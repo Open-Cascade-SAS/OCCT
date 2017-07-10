@@ -767,6 +767,36 @@ public: //! @name OpenGL ES 3.0
   typedef void (*glDrawBuffers_t)(GLsizei n, const GLenum* bufs);
   glDrawBuffers_t glDrawBuffers;
 
+  typedef void (*glGenSamplers_t)(GLsizei count, GLuint* samplers);
+  glGenSamplers_t glGenSamplers;
+
+  typedef void (*glDeleteSamplers_t)(GLsizei count, const GLuint* samplers);
+  glDeleteSamplers_t glDeleteSamplers;
+
+  typedef GLboolean (*glIsSampler_t)(GLuint sampler);
+  glIsSampler_t glIsSampler;
+
+  typedef void (*glBindSampler_t)(GLuint unit, GLuint sampler);
+  glBindSampler_t glBindSampler;
+
+  typedef void (*glSamplerParameteri_t)(GLuint sampler, GLenum pname, GLint param);
+  glSamplerParameteri_t glSamplerParameteri;
+
+  typedef void (*glSamplerParameteriv_t)(GLuint sampler, GLenum pname, const GLint* param);
+  glSamplerParameteriv_t glSamplerParameteriv;
+
+  typedef void (*glSamplerParameterf_t)(GLuint sampler, GLenum pname, GLfloat param);
+  glSamplerParameterf_t glSamplerParameterf;
+
+  typedef void (*glSamplerParameterfv_t)(GLuint sampler, GLenum pname, const GLfloat* param);
+  glSamplerParameterfv_t glSamplerParameterfv;
+
+  typedef void (*glGetSamplerParameteriv_t)(GLuint sampler, GLenum pname, GLint* params);
+  glGetSamplerParameteriv_t glGetSamplerParameteriv;
+
+  typedef void (*glGetSamplerParameterfv_t)(GLuint sampler, GLenum pname, GLfloat* params);
+  glGetSamplerParameterfv_t glGetSamplerParameterfv;
+
 public: //! @name OpenGL ES 3.1
 
   typedef void (*glTexStorage2DMultisample_t)(GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height, GLboolean fixedsamplelocations);

@@ -62,6 +62,30 @@ namespace
   };
 }
 
+namespace
+{
+  //! Defines OpenGL texture samplers.
+  static const Graphic3d_TextureUnit OpenGl_RT_EnvironmentMapTexture = Graphic3d_TextureUnit_0;
+
+  static const Graphic3d_TextureUnit OpenGl_RT_SceneNodeInfoTexture  = Graphic3d_TextureUnit_1;
+  static const Graphic3d_TextureUnit OpenGl_RT_SceneMinPointTexture  = Graphic3d_TextureUnit_2;
+  static const Graphic3d_TextureUnit OpenGl_RT_SceneMaxPointTexture  = Graphic3d_TextureUnit_3;
+  static const Graphic3d_TextureUnit OpenGl_RT_SceneTransformTexture = Graphic3d_TextureUnit_4;
+
+  static const Graphic3d_TextureUnit OpenGl_RT_GeometryVertexTexture = Graphic3d_TextureUnit_5;
+  static const Graphic3d_TextureUnit OpenGl_RT_GeometryNormalTexture = Graphic3d_TextureUnit_6;
+  static const Graphic3d_TextureUnit OpenGl_RT_GeometryTexCrdTexture = Graphic3d_TextureUnit_7;
+  static const Graphic3d_TextureUnit OpenGl_RT_GeometryTriangTexture = Graphic3d_TextureUnit_8;
+
+  static const Graphic3d_TextureUnit OpenGl_RT_RaytraceMaterialTexture = Graphic3d_TextureUnit_9;
+  static const Graphic3d_TextureUnit OpenGl_RT_RaytraceLightSrcTexture = Graphic3d_TextureUnit_10;
+
+  static const Graphic3d_TextureUnit OpenGl_RT_FsaaInputTexture = Graphic3d_TextureUnit_11;
+  static const Graphic3d_TextureUnit OpenGl_RT_PrevAccumTexture = Graphic3d_TextureUnit_12;
+
+  static const Graphic3d_TextureUnit OpenGl_RT_RaytraceDepthTexture = Graphic3d_TextureUnit_13;
+}
+
 // =======================================================================
 // function : updateRaytraceGeometry
 // purpose  : Updates 3D scene geometry for ray-tracing
@@ -289,6 +313,10 @@ Standard_Boolean OpenGl_View::toUpdateStructure (const OpenGl_Structure* theStru
 void buildTextureTransform (const Handle(Graphic3d_TextureParams)& theParams, BVH_Mat4f& theMatrix)
 {
   theMatrix.InitIdentity();
+  if (theParams.IsNull())
+  {
+    return;
+  }
 
   // Apply scaling
   const Graphic3d_Vec2& aScale = theParams->Scale();
@@ -418,27 +446,37 @@ OpenGl_RaytraceMaterial OpenGl_View::convertMaterial (const OpenGl_AspectFace*  
   theMaterial.BSDF.FresnelBase = aBSDF.FresnelBase.Serialize ();
 
   // Handle material textures
-  if (theAspect->Aspect()->ToMapTexture())
+  if (!theAspect->Aspect()->ToMapTexture())
   {
-    if (theGlContext->HasRayTracingTextures())
-    {
-      buildTextureTransform (theAspect->TextureParams(), theMaterial.TextureTransform);
+    return theMaterial;
+  }
 
-      // write texture ID to diffuse w-component
-      theMaterial.Diffuse.w() = theMaterial.BSDF.Kd.w() =
-        static_cast<Standard_ShortReal> (myRaytraceGeometry.AddTexture (theAspect->TextureRes (theGlContext)));
-    }
-    else if (!myIsRaytraceWarnTextures)
-    {
-      const TCollection_ExtendedString aWarnMessage =
-        "Warning: texturing in Ray-Trace requires GL_ARB_bindless_texture extension which is missing. "
-        "Please try to update graphics card driver. At the moment textures will be ignored.";
+  const Handle(OpenGl_TextureSet)& aTextureSet = theAspect->TextureSet (theGlContext);
+  if (aTextureSet.IsNull()
+   || aTextureSet->IsEmpty()
+   || aTextureSet->First().IsNull())
+  {
+    return theMaterial;
+  }
 
-      theGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION,
-        GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_HIGH, aWarnMessage);
+  if (theGlContext->HasRayTracingTextures())
+  {
+    const Handle(OpenGl_Texture)& aTexture = aTextureSet->First();
+    buildTextureTransform (aTexture->Sampler()->Parameters(), theMaterial.TextureTransform);
 
-      myIsRaytraceWarnTextures = Standard_True;
-    }
+    // write texture ID to diffuse w-component
+    theMaterial.Diffuse.w() = theMaterial.BSDF.Kd.w() = static_cast<Standard_ShortReal> (myRaytraceGeometry.AddTexture (aTexture));
+  }
+  else if (!myIsRaytraceWarnTextures)
+  {
+    const TCollection_ExtendedString aWarnMessage =
+      "Warning: texturing in Ray-Trace requires GL_ARB_bindless_texture extension which is missing. "
+      "Please try to update graphics card driver. At the moment textures will be ignored.";
+
+    theGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION,
+      GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_HIGH, aWarnMessage);
+
+    myIsRaytraceWarnTextures = Standard_True;
   }
 
   return theMaterial;
@@ -2681,8 +2719,10 @@ Standard_Boolean OpenGl_View::setUniformState (const Standard_Integer        the
   }
 
   // Set environment map parameters
-  const Standard_Boolean toDisableEnvironmentMap = myTextureEnv.IsNull() || !myTextureEnv->IsValid();
-  
+  const Standard_Boolean toDisableEnvironmentMap = myTextureEnv.IsNull()
+                                               ||  myTextureEnv->IsEmpty()
+                                               || !myTextureEnv->First()->IsValid();
+
   theProgram->SetUniform (theGlContext,
     myUniformLocations[theProgramId][OpenGl_RT_uSphereMapEnabled], toDisableEnvironmentMap ? 0 : 1);
 
@@ -2748,21 +2788,23 @@ void OpenGl_View::bindRaytraceTextures (const Handle(OpenGl_Context)& theGlConte
 #endif
   }
 
-  if (!myTextureEnv.IsNull() && myTextureEnv->IsValid())
+  if (!myTextureEnv.IsNull()
+   && !myTextureEnv->IsEmpty()
+   &&  myTextureEnv->First()->IsValid())
   {
-    myTextureEnv->Bind (theGlContext, GL_TEXTURE0 + OpenGl_RT_EnvironmentMapTexture);
+    myTextureEnv->First()->Bind (theGlContext, OpenGl_RT_EnvironmentMapTexture);
   }
 
-  mySceneMinPointTexture->BindTexture    (theGlContext, GL_TEXTURE0 + OpenGl_RT_SceneMinPointTexture);
-  mySceneMaxPointTexture->BindTexture    (theGlContext, GL_TEXTURE0 + OpenGl_RT_SceneMaxPointTexture);
-  mySceneNodeInfoTexture->BindTexture    (theGlContext, GL_TEXTURE0 + OpenGl_RT_SceneNodeInfoTexture);
-  myGeometryVertexTexture->BindTexture   (theGlContext, GL_TEXTURE0 + OpenGl_RT_GeometryVertexTexture);
-  myGeometryNormalTexture->BindTexture   (theGlContext, GL_TEXTURE0 + OpenGl_RT_GeometryNormalTexture);
-  myGeometryTexCrdTexture->BindTexture   (theGlContext, GL_TEXTURE0 + OpenGl_RT_GeometryTexCrdTexture);
-  myGeometryTriangTexture->BindTexture   (theGlContext, GL_TEXTURE0 + OpenGl_RT_GeometryTriangTexture);
-  mySceneTransformTexture->BindTexture   (theGlContext, GL_TEXTURE0 + OpenGl_RT_SceneTransformTexture);
-  myRaytraceMaterialTexture->BindTexture (theGlContext, GL_TEXTURE0 + OpenGl_RT_RaytraceMaterialTexture);
-  myRaytraceLightSrcTexture->BindTexture (theGlContext, GL_TEXTURE0 + OpenGl_RT_RaytraceLightSrcTexture);
+  mySceneMinPointTexture   ->BindTexture (theGlContext, OpenGl_RT_SceneMinPointTexture);
+  mySceneMaxPointTexture   ->BindTexture (theGlContext, OpenGl_RT_SceneMaxPointTexture);
+  mySceneNodeInfoTexture   ->BindTexture (theGlContext, OpenGl_RT_SceneNodeInfoTexture);
+  myGeometryVertexTexture  ->BindTexture (theGlContext, OpenGl_RT_GeometryVertexTexture);
+  myGeometryNormalTexture  ->BindTexture (theGlContext, OpenGl_RT_GeometryNormalTexture);
+  myGeometryTexCrdTexture  ->BindTexture (theGlContext, OpenGl_RT_GeometryTexCrdTexture);
+  myGeometryTriangTexture  ->BindTexture (theGlContext, OpenGl_RT_GeometryTriangTexture);
+  mySceneTransformTexture  ->BindTexture (theGlContext, OpenGl_RT_SceneTransformTexture);
+  myRaytraceMaterialTexture->BindTexture (theGlContext, OpenGl_RT_RaytraceMaterialTexture);
+  myRaytraceLightSrcTexture->BindTexture (theGlContext, OpenGl_RT_RaytraceLightSrcTexture);
 }
 
 // =======================================================================
@@ -2771,16 +2813,16 @@ void OpenGl_View::bindRaytraceTextures (const Handle(OpenGl_Context)& theGlConte
 // =======================================================================
 void OpenGl_View::unbindRaytraceTextures (const Handle(OpenGl_Context)& theGlContext)
 {
-  mySceneMinPointTexture->UnbindTexture    (theGlContext, GL_TEXTURE0 + OpenGl_RT_SceneMinPointTexture);
-  mySceneMaxPointTexture->UnbindTexture    (theGlContext, GL_TEXTURE0 + OpenGl_RT_SceneMaxPointTexture);
-  mySceneNodeInfoTexture->UnbindTexture    (theGlContext, GL_TEXTURE0 + OpenGl_RT_SceneNodeInfoTexture);
-  myGeometryVertexTexture->UnbindTexture   (theGlContext, GL_TEXTURE0 + OpenGl_RT_GeometryVertexTexture);
-  myGeometryNormalTexture->UnbindTexture   (theGlContext, GL_TEXTURE0 + OpenGl_RT_GeometryNormalTexture);
-  myGeometryTexCrdTexture->UnbindTexture   (theGlContext, GL_TEXTURE0 + OpenGl_RT_GeometryTexCrdTexture);
-  myGeometryTriangTexture->UnbindTexture   (theGlContext, GL_TEXTURE0 + OpenGl_RT_GeometryTriangTexture);
-  mySceneTransformTexture->UnbindTexture   (theGlContext, GL_TEXTURE0 + OpenGl_RT_SceneTransformTexture);
-  myRaytraceMaterialTexture->UnbindTexture (theGlContext, GL_TEXTURE0 + OpenGl_RT_RaytraceMaterialTexture);
-  myRaytraceLightSrcTexture->UnbindTexture (theGlContext, GL_TEXTURE0 + OpenGl_RT_RaytraceLightSrcTexture);
+  mySceneMinPointTexture   ->UnbindTexture (theGlContext, OpenGl_RT_SceneMinPointTexture);
+  mySceneMaxPointTexture   ->UnbindTexture (theGlContext, OpenGl_RT_SceneMaxPointTexture);
+  mySceneNodeInfoTexture   ->UnbindTexture (theGlContext, OpenGl_RT_SceneNodeInfoTexture);
+  myGeometryVertexTexture  ->UnbindTexture (theGlContext, OpenGl_RT_GeometryVertexTexture);
+  myGeometryNormalTexture  ->UnbindTexture (theGlContext, OpenGl_RT_GeometryNormalTexture);
+  myGeometryTexCrdTexture  ->UnbindTexture (theGlContext, OpenGl_RT_GeometryTexCrdTexture);
+  myGeometryTriangTexture  ->UnbindTexture (theGlContext, OpenGl_RT_GeometryTriangTexture);
+  mySceneTransformTexture  ->UnbindTexture (theGlContext, OpenGl_RT_SceneTransformTexture);
+  myRaytraceMaterialTexture->UnbindTexture (theGlContext, OpenGl_RT_RaytraceMaterialTexture);
+  myRaytraceLightSrcTexture->UnbindTexture (theGlContext, OpenGl_RT_RaytraceLightSrcTexture);
 
   theGlContext->core15fwd->glActiveTexture (GL_TEXTURE0);
 }
@@ -2849,7 +2891,7 @@ Standard_Boolean OpenGl_View::runRaytrace (const Standard_Integer        theSize
     glDisable (GL_DEPTH_TEST); // improve jagged edges without depth buffer
 
     // bind ray-tracing output image as input
-    myRaytraceFBO1[aFBOIdx]->ColorTexture()->Bind (theGlContext, GL_TEXTURE0 + OpenGl_RT_FsaaInputTexture);
+    myRaytraceFBO1[aFBOIdx]->ColorTexture()->Bind (theGlContext, OpenGl_RT_FsaaInputTexture);
 
     aResult &= theGlContext->BindProgram (myPostFSAAProgram);
 
@@ -2900,7 +2942,7 @@ Standard_Boolean OpenGl_View::runRaytrace (const Standard_Integer        theSize
       // perform adaptive FSAA pass
       theGlContext->core20fwd->glDrawArrays (GL_TRIANGLES, 0, 6);
 
-      aFramebuffer->ColorTexture()->Bind (theGlContext, GL_TEXTURE0 + OpenGl_RT_FsaaInputTexture);
+      aFramebuffer->ColorTexture()->Bind (theGlContext, OpenGl_RT_FsaaInputTexture);
     }
 
     aRenderImageFramebuffer = myRaytraceFBO2[aFBOIdx];
@@ -2920,20 +2962,14 @@ Standard_Boolean OpenGl_View::runRaytrace (const Standard_Integer        theSize
       aRenderImageFramebuffer->UnbindBuffer (theGlContext);
     }
 
-    aRenderImageFramebuffer->ColorTexture()->Bind (
-      theGlContext, GL_TEXTURE0 + OpenGl_RT_PrevAccumTexture);
-
-    aDepthSourceFramebuffer->DepthStencilTexture()->Bind (
-      theGlContext, GL_TEXTURE0 + OpenGl_RT_RaytraceDepthTexture);
+    aRenderImageFramebuffer->ColorTexture()       ->Bind (theGlContext, OpenGl_RT_PrevAccumTexture);
+    aDepthSourceFramebuffer->DepthStencilTexture()->Bind (theGlContext, OpenGl_RT_RaytraceDepthTexture);
 
     // copy the output image with depth values
     theGlContext->core20fwd->glDrawArrays (GL_TRIANGLES, 0, 6);
 
-    aDepthSourceFramebuffer->DepthStencilTexture()->Unbind (
-      theGlContext, GL_TEXTURE0 + OpenGl_RT_RaytraceDepthTexture);
-
-    aRenderImageFramebuffer->ColorTexture()->Unbind (
-      theGlContext, GL_TEXTURE0 + OpenGl_RT_PrevAccumTexture);
+    aDepthSourceFramebuffer->DepthStencilTexture()->Unbind (theGlContext, OpenGl_RT_RaytraceDepthTexture);
+    aRenderImageFramebuffer->ColorTexture()       ->Unbind (theGlContext, OpenGl_RT_PrevAccumTexture);
   }
 
   unbindRaytraceTextures (theGlContext);
@@ -3011,8 +3047,7 @@ Standard_Boolean OpenGl_View::runPathtrace (const Standard_Integer              
 
   aDepthSourceFramebuffer = aRenderImageFramebuffer;
 
-  anAccumImageFramebuffer->ColorTexture()->Bind (
-    theGlContext, GL_TEXTURE0 + OpenGl_RT_PrevAccumTexture);
+  anAccumImageFramebuffer->ColorTexture()->Bind (theGlContext, OpenGl_RT_PrevAccumTexture);
 
   aRenderImageFramebuffer->BindBuffer (theGlContext);
 
@@ -3105,16 +3140,14 @@ Standard_Boolean OpenGl_View::runPathtrace (const Standard_Integer              
     aRenderImageFramebuffer->UnbindBuffer (theGlContext);
   }
 
-  aRenderImageFramebuffer->ColorTexture()->Bind (
-    theGlContext, GL_TEXTURE0 + OpenGl_RT_PrevAccumTexture);
+  aRenderImageFramebuffer->ColorTexture()->Bind (theGlContext, OpenGl_RT_PrevAccumTexture);
 
   glEnable (GL_DEPTH_TEST);
 
   // Copy accumulated image with correct depth values
   theGlContext->core20fwd->glDrawArrays (GL_TRIANGLES, 0, 6);
 
-  aRenderImageFramebuffer->ColorTexture()->Unbind (
-    theGlContext, GL_TEXTURE0 + OpenGl_RT_PrevAccumTexture);
+  aRenderImageFramebuffer->ColorTexture()->Unbind (theGlContext, OpenGl_RT_PrevAccumTexture);
 
   if (myRaytraceParameters.AdaptiveScreenSampling)
   {

@@ -338,8 +338,8 @@ Standard_Boolean OpenGl_BackgroundArray::createTextureArray (const Handle(OpenGl
   // Get texture parameters
   const Handle(OpenGl_Context)& aCtx = theWorkspace->GetGlContext();
   const OpenGl_AspectFace* anAspectFace = theWorkspace->AspectFace();
-  GLfloat aTextureWidth  = (GLfloat )anAspectFace->TextureRes (aCtx)->SizeX();
-  GLfloat aTextureHeight = (GLfloat )anAspectFace->TextureRes (aCtx)->SizeY();
+  GLfloat aTextureWidth  = (GLfloat )anAspectFace->TextureSet (aCtx)->First()->SizeX();
+  GLfloat aTextureHeight = (GLfloat )anAspectFace->TextureSet (aCtx)->First()->SizeY();
 
   if (myFillMethod == Aspect_FM_CENTERED)
   {

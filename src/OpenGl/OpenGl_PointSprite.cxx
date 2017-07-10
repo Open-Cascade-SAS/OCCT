@@ -16,9 +16,9 @@
 
 #include <Graphic3d_TextureParams.hxx>
 #include <OpenGl_Context.hxx>
+#include <OpenGl_Sampler.hxx>
 #include <Standard_Assert.hxx>
 #include <Image_PixMap.hxx>
-
 
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_PointSprite,OpenGl_Texture)
 
@@ -26,15 +26,15 @@ IMPLEMENT_STANDARD_RTTIEXT(OpenGl_PointSprite,OpenGl_Texture)
 // function : OpenGl_PointSprite
 // purpose  :
 // =======================================================================
-OpenGl_PointSprite::OpenGl_PointSprite()
-: OpenGl_Texture (NULL),
+OpenGl_PointSprite::OpenGl_PointSprite (const TCollection_AsciiString& theResourceId)
+: OpenGl_Texture (theResourceId, Handle(Graphic3d_TextureParams)()),
   myBitmapList (0)
 {
-  //myParams->SetFilter (Graphic3d_TOTF_NEAREST);
-  myParams->SetModulate (Standard_False);
-  myParams->SetGenMode (Graphic3d_TOTM_SPRITE,
-                        Graphic3d_Vec4 (0.0f, 0.0f, 0.0f, 0.0f),
-                        Graphic3d_Vec4 (0.0f, 0.0f, 0.0f, 0.0f));
+  //mySampler->Parameters()->SetFilter (Graphic3d_TOTF_NEAREST);
+  mySampler->Parameters()->SetModulate (Standard_False);
+  mySampler->Parameters()->SetGenMode (Graphic3d_TOTM_SPRITE,
+                                       Graphic3d_Vec4 (0.0f, 0.0f, 0.0f, 0.0f),
+                                       Graphic3d_Vec4 (0.0f, 0.0f, 0.0f, 0.0f));
 }
 
 // =======================================================================
@@ -79,7 +79,6 @@ void OpenGl_PointSprite::SetDisplayList (const Handle(OpenGl_Context)& theCtx,
   Release (theCtx.operator->());
   myBitmapList = theBitmapList;
 }
-
 
 // =======================================================================
 // function : DrawBitmap

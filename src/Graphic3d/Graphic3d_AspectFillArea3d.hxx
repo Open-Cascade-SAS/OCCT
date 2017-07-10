@@ -26,6 +26,7 @@
 #include <Graphic3d_PolygonOffset.hxx>
 #include <Graphic3d_ShaderProgram.hxx>
 #include <Graphic3d_TextureMap.hxx>
+#include <Graphic3d_TextureSet.hxx>
 #include <Standard.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
@@ -153,18 +154,34 @@ public:
   //! Sets up OpenGL/GLSL shader program.
   void SetShaderProgram (const Handle(Graphic3d_ShaderProgram)& theProgram) { myProgram = theProgram; }
 
+  //! Return texture array to be mapped.
+  const Handle(Graphic3d_TextureSet)& TextureSet() const { return myTextureSet; }
+
+  //! Setup texture array to be mapped.
+  void SetTextureSet (const Handle(Graphic3d_TextureSet)& theTextures) { myTextureSet = theTextures; }
+
   //! Return texture to be mapped.
-  const Handle(Graphic3d_TextureMap)& TextureMap() const { return myTextureMap; }
+  //Standard_DEPRECATED("Deprecated method, TextureSet() should be used instead")
+  Handle(Graphic3d_TextureMap) TextureMap() const
+  {
+    return !myTextureSet.IsNull() && !myTextureSet->IsEmpty()
+          ? myTextureSet->First()
+          : Handle(Graphic3d_TextureMap)();
+  }
 
   //! Assign texture to be mapped.
-  //! See also SetTextureMap() to actually activate texture mapping.
-  void SetTextureMap (const Handle(Graphic3d_TextureMap)& theTexture) { myTextureMap = theTexture; }
+  //! See also SetTextureMapOn() to actually activate texture mapping.
+  //Standard_DEPRECATED("Deprecated method, SetTextureSet() should be used instead")
+  Standard_EXPORT void SetTextureMap (const Handle(Graphic3d_TextureMap)& theTexture);
 
   //! Return true if texture mapping is enabled (false by default).
   bool ToMapTexture() const { return myToMapTexture; }
 
   //! Return true if texture mapping is enabled (false by default).
   bool TextureMapState() const { return myToMapTexture; }
+
+  //! Enable or disable texture mapping (has no effect if texture is not set).
+  void SetTextureMapOn (bool theToMap) { myToMapTexture = theToMap; }
 
   //! Enable texture mapping (has no effect if texture is not set).
   void SetTextureMapOn() { myToMapTexture = true; }
@@ -312,7 +329,7 @@ public:
 protected:
 
   Handle(Graphic3d_ShaderProgram) myProgram;
-  Handle(Graphic3d_TextureMap)    myTextureMap;
+  Handle(Graphic3d_TextureSet)    myTextureSet;
   Graphic3d_MaterialAspect        myFrontMaterial;
   Graphic3d_MaterialAspect        myBackMaterial;
 

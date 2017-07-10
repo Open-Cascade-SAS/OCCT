@@ -28,7 +28,7 @@ class OpenGl_PointSprite : public OpenGl_Texture
 public:
 
   //! Create uninitialized resource.
-  Standard_EXPORT OpenGl_PointSprite();
+  Standard_EXPORT OpenGl_PointSprite (const TCollection_AsciiString& theResourceId);
 
   //! Destroy object.
   Standard_EXPORT virtual ~OpenGl_PointSprite();

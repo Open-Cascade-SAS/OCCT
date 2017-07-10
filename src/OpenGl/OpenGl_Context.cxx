@@ -24,6 +24,7 @@
 #include <OpenGl_ArbDbg.hxx>
 #include <OpenGl_ArbFBO.hxx>
 #include <OpenGl_ExtGS.hxx>
+#include <OpenGl_ArbSamplerObject.hxx>
 #include <OpenGl_ArbTexBindless.hxx>
 #include <OpenGl_GlCore44.hxx>
 #include <OpenGl_FrameBuffer.hxx>
@@ -133,6 +134,7 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
   arbNPTW  (Standard_False),
   arbTexRG (Standard_False),
   arbTexFloat (Standard_False),
+  arbSamplerObject (NULL),
   arbTexBindless (NULL),
   arbTBO (NULL),
   arbTboRGB32 (Standard_False),
@@ -159,6 +161,7 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
   myAnisoMax   (1),
   myTexClamp   (GL_CLAMP_TO_EDGE),
   myMaxTexDim  (1024),
+  myMaxTexCombined (1),
   myMaxClipPlanes (6),
   myMaxMsaaSamples(0),
   myMaxDrawBuffers (1),
@@ -286,12 +289,6 @@ OpenGl_Context::~OpenGl_Context()
   }
   mySharedResources.Nullify();
   myDelayed.Nullify();
-
-  // release sampler object
-  if (!myTexSampler.IsNull())
-  {
-    myTexSampler->Release (this);
-  }
 
   if (arbDbg != NULL
    && myIsGlDebugCtx
@@ -1281,6 +1278,9 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
   extGS      = NULL;
   myDefaultVao = 0;
 
+  //! Make record shorter to retrieve function pointer using variable with same name
+  #define FindProcShort(theFunc) FindProc(#theFunc, myFuncs->theFunc)
+
 #if defined(GL_ES_VERSION_2_0)
 
   hasTexRGBA8 = IsGlGreaterEqual (3, 0)
@@ -1308,9 +1308,27 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
     arbFBO    = (OpenGl_ArbFBO*      )(&(*myFuncs));
   }
   if (IsGlGreaterEqual (3, 0)
-   && FindProc ("glBlitFramebuffer", myFuncs->glBlitFramebuffer))
+   && FindProcShort (glBlitFramebuffer))
   {
     arbFBOBlit = (OpenGl_ArbFBOBlit* )(&(*myFuncs));
+  }
+  if (IsGlGreaterEqual (3, 0)
+   && FindProcShort (glGenSamplers)
+   && FindProcShort (glDeleteSamplers)
+   && FindProcShort (glIsSampler)
+   && FindProcShort (glBindSampler)
+   && FindProcShort (glSamplerParameteri)
+   && FindProcShort (glSamplerParameteriv)
+   && FindProcShort (glSamplerParameterf)
+   && FindProcShort (glSamplerParameterfv)
+   && FindProcShort (glGetSamplerParameteriv)
+   && FindProcShort (glGetSamplerParameterfv))
+   //&& FindProcShort (glSamplerParameterIiv) // only on Desktop or with extensions GL_OES_texture_border_clamp/GL_EXT_texture_border_clamp
+   //&& FindProcShort (glSamplerParameterIuiv)
+   //&& FindProcShort (glGetSamplerParameterIiv)
+   //&& FindProcShort (glGetSamplerParameterIuiv))
+  {
+    arbSamplerObject = (OpenGl_ArbSamplerObject* )(&(*myFuncs));
   }
   extFragDepth = !IsGlGreaterEqual(3, 0)
                && CheckExtension ("GL_EXT_frag_depth");
@@ -1440,6 +1458,10 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
   }
 
   glGetIntegerv (GL_MAX_TEXTURE_SIZE, &myMaxTexDim);
+  if (IsGlGreaterEqual (1, 5))
+  {
+    glGetIntegerv (GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &myMaxTexCombined);
+  }
 
   if (extAnis)
   {
@@ -1465,9 +1487,6 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
   bool has42 = false;
   bool has43 = false;
   bool has44 = false;
-
-  //! Make record shorter to retrieve function pointer using variable with same name
-  #define FindProcShort(theFunc) FindProc(#theFunc, myFuncs->theFunc)
 
   // retrieve platform-dependent extensions
 #if defined(HAVE_EGL)
@@ -1917,6 +1936,10 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
        && FindProcShort (glGetSamplerParameterIiv)
        && FindProcShort (glGetSamplerParameterfv)
        && FindProcShort (glGetSamplerParameterIuiv);
+  if (hasSamplerObjects)
+  {
+    arbSamplerObject = (OpenGl_ArbSamplerObject* )(&(*myFuncs));
+  }
 
   // load GL_ARB_timer_query (added to OpenGL 3.3 core)
   const bool hasTimerQuery = (IsGlGreaterEqual (3, 3) || CheckExtension ("GL_ARB_timer_query"))
@@ -2507,10 +2530,6 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
     core33back = (OpenGl_GlCore33Back* )(&(*myFuncs));
   }
 
-  // initialize sampler object
-  myTexSampler = new OpenGl_Sampler();
-  myTexSampler->Init (*this);
-
   if (!has40)
   {
     checkWrongVersion (4, 0);
@@ -2807,6 +2826,7 @@ void OpenGl_Context::DiagnosticInformation (TColStd_IndexedDataMapOfStringString
   if ((theFlags & Graphic3d_DiagnosticInfo_Limits) != 0)
   {
     addInfo (theDict, "Max texture size", TCollection_AsciiString(myMaxTexDim));
+    addInfo (theDict, "Max combined texture units", TCollection_AsciiString(myMaxTexCombined));
     addInfo (theDict, "Max MSAA samples", TCollection_AsciiString(myMaxMsaaSamples));
   }
 
@@ -2951,6 +2971,111 @@ void OpenGl_Context::ReleaseDelayed()
   {
     myDelayed->UnBind (aDeadList.Value (anIter));
   }
+}
+
+// =======================================================================
+// function : BindTextures
+// purpose  :
+// =======================================================================
+Handle(OpenGl_TextureSet) OpenGl_Context::BindTextures (const Handle(OpenGl_TextureSet)& theTextures)
+{
+  if (myActiveTextures == theTextures)
+  {
+    return myActiveTextures;
+  }
+
+  Handle(OpenGl_Context) aThisCtx (this);
+  OpenGl_TextureSet::Iterator aTextureIterOld (myActiveTextures), aTextureIterNew (theTextures);
+  for (;;)
+  {
+    if (!aTextureIterNew.More())
+    {
+      for (; aTextureIterOld.More(); aTextureIterOld.Next())
+      {
+        if (const Handle(OpenGl_Texture)& aTextureOld = aTextureIterOld.Value())
+        {
+        #if !defined(GL_ES_VERSION_2_0)
+          if (core11 != NULL)
+          {
+            OpenGl_Sampler::resetGlobalTextureParams (aThisCtx, *aTextureOld, aTextureOld->Sampler()->Parameters());
+          }
+        #endif
+          aTextureOld->Unbind (aThisCtx);
+        }
+      }
+      break;
+    }
+
+    const Handle(OpenGl_Texture)& aTextureNew = aTextureIterNew.Value();
+    if (aTextureIterOld.More())
+    {
+      const Handle(OpenGl_Texture)& aTextureOld = aTextureIterOld.Value();
+      if (aTextureNew == aTextureOld)
+      {
+        aTextureIterNew.Next();
+        aTextureIterOld.Next();
+        continue;
+      }
+      else if (aTextureNew.IsNull()
+           || !aTextureNew->IsValid())
+      {
+        if (!aTextureOld.IsNull())
+        {
+        #if !defined(GL_ES_VERSION_2_0)
+          if (core11 != NULL)
+          {
+            OpenGl_Sampler::resetGlobalTextureParams (aThisCtx, *aTextureOld, aTextureOld->Sampler()->Parameters());
+          }
+        #endif
+          aTextureOld->Unbind (aThisCtx);
+        }
+
+        aTextureIterNew.Next();
+        aTextureIterOld.Next();
+        continue;
+      }
+
+      aTextureIterOld.Next();
+    }
+    if (aTextureNew.IsNull())
+    {
+      aTextureIterNew.Next();
+      continue;
+    }
+
+    const Graphic3d_TextureUnit aTexUnit = aTextureNew->Sampler()->Parameters()->TextureUnit();
+    if (aTexUnit >= myMaxTexCombined)
+    {
+      PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
+                   TCollection_AsciiString("Texture unit ") + aTexUnit + " for " + aTextureNew->ResourceId() + " exceeds hardware limit " + myMaxTexCombined);
+      aTextureIterNew.Next();
+      continue;
+    }
+
+    aTextureNew->Bind (aThisCtx);
+    if (aTextureNew->Sampler()->ToUpdateParameters())
+    {
+      if (aTextureNew->Sampler()->IsImmutable())
+      {
+        aTextureNew->Sampler()->Init (aThisCtx, *aTextureNew);
+      }
+      else
+      {
+        OpenGl_Sampler::applySamplerParams (aThisCtx, aTextureNew->Sampler()->Parameters(), aTextureNew->Sampler().get(), aTextureNew->GetTarget(), aTextureNew->HasMipmaps());
+      }
+    }
+  #if !defined(GL_ES_VERSION_2_0)
+    if (core11 != NULL)
+    {
+      OpenGl_Sampler::applyGlobalTextureParams (aThisCtx, *aTextureNew, aTextureNew->Sampler()->Parameters());
+    }
+  #endif
+    aTextureIterNew.Next();
+  }
+
+  Handle(OpenGl_TextureSet) anOldTextures = myActiveTextures;
+  myActiveTextures = theTextures;
+  return anOldTextures;
 }
 
 // =======================================================================

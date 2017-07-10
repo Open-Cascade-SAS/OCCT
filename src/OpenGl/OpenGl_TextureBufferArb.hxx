@@ -92,11 +92,11 @@ public:
 
   //! Bind TBO to specified Texture Unit.
   Standard_EXPORT void BindTexture (const Handle(OpenGl_Context)& theGlCtx,
-                                    const GLenum theTextureUnit = GL_TEXTURE0) const;
+                                    const Graphic3d_TextureUnit   theTextureUnit) const;
 
   //! Unbind TBO.
   Standard_EXPORT void UnbindTexture (const Handle(OpenGl_Context)& theGlCtx,
-                                      const GLenum theTextureUnit = GL_TEXTURE0) const;
+                                      const Graphic3d_TextureUnit   theTextureUnit) const;
 
 protected:
 

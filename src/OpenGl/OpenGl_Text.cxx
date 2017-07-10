@@ -421,8 +421,8 @@ void OpenGl_Text::StringSize (const Handle(OpenGl_Context)& theCtx,
 void OpenGl_Text::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
 {
   const OpenGl_AspectText*      aTextAspect  = theWorkspace->ApplyAspectText();
-  const Handle(OpenGl_Texture)  aPrevTexture = theWorkspace->DisableTexture();
   const Handle(OpenGl_Context)& aCtx         = theWorkspace->GetGlContext();
+  const Handle(OpenGl_TextureSet) aPrevTexture = aCtx->BindTextures (Handle(OpenGl_TextureSet)());
 #if !defined(GL_ES_VERSION_2_0)
   const Standard_Integer aPrevPolygonMode  = aCtx->SetPolygonMode (GL_FILL);
   const bool             aPrevHatchingMode = aCtx->SetPolygonHatchEnabled (false);
@@ -444,7 +444,7 @@ void OpenGl_Text::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
   // restore aspects
   if (!aPrevTexture.IsNull())
   {
-    theWorkspace->EnableTexture (aPrevTexture);
+    aCtx->BindTextures (aPrevTexture);
   }
 #if !defined(GL_ES_VERSION_2_0)
   aCtx->SetPolygonMode         (aPrevPolygonMode);
@@ -725,7 +725,7 @@ void OpenGl_Text::drawRect (const Handle(OpenGl_Context)& theCtx,
   }
 
   // bind flat program
-  theCtx->ShaderManager()->BindFaceProgram (Handle(OpenGl_Texture)(), Standard_False, Standard_False, Standard_False, Handle(OpenGl_ShaderProgram)());
+  theCtx->ShaderManager()->BindFaceProgram (Handle(OpenGl_TextureSet)(), Standard_False, Standard_False, Standard_False, Handle(OpenGl_ShaderProgram)());
 
 #if !defined(GL_ES_VERSION_2_0)
   if (theCtx->core11 != NULL

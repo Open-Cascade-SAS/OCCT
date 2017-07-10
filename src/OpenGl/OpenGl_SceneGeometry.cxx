@@ -439,7 +439,7 @@ OpenGl_TriangleSet* OpenGl_RaytraceGeometry::TriangleSet (Standard_Integer theNo
 // function : AcquireTextures
 // purpose  : Makes the OpenGL texture handles resident
 // =======================================================================
-Standard_Boolean OpenGl_RaytraceGeometry::AcquireTextures (const Handle(OpenGl_Context)& theContext) const
+Standard_Boolean OpenGl_RaytraceGeometry::AcquireTextures (const Handle(OpenGl_Context)& theContext)
 {
   if (theContext->arbTexBindless == NULL)
   {
@@ -447,15 +447,39 @@ Standard_Boolean OpenGl_RaytraceGeometry::AcquireTextures (const Handle(OpenGl_C
   }
 
 #if !defined(GL_ES_VERSION_2_0)
-  for (Standard_Integer anIdx = 0; anIdx < myTextures.Size(); ++anIdx)
+  Standard_Integer aTexIter = 0;
+  for (NCollection_Vector<Handle(OpenGl_Texture)>::Iterator aTexSrcIter (myTextures); aTexSrcIter.More(); aTexSrcIter.Next(), ++aTexIter)
   {
-    theContext->arbTexBindless->glMakeTextureHandleResidentARB (myTextureHandles[anIdx]);
-
-    if (glGetError() != GL_NO_ERROR)
+    GLuint64& aHandle = myTextureHandles[aTexIter];
+    const Handle(OpenGl_Texture)& aTexture = aTexSrcIter.Value();
+    if (!aTexture->Sampler()->IsValid()
+     || !aTexture->Sampler()->IsImmutable())
     {
-#ifdef RAY_TRACE_PRINT_INFO
-      std::cout << "Error: Failed to make OpenGL texture resident" << std::endl;
-#endif
+      // need to recreate texture sampler handle
+      aHandle = GLuint64(-1); // specs do not define value for invalid handle, set -1 to initialize something
+      if (!aTexture->InitSamplerObject (theContext))
+      {
+        continue;
+      }
+
+      aTexture->Sampler()->SetImmutable();
+      aHandle = theContext->arbTexBindless->glGetTextureSamplerHandleARB (aTexture->TextureId(), aTexture->Sampler()->SamplerID());
+      const GLenum anErr = glGetError();
+      if (anErr != GL_NO_ERROR)
+      {
+        theContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
+                                 TCollection_AsciiString ("Error: Failed to get 64-bit handle of OpenGL texture #") + int(anErr));
+        myTextureHandles.clear();
+        return Standard_False;
+      }
+    }
+
+    theContext->arbTexBindless->glMakeTextureHandleResidentARB (aHandle);
+    const GLenum anErr = glGetError();
+    if (anErr != GL_NO_ERROR)
+    {
+      theContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
+                               TCollection_AsciiString ("Error: Failed to make OpenGL texture resident #") + int(anErr));
       return Standard_False;
     }
   }
@@ -476,15 +500,14 @@ Standard_Boolean OpenGl_RaytraceGeometry::ReleaseTextures (const Handle(OpenGl_C
   }
 
 #if !defined(GL_ES_VERSION_2_0)
-  for (Standard_Integer anIdx = 0; anIdx < myTextures.Size(); ++anIdx)
+  for (size_t aTexIter = 0; aTexIter < myTextureHandles.size(); ++aTexIter)
   {
-    theContext->arbTexBindless->glMakeTextureHandleNonResidentARB (myTextureHandles[anIdx]);
-
-    if (glGetError() != GL_NO_ERROR)
+    theContext->arbTexBindless->glMakeTextureHandleNonResidentARB (myTextureHandles[aTexIter]);
+    const GLenum anErr = glGetError();
+    if (anErr != GL_NO_ERROR)
     {
-#ifdef RAY_TRACE_PRINT_INFO
-      std::cout << "Error: Failed to make OpenGL texture non-resident" << std::endl;
-#endif
+      theContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
+                               TCollection_AsciiString("Error: Failed to make OpenGL texture non-resident #") + int(anErr));
       return Standard_False;
     }
   }
@@ -531,33 +554,33 @@ Standard_Boolean OpenGl_RaytraceGeometry::UpdateTextureHandles (const Handle(Ope
     return Standard_False;
   }
 
-  if (myTextureSampler.IsNull())
-  {
-    myTextureSampler = new OpenGl_Sampler();
-    myTextureSampler->Init (*theContext.operator->());
-    myTextureSampler->SetParameter (*theContext.operator->(), GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    myTextureSampler->SetParameter (*theContext.operator->(), GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    myTextureSampler->SetParameter (*theContext.operator->(), GL_TEXTURE_WRAP_S,     GL_REPEAT);
-    myTextureSampler->SetParameter (*theContext.operator->(), GL_TEXTURE_WRAP_T,     GL_REPEAT);
-  }
-
   myTextureHandles.clear();
+  myTextureHandles.resize (myTextures.Size());
 
 #if !defined(GL_ES_VERSION_2_0)
-  for (Standard_Integer anIdx = 0; anIdx < myTextures.Size(); ++anIdx)
+  Standard_Integer aTexIter = 0;
+  for (NCollection_Vector<Handle(OpenGl_Texture)>::Iterator aTexSrcIter (myTextures); aTexSrcIter.More(); aTexSrcIter.Next(), ++aTexIter)
   {
-    const GLuint64 aHandle = theContext->arbTexBindless->glGetTextureSamplerHandleARB (
-      myTextures.Value (anIdx)->TextureId(), myTextureSampler->SamplerID());
+    GLuint64& aHandle = myTextureHandles[aTexIter];
+    aHandle = GLuint64(-1); // specs do not define value for invalid handle, set -1 to initialize something
 
-    if (glGetError() != GL_NO_ERROR)
+    const Handle(OpenGl_Texture)& aTexture = aTexSrcIter.Value();
+    if (!aTexture->Sampler()->IsValid()
+     && !aTexture->InitSamplerObject (theContext))
     {
-#ifdef RAY_TRACE_PRINT_INFO
-      std::cout << "Error: Failed to get 64-bit handle of OpenGL texture" << std::endl;
-#endif
-      return Standard_False;
+      continue;
     }
 
-    myTextureHandles.push_back (aHandle);
+    aTexture->Sampler()->SetImmutable();
+    aHandle = theContext->arbTexBindless->glGetTextureSamplerHandleARB (aTexture->TextureId(), aTexture->Sampler()->SamplerID());
+    const GLenum anErr = glGetError();
+    if (anErr != GL_NO_ERROR)
+    {
+      theContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
+                               TCollection_AsciiString ("Error: Failed to get 64-bit handle of OpenGL texture #") + int(anErr));
+      myTextureHandles.clear();
+      return Standard_False;
+    }
   }
 #endif
 

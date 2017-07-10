@@ -17,6 +17,7 @@
 #define _OpenGl_AspectFace_Header
 
 #include <OpenGl_AspectLine.hxx>
+#include <OpenGl_TextureSet.hxx>
 #include <Graphic3d_AspectFillArea3d.hxx>
 #include <Graphic3d_ShaderProgram.hxx>
 #include <Graphic3d_TextureMap.hxx>
@@ -54,22 +55,15 @@ public:
   //! Set if lighting should be disabled or not.
   void SetNoLighting (bool theValue) { myIsNoLighting = theValue; }
 
-  //! @return texture mapping parameters.
-  const Handle(Graphic3d_TextureParams)& TextureParams() const
-  {
-    return myAspect->TextureMap()->GetParams();
-  }
-
-  //! @return texture map.
-  const Handle(OpenGl_Texture)& TextureRes (const Handle(OpenGl_Context)& theCtx) const
+  //! Returne textures map.
+  const Handle(OpenGl_TextureSet)& TextureSet (const Handle(OpenGl_Context)& theCtx) const
   {
     if (!myResources.IsTextureReady())
     {
-      myResources.BuildTexture (theCtx, myAspect->TextureMap());
+      myResources.BuildTextures (theCtx, myAspect->TextureSet());
       myResources.SetTextureReady();
     }
-
-    return myResources.Texture;
+    return myResources.TextureSet();
   }
 
   //! Init and return OpenGl shader program resource.
@@ -94,29 +88,49 @@ protected:
   mutable struct Resources
   {
   public:
+    //! Empty constructor.
     Resources()
-      : myIsTextureReady (Standard_False),
-        myIsShaderReady  (Standard_False) {}
+    : myIsTextureReady (Standard_False),
+      myIsShaderReady  (Standard_False) {}
 
+    //! Return TRUE if texture resource is up-to-date.
     Standard_Boolean IsTextureReady() const { return myIsTextureReady; }
+
+    //! Return TRUE if shader resource is up-to-date.
     Standard_Boolean IsShaderReady () const { return myIsShaderReady;  }
+
+    //! Set texture resource up-to-date state.
     void SetTextureReady() { myIsTextureReady = Standard_True; }
+
+    //! Set shader resource up-to-date state.
     void SetShaderReady () { myIsShaderReady  = Standard_True; }
-    void ResetTextureReadiness() { myIsTextureReady = Standard_False; }
+
+    //! Reset shader resource up-to-date state.
     void ResetShaderReadiness () { myIsShaderReady  = Standard_False; }
 
-    Standard_EXPORT void BuildTexture (const Handle(OpenGl_Context)&          theCtx,
-                                       const Handle(Graphic3d_TextureMap)&    theTexture);
+    //! Return textures array.
+    const Handle(OpenGl_TextureSet)& TextureSet() const { return myTextures; }
+
+    //! Update texture resource up-to-date state.
+    Standard_EXPORT void UpdateTexturesRediness (const Handle(Graphic3d_TextureSet)& theTextures);
+
+    //! Build texture resource.
+    Standard_EXPORT void BuildTextures (const Handle(OpenGl_Context)& theCtx,
+                                        const Handle(Graphic3d_TextureSet)& theTextures);
+
+    //! Build shader resource.
     Standard_EXPORT void BuildShader  (const Handle(OpenGl_Context)&          theCtx,
                                        const Handle(Graphic3d_ShaderProgram)& theShader);
 
-    Handle(OpenGl_Texture)       Texture;
-    TCollection_AsciiString      TextureId;
+    //! Release texture resource.
+    Standard_EXPORT void ReleaseTextures (OpenGl_Context* theCtx);
+
     Handle(OpenGl_ShaderProgram) ShaderProgram;
     TCollection_AsciiString      ShaderProgramId;
 
   private:
 
+    Handle(OpenGl_TextureSet) myTextures;
     Standard_Boolean myIsTextureReady;
     Standard_Boolean myIsShaderReady;
 

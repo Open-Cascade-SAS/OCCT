@@ -13,18 +13,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef OPENGL_SAMPLER_H
-#define OPENGL_SAMPLER_H
+#ifndef _OpenGl_Sampler_Header
+#define _OpenGl_Sampler_Header
 
 #include <OpenGl_Context.hxx>
+#include <OpenGl_Resource.hxx>
 
-class OpenGl_Sampler;
-DEFINE_STANDARD_HANDLE(OpenGl_Sampler, OpenGl_Resource)
+class OpenGl_Texture;
 
 //! Class implements OpenGL sampler object resource that
 //! stores the sampling parameters for a texture access.
 class OpenGl_Sampler : public OpenGl_Resource
 {
+  friend class OpenGl_Context;
+  friend class OpenGl_Texture;
+  DEFINE_STANDARD_RTTIEXT(OpenGl_Sampler, OpenGl_Resource)
 public:
 
   //! Helpful constant defining invalid sampler identifier
@@ -33,7 +36,7 @@ public:
 public:
 
   //! Creates new sampler object.
-  Standard_EXPORT OpenGl_Sampler();
+  Standard_EXPORT OpenGl_Sampler (const Handle(Graphic3d_TextureParams)& theParams);
 
   //! Releases resources of sampler object.
   Standard_EXPORT virtual ~OpenGl_Sampler();
@@ -41,8 +44,14 @@ public:
   //! Destroys object - will release GPU memory if any.
   Standard_EXPORT virtual void Release (OpenGl_Context* theContext) Standard_OVERRIDE;
 
-  //! Initializes sampler object.
-  Standard_EXPORT Standard_Boolean Init (OpenGl_Context& theContext);
+  //! Creates an uninitialized sampler object.
+  Standard_EXPORT Standard_Boolean Create (const Handle(OpenGl_Context)& theContext);
+
+  //! Creates and initializes sampler object.
+  //! Existing object will be reused if possible, however if existing Sampler Object has Immutable flag
+  //! and texture parameters should be re-initialized, then Sampler Object will be recreated.
+  Standard_EXPORT Standard_Boolean Init (const Handle(OpenGl_Context)& theContext,
+                                         const OpenGl_Texture& theTexture);
 
   //! Returns true if current object was initialized.
   Standard_Boolean IsValid() const
@@ -50,20 +59,56 @@ public:
     return isValidSampler();
   }
 
+  //! Binds sampler object to texture unit specified in parameters.
+  void Bind (const Handle(OpenGl_Context)& theCtx)
+  {
+    Bind (theCtx, myParams->TextureUnit());
+  }
+
+  //! Unbinds sampler object from texture unit specified in parameters.
+  void Unbind (const Handle(OpenGl_Context)& theCtx)
+  {
+    Unbind (theCtx, myParams->TextureUnit());
+  }
+
   //! Binds sampler object to the given texture unit.
-  Standard_EXPORT void Bind (OpenGl_Context& theContext, const GLuint theUnit = 0);
+  Standard_EXPORT void Bind (const Handle(OpenGl_Context)& theCtx,
+                             const Graphic3d_TextureUnit   theUnit);
 
   //! Unbinds sampler object from the given texture unit.
-  Standard_EXPORT void Unbind (OpenGl_Context& theContext, const GLuint theUnit = 0);
+  Standard_EXPORT void Unbind (const Handle(OpenGl_Context)& theCtx,
+                               const Graphic3d_TextureUnit   theUnit);
 
   //! Sets specific sampler parameter.
-  Standard_EXPORT void SetParameter (OpenGl_Context& theContext, const GLenum theParam, const GLint theValue);
+  void SetParameter (const Handle(OpenGl_Context)& theCtx,
+                     GLenum theTarget,
+                     GLenum theParam,
+                     GLint  theValue)
+  {
+    setParameter (theCtx, this, theTarget, theParam, theValue);
+  }
 
   //! Returns OpenGL sampler ID.
   GLuint SamplerID() const
   {
     return mySamplerID;
   }
+
+  //! Return immutable flag preventing further modifications of sampler parameters, FALSE by default.
+  //! Immutable flag might be set when Sampler Object is used within Bindless Texture.
+  bool IsImmutable() const { return myIsImmutable; }
+
+  //! Setup immutable flag. It is not possible unsetting this flag without Sampler destruction.
+  void SetImmutable() { myIsImmutable = true; }
+
+  //! Returns texture parameters.
+  const Handle(Graphic3d_TextureParams)& Parameters() { return myParams; }
+
+  //! Sets texture parameters.
+  Standard_EXPORT void SetParameters (const Handle(Graphic3d_TextureParams)& theParams);
+
+  //! Returns texture parameters initialization state.
+  bool ToUpdateParameters() const { return mySamplerRevision != myParams->SamplerRevision(); }
 
 protected:
 
@@ -73,14 +118,41 @@ protected:
     return mySamplerID != NO_SAMPLER;
   }
 
+  //! Sets specific sampler parameter.
+  Standard_EXPORT static void setParameter (const Handle(OpenGl_Context)& theContext,
+                                            OpenGl_Sampler* theSampler,
+                                            GLenum theTarget,
+                                            GLenum theParam,
+                                            GLint  theValue);
+
+  //! Apply sampler parameters.
+  //! If Sampler Object is not NULL and valid resource, the parameters will be set to it (and it is not required Sampler Object being bound).
+  //! Otherwise, parameters will be applied to currently bound Texture object.
+  Standard_EXPORT static void applySamplerParams (const Handle(OpenGl_Context)& theCtx,
+                                                  const Handle(Graphic3d_TextureParams)& theParams,
+                                                  OpenGl_Sampler* theSampler,
+                                                  const GLenum theTarget,
+                                                  const bool theHasMipMaps);
+
+  //! Apply global texture state for deprecated OpenGL functionality.
+  Standard_EXPORT static void applyGlobalTextureParams (const Handle(OpenGl_Context)& theCtx,
+                                                        const OpenGl_Texture& theTexture,
+                                                        const Handle(Graphic3d_TextureParams)& theParams);
+
+  //! Reset global texture state for deprecated OpenGL functionality.
+  Standard_EXPORT static void resetGlobalTextureParams (const Handle(OpenGl_Context)& theCtx,
+                                                        const OpenGl_Texture& theTexture,
+                                                        const Handle(Graphic3d_TextureParams)& theParams);
+
 protected:
 
-  GLuint mySamplerID; //!< OpenGL sampler object ID
-
-public:
-
-  DEFINE_STANDARD_RTTIEXT(OpenGl_Sampler,OpenGl_Resource)
+  Handle(Graphic3d_TextureParams) myParams;          //!< texture parameters
+  unsigned int                    mySamplerRevision; //!< modification counter of parameters related to sampler state
+  GLuint                          mySamplerID;       //!< OpenGL sampler object ID
+  bool                            myIsImmutable;     //!< immutable flag preventing further modifications of sampler parameters, FALSE by default
 
 };
 
-#endif // OPENGL_SAMPLER_H
+DEFINE_STANDARD_HANDLE(OpenGl_Sampler, OpenGl_Resource)
+
+#endif // _OpenGl_Sampler_Header

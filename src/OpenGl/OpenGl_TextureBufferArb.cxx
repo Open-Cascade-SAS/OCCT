@@ -128,9 +128,9 @@ bool OpenGl_TextureBufferArb::Init (const Handle(OpenGl_Context)& theGlCtx,
   }
 
   Bind (theGlCtx);
-  BindTexture (theGlCtx);
+  BindTexture  (theGlCtx, Graphic3d_TextureUnit_0);
   theGlCtx->arbTBO->glTexBuffer (GetTarget(), myTexFormat, myBufferId);
-  UnbindTexture (theGlCtx);
+  UnbindTexture(theGlCtx, Graphic3d_TextureUnit_0);
   Unbind (theGlCtx);
   return true;
 }
@@ -174,9 +174,9 @@ bool OpenGl_TextureBufferArb::Init (const Handle(OpenGl_Context)& theGlCtx,
   }
 
   Bind (theGlCtx);
-  BindTexture (theGlCtx);
+  BindTexture  (theGlCtx, Graphic3d_TextureUnit_0);
   theGlCtx->arbTBO->glTexBuffer (GetTarget(), myTexFormat, myBufferId);
-  UnbindTexture (theGlCtx);
+  UnbindTexture(theGlCtx, Graphic3d_TextureUnit_0);
   Unbind (theGlCtx);
   return true;
 }
@@ -215,9 +215,9 @@ bool OpenGl_TextureBufferArb::Init (const Handle(OpenGl_Context)& theGlCtx,
   }
 
   Bind (theGlCtx);
-  BindTexture (theGlCtx);
+  BindTexture  (theGlCtx, Graphic3d_TextureUnit_0);
   theGlCtx->arbTBO->glTexBuffer (GetTarget(), myTexFormat, myBufferId);
-  UnbindTexture (theGlCtx);
+  UnbindTexture(theGlCtx, Graphic3d_TextureUnit_0);
   Unbind (theGlCtx);
   return true;
 }
@@ -256,9 +256,9 @@ bool OpenGl_TextureBufferArb::Init (const Handle(OpenGl_Context)& theGlCtx,
   }
 
   Bind (theGlCtx);
-  BindTexture (theGlCtx);
+  BindTexture  (theGlCtx, Graphic3d_TextureUnit_0);
   theGlCtx->arbTBO->glTexBuffer (GetTarget(), myTexFormat, myBufferId);
-  UnbindTexture (theGlCtx);
+  UnbindTexture(theGlCtx, Graphic3d_TextureUnit_0);
   Unbind (theGlCtx);
   return true;
 }
@@ -268,9 +268,9 @@ bool OpenGl_TextureBufferArb::Init (const Handle(OpenGl_Context)& theGlCtx,
 // purpose  :
 // =======================================================================
 void OpenGl_TextureBufferArb::BindTexture (const Handle(OpenGl_Context)& theGlCtx,
-                                           const GLenum theTextureUnit) const
+                                           const Graphic3d_TextureUnit   theTextureUnit) const
 {
-  theGlCtx->core20fwd->glActiveTexture (theTextureUnit);
+  theGlCtx->core20fwd->glActiveTexture (GL_TEXTURE0 + theTextureUnit);
   glBindTexture (GetTarget(), myTextureId);
 }
 
@@ -279,8 +279,8 @@ void OpenGl_TextureBufferArb::BindTexture (const Handle(OpenGl_Context)& theGlCt
 // purpose  :
 // =======================================================================
 void OpenGl_TextureBufferArb::UnbindTexture (const Handle(OpenGl_Context)& theGlCtx,
-                                             const GLenum theTextureUnit) const
+                                             const Graphic3d_TextureUnit   theTextureUnit) const
 {
-  theGlCtx->core20fwd->glActiveTexture (theTextureUnit);
+  theGlCtx->core20fwd->glActiveTexture (GL_TEXTURE0 + theTextureUnit);
   glBindTexture (GetTarget(), NO_TEXTURE);
 }

@@ -610,10 +610,10 @@ void OpenGl_LayerList::renderTransparent (const Handle(OpenGl_Workspace)&   theW
       // Bind full screen quad buffer and framebuffer resources.
       aVerts->BindVertexAttrib (aCtx, Graphic3d_TOA_POS);
 
-      const Handle(OpenGl_Texture) aTextureBack = theWorkspace->DisableTexture();
+      const Handle(OpenGl_TextureSet) aTextureBack = aCtx->BindTextures (Handle(OpenGl_TextureSet)());
 
-      theOitAccumFbo->ColorTexture (0)->Bind (aCtx, GL_TEXTURE0 + 0);
-      theOitAccumFbo->ColorTexture (1)->Bind (aCtx, GL_TEXTURE0 + 1);
+      theOitAccumFbo->ColorTexture (0)->Bind (aCtx, Graphic3d_TextureUnit_0);
+      theOitAccumFbo->ColorTexture (1)->Bind (aCtx, Graphic3d_TextureUnit_1);
 
       // Draw full screen quad with special shader to compose the buffers.
       aCtx->core11fwd->glBlendFunc (GL_ONE_MINUS_SRC_ALPHA, GL_SRC_ALPHA);
@@ -621,13 +621,13 @@ void OpenGl_LayerList::renderTransparent (const Handle(OpenGl_Workspace)&   theW
 
       // Unbind OpenGL texture objects and shader program.
       aVerts->UnbindVertexAttrib (aCtx, Graphic3d_TOA_POS);
-      theOitAccumFbo->ColorTexture (0)->Unbind (aCtx, GL_TEXTURE0 + 0);
-      theOitAccumFbo->ColorTexture (1)->Unbind (aCtx, GL_TEXTURE0 + 1);
+      theOitAccumFbo->ColorTexture (0)->Unbind (aCtx, Graphic3d_TextureUnit_0);
+      theOitAccumFbo->ColorTexture (1)->Unbind (aCtx, Graphic3d_TextureUnit_1);
       aCtx->BindProgram (NULL);
 
       if (!aTextureBack.IsNull())
       {
-        theWorkspace->EnableTexture (aTextureBack);
+        aCtx->BindTextures (aTextureBack);
       }
     }
     else

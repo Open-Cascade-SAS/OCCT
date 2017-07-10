@@ -1,0 +1,40 @@
+puts "========"
+puts "0028912: Visualization, TKOpenGl - multi-texture support"
+puts "========"
+
+pload MODELING VISUALIZATION
+
+set aShaderVert "
+THE_SHADER_OUT vec2 TexCoord;
+void main() {
+  TexCoord    = occTexCoord.st;
+  gl_Position = occProjectionMatrix * occWorldViewMatrix * occModelWorldMatrix * occVertex;
+}"
+
+set aShaderFrag "
+uniform sampler2D occSampler1;
+uniform sampler2D occSampler2;
+uniform sampler2D occSampler3;
+THE_SHADER_IN vec2 TexCoord;
+void main() {
+  if      (TexCoord.s <  0.5 && TexCoord.t <  0.5) { occFragColor = occTexture2D(occSampler0, TexCoord.st); }
+  else if (TexCoord.s <  0.5 && TexCoord.t >= 0.5) { occFragColor = occTexture2D(occSampler1, TexCoord.st); }
+  else if (TexCoord.s >= 0.5 && TexCoord.t <  0.5) { occFragColor = occTexture2D(occSampler2, TexCoord.st); }
+  else                                             { occFragColor = occTexture2D(occSampler3, TexCoord.st); }
+}"
+
+# draw a box
+box b 1 2 3
+vclear
+vinit View1
+vaxo
+vdisplay -dispMode 1 b
+vfit
+vrotate 0.2 0.0 0.0
+
+# take snapshot with built-in shader
+vtexture b -tex0 3 -tex1 4 -tex2 5 -tex3 6
+vdump $::imagedir/${::casename}_normal.png
+
+vshaderprog b $aShaderVert $aShaderFrag
+vdump $::imagedir/${::casename}_multi.png

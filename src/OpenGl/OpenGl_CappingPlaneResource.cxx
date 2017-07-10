@@ -157,9 +157,9 @@ void OpenGl_CappingPlaneResource::updateAspect (const Handle(Graphic3d_AspectFil
   }
   if (myPlaneRoot->ToUseObjectTexture())
   {
+    myFillAreaAspect->SetTextureSet (theObjAspect->TextureSet());
     if (theObjAspect->ToMapTexture())
     {
-      myFillAreaAspect->SetTextureMap (theObjAspect->TextureMap());
       myFillAreaAspect->SetTextureMapOn();
     }
     else

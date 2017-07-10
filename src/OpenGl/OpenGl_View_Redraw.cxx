@@ -974,7 +974,7 @@ void OpenGl_View::render (Graphic3d_Camera::Projection theProjection,
 
   renderScene (theProjection, theOutputFBO, theOitAccumFbo, theToDrawImmediate);
 
-  myWorkspace->SetEnvironmentTexture (Handle(OpenGl_Texture)());
+  myWorkspace->SetEnvironmentTexture (Handle(OpenGl_TextureSet)());
 
   // ===============================
   //      Step 4: Trihedron
@@ -1161,7 +1161,7 @@ void OpenGl_View::renderScene (Graphic3d_Camera::Projection theProjection,
   }
 
   renderStructs (theProjection, theReadDrawFbo, theOitAccumFbo, theToDrawImmediate);
-  myWorkspace->DisableTexture();
+  aContext->BindTextures (Handle(OpenGl_TextureSet)());
 
   // Apply restored view matrix.
   aContext->ApplyWorldViewMatrix();
@@ -1375,7 +1375,7 @@ bool OpenGl_View::blitBuffers (OpenGl_FrameBuffer*    theReadFbo,
     }
   #endif
 
-    myWorkspace->DisableTexture();
+    aCtx->BindTextures (Handle(OpenGl_TextureSet)());
 
     const Graphic3d_TypeOfTextureFilter aFilter = (aDrawSizeX == aReadSizeX && aDrawSizeY == aReadSizeY) ? Graphic3d_TOTF_NEAREST : Graphic3d_TOTF_BILINEAR;
     const GLint aFilterGl = aFilter == Graphic3d_TOTF_NEAREST ? GL_NEAREST : GL_LINEAR;
@@ -1385,18 +1385,18 @@ bool OpenGl_View::blitBuffers (OpenGl_FrameBuffer*    theReadFbo,
     if (aVerts->IsValid()
      && aManager->BindFboBlitProgram())
     {
-      theReadFbo->ColorTexture()->Bind (aCtx, GL_TEXTURE0 + 0);
-      if (theReadFbo->ColorTexture()->GetParams()->Filter() != aFilter)
+      theReadFbo->ColorTexture()->Bind (aCtx, Graphic3d_TextureUnit_0);
+      if (theReadFbo->ColorTexture()->Sampler()->Parameters()->Filter() != aFilter)
       {
-        theReadFbo->ColorTexture()->GetParams()->SetFilter (aFilter);
+        theReadFbo->ColorTexture()->Sampler()->Parameters()->SetFilter (aFilter);
         aCtx->core20fwd->glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, aFilterGl);
         aCtx->core20fwd->glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, aFilterGl);
       }
 
-      theReadFbo->DepthStencilTexture()->Bind (aCtx, GL_TEXTURE0 + 1);
-      if (theReadFbo->DepthStencilTexture()->GetParams()->Filter() != aFilter)
+      theReadFbo->DepthStencilTexture()->Bind (aCtx, Graphic3d_TextureUnit_1);
+      if (theReadFbo->DepthStencilTexture()->Sampler()->Parameters()->Filter() != aFilter)
       {
-        theReadFbo->DepthStencilTexture()->GetParams()->SetFilter (aFilter);
+        theReadFbo->DepthStencilTexture()->Sampler()->Parameters()->SetFilter (aFilter);
         aCtx->core20fwd->glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, aFilterGl);
         aCtx->core20fwd->glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, aFilterGl);
       }
@@ -1406,8 +1406,8 @@ bool OpenGl_View::blitBuffers (OpenGl_FrameBuffer*    theReadFbo,
       aCtx->core20fwd->glDrawArrays (GL_TRIANGLE_STRIP, 0, 4);
 
       aVerts->UnbindVertexAttrib (aCtx, Graphic3d_TOA_POS);
-      theReadFbo->DepthStencilTexture()->Unbind (aCtx, GL_TEXTURE0 + 1);
-      theReadFbo->ColorTexture()       ->Unbind (aCtx, GL_TEXTURE0 + 0);
+      theReadFbo->DepthStencilTexture()->Unbind (aCtx, Graphic3d_TextureUnit_1);
+      theReadFbo->ColorTexture()       ->Unbind (aCtx, Graphic3d_TextureUnit_0);
       aCtx->BindProgram (NULL);
     }
     else
@@ -1518,7 +1518,7 @@ void OpenGl_View::drawStereoPair (OpenGl_FrameBuffer* theDrawFbo)
   aCtx->core20fwd->glDepthMask (GL_TRUE);
   aCtx->core20fwd->glEnable (GL_DEPTH_TEST);
 
-  myWorkspace->DisableTexture();
+  aCtx->BindTextures (Handle(OpenGl_TextureSet)());
   OpenGl_VertexBuffer* aVerts = initBlitQuad (myToFlipOutput);
 
   const Handle(OpenGl_ShaderManager)& aManager = aCtx->ShaderManager();
@@ -1588,15 +1588,15 @@ void OpenGl_View::drawStereoPair (OpenGl_FrameBuffer* theDrawFbo)
       aCtx->ActiveProgram()->SetUniform (aCtx, "uMultR", aFilterR);
     }
 
-    aPair[0]->ColorTexture()->Bind (aCtx, GL_TEXTURE0 + 0);
-    aPair[1]->ColorTexture()->Bind (aCtx, GL_TEXTURE0 + 1);
+    aPair[0]->ColorTexture()->Bind (aCtx, Graphic3d_TextureUnit_0);
+    aPair[1]->ColorTexture()->Bind (aCtx, Graphic3d_TextureUnit_1);
     aVerts->BindVertexAttrib (aCtx, 0);
 
     aCtx->core20fwd->glDrawArrays (GL_TRIANGLE_STRIP, 0, 4);
 
     aVerts->UnbindVertexAttrib (aCtx, 0);
-    aPair[1]->ColorTexture()->Unbind (aCtx, GL_TEXTURE0 + 1);
-    aPair[0]->ColorTexture()->Unbind (aCtx, GL_TEXTURE0 + 0);
+    aPair[1]->ColorTexture()->Unbind (aCtx, Graphic3d_TextureUnit_1);
+    aPair[0]->ColorTexture()->Unbind (aCtx, Graphic3d_TextureUnit_0);
   }
   else
   {

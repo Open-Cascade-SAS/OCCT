@@ -413,6 +413,8 @@ Standard_Integer OpenGl_GraphicDriver::InquireLimit (const Graphic3d_TypeOfLimit
       return 10000;
     case Graphic3d_TypeOfLimit_MaxTextureSize:
       return !aCtx.IsNull() ? aCtx->MaxTextureSize() : 1024;
+    case Graphic3d_TypeOfLimit_MaxCombinedTextureUnits:
+      return !aCtx.IsNull() ? aCtx->MaxCombinedTextureUnits() : 1;
     case Graphic3d_TypeOfLimit_MaxMsaa:
       return !aCtx.IsNull() ? aCtx->MaxMsaaSamples() : 0;
     case Graphic3d_TypeOfLimit_HasRayTracing:

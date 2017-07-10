@@ -1,6 +1,5 @@
-// Created on: 2012-04-04
-// Created by: Sergey ANIKIN
-// Copyright (c) 2012-2014 OPEN CASCADE SAS
+// Created by: Kirill GAVRILOV
+// Copyright (c) 2013-2014 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -13,11 +12,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <OpenGl_Resource.hxx>
-#include <OpenGl_NamedResource.hxx>
+#include <OpenGl_TextureSet.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Resource, Standard_Transient)
-IMPLEMENT_STANDARD_RTTIEXT(OpenGl_NamedResource, OpenGl_Resource)
-
-OpenGl_Resource::OpenGl_Resource() {}
-OpenGl_Resource::~OpenGl_Resource() {}
+IMPLEMENT_STANDARD_RTTIEXT(OpenGl_TextureSet, Standard_Transient)

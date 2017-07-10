@@ -680,10 +680,10 @@ void OpenGl_Layer::Render (const Handle(OpenGl_Workspace)&   theWorkspace,
   }
 
   // save environment texture
-  Handle(OpenGl_Texture) anEnvironmentTexture = theWorkspace->EnvironmentTexture();
+  Handle(OpenGl_TextureSet) anEnvironmentTexture = theWorkspace->EnvironmentTexture();
   if (!myLayerSettings.UseEnvironmentTexture())
   {
-    theWorkspace->SetEnvironmentTexture (Handle(OpenGl_Texture)());
+    theWorkspace->SetEnvironmentTexture (Handle(OpenGl_TextureSet)());
   }
 
   // handle depth offset

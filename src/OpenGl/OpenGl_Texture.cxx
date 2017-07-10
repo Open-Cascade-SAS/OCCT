@@ -17,13 +17,13 @@
 #include <OpenGl_ArbFBO.hxx>
 #include <OpenGl_Context.hxx>
 #include <OpenGl_GlCore32.hxx>
+#include <OpenGl_Sampler.hxx>
 #include <Graphic3d_TextureParams.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <Standard_Assert.hxx>
 #include <Image_PixMap.hxx>
 
-
-IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Texture,OpenGl_Resource)
+IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Texture, OpenGl_NamedResource)
 
 //! Simple class to reset unpack alignment settings
 struct OpenGl_UnpackAlignmentSentry
@@ -49,8 +49,10 @@ struct OpenGl_UnpackAlignmentSentry
 // function : OpenGl_Texture
 // purpose  :
 // =======================================================================
-OpenGl_Texture::OpenGl_Texture (const Handle(Graphic3d_TextureParams)& theParams)
-: OpenGl_Resource(),
+OpenGl_Texture::OpenGl_Texture (const TCollection_AsciiString& theResourceId,
+                                const Handle(Graphic3d_TextureParams)& theParams)
+: OpenGl_NamedResource (theResourceId),
+  mySampler (new OpenGl_Sampler (theParams)),
   myRevision (0),
   myTextureId (NO_TEXTURE),
   myTarget (GL_TEXTURE_2D),
@@ -59,13 +61,9 @@ OpenGl_Texture::OpenGl_Texture (const Handle(Graphic3d_TextureParams)& theParams
   mySizeZ (0),
   myTextFormat (GL_RGBA),
   myHasMipmaps (Standard_False),
-  myIsAlpha    (false),
-  myParams     (theParams)
+  myIsAlpha    (false)
 {
-  if (myParams.IsNull())
-  {
-    myParams = new Graphic3d_TextureParams();
-  }
+  //
 }
 
 // =======================================================================
@@ -78,43 +76,24 @@ OpenGl_Texture::~OpenGl_Texture()
 }
 
 // =======================================================================
-// function : HasMipmaps
-// purpose  :
-// =======================================================================
-Standard_Boolean OpenGl_Texture::HasMipmaps() const
-{
-  return myHasMipmaps;
-}
-
-// =======================================================================
-// function : GetParams
-// purpose  :
-// =======================================================================
-const Handle(Graphic3d_TextureParams)& OpenGl_Texture::GetParams() const
-{
-  return myParams;
-}
-
-// =======================================================================
-// function : SetParams
-// purpose  :
-// =======================================================================
-void OpenGl_Texture::SetParams (const Handle(Graphic3d_TextureParams)& theParams)
-{
-  myParams = theParams;
-}
-
-// =======================================================================
 // function : Create
 // purpose  :
 // =======================================================================
-bool OpenGl_Texture::Create (const Handle(OpenGl_Context)& )
+bool OpenGl_Texture::Create (const Handle(OpenGl_Context)& theCtx)
 {
+  if (myTextureId != NO_TEXTURE)
+  {
+    return true;
+  }
+
+  theCtx->core11fwd->glGenTextures (1, &myTextureId);
   if (myTextureId == NO_TEXTURE)
   {
-    glGenTextures (1, &myTextureId);
+    return false;
   }
-  return myTextureId != NO_TEXTURE;
+
+  //mySampler->Create (theCtx); // do not create sampler object by default
+  return true;
 }
 
 // =======================================================================
@@ -123,6 +102,7 @@ bool OpenGl_Texture::Create (const Handle(OpenGl_Context)& )
 // =======================================================================
 void OpenGl_Texture::Release (OpenGl_Context* theGlCtx)
 {
+  mySampler->Release (theGlCtx);
   if (myTextureId == NO_TEXTURE)
   {
     return;
@@ -141,16 +121,30 @@ void OpenGl_Texture::Release (OpenGl_Context* theGlCtx)
 }
 
 // =======================================================================
+// function : applyDefaultSamplerParams
+// purpose  :
+// =======================================================================
+void OpenGl_Texture::applyDefaultSamplerParams (const Handle(OpenGl_Context)& theCtx)
+{
+  OpenGl_Sampler::applySamplerParams (theCtx, mySampler->Parameters(), NULL, myTarget, myHasMipmaps);
+  if (mySampler->IsValid() && !mySampler->IsImmutable())
+  {
+    OpenGl_Sampler::applySamplerParams (theCtx, mySampler->Parameters(), mySampler.get(), myTarget, myHasMipmaps);
+  }
+}
+
+// =======================================================================
 // function : Bind
 // purpose  :
 // =======================================================================
 void OpenGl_Texture::Bind (const Handle(OpenGl_Context)& theCtx,
-                           const GLenum theTextureUnit) const
+                           const Graphic3d_TextureUnit   theTextureUnit) const
 {
   if (theCtx->core15fwd != NULL)
   {
-    theCtx->core15fwd->glActiveTexture (theTextureUnit);
+    theCtx->core15fwd->glActiveTexture (GL_TEXTURE0 + theTextureUnit);
   }
+  mySampler->Bind (theCtx, theTextureUnit);
   glBindTexture (myTarget, myTextureId);
 }
 
@@ -159,13 +153,24 @@ void OpenGl_Texture::Bind (const Handle(OpenGl_Context)& theCtx,
 // purpose  :
 // =======================================================================
 void OpenGl_Texture::Unbind (const Handle(OpenGl_Context)& theCtx,
-                             const GLenum theTextureUnit) const
+                             const Graphic3d_TextureUnit   theTextureUnit) const
 {
   if (theCtx->core15fwd != NULL)
   {
-    theCtx->core15fwd->glActiveTexture (theTextureUnit);
+    theCtx->core15fwd->glActiveTexture (GL_TEXTURE0 + theTextureUnit);
   }
+  mySampler->Unbind (theCtx, theTextureUnit);
   glBindTexture (myTarget, NO_TEXTURE);
+}
+
+//=======================================================================
+//function : InitSamplerObject
+//purpose  :
+//=======================================================================
+bool OpenGl_Texture::InitSamplerObject (const Handle(OpenGl_Context)& theCtx)
+{
+  return myTextureId != NO_TEXTURE
+      && mySampler->Init (theCtx, *this);
 }
 
 //=======================================================================
@@ -497,9 +502,6 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
   }
 #endif
 
-  const GLenum  aFilter   = (myParams->Filter() == Graphic3d_TOTF_NEAREST) ? GL_NEAREST : GL_LINEAR;
-  const GLenum  aWrapMode = myParams->IsRepeat() ? GL_REPEAT : theCtx->TextureWrapClamp();
-
 #if !defined(GL_ES_VERSION_2_0)
   GLint aTestWidth  = 0;
   GLint aTestHeight = 0;
@@ -530,9 +532,7 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
     {
     #if !defined(GL_ES_VERSION_2_0)
       Bind (theCtx);
-      glTexParameteri (GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, aFilter);
-      glTexParameteri (GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, aFilter);
-      glTexParameteri (GL_TEXTURE_1D, GL_TEXTURE_WRAP_S,     aWrapMode);
+      applyDefaultSamplerParams (theCtx);
       if (toPatchExisting)
       {
         glTexSubImage1D (GL_TEXTURE_1D, 0, 0,
@@ -579,10 +579,7 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
     case Graphic3d_TOT_2D:
     {
       Bind (theCtx);
-      glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, aFilter);
-      glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, aFilter);
-      glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,     aWrapMode);
-      glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,     aWrapMode);
+      applyDefaultSamplerParams (theCtx);
       if (toPatchExisting)
       {
         glTexSubImage2D (GL_TEXTURE_2D, 0,
@@ -632,22 +629,8 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
     }
     case Graphic3d_TOT_2D_MIPMAP:
     {
-      GLenum aFilterMin = aFilter;
-      aFilterMin = GL_NEAREST_MIPMAP_NEAREST;
-      if (myParams->Filter() == Graphic3d_TOTF_BILINEAR)
-      {
-        aFilterMin = GL_LINEAR_MIPMAP_NEAREST;
-      }
-      else if (myParams->Filter() == Graphic3d_TOTF_TRILINEAR)
-      {
-        aFilterMin = GL_LINEAR_MIPMAP_LINEAR;
-      }
-
       Bind (theCtx);
-      glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, aFilterMin);
-      glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, aFilter);
-      glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,     aWrapMode);
-      glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,     aWrapMode);
+      applyDefaultSamplerParams (theCtx);
       if (toPatchExisting)
       {
         glTexSubImage2D (GL_TEXTURE_2D, 0,
@@ -839,14 +822,9 @@ bool OpenGl_Texture::InitRectangle (const Handle(OpenGl_Context)& theCtx,
 
   const GLsizei aSizeX    = Min (theCtx->MaxTextureSize(), theSizeX);
   const GLsizei aSizeY    = Min (theCtx->MaxTextureSize(), theSizeY);
-  const GLenum  aFilter   = (myParams->Filter() == Graphic3d_TOTF_NEAREST) ? GL_NEAREST : GL_LINEAR;
-  const GLenum  aWrapMode = myParams->IsRepeat() ? GL_REPEAT : theCtx->TextureWrapClamp();
 
   Bind (theCtx);
-  glTexParameteri (myTarget, GL_TEXTURE_MIN_FILTER, aFilter);
-  glTexParameteri (myTarget, GL_TEXTURE_MAG_FILTER, aFilter);
-  glTexParameteri (myTarget, GL_TEXTURE_WRAP_S,     aWrapMode);
-  glTexParameteri (myTarget, GL_TEXTURE_WRAP_T,     aWrapMode);
+  applyDefaultSamplerParams (theCtx);
 
   const GLint anIntFormat = theFormat.Internal();
   myTextFormat = theFormat.Format();
@@ -988,16 +966,7 @@ bool OpenGl_Texture::Init3D (const Handle(OpenGl_Context)& theCtx,
   }
 #endif
 
-  const GLenum aWrapMode = myParams->IsRepeat() ? GL_REPEAT :  theCtx->TextureWrapClamp();
-  const GLenum aFilter   = (myParams->Filter() == Graphic3d_TOTF_NEAREST) ? GL_NEAREST : GL_LINEAR;
-
-  glTexParameteri (myTarget, GL_TEXTURE_WRAP_S, aWrapMode);
-  glTexParameteri (myTarget, GL_TEXTURE_WRAP_T, aWrapMode);
-  glTexParameteri (myTarget, GL_TEXTURE_WRAP_R, aWrapMode);
-
-  glTexParameteri (myTarget, GL_TEXTURE_MIN_FILTER, aFilter);
-  glTexParameteri (myTarget, GL_TEXTURE_MAG_FILTER, aFilter);
-
+  applyDefaultSamplerParams (theCtx);
   theCtx->Functions()->glTexImage3D (myTarget,
                                      0,
                                      anIntFormat,

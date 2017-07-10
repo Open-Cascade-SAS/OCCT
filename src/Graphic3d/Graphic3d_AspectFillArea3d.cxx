@@ -67,3 +67,18 @@ Graphic3d_AspectFillArea3d::Graphic3d_AspectFillArea3d (const Aspect_InteriorSty
     throw Aspect_AspectFillAreaDefinitionError("Bad value for EdgeLineWidth");
   }
 }
+
+// =======================================================================
+// function : Graphic3d_AspectFillArea3d
+// purpose  :
+// =======================================================================
+void Graphic3d_AspectFillArea3d::SetTextureMap (const Handle(Graphic3d_TextureMap)& theTexture)
+{
+  if (theTexture.IsNull())
+  {
+    myTextureSet.Nullify();
+    return;
+  }
+
+  myTextureSet = new Graphic3d_TextureSet (theTexture);
+}

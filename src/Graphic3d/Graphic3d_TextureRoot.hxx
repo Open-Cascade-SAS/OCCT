@@ -55,15 +55,17 @@ public:
 
   //! This ID will be used to manage resource in graphic driver.
   //!
-  //! Default implementation generates unique ID although inheritors may re-initialize it.
+  //! Default implementation generates unique ID within constructor;
+  //! inheritors may re-initialize it within their constructor,
+  //! but should never modify it afterwards.
   //!
   //! Multiple Graphic3d_TextureRoot instances with same ID
   //! will be treated as single texture with different parameters
   //! to optimize memory usage though this will be more natural
   //! to use same instance of Graphic3d_TextureRoot when possible.
   //!
-  //! Notice that inheritor may set this ID to empty string.
-  //! In this case independent graphical resource will be created
+  //! If this ID is set to empty string by inheritor,
+  //! then independent graphical resource will be created
   //! for each instance of Graphic3d_AspectFillArea3d where texture will be used.
   //!
   //! @return texture identifier.
@@ -74,7 +76,7 @@ public:
 
   //! Update image revision.
   //! Can be used for signaling changes in the texture source (e.g. file update, pixmap update)
-  //! without re-creating texture source itself (e.g. preserving the unique id).
+  //! without re-creating texture source itself (since unique id should be never modified).
   void UpdateRevision() { ++myRevision; }
 
   //! This method will be called by graphic driver each time when texture resource should be created.
@@ -101,13 +103,13 @@ protected:
   //! to be in Bottom-Up order (see Image_PixMap::IsTopDown()).
   Standard_EXPORT Graphic3d_TextureRoot(const Handle(Image_PixMap)& thePixmap, const Graphic3d_TypeOfTexture theType);
 
-  //! Unconditionally generate new texture id.
+  //! Unconditionally generate new texture id. Should be called only within constructor.
   Standard_EXPORT void generateId();
 
 protected:
 
   Handle(Graphic3d_TextureParams) myParams;   //!< associated texture parameters
-  TCollection_AsciiString         myTexId;    //!< unique identifier of this resource (for sharing)
+  TCollection_AsciiString         myTexId;    //!< unique identifier of this resource (for sharing graphic resource); should never be modified outside constructor
   Handle(Image_PixMap)            myPixMap;   //!< image pixmap - as one of the ways for defining the texture source
   OSD_Path                        myPath;     //!< image file path - as one of the ways for defining the texture source
   Standard_Size                   myRevision; //!< image revision - for signaling changes in the texture source (e.g. file update, pixmap update)

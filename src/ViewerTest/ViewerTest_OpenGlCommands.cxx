@@ -594,28 +594,40 @@ static Standard_Integer VShaderProg (Draw_Interpretor& /*theDI*/,
   {
     if (theArgNb < 3)
     {
-      std::cerr << theArgVec[0] << " syntax error: lack of arguments\n";
+      std::cout << "Syntax error: lack of arguments\n";
       return 1;
     }
 
     const TCollection_AsciiString aSrcVert = theArgVec[theArgNb - 2];
     const TCollection_AsciiString aSrcFrag = theArgVec[theArgNb - 1];
-    if (!aSrcVert.IsEmpty()
-     && !OSD_File (aSrcVert).Exists())
+    if (aSrcVert.IsEmpty() || aSrcFrag.IsEmpty())
     {
-      std::cerr << "Non-existing vertex shader source\n";
+      std::cout << "Syntax error: lack of arguments\n";
       return 1;
     }
-    if (!aSrcFrag.IsEmpty()
-     && !OSD_File (aSrcFrag).Exists())
+
+    const bool isVertFile = OSD_File (aSrcVert).Exists();
+    const bool isFragFile = OSD_File (aSrcFrag).Exists();
+    if (!isVertFile
+     && aSrcVert.Search ("gl_Position") == -1)
     {
-      std::cerr << "Non-existing fragment shader source\n";
+      std::cerr << "Error: non-existing or invalid vertex shader source\n";
+      return 1;
+    }
+    if (!isFragFile
+      && aSrcFrag.Search ("occFragColor") == -1)
+    {
+      std::cerr << "Error: non-existing or invalid fragment shader source\n";
       return 1;
     }
 
     aProgram = new Graphic3d_ShaderProgram();
-    aProgram->AttachShader (Graphic3d_ShaderObject::CreateFromFile (Graphic3d_TOS_VERTEX,   aSrcVert));
-    aProgram->AttachShader (Graphic3d_ShaderObject::CreateFromFile (Graphic3d_TOS_FRAGMENT, aSrcFrag));
+    aProgram->AttachShader (isVertFile
+                          ? Graphic3d_ShaderObject::CreateFromFile  (Graphic3d_TOS_VERTEX,   aSrcVert)
+                          : Graphic3d_ShaderObject::CreateFromSource(Graphic3d_TOS_VERTEX,   aSrcVert));
+    aProgram->AttachShader (isFragFile
+                          ? Graphic3d_ShaderObject::CreateFromFile  (Graphic3d_TOS_FRAGMENT, aSrcFrag)
+                          : Graphic3d_ShaderObject::CreateFromSource(Graphic3d_TOS_FRAGMENT, aSrcFrag));
     anArgsNb = theArgNb - 2;
   }
 

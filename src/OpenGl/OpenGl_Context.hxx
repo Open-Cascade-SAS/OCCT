@@ -24,6 +24,7 @@
 #include <Aspect_TypeOfLine.hxx>
 #include <NCollection_DataMap.hxx>
 #include <Graphic3d_DiagnosticInfo.hxx>
+#include <Graphic3d_TextureUnit.hxx>
 #include <NCollection_Map.hxx>
 #include <NCollection_Handle.hxx>
 #include <NCollection_List.hxx>
@@ -35,12 +36,12 @@
 #include <OpenGl_MatrixState.hxx>
 #include <OpenGl_Vec.hxx>
 #include <OpenGl_Resource.hxx>
+#include <OpenGl_TextureSet.hxx>
 #include <Standard_Transient.hxx>
 #include <TColStd_IndexedDataMapOfStringString.hxx>
 #include <TColStd_PackedMapOfInteger.hxx>
 #include <OpenGl_Clipping.hxx>
 #include <OpenGl_GlCore11.hxx>
-#include <OpenGl_ShaderProgram.hxx>
 
 #include <NCollection_Shared.hxx>
 
@@ -68,8 +69,9 @@ struct OpenGl_ArbIns;
 struct OpenGl_ArbDbg;
 struct OpenGl_ArbFBO;
 struct OpenGl_ArbFBOBlit;
-struct OpenGl_ExtGS;
+struct OpenGl_ArbSamplerObject;
 struct OpenGl_ArbTexBindless;
+struct OpenGl_ExtGS;
 
 template<typename theBaseClass_t> struct OpenGl_TmplCore12;
 typedef OpenGl_TmplCore12<OpenGl_GlCore11>     OpenGl_GlCore12;
@@ -130,11 +132,12 @@ template<typename theBaseClass_t> struct OpenGl_TmplCore44;
 typedef OpenGl_TmplCore44<OpenGl_GlCore43Back> OpenGl_GlCore44Back;
 typedef OpenGl_TmplCore44<OpenGl_GlCore43>     OpenGl_GlCore44;
 
-class OpenGl_ShaderManager;
-class OpenGl_Sampler;
-class OpenGl_FrameBuffer;
-class OpenGl_AspectFace;
 class Graphic3d_PresentationAttributes;
+class OpenGl_AspectFace;
+class OpenGl_FrameBuffer;
+class OpenGl_Sampler;
+class OpenGl_ShaderProgram;
+class OpenGl_ShaderManager;
 
 enum OpenGl_FeatureFlag
 {
@@ -461,6 +464,9 @@ public:
   //! @return value for GL_MAX_TEXTURE_SIZE
   Standard_Integer MaxTextureSize() const { return myMaxTexDim; }
 
+  //! @return value for GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS
+  Standard_Integer MaxCombinedTextureUnits() const { return myMaxTexCombined; }
+
   //! @return value for GL_MAX_SAMPLES
   Standard_Integer MaxMsaaSamples() const { return myMaxMsaaSamples; }
 
@@ -631,16 +637,17 @@ public: //! @name methods to alter or retrieve current state
   //! OpenGl state variables has a possibility of being out-of-date.
   Standard_EXPORT void FetchState();
 
+  //! @return active textures
+  const Handle(OpenGl_TextureSet)& ActiveTextures() const { return myActiveTextures; }
+
+  //! Bind specified texture set to current context,
+  //! or unbind previous one when NULL specified.
+  Standard_EXPORT Handle(OpenGl_TextureSet) BindTextures (const Handle(OpenGl_TextureSet)& theTextures);
+
   //! @return active GLSL program
   const Handle(OpenGl_ShaderProgram)& ActiveProgram() const
   {
     return myActiveProgram;
-  }
-
-  //! @return OpenGL sampler object used to override default texture parameters
-  const Handle(OpenGl_Sampler)& TextureSampler()
-  {
-    return myTexSampler;
   }
 
   //! Bind specified program to current context,
@@ -798,6 +805,7 @@ public: //! @name extensions
   Standard_Boolean       arbNPTW;            //!< GL_ARB_texture_non_power_of_two
   Standard_Boolean       arbTexRG;           //!< GL_ARB_texture_rg
   Standard_Boolean       arbTexFloat;        //!< GL_ARB_texture_float (on desktop OpenGL - since 3.0 or as extension GL_ARB_texture_float; on OpenGL ES - since 3.0)
+  OpenGl_ArbSamplerObject* arbSamplerObject; //!< GL_ARB_sampler_objects (on desktop OpenGL - since 3.3 or as extension GL_ARB_sampler_objects; on OpenGL ES - since 3.0)
   OpenGl_ArbTexBindless* arbTexBindless;     //!< GL_ARB_bindless_texture
   OpenGl_ArbTBO*         arbTBO;             //!< GL_ARB_texture_buffer_object
   Standard_Boolean       arbTboRGB32;        //!< GL_ARB_texture_buffer_object_rgb32 (3-component TBO), in core since 4.0
@@ -863,6 +871,7 @@ private: // context info
   Standard_Integer myAnisoMax;             //!< maximum level of anisotropy texture filter
   Standard_Integer myTexClamp;             //!< either GL_CLAMP_TO_EDGE (1.2+) or GL_CLAMP (1.1)
   Standard_Integer myMaxTexDim;            //!< value for GL_MAX_TEXTURE_SIZE
+  Standard_Integer myMaxTexCombined;       //!< value for GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS
   Standard_Integer myMaxClipPlanes;        //!< value for GL_MAX_CLIP_PLANES
   Standard_Integer myMaxMsaaSamples;       //!< value for GL_MAX_SAMPLES
   Standard_Integer myMaxDrawBuffers;       //!< value for GL_MAX_DRAW_BUFFERS
@@ -883,7 +892,8 @@ private: // context info
 private: //! @name fields tracking current state
 
   Handle(OpenGl_ShaderProgram)  myActiveProgram;   //!< currently active GLSL program
-  Handle(OpenGl_Sampler)        myTexSampler;      //!< currently active sampler object
+  Handle(OpenGl_TextureSet)     myActiveTextures;  //!< currently bound textures
+                                                   //!< currently active sampler objects
   Handle(OpenGl_FrameBuffer)    myDefaultFbo;      //!< default Frame Buffer Object
   Handle(OpenGl_LineAttributes) myHatchStyles;     //!< resource holding predefined hatch styles patterns
   Standard_Integer              myViewport[4];     //!< current viewport

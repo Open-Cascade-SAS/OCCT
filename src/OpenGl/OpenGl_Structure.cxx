@@ -67,16 +67,20 @@ public:
   virtual void Render  (const Handle(OpenGl_Workspace)& theWorkspace) const
   {
   #if !defined(GL_ES_VERSION_2_0)
-    // Apply line aspect
-    const Handle(OpenGl_Texture) aPrevTexture = theWorkspace->DisableTexture();
+    const Handle(OpenGl_Context)& aCtx = theWorkspace->GetGlContext();
+    if (aCtx->core11 == NULL)
+    {
+      return;
+    }
 
-    theWorkspace->GetGlContext()->BindProgram (Handle(OpenGl_ShaderProgram)());
-    theWorkspace->GetGlContext()->ShaderManager()->PushState (Handle(OpenGl_ShaderProgram)());
+    const Handle(OpenGl_TextureSet) aPrevTexture = aCtx->BindTextures (Handle(OpenGl_TextureSet)());
+    aCtx->BindProgram (Handle(OpenGl_ShaderProgram)());
+    aCtx->ShaderManager()->PushState (Handle(OpenGl_ShaderProgram)());
 
     glDisable (GL_LIGHTING);
 
     // Use highlight colors
-    theWorkspace->GetGlContext()->core11->glColor3fv (theWorkspace->LineColor().GetData());
+    aCtx->core11->glColor3fv (theWorkspace->LineColor().GetData());
 
     glEnableClientState (GL_VERTEX_ARRAY);
     glVertexPointer (3, GL_FLOAT, 0, (GLfloat* )&myVerts);
@@ -86,7 +90,7 @@ public:
     // restore aspects
     if (!aPrevTexture.IsNull())
     {
-      theWorkspace->EnableTexture (aPrevTexture);
+      aCtx->BindTextures (aPrevTexture);
     }
   #else
     (void )theWorkspace;

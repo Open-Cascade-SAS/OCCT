@@ -83,8 +83,8 @@ public:
   Standard_EXPORT Standard_Boolean IsEmpty() const;
 
   //! Bind program for filled primitives rendering
-  Standard_Boolean BindFaceProgram (const Handle(OpenGl_Texture)&       theTexture,
-                                    const Standard_Boolean              theToLightOn,
+  Standard_Boolean BindFaceProgram (const Handle(OpenGl_TextureSet)& theTextures,
+                                    const Standard_Boolean           theToLightOn,
                                     const Standard_Boolean              theHasVertColor,
                                     const Standard_Boolean              theEnableEnvMap,
                                     const Handle(OpenGl_ShaderProgram)& theCustomProgram)
@@ -95,13 +95,13 @@ public:
       return bindProgramWithState (theCustomProgram);
     }
 
-    const Standard_Integer        aBits    = getProgramBits (theTexture, theHasVertColor, theEnableEnvMap);
+    const Standard_Integer        aBits    = getProgramBits (theTextures, theHasVertColor, theEnableEnvMap);
     Handle(OpenGl_ShaderProgram)& aProgram = getStdProgram (theToLightOn, aBits);
     return bindProgramWithState (aProgram);
   }
 
   //! Bind program for line rendering
-  Standard_Boolean BindLineProgram (const Handle(OpenGl_Texture)&       theTexture,
+  Standard_Boolean BindLineProgram (const Handle(OpenGl_TextureSet)&    theTextures,
                                     const Standard_Boolean              theStipple,
                                     const Standard_Boolean              theToLightOn,
                                     const Standard_Boolean              theHasVertColor,
@@ -113,7 +113,7 @@ public:
       return bindProgramWithState (theCustomProgram);
     }
 
-    Standard_Integer aBits = getProgramBits (theTexture, theHasVertColor);
+    Standard_Integer aBits = getProgramBits (theTextures, theHasVertColor);
     if (theStipple)
     {
       aBits |= OpenGl_PO_StippleLine;
@@ -124,7 +124,7 @@ public:
   }
 
   //! Bind program for point rendering
-  Standard_Boolean BindMarkerProgram (const Handle(OpenGl_Texture)&       theTexture,
+  Standard_Boolean BindMarkerProgram (const Handle(OpenGl_TextureSet)&    theTextures,
                                       const Standard_Boolean              theToLightOn,
                                       const Standard_Boolean              theHasVertColor,
                                       const Handle(OpenGl_ShaderProgram)& theCustomProgram)
@@ -135,7 +135,7 @@ public:
       return bindProgramWithState (theCustomProgram);
     }
 
-    const Standard_Integer        aBits    = getProgramBits (theTexture, theHasVertColor) | OpenGl_PO_Point;
+    const Standard_Integer        aBits    = getProgramBits (theTextures, theHasVertColor) | OpenGl_PO_Point;
     Handle(OpenGl_ShaderProgram)& aProgram = getStdProgram (theToLightOn, aBits);
     return bindProgramWithState (aProgram);
   }
@@ -332,9 +332,9 @@ public:
 protected:
 
   //! Define program bits.
-  Standard_Integer getProgramBits (const Handle(OpenGl_Texture)& theTexture,
-                                   const Standard_Boolean        theHasVertColor,
-                                   const Standard_Boolean        theEnableEnvMap = Standard_False)
+  Standard_Integer getProgramBits (const Handle(OpenGl_TextureSet)& theTextures,
+                                   const Standard_Boolean theHasVertColor,
+                                   const Standard_Boolean theEnableEnvMap = Standard_False)
 
   {
     Standard_Integer aBits = 0;
@@ -358,9 +358,11 @@ protected:
       // Environment map overwrites material texture
       aBits |= OpenGl_PO_TextureEnv;
     }
-    else if (!theTexture.IsNull())
+    else if (!theTextures.IsNull()
+          && !theTextures->IsEmpty()
+          && !theTextures->First().IsNull())
     {
-      aBits |= theTexture->IsAlpha() ? OpenGl_PO_TextureA : OpenGl_PO_TextureRGB;
+      aBits |= theTextures->First()->IsAlpha() ? OpenGl_PO_TextureA : OpenGl_PO_TextureRGB;
     }
     if (theHasVertColor)
     {

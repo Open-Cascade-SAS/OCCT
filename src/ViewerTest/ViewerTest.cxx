@@ -50,6 +50,7 @@
 #include <Graphic3d_AspectLine3d.hxx>
 #include <Graphic3d_CStructure.hxx>
 #include <Graphic3d_Texture2Dmanual.hxx>
+#include <Graphic3d_GraphicDriver.hxx>
 #include <Image_AlienPixMap.hxx>
 #include <OSD_File.hxx>
 #include <Prs3d_Drawer.hxx>
@@ -3420,13 +3421,13 @@ Standard_Integer VTexture (Draw_Interpretor& theDi, Standard_Integer theArgsNb, 
   Graphic3d_LevelOfTextureAnisotropy anAnisoFilter = Graphic3d_LOTA_OFF;
 
   Handle(AIS_Shape) aTexturedIO;
-  Handle(Graphic3d_TextureMap) aTextureOld;
-  Handle(Graphic3d_Texture2Dmanual) aTextureNew;
+  Handle(Graphic3d_TextureSet) aTextureSetOld;
+  NCollection_Vector<Handle(Graphic3d_Texture2Dmanual)> aTextureVecNew;
   bool toSetGenRepeat = false;
   bool toSetGenScale  = false;
   bool toSetGenOrigin = false;
   bool toSetImage     = false;
-  bool toSetNewImage  = false;
+  bool toComputeUV    = false;
 
   const TCollection_AsciiString aCommandName (theArgVec[0]);
   bool toSetDefaults = aCommandName == "vtexdefault";
@@ -3456,7 +3457,7 @@ Standard_Integer VTexture (Draw_Interpretor& theDi, Standard_Integer theArgsNb, 
 
       if (aTexturedIO->Attributes()->HasOwnShadingAspect())
       {
-        aTextureOld = aTexturedIO->Attributes()->ShadingAspect()->Aspect()->TextureMap();
+        aTextureSetOld = aTexturedIO->Attributes()->ShadingAspect()->Aspect()->TextureSet();
       }
     }
     else if (aNameCase == "-scale"
@@ -3665,22 +3666,51 @@ Standard_Integer VTexture (Draw_Interpretor& theDi, Standard_Integer theArgsNb, 
     {
       toSetDefaults = true;
     }
-    else if (aTextureNew.IsNull()
-          && aCommandName == "vtexture")
+    else if (aCommandName == "vtexture"
+          && (aTextureVecNew.IsEmpty()
+           || aNameCase.StartsWith ("-tex")))
     {
-      toSetImage = true;
-      toSetNewImage = true;
-      if (aName.IsIntegerValue())
+      Standard_Integer aTexIndex = 0;
+      TCollection_AsciiString aTexName = aName;
+      if (aNameCase.StartsWith ("-tex"))
       {
-        const Standard_Integer aValue = aName.IntegerValue();
+        if (anArgIter + 1 >= theArgsNb
+         || aNameCase.Length() < 5)
+        {
+          std::cout << "Syntax error: invalid argument '" << theArgVec[anArgIter] << "'\n";
+          return 1;
+        }
+
+        TCollection_AsciiString aTexIndexStr = aNameCase.SubString (5, aNameCase.Length());
+        if (!aTexIndexStr.IsIntegerValue())
+        {
+          std::cout << "Syntax error: invalid argument '" << theArgVec[anArgIter] << "'\n";
+          return 1;
+        }
+
+        aTexIndex = aTexIndexStr.IntegerValue();
+        aTexName  = theArgVec[anArgIter + 1];
+        ++anArgIter;
+      }
+      if (aTexIndex >= Graphic3d_TextureUnit_NB
+       || aTexIndex >= aCtx->CurrentViewer()->Driver()->InquireLimit (Graphic3d_TypeOfLimit_MaxCombinedTextureUnits))
+      {
+        std::cout << "Error: too many textures specified\n";
+        return 1;
+      }
+
+      toSetImage = true;
+      if (aTexName.IsIntegerValue())
+      {
+        const Standard_Integer aValue = aTexName.IntegerValue();
         if (aValue < 0 || aValue >= Graphic3d_Texture2D::NumberOfTextures())
         {
           std::cout << "Syntax error: texture with ID " << aValue << " is undefined!\n";
           return 1;
         }
-        aTextureNew = new Graphic3d_Texture2Dmanual (Graphic3d_NameOfTexture2D (aValue));
+        aTextureVecNew.SetValue (aTexIndex, new Graphic3d_Texture2Dmanual (Graphic3d_NameOfTexture2D (aValue)));
       }
-      else if (aNameCase == "?")
+      else if (aTexName == "?")
       {
         const TCollection_AsciiString aTextureFolder = Graphic3d_TextureRoot::TexturesFolder();
 
@@ -3695,19 +3725,49 @@ Standard_Integer VTexture (Draw_Interpretor& theDi, Standard_Integer theArgsNb, 
         theDi.Eval (aCmnd.ToCString());
         return 0;
       }
-      else if (aNameCase != "off")
+      else if (aTexName != "off")
       {
-        if (!OSD_File (aName).Exists())
+        if (!OSD_File (aTexName).Exists())
         {
-          std::cout << "Syntax error: non-existing image file has been specified '" << aName << "'.\n";
+          std::cout << "Syntax error: non-existing image file has been specified '" << aTexName << "'.\n";
           return 1;
         }
-        aTextureNew = new Graphic3d_Texture2Dmanual (aName);
+        aTextureVecNew.SetValue (aTexIndex, new Graphic3d_Texture2Dmanual (aTexName));
       }
-
-      if (!aTextureNew.IsNull())
+      else
       {
-        if (!aTextureOld.IsNull())
+        aTextureVecNew.SetValue (aTexIndex, Handle(Graphic3d_Texture2Dmanual)());
+      }
+      aTextureVecNew.ChangeValue (aTexIndex)->GetParams()->SetTextureUnit ((Graphic3d_TextureUnit )aTexIndex);
+    }
+    else
+    {
+      std::cout << "Syntax error: invalid argument '" << theArgVec[anArgIter] << "'\n";
+      return 1;
+    }
+  }
+
+  if (toSetImage)
+  {
+    // check if new image set is equal to already set one
+    Standard_Integer aNbChanged = 0;
+    Handle(Graphic3d_TextureSet) aTextureSetNew;
+    if (!aTextureVecNew.IsEmpty())
+    {
+      aNbChanged = aTextureVecNew.Size();
+      aTextureSetNew = new Graphic3d_TextureSet (aTextureVecNew.Size());
+      for (Standard_Integer aTexIter = 0; aTexIter < aTextureSetNew->Size(); ++aTexIter)
+      {
+        Handle(Graphic3d_Texture2Dmanual)& aTextureNew = aTextureVecNew.ChangeValue (aTexIter);
+        Handle(Graphic3d_TextureRoot) aTextureOld;
+        if (!aTextureSetOld.IsNull()
+          && aTexIter < aTextureSetOld->Size())
+        {
+          aTextureOld = aTextureSetOld->Value (aTexIter);
+        }
+
+        if (!aTextureOld.IsNull()
+         && !aTextureNew.IsNull())
         {
           *aTextureNew->GetParams() = *aTextureOld->GetParams();
           if (Handle(Graphic3d_Texture2Dmanual) anOldManualTex = Handle(Graphic3d_Texture2Dmanual)::DownCast (aTextureOld))
@@ -3719,39 +3779,31 @@ Standard_Integer VTexture (Draw_Interpretor& theDi, Standard_Integer theArgsNb, 
              && aFilePathOld == aFilePathNew
              && (!aFilePathNew.IsEmpty() || aTextureNew->Name() != Graphic3d_NOT_2D_UNKNOWN))
             {
-              toSetNewImage = false;
+              --aNbChanged;
               aTextureNew = anOldManualTex;
             }
           }
         }
-        else
-        {
-          aTexturedIO->SetToUpdate (AIS_Shaded);
-        }
+        aTextureSetNew->SetValue (aTexIter, aTextureNew);
       }
-
-      if (!aTexturedIO->Attributes()->HasOwnShadingAspect())
-      {
-        aTexturedIO->Attributes()->SetShadingAspect (new Prs3d_ShadingAspect());
-        *aTexturedIO->Attributes()->ShadingAspect()->Aspect() = *aCtx->DefaultDrawer()->ShadingAspect()->Aspect();
-      }
-
-      if (!aTextureNew.IsNull())
-      {
-        aTexturedIO->Attributes()->ShadingAspect()->Aspect()->SetTextureMapOn();
-      }
-      else
-      {
-        aTexturedIO->Attributes()->ShadingAspect()->Aspect()->SetTextureMapOff();
-      }
-      aTexturedIO->Attributes()->ShadingAspect()->Aspect()->SetTextureMap (aTextureNew);
-      aTextureOld.Nullify();
     }
-    else
+    if (aNbChanged == 0
+     && ((aTextureSetOld.IsNull() && aTextureSetNew.IsNull())
+      || (aTextureSetOld->Size() == aTextureSetNew->Size())))
     {
-      std::cout << "Syntax error: invalid argument '" << theArgVec[anArgIter] << "'\n";
-      return 1;
+      aTextureSetNew = aTextureSetOld;
     }
+
+    if (!aTexturedIO->Attributes()->HasOwnShadingAspect())
+    {
+      aTexturedIO->Attributes()->SetShadingAspect (new Prs3d_ShadingAspect());
+      *aTexturedIO->Attributes()->ShadingAspect()->Aspect() = *aCtx->DefaultDrawer()->ShadingAspect()->Aspect();
+    }
+
+    toComputeUV = !aTextureSetNew.IsNull() && aTextureSetOld.IsNull();
+    aTexturedIO->Attributes()->ShadingAspect()->Aspect()->SetTextureMapOn (!aTextureSetNew.IsNull());
+    aTexturedIO->Attributes()->ShadingAspect()->Aspect()->SetTextureSet (aTextureSetNew);
+    aTextureSetOld.Nullify();
   }
 
   if (toSetDefaults)
@@ -3790,12 +3842,12 @@ Standard_Integer VTexture (Draw_Interpretor& theDi, Standard_Integer theArgsNb, 
   if (aCommandName == "vtexture"
    && theArgsNb == 2)
   {
-    if (!aTextureOld.IsNull())
+    if (!aTextureSetOld.IsNull())
     {
-      toSetNewImage = true;
+      //toComputeUV = true; // we can keep UV vertex attributes
       aTexturedIO->Attributes()->ShadingAspect()->Aspect()->SetTextureMapOff();
-      aTexturedIO->Attributes()->ShadingAspect()->Aspect()->SetTextureMap (Handle(Graphic3d_TextureMap)());
-      aTextureOld.Nullify();
+      aTexturedIO->Attributes()->ShadingAspect()->Aspect()->SetTextureSet (Handle(Graphic3d_TextureSet)());
+      aTextureSetOld.Nullify();
     }
   }
 
@@ -3851,7 +3903,7 @@ Standard_Integer VTexture (Draw_Interpretor& theDi, Standard_Integer theArgsNb, 
     toSetGenScale = true;
   }
 
-  if (toSetGenRepeat || toSetGenOrigin || toSetGenScale || toSetNewImage)
+  if (toSetGenRepeat || toSetGenOrigin || toSetGenScale || toComputeUV)
   {
     aTexturedIO->SetToUpdate (AIS_Shaded);
     if (toSetImage)
@@ -6267,6 +6319,7 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
 
   theCommands.Add ("vtexture",
                    "vtexture [-noupdate|-update] name [ImageFile|IdOfTexture|off]"
+                   "\n\t\t:          [-tex0 Image0] [-tex1 Image1] [...]"
                    "\n\t\t:          [-origin {u v|off}] [-scale {u v|off}] [-repeat {u v|off}]"
                    "\n\t\t:          [-trsfTrans du dv] [-trsfScale su sv] [-trsfAngle Angle]"
                    "\n\t\t:          [-modulate {on|off}]"

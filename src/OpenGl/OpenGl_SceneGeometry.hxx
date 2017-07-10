@@ -331,7 +331,7 @@ public: //! @name methods related to texture management
   Standard_Boolean UpdateTextureHandles (const Handle(OpenGl_Context)& theContext);
 
   //! Makes the OpenGL texture handles resident (must be called before using).
-  Standard_Boolean AcquireTextures (const Handle(OpenGl_Context)& theContext) const;
+  Standard_Boolean AcquireTextures (const Handle(OpenGl_Context)& theContext);
 
   //! Makes the OpenGL texture handles non-resident (must be called after using).
   Standard_Boolean ReleaseTextures (const Handle(OpenGl_Context)& theContext) const;
@@ -343,13 +343,9 @@ public: //! @name methods related to texture management
   }
 
   //! Releases OpenGL resources.
-  void ReleaseResources (const Handle(OpenGl_Context)& theContext)
+  void ReleaseResources (const Handle(OpenGl_Context)& )
   {
-    if (!myTextureSampler.IsNull())
-    {
-      myTextureSampler->Release (theContext.operator->());
-      myTextureSampler.Nullify();
-    }
+    //
   }
 
 public: //! @name auxiliary methods
@@ -369,7 +365,6 @@ public: //! @name auxiliary methods
 protected:
 
   NCollection_Vector<Handle(OpenGl_Texture)> myTextures;           //!< Array of texture maps shared between rendered objects
-  Handle(OpenGl_Sampler)                     myTextureSampler;     //!< Sampler object providing fixed sampling params for texures
   std::vector<GLuint64>                      myTextureHandles;     //!< Array of unique 64-bit texture handles obtained from OpenGL
   Standard_Integer                           myTopLevelTreeDepth;  //!< Depth of high-level scene BVH from last build
   Standard_Integer                           myBotLevelTreeDepth;  //!< Maximum depth of bottom-level scene BVHs from last build

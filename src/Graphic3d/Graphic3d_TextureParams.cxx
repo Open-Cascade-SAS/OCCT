@@ -11,9 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Graphic3d_TextureParams.hxx>
-#include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_TextureParams,Standard_Transient)
 
@@ -22,36 +20,29 @@ IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_TextureParams,Standard_Transient)
 // purpose  :
 // =======================================================================
 Graphic3d_TextureParams::Graphic3d_TextureParams()
-: myToModulate (Standard_False),
-  myToRepeat   (Standard_False),
-  myFilter     (Graphic3d_TOTF_NEAREST),
-  myAnisoLevel (Graphic3d_LOTA_OFF),
-  myRotAngle   (0.0f),
+: myGenPlaneS  (0.0f, 0.0f, 0.0f, 0.0f),
+  myGenPlaneT  (0.0f, 0.0f, 0.0f, 0.0f),
   myScale      (1.0f, 1.0f),
   myTranslation(0.0f, 0.0f),
+  mySamplerRevision (0),
+  myTextureUnit(Graphic3d_TextureUnit_BaseColor),
+  myFilter     (Graphic3d_TOTF_NEAREST),
+  myAnisoLevel (Graphic3d_LOTA_OFF),
   myGenMode    (Graphic3d_TOTM_MANUAL),
-  myGenPlaneS  (0.0f, 0.0f, 0.0f, 0.0f),
-  myGenPlaneT  (0.0f, 0.0f, 0.0f, 0.0f)
+  myRotAngle   (0.0f),
+  myToModulate (Standard_False),
+  myToRepeat   (Standard_False)
 {
   //
 }
 
 // =======================================================================
-// function : Destroy
+// function : ~Graphic3d_TextureParams
 // purpose  :
 // =======================================================================
-void Graphic3d_TextureParams::Destroy() const
+Graphic3d_TextureParams::~Graphic3d_TextureParams()
 {
   //
-}
-
-// =======================================================================
-// function : IsModulate
-// purpose  :
-// =======================================================================
-Standard_Boolean Graphic3d_TextureParams::IsModulate() const
-{
-  return myToModulate;
 }
 
 // =======================================================================
@@ -64,30 +55,16 @@ void Graphic3d_TextureParams::SetModulate (const Standard_Boolean theToModulate)
 }
 
 // =======================================================================
-// function : IsRepeat
-// purpose  :
-// =======================================================================
-Standard_Boolean Graphic3d_TextureParams::IsRepeat() const
-{
-  return myToRepeat;
-}
-
-// =======================================================================
 // function : SetRepeat
 // purpose  :
 // =======================================================================
 void Graphic3d_TextureParams::SetRepeat (const Standard_Boolean theToRepeat)
 {
-  myToRepeat = theToRepeat;
-}
-
-// =======================================================================
-// function : Filter
-// purpose  :
-// =======================================================================
-Graphic3d_TypeOfTextureFilter Graphic3d_TextureParams::Filter() const
-{
-  return myFilter;
+  if (myToRepeat != theToRepeat)
+  {
+    myToRepeat = theToRepeat;
+    updateSamplerRevision();
+  }
 }
 
 // =======================================================================
@@ -96,16 +73,11 @@ Graphic3d_TypeOfTextureFilter Graphic3d_TextureParams::Filter() const
 // =======================================================================
 void Graphic3d_TextureParams::SetFilter (const Graphic3d_TypeOfTextureFilter theFilter)
 {
-  myFilter = theFilter;
-}
-
-// =======================================================================
-// function : AnisoFilter
-// purpose  :
-// =======================================================================
-Graphic3d_LevelOfTextureAnisotropy Graphic3d_TextureParams::AnisoFilter() const
-{
-  return myAnisoLevel;
+  if (myFilter != theFilter)
+  {
+    myFilter = theFilter;
+    updateSamplerRevision();
+  }
 }
 
 // =======================================================================
@@ -114,16 +86,11 @@ Graphic3d_LevelOfTextureAnisotropy Graphic3d_TextureParams::AnisoFilter() const
 // =======================================================================
 void Graphic3d_TextureParams::SetAnisoFilter (const Graphic3d_LevelOfTextureAnisotropy theLevel)
 {
-  myAnisoLevel = theLevel;
-}
-
-// =======================================================================
-// function : Rotation
-// purpose  :
-// =======================================================================
-Standard_ShortReal Graphic3d_TextureParams::Rotation() const
-{
-  return myRotAngle;
+  if (myAnisoLevel != theLevel)
+  {
+    myAnisoLevel = theLevel;
+    updateSamplerRevision();
+  }
 }
 
 // =======================================================================
@@ -136,15 +103,6 @@ void Graphic3d_TextureParams::SetRotation (const Standard_ShortReal theAngleDegr
 }
 
 // =======================================================================
-// function : Scale
-// purpose  :
-// =======================================================================
-const Graphic3d_Vec2& Graphic3d_TextureParams::Scale() const
-{
-  return myScale;
-}
-
-// =======================================================================
 // function : SetScale
 // purpose  :
 // =======================================================================
@@ -154,48 +112,12 @@ void Graphic3d_TextureParams::SetScale (const Graphic3d_Vec2 theScale)
 }
 
 // =======================================================================
-// function : Translation
-// purpose  :
-// =======================================================================
-const Graphic3d_Vec2& Graphic3d_TextureParams::Translation() const
-{
-  return myTranslation;
-}
-
-// =======================================================================
 // function : SetTranslation
 // purpose  :
 // =======================================================================
 void Graphic3d_TextureParams::SetTranslation (const Graphic3d_Vec2 theVec)
 {
   myTranslation = theVec;
-}
-
-// =======================================================================
-// function : GenMode
-// purpose  :
-// =======================================================================
-Graphic3d_TypeOfTextureMode Graphic3d_TextureParams::GenMode() const
-{
-  return myGenMode;
-}
-
-// =======================================================================
-// function : GenPlaneS
-// purpose  :
-// =======================================================================
-const Graphic3d_Vec4& Graphic3d_TextureParams::GenPlaneS() const
-{
-  return myGenPlaneS;
-}
-
-// =======================================================================
-// function : GenPlaneT
-// purpose  :
-// =======================================================================
-const Graphic3d_Vec4& Graphic3d_TextureParams::GenPlaneT() const
-{
-  return myGenPlaneT;
 }
 
 // =======================================================================

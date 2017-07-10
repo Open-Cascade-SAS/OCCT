@@ -35,7 +35,7 @@
   #include <malloc.h> // for alloca()
 #endif
 
-IMPLEMENT_STANDARD_RTTIEXT(OpenGl_ShaderProgram,OpenGl_Resource)
+IMPLEMENT_STANDARD_RTTIEXT(OpenGl_ShaderProgram, OpenGl_NamedResource)
 
 OpenGl_VariableSetterSelector OpenGl_ShaderProgram::mySetterSelector = OpenGl_VariableSetterSelector();
 
@@ -63,7 +63,6 @@ Standard_CString OpenGl_ShaderProgram::PredefinedKeywords[] =
   "occLightSources",       // OpenGl_OCC_LIGHT_SOURCE_PARAMS
   "occLightAmbient",       // OpenGl_OCC_LIGHT_AMBIENT
 
-  "occActiveSampler",      // OpenGl_OCCT_ACTIVE_SAMPLER
   "occTextureEnable",      // OpenGl_OCCT_TEXTURE_ENABLE
   "occDistinguishingMode", // OpenGl_OCCT_DISTINGUISH_MODE
   "occFrontMaterial",      // OpenGl_OCCT_FRONT_MATERIAL
@@ -128,7 +127,8 @@ void OpenGl_VariableSetterSelector::Set (const Handle(OpenGl_Context)&          
 // purpose  : Creates uninitialized shader program
 // =======================================================================
 OpenGl_ShaderProgram::OpenGl_ShaderProgram (const Handle(Graphic3d_ShaderProgram)& theProxy)
-: myProgramID (NO_PROGRAM),
+: OpenGl_NamedResource (!theProxy.IsNull() ? theProxy->GetId() : ""),
+  myProgramID (NO_PROGRAM),
   myProxy     (theProxy),
   myShareCount(1)
 {
@@ -360,18 +360,36 @@ Standard_Boolean OpenGl_ShaderProgram::Initialize (const Handle(OpenGl_Context)&
   }
 
   // set uniform defaults
-  const GLint aLocSampler   = GetStateLocation (OpenGl_OCCT_ACTIVE_SAMPLER);
-  const GLint aLocTexEnable = GetStateLocation (OpenGl_OCCT_TEXTURE_ENABLE);
-  if (aLocSampler   != INVALID_LOCATION
-   || aLocTexEnable != INVALID_LOCATION)
+  const Handle(OpenGl_ShaderProgram)& anOldProgram = theCtx->ActiveProgram();
+  theCtx->core20fwd->glUseProgram (myProgramID);
   {
-    const Handle(OpenGl_ShaderProgram)& anOldProgram = theCtx->ActiveProgram();
-    theCtx->core20fwd->glUseProgram (myProgramID);
-    SetUniform (theCtx, aLocSampler,   0); // GL_TEXTURE0
-    SetUniform (theCtx, aLocTexEnable, 0); // Off
-    theCtx->core20fwd->glUseProgram (!anOldProgram.IsNull() ? anOldProgram->ProgramId() : OpenGl_ShaderProgram::NO_PROGRAM);
+    const GLint aLocTexEnable = GetStateLocation (OpenGl_OCCT_TEXTURE_ENABLE);
+    if (aLocTexEnable != INVALID_LOCATION)
+    {
+      SetUniform (theCtx, aLocTexEnable, 0); // Off
+    }
+  }
+  {
+    const GLint aLocSampler = GetUniformLocation (theCtx, "occActiveSampler");
+    if (aLocSampler != INVALID_LOCATION)
+    {
+      SetUniform (theCtx, aLocSampler, GLint(Graphic3d_TextureUnit_0));
+    }
   }
 
+  const TCollection_AsciiString aSamplerNamePrefix ("occSampler");
+  const Standard_Integer aNbUnitsMax = Max (theCtx->MaxCombinedTextureUnits(), Graphic3d_TextureUnit_NB);
+  for (GLint aUnitIter = 0; aUnitIter < aNbUnitsMax; ++aUnitIter)
+  {
+    const TCollection_AsciiString aName = aSamplerNamePrefix + aUnitIter;
+    const GLint aLocSampler = GetUniformLocation (theCtx, aName.ToCString());
+    if (aLocSampler != INVALID_LOCATION)
+    {
+      SetUniform (theCtx, aLocSampler, aUnitIter);
+    }
+  }
+
+  theCtx->core20fwd->glUseProgram (!anOldProgram.IsNull() ? anOldProgram->ProgramId() : OpenGl_ShaderProgram::NO_PROGRAM);
   return Standard_True;
 }
 
@@ -1283,7 +1301,7 @@ Standard_Boolean OpenGl_ShaderProgram::SetUniform (const Handle(OpenGl_Context)&
 // =======================================================================
 Standard_Boolean OpenGl_ShaderProgram::SetSampler (const Handle(OpenGl_Context)& theCtx,
                                                    const GLchar*                 theName,
-                                                   const GLenum                  theTextureUnit)
+                                                   const Graphic3d_TextureUnit   theTextureUnit)
 {
   return SetSampler (theCtx, GetUniformLocation (theCtx, theName), theTextureUnit);
 }
@@ -1294,7 +1312,7 @@ Standard_Boolean OpenGl_ShaderProgram::SetSampler (const Handle(OpenGl_Context)&
 // =======================================================================
 Standard_Boolean OpenGl_ShaderProgram::SetSampler (const Handle(OpenGl_Context)& theCtx,
                                                    GLint                         theLocation,
-                                                   const GLenum                  theTextureUnit)
+                                                   const Graphic3d_TextureUnit   theTextureUnit)
 {
   if (myProgramID == NO_PROGRAM || theLocation == INVALID_LOCATION)
   {

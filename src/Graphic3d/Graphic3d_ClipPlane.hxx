@@ -137,7 +137,9 @@ public: // @name user-defined graphical attributes
   Standard_EXPORT void SetCappingTexture (const Handle(Graphic3d_TextureMap)& theTexture);
 
   //! @return capping texture map.
-  const Handle(Graphic3d_TextureMap)& CappingTexture() const { return myAspect->TextureMap(); }
+  Handle(Graphic3d_TextureMap) CappingTexture() const { return !myAspect->TextureSet().IsNull() && !myAspect->TextureSet()->IsEmpty()
+                                                              ? myAspect->TextureSet()->First()
+                                                              : Handle(Graphic3d_TextureMap)(); }
 
   //! Set hatch style (stipple) and turn hatching on.
   //! @param theStyle [in] the hatch style.

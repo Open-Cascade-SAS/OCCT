@@ -2,6 +2,7 @@ glext.h
 OpenGl_ArbDbg.hxx
 OpenGl_ArbFBO.hxx
 OpenGl_ArbIns.hxx
+OpenGl_ArbSamplerObject.hxx
 OpenGl_ArbTBO.hxx
 OpenGl_ArbTexBindless.hxx
 OpenGl_AspectFace.cxx
@@ -50,8 +51,11 @@ OpenGl_FrameBuffer.hxx
 OpenGl_FrameBuffer.cxx
 OpenGl_Texture.cxx
 OpenGl_Texture.hxx
+OpenGl_TextureSet.cxx
+OpenGl_TextureSet.hxx
 OpenGl_Resource.hxx
 OpenGl_Resource.cxx
+OpenGl_NamedResource.hxx
 OpenGl_Font.hxx
 OpenGl_Font.cxx
 OpenGl_BackgroundArray.cxx

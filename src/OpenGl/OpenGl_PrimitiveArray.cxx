@@ -19,6 +19,7 @@
 #include <OpenGl_IndexBuffer.hxx>
 #include <OpenGl_PointSprite.hxx>
 #include <OpenGl_PrimitiveArray.hxx>
+#include <OpenGl_Sampler.hxx>
 #include <OpenGl_ShaderManager.hxx>
 #include <OpenGl_ShaderProgram.hxx>
 #include <OpenGl_Structure.hxx>
@@ -529,9 +530,10 @@ void OpenGl_PrimitiveArray::drawMarkers (const Handle(OpenGl_Workspace)& theWork
 {
   const OpenGl_AspectMarker* anAspectMarker     = theWorkspace->ApplyAspectMarker();
   const Handle(OpenGl_Context)&     aCtx        = theWorkspace->GetGlContext();
-  const Handle(OpenGl_PointSprite)& aSpriteNorm = anAspectMarker->SpriteRes (aCtx);
-  if (!aSpriteNorm.IsNull()
-   && !aSpriteNorm->IsDisplayList())
+  const Handle(OpenGl_TextureSet)& aSpriteNormRes = anAspectMarker->SpriteRes (aCtx);
+  const OpenGl_PointSprite* aSpriteNorm = !aSpriteNormRes.IsNull() ? dynamic_cast<const OpenGl_PointSprite*> (aSpriteNormRes->First().get()) : NULL;
+  if (aSpriteNorm != NULL
+  && !aSpriteNorm->IsDisplayList())
   {
     // Textured markers will be drawn with the point sprites
     aCtx->SetPointSize (anAspectMarker->MarkerSize());
@@ -568,7 +570,7 @@ void OpenGl_PrimitiveArray::drawMarkers (const Handle(OpenGl_Workspace)& theWork
 #if !defined(GL_ES_VERSION_2_0)
   // Textured markers will be drawn with the glBitmap
   else if (anAspectMarker->Aspect()->Type() != Aspect_TOM_POINT
-       && !aSpriteNorm.IsNull())
+        && aSpriteNorm != NULL)
   {
     /**if (!isHilight && (myPArray->vcolours != NULL))
     {
@@ -700,9 +702,14 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
   if (!myIsVboInit)
   {
     // compatibility - keep data to draw markers using display lists
-    const Standard_Boolean toKeepData = myDrawMode == GL_POINTS
-                                    && !anAspectMarker->SpriteRes (aCtx).IsNull()
-                                    &&  anAspectMarker->SpriteRes (aCtx)->IsDisplayList();
+    Standard_Boolean toKeepData = Standard_False;
+    if (myDrawMode == GL_POINTS)
+    {
+      const Handle(OpenGl_TextureSet)& aSpriteNormRes = anAspectMarker->SpriteRes (aCtx);
+      const OpenGl_PointSprite* aSpriteNorm = !aSpriteNormRes.IsNull() ? dynamic_cast<const OpenGl_PointSprite*> (aSpriteNormRes->First().get()) : NULL;
+      toKeepData = aSpriteNorm != NULL
+               &&  aSpriteNorm->IsDisplayList();
+    }
   #if defined (GL_ES_VERSION_2_0)
     processIndices (aCtx);
   #endif
@@ -717,7 +724,7 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
                                   &&  myVboAttribs->HasNormalAttribute();
 
   // Temporarily disable environment mapping
-  Handle(OpenGl_Texture) aTextureBack;
+  Handle(OpenGl_TextureSet) aTextureBack;
   bool toDrawArray = true;
   if (myDrawMode > GL_LINE_STRIP)
   {
@@ -725,7 +732,7 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
   }
   else if (myDrawMode <= GL_LINE_STRIP)
   {
-    aTextureBack = theWorkspace->DisableTexture();
+    aTextureBack = aCtx->BindTextures (Handle(OpenGl_TextureSet)());
     if (myDrawMode == GL_POINTS)
     {
       toDrawArray = anAspectMarker->Aspect()->Type() != Aspect_TOM_EMPTY;
@@ -744,19 +751,20 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
     {
       case GL_POINTS:
       {
-        const Handle(OpenGl_PointSprite)& aSpriteNorm = anAspectMarker->SpriteRes (aCtx);
-        if (!aSpriteNorm.IsNull()
-         && !aSpriteNorm->IsDisplayList())
+        const Handle(OpenGl_TextureSet)& aSpriteNormRes = anAspectMarker->SpriteRes (aCtx);
+        const OpenGl_PointSprite* aSpriteNorm = !aSpriteNormRes.IsNull() ? dynamic_cast<const OpenGl_PointSprite*> (aSpriteNormRes->First().get()) : NULL;
+        if (aSpriteNorm != NULL
+        && !aSpriteNorm->IsDisplayList())
         {
-          const Handle(OpenGl_PointSprite)& aSprite = (toHilight && anAspectMarker->SpriteHighlightRes (aCtx)->IsValid())
-                                                    ? anAspectMarker->SpriteHighlightRes (aCtx)
-                                                    : aSpriteNorm;
-          theWorkspace->EnableTexture (aSprite);
+          const Handle(OpenGl_TextureSet)& aSprite = toHilight && anAspectMarker->SpriteHighlightRes (aCtx)->First()->IsValid()
+                                                   ? anAspectMarker->SpriteHighlightRes (aCtx)
+                                                   : aSpriteNormRes;
+          aCtx->BindTextures (aSprite);
           aCtx->ShaderManager()->BindMarkerProgram (aSprite, isLightOn, hasVertColor, anAspectMarker->ShaderProgramRes (aCtx));
         }
         else
         {
-          aCtx->ShaderManager()->BindMarkerProgram (NULL, isLightOn, hasVertColor, anAspectMarker->ShaderProgramRes (aCtx));
+          aCtx->ShaderManager()->BindMarkerProgram (Handle(OpenGl_TextureSet)(), isLightOn, hasVertColor, anAspectMarker->ShaderProgramRes (aCtx));
         }
         break;
       }
@@ -772,12 +780,14 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
       }
       default:
       {
-        const Handle(OpenGl_Texture)& aTexture = theWorkspace->ActiveTexture();
+        const Handle(OpenGl_TextureSet)& aTextures = aCtx->ActiveTextures();
         const Standard_Boolean isLightOnFace = isLightOn
-                                            && (aTexture.IsNull()
-                                             || aTexture->GetParams()->IsModulate());
-        const Standard_Boolean toEnableEnvMap = (!aTexture.IsNull() && (aTexture == theWorkspace->EnvironmentTexture()));
-        aCtx->ShaderManager()->BindFaceProgram (aTexture,
+                                            && (aTextures.IsNull()
+                                             || aTextures->IsEmpty()
+                                             || aTextures->First().IsNull()
+                                             || aTextures->First()->Sampler()->Parameters()->IsModulate());
+        const Standard_Boolean toEnableEnvMap = (!aTextures.IsNull() && (aTextures == theWorkspace->EnvironmentTexture()));
+        aCtx->ShaderManager()->BindFaceProgram (aTextures,
                                                 isLightOnFace,
                                                 hasVertColor,
                                                 toEnableEnvMap,
@@ -802,10 +812,12 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
     }
   #endif
 
-    if (!theWorkspace->ActiveTexture().IsNull()
+    if (!aCtx->ActiveTextures().IsNull()
+     && !aCtx->ActiveTextures()->IsEmpty()
+     && !aCtx->ActiveTextures()->First().IsNull()
      && myDrawMode != GL_POINTS) // transformation is not supported within point sprites
     {
-      aCtx->SetTextureMatrix (theWorkspace->ActiveTexture()->GetParams());
+      aCtx->SetTextureMatrix (aCtx->ActiveTextures()->First()->Sampler()->Parameters());
     }
 
     if (myDrawMode <= GL_LINE_STRIP)
@@ -862,7 +874,7 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
 
   if (myDrawMode <= GL_LINE_STRIP)
   {
-    theWorkspace->EnableTexture (aTextureBack);
+    aCtx->BindTextures (aTextureBack);
   }
   else
   {

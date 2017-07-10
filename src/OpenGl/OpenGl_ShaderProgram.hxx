@@ -25,10 +25,11 @@
 
 #include <OpenGl_Vec.hxx>
 #include <OpenGl_Matrix.hxx>
+#include <OpenGl_NamedResource.hxx>
 #include <OpenGl_ShaderObject.hxx>
 
 class OpenGl_ShaderProgram;
-DEFINE_STANDARD_HANDLE(OpenGl_ShaderProgram, OpenGl_Resource)
+DEFINE_STANDARD_HANDLE(OpenGl_ShaderProgram, OpenGl_NamedResource)
 
 //! The enumeration of OCCT-specific OpenGL/GLSL variables.
 enum OpenGl_StateVariable
@@ -58,7 +59,6 @@ enum OpenGl_StateVariable
   OpenGl_OCC_LIGHT_AMBIENT,
 
   // Material state
-  OpenGl_OCCT_ACTIVE_SAMPLER,
   OpenGl_OCCT_TEXTURE_ENABLE,
   OpenGl_OCCT_DISTINGUISH_MODE,
   OpenGl_OCCT_FRONT_MATERIAL,
@@ -76,8 +76,6 @@ enum OpenGl_StateVariable
   // DON'T MODIFY THIS ITEM (insert new items before it)
   OpenGl_OCCT_NUMBER_OF_STATE_VARIABLES
 };
-
-class OpenGl_ShaderProgram;
 
 //! Interface for generic setter of user-defined uniform variables.
 struct OpenGl_SetterInterface
@@ -134,10 +132,11 @@ enum OpenGl_UniformStateType
 };
 
 //! Wrapper for OpenGL program object.
-class OpenGl_ShaderProgram : public OpenGl_Resource
+class OpenGl_ShaderProgram : public OpenGl_NamedResource
 {
   friend class OpenGl_View;
-
+  friend class OpenGl_ShaderManager;
+  DEFINE_STANDARD_RTTIEXT(OpenGl_ShaderProgram, OpenGl_NamedResource)
 public:
 
   //! Non-valid shader name.
@@ -521,12 +520,12 @@ public:
   //! Specifies the value of the sampler uniform variable.
   Standard_EXPORT Standard_Boolean SetSampler (const Handle(OpenGl_Context)& theCtx,
                                                const GLchar*                 theName,
-                                               const GLenum                  theTextureUnit);
+                                               const Graphic3d_TextureUnit   theTextureUnit);
 
   //! Specifies the value of the sampler uniform variable.
   Standard_EXPORT Standard_Boolean SetSampler (const Handle(OpenGl_Context)& theCtx,
                                                GLint                         theLocation,
-                                               const GLenum                  theTextureUnit);
+                                               const Graphic3d_TextureUnit   theTextureUnit);
 
 protected:
 
@@ -559,11 +558,6 @@ protected:
 
   //! Stores locations of OCCT state uniform variables.
   GLint myStateLocations[OpenGl_OCCT_NUMBER_OF_STATE_VARIABLES];
-
-public:
-
-  DEFINE_STANDARD_RTTIEXT(OpenGl_ShaderProgram,OpenGl_Resource)
-  friend class OpenGl_ShaderManager;
 
 };
 

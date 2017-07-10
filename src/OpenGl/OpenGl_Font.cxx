@@ -129,7 +129,7 @@ bool OpenGl_Font::createTexture (const Handle(OpenGl_Context)& theCtx)
   aParams->SetFilter      (Graphic3d_TOTF_BILINEAR);
   aParams->SetAnisoFilter (Graphic3d_LOTA_OFF);
 
-  myTextures.Append (new OpenGl_Texture (aParams));
+  myTextures.Append (new OpenGl_Texture (myKey + "_texture" + myTextures.Size(), aParams));
   Handle(OpenGl_Texture)& aTexture = myTextures.ChangeLast();
 
   Image_PixMap aBlackImg;

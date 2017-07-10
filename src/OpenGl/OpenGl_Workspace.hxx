@@ -235,11 +235,6 @@ public:
   //! Clear the applied aspect state to default values.
   void ResetAppliedAspect();
 
-  Standard_EXPORT Handle(OpenGl_Texture) DisableTexture();
-  Standard_EXPORT Handle(OpenGl_Texture) EnableTexture (const Handle(OpenGl_Texture)&          theTexture,
-                                                        const Handle(Graphic3d_TextureParams)& theParams = NULL);
-  const Handle(OpenGl_Texture)& ActiveTexture() const { return myTextureBound; }
-
   //! Set filter for restricting rendering of particular elements.
   //! Filter can be applied for rendering passes used by recursive
   //! rendering algorithms for rendering elements of groups.
@@ -287,21 +282,10 @@ public:
   }
 
   //! Sets a new environment texture.
-  void SetEnvironmentTexture (const Handle(OpenGl_Texture)& theTexture)
-  {
-    myEnvironmentTexture = theTexture;
-  }
+  void SetEnvironmentTexture (const Handle(OpenGl_TextureSet)& theTexture) { myEnvironmentTexture = theTexture; }
 
   //! Returns environment texture.
-  const Handle(OpenGl_Texture)& EnvironmentTexture() const
-  {
-    return myEnvironmentTexture;
-  }
-
-protected:
-
-  void setTextureParams (Handle(OpenGl_Texture)&                theTexture,
-                         const Handle(Graphic3d_TextureParams)& theParams);
+  const Handle(OpenGl_TextureSet)& EnvironmentTexture() const { return myEnvironmentTexture; }
 
 protected: //! @name protected fields
 
@@ -317,7 +301,6 @@ protected: //! @name protected fields
 protected: //! @name fields related to status
 
   Handle(OpenGl_RenderFilter) myRenderFilter;
-  Handle(OpenGl_Texture) myTextureBound;    //!< currently bound texture (managed by OpenGl_AspectFace and OpenGl_View environment texture)
   const OpenGl_AspectLine*   myAspectLineSet;
   const OpenGl_AspectFace*   myAspectFaceSet;
   Handle(Graphic3d_AspectFillArea3d) myAspectFaceApplied;
@@ -338,7 +321,7 @@ protected: //! @name fields related to status
 
   OpenGl_AspectFace myAspectFaceHl; //!< Hiddenline aspect
 
-  Handle(OpenGl_Texture) myEnvironmentTexture;
+  Handle(OpenGl_TextureSet) myEnvironmentTexture;
 
 public: //! @name type definition
 
