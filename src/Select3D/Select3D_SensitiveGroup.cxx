@@ -39,6 +39,7 @@ Select3D_SensitiveGroup::Select3D_SensitiveGroup (const Handle(SelectBasics_Enti
                                                   Select3D_EntitySequence& theEntities,
                                                   const Standard_Boolean theIsMustMatchAll)
 : Select3D_SensitiveSet (theOwnerId),
+  myEntities (Max (1, theEntities.Size())),
   myMustMatchAll (theIsMustMatchAll),
   myToCheckOverlapAll (Standard_False),
   myCenter (0.0, 0.0, 0.0)
@@ -46,13 +47,18 @@ Select3D_SensitiveGroup::Select3D_SensitiveGroup (const Handle(SelectBasics_Enti
   for (Select3D_EntitySequenceIter anIter (theEntities); anIter.More(); anIter.Next())
   {
     const Handle(Select3D_SensitiveEntity)& anEntity = anIter.Value();
-    myEntities.Append (anEntity);
+    const Standard_Integer aPrevExtent = myEntities.Extent();
+    if (myEntities.Add (anEntity) <= aPrevExtent)
+    {
+      continue;
+    }
+
     myBndBox.Combine (anEntity->BoundingBox());
-    myBVHPrimIndexes.Append (myEntities.Size());
+    myBVHPrimIndexes.Append (myEntities.Extent());
     myCenter.ChangeCoord() += anEntity->CenterOfGeometry().XYZ();
   }
 
-  myCenter.ChangeCoord().Divide (static_cast<Standard_Real> (myEntities.Size()));
+  myCenter.ChangeCoord().Divide (static_cast<Standard_Real> (myEntities.Extent()));
 
   MarkDirty();
 }
@@ -63,15 +69,27 @@ Select3D_SensitiveGroup::Select3D_SensitiveGroup (const Handle(SelectBasics_Enti
 //=======================================================================
 void Select3D_SensitiveGroup::Add (Select3D_EntitySequence& theEntities)
 {
+  if (theEntities.IsEmpty())
+  {
+    return;
+  }
+
   gp_Pnt aCent (0.0, 0.0, 0.0);
+  myEntities.ReSize (myEntities.Extent() + theEntities.Size());
   for (Select3D_EntitySequenceIter anIter (theEntities); anIter.More(); anIter.Next())
   {
-    myEntities.Append (anIter.Value());
-    myBndBox.Combine (anIter.Value()->BoundingBox());
-    myBVHPrimIndexes.Append (myEntities.Size());
-    aCent.ChangeCoord() += anIter.Value()->CenterOfGeometry().XYZ();
+    const Handle(Select3D_SensitiveEntity)& anEntity = anIter.Value();
+    const Standard_Integer aPrevExtent = myEntities.Extent();
+    if (myEntities.Add (anEntity) <= aPrevExtent)
+    {
+      continue;
+    }
+
+    myBndBox.Combine (anEntity->BoundingBox());
+    myBVHPrimIndexes.Append (myEntities.Extent());
+    aCent.ChangeCoord() += anEntity->CenterOfGeometry().XYZ();
   }
-  aCent.ChangeCoord().Divide (myEntities.Length());
+  aCent.ChangeCoord().Divide (myEntities.Extent());
   myCenter = (myCenter.XYZ() + aCent.XYZ()).Multiplied (0.5);
 }
 
@@ -81,16 +99,16 @@ void Select3D_SensitiveGroup::Add (Select3D_EntitySequence& theEntities)
 //=======================================================================
 void Select3D_SensitiveGroup::Add (const Handle(Select3D_SensitiveEntity)& theSensitive)
 {
-  for (Select3D_EntitySequenceIter anIter (myEntities); anIter.More(); anIter.Next())
+  const Standard_Integer aPrevExtent = myEntities.Extent();
+  if (myEntities.Add (theSensitive) <= aPrevExtent)
   {
-    if (anIter.Value() == theSensitive)
-      return;
+    return;
   }
-  myEntities.Append (theSensitive);
-  myBVHPrimIndexes.Append (myEntities.Size());
+
+  myBVHPrimIndexes.Append (myEntities.Extent());
   myBndBox.Combine (theSensitive->BoundingBox());
   myCenter.ChangeCoord() += theSensitive->CenterOfGeometry().XYZ();
-  if (myEntities.First() != myEntities.Last())
+  if (myEntities.Extent() >= 2)
   {
     myCenter.ChangeCoord().Multiply (0.5);
   }
@@ -102,30 +120,22 @@ void Select3D_SensitiveGroup::Add (const Handle(Select3D_SensitiveEntity)& theSe
 //=======================================================================
 void Select3D_SensitiveGroup::Remove (const Handle(Select3D_SensitiveEntity)& theSensitive)
 {
-  Standard_Boolean isSensitiveRemoved = Standard_False;
-  for (Select3D_EntitySequenceIter anIter (myEntities); anIter.More(); anIter.Next())
+  if (!myEntities.RemoveKey (theSensitive))
   {
-    if (anIter.Value() == theSensitive)
-    {
-      myEntities.Remove (anIter);
-      isSensitiveRemoved = Standard_True;
-      break;
-    }
+    return;
   }
 
-  if (isSensitiveRemoved)
+  myBndBox.Clear();
+  myCenter = gp_Pnt (0.0, 0.0, 0.0);
+  myBVHPrimIndexes.Clear();
+  for (Standard_Integer anIdx = 1; anIdx <= myEntities.Size(); ++anIdx)
   {
-    myBndBox.Clear();
-    myCenter = gp_Pnt (0.0, 0.0, 0.0);
-    myBVHPrimIndexes.Clear();
-    for (Standard_Integer anIdx = 1; anIdx <= myEntities.Size(); ++anIdx)
-    {
-      myBndBox.Combine (myEntities.Value (anIdx)->BoundingBox());
-      myCenter.ChangeCoord() += myEntities.Value (anIdx)->CenterOfGeometry().XYZ();
-      myBVHPrimIndexes.Append (anIdx);
-    }
-    myCenter.ChangeCoord().Divide (static_cast<Standard_Real> (myEntities.Size()));
+    const Handle(Select3D_SensitiveEntity)& anEntity = myEntities.FindKey (anIdx);
+    myBndBox.Combine (anEntity->BoundingBox());
+    myCenter.ChangeCoord() += anEntity->CenterOfGeometry().XYZ();
+    myBVHPrimIndexes.Append (anIdx);
   }
+  myCenter.ChangeCoord().Divide (static_cast<Standard_Real> (myEntities.Extent()));
 }
 
 //=======================================================================
@@ -134,12 +144,7 @@ void Select3D_SensitiveGroup::Remove (const Handle(Select3D_SensitiveEntity)& th
 //=======================================================================
 Standard_Boolean Select3D_SensitiveGroup::IsIn (const Handle(Select3D_SensitiveEntity)& theSensitive) const
 {
-  for(Select3D_EntitySequenceIter anIter (myEntities); anIter.More(); anIter.Next())
-  {
-    if (anIter.Value() == theSensitive)
-      return Standard_True;
-  }
-  return Standard_False;
+  return myEntities.Contains (theSensitive);
 }
 
 //=======================================================================
@@ -173,9 +178,9 @@ Handle(Select3D_SensitiveEntity) Select3D_SensitiveGroup::GetConnected()
 {
   Handle(Select3D_SensitiveGroup) aNewEntity = new Select3D_SensitiveGroup (myOwnerId, myMustMatchAll);
   Select3D_EntitySequence aConnectedEnt;
-  for (Select3D_EntitySequenceIter It (myEntities); It.More(); It.Next()) 
+  for (Select3D_IndexedMapOfEntity::Iterator anEntityIter (myEntities); anEntityIter.More(); anEntityIter.Next())
   {
-    aConnectedEnt.Append (It.Value()->GetConnected());
+    aConnectedEnt.Append (anEntityIter.Value()->GetConnected());
   }
   aNewEntity->Add (aConnectedEnt);
   return aNewEntity;
@@ -200,10 +205,10 @@ Standard_Boolean Select3D_SensitiveGroup::Matches (SelectBasics_SelectingVolumeM
   Standard_Real aDepth     = RealLast();
   Standard_Real aDistToCOG = RealLast();
   Standard_Boolean isFailed = Standard_False;
-  for (Select3D_EntitySequenceIter anIt (myEntities); anIt.More(); anIt.Next())
+  for (Select3D_IndexedMapOfEntity::Iterator anEntityIter (myEntities); anEntityIter.More(); anEntityIter.Next())
   {
     SelectBasics_PickResult aMatchResult;
-    Handle(Select3D_SensitiveEntity)& aChild = anIt.ChangeValue();
+    const Handle(Select3D_SensitiveEntity)& aChild = anEntityIter.Value();
     if (!aChild->Matches (theMgr, aMatchResult))
     {
       if (toMatchAll)
@@ -238,9 +243,10 @@ Standard_Boolean Select3D_SensitiveGroup::Matches (SelectBasics_SelectingVolumeM
 void Select3D_SensitiveGroup::Set (const Handle(SelectBasics_EntityOwner)& theOwnerId)
 { 
   Select3D_SensitiveEntity::Set (theOwnerId);
-  // set TheOwnerId for each element of sensitive group
-  for (Select3D_EntitySequenceIter anIter (myEntities); anIter.More(); anIter.Next())
-    anIter.Value()->Set (theOwnerId);
+  for (Select3D_IndexedMapOfEntity::Iterator anEntityIter (myEntities); anEntityIter.More(); anEntityIter.Next())
+  {
+    anEntityIter.Value()->Set (theOwnerId);
+  }
 }
 
 //=======================================================================
@@ -255,9 +261,9 @@ Select3D_BndBox3d Select3D_SensitiveGroup::BoundingBox()
 
   // do not apply the transformation because sensitives AABBs
   // are already transformed
-  for (Select3D_EntitySequenceIter anIter (myEntities); anIter.More(); anIter.Next())
+  for (Select3D_IndexedMapOfEntity::Iterator anEntityIter (myEntities); anEntityIter.More(); anEntityIter.Next())
   {
-    myBndBox.Combine (anIter.Value()->BoundingBox());
+    myBndBox.Combine (anEntityIter.Value()->BoundingBox());
   }
 
   return myBndBox;
@@ -280,7 +286,7 @@ gp_Pnt Select3D_SensitiveGroup::CenterOfGeometry() const
 Select3D_BndBox3d Select3D_SensitiveGroup::Box (const Standard_Integer theIdx) const
 {
   const Standard_Integer anElemIdx = myBVHPrimIndexes.Value (theIdx);
-  return myEntities.Value (anElemIdx)->BoundingBox();
+  return myEntities.FindKey (anElemIdx)->BoundingBox();
 }
 
 //=======================================================================
@@ -292,7 +298,7 @@ Standard_Real Select3D_SensitiveGroup::Center (const Standard_Integer theIdx,
                                                const Standard_Integer theAxis) const
 {
   const Standard_Integer anElemIdx = myBVHPrimIndexes.Value (theIdx);
-  const gp_Pnt aCenter = myEntities.Value (anElemIdx)->CenterOfGeometry();
+  const gp_Pnt aCenter = myEntities.FindKey (anElemIdx)->CenterOfGeometry();
   return theAxis == 0 ? aCenter.X() : (theAxis == 1 ? aCenter.Y() : aCenter.Z());
 }
 
@@ -331,7 +337,7 @@ Standard_Boolean Select3D_SensitiveGroup::overlapsElement (SelectBasics_Selectin
   theMatchDepth = RealLast();
   const Standard_Integer aSensitiveIdx = myBVHPrimIndexes.Value (theElemIdx);
   SelectBasics_PickResult aResult;
-  if (myEntities.Value (aSensitiveIdx)->Matches (theMgr, aResult))
+  if (myEntities.FindKey (aSensitiveIdx)->Matches (theMgr, aResult))
   {
     theMatchDepth = aResult.Depth();
     return Standard_True;

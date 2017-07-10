@@ -415,12 +415,16 @@ public:
 
   //! Remove the given key.
   //! Caution! The index of the last key can be changed.
-  void RemoveKey(const TheKeyType& theKey1)
+  Standard_Boolean RemoveKey (const TheKeyType& theKey1)
   {
     Standard_Integer anIndToRemove = FindIndex(theKey1);
-    if (anIndToRemove > 0) {
-      RemoveFromIndex(anIndToRemove);
+    if (anIndToRemove < 1)
+    {
+      return Standard_False;
     }
+
+    RemoveFromIndex (anIndToRemove);
+    return Standard_True;
   }
 
   //! FindKey

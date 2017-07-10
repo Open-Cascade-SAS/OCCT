@@ -18,6 +18,7 @@
 #define _Select3D_SensitiveGroup_HeaderFile
 
 #include <Select3D_EntitySequence.hxx>
+#include <Select3D_IndexedMapOfEntity.hxx>
 #include <Select3D_SensitiveEntity.hxx>
 #include <Select3D_SensitiveSet.hxx>
 #include <SelectMgr_SelectingVolumeManager.hxx>
@@ -48,19 +49,19 @@ public:
                                            const Standard_Boolean theIsMustMatchAll = Standard_True);
 
   //! Gets group content
-  const Select3D_EntitySequence& GetEntities() const { return myEntities; }
+  const Select3D_IndexedMapOfEntity& Entities() const { return myEntities; }
 
   //! Access entity by index [1, NbSubElements()].
   const Handle(Select3D_SensitiveEntity)& SubEntity (const Standard_Integer theIndex) const
   {
-    return myEntities.Value (theIndex);
+    return myEntities.FindKey (theIndex);
   }
 
   //! Return last detected entity.
   Handle(Select3D_SensitiveEntity) LastDetectedEntity() const
   {
     const Standard_Integer anIndex = LastDetectedEntityIndex();
-    return anIndex != -1 ? myEntities.Value (anIndex) : Handle(Select3D_SensitiveEntity)();
+    return anIndex != -1 ? myEntities.FindKey (anIndex) : Handle(Select3D_SensitiveEntity)();
   }
 
   //! Return index of last detected entity.
@@ -158,7 +159,7 @@ private:
 
 private:
 
-  Select3D_EntitySequence              myEntities;           //!< Grouped sensitive entities
+  Select3D_IndexedMapOfEntity          myEntities;           //!< Grouped sensitive entities
   Standard_Boolean                     myMustMatchAll;       //!< Determines whether all entities in the group should be overlapped or not
   Standard_Boolean                     myToCheckOverlapAll;  //!< flag to check overlapping with all entities within rectangular/polygonal selection
   gp_Pnt                               myCenter;             //!< Center of geometry of the group
