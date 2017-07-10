@@ -204,25 +204,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(OpenGl_GraphicDriver,Graphic3d_GraphicDriver)
 
-protected:
-
-  Standard_Boolean        myIsOwnContext; //!< indicates that shared context has been created within OpenGl_GraphicDriver
-#if defined(HAVE_EGL) || defined(HAVE_GLES2) || defined(OCCT_UWP) || defined(__ANDROID__) || defined(__QNX__)
-  Aspect_Display          myEglDisplay;   //!< EGL connection to the Display : EGLDisplay
-  Aspect_RenderingContext myEglContext;   //!< EGL rendering context         : EGLContext
-  void*                   myEglConfig;    //!< EGL configuration             : EGLConfig
-#endif
-
-  Handle(OpenGl_Caps)                                             myCaps;
-  NCollection_Map<Handle(OpenGl_View)>                            myMapOfView;
-  NCollection_DataMap<Standard_Integer, OpenGl_Structure*>        myMapOfStructure;
-
-public:
-
-  TColStd_MapOfInteger       myLayerIds;
-  TColStd_SequenceOfInteger  myLayerSeq;
-  OpenGl_MapOfZLayerSettings myMapOfZLayerSettings;
-
 public:
 
   //! State counter for OpenGl structures.
@@ -232,6 +213,21 @@ public:
   Standard_Size GetNextPrimitiveArrayUID() const { return myUIDGenerator.Increment(); }
 
 protected:
+
+  Standard_Boolean        myIsOwnContext; //!< indicates that shared context has been created within OpenGl_GraphicDriver
+#if defined(HAVE_EGL) || defined(HAVE_GLES2) || defined(OCCT_UWP) || defined(__ANDROID__) || defined(__QNX__)
+  Aspect_Display          myEglDisplay;   //!< EGL connection to the Display : EGLDisplay
+  Aspect_RenderingContext myEglContext;   //!< EGL rendering context         : EGLContext
+  void*                   myEglConfig;    //!< EGL configuration             : EGLConfig
+#endif
+
+  Handle(OpenGl_Caps)                                      myCaps;
+  NCollection_Map<Handle(OpenGl_View)>                     myMapOfView;
+  NCollection_DataMap<Standard_Integer, OpenGl_Structure*> myMapOfStructure;
+
+  TColStd_MapOfInteger       myLayerIds;
+  TColStd_SequenceOfInteger  myLayerSeq;
+  OpenGl_MapOfZLayerSettings myMapOfZLayerSettings;
 
   mutable OpenGl_StateCounter myStateCounter; //!< State counter for OpenGl structures.
   mutable OpenGl_StateCounter myUIDGenerator; //!< Unique ID counter for primitive arrays.
