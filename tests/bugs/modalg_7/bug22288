@@ -1,0 +1,13 @@
+puts "TODO OCC22288 ALL: Faulty shapes in variables"
+
+puts "========"
+puts "OCC22288"
+puts "========"
+puts ""
+########################################
+# checkshape works wrong with attached shape.
+########################################
+
+restore [locate_data_file bug22288_b1_m.brep] result
+
+checkshape result
