@@ -60,6 +60,9 @@ public:
   
   //! Changes the constraints of the approximation.
   Standard_EXPORT void SetConstraints (const AppParCurves_Constraint FirstC, const AppParCurves_Constraint LastC);
+
+  //! Changes the max number of segments, which is allowed for cutting.
+  Standard_EXPORT void SetMaxSegments (const Standard_Integer theMaxSegments);
   
   //! returns False if at a moment of the approximation,
   //! the status NoApproximation has been sent by the user
@@ -114,6 +117,7 @@ private:
   Standard_Boolean mycut;
   AppParCurves_Constraint myfirstC;
   AppParCurves_Constraint mylastC;
+  Standard_Integer myMaxSegments;
 
 
 };

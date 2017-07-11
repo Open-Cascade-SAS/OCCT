@@ -55,7 +55,7 @@ class ProjLib_Cylinder;
 class ProjLib_Cone;
 class ProjLib_Sphere;
 class ProjLib_Torus;
-
+class Adaptor3d_HSurface;
 
 //! The  projLib package  first provides projection of
 //! curves on a   plane along a  given Direction.  The
@@ -132,6 +132,12 @@ public:
   //! Make empty  P-Curve <aC> of relevant to <PC> type
   Standard_EXPORT static void MakePCurveOfType (const ProjLib_ProjectedCurve& PC,
                                                 Handle(Geom2d_Curve)& aC);
+  //! Returns "true" if surface is analytical, that is it can be
+  //! Plane, Cylinder, Cone, Sphere, Torus.
+  //! For all other types of surface method returns "false".
+  Standard_EXPORT static Standard_Boolean IsAnaSurf
+                                           (const Handle(Adaptor3d_HSurface)& theAS);
+
 
 
 

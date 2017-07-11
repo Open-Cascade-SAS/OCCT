@@ -48,6 +48,7 @@
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom2d_BezierCurve.hxx>
 #include <Standard_NotImplemented.hxx>
+#include <Adaptor3d_HSurface.hxx>
 
 //=======================================================================
 //function : Project
@@ -278,6 +279,28 @@ void  ProjLib::MakePCurveOfType
     default :
     Standard_NotImplemented::Raise
       ("ProjLib::MakePCurveOfType");
+    break;
+  }
+}
+//=======================================================================
+//function : IsAnaSurf
+//purpose  : 
+//=======================================================================
+Standard_Boolean  ProjLib::IsAnaSurf
+  (const Handle(Adaptor3d_HSurface)& theAS) 
+{ 
+  switch (theAS->GetType()) 
+  {
+
+  case GeomAbs_Plane:
+  case GeomAbs_Cylinder:
+  case GeomAbs_Cone:
+  case GeomAbs_Sphere:
+  case GeomAbs_Torus:
+    return Standard_True;
+    break;
+  default :
+    return Standard_False;
     break;
   }
 }

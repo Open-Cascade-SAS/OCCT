@@ -29,6 +29,7 @@
 #include <TColStd_Array1OfReal.hxx>
 #include <Standard_Boolean.hxx>
 #include <GeomAbs_CurveType.hxx>
+#include <AppParCurves_Constraint.hxx>
 class Adaptor3d_HSurface;
 class Adaptor3d_HCurve;
 class Standard_OutOfRange;
@@ -49,20 +50,32 @@ class Geom2d_BSplineCurve;
 
 //! Compute the 2d-curve.  Try to solve the particular
 //! case if possible.  Otherwize, an approximation  is
-//! done.
+//! done. For approximation some parameters are used, including 
+//! required tolerance of approximation.
+//! Tolerance is maximal possible value of 3d deviation of 3d projection of projected curve from
+//! "exact" 3d projection. Since algorithm searches 2d curve on surface, required 2d tolerance is computed
+//! from 3d tolerance with help of U,V resolutions of surface.
+//! 3d and 2d tolerances have sence only for curves on surface, it defines precision of projecting and approximation
+//! and have nothing to do with distance between the projected curve and the surface.
 class ProjLib_ProjectedCurve  : public Adaptor2d_Curve2d
 {
 public:
 
   DEFINE_STANDARD_ALLOC
 
-  
+  //! Empty constructor, it only sets some initial values for class fields.
   Standard_EXPORT ProjLib_ProjectedCurve();
   
+  //! Constructor with initialisation field mySurface
   Standard_EXPORT ProjLib_ProjectedCurve(const Handle(Adaptor3d_HSurface)& S);
-  
+
+  //! Constructor, which performs projecting.
+  //! If projecting uses approximation, default parameters are used, in particular, 3d tolerance of approximation
+  //! is Precision::Confusion()
   Standard_EXPORT ProjLib_ProjectedCurve(const Handle(Adaptor3d_HSurface)& S, const Handle(Adaptor3d_HCurve)& C);
   
+  //! Constructor, which performs projecting.
+  //! If projecting uses approximation, 3d tolerance is Tol, default parameters are used, 
   Standard_EXPORT ProjLib_ProjectedCurve(const Handle(Adaptor3d_HSurface)& S, const Handle(Adaptor3d_HCurve)& C, const Standard_Real Tol);
   
   //! Changes the tolerance used to project
@@ -72,9 +85,33 @@ public:
   //! Changes the Surface.
   Standard_EXPORT void Load (const Handle(Adaptor3d_HSurface)& S);
   
-  //! Changes the Curve.
-  Standard_EXPORT void Load (const Handle(Adaptor3d_HCurve)& C);
+  //! Performs projecting for given curve.
+  //! If projecting uses approximation, 
+  //! approximation parameters can be set before by corresponding methods 
+  //! SetDegree(...), SetMaxSegmets(...), SetBndPnt(...), SetMaxDist(...)
+  Standard_EXPORT void Perform (const Handle(Adaptor3d_HCurve)& C);
   
+  //! Set min and max possible degree of result BSpline curve2d, which is got by approximation.
+  //! If theDegMin/Max < 0, algorithm uses values that are chosen depending of types curve 3d
+  //! and surface.
+  Standard_EXPORT void SetDegree(const Standard_Integer theDegMin, const Standard_Integer theDegMax);
+
+  //! Set the parameter, which defines maximal value of parametric intervals the projected
+  //! curve can be cut for approximation. If theMaxSegments < 0, algorithm uses default 
+  //! value = 1000.
+  Standard_EXPORT void SetMaxSegments(const Standard_Integer theMaxSegments);
+
+  //! Set the parameter, which defines type of boundary condition between segments during approximation.
+  //! It can be AppParCurves_PassPoint or AppParCurves_TangencyPoint.
+  //! Default value is AppParCurves_TangencyPoint;
+  Standard_EXPORT void SetBndPnt(const AppParCurves_Constraint theBndPnt);
+
+  //! Set the parameter, which degines maximal possible distance between projected curve and surface.
+  //! It uses only for projecting on not analytical surfaces.
+  //! If theMaxDist < 0, algoritm uses default value 100.*Tolerance. 
+  //! If real distance between curve and surface more then theMaxDist, algorithm stops working.
+  Standard_EXPORT void SetMaxDist(const Standard_Real theMaxDist);
+
   Standard_EXPORT const Handle(Adaptor3d_HSurface)& GetSurface() const;
   
   Standard_EXPORT const Handle(Adaptor3d_HCurve)& GetCurve() const;
@@ -203,8 +240,11 @@ private:
   Handle(Adaptor3d_HSurface) mySurface;
   Handle(Adaptor3d_HCurve) myCurve;
   ProjLib_Projector myResult;
-
-
+  Standard_Integer myDegMin;
+  Standard_Integer myDegMax;
+  Standard_Integer myMaxSegments;
+  Standard_Real myMaxDist;
+  AppParCurves_Constraint myBndPnt;
 };
 
 

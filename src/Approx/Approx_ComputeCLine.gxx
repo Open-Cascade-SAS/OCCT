@@ -50,6 +50,7 @@ Approx_ComputeCLine::Approx_ComputeCLine
   mycut = cutting;
   myfirstC = FirstC;
   mylastC = LastC;
+  myMaxSegments = IntegerLast();
   alldone = Standard_False;
   Perform(Line);
 }
@@ -76,6 +77,7 @@ Approx_ComputeCLine::Approx_ComputeCLine
   mycut = cutting;
   myfirstC = FirstC;
   mylastC = LastC;
+  myMaxSegments = IntegerLast();
 }
 
 //=======================================================================
@@ -91,9 +93,11 @@ void Approx_ComputeCLine::Perform(const MultiLine& Line)
   Standard_Real thetol3d = Precision::Confusion(), thetol2d = Precision::Confusion();
   UFirst = Line.FirstParameter();
   ULast  = Line.LastParameter();
-  Standard_Real TolU = (ULast-UFirst)*1.e-05;
+  Standard_Real TolU = Max((ULast-UFirst)*1.e-05, Precision::PApproximation());
   Standard_Real myfirstU = UFirst; 
   Standard_Real mylastU = ULast;
+  Standard_Integer aMaxSegments = 0;
+  Standard_Integer aMaxSegments1 = myMaxSegments - 1;
 
   if (!mycut)
   {
@@ -126,7 +130,8 @@ void Approx_ComputeCLine::Perform(const MultiLine& Line)
           // Calcul de la partie a approximer.
           myfirstU = mylastU;
           mylastU  = ULast;
-          if (Abs(ULast-myfirstU) <= RealEpsilon())
+          if (Abs(ULast-myfirstU) <= RealEpsilon() 
+              || aMaxSegments >= myMaxSegments)
           {
             Finish = Standard_True;
             alldone = Standard_True;
@@ -155,11 +160,15 @@ void Approx_ComputeCLine::Perform(const MultiLine& Line)
 
       // Calcul des parametres sur ce nouvel intervalle.
       Ok = Compute(Line, myfirstU, mylastU, thetol3d, thetol2d);
+      if(Ok)
+      {
+        aMaxSegments++;
+      }
 
       //cout << myfirstU << " - " << mylastU << "  tol : " << thetol3d << " " << thetol2d << endl;
 
       // is new decision better?
-      if (!Ok && Abs(myfirstU-mylastU) <= TolU)
+      if (!Ok && (Abs(myfirstU-mylastU) <= TolU || aMaxSegments >= aMaxSegments1))
       {
           Ok = Standard_True; // stop interval cutting, approx the rest part
 
@@ -176,6 +185,7 @@ void Approx_ComputeCLine::Perform(const MultiLine& Line)
 
           tolreached = Standard_False; // helas
           myMultiCurves.Append(KeptMultiCurve);
+          aMaxSegments++;
           Tolers3d.Append     (KeptT3d);
           Tolers2d.Append     (KeptT2d);
           myfirstparam.Append (KeptUfirst);
@@ -301,6 +311,16 @@ void Approx_ComputeCLine::SetConstraints(const AppParCurves_Constraint FirstC,
 {
   myfirstC = FirstC;
   mylastC  = LastC;
+}
+
+//=======================================================================
+//function : SetMaxSegments
+//purpose  : Changes the max number of segments, which is allowed for cutting.
+//=======================================================================
+
+void Approx_ComputeCLine:: SetMaxSegments(const Standard_Integer theMaxSegments)
+{
+  myMaxSegments = theMaxSegments;
 }
 
 //=======================================================================

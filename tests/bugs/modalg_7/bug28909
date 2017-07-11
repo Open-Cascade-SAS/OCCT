@@ -1,0 +1,23 @@
+puts "======="
+puts "OCC28909"
+puts "======="
+puts ""
+##################################################
+# Algorithm of BO is stuck while fusing shell and edges
+##################################################
+
+restore [locate_data_file bug28909_shell.brep] ss
+restore [locate_data_file bug28909_edges.brep] edges
+
+bclearobjects
+bcleartools
+baddobjects ss
+baddcompound edges
+#Algorithm gets stuck in command bfillds
+bfillds
+bbuild result
+
+checkshape result
+checknbshapes result -edge 28 -face 6
+checkprops result -l 13568.8
+
