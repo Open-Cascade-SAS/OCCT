@@ -1,0 +1,16 @@
+puts "TODO OCC22487 ALL: Faulty shapes in variables"
+
+puts "========"
+puts "OCC22487"
+puts "========"
+puts ""
+##########################################################################
+# Reading IGES file produces invalid shape
+##########################################################################
+
+igesread [locate_data_file bug22487_35puan.igs] result *
+
+checkshape result
+
+checkview -display result -3d -path ${imagedir}/${test_image}-3d.png
+checkview -display result -2d -path ${imagedir}/${test_image}-2d.png
