@@ -1,0 +1,38 @@
+puts "REQUIRED All: Faulty shapes in variables faulty_1 to faulty_"
+
+puts "TODO OCC24251 ALL: ERROR: OCC24251 is reproduced."
+
+puts "========"
+puts "OCC24251"
+puts "========"
+puts ""
+#############################################################################
+# Command checkshape does not report a problem on first call after fixshape
+#############################################################################
+
+restore [locate_data_file bug24899_TheHull.brep] r0
+
+# First usage of checkshape command for r0
+set bug_info_initial [checkshape r0]
+
+# Calculate number of problematic sub-shapes before using fixshape command
+set bug_info_initial [lindex $bug_info_initial [expr {[llength $bug_info_initial] - 1}]]
+set bug_info_initial [string trim [string range $bug_info_initial [expr {[string last "_" $bug_info_initial] + 1}] [expr {[string length $bug_info_initial] - 1}]]]
+
+fixshape r r0
+
+# Second usage of checkshape command for r0
+set bug_info_final [checkshape r0]
+
+# ERROR if "This shape seems to be valid" after checkshape command
+if {$bug_info_final == "This shape seems to be valid"} {
+  puts "ERROR: OCC24251 is reproduced. Second usage of checkshape command does not show problems"
+} else {
+# Calculate number of problematic sub-shapes on after using fixshape command
+  set bug_info_final [lindex $bug_info_final [expr {[llength $bug_info_final] - 1}]]
+  set bug_info_final [string trim [string range $bug_info_final [expr {[string last "_" $bug_info_final] + 1}] [expr {[string length $bug_info_final] - 1}]]]
+# ERROR if result of first usage checkshape command is different from the second usage
+  if {$bug_info_final != $bug_info_initial} {
+    puts "ERROR: OCC24251 is reproduced. Second usage of checkshape command shows $bug_info_final problems, but first usage shows $bug_info_initial"
+  }
+}

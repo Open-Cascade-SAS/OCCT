@@ -1,0 +1,28 @@
+puts "TODO OCC23163 ALL: Error: No resulting circle at the intersection of tori, only b-splines"
+
+puts "================"
+puts "OCC23163"
+puts "================"
+puts ""
+#######################################################################
+#  Intersection of tori fails to produce results
+#######################################################################
+
+restore [locate_data_file bug23163_surface1_draw_b.draw] s1
+restore [locate_data_file bug23163_surface2_draw_b.draw] s2
+
+intersect result s1 s2
+
+set NbCurv [llength [directory result*]]
+
+if { $NbCurv > 6 } {
+  puts "OK: Number of curves is good"
+} else {
+  puts "Error: No resulting circle at the intersection of tori, only b-splines"
+}
+
+smallview
+donly result*
+fit
+display s1 s2
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

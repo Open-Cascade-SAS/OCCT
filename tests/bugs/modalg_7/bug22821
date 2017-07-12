@@ -1,0 +1,26 @@
+puts "TODO OCC22821 ALL: Error: Crash with BRepFilletAPI_MakeFillet"
+
+puts "============"
+puts "OCC22821"
+puts "============"
+puts ""
+#########################################################################
+# Crash with BRepFilletAPI_MakeFillet
+#########################################################################
+
+pload XDE
+
+stepread [locate_data_file bug22821_test.step] t *
+renamevar t_1 t
+checkshape t
+
+explode t E
+
+if {![catch {fillet result t 0.01 t_1}]} {
+  #puts "OK: The incorrect input data were processed correctly!"  
+  checkshape result
+  checkprops result -s 1.5708 
+  checkview -display result -2d -path ${imagedir}/${test_image}.png
+} else {
+  puts "Error: Crash with BRepFilletAPI_MakeFillet"
+}

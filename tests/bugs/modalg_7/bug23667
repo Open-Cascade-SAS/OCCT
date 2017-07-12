@@ -1,0 +1,15 @@
+puts "================"
+puts "OCC23667"
+puts "================"
+puts ""
+#######################################################################
+# checkshape command does not detect problems in the attached shape
+#######################################################################
+
+restore [locate_data_file bug23667_f_ref.brep] f
+
+checkshape f
+
+pcurve f
+
+checkview -display f -2d -path ${imagedir}/${test_image}.png

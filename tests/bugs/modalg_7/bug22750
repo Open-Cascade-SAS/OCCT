@@ -1,0 +1,125 @@
+puts "TODO OCC22750 ALL: Faulty shapes in variables"
+
+puts "========"
+puts "OCC22750"
+puts "========"
+puts ""
+#######################################################
+# Boolean operation: Bug in Fuse
+#######################################################
+
+# Step 1: Create surface wing
+
+# Create sections as ellipses 2D (possible to create directly in 3D)
+ellipse e1 0 0 30 20
+ellipse e2 0 0  20 10
+ellipse e3  0 0 16 8
+
+# Convert 2d Curves in 3d Curves, and place them along Z axis
+to3d ee1 e1
+to3d ee2 e2; translate ee2 0 0 100
+to3d ee3 e3; translate ee3 0 0 200
+
+rotate ee2 0 0 100 0 1 0 10
+rotate ee3 0 0 200 0 1 0 20
+
+#Approximate the ellipses by Bsplines
+appro c1 16 ee1
+appro c2 16 ee2
+appro c3 16 ee3
+
+#Make a surface by approximation passing throught a set of curves
+# and create a face
+appsurf s1 c1 c2 c3
+mkface f1 s1
+
+#Make a surface by approximation passing throught a set of ellipse
+# and create a face
+appsurf s2 ee1 ee2 ee3
+mkface f2 s2
+
+# Step 2: Create surface for fuselage
+
+#Create circles in 3D along axe X
+circle c1 -100 0 0 1 0 0 10
+circle c2 -50 0 0 1 0 0 30
+circle c3 50 0 0 1 0 0  29
+circle c4 100 0 0 1 0 0 20
+circle c5 150 0 0 1 0 0 10
+
+#Make a surface by approximation passing throught a set of circles
+# and create a face
+appsurf s3 c1 c2 c3 c4 c5
+mkface f3 s3
+
+
+# Step 3: Create a Solid for the Wing
+# Build edges from ellipse, wires with edges, faces on wires
+# It's necessary to sew the faces to create the Shell, because the faces don't shared the same edge
+#sewing will create a shell, it remains to create the solid from the shell
+
+mkedge ed1 ee1
+mkedge ed3 ee3
+
+wire w1 ed1
+wire w3 ed3
+
+mkplane f5 w1
+mkplane f6 w3
+
+sewing r f2 f5 f6
+###mksol so1 r
+shape so1 So
+add r so1
+
+checkshape so1
+# The shape so1 is valid
+
+#Step 4: Create a Solid for fuselage
+# We will extract the edge from the face f3, and use them to buid faces, the edge will be shared and we 
+# can rebuild a sh and a solid with the basic and fast method
+
+nexplode f3 e
+#nexplode give same order of exploration in different sessions
+
+wire w1 f3_1
+wire w3 f3_3
+mkplane f7 w1 1
+mkplane f8 w3 1
+
+shape rr Sh
+add f3 rr; add f7 rr; add f8 rr
+
+shape so2 So
+add rr so2
+
+checkshape so2
+# there is a pb of orientation, we have to chage orientation of f8
+
+orientation f8 R
+
+# We rebuild the shell and the solid
+shape rr Sh
+add f3 rr; add f7 rr; add f8 rr
+
+shape so2 So
+add rr so2
+
+checkshape so2
+# the shape is valid
+
+# Step 5: Fuse the Wing to the fuselage
+ttranslate so1 0 0 10
+bop so1 so2
+bopfuse rrr
+
+# Step 6: Create the othe wing using copy and rotation
+tcopy so1 so3
+trotate so3 0 0 0 1 0 0 180
+
+# Step 7: Fuse the Wing to the fuselage
+bop rrr so3
+bopfuse so4
+
+checkview -display so4 -3d -path ${imagedir}/${test_image}-3d.png
+checkview -display so4 -2d -path ${imagedir}/${test_image}-2d.png

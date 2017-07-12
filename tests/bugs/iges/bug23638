@@ -1,0 +1,13 @@
+puts "============"
+puts "CR23638"
+puts "============"
+puts ""
+#######################################################################
+# Reading IGES file produced invalid shape
+#######################################################################
+
+param read.surfacecurve.mode -3
+
+igesread [locate_data_file bug23638_cadbad.igs] result *
+
+checkshape result

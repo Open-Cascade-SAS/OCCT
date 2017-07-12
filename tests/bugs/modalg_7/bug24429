@@ -1,0 +1,16 @@
+puts "TODO OCC24429 ALL: An exception was caught"
+puts "TODO OCC24429 ALL: \\*\\* Exception \\*\\*.*"
+puts "TODO OCC24429 ALL: TEST INCOMPLETE"
+
+puts "========"
+puts "OCC24429"
+puts "========"
+puts ""
+##########################################################################
+# Cylinder-torus intersection throws an exception and produces no result
+##########################################################################
+
+restore [locate_data_file bug24429_s1.draw] s1
+restore [locate_data_file bug24429_s2.draw] s2
+
+intersect result s1 s2

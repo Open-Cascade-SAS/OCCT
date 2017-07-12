@@ -1,0 +1,26 @@
+puts "TODO OCC22602 ALL: Error : notched simple file is WRONG"
+
+puts "========"
+puts "OCC22602"
+puts "========"
+puts ""
+#############################################
+# Improvement in notched healing
+#############################################
+
+restore [locate_data_file bug22602_notched_simple.brep] a
+
+checkview -display a -2d -path ${imagedir}/${test_image}_1.png
+
+fixshape result a -l -o -h -m -d -s -i +n
+
+checkshape result
+
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX    : 6
+ EDGE      : 7
+"
+checknbshapes result -ref ${nbshapes_expected} -t -m "notched simple file"
+
+checkview -display result -2d -path ${imagedir}/${test_image}_2.png

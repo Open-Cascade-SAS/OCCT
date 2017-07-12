@@ -1,0 +1,23 @@
+puts "TODO OCC24185 ALL: Error : The length of result shape is"
+
+puts "========"
+puts "OCC24185"
+puts "========"
+puts ""
+########################################
+# Wrong projection of a wire to a face
+########################################
+
+restore [locate_data_file bug24185_face.brep] f
+restore [locate_data_file bug24185_wire.brep] w
+
+nproject result w f
+
+checkshape result
+checkprops result -l 11.06
+
+vinit
+vdisplay w
+vdisplay result
+vfit
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

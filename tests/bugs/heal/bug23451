@@ -1,0 +1,17 @@
+puts "TODO All: Faulty shapes in variables faulty_1 to faulty_"
+
+puts "================"
+puts "OCC23451"
+puts "================"
+puts ""
+######################################################################################
+# FixMissingSeam constructs intersecting wires
+######################################################################################
+
+restore [locate_data_file bug23451_testface_holes.brep] f
+
+fixshape result f
+
+checkshape result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

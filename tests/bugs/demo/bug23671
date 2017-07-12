@@ -1,0 +1,40 @@
+puts "TODO CR23671 Linux: Error"
+puts "TODO CR23671 Linux: Draw_Failure: Could not open"
+
+puts "============"
+puts "CR23671"
+puts "============"
+puts ""
+##########################################################################################################
+# pload function does not work if $DRAWDEFAULT file has win format
+##########################################################################################################
+
+set aDrawPlugin [locate_data_file DrawPlugin]
+set aDrawPluginDefaults [ file dirname ${aDrawPlugin} ]
+
+dgetenv CSF_DrawPluginDefaults
+dgetenv DRAWDEFAULT
+
+dsetenv CSF_DrawPluginDefaults ${aDrawPluginDefaults}
+dsetenv DRAWDEFAULT ${aDrawPlugin}
+
+dgetenv CSF_DrawPluginDefaults
+dgetenv DRAWDEFAULT
+
+if [catch {pload} info] {
+  puts "Error: pload function does not work if \$DRAWDEFAULT file has win format"
+} else {
+  puts "OK: pload function work if \$DRAWDEFAULT file has win format"
+}
+
+if [catch {pload -DrawPlugin} info] {
+  puts "Error: pload function does not work if \$DRAWDEFAULT file has win format"
+} else {
+  puts "OK: pload function work if \$DRAWDEFAULT file has win format"
+}
+
+if [catch {pload XDE} info] {
+  puts "Error: pload function does not work if \$DRAWDEFAULT file has win format"
+} else {
+  puts "OK: pload function work if \$DRAWDEFAULT file has win format"
+}

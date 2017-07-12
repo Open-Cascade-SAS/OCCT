@@ -1,0 +1,27 @@
+puts "TODO OCC23343 ALL: \\*\\* Exception \\*\\*.*"
+puts "TODO OCC23343 ALL: An exception was caught"
+puts "TODO OCC23343 ALL: Faulty OCC23343"
+
+puts "============"
+puts "OCC23343"
+puts "============"
+puts ""
+#######################################################################
+# Crash (ACCESS VIOLATION) in GeomPlate_BuildPlateSurface / MakeApprox if init Surface is set
+#######################################################################
+
+restore [locate_data_file bug23343_initFace.brep] initFace
+restore [locate_data_file bug23343_edge_constraint.brep] edge_constraint
+
+point p1 30 -33.4729635533385 49.7661550602442
+point p2 30 -49.6961550602442 33.3929635533386
+point p3 23.3333333333333 -50 30.07
+point p4 -30 -33.4729635533386 49.6161550602442
+
+if [catch {gplate result 1 4 initFace edge_constraint 0 p1 p2 p3 p4} catch_result] {
+   puts "Faulty OCC23343: there is crash (ACCESS VIOLATION) in GeomPlate_BuildPlateSurface"
+} else {
+   puts "OK OCC23343: there is not crash (ACCESS VIOLATION) in GeomPlate_BuildPlateSurface"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

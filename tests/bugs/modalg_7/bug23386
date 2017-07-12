@@ -1,0 +1,54 @@
+puts "========"
+puts "OCC23386"
+puts "========"
+puts ""
+################################################################################################
+##  BRepAlgoAPI_Fuse on two disjoint shapes sometimes loses all geometry from one of the shapes
+################################################################################################
+
+restore [locate_data_file bug23386_a.brep] a
+restore [locate_data_file bug23386_b.brep] b
+
+bfuse result a b
+
+set nbshapes_a "
+Number of shapes in shape
+ VERTEX    : 383
+ EDGE      : 686
+ WIRE      : 297
+ FACE      : 297
+ SHELL     : 2
+ SOLID     : 1
+ COMPSOLID : 0
+ COMPOUND  : 0
+ SHAPE     : 1666
+"
+checknbshapes a -ref ${nbshapes_a} -t -m "First initial shape"
+
+set nbshapes_b "
+Number of shapes in shape
+ VERTEX    : 6
+ EDGE      : 9
+ WIRE      : 5
+ FACE      : 5
+ SHELL     : 1
+ SOLID     : 1
+ COMPSOLID : 0
+ COMPOUND  : 0
+ SHAPE     : 27
+"
+checknbshapes b -ref ${nbshapes_b} -t -m "Second initial shape"
+
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX    : 388
+ EDGE      : 695
+ WIRE      : 302
+ FACE      : 302
+ SHELL     : 3
+ SOLID     : 2
+ COMPSOLID : 0
+ COMPOUND  : 1
+ SHAPE     : 1693
+"
+checknbshapes result -ref ${nbshapes_expected} -t -m "result of fuse operation"
