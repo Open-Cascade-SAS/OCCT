@@ -19,6 +19,7 @@
 
 #include <BRep_Builder.hxx>
 
+#include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 
 #include <BOPTools.hxx>
@@ -38,6 +39,9 @@ static
 static
   void MakeTypedContainers(const TopoDS_Shape& theSC,
                            TopoDS_Shape& theResult);
+
+static void CollectMaterialBoundaries(const BOPCol_ListOfShape& theLS,
+                                      TopTools_MapOfShape& theMapKeepBnd);
 
 //=======================================================================
 //function : empty constructor
@@ -267,7 +271,8 @@ void BOPAlgo_CellsBuilder::AddToResult(const BOPCol_ListOfShape& theLSToTake,
   BOPCol_ListIteratorOfListOfShape aItLP(aParts);
   for (; aItLP.More(); aItLP.Next()) {
     const TopoDS_Shape& aPart = aItLP.Value();
-    if (aResParts.Add(aPart)) {
+    // provide uniqueness of the parts 
+    if (aResParts.Add(aPart) && !myShapeMaterial.IsBound(aPart)) {
       BRep_Builder().Add(myShape, aPart);
       bChanged = Standard_True;
     }
@@ -459,6 +464,8 @@ void BOPAlgo_CellsBuilder::RemoveInternalBoundaries()
   // try to remove the internal boundaries between the
   // shapes of the same material
   BOPCol_DataMapIteratorOfDataMapOfIntegerListOfShape aItM(myMaterials);
+  BOPCol_ListOfShape aLSUnify[2];
+  TopTools_MapOfShape aKeepMap[2];
   for (; aItM.More(); aItM.Next()) {
     Standard_Integer iMaterial = aItM.Key();
     BOPCol_ListOfShape& aLS = aItM.ChangeValue();
@@ -485,34 +492,65 @@ void BOPAlgo_CellsBuilder::RemoveInternalBoundaries()
         break;
       }
     }
-    //
-    BOPCol_ListOfShape aLSNew;
-    if (aItLS.More()) {
+
+    if (aItLS.More())
+    {
       // add the warning
+      TopoDS_Compound aMultiDimS;
+      aBB.MakeCompound(aMultiDimS);
+      aBB.Add(aMultiDimS, aLS.First());
+      aBB.Add(aMultiDimS, aItLS.Value());
+      AddWarning(new BOPAlgo_AlertRemovalOfIBForMDimShapes(aMultiDimS));
+    }
+    else
+    {
+      if (aType == TopAbs_EDGE || aType == TopAbs_FACE)
       {
-        TopoDS_Compound aMultiDimS;
-        aBB.MakeCompound(aMultiDimS);
-        aBB.Add(aMultiDimS, aLS.First());
-        aBB.Add(aMultiDimS, aItLS.Value());
-        //
-        AddWarning (new BOPAlgo_AlertRemovalOfIBForMDimShapes (aMultiDimS));
+        // for edges and faces, just collect shapes to unify them later after exiting the loop;
+        // collect boundaries of shapes of current material in the keep map
+        Standard_Integer iType = (aType == TopAbs_EDGE ? 0 : 1);
+        CollectMaterialBoundaries(aLS, aKeepMap[iType]);
+        // save shapes to unify later
+        BOPCol_ListOfShape aCopy(aLS);
+        aLSUnify[iType].Append(aCopy);
+        continue;
       }
-      aLSNew.Assign(aLS);
-    }
-    else {
-      if (RemoveInternals(aLS, aLSNew)) {
-        bChanged = Standard_True;
+      else
+      {
+        // aType is Solid;
+        // remove internal faces between solids of the same material just now
+        BOPCol_ListOfShape aLSNew;
+        if (RemoveInternals(aLS, aLSNew))
+        {
+          bChanged = Standard_True;
+          // update materials maps
+          for (aItLS.Initialize(aLSNew); aItLS.More(); aItLS.Next()) {
+            const TopoDS_Shape& aS = aItLS.Value();
+            myShapeMaterial.Bind(aS, iMaterial);
+          }
+          aLS.Assign(aLSNew);
+        }
       }
     }
-    //
-    // update materials maps and add new shapes to result
-    aItLS.Initialize(aLSNew);
-    for (; aItLS.More(); aItLS.Next()) {
+    // add shapes to result (multidimensional and solids)
+    for (aItLS.Initialize(aLS); aItLS.More(); aItLS.Next()) {
       const TopoDS_Shape& aS = aItLS.Value();
       aBB.Add(aResult, aS);
-      if (!myShapeMaterial.IsBound(aS)) {
-        myShapeMaterial.Bind(aS, iMaterial);
-      }
+    }
+  }
+
+  // remove internal boundaries for edges and faces
+  for (Standard_Integer iType = 0; iType < 2; ++iType)
+  {
+    if (aLSUnify[iType].IsEmpty())
+      continue;
+    BOPCol_ListOfShape aLSN;
+    if (RemoveInternals(aLSUnify[iType], aLSN, aKeepMap[iType]))
+      bChanged = Standard_True;
+    // add shapes to result ([unified] edges or faces)
+    for (BOPCol_ListIteratorOfListOfShape aItLS(aLSN); aItLS.More(); aItLS.Next()) {
+      const TopoDS_Shape& aS = aItLS.Value();
+      aBB.Add(aResult, aS);
     }
   }
   //
@@ -720,7 +758,8 @@ void BOPAlgo_CellsBuilder::MakeContainers()
 //purpose  : 
 //=======================================================================
 Standard_Boolean BOPAlgo_CellsBuilder::RemoveInternals(const BOPCol_ListOfShape& theLS,
-                                                       BOPCol_ListOfShape& theLSNew)
+                                                       BOPCol_ListOfShape& theLSNew,
+                                                       const TopTools_MapOfShape& theMapKeepBnd)
 {
   Standard_Boolean bRemoved = Standard_False;
   if (theLS.Extent() < 2) {
@@ -750,8 +789,8 @@ Standard_Boolean BOPAlgo_CellsBuilder::RemoveInternals(const BOPCol_ListOfShape&
     //
     bFaces = (aType == TopAbs_FACE);
     bEdges = (aType == TopAbs_EDGE);
-    //
     ShapeUpgrade_UnifySameDomain anUnify (aShape, bEdges, bFaces);
+    anUnify.KeepShapes(theMapKeepBnd);
     anUnify.Build();
     const TopoDS_Shape& aSNew = anUnify.Shape();
     //
@@ -783,14 +822,15 @@ Standard_Boolean BOPAlgo_CellsBuilder::RemoveInternals(const BOPCol_ListOfShape&
     aNb = aMG.Extent();
     for (i = 1; i <= aNb; ++i) {
       const TopoDS_Shape& aSS = aMG(i);
+      const Standard_Integer* pMaterial = myShapeMaterial.Seek(aSS);
       const TopTools_ListOfShape& aLSMod = anUnify.History()->Modified(aSS);
       TopTools_ListIteratorOfListOfShape aIt(aLSMod);
       for (; aIt.More(); aIt.Next()) {
         const TopoDS_Shape& aSU = aIt.Value();
-        if (!aSU.IsNull() && !aSS.IsSame(aSU)) {
-          myMapModified.Bind(aSS, aSU);
-          bRemoved = Standard_True;
-        }
+        myMapModified.Bind(aSS, aSU);
+        bRemoved = Standard_True;
+        if (pMaterial && !myShapeMaterial.IsBound(aSU))
+          myShapeMaterial.Bind(aSU, *pMaterial);
       }
     }
   }
@@ -1070,6 +1110,33 @@ void MakeTypedContainers(const TopoDS_Shape& theSC,
     }
     //
     aBB.Add(theResult, aRCB);
+  }
+}
+
+//=======================================================================
+//function : CollectMaterialBoundaries
+//purpose  : Add to theMapKeepBnd the boundary shapes of the area defined by shapes from the list
+//=======================================================================
+static void CollectMaterialBoundaries(const BOPCol_ListOfShape& theLS,
+                                      TopTools_MapOfShape& theMapKeepBnd)
+{
+  TopAbs_ShapeEnum aType = theLS.First().ShapeType();
+  TopAbs_ShapeEnum aTypeSubsh = (aType == TopAbs_FACE ? TopAbs_EDGE : TopAbs_VERTEX);
+  TopTools_IndexedDataMapOfShapeListOfShape aMapSubSh;
+  BOPCol_ListIteratorOfListOfShape anIt(theLS);
+  for (; anIt.More(); anIt.Next())
+  {
+    const TopoDS_Shape& aS = anIt.Value();
+    TopExp::MapShapesAndAncestors(aS, aTypeSubsh, aType, aMapSubSh);
+  }
+  for (int i = 1; i <= aMapSubSh.Extent(); i++)
+  {
+    // check if the subshape belongs to boundary of the area
+    if (aMapSubSh(i).Extent() == 1)
+    {
+      // add to theMapKeepBnd
+      theMapKeepBnd.Add(aMapSubSh.FindKey(i));
+    }
   }
 }
 
