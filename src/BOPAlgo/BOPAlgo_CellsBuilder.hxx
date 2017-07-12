@@ -23,7 +23,7 @@
 #include <TopoDS_Shape.hxx>
 
 #include <TopAbs_ShapeEnum.hxx>
-
+#include <TopTools_MapOfShape.hxx>
 #include <BOPAlgo_Builder.hxx>
 
 #include <BOPCol_ListOfShape.hxx>
@@ -265,7 +265,8 @@ class BOPAlgo_CellsBuilder : public BOPAlgo_Builder
   //! Removes internal boundaries between cells with the same material.<br>
   //! Returns TRUE if any internal boundaries have been removed.
   Standard_EXPORT Standard_Boolean RemoveInternals(const BOPCol_ListOfShape& theLS,
-                                                   BOPCol_ListOfShape& theLSNew);
+                                                   BOPCol_ListOfShape& theLSNew,
+                                                   const TopTools_MapOfShape& theMapKeepBnd = TopTools_MapOfShape());
 
   // fields
   TopoDS_Shape myAllParts;
@@ -273,9 +274,6 @@ class BOPAlgo_CellsBuilder : public BOPAlgo_Builder
   BOPCol_DataMapOfIntegerListOfShape myMaterials;
   BOPCol_DataMapOfShapeInteger myShapeMaterial;
   BOPCol_DataMapOfShapeShape myMapModified;
-
- private:
-
 };
 
 #endif //_BOPAlgo_CellsBuilder_HeaderFile

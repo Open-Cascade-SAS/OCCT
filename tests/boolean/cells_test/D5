@@ -39,6 +39,10 @@ bcadd result f1 1 f2 1 f3 1 -m 2
 bcadd result f1 0 f2 1 f3 1 -m 2
 bcremoveint result
 
+if {![regexp {This shape seems to be OK.} [bopcheck result]]} {
+    puts "Error: result shape is self intersected"
+}
+
 donly result
 fit
 
