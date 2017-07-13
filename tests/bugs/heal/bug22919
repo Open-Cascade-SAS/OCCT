@@ -1,0 +1,32 @@
+puts "TODO All: Faulty shapes in variables faulty_1 to faulty_"
+
+puts "========"
+puts "OCC22919"
+puts "========"
+puts ""
+#############################################
+# Shape Healing fails to correct a face with missing seam
+#############################################
+
+restore [locate_data_file bug22919_ss.brep] ss
+explode ss
+
+fixshape ok1 ss_1
+whatis ok1
+checkshape ok1
+
+fixshape ok3 ss_3
+whatis ok3
+checkshape ok3
+
+fixshape ok5 ss_5
+whatis ok5
+checkshape ok5
+
+fixshape ko2 ss_2
+whatis ko2
+checkshape ko2
+
+fixshape ko4 ss_4
+whatis ko4
+checkshape ko4
