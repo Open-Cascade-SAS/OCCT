@@ -1,0 +1,43 @@
+puts "================"
+puts "OCC23176"
+puts "================"
+puts ""
+#######################################################################
+#  Intersection of cylinder and cone produces open curve
+#######################################################################
+
+restore [locate_data_file bug23176_surface1_draw.draw] s1
+restore [locate_data_file bug23176_surface2_draw.draw] s2
+
+intersect result s1 s2
+
+# first result curve
+cvalue result_1 0 x y z
+vertex v0 x y z
+cvalue result_1 1 x y z
+vertex v1 x y z
+
+# second result curve
+cvalue result_2 0 x y z
+vertex v2 x y z
+cvalue result_2 1 x y z
+vertex v3 x y z
+
+set tol_abs_dist 1.0e-7
+set tol_rel_dist 0.001
+
+distmini d_f v0 v1
+regexp {([-0-9.+eE]+)} [dump d_f_val] full dist_1
+set expected_dist_1 408.093320004435
+checkreal "Length first curve" ${dist_1} ${expected_dist_1} ${tol_abs_dist} ${tol_rel_dist}
+
+distmini d_s v2 v3
+regexp {([-0-9.+eE]+)} [dump d_s_val] full dist_2
+set expected_dist_2 408.093320004435
+checkreal "Length second curve" ${dist_2} ${expected_dist_2} ${tol_abs_dist} ${tol_rel_dist}
+
+smallview
+donly result*
+fit
+display s1 s2
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png
