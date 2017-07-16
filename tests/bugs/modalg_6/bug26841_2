@@ -7,7 +7,7 @@ puts ""
 ###############################
 
 restore [locate_data_file bug26841c3-prism.brep] p3
-restore [locate_data_file bug26841c3-deck.brep] a3
+restore [locate_data_file bug26841c1-deck.brep] a3
 
 bsection result a3 p3 -n2d2
 
