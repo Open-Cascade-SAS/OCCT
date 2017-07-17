@@ -27,7 +27,6 @@
 #include <AIS_Line.hxx>
 #include <AIS_Shape.hxx>
 #include <AIS_Point.hxx>
-#include <AIS_TexturedShape.hxx>
 #include <Aspect_Grid.hxx>
 #include <Aspect_PolygonOffsetMode.hxx>
 #include <Aspect_DisplayConnection.hxx>

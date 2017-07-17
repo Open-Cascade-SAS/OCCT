@@ -3251,7 +3251,8 @@ void OpenGl_Context::SetTextureMatrix (const Handle(Graphic3d_TextureParams)& th
 
     // pack transformation parameters
     OpenGl_Vec4 aTrsf[2];
-    aTrsf[0].xy() = theParams->Translation();
+    aTrsf[0].x()  = -theParams->Translation().x();
+    aTrsf[0].y()  = -theParams->Translation().y();
     aTrsf[0].zw() = theParams->Scale();
     aTrsf[1].x()  = std::sin (-theParams->Rotation() * static_cast<float> (M_PI / 180.0));
     aTrsf[1].y()  = std::cos (-theParams->Rotation() * static_cast<float> (M_PI / 180.0));

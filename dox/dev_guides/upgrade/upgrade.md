@@ -1260,6 +1260,8 @@ In most cases this change should be transparent, however applications implementi
 * The methods BOPAlgo_Tools::FillMap() have been replaced with the single template method BOPAlgo_Tools::FillMap().
 * Package BVH now uses opencascade::handle instead of NCollection_Handle (for classes BVH_Properties, BVH_Builder, BVH_Tree, BVH_Object).
   Application code using BVH package directly should be updated accordingly.
+* AIS_Shape now computes UV texture coordinates for AIS_Shaded presentation in case if texture mapping is enabled within Shaded Attributes.
+  Therefore, redundant class AIS_TexturedShape has been marked deprecated - applications can use AIS_Shape directly (texture mapping should be defined through AIS_Shape::Attributes()).
 
 @subsection upgrade_720_BOP_DataStructure BOP - Pairs of interfering indices
 

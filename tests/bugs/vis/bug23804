@@ -18,6 +18,7 @@ vdump $imagedir/${casename}_1.png
 vsetcolor b ANTIQUEWHITE
 vdump $imagedir/${casename}_2.png
 
+vunsetcolor b
 vtexture b 3
 vdump $imagedir/${casename}_3.png
 

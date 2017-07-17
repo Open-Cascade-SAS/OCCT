@@ -9,9 +9,9 @@
 #include <TopExp.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
-#include <AIS_TexturedShape.hxx>
+#include <AIS_Shape.hxx>
 #include <BRepTools.hxx>
-#include <Graphic3d_Texture2D.hxx>
+#include <Graphic3d_Texture2Dmanual.hxx>
 #include <BRep_Tool.hxx>
 #include <TopoDS.hxx>
 #include <BRepBuilderAPI_Transform.hxx>
@@ -80,7 +80,7 @@ void TexturesExt_Presentation::Init()
     "  // aShape = ..." EOL
     "" EOL
     "  // create a textured presentation object for aShape" EOL
-    "  Handle(AIS_TexturedShape) aTShape = new AIS_TexturedShape(aShape);" EOL
+    "  Handle(AIS_Shape) aTShape = new AIS_Shape(aShape);" EOL
     "" EOL
     "  TCollection_AsciiString aTFileName;" EOL
     "" EOL
@@ -90,22 +90,10 @@ void TexturesExt_Presentation::Init()
     "  // which will indicate use of predefined texture of this number" EOL
     "  // aTFileName = ..." EOL
     "" EOL
-    "  aTShape->SetTextureFileName(aTFileName);" EOL
-    "" EOL
-    "  // do other initialization of AIS_TexturedShape" EOL
-    "  Standard_Real nRepeat;" EOL
-    "  Standard_Boolean toRepeat;" EOL
-    "  Standard_Boolean toScale;" EOL
-    "  // initialize aRepeat, toRepeat, toScale ..." EOL
-    "" EOL
-    "  aTShape->SetTextureMapOn();" EOL
-    "  aTShape->SetTextureRepeat(toRepeat, nRepeat, nRepeat);" EOL
-    "  aTShape->SetTexturesExtcale(toScale);" EOL
-    "  " EOL
-    "  // mode 3 is \"textured\" mode of AIS_TexturedShape, " EOL
-    "  // other modes will display the \"normal\", non-textured shape," EOL
-    "  // in wireframe(1) or shaded(2) modes correspondingly" EOL
-    "  aTShape->SetDisplayMode(3); " EOL);
+    "  aTShape->Attributes()->SetShadingAspect (new Prs3d_ShadingAspect());" EOL
+    "  Handle(Graphic3d_Texture2Dmanual) aTexture = new Graphic3d_Texture2Dmanual (aTFileName);" EOL
+    "  aTShape->Attributes()->ShadingAspect()->Aspect()->SetTextureMap (aTexture);" EOL
+    "  aTShape->Attributes()->ShadingAspect()->Aspect()->SetTextureMapOn();" EOL);
 //	CString text(Message.ToCString());
   	getDocument()->ClearDialog();
 	getDocument()->SetDialogTitle("Change face color");
@@ -117,12 +105,12 @@ void TexturesExt_Presentation::Init()
 //////////////////////////////////////////////////////////////////////
 //================================================================
 // Function : TexturesExt_Presentation::Texturize
-// display an AIS_TexturedShape based on a given shape with texture with given filename
+// display an AIS_Shape based on a given shape with texture with given filename
 // filename can also be an integer value ("2", "5", etc.), in this case
 // a predefined texture from Graphic3d_NameOfTexture2D with number = this value
 // is loaded.
 //================================================================
-Handle(AIS_TexturedShape) TexturesExt_Presentation::Texturize(const TopoDS_Shape& aShape,
+Handle(AIS_Shape) TexturesExt_Presentation::Texturize(const TopoDS_Shape& aShape,
                                                         TCollection_AsciiString aTFileName,
                                                         Standard_Real toScaleU,
                                                         Standard_Real toScaleV,
@@ -132,7 +120,7 @@ Handle(AIS_TexturedShape) TexturesExt_Presentation::Texturize(const TopoDS_Shape
                                                         Standard_Real originV)
 {
   // create a textured presentation object for aShape
-  Handle(AIS_TexturedShape) aTShape = new AIS_TexturedShape(aShape);
+  Handle(AIS_Shape) aTShape = new AIS_Shape(aShape);
   TCollection_AsciiString TFileName;
   // load texture from file if it is not an integer value
   // integer value indicates a number of texture in predefined TexturesExt enumeration
@@ -144,15 +132,19 @@ Handle(AIS_TexturedShape) TexturesExt_Presentation::Texturize(const TopoDS_Shape
     initfile += aTFileName.ToCString();
   }
 
-  aTShape->SetTextureFileName (TCollection_AsciiString ((const wchar_t* )initfile));
+  if (!aTShape->Attributes()->HasOwnShadingAspect())
+  {
+    aTShape->Attributes()->SetShadingAspect (new Prs3d_ShadingAspect());
+  }
+  aTShape->Attributes()->ShadingAspect()->Aspect()->SetTextureMap (new Graphic3d_Texture2Dmanual (TCollection_AsciiString ((const wchar_t* )initfile)));
+  aTShape->Attributes()->ShadingAspect()->Aspect()->SetTextureMapOn();
 
-  // do other initialization of AIS_TexturedShape
-  aTShape->SetTextureMapOn();
-  aTShape->SetTextureScale(Standard_True, toScaleU, toScaleV);
-  aTShape->SetTextureRepeat(Standard_True, toRepeatU, toRepeatV);
-  aTShape->SetTextureOrigin(Standard_True, originU, originV);
-  
-  aTShape->SetDisplayMode(3); // mode 3 is "textured" mode
+  // do other initialization of AIS_Shape
+  aTShape->SetTextureScaleUV (gp_Pnt2d ( toScaleU, toScaleV));
+  aTShape->SetTextureRepeatUV(gp_Pnt2d (toRepeatU, toRepeatV));
+  aTShape->SetTextureOriginUV(gp_Pnt2d (  originU, originV));
+
+  aTShape->SetDisplayMode(AIS_Shaded);
 
   return aTShape;
 }
@@ -255,10 +247,10 @@ aShape = Transformer.Shape();
   aShapeIO->SetPolygonOffsets(Aspect_POM_Fill, 1.5, 0.5);
   DISP(aShapeIO);
 
-  Handle(AIS_TexturedShape) aTFace1 = Texturize(aFaces(16), "carrelage1.gif", 1, 1, 3, 2);
+  Handle(AIS_Shape) aTFace1 = Texturize(aFaces(16), "carrelage1.gif", 1, 1, 3, 2);
   DISP(aTFace1);
 
-  Handle(AIS_TexturedShape) aTFace2 = Texturize(aFaces(21), "carrelage1.gif", 1, 1, 3, 2);
+  Handle(AIS_Shape) aTFace2 = Texturize(aFaces(21), "carrelage1.gif", 1, 1, 3, 2);
   DISP(aTFace2);
 
   getViewer()->Update();

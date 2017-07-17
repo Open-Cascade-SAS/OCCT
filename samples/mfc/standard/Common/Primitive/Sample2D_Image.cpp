@@ -2,13 +2,15 @@
 
 #include "Sample2D_Image.h"
 
-IMPLEMENT_STANDARD_RTTIEXT(Sample2D_Image,AIS_TexturedShape)
+#include <Graphic3d_Texture2Dmanual.hxx>
+
+IMPLEMENT_STANDARD_RTTIEXT(Sample2D_Image,AIS_Shape)
 
 Sample2D_Image::Sample2D_Image(TCollection_AsciiString& aFileName,
                                const Standard_Real X,
                                const Standard_Real Y,
                                const Standard_Real aScale)
-    :AIS_TexturedShape(TopoDS_Shape())
+    :AIS_Shape(TopoDS_Shape())
 {
   myFilename = aFileName;
   myX = X;
@@ -35,9 +37,7 @@ void Sample2D_Image::SetContext(const Handle(AIS_InteractiveContext)& theContext
   AIS_InteractiveObject::SetContext(theContext);
   MakeShape();
   this->Set(TopoDS_Shape(myFace));
-  this->SetTextureFileName(myFilename);
-
+  myDrawer->SetShadingAspect (new Prs3d_ShadingAspect());
+  myDrawer->ShadingAspect()->Aspect()->SetTextureMap (new Graphic3d_Texture2Dmanual (myFilename));
+  myDrawer->ShadingAspect()->Aspect()->SetTextureMapOn();
 }
-
-
-

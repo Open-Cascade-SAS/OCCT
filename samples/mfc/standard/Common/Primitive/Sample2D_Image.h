@@ -11,8 +11,8 @@
 #include <Standard_OStream.hxx>
 #include <Standard_IStream.hxx>
 class Sample2D_Image;
-DEFINE_STANDARD_HANDLE(Sample2D_Image,AIS_TexturedShape)
-class Sample2D_Image : public AIS_TexturedShape {
+DEFINE_STANDARD_HANDLE(Sample2D_Image,AIS_Shape)
+class Sample2D_Image : public AIS_Shape {
 
 public:
 
@@ -26,7 +26,7 @@ Standard_EXPORT inline   Standard_Real GetScale() const;
 Standard_EXPORT inline   void SetScale(const Standard_Real aNewScale) ;
 Standard_EXPORT virtual void SetContext(const Handle(AIS_InteractiveContext)& theContext) ;
 
-DEFINE_STANDARD_RTTIEXT(Sample2D_Image,AIS_TexturedShape)
+DEFINE_STANDARD_RTTIEXT(Sample2D_Image,AIS_Shape)
 private:
   void MakeShape();
 protected:

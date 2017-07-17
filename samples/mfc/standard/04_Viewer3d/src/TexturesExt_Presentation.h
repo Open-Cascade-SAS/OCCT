@@ -10,7 +10,7 @@
 #endif // _MSC_VER > 1000
 
 #include "OCCDemo_Presentation.h"
-#include <AIS_TexturedShape.hxx>
+#include <AIS_Shape.hxx>
 class TopoDS_Shape;
 class TCollection_AsciiString;
 
@@ -28,11 +28,11 @@ public:
   virtual void Init();
 
 private:
-  // display an AIS_TexturedShape based on a given shape with texture with given filename
+  // display an AIS_Shape based on a given shape with texture with given filename
   // filename can also be an integer value ("2", "5", etc.), in this case
   // a predefined texture from Graphic3d_NameOfTexture2D with number = this value
   // is loaded.
-  Handle(AIS_TexturedShape) Texturize(
+  Handle(AIS_Shape) Texturize(
     const TopoDS_Shape& aShape, TCollection_AsciiString aTFileName, 
     Standard_Real toScaleU=1.0, Standard_Real toScaleV=1.0, 
     Standard_Real toRepeatU=1.0, Standard_Real toRepeatV=1.0,

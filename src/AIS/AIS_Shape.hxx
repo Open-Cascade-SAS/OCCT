@@ -49,6 +49,17 @@ class Bnd_Box;
 //! above deviation angle and coefficient functions return
 //! true indicating that there is a local setting available
 //! for the specific object.
+//!
+//! This class allows to map textures on shapes using native UV parametric space of underlying surface of each Face
+//! (this means that texture will be visually duplicated on all Faces).
+//! To generate texture coordinates, appropriate shading attribute should be set before computing presentation in AIS_Shaded display mode:
+//! @code
+//!   Handle(AIS_Shape) aPrs = new AIS_Shape();
+//!   aPrs->Attributes()->SetShadingAspect (new Prs3d_ShadingAspect());
+//!   aPrs->Attributes()->ShadingAspect()->Aspect()->SetTextureMapOn();
+//!   aPrs->Attributes()->ShadingAspect()->Aspect()->SetTextureMap (new Graphic3d_Texture2Dmanual (Graphic3d_NOT_2D_ALUMINUM));
+//! @endcode
+//! The texture itself is parametrized in (0,1)x(0,1).
 class AIS_Shape : public AIS_InteractiveObject
 {
   DEFINE_STANDARD_RTTIEXT(AIS_Shape, AIS_InteractiveObject)
@@ -218,6 +229,31 @@ public:
   //! -   mode 8 - Compound
   Standard_EXPORT static Standard_Integer SelectionMode (const TopAbs_ShapeEnum aShapeType);
 
+public: //! @name methods to alter texture mapping properties
+
+  //! Return texture repeat UV values; (1, 1) by default.
+  const gp_Pnt2d& TextureRepeatUV() const { return myUVRepeat; }
+
+  //! Sets the number of occurrences of the texture on each face. The texture itself is parameterized in (0,1) by (0,1).
+  //! Each face of the shape to be textured is parameterized in UV space (Umin,Umax) by (Vmin,Vmax).
+  void SetTextureRepeatUV (const gp_Pnt2d& theRepeatUV) { myUVRepeat = theRepeatUV; }
+
+  //! Return texture origin UV position; (0, 0) by default.
+  const gp_Pnt2d& TextureOriginUV() const { return myUVOrigin; }
+
+  //! Use this method to change the origin of the texture.
+  //! The texel (0,0) will be mapped to the surface (myUVOrigin.X(), myUVOrigin.Y()).
+  void SetTextureOriginUV (const gp_Pnt2d& theOriginUV) { myUVOrigin = theOriginUV; }
+
+  //! Return scale factor for UV coordinates; (1, 1) by default.
+  const gp_Pnt2d& TextureScaleUV() const { return myUVScale; }
+
+  //! Use this method to scale the texture (percent of the face).
+  //! You can specify a scale factor for both U and V.
+  //! Example: if you set ScaleU and ScaleV to 0.5 and you enable texture repeat,
+  //!          the texture will appear twice on the face in each direction.
+  void SetTextureScaleUV (const gp_Pnt2d& theScaleUV) { myUVScale = theScaleUV; }
+
 protected:
 
   Standard_EXPORT virtual void Compute (const Handle(PrsMgr_PresentationManager3d)& aPresentationManager, const Handle(Prs3d_Presentation)& aPresentation, const Standard_Integer aMode = 0) Standard_OVERRIDE;
@@ -238,19 +274,19 @@ protected:
   
   Standard_EXPORT void setMaterial (const Handle(Prs3d_Drawer)& theDrawer, const Graphic3d_MaterialAspect& theMaterial, const Standard_Boolean theToKeepColor, const Standard_Boolean theToKeepTransp) const;
 
-protected:
-
-  TopoDS_Shape myshape;
-  Bnd_Box myBB;
-  Standard_Boolean myCompBB;
-
 private:
-  
+
   Standard_EXPORT void Compute (const Handle(Prs3d_Projector)& aProjector, const Handle(Prs3d_Presentation)& aPresentation, const TopoDS_Shape& ashape);
 
-private:
+protected:
 
-  Standard_Real myInitAng;
+  TopoDS_Shape     myshape;    //!< shape to display
+  Bnd_Box          myBB;       //!< cached bounding box of the shape
+  gp_Pnt2d         myUVOrigin; //!< UV origin vector for generating texture coordinates
+  gp_Pnt2d         myUVRepeat; //!< UV repeat vector for generating texture coordinates
+  gp_Pnt2d         myUVScale;  //!< UV scale  vector for generating texture coordinates
+  Standard_Real    myInitAng;
+  Standard_Boolean myCompBB;   //!< if TRUE, then bounding box should be recomputed
 
 };
 

@@ -49,8 +49,9 @@
 #include <Graphic3d_AspectFillArea3d.hxx>
 #include <Graphic3d_AspectLine3d.hxx>
 #include <Graphic3d_CStructure.hxx>
-#include <Graphic3d_TextureRoot.hxx>
+#include <Graphic3d_Texture2Dmanual.hxx>
 #include <Image_AlienPixMap.hxx>
+#include <OSD_File.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_ShadingAspect.hxx>
 #include <Prs3d_IsoAspect.hxx>
@@ -396,7 +397,6 @@ void GetTypeAndSignfromString (const char* name,AIS_KindOfInteractive& TheType,S
 
 #include <AIS_InteractiveContext.hxx>
 #include <AIS_Shape.hxx>
-#include <AIS_TexturedShape.hxx>
 #include <AIS_DisplayMode.hxx>
 #include <TColStd_MapOfInteger.hxx>
 #include <AIS_MapOfInteractive.hxx>
@@ -3398,200 +3398,291 @@ int VBounding (Draw_Interpretor& theDI,
 //function : VTexture
 //purpose  :
 //==============================================================================
-Standard_Integer VTexture (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const char** theArgv)
+Standard_Integer VTexture (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const char** theArgVec)
 {
-  TCollection_AsciiString aCommandName (theArgv[0]);
-
-  NCollection_DataMap<TCollection_AsciiString, Handle(TColStd_HSequenceOfAsciiString)> aMapOfArgs;
-  if (aCommandName == "vtexture")
+  const Handle(AIS_InteractiveContext)& aCtx = ViewerTest::GetAISContext();
+  if (aCtx.IsNull())
   {
-    if (theArgsNb < 2)
+    std::cout << "Error: no active view!\n";
+    return 1;
+  }
+
+  int  toModulate     = -1;
+  bool toSetFilter    = false;
+  bool toSetAniso     = false;
+  bool toSetTrsfAngle = false;
+  bool toSetTrsfTrans = false;
+  bool toSetTrsfScale = false;
+  Standard_ShortReal aTrsfRotAngle = 0.0f;
+  Graphic3d_Vec2 aTrsfTrans (0.0f, 0.0f);
+  Graphic3d_Vec2 aTrsfScale (1.0f, 1.0f);
+  Graphic3d_TypeOfTextureFilter      aFilter       = Graphic3d_TOTF_NEAREST;
+  Graphic3d_LevelOfTextureAnisotropy anAnisoFilter = Graphic3d_LOTA_OFF;
+
+  Handle(AIS_Shape) aTexturedIO;
+  Handle(Graphic3d_TextureMap) aTextureOld;
+  Handle(Graphic3d_Texture2Dmanual) aTextureNew;
+  bool toSetGenRepeat = false;
+  bool toSetGenScale  = false;
+  bool toSetGenOrigin = false;
+  bool toSetImage     = false;
+  bool toSetNewImage  = false;
+
+  const TCollection_AsciiString aCommandName (theArgVec[0]);
+  bool toSetDefaults = aCommandName == "vtexdefault";
+
+  ViewerTest_AutoUpdater anUpdateTool (aCtx, ViewerTest::CurrentView());
+  for (Standard_Integer anArgIter = 1; anArgIter < theArgsNb; ++anArgIter)
+  {
+    const TCollection_AsciiString aName     = theArgVec[anArgIter];
+    TCollection_AsciiString       aNameCase = aName;
+    aNameCase.LowerCase();
+    if (anUpdateTool.parseRedrawMode (aName))
     {
-      std::cout << theArgv[0] << ":  invalid arguments.\n";
-      std::cout << "Type help for more information.\n";
+      continue;
+    }
+    else if (aTexturedIO.IsNull())
+    {
+      const ViewerTest_DoubleMapOfInteractiveAndName& aMapOfIO = GetMapOfAIS();
+      if (aMapOfIO.IsBound2 (aName))
+      {
+        aTexturedIO = Handle(AIS_Shape)::DownCast (aMapOfIO.Find2 (aName));
+      }
+      if (aTexturedIO.IsNull())
+      {
+        std::cout << "Syntax error: shape " << aName << " does not exists in the viewer.\n";
+        return 1;
+      }
+
+      if (aTexturedIO->Attributes()->HasOwnShadingAspect())
+      {
+        aTextureOld = aTexturedIO->Attributes()->ShadingAspect()->Aspect()->TextureMap();
+      }
+    }
+    else if (aNameCase == "-scale"
+          || aNameCase == "-setscale"
+          || aCommandName == "vtexscale")
+    {
+      if (aCommandName != "vtexscale")
+      {
+        ++anArgIter;
+      }
+      if (anArgIter < theArgsNb)
+      {
+        TCollection_AsciiString aValU (theArgVec[anArgIter]);
+        TCollection_AsciiString aValUCase = aValU;
+        aValUCase.LowerCase();
+        toSetGenScale = true;
+        if (aValUCase == "off")
+        {
+          aTexturedIO->SetTextureScaleUV (gp_Pnt2d (1.0, 1.0));
+          continue;
+        }
+        else if (anArgIter + 1 < theArgsNb)
+        {
+          TCollection_AsciiString aValV (theArgVec[anArgIter + 1]);
+          if (aValU.IsRealValue()
+           && aValV.IsRealValue())
+          {
+            aTexturedIO->SetTextureScaleUV (gp_Pnt2d (aValU.RealValue(), aValV.RealValue()));
+            ++anArgIter;
+            continue;
+          }
+        }
+      }
+      std::cout << "Syntax error: unexpected argument '" << aName << "'\n";
       return 1;
     }
-
-    // look for options of vtexture command
-    TCollection_AsciiString aParseKey;
-    for (Standard_Integer anArgIt = 2; anArgIt < theArgsNb; ++anArgIt)
+    else if (aNameCase == "-origin"
+          || aNameCase == "-setorigin"
+          || aCommandName == "vtexorigin")
     {
-      TCollection_AsciiString anArg (theArgv [anArgIt]);
-
-      anArg.UpperCase();
-      if (anArg.Value (1) == '-' && !anArg.IsRealValue())
+      if (aCommandName != "vtexorigin")
       {
-        aParseKey = anArg;
-        aParseKey.Remove (1);
-        aParseKey.UpperCase();
-        aMapOfArgs.Bind (aParseKey, new TColStd_HSequenceOfAsciiString);
-        continue;
+        ++anArgIter;
       }
-
-      if (aParseKey.IsEmpty())
+      if (anArgIter < theArgsNb)
       {
-        continue;
+        TCollection_AsciiString aValU (theArgVec[anArgIter]);
+        TCollection_AsciiString aValUCase = aValU;
+        aValUCase.LowerCase();
+        toSetGenOrigin = true;
+        if (aValUCase == "off")
+        {
+          aTexturedIO->SetTextureOriginUV (gp_Pnt2d (0.0, 0.0));
+          continue;
+        }
+        else if (anArgIter + 1 < theArgsNb)
+        {
+          TCollection_AsciiString aValV (theArgVec[anArgIter + 1]);
+          if (aValU.IsRealValue()
+           && aValV.IsRealValue())
+          {
+            aTexturedIO->SetTextureOriginUV (gp_Pnt2d (aValU.RealValue(), aValV.RealValue()));
+            ++anArgIter;
+            continue;
+          }
+        }
       }
-
-      aMapOfArgs(aParseKey)->Append (anArg);
-    }
-  }
-  else if (aCommandName == "vtexscale"
-        || aCommandName == "vtexorigin"
-        || aCommandName == "vtexrepeat")
-  {
-    // scan for parameters of vtexscale, vtexorigin, vtexrepeat commands
-    // equal to -scale, -origin, -repeat options of vtexture command
-    if (theArgsNb < 2 || theArgsNb > 4)
-    {
-      std::cout << theArgv[0] << ":  invalid arguments.\n";
-      std::cout << "Type help for more information.\n";
+      std::cout << "Syntax error: unexpected argument '" << aName << "'\n";
       return 1;
     }
-
-    Handle(TColStd_HSequenceOfAsciiString) anArgs = new TColStd_HSequenceOfAsciiString;
-    if (theArgsNb == 2)
+    else if (aNameCase == "-repeat"
+          || aNameCase == "-setrepeat"
+          || aCommandName == "vtexrepeat")
     {
-      anArgs->Append ("OFF");
-    }
-    else if (theArgsNb == 4)
-    {
-      anArgs->Append (TCollection_AsciiString (theArgv[2]));
-      anArgs->Append (TCollection_AsciiString (theArgv[3]));
-    }
-
-    TCollection_AsciiString anArgKey;
-    if (aCommandName == "vtexscale")
-    {
-      anArgKey = "SCALE";
-    }
-    else if (aCommandName == "vtexorigin")
-    {
-      anArgKey = "ORIGIN";
-    }
-    else
-    {
-      anArgKey = "REPEAT";
-    }
-
-    aMapOfArgs.Bind (anArgKey, anArgs);
-  }
-  else if (aCommandName == "vtexdefault")
-  {
-    // scan for parameters of vtexdefault command
-    // equal to -default option of vtexture command
-    aMapOfArgs.Bind ("DEFAULT", new TColStd_HSequenceOfAsciiString);
-  }
-
-  // Check arguments for validity
-  NCollection_DataMap<TCollection_AsciiString, Handle(TColStd_HSequenceOfAsciiString)>::Iterator aMapIt (aMapOfArgs);
-  for (; aMapIt.More(); aMapIt.Next())
-  {
-    const TCollection_AsciiString& aKey = aMapIt.Key();
-    const Handle(TColStd_HSequenceOfAsciiString)& anArgs = aMapIt.Value();
-
-    // -scale, -origin, -repeat: one argument "off", or two real values
-    if ((aKey.IsEqual ("SCALE") || aKey.IsEqual ("ORIGIN") || aKey.IsEqual ("REPEAT"))
-      && ((anArgs->Length() == 1 && anArgs->Value(1) == "OFF")
-       || (anArgs->Length() == 2 && anArgs->Value(1).IsRealValue() && anArgs->Value(2).IsRealValue())))
-    {
-      continue;
-    }
-
-    // -modulate: single argument "on" / "off"
-    if (aKey.IsEqual ("MODULATE") && anArgs->Length() == 1 && (anArgs->Value(1) == "OFF" || anArgs->Value(1) == "ON"))
-    {
-      continue;
-    }
-
-    // -default: no arguments
-    if (aKey.IsEqual ("DEFAULT") && anArgs->IsEmpty())
-    {
-      continue;
-    }
-
-    TCollection_AsciiString aLowerKey;
-    aLowerKey  = "-";
-    aLowerKey += aKey;
-    aLowerKey.LowerCase();
-    std::cout << theArgv[0] << ": " << aLowerKey << " is unknown option, or the arguments are unacceptable.\n";
-    std::cout << "Type help for more information.\n";
-    return 1;
-  }
-
-  Handle(AIS_InteractiveContext) anAISContext = ViewerTest::GetAISContext();
-  if (anAISContext.IsNull())
-  {
-    std::cout << aCommandName << ":  please use 'vinit' command to initialize view.\n";
-    return 1;
-  }
-
-  Standard_Integer aPreviousMode = 0;
-
-  TCollection_AsciiString aShapeName (theArgv[1]);
-  Handle(AIS_InteractiveObject) anIO;
-
-  const ViewerTest_DoubleMapOfInteractiveAndName& aMapOfIO = GetMapOfAIS();
-  if (aMapOfIO.IsBound2 (aShapeName))
-  {
-    anIO = Handle(AIS_InteractiveObject)::DownCast (aMapOfIO.Find2 (aShapeName));
-  }
-
-  if (anIO.IsNull())
-  {
-    std::cout << aCommandName << ": shape " << aShapeName << " does not exists.\n";
-    return 1;
-  }
-
-  Handle(AIS_TexturedShape) aTexturedIO;
-  if (anIO->IsKind (STANDARD_TYPE (AIS_TexturedShape)))
-  {
-    aTexturedIO = Handle(AIS_TexturedShape)::DownCast (anIO);
-    aPreviousMode = aTexturedIO->DisplayMode();
-  }
-  else
-  {
-    aTexturedIO = new AIS_TexturedShape (DBRep::Get (theArgv[1]));
-
-    if (anIO->HasTransformation())
-    {
-      const gp_Trsf& aLocalTrsf = anIO->LocalTransformation();
-      aTexturedIO->SetLocalTransformation (aLocalTrsf);
-    }
-
-    anAISContext->Remove (anIO, Standard_False);
-    GetMapOfAIS().UnBind1 (anIO);
-    GetMapOfAIS().UnBind2 (aShapeName);
-    GetMapOfAIS().Bind (aTexturedIO, aShapeName);
-  }
-
-  // -------------------------------------------
-  //  Turn texturing on/off - only for vtexture
-  // -------------------------------------------
-
-  if (aCommandName == "vtexture")
-  {
-    TCollection_AsciiString aTextureArg (theArgsNb > 2 ? theArgv[2] : "");
-
-    if (aTextureArg.IsEmpty())
-    {
-      std::cout << aCommandName << ":  Texture mapping disabled.\n";
-      std::cout << "To enable it, use 'vtexture NameOfShape NameOfTexture'\n\n";
-
-      anAISContext->SetDisplayMode (aTexturedIO, AIS_Shaded, Standard_False);
-      if (aPreviousMode == 3)
+      if (aCommandName != "vtexrepeat")
       {
-        anAISContext->RecomputePrsOnly (aTexturedIO, Standard_False);
+        ++anArgIter;
       }
-
-      anAISContext->Display (aTexturedIO, Standard_True);
-      return 0;
-    }
-    else if (aTextureArg.Value(1) != '-') // "-option" on place of texture argument
-    {
-      if (aTextureArg == "?")
+      if (anArgIter < theArgsNb)
       {
-        TCollection_AsciiString aTextureFolder = Graphic3d_TextureRoot::TexturesFolder();
+        TCollection_AsciiString aValU (theArgVec[anArgIter]);
+        TCollection_AsciiString aValUCase = aValU;
+        aValUCase.LowerCase();
+        toSetGenRepeat = true;
+        if (aValUCase == "off")
+        {
+          aTexturedIO->SetTextureRepeatUV (gp_Pnt2d (1.0, 1.0));
+          continue;
+        }
+        else if (anArgIter + 1 < theArgsNb)
+        {
+          TCollection_AsciiString aValV (theArgVec[anArgIter + 1]);
+          if (aValU.IsRealValue()
+           && aValV.IsRealValue())
+          {
+            aTexturedIO->SetTextureRepeatUV (gp_Pnt2d (aValU.RealValue(), aValV.RealValue()));
+            ++anArgIter;
+            continue;
+          }
+        }
+      }
+      std::cout << "Syntax error: unexpected argument '" << aName << "'\n";
+      return 1;
+    }
+    else if (aNameCase == "-modulate")
+    {
+      bool toModulateBool = true;
+      if (anArgIter + 1 < theArgsNb
+       && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], toModulateBool))
+      {
+        ++anArgIter;
+      }
+      toModulate = toModulateBool ? 1 : 0;
+    }
+    else if ((aNameCase == "-setfilter"
+           || aNameCase == "-filter")
+           && anArgIter + 1 < theArgsNb)
+    {
+      TCollection_AsciiString aValue (theArgVec[anArgIter + 1]);
+      aValue.LowerCase();
+      ++anArgIter;
+      toSetFilter = true;
+      if (aValue == "nearest")
+      {
+        aFilter = Graphic3d_TOTF_NEAREST;
+      }
+      else if (aValue == "bilinear")
+      {
+        aFilter = Graphic3d_TOTF_BILINEAR;
+      }
+      else if (aValue == "trilinear")
+      {
+        aFilter = Graphic3d_TOTF_TRILINEAR;
+      }
+      else
+      {
+        std::cout << "Syntax error: unexpected argument '" << aValue << "'\n";
+        return 1;
+      }
+    }
+    else if ((aNameCase == "-setaniso"
+           || aNameCase == "-setanisofilter"
+           || aNameCase == "-aniso"
+           || aNameCase == "-anisofilter")
+           && anArgIter + 1 < theArgsNb)
+    {
+      TCollection_AsciiString aValue (theArgVec[anArgIter + 1]);
+      aValue.LowerCase();
+      ++anArgIter;
+      toSetAniso = true;
+      if (aValue == "off")
+      {
+        anAnisoFilter = Graphic3d_LOTA_OFF;
+      }
+      else if (aValue == "fast")
+      {
+        anAnisoFilter = Graphic3d_LOTA_FAST;
+      }
+      else if (aValue == "middle")
+      {
+        anAnisoFilter = Graphic3d_LOTA_MIDDLE;
+      }
+      else if (aValue == "quality"
+            || aValue == "high")
+      {
+        anAnisoFilter =  Graphic3d_LOTA_QUALITY;
+      }
+      else
+      {
+        std::cout << "Syntax error: unexpected argument '" << aValue << "'\n";
+        return 1;
+      }
+    }
+    else if ((aNameCase == "-rotateangle"
+           || aNameCase == "-rotangle"
+           || aNameCase == "-rotate"
+           || aNameCase == "-angle"
+           || aNameCase == "-trsfangle")
+           && anArgIter + 1 < theArgsNb)
+    {
+      aTrsfRotAngle  = Standard_ShortReal (Draw::Atof (theArgVec[anArgIter + 1]));
+      toSetTrsfAngle = true;
+      ++anArgIter;
+    }
+    else if ((aNameCase == "-trsftrans"
+           || aNameCase == "-trsftranslate"
+           || aNameCase == "-translate"
+           || aNameCase == "-translation")
+           && anArgIter + 2 < theArgsNb)
+    {
+      aTrsfTrans.x() = Standard_ShortReal (Draw::Atof (theArgVec[anArgIter + 1]));
+      aTrsfTrans.y() = Standard_ShortReal (Draw::Atof (theArgVec[anArgIter + 2]));
+      toSetTrsfTrans = true;
+      anArgIter += 2;
+    }
+    else if ((aNameCase == "-trsfscale")
+           && anArgIter + 2 < theArgsNb)
+    {
+      aTrsfScale.x() = Standard_ShortReal (Draw::Atof (theArgVec[anArgIter + 1]));
+      aTrsfScale.y() = Standard_ShortReal (Draw::Atof (theArgVec[anArgIter + 2]));
+      toSetTrsfScale = true;
+      anArgIter += 2;
+    }
+    else if (aNameCase == "-default"
+          || aNameCase == "-defaults")
+    {
+      toSetDefaults = true;
+    }
+    else if (aTextureNew.IsNull()
+          && aCommandName == "vtexture")
+    {
+      toSetImage = true;
+      toSetNewImage = true;
+      if (aName.IsIntegerValue())
+      {
+        const Standard_Integer aValue = aName.IntegerValue();
+        if (aValue < 0 || aValue >= Graphic3d_Texture2D::NumberOfTextures())
+        {
+          std::cout << "Syntax error: texture with ID " << aValue << " is undefined!\n";
+          return 1;
+        }
+        aTextureNew = new Graphic3d_Texture2Dmanual (Graphic3d_NameOfTexture2D (aValue));
+      }
+      else if (aNameCase == "?")
+      {
+        const TCollection_AsciiString aTextureFolder = Graphic3d_TextureRoot::TexturesFolder();
 
         theDi << "\n Files in current directory : \n\n";
         theDi.Eval ("glob -nocomplain *");
@@ -3600,91 +3691,180 @@ Standard_Integer VTexture (Draw_Interpretor& theDi, Standard_Integer theArgsNb, 
         aCmnd += aTextureFolder;
         aCmnd += "/* ";
 
-        theDi << "Files in " << aTextureFolder.ToCString() << " : \n\n";
+        theDi << "Files in " << aTextureFolder << " : \n\n";
         theDi.Eval (aCmnd.ToCString());
         return 0;
       }
+      else if (aNameCase != "off")
+      {
+        if (!OSD_File (aName).Exists())
+        {
+          std::cout << "Syntax error: non-existing image file has been specified '" << aName << "'.\n";
+          return 1;
+        }
+        aTextureNew = new Graphic3d_Texture2Dmanual (aName);
+      }
+
+      if (!aTextureNew.IsNull())
+      {
+        if (!aTextureOld.IsNull())
+        {
+          *aTextureNew->GetParams() = *aTextureOld->GetParams();
+          if (Handle(Graphic3d_Texture2Dmanual) anOldManualTex = Handle(Graphic3d_Texture2Dmanual)::DownCast (aTextureOld))
+          {
+            TCollection_AsciiString aFilePathOld, aFilePathNew;
+            aTextureOld->Path().SystemName (aFilePathOld);
+            aTextureNew->Path().SystemName (aFilePathNew);
+            if (aTextureNew->Name() == anOldManualTex->Name()
+             && aFilePathOld == aFilePathNew
+             && (!aFilePathNew.IsEmpty() || aTextureNew->Name() != Graphic3d_NOT_2D_UNKNOWN))
+            {
+              toSetNewImage = false;
+              aTextureNew = anOldManualTex;
+            }
+          }
+        }
+        else
+        {
+          aTexturedIO->SetToUpdate (AIS_Shaded);
+        }
+      }
+
+      if (!aTexturedIO->Attributes()->HasOwnShadingAspect())
+      {
+        aTexturedIO->Attributes()->SetShadingAspect (new Prs3d_ShadingAspect());
+        *aTexturedIO->Attributes()->ShadingAspect()->Aspect() = *aCtx->DefaultDrawer()->ShadingAspect()->Aspect();
+      }
+
+      if (!aTextureNew.IsNull())
+      {
+        aTexturedIO->Attributes()->ShadingAspect()->Aspect()->SetTextureMapOn();
+      }
       else
       {
-        aTexturedIO->SetTextureFileName (aTextureArg);
+        aTexturedIO->Attributes()->ShadingAspect()->Aspect()->SetTextureMapOff();
       }
+      aTexturedIO->Attributes()->ShadingAspect()->Aspect()->SetTextureMap (aTextureNew);
+      aTextureOld.Nullify();
     }
-  }
-
-  // ------------------------------------
-  //  Process other options and commands
-  // ------------------------------------
-
-  Handle(TColStd_HSequenceOfAsciiString) aValues;
-  if (aMapOfArgs.Find ("DEFAULT", aValues))
-  {
-    aTexturedIO->SetTextureRepeat (Standard_False);
-    aTexturedIO->SetTextureOrigin (Standard_False);
-    aTexturedIO->SetTextureScale  (Standard_False);
-    aTexturedIO->EnableTextureModulate();
-  }
-  else
-  {
-    if (aMapOfArgs.Find ("SCALE", aValues))
+    else
     {
-      if (aValues->Value(1) != "OFF")
-      {
-        aTexturedIO->SetTextureScale (Standard_True, aValues->Value(1).RealValue(), aValues->Value(2).RealValue());
-      }
-      else
-      {
-        aTexturedIO->SetTextureScale (Standard_False);
-      }
-    }
-
-    if (aMapOfArgs.Find ("ORIGIN", aValues))
-    {
-      if (aValues->Value(1) != "OFF")
-      {
-        aTexturedIO->SetTextureOrigin (Standard_True, aValues->Value(1).RealValue(), aValues->Value(2).RealValue());
-      }
-      else
-      {
-        aTexturedIO->SetTextureOrigin (Standard_False);
-      }
-    }
-
-    if (aMapOfArgs.Find ("REPEAT", aValues))
-    {
-      if (aValues->Value(1) != "OFF")
-      {
-        aTexturedIO->SetTextureRepeat (Standard_True, aValues->Value(1).RealValue(), aValues->Value(2).RealValue());
-      }
-      else
-      {
-        aTexturedIO->SetTextureRepeat (Standard_False);
-      }
-    }
-
-    if (aMapOfArgs.Find ("MODULATE", aValues))
-    {
-      if (aValues->Value(1) == "ON")
-      {
-        aTexturedIO->EnableTextureModulate();
-      }
-      else
-      {
-        aTexturedIO->DisableTextureModulate();
-      }
+      std::cout << "Syntax error: invalid argument '" << theArgVec[anArgIter] << "'\n";
+      return 1;
     }
   }
 
-  if (aTexturedIO->DisplayMode() == 3 || aPreviousMode == 3)
+  if (toSetDefaults)
   {
-    anAISContext->RecomputePrsOnly (aTexturedIO, Standard_True);
-  }
-  else
-  {
-    anAISContext->SetDisplayMode (aTexturedIO, 3, Standard_False);
-    anAISContext->Display (aTexturedIO, Standard_True);
-    anAISContext->Update (aTexturedIO,Standard_True);
+    if (toModulate != -1)
+    {
+      toModulate = 1;
+    }
+    if (!toSetFilter)
+    {
+      toSetFilter = true;
+      aFilter     = Graphic3d_TOTF_BILINEAR;
+    }
+    if (!toSetAniso)
+    {
+      toSetAniso    = true;
+      anAnisoFilter = Graphic3d_LOTA_OFF;
+    }
+    if (!toSetTrsfAngle)
+    {
+      toSetTrsfAngle = true;
+      aTrsfRotAngle  = 0.0f;
+    }
+    if (!toSetTrsfTrans)
+    {
+      toSetTrsfTrans = true;
+      aTrsfTrans = Graphic3d_Vec2 (0.0f, 0.0f);
+    }
+    if (!toSetTrsfScale)
+    {
+      toSetTrsfScale = true;
+      aTrsfScale = Graphic3d_Vec2 (1.0f, 1.0f);
+    }
   }
 
+  if (aCommandName == "vtexture"
+   && theArgsNb == 2)
+  {
+    if (!aTextureOld.IsNull())
+    {
+      toSetNewImage = true;
+      aTexturedIO->Attributes()->ShadingAspect()->Aspect()->SetTextureMapOff();
+      aTexturedIO->Attributes()->ShadingAspect()->Aspect()->SetTextureMap (Handle(Graphic3d_TextureMap)());
+      aTextureOld.Nullify();
+    }
+  }
+
+  if (aTexturedIO->Attributes()->HasOwnShadingAspect()
+  && !aTexturedIO->Attributes()->ShadingAspect()->Aspect()->TextureMap().IsNull())
+  {
+    if (toModulate != -1)
+    {
+      aTexturedIO->Attributes()->ShadingAspect()->Aspect()->TextureMap()->GetParams()->SetModulate (toModulate == 1);
+    }
+    if (toSetTrsfAngle)
+    {
+      aTexturedIO->Attributes()->ShadingAspect()->Aspect()->TextureMap()->GetParams()->SetRotation (aTrsfRotAngle); // takes degrees
+    }
+    if (toSetTrsfTrans)
+    {
+      aTexturedIO->Attributes()->ShadingAspect()->Aspect()->TextureMap()->GetParams()->SetTranslation (aTrsfTrans);
+    }
+    if (toSetTrsfScale)
+    {
+      aTexturedIO->Attributes()->ShadingAspect()->Aspect()->TextureMap()->GetParams()->SetScale (aTrsfScale);
+    }
+    if (toSetFilter)
+    {
+      aTexturedIO->Attributes()->ShadingAspect()->Aspect()->TextureMap()->GetParams()->SetFilter (aFilter);
+    }
+    if (toSetAniso)
+    {
+      aTexturedIO->Attributes()->ShadingAspect()->Aspect()->TextureMap()->GetParams()->SetAnisoFilter (anAnisoFilter);
+    }
+  }
+
+  // set default values if requested
+  if (!toSetGenRepeat
+   && (aCommandName == "vtexrepeat"
+    || toSetDefaults))
+  {
+    aTexturedIO->SetTextureRepeatUV (gp_Pnt2d (1.0, 1.0));
+    toSetGenRepeat = true;
+  }
+  if (!toSetGenOrigin
+   && (aCommandName == "vtexorigin"
+    || toSetDefaults))
+  {
+    aTexturedIO->SetTextureOriginUV (gp_Pnt2d (0.0, 0.0));
+    toSetGenOrigin = true;
+  }
+  if (!toSetGenScale
+   && (aCommandName == "vtexscale"
+    || toSetDefaults))
+  {
+    aTexturedIO->SetTextureScaleUV  (gp_Pnt2d (1.0, 1.0));
+    toSetGenScale = true;
+  }
+
+  if (toSetGenRepeat || toSetGenOrigin || toSetGenScale || toSetNewImage)
+  {
+    aTexturedIO->SetToUpdate (AIS_Shaded);
+    if (toSetImage)
+    {
+      if ((aTexturedIO->HasDisplayMode() && aTexturedIO->DisplayMode() != AIS_Shaded)
+       || aCtx->DisplayMode() != AIS_Shaded)
+      {
+        aCtx->SetDisplayMode (aTexturedIO, AIS_Shaded, false);
+      }
+    }
+  }
+  aCtx->Display (aTexturedIO, false);
+  aTexturedIO->SynchronizeAspects();
   return 0;
 }
 
@@ -6086,47 +6266,46 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
       __FILE__,VShading,group);
 
   theCommands.Add ("vtexture",
-                   "\n'vtexture NameOfShape [TextureFile | IdOfTexture]\n"
-                   "                         [-scale u v]  [-scale off]\n"
-                   "                         [-origin u v] [-origin off]\n"
-                   "                         [-repeat u v] [-repeat off]\n"
-                   "                         [-modulate {on | off}]"
-                   "                         [-default]'\n"
-                   " The texture can be specified by filepath or as ID (0<=IdOfTexture<=20)\n"
-                   " specifying one of the predefined textures.\n"
-                   " The options are: \n"
-                   "  -scale u v : enable texture scaling and set scale factors\n"
-                   "  -scale off : disable texture scaling\n"
-                   "  -origin u v : enable texture origin positioning and set the origin\n"
-                   "  -origin off : disable texture origin positioning\n"
-                   "  -repeat u v : enable texture repeat and set texture coordinate scaling\n"
-                   "  -repeat off : disable texture repeat\n"
-                   "  -modulate {on | off} : enable or disable texture modulation\n"
-                   "  -default : sets texture mapping default parameters\n"
-                   "or 'vtexture NameOfShape' if you want to disable texture mapping\n"
-                   "or 'vtexture NameOfShape ?' to list available textures\n",
+                   "vtexture [-noupdate|-update] name [ImageFile|IdOfTexture|off]"
+                   "\n\t\t:          [-origin {u v|off}] [-scale {u v|off}] [-repeat {u v|off}]"
+                   "\n\t\t:          [-trsfTrans du dv] [-trsfScale su sv] [-trsfAngle Angle]"
+                   "\n\t\t:          [-modulate {on|off}]"
+                   "\n\t\t:          [-setFilter {nearest|bilinear|trilinear}]"
+                   "\n\t\t:          [-setAnisoFilter {off|low|middle|quality}]"
+                   "\n\t\t:          [-default]"
+                   "\n\t\t: The texture can be specified by filepath"
+                   "\n\t\t: or as ID (0<=IdOfTexture<=20) specifying one of the predefined textures."
+                   "\n\t\t: The options are:"
+                   "\n\t\t:   -scale     Setup texture scaling for generating coordinates; (1, 1) by default"
+                   "\n\t\t:   -origin    Setup texture origin  for generating coordinates; (0, 0) by default"
+                   "\n\t\t:   -repeat    Setup texture repeat  for generating coordinates; (1, 1) by default"
+                   "\n\t\t:   -modulate  Enable or disable texture color modulation"
+                   "\n\t\t:   -trsfAngle Setup dynamic texture coordinates transformation - rotation angle"
+                   "\n\t\t:   -trsfTrans Setup dynamic texture coordinates transformation - translation vector"
+                   "\n\t\t:   -trsfScale Setup dynamic texture coordinates transformation - scale vector"
+                   "\n\t\t:   -setFilter Setup texture filter"
+                   "\n\t\t:   -setAnisoFilter Setup anisotropic filter for texture with mip-levels"
+                   "\n\t\t:   -default   Sets texture mapping default parameters",
                     __FILE__, VTexture, group);
 
   theCommands.Add("vtexscale",
-		  "'vtexscale  NameOfShape ScaleU ScaleV' \n \
-                   or 'vtexscale NameOfShape ScaleUV' \n \
-                   or 'vtexscale NameOfShape' to disable scaling\n ",
+                  "vtexscale name ScaleU ScaleV"
+                  "\n\t\t: Alias for vtexture name -setScale ScaleU ScaleV.",
 		  __FILE__,VTexture,group);
 
   theCommands.Add("vtexorigin",
-		  "'vtexorigin NameOfShape UOrigin VOrigin' \n \
-                   or 'vtexorigin NameOfShape UVOrigin' \n \
-                   or 'vtexorigin NameOfShape' to disable origin positioning\n ",
+                  "vtexorigin name OriginU OriginV"
+                  "\n\t\t: Alias for vtexture name -setOrigin OriginU OriginV.",
 		  __FILE__,VTexture,group);
 
   theCommands.Add("vtexrepeat",
-		  "'vtexrepeat  NameOfShape URepeat VRepeat' \n \
-                   or 'vtexrepeat NameOfShape UVRepeat \n \
-                   or 'vtexrepeat NameOfShape' to disable texture repeat \n ",
+                  "vtexrepeat name RepeatU RepeatV"
+                  "\n\t\t: Alias for vtexture name -setRepeat RepeatU RepeatV.",
 		  VTexture,group);
 
   theCommands.Add("vtexdefault",
-		  "'vtexdefault NameOfShape' to set texture mapping default parameters \n",
+                  "vtexdefault name"
+                  "\n\t\t: Alias for vtexture name -default.",
 		  VTexture,group);
 
   theCommands.Add("vsetam",

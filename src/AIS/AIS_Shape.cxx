@@ -80,16 +80,19 @@ static Standard_Boolean IsInList(const TColStd_ListOfInteger& LL, const Standard
 }
 
 //==================================================
-// Function: 
+// Function: AIS_Shape
 // Purpose :
 //==================================================
-
-AIS_Shape::
-AIS_Shape(const TopoDS_Shape& shap):
-AIS_InteractiveObject(PrsMgr_TOP_ProjectorDependant),
-myInitAng(0.)
+AIS_Shape::AIS_Shape(const TopoDS_Shape& theShape)
+: AIS_InteractiveObject (PrsMgr_TOP_ProjectorDependant),
+  myshape (theShape),
+  myUVOrigin(0.0, 0.0),
+  myUVRepeat(1.0, 1.0),
+  myUVScale (1.0, 1.0),
+  myInitAng (0.0),
+  myCompBB (Standard_True)
 {
-  Set (shap);
+  //
 }
 
 //=======================================================================
@@ -183,7 +186,10 @@ void AIS_Shape::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresentat
           try
           {
             OCC_CATCH_SIGNALS
-            StdPrs_ShadedShape::Add (aPrs, myshape, myDrawer);
+            StdPrs_ShadedShape::Add (aPrs, myshape, myDrawer,
+                                     myDrawer->ShadingAspect()->Aspect()->ToMapTexture()
+                                 && !myDrawer->ShadingAspect()->Aspect()->TextureMap().IsNull(),
+                                     myUVOrigin, myUVRepeat, myUVScale);
           }
           catch (Standard_Failure)
           {
@@ -562,6 +568,7 @@ void AIS_Shape::UnsetColor()
     return;
   }
   hasOwnColor = Standard_False;
+  myDrawer->SetColor (myDrawer->HasLink() ? myDrawer->Link()->Color() : Quantity_Color (Quantity_NOC_WHITE));
 
   if (!HasWidth())
   {
@@ -605,22 +612,34 @@ void AIS_Shape::UnsetColor()
     myDrawer->SeenLineAspect()->SetColor (aColor);
   }
 
-  if (HasMaterial()
-   || IsTransparent())
+  if (!myDrawer->HasOwnShadingAspect())
   {
-    Graphic3d_MaterialAspect aDefaultMat (Graphic3d_NOM_BRASS);
+    //
+  }
+  else if (HasMaterial()
+        || IsTransparent()
+        || myDrawer->ShadingAspect()->Aspect()->ToMapTexture())
+  {
+    const Graphic3d_MaterialAspect aDefaultMat (Graphic3d_NOM_BRASS);
     Graphic3d_MaterialAspect mat = aDefaultMat;
+    Quantity_Color anInteriorColors[2] = {Quantity_NOC_CYAN1, Quantity_NOC_CYAN1};
+    if (myDrawer->HasLink())
+    {
+      anInteriorColors[0] = myDrawer->Link()->ShadingAspect()->Aspect()->InteriorColor();
+      anInteriorColors[1] = myDrawer->Link()->ShadingAspect()->Aspect()->BackInteriorColor();
+    }
     if (HasMaterial() || myDrawer->HasLink())
     {
-      mat = AIS_GraphicTool::GetMaterial(HasMaterial()? myDrawer : myDrawer->Link());
+      const Handle(Graphic3d_AspectFillArea3d)& aSrcAspect = (HasMaterial() ? myDrawer : myDrawer->Link())->ShadingAspect()->Aspect();
+      mat = myCurrentFacingModel != Aspect_TOFM_BACK_SIDE
+          ? aSrcAspect->FrontMaterial()
+          : aSrcAspect->BackMaterial();
     }
     if (HasMaterial())
     {
-      Quantity_Color aColor = aDefaultMat.AmbientColor();
-      if (myDrawer->HasLink())
-      {
-        aColor = myDrawer->Link()->ShadingAspect()->Color (myCurrentFacingModel);
-      }
+      const Quantity_Color aColor = myDrawer->HasLink()
+                                  ? myDrawer->Link()->ShadingAspect()->Color (myCurrentFacingModel)
+                                  : aDefaultMat.AmbientColor();
       mat.SetColor (aColor);
     }
     if (IsTransparent())
@@ -628,7 +647,9 @@ void AIS_Shape::UnsetColor()
       Standard_Real aTransp = myDrawer->ShadingAspect()->Transparency (myCurrentFacingModel);
       mat.SetTransparency (Standard_ShortReal(aTransp));
     }
-    myDrawer->ShadingAspect()->SetMaterial (mat ,myCurrentFacingModel);
+    myDrawer->ShadingAspect()->SetMaterial (mat, myCurrentFacingModel);
+    myDrawer->ShadingAspect()->Aspect()->SetInteriorColor    (anInteriorColors[0]);
+    myDrawer->ShadingAspect()->Aspect()->SetBackInteriorColor(anInteriorColors[1]);
   }
   else
   {
@@ -638,8 +659,8 @@ void AIS_Shape::UnsetColor()
 
   // modify shading presentation without re-computation
   const PrsMgr_Presentations&        aPrsList  = Presentations();
-  Handle(Graphic3d_AspectFillArea3d) anAreaAsp = myDrawer->Link()->ShadingAspect()->Aspect();
-  Handle(Graphic3d_AspectLine3d)     aLineAsp  = myDrawer->Link()->LineAspect()->Aspect();
+  Handle(Graphic3d_AspectFillArea3d) anAreaAsp = myDrawer->ShadingAspect()->Aspect();
+  Handle(Graphic3d_AspectLine3d)     aLineAsp  = myDrawer->LineAspect()->Aspect();
   for (Standard_Integer aPrsIt = 1; aPrsIt <= aPrsList.Length(); ++aPrsIt)
   {
     const PrsMgr_ModedPresentation& aPrsModed = aPrsList.Value (aPrsIt);
@@ -866,8 +887,13 @@ void AIS_Shape::UnsetMaterial()
     return;
   }
 
-  if (HasColor()
-   || IsTransparent())
+  if (!myDrawer->HasOwnShadingAspect())
+  {
+    //
+  }
+  else if (HasColor()
+        || IsTransparent()
+        || myDrawer->ShadingAspect()->Aspect()->ToMapTexture())
   {
     if(myDrawer->HasLink())
     {
@@ -981,7 +1007,9 @@ void AIS_Shape::UnsetTransparency()
   {
     return;
   }
-  else if (HasColor() || HasMaterial())
+  else if (HasColor()
+        || HasMaterial()
+        || myDrawer->ShadingAspect()->Aspect()->ToMapTexture())
   {
     myDrawer->ShadingAspect()->SetTransparency (0.0, myCurrentFacingModel);
   }

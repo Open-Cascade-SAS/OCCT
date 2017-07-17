@@ -52,11 +52,8 @@ AIS_TexturedShape::AIS_TexturedShape (const TopoDS_Shape& theShape)
   myPredefTexture   (Graphic3d_NameOfTexture2D(0)),
   myToMapTexture    (Standard_True),
   myModulate        (Standard_True),
-  myUVOrigin        (0.0, 0.0),
   myIsCustomOrigin  (Standard_True),
-  myUVRepeat        (1.0, 1.0),
   myToRepeat        (Standard_True),
-  myUVScale         (1.0, 1.0),
   myToScale         (Standard_True),
   myToShowTriangles (Standard_False)
 {

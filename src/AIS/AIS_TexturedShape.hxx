@@ -196,11 +196,8 @@ protected: //! @name texture mapping properties
 
   Standard_Boolean                   myToMapTexture;
   Standard_Boolean                   myModulate;
-  gp_Pnt2d                           myUVOrigin;
   Standard_Boolean                   myIsCustomOrigin;
-  gp_Pnt2d                           myUVRepeat;
   Standard_Boolean                   myToRepeat;
-  gp_Pnt2d                           myUVScale;
   Standard_Boolean                   myToScale;
   Standard_Boolean                   myToShowTriangles;
 
