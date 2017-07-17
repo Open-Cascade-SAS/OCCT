@@ -658,7 +658,7 @@ Handle(OpenGl_Font) OpenGl_Text::FindFont (const Handle(OpenGl_Context)& theCtx,
     Handle(Font_FTFont) aFontFt;
     if (!aRequestedFont.IsNull())
     {
-      aFontFt = new Font_FTFont (NULL);
+      aFontFt = new Font_FTFont (Handle(Font_FTLibrary)());
 
       if (aFontFt->Init (aRequestedFont->FontPath()->ToCString(), theHeight, theResolution))
       {

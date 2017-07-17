@@ -19,9 +19,8 @@
 #include <Standard_Type.hxx>
 #include <Standard_Transient.hxx>
 
-// inclusion template for FreeType
-#include <ft2build.h>
-#include FT_FREETYPE_H
+// forward declarations to avoid including of FreeType headers
+typedef struct FT_LibraryRec_ *FT_Library;
 
 //! Wrapper over FT_Library. Provides access to FreeType library.
 class Font_FTLibrary : public Standard_Transient

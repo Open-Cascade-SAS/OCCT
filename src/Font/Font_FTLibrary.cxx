@@ -15,6 +15,8 @@
 
 #include <Font_FTLibrary.hxx>
 
+#include <ft2build.h>
+#include FT_FREETYPE_H
 
 IMPLEMENT_STANDARD_RTTIEXT(Font_FTLibrary,Standard_Transient)
 

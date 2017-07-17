@@ -18,6 +18,7 @@
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include <BRepLib_MakeEdge.hxx>
+#include <Font_FTLibrary.hxx>
 #include <Font_TextFormatter.hxx>
 #include <GCE2d_MakeSegment.hxx>
 #include <GC_MakeSegment.hxx>
@@ -45,8 +46,9 @@
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Vertex.hxx>
 
+#include <ft2build.h>
+#include FT_FREETYPE_H
 #include FT_OUTLINE_H
-
 
 IMPLEMENT_STANDARD_RTTIEXT(Font_BRepFont,Font_FTFont)
 
@@ -60,6 +62,13 @@ namespace
   inline Standard_Real getScale (const Standard_Real theSize)
   {
     return theSize / Standard_Real(THE_FONT_SIZE) * 72.0 / Standard_Real(THE_RESOLUTION_DPI);
+  }
+
+  //! Auxiliary method to convert FT_Vector to gp_XY
+  static gp_XY readFTVec (const FT_Vector& theVec,
+                          const Standard_Real theScaleUnits)
+  {
+    return gp_XY (theScaleUnits * Standard_Real(theVec.x) / 64.0, theScaleUnits * Standard_Real(theVec.y) / 64.0);
   }
 
 }
@@ -277,8 +286,8 @@ Standard_Boolean Font_BRepFont::renderGlyph (const Standard_Utf32Char theChar,
     BRepBuilderAPI_MakeWire aWireMaker;
 
     gp_XY aPntPrev;
-    gp_XY aPntCurr = readFTVec (aPntList[aPntsNb - 1]);
-    gp_XY aPntNext = readFTVec (aPntList[0]);
+    gp_XY aPntCurr = readFTVec (aPntList[aPntsNb - 1], myScaleUnits);
+    gp_XY aPntNext = readFTVec (aPntList[0], myScaleUnits);
 
     Standard_Integer aLinePnts = (FT_CURVE_TAG(aTags[aPntsNb - 1]) == FT_Curve_Tag_On) ? 1 : 0;
     gp_XY aPntLine1 = aPntCurr;
@@ -289,7 +298,7 @@ Standard_Boolean Font_BRepFont::renderGlyph (const Standard_Utf32Char theChar,
     {
       aPntPrev = aPntCurr;
       aPntCurr = aPntNext;
-      aPntNext = readFTVec (aPntList[(aPntId + 1) % aPntsNb]);
+      aPntNext = readFTVec (aPntList[(aPntId + 1) % aPntsNb], myScaleUnits);
 
       // process tags
       if (FT_CURVE_TAG(aTags[aPntId]) == FT_Curve_Tag_On)
@@ -373,7 +382,7 @@ Standard_Boolean Font_BRepFont::renderGlyph (const Standard_Utf32Char theChar,
         my4Poles.SetValue (1, aPntPrev);
         my4Poles.SetValue (2, aPntCurr);
         my4Poles.SetValue (3, aPntNext);
-        my4Poles.SetValue (4, gp_Pnt2d(readFTVec (aPntList[(aPntId + 2) % aPntsNb])));
+        my4Poles.SetValue (4, gp_Pnt2d(readFTVec (aPntList[(aPntId + 2) % aPntsNb], myScaleUnits)));
         Handle(Geom2d_BezierCurve) aBezier = new Geom2d_BezierCurve (my4Poles);
         if (myIsCompositeCurve)
         {

@@ -14,12 +14,13 @@
 // commercial license or contractual agreement.
 
 #include <Font_FTFont.hxx>
+
+#include <Font_FTLibrary.hxx>
 #include <Font_FontMgr.hxx>
 #include <Font_TextFormatter.hxx>
 
-#include <TCollection_AsciiString.hxx>
-#include <TCollection_HAsciiString.hxx>
-
+#include <ft2build.h>
+#include FT_FREETYPE_H
 
 IMPLEMENT_STANDARD_RTTIEXT(Font_FTFont,Standard_Transient)
 
@@ -32,6 +33,7 @@ Font_FTFont::Font_FTFont (const Handle(Font_FTLibrary)& theFTLib)
   myFTFace     (NULL),
   myPointSize  (0U),
   myLoadFlags  (FT_LOAD_NO_HINTING | FT_LOAD_TARGET_NORMAL),
+  myKernAdvance(new FT_Vector()),
   myUChar      (0U)
 {
   if (myFTLib.IsNull())
@@ -47,10 +49,11 @@ Font_FTFont::Font_FTFont (const Handle(Font_FTLibrary)& theFTLib)
 Font_FTFont::~Font_FTFont()
 {
   Release();
+  delete myKernAdvance;
 }
 
 // =======================================================================
-// function : Font_FTFont
+// function : Release
 // purpose  :
 // =======================================================================
 void Font_FTFont::Release()
@@ -134,7 +137,7 @@ bool Font_FTFont::loadGlyph (const Standard_Utf32Char theUChar)
   myGlyphImg.Clear();
   myUChar = 0;
   if (theUChar == 0
-   || FT_Load_Char (myFTFace, theUChar, myLoadFlags) != 0
+   || FT_Load_Char (myFTFace, theUChar, FT_Int32(myLoadFlags)) != 0
    || myFTFace->glyph == NULL)
   {
     return false;
@@ -153,7 +156,7 @@ bool Font_FTFont::RenderGlyph (const Standard_Utf32Char theUChar)
   myGlyphImg.Clear();
   myUChar = 0;
   if (theUChar == 0
-   || FT_Load_Char (myFTFace, theUChar, myLoadFlags | FT_LOAD_RENDER) != 0
+   || FT_Load_Char (myFTFace, theUChar, FT_Int32(myLoadFlags | FT_LOAD_RENDER)) != 0
    || myFTFace->glyph == NULL
    || myFTFace->glyph->format != FT_GLYPH_FORMAT_BITMAP)
   {
@@ -201,6 +204,33 @@ unsigned int Font_FTFont::GlyphMaxSizeY() const
 }
 
 // =======================================================================
+// function : Ascender
+// purpose  :
+// =======================================================================
+float Font_FTFont::Ascender() const
+{
+  return float(myFTFace->ascender) * (float(myFTFace->size->metrics.y_ppem) / float(myFTFace->units_per_EM));
+}
+
+// =======================================================================
+// function : Descender
+// purpose  :
+// =======================================================================
+float Font_FTFont::Descender() const
+{
+  return float(myFTFace->descender) * (float(myFTFace->size->metrics.y_ppem) / float(myFTFace->units_per_EM));
+}
+
+// =======================================================================
+// function : LineSpacing
+// purpose  :
+// =======================================================================
+float Font_FTFont::LineSpacing() const
+{
+  return float(myFTFace->height) * (float(myFTFace->size->metrics.y_ppem) / float(myFTFace->units_per_EM));
+}
+
+// =======================================================================
 // function : AdvanceX
 // purpose  :
 // =======================================================================
@@ -234,11 +264,11 @@ float Font_FTFont::AdvanceX (const Standard_Utf32Char theUCharNext)
   }
 
   if (FT_HAS_KERNING (myFTFace) == 0 || theUCharNext == 0
-   || FT_Get_Kerning (myFTFace, myUChar, theUCharNext, FT_KERNING_UNFITTED, &myKernAdvance) != 0)
+   || FT_Get_Kerning (myFTFace, myUChar, theUCharNext, FT_KERNING_UNFITTED, myKernAdvance) != 0)
   {
     return fromFTPoints<float> (myFTFace->glyph->advance.x);
   }
-  return fromFTPoints<float> (myKernAdvance.x + myFTFace->glyph->advance.x);
+  return fromFTPoints<float> (myKernAdvance->x + myFTFace->glyph->advance.x);
 }
 
 // =======================================================================
@@ -253,11 +283,33 @@ float Font_FTFont::AdvanceY (const Standard_Utf32Char theUCharNext)
   }
 
   if (FT_HAS_KERNING (myFTFace) == 0 || theUCharNext == 0
-   || FT_Get_Kerning (myFTFace, myUChar, theUCharNext, FT_KERNING_UNFITTED, &myKernAdvance) != 0)
+   || FT_Get_Kerning (myFTFace, myUChar, theUCharNext, FT_KERNING_UNFITTED, myKernAdvance) != 0)
   {
     return fromFTPoints<float> (myFTFace->glyph->advance.y);
   }
-  return fromFTPoints<float> (myKernAdvance.y + myFTFace->glyph->advance.y);
+  return fromFTPoints<float> (myKernAdvance->y + myFTFace->glyph->advance.y);
+}
+
+// =======================================================================
+// function : GlyphsNumber
+// purpose  :
+// =======================================================================
+Standard_Integer Font_FTFont::GlyphsNumber() const
+{
+  return myFTFace->num_glyphs;
+}
+
+// =======================================================================
+// function : theRect
+// purpose  :
+// =======================================================================
+void Font_FTFont::GlyphRect (Font_Rect& theRect) const
+{
+  const FT_Bitmap& aBitmap = myFTFace->glyph->bitmap;
+  theRect.Left   = float(myFTFace->glyph->bitmap_left);
+  theRect.Top    = float(myFTFace->glyph->bitmap_top);
+  theRect.Right  = float(myFTFace->glyph->bitmap_left + (int )aBitmap.width);
+  theRect.Bottom = float(myFTFace->glyph->bitmap_top  - (int )aBitmap.rows);
 }
 
 // =======================================================================

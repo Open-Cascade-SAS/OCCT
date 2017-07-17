@@ -17,12 +17,16 @@
 #define _Font_FTFont_H__
 
 #include <Font_FontAspect.hxx>
-#include <Font_FTLibrary.hxx>
 #include <Font_Rect.hxx>
 #include <Graphic3d_HorizontalTextAlignment.hxx>
 #include <Graphic3d_VerticalTextAlignment.hxx>
 #include <Image_PixMap.hxx>
 #include <NCollection_String.hxx>
+
+// forward declarations to avoid including of FreeType headers
+typedef struct FT_FaceRec_* FT_Face;
+typedef struct FT_Vector_   FT_Vector;
+class Font_FTLibrary;
 
 //! Wrapper over FreeType font.
 //! Notice that this class uses internal buffers for loaded glyphs
@@ -32,7 +36,7 @@ class Font_FTFont : public Standard_Transient
 public:
 
   //! Create uninitialized instance.
-  Standard_EXPORT Font_FTFont (const Handle(Font_FTLibrary)& theFTLib = NULL);
+  Standard_EXPORT Font_FTFont (const Handle(Font_FTLibrary)& theFTLib = Handle(Font_FTLibrary)());
 
   //! Destructor.
   Standard_EXPORT virtual ~Font_FTFont();
@@ -82,22 +86,13 @@ public:
   Standard_EXPORT unsigned int GlyphMaxSizeY() const;
 
   //! @return vertical distance from the horizontal baseline to the highest character coordinate.
-  inline float Ascender() const
-  {
-    return float(myFTFace->ascender) * (float(myFTFace->size->metrics.y_ppem) / float(myFTFace->units_per_EM));
-  }
+  Standard_EXPORT float Ascender() const;
 
   //! @return vertical distance from the horizontal baseline to the lowest character coordinate.
-  inline float Descender() const
-  {
-    return float(myFTFace->descender) * (float(myFTFace->size->metrics.y_ppem) / float(myFTFace->units_per_EM));
-  }
+  Standard_EXPORT float Descender() const;
 
   //! @return default line spacing (the baseline-to-baseline distance).
-  inline float LineSpacing() const
-  {
-    return float(myFTFace->height) * (float(myFTFace->size->metrics.y_ppem) / float(myFTFace->units_per_EM));
-  }
+  Standard_EXPORT float LineSpacing() const;
 
   //! Configured point size
   unsigned int PointSize() const
@@ -124,20 +119,10 @@ public:
                                   const Standard_Utf32Char theUCharNext);
 
   //! @return glyphs number in this font.
-  inline Standard_Integer GlyphsNumber() const
-  {
-    return myFTFace->num_glyphs;
-  }
+  Standard_EXPORT Standard_Integer GlyphsNumber() const;
 
   //! Retrieve glyph bitmap rectangle
-  inline void GlyphRect (Font_Rect& theRect) const
-  {
-    const FT_Bitmap& aBitmap = myFTFace->glyph->bitmap;
-    theRect.Left   = float(myFTFace->glyph->bitmap_left);
-    theRect.Top    = float(myFTFace->glyph->bitmap_top);
-    theRect.Right  = float(myFTFace->glyph->bitmap_left + (int )aBitmap.width);
-    theRect.Bottom = float(myFTFace->glyph->bitmap_top  - (int )aBitmap.rows);
-  }
+  Standard_EXPORT void GlyphRect (Font_Rect& theRect) const;
 
   //! Computes bounding box of the given text using plain-text formatter (Font_TextFormatter).
   //! Note that bounding box takes into account the text alignment options.
@@ -150,9 +135,9 @@ protected:
 
   //! Convert value to 26.6 fixed-point format for FT library API.
   template <typename theInput_t>
-  inline FT_F26Dot6 toFTPoints (const theInput_t thePointSize) const
+  int32_t toFTPoints (const theInput_t thePointSize) const
   {
-    return (FT_F26Dot6)thePointSize * 64; 
+    return (int32_t)thePointSize * 64;
   }
 
   //! Convert value from 26.6 fixed-point format for FT library API.
@@ -173,10 +158,10 @@ protected:
   FT_Face                myFTFace;      //!< FT face object
   NCollection_String     myFontPath;    //!< font path
   unsigned int           myPointSize;   //!< point size set by FT_Set_Char_Size
-  FT_Int32               myLoadFlags;   //!< default load flags
+  int32_t                myLoadFlags;   //!< default load flags
 
   Image_PixMap           myGlyphImg;    //!< cached glyph plane
-  FT_Vector              myKernAdvance; //!< buffer variable
+  FT_Vector*             myKernAdvance; //!< buffer variable
   Standard_Utf32Char     myUChar;       //!< currently loaded unicode character
 
 public:

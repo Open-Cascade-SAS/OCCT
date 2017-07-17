@@ -183,12 +183,6 @@ private:
              const GeomAbs_Shape        theContinuity,
              Handle(Geom_Curve)&        theCurve3d);
 
-  //! Auxiliary method to convert FT_Vector to gp_XY
-  gp_XY readFTVec (const FT_Vector& theVec) const
-  {
-    return gp_XY (myScaleUnits * Standard_Real(theVec.x) / 64.0, myScaleUnits * Standard_Real(theVec.y) / 64.0);
-  }
-
 protected: //! @name Protected fields
 
   NCollection_DataMap<Standard_Utf32Char, TopoDS_Shape>
