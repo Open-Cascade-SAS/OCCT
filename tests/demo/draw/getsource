@@ -2,7 +2,7 @@
 
 # check that path returned for command pload is as expected
 if { [checkplatform -windows] } {
-    set expected src/Draw/Draw_PloadCommands.cxx
+    set expected /src/Draw/Draw_PloadCommands.cxx
 } else {
     set expected /src/Draw/Draw_PloadCommands.cxx
 }
