@@ -16,19 +16,17 @@
 #ifndef _Message_Messenger_HeaderFile
 #define _Message_Messenger_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
+#include <Message_Gravity.hxx>
 #include <Message_SequenceOfPrinters.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Type.hxx>
 #include <Standard_CString.hxx>
-#include <Message_Gravity.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <TCollection_HExtendedString.hxx>
+
 class Message_Printer;
-class TCollection_AsciiString;
-class TCollection_ExtendedString;
 
 // resolve name collisions with WinAPI headers
 #ifdef AddPrinter
@@ -52,10 +50,9 @@ DEFINE_STANDARD_HANDLE(Message_Messenger, Standard_Transient)
 //! Note that all these operators use trace level Warning.
 class Message_Messenger : public Standard_Transient
 {
-
+  DEFINE_STANDARD_RTTIEXT(Message_Messenger, Standard_Transient)
 public:
 
-  
   //! Empty constructor; initializes by single printer directed to cout.
   //! Note: the default messenger is not empty but directed to cout
   //! in order to protect against possibility to forget defining printers.
@@ -81,12 +78,12 @@ public:
   Standard_EXPORT Standard_Integer RemovePrinters (const Handle(Standard_Type)& theType);
   
   //! Returns current sequence of printers
-    const Message_SequenceOfPrinters& Printers() const;
-  
+  const Message_SequenceOfPrinters& Printers() const { return myPrinters; }
+
   //! Returns sequence of printers
   //! The sequence can be modified.
-    Message_SequenceOfPrinters& ChangePrinters();
-  
+  Message_SequenceOfPrinters& ChangePrinters() { return myPrinters; }
+
   //! Dispatch a message to all the printers in the list.
   //! Three versions of string representations are accepted for
   //! convenience, by default all are converted to ExtendedString.
@@ -101,29 +98,91 @@ public:
   //! See above
   Standard_EXPORT void Send (const TCollection_ExtendedString& theString, const Message_Gravity theGravity = Message_Warning, const Standard_Boolean putEndl = Standard_True) const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(Message_Messenger,Standard_Transient)
-
-protected:
-
-
-
-
 private:
-
 
   Message_SequenceOfPrinters myPrinters;
 
-
 };
 
+// CString
+inline const Handle(Message_Messenger)& operator<< (const Handle(Message_Messenger)& theMessenger,
+                                                    const Standard_CString theStr)
+{
+  theMessenger->Send (theStr, Message_Info, Standard_False);
+  return theMessenger;
+}
 
-#include <Message_Messenger.lxx>
+// AsciiString
+inline const Handle(Message_Messenger)& operator<< (const Handle(Message_Messenger)& theMessenger,
+                                                    const TCollection_AsciiString& theStr)
+{
+  theMessenger->Send (theStr, Message_Info, Standard_False);
+  return theMessenger;
+}
 
+// HAsciiString
+inline const Handle(Message_Messenger)& operator<< (const Handle(Message_Messenger)& theMessenger,
+                                                    const Handle(TCollection_HAsciiString)& theStr)
+{
+  theMessenger->Send (theStr->String(), Message_Info, Standard_False);
+  return theMessenger;
+}
 
+// ExtendedString
+inline const Handle(Message_Messenger)& operator<< (const Handle(Message_Messenger)& theMessenger,
+                                                    const TCollection_ExtendedString& theStr)
+{
+  theMessenger->Send (theStr, Message_Info, Standard_False);
+  return theMessenger;
+}
 
+// HExtendedString
+inline const Handle(Message_Messenger)& operator<< (const Handle(Message_Messenger)& theMessenger,
+                                                    const Handle(TCollection_HExtendedString)& theStr)
+{
+  theMessenger->Send (theStr->String(), Message_Info, Standard_False);
+  return theMessenger;
+}
 
+// Integer
+inline const Handle(Message_Messenger)& operator<< (const Handle(Message_Messenger)& theMessenger,
+                                                    const Standard_Integer theVal)
+{
+  TCollection_AsciiString aStr (theVal);
+  theMessenger->Send (aStr, Message_Info, Standard_False);
+  return theMessenger;
+}
+
+// Real
+inline const Handle(Message_Messenger)& operator<< (const Handle(Message_Messenger)& theMessenger,
+                                                    const Standard_Real theVal)
+{
+  TCollection_AsciiString aStr (theVal);
+  theMessenger->Send (aStr, Message_Info, Standard_False);
+  return theMessenger;
+}
+
+// Stream
+inline const Handle(Message_Messenger)& operator<< (const Handle(Message_Messenger)& theMessenger,
+                                                    const Standard_SStream& theStream)
+{
+  theMessenger->Send (theStream.str().c_str(), Message_Info, Standard_False);
+  return theMessenger;
+}
+
+// manipulators
+inline const Handle(Message_Messenger)&
+       operator << (const Handle(Message_Messenger)& theMessenger,
+                    const Handle(Message_Messenger)& (*pman) (const Handle(Message_Messenger)&))
+{
+  return pman (theMessenger);
+}
+
+// endl
+inline const Handle(Message_Messenger)& endl (const Handle(Message_Messenger)& theMessenger)
+{
+  theMessenger->Send ("", Message_Info, Standard_True);
+  return theMessenger;
+}
 
 #endif // _Message_Messenger_HeaderFile

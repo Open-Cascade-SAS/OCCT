@@ -10,7 +10,6 @@ Message_ListIteratorOfListOfMsg.hxx
 Message_ListOfMsg.hxx
 Message_Messenger.cxx
 Message_Messenger.hxx
-Message_Messenger.lxx
 Message_Msg.cxx
 Message_Msg.hxx
 Message_Msg.lxx
@@ -18,10 +17,8 @@ Message_MsgFile.cxx
 Message_MsgFile.hxx
 Message_Printer.cxx
 Message_Printer.hxx
-Message_Printer.lxx
 Message_PrinterOStream.cxx
 Message_PrinterOStream.hxx
-Message_PrinterOStream.lxx
 Message_ProgressIndicator.cxx
 Message_ProgressIndicator.hxx
 Message_ProgressIndicator.lxx

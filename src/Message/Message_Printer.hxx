@@ -36,18 +36,17 @@ DEFINE_STANDARD_HANDLE(Message_Printer, Standard_Transient)
 //! level, which can be used by printer to decide either to process a message or ignore it.
 class Message_Printer : public Standard_Transient
 {
-
+  DEFINE_STANDARD_RTTIEXT(Message_Printer, Standard_Transient)
 public:
 
-  
   //! Return trace level used for filtering messages;
   //! messages with lover gravity will be ignored.
-    Message_Gravity GetTraceLevel() const;
-  
+  Message_Gravity GetTraceLevel() const { return myTraceLevel; }
+
   //! Set trace level used for filtering messages.
   //! By default, trace level is Message_Info, so that all messages are output
-    void SetTraceLevel (const Message_Gravity theTraceLevel);
-  
+  void SetTraceLevel (const Message_Gravity theTraceLevel) { myTraceLevel = theTraceLevel; }
+
   //! Send a string message with specified trace level.
   //! The parameter theToPutEol specified whether end-of-line should be added to the end of the message.
   //! This method must be redefined in descentant.
@@ -63,32 +62,15 @@ public:
   //! Default implementation calls first method Send().
   Standard_EXPORT virtual void Send (const TCollection_AsciiString& theString, const Message_Gravity theGravity, const Standard_Boolean theToPutEol) const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(Message_Printer,Standard_Transient)
-
 protected:
 
-  
   //! Empty constructor with Message_Info trace level
   Standard_EXPORT Message_Printer();
 
+protected:
+
   Message_Gravity myTraceLevel;
 
-
-private:
-
-
-
-
 };
-
-
-#include <Message_Printer.lxx>
-
-
-
-
 
 #endif // _Message_Printer_HeaderFile

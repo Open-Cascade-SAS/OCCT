@@ -15,7 +15,6 @@
 
 #include <Message_Printer.hxx>
 
-#include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
 

@@ -16,18 +16,9 @@
 #ifndef _Message_PrinterOStream_HeaderFile
 #define _Message_PrinterOStream_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
-#include <Standard_Address.hxx>
-#include <Standard_Boolean.hxx>
 #include <Message_Printer.hxx>
-#include <Message_Gravity.hxx>
-#include <Standard_CString.hxx>
+#include <Standard_Address.hxx>
 #include <Standard_OStream.hxx>
-class TCollection_AsciiString;
-class TCollection_ExtendedString;
-
 
 class Message_PrinterOStream;
 DEFINE_STANDARD_HANDLE(Message_PrinterOStream, Message_Printer)
@@ -37,9 +28,8 @@ DEFINE_STANDARD_HANDLE(Message_PrinterOStream, Message_Printer)
 //! or file stream maintained internally (depending on constructor).
 class Message_PrinterOStream : public Message_Printer
 {
-
+  DEFINE_STANDARD_RTTIEXT(Message_PrinterOStream, Message_Printer)
 public:
-
   
   //! Empty constructor, defaulting to cout
   Standard_EXPORT Message_PrinterOStream(const Message_Gravity theTraceLevel = Message_Info);
@@ -58,15 +48,15 @@ public:
 {
   Close();
 }
-  
+
   //! Returns option to convert non-Ascii symbols to UTF8 encoding
-    Standard_Boolean GetUseUtf8() const;
+  Standard_Boolean GetUseUtf8() const { return myUseUtf8; }
   
   //! Sets option to convert non-Ascii symbols to UTF8 encoding
-    void SetUseUtf8 (const Standard_Boolean useUtf8);
-  
+  void SetUseUtf8 (const Standard_Boolean useUtf8) { myUseUtf8 = useUtf8; }
+
   //! Returns reference to the output stream
-    Standard_OStream& GetStream() const;
+  Standard_OStream& GetStream() const { return *(Standard_OStream*)myStream; }
   
   //! Puts a message to the current stream
   //! if its gravity is equal or greater
@@ -85,30 +75,12 @@ public:
   //! option is set, else replaced by symbols '?'
   Standard_EXPORT virtual void Send (const TCollection_ExtendedString& theString, const Message_Gravity theGravity, const Standard_Boolean putEndl = Standard_True) const Standard_OVERRIDE;
 
-
-
-  DEFINE_STANDARD_RTTIEXT(Message_PrinterOStream,Message_Printer)
-
-protected:
-
-
-
-
 private:
-
 
   Standard_Address myStream;
   Standard_Boolean myIsFile;
   Standard_Boolean myUseUtf8;
 
-
 };
-
-
-#include <Message_PrinterOStream.lxx>
-
-
-
-
 
 #endif // _Message_PrinterOStream_HeaderFile

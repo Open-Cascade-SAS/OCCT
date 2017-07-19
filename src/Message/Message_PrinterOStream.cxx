@@ -13,12 +13,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
-#include <Message_Gravity.hxx>
 #include <Message_PrinterOStream.hxx>
-#include <Standard_Mutex.hxx>
-#include <Standard_Stream.hxx>
-#include <Standard_Type.hxx>
+
+#include <OSD_OpenFile.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
 
@@ -68,8 +65,8 @@ Message_PrinterOStream::Message_PrinterOStream (const Standard_CString theFileNa
   aFileName.ChangeAll ('/', '\\');
 #endif
 
-  std::ofstream* aFile = new std::ofstream (aFileName.ToCString(),
-                                            (theToAppend ? (std::ios_base::app | std::ios_base::out) : std::ios_base::out));
+  std::ofstream* aFile = new std::ofstream();
+  OSD_OpenStream (*aFile, aFileName.ToCString(), (theToAppend ? (std::ios_base::app | std::ios_base::out) : std::ios_base::out));
   if (aFile->is_open())
   {
     myStream = (Standard_OStream* )aFile;
@@ -142,16 +139,6 @@ void Message_PrinterOStream::Send (const TCollection_ExtendedString &theString,
 				   const Message_Gravity theGravity,
 				   const Standard_Boolean putEndl) const
 {
-  // Note: the string might need to be converted to Ascii
-  if ( myUseUtf8 ) {
-    char* astr = new char[theString.LengthOfCString()+1];
-    theString.ToUTF8CString (astr);
-    Send ( astr, theGravity, putEndl );
-    delete [] astr;
-    astr = 0;
-  }
-  else {
-    TCollection_AsciiString aStr ( theString, '?' );
-    Send ( aStr.ToCString(), theGravity, putEndl );
-  }
+  TCollection_AsciiString aStr (theString, myUseUtf8 ? Standard_Character(0) : '?');
+  Send (aStr.ToCString(), theGravity, putEndl);
 }
