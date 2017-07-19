@@ -52,6 +52,56 @@ if /I ["%3"]     == ["relwithdeb"] set "CASDEB=i"
 rem Decode VCVER
 call "%~dp0adm\vcver.bat"
 
+rem ----- Parsing of Visual Studio platform -----
+set "VisualStudioExpressName=VCExpress"
+
+if not "%DevEnvDir%" == "" (
+  rem If DevEnvDir is already defined (e.g. in custom.bat), use that value
+) else if /I "%VCFMT%" == "vc10" (
+  set "DevEnvDir=%VS100COMNTOOLS%..\IDE"
+) else if /I "%VCFMT%" == "vc11" (
+  set "DevEnvDir=%VS110COMNTOOLS%..\IDE"
+  rem Visual Studio Express starting from VS 2012 is called "for Windows Desktop"
+  rem and has a new name for executable - WDExpress
+  set "VisualStudioExpressName=WDExpress"
+) else if /I "%VCFMT%" == "vc12" (
+  set "DevEnvDir=%VS120COMNTOOLS%..\IDE"
+  set "VisualStudioExpressName=WDExpress"
+) else if /I "%VCFMT%" == "vc14" (
+  set "DevEnvDir=%VS140COMNTOOLS%..\IDE"
+) else if /I "%VCFMT%" == "vc141" (
+  for /f "usebackq delims=" %%i in (`vswhere.exe -version "[15.0,15.99]" -requires Microsoft.VisualStudio.Workload.%VCPROP% -property installationPath`) do (
+    set "DevEnvDir=%%i\Common7\IDE\"
+  )
+) else (
+  echo Error: wrong VS identifier
+  exit /B
+)
+
+rem ----- Parsing vcvarsall for qt samples and define PlatformToolset -----
+if /I "%VCFMT%" == "vc10" (
+  set "VCVARS=%VS100COMNTOOLS%..\..\VC\vcvarsall.bat"
+  set "VCPlatformToolSet=v100"
+) else if /I "%VCFMT%" == "vc11" (
+  set "VCVARS=%VS110COMNTOOLS%..\..\VC\vcvarsall.bat"
+  set "VCPlatformToolSet=v110"
+) else if /I "%VCFMT%" == "vc12" (
+  set "VCVARS=%VS120COMNTOOLS%..\..\VC\vcvarsall.bat"
+  set "VCPlatformToolSet=v120"
+) else if /I "%VCFMT%" == "vc14" (
+  set "VCVARS=%VS140COMNTOOLS%..\..\VC\vcvarsall.bat"
+  set "VCPlatformToolSet=v140"
+) else if /I "%VCFMT%" == "vc141" (
+  for /f "usebackq delims=" %%i in (`vswhere.exe -version "[15.0,15.99]" -requires Microsoft.VisualStudio.Workload.%VCPROP% -property installationPath`) do (
+    set "VCVARS=%%i\VC\Auxiliary\Build\vcvarsall.bat"
+  )
+  set "VCPlatformToolSet=v141"
+) else (
+  echo Error: first argument ^(%VCVER%^) should specify supported version of Visual C++,
+  echo one of: vc10 ^(VS 2010 SP3^), vc11 ^(VS 2012 SP3^), vc12 ^(VS 2013^) or vc14 ^(VS 2015^)
+  exit
+)
+
 set "CSF_OPT_LIB32D=%CSF_OPT_LIB32%"
 set "CSF_OPT_LIB64D=%CSF_OPT_LIB64%"
 set "CSF_OPT_BIN32D=%CSF_OPT_BIN32%"
