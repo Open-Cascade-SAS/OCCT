@@ -1,0 +1,99 @@
+puts "============"
+puts "OCC23187"
+puts "============"
+puts ""
+######################################################
+# Cut with a compound
+######################################################
+
+# Création cylindre tronqué ouvert avec 4 zones
+
+# Démarche
+# - Création de quatre faces planes connexes (profil représentant les 
+#   3 couches et l'interieur
+# - Génération des portions de cylindres connexes par révolution 
+#   des faces précédentes
+# - Creation du plan et troncature (cut) de l'objet précedent
+
+# => temps moyen : 62source  ms
+
+vertex v0 0 0 0
+vertex v1 1 0 0
+vertex v2 2 0 0
+vertex v3 3 0 0
+vertex v4 4 0 0
+vertex v5 5 0 0 
+
+vertex v01 0 0 5
+vertex v11 1 0 5
+vertex v21 2 0 5
+vertex v31 3 0 5
+vertex v41 4 0 5
+
+edge e1 v0 v1
+edge ee2 v1 v11
+edge e3 v11 v01
+edge e4 v01 v0
+
+wire w1 e1 ee2 e3 e4
+mkplane f1 w1
+
+orientation ee2 R
+
+edge e1 v1 v2
+edge eee2 v2 v21
+edge e3 v21 v11
+
+wire w1 e1 eee2 e3 ee2
+mkplane f2 w1
+
+orientation eee2 R
+
+edge e1 v2 v3
+edge eeee2 v3 v31
+edge e3 v31 v21
+
+wire w1 e1 eeee2 e3 eee2
+mkplane f3 w1
+
+orientation eeee2 R
+edge e1 v3 v4
+edge eeeee2 v4 v41
+edge e3 v41 v31
+
+wire w1 e1 eeeee2 e3 eeee2
+mkplane f4 w1
+shape sp Sh
+add f1 sp
+add f2 sp
+add f3 sp
+add f4 sp
+
+revol r sp 0 0 0 0 0 1 270
+
+plane p
+mkface fp p -6 6 -6 6
+
+trotate fp 0 0 0 0 1 0 20
+ttranslate fp 0 0 3
+
+shape s Sh
+add fp s
+
+shape so So
+add s so
+
+explode r
+compound r_1 r_2 r_3 r_4 cr
+bcut result cr so
+
+checkshape result
+set area_result 231.511
+checkprops result -s ${area_result}
+checkview -display result -2d -path ${imagedir}/${test_image}_1.png
+
+compound r_2 r_1 r_4 r_3 cr
+bcut result2 cr so
+checkshape result2
+checkprops result2 -s ${area_result}
+checkview -display result2 -2d -path ${imagedir}/${test_image}_2.png
