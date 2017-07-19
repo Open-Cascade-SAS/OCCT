@@ -42,6 +42,11 @@ Graphic3d_StructureManager::Graphic3d_StructureManager (const Handle(Graphic3d_G
 // ========================================================================
 Graphic3d_StructureManager::~Graphic3d_StructureManager()
 {
+  for (Graphic3d_MapIteratorOfMapOfStructure anIt (myDisplayedStructure); anIt.More(); anIt.Next())
+  {
+    anIt.Value()->Remove();
+  }
+
   myDisplayedStructure.Clear();
   myHighlightedStructure.Clear();
   myDefinedViews.Clear();
@@ -66,6 +71,10 @@ void Graphic3d_StructureManager::Update (const Graphic3d_ZLayerId theLayerId) co
 void Graphic3d_StructureManager::Remove()
 {
   // clear all structures whilst views are alive for correct GPU memory management
+  for (Graphic3d_MapIteratorOfMapOfStructure anIt (myDisplayedStructure); anIt.More(); anIt.Next())
+  {
+    anIt.Value()->Remove();
+  }
   myDisplayedStructure.Clear();
   myHighlightedStructure.Clear();
 

@@ -41,11 +41,10 @@ IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_Structure,Standard_Transient)
 //purpose  :
 //=============================================================================
 Graphic3d_Structure::Graphic3d_Structure (const Handle(Graphic3d_StructureManager)& theManager)
-: myStructureManager      (theManager.operator->()),
-  myFirstStructureManager (theManager.operator->()),
-  myComputeVisual         (Graphic3d_TOS_ALL),
-  myOwner                 (NULL),
-  myVisual                (Graphic3d_TOS_ALL)
+: myStructureManager(theManager.operator->()),
+  myComputeVisual   (Graphic3d_TOS_ALL),
+  myOwner           (NULL),
+  myVisual          (Graphic3d_TOS_ALL)
 {
   myCStructure = theManager->GraphicDriver()->CreateStructure (theManager);
 }
@@ -56,11 +55,10 @@ Graphic3d_Structure::Graphic3d_Structure (const Handle(Graphic3d_StructureManage
 //=============================================================================
 Graphic3d_Structure::Graphic3d_Structure (const Handle(Graphic3d_StructureManager)& theManager,
                                           const Handle(Graphic3d_Structure)&        thePrs)
-: myStructureManager      (theManager.operator->()),
-  myFirstStructureManager (theManager.operator->()),
-  myComputeVisual         (thePrs->myComputeVisual),
-  myOwner                 (thePrs->myOwner),
-  myVisual                (thePrs->myVisual)
+: myStructureManager(theManager.operator->()),
+  myComputeVisual   (thePrs->myComputeVisual),
+  myOwner           (thePrs->myOwner),
+  myVisual          (thePrs->myVisual)
 {
   myCStructure = thePrs->myCStructure->ShadowLink (theManager);
 }
@@ -71,9 +69,9 @@ Graphic3d_Structure::Graphic3d_Structure (const Handle(Graphic3d_StructureManage
 //=============================================================================
 Graphic3d_Structure::~Graphic3d_Structure()
 {
-  // as myFirstStructureManager can be already destroyed,
+  // as myStructureManager can be already destroyed,
   // avoid attempts to access it
-  myFirstStructureManager = NULL;
+  myStructureManager = NULL;
   Remove();
 }
 

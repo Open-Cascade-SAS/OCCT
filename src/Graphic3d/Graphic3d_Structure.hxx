@@ -440,7 +440,6 @@ private:
 protected:
 
   Graphic3d_StructureManager* myStructureManager;
-  Graphic3d_StructureManager* myFirstStructureManager;
   Graphic3d_TypeOfStructure   myComputeVisual;
 
   Handle(Graphic3d_CStructure) myCStructure;
