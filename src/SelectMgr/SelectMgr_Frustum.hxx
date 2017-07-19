@@ -64,26 +64,26 @@ protected:
 
   //! Returns true if selecting volume is overlapped by axis-aligned bounding box
   //! with minimum corner at point theMinPt and maximum at point theMaxPt
-  Standard_EXPORT Standard_Boolean hasOverlap (const SelectMgr_Vec3& theBoxMin,
-                                               const SelectMgr_Vec3& theBoxMax,
-                                               Standard_Boolean*     theInside = NULL);
+  Standard_Boolean hasOverlap (const SelectMgr_Vec3& theBoxMin,
+                               const SelectMgr_Vec3& theBoxMax,
+                               Standard_Boolean*     theInside = NULL);
 
   //! SAT intersection test between defined volume and given point
-  Standard_EXPORT Standard_Boolean hasOverlap (const gp_Pnt& thePnt);
+  Standard_Boolean hasOverlap (const gp_Pnt& thePnt);
 
   //! SAT intersection test between defined volume and given segment
-  Standard_EXPORT Standard_Boolean hasOverlap (const gp_Pnt& thePnt1,
-                                               const gp_Pnt& thePnt2);
+  Standard_Boolean hasOverlap (const gp_Pnt& thePnt1,
+                               const gp_Pnt& thePnt2);
 
   //! SAT intersection test between frustum given and planar convex polygon represented as ordered point set
-  Standard_EXPORT Standard_Boolean hasOverlap (const TColgp_Array1OfPnt& theArrayOfPnts,
-                                               gp_Vec& theNormal);
+  Standard_Boolean hasOverlap (const TColgp_Array1OfPnt& theArrayOfPnts,
+                               gp_Vec& theNormal);
 
   //! SAT intersection test between defined volume and given triangle
-  Standard_EXPORT Standard_Boolean hasOverlap (const gp_Pnt& thePnt1,
-                                               const gp_Pnt& thePnt2,
-                                               const gp_Pnt& thePnt3,
-                                               gp_Vec& theNormal);
+  Standard_Boolean hasOverlap (const gp_Pnt& thePnt1,
+                               const gp_Pnt& thePnt2,
+                               const gp_Pnt& thePnt3,
+                               gp_Vec& theNormal);
 
 private:
 
