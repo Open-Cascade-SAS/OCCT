@@ -1,0 +1,26 @@
+puts "================"
+puts "OCC28551"
+puts "================"
+puts ""
+#######################################################################
+# Bad result of general fuse
+#######################################################################
+
+restore [locate_data_file bug28551_ts_orig.brep] ts0
+restore [locate_data_file bug28551_pc_orig.brep] pc
+
+DT_ShapeDivide ts ts0
+
+bfuzzyvalue 1.0
+bclearobjects
+bcleartools
+baddobjects ts
+baddtools pc
+
+bfillds
+
+bbuild result
+
+checkshape result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
