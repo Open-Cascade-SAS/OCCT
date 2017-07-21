@@ -148,20 +148,26 @@ void XmlMDataStd_BooleanArrayDriver::Paste(const Handle(TDF_Attribute)& theSourc
   // Allocation of 4 chars for each byte.
   Standard_Integer iChar = 0;
   NCollection_LocalArray<Standard_Character> str;
-  if (arr.Length())
-    str.Allocate(4 * arr.Length() + 1);
+  if (!arr.IsEmpty())
+  {
+    str.Allocate (4 * arr.Length() + 1);
+  }
 
   // Convert integers - compressed boolean values, to a string.
-  Standard_Integer lower = arr.Lower(), i = lower, upper = arr.Upper();
-  for (; i <= upper; i++)
+  const Standard_Integer upper = arr.Upper();
+  for (Standard_Integer i = arr.Lower(); i <= upper; i++)
   {
     const Standard_Byte& byte = arr.Value(i);
     iChar += Sprintf(&(str[iChar]), "%d ", byte);
   }
 
-  if (arr.Length())
+  if (!arr.IsEmpty())
+  {
     XmlObjMgt::SetStringValue (theTarget, (Standard_Character*)str, Standard_True);
-    if(aBooleanArray->ID() != TDataStd_BooleanArray::GetID()) {
+  }
+
+  if (aBooleanArray->ID() != TDataStd_BooleanArray::GetID())
+  {
     //convert GUID
     Standard_Character aGuidStr [Standard_GUID_SIZE_ALLOC];
     Standard_PCharacter pGuidStr = aGuidStr;
