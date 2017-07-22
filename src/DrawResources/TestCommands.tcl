@@ -2176,8 +2176,9 @@ proc _log_html_diff {file log dir1 dir2 highlight_percent} {
                 # note: special handler for the case if test grid directoried are compared directly
                 set gridpath ""
             }
-            set img1 "<img src=\"[_make_url $file [file join $dir1 $gridpath $img]]\">"
-            set img2 "<img src=\"[_make_url $file [file join $dir2 $gridpath $img]]\">"
+            set aCaseName [lindex $case end]
+            set img1 "<a href=\"[_make_url $file [file join $dir1 $gridpath $aCaseName.html]]\"><img src=\"[_make_url $file [file join $dir1 $gridpath $img]]\"></a>"
+            set img2 "<a href=\"[_make_url $file [file join $dir2 $gridpath $aCaseName.html]]\"><img src=\"[_make_url $file [file join $dir2 $gridpath $img]]\"></a>"
 
             set difffile [_diff_img_name $dir1 $dir2 $gridpath $img]
             if { [file exists $difffile] } {
