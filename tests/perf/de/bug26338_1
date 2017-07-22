@@ -12,3 +12,9 @@ trinfo result
 chrono s restart
 writestl result $imagedir/${casename}-binary.stl 1
 chrono s stop counter writestl
+set aFileSize [file size $imagedir/${casename}-binary.stl]
+if {$aFileSize < 100000000} {
+  puts "Error: unexpected file size"
+} else {
+  file delete -force $imagedir/${casename}-binary.stl
+}
