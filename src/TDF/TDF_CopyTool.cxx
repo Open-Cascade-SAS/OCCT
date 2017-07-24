@@ -186,7 +186,7 @@ void TDF_CopyTool::CopyAttributes
         tAtt = sAtt->NewEmpty();
         if(tAtt->ID() != id) 
           tAtt->SetID(id);//
-        aTargetLabel.AddAttribute(tAtt);
+        aTargetLabel.AddAttribute(tAtt, Standard_True);
         aAttMap.Bind(sAtt,tAtt);
       }
       else {

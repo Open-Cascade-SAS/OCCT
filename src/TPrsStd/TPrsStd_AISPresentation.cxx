@@ -65,7 +65,7 @@ Handle(TPrsStd_AISPresentation) TPrsStd_AISPresentation::Set
   if ( !theLabel.FindAttribute(TPrsStd_AISPresentation::GetID(), aPresentation) )
   {
     aPresentation = new TPrsStd_AISPresentation();
-    theLabel.AddAttribute(aPresentation);
+    theLabel.AddAttribute(aPresentation, Standard_True);
   }
 
   return aPresentation;

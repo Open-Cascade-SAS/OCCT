@@ -412,8 +412,9 @@ Standard_Boolean TDF_Label::HasGreaterNode(const TDF_Label& aLabel) const
 //purpose  : 
 //=======================================================================
 
-void TDF_Label::AddAttribute (const Handle(TDF_Attribute)& anAttribute)  const
-{ AddToNode(myLabelNode,anAttribute); }
+void TDF_Label::AddAttribute (const Handle(TDF_Attribute)& anAttribute,
+                              const Standard_Boolean append/* = Standard_False*/)  const
+{ AddToNode(myLabelNode,anAttribute,append); }
 
 
 //=======================================================================
@@ -532,7 +533,8 @@ void TDF_Label::ResumeAttribute (const Handle(TDF_Attribute)& anAttribute)  cons
 //=======================================================================
 
 void TDF_Label::AddToNode (const TDF_LabelNodePtr& toNode,
-                           const Handle(TDF_Attribute)& anAttribute) const
+                           const Handle(TDF_Attribute)& anAttribute,
+                           const Standard_Boolean append) const
 {
   // check that modification is allowed
   if ( !toNode->Data()->IsModificationAllowed() ) {
@@ -555,8 +557,10 @@ void TDF_Label::AddToNode (const TDF_LabelNodePtr& toNode,
 
   //append to the end of the attribute list
   dummyAtt.Nullify();
-  for (TDF_AttributeIterator itr (toNode); itr.More(); itr.Next())
-    dummyAtt = itr.Value();
+  if (append) {
+    for (TDF_AttributeIterator itr (toNode); itr.More(); itr.Next())
+      dummyAtt = itr.Value();
+  }
 
   toNode->AddAttribute(dummyAtt,anAttribute);
   toNode->AttributesModified(anAttribute->myTransaction != 0);
@@ -605,7 +609,7 @@ void TDF_Label::ForgetFromNode (const TDF_LabelNodePtr& fromNode,
             anAttribute->BeforeRemoval();
           }
           fromNode->RemoveAttribute(lastAtt,anAttribute);
-	  anAttribute->Forget(fromNode->Data()->Transaction()); // vro
+          anAttribute->Forget(fromNode->Data()->Transaction());
           break;
         }
         lastAtt = itr.Value();
@@ -638,7 +642,7 @@ void TDF_Label::ResumeToNode (const TDF_LabelNodePtr& toNode,
   if (!anAttribute->IsForgotten()) 
     throw Standard_DomainError("Cannot resume an unforgotten attribute.");
 
-  AddToNode(toNode, anAttribute); // vro
+  AddToNode(toNode, anAttribute, Standard_False);
   anAttribute->Resume();
   if (toNode->Data()->NotUndoMode()) anAttribute->AfterResume();
 }

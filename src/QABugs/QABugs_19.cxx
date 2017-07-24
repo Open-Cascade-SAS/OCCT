@@ -53,6 +53,7 @@
 #include <ViewerTest.hxx>
 #include <XmlDrivers_DocumentRetrievalDriver.hxx>
 #include <XmlDrivers_DocumentStorageDriver.hxx>
+#include <TDataStd_Real.hxx>
 
 #include <cstdio>
 #include <cmath>
@@ -1924,15 +1925,22 @@ static Standard_Integer OCC24755 (Draw_Interpretor& di, Standard_Integer n, cons
   Handle(TDocStd_Document) aDoc;
   anApp->NewDocument ("BinOcaf", aDoc);
   TDF_Label aLab = aDoc->Main();
+  // Prepend an int value.
   TDataStd_Integer::Set (aLab, 0);
+  // Prepend a name.
   TDataStd_Name::Set (aLab, "test");
+  // Append a double value.
+  aLab.AddAttribute(new TDataStd_Real(), true/*append*/);
 
   TDF_AttributeIterator i (aLab);
   Handle(TDF_Attribute) anAttr = i.Value();
+  QCOMPARE (anAttr->IsKind (STANDARD_TYPE (TDataStd_Name)), Standard_True);
+  i.Next();
+  anAttr = i.Value();
   QCOMPARE (anAttr->IsKind (STANDARD_TYPE (TDataStd_Integer)), Standard_True);
   i.Next();
   anAttr = i.Value();
-  QCOMPARE (anAttr->IsKind (STANDARD_TYPE (TDataStd_Name)), Standard_True);
+  QCOMPARE (anAttr->IsKind (STANDARD_TYPE (TDataStd_Real)), Standard_True);
 
   return 0;
 }

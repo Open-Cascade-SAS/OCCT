@@ -117,7 +117,7 @@ public:
   
   //! Adds an Attribute  to the current label. Raises if
   //! there is already one.
-  Standard_EXPORT void AddAttribute (const Handle(TDF_Attribute)& anAttribute) const;
+  Standard_EXPORT void AddAttribute (const Handle(TDF_Attribute)& anAttribute, const Standard_Boolean append = Standard_False) const;
   
   //! Forgets an  Attribute   from the  current  label,
   //! setting its   forgotten status true and  its valid
@@ -283,7 +283,7 @@ private:
   
   //! Adds an Attribute to <toNode>. Raises if there is
   //! already one.
-  Standard_EXPORT void AddToNode (const TDF_LabelNodePtr& toNode, const Handle(TDF_Attribute)& anAttribute) const;
+  Standard_EXPORT void AddToNode (const TDF_LabelNodePtr& toNode, const Handle(TDF_Attribute)& anAttribute, const Standard_Boolean append) const;
   
   //! Forgets an Attribute from <fromNode>.  Raises if
   //! the attribute is not in the structure.
