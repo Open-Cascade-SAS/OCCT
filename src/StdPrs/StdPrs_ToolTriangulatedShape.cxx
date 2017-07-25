@@ -23,6 +23,7 @@
 #include <GeomAbs_SurfaceType.hxx>
 #include <GeomLib.hxx>
 #include <gp_XYZ.hxx>
+#include <Poly.hxx>
 #include <Poly_Connect.hxx>
 #include <Poly_Triangulation.hxx>
 #include <Precision.hxx>
@@ -145,22 +146,26 @@ void StdPrs_ToolTriangulatedShape::ComputeNormals (const TopoDS_Face& theFace,
   }
 
   // take in face the surface location
-  const TopoDS_Face      aZeroFace = TopoDS::Face (theFace.Located (TopLoc_Location()));
-  Handle(Geom_Surface)   aSurf     = BRep_Tool::Surface (aZeroFace);
-  const Standard_Real    aTol      = Precision::Confusion();
-  Handle(TShort_HArray1OfShortReal) aNormals = new TShort_HArray1OfShortReal (1, theTris->NbNodes() * 3);
+  const TopoDS_Face    aZeroFace = TopoDS::Face (theFace.Located (TopLoc_Location()));
+  Handle(Geom_Surface) aSurf     = BRep_Tool::Surface (aZeroFace);
   const Poly_Array1OfTriangle& aTriangles = theTris->Triangles();
-  const TColgp_Array1OfPnt2d*  aNodesUV   = theTris->HasUVNodes() && !aSurf.IsNull()
-                                          ? &theTris->UVNodes()
-                                          : NULL;
+  if (!theTris->HasUVNodes() || aSurf.IsNull())
+  {
+    // compute normals by averaging triangulation normals sharing the same vertex
+    Poly::ComputeNormals (theTris);
+    return;
+  }
+
+  const Standard_Real aTol = Precision::Confusion();
+  Handle(TShort_HArray1OfShortReal) aNormals = new TShort_HArray1OfShortReal (1, theTris->NbNodes() * 3);
+  const TColgp_Array1OfPnt2d& aNodesUV = theTris->UVNodes();
   Standard_Integer aTri[3];
   const TColgp_Array1OfPnt& aNodes = theTris->Nodes();
   gp_Dir aNorm;
   for (Standard_Integer aNodeIter = aNodes.Lower(); aNodeIter <= aNodes.Upper(); ++aNodeIter)
   {
     // try to retrieve normal from real surface first, when UV coordinates are available
-    if (aNodesUV == NULL
-     || GeomLib::NormEstim (aSurf, aNodesUV->Value (aNodeIter), aTol, aNorm) > 1)
+    if (GeomLib::NormEstim (aSurf, aNodesUV.Value (aNodeIter), aTol, aNorm) > 1)
     {
       if (thePolyConnect.Triangulation() != theTris)
       {

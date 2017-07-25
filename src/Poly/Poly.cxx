@@ -445,69 +445,72 @@ Handle(Poly_Polygon2D) Poly::ReadPolygon2D(Standard_IStream& IS)
 //function : ComputeNormals
 //purpose  :
 //=======================================================================
-
-void  Poly::ComputeNormals(const Handle(Poly_Triangulation)& Tri)
+void Poly::ComputeNormals (const Handle(Poly_Triangulation)& theTri)
 {
-  const TColgp_Array1OfPnt&     arrNodes = Tri->Nodes();
-  const Poly_Array1OfTriangle & arrTri   = Tri->Triangles();
-  Standard_Integer              nbNormVal  = Tri->NbNodes() * 3;
-  const Handle(TShort_HArray1OfShortReal) Normals =
-    new TShort_HArray1OfShortReal(1, nbNormVal);
-  Normals->Init(0.F);
+  const TColgp_Array1OfPnt& aNodes   = theTri->Nodes();
+  const Standard_Integer    aNbNodes = aNodes.Size();
 
-  Standard_ShortReal            * arrNormal = &(Normals->ChangeValue(1));
+  const Handle(TShort_HArray1OfShortReal) aNormals = new TShort_HArray1OfShortReal (1, aNbNodes * 3);
+  aNormals->Init (0.0f);
+  Standard_ShortReal* aNormArr = &aNormals->ChangeFirst();
 
-  Standard_Real                 aCoord[3];
-  Standard_Integer              iNode[3] = {0, 0, 0};
-  Standard_Integer              iN, iTri;
-  const Standard_Real eps2 = gp::Resolution();
+  Standard_Integer anElem[3] = {0, 0, 0};
+  const Standard_Real anEps2 = gp::Resolution();
+  for (Poly_Array1OfTriangle::Iterator aTriIter (theTri->Triangles()); aTriIter.More(); aTriIter.Next())
+  {
+    aTriIter.Value().Get (anElem[0], anElem[1], anElem[2]);
+    const gp_Pnt& aNode0 = aNodes.Value (anElem[0]);
+    const gp_Pnt& aNode1 = aNodes.Value (anElem[1]);
+    const gp_Pnt& aNode2 = aNodes.Value (anElem[2]);
 
-  for (iTri = 1; iTri <= arrTri.Length(); iTri++) {
-    // Get the nodes of the current triangle
-    arrTri(iTri).Get (iNode[0], iNode[1], iNode[2]);
-      const gp_XYZ aVec[2] = {
-        arrNodes(iNode[1]).XYZ() - arrNodes(iNode[0]).XYZ(),
-        arrNodes(iNode[2]).XYZ() - arrNodes(iNode[0]).XYZ()
-      };
+    const gp_XYZ aVec01 = aNode1.XYZ() - aNode0.XYZ();
+    const gp_XYZ aVec02 = aNode2.XYZ() - aNode0.XYZ();
+    gp_XYZ aTriNorm = aVec01 ^ aVec02;
+    /*if (theToIgnoreTriangleSize)
+    {
+      const Standard_Real aMod = aTriNorm.SquareModulus();
+      if (aMod > anEps2)
+      {
+        aTriNorm /= Sqrt (aMod);
+      }
+      else
+      {
+        continue;
+      }
+    }*/
 
-    // Find the normal vector of the current triangle
-    gp_XYZ aNorm = aVec[0] ^ aVec[1];
-    const Standard_Real aMod = aNorm.SquareModulus();
-    if (aMod > eps2) {
-      aNorm /= sqrt(aMod);
-      aNorm.Coord (aCoord[0], aCoord[1], aCoord[2]);
-      iNode[0] = (iNode[0]-1)*3;
-      iNode[1] = (iNode[1]-1)*3;
-      iNode[2] = (iNode[2]-1)*3;
-      arrNormal[iNode[0]+0] += (Standard_ShortReal)aCoord[0];
-      arrNormal[iNode[0]+1] += (Standard_ShortReal)aCoord[1];
-      arrNormal[iNode[0]+2] += (Standard_ShortReal)aCoord[2];
-      arrNormal[iNode[1]+0] += (Standard_ShortReal)aCoord[0];
-      arrNormal[iNode[1]+1] += (Standard_ShortReal)aCoord[1];
-      arrNormal[iNode[1]+2] += (Standard_ShortReal)aCoord[2];
-      arrNormal[iNode[2]+0] += (Standard_ShortReal)aCoord[0];
-      arrNormal[iNode[2]+1] += (Standard_ShortReal)aCoord[1];
-      arrNormal[iNode[2]+2] += (Standard_ShortReal)aCoord[2];
+    for (Standard_Integer aNodeIter = 0; aNodeIter < 3; ++aNodeIter)
+    {
+      const Standard_Size anIndex = (anElem[aNodeIter] - 1) * 3;
+      aNormArr[anIndex + 0] += Standard_ShortReal(aTriNorm.X());
+      aNormArr[anIndex + 1] += Standard_ShortReal(aTriNorm.Y());
+      aNormArr[anIndex + 2] += Standard_ShortReal(aTriNorm.Z());
     }
   }
+
   // Normalize all vectors
-  for (iN = 0; iN < nbNormVal; iN+=3) {
-    Standard_Real aMod (arrNormal[iN+0]*arrNormal[iN+0] +
-                        arrNormal[iN+1]*arrNormal[iN+1] +
-                        arrNormal[iN+2]*arrNormal[iN+2]);
-    if (aMod < eps2) {
-      arrNormal[iN+0] = 0.f;
-      arrNormal[iN+1] = 0.f;
-      arrNormal[iN+2] = 1.f;
-    } else {
-      aMod = sqrt(aMod);
-      arrNormal[iN+0] = Standard_ShortReal(arrNormal[iN+0]/aMod);
-      arrNormal[iN+1] = Standard_ShortReal(arrNormal[iN+1]/aMod);
-      arrNormal[iN+2] = Standard_ShortReal(arrNormal[iN+2]/aMod);
+  gp_XYZ aNormXYZ;
+  for (Standard_Integer aNodeIter = 0; aNodeIter < aNbNodes; ++aNodeIter)
+  {
+    const Standard_Size anIndex = aNodeIter * 3;
+    aNormXYZ.SetCoord (aNormArr[anIndex + 0], aNormArr[anIndex + 1], aNormArr[anIndex + 2]);
+    const Standard_Real aMod2 = aNormXYZ.SquareModulus();
+    if (aMod2 < anEps2)
+    {
+      aNormArr[anIndex + 0] = 0.0f;
+      aNormArr[anIndex + 1] = 0.0f;
+      aNormArr[anIndex + 2] = 1.0f;
+    }
+    else
+    {
+      aNormXYZ /= Sqrt (aMod2);
+      aNormArr[anIndex + 0] = Standard_ShortReal(aNormXYZ.X());
+      aNormArr[anIndex + 1] = Standard_ShortReal(aNormXYZ.Y());
+      aNormArr[anIndex + 2] = Standard_ShortReal(aNormXYZ.Z());
     }
   }
 
-  Tri->SetNormals(Normals);
+  theTri->SetNormals (aNormals);
 }
 
 //=======================================================================
