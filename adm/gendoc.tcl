@@ -70,7 +70,7 @@ proc gendoc {args} {
   set DOCLABEL                  ""
   set VERB_MODE                 "NO"
   set SEARCH_MODE               "none"
-  set MATHJAX_LOCATION          "https://cdn.mathjax.org/mathjax/latest"
+  set MATHJAX_LOCATION          "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1"
   set mathjax_js_name           "MathJax.js"
   set DOCTYPE_COMBO_FLAG        0
   set GENMODE_COMBO_FLAG        0
