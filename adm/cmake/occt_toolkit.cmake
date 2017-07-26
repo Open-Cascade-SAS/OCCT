@@ -287,6 +287,14 @@ if (BUILD_SHARED_LIBS)
   target_link_libraries (${PROJECT_NAME} ${USED_TOOLKITS_BY_CURRENT_PROJECT} ${USED_EXTERNAL_LIBS_BY_CURRENT_PROJECT})
 endif()
 
+# suppress deprecation warnings inside OCCT itself for old gcc versions with unavailable Standard_DISABLE_DEPRECATION_WARNINGS
+if (CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
+  if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.6.0)
+    add_definitions("-DOCCT_NO_DEPRECATED")
+    message (STATUS "Warning: internal deprecation warnings by Standard_DEPRECATED have been disabled due to old gcc version being used")
+  endif()
+endif()
+
 # use Cotire to accelerate build via usage of precompiled headers
 if (BUILD_USE_PCH)
   if (WIN32)
