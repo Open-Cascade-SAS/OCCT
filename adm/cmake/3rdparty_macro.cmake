@@ -139,6 +139,17 @@ macro (THIRDPARTY_PRODUCT PRODUCT_NAME HEADER_NAME LIBRARY_CSF_NAME LIBRARY_NAME
                                                                                 PATH_SUFFIXES ${${PRODUCT_NAME}_PATH_SUFFIXES}
                                                                                 CMAKE_FIND_ROOT_PATH_BOTH
                                                                                 NO_DEFAULT_PATH)
+          if ("${3RDPARTY_${PRODUCT_NAME}_LIBRARY_${LIBRARY_NAME_SUFFIX}}" STREQUAL "3RDPARTY_${PRODUCT_NAME}_LIBRARY_${LIBRARY_NAME_SUFFIX}-NOTFOUND")
+            # find directory recursive
+            FIND_SUBDIRECTORY (${3RDPARTY_${PRODUCT_NAME}_DIR} "${${PRODUCT_NAME}_PATH_SUFFIXES}" SUBDIR_NAME)
+            if (NOT "${SUBDIR_NAME}" STREQUAL "")
+              find_library (3RDPARTY_${PRODUCT_NAME}_LIBRARY_${LIBRARY_NAME_SUFFIX} NAMES ${LIBRARY_NAME_SUFFIX}
+                                                           PATHS "${SUBDIR_NAME}"
+                                                           PATH_SUFFIXES ${${PRODUCT_NAME}_PATH_SUFFIXES}
+                                                           CMAKE_FIND_ROOT_PATH_BOTH
+                                                           NO_DEFAULT_PATH)
+            endif()
+          endif()
         else()
           find_library (3RDPARTY_${PRODUCT_NAME}_LIBRARY_${LIBRARY_NAME_SUFFIX} NAMES ${LIBRARY_NAME}
                                                                                 PATH_SUFFIXES ${${PRODUCT_NAME}_PATH_SUFFIXES}
@@ -175,6 +186,16 @@ macro (THIRDPARTY_PRODUCT PRODUCT_NAME HEADER_NAME LIBRARY_CSF_NAME LIBRARY_NAME
                                                                                PATHS "${3RDPARTY_${PRODUCT_NAME}_DIR}"
                                                                                PATH_SUFFIXES bin  win${COMPILER_BITNESS}/${COMPILER}/bin
                                                                                NO_DEFAULT_PATH)
+            if (3RDPARTY_${PRODUCT_NAME}_DLL_${LIBRARY_NAME_SUFFIX} STREQUAL "3RDPARTY_${PRODUCT_NAME}_DLL_${LIBRARY_NAME_SUFFIX}-NOTFOUND")
+              # find directory recursive
+              FIND_SUBDIRECTORY (${3RDPARTY_${PRODUCT_NAME}_DIR} bin SUBDIR_NAME)
+              if (NOT "${SUBDIR_NAME}" STREQUAL "")
+                find_library (3RDPARTY_${PRODUCT_NAME}_DLL_${LIBRARY_NAME_SUFFIX} NAMES ${LIBRARY_NAME_SUFFIX}
+                                                             PATHS "${SUBDIR_NAME}"
+                                                             PATH_SUFFIXES bin
+                                                             NO_DEFAULT_PATH)
+              endif()
+            endif()
           else()
             find_library (3RDPARTY_${PRODUCT_NAME}_DLL_${LIBRARY_NAME_SUFFIX} NAMES ${LIBRARY_NAME} PATH_SUFFIXES bin)
           endif()
@@ -206,6 +227,7 @@ macro (THIRDPARTY_PRODUCT PRODUCT_NAME HEADER_NAME LIBRARY_CSF_NAME LIBRARY_NAME
         string (REPLACE "." "" LIBRARY_NAME_SUFFIX "${LIBRARY_NAME}")
         if (WIN32)
           set (3RDPARTY_${PRODUCT_NAME}_DLL_DIRS "${3RDPARTY_${PRODUCT_NAME}_DLL_DIR_${LIBRARY_NAME_SUFFIX}};${3RDPARTY_${PRODUCT_NAME}_DLL_DIRS}")
+          set (3RDPARTY_${PRODUCT_NAME}_LIBRARY_DIRS "${3RDPARTY_${PRODUCT_NAME}_LIBRARY_DIR_${LIBRARY_NAME_SUFFIX}}")
         else()
           set (3RDPARTY_${PRODUCT_NAME}_LIBRARY_DIRS "${3RDPARTY_${PRODUCT_NAME}_LIBRARY_DIR_${LIBRARY_NAME_SUFFIX}}:${3RDPARTY_${PRODUCT_NAME}_LIBRARY_DIRS}")
         endif()

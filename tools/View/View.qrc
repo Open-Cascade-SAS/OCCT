@@ -1,0 +1,17 @@
+<!DOCTYPE RCC><RCC version="1.0">
+    <qresource>
+        <file>icons/cursor_rotate.png</file>
+        <file>icons/cursor_zoom.png</file>
+        <file>icons/keep_view_off.png</file>
+        <file>icons/keep_view_on.png</file>
+        <file>icons/view_clear.png</file>
+        <file>icons/view_dm_shading.png</file>
+        <file>icons/view_dm_wireframe.png</file>
+        <file>icons/view_fitall.png</file>
+        <file>icons/view_fitarea.png</file>
+        <file>icons/view_pan.png</file>
+        <file>icons/view_rotate.png</file>
+        <file>icons/view_zoom.png</file>
+    </qresource>
+</RCC>
+

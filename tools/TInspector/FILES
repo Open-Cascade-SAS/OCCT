@@ -1,0 +1,5 @@
+TInspector.qrc
+TInspector_Communicator.cxx
+TInspector_Communicator.hxx
+TInspector_Window.cxx
+TInspector_Window.hxx

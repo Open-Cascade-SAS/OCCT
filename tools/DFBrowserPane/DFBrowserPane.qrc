@@ -1,0 +1,13 @@
+<!DOCTYPE RCC><RCC version="1.0">
+    <qresource>
+        <file>icons/attribute.png</file>
+        <file>icons/attribute_40x40.png</file>
+        <file>icons/export_shape.png</file>
+        <file>icons/folder_export.png</file>
+        <file>icons/label.png</file>
+        <file>icons/label_folder_16x16.png</file>
+        <file>icons/label_folder_40x40.png</file>
+        <file>icons/named_shape.png</file>
+        <file>icons/named_shape_40x40.png</file>
+    </qresource>
+</RCC>

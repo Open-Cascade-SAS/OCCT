@@ -1,0 +1,12 @@
+<!DOCTYPE RCC><RCC version="1.0">
+    <qresource>
+        <file>icons/item_type_folder.png</file>
+        <file>icons/item_type_folder_40x40.png</file>
+        <file>icons/level_change.png</file>
+        <file>icons/search.png</file>
+        <file>icons/search_cancel.png</file>
+        <file>icons/treeline_backward.png</file>
+        <file>icons/treeline_forward.png</file>
+        <file>icons/treeline_update.png</file>
+    </qresource>
+</RCC>

@@ -1,0 +1,3 @@
+if { [array get Draw_Groups "TOOLS Check commands"] == "" } {
+  pload TOOLS
+}

@@ -1,0 +1,12 @@
+pload DCAF
+pload TOOLS
+
+NewDocument Doc BinOcaf
+
+set aSetAttr1 100
+set aLabel 0:2
+SetInteger Doc ${aLabel} ${aSetAttr1}
+
+tinspector -dfbrowser
+tinspector -update
+

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <LocalDebuggerEnvironment>PATH=@3RDPARTY_DLL_DEB_PATH@;@CMAKE_INSTALL_PREFIX@/@INSTALL_DIR_BIN@;%PATH%
+DATA_DIR=@INSTALL_DIR@/data
+QTDIR=@3RDPARTY_QT_DIR@
+CSF_OCCTDataPath=@3RDPARTY_OCCT_DIR@/data
+    </LocalDebuggerEnvironment>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <LocalDebuggerEnvironment>PATH=@3RDPARTY_DLL_DEB_PATH@;@CMAKE_INSTALL_PREFIX@/@INSTALL_DIR_BIN@;%PATH%
+DATA_DIR=@INSTALL_DIR@/data
+QTDIR=@3RDPARTY_QT_DIR@
+CSF_OCCTDataPath=@3RDPARTY_OCCT_DIR@/data
+    </LocalDebuggerEnvironment>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <LocalDebuggerEnvironment>PATH=@3RDPARTY_DLL_DEB_PATH@;@CMAKE_INSTALL_PREFIX@/@INSTALL_DIR_BIN@;%PATH%
+DATA_DIR=@INSTALL_DIR@/data
+QTDIR=@3RDPARTY_QT_DIR@
+CSF_OCCTDataPath=@3RDPARTY_OCCT_DIR@/data
+CSF_ShadersDirectory=@CASROOT@/src/Shaders
+    </LocalDebuggerEnvironment>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'" Label="Configuration">
+  </PropertyGroup>
+</Project>

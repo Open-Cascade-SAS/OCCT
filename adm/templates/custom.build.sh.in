@@ -13,6 +13,10 @@ if [ "$1" == "@BIN_LETTER@" ]; then
     export TBB_DIR="@3RDPARTY_TBB_LIBRARY_DIR@"
     export VTK_DIR="@3RDPARTY_VTK_LIBRARY_DIR@"
 
+    if [ "x@3RDPARTY_QT_DIR" != "x" ]; then
+      export QTDIR="@3RDPARTY_QT_DIR@"
+    fi
+
     export TCL_VERSION_WITH_DOT="@3RDPARTY_TCL_LIBRARY_VERSION_WITH_DOT@"
     export TK_VERSION_WITH_DOT="@3RDPARTY_TK_LIBRARY_VERSION_WITH_DOT@"
 

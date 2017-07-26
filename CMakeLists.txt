@@ -365,6 +365,9 @@ if (WIN32)
   set (USE_D3D OFF CACHE BOOL "${USE_D3D_DESCR}")
 endif()
 
+set (USE_QT_TOOLS OFF CACHE BOOL "${USE_QT_TOOLS_DESCR}")
+set (USE_QT4 ON CACHE BOOL "${USE_QT4}")
+
 # Enable/Disable the floating point exceptions (FPE) during runtime.
 if (NOT BUILD_ENABLE_FPE_SIGNAL_HANDLER)
   set (BUILD_ENABLE_FPE_SIGNAL_HANDLER OFF CACHE BOOL "${BUILD_ENABLE_FPE_SIGNAL_HANDLER_DESCR}" FORCE)
@@ -691,7 +694,7 @@ if (3RDPARTY_INCLUDE_DIRS)
 endif()
 
 # include <cmake binary folder>/inc
-include_directories (${CMAKE_BINARY_DIR}/inc)
+include_directories (${CMAKE_BINARY_DIR}/${INSTALL_DIR_INCLUDE})
 
 if (3RDPARTY_LIBRARY_DIRS AND BUILD_SHARED_LIBS)
   list (REMOVE_DUPLICATES 3RDPARTY_LIBRARY_DIRS)
@@ -732,7 +735,7 @@ string(TIMESTAMP CURRENT_TIME "%H:%M:%S")
 message (STATUS "\nInfo: \(${CURRENT_TIME}\) Start collecting all OCCT header files into ${CMAKE_BINARY_DIR}/inc ...")
 
 # collect all the headers to <binary dir>/inc folder
-COLLECT_AND_INSTALL_OCCT_HEADER_FILES ("${CMAKE_BINARY_DIR}" "${BUILD_TOOLKITS}")
+COLLECT_AND_INSTALL_OCCT_HEADER_FILES ("${CMAKE_BINARY_DIR}" "${BUILD_TOOLKITS}" "${CMAKE_SOURCE_DIR}/src" "${INSTALL_DIR_INCLUDE}")
 
 string(TIMESTAMP CURRENT_TIME "%H:%M:%S")
 message (STATUS "Info: \(${CURRENT_TIME}\) End the collecting")
@@ -747,6 +750,33 @@ if (WIN32)
   set (SCRIPT_EXT bat)
 else()
   set (SCRIPT_EXT sh)
+endif()
+
+# OCCT tools
+# include the patched or original list of tools
+# list <TOOLNAME>_TOOLKITS is created foreach tool and contains its toolkits
+# list <OCCT_TOOLS> will contain all tools
+if (NOT USE_QT_TOOLS)
+  OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_QT")
+  OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_TQTMALLOC")
+  OCCT_CHECK_AND_UNSET ("INSTALL_QT")
+else()
+  OCCT_TOOLS_AND_TOOLKITS (OCCT_TOOLS)
+  foreach (OCCT_TOOL ${OCCT_TOOLS})
+    list (APPEND BUILD_TOOL_TOOLKITS ${${OCCT_TOOL}_TOOL_TOOLKITS})
+  endforeach()
+
+  # collect all the headers to <binary dir>/inc folder
+  string(TIMESTAMP CURRENT_TIME "%H:%M:%S")
+  message (STATUS "\nInfo: \(${CURRENT_TIME}\) Start collecting all OCCT tool header files into ${CMAKE_BINARY_DIR}/tools/inc ...")
+  COLLECT_AND_INSTALL_OCCT_HEADER_FILES ("${CMAKE_BINARY_DIR}/${INSTALL_DIR_INCLUDE}" "${BUILD_TOOL_TOOLKITS}" "${CMAKE_SOURCE_DIR}/tools" "tools")
+  include_directories (${CMAKE_BINARY_DIR}/${INSTALL_DIR_INCLUDE}/tools)
+
+
+  # check qt 3rdparty path
+  add_definitions (-DHAVE_QT)
+  OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/qt5")
+  message (STATUS "Info: Qt is used by OCCT")
 endif()
 
 # OCCT samples
@@ -891,8 +921,14 @@ if (MSVC AND 3RDPARTY_DLL_DIRS)
   endif()
 endif()
 
-message (STATUS "Info: \(${CURRENT_TIME}\) OCCT toolkits processed")
+# include patched toolkit projects or original ones
+if (BUILD_TOOL_TOOLKITS)
+  foreach (BUILD_TOOL_TOOLKIT ${BUILD_TOOL_TOOLKITS})
+    OCCT_ADD_SUBDIRECTORY ("tools/${BUILD_TOOL_TOOLKIT}")
+  endforeach()
+endif()
 
+message (STATUS "Info: \(${CURRENT_TIME}\) OCCT toolkits processed")
 # samples do not support patch usage
 if (BUILD_MODULE_MfcSamples)
   set (OCCT_ROOT ${CMAKE_SOURCE_DIR})
@@ -917,6 +953,22 @@ endif()
 
 if (BUILD_MODULE_UwpSample)
   add_subdirectory(samples/xaml)
+endif()
+
+if (BUILD_TOOL_TOOLKITS)
+  # copy tinspector script to install script folder
+  if (BUILD_PATCH AND EXISTS "${BUILD_PATCH}/adm/templates/dfbrowser.${SCRIPT_EXT}")
+    install (FILES "${BUILD_PATCH}/adm/templates/dfbrowser.${SCRIPT_EXT}" DESTINATION  "${INSTALL_DIR_SCRIPT}"
+            PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_WRITE GROUP_EXECUTE WORLD_READ WORLD_WRITE WORLD_EXECUTE)
+  else()
+    install (FILES "${CMAKE_SOURCE_DIR}/adm/templates/dfbrowser.${SCRIPT_EXT}" DESTINATION  "${INSTALL_DIR_SCRIPT}"
+            PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_WRITE GROUP_EXECUTE WORLD_READ WORLD_WRITE WORLD_EXECUTE)
+  endif()
+
+  set (BUILD_SAMPLE_TOOLKITS TInspectorEXE)
+  foreach (BUILD_SAMPLE_TOOL_TOOLKIT ${BUILD_SAMPLE_TOOLKITS})
+    OCCT_ADD_SUBDIRECTORY ("samples/tools/${BUILD_SAMPLE_TOOL_TOOLKIT}")
+  endforeach()
 endif()
 
 # Prepare variables for configuration of OpenCASCADE cmake config file

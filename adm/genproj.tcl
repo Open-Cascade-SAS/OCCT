@@ -1354,6 +1354,7 @@ proc osutils:csfList { theOS theCsfLibsMap theCsfFrmsMap } {
       set aLibsMap(CSF_TclLibs)    ""
       set aFrmsMap(CSF_TclTkLibs)  "Tk"
       set aLibsMap(CSF_TclTkLibs)  ""
+      set aLibsMap(CSF_QT)         "QtCore QtGui"
     } else {
       if { "$theOS" == "qnx" } {
         # CSF_ThreadLibs - pthread API is part of libc on QNX
