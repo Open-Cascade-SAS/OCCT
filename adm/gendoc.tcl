@@ -303,13 +303,6 @@ proc gendoc {args} {
 
   puts ""
 
-  # Clean logfiles
-  set DOXYLOG [OCCDoc_GetRootDir]/doc/doxygen_warnings_and_errors.log
-  set PDFLOG  [OCCDoc_GetRootDir]/doc/pdflatex_warnings_and_errors.log
-
-  file delete -force $PDFLOG
-  file delete -force $DOXYLOG
-  
   # Start main activities
   if { $GEN_MODE != "PDF_ONLY" } {
     if { [OCCDoc_GetProdRootDir] == ""} {
@@ -330,15 +323,15 @@ proc gendoc {args} {
       }
     }
   } else {
-    puts "Generating OCCT User Guides in PDF format...\n"
+    puts "Generating OCCT User Guides in PDF format..."
     foreach pdf $DOCFILES {
 
-      puts "Info: Processing file $pdf\n"
+      puts "\nInfo: Processing file $pdf"
 
       # Some values are hardcoded because they are related only to PDF generation
       OCCDoc_Main "OVERVIEW" [list $pdf] {} "PDF_ONLY" $VERB_MODE "none" $MATHJAX_LOCATION "NO" $DOXYGEN_PATH $GRAPHVIZ_PATH $INKSCAPE_PATH $HHC_PATH
     }
-    puts "[clock format [clock seconds] -format {%Y-%m-%d %H:%M}] Generation completed."
+    puts "\n[clock format [clock seconds] -format {%Y-%m-%d %H:%M}] Generation completed."
   }
 }
 
@@ -465,23 +458,31 @@ proc OCCDoc_Main {docType {docfiles {}} {modules {}} generatorMode verboseMode s
   set starttimestamp [clock format [clock seconds] -format {%Y-%m-%d %H:%M}]
 
   if { ($generatorMode == "HTML_ONLY") || ($docType == "REFMAN") } {
+    set LOGPREFIX "html_"
     puts "$starttimestamp Generating HTML files..."
 
     # Copy index file to provide fast access to HTML documentation
     file copy -force $INDIR/resources/index.html $DOCDIR/index.html
   } elseif { $generatorMode == "CHM_ONLY" } {
+    set LOGPREFIX "chm_"
     puts "$starttimestamp Generating CHM file..."
   } elseif { $generatorMode == "PDF_ONLY" } {
+    set LOGPREFIX "[file rootname [file tail [lindex $docfiles 0]]]_"
     puts "$starttimestamp Generating PDF file..."
   }
 
-  set DOXYLOG $OUTDIR/doxygen_warnings_and_errors.log
-  set RESULT [catch {exec $DOXYGEN_PATH $DOXYFILE >> $OUTDIR/doxygen_out.log} DOX_ERROR] 
+  # Clean logfiles  
+  set DOXYLOG $OUTDIR/${LOGPREFIX}doxygen_err.log
+  set DOXYOUT $OUTDIR/${LOGPREFIX}doxygen_out.log
+  file delete -force $DOXYLOG
+  file delete -force $DOXYOUT
+
+  set RESULT [catch {exec $DOXYGEN_PATH $DOXYFILE >> $DOXYOUT} DOX_ERROR] 
   if {$RESULT != 0} {
     set NbErrors [regexp -all -line {^\s*[^\s]+} $DOX_ERROR]
     if {$NbErrors > 0} {
-      puts "\nWarning: Doxygen reported $NbErrors messages."
-      puts "See log in $DOXYLOG\n"
+      puts "Warning: Doxygen reported $NbErrors messages."
+      puts "See log in $DOXYLOG"
       set DOX_ERROR_FILE [open $DOXYLOG "a"]
       if {$generatorMode == "PDF_ONLY"} {
         puts $DOX_ERROR_FILE "\n===================================================="
@@ -503,7 +504,7 @@ proc OCCDoc_Main {docType {docfiles {}} {modules {}} generatorMode verboseMode s
     if {[OCCDoc_PostProcessor $DOCDIR] == 0} {
       puts "$curtime Generation completed."
       puts "\nInfo: doxygen log file is located in:"
-      puts "$OUTDIR/doxygen_out.log."
+      puts "${DOXYOUT}."
       puts "\nReference Manual is generated in \n$DOCDIR"
     }
   } elseif { $docType == "OVERVIEW" } {
@@ -570,25 +571,29 @@ proc OCCDoc_Main {docType {docfiles {}} {modules {}} generatorMode verboseMode s
             puts "Info: Executing $LATEXDIR/Makefile..."
           }
         }
-        set PDFLOG $OUTDIR/pdflatex_warnings_and_errors.log
+
+        set PDFLOG $OUTDIR/${LOGPREFIX}pdflatex_err.log
+        set PDFOUT $OUTDIR/${LOGPREFIX}pdflatex_out.log
+        file delete -force $PDFLOG
+        file delete -force $PDFOUT
 
         if {"$is_win" == "yes"} {
-          set RESULT [catch {eval exec [auto_execok $LATEXDIR/make.bat] >> "$OUTDIR/pdflatex_out.log"} LaTeX_ERROR]
+          set RESULT [catch {eval exec [auto_execok $LATEXDIR/make.bat] >> "$PDFOUT"} LaTeX_ERROR]
         } else {
-          set RESULT [catch {eval exec "make -f $LATEXDIR/Makefile" >> "$OUTDIR/pdflatex_out.log"} LaTeX_ERROR]
+          set RESULT [catch {eval exec "make -f $LATEXDIR/Makefile" >> "$PDFOUT"} LaTeX_ERROR]
 
           # Small workaround for *nix stations
           set prev_loc [pwd]
           cd $LATEXDIR
-          set RESULT [catch {eval exec "pdflatex refman.tex" >> "$OUTDIR/pdflatex_out.log"} LaTeX_ERROR]
+          set RESULT [catch {eval exec "pdflatex refman.tex" >> "$PDFOUT"} LaTeX_ERROR]
           cd $prev_loc
         }
 
         if {$RESULT != 0} {
           set NbErrors [regexp -all -line {^\s*[^\s]+} $LaTeX_ERROR]
           if {$NbErrors > 0} {
-            puts "\nWarning: PDFLaTeX reported $NbErrors messages.\nSee log in $PDFLOG\n"
-            set LaTeX_ERROR_FILE [open $PDFLOG "a"]
+            puts "Warning: PDFLaTeX reported $NbErrors messages.\nSee log in $PDFLOG"
+            set LaTeX_ERROR_FILE [open $PDFLOG "a+"]
             puts $LaTeX_ERROR_FILE "\n===================================================="
             puts $LaTeX_ERROR_FILE "Logfile of file $TEX:"
             puts $LaTeX_ERROR_FILE "====================================================\n"
@@ -621,6 +626,7 @@ proc OCCDoc_Main {docType {docfiles {}} {modules {}} generatorMode verboseMode s
           set TEX "$PDFNAME"
         }
         file rename -force $LATEXDIR/refman.pdf "$destFolder/$TEX.pdf"
+        puts "Generated $destFolder/$TEX.pdf"
       }
     } elseif { $generatorMode == "CHM_ONLY" } {
       if { [OCCDoc_GetProdRootDir] == ""} {
@@ -632,13 +638,10 @@ proc OCCDoc_Main {docType {docfiles {}} {modules {}} generatorMode verboseMode s
     cd $INDIR
 
     if { $generatorMode == "HTML_ONLY" } {
-      puts "\nHTML documentation is generated in \n$DOCDIR"
+      puts "HTML documentation is generated in \n$DOCDIR"
+    } elseif { $generatorMode == "CHM_ONLY" } {
+      puts "Generated CHM documentation is in \n$OUTDIR/overview.chm"
     }
-    if { $generatorMode == "CHM_ONLY" } {
-      puts "\nGenerated CHM documentation is in \n$OUTDIR/overview.chm"
-    }
-
-    puts ""
   }
 
   # Remove temporary Doxygen files
@@ -646,8 +649,6 @@ proc OCCDoc_Main {docType {docfiles {}} {modules {}} generatorMode verboseMode s
   foreach file $deleteList {
     file delete $file
   }
-
-  puts "\nPDF files are generated in \n[file normalize $OUTDIR]"
 
   return 0
 }

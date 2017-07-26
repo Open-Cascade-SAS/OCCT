@@ -31,6 +31,7 @@
   \fontseries{bc}\selectfont%
   \color{darkgray}%
 }
+\newcommand{\+}{\discretionary{\mbox{\scriptsize$\hookleftarrow$}}{}{}}
 
 % Page & text layout
 \usepackage{geometry}
@@ -50,12 +51,12 @@
 \makeatletter
 \renewcommand{\paragraph}{%
   \@startsection{paragraph}{4}{0ex}{-1.0ex}{1.0ex}{%
-\normalfont\normalsize\bfseries\SS@parafont%
+    \normalfont\normalsize\bfseries\SS@parafont%
   }%
 }
 \renewcommand{\subparagraph}{%
   \@startsection{subparagraph}{5}{0ex}{-1.0ex}{1.0ex}{%
-\normalfont\normalsize\bfseries\SS@subparafont%
+    \normalfont\normalsize\bfseries\SS@subparafont%
   }%
 }
 \makeatother
@@ -107,9 +108,12 @@
 \newcommand{\clearemptydoublepage}{%
   \newpage{\pagestyle{empty}\cleardoublepage}%
 }
-\n
-%===== C O N T E N T S =====\n
+
+
+%===== C O N T E N T S =====
+
 \begin{document}
+
 % Titlepage & ToC
 \hypersetup{pageanchor=false}
 \pagenumbering{roman}

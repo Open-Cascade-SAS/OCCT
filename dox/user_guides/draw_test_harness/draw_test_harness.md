@@ -391,7 +391,7 @@ puts ;negative;
 Syntax:                  
 
 
-~~~~~~
+~~~~~
 while condition script 
 for init condition reinit script 
 foreach varname list script 
