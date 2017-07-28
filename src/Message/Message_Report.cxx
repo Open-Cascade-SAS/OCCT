@@ -37,7 +37,7 @@ Message_Report::Message_Report ()
 void Message_Report::AddAlert (Message_Gravity theGravity, const Handle(Message_Alert)& theAlert)
 {
   Standard_ASSERT_RETURN (! theAlert.IsNull(), "Attempt to add null alert",);
-  Standard_ASSERT_RETURN (theGravity >= 0 && theGravity < sizeof(myAlerts)/sizeof(myAlerts[0]), 
+  Standard_ASSERT_RETURN (theGravity >= 0 && size_t(theGravity) < sizeof(myAlerts)/sizeof(myAlerts[0]), 
                           "Adding alert with gravity not in valid range",);
 
   Standard_Mutex::Sentry aSentry (myMutex);
@@ -68,7 +68,7 @@ void Message_Report::AddAlert (Message_Gravity theGravity, const Handle(Message_
 const Message_ListOfAlert& Message_Report::GetAlerts (Message_Gravity theGravity) const
 {
   static const Message_ListOfAlert anEmptyList;
-  Standard_ASSERT_RETURN (theGravity >= 0 && theGravity < sizeof(myAlerts)/sizeof(myAlerts[0]), 
+  Standard_ASSERT_RETURN (theGravity >= 0 && size_t(theGravity) < sizeof(myAlerts)/sizeof(myAlerts[0]), 
                           "Requesting alerts for gravity not in valid range", anEmptyList);
   return myAlerts[theGravity];
 }
@@ -95,7 +95,7 @@ Standard_Boolean Message_Report::HasAlert (const Handle(Standard_Type)& theType)
 
 Standard_Boolean Message_Report::HasAlert (const Handle(Standard_Type)& theType, Message_Gravity theGravity)
 {
-  Standard_ASSERT_RETURN (theGravity >= 0 && theGravity < sizeof(myAlerts)/sizeof(myAlerts[0]), 
+  Standard_ASSERT_RETURN (theGravity >= 0 && size_t(theGravity) < sizeof(myAlerts)/sizeof(myAlerts[0]), 
                           "Requesting alerts for gravity not in valid range", Standard_False);
   for (Message_ListOfAlert::Iterator anIt (myAlerts[theGravity]); anIt.More(); anIt.Next())
   {
@@ -125,7 +125,7 @@ void Message_Report::Clear ()
 
 void Message_Report::Clear (Message_Gravity theGravity)
 {
-  Standard_ASSERT_RETURN (theGravity >= 0 && theGravity < sizeof(myAlerts)/sizeof(myAlerts[0]), 
+  Standard_ASSERT_RETURN (theGravity >= 0 && size_t(theGravity) < sizeof(myAlerts)/sizeof(myAlerts[0]), 
                           "Requesting alerts for gravity not in valid range", );
   myAlerts[theGravity].Clear();
 }
@@ -173,7 +173,7 @@ void Message_Report::Dump (Standard_OStream& theOS)
 
 void Message_Report::Dump (Standard_OStream& theOS, Message_Gravity theGravity)
 {
-  Standard_ASSERT_RETURN (theGravity >= 0 && theGravity < sizeof(myAlerts)/sizeof(myAlerts[0]), 
+  Standard_ASSERT_RETURN (theGravity >= 0 && size_t(theGravity) < sizeof(myAlerts)/sizeof(myAlerts[0]), 
                           "Requesting alerts for gravity not in valid range", );
 
   // report each type of warning only once
@@ -208,7 +208,7 @@ void Message_Report::SendMessages (const Handle(Message_Messenger)& theMessenger
 
 void Message_Report::SendMessages (const Handle(Message_Messenger)& theMessenger, Message_Gravity theGravity)
 {
-  Standard_ASSERT_RETURN (theGravity >= 0 && theGravity < sizeof(myAlerts)/sizeof(myAlerts[0]), 
+  Standard_ASSERT_RETURN (theGravity >= 0 && size_t(theGravity) < sizeof(myAlerts)/sizeof(myAlerts[0]), 
                           "Requesting alerts for gravity not in valid range", );
 
   // report each type of warning only once

@@ -93,18 +93,14 @@ GccAna_Circ2d3Tan::
      Standard_Integer nbsolution1 = Bis1.NbSolutions();
      Handle(GccInt_Bisec) Sol2 = Bis2.ThisSolution();
      for (Standard_Integer i = 1 ; i <=  nbsolution1; i++) {
-#ifdef OCCT_DEBUG
-       gp_Lin2d Sol1(Bis1.ThisSolution(i));
-#else
-       Bis1.ThisSolution(i) ;
-#endif
+       const gp_Lin2d Sol1(Bis1.ThisSolution(i));
        GccInt_IType typ2 = Sol2->ArcType();
        IntAna2d_AnaIntersection Intp;
        if (typ2 == GccInt_Lin) {
-	 Intp.Perform(Bis1.ThisSolution(i),Sol2->Line());
+	 Intp.Perform(Sol1,Sol2->Line());
        }
        else if (typ2 == GccInt_Par) {
-	 Intp.Perform(Bis1.ThisSolution(i),IntAna2d_Conic(Sol2->Parabola()));
+	 Intp.Perform(Sol1,IntAna2d_Conic(Sol2->Parabola()));
        }
        if (Intp.IsDone()) {
 	 if (!Intp.IsEmpty()) {

@@ -313,11 +313,14 @@ void BRepClass3d_SClassifier::Perform(BRepClass3d_SolidExplorer& SolidExplorer,
           continue;
         TopoDS_Face f1 = TopoDS::Face(ffs.First());
         TopoDS_Face f2 = TopoDS::Face(ffs.Last());
-        IntCurveSurface_TransitionOnCurve tran;
         TopoDS_Vertex V1, V2;
         TopExp::Vertices(EE, V1, V2);
         if (LVInts.Contains(V1) || LVInts.Contains(V2))
+        {
           continue;
+        }
+
+        IntCurveSurface_TransitionOnCurve tran = IntCurveSurface_Tangent;
         Standard_Integer Tst = GetTransi(f1, f2, EE, param, L, tran);
         if (Tst == 1 && Abs(Lpar) < Abs(parmin))
         {

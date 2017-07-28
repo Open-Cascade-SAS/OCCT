@@ -118,13 +118,15 @@ Standard_Integer DNaming_Line3DDriver::Execute(Handle(TFunction_Logbook)& theLog
 #ifdef OCCT_DEBUG
     if(!aNS1->IsEmpty()) {
       aShape1 = aNS1->Get();
-      gp_Pnt aDebPoint = BRep_Tool::Pnt(TopoDS::Vertex(aShape1));
+      const gp_Pnt aDebPoint = BRep_Tool::Pnt(TopoDS::Vertex(aShape1));
+      (void )aDebPoint;
       //	cout << aCounter << " X = " <<  aDebPoint.X() << " Y = " <<  aDebPoint.Y() << " Z = " <<  aDebPoint.Z() << endl;
     } else
       cout << " Line3DDriver:: NS1 is empty" << endl;
     if(!aNS2->IsEmpty()) {
       aShape2 = aNS2->Get();
-      gp_Pnt aDebPoint = BRep_Tool::Pnt(TopoDS::Vertex(aShape2));
+      const gp_Pnt aDebPoint = BRep_Tool::Pnt(TopoDS::Vertex(aShape2));
+      (void )aDebPoint;
       //      cout << aCounter+1 << " X = " <<  aDebPoint.X() << " Y = " <<  aDebPoint.Y() << " Z = " <<  aDebPoint.Z() << endl;
     } else
       cout << " Line3DDriver:: NS2 is empty" << endl;
@@ -137,10 +139,12 @@ Standard_Integer DNaming_Line3DDriver::Execute(Handle(TFunction_Logbook)& theLog
     aShape1 = aNS1->Get();
     aShape2 = aNS2->Get();
 #ifdef OCCT_DEBUG
-    gp_Pnt aDebPoint = BRep_Tool::Pnt(TopoDS::Vertex(aShape1));
-    //      cout << aCounter << " X = " <<  aDebPoint.X() << " Y = " <<  aDebPoint.Y() << " Z = " <<  aDebPoint.Z() << endl;
-    aDebPoint = BRep_Tool::Pnt(TopoDS::Vertex(aShape2));
-    //      cout << aCounter+1 << " X = " <<  aDebPoint.X() << " Y = " <<  aDebPoint.Y() << " Z = " <<  aDebPoint.Z() << endl;
+    const gp_Pnt aDebPoint1 = BRep_Tool::Pnt(TopoDS::Vertex(aShape1));
+    const gp_Pnt aDebPoint2 = BRep_Tool::Pnt(TopoDS::Vertex(aShape2));
+    //      cout << aCounter   << " X = " <<  aDebPoint1.X() << " Y = " <<  aDebPoint1.Y() << " Z = " <<  aDebPoint1.Z() << endl;
+    //      cout << aCounter+1 << " X = " <<  aDebPoint2.X() << " Y = " <<  aDebPoint2.Y() << " Z = " <<  aDebPoint2.Z() << endl;
+    (void )aDebPoint1;
+    (void )aDebPoint2;
 #endif 
     if(aShape1.ShapeType() != TopAbs_VERTEX || aShape2.ShapeType() != TopAbs_VERTEX) {
       aFunction->SetFailure(WRONG_ARGUMENT);

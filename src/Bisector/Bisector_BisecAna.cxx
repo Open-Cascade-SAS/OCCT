@@ -839,11 +839,8 @@ void Bisector_BisecAna::Perform(const Handle(Geom2d_Curve)& afirstcurve  ,
   }
 
   aFirstCurveType = curve->DynamicType();
-#ifdef OCCT_DEBUG
-  gp_Pnt2d Point(asecondpoint->Pnt2d());
-#else
-  asecondpoint->Pnt2d();
-#endif
+  const gp_Pnt2d aPoint(asecondpoint->Pnt2d());
+  (void )aPoint;
   if (aFirstCurveType == STANDARD_TYPE(Geom2d_Circle)) {
     cas = 1;
     Handle(Geom2d_Circle) C1 = Handle(Geom2d_Circle)::DownCast(curve);

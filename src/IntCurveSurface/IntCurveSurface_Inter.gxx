@@ -942,12 +942,8 @@ void IntCurveSurface_Inter::PerformConicSurf(const gp_Lin&   Line,
 	Standard_Integer nbp = intlintorus.NbPoints();
 	Standard_Real fi,theta,w;
 	for(Standard_Integer i = 1; i<= nbp; i++) { 
-#ifndef OCCT_DEBUG
-	  gp_Pnt P;
-	  P = intlintorus.Value(i);
-#else
-	  gp_Pnt P(intlintorus.Value(i));
-#endif
+	  const gp_Pnt aDebPnt(intlintorus.Value(i));
+	  (void )aDebPnt;
 	  w = intlintorus.ParamOnLine(i);
 	  intlintorus.ParamOnTorus(i,fi,theta);
 	  AppendPoint(curve,w,surface,fi,theta);

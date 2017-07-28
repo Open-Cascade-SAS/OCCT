@@ -88,14 +88,9 @@ GccAna_Circ2d3Tan::
    GccAna_Pnt2dBisec Bis1(Point2,Point3);
    GccAna_LinPnt2dBisec Bis2(L1,Point2);
    if (Bis1.IsDone() && Bis2.IsDone()) {
-     gp_Lin2d linint1(Bis1.ThisSolution());
+     const gp_Lin2d linint1(Bis1.ThisSolution());
      Handle(GccInt_Bisec) Sol2 = Bis2.ThisSolution();
      GccInt_IType typ2 = Sol2->ArcType();
-#ifdef OCCT_DEBUG
-     gp_Lin2d linintb(Bis1.ThisSolution());
-#else
-     Bis1.ThisSolution() ;
-#endif
      IntAna2d_AnaIntersection Intp;
      if (typ2 == GccInt_Lin) {
        gp_Lin2d linint2(Sol2->Line());
