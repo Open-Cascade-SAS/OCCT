@@ -1,0 +1,23 @@
+puts "========"
+puts "OCC28944"
+puts "========"
+puts ""
+#######################################################
+# Cannot find section between two faces
+#######################################################
+
+restore [locate_data_file bug28944_shell.brep] sh0
+plane pl0 28.0 0.0 0.0 1.0 0.0 0.0
+mkface f0 pl0 -50 50 -50 50
+
+# Incomplete section
+bsection result sh0 f0
+
+regexp {nb alone Vertices : ([-0-9.+eE]+)} [checksection result] full nbv
+if { $nbv != 0 } { puts "Error : Section is incorrect" }
+
+checknbshapes result -vertex 2 -edge 2
+
+checkprops result -l 6.91796
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
