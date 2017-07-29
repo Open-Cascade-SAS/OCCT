@@ -56,6 +56,6 @@ To build all toolkits, click **Build->Build workspace** in the menu bar.
 
 To start *DRAWEXE*, which has been built with **Code::Blocks** on Mac OS X, run the script
 ~~~~~
-   ./draw_cbp.sh cbp [d]
+   ./draw.sh cbp [d]
 ~~~~~
 Option *d* is used if OCCT has been built in **Debug** mode.

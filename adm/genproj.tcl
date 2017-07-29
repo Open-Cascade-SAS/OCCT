@@ -26,7 +26,7 @@ set path [file normalize .]
 set THE_CASROOT ""
 set fBranch ""
 if { [info exists ::env(CASROOT)] } {
-  set THE_CASROOT "$::env(CASROOT)"
+  set THE_CASROOT [file normalize "$::env(CASROOT)"]
 }
 
 proc _get_options { platform type branch } {
@@ -344,6 +344,22 @@ proc genproj {theFormat args} {
   genAllResources
 }
 
+# copy file providing warning if the target file exists and has 
+# different date or size; if it is newer than source, save it as .bak
+proc copy_with_warning {from to} {
+  if { [file exists "$to"] &&
+      ([file size   "$to"] != [file size  "$from"] ||
+       [file mtime  "$to"] != [file mtime "$from"]) } {
+    puts "Warning: file $to is updated (copied from $from)!"
+    if { [file mtime $to] > [file mtime $from] } {
+      puts "Info: old content of file $to is saved in ${to}.bak"
+      file copy -force -- "$to" "${to}.bak"
+    }
+  }
+
+  file copy -force -- "$from" "$to"
+}
+
 proc genprojbat {theFormat thePlatform} {
   set aTargetPlatformExt sh
   if { $thePlatform == "wnt" || $thePlatform == "uwp" } {
@@ -369,11 +385,11 @@ proc genprojbat {theFormat thePlatform} {
       close $anEnvFile
     }
 
-    file copy -force -- "$::THE_CASROOT/adm/templates/draw.${aTargetPlatformExt}" "$::path/draw.${aTargetPlatformExt}"
+    copy_with_warning "$::THE_CASROOT/adm/templates/draw.${aTargetPlatformExt}" "$::path/draw.${aTargetPlatformExt}"
   }
 
   if { [regexp {^vc} $theFormat] } {
-    file copy -force -- "$::THE_CASROOT/adm/templates/msvc.bat" "$::path/msvc.bat"
+    copy_with_warning "$::THE_CASROOT/adm/templates/msvc.bat" "$::path/msvc.bat"
   } else {
     switch -exact -- "$theFormat" {
       "cbp"   {
