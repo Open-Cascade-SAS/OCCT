@@ -1,0 +1,8 @@
+readstl m [locate_data_file bug28680_sample01b.stl] triangulation
+
+# Number of triangles check
+checktrinfo m -tri 62075 -nod 31879
+
+# Visual check
+checkview -display m -3d -vdispmode 0 -path ${imagedir}/${test_image}_edges.png
+checkview -display m -3d -vdispmode 1 -path ${imagedir}/${test_image}_shading.png

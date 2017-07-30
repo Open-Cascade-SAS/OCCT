@@ -33,6 +33,8 @@ class RWStl_Reader : public Standard_Transient
 public:
 
   //! Reads data from STL file (either binary or Ascii).
+  //! This function supports reading multi-domain STL files formed by concatenation of several "plain" files.
+  //! The mesh nodes are not merged between domains.
   //! Unicode paths can be given in UTF-8 encoding.
   //! Format is recognized automatically by analysis of the file header.
   //! Returns true if success, false on error or user break.

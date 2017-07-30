@@ -132,18 +132,31 @@ Standard_Boolean RWStl_Reader::Read (const char* theFile,
   }
 
   Standard_IStream aStream (&aBuf);
-  if (IsAscii (aStream))
+
+  // get length of file to feed progress indicator in Ascii mode
+  aStream.seekg (0, aStream.end);
+  std::streampos theEnd = aStream.tellg();
+  aStream.seekg (0, aStream.beg);
+
+  while (!aStream.eof() && !aStream.bad())
   {
-    // get length of file to feed progress indicator
-    aStream.seekg (0, aStream.end);
-    std::streampos theEnd = aStream.tellg();
-    aStream.seekg (0, aStream.beg);
-    return ReadAscii (aStream, theEnd, theProgress);
+    if (IsAscii (aStream))
+    {
+      if (!ReadAscii (aStream, theEnd, theProgress))
+      {
+        break;
+      }
+    }
+    else
+    {
+      if (!ReadBinary (aStream, theProgress))
+      {
+        break;
+      }
+    }
+    aStream >> std::ws; // skip any white spaces
   }
-  else
-  {
-    return ReadBinary (aStream, theProgress);
-  }
+  return !aStream.bad();
 }
 
 //==============================================================================
