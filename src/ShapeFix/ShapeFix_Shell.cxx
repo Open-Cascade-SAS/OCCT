@@ -70,6 +70,7 @@ ShapeFix_Shell::ShapeFix_Shell()
   myFixOrientationMode = -1;
   myFixFace = new ShapeFix_Face;
   myNbShells =0;
+  myNonManifold = Standard_False;
 }
 
 //=======================================================================
@@ -84,6 +85,7 @@ ShapeFix_Shell::ShapeFix_Shell(const TopoDS_Shell& shape)
   myFixOrientationMode = -1;
   myFixFace = new ShapeFix_Face;
   Init(shape);
+  myNonManifold = Standard_False;
 }
 
 //=======================================================================
@@ -138,9 +140,10 @@ Standard_Boolean ShapeFix_Shell::Perform(const Handle(Message_ProgressIndicator)
     if ( !aPSentry.More() )
       return Standard_False;
   }
+
   TopoDS_Shape newsh = Context()->Apply(myShell);
   if ( NeedFix ( myFixOrientationMode) )
-    FixFaceOrientation(TopoDS::Shell(newsh));
+    FixFaceOrientation(TopoDS::Shell(newsh), Standard_True, myNonManifold);
 
   TopoDS_Shape aNewsh = Context()->Apply (newsh);
   ShapeAnalysis_Shell aSas;
@@ -853,7 +856,10 @@ static void CreateClosedShell(TopTools_SequenceOfShape& OpenShells,
 // purpose  : 
 //=======================================================================
   
-Standard_Boolean ShapeFix_Shell::FixFaceOrientation(const TopoDS_Shell& shell,const Standard_Boolean isAccountMultiConex,const Standard_Boolean NonManifold) 
+Standard_Boolean ShapeFix_Shell::FixFaceOrientation(
+    const TopoDS_Shell& shell,
+    const Standard_Boolean isAccountMultiConex,
+    const Standard_Boolean NonManifold) 
 {
   //myStatus = ShapeExtend::EncodeStatus (ShapeExtend_OK);
   Standard_Boolean done = Standard_False;
@@ -1101,6 +1107,7 @@ void ShapeFix_Shell::SetMaxTolerance (const Standard_Real maxtol)
   ShapeFix_Root::SetMaxTolerance ( maxtol );
   myFixFace->SetMaxTolerance ( maxtol );
 }
+
 //=======================================================================
 //function : NbShells
 //purpose  : 
@@ -1109,4 +1116,14 @@ void ShapeFix_Shell::SetMaxTolerance (const Standard_Real maxtol)
 Standard_Integer ShapeFix_Shell::NbShells() const
 {
   return myNbShells;
+}
+
+//=======================================================================
+//function : SetNonManifoldFlag
+//purpose  : 
+//=======================================================================
+
+void ShapeFix_Shell::SetNonManifoldFlag(const Standard_Boolean isNonManifold)
+{
+    myNonManifold = isNonManifold;
 }

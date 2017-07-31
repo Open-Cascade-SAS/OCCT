@@ -716,7 +716,8 @@ static Standard_Boolean fixshape (const Handle(ShapeProcess_Context)& context)
   sfs->FixSolidTool()->CreateOpenSolidMode() = ctx->BooleanVal ( "CreateOpenSolidMode", Standard_True );
 
   sfs->FixShellTool()->FixFaceMode() = ctx->IntegerVal ( "FixFaceMode", -1 );
-  sfs->FixShellTool()->FixOrientationMode() = ctx->IntegerVal ( "FixFaceOrientationMode", -1 );
+  sfs->FixShellTool()->SetNonManifoldFlag(ctx->IsNonManifold());
+  sfs->FixShellTool()->FixOrientationMode() = ctx->IntegerVal("FixFaceOrientationMode", -1);
 
   //parameters for ShapeFix_Face
   sff->FixWireMode()              = ctx->IntegerVal ( "FixWireMode", -1 );

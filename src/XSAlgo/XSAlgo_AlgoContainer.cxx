@@ -97,7 +97,8 @@ TopoDS_Shape XSAlgo_AlgoContainer::ProcessShape (const TopoDS_Shape& shape,
                                                  const Standard_CString prscfile,
                                                  const Standard_CString pseq,
                                                  Handle(Standard_Transient)& info,
-                                                 const Handle(Message_ProgressIndicator)& progress) const
+                                                 const Handle(Message_ProgressIndicator)& progress,
+                                                 const Standard_Boolean NonManifold) const
 {
   if ( shape.IsNull() ) return shape;
   
@@ -112,6 +113,7 @@ TopoDS_Shape XSAlgo_AlgoContainer::ProcessShape (const TopoDS_Shape& shape,
     if ( !progress.IsNull() )
       context->SetProgress(progress);
   }
+  context->SetNonManifold(NonManifold);
   info = context;
   
   Standard_CString seq = Interface_Static::CVal ( pseq );

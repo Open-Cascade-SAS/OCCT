@@ -243,6 +243,7 @@ Standard_Boolean ShapeFix_Shape::Perform(const Handle(Message_ProgressIndicator)
   aPSentry.Next();
 
   myResult = Context()->Apply(S);
+
   if ( NeedFix(myFixSameParameterMode) )
   {
     SameParameter(myResult, Standard_False, theProgress);
@@ -269,6 +270,7 @@ Standard_Boolean ShapeFix_Shape::Perform(const Handle(Message_ProgressIndicator)
       }
     }
   }
+
   myResult = Context()->Apply(myResult);
 
   if ( !fft.IsNull() )

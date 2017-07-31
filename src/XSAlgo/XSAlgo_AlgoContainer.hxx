@@ -63,7 +63,11 @@ public:
   //! This information should be later transmitted to
   //! MergeTransferInfo in order to be recorded in the
   //! translation map
-  Standard_EXPORT virtual TopoDS_Shape ProcessShape (const TopoDS_Shape& shape, const Standard_Real Prec, const Standard_Real MaxTol, const Standard_CString rscfile, const Standard_CString seq, Handle(Standard_Transient)& info, const Handle(Message_ProgressIndicator)& progress = 0) const;
+  Standard_EXPORT virtual TopoDS_Shape ProcessShape (
+      const TopoDS_Shape& shape, const Standard_Real Prec, const Standard_Real MaxTol,
+      const Standard_CString rscfile, const Standard_CString seq, Handle(Standard_Transient)& info,
+      const Handle(Message_ProgressIndicator)& progress = 0,
+      const Standard_Boolean NonManifold = Standard_False) const;
   
   //! Checks quality of pcurve of the edge on the given face,
   //! and corrects it if necessary.

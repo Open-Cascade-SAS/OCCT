@@ -1,0 +1,26 @@
+puts "========"
+puts "OCC28715"
+puts "========"
+puts ""
+##########################################################################
+# Invalid shape after import STeP file
+##########################################################################
+
+stepread [locate_data_file bug28715_Ailette_mm.stp] a *
+
+checkshape a_1
+
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX    : 487
+ EDGE      : 794
+ WIRE      : 313
+ FACE      : 313
+ SHELL     : 3
+ SOLID     : 0
+ COMPSOLID : 0
+ COMPOUND  : 1
+ SHAPE     : 1911
+"
+checknbshapes a_1 -ref ${nbshapes_expected} -t -m "importing file"
+checkview -display a_1 -3d -path ${imagedir}/${test_image}.png

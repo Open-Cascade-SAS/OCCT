@@ -126,7 +126,17 @@ public:
   //! Prints statistics on Shape Processing onto the current Messenger.
   Standard_EXPORT void PrintStatistics() const;
 
+  //! Set NonManifold flag
+  Standard_EXPORT void SetNonManifold(Standard_Boolean theNonManifold)
+  {
+      myNonManifold = theNonManifold;
+  }
 
+  //! Get NonManifold flag
+  Standard_EXPORT Standard_Boolean IsNonManifold()
+  {
+      return myNonManifold;
+  }
 
 
   DEFINE_STANDARD_RTTIEXT(ShapeProcess_ShapeContext,ShapeProcess_Context)
@@ -144,7 +154,7 @@ private:
   TopTools_DataMapOfShapeShape myMap;
   Handle(ShapeExtend_MsgRegistrator) myMsg;
   TopAbs_ShapeEnum myUntil;
-
+  Standard_Boolean myNonManifold;
 
 };
 

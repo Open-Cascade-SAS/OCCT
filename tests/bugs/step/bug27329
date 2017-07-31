@@ -16,7 +16,7 @@ stepwrite 0 a $imagedir/bug27329_temp.stp
 stepread $imagedir/bug27329_temp.stp b *
 renamevar b_1 result
 
-checknbshapes result -solid 3 -shell 3 -face 42
+checknbshapes result -solid 1 -shell 5 -face 42
 
 param write.step.nonmanifold 0
 param read.step.nonmanifold 0

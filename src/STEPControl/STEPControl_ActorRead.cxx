@@ -47,6 +47,7 @@
 #include <StepDimTol_GeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol.hxx>
 #include <StepGeom_Axis2Placement3d.hxx>
 #include <StepGeom_CartesianTransformationOperator3d.hxx>
+#include <StepGeom_Direction.hxx>
 #include <StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext.hxx>
 #include <StepGeom_GeometricRepresentationItem.hxx>
 #include <StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx.hxx>
@@ -823,17 +824,29 @@ Handle(TransferBRep_ShapeBinder) STEPControl_ActorRead::TransferEntity(const Han
       nsh ++;
     }
   }
-  
+
   // [BEGIN] Proceed with non-manifold topology (ssv; 12.11.2010)
   if (!isManifold) {
+
     Handle(Standard_Transient) info;
     // IMPORTANT: any fixing on non-manifold topology must be done after the shape is transferred from STEP
     TopoDS_Shape fixedResult = 
       XSAlgo::AlgoContainer()->ProcessShape( comp, myPrecision, myMaxTol,
                                              "read.step.resource.name", 
                                              "read.step.sequence", info,
-                                             TP->GetProgress() );
+                                             TP->GetProgress(), Standard_True);
     XSAlgo::AlgoContainer()->MergeTransferInfo(TP, info, nbTPitems);
+
+    if (fixedResult.ShapeType() == TopAbs_COMPOUND)
+    {
+        comp = TopoDS::Compound(fixedResult);
+    }
+    else
+    {
+        comp.Nullify();
+        B.MakeCompound(comp);
+        B.Add(comp, fixedResult);
+    }
 
     BRep_Builder brepBuilder;
 
@@ -874,20 +887,19 @@ Handle(TransferBRep_ShapeBinder) STEPControl_ActorRead::TransferEntity(const Han
     // [BEGIN] Reconstruct Solids from Closed Shells (ssv; 15.11.2010)
     TopoDS_Compound reconstComp;
     brepBuilder.MakeCompound(reconstComp);
-    
-    TopoDS_Iterator it(comp);
-    for ( ; it.More(); it.Next() ) {
-      TopoDS_Shape aSubShape = it.Value();
-      if ( aSubShape.ShapeType() == TopAbs_SHELL && aSubShape.Closed() ) {
-        TopoDS_Solid nextSolid;
-        brepBuilder.MakeSolid(nextSolid);
-        brepBuilder.Add(nextSolid, aSubShape);
-        brepBuilder.Add(reconstComp, nextSolid);
-      } 
-      else if (aSubShape.ShapeType() == TopAbs_SHELL)
-        brepBuilder.Add(reconstComp, aSubShape);
+    TopExp_Explorer exp(comp, TopAbs_SHELL);
+    for (; exp.More(); exp.Next())
+    {
+        TopoDS_Shape aSubShape = exp.Current();
+        if (aSubShape.ShapeType() == TopAbs_SHELL && aSubShape.Closed()) {
+            TopoDS_Solid nextSolid;
+            brepBuilder.MakeSolid(nextSolid);
+            brepBuilder.Add(nextSolid, aSubShape);
+            brepBuilder.Add(reconstComp, nextSolid);
+        }
+        else if (aSubShape.ShapeType() == TopAbs_SHELL)
+            brepBuilder.Add(reconstComp, aSubShape);
     }
-
     comp = reconstComp;
     // [END] Reconstruct Solids from Closed Shells (ssv; 15.11.2010)
   }
@@ -896,6 +908,7 @@ Handle(TransferBRep_ShapeBinder) STEPControl_ActorRead::TransferEntity(const Han
   if      (nsh == 0) shbinder.Nullify();
   else if (nsh == 1) shbinder = new TransferBRep_ShapeBinder (OneResult);
   else               shbinder = new TransferBRep_ShapeBinder (comp);
+
   PrepareUnits ( oldSRContext, TP ); //:S4136
   TP->Bind(sr, shbinder);
 

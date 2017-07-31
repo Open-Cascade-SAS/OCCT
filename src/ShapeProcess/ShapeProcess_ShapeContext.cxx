@@ -38,7 +38,8 @@ IMPLEMENT_STANDARD_RTTIEXT(ShapeProcess_ShapeContext,ShapeProcess_Context)
 //=======================================================================
 ShapeProcess_ShapeContext::ShapeProcess_ShapeContext (const Standard_CString file,
                                                       const Standard_CString seq) 
-     : ShapeProcess_Context ( file, seq ), myUntil(TopAbs_FACE)
+     : ShapeProcess_Context ( file, seq ), myUntil(TopAbs_FACE),
+       myNonManifold(Standard_False)
 {
 }
 
@@ -50,7 +51,8 @@ ShapeProcess_ShapeContext::ShapeProcess_ShapeContext (const Standard_CString fil
 ShapeProcess_ShapeContext::ShapeProcess_ShapeContext (const TopoDS_Shape &S,
                                                       const Standard_CString file,
                                                       const Standard_CString seq) 
-     : ShapeProcess_Context ( file, seq ), myUntil(TopAbs_FACE)
+     : ShapeProcess_Context ( file, seq ), myUntil(TopAbs_FACE),
+       myNonManifold(Standard_False)
 {
   Init ( S );
 }
