@@ -110,6 +110,7 @@
       <ProgramDatabaseFile>.\..\..\..\win32\__VCVER__\bin\__XQTNAM__.pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
       <ImportLibrary>..\..\..\win32\__VCVER__\lib\__XQTNAM__.lib</ImportLibrary>
+      <AdditionalOptions>/LARGEADDRESSAWARE %(AdditionalOptions)</AdditionalOptions>
       __VCLNKREL__
     </Link>
   </ItemDefinitionGroup>
@@ -155,6 +156,7 @@
       <ProgramDatabaseFile>..\..\..\win32\__VCVER__\bind\__XQTNAM__.pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
       <ImportLibrary>..\..\..\win32\__VCVER__\libd\__XQTNAM__.lib</ImportLibrary>
+      <AdditionalOptions>/LARGEADDRESSAWARE %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
