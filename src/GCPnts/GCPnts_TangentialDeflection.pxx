@@ -576,13 +576,12 @@ void GCPnts_TangentialDeflection::PerformCurve (const TheCurve& C)
   //-- if(Nbp <  MinNb) { cout<<"\n*"; } else {  cout<<"\n."; } 
   while(Nbp < MinNb) { 
     //-- cout<<" \nGCPnts TangentialDeflection : Ajout de Points ("<<Nbp<<" "<<minNbPnts<<" )"<<endl;
-    for(i=2; i<=Nbp; i++) { 
+    for (i = 2; i <= Nbp; i += 2) {
       MiddleU = (parameters.Value(i-1)+parameters.Value(i))*0.5;
       D0 (C, MiddleU, MiddlePoint); 
       parameters.InsertBefore(i,MiddleU);
       points.InsertBefore(i,MiddlePoint);
       Nbp++;
-      i++;
     }
   }
   //Additional check for intervals
