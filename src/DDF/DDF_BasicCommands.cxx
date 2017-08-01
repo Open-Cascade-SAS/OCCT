@@ -13,11 +13,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//      	---------------------
+// ---------------------
 
-// Version:	0.0
-//Version	Date		Purpose
-//		0.0	Feb 10 1997	Creation
+// Version: 0.0
+// Version   Date            Purpose
+//          0.0 Feb 10 1997  Creation
 
 
 #include <DDF.hxx>
@@ -64,11 +64,11 @@
 //=======================================================================
 
 static Standard_Integer DDF_Children (Draw_Interpretor& di, 
-				      Standard_Integer  n, 
-				      const char**            a)
+                                      Standard_Integer  n, 
+                                      const char**            a)
 {
   if (n < 2) return 1;
-  
+
   Handle(TDF_Data) DF;
   TCollection_AsciiString entry;
 
@@ -97,11 +97,11 @@ static Standard_Integer DDF_Children (Draw_Interpretor& di,
 //=======================================================================
 
 static Standard_Integer DDF_Attributes (Draw_Interpretor& di, 
-					Standard_Integer  n, 
-					const char**            a)
+                                        Standard_Integer  n, 
+                                        const char**            a)
 {
   if (n != 3) return 1;
-  
+
   Handle(TDF_Data) DF;
 
   if (!DDF::GetDF (a[1], DF)) return 1;
@@ -124,11 +124,11 @@ static Standard_Integer DDF_Attributes (Draw_Interpretor& di,
 //=======================================================================
 
 static Standard_Integer DDF_ForgetAll(Draw_Interpretor& /*di*/, 
-				      Standard_Integer  n, 
-				      const char**            a)
+                                      Standard_Integer  n, 
+                                      const char**            a)
 {
   if (n != 3) return 1;
-  
+
   Handle(TDF_Data) DF;
 
   if (!DDF::GetDF (a[1], DF)) return 1;
@@ -137,11 +137,35 @@ static Standard_Integer DDF_ForgetAll(Draw_Interpretor& /*di*/,
   TDF_Tool::Label(DF,a[2],label);
   if (label.IsNull()) return 1;
   label.ForgetAllAttributes();
-//POP pour NT
+  //POP pour NT
   return 0;
 }
 
+//=======================================================================
+//function : ForgetAttribute
+//purpose  : "ForgetAtt dfname Label guid"
+//=======================================================================
 
+static Standard_Integer DDF_ForgetAttribute(Draw_Interpretor& di,
+                                            Standard_Integer  n,
+                                            const char**      a)
+{
+  if (n != 4) return 1;
+  Handle(TDF_Data) DF;
+  if (!DDF::GetDF (a[1], DF)) return 1;
+
+  TDF_Label aLabel;
+  TDF_Tool::Label(DF,a[2],aLabel);
+  if (aLabel.IsNull()) return 1;
+  if (!Standard_GUID::CheckGUIDFormat(a[3]))
+  {
+    di<<"DDF: The format of GUID is invalid\n";
+    return 1;
+  }
+  Standard_GUID guid(a[3]);
+  aLabel.ForgetAttribute(guid);
+  return 0;
+}
 
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // save/restore & Store/Retrieve commands
@@ -209,8 +233,8 @@ void ErrorMessage (const Storage_Error n)
 //=======================================================================
 
 static Standard_Integer DDF_SetTagger (Draw_Interpretor& di,
-					       Standard_Integer nb, 
-					       const char** arg) 
+                                       Standard_Integer nb, 
+                                       const char** arg) 
 {   
   if (nb == 3) {    
     Handle(TDF_Data) DF;
@@ -232,8 +256,8 @@ static Standard_Integer DDF_SetTagger (Draw_Interpretor& di,
 //=======================================================================
 
 static Standard_Integer DDF_NewTag (Draw_Interpretor& di,
-					 Standard_Integer nb, 
-					 const char** arg) 
+                                    Standard_Integer nb, 
+                                    const char** arg) 
 { 
   if (nb == 3) {
     Handle(TDF_Data) DF;
@@ -254,8 +278,8 @@ static Standard_Integer DDF_NewTag (Draw_Interpretor& di,
 //=======================================================================
 
 static Standard_Integer DDF_NewChild (Draw_Interpretor& di,
-					   Standard_Integer nb, 
-					   const char** arg) 
+                                      Standard_Integer nb, 
+                                      const char** arg) 
 { 
   Handle(TDF_Data) DF;
   if (nb>=2){
@@ -314,35 +338,38 @@ void DDF::BasicCommands (Draw_Interpretor& theCommands)
 
   const char* g = "DF basic commands";
 
-  // Label :  
+  // Label :
 
   theCommands.Add ("SetTagger", 
                    "SetTagger (DF, entry)",
-		   __FILE__, DDF_SetTagger, g);  
+                   __FILE__, DDF_SetTagger, g);  
 
   theCommands.Add ("NewTag", 
                    "NewTag (DF, tagger)",
-		   __FILE__, DDF_NewTag, g);
+                   __FILE__, DDF_NewTag, g);
 
   theCommands.Add ("NewChild", 
                    "NewChild (DF, [tagger])",
-		   __FILE__, DDF_NewChild, g);
+                   __FILE__, DDF_NewChild, g);
 
   theCommands.Add ("Children",
-		   " Returns the list of label children: Children DF label",
-		   __FILE__, DDF_Children, g);
+                   " Returns the list of label children: Children DF label",
+                   __FILE__, DDF_Children, g);
 
   theCommands.Add ("Attributes",
-		   " Returns the list of label attributes: Attributes DF label",
-		   __FILE__, DDF_Attributes, g);
+                   " Returns the list of label attributes: Attributes DF label",
+                   __FILE__, DDF_Attributes, g);
 
   theCommands.Add ("ForgetAll",
-		   "Forgets all attributes from the label: ForgetAll DF Label",
-		   __FILE__, DDF_ForgetAll, g);
+                   "Forgets all attributes from the label: ForgetAll DF Label",
+                   __FILE__, DDF_ForgetAll, g);
+
+  theCommands.Add ("ForgetAtt",
+                   "Forgets the specified by guid attribute from the label: ForgetAtt DF Label guid",
+                   __FILE__, DDF_ForgetAttribute, g);
 
   theCommands.Add ("Label",
-		   "Label DF entry",
-		  __FILE__, DDF_Label, g);  
-
+                   "Label DF entry",
+                   __FILE__, DDF_Label, g);  
 
 }

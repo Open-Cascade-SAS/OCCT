@@ -1,0 +1,40 @@
+puts "================"
+puts "bug0028946"
+puts "================"
+puts ""
+
+######################################################
+# Checks bug of Undo mechanism
+######################################################
+
+set aLab [Label D 0:1]
+
+#1. Add to Main label two numeric attributes
+SetInteger D $aLab 1
+SetReal    D $aLab 1.5
+
+#2. Forget Integer attribute
+NewCommand D
+ForgetAtt D $aLab 2a96b606-ec8b-11d0-bee7-080009dc3333
+
+#3. Set new Integer attribute
+SetInteger D $aLab 3
+NewCommand D
+
+#4. make Undo
+set IsGood 1
+if [catch {Undo D}] {
+   puts "Error during Document Undo"
+   set IsGood 0
+}
+
+#5. Check result
+if {$IsGood == 1} {
+    puts "bug0028946: OK"
+} else {
+    puts "bug0028946: ERROR"
+}
+
+#6. Close document
+Close D
+
