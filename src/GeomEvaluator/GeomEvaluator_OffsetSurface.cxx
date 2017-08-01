@@ -72,12 +72,90 @@ GeomEvaluator_OffsetSurface::GeomEvaluator_OffsetSurface(
 {
 }
 
+// If point is on parametric boundary, and calculation of normal fails,
+// try shifting it towards the inside in the hope that derivatives 
+// are better defined there.
+//
+// NB: temporarily this is made as static function and not class method, 
+// hence code duplications
+static Standard_Boolean shiftPoint (Standard_Real& theU, Standard_Real& theV, 
+                                    const Handle(Geom_Surface)& theSurf,
+                                    const Handle(GeomAdaptor_HSurface)& theAdaptor)
+{
+  // Get parametric bounds and closure status
+  Standard_Real aUMin, aUMax, aVMin, aVMax;
+  Standard_Boolean isUPeriodic, isVPeriodic;
+  if (! theSurf.IsNull())
+  {
+    theSurf->Bounds (aUMin, aUMax, aVMin, aVMax);
+    isUPeriodic = theSurf->IsUPeriodic();
+    isVPeriodic = theSurf->IsVPeriodic();
+  }
+  else
+  {
+    aUMin = theAdaptor->FirstUParameter();
+    aUMax = theAdaptor->LastUParameter();
+    aVMin = theAdaptor->FirstVParameter();
+    aVMax = theAdaptor->LastVParameter();
+    isUPeriodic = theAdaptor->IsUPeriodic();
+    isVPeriodic = theAdaptor->IsVPeriodic();
+  }
+
+  Standard_Boolean isShifted = Standard_False;
+
+  // shift by U
+  if (! isUPeriodic && aUMax - aUMin > 2 * Precision::PConfusion())
+  {
+    if (Abs (theU - aUMin) < Precision::PConfusion())
+    {
+      theU += Precision::PConfusion();
+      isShifted = Standard_True;
+    }
+    else if (Abs (theU - aUMax) < Precision::PConfusion())
+    {
+      theU -= Precision::PConfusion();
+      isShifted = Standard_True;
+    }
+  }
+
+  // shift by V
+  if (! isVPeriodic && aVMax - aVMin > 2 * Precision::PConfusion())
+  {
+    if (Abs (theV - aVMin) < Precision::PConfusion())
+    {
+      theV += Precision::PConfusion();
+      isShifted = Standard_True;
+    }
+    else if (Abs (theV - aVMax) < Precision::PConfusion())
+    {
+      theV -= Precision::PConfusion();
+      isShifted = Standard_True;
+    }
+  }
+
+  return isShifted;
+}
+
 void GeomEvaluator_OffsetSurface::D0(
     const Standard_Real theU, const Standard_Real theV, gp_Pnt& theValue) const
 {
   gp_Vec aD1U, aD1V;
   BaseD1(theU, theV, theValue, aD1U, aD1V);
-  CalculateD0(theU, theV, theValue, aD1U, aD1V);
+  try 
+  {
+    CalculateD0(theU, theV, theValue, aD1U, aD1V);
+  } 
+  catch (Geom_UndefinedValue&)
+  {
+    // if failed at parametric boundary, try taking derivative at shifted point
+    Standard_Real aU = theU, aV = theV;
+    if (! shiftPoint (aU, aV, myBaseSurf, myBaseAdaptor))
+    {
+      throw;
+    }
+    BaseD1(aU, aV, theValue, aD1U, aD1V);
+    CalculateD0(theU, theV, theValue, aD1U, aD1V);
+  }
 }
 
 void GeomEvaluator_OffsetSurface::D1(
@@ -86,7 +164,21 @@ void GeomEvaluator_OffsetSurface::D1(
 {
   gp_Vec aD2U, aD2V, aD2UV;
   BaseD2(theU, theV, theValue, theD1U, theD1V, aD2U, aD2V, aD2UV);
-  CalculateD1(theU, theV, theValue, theD1U, theD1V, aD2U, aD2V, aD2UV);
+  try 
+  {
+    CalculateD1(theU, theV, theValue, theD1U, theD1V, aD2U, aD2V, aD2UV);
+  } 
+  catch (Geom_UndefinedValue&)
+  {
+    // if failed at parametric boundary, try taking derivative at shifted point
+    Standard_Real aU = theU, aV = theV;
+    if (! shiftPoint (aU, aV, myBaseSurf, myBaseAdaptor))
+    {
+      throw;
+    }
+    BaseD2 (aU, aV, theValue, theD1U, theD1V, aD2U, aD2V, aD2UV);
+    CalculateD1(theU, theV, theValue, theD1U, theD1V, aD2U, aD2V, aD2UV);
+  }
 }
 
 void GeomEvaluator_OffsetSurface::D2(
@@ -97,8 +189,24 @@ void GeomEvaluator_OffsetSurface::D2(
   gp_Vec aD3U, aD3V, aD3UUV, aD3UVV;
   BaseD3(theU, theV, theValue, theD1U, theD1V,
          theD2U, theD2V, theD2UV, aD3U, aD3V, aD3UUV, aD3UVV);
-  CalculateD2(theU, theV, theValue, theD1U, theD1V,
-              theD2U, theD2V, theD2UV, aD3U, aD3V, aD3UUV, aD3UVV);
+  try
+  {
+    CalculateD2(theU, theV, theValue, theD1U, theD1V,
+                theD2U, theD2V, theD2UV, aD3U, aD3V, aD3UUV, aD3UVV);
+  } 
+  catch (Geom_UndefinedValue&)
+  {
+    // if failed at parametric boundary, try taking derivative at shifted point
+    Standard_Real aU = theU, aV = theV;
+    if (! shiftPoint (aU, aV, myBaseSurf, myBaseAdaptor))
+    {
+      throw;
+    }
+    BaseD3(theU, theV, theValue, theD1U, theD1V,
+         theD2U, theD2V, theD2UV, aD3U, aD3V, aD3UUV, aD3UVV);
+    CalculateD2(theU, theV, theValue, theD1U, theD1V,
+                theD2U, theD2V, theD2UV, aD3U, aD3V, aD3UUV, aD3UVV);
+  }
 }
 
 void GeomEvaluator_OffsetSurface::D3(
@@ -109,8 +217,24 @@ void GeomEvaluator_OffsetSurface::D3(
 {
   BaseD3(theU, theV, theValue, theD1U, theD1V,
          theD2U, theD2V, theD2UV, theD3U, theD3V, theD3UUV, theD3UVV);
-  CalculateD3(theU, theV, theValue, theD1U, theD1V,
-              theD2U, theD2V, theD2UV, theD3U, theD3V, theD3UUV, theD3UVV);
+  try
+  {
+    CalculateD3(theU, theV, theValue, theD1U, theD1V,
+                theD2U, theD2V, theD2UV, theD3U, theD3V, theD3UUV, theD3UVV);
+  } 
+  catch (Geom_UndefinedValue&)
+  {
+    // if failed at parametric boundary, try taking derivative at shifted point
+    Standard_Real aU = theU, aV = theV;
+    if (! shiftPoint (aU, aV, myBaseSurf, myBaseAdaptor))
+    {
+      throw;
+    }
+    BaseD3(aU, aV, theValue, theD1U, theD1V,
+         theD2U, theD2V, theD2UV, theD3U, theD3V, theD3UUV, theD3UVV);
+    CalculateD3(theU, theV, theValue, theD1U, theD1V,
+                theD2U, theD2V, theD2UV, theD3U, theD3V, theD3UUV, theD3UVV);
+  }
 }
 
 gp_Vec GeomEvaluator_OffsetSurface::DN(
@@ -125,7 +249,21 @@ gp_Vec GeomEvaluator_OffsetSurface::DN(
   gp_Pnt aP;
   gp_Vec aD1U, aD1V;
   BaseD1(theU, theV, aP, aD1U, aD1V);
-  return CalculateDN(theU, theV, theDerU, theDerV, aD1U, aD1V);
+  try
+  {
+    return CalculateDN(theU, theV, theDerU, theDerV, aD1U, aD1V);
+  } 
+  catch (Geom_UndefinedValue&)
+  {
+    // if failed at parametric boundary, try taking derivative at shifted point
+    Standard_Real aU = theU, aV = theV;
+    if (! shiftPoint (aU, aV, myBaseSurf, myBaseAdaptor))
+    {
+      throw;
+    }
+    BaseD1 (aU, aV, aP, aD1U, aD1V);
+    return CalculateDN (theU, theV, theDerU, theDerV, aD1U, aD1V);
+  }
 }
 
 

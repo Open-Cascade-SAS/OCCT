@@ -1,0 +1,22 @@
+puts "========"
+puts "OCC28112"
+puts "========"
+puts ""
+####################################################################################
+## Exception during offset computation
+####################################################################################
+
+restore [locate_data_file bug28112.brep] s
+
+regexp {Mass +: +([-0-9.+eE]+)} [lprops s 1.e-4] full s_len
+regexp {Mass +: +([-0-9.+eE]+)} [sprops s 1.e-4] full s_area
+
+for {set i -5} {$i <= 5} {incr i} {
+  set offsetvalue [expr 6. * $i]
+  offsetshapesimple result s ${offsetvalue}
+
+  checkshape result
+  checkprops result -l ${s_len}
+  checkprops result -s ${s_area}
+  checknbshapes result -vertex 12 -edge 15 -face 3
+}
