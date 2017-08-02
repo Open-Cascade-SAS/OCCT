@@ -19,7 +19,6 @@
 #include <Interface_HArray1OfHAsciiString.hxx>
 #include <Interface_Macros.hxx>
 #include <Interface_ParamList.hxx>
-#include <Interface_Static.hxx>
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
 #include <Standard_Transient.hxx>
@@ -46,6 +45,7 @@
 #include <TColStd_HSequenceOfReal.hxx>
 #include <TColStd_IndexedMapOfInteger.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
+#include <StepData_UndefinedEntity.hxx>
 
 #include <stdio.h>
 IMPLEMENT_STANDARD_RTTIEXT(StepData_StepReaderData, Interface_FileReaderData)
@@ -117,7 +117,6 @@ StepData_StepReaderData::StepData_StepReaderData
   thenbscop = 0;  thenbents = 0;  thelastn = 0;  thenbhead = nbheader;
   //themults.Init(0);
   thecheck = new Interface_Check;
-  //:S4136  acceptvoid = Interface_Static::IVal("step.readaccept.void");
   if (initstr) return;
   //for (Standard_Integer i = 0; i < Maxlst; i ++) {
   //  sprintf(textnum,"$%d",i+1);
@@ -999,8 +998,8 @@ Standard_Boolean StepData_StepReaderData::ReadReal(const Standard_Integer num,
   Handle(String) errmess;  // Null si pas d erreur
   if (nump > 0 && nump <= NbParams(num)) {
     const Interface_FileParameter& FP = Param(num, nump);
-    if (FP.ParamType() == Interface_ParamReal)  val =
-      Interface_FileReaderData::Fastof(FP.CValue());
+    if (FP.ParamType() == Interface_ParamReal || FP.ParamType() == Interface_ParamInteger) 
+      val = Interface_FileReaderData::Fastof(FP.CValue());
     else errmess = new String("Parameter n0.%d (%s) not a Real");
   }
   else errmess = new String("Parameter n0.%d (%s) absent");
@@ -1035,10 +1034,14 @@ Standard_Boolean StepData_StepReaderData::ReadEntity(const Standard_Integer num,
     if (FP.ParamType() == Interface_ParamIdent) {
       warn = (acceptvoid > 0);
       if (nent > 0) {
-        Handle(Standard_Transient) entent = BoundEntity(nent);
+	Handle(Standard_Transient) entent = BoundEntity(nent);
         if (entent.IsNull() || !entent->IsKind(atype))
+        {
           errmess = new String("Parameter n0.%d (%s) : Entity has illegal type");
-        else ent = entent;
+          if (entent->IsKind(STANDARD_TYPE(StepData_UndefinedEntity)))
+            ent = entent;
+        }
+	else ent = entent;
       }
       else errmess = new String("Parameter n0.%d (%s) : Unresolved reference");
     }
@@ -1079,10 +1082,15 @@ Standard_Boolean StepData_StepReaderData::ReadEntity(const Standard_Integer num,
     if (FP.ParamType() == Interface_ParamIdent) {
       warn = (acceptvoid > 0);
       if (nent > 0) {
-        Handle(Standard_Transient) entent = BoundEntity(nent);
+	Handle(Standard_Transient) entent = BoundEntity(nent);
         if (!sel.Matches(entent))
+        {
           errmess = new String("Parameter n0.%d (%s) : Entity has illegal type");
-        else
+          //fot not suppported STEP entity
+          if (entent->IsKind(STANDARD_TYPE(StepData_UndefinedEntity)))
+            sel.SetValue(entent);
+        }
+	else
           sel.SetValue(entent);
       }
       else

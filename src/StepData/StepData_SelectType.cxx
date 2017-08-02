@@ -21,6 +21,8 @@
 #include <StepData_SelectNamed.hxx>
 #include <StepData_SelectReal.hxx>
 #include <StepData_SelectType.hxx>
+#include <StepData_UndefinedEntity.hxx>
+
 
 Standard_Boolean  StepData_SelectType::Matches
   (const Handle(Standard_Transient)& ent) const
@@ -35,6 +37,8 @@ Standard_Boolean  StepData_SelectType::Matches
     void  StepData_SelectType::SetValue (const Handle(Standard_Transient)& ent)
 {
   if (ent.IsNull())  thevalue.Nullify();
+  else if (ent->IsKind(STANDARD_TYPE(StepData_UndefinedEntity)))
+    thevalue = ent;
   else if (!Matches(ent))
     throw Standard_TypeMismatch("StepData : SelectType, SetValue");
   else thevalue = ent;

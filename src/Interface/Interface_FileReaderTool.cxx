@@ -66,7 +66,7 @@ Interface_FileReaderTool::Interface_FileReaderTool ()
 {
   themessenger = Message::DefaultMessenger();
   theerrhand = Standard_True;
-  thetrace = 1;
+  thetrace = 0;
   thenbrep0 = thenbreps = 0;
 }
 
@@ -334,8 +334,11 @@ void Interface_FileReaderTool::LoadModel
     }
     catch (Standard_Failure const&) {
       // Sendinf of message : Internal error during the header reading
-      Message_Msg Msg11("XSTEP_11");
-      TF->Send (Msg11, Message_Info); 
+      if (!TF.IsNull())
+      {
+        Message_Msg Msg11("XSTEP_11");
+        TF->Send(Msg11, Message_Info);
+      }
     }
   }
   else
@@ -367,9 +370,12 @@ void Interface_FileReaderTool::LoadModel
 	//   ..        Fin Lecture        ..
 	if (anent.IsNull())  {
           // Sending of message : Number of ignored Null Entities  
-	  Message_Msg Msg21("XSTEP_21");
-          Msg21.Arg(amodel->NbEntities());
-          TF->Send (Msg21, Message_Info);
+    if (!TF.IsNull())
+    {
+      Message_Msg Msg21("XSTEP_21");
+      Msg21.Arg(amodel->NbEntities());
+      TF->Send(Msg21, Message_Info);
+    }
 	  continue;
 	}
 	//      LoadedEntity fait AddEntity MAIS PAS SetReport (en bloc a la fin)
@@ -392,13 +398,18 @@ void Interface_FileReaderTool::LoadModel
 //:abv 03Apr00: anent is actually a previous one:      if (anent.IsNull()) 
       anent = thereader->BoundEntity(num);
       if (anent.IsNull()) {
-	if (thetrace > 0) 
-	{
-	  // Sending of message : Number of ignored Null Entities  
-	  Message_Msg Msg21("XSTEP_21");
-	  Msg21.Arg(amodel->NbEntities()+1);
-	  TF->Send (Msg21, Message_Info);
-	  continue;
+        if (thetrace > 0)
+        {
+          // Sending of message : Number of ignored Null Entities  
+          if (!TF.IsNull())
+          {
+
+            Message_Msg Msg21("XSTEP_21");
+            Msg21.Arg(amodel->NbEntities() + 1);
+
+            TF->Send(Msg21, Message_Info);
+          }
+	    continue;
 	}
       }
       /*Handle(Interface_Check)*/ ach = new Interface_Check(anent);
@@ -408,10 +419,13 @@ void Interface_FileReaderTool::LoadModel
       ach->SendFail (Msg278); 
       
       if (ierr == 2) {
-       // Sending of message : reading of entity failed  
-	Message_Msg Msg22("XSTEP_22");
-        Msg22.Arg(amodel->StringLabel(anent));
-        TF->Send (Msg22, Message_Info); 
+       // Sending of message : reading of entity failed 
+        if (!TF.IsNull())
+        {
+          Message_Msg Msg22("XSTEP_22");
+          Msg22.Arg(amodel->StringLabel(anent));
+          TF->Send(Msg22, Message_Info);
+        }
 	return;
       }
 
@@ -420,10 +434,13 @@ void Interface_FileReaderTool::LoadModel
 	ierr = 1;
 // ce qui serait bien ici serait de recuperer le texte de l erreur pour ach ...
 	if (thetrace > 0) {
-	  // Sending of message : recovered entity  
-	  Message_Msg Msg23("XSTEP_23");
-	  Msg23.Arg(num);
-	  TF->Send (Msg23, Message_Info); 
+	  // Sending of message : recovered entity
+    if (!TF.IsNull())
+    {
+      Message_Msg Msg23("XSTEP_23");
+      Msg23.Arg(num);
+      TF->Send(Msg23, Message_Info);
+    }
 	}
 
 //  Finalement, on charge une Entite Inconnue
@@ -444,9 +461,12 @@ void Interface_FileReaderTool::LoadModel
       else {
 	if (thetrace > 0) {
 	  // Sending of message : reading of entity failed  
-	  Message_Msg Msg22("XSTEP_22");
-	  Msg22.Arg(amodel->StringLabel(anent));
-	  TF->Send (Msg22, Message_Info);
+    if (!TF.IsNull())
+    {
+      Message_Msg Msg22("XSTEP_22");
+      Msg22.Arg(amodel->StringLabel(anent));
+      TF->Send(Msg22, Message_Info);
+    }
 	}
 //  On garde <rep> telle quelle : pas d analyse fichier supplementaire,
 //  Mais la phase preliminaire eventuelle est conservee
@@ -460,9 +480,12 @@ void Interface_FileReaderTool::LoadModel
     if (thetrace > 0) 
     {
       // Sending of message : report   
-      Message_Msg Msg24("XSTEP_24");
-      Msg24.Arg(thenbreps);
-      TF->Send (Msg24, Message_Info); 
+      if (!TF.IsNull())
+      {
+        Message_Msg Msg24("XSTEP_24");
+        Msg24.Arg(thenbreps);
+        TF->Send(Msg24, Message_Info);
+      }
     }
     amodel->Reservate (-thenbreps-10);
     thenbreps = thereports->Upper();
@@ -483,8 +506,11 @@ void Interface_FileReaderTool::LoadModel
     }
     catch (Standard_Failure const&) {
       // Sendinf of message : Internal error during the header reading
-      Message_Msg Msg11("XSTEP_11");
-      TF->Send (Msg11, Message_Info); 
+      if (!TF.IsNull())
+      {
+        Message_Msg Msg11("XSTEP_11");
+        TF->Send(Msg11, Message_Info);
+      }
     }
   }
   else
@@ -513,10 +539,13 @@ Handle(Standard_Transient) Interface_FileReaderTool::LoadedEntity
 //    Trace Entite Inconnue
   if (thetrace >= 2 && theproto->IsUnknownEntity(anent)) {
     Handle(Message_Messenger) TF = Messenger();
-    Message_Msg Msg22("XSTEP_22");
-    // Sending of message : reading of entity failed
-    Msg22.Arg(themodel->StringLabel(anent)->String());
-    TF->Send (Msg22, Message_Info); 
+    if (!TF.IsNull())
+    {
+      Message_Msg Msg22("XSTEP_22");
+      // Sending of message : reading of entity failed
+      Msg22.Arg(themodel->StringLabel(anent)->String());
+      TF->Send(Msg22, Message_Info);
+    }
   }
 //  ..        Chargement proprement dit : Specifique de la Norme        ..
   AnalyseRecord(num,anent,ach);
@@ -545,7 +574,7 @@ Handle(Standard_Transient) Interface_FileReaderTool::LoadedEntity
     }
     thereports->SetValue(irep,rep);
 
-    if ( thetrace >= 2)
+    if ( thetrace >= 2 && !Messenger().IsNull())
       ach->Print (Messenger(),2);
   }
   

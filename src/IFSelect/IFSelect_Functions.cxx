@@ -877,62 +877,6 @@ static IFSelect_ReturnStatus fun27
   return IFSelect_RetVoid;
 }
 
-static IFSelect_ReturnStatus fun28
-  (const Handle(IFSelect_SessionPilot)& pilot)
-{
-  Standard_Integer argc = pilot->NbWords();
-  const Standard_CString arg1 = pilot->Arg(1);
-  const Standard_CString arg2 = pilot->Arg(2);
-  const Standard_CString arg3 = pilot->Arg(3);
-//        ****    DefParam         ****
-  Handle(Message_Messenger) sout = Message::DefaultMessenger();
-  if (argc < 2) {
-    Handle(TColStd_HSequenceOfHAsciiString) li = Interface_Static::Items();
-    Standard_Integer i,nb = li->Length();
-    sout<<" List of parameters : "<<nb<<" items :"<<Message_EndLine;
-    for (i = 1; i <= nb; i ++) sout<<"  "<<li->Value(i)->ToCString();
-    sout<<Message_EndLine<<"  defparam name_param  to known more about one"<<Message_EndLine;
-    sout<<"  defparam nom_param e options  to edit a definition"<<Message_EndLine;
-
-  } else if (argc == 2) {
-    sout<<" Definition of Parameter : "<<arg1<<Message_EndLine;
-    Handle(Interface_Static) unst = Interface_Static::Static (arg1);
-    if (unst.IsNull()) sout<<"  undefined"<<Message_EndLine;
-    else unst->Print(sout);
-    return IFSelect_RetVoid;
-
-  } else if (arg2[0] == 'i') {
-//  initialisation : arg1=nompar  a2='i'  a3=family  a4=type  [a5=val]
-    if (argc < 5) { sout<<" name init family type [valinit]"<<Message_EndLine; return IFSelect_RetVoid; }
-    char typ = (pilot->Arg(4))[0];
-    Standard_Boolean ok= (argc==5 ? Interface_Static::Init(arg3,arg1,typ) :
-			  Interface_Static::Init(arg3,arg1,typ,pilot->Arg(5)));
-    return (ok ? IFSelect_RetDone : IFSelect_RetFail);
-
-  } else if (arg2[0] == 'e') {
-//  edition : arg1=nompar  arg2='e' arg3=option  arg4...=parametres option
-    char comm[100];
-    if (argc < 4) {
-      sout<<" give name and options !  Options (according type), 1 a time\n"
-	  <<" imin ival / imax ival / rmin rval / rmax rval /\n"
-	  <<" enum stnum / enum stnum match / eval e1 e2 e3 ... (maxi 10)\n"
-	  <<Message_EndLine;
-      return IFSelect_RetVoid;
-    }
-    if (argc > 4) sout<<"Only the command and ONE more arg are considered"<<Message_EndLine;
-    sprintf(comm,"%s %s",pilot->Arg(3),pilot->Arg(4));
-    sout<<"Editing parameter : "<<arg1<<" , by command : "<<comm<<Message_EndLine;
-
-    Handle(Interface_Static) unst = Interface_Static::Static (arg1);
-    if (unst.IsNull()) { sout<<arg1<<"  undefined"<<Message_EndLine; return IFSelect_RetError; }
-    if (Interface_Static::Init(unst->Family(),arg1,'&',comm))
-      {  sout<<"Editing done"<<Message_EndLine;  return IFSelect_RetDone;  }
-    else  {  sout<<"Command not processed : "<<comm<<Message_EndLine; return IFSelect_RetFail;  }
-  }
-  sout<<"Unknown Option : "<<arg2<<Message_EndLine;
-  return IFSelect_RetVoid;
-}
-
 static IFSelect_ReturnStatus fun29
   (const Handle(IFSelect_SessionPilot)& pilot)
 {
@@ -2494,7 +2438,6 @@ void IFSelect_Functions::Init()
   IFSelect_Act::AddFunc("xsave","filename:string  : sauve items-session",fun25);
   IFSelect_Act::AddFunc("xrestore","filename:string  : restaure items-session",fun26);
   IFSelect_Act::AddFunc("param","nompar:string : displays parameter value; + nompar val : changes it",fun27);
-  IFSelect_Act::AddFunc("defparam","nompar:string : display def. param; also : nompar edit, nompar init",fun28);
 
   IFSelect_Act::AddFunc("sentfiles","Lists files sent from last Load",fun29);
   IFSelect_Act::AddFunc("fileprefix","prefix:string    : definit File Prefix",fun30);

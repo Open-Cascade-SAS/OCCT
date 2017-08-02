@@ -3,14 +3,8 @@ StepData.hxx
 StepData_Array1OfField.hxx
 StepData_DefaultGeneral.cxx
 StepData_DefaultGeneral.hxx
-StepData_DescrGeneral.cxx
-StepData_DescrGeneral.hxx
 StepData_Described.cxx
 StepData_Described.hxx
-StepData_DescrProtocol.cxx
-StepData_DescrProtocol.hxx
-StepData_DescrReadWrite.cxx
-StepData_DescrReadWrite.hxx
 StepData_ECDescr.cxx
 StepData_ECDescr.hxx
 StepData_EDescr.cxx
@@ -40,8 +34,6 @@ StepData_GeneralModule.hxx
 StepData_GlobalNodeOfWriterLib.hxx
 StepData_GlobalNodeOfWriterLib_0.cxx
 StepData_HArray1OfField.hxx
-StepData_HeaderTool.cxx
-StepData_HeaderTool.hxx
 StepData_Logical.hxx
 StepData_NodeOfWriterLib.hxx
 StepData_NodeOfWriterLib_0.cxx

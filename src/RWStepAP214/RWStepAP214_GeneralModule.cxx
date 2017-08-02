@@ -555,7 +555,6 @@
 #include <StepAP203_ChangeRequest.hxx>
 #include <StepAP203_StartRequest.hxx>
 #include <StepAP203_StartWork.hxx>
-#include <StepAP214.hxx>
 #include <StepAP214_AppliedApprovalAssignment.hxx>
 #include <StepAP214_AppliedDateAndTimeAssignment.hxx>
 #include <StepAP214_AppliedDateAssignment.hxx>
@@ -1375,7 +1374,6 @@ RWStepAP214_GeneralModule::RWStepAP214_GeneralModule ()
   catstr = Interface_Category::Number("Structure");
   catdsc = Interface_Category::Number("Description");
   cataux = Interface_Category::Number("Auxiliary");
-//// Interface_GeneralLib::SetGlobal(Handle(RWStepAP214_GeneralModule)::DownCast(This()), StepAP214::Protocol());
 }
 
 
