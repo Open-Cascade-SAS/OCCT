@@ -161,13 +161,7 @@ void TDF_CopyLabel::Perform()
   myIsDone = Standard_False;
   if(mySL.Data()->Root().IsDifferent(myTL.Data()->Root()) && //TDF_Data is not the same
      !TDF_Tool::IsSelfContained(mySL, myFilter)) return;               //source label isn't self-contained
-  else {
-#ifdef OCCT_DEBUG
-    cout << "THE SAME Data" <<endl;
-#endif
-  }
 
-//TDF_Data of the source and target labels are the same
   Standard_Boolean extReferers =
     ExternalReferences(mySL, myMapOfExt, myFilter);
   
