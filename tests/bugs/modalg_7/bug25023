@@ -1,0 +1,18 @@
+puts "========"
+puts "OCC25023"
+puts "========"
+puts ""
+###################################
+# Check fails after cut operation
+###################################
+
+restore [locate_data_file bug25023_a.brep] a
+checkshape a
+
+restore [locate_data_file bug25023_b.brep] b
+checkshape b
+
+bopargcheck b a -C
+
+bcut result b a
+checkshape result
