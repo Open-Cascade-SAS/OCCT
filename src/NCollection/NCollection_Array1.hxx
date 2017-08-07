@@ -212,7 +212,18 @@ public:
     myDeletable                                 (Standard_False)
   {
     Standard_RangeError_Raise_if (theUpper < theLower, "NCollection_Array1::Create");
-    myData = (TheItemType *) &theBegin - theLower; 
+  #if (defined(__GNUC__) && __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6))
+    // gcc emits -Warray-bounds warning when NCollection_Array1 is initialized
+    // from local array with lower index 1 (so that (&theBegin - 1) points out of array bounds).
+    // NCollection_Array1 initializes myData with a shift to avoid this shift within per-element access.
+    // It is undesired changing this logic, and -Warray-bounds is not useful here.
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic ignored "-Warray-bounds"
+  #endif
+    myData = (TheItemType *) &theBegin - theLower;
+  #if (defined(__GNUC__) && __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6))
+    #pragma GCC diagnostic pop
+  #endif
   }
 
   //! Initialise the items with theValue
