@@ -1074,7 +1074,7 @@ void  DBRep_DrawableShape::display(const Handle(Poly_Triangulation)& T,
   }
 
   // allocate the arrays
-  TColStd_Array1OfInteger Free(1,2*nFree);
+  TColStd_Array1OfInteger Free (1, Max (1, 2 * nFree));
   
   // array is replaced on map because it is impossible
   // to calculate number of internal edges in advance
