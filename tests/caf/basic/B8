@@ -1,0 +1,41 @@
+#INTERFACE CAF
+# Basic attributes
+#
+# Testing order of attributes on Undo/Redo
+#
+# Testing command:   SetInteger
+# Testing command:   GetReal
+# Testing command:   Undo and Redo
+#
+
+puts "caf001-B8"
+
+NewCommand D
+SetInteger D 0:1 123
+SetReal D 0:1 123.321
+NewCommand D
+CheckLabel D 0:1
+
+set res1 [CheckLabel D 0:1]
+set indexReal1 [lsearch ${res1} TDataStd_Real]
+set indexInt1  [lsearch ${res1} TDataStd_Integer]
+if { ${indexReal1} != 5} {
+    puts "Error: Wrong position 1 of TDataStd_Real attribute."
+}
+if { ${indexInt1} != 11} {
+    puts "Error: Wrong position 1 of TDataStd_Integer attribute."
+}
+
+Undo D
+Redo D
+CheckLabel D 0:1
+
+set res2 [CheckLabel D 0:1]
+set indexReal2 [lsearch ${res2} TDataStd_Real]
+set indexInt2  [lsearch ${res2} TDataStd_Integer]
+if { ${indexReal1} != ${indexReal2}} {
+    puts "Error: Wrong position 2 of TDataStd_Real attribute."
+}
+if { ${indexInt1} != ${indexInt2}} {
+    puts "Error: Wrong position 2 of TDataStd_Integer attribute."
+}

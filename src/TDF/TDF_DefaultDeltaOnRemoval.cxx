@@ -42,5 +42,5 @@ TDF_DefaultDeltaOnRemoval::TDF_DefaultDeltaOnRemoval
 
 void TDF_DefaultDeltaOnRemoval::Apply() 
 {
-  Label().AddAttribute(Attribute());
+  Label().AddAttribute(Attribute(), Standard_True);
 }
