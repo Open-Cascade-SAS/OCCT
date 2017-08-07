@@ -6,7 +6,6 @@ Graphic3d_ArrayOfPolylines.cxx
 Graphic3d_ArrayOfPolylines.hxx
 Graphic3d_ArrayOfPrimitives.cxx
 Graphic3d_ArrayOfPrimitives.hxx
-Graphic3d_ArrayOfPrimitives.lxx
 Graphic3d_ArrayOfQuadrangles.cxx
 Graphic3d_ArrayOfQuadrangles.hxx
 Graphic3d_ArrayOfQuadrangleStrips.cxx

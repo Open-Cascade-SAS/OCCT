@@ -128,7 +128,7 @@ void AIS_Triangulation::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aP
                                 const Handle(Prs3d_Presentation)& aPresentation,
                                 const Standard_Integer aMode)
 {
-  switch (aMode) 
+  switch (aMode)
   {
     case 0:
       const TColgp_Array1OfPnt& nodes = myTriangulation->Nodes();             //Nodes
@@ -203,7 +203,7 @@ void AIS_Triangulation::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aP
 
 //=======================================================================
 //function : ComputeSelection
-//purpose  : 
+//purpose  :
 //=======================================================================
 void AIS_Triangulation::ComputeSelection(const Handle(SelectMgr_Selection)& /*aSelection*/,
                                          const Standard_Integer /*aMode*/)
@@ -238,7 +238,7 @@ Handle(TColStd_HArray1OfInteger) AIS_Triangulation::GetColors() const
 
 //=======================================================================
 //function : SetTriangulation
-//purpose  : 
+//purpose  :
 //=======================================================================
 void AIS_Triangulation::SetTriangulation(const Handle(Poly_Triangulation)& aTriangulation)
 {
@@ -247,7 +247,7 @@ void AIS_Triangulation::SetTriangulation(const Handle(Poly_Triangulation)& aTria
 
 //=======================================================================
 //function : GetTriangulation
-//purpose  : 
+//purpose  :
 //=======================================================================
 Handle(Poly_Triangulation) AIS_Triangulation::GetTriangulation() const{
   return myTriangulation;
@@ -255,25 +255,19 @@ Handle(Poly_Triangulation) AIS_Triangulation::GetTriangulation() const{
 
 //=======================================================================
 //function : AttenuateColor
-//purpose  : Attenuates 32-bit color by a given attenuation factor (0...1):
-//           aColor = Alpha << 24 + Blue << 16 + Green << 8 + Red
-//           All color components are multiplied by aComponent, the result is then packed again as 32-bit integer.
-//           Color attenuation is applied to the vertex colors in order to have correct visual result 
-//           after glColorMaterial(GL_AMBIENT_AND_DIFFUSE). Without it, colors look unnatural and flat.
+//purpose  :
 //=======================================================================
-
 Graphic3d_Vec4ub AIS_Triangulation::attenuateColor (const Standard_Integer theColor,
                                                     const Standard_Real    theComposition)
 {
+  const Standard_Byte* anRgbx = reinterpret_cast<const Standard_Byte*> (&theColor);
 
-  const Graphic3d_Vec4ub& aColor = *reinterpret_cast<const Graphic3d_Vec4ub*> (&theColor);
   // If IsTranparent() is false alpha value will be ignored anyway.
   Standard_Byte anAlpha = IsTransparent() ? static_cast<Standard_Byte> (255.0 - myDrawer->ShadingAspect()->Aspect()->FrontMaterial().Transparency() * 255.0)
                                           : 255;
 
-  return Graphic3d_Vec4ub ((Standard_Byte)(theComposition * aColor.r()),
-                           (Standard_Byte)(theComposition * aColor.g()),
-                           (Standard_Byte)(theComposition * aColor.b()),
+  return Graphic3d_Vec4ub ((Standard_Byte)(theComposition * anRgbx[0]),
+                           (Standard_Byte)(theComposition * anRgbx[1]),
+                           (Standard_Byte)(theComposition * anRgbx[2]),
                            anAlpha);
 }
-
