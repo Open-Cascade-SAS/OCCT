@@ -35,7 +35,8 @@
   #endif
 #endif // ifndef HAVE_LOCALE_H
 
-#ifdef HAVE_XLOCALE_H
+#if defined(HAVE_XLOCALE_H) && !(defined(__GLIBC__) && (__GLIBC__ == 2 && __GLIBC_MINOR__ <= 24))
+  // xlocale.h is actually a non-standard header file; glibc 2.26 has removed it altogether (all definition comes from locale.h)
   #include <xlocale.h>
 #endif
 
@@ -65,7 +66,7 @@ public:
 
 #ifdef HAVE_XLOCALE_H
   typedef  locale_t clocale_t;
-#elif defined(_WIN32) && !defined(__MINGW32__)
+#elif defined(_MSC_VER)
   typedef _locale_t clocale_t;
 #else
   typedef void*     clocale_t;
@@ -78,7 +79,7 @@ public:
 private:
 
   void* myPrevLocale;       //!< previous locale, platform-dependent pointer!
-#ifdef _WIN32
+#ifdef _MSC_VER
   int   myPrevTLocaleState; //!< previous thread-locale state, MSVCRT-specific
 #endif
 

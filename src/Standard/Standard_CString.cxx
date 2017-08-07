@@ -63,7 +63,7 @@ Standard_Integer HashCodes (const Standard_CString Value,
 #ifdef __APPLE__
   // There are a lot of *_l functions availalbe on Mac OS X - we use them
   #define SAVE_TL()
-#elif defined(_WIN32) && !defined(__MINGW32__)
+#elif defined(_MSC_VER)
   // MSVCRT has equivalents with slightly different syntax
   #define SAVE_TL()
   #define strtod_l(thePtr, theNextPtr, theLocale)                _strtod_l(thePtr, theNextPtr, theLocale)
