@@ -17,6 +17,7 @@
 #include <AdvApp2Var_Data_f2c.hxx>
 #include <AdvApp2Var_MathBase.hxx>
 #include <AdvApp2Var_Data.hxx>
+#include <NCollection_Array1.hxx>
 
 // statics 
 static
@@ -120,11 +121,11 @@ int mmdrvcb_(integer *ideriv,
 
 static
 int mmexthi_(integer *ndegre, 
-	     doublereal *hwgaus);
+	     NCollection_Array1<doublereal>& hwgaus);
 
 static
 int mmextrl_(integer *ndegre,
-	     doublereal *rootlg);
+	     NCollection_Array1<doublereal>& rootlg);
 
 
 
@@ -152,7 +153,7 @@ int mmpojac_(doublereal *tparam,
 	     integer *iordre, 
 	     integer *ncoeff, 
 	     integer *nderiv, 
-	     doublereal *valjac, 
+       NCollection_Array1<doublereal>& valjac, 
 	     integer *iercod);
 
 static
@@ -3764,7 +3765,7 @@ int AdvApp2Var_MathBase::mmeps1_(doublereal *epsilo)
 //purpose  : 
 //=======================================================================
 int mmexthi_(integer *ndegre, 
-	     doublereal *hwgaus)
+	     NCollection_Array1<doublereal>& hwgaus)
 
 {
   /* System generated locals */
@@ -3855,8 +3856,6 @@ int mmexthi_(integer *ndegre,
 
 /************************************************************************
 *****/
-    /* Parameter adjustments */
-    --hwgaus;
 
     /* Function Body */
     ibb = AdvApp2Var_SysBase::mnfndeb_();
@@ -3882,7 +3881,7 @@ int mmexthi_(integer *ndegre,
     i__1 = *ndegre;
     for (ii = ideb; ii <= i__1; ++ii) {
 	kpt = iadd + ii - ideb;
-	hwgaus[ii] = mlgdrtl_.hiltab[kpt + nmod2 * 465 - 1];
+	hwgaus(ii) = mlgdrtl_.hiltab[kpt + nmod2 * 465 - 1];
 /* L100: */
     }
 
@@ -3891,7 +3890,7 @@ int mmexthi_(integer *ndegre,
 
     i__1 = ndeg2;
     for (ii = 1; ii <= i__1; ++ii) {
-	hwgaus[ii] = hwgaus[*ndegre + 1 - ii];
+	hwgaus(ii) = hwgaus(*ndegre + 1 - ii);
 /* L200: */
     }
 
@@ -3899,7 +3898,7 @@ int mmexthi_(integer *ndegre,
 /*   associated Gauss weights are loaded. */
 
     if (nmod2 == 1) {
-	hwgaus[ndeg2 + 1] = mlgdrtl_.hi0tab[ndeg2];
+	hwgaus(ndeg2 + 1) = mlgdrtl_.hi0tab[ndeg2];
     }
 
 /* --------------------------- The end ---------------------------------- 
@@ -3916,7 +3915,7 @@ int mmexthi_(integer *ndegre,
 //purpose  : 
 //=======================================================================
 int mmextrl_(integer *ndegre,
-	     doublereal *rootlg)
+	     NCollection_Array1<doublereal>& rootlg)
 {
   /* System generated locals */
   integer i__1;
@@ -4002,8 +4001,6 @@ int mmextrl_(integer *ndegre,
 
 /************************************************************************
 *****/
-    /* Parameter adjustments */
-    --rootlg;
 
     /* Function Body */
     ibb = AdvApp2Var_SysBase::mnfndeb_();
@@ -4029,7 +4026,7 @@ int mmextrl_(integer *ndegre,
     i__1 = *ndegre;
     for (ii = ideb; ii <= i__1; ++ii) {
 	kpt = iadd + ii - ideb;
-	rootlg[ii] = mlgdrtl_.rootab[kpt + nmod2 * 465 - 1];
+	rootlg(ii) = mlgdrtl_.rootab[kpt + nmod2 * 465 - 1];
 /* L100: */
     }
 
@@ -4040,14 +4037,14 @@ int mmextrl_(integer *ndegre,
 
     i__1 = ndeg2;
     for (ii = 1; ii <= i__1; ++ii) {
-	rootlg[ii] = -rootlg[*ndegre + 1 - ii];
+	rootlg(ii) = -rootlg(*ndegre + 1 - ii);
 /* L200: */
     }
 
 /*   Case NDEGRE uneven, 0 is root of Legendre polynom. */
 
     if (nmod2 == 1) {
-	rootlg[ndeg2 + 1] = 0.;
+	rootlg(ndeg2 + 1) = 0.;
     }
 
 /* -------------------------------- THE END ----------------------------- 
@@ -6590,7 +6587,8 @@ L9900:
     integer valbas_dim1, i__1;
 
     /* Local variables */
-    doublereal vjac[80], herm[24];
+    doublereal vjacc[80], herm[24];
+    NCollection_Array1<doublereal> vjac (vjacc[0], 1, 80);
     integer iord[2];
     doublereal wval[4];
     integer nwcof, iunit;
@@ -6785,7 +6783,7 @@ L9900:
 
     i__1 = kk1;
     for (ii = 1; ii <= i__1; ++ii) {
-	valbas[ii + iorjac] = wval[0] * vjac[ii - 1];
+	valbas[ii + iorjac] = wval[0] * vjac(ii);
     }
 
 /*  (3) Evaluation of order 1 */
@@ -6801,8 +6799,8 @@ L9900:
 
 	i__1 = kk1;
 	for (ii = 1; ii <= i__1; ++ii) {
-	    valbas[ii + iorjac + valbas_dim1] = wval[0] * vjac[ii + kk1 - 1] 
-		    + wval[1] * vjac[ii - 1];
+	    valbas[ii + iorjac + valbas_dim1] = wval[0] * vjac(ii + kk1)
+		    + wval[1] * vjac(ii);
 	}
     }
 
@@ -6818,9 +6816,9 @@ L9900:
 
 	i__1 = kk1;
 	for (ii = 1; ii <= i__1; ++ii) {
-	    valbas[ii + iorjac + (valbas_dim1 << 1)] = wval[0] * vjac[ii + 
-		    kk2 - 1] + wval[1] * 2 * vjac[ii + kk1 - 1] + wval[2] * 
-		    vjac[ii - 1];
+	    valbas[ii + iorjac + (valbas_dim1 << 1)] = wval[0] * vjac(ii + 
+		    kk2) + wval[1] * 2 * vjac(ii + kk1) + wval[2] * 
+		    vjac(ii);
 	}
     }
 
@@ -6836,9 +6834,9 @@ L9900:
 
 	i__1 = kk1;
 	for (ii = 1; ii <= i__1; ++ii) {
-	    valbas[ii + iorjac + valbas_dim1 * 3] = wval[0] * vjac[ii + kk3 - 
-		    1] + wval[1] * 3 * vjac[ii + kk2 - 1] + wval[2] * 3 * 
-		    vjac[ii + kk1 - 1] + wval[3] * vjac[ii - 1];
+	    valbas[ii + iorjac + valbas_dim1 * 3] = wval[0] * vjac(ii + kk3)
+		  + wval[1] * 3 * vjac(ii + kk2) + wval[2] * 3 * 
+		    vjac(ii + kk1) + wval[3] * vjac(ii);
 	}
     }
 
@@ -7092,7 +7090,7 @@ int mmpojac_(doublereal *tparam,
 	     integer *iordre, 
 	     integer *ncoeff, 
 	     integer *nderiv, 
-	     doublereal *valjac, 
+	     NCollection_Array1<doublereal>& valjac, 
 	     integer *iercod)
 
 {
@@ -7167,7 +7165,6 @@ int mmpojac_(doublereal *tparam,
 
     /* Parameter adjustments */
     valjac_dim1 = *ncoeff;
-    --valjac;
 
     /* Function Body */
 
@@ -7213,21 +7210,21 @@ int mmpojac_(doublereal *tparam,
 
 /*  --- Trivial Positions ----- */
 
-    valjac[1] = 1.;
+    valjac(1) = 1.;
     aux1 = (doublereal) (*iordre + 1);
-    valjac[2] = aux1 * *tparam;
+    valjac(2) = aux1 * *tparam;
 
     if (*nderiv >= 1) {
-	valjac[valjac_dim1 + 1] = 0.;
-	valjac[valjac_dim1 + 2] = aux1;
+	valjac(valjac_dim1 + 1) = 0.;
+	valjac(valjac_dim1 + 2) = aux1;
 
 	if (*nderiv >= 2) {
-	    valjac[(valjac_dim1 << 1) + 1] = 0.;
-	    valjac[(valjac_dim1 << 1) + 2] = 0.;
+	    valjac((valjac_dim1 << 1) + 1) = 0.;
+	    valjac((valjac_dim1 << 1) + 2) = 0.;
 
 	    if (*nderiv >= 3) {
-		valjac[valjac_dim1 * 3 + 1] = 0.;
-		valjac[valjac_dim1 * 3 + 2] = 0.;
+		valjac(valjac_dim1 * 3 + 1) = 0.;
+		valjac(valjac_dim1 * 3 + 2) = 0.;
 	    }
 	}
     }
@@ -7247,26 +7244,26 @@ int mmpojac_(doublereal *tparam,
 	denom = 1. / denom;
 
 /*        --> Pi(t) */
-	valjac[ii] = (cofa * *tparam * valjac[kk1] + cofb * valjac[kk2]) * 
+	valjac(ii) = (cofa * *tparam * valjac(kk1) + cofb * valjac(kk2)) * 
 		denom;
 /*        --> P'i(t) */
 	if (*nderiv >= 1) {
-	    valjac[ii + valjac_dim1] = (cofa * *tparam * valjac[kk1 + 
-		    valjac_dim1] + cofa * valjac[kk1] + cofb * valjac[kk2 + 
-		    valjac_dim1]) * denom;
+	    valjac(ii + valjac_dim1) = (cofa * *tparam * valjac(kk1 + 
+		    valjac_dim1) + cofa * valjac(kk1) + cofb * valjac(kk2 + 
+		    valjac_dim1)) * denom;
 /*        --> P''i(t) */
 	    if (*nderiv >= 2) {
-		valjac[ii + (valjac_dim1 << 1)] = (cofa * *tparam * valjac[
-			kk1 + (valjac_dim1 << 1)] + cofa * 2 * valjac[kk1 + 
-			valjac_dim1] + cofb * valjac[kk2 + (valjac_dim1 << 1)]
+		valjac(ii + (valjac_dim1 << 1)) = (cofa * *tparam * valjac(
+			kk1 + (valjac_dim1 << 1)) + cofa * 2 * valjac(kk1 + 
+			valjac_dim1) + cofb * valjac(kk2 + (valjac_dim1 << 1))
 			) * denom;
 	    }
 /*        --> P'i(t) */
 	    if (*nderiv >= 3) {
-		valjac[ii + valjac_dim1 * 3] = (cofa * *tparam * valjac[kk1 + 
-			valjac_dim1 * 3] + cofa * 3 * valjac[kk1 + (
-			valjac_dim1 << 1)] + cofb * valjac[kk2 + valjac_dim1 *
-			 3]) * denom;
+		valjac(ii + valjac_dim1 * 3) = (cofa * *tparam * valjac(kk1 + 
+			valjac_dim1 * 3) + cofa * 3 * valjac(kk1 + (
+			valjac_dim1 << 1)) + cofb * valjac(kk2 + valjac_dim1 *
+			 3)) * denom;
 	    }
 	}
     }
@@ -7277,8 +7274,8 @@ int mmpojac_(doublereal *tparam,
     for (ii = 1; ii <= i__1; ++ii) {
 	i__2 = *nderiv;
 	for (jj = 0; jj <= i__2; ++jj) {
-	    valjac[ii + jj * valjac_dim1] = tnorm[ii - 1] * valjac[ii + jj * 
-		    valjac_dim1];
+	    valjac(ii + jj * valjac_dim1) = tnorm[ii - 1] * valjac(ii + jj * 
+		    valjac_dim1);
 	}
     }
 
@@ -10658,7 +10655,8 @@ int mvgaus0_(integer *kindic,
     integer i__1;
 
     /* Local variables */
-    doublereal tamp[40];
+    doublereal tampc[40];
+    NCollection_Array1<doublereal> tamp (tampc[0], 1, 40);
     integer ndegl, kg, ii;
    
 /* ********************************************************************** 
@@ -10751,7 +10749,7 @@ int mvgaus0_(integer *kindic,
     mmextrl_(&ndegl, tamp);
     i__1 = *nbrval;
     for (ii = 1; ii <= i__1; ++ii) {
-	urootl[ii] = -tamp[ii - 1];
+	urootl[ii] = -tamp(ii);
 /* L100: */
     }
 
@@ -10762,7 +10760,7 @@ int mvgaus0_(integer *kindic,
     mmexthi_(&ndegl, tamp);
     i__1 = *nbrval;
     for (ii = 1; ii <= i__1; ++ii) {
-	hiltab[ii] = tamp[ii - 1];
+	hiltab[ii] = tamp(ii);
 /* L200: */
     }
 
