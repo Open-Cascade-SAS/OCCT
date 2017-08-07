@@ -6271,41 +6271,51 @@ bsplineprof res
 
 @subsubsection occt_draw_7_2_6  mkoffset
 
+**mkoffset** creates a parallel wire in the same plane using a face or an existing continuous set of wires as a reference. The number of occurrences is not limited. 
+The offset distance defines the spacing and the positioning of the occurrences. 
+
 Syntax:      
 ~~~~~
-mkoffset result face/compound of wires nboffset stepoffset 
+mkoffset result shape nboffset stepoffset [jointype(a/i) [alt]]
 ~~~~~
+where:
+* *result* - the base name for the resulting wires. The index of the occurrence (starting with 1) will be added to this name, so the resulting wires will have the names - *result_1*, *result_2* ...;
+* *shape* - input shape (face or compound of wires);
+* *nboffset* - the number of the parallel occurrences;
+* *stepoffset* - offset distance between occurrences;
+* *jointype(a/i)* - join type (a for *arc* (default) and i for *intersection*);
+* *alt* - altitude from the plane of the input face in relation to the normal to the face.
 
-**mkoffset** creates a parallel wire in the same plane using a face or an existing continuous set of wires as a reference. The number of occurences is not limited. 
-
-The offset distance defines the spacing and the positioning of the occurences. 
 
 **Example:** 
 ~~~~~
-#Create a box and select a face 
+# Create a box and select a face 
 box b 1 2 3 
 explode b f 
-#Create three exterior parallel contours with an offset 
-value of 2 
+# Create three exterior parallel contours with an offset value of 2 
 mkoffset r b_1 3 2 
-Create one interior parallel contour with an offset 
-value of 
-0.4 
+# wires r_1, r_2 and r_3 are created
+
+# Create three exterior parallel contours with an offset value of 2 without round corners
+mkoffset r b_1 3 2 i
+# wires r_1, r_2 and r_3 are created
+
+# Create one interior parallel contour with an offset value of 0.4 
 mkoffset r b_1 1 -0.4 
 ~~~~~
 
-**Note** that *mkoffset* command must be used with prudence, as angular contours produce offset contours with fillets. Interior parallel contours can produce more than one wire, normally these are refused. In the following example, any increase in the offset value is refused.
+**Note** that on a concave input contour for an interior step *mkoffset* command may produce several wires which will be contained in a single compound.
 
 **Example:** 
 ~~~~~
 # to create the example contour 
 profile p F 0 0 x 2 y 4 tt 1 1 tt 0 4 w 
-# to create an incoherent interior offset 
+# creates an incoherent interior offset 
 mkoffset r p 1 -0.50 
-==p is not a FACE but a WIRE 
-BRepFill_TrimEdgeTool: incoherent intersection 
-# to create two incoherent wires 
-mkoffset r p 1 -0.50 
+
+# creates two incoherent wires 
+mkoffset r p 1 -0.55 
+# r_1 is a compound of two wires
 ~~~~~
 
 @subsubsection occt_draw_7_2_7  mkplane, mkface
