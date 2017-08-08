@@ -1371,18 +1371,17 @@ Standard_Real ResolutionCoeff(const BRepAdaptor_Curve& theBAC,
   case GeomAbs_OffsetCurve : {
     const Handle(Geom_OffsetCurve)& anOffsetCurve = Handle(Geom_OffsetCurve)::DownCast(aCurve);
     const Handle(Geom_Curve)& aBasisCurve = anOffsetCurve->BasisCurve();
-    const GeomAbs_CurveType aBCType = GeomAdaptor_Curve(aBasisCurve).GetType();
+    GeomAdaptor_Curve aGBasisCurve(aBasisCurve);
+    const GeomAbs_CurveType aBCType = aGBasisCurve.GetType();
     if (aBCType == GeomAbs_Line) {
       break;
     }
     else if (aBCType == GeomAbs_Circle) {
-      aResCoeff = 1. / (2 * (anOffsetCurve->Offset() +
-        Handle(Geom_Circle)::DownCast (aBasisCurve)->Circ().Radius()));
+      aResCoeff = 1. / (2 * (anOffsetCurve->Offset() + aGBasisCurve.Circle().Radius()));
       break;
     }
     else if (aBCType == GeomAbs_Ellipse) {
-      aResCoeff = 1. / (anOffsetCurve->Offset() +
-        Handle(Geom_Ellipse)::DownCast (aBasisCurve)->MajorRadius());
+      aResCoeff = 1. / (anOffsetCurve->Offset() + aGBasisCurve.Ellipse().MajorRadius());
       break;
     }
   }
