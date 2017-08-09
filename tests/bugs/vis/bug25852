@@ -1,0 +1,25 @@
+puts "TODO CR25852 ALL: Faulty shapes in variables faulty_1 to"
+
+puts "============"
+puts "CR25852"
+puts "============"
+puts ""
+
+################################################################
+# Text to BRep algorithm produces bad faces for circled symbols
+################################################################
+
+text2brep t "\u00ae" Courier 10
+whatis t
+
+vinit View1
+vclear
+vtop
+vsetdispmode 1
+vdisplay t
+vfit
+
+vmoveto 250 250
+checkshape t
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

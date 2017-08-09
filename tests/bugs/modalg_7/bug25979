@@ -1,0 +1,16 @@
+puts "TODO OCC25979 ALL: Faulty shapes in variables faulty_1 to faulty_"
+
+puts "========"
+puts "OCC25979"
+puts "========"
+puts ""
+##############################################
+# fillet creates faces with non-closed wires
+##############################################
+
+restore [locate_data_file bug25979_fillet-missingface1-tcl-Fillet005.brep] Fillet005
+
+explode Fillet005 E
+blend Fillet003 Fillet005 1.27 Fillet005_1 1.27 Fillet005_2 1.27 Fillet005_3 1.27 Fillet005_4 1.27 Fillet005_5 1.27 Fillet005_7 1.27 Fillet005_8 1.27 Fillet005_10 1.27 Fillet005_11 1.27 Fillet005_12 1.27 Fillet005_13 1.27 Fillet005_14 1.27 Fillet005_15 1.27 Fillet005_16 1.27 Fillet005_17 1.27 Fillet005_18 1.27 Fillet005_19 1.27 Fillet005_20 1.27 Fillet005_21 1.27 Fillet005_22 1.27 Fillet005_23 1.27 Fillet005_24 1.27 Fillet005_25 1.27 Fillet005_26 1.27 Fillet005_27 1.27 Fillet005_28 1.27 Fillet005_29 1.27 Fillet005_30 1.27 Fillet005_31 1.27 Fillet005_33 1.27 Fillet005_34 1.27 Fillet005_35 1.27 Fillet005_36 1.27 Fillet005_37 1.27 Fillet005_38 1.27 Fillet005_39 1.27 Fillet005_40 1.27 Fillet005_41 1.27 Fillet005_42 1.27 Fillet005_43 1.27 Fillet005_44 1.27 Fillet005_46 1.27 Fillet005_47 1.27 Fillet005_48 1.27 Fillet005_49 1.27 Fillet005_50
+
+checkshape Fillet003

@@ -1,0 +1,25 @@
+puts "========="
+puts "CR25837"
+puts "========="
+puts ""
+######################################################
+# Bad triangulation when IGES loaded in meters
+######################################################
+
+pload XDE
+
+param xstep.cascade.unit MM
+newmodel
+
+igesbrep [locate_data_file bug25837_S.igs] result *
+
+vinit
+vdisplay result
+vfit
+vsetdispmode 1
+
+set x 200
+set y 200
+checkcolor $x $y 0 0 0
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

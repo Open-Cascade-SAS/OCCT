@@ -1,0 +1,24 @@
+puts "TODO OCC25385 ALL: is not equal to expected"
+
+puts "============"
+puts "OCC25385"
+puts "============"
+puts ""
+#######################################################################
+# steep increase in tolerance by intersection
+#######################################################################
+
+restore [locate_data_file bug25385_shell2.brep] s
+
+regexp {Tolerance +MAX=([-0-9.+eE]+)} [tolerance s] full MaxTol_s_1
+
+plane p 28.5 0 0 1 0 0 0 1 0
+mkface f p
+bop s f
+bopsection r
+
+regexp {Tolerance +MAX=([-0-9.+eE]+)} [tolerance s] full MaxTol_s_2
+
+set tol_abs_MaxTol 0.0001
+set tol_rel_MaxTol 0.0001
+checkreal "MaxTolerance " ${MaxTol_s_2} ${MaxTol_s_1} ${tol_abs_MaxTol} ${tol_rel_MaxTol}

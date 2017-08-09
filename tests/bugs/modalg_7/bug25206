@@ -1,0 +1,31 @@
+puts "TODO OCC25206 ALL: ERROR: OCC25206 is reproduced."
+
+puts "========"
+puts "OCC25206"
+puts "========"
+puts ""
+##########################################
+# Fillet creates edge with C0 continuity
+##########################################
+
+restore [locate_data_file bug25206_lampe-1-draw-Fusion.brep] Fusion
+
+explode Fusion E
+set edges [explode Fusion E]
+blend Fillet Fusion 25 Fusion_4 25 Fusion_5 25 Fusion_6 25 Fusion_7 25 Fusion_8 25 Fusion_9 25 Fusion_10 25 Fusion_11 25 Fusion_12
+explode Fillet E
+renamevar Fillet_8 E8
+set bug_info [dump E8]
+
+# Find section "VKnots" in dump and cut it
+set bug_info [string trim [string range $bug_info [string first "VKnots" $bug_info] [expr {[string length $bug_info] - 1}]]]
+
+# Get value for VKnots #7
+set VKnots_7 [lindex $bug_info 29]
+# Get value for VKnots #8
+set VKnots_8 [lindex $bug_info 33]
+
+# Check CO continuity
+if {$VKnots_7 == 8 && $VKnots_8 == 9} {
+  puts "ERROR: OCC25206 is reproduced. CO continuity has been detected."
+}

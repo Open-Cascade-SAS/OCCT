@@ -1,0 +1,41 @@
+puts "TODO OCC25989 ALL: Error : The volume of result shape is"
+
+puts "========"
+puts "OCC25989"
+puts "========"
+puts ""
+################################################
+# toridial surface gets damaged in STEP export
+################################################
+
+set StepFileName ${imagedir}/${casename}_fusion-step1-out.step
+
+catch {exec rm ${StepFileName}}
+
+box Box 10 10 10
+pcylinder Cylinder 2 10
+psphere Sphere 5
+ptorus Torus 10 2
+
+bclearobjects
+bcleartools
+baddobjects Box
+baddtools Cylinder Sphere Torus
+bfillds
+bbop Fusion 1
+
+checkshape Fusion
+bopcheck Fusion
+
+set FusionVolume [lindex [string trim [vprops Fusion]] 2]
+
+stepwrite m Fusion
+writeall $StepFileName
+
+stepread $StepFileName a *
+renamevar a_1 result
+
+checkshape result
+bopcheck result
+
+checkprops result -v $FusionVolume

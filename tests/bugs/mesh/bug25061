@@ -1,0 +1,19 @@
+puts "TODO OCC25061 ALL: ERROR: OCC25061 is reproduced."
+
+puts "========"
+puts "OCC25061"
+puts "========"
+puts ""
+####################################################################################################
+# BRepMesh should skip internal wires with self intersections to produce mesh for the shape anyway
+####################################################################################################
+
+restore [locate_data_file bug25061_a.brep] a
+
+incmesh a 0.1
+set bug_info [tricheck a]
+
+if {[string trim $bug_info] == "face 1 has no triangulation"} {
+  puts "ERROR: OCC25061 is reproduced. Mesh is not created."
+}
+

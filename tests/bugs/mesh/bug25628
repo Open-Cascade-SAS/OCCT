@@ -1,0 +1,32 @@
+puts "TODO CR25628 ALL: Error: Number of triangles is equal to 0"
+puts "TODO CR25628 ALL: Error: Number of nodes is equal to 0"
+puts "TODO CR25628 ALL: Error: BRepMesh fails to mesh face with open wire, considered as correct by checkshape"
+
+puts "========="
+puts "CR25628"
+puts "========="
+puts ""
+##############################################################################################
+# BRepMesh fails to mesh face with open wire, considered as correct by checkshape
+##############################################################################################
+
+pload XDE
+
+stepread [locate_data_file bug25628_twr_hull.stp] a *
+renamevar a_1 a
+explode a f
+
+checkshape a_36
+
+set Log [incmesh a_36 0.1]
+if {[regexp "OpenWire" ${Log}] == 1} {
+    puts "Error: BRepMesh fails to mesh face with open wire, considered as correct by checkshape"
+}
+
+checktrinfo a_1 -tri -nod
+
+smallview
+donly a_36
+left
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}-2d.png

@@ -1,0 +1,35 @@
+puts "========"
+puts "OCC23866"
+puts "========"
+puts ""
+########################################
+#  GccAna_Circ2d3Tan does not find a circle
+########################################
+
+restore [locate_data_file bug23866_3curves.brep] 3curves
+
+explode 3curves
+
+mkcurve 3d_curve_1 3curves_1
+mkcurve 3d_curve_2 3curves_2
+mkcurve 3d_curve_3 3curves_3
+
+to2d 2d_curve_1 3d_curve_1
+to2d 2d_curve_2 3d_curve_2
+to2d 2d_curve_3 3d_curve_3
+
+set circles_Nb [llength [cirtang cir 2d_curve_1 2d_curve_2 2d_curve_3] ]
+
+if { ${circles_Nb} != 8 } {
+   puts "Error: GccAna_Circ2d3Tan does not find a circle"
+} else {
+   puts "OK: GccAna_Circ2d3Tan find a circle"
+   checklength cir_1 -l 9429.8727947293246
+   checklength cir_2 -l 888.65915068757909
+   checklength cir_3 -l 8.5227983514817236
+   checklength cir_4 -l 6.2260879234386
+   checklength cir_5 -l 14054.240322333564
+   checklength cir_6 -l 596.25725451268329
+   checklength cir_7 -l 7.6941358383928531
+   checklength cir_8 -l 6.8966408969867814
+}

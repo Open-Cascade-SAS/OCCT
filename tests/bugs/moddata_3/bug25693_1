@@ -1,0 +1,17 @@
+puts "TODO OCC25693 ALL: Wire of BSplines fails bopcheck"
+
+puts "============"
+puts "OCC25693"
+puts "============"
+puts ""
+###############################
+## Wire of BSplines fails bopcheck
+###############################
+
+restore [locate_data_file bug25693_path3035.brep] result
+
+if { [regexp "There were errors during the operation, so the list may be incomplete" [bopcheck result]] == 1 } {
+    puts "Error : Wire of BSplines fails bopcheck"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}-2d.png

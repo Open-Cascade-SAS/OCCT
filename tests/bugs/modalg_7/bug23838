@@ -1,0 +1,28 @@
+puts "TODO OCC23838 Windows: OSD_Exception_ACCESS_VIOLATION"
+puts "TODO OCC23838 Linux: segmentation violation"
+puts "TODO OCC23838 ALL:TEST INCOMPLETE"
+
+puts "============"
+puts "OCC23838"
+puts "============"
+puts ""
+#######################################################
+# Standard_OutOfRange in Geom_OffsetSurface::LocalDN (called by BRepFill_PipeShell)
+#######################################################
+
+restore [locate_data_file bug23838_profile.brep] prof
+restore [locate_data_file bug23838_SpineAndSupport.brep] comp
+
+explode comp
+renamevar comp_1 supp
+renamevar comp_2 spine
+
+mksweep spine
+setsweep -DX supp
+addsweep prof
+
+buildsweep result -R
+
+checkshape result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,18 @@
+puts "========"
+puts "OCC25994"
+puts "========"
+puts ""
+#########################################
+# Boolean fuse result in invalid result
+#########################################
+
+restore [locate_data_file bug25994_body.brep] body
+restore [locate_data_file bug25994_wing.brep] wing
+
+bfuse result body wing
+
+checkshape result
+
+smallview
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

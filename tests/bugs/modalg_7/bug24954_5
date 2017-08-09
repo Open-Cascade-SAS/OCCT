@@ -1,0 +1,53 @@
+puts "========"
+puts "OCC24954"
+puts "========"
+puts ""
+################################################################
+# BRepBuilderAPI_MakeFace adds wire with aribitary orientation
+################################################################
+
+polyline p -4.05 3.84 0.17 4.22 3.55 3.19 -1.32 -1.44 -1.57 -4.05 3.84 0.17
+wire w p
+mkplane f w
+
+# Verify orientation of shapes
+set bug_info [whatis p]
+if {[lindex $bug_info 5] != "FORWARD"} {
+  puts "ERROR: Input data is incorrect."
+}
+set bug_info [whatis w]
+if {[lindex $bug_info 5] != "FORWARD"} {
+  puts "ERROR: Input data is incorrect."
+}
+set bug_info [whatis f]
+if {[lindex $bug_info 5] != "FORWARD"} {
+  puts "ERROR: Input data is incorrect."
+}
+
+# Explode face (f) and verify wire orientation
+puts "Checks wires:"
+set wire_name_list [explode f w]
+set while_count 0
+while {$while_count < [llength $wire_name_list]} {
+  set bug_info [whatis [lindex $wire_name_list $while_count]]
+  if {[lindex $bug_info 5] != "FORWARD"} {
+    puts "ERROR: OCC24954 is reproduced. Wire [lindex $wire_name_list $while_count] has REVERSED orientation."
+  } else {
+    puts "     [lindex $wire_name_list $while_count] has FORWARD orientation."
+  }
+  set while_count [expr {$while_count + 1}]
+}
+
+# Explode face (f) and verify edge orientation
+puts "Checks edges:"
+set edge_name_list [explode f e]
+set while_count 0
+while {$while_count < [llength $edge_name_list]} {
+  set bug_info [whatis [lindex $edge_name_list $while_count]]
+  if {[lindex $bug_info 5] != "FORWARD"} {
+    puts "ERROR: OCC24954 is reproduced. Edge [lindex $edge_name_list $while_count] has REVERSED orientation."
+  } else {
+    puts "     [lindex $edge_name_list $while_count] has FORWARD orientation."
+  }
+  set while_count [expr {$while_count + 1}]
+}

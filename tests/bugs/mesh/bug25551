@@ -1,0 +1,33 @@
+puts "TODO OCC25551 ALL: Error: BRepMesh can produce internal nodes outside the face interior based on distorted BSpline surface"
+
+puts "================"
+puts "OCC25551"
+puts "================"
+puts ""
+#######################################################################################
+# BRepMesh can produce internal nodes outside the face interior based on distorted BSpline surface
+#######################################################################################
+
+restore [locate_data_file bug25551_m-a-i-B6.brep] res
+
+explode res f
+
+triangles res_2
+
+set ExpectedArea 0.208305
+set tol_abs 0.00001
+
+set prop [ sprops res_2]
+regexp {Mass\s*:\s*([0-9.e+-]+)} $prop prop_s Area
+
+if { [expr abs($Area - $ExpectedArea)] > $tol_abs } {
+  puts "OK: BRepMesh not produce internal nodes outside the face interior based on distorted BSpline surface"
+} else {
+  puts "Error: BRepMesh can produce internal nodes outside the face interior based on distorted BSpline surface"
+}
+
+smallview
+donly res_2
+top
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

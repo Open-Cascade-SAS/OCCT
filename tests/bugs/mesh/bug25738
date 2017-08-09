@@ -1,0 +1,31 @@
+puts "TODO CR25738 ALL: Not connected mesh inside face"
+puts "TODO CR25738 ALL: Error: BRepMesh fails to produce correct mesh for the face"
+
+puts "========="
+puts "CR25738"
+puts "========="
+puts ""
+######################################################
+# BRepMesh fails to produce correct mesh for the face
+######################################################
+
+restore [locate_data_file bug25738_face1736.brep] a
+
+incmesh a 1 -a 20
+
+front
+fit
+isos a 0
+triangles a
+
+trinfo a
+
+set info [tricheck a]
+set pattern "Free_links +(\[0-9\]+) +Cross_face_errors +(\[0-9\]+) +Async_edges +(\[0-9\]+) +Free_nodes +(\[0-9\]+)"
+regexp "${pattern}" $info full freelinks crossfaces asyncedges freenodes
+
+if { $freenodes > 0 } {
+  puts "Error: BRepMesh fails to produce correct mesh for the face"
+}
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}-2d.png

@@ -1,0 +1,28 @@
+puts "TODO OCC25730 ALL: result of MakeThickSolid aborts the BOPCheck in Geom_OffsetSurface::SetD0"
+
+puts "============"
+puts "OCC25730"
+puts "============"
+puts ""
+#############################################################################################
+## result of MakeThickSolid aborts the BOPCheck in Geom_OffsetSurface::SetD0
+#############################################################################################
+
+restore [locate_data_file bug25730_thickness8-draw-fillet001.brep] Fillet001
+
+explode Fillet001 F
+
+offsetparameter 1e-7 p a
+offsetload Fillet001 -1 Fillet001_4
+offsetperform Thickness
+
+if { [regexp "There were errors during the operation, so the list may be incomplete" [bopcheck Fillet001]] == 1 } {
+    puts "Error : result of MakeThickSolid aborts the BOPCheck in Geom_OffsetSurface::SetD0"
+}
+
+if { [regexp "There were errors during the operation, so the list may be incomplete" [bopcheck Thickness]] == 1 } {
+    puts "Error : result of MakeThickSolid aborts the BOPCheck in Geom_OffsetSurface::SetD0"
+}
+
+checkview -display Fillet001 -2d -path ${imagedir}/${test_image}-Fillet001-2d.png
+checkview -display Thickness -2d -path ${imagedir}/${test_image}-Thickness-2d.png

@@ -1,10 +1,10 @@
 # Original bug : pro10658
 # Date : 24mar98
-puts "TODO ALL: Error : The area of result shape is"
+
 restore [locate_data_file CTO900_pro10658a.rle] a
 restore [locate_data_file pro10658b.rle] b
 
 bfuse result a b
 
-checkprops result -s 8231.06
+checkprops result -s 8636.79
 checkview -display result -2d -otherwise { a b } -s -path ${imagedir}/${test_image}.png

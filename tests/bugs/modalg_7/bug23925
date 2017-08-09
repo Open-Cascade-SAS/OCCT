@@ -1,0 +1,22 @@
+puts "============"
+puts "OCC23925"
+puts "============"
+puts ""
+#######################################################################
+# BRepFeat_SplitShape produces invalid shape
+#######################################################################
+
+restore [locate_data_file bug23925_E.brep] e
+restore [locate_data_file bug23925_F.brep] f
+
+splitshape result f f e
+
+set nb_F [ llength [explode result F] ]
+
+if { ${nb_F} == 2 } {
+   puts "OK: BRepFeat_SplitShape produces good shape"
+} else {
+   puts "Error: BRepFeat_SplitShape produces invalid shape"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

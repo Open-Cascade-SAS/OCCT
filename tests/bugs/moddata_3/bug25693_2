@@ -1,0 +1,24 @@
+puts "TODO OCC25693 ALL: Wire of BSplines fails bopcheck"
+
+puts "============"
+puts "OCC25693"
+puts "============"
+puts ""
+###############################
+## Wire of BSplines fails bopcheck
+###############################
+
+restore [locate_data_file bug25693_path3039.brep] path3039
+
+prism Extrude_path3039 path3039 0 0 50
+
+if { [regexp "There were errors during the operation, so the list may be incomplete" [bopcheck path3039]] == 1 } {
+    puts "Error : bad shape"
+}
+
+if { [regexp "There were errors during the operation, so the list may be incomplete" [bopcheck Extrude_path3039]] == 1 } {
+    puts "Error : Wire of BSplines fails bopcheck"
+}
+
+checkview -display path3039 -2d -path ${imagedir}/${test_image}-path3039-2d.png
+checkview -display Extrude_path3039 -2d -path ${imagedir}/${test_image}-Extrude_path3039-2d.png

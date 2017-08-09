@@ -1,0 +1,56 @@
+puts "TODO OCC26052 ALL: Faulty shapes in variables faulty_1 to faulty_"
+
+puts "========"
+puts "OCC26052"
+puts "========"
+puts ""
+##############################################################################################
+# Missing pcurves are computed incorrectly on two connected faces laying on the same surface
+##############################################################################################
+
+cylinder c 10
+circle c1 0 0 0 10
+circle c2 0 0 0 10
+circle c3 0 0 10 10
+circle c4 0 0 10 10
+line l1 10 0 0 0 0 1
+line l2 -10 0 0 0 0 1
+trim c1 c1 0 pi
+trim c2 c2 pi 2*pi
+trim c3 c3 0 pi
+trim c4 c4 pi 2*pi
+trim l1 l1 0 10
+trim l2 l2 0 10
+vertex v1 10 0 0
+vertex v2 -10 0 0
+vertex v3 10 0 10
+vertex v4 -10 0 10
+mkedge ec1 c1 v1 v2
+mkedge ec2 c2 v2 v1
+mkedge ec3 c3 v3 v4
+mkedge ec4 c4 v4 v3
+mkedge el1 l1 v1 v3
+mkedge el2 l2 v2 v4
+shape w1 W
+#orientation ec3 R
+#orientation el1 R
+add ec1 w1
+add el2 w1
+add ec3 w1
+add el1 w1
+shape w2 W
+#orientation el1 F
+#orientation el2 R
+#orientation ec4 R
+add ec2 w2
+add el1 w2
+add ec4 w2
+add el2 w2
+mkface f1 c w1
+mkface f2 c w2
+shape s Sh
+add f1 s
+add f2 s
+fixshape result s
+
+checkshape result

@@ -1,0 +1,34 @@
+puts "========="
+puts "CR25817"
+puts "========="
+puts ""
+#############################
+# crescent face is not meshed
+#############################
+
+restore [locate_data_file bug25817_mesh-missing-cresent.brep] c
+
+tclean c
+
+set Log [incmesh c 0.1]
+if {[regexp "NoError" ${Log}] == 0} {
+    puts "Error: face is not meshed"
+}
+
+tricheck c
+
+smallview
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}-1.png
+
+explode c F
+
+set Log [incmesh c_4 0.1]
+if {[regexp "NoError" ${Log}] == 0} {
+    puts "Error: crescent face is not meshed"
+}
+
+clear
+donly c_4
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}-2.png

@@ -1,0 +1,87 @@
+puts "TODO OCC23942 ALL: is not equal"
+
+puts "========"
+puts "OCC23942"
+puts "========"
+puts ""
+#########################################################
+# Pipe algorithms unrobust to number rounding
+#########################################################
+
+#
+### 1
+#
+interpol c [locate_data_file bug23942_points.txt]
+tuyau r_1 c 5
+
+decho off
+dlog reset
+dlog on
+
+dump r_1
+
+set info_1 [dlog get]
+dlog reset
+dlog off
+decho on
+
+regexp {Degrees :+([-0-9.+eE]+) +([-0-9.+eE]+)} ${info_1} full X Degrees_1
+regexp {NbPoles :+([-0-9.+eE]+) +([-0-9.+eE]+)} ${info_1} full X NbPoles_1
+regexp {NbKnots :+([-0-9.+eE]+) +([-0-9.+eE]+)} ${info_1} full UKnots_1 VKnots_1
+puts "Degrees_1 = ${Degrees_1}"
+puts "NbPoles_1 = ${NbPoles_1}"
+puts "UKnots_1 = ${UKnots_1}"
+puts "VKnots_1 = ${VKnots_1}"
+
+#
+### 2
+#
+save c ${imagedir}/cc
+restore ${imagedir}/cc
+tuyau r_2 cc 5
+
+decho off
+dlog reset
+dlog on
+
+dump r_2
+
+set info_2 [dlog get]
+dlog reset
+dlog off
+decho on
+
+regexp {Degrees :+([-0-9.+eE]+) +([-0-9.+eE]+)} ${info_2} full X Degrees_2
+regexp {NbPoles :+([-0-9.+eE]+) +([-0-9.+eE]+)} ${info_2} full X NbPoles_2
+regexp {NbKnots :+([-0-9.+eE]+) +([-0-9.+eE]+)} ${info_2} full UKnots_2 VKnots_2
+puts "Degrees_2 = ${Degrees_2}"
+puts "NbPoles_2 = ${NbPoles_2}"
+puts "UKnots_2 = ${UKnots_2}"
+puts "VKnots_2 = ${VKnots_2}"
+
+#
+### 3
+#
+if {${Degrees_1} != ${Degrees_2}} {
+   puts "Error : Degrees_1 is not equal Degrees_2"
+} else {
+   puts "OK : Degrees_1 is equal Degrees_2"
+}
+if {${NbPoles_1} != ${NbPoles_2}} {
+   puts "Error : NbPoles_1 is not equal NbPoles_2"
+} else {
+   puts "OK : NbPoles_1 is equal NbPoles_2"
+}
+if {${UKnots_1} != ${UKnots_2}} {
+   puts "Error : UKnots_1 is not equal UKnots_2"
+} else {
+   puts "OK : UKnots_1 is equal UKnots_2"
+}
+if {${VKnots_1} != ${VKnots_2}} {
+   puts "Error : VKnots_1 is not equal VKnots_2"
+} else {
+   puts "OK : VKnots_1 is equal VKnots_2"
+}
+
+checkview -display r_1 -2d -path ${imagedir}/${test_image}_1.png
+checkview -display r_2 -2d -path ${imagedir}/${test_image}_2.png

@@ -1,0 +1,24 @@
+puts "TODO OCC25983 ALL: Faulty shapes in variables faulty_1 to faulty_"
+
+puts "========"
+puts "OCC25983"
+puts "========"
+puts ""
+##########################################
+# Fusion of sweep and its mirror invalid
+##########################################
+
+restore [locate_data_file bug25983_deform-fusion1-tcl-BSpline.brep] BSpline
+wire Knurling-0-spine BSpline
+mksweep Knurling-0-spine
+setsweep -FR
+polyline DWire 0 0 0 1 -0.9999999999999998 0 1.0000000000000002 0.9999999999999998 0 0 0 0
+trotate DWire 0 0 0 1 0 0 134.99999999999693
+ttranslate DWire 9 0 0
+addsweep DWire 
+buildsweep Knurling -C -S
+copy Knurling Clone
+tmirror Clone 0 0 0 1 0 0
+bfuse result Knurling Clone
+
+checkshape result

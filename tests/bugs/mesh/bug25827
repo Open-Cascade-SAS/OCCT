@@ -1,0 +1,20 @@
+puts "TODO CR25827 ALL: Faulty shapes in variables faulty_"
+
+puts "========="
+puts "CR25827"
+puts "========="
+puts ""
+############################################################################
+# BRepMesh does not synchronize parameters of glued vertices on small edges
+############################################################################
+
+restore [locate_data_file bug25827_result_valid.brep] r
+
+checkshape r
+
+incmesh r 0.01 -a 10 -relative -parallel
+
+checkshape r
+
+checkview -display r -2d -path ${imagedir}/${test_image}-2d.png
+checkview -display r -3d -path ${imagedir}/${test_image}-3d.png

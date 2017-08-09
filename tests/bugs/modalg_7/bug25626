@@ -1,0 +1,23 @@
+puts "TODO OCC25626 ALL: Error :  is WRONG because number of EDGE entities"
+puts "TODO OCC25626 ALL: Error :  is WRONG because number of WIRE entities"
+
+puts "============"
+puts "OCC25626"
+puts "============"
+puts ""
+############################################################################
+# Loft of ellipses shows wrinkle near seam edge
+############################################################################
+
+restore [locate_data_file bug25626_loft-el1-draw-Loft-00-section.brep] Loft-00-section
+restore [locate_data_file bug25626_loft-el1-draw-Loft-01-section.brep] Loft-01-section
+restore [locate_data_file bug25626_loft-el1-draw-Loft-02-section.brep] Loft-02-section
+
+thrusections Loft 0 0 Loft-00-section Loft-01-section Loft-02-section
+
+checkshape Loft
+
+checknbshapes Loft -wire 1 -edge 3
+
+checkview -display Loft -2d -path ${imagedir}/${test_image}-2d.png
+checkview -display Loft -3d -path ${imagedir}/${test_image}-3d.png

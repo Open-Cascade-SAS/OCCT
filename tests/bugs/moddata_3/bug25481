@@ -1,0 +1,45 @@
+puts "TODO OCC25481 ALL: unexpected polygons are found"
+puts "TODO OCC25481 ALL: unexpected pcurves are found"
+
+puts "================"
+puts "OCC25481"
+puts "================"
+puts ""
+#######################################################################
+# Edge must not contain obsolete curve representations
+#######################################################################
+
+pcylinder c 1 1
+incmesh c 0.1 -a 60
+subshape c e 1
+unset c
+renamevar c_1 e
+
+polygons e
+
+set dmp [dump e]
+set npol 0
+set npc 0
+foreach l [split $dmp \n] {
+  if [regexp -- {- PCurve} $l dummy dummy] {
+    puts $l
+    incr npc
+  }
+  if [regexp -- {- PolygonOnTriangulation} $l dummy dummy] {
+    puts $l
+    incr npol
+  }
+}
+
+if $npol {
+  puts "Error : $npol unexpected polygons are found"
+} else {
+  puts "OK : unexpected polygons are not found"
+}
+if $npc {
+  puts "Error : $npc unexpected pcurves are found"
+} else {
+  puts "OK : unexpected pcurves are not found"
+}
+
+checkview -display e -2d -path ${imagedir}/${test_image}.png

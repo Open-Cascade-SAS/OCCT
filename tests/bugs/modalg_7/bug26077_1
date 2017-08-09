@@ -1,0 +1,18 @@
+puts "TODO OCC26077 ALL: ERROR: OCC26077 is reproduced."
+
+puts "========"
+puts "OCC26077"
+puts "========"
+puts ""
+#################################################
+# nurbsconvert of psphere fails the bopargcheck
+#################################################
+
+psphere s 10
+nurbsconvert result s
+
+set bug_info [string trim [bopargcheck result]]
+
+if {$bug_info != "Shape(s) seem(s) to be valid for BOP."} {
+  puts "ERROR: OCC26077 is reproduced. Command bopargcheck returns FAIL status for nurbsconvert of sphere."
+}

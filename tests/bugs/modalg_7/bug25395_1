@@ -1,0 +1,18 @@
+puts "TODO OCC25395 ALL: ERROR. offsetperform operation not done."
+
+puts "========"
+puts "OCC25395"
+puts "========"
+puts ""
+#######################################################
+# SIGSEGV in BRepOffsetAPI_MakeThickSolid
+#######################################################
+
+restore [locate_data_file bug25395_thickness2-s1.brep] s1
+
+explode s1 F
+offsetparameter 1e-7 p a
+offsetload s1 1 s1_2 s1_3 s1_4
+offsetperform Thickness
+
+checkview -display Thickness -2d -path ${imagedir}/${test_image}.png

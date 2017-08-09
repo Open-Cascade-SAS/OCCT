@@ -1,0 +1,45 @@
+puts "TODO OCC25586 ALL: Error : The area of result shape is"
+
+puts "========="
+puts "OCC25586"
+puts "========="
+puts ""
+#########################################################
+# Poor mesh quality, or failure of meshing for closed extruded surfaces with holes
+#########################################################
+
+restore [locate_data_file bug25586_quasi_closed.brep] result
+
+checkprops result -s 1.
+
+checkview -display result -2d -path ${imagedir}/${test_image}-axo.png
+
+vinit
+vdisplay result
+vfit
+vsetdispmode 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}-3d.png
+
+vfront
+vfit
+checkview -screenshot -3d -path ${imagedir}/${test_image}-front.png
+
+vback
+vfit
+checkview -screenshot -3d -path ${imagedir}/${test_image}-back.png
+
+vleft
+vfit
+checkview -screenshot -3d -path ${imagedir}/${test_image}-left.png
+
+vright
+vfit
+checkview -screenshot -3d -path ${imagedir}/${test_image}-right.png
+
+vtop
+vfit
+checkview -screenshot -3d -path ${imagedir}/${test_image}-top.png
+
+vbottom
+vfit
+checkview -screenshot -3d -path ${imagedir}/${test_image}-bottom.png

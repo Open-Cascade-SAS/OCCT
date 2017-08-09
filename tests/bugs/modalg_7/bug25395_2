@@ -1,0 +1,49 @@
+puts "TODO OCC25395 ALL: Standard_ConstructionError"
+puts "TODO OCC25395 ALL:TEST INCOMPLETE"
+
+puts "========"
+puts "OCC25395"
+puts "========"
+puts ""
+#######################################################
+# SIGSEGV in BRepOffsetAPI_MakeThickSolid
+#######################################################
+
+ellipse Ellipse-curve 0 0 0 100.87 22
+mkedge Ellipse-edge Ellipse-curve 0 6.28318530718
+wire Ellipse-wire Ellipse-edge
+mkplane Ellipse Ellipse-wire
+ttranslate Ellipse 0 -27 184.5
+
+explode Ellipse E
+wire Sweep-0-spine Ellipse_1
+mksweep Sweep-0-spine
+
+setsweep -CF
+
+circle Circle-curve 0 0 0 18
+mkedge Circle-edge Circle-curve 0 0
+wire Circle Circle-edge
+trotate Circle 0 0 0 0 -1 0 90
+ttranslate Circle 0 -70 202.5
+
+addsweep Circle 
+
+buildsweep Sweep -C -S
+
+box Box001 300 90 300
+ttranslate Box001 -150 -27 0
+
+bcut Cut031 Sweep Box001
+
+box Box002 300 100 30
+ttranslate Box002 -150 -100 202.5
+
+bcut Cut032 Cut031 Box002
+explode Cut032 F
+
+offsetparameter 1e-7 p a
+offsetload Cut032 1 Cut032_3 Cut032_2 Cut032_4
+offsetperform Thickness
+
+checkview -display Thickness -2d -path ${imagedir}/${test_image}.png

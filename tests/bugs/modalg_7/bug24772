@@ -1,0 +1,45 @@
+puts "========"
+puts "OCC24772"
+puts "========"
+puts ""
+################################################################
+# Intersection of cylinder and cone produces incorrect results
+################################################################
+
+restore [locate_data_file bug24772_s1.draw] s1
+restore [locate_data_file bug24772_s2.draw] s2
+
+smallview +X+Y
+fit
+zoom 6
+
+set bug_info [intersect r s1 s2]
+
+if {[llength $bug_info] != 4} {
+#  puts "ERROR: OCC24722 is reproduced."
+} else {
+  # snapshot r_1
+  clear
+  display s1
+  display s2
+  display r_1
+  xwd $imagedir/${casename}_r_1.png
+  # snapshot r_2
+  clear
+  display s1
+  display s2
+  display r_2
+  xwd $imagedir/${casename}_r_2.png
+  # snapshot r_3
+  clear
+  display s1
+  display s2
+  display r_3
+  xwd $imagedir/${casename}_r_3.png
+  # snapshot r_4
+  clear
+  display s1
+  display s2
+  display r_4
+  xwd $imagedir/${casename}_r_4.png
+}
