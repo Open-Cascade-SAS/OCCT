@@ -1,0 +1,25 @@
+puts "TODO OCC28984 ALL: Error: Too big intersection tolerance"
+
+puts "======="
+puts "0028984"
+puts "======="
+puts ""
+##################################################
+# Huge intersection tolerance obtained by Face/Face intersection algorithm
+##################################################
+
+binrestore [locate_data_file bug28984_faces.bin] f
+
+explode f
+
+set log [bopcurves f_1 f_2 -2d]
+regexp {Tolerance Reached=([-0-9.+eE]+)} $log full tol_reached
+regexp {([1-9]) curve} $log full nb_curves
+
+if {$nb_curves != 2} {
+  puts "Error: Invalid number of curves"
+}
+
+if {$tol_reached > 0.1} {
+  puts "Error: Too big intersection tolerance"
+}

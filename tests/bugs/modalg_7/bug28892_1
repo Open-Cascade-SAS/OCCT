@@ -1,0 +1,24 @@
+puts "TODO OCC28989 ALL: Faulty shapes in variables"
+
+puts "======="
+puts "OCC28892"
+puts "======="
+puts ""
+##################################################
+# BOPAlgo_PaveFiller returns status "error: 11" in draw or raises exception in app on the given shapes set
+##################################################
+
+binrestore [locate_data_file bug28892_shape.bin] a
+binrestore [locate_data_file bug28892_tools.bin] b
+
+bclearobjects
+bcleartools
+baddobjects a
+baddctools b
+bfillds
+bbuild result
+
+# just check that the operation did not raise an exception and produced any result
+checkshape result
+
+# checkview -display result -2d -path ${imagedir}/${test_image}.png

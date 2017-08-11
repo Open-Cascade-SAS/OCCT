@@ -174,16 +174,26 @@ IntCurvesFace_Intersector::IntCurvesFace_Intersector(const TopoDS_Face& Face,
     if (nbsu > aMaxSamples) nbsu = aMaxSamples;
     if (nbsv > aMaxSamples) nbsv = aMaxSamples;
 
-    if (Max(dU, dV) > Min(dU, dV) * aTresh)
-    {
-      aMinSamples = 10;
-      nbsu = (Standard_Integer)(Sqrt(dU / dV) * aMaxSamples);
-      if (nbsu < aMinSamples) nbsu = aMinSamples;
-      nbsv = aMaxSamples2 / nbsu;
-      if (nbsv < aMinSamples)
+    if (dU > gp::Resolution() && dV > gp::Resolution()) {
+      if (Max(dU, dV) > Min(dU, dV) * aTresh)
       {
-        nbsv = aMinSamples;
-        nbsu = aMaxSamples2 / aMinSamples;
+        aMinSamples = 10;
+        nbsu = (Standard_Integer)(Sqrt(dU / dV) * aMaxSamples);
+        if (nbsu < aMinSamples) nbsu = aMinSamples;
+        nbsv = aMaxSamples2 / nbsu;
+        if (nbsv < aMinSamples)
+        {
+          nbsv = aMinSamples;
+          nbsu = aMaxSamples2 / aMinSamples;
+        }
+      }
+    }
+    else {
+      if (dU < gp::Resolution()) {
+        nbsu = 1;
+      }
+      if (dV < gp::Resolution()) {
+        nbsv = 1;
       }
     }
 

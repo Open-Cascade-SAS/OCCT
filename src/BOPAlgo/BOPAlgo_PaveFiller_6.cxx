@@ -2602,21 +2602,27 @@ void BOPAlgo_PaveFiller::UpdatePaveBlocks
       }
       //
       if (bRebuild) {
-        Standard_Boolean isDegEdge = myDS->ShapeInfo(aPB->Edge()).HasFlag();
+        Standard_Integer nE = aPB->Edge();
+        // Check if the Pave Block has the edge set
+        if (nE < 0) {
+          // untouched edge
+          nE = aPB->OriginalEdge();
+        }
+        Standard_Boolean isDegEdge = myDS->ShapeInfo(nE).HasFlag();
         if (wasRegularEdge && !isDegEdge && nV[0] == nV[1]) {
           // now edge has the same vertex on both ends;
           // check if it is not a regular closed curve.
-          const TopoDS_Edge& aE = TopoDS::Edge(myDS->Shape(aPB->Edge()));
+          const TopoDS_Edge& aE = TopoDS::Edge(myDS->Shape(nE));
           const TopoDS_Vertex& aV = TopoDS::Vertex(myDS->Shape(nV[0]));
           Standard_Real aLength = IntTools::Length(aE);
           Standard_Real aTolV = BRep_Tool::Tolerance(aV);
           if (aLength <= aTolV * 2.) {
             // micro edge, so mark it for removal
-            aMicroEdges.Add(aPB->Edge());
+            aMicroEdges.Add(nE);
             continue;
           }
         }
-        nSp = SplitEdge(aPB->Edge(), nV[0], aT[0], nV[1], aT[1]);
+        nSp = SplitEdge(nE, nV[0], aT[0], nV[1], aT[1]);
         if (bCB)
           aCB->SetEdge(nSp);
         else

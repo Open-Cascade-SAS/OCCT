@@ -1,0 +1,29 @@
+puts "TODO OCC28989 ALL: Error: result is self-interfered"
+
+puts "======="
+puts "OCC28892"
+puts "======="
+puts ""
+##################################################
+# BOPAlgo_PaveFiller returns status "error: 11" in draw or raises exception in app on the given shapes set
+##################################################
+
+binrestore [locate_data_file bug28892_shape.bin] a
+binrestore [locate_data_file bug28892_tools.bin] b
+
+bclearobjects
+bcleartools
+baddobjects a
+explode b
+baddtools b_1 b_6 b_12
+bfillds
+bbuild result
+
+# just check that the operation did not raise an exception and produced any result
+checkshape result
+
+if {![regexp "OK" [bopcheck result]]} {
+  puts "Error: result is self-interfered"
+}
+
+# checkview -display result -2d -path ${imagedir}/${test_image}.png
