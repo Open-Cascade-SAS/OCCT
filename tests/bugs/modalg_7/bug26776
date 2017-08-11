@@ -1,0 +1,32 @@
+puts "========"
+puts "OCC26776"
+puts "========"
+puts ""
+##################################################
+# Bad result of section algorithm
+##################################################
+
+restore [locate_data_file bug26580-plate-2.brep] a2
+restore [locate_data_file bug26776_b2.brep] b2
+
+bsection result a2 b2
+
+checkshape result
+
+checknbshapes result -vertex 2 -edge 1
+
+regexp {nb alone Vertices : ([-0-9.+eE]+)} [checksection result] full nbv
+
+if { $nbv != 2 } { 
+  puts "Error : Bad result of section algorithm" 
+} else {
+  puts "OK: Good result of section algorithm" 
+}
+
+checkprops result -l 27.3439
+
+smallview
+don result
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png
