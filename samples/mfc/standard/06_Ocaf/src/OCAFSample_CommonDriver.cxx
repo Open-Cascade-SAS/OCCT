@@ -34,6 +34,9 @@
 #define OPERATION_NOT_DONE 8
 #define NULL_OPERATION 9
 
+// OCCT RTTI
+IMPLEMENT_STANDARD_RTTIEXT (OCAFSample_CommonDriver, OCAFSample_Driver)
+
 //=======================================================================
 //function : Constructor
 //purpose  :

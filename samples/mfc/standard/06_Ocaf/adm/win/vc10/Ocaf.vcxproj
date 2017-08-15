@@ -462,10 +462,10 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\src\Handle_TOcaf_Application.hxx" />
-    <ClInclude Include="..\..\..\src\Handle_TOcafFunction_BoxDriver.hxx" />
-    <ClInclude Include="..\..\..\src\Handle_TOcafFunction_CutDriver.hxx" />
-    <ClInclude Include="..\..\..\src\Handle_TOcafFunction_CylDriver.hxx" />
+    <ClInclude Include="..\..\..\src\TOcaf_Application.hxx" />
+    <ClInclude Include="..\..\..\src\TOcafFunction_BoxDriver.hxx" />
+    <ClInclude Include="..\..\..\src\TOcafFunction_CutDriver.hxx" />
+    <ClInclude Include="..\..\..\src\TOcafFunction_CylDriver.hxx" />
     <ClInclude Include="..\..\..\src\NewBoxDlg.h" />
     <ClInclude Include="..\..\..\src\NewCylDlg.h" />
     <ClInclude Include="..\..\..\src\OcafApp.h" />

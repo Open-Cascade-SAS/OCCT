@@ -17,6 +17,8 @@
 #include "TFunction_Logbook.hxx"
 #include "TDF_Reference.hxx"
 
+IMPLEMENT_STANDARD_RTTIEXT (TOcafFunction_CutDriver, TFunction_Driver)
+
 //=======================================================================
 //function : GetID
 //purpose  :
@@ -139,32 +141,3 @@ Standard_Integer TOcafFunction_CutDriver::Execute(Handle(TFunction_Logbook)& /*l
   // If there are no any mistakes we return 0:
   return 0;
 }
-
-TOcafFunction_CutDriver::~TOcafFunction_CutDriver() {}
- 
-// DownCast method
-//   allow safe downcasting
-//
-const Handle(TOcafFunction_CutDriver) TOcafFunction_CutDriver::DownCast(const Handle(Standard_Transient)& AnObject) 
-{
-  Handle(TOcafFunction_CutDriver) _anOtherObject;
-
-  if (!AnObject.IsNull()) {
-     if (AnObject->IsKind(STANDARD_TYPE(TOcafFunction_CutDriver))) {
-       _anOtherObject = Handle(TOcafFunction_CutDriver)::DownCast (AnObject);
-     }
-  }
-
-  return _anOtherObject ;
-}
-const Handle(Standard_Type)& TOcafFunction_CutDriver::DynamicType() const 
-{ 
-  return STANDARD_TYPE(TOcafFunction_CutDriver) ; 
-}
-Standard_Boolean TOcafFunction_CutDriver::IsKind(const Handle(Standard_Type)& AType) const 
-{ 
-  return (STANDARD_TYPE(TOcafFunction_CutDriver) == AType || TFunction_Driver::IsKind(AType)); 
-}
-
-
-

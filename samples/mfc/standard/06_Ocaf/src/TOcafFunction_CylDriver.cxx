@@ -13,6 +13,7 @@
 #include "TDataStd_Real.hxx"
 #include "TNaming_Builder.hxx"
 
+IMPLEMENT_STANDARD_RTTIEXT (TOcafFunction_CylDriver, TFunction_Driver)
 
 //=======================================================================
 //function : GetID
@@ -113,32 +114,3 @@ Standard_Integer TOcafFunction_CylDriver::Execute(Handle(TFunction_Logbook)& /*l
   // If there are no any mistakes we return 0:
   return 0;
 }
-
-TOcafFunction_CylDriver::~TOcafFunction_CylDriver() {}
- 
-// DownCast method
-//   allow safe downcasting
-//
-const Handle(TOcafFunction_CylDriver) TOcafFunction_CylDriver::DownCast(const Handle(Standard_Transient)& AnObject) 
-{
-  Handle(TOcafFunction_CylDriver) _anOtherObject;
-
-  if (!AnObject.IsNull()) {
-     if (AnObject->IsKind(STANDARD_TYPE(TOcafFunction_CylDriver))) {
-       _anOtherObject = Handle(TOcafFunction_CylDriver)::DownCast (AnObject);
-     }
-  }
-
-  return _anOtherObject ;
-}
-const Handle(Standard_Type)& TOcafFunction_CylDriver::DynamicType() const 
-{ 
-  return STANDARD_TYPE(TOcafFunction_CylDriver) ; 
-}
-Standard_Boolean TOcafFunction_CylDriver::IsKind(const Handle(Standard_Type)& AType) const 
-{ 
-  return (STANDARD_TYPE(TOcafFunction_CylDriver) == AType || TFunction_Driver::IsKind(AType)); 
-}
-
-
-

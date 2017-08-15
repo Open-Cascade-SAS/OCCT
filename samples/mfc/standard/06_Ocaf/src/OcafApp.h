@@ -10,7 +10,6 @@
 
 #include <OCC_App.h>
 #include "OcafDoc.h"
-#include "TOCAF_Application.hxx"
 #include <TOcaf_Application.hxx>
 
 

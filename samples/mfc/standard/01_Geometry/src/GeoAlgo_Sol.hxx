@@ -15,7 +15,7 @@
 #ifndef _GeoAlgo_Sol_HeaderFile
 #define _GeoAlgo_Sol_HeaderFile
 
-#ifndef _Handle_Geom_BSplineSurface_HeaderFile
+#ifndef _Geom_BSplineSurface_HeaderFile
 #include <Geom_BSplineSurface.hxx>
 #endif
 #ifndef _Standard_Boolean_HeaderFile

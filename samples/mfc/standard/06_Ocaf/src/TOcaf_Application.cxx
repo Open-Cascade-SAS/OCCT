@@ -5,7 +5,7 @@
 //Modified by Sergey RUIN (An instanciation of the drivers)
 
 #include <stdafx.h>
-#include <TOcaf_Application.ixx>
+#include <TOcaf_Application.hxx>
 #include <TDF_Label.hxx>
 #include <TPrsStd_AISPresentation.hxx>
 #include <TPrsStd_AISViewer.hxx>
@@ -14,6 +14,8 @@
 #include "TOcafFunction_BoxDriver.hxx"
 #include "TOcafFunction_CylDriver.hxx"
 #include "TOcafFunction_CutDriver.hxx"
+
+IMPLEMENT_STANDARD_RTTIEXT (TOcaf_Application, TDocStd_Application)
 
 //=======================================================================
 //function : TOcaf_Application

@@ -32,73 +32,18 @@
 class TFunction_Logbook;
 
 
-class TOcafFunction_CutDriver : public TFunction_Driver {
-
+class TOcafFunction_CutDriver : public TFunction_Driver
+{
 public:
 
-    inline void* operator new(size_t,void* anAddress) 
-      {
-        return anAddress;
-      }
-    inline void* operator new(size_t size) 
-      { 
-        return Standard::Allocate(size); 
-      }
-    inline void  operator delete(void *anAddress) 
-      { 
-        if (anAddress) Standard::Free((Standard_Address&)anAddress); 
-      }
-//    inline void  operator delete(void *anAddress, size_t size) 
-//      { 
-//        if (anAddress) Standard::Free((Standard_Address&)anAddress,size); 
-//      }
- // Methods PUBLIC
- // 
-Standard_EXPORT static const Standard_GUID& GetID() ;
-Standard_EXPORT TOcafFunction_CutDriver();
-Standard_EXPORT virtual  void Validate(Handle(TFunction_Logbook)& log) const;
-Standard_EXPORT virtual  Standard_Boolean MustExecute(const Handle(TFunction_Logbook)& log) const;
-Standard_EXPORT virtual  Standard_Integer Execute(Handle(TFunction_Logbook)& log) const;
-Standard_EXPORT ~TOcafFunction_CutDriver();
+  Standard_EXPORT static const Standard_GUID& GetID() ;
+  Standard_EXPORT TOcafFunction_CutDriver ();
+  Standard_EXPORT virtual  void Validate (Handle (TFunction_Logbook)& log) const;
+  Standard_EXPORT virtual  Standard_Boolean MustExecute (const Handle (TFunction_Logbook)& log) const;
+  Standard_EXPORT virtual  Standard_Integer Execute (Handle (TFunction_Logbook)& log) const;
 
-
-
-
- // Type management
- //
- //Standard_EXPORT friend Handle(Standard_Type)& TOcafFunction_CutDriver_Type_();
- Standard_EXPORT const Handle(TOcafFunction_CutDriver) DownCast(const Handle(Standard_Transient)& AnObject); 
- Standard_EXPORT const Handle(Standard_Type)& DynamicType() const;
- Standard_EXPORT Standard_Boolean	       IsKind(const Handle(Standard_Type)&) const;
-
-protected:
-
- // Methods PROTECTED
- // 
-
-
- // Fields PROTECTED
- //
-
-
-private: 
-
- // Methods PRIVATE
- // 
-
-
- // Fields PRIVATE
- //
-
-
+  // OCCT RTTI
+  DEFINE_STANDARD_RTTIEXT(TOcafFunction_CutDriver,TFunction_Driver)
 };
-
-
-
-
-
-// other inline functions and methods (like "C++: function call" methods)
-//
-
 
 #endif

@@ -58,16 +58,16 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\src\Handle_TOcaf_Application.hxx">
+    <ClInclude Include="..\..\..\src\TOcaf_Application.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\Handle_TOcafFunction_BoxDriver.hxx">
+    <ClInclude Include="..\..\..\src\TOcafFunction_BoxDriver.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\Handle_TOcafFunction_CutDriver.hxx">
+    <ClInclude Include="..\..\..\src\TOcafFunction_CutDriver.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\Handle_TOcafFunction_CylDriver.hxx">
+    <ClInclude Include="..\..\..\src\TOcafFunction_CylDriver.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\NewBoxDlg.h">

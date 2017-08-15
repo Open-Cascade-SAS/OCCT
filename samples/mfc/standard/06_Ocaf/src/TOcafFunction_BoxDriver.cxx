@@ -12,6 +12,8 @@
 #include "BRepPrimAPI_MakeBox.hxx"
 #include "TNaming_Builder.hxx"
 
+IMPLEMENT_STANDARD_RTTIEXT (TOcafFunction_BoxDriver, TFunction_Driver)
+
 //=======================================================================
 //function : GetID
 //purpose  :
@@ -118,32 +120,3 @@ Standard_Integer TOcafFunction_BoxDriver::Execute(Handle(TFunction_Logbook)& /*l
   // If there are no any mistakes we return 0:
   return 0;
 }
-
-TOcafFunction_BoxDriver::~TOcafFunction_BoxDriver() {}
- 
-// DownCast method
-//   allow safe downcasting
-//
-const Handle(TOcafFunction_BoxDriver) TOcafFunction_BoxDriver::DownCast(const Handle(Standard_Transient)& AnObject) 
-{
-  Handle(TOcafFunction_BoxDriver) _anOtherObject;
-
-  if (!AnObject.IsNull()) {
-     if (AnObject->IsKind(STANDARD_TYPE(TOcafFunction_BoxDriver))) {
-       _anOtherObject = Handle(TOcafFunction_BoxDriver)::DownCast (AnObject);
-     }
-  }
-
-  return _anOtherObject ;
-}
-const Handle(Standard_Type)& TOcafFunction_BoxDriver::DynamicType() const 
-{ 
-  return STANDARD_TYPE(TOcafFunction_BoxDriver) ; 
-}
-Standard_Boolean TOcafFunction_BoxDriver::IsKind(const Handle(Standard_Type)& AType) const 
-{ 
-  return (STANDARD_TYPE(TOcafFunction_BoxDriver) == AType || TFunction_Driver::IsKind(AType)); 
-}
-
-
-
