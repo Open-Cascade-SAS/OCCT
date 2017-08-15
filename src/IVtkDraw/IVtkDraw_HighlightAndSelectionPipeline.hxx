@@ -21,11 +21,18 @@
 #include <Standard_Transient.hxx>
 #include <TopoDS_Shape.hxx>
 
+// prevent disabling some MSVC warning messages by VTK headers 
+#ifdef _MSC_VER
+#pragma warning(push)
+#endif
 #include <vtkActor.h>
 #include <vtkPolyData.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkRenderer.h>
 #include <vtkSmartPointer.h>
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
 
 #include <IVtk_Types.hxx>
 #include <IVtkTools_DisplayModeFilter.hxx>

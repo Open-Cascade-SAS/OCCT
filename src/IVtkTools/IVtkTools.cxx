@@ -15,8 +15,16 @@
 
 #include <IVtkTools.hxx>
 #include <IVtkVTK_ShapeData.hxx>
+
+// prevent disabling some MSVC warning messages by VTK headers 
+#ifdef _MSC_VER
+#pragma warning(push)
+#endif
 #include <vtkLookupTable.h>
 #include <vtkMapper.h>
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
 
 namespace IVtkTools
 {

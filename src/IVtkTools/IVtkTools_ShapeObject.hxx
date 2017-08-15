@@ -18,9 +18,17 @@
 
 #include <IVtkTools.hxx>
 #include <IVtkOCC_Shape.hxx>
+
+// prevent disabling some MSVC warning messages by VTK headers 
+#ifdef _MSC_VER
+#pragma warning(push)
+#endif
 #include <vtkDataObject.h>
 #include <vtkSetGet.h>
 #include <vtkWeakPointer.h>
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
 
 class vtkActor;
 class vtkDataSet;

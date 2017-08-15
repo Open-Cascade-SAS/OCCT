@@ -13,10 +13,28 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+// prevent disabling some MSVC warning messages by VTK headers 
+#ifdef _MSC_VER
+#pragma warning(push)
+#endif
 #ifdef _WIN32
-#include <windows.h>
 #include <vtkWin32RenderWindowInteractor.h>
 #include <vtkWin32OpenGLRenderWindow.h>
+#else
+#include <GL/glx.h>
+#include <vtkXRenderWindowInteractor.h>
+#include <vtkXOpenGLRenderWindow.h>
+#endif
+#include <vtkActor.h>
+#include <vtkActorCollection.h>
+#include <vtkCommand.h>
+#include <vtkObjectFactory.h>
+#include <vtkSmartPointer.h>
+
+#include <IVtkDraw_Interactor.hxx>
+
+#ifdef _MSC_VER
+#pragma warning(pop)
 #endif
 
 #include <IVtkTools_ShapePicker.hxx>
@@ -24,27 +42,9 @@
 #include <IVtkTools_DisplayModeFilter.hxx>
 #include <IVtkTools_ShapeObject.hxx>
 #include <IVtkTools_ShapeDataSource.hxx>
-#include <IVtkDraw_Interactor.hxx>
 
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
-
-#include <vtkActor.h>
-#include <vtkActorCollection.h>
-#include <vtkCommand.h>
-#include <vtkObjectFactory.h>
-#include <vtkSmartPointer.h>
-
-#ifndef _WIN32
-#include <X11/X.h>
-#include <X11/Shell.h>
-#include <X11/Xlib.h>
-#include <GL/glx.h>
-#include <vtkXRenderWindowInteractor.h>
-#include <vtkXOpenGLRenderWindow.h>
-#include <X11/Xutil.h>
-#include <tk.h>
-#endif
 
 //===========================================================
 // Function : ClearHighlightAndSelection

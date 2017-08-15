@@ -14,12 +14,20 @@
 // commercial license or contractual agreement.
 
 #include <IVtkVTK_ShapeData.hxx>
+
+// prevent disabling some MSVC warning messages by VTK headers 
+#ifdef _MSC_VER
+#pragma warning(push)
+#endif
 #include <vtkCellData.h>
 #include <vtkDoubleArray.h>
 #include <vtkIdList.h>
 #include <vtkIdTypeArray.h>
 #include <vtkPoints.h>
 #include <vtkPolyData.h>
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
 
 IMPLEMENT_STANDARD_RTTIEXT(IVtkVTK_ShapeData,IVtk_IShapeData)
 

@@ -15,9 +15,17 @@
 
 #include <IVtkTools_DisplayModeFilter.hxx>
 #include <IVtkVTK_ShapeData.hxx>
+
+// prevent disabling some MSVC warning messages by VTK headers 
+#ifdef _MSC_VER
+#pragma warning(push)
+#endif
 #include <vtkInformation.h>
 #include <vtkInformationVector.h>
 #include <vtkObjectFactory.h>
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
 
 vtkStandardNewMacro(IVtkTools_DisplayModeFilter)
 

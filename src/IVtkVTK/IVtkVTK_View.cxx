@@ -15,11 +15,19 @@
 
 
 #include <IVtkVTK_View.hxx>
+
+// prevent disabling some MSVC warning messages by VTK headers 
+#ifdef _MSC_VER
+#pragma warning(push)
+#endif
 #include <vtkAutoInit.h>
 #include <vtkCamera.h>
 #include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
 #include <vtkTransform.h>
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
 
 IMPLEMENT_STANDARD_RTTIEXT(IVtkVTK_View,IVtk_IView)
 

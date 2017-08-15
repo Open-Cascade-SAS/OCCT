@@ -15,12 +15,20 @@
 
 #include <IVtkTools_ShapeObject.hxx>
 #include <IVtkTools_ShapeDataSource.hxx>
+
+// prevent disabling some MSVC warning messages by VTK headers 
+#ifdef _MSC_VER
+#pragma warning(push)
+#endif
 #include <vtkActor.h>
 #include <vtkObjectFactory.h> 
 #include <vtkDataSet.h>
 #include <vtkInformation.h>
 #include <vtkInformationObjectBaseKey.h>
 #include <vtkPolyData.h>
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
 
 IVtkTools_ShapeObject::KeyPtr IVtkTools_ShapeObject::myKey = 0;
 

@@ -18,7 +18,10 @@
 #include <IVtkOCC_ShapeMesher.hxx>
 #include <IVtkTools_ShapeObject.hxx>
 
-// VTK includes
+// prevent disabling some MSVC warning messages by VTK headers 
+#ifdef _MSC_VER
+#pragma warning(push)
+#endif
 #include <vtkObjectFactory.h> 
 #include <vtkCellData.h>
 #include <vtkIdTypeArray.h>
@@ -27,6 +30,9 @@
 #include <vtkPolyData.h>
 #include <vtkTransform.h>
 #include <vtkTransformPolyDataFilter.h>
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
 
 vtkStandardNewMacro(IVtkTools_ShapeDataSource)
 

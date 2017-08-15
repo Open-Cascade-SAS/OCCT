@@ -19,8 +19,16 @@
 #include <IVtkTools.hxx>
 #include <IVtk_Types.hxx>
 #include <IVtkOCC_ShapePickerAlgo.hxx>
+
+// prevent disabling some MSVC warning messages by VTK headers 
+#ifdef _MSC_VER
+#pragma warning(push)
+#endif
 #include <vtkAbstractPropPicker.h>
 #include <vtkSmartPointer.h>
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
 
 class vtkRenderer;
 class vtkActorCollection;

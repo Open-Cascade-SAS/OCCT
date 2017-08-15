@@ -30,8 +30,16 @@
 #include <tk.h>
 #endif
 
+// prevent disabling some MSVC warning messages by VTK headers 
+#ifdef _MSC_VER
+#pragma warning(push)
+#endif
 #include <vtkRenderWindowInteractor.h>
 #include <vtkSmartPointer.h>
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
+
 #include <IVtkTools_ShapePicker.hxx>
 #include <IVtkDraw_HighlightAndSelectionPipeline.hxx>
 #include <Aspect_Window.hxx>
