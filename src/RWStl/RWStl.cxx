@@ -80,6 +80,9 @@ namespace
     //! Creates Poly_Triangulation from collected data
     Handle(Poly_Triangulation) GetTriangulation()
     {
+      if (myTriangles.IsEmpty())
+        return Handle(Poly_Triangulation)();
+
       Handle(Poly_Triangulation) aPoly = new Poly_Triangulation (myNodes.Length(), myTriangles.Length(), Standard_False);
       for (Standard_Integer aNodeIter = 0; aNodeIter < myNodes.Size(); ++aNodeIter)
       {
@@ -109,10 +112,9 @@ Handle(Poly_Triangulation) RWStl::ReadFile (const Standard_CString theFile,
                                             const Handle(Message_ProgressIndicator)& theProgress)
 {
   Reader aReader;
-  if (!aReader.Read (theFile, theProgress))
-  {
-    return Handle(Poly_Triangulation)();
-  }
+  aReader.Read (theFile, theProgress);
+  // note that returned bool value is ignored intentionally -- even if something went wrong,
+  // but some data have been read, we at least will return these data
   return aReader.GetTriangulation();
 }
 
@@ -209,10 +211,15 @@ Handle(Poly_Triangulation) RWStl::ReadAscii (const OSD_Path& theFile,
 //function : Write
 //purpose  :
 //=============================================================================
-Standard_Boolean RWStl::WriteBinary (const Handle(Poly_Triangulation)& aMesh,
+Standard_Boolean RWStl::WriteBinary (const Handle(Poly_Triangulation)& theMesh,
                                      const OSD_Path& thePath,
                                      const Handle(Message_ProgressIndicator)& theProgInd)
 {
+  if (theMesh.IsNull() || theMesh->NbTriangles() <= 0)
+  {
+    return Standard_False;
+  }
+
   TCollection_AsciiString aPath;
   thePath.SystemName (aPath);
 
@@ -222,7 +229,7 @@ Standard_Boolean RWStl::WriteBinary (const Handle(Poly_Triangulation)& aMesh,
     return Standard_False;
   }
 
-  Standard_Boolean isOK = writeBinary (aMesh, aFile, theProgInd);
+  Standard_Boolean isOK = writeBinary (theMesh, aFile, theProgInd);
 
   fclose (aFile);
   return isOK;
@@ -236,6 +243,11 @@ Standard_Boolean RWStl::WriteAscii (const Handle(Poly_Triangulation)& theMesh,
                                     const OSD_Path& thePath,
                                     const Handle(Message_ProgressIndicator)& theProgInd)
 {
+  if (theMesh.IsNull() || theMesh->NbTriangles() <= 0)
+  {
+    return Standard_False;
+  }
+
   TCollection_AsciiString aPath;
   thePath.SystemName (aPath);
 

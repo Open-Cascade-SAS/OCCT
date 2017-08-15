@@ -1,0 +1,91 @@
+puts "\n#======================================================================"
+puts "# Check reading empty or small STL files"
+puts "#======================================================================\n"
+
+set minimal_ascii_stl {solid
+facet normal 0 0 1
+outer loop
+vertex 0 0 0
+vertex 1 0 0
+vertex 0 1 0
+endloop
+endfacet
+endsolid}
+
+puts "\n#======================================================================"
+puts "# Ascii file with single facet, CRLF"
+puts "#======================================================================"
+set fd [open ${imagedir}/${casename}_one_ascii_dos.stl w]
+fconfigure $fd -translation crlf
+puts $fd $minimal_ascii_stl
+close $fd
+readstl res_one_ascii_dos ${imagedir}/${casename}_one_ascii_dos.stl
+checknbshapes res_one_ascii_dos -face 1
+
+puts "\n#======================================================================"
+puts "# Ascii file with single facet, LF"
+puts "#======================================================================"
+set fd [open ${imagedir}/${casename}_one_ascii_unix.stl w]
+fconfigure $fd -translation lf
+puts $fd $minimal_ascii_stl
+close $fd
+readstl res_one_ascii_unix ${imagedir}/${casename}_one_ascii_unix.stl
+checknbshapes res_one_ascii_unix -face 1
+
+puts "\n#======================================================================"
+puts "# Ascii file with single facet, LF, no EOL at the last line"
+puts "#======================================================================"
+set fd [open ${imagedir}/${casename}_one_ascii_noeol.stl w]
+fconfigure $fd -translation lf
+puts -nonewline $fd $minimal_ascii_stl
+close $fd
+readstl res_one_ascii_noeol ${imagedir}/${casename}_one_ascii_noeol.stl
+checknbshapes res_one_ascii_noeol -face 1
+
+puts "\n#======================================================================"
+puts "# Ascii file with no facets, CRLF"
+puts "#======================================================================"
+set fd [open ${imagedir}/${casename}_zero_ascii_dos.stl w]
+fconfigure $fd -translation crlf
+puts $fd "solid \nendsolid"
+close $fd
+readstl res_zero_ascii_dos ${imagedir}/${casename}_zero_ascii_dos.stl
+
+puts "\n#======================================================================"
+puts "# Ascii file with no facets, LF"
+puts "#======================================================================"
+set fd [open ${imagedir}/${casename}_zero_ascii_unix.stl w]
+fconfigure $fd -translation lf
+puts $fd "solid \nendsolid"
+close $fd
+readstl res_zero_ascii_unix ${imagedir}/${casename}_zero_ascii_unix.stl
+
+puts "\n#======================================================================"
+puts "# Binary file with single facet"
+puts "#======================================================================"
+set fd [open ${imagedir}/${casename}_one_binary.stl w]
+fconfigure $fd -translation binary
+puts -nonewline $fd "stl [string repeat { } 76]"
+puts -nonewline $fd [binary format if3f3f3f3t 1 {0 0 1} {0 0 0} {1 0 0} {0 1 0} 0]
+close $fd
+readstl res_one_binary ${imagedir}/${casename}_one_binary.stl
+checknbshapes res_one_binary -face 1
+
+puts "\n#======================================================================"
+puts "# Binary file with no facets -- will be treated as Ascii and generate e r r o r"
+puts "#======================================================================"
+puts "REQUIRED ALL: Error: unexpected format of facet at line 2"
+set fd [open ${imagedir}/${casename}_zero_binary.stl w]
+fconfigure $fd -translation binary
+puts -nonewline $fd "stl [string repeat { } 76][binary format i 0]"
+close $fd
+readstl res_zero_binary ${imagedir}/${casename}_zero_binary.stl
+
+puts "\n#======================================================================"
+puts "# Empty file"
+puts "#======================================================================"
+puts "REQUIRED ALL: Error: unexpected format of facet at line 2"
+set fd [open ${imagedir}/${casename}_empty.stl w]
+close $fd
+readstl res_empty ${imagedir}/${casename}_empty.stl
+

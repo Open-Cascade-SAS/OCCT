@@ -138,9 +138,15 @@ Standard_Boolean RWStl_Reader::Read (const char* theFile,
   std::streampos theEnd = aStream.tellg();
   aStream.seekg (0, aStream.beg);
 
-  while (!aStream.eof() && !aStream.bad())
+  // binary STL files cannot be shorter than 134 bytes 
+  // (80 bytes header + 4 bytes facet count + 50 bytes for one facet);
+  // thus assume files shorter than 134 as Ascii without probing
+  // (probing may bring stream to fail state if EOF is reached)
+  bool isAscii = ((size_t)theEnd < THE_STL_MIN_FILE_SIZE || IsAscii (aStream));
+
+  while (aStream.good())
   {
-    if (IsAscii (aStream))
+    if (isAscii)
     {
       if (!ReadAscii (aStream, theEnd, theProgress))
       {
@@ -156,7 +162,7 @@ Standard_Boolean RWStl_Reader::Read (const char* theFile,
     }
     aStream >> std::ws; // skip any white spaces
   }
-  return !aStream.bad();
+  return ! aStream.fail();
 }
 
 //==============================================================================
@@ -169,10 +175,10 @@ Standard_Boolean RWStl_Reader::IsAscii (Standard_IStream& theStream)
   // read first 134 bytes to detect file format
   char aBuffer[THE_STL_MIN_FILE_SIZE];
   std::streamsize aNbRead = theStream.read (aBuffer, THE_STL_MIN_FILE_SIZE).gcount();
-  if (!theStream)
+  if (! theStream)
   {
     Message::DefaultMessenger()->Send ("Error: Cannot read file", Message_Fail);
-    return false;
+    return true;
   }
 
   // put back the read symbols
@@ -240,7 +246,8 @@ Standard_Boolean RWStl_Reader::ReadAscii (Standard_IStream& theStream,
   // use method seekpos() to get true 64-bit offset to enable
   // handling of large files (VS 2010 64-bit)
   const int64_t aStartPos = GETPOS(theStream.tellg());
-  const int64_t aEndPos = (theUntilPos > 0 ? GETPOS(theUntilPos) : std::numeric_limits<int64_t>::max());
+  // Note: 1 is added to theUntilPos to be sure to read the last symbol (relevant for files without EOL at the end)
+  const int64_t aEndPos = (theUntilPos > 0 ? 1 + GETPOS(theUntilPos) : std::numeric_limits<int64_t>::max());
 
   // skip header "solid ..."
   theStream.ignore (aEndPos - aStartPos, '\n');

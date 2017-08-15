@@ -49,8 +49,11 @@ Standard_Boolean StlAPI_Writer::Write (const TopoDS_Shape&    theShape,
   {
     TopLoc_Location aLoc;
     Handle(Poly_Triangulation) aTriangulation = BRep_Tool::Triangulation (TopoDS::Face (anExpSF.Current()), aLoc);
-    aNbNodes     += aTriangulation->NbNodes();
-    aNbTriangles += aTriangulation->NbTriangles();
+    if (! aTriangulation.IsNull())
+    {
+      aNbNodes += aTriangulation->NbNodes ();
+      aNbTriangles += aTriangulation->NbTriangles ();
+    }
   }
 
   // create temporary triangulation
