@@ -1,5 +1,5 @@
 pload DCAF
-pload TOOLS
+pload INSPECTOR
 
 NewDocument Doc BinOcaf
 

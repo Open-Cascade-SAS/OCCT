@@ -1,6 +1,6 @@
 pload DCAF
 pload VISUALIZATION
-pload TOOLS
+pload INSPECTOR
 
 chrono qat start
 # Create a new document and set UndoLimit

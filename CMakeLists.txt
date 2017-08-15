@@ -347,6 +347,8 @@ if (MSVC)
   set (BUILD_MODULE_MfcSamples OFF CACHE BOOL "${BUILD_MODULE_MfcSamples_DESCR}")
 endif()
 
+set (BUILD_Inspector OFF CACHE BOOL "${BUILD_Inspector_DESCR}")
+
 # uwp sample
 if (MSVC)
   if ("${CMAKE_SYSTEM_NAME}" STREQUAL "WindowsStore")
@@ -364,9 +366,6 @@ endif()
 if (WIN32)
   set (USE_D3D OFF CACHE BOOL "${USE_D3D_DESCR}")
 endif()
-
-set (USE_QT_TOOLS OFF CACHE BOOL "${USE_QT_TOOLS_DESCR}")
-set (USE_QT4 ON CACHE BOOL "${USE_QT4}")
 
 # Enable/Disable the floating point exceptions (FPE) during runtime.
 if (NOT BUILD_ENABLE_FPE_SIGNAL_HANDLER)
@@ -777,7 +776,7 @@ endif()
 # include the patched or original list of tools
 # list <TOOLNAME>_TOOLKITS is created foreach tool and contains its toolkits
 # list <OCCT_TOOLS> will contain all tools
-if (NOT USE_QT_TOOLS)
+if (NOT BUILD_Inspector)
   OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_QT")
   OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_TQTMALLOC")
   OCCT_CHECK_AND_UNSET ("INSTALL_QT")
@@ -796,7 +795,7 @@ else()
 
   # check qt 3rdparty path
   add_definitions (-DHAVE_QT)
-  OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/qt5")
+  OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/qt")
   message (STATUS "Info: Qt is used by OCCT")
 endif()
 
@@ -978,11 +977,11 @@ endif()
 
 if (BUILD_TOOL_TOOLKITS)
   # copy tinspector script to install script folder
-  if (BUILD_PATCH AND EXISTS "${BUILD_PATCH}/adm/templates/dfbrowser.${SCRIPT_EXT}")
-    install (FILES "${BUILD_PATCH}/adm/templates/dfbrowser.${SCRIPT_EXT}" DESTINATION  "${INSTALL_DIR_SCRIPT}"
+  if (BUILD_PATCH AND EXISTS "${BUILD_PATCH}/adm/templates/inspector.${SCRIPT_EXT}")
+    install (FILES "${BUILD_PATCH}/adm/templates/inspector.${SCRIPT_EXT}" DESTINATION  "${INSTALL_DIR_SCRIPT}"
             PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_WRITE GROUP_EXECUTE WORLD_READ WORLD_WRITE WORLD_EXECUTE)
   else()
-    install (FILES "${CMAKE_SOURCE_DIR}/adm/templates/dfbrowser.${SCRIPT_EXT}" DESTINATION  "${INSTALL_DIR_SCRIPT}"
+    install (FILES "${CMAKE_SOURCE_DIR}/adm/templates/inspector.${SCRIPT_EXT}" DESTINATION  "${INSTALL_DIR_SCRIPT}"
             PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_WRITE GROUP_EXECUTE WORLD_READ WORLD_WRITE WORLD_EXECUTE)
   endif()
 
@@ -990,6 +989,9 @@ if (BUILD_TOOL_TOOLKITS)
   foreach (BUILD_SAMPLE_TOOL_TOOLKIT ${BUILD_SAMPLE_TOOLKITS})
     OCCT_ADD_SUBDIRECTORY ("samples/tools/${BUILD_SAMPLE_TOOL_TOOLKIT}")
   endforeach()
+
+  # patch TInspectorEXE
+  OCCT_CONFIGURE ("adm/templates/TInspectorEXE.vcxproj.user.in" "${CMAKE_BINARY_DIR}/samples/tools/TInspectorEXE/TInspectorEXE.vcxproj.user")
 endif()
 
 # Prepare variables for configuration of OpenCASCADE cmake config file

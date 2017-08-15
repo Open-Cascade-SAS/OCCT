@@ -122,6 +122,13 @@ set (BUILD_MODULE_MfcSamples_DESCR
 These samples show some possibilities of using OCCT and they can be executed
 with script samples.bat from the installation directory (INSTALL_DIR)")
 
+set (BUILD_Inspector_DESCR
+"Indicates whether OCCT inspector should be built together with OCCT.
+This inspector provides functionality to interactively inspect low-level content
+of the OCAF data model, OCCT viewer, etc. have been introduced in OCCT.
+It can be executed with script inspector.bat from the installation directory (INSTALL_DIR) or
+using 'tinspector' command in DRAW interpretator")
+
 set (BUILD_MODULE_UwpSample_DESCR
 "Indicates whether OCCT UWP sample should be built together with OCCT.")
 
@@ -171,11 +178,6 @@ VTK by means of its dedicated VIS component (VTK Integration Services).")
 set (USE_GLX_DESCR "Indicates whether X11 OpenGl on OSX is used or not")
 
 set (USE_D3D_DESCR "Indicates whether optional Direct3D wrapper in OCCT visualization module should be build or not")
-
-set (BUILD_QT_TOOLS_DESCR "Indicates whether OCCT tools should be build or not")
-
-set (USE_QT_TOOLS_DESCR "Indicates whether OCCT tools should be used or not
-The tools will be searched in third-party directory or may be set manually")
 
 macro (BUILD_MODULE MODULE_NAME)
   set (ENABLE_MODULE TRUE)

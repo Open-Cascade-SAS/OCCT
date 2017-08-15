@@ -86,13 +86,13 @@ int main (int argc, char** argv)
   std::set<TCollection_AsciiString> aPlugins;
   for (int anArgId = 1; anArgId < argc; anArgId++ )
   {
-    if (!strcmp (argv[anArgId], "--dfbrowser"))
+    if (!strcmp (argv[anArgId], "dfbrowser"))
       aPlugins.insert ("TKDFBrowser");
 
-    if (!strcmp (argv[anArgId], "--shapeview"))
+    if (!strcmp (argv[anArgId], "shapeview"))
       aPlugins.insert ("TKShapeView");
 
-    if (!strcmp (argv[anArgId], "--vinspector"))
+    if (!strcmp (argv[anArgId], "vinspector"))
       aPlugins.insert ("TKVInspector");
   }
   NCollection_List<Handle(Standard_Transient)> aParameters;

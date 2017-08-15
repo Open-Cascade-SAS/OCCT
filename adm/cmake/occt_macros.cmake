@@ -116,7 +116,7 @@ function (FIND_SUBDIRECTORY ROOT_DIRECTORY DIRECTORY_SUFFIX SUBDIRECTORY_NAME)
   foreach (SUBDIR_NAME ${SUBDIR_NAME_LIST})
     #message("Subdir: ${SUBDIR_NAME}, ${DIRECTORY_SUFFIX}")
     # REGEX failed if the directory name contains '++' combination, so we replace it
-    string(REPLACE "++" "\\+\\+" SUBDIR_NAME_ESCAPED ${SUBDIR_NAME})
+    string(REPLACE "+" "\\+" SUBDIR_NAME_ESCAPED ${SUBDIR_NAME})
     string (REGEX MATCH "${SUBDIR_NAME_ESCAPED}" DOES_PATH_CONTAIN "${DIRECTORY_SUFFIX}")
     if (DOES_PATH_CONTAIN)
       set(${SUBDIRECTORY_NAME} "${ROOT_DIRECTORY}/${SUBDIR_NAME}" PARENT_SCOPE)

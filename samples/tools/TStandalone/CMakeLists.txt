@@ -5,8 +5,6 @@ set (CASROOT "" CACHE PATH "Third party OpenCascade dir" )
 set (3RDPARTY_DIR "" CACHE PATH "Third party dir" )
 set (INSTALL_DIR "" CACHE PATH "Where to install" )
 
-set (USE_QT4 ON CACHE BOOL "${USE_QT4}")
-
 if (NOT "$ENV{CASROOT}" STREQUAL "" AND EXISTS "$ENV{CASROOT}")
   set (CASROOT "$ENV{CASROOT}")
   #set (3RDPARTY_OCCT_DIR "${CASROOT}")
@@ -69,7 +67,7 @@ OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/freetype")
 OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/freeimage")
 OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/gl2ps")
 OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/tbb")
-OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/qt5")
+OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/qt")
 OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/occt_macros")
 
 #include (${CMAKE_SOURCE_DIR}/adm/cmake/3rdparty.cmake)
@@ -106,7 +104,7 @@ message (STATUS "\nInfo: \(${CURRENT_TIME}\) Start collecting all header files i
 COLLECT_AND_INSTALL_OCCT_HEADER_FILES ("${CMAKE_BINARY_DIR}" "${BUILD_TOOLKITS}" "${CASROOT_SOURCE_FILES}/tools" "${INSTALL_DIR_INCLUDE}")
 
 OCCT_INCLUDE_CMAKE_FILE_STANDALONE ("adm/cmake/standalone_macros")
-OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/qt5_macro")
+OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/qt_macro")
 
 set (BUILD_PROJECTS
   TInspectorAPI
