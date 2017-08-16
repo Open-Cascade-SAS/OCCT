@@ -324,6 +324,15 @@ The methods *V3d_View::Convert* and *V3d_View::ConvertWithProj()* have ceased to
 
 Porting of user applications from an earlier OCCT version to version 7.0.0 requires taking into account the following major changes.
 
+Building OCCT now requires compiler supporting some C++11 features.
+The supported compilers are:
+- MSVC: version 10 (Visual Studio 2010) or later
+- GCC: version 4.3 or later
+- CLang: version 3.6 or later
+- ICC: version XE 2013 SP 1 or later
+
+When compiling code that uses OCCT with GCC and CLang compilers, it is necessary to use compiler option -std=c++0x (or its siblings) to enable C++11 features.
+
 @subsection upgrade_700_persist Removal of legacy persistence
 
 Legacy persistence for shapes and OCAF data based on *Storage_Schema* (toolkits *TKPShape*, *TKPLCAF*, *TKPCAF*, *TKShapeShcema, TLStdLSchema, TKStdSchema*, and *TKXCAFSchema*) has been removed in OCCT 7.0.0.
