@@ -397,14 +397,12 @@ public:
   Standard_EXPORT void UnsetDisplayMode (const Handle(AIS_InteractiveObject)& theIObj,
                                          const Standard_Boolean               theToUpdateViewer);
 
-  //! Disables the mechanism of adaptive tolerance calculation in SelectMgr_ViewerSelector and
-  //! sets the given tolerance for ALL sensitive entities activated. For more information, see
-  //! SelectMgr_ViewerSelector documentation
-  //! Warning: When a local context is open the sensitivity is apply on it
-  //! instead on the main context.
-  Standard_EXPORT void SetPixelTolerance (const Standard_Integer aPrecision = 2);
-  
-  //! Returns the pixel tolerance.
+  //! Setup pixel tolerance for MoveTo() operation.
+  Standard_EXPORT void SetPixelTolerance (const Standard_Integer thePrecision = 2);
+
+  //! Returns the pixel tolerance, default is 2.
+  //! Pixel Tolerance extends sensitivity within MoveTo() operation (picking by point)
+  //! and can be adjusted by application based on user input precision (e.g. screen pixel density, input device precision, etc.).
   Standard_EXPORT Standard_Integer PixelTolerance() const;
 
   //! Allows to manage sensitivity of a particular selection of interactive object theObject

@@ -18,9 +18,10 @@
 // purpose :
 //=======================================================================
 SelectMgr_ToleranceMap::SelectMgr_ToleranceMap()
+: myLargestKey (-1),
+  myCustomTolerance (-1)
 {
-  myLargestKey = -1;
-  myCustomTolerance = -1;
+  //
 }
 
 //=======================================================================
@@ -38,24 +39,23 @@ SelectMgr_ToleranceMap::~SelectMgr_ToleranceMap()
 //=======================================================================
 void SelectMgr_ToleranceMap::Add (const Standard_Integer& theTolerance)
 {
-  if (myTolerances.IsBound (theTolerance))
+  if (Standard_Integer* aFreq = myTolerances.ChangeSeek (theTolerance))
   {
-    Standard_Integer& aFreq = myTolerances.ChangeFind (theTolerance);
-    aFreq++;
-
-    if (aFreq == 1 && theTolerance != myLargestKey)
+    ++(*aFreq);
+    if (*aFreq == 1 && theTolerance != myLargestKey)
+    {
       myLargestKey = Max (theTolerance, myLargestKey);
+    }
+    return;
+  }
+
+  myTolerances.Bind (theTolerance, 1);
+  if (myTolerances.Extent() == 1)
+  {
+    myLargestKey = theTolerance;
   }
   else
   {
-    if (myTolerances.IsEmpty())
-    {
-      myTolerances.Bind (theTolerance, 1);
-      myLargestKey = theTolerance;
-      return;
-    }
-
-    myTolerances.Bind (theTolerance, 1);
     myLargestKey = Max (theTolerance, myLargestKey);
   }
 }
@@ -66,18 +66,22 @@ void SelectMgr_ToleranceMap::Add (const Standard_Integer& theTolerance)
 //=======================================================================
 void SelectMgr_ToleranceMap::Decrement (const Standard_Integer& theTolerance)
 {
-  if (myTolerances.IsBound (theTolerance))
+  Standard_Integer* aFreq = myTolerances.ChangeSeek (theTolerance);
+  if (aFreq == NULL)
   {
-    Standard_Integer& aFreq = myTolerances.ChangeFind (theTolerance);
-    aFreq--;
+    return;
+  }
 
-    if (Abs (theTolerance - myLargestKey) < Precision::Confusion() && aFreq == 0)
+  --(*aFreq);
+  if (theTolerance == myLargestKey
+  && *aFreq == 0)
+  {
+    myLargestKey = 0;
+    for (NCollection_DataMap<Standard_Integer, Standard_Integer>::Iterator anIter (myTolerances); anIter.More(); anIter.Next())
     {
-      myLargestKey = 0;
-      for (NCollection_DataMap<Standard_Integer, Standard_Integer>::Iterator anIter (myTolerances); anIter.More(); anIter.Next())
+      if (anIter.Value() != 0)
       {
-        if (anIter.Value() != 0)
-          myLargestKey = Max (myLargestKey, anIter.Key());
+        myLargestKey = Max (myLargestKey, anIter.Key());
       }
     }
   }

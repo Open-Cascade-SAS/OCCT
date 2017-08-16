@@ -2611,11 +2611,9 @@ Standard_Boolean AIS_InteractiveContext::IsoOnTriangulation() const
   return myDefaultDrawer->IsoOnTriangulation();
 }
 
+//=======================================================================
 //function : SetPixelTolerance
-//purpose  : Disables the mechanism of adaptive tolerance calculation in
-//           SelectMgr_ViewerSelector and sets the given tolerance for ALL
-//           sensitive entities activated. For more information, see
-//           SelectMgr_ViewerSelector.hxx
+//purpose  :
 //=======================================================================
 void AIS_InteractiveContext::SetPixelTolerance (const Standard_Integer thePrecision)
 {
