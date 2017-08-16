@@ -223,12 +223,14 @@ public:
   Standard_EXPORT virtual void UnsetAttributes();
 
   //! Returns the hilight attributes settings.
+  //! When not NULL, overrides both Prs3d_TypeOfHighlight_LocalSelected and Prs3d_TypeOfHighlight_Selected defined within AIS_InteractiveContext.
   const Handle(Prs3d_Drawer)& HilightAttributes() const { return myHilightDrawer; }
 
   //! Initializes the hilight drawing tool theDrawer.
   virtual void SetHilightAttributes(const Handle(Prs3d_Drawer)& theDrawer) { myHilightDrawer = theDrawer; }
 
   //! Returns the hilight attributes settings.
+  //! When not NULL, overrides both Prs3d_TypeOfHighlight_LocalDynamic and Prs3d_TypeOfHighlight_Dynamic defined within AIS_InteractiveContext.
   const Handle(Prs3d_Drawer)& DynamicHilightAttributes() const { return myDynHilightDrawer; }
 
   //! Initializes the dynamic hilight drawing tool.

@@ -1195,6 +1195,9 @@ Management of highlight attributes has been revised and might require modificati
   it is now possible to customize default highlight attributes like *Display Mode* and *ZLayer*, which previously could be defined only on Object level.
 * Properties *Prs3d_Drawer::HighlightStyle()* and *Prs3d_Drawer::SelectionStyle()* have been removed.
   Instead, *AIS_InteractiveObject* now defines *DynamicHilightAttributes()* for dynamic highlighting in addition to *HilightAttributes()* used for highlighting in selected state.
+  Note that *AIS_InteractiveObject::HilightAttributes()* and *AIS_InteractiveObject::DynamicHilightAttributes()* override highlighting properties for both - entire object and for part coming from decomposition.
+  This includes Z-layer settings, which will be the same when overriding properties through AIS_InteractiveObject, while *AIS_InteractiveContext::HighlightStyle()* allows customizing properties for local and global selection independently
+  (with Graphic3d_ZLayerId_Top used for dynamic highlighting of entire object and Graphic3d_ZLayerId_Topmost for dynamic highlighting of object part by default).
 * The following protected fields have been removed from class *AIS_InteractiveObject*:
   - *myOwnColor*, replaced by *myDrawer->Color()*
   - *myTransparency*, replaced by *myDrawer->Transparency()*
