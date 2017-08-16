@@ -237,12 +237,13 @@ public:
   //! Gets next current object during iteration through mouse-detected
   //! interactive objects.
   Standard_EXPORT void NextDetected();
-  
+
+  //! @return current mouse-detected Owner or null object if there is no current detected.
+  Standard_EXPORT Handle(SelectMgr_EntityOwner) DetectedCurrentOwner() const;
 
   //! @return current mouse-detected shape or empty (null) shape, if current interactive object
   //! is not a shape (AIS_Shape) or there is no current mouse-detected interactive object at all.
   Standard_EXPORT const TopoDS_Shape& DetectedCurrentShape() const;
-  
 
   //! @return current mouse-detected interactive object or null object if there is no current detected.
   Standard_EXPORT Handle(AIS_InteractiveObject) DetectedCurrentObject() const;
@@ -424,7 +425,6 @@ private:
   Standard_Integer myCurrentOwner;
   TColStd_SequenceOfInteger myDetectedSeq;
   Standard_Integer myCurDetected;
-  AIS_SequenceOfInteractive myAISDetectedSeq;
   Standard_Integer myAISCurDetected;
   Handle(Prs3d_Drawer) mySubintStyle;
 

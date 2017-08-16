@@ -73,7 +73,6 @@ AIS_StatusOfDetection AIS_LocalContext::MoveTo (const Standard_Integer  theXpix,
   }
 
   myAISCurDetected = 0;
-  myAISDetectedSeq.Clear();
 
   myCurDetected = 0;
   myDetectedSeq.Clear();
@@ -84,17 +83,10 @@ AIS_StatusOfDetection AIS_LocalContext::MoveTo (const Standard_Integer  theXpix,
   for (Standard_Integer aDetIter = 1; aDetIter <= aDetectedNb; ++aDetIter)
   {
     Handle(SelectMgr_EntityOwner) anOwner = myMainVS->Picked (aDetIter);
-    if (anOwner.IsNull()
-     || !myFilters->IsOk (anOwner))
+    if (!anOwner.IsNull()
+      && myFilters->IsOk (anOwner))
     {
-      continue;
-    }
-
-    myDetectedSeq.Append (aDetIter); // normally they are already arranged in correct order...
-    Handle(AIS_InteractiveObject) anObj = Handle(AIS_InteractiveObject)::DownCast (anOwner->Selectable());
-    if (!anObj.IsNull())
-    {
-      myAISDetectedSeq.Append (anObj);
+      myDetectedSeq.Append (aDetIter); // normally they are already arranged in correct order...
     }
   }
 
@@ -868,15 +860,17 @@ void AIS_LocalContext::ClearOutdatedSelection (const Handle(AIS_InteractiveObjec
     }
 
     myDetectedSeq.Remove (anIdx--);
-
-    if (anIdx < myCurDetected)
+    if (myCurDetected > anIdx)
     {
-      myCurDetected--;
+      --myCurDetected;
+    }
+    if (myAISCurDetected > anIdx)
+    {
+      --myAISCurDetected;
     }
   }
-  myCurDetected = Max (myCurDetected, 1);
-
-  Standard_Boolean isAISRemainsDetected = Standard_False;
+  myCurDetected    = Max (myCurDetected,    1);
+  myAISCurDetected = Max (myAISCurDetected, 1);
 
   // 3. AIS_Selection : remove entity owners from AIS_Selection
   const Handle(V3d_Viewer)& aViewer = myCTX->CurrentViewer();
@@ -889,11 +883,7 @@ void AIS_LocalContext::ClearOutdatedSelection (const Handle(AIS_InteractiveObjec
       continue;
     }
 
-    if (aValidOwners.Contains (anOwner))
-    {
-      isAISRemainsDetected = Standard_True;
-    }
-    else
+    if (!aValidOwners.Contains (anOwner))
     {
       aRemoveEntites.Append (anOwner);
       anOwner->SetSelected (Standard_False);
@@ -967,28 +957,6 @@ void AIS_LocalContext::ClearOutdatedSelection (const Handle(AIS_InteractiveObjec
                       aViewer->ActiveViewIterator().Value(),
                       Standard_False);
     }
-  }
-
-  // Renew iterator of ::DetectedCurrentObject()
-  if (!isAISRemainsDetected)
-  {
-    // Remove the interactive object from detected sequences
-    for (Standard_Integer anIdx = 1; anIdx <= myAISDetectedSeq.Length(); ++anIdx)
-    {
-      Handle(AIS_InteractiveObject) aDetectedIO = myAISDetectedSeq.Value (anIdx);
-      if (aDetectedIO.IsNull() || aDetectedIO != theIO)
-      {
-        continue;
-      }
-
-      myAISDetectedSeq.Remove (anIdx--);
-
-      if (anIdx < myAISCurDetected)
-      {
-        myAISCurDetected--;
-      }
-    }
-    myAISCurDetected = Max (myAISCurDetected, 1);
   }
 }
 
@@ -1454,7 +1422,7 @@ Handle(SelectMgr_EntityOwner) AIS_LocalContext::FindSelectedOwnerFromShape(const
 //=======================================================================
 void AIS_LocalContext::InitDetected()
 {
-  myAISCurDetected = myAISDetectedSeq.Length()? 1 : 0;
+  myAISCurDetected = !myDetectedSeq.IsEmpty() ? myDetectedSeq.Lower() : 0;
 }
 
 //=======================================================================
@@ -1463,7 +1431,8 @@ void AIS_LocalContext::InitDetected()
 //=======================================================================
 Standard_Boolean AIS_LocalContext::MoreDetected() const
 {
-  return (myAISCurDetected > 0 && myAISCurDetected <= myAISDetectedSeq.Length());
+  return myAISCurDetected >= myDetectedSeq.Lower()
+      && myAISCurDetected <= myDetectedSeq.Upper();
 }
 
 //=======================================================================
@@ -1490,13 +1459,29 @@ const TopoDS_Shape& AIS_LocalContext::DetectedCurrentShape() const
 
   return aCurrentShape->Shape();
 }
+
+//=======================================================================
+//function : DetectedCurrentOwner
+//purpose  :
+//=======================================================================
+Handle(SelectMgr_EntityOwner) AIS_LocalContext::DetectedCurrentOwner() const
+{
+  return MoreDetected()
+       ? myMainVS->Picked (myDetectedSeq (myAISCurDetected))
+       : Handle(SelectMgr_EntityOwner)();
+}
+
 //=======================================================================
 //function : DetectedCurrentObject
 //purpose  :
 //=======================================================================
 Handle(AIS_InteractiveObject) AIS_LocalContext::DetectedCurrentObject() const
 {
-  return MoreDetected() ? myAISDetectedSeq(myAISCurDetected) : NULL;
+  if (!MoreDetected())
+  {
+    return Handle(AIS_InteractiveObject)();
+  }
+  return Handle(AIS_InteractiveObject)::DownCast (myMainVS->Picked (myDetectedSeq (myAISCurDetected))->Selectable());
 }
 
 //=======================================================================

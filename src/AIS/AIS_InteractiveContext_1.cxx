@@ -1662,6 +1662,22 @@ void AIS_InteractiveContext::NextDetected()
 }
 
 //=======================================================================
+//function : DetectedCurrentOwner
+//purpose  :
+//=======================================================================
+Handle(SelectMgr_EntityOwner) AIS_InteractiveContext::DetectedCurrentOwner() const
+{
+  if (HasOpenedContext())
+  {
+    return myLocalContexts (myCurLocalIndex)->DetectedCurrentOwner();
+  }
+
+  return MoreDetected()
+       ? myMainSel->Picked (myDetectedSeq (myCurDetected))
+       : Handle(SelectMgr_EntityOwner)();
+}
+
+//=======================================================================
 //function : DetectedCurrentShape
 //purpose  :
 //=======================================================================

@@ -2780,24 +2780,6 @@ Standard_Boolean AIS_InteractiveContext::PlaneSize (Standard_Real& theX,
 }
 
 //=======================================================================
-//function : SetAutoActivateSelection
-//purpose  :
-//=======================================================================
-void AIS_InteractiveContext::SetAutoActivateSelection (const Standard_Boolean theIsAuto)
-{
-  myIsAutoActivateSelMode = theIsAuto;
-}
-
-//=======================================================================
-//function : GetAutoActivateSelection
-//purpose  :
-//=======================================================================
-Standard_Boolean AIS_InteractiveContext::GetAutoActivateSelection() const
-{
-  return myIsAutoActivateSelMode;
-}
-
-//=======================================================================
 //function : SetZLayer
 //purpose  :
 //=======================================================================
