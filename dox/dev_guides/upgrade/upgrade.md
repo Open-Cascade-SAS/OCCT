@@ -1422,3 +1422,10 @@ The history of the changing of the initial shape was corrected:
 @subsection upgrade_720_Change_In_RWStl Changes in STL Reader / Writer
 
 Class RWStl now uses class Poly_Triangulation for storing triangular mesh instead of StlMesh data classes; the latter have been removed.
+
+@subsection upgrade_720_New_Error_Warning_system_in_BOA Refactoring of the Error/Warning reporting system in Boolean Component
+
+The Error/Warning reporting system of the algorithms in Boolean Component (in all BOPAlgo_* and BRepAlgoAPI_* algorithms) has been refactored.
+The methods returning the status of errors and warnings of the algorithms (ErrorStatus() and WarningStatus()) have been removed.
+Instead use methods HasErrors() and HasWarnings() to check for presence of errors and warnings, respectively.
+The full list of errors and warnings, with associated data such as problematic sub-shapes, can be obtained by method GetReport().

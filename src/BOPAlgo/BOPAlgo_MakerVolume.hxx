@@ -102,8 +102,8 @@ class BOPAlgo_PaveFiller;
 //! aMV.SetIntersect(bIntersect); //intersect or not the shapes from <aLS>
 //! //
 //! aMV.Perform(); //perform the operation
-//! if (aMV.ErrorStatus()) { //check error status
-//! return;
+//! if (aMV.HasErrors()) { //check error status
+//!   return;
 //! }
 //! //
 //! const TopoDS_Shape& aResult = aMV.Shape();  //result of the operation

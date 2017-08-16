@@ -540,6 +540,23 @@ The structure *BOPDS_FaceInfo* has the following contents.
 
 The objects of type *BOPDS_FaceInfo* are stored in one container of array type. The array allows getting the access to the information by index. This index (if exists) is stored in the field *myReference*.
 
+@section occt_algorithms_root_classes Root Classes
+
+@subsection occt_algorithms_root_classes_1 Class BOPAlgo_Options
+The class *BOPAlgo_Options* provides the following options for the algorithms:
+* Set the appropriate memory allocator;
+* Check the presence of the Errors and Warnings;
+* Turn on/off the parallel processing;
+* Set the additional tolerance for the operation;
+* Break the operations by user request.
+
+@subsection occt_algorithms_root_classes_2 Class BOPAlgo_Algo
+
+The class *BOPAlgo_Algo* provides the base interface for all algorithms:
+* Perform the operation;
+* Check the input data;
+* Check the result.
+
 @section occt_algorithms_5	Intersection Part
 
 Intersection Part (IP) is used to
@@ -553,17 +570,7 @@ Intersection Part (IP) is used to
 
 IP is implemented in the class *BOPAlgo_PaveFiller*.
 
-@figure{/user_guides/boolean_operations/images/operations_image064.svg,"Diagram for Class BOPAlgo_PaveFiller",230}
-
-@subsection occt_algorithms_5_1a Class BOPAlgo_Algo
-The class *BOPAlgo_Algo* provides the base interface for all algorithms to provide the possibility to:
-* Get Error status;
-* Get Warning status;
-* Turn on/off the parallel processing
-* Break the operations by user request
-* Check data;
-* Check the result;
-* Set the appropriate memory allocator. 
+@figure{/user_guides/boolean_operations/images/operations_image064.png,"Diagram for Class BOPAlgo_PaveFiller",230}
 
 The description provided in the next paragraphs is coherent with the implementation of the method *BOPAlgo_PaveFiller::Perform()*.
 
@@ -745,8 +752,11 @@ BP is implemented in the following classes:
 * *BOPAlgo_Builder* -- for the General Fuse operator  (GFA).
 * *BOPAlgo_BOP* -- for the Boolean Operation operator   (BOA).
 * *BOPAlgo_Section* -- for the Section operator  (SA).
+* *BOPAlgo_MakerVolume* -- for the Volume Maker operator.
+* *BOPAlgo_Splitter* -- for the Splitter operator.
+* *BOPAlgo_CellsBuilder* -- for the Cells Builder operator.
 
-@figure{/user_guides/boolean_operations/images/operations_image020.svg,"Diagram for BP classes",300}
+@figure{/user_guides/boolean_operations/images/operations_image020.png,"Diagram for BP classes",300}
 
 The class *BOPAlgo_BuilderShape* provides the interface for algorithms that have:
 * A Shape as the result;
@@ -1088,7 +1098,7 @@ aSplitter.SetNonDestructive(bSafeMode);
 aSplitter.SetGlue(aGlue);
 //
 aSplitter.Perform(); //perform the operation
-if (aSplitter.ErrorStatus()) { //check error status
+if (aSplitter.HasErrors()) { //check error status
   return;
 }
 //
@@ -2061,7 +2071,7 @@ aMV.SetGlue(aGlue);
 aMV.SetAvoidInternalShapes(bAvoidInternalShapes);
 //
 aMV.Perform(); //perform the operation
-if (aMV.ErrorStatus()) { //check error status
+if (aMV.HasErrors()) { //check error status
   return;
 }
 //
@@ -2151,7 +2161,7 @@ aCBuilder.SetNonDestructive(bSafeMode);
 aCBuilder.SetGlue(aGlue);
 //
 aCBuilder.Perform(); // build splits of all arguments (GF)
-if (aCBuilder.ErrorStatus()) { // check error status
+if (aCBuilder.HasErrors()) { // check error status
   return;
 }
 //
@@ -2804,7 +2814,6 @@ The following example illustrates how to use General Fuse operator:
 #include <BRepAlgoAPI_BuilderAlgo.hxx>
  {…
   Standard_Boolean bRunParallel;
-  Standard_Integer iErr;
   Standard_Real aFuzzyValue;
   BRepAlgoAPI_BuilderAlgo aBuilder;
   //
@@ -2841,8 +2850,7 @@ The following example illustrates how to use General Fuse operator:
   //
   // run the algorithm 
   aBuilder.Build(); 
-  iErr=aBuilder.ErrorStatus();
-  if (iErr) {
+  if (aBuilder.HasErrors()) {
     // an error treatment
     return;
   }
@@ -2945,7 +2953,7 @@ aSplitter.SetGlue(aGlueOpt);
 // run the algorithm 
 aSplitter.Build(); 
 // check error status
-if (aSplitter.ErrorStatus()) {
+if (aSplitter.HasErrors()) {
   return;
 }
 //
@@ -3012,7 +3020,6 @@ The following example illustrates how to use Common operation:
 #include < BRepAlgoAPI_Common.hxx>
  {…
   Standard_Boolean bRunParallel;
-  Standard_Integer iErr;
   Standard_Real aFuzzyValue;
   BRepAlgoAPI_Common aBuilder;
   
@@ -3052,8 +3059,7 @@ The following example illustrates how to use Common operation:
   //
   // run the algorithm 
   aBuilder.Build(); 
-  iErr=aBuilder.ErrorStatus();
-  if (iErr) {
+  if (aBuilder.HasErrors()) {
     // an error treatment
     return;
   }
@@ -3119,7 +3125,6 @@ The following example illustrates how to use Fuse operation:
 #include < BRepAlgoAPI_Fuse.hxx>
  {…
   Standard_Boolean bRunParallel;
-  Standard_Integer iErr;
   Standard_Real aFuzzyValue;
   BRepAlgoAPI_Fuse aBuilder;
   
@@ -3159,8 +3164,7 @@ The following example illustrates how to use Fuse operation:
   //
   // run the algorithm 
   aBuilder.Build(); 
-  iErr=aBuilder.ErrorStatus();
-  if (iErr) {
+  if (aBuilder.HasErrors()) {
     // an error treatment
     return;
   }
@@ -3226,7 +3230,6 @@ The following example illustrates how to use Cut operation:
 #include < BRepAlgoAPI_Cut.hxx>
  {…
   Standard_Boolean bRunParallel;
-  Standard_Integer iErr;
   Standard_Real aFuzzyValue;
   BRepAlgoAPI_Cut aBuilder;
   
@@ -3266,8 +3269,7 @@ The following example illustrates how to use Cut operation:
   //
   // run the algorithm 
   aBuilder.Build(); 
-  iErr=aBuilder.ErrorStatus();
-  if (iErr) {
+  if (aBuilder.HasErrors()) {
     // an error treatment
     return;
   }
@@ -3334,7 +3336,6 @@ The following example illustrates how to use Section operation:
 #include < BRepAlgoAPI_Section.hxx>
  {…
   Standard_Boolean bRunParallel;
-  Standard_Integer iErr;
   Standard_Real aFuzzyValue;
   BRepAlgoAPI_Section aBuilder;
   
@@ -3374,8 +3375,7 @@ The following example illustrates how to use Section operation:
   //
   // run the algorithm 
   aBuilder.Build(); 
-  iErr=aBuilder.ErrorStatus();
-  if (iErr) {
+  if (aBuilder.HasErrors()) {
     // an error treatment
     return;
   }
