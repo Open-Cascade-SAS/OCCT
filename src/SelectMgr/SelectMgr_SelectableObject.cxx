@@ -379,6 +379,32 @@ Handle(Prs3d_Presentation) SelectMgr_SelectableObject::GetSelectPresentation (co
 }
 
 //=======================================================================
+//function : ErasePresentations
+//purpose  :
+//=======================================================================
+void SelectMgr_SelectableObject::ErasePresentations (Standard_Boolean theToRemove)
+{
+  if (!mySelectionPrs.IsNull())
+  {
+    mySelectionPrs->Erase();
+    if (theToRemove)
+    {
+      mySelectionPrs->Clear();
+      mySelectionPrs.Nullify();
+    }
+  }
+  if (!myHilightPrs.IsNull())
+  {
+    myHilightPrs->Erase();
+    if (theToRemove)
+    {
+      myHilightPrs->Clear();
+      myHilightPrs.Nullify();
+    }
+  }
+}
+
+//=======================================================================
 //function : SetZLayer
 //purpose  :
 //=======================================================================

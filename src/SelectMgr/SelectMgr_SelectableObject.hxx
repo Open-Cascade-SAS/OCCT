@@ -168,7 +168,10 @@ public:
   Standard_EXPORT Handle(Prs3d_Presentation) GetHilightPresentation (const Handle(PrsMgr_PresentationManager3d)& TheMgr);
   
   Standard_EXPORT Handle(Prs3d_Presentation) GetSelectPresentation (const Handle(PrsMgr_PresentationManager3d)& TheMgr);
-  
+
+  //! Removes presentations returned by GetHilightPresentation() and GetSelectPresentation().
+  Standard_EXPORT virtual void ErasePresentations (Standard_Boolean theToRemove);
+
   //! Set Z layer ID and update all presentations of the selectable object.
   //! The layers mechanism allows drawing objects in higher layers in overlay of objects in lower layers.
   Standard_EXPORT virtual void SetZLayer (const Graphic3d_ZLayerId theLayerId) Standard_OVERRIDE;
@@ -219,14 +222,15 @@ protected:
 
   SelectMgr_SequenceOfSelection myselections;
   Handle(SelectMgr_EntityOwner) myAssemblyOwner;
+  Handle(Prs3d_Presentation) mySelectionPrs;
+  Handle(Prs3d_Presentation) myHilightPrs;
   Standard_Boolean myAutoHilight;
 
 private:
 
   Standard_Integer mycurrent;
-  Handle(Prs3d_Presentation) mySelectionPrs;
-  Handle(Prs3d_Presentation) myHilightPrs;
   Standard_Integer myGlobalSelMode;
+
 };
 
 #endif // _SelectMgr_SelectableObject_HeaderFile

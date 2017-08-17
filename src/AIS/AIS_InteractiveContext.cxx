@@ -2336,6 +2336,9 @@ void AIS_InteractiveContext::EraseGlobal (const Handle(AIS_InteractiveObject)& t
     clearDynamicHighlight();
   }
 
+  // make sure highlighting presentations are properly erased
+  theIObj->ErasePresentations (false);
+
   if (IsSelected (theIObj)
    && aStatus->DisplayMode() != aDispMode)
   {
@@ -2396,6 +2399,7 @@ void AIS_InteractiveContext::ClearGlobal (const Handle(AIS_InteractiveObject)& t
   unhighlightOwners (theIObj);
 
   myMainPM->Erase (theIObj, -1);
+  theIObj->ErasePresentations (true); // make sure highlighting presentations are properly erased
 
   // Object removes from Detected sequence
   Standard_DISABLE_DEPRECATION_WARNINGS
