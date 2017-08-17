@@ -1,0 +1,28 @@
+puts "TODO OCC26225 ALL: Tcl Exception: compute of chamfer failed"
+puts "TODO OCC26225 ALL: TEST INCOMPLETE"
+
+
+puts "========"
+puts "OCC26225"
+puts "========"
+puts ""
+#################################################################################################
+# Wrong result of chamfer in case of coinciding bound of chamfer's surface with bound of a face
+#################################################################################################
+
+restore [locate_data_file bug26225_chamferror_1.brep] b1
+
+smallview
+
+explode b1 f
+copy b1_9 f1
+copy b1_1 f2
+explode b1 e
+copy b1_10 e
+
+donly b1 f1 e
+fit
+
+chamf r b1 e f1 0.1 0.1
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

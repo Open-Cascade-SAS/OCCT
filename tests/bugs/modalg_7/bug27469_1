@@ -1,0 +1,24 @@
+puts "TODO OCC27469 ALL: Error :  is WRONG because number of"
+
+puts "========"
+puts "OCC27469"
+puts "========"
+puts ""
+###############################################################
+# Regression vs 6.9.1: Wrong result of Edge/Face intersection
+###############################################################
+
+restore [locate_data_file bug27469_shapes.brep] b
+
+explode b
+explode b_1 F
+explode b_2 E
+
+bclearobjects
+bcleartools
+baddobjects b_1_2
+baddtools b_2_10 b_2_9
+bfillds
+bbuild result
+
+checknbshapes result -edge 35

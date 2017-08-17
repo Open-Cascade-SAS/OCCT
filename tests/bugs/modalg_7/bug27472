@@ -1,0 +1,26 @@
+puts "========"
+puts "OCC27472"
+puts "========"
+puts ""
+#######################
+# Wrong result of cut
+#######################
+
+restore [locate_data_file bug27472_o.brep] o
+restore [locate_data_file bug27472_t.brep] t
+
+bcut result o t
+checkshape result
+
+set o_Vol [lindex [string trim [vprops o]] 2]
+set r_Vol [lindex [string trim [vprops result]] 2]
+
+if {$r_Vol == $o_Vol} {
+  puts "ERROR: OCC27472 is reproduced. Result of bcut operation is WRONG."
+}
+
+vinit
+vdisplay result
+vfit
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

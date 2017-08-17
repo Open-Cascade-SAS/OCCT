@@ -1,0 +1,20 @@
+puts "TODO OCC27453 ALL: Not connected mesh"
+
+puts "========"
+puts "OCC27453"
+puts "========"
+puts ""
+##########################
+# Wrongly meshed surface
+##########################
+
+pload XDE
+
+stepread [locate_data_file bug27453_165-174_piattello.stp] a *
+
+explode a_1 F
+renamevar a_1_13 result
+checkshape result
+incmesh result 0.01 -a 0.5
+
+tricheck result

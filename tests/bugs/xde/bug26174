@@ -1,0 +1,54 @@
+puts "TODO OCC26174 ALL: ERROR: OCC26174 is reproduced."
+
+puts "========"
+puts "OCC26174"
+puts "========"
+puts ""
+#######################################################
+# Loss of color after the second write of file (iges)
+#######################################################
+
+pload DCAF
+
+set aFileD1 ${imagedir}/${casename}_D1.igs
+set aFileD2 ${imagedir}/${casename}_D2.igs
+
+set anImageD $imagedir/${casename}_D.png
+set anImageD1 $imagedir/${casename}_D1.png
+set anImageD2 $imagedir/${casename}_D2.png
+
+catch {exec rm ${aFileD1}}
+catch {exec rm ${aFileD2}}
+
+box b 0 0 0 10 10 10
+compound b c
+NewDocument D
+XAddShape D c 1
+XSetColor D 0:1:1:1 1 0 0
+
+XShow D
+vfit
+set ColorD [string trim [vreadpixel 204 204 name]]
+vdump $anImageD
+
+WriteIges D ${aFileD1}
+WriteIges D ${aFileD2}
+
+ReadIges D1 ${aFileD1}
+ReadIges D2 ${aFileD2}
+
+XShow D1
+vfit
+set ColorD1 [string trim [vreadpixel 204 204 name]]
+vdump $anImageD1
+if {$ColorD != $ColorD1} {
+  puts "ERROR: OCC26174 is reproduced. Expected color of shape from Document1 is ${ColorD}, not ${ColorD1}."
+}
+
+XShow D2
+vfit
+set ColorD2 [string trim [vreadpixel 204 204 name]]
+vdump $anImageD2
+if {$ColorD != $ColorD2} {
+  puts "ERROR: OCC26174 is reproduced. Expected color of shape from Document2 is ${ColorD}, not ${ColorD2}."
+}

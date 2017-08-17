@@ -1,0 +1,12 @@
+puts "TODO OCC26280 ALL: Faulty shapes in variables faulty_1 to faulty_"
+
+puts "========"
+puts "OCC26280"
+puts "========"
+puts ""
+##################################################
+# Mechanism 'ShapeFix' is unable to heal a shape
+##################################################
+
+stepread [locate_data_file bug26280_1kento13-mld-b-cv-qubit.stp] r *
+checkshape r_1

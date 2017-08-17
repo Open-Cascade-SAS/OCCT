@@ -1,0 +1,23 @@
+puts "TODO OCC26295 ALL: An exception was caught"
+puts "TODO OCC26295 ALL: \\*\\* Exception \\*\\*.*"
+puts "TODO OCC26295 ALL: TEST INCOMPLETE"
+
+puts "========"
+puts "OCC26295"
+puts "========"
+puts ""
+#############################################
+# Sweep fails with BRepFill_ContactOnBorder
+#############################################
+
+restore [locate_data_file bug26295_section.brep] section
+restore [locate_data_file bug26295_profile1.brep] profile1
+restore [locate_data_file bug26295_profile3.brep] profile3
+
+explode section
+explode profile1
+explode profile3
+mksweep profile1_1
+addsweep section_1 -T -R
+setsweep -G profile3_1 0 2
+buildsweep sw -S

@@ -1,4 +1,4 @@
-puts "TODO OCC25879 ALL: Error : result of blend fails the bopcheck"
+puts "TODO OCC25879 Windows: Error : result of blend fails the bopcheck"
 
 puts "============"
 puts "OCC25879"

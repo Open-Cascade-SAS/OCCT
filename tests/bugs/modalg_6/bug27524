@@ -1,0 +1,24 @@
+puts "TODO 0027524 ALL: Error: pcurve deviation is greater than shape tolerance" 
+puts "========="
+puts "CR27524"
+puts "========="
+puts ""
+###############################
+## Incorrect result of "checkshape" command
+###############################
+
+set aTol 1.0e-7
+set aShapeToler 0.0069791772900578497
+
+restore [locate_data_file bug27524.brep] aS
+
+checkshape aS
+
+explode aS E
+explode aS F
+set log [xdistef aS_3 aS_1]
+regexp {Max Distance = +([-0-9.+eE]+);} ${log} full aDist
+
+if { $aDist > $aShapeToler + $aTol } {
+  puts "Error: pcurve deviation is greater than shape tolerance"
+}

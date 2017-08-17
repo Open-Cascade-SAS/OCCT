@@ -1,0 +1,96 @@
+puts "TODO CR26928 All: Error: Edges are meshed too coarsly"
+puts "REQUIRED CR26928 All: Error : Colors are not equal in default coordinate and in the near coordinates too"
+
+puts "========="
+puts "CR26928"
+puts "========="
+puts ""
+###############################
+# Edges are meshed too coarsly
+###############################
+
+restore [locate_data_file bug27356_comp.brep] c
+
+set x 168
+set y 298
+
+vinit
+vdisplay c
+vviewparams -scale 17.2151 -proj 0.68553 -0.268225 -0.676834 -up -0.664339 0.149845 -0.732257 -at 33.3169 24.0699 29.5546
+vsetdispmode c 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}-vdisplay.png
+if { [checkcolor $x $y 1 0 0] == 1 } {
+  puts "" 
+  puts "vdisplay.png" 
+  puts "Error: Edges are meshed too coarsly" 
+  puts "" 
+} else {
+  puts "" 
+  puts "vdisplay.png" 
+  puts "OK: Edges are meshed good" 
+  puts "" 
+}
+
+incmesh c 0.715 -a 11.459
+vdisplay -redisplay c
+vviewparams -scale 17.2151 -proj 0.68553 -0.268225 -0.676834 -up -0.664339 0.149845 -0.732257 -at 33.3169 24.0699 29.5546
+checkview -screenshot -3d -path ${imagedir}/${test_image}-0715.png
+if { [checkcolor $x $y 1 0 0] == 1 } {
+  puts "" 
+  puts "0715.png" 
+  puts "Error: Edges are meshed too coarsly" 
+  puts "" 
+} else {
+  puts "" 
+  puts "0715.png" 
+  puts "OK: Edges are meshed good" 
+  puts "" 
+}
+
+incmesh c 0.5 -a 11.459
+vdisplay -redisplay c
+vviewparams -scale 17.2151 -proj 0.68553 -0.268225 -0.676834 -up -0.664339 0.149845 -0.732257 -at 33.3169 24.0699 29.5546
+checkview -screenshot -3d -path ${imagedir}/${test_image}-05.png
+if { [checkcolor $x $y 1 0 0] == 1 } {
+  puts "" 
+  puts "05.png" 
+  puts "Error: Edges are meshed too coarsly" 
+  puts "" 
+} else {
+  puts "" 
+  puts "05.png" 
+  puts "OK: Edges are meshed good" 
+  puts "" 
+}
+
+incmesh c 0.3 -a 11.459
+vdisplay -redisplay c
+vviewparams -scale 17.2151 -proj 0.68553 -0.268225 -0.676834 -up -0.664339 0.149845 -0.732257 -at 33.3169 24.0699 29.5546
+checkview -screenshot -3d -path ${imagedir}/${test_image}-03.png
+if { [checkcolor $x $y 1 0 0] == 1 } {
+  puts "" 
+  puts "03.png" 
+  puts "Error: Edges are meshed too coarsly" 
+  puts "" 
+} else {
+  puts "" 
+  puts "03.png" 
+  puts "OK: Edges are meshed good" 
+  puts "" 
+}
+
+incmesh c 0.1 -a 11.459
+vdisplay -redisplay c
+vviewparams -scale 17.2151 -proj 0.68553 -0.268225 -0.676834 -up -0.664339 0.149845 -0.732257 -at 33.3169 24.0699 29.5546
+checkview -screenshot -3d -path ${imagedir}/${test_image}-01.png
+if { [checkcolor $x $y 1 0 0] == 1 } {
+  puts "" 
+  puts "01.png" 
+  puts "Error: Edges are meshed too coarsly" 
+  puts "" 
+} else {
+  puts "" 
+  puts "01.png" 
+  puts "OK: Edges are meshed good" 
+  puts "" 
+}

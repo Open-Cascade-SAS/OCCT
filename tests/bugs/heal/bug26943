@@ -1,0 +1,17 @@
+puts "TODO OCC26943 All: Faulty shapes in variables faulty_1 to faulty_"
+
+puts "================"
+puts "OCC26943"
+puts "================"
+puts ""
+################################################################################
+# Wrong projection of helix on cylinder by ShapeConstruct_ProjectCurveOnSurface
+################################################################################
+
+restore [locate_data_file bug26943_face_helix.brep] ff
+
+fixshape result ff
+
+checkshape result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

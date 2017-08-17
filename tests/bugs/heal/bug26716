@@ -1,0 +1,21 @@
+puts "TODO OCC26716 ALL: Error: Number of triangles is equal to 0"
+
+puts "============"
+puts "OCC26716"
+puts "============"
+puts ""
+################################################################################
+## Mesher cannot create a mesh of brep model due to ShapeFix_Wire::FixShifted()
+################################################################################
+
+restore [locate_data_file bug26716_rev.brep] result
+
+checkshape result
+
+vinit
+vsetdispmode 1
+vdisplay result
+vfit
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
+
+checktrinfo result -tri

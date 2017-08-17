@@ -1,0 +1,20 @@
+puts "TODO CR26697 ALL: Error :  is WRONG because number of SHAPE entities"
+
+puts "================"
+puts "CR26697"
+puts "================"
+puts ""
+###############################################
+## BRepFeat_MakePrism returns empty compound
+###############################################
+
+restore [locate_data_file bug26697_aBase.brep] aB
+restore [locate_data_file bug26697_aFrom.brep] aF
+restore [locate_data_file bug26697_aTo.brep] aT
+
+featprism aB aB aB 0 -1 0 2 1
+featperform prism aR aF aT
+
+checknbshapes aR -shape 2
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

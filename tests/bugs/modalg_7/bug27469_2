@@ -1,0 +1,22 @@
+puts "TODO OCC27469 ALL: Faulty shapes in variables faulty_1 to faulty_"
+
+puts "========"
+puts "OCC27469"
+puts "========"
+puts ""
+###############################################################
+# Regression vs 6.9.1: Wrong result of Edge/Face intersection
+###############################################################
+
+restore [locate_data_file bug27469_shapes.brep] b
+
+explode b
+
+bclearobjects
+bcleartools
+baddobjects b_1
+baddtools b_2
+bfillds
+bbuild result
+
+checkshape result

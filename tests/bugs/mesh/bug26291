@@ -1,0 +1,14 @@
+puts "TODO OCC26291 ALL: Not connected mesh"
+
+puts "========"
+puts "OCC26291"
+puts "========"
+puts ""
+#########################################################
+# BRepMesh produces mesh with gap on the attached shape
+#########################################################
+
+restore [locate_data_file bug26291_mesh_gap.brep] a
+incmesh a 1
+
+tricheck a

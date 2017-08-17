@@ -1,0 +1,17 @@
+puts "TODO OCC26282 ALL: Faulty shapes in variables faulty_1 to faulty_"
+
+puts "========"
+puts "OCC26282"
+puts "========"
+puts ""
+####################################################################
+# Mechanism 'ShapeFix' has errors revealed by wire tool 'FixTails'
+####################################################################
+
+
+restore [locate_data_file bug26282_mld-m-cv-qubit-th.brep] s
+
+checkshape s
+fixshape result s 1e-4 1 -maxtaila 6 -maxtailw 1e-4
+
+checkshape result

@@ -1,0 +1,24 @@
+puts "TODO OCC26842 ALL: Error :  is WRONG because number of EDGE entities in shape"
+puts "TODO OCC26842 ALL: Error : The length of result shape is"
+puts "TODO OCC26842 ALL: Error : The command is not valid. The length is 0."
+
+puts "======="
+puts "OCC26842"
+puts "======="
+puts ""
+##################################################
+# bopsection result does not contain any edges.
+##################################################
+
+restore [locate_data_file bug26842_s2.brep] s2
+restore [locate_data_file bug26842_plane.brep] plane
+
+bsection result s2 plane
+
+checkshape result
+checksection result
+
+checknbshapes result -vertex 2 -edge 1
+checkprops result -l 1765.01
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

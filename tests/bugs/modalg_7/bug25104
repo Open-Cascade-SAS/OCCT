@@ -1,4 +1,4 @@
-puts "TODO OCC25104 ALL: ERROR: OCC25104 is reproduced."
+puts "TODO OCC25104 Windows: ERROR: OCC25104 is reproduced."
 
 puts "========"
 puts "OCC25104"

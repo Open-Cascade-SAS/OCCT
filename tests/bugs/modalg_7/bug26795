@@ -1,0 +1,45 @@
+puts "TODO OCC26795 ALL: Error: General Fuse operation is bad"
+
+puts "================"
+puts "OCC26795"
+puts "================"
+puts ""
+#######################################################################
+# Unable to perform General Fuse operation on the attached faces
+#######################################################################
+
+restore [locate_data_file bug26795_c.brep] c
+
+explode c f
+
+bclearobjects
+bcleartools
+baddobjects c_1
+baddtools c_2
+
+bfillds
+
+bbuild result
+
+checkshape result
+
+set tol_rel 1.e-5
+
+set s_exp_c_1 8.71862e+06
+set s_exp_c_2 1.01299e+07
+
+set s_c_1_and_s_c_2 [expr ${s_exp_c_1} + ${s_exp_c_2}]
+
+set prop [ sprops result ]
+regexp {Mass\s*:\s*([0-9.e+-]+)} $prop prop_s s_Fuse
+
+checkprops c_1 -s ${s_exp_c_1}
+checkprops c_2 -s ${s_exp_c_2}
+
+if { [expr ( abs (${s_Fuse} - ${s_c_1_and_s_c_2}) ) / ${s_c_1_and_s_c_2}] > ${tol_rel} } {
+   puts "OK: General Fuse operation is good"
+} else {
+   puts "Error: General Fuse operation is bad"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

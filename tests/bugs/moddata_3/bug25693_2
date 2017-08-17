@@ -1,4 +1,4 @@
-puts "TODO OCC25693 ALL: Wire of BSplines fails bopcheck"
+puts "TODO OCC25693 Windows: Wire of BSplines fails bopcheck"
 
 puts "============"
 puts "OCC25693"

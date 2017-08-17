@@ -1,0 +1,20 @@
+puts "TODO OCC25930 ALL: Faulty shapes in variables faulty_1 to faulty_"
+
+puts "============"
+puts "OCC25930"
+puts "============"
+puts ""
+######################################################
+# thickness of spherical cap is invalid
+######################################################
+
+psphere Sphere 5 -90 40 360
+explode Sphere F
+
+offsetparameter 1e-7 p a
+offsetload Sphere -1 Sphere_2
+offsetperform Thickness
+
+checkshape Thickness
+
+checkview -display Thickness -2d -path ${imagedir}/${test_image}.png

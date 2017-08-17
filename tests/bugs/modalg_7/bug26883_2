@@ -1,0 +1,24 @@
+puts "========"
+puts "OCC26883"
+puts "========"
+puts ""
+#######################################################################
+# Wrong result of Boolean Operation
+#######################################################################
+
+restore [locate_data_file bug26883_object_cut.brep] b1
+restore [locate_data_file bug26883_fuse_tool1.brep] b2
+
+bclearobjects
+bcleartools
+baddobjects b1
+baddtools b2
+bfillds
+ 
+bbop result 0
+
+checkshape result
+
+checknbshapes result -solid 1
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

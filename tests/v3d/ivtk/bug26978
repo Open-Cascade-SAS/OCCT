@@ -1,0 +1,29 @@
+puts "========"
+puts "OCC26978"
+puts "========"
+puts ""
+######################################################
+# Interactive selection is insensitive to swept shell
+#######################################################
+
+restore [locate_data_file bug26978_evol3.brep] s
+
+ivtkinit
+ivtkdisplay s
+ivtksetdispmode s 1
+
+set anImg1 ${imagedir}/${test_image}_1.png
+set anImg2 ${imagedir}/${test_image}_2.png
+set anImgDiff ${imagedir}/${test_image}_diff.png
+
+set x 75
+set y 200
+ivtkselect $x $y
+ivtkdump ${anImg1}
+
+set x 150
+set y 150
+ivtkselect $x $y
+ivtkdump ${anImg2}
+
+diffimage ${anImg2} ${anImg1} 0.0 0 0 ${anImgDiff}

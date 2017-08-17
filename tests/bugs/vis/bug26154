@@ -1,0 +1,24 @@
+puts "TODO OCC26154 ALL: ERROR: OCC26154 is reproduced."
+
+puts "========"
+puts "OCC26154"
+puts "========"
+puts ""
+##############################################################################
+# 0026154: Visualization - v3d viewer grid disappears due to automatic z-fit
+##############################################################################
+
+vinit
+
+box b 1 1 1
+vdisplay b
+vfit
+vgrid r l 0 0 1 1 0
+vtop
+
+set bug_info [string trim [vreadpixel 86 355 name]]
+if {$bug_info != "GRAY50 1"} {
+  puts "ERROR: OCC26154 is reproduced. Grid is not visible."
+}
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

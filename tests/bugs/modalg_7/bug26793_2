@@ -1,0 +1,27 @@
+puts "TODO OCC26793 ALL: Error :  is WRONG because number of FACE entities"
+
+puts "================"
+puts "OCC26793"
+puts "================"
+puts ""
+###################################################
+# General Fuse algorithm produces incorrect result
+###################################################
+
+restore [locate_data_file bug26793_GenFuse_BaseFace2.brep] bf
+restore [locate_data_file bug26793_GenFuse_Splitter2.brep] sp
+
+bclearobjects
+bcleartools
+baddobjects bf
+baddtools sp
+
+bfillds
+
+bbuild result
+
+checkshape result
+checkprops result -s 1184.78
+checknbshapes result -face 2
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

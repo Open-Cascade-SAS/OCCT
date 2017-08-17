@@ -1,0 +1,27 @@
+puts "TODO OCC26883 ALL: Faulty shapes in variables faulty_1 to"
+puts "TODO OCC26883 ALL: Error :  is WRONG because number of SOLID entities in shape"
+
+puts "========"
+puts "OCC26883"
+puts "========"
+puts ""
+#######################################################################
+# Wrong result of Boolean Operation
+#######################################################################
+
+restore [locate_data_file bug26883_object.brep] b1
+restore [locate_data_file bug26883_fuse_tool2.brep] b2
+
+bclearobjects
+bcleartools
+baddobjects b1
+baddtools b2
+bfillds
+ 
+bbop result 1
+
+checkshape result
+
+checknbshapes result -solid 1
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

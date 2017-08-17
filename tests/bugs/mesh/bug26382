@@ -1,0 +1,27 @@
+puts "========"
+puts "OCC22886"
+puts "========"
+puts ""
+###############################################################
+#  BRepMesh produces internal nodes outside the face interior
+###############################################################
+
+restore [locate_data_file bug26382_test.brep] result
+
+vinit
+vsetdispmode 1
+vdisplay result
+
+set scale 455.627
+set proj_x 0.521827
+set proj_y -0.641161
+set proj_z 0.56268
+set up_x -0.400279
+set up_y 0.398446
+set up_z 0.825238
+set at_x 146.11
+set at_y -109.936
+set at_z 60.2014"
+vviewparams -scale ${scale} -proj ${proj_x} ${proj_y} ${proj_z} -up ${up_x} ${up_y} ${up_z} -at ${at_x} ${at_y} ${at_z}
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

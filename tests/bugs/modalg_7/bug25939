@@ -1,0 +1,22 @@
+puts "TODO OCC25939 ALL: An exception was caught"
+puts "TODO OCC25939 ALL: \\*\\* Exception \\*\\*.*"
+
+puts "============"
+puts "OCC25939"
+puts "============"
+puts ""
+######################################################
+# SIGSEGV in MakeThickSolid
+######################################################
+
+psphere Sphere 5
+pcylinder Cylinder 83 100
+ttranslate Cylinder -83 0 -50
+bcut Cut Sphere Cylinder
+explode Cut F
+
+offsetparameter 1e-7 p a
+offsetload Cut -2 Cut_4
+catch {offsetperform Thickness}
+
+checkview -display Thickness -2d -path ${imagedir}/${test_image}.png

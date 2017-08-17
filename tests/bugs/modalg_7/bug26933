@@ -1,0 +1,29 @@
+puts "TODO ?OCC26933 All: Error : The length of result shape is"
+
+puts "========"
+puts "OCC26933"
+puts "========"
+puts ""
+#################################################################################
+# Section works unstably due to incorrect work of the method IsExistingPaveBlock
+#################################################################################
+
+restore [locate_data_file bug26933.brep] a
+
+explode a
+
+bclearobjects
+bcleartools
+baddobjects a_1
+baddtools a_2
+bfillds
+
+bbop result 4
+
+smallview
+donly a_1 result
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png
+
+checkprops result -l 945.22 -deps 0.1

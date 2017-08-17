@@ -1,0 +1,18 @@
+puts "TODO OCC26568 ALL: An exception was caught"
+puts "TODO OCC26568 ALL: \\*\\* Exception \\*\\*.*"
+puts "TODO OCC26568 ALL: TEST INCOMPLETE"
+
+puts "========"
+puts "OCC26568"
+puts "========"
+puts ""
+################################
+# Exception when creating pipe
+################################
+
+box b 10 10 10
+explode b f
+circle c 0 0 0 0 1 0 10
+mkedge e c
+wire w e
+pipe p w b_1

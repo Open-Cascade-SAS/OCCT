@@ -1,0 +1,26 @@
+puts "TODO OCC26735 ALL: Error : Adjacent perpendicular edges are detected as overlapped"
+
+puts "============"
+puts "OCC26735"
+puts "============"
+puts ""
+###########################################################################################
+##  Adjacent perpendicular edges are detected as overlapped by DRAW command "checkoverlap".
+###########################################################################################
+
+restore [locate_data_file bug26735_PartialOverlap_OCOverlapValidatorWire.brep] w1
+
+explode w1 e
+
+set Log [checkoverlapedges w1_1 w1_2 0.01 0.01]
+set Message "Edges is overlaped"
+
+if { [regexp ${Message} ${Log} ] == 1 } {
+    puts "Error : Adjacent perpendicular edges are detected as overlapped"
+} else {
+    puts "OK : Adjacent perpendicular edges are not detected as overlapped"
+}
+
+smallview
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

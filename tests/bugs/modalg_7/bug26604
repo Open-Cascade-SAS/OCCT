@@ -1,0 +1,47 @@
+puts "TODO OCC26604 ALL: Error: GeomFill_Pipe doesn't fit given bounds"
+
+puts "========"
+puts "OCC26604"
+puts "========"
+puts ""
+#######################################################
+# GeomFill_Pipe doesn't fit given bounds
+#######################################################
+
+pload QAcommands
+
+restore [locate_data_file bug26604_spine.brep] spine
+restore [locate_data_file bug26604_bound1.brep] bound1
+restore [locate_data_file bug26604_bound2.brep] bound2
+
+mkcurve s spine
+mkcurve b1 bound1
+mkcurve b2 bound2
+
+OCC9 result s b1 b2 10
+
+smallview
+top
+clear
+display bound1
+display bound2
+display result
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}-2d.png
+
+mkface face result
+
+vinit
+vtop
+vclear
+vdisplay bound1
+vdisplay bound2
+vdisplay face
+vfit
+checkview -screenshot -3d -path ${imagedir}/${test_image}-3d.png
+
+set x 155
+set y 185
+if { [checkcolor $x $y 0 1 0] == 1 } {
+  puts "Error: GeomFill_Pipe doesn't fit given bounds"
+}

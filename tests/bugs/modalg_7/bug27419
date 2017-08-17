@@ -1,0 +1,41 @@
+puts "TODO OCC27419 ALL: ERROR: OCC27419 is reproduced."
+
+puts "========"
+puts "OCC27419"
+puts "========"
+puts ""
+##############################################
+# Incorrect result of Edge/Face intersection
+##############################################
+
+restore [locate_data_file bug27419_ef.brep] b
+
+explode b
+mkcurve c b_1
+mksurface s b_2
+
+# Get intersection of Curve and Surface
+intersect i c s
+
+# Get coordinates of intersection of Curve and Surface
+set bug_info [string trim [dump i]]
+set x_Coord [lindex $bug_info 7]
+set x_Coord [string trim [string range $x_Coord 0 [expr {[string length $x_Coord] - 2}]]]
+set y_Coord [lindex $bug_info 8]
+set y_Coord [string trim [string range $y_Coord 0 [expr {[string length $y_Coord] - 2}]]]
+set z_Coord [lindex $bug_info 9]
+
+# Get projection of intersection point to Curve
+proj c $x_Coord $y_Coord $z_Coord
+
+#Get the length of projection
+set Proj_Len [lindex [string trim [length ext_1]] 4]
+
+#Get maximim value of tolerance for the EDGE
+set MaxTol_Edge [lindex [string trim [tolerance b_1]] 11]
+set MaxTol_Edge [string trim [string range $MaxTol_Edge [expr {[string first "=" $MaxTol_Edge] + 1}] [expr {[string length $MaxTol_Edge] - 1}]]]
+
+# ERROR if MaxTol_Edge < Proj_Len else OK
+if {$MaxTol_Edge < $Proj_Len} {
+  puts "ERROR: OCC27419 is reproduced. Result of Edge/Face intersection is incorrect."
+}
