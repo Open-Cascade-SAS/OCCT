@@ -78,6 +78,8 @@
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_Root.hxx>
+#include <Prs3d_Text.hxx>
+#include <Select3D_SensitivePrimitiveArray.hxx>
 
 #ifdef _WIN32
 #undef DrawText
@@ -99,6 +101,7 @@
 
 // Auxiliary definitions
 static const char THE_KEY_DELETE = 127;
+static const char THE_KEY_ESCAPE = 27;
 
 //==============================================================================
 //  VIEWER GLOBAL VARIABLES
@@ -194,6 +197,8 @@ int Y_ButtonPress = 0;
 Standard_Boolean IsDragged = Standard_False;
 Standard_Boolean DragFirst = Standard_False;
 Standard_Boolean TheIsAnimating = Standard_False;
+Standard_Boolean Draw_ToExitOnCloseView = Standard_False;
+Standard_Boolean Draw_ToCloseViewOnEsc  = Standard_False;
 
 
 Standard_EXPORT const Handle(AIS_RubberBand)& GetRubberBand()
@@ -772,13 +777,6 @@ void ViewerTest::RedrawAllViews()
 
 static int VInit (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const char** theArgVec)
 {
-  if (theArgsNb > 9)
-  {
-    std::cerr << theArgVec[0] << ": incorrect number of command arguments.\n"
-              << "Type help for more information.\n";
-    return 1;
-  }
-
   TCollection_AsciiString aViewName, aDisplayName;
   Standard_Integer aPxLeft = 0, aPxTop = 0, aPxWidth = 0, aPxHeight = 0;
   TCollection_AsciiString aName, aValue;
@@ -786,44 +784,98 @@ static int VInit (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const cha
   {
     const TCollection_AsciiString anArg = theArgVec[anArgIt];
     TCollection_AsciiString anArgCase = anArg;
-    anArgCase.UpperCase();
-    if (ViewerTest::SplitParameter (anArg, aName, aValue))
+    anArgCase.LowerCase();
+    if (anArgIt + 1 < theArgsNb
+     && anArgCase == "-name")
     {
-      aName.UpperCase();
-      if (aName.IsEqual ("NAME"))
+      aViewName = theArgVec[++anArgIt];
+    }
+    else if (anArgIt + 1 < theArgsNb
+          && (anArgCase == "-left"
+           || anArgCase == "-l"))
+    {
+      aPxLeft = Draw::Atoi (theArgVec[++anArgIt]);
+    }
+    else if (anArgIt + 1 < theArgsNb
+          && (anArgCase == "-top"
+           || anArgCase == "-t"))
+    {
+      aPxTop = Draw::Atoi (theArgVec[++anArgIt]);
+    }
+    else if (anArgIt + 1 < theArgsNb
+          && (anArgCase == "-width"
+           || anArgCase == "-w"))
+    {
+      aPxWidth = Draw::Atoi (theArgVec[++anArgIt]);
+    }
+    else if (anArgIt + 1 < theArgsNb
+          && (anArgCase == "-height"
+           || anArgCase == "-h"))
+    {
+      aPxHeight = Draw::Atoi (theArgVec[++anArgIt]);
+    }
+    else if (anArgCase == "-exitonclose")
+    {
+      Draw_ToExitOnCloseView = true;
+      if (anArgIt + 1 < theArgsNb
+       && ViewerTest::ParseOnOff (theArgVec[anArgIt + 1], Draw_ToExitOnCloseView))
+      {
+        ++anArgIt;
+      }
+    }
+    else if (anArgCase == "-closeonescape"
+          || anArgCase == "-closeonesc")
+    {
+      Draw_ToCloseViewOnEsc = true;
+      if (anArgIt + 1 < theArgsNb
+       && ViewerTest::ParseOnOff (theArgVec[anArgIt + 1], Draw_ToCloseViewOnEsc))
+      {
+        ++anArgIt;
+      }
+    }
+    else if (anArgIt + 1 < theArgsNb
+          && (anArgCase == "-disp"
+           || anArgCase == "-display"))
+    {
+      aDisplayName = theArgVec[++anArgIt];
+    }
+    // old syntax
+    else if (ViewerTest::SplitParameter (anArg, aName, aValue))
+    {
+      aName.LowerCase();
+      if (aName == "name")
       {
         aViewName = aValue;
       }
-      else if (aName.IsEqual ("L")
-            || aName.IsEqual ("LEFT"))
+      else if (aName == "l"
+            || aName == "left")
       {
         aPxLeft = aValue.IntegerValue();
       }
-      else if (aName.IsEqual ("T")
-            || aName.IsEqual ("TOP"))
+      else if (aName == "t"
+            || aName == "top")
       {
         aPxTop = aValue.IntegerValue();
       }
-    #if !defined(_WIN32) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
-      else if (aName.IsEqual ("DISP")
-            || aName.IsEqual ("DISPLAY"))
+      else if (aName == "disp"
+            || aName == "display")
       {
         aDisplayName = aValue;
       }
-    #endif
-      else if (aName.IsEqual ("W")
-            || aName.IsEqual ("WIDTH"))
+      else if (aName == "w"
+            || aName == "width")
       {
         aPxWidth = aValue.IntegerValue();
       }
-      else if (aName.IsEqual ("H")
-            || aName.IsEqual ("HEIGHT"))
+      else if (aName == "h"
+            || aName == "height")
       {
         aPxHeight = aValue.IntegerValue();
       }
       else
       {
-        std::cerr << theArgVec[0] << ": Warning: unknown argument " << anArg << ".\n";
+        std::cout << "Syntax error: unknown argument " << anArg << ".\n";
+        return 1;
       }
     }
     else if (aViewName.IsEmpty())
@@ -832,9 +884,18 @@ static int VInit (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const cha
     }
     else
     {
-      std::cerr << theArgVec[0] << ": Warning: unknown argument " << anArg << ".\n";
+      std::cout << "Syntax error: unknown argument " << anArg << ".\n";
+      return 1;
     }
   }
+
+#if defined(_WIN32) || (defined(__APPLE__) && !defined(MACOSX_USE_GLX))
+  if (!aDisplayName.IsEmpty())
+  {
+    aDisplayName.Clear();
+    std::cout << "Warning: display parameter will be ignored.\n";
+  }
+#endif
 
   ViewerTest_Names aViewNames (aViewName);
   if (ViewerTest_myViews.IsBound1 (aViewNames.GetViewName()))
@@ -1258,7 +1319,10 @@ void ViewerTest::RemoveView (const TCollection_AsciiString& theViewName, const S
     }
   }
   cout << "3D View - " << theViewName << " was deleted.\n";
-
+  if (Draw_ToExitOnCloseView)
+  {
+    Draw_Interprete ("exit");
+  }
 }
 
 //==============================================================================
@@ -1623,6 +1687,15 @@ void VT_ProcessKeyPress (const char* buf_ret)
      && aCtx->NbSelected() > 0)
     {
       Draw_Interprete ("verase");
+    }
+  }
+  else if (*buf_ret == THE_KEY_ESCAPE)
+  {
+    Handle(AIS_InteractiveContext) aCtx = ViewerTest::GetAISContext();
+    if (!aCtx.IsNull()
+     && Draw_ToCloseViewOnEsc)
+    {
+      Draw_Interprete (Draw_ToExitOnCloseView ? "exit" : "vclose");
     }
   }
   else
@@ -2148,6 +2221,10 @@ static LRESULT WINAPI ViewerWindowProc( HWND hwnd,
         if (wParam == VK_DELETE)
         {
           c[0] = THE_KEY_DELETE;
+        }
+        else if (wParam == VK_ESCAPE)
+        {
+          c[0] = THE_KEY_ESCAPE;
         }
         // comma
         else if (wParam == VK_OEM_COMMA)
@@ -5990,6 +6067,117 @@ static int VReadPixel (Draw_Interpretor& theDI,
   return 0;
 }
 
+//! Auxiliary presentation for an image plane.
+class ViewerTest_ImagePrs : public AIS_InteractiveObject
+{
+public:
+  //! Main constructor.
+  ViewerTest_ImagePrs (const Handle(Image_PixMap)& theImage,
+                       const Standard_Real theWidth,
+                       const Standard_Real theHeight,
+                       const TCollection_AsciiString& theLabel)
+  : myLabel (theLabel), myWidth (theWidth), myHeight(theHeight)
+  {
+    SetDisplayMode (0);
+    SetHilightMode (1);
+    myDynHilightDrawer->SetZLayer (Graphic3d_ZLayerId_Topmost);
+    {
+      myDrawer->SetShadingAspect (new Prs3d_ShadingAspect());
+      const Handle(Graphic3d_AspectFillArea3d)& aFillAspect = myDrawer->ShadingAspect()->Aspect();
+      Graphic3d_MaterialAspect aMat;
+      aMat.SetMaterialType (Graphic3d_MATERIAL_PHYSIC);
+      aMat.SetAmbient  (1.0);
+      aMat.SetDiffuse  (1.0);
+      aMat.SetSpecular (1.0);
+      aMat.SetEmissive (1.0);
+      aMat.SetReflectionModeOn (Graphic3d_TOR_AMBIENT);
+      aMat.SetReflectionModeOn (Graphic3d_TOR_DIFFUSE);
+      aMat.SetReflectionModeOn (Graphic3d_TOR_SPECULAR);
+      aMat.SetReflectionModeOn (Graphic3d_TOR_EMISSION);
+      aMat.SetAmbientColor  (Quantity_Color (0.0, 0.0, 0.0, Quantity_TOC_RGB));
+      aMat.SetDiffuseColor  (Quantity_Color (1.0, 1.0, 1.0, Quantity_TOC_RGB));
+      aMat.SetSpecularColor (Quantity_Color (0.0, 0.0, 0.0, Quantity_TOC_RGB));
+      aMat.SetEmissiveColor (Quantity_Color (0.0, 0.0, 0.0, Quantity_TOC_RGB));
+      aFillAspect->SetFrontMaterial (aMat);
+      aFillAspect->SetTextureMap (new Graphic3d_Texture2Dmanual (theImage));
+      aFillAspect->SetTextureMapOn();
+    }
+    {
+      Handle(Prs3d_TextAspect) aTextAspect = new Prs3d_TextAspect();
+      aTextAspect->SetHorizontalJustification (Graphic3d_HTA_CENTER);
+      aTextAspect->SetVerticalJustification   (Graphic3d_VTA_CENTER);
+      myDrawer->SetTextAspect (aTextAspect);
+    }
+    {
+      const gp_Dir aNorm (0.0, 0.0, 1.0);
+      myTris = new Graphic3d_ArrayOfTriangles (4, 6, true, false, true);
+      myTris->AddVertex (gp_Pnt(-myWidth * 0.5, -myHeight * 0.5, 0.0), aNorm, gp_Pnt2d (0.0, 0.0));
+      myTris->AddVertex (gp_Pnt( myWidth * 0.5, -myHeight * 0.5, 0.0), aNorm, gp_Pnt2d (1.0, 0.0));
+      myTris->AddVertex (gp_Pnt(-myWidth * 0.5,  myHeight * 0.5, 0.0), aNorm, gp_Pnt2d (0.0, 1.0));
+      myTris->AddVertex (gp_Pnt( myWidth * 0.5,  myHeight * 0.5, 0.0), aNorm, gp_Pnt2d (1.0, 1.0));
+      myTris->AddEdge (1);
+      myTris->AddEdge (2);
+      myTris->AddEdge (3);
+      myTris->AddEdge (3);
+      myTris->AddEdge (2);
+      myTris->AddEdge (4);
+
+      myRect = new Graphic3d_ArrayOfPolylines (4);
+      myRect->AddVertex (myTris->Vertice (1));
+      myRect->AddVertex (myTris->Vertice (3));
+      myRect->AddVertex (myTris->Vertice (4));
+      myRect->AddVertex (myTris->Vertice (2));
+    }
+  }
+
+  //! Returns TRUE for accepted display modes.
+  virtual Standard_Boolean AcceptDisplayMode (const Standard_Integer theMode) const Standard_OVERRIDE { return theMode == 0 || theMode == 1; }
+
+  //! Compute presentation.
+  virtual void Compute (const Handle(PrsMgr_PresentationManager3d)& , const Handle(Prs3d_Presentation)& thePrs, const Standard_Integer theMode) Standard_OVERRIDE
+  {
+    switch (theMode)
+    {
+      case 0:
+      {
+        Handle(Graphic3d_Group) aGroup = thePrs->NewGroup();
+        aGroup->AddPrimitiveArray (myTris);
+        aGroup->SetGroupPrimitivesAspect (myDrawer->ShadingAspect()->Aspect());
+        aGroup->AddPrimitiveArray (myRect);
+        aGroup->SetGroupPrimitivesAspect (myDrawer->LineAspect()->Aspect());
+        return;
+      }
+      case 1:
+      {
+        Prs3d_Text::Draw (thePrs->NewGroup(), myDrawer->TextAspect(), myLabel, gp_Pnt(0.0, 0.0, 0.0));
+        Handle(Graphic3d_Group) aGroup = thePrs->NewGroup();
+        aGroup->AddPrimitiveArray (myRect);
+        aGroup->SetGroupPrimitivesAspect (myDrawer->LineAspect()->Aspect());
+        return;
+      }
+    }
+  }
+
+  //! Compute selection.
+  virtual void ComputeSelection (const Handle(SelectMgr_Selection)& theSel, const Standard_Integer theMode) Standard_OVERRIDE
+  {
+    if (theMode == 0)
+    {
+      Handle(SelectMgr_EntityOwner) anEntityOwner = new SelectMgr_EntityOwner (this, 5);
+      Handle(Select3D_SensitivePrimitiveArray) aSensitive = new Select3D_SensitivePrimitiveArray (anEntityOwner);
+      aSensitive->InitTriangulation (myTris->Attributes(), myTris->Indices(), TopLoc_Location());
+      theSel->Add (aSensitive);
+    }
+  }
+
+private:
+  Handle(Graphic3d_ArrayOfTriangles) myTris;
+  Handle(Graphic3d_ArrayOfPolylines) myRect;
+  TCollection_AsciiString myLabel;
+  Standard_Real myWidth;
+  Standard_Real myHeight;
+};
+
 //==============================================================================
 //function : VDiffImage
 //purpose  : The draw-command compares two images.
@@ -5997,47 +6185,238 @@ static int VReadPixel (Draw_Interpretor& theDI,
 
 static int VDiffImage (Draw_Interpretor& theDI, Standard_Integer theArgNb, const char** theArgVec)
 {
-  if (theArgNb < 6)
+  if (theArgNb < 3)
   {
-    theDI << "Not enough arguments.\n";
+    std::cout << "Syntax error: not enough arguments.\n";
     return 1;
   }
 
-  // image file names
-  const char* anImgPathRef = theArgVec[1];
-  const char* anImgPathNew = theArgVec[2];
+  Standard_Integer anArgIter = 1;
+  TCollection_AsciiString anImgPathRef (theArgVec[anArgIter++]);
+  TCollection_AsciiString anImgPathNew (theArgVec[anArgIter++]);
+  TCollection_AsciiString aDiffImagePath;
+  Standard_Real    aTolColor        = -1.0;
+  Standard_Integer toBlackWhite     = -1;
+  Standard_Integer isBorderFilterOn = -1;
+  Standard_Boolean isOldSyntax = Standard_False;
+  TCollection_AsciiString aViewName, aPrsNameRef, aPrsNameNew, aPrsNameDiff;
+  for (; anArgIter < theArgNb; ++anArgIter)
+  {
+    TCollection_AsciiString anArg (theArgVec[anArgIter]);
+    anArg.LowerCase();
+    if (anArgIter + 1 < theArgNb
+     && (anArg == "-toleranceofcolor"
+      || anArg == "-tolerancecolor"
+      || anArg == "-tolerance"
+      || anArg == "-toler"))
+    {
+      aTolColor = Atof (theArgVec[++anArgIter]);
+      if (aTolColor < 0.0 || aTolColor > 1.0)
+      {
+        std::cout << "Syntax error at '" << anArg << " " << theArgVec[anArgIter] << "'\n";
+        return 1;
+      }
+    }
+    else if (anArg == "-blackwhite")
+    {
+      Standard_Boolean toEnable = Standard_True;
+      if (anArgIter + 1 < theArgNb
+       && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], toEnable))
+      {
+        ++anArgIter;
+      }
+      toBlackWhite = toEnable ? 1 : 0;
+    }
+    else if (anArg == "-borderfilter")
+    {
+      Standard_Boolean toEnable = Standard_True;
+      if (anArgIter + 1 < theArgNb
+       && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], toEnable))
+      {
+        ++anArgIter;
+      }
+      isBorderFilterOn = toEnable ? 1 : 0;
+    }
+    else if (anArg == "-exitonclose")
+    {
+      Draw_ToExitOnCloseView = true;
+      if (anArgIter + 1 < theArgNb
+       && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], Draw_ToExitOnCloseView))
+      {
+        ++anArgIter;
+      }
+    }
+    else if (anArg == "-closeonescape"
+          || anArg == "-closeonesc")
+    {
+      Draw_ToCloseViewOnEsc = true;
+      if (anArgIter + 1 < theArgNb
+       && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], Draw_ToCloseViewOnEsc))
+      {
+        ++anArgIter;
+      }
+    }
+    else if (anArgIter + 3 < theArgNb
+          && anArg == "-display")
+    {
+      aViewName   = theArgVec[++anArgIter];
+      aPrsNameRef = theArgVec[++anArgIter];
+      aPrsNameNew = theArgVec[++anArgIter];
+      if (anArgIter + 1 < theArgNb
+      && *theArgVec[anArgIter + 1] != '-')
+      {
+        aPrsNameDiff = theArgVec[++anArgIter];
+      }
+    }
+    else if (aTolColor < 0.0
+          && anArg.IsRealValue())
+    {
+      isOldSyntax = Standard_True;
+      aTolColor = anArg.RealValue();
+      if (aTolColor < 0.0 || aTolColor > 1.0)
+      {
+        std::cout << "Syntax error at '" << anArg << " " << theArgVec[anArgIter] << "'\n";
+        return 1;
+      }
+    }
+    else if (isOldSyntax
+          && toBlackWhite == -1
+          && (anArg == "0" || anArg == "1"))
+    {
+      toBlackWhite = anArg == "1" ? 1 : 0;
+    }
+    else if (isOldSyntax
+          && isBorderFilterOn == -1
+          && (anArg == "0" || anArg == "1"))
+    {
+      isBorderFilterOn = anArg == "1" ? 1 : 0;
+    }
+    else if (aDiffImagePath.IsEmpty())
+    {
+      aDiffImagePath = theArgVec[anArgIter];
+    }
+    else
+    {
+      std::cout << "Syntax error at '" << theArgVec[anArgIter] << "'\n";
+      return 1;
+    }
+  }
 
-  // get string tolerance and check its validity
-  Standard_Real aTolColor = Draw::Atof (theArgVec[3]);
-  if (aTolColor < 0.0)
-    aTolColor = 0.0;
-  if (aTolColor > 1.0)
-    aTolColor = 1.0;
-
-  Standard_Boolean toBlackWhite     = (Draw::Atoi (theArgVec[4]) == 1);
-  Standard_Boolean isBorderFilterOn = (Draw::Atoi (theArgVec[5]) == 1);
-
-  // image file of difference
-  const char* aDiffImagePath = (theArgNb >= 7) ? theArgVec[6] : NULL;
+  Handle(Image_AlienPixMap) anImgRef = new Image_AlienPixMap();
+  Handle(Image_AlienPixMap) anImgNew = new Image_AlienPixMap();
+  if (!anImgRef->Load (anImgPathRef))
+  {
+    std::cout << "Error: image file '" << anImgPathRef << "' cannot be read\n";
+    return 1;
+  }
+  if (!anImgNew->Load (anImgPathNew))
+  {
+    std::cout << "Error: image file '" << anImgPathNew << "' cannot be read\n";
+    return 1;
+  }
 
   // compare the images
   Image_Diff aComparer;
-  if (!aComparer.Init (anImgPathRef, anImgPathNew, toBlackWhite))
+  Standard_Integer aDiffColorsNb = -1;
+  if (aComparer.Init (anImgRef, anImgNew, toBlackWhite == 1))
   {
-    return 1;
+    aComparer.SetColorTolerance (aTolColor >= 0.0 ? aTolColor : 0.0);
+    aComparer.SetBorderFilterOn (isBorderFilterOn == 1);
+    aDiffColorsNb = aComparer.Compare();
+    theDI << aDiffColorsNb << "\n";
   }
-
-  aComparer.SetColorTolerance (aTolColor);
-  aComparer.SetBorderFilterOn (isBorderFilterOn);
-  Standard_Integer aDiffColorsNb = aComparer.Compare();
-  theDI << aDiffColorsNb << "\n";
 
   // save image of difference
-  if (aDiffColorsNb >0 && aDiffImagePath != NULL)
+  Handle(Image_AlienPixMap) aDiff;
+  if (aDiffColorsNb > 0
+  && (!aDiffImagePath.IsEmpty() || !aPrsNameDiff.IsEmpty()))
   {
-    aComparer.SaveDiffImage (aDiffImagePath);
+    aDiff = new Image_AlienPixMap();
+    if (!aDiff->InitTrash (Image_Format_Gray, anImgRef->SizeX(), anImgRef->SizeY()))
+    {
+      std::cout << "Error: cannot allocate memory for diff image " << anImgRef->SizeX() << "x" << anImgRef->SizeY() << "\n";
+      return 1;
+    }
+    aComparer.SaveDiffImage (*aDiff);
+    if (!aDiffImagePath.IsEmpty()
+     && !aDiff->Save (aDiffImagePath))
+    {
+      std::cout << "Error: diff image file '" << aDiffImagePath << "' cannot be written\n";
+      return 1;
+    }
   }
 
+  if (aViewName.IsEmpty())
+  {
+    return 0;
+  }
+
+  ViewerTest_Names aViewNames (aViewName);
+  if (ViewerTest_myViews.IsBound1 (aViewNames.GetViewName()))
+  {
+    TCollection_AsciiString aCommand = TCollection_AsciiString ("vclose ") + aViewNames.GetViewName();
+    theDI.Eval (aCommand.ToCString());
+  }
+
+  Standard_Integer aPxLeft = 0;
+  Standard_Integer aPxTop  = 0;
+  Standard_Integer aWinSizeX = int(anImgRef->SizeX() * 2);
+  Standard_Integer aWinSizeY = !aDiff.IsNull() && !aPrsNameDiff.IsEmpty()
+                              ? int(anImgRef->SizeY() * 2)
+                              : int(anImgRef->SizeY());
+  TCollection_AsciiString aDisplayName;
+  TCollection_AsciiString aViewId = ViewerTest::ViewerInit (aPxLeft, aPxTop,
+                                                            aWinSizeX, aWinSizeY,
+                                                            aViewName.ToCString(),
+                                                            aDisplayName.ToCString());
+
+  Standard_Real aRatio = anImgRef->Ratio();
+  Standard_Real aSizeX = 1.0;
+  Standard_Real aSizeY = aSizeX / aRatio;
+  {
+    OSD_Path aPath (anImgPathRef);
+    TCollection_AsciiString aLabelRef;
+    if (!aPath.Name().IsEmpty())
+    {
+      aLabelRef = aPath.Name() + aPath.Extension();
+    }
+    aLabelRef += TCollection_AsciiString() + "\n" + int(anImgRef->SizeX()) + "x" + int(anImgRef->SizeY());
+
+    Handle(ViewerTest_ImagePrs) anImgRefPrs = new ViewerTest_ImagePrs (anImgRef, aSizeX, aSizeY, aLabelRef);
+    gp_Trsf aTrsfRef;
+    aTrsfRef.SetTranslationPart (gp_Vec (-aSizeX * 0.5, 0.0, 0.0));
+    anImgRefPrs->SetLocalTransformation (aTrsfRef);
+    ViewerTest::Display (aPrsNameRef, anImgRefPrs, false, true);
+  }
+  {
+    OSD_Path aPath (anImgPathNew);
+    TCollection_AsciiString aLabelNew;
+    if (!aPath.Name().IsEmpty())
+    {
+      aLabelNew = aPath.Name() + aPath.Extension();
+    }
+    aLabelNew += TCollection_AsciiString() + "\n" + int(anImgNew->SizeX()) + "x" + int(anImgNew->SizeY());
+
+    Handle(ViewerTest_ImagePrs) anImgNewPrs = new ViewerTest_ImagePrs (anImgNew, aSizeX, aSizeY, aLabelNew);
+    gp_Trsf aTrsfRef;
+    aTrsfRef.SetTranslationPart (gp_Vec (aSizeX * 0.5, 0.0, 0.0));
+    anImgNewPrs->SetLocalTransformation (aTrsfRef);
+    ViewerTest::Display (aPrsNameNew, anImgNewPrs, false, true);
+  }
+  Handle(ViewerTest_ImagePrs) anImgDiffPrs;
+  if (!aDiff.IsNull())
+  {
+    anImgDiffPrs = new ViewerTest_ImagePrs (aDiff, aSizeX, aSizeY, TCollection_AsciiString() + "Difference: " + aDiffColorsNb + " pixels");
+    gp_Trsf aTrsfDiff;
+    aTrsfDiff.SetTranslationPart (gp_Vec (0.0, -aSizeY, 0.0));
+    anImgDiffPrs->SetLocalTransformation (aTrsfDiff);
+  }
+  if (!aPrsNameDiff.IsEmpty())
+  {
+    ViewerTest::Display (aPrsNameDiff, anImgDiffPrs, false, true);
+  }
+  ViewerTest::CurrentView()->SetProj (V3d_Zpos);
+  ViewerTest::CurrentView()->FitAll();
   return 0;
 }
 
@@ -10952,24 +11331,26 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
 
   const char *group = "ZeViewer";
   theCommands.Add("vinit",
-#if !defined(_WIN32) && !defined(__WIN32__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
-    "[name=view_name] [display=display_name] [l=leftPx t=topPx] [w=widthPx h=heightPx]\n"
-#else
-    "[name=view_name] [l=leftPx t=topPx] [w=widthPx h=heightPx]\n"
+          "vinit [-name viewName] [-left leftPx] [-top topPx] [-width widthPx] [-height heightPx]"
+    "\n\t\t:     [-exitOnClose] [-closeOnEscape]"
+  #if !defined(_WIN32) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
+    "\n\t\t:     [-display displayName]"
+  #endif
+    "\n\t\t: Creates new View window with specified name viewName."
+    "\n\t\t: By default the new view is created in the viewer and in"
+    "\n\t\t: graphic driver shared with active view."
+    "\n\t\t:  -name {driverName/viewerName/viewName | viewerName/viewName | viewName}"
+    "\n\t\t: If driverName isn't specified the driver will be shared with active view."
+    "\n\t\t: If viewerName isn't specified the viewer will be shared with active view."
+#if !defined(_WIN32) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
+    "\n\t\t:  -display HostName.DisplayNumber[:ScreenNumber]"
+    "\n\t\t: Display name will be used within creation of graphic driver, when specified."
 #endif
-    " - Creates new View window with specified name view_name.\n"
-    "By default the new view is created in the viewer and in"
-    " graphic driver shared with active view.\n"
-    " - name = {driverName/viewerName/viewName | viewerName/viewName | viewName}.\n"
-    "If driverName isn't specified the driver will be shared with active view.\n"
-    "If viewerName isn't specified the viewer will be shared with active view.\n"
-#if !defined(_WIN32) && !defined(__WIN32__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
-    " - display = HostName.DisplayNumber[:ScreenNumber] : if specified"
-    "is used in creation of graphic driver\n"
-#endif
-    " - l, t: pixel position of left top corner of the window\n"
-    " - w,h: width and heigth of window respectively.\n"
-    "Additional commands for operations with views: vclose, vactivate, vviewlist.\n",
+    "\n\t\t:  -left,  -top    pixel position of left top corner of the window."
+    "\n\t\t:  -width, -height width and heigth of window respectively."
+    "\n\t\t:  -exitOnClose when specified, closing the view will exit application."
+    "\n\t\t:  -closeOnEscape when specified, view will be closed on pressing Escape."
+    "\n\t\t: Additional commands for operations with views: vclose, vactivate, vviewlist.",
     __FILE__,VInit,group);
   theCommands.Add("vclose" ,
     "[view_id [keep_context=0|1]]\n"
@@ -11263,7 +11644,12 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     " : Read pixel value for active view",
     __FILE__, VReadPixel, group);
   theCommands.Add("diffimage",
-    "diffimage     : diffimage imageFile1 imageFile2 toleranceOfColor(0..1) blackWhite(1|0) borderFilter(1|0) [diffImageFile]",
+            "diffimage imageFile1 imageFile2 [diffImageFile]"
+    "\n\t\t:           [-toleranceOfColor {0..1}=0] [-blackWhite {on|off}=off] [-borderFilter {on|off}=off]"
+    "\n\t\t:           [-display viewName prsName1 prsName2 prsNameDiff] [-exitOnClose] [-closeOnEscape]"
+    "\n\t\t: Compare two images by content and generate difference image."
+    "\n\t\t: When -exitOnClose is specified, closing the view will exit application."
+    "\n\t\t: When -closeOnEscape is specified, view will be closed on pressing Escape.",
     __FILE__, VDiffImage, group);
   theCommands.Add ("vselect",
     "vselect x1 y1 [x2 y2 [x3 y3 ... xn yn]] [-allowoverlap 0|1] [shift_selection = 0|1]\n"
