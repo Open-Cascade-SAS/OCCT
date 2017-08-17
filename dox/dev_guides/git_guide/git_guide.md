@@ -82,7 +82,7 @@ The official repository contains:
 
 @subsection occt_gitguide_1_5 Version of Git
 
-  The repository is tested to work with Git 1.7.6 to 1.7.9. 
+  The repository is tested to work with Git 1.7.6 and above. 
   Please do not use versions below 1.7.1 as they are known to cause troubles.
 
 @section occt_gitguide_2 Installing Tools for Work with Git
@@ -138,6 +138,13 @@ The official repository contains:
   Select Git->Config to add your user name and Email address to the local <i>.gitconfig</i> file
   
   @figure{OCCT_GitGuide_V2_image006.png,"",320}
+
+  Optionally, you can set up TortoiseGit to use visual diff utility for SVG images used in OCCT documentation.
+  For that, click on item "Diff Viewer" in the Settings dialog, then click button "Advanced..." on the right tab add new record with the following parameters:
+  - Extension: <code>.svg</code>
+  - External program: <code>&lt;path_to_OCCT&gt;\\adm\\svgdiff.bat %%base %%mine %%bname %%yname</code>
+
+@figure{OCCT_GitGuide_V2_svgdiff.png,"",709}
 
 @subsection occt_gitguide_2_2 Linux platform
 
