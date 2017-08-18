@@ -2157,8 +2157,19 @@ proc _log_html_diff {file log dir1 dir2 highlight_percent} {
     puts $fd "<h2>Version A - $dir1</h2>"
     puts $fd "<h2>Version B - $dir2</h2>"
 
-    # print log body, trying to add HTML links to script files on lines like
-    # "Executing <filename>..."
+    # add script for switching between images on click
+    puts $fd ""
+    puts $fd "<script type=\"text/javascript\">"
+    puts $fd "  function diffimage_toggle(img,url1,url2)"
+    puts $fd "  {"
+    puts $fd "    if (img.src.match(url2)) img.src = url1;"
+    puts $fd "    else img.src = url2;"
+    puts $fd "  }"
+    puts $fd "  function diffimage_reset(img,url) { img.src = url; }"
+    puts $fd "</script>"
+    puts $fd ""
+
+    # print log body
     puts $fd "<pre>"
     set logpath [file split [file normalize $file]]
     foreach line $log {
@@ -2177,17 +2188,20 @@ proc _log_html_diff {file log dir1 dir2 highlight_percent} {
                 set gridpath ""
             }
             set aCaseName [lindex $case end]
-            set img1 "<a href=\"[_make_url $file [file join $dir1 $gridpath $aCaseName.html]]\"><img src=\"[_make_url $file [file join $dir1 $gridpath $img]]\"></a>"
-            set img2 "<a href=\"[_make_url $file [file join $dir2 $gridpath $aCaseName.html]]\"><img src=\"[_make_url $file [file join $dir2 $gridpath $img]]\"></a>"
+            set img1url [_make_url $file [file join $dir1 $gridpath $img]]
+            set img2url [_make_url $file [file join $dir2 $gridpath $img]]
+            set img1 "<a href=\"[_make_url $file [file join $dir1 $gridpath $aCaseName.html]]\"><img src=\"$img1url\"></a>"
+            set img2 "<a href=\"[_make_url $file [file join $dir2 $gridpath $aCaseName.html]]\"><img src=\"$img2url\"></a>"
 
             set difffile [_diff_img_name $dir1 $dir2 $gridpath $img]
+            set imgdurl [_make_url $file $difffile]
             if { [file exists $difffile] } {
-                set imgd "<img src=\"[_make_url $file $difffile]\">"
+                set imgd "<img src=\"$imgdurl\" onmouseout=diffimage_reset(this,\"$imgdurl\") onclick=diffimage_toggle(this,\"$img1url\",\"$img2url\")>"
             } else {
                 set imgd "N/A"
             }
 
-            puts $fd "<table><tr><th><abbr title=\"$dir1\">Version A</abbr></th><th><abbr title=\"$dir2\">Version B</abbr></th><th>Different pixels</th></tr>"
+            puts $fd "<table><tr><th><abbr title=\"$dir1\">Version A</abbr></th><th><abbr title=\"$dir2\">Version B</abbr></th><th>Diff (click to toggle)</th></tr>"
             puts $fd "<tr><td>$img1</td><td>$img2</td><td>$imgd</td></tr></table>"
         }
     }
