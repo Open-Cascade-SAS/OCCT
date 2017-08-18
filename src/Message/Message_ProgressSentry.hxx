@@ -37,6 +37,25 @@ class TCollection_HAsciiString;
 //! check for user break
 //! - Automatic scope closing in destructor
 //! - Safe for NULL ProgressIndicator (just does nothing)
+//!
+//! Example of usage in nested process:
+//!
+//! @code{.cpp}
+//!   Handle(Draw_ProgressIndicator) aProgress = ...;
+//!
+//!   // Outer cycle
+//!   Message_ProgressSentry anOuter (aProgress, "Outer", 0, nbOuter, 1);
+//!   for (int i = 0; i < nbOuter && anOuter.More(); i++, anOuter.Next())
+//!   {
+//!     // Inner cycle
+//!     Message_ProgressSentry anInner (aProgress, "Inner", 0, nbInner, 1);
+//!     for (int j = 0; j < nbInner && anInner.More(); j++, anInner.Next())
+//!     {
+//!       // Cycle body
+//!     }
+//!   }
+//! @endcode
+
 class Message_ProgressSentry 
 {
 public:

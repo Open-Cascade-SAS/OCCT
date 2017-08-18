@@ -205,7 +205,7 @@ void OSD_Chronometer::Reset ()
 //=======================================================================
 void OSD_Chronometer::Restart ()
 {
-  Stopped = Standard_True;
+  Reset();
   Start();
 }
 

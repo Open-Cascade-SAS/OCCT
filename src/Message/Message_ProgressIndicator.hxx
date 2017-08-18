@@ -33,50 +33,45 @@ class Message_ProgressIndicator;
 DEFINE_STANDARD_HANDLE(Message_ProgressIndicator, Standard_Transient)
 
 //! Defines abstract interface from program to the "user".
-//! That includes progress indication and user break mechanisms
+//! This includes progress indication and user break mechanisms.
 //!
-//! The interface to progress indicator represents it as a scale
-//! for each range and step can be defined by the program that uses it.
+//! The process that uses the progress indicator interacts with it as
+//! with a scale whose range and step can be configured according to
+//! the nature of the process.
 //! The scale can be made "infinite", which means it will grow
-//! non-linearly, end of scale will be approached asymptotically at
-//! infinite number of steps. In that case value of scale range
-//! gives a number of steps corresponding to position at 1/2 of scale.
+//! non-linearly, and end of scale will be approached asymptotically at
+//! infinite number of steps. In that case the range defines
+//! a number of steps corresponding to position at 1/2 of scale.
 //! The current position can be either set directly (in a range from
 //! current position to maximum scale value), or incremented step
 //! by step.
 //!
 //! Progress indication mechanism is adapted for convenient
 //! usage in hiererchical processes that require indication of
-//! progress at several (sub)levels of the process.
+//! progress at several levels of the process nesting.
 //! For that purpose, it is possible to create restricted sub-scope of
-//! indication by specifying part of a current scale that is to be
+//! indication by specifying part of a current scale to be
 //! used by the subprocess.
 //! When subprocess works with progress indicator in the restricted
 //! scope, it has the same interface to a scale, while actually it
 //! deals only with part of the whole scale.
+//! 
+//! The recommended way to implement progress indication in the algorithm
+//! is to use class Message_ProgressSentry that provides iterator-like
+//! interface for incrementing progress and opening nested scopes.
 //!
 //! NOTE:
 //! Currently there is no support for concurrent progress
 //! indicator that could be useful in multithreaded applications.
-//! The main reason for this is that such implementation would be
-//! too complex regarding forecasted lack of real need for such
-//! support.
-//! To support this it would require that ProgressScale keep its
-//! own position and take care of incrementing main ProgressIndicator
-//! in destructor. This would also require having cross-references
-//! between nested instances of ProgressScale, ie. potential
-//! problems with memory management.
-//! In case of need of concurrent progress indicator two things can
-//! be suggested: either creation of single spane with summary number
-//! of steps, or usage of infinite scale.
 //!
-//! The user break is implemented as virtual function that might
-//! return True in case if break signal from the user is obtained.
+//! The user break is implemented as virtual function that should
+//! return True in case if break signal from the user is received.
 //!
-//! The derived classes should take care of visualisation of the
+//! The derived class should take care of visualisation of the
 //! progress indicator (e.g. show total position at the graphical bar,
-//! and/or print all scopes in text mode), and for implementation
-//! of user break mechanism (if defined).
+//! print scopes in text mode, or else), and for implementation
+//! of user break mechanism (if necessary).
+
 class Message_ProgressIndicator : public Standard_Transient
 {
 

@@ -116,7 +116,8 @@ static Standard_Integer readstl(Draw_Interpretor& theDI,
         strcmp("triangulation", theArgv[3]) == 0)
     {
       // Read STL file to the triangulation.
-      Handle(Poly_Triangulation) aTriangulation = RWStl::ReadFile (theArgv[2]);
+      Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator (theDI, 1);
+      Handle(Poly_Triangulation) aTriangulation = RWStl::ReadFile (theArgv[2], aProgress);
 
       TopoDS_Face aFace;
       BRep_Builder aB;

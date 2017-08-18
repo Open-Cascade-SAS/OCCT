@@ -1,0 +1,10 @@
+puts "# ========"
+puts "# Measure performance of progress indicator on many empty cycles"
+puts "# ========"
+puts ""
+
+pload QAcommands
+
+chrono s restart
+OCC28478 10000 10000
+chrono s counter "100 M cycles of progress indicator"

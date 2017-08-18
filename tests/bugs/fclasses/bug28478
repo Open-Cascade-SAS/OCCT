@@ -1,0 +1,24 @@
+puts "# ============"
+puts "# 0028478: Scope Names Are Swallowed in Message_ProgressSentry Constructors"
+puts "# ============"
+puts ""
+puts "# Test output of progress indicator in text mode"
+
+pload QAcommands
+set out [OCC28478 3 2]
+
+set expected {
+  {Progress: 0% Outer: 1 / 3}
+  {Progress: 17% Outer: 1 / 3 Inner: 1 / 2}
+  {Progress: 33% Outer: 1 / 3 Inner: 2 / 2}
+  {Progress: 50% Outer: 2 / 3 Inner: 1 / 2}
+  {Progress: 67% Outer: 2 / 3 Inner: 2 / 2}
+  {Progress: 83% Outer: 3 / 3 Inner: 1 / 2}
+  {Progress: 100% Outer: 3 / 3 Inner: 2 / 2}
+}
+
+if { [string compare [string trim $out] [join $expected "\n"]] } {
+  puts "Error: output (see above) does not match expected one:"
+  puts "[join $expected "\n"]"
+  puts ""
+}

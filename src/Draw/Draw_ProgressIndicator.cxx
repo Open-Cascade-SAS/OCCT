@@ -28,24 +28,24 @@ IMPLEMENT_STANDARD_RTTIEXT(Draw_ProgressIndicator,Message_ProgressIndicator)
 //function : Draw_ProgressIndicator
 //purpose  : 
 //=======================================================================
-Draw_ProgressIndicator::Draw_ProgressIndicator(const Draw_Interpretor &di,
-                                                   const Standard_Integer updateTime) :
-       myTextMode ( DefaultTextMode() ),
-       myGraphMode ( DefaultGraphMode() ),
-       myDraw ( (Standard_Address)&di ),
-       myShown ( Standard_False ),
-       myBreak ( Standard_False ),
-       myUpdateTime ( updateTime ),
-       myLastUpdate ( 0 ), myStartTime ( 0 )
+Draw_ProgressIndicator::Draw_ProgressIndicator (const Draw_Interpretor &di, Standard_Real theUpdateThreshold)
+: myTextMode ( DefaultTextMode() ),
+  myGraphMode ( DefaultGraphMode() ),
+  myDraw ( (Standard_Address)&di ),
+  myShown ( Standard_False ),
+  myBreak ( Standard_False ),
+  myUpdateThreshold ( 0.01 * theUpdateThreshold ),
+  myLastPosition ( -1. ),
+  myStartTime ( 0 )
 {
 }
 
 //=======================================================================
-//function : Destroy
+//function : ~Draw_ProgressIndicator
 //purpose  : 
 //=======================================================================
 
-void Draw_ProgressIndicator::Destroy()
+Draw_ProgressIndicator::~Draw_ProgressIndicator()
 {
   Reset();
 }
@@ -63,7 +63,8 @@ void Draw_ProgressIndicator::Reset()
     myShown = Standard_False;
   }
   myBreak = Standard_False;
-  myLastUpdate = myStartTime = 0;
+  myLastPosition = -1.;
+  myStartTime = 0;
 }
 
 //=======================================================================
@@ -73,14 +74,22 @@ void Draw_ProgressIndicator::Reset()
 
 Standard_Boolean Draw_ProgressIndicator::Show(const Standard_Boolean force)
 {
-  if ( ! myGraphMode && ! myTextMode ) return Standard_False;
-  time_t aTimeT;
-  time ( &aTimeT );
-  Standard_Size aTime = (Standard_Size)aTimeT;
-  if ( ! myStartTime ) myStartTime = aTime;
-  if ( ! force && myUpdateTime >0 && aTime < myLastUpdate + myUpdateTime && GetPosition() < 1. )
+  if ( ! myGraphMode && ! myTextMode )
+    return Standard_False;
+
+  // remember time of the first call to Show as process start time
+  if ( ! myStartTime )
+  {
+    time_t aTimeT;
+    time ( &aTimeT );
+    myStartTime = (Standard_Size)aTimeT;
+  }
+
+  // unless show is forced, show updated state only if at least 1% progress has been reached since the last update
+  Standard_Real aPosition = GetPosition();
+  if ( ! force && aPosition < 1. && Abs (aPosition - myLastPosition) < myUpdateThreshold)
     return Standard_False; // return if update interval has not elapsed
-  myLastUpdate = aTime;
+  myLastPosition = aPosition;
   
   // Prepare textual progress info
   char text[2048];
@@ -100,14 +109,18 @@ Standard_Boolean Draw_ProgressIndicator::Show(const Standard_Boolean force)
                      scale.BaseToLocal ( locPos ), scale.GetMax() );
   }
 
-  // In addition, write elapsed/estimated/remaining time
-  if ( GetPosition() > 0.01 ) {
-    n += Sprintf ( &text[n], "\nElapsed/estimated time: %ld/%.0f sec", 
-                   (long)(aTime - myStartTime), ( aTime - myStartTime ) / GetPosition() );
-  }
-  
   // Show graphic progress bar
   if ( myGraphMode ) {
+
+    // In addition, write elapsed/estimated/remaining time
+    if ( GetPosition() > 0.01 ) { 
+      time_t aTimeT;
+      time ( &aTimeT );
+      Standard_Size aTime = (Standard_Size)aTimeT;
+      n += Sprintf ( &text[n], "\nElapsed/estimated time: %ld/%.0f sec", 
+                     (long)(aTime - myStartTime), ( aTime - myStartTime ) / GetPosition() );
+    }
+  
     if ( ! myShown ) {
       char command[1024];
       Sprintf ( command, "toplevel .xprogress -height 100 -width 410;"

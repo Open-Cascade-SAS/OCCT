@@ -4791,6 +4791,30 @@ Standard_Integer CR23403 (Draw_Interpretor& di, Standard_Integer argc, const cha
   return 0;
 }
 
+Standard_Integer OCC28478 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
+{	
+  Standard_Integer nbOuter = (argc > 1 ? Draw::Atoi(argv[1]) : 3);
+  Standard_Integer nbInner = (argc > 2 ? Draw::Atoi(argv[2]) : 2);
+
+  // test behavior of progress indicator when using nested scopes with names set by Sentry objects
+  Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator (di, 1);
+  aProgress->SetTextMode (Standard_True);
+
+  // Outer cycle
+  Message_ProgressSentry anOuter (aProgress, "Outer", 0, nbOuter, 1);
+  for (int i = 0; i < nbOuter && anOuter.More(); i++, anOuter.Next())
+  {
+    // Inner cycle
+    Message_ProgressSentry anInner (aProgress, "Inner", 0, nbInner, 1);
+    for (int j = 0; j < nbInner && anInner.More(); j++, anInner.Next())
+    {
+      // Cycle body
+    }
+  }
+
+  return 0;
+}
+
 void QABugs::Commands_11(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
@@ -4896,5 +4920,6 @@ void QABugs::Commands_11(Draw_Interpretor& theCommands) {
   theCommands.Add("OCC22558", "OCC22558 x_vec y_vec z_vec x_dir y_dir z_dit x_pnt y_pnt z_pnt", __FILE__, OCC22558, group);
   theCommands.Add("CR23403", "CR23403 string", __FILE__, CR23403, group);
   theCommands.Add("OCC23429", "OCC23429 res shape tool [appr]", __FILE__, OCC23429, group);
+  theCommands.Add("OCC28478", "OCC28478 [nb_outer=3 [nb_inner=2]: test progress indicator on nested cycles", __FILE__, OCC28478, group);
   return;
 }

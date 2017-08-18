@@ -33,18 +33,15 @@ class Draw_ProgressIndicator : public Message_ProgressIndicator
 public:
 
   
-  //! Creates a progress indicator and remembers pointer to
-  //! Draw_Interpretor
-  //! The updateTime, if given, defines time interval between
-  //! updates of the indicator (in seconds)
-  Standard_EXPORT Draw_ProgressIndicator(const Draw_Interpretor& di, const Standard_Integer updateTime = 0);
+  //! Creates a progress indicator and remembers pointer to Draw_Interpretor
+  //!
+  //! @param theUpdateThreshold defines minimal progress (in percents) between
+  //! updates of the indicator (non-forced updates of the progress bar will be
+  //! disabled until that progress is reached since last update).
+  Standard_EXPORT Draw_ProgressIndicator(const Draw_Interpretor& di, Standard_Real theUpdateThreshold = 1.);
   
   //! Destructor; calls Reset()
-  Standard_EXPORT void Destroy();
-~Draw_ProgressIndicator()
-{
-  Destroy();
-}
+  Standard_EXPORT ~Draw_ProgressIndicator();
   
   //! Sets text output mode (on/off)
   Standard_EXPORT void SetTextMode (const Standard_Boolean theTextMode);
@@ -85,8 +82,8 @@ private:
   Standard_Address myDraw;
   Standard_Boolean myShown;
   Standard_Boolean myBreak;
-  Standard_Integer myUpdateTime;
-  Standard_Size myLastUpdate;
+  Standard_Real myUpdateThreshold;
+  Standard_Real myLastPosition;
   Standard_Size myStartTime;
 };
 
