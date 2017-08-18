@@ -1,0 +1,83 @@
+if {[isdraw result]} {
+  # check history information
+
+  # get resulting edges
+  eval compound [explode result v] res_verts
+  eval compound [explode result e] res_edges
+
+  # get all vertices and edges of the input shape
+  eval compound [explode a v] input_verts
+  eval compound [explode a e] input_edges
+
+  # check deleted
+
+  # get removed vertices through the history
+  compound rem_verts
+  foreach v [explode input_verts] {
+    if {[regexp "The shape has been deleted" [unifysamedomisdel $v]]} {
+      add $v rem_verts;
+    }
+  }
+
+  # get removed edges through the history
+  compound rem_edges
+  foreach e [explode input_edges] {
+    if {[regexp "The shape has been deleted" [unifysamedomisdel $e]]} {
+      add $e rem_edges;
+    }
+  }
+
+  # check that all removed shapes are not present in the result
+  bsection sec_v res_verts rem_verts
+  if {[llength [explode sec_v v]]} {
+    puts "Error: the history of the removed vertices is incorrect."
+  }
+
+  bsection sec_e res_edges rem_edges
+  if {[llength [explode sec_e e]]} {
+    puts "Error: the history of the removed edges is incorrect."
+  }
+
+  # faces should not be removed at all
+  foreach f [explode a f] {
+    if {[regexp "The shape has been deleted" [unifysamedomisdel $f]]} {
+      puts "Error: the faces should not be removed during unification."
+      break;
+    }
+  }
+
+
+  # check modifications
+
+  # get all modified and not removed shapes into compound and
+  # compare the contents of the compound with the result shape
+  eval compound [explode a f] input_faces
+
+  compound all_hist_shapes
+  foreach comp {input_verts input_edges input_faces} {
+    foreach s [explode $comp] {
+      if {[regexp "The shape has been deleted" [unifysamedomisdel $s]]} {
+        continue;
+      }
+      if {[regexp "The shape has not been modified" [unifysamedommod s_mod $s]]} {
+        add $s all_hist_shapes;
+        continue;
+      }
+      
+      if {[regexp "COMPOUND" [whatis s_mod]]} {
+        foreach sm [explode s_mod] { add $sm all_hist_shapes }
+      } else {
+        add s_mod all_hist_shapes;
+      }
+    }
+  }
+
+  eval compound [explode result f] res_faces
+  compound all_res_shapes
+  foreach comp {res_verts res_edges res_faces} {
+    foreach s [explode $comp] { add $s all_res_shapes }
+  }
+
+  checknbshapes all_hist_shapes -ref [nbshapes all_res_shapes]
+  checkprops all_hist_shapes -s [lindex [sprops result -skip] 2] -l [lindex [lprops result -skip] 2] -skip
+}

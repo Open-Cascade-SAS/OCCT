@@ -144,6 +144,10 @@ private:
                      TopTools_IndexedDataMapOfShapeListOfShape& theGMapEdgeFaces,
                      Standard_Boolean IsCheckSharedEdgeOri);
 
+  //! Fills the history of the modifications during the operation.
+  Standard_EXPORT void FillHistory();
+
+
   TopoDS_Shape myInitShape;
   Standard_Real myLinTol;
   Standard_Real myAngTol;
@@ -157,7 +161,6 @@ private:
   TopTools_MapOfShape myKeepShapes;
 
   Handle(BRepTools_History) myHistory; //!< The history.
-  TopTools_MapOfShape myRemoved;
 };
 
 

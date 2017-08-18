@@ -1,0 +1,17 @@
+puts "======="
+puts "0029027"
+puts "======="
+puts ""
+##################################################
+# Crash in attemption to use ShapeUpgrade_UnifySameDomain algorithm on half-cylinder
+##################################################
+
+pcylinder a 10 30 180
+
+unifysamedom result a
+
+checkshape result
+checknbshapes result -vertex 4 -edge 6 -wire 4 -face 4
+checkprops result -s 1856.64
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

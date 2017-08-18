@@ -1,0 +1,19 @@
+puts "TODO OCC29040 ALL: Error: the history of the removed edges is incorrect"
+
+puts "======="
+puts "0028913"
+puts "======="
+puts ""
+##################################################
+# UnifySameDomain crashes with error: "a shape is modified and removed simultaneously"
+##################################################
+
+brestore [locate_data_file bug28913_26219_model.brep] a
+
+unifysamedom result a
+
+checkshape result
+checknbshapes result -vertex 76 -edge 125 -wire 51 -face 44
+checkprops result -s 1473.4
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
