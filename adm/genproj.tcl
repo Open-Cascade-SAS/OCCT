@@ -1361,6 +1361,7 @@ proc osutils:csfList { theOS theCsfLibsMap theCsfFrmsMap } {
     # tbb headers define different pragma lib depending on debug/release
     set aLibsMap(CSF_TBB) ""
   } else {
+    set aLibsMap(CSF_dl)           "dl"
     if { "$theOS" == "mac" } {
       set aLibsMap(CSF_objc)       "objc"
       set aFrmsMap(CSF_Appkit)     "Appkit"
