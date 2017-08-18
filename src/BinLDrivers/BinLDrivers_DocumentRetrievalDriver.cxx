@@ -222,6 +222,7 @@ void BinLDrivers_DocumentRetrievalDriver::Read (Standard_IStream&               
 
   // 2a. Retrieve data from the stream:
   myRelocTable.Clear();
+  myRelocTable.SetHeaderData(aHeaderData);
   mySections.Clear();
   myPAtt.Init();
   Handle(TDF_Data) aData = new TDF_Data();
@@ -531,4 +532,3 @@ Standard_Boolean BinLDrivers_DocumentRetrievalDriver::CheckDocumentVersion(
   }
   return Standard_True;
 }
-

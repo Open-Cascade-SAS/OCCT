@@ -103,3 +103,25 @@ void CDM_Application::EndOfUpdate
   message+=aDocument->Presentation();
   Write(message.ToExtString());
 }
+
+//=======================================================================
+//function : Name
+//purpose  : returns the application name
+//=======================================================================
+
+TCollection_ExtendedString CDM_Application::Name() const
+{
+  // Default: empty
+  return TCollection_ExtendedString();
+}
+
+//=======================================================================
+//function : Version
+//purpose  : returns the application version
+//=======================================================================
+
+TCollection_AsciiString CDM_Application::Version() const
+{
+  // Default: empty
+  return TCollection_AsciiString();
+}

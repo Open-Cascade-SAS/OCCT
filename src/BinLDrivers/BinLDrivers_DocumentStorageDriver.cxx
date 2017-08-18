@@ -429,6 +429,11 @@ void BinLDrivers_DocumentStorageDriver::WriteInfoSection
   Standard_Integer aObjNb = 1;
   Standard_Integer aShemaVer = 1;
 
+  // Store the name and version of the application that has created the
+  // document.
+  theData->SetApplicationVersion(theDoc->Application()->Version());
+  theData->SetApplicationName(theDoc->Application()->Name());
+
   aHeader.einfo += FSD_BinaryFile::WriteInfo (theOStream,
                                               aObjNb,
                                               BinLDrivers::StorageVersion(),

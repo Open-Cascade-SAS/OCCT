@@ -7,5 +7,6 @@ BinObjMgt_PExtChar.hxx
 BinObjMgt_PInteger.hxx
 BinObjMgt_PReal.hxx
 BinObjMgt_PShortReal.hxx
+BinObjMgt_RRelocationTable.cxx
 BinObjMgt_RRelocationTable.hxx
 BinObjMgt_SRelocationTable.hxx

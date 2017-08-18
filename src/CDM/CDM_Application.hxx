@@ -24,12 +24,14 @@
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_ExtString.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_ExtendedString.hxx>
+
 class CDM_Reference;
 class CDM_MetaData;
 class CDM_Document;
 class Resource_Manager;
 class CDM_MessageDriver;
-class TCollection_ExtendedString;
 
 
 class CDM_Application;
@@ -60,6 +62,11 @@ public:
   //! writes the string in the application MessagerDriver.
   Standard_EXPORT void Write (const Standard_ExtString aString);
 
+  //! Returns the application name.
+  Standard_EXPORT virtual TCollection_ExtendedString Name() const;
+
+  //! Returns the application version.
+  Standard_EXPORT virtual TCollection_AsciiString Version() const;
 
 friend class CDM_Reference;
 friend class CDM_MetaData;
