@@ -103,6 +103,16 @@ public:
   //! handle  if this curve does  not exist.  Returns in
   //! <First> and <Last> the parameter range.
   Standard_EXPORT static Handle(Geom2d_Curve) CurveOnSurface (const TopoDS_Edge& E, const Handle(Geom_Surface)& S, const TopLoc_Location& L, Standard_Real& First, Standard_Real& Last);
+
+  //! For the planar surface builds the 2d curve for the edge
+  //! by projection of the edge on plane.
+  //! Returns a NULL handle if the surface is not planar or
+  //! the projection failed.
+  Standard_EXPORT static Handle(Geom2d_Curve) CurveOnPlane (const TopoDS_Edge& E,
+                                                            const Handle(Geom_Surface)& S,
+                                                            const TopLoc_Location& L,
+                                                            Standard_Real& First,
+                                                            Standard_Real& Last);
   
   //! Returns in <C>, <S>, <L> a 2d curve, a surface and
   //! a location for the edge <E>. <C> and <S>  are null

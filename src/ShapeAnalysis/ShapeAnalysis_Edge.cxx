@@ -800,92 +800,111 @@ Standard_Boolean ShapeAnalysis_Edge::CheckSameParameter (const TopoDS_Edge& edge
   if (BRep_Tool::Degenerated (edge)) return Standard_False;
 
   maxdev = 0;
-  
+
+  // Get same parameter flag
   Handle(BRep_TEdge)& TE = *((Handle(BRep_TEdge)*)&edge.TShape());
   Standard_Boolean SameParameter = TE->SameParameter();
 
-  GeomAdaptor_Curve AC3d;
-
-  // find 3d curve
-  BRep_ListIteratorOfListOfCurveRepresentation itcr(TE->Curves());
-  for ( ; itcr.More(); itcr.Next() ) {
-    Handle(BRep_GCurve) GC = Handle(BRep_GCurve)::DownCast(itcr.Value());
-    if ( GC.IsNull() || ! GC->IsCurve3D() ) continue;
-    Handle(Geom_Curve) C3d = GC->Curve3D();
-    if ( C3d.IsNull() ) continue; //:s1 abv 22 Apr 99: PRO7226 #489490
-    TopLoc_Location loc = GC->Location();
-    if ( ! loc.IsIdentity() )
-      C3d = Handle(Geom_Curve)::DownCast ( C3d->Transformed ( loc ) );
-    else C3d = Handle(Geom_Curve)::DownCast ( C3d->Copy() ); //:s4 abv 26 Apr 99: sim6049.igs 21677: necessary to get True SP (!!?)
-    Standard_Real First, Last;
-    GC->Range ( First, Last );
-    AC3d.Load ( C3d, First, Last );
-    break;
-  }
-
-  if ( ! itcr.More() ) {
-    myStatus |= ShapeExtend::EncodeStatus ( ShapeExtend_FAIL1 );
+  // Get 3D curve of the edge
+  Standard_Real aFirst, aLast;
+  TopLoc_Location aCurveLoc;
+  Handle(Geom_Curve) aC3D = BRep_Tool::Curve(edge, aCurveLoc, aFirst, aLast);
+  if (aC3D.IsNull()) {
+    myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_FAIL1);
     return Standard_False;
   }
 
-  Handle(Geom_Surface) aFaceSurf;
-  TopLoc_Location L;
-  if ( !face.IsNull() )
+  if (!aCurveLoc.IsIdentity())
   {
-    aFaceSurf = BRep_Tool::Surface(face, L);
+    const gp_Trsf& aTrsf = aCurveLoc.Transformation();
+    aC3D = Handle(Geom_Curve)::DownCast(aC3D->Transformed(aTrsf));
+    aFirst = aC3D->TransformedParameter(aFirst, aTrsf);
+    aLast = aC3D->TransformedParameter(aLast, aTrsf);
   }
 
-  // iterate on pcurves
-  itcr.Initialize ( TE->Curves() );
-  for ( ; itcr.More(); itcr.Next() )
-  {
-    Handle(BRep_GCurve) GC = Handle(BRep_GCurve)::DownCast(itcr.Value());
-    if ( GC.IsNull() || ! GC->IsCurveOnSurface() ) continue;
+  // Create adaptor for the curve
+  GeomAdaptor_Curve aGAC(aC3D, aFirst, aLast);
 
-    if ( !(face.IsNull()) ) // Face is not null.
+  Handle(Geom_Surface) aFaceSurf;
+  TopLoc_Location aFaceLoc;
+  if (!face.IsNull())
+    aFaceSurf = BRep_Tool::Surface(face, aFaceLoc);
+
+  Standard_Boolean IsPCurveFound = Standard_False;
+  Standard_Integer i = 1;
+
+  // Iterate on all curve representations
+  for (;;)
+  {
+    Handle(Geom2d_Curve) aPC;
+    Handle(Geom_Surface) aS;
+    TopLoc_Location aLoc;
+    Standard_Real f, l;
+
+    BRep_Tool::CurveOnSurface(edge, aPC, aS, aLoc, f, l, i);
+
+    if (aPC.IsNull())
+      // No more curves
+      break;
+
+    ++i;
+
+    // If the input face is not null, check that the curve is on its surface
+    if (!aFaceSurf.IsNull())
     {
-      // Check for different surface.
-      if (!GC->IsCurveOnSurface(aFaceSurf, GC->Location()))
+      if (aFaceSurf != aS || aFaceLoc != aLoc)
+      {
         continue;
+      }
     }
 
-    Standard_Real f, l;
-    GC->Range ( f, l );
-    Handle(Geom_Surface) Su = GC->Surface();
-    TopLoc_Location loc = GC->Location();
-    if (!loc.IsIdentity())
-      Su = Handle(Geom_Surface)::DownCast ( Su->Transformed ( loc ) );
-    Handle(GeomAdaptor_HSurface) GAHS = new GeomAdaptor_HSurface(Su);
-    
-    Handle(Geom2d_Curve) PC = GC->PCurve();
-    Handle(Geom2dAdaptor_HCurve) GHPC = new Geom2dAdaptor_HCurve(PC,f,l);
-    //Adaptor3d_CurveOnSurface ACS(GHPC,GAHS);
-    Adaptor3d_CurveOnSurface ACS;
-    ACS.Load(GHPC, GAHS);
-    if ( ! ComputeDeviation ( AC3d, ACS, SameParameter, maxdev, NbControl-1 ) )
+    IsPCurveFound = Standard_True;
+
+    // Apply transformations for the surface
+    Handle(Geom_Surface) aST = Handle(Geom_Surface)::
+      DownCast(aS->Transformed(aLoc.Transformation()));
+
+    // Compute deviation between curves
+    Handle(Geom2dAdaptor_HCurve) GHPC = new Geom2dAdaptor_HCurve(aPC, f, l);
+    Handle(GeomAdaptor_HSurface) GAHS = new GeomAdaptor_HSurface(aST);
+
+    Adaptor3d_CurveOnSurface ACS(GHPC, GAHS);
+    if (!ComputeDeviation(aGAC, ACS, SameParameter, maxdev, NbControl - 1))
     {
       myStatus |= ShapeExtend::EncodeStatus ( ShapeExtend_FAIL2 );
     }
+  }
 
-    if ( GC->IsCurveOnClosedSurface() )
+  // For the planar face and non-existing  2d curve
+  // check the deviation for the projection of the 3d curve on plane
+  if (!IsPCurveFound && !aFaceSurf.IsNull())
+  {
+    Standard_Real f, l;
+    Handle(Geom2d_Curve) aPC = BRep_Tool::CurveOnPlane(edge, aFaceSurf, aFaceLoc, f, l);
+    if (!aPC.IsNull())
     {
-      GHPC->ChangeCurve2d().Load ( GC->PCurve2(), f, l ); // same bounds
-      ACS.Load(GHPC, GAHS); // sans doute inutile
-      if ( ! ComputeDeviation ( AC3d, ACS, SameParameter, maxdev, NbControl-1 ) )
+      Handle(Geom2dAdaptor_HCurve) GHPC = new Geom2dAdaptor_HCurve(aPC, aFirst, aLast);
+
+      Handle(Geom_Surface) aST =
+        Handle(Geom_Surface)::DownCast(aFaceSurf->Transformed(aFaceLoc.Transformation()));
+      Handle(GeomAdaptor_HSurface) GAHS = new GeomAdaptor_HSurface(aST);
+
+      Adaptor3d_CurveOnSurface ACS(GHPC, GAHS);
+
+      if (!ComputeDeviation(aGAC, ACS, SameParameter, maxdev, NbControl - 1))
       {
-        myStatus |= ShapeExtend::EncodeStatus ( ShapeExtend_FAIL2 );
+        myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_FAIL2);
       }
     }
   }
-  
-  if ( maxdev > TE->Tolerance() ) 
-    myStatus |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE1 );
-  if ( ! SameParameter ) 
-    myStatus |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE2 );
+
+  if (maxdev > TE->Tolerance())
+    myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE1);
+  if (!SameParameter)
+    myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE2);
 
   return Status ( ShapeExtend_DONE );
 }
-
 
 //=======================================================================
 //function : IsOverlapPartEdges
