@@ -51,7 +51,7 @@ void BaseDriver::Results(TDF_LabelList& res) const
 }
 
 // Execution.
-Standard_Integer BaseDriver::Execute(Handle(TFunction_Logbook)& log) const
+Standard_Integer BaseDriver::Execute(Handle(TFunction_Logbook)& ) const
 {
 #ifdef SLOW
     // Make a boolean operation to slow down the function

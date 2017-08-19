@@ -59,7 +59,7 @@ void SimpleDriver::Results(TDF_LabelList& res) const
 }
 
 // Execution.
-Standard_Integer SimpleDriver::Execute(Handle(TFunction_Logbook)& log) const
+Standard_Integer SimpleDriver::Execute(Handle(TFunction_Logbook)& ) const
 {
 	// Check initialization
 	if (Label().IsNull())

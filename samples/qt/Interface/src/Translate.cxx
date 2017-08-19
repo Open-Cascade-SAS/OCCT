@@ -245,30 +245,19 @@ bool Translate::exportModel( const int format, const Handle(AIS_InteractiveConte
 
 bool Translate::exportModel( const int format, const QString& file, const Handle(TopTools_HSequenceOfShape)& shapes )
 {
-    bool status;
     try {
         switch ( format )
         {
-        case FormatBREP:
-            status = exportBREP( file, shapes );
-            break;
-        case FormatIGES:
-            status = exportIGES( file, shapes );
-            break;
-        case FormatSTEP:
-            status = exportSTEP( file, shapes );
-            break;
-        case FormatSTL:
-            status = exportSTL( file, shapes );
-            break;
-        case FormatVRML:
-            status = exportVRML( file, shapes );
-            break;
+        case FormatBREP: return exportBREP( file, shapes );
+        case FormatIGES: return exportIGES( file, shapes );
+        case FormatSTEP: return exportSTEP( file, shapes );
+        case FormatSTL:  return exportSTL ( file, shapes );
+        case FormatVRML: return exportVRML( file, shapes );
         }
     } catch ( Standard_Failure ) {
-        status = false;
+        //
     }
-    return status;
+    return false;
 }
 
 Handle(TopTools_HSequenceOfShape) Translate::getShapes( const Handle(AIS_InteractiveContext)& ic )
@@ -521,6 +510,9 @@ bool Translate::exportSTEP( const QString& file, const Handle(TopTools_HSequence
         break;
     case IFSelect_RetVoid:
         myInfo = QObject::tr( "INF_NOTHING_ERROR" );
+        break;
+    case IFSelect_RetStop:
+    case IFSelect_RetDone:
         break;
     }
     return status == IFSelect_RetDone;

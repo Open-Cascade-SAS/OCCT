@@ -106,8 +106,7 @@ void MDIWindow::onWindowActivated ()
 void MDIWindow::dump()
 {
   QString datadir = (QString(qgetenv ("CSF_OCCTDataPath").constData()) + "/images");
-  static QString filter;
-  filter = "Images Files (*.bmp *.ppm *.png *.jpg *.tiff *.tga *.gif *.exr *.ps *.eps *.tex *.pdf *.svg *.pgf)";
+  QString filter = "Images Files (*.bmp *.ppm *.png *.jpg *.tiff *.tga *.gif *.exr)";
   QFileDialog fd ( 0 );
   fd.setModal( true );
   fd.setNameFilter ( filter );
@@ -135,7 +134,7 @@ void MDIWindow::dump()
     if ( !res )
     {
       QWidgetList list = qApp->allWidgets();
-      QWidget* mainWidget;
+      QWidget* mainWidget = NULL;
       for( int i = 0; i < list.size(); ++i )
       {
         if( qobject_cast<ApplicationCommonWindow*>( list.at( i ) ) )

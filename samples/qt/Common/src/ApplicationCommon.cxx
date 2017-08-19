@@ -22,15 +22,16 @@ static ApplicationCommonWindow* stApp = 0;
 static QMdiArea* stWs = 0;
 
 ApplicationCommonWindow::ApplicationCommonWindow()
-    : QMainWindow( 0 ),
-myWindowPopup( 0 ),
-myFilePopup( 0 ),
+: QMainWindow( 0 ),
+myNbDocuments( 0 ),
+myIsDocuments(false),
+myStdToolBar( 0 ),
 myCasCadeBar( 0 ),
-myStdToolBar( 0 )
+myFilePopup( 0 ),
+myWindowPopup( 0 ),
+myFileSeparator(NULL)
 {
-  myNbDocuments = 0;
   stApp = this;
-  myIsDocuments = false;
 
   // create and define the central widget
   QFrame* vb = new QFrame( this );
@@ -346,48 +347,51 @@ ApplicationCommonWindow* ApplicationCommonWindow::getApplication()
 
 void ApplicationCommonWindow::updateFileActions()
 {
-  if ( myDocuments.isEmpty() )
+  if (!myDocuments.isEmpty())
   {
-    if ( !myIsDocuments )
+    return;
+  }
+
+  if ( !myIsDocuments )
+  {
+    QAction* fileQuitAction = NULL;
+    QAction* windowAction = NULL;
+    QList<QAction *> aListActions = myFilePopup->actions();
+    for ( int i = 0; i < aListActions.size(); i++ )
     {
-      QAction *fileQuitAction, *windowAction;
-      QList<QAction *> aListActions = myFilePopup->actions();
-      for ( int i = 0; i < aListActions.size(); i++ )
+      if( aListActions.at( i )->text() == QObject::tr("MNU_QUIT") )
       {
-        if( aListActions.at( i )->text() == QObject::tr("MNU_QUIT") )
-        {
-          fileQuitAction = aListActions.at( i );
-          break;
-        }
+        fileQuitAction = aListActions.at( i );
+        break;
       }
+    }
         
-      if( !fileQuitAction )
-        return;
+    if( !fileQuitAction )
+      return;
       
-      myIsDocuments = true;
-      myCasCadeBar->show();
+    myIsDocuments = true;
+    myCasCadeBar->show();
 
-      QList<QAction *> aListMenuActions = menuBar()->actions();
-      for ( int i = 0; i < aListMenuActions.size(); i++ )
-      {
-        if( aListMenuActions.at( i )->text() == QObject::tr("MNU_HELP") )
-        {
-           windowAction= aListMenuActions.at( i );
-           break;
-        }
-      }
-
-      if( !windowAction )
-        return;
-
-      menuBar()->insertMenu( windowAction, myWindowPopup );
-    }
-    else
+    QList<QAction *> aListMenuActions = menuBar()->actions();
+    for ( int i = 0; i < aListMenuActions.size(); i++ )
     {
-      myIsDocuments = false;
-      myCasCadeBar->hide();
-      menuBar()->removeAction( myWindowPopup->menuAction() );
+      if( aListMenuActions.at( i )->text() == QObject::tr("MNU_HELP") )
+      {
+          windowAction= aListMenuActions.at( i );
+          break;
+      }
     }
+
+    if( !windowAction )
+      return;
+
+    menuBar()->insertMenu( windowAction, myWindowPopup );
+  }
+  else
+  {
+    myIsDocuments = false;
+    myCasCadeBar->hide();
+    menuBar()->removeAction( myWindowPopup->menuAction() );
   }
 }
 

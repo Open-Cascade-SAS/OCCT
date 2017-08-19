@@ -1034,33 +1034,6 @@ void View::onEnvironmentMap()
 
 bool View::dump(Standard_CString theFile)
 {
-  myView->Redraw();
-  QString ext = QFileInfo( QString( theFile ) ).completeSuffix();
-  if ( !ext.compare("ps") || !ext.compare("eps") || !ext.compare("tex") || !ext.compare("pdf") || !ext.compare("svg") || !ext.compare("pgf") )
-  {
-    Graphic3d_ExportFormat exFormat;
-    if ( !ext.compare("ps") )
-      exFormat = Graphic3d_EF_PostScript;
-    if ( !ext.compare("eps") )
-      exFormat = Graphic3d_EF_EnhPostScript;
-    if ( !ext.compare("tex") )
-      exFormat = Graphic3d_EF_TEX;
-    if ( !ext.compare("pdf") )
-      exFormat = Graphic3d_EF_PDF;
-    if ( !ext.compare("svg") )
-      exFormat = Graphic3d_EF_SVG;
-    if ( !ext.compare("pgf") )
-      exFormat = Graphic3d_EF_PGF;
-    try
-    {
-      myView->Export( theFile, exFormat );
-    }
-    catch(...)
-    {
-      return false;
-    }
-    return true;
-  }
   return myView->Dump(theFile);
 }
 
