@@ -4608,26 +4608,6 @@ Standard_Integer OCC22301 (Draw_Interpretor& di, Standard_Integer argc, const ch
 
   return 0;
 }
-#include <ShapeFix_FixSmallFace.hxx>
-Standard_Integer OCC22586 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
-{
-	
-  if (argc != 3) {
-    di << "Usage : " << argv[0] << " shape resshape\n";
-    return 1;
-  }
-  
-  // try to read a shape:
-  TopoDS_Shape aShape=DBRep::Get(argv[1]);
-  ShapeFix_FixSmallFace aFixSmallFaces;
-  aFixSmallFaces.Init (aShape);
-  aFixSmallFaces.Perform();
-  TopoDS_Shape aResShape = aFixSmallFaces.Shape();
-  DBRep::Set(argv[2],aResShape);
-  
-  return 0;
-
-}
 
 #include <NCollection_DataMap.hxx>
 Standard_Integer OCC22744 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
@@ -4910,7 +4890,6 @@ void QABugs::Commands_11(Draw_Interpretor& theCommands) {
   theCommands.Add("OCC20627", "OCC20627", __FILE__, OCC20627, group);
   theCommands.Add("OCC17424", "OCC17424  shape X_Pnt Y_Pnt Z_Pnt X_Dir Y_Dir Z_Dir PInf", __FILE__, OCC17424, group);
   theCommands.Add("OCC22301", "OCC22301", __FILE__, OCC22301, group);
-  theCommands.Add("OCC22586", "OCC22586 shape resshape", __FILE__, OCC22586, group);
   theCommands.Add("OCC22736", "OCC22736 X_mirrorFirstPoint Y_mirrorFirstPoint X_mirrorSecondPoint Y_mirrorSecondPoint X_p1 Y_p1 X_p2 Y_p2", __FILE__, OCC22736, group);
   theCommands.Add("OCC22744", "OCC22744", __FILE__, OCC22744, group);
   theCommands.Add("OCC22762", "OCC22762 x1 y1 z1 x2 y2 z3", __FILE__, OCC22762, group);

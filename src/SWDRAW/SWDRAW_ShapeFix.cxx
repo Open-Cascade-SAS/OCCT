@@ -39,6 +39,7 @@
 #include <ShapeExtend_WireData.hxx>
 #include <ShapeFix.hxx>
 #include <ShapeFix_Face.hxx>
+#include <ShapeFix_FixSmallFace.hxx>
 #include <ShapeFix_Shape.hxx>
 #include <ShapeFix_ShapeTolerance.hxx>
 #include <ShapeFix_Wire.hxx>
@@ -634,6 +635,42 @@ static Standard_Integer fixsmalledges(Draw_Interpretor& di, Standard_Integer n, 
 }
 
 //=======================================================================
+//function : fixsmallfaces
+//purpose  : 
+//=======================================================================
+
+Standard_Integer fixsmallfaces (Draw_Interpretor& theDI, Standard_Integer theArgc, const char** theArgv)
+{
+  if (theArgc < 3)
+  {
+    std::cerr << "Use: " << theArgv[0] << " result shape [tolerance]" << std::endl;
+    return 1;
+  }
+  
+  TopoDS_Shape aShape = DBRep::Get(theArgv[2]);
+  if (aShape.IsNull()) {
+    theDI << "Error: Shape " << theArgv[2] << " is null\n";
+    return 1;
+  }
+
+  Standard_Real aPrec = (theArgc < 4 ? 1. : Draw::Atof(theArgv[3]));
+
+  ShapeFix_FixSmallFace aFixSmallFaces;
+  aFixSmallFaces.Init (aShape);
+  aFixSmallFaces.SetPrecision(aPrec);
+  aFixSmallFaces.Perform();
+  if (! aFixSmallFaces.Shape().IsSame (aShape))
+  {
+    theDI << "Small faces are removed";
+    aShape = aFixSmallFaces.Shape();
+  }
+
+  DBRep::Set (theArgv[1], aShape);
+
+  return 0;
+}
+
+//=======================================================================
 //function : checkoverlapedges
 //purpose  : 
 //=======================================================================
@@ -823,6 +860,8 @@ static Standard_Integer connectedges(Draw_Interpretor& di, Standard_Integer n, c
 		   __FILE__,fixsmall,g);
   theCommands.Add ("fixsmalledges","result shape [toler mode amxangle]",
 		   __FILE__,fixsmalledges,g);
+  theCommands.Add ("fixsmallfaces","result shape [toler=1.]",
+		   __FILE__,fixsmallfaces,g);
   theCommands.Add ("checkoverlapedges","edge1 edge2 [toler domaindist]",
 		   __FILE__,checkoverlapedges,g);
   theCommands.Add ("checkfclass2d","face ucoord vcoord",
