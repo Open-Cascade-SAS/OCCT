@@ -275,7 +275,7 @@ STEPCAFControl_Writer::STEPCAFControl_Writer () :
        myLayerMode( Standard_True ),
        myPropsMode( Standard_True ),
        mySHUOMode ( Standard_True ),
-       myDGTMode  ( Standard_True ),
+       myGDTMode  ( Standard_True ),
        myMatMode  ( Standard_True )
 {
   STEPCAFControl_Controller::Init();
@@ -290,15 +290,17 @@ STEPCAFControl_Writer::STEPCAFControl_Writer () :
 //=======================================================================
 
 STEPCAFControl_Writer::STEPCAFControl_Writer (const Handle(XSControl_WorkSession)& WS,
-					      const Standard_Boolean scratch)
+                                              const Standard_Boolean scratch) :
+  myColorMode(Standard_True),
+  myNameMode(Standard_True),
+  myLayerMode(Standard_True),
+  myPropsMode(Standard_True),
+  mySHUOMode(Standard_True),
+  myGDTMode(Standard_True),
+  myMatMode(Standard_True)
 {
   STEPCAFControl_Controller::Init();
   Init ( WS, scratch );
-  myColorMode = Standard_True;
-  myNameMode = Standard_True;
-  myLayerMode = Standard_True;
-  myPropsMode = Standard_True;
-  mySHUOMode = Standard_True;
 }
 
 
@@ -4269,7 +4271,7 @@ Standard_Boolean STEPCAFControl_Writer::GetSHUOMode () const
 
 void STEPCAFControl_Writer::SetDimTolMode(const Standard_Boolean dimtolmode)
 {
-  myDGTMode = dimtolmode;
+  myGDTMode = dimtolmode;
 }
 
 
@@ -4280,7 +4282,7 @@ void STEPCAFControl_Writer::SetDimTolMode(const Standard_Boolean dimtolmode)
 
 Standard_Boolean STEPCAFControl_Writer::GetDimTolMode() const
 {
-  return myDGTMode;
+  return myGDTMode;
 }
 
 

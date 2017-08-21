@@ -231,7 +231,7 @@ private:
   Standard_Boolean myPropsMode;
   Standard_Boolean mySHUOMode;
   MoniTool_DataMapOfShapeTransient myMapCompMDGPR;
-  Standard_Boolean myDGTMode;
+  Standard_Boolean myGDTMode;
   Standard_Boolean myMatMode;
   NCollection_Vector<Handle(StepRepr_RepresentationItem)> myGDTAnnotations;
   Handle(StepVisual_DraughtingModel) myGDTPresentationDM;
