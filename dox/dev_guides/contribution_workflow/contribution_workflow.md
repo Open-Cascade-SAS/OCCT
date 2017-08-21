@@ -204,7 +204,7 @@ In a general case, the following elements should be present:
 Example:
 
 > *0026330: BRepOffsetAPI_ThruSections creates invalid shape.*
-> 
+>
 > *Methods BRep_Tool::CurveOnSurface() and BRepCheck_Edge::InContext() now properly handle parametric range on a 3D curve when it is used to generate a p-curve dynamically (on a planar surface) and both the surface and the 3D curve have non-null locations.*
 
 Provide sufficient context so that potential user of the affected functionality can understand what has been changed and how the algorithm works now.

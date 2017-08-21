@@ -352,6 +352,21 @@ Smaller code blocks can be inserted by wrapping with tags <i>\@code</i> and <i>\
 
 Verbatim content (same as code but without syntax highlighting) can be inserted by wrapping with tags <i>\@verbatim</i> and <i>\@endverbatim</i>.
 
+@subsection  OCCT_DM_SECTION_A_5a Quotes
+
+Text quoted from other sources can be indented using ">" tag. For example:
+
+@verbatim
+> [Regression in 6.9.0] *IGES - Export of a reversed face leads to wrong data*
+@endverbatim
+
+will produce 
+
+> [Regression in 6.9.0] *IGES - Export of a reversed face leads to wrong data*
+
+Note that this tag should prefix each line of the quoted text.
+Empty lines in the quoted text, if any, should not have trailing spaces after the ">" (lines with trailing spaces will break the quote block).
+
 @subsection  OCCT_DM_SECTION_A_6 References
 
 To insert a reference to a website, it is sufficient to write an URL.
