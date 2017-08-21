@@ -152,8 +152,8 @@ else()
   add_library (${PROJECT_NAME} ${USED_SRCFILES} ${USED_INCFILES} ${USED_RCFILE})
 
   if (MSVC)
-    install (FILES  ${CMAKE_BINARY_DIR}/${OS_WITH_BIT}/${COMPILER}/bind/${PROJECT_NAME}.pdb
-             CONFIGURATIONS Debug
+    install (FILES  ${CMAKE_BINARY_DIR}/${OS_WITH_BIT}/${COMPILER}/bin\${OCCT_INSTALL_BIN_LETTER}/${PROJECT_NAME}.pdb
+             CONFIGURATIONS Debug RelWithDebInfo
              DESTINATION "${INSTALL_DIR_BIN}\${OCCT_INSTALL_BIN_LETTER}")
   endif()
 
