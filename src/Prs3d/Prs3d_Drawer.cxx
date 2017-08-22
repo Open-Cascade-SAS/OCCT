@@ -1075,9 +1075,11 @@ inline void copyLineAspect (const Handle(Prs3d_Drawer)&     theLink,
 //! Assign the shader program.
 template <typename T>
 inline void setAspectProgram (const Handle(Graphic3d_ShaderProgram)& theProgram,
+                              bool theHasAspect,
                               T thePrsAspect)
 {
-  if (!thePrsAspect.IsNull())
+  if (!thePrsAspect.IsNull()
+    && theHasAspect)
   {
     thePrsAspect->Aspect()->SetShaderProgram (theProgram);
   }
@@ -1097,7 +1099,7 @@ void Prs3d_Drawer::SetShaderProgram (const Handle(Graphic3d_ShaderProgram)& theP
     {
       if (theToOverrideDefaults)
       {
-        if (myUIsoAspect.IsNull())
+        if (!myHasOwnUIsoAspect)
         {
           Handle(Prs3d_IsoAspect) anAspect = UIsoAspect();
           if (!myLink.IsNull())
@@ -1106,8 +1108,9 @@ void Prs3d_Drawer::SetShaderProgram (const Handle(Graphic3d_ShaderProgram)& theP
             *myUIsoAspect->Aspect() = *anAspect->Aspect();
             myUIsoAspect->SetNumber (anAspect->Number());
           }
+          myHasOwnUIsoAspect = true;
         }
-        if (myVIsoAspect.IsNull())
+        if (!myHasOwnVIsoAspect)
         {
           Handle(Prs3d_IsoAspect) anAspect = VIsoAspect();
           if (!myLink.IsNull())
@@ -1116,126 +1119,142 @@ void Prs3d_Drawer::SetShaderProgram (const Handle(Graphic3d_ShaderProgram)& theP
             *myVIsoAspect->Aspect() = *anAspect->Aspect();
             myUIsoAspect->SetNumber (anAspect->Number());
           }
+          myHasOwnVIsoAspect = true;
         }
-        if (myWireAspect.IsNull())
+        if (!myHasOwnWireAspect)
         {
           copyLineAspect (myLink, myWireAspect, WireAspect());
+          myHasOwnWireAspect = true;
         }
-        if (myLineAspect.IsNull())
+        if (!myHasOwnLineAspect)
         {
           copyLineAspect (myLink, myLineAspect, LineAspect());
+          myHasOwnLineAspect = true;
         }
-        if (mySeenLineAspect.IsNull())
+        if (!myHasOwnSeenLineAspect)
         {
           copyLineAspect (myLink, mySeenLineAspect, SeenLineAspect());
+          myHasOwnSeenLineAspect = true;
         }
-        if (myHiddenLineAspect.IsNull())
+        if (!myHasOwnHiddenLineAspect)
         {
           copyLineAspect (myLink, myHiddenLineAspect, HiddenLineAspect());
+          myHasOwnHiddenLineAspect = true;
         }
-        if (myVectorAspect.IsNull())
+        if (!myHasOwnVectorAspect)
         {
           copyLineAspect (myLink, myVectorAspect, VectorAspect());
+          myHasOwnVectorAspect = true;
         }
-        if (mySectionAspect.IsNull())
+        if (!myHasOwnSectionAspect)
         {
           copyLineAspect (myLink, mySectionAspect, SectionAspect());
+          myHasOwnSectionAspect = true;
         }
-        if (myFreeBoundaryAspect.IsNull())
+        if (!myHasOwnFreeBoundaryAspect)
         {
           copyLineAspect (myLink, myFreeBoundaryAspect, FreeBoundaryAspect());
+          myHasOwnFreeBoundaryAspect = true;
         }
-        if (myUnFreeBoundaryAspect.IsNull())
+        if (!myHasOwnUnFreeBoundaryAspect)
         {
           copyLineAspect (myLink, myUnFreeBoundaryAspect, UnFreeBoundaryAspect());
+          myHasOwnUnFreeBoundaryAspect = true;
         }
-        if (myFaceBoundaryAspect.IsNull())
+        if (!myHasOwnFaceBoundaryAspect)
         {
           copyLineAspect (myLink, myFaceBoundaryAspect, FaceBoundaryAspect());
+          myHasOwnFaceBoundaryAspect = true;
         }
 
-        if (myPlaneAspect.IsNull())
+        if (!myHasOwnPlaneAspect)
         {
           myPlaneAspect = new Prs3d_PlaneAspect();
+          myHasOwnPlaneAspect = true;
         }
-        if (myArrowAspect.IsNull())
+        if (!myHasOwnArrowAspect)
         {
           myArrowAspect = new Prs3d_ArrowAspect();
+          myHasOwnArrowAspect = true;
         }
-        if (myDatumAspect.IsNull())
+        if (!myHasOwnDatumAspect)
         {
           myDatumAspect = new Prs3d_DatumAspect();
+          myHasOwnDatumAspect = true;
         }
       }
 
-      setAspectProgram (theProgram, myUIsoAspect);
-      setAspectProgram (theProgram, myVIsoAspect);
-      setAspectProgram (theProgram, myWireAspect);
-      setAspectProgram (theProgram, myLineAspect);
-      setAspectProgram (theProgram, mySeenLineAspect);
-      setAspectProgram (theProgram, myHiddenLineAspect);
-      setAspectProgram (theProgram, myVectorAspect);
-      setAspectProgram (theProgram, mySectionAspect);
-      setAspectProgram (theProgram, myFreeBoundaryAspect);
-      setAspectProgram (theProgram, myUnFreeBoundaryAspect);
-      setAspectProgram (theProgram, myFaceBoundaryAspect);
-      if (!myPlaneAspect.IsNull())
+      setAspectProgram (theProgram, myHasOwnUIsoAspect, myUIsoAspect);
+      setAspectProgram (theProgram, myHasOwnVIsoAspect, myVIsoAspect);
+      setAspectProgram (theProgram, myHasOwnWireAspect, myWireAspect);
+      setAspectProgram (theProgram, myHasOwnLineAspect, myLineAspect);
+      setAspectProgram (theProgram, myHasOwnSeenLineAspect,       mySeenLineAspect);
+      setAspectProgram (theProgram, myHasOwnHiddenLineAspect,     myHiddenLineAspect);
+      setAspectProgram (theProgram, myHasOwnVectorAspect,         myVectorAspect);
+      setAspectProgram (theProgram, myHasOwnSectionAspect,        mySectionAspect);
+      setAspectProgram (theProgram, myHasOwnFreeBoundaryAspect,   myFreeBoundaryAspect);
+      setAspectProgram (theProgram, myHasOwnUnFreeBoundaryAspect, myUnFreeBoundaryAspect);
+      setAspectProgram (theProgram, myHasOwnFaceBoundaryAspect,   myFaceBoundaryAspect);
+      if (myHasOwnPlaneAspect)
       {
-        setAspectProgram (theProgram, myPlaneAspect->EdgesAspect());
-        setAspectProgram (theProgram, myPlaneAspect->IsoAspect());
-        setAspectProgram (theProgram, myPlaneAspect->ArrowAspect());
+        setAspectProgram (theProgram, true, myPlaneAspect->EdgesAspect());
+        setAspectProgram (theProgram, true, myPlaneAspect->IsoAspect());
+        setAspectProgram (theProgram, true, myPlaneAspect->ArrowAspect());
       }
-      if (!myDatumAspect.IsNull())
+      if (myHasOwnDatumAspect)
       {
-        setAspectProgram (theProgram, myDatumAspect->LineAspect(Prs3d_DP_XAxis));
-        setAspectProgram (theProgram, myDatumAspect->LineAspect(Prs3d_DP_YAxis));
-        setAspectProgram (theProgram, myDatumAspect->LineAspect(Prs3d_DP_ZAxis));
+        setAspectProgram (theProgram, true, myDatumAspect->LineAspect(Prs3d_DP_XAxis));
+        setAspectProgram (theProgram, true, myDatumAspect->LineAspect(Prs3d_DP_YAxis));
+        setAspectProgram (theProgram, true, myDatumAspect->LineAspect(Prs3d_DP_ZAxis));
       }
-      setAspectProgram (theProgram, myArrowAspect);
+      setAspectProgram (theProgram, myHasOwnArrowAspect, myArrowAspect);
       return;
     }
     case Graphic3d_ASPECT_TEXT:
     {
       if (theToOverrideDefaults
-       && myTextAspect.IsNull())
+      && !myHasOwnTextAspect)
       {
         myTextAspect = new Prs3d_TextAspect();
+        myHasOwnTextAspect = true;
         if (!myLink.IsNull())
         {
           *myTextAspect->Aspect() = *myLink->TextAspect()->Aspect();
         }
       }
 
-      setAspectProgram (theProgram, myTextAspect);
+      setAspectProgram (theProgram, myHasOwnTextAspect, myTextAspect);
       return;
     }
     case Graphic3d_ASPECT_MARKER:
     {
       if (theToOverrideDefaults
-       && myPointAspect.IsNull())
+      && !myHasOwnPointAspect)
       {
         myPointAspect = new Prs3d_PointAspect (Aspect_TOM_PLUS, Quantity_NOC_YELLOW, 1.0);
+        myHasOwnPointAspect = true;
         if (!myLink.IsNull())
         {
           *myPointAspect->Aspect() = *myLink->PointAspect()->Aspect();
         }
       }
 
-      setAspectProgram (theProgram, myPointAspect);
+      setAspectProgram (theProgram, myHasOwnPointAspect, myPointAspect);
       return;
     }
     case Graphic3d_ASPECT_FILL_AREA:
     {
-      if (myShadingAspect.IsNull()
-       && theToOverrideDefaults)
+      if (theToOverrideDefaults
+      && !myHasOwnShadingAspect)
       {
         myShadingAspect = new Prs3d_ShadingAspect();
+        myHasOwnShadingAspect = true;
         if (!myLink.IsNull())
         {
           *myShadingAspect->Aspect() = *myLink->ShadingAspect()->Aspect();
         }
       }
-      setAspectProgram (theProgram, myShadingAspect);
+      setAspectProgram (theProgram, myHasOwnShadingAspect, myShadingAspect);
       return;
     }
   }
