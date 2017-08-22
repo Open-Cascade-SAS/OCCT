@@ -24,9 +24,78 @@
 #include <gp_Vec.hxx>
 #include <Standard_RangeError.hxx>
 
-
 IMPLEMENT_STANDARD_RTTIEXT(GeomEvaluator_OffsetSurface,GeomEvaluator_Surface)
 
+namespace {
+
+// tolerance for considering derivative to be null
+const Standard_Real the_D1MagTol = 1.e-9;
+
+// If calculation of normal fails, try shifting the point towards the center 
+// of the parametric space of the surface, in the hope that derivatives 
+// are better defined there.
+//
+// This shift is iterative, starting with Precision::PConfusion()
+// and increasing by multiple of 2 on each step.
+//
+// NB: temporarily this is made as static function and not class method, 
+// hence code duplications
+static Standard_Boolean shiftPoint (const Standard_Real theUStart, const Standard_Real theVStart,
+                                    Standard_Real& theU, Standard_Real& theV, 
+                                    const Handle(Geom_Surface)& theSurf,
+                                    const Handle(GeomAdaptor_HSurface)& theAdaptor,
+                                    const gp_Vec& theD1U, const gp_Vec& theD1V)
+{
+  // Get parametric bounds and closure status
+  Standard_Real aUMin, aUMax, aVMin, aVMax;
+  Standard_Boolean isUPeriodic, isVPeriodic;
+  if (! theSurf.IsNull())
+  {
+    theSurf->Bounds (aUMin, aUMax, aVMin, aVMax);
+    isUPeriodic = theSurf->IsUPeriodic();
+    isVPeriodic = theSurf->IsVPeriodic();
+  }
+  else
+  {
+    aUMin = theAdaptor->FirstUParameter();
+    aUMax = theAdaptor->LastUParameter();
+    aVMin = theAdaptor->FirstVParameter();
+    aVMax = theAdaptor->LastVParameter();
+    isUPeriodic = theAdaptor->IsUPeriodic();
+    isVPeriodic = theAdaptor->IsVPeriodic();
+  }
+
+  // check if either U or V is singular (normally one of them is)
+  Standard_Boolean isUSingular = (theD1U.SquareMagnitude() < the_D1MagTol * the_D1MagTol);
+  Standard_Boolean isVSingular = (theD1V.SquareMagnitude() < the_D1MagTol * the_D1MagTol);
+
+  // compute vector to shift from start point to center of the surface;
+  // if surface is periodic or singular in some direction, take shift in that direction zero
+  Standard_Real aDirU = (isUPeriodic || (isUSingular && ! isVSingular) ? 0. : 0.5 * (aUMin + aUMax) - theUStart);
+  Standard_Real aDirV = (isVPeriodic || (isVSingular && ! isUSingular) ? 0. : 0.5 * (aVMin + aVMax) - theVStart);
+  Standard_Real aDist = Sqrt (aDirU * aDirU + aDirV * aDirV);
+
+  // shift current point from its current position towards center, by value of twice
+  // current distance from it to start (but not less than Precision::PConfusion());
+  // fail if center is overpassed.
+  Standard_Real aDU = theU - theUStart;
+  Standard_Real aDV = theV - theVStart;
+  Standard_Real aStep = Max (2. * Sqrt (aDU * aDU + aDV * aDV), Precision::PConfusion());
+  if (aStep >= aDist)
+  {
+    return Standard_False;
+  }
+
+  aStep /= aDist;
+  theU += aDirU * aStep;
+  theV += aDirV * aStep;
+
+//  std::cout << "Normal calculation failed at (" << theUStart << ", " << theVStart << "), shifting to (" << theU << ", " << theV << ")" << std::endl;
+
+  return Standard_True;
+}
+
+// auxiliary function
 template<class SurfOrAdapt>
 static void derivatives(Standard_Integer theMaxOrder,
                         Standard_Integer theMinOrder,
@@ -39,9 +108,103 @@ static void derivatives(Standard_Integer theMaxOrder,
                         const Standard_Boolean theAlongV,
                         const Handle(Geom_BSplineSurface)& theL,
                         TColgp_Array2OfVec& theDerNUV,
-                        TColgp_Array2OfVec& theDerSurf);
+                        TColgp_Array2OfVec& theDerSurf)
+{
+  Standard_Integer i, j;
+  gp_Pnt P;
+  gp_Vec DL1U, DL1V, DL2U, DL2V, DL2UV, DL3U, DL3UUV, DL3UVV, DL3V;
 
+  if (theAlongU || theAlongV)
+  {
+    theMaxOrder = 0;
+    TColgp_Array2OfVec DerSurfL(0, theMaxOrder + theNU + 1, 0, theMaxOrder + theNV + 1);
+    switch (theMinOrder)
+    {
+    case 1:
+      theL->D1(theU, theV, P, DL1U, DL1V);
+      DerSurfL.SetValue(1, 0, DL1U);
+      DerSurfL.SetValue(0, 1, DL1V);
+      break;
+    case 2:
+      theL->D2(theU, theV, P, DL1U, DL1V, DL2U, DL2V, DL2UV);
+      DerSurfL.SetValue(1, 0, DL1U);
+      DerSurfL.SetValue(0, 1, DL1V);
+      DerSurfL.SetValue(1, 1, DL2UV);
+      DerSurfL.SetValue(2, 0, DL2U);
+      DerSurfL.SetValue(0, 2, DL2V);
+      break;
+    case 3:
+      theL->D3(theU, theV, P, DL1U, DL1V, DL2U, DL2V, DL2UV, DL3U, DL3V, DL3UUV, DL3UVV);
+      DerSurfL.SetValue(1, 0, DL1U);
+      DerSurfL.SetValue(0, 1, DL1V);
+      DerSurfL.SetValue(1, 1, DL2UV);
+      DerSurfL.SetValue(2, 0, DL2U);
+      DerSurfL.SetValue(0, 2, DL2V);
+      DerSurfL.SetValue(3, 0, DL3U);
+      DerSurfL.SetValue(2, 1, DL3UUV);
+      DerSurfL.SetValue(1, 2, DL3UVV);
+      DerSurfL.SetValue(0, 3, DL3V);
+      break;
+    default:
+      break;
+    }
 
+    if (theNU <= theNV)
+    {
+      for (i = 0; i <= theMaxOrder + 1 + theNU; i++)
+        for (j = i; j <= theMaxOrder + theNV + 1; j++)
+          if (i + j > theMinOrder)
+          {
+            DerSurfL.SetValue(i, j, theL->DN(theU, theV, i, j));
+            theDerSurf.SetValue(i, j, theBasisSurf->DN(theU, theV, i, j));
+            if (i != j && j <= theNU + 1)
+            {
+              theDerSurf.SetValue(j, i, theBasisSurf->DN(theU, theV, j, i));
+              DerSurfL.SetValue(j, i, theL->DN(theU, theV, j, i));
+            }
+          }
+    }
+    else
+    {
+      for (j = 0; j <= theMaxOrder + 1 + theNV; j++)
+        for (i = j; i <= theMaxOrder + theNU + 1; i++)
+          if (i + j > theMinOrder)
+          {
+            DerSurfL.SetValue(i, j, theL->DN(theU, theV, i, j));
+            theDerSurf.SetValue(i, j, theBasisSurf->DN(theU, theV, i, j));
+            if (i != j && i <= theNV + 1)
+            {
+              theDerSurf.SetValue(j, i, theBasisSurf->DN(theU, theV, j, i));
+              DerSurfL.SetValue(j, i, theL->DN(theU, theV, j, i));
+            }
+          }
+    }
+    for (i = 0; i <= theMaxOrder + theNU; i++)
+      for (j = 0; j <= theMaxOrder + theNV; j++)
+      {
+        if (theAlongU)
+          theDerNUV.SetValue(i, j, CSLib::DNNUV(i, j, DerSurfL, theDerSurf));
+        if (theAlongV)
+          theDerNUV.SetValue(i, j, CSLib::DNNUV(i, j, theDerSurf, DerSurfL));
+      }
+  }
+  else
+  {
+    for (i = 0; i <= theMaxOrder + theNU+ 1; i++)
+      for (j = i; j <= theMaxOrder + theNV + 1; j++)
+        if (i + j > theMinOrder)
+        {
+          theDerSurf.SetValue(i, j, theBasisSurf->DN(theU, theV, i, j));
+          if (i != j)
+            theDerSurf.SetValue(j, i, theBasisSurf->DN(theU, theV, j, i));
+        }
+    for (i = 0; i <= theMaxOrder + theNU; i++)
+      for (j = 0; j <= theMaxOrder + theNV; j++)
+        theDerNUV.SetValue(i, j, CSLib::DNNUV(i, j, theDerSurf));
+  }
+}
+
+} // end of anonymous namespace
 
 GeomEvaluator_OffsetSurface::GeomEvaluator_OffsetSurface(
         const Handle(Geom_Surface)& theBase,
@@ -72,89 +235,27 @@ GeomEvaluator_OffsetSurface::GeomEvaluator_OffsetSurface(
 {
 }
 
-// If point is on parametric boundary, and calculation of normal fails,
-// try shifting it towards the inside in the hope that derivatives 
-// are better defined there.
-//
-// NB: temporarily this is made as static function and not class method, 
-// hence code duplications
-static Standard_Boolean shiftPoint (Standard_Real& theU, Standard_Real& theV, 
-                                    const Handle(Geom_Surface)& theSurf,
-                                    const Handle(GeomAdaptor_HSurface)& theAdaptor)
-{
-  // Get parametric bounds and closure status
-  Standard_Real aUMin, aUMax, aVMin, aVMax;
-  Standard_Boolean isUPeriodic, isVPeriodic;
-  if (! theSurf.IsNull())
-  {
-    theSurf->Bounds (aUMin, aUMax, aVMin, aVMax);
-    isUPeriodic = theSurf->IsUPeriodic();
-    isVPeriodic = theSurf->IsVPeriodic();
-  }
-  else
-  {
-    aUMin = theAdaptor->FirstUParameter();
-    aUMax = theAdaptor->LastUParameter();
-    aVMin = theAdaptor->FirstVParameter();
-    aVMax = theAdaptor->LastVParameter();
-    isUPeriodic = theAdaptor->IsUPeriodic();
-    isVPeriodic = theAdaptor->IsVPeriodic();
-  }
-
-  Standard_Boolean isShifted = Standard_False;
-
-  // shift by U
-  if (! isUPeriodic && aUMax - aUMin > 2 * Precision::PConfusion())
-  {
-    if (Abs (theU - aUMin) < Precision::PConfusion())
-    {
-      theU += Precision::PConfusion();
-      isShifted = Standard_True;
-    }
-    else if (Abs (theU - aUMax) < Precision::PConfusion())
-    {
-      theU -= Precision::PConfusion();
-      isShifted = Standard_True;
-    }
-  }
-
-  // shift by V
-  if (! isVPeriodic && aVMax - aVMin > 2 * Precision::PConfusion())
-  {
-    if (Abs (theV - aVMin) < Precision::PConfusion())
-    {
-      theV += Precision::PConfusion();
-      isShifted = Standard_True;
-    }
-    else if (Abs (theV - aVMax) < Precision::PConfusion())
-    {
-      theV -= Precision::PConfusion();
-      isShifted = Standard_True;
-    }
-  }
-
-  return isShifted;
-}
-
 void GeomEvaluator_OffsetSurface::D0(
     const Standard_Real theU, const Standard_Real theV, gp_Pnt& theValue) const
 {
-  gp_Vec aD1U, aD1V;
-  BaseD1(theU, theV, theValue, aD1U, aD1V);
-  try 
+  Standard_Real aU = theU, aV = theV;
+  for (;;)
   {
-    CalculateD0(theU, theV, theValue, aD1U, aD1V);
-  } 
-  catch (Geom_UndefinedValue&)
-  {
-    // if failed at parametric boundary, try taking derivative at shifted point
-    Standard_Real aU = theU, aV = theV;
-    if (! shiftPoint (aU, aV, myBaseSurf, myBaseAdaptor))
+    gp_Vec aD1U, aD1V;
+    BaseD1 (aU, aV, theValue, aD1U, aD1V);
+    try 
     {
-      throw;
+      CalculateD0(aU, aV, theValue, aD1U, aD1V);
+      break;
+    } 
+    catch (Geom_UndefinedValue&)
+    {
+      // if failed at parametric boundary, try taking derivative at shifted point
+      if (! shiftPoint (theU, theV, aU, aV, myBaseSurf, myBaseAdaptor, aD1U, aD1V))
+      {
+        throw;
+      }
     }
-    BaseD1(aU, aV, theValue, aD1U, aD1V);
-    CalculateD0(theU, theV, theValue, aD1U, aD1V);
   }
 }
 
@@ -162,22 +263,24 @@ void GeomEvaluator_OffsetSurface::D1(
     const Standard_Real theU, const Standard_Real theV,
     gp_Pnt& theValue, gp_Vec& theD1U, gp_Vec& theD1V) const
 {
-  gp_Vec aD2U, aD2V, aD2UV;
-  BaseD2(theU, theV, theValue, theD1U, theD1V, aD2U, aD2V, aD2UV);
-  try 
+  Standard_Real aU = theU, aV = theV;
+  for (;;)
   {
-    CalculateD1(theU, theV, theValue, theD1U, theD1V, aD2U, aD2V, aD2UV);
-  } 
-  catch (Geom_UndefinedValue&)
-  {
-    // if failed at parametric boundary, try taking derivative at shifted point
-    Standard_Real aU = theU, aV = theV;
-    if (! shiftPoint (aU, aV, myBaseSurf, myBaseAdaptor))
-    {
-      throw;
-    }
+    gp_Vec aD2U, aD2V, aD2UV;
     BaseD2 (aU, aV, theValue, theD1U, theD1V, aD2U, aD2V, aD2UV);
-    CalculateD1(theU, theV, theValue, theD1U, theD1V, aD2U, aD2V, aD2UV);
+    try 
+    {
+      CalculateD1(aU, aV, theValue, theD1U, theD1V, aD2U, aD2V, aD2UV);
+      break;
+    } 
+    catch (Geom_UndefinedValue&)
+    {
+      // if failed at parametric boundary, try taking derivative at shifted point
+      if (! shiftPoint (theU, theV, aU, aV, myBaseSurf, myBaseAdaptor, theD1U, theD1V))
+      {
+        throw;
+      }
+    }
   }
 }
 
@@ -186,26 +289,26 @@ void GeomEvaluator_OffsetSurface::D2(
     gp_Pnt& theValue, gp_Vec& theD1U, gp_Vec& theD1V,
     gp_Vec& theD2U, gp_Vec& theD2V, gp_Vec& theD2UV) const
 {
-  gp_Vec aD3U, aD3V, aD3UUV, aD3UVV;
-  BaseD3(theU, theV, theValue, theD1U, theD1V,
-         theD2U, theD2V, theD2UV, aD3U, aD3V, aD3UUV, aD3UVV);
-  try
+  Standard_Real aU = theU, aV = theV;
+  for (;;)
   {
-    CalculateD2(theU, theV, theValue, theD1U, theD1V,
-                theD2U, theD2V, theD2UV, aD3U, aD3V, aD3UUV, aD3UVV);
-  } 
-  catch (Geom_UndefinedValue&)
-  {
-    // if failed at parametric boundary, try taking derivative at shifted point
-    Standard_Real aU = theU, aV = theV;
-    if (! shiftPoint (aU, aV, myBaseSurf, myBaseAdaptor))
+    gp_Vec aD3U, aD3V, aD3UUV, aD3UVV;
+    BaseD3 (aU, aV, theValue, theD1U, theD1V,
+            theD2U, theD2V, theD2UV, aD3U, aD3V, aD3UUV, aD3UVV);
+    try
     {
-      throw;
+      CalculateD2 (aU, aV, theValue, theD1U, theD1V,
+                   theD2U, theD2V, theD2UV, aD3U, aD3V, aD3UUV, aD3UVV);
+      break;
+    } 
+    catch (Geom_UndefinedValue&)
+    {
+      // if failed at parametric boundary, try taking derivative at shifted point
+      if (! shiftPoint (theU, theV, aU, aV, myBaseSurf, myBaseAdaptor, theD1U, theD1V))
+      {
+        throw;
+      }
     }
-    BaseD3(theU, theV, theValue, theD1U, theD1V,
-         theD2U, theD2V, theD2UV, aD3U, aD3V, aD3UUV, aD3UVV);
-    CalculateD2(theU, theV, theValue, theD1U, theD1V,
-                theD2U, theD2V, theD2UV, aD3U, aD3V, aD3UUV, aD3UVV);
   }
 }
 
@@ -215,25 +318,25 @@ void GeomEvaluator_OffsetSurface::D3(
     gp_Vec& theD2U, gp_Vec& theD2V, gp_Vec& theD2UV,
     gp_Vec& theD3U, gp_Vec& theD3V, gp_Vec& theD3UUV, gp_Vec& theD3UVV) const
 {
-  BaseD3(theU, theV, theValue, theD1U, theD1V,
-         theD2U, theD2V, theD2UV, theD3U, theD3V, theD3UUV, theD3UVV);
-  try
+  Standard_Real aU = theU, aV = theV;
+  for (;;)
   {
-    CalculateD3(theU, theV, theValue, theD1U, theD1V,
-                theD2U, theD2V, theD2UV, theD3U, theD3V, theD3UUV, theD3UVV);
-  } 
-  catch (Geom_UndefinedValue&)
-  {
-    // if failed at parametric boundary, try taking derivative at shifted point
-    Standard_Real aU = theU, aV = theV;
-    if (! shiftPoint (aU, aV, myBaseSurf, myBaseAdaptor))
+    BaseD3 (aU, aV, theValue, theD1U, theD1V,
+            theD2U, theD2V, theD2UV, theD3U, theD3V, theD3UUV, theD3UVV);
+    try
     {
-      throw;
+      CalculateD3 (aU, aV, theValue, theD1U, theD1V,
+                   theD2U, theD2V, theD2UV, theD3U, theD3V, theD3UUV, theD3UVV);
+      break;
+    } 
+    catch (Geom_UndefinedValue&)
+    {
+      // if failed at parametric boundary, try taking derivative at shifted point
+      if (! shiftPoint (theU, theV, aU, aV, myBaseSurf, myBaseAdaptor, theD1U, theD1V))
+      {
+        throw;
+      }
     }
-    BaseD3(aU, aV, theValue, theD1U, theD1V,
-         theD2U, theD2V, theD2UV, theD3U, theD3V, theD3UUV, theD3UVV);
-    CalculateD3(theU, theV, theValue, theD1U, theD1V,
-                theD2U, theD2V, theD2UV, theD3U, theD3V, theD3UUV, theD3UVV);
   }
 }
 
@@ -246,23 +349,24 @@ gp_Vec GeomEvaluator_OffsetSurface::DN(
   Standard_RangeError_Raise_if(theDerU + theDerV < 1,
       "GeomEvaluator_OffsetSurface::DN(): theDerU + theDerV < 1");
 
-  gp_Pnt aP;
-  gp_Vec aD1U, aD1V;
-  BaseD1(theU, theV, aP, aD1U, aD1V);
-  try
+  Standard_Real aU = theU, aV = theV;
+  for (;;)
   {
-    return CalculateDN(theU, theV, theDerU, theDerV, aD1U, aD1V);
-  } 
-  catch (Geom_UndefinedValue&)
-  {
-    // if failed at parametric boundary, try taking derivative at shifted point
-    Standard_Real aU = theU, aV = theV;
-    if (! shiftPoint (aU, aV, myBaseSurf, myBaseAdaptor))
-    {
-      throw;
-    }
+    gp_Pnt aP;
+    gp_Vec aD1U, aD1V;
     BaseD1 (aU, aV, aP, aD1U, aD1V);
-    return CalculateDN (theU, theV, theDerU, theDerV, aD1U, aD1V);
+    try
+    {
+      return CalculateDN (aU, aV, theDerU, theDerV, aD1U, aD1V);
+    } 
+    catch (Geom_UndefinedValue&)
+    {
+      // if failed at parametric boundary, try taking derivative at shifted point
+      if (! shiftPoint (theU, theV, aU, aV, myBaseSurf, myBaseAdaptor, aD1U, aD1V))
+      {
+        throw;
+      }
+    }
   }
 }
 
@@ -315,8 +419,6 @@ void GeomEvaluator_OffsetSurface::CalculateD0(
     gp_Pnt& theValue,
     const gp_Vec& theD1U, const gp_Vec& theD1V) const
 {
-  const Standard_Real MagTol = 1.e-9;
-
   // Normalize derivatives before normal calculation because it gives more stable result.
   // There will be normalized only derivatives greater than 1.0 to avoid differences in last significant digit
   gp_Vec aD1U(theD1U);
@@ -329,7 +431,7 @@ void GeomEvaluator_OffsetSurface::CalculateD0(
     aD1V /= Sqrt(aD1VNorm2);
 
   gp_Vec aNorm = aD1U.Crossed(aD1V);
-  if (aNorm.SquareMagnitude() > MagTol * MagTol)
+  if (aNorm.SquareMagnitude() > the_D1MagTol * the_D1MagTol)
   {
     // Non singular case. Simple computations.
     aNorm.Normalize();
@@ -365,15 +467,15 @@ void GeomEvaluator_OffsetSurface::CalculateD0(
 
     gp_Dir Normal;
     CSLib_NormalStatus NStatus;
-    CSLib::Normal(MaxOrder, DerNUV, MagTol, theU, theV, Umin, Umax, Vmin, Vmax,
+    CSLib::Normal(MaxOrder, DerNUV, the_D1MagTol, theU, theV, Umin, Umax, Vmin, Vmax,
                   NStatus, Normal, OrderU, OrderV);
     if (NStatus == CSLib_InfinityOfSolutions)
     {
       // Replace zero derivative and try to calculate normal
       gp_Vec aNewDU = theD1U;
       gp_Vec aNewDV = theD1V;
-      if (ReplaceDerivative(theU, theV, aNewDU, aNewDV, MagTol * MagTol))
-        CSLib::Normal(aNewDU, aNewDV, MagTol, NStatus, Normal);
+      if (ReplaceDerivative(theU, theV, aNewDU, aNewDV, the_D1MagTol * the_D1MagTol))
+        CSLib::Normal(aNewDU, aNewDV, the_D1MagTol, NStatus, Normal);
     }
 
     if (NStatus != CSLib_Defined)
@@ -389,8 +491,6 @@ void GeomEvaluator_OffsetSurface::CalculateD1(
     gp_Pnt& theValue, gp_Vec& theD1U, gp_Vec& theD1V,
     const gp_Vec& theD2U, const gp_Vec& theD2V, const gp_Vec& theD2UV) const
 {
-  const Standard_Real MagTol = 1.e-9;
-
   // Check offset side.
   Handle(Geom_BSplineSurface) L;
   Standard_Boolean isOpposite = Standard_False;
@@ -411,7 +511,7 @@ void GeomEvaluator_OffsetSurface::CalculateD1(
   Standard_Boolean isSingular = Standard_False;
   Standard_Integer MaxOrder = 0;
   gp_Vec aNorm = aD1U.Crossed(aD1V);
-  if (aNorm.SquareMagnitude() <= MagTol * MagTol)
+  if (aNorm.SquareMagnitude() <= the_D1MagTol * the_D1MagTol)
   {
     if (!myOscSurf.IsNull())
     {
@@ -478,13 +578,13 @@ void GeomEvaluator_OffsetSurface::CalculateD1(
 
   gp_Dir Normal;
   CSLib_NormalStatus NStatus;
-  CSLib::Normal(MaxOrder, DerNUV, MagTol, theU, theV, Umin, Umax, Vmin, Vmax, NStatus, Normal, OrderU, OrderV);
+  CSLib::Normal(MaxOrder, DerNUV, the_D1MagTol, theU, theV, Umin, Umax, Vmin, Vmax, NStatus, Normal, OrderU, OrderV);
   if (NStatus == CSLib_InfinityOfSolutions)
   {
     gp_Vec aNewDU = theD1U;
     gp_Vec aNewDV = theD1V;
     // Replace zero derivative and try to calculate normal
-    if (ReplaceDerivative(theU, theV, aNewDU, aNewDV, MagTol * MagTol))
+    if (ReplaceDerivative(theU, theV, aNewDU, aNewDV, the_D1MagTol * the_D1MagTol))
     {
       DerSurf.SetValue(1, 0, aNewDU);
       DerSurf.SetValue(0, 1, aNewDV);
@@ -492,7 +592,7 @@ void GeomEvaluator_OffsetSurface::CalculateD1(
         derivatives(MaxOrder, 2, theU, theV, myBaseSurf, 1, 1, AlongU, AlongV, L, DerNUV, DerSurf);
       else
         derivatives(MaxOrder, 2, theU, theV, myBaseAdaptor, 1, 1, AlongU, AlongV, L, DerNUV, DerSurf);
-      CSLib::Normal(MaxOrder, DerNUV, MagTol, theU, theV, Umin, Umax, Vmin, Vmax,
+      CSLib::Normal(MaxOrder, DerNUV, the_D1MagTol, theU, theV, Umin, Umax, Vmin, Vmax,
                     NStatus, Normal, OrderU, OrderV);
     }
   }
@@ -513,11 +613,9 @@ void GeomEvaluator_OffsetSurface::CalculateD2(
     gp_Vec& theD2U, gp_Vec& theD2V, gp_Vec& theD2UV,
     const gp_Vec& theD3U, const gp_Vec& theD3V, const gp_Vec& theD3UUV, const gp_Vec& theD3UVV) const
 {
-  const Standard_Real MagTol = 1.e-9;
-
   gp_Dir Normal;
   CSLib_NormalStatus NStatus;
-  CSLib::Normal(theD1U, theD1V, MagTol, NStatus, Normal);
+  CSLib::Normal(theD1U, theD1V, the_D1MagTol, NStatus, Normal);
 
   const Standard_Integer MaxOrder = (NStatus == CSLib_Defined) ? 0 : 3;
   Standard_Integer OrderU, OrderV;
@@ -554,7 +652,7 @@ void GeomEvaluator_OffsetSurface::CalculateD2(
   else
     derivatives(MaxOrder, 3, theU, theV, myBaseAdaptor, 2, 2, AlongU, AlongV, L, DerNUV, DerSurf);
 
-  CSLib::Normal(MaxOrder, DerNUV, MagTol, theU, theV, Umin, Umax, Vmin, Vmax,
+  CSLib::Normal(MaxOrder, DerNUV, the_D1MagTol, theU, theV, Umin, Umax, Vmin, Vmax,
                 NStatus, Normal, OrderU, OrderV);
   if (NStatus != CSLib_Defined)
     throw Geom_UndefinedValue(
@@ -589,11 +687,9 @@ void GeomEvaluator_OffsetSurface::CalculateD3(
     gp_Vec& theD2U, gp_Vec& theD2V, gp_Vec& theD2UV,
     gp_Vec& theD3U, gp_Vec& theD3V, gp_Vec& theD3UUV, gp_Vec& theD3UVV) const
 {
-  const Standard_Real MagTol = 1.e-9;
-
   gp_Dir Normal;
   CSLib_NormalStatus NStatus;
-  CSLib::Normal(theD1U, theD1V, MagTol, NStatus, Normal);
+  CSLib::Normal(theD1U, theD1V, the_D1MagTol, NStatus, Normal);
   const Standard_Integer MaxOrder = (NStatus == CSLib_Defined) ? 0 : 3;
   Standard_Integer OrderU, OrderV;
   TColgp_Array2OfVec DerNUV(0, MaxOrder + 3, 0, MaxOrder + 3);
@@ -629,7 +725,7 @@ void GeomEvaluator_OffsetSurface::CalculateD3(
   else
     derivatives(MaxOrder, 3, theU, theV, myBaseAdaptor, 3, 3, AlongU, AlongV, L, DerNUV, DerSurf);
 
-  CSLib::Normal(MaxOrder, DerNUV, MagTol, theU, theV, Umin, Umax, Vmin, Vmax,
+  CSLib::Normal(MaxOrder, DerNUV, the_D1MagTol, theU, theV, Umin, Umax, Vmin, Vmax,
                 NStatus, Normal, OrderU, OrderV);
   if (NStatus != CSLib_Defined)
     throw Geom_UndefinedValue(
@@ -675,11 +771,9 @@ gp_Vec GeomEvaluator_OffsetSurface::CalculateDN(
     const Standard_Integer theNu, const Standard_Integer theNv,
     const gp_Vec& theD1U, const gp_Vec& theD1V) const
 {
-  const Standard_Real MagTol = 1.e-9;
-
   gp_Dir Normal;
   CSLib_NormalStatus NStatus;
-  CSLib::Normal(theD1U, theD1V, MagTol, NStatus, Normal);
+  CSLib::Normal(theD1U, theD1V, the_D1MagTol, NStatus, Normal);
   const Standard_Integer MaxOrder = (NStatus == CSLib_Defined) ? 0 : 3;
   Standard_Integer OrderU, OrderV;
   TColgp_Array2OfVec DerNUV(0, MaxOrder + theNu, 0, MaxOrder + theNu);
@@ -709,7 +803,7 @@ gp_Vec GeomEvaluator_OffsetSurface::CalculateDN(
   else
     derivatives(MaxOrder, 1, theU, theV, myBaseAdaptor, theNu, theNv, AlongU, AlongV, L, DerNUV, DerSurf);
 
-  CSLib::Normal(MaxOrder, DerNUV, MagTol, theU, theV, Umin, Umax, Vmin, Vmax,
+  CSLib::Normal(MaxOrder, DerNUV, the_D1MagTol, theU, theV, Umin, Umax, Vmin, Vmax,
                 NStatus, Normal, OrderU, OrderV);
   if (NStatus != CSLib_Defined)
     throw Geom_UndefinedValue(
@@ -811,117 +905,3 @@ Standard_Boolean GeomEvaluator_OffsetSurface::ReplaceDerivative(
   }
   return isReplaced;
 }
-
-
-
-
-
-// =====================   Auxiliary functions   ===================================
-template<class SurfOrAdapt>
-void derivatives(Standard_Integer theMaxOrder,
-                 Standard_Integer theMinOrder,
-                 const Standard_Real theU,
-                 const Standard_Real theV,
-                 const SurfOrAdapt& theBasisSurf,
-                 const Standard_Integer theNU,
-                 const Standard_Integer theNV,
-                 const Standard_Boolean theAlongU,
-                 const Standard_Boolean theAlongV,
-                 const Handle(Geom_BSplineSurface)& theL,
-                 TColgp_Array2OfVec& theDerNUV,
-                 TColgp_Array2OfVec& theDerSurf)
-{
-  Standard_Integer i, j;
-  gp_Pnt P;
-  gp_Vec DL1U, DL1V, DL2U, DL2V, DL2UV, DL3U, DL3UUV, DL3UVV, DL3V;
-
-  if (theAlongU || theAlongV)
-  {
-    theMaxOrder = 0;
-    TColgp_Array2OfVec DerSurfL(0, theMaxOrder + theNU + 1, 0, theMaxOrder + theNV + 1);
-    switch (theMinOrder)
-    {
-    case 1:
-      theL->D1(theU, theV, P, DL1U, DL1V);
-      DerSurfL.SetValue(1, 0, DL1U);
-      DerSurfL.SetValue(0, 1, DL1V);
-      break;
-    case 2:
-      theL->D2(theU, theV, P, DL1U, DL1V, DL2U, DL2V, DL2UV);
-      DerSurfL.SetValue(1, 0, DL1U);
-      DerSurfL.SetValue(0, 1, DL1V);
-      DerSurfL.SetValue(1, 1, DL2UV);
-      DerSurfL.SetValue(2, 0, DL2U);
-      DerSurfL.SetValue(0, 2, DL2V);
-      break;
-    case 3:
-      theL->D3(theU, theV, P, DL1U, DL1V, DL2U, DL2V, DL2UV, DL3U, DL3V, DL3UUV, DL3UVV);
-      DerSurfL.SetValue(1, 0, DL1U);
-      DerSurfL.SetValue(0, 1, DL1V);
-      DerSurfL.SetValue(1, 1, DL2UV);
-      DerSurfL.SetValue(2, 0, DL2U);
-      DerSurfL.SetValue(0, 2, DL2V);
-      DerSurfL.SetValue(3, 0, DL3U);
-      DerSurfL.SetValue(2, 1, DL3UUV);
-      DerSurfL.SetValue(1, 2, DL3UVV);
-      DerSurfL.SetValue(0, 3, DL3V);
-      break;
-    default:
-      break;
-    }
-
-    if (theNU <= theNV)
-    {
-      for (i = 0; i <= theMaxOrder + 1 + theNU; i++)
-        for (j = i; j <= theMaxOrder + theNV + 1; j++)
-          if (i + j > theMinOrder)
-          {
-            DerSurfL.SetValue(i, j, theL->DN(theU, theV, i, j));
-            theDerSurf.SetValue(i, j, theBasisSurf->DN(theU, theV, i, j));
-            if (i != j && j <= theNU + 1)
-            {
-              theDerSurf.SetValue(j, i, theBasisSurf->DN(theU, theV, j, i));
-              DerSurfL.SetValue(j, i, theL->DN(theU, theV, j, i));
-            }
-          }
-    }
-    else
-    {
-      for (j = 0; j <= theMaxOrder + 1 + theNV; j++)
-        for (i = j; i <= theMaxOrder + theNU + 1; i++)
-          if (i + j > theMinOrder)
-          {
-            DerSurfL.SetValue(i, j, theL->DN(theU, theV, i, j));
-            theDerSurf.SetValue(i, j, theBasisSurf->DN(theU, theV, i, j));
-            if (i != j && i <= theNV + 1)
-            {
-              theDerSurf.SetValue(j, i, theBasisSurf->DN(theU, theV, j, i));
-              DerSurfL.SetValue(j, i, theL->DN(theU, theV, j, i));
-            }
-          }
-    }
-    for (i = 0; i <= theMaxOrder + theNU; i++)
-      for (j = 0; j <= theMaxOrder + theNV; j++)
-      {
-        if (theAlongU)
-          theDerNUV.SetValue(i, j, CSLib::DNNUV(i, j, DerSurfL, theDerSurf));
-        if (theAlongV)
-          theDerNUV.SetValue(i, j, CSLib::DNNUV(i, j, theDerSurf, DerSurfL));
-      }
-  }
-  else
-  {
-    for (i = 0; i <= theMaxOrder + theNU+ 1; i++)
-      for (j = i; j <= theMaxOrder + theNV + 1; j++)
-        if (i + j > theMinOrder)
-        {
-          theDerSurf.SetValue(i, j, theBasisSurf->DN(theU, theV, i, j));
-          if (i != j)
-            theDerSurf.SetValue(j, i, theBasisSurf->DN(theU, theV, j, i));
-        }
-    for (i = 0; i <= theMaxOrder + theNU; i++)
-      for (j = 0; j <= theMaxOrder + theNV; j++)
-        theDerNUV.SetValue(i, j, CSLib::DNNUV(i, j, theDerSurf));
-  }
-}
-

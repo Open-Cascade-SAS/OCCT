@@ -24,9 +24,12 @@
 #include <TColStd_Array2OfReal.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_Array1OfInteger.hxx>
+#include <Geom_BezierCurve.hxx>
 #include <Geom_BSplineSurface.hxx>
+#include <GeomConvert.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_Line.hxx>
+#include <GeomFill_BSplineCurves.hxx>
 #include <Draw.hxx>
 #include <DrawTrSurf.hxx>
 #include <ShapeConstruct_ProjectCurveOnSurface.hxx>
@@ -2435,6 +2438,99 @@ static Standard_Integer OCC28887 (Draw_Interpretor&, Standard_Integer theNbArgs,
   return 0;
 }
 
+static Standard_Integer OCC28131 (Draw_Interpretor&, Standard_Integer theNbArgs, const char** theArgVec)
+{
+  if (theNbArgs != 2)
+  {
+    std::cerr << "Error: wrong number of arguments" << std::endl;
+    return 1;
+  }
+
+  double height = 8.5;
+  gp_Pnt JiZhunXian2_v0 = gp_Pnt(-17.6, 0.0, 0.0);
+  gp_Pnt JiZhunXian2_v1 = gp_Pnt(0, 32.8, 0.0);
+
+  // Outline
+  TColgp_Array1OfPnt outer_e_bzr_geom_v(1, 4);
+  {
+    outer_e_bzr_geom_v(1) = JiZhunXian2_v0;
+    outer_e_bzr_geom_v(4) = JiZhunXian2_v1;
+
+    Standard_Real ratio1 = 5.4 / 13.2;
+    outer_e_bzr_geom_v(2) = gp_Pnt(outer_e_bzr_geom_v(1).X(), ratio1*outer_e_bzr_geom_v(4).Y(), 0);
+    Standard_Real ratio2 = 6.0 / 6.8;
+    outer_e_bzr_geom_v(3) = gp_Pnt(ratio2*outer_e_bzr_geom_v(1).X(), outer_e_bzr_geom_v(4).Y(), 0);
+  }
+
+  Handle(Geom_BezierCurve) outer_e_bzr_geom = new Geom_BezierCurve(outer_e_bzr_geom_v);
+  Handle(Geom_BSplineCurve) outer_e_bsp_geom = GeomConvert::CurveToBSplineCurve(outer_e_bzr_geom);
+  TopoDS_Edge outer_e = BRepBuilderAPI_MakeEdge(outer_e_bsp_geom);
+
+  Handle(Geom_BSplineCurve) curve1;
+  {
+    Handle(TColgp_HArray1OfPnt2d) harray = new TColgp_HArray1OfPnt2d(1, 2); // sizing harray
+    harray->SetValue(1, gp_Pnt2d(-JiZhunXian2_v1.Y(), 0));
+    harray->SetValue(2, gp_Pnt2d(0, height + height / 2));
+
+    Geom2dAPI_Interpolate anInterpolation(harray, Standard_False, 1e-6);
+
+    gp_Vec2d vtangent1(0, 1);
+    gp_Vec2d vtangent2(1, 0);
+    anInterpolation.Load(vtangent1, vtangent2);
+    anInterpolation.Perform();
+
+    Handle(Geom2d_BSplineCurve) c = anInterpolation.Curve();
+
+    gp_Pln pln(gp_Ax3(gp_Pnt(), gp_Dir(1, 0, 0), gp_Dir(0, -1, 0)));
+
+    Handle(Geom_BSplineCurve) c3d = Handle(Geom_BSplineCurve)::DownCast(GeomAPI::To3d(c, pln));
+    curve1 = c3d;
+  }
+
+  Handle(Geom_BSplineCurve) curve2;
+  {
+    Handle(TColgp_HArray1OfPnt2d) harray = new TColgp_HArray1OfPnt2d(1, 3); // sizing harray
+    harray->SetValue(1, gp_Pnt2d(-JiZhunXian2_v0.X(), 0));
+    harray->SetValue(2, gp_Pnt2d(-JiZhunXian2_v0.X() - 2.6, height));
+    harray->SetValue(3, gp_Pnt2d(0, height + height / 2));
+
+    Geom2dAPI_Interpolate anInterpolation(harray, Standard_False, 1e-6);
+    anInterpolation.Perform();
+
+    Handle(Geom2d_BSplineCurve) c = anInterpolation.Curve();
+    gp_Pln pln(gp_Ax3(gp_Pnt(), gp_Dir(0, -1, 0), gp_Dir(-1, 0, 0)));
+    Handle(Geom_BSplineCurve) c3d = Handle(Geom_BSplineCurve)::DownCast(GeomAPI::To3d(c, pln));
+    curve2 = c3d;
+  }
+
+  //////////////////////////////////////
+  GeomFill_BSplineCurves fill2;
+  fill2.Init(outer_e_bsp_geom, curve1, curve2, GeomFill_CoonsStyle);
+
+  const Handle(Geom_BSplineSurface)& surf_geom = fill2.Surface();
+
+  TopoDS_Shape filled_face = BRepBuilderAPI_MakeFace(surf_geom, 0);
+
+  DBRep::Set (theArgVec[1], filled_face);
+
+/*
+  ///////////////////////////////////////////////////////////////////////
+  TopoDS_Solid first_solid;
+  {
+    BRepOffset_MakeOffset myOffsetShape(filled_face, -offset_thick, 1e-4,
+      BRepOffset_Skin, //Mode
+      Standard_False, //Intersection
+      Standard_False, //SelfInter
+      GeomAbs_Intersection, //Join
+      Standard_True, //Thickening
+      Standard_False //RemoveIntEdges
+      ); //RemoveInvalidFaces
+    first_solid = TopoDS::Solid(myOffsetShape.Shape());
+  }
+*/
+  return 0;
+}
+
 void QABugs::Commands_20(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
@@ -2462,6 +2558,7 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands) {
                   "OCC28887 filePath result"
                   "\n\t\t: Check interface for reading BRep from memory.",
                   __FILE__, OCC28887, group);
+  theCommands.Add("OCC28131", "OCC28131 name: creates face problematic for offset", __FILE__, OCC28131, group);
 
   return;
 }

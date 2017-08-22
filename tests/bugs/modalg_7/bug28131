@@ -1,0 +1,38 @@
+puts "# ==============================================================="
+puts "# 0028131: BRepOffset_MakeOffset can't create offset with a face which created by filling 3 bsplinecurve"
+puts "# ==============================================================="
+puts ""
+
+puts "# Create face to be offset, by dedicated command"
+pload QAcommands
+OCC28131 f
+
+puts "# Try simple offset"
+offsetshapesimple result_simple f 10.
+checkshape result_simple
+checkmaxtol result_simple -ref 0.205
+checkprops result_simple -s 1693.7
+
+puts "# Try standard offset"
+offsetshape result_std f 10.
+fixshape result_std result_std ;# need to fix it....
+checkshape result_std
+checkmaxtol result_std -ref 0.408
+checkprops result_std -s 1693.76
+
+puts "# Make snapshots (overall and zoom to degenerated point)"
+
+smallview -Y+Z
+fit
+checkview -2d -screenshot -path ${imagedir}/${test_image}.png
+
+smallview -Y+Z
+zoom 400
+pu; pu; pu
+pr; pr; pr
+
+donly result_simple
+checkview -2d -screenshot -path ${imagedir}/${test_image}_zoom_simple.png
+
+donly result_std
+checkview -2d -screenshot -path ${imagedir}/${test_image}_zoom_standard.png
