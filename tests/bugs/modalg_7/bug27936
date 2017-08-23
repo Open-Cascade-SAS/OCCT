@@ -1,0 +1,22 @@
+puts "========"
+puts "OCC27936"
+puts "========"
+puts ""
+###############################################################################
+# [regression] BRepAlgoAPI_Common returns empty result for a solid and a face
+###############################################################################
+
+restore [locate_data_file bug27936_rsi.brep] s
+
+explode s
+brunparallel 1
+bop s_1 s_2
+bopcommon result
+
+set bug_info [string trim [explode result]]
+if {$bug_info == ""} {
+  puts "ERROR: OCC27936 is reproduced. Result of bopcommon is empty."
+}
+
+checkshape result
+checknbshapes result -vertex 4 -edge 4 -wire 1 -face 1 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 11
