@@ -1,5 +1,9 @@
 # eigen
 
+if (NOT DEFINED INSTALL_EIGEN)
+  set (INSTALL_EIGEN OFF CACHE BOOL "${INSTALL_EIGEN_DESCR}")
+endif()
+
 # eigen directory
 if (NOT DEFINED 3RDPARTY_EIGEN_DIR)
   set (3RDPARTY_EIGEN_DIR "" CACHE PATH "The directory containing eigen")
@@ -61,6 +65,18 @@ endif()
 
 if (3RDPARTY_EIGEN_INCLUDE_DIR AND EXISTS "${3RDPARTY_EIGEN_INCLUDE_DIR}")
   list (APPEND 3RDPARTY_INCLUDE_DIRS "${3RDPARTY_EIGEN_INCLUDE_DIR}")
+
+  # Install header files
+  if (INSTALL_EIGEN)
+    file(GLOB EIGEN_SUBDIRS "${3RDPARTY_EIGEN_INCLUDE_DIR}/*")
+    foreach(SUBDIR ${EIGEN_SUBDIRS})
+      if(IS_DIRECTORY "${SUBDIR}")
+        install (DIRECTORY "${SUBDIR}" DESTINATION "${INSTALL_DIR_INCLUDE}")
+      else()
+        install (FILES "${SUBDIR}" DESTINATION "${INSTALL_DIR_INCLUDE}")
+      endif()
+    endforeach()
+  endif()
 else()
   list (APPEND 3RDPARTY_NOT_INCLUDED 3RDPARTY_EIGEN_INCLUDE_DIR)
 
