@@ -59,18 +59,12 @@ if { [file isdirectory $dir] } {
   puts "Warning: could not find DRAW directory"
 }
 
-# set default testing environment
-if {[info exists ::env(CSF_OCCTTestsPath)] && [file isdirectory $env(CSF_OCCTTestsPath)]} {
-  if { ! [info exists env(CSF_TestScriptsPath)] } {
+# set default testing environment (unless already defined before)
+if { ! [info exists env(CSF_TestScriptsPath)] } {
+  if {[info exists ::env(CSF_OCCTTestsPath)] && [file isdirectory $env(CSF_OCCTTestsPath)]} {
     set env(CSF_TestScriptsPath) $env(CSF_OCCTTestsPath)
-  } else {
-    set env(CSF_TestScriptsPath) $env(CSF_TestScriptsPath)[_path_separator]$env(CSF_OCCTTestsPath)
-  }  
-} elseif { [info exists env(CASROOT)] && [file isdirectory $env(CASROOT)/tests] } {
-  if { ! [info exists env(CSF_TestScriptsPath)] } {
+  } elseif { [info exists env(CASROOT)] && [file isdirectory $env(CASROOT)/tests] } {
     set env(CSF_TestScriptsPath) $env(CASROOT)/tests
-  } else {
-    set env(CSF_TestScriptsPath) $env(CSF_TestScriptsPath)[_path_separator]$env(CASROOT)/tests
   }
 }
 if {[info exists ::env(CSF_OCCTDataPath)] && [file isdirectory $env(CSF_OCCTDataPath)]} {
