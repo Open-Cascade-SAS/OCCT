@@ -1156,7 +1156,13 @@ The following obsolete features have been removed:
 * The method Perform of the *ShapeConstruct_ProjectCurveOnSurface* class is modified:
   - input arguments *continuity*, *maxdeg*, *nbinterval* have been removed as unused;
   - input arguments *TolFirst*, *TolLast* have been added at the end of arguments' list.
-* The functionality to process shapes different only in orientation by different ways was removed from types *BRepTools_ReShape* and *ShapeBuild_ReShape*.
+* Typedefs Quantity_Factor, Quantity_Parameter, Quantity_Ratio, Quantity_Coefficient, Quantity_PlaneAngle, Quantity_Length, V3d_Parameter and V3d_Coordinate have been removed; Standard_Real should be used instead.
+
+@subsection upgrade_occt720_reshape_oriented_removed Corrections in BRepOffset API
+
+In classes *BRepTools_ReShape* and *ShapeBuild_ReShape*, the possibility to process shapes different only by orientation in different ways has been removed.
+Thus methods *Remove()* and *Replace()* do not have any more the last argument 'oriented'; they work always as if *Standard_False* was passed before (default behavior).
+Methods *ModeConsiderLo()* and *Apply()* with three arguments have been removed.
 
 @subsection upgrade_occt720_correction_of_Offset_API Corrections in BRepOffset API
 
@@ -1213,6 +1219,8 @@ Management of highlight attributes has been revised and might require modificati
   - *myZLayer*, replaced by *myDrawer->ZLayer()*
 * The method *PrsMgr_PresentationManager::Unhighlight()* taking Display Mode as an argument has been marked deprecated.
   Implementation now performs unhighlighting of all highlighted presentation mode.
+* The methods taking/returning *Quantity_NameOfColor* (predefined list of colors) and duplicating methods operating with *Quantity_Color* (definition of arbitrary RGB color) in AIS have been removed.
+  *Quantity_Color* should be now used instead.
 
 @subsection upgrade_720_implicit_viewer_update Elimination of implicit 3D Viewer updates
 
@@ -1226,7 +1234,7 @@ To avoid such issues, the interface has been modified and default value has been
 Therefore, old application code should be updated to set the flag theToUpdateViewer explicitly
 to desired value (TRUE to preserve old previous behavior), if it was not already set.
 
-The follow AIS_InteractiveContext methods have been changed:
+The following AIS_InteractiveContext methods have been changed:
   Display, Erase, EraseAll, DisplayAll, EraseSelected, DisplaySelected, ClearPrs, Remove, RemoveAll, Hilight,
   HilightWithColor, Unhilight, Redisplay, RecomputePrsOnly, Update, SetDisplayMode, UnsetDisplayMode, SetColor,
   UnsetColor, SetWidth, UnsetWidth, SetMaterial, UnsetMaterial, SetTransparency, UnsetTransparency,
@@ -1273,7 +1281,8 @@ In most cases this change should be transparent, however applications implementi
 * Package BVH now uses opencascade::handle instead of NCollection_Handle (for classes BVH_Properties, BVH_Builder, BVH_Tree, BVH_Object).
   Application code using BVH package directly should be updated accordingly.
 * AIS_Shape now computes UV texture coordinates for AIS_Shaded presentation in case if texture mapping is enabled within Shaded Attributes.
-  Therefore, redundant class AIS_TexturedShape has been marked deprecated - applications can use AIS_Shape directly (texture mapping should be defined through AIS_Shape::Attributes()).
+  Therefore, redundant class *AIS_TexturedShape is now deprecated* - applications can use *AIS_Shape* directly (texture mapping should be defined through AIS_Shape::Attributes()).
+* Methods for managing active texture within OpenGl_Workspace class (ActiveTexture(), DisableTexture(), EnableTexture()) have been moved to *OpenGl_Context::BindTextures()*.
 
 @subsection upgrade_720_BOP_DataStructure BOP - Pairs of interfering indices
 
@@ -1298,14 +1307,14 @@ In most cases this change should be transparent, however applications implementi
 
 
 @subsection upgrade_720_persistence Restore OCCT 6.9.1 persistence
-  
-The capability of reading / writing files in old format using *Storage_ShapeSchema* functionality from OCCT 6.9.1 has been restored in OCCT 7.2.0. 
+
+The capability of reading / writing files in old format using *Storage_ShapeSchema* functionality from OCCT 6.9.1 has been restored in OCCT 7.2.0.
 
 One can use this functionality in two ways:
 - invoke DRAW Test Harness commands *fsdread / fsdwrite* for shapes;
 - call *StdStorage* class *Read / Write* functions in custom code.
 
-The code example below demonstrates how to read shapes from a storage driver using *StdStorage* class. 
+The code example below demonstrates how to read shapes from a storage driver using *StdStorage* class.
 
 ~~~~
 // aDriver should be created and opened for reading
@@ -1353,7 +1362,7 @@ NCollection_Handle<Storage_BaseDriver> aFileDriver(new FSD_File());
 try
 {
   OCC_CATCH_SIGNALS
-  PCDM_ReadWriter::Open(*aFileDriver, TCollection_ExtendedString(CStringA(filename).GetBuffer()), Storage_VSWrite);
+  PCDM_ReadWriter::Open (*aFileDriver, TCollection_ExtendedString(theFilename), Storage_VSWrite);
 }
 catch (Standard_Failure& e)
 {
@@ -1361,7 +1370,7 @@ catch (Standard_Failure& e)
 }
 
 // Create a storage data instance
-Handle(StdStorage_Data) aData = new StdStorage_Data;
+Handle(StdStorage_Data) aData = new StdStorage_Data();
 // Set an axiliary application name (optional)
 aData->HeaderData()->SetApplicationName(TCollection_ExtendedString("Application"));
 
@@ -1380,8 +1389,7 @@ for (Standard_Integer i = 1; i <= shapes.Length(); ++i)
   }
 
   // Construct a root name
-  TCollection_AsciiString aName = "Shape_";
-  aName += i;
+  TCollection_AsciiString aName = TCollection_AsciiString("Shape_") + i;
 
   // Add a root to storage data
   Handle(StdStorage_Root) aRoot = new StdStorage_Root(aName, aPShape);
@@ -1398,17 +1406,17 @@ if (anError != Storage_VSOk)
 
 @subsection upgrade_720_Change_In_BRepLib_MakeFace_Algo Change in BRepLib_MakeFace algorithm
 
-  Previously, *BRepLib_MakeFace* algorithm changed orientation of the source wire in order to avoid creation of face as a hole (i.e. it is impossible to create the entire face as a hole; the hole can be created in context of another face only). New algorithm does not reverse the wire if it is open. Material of the face for the open wire will be located on the left side from the source wire.
+Previously, *BRepLib_MakeFace* algorithm changed orientation of the source wire in order to avoid creation of face as a hole (i.e. it is impossible to create the entire face as a hole; the hole can be created in context of another face only). New algorithm does not reverse the wire if it is open. Material of the face for the open wire will be located on the left side from the source wire.
 
 @subsection upgrade_720_Change_In_BRepFill_OffsetWire Change in BRepFill_OffsetWire algorithm
 
-  From now on, the offset  will always be directed to the outer region in case of positive offset value and to the inner region in case of negative offset value.
-  Inner/Outer region for an open wire is defined by the following rule:
-    when we go along the wire (taking into account edges orientation) the outer region will be on the right side, the inner region will be on the left side.
-  In case of a closed wire, the inner region will always be inside the wire (at that, the edges orientation is not taken into account).
-  
+From now on, the offset  will always be directed to the outer region in case of positive offset value and to the inner region in case of negative offset value.
+Inner/Outer region for an open wire is defined by the following rule:
+when we go along the wire (taking into account edges orientation) the outer region will be on the right side, the inner region will be on the left side.
+In case of a closed wire, the inner region will always be inside the wire (at that, the edges orientation is not taken into account).
+
 @subsection upgrade_720_Change_In_GeomAdaptor_Curve Change in Geom(2d)Adaptor_Curve::IsPeriodic
-  
+
 Since 7.2.0 version, method *IsPeriodic()* returns the corresponding status of periodicity of the basis curve regardless of closure status of the adaptor curve (see method *IsClosed()*).
 Method *IsClosed()* for adaptor can return false even on periodic curve, in the case if its parametric range is not full period, e.g. for adaptor on circle in range [0, @f$ \pi @f$].
 In previous versions, *IsPeriodic()* always returned false if *IsClosed()* returned false.
