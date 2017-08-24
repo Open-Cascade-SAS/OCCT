@@ -17,15 +17,15 @@
 #define VInspector_ViewModelHistory_H
 
 #include <Standard.hxx>
-#include <VInspector_ItemBase.hxx>
-#include <VInspector_CallBackMode.hxx>
+#include <inspector/VInspector_ItemBase.hxx>
+#include <inspector/VInspector_CallBackMode.hxx>
 
 #include <QByteArray>
 #include <QHash>
 #include <QMap>
 #include <QObject>
 
-#include <TreeModel_ModelBase.hxx>
+#include <inspector/TreeModel_ModelBase.hxx>
 
 //! \class VInspector_ViewModelHistory
 //! The class that visualizes methods called in AIS interactive context.

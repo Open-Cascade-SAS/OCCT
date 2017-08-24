@@ -18,7 +18,7 @@
 
 #include <AIS_InteractiveContext.hxx>
 #include <Standard.hxx>
-#include <TreeModel_ItemBase.hxx>
+#include <inspector/TreeModel_ItemBase.hxx>
 
 class VInspector_ItemBase;
 typedef QExplicitlySharedDataPointer<VInspector_ItemBase> VInspector_ItemBasePtr;

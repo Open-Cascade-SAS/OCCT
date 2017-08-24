@@ -13,18 +13,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <DFBrowser_TreeLevelViewModel.hxx>
+#include <inspector/DFBrowser_TreeLevelViewModel.hxx>
 
-#include <DFBrowser_Item.hxx>
-#include <DFBrowser_ItemRole.hxx>
-#include <DFBrowser_Module.hxx>
-#include <DFBrowser_Tools.hxx>
-#include <DFBrowser_TreeLevelView.hxx>
+#include <inspector/DFBrowser_Item.hxx>
+#include <inspector/DFBrowser_ItemRole.hxx>
+#include <inspector/DFBrowser_Module.hxx>
+#include <inspector/DFBrowser_Tools.hxx>
+#include <inspector/DFBrowser_TreeLevelView.hxx>
 
 #include <TDF_AttributeIterator.hxx>
 #include <TDF_ChildIterator.hxx>
 #include <TDF_Label.hxx>
-#include <TreeModel_ModelBase.hxx>
+#include <inspector/TreeModel_ModelBase.hxx>
 
 #include <QIcon>
 

@@ -13,7 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <DFBrowser_OpenApplication.hxx>
+#include <inspector/DFBrowser_OpenApplication.hxx>
 
 #include <BinDrivers.hxx>
 #include <BinLDrivers.hxx>
@@ -32,7 +32,6 @@
 #include <XmlXCAFDrivers.hxx>
 #include <UTL.hxx>
 
-//#define REQUIRE_OCAF_REVIEW:24
 namespace DFBrowser_OpenApplication
 {
 

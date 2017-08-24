@@ -16,7 +16,7 @@
 #ifndef DFBrowserPane_HelperExport_H
 #define DFBrowserPane_HelperExport_H
 
-#include <DFBrowserPane.hxx>
+#include <inspector/DFBrowserPane.hxx>
 #include <TopoDS_Shape.hxx>
 
 #ifdef _MSC_VER

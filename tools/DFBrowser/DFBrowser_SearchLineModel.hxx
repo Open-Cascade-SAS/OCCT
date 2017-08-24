@@ -16,11 +16,12 @@
 #ifndef DFBrowser_SearchLineModel_H
 #define DFBrowser_SearchLineModel_H
 
-#include <DFBrowser_SearchItemInfo.hxx>
+#include <inspector/DFBrowser_SearchItemInfo.hxx>
+#include <inspector/TreeModel_ItemBase.hxx>
+
 #include <Standard.hxx>
 #include <TDF_Attribute.hxx>
 #include <TDF_Label.hxx>
-#include <TreeModel_ItemBase.hxx>
 
 #ifdef _MSC_VER
 #pragma warning(disable : 4127) // conditional expression is constant

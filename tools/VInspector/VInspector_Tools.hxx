@@ -25,8 +25,8 @@
 #include <TopLoc_Location.hxx>
 #include <TopoDS_Shape.hxx>
 
-#include <VInspector_CallBackMode.hxx>
-#include <VInspector_SelectionType.hxx>
+#include <inspector/VInspector_CallBackMode.hxx>
+#include <inspector/VInspector_SelectionType.hxx>
 
 #ifdef _MSC_VER
 #pragma warning(disable : 4127) // conditional expression is constant

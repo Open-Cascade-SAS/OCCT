@@ -17,7 +17,7 @@
 #define TreeModel_ModelBase_H
 
 #include <Standard.hxx>
-#include <TreeModel_ItemBase.hxx>
+#include <inspector/TreeModel_ItemBase.hxx>
 
 #include <QAbstractItemModel>
 #include <QExplicitlySharedDataPointer>

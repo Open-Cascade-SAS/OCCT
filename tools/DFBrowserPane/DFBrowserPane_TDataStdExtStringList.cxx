@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <DFBrowserPane_TDataStdExtStringList.hxx>
-#include <DFBrowserPane_Tools.hxx>
+#include <inspector/DFBrowserPane_TDataStdExtStringList.hxx>
+#include <inspector/DFBrowserPane_Tools.hxx>
 
 #include <TDataStd_ExtStringList.hxx>
 #include <TDataStd_ListIteratorOfListOfExtendedString.hxx>
@@ -22,7 +22,6 @@
 #include <QVariant>
 #include <QWidget>
 
-//#define REQUIRE_OCAF_REVIEW:7 : start (DFBrowserPane_Tools)
 // =======================================================================
 // function : GetValues
 // purpose :
@@ -36,4 +35,3 @@ void DFBrowserPane_TDataStdExtStringList::GetValues (const Handle(TDF_Attribute)
   for (TDataStd_ListIteratorOfListOfExtendedString aValuesIt(anAttribute->List()); aValuesIt.More(); aValuesIt.Next())
     theValues.append (DFBrowserPane_Tools::ToString (aValuesIt.Value()));
 }
-//#define REQUIRE_OCAF_REVIEW:7 : end

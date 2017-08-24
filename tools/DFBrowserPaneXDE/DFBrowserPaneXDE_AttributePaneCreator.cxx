@@ -13,26 +13,26 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <DFBrowserPaneXDE_AttributePaneCreator.hxx>
+#include <inspector/DFBrowserPaneXDE_AttributePaneCreator.hxx>
 
-#include <DFBrowserPaneXDE_AttributeCommonPane.hxx>
-#include <DFBrowserPaneXDE_XCAFDocArea.hxx>
-#include <DFBrowserPaneXDE_XCAFDocCentroid.hxx>
-#include <DFBrowserPaneXDE_XCAFDocColor.hxx>
-#include <DFBrowserPaneXDE_XCAFDocColorTool.hxx>
-#include <DFBrowserPaneXDE_XCAFDocDatum.hxx>
-#include <DFBrowserPaneXDE_XCAFDocDimension.hxx>
-#include <DFBrowserPaneXDE_XCAFDocDimTol.hxx>
-#include <DFBrowserPaneXDE_XCAFDocDimTolTool.hxx>
-#include <DFBrowserPaneXDE_XCAFDocDocumentTool.hxx>
-#include <DFBrowserPaneXDE_XCAFDocGeomTolerance.hxx>
-#include <DFBrowserPaneXDE_XCAFDocGraphNode.hxx>
-#include <DFBrowserPaneXDE_XCAFDocLayerTool.hxx>
-#include <DFBrowserPaneXDE_XCAFDocLocation.hxx>
-#include <DFBrowserPaneXDE_XCAFDocMaterial.hxx>
-#include <DFBrowserPaneXDE_XCAFDocMaterialTool.hxx>
-#include <DFBrowserPaneXDE_XCAFDocShapeMapTool.hxx>
-#include <DFBrowserPaneXDE_XCAFDocShapeTool.hxx>
+#include <inspector/DFBrowserPaneXDE_AttributeCommonPane.hxx>
+#include <inspector/DFBrowserPaneXDE_XCAFDocArea.hxx>
+#include <inspector/DFBrowserPaneXDE_XCAFDocCentroid.hxx>
+#include <inspector/DFBrowserPaneXDE_XCAFDocColor.hxx>
+#include <inspector/DFBrowserPaneXDE_XCAFDocColorTool.hxx>
+#include <inspector/DFBrowserPaneXDE_XCAFDocDatum.hxx>
+#include <inspector/DFBrowserPaneXDE_XCAFDocDimension.hxx>
+#include <inspector/DFBrowserPaneXDE_XCAFDocDimTol.hxx>
+#include <inspector/DFBrowserPaneXDE_XCAFDocDimTolTool.hxx>
+#include <inspector/DFBrowserPaneXDE_XCAFDocDocumentTool.hxx>
+#include <inspector/DFBrowserPaneXDE_XCAFDocGeomTolerance.hxx>
+#include <inspector/DFBrowserPaneXDE_XCAFDocGraphNode.hxx>
+#include <inspector/DFBrowserPaneXDE_XCAFDocLayerTool.hxx>
+#include <inspector/DFBrowserPaneXDE_XCAFDocLocation.hxx>
+#include <inspector/DFBrowserPaneXDE_XCAFDocMaterial.hxx>
+#include <inspector/DFBrowserPaneXDE_XCAFDocMaterialTool.hxx>
+#include <inspector/DFBrowserPaneXDE_XCAFDocShapeMapTool.hxx>
+#include <inspector/DFBrowserPaneXDE_XCAFDocShapeTool.hxx>
 
 #include <Standard_Version.hxx>
 
@@ -57,7 +57,6 @@
 #include <XCAFDoc_ShapeTool.hxx>
 #include <XCAFDoc_ShapeMapTool.hxx>
 
-//#define REQUIRE_OCAF_REVIEW:2 : start
 // =======================================================================
 // function : Constructor
 // purpose :
@@ -137,4 +136,3 @@ DFBrowserPane_AttributePaneAPI* DFBrowserPaneXDE_AttributePaneCreator::createXDE
     aPane = new DFBrowserPaneXDE_XCAFDocShapeTool();
   return aPane;
 }
-//#define REQUIRE_OCAF_REVIEW:2 : end

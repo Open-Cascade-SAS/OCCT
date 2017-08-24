@@ -13,9 +13,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <DFBrowserPaneXDE_XCAFDocDatum.hxx>
+#include <inspector/DFBrowserPaneXDE_XCAFDocDatum.hxx>
 
-#include <DFBrowserPane_AttributePaneModel.hxx>
+#include <inspector/DFBrowserPane_AttributePaneModel.hxx>
 
 #include <Standard_Version.hxx>
 #include <TCollection_HAsciiString.hxx>

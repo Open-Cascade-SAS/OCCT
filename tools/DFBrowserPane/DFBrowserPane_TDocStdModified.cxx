@@ -13,7 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <DFBrowserPane_TDocStdModified.hxx>
+#include <inspector/DFBrowserPane_TDocStdModified.hxx>
 
 #include <TDocStd_Modified.hxx>
 

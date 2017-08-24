@@ -16,9 +16,10 @@
 #ifndef DFBrowser_Tools_H
 #define DFBrowser_Tools_H
 
+#include <inspector/TreeModel_ItemBase.hxx>
+
 #include <Standard.hxx>
 #include <Standard_GUID.hxx>
-#include <TreeModel_ItemBase.hxx>
 #include <TDocStd_Document.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_Attribute.hxx>

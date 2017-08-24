@@ -13,7 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <VInspectorAPI_CallBack.hxx>
+#include <inspector/VInspectorAPI_CallBack.hxx>
 
 #if OCC_VERSION_HEX <= 0x060901
 IMPLEMENT_STANDARD_HANDLE(VInspectorAPI_CallBack, Standard_Transient)

@@ -13,7 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <DFBrowserPane_TDataStdVariable.hxx>
+#include <inspector/DFBrowserPane_TDataStdVariable.hxx>
 
 #include <TDataStd_Variable.hxx>
 

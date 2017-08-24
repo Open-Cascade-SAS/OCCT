@@ -13,15 +13,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <DFBrowserPane_AttributePaneCreator.hxx>
+#include <inspector/DFBrowserPane_AttributePaneCreator.hxx>
 
 #include <TDF_Attribute.hxx>
 
 #include <TDF_Reference.hxx>
 
 // the types are defined in TDF library
-#include <DFBrowserPane_TDFReference.hxx>
-#include <DFBrowserPane_TDFTagSource.hxx>
+#include <inspector/DFBrowserPane_TDFReference.hxx>
+#include <inspector/DFBrowserPane_TDFTagSource.hxx>
 
 #include <TDataStd_Current.hxx>
 #include <TDataStd_Name.hxx>
@@ -68,61 +68,60 @@
 
 // the types are defined in TDataStd.cdl
 // Basic  attributes
-#include <DFBrowserPane_TDataStdCurrent.hxx>
-#include <DFBrowserPane_TDataStdName.hxx>
-#include <DFBrowserPane_TDataStdComment.hxx>
-#include <DFBrowserPane_TDataStdInteger.hxx>
-#include <DFBrowserPane_TDataStdIntegerArray.hxx>
-#include <DFBrowserPane_TDataStdReal.hxx>
-#include <DFBrowserPane_TDataStdRealArray.hxx>
-#include <DFBrowserPane_TDataStdExtStringArray.hxx>
-#include <DFBrowserPane_TDataStdUAttribute.hxx>
+#include <inspector/DFBrowserPane_TDataStdCurrent.hxx>
+#include <inspector/DFBrowserPane_TDataStdName.hxx>
+#include <inspector/DFBrowserPane_TDataStdComment.hxx>
+#include <inspector/DFBrowserPane_TDataStdInteger.hxx>
+#include <inspector/DFBrowserPane_TDataStdIntegerArray.hxx>
+#include <inspector/DFBrowserPane_TDataStdReal.hxx>
+#include <inspector/DFBrowserPane_TDataStdRealArray.hxx>
+#include <inspector/DFBrowserPane_TDataStdExtStringArray.hxx>
+#include <inspector/DFBrowserPane_TDataStdUAttribute.hxx>
 
-#include <DFBrowserPane_TDataStdTreeNode.hxx>
-#include <DFBrowserPane_TDataStdDirectory.hxx>
-#include <DFBrowserPane_TDataStdNoteBook.hxx>
-#include <DFBrowserPane_TDataStdExpression.hxx>
-#include <DFBrowserPane_TDataStdRelation.hxx>
-#include <DFBrowserPane_TDataStdVariable.hxx>
+#include <inspector/DFBrowserPane_TDataStdTreeNode.hxx>
+#include <inspector/DFBrowserPane_TDataStdDirectory.hxx>
+#include <inspector/DFBrowserPane_TDataStdNoteBook.hxx>
+#include <inspector/DFBrowserPane_TDataStdExpression.hxx>
+#include <inspector/DFBrowserPane_TDataStdRelation.hxx>
+#include <inspector/DFBrowserPane_TDataStdVariable.hxx>
 
 //Extension
-#include <DFBrowserPane_TDataStdTick.hxx>
-#include <DFBrowserPane_TDataStdAsciiString.hxx>
-#include <DFBrowserPane_TDataStdIntPackedMap.hxx>
+#include <inspector/DFBrowserPane_TDataStdTick.hxx>
+#include <inspector/DFBrowserPane_TDataStdAsciiString.hxx>
+#include <inspector/DFBrowserPane_TDataStdIntPackedMap.hxx>
 // Lists:
-#include <DFBrowserPane_TDataStdIntegerList.hxx>
-#include <DFBrowserPane_TDataStdRealList.hxx>
-#include <DFBrowserPane_TDataStdExtStringList.hxx>
-#include <DFBrowserPane_TDataStdBooleanList.hxx>
-#include <DFBrowserPane_TDataStdReferenceList.hxx>
+#include <inspector/DFBrowserPane_TDataStdIntegerList.hxx>
+#include <inspector/DFBrowserPane_TDataStdRealList.hxx>
+#include <inspector/DFBrowserPane_TDataStdExtStringList.hxx>
+#include <inspector/DFBrowserPane_TDataStdBooleanList.hxx>
+#include <inspector/DFBrowserPane_TDataStdReferenceList.hxx>
 
 // Arrays:
-#include <DFBrowserPane_TDataStdBooleanArray.hxx>
-#include <DFBrowserPane_TDataStdReferenceArray.hxx>
-#include <DFBrowserPane_TDataStdByteArray.hxx>
-#include <DFBrowserPane_TDataStdNamedData.hxx>
+#include <inspector/DFBrowserPane_TDataStdBooleanArray.hxx>
+#include <inspector/DFBrowserPane_TDataStdReferenceArray.hxx>
+#include <inspector/DFBrowserPane_TDataStdByteArray.hxx>
+#include <inspector/DFBrowserPane_TDataStdNamedData.hxx>
 
 // TDocStd attributes
-#include <DFBrowserPane_TDocStdModified.hxx>
-#include <DFBrowserPane_TDocStdOwner.hxx>
-#include <DFBrowserPane_TDocStdXLink.hxx>
-#include <DFBrowserPane_TDocStdXLinkRoot.hxx>
+#include <inspector/DFBrowserPane_TDocStdModified.hxx>
+#include <inspector/DFBrowserPane_TDocStdOwner.hxx>
+#include <inspector/DFBrowserPane_TDocStdXLink.hxx>
+#include <inspector/DFBrowserPane_TDocStdXLinkRoot.hxx>
 
 // TPrsStd attributes
-#include <DFBrowserPane_TPrsStdAISViewer.hxx>
-#include <DFBrowserPane_TPrsStdAISPresentation.hxx>
+#include <inspector/DFBrowserPane_TPrsStdAISViewer.hxx>
+#include <inspector/DFBrowserPane_TPrsStdAISPresentation.hxx>
 
 // TNaming attributes
-#include <DFBrowserPane_TNamingNamedShape.hxx>
-#include <DFBrowserPane_TNamingNaming.hxx>
-#include <DFBrowserPane_TNamingUsedShapes.hxx>
+#include <inspector/DFBrowserPane_TNamingNamedShape.hxx>
+#include <inspector/DFBrowserPane_TNamingNaming.hxx>
+#include <inspector/DFBrowserPane_TNamingUsedShapes.hxx>
 
 // TFunction attributes
-#include <DFBrowserPane_TFunctionFunction.hxx>
-#include <DFBrowserPane_TFunctionGraphNode.hxx>
-#include <DFBrowserPane_TFunctionScope.hxx>
+#include <inspector/DFBrowserPane_TFunctionFunction.hxx>
+#include <inspector/DFBrowserPane_TFunctionGraphNode.hxx>
+#include <inspector/DFBrowserPane_TFunctionScope.hxx>
 
-//#define REQUIRE_OCAF_REVIEW:1 : start
 // =======================================================================
 // function : Constructor
 // purpose :
@@ -216,5 +215,3 @@ DFBrowserPane_AttributePaneAPI* DFBrowserPane_AttributePaneCreator::CreateAttrib
 
   return aPane;
 }
-
-//#define REQUIRE_OCAF_REVIEW : end

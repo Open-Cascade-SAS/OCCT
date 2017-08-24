@@ -13,14 +13,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <DFBrowser_TreeModel.hxx>
+#include <inspector/DFBrowser_TreeModel.hxx>
 
-#include <DFBrowser_Item.hxx>
-#include <DFBrowser_ItemApplication.hxx>
-#include <DFBrowser_ItemDocument.hxx>
-#include <DFBrowser_Module.hxx>
-#include <DFBrowser_Window.hxx>
-#include <DFBrowserPane_Tools.hxx>
+#include <inspector/DFBrowser_Item.hxx>
+#include <inspector/DFBrowser_ItemApplication.hxx>
+#include <inspector/DFBrowser_ItemDocument.hxx>
+#include <inspector/DFBrowser_Module.hxx>
+#include <inspector/DFBrowser_Window.hxx>
+#include <inspector/DFBrowserPane_Tools.hxx>
 #include <NCollection_List.hxx>
 
 #include <TDocStd_Application.hxx>
@@ -30,7 +30,6 @@
 
 #include <QAbstractItemModel>
 
-//#define REQUIRE_OCAF_REVIEW:19
 // =======================================================================
 // function : Constructor
 // purpose :
@@ -71,7 +70,6 @@ Handle(TDocStd_Application) DFBrowser_TreeModel::GetTDocStdApplication() const
 // =======================================================================
 QModelIndex DFBrowser_TreeModel::FindIndex (const TDF_Label& theLabel) const
 {
-//#define REQUIRE_OCAF_REVIEW:10 : start (GetReferences)
   TDF_Label aRoot = theLabel.Root();
 
   NCollection_List<TDF_Label> aLabels;
@@ -124,7 +122,6 @@ QModelIndex DFBrowser_TreeModel::FindIndex (const TDF_Label& theLabel) const
       }
     }
   }
-  //#define REQUIRE_OCAF_REVIEW:10 : end
   return aParentIndex;
 }
 
@@ -233,10 +230,8 @@ QModelIndex DFBrowser_TreeModel::FindIndexByAttribute (Handle(TDF_Attribute) the
 void DFBrowser_TreeModel::ConvertToIndices (const NCollection_List<TDF_Label>& theReferences,
                                             QModelIndexList& theIndices)
 {
-//#define REQUIRE_OCAF_REVIEW:10 : start (GetReferences)
   for (NCollection_List<TDF_Label>::Iterator aLabelItr (theReferences); aLabelItr.More(); aLabelItr.Next())
     theIndices.append (FindIndex (aLabelItr.Value()));
-//#define REQUIRE_OCAF_REVIEW:10 : end
 }
 
 // =======================================================================

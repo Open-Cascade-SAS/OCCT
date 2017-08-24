@@ -13,11 +13,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <DFBrowserPane_TDataStdExtStringArray.hxx>
-#include <DFBrowserPane_Tools.hxx>
-#include <DFBrowserPane_TableView.hxx>
-#include <DFBrowserPane_AttributePaneModel.hxx>
-#include <DFBrowserPane_HelperArray.hxx>
+#include <inspector/DFBrowserPane_TDataStdExtStringArray.hxx>
+#include <inspector/DFBrowserPane_Tools.hxx>
+#include <inspector/DFBrowserPane_TableView.hxx>
+#include <inspector/DFBrowserPane_AttributePaneModel.hxx>
+#include <inspector/DFBrowserPane_HelperArray.hxx>
 
 #include <TDataStd_ExtStringArray.hxx>
 

@@ -13,7 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <VInspector_CallBack.hxx>
+#include <inspector/VInspector_CallBack.hxx>
 
 #include <AIS_InteractiveContext.hxx>
 #include <AIS_InteractiveObject.hxx>
@@ -21,9 +21,9 @@
 #include <SelectMgr_EntityOwner.hxx>
 #include <Standard_Version.hxx>
 
-#include <VInspector_CallBackMode.hxx>
-#include <VInspector_Tools.hxx>
-#include <VInspector_ViewModelHistory.hxx>
+#include <inspector/VInspector_CallBackMode.hxx>
+#include <inspector/VInspector_Tools.hxx>
+#include <inspector/VInspector_ViewModelHistory.hxx>
 
 #include <QStringList>
 

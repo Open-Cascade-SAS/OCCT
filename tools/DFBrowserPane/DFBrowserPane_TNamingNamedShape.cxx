@@ -13,15 +13,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <DFBrowserPane_TNamingNamedShape.hxx>
+#include <inspector/DFBrowserPane_TNamingNamedShape.hxx>
 
-#include <DFBrowserPane_AttributePaneModel.hxx>
-#include <DFBrowserPane_ItemDelegateButton.hxx>
-#include <DFBrowserPane_ItemRole.hxx>
-#include <DFBrowserPane_HelperExport.hxx>
-#include <DFBrowserPane_SelectionKind.hxx>
-#include <DFBrowserPane_TableView.hxx>
-#include <DFBrowserPane_Tools.hxx>
+#include <inspector/DFBrowserPane_AttributePaneModel.hxx>
+#include <inspector/DFBrowserPane_ItemDelegateButton.hxx>
+#include <inspector/DFBrowserPane_ItemRole.hxx>
+#include <inspector/DFBrowserPane_HelperExport.hxx>
+#include <inspector/DFBrowserPane_SelectionKind.hxx>
+#include <inspector/DFBrowserPane_TableView.hxx>
+#include <inspector/DFBrowserPane_Tools.hxx>
 
 #include <AIS_InteractiveObject.hxx>
 #include <AIS_Shape.hxx>
@@ -52,7 +52,6 @@ const int COLUMN_POINTER_WIDTH = 110;
 const int COLUMN_REFERENCE_WIDTH = 90;
 const int COLUMN_EVOLUTION_WIDTH = 90;
 
-//#define REQUIRE_OCAF_REVIEW:13
 // =======================================================================
 // function : Constructor
 // purpose :

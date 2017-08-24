@@ -1,0 +1,5 @@
+<!DOCTYPE RCC><RCC version="1.0">
+    <qresource>
+        <file>icons/treeview_update.png</file>
+    </qresource>
+</RCC>

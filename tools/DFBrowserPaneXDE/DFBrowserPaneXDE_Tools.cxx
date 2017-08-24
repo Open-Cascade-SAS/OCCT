@@ -13,9 +13,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <DFBrowserPaneXDE_Tools.hxx>
+#include <inspector/DFBrowserPaneXDE_Tools.hxx>
 
-#include <DFBrowserPane_AttributePaneAPI.hxx>
+#include <inspector/DFBrowserPane_AttributePaneAPI.hxx>
 
 #include <TCollection_AsciiString.hxx>
 #include <TDataStd_Name.hxx>

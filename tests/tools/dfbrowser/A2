@@ -5,7 +5,7 @@ pload INSPECTOR
 chrono qat start
 # Create a new document and set UndoLimit
 NewDocument D BinOcaf
-tinspector -dfbrowser
+tinspector -plugins dfbrowser
 
 #NewDocument D
 cpulimit 300

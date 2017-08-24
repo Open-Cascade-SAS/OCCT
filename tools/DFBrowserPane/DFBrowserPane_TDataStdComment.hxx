@@ -16,7 +16,8 @@
 #ifndef DFBrowserPane_TDataStdComment_H
 #define DFBrowserPane_TDataStdComment_H
 
-#include <DFBrowserPane_AttributePane.hxx>
+#include <inspector/DFBrowserPane_AttributePane.hxx>
+
 #include <Standard.hxx>
 
 //! \class DFBrowserPane_TDataStdComment

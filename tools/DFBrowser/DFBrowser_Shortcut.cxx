@@ -13,9 +13,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <DFBrowser_Shortcut.hxx>
+#include <inspector/DFBrowser_Shortcut.hxx>
 
-#include <DFBrowser_Module.hxx>
+#include <inspector/DFBrowser_Module.hxx>
 
 #include <QApplication>
 #include <QKeyEvent>

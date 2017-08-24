@@ -13,13 +13,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <DFBrowserPane_TDataStdTreeNodeItem.hxx>
+#include <inspector/DFBrowserPane_TDataStdTreeNodeItem.hxx>
 
-#include <DFBrowser_Module.hxx>
-#include <DFBrowser_Tools.hxx>
+#include <inspector/DFBrowser_Module.hxx>
+#include <inspector/DFBrowser_Tools.hxx>
 
-#include <DFBrowserPane_AttributePane.hxx>
-#include <DFBrowserPane_Tools.hxx>
+#include <inspector/DFBrowserPane_AttributePane.hxx>
+#include <inspector/DFBrowserPane_Tools.hxx>
 
 #include <TDataStd_TreeNode.hxx>
 #include <TDataStd_ChildNodeIterator.hxx>
@@ -28,8 +28,6 @@
 
 #include <QIcon>
 #include <QObject>
-
-//#define REQUIRE_OCAF_REVIEW:11
 
 // =======================================================================
 // function : Init

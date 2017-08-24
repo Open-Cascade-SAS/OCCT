@@ -13,8 +13,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <ShapeView_TreeModel.hxx>
-#include <ShapeView_ItemRoot.hxx>
+#include <inspector/ShapeView_TreeModel.hxx>
+#include <inspector/ShapeView_ItemRoot.hxx>
+#include <inspector/ShapeView_TreeModel.hxx>
+#include <inspector/ShapeView_ItemRoot.hxx>
+#include <inspector/ShapeView_ItemShape.hxx>
 
 // =======================================================================
 // function : Constructor
@@ -83,4 +86,40 @@ QVariant ShapeView_TreeModel::headerData (int theSection, Qt::Orientation theOri
     }
   }
   return QVariant();
+}
+
+// =======================================================================
+// function : FindIndex
+// purpose :
+// =======================================================================
+QModelIndex ShapeView_TreeModel::FindIndex (const TopoDS_Shape& theShape) const
+{
+  QModelIndex aParentIndex = index (0, 0);
+  TreeModel_ItemBasePtr aParentItem = TreeModel_ModelBase::GetItemByIndex (aParentIndex); // application item
+  for (int aChildId = 0, aCount = aParentItem->rowCount(); aChildId < aCount; aChildId++)
+  {
+    QModelIndex anIndex = index (aChildId, 0, aParentIndex);
+    ShapeView_ItemShapePtr anItem = itemDynamicCast<ShapeView_ItemShape> (TreeModel_ModelBase::GetItemByIndex (anIndex));
+    if (anItem && anItem->GetItemShape() == theShape)
+      return anIndex;
+  }
+  return QModelIndex();
+}
+
+// =======================================================================
+// function : SingleSelected
+// purpose :
+// =======================================================================
+QModelIndex ShapeView_TreeModel::SingleSelected (const QModelIndexList& theIndices, const int theCellId,
+                                                 const Qt::Orientation theOrientation)
+{
+  QModelIndexList aFirstColumnSelectedIndices;
+  for (QModelIndexList::const_iterator anIndicesIt = theIndices.begin(); anIndicesIt != theIndices.end(); anIndicesIt++)
+  {
+    QModelIndex anIndex = *anIndicesIt;
+    if ((theOrientation == Qt::Horizontal && anIndex.column() == theCellId) ||
+        (theOrientation == Qt::Vertical && anIndex.row() == theCellId))
+      aFirstColumnSelectedIndices.append (anIndex);
+  }
+  return aFirstColumnSelectedIndices.size() == 1 ? aFirstColumnSelectedIndices.first() : QModelIndex();
 }

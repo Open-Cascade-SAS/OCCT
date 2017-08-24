@@ -13,9 +13,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <TreeModel_ModelBase.hxx>
+#include <inspector/TreeModel_ModelBase.hxx>
 
-#include <TreeModel_ItemBase.hxx>
+#include <inspector/TreeModel_ItemBase.hxx>
 
 // =======================================================================
 // function : Constructor

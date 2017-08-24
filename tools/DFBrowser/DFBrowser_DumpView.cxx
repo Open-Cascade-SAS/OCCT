@@ -13,13 +13,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <DFBrowser_DumpView.hxx>
+#include <inspector/DFBrowser_DumpView.hxx>
 
-#include <DFBrowser_Item.hxx>
-#include <DFBrowser_Window.hxx>
-#include <DFBrowser_TreeLevelView.hxx>
+#include <inspector/DFBrowser_Item.hxx>
+#include <inspector/DFBrowser_Window.hxx>
+#include <inspector/DFBrowser_TreeLevelView.hxx>
 #include <OSD_OpenFile.hxx>
-#include <TreeModel_ModelBase.hxx>
+#include <inspector/TreeModel_ModelBase.hxx>
 
 #include <QAbstractItemModel>
 #include <QDir>
@@ -52,7 +52,6 @@ void DFBrowser_DumpView::OnTreeViewSelectionChanged (const QItemSelection& theSe
   QString aDumpInfo;
   const QModelIndex& anIndex = aFirstColumnSelectedIndices.first();
   TreeModel_ItemBasePtr anItemBase = TreeModel_ModelBase::GetItemByIndex (anIndex);
-//#define REQUIRE_OCAF_REVIEW:18 : start
   DFBrowser_ItemPtr anItem;
   if (anItemBase)
     anItem = itemDynamicCast<DFBrowser_Item> (anItemBase);
@@ -87,7 +86,6 @@ void DFBrowser_DumpView::OnTreeViewSelectionChanged (const QItemSelection& theSe
   aFile.close();
   QDir aDir;
   aDir.remove (aFileName.ToCString());
-//#define REQUIRE_OCAF_REVIEW:18 : end
   if (!aDumpInfo.isEmpty())
   {
     myTextEdit->setVisible (true);

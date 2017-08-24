@@ -13,10 +13,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <DFBrowserPane_TDataStdBooleanArray.hxx>
-#include <DFBrowserPane_TableView.hxx>
-#include <DFBrowserPane_AttributePaneModel.hxx>
-#include <DFBrowserPane_HelperArray.hxx>
+#include <inspector/DFBrowserPane_TDataStdBooleanArray.hxx>
+#include <inspector/DFBrowserPane_TableView.hxx>
+#include <inspector/DFBrowserPane_AttributePaneModel.hxx>
+#include <inspector/DFBrowserPane_HelperArray.hxx>
 
 #include <TDataStd_BooleanArray.hxx>
 
@@ -28,7 +28,6 @@
 #include <QWidget>
 #include <QGridLayout>
 
-//#define REQUIRE_OCAF_REVIEW:5 : start
 // =======================================================================
 // function : CreateWidget
 // purpose :
@@ -84,4 +83,3 @@ void DFBrowserPane_TDataStdBooleanArray::GetShortAttributeInfo (const Handle(TDF
   myArrayTableHelper.Init (aValues);
   return myArrayTableHelper.GetShortAttributeInfo (theAttribute, theValues);
 }
-//#define REQUIRE_OCAF_REVIEW:5 : end

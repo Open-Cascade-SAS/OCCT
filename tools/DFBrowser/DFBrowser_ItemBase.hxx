@@ -17,8 +17,9 @@
 #define DFBrowser_ItemBase_H
 
 #include <Standard.hxx>
-#include <TreeModel_ItemBase.hxx>
 #include <TDF_Label.hxx>
+
+#include <inspector/TreeModel_ItemBase.hxx>
 
 class DFBrowser_ItemBase;
 class DFBrowser_Module;

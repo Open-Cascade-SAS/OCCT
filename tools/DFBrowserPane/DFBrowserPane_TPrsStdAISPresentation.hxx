@@ -16,7 +16,8 @@
 #ifndef DFBrowserPane_TPrsStdAISPresentation_H
 #define DFBrowserPane_TPrsStdAISPresentation_H
 
-#include <DFBrowserPane_AttributePane.hxx>
+#include <inspector/DFBrowserPane_AttributePane.hxx>
+
 #include <Standard.hxx>
 
 //! \class DFBrowserPane_TPrsStdAISPresentation

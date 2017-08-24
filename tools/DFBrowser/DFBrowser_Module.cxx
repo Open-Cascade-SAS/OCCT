@@ -13,22 +13,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <DFBrowser_Module.hxx>
+#include <inspector/DFBrowser_Module.hxx>
 
-#include <DFBrowser_Item.hxx>
-#include <DFBrowser_ItemApplication.hxx>
-#include <DFBrowser_ItemBase.hxx>
-#include <DFBrowser_ItemRole.hxx>
-#include <DFBrowser_Tools.hxx>
-#include <DFBrowser_TreeModel.hxx>
+#include <inspector/DFBrowser_Item.hxx>
+#include <inspector/DFBrowser_ItemApplication.hxx>
+#include <inspector/DFBrowser_ItemBase.hxx>
+#include <inspector/DFBrowser_ItemRole.hxx>
+#include <inspector/DFBrowser_Tools.hxx>
+#include <inspector/DFBrowser_TreeModel.hxx>
 
-#include <DFBrowserPane_AttributePane.hxx>
-#include <DFBrowserPane_AttributePaneCreator.hxx>
-#include <DFBrowserPane_ItemRole.hxx>
-#include <DFBrowserPane_Tools.hxx>
+#include <inspector/DFBrowserPane_AttributePane.hxx>
+#include <inspector/DFBrowserPane_AttributePaneCreator.hxx>
+#include <inspector/DFBrowserPane_ItemRole.hxx>
+#include <inspector/DFBrowserPane_Tools.hxx>
 
-#include <DFBrowserPaneXDE_AttributePaneCreator.hxx>
-#include <DFBrowserPaneXDE_Tools.hxx>
+#include <inspector/DFBrowserPaneXDE_AttributePaneCreator.hxx>
+#include <inspector/DFBrowserPaneXDE_Tools.hxx>
 
 #include <XCAFApp_Application.hxx>
 

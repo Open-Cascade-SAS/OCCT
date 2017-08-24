@@ -13,7 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <DFBrowserPaneXDE_XCAFDocDocumentTool.hxx>
+#include <inspector/DFBrowserPaneXDE_XCAFDocDocumentTool.hxx>
 
 #include <XCAFDoc_DocumentTool.hxx>
 

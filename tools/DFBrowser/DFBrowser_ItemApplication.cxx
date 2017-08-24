@@ -13,19 +13,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <DFBrowser_ItemApplication.hxx>
+#include <inspector/DFBrowser_ItemApplication.hxx>
 
-#include <DFBrowser_Item.hxx>
-#include <DFBrowser_ItemDocument.hxx>
-#include <DFBrowser_Module.hxx>
-#include <DFBrowser_Tools.hxx>
+#include <inspector/DFBrowser_Item.hxx>
+#include <inspector/DFBrowser_ItemDocument.hxx>
+#include <inspector/DFBrowser_Module.hxx>
+#include <inspector/DFBrowser_Tools.hxx>
 
-#include <DFBrowserPane_AttributePane.hxx>
-#include <DFBrowserPane_ItemRole.hxx>
+#include <inspector/DFBrowserPane_AttributePane.hxx>
+#include <inspector/DFBrowserPane_ItemRole.hxx>
 
 #include <QObject>
-
-//#define REQUIRE_OCAF_REVIEW:21
 
 // =======================================================================
 // function : createChild

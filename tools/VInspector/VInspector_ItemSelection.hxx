@@ -17,7 +17,7 @@
 #define VInspector_ItemSelection_H
 
 #include <Standard.hxx>
-#include <VInspector_ItemBase.hxx>
+#include <inspector/VInspector_ItemBase.hxx>
 
 #include <SelectMgr_Selection.hxx>
 

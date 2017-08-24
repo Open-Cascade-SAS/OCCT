@@ -16,7 +16,8 @@
 #ifndef DFBROWSER_ThreadItemUsedShapesMap_H
 #define DFBROWSER_ThreadItemUsedShapesMap_H
 
-#include <DFBrowser_ThreadItem.hxx>
+#include <inspector/DFBrowser_ThreadItem.hxx>
+
 #include <NCollection_DataMap.hxx>
 #include <Standard.hxx>
 #include <TCollection_AsciiString.hxx>

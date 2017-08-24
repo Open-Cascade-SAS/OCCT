@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <ShapeView_OpenFileDialog.hxx>
-#include <ShapeView_OpenFileViewModel.hxx>
+#include <inspector/ShapeView_OpenFileDialog.hxx>
+#include <inspector/ShapeView_OpenFileViewModel.hxx>
 
 #include <QGroupBox>
 #include <QHBoxLayout>
@@ -208,7 +208,8 @@ void ShapeView_OpenFileDialog::onSelectClicked()
       anEnteredPath = aDirName;
   }
 
-  QString aFileName = QFileDialog::getOpenFileName (0, "Open document", anEnteredPath);
+  QString aFilter (tr ("BREP file (*.brep*)"));
+  QString aFileName = QFileDialog::getOpenFileName (0, "Open document", anEnteredPath, aFilter);
 
   if (aFileName.isEmpty())
     return; // do nothing, left the previous value

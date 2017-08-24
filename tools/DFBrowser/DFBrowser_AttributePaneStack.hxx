@@ -16,9 +16,10 @@
 #ifndef DFBrowser_AttributePaneStack_H
 #define DFBrowser_AttributePaneStack_H
 
-#include <DFBrowser_AttributePaneType.hxx>
+#include <inspector/DFBrowser_AttributePaneType.hxx>
+#include <inspector/TreeModel_ItemBase.hxx>
+
 #include <Standard.hxx>
-#include <TreeModel_ItemBase.hxx>
 
 #include <QMap>
 #include <QItemSelection>

@@ -18,9 +18,9 @@
 
 #include <Standard.hxx>
 #include <Standard_Macro.hxx>
-#include <VInspector_Window.hxx>
+#include <inspector/VInspector_Window.hxx>
 
-#include <TInspectorAPI_Communicator.hxx>
+#include <inspector/TInspectorAPI_Communicator.hxx>
 
 //! \class VInspector_Communicator.
 //! \brief This is a connector from TInspector application to VInspector view

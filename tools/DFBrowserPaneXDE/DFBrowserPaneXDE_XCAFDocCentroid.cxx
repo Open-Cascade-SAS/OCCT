@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <DFBrowserPaneXDE_XCAFDocCentroid.hxx>
-#include <DFBrowserPane_AttributePaneModel.hxx>
+#include <inspector/DFBrowserPaneXDE_XCAFDocCentroid.hxx>
+#include <inspector/DFBrowserPane_AttributePaneModel.hxx>
 
 #include <XCAFDoc_Centroid.hxx>
 

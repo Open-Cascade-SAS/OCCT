@@ -13,12 +13,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <VInspector_ItemContext.hxx>
+#include <inspector/VInspector_ItemContext.hxx>
 
 #include <AIS_ListOfInteractive.hxx>
 #include <SelectMgr_EntityOwner.hxx>
-#include <VInspector_ItemPresentableObject.hxx>
-#include <VInspector_Tools.hxx>
+#include <inspector/VInspector_ItemPresentableObject.hxx>
+#include <inspector/VInspector_Tools.hxx>
 
 #include <QStringList>
 

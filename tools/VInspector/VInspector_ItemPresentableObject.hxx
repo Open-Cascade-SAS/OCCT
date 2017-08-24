@@ -17,7 +17,7 @@
 #define VInspector_ItemPresentableObject_H
 
 #include <Standard.hxx>
-#include <VInspector_ItemBase.hxx>
+#include <inspector/VInspector_ItemBase.hxx>
 
 #include <AIS_InteractiveObject.hxx>
 #include <NCollection_List.hxx>

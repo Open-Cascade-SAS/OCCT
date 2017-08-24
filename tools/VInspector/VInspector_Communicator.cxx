@@ -13,10 +13,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <VInspector_Communicator.hxx>
+#include <inspector/VInspector_Communicator.hxx>
 
-#include <VInspector_CallBack.hxx>
-#include <VInspector_Window.hxx>
+#include <inspector/VInspector_CallBack.hxx>
+#include <inspector/VInspector_Window.hxx>
 
 #include <AIS_InteractiveContext.hxx>
 

@@ -16,7 +16,7 @@
 #ifndef DFBrowser_Item_H
 #define DFBrowser_Item_H
 
-#include <DFBrowser_ItemBase.hxx>
+#include <inspector/DFBrowser_ItemBase.hxx>
 
 #include <TDF_Attribute.hxx>
 #include <Standard.hxx>

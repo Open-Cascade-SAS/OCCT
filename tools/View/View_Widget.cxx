@@ -17,12 +17,12 @@
 #define QT_CLEAN_NAMESPACE         /* avoid definition of INT32 and INT8 */
 #endif
 
-#include <View_Widget.hxx>
+#include <inspector/View_Widget.hxx>
 
 #include <Graphic3d_GraphicDriver.hxx>
 #include <Standard_Version.hxx>
-#include <View_ViewActionType.hxx>
-#include <View_Viewer.hxx>
+#include <inspector/View_ViewActionType.hxx>
+#include <inspector/View_Viewer.hxx>
 
 #include <QColorDialog>
 #include <QCursor>

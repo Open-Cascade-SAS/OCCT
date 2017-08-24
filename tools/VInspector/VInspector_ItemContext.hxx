@@ -17,7 +17,7 @@
 #define VInspector_ItemContext_H
 
 #include <Standard.hxx>
-#include <VInspector_ItemBase.hxx>
+#include <inspector/VInspector_ItemBase.hxx>
 
 class VInspector_ItemContext;
 typedef QExplicitlySharedDataPointer<VInspector_ItemContext> VInspector_ItemContextPtr;

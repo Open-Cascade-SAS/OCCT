@@ -14,8 +14,8 @@
 // commercial license or contractual agreement. 
 
 
-#include <ShapeView_ItemRoot.hxx>
-#include <ShapeView_ItemShape.hxx>
+#include <inspector/ShapeView_ItemRoot.hxx>
+#include <inspector/ShapeView_ItemShape.hxx>
 
 // =======================================================================
 // function : GetShape

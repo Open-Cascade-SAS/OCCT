@@ -17,7 +17,7 @@
 #define ShapeView_ItemRoot_H
 
 #include <NCollection_List.hxx>
-#include <ShapeView_ItemBase.hxx>
+#include <inspector/ShapeView_ItemBase.hxx>
 #include <Standard.hxx>
 #include <TopoDS_Shape.hxx>
 

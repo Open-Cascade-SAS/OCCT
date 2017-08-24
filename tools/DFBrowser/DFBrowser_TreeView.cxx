@@ -13,7 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <DFBrowser_TreeView.hxx>
+#include <inspector/DFBrowser_TreeView.hxx>
 
 // =======================================================================
 // function : SetPredefinedSize

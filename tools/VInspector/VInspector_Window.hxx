@@ -20,14 +20,17 @@
 #include <NCollection_List.hxx>
 #include <SelectBasics_EntityOwner.hxx>
 #include <Standard.hxx>
-#include <TInspectorAPI_PluginParameters.hxx>
-#include <VInspector_CallBack.hxx>
+#include <inspector/TInspectorAPI_PluginParameters.hxx>
+#include <inspector/VInspector_CallBack.hxx>
 
 #include <QObject>
 #include <QItemSelection>
 #include <QMainWindow>
 
+class TreeModel_MessageDialog;
+
 class VInspector_ToolBar;
+class View_Window;
 
 class QAbstractItemModel;
 class QAction;
@@ -126,13 +129,22 @@ private:
   //! \param theToDisplay if true, presentation is displayed otherwise erased
   void displaySelectedPresentations (const bool theToDisplay);
 
+  //! Creates an istance of 3D view to initialize context.
+  //! \return a context of created view.
+  Handle(AIS_InteractiveContext) createView();
+
 private:
+
+  QWidget* myParent; //!< widget, comes when Init window, the window control lays in the layout, updates window title
 
   QMainWindow* myMainWindow; //!< main control
   VInspector_ToolBar* myToolBar; //!< tool bar actions
   QTreeView* myTreeView; //!< tree view of AIS content
   QTreeView* myHistoryView; //!< history of AIS context calls
   Handle(VInspector_CallBack) myCallBack; //!< AIS context call back, if set
+
+  TreeModel_MessageDialog* myExportToShapeViewDialog; //!< dialog about exporting TopoDS_Shape to ShapeView plugin
+  View_Window* myViewWindow; //!< temporary view window, it is created if Open is called but context is still NULL
 
   Handle(TInspectorAPI_PluginParameters) myParameters; //!< plugins parameters container
 };

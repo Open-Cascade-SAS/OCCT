@@ -14,11 +14,11 @@
 // commercial license or contractual agreement. 
 
 
-#include <DFBrowser_Communicator.hxx>
+#include <inspector/DFBrowser_Communicator.hxx>
 
 #include <CDF_Session.hxx>
-#include <DFBrowser_Module.hxx>
-#include <DFBrowser_Window.hxx>
+#include <inspector/DFBrowser_Module.hxx>
+#include <inspector/DFBrowser_Window.hxx>
 
 // =======================================================================
 // function : CreateCommunicator

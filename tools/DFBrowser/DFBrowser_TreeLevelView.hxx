@@ -16,8 +16,9 @@
 #ifndef DFBrowser_TreeLevelView_H
 #define DFBrowser_TreeLevelView_H
 
+#include <inspector/TreeModel_ItemBase.hxx>
+
 #include <Standard.hxx>
-#include <TreeModel_ItemBase.hxx>
 
 #include <QObject>
 #include <QItemSelection>

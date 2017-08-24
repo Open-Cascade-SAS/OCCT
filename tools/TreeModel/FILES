@@ -1,5 +1,7 @@
 TreeModel_ItemBase.cxx
 TreeModel_ItemBase.hxx
 TreeModel_ItemRole.hxx
+TreeModel_MessageDialog.cxx
+TreeModel_MessageDialog.hxx
 TreeModel_ModelBase.cxx
 TreeModel_ModelBase.hxx

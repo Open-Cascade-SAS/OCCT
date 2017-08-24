@@ -13,7 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <DFBrowserPane_Tools.hxx>
+#include <inspector/DFBrowserPane_Tools.hxx>
 
 #include <AIS_DisplayMode.hxx>
 #include <Graphic3d_MaterialAspect.hxx>
@@ -39,7 +39,6 @@
 
 #include <sstream>
 
-//#define REQUIRE_OCAF_REVIEW:8 : start
 const int TABLE_COLUMN_0_WIDTH = 200;
 const int TABLE_COLUMN_OTHER_WIDTH = 120;
 
@@ -132,4 +131,3 @@ TCollection_AsciiString DFBrowserPane_Tools::ToName (const DFBrowserPane_OcctEnu
   }
   return aSStream.str().c_str();
 }
-//#define REQUIRE_OCAF_REVIEW:8 : end

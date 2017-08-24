@@ -13,17 +13,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <DFBrowserPane_HelperArray.hxx>
-#include <DFBrowserPane_TableView.hxx>
+#include <inspector/DFBrowserPane_HelperArray.hxx>
+#include <inspector/DFBrowserPane_TableView.hxx>
 
-#include <DFBrowserPane_AttributePaneModel.hxx>
+#include <inspector/DFBrowserPane_AttributePaneModel.hxx>
 
 #include <QList>
 #include <QVariant>
 #include <QGridLayout>
 #include <QWidget>
 
-//#define REQUIRE_OCAF_REVIEW:6 : start
 // =======================================================================
 // function : Constructor
 // purpose :
@@ -86,4 +85,3 @@ void DFBrowserPane_HelperArray::GetShortAttributeInfo (const Handle(TDF_Attribut
   for (int aRowId = 0, aRows = myValuesModel->rowCount(); aRowId < aRows; aRowId++)
     theValues.append (myValuesModel->data (myValuesModel->index (aRowId, 0)));
 }
-//#define REQUIRE_OCAF_REVIEW:6 : end

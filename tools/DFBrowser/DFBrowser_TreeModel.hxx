@@ -16,12 +16,13 @@
 #ifndef DFBrowser_TreeModel_H
 #define DFBrowser_TreeModel_H
 
-#include <DFBrowser_ItemBase.hxx>
+#include <inspector/DFBrowser_ItemBase.hxx>
+#include <inspector/TreeModel_ModelBase.hxx>
+
 #include <NCollection_List.hxx>
 #include <Standard.hxx>
 #include <TDF_Label.hxx>
 #include <TDocStd_Application.hxx>
-#include <TreeModel_ModelBase.hxx>
 
 #include <QByteArray>
 #include <QHash>

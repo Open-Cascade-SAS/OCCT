@@ -16,7 +16,7 @@
 #ifndef ShapeView_ItemShape_H
 #define ShapeView_ItemShape_H
 
-#include <ShapeView_ItemBase.hxx>
+#include <inspector/ShapeView_ItemBase.hxx>
 #include <Standard.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TopoDS_Shape.hxx>
@@ -45,7 +45,7 @@ public:
   virtual ~ShapeView_ItemShape() Standard_OVERRIDE {};
 
   //! Returns the current shape
-  const TopoDS_Shape& GetItemShape() const { return myShape; }
+  const TopoDS_Shape& GetItemShape() const { initItem(); return myShape; }
 
   //! Returns child(extracted) shape for the current shape by the index
   //! \param theRowId an index of child shape

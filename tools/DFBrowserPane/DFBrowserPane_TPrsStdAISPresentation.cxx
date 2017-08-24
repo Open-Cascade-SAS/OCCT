@@ -13,17 +13,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <DFBrowserPane_TPrsStdAISPresentation.hxx>
+#include <inspector/DFBrowserPane_TPrsStdAISPresentation.hxx>
 
-#include <DFBrowserPane_AttributePaneModel.hxx>
-#include <DFBrowserPane_Tools.hxx>
+#include <inspector/DFBrowserPane_AttributePaneModel.hxx>
+#include <inspector/DFBrowserPane_Tools.hxx>
 
 #include <TPrsStd_AISPresentation.hxx>
 
 #include <QVariant>
 #include <QWidget>
 
-//#define REQUIRE_OCAF_REVIEW:16
 // =======================================================================
 // function : Constructor
 // purpose :

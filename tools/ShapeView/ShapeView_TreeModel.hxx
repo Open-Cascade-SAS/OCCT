@@ -16,10 +16,10 @@
 #ifndef ShapeView_TreeModel_H
 #define ShapeView_TreeModel_H
 
-#include <ShapeView_ItemBase.hxx>
+#include <inspector/ShapeView_ItemBase.hxx>
 #include <Standard.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TreeModel_ModelBase.hxx>
+#include <inspector/TreeModel_ModelBase.hxx>
 
 #include <QMap>
 #include <QObject>
@@ -64,6 +64,19 @@ public:
   //! \return the header data
   Standard_EXPORT virtual QVariant headerData (int theSection, Qt::Orientation theOrientation,
                                                int theRole = Qt::DisplayRole ) const Standard_OVERRIDE;
+  //! Returns model index of the shape.
+  //! \param theShape a shape object
+  //! \return the model index
+  QModelIndex FindIndex (const TopoDS_Shape& theShape) const;
+
+    //! Returns single selected item in the cell of given orientation. If the orientation is Horizontal,
+  //! in the cell id colum, one row should be selected.
+  //! \param theIndices a container of selected indices
+  //! \param theCellId column index if orientation is horizontal, row index otherwise
+  //! \param theOrientation an orientation to apply the cell index
+  //! \return model index from the list
+  Standard_EXPORT static QModelIndex SingleSelected (const QModelIndexList& theIndices, const int theCellId,
+                                                     const Qt::Orientation theOrientation = Qt::Horizontal);
 
 private:
   QMap<int, TreeModel_ItemBasePtr> myRootItems; //!< container of root items, for each column own root item

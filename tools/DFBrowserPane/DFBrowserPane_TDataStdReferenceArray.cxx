@@ -13,12 +13,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <DFBrowserPane_TDataStdReferenceArray.hxx>
+#include <inspector/DFBrowserPane_TDataStdReferenceArray.hxx>
 
-#include <DFBrowserPane_AttributePaneModel.hxx>
-#include <DFBrowserPane_HelperArray.hxx>
-#include <DFBrowserPane_TableView.hxx>
-#include <DFBrowserPane_Tools.hxx>
+#include <inspector/DFBrowserPane_AttributePaneModel.hxx>
+#include <inspector/DFBrowserPane_HelperArray.hxx>
+#include <inspector/DFBrowserPane_TableView.hxx>
+#include <inspector/DFBrowserPane_Tools.hxx>
 
 #include <TDataStd_ReferenceArray.hxx>
 
@@ -28,7 +28,6 @@
 #include <QVariant>
 #include <QWidget>
 
-//#define REQUIRE_OCAF_REVIEW:10 : start (GetReferences)
 // =======================================================================
 // function : CreateWidget
 // purpose :
@@ -108,4 +107,3 @@ void DFBrowserPane_TDataStdReferenceArray::GetReferences (const Handle(TDF_Attri
       theRefLabels.Append (aLabel);
   }
 }
-//#define REQUIRE_OCAF_REVIEW:10 : end

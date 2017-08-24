@@ -13,11 +13,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <DFBrowserPane_AttributePane.hxx>
-#include <DFBrowserPane_ItemRole.hxx>
-#include <DFBrowserPane_TableView.hxx>
-#include <DFBrowserPane_Tools.hxx>
-#include <DFBrowserPane_AttributePaneModel.hxx>
+#include <inspector/DFBrowserPane_AttributePane.hxx>
+#include <inspector/DFBrowserPane_ItemRole.hxx>
+#include <inspector/DFBrowserPane_TableView.hxx>
+#include <inspector/DFBrowserPane_Tools.hxx>
+#include <inspector/DFBrowserPane_AttributePaneModel.hxx>
 
 #include <AIS_InteractiveObject.hxx>
 
@@ -26,8 +26,6 @@
 #include <QItemSelectionModel>
 #include <QTableView>
 #include <QWidget>
-
-//#define REQUIRE_OCAF_REVIEW:3 : start
 
 // =======================================================================
 // function : Constructor
@@ -154,4 +152,3 @@ QMap<int, int> DFBrowserPane_AttributePane::getTableColumnWidths() const
     aValues.insert (aColumnId, DFBrowserPane_Tools::DefaultPanelColumnWidth (aColumnId));
   return aValues;
 }
-//#define REQUIRE_OCAF_REVIEW:2 : end

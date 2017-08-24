@@ -18,7 +18,7 @@
 
 #include <AIS_InteractiveObject.hxx>
 #include <Standard.hxx>
-#include <VInspector_ItemBase.hxx>
+#include <inspector/VInspector_ItemBase.hxx>
 
 class QItemSelectionModel;
 

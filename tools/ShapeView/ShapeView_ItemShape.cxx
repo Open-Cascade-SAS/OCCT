@@ -13,7 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <ShapeView_ItemShape.hxx>
+#include <inspector/ShapeView_ItemShape.hxx>
 
 #include <Adaptor3d_Curve.hxx>
 #include <BRep_Tool.hxx>
@@ -23,8 +23,8 @@
 #include <Geom_Curve.hxx>
 #include <GeomAdaptor_Curve.hxx>
 
-#include <ShapeView_ItemRoot.hxx>
-#include <ShapeView_ItemShape.hxx>
+#include <inspector/ShapeView_ItemRoot.hxx>
+#include <inspector/ShapeView_ItemShape.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>

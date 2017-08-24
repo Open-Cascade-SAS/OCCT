@@ -19,7 +19,7 @@
 #include <SelectMgr_SensitiveEntity.hxx>
 #include <SelectBasics_SensitiveEntity.hxx>
 #include <Standard.hxx>
-#include <VInspector_ItemBase.hxx>
+#include <inspector/VInspector_ItemBase.hxx>
 
 class SelectBasics_EntityOwner;
 class VInspector_ItemSensitiveEntity;

@@ -13,14 +13,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <DFBrowserPane_TDataStdAsciiString.hxx>
+#include <inspector/DFBrowserPane_TDataStdAsciiString.hxx>
 
 #include <TDataStd_AsciiString.hxx>
 
 #include <QVariant>
 #include <QIcon>
 
-//#define REQUIRE_OCAF_REVIEW:4 : start
 // =======================================================================
 // function : GetValues
 // purpose :
@@ -32,4 +31,3 @@ void DFBrowserPane_TDataStdAsciiString::GetValues (const Handle(TDF_Attribute)& 
   if (!anAttribute.IsNull())
     theValues.append (anAttribute->Get().ToCString());
 }
-//#define REQUIRE_OCAF_REVIEW:4 : end

@@ -13,17 +13,28 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <VInspector_Window.hxx>
+#include <inspector/VInspector_Window.hxx>
 
 #include <AIS_Shape.hxx>
-#include <VInspector_CallBack.hxx>
-#include <VInspector_Communicator.hxx>
-#include <VInspector_ItemEntityOwner.hxx>
-#include <VInspector_ItemPresentableObject.hxx>
-#include <VInspector_ToolBar.hxx>
-#include <VInspector_Tools.hxx>
-#include <VInspector_ViewModel.hxx>
-#include <VInspector_ViewModelHistory.hxx>
+
+#include <inspector/TreeModel_MessageDialog.hxx>
+
+#include <inspector/VInspector_ItemPresentableObject.hxx>
+#include <inspector/VInspector_ToolBar.hxx>
+#include <inspector/VInspector_Tools.hxx>
+#include <inspector/VInspector_ViewModel.hxx>
+#include <inspector/VInspector_ViewModelHistory.hxx>
+#include <inspector/VInspector_CallBack.hxx>
+#include <inspector/VInspector_Communicator.hxx>
+#include <inspector/VInspector_ItemEntityOwner.hxx>
+#include <inspector/VInspector_ItemPresentableObject.hxx>
+#include <inspector/VInspector_ToolBar.hxx>
+#include <inspector/VInspector_Tools.hxx>
+#include <inspector/VInspector_ViewModel.hxx>
+#include <inspector/VInspector_ViewModelHistory.hxx>
+
+#include <inspector/View_Widget.hxx>
+#include <inspector/View_Window.hxx>
 
 #include <QApplication>
 #include <QDockWidget>
@@ -55,11 +66,18 @@ const int VINSPECTOR_DEFAULT_HEIGHT = 800;
 const int VINSPECTOR_DEFAULT_POSITION_X = 200;
 const int VINSPECTOR_DEFAULT_POSITION_Y = 60;
 
+const int VINSPECTOR_DEFAULT_VIEW_WIDTH = 400;
+const int VINSPECTOR_DEFAULT_VIEW_HEIGHT = 1000;
+
+const int VINSPECTOR_DEFAULT_VIEW_POSITION_X = 200 + 900 + 100; // TINSPECTOR_DEFAULT_POSITION_X + TINSPECTOR_DEFAULT_WIDTH + 100
+const int VINSPECTOR_DEFAULT_VIEW_POSITION_Y = 60; // TINSPECTOR_DEFAULT_POSITION_Y + 50
+
 // =======================================================================
 // function : Constructor
 // purpose :
 // =======================================================================
 VInspector_Window::VInspector_Window()
+: myParent (0), myExportToShapeViewDialog (0), myViewWindow (0)
 {
   myMainWindow = new QMainWindow (0);
 
@@ -91,7 +109,7 @@ VInspector_Window::VInspector_Window()
   VInspector_ViewModelHistory* aHistoryModel = new VInspector_ViewModelHistory (myHistoryView);
   myHistoryView->setModel (aHistoryModel);
 
-  QItemSelectionModel* aSelectionModel = new QItemSelectionModel (myTreeView->model());
+  QItemSelectionModel* aSelectionModel = new QItemSelectionModel (myHistoryView->model());
   myHistoryView->setSelectionModel (aSelectionModel);
   connect (aSelectionModel, SIGNAL (selectionChanged (const QItemSelection&, const QItemSelection&)),
            this, SLOT (onHistoryViewSelectionChanged (const QItemSelection&, const QItemSelection&)));
@@ -102,7 +120,7 @@ VInspector_Window::VInspector_Window()
   myHistoryView->setColumnWidth (3, COLUMN_3_WIDTH);
   myHistoryView->setColumnWidth (4, HISTORY_AIS_NAME_COLUMN_WIDTH);
 
-  QDockWidget* aHistoryDockWidget = new QDockWidget (tr ("Tree Level Line"), myMainWindow);
+  QDockWidget* aHistoryDockWidget = new QDockWidget (tr ("HistoryView"), myMainWindow);
   aHistoryDockWidget->setWidget (myHistoryView);
   myMainWindow->addDockWidget (Qt::BottomDockWidgetArea, aHistoryDockWidget);
 
@@ -119,11 +137,11 @@ VInspector_Window::VInspector_Window()
 // =======================================================================
 void VInspector_Window::SetParent (void* theParent)
 {
-  QWidget* aParent = (QWidget*)theParent;
-  if (!aParent)
+  myParent = (QWidget*)theParent;
+  if (!myParent)
     return;
 
-  QLayout* aLayout = aParent->layout();
+  QLayout* aLayout = myParent->layout();
   if (aLayout)
     aLayout->addWidget (GetMainWindow());
 }
@@ -146,6 +164,29 @@ void VInspector_Window::UpdateContent()
 
     NCollection_List<TCollection_AsciiString> aNames;
     myParameters->SetFileNames(aName, aNames);
+  }
+
+  // make AIS_InteractiveObject selected selected if exist in select parameters
+  NCollection_List<Handle(Standard_Transient)> anObjects;
+  if (myParameters->GetSelectedObjects(aName, anObjects))
+  {
+    VInspector_ViewModel* aViewModel = dynamic_cast<VInspector_ViewModel*>(myTreeView->model());
+    QItemSelectionModel* aSelectionModel = myTreeView->selectionModel();
+    aSelectionModel->clear();
+    for (NCollection_List<Handle(Standard_Transient)>::Iterator aParamsIt (anObjects);
+         aParamsIt.More(); aParamsIt.Next())
+    {
+      Handle(Standard_Transient) anObject = aParamsIt.Value();
+      Handle(AIS_InteractiveObject) aPresentation = Handle(AIS_InteractiveObject)::DownCast (anObject);
+      if (aPresentation.IsNull())
+        continue;
+
+      QModelIndex aPresentationIndex = aViewModel->FindIndex (aPresentation);
+      if (!aPresentationIndex.isValid())
+        continue;
+       aSelectionModel->select (aPresentationIndex, QItemSelectionModel::Select);
+       myTreeView->scrollTo (aPresentationIndex);
+    }
   }
 }
 
@@ -219,10 +260,16 @@ void VInspector_Window::OpenFile(const TCollection_AsciiString& theFileName)
 {
   VInspector_ViewModel* aViewModel = dynamic_cast<VInspector_ViewModel*> (myTreeView->model());
   if (!aViewModel)
+  {
+    Handle(AIS_InteractiveContext) aContext = createView();
+    SetContext (aContext);
+    aViewModel = dynamic_cast<VInspector_ViewModel*> (myTreeView->model());
+  }
+  if (!aViewModel)
     return;
-    
+
   Handle(AIS_InteractiveContext) aContext = aViewModel->GetContext();
-  if (aContext.IsNull())
+  if (!aContext)
     return;
 
   TopoDS_Shape aShape = VInspector_Tools::ReadShape (theFileName);
@@ -351,29 +398,39 @@ void VInspector_Window::onExportToShapeView()
     return;
 
   TCollection_AsciiString aPluginName ("TKShapeView");
-  if (myParameters->FindParameters(aPluginName))
+  NCollection_List<Handle(Standard_Transient)> aParameters;
+  if (myParameters->FindParameters (aPluginName))
+    aParameters = myParameters->Parameters (aPluginName);
+
+  QStringList anExportedPointers;
+  for (NCollection_List<Handle(AIS_InteractiveObject)>::Iterator anIOIt (aSelectedPresentations); anIOIt.More(); anIOIt.Next())
   {
-    NCollection_List<Handle(Standard_Transient)> aPluginParameters = myParameters->Parameters(aPluginName);
+    Handle(AIS_Shape) aShapePresentation = Handle(AIS_Shape)::DownCast (anIOIt.Value());
+    if (aShapePresentation.IsNull())
+      continue;
 
-    QStringList anExportedPointers;
-    for (NCollection_List<Handle(AIS_InteractiveObject)>::Iterator anIOIt (aSelectedPresentations); anIOIt.More(); anIOIt.Next())
-    {
-      Handle(AIS_Shape) aShapePresentation = Handle(AIS_Shape)::DownCast (anIOIt.Value());
-      if (aShapePresentation.IsNull())
-        continue;
-
-      const TopoDS_Shape& aShape = aShapePresentation->Shape();
-      if (aShape.IsNull())
-        continue;
-      aPluginParameters.Append (aShape.TShape());
-      anExportedPointers.append (VInspector_Tools::GetPointerInfo (aShape.TShape(), true).ToCString());
-    }
-    if (anExportedPointers.empty())
-      return;
-    myParameters->SetParameters (aPluginName, aPluginParameters);
-    QMessageBox::information (0, "Information", QString("TShapes '%1' are sent to %2 tool.")
-                             .arg (anExportedPointers.join(", ").arg (QString (aPluginName.ToCString()))));
+    const TopoDS_Shape& aShape = aShapePresentation->Shape();
+    if (aShape.IsNull())
+      continue;
+    aParameters.Append (aShape.TShape());
+    anExportedPointers.append (VInspector_Tools::GetPointerInfo (aShape.TShape(), true).ToCString());
   }
+  if (anExportedPointers.empty())
+    return;
+
+  TCollection_AsciiString aPluginShortName = aPluginName.SubString (3, aPluginName.Length());
+  QString aMessage = QString ("TShape %1 is sent to %2.")
+    .arg (anExportedPointers.join(", "))
+    .arg (aPluginShortName.ToCString());
+  QString aQuestion = QString ("Would you like to activate %1 immediately?\n")
+    .arg (aPluginShortName.ToCString()).toStdString().c_str();
+  if (!myExportToShapeViewDialog)
+    myExportToShapeViewDialog = new TreeModel_MessageDialog (myParent, aMessage, aQuestion);
+  else
+    myExportToShapeViewDialog->SetInformation (aMessage);
+  myExportToShapeViewDialog->Start();
+
+  myParameters->SetParameters (aPluginName, aParameters);
 }
 
 // =======================================================================
@@ -450,4 +507,18 @@ void VInspector_Window::displaySelectedPresentations(const bool theToDisplay)
       aContext->Erase(aPresentation, false);
   }
   aContext->UpdateCurrentViewer();
+}
+
+// =======================================================================
+// function : createView
+// purpose :
+// =======================================================================
+Handle(AIS_InteractiveContext) VInspector_Window::createView()
+{
+  myViewWindow = new View_Window (0);
+  myViewWindow->GetView()->SetPredefinedSize (VINSPECTOR_DEFAULT_VIEW_WIDTH, VINSPECTOR_DEFAULT_VIEW_HEIGHT);
+  myViewWindow->move (VINSPECTOR_DEFAULT_VIEW_POSITION_X, VINSPECTOR_DEFAULT_VIEW_POSITION_Y);
+  myViewWindow->show();
+
+  return myViewWindow->GetView()->GetViewer()->GetContext();
 }

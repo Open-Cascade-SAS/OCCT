@@ -18,10 +18,10 @@
 
 #include <AIS_InteractiveContext.hxx>
 #include <Standard.hxx>
-#include <VInspectorAPI_CallBack.hxx>
-#include <VInspector_CallBackMode.hxx>
-#include <VInspector_ViewModelHistory.hxx>
-#include <VInspector_Tools.hxx>
+#include <inspector/VInspectorAPI_CallBack.hxx>
+#include <inspector/VInspector_CallBackMode.hxx>
+#include <inspector/VInspector_ViewModelHistory.hxx>
+#include <inspector/VInspector_Tools.hxx>
 
 class AIS_InteractiveObject;
 class SelectMgr_EntityOwner;

@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <DFBrowserPane_TDataStdTreeNodeModel.hxx>
-#include <DFBrowserPane_TDataStdTreeNodeItem.hxx>
+#include <inspector/DFBrowserPane_TDataStdTreeNodeModel.hxx>
+#include <inspector/DFBrowserPane_TDataStdTreeNodeItem.hxx>
 
 #include <TDataStd_TreeNode.hxx>
 

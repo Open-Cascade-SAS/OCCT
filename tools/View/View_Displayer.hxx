@@ -22,7 +22,7 @@
 #include <NCollection_DataMap.hxx>
 #include <NCollection_Shared.hxx>
 #include <Quantity_Color.hxx>
-#include <View_PresentationType.hxx>
+#include <inspector/View_PresentationType.hxx>
 
 class V3d_View;
 

@@ -13,7 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <DFBrowser_Window.hxx>
+#include <inspector/DFBrowser_Window.hxx>
 
 #include <AIS_InteractiveContext.hxx>
 #include <AIS_InteractiveObject.hxx>
@@ -21,40 +21,44 @@
 
 #include <CDF_Session.hxx>
 
-#include <DFBrowserPane_AttributePaneAPI.hxx>
+#include <inspector/DFBrowserPane_AttributePaneAPI.hxx>
 
-#include <DFBrowser_AttributePaneStack.hxx>
-#include <DFBrowser_AttributePaneType.hxx>
-#include <DFBrowser_DumpView.hxx>
-#include <DFBrowser_Item.hxx>
-#include <DFBrowser_Module.hxx>
-#include <DFBrowser_OpenApplication.hxx>
-#include <DFBrowser_PropertyPanel.hxx>
-#include <DFBrowser_SearchLine.hxx>
-#include <DFBrowser_SearchView.hxx>
-#include <DFBrowser_Shortcut.hxx>
-#include <DFBrowser_Thread.hxx>
-#include <DFBrowser_ThreadItemSearch.hxx>
-#include <DFBrowser_ThreadItemUsedShapesMap.hxx>
-#include <DFBrowser_Tools.hxx>
-#include <DFBrowser_TreeLevelLine.hxx>
-#include <DFBrowser_TreeLevelView.hxx>
-#include <DFBrowser_TreeModel.hxx>
-#include <DFBrowser_TreeView.hxx>
+#include <inspector/DFBrowser_AttributePaneStack.hxx>
+#include <inspector/DFBrowser_AttributePaneType.hxx>
+#include <inspector/DFBrowser_DumpView.hxx>
+#include <inspector/DFBrowser_Item.hxx>
+#include <inspector/DFBrowser_ItemApplication.hxx>
+#include <inspector/DFBrowser_Module.hxx>
+#include <inspector/DFBrowser_OpenApplication.hxx>
+#include <inspector/DFBrowser_PropertyPanel.hxx>
+#include <inspector/DFBrowser_SearchLine.hxx>
+#include <inspector/DFBrowser_SearchView.hxx>
+#include <inspector/DFBrowser_Shortcut.hxx>
+#include <inspector/DFBrowser_Thread.hxx>
+#include <inspector/DFBrowser_ThreadItemSearch.hxx>
+#include <inspector/DFBrowser_ThreadItemUsedShapesMap.hxx>
+#include <inspector/DFBrowser_Tools.hxx>
+#include <inspector/DFBrowser_TreeLevelLine.hxx>
+#include <inspector/DFBrowser_TreeLevelView.hxx>
+#include <inspector/DFBrowser_TreeModel.hxx>
+#include <inspector/DFBrowser_TreeView.hxx>
 
-#include <DFBrowserPane_AttributePaneSelector.hxx>
-#include <DFBrowserPane_SelectionKind.hxx>
-#include <DFBrowserPane_Tools.hxx>
+#include <inspector/DFBrowserPane_AttributePaneSelector.hxx>
+#include <inspector/DFBrowserPane_SelectionKind.hxx>
+#include <inspector/DFBrowserPane_Tools.hxx>
 
 #include <OSD_Directory.hxx>
 #include <OSD_Environment.hxx>
 #include <OSD_Protection.hxx>
 
-#include <View_Displayer.hxx>
-#include <View_ToolBar.hxx>
-#include <View_Viewer.hxx>
-#include <View_Widget.hxx>
-#include <View_Window.hxx>
+#include <inspector/View_Displayer.hxx>
+#include <inspector/View_ToolBar.hxx>
+#include <inspector/View_Viewer.hxx>
+#include <inspector/View_Widget.hxx>
+#include <inspector/View_Window.hxx>
+
+#include <TDF_Tool.hxx>
+#include <inspector/TreeModel_MessageDialog.hxx>
 
 #include <QAction>
 #include <QApplication>
@@ -100,7 +104,7 @@ const int DEFAULT_BROWSER_HEIGHT = 800;
 // purpose :
 // =======================================================================
 DFBrowser_Window::DFBrowser_Window()
-: myModule (0), myParent (0), myPropertyPanel (0)
+: myModule (0), myParent (0), myPropertyPanel (0), myExportToShapeViewDialog (0)
 {
   myMainWindow = new QMainWindow (0);
 
@@ -237,6 +241,72 @@ void DFBrowser_Window::UpdateContent()
     myParameters->SetFileNames(aName, NCollection_List<TCollection_AsciiString>());
   }
   onUpdateClicked();
+
+  // make parameter items selected if defined
+  if (myParameters->FindSelectedNames(aName))
+  {
+    const NCollection_List<TCollection_AsciiString>& aSelected = myParameters->GetSelectedNames (aName);
+
+    DFBrowser_TreeModel* aTreeModel = dynamic_cast<DFBrowser_TreeModel*> (myTreeView->model());
+    Handle(TDocStd_Application) anApplication = aTreeModel->GetTDocStdApplication();
+
+    QItemSelectionModel* aSelectionModel = myTreeView->selectionModel();
+    aSelectionModel->clear();
+
+    NCollection_List<TCollection_AsciiString>::Iterator aSelectedIt (aSelected);
+    if (aSelectedIt.More())
+    {
+      TCollection_AsciiString aLabelEntry = aSelectedIt.Value();
+
+      TDF_Label aLabel;
+      for (Standard_Integer aDocId = 1, aNbDoc = anApplication->NbDocuments(); aDocId <= aNbDoc; aDocId++)
+      {
+        Handle(TDocStd_Document) aDocument;
+        anApplication->GetDocument (aDocId, aDocument);
+
+        TDF_Tool::Label(aDocument->GetData(), aLabelEntry.ToCString(), aLabel, Standard_False);
+        if (!aLabel.IsNull())
+          break;
+      }
+      if (!aLabel.IsNull())
+      {
+        QModelIndex anIndexToBeSelected = aTreeModel->FindIndex (aLabel);
+
+        TCollection_AsciiString anAttributeType;
+        aSelectedIt.Next();
+        // find attribute by attribute type on the given label
+        if  (aSelectedIt.More())
+        {
+          anAttributeType = aSelectedIt.Value();
+
+          TreeModel_ItemBasePtr aLabelItem = TreeModel_ModelBase::GetItemByIndex (anIndexToBeSelected);
+          //DFBrowser_ItemPtr anItem = itemDynamicCast<DFBrowser_Item> (anItemBase);
+          for (int aChildId = 0, aNbChildren = aLabelItem->rowCount(); aChildId < aNbChildren; aChildId++)
+          {
+            QModelIndex anIndex = aTreeModel->index (aChildId, 0, anIndexToBeSelected);
+            TreeModel_ItemBasePtr anItemBase = TreeModel_ModelBase::GetItemByIndex (anIndex);
+            DFBrowser_ItemPtr anItem = itemDynamicCast<DFBrowser_Item> (anItemBase);
+            if (anItem->HasAttribute())
+            {
+              // processing attribute in theValue
+              DFBrowser_ItemApplicationPtr aRootAppItem = itemDynamicCast<DFBrowser_ItemApplication>(aTreeModel->RootItem (0));
+              QString anAttributeInfo = DFBrowser_Module::GetAttributeInfo (anItem->GetAttribute(), aRootAppItem->GetModule(),
+                                                      Qt::DisplayRole, 0).toString();
+              if (anAttributeInfo == anAttributeType.ToCString())
+              {
+                anIndexToBeSelected = anIndex;
+                break;
+              }
+            }
+          }
+        }
+        aSelectionModel->select (anIndexToBeSelected, QItemSelectionModel::Select);
+        myTreeView->scrollTo (anIndexToBeSelected);
+      }
+    }
+
+    myParameters->SetSelectedNames(aName, NCollection_List<TCollection_AsciiString>());
+  }
 }
 
 // =======================================================================
@@ -326,8 +396,6 @@ void DFBrowser_Window::Init (const NCollection_List<Handle(Standard_Transient)>&
 // =======================================================================
 void DFBrowser_Window::OpenFile (const TCollection_AsciiString& theFileName)
 {
-  //#define REQUIRE_OCAF_REVIEW:28 (check that previous application is correctly closed) : start
-
   QApplication::setOverrideCursor (Qt::WaitCursor);
   myThread->TerminateThread();
 
@@ -389,7 +457,6 @@ void DFBrowser_Window::OpenFile (const TCollection_AsciiString& theFileName)
     myModule->SetInitialTreeViewSelection();
     QApplication::restoreOverrideCursor();
   }
-  //#define REQUIRE_OCAF_REVIEW:28 (check that previous application is correctly closed) : end
 }
 
 // =======================================================================
@@ -665,18 +732,27 @@ void DFBrowser_Window::onPaneSelectionChanged (const QItemSelection&,
         return;
 
       TCollection_AsciiString aPluginName ("TKShapeView");
-      if (!myParameters->FindParameters (aPluginName))
-        return;
+      NCollection_List<Handle(Standard_Transient)> aParameters;
+      if (myParameters->FindParameters (aPluginName))
+        aParameters = myParameters->Parameters (aPluginName);
 
-      NCollection_List<Handle(Standard_Transient)> aParameters = myParameters->Parameters (aPluginName);
       int aParametersCount = aParameters.Extent();
       anAttributePane->GetSelectionParameters (aSelectionModel, aParameters);
       if (aParametersCount != aParameters.Extent()) // some TShapes are added
       {
-        myParameters->SetParameters (aPluginName, aParameters);
-        QMessageBox::information (0, "Information", QString ("TShape %1 is sent to %2 tool.")
-                                 .arg (DFBrowserPane_Tools::GetPointerInfo (aParameters.Last()).ToCString())
-                                 .arg (aPluginName.ToCString()));
+        TCollection_AsciiString aPluginShortName = aPluginName.SubString (3, aPluginName.Length());
+        QString aMessage = QString ("TShape %1 is sent to %2.")
+          .arg (DFBrowserPane_Tools::GetPointerInfo (aParameters.Last()).ToCString())
+          .arg (aPluginShortName.ToCString());
+        QString aQuestion = QString ("Would you like to activate %1 immediately?\n")
+          .arg (aPluginShortName.ToCString()).toStdString().c_str();
+        if (!myExportToShapeViewDialog)
+          myExportToShapeViewDialog = new TreeModel_MessageDialog (myParent, aMessage, aQuestion);
+        else
+          myExportToShapeViewDialog->SetInformation (aMessage);
+        myExportToShapeViewDialog->Start();
+
+        myParameters->SetParameters (aPluginName, aParameters, myExportToShapeViewDialog->IsAccepted());
       }
       return;
     }
@@ -700,9 +776,7 @@ void DFBrowser_Window::onPaneSelectionChanged (const QItemSelection&,
   Handle(TDF_Attribute) anAttribute = myModule->FindAttribute (aSelectedIndex);
   NCollection_List<TDF_Label> aReferences;
   Handle(Standard_Transient) aPresentation;
-//#define REQUIRE_OCAF_REVIEW:10 : start (GetReferences)
   anAttributePane->GetReferences (anAttribute, aReferences, aPresentation);
-//#define REQUIRE_OCAF_REVIEW:10 : end
   QModelIndexList anIndices;
   DFBrowser_TreeModel* aTreeModel = dynamic_cast<DFBrowser_TreeModel*> (myTreeView->model());
   if (!aReferences.IsEmpty())

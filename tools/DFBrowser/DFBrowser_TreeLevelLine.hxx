@@ -16,8 +16,9 @@
 #ifndef DFBrowser_TreeLevelLine_H
 #define DFBrowser_TreeLevelLine_H
 
+#include <inspector/TreeModel_ItemBase.hxx>
+
 #include <Standard.hxx>
-#include <TreeModel_ItemBase.hxx>
 
 #include <QItemSelection>
 #include <QObject>

@@ -13,12 +13,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <VInspector_ViewModel.hxx>
+#include <inspector/VInspector_ViewModel.hxx>
 
-#include <VInspector_ItemContext.hxx>
-#include <VInspector_ItemEntityOwner.hxx>
-#include <VInspector_ItemPresentableObject.hxx>
-#include <VInspector_ItemSensitiveEntity.hxx>
+#include <inspector/VInspector_ItemContext.hxx>
+#include <inspector/VInspector_ItemEntityOwner.hxx>
+#include <inspector/VInspector_ItemPresentableObject.hxx>
+#include <inspector/VInspector_ItemSensitiveEntity.hxx>
 #include <SelectBasics_EntityOwner.hxx>
 
 #include <QItemSelectionModel>
@@ -78,6 +78,27 @@ QModelIndexList VInspector_ViewModel::FindPointers (const QStringList& thePointe
       anIndices.append (anIndex);
   }
   return anIndices;
+}
+
+// =======================================================================
+// function : FindIndex
+// purpose :
+// =======================================================================
+QModelIndex VInspector_ViewModel::FindIndex (const Handle(AIS_InteractiveObject)& thePresentation) const
+{
+  QModelIndex aParentIndex = index (0, 0);
+  TreeModel_ItemBasePtr aParentItem = TreeModel_ModelBase::GetItemByIndex (aParentIndex); // context item
+  for (int aRowId = 0, aCount = aParentItem->rowCount(); aRowId < aCount; aRowId++)
+  {
+    QModelIndex anIndex = index (aRowId, 0, aParentIndex);
+    TreeModel_ItemBasePtr anItemBase = TreeModel_ModelBase::GetItemByIndex (anIndex);
+    VInspector_ItemPresentableObjectPtr anItemPrs = itemDynamicCast<VInspector_ItemPresentableObject>(anItemBase);
+    if (!anItemPrs)
+      continue;
+    if (anItemPrs->GetInteractiveObject() == thePresentation)
+      return anIndex;
+  }
+  return QModelIndex();
 }
 
 // =======================================================================

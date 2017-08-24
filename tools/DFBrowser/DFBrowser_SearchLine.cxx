@@ -13,12 +13,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <DFBrowser_SearchLine.hxx>
-#include <DFBrowser_SearchLineModel.hxx>
-#include <DFBrowser_Window.hxx>
+#include <inspector/DFBrowser_SearchLine.hxx>
+#include <inspector/DFBrowser_SearchLineModel.hxx>
+#include <inspector/DFBrowser_Window.hxx>
 
-#include <DFBrowserPane_Tools.hxx>
-#include <DFBrowser_Module.hxx>
+#include <inspector/DFBrowserPane_Tools.hxx>
+#include <inspector/DFBrowser_Module.hxx>
 
 #include <TDocStd_Application.hxx>
 #include <TDocStd_Document.hxx>

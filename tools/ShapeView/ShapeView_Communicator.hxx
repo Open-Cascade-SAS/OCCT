@@ -16,8 +16,8 @@
 #ifndef ShapeView_Communicator_H
 #define ShapeView_Communicator_H
 
-#include <ShapeView_Window.hxx>
-#include <TInspectorAPI_Communicator.hxx>
+#include <inspector/ShapeView_Window.hxx>
+#include <inspector/TInspectorAPI_Communicator.hxx>
 
 //! \class ShapeView_Communicator.
 //! \brief This is a connector from TInspector application to ShapeView window

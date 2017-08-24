@@ -13,7 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <ShapeView_OpenFileViewModel.hxx>
+#include <inspector/ShapeView_OpenFileViewModel.hxx>
 
 #include <QApplication>
 #include <QFileInfo>

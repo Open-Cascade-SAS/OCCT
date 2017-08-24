@@ -13,14 +13,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <DFBrowser_TreeLevelLine.hxx>
+#include <inspector/DFBrowser_TreeLevelLine.hxx>
 
-#include <DFBrowser_SearchLine.hxx>
-#include <DFBrowser_Window.hxx>
-#include <DFBrowser_TreeLevelLineDelegate.hxx>
-#include <DFBrowser_TreeLevelLineModel.hxx>
+#include <inspector/DFBrowser_SearchLine.hxx>
+#include <inspector/DFBrowser_Window.hxx>
+#include <inspector/DFBrowser_TreeLevelLineDelegate.hxx>
+#include <inspector/DFBrowser_TreeLevelLineModel.hxx>
 
-#include <DFBrowserPane_Tools.hxx>
+#include <inspector/DFBrowserPane_Tools.hxx>
 
 #include <QAbstractItemModel>
 #include <QFrame>

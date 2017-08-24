@@ -16,7 +16,8 @@
 #ifndef DFBrowserPane_TDataStdVariable_H
 #define DFBrowserPane_TDataStdVariable_H
 
-#include <DFBrowserPane_AttributePane.hxx>
+#include <inspector/DFBrowserPane_AttributePane.hxx>
+
 #include <Standard.hxx>
 
 //! \class DFBrowserPane_TDataStdVariable

@@ -17,9 +17,9 @@
 #define VInspector_ItemHistoryRoot_H
 
 #include <Standard.hxx>
-#include <VInspector_ItemBase.hxx>
-#include <VInspector_ItemHistoryTypeInfo.hxx>
-#include <VInspector_CallBackMode.hxx>
+#include <inspector/VInspector_ItemBase.hxx>
+#include <inspector/VInspector_ItemHistoryTypeInfo.hxx>
+#include <inspector/VInspector_CallBackMode.hxx>
 
 class VInspector_ItemHistoryRoot;
 typedef QExplicitlySharedDataPointer<VInspector_ItemHistoryRoot> VInspector_ItemHistoryRootPtr;

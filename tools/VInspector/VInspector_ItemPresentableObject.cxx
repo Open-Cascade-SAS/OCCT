@@ -13,16 +13,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <VInspector_ItemPresentableObject.hxx>
+#include <inspector/VInspector_ItemPresentableObject.hxx>
 
 #include <AIS_Shape.hxx>
 #include <AIS_ListOfInteractive.hxx>
 #include <AIS_ListIteratorOfListOfInteractive.hxx>
-#include <VInspector_ItemContext.hxx>
-#include <VInspector_ItemEntityOwner.hxx>
-#include <VInspector_ItemSelection.hxx>
-#include <VInspector_Tools.hxx>
-#include <VInspector_ViewModel.hxx>
+#include <inspector/VInspector_ItemContext.hxx>
+#include <inspector/VInspector_ItemEntityOwner.hxx>
+#include <inspector/VInspector_ItemSelection.hxx>
+#include <inspector/VInspector_Tools.hxx>
+#include <inspector/VInspector_ViewModel.hxx>
 
 #include <NCollection_List.hxx>
 #include <Prs3d.hxx>

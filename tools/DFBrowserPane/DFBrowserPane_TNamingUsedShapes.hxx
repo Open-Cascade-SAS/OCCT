@@ -16,7 +16,8 @@
 #ifndef DFBrowserPane_TNamingUsedShapes_H
 #define DFBrowserPane_TNamingUsedShapes_H
 
-#include <DFBrowserPane_AttributePane.hxx>
+#include <inspector/DFBrowserPane_AttributePane.hxx>
+
 #include <NCollection_DataMap.hxx>
 #include <Standard.hxx>
 #include <TCollection_AsciiString.hxx>

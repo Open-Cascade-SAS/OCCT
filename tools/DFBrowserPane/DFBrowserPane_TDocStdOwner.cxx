@@ -13,11 +13,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <DFBrowserPane_TDocStdOwner.hxx>
+#include <inspector/DFBrowserPane_TDocStdOwner.hxx>
 
-#include <DFBrowserPane_AttributePaneModel.hxx>
-#include <DFBrowserPane_TableView.hxx>
-#include <DFBrowserPane_Tools.hxx>
+#include <inspector/DFBrowserPane_AttributePaneModel.hxx>
+#include <inspector/DFBrowserPane_TableView.hxx>
+#include <inspector/DFBrowserPane_Tools.hxx>
 
 #include <TDocStd_Document.hxx>
 #include <TDocStd_Owner.hxx>
@@ -31,7 +31,6 @@
 #include <QGroupBox>
 #include <QTableView>
 
-//#define REQUIRE_OCAF_REVIEW:12
 // =======================================================================
 // function : Constructor
 // purpose :

@@ -18,7 +18,7 @@
 
 #include <Standard.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <TInspectorAPI_PluginParameters.hxx>
+#include <inspector/TInspectorAPI_PluginParameters.hxx>
 #include <TopoDS_Shape.hxx>
 
 #ifdef _MSC_VER
@@ -109,6 +109,9 @@ protected slots:
 
   //! Removes all shapes in tree view
   void onClearView() { RemoveAllShapes(); }
+
+  //! Load BREP file and updates tree model to have shape of the file
+  void onLoadFile();
 
   //! View BREP files of selected items if exist
   void onBREPView();

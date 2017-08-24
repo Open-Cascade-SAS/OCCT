@@ -22,7 +22,7 @@
 #if OCC_VERSION_HEX > 0x060901
   #include <Standard_Handle.hxx>
 #endif
-#include <TInspectorAPI_PluginParameters.hxx>
+#include <inspector/TInspectorAPI_PluginParameters.hxx>
 
 //! The Communicator is an interface that should be implemented for a separate plugin
 //! It will be placed in layout of the given parent. After the plugin is created, it is possible to

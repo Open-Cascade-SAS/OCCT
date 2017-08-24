@@ -16,10 +16,10 @@
 #ifndef DFBrowserPane_TDataStdByteArray_H
 #define DFBrowserPane_TDataStdByteArray_H
 
-#include <DFBrowserPane_AttributePane.hxx>
-#include <Standard.hxx>
+#include <inspector/DFBrowserPane_AttributePane.hxx>
+#include <inspector/DFBrowserPane_HelperArray.hxx>
 
-#include <DFBrowserPane_HelperArray.hxx>
+#include <Standard.hxx>
 
 //! \class DFBrowserPane_TDataStdByteArray
 //! \brief The class to manipulate of TDataStd_ByteArra attribute

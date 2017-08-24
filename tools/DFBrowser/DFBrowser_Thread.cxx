@@ -13,13 +13,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <DFBrowser_Thread.hxx>
-#include <DFBrowser_ThreadItemSearch.hxx>
-#include <DFBrowser_ThreadItemUsedShapesMap.hxx>
-#include <DFBrowser_TreeLevelLine.hxx>
-#include <DFBrowser_SearchLine.hxx>
+#include <inspector/DFBrowser_Thread.hxx>
+#include <inspector/DFBrowser_ThreadItemSearch.hxx>
+#include <inspector/DFBrowser_ThreadItemUsedShapesMap.hxx>
+#include <inspector/DFBrowser_TreeLevelLine.hxx>
+#include <inspector/DFBrowser_SearchLine.hxx>
 
-#include <DFBrowser_Window.hxx>
+#include <inspector/DFBrowser_Window.hxx>
 
 #include <QThread>
 

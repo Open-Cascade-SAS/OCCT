@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <DFBrowser_TreeLevelLineDelegate.hxx>
-#include <DFBrowser_Window.hxx>
+#include <inspector/DFBrowser_TreeLevelLineDelegate.hxx>
+#include <inspector/DFBrowser_Window.hxx>
 
 #include <QPainter>
 

@@ -789,8 +789,7 @@ else()
   # collect all the headers to <binary dir>/inc folder
   string(TIMESTAMP CURRENT_TIME "%H:%M:%S")
   message (STATUS "\nInfo: \(${CURRENT_TIME}\) Start collecting all OCCT tool header files into ${CMAKE_BINARY_DIR}/tools/inc ...")
-  COLLECT_AND_INSTALL_OCCT_HEADER_FILES ("${CMAKE_BINARY_DIR}/${INSTALL_DIR_INCLUDE}" "${BUILD_TOOL_TOOLKITS}" "${CMAKE_SOURCE_DIR}/tools" "tools")
-  include_directories (${CMAKE_BINARY_DIR}/${INSTALL_DIR_INCLUDE}/tools)
+  COLLECT_AND_INSTALL_OCCT_HEADER_FILES ("${CMAKE_BINARY_DIR}" "${BUILD_TOOL_TOOLKITS}" "${CMAKE_SOURCE_DIR}/tools" "${INSTALL_DIR_INCLUDE}/inspector")
 
 
   # check qt 3rdparty path

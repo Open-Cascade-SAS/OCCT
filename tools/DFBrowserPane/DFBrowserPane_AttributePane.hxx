@@ -16,7 +16,7 @@
 #ifndef DFBrowserPane_AttributePane_H
 #define DFBrowserPane_AttributePane_H
 
-#include <DFBrowserPane_AttributePaneAPI.hxx>
+#include <inspector/DFBrowserPane_AttributePaneAPI.hxx>
 
 #include <TDF_Attribute.hxx>
 #include <TDF_Label.hxx>

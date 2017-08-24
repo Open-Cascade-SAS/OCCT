@@ -13,12 +13,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <DFBrowserPane_TDataStdNamedData.hxx>
+#include <inspector/DFBrowserPane_TDataStdNamedData.hxx>
 
-#include <DFBrowserPane_AttributePaneModel.hxx>
-#include <DFBrowserPane_HelperGroupContent.hxx>
-#include <DFBrowserPane_TableView.hxx>
-#include <DFBrowserPane_Tools.hxx>
+#include <inspector/DFBrowserPane_AttributePaneModel.hxx>
+#include <inspector/DFBrowserPane_HelperGroupContent.hxx>
+#include <inspector/DFBrowserPane_TableView.hxx>
+#include <inspector/DFBrowserPane_Tools.hxx>
 
 #include <TColStd_DataMapOfStringInteger.hxx>
 #include <TColStd_DataMapIteratorOfDataMapOfStringInteger.hxx>
@@ -48,7 +48,6 @@ static const QString VALUES_BYTE =       "values_byte";
 static const QString VALUES_INT_ARRAY =  "values_int_array";
 static const QString VALUES_REAL_ARRAY = "values_real_array";
 
-//#define REQUIRE_OCAF_REVIEW:9 : start
 // =======================================================================
 // function : Constructor
 // purpose :
@@ -236,4 +235,3 @@ QList<QVariant> DFBrowserPane_TDataStdNamedData::getPartOfValues (const QString&
   }
   return aValues;
 }
-//#define REQUIRE_OCAF_REVIEW:9 : end

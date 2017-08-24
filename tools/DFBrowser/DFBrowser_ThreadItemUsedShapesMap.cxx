@@ -13,14 +13,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <DFBrowser_ThreadItemUsedShapesMap.hxx>
+#include <inspector/DFBrowser_ThreadItemUsedShapesMap.hxx>
 
-#include <DFBrowser_Module.hxx>
-#include <DFBrowser_Tools.hxx>
-#include <DFBrowser_TreeModel.hxx>
+#include <inspector/DFBrowser_Module.hxx>
+#include <inspector/DFBrowser_Tools.hxx>
+#include <inspector/DFBrowser_TreeModel.hxx>
 
-#include <DFBrowserPane_TNamingUsedShapes.hxx>
-#include <DFBrowserPane_Tools.hxx>
+#include <inspector/DFBrowserPane_TNamingUsedShapes.hxx>
+#include <inspector/DFBrowserPane_Tools.hxx>
 
 #include <TNaming_DataMapIteratorOfDataMapOfShapePtrRefShape.hxx>
 #include <TNaming_PtrRefShape.hxx>
@@ -89,7 +89,10 @@ void DFBrowser_ThreadItemUsedShapesMap::ApplyValues()
     TreeModel_ItemBasePtr anItemBase = TreeModel_ModelBase::GetItemByIndex
                                                    (aDFBrowserModel->FindIndexByAttribute (aRefIt.Key()));
     if (anItemBase)
+    {
+      anItemBase->Reset();
       anItemBase->Init();
+    }
   }
   // clear cache
   myAttributeRefs.Clear();
@@ -205,7 +208,6 @@ void DFBrowser_ThreadItemUsedShapesMap::addValue (const TCollection_AsciiString&
 // function : findReferences
 // purpose :
 // =======================================================================
-//#define REQUIRE_OCAF_REVIEW:26 : start
 void DFBrowser_ThreadItemUsedShapesMap::findReferences (Handle(TDF_Attribute) theAttribute,
                                                         std::list<TCollection_AsciiString>& theReferences)
 {
@@ -219,4 +221,3 @@ void DFBrowser_ThreadItemUsedShapesMap::findReferences (Handle(TDF_Attribute) th
        anEntryIt != anEntries.end(); anEntryIt++)
     theReferences.push_back (anEntryIt->first);
 }
-//#define REQUIRE_OCAF_REVIEW:26 : end

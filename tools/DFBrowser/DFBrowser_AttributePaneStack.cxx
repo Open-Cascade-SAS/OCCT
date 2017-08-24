@@ -13,17 +13,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <DFBrowser_AttributePaneStack.hxx>
+#include <inspector/DFBrowser_AttributePaneStack.hxx>
 
-#include <DFBrowserPane_AttributePaneAPI.hxx>
-#include <DFBrowserPane_AttributePaneSelector.hxx>
-#include <DFBrowser_Item.hxx>
-#include <DFBrowser_Module.hxx>
-#include <DFBrowser_Tools.hxx>
-#include <DFBrowser_TreeLevelView.hxx>
-#include <DFBrowser_TreeModel.hxx>
-#include <DFBrowser_SearchView.hxx>
-#include <DFBrowser_Window.hxx>
+#include <inspector/DFBrowserPane_AttributePaneAPI.hxx>
+#include <inspector/DFBrowserPane_AttributePaneSelector.hxx>
+#include <inspector/DFBrowser_Item.hxx>
+#include <inspector/DFBrowser_Module.hxx>
+#include <inspector/DFBrowser_Tools.hxx>
+#include <inspector/DFBrowser_TreeLevelView.hxx>
+#include <inspector/DFBrowser_TreeModel.hxx>
+#include <inspector/DFBrowser_SearchView.hxx>
+#include <inspector/DFBrowser_Window.hxx>
 
 #include <TDF_Attribute.hxx>
 

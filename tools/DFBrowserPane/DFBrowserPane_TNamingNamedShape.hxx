@@ -16,8 +16,9 @@
 #ifndef DFBrowserPane_TNamingNamedShape_H
 #define DFBrowserPane_TNamingNamedShape_H
 
-#include <DFBrowserPane_AttributePane.hxx>
-#include <DFBrowserPane_HelperExport.hxx>
+#include <inspector/DFBrowserPane_AttributePane.hxx>
+#include <inspector/DFBrowserPane_HelperExport.hxx>
+
 #include <Standard.hxx>
 #include <TDF_Attribute.hxx>
 #include <TNaming_NamedShape.hxx>

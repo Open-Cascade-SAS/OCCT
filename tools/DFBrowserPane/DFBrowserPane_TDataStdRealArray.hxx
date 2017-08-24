@@ -16,10 +16,10 @@
 #ifndef DFBrowserPane_TDataStdRealArray_H
 #define DFBrowserPane_TDataStdRealArray_H
 
-#include <DFBrowserPane_AttributePane.hxx>
-#include <Standard.hxx>
+#include <inspector/DFBrowserPane_AttributePane.hxx>
+#include <inspector/DFBrowserPane_HelperArray.hxx>
 
-#include <DFBrowserPane_HelperArray.hxx>
+#include <Standard.hxx>
 
 //! \class DFBrowserPane_TDataStdRealArray
 //! \brief The class to manipulate of TDataStd_RealArray attribute

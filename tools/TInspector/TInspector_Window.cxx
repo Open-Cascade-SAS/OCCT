@@ -13,9 +13,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <TInspector_Window.hxx>
+#include <inspector/TInspector_Window.hxx>
+#include <inspector/TInspector_Window.hxx>
 
-#include <TInspectorAPI_Communicator.hxx>
+#include <inspector/TInspectorAPI_Communicator.hxx>
+#include <inspector/TInspector_PluginParameters.hxx>
 
 #include <QApplication>
 #include <QDockWidget>
@@ -65,7 +67,35 @@ TInspector_Window::TInspector_Window()
   myMainWindow->move (TINSPECTOR_DEFAULT_POSITION_X, TINSPECTOR_DEFAULT_POSITION_Y);
   myMainWindow->setDockOptions (QMainWindow::VerticalTabs);
 
-  myParameters = new TInspectorAPI_PluginParameters();
+  myParameters = new TInspector_PluginParameters (this);
+}
+
+// =======================================================================
+// function : RegisterPlugin
+// purpose :
+// =======================================================================
+void TInspector_Window::RegisterPlugin (const TCollection_AsciiString& thePluginName)
+{
+  TInspector_ToolInfo anInfo;
+  int aToolId;
+  if (FindPlugin (thePluginName, anInfo, aToolId))
+    return;
+
+  myToolNames.append (TInspector_ToolInfo (thePluginName));
+}
+
+// =======================================================================
+// function : RegisteredPlugins
+// purpose :
+// =======================================================================
+NCollection_List<TCollection_AsciiString> TInspector_Window::RegisteredPlugins() const
+{
+  NCollection_List<TCollection_AsciiString> aPlugins;
+
+  for (int aToolId = 0, aSize = myToolNames.size(); aToolId < aSize; aToolId++)
+    aPlugins.Append (myToolNames[aToolId].myName);
+
+  return aPlugins;
 }
 
 // =======================================================================
@@ -73,13 +103,14 @@ TInspector_Window::TInspector_Window()
 // purpose :
 // =======================================================================
 void TInspector_Window::Init (const TCollection_AsciiString& thePluginName,
-                              const NCollection_List<Handle(Standard_Transient)>& theParameters)
+                              const NCollection_List<Handle(Standard_Transient)>& theParameters,
+                              const Standard_Boolean theAppend)
 {
   if (thePluginName.IsEmpty())
   {
     // Init all plugins by the given parameters
     for (int aToolId = 0, aSize = myToolNames.size(); aToolId < aSize; aToolId++)
-      Init (myToolNames[aToolId].myName, theParameters);
+      Init (myToolNames[aToolId].myName, theParameters, theAppend);
 
     // temporary activation of the first tool
     if (!myToolNames.isEmpty())
@@ -87,24 +118,38 @@ void TInspector_Window::Init (const TCollection_AsciiString& thePluginName,
     return;
   }
 
-  myParameters->SetParameters (thePluginName, theParameters);
-
-  for (int aToolId = 0, aSize = myToolNames.size(); aToolId < aSize; aToolId++)
+  if (theAppend)
   {
-    TInspector_ToolInfo anInfo = myToolNames[aToolId];
-    if (anInfo.myName != thePluginName)
-      continue;
+    NCollection_List<Handle(Standard_Transient)> aParameters;
+    if (myParameters->FindParameters (thePluginName))
+      aParameters = myParameters->Parameters (thePluginName);
 
-    if (anInfo.myCommunicator)
-      break;
+    for (NCollection_List<Handle(Standard_Transient)>::Iterator anIterator (theParameters);
+      anIterator.More(); anIterator.Next())
+      aParameters.Append (anIterator.Value());
 
-    QPushButton* aButton = new QPushButton(anInfo.myName.ToCString(), myButtonWidget);
-    connect (aButton, SIGNAL (clicked (bool)), this, SLOT (onButtonClicked()));
-    myButtonLay->insertWidget (myButtonLay->count()-1, aButton);
-    anInfo.myButton = aButton;
-    myToolNames[aToolId] = anInfo;
-    break;
+    myParameters->SetParameters (thePluginName, aParameters, Standard_False);
   }
+  else
+    myParameters->SetParameters (thePluginName, theParameters, Standard_False);
+
+  TInspector_ToolInfo anInfo;
+  int aToolId;
+  if (!FindPlugin (thePluginName, anInfo, aToolId))
+    return;
+
+  if (anInfo.myButton)
+    return;
+
+  QString aButtonName = anInfo.myName.ToCString();
+  if (aButtonName.indexOf("TK") == 0)
+    aButtonName = aButtonName.mid(2);
+
+  QPushButton* aButton = new QPushButton(aButtonName, myButtonWidget);
+  connect (aButton, SIGNAL (clicked (bool)), this, SLOT (onButtonClicked()));
+  myButtonLay->insertWidget (myButtonLay->count()-1, aButton);
+  anInfo.myButton = aButton;
+  myToolNames[aToolId] = anInfo;
 }
 
 // =======================================================================
@@ -147,6 +192,44 @@ void TInspector_Window::ActivateTool (const TCollection_AsciiString& thePluginNa
 }
 
 // =======================================================================
+// function : SetSelected
+// purpose :
+// =======================================================================
+void TInspector_Window::SetSelected (const NCollection_List<TCollection_AsciiString>& theItemNames)
+{
+  TInspector_ToolInfo anInfo;
+  if (!ActiveToolInfo (anInfo))
+    return;
+
+  myParameters->SetSelectedNames (anInfo.myName, theItemNames);
+
+  TInspectorAPI_Communicator* aCommunicator = anInfo.myCommunicator;
+  if (aCommunicator)
+  {
+    aCommunicator->UpdateContent();
+  }
+}
+
+// =======================================================================
+// function : SetSelected
+// purpose :
+// =======================================================================
+void TInspector_Window::SetSelected (const NCollection_List<Handle(Standard_Transient)>& theObjects)
+{
+  TInspector_ToolInfo anInfo;
+  if (!ActiveToolInfo (anInfo))
+    return;
+
+  myParameters->SetSelected (anInfo.myName, theObjects);
+
+  TInspectorAPI_Communicator* aCommunicator = anInfo.myCommunicator;
+  if (aCommunicator)
+  {
+    aCommunicator->UpdateContent();
+  }
+}
+
+// =======================================================================
 // function : SetOpenButton
 // purpose :
 // =======================================================================
@@ -166,6 +249,14 @@ void TInspector_Window::SetOpenButton (QPushButton* theButton)
 void TInspector_Window::OpenFile (const TCollection_AsciiString& thePluginName,
                                   const TCollection_AsciiString& theFileName)
 {
+  if (thePluginName.IsEmpty())
+  {
+    // Apply file name to all plugins
+    for (int aToolId = 0, aSize = myToolNames.size(); aToolId < aSize; aToolId++)
+      OpenFile (myToolNames[aToolId].myName, theFileName);
+    return;
+  }
+
   myParameters->AddFileName (thePluginName, theFileName);
 
   TInspector_ToolInfo anInfo;
@@ -222,23 +313,13 @@ bool TInspector_Window::LoadPlugin (const TCollection_AsciiString& thePluginName
 }
 
 // =======================================================================
-// function : onLastApplicationWindowClosed
-// purpose :
-// =======================================================================
-void TInspector_Window::OnLastApplicationWindowClosed()
-{
-  for (int aToolId = 0, aSize = myToolNames.size(); aToolId < aSize; aToolId++)
-    delete myToolNames[aToolId].myCommunicator;
-}
-
-// =======================================================================
 // function : onButtonClicked
 // purpose :
 // =======================================================================
 void TInspector_Window::onButtonClicked()
 {
   QPushButton* aButton = (QPushButton*)sender();
-  ActivateTool (TCollection_AsciiString (aButton->text().toStdString().c_str()));
+  ActivateTool (TCollection_AsciiString ("TK") + aButton->text().toStdString().c_str());
 }
 
 // =======================================================================
@@ -275,3 +356,24 @@ bool TInspector_Window::ActiveToolInfo (TInspector_Window::TInspector_ToolInfo& 
   }
   return false;
 }
+
+// =======================================================================
+// function : FindPlugin
+// purpose :
+// =======================================================================
+bool TInspector_Window::FindPlugin (const TCollection_AsciiString& thePluginName, TInspector_ToolInfo& theToolInfo,
+                                    int& theToolId)
+{
+  for (int aToolId = 0, aSize = myToolNames.size(); aToolId < aSize; aToolId++)
+  {
+    TInspector_ToolInfo anInfo = myToolNames[aToolId];
+    if (anInfo.myName != thePluginName)
+      continue;
+    theToolInfo = anInfo;
+    theToolId = aToolId;
+    return true;
+  }
+
+  return false;
+}
+  

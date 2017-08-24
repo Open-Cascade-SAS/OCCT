@@ -13,10 +13,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <DFBrowserPaneXDE_AttributeCommonPane.hxx>
+#include <inspector/DFBrowserPaneXDE_AttributeCommonPane.hxx>
 
-#include <DFBrowserPane_ItemRole.hxx>
-#include <DFBrowserPaneXDE_XDEDRAW.hxx>
+#include <inspector/DFBrowserPane_ItemRole.hxx>
+#include <inspector/DFBrowserPaneXDE_XDEDRAW.hxx>
 
 #include <TDataStd_TreeNode.hxx>
 #include <TDF_Reference.hxx>

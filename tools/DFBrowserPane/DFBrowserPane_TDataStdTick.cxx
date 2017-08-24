@@ -13,7 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <DFBrowserPane_TDataStdTick.hxx>
+#include <inspector/DFBrowserPane_TDataStdTick.hxx>
 
 #include <TDataStd_Tick.hxx>
 

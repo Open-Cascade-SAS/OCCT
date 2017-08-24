@@ -13,7 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <DFBrowserPane_TDataStdNoteBook.hxx>
+#include <inspector/DFBrowserPane_TDataStdNoteBook.hxx>
 
 #include <TDataStd_NoteBook.hxx>
 

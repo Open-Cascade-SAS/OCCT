@@ -18,7 +18,7 @@
 
 #include <Standard.hxx>
 #include <Standard_Macro.hxx>
-#include <TreeModel_ItemRole.hxx>
+#include <inspector/TreeModel_ItemRole.hxx>
 
 #ifdef _MSC_VER
 #pragma warning(disable : 4127) // conditional expression is constant

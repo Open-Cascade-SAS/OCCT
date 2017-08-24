@@ -14,9 +14,9 @@
 // commercial license or contractual agreement. 
 
 #include <TInspectorEXE_OpenFileDialog.hxx>
-
-#include <TInspector_Communicator.hxx>
 #include <TInspectorEXE_OpenFileViewModel.hxx>
+
+#include <inspector/TInspector_Communicator.hxx>
 
 #include <QApplication>
 #include <QCompleter>

@@ -16,7 +16,7 @@
 #ifndef TInspector_Communicator_H
 #define TInspector_Communicator_H
 
-#include <TInspector_Window.hxx>
+#include <inspector/TInspector_Window.hxx>
 
 #include <NCollection_List.hxx>
 #include <Standard.hxx>
@@ -43,16 +43,25 @@ public:
   //! \param thePluginName a name of the plugin
   void RegisterPlugin (const TCollection_AsciiString& thePluginName) { myWindow->RegisterPlugin (thePluginName); }
 
+  //! Returns list of registered plugins
+  //! \return container of plugin names
+  NCollection_List<TCollection_AsciiString> RegisteredPlugins() const { return myWindow->RegisteredPlugins(); }
+
   //! Stores parameters for the plugin
   //! \param theParameters container of parameters(e.g. AIS_InteractiveContext, TDocStd_Application)
-  void Init (const NCollection_List<Handle(Standard_Transient)>& theParameters) { myWindow->Init ("", theParameters); }
+  //! \param theAppend boolean state whethe the parameters should be added to existing
+  void Init (const NCollection_List<Handle(Standard_Transient)>& theParameters,
+             const Standard_Boolean theAppend = Standard_False)
+    { myWindow->Init ("", theParameters, theAppend); }
 
   //! Stores parameters for the plugin
   //! \param thePluginName a name of the plugin
   //! \param theParameters container of parameters(e.g. AIS_InteractiveContext, TDocStd_Application)
+  //! \param theAppend boolean state whethe the parameters should be added to existing
   void Init (const TCollection_AsciiString& thePluginName,
-             const NCollection_List<Handle(Standard_Transient)>& theParameters)
-  { myWindow->Init (thePluginName, theParameters); }
+             const NCollection_List<Handle(Standard_Transient)>& theParameters,
+             const Standard_Boolean theAppend = Standard_False)
+  { myWindow->Init (thePluginName, theParameters, theAppend); }
 
   //! UpdateContent for the TInspector window
   void UpdateContent() { myWindow->UpdateContent(); }
@@ -67,6 +76,15 @@ public:
   //! Activates plugin
   //! \param thePluginName a name of the plugin
   void Activate (const TCollection_AsciiString& thePluginName) { myWindow->ActivateTool (thePluginName); }
+
+  //! Set item selected in the active plugin
+  //! \param theItemName a containerr of name of items in plugin that should become selected
+  void SetSelected (const NCollection_List<TCollection_AsciiString>& theItemNames) { myWindow->SetSelected (theItemNames); }
+
+  //! Sets objects to be selected in the plugin
+  //! \param theObjects an objects
+  Standard_EXPORT void SetSelected (const NCollection_List<Handle(Standard_Transient)>& theObjects)
+    { myWindow->SetSelected (theObjects); }
 
   //! Change window visibility
   //! \param theVisible boolean state

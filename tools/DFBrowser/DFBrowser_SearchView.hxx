@@ -16,9 +16,10 @@
 #ifndef DFBrowser_SearchView_H
 #define DFBrowser_SearchView_H
 
-#include <DFBrowser_SearchLine.hxx>
+#include <inspector/DFBrowser_SearchLine.hxx>
+#include <inspector/TreeModel_ItemBase.hxx>
+
 #include <Standard.hxx>
-#include <TreeModel_ItemBase.hxx>
 
 #include <QItemSelection>
 #include <QObject>

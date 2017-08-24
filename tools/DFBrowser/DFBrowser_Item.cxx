@@ -13,15 +13,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <DFBrowser_Item.hxx>
+#include <inspector/DFBrowser_Item.hxx>
 
-#include <DFBrowser_ItemRole.hxx>
-#include <DFBrowser_Module.hxx>
-#include <DFBrowser_Tools.hxx>
+#include <inspector/DFBrowser_ItemRole.hxx>
+#include <inspector/DFBrowser_Module.hxx>
+#include <inspector/DFBrowser_Tools.hxx>
 
-#include <DFBrowserPane_AttributePane.hxx>
-#include <DFBrowserPane_ItemRole.hxx>
-#include <DFBrowserPane_Tools.hxx>
+#include <inspector/DFBrowserPane_AttributePane.hxx>
+#include <inspector/DFBrowserPane_ItemRole.hxx>
+#include <inspector/DFBrowserPane_Tools.hxx>
 
 #include <TDF_AttributeIterator.hxx>
 #include <TDF_ChildIterator.hxx>
@@ -31,7 +31,6 @@
 
 const int INFO_LENGHT = 60;
 
-//#define REQUIRE_OCAF_REVIEW:23
 // =======================================================================
 // function : hasAttribute
 // purpose :

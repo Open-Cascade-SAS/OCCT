@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <DFBrowserPane_TDataStdName.hxx>
-#include <DFBrowserPane_Tools.hxx>
+#include <inspector/DFBrowserPane_TDataStdName.hxx>
+#include <inspector/DFBrowserPane_Tools.hxx>
 
 #include <TDataStd_Name.hxx>
 

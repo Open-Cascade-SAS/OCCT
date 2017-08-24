@@ -13,7 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <DFBrowserPane_TDocStdXLinkRoot.hxx>
+#include <inspector/DFBrowserPane_TDocStdXLinkRoot.hxx>
 
 #include <TDocStd_XLinkRoot.hxx>
 

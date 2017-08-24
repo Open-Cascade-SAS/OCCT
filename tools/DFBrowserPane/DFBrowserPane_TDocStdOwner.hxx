@@ -16,7 +16,8 @@
 #ifndef DFBrowserPane_TDocStdOwner_H
 #define DFBrowserPane_TDocStdOwner_H
 
-#include <DFBrowserPane_AttributePane.hxx>
+#include <inspector/DFBrowserPane_AttributePane.hxx>
+
 #include <Standard.hxx>
 #include <TColStd_SequenceOfExtendedString.hxx>
 #include <TDF_DeltaList.hxx>

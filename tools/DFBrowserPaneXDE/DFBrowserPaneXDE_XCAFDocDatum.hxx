@@ -16,7 +16,8 @@
 #ifndef DFBrowserPaneXDE_XCAFDocDatum_H
 #define DFBrowserPaneXDE_XCAFDocDatum_H
 
-#include <DFBrowserPane_AttributePane.hxx>
+#include <inspector/DFBrowserPane_AttributePane.hxx>
+
 #include <Standard.hxx>
 #include <TDF_Attribute.hxx>
 

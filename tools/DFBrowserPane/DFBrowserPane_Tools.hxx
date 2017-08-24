@@ -16,7 +16,8 @@
 #ifndef DFBrowserPane_Tools_H
 #define DFBrowserPane_Tools_H
 
-#include <DFBrowserPane_OcctEnumType.hxx>
+#include <inspector/DFBrowserPane_OcctEnumType.hxx>
+
 #include <Standard.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <TDF_Label.hxx>

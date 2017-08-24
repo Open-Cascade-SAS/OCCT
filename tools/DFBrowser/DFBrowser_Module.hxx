@@ -16,15 +16,16 @@
 #ifndef DFBrowser_Module_H
 #define DFBrowser_Module_H
 
+#include <inspector/DFBrowser_TreeModel.hxx>
+#include <inspector/TreeModel_ItemBase.hxx>
+
 #include <AIS_InteractiveContext.hxx>
-#include <DFBrowser_TreeModel.hxx>
 #include <NCollection_Map.hxx>
 #include <Standard.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TDF_Attribute.hxx>
 #include <TDocStd_Application.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TreeModel_ItemBase.hxx>
 
 #include <QObject>
 

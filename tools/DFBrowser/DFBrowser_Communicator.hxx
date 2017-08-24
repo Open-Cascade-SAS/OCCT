@@ -16,10 +16,11 @@
 #ifndef DFBrowser_Communicator_H
 #define DFBrowser_Communicator_H
 
-#include <DFBrowser_Window.hxx>
+#include <inspector/DFBrowser_Window.hxx>
+#include <inspector/TInspectorAPI_Communicator.hxx>
+
 #include <Standard.hxx>
 #include <Standard_Macro.hxx>
-#include <TInspectorAPI_Communicator.hxx>
 
 #include <QObject>
 

@@ -13,7 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <DFBrowserPane_TDataStdIntegerList.hxx>
+#include <inspector/DFBrowserPane_TDataStdIntegerList.hxx>
 
 #include <TDataStd_IntegerList.hxx>
 #include <TColStd_ListIteratorOfListOfInteger.hxx>

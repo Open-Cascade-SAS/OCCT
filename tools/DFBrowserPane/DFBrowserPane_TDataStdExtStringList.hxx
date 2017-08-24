@@ -16,7 +16,8 @@
 #ifndef DFBrowserPane_TDataStdExtStringList_H
 #define DFBrowserPane_TDataStdExtStringList_H
 
-#include <DFBrowserPane_AttributePane.hxx>
+#include <inspector/DFBrowserPane_AttributePane.hxx>
+
 #include <Standard.hxx>
 
 //! \class DFBrowserPane_TDataStdExtStringList

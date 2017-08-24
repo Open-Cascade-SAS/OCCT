@@ -17,7 +17,7 @@
 #define View_Window_H
 
 #include <AIS_InteractiveContext.hxx>
-#include <View_ContextType.hxx>
+#include <inspector/View_ContextType.hxx>
 
 #ifdef _MSC_VER
 #pragma warning(disable : 4127) // conditional expression is constant

@@ -16,7 +16,7 @@
 #ifndef DFBrowserPaneXDE_XCAFDocDimTol_H
 #define DFBrowserPaneXDE_XCAFDocDimTol_H
 
-#include <DFBrowserPane_AttributePane.hxx>
+#include <inspector/DFBrowserPane_AttributePane.hxx>
 #include <Standard.hxx>
 #include <TDF_Attribute.hxx>
 

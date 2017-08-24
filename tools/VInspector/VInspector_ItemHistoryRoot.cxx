@@ -13,9 +13,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <VInspector_ItemHistoryRoot.hxx>
+#include <inspector/VInspector_ItemHistoryRoot.hxx>
 
-#include <VInspector_ItemHistoryType.hxx>
+#include <inspector/VInspector_ItemHistoryType.hxx>
 
 // =======================================================================
 // function : Constructor

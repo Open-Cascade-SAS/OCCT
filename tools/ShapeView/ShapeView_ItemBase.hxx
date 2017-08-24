@@ -18,7 +18,7 @@
 
 #include <Standard.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TreeModel_ItemBase.hxx>
+#include <inspector/TreeModel_ItemBase.hxx>
 
 class ShapeView_ItemBase;
 typedef QExplicitlySharedDataPointer<ShapeView_ItemBase> ShapeView_ItemBasePtr;

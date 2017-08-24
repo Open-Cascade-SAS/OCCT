@@ -16,7 +16,8 @@
 #ifndef DFBrowserPaneXDE_ATTRIBUTEPANECREATOR_H
 #define DFBrowserPaneXDE_ATTRIBUTEPANECREATOR_H
 
-#include <DFBrowserPane_AttributePaneCreatorAPI.hxx>
+#include <inspector/DFBrowserPane_AttributePaneCreatorAPI.hxx>
+
 #include <Standard.hxx>
 #include <Standard_Macro.hxx>
 

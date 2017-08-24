@@ -13,13 +13,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <DFBrowserPane_TDataStdTreeNode.hxx>
+#include <inspector/DFBrowserPane_TDataStdTreeNode.hxx>
 
-#include <DFBrowserPane_AttributePaneModel.hxx>
-#include <DFBrowserPane_TableView.hxx>
-#include <DFBrowserPane_TDataStdTreeNodeItem.hxx>
-#include <DFBrowserPane_TDataStdTreeNodeModel.hxx>
-#include <DFBrowserPane_Tools.hxx>
+#include <inspector/DFBrowserPane_AttributePaneModel.hxx>
+#include <inspector/DFBrowserPane_TableView.hxx>
+#include <inspector/DFBrowserPane_TDataStdTreeNodeItem.hxx>
+#include <inspector/DFBrowserPane_TDataStdTreeNodeModel.hxx>
+#include <inspector/DFBrowserPane_Tools.hxx>
 
 #include <TDataStd_TreeNode.hxx>
 
@@ -30,7 +30,6 @@
 #include <QWidget>
 #include <QItemSelectionModel>
 
-//#define REQUIRE_OCAF_REVIEW:11
 // =======================================================================
 // function : Constructor
 // purpose :
@@ -55,9 +54,6 @@ QWidget* DFBrowserPane_TDataStdTreeNode::CreateWidget (QWidget* theParent)
   myTableView = new DFBrowserPane_TableView (aMainWidget, getTableColumnWidths());
   DFBrowserPane_TableView::SetFixedRowCount (1, myTableView->GetTableView());
   myTableView->SetModel (myPaneModel);
-  QTableView* aTableView = myTableView->GetTableView();
-  aTableView->setSelectionModel (mySelectionModels.front());
-  aTableView->setSelectionBehavior (QAbstractItemView::SelectRows);
 
   QVBoxLayout* aLay = new QVBoxLayout (aMainWidget);
   aLay->setContentsMargins (0, 0, 0, 0);

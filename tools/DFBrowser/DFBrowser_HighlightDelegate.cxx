@@ -13,9 +13,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <DFBrowser_HighlightDelegate.hxx>
+#include <inspector/DFBrowser_HighlightDelegate.hxx>
 
-#include <DFBrowser_Window.hxx>
+#include <inspector/DFBrowser_Window.hxx>
 #include <QPainter>
 
 // =======================================================================

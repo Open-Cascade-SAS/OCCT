@@ -16,13 +16,14 @@
 #ifndef DFBrowser_Window_H
 #define DFBrowser_Window_H
 
+#include <inspector/TInspectorAPI_PluginParameters.hxx>
+
 #include <AIS_InteractiveObject.hxx>
 #include <AIS_ListOfInteractive.hxx>
 #include <NCollection_List.hxx>
 #include <Standard.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TDF_Label.hxx>
-#include <TInspectorAPI_PluginParameters.hxx>
 
 #ifdef _MSC_VER
 #pragma warning(disable : 4127) // conditional expression is constant
@@ -38,6 +39,8 @@ class DFBrowser_PropertyPanel;
 class DFBrowser_Shortcut;
 class DFBrowser_Thread;
 class DFBrowser_TreeLevelLine;
+
+class TreeModel_MessageDialog;
 
 class View_ToolBar;
 class View_Window;
@@ -234,6 +237,7 @@ private:
   DFBrowser_DumpView* myDumpView; //!< Text editor where "Dump" method output is shown
   DFBrowser_Thread* myThread; //!< Threads manipulator, starting thread items, listens finalizing
   DFBrowser_Shortcut* myShortcut; //!< Short cut processor, F5 - updates OCAF view model content
+  TreeModel_MessageDialog* myExportToShapeViewDialog; //!< dialog about exporting TopoDS_Shape to ShapeView plugin
   Handle(TInspectorAPI_PluginParameters) myParameters; //!< contains application, context, files that should be opened
 };
 

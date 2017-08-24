@@ -16,10 +16,10 @@
 #ifndef DFBrowserPane_TDataStdBooleanArray_H
 #define DFBrowserPane_TDataStdBooleanArray_H
 
-#include <DFBrowserPane_AttributePane.hxx>
-#include <Standard.hxx>
+#include <inspector/DFBrowserPane_AttributePane.hxx>
+#include <inspector/DFBrowserPane_HelperArray.hxx>
 
-#include <DFBrowserPane_HelperArray.hxx>
+#include <Standard.hxx>
 
 //! \class DFBrowserPane_TDataStdBooleanArray
 //! \brief The class to manipulate of TDataStd_BooleanArray attribute

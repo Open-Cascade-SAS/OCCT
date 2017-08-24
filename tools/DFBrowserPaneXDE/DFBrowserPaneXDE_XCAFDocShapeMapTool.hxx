@@ -16,8 +16,8 @@
 #ifndef DFBrowserPaneXDE_XCAFDocShapeMapTool_H
 #define DFBrowserPaneXDE_XCAFDocShapeMapTool_H
 
-#include <DFBrowserPane_AttributePane.hxx>
-#include <DFBrowserPane_HelperExport.hxx>
+#include <inspector/DFBrowserPane_AttributePane.hxx>
+#include <inspector/DFBrowserPane_HelperExport.hxx>
 #include <Standard.hxx>
 #include <TDF_Attribute.hxx>
 

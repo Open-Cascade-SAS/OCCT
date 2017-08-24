@@ -13,7 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <View_Viewer.hxx>
+#include <inspector/View_Viewer.hxx>
 
 #include <OpenGl_GraphicDriver.hxx>
 #include <Standard_ExtString.hxx>

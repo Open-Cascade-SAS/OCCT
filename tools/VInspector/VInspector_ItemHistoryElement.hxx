@@ -17,7 +17,7 @@
 #define VInspector_ItemHistoryElement_H
 
 #include <Standard.hxx>
-#include <VInspector_ItemBase.hxx>
+#include <inspector/VInspector_ItemBase.hxx>
 
 class VInspector_ItemHistoryElement;
 typedef QExplicitlySharedDataPointer<VInspector_ItemHistoryElement> VInspector_ItemHistoryElementPtr;

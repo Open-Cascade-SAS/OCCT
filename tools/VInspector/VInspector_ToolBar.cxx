@@ -13,11 +13,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <VInspector_ToolBar.hxx>
+#include <inspector/VInspector_ToolBar.hxx>
 
 #include <QHBoxLayout>
-#include <QToolButton>
+#include <QPushButton>
 #include <QWidget>
+
 
 // =======================================================================
 // function : Constructor
@@ -26,34 +27,42 @@
 VInspector_ToolBar::VInspector_ToolBar (QWidget* theParent)
 : QObject (theParent)
 {
-  myActionsMap[VInspector_ToolActionType_UpdateId] = new QToolButton (theParent);
+  myActionsMap[VInspector_ToolActionType_UpdateId] = new QPushButton (theParent);
+  myActionsMap[VInspector_ToolActionType_UpdateId]->setIcon (QIcon (":/icons/treeview_update.png"));
+  myActionsMap[VInspector_ToolActionType_UpdateId]->setText (tr ("Update Tree Model"));
+  myActionsMap[VInspector_ToolActionType_UpdateId]->setToolTip (tr ("Update Tree Model"));
+
   myActionsMap[VInspector_ToolActionType_UpdateId]->setText ("Update");
 
-  myActionsMap[VInspector_ToolActionType_SelectPresentationsId] = new QToolButton (theParent);
+  myActionsMap[VInspector_ToolActionType_SelectPresentationsId] = new QPushButton (theParent);
   myActionsMap[VInspector_ToolActionType_SelectPresentationsId]->setText ("Select Presentations");
   myActionsMap[VInspector_ToolActionType_SelectPresentationsId]->setCheckable (true);
+  myActionsMap[VInspector_ToolActionType_SelectPresentationsId]->setFixedHeight(20);
 
-  myActionsMap[VInspector_ToolActionType_SelectOwnersId] = new QToolButton (theParent);
+  myActionsMap[VInspector_ToolActionType_SelectOwnersId] = new QPushButton (theParent);
   myActionsMap[VInspector_ToolActionType_SelectOwnersId]->setText ("Select Owners");
   myActionsMap[VInspector_ToolActionType_SelectOwnersId]->setCheckable (true);
+  myActionsMap[VInspector_ToolActionType_SelectPresentationsId]->setFixedHeight(25);
 
   myMainWindow = new QWidget (theParent);
 
   QHBoxLayout* aLay = new QHBoxLayout (myMainWindow);
-  for (QMap<VInspector_ToolActionType, QToolButton*>::ConstIterator anActionsIt = myActionsMap.begin();
+  aLay->setMargin(0);
+  for (QMap<VInspector_ToolActionType, QPushButton*>::ConstIterator anActionsIt = myActionsMap.begin();
        anActionsIt != myActionsMap.end(); anActionsIt++)
   {
-    QToolButton* aBtn = anActionsIt.value();
+    QPushButton* aBtn = anActionsIt.value();
     connect (aBtn, SIGNAL (clicked()), this, SLOT (onActionClicked()));
     aLay->addWidget (aBtn);
   }
+  aLay->addStretch(1);
 }
 
 // =======================================================================
 // function : GetToolButton
 // purpose :
 // =======================================================================
-QToolButton* VInspector_ToolBar::GetToolButton (const VInspector_ToolActionType& theActionId ) const
+QPushButton* VInspector_ToolBar::GetToolButton (const VInspector_ToolActionType& theActionId ) const
 {
   return myActionsMap.contains (theActionId) ? myActionsMap[theActionId] : 0;
 }
@@ -65,9 +74,9 @@ QToolButton* VInspector_ToolBar::GetToolButton (const VInspector_ToolActionType&
 void VInspector_ToolBar::onActionClicked()
 {
   int anId = -1;
-  QToolButton* aSenderBtn = (QToolButton*)sender();
+  QPushButton* aSenderBtn = (QPushButton*)sender();
 
-  for (QMap<VInspector_ToolActionType, QToolButton*>::ConstIterator anActionsIt = myActionsMap.begin();
+  for (QMap<VInspector_ToolActionType, QPushButton*>::ConstIterator anActionsIt = myActionsMap.begin();
        anActionsIt != myActionsMap.end(); anActionsIt++)
   {
     if (anActionsIt.value() != aSenderBtn)

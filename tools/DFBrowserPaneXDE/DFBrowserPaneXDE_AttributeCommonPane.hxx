@@ -16,7 +16,8 @@
 #ifndef DFBrowserPaneXDE_AttributeCommonPane_H
 #define DFBrowserPaneXDE_AttributeCommonPane_H
 
-#include <DFBrowserPane_AttributePane.hxx>
+#include <inspector/DFBrowserPane_AttributePane.hxx>
+
 #include <Standard.hxx>
 #include <TopoDS_Shape.hxx>
 

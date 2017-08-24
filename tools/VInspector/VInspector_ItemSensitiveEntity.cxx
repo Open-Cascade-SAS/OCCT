@@ -14,7 +14,7 @@
 // commercial license or contractual agreement. 
 
 
-#include <VInspector_ItemSensitiveEntity.hxx>
+#include <inspector/VInspector_ItemSensitiveEntity.hxx>
 
 #include <AIS_ListOfInteractive.hxx>
 #include <SelectBasics_SensitiveEntity.hxx>
@@ -24,10 +24,10 @@
 #include <Standard_Version.hxx>
 #include <StdSelect_BRepOwner.hxx>
 #include <TopoDS_Shape.hxx>
-#include <VInspector_ItemContext.hxx>
-#include <VInspector_ItemEntityOwner.hxx>
-#include <VInspector_ItemSelection.hxx>
-#include <VInspector_Tools.hxx>
+#include <inspector/VInspector_ItemContext.hxx>
+#include <inspector/VInspector_ItemEntityOwner.hxx>
+#include <inspector/VInspector_ItemSelection.hxx>
+#include <inspector/VInspector_Tools.hxx>
 
 #include <QStringList>
 #include <QColor>

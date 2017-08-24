@@ -18,8 +18,8 @@
 
 #include <AIS_InteractiveContext.hxx>
 #include <Standard.hxx>
-#include <View_ContextType.hxx>
-#include <View_ToolActionType.hxx>
+#include <inspector/View_ContextType.hxx>
+#include <inspector/View_ToolActionType.hxx>
 
 #ifdef _MSC_VER
   #pragma warning(disable : 4127 4718) // conditional expression is constant, recursive call has no side effects

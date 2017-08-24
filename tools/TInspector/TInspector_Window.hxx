@@ -20,7 +20,7 @@
 #include <Standard.hxx>
 #include <Standard_Transient.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <TInspectorAPI_PluginParameters.hxx>
+#include <inspector/TInspectorAPI_PluginParameters.hxx>
 
 #ifdef _MSC_VER
 #pragma warning(disable : 4127) // conditional expression is constant
@@ -70,14 +70,19 @@ public:
 
   //! Appends the plugin names into internal conainer
   //! \param thePluginName a name of the plugin
-  void RegisterPlugin (const TCollection_AsciiString& thePluginName)
-  { myToolNames.append (TInspector_ToolInfo(thePluginName)); }
+  Standard_EXPORT void RegisterPlugin (const TCollection_AsciiString& thePluginName);
+
+  //! Returns list of registered plugins
+  //! \return container of plugin names
+  Standard_EXPORT NCollection_List<TCollection_AsciiString> RegisteredPlugins() const;
 
   //! Stores parameters for the plugin. If the plugin name is empty, it inits all plugins with the parameters
   //! \param thePluginName a name of the plugin
   //! \param theParameters container of parameters(e.g. AIS_InteractiveContext, TDocStd_Application)
+  //! \param theAppend boolean state whethe the parameters should be added to existing
   Standard_EXPORT void Init (const TCollection_AsciiString& thePluginName,
-                             const NCollection_List<Handle(Standard_Transient)>& theParameters);
+                             const NCollection_List<Handle(Standard_Transient)>& theParameters,
+                             const Standard_Boolean theAppend = Standard_False);
 
   //! Appends to container of parameters the given name, if the given parameter is active, cal UpdateContent
   //! \param thePluginName a name of the plugin
@@ -95,6 +100,14 @@ public:
   //! \param thePluginName a name of the plugin
   Standard_EXPORT void ActivateTool (const TCollection_AsciiString& thePluginName);
 
+  //! Set item selected in the active plugin
+  //! \param theItemNames a container of name of items in plugin that should become selected
+  Standard_EXPORT void SetSelected (const NCollection_List<TCollection_AsciiString>& theItemNames);
+
+  //! Sets objects to be selected in the plugin
+  //! \param theObjects an objects
+  Standard_EXPORT void SetSelected (const NCollection_List<Handle(Standard_Transient)>& theObjects);
+
   //! Sets open button. Stores into objectName for the button the name of the current plugin to know where
   //! the file should be applied
   //! \param theButton a button
@@ -104,11 +117,6 @@ public:
   //! \param thePluginName a name of the plugin
   //! \param theInfo an output parameter for plugin info
   Standard_EXPORT bool LoadPlugin (const TCollection_AsciiString& thePluginName, TInspector_ToolInfo& theInfo);
-
-public slots:
-
-  //! Destroys loaded communicators
-  Standard_EXPORT void OnLastApplicationWindowClosed();
 
 protected slots:
 
@@ -123,6 +131,14 @@ protected:
   //! Activates plugin by the plugin info 
   //! \param theToolInfo an information about plugin
   bool ActiveToolInfo (TInspector_ToolInfo& theToolInfo) const;
+
+  //! Returns true if there is plugin registered by the given name
+  //! \param thePluginName a name of the plugin
+  //! \param theToolInfo an output parameter for plugin information
+  //! \param theToolId an index in internal map
+  //! \return true if the plugin is found
+  bool FindPlugin (const TCollection_AsciiString& thePluginName, TInspector_ToolInfo& theToolInfo,
+                   int& theToolId);
 
 private:
 

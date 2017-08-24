@@ -16,7 +16,7 @@
 #ifndef VInspector_ItemHistoryTypeInfo_H
 #define VInspector_ItemHistoryTypeInfo_H
 
-#include <VInspector_CallBackMode.hxx>
+#include <inspector/VInspector_CallBackMode.hxx>
 
 //! \class VInspector_ItemHistoryTypeInfo
 //! History info for a type item. It contains container of information for the element

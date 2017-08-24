@@ -14,8 +14,8 @@
 // commercial license or contractual agreement. 
 
 
-#include <VInspector_ItemBase.hxx>
-#include <VInspector_ItemContext.hxx>
+#include <inspector/VInspector_ItemBase.hxx>
+#include <inspector/VInspector_ItemContext.hxx>
 
 // =======================================================================
 // function : GetContext

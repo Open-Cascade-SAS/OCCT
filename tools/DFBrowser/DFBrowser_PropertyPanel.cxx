@@ -13,13 +13,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <DFBrowser_PropertyPanel.hxx>
+#include <inspector/DFBrowser_PropertyPanel.hxx>
 
-#include <DFBrowser_AttributePaneStack.hxx>
-#include <DFBrowser_Item.hxx>
-#include <DFBrowser_SearchView.hxx>
-#include <DFBrowser_Window.hxx>
-#include <DFBrowser_TreeLevelView.hxx>
+#include <inspector/DFBrowser_AttributePaneStack.hxx>
+#include <inspector/DFBrowser_Item.hxx>
+#include <inspector/DFBrowser_SearchView.hxx>
+#include <inspector/DFBrowser_Window.hxx>
+#include <inspector/DFBrowser_TreeLevelView.hxx>
 
 #include <QAbstractItemModel>
 #include <QGridLayout>

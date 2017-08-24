@@ -13,14 +13,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <DFBrowserPane_TNamingNaming.hxx>
+#include <inspector/DFBrowserPane_TNamingNaming.hxx>
 
 #include <AIS_Shape.hxx>
 #include <BRep_Builder.hxx>
 
-#include <DFBrowserPane_AttributePaneModel.hxx>
-#include <DFBrowserPane_TableView.hxx>
-#include <DFBrowserPane_Tools.hxx>
+#include <inspector/DFBrowserPane_AttributePaneModel.hxx>
+#include <inspector/DFBrowserPane_TableView.hxx>
+#include <inspector/DFBrowserPane_Tools.hxx>
 
 #include <TDF_Label.hxx>
 #include <TNaming_ListIteratorOfListOfNamedShape.hxx>
@@ -36,7 +36,6 @@
 #include <QVariant>
 #include <QWidget>
 
-//#define REQUIRE_OCAF_REVIEW:14
 // =======================================================================
 // function : Constructor
 // purpose :

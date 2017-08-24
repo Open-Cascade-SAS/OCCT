@@ -16,7 +16,8 @@
 #ifndef DFBrowser_SearchLine_H
 #define DFBrowser_SearchLine_H
 
-#include <DFBrowser_SearchLineModel.hxx> // to include DFBrowser_SearchItemInfo
+#include <inspector/DFBrowser_SearchLineModel.hxx> // to include DFBrowser_SearchItemInfo
+
 #include <Standard.hxx>
 #include <TDocStd_Application.hxx>
 #include <TDF_Label.hxx>

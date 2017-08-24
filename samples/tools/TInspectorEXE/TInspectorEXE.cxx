@@ -14,9 +14,11 @@
 // commercial license or contractual agreement. 
 
 
-#include <OSD_Environment.hxx>
 #include <TInspectorEXE_OpenFileDialog.hxx>
-#include <TInspector_Communicator.hxx>
+
+#include <inspector/TInspector_Communicator.hxx>
+
+#include <OSD_Environment.hxx>
 
 #include <QAction>
 #include <QApplication>

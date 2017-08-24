@@ -20,8 +20,8 @@
 #include <NCollection_List.hxx>
 #include <SelectBasics_EntityOwner.hxx>
 #include <Standard.hxx>
-#include <TreeModel_ModelBase.hxx>
-#include <VInspector_ItemBase.hxx>
+#include <inspector/TreeModel_ModelBase.hxx>
+#include <inspector/VInspector_ItemBase.hxx>
 
 #include <QByteArray>
 #include <QHash>
@@ -59,6 +59,11 @@ public:
   //! \param thePointers a list of presentation pointers
   //! \return container of indices
   Standard_EXPORT QModelIndexList FindPointers (const QStringList& thePointers);
+
+  //! Returns tree model index of the presentation item in the tree view.
+  //! \param thePresentation a presentation
+  //! \return model index if the value is found or Null model index
+  Standard_EXPORT QModelIndex FindIndex (const Handle(AIS_InteractiveObject)& thePresentation) const;
 
   //! Returns root item by column
   //! \param theColumn an index of the column

@@ -13,7 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <DFBrowserPane_TPrsStdAISViewer.hxx>
+#include <inspector/DFBrowserPane_TPrsStdAISViewer.hxx>
 
 #include <TPrsStd_AISViewer.hxx>
 

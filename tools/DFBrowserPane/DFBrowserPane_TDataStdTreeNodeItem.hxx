@@ -16,9 +16,10 @@
 #ifndef DFBrowserPane_TDataStdTreeNodeItem_H
 #define DFBrowserPane_TDataStdTreeNodeItem_H
 
+#include <inspector/TreeModel_ItemBase.hxx>
+
 #include <Standard.hxx>
 #include <TDF_Attribute.hxx>
-#include <TreeModel_ItemBase.hxx>
 
 #include <QList>
 #include <QMap>

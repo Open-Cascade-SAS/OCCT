@@ -13,10 +13,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <DFBrowser_TreeLevelLineModel.hxx>
+#include <inspector/DFBrowser_TreeLevelLineModel.hxx>
 
-#include <DFBrowser_ItemBase.hxx>
-#include <TreeModel_ModelBase.hxx>
+#include <inspector/DFBrowser_ItemBase.hxx>
+#include <inspector/TreeModel_ModelBase.hxx>
 
 #include <QIcon>
 #include <QWidget>

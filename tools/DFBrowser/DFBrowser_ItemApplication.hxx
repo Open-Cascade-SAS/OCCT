@@ -16,7 +16,8 @@
 #ifndef DFBrowser_ItemApplication_H
 #define DFBrowser_ItemApplication_H
 
-#include <DFBrowser_ItemBase.hxx>
+#include <inspector/DFBrowser_ItemBase.hxx>
+
 #include <TDocStd_Application.hxx>
 
 class DFBrowser_ItemApplication;

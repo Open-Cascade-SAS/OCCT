@@ -13,7 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <DFBrowserPane_TFunctionGraphNode.hxx>
+#include <inspector/DFBrowserPane_TFunctionGraphNode.hxx>
 
 #include <TFunction_GraphNode.hxx>
 

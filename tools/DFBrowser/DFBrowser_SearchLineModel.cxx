@@ -13,14 +13,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <DFBrowser_SearchLineModel.hxx>
+#include <inspector/DFBrowser_SearchLineModel.hxx>
 
-#include <DFBrowser_Module.hxx>
-#include <DFBrowser_Tools.hxx>
+#include <inspector/DFBrowser_Module.hxx>
+#include <inspector/DFBrowser_Tools.hxx>
 
-#include <DFBrowserPane_AttributePane.hxx>
-#include <DFBrowserPane_ItemRole.hxx>
-#include <DFBrowserPane_Tools.hxx>
+#include <inspector/DFBrowserPane_AttributePane.hxx>
+#include <inspector/DFBrowserPane_ItemRole.hxx>
+#include <inspector/DFBrowserPane_Tools.hxx>
 
 #include <QDir>
 #include <QIcon>
@@ -139,6 +139,8 @@ QVariant DFBrowser_SearchLineModel::data (const QModelIndex& theIndex, int theRo
           anIcon = DFBrowser_Module::GetAttributeInfo (anAttributeName.toUtf8().data(),
                                                        myModule, DFBrowserPane_ItemRole_Decoration_40x40, 0);
         }
+        else
+          anIcon = DFBrowser_Tools::GetLabelIcon (TDF_Label(), false);
         return anIcon;
       }
       if (theRole == Qt::SizeHintRole) return QSize (80, 80);

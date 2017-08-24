@@ -18,7 +18,7 @@
 
 #include <Standard.hxx>
 #include <Standard_Macro.hxx>
-#include <VInspector_ToolActionType.hxx>
+#include <inspector/VInspector_ToolActionType.hxx>
 
 #ifdef _MSC_VER
   #pragma warning(disable : 4127 4718) // conditional expression is constant, recursive call has no side effects
@@ -27,7 +27,7 @@
 #include <QObject>
 
 class QWidget;
-class QToolButton;
+class QPushButton;
 
 //! \class VInspector_ToolBar
 //! Container of View tool bar actions
@@ -48,7 +48,7 @@ public:
 
   //! Returns tool button by action index
   //! \param theActionId index of action
-  Standard_EXPORT QToolButton* GetToolButton (const VInspector_ToolActionType& theActionId) const;
+  Standard_EXPORT QPushButton* GetToolButton (const VInspector_ToolActionType& theActionId) const;
 
 signals:
 
@@ -64,7 +64,7 @@ private slots:
 private:
 
   QWidget* myMainWindow; //!< the main control
-  QMap<VInspector_ToolActionType, QToolButton*> myActionsMap; //!< container of type into button
+  QMap<VInspector_ToolActionType, QPushButton*> myActionsMap; //!< container of type into button
 };
 
 #endif

@@ -14,7 +14,7 @@
 // commercial license or contractual agreement. 
 
                                                           
-#include <View_ToolBar.hxx>
+#include <inspector/View_ToolBar.hxx>
 
 #include <QComboBox>
 #include <QHBoxLayout>
@@ -42,7 +42,7 @@ View_ToolBar::View_ToolBar (QWidget* theParent)
   QHBoxLayout* aViewSelectorLay = new QHBoxLayout (aViewSelectorWidget);
   aViewSelectorLay->setContentsMargins (0, 0, 0, 0);
   aViewSelectorLay->setContentsMargins (0, 0, 0, 0);
-  aViewSelectorLay->addWidget (new QLabel (tr ("View: "), aViewSelectorWidget));
+  aViewSelectorLay->addWidget (new QLabel (tr ("Context: "), aViewSelectorWidget));
   myViewSelector = new QComboBox (aViewSelectorWidget);
   myViewSelector->setMinimumWidth (DEFAULT_COMBO_WIDTH_MINIMUM);
   aViewSelectorLay->addWidget (myViewSelector);
@@ -63,14 +63,16 @@ View_ToolBar::View_ToolBar (QWidget* theParent)
 
   myActionsMap[View_ToolActionType_KeepViewId] = new QToolButton (theParent);
   myActionsMap[View_ToolActionType_KeepViewId]->setIcon (QIcon (":/icons/keep_view_on.png"));
-  myActionsMap[View_ToolActionType_KeepViewId]->setText (tr ("Keep View On"));
+  myActionsMap[View_ToolActionType_KeepViewId]->setText (tr ("Multi"));
   myActionsMap[View_ToolActionType_KeepViewId]->setToolTip (tr ("Keep View On: does not clear previously shown presentation"));
+  myActionsMap[View_ToolActionType_KeepViewId]->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
   myActionsMap[View_ToolActionType_KeepViewId]->setCheckable (true);
   myActionsMap[View_ToolActionType_KeepViewId]->setChecked (false);
 
   myActionsMap[View_ToolActionType_KeepViewOffId] = new QToolButton (theParent);
   myActionsMap[View_ToolActionType_KeepViewOffId]->setIcon (QIcon (":/icons/keep_view_off.png"));
-  myActionsMap[View_ToolActionType_KeepViewOffId]->setText (QObject::tr ("Keep View Off"));
+  myActionsMap[View_ToolActionType_KeepViewOffId]->setText (QObject::tr ("Single"));
+  myActionsMap[View_ToolActionType_KeepViewOffId]->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
   myActionsMap[View_ToolActionType_KeepViewOffId]->setToolTip (tr ("Keep View Off: clear previously shown presentation"));
   myActionsMap[View_ToolActionType_KeepViewOffId]->setCheckable (true);
   myActionsMap[View_ToolActionType_KeepViewOffId]->setChecked (true);

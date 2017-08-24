@@ -16,7 +16,8 @@
 #ifndef DFBrowserPane_TDataStdReal_H
 #define DFBrowserPane_TDataStdReal_H
 
-#include <DFBrowserPane_AttributePane.hxx>
+#include <inspector/DFBrowserPane_AttributePane.hxx>
+
 #include <Standard.hxx>
 
 //! \class DFBrowserPane_TDataStdReal

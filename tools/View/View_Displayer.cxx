@@ -13,15 +13,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <View_Displayer.hxx>
+#include <inspector/View_Displayer.hxx>
 
 #include <AIS_InteractiveContext.hxx>
 #include <AIS_InteractiveObject.hxx>
 #include <AIS_ListIteratorOfListOfInteractive.hxx>
 #include <V3d_View.hxx>
 #include <V3d_Viewer.hxx>
-#include <View_Viewer.hxx>
-#include <View_Widget.hxx>
+#include <inspector/View_Viewer.hxx>
+#include <inspector/View_Widget.hxx>
 
 // =======================================================================
 // function : Constructor

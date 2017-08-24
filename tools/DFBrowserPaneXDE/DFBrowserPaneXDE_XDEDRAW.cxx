@@ -13,7 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <DFBrowserPaneXDE_XDEDRAW.hxx>
+#include <inspector/DFBrowserPaneXDE_XDEDRAW.hxx>
 
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_HAsciiString.hxx>

@@ -16,7 +16,7 @@
 #ifndef DFBrowserPaneXDE_XCAFDocLocation_H
 #define DFBrowserPaneXDE_XCAFDocLocation_H
 
-#include <DFBrowserPane_AttributePane.hxx>
+#include <inspector/DFBrowserPane_AttributePane.hxx>
 #include <Standard.hxx>
 #include <TDF_Attribute.hxx>
 

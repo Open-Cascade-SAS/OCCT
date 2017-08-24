@@ -13,13 +13,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <DFBrowser_ThreadItemSearch.hxx>
+#include <inspector/DFBrowser_ThreadItemSearch.hxx>
 
-#include <DFBrowser_Module.hxx>
-#include <DFBrowser_Tools.hxx>
-#include <DFBrowser_TreeModel.hxx>
-#include <DFBrowser_SearchLine.hxx>
-#include <DFBrowserPane_Tools.hxx>
+#include <inspector/DFBrowser_Module.hxx>
+#include <inspector/DFBrowser_Tools.hxx>
+#include <inspector/DFBrowser_TreeModel.hxx>
+#include <inspector/DFBrowser_SearchLine.hxx>
+#include <inspector/DFBrowserPane_Tools.hxx>
 
 #include <TDataStd_Comment.hxx>
 #include <TDataStd_Name.hxx>
@@ -43,7 +43,6 @@ void DFBrowser_ThreadItemSearch::Run()
   myDocumentValues.clear();
   myDocumentInfoValues.clear();
 
-  //#define REQUIRE_OCAF_REVIEW:25 : start
   QMap<QString, DFBrowser_SearchItemInfo> anAdditionalValues;
   QStringList anInfoValues;
   QStringList aCurrentPath;
@@ -62,7 +61,6 @@ void DFBrowser_ThreadItemSearch::Run()
     myDocumentValues[aDocId] = anAdditionalValues;
     myDocumentInfoValues[aDocId] = anInfoValues;
   }
-  //#define REQUIRE_OCAF_REVIEW:25 : end
 }
 
 // =======================================================================
@@ -116,8 +114,7 @@ void DFBrowser_ThreadItemSearch::addLabel (const TDF_Label& theLabel, const QStr
   if (!theValues.contains (anEntry))
   {
     theInfoValues.append (anEntry);
-    theValues[anEntry] = DFBrowser_SearchItemInfo (DFBrowser_Tools::GetLabelIcon (theLabel, false),
-                                                   anEntry, theCurrentPath, QDir::separator());
+    theValues[anEntry] = DFBrowser_SearchItemInfo ("40x40_label_icon", anEntry, theCurrentPath, QDir::separator());
   }
 }
 
