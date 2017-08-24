@@ -1,0 +1,638 @@
+puts "TODO OCC27316 Windows: OSD_Exception_ACCESS_VIOLATION"
+puts "TODO OCC27316 Linux: segmentation violation"
+puts "TODO OCC27316 ALL:TEST INCOMPLETE"
+
+puts "========"
+puts "OCC27316"
+puts "========"
+puts ""
+##########################
+# exception when XAddShape
+##########################
+
+# model of rib for Buran wing. Drawing taken from www.buran.ru 
+# Create parameters
+set B1  140.    ;# half chord 1
+set B2 60.    ;#  half chord 2
+set B3 50.    ;#  breadth of upper part 
+set L 1000.;   # wing length
+set L_edge [expr "sqrt($L*$L+($B1-$B2)*($B1-$B2))"]     ;# wing edge length
+set step 135.     ;# stiffener step
+set step1 95.     ;# 1 stiffener step
+set B_st 30.     ;# stiffener flange breadth
+set B_st1 50.     ;# stiffener flange  breadth with inclined part
+set H_st 30.     ;# stiffener flange height
+set t_st 1.5     ;# stiffener flange web thickness
+set offset_fl 10.0     ;# stiffener side flange 1 offset
+set t_fl 2.0     ;# stiffener side flange 1 thickness
+set B_fl1 20.0     ;# stiffener side flange 1 width
+set B_fl2 16.0     ;# stiffener side flange 2 width
+set angle_cos [expr "$L/$L_edge"] ;# cos of angle between axis x and wing edge
+set angle_sin [expr "($B1-$B2)/$L_edge"] ;# sin of angle between axis x and wing edge
+set rad_rivet 1.;# radius of rivet
+set step_rivet 20.;# step between  rivets
+set offset_rivet 5.;# offset between  rivets and stringer
+set rad_cut 45. ; # radius of big cut in middle plate
+set rad_cut1 35. ; # radius of middle cut in middle plate
+set rad_cut2 25. ; # radius of small cut in middle plate
+set t_ang 1.;  # angle bracket thickness
+set h_ang 18.;  # angle bracket length
+
+
+# Create  edge of upper stiffener flange
+vertex r_1 0. $B1 0.;
+set i 1; 
+set NN 8
+while {$i < $NN} { 
+  vertex r_[expr "($i-1)*4+2"] [expr "(($i-1)*$step+$step1-$B_st1/2)*$angle_cos"] [expr "$B1-(($i-1)*$step+$step1-$B_st1/2)*$angle_sin"]  0.;
+  vertex r_[expr "($i-1)*4+3"] [expr "(($i-1)*$step+$step1-$B_st/2)*$angle_cos+$H_st*$angle_sin"] [expr "$B1-(($i-1)*$step+$step1-$B_st/2)*$angle_sin-$H_st*$angle_cos"] 0.;
+  vertex r_[expr "($i-1)*4+4"] [expr "(($i-1)*$step+$step1+$B_st/2)*$angle_cos+$H_st*$angle_sin"] [expr "$B1-(($i-1)*$step+$step1+$B_st/2)*$angle_sin-$H_st*$angle_cos"] 0.;
+  vertex r_[expr "($i-1)*4+5"] [expr "(($i-1)*$step+$step1+$B_st1/2)*$angle_cos"] [expr "$B1-(($i-1)*$step+$step1+$B_st1/2)*$angle_sin"] 0.;
+  vertex r_[expr "($i-1)*4+6"] [expr "($i*$step+$step1+$B_st1/2)*$angle_cos"] [expr "$B1-($i*$step+$step1+$B_st1/2)*$angle_sin"]  0.;
+  edge e_[expr "($i-1)*4+1"] r_[expr "($i-1)*4+1"] r_[expr "($i-1)*4+2"];
+  edge e_[expr "($i-1)*4+2"] r_[expr "($i-1)*4+2"] r_[expr "($i-1)*4+3"];
+  edge e_[expr "($i-1)*4+3"] r_[expr "($i-1)*4+3"] r_[expr "($i-1)*4+4"];
+  fillet2d fil1_$i e_[expr "($i-1)*4+2"] e_[expr "($i-1)*4+3"] 3.
+  edge e_[expr "($i-1)*4+4"] r_[expr "($i-1)*4+4"] r_[expr "($i-1)*4+5"];
+  fillet2d fil2_$i e_[expr "($i-1)*4+3"] e_[expr "($i-1)*4+4"] 3.
+  wire w_$i e_[expr "($i-1)*4+1"] e_[expr "($i-1)*4+2"] fil1_$i e_[expr "($i-1)*4+3"] fil2_$i e_[expr "($i-1)*4+4"];   
+  incr i;
+}
+vertex r_last $L $B2 0.;
+edge e_last r_[expr "($i-2)*4+5"] r_last;
+vertex vu_1 0. [expr "$B1-$B3"]  0.;
+vertex vu_2 $L [expr "$B2-$B3"]  0.;
+edge e_v1 vu_1 r_1 ;
+edge e_v2 r_last vu_2;
+edge e_v3 vu_2 vu_1;
+wire w_upper  e_v1 w_1 w_2 w_3 w_4 w_5 w_6 w_7 e_last e_v2 e_v3;
+
+mkplane f_upper w_upper;
+#Create holes for rivets
+circle c1 $offset_rivet [expr "$B1-$B3+$offset_rivet"]  0. $rad_rivet;
+mkedge e_hole1 c1;
+wire w_hole1 e_hole1;
+mkplane f_hole1 w_hole1;
+compound f_hole1 holes_upper;
+set i 1; 
+set NNN [expr "int($L_edge/$step_rivet)"]
+while {$i < $NNN} {   
+  copy f_hole1 f_hole_$i
+  ttranslate f_hole_$i [expr "$i*$step_rivet*$angle_cos"] [expr "-($i*$step_rivet*$angle_sin)"]   0. ;
+  add f_hole_$i holes_upper;
+  incr i;
+}
+bcut f_upper_holes_1 f_upper holes_upper;
+prism fwall_upper f_upper_holes_1 0 0 $t_st;
+
+#Create low side flange 1
+#Create wire and face for side flange
+vertex vf_1 0. [expr "$B1-$B3+$offset_fl"]  0.;
+vertex vf_2 0. [expr "$B1-$B3+$offset_fl+$t_fl"] 0. ;
+vertex vf_3 0. [expr "$B1-$B3+$offset_fl"]  $t_st;
+vertex vf_4 0. [expr "$B1-$B3+$offset_fl+$t_fl"]  $t_st;
+vertex vf_5 0. [expr "$B1-$B3+$offset_fl"]  $B_fl1;
+vertex vf_6 0. [expr "$B1-$B3+$offset_fl+$t_fl"]  $B_fl1;
+vertex vf_7 0. [expr "$B1-$B3+$offset_fl-$t_st"]  $t_st;
+vertex vf_8 0. [expr "$B1-$B3+$offset_fl+$t_fl+$t_st"] $t_st; 
+edge side_fl_1 vf_1 vf_2;
+edge side_fl_2 vf_2 vf_8;
+edge side_fl_3 vf_8 vf_4;
+edge side_fl_4 vf_4 vf_6;
+edge side_fl_5 vf_6 vf_5;
+edge side_fl_6 vf_5 vf_3;
+edge side_fl_7 vf_3 vf_7;
+edge side_fl_8 vf_7 vf_1;
+fillet2d side_f1 side_fl_3 side_fl_4 1.5;
+fillet2d side_f2 side_fl_6 side_fl_7 1.5;
+wire w_side_fl side_fl_1 side_fl_2 side_fl_3 side_f1 side_fl_4 side_fl_5 side_fl_6 side_f2 side_fl_7 side_fl_8;
+mkplane f_side_fl w_side_fl;
+prism  v_side_fl f_side_fl [expr "$L_edge*$angle_cos"] [expr "-$L_edge*$angle_sin"] 0. ;
+bfuse f_upper  v_side_fl fwall_upper
+
+#Create upper side flange 2
+#Create wire and face for side flange 2
+vertex vfs_1  0. [expr "$B1+$t_st"] [expr "$B_fl2-$t_st/2."];
+vertex vfs_2  0. [expr "$B1+$t_st"] [expr "-$B_fl2+$t_st/2."];
+vertex vfs_3  0. $B1 [expr "$B_fl2-$t_st/2."];
+vertex vfs_4  0. $B1 [expr "-$B_fl2+$t_st/2."];
+vertex vfs_5  0. [expr "$B1-3.*$t_st"] 0.;
+vertex vfs_6  0. [expr "$B1-3.*$t_st"] $t_st;
+vertex vfs_7  0. $B1 $t_st;
+edge side_fl2_1 vfs_1 vfs_2;
+edge side_fl2_2 vfs_2 vfs_4;
+edge side_fl2_3 vfs_4 r_1;
+edge side_fl2_4 r_1 vfs_5 ;
+#fillet2d side_f12_1 side_fl2_3 side_fl2_4 1.5;
+edge side_fl2_5 vfs_5 vfs_6;
+edge side_fl2_6 vfs_6 vfs_7;
+edge side_fl2_7 vfs_7 vfs_3;
+#fillet2d side_f12_2 side_fl2_6 side_fl2_7 1.5;
+edge side_fl2_8 vfs_3 vfs_1;
+#wire w_side_fl2 side_fl2_1 side_fl2_2 side_fl2_3 side_f12_1 side_fl2_4 side_fl2_5 side_fl2_6 side_f12_2 side_fl2_7 side_fl2_8;
+wire w_side_fl2 side_fl2_1 side_fl2_2 side_fl2_3  side_fl2_4 side_fl2_5 side_fl2_6 side_fl2_7 side_fl2_8;
+mkplane f_side_fl2 w_side_fl2;
+
+#Create first side flange 2
+prism  v_side_fl2 f_side_fl2 [expr "($step1-$B_st1/2)*$angle_cos"] [expr "-($step1-$B_st1/2)*$angle_sin"]   0. ;
+bfuse f_upper_1  v_side_fl2 f_upper;
+
+#Create next side flange 2
+prism  v_side_fl3 f_side_fl2 [expr "($step-$B_st1)*$angle_cos"] [expr "-($step-$B_st1)*$angle_sin"]   0. ;
+set i 1; 
+set NN 7
+while {$i < $NN} {   
+  copy v_side_fl3 v_side_fl_$i
+  ttranslate v_side_fl_$i [expr "(($i-1)*$step+$step1+$B_st1/2)*$angle_cos"] [expr "-(($i-1)*$step+$step1+$B_st1/2)*$angle_sin"]   0. ;
+  bfuse f_upper_[expr "$i+1"]  v_side_fl_$i f_upper_[expr "$i"] ;  
+  incr i;
+}
+
+#Create last side flange 2
+prism  v_side_fl4 f_side_fl2 [expr "($L_edge-6*$step-$step1-$B_st1/2)*$angle_cos"] [expr "-($L_edge-6*$step-$step-$B_st1/2)*$angle_sin"]   0. ;
+ttranslate v_side_fl4 [expr "(6*$step+$step1+$B_st1/2)*$angle_cos"] [expr "-(6*$step+$step1+$B_st1/2)*$angle_sin"]   0. ;
+bfuse f_uppern f_upper_7 v_side_fl4 ; 
+unifysamedom f_upper1 f_uppern;
+
+restore [locate_data_file bug27316_edges_fillet.brep] edges_fillet
+
+bclearobjects; 
+bcleartools;
+baddobjects f_upper1 edges_fillet;
+bfillds;
+bbuild rgf;
+explode rgf so;
+copy rgf_1 v_upper
+
+set edges [explode edges_fillet e];
+set nbe [llength $edges]
+
+for {set i 1} {$i <= $nbe} {incr i} {
+  bmodified em edges_fillet_$i;
+  explode em e;
+  blend v_upper v_upper 1.5 em_1;
+}
+
+#vdisplay v_upper;
+#Create  symmetrical part
+copy v_upper v_lower;
+tmirror v_lower 0. 0. 0. 0. 1. 0.;
+
+#Create middle plate
+#Create wire and face for middle plate
+vertex vfl_1 0. [expr "-($B1-$B3+$offset_fl)"]  0.;
+vertex vfl_2 $L [expr "($B2-$B3+$offset_fl)"]  0.;
+vertex vfl_3 $L [expr "-($B2-$B3+$offset_fl)"]  0.;
+edge pl_1 vf_1 vfl_1;
+edge pl_2 vfl_1 vfl_3;
+edge pl_3 vfl_3 vfl_2;
+edge pl_4 vfl_2 vf_1;
+wire w_plate pl_1 pl_2 pl_3 pl_4;
+mkplane f_plate w_plate;
+
+#Cut holes
+#Create upper row of holes
+bcut f_plate_holes f_plate holes_upper;
+
+#Create lower row of holes
+copy holes_upper holes_lower;
+tmirror holes_lower 0. 0. 0. 0. 1. 0.
+bcut plate_holes_ul f_plate_holes holes_lower;
+#Create 1 row of holes
+compound  holes_1;
+set i 1; 
+set NN1 [expr "int(2*($B1-$B3+$offset_rivet)/$step_rivet)"]
+while {$i < $NN1} {   
+  copy f_hole1 f_hole1_$i
+  ttranslate f_hole1_$i 0. [expr "-($i*$step_rivet)"]   0. ;
+  add f_hole1_$i holes_1;
+  incr i;
+}
+bcut  plate_holes_1 plate_holes_ul holes_1;
+
+#Create next rows of holes
+set Nrow 6; #number of vertical rows
+set j 1; 
+while {$j < $Nrow} {
+   copy f_hole1 f_hole_$j;
+   ttranslate f_hole_$j [expr "7*$step_rivet*$j*$angle_cos"] [expr "-(7*$step_rivet*$j)*$angle_sin-$step_rivet"]  0. ;
+   compound f_hole_$j holes_$j;
+   set i 1; 
+   set NN2 [expr "$NN1-$j-1"];
+   while {$i < $NN2} {   
+      copy f_hole_$j f_holev_$i
+      ttranslate f_holev_$i 0. [expr "-($i*$step_rivet)"] 0. ;
+      add f_holev_$i holes_$j;
+      incr i;
+      }
+   bcut  plate_holes_[expr "$j+1"] plate_holes_$j holes_$j;
+   incr j;
+}
+
+#Create holes for cuts
+#Create cut1
+circle c2 [expr "$offset_rivet+3.5*$step_rivet*$angle_cos"] 0.  0. $rad_cut;
+mkedge e_hole2 c2;
+wire w_hole2 e_hole2;
+mkplane f_big_hole w_hole2;
+bcut  plate_holes_pl1 plate_holes_6 f_big_hole;
+
+#Create cut2
+copy f_big_hole f_big_hole1
+ttranslate f_big_hole1 [expr "7.*$step_rivet*$angle_cos"] 0. 0.;
+bcut  plate_holes_pl2 plate_holes_pl1 f_big_hole1;
+
+#Create cut3
+copy f_big_hole1 f_big_hole2
+ttranslate f_big_hole2 [expr "7.*$step_rivet*$angle_cos"] 0. 0.;
+bcut  plate_holes_pl3 plate_holes_pl2 f_big_hole2;
+
+#Create cut4
+circle c3 [expr "$offset_rivet+24.5*$step_rivet*$angle_cos"] 0.  0. $rad_cut1;
+mkedge e_hole3 c3;
+wire w_hole3 e_hole3;
+mkplane f_big_hole3 w_hole3;
+bcut  plate_holes_pl4 plate_holes_pl3 f_big_hole3;
+
+#Create cut5
+circle c4 [expr "$offset_rivet+31.5*$step_rivet*$angle_cos"] 0.  0. $rad_cut2;
+mkedge e_hole4 c4;
+wire w_hole4 e_hole4;
+mkplane f_big_hole4 w_hole4;
+bcut  plate_holes_pl5 plate_holes_pl4 f_big_hole4;
+prism  v_plate  plate_holes_pl5  0. 0. [expr "-$t_st"];
+
+#Create reinforcement of cut1
+circle c5 [expr "$offset_rivet+3.5*$step_rivet*$angle_cos+$rad_cut"] 0. [expr "3*$t_st"]  0. 1. 0. 3*$t_st;
+mkedge en5 c5 [expr "3.141"] [expr "5*3.141/4"];
+circle c6 [expr "$offset_rivet+3.5*$step_rivet*$angle_cos+$rad_cut"] 0. [expr "3*$t_st"]  0. 1. 0. 4*$t_st;
+mkedge en6 c6 [expr "3.141"] [expr "5*3.141/4"];
+explode en5 v;
+explode en6 v;
+vertex p1 [expr "$offset_rivet+3.5*$step_rivet*$angle_cos+$rad_cut+$t_st"] 0.  0. ;
+vertex p2 [expr "$offset_rivet+3.5*$step_rivet*$angle_cos+$rad_cut+$t_st"] 0.  [expr "-$t_st"] ;
+edge en1 en6_2 en5_2;
+edge en2 en5_1 p1;
+edge en3  p1 p2;
+edge en4  p2 en6_1;
+wire w_en en1 en5 en2 en3 en4 en6;
+mkplane f_en w_en;
+revol rev_en1 f_en [expr "$offset_rivet+3.5*$step_rivet*$angle_cos"] 0.  0. 0.  0. 1. 360.
+bfuse v_plate1 v_plate rev_en1;
+
+#Create reinforcement of cut2
+copy rev_en1 rev_en2;
+ttranslate rev_en2 [expr "7.*$step_rivet*$angle_cos"] 0. 0.;
+bfuse v_plate2 v_plate1 rev_en2;
+
+#Create reinforcement of cut3
+copy rev_en2 rev_en3;
+ttranslate rev_en3 [expr "7.*$step_rivet*$angle_cos"] 0. 0.;
+bfuse v_plate3 v_plate2 rev_en3;
+
+#Create reinforcement of cut4
+circle c7 [expr "$offset_rivet+24.5*$step_rivet*$angle_cos+$rad_cut1"] 0. [expr "3*$t_st"]  0. 1. 0. 3*$t_st;
+mkedge en7 c7 [expr "3.141"] [expr "5*3.141/4"];
+circle c8 [expr "$offset_rivet+24.5*$step_rivet*$angle_cos+$rad_cut1"] 0. [expr "3*$t_st"]  0. 1. 0. 4*$t_st;
+mkedge en8 c8 [expr "3.141"] [expr "5*3.141/4"];
+explode en7 v;
+explode en8 v;
+vertex p3 [expr "$offset_rivet+24.5*$step_rivet*$angle_cos+$rad_cut1+$t_st"] 0.  0. ;
+vertex p4 [expr "$offset_rivet+24.5*$step_rivet*$angle_cos+$rad_cut1+$t_st"] 0.  [expr "-$t_st"] ;
+edge en9 en8_2 en7_2;
+edge en10 en7_1 p3;
+edge en11  p3 p4;
+edge en12  p4 en8_1;
+wire w_en1 en7 en10 en11 en12 en8 en9  ;
+mkplane f_en1 w_en1;
+revol rev_en4 f_en1 [expr "$offset_rivet+24.5*$step_rivet*$angle_cos"] 0.  0. 0.  0. 1. 360.
+bfuse v_plate4 v_plate3 rev_en4;
+
+#Create reinforcement of cut5
+circle c9 [expr "$offset_rivet+31.5*$step_rivet*$angle_cos+$rad_cut2"] 0. [expr "3*$t_st"]  0. 1. 0. 3*$t_st;
+mkedge en13 c9 [expr "3.141"] [expr "5*3.141/4"];
+circle c10 [expr "$offset_rivet+31.5*$step_rivet*$angle_cos+$rad_cut2"] 0. [expr "3*$t_st"]  0. 1. 0. 4*$t_st;
+mkedge en14 c10 [expr "3.141"] [expr "5*3.141/4"];
+explode en13 v;
+explode en14 v;
+vertex p5 [expr "$offset_rivet+31.5*$step_rivet*$angle_cos+$rad_cut2+$t_st"] 0.  0. ;
+vertex p6 [expr "$offset_rivet+31.5*$step_rivet*$angle_cos+$rad_cut2+$t_st"] 0.  [expr "-$t_st"] ;
+edge en15 en14_2 en13_2;
+edge en16 en13_1 p5;
+edge en17  p5 p6;
+edge en18  p6 en14_1;
+wire w_en2 en13 en16 en17 en18 en14 en15  ;
+mkplane f_en2 w_en2;
+revol rev_en5 f_en2 [expr "$offset_rivet+31.5*$step_rivet*$angle_cos"] 0.  0. 0.  0. 1. 360.
+bfuse v_plate5 v_plate4 rev_en5;
+
+#Create pattern rivet 1 for 2 plates
+circle c11 $offset_rivet [expr "$B1-$B3+$offset_rivet"]  [expr " 0.3*$t_st"]  1. 0. 0. [expr "2.5* $rad_rivet"];
+mkedge e_riv c11 [expr "-acos(0.7*$t_st/2.5*$rad_rivet)"] 0;
+explode e_riv v;
+copy e_riv e_riv1;
+tmirror e_riv1  0. 0. 0. 0. 0. 1.;
+reverse e_riv1;
+explode e_riv1 v;
+vertex riv1 $offset_rivet [expr "$B1-$B3+$offset_rivet+$rad_rivet"] $t_st;
+vertex riv2 $offset_rivet [expr "$B1-$B3+$offset_rivet+$rad_rivet"] [expr " -$t_st"];
+edge riv_e1 riv2 riv1;
+edge riv_e2 e_riv_2 e_riv1_2;
+edge riv_e3 e_riv1_1 riv2 ;
+edge riv_e4 riv1 e_riv_1 ;
+#fillet2d riv_fil1 riv_e1 riv_e3 0.25;
+#fillet2d riv_fil2 riv_e2 riv_e1 0.25;
+wire w_riv e_riv riv_e2 e_riv1 riv_e3 riv_e1 riv_e4;
+mkplane f_riv w_riv;
+revol rev_riv f_riv $offset_rivet [expr "$B1-$B3+$offset_rivet"] 0. 0.  0. 1. 360.;
+
+#Create pattern rivet 2 for 2 plates
+copy e_riv e_riv3;
+ttranslate e_riv3 0. 0. [expr " -$t_st"]; 
+explode e_riv3 v;
+copy e_riv1 e_riv2;
+ttranslate e_riv2 0. 0. [expr " -$t_ang"]; 
+explode e_riv2 v;
+vertex riv3 $offset_rivet [expr "$B1-$B3+$offset_rivet+$rad_rivet"] 0;
+vertex riv4 $offset_rivet [expr "$B1-$B3+$offset_rivet+$rad_rivet"] [expr " -$t_ang-$t_st"];
+
+edge riv_e5 riv4 riv3;
+edge riv_e6 riv3 e_riv3_1;
+edge riv_e7 e_riv3_2 e_riv2_2;
+edge riv_e8 e_riv2_1 riv4;
+wire w_rivl e_riv3 riv_e7 e_riv2 riv_e8 riv_e5 riv_e6;
+mkplane f_rivl w_rivl;
+revol rev_rivl f_rivl $offset_rivet [expr "$B1-$B3+$offset_rivet"] 0. 0.  0. 1. 360.;
+
+#Create pattern rivet 3 for 3 plates
+edge riv_e9 e_riv_2 e_riv2_2;
+edge riv_e10  riv1 riv4;
+wire w_riv3pl e_riv2 riv_e8 riv_e10 riv_e4  e_riv riv_e9 ;
+mkplane f_riv3pl w_riv3pl;
+revol rev_riv3pl f_riv3pl $offset_rivet [expr "$B1-$B3+$offset_rivet"] 0. 0.  0. 1. 360.;
+
+
+#Create rivets upper row
+compound rev_riv rivets_upper;
+set i 1; 
+set NNN [expr "int($L_edge/$step_rivet)"]
+while {$i < $NNN} {   
+  if {fmod ($i,7) != 0 } { 
+      copy rev_riv rev_riv_$i
+      ttranslate rev_riv_$i [expr "$i*$step_rivet*$angle_cos"] [expr "-($i*$step_rivet*$angle_sin)"]   0. ;  
+      add rev_riv_$i rivets_upper;
+  }   else {      
+      copy rev_riv3pl rev_riv_$i
+      ttranslate rev_riv_$i [expr "$i*$step_rivet*$angle_cos"] [expr "-($i*$step_rivet*$angle_sin)"]   0. ;  
+      add rev_riv_$i rivets_upper;
+  } 
+  incr i;
+}
+
+#Create rivets lower row
+copy rivets_upper rivets_lower;
+tmirror rivets_lower 0. 0. 0. 0. 1. 0.;
+
+#Create 1 row of rivets 
+
+compound rivets_1;
+set i 1; 
+set NN1 [expr "int(2*($B1-$B3+$offset_rivet)/$step_rivet)"]
+while {$i < $NN1} {   
+  copy rev_rivl rev_$i
+  ttranslate rev_$i 0. [expr "-($i*$step_rivet)"]   0. ;
+  add rev_$i rivets_1;
+  incr i;
+}
+
+
+#Create next rows of rivets 
+set Nrow 6; #number of vertical rows
+set j 1; 
+while {$j < $Nrow} {
+   copy rev_rivl rev_riv1e_$j;
+   ttranslate rev_riv1e_$j [expr "7*$step_rivet*$j*$angle_cos"] [expr "-(7*$step_rivet*$j)*$angle_sin-$step_rivet"]  0. ;
+   compound rev_riv1e_$j rivets_$j;
+   set i 1; 
+   set NN2 [expr "$NN1-$j-1"];
+   while {$i < $NN2} {   
+      copy rev_riv1e_$j rev_riv1v_$i
+      ttranslate rev_riv1v_$i 0. [expr "-($i*$step_rivet)"] 0. ;
+      add rev_riv1v_$i rivets_$j;
+      incr i;
+      }   
+   incr j;
+}
+#Create profile for bracket
+set ang_x1 [expr "($offset_rivet+7*$step_rivet-$h_ang/2)*$angle_cos"];
+set ang_y1 [expr "$B1-$B3+$offset_fl-($offset_rivet+7*$step_rivet-$h_ang/2)*$angle_sin"];
+vertex ang_1 $ang_x1 $ang_y1 [expr " -$t_st"]; 
+set ang_x2 [expr "($offset_rivet+7*$step_rivet+$h_ang/2)*$angle_cos"];
+set ang_y2 [expr "$B1-$B3+$offset_fl-($offset_rivet+7*$step_rivet+$h_ang/2)*$angle_sin"];
+vertex ang_2 $ang_x2 $ang_y2 [expr " -$t_st"]; 
+set ang_y3 [expr "$B1-$B3+$offset_fl-($offset_rivet+7*$step_rivet-$h_ang/2)*$angle_sin"];
+vertex ang_3 $ang_x1 $ang_y3 [expr " -$t_st-$t_ang"];
+set ang_y4 [expr "$B1-$B3+$offset_fl-($offset_rivet+7*$step_rivet+$h_ang/2)*$angle_sin"];
+vertex ang_4 $ang_x2 $ang_y4 [expr " -$t_st-$h_ang"];
+set ang_x5 [expr "($offset_rivet+7*$step_rivet+$h_ang/2-$t_ang)*$angle_cos"];
+set ang_y5 [expr "$B1-$B3+$offset_fl-($offset_rivet+7*$step_rivet+$h_ang/2-$t_ang)*$angle_sin"];
+vertex ang_5 $ang_x5 $ang_y5 [expr " -$t_st-$h_ang"]; 
+set ang_y6 [expr "$B1-$B3+$offset_fl-($offset_rivet+7*$step_rivet+$h_ang/2-$t_ang)*$angle_sin"];
+vertex ang_6 $ang_x5 $ang_y6 [expr " -$t_st-$t_ang"];
+edge ang_e1 ang_1 ang_2;
+edge ang_e2 ang_2 ang_4;
+edge ang_e3 ang_4 ang_5;
+edge ang_e4 ang_5 ang_6;
+edge ang_e5 ang_6 ang_3;
+edge ang_e6 ang_3 ang_1;
+fillet2d ang_f1 ang_e4 ang_e5 2.;
+fillet2d ang_f2 ang_e5 ang_e6 0.4;
+fillet2d ang_f3 ang_e3 ang_e4 0.4;
+wire w_ang ang_e1 ang_e2 ang_e3 ang_f3 ang_e4 ang_f1 ang_e5 ang_f2 ang_e6;
+mkplane f_ang w_ang;
+prism v_ang f_ang 0. [expr "-2. *$B1"] 0.;
+
+
+#Create prisms to cut profile
+#prism v_pr1
+#vertex p1_1 0. [expr "-($B1-$B3+$offset_fl)-$B1"]  0.;
+#vertex p1_2 $L [expr "-($B2-$B3+$offset_fl)-$B1"]  0.;
+vertex p1_1 0. [expr "-($B1-$B3+$offset_fl)-3.*$B1"]  0.;
+vertex p1_2 $L [expr "-($B2-$B3+$offset_fl)-3.*$B1"]  0.;
+edge ep1_1 vfl_3 p1_2;
+edge ep1_2 p1_2 p1_1;
+edge ep1_3 p1_1 vfl_1;
+wire w_pr1 ep1_1 pl_2 ep1_2 ep1_3;
+mkplane f_pr1 w_pr1;
+prism v_pr1 f_pr1 0. 0. [expr "-4.*$h_ang"];
+
+#prism v_pr2
+vertex p2_1 $ang_x5 [expr "$ang_y5-10."] [expr " -$t_st-$h_ang"]; 
+vertex p2_2 $ang_x5 $ang_y5 [expr " -$t_st-$h_ang+10."]; 
+edge ep2_1 p2_1 p2_2;
+edge ep2_2 p2_2 ang_5;
+edge ep2_3 ang_5 p2_1;
+wire w_pr2 ep2_1 ep2_2 ep2_3;
+mkplane f_pr2 w_pr2;
+prism v_pr2 f_pr2 [expr "$L*$angle_cos"] [expr "-$L*$angle_sin"] 0.;
+
+#prism v_pr3
+copy v_pr2 v_pr3;
+tmirror v_pr3 0. 0. 0. 0. 1. 0.;
+
+#prism v_pr4
+set ang_xpr1 [expr "($offset_rivet+7*$step_rivet-$h_ang/2+5.)*$angle_cos"];
+set ang_ypr1 [expr "$B1-$B3+$offset_fl-($offset_rivet+7*$step_rivet-$h_ang/2+5.)*$angle_sin"];
+vertex p4_1 $ang_xpr1 $ang_ypr1 [expr " -$t_st"]; 
+vertex p4_2 $ang_x1 [expr "$ang_y1-5."] [expr " -$t_st"];
+edge ep4_1 p4_1 p4_2;
+edge ep4_2 p4_2 ang_1;
+edge ep4_3 ang_1 p4_1;
+wire w_pr4 ep4_1 ep4_2 ep4_3;
+mkplane f_pr4 w_pr4;
+prism v_pr4 f_pr4 0. 0. [expr "-$L"];
+
+#prism v_pr5
+copy v_pr4 v_pr5;
+tmirror v_pr5 0. 0. 0. 0. 1. 0.;
+
+#Create bracket 1
+prism vholes_1 holes_1 0. 0. [expr "-4.*$h_ang"];
+bcut v_ang_1a v_ang v_pr1; 
+bcut v_ang_1b v_ang_1a v_pr2; 
+bcut v_ang_1c v_ang_1b v_pr3; 
+bcut v_ang_1d v_ang_1c v_pr4;
+bcut v_ang_1e v_ang_1d v_pr5;
+bcut v_ang_1f v_ang_1e vholes_1;
+compound v_ang_1f brackets;
+
+set Nrow 6; #number of vertical rows
+set j 2; 
+while {$j < $Nrow} {
+   	copy v_ang_1e v_ang2;
+	ttranslate v_ang2 [expr "7*($j-1)*$step_rivet*$angle_cos"] [expr "-7*($j-1)*$step_rivet*$angle_sin"] 0.;
+	bcut v_ang3 v_ang2 v_pr1; 
+        bcut v_ang4 v_ang3 v_pr3; 
+	copy v_pr5 v_pr5_$j; 
+	ttranslate v_pr5_$j [expr "7*($j-1)*$step_rivet*$angle_cos"] [expr "7*($j-1)*$step_rivet*$angle_sin"] 0.;
+	bcut v_ang5 v_ang4 v_pr5_$j; 
+        prism vholes_$j holes_$j 0. 0. [expr "-4.*$h_ang"];
+        bcut v_ang1_$j  v_ang5 vholes_$j;
+        add v_ang1_$j brackets;
+        incr j;
+}
+
+
+#vdisplay v_plate5 v_upper v_lower rivets_1 rivets_2 rivets_3 rivets_4 rivets_5 rivets_upper rivets_lower brackets
+
+compound  rivets_1 rivets_2 rivets_3 rivets_4 rivets_5 brackets brackets_with_rivets;
+compound  rivets_upper v_upper v_upper_rivets;
+compound  v_lower  rivets_lower v_lower_rivets;
+compound  v_plate5 v_upper_rivets v_lower_rivets brackets_with_rivets wing_rib;
+
+
+pload MODELING VISUALIZATION OCAF XDE;
+NewDocument D;#creates new document with name D;
+
+#Assign names to shapes
+XAddShape D wing_rib;
+
+SetName D 0:1:1:1 wing_rib;
+SetName D 0:1:1:1:1 v_plate5;
+SetName D 0:1:1:1:2 v_upper_rivets;
+SetName D 0:1:1:1:3 v_lower_rivets;
+SetName D 0:1:1:1:4 brackets_with_rivets;
+SetName D 0:1:1:2 v_plate5;
+SetName D 0:1:1:4 v_upper_rivets;
+SetName D 0:1:1:4:1 rivets_upper;
+SetName D 0:1:1:4:2 v_upper;
+SetName D 0:1:1:5 rivets_upper;
+SetName D 0:1:1:8 v_upper;
+SetName D 0:1:1:8:1 v_upper;
+SetName D 0:1:1:9 v_upper;
+SetName D 0:1:1:10 v_lower_rivets;
+SetName D 0:1:1:10:1 v_lower;
+SetName D 0:1:1:10:2 rivets_lower;
+SetName D 0:1:1:11 v_lower;
+SetName D 0:1:1:13 rivets_lower;
+
+set i 1; 
+set NNN [expr "int($L_edge/$step_rivet)+1"]
+while {$i < $NNN} {      
+  SetName D 0:1:1:5:$i rev_riv_up_$i;
+  SetName D 0:1:1:13:$i rev_riv_low_$i;
+  set ind [expr "$i+13"]
+  XSetColor D 0:1:1:$ind 0.576 0.576 0.432;
+  incr i;
+}
+
+XSetColor D 0:1:1:$ind 0.576 0.576 0.432;
+puts $ind
+SetName D 0:1:1:64 brackets_with_rivets;
+SetName D 0:1:1:64:1 rivets_on_bracket_1;
+SetName D 0:1:1:65 rivets_on_bracket_1;
+SetName D 0:1:1:64:2 rivets_on_bracket_2;
+SetName D 0:1:1:67 rivets_on_bracket_2;
+SetName D 0:1:1:64:3 rivets_on_bracket_3;
+SetName D 0:1:1:68 rivets_on_bracket_3;
+SetName D 0:1:1:64:4 rivets_on_bracket_4;
+SetName D 0:1:1:69 rivets_on_bracket_4;
+SetName D 0:1:1:64:5 rivets_on_bracket_5;
+SetName D 0:1:1:70 rivets_on_bracket_5;
+SetName D 0:1:1:64:6 brackets;
+SetName D 0:1:1:71 brackets;
+SetName D 0:1:1:71:1 bracket_1;
+SetName D 0:1:1:72 bracket_1;
+SetName D 0:1:1:71:2 bracket_2;
+SetName D 0:1:1:74 bracket_2;
+SetName D 0:1:1:71:3 bracket_3;
+SetName D 0:1:1:76 bracket_3;
+SetName D 0:1:1:71:4 bracket_4;
+SetName D 0:1:1:78 bracket_4;
+SetName D 0:1:1:71:5 bracket_5;
+SetName D 0:1:1:80 bracket_5;
+
+SetName D 0:1:1:3 plate5;
+XSetColor D 0:1:1:3 0.58 0.57 0.57;
+XSetColor D 0:1:1:6 0.576 0.576 0.432;
+XSetColor D 0:1:1:7 0.576 0.576 0.432;
+XSetColor D 0:1:1:66 0.576 0.576 0.432;
+XSetColor D 0:1:1:75 0.58 0.57 0.57;
+XSetColor D 0:1:1:77 0.58 0.57 0.57;
+XSetColor D 0:1:1:79 0.58 0.57 0.57;
+XSetColor D 0:1:1:81 0.58 0.57 0.57;
+
+
+#All attributes (colors, dimensions can be exported only on basic solids without locations noty compounds
+XGetShape v1 D 0:1:1:9;
+explode v1 e;
+#Set rivet diameter
+XAddDimension D v1_388; #0:1:4:1
+XSetDimensionType D  0:1:4:1 15;
+
+XSetDimensionValue D 0:1:4:1 2.;
+#Set length
+XAddDimension D v1_296; #0:1:4:2
+XSetDimensionType D  0:1:4:2 2;
+
+XSetDimensionValue D 0:1:4:2 100.;
+
+XGetShape v2 D 0:1:1:3;
+explode v2 f
+
+#Set cut diameter
+XAddDimension D v2_24; #0:1:4:3
+XSetDimensionType D  0:1:4:3 15;
+
+XSetDimensionValue D 0:1:4:3 35.;
+
+#Set  tolerance
+XAddGeomTolerance D v2_2; #0:1:4:
+XSetToleranceValue D 0:1:4:4 0.5
+
+XSetTypeOfTolerance D 0:1:4:4 2
+
+XSetTypeOfToleranceValue D 0:1:4:4 1
+
+#========
+XAddShape D bracket_5

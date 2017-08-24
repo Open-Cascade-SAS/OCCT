@@ -1,0 +1,18 @@
+puts "========"
+puts "OCC27701"
+puts "========"
+puts ""
+#########################################
+# Crash when export empty solid to STEP
+#########################################
+
+pload DCAF
+
+catch {exec rm ${imagedir}/bug27701.stp}
+
+restore [locate_data_file bug27701.brep] s
+
+NewDocument D
+XAddShape D s
+XSetColor D 0:1:1:1 1 0 0 s
+WriteStep D ${imagedir}/bug27701.stp

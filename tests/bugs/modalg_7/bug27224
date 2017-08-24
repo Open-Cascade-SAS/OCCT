@@ -1,0 +1,29 @@
+puts "========"
+puts "OCC27224"
+puts "========"
+puts ""
+############################################################################
+# Incorrect result of boolean operation in boolean bcut_complex Q1 test case
+############################################################################
+
+restore [locate_data_file buc60290a.rle] sol1
+restore [locate_data_file buc60290b.rle] sol2
+
+explode sol1 f
+explode sol2 f
+
+bsection result sol2_1 sol1_1
+
+regexp {nb alone Vertices : ([-0-9.+eE]+)} [checksection result] full nbv
+
+if { $nbv != 0 } { 
+  puts "Error : Incorrect result of boolean operation" 
+} else {
+  puts "OK : Correct result of boolean operation" 
+}
+
+smallview
+donly result
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,49 @@
+puts "TODO OCC27049 ALL: Error : result is WRONG because number of .* entities in shape"
+puts "TODO OCC27049 ALL: Error: MaxTolerance"
+
+puts "============"
+puts "OCC27049"
+puts "============"
+puts ""
+#######################################################################
+# Make non-destructive mode be defined by default in Boolean operations
+#######################################################################
+
+restore [locate_data_file bug26619_shell_ft81_h0.brep] h0
+restore [locate_data_file bug26619_the_face.brep] f0
+
+regexp {Tolerance +MAX=([-0-9.+eE]+)} [tolerance h0] full MaxTolerance1
+
+tolerance f0
+
+#turn on non-destructive mode of BOP
+#setflags h0 locked
+#setflags f0 locked
+#bnondestructive 1
+
+bop h0 f0
+bopsection result
+checkprops result -l 142.264
+
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX    : 46
+ EDGE      : 46
+ WIRE      : 0
+ FACE      : 0
+ SHELL     : 0
+ SOLID     : 0
+ COMPSOLID : 0
+ COMPOUND  : 1
+ SHAPE     : 93
+"
+checknbshapes result -ref ${nbshapes_expected} -t -m "result"
+
+regexp {Tolerance +MAX=([-0-9.+eE]+)} [tolerance h0] full MaxTolerance2
+
+set expected_MaxTolerance ${MaxTolerance1}
+set tol_abs_MaxTolerance 0.0001
+set tol_rel_MaxTolerance 0.0001
+checkreal "MaxTolerance" ${MaxTolerance2} ${expected_MaxTolerance} ${tol_abs_MaxTolerance} ${tol_rel_MaxTolerance}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

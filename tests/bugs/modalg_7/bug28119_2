@@ -1,0 +1,18 @@
+puts "========"
+puts "OCC28119"
+puts "========"
+puts ""
+#################################################
+# Blend fails on fused identical but shifted tori
+#################################################
+
+# large difference in secondary radi
+
+ptorus t1 100 10
+ptorus t2 100 9.9
+ttranslate t2 100 0 0 
+
+bfuseblend result t1 t2 5
+
+checkview -display result -2d -path ${imagedir}/${test_image}-2d.png
+checkview -display result -3d -path ${imagedir}/${test_image}-3d.png

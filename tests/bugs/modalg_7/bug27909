@@ -1,0 +1,18 @@
+puts "TODO OCC27908 ALL: An exception was caught"
+puts "TODO OCC27908 ALL: \\*\\* Exception \\*\\*.*"
+puts "TODO OCC27908 ALL: TEST INCOMPLETE"
+
+puts "========"
+puts "OCC27909"
+puts "========"
+puts ""
+#######################################
+# Exception during offset computation
+#######################################
+
+restore [locate_data_file bug27909.brep] s
+
+offsetparameter 1e-7 p i
+offsetload s 10
+
+offsetperform result

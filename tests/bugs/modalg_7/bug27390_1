@@ -1,0 +1,34 @@
+puts "========"
+puts "OCC27390"
+puts "========"
+puts ""
+###########################################################################
+#  Box and Ellipsoid shape boolean cut and common introduce invalid result.
+###########################################################################
+
+restore [locate_data_file bug27390_Box_Ellipsoid.brep] c
+
+explode c
+
+bcommon result c_1 c_2
+
+checkshape result
+
+checkprops result -s 8206.54
+
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX    : 5
+ EDGE      : 9
+ WIRE      : 4
+ FACE      : 4
+ SHELL     : 1
+ SOLID     : 1
+ COMPSOLID : 0
+ COMPOUND  : 1
+ SHAPE     : 25
+"
+checknbshapes result -ref ${nbshapes_expected} -t -m "Boolean operations common"
+
+checkview -display result -3d -path ${imagedir}/${test_image}-3d.png
+checkview -display result -2d -path ${imagedir}/${test_image}-2d.png

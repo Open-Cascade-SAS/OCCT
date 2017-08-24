@@ -1,0 +1,19 @@
+puts "TODO OCC27928 ALL: ERROR: OCC27928 is reproduced."
+
+puts "========"
+puts "OCC27928"
+puts "========"
+puts ""
+######################################
+# BOP common produces empty compound
+######################################
+
+restore [locate_data_file bug27928_b1.brep] b1
+restore [locate_data_file bug27928_b2.brep] b2
+
+bcommon result b1 b2
+
+set bug_info [string trim [explode r]]
+if {$bug_info == ""} {
+  puts "ERROR: OCC27928 is reproduced. Result of bcommon is empty."
+}

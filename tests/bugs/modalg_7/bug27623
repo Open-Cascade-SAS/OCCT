@@ -1,0 +1,21 @@
+puts "TODO OCC27623 ALL: ERROR: OCC27623 is reproduced."
+
+puts "========"
+puts "OCC27623"
+puts "========"
+puts ""
+#####################################################################
+# Cannot find intersection line between two trimmed planar surfaces
+#####################################################################
+
+plane s1 0 0 0 0 0 1 1 0 0
+trim s1 s1 -10 10 -10 10
+plane s2 0 0 10 1 0 0 0 0 1
+trim s2 s2 -10+1.0e-5 10 -10+1.0e-5 10
+
+intersect ii s1 s2 4.0e-4
+
+set bug_info [string trim [whatis ii]]
+if {[string length $bug_info] == 7} {
+  puts "ERROR: OCC27623 is reproduced. Intersection of trimmed planar surface has not been detected."
+}

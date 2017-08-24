@@ -1,0 +1,33 @@
+puts "TODO OCC27160 ALL: Error: Weird results of the pipe algorithm"
+
+puts "========"
+puts "OCC27160"
+puts "========"
+puts ""
+#####################################
+# Weird results of the pipe algorithm
+#####################################
+
+cpulimit 3000
+
+smallview
+
+restore [locate_data_file bug27160_path.rle] p
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}-path.png
+
+tuyau r p 0.2
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}-fit.png
+
+clear r
+
+mkface f r
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}-f.png
+
+set Log [bopcheck f]
+if {[regexp "This shape seems to be OK" ${Log}] != 1} {
+    puts "Error: Weird results of the pipe algorithm"
+}

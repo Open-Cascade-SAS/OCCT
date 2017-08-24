@@ -1,0 +1,58 @@
+puts "TODO OCC27711 ALL: Faulty shapes in variables faulty_1 to faulty_"
+puts "TODO OCC27711 ALL: ERROR: OCC27711 is reproduced."
+
+puts "========"
+puts "OCC27711"
+puts "========"
+puts ""
+#####################################
+# Blend-on-blend corrupts the shape
+#####################################
+
+smallview
+
+box a -1.5 -1.5 0 3 3 3
+box b -3 -3 -3 6 6 3
+bfuse result a b
+set bug_info [string trim [checkshape result]]
+if {$bug_info != "This shape seems to be valid"} {
+  puts "ERROR: Problem of test case functionality. Should be additionally investigated."
+}
+clear
+display result
+fit
+xwd $imagedir/${casename}_step_0.png
+
+explode result e
+blend result result 0.5 result_12 0.5 result_11
+set bug_info [string trim [checkshape result]]
+if {$bug_info != "This shape seems to be valid"} {
+  puts "ERROR: Problem of test case functionality. Should be additionally investigated."
+}
+clear
+display result
+xwd $imagedir/${casename}_step_1.png
+
+explode result e
+# The correct command format should be following:
+# blend res res 0.5 res_7 0.5 res_11
+# but it does not work properly on win64 vc 10
+# so for automated test case following command format was used:
+blend result result 0.5 result_11
+set bug_info [string trim [checkshape result]]
+if {$bug_info != "This shape seems to be valid"} {
+  puts "ERROR: Problem of test case functionality. Should be additionally investigated."
+}
+clear
+display result
+xwd $imagedir/${casename}_step_2.png
+
+explode result e
+blend result result 0.35 result_4 0.25 ressult_15 0.2 result_27
+set bug_info [string trim [checkshape result]]
+if {$bug_info != "This shape seems to be valid"} {
+  puts "ERROR: OCC27711 is reproduced. Result of blend operation is WRONG."
+}
+clear
+display result
+xwd $imagedir/${casename}_step_3.png

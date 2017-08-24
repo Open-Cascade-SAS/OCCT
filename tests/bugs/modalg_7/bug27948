@@ -1,0 +1,28 @@
+puts "TODO OCC27948 ALL: ERROR: OCC27948 is reproduced."
+
+puts "========"
+puts "OCC27948"
+puts "========"
+puts ""
+##################################
+# Cut produces unexcpected shape
+##################################
+
+restore [locate_data_file bug27948_a.brep] a
+restore [locate_data_file bug27948_b.brep] b
+
+bcut res a b
+explode res F
+
+vinit
+vdisplay res
+vfit
+vdisplay res_16
+vsetdispmode res_16 1
+
+set bug_info [string trim [vreadpixel 340 280 name]]
+if {$bug_info == "DARKGOLDENROD3 1"} {
+  puts "ERROR: OCC27948 is reproduced."
+}
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

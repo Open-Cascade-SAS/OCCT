@@ -1,0 +1,10 @@
+puts "TODO ?OCC27052 All: Faulty shapes in variables faulty_1 to"
+
+source [locate_data_file equipement_chambre.asm.1.gdml.tcl]
+
+set So_N [llength [explode result So]]
+
+smallview
+for {set i 1} {$i<=$So_N} {incr i} {
+   checkview -display result_${i} -2d -path ${imagedir}/${test_image}_${i}.png
+}

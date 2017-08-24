@@ -1,0 +1,14 @@
+puts "TODO OCC27186 ALL: Directory Entry Error Status" 
+
+puts "========"
+puts "OCC27186"
+puts "========"
+puts ""
+####################################################################
+# IGES - reconsider creation of Undefined entity in case of failure
+####################################################################
+
+set filename 919-004-T03-04-CP-VL.igs
+igesbrep [locate_data_file ${filename}] a *
+
+entity 16233

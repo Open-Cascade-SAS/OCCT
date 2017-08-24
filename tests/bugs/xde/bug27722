@@ -1,0 +1,47 @@
+puts "TODO OCC27722 ALL: Faulty shapes in variables faulty_1 to faulty_"
+puts "TODO OCC27722 ALL: Error :  is WRONG because number of "
+
+puts "========"
+puts "OCC27722"
+puts "========"
+puts ""
+######################################
+# STEP error for Ellipse revol shape
+######################################
+
+catch {exec rm ${imagedir}/bug27722.stp}
+
+ellipse ge 0 0 20 10
+mkedge te ge 0 pi/2.0
+revol re te 0 0 0 0 1 0 360
+
+set i_Vertex   0
+set i_Edge     0
+set i_Wire     0
+set i_Face     0
+set i_Shell    0
+set i_Solid    0
+set i_CSolid   0
+set i_Compound 0
+set i_Shape    0
+set bug_info [string trim [checkshape re]]
+if {$bug_info == "This shape seems to be valid"} {
+  set nb_info [string trim [nbshapes re]]
+  set i_Vertex   [string trim [lindex $nb_info 7]]
+  set i_Edge     [string trim [lindex $nb_info 10]]
+  set i_Wire     [string trim [lindex $nb_info 13]]
+  set i_Face     [string trim [lindex $nb_info 16]]
+  set i_Shell    [string trim [lindex $nb_info 19]]
+  set i_Solid    [string trim [lindex $nb_info 22]]
+  set i_CSolid   [string trim [lindex $nb_info 25]]
+  set i_Compound [string trim [lindex $nb_info 28]]
+  set i_Shape    [string trim [lindex $nb_info 31]]
+} else {
+  puts "ERROR: Problem of test case functionality. Should be additionally investigated."
+}
+
+stepwrite a re ${imagedir}/bug27722.stp
+
+stepread ${imagedir}/bug27722.stp sr *
+checkshape sr_1
+checknbshapes sr_1 -vertex ${i_Vertex} -edge ${i_Edge} -wire ${i_Wire} -face ${i_Face} -shell ${i_Shell} -solid ${i_Solid} -compsolid ${i_CSolid} -compound ${i_Compound} -shape ${i_Shape}

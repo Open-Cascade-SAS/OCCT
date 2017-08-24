@@ -1,0 +1,68 @@
+puts "============"
+puts "OCC27227"
+puts "============"
+puts ""
+#############################################################
+# Intersection curve is not continued to the surface boundary
+#############################################################
+
+ptorus a0 100 20
+tcopy a0 a1
+trotate a1 0 0 0 1 0 0 90
+
+explode a0 f
+explode a1 f
+
+smallview
+donly a0_1 a1_1
+
+bopcurves a0_1 a1_1 -2d
+
+disp c_5
+
+set log [dump c_5]
+
+regexp {Degree +([-0-9.+eE]+), +([-0-9.+eE]+) Poles, +([-0-9.+eE]+)} ${log} full Degree Poles KnotsPoles
+puts "Degree=${Degree}"
+puts "Poles=${Poles}"
+puts "KnotsPoles=${KnotsPoles}"
+puts ""
+
+set Pole 1
+set exp_string " +${Pole} : +(\[-0-9.+eE\]+), +(\[-0-9.+eE\]+), +(\[-0-9.+eE\]+)"
+regexp ${exp_string} ${log} full X_first Y_first Z_first
+
+puts "Pole=${Pole}"
+puts "X_first=${X_first}"
+puts "Y_first=${Y_first}"
+puts "Z_first=${Z_first}"
+puts ""
+
+set Pole ${Poles}
+set exp_string " +${Pole} : +(\[-0-9.+eE\]+), +(\[-0-9.+eE\]+), +(\[-0-9.+eE\]+)"
+regexp ${exp_string} ${log} full X_end Y_end Z_end
+
+puts "Pole=${Pole}"
+puts "X_end=${X_end}"
+puts "Y_end=${Y_end}"
+puts "Z_end=${Z_end}"
+puts ""
+
+set tol_abs [checkmaxtol a0]
+set tol_rel 0.01
+
+set expected_X_first 80.
+checkreal "X_first" ${X_first} ${expected_X_first} ${tol_abs} ${tol_rel}
+set expected_Y_first 0.
+checkreal "Y_first" ${Y_first} ${expected_Y_first} ${tol_abs} ${tol_rel}
+set expected_Z_first 0.
+checkreal "Z_first" ${Z_first} ${expected_Z_first} ${tol_abs} ${tol_rel}
+puts ""
+
+set expected_X_end 120.
+checkreal "X_end" ${X_end} ${expected_X_end} ${tol_abs} ${tol_rel}
+set expected_Y_end 0.
+checkreal "Y_end" ${Y_end} ${expected_Y_end} ${tol_abs} ${tol_rel}
+set expected_Z_end 0.
+checkreal "Z_end" ${Z_end} ${expected_Z_end} ${tol_abs} ${tol_rel}
+puts ""

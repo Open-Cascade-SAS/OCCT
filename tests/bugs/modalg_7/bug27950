@@ -1,0 +1,59 @@
+puts "TODO OCC27950 ALL: ERROR: OCC27950 is reproduced."
+
+puts "========"
+puts "OCC27950"
+puts "========"
+puts ""
+############################################################################
+# Result of intersection algorithm depends too much on surface trim bounds
+############################################################################
+
+restore [locate_data_file bug27950_s1.draw] s1
+restore [locate_data_file bug27950_s2.draw] s2
+
+set bug_info [string trim [intersect i1 s1 s2]]
+if {[llength $bug_info] != 4} {
+  puts "ERROR: OCC27950 is reproduced. Step #1. Result of intersection is [llength $bug_info]."
+}
+
+trimv s2t s2 200 300
+set bug_info [string trim [intersect i2 s1 s2t]]
+if {[llength $bug_info] != 4} {
+  puts "ERROR: OCC27950 is reproduced. Step #2. Result of intersection is [llength $bug_info]."
+}
+
+trimv s2t s2 200 220
+set bug_info [string trim [intersect i3 s1 s2t]]
+if {[llength $bug_info] != 4} {
+  puts "ERROR: OCC27950 is reproduced. Step #3. Result of intersection is [llength $bug_info]."
+}
+
+trimv s2t s2 205.38050051360744 210.55652011282123
+set bug_info [string trim [intersect i4 s1 s2t]]
+if {[llength $bug_info] != 4} {
+  puts "ERROR: OCC27950 is reproduced. Step #4. Result of intersection is [llength $bug_info]."
+}
+
+trimv s2t s2 205 211
+set bug_info [string trim [intersect i5 s1 s2t]]
+if {[llength $bug_info] != 4} {
+  puts "ERROR: OCC27950 is reproduced. Step #5. Result of intersection is [llength $bug_info]."
+}
+
+trimv s2t s2 206 210
+set bug_info [string trim [intersect i6 s1 s2t]]
+if {[llength $bug_info] != 4} {
+  puts "ERROR: OCC27950 is reproduced. Step #6. Result of intersection is [llength $bug_info]."
+}
+
+trimv s2t s2 205.4 210.575
+set bug_info [string trim [intersect i7 s1 s2t]]
+if {[llength $bug_info] != 4} {
+  puts "ERROR: OCC27950 is reproduced. Step #7. Result of intersection is [llength $bug_info]."
+}
+
+trimv s2t s2 205.353 210.529
+set bug_info [string trim [intersect i8 s1 s2t]]
+if {[llength $bug_info] != 4} {
+  puts "ERROR: OCC27950 is reproduced. Step #8. Result of intersection is [llength $bug_info]."
+}

@@ -1,0 +1,26 @@
+puts "TODO OCC27683 ALL: ERROR: OCC27683 is reproduced."
+
+puts "========"
+puts "OCC27683"
+puts "========"
+puts ""
+###############################
+# Inaccurate result by bopcut
+###############################
+
+restore [locate_data_file bug27683_shell.brep] s
+restore [locate_data_file bug27683_solidreverse.brep] b
+
+bop s b
+bopcut result
+
+set bug_info [string trim [bopcheck result]]
+if {$bug_info != "This shape seems to be OK."} {
+  puts "ERROR: OCC27683 is reproduced. Result of bopcut operation is WRONG."
+}
+
+vinit
+vdisplay result
+vfit
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

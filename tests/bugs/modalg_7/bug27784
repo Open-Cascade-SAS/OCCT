@@ -1,0 +1,19 @@
+puts "TODO OCC27784 ALL: An exception was caught"
+puts "TODO OCC27784 ALL: \\*\\* Exception \\*\\*.*"
+puts "TODO OCC27784 ALL: TEST INCOMPLETE"
+
+puts "========"
+puts "OCC27784"
+puts "========"
+puts ""
+##########################################
+# Thickness fails on cylinder with draft
+##########################################
+
+pcylinder cyl 50 30
+explode cyl f
+
+depouille draft cyl 0 0 -1 cyl_1 20 0 0 0 0 0 1
+explode draft f
+
+offsetcompshape d_thick draft -5 draft_2

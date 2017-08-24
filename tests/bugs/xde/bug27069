@@ -1,0 +1,25 @@
+puts "TODO OCC27069 ALL: Error: IGES parser does not recognize comments in Parameters section"
+
+puts "=========="
+puts "OCC27069"
+puts "=========="
+puts ""
+######################################################################
+# IGES parser does not recognize comments in Parameters section
+######################################################################
+
+igesbrep [locate_data_file bug27069_points-with-comments.igs] a *
+
+set Log [data c]
+
+if {[regexp {Unknown message invoked with the keyword} $Log] == 1} {
+  puts "Error: IGES parser does not recognize comments in Parameters section"
+} else {
+  puts "OK: IGES parser recognize comments in Parameters section"
+}
+
+if {[regexp {Directory Entry : parameter 1 \(entity type\) is incorrect} $Log] == 1} {
+  puts "Error: IGES parser does not recognize comments in Parameters section"
+} else {
+  puts "OK: IGES parser recognize comments in Parameters section"
+}

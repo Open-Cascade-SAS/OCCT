@@ -1,0 +1,18 @@
+puts "========"
+puts "OCC28144"
+puts "========"
+puts ""
+###########################################################
+# Step reader - regression in comparison of version OCCT654
+###########################################################
+
+testreadstep [locate_data_file bug28118_18547.stp] solid
+
+checkshape solid
+
+explode solid F
+
+renamevar solid_128 face
+
+checkview -display face -2d -path ${imagedir}/${test_image}-2d.png
+checkview -display face -3d -path ${imagedir}/${test_image}-3d.png
