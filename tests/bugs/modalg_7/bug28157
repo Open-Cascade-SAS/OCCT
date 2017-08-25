@@ -1,0 +1,41 @@
+puts "========"
+puts "OCC28157"
+puts "========"
+puts ""
+#######################################################################################################################
+# Setting the tolerance of a face to a small value and then fixing it leads to a face with vertex-vertex intersections
+#######################################################################################################################
+
+brunparallel 1
+
+restore [locate_data_file bug28157_init.brep] n
+whatis n
+tolerance n
+checkshape n
+bopcheck n
+
+restore [locate_data_file bug28157_solid.brep] s
+whatis s
+tolerance s
+checkshape s
+bopcheck s
+
+bop s n
+bopcommon r
+whatis r
+
+explode r
+whatis r_1
+tolerance r_1
+
+settolerance r_1 1e-7
+fixshape rr r_1
+tolerance rr
+checkshape rr
+
+set Log [bopcheck rr]
+if {[regexp "This shape seems to be OK" ${Log}] != 1} {
+    puts "Error: there are vertex-vertex intersections"
+}
+
+checkview -display rr -2d -path ${imagedir}/${test_image}.png
