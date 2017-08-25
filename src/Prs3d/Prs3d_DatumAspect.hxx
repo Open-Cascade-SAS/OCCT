@@ -88,10 +88,10 @@ public:
   Standard_EXPORT Standard_Boolean DrawDatumPart (Prs3d_DatumParts thePart) const;
 
   //! Sets the axes used in the datum aspect
-   void SetDrawDatumAxes (Prs3d_DatumAxes theType) { myAxes = theType; }
+  void SetDrawDatumAxes (Prs3d_DatumAxes theType) { myAxes = theType; }
 
   //! Returns axes used in the datum aspect
-   Prs3d_DatumAxes DatumAxes() const { return myAxes; }
+  Prs3d_DatumAxes DatumAxes() const { return myAxes; }
 
   //! Sets the attribute of the datum type
   void SetAttribute (Prs3d_DatumAttribute theType, const Standard_Real& theValue)

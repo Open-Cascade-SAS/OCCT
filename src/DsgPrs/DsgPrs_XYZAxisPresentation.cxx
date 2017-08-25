@@ -50,8 +50,11 @@ void DsgPrs_XYZAxisPresentation::Add(
  
   Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPresentation), aPlast,aDir, M_PI/180.*10., aVal/10.);
 
-  Graphic3d_Vertex a2(aPlast.X(),aPlast.Y(),aPlast.Z());
-  Prs3d_Root::CurrentGroup(aPresentation)->Text(aText,a2,1./81.);
+  if (*aText != '\0')
+  {
+    Graphic3d_Vertex a2(aPlast.X(),aPlast.Y(),aPlast.Z());
+    Prs3d_Root::CurrentGroup(aPresentation)->Text(aText,a2,1./81.);
+  }
 }
 
 
@@ -74,9 +77,13 @@ void DsgPrs_XYZAxisPresentation::Add(const Handle(Prs3d_Presentation)& aPresenta
   G->AddPrimitiveArray(aPrims);
 
   G->SetPrimitivesAspect( anArrowAspect->Aspect() );
-  Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPresentation), aPlast, aDir, M_PI/180.*10., aVal/10.);
+  Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPresentation), aPlast, aDir, anArrowAspect->Angle(), aVal/10.);
 
   G->SetPrimitivesAspect(aTextAspect->Aspect());
-  Graphic3d_Vertex a2(aPlast.X(),aPlast.Y(),aPlast.Z());
-  Prs3d_Root::CurrentGroup(aPresentation)->Text(aText,a2,1./81.);
+
+  if (*aText != '\0')
+  {
+    Graphic3d_Vertex a2(aPlast.X(),aPlast.Y(),aPlast.Z());
+    Prs3d_Root::CurrentGroup(aPresentation)->Text(aText,a2,1./81.);
+  }
 }
