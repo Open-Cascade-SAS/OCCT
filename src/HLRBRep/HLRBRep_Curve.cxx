@@ -345,27 +345,15 @@ void HLRBRep_Curve::D1 (const Standard_Real U,
   //       1 - ----   f (1 - ----)                                    
   //            f             f                                       
 
-  /* gp_Pnt P3D;
-  gp_Vec V13D;
-  HLRBRep_BCurveTool::D1(myCurve,U,P3D,V13D);
-  P3D .Transform(((HLRAlgo_Projector*) myProj)->Transformation());
-  V13D.Transform(((HLRAlgo_Projector*) myProj)->Transformation());
-  if (((HLRAlgo_Projector*) myProj)->Perspective()) {
-    Standard_Real f = ((HLRAlgo_Projector*) myProj)->Focus();
-    Standard_Real R = 1. - P3D.Z()/f;
-    Standard_Real e = V13D.Z()/(f*R*R);
-    P.SetCoord(P3D .X()/R            , P3D .Y()/R            );
-    V.SetCoord(V13D.X()/R + P3D.X()*e, V13D.Y()/R + P3D.Y()*e);
-  }
-  else {
-    P.SetCoord(P3D .X(),P3D .Y());
-    V.SetCoord(V13D.X(),V13D.Y());
-  } */
   gp_Pnt P3D;
   gp_Vec V13D;
   HLRBRep_BCurveTool::D1(myCurve,U,P3D,V13D);
-  if (((HLRAlgo_Projector*) myProj)->Perspective()) {  
-    Standard_Real f = ((HLRAlgo_Projector*) myProj)->Focus();
+  if (myProj->Perspective())
+  {
+    P3D .Transform(myProj->Transformation());
+    V13D.Transform(myProj->Transformation());
+
+    Standard_Real f = myProj->Focus();
     Standard_Real R = 1. - P3D.Z()/f;
     Standard_Real e = V13D.Z()/(f*R*R);
     P.SetCoord(P3D .X()/R            , P3D .Y()/R            );
@@ -373,12 +361,7 @@ void HLRBRep_Curve::D1 (const Standard_Real U,
   }
   else {
     //OCC155
-    ((HLRAlgo_Projector*) myProj)->Project(P3D,V13D,P,V);
-    /* ((HLRAlgo_Projector*) myProj)->Project(P3D,P);
-    gp_Pnt2d opop;
-    gp_Pnt uiui(V13D.X(),V13D.Y(),V13D.Z());
-    ((HLRAlgo_Projector*) myProj)->Project(uiui,opop);
-    V.SetCoord(opop.X(),opop.Y()); */
+    myProj->Project(P3D,V13D,P,V);
   }
 }
 
@@ -402,11 +385,12 @@ void HLRBRep_Curve::D2 (const Standard_Real U,
   gp_Pnt P3D;
   gp_Vec V13D,V23D;
   HLRBRep_BCurveTool::D2(myCurve,U,P3D,V13D,V23D);
-  P3D .Transform(((HLRAlgo_Projector*) myProj)->Transformation());
-  V13D.Transform(((HLRAlgo_Projector*) myProj)->Transformation());
-  V23D.Transform(((HLRAlgo_Projector*) myProj)->Transformation());
-  if (((HLRAlgo_Projector*) myProj)->Perspective()) {
-    Standard_Real f = ((HLRAlgo_Projector*) myProj)->Focus();
+  P3D .Transform(myProj->Transformation());
+  V13D.Transform(myProj->Transformation());
+  V23D.Transform(myProj->Transformation());
+  if (myProj->Perspective())
+  {
+    Standard_Real f = myProj->Focus();
     Standard_Real R = 1. - P3D.Z() / f;
     Standard_Real q = f*R*R;
     Standard_Real e = V13D.Z()/q;
