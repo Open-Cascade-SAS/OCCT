@@ -73,6 +73,8 @@ if not "%DevEnvDir%" == "" (
   for /f "usebackq delims=" %%i in (`vswhere.exe -version "[15.0,15.99]" -requires Microsoft.VisualStudio.Workload.%VCPROP% -property installationPath`) do (
     set "DevEnvDir=%%i\Common7\IDE\"
   )
+) else if /I "%VCFMT%" == "gcc" (
+  rem MinGW
 ) else (
   echo Error: wrong VS identifier
   exit /B
@@ -96,6 +98,8 @@ if /I "%VCFMT%" == "vc10" (
     set "VCVARS=%%i\VC\Auxiliary\Build\vcvarsall.bat"
   )
   set "VCPlatformToolSet=v141"
+) else if /I "%VCFMT%" == "gcc" (
+  rem MinGW
 ) else (
   echo Error: first argument ^(%VCVER%^) should specify supported version of Visual C++,
   echo one of: vc10 ^(VS 2010 SP3^), vc11 ^(VS 2012 SP3^), vc12 ^(VS 2013^) or vc14 ^(VS 2015^)
