@@ -35,7 +35,11 @@ endif()
 if (USE_FREEIMAGE)
   set (CSF_FreeImagePlus "freeimage")
 else()
-  set (CSF_FreeImagePlus)
+  if (WIN32)
+    set (CSF_FreeImagePlus "windowscodecs")
+  else()
+    set (CSF_FreeImagePlus)
+  endif()
 endif()
 
 # TCL/TK

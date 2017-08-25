@@ -1312,6 +1312,8 @@ proc osutils:csfList { theOS theCsfLibsMap theCsfFrmsMap } {
     } else {
       set aLibsMap(CSF_FreeImagePlus) "freeimage"
     }
+  } elseif { "$theOS" == "wnt" } {
+    set aLibsMap(CSF_FreeImagePlus) "windowscodecs"
   }
   if { "$::HAVE_FFMPEG" == "true" } {
     set aLibsMap(CSF_FFmpeg) "avcodec avformat swscale avutil"
