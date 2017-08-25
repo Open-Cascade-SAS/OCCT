@@ -1,0 +1,28 @@
+puts "========"
+puts "OCC28195"
+puts "========"
+puts ""
+##################################################################################################
+# Boolean common returns empty result for a solid where some surfaces of revolution touch the axis
+##################################################################################################
+
+restore [locate_data_file bug28195_solidsKO.brep] s
+
+whatis s
+
+explode s
+checkshape s
+bopcheck s_1
+bopcheck s_2
+
+bopargcheck s_1 s_2 -O #F
+bop s_1 s_2
+bopcommon r
+
+whatis r
+explode r
+checkshape r_1
+nbshapes r_1
+
+checkview -display r_1 -2d -path ${imagedir}/${test_image}-2d.png
+checkview -display r_1 -3d -path ${imagedir}/${test_image}-3d.png
