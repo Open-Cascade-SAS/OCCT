@@ -1,0 +1,21 @@
+puts "========"
+puts "0029051: Visualization, TKOpenGl - wrong color of transparent dynamic highlight with OIT tuned ON"
+puts "========"
+puts ""
+
+pload MODELING VISUALIZATION
+box b 1 2 3
+vclear
+vinit View1
+vdisplay -dispMode 1 b
+vfit
+vselprops dynHighlight -dispMode 1 -color RED -transp 0.2
+vmoveto 250 250
+vrenderparams -oit off
+if { [vreadpixel 250 250 rgb name] != "ORANGERED3" } { puts "Error: wrong highlight color with OIT turned OFF"}
+vdump $imagedir/${casename}_oit_off.png
+
+vrenderparams -oit 0
+vreadpixel 250 250 rgb name
+if { [vreadpixel 250 250 rgb name] != "ORANGERED3" } { puts "Error: wrong highlight color with OIT turned ON"}
+vdump $imagedir/${casename}_oit_on.png
