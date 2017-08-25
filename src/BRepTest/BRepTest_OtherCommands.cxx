@@ -72,7 +72,6 @@
 
 #include <BRepTools.hxx>
 #include <BRepIntCurveSurface_Inter.hxx>
-#include <BRepOffset.hxx>
 #include <BRepOffset_MakeOffset.hxx>
 #include <BRepClass3d_SolidClassifier.hxx>
 #include <GeomAdaptor_Curve.hxx>

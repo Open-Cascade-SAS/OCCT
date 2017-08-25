@@ -21,27 +21,17 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Real.hxx>
 #include <BRepOffset_Status.hxx>
+
 class Geom_Surface;
-class BRepOffset_MakeOffset;
-class BRepOffset_Inter3d;
-class BRepOffset_Inter2d;
-class BRepOffset_Offset;
-class BRepOffset_Analyse;
-class BRepOffset_MakeLoops;
-class BRepOffset_Tool;
-class BRepOffset_Interval;
+class TopoDS_Face;
 
-
+//! Auxiliary tools for offset algorithms
 
 class BRepOffset 
 {
 public:
 
-  DEFINE_STANDARD_ALLOC
-
-  
   //! returns   the  Offset  surface  computed from  the
   //! surface <Surface> at an OffsetDistance <Offset>.
   //!
@@ -50,37 +40,29 @@ public:
   //!
   //! If  no particular  case  is detected, the returned
   //! surface will have the Type Geom_OffsetSurface.
-  Standard_EXPORT static Handle(Geom_Surface) Surface (const Handle(Geom_Surface)& Surface, const Standard_Real Offset, BRepOffset_Status& theStatus);
+  //! Parameter allowC0 is then passed as last argument to 
+  //! constructor of Geom_OffsetSurface.
+  Standard_EXPORT static Handle(Geom_Surface) Surface (const Handle(Geom_Surface)& Surface, 
+                                                       const Standard_Real Offset, 
+                                                       BRepOffset_Status& theStatus,
+                                                       Standard_Boolean allowC0 = Standard_False);
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class BRepOffset_MakeOffset;
-friend class BRepOffset_Inter3d;
-friend class BRepOffset_Inter2d;
-friend class BRepOffset_Offset;
-friend class BRepOffset_Analyse;
-friend class BRepOffset_MakeLoops;
-friend class BRepOffset_Tool;
-friend class BRepOffset_Interval;
+  //! Preprocess surface to be offset (bspline, bezier, or revolution based on
+  //! bspline or bezier curve), by collapsing each singular side to single point.
+  //!
+  //! This is to avoid possible flipping of normal at the singularity 
+  //! of the surface due to non-zero distance between the poles that
+  //! logically should be in one point (singularity).
+  //! 
+  //! The (parametric) side of the surface is considered to be singularity if face 
+  //! has degenerated edge whose vertex encompasses (by its tolerance) all points on that side,
+  //! or if all poles defining that side fit into sphere with radius thePrecision.
+  //!
+  //! Returns either original surface or its modified copy (if some poles have been moved).
+  Standard_EXPORT static Handle(Geom_Surface) CollapseSingularities (const Handle(Geom_Surface)& theSurface, 
+                                                                     const TopoDS_Face& theFace,
+                                                                     Standard_Real thePrecision);
 
 };
-
-
-
-
-
-
 
 #endif // _BRepOffset_HeaderFile

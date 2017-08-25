@@ -2247,9 +2247,9 @@ static Standard_Integer ComputeSimpleOffset(Draw_Interpretor& theCommands,
                                             Standard_Integer narg, 
                                             const char** a)
 {
-  if (narg != 4 && narg != 5)
+  if (narg < 4)
   {
-    theCommands << "offsetshapesimple result shape offsetvalue [solid]\n";
+    theCommands << "offsetshapesimple result shape offsetvalue [solid] [tolerance=1e-7]\n";
     return 1;
   }
 
@@ -2267,12 +2267,13 @@ static Standard_Integer ComputeSimpleOffset(Draw_Interpretor& theCommands,
     return 0;
   }
 
-  BRepOffset_MakeSimpleOffset aMaker(aShape, anOffsetValue);
-  if (narg == 5 && !strcasecmp(a[4],"solid") )
-  {
-    aMaker.SetBuildSolidFlag(Standard_True);
-  }
+  Standard_Boolean makeSolid = (narg > 4 && !strcasecmp(a[4],"solid"));
+  int iTolArg = (makeSolid ? 5 : 4);
+  Standard_Real aTol = (narg > iTolArg ? Draw::Atof(a[iTolArg]) : Precision::Confusion());
 
+  BRepOffset_MakeSimpleOffset aMaker(aShape, anOffsetValue);
+  aMaker.SetTolerance (aTol);
+  aMaker.SetBuildSolidFlag(makeSolid);
   aMaker.Perform();
 
   if (!aMaker.IsDone())
@@ -2432,6 +2433,6 @@ void BRepTest::FeatureCommands (Draw_Interpretor& theCommands)
 		  __FILE__,BOSS);
 
   theCommands.Add("offsetshapesimple", 
-                  "offsetshapesimple result shape offsetvalue [solid]",
+                  "offsetshapesimple result shape offsetvalue [solid] [tolerance=1e-7]",
                   __FILE__, ComputeSimpleOffset);
 }

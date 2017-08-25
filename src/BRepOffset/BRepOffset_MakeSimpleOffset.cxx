@@ -50,7 +50,9 @@
 //purpose  : Constructor
 //=============================================================================
 BRepOffset_MakeSimpleOffset::BRepOffset_MakeSimpleOffset()
-: myIsBuildSolid(Standard_False),
+: myOffsetValue(0.),
+  myTolerance(Precision::Confusion()),
+  myIsBuildSolid(Standard_False),
   myMaxAngle(0.0),
   myError(BRepOffsetSimple_OK),
   myIsDone(Standard_False)
@@ -66,6 +68,7 @@ BRepOffset_MakeSimpleOffset::BRepOffset_MakeSimpleOffset(const TopoDS_Shape& the
                                                          const Standard_Real theOffsetValue)
 : myInputShape(theInputShape),
   myOffsetValue(theOffsetValue),
+  myTolerance(Precision::Confusion()),
   myIsBuildSolid(Standard_False),
   myMaxAngle(0.0),
   myError(BRepOffsetSimple_OK),
@@ -177,7 +180,7 @@ void BRepOffset_MakeSimpleOffset::Perform()
     ComputeMaxAngle();
 
   myBuilder.Init(myInputShape);
-  Handle(BRepOffset_SimpleOffset) aMapper = new BRepOffset_SimpleOffset(myInputShape, myOffsetValue);
+  Handle(BRepOffset_SimpleOffset) aMapper = new BRepOffset_SimpleOffset(myInputShape, myOffsetValue, myTolerance);
   myBuilder.Perform(aMapper);
 
   if (!myBuilder.IsDone())

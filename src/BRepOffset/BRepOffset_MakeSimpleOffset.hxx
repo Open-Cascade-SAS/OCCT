@@ -95,6 +95,12 @@ public:
   //! Sets offset value.
   void SetOffsetValue(const Standard_Real theOffsetValue) { myOffsetValue = theOffsetValue; }
 
+  //! Gets tolerance (used for handling singularities).
+  Standard_Real GetTolerance() const { return myTolerance; }
+
+  //! Sets tolerance (used for handling singularities).
+  void SetTolerance (const Standard_Real theValue) { myTolerance = theValue; }
+
   //! Gets done state.
   Standard_Boolean IsDone() const { return myIsDone; } 
 
@@ -133,6 +139,9 @@ private:
 
   //! Offset value.
   Standard_Real myOffsetValue;
+
+  //! Tolerance (for singularities)
+  Standard_Real myTolerance;
 
   //! Solid building flag. True means solid construction.
   Standard_Boolean myIsBuildSolid;

@@ -21,6 +21,7 @@
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepLib.hxx>
 #include <BRep_Tool.hxx>
+#include <BRepOffset.hxx>
 #include <Geom_OffsetSurface.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <Geom2dAdaptor_HCurve.hxx>
@@ -42,8 +43,10 @@ static const Standard_Integer NCONTROL=22;
 //purpose  : Constructor
 //=============================================================================
 BRepOffset_SimpleOffset::BRepOffset_SimpleOffset(const TopoDS_Shape& theInputShape,
-                                                 const Standard_Real theOffsetValue)
-: myOffsetValue(theOffsetValue)
+                                                 const Standard_Real theOffsetValue,
+                                                 const Standard_Real theTolerance)
+: myOffsetValue(theOffsetValue),
+  myTolerance(theTolerance)
 {
   FillOffsetData(theInputShape);
 }
@@ -223,6 +226,7 @@ void BRepOffset_SimpleOffset::FillFaceData(const TopoDS_Face& theFace)
   // Any existing transformation is applied to the surface.
   // New face will have null transformation.
   Handle(Geom_Surface) aS = BRep_Tool::Surface(theFace);
+  aS = BRepOffset::CollapseSingularities (aS, theFace, myTolerance);
 
   // Take into account face orientation.
   Standard_Real aMult = 1.0;

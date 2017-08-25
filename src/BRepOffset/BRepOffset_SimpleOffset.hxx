@@ -46,8 +46,12 @@ public:
   DEFINE_STANDARD_RTTI_INLINE(BRepOffset_SimpleOffset, BRepTools_Modification)
 
   //! Constructor.
+  //! @param theInputShape shape to be offset
+  //! @param theOffsetValue offset distance (signed)
+  //! @param theTolerance tolerance for handling singular points
   Standard_EXPORT BRepOffset_SimpleOffset(const TopoDS_Shape& theInputShape,
-                                          const Standard_Real theOffsetValue);
+                                          const Standard_Real theOffsetValue,
+                                          const Standard_Real theTolerance);
 
   //! Returns Standard_True  if  the face  <F> has  been
   //! modified.  In this  case, <S> is the new geometric
@@ -178,6 +182,9 @@ private:
 
   //! Offset value.
   Standard_Real myOffsetValue;
+
+  //! Tolerance.
+  Standard_Real myTolerance;
 };
 
 #endif // _BRepOffset_SimpleOffset_HeaderFile

@@ -1,5 +1,5 @@
 # Compute offset.
-offsetshapesimple result s $OffsetValue
+offsetshapesimple result s $OffsetValue $SingularTol
 
 # 1% relative tolerance
 set TolRel 1.0e-2

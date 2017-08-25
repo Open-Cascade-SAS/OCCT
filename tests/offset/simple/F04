@@ -1,0 +1,11 @@
+# Test data:
+puts "USER GUID: HA-3781"
+
+restore [locate_data_file bug28968_HA-3781-plate.brep] s
+
+set OffsetValue 20.0
+set SingularTol 0.01
+
+# Reference data.
+set ExpectedMass 2.7118e+007
+set ExpectedMaxTol 0.539

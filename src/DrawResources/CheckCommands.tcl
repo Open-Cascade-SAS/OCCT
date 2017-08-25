@@ -359,15 +359,18 @@ proc checkfreebounds {shape ref_value args} {
 }
 
 help checkmaxtol {
-  Compare max tolerance of shape with reference value.
-  Command returns max tolerance of the shape.
+  Returns max tolerance of the shape and prints error message if specified
+  criteria are not satisfied.
 
   Use: checkmaxtol shape [options...]
-  Allowed options are:
-    -ref: reference value of maximum tolerance.
-    -source: list of shapes to compare with, e.g.: -source {shape1 shape2 shape3}
-    -min_tol: minimum tolerance for comparison.
-    -multi_tol: tolerance multiplier.
+
+  Options specify criteria for checking the maximal tolerance value:
+    -ref <value>: check it to be equal to reference value.
+    -min_tol <value>: check it to be not greater than specified value.
+    -source <list of shapes>: check it to be not greater than 
+            maximal tolerance of specified shape(s)
+    -multi_tol <value>: additional multiplier for value specified by -min_tol 
+               or -shapes options.
 }
 
 proc checkmaxtol {shape args} {
@@ -764,9 +767,10 @@ help checkview {
     -display shapename: display shape with name 'shapename'
     -3d: display shape in 3d viewer
     -2d [ v2d / smallview ]: display shape in 2d viewer (default viewer is a 'smallview')
-    -path PATH: location of saved screenshot of viewer
     -vdispmode N: it is possible to set vdispmode for 3d viewer (default value is 1)
     -screenshot: procedure will try to make screenshot of already created viewer
+    -path <path>: location of saved screenshot of viewer
+
     Procedure can check some property of shape (length, area or volume) and compare it with some value N:
       -l [N]
       -s [N]
