@@ -25,6 +25,8 @@
 #include <TCollection_ExtendedString.hxx>
 #include <Graphic3d_GraphicDriver.hxx>
 
+#include <memory>
+
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Window,Standard_Transient)
 
 #if defined(HAVE_EGL)
@@ -477,14 +479,14 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_GraphicDriver)& theDriver,
   aVisInfo.visualid = aWinAttribs.visual->visualid;
   aVisInfo.screen   = DefaultScreen (aDisp);
   int aNbItems;
-  XVisualInfo* aVis = XGetVisualInfo (aDisp, VisualIDMask | VisualScreenMask, &aVisInfo, &aNbItems);
+  std::unique_ptr<XVisualInfo, int(*)(void*)> aVis (XGetVisualInfo (aDisp, VisualIDMask | VisualScreenMask, &aVisInfo, &aNbItems), &XFree);
   int isGl = 0;
-  if (aVis == NULL)
+  if (aVis.get() == NULL)
   {
     throw Aspect_GraphicDeviceDefinitionError("OpenGl_Window::CreateWindow: XGetVisualInfo is unable to choose needed configuration in existing OpenGL context. ");
     return;
   }
-  else if (glXGetConfig (aDisp, aVis, GLX_USE_GL, &isGl) != 0 || !isGl)
+  else if (glXGetConfig (aDisp, aVis.get(), GLX_USE_GL, &isGl) != 0 || !isGl)
   {
     throw Aspect_GraphicDeviceDefinitionError("OpenGl_Window::CreateWindow: window Visual does not support GL rendering!");
     return;
@@ -556,7 +558,7 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_GraphicDriver)& theDriver,
   if (myOwnGContext
    && aGContext == NULL)
   {
-    aGContext = glXCreateContext (aDisp, aVis, aSlaveCtx, GL_TRUE);
+    aGContext = glXCreateContext (aDisp, aVis.get(), aSlaveCtx, GL_TRUE);
     if (aGContext == NULL)
     {
       throw Aspect_GraphicDeviceDefinitionError("OpenGl_Window::CreateWindow: glXCreateContext failed.");
@@ -568,11 +570,11 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_GraphicDriver)& theDriver,
   TCollection_ExtendedString aList;
   int isDoubleBuffer = 0, isRGBA = 0, isStereo = 0;
   int aDepthSize = 0, aStencilSize = 0;
-  glXGetConfig (aDisp, aVis, GLX_RGBA,         &isRGBA);
-  glXGetConfig (aDisp, aVis, GLX_DOUBLEBUFFER, &isDoubleBuffer);
-  glXGetConfig (aDisp, aVis, GLX_STEREO,       &isStereo);
-  glXGetConfig (aDisp, aVis, GLX_DEPTH_SIZE,   &aDepthSize);
-  glXGetConfig (aDisp, aVis, GLX_STENCIL_SIZE, &aStencilSize);
+  glXGetConfig (aDisp, aVis.get(), GLX_RGBA,         &isRGBA);
+  glXGetConfig (aDisp, aVis.get(), GLX_DOUBLEBUFFER, &isDoubleBuffer);
+  glXGetConfig (aDisp, aVis.get(), GLX_STEREO,       &isStereo);
+  glXGetConfig (aDisp, aVis.get(), GLX_DEPTH_SIZE,   &aDepthSize);
+  glXGetConfig (aDisp, aVis.get(), GLX_STENCIL_SIZE, &aStencilSize);
   if (aDepthSize < 1)      addMsgToList (aList, "no depth buffer");
   if (aStencilSize < 1)    addMsgToList (aList, "no stencil buffer");
   if (isRGBA == 0)         addMsgToList (aList, "no RGBA color buffer");
