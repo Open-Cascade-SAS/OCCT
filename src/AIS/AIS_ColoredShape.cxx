@@ -18,6 +18,7 @@
 #include <AIS_InteractiveContext.hxx>
 #include <BRep_Builder.hxx>
 #include <BRepTools.hxx>
+#include <BRepMesh_IncrementalMesh.hxx>
 #include <gp_Pnt2d.hxx>
 #include <Graphic3d_AspectFillArea3d.hxx>
 #include <Graphic3d_AspectLine3d.hxx>
@@ -35,6 +36,7 @@
 #include <Prs3d_Root.hxx>
 #include <PrsMgr_PresentationManager3d.hxx>
 #include <Standard_ErrorHandler.hxx>
+#include <StdSelect_BRepSelectionTool.hxx>
 #include <StdPrs_ShadedShape.hxx>
 #include <StdPrs_ToolTriangulatedShape.hxx>
 #include <StdPrs_WFShape.hxx>
@@ -384,55 +386,10 @@ void AIS_ColoredShape::Compute (const Handle(PrsMgr_PresentationManager3d)& ,
     Prs3d::GetDeflection (myshape, myDrawer);
   }
 
-  // Extract myShapeColors map (KeyshapeColored -> Color)
-  // to subshapes map (Subshape -> Color).
-  // This needed when colored shape is not part of BaseShape
-  // (but subshapes are) and actually container for subshapes.
+  // Extract myShapeColors map (KeyshapeColored -> Color) to subshapes map (Subshape -> Color).
+  // This needed when colored shape is not part of BaseShape (but subshapes are) and actually container for subshapes.
   AIS_DataMapOfShapeDrawer aSubshapeDrawerMap;
-  {
-    // unroll compounds specified for grouping sub-shapes with the same style
-    // (e.g. the compounds that are not a part of the main shape)
-    TopTools_MapOfShape aMapOfOwnCompounds;
-    if (myshape.ShapeType() == TopAbs_COMPOUND)
-    {
-      aMapOfOwnCompounds.Add (myshape);
-      collectSubCompounds (aMapOfOwnCompounds, myshape);
-    }
-    for (AIS_DataMapOfShapeDrawer::Iterator aKeyShapeIter (myShapeColors);
-         aKeyShapeIter.More(); aKeyShapeIter.Next())
-    {
-      const TopoDS_Shape& aKeyShape = aKeyShapeIter.Key();
-      if (aKeyShape.ShapeType() != TopAbs_COMPOUND
-       || aMapOfOwnCompounds.Contains (aKeyShape))
-      {
-        continue;
-      }
-
-      for (TopoDS_Iterator aChildIter (aKeyShape); aChildIter.More(); aChildIter.Next())
-      {
-        const TopoDS_Shape& aShape = aChildIter.Value();
-        if (!myShapeColors.IsBound (aShape))
-        {
-          bindSubShapes (aSubshapeDrawerMap, aShape, aKeyShapeIter.Value());
-        }
-      }
-    }
-
-    // assign other sub-shapes with styles
-    for (AIS_DataMapOfShapeDrawer::Iterator aKeyShapeIter (myShapeColors);
-         aKeyShapeIter.More(); aKeyShapeIter.Next())
-    {
-      const TopoDS_Shape& aKeyShape = aKeyShapeIter.Key();
-      if (myshape == aKeyShape
-      || (aKeyShape.ShapeType() == TopAbs_COMPOUND
-      && !aMapOfOwnCompounds.Contains (aKeyShape)))
-      {
-        continue;
-      }
-
-      bindSubShapes (aSubshapeDrawerMap, aKeyShape, aKeyShapeIter.Value());
-    }
-  }
+  fillSubshapeDrawerMap (aSubshapeDrawerMap);
 
   Handle(AIS_ColoredDrawer) aBaseDrawer;
   myShapeColors.Find (myshape, aBaseDrawer);
@@ -444,6 +401,156 @@ void AIS_ColoredShape::Compute (const Handle(PrsMgr_PresentationManager3d)& ,
                   aSubshapeDrawerMap, TopAbs_COMPOUND, Standard_False,
                   aDispatchedOpened, theMode == AIS_Shaded ? aDispatchedClosed : aDispatchedOpened[TopAbs_FACE]);
   addShapesWithCustomProps (thePrs, aDispatchedOpened, aDispatchedClosed, theMode);
+}
+
+//=======================================================================
+//function : fillSubshapeDrawerMap
+//purpose  :
+//=======================================================================
+void AIS_ColoredShape::fillSubshapeDrawerMap (AIS_DataMapOfShapeDrawer& theSubshapeDrawerMap) const
+{
+  // unroll compounds specified for grouping sub-shapes with the same style
+  // (e.g. the compounds that are not a part of the main shape)
+  TopTools_MapOfShape aMapOfOwnCompounds;
+  if (myshape.ShapeType() == TopAbs_COMPOUND)
+  {
+    aMapOfOwnCompounds.Add (myshape);
+    collectSubCompounds (aMapOfOwnCompounds, myshape);
+  }
+  for (AIS_DataMapOfShapeDrawer::Iterator aKeyShapeIter (myShapeColors);
+        aKeyShapeIter.More(); aKeyShapeIter.Next())
+  {
+    const TopoDS_Shape& aKeyShape = aKeyShapeIter.Key();
+    if (aKeyShape.ShapeType() != TopAbs_COMPOUND
+     || aMapOfOwnCompounds.Contains (aKeyShape))
+    {
+      continue;
+    }
+
+    for (TopoDS_Iterator aChildIter (aKeyShape); aChildIter.More(); aChildIter.Next())
+    {
+      const TopoDS_Shape& aShape = aChildIter.Value();
+      if (!myShapeColors.IsBound (aShape))
+      {
+        bindSubShapes (theSubshapeDrawerMap, aShape, aKeyShapeIter.Value());
+      }
+    }
+  }
+
+  // assign other sub-shapes with styles
+  for (AIS_DataMapOfShapeDrawer::Iterator aKeyShapeIter (myShapeColors);
+        aKeyShapeIter.More(); aKeyShapeIter.Next())
+  {
+    const TopoDS_Shape& aKeyShape = aKeyShapeIter.Key();
+    if (myshape == aKeyShape
+    || (aKeyShape.ShapeType() == TopAbs_COMPOUND
+    && !aMapOfOwnCompounds.Contains (aKeyShape)))
+    {
+      continue;
+    }
+
+    bindSubShapes (theSubshapeDrawerMap, aKeyShape, aKeyShapeIter.Value());
+  }
+}
+
+//=======================================================================
+//function : ComputeSelection
+//purpose  :
+//=======================================================================
+void AIS_ColoredShape::ComputeSelection (const Handle(SelectMgr_Selection)& theSelection,
+                                         const Standard_Integer theMode)
+{
+  if (myshape.IsNull())
+  {
+    return;
+  }
+  else if (isShapeEntirelyVisible())
+  {
+    base_type::ComputeSelection (theSelection, theMode);
+    return;
+  }
+
+  const TopAbs_ShapeEnum aTypOfSel   = AIS_Shape::SelectionType (theMode);
+  const Standard_Real    aDeflection = Prs3d::GetDeflection (myshape, myDrawer);
+  const Standard_Real    aDeviationAngle = myDrawer->HLRAngle();
+  const Standard_Integer aPriority   = StdSelect_BRepSelectionTool::GetStandardPriority (myshape, aTypOfSel);
+  if (myDrawer->IsAutoTriangulation()
+  && !BRepTools::Triangulation (myshape, Precision::Infinite()))
+  {
+    BRepMesh_IncrementalMesh aMesher (myshape, aDeflection, Standard_False, aDeviationAngle);
+  }
+
+  AIS_DataMapOfShapeDrawer aSubshapeDrawerMap;
+  fillSubshapeDrawerMap (aSubshapeDrawerMap);
+
+  Handle(StdSelect_BRepOwner) aBrepOwner = new StdSelect_BRepOwner (myshape, aPriority);
+  if (aTypOfSel == TopAbs_SHAPE)
+  {
+    aBrepOwner = new StdSelect_BRepOwner (myshape, aPriority);
+  }
+
+  Handle(AIS_ColoredDrawer) aBaseDrawer;
+  myShapeColors.Find (myshape, aBaseDrawer);
+  computeSubshapeSelection (aBaseDrawer, aSubshapeDrawerMap, myshape, aBrepOwner, theSelection,
+                            aTypOfSel, aPriority, aDeflection, aDeviationAngle);
+
+  Handle(SelectMgr_SelectableObject) aThis (this);
+  for (theSelection->Init(); theSelection->More(); theSelection->Next())
+  {
+    Handle(SelectMgr_EntityOwner) anOwner = Handle(SelectMgr_EntityOwner)::DownCast (theSelection->Sensitive()->BaseSensitive()->OwnerId());
+    anOwner->Set (aThis);
+  }
+
+  StdSelect_BRepSelectionTool::PreBuildBVH (theSelection);
+}
+
+//=======================================================================
+//function : computeSubshapeSelection
+//purpose  :
+//=======================================================================
+void AIS_ColoredShape::computeSubshapeSelection (const Handle(AIS_ColoredDrawer)& theParentDrawer,
+                                                 const AIS_DataMapOfShapeDrawer& theShapeDrawerMap,
+                                                 const TopoDS_Shape& theShape,
+                                                 const Handle(StdSelect_BRepOwner)& theOwner,
+                                                 const Handle(SelectMgr_Selection)& theSelection,
+                                                 const TopAbs_ShapeEnum theTypOfSel,
+                                                 const Standard_Integer thePriority,
+                                                 const Standard_Real theDeflection,
+                                                 const Standard_Real theDeflAngle)
+{
+  Handle(AIS_ColoredDrawer) aDrawer = theParentDrawer;
+  theShapeDrawerMap.Find (theShape, aDrawer);
+  if (!aDrawer.IsNull()
+    && aDrawer->IsHidden())
+  {
+    return;
+  }
+
+  const Standard_Integer aNbPOnEdge = 9;
+  const Standard_Real    aMaximalParameter = 500.0;
+  if (theTypOfSel == TopAbs_SHAPE
+   && theShape.ShapeType() >= TopAbs_FACE)
+  {
+    StdSelect_BRepSelectionTool::ComputeSensitive (theShape, theOwner, theSelection,
+                                                   theDeflection, theDeflAngle, aNbPOnEdge, aMaximalParameter, myDrawer->IsAutoTriangulation());
+    return;
+  }
+  else if (theShape.ShapeType() == theTypOfSel)
+  {
+    const Standard_Boolean isComesFromDecomposition = !theShape.IsEqual (myshape);
+    Handle(StdSelect_BRepOwner) aBrepOwner = new StdSelect_BRepOwner (theShape, thePriority, isComesFromDecomposition);
+    StdSelect_BRepSelectionTool::ComputeSensitive (theShape, aBrepOwner, theSelection,
+                                                   theDeflection, theDeflAngle, aNbPOnEdge, aMaximalParameter, myDrawer->IsAutoTriangulation());
+    return;
+  }
+
+  for (TopoDS_Iterator aSubShapeIter (theShape); aSubShapeIter.More(); aSubShapeIter.Next())
+  {
+    const TopoDS_Shape& aSubShape = aSubShapeIter.Value();
+    computeSubshapeSelection (aDrawer, theShapeDrawerMap, aSubShape,
+                              theOwner, theSelection, theTypOfSel, thePriority,
+                              theDeflection, theDeflAngle);
+  }
 }
 
 //=======================================================================
@@ -683,7 +790,7 @@ Standard_Boolean AIS_ColoredShape::isShapeEntirelyVisible() const
 //=======================================================================
 void AIS_ColoredShape::bindSubShapes (AIS_DataMapOfShapeDrawer& theShapeDrawerMap,
                                       const TopoDS_Shape& theKeyShape,
-                                      const Handle(AIS_ColoredDrawer)& theDrawer)
+                                      const Handle(AIS_ColoredDrawer)& theDrawer) const
 {
   TopAbs_ShapeEnum aShapeWithColorType = theKeyShape.ShapeType();
   if (aShapeWithColorType == TopAbs_COMPOUND)

@@ -24,6 +24,8 @@
 #include <TopTools_MapOfShape.hxx>
 #include <TColStd_MapTransientHasher.hxx>
 
+class StdSelect_BRepOwner;
+
 //! Presentation of the shape with customizable sub-shapes properties.
 class AIS_ColoredShape : public AIS_Shape
 {
@@ -83,9 +85,14 @@ public: //! @name global aspects
 
 protected: //! @name override presentation computation
 
+  //! Compute presentation considering sub-shape color map.
   Standard_EXPORT virtual void Compute (const Handle(PrsMgr_PresentationManager3d)& thePrsMgr,
                                         const Handle(Prs3d_Presentation)&           thePrs,
                                         const Standard_Integer                      theMode) Standard_OVERRIDE;
+
+  //! Compute selection considering sub-shape hidden state.
+  Standard_EXPORT virtual void ComputeSelection (const Handle(SelectMgr_Selection)& theSelection,
+                                                 const Standard_Integer theMode) Standard_OVERRIDE;
 
 protected:
 
@@ -110,6 +117,10 @@ protected:
                                                           DataMapOfDrawerCompd& theDrawerClosedFaces);
 protected:
 
+  //! Extract myShapeColors map (KeyshapeColored -> Color) to subshapes map (Subshape -> Color).
+  //! This needed when colored shape is not part of BaseShape (but subshapes are) and actually container for subshapes.
+  Standard_EXPORT void fillSubshapeDrawerMap (AIS_DataMapOfShapeDrawer& theSubshapeDrawerMap) const;
+
   //! Add shape to presentation
   //! @param thePrs the presentation
   //! @param theDrawerOpenedShapePerType the shapes map with unique attributes
@@ -131,7 +142,26 @@ protected:
   //! @param theDrawer         assigned drawer
   Standard_EXPORT void bindSubShapes (AIS_DataMapOfShapeDrawer& theShapeDrawerMap,
                                       const TopoDS_Shape& theKeyShape,
-                                      const Handle(AIS_ColoredDrawer)& theDrawer);
+                                      const Handle(AIS_ColoredDrawer)& theDrawer) const;
+
+  //! Add sub-shape to selection considering hidden state (recursively).
+  //! @param theParentDrawer   drawer of parent shape
+  //! @param theShapeDrawerMap shapes map
+  //! @param theShape          shape to compute sensitive entities
+  //! @param theOwner          selectable owner object
+  //! @param theSelection      selection to append new sensitive entities
+  //! @param theTypOfSel       type of selection
+  //! @param theDeflection     linear deflection
+  //! @param theDeflAngle      angular deflection
+  Standard_EXPORT void computeSubshapeSelection (const Handle(AIS_ColoredDrawer)& theParentDrawer,
+                                                 const AIS_DataMapOfShapeDrawer& theShapeDrawerMap,
+                                                 const TopoDS_Shape& theShape,
+                                                 const Handle(StdSelect_BRepOwner)& theOwner,
+                                                 const Handle(SelectMgr_Selection)& theSelection,
+                                                 const TopAbs_ShapeEnum theTypOfSel,
+                                                 const Standard_Integer thePriority,
+                                                 const Standard_Real theDeflection,
+                                                 const Standard_Real theDeflAngle);
 
 protected:
 

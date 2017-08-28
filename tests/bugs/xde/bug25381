@@ -1,19 +1,20 @@
 puts "============"
-puts "CR25381"
+puts "0025381: Visualization - XCAFPrs_AISObject ignores visibility flag for sub-shapes"
 puts "============"
 puts ""
-######################################################
-# Visualization - XCAFPrs_AISObject ignores visibility flag for sub-shapes
-######################################################
 
+pload XDE OCAF VISUALIZATION
+catch { Close D }
 ReadStep D [locate_data_file bug25381_test_assembly_invisible.step]
 XShow D
+vaxo
 vfit
+vsetdispmode 1
+vselprops dynHighlight -dispMode -1
+vmoveto 300 200
+if { [vreadpixel 250 200 rgb name] != "DARKTURQUOISE" } { puts "Error: object is NOT picked" }
+vmoveto 200 250
+if { [vreadpixel 200 250 rgb name] != "BLACK"} { puts "Error: hidden part is displayed" }
+if { [vreadpixel 250 200 rgb name] != "RED4" } { puts "Error: object is picked by hidden part" }
 
-if { "[vreadpixel 198 172 rgb name]" != "WHITE" } {
-   puts "OK : XCAFPrs_AISObject get visibility flag for sub-shapes"
-} else {
-   puts "Error : XCAFPrs_AISObject ignores visibility flag for sub-shapes"
-}
-
-checkview -screenshot -3d -path ${imagedir}/${test_image}.png
+vdump ${imagedir}/${casename}.png
