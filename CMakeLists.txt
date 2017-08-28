@@ -515,6 +515,7 @@ endif()
 # VTK
 if (USE_VTK)
   add_definitions (-DHAVE_VTK)
+  set (OCCT_VTK_USED_TARGETS "" CACHE INTERNAL "" FORCE)
   OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/vtk")
 else()
   OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_VTK")

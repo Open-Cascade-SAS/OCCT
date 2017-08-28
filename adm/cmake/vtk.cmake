@@ -1,8 +1,8 @@
 # vtk
 
-#if (NOT DEFINED INSTALL_VTK)
-#  set (INSTALL_VTK OFF CACHE BOOL "${INSTALL_VTK_DESCR}")
-#endif()
+if (NOT DEFINED INSTALL_VTK)
+  set (INSTALL_VTK OFF CACHE BOOL "${INSTALL_VTK_DESCR}")
+endif()
 
 # vtk directory
 if (NOT DEFINED 3RDPARTY_VTK_DIR)
@@ -210,11 +210,86 @@ if (BUILD_SHARED_LIBS)
   endif()
 endif()
 
+# Install vtk library using vtk targets
+macro (OCCT_INSTALL_VTK VTK_LIBRARY_NAME)
+  # Check that input library name contains "vtk" prefix
+  string (REGEX MATCH "^vtk" IS_VTK_LIBRARY ${VTK_LIBRARY_NAME})
+  # Check that input library was not already installed
+  list (FIND OCCT_VTK_USED_TARGETS ${VTK_LIBRARY_NAME} VTK_LIBRARY_IS_USED)
+  if (BUILD_SHARED_LIBS AND INSTALL_VTK AND TARGET ${VTK_LIBRARY_NAME} AND VTK_LIBRARY_IS_USED EQUAL -1 AND IS_VTK_LIBRARY)
+    OCCT_MAKE_OS_WITH_BITNESS()
+
+    # Get configuration of vtk
+    get_target_property (TARGET_VTK_IMPORT_CONFS ${VTK_LIBRARY_NAME} IMPORTED_CONFIGURATIONS)
+    list (GET TARGET_VTK_IMPORT_CONFS 0 CHOSEN_IMPORT_CONF)
+
+    # Get dependencies for current input library
+    get_property(VTK_LIBRARY_PATH       TARGET ${VTK_LIBRARY_NAME} PROPERTY LOCATION)
+    get_property(VTK_DEPEND             TARGET ${VTK_LIBRARY_NAME} PROPERTY IMPORTED_LINK_DEPENDENT_LIBRARIES_${CHOSEN_IMPORT_CONF})
+    get_property(VTK_IMPORTED_INTERFACE TARGET ${VTK_LIBRARY_NAME} PROPERTY IMPORTED_LINK_INTERFACE_LIBRARIES_${CHOSEN_IMPORT_CONF})
+    get_property(VTK_INTERFACE          TARGET ${VTK_LIBRARY_NAME} PROPERTY INTERFACE_LINK_LIBRARIES)
+    list (APPEND VTK_DEPEND ${VTK_INTERFACE} ${VTK_IMPORTED_INTERFACE})
+
+    # Install
+    if (WIN32)
+      if (SINGLE_GENERATOR)
+        install (FILES "${VTK_LIBRARY_PATH}" DESTINATION "${INSTALL_DIR_BIN}")
+      else()
+        install (FILES "${VTK_LIBRARY_PATH}"
+                 CONFIGURATIONS Release
+                 DESTINATION "${INSTALL_DIR_BIN}")
+        install (FILES "${VTK_LIBRARY_PATH}"
+                 CONFIGURATIONS RelWithDebInfo
+                 DESTINATION "${INSTALL_DIR_BIN}i")
+        install (FILES "${VTK_LIBRARY_PATH}"
+                 CONFIGURATIONS Debug
+                 DESTINATION "${INSTALL_DIR_BIN}d")
+      endif()
+    else()
+      get_filename_component(3RDPARTY_VTK_LIBRARY_ABS ${VTK_LIBRARY_PATH} REALPATH)
+
+      if (SINGLE_GENERATOR)
+        install (FILES "${3RDPARTY_VTK_LIBRARY_ABS}"
+                 DESTINATION "${INSTALL_DIR_LIB}")
+      else()
+        install (FILES "${3RDPARTY_VTK_LIBRARY_ABS}"
+                 CONFIGURATIONS Release
+                 DESTINATION "${INSTALL_DIR_LIB}")
+        install (FILES "${3RDPARTY_VTK_LIBRARY_ABS}"
+                 CONFIGURATIONS RelWithDebInfo
+                 DESTINATION "${INSTALL_DIR_LIB}i")
+        install (FILES "${3RDPARTY_VTK_LIBRARY_ABS}"
+                 CONFIGURATIONS Debug
+                 DESTINATION "${INSTALL_DIR_LIB}d")
+      endif()
+    endif()
+
+    set (USED_3RDPARTY_VTK_DIR "")
+
+    # Mark current library as already installed
+    list (APPEND OCCT_VTK_USED_TARGETS ${VTK_LIBRARY_NAME})
+    set (OCCT_VTK_USED_TARGETS "${OCCT_VTK_USED_TARGETS}" CACHE INTERNAL "" FORCE)
+
+    # Recursively install all depended libraries
+    foreach(VTK_TARGET ${VTK_DEPEND})
+      OCCT_INSTALL_VTK(${VTK_TARGET})
+    endforeach()
+  endif()
+endmacro()
+
+if (NOT BUILD_SHARED_LIBS)
+  OCCT_CHECK_AND_UNSET(3RDPARTY_VTK_DLL_DIR)
+  OCCT_CHECK_AND_UNSET(3RDPARTY_VTK_LIBRARY_DIR)
+  OCCT_CHECK_AND_UNSET(INSTALL_VTK)
+endif()
+
 # the library directory for using by the executable
-if (WIN32)
-  set (USED_3RDPARTY_VTK_DIR ${3RDPARTY_VTK_DLL_DIR})
-else()
-  set (USED_3RDPARTY_VTK_DIR ${3RDPARTY_VTK_LIBRARY_DIR})
+if (NOT INSTALL_VTK)
+  if (WIN32)
+    set (USED_3RDPARTY_VTK_DIR ${3RDPARTY_VTK_DLL_DIR})
+  else()
+    set (USED_3RDPARTY_VTK_DIR ${3RDPARTY_VTK_LIBRARY_DIR})
+  endif()
 endif()
 
 OCCT_CHECK_AND_UNSET (VTK_INCLUDE_DIRS)
