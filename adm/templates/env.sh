@@ -24,15 +24,13 @@ export CSF_OPT_BIN32=""
 export CSF_OPT_BIN64=""
 
 # ----- Set local settings -----
-if [ "${CASROOT}" != "" ] && [ -e "${CASROOT}/custom.sh" ]; then source "${CASROOT}/custom.sh"; fi
-if [ -e "${aScriptPath}/custom.sh" ]; then source "${aScriptPath}/custom.sh"; fi
-
 if [ "${CASROOT}" != "" ] && [ -d "${aScriptPath}/${CASROOT}" ]; then
   export CASROOT="${aScriptPath}/${CASROOT}"
 fi
 if [ "${CASROOT}" == "" ]; then
   export CASROOT="${aScriptPath}"
 fi
+if [ -e "${CASROOT}/custom.sh" ]; then source "${CASROOT}/custom.sh"; fi
 
 # Read script arguments
 shopt -s nocasematch
