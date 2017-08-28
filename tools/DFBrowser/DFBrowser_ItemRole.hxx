@@ -16,12 +16,14 @@
 #ifndef DFBrowser_ItemRole_H
 #define DFBrowser_ItemRole_H
 
+#include <inspector/DFBrowserPane_ItemRole.hxx>
+
 #include <Qt>
 
 //! Additional data item role for DFBrowser tree item
 enum DFBrowser_ItemRole
 {
-  DFBrowser_ItemRole_AdditionalInfo = Qt::UserRole + 1 //!< an attribute additional information 
+  DFBrowser_ItemRole_AdditionalInfo = DFBrowserPane_ItemRole_LastTreeRole + 1 //!< an attribute additional information 
 };
 
 #endif

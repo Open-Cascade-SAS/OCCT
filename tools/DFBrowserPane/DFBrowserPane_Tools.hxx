@@ -80,6 +80,10 @@ public:
     return QString::fromUtf16((uint16_t*)theValue.ToExtString());
   }
 
+  //! Returns light highlight color
+  //! \returns Qt color
+  static Standard_EXPORT QColor LightHighlightColor();
+
   //! Converts enumeration value into string text
   //! \param theType an enumeration kind
   //! \param theEnumId an enumeration value

@@ -32,6 +32,7 @@ void DFBrowserPane_TFunctionFunction::GetValues (const Handle(TDF_Attribute)& th
   anAttribute->GetDriverGUID().ToCString (aStr);
   TCollection_AsciiString aString(aStr);
 
+  theValues.append ("GetDriverGUID");
   theValues.append (DFBrowserPane_Tools::ToString(aString));
 }
 

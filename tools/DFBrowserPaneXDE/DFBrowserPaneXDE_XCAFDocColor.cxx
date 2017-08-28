@@ -28,7 +28,6 @@
 DFBrowserPaneXDE_XCAFDocColor::DFBrowserPaneXDE_XCAFDocColor()
 : DFBrowserPane_AttributePane()
 {
-  getPaneModel()->SetColumnCount (2);
 }
 
 // =======================================================================
@@ -40,11 +39,11 @@ void DFBrowserPaneXDE_XCAFDocColor::GetValues (const Handle(TDF_Attribute)& theA
   Handle(XCAFDoc_Color) anAttr = Handle(XCAFDoc_Color)::DownCast (theAttribute);
   const Quantity_Color& aColor = anAttr->GetColor();
 
-  theValues << "Red" << aColor.Red();
-  theValues << "Green" << aColor.Green();
-  theValues << "Blue" << aColor.Blue();
+  theValues << "GetColor: Red" << aColor.Red();
+  theValues << "GetColor: Green" << aColor.Green();
+  theValues << "GetColor: Blue" << aColor.Blue();
 
-  theValues << "Quantity_NameOfColor (nearest)" << aColor.Name();
+  theValues << "GetColor: Name" << aColor.Name();
 }
 
 // =======================================================================

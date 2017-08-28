@@ -18,9 +18,11 @@
 
 #include <inspector/DFBrowserPane_AttributePaneModel.hxx>
 
-#include <QList>
-#include <QVariant>
+#include <qheaderview.h>
 #include <QGridLayout>
+#include <QList>
+#include <QTableView>
+#include <QVariant>
 #include <QWidget>
 
 // =======================================================================
@@ -28,26 +30,25 @@
 // purpose :
 // =======================================================================
 DFBrowserPane_HelperArray::DFBrowserPane_HelperArray (DFBrowserPane_AttributePaneModel* theValuesModel)
- : myValuesModel (theValuesModel)
+ : myValuesModel (theValuesModel), myArrayBounds (0), myValuesView (0)
 {
   myBoundsModel = new DFBrowserPane_AttributePaneModel();
-
-  QList<QVariant> aHeaderValues;
-  aHeaderValues << "Bounds";
-  myBoundsModel->SetHeaderValues (aHeaderValues, Qt::Horizontal);
+  myBoundsModel->SetColumnCount (2);
 }
 
 // =======================================================================
 // function : CreateWidget
 // purpose :
 // =======================================================================
-void DFBrowserPane_HelperArray::CreateWidget (QWidget* theParent, QWidget* theValuesView)
+void DFBrowserPane_HelperArray::CreateWidget (QWidget* theParent, DFBrowserPane_TableView* theValuesView)
 {
+  myValuesView = theValuesView;
   myArrayBounds = new DFBrowserPane_TableView (theParent);
   myArrayBounds->SetModel (myBoundsModel);
   DFBrowserPane_TableView::SetFixedRowCount (2, myArrayBounds->GetTableView());
 
   QGridLayout* aLay = new QGridLayout (theParent);
+  aLay->setContentsMargins (0, 0, 0, 0);
   aLay->addWidget (myArrayBounds);
   aLay->addWidget (theValuesView);
   aLay->setRowStretch (1, 1);
@@ -60,19 +61,19 @@ void DFBrowserPane_HelperArray::CreateWidget (QWidget* theParent, QWidget* theVa
 void DFBrowserPane_HelperArray::Init (const QList<QVariant>& theValues)
 {
   QList<QVariant> aTmpValues;
-  aTmpValues << theValues[0] << theValues[1];
+  aTmpValues << "Lower" << theValues[0] << "Upper" << theValues[1];
   myBoundsModel->Init (aTmpValues);
 
   aTmpValues.clear();
-  QList<QVariant> aHeaderValues;
   int aLower = theValues[0].toInt();
-  for (int aValuesIt = 2, aSize = theValues.size(); aValuesIt < aSize; aValuesIt++)
-  {
-    aTmpValues << theValues[aValuesIt];
-    aHeaderValues << aLower + (aValuesIt - 2);
-  }
-  myValuesModel->SetHeaderValues (aHeaderValues, Qt::Vertical);
+  for (int aValueIt = 2, aSize = theValues.size(); aValueIt < aSize; aValueIt++)
+    aTmpValues << QString ("Value (%1)").arg(aValueIt-2 + aLower) << theValues[aValueIt];
   myValuesModel->Init (aTmpValues);
+
+  if (myArrayBounds)
+    myArrayBounds->GetTableView()->resizeColumnToContents (0);
+  if (myValuesView)
+    myValuesView->GetTableView()->resizeColumnToContents (0);
 }
 
 // =======================================================================
@@ -83,5 +84,5 @@ void DFBrowserPane_HelperArray::GetShortAttributeInfo (const Handle(TDF_Attribut
                                                        QList<QVariant>& theValues)
 {
   for (int aRowId = 0, aRows = myValuesModel->rowCount(); aRowId < aRows; aRowId++)
-    theValues.append (myValuesModel->data (myValuesModel->index (aRowId, 0)));
+    theValues.append (myValuesModel->data (myValuesModel->index (aRowId, 1)));
 }

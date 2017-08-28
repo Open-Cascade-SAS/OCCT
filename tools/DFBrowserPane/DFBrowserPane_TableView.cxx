@@ -16,11 +16,12 @@
 #include <inspector/DFBrowserPane_TableView.hxx>
 #include <inspector/DFBrowserPane_Tools.hxx>
 
-#include <QWidget>
-#include <QTableView>
 #include <QAbstractTableModel>
 #include <QHeaderView>
 #include <QHBoxLayout>
+#include <QScrollBar>
+#include <QTableView>
+#include <QWidget>
 
 static const int DEFAULT_ROW_HEIGHT = 30;
 
@@ -40,9 +41,10 @@ DFBrowserPane_TableView::DFBrowserPane_TableView (QWidget* theParent,
 
   QHeaderView* aVHeader = myTableView->verticalHeader();
   aVHeader->setVisible (false);
-  aVHeader->setDefaultSectionSize (aVHeader->minimumSectionSize() + DFBrowserPane_Tools::HeaderSectionMargin());
+  aVHeader->setDefaultSectionSize (aVHeader->minimumSectionSize());
 
   myTableView->horizontalHeader()->setStretchLastSection (true);
+  myTableView->horizontalHeader()->setVisible (false);
   aLay->addWidget (myTableView);
   myDefaultColumnWidths = theDefaultColumnWidths;
 }
@@ -64,9 +66,22 @@ void DFBrowserPane_TableView::SetModel (QAbstractTableModel* theModel)
 // function : SetFixedRowCount
 // purpose :
 // =======================================================================
-void DFBrowserPane_TableView::SetFixedRowCount (const int theCount, QTableView* theView)
+void DFBrowserPane_TableView::SetFixedRowCount (const int theCount, QTableView* theView, const bool theScroll)
 {
-  theView->setMaximumHeight (DEFAULT_ROW_HEIGHT*(theCount + 1/*header row*/));
+  double aHeight = theView->verticalHeader()->defaultSectionSize()*theCount + DFBrowserPane_Tools::HeaderSectionMargin();
+  if (theScroll)
+    aHeight += theView->horizontalScrollBar()->sizeHint().height();
+
+  theView->setMaximumHeight (aHeight);
+}
+
+// =======================================================================
+// function : SetVisibleHorizontalHeader
+// purpose :
+// =======================================================================
+void DFBrowserPane_TableView::SetVisibleHorizontalHeader (const bool& theVisible)
+{
+  myTableView->horizontalHeader()->setVisible (theVisible);
 }
 
 // =======================================================================
@@ -83,7 +98,9 @@ QStringList DFBrowserPane_TableView::GetSelectedColumnValues (QTableView* theTab
        aSelectedIt != aSelectedIndices.end(); aSelectedIt++)
   {
     QModelIndex anIndex = *aSelectedIt;
-    aSelectedEntries.append (aModel->data (aModel->index (anIndex.row(), theColumnId, anIndex.parent()), Qt::DisplayRole).toString());
+    if (theColumnId == anIndex.column())
+      aSelectedEntries.append (aModel->data (aModel->index (anIndex.row(), theColumnId, anIndex.parent()),
+                               Qt::DisplayRole).toString());
   }
   return aSelectedEntries;
 }

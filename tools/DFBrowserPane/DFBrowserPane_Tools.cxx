@@ -16,6 +16,7 @@
 #include <inspector/DFBrowserPane_Tools.hxx>
 
 #include <AIS_DisplayMode.hxx>
+#include <CDM_CanCloseStatus.hxx>
 #include <Graphic3d_MaterialAspect.hxx>
 #include <Graphic3d_NameOfMaterial.hxx>
 #include <Standard_Version.hxx>
@@ -34,8 +35,10 @@
 #include <TopAbs_Orientation.hxx>
 
 #include <QApplication>
+#include <QPalette>
 #include <QStringList>
 #include <QStyle>
+#include <QWidget>
 
 #include <sstream>
 
@@ -100,6 +103,17 @@ QVariant DFBrowserPane_Tools::ShapeTypeInfo (const TopoDS_Shape& theShape)
 }
 
 // =======================================================================
+// function : LightHighlightColor
+// purpose :
+// =======================================================================
+QColor DFBrowserPane_Tools::LightHighlightColor()
+{
+  QWidget aWidget;
+  QPalette aPalette = aWidget.palette();
+  return aPalette.highlight().color().lighter();
+}
+
+// =======================================================================
 // function : ToName
 // purpose :
 // =======================================================================
@@ -127,6 +141,18 @@ TCollection_AsciiString DFBrowserPane_Tools::ToName (const DFBrowserPane_OcctEnu
       break;
     }
     case DB_ORIENTATION_TYPE: { TopAbs::Print((TopAbs_Orientation)theEnumId, aSStream); break; }
+    case DB_CDM_CAN_CLOSE_STATUS:
+    {
+      switch (theEnumId)
+      {
+        case CDM_CCS_OK: return "OK";
+        case CDM_CCS_NotOpen: return "NotOpen";
+        case CDM_CCS_UnstoredReferenced: return "UnstoredReferenced";
+        case CDM_CCS_ReferenceRejection: return "ReferenceRejection";
+        default: return "UNKNOWN CDM_CanCloseStatus";
+      }
+      break;
+    }
     default: return "UNKNOWN PARAMETER";
   }
   return aSStream.str().c_str();

@@ -1,0 +1,18 @@
+pload ALL INSPECTOR
+
+tinspector -plugins vinspector
+
+vinit
+
+box box_1 0 0 200 100 100 100
+vdisplay box_1
+vselmode box_1 1 1
+vselmode box_1 3 1
+
+box box_2 180 120 200 150 150 150
+vdisplay box_2
+
+vfit
+
+tinspector -update -select box_1
+

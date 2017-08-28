@@ -65,8 +65,7 @@ public:
     QRect aLineRect = rect();
     Qt::Alignment anAlignment = QStyle::visualAlignment (layoutDirection(), Qt::AlignLeft);
 
-    QColor aColor = palette().text().color();
-    aColor.setAlpha (128);
+    QColor aColor = Qt::gray;
     QPen anOldpen = aPainter.pen();
     aPainter.setPen (aColor);
     aLineRect.adjust (4, 4, 0, 0);

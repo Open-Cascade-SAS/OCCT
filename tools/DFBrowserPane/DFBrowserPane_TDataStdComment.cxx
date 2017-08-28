@@ -30,5 +30,6 @@ void DFBrowserPane_TDataStdComment::GetValues (const Handle(TDF_Attribute)& theA
   Handle(TDataStd_Comment) anAttribute = Handle(TDataStd_Comment)::DownCast (theAttribute);
   if (anAttribute.IsNull())
     return;
+  theValues.append ("Get");
   theValues.append (DFBrowserPane_Tools::ToString (anAttribute->Get()));
 }

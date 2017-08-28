@@ -1,0 +1,150 @@
+pload DCAF INSPECTOR TOPTEST
+
+# Create the first document and set UndoLimit
+NewDocument Doc1 BinOcaf
+UndoLimit Doc1 100
+
+# Add an attribute to a data framework
+set aSetAttr1 100
+set aLabel 0:2
+SetInteger Doc1 ${aLabel} ${aSetAttr1}
+
+
+# Create the second document
+set test_name "OCC26961"
+set test_int 123
+set test_real 123.456e-7
+set test_int_arr {10 20}
+set test_real_arr {1.1 3.14 5.4e18}
+set test_extstr_arr {"sample string 1" "string 2"}
+set test_bool_arr {0 1}
+set test_ref_arr {"0:1:2:3:2" "0:1:2:3:1"}
+set test_byte_arr {15 25}
+set test_map {1 5 2 10}
+set test_map_sorted {1 2 5 10}
+set test_named_ints {i1 1 i2 2}
+set test_named_reals {r1 1.1 r2 2.2}
+set test_named_strings {s1 string1 s2 string2 s3 string3_string_extended s4 string4_double_extended s5 string5}
+set test_named_bytes {b1 65 b2 66}
+set test_ref "0:1:1"
+set test_guid "00000000-0000-0000-2222-000000000000"
+set test_comment "Sample document containing various attributes"
+set test_string "Sample string"
+set test_expr "2*pi*r"
+set test_var1 "0:1:2:3:2"
+set test_var2 "0:1:2:3:1"
+set test_point "111 222 333"
+set test_axisPos "10 10 30"
+set test_axisDir "11 22 33"
+set test_plane "15 25 35"
+set test_boxXYZ "10 20 30"
+set test_boxDX 100
+set test_boxDY 200
+set test_boxDZ 300
+set test_geom_t "cir"
+set test_failure 1
+set test_driver "G"
+set test_driver_id "2a96b604-ec8b-11d0-bee7-080009dc3333"
+set test_transp 0.5
+set test_color 11
+set test_material 22
+set test_positionX 100
+set test_positionY 200
+set test_positionZ 300
+
+puts "Creating document"
+NewDocument D BinOcaf
+
+# Simple values
+SetInteger     D 0:1:1 $test_int
+SetReal        D 0:1:1 $test_real
+SetName        D 0:1:1 $test_name
+SetComment     D 0:1:1 $test_comment
+SetAsciiString D 0:1:1 $test_string
+
+# TagSource
+SetTagger D 0:1:2
+  
+# Reference
+SetReference D 0:1:3 $test_ref
+  
+# Directory
+#NewDirectory D 0:1:2:1
+
+# UAttribute
+#SetUAttribute D 0:1:2:2 $test_guid
+
+# Variable
+SetVariable D $test_var2 0 mm
+SetVariable D $test_var1 1 ""
+
+# Relation
+SetRelation D 0:1:2:3 "2*pi*r" $test_var1 $test_var2
+
+# TreeNode
+SetNode D 0:1:2:4
+
+# Arrays
+eval SetIntArray       D 0:1:1 1 1 2 $test_int_arr
+eval SetRealArray      D 0:1:1 1 1 3 $test_real_arr
+eval SetExtStringArray D 0:1:1 1 1 2 $test_extstr_arr
+eval SetRefArray       D 0:1:1   1 2 $test_ref_arr
+eval SetByteArray      D 0:1:1 1 1 2 $test_byte_arr
+
+# Lists
+eval SetIntegerList   D 0:1:1 $test_int_arr
+eval SetRealList      D 0:1:1 $test_real_arr
+eval SetExtStringList D 0:1:1 $test_extstr_arr
+eval SetBooleanList   D 0:1:1 $test_bool_arr
+eval SetReferenceList D 0:1:1 $test_ref_arr
+
+# IntPackedMap
+eval SetIntPackedMap  D 0:1:1 1 $test_map
+
+# NamedData
+eval SetNDataIntegers   D 0:1:4 2 $test_named_ints
+eval SetNDataReals      D 0:1:4 2 $test_named_reals
+eval SetNDataStrings    D 0:1:4 5 $test_named_strings
+eval SetNDataBytes      D 0:1:4 2 $test_named_bytes
+eval SetNDataIntArrays  D 0:1:4 ia 2 $test_int_arr
+eval SetNDataRealArrays D 0:1:4 ra 3 $test_real_arr
+
+# NamedShape  
+eval box Box $test_boxXYZ $test_boxDX $test_boxDY $test_boxDZ
+SetShape D 0:1:6 Box
+
+# Point
+eval point Point $test_point
+SetPoint D 0:1:5:1 Point
+
+# Axis
+eval line Axis $test_axisPos $test_axisDir
+SetAxis D 0:1:5:2 Axis
+
+# Plane
+eval plane Plane $test_plane
+SetPlane D 0:1:5:3 Plane
+
+# Geometry
+SetGeometry D 0:1:6 $test_geom_t
+
+# Constraint
+SetConstraint D 0:1:1 equal 0:1:6
+
+# PatternStd
+SetPattern D 0:1:1 5 0:1:6
+
+# Function
+SetFunction D 0:1:1 $test_guid $test_failure
+
+# AISPresentation
+AISInitViewer D
+AISSet          D 0:1:1 $test_driver
+AISTransparency D 0:1:1 $test_transp
+AISColor        D 0:1:1 $test_color
+AISMaterial     D 0:1:1 $test_material
+
+# Position
+SetPosition D 0:1:1 $test_positionX $test_positionY $test_positionZ
+
+tinspector -plugins dfbrowser

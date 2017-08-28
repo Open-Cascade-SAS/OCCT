@@ -252,6 +252,6 @@ void DFBrowser_TreeModel::ConvertToIndices (const NCollection_List<Handle(TDF_At
 QVariant DFBrowser_TreeModel::data (const QModelIndex& theIndex, int theRole) const
 {
   if (theRole == Qt::BackgroundRole && myHighlightedIndices.contains (theIndex))
-    return DFBrowser_Window::LightHighlightColor();
+    return DFBrowserPane_Tools::LightHighlightColor();
   return TreeModel_ModelBase::data (theIndex, theRole);
 }

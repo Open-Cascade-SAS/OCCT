@@ -24,6 +24,7 @@
 void DFBrowserPaneXDE_XCAFDocArea::GetValues (const Handle(TDF_Attribute)& theAttribute, QList<QVariant>& theValues)
 {
   Handle(XCAFDoc_Area) anAttr = Handle(XCAFDoc_Area)::DownCast (theAttribute);
+  theValues.append ("Get");
   theValues.append (anAttr->Get());
 }
 

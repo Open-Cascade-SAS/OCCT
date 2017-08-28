@@ -32,7 +32,6 @@
 DFBrowserPaneXDE_XCAFDocDatum::DFBrowserPaneXDE_XCAFDocDatum()
 : DFBrowserPane_AttributePane()
 {
-  getPaneModel()->SetColumnCount (2);
 }
 
 // =======================================================================

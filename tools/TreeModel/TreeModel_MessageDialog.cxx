@@ -54,6 +54,8 @@ TreeModel_MessageDialog::TreeModel_MessageDialog (QWidget* theParent, const QStr
 
   aLayout->setColumnStretch (0, 1);
 
+  myCancelButton->setDefault (true);
+
   SetInformation (theInformation);
 }
 

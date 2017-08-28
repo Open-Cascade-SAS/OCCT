@@ -82,10 +82,11 @@ void DFBrowser_SearchView::InitModels()
 // function : onTableSelectionChanged
 // purpose :
 // =======================================================================
-void DFBrowser_SearchView::onTableSelectionChanged (const QItemSelection& theSelected,
+void DFBrowser_SearchView::onTableSelectionChanged (const QItemSelection&,
                                                    const QItemSelection&)
 {
-  QModelIndexList aSelectedIndices = theSelected.indexes();
+  QItemSelectionModel* aSelectionModel = myTableView->selectionModel();
+  QModelIndexList aSelectedIndices = aSelectionModel->selectedIndexes();
   QModelIndex aSelectedIndex = DFBrowser_Window::SingleSelected (aSelectedIndices, 2);
   if (!aSelectedIndex.isValid())
     return;

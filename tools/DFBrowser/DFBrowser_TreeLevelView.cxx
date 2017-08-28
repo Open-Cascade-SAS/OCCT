@@ -28,7 +28,7 @@
 #include <QTableView>
 #include <QWidget>
 
-const int DEFAULT_COLUMN_WIDTH = 300;
+const int LABEL_OR_ATTRIBUTECOLUMN_WIDTH = 160;
 
 // =======================================================================
 // function : Constructor
@@ -43,11 +43,12 @@ DFBrowser_TreeLevelView::DFBrowser_TreeLevelView (QWidget* theParent)
 
   myTableView = new QTableView (myMainWindow);
   myTableView->setModel (new DFBrowser_TreeLevelViewModel (myTableView));
-  myTableView->setColumnWidth (0, DEFAULT_COLUMN_WIDTH);
+  myTableView->setColumnWidth (0, LABEL_OR_ATTRIBUTECOLUMN_WIDTH);
   myTableView->setEditTriggers (QAbstractItemView::DoubleClicked);
+  myTableView->horizontalHeader()->setVisible (false);
   QHeaderView* aVHeader = myTableView->verticalHeader();
   aVHeader->setVisible (false);
-  aVHeader->setDefaultSectionSize (aVHeader->minimumSectionSize() + DFBrowserPane_Tools::HeaderSectionMargin());
+  aVHeader->setDefaultSectionSize (aVHeader->minimumSectionSize());
   myTableView->horizontalHeader()->setStretchLastSection (true);
   aLayout->addWidget (myTableView);
 

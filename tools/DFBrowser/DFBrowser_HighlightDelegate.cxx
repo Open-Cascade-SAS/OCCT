@@ -15,7 +15,7 @@
 
 #include <inspector/DFBrowser_HighlightDelegate.hxx>
 
-#include <inspector/DFBrowser_Window.hxx>
+#include <inspector/DFBrowserPane_Tools.hxx>
 #include <QPainter>
 
 // =======================================================================
@@ -28,7 +28,7 @@ void DFBrowser_HighlightDelegate::paint (QPainter* thePainter, const QStyleOptio
   // highlight cell
   if (theOption.state & QStyle::State_MouseOver)
   {
-    QColor aHighlightColor = DFBrowser_Window::LightHighlightColor();
+    QColor aHighlightColor = DFBrowserPane_Tools::LightHighlightColor();
     thePainter->fillRect (theOption.rect, aHighlightColor);
   }
   // default paint

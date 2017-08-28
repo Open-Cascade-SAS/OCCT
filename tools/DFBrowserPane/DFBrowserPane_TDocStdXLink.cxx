@@ -27,7 +27,9 @@ void DFBrowserPane_TDocStdXLink::GetValues (const Handle(TDF_Attribute)& theAttr
   Handle(TDocStd_XLink) anAttribute = Handle(TDocStd_XLink)::DownCast (theAttribute);
   if (anAttribute.IsNull())
     return;
+  theValues.append ("LabelEntry");
   theValues.append (anAttribute->LabelEntry().ToCString());
+  theValues.append ("DocumentEntry");
   theValues.append (anAttribute->DocumentEntry().ToCString());
 }
 

@@ -94,7 +94,7 @@ void DFBrowserPane_TDataStdReferenceArray::GetReferences (const Handle(TDF_Attri
 {
   if (!getTableView())
     return;
-  QStringList aSelectedEntries = DFBrowserPane_TableView::GetSelectedColumnValues (getTableView()->GetTableView(), 0);
+  QStringList aSelectedEntries = DFBrowserPane_TableView::GetSelectedColumnValues (getTableView()->GetTableView(), 1);
 
   Handle(TDataStd_ReferenceArray) anAttribute = Handle(TDataStd_ReferenceArray)::DownCast (theAttribute);
   if (anAttribute.IsNull())

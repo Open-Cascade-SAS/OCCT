@@ -21,7 +21,8 @@
 //! Sets custom item role of Tree view wmodel
 enum TreeModel_ItemRole
 {
-  TreeModel_ItemRole_RowCountRole = Qt::UserRole + 1 //! additional column with row count for item (cached value)
+  TreeModel_ItemRole_RowCountRole = Qt::UserRole + 1, //! additional column with row count for item (cached value)
+  TreeModel_ItemRole_LastTreeRole //! last enumeration value to use outside incremented
 };
 
 #endif

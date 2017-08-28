@@ -1,0 +1,9 @@
+pload ALL INSPECTOR
+
+tinspector -plugins vinspector
+
+vinit
+
+tinspector -open $env(CSF_OCCTDataPath)/occ/solid.brep
+vfit
+

@@ -30,11 +30,6 @@
 DFBrowserPane_TPrsStdAISPresentation::DFBrowserPane_TPrsStdAISPresentation()
  : DFBrowserPane_AttributePane()
 {
-  getPaneModel()->SetColumnCount (2);
-
-  QList<QVariant> theValues;
-  theValues << "Method" << "Value";
-  getPaneModel()->SetHeaderValues (theValues, Qt::Horizontal);
 }
 
 // =======================================================================
@@ -57,10 +52,15 @@ void DFBrowserPane_TPrsStdAISPresentation::GetValues (const Handle(TDF_Attribute
   if (anAttribute.IsNull())
     return;
   Handle(AIS_InteractiveObject) anIO = anAttribute->GetAIS();
-  theValues << "GetDriverGUID" << ""//DFBrowserPane_Tools::ToString (anAttribute->GetDriverGUID())
+
+  char aStr[256];
+  anAttribute->GetDriverGUID().ToCString(aStr);
+  TCollection_AsciiString aString(aStr);
+
+  theValues << "GetDriverGUID" << DFBrowserPane_Tools::ToString (aString)
             << "GetAIS" << (anIO.IsNull() ? "Null" : anAttribute->DynamicType()->Name())
             << "IsDisplayed" << DFBrowserPane_Tools::BoolToStr (anAttribute->IsDisplayed())
-            << "GetContext()" << (!anIO->GetContext().IsNull() ?
+            << "GetContext()" << ((!anIO.IsNull() && !anIO->GetContext().IsNull()) ?
                                  DFBrowserPane_Tools::GetPointerInfo (anIO->GetContext()).ToCString() : "")
             << "HasOwnMaterial" << DFBrowserPane_Tools::BoolToStr (anAttribute->HasOwnMaterial())
             << "Material" << (anAttribute->HasOwnMaterial() ?

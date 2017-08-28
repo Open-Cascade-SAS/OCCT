@@ -32,5 +32,8 @@ void DFBrowserPane_TDataStdIntegerList::GetValues (const Handle(TDF_Attribute)& 
     return;
 
   for (TColStd_ListIteratorOfListOfInteger aValuesIt (anAttribute->List()); aValuesIt.More(); aValuesIt.Next())
+  {
+    theValues.append ("Value");
     theValues.append (aValuesIt.Value());
+  }
 }

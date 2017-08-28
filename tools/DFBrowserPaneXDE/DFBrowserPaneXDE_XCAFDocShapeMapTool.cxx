@@ -56,6 +56,7 @@ DFBrowserPaneXDE_XCAFDocShapeMapTool::DFBrowserPaneXDE_XCAFDocShapeMapTool()
 
   getPaneModel()->SetHeaderValues (aHeaderValues, Qt::Horizontal);
   getPaneModel()->SetColumnCount (aHeaderValues.count());
+  getPaneModel()->SetItalicColumns (QList<int>());
 }
 
 // =======================================================================

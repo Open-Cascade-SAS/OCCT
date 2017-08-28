@@ -26,6 +26,9 @@
 #include <TDF_Label.hxx>
 #include <inspector/TreeModel_ModelBase.hxx>
 
+#include <QApplication>
+#include <QColor>
+#include <QFont>
 #include <QIcon>
 
 // =======================================================================
@@ -84,7 +87,7 @@ QVariant DFBrowser_TreeLevelViewModel::data (const QModelIndex& theIndex, int th
 
   QVariant aValue;
   TreeModel_ItemBasePtr anItemBase = TreeModel_ModelBase::GetItemByIndex (anIndex);
-  if (anIndex.column() == 0)
+  if (theIndex.column() == 0)
   {
     DFBrowser_ItemBasePtr aDBrowserItem = itemDynamicCast<DFBrowser_ItemBase> (anItemBase);
     bool aPrevValue = aDBrowserItem->SetUseAdditionalInfo (false);
@@ -99,6 +102,15 @@ QVariant DFBrowser_TreeLevelViewModel::data (const QModelIndex& theIndex, int th
         aValue = anItem->GetAttributeInfo (DFBrowser_ItemRole_AdditionalInfo);
     }
   }
+  if (theIndex.column() == 0 && theRole == Qt::FontRole) // method name is in italic
+  {
+    QFont aFont = qApp->font();
+    aFont.setItalic (true);
+    return aFont;
+  }
+  if (theIndex.column() == 0 && theRole == Qt::ForegroundRole) // method name is light gray
+    return QColor (Qt::darkGray).darker(150);
+
   return aValue;
 }
 

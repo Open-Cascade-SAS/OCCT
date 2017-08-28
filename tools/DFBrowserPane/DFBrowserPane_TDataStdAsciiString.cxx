@@ -28,6 +28,9 @@ void DFBrowserPane_TDataStdAsciiString::GetValues (const Handle(TDF_Attribute)& 
                                                    QList<QVariant>& theValues)
 {
   Handle(TDataStd_AsciiString) anAttribute = Handle(TDataStd_AsciiString)::DownCast (theAttribute);
-  if (!anAttribute.IsNull())
-    theValues.append (anAttribute->Get().ToCString());
+  if (anAttribute.IsNull())
+    return;
+
+  theValues.append ("Get");
+  theValues.append (anAttribute->Get().ToCString());
 }

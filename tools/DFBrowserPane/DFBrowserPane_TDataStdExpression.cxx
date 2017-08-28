@@ -29,6 +29,7 @@ void DFBrowserPane_TDataStdExpression::GetValues (const Handle(TDF_Attribute)& t
   if (anAttribute.IsNull())
     return;
 
+  theValues.append ("GetExpression");
   theValues.append (DFBrowserPane_Tools::ToString (anAttribute->GetExpression()));
 }
 

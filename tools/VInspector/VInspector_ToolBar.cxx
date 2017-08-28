@@ -37,12 +37,10 @@ VInspector_ToolBar::VInspector_ToolBar (QWidget* theParent)
   myActionsMap[VInspector_ToolActionType_SelectPresentationsId] = new QPushButton (theParent);
   myActionsMap[VInspector_ToolActionType_SelectPresentationsId]->setText ("Select Presentations");
   myActionsMap[VInspector_ToolActionType_SelectPresentationsId]->setCheckable (true);
-  myActionsMap[VInspector_ToolActionType_SelectPresentationsId]->setFixedHeight(20);
 
   myActionsMap[VInspector_ToolActionType_SelectOwnersId] = new QPushButton (theParent);
   myActionsMap[VInspector_ToolActionType_SelectOwnersId]->setText ("Select Owners");
   myActionsMap[VInspector_ToolActionType_SelectOwnersId]->setCheckable (true);
-  myActionsMap[VInspector_ToolActionType_SelectPresentationsId]->setFixedHeight(25);
 
   myMainWindow = new QWidget (theParent);
 

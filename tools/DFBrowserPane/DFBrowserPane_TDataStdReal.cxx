@@ -29,6 +29,7 @@ void DFBrowserPane_TDataStdReal::GetValues (const Handle(TDF_Attribute)& theAttr
   if (anAttribute.IsNull())
     return;
 
+  theValues.append ("Get");
   theValues.append (anAttribute->Get());
 }
 

@@ -29,6 +29,7 @@ void DFBrowserPane_TDFTagSource::GetValues (const Handle(TDF_Attribute)& theAttr
   Handle(TDF_TagSource) anAttribute = Handle(TDF_TagSource)::DownCast (theAttribute);
   if (anAttribute.IsNull())
     return;
+  theValues.append ("Get");
   theValues.append (anAttribute->Get());
 }
 

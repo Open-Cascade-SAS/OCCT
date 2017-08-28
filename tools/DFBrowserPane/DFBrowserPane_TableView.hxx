@@ -49,10 +49,15 @@ public:
   //! Returns the current table view
   QTableView* GetTableView() const { return myTableView; }
 
+  //! Set horizontal header shown or hidden
+  //! \param theVisible visibility flag
+  Standard_EXPORT void SetVisibleHorizontalHeader (const bool& theVisible);
+
   //! Updates table view height to contain the given number of rows only
   //! \param theCount a row count
   //! \param theView a table view, which size will be changed
-  Standard_EXPORT static void SetFixedRowCount (const int theCount, QTableView* theView);
+  //! \param theScroll flag whether add scroll height to size
+  Standard_EXPORT static void SetFixedRowCount (const int theCount, QTableView* theView, const bool theScroll = false);
 
   //! Returns names of selected items in the view
   //! \param theView a table view

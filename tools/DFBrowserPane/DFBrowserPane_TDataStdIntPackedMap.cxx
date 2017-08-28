@@ -31,6 +31,10 @@ void DFBrowserPane_TDataStdIntPackedMap::GetValues (const Handle(TDF_Attribute)&
   if (anAttribute.IsNull())
     return;
 
-  for (TColStd_MapIteratorOfPackedMapOfInteger aValueIt(anAttribute->GetMap()); aValueIt.More(); aValueIt.Next())
+  int anIndexInMap = 0;
+  for (TColStd_MapIteratorOfPackedMapOfInteger aValueIt(anAttribute->GetMap()); aValueIt.More(); aValueIt.Next(), anIndexInMap++)
+  {
+    theValues.append (QString ("GetMap [%1]").arg(anIndexInMap));
     theValues.append (aValueIt.Key());
+  }
 }

@@ -72,6 +72,11 @@ public:
                                       NCollection_List<Handle(TDF_Attribute)>& theRefAttributes,
                                       Handle(Standard_Transient)& theRefPresentation) Standard_OVERRIDE;
 
+protected:
+  //! Defines widths of table columns
+  //! \return container of widths
+  Standard_EXPORT virtual QMap<int, int> getTableColumnWidths() const;
+
 private:
 
   NCollection_DataMap<Handle(TDF_Attribute), std::list<TCollection_AsciiString> > myAttributeRefs;

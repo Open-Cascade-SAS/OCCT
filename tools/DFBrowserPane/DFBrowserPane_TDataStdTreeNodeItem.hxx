@@ -51,9 +51,13 @@ public:
   //! \param theAttribute an attribute
   void SetAttribute (const Handle(TDF_Attribute)& theAttribute) { myAttribute = theAttribute; }
 
+  //! Returns the current attribute
+  //! \return an attribute
+  Handle(TDF_Attribute) GetAttribute () const { initItem(); return myAttribute; }
+
   //! Set state if the attribute is current(corresponds to the selected attribute in tree)
   //! \param theCurrent boolean state
-  void setCurrentAttribute (const bool theCurrent) { myIsCurrentItem = theCurrent; }
+  void setCurrentAttribute (const bool theCurrent) { Reset(); myIsCurrentItem = theCurrent; }
 
   //! Returns child attribute of the current attribute
   //! \param theChildRow an index of a child attribute

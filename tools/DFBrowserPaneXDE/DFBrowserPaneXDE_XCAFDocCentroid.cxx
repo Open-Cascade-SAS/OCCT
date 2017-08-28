@@ -25,7 +25,6 @@
 DFBrowserPaneXDE_XCAFDocCentroid::DFBrowserPaneXDE_XCAFDocCentroid()
 : DFBrowserPane_AttributePane()
 {
-  getPaneModel()->SetColumnCount (2);
 }
 
 // =======================================================================
@@ -36,9 +35,9 @@ void DFBrowserPaneXDE_XCAFDocCentroid::GetValues (const Handle(TDF_Attribute)& t
 {
   Handle(XCAFDoc_Centroid) anAttr = Handle(XCAFDoc_Centroid)::DownCast (theAttribute);
   gp_Pnt aPoint = anAttr->Get();
-  theValues << "X" << aPoint.X()
-            << "Y" << aPoint.Y()
-            << "Z" << aPoint.Z();
+  theValues << "Get: X" << aPoint.X()
+            << "Get: Y" << aPoint.Y()
+            << "Get: Z" << aPoint.Z();
 }
 
 // =======================================================================

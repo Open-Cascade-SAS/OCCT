@@ -35,5 +35,8 @@ void DFBrowserPane_TDataStdBooleanList::GetValues (const Handle(TDF_Attribute)& 
     return;
 
   for (TDataStd_ListIteratorOfListOfByte aBoolListIt (anAttribute->List()); aBoolListIt.More(); aBoolListIt.Next())
+  {
+    theValues.append ("Value");
     theValues.append (aBoolListIt.Value());
+  }
 }

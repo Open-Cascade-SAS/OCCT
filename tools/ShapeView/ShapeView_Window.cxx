@@ -52,9 +52,9 @@
 #include <QWidget>
 #include <QVBoxLayout>
 
-const int FIRST_COLUMN_WIDTH = 200;
+const int FIRST_COLUMN_WIDTH = 190;
 const int SIZE_COLUMN_WIDTH = 30;
-const int POINTER_COLUMN_WIDTH = 110;
+const int POINTER_COLUMN_WIDTH = 70;
 const int ORIENTATION_COLUMN_WIDTH = 70;
 const int LOCATION_COLUMN_WIDTH = 120;
 const int FLAGS_COLUMN_WIDTH = 70;
@@ -73,7 +73,7 @@ const int DEFAULT_SHAPE_VIEW_POSITION_Y = 60;
 const int SHAPEVIEW_DEFAULT_TREE_VIEW_WIDTH = 600;
 const int SHAPEVIEW_DEFAULT_TREE_VIEW_HEIGHT = 500;
 
-const int SHAPEVIEW_DEFAULT_VIEW_WIDTH = 400;
+const int SHAPEVIEW_DEFAULT_VIEW_WIDTH = 200;//400;
 const int SHAPEVIEW_DEFAULT_VIEW_HEIGHT = 1000;
 
 //! \class ShapeView_TreeView
@@ -163,6 +163,7 @@ ShapeView_Window::ShapeView_Window (QWidget* theParent, const TCollection_AsciiS
 
   QDockWidget* aViewDockWidget = new QDockWidget (tr ("View"), myMainWindow);
   aViewDockWidget->setWidget (myViewWindow);
+  aViewDockWidget->setTitleBarWidget (myViewWindow->GetViewToolBar()->GetControl());
   myMainWindow->addDockWidget (Qt::RightDockWidgetArea, aViewDockWidget);
 
   myMainWindow->resize (DEFAULT_SHAPE_VIEW_WIDTH, DEFAULT_SHAPE_VIEW_HEIGHT);

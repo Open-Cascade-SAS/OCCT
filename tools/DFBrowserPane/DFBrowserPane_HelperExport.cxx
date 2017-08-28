@@ -47,7 +47,11 @@ void DFBrowserPane_HelperExport::OnButtonPressed (const QModelIndex& theIndex)
 
   QString aFileExtension = ".brep";
 
+#if QT_VERSION < 0x050000
   QString aFilter (tr ("BREP file (*%1*)").arg (aFileExtension));
+#else
+  QString aFilter;
+#endif
   QString aSelectedFilter;
   QString aFileName = QFileDialog::getSaveFileName (0, tr ("Export shape to BREP file"), QString(),
                                                     aFilter, &aSelectedFilter);

@@ -1,53 +1,23 @@
-pload DCAF
-pload VISUALIZATION
-pload INSPECTOR
+pload DCAF VISUALIZATION INSPECTOR
 
-chrono qat start
-# Create a new document and set UndoLimit
 NewDocument D BinOcaf
 tinspector -plugins dfbrowser
 
-#NewDocument D
 cpulimit 300
 UndoLimit D 100
 
-# Open a transaction
 NewCommand D
 
-#1 - create box using more flexible set of commands
 NewCommand D
-# add object
+
 set B2 [AddObject D]
-# add function
 set F2 [AddFunction D $B2 Box]
-# set argumets of this function
 BoxDX D $B2 190
 BoxDY D $B2 290
 BoxDZ D $B2 390
-# initialize (clean) internal maps of labels
+
 InitLogBook D
 AddDriver D Box Attach Cyl
-# compute the function
 ComputeFun D $F2
 
-# check result
-set IsDone [catch {GetShape D $F2:2 Box2} aResult]
-if { ${IsDone} != 0 } {
-    puts "Error: Get a value of TNaming_NamedShape attribute from restoring document"
-} else {
-    puts "OK: Value of TNaming_NamedShape attribute from restoring document was got"
-}
-if { [regexp "SOLID FORWARD" [whatis Box2] ] != 1 } {
-    puts "Error: Box2 is not a solid forward"
-} else {
-    puts "OK: Box2 is  a solid forward"
-}
-
-# referes to result NS
-GetReference D $B2;			
-
 tinspector -update
-vinit
-vdisplay Box2
-vfit
-checkview -screenshot -3d -path ${imagedir}/${test_image}.png

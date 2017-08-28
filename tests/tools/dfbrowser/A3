@@ -1,0 +1,2 @@
+pload INSPECTOR
+tinspector -plugins dfbrowser -open $env(CSF_OCCTDataPath)/step/screw.step -select 0:1:1:1

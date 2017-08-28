@@ -14,8 +14,6 @@ DFBrowserPane_HelperArray.cxx
 DFBrowserPane_HelperArray.hxx
 DFBrowserPane_HelperExport.cxx
 DFBrowserPane_HelperExport.hxx
-DFBrowserPane_HelperGroupContent.cxx
-DFBrowserPane_HelperGroupContent.hxx
 DFBrowserPane_ItemDelegateButton.cxx
 DFBrowserPane_ItemDelegateButton.hxx
 DFBrowserPane_ItemRole.hxx

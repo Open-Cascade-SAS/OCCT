@@ -18,3 +18,4 @@ OCCT User Guides are organized by OCCT modules:
 * @subpage occt_user_guides__ocaf "Open CASCADE Application Framework (OCAF)"
   * @subpage occt_user_guides__tobj "TObj package"
 * @subpage occt_user_guides__test_harness "DRAW Test Harness"
+* @subpage occt_user_guides__inspector "Inspector"

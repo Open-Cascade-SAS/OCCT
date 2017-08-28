@@ -14,6 +14,7 @@
 // commercial license or contractual agreement. 
 
 #include <inspector/DFBrowserPane_TDataStdTreeNodeItem.hxx>
+#include <inspector/DFBrowserPane_Tools.hxx>
 
 #include <inspector/DFBrowser_Module.hxx>
 #include <inspector/DFBrowser_Tools.hxx>
@@ -82,6 +83,7 @@ QVariant DFBrowserPane_TDataStdTreeNodeItem::initValue (const int theRole) const
     case Qt::DisplayRole:
     case Qt::ToolTipRole:    return getName();
     case Qt::ForegroundRole: return myIsCurrentItem ? QColor (Qt::darkBlue) : QColor (Qt::black);
+    case Qt::BackgroundRole: return myIsCurrentItem ? DFBrowserPane_Tools::LightHighlightColor() : QVariant();
     default: break;
   }
   return QVariant();

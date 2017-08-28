@@ -41,3 +41,37 @@ void DFBrowserPane_TDataStdTreeNodeModel::SetAttribute (const Handle(TDF_Attribu
   aRootItem->SetAttribute (theAttribute);
   EmitLayoutChanged();
 }
+
+// =======================================================================
+// function : FindIndex
+// purpose :
+// =======================================================================
+QModelIndex DFBrowserPane_TDataStdTreeNodeModel::FindIndex (const Handle(TDF_Attribute)& theAttribute,
+                                                            const QModelIndex theParentIndex)
+{
+  QModelIndex aParentIndex = theParentIndex;
+  
+  if (!aParentIndex.isValid())
+    aParentIndex = index (0, 0);
+
+  DFBrowserPane_TDataStdTreeNodeItemPtr aParentItem = itemDynamicCast<DFBrowserPane_TDataStdTreeNodeItem>
+    (TreeModel_ModelBase::GetItemByIndex (aParentIndex));
+
+  if (aParentItem->GetAttribute() == theAttribute)
+    return aParentIndex;
+
+  for (int aChildId = 0, aCount = aParentItem->rowCount(); aChildId < aCount; aChildId++)
+  {
+    QModelIndex anIndex = index (aChildId, 0, aParentIndex);
+    TreeModel_ItemBasePtr anItemBase = TreeModel_ModelBase::GetItemByIndex (anIndex);
+    DFBrowserPane_TDataStdTreeNodeItemPtr anItem = itemDynamicCast<DFBrowserPane_TDataStdTreeNodeItem>(anItemBase);
+
+    if (anItem->GetAttribute() == theAttribute)
+      return anIndex;
+
+    QModelIndex aSubIndex = FindIndex (theAttribute, anIndex);
+    if (aSubIndex.isValid())
+      return aSubIndex;
+  }
+  return QModelIndex();
+}

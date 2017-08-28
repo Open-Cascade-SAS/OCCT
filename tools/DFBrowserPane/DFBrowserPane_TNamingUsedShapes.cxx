@@ -39,6 +39,10 @@
 #include <QVariant>
 #include <QWidget>
 
+const int COLUMN_TYPE_WIDTH = 70;
+const int COLUMN_POINTER_WIDTH = 90;
+const int COLUMN_REFERENCE_WIDTH = 90;
+
 // =======================================================================
 // function : Constructor
 // purpose :
@@ -47,10 +51,11 @@ DFBrowserPane_TNamingUsedShapes::DFBrowserPane_TNamingUsedShapes()
 : DFBrowserPane_AttributePane()
 {
   getPaneModel()->SetColumnCount (4);
+  getPaneModel()->SetItalicColumns (QList<int>());
 
-  QList<QVariant> theValues;
-  theValues << "ShapeType" << "Label Entry" << "Key_TShape" << "Value_TShape";
-  getPaneModel()->SetHeaderValues (theValues, Qt::Horizontal);
+  QList<QVariant> aValues;
+  aValues << "ShapeType" << "TShape" << "Label" << "RefShape";
+  getPaneModel()->SetHeaderValues (aValues, Qt::Horizontal);
 }
 
 // =======================================================================
@@ -86,7 +91,7 @@ void DFBrowserPane_TNamingUsedShapes::GetValues (const Handle(TDF_Attribute)& th
     for (std::list<TCollection_AsciiString>::const_iterator aRefIt = aReferences.begin(); aRefIt != aReferences.end(); aRefIt++)
     {
       aValues = anEntryValues[*aRefIt];
-      theValues << aValues[0] << QString ((*aRefIt).ToCString()) << aValues[1] << aValues[2];
+      theValues << aValues[0] << aValues[1] << QString ((*aRefIt).ToCString()) << aValues[2];
     }
   }
   else
@@ -97,8 +102,8 @@ void DFBrowserPane_TNamingUsedShapes::GetValues (const Handle(TDF_Attribute)& th
       TopoDS_Shape aShape = aRefIt.Key();
       theValues.append (!aShape.IsNull() ? DFBrowserPane_Tools::ToName (DB_SHAPE_TYPE, aShape.ShapeType()).ToCString()
                                          : "EMPTY SHAPE");
-      theValues.append (DFBrowserPane_Tools::GetEntry (aRefIt.Value()->Label()).ToCString());
       theValues.append (!aShape.IsNull() ? DFBrowserPane_Tools::GetPointerInfo (aShape.TShape()->This()).ToCString() : "");
+      theValues.append (DFBrowserPane_Tools::GetEntry (aRefIt.Value()->Label()).ToCString());
       const TopoDS_Shape aValueShape = aRefIt.Value()->Shape();
       theValues.append (!aValueShape.IsNull() ? DFBrowserPane_Tools::GetPointerInfo (aValueShape.TShape()->This()).ToCString() : "");
     }
@@ -152,10 +157,26 @@ void DFBrowserPane_TNamingUsedShapes::GetAttributeReferences (const Handle(TDF_A
   if (anAttribute.IsNull())
     return;
 
-  QStringList aSelectedEntries = DFBrowserPane_TableView::GetSelectedColumnValues (getTableView()->GetTableView(), 1);
+  QStringList aSelectedEntries = DFBrowserPane_TableView::GetSelectedColumnValues (getTableView()->GetTableView(), 2);
+  if (aSelectedEntries.isEmpty())
+    return;
+
   for (TNaming_DataMapIteratorOfDataMapOfShapePtrRefShape aRefIt (anAttribute->Map()); aRefIt.More(); aRefIt.Next())
   {
     if (aSelectedEntries.contains (DFBrowserPane_Tools::GetEntry (aRefIt.Value()->Label()).ToCString()))
       theRefAttributes.Append (aRefIt.Value()->NamedShape());
   }
+}
+
+// =======================================================================
+// function : getTableColumnWidths
+// purpose :
+// =======================================================================
+QMap<int, int> DFBrowserPane_TNamingUsedShapes::getTableColumnWidths() const
+{
+  QMap<int, int> aValues;
+  aValues[0] = COLUMN_TYPE_WIDTH; // "ShapeType"
+  aValues[1] = COLUMN_POINTER_WIDTH; // "Key_TShape"
+  aValues[2] = COLUMN_REFERENCE_WIDTH; // "Label Entry"
+  return aValues;
 }

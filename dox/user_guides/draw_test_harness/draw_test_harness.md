@@ -10687,6 +10687,87 @@ Example:
 mdist
 ~~~~~
 
+@section occt_draw_13 Inspector commands
+
+
+This section describes commands that make possible to use Inspector.
+
+@subsection occt_draw_13_1 tinspector
+
+Syntax:                  
+~~~~~
+tinspector [-plugins {name1 ... [nameN] | all}]
+           [-activate name]
+           [-shape object [name1] ... [nameN]]
+           [-open file_name [name1] ... [nameN]]
+           [-update]
+           [-select {object | name1 ... [nameN]}]
+           [-show {0|1} = 1]
+~~~~~
+Starts tool of inspection.
+Options:
+* *plugins* enters plugins that should be added in the inspector.
+Available names are: dfbrowser, vinspector and shapeview.
+Plugins order will be the same as defined in arguments.
+'all' adds all available plugins in the order:
+DFBrowser, VInspector and ShapeView.
+If at the first call this option is not used, 'all' option is applyed;
+* *activate* activates the plugin in the tool view.
+If at the first call this option is not used, the first plugin is activated;
+* *shape* initializes plugin/s by the shape object. If 'name' is empty, initializes all plugins;
+* *open* gives the file to the plugin/s. If the plugin is active, after open, update content will be done;
+* *update* updates content of the active plugin;
+* *select* sets the parameter that should be selected in an active tool view.
+Depending on active tool the parameter is:
+ShapeView: 'object' is an instance of TopoDS_Shape TShape,
+DFBrowser: 'name' is an entry of TDF_Label and name2(optionaly) for TDF_Attribute type name,
+VInspector: 'object' is an instance of AIS_InteractiveObject;
+* *show* sets Inspector view visible or hidden. The first call of this command will show it.
+
+**Example:** 
+~~~~~
+pload DCAF INSPECTOR
+
+NewDocument Doc BinOcaf
+
+set aSetAttr1 100
+set aLabel 0:2
+SetInteger Doc ${aLabel} ${aSetAttr1}
+
+tinspector -plugins dfbrowser -select 0:2 TDataStd_Integer
+~~~~~ 
+
+**Example:** 
+~~~~~
+pload ALL INSPECTOR
+
+box b1 200 100 120
+box b2 100 200 220 100 120 100
+
+tinspector -plugins shapeview -shape b1 -shape b2 -select b1
+~~~~~ 
+
+**Example:** 
+~~~~~
+pload ALL INSPECTOR
+
+tinspector -plugins vinspector
+
+vinit
+box box_1 100 100 100
+vdisplay box_1
+
+box box_2 180 120 200 150 150 150
+vdisplay box_2
+
+vfit
+vselmode box_1 1 1
+vselmode box_1 3 1
+
+tinspector -update -select box_1
+~~~~~ 
+
+
 @section occt_draw_11 Extending Test Harness with custom commands
 
 

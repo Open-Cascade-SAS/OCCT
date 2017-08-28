@@ -213,7 +213,7 @@ static int tinspector (Draw_Interpretor&/* di*/, Standard_Integer theArgsNb, con
         anObjectsToSelect.Append(anIO);
       }
       // give parameters as a container of names
-      TCollection_AsciiString aParam (theArgs[anIt]);
+      aParam = TCollection_AsciiString (theArgs[anIt]);
       while (!aParam.StartsWith ("-"))
       {
         anItemNamesToSelect.Append (aParam);
@@ -350,17 +350,17 @@ void ToolsDraw::Commands(Draw_Interpretor& theCommands)
     "\n\t\t:           'all' adds all available plugins in the order:"
     "\n\t\t:                 DFBrowser, VInspector and ShapeView."
     "\n\t\t:           If at the first call this option is not used, 'all' option is applyed;"
-    "\n\t\t:  -activate active the plugin in the tool view."
+    "\n\t\t:  -activate activates the plugin in the tool view."
     "\n\t\t:           If at the first call this option is not used, the first plugin is activated;"
-    "\n\t\t:  -shape initialize plugin/s by the shape object. If 'name' is empty, initializes all plugins;"
+    "\n\t\t:  -shape initializes plugin/s by the shape object. If 'name' is empty, initializes all plugins;"
     "\n\t\t:  -open gives the file to the plugin/s. If the plugin is active, after open, update content will be done;"
     "\n\t\t:  -update updates content of the active plugin;"
-    "\n\t\t:  -select set the parameter that should be selected in an active tool view."
+    "\n\t\t:  -select sets the parameter that should be selected in an active tool view."
     "\n\t\t:          Depending on active tool the parameter is:"
     "\n\t\t:          ShapeView: 'object' is an instance of TopoDS_Shape TShape,"
     "\n\t\t:          DFBrowser: 'name' is an entry of TDF_Label and name2(optionaly) for TDF_Attribute type name,"
     "\n\t\t:          VInspector: 'object' is an instance of AIS_InteractiveObject;"
-    "\n\t\t:  -show set tool view visible or hidden. The first call of this command will show it.",
+    "\n\t\t:  -show sets Inspector view visible or hidden. The first call of this command will show it.",
       __FILE__, tinspector, group);
 }
 

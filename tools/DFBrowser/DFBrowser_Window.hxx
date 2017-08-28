@@ -110,10 +110,6 @@ public:
   //! \return string value
   Standard_EXPORT static TCollection_AsciiString TmpDirectory();
 
-  //! Returns light highlight color
-  //! \returns Qt color
-  static QColor LightHighlightColor() { return QColor (229, 243, 255); }
-
   //! Returns single selected item in the cell of given orientation. If the orientation is Horizontal,
   //! in the cell id colum, one row should be selected.
   //! \param theIndices a container of selected indices

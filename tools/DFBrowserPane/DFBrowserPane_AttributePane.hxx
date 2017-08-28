@@ -84,11 +84,10 @@ public:
   //! \return value, interpreted by tree model depending on the role
   Standard_EXPORT virtual QVariant GetAttributeInfo(const Handle(TDF_Attribute)& theAttribute, int theRole, int theColumnId);
 
-  //! Returns brief attribute information. In general case, it returns GetValues() result.
+  //! Returns brief attribute information. In general case, it returns even values of GetValues() result.
   //! \param theAttribute a current attribute
   //! \param theValues a result list of values
-  virtual void GetShortAttributeInfo (const Handle(TDF_Attribute)& theAttribute, QList<QVariant>& theValues)
-  { GetValues(theAttribute, theValues); }
+  Standard_EXPORT virtual void GetShortAttributeInfo (const Handle(TDF_Attribute)& theAttribute, QList<QVariant>& theValues);
 
   //! Returns list of selection models. In default implementation it contains a selection model for the table view
   //! \returns container of models
@@ -101,6 +100,16 @@ protected:
 
   //! Returns converted table view
   DFBrowserPane_TableView* getTableView() const { return myTableView; }
+
+  //! Returns header text values for 0...n table cells in parameter orientation
+  //! \param theOrientation defines horizontal or vertical values
+  //! \param theValues output container of values
+  virtual QList<QVariant> getHeaderValues (const Qt::Orientation theOrientation)
+    { (void)theOrientation; return QList<QVariant>(); }
+
+  //! Retuns number of columns in internal table. By default it returns 2 : method name for method value.
+  //! \return integer value
+  virtual int getColumnCount() const { return 2; }
 
   //! Defines widths of table columns
   //! \return container of widths

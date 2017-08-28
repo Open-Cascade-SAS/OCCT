@@ -30,5 +30,6 @@ void DFBrowserPane_TDataStdCurrent::GetValues (const Handle(TDF_Attribute)& theA
   Handle(TDataStd_Current) anAttribute = Handle(TDataStd_Current)::DownCast (theAttribute);
   if (anAttribute.IsNull())
     return;
+  theValues.append ("GetLabel");
   theValues.append (DFBrowserPane_Tools::GetEntry (anAttribute->GetLabel()).ToCString());
 }

@@ -16,7 +16,6 @@
 #include <inspector/DFBrowserPane_TDataStdNamedData.hxx>
 
 #include <inspector/DFBrowserPane_AttributePaneModel.hxx>
-#include <inspector/DFBrowserPane_HelperGroupContent.hxx>
 #include <inspector/DFBrowserPane_TableView.hxx>
 #include <inspector/DFBrowserPane_Tools.hxx>
 
@@ -37,6 +36,8 @@
 #include <TDataStd_HDataMapOfStringHArray1OfInteger.hxx>
 #include <TDataStd_NamedData.hxx>
 
+#include <QTableView>
+#include <QTabWidget>
 #include <QVariant>
 #include <QVBoxLayout>
 #include <QWidget>
@@ -53,7 +54,8 @@ static const QString VALUES_REAL_ARRAY = "values_real_array";
 // purpose :
 // =======================================================================
 DFBrowserPane_TDataStdNamedData::DFBrowserPane_TDataStdNamedData()
- : DFBrowserPane_AttributePane()
+ : DFBrowserPane_AttributePane(), myRealValues (0), myStringValues(0), myByteValues(0), myIntArrayValues(0),
+ myRealArrayValues(0)
 {
   myPaneModel = createPaneModel();
   myRealValuesModel = createPaneModel();
@@ -70,14 +72,8 @@ DFBrowserPane_TDataStdNamedData::DFBrowserPane_TDataStdNamedData()
 DFBrowserPane_AttributePaneModel* DFBrowserPane_TDataStdNamedData::createPaneModel()
 {
   DFBrowserPane_AttributePaneModel* aTableModel = new DFBrowserPane_AttributePaneModel();
-
-  aTableModel->SetOrientation (Qt::Horizontal);
-
-  QList<QVariant> aHeaderValues;
-  aHeaderValues << "Name" << "Value";
-  aTableModel->SetHeaderValues (aHeaderValues, Qt::Vertical);
-  aTableModel->SetColumnCount (2); // indeed these are rows as table orientation is Horizontal
-
+  aTableModel->SetColumnCount (2);
+  aTableModel->SetItalicColumns (QList<int>());
   return aTableModel;
 }
 
@@ -87,40 +83,35 @@ DFBrowserPane_AttributePaneModel* DFBrowserPane_TDataStdNamedData::createPaneMod
 // =======================================================================
 QWidget* DFBrowserPane_TDataStdNamedData::CreateWidget (QWidget* theParent)
 {
-  QWidget* aMainWidget = new QWidget (theParent);
-  QVBoxLayout* aLay = new QVBoxLayout (aMainWidget);
+  QTabWidget* aMainWidget = new QTabWidget (theParent);
+  // gray text is visualized by default, better the black one (Qt4)
+  QPalette aPalette = aMainWidget->palette();
+  aPalette.setColor(QPalette::Foreground, Qt::black);
+  aMainWidget->setPalette (aPalette);
 
   myTableView = new DFBrowserPane_TableView (aMainWidget);
   myTableView->SetModel (getPaneModel());
-  myIntValuesContent = new DFBrowserPane_HelperGroupContent ("Named integers", aMainWidget, myTableView);
-  aLay->addWidget (myIntValuesContent);
+  aMainWidget->addTab (myTableView, "Integers");
 
   myRealValues = new DFBrowserPane_TableView (aMainWidget);
   myRealValues->SetModel (myRealValuesModel);
-  myRealValuesContent = new DFBrowserPane_HelperGroupContent ("Named reals", aMainWidget, myRealValues);
-  aLay->addWidget (myRealValuesContent);
+  aMainWidget->addTab (myRealValues, "Reals");
 
   myStringValues = new DFBrowserPane_TableView (aMainWidget);
   myStringValues->SetModel (myStringValuesModel);
-  myStringValuesContent = new DFBrowserPane_HelperGroupContent ("Named strings", aMainWidget, myStringValues);
-  aLay->addWidget (myStringValuesContent);
+  aMainWidget->addTab (myStringValues, "Strings");
 
   myByteValues = new DFBrowserPane_TableView (aMainWidget);
   myByteValues->SetModel (myByteValuesModel);
-  myByteValuesContent = new DFBrowserPane_HelperGroupContent ("Named bytes", aMainWidget, myByteValues);
-  aLay->addWidget (myByteValuesContent);
+  aMainWidget->addTab (myByteValues, "Bytes");
 
   myIntArrayValues = new DFBrowserPane_TableView (aMainWidget);
   myIntArrayValues->SetModel (myIntArrayValuesModel);
-  myIntArrayValuesContent = new DFBrowserPane_HelperGroupContent ("Named integer arrays", aMainWidget, myIntArrayValues);
-  aLay->addWidget (myIntArrayValuesContent);
+  aMainWidget->addTab (myIntArrayValues, "ArraysOfIntegers");
 
   myRealArrayValues = new DFBrowserPane_TableView (aMainWidget);
   myRealArrayValues->SetModel (myRealArrayModel);
-  myRealArrayValuesContent = new DFBrowserPane_HelperGroupContent ("Named real arrays", aMainWidget, myRealArrayValues);
-  aLay->addWidget (myRealArrayValuesContent);
-
-  aLay->addStretch (1);
+  aMainWidget->addTab (myRealArrayValues, "ArraysOfReals");
 
   return aMainWidget;
 }
@@ -135,11 +126,23 @@ void DFBrowserPane_TDataStdNamedData::Init (const Handle(TDF_Attribute)& theAttr
   GetValues (theAttribute, aValues);
 
   getPaneModel()->Init (getPartOfValues (VALUES_INTEGER, VALUES_REAL, aValues));
+  if (myTableView)
+    myTableView->GetTableView()->resizeColumnToContents (0);
   myRealValuesModel->Init (getPartOfValues (VALUES_REAL, VALUES_STRING, aValues));
+  if (myRealValues)
+    myRealValues->GetTableView()->resizeColumnToContents (0);
   myStringValuesModel->Init (getPartOfValues (VALUES_STRING, VALUES_BYTE, aValues));
+  if (myStringValues)
+    myStringValues->GetTableView()->resizeColumnToContents (0);
   myByteValuesModel->Init (getPartOfValues (VALUES_BYTE, VALUES_INT_ARRAY, aValues));
+  if (myByteValues)
+    myByteValues->GetTableView()->resizeColumnToContents (0);
   myIntArrayValuesModel->Init (getPartOfValues (VALUES_INT_ARRAY, VALUES_REAL_ARRAY, aValues));
+  if (myIntArrayValues)
+    myIntArrayValues->GetTableView()->resizeColumnToContents (0);
   myRealArrayModel->Init (getPartOfValues (VALUES_REAL_ARRAY, "", aValues));
+  if (myRealArrayValues)
+    myRealArrayValues->GetTableView()->resizeColumnToContents (0);
 }
 
 // =======================================================================

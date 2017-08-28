@@ -21,7 +21,6 @@
 #include <Standard.hxx>
 
 class DFBrowserPane_AttributePaneModel;
-class DFBrowserPane_HelperGroupContent;
 class DFBrowserPane_TableView;
 
 //! \class DFBrowserPane_TDataStdNamedData
@@ -68,29 +67,22 @@ private:
   DFBrowserPane_AttributePaneModel* createPaneModel();
 
 private:
-
   //! myPaneMode and myTableView are used for int values
-  DFBrowserPane_HelperGroupContent* myIntValuesContent; //!< check box of values using
 
   DFBrowserPane_AttributePaneModel* myRealValuesModel; //!< real values model
   DFBrowserPane_TableView* myRealValues; //!< values table view
-  DFBrowserPane_HelperGroupContent* myRealValuesContent; //!< check box of values using
 
   DFBrowserPane_AttributePaneModel* myStringValuesModel; //!< string values model
   DFBrowserPane_TableView* myStringValues; //!< values table view
-  DFBrowserPane_HelperGroupContent* myStringValuesContent; //!< check box of values using
 
   DFBrowserPane_AttributePaneModel* myByteValuesModel; //!< byte values model
   DFBrowserPane_TableView* myByteValues; //!< values table view
-  DFBrowserPane_HelperGroupContent* myByteValuesContent; //!< check box of values using
 
   DFBrowserPane_AttributePaneModel* myIntArrayValuesModel; //!< int array values model
   DFBrowserPane_TableView* myIntArrayValues; //!< values table view
-  DFBrowserPane_HelperGroupContent* myIntArrayValuesContent; //!< check box of values using
 
   DFBrowserPane_AttributePaneModel* myRealArrayModel; //!< real array values model
   DFBrowserPane_TableView* myRealArrayValues; //!< values table view
-  DFBrowserPane_HelperGroupContent* myRealArrayValuesContent; //!< check box of values using
 };
 
 #endif

@@ -34,6 +34,7 @@
 #include <QWidget>
 
 const int HISTORY_SIZE = 10;
+const int MARGIN_SIZE = 2;
 
 // =======================================================================
 // function : Constructor
@@ -44,7 +45,7 @@ DFBrowser_TreeLevelLine::DFBrowser_TreeLevelLine (QWidget* theParent)
 {
   myMainWindow = new QWidget (theParent);
   QGridLayout* aLayout = new QGridLayout (myMainWindow);
-  aLayout->setContentsMargins (0, 0, 0, 0);
+  aLayout->setContentsMargins (MARGIN_SIZE, MARGIN_SIZE, MARGIN_SIZE, MARGIN_SIZE);
 
   myBackwardButton = new QToolButton (myMainWindow);
   myBackwardButton->setIcon (QIcon (":/icons/treeline_backward.png"));
@@ -64,13 +65,12 @@ DFBrowser_TreeLevelLine::DFBrowser_TreeLevelLine (QWidget* theParent)
   aVHeader->setVisible (false);
   int aDefCellSize = aVHeader->minimumSectionSize() + DFBrowserPane_Tools::HeaderSectionMargin();
   aVHeader->setDefaultSectionSize (aDefCellSize);
-  aLayout->addWidget (myTableView, 0, 2, 2, 1);
+  aLayout->addWidget (myTableView, 0, 2);
 
-  int aScrollHeight = myTableView->horizontalScrollBar()->sizeHint().height();
-  myTableView->setFixedHeight (aDefCellSize + aScrollHeight);
+  myTableView->setFixedHeight (aDefCellSize);
   myTableView->horizontalHeader()->setMinimumSectionSize (5); // it will be resized by context
   myTableView->setHorizontalScrollMode (QAbstractItemView::ScrollPerItem);
-  myTableView->setHorizontalScrollBarPolicy (Qt::ScrollBarAlwaysOn); //! TEMPORARY
+  myTableView->setHorizontalScrollBarPolicy (Qt::ScrollBarAlwaysOff); //! TEMPORARY
   myTableView->setShowGrid (false);
 
   DFBrowser_TreeLevelLineModel* aHModel = new DFBrowser_TreeLevelLineModel (myTableView);

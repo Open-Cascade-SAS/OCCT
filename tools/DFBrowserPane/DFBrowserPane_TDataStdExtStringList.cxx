@@ -33,5 +33,8 @@ void DFBrowserPane_TDataStdExtStringList::GetValues (const Handle(TDF_Attribute)
     return;
 
   for (TDataStd_ListIteratorOfListOfExtendedString aValuesIt(anAttribute->List()); aValuesIt.More(); aValuesIt.Next())
+  {
+    theValues.append ("Value");
     theValues.append (DFBrowserPane_Tools::ToString (aValuesIt.Value()));
+  }
 }

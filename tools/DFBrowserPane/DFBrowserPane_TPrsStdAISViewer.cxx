@@ -14,7 +14,9 @@
 // commercial license or contractual agreement. 
 
 #include <inspector/DFBrowserPane_TPrsStdAISViewer.hxx>
+#include <inspector/DFBrowserPane_Tools.hxx>
 
+#include <AIS_InteractiveContext.hxx>
 #include <TPrsStd_AISViewer.hxx>
 
 #include <QVariant>
@@ -23,6 +25,16 @@
 // function : 
 // purpose :
 // =======================================================================
-void DFBrowserPane_TPrsStdAISViewer::GetValues (const Handle(TDF_Attribute)&, QList<QVariant>&)
+void DFBrowserPane_TPrsStdAISViewer::GetValues (const Handle(TDF_Attribute)& theAttribute, QList<QVariant>& theValues)
 {
+  Handle(TPrsStd_AISViewer) aViewerAttribute = Handle(TPrsStd_AISViewer)::DownCast (theAttribute);
+  if (!aViewerAttribute)
+    return;
+
+  Handle(AIS_InteractiveContext) aContext = aViewerAttribute->GetInteractiveContext();
+  TCollection_AsciiString aPointerInfo = !aContext.IsNull()
+    ? DFBrowserPane_Tools::GetPointerInfo (aContext).ToCString() : "";
+
+  theValues << "GetInteractiveContext" << aPointerInfo.ToCString();
+
 }

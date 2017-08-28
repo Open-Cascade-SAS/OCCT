@@ -32,5 +32,8 @@ void DFBrowserPane_TDataStdRealList::GetValues (const Handle(TDF_Attribute)& the
     return;
 
   for (TColStd_ListIteratorOfListOfReal aRealListIt(anAttribute->List()); aRealListIt.More(); aRealListIt.Next())
+  {
+    theValues.append ("Value");
     theValues.append (aRealListIt.Value());
+  }
 }

@@ -24,9 +24,9 @@
 #pragma warning(disable : 4127) // conditional expression is constant
 #endif
 
+#include <QGridLayout>
 #include <QVariant>
 #include <QWidget>
-#include <QGridLayout>
 
 // =======================================================================
 // function : CreateWidget
@@ -62,13 +62,13 @@ void DFBrowserPane_TDataStdBooleanArray::GetValues (const Handle(TDF_Attribute)&
                                                     QList<QVariant>& theValues)
 {
   Handle(TDataStd_BooleanArray) anAttribute = Handle(TDataStd_BooleanArray)::DownCast (theAttribute);
-  if (!anAttribute.IsNull())
-  {
-    theValues.append (anAttribute->Lower());
-    theValues.append (anAttribute->Upper());
-    for (int aValuesId = anAttribute->Lower(); aValuesId <= anAttribute->Upper(); aValuesId++)
-      theValues.append (anAttribute->Value (aValuesId));
-  }
+  if (anAttribute.IsNull())
+    return;
+
+  theValues.append (anAttribute->Lower());
+  theValues.append (anAttribute->Upper());
+  for (int aValueId = anAttribute->Lower(); aValueId <= anAttribute->Upper(); aValueId++)
+    theValues.append (anAttribute->Value (aValueId));
 }
 
 // =======================================================================

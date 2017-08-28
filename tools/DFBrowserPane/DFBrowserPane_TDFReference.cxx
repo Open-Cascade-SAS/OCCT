@@ -29,11 +29,12 @@
 void DFBrowserPane_TDFReference::GetValues (const Handle(TDF_Attribute)& theAttribute, QList<QVariant>& theValues)
 {
   Handle(TDF_Reference) anAttribute = Handle(TDF_Reference)::DownCast (theAttribute);
-  if (!anAttribute.IsNull())
-  {
-    TDF_Label aLabel = anAttribute->Get();
-    theValues.append (DFBrowserPane_Tools::GetEntry (aLabel).ToCString());
-  }
+  if (anAttribute.IsNull())
+    return;
+
+  TDF_Label aLabel = anAttribute->Get();
+  theValues.append ("Get");
+  theValues.append (DFBrowserPane_Tools::GetEntry (aLabel).ToCString());
 }
 
 // =======================================================================

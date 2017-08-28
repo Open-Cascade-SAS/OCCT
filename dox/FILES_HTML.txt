@@ -32,6 +32,7 @@ user_guides/xde/xde.md
 user_guides/ocaf/ocaf.md
 user_guides/tobj/tobj.md
 user_guides/draw_test_harness/draw_test_harness.md
+user_guides/inspector/inspector.md
 user_guides/brep_wp/brep_wp.md
 user_guides/vis/vis.md
 

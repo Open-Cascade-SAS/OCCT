@@ -27,7 +27,8 @@ enum DFBrowserPane_OcctEnumType
   DB_DIMENSION_TYPE = 5,  //!< TDataStd_RealEnum values
   DB_MATERIAL_TYPE = 6,   //!< Graphic3d_NameOfMaterial values
   DB_DISPLAY_MODE = 7,    //!< AIS_DisplayMode values
-  DB_ORIENTATION_TYPE = 8 //!< TopAbs_Orientation values
+  DB_ORIENTATION_TYPE = 8, //!< TopAbs_Orientation values
+  DB_CDM_CAN_CLOSE_STATUS //!< CDM_CanCloseStatus values
 };
 
 #endif

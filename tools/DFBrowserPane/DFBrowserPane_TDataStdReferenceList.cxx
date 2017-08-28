@@ -35,7 +35,10 @@ void DFBrowserPane_TDataStdReferenceList::GetValues (const Handle(TDF_Attribute)
     return;
 
   for (TDF_ListIteratorOfLabelList aLabelIt(anAttribute->List()); aLabelIt.More(); aLabelIt.Next())
+  {
+    theValues.append ("Value");
     theValues.append (DFBrowserPane_Tools::GetEntry (aLabelIt.Value()).ToCString());
+  }
 }
 
 // =======================================================================
@@ -46,7 +49,7 @@ void DFBrowserPane_TDataStdReferenceList::GetReferences (const Handle(TDF_Attrib
                                                          NCollection_List<TDF_Label>& theRefLabels,
                                                          Handle(Standard_Transient)& /*theRefPresentation*/)
 {
-  QStringList aSelectedEntries = DFBrowserPane_TableView::GetSelectedColumnValues (getTableView()->GetTableView(), 0);
+  QStringList aSelectedEntries = DFBrowserPane_TableView::GetSelectedColumnValues (getTableView()->GetTableView(), 1);
   Handle(TDataStd_ReferenceList) anAttribute = Handle(TDataStd_ReferenceList)::DownCast (theAttribute);
   if (anAttribute.IsNull())
     return;

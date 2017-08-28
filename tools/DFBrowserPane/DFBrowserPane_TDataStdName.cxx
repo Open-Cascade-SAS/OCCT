@@ -30,6 +30,7 @@ void DFBrowserPane_TDataStdName::GetValues (const Handle(TDF_Attribute)& theAttr
   if (anAttribute.IsNull())
     return;
 
+  theValues.append ("Get");
   theValues.append (DFBrowserPane_Tools::ToString (anAttribute->Get()));
 }
 

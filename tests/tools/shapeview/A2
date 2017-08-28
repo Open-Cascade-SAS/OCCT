@@ -1,0 +1,5 @@
+pload ALL INSPECTOR
+
+tinspector -plugins shapeview
+
+tinspector -open $env(CSF_OCCTDataPath)/occ/solid.brep shapeview

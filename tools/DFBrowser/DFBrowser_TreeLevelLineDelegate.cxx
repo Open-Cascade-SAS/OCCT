@@ -14,7 +14,7 @@
 // commercial license or contractual agreement. 
 
 #include <inspector/DFBrowser_TreeLevelLineDelegate.hxx>
-#include <inspector/DFBrowser_Window.hxx>
+#include <inspector/DFBrowserPane_Tools.hxx>
 
 #include <QPainter>
 
@@ -36,7 +36,7 @@ void DFBrowser_TreeLevelLineDelegate::paint (QPainter* thePainter, const QStyleO
 {
   // highlight cell
   if (theOption.state & QStyle::State_MouseOver)
-    thePainter->fillRect (theOption.rect, DFBrowser_Window::LightHighlightColor());
+    thePainter->fillRect (theOption.rect, DFBrowserPane_Tools::LightHighlightColor());
 
   // action icon for all indices before the last one
   if (theIndex.column() < theIndex.model()->columnCount()-1)

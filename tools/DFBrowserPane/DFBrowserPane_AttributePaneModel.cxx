@@ -15,6 +15,10 @@
 
 #include <inspector/DFBrowserPane_AttributePaneModel.hxx>
 
+#include <QApplication>
+#include <QFont>
+#include <QColor>
+
 // =======================================================================
 // function : Constructor
 // purpose :
@@ -22,6 +26,7 @@
 DFBrowserPane_AttributePaneModel::DFBrowserPane_AttributePaneModel (QObject* theParent)
 : QAbstractTableModel (theParent), myOrientation (Qt::Vertical), myColumnCount (1)
 {
+  myItalicColumns.append (0);
 }
 
 // =======================================================================
@@ -120,6 +125,15 @@ QVariant DFBrowserPane_AttributePaneModel::data (const QModelIndex& theIndex, in
       aValue = aColValues.at (theIndex.row());
     }
   }
+  if (myItalicColumns.contains (theIndex.column()) && theRole == Qt::FontRole)
+  {
+    QFont aFont = qApp->font();
+    aFont.setItalic (true);
+    return aFont;
+  }
+  if (myItalicColumns.contains (theIndex.column()) && theRole == Qt::ForegroundRole)
+    return QColor (Qt::darkGray).darker(150);
+
   return aValue;
 }
 

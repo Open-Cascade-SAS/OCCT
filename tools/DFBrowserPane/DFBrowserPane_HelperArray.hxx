@@ -47,7 +47,7 @@ public:
   //! Creates bounds table view and grid layout, where the bounds view and the values view are shown
   //! \param theParent a parent widget
   //! \param theValuesView a view of values(table view filled by myValuesModel)
-  Standard_EXPORT void CreateWidget(QWidget* theParent, QWidget* theValuesView);
+  Standard_EXPORT void CreateWidget(QWidget* theParent, DFBrowserPane_TableView* theValuesView);
 
   //! Fills bounds model by firsth and second values, fills values model by left values
   //! \param theValues values to fill views
@@ -63,5 +63,6 @@ private:
   DFBrowserPane_AttributePaneModel* myValuesModel; //!< model of table view
   DFBrowserPane_AttributePaneModel* myBoundsModel; //!< model of bounds view
   DFBrowserPane_TableView* myArrayBounds; //!< bounds view
+  DFBrowserPane_TableView* myValuesView; //!< values view
 };
 #endif

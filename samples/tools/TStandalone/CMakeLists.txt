@@ -101,7 +101,7 @@ set (BUILD_TOOLKITS
 string(TIMESTAMP CURRENT_TIME "%H:%M:%S")
 message (STATUS "\nInfo: \(${CURRENT_TIME}\) Start collecting all header files into ${CMAKE_BINARY_DIR}/inc ...")
 # collect all the headers to <binary dir>/inc folder
-COLLECT_AND_INSTALL_OCCT_HEADER_FILES ("${CMAKE_BINARY_DIR}" "${BUILD_TOOLKITS}" "${CASROOT_SOURCE_FILES}/tools" "${INSTALL_DIR_INCLUDE}")
+COLLECT_AND_INSTALL_OCCT_HEADER_FILES ("${CMAKE_BINARY_DIR}" "${BUILD_TOOLKITS}" "${CASROOT_SOURCE_FILES}/tools" "${INSTALL_DIR_INCLUDE}/inspector")
 
 OCCT_INCLUDE_CMAKE_FILE_STANDALONE ("adm/cmake/standalone_macros")
 OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/qt_macro")

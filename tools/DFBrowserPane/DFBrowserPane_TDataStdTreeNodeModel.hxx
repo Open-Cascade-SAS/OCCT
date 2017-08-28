@@ -42,8 +42,11 @@ public:
   //! \param theAttribute a current attribute
   Standard_EXPORT void SetAttribute (const Handle(TDF_Attribute)& theAttribute);
 
-  //! Returns model index by the attribute.
-  QModelIndex FindIndex (const Handle(TDF_Attribute)& theAttribute) { (void)theAttribute; return QModelIndex(); }
+  //! Returns model index by the attribute. The method is recursive.
+  //! \param theAttribute an attribute that is searched
+  //! \param theParentIndex an index of the parent item
+  //! \return the model index
+  QModelIndex FindIndex (const Handle(TDF_Attribute)& theAttribute, const QModelIndex theParentIndex);
 
   //! Returns count of columns in the model.
   //! \param theParent an index of the parent item

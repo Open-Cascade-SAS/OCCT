@@ -48,14 +48,14 @@
 #include <QTreeView>
 #include <QWidget>
 
-const int FIRST_COLUMN_WIDTH = 250;
+const int FIRST_COLUMN_WIDTH = 230;
 
 const int COLUMN_1_WIDTH = 30;
 const int COLUMN_2_WIDTH = 70;
-const int COLUMN_3_WIDTH = 130;
-const int COLUMN_4_WIDTH = 90;
-const int COLUMN_5_WIDTH = 180;
-const int COLUMN_6_WIDTH = 70;
+const int COLUMN_3_WIDTH = 70;
+const int COLUMN_4_WIDTH = 75;
+const int COLUMN_5_WIDTH = 120;
+const int COLUMN_6_WIDTH = 65;
 const int COLUMN_7_WIDTH = 70;
 
 const int HISTORY_AIS_NAME_COLUMN_WIDTH = 140;
@@ -69,8 +69,57 @@ const int VINSPECTOR_DEFAULT_POSITION_Y = 60;
 const int VINSPECTOR_DEFAULT_VIEW_WIDTH = 400;
 const int VINSPECTOR_DEFAULT_VIEW_HEIGHT = 1000;
 
+const int VINSPECTOR_DEFAULT_HISTORY_VIEW_WIDTH = 400;
+const int VINSPECTOR_DEFAULT_HISTORY_VIEW_HEIGHT = 50;
+
 const int VINSPECTOR_DEFAULT_VIEW_POSITION_X = 200 + 900 + 100; // TINSPECTOR_DEFAULT_POSITION_X + TINSPECTOR_DEFAULT_WIDTH + 100
 const int VINSPECTOR_DEFAULT_VIEW_POSITION_Y = 60; // TINSPECTOR_DEFAULT_POSITION_Y + 50
+
+//! \class Vinspector_TreeView
+//! Extended tree view control with possibility to set predefined size.
+class Vinspector_TreeView : public QTreeView
+{
+public:
+  //! Constructor
+  Vinspector_TreeView (QWidget* theParent) : QTreeView (theParent), myDefaultWidth (-1), myDefaultHeight (-1) {}
+
+  //! Destructor
+  virtual ~Vinspector_TreeView() {}
+
+  //! Sets default size of control, that is used by the first control show
+  //! \param theDefaultWidth the width value
+  //! \param theDefaultHeight the height value
+  void SetPredefinedSize (int theDefaultWidth, int theDefaultHeight);
+
+  //! Returns predefined size if both values are positive, otherwise parent size hint
+  virtual QSize sizeHint() const Standard_OVERRIDE;
+
+private:
+
+  int myDefaultWidth; //!< default width, -1 if it should not be used
+  int myDefaultHeight; //!< default height, -1 if it should not be used
+};
+
+// =======================================================================
+// function : SetPredefinedSize
+// purpose :
+// =======================================================================
+void Vinspector_TreeView::SetPredefinedSize (int theDefaultWidth, int theDefaultHeight)
+{
+  myDefaultWidth = theDefaultWidth;
+  myDefaultHeight = theDefaultHeight;
+}
+
+// =======================================================================
+// function : sizeHint
+// purpose :
+// =======================================================================
+QSize Vinspector_TreeView::sizeHint() const
+{
+  if (myDefaultWidth > 0 && myDefaultHeight > 0)
+    return QSize (myDefaultWidth, myDefaultHeight);
+  return QTreeView::sizeHint();
+}
 
 // =======================================================================
 // function : Constructor
@@ -84,6 +133,7 @@ VInspector_Window::VInspector_Window()
   QWidget* aCentralWidget = new QWidget (myMainWindow);
   QGridLayout* aParentLay = new QGridLayout (aCentralWidget);
   aParentLay->setContentsMargins (0, 0, 0, 0);
+  aParentLay->setSpacing(0);
 
   // tool bar: on the bottom of the window
   myToolBar = new VInspector_ToolBar(aCentralWidget);
@@ -103,8 +153,11 @@ VInspector_Window::VInspector_Window()
   myMainWindow->setCentralWidget (aCentralWidget);
 
   // history view in bottom dock widget
-  myHistoryView = new QTreeView (aCentralWidget);
+  myHistoryView = new Vinspector_TreeView (aCentralWidget);
   myHistoryView->setSelectionBehavior (QAbstractItemView::SelectRows);
+  ((Vinspector_TreeView*)myHistoryView)->SetPredefinedSize (VINSPECTOR_DEFAULT_HISTORY_VIEW_WIDTH,
+                                                            VINSPECTOR_DEFAULT_HISTORY_VIEW_HEIGHT);
+
   myHistoryView->setSelectionMode (QAbstractItemView::ExtendedSelection);
   VInspector_ViewModelHistory* aHistoryModel = new VInspector_ViewModelHistory (myHistoryView);
   myHistoryView->setModel (aHistoryModel);
@@ -121,6 +174,7 @@ VInspector_Window::VInspector_Window()
   myHistoryView->setColumnWidth (4, HISTORY_AIS_NAME_COLUMN_WIDTH);
 
   QDockWidget* aHistoryDockWidget = new QDockWidget (tr ("HistoryView"), myMainWindow);
+  aHistoryDockWidget->setTitleBarWidget (new QWidget(myMainWindow));
   aHistoryDockWidget->setWidget (myHistoryView);
   myMainWindow->addDockWidget (Qt::BottomDockWidgetArea, aHistoryDockWidget);
 
@@ -168,9 +222,9 @@ void VInspector_Window::UpdateContent()
 
   // make AIS_InteractiveObject selected selected if exist in select parameters
   NCollection_List<Handle(Standard_Transient)> anObjects;
-  if (myParameters->GetSelectedObjects(aName, anObjects))
+  VInspector_ViewModel* aViewModel = dynamic_cast<VInspector_ViewModel*>(myTreeView->model());
+  if (aViewModel && myParameters->GetSelectedObjects(aName, anObjects))
   {
-    VInspector_ViewModel* aViewModel = dynamic_cast<VInspector_ViewModel*>(myTreeView->model());
     QItemSelectionModel* aSelectionModel = myTreeView->selectionModel();
     aSelectionModel->clear();
     for (NCollection_List<Handle(Standard_Transient)>::Iterator aParamsIt (anObjects);
@@ -305,33 +359,35 @@ void VInspector_Window::onTreeViewContextMenuRequested(const QPoint& thePosition
 // =======================================================================
 void VInspector_Window::onToolBarActionClicked (const int theActionId)
 {
+  VInspector_ViewModel* aViewModel = dynamic_cast<VInspector_ViewModel*> (myTreeView->model());
+  if (!aViewModel)
+    return;
+
   switch (theActionId)
   {
     case VInspector_ToolActionType_UpdateId:
     {
-      VInspector_ViewModel* aViewModel = dynamic_cast<VInspector_ViewModel*> (myTreeView->model());
-      if (aViewModel)
-        UpdateTreeModel();
+      UpdateTreeModel();
       break;
     }
     case VInspector_ToolActionType_SelectPresentationsId:
     {
-       bool isChecked = myToolBar->GetToolButton((VInspector_ToolActionType)theActionId)->isChecked();
-       NCollection_List<Handle(AIS_InteractiveObject)> aPresentationsForViewer;
-       if (isChecked)
-         aPresentationsForViewer = VInspector_ItemPresentableObject::GetSelectedPresentations(myTreeView->selectionModel());
-       VInspector_ViewModel* aViewModel = dynamic_cast<VInspector_ViewModel*> (myTreeView->model());
-       Handle(AIS_InteractiveContext) aContext = aViewModel->GetContext();
-       VInspector_Tools::AddOrRemovePresentations(aContext, aPresentationsForViewer);
+      bool isChecked = myToolBar->GetToolButton((VInspector_ToolActionType)theActionId)->isChecked();
+      NCollection_List<Handle(AIS_InteractiveObject)> aPresentationsForViewer;
+      if (isChecked)
+        aPresentationsForViewer = VInspector_ItemPresentableObject::GetSelectedPresentations(myTreeView->selectionModel());
+      Handle(AIS_InteractiveContext) aContext = aViewModel->GetContext();
+      VInspector_Tools::AddOrRemovePresentations(aContext, aPresentationsForViewer);
+      UpdateTreeModel();
       break;
     }
     case VInspector_ToolActionType_SelectOwnersId:
     {
-       NCollection_List<Handle(SelectBasics_EntityOwner)> anOwnersForViewer;
-       if (myToolBar->GetToolButton((VInspector_ToolActionType)theActionId)->isChecked())
-         VInspector_ViewModel::GetSelectedOwners(myTreeView->selectionModel(), anOwnersForViewer);
-       VInspector_ViewModel* aViewModel = dynamic_cast<VInspector_ViewModel*> (myTreeView->model());
-       VInspector_Tools::AddOrRemoveSelectedShapes(aViewModel->GetContext(), anOwnersForViewer);
+      NCollection_List<Handle(SelectBasics_EntityOwner)> anOwnersForViewer;
+      if (myToolBar->GetToolButton((VInspector_ToolActionType)theActionId)->isChecked())
+        VInspector_ViewModel::GetSelectedOwners(myTreeView->selectionModel(), anOwnersForViewer);
+      VInspector_Tools::AddOrRemoveSelectedShapes(aViewModel->GetContext(), anOwnersForViewer);
+      UpdateTreeModel();
       break;
     }
     default:
@@ -374,6 +430,8 @@ void VInspector_Window::onHistoryViewSelectionChanged (const QItemSelection& the
   QStringList aPointers = aHistoryModel->GetSelectedPointers(aSelectedIndices.first());
 
   VInspector_ViewModel* aTreeModel = dynamic_cast<VInspector_ViewModel*> (myTreeView->model());
+  if (!aTreeModel)
+    return;
 
   QModelIndexList anIndices = aTreeModel->FindPointers (aPointers);
   QItemSelectionModel* aSelectionModel = myTreeView->selectionModel();
@@ -430,7 +488,7 @@ void VInspector_Window::onExportToShapeView()
     myExportToShapeViewDialog->SetInformation (aMessage);
   myExportToShapeViewDialog->Start();
 
-  myParameters->SetParameters (aPluginName, aParameters);
+  myParameters->SetParameters (aPluginName, aParameters, myExportToShapeViewDialog->IsAccepted());
 }
 
 // =======================================================================
@@ -507,6 +565,13 @@ void VInspector_Window::displaySelectedPresentations(const bool theToDisplay)
       aContext->Erase(aPresentation, false);
   }
   aContext->UpdateCurrentViewer();
+
+  // the order of objects returned by AIS_InteractiveContext is changed because the processed object is moved from
+  // Erased to Displayed container or back
+  QItemSelectionModel* aSelectionModel = myTreeView->selectionModel();
+  aSelectionModel->clear();
+
+  UpdateTreeModel();
 }
 
 // =======================================================================

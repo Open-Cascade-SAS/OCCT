@@ -33,6 +33,7 @@ void DFBrowserPane_TDataStdUAttribute::GetValues (const Handle(TDF_Attribute)& t
   theAttribute->ID().ToCString(aStr);
   TCollection_AsciiString aString(aStr);
 
+  theValues.append ("ID");
   theValues.append (DFBrowserPane_Tools::ToString (aString));
 }
 

@@ -68,9 +68,6 @@
 #include <QGridLayout>
 #include <QList>
 #include <QMainWindow>
-#if QT_VERSION < 0x050000
-#include <QMotifStyle>
-#endif
 #include <QItemSelectionModel>
 #include <QTabWidget>
 #include <QToolBar>
@@ -85,9 +82,9 @@
 #include <QStyleFactory>
 #endif
 
-const int DFBROWSER_DEFAULT_WIDTH = 1200;
-const int DFBROWSER_DEFAULT_HEIGHT = 850;
-const int DFBROWSER_DEFAULT_TREE_VIEW_WIDTH = 300;
+const int DFBROWSER_DEFAULT_WIDTH = 650;
+const int DFBROWSER_DEFAULT_HEIGHT = 350;
+const int DFBROWSER_DEFAULT_TREE_VIEW_WIDTH = 325;
 const int DFBROWSER_DEFAULT_TREE_VIEW_HEIGHT = 500;
 const int DFBROWSER_DEFAULT_VIEW_WIDTH = 400;
 const int DFBROWSER_DEFAULT_VIEW_HEIGHT = 300;
@@ -96,7 +93,7 @@ const int DFBROWSER_DEFAULT_POSITION_X = 200;
 const int DFBROWSER_DEFAULT_POSITION_Y = 60;
 
 const int OCAF_BROWSER_COLUMN_WIDTH_0 = 300;
-const int DEFAULT_PROPERTY_PANEL_HEIGHT = 100;
+const int DEFAULT_PROPERTY_PANEL_HEIGHT = 200;
 const int DEFAULT_BROWSER_HEIGHT = 800;
 
 // =======================================================================
@@ -119,6 +116,7 @@ DFBrowser_Window::DFBrowser_Window()
   myTreeView->setSortingEnabled (Standard_False);
 
   QDockWidget* aTreeViewWidget = new QDockWidget (tr ("TreeView"), myMainWindow);
+  aTreeViewWidget->setTitleBarWidget (new QWidget(myMainWindow));
   aTreeViewWidget->setFeatures (QDockWidget::NoDockWidgetFeatures);
   aTreeViewWidget->setWidget (myTreeView);
   myMainWindow->addDockWidget (Qt::LeftDockWidgetArea, aTreeViewWidget);
@@ -137,6 +135,7 @@ DFBrowser_Window::DFBrowser_Window()
   connect (myTreeLevelLine, SIGNAL (updateClicked()), this, SLOT (onUpdateClicked()));
 
   QDockWidget* aTreeLineDockWidget = new QDockWidget (tr ("Tree Level Line"), myMainWindow);
+  aTreeLineDockWidget->setTitleBarWidget (new QWidget(myMainWindow));
   aTreeLineDockWidget->setFeatures (QDockWidget::NoDockWidgetFeatures);
   aTreeLineDockWidget->setWidget (myTreeLevelLine->GetControl());
   myMainWindow->addDockWidget (Qt::TopDockWidgetArea, aTreeLineDockWidget);
@@ -148,6 +147,7 @@ DFBrowser_Window::DFBrowser_Window()
   myDumpView = new DFBrowser_DumpView (aDumpWidget);
   aDumpLay->addWidget (myDumpView->GetControl());
   QDockWidget* aDumpDockWidget = new QDockWidget (tr ("Dump"), myMainWindow);
+
   aDumpDockWidget->setWidget (aDumpWidget);
   myMainWindow->addDockWidget (Qt::BottomDockWidgetArea, aDumpDockWidget);
 
@@ -178,18 +178,16 @@ DFBrowser_Window::DFBrowser_Window()
   myViewWindow->GetView()->SetPredefinedSize (DFBROWSER_DEFAULT_VIEW_WIDTH, DFBROWSER_DEFAULT_VIEW_HEIGHT);
 
   QDockWidget* aViewDockWidget = new QDockWidget (tr ("View"), myMainWindow);
+  aViewDockWidget->setTitleBarWidget (myViewWindow->GetViewToolBar()->GetControl());
   aViewDockWidget->setWidget (myViewWindow);
   myMainWindow->addDockWidget (Qt::BottomDockWidgetArea, aViewDockWidget);
 
-  QColor aHColor = DFBrowser_Window::LightHighlightColor();
+  QColor aHColor (229, 243, 255);
   myViewWindow->GetDisplayer()->SetAttributeColor (Quantity_Color(aHColor.red() / 255., aHColor.green() / 255.,
                                                    aHColor.blue() / 255., Quantity_TOC_RGB), View_PresentationType_Additional);
   myMainWindow->tabifyDockWidget (aDumpDockWidget, aViewDockWidget);
 
-  myMainWindow->resize (DFBROWSER_DEFAULT_WIDTH, DFBROWSER_DEFAULT_HEIGHT);
-  myMainWindow->move (DFBROWSER_DEFAULT_POSITION_X, DFBROWSER_DEFAULT_POSITION_Y);
-
-  aTreeViewWidget->resize (DFBROWSER_DEFAULT_TREE_VIEW_WIDTH, DFBROWSER_DEFAULT_HEIGHT);
+  aTreeViewWidget->resize (DFBROWSER_DEFAULT_TREE_VIEW_WIDTH, DFBROWSER_DEFAULT_TREE_VIEW_HEIGHT);
 
   myThread = new DFBrowser_Thread (this);
 
@@ -792,6 +790,7 @@ void DFBrowser_Window::onPaneSelectionChanged (const QItemSelection&,
   if (!aPresentation.IsNull())
     aDisplayer->DisplayPresentation (aPresentation, View_PresentationType_Additional);
   else {
+    aDisplayer->ErasePresentations (View_PresentationType_Additional, false);
     AIS_ListOfInteractive aDisplayed;
     findPresentations (anIndices, aDisplayed);
     for (AIS_ListIteratorOfListOfInteractive aDisplayedIt (aDisplayed); aDisplayedIt.More(); aDisplayedIt.Next())
@@ -904,7 +903,7 @@ void DFBrowser_Window::highlightIndices (const QModelIndexList& theIndices)
   aTreeModel->SetHighlighted (theIndices);
 
   QModelIndex anIndexToScroll;
-  if (theIndices.size() > 0)
+  if (!theIndices.isEmpty())
     anIndexToScroll = theIndices.last(); // scroll to last selected index
   else
   {
@@ -916,6 +915,9 @@ void DFBrowser_Window::highlightIndices (const QModelIndexList& theIndices)
   }
   if (anIndexToScroll.isValid())
     myTreeView->scrollTo (anIndexToScroll);
+
+  if (theIndices.isEmpty())
+    myTreeView->setFocus(); // to see the selected item in active palette color
 
   aTreeModel->EmitLayoutChanged();
 }
