@@ -2162,10 +2162,10 @@ proc _log_html_diff {file log dir1 dir2 highlight_percent} {
     puts $fd "<script type=\"text/javascript\">"
     puts $fd "  function diffimage_toggle(img,url1,url2)"
     puts $fd "  {"
-    puts $fd "    if (img.src.match(url2)) img.src = url1;"
-    puts $fd "    else img.src = url2;"
+    puts $fd "    if (img.show2nd) { img.src = url1; img.show2nd = false; }"
+    puts $fd "    else { img.src = url2; img.show2nd = true; }"
     puts $fd "  }"
-    puts $fd "  function diffimage_reset(img,url) { img.src = url; }"
+    puts $fd "  function diffimage_reset(img,url) { img.src = url; img.show2nd = true; }"
     puts $fd "</script>"
     puts $fd ""
 
