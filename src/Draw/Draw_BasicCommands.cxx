@@ -943,9 +943,11 @@ void Draw::BasicCommands(Draw_Interpretor& theCommands)
 		  __FILE__,Draw_wait,g);
   theCommands.Add("cpulimit","cpulimit [nbseconds], no args remove limits",
 		  __FILE__,cpulimit,g);
-  theCommands.Add("chrono","chrono [ name start/stop/reset/show]",
+  theCommands.Add("chrono","chrono [name action [action...]] \n  Operates named timer.\n"
+                           "  Supported actions: reset, start, stop, restart, show, counter [text].\n"
+                           "  Without arguments enables / disables global timer for all DRAW commands.",
 		  __FILE__,chronom,g);
-  theCommands.Add("dchrono","dchrono [ name start/stop/reset/show]",
+  theCommands.Add("dchrono","see help of chrono command",
 		  __FILE__,dchronom,g);
   theCommands.Add("mallochook",
                   "debug memory allocation/deallocation, w/o args for help",
