@@ -67,7 +67,12 @@ public:
   
   Standard_EXPORT virtual Handle(Transfer_Binder) Transfer (const Handle(Standard_Transient)& start, const Handle(Transfer_TransientProcess)& TP) Standard_OVERRIDE;
   
-  Standard_EXPORT Handle(Transfer_Binder) TransferShape (const Handle(Standard_Transient)& start, const Handle(Transfer_TransientProcess)& TP, const Standard_Boolean isManifold = Standard_True);
+  //! theUseTrsf - special flag for using Axis2Placement from ShapeRepresentation for transform root shape
+  Standard_EXPORT Handle(Transfer_Binder) TransferShape (
+      const Handle(Standard_Transient)& start,
+      const Handle(Transfer_TransientProcess)& TP,
+      const Standard_Boolean isManifold = Standard_True,
+      const Standard_Boolean theUseTrsf = Standard_False);
   
   //! set units and tolerances context by given ShapeRepresentation
   Standard_EXPORT void PrepareUnits (const Handle(StepRepr_Representation)& rep, const Handle(Transfer_TransientProcess)& TP);
@@ -95,19 +100,33 @@ protected:
 
   
   //! Transfers product definition entity
-  Standard_EXPORT Handle(TransferBRep_ShapeBinder) TransferEntity (const Handle(StepBasic_ProductDefinition)& PD, const Handle(Transfer_TransientProcess)& TP);
+  //! theUseTrsf - special flag for using Axis2Placement from ShapeRepresentation for transform root shape
+    Standard_EXPORT Handle(TransferBRep_ShapeBinder) TransferEntity (
+      const Handle(StepBasic_ProductDefinition)& PD,
+      const Handle(Transfer_TransientProcess)& TP,
+      const Standard_Boolean theUseTrsf = Standard_False);
   
   //! Transfers next assembly usage occurence entity
   Standard_EXPORT Handle(TransferBRep_ShapeBinder) TransferEntity (const Handle(StepRepr_NextAssemblyUsageOccurrence)& NAUO, const Handle(Transfer_TransientProcess)& TP);
   
   //! Transfers shape representation entity
-  Standard_EXPORT Handle(TransferBRep_ShapeBinder) TransferEntity (const Handle(StepShape_ShapeRepresentation)& sr, const Handle(Transfer_TransientProcess)& TP, Standard_Boolean& isBound);
+  //! theUseTrsf - special flag for using Axis2Placement from ShapeRepresentation for transform root shape
+  Standard_EXPORT Handle(TransferBRep_ShapeBinder) TransferEntity (
+      const Handle(StepShape_ShapeRepresentation)& sr,
+      const Handle(Transfer_TransientProcess)& TP,
+      Standard_Boolean& isBound,
+      const Standard_Boolean theUseTrsf = Standard_False);
   
   //! Transfers context dependent shape representation entity
   Standard_EXPORT Handle(TransferBRep_ShapeBinder) TransferEntity (const Handle(StepShape_ContextDependentShapeRepresentation)& CDSR, const Handle(Transfer_TransientProcess)& TP);
   
   //! Transfers  shape representation relationship entity
-  Standard_EXPORT Handle(TransferBRep_ShapeBinder) TransferEntity (const Handle(StepRepr_ShapeRepresentationRelationship)& und, const Handle(Transfer_TransientProcess)& TP, const Standard_Integer nbrep = 0);
+  //! theUseTrsf - special flag for using Axis2Placement from ShapeRepresentation for transform root shape
+  Standard_EXPORT Handle(TransferBRep_ShapeBinder) TransferEntity (
+      const Handle(StepRepr_ShapeRepresentationRelationship)& und,
+      const Handle(Transfer_TransientProcess)& TP,
+      const Standard_Integer nbrep = 0,
+      const Standard_Boolean theUseTrsf = Standard_False);
   
   //! Transfers  geometric representation item entity such as ManifoldSolidBRep ,...etc
   Standard_EXPORT Handle(TransferBRep_ShapeBinder) TransferEntity (const Handle(StepGeom_GeometricRepresentationItem)& git, const Handle(Transfer_TransientProcess)& TP, const Standard_Boolean isManifold);

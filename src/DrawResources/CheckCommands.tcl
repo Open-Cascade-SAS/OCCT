@@ -1104,3 +1104,33 @@ proc checkplatform {args} {
     # current platform is not equal to given as argument platform, return false
     return 0
 }
+
+help checkgravitycenter {
+  Compare Center Of Gravity with given reference data
+
+  Use: checkgravitycenter shape prop_type x y z tol
+}
+proc checkgravitycenter {shape prop_type x y z tol} {
+  puts "checkgravitycenter ${shape} $prop_type $x $y $z $tol"
+  upvar ${shape} ${shape}
+
+  if { $prop_type == "-l" } {
+    set outstr [lprops $shape]
+  } elseif { $prop_type == "-s" } {
+    set outstr [sprops $shape]
+  } elseif { $prop_type == "-v" } {
+    set outstr [vprops $shape]
+  } else {
+    error "Error : invalid prop_type"
+  }
+
+  if { ![regexp {\nX = +([-0-9.+eE]+).*\nY = +([-0-9.+eE]+).*\nZ = +([-0-9.+eE]+)} ${outstr} full comp_x comp_y comp_z] } {
+    error "Error : cannot evaluate properties"
+  }
+
+  if { [expr abs($comp_x-$x)] < $tol && [expr abs($comp_y-$y)] < $tol && [expr abs($comp_z-$z)] < $tol } {
+    puts "Check of center of gravity is OK: value = ($comp_x, $comp_y, $comp_z), expected = ($x, $y, $z)"
+  } else {
+    puts "Error: center of gravity ($comp_x, $comp_y, $comp_z) is not equal to expected ($x, $y, $z)"
+  }
+}
