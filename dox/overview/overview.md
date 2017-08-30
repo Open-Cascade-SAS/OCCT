@@ -28,13 +28,22 @@ https://www.opencascade.com
  License
 --------
 
-Open CASCADE Technology is free software; you can redistribute it and / or 
-modify it under the terms of the 
-@ref license_lgpl_21 "GNU Lesser General Public License (LGPL) version 2.1", 
-with additional @ref occt_lgpl_exception "exception".
+Open CASCADE Technology is free software; you can redistribute it and / or modify it under the terms of the 
+@ref license_lgpl_21 "GNU Lesser General Public License (LGPL) version 2.1", with additional @ref occt_lgpl_exception "exception".
 
-Alternatively, Open CASCADE Technology may be used under the terms of Open 
-CASCADE commercial license or contractual agreement.
+Note that LGPL imposes some obligations on the application linked with Open CASCADE Technology.
+If you wish to use OCCT in a proprietary application, please, pay special attention to address the requirements of LGPL section 6.
+At minimum the following should be considered:
+1. Add the notice visible to the users of your application clearly stating that Open CASCADE Technology is used in this application, and that they have rights in this regard according to LGPL. 
+   Such notice can be added in About dialog box (this is mandatory if this box contains copyright statements) or a similar place and/or in the documentation. 
+   The text of LGPL license should be accessible to the user.
+2. Make the copy of OCCT sources used by the application available to its users, and if necessary provide instructions on how to build it in a way compatible with the application.
+3. Ensure that the user actually can exercise the right to run your application with a modified version of OCCT. 
+   If the application is distributed in a form that does not allow the user to modify OCCT part (e.g. the application is linked to OCCT statically or is distributed via AppStore on iOS, GooglePlay on Android, Windows Store, etc.), 
+   the application should be provided separately in a modifiable form, with all materials needed for the user to be able to run the application with a modified version of OCCT.
+
+If you want to use Open CASCADE Technology without being bound by LGPL requirements, 
+please <a href="https://www.opencascade.com/contact">contact Open CASCADE company</a> for a commercial license.
 
 Note that Open CASCADE Technology is provided on an "AS IS" basis, WITHOUT 
 WARRANTY OF ANY KIND. The entire risk related to any use of the OCCT code and 
