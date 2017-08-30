@@ -18,7 +18,7 @@ modeling (CAD), manufacturing / measuring (CAM) or numerical simulation (CAE).
 @section OCCT_OVW_SECTION_2 Copyrights
 
 Open CASCADE Technology and all materials, including this documentation, is 
-Copyright (c) 1999-2016 by OPEN CASCADE S.A.S. All rights reserved.
+Copyright (c) 1999-2017 by OPEN CASCADE S.A.S. All rights reserved.
 
 @htmlonly<center>@endhtmlonly
 https://www.opencascade.com
@@ -83,28 +83,28 @@ To use Tcl/Tk, please refer to the Licensing Terms (https://www.tcl.tk/software/
 
 **GL2PS** is developed by Christophe Geuzaine and others. It is optionally used by OCCT to
 export content of OpenGL scene to vector graphics formats (PS, PDF, EMF, SVG). 
-The library is licensed under GL2PS LICENSE https://www.geuz.org/gl2ps/COPYING.GL2PS Version 2, November 2003.
+The library is licensed under GL2PS license (http://www.geuz.org/gl2ps/COPYING.GL2PS).
 
 **FreeType 2** is developed by Antoine Leca, David Turner, Werner Lemberg and others. 
 It is a software font engine that is designed to be small, efficient, highly customizable and 
 portable while capable of producing high-quality output (glyph images). This product 
 can be used in graphic libraries, display servers, font conversion tools, 
 text image generation tools, and many other products.
-
-FreeType 2 is released under two open-source licenses: BSD-like FreeType License and the GPL.
+FreeType 2 is released under two open-source licenses: BSD-like FreeType License and the GPL (https://www.freetype.org/license.html).
 
 **Intel(R) Threading Building Blocks (TBB)** offers a rich and complete approach to expressing parallelism in a C++ program. 
 It is a library that helps you to take advantage of multi-core processor performance without having to be a threading expert. 
 Threading Building Blocks is not just a threads-replacement library. It represents a higher-level, task-based parallelism that 
 abstracts platform details and threading mechanisms for scalability and performance. 
-TBB is available under GPLv2 license with the runtime exception.
+TBB version 2017 is available under Apache 2.0 license, while older versions 
+until 4.4 are available under GPLv2 license with the runtime exception (https://www.threadingbuildingblocks.org).
 
 **OpenGL** is an industry standard API for 3D graphics used by OCCT for 
 implementation of 3D viewer. OpenGL specification is developed by the
 Khronos group, https://www.khronos.org/opengl/. OCCT code includes header 
 file *glext.h* obtained from Khronos web site.
 
-**VTK** -- The **Visualization Toolkit (VTK)** is an open-source, freely available software system for 3D computer graphics, image processing and visualization. OCCT VIS component provides adaptation functionality for visualization of OCCT topological shapes by means of VTK library. If you need further information on VTK, please, refer to VTK Homepage https://www.vtk.org/.
+**VTK** -- The **Visualization Toolkit (VTK)** is an open-source, freely available software system for 3D computer graphics, image processing and visualization. OCCT VIS component provides adaptation functionality for visualization of OCCT topological shapes by means of VTK library. If you need further information on VTK, please, refer to VTK Homepage http://www.vtk.org/.
 
 **Doxygen** developed by Dimitri van Heesch is open source documentation system for 
 C++, C, Java, Objective-C, Python, IDL, PHP and C#. This product is used in Open CASCADE Technology 
@@ -115,17 +115,17 @@ If you need further information on Doxygen, please refer to https://www.stack.nl
 Graph visualization is representiation of structured information as diagrams of abstract graphs and networks. 
 This product is used together with Doxygen in Open CASCADE Technology for automatic creation of Technical Documentation 
 (generation of dependency graphs). Current versions of Graphviz are licensed on an open source 
-basis under The Eclipse Public License (EPL) (https://www.graphviz.org/License.php).
+basis under The Eclipse Public License (EPL) (http://www.graphviz.org/License.php).
 
 **Inno Setup** is a free script-driven installation system created in CodeGear Delphi by Jordan Russell. 
 In OCCT Inno Setup is used to create Installation Wizard on Windows. 
-It is licensed under Inno Setup License (https://www.jrsoftware.org/files/is/license.txt).
+It is licensed under Inno Setup License (http://www.jrsoftware.org/files/is/license.txt).
 
 **FreeImage** is an Open Source library supporting popular graphics image formats, such as PNG, BMP, JPEG, TIFF, 
 and others used by multimedia applications. This library is developed by Hervé Drolon and Floris van den Berg. 
 FreeImage is easy to use, fast, multithreading safe, compatible with all 32-bit or 64-bit versions of Windows, 
 and cross-platform (works both with Linux and Mac OS X). FreeImage is optionally used by OCCT to work
-with images, on conditions of the FreeImage Public License (FIPL) (https://freeimage.sourceforge.net/freeimage-license.txt).
+with images, on conditions of the FreeImage Public License (FIPL) (http://freeimage.sourceforge.net/freeimage-license.txt).
 
 **CMake** is an open-source, cross-platform family of tools designed to build, test and package software. CMake is used to control the software compilation process using simple platform and compiler independent configuration files, and generate native makefiles and workspaces that can be used in the compiler environment of your choice. 
 OCCT uses CMake as a build system. CMake is available under BSD 3-Clause license. See more at https://cmake.org/
@@ -196,7 +196,7 @@ for which OCCT is certified to work.
 
 | OS        | Compiler |
 | --------- | ----------- |
-| Windows   | Microsoft Visual Studio: 2010 SP1<sup>1</sup>, 2012 Update 4, 2013 Update 5, 2015 <br> Intel C++ Composer XE 2013 SP1 <br> GCC 4.3+ (Mingw-w64)|
+| Windows   | Microsoft Visual Studio: 2010 SP1<sup>1</sup>, 2012 Update 4, 2013 Update 5, 2015, 2017 <br> Intel C++ Composer XE 2013 SP1 <br> GCC 4.3+ (Mingw-w64)|
 | Linux     | GNU gcc 4.3+ <br> LLVM CLang 3.6+ |
 | OS X      | XCode 6 or newer |
 | Android   | NDK r10, GNU gcc 4.8 or newer |
@@ -209,15 +209,15 @@ for which OCCT is certified to work.
 | Component | Requirement |
 | --------- | ----------- |
 | Graphic library | OpenGL 3.3+, OpenGL ES 2.0+ <br> Direct3D 9 |
-| Qt (for samples and demos) | Desktop: Qt 4.8.6+ http://www.qt.io/download/ <br> Android: Qt 5.3.2+ http://www.qt.io/download/ |
-| TCL (for testing tools)    | Tcl/Tk 8.6.3+ http://www.tcl.tk/software/tcltk/download.html <br> or ActiveTcl 8.6 http://www.activestate.com/activetcl/downloads (for Windows)| 
-| Freetype (for text rendering) | FreeType 2.4.11-2.5.5 http://sourceforge.net/projects/freetype/files/ |
-| FreeImage (optional, for support of common 2D graphic formats) | FreeImage 3.17.0+ http://sourceforge.net/projects/freeimage/files |
-| FFmpeg (optional, for video recording) | FFmpeg 3.1+ https://www.ffmpeg.org |
+| Qt (for samples and demos) | Desktop: Qt 4.8.6+ https://www.qt.io/download/ <br> Android: Qt 5.3.2+ https://www.qt.io/download/ |
+| TCL (for testing tools)    | Tcl/Tk 8.6.3+ https://www.tcl.tk/software/tcltk/download.html <br> or ActiveTcl 8.6 https://www.activestate.com/activetcl/downloads (for Windows)| 
+| Freetype (for text rendering) | FreeType 2.4.11-2.5.5 https://sourceforge.net/projects/freetype/files/ |
+| FreeImage (optional, for support of common 2D graphic formats) | FreeImage 3.17.0+ https://sourceforge.net/projects/freeimage/files |
+| FFmpeg (optional, for video recording) | FFmpeg 3.1+ https://www.ffmpeg.org/download.html |
 | gl2ps (optional, for export contents of OCCT viewer to vector formats) | gl2ps-1.3.8+  http://geuz.org/gl2ps/ |
-| Intel TBB (optional, for multithreaded algorithms) | TBB 4.x or 5.x http://www.threadingbuildingblocks.org/ |
-| VTK (for VTK Integration Services | VTK 6.1+ http://www.vtk.org/VTK/resources/software.html |
-| Doxygen (optional for building documentation) | Doxygen 1.8.5+ http://www.stack.nl/~dimitri/doxygen/download.html |
+| Intel TBB (optional, for multithreaded algorithms) | TBB 4.x or 5.x https://www.threadingbuildingblocks.org/ |
+| VTK (for VTK Integration Services | VTK 6.1+ http://www.vtk.org/download/ |
+| Doxygen (optional for building documentation) | Doxygen 1.8.5+ https://www.stack.nl/~dimitri/doxygen/download.html |
 
 @subsection overview_req_hw Hardware
 
@@ -534,11 +534,11 @@ Export:
   * Stl
   * Vrml
 
-See \subpage samples_csharp_occt "Readme" for details.
+See \subpage samples_csharp_occt "C# sample Readme" for details.
 
 There is also another C# example with the same functionality, which demonstrates the integration of Direct3D Viewer into .NET applications using WPF front end.
 
-See \subpage samples_csharp_direct3d "Readme" for details.
+See \subpage samples_csharp_direct3d "Direct3D C# sample Readme" for details.
 
 @subsubsection OCCT_OVW_SECTION_7_3_4 Android
 
@@ -546,8 +546,16 @@ There are two samples are representing usage OCCT framework on Android mobile pl
 
 jniviewer
 @figure{/overview/images/samples_java_android_occt.jpg}
-Java -- See \subpage samples_java_android_occt "Readme" for details.
+Java -- See \subpage samples_java_android_occt "Android Java sample Readme" for details.
 
 AndroidQt
 @figure{/overview/images/samples_qml_android_occt.jpg}
-Qt -- See \subpage samples_qml_android_occt "Readme" for details.
+Qt -- See \subpage samples_qml_android_occt "Android Qt sample Readme" for details.
+
+@subsubsection OCCT_OVW_SECTION_7_3_5 iOS
+
+There is a sample demonstrating usage of OCCT on iOS with Apple UIKit framework.
+
+@figure{/overview/images/sample_ios_uikit.png}
+
+See \subpage occt_samples_ios_uikit "iOS sample Readme" for details.
