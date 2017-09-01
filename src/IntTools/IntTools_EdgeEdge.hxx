@@ -156,7 +156,7 @@ protected:
     const IntTools_SequenceOfRanges& theRanges2, const Standard_Boolean bSplit2);
   
 
-  //! Looking for the range of the edge whick is in the box
+  //! Looking for the range of the edge which is in the box
   Standard_EXPORT static Standard_Boolean FindParameters(const BRepAdaptor_Curve& theBAC,
     const Standard_Real aT1, const Standard_Real aT2, const Standard_Real theTol,
     const Standard_Real theRes, const Standard_Real thePTol,

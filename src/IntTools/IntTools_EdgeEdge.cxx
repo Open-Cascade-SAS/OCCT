@@ -505,39 +505,48 @@ Standard_Boolean IntTools_EdgeEdge::FindParameters(const BRepAdaptor_Curve& theB
                                                    Standard_Real& aTB2)
 {
   Standard_Boolean bRet;
-  Standard_Integer aC, i, k;
+  Standard_Integer aC, i;
   Standard_Real aCf, aDiff, aDt, aT, aTB, aTOut, aTIn;
-  Standard_Real aDist, aDistP, aDistTol;
+  Standard_Real aDist, aDistP;
   gp_Pnt aP;
   Bnd_Box aCBx;
   //
   bRet = Standard_False;
   aCf = 0.6180339887498948482045868343656;// =0.5*(1.+sqrt(5.))/2.;
-  aDt = theRes;
-  aDistP = 0.;
-  aDistTol = 1e-9;
   aCBx = theCBox;
-  aCBx.Enlarge(theTol);
+  aCBx.SetGap(aCBx.GetGap() + theTol);
   //
   const Handle(Geom_Curve)& aCurve = theBAC.Curve().Curve();
   const GeomAbs_CurveType aCurveType = theBAC.GetType();
+  Standard_Real aMaxDt = (aT2 - aT1) * 0.01;
   //
   for (i = 0; i < 2; ++i) {
     aTB = !i ? aT1 : aT2;
     aT = !i ? aT2 : aTB1;
     aC = !i ? 1 : -1;
+    aDt = theRes;
+    aDistP = 0.;
     bRet = Standard_False;
-    k = 0;
+    Standard_Real k = 1;
     //looking for the point on the edge which is in the box;
     while (aC*(aT-aTB) >= 0) {
       theBAC.D0(aTB, aP);
       aDist = PointBoxDistance(theCBox, aP);
       if (aDist > theTol) {
-        if (fabs(aDist - aDistP) < aDistTol) {
-          aDt = Resolution(aCurve, aCurveType, theResCoeff, (++k)*aDist);
-        } else {
-          k = 0;
-          aDt = Resolution(aCurve, aCurveType, theResCoeff, aDist);
+        if (aDistP > 0.) {
+          Standard_Boolean toGrow = Standard_False;
+          if (Abs(aDistP - aDist) / aDistP < 0.1) {
+            aDt = Resolution(aCurve, aCurveType, theResCoeff, k*aDist);
+            if (aDt < aMaxDt)
+            {
+              toGrow = Standard_True;
+              k *= 2;
+            }
+          }
+          if (!toGrow) {
+            k = 1;
+            aDt = Resolution(aCurve, aCurveType, theResCoeff, aDist);
+          }
         }
         aTB += aC*aDt;
       } else {
@@ -735,16 +744,14 @@ void IntTools_EdgeEdge::FindBestSolution(const Standard_Real aT11,
   Standard_Integer i, aNbS, iErr;
   Standard_Real aDMin, aD, aRes1, aSolCriteria, aTouchCriteria;
   Standard_Real aT1A, aT1B, aT1Min, aT2Min;
-  Standard_Real aT1Im, aT2Im, aT1Touch;
   GeomAPI_ProjectPointOnCurve aProjPC;
   IntTools_SequenceOfRanges aRanges;
-  Standard_Boolean bTouch;
   //
   aDMin = Precision::Infinite();
   aSolCriteria   = 5.e-16;
   aTouchCriteria = 5.e-13;
-  bTouch = Standard_False;
-  aT1Touch = aT11;
+  Standard_Boolean bTouch = Standard_False;
+  Standard_Boolean bTouchConfirm = Standard_False;
   //
   aRes1 = Resolution(myCurve1.Curve().Curve(), 
                      myCurve1.GetType(), myResCoeff1, myTol);
@@ -753,15 +760,9 @@ void IntTools_EdgeEdge::FindBestSolution(const Standard_Real aT11,
   //
   aProjPC.Init(myGeom2, aT21, aT22);
   //
-  aT1 = (aT11 + aT12) * 0.5;
-  iErr = DistPC(aT1, myGeom1, aSolCriteria, aProjPC, aD, aT2, -1);
-  if (iErr == 1) {
-    aT2 = (aT21 + aT22) * 0.5;
-  }
-  //
-  aT1Im = aT1;
-  aT2Im = aT2;
-  //
+  Standard_Real aT11Touch = aT11, aT12Touch = aT12;
+  Standard_Real aT21Touch = aT21, aT22Touch = aT22;
+  Standard_Boolean isSolFound = Standard_False;
   for (i = 1; i <= aNbS; ++i) {
     const IntTools_Range& aR1 = aRanges(i);
     aR1.Range(aT1A, aT1B);
@@ -774,24 +775,29 @@ void IntTools_EdgeEdge::FindBestSolution(const Standard_Real aT11,
         aT1 = aT1Min;
         aT2 = aT2Min;
         aDMin = aD;
+        isSolFound = Standard_True;
       }
       //
       if (aD < aTouchCriteria) {
         if (bTouch) {
-          aT1A = (aT1Touch + aT1Min) * 0.5;
-          iErr = DistPC(aT1A, myGeom1, aTouchCriteria, 
-                        aProjPC, aD, aT2Min, -1);
-          if (aD > aTouchCriteria) {
-            aT1 = aT1Im;
-            aT2 = aT2Im;
-            break;
-          }
+          aT12Touch = aT1Min;
+          aT22Touch = aT2Min;
+          bTouchConfirm = Standard_True;
         }
         else {
-          aT1Touch = aT1Min;
+          aT11Touch = aT1Min;
+          aT21Touch = aT2Min;
           bTouch = Standard_True;
         }
       }
+    }
+  }
+  if (!isSolFound || bTouchConfirm)
+  {
+    aT1 = (aT11Touch + aT12Touch) * 0.5;
+    iErr = DistPC(aT1, myGeom1, aSolCriteria, aProjPC, aD, aT2, -1);
+    if (iErr == 1) {
+      aT2 = (aT21Touch + aT22Touch) * 0.5;
     }
   }
 }
@@ -1128,6 +1134,7 @@ Standard_Integer FindDistPC(const Standard_Real aT1A,
     return iErr;
   }
   //
+  Standard_Real anEps = Max(theEps, Epsilon(Max(Abs(aA), Abs(aB))) * 10.);
   for (;;) {
     if (iC*(aYP - aYL) > 0) {
       aA = aXL;
@@ -1155,7 +1162,7 @@ Standard_Integer FindDistPC(const Standard_Real aT1A,
       return iErr;
     }
     //
-    if ((aB - aA) < theEps) {
+    if ((aB - aA) < anEps) {
       break;
     }
   }// for (;;) {

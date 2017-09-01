@@ -1888,6 +1888,8 @@ Standard_Boolean GetFaceDir(const TopoDS_Edge& aE,
     bFound = BOPTools_AlgoTools3D::GetApproxNormalToFaceOnEdge
       (aE, aF, aT, aDt, aPx, aDN, theContext);
     aProjPL.Perform(aPx);
+    Standard_ASSERT_RETURN(aProjPL.IsDone(),
+      "GetFaceDir: Project point on plane is failed", Standard_False);
     aPx = aProjPL.NearestPoint();
     gp_Vec aVec(aP, aPx);
     aDB.SetXYZ(aVec.XYZ());
