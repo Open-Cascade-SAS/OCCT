@@ -4,6 +4,9 @@ puts "Visual comparison with the reference snapshot should be performed for this
 puts "========"
 
 # setup viewer
+vclear
+vclose ALL
+vinit View1
 vcaps -ffp 0
 vrenderparams -shadingModel phong
 vlight delete 0

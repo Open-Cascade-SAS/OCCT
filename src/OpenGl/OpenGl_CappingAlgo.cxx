@@ -230,6 +230,5 @@ Standard_Boolean OpenGl_CappingAlgoFilter::ShouldRender (const Handle(OpenGl_Wor
 
   const OpenGl_PrimitiveArray* aPArray = dynamic_cast<const OpenGl_PrimitiveArray*> (theGlElement);
   return aPArray != NULL
-      && aPArray->DrawMode() >= OpenGl_PrimitiveArray::THE_FILLPRIM_FROM
-      && aPArray->DrawMode() <= OpenGl_PrimitiveArray::THE_FILLPRIM_TO;
+      && aPArray->IsFillDrawMode();
 }

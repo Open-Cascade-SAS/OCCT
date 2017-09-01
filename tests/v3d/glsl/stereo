@@ -3,8 +3,9 @@ puts "Stereo output modes"
 puts "========"
 
 restore [locate_data_file occ/fuse.brep] f
-vinit View1
 vclear
+vclose ALL
+vinit View1
 vsetdispmode 1
 vaxo
 vdisplay f

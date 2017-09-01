@@ -7,8 +7,9 @@ restore [locate_data_file occ/fuse.brep] f
 tclean f
 
 # draw box
-vinit View1
 vclear
+vclose ALL
+vinit View1
 vdefaults -absDefl 0.5
 vsetdispmode 1
 vaxo

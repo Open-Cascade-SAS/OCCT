@@ -3,7 +3,10 @@ puts "Per-vertex lighting using built-in GLSL program, two directional light sou
 puts "Visual comparison with the reference snapshot should be performed for this test case."
 puts "========"
 
-# setup viewer
+# setup viewervclear
+vclear
+vclose ALL
+vinit View1
 vcaps -ffp 0
 vrenderparams -shadingModel vert
 vlight delete 0

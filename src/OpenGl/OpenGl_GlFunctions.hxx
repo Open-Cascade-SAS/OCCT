@@ -198,6 +198,19 @@
   // OpenGL ES 3.0+ or OES_texture_half_float
   #define GL_HALF_FLOAT                 0x140B
   #define GL_HALF_FLOAT_OES             0x8D61
+
+  // OpenGL ES 3.1+
+  #define GL_COMPUTE_SHADER             0x91B9
+
+  // OpenGL ES 3.2+
+  #define GL_GEOMETRY_SHADER            0x8DD9
+  #define GL_TESS_CONTROL_SHADER        0x8E88
+  #define GL_TESS_EVALUATION_SHADER     0x8E87
+  #define GL_LINES_ADJACENCY            0x000A
+  #define GL_LINE_STRIP_ADJACENCY       0x000B
+  #define GL_TRIANGLES_ADJACENCY        0x000C
+  #define GL_TRIANGLE_STRIP_ADJACENCY   0x000D
+  #define GL_PATCHES                    0x000E
 #endif
 
 #if !defined(HAVE_EGL) && (defined(__ANDROID__) || defined(__QNX__) || defined(HAVE_GLES2) || defined(OCCT_UWP))

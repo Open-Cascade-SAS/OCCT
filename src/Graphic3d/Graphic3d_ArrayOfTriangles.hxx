@@ -15,87 +15,50 @@
 #ifndef _Graphic3d_ArrayOfTriangles_HeaderFile
 #define _Graphic3d_ArrayOfTriangles_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
 #include <Graphic3d_ArrayOfPrimitives.hxx>
-#include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
-
-
-class Graphic3d_ArrayOfTriangles;
-DEFINE_STANDARD_HANDLE(Graphic3d_ArrayOfTriangles, Graphic3d_ArrayOfPrimitives)
 
 //! Contains triangles array definition
 class Graphic3d_ArrayOfTriangles : public Graphic3d_ArrayOfPrimitives
 {
-
+  DEFINE_STANDARD_RTTIEXT(Graphic3d_ArrayOfTriangles, Graphic3d_ArrayOfPrimitives)
 public:
-
-  
-  //! Creates an array of triangles,
-  //! a triangle can be filled as:
-  //! 1) creating a set of triangles defined with his vertexs.
-  //! i.e:
-  //! myArray = Graphic3d_ArrayOfTriangles(6)
-  //! myArray->AddVertex(x1,y1,z1)
-  //! ....
-  //! myArray->AddVertex(x6,y6,z6)
-  //! 3) creating a set of indexed triangles defined with his vertex
-  //! ans edges.
-  //! i.e:
-  //! myArray = Graphic3d_ArrayOfTriangles(4,6)
-  //! myArray->AddVertex(x1,y1,z1)
-  //! ....
-  //! myArray->AddVertex(x4,y4,z4)
-  //! myArray->AddEdge(1)
-  //! myArray->AddEdge(2)
-  //! myArray->AddEdge(3)
-  //! myArray->AddEdge(2)
-  //! myArray->AddEdge(3)
-  //! myArray->AddEdge(4)
-  //!
-  //! <maxVertexs> defined the maximun allowed vertex number in the array.
-  //! <maxEdges> defined the maximun allowed edge number in the array.
-  //! Warning:
-  //! When <hasVNormals> is TRUE , you must use one of
-  //! AddVertex(Point,Normal)
-  //! or  AddVertex(Point,Normal,Color)
-  //! or  AddVertex(Point,Normal,Texel) methods.
-  //! When <hasVColors> is TRUE , you must use one of
-  //! AddVertex(Point,Color)
-  //! or  AddVertex(Point,Normal,Color) methods.
-  //! When <hasTexels> is TRUE , you must use one of
-  //! AddVertex(Point,Texel)
-  //! or  AddVertex(Point,Normal,Texel) methods.
-  //! Warning:
-  //! the user is responsible about the orientation of the triangle
-  //! depending of the order of the created vertex or edges and this
-  //! orientation must be coherent with the vertex normal optionnaly
-  //! given at each vertex (See the Orientate() methods).
-  Standard_EXPORT Graphic3d_ArrayOfTriangles(const Standard_Integer maxVertexs, const Standard_Integer maxEdges = 0, const Standard_Boolean hasVNormals = Standard_False, const Standard_Boolean hasVColors = Standard_False, const Standard_Boolean hasTexels = Standard_False);
-
-
-
-
-  DEFINE_STANDARD_RTTIEXT(Graphic3d_ArrayOfTriangles,Graphic3d_ArrayOfPrimitives)
-
-protected:
-
-
-
-
-private:
-
-
-
+ 
+  //! Creates an array of triangles, a triangle can be filled as:
+  //! 1) Creating a set of triangles defined with his vertexes, i.e:
+  //! @code
+  //!   myArray = Graphic3d_ArrayOfTriangles (6);
+  //!   myArray->AddVertex (x1, y1, z1);
+  //!   ....
+  //!   myArray->AddVertex (x6, y6, z6);
+  //! @endcode
+  //! 3) Creating a set of indexed triangles defined with his vertex and edges, i.e:
+  //! @code
+  //!   myArray = Graphic3d_ArrayOfTriangles (4, 6);
+  //!   myArray->AddVertex (x1, y1, z1);
+  //!   ....
+  //!   myArray->AddVertex (x4, y4, z4);
+  //!   myArray->AddEdge (1);
+  //!   myArray->AddEdge (2);
+  //!   myArray->AddEdge (3);
+  //!   myArray->AddEdge (2);
+  //!   myArray->AddEdge (3);
+  //!   myArray->AddEdge (4);
+  //! @endcode
+  //! @param theMaxVertexs  defines the maximum allowed vertex number in the array
+  //! @param theMaxEdges    defines the maximum allowed edge   number in the array
+  //! @param theHasVNormals when TRUE,  AddVertex(Point,Normal), AddVertex(Point,Normal,Color) or AddVertex(Point,Normal,Texel) should be used to specify vertex normal;
+  //!                       vertex normals should be specified coherent to triangle orientation (defined by order of vertexes within triangle) for proper rendering
+  //! @param theHasVColors  when TRUE,  AddVertex(Point,Color) or AddVertex(Point,Normal,Color) should be used to specify vertex color
+  //! @param theHasVTexels  when TRUE,  AddVertex(Point,Texel) or AddVertex(Point,Normal,Texel) should be used to specify vertex UV coordinates
+  Graphic3d_ArrayOfTriangles (const Standard_Integer theMaxVertexs,
+                              const Standard_Integer theMaxEdges    = 0,
+                              const Standard_Boolean theHasVNormals = Standard_False,
+                              const Standard_Boolean theHasVColors  = Standard_False,
+                              const Standard_Boolean theHasVTexels  = Standard_False)
+  : Graphic3d_ArrayOfPrimitives (Graphic3d_TOPA_TRIANGLES, theMaxVertexs, 0, theMaxEdges, theHasVNormals, theHasVColors, Standard_False, theHasVTexels) {}
 
 };
 
-
-
-
-
-
+DEFINE_STANDARD_HANDLE(Graphic3d_ArrayOfTriangles, Graphic3d_ArrayOfPrimitives)
 
 #endif // _Graphic3d_ArrayOfTriangles_HeaderFile

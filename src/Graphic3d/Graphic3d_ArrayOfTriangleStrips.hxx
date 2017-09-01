@@ -15,91 +15,52 @@
 #ifndef _Graphic3d_ArrayOfTriangleStrips_HeaderFile
 #define _Graphic3d_ArrayOfTriangleStrips_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
 #include <Graphic3d_ArrayOfPrimitives.hxx>
-#include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 
-
-class Graphic3d_ArrayOfTriangleStrips;
-DEFINE_STANDARD_HANDLE(Graphic3d_ArrayOfTriangleStrips, Graphic3d_ArrayOfPrimitives)
-
-//! Contains triangles strip array definition
+//! Contains triangles strip array definition.
 class Graphic3d_ArrayOfTriangleStrips : public Graphic3d_ArrayOfPrimitives
 {
-
+  DEFINE_STANDARD_RTTIEXT(Graphic3d_ArrayOfTriangleStrips, Graphic3d_ArrayOfPrimitives)
 public:
 
-  
-  //! Creates an array of triangle strips,
-  //! a polygon can be filled as:
-  //! 1) creating a single strip defined with his vertexs.
-  //! i.e:
-  //! myArray = Graphic3d_ArrayOfTriangleStrips(7)
-  //! myArray->AddVertex(x1,y1,z1)
-  //! ....
-  //! myArray->AddVertex(x7,y7,z7)
-  //! 2) creating separate strips defined with a predefined
-  //! number of strips and the number of vertex per strip.
-  //! i.e:
-  //! myArray = Graphic3d_ArrayOfTriangleStrips(8,2)
-  //! myArray->AddBound(4)
-  //! myArray->AddVertex(x1,y1,z1)
-  //! ....
-  //! myArray->AddVertex(x4,y4,z4)
-  //! myArray->AddBound(4)
-  //! myArray->AddVertex(x5,y5,z5)
-  //! ....
-  //! myArray->AddVertex(x8,y8,z8)
-  //!
-  //! <maxVertexs> defined the maximun allowed vertex number in the array.
-  //! <maxStrips> defined the maximun allowed strip number in the array.
-  //! The number of triangle really drawn is :
-  //! VertexNumber()-2*Min(1,BoundNumber())
-  //! Warning:
-  //! When <hasVNormals> is TRUE , you must use one of
-  //! AddVertex(Point,Normal)
-  //! or  AddVertex(Point,Normal,Color)
-  //! or  AddVertex(Point,Normal,Texel) methods.
-  //! When <hasVColors> is TRUE , you must use one of
-  //! AddVertex(Point,Color)
-  //! or  AddVertex(Point,Normal,Color) methods.
-  //! When <hasTexels> is TRUE , you must use one of
-  //! AddVertex(Point,Texel)
-  //! or  AddVertex(Point,Normal,Texel) methods.
-  //! When <hasBColors> is TRUE , <maxBounds> must be > 0 and
-  //! you must use the
-  //! AddBound(number,Color) method.
-  //! Warning:
-  //! the user is responsible about the orientation of the strip
-  //! depending of the order of the created vertex and this
-  //! orientation must be coherent with the vertex normal optionnaly
-  //! given at each vertex (See the Orientate() methods).
-  Standard_EXPORT Graphic3d_ArrayOfTriangleStrips(const Standard_Integer maxVertexs, const Standard_Integer maxStrips = 0, const Standard_Boolean hasVNormals = Standard_False, const Standard_Boolean hasVColors = Standard_False, const Standard_Boolean hasSColors = Standard_False, const Standard_Boolean hasTexels = Standard_False);
-
-
-
-
-  DEFINE_STANDARD_RTTIEXT(Graphic3d_ArrayOfTriangleStrips,Graphic3d_ArrayOfPrimitives)
-
-protected:
-
-
-
-
-private:
-
-
-
+  //! Creates an array of triangle strips, a polygon can be filled as:
+  //! 1) Creating a single strip defined with his vertexes, i.e:
+  //! @code
+  //!   myArray = Graphic3d_ArrayOfTriangleStrips (7);
+  //!   myArray->AddVertex (x1, y1, z1);
+  //!   ....
+  //!   myArray->AddVertex (x7, y7, z7);
+  //! @endcode
+  //! 2) Creating separate strips defined with a predefined number of strips and the number of vertex per strip, i.e:
+  //! @code
+  //!   myArray = Graphic3d_ArrayOfTriangleStrips (8, 2);
+  //!   myArray->AddBound (4);
+  //!   myArray->AddVertex (x1, y1, z1);
+  //!   ....
+  //!   myArray->AddVertex (x4, y4, z4);
+  //!   myArray->AddBound (4);
+  //!   myArray->AddVertex (x5, y5, z5);
+  //!   ....
+  //!   myArray->AddVertex (x8, y8, z8);
+  //! @endcode
+  //! @param theMaxVertexs defines the maximum allowed vertex number in the array
+  //! @param theMaxStrips  defines the maximum allowed strip  number in the array;
+  //!                      the number of triangle really drawn is: VertexNumber() - 2 * Min(1, BoundNumber())
+  //! @param theHasVNormals when TRUE, AddVertex(Point,Normal), AddVertex(Point,Normal,Color) or AddVertex(Point,Normal,Texel) should be used to specify vertex normal;
+  //!                       vertex normals should be specified coherent to triangle orientation (defined by order of vertexes within triangle) for proper rendering
+  //! @param theHasVColors  when TRUE, AddVertex(Point,Color) or AddVertex(Point,Normal,Color) should be used to specify vertex color
+  //! @param theHasBColors  when TRUE, AddBound(number,Color) should be used to specify sub-group color
+  //! @param theHasVTexels  when TRUE, AddVertex(Point,Texel) or AddVertex(Point,Normal,Texel) should be used to specify vertex UV coordinates
+  Graphic3d_ArrayOfTriangleStrips (const Standard_Integer theMaxVertexs,
+                                   const Standard_Integer theMaxStrips   = 0,
+                                   const Standard_Boolean theHasVNormals = Standard_False,
+                                   const Standard_Boolean theHasVColors  = Standard_False,
+                                   const Standard_Boolean theHasBColors  = Standard_False,
+                                   const Standard_Boolean theHasVTexels  = Standard_False)
+  : Graphic3d_ArrayOfPrimitives (Graphic3d_TOPA_TRIANGLESTRIPS, theMaxVertexs, theMaxStrips, 0, theHasVNormals, theHasVColors, theHasBColors, theHasVTexels) {}
 
 };
 
-
-
-
-
-
+DEFINE_STANDARD_HANDLE(Graphic3d_ArrayOfTriangleStrips, Graphic3d_ArrayOfPrimitives)
 
 #endif // _Graphic3d_ArrayOfTriangleStrips_HeaderFile

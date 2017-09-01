@@ -1,6 +1,8 @@
 restore [locate_data_file occ/fuse.brep] f
 
 vcaps -ffp 1
+vclear
+vclose ALL
 vinit View1
 vclear
 vsetdispmode 0

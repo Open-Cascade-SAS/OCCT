@@ -16,6 +16,7 @@ if { "$aFontFile" != "" } {
 }
 
 vclear
+vclose ALL
 vinit View1
 vraytrace 0
 vsetgradientbg 180 200 255 180 180 180 2

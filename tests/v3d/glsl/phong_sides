@@ -7,8 +7,9 @@ box b 1 2 3
 explode b F
 
 # draw box
-vinit View1
 vclear
+vclose ALL
+vinit View1
 vsetdispmode 1
 vaxo
 vdisplay b_1 b_2

@@ -532,6 +532,50 @@ static int VGlInfo (Draw_Interpretor& theDI,
   return 0;
 }
 
+//! Parse shader type argument.
+static bool parseShaderTypeArg (Graphic3d_TypeOfShaderObject& theType,
+                                const TCollection_AsciiString& theArg)
+{
+  if (theArg == "-vertex"
+   || theArg == "-vert")
+  {
+    theType = Graphic3d_TOS_VERTEX;
+  }
+  else if (theArg == "-tessevaluation"
+        || theArg == "-tesseval"
+        || theArg == "-evaluation"
+        || theArg == "-eval")
+  {
+    theType = Graphic3d_TOS_TESS_EVALUATION;
+  }
+  else if (theArg == "-tesscontrol"
+        || theArg == "-tessctrl"
+        || theArg == "-control"
+        || theArg == "-ctrl")
+  {
+    theType = Graphic3d_TOS_TESS_CONTROL;
+  }
+  else if (theArg == "-geometry"
+        || theArg == "-geom")
+  {
+    theType = Graphic3d_TOS_GEOMETRY;
+  }
+  else if (theArg == "-fragment"
+        || theArg == "-frag")
+  {
+    theType = Graphic3d_TOS_FRAGMENT;
+  }
+  else if (theArg == "-compute"
+        || theArg == "-comp")
+  {
+    theType = Graphic3d_TOS_COMPUTE;
+  }
+  else
+  {
+    return false;
+  }
+  return true;
+}
 
 //==============================================================================
 //function : VShaderProg
@@ -544,150 +588,219 @@ static Standard_Integer VShaderProg (Draw_Interpretor& /*theDI*/,
   Handle(AIS_InteractiveContext) aCtx = ViewerTest::GetAISContext();
   if (aCtx.IsNull())
   {
-    std::cerr << "Use 'vinit' command before " << theArgVec[0] << "\n";
+    std::cout << "Error: no active view.\n";
     return 1;
   }
   else if (theArgNb < 2)
   {
-    std::cerr << theArgVec[0] << " syntax error: lack of arguments\n";
+    std::cout << "Syntax error: lack of arguments\n";
     return 1;
   }
 
-  TCollection_AsciiString aLastArg (theArgVec[theArgNb - 1]);
-  aLastArg.LowerCase();
-  const Standard_Boolean toTurnOff = aLastArg == "off";
-  Standard_Integer       anArgsNb  = theArgNb - 1;
-  Handle(Graphic3d_ShaderProgram) aProgram;
-  if (!toTurnOff
-   && aLastArg == "phong")
+  bool isExplicitShaderType = false;
+  Handle(Graphic3d_ShaderProgram) aProgram = new Graphic3d_ShaderProgram();
+  NCollection_Sequence<Handle(AIS_InteractiveObject)> aPrsList;
+  Graphic3d_GroupAspect aGroupAspect = Graphic3d_ASPECT_FILL_AREA;
+  bool isSetGroupAspect = false;
+  for (Standard_Integer anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
   {
-    const TCollection_AsciiString& aShadersRoot = Graphic3d_ShaderProgram::ShadersFolder();
-    if (aShadersRoot.IsEmpty())
+    TCollection_AsciiString anArg (theArgVec[anArgIter]);
+    anArg.LowerCase();
+    Graphic3d_TypeOfShaderObject aShaderTypeArg = Graphic3d_TypeOfShaderObject(-1);
+    if (!aProgram.IsNull()
+     &&  aProgram->ShaderObjects().IsEmpty()
+     && (anArg == "-off"
+      || anArg ==  "off"))
     {
-      std::cerr << "Both environment variables CSF_ShadersDirectory and CASROOT are undefined!\n"
-                << "At least one should be defined to load Phong program.\n";
+      aProgram.Nullify();
+    }
+    else if (!aProgram.IsNull()
+          &&  aProgram->ShaderObjects().IsEmpty()
+          && (anArg == "-phong"
+           || anArg ==  "phong"))
+    {
+      const TCollection_AsciiString& aShadersRoot = Graphic3d_ShaderProgram::ShadersFolder();
+      if (aShadersRoot.IsEmpty())
+      {
+        std::cout << "Error: both environment variables CSF_ShadersDirectory and CASROOT are undefined!\n"
+                     "At least one should be defined to load Phong program.\n";
+        return 1;
+      }
+
+      const TCollection_AsciiString aSrcVert = aShadersRoot + "/PhongShading.vs";
+      const TCollection_AsciiString aSrcFrag = aShadersRoot + "/PhongShading.fs";
+      if (!aSrcVert.IsEmpty()
+       && !OSD_File (aSrcVert).Exists())
+      {
+        std::cout << "Error: PhongShading.vs is not found\n";
+        return 1;
+      }
+      if (!aSrcFrag.IsEmpty()
+       && !OSD_File (aSrcFrag).Exists())
+      {
+        std::cout << "Error: PhongShading.fs is not found\n";
+        return 1;
+      }
+
+      aProgram->AttachShader (Graphic3d_ShaderObject::CreateFromFile (Graphic3d_TOS_VERTEX,   aSrcVert));
+      aProgram->AttachShader (Graphic3d_ShaderObject::CreateFromFile (Graphic3d_TOS_FRAGMENT, aSrcFrag));
+    }
+    else if (aPrsList.IsEmpty()
+          && anArg == "*")
+    {
+      //
+    }
+    else if (!isSetGroupAspect
+          &&  anArgIter + 1 < theArgNb
+          && (anArg == "-primtype"
+           || anArg == "-primitivetype"
+           || anArg == "-groupaspect"
+           || anArg == "-aspecttype"
+           || anArg == "-aspect"))
+    {
+      isSetGroupAspect = true;
+      TCollection_AsciiString aPrimTypeStr (theArgVec[++anArgIter]);
+      aPrimTypeStr.LowerCase();
+      if (aPrimTypeStr == "line")
+      {
+        aGroupAspect = Graphic3d_ASPECT_LINE;
+      }
+      else if (aPrimTypeStr == "tris"
+            || aPrimTypeStr == "triangles"
+            || aPrimTypeStr == "fill"
+            || aPrimTypeStr == "fillarea"
+            || aPrimTypeStr == "shading"
+            || aPrimTypeStr == "shade")
+      {
+        aGroupAspect = Graphic3d_ASPECT_FILL_AREA;
+      }
+      else if (aPrimTypeStr == "text")
+      {
+        aGroupAspect = Graphic3d_ASPECT_TEXT;
+      }
+      else if (aPrimTypeStr == "marker"
+            || aPrimTypeStr == "point"
+            || aPrimTypeStr == "pnt")
+      {
+        aGroupAspect = Graphic3d_ASPECT_MARKER;
+      }
+      else
+      {
+        std::cerr << "Syntax error at '" << aPrimTypeStr << "'\n";
+        return 1;
+      }
+    }
+    else if (anArgIter + 1 < theArgNb
+         && !aProgram.IsNull()
+         &&  aProgram->Header().IsEmpty()
+         &&  (anArg == "-version"
+           || anArg == "-glslversion"
+           || anArg == "-header"
+           || anArg == "-glslheader"))
+    {
+      TCollection_AsciiString aHeader (theArgVec[++anArgIter]);
+      if (aHeader.IsIntegerValue())
+      {
+        aHeader = TCollection_AsciiString ("#version ") + aHeader;
+      }
+      aProgram->SetHeader (aHeader);
+    }
+    else if (!anArg.StartsWith ("-")
+          && GetMapOfAIS().IsBound2 (theArgVec[anArgIter]))
+    {
+      Handle(AIS_InteractiveObject) anIO = Handle(AIS_InteractiveObject)::DownCast (GetMapOfAIS().Find2 (theArgVec[anArgIter]));
+      if (anIO.IsNull())
+      {
+        std::cerr << "Syntax error: " << theArgVec[anArgIter] << " is not an AIS object\n";
+        return 1;
+      }
+      aPrsList.Append (anIO);
+    }
+    else if (!aProgram.IsNull()
+           && ((anArgIter + 1 < theArgNb && parseShaderTypeArg (aShaderTypeArg, anArg))
+            || (!isExplicitShaderType && aProgram->ShaderObjects().Size() < 2)))
+    {
+      TCollection_AsciiString aShaderPath (theArgVec[anArgIter]);
+      if (aShaderTypeArg != Graphic3d_TypeOfShaderObject(-1))
+      {
+        aShaderPath = (theArgVec[++anArgIter]);
+        isExplicitShaderType = true;
+      }
+
+      const bool isSrcFile = OSD_File (aShaderPath).Exists();
+      Handle(Graphic3d_ShaderObject) aShader = isSrcFile
+                                             ? Graphic3d_ShaderObject::CreateFromFile  (Graphic3d_TOS_VERTEX, aShaderPath)
+                                             : Graphic3d_ShaderObject::CreateFromSource(Graphic3d_TOS_VERTEX, aShaderPath);
+      const TCollection_AsciiString& aShaderSrc = aShader->Source();
+
+      const bool hasVertPos   = aShaderSrc.Search ("gl_Position")  != -1;
+      const bool hasFragColor = aShaderSrc.Search ("occFragColor") != -1
+                             || aShaderSrc.Search ("gl_FragColor") != -1
+                             || aShaderSrc.Search ("gl_FragData")  != -1;
+      Graphic3d_TypeOfShaderObject aShaderType = aShaderTypeArg;
+      if (aShaderType == Graphic3d_TypeOfShaderObject(-1))
+      {
+        if (hasVertPos
+        && !hasFragColor)
+        {
+          aShaderType = Graphic3d_TOS_VERTEX;
+        }
+        if (hasFragColor
+        && !hasVertPos)
+        {
+          aShaderType = Graphic3d_TOS_FRAGMENT;
+        }
+      }
+      if (aShaderType == Graphic3d_TypeOfShaderObject(-1))
+      {
+        std::cerr << "Error: non-existing or invalid shader source\n";
+        return 1;
+      }
+
+      aProgram->AttachShader (Graphic3d_ShaderObject::CreateFromSource (aShaderType, aShaderSrc));
+    }
+    else
+    {
+      std::cerr << "Syntax error at '" << anArg << "'\n";
       return 1;
     }
-
-    const TCollection_AsciiString aSrcVert = aShadersRoot + "/PhongShading.vs";
-    const TCollection_AsciiString aSrcFrag = aShadersRoot + "/PhongShading.fs";
-
-    if (!aSrcVert.IsEmpty()
-     && !OSD_File (aSrcVert).Exists())
-    {
-      std::cerr << "Error: PhongShading.vs is not found\n";
-      return 1;
-    }
-    if (!aSrcFrag.IsEmpty()
-      && !OSD_File (aSrcFrag).Exists())
-    {
-      std::cerr << "Error: PhongShading.fs is not found\n";
-      return 1;
-    }
-
-    aProgram = new Graphic3d_ShaderProgram();
-    aProgram->AttachShader (Graphic3d_ShaderObject::CreateFromFile (Graphic3d_TOS_VERTEX,   aSrcVert));
-    aProgram->AttachShader (Graphic3d_ShaderObject::CreateFromFile (Graphic3d_TOS_FRAGMENT, aSrcFrag));
   }
-  if (!toTurnOff
-   && aProgram.IsNull())
+
+  ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName aGlobalPrsIter (GetMapOfAIS());
+  NCollection_Sequence<Handle(AIS_InteractiveObject)>::Iterator aPrsIter (aPrsList);
+  const bool isGlobalList = aPrsList.IsEmpty();
+  for (;;)
   {
-    if (theArgNb < 3)
+    Handle(AIS_InteractiveObject) anIO;
+    if (isGlobalList)
     {
-      std::cout << "Syntax error: lack of arguments\n";
-      return 1;
-    }
-
-    const TCollection_AsciiString aSrcVert = theArgVec[theArgNb - 2];
-    const TCollection_AsciiString aSrcFrag = theArgVec[theArgNb - 1];
-    if (aSrcVert.IsEmpty() || aSrcFrag.IsEmpty())
-    {
-      std::cout << "Syntax error: lack of arguments\n";
-      return 1;
-    }
-
-    const bool isVertFile = OSD_File (aSrcVert).Exists();
-    const bool isFragFile = OSD_File (aSrcFrag).Exists();
-    if (!isVertFile
-     && aSrcVert.Search ("gl_Position") == -1)
-    {
-      std::cerr << "Error: non-existing or invalid vertex shader source\n";
-      return 1;
-    }
-    if (!isFragFile
-      && aSrcFrag.Search ("occFragColor") == -1)
-    {
-      std::cerr << "Error: non-existing or invalid fragment shader source\n";
-      return 1;
-    }
-
-    aProgram = new Graphic3d_ShaderProgram();
-    aProgram->AttachShader (isVertFile
-                          ? Graphic3d_ShaderObject::CreateFromFile  (Graphic3d_TOS_VERTEX,   aSrcVert)
-                          : Graphic3d_ShaderObject::CreateFromSource(Graphic3d_TOS_VERTEX,   aSrcVert));
-    aProgram->AttachShader (isFragFile
-                          ? Graphic3d_ShaderObject::CreateFromFile  (Graphic3d_TOS_FRAGMENT, aSrcFrag)
-                          : Graphic3d_ShaderObject::CreateFromSource(Graphic3d_TOS_FRAGMENT, aSrcFrag));
-    anArgsNb = theArgNb - 2;
-  }
-
-  Handle(AIS_InteractiveObject) anIO;
-  if (anArgsNb <= 1
-   || *theArgVec[1] == '*')
-  {
-    for (ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName anIter (GetMapOfAIS());
-          anIter.More(); anIter.Next())
-    {
-      anIO = Handle(AIS_InteractiveObject)::DownCast (anIter.Key1());
+      if (!aGlobalPrsIter.More())
+      {
+        break;
+      }
+      anIO = Handle(AIS_InteractiveObject)::DownCast (aGlobalPrsIter.Key1());
+      aGlobalPrsIter.Next();
       if (anIO.IsNull())
       {
         continue;
       }
-
-      if (!anIO->Attributes()->HasOwnShadingAspect())
+    }
+    else
+    {
+      if (!aPrsIter.More())
       {
-        Handle(Prs3d_ShadingAspect) aNewAspect = new Prs3d_ShadingAspect();
-        *aNewAspect->Aspect() = *anIO->Attributes()->ShadingAspect()->Aspect();
-        aNewAspect->Aspect()->SetShaderProgram (aProgram);
-        anIO->Attributes()->SetShadingAspect (aNewAspect);
-        aCtx->Redisplay (anIO, Standard_False);
+        break;
       }
-      else
-      {
-        anIO->Attributes()->SetShaderProgram (aProgram, Graphic3d_ASPECT_FILL_AREA);
-        anIO->SynchronizeAspects();
-      }
-    }
-    aCtx->UpdateCurrentViewer();
-    return 0;
-  }
-
-  for (Standard_Integer anArgIter = 1; anArgIter < anArgsNb; ++anArgIter)
-  {
-    const TCollection_AsciiString aName (theArgVec[anArgIter]);
-    if (!GetMapOfAIS().IsBound2 (aName))
-    {
-      std::cerr << "Warning: " << aName.ToCString() << " is not displayed\n";
-      continue;
-    }
-    anIO = Handle(AIS_InteractiveObject)::DownCast (GetMapOfAIS().Find2 (aName));
-    if (anIO.IsNull())
-    {
-      std::cerr << "Warning: " << aName.ToCString() << " is not an AIS object\n";
-      continue;
+      anIO = aPrsIter.Value();
+      aPrsIter.Next();
     }
 
-    if (!anIO->Attributes()->HasOwnShadingAspect())
+    if (anIO->Attributes()->SetShaderProgram (aProgram, aGroupAspect, true))
     {
-      Handle(Prs3d_ShadingAspect) aNewAspect = new Prs3d_ShadingAspect();
-      *aNewAspect->Aspect() = *anIO->Attributes()->ShadingAspect()->Aspect();
-      aNewAspect->Aspect()->SetShaderProgram (aProgram);
-      anIO->Attributes()->SetShadingAspect (aNewAspect);
       aCtx->Redisplay (anIO, Standard_False);
     }
     else
     {
-      anIO->Attributes()->SetShaderProgram (aProgram, Graphic3d_ASPECT_FILL_AREA);
       anIO->SynchronizeAspects();
     }
   }
@@ -720,10 +833,12 @@ void ViewerTest::OpenGlCommands(Draw_Interpretor& theCommands)
         "\n\t\t:         [GL_SHADING_LANGUAGE_VERSION] [GL_EXTENSIONS]"
         "\n\t\t: print OpenGL info",
     __FILE__, VGlInfo, aGroup);
-  theCommands.Add("vshaderprog",
-            "   'vshaderprog [name] pathToVertexShader pathToFragmentShader'"
-    "\n\t\t: or 'vshaderprog [name] off'   to disable GLSL program"
-    "\n\t\t: or 'vshaderprog [name] phong' to enable per-pixel lighting calculations"
-    "\n\t\t: * might be used to specify all displayed objects",
+  theCommands.Add("vshader",
+                  "vshader name -vert VertexShader -frag FragmentShader [-geom GeometryShader]"
+                  "\n\t\t:   [-off] [-phong] [-aspect {shading|line|point|text}=shading]"
+                  "\n\t\t:   [-header VersionHeader]"
+                  "\n\t\t:   [-tessControl TessControlShader -tesseval TessEvaluationShader]"
+                  "\n\t\t: Assign custom GLSL program to presentation aspects.",
     __FILE__, VShaderProg, aGroup);
+  theCommands.Add("vshaderprog", "Alias for vshader", __FILE__, VShaderProg, aGroup);
 }

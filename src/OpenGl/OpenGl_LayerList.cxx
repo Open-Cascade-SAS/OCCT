@@ -665,8 +665,7 @@ Standard_Boolean OpenGl_LayerList::OpenGl_OpaqueFilter::ShouldRender (const Hand
 
   const OpenGl_PrimitiveArray* aPArray = dynamic_cast<const OpenGl_PrimitiveArray*> (theGlElement);
   if (aPArray == NULL
-   || aPArray->DrawMode() < OpenGl_PrimitiveArray::THE_FILLPRIM_FROM
-   || aPArray->DrawMode() > OpenGl_PrimitiveArray::THE_FILLPRIM_TO)
+  || !aPArray->IsFillDrawMode())
   {
     return Standard_True;
   }
@@ -697,8 +696,7 @@ Standard_Boolean OpenGl_LayerList::OpenGl_TransparentFilter::ShouldRender (const
 
   const OpenGl_PrimitiveArray* aPArray = dynamic_cast<const OpenGl_PrimitiveArray*> (theGlElement);
   if (aPArray == NULL
-   || aPArray->DrawMode() < OpenGl_PrimitiveArray::THE_FILLPRIM_FROM
-   || aPArray->DrawMode() > OpenGl_PrimitiveArray::THE_FILLPRIM_TO)
+  || !aPArray->IsFillDrawMode())
   {
     return dynamic_cast<const OpenGl_AspectFace*> (theGlElement) != NULL;
   }

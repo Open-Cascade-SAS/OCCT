@@ -210,6 +210,9 @@ public:
     return myProgramID;
   }
 
+  //! Return TRUE if program defines tessellation stage.
+  Standard_Boolean HasTessellationStage() const { return myHasTessShader; }
+
 private:
 
   //! Returns index of last modification of variables of specified state type.
@@ -551,6 +554,7 @@ protected:
   OpenGl_ShaderList               myShaderObjects; //!< List of attached shader objects
   Handle(Graphic3d_ShaderProgram) myProxy;         //!< Proxy shader program (from application layer)
   Standard_Integer                myShareCount;    //!< program users count, initialized with 1 (already shared by one user)
+  Standard_Boolean                myHasTessShader; //!< flag indicating that program defines tessellation stage
 
 protected:
 

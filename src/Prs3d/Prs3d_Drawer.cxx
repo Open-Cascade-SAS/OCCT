@@ -1089,10 +1089,11 @@ inline void setAspectProgram (const Handle(Graphic3d_ShaderProgram)& theProgram,
 // function : SetShaderProgram
 // purpose  :
 // =======================================================================
-void Prs3d_Drawer::SetShaderProgram (const Handle(Graphic3d_ShaderProgram)& theProgram,
+bool Prs3d_Drawer::SetShaderProgram (const Handle(Graphic3d_ShaderProgram)& theProgram,
                                      const Graphic3d_GroupAspect            theAspect,
                                      const bool                             theToOverrideDefaults)
 {
+  bool isUpdateNeeded = false;
   switch (theAspect)
   {
     case Graphic3d_ASPECT_LINE:
@@ -1101,6 +1102,7 @@ void Prs3d_Drawer::SetShaderProgram (const Handle(Graphic3d_ShaderProgram)& theP
       {
         if (!myHasOwnUIsoAspect)
         {
+          isUpdateNeeded = true;
           Handle(Prs3d_IsoAspect) anAspect = UIsoAspect();
           if (!myLink.IsNull())
           {
@@ -1112,6 +1114,7 @@ void Prs3d_Drawer::SetShaderProgram (const Handle(Graphic3d_ShaderProgram)& theP
         }
         if (!myHasOwnVIsoAspect)
         {
+          isUpdateNeeded = true;
           Handle(Prs3d_IsoAspect) anAspect = VIsoAspect();
           if (!myLink.IsNull())
           {
@@ -1123,62 +1126,74 @@ void Prs3d_Drawer::SetShaderProgram (const Handle(Graphic3d_ShaderProgram)& theP
         }
         if (!myHasOwnWireAspect)
         {
+          isUpdateNeeded = true;
           copyLineAspect (myLink, myWireAspect, WireAspect());
           myHasOwnWireAspect = true;
         }
         if (!myHasOwnLineAspect)
         {
+          isUpdateNeeded = true;
           copyLineAspect (myLink, myLineAspect, LineAspect());
           myHasOwnLineAspect = true;
         }
         if (!myHasOwnSeenLineAspect)
         {
+          isUpdateNeeded = true;
           copyLineAspect (myLink, mySeenLineAspect, SeenLineAspect());
           myHasOwnSeenLineAspect = true;
         }
         if (!myHasOwnHiddenLineAspect)
         {
+          isUpdateNeeded = true;
           copyLineAspect (myLink, myHiddenLineAspect, HiddenLineAspect());
           myHasOwnHiddenLineAspect = true;
         }
         if (!myHasOwnVectorAspect)
         {
+          isUpdateNeeded = true;
           copyLineAspect (myLink, myVectorAspect, VectorAspect());
           myHasOwnVectorAspect = true;
         }
         if (!myHasOwnSectionAspect)
         {
+          isUpdateNeeded = true;
           copyLineAspect (myLink, mySectionAspect, SectionAspect());
           myHasOwnSectionAspect = true;
         }
         if (!myHasOwnFreeBoundaryAspect)
         {
+          isUpdateNeeded = true;
           copyLineAspect (myLink, myFreeBoundaryAspect, FreeBoundaryAspect());
           myHasOwnFreeBoundaryAspect = true;
         }
         if (!myHasOwnUnFreeBoundaryAspect)
         {
+          isUpdateNeeded = true;
           copyLineAspect (myLink, myUnFreeBoundaryAspect, UnFreeBoundaryAspect());
           myHasOwnUnFreeBoundaryAspect = true;
         }
         if (!myHasOwnFaceBoundaryAspect)
         {
+          isUpdateNeeded = true;
           copyLineAspect (myLink, myFaceBoundaryAspect, FaceBoundaryAspect());
           myHasOwnFaceBoundaryAspect = true;
         }
 
         if (!myHasOwnPlaneAspect)
         {
+          isUpdateNeeded = true;
           myPlaneAspect = new Prs3d_PlaneAspect();
           myHasOwnPlaneAspect = true;
         }
         if (!myHasOwnArrowAspect)
         {
+          isUpdateNeeded = true;
           myArrowAspect = new Prs3d_ArrowAspect();
           myHasOwnArrowAspect = true;
         }
         if (!myHasOwnDatumAspect)
         {
+          isUpdateNeeded = true;
           myDatumAspect = new Prs3d_DatumAspect();
           myHasOwnDatumAspect = true;
         }
@@ -1208,13 +1223,14 @@ void Prs3d_Drawer::SetShaderProgram (const Handle(Graphic3d_ShaderProgram)& theP
         setAspectProgram (theProgram, true, myDatumAspect->LineAspect(Prs3d_DP_ZAxis));
       }
       setAspectProgram (theProgram, myHasOwnArrowAspect, myArrowAspect);
-      return;
+      return isUpdateNeeded;
     }
     case Graphic3d_ASPECT_TEXT:
     {
       if (theToOverrideDefaults
       && !myHasOwnTextAspect)
       {
+        isUpdateNeeded = true;
         myTextAspect = new Prs3d_TextAspect();
         myHasOwnTextAspect = true;
         if (!myLink.IsNull())
@@ -1224,13 +1240,14 @@ void Prs3d_Drawer::SetShaderProgram (const Handle(Graphic3d_ShaderProgram)& theP
       }
 
       setAspectProgram (theProgram, myHasOwnTextAspect, myTextAspect);
-      return;
+      return isUpdateNeeded;
     }
     case Graphic3d_ASPECT_MARKER:
     {
       if (theToOverrideDefaults
       && !myHasOwnPointAspect)
       {
+        isUpdateNeeded = true;
         myPointAspect = new Prs3d_PointAspect (Aspect_TOM_PLUS, Quantity_NOC_YELLOW, 1.0);
         myHasOwnPointAspect = true;
         if (!myLink.IsNull())
@@ -1240,13 +1257,14 @@ void Prs3d_Drawer::SetShaderProgram (const Handle(Graphic3d_ShaderProgram)& theP
       }
 
       setAspectProgram (theProgram, myHasOwnPointAspect, myPointAspect);
-      return;
+      return isUpdateNeeded;
     }
     case Graphic3d_ASPECT_FILL_AREA:
     {
       if (theToOverrideDefaults
       && !myHasOwnShadingAspect)
       {
+        isUpdateNeeded = true;
         myShadingAspect = new Prs3d_ShadingAspect();
         myHasOwnShadingAspect = true;
         if (!myLink.IsNull())
@@ -1255,7 +1273,8 @@ void Prs3d_Drawer::SetShaderProgram (const Handle(Graphic3d_ShaderProgram)& theP
         }
       }
       setAspectProgram (theProgram, myHasOwnShadingAspect, myShadingAspect);
-      return;
+      return isUpdateNeeded;
     }
   }
+  return false;
 }

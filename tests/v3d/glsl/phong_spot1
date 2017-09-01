@@ -3,6 +3,10 @@ puts "Per-fragment lighting using built-in GLSL program, one spot light source."
 puts "Visual comparison with the reference snapshot should be performed for this test case."
 puts "========"
 
+vclear
+vclose ALL
+vinit View1
+
 # create objects
 set anX 0.001
 circle c 0 0 0 0.001

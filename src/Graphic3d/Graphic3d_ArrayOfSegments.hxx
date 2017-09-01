@@ -15,76 +15,47 @@
 #ifndef _Graphic3d_ArrayOfSegments_HeaderFile
 #define _Graphic3d_ArrayOfSegments_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
 #include <Graphic3d_ArrayOfPrimitives.hxx>
-#include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 
-
-class Graphic3d_ArrayOfSegments;
-DEFINE_STANDARD_HANDLE(Graphic3d_ArrayOfSegments, Graphic3d_ArrayOfPrimitives)
-
-//! Contains segments array definition
+//! Contains segments array definition.
 class Graphic3d_ArrayOfSegments : public Graphic3d_ArrayOfPrimitives
 {
-
+  DEFINE_STANDARD_RTTIEXT(Graphic3d_ArrayOfSegments, Graphic3d_ArrayOfPrimitives)
 public:
 
-  
-  //! Creates an array of segments,
-  //! a segment can be filled as:
-  //! 1) creating a set of segments defined with his vertexs.
-  //! i.e:
-  //! myArray = Graphic3d_ArrayOfSegments(4)
-  //! myArray->AddVertex(x1,y1,z1)
-  //! ....
-  //! myArray->AddVertex(x4,y4,z4)
-  //! 2) creating a set of indexed segments defined with his vertex
-  //! ans edges.
-  //! i.e:
-  //! myArray = Graphic3d_ArrayOfSegments(4,0,8)
-  //! myArray->AddVertex(x1,y1,z1)
-  //! ....
-  //! myArray->AddVertex(x4,y4,z4)
-  //! myArray->AddEdge(1)
-  //! myArray->AddEdge(2)
-  //! myArray->AddEdge(3)
-  //! myArray->AddEdge(4)
-  //! myArray->AddEdge(2)
-  //! myArray->AddEdge(4)
-  //! myArray->AddEdge(1)
-  //! myArray->AddEdge(3)
-  //!
-  //! <maxVertexs> defined the maximun allowed vertex number in the array.
-  //! <maxEdges> defined the maximun allowed edge number in the array.
-  //! Warning:
-  //! When <hasVColors> is TRUE , you must use only
-  //! AddVertex(Point,Color) method
-  Standard_EXPORT Graphic3d_ArrayOfSegments(const Standard_Integer maxVertexs, const Standard_Integer maxEdges = 0, const Standard_Boolean hasVColors = Standard_False);
-
-
-
-
-  DEFINE_STANDARD_RTTIEXT(Graphic3d_ArrayOfSegments,Graphic3d_ArrayOfPrimitives)
-
-protected:
-
-
-
-
-private:
-
-
-
+  //! Creates an array of segments, a segment can be filled as:
+  //! 1) Creating a set of segments defined with his vertexes, i.e:
+  //! @code
+  //!   myArray = Graphic3d_ArrayOfSegments (4);
+  //!   myArray->AddVertex (x1, y1, z1);
+  //!   ....
+  //!   myArray->AddVertex (x4, y4, z4);
+  //! @endcode
+  //! 2) Creating a set of indexed segments defined with his vertex and edges, i.e:
+  //! @code
+  //!   myArray = Graphic3d_ArrayOfSegments (4, 0, 8);
+  //!   myArray->AddVertex (x1, y1, z1);
+  //!   ....
+  //!   myArray->AddVertex (x4, y4, z4);
+  //!   myArray->AddEdge (1);
+  //!   myArray->AddEdge (2);
+  //!   myArray->AddEdge (3);
+  //!   myArray->AddEdge (4);
+  //!   myArray->AddEdge (2);
+  //!   myArray->AddEdge (4);
+  //!   myArray->AddEdge (1);
+  //!   myArray->AddEdge (3);
+  //! @endcode
+  //! @param theMaxVertexs defines the maximum allowed vertex number in the array
+  //! @param theMaxEdges   defines the maximum allowed edge   number in the array
+  //! @param theHasVColors when TRUE, AddVertex(Point,Color) should be used for specifying vertex color
+  Graphic3d_ArrayOfSegments (const Standard_Integer theMaxVertexs,
+                             const Standard_Integer theMaxEdges   = 0,
+                             const Standard_Boolean theHasVColors = Standard_False)
+  : Graphic3d_ArrayOfPrimitives (Graphic3d_TOPA_SEGMENTS, theMaxVertexs, 0, theMaxEdges, Standard_False, theHasVColors, Standard_False, Standard_False) {}
 
 };
 
-
-
-
-
-
+DEFINE_STANDARD_HANDLE(Graphic3d_ArrayOfSegments, Graphic3d_ArrayOfPrimitives)
 
 #endif // _Graphic3d_ArrayOfSegments_HeaderFile

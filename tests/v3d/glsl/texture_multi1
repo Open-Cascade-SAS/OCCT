@@ -26,6 +26,7 @@ void main() {
 # draw a box
 box b 1 2 3
 vclear
+vclose ALL
 vinit View1
 vaxo
 vdisplay -dispMode 1 b
@@ -36,5 +37,6 @@ vrotate 0.2 0.0 0.0
 vtexture b -tex0 3 -tex1 4 -tex2 5 -tex3 6
 vdump $::imagedir/${::casename}_normal.png
 
-vshaderprog b $aShaderVert $aShaderFrag
+#vshaderprog b $aShaderVert $aShaderFrag
+vshaderprog b -vert $aShaderVert -frag $aShaderFrag
 vdump $::imagedir/${::casename}_multi.png

@@ -373,8 +373,12 @@ void OpenGl_PrimitiveArray::drawArray (const Handle(OpenGl_Workspace)& theWorksp
     return;
   }
 
-  const Handle(OpenGl_Context)& aGlContext  = theWorkspace->GetGlContext();
-  const bool                    toHilight   = theWorkspace->ToHighlight();
+  const Handle(OpenGl_Context)& aGlContext = theWorkspace->GetGlContext();
+  const bool                    toHilight  = theWorkspace->ToHighlight();
+  const GLenum aDrawMode = !aGlContext->ActiveProgram().IsNull()
+                         && aGlContext->ActiveProgram()->HasTessellationStage()
+                         ? GL_PATCHES
+                         : myDrawMode;
   myVboAttribs->BindAllAttributes (aGlContext);
   if (theHasVertColor && toHilight)
   {
@@ -393,14 +397,14 @@ void OpenGl_PrimitiveArray::drawArray (const Handle(OpenGl_Workspace)& theWorksp
       {
         const GLint aNbElemsInGroup = myBounds->Bounds[aGroupIter];
         if (theFaceColors != NULL) aGlContext->SetColor4fv (theFaceColors[aGroupIter]);
-        glDrawElements (myDrawMode, aNbElemsInGroup, myVboIndices->GetDataType(), anOffset);
+        glDrawElements (aDrawMode, aNbElemsInGroup, myVboIndices->GetDataType(), anOffset);
         anOffset += aStride * aNbElemsInGroup;
       }
     }
     else
     {
       // draw one (or sequential) primitive by the indices
-      glDrawElements (myDrawMode, myVboIndices->GetElemsNb(), myVboIndices->GetDataType(), anOffset);
+      glDrawElements (aDrawMode, myVboIndices->GetElemsNb(), myVboIndices->GetDataType(), anOffset);
     }
     myVboIndices->Unbind (aGlContext);
   }
@@ -411,7 +415,7 @@ void OpenGl_PrimitiveArray::drawArray (const Handle(OpenGl_Workspace)& theWorksp
     {
       const GLint aNbElemsInGroup = myBounds->Bounds[aGroupIter];
       if (theFaceColors != NULL) aGlContext->SetColor4fv (theFaceColors[aGroupIter]);
-      glDrawArrays (myDrawMode, aFirstElem, aNbElemsInGroup);
+      glDrawArrays (aDrawMode, aFirstElem, aNbElemsInGroup);
       aFirstElem += aNbElemsInGroup;
     }
   }
@@ -423,7 +427,7 @@ void OpenGl_PrimitiveArray::drawArray (const Handle(OpenGl_Workspace)& theWorksp
     }
     else
     {
-      glDrawArrays (myDrawMode, 0, myVboAttribs->GetElemsNb());
+      glDrawArrays (aDrawMode, 0, myVboAttribs->GetElemsNb());
     }
   }
 
@@ -466,6 +470,10 @@ void OpenGl_PrimitiveArray::drawEdges (const OpenGl_Vec4&              theEdgeCo
                                                   Standard_False,
                                                   anAspect->ShaderProgramRes (aGlContext));
   }
+  const GLenum aDrawMode = !aGlContext->ActiveProgram().IsNull()
+                         && aGlContext->ActiveProgram()->HasTessellationStage()
+                         ? GL_PATCHES
+                         : myDrawMode;
 
   /// OCC22236 NOTE: draw edges for all situations:
   /// 1) draw elements with GL_LINE style as edges from myPArray->bufferVBO[VBOEdges] indices array
@@ -489,14 +497,14 @@ void OpenGl_PrimitiveArray::drawEdges (const OpenGl_Vec4&              theEdgeCo
       for (Standard_Integer aGroupIter = 0; aGroupIter < myBounds->NbBounds; ++aGroupIter)
       {
         const GLint aNbElemsInGroup = myBounds->Bounds[aGroupIter];
-        glDrawElements (myDrawMode, aNbElemsInGroup, myVboIndices->GetDataType(), anOffset);
+        glDrawElements (aDrawMode, aNbElemsInGroup, myVboIndices->GetDataType(), anOffset);
         anOffset += aStride * aNbElemsInGroup;
       }
     }
     // draw one (or sequential) primitive by the indices
     else
     {
-      glDrawElements (myDrawMode, myVboIndices->GetElemsNb(), myVboIndices->GetDataType(), anOffset);
+      glDrawElements (aDrawMode, myVboIndices->GetElemsNb(), myVboIndices->GetDataType(), anOffset);
     }
     myVboIndices->Unbind (aGlContext);
   }
@@ -506,13 +514,13 @@ void OpenGl_PrimitiveArray::drawEdges (const OpenGl_Vec4&              theEdgeCo
     for (Standard_Integer aGroupIter = 0; aGroupIter < myBounds->NbBounds; ++aGroupIter)
     {
       const GLint aNbElemsInGroup = myBounds->Bounds[aGroupIter];
-      glDrawArrays (myDrawMode, aFirstElem, aNbElemsInGroup);
+      glDrawArrays (aDrawMode, aFirstElem, aNbElemsInGroup);
       aFirstElem += aNbElemsInGroup;
     }
   }
   else
   {
-    glDrawArrays (myDrawMode, 0, !myVboAttribs.IsNull() ? myVboAttribs->GetElemsNb() : myAttribs->NbElements);
+    glDrawArrays (aDrawMode, 0, !myVboAttribs.IsNull() ? myVboAttribs->GetElemsNb() : myAttribs->NbElements);
   }
 
   // unbind buffers
@@ -528,8 +536,13 @@ void OpenGl_PrimitiveArray::drawEdges (const OpenGl_Vec4&              theEdgeCo
 // =======================================================================
 void OpenGl_PrimitiveArray::drawMarkers (const Handle(OpenGl_Workspace)& theWorkspace) const
 {
-  const OpenGl_AspectMarker* anAspectMarker     = theWorkspace->ApplyAspectMarker();
-  const Handle(OpenGl_Context)&     aCtx        = theWorkspace->GetGlContext();
+  const OpenGl_AspectMarker* anAspectMarker = theWorkspace->ApplyAspectMarker();
+  const Handle(OpenGl_Context)&     aCtx    = theWorkspace->GetGlContext();
+  const GLenum aDrawMode = !aCtx->ActiveProgram().IsNull()
+                         && aCtx->ActiveProgram()->HasTessellationStage()
+                         ? GL_PATCHES
+                         : myDrawMode;
+
   const Handle(OpenGl_TextureSet)& aSpriteNormRes = anAspectMarker->SpriteRes (aCtx);
   const OpenGl_PointSprite* aSpriteNorm = !aSpriteNormRes.IsNull() ? dynamic_cast<const OpenGl_PointSprite*> (aSpriteNormRes->First().get()) : NULL;
   if (aSpriteNorm != NULL
@@ -549,7 +562,7 @@ void OpenGl_PrimitiveArray::drawMarkers (const Handle(OpenGl_Workspace)& theWork
     aCtx->core11fwd->glEnable (GL_BLEND);
     aCtx->core11fwd->glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    aCtx->core11fwd->glDrawArrays (myDrawMode, 0, !myVboAttribs.IsNull() ? myVboAttribs->GetElemsNb() : myAttribs->NbElements);
+    aCtx->core11fwd->glDrawArrays (aDrawMode, 0, !myVboAttribs.IsNull() ? myVboAttribs->GetElemsNb() : myAttribs->NbElements);
 
     aCtx->core11fwd->glDisable (GL_BLEND);
   #if !defined(GL_ES_VERSION_2_0)
@@ -564,7 +577,7 @@ void OpenGl_PrimitiveArray::drawMarkers (const Handle(OpenGl_Workspace)& theWork
   else if (anAspectMarker->Aspect()->Type() == Aspect_TOM_POINT)
   {
     aCtx->SetPointSize (anAspectMarker->MarkerSize());
-    aCtx->core11fwd->glDrawArrays (myDrawMode, 0, !myVboAttribs.IsNull() ? myVboAttribs->GetElemsNb() : myAttribs->NbElements);
+    aCtx->core11fwd->glDrawArrays (aDrawMode, 0, !myVboAttribs.IsNull() ? myVboAttribs->GetElemsNb() : myAttribs->NbElements);
     aCtx->SetPointSize (1.0f);
   }
 #if !defined(GL_ES_VERSION_2_0)
@@ -600,6 +613,7 @@ void OpenGl_PrimitiveArray::drawMarkers (const Handle(OpenGl_Workspace)& theWork
 OpenGl_PrimitiveArray::OpenGl_PrimitiveArray (const OpenGl_GraphicDriver* theDriver)
 
 : myDrawMode  (DRAW_MODE_NONE),
+  myIsFillType(Standard_False),
   myIsVboInit (Standard_False)
 {
   if (theDriver != NULL)
@@ -622,6 +636,7 @@ OpenGl_PrimitiveArray::OpenGl_PrimitiveArray (const OpenGl_GraphicDriver*       
   myAttribs   (theAttribs),
   myBounds    (theBounds),
   myDrawMode  (DRAW_MODE_NONE),
+  myIsFillType(Standard_False),
   myIsVboInit (Standard_False)
 {
   if (!myIndices.IsNull()
@@ -876,45 +891,75 @@ void OpenGl_PrimitiveArray::setDrawMode (const Graphic3d_TypeOfPrimitiveArray th
   if (myAttribs.IsNull())
   {
     myDrawMode = DRAW_MODE_NONE;
+    myIsFillType = false;
     return;
   }
 
   switch (theType)
   {
     case Graphic3d_TOPA_POINTS:
-      myDrawMode = GL_POINTS;
-      break;
-    case Graphic3d_TOPA_POLYLINES:
-      myDrawMode = GL_LINE_STRIP;
+      myDrawMode   = GL_POINTS;
+      myIsFillType = false;
       break;
     case Graphic3d_TOPA_SEGMENTS:
-      myDrawMode = GL_LINES;
+      myDrawMode   = GL_LINES;
+      myIsFillType = false;
+      break;
+    case Graphic3d_TOPA_POLYLINES:
+      myDrawMode   = GL_LINE_STRIP;
+      myIsFillType = false;
       break;
     case Graphic3d_TOPA_TRIANGLES:
-      myDrawMode = GL_TRIANGLES;
+      myDrawMode   = GL_TRIANGLES;
+      myIsFillType = true;
       break;
     case Graphic3d_TOPA_TRIANGLESTRIPS:
-      myDrawMode = GL_TRIANGLE_STRIP;
+      myDrawMode   = GL_TRIANGLE_STRIP;
+      myIsFillType = true;
       break;
     case Graphic3d_TOPA_TRIANGLEFANS:
-      myDrawMode = GL_TRIANGLE_FAN;
+      myDrawMode   = GL_TRIANGLE_FAN;
+      myIsFillType = true;
       break;
+    //
+    case Graphic3d_TOPA_LINES_ADJACENCY:
+      myDrawMode = GL_LINES_ADJACENCY;
+      myIsFillType = false;
+      break;
+    case Graphic3d_TOPA_LINE_STRIP_ADJACENCY:
+      myDrawMode   = GL_LINE_STRIP_ADJACENCY;
+      myIsFillType = false;
+      break;
+    case Graphic3d_TOPA_TRIANGLES_ADJACENCY:
+      myDrawMode   = GL_TRIANGLES_ADJACENCY;
+      myIsFillType = true;
+      break;
+    case Graphic3d_TOPA_TRIANGLE_STRIP_ADJACENCY:
+      myDrawMode   = GL_TRIANGLE_STRIP_ADJACENCY;
+      myIsFillType = true;
+      break;
+    //
   #if !defined(GL_ES_VERSION_2_0)
-    case Graphic3d_TOPA_POLYGONS:
-      myDrawMode = GL_POLYGON;
-      break;
     case Graphic3d_TOPA_QUADRANGLES:
-      myDrawMode = GL_QUADS;
+      myDrawMode   = GL_QUADS;
+      myIsFillType = true;
       break;
     case Graphic3d_TOPA_QUADRANGLESTRIPS:
-      myDrawMode = GL_QUAD_STRIP;
+      myDrawMode   = GL_QUAD_STRIP;
+      myIsFillType = true;
+      break;
+    case Graphic3d_TOPA_POLYGONS:
+      myDrawMode   = GL_POLYGON;
+      myIsFillType = true;
       break;
   #else
-    case Graphic3d_TOPA_POLYGONS:
     case Graphic3d_TOPA_QUADRANGLES:
     case Graphic3d_TOPA_QUADRANGLESTRIPS:
+    case Graphic3d_TOPA_POLYGONS:
   #endif
     case Graphic3d_TOPA_UNDEFINED:
+      myDrawMode   = DRAW_MODE_NONE;
+      myIsFillType = false;
       break;
   }
 }

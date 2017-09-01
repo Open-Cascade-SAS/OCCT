@@ -49,20 +49,22 @@
   THE_ATTRIBUTE vec3 occNormal;
   THE_ATTRIBUTE vec4 occTexCoord;
   THE_ATTRIBUTE vec4 occVertColor;
-#elif (__VERSION__ >= 130)
-  #ifdef OCC_ENABLE_draw_buffers
-    out vec4 occFragColorArray[2];
-    #define occFragColor    occFragColorArray[0]
-    #define occFragCoverage occFragColorArray[1]
+#elif defined(FRAGMENT_SHADER)
+  #if (__VERSION__ >= 130)
+    #ifdef OCC_ENABLE_draw_buffers
+      out vec4 occFragColorArray[2];
+      #define occFragColor    occFragColorArray[0]
+      #define occFragCoverage occFragColorArray[1]
+    #else
+      out vec4 occFragColor;
+    #endif
   #else
-    out vec4 occFragColor;
-  #endif
-#else
-  #ifdef OCC_ENABLE_draw_buffers
-    #define occFragColor    gl_FragData[0]
-    #define occFragCoverage gl_FragData[1]
-  #else
-    #define occFragColor gl_FragColor
+    #ifdef OCC_ENABLE_draw_buffers
+      #define occFragColor    gl_FragData[0]
+      #define occFragCoverage gl_FragData[1]
+    #else
+      #define occFragColor gl_FragColor
+    #endif
   #endif
 #endif
 

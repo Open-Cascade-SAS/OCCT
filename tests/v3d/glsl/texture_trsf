@@ -2,6 +2,10 @@ puts "========"
 puts "Texture 2D transformation (UV coordinates generation)"
 puts "========"
 
+vclear
+vclose ALL
+vinit View1
+
 set aTexture [locate_data_file bug26122_texture_trsf_ref.png]
 pload MODELING VISUALIZATION
 box b 1 1 1

@@ -32,21 +32,12 @@ class OpenGl_GraphicDriver;
 class OpenGl_PrimitiveArray : public OpenGl_Element
 {
 public:
-  // OpenGL does not provide a constant for "none" draw mode.
-  // So we define our own one that does not conflict with GL constants
-  // and utilizes common GL invalid value
+  //! OpenGL does not provide a constant for "none" draw mode.
+  //! So we define our own one that does not conflict with GL constants and utilizes common GL invalid value.
   enum
   {
     DRAW_MODE_NONE = -1
   };
-
-#if !defined(GL_ES_VERSION_2_0)
-  static const GLint THE_FILLPRIM_FROM = GL_TRIANGLES;
-  static const GLint THE_FILLPRIM_TO   = GL_POLYGON;
-#else
-  static const GLint THE_FILLPRIM_FROM = GL_TRIANGLES;
-  static const GLint THE_FILLPRIM_TO   = GL_TRIANGLE_FAN;
-#endif
 
   //! Empty constructor
   Standard_EXPORT OpenGl_PrimitiveArray (const OpenGl_GraphicDriver* theDriver);
@@ -77,6 +68,9 @@ public:
 
   //! @return primitive type (GL_LINES, GL_TRIANGLES and others)
   GLint DrawMode() const { return myDrawMode; }
+
+  //! Return TRUE if primitive type generates shaded triangulation.
+  Standard_Boolean IsFillDrawMode() const { return myIsFillType; }
 
   //! @return indices array
   const Handle(Graphic3d_IndexBuffer)& Indices() const { return myIndices; }
@@ -139,7 +133,8 @@ protected:
   mutable Handle(Graphic3d_IndexBuffer) myIndices;
   mutable Handle(Graphic3d_Buffer)      myAttribs;
   mutable Handle(Graphic3d_BoundBuffer) myBounds;
-  GLint                                 myDrawMode;
+  GLshort                               myDrawMode;
+  mutable Standard_Boolean              myIsFillType;
   mutable Standard_Boolean              myIsVboInit;
 
   Standard_Size                         myUID; //!< Unique ID of primitive array. 

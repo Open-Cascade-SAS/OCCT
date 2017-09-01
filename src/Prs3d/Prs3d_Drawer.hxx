@@ -842,7 +842,8 @@ public:
   //! @param theAspect  the type of primitives
   //! @param theToOverrideDefaults if true then non-overridden attributes using defaults will be allocated and copied from the Link;
   //!                              otherwise, only already customized attributes will be changed
-  Standard_EXPORT void SetShaderProgram (const Handle(Graphic3d_ShaderProgram)& theProgram,
+  //! @return TRUE if presentation should be recomputed after creating aspects not previously customized (if theToOverrideDefaults is also TRUE)
+  Standard_EXPORT bool SetShaderProgram (const Handle(Graphic3d_ShaderProgram)& theProgram,
                                          const Graphic3d_GroupAspect            theAspect,
                                          const bool                             theToOverrideDefaults = false);
 

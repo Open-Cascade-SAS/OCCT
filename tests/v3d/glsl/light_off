@@ -6,8 +6,9 @@ puts "========"
 box b 1 2 3
 
 # draw box
-vinit View1
 vclear
+vclose ALL
+vinit View1
 vsetdispmode 1
 vdisplay b
 vfit

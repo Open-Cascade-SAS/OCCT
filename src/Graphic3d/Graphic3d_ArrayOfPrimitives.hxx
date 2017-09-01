@@ -24,28 +24,41 @@
 #include <Standard_OutOfRange.hxx>
 #include <Quantity_Color.hxx>
 
-class Quantity_Color;
-
 class Graphic3d_ArrayOfPrimitives;
 DEFINE_STANDARD_HANDLE(Graphic3d_ArrayOfPrimitives, Standard_Transient)
 
-//! This class furnish services to defined and fill an
-//! array of primitives compatible with the use of
-//! the OPENGl glDrawArrays() or glDrawElements() functions.
-//! NOTE that the main goal of this kind of primitive
-//! is to avoid multiple copies of datas between
-//! each layer of the software.
-//! So the array datas exist only one time and the use
-//! of SetXxxxxx() methods enable to change dynamically
-//! the aspect of this primitive.
+//! This class furnish services to defined and fill an array of primitives
+//! which can be passed directly to graphics rendering API.
 //!
-//! Advantages are :
-//! 1) Decrease strongly the loading time.
-//! 2) Decrease strongly the display time using optimized Opengl
-//! primitives.
-//! 3) Enable to change dynamically the components of the primitive
-//! (vertice,normal,color,texture coordinates).
-//! 4) Add true triangle and quadrangle strips or fans capabilities.
+//! The basic interface consists of the following parts:
+//! 1) Specifying primitive type.
+//!    WARNING! Particular primitive types might be unsupported by specific hardware/graphics API (like quads and polygons).
+//!             It is always preferred using one of basic types having maximum compatibility:
+//!             Point, Triangle (or Triangle strip), Segment aka Lines (or Polyline aka Line Strip).
+//!    Primitive strip types can be used to reduce memory usage as alternative to Indexed arrays.
+//! 2) Vertex array.
+//!    - Specifying the (maximum) number of vertexes within array.
+//!    - Specifying the vertex attributes, complementary to mandatory vertex Position (normal, color, UV texture coordinates).
+//!    - Defining vertex values by using various versions of AddVertex() or SetVertex*() methods.
+//! 3) Index array (optional).
+//!    - Specifying the (maximum) number of indexes (edges).
+//!    - Defining index values by using AddEdge() method; the index value should be within number of defined Vertexes.
+//!
+//!    Indexed array allows sharing vertex data across Primitives and thus reducing memory usage,
+//!    since index size is much smaller then size of vertex with all its attributes.
+//!    It is a preferred way for defining primitive array and main alternative to Primitive Strips for optimal memory usage,
+//!    although it is also possible (but unusual) defining Indexed Primitive Strip.
+//!    Note that it is NOT possible sharing Vertex Attributes partially (e.g. share Position, but have different Normals);
+//!    in such cases Vertex should be entirely duplicated with all Attributes.
+//! 4) Bounds array (optional).
+//!    - Specifying the (maximum) number of bounds.
+//!    - Defining bounds using AddBound() methods.
+//!
+//!    Bounds allow splitting Primitive Array into sub-groups.
+//!    This is useful only in two cases - for specifying per-group color and for restarting Primitive Strips.
+//!    WARNING! Bounds within Primitive Array break rendering batches into parts (additional for loops),
+//!             affecting rendering performance negatively (increasing CPU load).
+
 class Graphic3d_ArrayOfPrimitives : public Standard_Transient
 {
   DEFINE_STANDARD_RTTIEXT(Graphic3d_ArrayOfPrimitives, Standard_Transient)
