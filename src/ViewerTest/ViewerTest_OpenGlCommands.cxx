@@ -155,10 +155,7 @@ void VUserDrawObj::ComputeSelection (const Handle(SelectMgr_Selection)& theSelec
 
 void VUserDrawObj::Render(const Handle(OpenGl_Workspace)& theWorkspace) const
 {
-  // this sample does not use GLSL programs - make sure it is disabled
-  Handle(OpenGl_Context) aCtx = theWorkspace->GetGlContext();
-  aCtx->BindProgram (Handle(OpenGl_ShaderProgram)());
-  aCtx->ShaderManager()->PushState (Handle(OpenGl_ShaderProgram)());
+  const Handle(OpenGl_Context)& aCtx = theWorkspace->GetGlContext();
 
   // To test linking against OpenGl_Workspace and all aspect classes
   const OpenGl_AspectMarker* aMA = theWorkspace->AspectMarker();
@@ -167,19 +164,24 @@ void VUserDrawObj::Render(const Handle(OpenGl_Workspace)& theWorkspace) const
   aTA->Aspect()->Font();
   OpenGl_Vec4 aColor = theWorkspace->LineColor();
 
-#if !defined(GL_ES_VERSION_2_0)
+  aCtx->ShaderManager()->BindLineProgram (Handle(OpenGl_TextureSet)(), false, false, false, Handle(OpenGl_ShaderProgram)());
+  aCtx->SetColor4fv (aColor);
+
+  const OpenGl_Vec3 aVertArray[4] =
+  {
+    OpenGl_Vec3(myCoords[0], myCoords[1], myCoords[2]),
+    OpenGl_Vec3(myCoords[3], myCoords[4], myCoords[2]),
+    OpenGl_Vec3(myCoords[3], myCoords[4], myCoords[5]),
+    OpenGl_Vec3(myCoords[0], myCoords[1], myCoords[5]),
+  };
+  Handle(OpenGl_VertexBuffer) aVertBuffer = new OpenGl_VertexBuffer();
+  aVertBuffer->Init (aCtx, 3, 4, aVertArray[0].GetData());
+
   // Finally draw something to make sure UserDraw really works
-  glPushAttrib(GL_ENABLE_BIT);
-  glDisable(GL_LIGHTING);
-  glColor4fv(aColor.GetData());
-  glBegin(GL_LINE_LOOP);
-  glVertex3f(myCoords[0], myCoords[1], myCoords[2]);
-  glVertex3f(myCoords[3], myCoords[4], myCoords[2]);
-  glVertex3f(myCoords[3], myCoords[4], myCoords[5]);
-  glVertex3f(myCoords[0], myCoords[1], myCoords[5]);
-  glEnd();
-  glPopAttrib();
-#endif
+  aVertBuffer->BindAttribute  (aCtx, Graphic3d_TOA_POS);
+  glDrawArrays(GL_LINE_LOOP, 0, aVertBuffer->GetElemsNb());
+  aVertBuffer->UnbindAttribute(aCtx, Graphic3d_TOA_POS);
+  aVertBuffer->Release (aCtx.get());
 }
 
 } // end of anonymous namespace
