@@ -1,0 +1,52 @@
+puts "# This test is for command testfile, used to check new data files "
+puts "# before adding to the data base:"
+puts "# - bottle.brep should be reported as already in data base"
+puts "# - hammer_copy.igs should be reported as duplicate"
+puts "# - square.brep should be reported as new, with warnings on DOS encoding"
+puts "#   and presence of triangulation"
+puts ""
+
+puts "# Preparing test data files..."
+
+# find reference data files (they should be present, otherwise test is meaningless)
+set bottle [locate_data_file bottle.brep]
+set hammer [locate_data_file hammer.iges]
+
+# bottle is simply copied
+file copy -force $bottle ${imagedir}/bottle.brep
+
+# hammer is copied with different name and DOS encoding
+set fd [open $hammer r]
+set hammer_content [read $fd]
+close $fd
+set fd [open ${imagedir}/_hammer_copy.igs w]
+fconfigure $fd -translation crlf
+puts -nonewline $fd $hammer_content
+close $fd
+
+# square is created anew
+pload MODELING
+box b 11.1 11.1 11.1
+explode b f
+tcopy b_1 f
+incmesh f 0.01
+save f ${imagedir}/_square.brep
+
+set fd [open ${imagedir}/_square.brep r]
+set square_content [read $fd]
+close $fd
+set fd [open ${imagedir}/_square.brep w]
+fconfigure $fd -translation crlf
+puts -nonewline $fd $square_content
+close $fd
+
+puts ""
+puts "REQUIRED ALL: bottle.brep: already present"
+puts "REQUIRED ALL: hammer_copy.igs: duplicate"
+puts "REQUIRED ALL: square.brep: new file"
+puts "REQUIRED ALL: Warning: DOS encoding detected"
+puts "REQUIRED ALL: Warning: shape contains triangulation"
+
+testfile [list ${imagedir}/bottle.brep ${imagedir}/_hammer_copy.igs ${imagedir}/_square.brep]
+
+puts "TEST COMPLETED"

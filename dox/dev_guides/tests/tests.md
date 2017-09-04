@@ -192,7 +192,11 @@ Use prefix <i>bug</i> followed by Mantis issue ID and, if necessary, additional 
 	*	If the test case reports error due to an existing problem and the fix is not available, add @ref testmanual_3_6 "TODO" statement for each error to mark it as a known problem. The TODO statements must be specific so as to match the actually generated messages but not all similar errors.
 	*	To check expected output which should be obtained as the test result, add @ref testmanual_3_7 "REQUIRED" statement for each line of output to mark it as required.
 	*	If the test case produces error messages (contained in parse.rules), which are expected in that test and should not be considered as its failure (e.g. test for *checkshape* command), add REQUIRED statement for each error to mark it as required output.
-4.	If the test uses data file(s) that are not yet present in the test database, it is possible to put them to (sub)directory pointed out by *CSF_TestDataPath* variable for running test. The files should be attached to the Mantis issue corresponding to the tested modification.
+4.	To check whether the data files needed for the test are already present in the database, use DRAW command *testfile* (see below).
+    If the data file is already present, use it for new test instead of adding a duplicate.
+    If the data file(s) are not yet present in the test database, put them to some folder and add it to the environment variable *CSF_TestDataPath* to be found by the test system.
+    Information on where the data files can be accessed by OCC team for putting to official database should be provided in comment to Mantis issue, clearly indicating how names of the files used by the test script match the actual names of the files.
+    The simplest way is to attach the data files to the Mantis issue, with the same names as used by the test script.
 5.	Check that the test case runs as expected (test for fix: OK with the fix, FAILED without the fix; test for existing problem: BAD), and integrate it to the Git branch created for the issue.
 
 Example:
@@ -216,6 +220,33 @@ restore [locate_data_file bug210_a.brep] a
 
 fixshape result a 0.01 0.01
 checkshape result
+~~~~~
+
+DRAW command testfile should be used to check the data files being used by the test for possible duplication of content or names.
+The command accepts list of paths to files being checked as single argument, and will give conclusion on each of the files, for instance:
+
+~~~~~
+Draw[1]> testfile [glob /my/data/path/bug12345*]
+Collecting info on test data files repository...
+Checking new file(s)...
+
+* /my/data/path/bug12345.brep: duplicate
+  already present under name bug28773_1.brep
+  --> //server/occt_tests_data/public/brep/bug28773_1.brep
+
+* /my/data/path/cadso.brep: new file
+  Warning: DOS encoding detected, consider converting to
+           UNIX unless DOS line ends are needed for the test
+  Warning: shape contains triangulation (946 triangles),
+           consider removing them unless they are needed for the test!
+  BREP size=201 KiB, nbfaces=33, nbedges=94 -> private
+
+* /my/data/path/case_8_wire3.brep: already present
+  --> //server/occt_tests_data/public/brep/case_8_wire3.brep
+
+* /my/data/path/case_8_wire4.brep: error
+  name is already used by existing file
+  --> //server/occt_tests_data/public/brep/case_8_wire4.brep
 ~~~~~
 
 @section testmanual_2 Organization of Test Scripts

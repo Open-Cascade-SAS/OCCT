@@ -800,20 +800,29 @@ proc testdiff {dir1 dir2 args} {
 
 # Procedure to check data file before adding it to repository
 help testfile {
-  Check data file and prepare it for putting to test data files repository.
-  Use: testfile [filelist]
+  Checks specified data files for putting them into the test data files repository.
+
+  Use: testfile filelist
 
   Will report if:
   - data file (non-binary) is in DOS encoding (CR/LF)
   - same data file (with same or another name) already exists in the repository
   - another file with the same name already exists 
-  Note that names are assumed to be case-insensitive (for Windows).
+  Note that names are considered to be case-insensitive (for compatibility 
+  with Windows).
 
   Unless the file is already in the repository, tries to load it, reports
   the recognized file format, file size, number of faces and edges in the 
-  loaded shape (if any), and makes snapshot (in the temporary directory).
+  loaded shape (if any), information contained its triangulation, and makes 
+  snapshot (in the temporary directory).
+
   Finally it advises whether the file should be put to public section of the 
   repository.
+
+  Use: testfile -check
+
+  If "-check" is given as an argument, then procedure will check files already 
+  located in the repository (for possible duplicates and for DOS encoding).
 }
 proc testfile {filelist} {
     global env
@@ -823,8 +832,11 @@ proc testfile {filelist} {
         error "Environment variable CSF_TestDataPath must be defined!"
     }
 
+    set checkrepo f
+    if { "$filelist" == "-check" } { set checkrepo t }
+
     # build registry of existing data files (name -> path) and (size -> path)
-    puts "Checking available test data files..."
+    puts "Collecting info on test data files repository..."
     foreach dir [_split_path $env(CSF_TestDataPath)] {
         while {[llength $dir] != 0} {
             set curr [lindex $dir 0]
@@ -833,87 +845,141 @@ proc testfile {filelist} {
             foreach file [glob -nocomplain -directory $curr -type f *] {
                 set name [file tail $file]
                 set name_lower [string tolower $name]
+                set size [file size $file]
 
                 # check that the file is not in DOS encoding
-                if { [_check_dos_encoding $file] } {
-                    puts "Warning: file $file is in DOS encoding; was this intended?"
-                }
-                _check_file_format $file
-
-                # check if file with the same name is present twice or more
-                if { [info exists names($name_lower)] } {
-                    puts "Error: more than one file with name $name is present in the repository:"
-                    if { [_diff_files $file $names($name_lower)] } {
-                        puts "(files are different by content)"
-                    } else {
-                        puts "(files are same by content)"
+                if { $checkrepo } {
+                    if { [_check_dos_encoding $file] } {
+                        puts "Warning: file $file is in DOS encoding; was this intended?"
                     }
-                    puts "--> $file"
-                    puts "--> $names($name_lower)"
-                    continue
-                } 
+                    _check_file_format $file
+
+                    # check if file with the same name is present twice or more
+                    if { [info exists names($name_lower)] } {
+                        puts "Error: more than one file with name $name is present in the repository:"
+                        if { [_diff_files $file $names($name_lower)] } {
+                            puts "(files are different by content)"
+                        } else {
+                            puts "(files are same by content)"
+                        }
+                        puts "--> $file"
+                        puts "--> $names($name_lower)"
+                        continue
+                    } 
                 
-                # check if file with the same content exists
-                set size [file size $file]
-                if { [info exists sizes($size)] } {
-                    foreach other $sizes($size) {
-                        if { ! [_diff_files $file $other] } {
-                            puts "Warning: two files with the same content found:"
-                            puts "--> $file"
-                            puts "--> $other"
+                    # check if file with the same content exists
+                    if { [info exists sizes($size)] } {
+                        foreach other $sizes($size) {
+                            if { ! [_diff_files $file $other] } {
+                                puts "Warning: two files with the same content found:"
+                                puts "--> $file"
+                                puts "--> $other"
+                            }
                         }
                     }
                 }
 
                 # add the file to the registry
-                set names($name_lower) $file
+                lappend names($name_lower) $file
                 lappend sizes($size) $file
             }
         }
     }
-    if { [llength $filelist] <= 0 } { return }
+    if { $checkrepo || [llength $filelist] <= 0 } { return }
 
     # check the new files
     set has_images f
     puts "Checking new file(s)..."
     foreach file $filelist {
-        # check for DOS encoding
-        if { [_check_dos_encoding $file] } {
-            puts "$file: Warning: DOS encoding detected"
-        }
-
         set name [file tail $file]
         set name_lower [string tolower $name]
+        set found f
 
         # check for presence of the file with same name
         if { [info exists names($name_lower)] } {
-            if { [_diff_files $file $names($name_lower)] } {
-                puts "$file: Error: name is already used by existing file\n--> $names($name_lower)"
-            } else {
-                puts "$file: OK: already in the repository \n--> $names($name_lower)"
-                continue
+            set found f
+            foreach other $names($name_lower) {
+                # avoid comparing the file with itself
+                if { [file normalize $file] == [file normalize $other] } {
+                    continue
+                }
+                # compare content
+                if { [_diff_files $file $other] } {
+                    puts "\n* $file: error\n  name is already used by existing file\n  --> $other"
+                } else {
+                    puts "\n* $file: already present \n  --> $other"
+                }
+                set found t
+                break
             }
+            if { $found } { continue }
+        }
+
+        # get size of the file; if it is in DOS encoding and less than 1 MB,
+        # estimate also its size in UNIX encoding to be able to find same 
+        # file if already present but in UNIX encoding
+        set sizeact [file size $file]
+        set sizeunx ""
+        set isdos [_check_dos_encoding $file]
+        if { $isdos && $sizeact < 10000000 } {
+            set fd [open $file r]
+            fconfigure $fd -translation crlf
+            set sizeunx [string length [read $fd]]
+            close $fd
         }
                 
         # check if file with the same content exists
-        set size [file size $file]
-        if { [info exists sizes($size)] } {
-            set found f
+        foreach size "$sizeact $sizeunx" {
+          if { [info exists sizes($size)] } {
             foreach other $sizes($size) {
+                # avoid comparing the file with itself
+                if { [file normalize $file] == [file normalize $other] } {
+                    continue
+                }
+                # compare content
                 if { ! [_diff_files $file $other] } {
-                    puts "$file: OK: the same file is already present under name [file tail $other]\n--> $other"
+                    puts "\n* $file: duplicate \n  already present under name [file tail $other]\n  --> $other"
                     set found t
                     break
                 }
             }
-            if { $found } { continue }
+            if { $found } { break }
+          }
+        }
+        if { $found } { continue }
+
+        # file is not present yet, so to be analyzed
+        puts "\n* $file: new file"
+
+        # add the file to the registry as if it were added to the repository,
+        # to report possible duplicates among the currently processed files
+        lappend names($name_lower) $file
+        if { "$sizeunx" != "" } {
+            lappend sizes($sizeunx) $file
+        } else {
+            lappend sizes($sizeact) $file
+        }
+
+        # first of all, complain if it is in DOS encoding
+        if { $isdos } {
+            puts "  Warning: DOS encoding detected, consider converting to"
+            puts "           UNIX unless DOS line ends are needed for the test"
         }
 
         # try to read the file
         set format [_check_file_format $file]
         if { [catch {uplevel load_data_file $file $format a}] } {
-            puts "$file: Error: Cannot read as $format file"
+            puts "  Warning: Cannot read as $format file"
             continue
+        }
+
+        # warn if shape contains triangulation
+        pload MODELING
+        if { "$format" != "STL" &&
+             [regexp {contains\s+([0-9]+)\s+triangles} [uplevel trinfo a] res nbtriangles] &&
+             $nbtriangles != 0 } {
+            puts "  Warning: shape contains triangulation ($nbtriangles triangles),"
+            puts "           consider removing them unless they are needed for the test!"
         }
 
         # get number of faces and edges
@@ -928,16 +994,10 @@ proc testfile {filelist} {
             set dir public
         } else {
             set dir private
-            # check if one of names of that file corresponds to typical name for 
-            # MDTV bugs or has extension .rle, this should be old model
-            if { [regexp -nocase {.*(cts|ats|pro|buc|ger|fra|usa|uki)[0-9]+.*} $name] ||
-                 [regexp -nocase {[.]rle\y} $name] } {
-                set dir old
-            }
         }
 
         # add stats
-        puts "$file: $format size=[expr $size / 1024] KiB, nbfaces=$faces, nbedges=$edges -> $dir"
+        puts "  $format size=[expr $size / 1024] KiB, nbfaces=$faces, nbedges=$edges -> $dir"
 
         set tmpdir [_get_temp_dir]
         file mkdir $tmpdir/$dir
@@ -945,6 +1005,7 @@ proc testfile {filelist} {
         # make snapshot
         pload AISV
         uplevel vdisplay a
+        uplevel vsetdispmode 1
         uplevel vfit
         uplevel vzfit
         uplevel vdump $tmpdir/$dir/[file rootname [file tail $file]].png
@@ -2346,7 +2407,7 @@ proc load_data_file {file format shape} {
         DRAW { uplevel restore $file $shape }
         IGES { pload XSDRAW; uplevel igesbrep $file $shape * }
         STEP { pload XSDRAW; uplevel stepread $file __a *; uplevel renamevar __a_1 $shape }
-        STL  { pload XSDRAW; uplevel readstl $shape $file }
+        STL  { pload XSDRAW; uplevel readstl $shape $file triangulation }
         default { error "Cannot read $format file $file" }
     }
 }
