@@ -1795,45 +1795,38 @@ void V3d_View::Convert(const Standard_Integer Xp,
 //function : ConvertWithProj
 //purpose  :
 //=======================================================================
-void V3d_View::ConvertWithProj(const Standard_Integer Xp,
-                               const Standard_Integer Yp,
-                               Standard_Real& X,
-                               Standard_Real& Y,
-                               Standard_Real& Z,
-                               Standard_Real& Dx,
-                               Standard_Real& Dy,
-                               Standard_Real& Dz) const
+void V3d_View::ConvertWithProj(const Standard_Integer theXp,
+                               const Standard_Integer theYp,
+                               Standard_Real& theX,
+                               Standard_Real& theY,
+                               Standard_Real& theZ,
+                               Standard_Real& theDx,
+                               Standard_Real& theDy,
+                               Standard_Real& theDz) const
 {
   V3d_UnMapped_Raise_if (!myView->IsDefined(), "view has no window");
-  Standard_Integer aHeight, aWidth;
+  Standard_Integer aHeight = 0, aWidth = 0;
   MyWindow->Size (aWidth, aHeight);
 
-  Standard_Real anX = 2.0 * Xp / aWidth - 1.0;
-  Standard_Real anY = 2.0 * (aHeight - 1 - Yp) / aHeight - 1.0;
-  Standard_Real  aZ = 2.0 * 0.0 - 1.0;
+  const Standard_Real anX = 2.0 * theXp / aWidth - 1.0;
+  const Standard_Real anY = 2.0 * (aHeight - 1 - theYp) / aHeight - 1.0;
+  const Standard_Real  aZ = 2.0 * 0.0 - 1.0;
 
-  Handle(Graphic3d_Camera) aCamera = Camera();
+  const Handle(Graphic3d_Camera)& aCamera = Camera();
+  const gp_Pnt aResult1 = aCamera->UnProject (gp_Pnt (anX, anY, aZ));
+  const gp_Pnt aResult2 = aCamera->UnProject (gp_Pnt (anX, anY, aZ - 10.0));
 
-  gp_Pnt aResult = aCamera->UnProject (gp_Pnt (anX, anY, aZ));
-
-  X = aResult.X();
-  Y = aResult.Y();
-  Z = aResult.Z();
-
-  Graphic3d_Vertex aVrp;
-  aVrp.SetCoord (X, Y, Z);
-
-  aResult = aCamera->UnProject (gp_Pnt (anX, anY, aZ - 10.0));
-
-  Graphic3d_Vec3d aNormDir;
-  aNormDir.x() = X - aResult.X();
-  aNormDir.y() = Y - aResult.Y();
-  aNormDir.z() = Z - aResult.Z();
+  theX = aResult1.X();
+  theY = aResult1.Y();
+  theZ = aResult1.Z();
+  Graphic3d_Vec3d aNormDir (theX - aResult2.X(),
+                            theY - aResult2.Y(),
+                            theZ - aResult2.Z());
   aNormDir.Normalize();
 
-  Dx = aNormDir.x();
-  Dy = aNormDir.y();
-  Dz = aNormDir.z();
+  theDx = aNormDir.x();
+  theDy = aNormDir.y();
+  theDz = aNormDir.z();
 }
 
 //=======================================================================

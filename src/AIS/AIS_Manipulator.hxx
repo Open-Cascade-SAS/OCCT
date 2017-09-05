@@ -215,18 +215,18 @@ public:
   //! @return true if manipulator is attached to some interactive object (has owning object).
   Standard_Boolean IsAttached() const { return HasOwner(); }
 
-  //! @return true if some part of manipulator is selected (tranformation mode is active, and owning object can be rtansformated).
+  //! @return true if some part of manipulator is selected (transformation mode is active, and owning object can be transformed).
   Standard_Boolean HasActiveMode() const { return IsAttached() && myCurrentMode != AIS_MM_None; }
 
   Standard_Boolean HasActiveTransformation() { return myHasStartedTransformation; }
 
-  gp_Trsf StartTransformation() const { return myStartTrsfs.Size() < 1 ? gp_Trsf() : myStartTrsfs(1); }
+  gp_Trsf StartTransformation() const { return !myStartTrsfs.IsEmpty() ? myStartTrsfs.First() : gp_Trsf(); }
 
-  gp_Trsf StartTransformation (const Standard_Integer theIndex) const
+  gp_Trsf StartTransformation (Standard_Integer theIndex) const
   {
     Standard_ProgramError_Raise_if (theIndex < 1 || theIndex > Objects()->Upper(),
       "AIS_Manipulator::StartTransformation(): theIndex is out of bounds");
-    return myStartTrsfs.Size() < 1 ? gp_Trsf() : myStartTrsfs (theIndex);
+    return !myStartTrsfs.IsEmpty() ? myStartTrsfs (theIndex) : gp_Trsf();
   }
 
 public: //! @name Configuration of graphical transformations
@@ -245,7 +245,7 @@ public: //! @name Configuration of graphical transformations
   //! Redefines transform persistence management to setup transformation for sub-presentation of axes.
   //! @warning this interactive object does not support custom transformation persistence when
   //! using \sa ZoomPersistence mode. In this mode the transformation persistence flags for
-  //! presentations are overriden by this class.
+  //! presentations are overridden by this class.
   //! @warning Invokes debug assertion to catch incompatible usage of the method with \sa ZoomPersistence mode,
   //! silently does nothing in release mode.
   //! @warning revise use of AdjustSize argument of of \sa AttachToObjects method
@@ -298,17 +298,17 @@ public:
 public: //! @name Presentation computation
 
   //! Fills presentation.
-  //! @note Manipulator presentation does not use display mode and for all modes has the same presenatation.
+  //! @note Manipulator presentation does not use display mode and for all modes has the same presentation.
   Standard_EXPORT virtual void Compute (const Handle(PrsMgr_PresentationManager3d)& thePrsMgr,
                                         const Handle(Prs3d_Presentation)& thePrs,
                                         const Standard_Integer theMode = 0) Standard_OVERRIDE;
 
   //! Computes selection sensitive zones (triangulation) for manipulator.
-  //! @param theNode [in] Seldction mode that is treated as transformation mode.
+  //! @param theNode [in] Selection mode that is treated as transformation mode.
   Standard_EXPORT virtual void ComputeSelection (const Handle(SelectMgr_Selection)& theSelection,
                                                  const Standard_Integer theMode) Standard_OVERRIDE;
 
-  //! Disables auto highlighting to use HilightSelected() and HilightOwnerWithColor() overriden methods.
+  //! Disables auto highlighting to use HilightSelected() and HilightOwnerWithColor() overridden methods.
   Standard_EXPORT virtual Standard_Boolean IsAutoHilight() const Standard_OVERRIDE
   {
     return Standard_False;
@@ -352,7 +352,7 @@ protected:
   Standard_EXPORT virtual void setLocalTransformation (const Handle(Geom_Transformation)& theTrsf) Standard_OVERRIDE;
   using AIS_InteractiveObject::SetLocalTransformation; // hide visibility
 
-protected: //! @name Auxilliary classes to fill presentation with proper primitives
+protected: //! @name Auxiliary classes to fill presentation with proper primitives
 
   class Quadric
   {
@@ -616,16 +616,16 @@ protected:
 
   Axis myAxes[3]; //!< Tree axes of the manipulator.
   Sphere myCenter; //!< Visual part displaying the center sphere of the manipulator.
-  gp_Ax2 myPosition; //!< Position of the manipualtor object. it displayes its location and position of its axes.
+  gp_Ax2 myPosition; //!< Position of the manipulator object. it displays its location and position of its axes.
 
   Standard_Integer myCurrentIndex; //!< Index of active axis.
-  AIS_ManipulatorMode myCurrentMode; //!< Name of active manipualtion mode.
+  AIS_ManipulatorMode myCurrentMode; //!< Name of active manipulation mode.
 
   Standard_Boolean myIsActivationOnDetection; //!< Manual activation of modes (not on parts selection).
   Standard_Boolean myIsZoomPersistentMode; //!< Zoom persistence mode activation.
   BehaviorOnTransform myBehaviorOnTransform; //!< Behavior settings applied on manipulator when transforming an object.
 
-protected: //! @name Fields for interactive trnasformation. Fields only for internal needs. They do not have public interface.
+protected: //! @name Fields for interactive transformation. Fields only for internal needs. They do not have public interface.
 
   NCollection_Sequence<gp_Trsf> myStartTrsfs; //!< Owning object transformation for start. It is used internally.
   Standard_Boolean myHasStartedTransformation; //!< Shows if transformation is processed (sequential calls of Transform()).
@@ -633,7 +633,7 @@ protected: //! @name Fields for interactive trnasformation. Fields only for inte
   gp_Pnt myStartPick; //! 3d point corresponding to start mouse pick.
   Standard_Real myPrevState; //! Previous value of angle during rotation.
 
-  //! Aspect used to colour current detected part and current selected part.
+  //! Aspect used to color current detected part and current selected part.
   Handle(Prs3d_ShadingAspect) myHighlightAspect;
 public:
 

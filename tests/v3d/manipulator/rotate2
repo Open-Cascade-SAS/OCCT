@@ -1,0 +1,22 @@
+puts "=================================="
+puts "0029084: Visualization, AIS_Manipulator - broken transformation is applied at Rotation angles near to Pi"
+puts "=================================="
+
+pload MODELING VISUALIZATION
+box b 1 2 3
+vclear
+vinit View1
+vdisplay -dispMode 0 b
+vpoint p0 0 0 0
+vtop
+vfit
+vmanipulator m -attach b
+vmoveto 135 275
+vselect 135 275
+vmanipulator m -startTransform 135 275
+vdump $imagedir/${casename}_0.png
+for {set x 250} {$x < 400} {set x [expr $x+5]} { vmanipulator m -transform $x 400 }
+vdump $imagedir/${casename}_1.png
+for {set y 400} {$y > 300} {set y [expr $y-1]} { vmanipulator m -transform 400 $y }
+vdump $imagedir/${casename}_2.png
+vmanipulator m -stopTransform
