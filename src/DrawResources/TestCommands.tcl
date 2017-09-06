@@ -1517,7 +1517,7 @@ proc _html_highlight {status line} {
 
 # Internal procedure to generate HTML page presenting log of the tests
 # execution in tabular form, with links to reports on individual cases
-proc _log_html_summary {logdir log totals regressions improvements total_time} {
+proc _log_html_summary {logdir log totals regressions improvements skipped total_time} {
     global _test_case_regexp
 
     # create missing directories as needed
@@ -1564,7 +1564,7 @@ proc _log_html_summary {logdir log totals regressions improvements total_time} {
     }
    
     # print regressions and improvements
-    foreach featured [list $regressions $improvements] {
+    foreach featured [list $regressions $improvements $skipped] {
         if { [llength $featured] <= 1 } { continue }
         set status [string trim [lindex $featured 0] { :}]
         puts $fd "<h2>$status</h2>"
@@ -1671,13 +1671,16 @@ proc _log_summarize {logdir log {total_time {}}} {
     set totals {}
     set improvements {Improvements:}
     set regressions {Failed:}
+    set skipped {Skipped:}
     if { [info exists stat] } {
         foreach status [lsort [array names stat]] {
             lappend totals [list [llength $stat($status)] $status]
 
-            # separately count improvements (status starting with IMP) and regressions (all except IMP, OK, BAD, and SKIP)
+            # separately count improvements (status starting with IMP), skipped (status starting with SKIP) and regressions (all except IMP, OK, BAD, and SKIP)
             if { [regexp -nocase {^IMP} $status] } {
                 eval lappend improvements $stat($status)
+            } elseif { [regexp -nocase {^SKIP} $status] } {
+                eval lappend skipped $stat($status)
             } elseif { $status != "OK" && ! [regexp -nocase {^BAD} $status] && ! [regexp -nocase {^SKIP} $status] } {
                 eval lappend regressions $stat($status)
             }
@@ -1692,6 +1695,9 @@ proc _log_summarize {logdir log {total_time {}}} {
         if { [llength $regressions] > 1 } {
             _log_and_puts log [join $regressions "\n  "]
         }
+        if { [llength $skipped] > 1 } {
+            _log_and_puts log [join $skipped "\n  "]
+        }
         if { [llength $improvements] == 1 && [llength $regressions] == 1 } {
             _log_and_puts log "No regressions"
         }
@@ -1701,7 +1707,7 @@ proc _log_summarize {logdir log {total_time {}}} {
 
     # save log to files
     if { $logdir != "" } {
-        _log_html_summary $logdir $log $totals $regressions $improvements $total_time
+        _log_html_summary $logdir $log $totals $regressions $improvements $skipped $total_time
         _log_save $logdir/tests.log [join $log "\n"] "Tests summary"
     }
 
