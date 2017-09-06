@@ -70,6 +70,9 @@ public:
   //! Returns the entity with index theIndex in the set
   Standard_EXPORT const Handle(SelectMgr_SensitiveEntity)& GetSensitiveById (const Standard_Integer theIndex) const;
 
+  //! Returns map of entities.
+  const SelectMgr_IndexedMapOfHSensitive& Sensitives() const { return mySensitives; }
+
 private:
 
   SelectMgr_IndexedMapOfHSensitive mySensitives;     //!< Map of entities and its corresponding index in BVH

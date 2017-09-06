@@ -34,6 +34,7 @@ public:
   Standard_Real      Tolerance;       //!< tolerance used for selecting candidates
   Standard_Integer   Priority;        //!< selection priority
   Standard_Integer   ZLayerPosition;  //!< ZLayer rendering order index, stronger than a depth
+  Standard_Integer   NbOwnerMatches;  //!< overall number of entities collected for the same owner
   Standard_Boolean   ToPreferClosest; //!< whether closest object is preferred even if has less priority
 
 public:
@@ -46,6 +47,7 @@ public:
     Tolerance(0.0),
     Priority (0),
     ZLayerPosition  (0),
+    NbOwnerMatches  (0),
     ToPreferClosest (Standard_True) {}
 
   //! Comparison operator.

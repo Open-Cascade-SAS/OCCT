@@ -634,63 +634,6 @@ static Standard_Integer OCC301 (Draw_Interpretor& di, Standard_Integer argc, con
   return 0;
 }
 
-static Standard_Integer OCC60 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
-{
-  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
-  if(aContext.IsNull()) { 
-    di << "use 'vinit' command before " << argv[0] << "\n";
-    return 1;
-  }
-  if(argc < 5) {
-    di << "Usage : " << argv[0] << " xmin ymin xmax ymax; selection window\n";
-    return 1;
-  }
-
-  Standard_Integer xmin = Draw::Atoi(argv[1]);
-  Standard_Integer ymin = Draw::Atoi(argv[2]);
-  Standard_Integer xmax = Draw::Atoi(argv[3]);
-  Standard_Integer ymax = Draw::Atoi(argv[4]);
-
-  Handle(V3d_View) V3dView = ViewerTest::CurrentView();
-
-  Handle(ViewerTest_EventManager) EM = ViewerTest::CurrentEventManager();
-  EM->Select(xmin,ymin,xmax,ymax);
-
-  return 0;
-}
-
-static Standard_Integer OCC70 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
-{
-  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
-  if(aContext.IsNull()) { 
-    di << "use 'vinit' command before " << argv[0] << "\n";
-    return 1;
-  }
-  if(argc < 7) {
-    di << "Usage : " << argv[0] << " x1 y1 x2 y2 x3 y3 [x y ...]; polygon of selection\n";
-    return 1;
-  }
-  if (((argc - 1) % 2) != 0) {
-    di << "Usage : " << argv[0] << " x1 y1 x2 y2 x3 y3 [x y ...]; polygon of selection\n";
-    return 1;
-  }
-
-  Standard_Integer i, j, np = (argc-1) / 2;
-  TColgp_Array1OfPnt2d Polyline(1,np);
-  j = 1;
-  for (i = 1; i <= np; i++) {
-    Polyline(i) = gp_Pnt2d(Draw::Atof(argv[j]), Draw::Atof(argv[j+1]));
-    j += 2;
-  }
-
-  Handle(V3d_View) V3dView = ViewerTest::CurrentView();
-
-  aContext->Select (Polyline, V3dView, Standard_False);
-  aContext->UpdateCurrentViewer();
-
-  return 0;
-}
-
 static Standard_Integer OCC261 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
   if(argc != 2) {
@@ -758,8 +701,6 @@ void QABugs::Commands_16(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC395", "OCC395 edge_result edge1 edge2", __FILE__, OCC395, group);
   theCommands.Add ("OCC394", "OCC394 edge_result edge [tol [mode [tolang]]]", __FILE__, OCC394, group);
   theCommands.Add ("OCC301", "OCC301 ArcRadius ArrowSize", __FILE__, OCC301, group);
-  theCommands.Add ("OCC60", "OCC60 xmin ymin xmax ymax; selection window", __FILE__, OCC60, group);
-  theCommands.Add ("OCC70", "OCC70 x1 y1 x2 y2 x3 y3 [x y ...]; polygon of selection", __FILE__, OCC70, group);
   theCommands.Add ("OCC261", "OCC261 Doc", __FILE__, OCC261, group);
   theCommands.Add ("OCC710", "OCC710 path", __FILE__, OCC710, group);
   theCommands.Add ("OCC904", "OCC904 result shape nonmanifoldmode(0/1)", __FILE__, OCC904, group);

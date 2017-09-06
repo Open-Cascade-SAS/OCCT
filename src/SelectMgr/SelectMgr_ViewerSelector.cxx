@@ -248,21 +248,22 @@ void SelectMgr_ViewerSelector::checkOverlap (const Handle(SelectBasics_Sensitive
   aCriterion.Tolerance = theEntity->SensitivityFactor() / 33.0;
   aCriterion.ToPreferClosest = preferclosest;
 
-  const Standard_Integer aPrevStoredIndex = mystored.FindIndex (anOwner);
-  if (aPrevStoredIndex != 0)
+  if (SelectMgr_SortCriterion* aPrevCriterion = mystored.ChangeSeek (anOwner))
   {
+    ++aPrevCriterion->NbOwnerMatches;
+    aCriterion.NbOwnerMatches = aPrevCriterion->NbOwnerMatches;
     if (theMgr.GetActiveSelectionType() != SelectBasics_SelectingVolumeManager::Box)
     {
-      SelectMgr_SortCriterion& aPrevCriterion = mystored.ChangeFromIndex (aPrevStoredIndex);
-      if (aCriterion > aPrevCriterion)
+      if (aCriterion > *aPrevCriterion)
       {
         updatePoint3d (aCriterion, theInversedTrsf, theMgr);
-        aPrevCriterion = aCriterion;
+        *aPrevCriterion = aCriterion;
       }
     }
   }
   else
   {
+    aCriterion.NbOwnerMatches = 1;
     updatePoint3d (aCriterion, theInversedTrsf, theMgr);
     mystored.Add (anOwner, aCriterion);
   }
@@ -362,6 +363,9 @@ void SelectMgr_ViewerSelector::traverseObject (const Handle(SelectMgr_Selectable
   {
     return;
   }
+
+  const Standard_Integer aFirstStored = mystored.Extent() + 1;
+
   Standard_Integer aStack[BVH_Constants_MaxTreeDepth];
   Standard_Integer aHead = -1;
   for (;;)
@@ -403,8 +407,7 @@ void SelectMgr_ViewerSelector::traverseObject (const Handle(SelectMgr_Selectable
       Standard_Integer anEndIdx = aSensitivesTree->EndPrimitive (aNode);
       for (Standard_Integer anIdx = aStartIdx; anIdx <= anEndIdx; ++anIdx)
       {
-        const Handle(SelectMgr_SensitiveEntity)& aSensitive =
-          anEntitySet->GetSensitiveById (anIdx);
+        const Handle(SelectMgr_SensitiveEntity)& aSensitive = anEntitySet->GetSensitiveById (anIdx);
         if (aSensitive->IsActiveForSelection())
         {
           const Handle(SelectBasics_SensitiveEntity)& anEnt = aSensitive->BaseSensitive();
@@ -420,6 +423,35 @@ void SelectMgr_ViewerSelector::traverseObject (const Handle(SelectMgr_Selectable
 
       aNode = aStack[aHead];
       --aHead;
+    }
+  }
+
+  // in case of Box/Polyline selection - keep only Owners having all Entities detected
+  if (mySelectingVolumeMgr.IsOverlapAllowed()
+  || (theMgr.GetActiveSelectionType() != SelectBasics_SelectingVolumeManager::Box
+   && theMgr.GetActiveSelectionType() != SelectBasics_SelectingVolumeManager::Polyline))
+  {
+    return;
+  }
+
+  for (Standard_Integer aStoredIter = mystored.Extent(); aStoredIter >= aFirstStored; --aStoredIter)
+  {
+    const SelectMgr_SortCriterion& aCriterion = mystored.FindFromIndex (aStoredIter);
+    const Handle(SelectBasics_EntityOwner)& anOwner = aCriterion.Entity->OwnerId();
+    Standard_Integer aNbOwnerEntities = 0;
+    for (SelectMgr_IndexedMapOfHSensitive::Iterator aSensIter (anEntitySet->Sensitives()); aSensIter.More(); aSensIter.Next())
+    {
+      if (aSensIter.Value()->BaseSensitive()->OwnerId() == anOwner)
+      {
+        if (++aNbOwnerEntities > aCriterion.NbOwnerMatches)
+        {
+          // Remove from index map.
+          // Considering NCollection_IndexedDataMap implementation, the values for lower indexes will not be modified.
+          // Hence, just keep iterating in backward direction.
+          mystored.RemoveFromIndex (aStoredIter);
+          break;
+        }
+      }
     }
   }
 }
