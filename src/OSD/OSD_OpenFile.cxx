@@ -13,12 +13,70 @@
 
 #ifdef _WIN32
   #include <windows.h>
+  #include <share.h>
 #endif
 
 #include <OSD_OpenFile.hxx>
 
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <fcntl.h>
+
+//! Auxiliary function converting C++ ios open mode flags to C fopen() flags.
+static int OSD_OpenFile_iosMode2FileFlags (::std::ios_base::openmode theMode)
+{
+  int aFlags = 0;
+  if (theMode & ::std::ios_base::in)
+  {
+    aFlags |= O_RDONLY;
+  }
+  if (theMode & ::std::ios_base::out)
+  {
+    aFlags |= O_WRONLY;
+    aFlags |= O_CREAT;
+    if (theMode & ::std::ios_base::app)
+    {
+      aFlags |= O_APPEND;
+    }
+    if (theMode & ::std::ios_base::trunc)
+    {
+      aFlags |= O_TRUNC;
+    }
+  }
+#ifdef _WIN32
+  if (theMode & ::std::ios_base::binary)
+  {
+    aFlags |= O_BINARY;
+  }
+  else
+  {
+    aFlags |= O_TEXT;
+  }
+#endif
+  return aFlags;
+}
+
+// ==============================================
+// function : OSD_OpenFile
+// purpose : Opens file
+// ==============================================
+int OSD_OpenFileDescriptor (const TCollection_ExtendedString& theName,
+                            ::std::ios_base::openmode theMode)
+{
+  int aFileDesc = -1;
+  const int aFlags = OSD_OpenFile_iosMode2FileFlags (theMode);
+#if defined(_WIN32)
+  const errno_t anErrCode = _wsopen_s (&aFileDesc, theName.ToWideString(), aFlags, _SH_DENYNO, _S_IREAD | _S_IWRITE);
+  if (anErrCode != 0)
+  {
+    return -1;
+  }
+#else
+  NCollection_Utf8String aString (theName.ToExtString());
+  aFileDesc = open (aString.ToCString(), aFlags);
+#endif
+  return aFileDesc;
+}
 
 // ==============================================
 // function : OSD_OpenFile

@@ -91,7 +91,7 @@ Standard_Boolean  StepSelect_WorkLibrary::WriteFile
   ofstream fout;
   OSD_OpenStream(fout,ctx.FileName(),ios::out|ios::trunc);
 
-  if (!fout || !fout.rdbuf()->is_open()) {
+  if (!fout || !fout.is_open()) {
     ctx.CCheck(0)->AddFail("Step File could not be created");
     sout<<" Step File could not be created : " << ctx.FileName() << endl; return 0;
   }

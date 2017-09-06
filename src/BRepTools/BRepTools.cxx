@@ -789,7 +789,8 @@ Standard_Boolean  BRepTools::Write(const TopoDS_Shape& Sh,
 {
   ofstream os;
   OSD_OpenStream(os, File, ios::out);
-  if (!os.rdbuf()->is_open()) return Standard_False;
+  if (!os.is_open() || !os.good())
+    return Standard_False;
 
   Standard_Boolean isGood = (os.good() && !os.eof());
   if(!isGood)

@@ -8,7 +8,9 @@ puts ""
 
 pload XDE
 
-set s [encoding convertfrom unicode "\xDE\x30\xF9\x30\xF1\x30"]
+# words "it works" translated to Traditional Chinese by Google Translate
+set s [encoding convertfrom utf-8 "\xE6\x9C\x89\xE7\x94\xA8"]
+
 igesbrep [locate_data_file bug22125_Part1_badname.igs] a *
 brepiges a ${imagedir}/Part1_badname_$s.igs
 igesbrep ${imagedir}/Part1_badname_$s.igs result *
