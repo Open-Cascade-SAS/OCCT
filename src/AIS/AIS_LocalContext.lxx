@@ -18,9 +18,6 @@
 
 #include <SelectMgr_OrFilter.hxx>
 
-inline const Handle(AIS_Selection) AIS_LocalContext::Selection() const 
-{return mySelection;}
-
 inline void AIS_LocalContext::SetAutomaticHilight(const Standard_Boolean aStatus)
 {myAutoHilight = aStatus;}
 

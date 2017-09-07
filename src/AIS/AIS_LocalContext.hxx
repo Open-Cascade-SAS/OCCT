@@ -91,8 +91,8 @@ public:
     Standard_Boolean AcceptErase() const;
   
   Standard_EXPORT void SetContext (const Handle(AIS_InteractiveContext)& aCtx);
-  
-    const Handle(AIS_Selection) Selection() const;
+
+  const Handle(AIS_Selection)& Selection() const { return mySelection; }
   
   Standard_EXPORT void Terminate (const Standard_Boolean updateviewer = Standard_True);
   

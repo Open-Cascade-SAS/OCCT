@@ -564,7 +564,9 @@ AIS_StatusOfPick AIS_InteractiveContext::Select (const Standard_Boolean toUpdate
   clearDynamicHighlight();
   if (myWasLastMain && !myLastinMain.IsNull())
   {
-    if (!myLastinMain->IsSelected() || myLastinMain->IsForcedHilight())
+    if (!myLastinMain->IsSelected()
+      || myLastinMain->IsForcedHilight()
+      || NbSelected() > 1)
     {
       SetSelected (myLastinMain, Standard_False);
       if(toUpdateViewer)
@@ -1431,13 +1433,11 @@ void AIS_InteractiveContext::EntityOwners(Handle(SelectMgr_IndexedMapOfOwner)& t
 //=======================================================================
 Standard_Integer AIS_InteractiveContext::NbSelected()
 {
-  Standard_Integer aNbSelected = 0;
-  for (InitSelected(); MoreSelected(); NextSelected())
+  if (HasOpenedContext())
   {
-    aNbSelected++;
+    return myLocalContexts (myCurLocalIndex)->Selection()->Extent();
   }
-
-  return aNbSelected;
+  return mySelection->Extent();
 }
 
 //=======================================================================

@@ -14,12 +14,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <ViewerTest_EventManager.hxx>
 
 #include <AIS_InteractiveContext.hxx>
 #include <Aspect_Grid.hxx>
 #include <Standard_Type.hxx>
 #include <V3d_View.hxx>
-#include <ViewerTest_EventManager.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(ViewerTest_EventManager,Standard_Transient)
 
@@ -88,40 +88,31 @@ void ViewerTest_EventManager::Select (const Standard_Integer theXPressed,
                                       const Standard_Integer theYMotion,
                                       const Standard_Boolean theIsAutoAllowOverlap)
 {
-  #define IS_FULL_INCLUSION Standard_True
   if (myView.IsNull()
+   || myCtx.IsNull()
    || Abs (theXPressed - theXMotion) < 2
    || Abs (theYPressed - theYMotion) < 2)
   {
     return;
   }
-  else if (!myCtx.IsNull())
+
+  if (theIsAutoAllowOverlap)
   {
-    if (theIsAutoAllowOverlap)
-    {
-      if (theYPressed == Min (theYPressed, theYMotion))
-      {
-        myCtx->MainSelector()->AllowOverlapDetection (Standard_False);
-      }
-      else
-      {
-        myCtx->MainSelector()->AllowOverlapDetection (Standard_True);
-      }
-    }
-    myCtx->Select (Min (theXPressed, theXMotion),
-                   Min (theYPressed, theYMotion),
-                   Max (theXPressed, theXMotion),
-                   Max (theYPressed, theYMotion),
-                   myView,
-                   Standard_False);
-
-    // to restore default state of viewer selector
-    if (theIsAutoAllowOverlap)
-    {
-      myCtx->MainSelector()->AllowOverlapDetection (Standard_False);
-    }
+    const Standard_Boolean toAllowOverlap = theYPressed != Min (theYPressed, theYMotion);
+    myCtx->MainSelector()->AllowOverlapDetection (toAllowOverlap);
   }
+  myCtx->Select (Min (theXPressed, theXMotion),
+                 Min (theYPressed, theYMotion),
+                 Max (theXPressed, theXMotion),
+                 Max (theYPressed, theYMotion),
+                 myView,
+                 Standard_False);
 
+  // to restore default state of viewer selector
+  if (theIsAutoAllowOverlap)
+  {
+    myCtx->MainSelector()->AllowOverlapDetection (Standard_False);
+  }
   myView->Redraw();
 }
 
@@ -137,36 +128,29 @@ void ViewerTest_EventManager::ShiftSelect (const Standard_Integer theXPressed,
                                            const Standard_Boolean theIsAutoAllowOverlap)
 {
   if (myView.IsNull()
+   || myCtx.IsNull()
    || Abs (theXPressed - theXMotion) < 2
    || Abs (theYPressed - theYMotion) < 2)
   {
     return;
   }
-  else if (!myCtx.IsNull())
-  {
-    if (theIsAutoAllowOverlap)
-    {
-      if (theYPressed == Min (theYPressed, theYMotion))
-      {
-        myCtx->MainSelector()->AllowOverlapDetection (Standard_False);
-      }
-      else
-      {
-        myCtx->MainSelector()->AllowOverlapDetection (Standard_True);
-      }
-    }
-    myCtx->ShiftSelect (Min (theXPressed, theXMotion),
-                        Min (theYPressed, theYMotion),
-                        Max (theXPressed, theXMotion),
-                        Max (theYPressed, theYMotion),
-                        myView,
-                        Standard_False);
 
-    // to restore default state of viewer selector
-    if (theIsAutoAllowOverlap)
-    {
-      myCtx->MainSelector()->AllowOverlapDetection (Standard_False);
-    }
+  if (theIsAutoAllowOverlap)
+  {
+    const Standard_Boolean toAllowOverlap = theYPressed != Min (theYPressed, theYMotion);
+    myCtx->MainSelector()->AllowOverlapDetection (toAllowOverlap);
+  }
+  myCtx->ShiftSelect (Min (theXPressed, theXMotion),
+                      Min (theYPressed, theYMotion),
+                      Max (theXPressed, theXMotion),
+                      Max (theYPressed, theYMotion),
+                      myView,
+                      Standard_False);
+
+  // to restore default state of viewer selector
+  if (theIsAutoAllowOverlap)
+  {
+    myCtx->MainSelector()->AllowOverlapDetection (Standard_False);
   }
   myView->Redraw();
 }
@@ -178,15 +162,13 @@ void ViewerTest_EventManager::ShiftSelect (const Standard_Integer theXPressed,
 
 void ViewerTest_EventManager::Select()
 {
-  if (myView.IsNull())
+  if (myView.IsNull()
+   || myCtx.IsNull())
   {
     return;
   }
-  else if (!myCtx.IsNull())
-  {
-    myCtx->Select (Standard_False);
-  }
 
+  myCtx->Select (Standard_False);
   myView->Redraw();
 }
 
@@ -197,15 +179,13 @@ void ViewerTest_EventManager::Select()
 
 void ViewerTest_EventManager::ShiftSelect()
 {
-  if (myView.IsNull())
+  if (myView.IsNull()
+   || myCtx.IsNull())
   {
     return;
   }
-  else if (!myCtx.IsNull())
-  {
-    myCtx->ShiftSelect (Standard_False);
-  }
 
+  myCtx->ShiftSelect (Standard_False);
   myView->Redraw();
 }
 
@@ -216,15 +196,13 @@ void ViewerTest_EventManager::ShiftSelect()
 
 void ViewerTest_EventManager::Select (const TColgp_Array1OfPnt2d& thePolyline)
 {
-  if (myView.IsNull())
+  if (myView.IsNull()
+   || myCtx.IsNull())
   {
     return;
   }
-  else if (!myCtx.IsNull())
-  {
-    myCtx->Select (thePolyline, myView, Standard_False);
-  }
 
+  myCtx->Select (thePolyline, myView, Standard_False);
   myView->Redraw();
 }
 
@@ -235,18 +213,20 @@ void ViewerTest_EventManager::Select (const TColgp_Array1OfPnt2d& thePolyline)
 
 void ViewerTest_EventManager::ShiftSelect (const TColgp_Array1OfPnt2d& thePolyline)
 {
-  if (myView.IsNull())
+  if (myView.IsNull()
+   || myCtx.IsNull())
   {
     return;
   }
-  else if (!myCtx.IsNull())
-  {
-    myCtx->ShiftSelect (thePolyline, myView, Standard_False);
-  }
 
+  myCtx->ShiftSelect (thePolyline, myView, Standard_False);
   myView->Redraw();
 }
 
+//=======================================================================
+//function : GetCurrentPosition
+//purpose  :
+//=======================================================================
 void ViewerTest_EventManager::GetCurrentPosition (Standard_Integer& theXPix, Standard_Integer& theYPix) const
 {
   theXPix = myX;
