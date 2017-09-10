@@ -1015,10 +1015,7 @@ void AIS_InteractiveContext::SetSelected (const Handle(AIS_InteractiveObject)& t
   {
     Display (theObject, Standard_False);
   }
-  if (!theObject->HasSelection (theObject->GlobalSelectionMode()))
-  {
-    return;
-  }
+
   Handle(SelectMgr_EntityOwner) anOwner = theObject->GlobalSelOwner();
   if (anOwner.IsNull())
   {
@@ -1039,9 +1036,9 @@ void AIS_InteractiveContext::SetSelected (const Handle(AIS_InteractiveObject)& t
     return;
   }
 
-  for (mySelection->Init(); mySelection->More(); mySelection->Next())
+  for (AIS_NListOfEntityOwner::Iterator aSelIter (mySelection->Objects()); aSelIter.More(); aSelIter.Next())
   {
-    const Handle(SelectMgr_EntityOwner) aSelOwner = mySelection->Value();
+    const Handle(SelectMgr_EntityOwner)& aSelOwner = aSelIter.Value();
     if (!myFilters->IsOk (aSelOwner))
     {
       continue;
@@ -1139,22 +1136,26 @@ void AIS_InteractiveContext::AddOrRemoveSelected (const Handle(AIS_InteractiveOb
                                                   const Standard_Boolean theToUpdateViewer)
 {
   if (theObject.IsNull())
+  {
     return;
+  }
 
   if (HasOpenedContext())
+  {
     return myLocalContexts (myCurLocalIndex)->AddOrRemoveSelected (theObject, theToUpdateViewer);
+  }
 
-  const Standard_Integer aGlobalSelMode = theObject->GlobalSelectionMode();
-  if (!myObjects.IsBound (theObject) || !theObject->HasSelection (aGlobalSelMode))
+  if (!myObjects.IsBound (theObject))
+  {
     return;
+  }
 
-  setContextToObject (theObject);
   const Handle(SelectMgr_EntityOwner) anOwner = theObject->GlobalSelOwner();
-
-  if (anOwner.IsNull() || !anOwner->HasSelectable())
-    return;
-
-  AddOrRemoveSelected (anOwner, theToUpdateViewer);
+  if (!anOwner.IsNull()
+    && anOwner->HasSelectable())
+  {
+    AddOrRemoveSelected (anOwner, theToUpdateViewer);
+  }
 }
 //=======================================================================
 //function : AddOrRemoveSelected
@@ -1195,8 +1196,7 @@ void AIS_InteractiveContext::AddOrRemoveSelected (const Handle(SelectMgr_EntityO
 
   AIS_SelectStatus aSelStat = mySelection->Select (theOwner);
   theOwner->SetSelected (aSelStat == AIS_SS_Added);
-  const Handle(AIS_InteractiveObject) anObj =
-    Handle(AIS_InteractiveObject)::DownCast (theOwner->Selectable());
+  const Handle(AIS_InteractiveObject) anObj = Handle(AIS_InteractiveObject)::DownCast (theOwner->Selectable());
   const Standard_Boolean isGlobal = anObj->GlobalSelOwner() == theOwner;
   Handle(AIS_GlobalStatus)& aStatus = myObjects.ChangeFind (anObj);
   if (theOwner->IsSelected())
@@ -1241,19 +1241,18 @@ Standard_Boolean AIS_InteractiveContext::IsSelected (const Handle(AIS_Interactiv
 
   const Standard_Integer aGlobalSelMode = theObj->GlobalSelectionMode();
   const TColStd_ListOfInteger& anActivatedModes = myObjects (theObj)->SelectionModes();
-  Standard_Boolean isGlobalModeActivated = Standard_False;
   for (TColStd_ListIteratorOfListOfInteger aModeIter (anActivatedModes); aModeIter.More(); aModeIter.Next())
   {
     if (aModeIter.Value() == aGlobalSelMode)
     {
-      isGlobalModeActivated = Standard_True;
-      break;
+      if (Handle(SelectMgr_EntityOwner) aGlobOwner = theObj->GlobalSelOwner())
+      {
+        return aGlobOwner->IsSelected();
+      }
+      return Standard_False;
     }
   }
-  if (!theObj->HasSelection (aGlobalSelMode) || !isGlobalModeActivated || theObj->GlobalSelOwner().IsNull())
-    return Standard_False;
-
-  return theObj->GlobalSelOwner()->IsSelected();
+  return Standard_False;
 }
 
 //=======================================================================
@@ -1263,12 +1262,11 @@ Standard_Boolean AIS_InteractiveContext::IsSelected (const Handle(AIS_Interactiv
 Standard_Boolean AIS_InteractiveContext::IsSelected (const Handle(SelectMgr_EntityOwner)& theOwner) const
 {
   if (HasOpenedContext())
+  {
     return myLocalContexts(myCurLocalIndex)->IsSelected (theOwner);
-
-  if (theOwner.IsNull())
-    return Standard_False;
-
-  return theOwner->IsSelected();
+  }
+  return !theOwner.IsNull()
+       && theOwner->IsSelected();
 }
 
 //=======================================================================
@@ -1392,37 +1390,44 @@ void AIS_InteractiveContext::EntityOwners(Handle(SelectMgr_IndexedMapOfOwner)& t
 					  const Handle(AIS_InteractiveObject)& theIObj,
 					  const Standard_Integer theMode) const 
 {
-  if ( theIObj.IsNull() )
-      return;
+  if (theIObj.IsNull())
+  {
+    return;
+  }
 
   TColStd_ListOfInteger aModes;
-  if ( theMode == -1 )
-    ActivatedModes( theIObj, aModes );
+  if (theMode == -1)
+  {
+    ActivatedModes (theIObj, aModes);
+  }
   else
-    aModes.Append( theMode );
+  {
+    aModes.Append (theMode);
+  }
 
   if (theOwners.IsNull())
-    theOwners = new SelectMgr_IndexedMapOfOwner();
-
-  TColStd_ListIteratorOfListOfInteger anItr( aModes );
-  for (; anItr.More(); anItr.Next() )
   {
-    int aMode = anItr.Value();
-    if ( !theIObj->HasSelection( aMode ) )
-      continue;
+    theOwners = new SelectMgr_IndexedMapOfOwner();
+  }
 
-    Handle(SelectMgr_Selection) aSel = theIObj->Selection(aMode);
-
-    for ( aSel->Init(); aSel->More(); aSel->Next() )
+  for (TColStd_ListIteratorOfListOfInteger anItr (aModes); anItr.More(); anItr.Next())
+  {
+    const int aMode = anItr.Value();
+    const Handle(SelectMgr_Selection)& aSel = theIObj->Selection (aMode);
+    if (aSel.IsNull())
     {
-      Handle(SelectBasics_SensitiveEntity) aEntity = aSel->Sensitive()->BaseSensitive();
-      if ( aEntity.IsNull() )
-	continue;
+      continue;
+    }
 
-      Handle(SelectMgr_EntityOwner) aOwner =
-	Handle(SelectMgr_EntityOwner)::DownCast(aEntity->OwnerId());
-      if ( !aOwner.IsNull() )
-	theOwners->Add( aOwner );
+    for (NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>::Iterator aSelEntIter (aSel->Entities()); aSelEntIter.More(); aSelEntIter.Next())
+    {
+      if (Handle(SelectBasics_SensitiveEntity) aEntity = aSelEntIter.Value()->BaseSensitive())
+      {
+        if (Handle(SelectMgr_EntityOwner) aOwner = Handle(SelectMgr_EntityOwner)::DownCast(aEntity->OwnerId()))
+        {
+          theOwners->Add (aOwner);
+        }
+      }
     }
   }
 }

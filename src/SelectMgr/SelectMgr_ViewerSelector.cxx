@@ -104,9 +104,9 @@ myEntityIdx (0)
 //==================================================
 void SelectMgr_ViewerSelector::Activate (const Handle(SelectMgr_Selection)& theSelection)
 {
-  for (theSelection->Init(); theSelection->More(); theSelection->Next())
+  for (NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>::Iterator aSelEntIter (theSelection->Entities()); aSelEntIter.More(); aSelEntIter.Next())
   {
-    theSelection->Sensitive()->SetActiveForSelection();
+    aSelEntIter.Value()->SetActiveForSelection();
   }
 
   theSelection->SetSelectionState (SelectMgr_SOS_Activated);
@@ -121,9 +121,9 @@ void SelectMgr_ViewerSelector::Activate (const Handle(SelectMgr_Selection)& theS
 //==================================================
 void SelectMgr_ViewerSelector::Deactivate (const Handle(SelectMgr_Selection)& theSelection)
 {
-  for (theSelection->Init(); theSelection->More(); theSelection->Next())
+  for (NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>::Iterator aSelEntIter (theSelection->Entities()); aSelEntIter.More(); aSelEntIter.Next())
   {
-    theSelection->Sensitive()->ResetSelectionActiveStatus();
+    aSelEntIter.Value()->ResetSelectionActiveStatus();
   }
 
   theSelection->SetSelectionState (SelectMgr_SOS_Deactivated);
@@ -670,15 +670,15 @@ Standard_Boolean SelectMgr_ViewerSelector::Modes (const Handle(SelectMgr_Selecta
                                                   const SelectMgr_StateOfSelection theWantedState) const
 {
   Standard_Boolean hasActivatedStates = Contains (theSelectableObject);
-  for (theSelectableObject->Init(); theSelectableObject->More(); theSelectableObject->Next())
+  for (SelectMgr_SequenceOfSelection::Iterator aSelIter (theSelectableObject->Selections()); aSelIter.More(); aSelIter.Next())
   {
       if (theWantedState == SelectMgr_SOS_Any)
       {
-        theModeList.Append (theSelectableObject->CurrentSelection()->Mode());
+        theModeList.Append (aSelIter.Value()->Mode());
       }
-      else if (theWantedState == theSelectableObject->CurrentSelection()->GetSelectionState())
+      else if (theWantedState == aSelIter.Value()->GetSelectionState())
       {
-        theModeList.Append (theSelectableObject->CurrentSelection()->Mode());
+        theModeList.Append (aSelIter.Value()->Mode());
       }
   }
 
@@ -695,15 +695,9 @@ Standard_Boolean SelectMgr_ViewerSelector::IsActive (const Handle(SelectMgr_Sele
   if (!Contains (theSelectableObject))
     return Standard_False;
 
-  for (theSelectableObject->Init(); theSelectableObject->More(); theSelectableObject->Next())
-  {
-    if (theMode == theSelectableObject->CurrentSelection()->Mode())
-    {
-      return theSelectableObject->CurrentSelection()->GetSelectionState() == SelectMgr_SOS_Activated;
-    }
-  }
-
-  return Standard_False;
+  const Handle(SelectMgr_Selection)& aSel = theSelectableObject->Selection (theMode);
+  return !aSel.IsNull()
+       && aSel->GetSelectionState() == SelectMgr_SOS_Activated;
 }
 
 //==================================================
@@ -716,15 +710,9 @@ Standard_Boolean SelectMgr_ViewerSelector::IsInside (const Handle(SelectMgr_Sele
   if (!Contains (theSelectableObject))
     return Standard_False;
 
-  for (theSelectableObject->Init(); theSelectableObject->More(); theSelectableObject->Next())
-  {
-    if (theMode == theSelectableObject->CurrentSelection()->Mode())
-    {
-      return theSelectableObject->CurrentSelection()->GetSelectionState() != SelectMgr_SOS_Unknown;
-    }
-  }
-
-  return Standard_False;
+  const Handle(SelectMgr_Selection)& aSel = theSelectableObject->Selection (theMode);
+  return !aSel.IsNull()
+       && aSel->GetSelectionState() != SelectMgr_SOS_Unknown;
 }
 
 
@@ -746,22 +734,12 @@ SelectMgr_StateOfSelection SelectMgr_ViewerSelector::Status (const Handle(Select
 TCollection_AsciiString SelectMgr_ViewerSelector::Status (const Handle(SelectMgr_SelectableObject)& theSelectableObject) const
 {
   TCollection_AsciiString aStatus ("Status Object :\n\t");
-
-  for (theSelectableObject->Init(); theSelectableObject->More(); theSelectableObject->Next())
+  for (SelectMgr_SequenceOfSelection::Iterator aSelIter (theSelectableObject->Selections()); aSelIter.More(); aSelIter.Next())
   {
-    if (theSelectableObject->CurrentSelection()->GetSelectionState() != SelectMgr_SOS_Unknown)
+    if (aSelIter.Value()->GetSelectionState() != SelectMgr_SOS_Unknown)
     {
-      aStatus = aStatus + "Mode " +
-        TCollection_AsciiString (theSelectableObject->CurrentSelection()->Mode()) +
-        " present - ";
-      if (theSelectableObject->CurrentSelection()->GetSelectionState() == SelectMgr_SOS_Activated)
-      {
-        aStatus = aStatus + " Active \n\t";
-      }
-      else
-      {
-        aStatus = aStatus + " Inactive \n\t";
-      }
+      aStatus = aStatus + "Mode " + TCollection_AsciiString (aSelIter.Value()->Mode()) + " present - "
+              + (aSelIter.Value()->GetSelectionState() == SelectMgr_SOS_Activated ? " Active \n\t" : " Inactive \n\t");
     }
   }
 

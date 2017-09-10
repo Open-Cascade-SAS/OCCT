@@ -17,30 +17,18 @@
 #ifndef _SelectMgr_SelectableObject_HeaderFile
 #define _SelectMgr_SelectableObject_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
-#include <SelectMgr_SequenceOfSelection.hxx>
-#include <Prs3d_Drawer.hxx>
-#include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 #include <PrsMgr_PresentableObject.hxx>
-#include <PrsMgr_TypeOfPresentation3d.hxx>
-#include <SelectMgr_Selection.hxx>
 #include <PrsMgr_PresentationManager3d.hxx>
-#include <SelectMgr_SequenceOfOwner.hxx>
-#include <Quantity_NameOfColor.hxx>
-#include <Graphic3d_ZLayerId.hxx>
+#include <PrsMgr_TypeOfPresentation3d.hxx>
 #include <SelectMgr_IndexedMapOfOwner.hxx>
+#include <SelectMgr_SequenceOfSelection.hxx>
+#include <SelectMgr_Selection.hxx>
+#include <SelectMgr_SequenceOfOwner.hxx>
+
 class SelectMgr_EntityOwner;
 class Prs3d_Presentation;
 class Standard_NotImplemented;
 class SelectMgr_SelectionManager;
-class Bnd_Box;
-
-
-class SelectMgr_SelectableObject;
-DEFINE_STANDARD_HANDLE(SelectMgr_SelectableObject, PrsMgr_PresentableObject)
 
 //! A framework to supply the structure of the object to be
 //! selected. At the first pick, this structure is created by
@@ -94,36 +82,30 @@ public:
   //! completely) when some selection mode is activated not for the first time.
   Standard_EXPORT void ClearSelections (const Standard_Boolean update = Standard_False);
   
-  //! Returns the selection Selection having the selection mode aMode.
-  Standard_EXPORT const Handle(SelectMgr_Selection)& Selection (const Standard_Integer aMode) const;
-  
-  //! Returns true if a selection corresponding to the
-  //! selection mode theMode was computed for this object.
-  Standard_EXPORT virtual Standard_Boolean HasSelection (const Standard_Integer theMode) const;
-  
+  //! Returns the selection having specified selection mode or NULL.
+  Standard_EXPORT const Handle(SelectMgr_Selection)& Selection (const Standard_Integer theMode) const;
+
+  //! Returns true if a selection corresponding to the selection mode theMode was computed for this object.
+  Standard_Boolean HasSelection (const Standard_Integer theMode) const { return !Selection (theMode).IsNull(); }
+
+  //! Return the sequence of selections.
+  const SelectMgr_SequenceOfSelection& Selections() const { return myselections; }
+
   //! Begins the iteration scanning for sensitive primitives.
-  void Init()
-  {
-    mycurrent = 1;
-  }
+  Standard_DEPRECATED("Deprecated method, Selections() should be used instead")
+  void Init() { mycurrent = 1; }
 
   //! Continues the iteration scanning for sensitive primitives.
-  Standard_Boolean More() const
-  {
-    return mycurrent <= myselections.Length();
-  }
+  Standard_DEPRECATED("Deprecated method, Selections() should be used instead")
+  Standard_Boolean More() const { return mycurrent <= myselections.Length(); }
 
   //! Continues the iteration scanning for sensitive primitives.
-  void Next()
-  {
-    mycurrent++;
-  }
+  Standard_DEPRECATED("Deprecated method, Selections() should be used instead")
+  void Next() { ++mycurrent; }
 
   //! Returns the current selection in this framework.
-  const Handle(SelectMgr_Selection)& CurrentSelection() const
-  {
-    return myselections (mycurrent);
-  }
+  Standard_DEPRECATED("Deprecated method, Selections() should be used instead")
+  const Handle(SelectMgr_Selection)& CurrentSelection() const { return myselections (mycurrent); }
 
   Standard_EXPORT void ResetTransformation() Standard_OVERRIDE;
   
@@ -190,10 +172,7 @@ public:
 
   //! Sets common entity owner for assembly sensitive object entities
   Standard_EXPORT void SetAssemblyOwner (const Handle(SelectMgr_EntityOwner)& theOwner, const Standard_Integer theMode = -1);
-  
-  //! Returns common entity owner if the object is an assembly
-  Standard_EXPORT const Handle(SelectMgr_EntityOwner)& GetAssemblyOwner() const;
-  
+
   //! Returns a bounding box of sensitive entities with the owners given
   //! if they are a part of activated selection
   Standard_EXPORT Bnd_Box BndBoxOfSelected (const Handle(SelectMgr_IndexedMapOfOwner)& theOwners);
@@ -206,6 +185,9 @@ public:
 
   //! Returns the owner of mode for selection of object as a whole
   Standard_EXPORT virtual Handle(SelectMgr_EntityOwner) GlobalSelOwner() const;
+
+  //! Returns common entity owner if the object is an assembly
+  Standard_EXPORT virtual const Handle(SelectMgr_EntityOwner)& GetAssemblyOwner() const;
 
 protected:
 
@@ -221,7 +203,6 @@ protected:
 protected:
 
   SelectMgr_SequenceOfSelection myselections;
-  Handle(SelectMgr_EntityOwner) myAssemblyOwner;
   Handle(Prs3d_Presentation) mySelectionPrs;
   Handle(Prs3d_Presentation) myHilightPrs;
   Standard_Boolean myAutoHilight;
@@ -232,5 +213,7 @@ private:
   Standard_Integer myGlobalSelMode;
 
 };
+
+DEFINE_STANDARD_HANDLE(SelectMgr_SelectableObject, PrsMgr_PresentableObject)
 
 #endif // _SelectMgr_SelectableObject_HeaderFile

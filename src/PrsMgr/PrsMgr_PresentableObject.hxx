@@ -23,6 +23,7 @@
 #include <Graphic3d_TransformPers.hxx>
 #include <Graphic3d_TransModeFlags.hxx>
 #include <Graphic3d_ZLayerId.hxx>
+#include <Prs3d_Drawer.hxx>
 #include <PrsMgr_ListOfPresentableObjects.hxx>
 #include <PrsMgr_Presentation.hxx>
 #include <PrsMgr_Presentations.hxx>

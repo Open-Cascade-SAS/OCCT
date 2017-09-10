@@ -44,12 +44,8 @@ Handle(SelectMgr_Selection) VInspector_ItemSelection::getSelection() const
 // =======================================================================
 int VInspector_ItemSelection::initRowCount() const
 {
-  int aRows = 0;
   Handle(SelectMgr_Selection) aSelection = getSelection();
-  for (aSelection->Init(); aSelection->More(); aSelection->Next())
-    aRows++;
-
-  return aRows;
+  return aSelection->Entities().Size();
 }
 
 // =======================================================================
@@ -88,9 +84,9 @@ QVariant VInspector_ItemSelection::initValue (int theItemRole) const
             if (aState == SelectMgr_SOS_Activated || aState == SelectMgr_SOS_Any)
             {
               Handle(AIS_InteractiveContext) aContext = GetContext();
-              for (mySelection->Init(); mySelection->More(); mySelection->Next())
+              for (NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>::Iterator aSelEntIter (mySelection->Entities()); aSelEntIter.More(); aSelEntIter.Next())
               {
-                const Handle(SelectBasics_EntityOwner)& anOwner = mySelection->Sensitive()->BaseSensitive()->OwnerId();
+                const Handle(SelectBasics_EntityOwner)& anOwner = aSelEntIter.Value()->BaseSensitive()->OwnerId();
                 if (VInspector_Tools::IsOwnerSelected(aContext, anOwner))
                   aNbSelected++;
               }
@@ -145,11 +141,11 @@ void VInspector_ItemSelection::Init()
 
   int aRowId = Row();
   int aCurrentId = 0;
-  for (anIO->Init(); anIO->More(); anIO->Next(), aCurrentId++)
+  for (SelectMgr_SequenceOfSelection::Iterator aSelIter (anIO->Selections()); aSelIter.More(); aSelIter.Next(), aCurrentId++)
   {
     if (aCurrentId != aRowId)
       continue;
-    mySelection = anIO->CurrentSelection();
+    mySelection = aSelIter.Value();
     break;
   }
   TreeModel_ItemBase::Init();

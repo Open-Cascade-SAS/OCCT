@@ -186,11 +186,11 @@ AIS_InteractiveContext::~AIS_InteractiveContext()
   Handle(AIS_InteractiveContext) aNullContext;
   for (AIS_DataMapIteratorOfDataMapOfIOStatus anObjIter (myObjects); anObjIter.More(); anObjIter.Next())
   {
-    Handle(AIS_InteractiveObject) anObj = anObjIter.Key();
+    const Handle(AIS_InteractiveObject)& anObj = anObjIter.Key();
     anObj->SetContext (aNullContext);
-    for (anObj->Init(); anObj->More(); anObj->Next())
+    for (SelectMgr_SequenceOfSelection::Iterator aSelIter (anObj->Selections()); aSelIter.More(); aSelIter.Next())
     {
-      anObj->CurrentSelection()->UpdateBVHStatus (SelectMgr_TBU_Renew);
+      aSelIter.Value()->UpdateBVHStatus (SelectMgr_TBU_Renew);
     }
   }
 }
@@ -692,15 +692,13 @@ void AIS_InteractiveContext::DisplaySelected (const Standard_Boolean theToUpdate
     return;
   }
 
-  Standard_Boolean      isFound  = Standard_False;
-  for (mySelection->Init(); mySelection->More(); mySelection->Next())
+  for (AIS_NListOfEntityOwner::Iterator aSelIter (mySelection->Objects()); aSelIter.More(); aSelIter.Next())
   {
-    Handle(AIS_InteractiveObject) anObj = Handle(AIS_InteractiveObject)::DownCast (mySelection->Value()->Selectable());
+    Handle(AIS_InteractiveObject) anObj = Handle(AIS_InteractiveObject)::DownCast (aSelIter.Value()->Selectable());
     Display (anObj, Standard_False);
-    isFound = Standard_True;
   }
 
-  if (isFound && theToUpdateViewer)
+  if (theToUpdateViewer && !mySelection->Objects().IsEmpty())
   {
     myMainVwr->Update();
   }
@@ -717,17 +715,12 @@ void AIS_InteractiveContext::EraseSelected (const Standard_Boolean theToUpdateVi
     return;
   }
 
-  Standard_Boolean      isFound  = Standard_False;
-  mySelection->Init();
-  while (mySelection->More())
+  Standard_Boolean isFound = Standard_False;
+  for (AIS_NListOfEntityOwner::Iterator aSelIter (mySelection->Objects()); aSelIter.More(); aSelIter.Init (mySelection->Objects()))
   {
-    Handle(SelectMgr_EntityOwner) anOwner = mySelection->Value();
-    Handle(AIS_InteractiveObject) anObj   = Handle(AIS_InteractiveObject)::DownCast (anOwner->Selectable());
-
+    Handle(AIS_InteractiveObject) anObj = Handle(AIS_InteractiveObject)::DownCast (aSelIter.Value()->Selectable());
     Erase (anObj, Standard_False);
     isFound = Standard_True;
-
-    mySelection->Init();
   }
 
   if (isFound && theToUpdateViewer)
@@ -2858,15 +2851,14 @@ void AIS_InteractiveContext::FitSelected (const Handle(V3d_View)& theView,
                                           const Standard_Real theMargin,
                                           const Standard_Boolean theToUpdate)
 {
-  const Handle(AIS_Selection)& aSelection = HasOpenedContext() ?
-      myLocalContexts(myCurLocalIndex)->Selection() : mySelection;
-
+  const Handle(AIS_Selection)& aSelection = HasOpenedContext()
+                                          ? myLocalContexts(myCurLocalIndex)->Selection()
+                                          : mySelection;
   Bnd_Box aBndSelected;
-
   AIS_MapOfObjectOwners anObjectOwnerMap;
-  for (aSelection->Init(); aSelection->More(); aSelection->Next())
+  for (AIS_NListOfEntityOwner::Iterator aSelIter (aSelection->Objects()); aSelIter.More(); aSelIter.Next())
   {
-    const Handle(SelectMgr_EntityOwner)& anOwner = aSelection->Value();
+    const Handle(SelectMgr_EntityOwner)& anOwner = aSelIter.Value();
     Handle(AIS_InteractiveObject) anObj = Handle(AIS_InteractiveObject)::DownCast(anOwner->Selectable());
     if (anObj->IsInfinite())
     {

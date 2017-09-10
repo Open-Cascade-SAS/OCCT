@@ -152,15 +152,10 @@ QVariant VInspector_ItemPresentableObject::initValue (int theItemRole) const
 // =======================================================================
 int VInspector_ItemPresentableObject::initRowCount() const
 {
-  int aRows = 0;
   Handle(AIS_InteractiveObject) anIO = GetInteractiveObject();
-  if (anIO.IsNull())
-    return aRows;
-  // iteration through sensitive privitives
-  for (anIO->Init(); anIO->More(); anIO->Next())
-    aRows++;
-
-  return aRows;
+  return !anIO.IsNull()
+        ? anIO->Selections().Size()
+        : 0;
 }
 
 // =======================================================================

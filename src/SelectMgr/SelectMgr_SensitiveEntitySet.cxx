@@ -52,14 +52,14 @@ void SelectMgr_SensitiveEntitySet::Append (const Handle(SelectMgr_SensitiveEntit
 //=======================================================================
 void SelectMgr_SensitiveEntitySet::Append (const Handle(SelectMgr_Selection)& theSelection)
 {
-  for (theSelection->Init(); theSelection->More(); theSelection->Next())
+  for (NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>::Iterator aSelEntIter (theSelection->Entities()); aSelEntIter.More(); aSelEntIter.Next())
   {
-    if (!theSelection->Sensitive()->BaseSensitive()->IsKind (STANDARD_TYPE(Select3D_SensitiveEntity)))
+    if (!aSelEntIter.Value()->BaseSensitive()->IsKind (STANDARD_TYPE(Select3D_SensitiveEntity)))
     {
-      theSelection->Sensitive()->ResetSelectionActiveStatus();
+      aSelEntIter.Value()->ResetSelectionActiveStatus();
       continue;
     }
-    mySensitives.Add (theSelection->Sensitive());
+    mySensitives.Add (aSelEntIter.Value());
   }
   MarkDirty();
 }
@@ -71,11 +71,13 @@ void SelectMgr_SensitiveEntitySet::Append (const Handle(SelectMgr_Selection)& th
 //=======================================================================
 void SelectMgr_SensitiveEntitySet::Remove (const Handle(SelectMgr_Selection)& theSelection)
 {
-  for (theSelection->Init(); theSelection->More(); theSelection->Next())
+  for (NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>::Iterator aSelEntIter (theSelection->Entities()); aSelEntIter.More(); aSelEntIter.Next())
   {
-    Standard_Integer anEntIdx = mySensitives.FindIndex (theSelection->Sensitive());
-    if (!anEntIdx)
+    const Standard_Integer anEntIdx = mySensitives.FindIndex (aSelEntIter.Value());
+    if (anEntIdx == 0)
+    {
       continue;
+    }
 
     if (anEntIdx != mySensitives.Size())
     {

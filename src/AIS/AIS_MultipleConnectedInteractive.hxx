@@ -72,12 +72,11 @@ public:
   //! may be decomposed into sub-shapes for dynamic selection.
   Standard_EXPORT virtual Standard_Boolean AcceptShapeDecomposition() const Standard_OVERRIDE;
 
-  //! Returns the owner of mode for selection of object as a whole
-  Standard_EXPORT virtual Handle(SelectMgr_EntityOwner) GlobalSelOwner() const Standard_OVERRIDE;
+  //! Returns common entity owner if the object is an assembly
+  virtual const Handle(SelectMgr_EntityOwner)& GetAssemblyOwner() const Standard_OVERRIDE { return myAssemblyOwner; }
 
-  //! Returns true if a selection corresponding to the selection mode theMode was computed for all
-  //! children of multiple connected interactive object.
-  Standard_EXPORT virtual Standard_Boolean HasSelection (const Standard_Integer theMode) const Standard_OVERRIDE;
+  //! Returns the owner of mode for selection of object as a whole
+  virtual Handle(SelectMgr_EntityOwner) GlobalSelOwner() const Standard_OVERRIDE { return myAssemblyOwner; }
 
   //! Assigns interactive context.
   Standard_EXPORT virtual void SetContext (const Handle(AIS_InteractiveContext)& theCtx) Standard_OVERRIDE;
@@ -141,6 +140,10 @@ private:
   
   //! Computes the selection for whole subtree in scene hierarchy.
   Standard_EXPORT virtual void ComputeSelection (const Handle(SelectMgr_Selection)& aSelection, const Standard_Integer aMode) Standard_OVERRIDE;
+
+protected:
+
+  Handle(SelectMgr_EntityOwner) myAssemblyOwner;
 
 };
 

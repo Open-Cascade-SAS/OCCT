@@ -202,9 +202,8 @@ Load(const Handle(AIS_InteractiveObject)& anInteractive,
 {
   if (myActiveObjects.IsBound (anInteractive))
   {
-    if (anInteractive->HasSelection (ActivationMode))
+    if (const Handle(SelectMgr_Selection)& aSel = anInteractive->Selection (ActivationMode))
     {
-      const Handle(SelectMgr_Selection)& aSel = anInteractive->Selection (ActivationMode);
       if (aSel->GetSelectionState() != SelectMgr_SOS_Activated)
       {
         if (!myMainVS->Contains (anInteractive))
@@ -864,24 +863,26 @@ const Handle(AIS_LocalStatus)& AIS_LocalContext::Status(const Handle(AIS_Interac
 
 void AIS_LocalContext::LoadContextObjects()
 {
-  AIS_ListIteratorOfListOfInteractive It;
-  if(myLoadDisplayed) {
-    AIS_ListOfInteractive LL;
-    myCTX->DisplayedObjects(LL,Standard_True);
-    Handle(AIS_LocalStatus) Att;
-    for (It.Initialize(LL);It.More();It.Next()){
-      const Handle(AIS_InteractiveObject)& anObj = It.Value();
-      Att= new AIS_LocalStatus();
-      Att->SetDecomposition((anObj->AcceptShapeDecomposition() && myAcceptStdMode));
-      Att->SetTemporary(Standard_False);
-      Att->SetHilightMode(anObj->HasHilightMode()? anObj->HilightMode(): 0);
-      for (anObj->Init(); anObj->More(); anObj->Next())
-      {
-        const Handle(SelectMgr_Selection)& aSel = anObj->CurrentSelection();
-        aSel->SetSelectionState (SelectMgr_SOS_Deactivated);
-      }
-      myActiveObjects.Bind(anObj,Att);
+  if (!myLoadDisplayed)
+  {
+    return;
+  }
+
+  AIS_ListOfInteractive LL;
+  myCTX->DisplayedObjects(LL,Standard_True);
+  for (AIS_ListIteratorOfListOfInteractive It (LL); It.More(); It.Next())
+  {
+    const Handle(AIS_InteractiveObject)& anObj = It.Value();
+    Handle(AIS_LocalStatus) Att = new AIS_LocalStatus();
+    Att->SetDecomposition((anObj->AcceptShapeDecomposition() && myAcceptStdMode));
+    Att->SetTemporary(Standard_False);
+    Att->SetHilightMode(anObj->HasHilightMode()? anObj->HilightMode(): 0);
+    for (SelectMgr_SequenceOfSelection::Iterator aSelIter (anObj->Selections()); aSelIter.More(); aSelIter.Next())
+    {
+      const Handle(SelectMgr_Selection)& aSel = aSelIter.Value();
+      aSel->SetSelectionState (SelectMgr_SOS_Deactivated);
     }
+    myActiveObjects.Bind(anObj,Att);
   }
 }
 

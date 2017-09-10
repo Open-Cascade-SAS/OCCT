@@ -32,7 +32,6 @@ SelectMgr_SelectingVolumeManager.cxx
 SelectMgr_SelectingVolumeManager.hxx
 SelectMgr_Selection.cxx
 SelectMgr_Selection.hxx
-SelectMgr_Selection.lxx
 SelectMgr_SelectionManager.cxx
 SelectMgr_SelectionManager.hxx
 SelectMgr_SensitiveEntity.cxx

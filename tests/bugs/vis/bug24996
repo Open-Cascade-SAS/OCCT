@@ -1,23 +1,18 @@
 puts "============"
-puts "CR24996"
+puts "0024996: Visualization - newly displayed objects are clipped until first camera movement"
 puts "============"
 puts ""
-#######################################################################
-#  Visualization - newly displayed objects are clipped until first camera movement
-#######################################################################
 
 box b1 0  0 0 1 2 3
 box b2 3  2 1 1 2 3
 box b3 5 -4 0 1 2 3
 
-vinit
 vclear
+vinit View1
 vaxo
-vsetdispmode 0
-vdisplay b1
+vdisplay -dispMode 0 b1
 vfit
 vzoom 0.25
-vdisplay b2 b3
+vdisplay -dispMode 0 b2 b3
 
-set anImage ${imagedir}/${casename}.png
-vdump ${anImage}
+vdump ${imagedir}/${casename}.png

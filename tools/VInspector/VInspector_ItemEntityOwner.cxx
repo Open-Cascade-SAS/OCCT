@@ -146,12 +146,12 @@ void VInspector_ItemEntityOwner::Init()
 
       int aRowId = Row();
       int aCurrentIndex = 0;
-      for (anIO->Init(); anIO->More() && anOwner.IsNull(); anIO->Next())
+      for (SelectMgr_SequenceOfSelection::Iterator aSelIter (anIO->Selections()); aSelIter.More() && anOwner.IsNull(); aSelIter.Next())
       {
-        const Handle(SelectMgr_Selection)& aSelection = anIO->CurrentSelection();
-        for (aSelection->Init(); aSelection->More() && anOwner.IsNull(); aSelection->Next())
+        const Handle(SelectMgr_Selection)& aSelection = aSelIter.Value();
+        for (NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>::Iterator aSelEntIter (aSelection->Entities()); aSelEntIter.More() && anOwner.IsNull(); aSelEntIter.Next())
         {
-          Handle(SelectMgr_SensitiveEntity) anEntity = aSelection->Sensitive();
+          Handle(SelectMgr_SensitiveEntity) anEntity = aSelEntIter.Value();
           const Handle(SelectBasics_SensitiveEntity)& aBase = anEntity->BaseSensitive();
           if (!aBase.IsNull())
           {

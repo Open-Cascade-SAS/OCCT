@@ -30,14 +30,13 @@ IMPLEMENT_STANDARD_RTTIEXT(AIS_MultipleConnectedInteractive,AIS_InteractiveObjec
 
 //=======================================================================
 //function : AIS_MultipleConnectedInteractive
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 AIS_MultipleConnectedInteractive::AIS_MultipleConnectedInteractive()
-  : AIS_InteractiveObject (PrsMgr_TOP_AllView)
+: AIS_InteractiveObject (PrsMgr_TOP_AllView)
 {
   myHasOwnPresentations = Standard_False;
-  myAssemblyOwner = NULL;
 }
 
 //=======================================================================
@@ -213,53 +212,27 @@ Standard_Boolean AIS_MultipleConnectedInteractive::AcceptShapeDecomposition() co
 void AIS_MultipleConnectedInteractive::ComputeSelection (const Handle(SelectMgr_Selection)& /*theSelection*/,
                                                          const Standard_Integer             theMode)
 {
-  if (theMode != 0)
+  if (theMode == 0)
   {
-    for (PrsMgr_ListOfPresentableObjectsIter anIter (Children()); anIter.More(); anIter.Next())
-    {
-      Handle(AIS_InteractiveObject) aChild = Handle(AIS_InteractiveObject)::DownCast (anIter.Value());
-      if (aChild.IsNull())
-      {
-        continue;
-      }
-
-      if (!aChild->HasSelection (theMode))
-      {
-        aChild->RecomputePrimitives (theMode);
-      }
-
-      Handle(SelectMgr_Selection) aSelection = new SelectMgr_Selection (theMode);
-      aChild->ComputeSelection (aSelection, theMode);
-    }
+    return;
   }
-}
 
-//=======================================================================
-//function : GlobalSelOwner
-//purpose  :
-//=======================================================================
-Handle(SelectMgr_EntityOwner) AIS_MultipleConnectedInteractive::GlobalSelOwner() const
-{
-  return myAssemblyOwner;
-}
-
-//=======================================================================
-//function : HasSelection
-//purpose  :
-//=======================================================================
-Standard_Boolean AIS_MultipleConnectedInteractive::HasSelection (const Standard_Integer theMode) const
-{
   for (PrsMgr_ListOfPresentableObjectsIter anIter (Children()); anIter.More(); anIter.Next())
   {
     Handle(AIS_InteractiveObject) aChild = Handle(AIS_InteractiveObject)::DownCast (anIter.Value());
     if (aChild.IsNull())
+    {
       continue;
+    }
 
     if (!aChild->HasSelection (theMode))
-      return Standard_False;
-  }
+    {
+      aChild->RecomputePrimitives (theMode);
+    }
 
-  return Standard_True;
+    Handle(SelectMgr_Selection) aSelection = new SelectMgr_Selection (theMode);
+    aChild->ComputeSelection (aSelection, theMode);
+  }
 }
 
 //=======================================================================

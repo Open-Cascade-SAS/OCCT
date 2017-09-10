@@ -804,13 +804,10 @@ void AIS_LocalContext::ClearOutdatedSelection (const Handle(AIS_InteractiveObjec
 {
   // 1. Collect selectable entities
   SelectMgr_IndexedMapOfOwner aValidOwners;
-
   const TColStd_ListOfInteger& aModes = SelectionModes (theIO);
-
-  TColStd_ListIteratorOfListOfInteger aModeIter (aModes);
-  for (; aModeIter.More(); aModeIter.Next())
+  for (TColStd_ListIteratorOfListOfInteger aModeIter (aModes); aModeIter.More(); aModeIter.Next())
   {
-    int aMode = aModeIter.Value();
+    const int aMode = aModeIter.Value();
     if (!theIO->HasSelection(aMode))
     {
       continue;
@@ -821,24 +818,16 @@ void AIS_LocalContext::ClearOutdatedSelection (const Handle(AIS_InteractiveObjec
       continue;
     }
 
-    Handle(SelectMgr_Selection) aSelection = theIO->Selection(aMode);
-    for (aSelection->Init(); aSelection->More(); aSelection->Next())
+    const Handle(SelectMgr_Selection)& aSelection = theIO->Selection (aMode);
+    for (NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>::Iterator aSelEntIter (aSelection->Entities()); aSelEntIter.More(); aSelEntIter.Next())
     {
-      Handle(SelectBasics_SensitiveEntity) anEntity = aSelection->Sensitive()->BaseSensitive();
-      if (anEntity.IsNull())
+      if (Handle(SelectBasics_SensitiveEntity) anEntity = aSelEntIter.Value()->BaseSensitive())
       {
-        continue;
+        if (Handle(SelectMgr_EntityOwner) anOwner = Handle(SelectMgr_EntityOwner)::DownCast (anEntity->OwnerId()))
+        {
+          aValidOwners.Add (anOwner);
+        }
       }
-
-      Handle(SelectMgr_EntityOwner) anOwner =
-        Handle(SelectMgr_EntityOwner)::DownCast (anEntity->OwnerId());
-
-      if (anOwner.IsNull())
-      {
-        continue;
-      }
-
-      aValidOwners.Add(anOwner);
     }
   }
 

@@ -144,14 +144,14 @@ NCollection_List<Handle(SelectBasics_EntityOwner)> VInspector_Tools::ContextOwne
     Handle(AIS_InteractiveObject) anIO = aIt.Value();
     if (anIO.IsNull())
       continue;
-    for (anIO->Init(); anIO->More(); anIO->Next())
+    for (SelectMgr_SequenceOfSelection::Iterator aSelIter (anIO->Selections()); aSelIter.More(); aSelIter.Next())
     {
-      Handle(SelectMgr_Selection) aSelection = anIO->CurrentSelection();
+      Handle(SelectMgr_Selection) aSelection = aSelIter.Value();
       if (aSelection.IsNull())
         continue;
-      for (aSelection->Init(); aSelection->More(); aSelection->Next())
+      for (NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>::Iterator aSelEntIter (aSelection->Entities()); aSelEntIter.More(); aSelEntIter.Next())
       {
-        Handle(SelectMgr_SensitiveEntity) anEntity = aSelection->Sensitive();
+        Handle(SelectMgr_SensitiveEntity) anEntity = aSelEntIter.Value();
         if (anEntity.IsNull())
           continue;
         const Handle(SelectBasics_SensitiveEntity)& aBase = anEntity->BaseSensitive();

@@ -14,10 +14,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Standard_NullObject.hxx>
-
 #include <SelectBasics_EntityOwner.hxx>
+
 #include <SelectMgr_Selection.hxx>
+#include <Standard_NullObject.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_Selection,Standard_Transient)
 
@@ -26,7 +26,8 @@ IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_Selection,Standard_Transient)
 // Purpose :
 //==================================================
 SelectMgr_Selection::SelectMgr_Selection (const Standard_Integer theModeIdx)
-: myMode (theModeIdx),
+: myEntityIter (0),
+  myMode (theModeIdx),
   mySelectionState (SelectMgr_SOS_Unknown),
   myBVHUpdateStatus (SelectMgr_TBU_None),
   mySensFactor (2),
@@ -58,31 +59,29 @@ void SelectMgr_Selection::Destroy()
 //==================================================
 void SelectMgr_Selection::Add (const Handle(SelectBasics_SensitiveEntity)& theSensitive)
 {
-  // if input is null:
-  // in debug mode raise exception
-  Standard_NullObject_Raise_if
-    (theSensitive.IsNull(), "Null sensitive entity is added to the selection");
-
-  // in release mode do not add
-  if (!theSensitive.IsNull())
+  // if input is null: in debug mode raise exception
+  Standard_NullObject_Raise_if (theSensitive.IsNull(), "Null sensitive entity is added to the selection");
+  if (theSensitive.IsNull())
   {
-    Handle(SelectMgr_SensitiveEntity) anEntity = new SelectMgr_SensitiveEntity (theSensitive);
-    myEntities.Append (anEntity);
-    if (mySelectionState == SelectMgr_SOS_Activated &&
-        !anEntity->IsActiveForSelection())
-    {
-      anEntity->SetActiveForSelection();
-    }
+    // in release mode do not add
+    return;
+  }
 
-    if (myIsCustomSens)
-    {
-      anEntity->BaseSensitive()->SetSensitivityFactor (mySensFactor);
-    }
-    else
-    {
-      mySensFactor = Max (mySensFactor,
-                          anEntity->BaseSensitive()->SensitivityFactor());
-    }
+  Handle(SelectMgr_SensitiveEntity) anEntity = new SelectMgr_SensitiveEntity (theSensitive);
+  myEntities.Append (anEntity);
+  if (mySelectionState == SelectMgr_SOS_Activated
+  && !anEntity->IsActiveForSelection())
+  {
+    anEntity->SetActiveForSelection();
+  }
+
+  if (myIsCustomSens)
+  {
+    anEntity->BaseSensitive()->SetSensitivityFactor (mySensFactor);
+  }
+  else
+  {
+    mySensFactor = Max (mySensFactor, anEntity->BaseSensitive()->SensitivityFactor());
   }
 }	
 
@@ -99,52 +98,6 @@ void SelectMgr_Selection::Clear()
   }
 
   myEntities.Clear();
-}
-
-//==================================================
-// Function: IsEmpty 
-// Purpose :
-//==================================================
-Standard_Boolean SelectMgr_Selection::IsEmpty() const
-{
-  return myEntities.IsEmpty();
-}
-
-//==================================================
-// function: GetEntityById
-// purpose : Returns sensitive entity stored by
-//           index theIdx in entites vector
-//==================================================
-Handle(SelectMgr_SensitiveEntity)& SelectMgr_Selection::GetEntityById (const Standard_Integer theIdx)
-{
-  return myEntities.ChangeValue (theIdx);
-}
-
-//==================================================
-// function: GetSelectionState
-// purpose : Returns status of selection
-//==================================================
-SelectMgr_StateOfSelection SelectMgr_Selection::GetSelectionState() const
-{
-  return mySelectionState;
-}
-
-//==================================================
-// function: SetSelectionState
-// purpose : Sets status of selection
-//==================================================
-void SelectMgr_Selection::SetSelectionState (const SelectMgr_StateOfSelection theState) const
-{
-  mySelectionState = theState;
-}
-
-//==================================================
-// function: Sensitivity
-// purpose : Returns sensitivity of the selection
-//==================================================
-Standard_Integer SelectMgr_Selection::Sensitivity() const
-{
-  return mySensFactor;
 }
 
 //==================================================

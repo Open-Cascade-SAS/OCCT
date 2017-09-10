@@ -155,11 +155,11 @@ void VInspector_ItemSensitiveEntity::Init()
 
   int aRowId = Row();
   int aCurrentId = 0;
-  for (aSelection->Init(); aSelection->More(); aSelection->Next(), aCurrentId++)
+  for (NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>::Iterator aSelEntIter (aSelection->Entities()); aSelEntIter.More(); aSelEntIter.Next(), aCurrentId++)
   {
     if (aCurrentId != aRowId)
       continue;
-    myEntity = aSelection->Sensitive();
+    myEntity = aSelEntIter.Value();
     break;
   }
   TreeModel_ItemBase::Init();

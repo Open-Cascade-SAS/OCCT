@@ -495,9 +495,9 @@ void AIS_ColoredShape::ComputeSelection (const Handle(SelectMgr_Selection)& theS
                             aTypOfSel, aPriority, aDeflection, aDeviationAngle);
 
   Handle(SelectMgr_SelectableObject) aThis (this);
-  for (theSelection->Init(); theSelection->More(); theSelection->Next())
+  for (NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>::Iterator aSelEntIter (theSelection->Entities()); aSelEntIter.More(); aSelEntIter.Next())
   {
-    Handle(SelectMgr_EntityOwner) anOwner = Handle(SelectMgr_EntityOwner)::DownCast (theSelection->Sensitive()->BaseSensitive()->OwnerId());
+    Handle(SelectMgr_EntityOwner) anOwner = Handle(SelectMgr_EntityOwner)::DownCast (aSelEntIter.Value()->BaseSensitive()->OwnerId());
     anOwner->Set (aThis);
   }
 
