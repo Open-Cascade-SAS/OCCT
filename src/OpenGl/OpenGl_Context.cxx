@@ -152,6 +152,7 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
   atiMem (Standard_False),
   nvxMem (Standard_False),
   oesSampleVariables (Standard_False),
+  oesStdDerivatives (Standard_False),
   mySharedResources (new OpenGl_ResourcesMap()),
   myDelayed         (new OpenGl_DelayReleaseMap()),
   myUnusedResources (new OpenGl_ResourcesStack()),
@@ -1412,6 +1413,7 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
                                                                          : OpenGl_FeatureNotAvailable;
 
   oesSampleVariables = CheckExtension ("GL_OES_sample_variables");
+  oesStdDerivatives  = CheckExtension ("GL_OES_standard_derivatives");
   hasSampleVariables = IsGlGreaterEqual (3, 2) ? OpenGl_FeatureInCore :
                        oesSampleVariables ? OpenGl_FeatureInExtensions
                                           : OpenGl_FeatureNotAvailable;

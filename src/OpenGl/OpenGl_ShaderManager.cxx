@@ -479,7 +479,14 @@ Standard_Boolean OpenGl_ShaderManager::IsEmpty() const
 // =======================================================================
 void OpenGl_ShaderManager::switchLightPrograms()
 {
-  TCollection_AsciiString aKey (myShadingModel == Graphic3d_TOSM_FRAGMENT ? "p_" : "g_");
+  TCollection_AsciiString aKey;
+  switch (myShadingModel)
+  {
+    case Graphic3d_TOSM_NONE:     aKey = "c_"; break;
+    case Graphic3d_TOSM_FACET:    aKey = "f_"; break;
+    case Graphic3d_TOSM_VERTEX:   aKey = "g_"; break;
+    case Graphic3d_TOSM_FRAGMENT: aKey = "p_"; break;
+  }
   const OpenGl_ListOfLight* aLights = myLightSourceState.LightSources();
   if (aLights != NULL)
   {
@@ -1847,9 +1854,17 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramGouraud (Handle(OpenGl_S
 // purpose  :
 // =======================================================================
 Standard_Boolean OpenGl_ShaderManager::prepareStdProgramPhong (Handle(OpenGl_ShaderProgram)& theProgram,
-                                                               const Standard_Integer        theBits)
+                                                               const Standard_Integer        theBits,
+                                                               const Standard_Boolean        theIsFlatNormal)
 {
   #define thePhongCompLight "computeLighting (normalize (Normal), normalize (View), Position, gl_FrontFacing)"
+#if defined(GL_ES_VERSION_2_0)
+  const bool isFlatNormal = theIsFlatNormal
+                         && (myContext->IsGlGreaterEqual (3, 0)
+                          || myContext->oesStdDerivatives);
+#else
+  const bool isFlatNormal = theIsFlatNormal;
+#endif
 
   Handle(Graphic3d_ShaderProgram) aProgramSrc = new Graphic3d_ShaderProgram();
   TCollection_AsciiString aSrcVert, aSrcVertExtraOut, aSrcVertExtraMain;
@@ -1920,20 +1935,22 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramPhong (Handle(OpenGl_Sha
   }
 
   aSrcVert = TCollection_AsciiString()
-    + THE_FUNC_transformNormal
+    + (isFlatNormal ? "" : THE_FUNC_transformNormal)
     + EOL
       EOL"THE_SHADER_OUT vec4 PositionWorld;"
       EOL"THE_SHADER_OUT vec4 Position;"
-      EOL"THE_SHADER_OUT vec3 Normal;"
       EOL"THE_SHADER_OUT vec3 View;"
-      EOL
+    + (isFlatNormal ? ""
+    : EOL"THE_SHADER_OUT vec3 Normal;")
+    + EOL
     + aSrcVertExtraOut
     + EOL"void main()"
       EOL"{"
       EOL"  PositionWorld = occModelWorldMatrix * occVertex;"
       EOL"  Position      = occWorldViewMatrix * PositionWorld;"
-      EOL"  Normal        = transformNormal (occNormal);"
-      EOL"  View          = vec3 (0.0, 0.0, 1.0);"
+    + (isFlatNormal ? ""
+    : EOL"  Normal        = transformNormal (occNormal);")
+    + EOL"  View          = vec3 (0.0, 0.0, 1.0);"
     + aSrcVertExtraMain
     + EOL"  gl_Position = occProjectionMatrix * occWorldViewMatrix * occModelWorldMatrix * occVertex;"
       EOL"}";
@@ -1942,8 +1959,10 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramPhong (Handle(OpenGl_Sha
   aSrcFrag = TCollection_AsciiString()
     + EOL"THE_SHADER_IN vec4 PositionWorld;"
       EOL"THE_SHADER_IN vec4 Position;"
-      EOL"THE_SHADER_IN vec3 Normal;"
       EOL"THE_SHADER_IN vec3 View;"
+    + (isFlatNormal
+    ? EOL"vec3 Normal;"
+    : EOL"THE_SHADER_IN vec3 Normal;")
     + EOL
     + aSrcFragExtraOut
     + aSrcFragGetVertColor
@@ -1953,6 +1972,9 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramPhong (Handle(OpenGl_Sha
       EOL"void main()"
       EOL"{"
     + aSrcFragExtraMain
+    + (isFlatNormal
+    ? EOL"  Normal = normalize (cross (dFdx (Position.xyz / Position.w), dFdy (Position.xyz / Position.w)));"
+    : "")
     + EOL"  occFragColor = getColor();"
     + aSrcFragWriteOit
     + EOL"}";
@@ -1966,6 +1988,19 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramPhong (Handle(OpenGl_Sha
   if (myContext->IsGlGreaterEqual (3, 0))
   {
     aProgramSrc->SetHeader ("#version 300 es");
+  }
+  else if (isFlatNormal)
+  {
+    if (myContext->oesStdDerivatives)
+    {
+      aProgramSrc->SetHeader ("#extension GL_OES_standard_derivatives : enable");
+    }
+    else
+    {
+      myContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION,
+                              GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_MEDIUM,
+                              "Warning: flat shading requires OpenGL ES 3.0+ or GL_OES_standard_derivatives extension.");
+    }
   }
 #endif
   aProgramSrc->AttachShader (Graphic3d_ShaderObject::CreateFromSource (Graphic3d_TOS_VERTEX,   aSrcVert));

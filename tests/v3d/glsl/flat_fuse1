@@ -1,0 +1,22 @@
+puts "========"
+puts "0028069: Visualization, TKOpenGl - handle flat shading model within GLSL programs"
+puts "========"
+
+vclear
+vclose ALL
+vinit View1
+vviewparams -scale 551.55 -proj 0.85 -0.16 0.51 -up -0.41 0.41 0.82 -at 0.55 0.55 0.55
+
+restore [locate_data_file occ/fuse.brep] f
+tclean f
+vdefaults -absDefl 0.5
+vdisplay -dispMode 1 f
+
+# setup lights
+vlight clear
+vlight add ambient                color WHITE
+vlight add directional dir  1 0 0 color GREEN headlight 1
+vlight add directional dir -1 0 0 color RED1  headlight 1
+
+vrenderparams -shadingModel flat
+vdump $::imagedir/${::casename}.png

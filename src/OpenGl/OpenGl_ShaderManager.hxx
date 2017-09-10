@@ -423,9 +423,14 @@ protected:
   Standard_Boolean prepareStdProgramLight (Handle(OpenGl_ShaderProgram)& theProgram,
                                            const Standard_Integer        theBits)
   {
-    return myShadingModel == Graphic3d_TOSM_FRAGMENT
-         ? prepareStdProgramPhong   (theProgram, theBits)
-         : prepareStdProgramGouraud (theProgram, theBits);
+    switch (myShadingModel)
+    {
+      case Graphic3d_TOSM_NONE:     return prepareStdProgramFlat   (theProgram, theBits);
+      case Graphic3d_TOSM_FACET:    return prepareStdProgramPhong  (theProgram, theBits, true);
+      case Graphic3d_TOSM_VERTEX:   return prepareStdProgramGouraud(theProgram, theBits);
+      case Graphic3d_TOSM_FRAGMENT: return prepareStdProgramPhong  (theProgram, theBits, false);
+    }
+    return false;
   }
 
   //! Prepare standard GLSL program with per-vertex lighting.
@@ -433,8 +438,10 @@ protected:
                                                              const Standard_Integer        theBits);
 
   //! Prepare standard GLSL program with per-pixel lighting.
+  //! @param theIsFlatNormal when TRUE, the Vertex normals will be ignored and Face normal will be computed instead
   Standard_EXPORT Standard_Boolean prepareStdProgramPhong (Handle(OpenGl_ShaderProgram)& theProgram,
-                                                           const Standard_Integer        theBits);
+                                                           const Standard_Integer        theBits,
+                                                           const Standard_Boolean        theIsFlatNormal = false);
 
   //! Define computeLighting GLSL function depending on current lights configuration
   //! @param theHasVertColor flag to use getVertColor() instead of Ambient and Diffuse components of active material

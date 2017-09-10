@@ -823,6 +823,7 @@ public: //! @name extensions
   Standard_Boolean       atiMem;             //!< GL_ATI_meminfo
   Standard_Boolean       nvxMem;             //!< GL_NVX_gpu_memory_info
   Standard_Boolean       oesSampleVariables; //!< GL_OES_sample_variables
+  Standard_Boolean       oesStdDerivatives;  //!< GL_OES_standard_derivatives
 
 public: //! @name public properties tracking current state
 
