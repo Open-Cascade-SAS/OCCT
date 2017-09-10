@@ -164,54 +164,10 @@ void AIS_ConnectedInteractive::Compute(const Handle(Prs3d_Projector)& aProjector
 //purpose  :
 //=======================================================================
 void AIS_ConnectedInteractive::Compute (const Handle(Prs3d_Projector)& theProjector,
-                                        const Handle(Prs3d_Presentation)& thePresentation,
+                                        const Handle(Prs3d_Presentation)& thePrs,
                                         const TopoDS_Shape& theShape)
 {
-  if (myShape.IsNull())
-  {
-    return;
-  }
-
-  switch (theShape.ShapeType())
-  {
-    case TopAbs_VERTEX:
-    case TopAbs_EDGE:
-    case TopAbs_WIRE:
-    {
-      thePresentation->SetDisplayPriority (4);
-      StdPrs_WFShape::Add (thePresentation, theShape, myDrawer);
-      break;
-    }
-    default:
-    {
-      Handle(Prs3d_Drawer) aDefaultDrawer = GetContext()->DefaultDrawer();
-      if (aDefaultDrawer->DrawHiddenLine()) 
-      {
-        myDrawer->EnableDrawHiddenLine();
-      }
-      else 
-      {
-        myDrawer->DisableDrawHiddenLine();
-      }
-      
-      Aspect_TypeOfDeflection aPrevDeflection = aDefaultDrawer->TypeOfDeflection();
-      aDefaultDrawer->SetTypeOfDeflection(Aspect_TOD_RELATIVE);
-
-      // process HLRAngle and HLRDeviationCoefficient()
-      Standard_Real aPrevAngle = myDrawer->HLRAngle();
-      Standard_Real aNewAngle = aDefaultDrawer->HLRAngle();
-      if (myDrawer->IsAutoTriangulation() &&
-          Abs (aNewAngle - aPrevAngle) > Precision::Angular())
-      {
-        BRepTools::Clean (theShape);
-      }
-
-      myDrawer->SetHLRAngle (aNewAngle);
-      myDrawer->SetHLRDeviationCoefficient (aDefaultDrawer->HLRDeviationCoefficient());
-      StdPrs_HLRPolyShape::Add (thePresentation, theShape, myDrawer, theProjector);
-      aDefaultDrawer->SetTypeOfDeflection (aPrevDeflection);
-    }
-  }
+  AIS_Shape::computeHlrPresentation (theProjector, thePrs, theShape, myDrawer);
 }
 
 //=======================================================================

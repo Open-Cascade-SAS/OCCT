@@ -35,6 +35,8 @@
 #include <Graphic3d_MaterialAspect.hxx>
 #include <Graphic3d_SequenceOfGroup.hxx>
 #include <Graphic3d_Structure.hxx>
+#include <Message.hxx>
+#include <Message_Messenger.hxx>
 #include <HLRBRep.hxx>
 #include <OSD_Timer.hxx>
 #include <Precision.hxx>
@@ -157,14 +159,11 @@ void AIS_Shape::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresentat
         OCC_CATCH_SIGNALS
         StdPrs_WFShape::Add (aPrs, myshape, myDrawer);
       }
-      catch (Standard_Failure)
+      catch (Standard_Failure const& anException)
       {
-      #ifdef OCCT_DEBUG
-        cout << "AIS_Shape::Compute() failed" << endl;
-        cout << "a Shape should be incorrect : No Compute can be maked on it " << endl;
-      #endif
-        // presentation of the bounding box is calculated
-        //      Compute(aPresentationManager,aPrs,2);
+        Message::DefaultMessenger()->Send (TCollection_AsciiString()
+                                         + "Error: AIS_Shape::Compute() wireframe presentation builder has failed ("
+                                         + anException.GetMessageString() + ")", Message_Fail);
       }
       break;
     }
@@ -191,11 +190,11 @@ void AIS_Shape::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresentat
                                  && !myDrawer->ShadingAspect()->Aspect()->TextureMap().IsNull(),
                                      myUVOrigin, myUVRepeat, myUVScale);
           }
-          catch (Standard_Failure)
+          catch (Standard_Failure const& anException)
           {
-          #ifdef OCCT_DEBUG
-            cout << "AIS_Shape::Compute() in ShadingMode failed" << endl;
-          #endif
+            Message::DefaultMessenger()->Send (TCollection_AsciiString()
+                                               + "Error: AIS_Shape::Compute() shaded presentation builder has failed ("
+                                               + anException.GetMessageString() + ")", Message_Fail);
             StdPrs_WFShape::Add (aPrs, myshape, myDrawer);
           }
         }
@@ -227,149 +226,87 @@ void AIS_Shape::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresentat
 }
 
 //=======================================================================
-//function : Compute
-//purpose  : Hidden Line Removal
+//function : computeHlrPresentation
+//purpose  :
 //=======================================================================
-void AIS_Shape::Compute(const Handle(Prs3d_Projector)& aProjector,
-                        const Handle(Prs3d_Presentation)& aPresentation)
+void AIS_Shape::computeHlrPresentation (const Handle(Prs3d_Projector)& theProjector,
+                                        const Handle(Prs3d_Presentation)& thePrs,
+                                        const TopoDS_Shape& theShape,
+                                        const Handle(Prs3d_Drawer)& theDrawer)
 {
-  Compute(aProjector,aPresentation,myshape);
-}
-
-//=======================================================================
-//function : Compute
-//purpose  : 
-//=======================================================================
-
-void AIS_Shape::Compute(const Handle(Prs3d_Projector)&     aProjector,
-                        const Handle(Geom_Transformation)& TheTrsf,
-                        const Handle(Prs3d_Presentation)&  aPresentation)
-{
-  const TopLoc_Location& loc = myshape.Location();
-  TopoDS_Shape shbis = myshape.Located(TopLoc_Location(TheTrsf->Trsf())*loc);
-  Compute(aProjector,aPresentation,shbis);
-}
-
-//=======================================================================
-//function : Compute
-//purpose  : 
-//=======================================================================
-
-void AIS_Shape::Compute(const Handle(Prs3d_Projector)& aProjector,
-                        const Handle(Prs3d_Presentation)& aPresentation,
-                        const TopoDS_Shape& SH)
-{
-  if (SH.ShapeType() == TopAbs_COMPOUND) {
-    TopoDS_Iterator anExplor (SH);
-
-    if (!anExplor.More()) // Shape vide -> Assemblage vide.
-      return;
+  if (theShape.IsNull())
+  {
+    return;
   }
 
-  Handle (Prs3d_Drawer) defdrawer = GetContext()->DefaultDrawer();
-  if (defdrawer->DrawHiddenLine())
-    {myDrawer->EnableDrawHiddenLine();}
-  else {myDrawer->DisableDrawHiddenLine();}
-
-  Aspect_TypeOfDeflection prevdef = defdrawer->TypeOfDeflection();
-  defdrawer->SetTypeOfDeflection(Aspect_TOD_RELATIVE);
-
-  if (myDrawer->IsAutoTriangulation())
+  switch (theShape.ShapeType())
   {
-    // coefficients for calculation
-    Standard_Real aPrevAngle, aNewAngle, aPrevCoeff, aNewCoeff;
-    Standard_Boolean isOwnHLRDeviationAngle = OwnHLRDeviationAngle (aNewAngle, aPrevAngle);
-    Standard_Boolean isOwnHLRDeviationCoefficient = OwnHLRDeviationCoefficient (aNewCoeff, aPrevCoeff);
-    if (((Abs (aNewAngle - aPrevAngle) > Precision::Angular()) && isOwnHLRDeviationAngle) ||
-        ((Abs (aNewCoeff - aPrevCoeff) > Precision::Confusion()) && isOwnHLRDeviationCoefficient))
+    case TopAbs_VERTEX:
+    case TopAbs_EDGE:
+    case TopAbs_WIRE:
     {
-      BRepTools::Clean(SH);
+      thePrs->SetDisplayPriority (4);
+      StdPrs_WFShape::Add (thePrs, theShape, theDrawer);
+      return;
+    }
+    case TopAbs_COMPOUND:
+    {
+      TopoDS_Iterator anExplor (theShape);
+      if (!anExplor.More())
+      {
+        return;
+      }
+      break;
+    }
+    default:
+    {
+      break;
     }
   }
-  
+
+  const Handle(Prs3d_Drawer)& aDefDrawer = theDrawer->Link();
+  if (aDefDrawer->DrawHiddenLine())
   {
-    try {
+    theDrawer->EnableDrawHiddenLine();
+  }
+  else
+  {
+    theDrawer->DisableDrawHiddenLine();
+  }
+
+  const Aspect_TypeOfDeflection aPrevDef = aDefDrawer->TypeOfDeflection();
+  aDefDrawer->SetTypeOfDeflection (Aspect_TOD_RELATIVE);
+  if (theDrawer->IsAutoTriangulation())
+  {
+    StdPrs_ToolTriangulatedShape::ClearOnOwnDeflectionChange (theShape, theDrawer, Standard_True);
+  }
+
+  {
+    try
+    {
       OCC_CATCH_SIGNALS
-      switch (TypeOfHLR()) {
+      switch (theDrawer->TypeOfHLR())
+      {
         case Prs3d_TOH_Algo:
-          StdPrs_HLRShape::Add (aPresentation, SH, myDrawer, aProjector);
+          StdPrs_HLRShape::Add (thePrs, theShape, theDrawer, theProjector);
           break;
         case Prs3d_TOH_PolyAlgo:
         default:
-          StdPrs_HLRPolyShape::Add (aPresentation, SH, myDrawer, aProjector);
+          StdPrs_HLRPolyShape::Add (thePrs, theShape, theDrawer, theProjector);
           break;
       }
     }
-    catch (Standard_Failure) {
-#ifdef OCCT_DEBUG
-      cout <<"AIS_Shape::Compute(Proj) HLR Algorithm failed" << endl;
-#endif
-      StdPrs_WFShape::Add(aPresentation,SH,myDrawer);
+    catch (Standard_Failure const& anException)
+    {
+      Message::DefaultMessenger()->Send (TCollection_AsciiString()
+                                       + "Error: AIS_Shape::Compute() HLR Algorithm has failed ("
+                                       + anException.GetMessageString() + ")", Message_Fail);
+      StdPrs_WFShape::Add (thePrs, theShape, theDrawer);
     }
   }
 
-  defdrawer->SetTypeOfDeflection (prevdef);
+  aDefDrawer->SetTypeOfDeflection (aPrevDef);
 }
-
-//=======================================================================
-//function : SelectionType
-//purpose  : gives the type according to the Index of Selection Mode
-//=======================================================================
-
-TopAbs_ShapeEnum AIS_Shape::SelectionType(const Standard_Integer aMode)
-{
-  switch(aMode){
-  case 1:
-    return TopAbs_VERTEX;
-  case 2:
-    return TopAbs_EDGE;
-  case 3:
-    return TopAbs_WIRE;
-  case 4:
-    return TopAbs_FACE;
-  case 5:
-    return TopAbs_SHELL;
-  case 6:
-    return TopAbs_SOLID;
-  case 7:
-    return TopAbs_COMPSOLID;
-  case 8:
-    return TopAbs_COMPOUND;
-  case 0:
-  default:
-    return TopAbs_SHAPE;
-  }
-  
-}
-//=======================================================================
-//function : SelectionType
-//purpose  : gives the SelectionMode according to the Type od Decomposition...
-//=======================================================================
-Standard_Integer AIS_Shape::SelectionMode(const TopAbs_ShapeEnum aType)
-{
-  switch(aType){
-  case TopAbs_VERTEX:
-    return 1;
-  case TopAbs_EDGE:
-    return 2;
-  case TopAbs_WIRE:
-    return 3;
-  case  TopAbs_FACE:
-    return 4;
-  case TopAbs_SHELL:
-    return 5;
-  case TopAbs_SOLID:
-    return 6;
-  case TopAbs_COMPSOLID:
-    return 7;
-  case TopAbs_COMPOUND:
-    return 8;
-  case TopAbs_SHAPE:
-  default:
-    return 0;
-  }
-}
-
 
 //=======================================================================
 //function : ComputeSelection
@@ -393,7 +330,8 @@ void AIS_Shape::ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
 // POP protection against crash in low layers
 
   Standard_Real aDeflection = Prs3d::GetDeflection(shape, myDrawer);
-  try {  
+  try
+  {
     OCC_CATCH_SIGNALS
     StdSelect_BRepSelectionTool::Load(aSelection,
                                       this,
@@ -402,9 +340,14 @@ void AIS_Shape::ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
                                       aDeflection,
                                       myDrawer->HLRAngle(),
                                       myDrawer->IsAutoTriangulation());
-  } catch ( Standard_Failure ) {
-//    cout << "a Shape should be incorrect : A Selection on the Bnd  is activated   "<<endl;
-    if ( aMode == 0 ) {
+  }
+  catch (Standard_Failure const& anException)
+  {
+    Message::DefaultMessenger()->Send (TCollection_AsciiString()
+                                       + "Error: AIS_Shape::ComputeSelection(" + aMode + ") has failed ("
+                                       + anException.GetMessageString() + ")", Message_Fail);
+    if (aMode == 0)
+    {
       aSelection->Clear();
       Bnd_Box B = BoundingBox();
       Handle(StdSelect_BRepOwner) aOwner = new StdSelect_BRepOwner(shape,this);

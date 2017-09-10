@@ -598,6 +598,13 @@ const TopoDS_Edge&  BRepTools_WireExplorer::Current()const
 //=======================================================================
 TopAbs_Orientation BRepTools_WireExplorer::Orientation() const
 {
+  if (myVertex.IsNull()
+  && !myEdge.IsNull())
+  {
+    // infinite edge
+    return TopAbs_FORWARD;
+  }
+
   TopoDS_Iterator it(myEdge,Standard_False);
   while (it.More()) {
     if (myVertex.IsSame(it.Value()))

@@ -1,0 +1,14 @@
+puts "================"
+puts "0027869: Visualization - AIS_ConnectedInteractive does not support exact HLR mode"
+puts "================"
+puts ""
+
+restore [locate_data_file CrankArm.brep] obj
+vclear
+vinit View1
+vdisplay obj
+vconnect new 50 50 50 obj
+vfit
+vhlr on -algoType algo
+
+vdump ${imagedir}/${casename}.png

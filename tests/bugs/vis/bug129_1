@@ -1,41 +1,22 @@
 puts "================"
-puts "OCC129"
+puts "OCC129 - infinite cylinder is not selectable in 3D Viewer"
 puts "================"
 puts ""
-#######################################################################################
-# Object is not selectable in the Cascade Viewer
-######################################################################################
-
-set BugNumber OCC22129
 
 cylinder c 0 0 1 10
 mkface f c
 
-vinit
-vdisplay f
+vclear
+vinit View1
+vdisplay -dispMode 0 f
+# check dynamic highlighting
+vmoveto    207 184
+checkcolor 207 184 0 1 1
+# check selected highlighting
+vselect    207 184
+checkcolor 207 184 0.8 0.8 0.8
+# check unselected
+vselect    222 175
+checkcolor 207 184 1 1 0
 
-set x1 207
-set y1 184
-set x2 222
-set y2 175
-
-set UNSELECT_R 1
-set UNSELECT_G 1
-set UNSELECT_B 0
-
-set MOVESELECT_R 0
-set MOVESELECT_G 1
-set MOVESELECT_B 1
-
-
-vmoveto ${x1} ${y1}
-checkcolor ${x1} ${y1} 0 1 1
-
-vselect ${x1} ${y1}
-checkcolor ${x1} ${y1} 0.8 0.8 0.8
-
-vselect ${x2} ${y2}
-checkcolor ${x1} ${y1} 1 1 0
-
-checkview -screenshot -3d -path ${imagedir}/${test_image}.png
-
+vdump ${imagedir}/${casename}.png

@@ -565,11 +565,8 @@ Standard_Boolean StdSelect_BRepSelectionTool::GetSensitiveForFace (const TopoDS_
                                                                    const Standard_Real    theMaxParam,
                                                                    const Standard_Boolean theInteriorFlag)
 {
-  // check if there is triangulation of the face...
   TopLoc_Location aLoc;
-  Handle(Poly_Triangulation) aTriangulation = BRep_Tool::Triangulation (theFace, aLoc);
-
-  if (!aTriangulation.IsNull())
+  if (Handle(Poly_Triangulation) aTriangulation = BRep_Tool::Triangulation (theFace, aLoc))
   {
     Handle(Select3D_SensitiveTriangulation) STG = new Select3D_SensitiveTriangulation (theOwner, aTriangulation, aLoc, theInteriorFlag);
     theSensitiveList.Append (STG);
@@ -578,184 +575,185 @@ Standard_Boolean StdSelect_BRepSelectionTool::GetSensitiveForFace (const TopoDS_
 
   // for faces with triangulation bugs or without autotriangulation ....
   // very ugly and should not even exist ...
-  BRepAdaptor_Surface BS;
-  BS.Initialize (theFace);
-
-  Standard_Real FirstU = BS.FirstUParameter() <= -Precision::Infinite() ? -theMaxParam : BS.FirstUParameter();
-  Standard_Real LastU  = BS.LastUParameter()  >=  Precision::Infinite() ?  theMaxParam : BS.LastUParameter();
-  Standard_Real FirstV = BS.FirstVParameter() <= -Precision::Infinite() ? -theMaxParam : BS.FirstVParameter();
-  Standard_Real LastV  = BS.LastVParameter()  >=  Precision::Infinite() ?  theMaxParam : BS.LastVParameter();
-
+  BRepAdaptor_Surface BS (theFace);
   if (BS.GetType() == GeomAbs_Plane)
   {
-    gp_Pnt pcur;
-    Handle(TColgp_HArray1OfPnt) P = new TColgp_HArray1OfPnt (1, 5);
-    BS.D0 (FirstU, FirstV, pcur);
-    P->SetValue (1, pcur);
-    BS.D0 (LastU, FirstV, pcur);
-    P->SetValue (2, pcur);
-    BS.D0 (LastU, LastV, pcur);
-    P->SetValue (3, pcur);
-    BS.D0 (FirstU, LastV, pcur);
-    P->SetValue (4, pcur);
-    P->SetValue (5, P->Value (1));
+    const Standard_Real aFirstU = BS.FirstUParameter() <= -Precision::Infinite() ? -theMaxParam : BS.FirstUParameter();
+    const Standard_Real aLastU  = BS.LastUParameter()  >=  Precision::Infinite() ?  theMaxParam : BS.LastUParameter();
+    const Standard_Real aFirstV = BS.FirstVParameter() <= -Precision::Infinite() ? -theMaxParam : BS.FirstVParameter();
+    const Standard_Real aLastV  = BS.LastVParameter()  >=  Precision::Infinite() ?  theMaxParam : BS.LastVParameter();
+    Handle(TColgp_HArray1OfPnt) aPlanePnts = new TColgp_HArray1OfPnt (1, 5);
+    BS.D0 (aFirstU, aFirstV, aPlanePnts->ChangeValue (1));
+    BS.D0 (aLastU,  aFirstV, aPlanePnts->ChangeValue (2));
+    BS.D0 (aLastU,  aLastV,  aPlanePnts->ChangeValue (3));
+    BS.D0 (aFirstU, aLastV,  aPlanePnts->ChangeValue (4));
+    aPlanePnts->SetValue (5, aPlanePnts->Value (1));
+
     // if the plane is "infinite", it is sensitive only on the border limited by MaxParam
-    if (FirstU == -theMaxParam && LastU == theMaxParam && FirstV == -theMaxParam && LastV == theMaxParam)
-    {
-      theSensitiveList.Append (new Select3D_SensitiveFace (theOwner, P, Select3D_TOS_BOUNDARY));
-    }
-    else
-    {
-      Select3D_TypeOfSensitivity TS = theInteriorFlag ? Select3D_TOS_INTERIOR : Select3D_TOS_BOUNDARY;
-      theSensitiveList.Append (new Select3D_SensitiveFace (theOwner, P, TS));
-    }
+    const bool isInfinite = aFirstU == -theMaxParam
+                         && aLastU  ==  theMaxParam
+                         && aFirstV == -theMaxParam
+                         && aLastV  ==  theMaxParam;
+    theSensitiveList.Append (new Select3D_SensitiveFace (theOwner, aPlanePnts,
+                                                         theInteriorFlag && !isInfinite
+                                                       ? Select3D_TOS_INTERIOR
+                                                       : Select3D_TOS_BOUNDARY));
     return Standard_True;
   }
 
-  // This is construction of a sevsitive polygon from the exterior contour of the face...
+  // This is construction of a sensitive polygon from the exterior contour of the face...
   // It is not good at all, but...
   TopoDS_Wire aWire;
-  TopExp_Explorer anExpWiresInFace (theFace, TopAbs_WIRE);
-  if (anExpWiresInFace.More())
   {
-    // believing that this is the first... to be seen
-    aWire = TopoDS::Wire (anExpWiresInFace.Current());
+    TopExp_Explorer anExpWiresInFace (theFace, TopAbs_WIRE);
+    if (anExpWiresInFace.More())
+    {
+      // believing that this is the first... to be seen
+      aWire = TopoDS::Wire (anExpWiresInFace.Current());
+    }
   }
   if (aWire.IsNull())
   {
     return Standard_False;
   }
 
-  TColgp_SequenceOfPnt WirePoints;
-  Standard_Boolean FirstExp = Standard_True;
-  Standard_Real wf, wl;
+  TColgp_SequenceOfPnt aWirePoints;
+  Standard_Boolean isFirstExp = Standard_True;
   BRepAdaptor_Curve cu3d;
-  for (BRepTools_WireExplorer aWireExplorer (aWire);
-       aWireExplorer.More(); aWireExplorer.Next())
+  for (BRepTools_WireExplorer aWireExplorer (aWire); aWireExplorer.More(); aWireExplorer.Next())
   {
     cu3d.Initialize (aWireExplorer.Current());
+    Standard_Real wf = 0.0, wl = 0.0;
     BRep_Tool::Range (aWireExplorer.Current(), wf, wl);
     if (Abs (wf - wl) <= Precision::Confusion())
     {
     #ifdef OCCT_DEBUG
       cout<<" StdSelect_BRepSelectionTool : Curve where ufirst = ulast ...."<<endl;
     #endif
+      continue;
     }
-    else
-    {
-      if (FirstExp)
-      {
-        if (aWireExplorer.Orientation() == TopAbs_FORWARD)
-        {
-          WirePoints.Append (cu3d.Value (wf));
-        }
-        else
-        {
-          WirePoints.Append (cu3d.Value (wl));
-        }
-        FirstExp = Standard_False;
-      }
 
-      switch (cu3d.GetType())
+    if (isFirstExp)
+    {
+      isFirstExp = Standard_False;
+      if (aWireExplorer.Orientation() == TopAbs_FORWARD)
       {
-        case GeomAbs_Line:
+        aWirePoints.Append (cu3d.Value (wf));
+      }
+      else
+      {
+        aWirePoints.Append (cu3d.Value (wl));
+      }
+    }
+
+    switch (cu3d.GetType())
+    {
+      case GeomAbs_Line:
+      {
+        aWirePoints.Append (cu3d.Value ((aWireExplorer.Orientation() == TopAbs_FORWARD) ? wl : wf));
+        break;
+      }
+      case GeomAbs_Circle:
+      {
+        if (2.0 * M_PI - Abs (wl - wf) <= Precision::Confusion())
         {
-          WirePoints.Append (cu3d.Value ((aWireExplorer.Orientation() == TopAbs_FORWARD) ? wl : wf));
-          break;
-        }
-        case GeomAbs_Circle:
-        {
-          if (2 * M_PI - Abs (wl - wf) <= Precision::Confusion())
+          if (BS.GetType() == GeomAbs_Cylinder ||
+              BS.GetType() == GeomAbs_Torus ||
+              BS.GetType() == GeomAbs_Cone  ||
+              BS.GetType() == GeomAbs_BSplineSurface) // beuurkk pour l'instant...
           {
-            if (BS.GetType() == GeomAbs_Cylinder ||
-                BS.GetType() == GeomAbs_Torus ||
-                BS.GetType() == GeomAbs_Cone  ||
-                BS.GetType() == GeomAbs_BSplineSurface) // beuurkk pour l'instant...
-            {
-              Standard_Real ff = wf ,ll = wl;
-              Standard_Real dw =(Max (wf, wl) - Min (wf, wl)) / (Standard_Real )Max (2, NbPOnEdge - 1);
-              if (aWireExplorer.Orientation() == TopAbs_FORWARD)
-              {
-                for (Standard_Real wc = wf + dw; wc <= wl; wc += dw)
-                {
-                  WirePoints.Append (cu3d.Value (wc));
-                }
-              }
-              else if (aWireExplorer.Orientation() == TopAbs_REVERSED)
-              {
-                for (Standard_Real wc = ll - dw; wc >= ff; wc -= dw)
-                {
-                  WirePoints.Append (cu3d.Value (wc));
-                }
-              }
-            }
-            else
-            {
-              if (cu3d.Circle().Radius() <= Precision::Confusion())
-              {
-                theSensitiveList.Append (new Select3D_SensitivePoint (theOwner, cu3d.Circle().Location()));
-              }
-              else
-              {
-                theSensitiveList.Append (new Select3D_SensitiveCircle (theOwner, new Geom_Circle (cu3d.Circle()), theInteriorFlag, 16));
-              }
-            }
-          }
-          else
-          {
-            Standard_Real ff = wf, ll = wl;
-            Standard_Real dw = (Max (wf, wl) - Min (wf, wl)) / (Standard_Real )Max (2, NbPOnEdge - 1);
+            Standard_Real ff = wf ,ll = wl;
+            Standard_Real dw =(Max (wf, wl) - Min (wf, wl)) / (Standard_Real )Max (2, NbPOnEdge - 1);
             if (aWireExplorer.Orientation() == TopAbs_FORWARD)
             {
               for (Standard_Real wc = wf + dw; wc <= wl; wc += dw)
               {
-                WirePoints.Append (cu3d.Value (wc));
+                aWirePoints.Append (cu3d.Value (wc));
               }
             }
             else if (aWireExplorer.Orientation() == TopAbs_REVERSED)
             {
               for (Standard_Real wc = ll - dw; wc >= ff; wc -= dw)
               {
-                WirePoints.Append (cu3d.Value (wc));
+                aWirePoints.Append (cu3d.Value (wc));
               }
             }
           }
-          break;
+          else
+          {
+            if (cu3d.Circle().Radius() <= Precision::Confusion())
+            {
+              theSensitiveList.Append (new Select3D_SensitivePoint (theOwner, cu3d.Circle().Location()));
+            }
+            else
+            {
+              theSensitiveList.Append (new Select3D_SensitiveCircle (theOwner, new Geom_Circle (cu3d.Circle()), theInteriorFlag, 16));
+            }
+          }
         }
-        default:
+        else
         {
           Standard_Real ff = wf, ll = wl;
           Standard_Real dw = (Max (wf, wl) - Min (wf, wl)) / (Standard_Real )Max (2, NbPOnEdge - 1);
-          if (aWireExplorer.Orientation()==TopAbs_FORWARD)
+          if (aWireExplorer.Orientation() == TopAbs_FORWARD)
           {
             for (Standard_Real wc = wf + dw; wc <= wl; wc += dw)
             {
-              WirePoints.Append (cu3d.Value (wc));
+              aWirePoints.Append (cu3d.Value (wc));
             }
           }
           else if (aWireExplorer.Orientation() == TopAbs_REVERSED)
           {
             for (Standard_Real wc = ll - dw; wc >= ff; wc -= dw)
             {
-              WirePoints.Append (cu3d.Value (wc));
+              aWirePoints.Append (cu3d.Value (wc));
             }
+          }
+        }
+        break;
+      }
+      default:
+      {
+        Standard_Real ff = wf, ll = wl;
+        Standard_Real dw = (Max (wf, wl) - Min (wf, wl)) / (Standard_Real )Max (2, NbPOnEdge - 1);
+        if (aWireExplorer.Orientation()==TopAbs_FORWARD)
+        {
+          for (Standard_Real wc = wf + dw; wc <= wl; wc += dw)
+          {
+            aWirePoints.Append (cu3d.Value (wc));
+          }
+        }
+        else if (aWireExplorer.Orientation() == TopAbs_REVERSED)
+        {
+          for (Standard_Real wc = ll - dw; wc >= ff; wc -= dw)
+          {
+            aWirePoints.Append (cu3d.Value (wc));
           }
         }
       }
     }
   }
-  Standard_Integer ArrayPosition = WirePoints.Length();
 
-  Handle(TColgp_HArray1OfPnt) facepoints = new TColgp_HArray1OfPnt (1, ArrayPosition);
-  for (Standard_Integer I = 1; I <= ArrayPosition; ++I)
+  Handle(TColgp_HArray1OfPnt) aFacePoints = new TColgp_HArray1OfPnt (1, aWirePoints.Length());
   {
-    facepoints->SetValue (I, WirePoints.Value(I));
+    Standard_Integer aPntIndex = 1;
+    for (TColgp_SequenceOfPnt::Iterator aPntIter (aWirePoints); aPntIter.More(); aPntIter.Next())
+    {
+      aFacePoints->SetValue (aPntIndex++, aPntIter.Value());
+    }
   }
 
-  if ((facepoints->Array1()).Length() > 1)
-  { //1 if only one circular edge
-    Select3D_TypeOfSensitivity TS = theInteriorFlag ? Select3D_TOS_INTERIOR : Select3D_TOS_BOUNDARY;
-    theSensitiveList.Append (new Select3D_SensitiveFace (theOwner, facepoints, TS));
+  // 1 if only one circular edge
+  if (aFacePoints->Array1().Length() == 2)
+  {
+    theSensitiveList.Append (new Select3D_SensitiveCurve (theOwner, aFacePoints));
+  }
+  else if (aFacePoints->Array1().Length() > 2)
+  {
+    theSensitiveList.Append (new Select3D_SensitiveFace (theOwner, aFacePoints,
+                                                         theInteriorFlag
+                                                       ? Select3D_TOS_INTERIOR
+                                                       : Select3D_TOS_BOUNDARY));
   }
   return Standard_True;
 }
