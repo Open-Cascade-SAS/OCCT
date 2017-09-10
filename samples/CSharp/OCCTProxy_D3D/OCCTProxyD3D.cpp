@@ -1,3 +1,4 @@
+#include <d3d9.h>
 #include <windows.h>
 
 // include required OCCT headers
@@ -619,7 +620,7 @@ public:
     }
     for (myAISContext()->InitSelected(); myAISContext()->MoreSelected(); myAISContext()->NextSelected())
     {
-      myAISContext()->SetTransparency (myAISContext()->Current(), ((Standard_Real )theTrans) / 10.0, Standard_False);
+      myAISContext()->SetTransparency (myAISContext()->SelectedInteractive(), ((Standard_Real )theTrans) / 10.0, Standard_False);
     }
     myAISContext()->UpdateCurrentViewer();
   }
