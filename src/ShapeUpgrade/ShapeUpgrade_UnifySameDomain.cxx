@@ -802,7 +802,9 @@ static Standard_Boolean MergeSubSeq(const TopTools_SequenceOfShape& aChain,
 //=======================================================================
 
 static Standard_Boolean IsMergingPossible(const TopoDS_Edge& edge1, const TopoDS_Edge& edge2, 
-                                          double theAngTol, const TopTools_MapOfShape& AvoidEdgeVrt)
+                                          double theAngTol, double theLinTol, 
+                                          const TopTools_MapOfShape& AvoidEdgeVrt, const bool theLineDirectionOk,
+                                          const gp_Pnt& theFirstPoint, const gp_Vec& theDirectionVec)
 {
   TopoDS_Vertex CV = TopExp::LastVertex(edge1, Standard_True);
   if (CV.IsNull() || AvoidEdgeVrt.Contains(CV))
@@ -845,6 +847,39 @@ static Standard_Boolean IsMergingPossible(const TopoDS_Edge& edge1, const TopoDS
   if (Diff1.Angle(Diff2) > theAngTol)
     return Standard_False;
 
+  if (theLineDirectionOk && t2 == GeomAbs_Line)
+  {
+    gp_Vec aCurV(theFirstPoint, BRep_Tool::Pnt(TopExp::LastVertex(edge2, Standard_True)));
+    Standard_Real aDD = theDirectionVec.CrossSquareMagnitude(aCurV);
+    if (aDD > theLinTol*theLinTol)
+      return Standard_False;
+  }
+
+  return Standard_True;
+}
+
+//=======================================================================
+//function : GetLineEdgePoints
+//purpose  : 
+//=======================================================================
+static Standard_Boolean GetLineEdgePoints(const TopoDS_Edge& theInpEdge, gp_Pnt& theFirstPoint, gp_Vec& theDirectionVec)
+{
+  double f, l;
+  Handle(Geom_Curve) aCur = BRep_Tool::Curve(theInpEdge, f, l);
+  if(aCur.IsNull()) 
+    return Standard_False;
+
+  Handle(Geom_TrimmedCurve) aTC = Handle(Geom_TrimmedCurve)::DownCast(aCur);
+  if (!aTC.IsNull())
+    aCur = aTC->BasisCurve();
+
+  if (aCur->DynamicType() != STANDARD_TYPE(Geom_Line))
+    return Standard_False;
+
+  theFirstPoint = BRep_Tool::Pnt(TopExp::FirstVertex(theInpEdge, Standard_True));
+  gp_Pnt aLP = BRep_Tool::Pnt(TopExp::LastVertex(theInpEdge, Standard_True));
+  theDirectionVec = aLP.XYZ().Subtracted(theFirstPoint.XYZ());
+  theDirectionVec.Normalize();
   return Standard_True;
 }
 
@@ -856,25 +891,32 @@ static Standard_Boolean IsMergingPossible(const TopoDS_Edge& edge1, const TopoDS
 
 static void GenerateSubSeq (const TopTools_SequenceOfShape& anInpEdgeSeq,
                             NCollection_Sequence<SubSequenceOfEdges>& SeqOfSubSeqOfEdges,
-                            Standard_Boolean IsClosed, double theAngTol, const TopTools_MapOfShape& AvoidEdgeVrt)
+                            Standard_Boolean IsClosed, double theAngTol, double theLinTol, 
+                            const TopTools_MapOfShape& AvoidEdgeVrt)
 {
   Standard_Boolean isOk = Standard_False;
   TopoDS_Edge edge1, edge2;
 
   SubSequenceOfEdges SubSeq;
-  SubSeq.SeqsEdges.Append(TopoDS::Edge(anInpEdgeSeq(1)));
+  TopoDS_Edge RefEdge = TopoDS::Edge(anInpEdgeSeq(1));
+  SubSeq.SeqsEdges.Append(RefEdge);
   SeqOfSubSeqOfEdges.Append(SubSeq);
 
+  gp_Pnt aFirstPoint;
+  gp_Vec aDirectionVec;
+  Standard_Boolean isLineDirectionOk = GetLineEdgePoints(RefEdge, aFirstPoint, aDirectionVec);  
+  
   for (int i = 1; i < anInpEdgeSeq.Length(); i++)
   {
     edge1 = TopoDS::Edge(anInpEdgeSeq(i));
     edge2 = TopoDS::Edge(anInpEdgeSeq(i+1));
-    isOk = IsMergingPossible(edge1, edge2, theAngTol, AvoidEdgeVrt);
+    isOk = IsMergingPossible(edge1, edge2, theAngTol, theLinTol, AvoidEdgeVrt, isLineDirectionOk, aFirstPoint, aDirectionVec);
     if (!isOk)
     {
       SubSequenceOfEdges aSubSeq;
       aSubSeq.SeqsEdges.Append(edge2);
       SeqOfSubSeqOfEdges.Append(aSubSeq);
+      isLineDirectionOk = GetLineEdgePoints(edge2, aFirstPoint, aDirectionVec);
     }
     else
       SeqOfSubSeqOfEdges.ChangeLast().SeqsEdges.Append(edge2);
@@ -884,7 +926,7 @@ static void GenerateSubSeq (const TopTools_SequenceOfShape& anInpEdgeSeq,
   {
     edge1 = TopoDS::Edge(anInpEdgeSeq.Last());
     edge2 = TopoDS::Edge(anInpEdgeSeq.First());
-    if (IsMergingPossible(edge1, edge2, theAngTol, AvoidEdgeVrt))
+    if (IsMergingPossible(edge1, edge2, theAngTol, theLinTol, AvoidEdgeVrt, Standard_False, aFirstPoint, aDirectionVec))
     {
       SeqOfSubSeqOfEdges.ChangeLast().SeqsEdges.Append(SeqOfSubSeqOfEdges.ChangeFirst().SeqsEdges);
       SeqOfSubSeqOfEdges.Remove(1);
@@ -898,6 +940,7 @@ static void GenerateSubSeq (const TopTools_SequenceOfShape& anInpEdgeSeq,
 //=======================================================================
 static Standard_Boolean MergeEdges(TopTools_SequenceOfShape& SeqEdges,
                                    const Standard_Real theAngTol,
+                                   const Standard_Real theLinTol,
                                    const Standard_Boolean ConcatBSplines,
                                    const Standard_Boolean isSafeInputMode,
                                    Handle(ShapeBuild_ReShape)& theContext,
@@ -1000,7 +1043,7 @@ static Standard_Boolean MergeEdges(TopTools_SequenceOfShape& SeqEdges,
 
     // split chain by vertices at which merging is not possible
     NCollection_Sequence<SubSequenceOfEdges> aOneSeq;
-    GenerateSubSeq(aChain, aOneSeq, IsClosed, theAngTol, VerticesToAvoid);
+    GenerateSubSeq(aChain, aOneSeq, IsClosed, theAngTol, theLinTol, VerticesToAvoid);
 
     // put sub-chains in the result
     SeqOfSubSeqOfEdges.Append(aOneSeq);
@@ -1025,13 +1068,14 @@ static Standard_Boolean MergeEdges(TopTools_SequenceOfShape& SeqEdges,
 //=======================================================================
 static Standard_Boolean MergeSeq (TopTools_SequenceOfShape& SeqEdges,
                                   const Standard_Real theAngTol,
+                                  const Standard_Real theLinTol,
                                   const Standard_Boolean ConcatBSplines,
                                   const Standard_Boolean isSafeInputMode,
                                   Handle(ShapeBuild_ReShape)& theContext,
                                   const TopTools_MapOfShape& nonMergVert)
 {
   NCollection_Sequence<SubSequenceOfEdges> SeqOfSubsSeqOfEdges;
-  if (MergeEdges(SeqEdges, theAngTol, ConcatBSplines, isSafeInputMode,
+  if (MergeEdges(SeqEdges, theAngTol, theLinTol, ConcatBSplines, isSafeInputMode,
                  theContext, SeqOfSubsSeqOfEdges, nonMergVert))
   {
     for (Standard_Integer i = 1; i <= SeqOfSubsSeqOfEdges.Length(); i++ )
@@ -1639,7 +1683,7 @@ void ShapeUpgrade_UnifySameDomain::UnifyEdges()
       SeqEdges.Append(expE.Current());
     SharedVert.Clear();
     CheckSharedVertices(SeqEdges, aMapEdgesVertex, myKeepShapes, SharedVert); 
-    MergeSeq(SeqEdges, myAngTol, myConcatBSplines, mySafeInputMode, myContext,
+    MergeSeq(SeqEdges, myAngTol, myLinTol, myConcatBSplines, mySafeInputMode, myContext,
       SharedVert);
   }
 
@@ -1686,7 +1730,7 @@ void ShapeUpgrade_UnifySameDomain::UnifyEdges()
 
       SharedVert.Clear();
       CheckSharedVertices(SeqEdges, aMapEdgesVertex, myKeepShapes, SharedVert);
-      if (MergeSeq(SeqEdges, myAngTol, myConcatBSplines, mySafeInputMode,
+      if (MergeSeq(SeqEdges, myAngTol, myLinTol, myConcatBSplines, mySafeInputMode,
         myContext, SharedVert))
       {
         TopoDS_Face tmpF = TopoDS::Face(exp.Current());
@@ -1702,7 +1746,7 @@ void ShapeUpgrade_UnifySameDomain::UnifyEdges()
     {
       SharedVert.Clear();
       CheckSharedVertices(aNonSharedEdges, aMapEdgesVertex, myKeepShapes, SharedVert);
-      if (MergeSeq(aNonSharedEdges, myAngTol, myConcatBSplines, mySafeInputMode,
+      if (MergeSeq(aNonSharedEdges, myAngTol, myLinTol, myConcatBSplines, mySafeInputMode,
         myContext, SharedVert))
       {
         TopoDS_Face tmpF = TopoDS::Face(exp.Current());
