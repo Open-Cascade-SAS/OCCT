@@ -1795,8 +1795,8 @@ static Standard_Boolean SaveBitmap (HBITMAP     theHBitmap,
   }
 
   Image_AlienPixMap anImage;
-  const Standard_Size aSizeRowBytes = Standard_Size(aBitmap.bmWidth) * 4;
-  if (!anImage.InitTrash (Image_Format_BGR32, Standard_Size(aBitmap.bmWidth), Standard_Size(aBitmap.bmHeight), aSizeRowBytes))
+  const Standard_Size aSizeRowBytes = ((Standard_Size(aBitmap.bmWidth) * 24 + 31) / 32) * 4; // 4 bytes alignment for GetDIBits()
+  if (!anImage.InitTrash (Image_Format_BGR, Standard_Size(aBitmap.bmWidth), Standard_Size(aBitmap.bmHeight), aSizeRowBytes))
   {
     return Standard_False;
   }
@@ -1809,7 +1809,7 @@ static Standard_Boolean SaveBitmap (HBITMAP     theHBitmap,
   aBitmapInfo.biWidth       = aBitmap.bmWidth;
   aBitmapInfo.biHeight      = aBitmap.bmHeight; // positive means bottom-up!
   aBitmapInfo.biPlanes      = 1;
-  aBitmapInfo.biBitCount    = 32; // use 32bit for automatic word-alignment per row
+  aBitmapInfo.biBitCount    = 24;
   aBitmapInfo.biCompression = BI_RGB;
 
   // Copy the pixels
