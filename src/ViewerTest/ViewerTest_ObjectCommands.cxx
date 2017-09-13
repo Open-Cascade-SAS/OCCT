@@ -349,17 +349,42 @@ namespace
 
     if (aMapOfArgs.Find ("hidelabels", aValues))
     {
-      if (aValues->Size() == 0)
+      Standard_Boolean toHideLabels = Standard_True;
+      if (aValues->Size() == 1)
+      {
+        ViewerTest::ParseOnOff (aValues->First().ToCString(), toHideLabels);
+      }
+      else if (aValues->Size() != 0)
       {
         std::cout << "Syntax error: -hidelabels expects parameter 'on' or 'off' after.\n";
         return Standard_False;
       }
 
-      Standard_Boolean toHideLabels = Standard_True;
-      ViewerTest::ParseOnOff (aValues->Value (1).ToCString(), toHideLabels);
       if (!theTrihedron->Attributes()->HasOwnDatumAspect())
-        theTrihedron->Attributes()->SetDatumAspect(new Prs3d_DatumAspect());
-      theTrihedron->Attributes()->DatumAspect()->SetToDrawLabels (!toHideLabels);
+      {
+        theTrihedron->Attributes()->SetDatumAspect (new Prs3d_DatumAspect());
+      }
+      theTrihedron->Attributes()->DatumAspect()->SetDrawLabels (!toHideLabels);
+    }
+
+    if (aMapOfArgs.Find ("hidearrows", aValues))
+    {
+      Standard_Boolean toHideArrows = Standard_True;
+      if (aValues->Size() == 1)
+      {
+        ViewerTest::ParseOnOff (aValues->First().ToCString(), toHideArrows);
+      }
+      else if (aValues->Size() != 0)
+      {
+        std::cout << "Syntax error: -hidearrows expects parameter 'on' or 'off' after.\n";
+        return Standard_False;
+      }
+
+      if (!theTrihedron->Attributes()->HasOwnDatumAspect())
+      {
+        theTrihedron->Attributes()->SetDatumAspect (new Prs3d_DatumAspect());
+      }
+      theTrihedron->Attributes()->DatumAspect()->SetDrawArrows (!toHideArrows);
     }
 
     if (aMapOfArgs.Find ("color", aValues))
@@ -6460,8 +6485,9 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
                    "\n\t\t: [-dispMode {wireframe|shading} ]"
                    "\n\t\t: [-origin x y z ]"
                    "\n\t\t: [-zaxis u v w -xaxis u v w ]"
-                   "\n\t\t: [-drawaxes {X|Y|Z|XY|YZ|XZ|XYZ}]"
-                   "\n\t\t: [-hidelabels {on|off}]"
+                   "\n\t\t: [-drawAxes {X|Y|Z|XY|YZ|XZ|XYZ}]"
+                   "\n\t\t: [-hideLabels {on|off}]"
+                   "\n\t\t: [-hideArrows {on|off}]"
                    "\n\t\t: [-label {XAxis|YAxis|ZAxis} value]"
                    "\n\t\t: [-attribute {XAxisLength|YAxisLength|ZAxisLength"
                    "\n\t\t:             |TubeRadiusPercent|ConeRadiusPercent"
@@ -6469,8 +6495,8 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
                    "\n\t\t:             |ShadingNumberOfFacettes} value]"
                    "\n\t\t: [-color {Origin|XAxis|YAxis|ZAxis|XOYAxis|YOZAxis"
                    "\n\t\t:         |XOZAxis|Whole} {r g b | colorName}]"
-                   "\n\t\t: [-textcolor {r g b | colorName}]"
-                   "\n\t\t: [-arrowscolor {r g b | colorName}]"
+                   "\n\t\t: [-textColor {r g b | colorName}]"
+                   "\n\t\t: [-arrowColor {r g b | colorName}]"
                    "\n\t\t: [-priority {Origin|XAxis|YAxis|ZAxis|XArrow"
                    "\n\t\t:            |YArrow|ZArrow|XOYAxis|YOZAxis"
                    "\n\t\t:            |XOZAxis|Whole} value]"
@@ -6485,14 +6511,15 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
                    "\n\t\t: -zaxis/-xaxis allows to set trihedron X and Z"
                    "\n\t\t:               directions. The directions should"
                    "\n\t\t:               be orthogonal. Y direction is calculated."
-                   "\n\t\t: -drawaxes allows to set what axes are drawn in the"
+                   "\n\t\t: -drawAxes allows to set what axes are drawn in the"
                    "\n\t\t:           trihedron, default state is XYZ"
-                   "\n\t\t: -hidelabels allows to hide or show trihedron labels"
+                   "\n\t\t: -hideLabels allows to show/hide trihedron labels"
+                   "\n\t\t: -hideArrows allows to show/hide trihedron arrows"
                    "\n\t\t: -labels allows to change default X/Y/Z titles of axes"
                    "\n\t\t: -attribute sets parameters of trihedron"
                    "\n\t\t: -color sets color properties of parts of trihedron"
-                   "\n\t\t: -textcolor sets color properties of trihedron labels"
-                   "\n\t\t: -arrowscolor sets color properties of trihedron arrows"
+                   "\n\t\t: -textColor sets color properties of trihedron labels"
+                   "\n\t\t: -arrowColor sets color properties of trihedron arrows"
                    "\n\t\t: -priority allows to change default selection priority"
                    "\n\t\t: of trihedron components",
                    __FILE__,VTrihedron,group);

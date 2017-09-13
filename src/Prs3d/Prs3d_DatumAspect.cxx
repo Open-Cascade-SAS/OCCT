@@ -22,9 +22,10 @@ IMPLEMENT_STANDARD_RTTIEXT(Prs3d_DatumAspect, Prs3d_BasicAspect)
 // =======================================================================
 Prs3d_DatumAspect::Prs3d_DatumAspect()
 : myAxes (Prs3d_DA_XYZAxis),
-  myToDrawLabels (Standard_True)
+  myToDrawLabels (Standard_True),
+  myToDrawArrows (Standard_True)
 {
-  Standard_Real aDefaultLength = 100.0; // default axis lenght, the same as in context
+  Standard_Real aDefaultLength = 100.0; // default axis length, the same as in context
   Quantity_Color aDefaultColor(Quantity_NOC_LIGHTSTEELBLUE4); // default axis color
 
   myAttributes.Bind (Prs3d_DA_XAxisLength, aDefaultLength);
@@ -118,12 +119,12 @@ bool Prs3d_DatumAspect::DrawDatumPart (Prs3d_DatumParts thePart) const
   switch (thePart)
   {
     case Prs3d_DP_Origin:  return true;
-    case Prs3d_DP_XAxis:
-    case Prs3d_DP_XArrow:  return (myAxes & Prs3d_DA_XAxis) != 0;
-    case Prs3d_DP_YAxis:
-    case Prs3d_DP_YArrow:  return (myAxes & Prs3d_DA_YAxis) != 0;
-    case Prs3d_DP_ZAxis:
-    case Prs3d_DP_ZArrow:  return (myAxes & Prs3d_DA_ZAxis) != 0;
+    case Prs3d_DP_XAxis:   return (myAxes & Prs3d_DA_XAxis) != 0;
+    case Prs3d_DP_XArrow:  return (myAxes & Prs3d_DA_XAxis) != 0 && myToDrawArrows;
+    case Prs3d_DP_YAxis:   return (myAxes & Prs3d_DA_YAxis) != 0;
+    case Prs3d_DP_YArrow:  return (myAxes & Prs3d_DA_YAxis) != 0 && myToDrawArrows;
+    case Prs3d_DP_ZAxis:   return (myAxes & Prs3d_DA_ZAxis) != 0;
+    case Prs3d_DP_ZArrow:  return (myAxes & Prs3d_DA_ZAxis) != 0 && myToDrawArrows;
     case Prs3d_DP_XOYAxis: return DrawDatumPart (Prs3d_DP_XAxis)
                                && DrawDatumPart (Prs3d_DP_YAxis);
     case Prs3d_DP_YOZAxis: return DrawDatumPart (Prs3d_DP_YAxis)

@@ -152,6 +152,12 @@ public:
   //! Standard_DEPRECATED("This method is deprecated - SetColor() should be called instead")
   Standard_EXPORT void SetAxisColor (const Quantity_Color& theColor);
 
+  //! Returns true if arrows are to be drawn
+  Standard_EXPORT Standard_Boolean ToDrawArrows() const;
+
+  //! Sets whether to draw the arrows in visualization
+  Standard_EXPORT void SetDrawArrows (const Standard_Boolean theToDraw);
+
   //! Sets priority of selection for owner of the given type
   void SetSelectionPriority (Prs3d_DatumParts thePart,
                              Standard_Integer thePriority)

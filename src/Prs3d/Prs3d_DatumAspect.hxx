@@ -128,11 +128,18 @@ public:
   Standard_DEPRECATED("This method is deprecated - AxisLength() should be called instead")
   Standard_Real ThirdAxisLength() const { return myAttributes.Find (Prs3d_DA_ZAxisLength); }
 
+  //! @return true if axes labels are drawn; TRUE by default.
+  Standard_Boolean ToDrawLabels() const { return myToDrawLabels; }
+
   //! Sets option to draw or not to draw text labels for axes
+  void SetDrawLabels (Standard_Boolean theToDraw) { myToDrawLabels = theToDraw; }
   void SetToDrawLabels (Standard_Boolean theToDraw) { myToDrawLabels = theToDraw; }
 
-  //! @return true if axes labels are drawn
-  Standard_Boolean ToDrawLabels() const { return myToDrawLabels; }
+  //! @return true if axes arrows are drawn; TRUE by default.
+  Standard_Boolean ToDrawArrows() const { return myToDrawArrows; }
+
+  //! Sets option to draw or not arrows for axes
+  void SetDrawArrows (Standard_Boolean theToDraw) { myToDrawArrows = theToDraw; }
 
   //! Returns type of arrow for a type of axis
   Standard_EXPORT Prs3d_DatumParts ArrowPartForAxis (Prs3d_DatumParts thePart) const;
@@ -140,6 +147,7 @@ public:
 private:
   Prs3d_DatumAxes myAxes;
   Standard_Boolean myToDrawLabels;
+  Standard_Boolean myToDrawArrows;
   NCollection_DataMap<Prs3d_DatumAttribute, Standard_Real> myAttributes;
 
   NCollection_DataMap<Prs3d_DatumParts, Handle(Prs3d_ShadingAspect)> myShadedAspects;
