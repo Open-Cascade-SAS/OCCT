@@ -1,0 +1,23 @@
+puts "======="
+puts "0029102"
+puts "======="
+puts ""
+##################################################
+# Missing points using GCPnts_QuasiUniformDeflection
+##################################################
+
+brestore [locate_data_file bug29102_Wire.brep] w
+
+set info [crvpoints r w 0.0005]
+
+regexp "Max defl: +(\[-0-9.+eE\]+)" $info full defl
+
+if {$defl > 0.0005} {
+  puts "Error: deflection $defl is greater than expected 0.0005"
+} else {
+  puts "OK: deflection $defl is within limit 0.0005"
+}
+
+smallview +X+Y
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

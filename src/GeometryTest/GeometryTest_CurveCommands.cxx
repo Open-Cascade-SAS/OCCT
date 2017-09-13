@@ -125,7 +125,10 @@
 //epa test
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <AIS_Shape.hxx>
+#include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
+#include <TopoDS_Wire.hxx>
+#include <BRepAdaptor_HCompCurve.hxx>
 #include <GeomLProp_CLProps.hxx>
 #include <GCPnts_AbscissaPoint.hxx>
 #include <GCPnts_UniformAbscissa.hxx>
@@ -835,10 +838,10 @@ static Standard_Integer movelaw (Draw_Interpretor& di, Standard_Integer n, const
 #include <math_MultipleVarFunction.hxx>
 #include <math_BrentMinimum.hxx>
 
-static Standard_Real CompLocalDev(const Handle(Geom_Curve)& theCurve,  
+static Standard_Real CompLocalDev(const Adaptor3d_Curve& theCurve,
                                   const Standard_Real u1, const Standard_Real u2);
 
-static void ComputeDeviation(const Handle(Geom_Curve)& theCurve,
+static void ComputeDeviation(const Adaptor3d_Curve& theCurve,
                              const Handle(Geom_BSplineCurve)& thePnts,
                              Standard_Real& theDmax,
                              Standard_Real& theUfMax,
@@ -870,19 +873,18 @@ static void ComputeDeviation(const Handle(Geom_Curve)& theCurve,
   }
 }
 
-Standard_Real CompLocalDev(const Handle(Geom_Curve)& theCurve,  
+Standard_Real CompLocalDev(const Adaptor3d_Curve& theCurve,
                            const Standard_Real u1, const Standard_Real u2)
 {
   math_Vector aLowBorder(1,1);
   math_Vector aUppBorder(1,1);
   math_Vector aSteps(1,1);
-  GeomAdaptor_Curve TCurve(theCurve);
   //
   aLowBorder(1) = u1;
   aUppBorder(1) = u2;
   aSteps(1) =(aUppBorder(1) - aLowBorder(1)) * 0.01; // Run PSO on even distribution with 100 points.
   //
-  GCPnts_DistFunction aFunc1(TCurve,  u1, u2);
+  GCPnts_DistFunction aFunc1(theCurve,  u1, u2);
   //
   Standard_Real aValue;
   math_Vector aT(1,1);
@@ -935,11 +937,28 @@ static Standard_Integer crvpoints (Draw_Interpretor& di, Standard_Integer /*n*/,
   Standard_Integer i, nbp;
   Standard_Real defl;
 
+  Handle(Adaptor3d_HCurve) aHCurve;
   Handle(Geom_Curve) C = DrawTrSurf::GetCurve(a[2]);
+  if (C.IsNull())
+  {
+    // try getting a wire
+    TopoDS_Wire aWire = TopoDS::Wire(DBRep::Get(a[2], TopAbs_WIRE));
+    if (aWire.IsNull())
+    {
+      cout << "cannot evaluate the argument " << a[2] << " as a curve" << endl;
+      return 1;
+    }
+    BRepAdaptor_CompCurve aCompCurve(aWire);
+    aHCurve = new BRepAdaptor_HCompCurve(aCompCurve);
+  }
+  else
+  {
+    aHCurve = new GeomAdaptor_HCurve(C);
+  }
+
   defl = Draw::Atof(a[3]);
 
-  GeomAdaptor_Curve GAC(C);
-  GCPnts_QuasiUniformDeflection PntGen(GAC, defl);
+  GCPnts_QuasiUniformDeflection PntGen(aHCurve->Curve(), defl);
     
   if(!PntGen.IsDone()) {
     di << "Points generation failed\n";
@@ -976,7 +995,7 @@ static Standard_Integer crvpoints (Draw_Interpretor& di, Standard_Integer /*n*/,
   Standard_Integer imax = 0;
 
   //check deviation
-  ComputeDeviation(C,aPnts,dmax,ufmax,ulmax,imax);
+  ComputeDeviation(aHCurve->Curve(), aPnts, dmax, ufmax, ulmax, imax);
   di << "Max defl: " << dmax << " " << ufmax << " " << ulmax << " " << imax << "\n"; 
 
   return 0;
@@ -992,14 +1011,30 @@ static Standard_Integer crvtpoints (Draw_Interpretor& di, Standard_Integer n, co
   Standard_Integer i, nbp;
   Standard_Real defl, angle = Precision::Angular();
 
+  Handle(Adaptor3d_HCurve) aHCurve;
   Handle(Geom_Curve) C = DrawTrSurf::GetCurve(a[2]);
+  if (C.IsNull())
+  {
+    // try getting a wire
+    TopoDS_Wire aWire = TopoDS::Wire(DBRep::Get(a[2], TopAbs_WIRE));
+    if (aWire.IsNull())
+    {
+      cout << "cannot evaluate the argument " << a[2] << " as a curve" << endl;
+      return 1;
+    }
+    BRepAdaptor_CompCurve aCompCurve(aWire);
+    aHCurve = new BRepAdaptor_HCompCurve(aCompCurve);
+  }
+  else
+  {
+    aHCurve = new GeomAdaptor_HCurve(C);
+  }
   defl = Draw::Atof(a[3]);
 
   if(n > 3)
     angle = Draw::Atof(a[4]);
 
-  GeomAdaptor_Curve GAC(C);
-  GCPnts_TangentialDeflection PntGen(GAC, angle, defl, 2);
+  GCPnts_TangentialDeflection PntGen(aHCurve->Curve(), angle, defl, 2);
   
   nbp = PntGen.NbPoints();
   di << "Nb points : " << nbp << "\n";
@@ -1031,7 +1066,7 @@ static Standard_Integer crvtpoints (Draw_Interpretor& di, Standard_Integer n, co
   Standard_Integer imax = 0;
 
   //check deviation
-  ComputeDeviation(C,aPnts,dmax,ufmax,ulmax,imax);
+  ComputeDeviation(aHCurve->Curve(), aPnts, dmax, ufmax, ulmax, imax);
   //
   di << "Max defl: " << dmax << " " << ufmax << " " << ulmax << " " << imax << "\n"; 
 
@@ -1399,7 +1434,7 @@ static Standard_Integer mypoints (Draw_Interpretor& di, Standard_Integer /*n*/, 
   Standard_Real dmax = 0., ufmax = 0., ulmax = 0.;
   Standard_Integer imax = 0;
 
-  ComputeDeviation(C,aPnts,dmax,ufmax,ulmax,imax);
+  ComputeDeviation(GeomAdaptor_Curve(C),aPnts,dmax,ufmax,ulmax,imax);
   di << "Max defl: " << dmax << " " << ufmax << " " << ulmax << " " << imax << "\n"; 
 
   return 0;
@@ -1804,12 +1839,12 @@ void  GeometryTest::CurveCommands(Draw_Interpretor& theCommands)
 		  intersection,g);
 
   theCommands.Add("crvpoints",
-		  "crvpoints result curv deflection",
+		  "crvpoints result <curve or wire> deflection",
 		  __FILE__,
 		  crvpoints,g);
 
   theCommands.Add("crvtpoints",
-		  "crvtpoints result curv deflection angular deflection - tangential deflection points",
+		  "crvtpoints result <curve or wire> deflection angular deflection - tangential deflection points",
 		  __FILE__,
 		  crvtpoints,g);
   
