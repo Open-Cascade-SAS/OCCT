@@ -32,6 +32,7 @@
 #include <Geom2d_Line.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
+#include <Geom2dAPI_ProjectPointOnCurve.hxx>
 #include <Geom2dInt_GInter.hxx>
 #include <gp_Lin2d.hxx>
 #include <gp_Pnt.hxx>
@@ -51,6 +52,11 @@ static
                        const TopoDS_Vertex& aV2,
                        const Standard_Real  aP2,
                        TopoDS_Edge& aNewEdge);
+
+static
+  Standard_Boolean AddSplitPoint(const Handle(BOPDS_PaveBlock)& thePBD,
+                                 const BOPDS_Pave& thePave,
+                                 const Standard_Real theTol);
 
 //=======================================================================
 //function : ProcessDE
@@ -304,25 +310,30 @@ void BOPAlgo_PaveFiller::ProcessDE()
     }
     // Intersection
     Geom2dInt_GInter aGInter(aGAC1, aGAC2, aTolInt, aTolInt);
-    if (!aGInter.IsDone()) {
-      continue;
+    if (aGInter.IsDone() && aGInter.NbPoints())
+    {
+      // Analyze intersection points
+      Standard_Integer i, aNbPoints = aGInter.NbPoints();
+      for (i = 1; i <= aNbPoints; ++i) {
+        Standard_Real aX = aGInter.Point(i).ParamOnFirst();
+        aPave.SetParameter(aX);
+        AddSplitPoint(aPBD, aPave, aTolCmp);
+      }
     }
-    //
-    // Analyze intersection points
-    Standard_Integer i, aNbPoints = aGInter.NbPoints();
-    for (i = 1; i <= aNbPoints; ++i) {
-      Standard_Real aX = aGInter.Point(i).ParamOnFirst();
-      if (aX - aTD1 < aTolCmp || aTD2 - aX < aTolCmp) {
-        continue;
+    else
+    {
+      // If the intersection did not succeed, try the projection of the end point
+      // of the curve corresponding to the vertex of degenerated edge
+      Standard_Real aT = (nVD == aPB->Pave1().Index() ?
+        aPB->Pave1().Parameter() : aPB->Pave2().Parameter());
+      gp_Pnt2d aP2d = aC2D->Value(aT);
+      Geom2dAPI_ProjectPointOnCurve aProj2d(aP2d, aC2DDE, aTD1, aTD2);
+      if (aProj2d.NbPoints())
+      {
+        Standard_Real aX = aProj2d.LowerDistanceParameter();
+        aPave.SetParameter(aX);
+        AddSplitPoint(aPBD, aPave, aTolCmp);
       }
-      //
-      Standard_Integer anInd;
-      if (aPBD->ContainsParameter(aX, aTolCmp, anInd)) {
-        continue;
-      }
-      //
-      aPave.SetParameter(aX);
-      aPBD->AppendExtPave1(aPave);
     }
   }
 }
@@ -353,4 +364,35 @@ void BOPAlgo_PaveFiller::ProcessDE()
 
   BB.UpdateEdge(E, aTol);
   aNewEdge=E;
+}
+
+//=======================================================================
+// function: AddSplitPoint
+// purpose: Validates the point represented by the pave <thePave>
+//          for the Pave Block <thePBD>.
+//          In case the point passes the checks it is added as an
+//          Extra Pave to the Pave Block for further splitting of the latter.
+//          Returns TRUE if the point is added, otherwise returns FALSE.
+//=======================================================================
+Standard_Boolean AddSplitPoint(const Handle(BOPDS_PaveBlock)& thePBD,
+                               const BOPDS_Pave& thePave,
+                               const Standard_Real theTol)
+{
+  Standard_Real aTD1, aTD2;
+  thePBD->Range(aTD1, aTD2);
+
+  Standard_Real aT = thePave.Parameter();
+  // Check that the parameter is inside the Pave Block
+  if (aT - aTD1 < theTol || aTD2 - aT < theTol)
+    return Standard_False;
+
+  // Check that the pave block does not contain the same parameter
+  Standard_Integer anInd;
+  if (thePBD->ContainsParameter(aT, theTol, anInd))
+    return Standard_False;
+
+  // Add the point as an Extra pave to the Pave Block for further
+  // splitting of the latter
+  thePBD->AppendExtPave1(thePave);
+  return Standard_True;
 }
