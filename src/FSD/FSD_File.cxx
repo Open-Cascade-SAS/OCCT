@@ -28,7 +28,7 @@ const Standard_CString MAGICNUMBER = "FSDFILE";
 const Standard_CString ENDOFNORMALEXTENDEDSECTION = "BEGIN_REF_SECTION";
 const Standard_Integer SIZEOFNORMALEXTENDEDSECTION = 16;
 
-//#define USEOSDREAL 1
+#define USEOSDREAL 1
 
 //=======================================================================
 //function : FSD_File
@@ -175,20 +175,6 @@ void FSD_File::FlushEndOfLine()
 {
   TCollection_AsciiString aDummy;
   ReadLine (aDummy); // flush is nothing more than to read till the line-break
-/*  static char Buffer[8192];
-  char c;
-  Standard_Boolean IsEnd = Standard_False;
-
-  while (!IsEnd && !FSD_File::IsEnd()) {
-    Buffer[0] = '\0';
-    myStream.get(Buffer,8192,'\n');
-
-    if (myStream.get(c) && c != '\n') {
-    }
-    else {
-      IsEnd = Standard_True;
-    }
-  }*/
 }
 
 //=======================================================================
@@ -609,7 +595,7 @@ Storage_BaseDriver& FSD_File::GetShortReal(Standard_ShortReal& aValue)
   if (!(myStream >> realbuffer)) throw Storage_StreamTypeMismatchError();
   if (!OSD::CStringToReal(realbuffer,r)) throw Storage_StreamTypeMismatchError();
 
-  aValue = r;
+  aValue = (Standard_ShortReal)r;
 
   return *this;
 #else
