@@ -1,5 +1,3 @@
-puts "TODO OCC26795 ALL: Error: General Fuse operation is bad"
-
 puts "================"
 puts "OCC26795"
 puts "================"
@@ -22,24 +20,7 @@ bfillds
 bbuild result
 
 checkshape result
-
-set tol_rel 1.e-5
-
-set s_exp_c_1 8.71862e+06
-set s_exp_c_2 1.01299e+07
-
-set s_c_1_and_s_c_2 [expr ${s_exp_c_1} + ${s_exp_c_2}]
-
-set prop [ sprops result ]
-regexp {Mass\s*:\s*([0-9.e+-]+)} $prop prop_s s_Fuse
-
-checkprops c_1 -s ${s_exp_c_1}
-checkprops c_2 -s ${s_exp_c_2}
-
-if { [expr ( abs (${s_Fuse} - ${s_c_1_and_s_c_2}) ) / ${s_c_1_and_s_c_2}] > ${tol_rel} } {
-   puts "OK: General Fuse operation is good"
-} else {
-   puts "Error: General Fuse operation is bad"
-}
+checkprops result -l 38958.7 -s 1.88559e+007
+checknbshapes result -wire 4 -face 3
 
 checkview -display result -2d -path ${imagedir}/${test_image}.png
