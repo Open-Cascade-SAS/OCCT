@@ -159,6 +159,35 @@ static void IsParallel(const Handle(IntSurf_LineOn2S)& theLine,
   theIsUparallel = ((aVmax - aVmin) < theToler);
 }
 
+//=======================================================================
+//function : AdjustToDomain
+//purpose  : Returns TRUE if theP has been changed (i.e. initial value
+//            was out of the domain)
+//=======================================================================
+static Standard_Boolean AdjustToDomain(const Standard_Integer theNbElem,
+                                       Standard_Real* theParam,
+                                       const Standard_Real* const theLowBorder,
+                                       const Standard_Real* const theUppBorder)
+{
+  Standard_Boolean aRetVal = Standard_False;
+  for (Standard_Integer i = 0; i < theNbElem; i++)
+  {
+    if ((theParam[i] - theLowBorder[i]) < -Precision::PConfusion())
+    {
+      theParam[i] = theLowBorder[i];
+      aRetVal = Standard_True;
+    }
+
+    if ((theParam[i] - theUppBorder[i]) > Precision::PConfusion())
+    {
+      theParam[i] = theUppBorder[i];
+      aRetVal = Standard_True;
+    }
+  }
+
+  return aRetVal;
+}
+
 //==================================================================================
 // function : IntWalk_PWalking::IntWalk_PWalking
 // purpose  : 
@@ -2247,7 +2276,19 @@ Standard_Boolean IntWalk_PWalking::HandleSingleSingularPoint(const Handle(Adapto
         continue;
 
       anInt.Point().Parameters(thePnt(1), thePnt(2), thePnt(3), thePnt(4));
-      return Standard_True;
+
+      Standard_Boolean isInDomain = Standard_True;
+      for (Standard_Integer j = 1; isInDomain && (j <= 4); ++j)
+      {
+        if ((thePnt(j) - aLowBorder[j - 1] + Precision::PConfusion())*
+            (thePnt(j) - aUppBorder[j - 1] - Precision::PConfusion()) > 0.0)
+        {
+          isInDomain = Standard_False;
+        }
+      }
+
+      if (isInDomain)
+        return Standard_True;
     }
   }
 
@@ -2259,15 +2300,25 @@ Standard_Boolean IntWalk_PWalking::HandleSingleSingularPoint(const Handle(Adapto
 //purpose  : 
 //=======================================================================
 Standard_Boolean IntWalk_PWalking::
-SeekPointOnBoundary(const Handle(Adaptor3d_HSurface)& theASurf1,
-                    const Handle(Adaptor3d_HSurface)& theASurf2,
-                    const Standard_Real theU1,
-                    const Standard_Real theV1,
-                    const Standard_Real theU2,
-                    const Standard_Real theV2,
-                    const Standard_Boolean isTheFirst)
+        SeekPointOnBoundary(const Handle(Adaptor3d_HSurface)& theASurf1,
+                            const Handle(Adaptor3d_HSurface)& theASurf2,
+                            const Standard_Real theU1,
+                            const Standard_Real theV1,
+                            const Standard_Real theU2,
+                            const Standard_Real theV2,
+                            const Standard_Boolean isTheFirst)
 {
   Standard_Boolean isOK = Standard_False;
+
+  // u1, v1, u2, v2 order is used.
+  const Standard_Real aLowBorder[4] = {theASurf1->FirstUParameter(),
+                                       theASurf1->FirstVParameter(),
+                                       theASurf2->FirstUParameter(),
+                                       theASurf2->FirstVParameter()};
+  const Standard_Real aUppBorder[4] = {theASurf1->LastUParameter(),
+                                       theASurf1->LastVParameter(),
+                                       theASurf2->LastUParameter(),
+                                       theASurf2->LastVParameter()};
 
   // Tune solution tolerance according with object size.
   const Standard_Real aRes1 = Max(Precision::PConfusion() / theASurf1->UResolution(1.0),
@@ -2288,21 +2339,26 @@ SeekPointOnBoundary(const Handle(Adaptor3d_HSurface)& theASurf1,
   {
     aNbIter--;
     aStatus = DistanceMinimizeByGradient(theASurf1, theASurf2, aPnt);
-    if(aStatus)
+    if (aStatus && !AdjustToDomain(4, &aPnt(1), &aLowBorder[0], &aUppBorder[0]))
       break;
 
-    aStatus = DistanceMinimizeByExtrema(theASurf1, theASurf2->Value(aPnt(3), aPnt(4)), aPnt(1), aPnt(2));
-    if(aStatus)
+    aStatus = DistanceMinimizeByExtrema(theASurf1, theASurf2->Value(aPnt(3), aPnt(4)),
+                                        aPnt(1), aPnt(2));
+    if (aStatus && !AdjustToDomain(2, &aPnt(1), &aLowBorder[0], &aUppBorder[0]))
       break;
 
-    aStatus = DistanceMinimizeByExtrema(theASurf2, theASurf1->Value(aPnt(1), aPnt(2)), aPnt(3), aPnt(4));
-    if(aStatus)
+    aStatus = DistanceMinimizeByExtrema(theASurf2, theASurf1->Value(aPnt(1), aPnt(2)),
+                                        aPnt(3), aPnt(4));
+    if (aStatus && !AdjustToDomain(2, &aPnt(3), &aLowBorder[2], &aUppBorder[2]))
       break;
   }
   while(!aStatus && (aNbIter > 0));
 
   // Handle singular points.
-  Standard_Boolean aSingularStatus = HandleSingleSingularPoint(theASurf1, theASurf2, aTol, aSingularPnt);
+  Standard_Boolean aSingularStatus = HandleSingleSingularPoint(theASurf1,
+                                                               theASurf2,
+                                                               aTol,
+                                                               aSingularPnt);
   if (aSingularStatus)
     aPnt = aSingularPnt;
 
