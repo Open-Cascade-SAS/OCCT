@@ -152,7 +152,7 @@ public:
   //! classes derived from IGESData_IGESEntity, for VC++ 10 and 11 compillers
   template <class T> 
   void Send (const Handle(T)& val, Standard_Boolean negative = Standard_False, 
-             typename std::enable_if<std::is_base_of<IGESData_IGESEntity, T>::value>::type * = 0)
+             typename opencascade::std::enable_if<opencascade::std::is_base_of<IGESData_IGESEntity, T>::value>::type * = 0)
   { 
     Send ((const Handle(IGESData_IGESEntity)&)val, negative);
   }

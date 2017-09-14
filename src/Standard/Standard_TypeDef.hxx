@@ -17,7 +17,22 @@
 
 #include <cstddef>
 #include <ctime>
-#include <stdint.h>
+
+// VC9 does not have stdint.h
+#if(defined(_MSC_VER) && (_MSC_VER < 1600))
+  // old MSVC - hasn't stdint header
+  typedef unsigned __int8   uint8_t;
+  typedef unsigned __int16  uint16_t;
+  typedef unsigned __int32  uint32_t;
+  typedef unsigned __int64  uint64_t;
+
+  typedef __int8   int8_t;
+  typedef __int16  int16_t;
+  typedef __int32  int32_t;
+  typedef __int64  int64_t;
+#else
+  #include <stdint.h>
+#endif
 
 #if(defined(_MSC_VER) && (_MSC_VER < 1800))
   // only Visual Studio 2013 (vc12) provides <cinttypes> header
@@ -64,8 +79,8 @@ typedef std::time_t   Standard_Time;
 // Unicode primitives, char16_t, char32_t
 typedef char          Standard_Utf8Char;     //!< signed   UTF-8 char
 typedef unsigned char Standard_Utf8UChar;    //!< unsigned UTF-8 char
-#if (defined(__GNUC__) && !defined(__clang__) && ((__GNUC__ == 4 && __GNUC_MINOR__ <= 3) || __GNUC__ < 4))
-// compatibility with old GCC compilers
+#if ((defined(__GNUC__) && !defined(__clang__) && ((__GNUC__ == 4 && __GNUC_MINOR__ <= 3) || __GNUC__ < 4)) || (defined(_MSC_VER) && (_MSC_VER < 1600)))
+// compatibility with old GCC and MSVC compilers
 typedef uint16_t      Standard_ExtCharacter;
 typedef uint16_t      Standard_Utf16Char;
 typedef uint32_t      Standard_Utf32Char;

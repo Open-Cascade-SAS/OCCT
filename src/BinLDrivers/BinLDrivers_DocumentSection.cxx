@@ -160,7 +160,7 @@ void BinLDrivers_DocumentSection::Write (Standard_OStream&   theStream,
                                          const uint64_t theOffset)
 {
   const uint64_t aSectionEnd = (uint64_t) theStream.tellp();
-  theStream.seekp(myValue[0]);
+  theStream.seekp((std::streamsize)myValue[0]);
   myValue[0] = theOffset;
   myValue[1] = aSectionEnd - theOffset;
   uint64_t aVal[3] = {
@@ -175,7 +175,7 @@ void BinLDrivers_DocumentSection::Write (Standard_OStream&   theStream,
 #endif
 
   theStream.write((char *)&aVal[0], 3*sizeof(uint64_t));
-  theStream.seekp(aSectionEnd);
+  theStream.seekp((std::streamsize)aSectionEnd);
 }
 
 //=======================================================================

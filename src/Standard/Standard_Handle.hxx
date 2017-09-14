@@ -22,16 +22,59 @@
 
 class Standard_Transient;
 
+//! Namespace opencascade is intended for low-level template classes and functions
 namespace opencascade {
+
+  //! Namespace opencascade::std includes templates from C++11 std namespace used by
+  //! OCCT classes. These definitions are imported from std namespace, plus (on older 
+  //! compilers) from std::tr1, or implemented by custom code where neither std 
+  //! not std::tr1 provide necessary definitions.
+  namespace std
+  {
+  // import all available standard stuff from std namespace
+  using namespace ::std;
+
+// for old MSVC compiler, some standard templates are defined in std::tr1 namespace,
+// and some missing ones are implemented here
+#if(defined(_MSC_VER) && (_MSC_VER < 1600))
+  using namespace ::std::tr1;
+  
+  // C++11 template class enable_if
+  template<bool Test, class Type = void>
+  struct enable_if
+  {// type is undefined for assumed !_Test
+  };
+
+  template<class _Type>
+  struct enable_if<true, _Type>
+  {// type is _Type for _Test
+    typedef _Type type;
+  };
+
+  template<bool Condition, typename TypeTrue, typename TypeFalse>
+  struct conditional
+  {
+    typedef TypeTrue type;
+  };
+
+  template<typename TypeTrue, typename TypeFalse>
+  struct conditional<false, TypeTrue, TypeFalse>
+  {
+    typedef TypeFalse type;
+  };
+
+#endif
+
+  } // namespace opencascade::std
 
   //! Trait yielding true if class T1 is base of T2 but not the same
   template <class T1, class T2, class Dummy = void>
-  struct is_base_but_not_same : std::is_base_of <T1, T2> {};
+  struct is_base_but_not_same : opencascade::std::is_base_of <T1, T2> {};
 
   //! Explicit specialization of is_base_of trait to workaround the
   //! requirement of type to be complete when T1 and T2 are the same.
   template <class T1, class T2>
-  struct is_base_but_not_same <T1, T2, typename std::enable_if <std::is_same <T1, T2>::value>::type> : std::false_type {};
+  struct is_base_but_not_same <T1, T2, typename opencascade::std::enable_if <opencascade::std::is_same <T1, T2>::value>::type> : opencascade::std::false_type {};
 
   //! Intrusive smart pointer for use with Standard_Transient class and its descendants.
   //!
@@ -79,11 +122,14 @@ namespace opencascade {
       BeginScope();
     }
 
+#if(defined(_MSC_VER) && (_MSC_VER < 1600))
+#else
     //! Move constructor
     handle (handle&& theHandle) : entity(theHandle.entity)
     {
       theHandle.entity = 0;
     }
+#endif
 
     //! Destructor
     ~handle ()
@@ -120,12 +166,15 @@ namespace opencascade {
       return *this;
     }
 
+#if(defined(_MSC_VER) && (_MSC_VER < 1600))
+#else
     //! Move operator
     handle& operator= (handle&& theHandle)
     {
       std::swap (this->entity, theHandle.entity);
       return *this;
     }
+#endif
 
     //! STL-like cast to pointer to referred object (note non-const).
     //! @sa std::shared_ptr::get()
@@ -188,7 +237,7 @@ namespace opencascade {
 
     //! Down casting operator from handle to base type
     template <class T2>
-    static typename std::enable_if<is_base_but_not_same<T2, T>::value, handle>::type
+    static typename opencascade::std::enable_if<is_base_but_not_same<T2, T>::value, handle>::type
       DownCast (const handle<T2>& theObject)
     {
       return handle (dynamic_cast<T*>(const_cast<T2*>(theObject.get())));
@@ -196,7 +245,7 @@ namespace opencascade {
 
     //! Down casting operator from pointer to base type
     template <class T2>
-    static typename std::enable_if<is_base_but_not_same<T2, T>::value, handle>::type 
+    static typename opencascade::std::enable_if<is_base_but_not_same<T2, T>::value, handle>::type 
       DownCast (const T2* thePtr)
     {
       return handle (dynamic_cast<T*>(const_cast<T2*>(thePtr)));
@@ -205,7 +254,7 @@ namespace opencascade {
     //! For compatibility, define down casting operator from non-base type, as deprecated
     template <class T2>
     Standard_DEPRECATED("down-casting from object of the same or unrelated type is meaningless")
-    static handle DownCast (const handle<T2>& theObject, typename std::enable_if<!is_base_but_not_same<T2, T>::value, void*>::type = 0)
+    static handle DownCast (const handle<T2>& theObject, typename opencascade::std::enable_if<!is_base_but_not_same<T2, T>::value, void*>::type = 0)
     {
       return handle (dynamic_cast<T*>(const_cast<T2*>(theObject.get())));
     }
@@ -213,7 +262,7 @@ namespace opencascade {
     //! For compatibility, define down casting operator from non-base type, as deprecated
     template <class T2>
     Standard_DEPRECATED("down-casting from object of the same or unrelated type is meaningless")
-    static handle DownCast (const T2* thePtr, typename std::enable_if<!is_base_but_not_same<T2, T>::value, void*>::type = 0)
+    static handle DownCast (const T2* thePtr, typename opencascade::std::enable_if<!is_base_but_not_same<T2, T>::value, void*>::type = 0)
     {
       return handle (dynamic_cast<T*>(const_cast<T2*>(thePtr)));
     }
@@ -312,6 +361,8 @@ namespace opencascade {
       BeginScope();
     }
 
+#if(defined(_MSC_VER) && (_MSC_VER < 1600))
+#else
     //! Generalized move constructor
     template <class T2>
     handle (handle<T2>&& theHandle, typename std::enable_if <is_base_but_not_same <T, T2>::value>::type* = nullptr)
@@ -319,6 +370,7 @@ namespace opencascade {
     {
       theHandle.entity = 0;
     }
+#endif
 
     //! Generalized assignment operator.
     template <class T2>
@@ -330,6 +382,8 @@ namespace opencascade {
       return *this;
     }
 
+#if(defined(_MSC_VER) && (_MSC_VER < 1600))
+#else
     //! Generalized move operator
     template <class T2>
     handle& operator= (handle<T2>&& theHandle)
@@ -339,6 +393,7 @@ namespace opencascade {
       std::swap (this->entity, theHandle.entity);
       return *this;
     }
+#endif
 
 #else
 
@@ -351,7 +406,7 @@ namespace opencascade {
     {
       // error "type is not a member of enable_if" will be generated if T2 is not sub-type of T
       // (handle is being cast to const& to handle of non-base type)
-      return reinterpret_cast<typename std::enable_if<is_base_but_not_same<T2, T>::value, const handle<T2>&>::type>(*this);
+      return reinterpret_cast<typename opencascade::std::enable_if<is_base_but_not_same<T2, T>::value, const handle<T2>&>::type>(*this);
     }
 
     //! Upcast to non-const reference to base type.
@@ -362,7 +417,7 @@ namespace opencascade {
     {
       // error "type is not a member of enable_if" will be generated if T2 is not sub-type of T
       // (handle is being cast to const& to handle of non-base type)
-      return reinterpret_cast<typename std::enable_if<is_base_but_not_same<T2, T>::value, handle<T2>&>::type>(*this);
+      return reinterpret_cast<typename opencascade::std::enable_if<is_base_but_not_same<T2, T>::value, handle<T2>&>::type>(*this);
     }
 
 #endif /* OCCT_HANDLE_NOCAST */

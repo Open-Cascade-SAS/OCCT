@@ -41,7 +41,7 @@ class HClassName : public _SequenceType_, public Standard_Transient {           
    _SequenceType_& ChangeSequence ()       { return *this; }                   \
    template <class T>                                                          \
    void Append (const Handle(T)& theOther,                                     \
-                typename std::enable_if<std::is_base_of<HClassName, T>::value>::type * = 0) { \
+                typename opencascade::std::enable_if<opencascade::std::is_base_of<HClassName, T>::value>::type * = 0) { \
      _SequenceType_::Append (theOther->ChangeSequence());                      \
    }                                                                           \
    DEFINE_STANDARD_RTTI_INLINE(HClassName,Standard_Transient)                             \

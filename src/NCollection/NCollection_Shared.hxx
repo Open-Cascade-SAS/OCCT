@@ -32,7 +32,7 @@
 //! The intent is similar to std::make_shared<> in STL, except that this
 //! implementation defines a separate type.
 
-template <class T, typename = typename std::enable_if<! std::is_base_of<Standard_Transient, T>::value>::type>
+template <class T, typename = typename opencascade::std::enable_if<! opencascade::std::is_base_of<Standard_Transient, T>::value>::type>
 class NCollection_Shared : public Standard_Transient, public T
 {
 public:

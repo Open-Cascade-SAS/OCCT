@@ -19,48 +19,6 @@
 #include <Standard_Assert.hxx>
 #include <iterator>
 
-// This file uses C++11 utilities like std::is_base<>, which are not 
-// available in some environments (e.g. MSVC includes them since VS 2008).
-// Hence here we define our own implementation of these tools in namespace opencascade.
-// When all compilers support this, this namespace can be removed and replaced by std.
-namespace opencascade
-{
-  template<bool Condition, typename T>
-  struct enable_if
-  {
-    typedef T type;
-  };
-  
-  template<typename T>
-  struct enable_if<false, T>
-  {
-  };
-  
-  template<typename T1, typename T2>
-  struct is_same
-  {
-    enum { value = 0 };
-  };
-  
-  template<typename T>
-  struct is_same<T, T>
-  {
-    enum { value = 1 };
-  };
-  
-  template<bool Condition, typename TypeTrue, typename TypeFalse>
-  struct conditional
-  {
-    typedef TypeTrue type;
-  };
-
-  template<typename TypeTrue, typename TypeFalse>
-  struct conditional<false, TypeTrue, TypeFalse>
-  {
-    typedef TypeFalse type;
-  };
-}
-
 //! Helper class that allows to use NCollection iterators as STL iterators.
 //! NCollection iterator can be extended to STL iterator of any category by
 //! adding necessary methods: STL forward iterator requires IsEqual method,
@@ -70,8 +28,8 @@ namespace opencascade
 template<class Category, class BaseIterator, class ItemType, bool IsConstant>
 class NCollection_StlIterator :
   public std::iterator<Category, ItemType, ptrdiff_t,
-                       typename opencascade::conditional<IsConstant, const ItemType*, ItemType*>::type,
-                       typename opencascade::conditional<IsConstant, const ItemType&, ItemType&>::type>
+                       typename opencascade::std::conditional<IsConstant, const ItemType*, ItemType*>::type,
+                       typename opencascade::std::conditional<IsConstant, const ItemType&, ItemType&>::type>
 {
 public:
 
@@ -113,13 +71,13 @@ protected: //! @name methods related to forward STL iterator
   // an appropriate method based on template arguments (at instantiation time).
 
   template<bool Condition>
-  typename opencascade::enable_if<!Condition, ItemType&>::type Reference() const
+  typename opencascade::std::enable_if<!Condition, ItemType&>::type Reference() const
   {
     return myIterator.ChangeValue();
   }
 
   template<bool Condition>
-  typename opencascade::enable_if<Condition, const ItemType&>::type Reference() const
+  typename opencascade::std::enable_if<Condition, const ItemType&>::type Reference() const
   {
     return myIterator.Value();
   }
@@ -171,8 +129,8 @@ public: //! @name methods related to bidirectional STL iterator
   //! Prefix decrement
   NCollection_StlIterator& operator--()
   {
-    Standard_STATIC_ASSERT((opencascade::is_same<std::bidirectional_iterator_tag,Category>::value ||
-                            opencascade::is_same<std::random_access_iterator_tag,Category>::value));
+    Standard_STATIC_ASSERT((opencascade::std::is_same<std::bidirectional_iterator_tag,Category>::value ||
+                            opencascade::std::is_same<std::random_access_iterator_tag,Category>::value));
     myIterator.Previous();
     return *this;
   }
@@ -190,7 +148,7 @@ public: //! @name methods related to random access STL iterator
   //! Move forward
   NCollection_StlIterator& operator+= (typename NCollection_StlIterator::difference_type theOffset)
   {
-    Standard_STATIC_ASSERT((opencascade::is_same<std::random_access_iterator_tag,Category>::value));
+    Standard_STATIC_ASSERT((opencascade::std::is_same<std::random_access_iterator_tag,Category>::value));
     myIterator.Offset (theOffset);
     return *this;
   }
@@ -218,7 +176,7 @@ public: //! @name methods related to random access STL iterator
   //! Difference
   typename NCollection_StlIterator::difference_type operator- (const NCollection_StlIterator& theOther) const
   {
-    Standard_STATIC_ASSERT((opencascade::is_same<std::random_access_iterator_tag,Category>::value));
+    Standard_STATIC_ASSERT((opencascade::std::is_same<std::random_access_iterator_tag,Category>::value));
     return myIterator.Differ (theOther.myIterator);
   }
 

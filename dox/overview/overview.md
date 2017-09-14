@@ -205,9 +205,9 @@ for which OCCT is certified to work.
 
 | OS        | Compiler |
 | --------- | ----------- |
-| Windows   | Microsoft Visual Studio: 2010 SP1<sup>1</sup>, 2012 Update 4, 2013 Update 5, 2015, 2017 <br> Intel C++ Composer XE 2013 SP1 <br> GCC 4.3+ (Mingw-w64)|
+| Windows   | Microsoft Visual Studio: 2008 SP1, 2010 SP1<sup>1</sup>, 2012 Update 4, 2013 Update 5, 2015, 2017 <br> GCC 4.3+ (Mingw-w64)|
 | Linux     | GNU gcc 4.3+ <br> LLVM CLang 3.6+ |
-| OS X      | XCode 6 or newer |
+| OS X / macOS | XCode 6 or newer |
 | Android   | NDK r10, GNU gcc 4.8 or newer |
 
 1) VC++ 10 64-bit is used for regular testing and for building 

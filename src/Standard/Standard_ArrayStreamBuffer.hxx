@@ -18,6 +18,12 @@
 
 #include <fstream>
 
+// Suppress VC9 warning on xsputn() function
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable: 4996)
+#endif
+
 //! Custom buffer object implementing STL interface std::streambuf for streamed reading from allocated memory block.
 //! Implements minimal sub-set of methods for passing buffer to std::istream, including seek support.
 //!
@@ -109,5 +115,9 @@ protected:
   const char* myCurrent;
 
 };
+
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
 
 #endif // _Standard_ArrayStreamBuffer_HeaderFile

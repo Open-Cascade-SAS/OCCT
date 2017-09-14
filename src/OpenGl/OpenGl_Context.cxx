@@ -2904,7 +2904,7 @@ void OpenGl_Context::ReleaseResource (const TCollection_AsciiString& theKey,
   {
     return;
   }
-  auto& aRes = mySharedResources->Find (theKey);
+  const Handle(OpenGl_Resource)& aRes = mySharedResources->Find (theKey);
   if (aRes->GetRefCount() > 1)
   {
     return;
@@ -2952,7 +2952,7 @@ void OpenGl_Context::ReleaseDelayed()
       continue;
     }
 
-    auto& aRes = mySharedResources->ChangeFind (aKey);
+    const Handle(OpenGl_Resource)& aRes = mySharedResources->ChangeFind (aKey);
     if (aRes->GetRefCount() > 1)
     {
       // should be only 1 instance in mySharedResources

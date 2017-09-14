@@ -192,6 +192,8 @@ public:
   }
 
   //! Move constructor
+#if(defined(_MSC_VER) && (_MSC_VER < 1600))
+#else
   NCollection_Array1 (NCollection_Array1&& theOther)
   : myLowerBound (theOther.myLowerBound),
     myUpperBound (theOther.myUpperBound),
@@ -202,6 +204,7 @@ public:
     theOther.myDeletable  = false;
     theOther.myData       = NULL;
   }
+#endif
 
   //! C array-based constructor
   NCollection_Array1 (const TheItemType& theBegin,
@@ -279,7 +282,7 @@ public:
   }
 
   //! Move assignment
-  NCollection_Array1& Move (NCollection_Array1&& theOther)
+  NCollection_Array1& Move (NCollection_Array1& theOther)
   {
     if (&theOther == this)
     {
@@ -308,10 +311,13 @@ public:
   }
 
   //! Move assignment operator.
+#if(defined(_MSC_VER) && (_MSC_VER < 1600))
+#else
   NCollection_Array1& operator= (NCollection_Array1&& theOther)
   {
-    return Move (std::move (theOther));
+    return Move (theOther);
   }
+#endif
 
   //! @return first element
   const TheItemType& First() const

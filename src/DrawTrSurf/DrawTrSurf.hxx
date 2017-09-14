@@ -89,14 +89,14 @@ public:
   //! isSenseMarker indicates whether to render the
   //! sense glyph (arrow) for curves or not
   Standard_EXPORT static void Set (const Standard_CString Name, const Handle(Geom_Geometry)& G, const Standard_Boolean isSenseMarker = Standard_True);
-template <class T> static void Set (const Standard_CString Name, const Handle(T)& Arg, typename std::enable_if<std::is_base_of<Geom_Geometry, T>::value>::type * = 0) { Set (Name, (const Handle(Geom_Geometry)&)Arg); }
+template <class T> static void Set (const Standard_CString Name, const Handle(T)& Arg, typename opencascade::std::enable_if<opencascade::std::is_base_of<Geom_Geometry, T>::value>::type * = 0) { Set (Name, (const Handle(Geom_Geometry)&)Arg); }
   
   //! Sets <C> in the variable <Name>.  Overwrite the
   //! variable if already set.
   //! isSenseMarker indicates whether to render the
   //! sense glyph (arrow) for curves or not
   Standard_EXPORT static void Set (const Standard_CString Name, const Handle(Geom2d_Curve)& C, const Standard_Boolean isSenseMarker = Standard_True);
-template <class T> static void Set (const Standard_CString Name, const Handle(T)& Arg, typename std::enable_if<std::is_base_of<Geom2d_Curve, T>::value>::type * = 0) { Set (Name, (const Handle(Geom2d_Curve)&)Arg); }
+template <class T> static void Set (const Standard_CString Name, const Handle(T)& Arg, typename opencascade::std::enable_if<opencascade::std::is_base_of<Geom2d_Curve, T>::value>::type * = 0) { Set (Name, (const Handle(Geom2d_Curve)&)Arg); }
   
   //! Sets <T> in the variable <Name>.  Overwrite the
   //! variable if already set.
