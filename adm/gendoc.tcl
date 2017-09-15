@@ -655,6 +655,8 @@ proc OCCDoc_Main {docType {docfiles {}} {modules {}} generatorMode verboseMode s
 
 # Generates Doxygen configuration file for Overview documentation
 proc OCCDoc_MakeDoxyfile {docType outDir tagFileDir {doxyFileName} {generatorMode ""} {DocFilesList {}} {ModulesList {}} verboseMode searchMode hhcPath mathjaxLocation graphvizPath productsPath} {
+  global module_dependency
+
   set inputDir      [OCCDoc_GetDoxDir [OCCDoc_GetProdRootDir]]
 
   set TEMPLATES_DIR [OCCDoc_GetDoxDir]/resources
@@ -724,6 +726,16 @@ proc OCCDoc_MakeDoxyfile {docType outDir tagFileDir {doxyFileName} {generatorMod
       set title "Open CASCADE Technology"
       set name OCCT
     }
+
+    OCCDoc_LoadData "${productsPath}"
+
+    # Add all dependencies of modules to the graph
+    set additional_modules {}
+    foreach module $modules {
+      set additional_modules [list {*}$additional_modules {*}$module_dependency($module)]
+    }
+    set modules [list {*}$modules {*}$additional_modules]
+    set modules [lsort -unique $modules]
 
     # Get list of header files in the specified modules
     set filelist {}
