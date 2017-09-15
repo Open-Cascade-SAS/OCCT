@@ -10,7 +10,8 @@ puts ""
 
 restore [locate_data_file bug25693_path3035.brep] result
 
-if { [regexp "There were errors during the operation, so the list may be incomplete" [bopcheck result]] == 1 } {
+set bug_info [string trim [bopcheck result]]
+if {$bug_info != "This shape seems to be OK."} {
     puts "Error : Wire of BSplines fails bopcheck"
 }
 

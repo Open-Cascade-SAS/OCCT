@@ -103,7 +103,16 @@ class BOPAlgo_EdgeFace :
   //
   virtual void Perform() {
     BOPAlgo_Algo::UserBreak();
-    IntTools_EdgeFace::Perform();
+    try
+    {
+      OCC_CATCH_SIGNALS
+
+      IntTools_EdgeFace::Perform();
+    }
+    catch (Standard_Failure)
+    {
+      AddError(new BOPAlgo_AlertIntersectionFailed);
+    }
   }
   //
  protected:
@@ -258,7 +267,9 @@ void BOPAlgo_PaveFiller::PerformEF()
   //
   for (k=0; k < aNbEdgeFace; ++k) {
     BOPAlgo_EdgeFace& aEdgeFace=aVEdgeFace(k);
-    if (!aEdgeFace.IsDone()) {
+    if (!aEdgeFace.IsDone() || aEdgeFace.HasErrors()) {
+      // Warn about failed intersection of sub-shapes
+      AddIntersectionFailedWarning(aEdgeFace.Edge(), aEdgeFace.Face());
       continue;
     }
     //

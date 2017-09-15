@@ -68,6 +68,7 @@ FILE_TO_LIST ("adm/RESOURCES" RESOURCES)
 foreach (CurrentResource ${RESOURCES})
   get_filename_component (CurrentResource_FileName "${CurrentResource}" NAME)
   if ("${CurrentResource_FileName}" STREQUAL TObj.msg OR
+      "${CurrentResource_FileName}" STREQUAL BOPAlgo.msg OR
       "${CurrentResource_FileName}" STREQUAL Units.dat OR
       "${CurrentResource}" STREQUAL XSMessage OR
       "${CurrentResource}" STREQUAL SHMessage OR

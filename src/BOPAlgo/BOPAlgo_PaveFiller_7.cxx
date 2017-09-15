@@ -16,6 +16,7 @@
 // commercial license or contractual agreement.
 
 #include <BOPAlgo_PaveFiller.hxx>
+#include <BOPAlgo_Alerts.hxx>
 #include <BOPAlgo_SectionAttribute.hxx>
 #include <BOPAlgo_Tools.hxx>
 #include <BOPCol_IndexedMapOfShape.hxx>
@@ -241,28 +242,37 @@ class BOPAlgo_MPC : public BOPAlgo_Algo  {
   }
   //
   virtual void Perform() {
-    Standard_Integer iErr;
-    //
-    iErr=1;
-    if (!myEz.IsNull()) {
-      TopoDS_Edge aSpz;
+    try
+    {
+      OCC_CATCH_SIGNALS
+
+      Standard_Integer iErr;
       //
-      BOPTools_AlgoTools::MakeSplitEdge(myEz,myV1, myT1, 
-                                        myV2, myT2, aSpz);
+      iErr=1;
+      if (!myEz.IsNull()) {
+        TopoDS_Edge aSpz;
+        //
+        BOPTools_AlgoTools::MakeSplitEdge(myEz,myV1, myT1, 
+                                          myV2, myT2, aSpz);
+        //
+        iErr=
+          BOPTools_AlgoTools2D::AttachExistingPCurve(aSpz, 
+                                                     myE, 
+                                                     myF, 
+                                                     myContext);
+      }
       //
-      iErr=
-        BOPTools_AlgoTools2D::AttachExistingPCurve(aSpz, 
-                                                   myE, 
-                                                   myF, 
-                                                   myContext);
+      if (iErr) { 
+        BOPTools_AlgoTools2D::BuildPCurveForEdgeOnFace(myE, myF, myContext);
+      }
+      // 
+      if (myFlag) {
+        UpdateVertices(myE, myF);
+      }
     }
-    //
-    if (iErr) { 
-      BOPTools_AlgoTools2D::BuildPCurveForEdgeOnFace(myE, myF, myContext);
-    }
-    // 
-    if (myFlag) {
-      UpdateVertices(myE, myF);
+    catch (Standard_Failure)
+    {
+      AddError(new BOPAlgo_AlertBuildingPCurveFailed(TopoDS_Shape()));
     }
   }
   //
@@ -676,6 +686,20 @@ void BOPAlgo_PaveFiller::MakePCurves()
   //======================================================
   BOPAlgo_MPCCnt::Perform(myRunParallel, aVMPC, myContext);
   //======================================================
+
+  // Add warnings of the failed projections
+  Standard_Integer aNb = aVMPC.Extent();
+  for (i = 0; i < aNb; ++i)
+  {
+    if (aVMPC(i).HasErrors())
+    {
+      TopoDS_Compound aWC;
+      BRep_Builder().MakeCompound(aWC);
+      BRep_Builder().Add(aWC, aVMPC(i).Edge());
+      BRep_Builder().Add(aWC, aVMPC(i).Face());
+      AddWarning(new BOPAlgo_AlertBuildingPCurveFailed(aWC));
+    }
+  }
 }
 //=======================================================================
 //function : UpdateVertices

@@ -1,0 +1,34 @@
+puts "======="
+puts "0029073"
+puts "======="
+puts ""
+##################################################
+# Regression: General Cut produces invalid shape
+##################################################
+
+brestore [locate_data_file bug29073_M6.brep] b1
+brestore [locate_data_file bug29073_Shell.brep] b2
+
+bclearobjects
+bcleartools
+baddobjects b1
+baddtools b2
+bfillds
+
+# check the result of SECTION
+bbop rsec 4
+checknbshapes rsec -edge 1 -vertex 2
+
+# check the result of GF
+bbuild rgf
+checkshape rgf
+checkprops rgf -s 163.708 -v 115.912
+checknbshapes rgf -wire 25 -face 24 -shell 3 -solid 1
+
+# check the CUT
+bbop result 3
+checkshape result
+checkprops result -s 0.000713987
+checknbshapes result -wire 1 -face 1
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
