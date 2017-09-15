@@ -28,6 +28,13 @@ struct AVCodec;
 struct AVFrame;
 struct SwsContext;
 
+// Undefine macro that clashes with name used by field of Image_VideoParams;
+// this macro is defined in headers of older versions of libavutil
+// (see definition of macro FF_API_PIX_FMT in version.h)
+#ifdef PixelFormat
+#undef PixelFormat
+#endif
+
 //! Auxiliary structure defining video parameters.
 //! Please refer to FFmpeg documentation for defining text values.
 struct Image_VideoParams

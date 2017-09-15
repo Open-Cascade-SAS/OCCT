@@ -51,6 +51,13 @@ extern "C"
 #endif
 };
 
+// Undefine macro that clashes with name used by field of Image_VideoParams;
+// this macro is defined in headers of older versions of libavutil
+// (see definition of macro FF_API_PIX_FMT in version.h)
+#ifdef PixelFormat
+#undef PixelFormat
+#endif
+
 #endif
 
 IMPLEMENT_STANDARD_RTTIEXT(Image_VideoRecorder, Standard_Transient)
