@@ -67,3 +67,12 @@ Warning: Removal of internal boundaries among Faces has failed
 
 .BOPAlgo_AlertRemovalOfIBForEdgesFailed
 Warning: Removal of internal boundaries among Edges has failed
+
+.BOPAlgo_AlertIntersectionOfPairOfShapesFailed
+Warning: Intersection of pair of shapes has failed
+
+.BOPAlgo_AlertBuildingPCurveFailed
+Warning: Building 2D curve of edge on face has failed
+
+.BOPAlgo_AlertAcquiredSelfIntersection
+Warning: Some sub-shapes of some of the argument become connected through other shapes and the argument became self-interfered

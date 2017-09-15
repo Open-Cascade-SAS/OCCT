@@ -78,4 +78,14 @@ DEFINE_ALERT_WITH_SHAPE(BOPAlgo_AlertShellSplitterFailed)
 //! Some edges are too small and have no valid range
 DEFINE_ALERT_WITH_SHAPE(BOPAlgo_AlertTooSmallEdge)
 
+//! Intersection of pair of shapes has failed
+DEFINE_ALERT_WITH_SHAPE(BOPAlgo_AlertIntersectionOfPairOfShapesFailed)
+
+//! Building 2D curve of edge on face has failed
+DEFINE_ALERT_WITH_SHAPE(BOPAlgo_AlertBuildingPCurveFailed)
+
+//! Some sub-shapes of some of the argument become connected through
+//! other shapes and the argument became self-interfered
+DEFINE_ALERT_WITH_SHAPE(BOPAlgo_AlertAcquiredSelfIntersection)
+
 #endif // _BOPAlgo_Alerts_HeaderFile

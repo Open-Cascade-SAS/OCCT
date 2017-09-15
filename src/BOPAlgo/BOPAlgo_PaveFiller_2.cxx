@@ -17,6 +17,7 @@
 
 
 #include <BOPAlgo_PaveFiller.hxx>
+#include <BOPAlgo_Alerts.hxx>
 #include <BOPAlgo_Tools.hxx>
 #include <BOPCol_NCVector.hxx>
 #include <BOPCol_Parallel.hxx>
@@ -27,6 +28,7 @@
 #include <BOPDS_PaveBlock.hxx>
 #include <BOPDS_VectorOfInterfVE.hxx>
 #include <BOPTools_AlgoTools.hxx>
+#include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
 #include <gp_Pnt.hxx>
 #include <IntTools_Context.hxx>
@@ -110,7 +112,16 @@ class BOPAlgo_VertexEdge : public BOPAlgo_Algo {
   //
   virtual void Perform() {
     BOPAlgo_Algo::UserBreak();
-    myFlag=myContext->ComputeVE (myV, myE, myT, myTolVNew, myFuzzyValue);
+    try
+    {
+      OCC_CATCH_SIGNALS
+
+      myFlag=myContext->ComputeVE (myV, myE, myT, myTolVNew, myFuzzyValue);
+    }
+    catch (Standard_Failure)
+    {
+      AddError(new BOPAlgo_AlertIntersectionFailed);
+    }
   };
   //
  protected:
@@ -267,6 +278,11 @@ void BOPAlgo_PaveFiller::IntersectVE
   for (i = 0; i < aNbVE; ++i) {
     const BOPAlgo_VertexEdge& aVESolver = aVVE(i);
     if (aVESolver.Flag() != 0) {
+      if (aVESolver.HasErrors())
+      {
+        // Warn about failed intersection of sub-shapes
+        AddIntersectionFailedWarning(aVESolver.Vertex(), aVESolver.Edge());
+      }
       continue;
     }
     //
@@ -490,4 +506,20 @@ void BOPAlgo_PaveFiller::SplitPaveBlocks(const BOPCol_MapOfInteger& theMEdges,
       }
     }
   }
+}
+
+//=======================================================================
+// function: AddIntersectionFailedWarning
+// purpose: 
+//=======================================================================
+void BOPAlgo_PaveFiller::AddIntersectionFailedWarning(const TopoDS_Shape& theS1,
+                                                      const TopoDS_Shape& theS2)
+{
+  // Create the warn shape
+  TopoDS_Compound aWC;
+  BRep_Builder().MakeCompound(aWC);
+  BRep_Builder().Add(aWC, theS1);
+  BRep_Builder().Add(aWC, theS2);
+  // Add the warning
+  AddWarning(new BOPAlgo_AlertIntersectionOfPairOfShapesFailed(aWC));
 }

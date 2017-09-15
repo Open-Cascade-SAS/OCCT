@@ -69,4 +69,13 @@ static const char BOPAlgo_BOPAlgo_msg[] =
   "Warning: Removal of internal boundaries among Faces has failed\n"
   "\n"
   ".BOPAlgo_AlertRemovalOfIBForEdgesFailed\n"
-  "Warning: Removal of internal boundaries among Edges has failed\n";
+  "Warning: Removal of internal boundaries among Edges has failed\n"
+  "\n"
+  ".BOPAlgo_AlertIntersectionOfPairOfShapesFailed\n"
+  "Warning: Intersection of pair of shapes has failed\n"
+  "\n"
+  ".BOPAlgo_AlertBuildingPCurveFailed\n"
+  "Warning: Building 2D curve of edge on face has failed\n"
+  "\n"
+  ".BOPAlgo_AlertAcquiredSelfIntersection\n"
+  "Warning: Some sub-shapes of some of the argument become connected through other shapes and the argument became self-interfered\n";

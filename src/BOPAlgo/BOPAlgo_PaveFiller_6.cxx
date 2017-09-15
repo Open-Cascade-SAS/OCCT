@@ -144,7 +144,16 @@ class BOPAlgo_FaceFace :
   //
   virtual void Perform() {
     BOPAlgo_Algo::UserBreak();
-    IntTools_FaceFace::Perform(myF1, myF2);
+    try
+    {
+      OCC_CATCH_SIGNALS
+
+      IntTools_FaceFace::Perform(myF1, myF2);
+    }
+    catch (Standard_Failure)
+    {
+      AddError(new BOPAlgo_AlertIntersectionFailed);
+    }
   }
   //
  protected:
@@ -263,10 +272,12 @@ void BOPAlgo_PaveFiller::PerformFF()
   for (k = 0; k < aNbFaceFace; ++k) {
     BOPAlgo_FaceFace& aFaceFace = aVFaceFace(k);
     aFaceFace.Indices(nF1, nF2);
-    if (!aFaceFace.IsDone()) {
+    if (!aFaceFace.IsDone() || aFaceFace.HasErrors()) {
       BOPDS_InterfFF& aFF = aFFs.Append1();
       aFF.SetIndices(nF1, nF2);
       aFF.Init(0, 0);
+      // Warn about failed intersection of faces
+      AddIntersectionFailedWarning(aFaceFace.Face1(), aFaceFace.Face2());
       continue;
     }
     //
@@ -373,6 +384,7 @@ void BOPAlgo_PaveFiller::MakeBlocks()
   BOPCol_DataMapOfIntegerListOfInteger aDMBV(100, aAllocator);
   BOPCol_DataMapIteratorOfDataMapOfIntegerReal aItMV;
   BOPCol_IndexedMapOfShape aMicroEdges(100, aAllocator);
+  BOPCol_IndexedMapOfShape aVertsOnRejectedPB;
   //
   for (i=0; i<aNbFF; ++i) {
     //
@@ -557,6 +569,19 @@ void BOPAlgo_PaveFiller::MakeBlocks()
             if (!bInBothFaces) {
               aMPBAdd.Add(aPBOut);
               PreparePostTreatFF(i, j, aPBOut, aMSCPB, aMVI, aLPBC);
+              // Try fusing the vertices of the existing pave block
+              // with the vertices put on the real section curve (except
+              // for technological vertices, which will be removed)
+              Standard_Integer nVOut1, nVOut2;
+              aPBOut->Indices(nVOut1, nVOut2);
+              if (nV1 != nVOut1 && nV1 != nVOut2 && !aMVBounds.Contains(nV1))
+              {
+                aVertsOnRejectedPB.Add(aV1);
+              }
+              if (nV2 != nVOut1 && nV2 != nVOut2 && !aMVBounds.Contains(nV2))
+              {
+                aVertsOnRejectedPB.Add(aV2);
+              }
             }
           }
           continue;
@@ -639,7 +664,7 @@ void BOPAlgo_PaveFiller::MakeBlocks()
   // 
   // post treatment
   MakeSDVerticesFF(aDMVLV, aDMNewSD);
-  PostTreatFF(aMSCPB, aDMExEdges, aDMNewSD, aMicroEdges, aAllocator);
+  PostTreatFF(aMSCPB, aDMExEdges, aDMNewSD, aMicroEdges, aVertsOnRejectedPB, aAllocator);
   if (HasErrors()) {
     return;
   }
@@ -697,6 +722,7 @@ void BOPAlgo_PaveFiller::PostTreatFF
      BOPDS_DataMapOfPaveBlockListOfPaveBlock& aDMExEdges,
      BOPCol_DataMapOfIntegerInteger& aDMNewSD,
      const BOPCol_IndexedMapOfShape& theMicroEdges,
+     const BOPCol_IndexedMapOfShape& theVertsOnRejectedPB,
      const Handle(NCollection_BaseAllocator)& theAllocator)
 {
   Standard_Integer aNbS = theMSCPB.Extent();
@@ -724,8 +750,9 @@ void BOPAlgo_PaveFiller::PostTreatFF
   BOPDS_VectorOfInterfFF& aFFs=myDS->InterfFF();
   //
   Standard_Integer aNbME = theMicroEdges.Extent();
+  Standard_Integer aNbVOnRPB = theVertsOnRejectedPB.Extent();
   // 0
-  if (aNbS==1 && (aNbME == 0)) {
+  if (aNbS==1 && (aNbME == 0) && (aNbVOnRPB == 0)) {
     const TopoDS_Shape& aS=theMSCPB.FindKey(1);
     const BOPDS_CoupleOfPaveBlocks &aCPB=theMSCPB.FindFromIndex(1);
     //
@@ -823,6 +850,20 @@ void BOPAlgo_PaveFiller::PostTreatFF
       aBB.UpdateVertex(aVerts[0], aTolV1 + aDist);
       aBB.UpdateVertex(aVerts[1], aTolV2 + aDist);
     }
+  }
+
+  // Add vertices put on the real section curves to unify them with the
+  // vertices of the edges, by which these sections curves have been rejected
+  for (Standard_Integer i = 1; i <= aNbVOnRPB; ++i)
+  {
+    TopoDS_Shape aVer = theVertsOnRejectedPB(i);
+    Standard_Integer iVer = myDS->Index(aVer);
+    const Standard_Integer* pSD = aDMNewSD.Seek(iVer);
+    if (pSD)
+      aVer = myDS->Shape(*pSD);
+
+    if (anAddedSD.Add(aVer))
+      aLS.Append(aVer);
   }
   //
   // 2 Fuse shapes

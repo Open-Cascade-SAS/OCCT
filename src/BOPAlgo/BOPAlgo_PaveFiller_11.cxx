@@ -112,7 +112,8 @@ void BOPAlgo_PaveFiller::CheckSelfInterference()
               }
               //
               if (aLE.Extent() > 1) {
-                // Add warning
+                // Add the acquired self-interference warning:
+                // The same common block contains several edges from one argument
                 TopoDS_Compound aWC;
                 aBB.MakeCompound(aWC);
                 //
@@ -122,7 +123,7 @@ void BOPAlgo_PaveFiller::CheckSelfInterference()
                   aBB.Add(aWC, aE1);
                 }
                 //
-                AddWarning (new BOPAlgo_AlertSelfInterferingShape (aWC));
+                AddWarning (new BOPAlgo_AlertAcquiredSelfIntersection (aWC));
               }
             }
           }
@@ -168,7 +169,8 @@ void BOPAlgo_PaveFiller::CheckSelfInterference()
     for (j = 1; j <= aNbC; ++j) {
       const BOPCol_IndexedMapOfShape& aMCS = aMCSI(j);
       if (aMCS.Extent() > 1) {
-        // Add self-interference warning
+        // Add acquired self-interference warning:
+        // Several faces from one argument contain the same vertex or edge
         TopoDS_Compound aWC;
         aBB.MakeCompound(aWC);
         //
@@ -177,7 +179,7 @@ void BOPAlgo_PaveFiller::CheckSelfInterference()
           const TopoDS_Shape& aSx = aMCS(iS);
           aBB.Add(aWC, aSx);
         }
-        AddWarning (new BOPAlgo_AlertSelfInterferingShape (aWC));
+        AddWarning (new BOPAlgo_AlertAcquiredSelfIntersection (aWC));
       }
     }
   }

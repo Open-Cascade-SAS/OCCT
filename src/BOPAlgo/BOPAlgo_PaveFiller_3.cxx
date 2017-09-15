@@ -93,7 +93,16 @@ class BOPAlgo_EdgeEdge :
   //
   virtual void Perform() {
     BOPAlgo_Algo::UserBreak();
-    IntTools_EdgeEdge::Perform();
+    try
+    {
+      OCC_CATCH_SIGNALS
+
+      IntTools_EdgeEdge::Perform();
+    }
+    catch (Standard_Failure)
+    {
+      AddError(new BOPAlgo_AlertIntersectionFailed);
+    }
   }
   //
  protected:
@@ -229,7 +238,11 @@ void BOPAlgo_PaveFiller::PerformEE()
     Bnd_Box aBB1, aBB2;
     //
     BOPAlgo_EdgeEdge& anEdgeEdge=aVEdgeEdge(k);
-    if (!anEdgeEdge.IsDone()) {
+    if (!anEdgeEdge.IsDone() || anEdgeEdge.HasErrors()) {
+      // Warn about failed intersection of sub-shapes
+      const TopoDS_Shape& aE1 = myDS->Shape(anEdgeEdge.PaveBlock1()->OriginalEdge());
+      const TopoDS_Shape& aE2 = myDS->Shape(anEdgeEdge.PaveBlock2()->OriginalEdge());
+      AddIntersectionFailedWarning(aE1, aE2);
       continue;
     }
     //

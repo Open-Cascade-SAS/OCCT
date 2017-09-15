@@ -87,13 +87,19 @@ class TopoDS_Face;
 //! - *Gluing options* - allows to speed up the calculation on the special
 //!                      cases, in which some sub-shapes are coincide.<br>
 //!
-//! The algorithm returns the following Warning statuses:<br>
-//! - *BOPAlgo_AlertSelfInterferingShape* - in case some of the argument shapes are self-interfering shapes;<br>
-//! - *BOPAlgo_AlertTooSmallEdge* - in case some edges of the input shapes have no valid range;<br>
+//! The algorithm returns the following Warning statuses:
+//! - *BOPAlgo_AlertSelfInterferingShape* - in case some of the argument shapes are self-interfering shapes;
+//! - *BOPAlgo_AlertTooSmallEdge* - in case some edges of the input shapes have no valid range;
 //! - *BOPAlgo_AlertNotSplittableEdge* - in case some edges of the input shapes has such a small
-//!                         valid range so it cannot be split;<br>
+//!                                      valid range so it cannot be split;
 //! - *BOPAlgo_AlertBadPositioning* - in case the positioning of the input shapes leads to creation
-//!                      of small edges.<br>
+//!                                   of small edges;
+//! - *BOPAlgo_AlertIntersectionOfPairOfShapesFailed* - in case intersection of some of the
+//!                                                     sub-shapes has failed;
+//! - *BOPAlgo_AlertAcquiredSelfIntersection* - in case some sub-shapes of the argument become connected
+//!                                             through other shapes;
+//! - *BOPAlgo_AlertBuildingPCurveFailed* - in case building 2D curve for some of the edges
+//!                                         on the faces has failed.
 //!
 //! The algorithm returns the following Error alerts:
 //! - *BOPAlgo_AlertTooFewArguments* - in case there are no enough arguments to
@@ -290,6 +296,7 @@ protected:
                                     BOPDS_DataMapOfPaveBlockListOfPaveBlock& theDMExEdges,
                                     BOPCol_DataMapOfIntegerInteger& theDMNewSD,
                                     const BOPCol_IndexedMapOfShape& theMicroEdges,
+                                    const BOPCol_IndexedMapOfShape& theVertsOnRejectedPB,
                                     const BOPCol_BaseAllocator& theAllocator);
   
   Standard_EXPORT void FindPaveBlocks (const Standard_Integer theV, const Standard_Integer theF, BOPDS_ListOfPaveBlock& theLPB);
@@ -474,6 +481,8 @@ protected:
   //! In case self-interference is found the warning is added.
   Standard_EXPORT void CheckSelfInterference();
 
+  //! Adds the warning about failed intersection of pair of sub-shapes
+  Standard_EXPORT void AddIntersectionFailedWarning(const TopoDS_Shape& theS1, const TopoDS_Shape& theS2);
 
   BOPCol_ListOfShape myArguments;
   BOPDS_PDS myDS;

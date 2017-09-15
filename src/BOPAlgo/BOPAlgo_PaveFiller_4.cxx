@@ -17,6 +17,7 @@
 
 
 #include <BOPAlgo_PaveFiller.hxx>
+#include <BOPAlgo_Alerts.hxx>
 #include <BOPAlgo_SectionAttribute.hxx>
 #include <BOPCol_MapOfInteger.hxx>
 #include <BOPCol_NCVector.hxx>
@@ -107,7 +108,16 @@ class BOPAlgo_VertexFace : public BOPAlgo_Algo {
   //
   virtual void Perform() {
     BOPAlgo_Algo::UserBreak();
-    myFlag=myContext->ComputeVF(myV, myF, myT1, myT2, myTolVNew, myFuzzyValue);
+    try
+    {
+      OCC_CATCH_SIGNALS
+
+      myFlag=myContext->ComputeVF(myV, myF, myT1, myT2, myTolVNew, myFuzzyValue);
+    }
+    catch (Standard_Failure)
+    {
+      AddError(new BOPAlgo_AlertIntersectionFailed);
+    }
   }
   //
  protected:
@@ -212,7 +222,12 @@ void BOPAlgo_PaveFiller::PerformVF()
     const BOPAlgo_VertexFace& aVertexFace=aVVF(k);
     // 
     iFlag=aVertexFace.Flag();
-    if (iFlag) {
+    if (iFlag != 0) {
+      if (aVertexFace.HasErrors())
+      {
+        // Warn about failed intersection of sub-shapes
+        AddIntersectionFailedWarning(aVertexFace.Vertex(), aVertexFace.Face());
+      }
       continue;
     }
     //
