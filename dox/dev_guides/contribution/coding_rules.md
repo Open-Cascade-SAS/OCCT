@@ -76,19 +76,28 @@ Note that .lxx files should be avoided in most cases - inline method should be p
 
 Toolkit names are prefixed by *TK*, followed by a meaningful part of the name explaining the domain of functionality covered by the toolkit (e.g. *TKOpenGl*).
 
-### Names of classes
+### Names of public types
 
-Usually the names of source files located in a unit start from the unit name separated from the other part of the file name by underscore "_".
-
-Thus, the names of files containing sources of C++ classes that belong to a package are constructed according to the following template:
+Names of public classes and other types (structures, enums, typedefs) should match the common pattern: name of the package followed by underscore and suffix (the own name of the type):
 
 ~~~~~
-    <package-name>_<class-name>.cxx (or .hxx)
+    <package-name>_<class-name>
 ~~~~~
 
-For example, file *Adaptor2d_Curve2d.cxx* belongs to the package *Adaptor2d*
+Static methods related to the whole package are defined in the class with the same name as package (without suffix).
 
-Files that contain sources related to the whole unit are called by the unit name with appropriate extension.
+Each type should be defined in its own header file with the name of the type and extension ".hxx".
+Implementation should be placed in the file with the same name and extension ".cxx"; for large classes it is possible to split implementation into multiple source files with additional suffixes in the names (usually numerical, e.g. *BSplCLib_1.cxx*).
+
+For example, class *Adaptor2d_Curve2d* belongs to the package *Adaptor2d*; it is defined in header file *Adaptor2d_Curve2d.hxx* and implemented in source file *Adaptor2d_Curve2d.cxx*.
+
+This rule also applies to complex types constructed by instantiation of templates.
+Such types should be given own names using *typedef* statement, located in same-named header file.
+
+For example, see definition in the file *TColStd_IndexedDataMapOfStringString.hxx*:
+~~~~~
+typedef NCollection_IndexedDataMap<TCollection_AsciiString,TCollection_AsciiString,TCollection_AsciiString> TColStd_IndexedDataMapOfStringString;
+~~~~~
 
 ### Names of functions
 
