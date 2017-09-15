@@ -17,6 +17,7 @@
 
 #include <NCollection_AlignedAllocator.hxx>
 #include <OSD_Parallel.hxx>
+#include <Standard_Atomic.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitivePrimitiveArray, Select3D_SensitiveSet)
 

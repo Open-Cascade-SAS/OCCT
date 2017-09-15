@@ -54,6 +54,7 @@
 #include <XmlDrivers_DocumentRetrievalDriver.hxx>
 #include <XmlDrivers_DocumentStorageDriver.hxx>
 #include <TDataStd_Real.hxx>
+#include <Standard_Atomic.hxx>
 
 #include <cstdio>
 #include <cmath>
@@ -2864,19 +2865,19 @@ struct OCC25545_Functor
 //function : OCC25545
 //purpose  : Tests data race when concurrently accessing TopLoc_Location::Transformation()
 //=======================================================================
-#ifdef HAVE_TBB
+
 static Standard_Integer OCC25545 (Draw_Interpretor& di, 
                                   Standard_Integer, 
                                   const char **)
 {
   // Place vertices in a vector, giving the i-th vertex the
   // transformation that translates it on the vector (i,0,0) from the origin.
-  size_t n = 1000;
+  Standard_Integer n = 1000;
   std::vector<TopoDS_Shape> aShapeVec (n);
   std::vector<TopLoc_Location> aLocVec (n);
   TopoDS_Shape aShape = BRepBuilderAPI_MakeVertex (gp::Origin ());
   aShapeVec[0] = aShape;
-  for (size_t i = 1; i < n; ++i) {
+  for (Standard_Integer i = 1; i < n; ++i) {
     gp_Trsf aT;
     aT.SetTranslation (gp_Vec (1, 0, 0));
     aLocVec[i] = aLocVec[i - 1] * aT;
@@ -2887,20 +2888,12 @@ static Standard_Integer OCC25545 (Draw_Interpretor& di,
   // concurrently
   OCC25545_Functor aFunc(aShapeVec);
 
-  //concurrently process
-  tbb::parallel_for (size_t (0), n, aFunc, tbb::simple_partitioner ());
+  // concurrently process
+  OSD_Parallel::For (0, n, aFunc);
+
   QVERIFY (!aFunc.myIsRaceDetected);
   return 0;
 }
-#else
-static Standard_Integer OCC25545 (Draw_Interpretor&, 
-                                  Standard_Integer, 
-                                  const char **argv)
-{
-  cout << "Test skipped: command " << argv[0] << " requires TBB library" << endl;
-  return 0;
-}
-#endif
 
 //=======================================================================
 //function : OCC25547

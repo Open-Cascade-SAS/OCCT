@@ -19,6 +19,8 @@
 #include <Standard_NotImplemented.hxx>
 #include <OSD_Parallel.hxx>
 #include <NCollection_DataMap.hxx>
+#include <Standard_Mutex.hxx>
+#include <OSD_Thread.hxx>
 
 //
 // 1. Implementation of Functors/Starters

@@ -57,6 +57,8 @@ OSD_OpenMode.hxx
 OSD_OSDError.hxx
 OSD_Parallel.cxx
 OSD_Parallel.hxx
+OSD_Parallel_TBB.cxx
+OSD_Parallel_Threads.cxx
 OSD_Path.cxx
 OSD_Path.hxx
 OSD_PerfMeter.cxx

@@ -21,6 +21,7 @@
   #include <process.h>
 #else
   #include <sys/types.h>
+  #include <unistd.h>
 
   #ifdef __sun
     #include <sys/processor.h>
