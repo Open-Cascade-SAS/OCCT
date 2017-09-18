@@ -885,6 +885,7 @@ Handle(Adaptor2d_HCurve2d)
 
   Standard_Integer NbOfPnts = 61; 
   GCPnts_QuasiUniformAbscissa QUA(Curve->GetCurve(),NbOfPnts);
+  NbOfPnts = QUA.NbPoints();
   TColgp_Array1OfPnt Pts(1,NbOfPnts);
   TColStd_Array1OfReal Param(1,NbOfPnts);
   Standard_Integer i, j;
