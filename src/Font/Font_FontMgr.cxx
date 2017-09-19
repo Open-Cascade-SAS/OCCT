@@ -218,6 +218,8 @@ static Handle(Font_SystemFont) checkFont (const Handle(Font_FTLibrary)& theFTLib
     Handle(TCollection_HAsciiString) aFontName = new TCollection_HAsciiString (aFontFace->family_name);
     Handle(TCollection_HAsciiString) aFontPath = new TCollection_HAsciiString (theFontPath);
     aResult = new Font_SystemFont (aFontName, anAspect, aFontPath);
+    // automatically identify some known single-line fonts
+    aResult->SetSingleStrokeFont (aFontName->String().StartsWith ("OLF "));
   }
 
   FT_Done_Face (aFontFace);

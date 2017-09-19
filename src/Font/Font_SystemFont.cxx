@@ -13,126 +13,113 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-// Updated:
-
 #include <Font_SystemFont.hxx>
+
 #include <OSD_Path.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Font_SystemFont,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(Font_SystemFont, Standard_Transient)
 
-Font_SystemFont::Font_SystemFont():
-MyFontName(),
-MyFontAspect(Font_FA_Undefined),
-MyFaceSize(-1),
-MyVerification(Standard_False)
+// =======================================================================
+// function : Font_SystemFont
+// purpose  :
+// =======================================================================
+Font_SystemFont::Font_SystemFont()
+: myFontAspect (Font_FA_Undefined),
+  myFaceSize (-1),
+  myIsSingleLine (Standard_False),
+  myIsDefined (Standard_False)
 {
+  //
 }
 
-Font_SystemFont::Font_SystemFont( const Handle(TCollection_HAsciiString)& FontName,
-                                const Font_FontAspect FontAspect,
-                                const Handle(TCollection_HAsciiString)& FilePath ):
-MyFontName(FontName),
-MyFontAspect(FontAspect),
-MyFaceSize(-1),
-MyFilePath(FilePath),
-MyVerification(Standard_True)
+// =======================================================================
+// function : Font_SystemFont
+// purpose  :
+// =======================================================================
+Font_SystemFont::Font_SystemFont (const Handle(TCollection_HAsciiString)& theFontName,
+                                  const Font_FontAspect theFontAspect,
+                                  const Handle(TCollection_HAsciiString)& theFilePath)
+: myFontName (theFontName),
+  myFontAspect (theFontAspect),
+  myFaceSize (-1),
+  myFilePath (theFilePath),
+  myIsSingleLine (Standard_False),
+  myIsDefined (Standard_True)
 {
-
+  //
 }
 
+// =======================================================================
+// function : Font_SystemFont
+// purpose  :
+// =======================================================================
 Font_SystemFont::Font_SystemFont (const Handle(TCollection_HAsciiString)& theXLFD,
-                                  const Handle(TCollection_HAsciiString)& theFilePath) :
-MyFontAspect(Font_FA_Regular),
-MyFaceSize(-1),
-MyFilePath(theFilePath)
+                                  const Handle(TCollection_HAsciiString)& theFilePath)
+: myFontAspect (Font_FA_Regular),
+  myFaceSize (-1),
+  myFilePath (theFilePath),
+  myIsSingleLine (Standard_False),
+  myIsDefined (Standard_True)
 {
-  MyVerification = Standard_True;
-  if (theXLFD.IsNull())
+  if (theXLFD.IsNull()
+   || theXLFD->IsEmpty())
   {
-    MyVerification = Standard_False; // empty font description handler
-  }
-  if (theXLFD->IsEmpty())
-  {
-    MyVerification = Standard_False; // empty font description
+    myIsDefined = Standard_False;
+    return;
   }
 
-  if (MyVerification)
+  myFontName = theXLFD->Token ("-", 2);
+  const TCollection_AsciiString& aXLFD = theXLFD->String();
+
+  // Getting font size for fixed size fonts
+  if (aXLFD.Search ("-0-0-0-0-") >= 0)
   {
-    MyFontName = theXLFD->Token ("-", 2);
-    TCollection_AsciiString aXLFD (theXLFD->ToCString());
+    myFaceSize = -1; // Scalable font
+  }
+  else
+  {
+    myFaceSize = aXLFD.Token ("-", 7).IntegerValue();
+  }
 
-    // Getting font size for fixed size fonts
-    if (aXLFD.Search ("-0-0-0-0-") >= 0)
-      MyFaceSize = -1; // Scalable font
-    else
-      //TODO catch exeption
-      MyFaceSize = aXLFD.Token ("-", 7).IntegerValue();
-
-    // Detect font aspect
-    if (aXLFD.Token ("-", 3).IsEqual ("bold") &&
-       (aXLFD.Token ("-", 4).IsEqual ("i") || aXLFD.Token ("-", 4).IsEqual ("o")))
-    {
-      MyFontAspect = Font_FA_BoldItalic;
-    }
-    else if (aXLFD.Token ("-", 3).IsEqual ("bold"))
-    {
-      MyFontAspect = Font_FA_Bold;
-    }
-    else if (aXLFD.Token ("-", 4).IsEqual ("i") || aXLFD.Token ("-", 4).IsEqual ("o"))
-    {
-      MyFontAspect = Font_FA_Italic;
-    }
+  // Detect font aspect
+  if (aXLFD.Token ("-", 3).IsEqual ("bold")
+   && (aXLFD.Token ("-", 4).IsEqual ("i")
+    || aXLFD.Token ("-", 4).IsEqual ("o")))
+  {
+    myFontAspect = Font_FA_BoldItalic;
+  }
+  else if (aXLFD.Token ("-", 3).IsEqual ("bold"))
+  {
+    myFontAspect = Font_FA_Bold;
+  }
+  else if (aXLFD.Token ("-", 4).IsEqual ("i")
+        || aXLFD.Token ("-", 4).IsEqual ("o"))
+  {
+    myFontAspect = Font_FA_Italic;
   }
 }
 
-Standard_Boolean Font_SystemFont::IsValid() const{
-  if ( !MyVerification)
-    return Standard_False;
-
-  if ( MyFontAspect == Font_FA_Undefined )
-    return Standard_False;
-
-  if ( MyFontName->IsEmpty() || !MyFontName->IsAscii() )
-    return Standard_False;
-
-  OSD_Path path;
-  return path.IsValid( MyFilePath->String() );
-}
-
-Handle(TCollection_HAsciiString) Font_SystemFont::FontPath() const{
-  return MyFilePath;
-}
-
-Handle(TCollection_HAsciiString) Font_SystemFont::FontName() const{
-  return MyFontName;
-}
-
-Font_FontAspect Font_SystemFont::FontAspect() const{
-  return MyFontAspect;
-}
-
-Standard_Integer Font_SystemFont::FontHeight() const {
-  return MyFaceSize;
-}
-
-Standard_Boolean Font_SystemFont::IsEqual(const Handle(Font_SystemFont)& theOtherFont) const
+// =======================================================================
+// function : IsValid
+// purpose  :
+// =======================================================================
+Standard_Boolean Font_SystemFont::IsValid() const
 {
-  if (!MyFontName->IsSameString (theOtherFont->FontName(), Standard_False))
-  {
-    return Standard_False;
-  }
+  return myIsDefined
+     &&  myFontAspect != Font_FA_Undefined
+     && !myFontName->IsEmpty()
+     &&  OSD_Path::IsValid (myFilePath->String());
+}
 
-  if (MyFontAspect != theOtherFont->FontAspect())
-  {
-    return Standard_False;
-  }
-
-  if (MyFaceSize != theOtherFont->FontHeight())
-  {
-    return Standard_False;
-  }
-
-  return Standard_True;
+// =======================================================================
+// function : IsEqual
+// purpose  :
+// =======================================================================
+Standard_Boolean Font_SystemFont::IsEqual (const Handle(Font_SystemFont)& theOtherFont) const
+{
+  return myFontName->IsSameString (myFontName, Standard_False)
+      && myFontAspect == theOtherFont->myFontAspect
+      && myFaceSize   == theOtherFont->myFaceSize;
 }

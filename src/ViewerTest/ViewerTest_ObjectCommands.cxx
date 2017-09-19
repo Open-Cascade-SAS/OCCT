@@ -5594,26 +5594,37 @@ static int VFont (Draw_Interpretor& theDI,
     {
       if (++anArgIter >= theArgNb)
       {
-        std::cerr << "Wrong syntax at argument '" << anArg.ToCString() << "'!\n";
+        std::cerr << "Error: wrong syntax at argument '" << anArg << "'!\n";
         return 1;
       }
-      Standard_CString aFontPath   = theArgVec[anArgIter];
-      Standard_CString aFontName   = NULL;
+
+      Standard_CString aFontPath = theArgVec[anArgIter++];
+      TCollection_AsciiString aFontName;
       Font_FontAspect  aFontAspect = Font_FA_Undefined;
-      if (++anArgIter < theArgNb)
+      Standard_Integer isSingelStroke = -1;
+      for (; anArgIter < theArgNb; ++anArgIter)
       {
-        if (!parseFontStyle (anArgCase, aFontAspect))
+        anArgCase = theArgVec[anArgIter];
+        anArgCase.LowerCase();
+        if (aFontAspect == Font_FA_Undefined
+         && parseFontStyle (anArgCase, aFontAspect))
+        {
+          continue;
+        }
+        else if (anArgCase == "singlestroke"
+              || anArgCase == "singleline"
+              || anArgCase == "oneline")
+        {
+          isSingelStroke = 1;
+        }
+        else if (aFontName.IsEmpty())
         {
           aFontName = theArgVec[anArgIter];
         }
-        if (++anArgIter < theArgNb)
+        else
         {
-          anArgCase = theArgVec[anArgIter];
-          anArgCase.LowerCase();
-          if (!parseFontStyle (anArgCase, aFontAspect))
-          {
-            --anArgIter;
-          }
+          --anArgIter;
+          break;
         }
       }
 
@@ -5625,18 +5636,22 @@ static int VFont (Draw_Interpretor& theDI,
       }
 
       if (aFontAspect != Font_FA_Undefined
-       || aFontName   != NULL)
+      || !aFontName.IsEmpty())
       {
         if (aFontAspect == Font_FA_Undefined)
         {
           aFontAspect = aFont->FontAspect();
         }
         Handle(TCollection_HAsciiString) aName = aFont->FontName();
-        if (aFontName != NULL)
+        if (!aFontName.IsEmpty())
         {
           aName = new TCollection_HAsciiString (aFontName);
         }
         aFont = new Font_SystemFont (aName, aFontAspect, new TCollection_HAsciiString (aFontPath));
+      }
+      if (isSingelStroke != -1)
+      {
+        aFont->SetSingleStrokeFont (isSingelStroke == 1);
       }
 
       aMgr->RegisterFont (aFont, Standard_True);
@@ -5646,7 +5661,7 @@ static int VFont (Draw_Interpretor& theDI,
     }
     else
     {
-      std::cerr << "Warning! Unknown argument '" << anArg.ToCString() << "'\n";
+      std::cerr << "Warning! Unknown argument '" << anArg << "'\n";
     }
   }
 
@@ -6721,7 +6736,7 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
                    "\n\t\t: [-plane NormX NormY NormZ DirX DirY DirZ]",
                    __FILE__, TextToBRep, group);
   theCommands.Add ("vfont",
-                            "vfont [add pathToFont [fontName] [regular,bold,italic,bolditalic=undefined]]"
+                            "vfont [add pathToFont [fontName] [regular,bold,italic,bolditalic=undefined] [singleStroke]]"
                    "\n\t\t:        [find fontName [regular,bold,italic,bolditalic=undefined]]",
                    __FILE__, VFont, group);
   

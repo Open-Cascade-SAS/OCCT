@@ -265,7 +265,7 @@ Standard_Boolean Font_BRepFont::renderGlyph (const Standard_Utf32Char theChar,
 
   TopLoc_Location aLoc;
   TopoDS_Face aFaceDraft;
-  myBuilder.MakeFace (aFaceDraft, mySurface, myPrecision);
+  TopoDS_Compound aFaceCompDraft;
 
   // Get orientation is useless since it doesn't retrieve any in-font information and just computes orientation.
   // Because it fails in some cases - leave this to ShapeFix.
@@ -277,7 +277,7 @@ Standard_Boolean Font_BRepFont::renderGlyph (const Standard_Utf32Char theChar,
     const short anEndIndex = anOutline.contours[aContour];
     const short aPntsNb    = (anEndIndex - aStartIndex) + 1;
     aStartIndex = anEndIndex + 1;
-    if (aPntsNb < 3)
+    if (aPntsNb < 3 && !myIsSingleLine)
     {
       // closed contour can not be constructed from < 3 points
       continue;
@@ -289,7 +289,8 @@ Standard_Boolean Font_BRepFont::renderGlyph (const Standard_Utf32Char theChar,
     gp_XY aPntCurr = readFTVec (aPntList[aPntsNb - 1], myScaleUnits);
     gp_XY aPntNext = readFTVec (aPntList[0], myScaleUnits);
 
-    Standard_Integer aLinePnts = (FT_CURVE_TAG(aTags[aPntsNb - 1]) == FT_Curve_Tag_On) ? 1 : 0;
+    bool isLineSeg = !myIsSingleLine
+                  && FT_CURVE_TAG(aTags[aPntsNb - 1]) == FT_Curve_Tag_On;
     gp_XY aPntLine1 = aPntCurr;
 
     // see http://freetype.sourceforge.net/freetype2/docs/glyphs/glyphs-6.html
@@ -303,10 +304,10 @@ Standard_Boolean Font_BRepFont::renderGlyph (const Standard_Utf32Char theChar,
       // process tags
       if (FT_CURVE_TAG(aTags[aPntId]) == FT_Curve_Tag_On)
       {
-        if (aLinePnts < 1)
+        if (!isLineSeg)
         {
           aPntLine1 = aPntCurr;
-          aLinePnts = 1;
+          isLineSeg = true;
           continue;
         }
 
@@ -315,7 +316,7 @@ Standard_Boolean Font_BRepFont::renderGlyph (const Standard_Utf32Char theChar,
         if (aLen <= myPrecision)
         {
           aPntLine1 = aPntCurr;
-          aLinePnts = 1;
+          isLineSeg = true;
           continue;
         }
 
@@ -339,7 +340,7 @@ Standard_Boolean Font_BRepFont::renderGlyph (const Standard_Utf32Char theChar,
       }
       else if (FT_CURVE_TAG(aTags[aPntId]) == FT_Curve_Tag_Conic)
       {
-        aLinePnts = 0;
+        isLineSeg = false;
         gp_XY aPntPrev2 = aPntPrev;
         gp_XY aPntNext2 = aPntNext;
 
@@ -378,7 +379,7 @@ Standard_Boolean Font_BRepFont::renderGlyph (const Standard_Utf32Char theChar,
       else if (FT_CURVE_TAG(aTags[aPntId])                 == FT_Curve_Tag_Cubic
             && FT_CURVE_TAG(aTags[(aPntId + 1) % aPntsNb]) == FT_Curve_Tag_Cubic)
       {
-        aLinePnts = 0;
+        isLineSeg = false;
         my4Poles.SetValue (1, aPntPrev);
         my4Poles.SetValue (2, aPntCurr);
         my4Poles.SetValue (3, aPntNext);
@@ -411,7 +412,8 @@ Standard_Boolean Font_BRepFont::renderGlyph (const Standard_Utf32Char theChar,
 
       const gp_Pnt2d aFirstPnt = aDraft2d->StartPoint();
       const gp_Pnt2d aLastPnt  = aDraft2d->EndPoint();
-      if (!aFirstPnt.IsEqual (aLastPnt, myPrecision))
+      if (!myIsSingleLine
+       && !aFirstPnt.IsEqual (aLastPnt, myPrecision))
       {
         Handle(Geom2d_TrimmedCurve) aLine = GCE2d_MakeSegment (aLastPnt, aFirstPnt);
         myConcatMaker.Add (aLine, myPrecision);
@@ -438,7 +440,8 @@ Standard_Boolean Font_BRepFont::renderGlyph (const Standard_Utf32Char theChar,
       TopExp::Vertices (aWireMaker.Wire(), aFirstV, aLastV);
       gp_Pnt aFirstPoint = BRep_Tool::Pnt (aFirstV);
       gp_Pnt aLastPoint  = BRep_Tool::Pnt (aLastV);
-      if (!aFirstPoint.IsEqual (aLastPoint, myPrecision))
+      if (!myIsSingleLine
+       && !aFirstPoint.IsEqual (aLastPoint, myPrecision))
       {
         aWireMaker.Add (BRepLib_MakeEdge (aFirstV, aLastV));
       }
@@ -450,31 +453,64 @@ Standard_Boolean Font_BRepFont::renderGlyph (const Standard_Utf32Char theChar,
     }
 
     TopoDS_Wire aWireDraft = aWireMaker.Wire();
-    //if (anOrient == FT_ORIENTATION_FILL_LEFT)
-    //{
-    // According to the TrueType specification, clockwise contours must be filled
-    aWireDraft.Reverse();
-    //}
-    myBuilder.Add (aFaceDraft, aWireDraft);
+    if (!myIsSingleLine)
+    {
+      //if (anOrient == FT_ORIENTATION_FILL_LEFT)
+      //{
+      // According to the TrueType specification, clockwise contours must be filled
+      aWireDraft.Reverse();
+      //}
+      if (aFaceDraft.IsNull())
+      {
+        myBuilder.MakeFace (aFaceDraft, mySurface, myPrecision);
+      }
+      myBuilder.Add (aFaceDraft, aWireDraft);
+    }
+    else
+    {
+      if (aFaceCompDraft.IsNull())
+      {
+        myBuilder.MakeCompound (aFaceCompDraft);
+      }
+      myBuilder.Add (aFaceCompDraft, aWireDraft);
+    }
   }
 
-  myFixer.Init (aFaceDraft);
-  myFixer.Perform();
-  theShape = myFixer.Result();
-  if (!theShape.IsNull()
-  &&  theShape.ShapeType() != TopAbs_FACE)
+  if (!aFaceDraft.IsNull())
   {
-    // shape fix can not fix orientation within the single call
-    TopoDS_Compound aComp;
-    myBuilder.MakeCompound (aComp);
-    for (TopExp_Explorer aFaceIter (theShape, TopAbs_FACE); aFaceIter.More(); aFaceIter.Next())
+    myFixer.Init (aFaceDraft);
+    myFixer.Perform();
+    TopoDS_Shape aFixResult = myFixer.Result();
+    if (!aFixResult.IsNull()
+     &&  aFixResult.ShapeType() != TopAbs_FACE)
     {
-      TopoDS_Face aFace = TopoDS::Face (aFaceIter.Current());
-      myFixer.Init (aFace);
-      myFixer.Perform();
-      myBuilder.Add (aComp, myFixer.Result());
+      // shape fix can not fix orientation within the single call
+      if (aFaceCompDraft.IsNull())
+      {
+        myBuilder.MakeCompound (aFaceCompDraft);
+      }
+      for (TopExp_Explorer aFaceIter (aFixResult, TopAbs_FACE); aFaceIter.More(); aFaceIter.Next())
+      {
+        TopoDS_Face aFace = TopoDS::Face (aFaceIter.Current());
+        myFixer.Init (aFace);
+        myFixer.Perform();
+        myBuilder.Add (aFaceCompDraft, myFixer.Result());
+      }
+      theShape = aFaceCompDraft;
     }
-    theShape = aComp;
+    else if (!aFaceCompDraft.IsNull())
+    {
+      myBuilder.Add (aFaceCompDraft, aFixResult);
+      theShape = aFaceCompDraft;
+    }
+    else
+    {
+      theShape = aFixResult;
+    }
+  }
+  else if (!aFaceCompDraft.IsNull())
+  {
+    theShape = aFaceCompDraft;
   }
 
   myCache.Bind (theChar, theShape);

@@ -73,6 +73,13 @@ public:
                              const unsigned int        thePointSize,
                              const unsigned int        theResolution);
 
+  //! Return TRUE if this is single-stroke (one-line) font, FALSE by default.
+  //! Such fonts define single-line glyphs instead of closed contours, so that they are rendered incorrectly by normal software.
+  bool IsSingleStrokeFont() const { return myIsSingleLine; }
+
+  //! Set if this font should be rendered as single-stroke (one-line).
+  void SetSingleStrokeFont (bool theIsSingleLine) { myIsSingleLine = theIsSingleLine; }
+
   //! Release currently loaded font.
   Standard_EXPORT virtual void Release();
 
@@ -159,6 +166,7 @@ protected:
   NCollection_String     myFontPath;    //!< font path
   unsigned int           myPointSize;   //!< point size set by FT_Set_Char_Size
   int32_t                myLoadFlags;   //!< default load flags
+  bool                   myIsSingleLine;//!< single stroke font flag, FALSE by default
 
   Image_PixMap           myGlyphImg;    //!< cached glyph plane
   FT_Vector*             myKernAdvance; //!< buffer variable

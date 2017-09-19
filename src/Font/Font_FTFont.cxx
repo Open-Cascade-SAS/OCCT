@@ -33,6 +33,7 @@ Font_FTFont::Font_FTFont (const Handle(Font_FTLibrary)& theFTLib)
   myFTFace     (NULL),
   myPointSize  (0U),
   myLoadFlags  (FT_LOAD_NO_HINTING | FT_LOAD_TARGET_NORMAL),
+  myIsSingleLine(false),
   myKernAdvance(new FT_Vector()),
   myUChar      (0U)
 {
@@ -118,9 +119,12 @@ bool Font_FTFont::Init (const NCollection_String& theFontName,
 {
   Handle(Font_FontMgr) aFontMgr = Font_FontMgr::GetInstance();
   const Handle(TCollection_HAsciiString) aFontName = new TCollection_HAsciiString (theFontName.ToCString());
-  Handle(Font_SystemFont) aRequestedFont = aFontMgr->FindFont (aFontName, theFontAspect, thePointSize);
-  return !aRequestedFont.IsNull()
-      && Font_FTFont::Init (aRequestedFont->FontPath()->ToCString(), thePointSize, theResolution);
+  if (Handle(Font_SystemFont) aRequestedFont = aFontMgr->FindFont (aFontName, theFontAspect, thePointSize))
+  {
+    myIsSingleLine = aRequestedFont->IsSingleStrokeFont();
+    return Font_FTFont::Init (aRequestedFont->FontPath()->ToCString(), thePointSize, theResolution);
+  }
+  return false;
 }
 
 // =======================================================================
