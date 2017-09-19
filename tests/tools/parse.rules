@@ -1,2 +1,3 @@
+SKIPPED /Draw_Failure: Could not open: TKToolsDraw/ OCCT built without Qt tools
 FAILED /\bFaulty\b/ bad shape
 OK /Relative error of mass computation/ message from vprops

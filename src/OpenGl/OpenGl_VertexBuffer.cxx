@@ -59,7 +59,7 @@ GLenum OpenGl_VertexBuffer::GetTarget() const
 // =======================================================================
 bool OpenGl_VertexBuffer::Create (const Handle(OpenGl_Context)& theGlCtx)
 {
-  if (myBufferId == NO_BUFFER)
+  if (myBufferId == NO_BUFFER && theGlCtx->core15fwd != NULL)
   {
     theGlCtx->core15fwd->glGenBuffers (1, &myBufferId);
   }

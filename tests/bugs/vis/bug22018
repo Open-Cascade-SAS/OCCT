@@ -43,27 +43,27 @@ vmoveto 0 0
 vmoveto 0 0
 
 if { [vreadpixel $x1 $y rgb name] != "IVORY" || [vreadpixel $x2 $y rgb name] != "IVORY" } {
-  Error: unexpected color of not selected object
+  puts "Error: unexpected color of not selected object"
 }
 
 vmoveto ${x1} ${y}
 vmoveto ${x1} ${y}
 
 if { [vreadpixel $x1 $y rgb name] != "WHITE" } {
-  Error: unexpected color of selected object
+  puts "Error: unexpected color of selected object"
 }
 if { [vreadpixel $x2 $y rgb name] != "IVORY" } {
-  Error: unexpected color of not selected object
+  puts "Error: unexpected color of not selected object"
 }
 
 vmoveto ${x2} ${y}
 vmoveto ${x2} ${y}
 
 if { [vreadpixel $x1 $y rgb name] != "IVORY" } {
-  Error: unexpected color of not selected object
+  puts "Error: unexpected color of not selected object"
 }
 if { [vreadpixel $x2 $y rgb name] != "WHITE" } {
-  Error: unexpected color of selected object
+  puts "Error: unexpected color of selected object"
 }
 
 checkview -screenshot -3d -path ${imagedir}/${test_image}.png

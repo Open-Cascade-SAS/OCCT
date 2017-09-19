@@ -1,4 +1,5 @@
+IGNORE /on screen buffer is used for image dump - content might be invalid/ reported when software Microsoft OpenGL driver is used (remote desktop)
+IGNORE /^\s*DPrsStd_AISColor\s*:\s*Error\b/ ignore presentation K2 error message
 FAILED /\binvalid\b/ error
 FAILED /\bFailed\b/ error
 FAILED /\bfailed\b/ error
-IGNORE /^\s*DPrsStd_AISColor\s*:\s*Error\b/ ignore presentation K2 error message

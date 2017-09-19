@@ -6022,6 +6022,16 @@ static int VReadPixel (Draw_Interpretor& theDI,
     return 1;
   }
 
+  // redirect possible warning messages that could have been added by ToPixMap
+  // into the Tcl interpretor (via DefaultMessenger) to cout, so that they do not
+  // contaminate result of the command
+  Standard_CString aWarnLog = theDI.Result();
+  if (aWarnLog != NULL && aWarnLog[0] != '\0')
+  {
+    std::cout << aWarnLog << std::endl;
+  }
+  theDI.Reset();
+
   Quantity_ColorRGBA aColor = anImage.PixelColor (anX, anY);
   if (toShowName)
   {
