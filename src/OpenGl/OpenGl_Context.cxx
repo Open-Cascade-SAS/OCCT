@@ -2816,7 +2816,10 @@ void OpenGl_Context::DiagnosticInformation (TColStd_IndexedDataMapOfStringString
     addInfo (theDict, "GLvendor",    (const char*)::glGetString (GL_VENDOR));
     addInfo (theDict, "GLdevice",    (const char*)::glGetString (GL_RENDERER));
     addInfo (theDict, "GLversion",   (const char*)::glGetString (GL_VERSION));
-    addInfo (theDict, "GLSLversion", (const char*)::glGetString (GL_SHADING_LANGUAGE_VERSION));
+    if (IsGlGreaterEqual (2, 0))
+    {
+      addInfo (theDict, "GLSLversion", (const char*)::glGetString (GL_SHADING_LANGUAGE_VERSION));
+    }
     if (myIsGlDebugCtx)
     {
       addInfo (theDict, "GLdebug", "ON");

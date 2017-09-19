@@ -22,6 +22,7 @@
 #include <OpenGl_Text.hxx>
 #include <OpenGl_Workspace.hxx>
 #include <OpenGl_View.hxx>
+#include <OpenGl_VertexBufferCompat.hxx>
 
 #include <Font_FontMgr.hxx>
 #include <Font_FTFont.hxx>
@@ -720,7 +721,14 @@ void OpenGl_Text::drawRect (const Handle(OpenGl_Context)& theCtx,
       OpenGl_Vec2(myBndBox.Left,  myBndBox.Bottom),
       OpenGl_Vec2(myBndBox.Left,  myBndBox.Top)
     };
-    myBndVertsVbo = new OpenGl_VertexBuffer();
+    if (theCtx->ToUseVbo())
+    {
+      myBndVertsVbo = new OpenGl_VertexBuffer();
+    }
+    else
+    {
+      myBndVertsVbo = new OpenGl_VertexBufferCompat();
+    }
     myBndVertsVbo->Init (theCtx, 2, 4, aQuad[0].GetData());
   }
 
