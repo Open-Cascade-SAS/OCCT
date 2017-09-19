@@ -177,6 +177,9 @@ void SelectMgr_ViewerSelector::checkOverlap (const Handle(SelectBasics_Sensitive
   if (!anOwner.IsNull())
   {
     aSelectable = anOwner->Selectable();
+  }
+  if (!aSelectable.IsNull())
+  {
     if (!aSelectable->ClipPlanes().IsNull()
       && aSelectable->ClipPlanes()->ToOverrideGlobal())
     {
@@ -231,6 +234,7 @@ void SelectMgr_ViewerSelector::checkOverlap (const Handle(SelectBasics_Sensitive
   }
 
   if (HasDepthClipping (anOwner)
+  && !aSelectable.IsNull()
   &&  theMgr.GetActiveSelectionType() == SelectMgr_SelectingVolumeManager::Point)
   {
     Standard_Boolean isClipped = mySelectingVolumeMgr.IsClipped (*aSelectable->ClipPlanes(),
@@ -240,7 +244,7 @@ void SelectMgr_ViewerSelector::checkOverlap (const Handle(SelectBasics_Sensitive
   }
 
   SelectMgr_SortCriterion aCriterion;
-  myZLayerOrderMap.Find (aSelectable->ZLayer(), aCriterion.ZLayerPosition);
+  myZLayerOrderMap.Find (!aSelectable.IsNull() ? aSelectable->ZLayer() : Graphic3d_ZLayerId_Default, aCriterion.ZLayerPosition);
   aCriterion.Entity    = theEntity;
   aCriterion.Priority  = anOwner->Priority();
   aCriterion.Depth     = aPickResult.Depth();
