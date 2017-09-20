@@ -2945,16 +2945,11 @@ Standard_Boolean V3d_View::ToPixMap (Image_PixMap&               theImage,
       anOffset.x() = 0;
       for (; anOffset.x() < aTargetSize.x(); anOffset.x() += aFBOVPSize.x())
       {
-        Graphic3d_CameraTile aTile;
-        aTile.Offset    = anOffset;
-        aTile.TotalSize = aTargetSize;
-        aTile.TileSize  = aFBOVPSize;
-        if (!aFBOPtr.IsNull())
-        {
-          // crop corners in case of FBO
-          // (no API to resize viewport of on-screen buffer - keep uncropped in this case)
-          aTile = aTile.Cropped();
-        }
+        Graphic3d_CameraTile aTileUncropped;
+        aTileUncropped.Offset    = anOffset;
+        aTileUncropped.TotalSize = aTargetSize;
+        aTileUncropped.TileSize  = aFBOVPSize;
+        const Graphic3d_CameraTile aTile = aTileUncropped.Cropped();
         if (aTile.TileSize.x() < 1
          || aTile.TileSize.y() < 1)
         {
@@ -2973,10 +2968,15 @@ Standard_Boolean V3d_View::ToPixMap (Image_PixMap&               theImage,
                                  aTile.TileSize.x(), aTile.TileSize.y(),
                                  theImage.SizeRowBytes());
 
-        aCamera->SetTile (aTile);
         if (!aFBOPtr.IsNull())
         {
+          aCamera->SetTile (aTile);
           myView->FBOChangeViewport (aFBOPtr, aTile.TileSize.x(), aTile.TileSize.y());
+        }
+        else
+        {
+          // no API to resize viewport of on-screen buffer - render uncropped
+          aCamera->SetTile (aTileUncropped);
         }
         Redraw();
         isSuccess = isSuccess && myView->BufferDump (aTilePixMap, theParams.BufferType);
