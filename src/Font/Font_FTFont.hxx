@@ -107,6 +107,13 @@ public:
     return myPointSize;
   }
 
+  //! Setup glyph scaling along X-axis.
+  //! By default glyphs are not scaled (scaling factor = 1.0)
+  void SetWidthScaling (const float theScaleFactor)
+  {
+    myWidthScaling = theScaleFactor;
+  }
+
   //! Compute advance to the next character with kerning applied when applicable.
   //! Assuming text rendered horizontally.
   Standard_EXPORT float AdvanceX (const Standard_Utf32Char theUCharNext);
@@ -161,16 +168,17 @@ protected:
 
 protected:
 
-  Handle(Font_FTLibrary) myFTLib;       //!< handle to the FT library object
-  FT_Face                myFTFace;      //!< FT face object
-  NCollection_String     myFontPath;    //!< font path
-  unsigned int           myPointSize;   //!< point size set by FT_Set_Char_Size
-  int32_t                myLoadFlags;   //!< default load flags
-  bool                   myIsSingleLine;//!< single stroke font flag, FALSE by default
+  Handle(Font_FTLibrary) myFTLib;        //!< handle to the FT library object
+  FT_Face                myFTFace;       //!< FT face object
+  NCollection_String     myFontPath;     //!< font path
+  unsigned int           myPointSize;    //!< point size set by FT_Set_Char_Size
+  float                  myWidthScaling; //!< scale glyphs along X-axis
+  int32_t                myLoadFlags;    //!< default load flags
+  bool                   myIsSingleLine; //!< single stroke font flag, FALSE by default
 
-  Image_PixMap           myGlyphImg;    //!< cached glyph plane
-  FT_Vector*             myKernAdvance; //!< buffer variable
-  Standard_Utf32Char     myUChar;       //!< currently loaded unicode character
+  Image_PixMap           myGlyphImg;     //!< cached glyph plane
+  FT_Vector*             myKernAdvance;  //!< buffer variable
+  Standard_Utf32Char     myUChar;        //!< currently loaded unicode character
 
 public:
 

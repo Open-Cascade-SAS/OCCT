@@ -49,7 +49,8 @@ static const Font_FontMgr_FontAliasMapNode Font_FontMgr_MapOfFontsAliases[] =
   { "Symbol"                   , "Symbol"         , Font_FA_Regular  },
   { "ZapfDingbats"             , "WingDings"      , Font_FA_Regular  },
   { "Rock"                     , "Arial"          , Font_FA_Regular  },
-  { "Iris"                     , "Lucida Console" , Font_FA_Regular  }
+  { "Iris"                     , "Lucida Console" , Font_FA_Regular  },
+  { "NSimSun"                  , "SimSun"         , Font_FA_Regular  }
 
 #elif defined(__ANDROID__)
 

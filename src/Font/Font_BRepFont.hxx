@@ -96,6 +96,13 @@ public:
   //! Notice that altering this flag clears currently accumulated cache!
   Standard_EXPORT void SetCompositeCurveMode (const Standard_Boolean theToConcatenate);
 
+  //! Setup glyph scaling along X-axis.
+  //! By default glyphs are not scaled (scaling factor = 1.0)
+  void SetWidthScaling (const float theScaleFactor)
+  {
+    myWidthScaling = theScaleFactor;
+  }
+
 public:
 
   //! @return vertical distance from the horizontal baseline to the highest character coordinate.
