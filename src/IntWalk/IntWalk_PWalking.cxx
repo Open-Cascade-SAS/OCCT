@@ -729,7 +729,7 @@ void IntWalk_PWalking::Perform(const TColStd_Array1OfReal& ParDep,
   previousd  = myIntersectionOn2S.Direction();
   previousd1 = myIntersectionOn2S.DirectionOnS1();
   previousd2 = myIntersectionOn2S.DirectionOnS2();
-  indextg = 1;
+  myTangentIdx = 1;
   tgdir   = previousd;
   firstd1 = previousd1;
   firstd2 = previousd2;
@@ -748,7 +748,7 @@ void IntWalk_PWalking::Perform(const TColStd_Array1OfReal& ParDep,
   if(IsTangentExtCheck(Caro1, Caro2, Param(1), Param(2), Param(3), Param(4), myTolTang, pasuv))
     return;
 
-  AddAPoint(line,previousPoint);
+  AddAPoint(previousPoint);
   //
   IntWalk_StatusDeflection aStatus = IntWalk_OK, aPrevStatus = IntWalk_OK;
   Standard_Boolean NoTestDeflection = Standard_False;
@@ -1251,7 +1251,7 @@ void IntWalk_PWalking::Perform(const TColStd_Array1OfReal& ParDep,
                       }
                     }
                     //
-                    AddAPoint(line,previousPoint);
+                    AddAPoint(previousPoint);
                     RejectIndex++;
 
                     if(RejectIndex >= RejectIndexMAX)
@@ -1287,7 +1287,7 @@ void IntWalk_PWalking::Perform(const TColStd_Array1OfReal& ParDep,
               if(close)
               {
                 //================= la ligne est fermee ===============
-                AddAPoint(line,line->Value(1)); //ligne fermee
+                AddAPoint(line->Value(1)); //ligne fermee
                 LevelOfIterWithoutAppend=0;
               }
               else    //$$$
@@ -1339,7 +1339,7 @@ void IntWalk_PWalking::Perform(const TColStd_Array1OfReal& ParDep,
                         }
                       }
                       //
-                      AddAPoint(line,previousPoint);
+                      AddAPoint(previousPoint);
                       RejectIndex++;
 
                       if(RejectIndex >= RejectIndexMAX)
@@ -1573,7 +1573,7 @@ void IntWalk_PWalking::Perform(const TColStd_Array1OfReal& ParDep,
                         }//if (previoustg) cond.
 
                         ////////////////////////////////////////
-                        AddAPoint(line,previousPoint);
+                        AddAPoint(previousPoint);
                         RejectIndex++;
 
                         if(RejectIndex >= RejectIndexMAX)
@@ -2031,7 +2031,7 @@ Standard_Boolean IntWalk_PWalking::ExtendLineInCommonZone(const IntImp_ConstIsop
   Standard_Integer i = 0;
 
   for(i = 1; i <= aSeqOfNewPoint.Length(); i++) {
-    AddAPoint(line, aSeqOfNewPoint.Value(i));
+    AddAPoint(aSeqOfNewPoint.Value(i));
   }
 
   return bOutOfTangentZone;
@@ -2440,7 +2440,7 @@ Standard_Boolean IntWalk_PWalking::
         break;
       }
 
-      line->RemovePoint(1);
+      RemoveAPoint(1);
     }
 
     line->InsertBefore(1, anIP);
@@ -2481,7 +2481,7 @@ Standard_Boolean IntWalk_PWalking::
         break;
       }
 
-      line->RemovePoint(aNbPnts);
+      RemoveAPoint(aNbPnts);
     }
 
     line->Add(anIP);
@@ -2839,14 +2839,14 @@ RepartirOuDiviser(Standard_Boolean& DejaReparti,
   //  Standard_Integer i;
   if (Arrive) {    //restart in the other direction
     if (!DejaReparti ) {
-      Arrive        = Standard_False; 
-      DejaReparti   = Standard_True;
+      Arrive = Standard_False;
+      DejaReparti = Standard_True;
       previousPoint = line->Value(1);
-      previoustg    = Standard_False;
-      previousd1    = firstd1;
-      previousd2    = firstd2;
-      previousd     = tgdir;
-      indextg       = line->NbPoints();
+      previoustg = Standard_False;
+      previousd1 = firstd1;
+      previousd2 = firstd2;
+      previousd = tgdir;
+      myTangentIdx = line->NbPoints();
       tgdir.Reverse();
       line->Reverse();
 
@@ -2886,14 +2886,15 @@ RepartirOuDiviser(Standard_Boolean& DejaReparti,
           tglast = Standard_True;      // IS IT ENOUGH ????
         }
 
-        if (!DejaReparti) {  //restart in the other direction
-          DejaReparti       = Standard_True;
-          previousPoint     = line->Value(1);
-          previoustg        = Standard_False;
-          previousd1        = firstd1;
-          previousd2        = firstd2;
-          previousd         = tgdir;
-          indextg           = line->NbPoints();
+        if (!DejaReparti)
+        {  //restart in the other direction
+          DejaReparti = Standard_True;
+          previousPoint = line->Value(1);
+          previoustg = Standard_False;
+          previousd1 = firstd1;
+          previousd2 = firstd2;
+          previousd = tgdir;
+          myTangentIdx = line->NbPoints();
           tgdir.Reverse();
           line->Reverse();
 

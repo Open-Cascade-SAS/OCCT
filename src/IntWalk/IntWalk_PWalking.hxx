@@ -132,7 +132,27 @@ public:
   
   Standard_EXPORT void RepartirOuDiviser (Standard_Boolean& DejaReparti, IntImp_ConstIsoparametric& ChoixIso, Standard_Boolean& Arrive);
   
-    void AddAPoint (Handle(IntSurf_LineOn2S)& line, const IntSurf_PntOn2S& POn2S);
+  //! Inserts thePOn2S in the end of line
+  void AddAPoint (const IntSurf_PntOn2S& thePOn2S);
+
+  //! Removes point with index theIndex from line.
+  //! If theIndex is greater than the number of points in line
+  //! then the last point will be removed.
+  //! theIndex must be started with 1.
+  void RemoveAPoint(const Standard_Integer theIndex)
+  {
+    const Standard_Integer anIdx = Min(theIndex, line->NbPoints());
+    
+    if (anIdx < 1)
+      return;
+
+    if (anIdx <= myTangentIdx)
+    {
+      myTangentIdx--;
+    }
+
+    line->RemovePoint(anIdx);
+  }
   
   Standard_EXPORT Standard_Boolean PutToBoundary (const Handle(Adaptor3d_HSurface)& theASurf1, const Handle(Adaptor3d_HSurface)& theASurf2);
   
@@ -208,7 +228,7 @@ private:
   Standard_Boolean close;
   Standard_Boolean tgfirst;
   Standard_Boolean tglast;
-  Standard_Integer indextg;
+  Standard_Integer myTangentIdx;
   gp_Dir tgdir;
   Standard_Real fleche;
   Standard_Real pasMax;

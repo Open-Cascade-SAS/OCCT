@@ -1,0 +1,24 @@
+puts "========"
+puts "OCC28764"
+puts "========"
+puts ""
+#################################################
+# [Regression to 7.0] Intersection of faces gives exception in debug mode
+#################################################
+
+restore [locate_data_file bug28764_ff.brep] f
+explode f
+
+####
+
+axo
+don f
+fit
+
+# Before the fix: Exception in Debug-mode only
+set log [bopcurves f_1 f_2 -2d]
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png
+
+regexp {Tolerance Reached=+([-0-9.+eE]+)} ${log} full Toler
+checkreal TolReached $Toler 4.60347250530349e-008 0.0 0.1
+
