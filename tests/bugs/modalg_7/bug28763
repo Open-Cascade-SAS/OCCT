@@ -1,0 +1,18 @@
+puts "======="
+puts "0028763"
+puts "======="
+puts ""
+##################################################
+# Projection of a short line segment on a polar surface causes exception
+##################################################
+
+beziersurf s 2 2 0 0 0 0 1 0 1 0 0 1 1 0
+line c 0 0 0 1 1 0
+trim c c 0 1e-6
+project result c s
+
+if {![regexp "Trimmed curve" [dump result]]} {
+  puts "Error: Projection not done"
+}
+
+checklength result -l 1.e-6
