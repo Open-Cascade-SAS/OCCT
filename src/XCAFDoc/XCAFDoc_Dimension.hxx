@@ -34,7 +34,9 @@ class XCAFDimTolObjects_DimensionObject;
 class XCAFDoc_Dimension;
 DEFINE_STANDARD_HANDLE(XCAFDoc_Dimension, TDF_Attribute)
 
-//! attribute to store dimension
+//! Attribute that identifies a dimension in the GD&T table.
+//! Its parent label is used as a container to store data provided 
+//! by XCAFDimTolObjects_DimensionObject.
 class XCAFDoc_Dimension : public TDF_Attribute
 {
 
@@ -54,8 +56,11 @@ public:
   
   Standard_EXPORT void Paste (const Handle(TDF_Attribute)& Into, const Handle(TDF_RelocationTable)& RT) const Standard_OVERRIDE;
   
+  //! Updates parent's label and its sub-labels with data taken from theDimensionObject.
+  //! Old data associated with the label will be lost.
   Standard_EXPORT void SetObject (const Handle(XCAFDimTolObjects_DimensionObject)& theDimensionObject);
   
+  //! Returns dimension object data taken from the paren's label and its sub-labels.
   Standard_EXPORT Handle(XCAFDimTolObjects_DimensionObject) GetObject() const;
 
   DEFINE_STANDARD_RTTIEXT(XCAFDoc_Dimension,TDF_Attribute)

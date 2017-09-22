@@ -35,7 +35,7 @@
 class XCAFDimTolObjects_DatumObject;
 DEFINE_STANDARD_HANDLE(XCAFDimTolObjects_DatumObject, Standard_Transient)
 
-//! object to store datum
+//! Access object to store datum
 class XCAFDimTolObjects_DatumObject : public Standard_Transient
 {
 
@@ -45,93 +45,131 @@ public:
   
   Standard_EXPORT XCAFDimTolObjects_DatumObject(const Handle(XCAFDimTolObjects_DatumObject)& theObj);
   
+  //! Returns datum name.
   Standard_EXPORT Handle(TCollection_HAsciiString) GetName() const;
   
+  //! Sets datum name.
   Standard_EXPORT void SetName (const Handle(TCollection_HAsciiString)& theTag);
   
+  //! Returns a sequence of modifiers of the datum.
   Standard_EXPORT XCAFDimTolObjects_DatumModifiersSequence GetModifiers() const;
   
+  //! Sets new sequence of datum modifiers.
   Standard_EXPORT void SetModifiers (const XCAFDimTolObjects_DatumModifiersSequence& theModifiers);
   
-  Standard_EXPORT void GetModifierWithValue (XCAFDimTolObjects_DatumModifWithValue& theModifier, Standard_Real& theValue) const;
+  //! Retrieves datum modifier with value.
+  Standard_EXPORT void GetModifierWithValue (XCAFDimTolObjects_DatumModifWithValue& theModifier, 
+                                             Standard_Real& theValue) const;
   
-  Standard_EXPORT void SetModifierWithValue (const XCAFDimTolObjects_DatumModifWithValue theModifier, const Standard_Real theValue);
+  //! Sets datum modifier with value.
+  Standard_EXPORT void SetModifierWithValue (const XCAFDimTolObjects_DatumModifWithValue theModifier, 
+                                             const Standard_Real theValue);
   
+  //! Adds a modifier to the datum sequence of modifiers.
   Standard_EXPORT void AddModifier (const XCAFDimTolObjects_DatumSingleModif theModifier);
   
+  //! Returns datum target shape.
   Standard_EXPORT TopoDS_Shape GetDatumTarget() const;
   
+  //! Sets datum target shape.
   Standard_EXPORT void SetDatumTarget (const TopoDS_Shape& theShape);
 
+  //! Returns datum position in the related geometric tolerance object.
   Standard_EXPORT Standard_Integer GetPosition () const;
   
+  //! Sets datum position in the related geometric tolerance object.
   Standard_EXPORT void SetPosition (const Standard_Integer thePosition);
   
+  //! Returns True if the datum target is specified.
   Standard_EXPORT Standard_Boolean IsDatumTarget() const;
 
+  //! Sets or drops the datum target indicator.
   Standard_EXPORT void IsDatumTarget(const Standard_Boolean theIsDT);
 
+  //! Returns datum target type
   Standard_EXPORT XCAFDimTolObjects_DatumTargetType GetDatumTargetType() const;
 
+  //! Sets datum target to point, line, rectangle, circle or area type.
   Standard_EXPORT void SetDatumTargetType (const XCAFDimTolObjects_DatumTargetType theType);
 
+  //! Returns datum target axis.
+  //! The Z axis of the datum placement denotes the normal of the surface 
+  //! pointing away from the material. 
   Standard_EXPORT gp_Ax2 GetDatumTargetAxis() const;
 
+  //! Sets datum target axis.
   Standard_EXPORT void SetDatumTargetAxis (const gp_Ax2& theAxis);
 
+  //! Returns datum target length for line and rectangle types.
+  //! The length along the X axis of the datum placement.
   Standard_EXPORT Standard_Real GetDatumTargetLength() const;
 
+  //! Sets datum target length.
   Standard_EXPORT void SetDatumTargetLength (const Standard_Real theLength);
 
+  //! Returns datum target width for rectangle type.
+  //! The width along the derived Y axis, with the placement itself positioned
+  //! at the centre of the rectangle.
   Standard_EXPORT Standard_Real GetDatumTargetWidth() const;
 
+  //! Sets datum target width.
   Standard_EXPORT void SetDatumTargetWidth (const Standard_Real theWidth);
 
+  //! Returns datum target number.
   Standard_EXPORT Standard_Integer GetDatumTargetNumber() const;
 
+  //! Sets datum target number.
   Standard_EXPORT void SetDatumTargetNumber (const Standard_Integer theNumber);
 
-   Standard_EXPORT void SetPlane (const gp_Ax2& thePlane)
+  //! Sets annotation plane.
+  Standard_EXPORT void SetPlane (const gp_Ax2& thePlane)
   {
     myPlane = thePlane;
     myHasPlane = Standard_True;
   }
 
-   Standard_EXPORT const gp_Ax2& GetPlane() const { return myPlane; }
+  //! Returns annotation plane.
+  Standard_EXPORT const gp_Ax2& GetPlane() const { return myPlane; }
 
-   Standard_EXPORT void SetPoint (const gp_Pnt& thePnt)
+  //! Sets a point on the datum target shape.
+  Standard_EXPORT void SetPoint (const gp_Pnt& thePnt)
   {
     myPnt = thePnt;
     myHasPnt = Standard_True;
   }
 
-   Standard_EXPORT const gp_Pnt& GetPoint() const 
+  //! Gets point on the datum shape.
+  Standard_EXPORT const gp_Pnt& GetPoint() const 
   { 
     return myPnt; 
   }
-
- 
-   Standard_EXPORT void SetPointTextAttach (const gp_Pnt& thePntText)
+   
+  //! Sets a position of the datum text.
+  Standard_EXPORT void SetPointTextAttach (const gp_Pnt& thePntText)
   {
     myPntText = thePntText;
     myHasPntText = Standard_True;
   }
 
-   Standard_EXPORT const gp_Pnt& GetPointTextAttach() const 
+  //! Gets datum text position.
+  Standard_EXPORT const gp_Pnt& GetPointTextAttach() const 
   { 
     return myPntText; 
   }
 
+  //! Returns True if the datum has annotation plane.
   Standard_Boolean HasPlane() const { return myHasPlane; }
 
+  //! Returns True if point on the datum target is specified.
   Standard_Boolean HasPoint() const { return myHasPnt; }
 
-   Standard_EXPORT Standard_Boolean HasPointText() const 
+  //! Returns True if the datum text position is specified.
+  Standard_EXPORT Standard_Boolean HasPointText() const 
   { 
     return myHasPntText; 
   }
 
-   //! Set graphical presentation for object
+  //! Set graphical presentation for object.
   Standard_EXPORT void SetPresentation(const TopoDS_Shape& thePresentation, 
     const Handle(TCollection_HAsciiString)& thePresentationName)
   {
@@ -139,19 +177,19 @@ public:
     myPresentationName = thePresentationName;
   }
 
-  //! Returns graphical presentation of the object
+  //! Returns graphical presentation of the object.
   Standard_EXPORT TopoDS_Shape GetPresentation() const
   {
     return myPresentation;
   }
 
-   //! Returns graphical presentation of the object
+   //! Returns graphical presentation of the object.
   Standard_EXPORT Handle(TCollection_HAsciiString) GetPresentationName() const
   {
     return myPresentationName;
   }
 
-  //! Returns true if datum has valid parameters for datum target (width, length, circle radius etc)
+  //! Returns True if the datum has valid parameters for datum target (width, length, circle radius etc)
   Standard_EXPORT Standard_Boolean HasDatumTargetParams()
   {
     return myIsValidDT;
@@ -181,7 +219,8 @@ private:
   Standard_Boolean myHasPnt;
   Standard_Boolean myHasPntText;
   TopoDS_Shape myPresentation;
-   Handle(TCollection_HAsciiString) myPresentationName;
+  Handle(TCollection_HAsciiString) myPresentationName;
+
 };
 
 #endif // _XCAFDimTolObjects_DatumObject_HeaderFile

@@ -42,21 +42,28 @@ public:
   Standard_EXPORT XCAFDimTolObjects_Tool(const Handle(TDocStd_Document)& theDoc);
   
   //! Returns a sequence of Dimensions currently stored
-  //! in the DGTtable
+  //! in the GD&T table
   Standard_EXPORT void GetDimensions (XCAFDimTolObjects_DimensionObjectSequence& theDimensionObjectSequence) const;
   
   //! Returns all Dimensions defined for Shape
-  Standard_EXPORT Standard_Boolean GetRefDimensions (const TopoDS_Shape& theShape, XCAFDimTolObjects_DimensionObjectSequence& theDimensions) const;
+  Standard_EXPORT Standard_Boolean GetRefDimensions (const TopoDS_Shape& theShape, 
+                                                     XCAFDimTolObjects_DimensionObjectSequence& theDimensions) const;
   
-  //! Returns a sequence of Tolerancess currently stored
-  //! in the DGTtable
-  Standard_EXPORT void GetGeomTolerances (XCAFDimTolObjects_GeomToleranceObjectSequence& theGeomToleranceObjectSequence, XCAFDimTolObjects_DatumObjectSequence& theDatumObjectSequence, XCAFDimTolObjects_DataMapOfToleranceDatum& theMap) const;
+  //! Returns a sequence of Tolerances currently stored
+  //! in the GD&T table
+  Standard_EXPORT void GetGeomTolerances (XCAFDimTolObjects_GeomToleranceObjectSequence& theGeomToleranceObjectSequence, 
+                                          XCAFDimTolObjects_DatumObjectSequence& theDatumObjectSequence, 
+                                          XCAFDimTolObjects_DataMapOfToleranceDatum& theMap) const;
   
   //! Returns all GeomTolerances defined for Shape
-  Standard_EXPORT Standard_Boolean GetRefGeomTolerances (const TopoDS_Shape& theShape, XCAFDimTolObjects_GeomToleranceObjectSequence& theGeomToleranceObjectSequence, XCAFDimTolObjects_DatumObjectSequence& theDatumObjectSequence, XCAFDimTolObjects_DataMapOfToleranceDatum& theMap) const;
+  Standard_EXPORT Standard_Boolean GetRefGeomTolerances (const TopoDS_Shape& theShape, 
+                                                         XCAFDimTolObjects_GeomToleranceObjectSequence& theGeomToleranceObjectSequence, 
+                                                         XCAFDimTolObjects_DatumObjectSequence& theDatumObjectSequence, 
+                                                         XCAFDimTolObjects_DataMapOfToleranceDatum& theMap) const;
   
   //! Returns DatumObject defined for Shape
-  Standard_EXPORT Standard_Boolean GetRefDatum (const TopoDS_Shape& theShape, Handle(XCAFDimTolObjects_DatumObject)& theDatum) const;
+  Standard_EXPORT Standard_Boolean GetRefDatum (const TopoDS_Shape& theShape, 
+                                                Handle(XCAFDimTolObjects_DatumObject)& theDatum) const;
 
 private:
 

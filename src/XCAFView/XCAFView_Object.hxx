@@ -30,7 +30,7 @@
 class XCAFView_Object;
 DEFINE_STANDARD_HANDLE(XCAFView_Object, Standard_Transient)
                             
-//! object to store view
+//! Access object for saved view
 class XCAFView_Object : public Standard_Transient
 {
 

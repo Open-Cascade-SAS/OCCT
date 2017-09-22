@@ -405,11 +405,11 @@ void XCAFDoc_DimTolTool::SetDimension(const TDF_LabelSequence& theFirstL,
 //=======================================================================
 
 void XCAFDoc_DimTolTool::SetGeomTolerance(const TDF_Label& theL,
-                                   const TDF_Label& theDimTolL) const
+                                          const TDF_Label& theGeomTolL) const
 {
   TDF_LabelSequence aSeq;
   aSeq.Append(theL);
-  SetGeomTolerance(aSeq, theDimTolL);
+  SetGeomTolerance(aSeq, theGeomTolL);
 }
 
 //=======================================================================
@@ -418,7 +418,7 @@ void XCAFDoc_DimTolTool::SetGeomTolerance(const TDF_Label& theL,
 //=======================================================================
 
 void XCAFDoc_DimTolTool::SetGeomTolerance(const TDF_LabelSequence& theL,
-                                   const TDF_Label& theDimTolL) const
+                                          const TDF_Label& theGeomTolL) const
 {
   //  // set reference
   //  Handle(TDataStd_TreeNode) refNode, mainNode;
@@ -427,7 +427,7 @@ void XCAFDoc_DimTolTool::SetGeomTolerance(const TDF_LabelSequence& theL,
   //  refNode->Remove(); // abv: fix against bug in TreeNode::Append()
   //  mainNode->Append(refNode);
   
-  if(!IsGeomTolerance(theDimTolL) ||  theL.Length() == 0)
+  if (!IsGeomTolerance(theGeomTolL) || theL.Length() == 0)
   {
     return;
   }
@@ -435,20 +435,19 @@ void XCAFDoc_DimTolTool::SetGeomTolerance(const TDF_LabelSequence& theL,
   Handle(XCAFDoc_GraphNode) aChGNode;
   Handle(XCAFDoc_GraphNode) aFGNode;
 
-  //Handle(XCAFDoc_GraphNode) ChGNode, FGNode;
-  if ( theDimTolL.FindAttribute (XCAFDoc::GeomToleranceRefGUID(), aChGNode) ) {
+  if (theGeomTolL.FindAttribute(XCAFDoc::GeomToleranceRefGUID(), aChGNode)) {
     while (aChGNode->NbFathers() > 0) {
       aFGNode = aChGNode->GetFather(1);
       aFGNode->UnSetChild(aChGNode);
       if(aFGNode->NbChildren() == 0)
         aFGNode->ForgetAttribute( XCAFDoc::GeomToleranceRefGUID() );
     }
-    theDimTolL.ForgetAttribute ( XCAFDoc::GeomToleranceRefGUID() );
+    theGeomTolL.ForgetAttribute(XCAFDoc::GeomToleranceRefGUID());
   }
 
-  if (!theDimTolL.FindAttribute(XCAFDoc::GeomToleranceRefGUID(), aChGNode)) {
+  if (!theGeomTolL.FindAttribute(XCAFDoc::GeomToleranceRefGUID(), aChGNode)) {
     aChGNode = new XCAFDoc_GraphNode;
-    aChGNode = XCAFDoc_GraphNode::Set(theDimTolL);
+    aChGNode = XCAFDoc_GraphNode::Set(theGeomTolL);
     aChGNode->SetGraphID(XCAFDoc::GeomToleranceRefGUID());
   }
   for(Standard_Integer i = theL.Lower(); i <= theL.Upper(); i++)

@@ -80,13 +80,13 @@ public:
   Standard_EXPORT static Standard_GUID DimTolRefGUID();
 
   //! Return GUIDs for TreeNode representing specified types of Dimension
-  Standard_EXPORT static   Standard_GUID DimensionRefFirstGUID() ;
+  Standard_EXPORT static Standard_GUID DimensionRefFirstGUID() ;
 
   //! Return GUIDs for TreeNode representing specified types of Dimension
-  Standard_EXPORT static   Standard_GUID DimensionRefSecondGUID() ;
+  Standard_EXPORT static Standard_GUID DimensionRefSecondGUID() ;
 
   //! Return GUIDs for TreeNode representing specified types of GeomTolerance
-  Standard_EXPORT static   Standard_GUID GeomToleranceRefGUID() ;
+  Standard_EXPORT static Standard_GUID GeomToleranceRefGUID() ;
   
   //! Return GUIDs for TreeNode representing specified types of datum
   Standard_EXPORT static Standard_GUID DatumRefGUID();

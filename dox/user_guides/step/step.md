@@ -1481,7 +1481,7 @@ General types of STEP entities imported by OCCT are listed in the table below:
 |Datum_Feature|XCAFDoc_Datum|
 |Datum_Target|XCAFDoc_Datum|
 
-Processing of GD&T is realized in accordance with <a href="http://www.cax-if.org/documents/rec_pracs_pmi_v40.pdf">Recommended practices for the Representation and Presentation of Product Manufacturing</a> for AP242.
+Processing of GD&T is realized in accordance with <a href="https://www.cax-if.org/documents/rec_pracs_pmi_v40.pdf">Recommended practices for the Representation and Presentation of Product Manufacturing</a> for AP242.
 The general restriction is that OCCT STEP Reader imports GD&T assigned only to shapes (faces, edges, vertices, etc) or to shape groups from general shape model i.e. any constructive geometries are not translated as referenced shapes.
 
 #### Dimensions

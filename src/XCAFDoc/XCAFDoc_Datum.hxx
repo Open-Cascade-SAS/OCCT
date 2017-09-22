@@ -58,9 +58,12 @@ public:
   
   Standard_EXPORT Handle(TCollection_HAsciiString) GetIdentification() const;
   
+  //! Returns dimension object data taken from the paren's label and its sub-labels.
   Standard_EXPORT Handle(XCAFDimTolObjects_DatumObject) GetObject() const;
   
-  Standard_EXPORT void SetObject (const Handle(XCAFDimTolObjects_DatumObject)& theObject);
+  //! Updates parent's label and its sub-labels with data taken from theDatumObject.
+  //! Old data associated with the label will be lost.
+  Standard_EXPORT void SetObject(const Handle(XCAFDimTolObjects_DatumObject)& theDatumObject);
       
   Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
   
