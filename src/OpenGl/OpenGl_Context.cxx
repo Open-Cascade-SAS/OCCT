@@ -2776,12 +2776,12 @@ void OpenGl_Context::DiagnosticInformation (TColStd_IndexedDataMapOfStringString
   if ((theFlags & Graphic3d_DiagnosticInfo_NativePlatform) != 0)
   {
   #if defined(HAVE_EGL)
-    addInfo (theDict, "EGLVersion",    ::eglQueryString ((Aspect_Display)myDisplay, EGL_VERSION));
-    addInfo (theDict, "EGLVendor",     ::eglQueryString ((Aspect_Display)myDisplay, EGL_VENDOR));
-    addInfo (theDict, "EGLClientAPIs", ::eglQueryString ((Aspect_Display)myDisplay, EGL_CLIENT_APIS));
+    addInfo (theDict, "EGLVersion",    ::eglQueryString ((EGLDisplay )myDisplay, EGL_VERSION));
+    addInfo (theDict, "EGLVendor",     ::eglQueryString ((EGLDisplay )myDisplay, EGL_VENDOR));
+    addInfo (theDict, "EGLClientAPIs", ::eglQueryString ((EGLDisplay )myDisplay, EGL_CLIENT_APIS));
     if ((theFlags & Graphic3d_DiagnosticInfo_Extensions) != 0)
     {
-      addInfo (theDict, "EGLExtensions", ::eglQueryString ((Aspect_Display)myDisplay, EGL_EXTENSIONS));
+      addInfo (theDict, "EGLExtensions", ::eglQueryString ((EGLDisplay )myDisplay, EGL_EXTENSIONS));
     }
   #elif defined(_WIN32)
     if ((theFlags & Graphic3d_DiagnosticInfo_Extensions) != 0

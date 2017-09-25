@@ -29,7 +29,7 @@ IMPLEMENT_STANDARD_RTTIEXT(D3DHost_GraphicDriver,OpenGl_GraphicDriver)
 // purpose  :
 // =======================================================================
 D3DHost_GraphicDriver::D3DHost_GraphicDriver()
-: OpenGl_GraphicDriver (Handle(Aspect_DisplayConnection)(), Standard_False)
+: OpenGl_GraphicDriver (Handle(Aspect_DisplayConnection)(), Standard_True)
 {
   //
 }

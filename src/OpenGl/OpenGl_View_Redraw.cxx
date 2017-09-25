@@ -800,7 +800,8 @@ bool OpenGl_View::redrawImmediate (const Graphic3d_Camera::Projection theProject
   #if !defined(GL_ES_VERSION_2_0)
     aCtx->core11fwd->glGetBooleanv (GL_DOUBLEBUFFER, &toCopyBackToFront);
   #endif
-    if (toCopyBackToFront)
+    if (toCopyBackToFront
+     && myTransientDrawToFront)
     {
       if (!HasImmediateStructures()
        && !theIsPartialUpdate)

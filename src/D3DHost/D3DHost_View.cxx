@@ -93,6 +93,15 @@ D3DHost_View::~D3DHost_View()
 }
 
 // =======================================================================
+// function : D3dColorSurface
+// purpose  :
+// =======================================================================
+IDirect3DSurface9* D3DHost_View::D3dColorSurface() const
+{
+  return myD3dWglFbo->D3dColorSurface();
+}
+
+// =======================================================================
 // function : SetWindow
 // purpose  :
 // =======================================================================
@@ -158,11 +167,7 @@ bool D3DHost_View::d3dInit()
 {
   if (!d3dInitLib())
   {
-    myWorkspace->GetGlContext()->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
-                                              GL_DEBUG_TYPE_ERROR_ARB,
-                                              0,
-                                              GL_DEBUG_SEVERITY_HIGH_ARB,
-                                              "Direct3DCreate9 failed!");
+    myWorkspace->GetGlContext()->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH, "Direct3DCreate9 failed!");
     return false;
   }
 
@@ -221,17 +226,34 @@ bool D3DHost_View::d3dReset()
 // =======================================================================
 bool D3DHost_View::d3dCreateRenderTarget()
 {
+  bool toD3dFallback = false;
   if (myD3dWglFbo.IsNull())
   {
     myD3dWglFbo = new D3DHost_FrameBuffer();
   }
-  if (!myD3dWglFbo->Init (myWorkspace->GetGlContext(),
-                          myD3dDevice,
-                          myIsD3dEx,
-                          myWindow->Width(),
-                          myWindow->Height()))
+  else
   {
-    return false;
+    toD3dFallback = myD3dWglFbo->D3dFallback();
+  }
+
+  if (!toD3dFallback)
+  {
+    toD3dFallback = !myD3dWglFbo->InitD3dInterop (myWorkspace->GetGlContext(),
+                                                  myD3dDevice,
+                                                  myIsD3dEx,
+                                                  myWindow->Width(),
+                                                  myWindow->Height());
+  }
+  if (toD3dFallback)
+  {
+    if (!myD3dWglFbo->InitD3dFallback (myWorkspace->GetGlContext(),
+                                       myD3dDevice,
+                                       myIsD3dEx,
+                                       myWindow->Width(),
+                                       myWindow->Height()))
+    {
+      return false;
+    }
   }
 
   myD3dDevice->SetRenderTarget (0, myD3dWglFbo->D3dColorSurface());
@@ -280,13 +302,8 @@ bool D3DHost_View::d3dSwap()
   const HRESULT isOK = myD3dDevice->Present (NULL, NULL, NULL, NULL);
   if (isOK != D3D_OK)
   {
-    TCollection_ExtendedString aMsg = TCollection_ExtendedString()
-      + "Direct3D9, Present device failed, " + d3dFormatError (isOK);
-    myWorkspace->GetGlContext()->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
-                                              GL_DEBUG_TYPE_ERROR_ARB,
-                                              0,
-                                              GL_DEBUG_SEVERITY_HIGH_ARB,
-                                              aMsg);
+    myWorkspace->GetGlContext()->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
+                                              TCollection_AsciiString("Direct3D9, Present device failed, ") + d3dFormatError (isOK));
   }
   return isOK == D3D_OK;
 }
@@ -309,9 +326,32 @@ void D3DHost_View::Redraw()
   }
 
   Handle(OpenGl_Context) aCtx = myWorkspace->GetGlContext();
-  myToFlipOutput = Standard_True;
+  if (myWindow->PlatformWindow()->IsVirtual()
+  &&  aCtx->arbFBO == NULL)
+  {
+    // do a dirty hack in extreme fallback mode with OpenGL driver not supporting FBO,
+    // the back buffer of hidden window is used for rendering as offscreen buffer
+    myTransientDrawToFront = false;
+    int aWinSizeX = 0, aWinSizeY = 0;
+    myWindow->PlatformWindow()->Size (aWinSizeX, aWinSizeY);
+    WINDOWPLACEMENT aPlace;
+    GetWindowPlacement ((HWND )myWindow->PlatformWindow()->NativeHandle(), &aPlace);
+    if (aPlace.rcNormalPosition.right  - aPlace.rcNormalPosition.left != aWinSizeX
+     || aPlace.rcNormalPosition.bottom - aPlace.rcNormalPosition.top  != aWinSizeY)
+    {
+      aPlace.rcNormalPosition.right  = aPlace.rcNormalPosition.left + aWinSizeX;
+      aPlace.rcNormalPosition.bottom = aPlace.rcNormalPosition.top  + aWinSizeY;
+      aPlace.showCmd = SW_HIDE;
+      SetWindowPlacement ((HWND )myWindow->PlatformWindow()->NativeHandle(), &aPlace);
+    }
+  }
+
   myD3dWglFbo->LockSurface   (aCtx);
-  myFBO = myD3dWglFbo;
+  if (myD3dWglFbo->IsValid())
+  {
+    myToFlipOutput = Standard_True;
+    myFBO = myD3dWglFbo;
+  }
   OpenGl_View::Redraw();
   myFBO.Nullify();
   myD3dWglFbo->UnlockSurface (aCtx);
@@ -358,9 +398,12 @@ void D3DHost_View::RedrawImmediate()
     return;
   }
 
-  myToFlipOutput = Standard_True;
   myD3dWglFbo->LockSurface   (aCtx);
-  myFBO = myD3dWglFbo;
+  if (myD3dWglFbo->IsValid())
+  {
+    myToFlipOutput = Standard_True;
+    myFBO = myD3dWglFbo;
+  }
   OpenGl_View::RedrawImmediate();
   myFBO.Nullify();
   myD3dWglFbo->UnlockSurface (aCtx);

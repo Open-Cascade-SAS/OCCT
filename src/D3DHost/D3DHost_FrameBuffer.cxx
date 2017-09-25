@@ -33,7 +33,8 @@ D3DHost_FrameBuffer::D3DHost_FrameBuffer()
   myD3dSurfShare (NULL),
   myGlD3dDevice  (NULL),
   myGlD3dSurf    (NULL),
-  myLockCount    (0)
+  myLockCount    (0),
+  myD3dFallback  (Standard_False)
 {
   //
 }
@@ -96,6 +97,50 @@ Standard_Boolean D3DHost_FrameBuffer::Init (const Handle(OpenGl_Context)& theCtx
                                             const Standard_Integer        theSizeX,
                                             const Standard_Integer        theSizeY)
 {
+  if (InitD3dInterop (theCtx, theD3DDevice, theIsD3dEx, theSizeX, theSizeY))
+  {
+    return Standard_True;
+  }
+  return InitD3dFallback (theCtx, theD3DDevice, theIsD3dEx, theSizeX, theSizeY);
+}
+
+// =======================================================================
+// function : InitD3dFallback
+// purpose  :
+// =======================================================================
+Standard_Boolean D3DHost_FrameBuffer::InitD3dFallback (const Handle(OpenGl_Context)& theCtx,
+                                                       IDirect3DDevice9*             theD3DDevice,
+                                                       const Standard_Boolean        theIsD3dEx,
+                                                       const Standard_Integer        theSizeX,
+                                                       const Standard_Integer        theSizeY)
+{
+  const Standard_Boolean isGlInit = Init (theCtx, theSizeX, theSizeY, GL_RGBA8, GL_DEPTH24_STENCIL8, 0);
+  myD3dFallback = Standard_True;
+
+  const Standard_Integer aSizeX = theSizeX > 0 ? theSizeX : 2;
+  const Standard_Integer aSizeY = theSizeY > 0 ? theSizeY : 2;
+  if (theD3DDevice->CreateRenderTarget (aSizeX, aSizeY,
+                                        D3DFMT_X8R8G8B8, D3DMULTISAMPLE_NONE, 0, theIsD3dEx ? TRUE : FALSE,
+                                        &myD3dSurf, theIsD3dEx ? &myD3dSurfShare : NULL) != D3D_OK)
+  {
+    Release (theCtx.operator->());
+    theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
+                         TCollection_AsciiString ("D3DHost_FrameBuffer, could not D3DFMT_X8R8G8B8 render target ") + aSizeX + "x" + aSizeY);
+    return Standard_False;
+  }
+  return isGlInit;
+}
+
+// =======================================================================
+// function : InitD3dInterop
+// purpose  :
+// =======================================================================
+Standard_Boolean D3DHost_FrameBuffer::InitD3dInterop (const Handle(OpenGl_Context)& theCtx,
+                                                      IDirect3DDevice9*             theD3DDevice,
+                                                      const Standard_Boolean        theIsD3dEx,
+                                                      const Standard_Integer        theSizeX,
+                                                      const Standard_Integer        theSizeY)
+{
   Release (theCtx.operator->());
 #if !defined(GL_ES_VERSION_2_0)
   myVPSizeX = theSizeX;
@@ -108,10 +153,8 @@ Standard_Boolean D3DHost_FrameBuffer::Init (const Handle(OpenGl_Context)& theCtx
   const OpenGl_GlFunctions* aFuncs = theCtx->Functions();
   if (aFuncs->wglDXOpenDeviceNV == NULL)
   {
-    theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
-                         GL_DEBUG_TYPE_ERROR_ARB,
-                         0,
-                         GL_DEBUG_SEVERITY_HIGH_ARB,
+    Release (theCtx.operator->());
+    theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
                          "D3DHost_FrameBuffer, WGL_NV_DX_interop is unavailable!");
     return Standard_False;
   }
@@ -156,6 +199,7 @@ Standard_Boolean D3DHost_FrameBuffer::Init (const Handle(OpenGl_Context)& theCtx
     return Standard_False;
   }
 
+  myD3dFallback = Standard_False;
   return Standard_True;
 #else
   (void )theD3DDevice;
@@ -203,7 +247,6 @@ Standard_Boolean D3DHost_FrameBuffer::registerD3dBuffer (const Handle(OpenGl_Con
                                                myColorTextures (0)->TextureId(),
                                                GL_TEXTURE_2D,
                                                WGL_ACCESS_WRITE_DISCARD_NV);
-
   if (myGlD3dSurf == NULL)
   {
     theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
@@ -222,8 +265,17 @@ Standard_Boolean D3DHost_FrameBuffer::registerD3dBuffer (const Handle(OpenGl_Con
 void D3DHost_FrameBuffer::BindBuffer (const Handle(OpenGl_Context)& theCtx)
 {
   Standard_ProgramError_Raise_if (myLockCount < 1, "D3DHost_FrameBuffer::BindBuffer(), resource should be locked beforehand!");
+  if (theCtx->arbFBO == NULL)
+  {
+    return;
+  }
 
   OpenGl_FrameBuffer::BindBuffer (theCtx);
+  if (myD3dFallback)
+  {
+    return;
+  }
+
   theCtx->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
                                           myColorTextures (0)->GetTarget(), myColorTextures (0)->TextureId(), 0);
 #ifdef GL_DEPTH_STENCIL_ATTACHMENT
@@ -278,6 +330,42 @@ void D3DHost_FrameBuffer::UnlockSurface (const Handle(OpenGl_Context)& theCtx)
 {
   if (--myLockCount != 0)
   {
+    return;
+  }
+
+  if (myD3dFallback)
+  {
+    if (myD3dSurf == NULL)
+    {
+      return;
+    }
+
+    D3DLOCKED_RECT aLockedRect;
+    if (myD3dSurf->LockRect (&aLockedRect, NULL, 0) != 0)
+    {
+      theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
+                           "D3DHost_FrameBuffer::UnlockSurface(), lock failed!");
+      return;
+    }
+
+    Image_PixMap anImg;
+    if (anImg.InitWrapper (Image_Format_BGRA, (Standard_Byte* )aLockedRect.pBits, myInitVPSizeX, myInitVPSizeY, aLockedRect.Pitch))
+    {
+      anImg.SetTopDown (!IsValid()); // flip in software if OpenGL FBO is unavailable
+      myLockCount = 1;
+      if (!BufferDump (theCtx, this, anImg, Graphic3d_BT_RGBA))
+      {
+        theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
+                             "D3DHost_FrameBuffer::UnlockSurface(), buffer dump failed!");
+      }
+      myLockCount = 0;
+    }
+    else
+    {
+      theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
+                           "D3DHost_FrameBuffer::UnlockSurface(), buffer dump failed!");
+    }
+    myD3dSurf->UnlockRect();
     return;
   }
   if (myGlD3dSurf == NULL)

@@ -70,7 +70,7 @@ public:
   const Handle(D3DHost_FrameBuffer)& D3dWglBuffer() const { return myD3dWglFbo; }
 
   //! Return D3D surface.
-  IDirect3DSurface9* D3dColorSurface() const { return myD3dWglFbo->D3dColorSurface(); }
+  Standard_EXPORT IDirect3DSurface9* D3dColorSurface() const;
 
 protected:
 

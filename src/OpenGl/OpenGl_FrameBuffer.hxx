@@ -19,6 +19,7 @@
 #include <OpenGl_Resource.hxx>
 #include <OpenGl_Texture.hxx>
 
+#include <Graphic3d_BufferType.hxx>
 #include <NCollection_Vector.hxx>
 
 class OpenGl_FrameBuffer;
@@ -37,6 +38,19 @@ public:
   //! Helpful constants
   static const GLuint NO_FRAMEBUFFER  = 0;
   static const GLuint NO_RENDERBUFFER = 0;
+
+public:
+
+  //! Dump content into image.
+  //! @param theGlCtx      bound OpenGL context
+  //! @param theFbo        FBO to dump (or window buffer, if NULL)
+  //! @param theImage      target image
+  //! @param theBufferType buffer type (attachment) to dump
+  //! @return TRUE on success
+  Standard_EXPORT static Standard_Boolean BufferDump (const Handle(OpenGl_Context)& theGlCtx,
+                                                      const Handle(OpenGl_FrameBuffer)& theFbo,
+                                                      Image_PixMap& theImage,
+                                                      Graphic3d_BufferType theBufferType);
 
 public:
 

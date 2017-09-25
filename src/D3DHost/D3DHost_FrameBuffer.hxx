@@ -35,12 +35,26 @@ public:
   //! Releases D3D and OpenGL resources.
   Standard_EXPORT virtual void Release (OpenGl_Context* theCtx) Standard_OVERRIDE;
 
-  //! Initializes OpenGL FBO for Direct3D interoperability.
+  //! Initializes OpenGL FBO for Direct3D interoperability or in fallback mode.
   Standard_EXPORT Standard_Boolean Init (const Handle(OpenGl_Context)& theCtx,
                                          IDirect3DDevice9*             theD3DDevice,
                                          const Standard_Boolean        theIsD3dEx,
                                          const Standard_Integer        theSizeX,
                                          const Standard_Integer        theSizeY);
+
+  //! Initializes OpenGL FBO for Direct3D interoperability.
+  Standard_EXPORT Standard_Boolean InitD3dInterop (const Handle(OpenGl_Context)& theCtx,
+                                                   IDirect3DDevice9*             theD3DDevice,
+                                                   const Standard_Boolean        theIsD3dEx,
+                                                   const Standard_Integer        theSizeX,
+                                                   const Standard_Integer        theSizeY);
+
+  //! Initializes OpenGL FBO + Direct3D surface for copying memory using fallback.
+  Standard_EXPORT Standard_Boolean InitD3dFallback (const Handle(OpenGl_Context)& theCtx,
+                                                    IDirect3DDevice9*             theD3DDevice,
+                                                    const Standard_Boolean        theIsD3dEx,
+                                                    const Standard_Integer        theSizeX,
+                                                    const Standard_Integer        theSizeY);
 
   //! Binds Direct3D color buffer to OpenGL texture.
   Standard_EXPORT Standard_Boolean registerD3dBuffer (const Handle(OpenGl_Context)& theCtx);
@@ -58,8 +72,11 @@ public:
   //! Returns D3D surface used as color buffer.
   IDirect3DSurface9* D3dColorSurface()      { return myD3dSurf; }
 
-  //! Returns WDDM hande for D3D color surface.
+  //! Returns WDDM handle for D3D color surface.
   void*              D3dColorSurfaceShare() { return myD3dSurfShare; }
+
+  //! Returns TRUE if FBO has been initialized without WGL/D3D interop.
+  Standard_Boolean   D3dFallback() const { return myD3dFallback; }
 
 protected:
 
@@ -72,6 +89,7 @@ protected:
   void*              myGlD3dDevice;  //!< WGL/D3D device  handle
   void*              myGlD3dSurf;    //!< WGL/D3D surface handle
   Standard_Integer   myLockCount;    //!< locking counter
+  Standard_Boolean   myD3dFallback;  //!< indicates that FBO has been initialized without WGL/D3D interop
 
 public:
 
