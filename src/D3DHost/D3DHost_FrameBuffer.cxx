@@ -29,11 +29,11 @@ IMPLEMENT_STANDARD_RTTIEXT(D3DHost_FrameBuffer,OpenGl_FrameBuffer)
 // purpose  :
 // =======================================================================
 D3DHost_FrameBuffer::D3DHost_FrameBuffer()
-: OpenGl_FrameBuffer(),
-  myD3dSurf      (NULL),
+: myD3dSurf      (NULL),
   myD3dSurfShare (NULL),
   myGlD3dDevice  (NULL),
-  myGlD3dSurf    (NULL)
+  myGlD3dSurf    (NULL),
+  myLockCount    (0)
 {
   //
 }
@@ -53,6 +53,7 @@ D3DHost_FrameBuffer::~D3DHost_FrameBuffer()
 // =======================================================================
 void D3DHost_FrameBuffer::Release (OpenGl_Context* theCtx)
 {
+#if !defined(GL_ES_VERSION_2_0)
   if (myGlD3dDevice != NULL)
   {
     const OpenGl_GlFunctions* aFuncs = (theCtx != NULL && theCtx->IsValid())
@@ -73,6 +74,7 @@ void D3DHost_FrameBuffer::Release (OpenGl_Context* theCtx)
     }
     myGlD3dDevice = NULL;
   }
+#endif
 
   if (myD3dSurf != NULL)
   {
@@ -95,29 +97,13 @@ Standard_Boolean D3DHost_FrameBuffer::Init (const Handle(OpenGl_Context)& theCtx
                                             const Standard_Integer        theSizeY)
 {
   Release (theCtx.operator->());
-
+#if !defined(GL_ES_VERSION_2_0)
   myVPSizeX = theSizeX;
   myVPSizeY = theSizeY;
   myInitVPSizeX = theSizeX;
   myInitVPSizeY = theSizeY;
   const Standard_Integer aSizeX = theSizeX > 0 ? theSizeX : 2;
   const Standard_Integer aSizeY = theSizeY > 0 ? theSizeY : 2;
-
-  // Render target surface should be lockable on
-  // Windows XP and non-lockable on Windows Vista or higher
-  if (theD3DDevice->CreateRenderTarget (aSizeX, aSizeY,
-                                        D3DFMT_X8R8G8B8, D3DMULTISAMPLE_NONE, 0, theIsD3dEx ? TRUE : FALSE,
-                                        &myD3dSurf, theIsD3dEx ? &myD3dSurfShare : NULL) != D3D_OK)
-  {
-    TCollection_ExtendedString aMsg = TCollection_ExtendedString()
-      + "D3DHost_FrameBuffer, could not D3DFMT_X8R8G8B8 render target " + aSizeX + "x" + aSizeY;
-    theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
-                         GL_DEBUG_TYPE_ERROR_ARB,
-                         0,
-                         GL_DEBUG_SEVERITY_HIGH_ARB,
-                         aMsg);
-    return Standard_False;
-  }
 
   const OpenGl_GlFunctions* aFuncs = theCtx->Functions();
   if (aFuncs->wglDXOpenDeviceNV == NULL)
@@ -130,39 +116,54 @@ Standard_Boolean D3DHost_FrameBuffer::Init (const Handle(OpenGl_Context)& theCtx
     return Standard_False;
   }
 
+  // Render target surface should be lockable on
+  // Windows XP and non-lockable on Windows Vista or higher
+  if (theD3DDevice->CreateRenderTarget (aSizeX, aSizeY,
+                                        D3DFMT_X8R8G8B8, D3DMULTISAMPLE_NONE, 0, theIsD3dEx ? TRUE : FALSE,
+                                        &myD3dSurf, theIsD3dEx ? &myD3dSurfShare : NULL) != D3D_OK)
+  {
+    Release (theCtx.operator->());
+    theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
+                         TCollection_AsciiString ("D3DHost_FrameBuffer, could not D3DFMT_X8R8G8B8 render target ") + aSizeX + "x" + aSizeY);
+    return Standard_False;
+  }
+
   myGlD3dDevice = aFuncs->wglDXOpenDeviceNV (theD3DDevice);
   if (myGlD3dDevice == NULL)
   {
-    theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
-                         GL_DEBUG_TYPE_ERROR_ARB,
-                         0,
-                         GL_DEBUG_SEVERITY_HIGH_ARB,
+    Release (theCtx.operator->());
+    theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
                          "D3DHost_FrameBuffer, could not create the GL <-> DirectX Interop using wglDXOpenDeviceNV()");
     return Standard_False;
   }
 
   if (!registerD3dBuffer (theCtx))
   {
+    Release (theCtx.operator->());
     return Standard_False;
   }
 
+  myIsOwnBuffer = true;
+  myIsOwnDepth  = true;
   theCtx->arbFBO->glGenFramebuffers (1, &myGlFBufferId);
-
   if (!myDepthStencilTexture->Init (theCtx, GL_DEPTH24_STENCIL8,
                                     GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8,
                                     aSizeX, aSizeY, Graphic3d_TOT_2D))
   {
-    TCollection_ExtendedString aMsg = TCollection_ExtendedString()
-      + "D3DHost_FrameBuffer, could not initialize GL_DEPTH24_STENCIL8 texture " + aSizeX + "x" + aSizeY;
-    theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
-                         GL_DEBUG_TYPE_ERROR_ARB,
-                         0,
-                         GL_DEBUG_SEVERITY_HIGH_ARB,
-                         aMsg);
+    Release (theCtx.operator->());
+    theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
+                         TCollection_AsciiString("D3DHost_FrameBuffer, could not initialize GL_DEPTH24_STENCIL8 texture ") + aSizeX + "x" + aSizeY);
     return Standard_False;
   }
 
   return Standard_True;
+#else
+  (void )theD3DDevice;
+  (void )theIsD3dEx;
+  (void )theSizeX;
+  (void )theSizeY;
+  return Standard_False;
+#endif
 }
 
 // =======================================================================
@@ -171,15 +172,16 @@ Standard_Boolean D3DHost_FrameBuffer::Init (const Handle(OpenGl_Context)& theCtx
 // =======================================================================
 Standard_Boolean D3DHost_FrameBuffer::registerD3dBuffer (const Handle(OpenGl_Context)& theCtx)
 {
+#if defined(GL_ES_VERSION_2_0)
+  (void )theCtx;
+  return Standard_False;
+#else
   const OpenGl_GlFunctions* aFuncs = theCtx->Functions();
   if (myGlD3dSurf != NULL)
   {
     if (!aFuncs->wglDXUnregisterObjectNV (myGlD3dDevice, myGlD3dSurf))
     {
-      theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
-                           GL_DEBUG_TYPE_ERROR_ARB,
-                           0,
-                           GL_DEBUG_SEVERITY_HIGH_ARB,
+      theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
                            "D3DHost_FrameBuffer, can not unregister color buffer");
       return Standard_False;
     }
@@ -188,10 +190,7 @@ Standard_Boolean D3DHost_FrameBuffer::registerD3dBuffer (const Handle(OpenGl_Con
 
   if (!aFuncs->wglDXSetResourceShareHandleNV (myD3dSurf, myD3dSurfShare))
   {
-    theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
-                         GL_DEBUG_TYPE_ERROR_ARB,
-                         0,
-                         GL_DEBUG_SEVERITY_HIGH_ARB,
+    theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
                          "D3DHost_FrameBuffer, wglDXSetResourceShareHandleNV() has failed");
     return Standard_False;
   }
@@ -207,15 +206,13 @@ Standard_Boolean D3DHost_FrameBuffer::registerD3dBuffer (const Handle(OpenGl_Con
 
   if (myGlD3dSurf == NULL)
   {
-    theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
-                         GL_DEBUG_TYPE_ERROR_ARB,
-                         0,
-                         GL_DEBUG_SEVERITY_HIGH_ARB,
+    theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
                          "D3DHost_FrameBuffer, can not register color buffer");
     return Standard_False;
   }
 
   return Standard_True;
+#endif
 }
 
 // =======================================================================
@@ -228,15 +225,19 @@ void D3DHost_FrameBuffer::BindBuffer (const Handle(OpenGl_Context)& theCtx)
 
   OpenGl_FrameBuffer::BindBuffer (theCtx);
   theCtx->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-                                          GL_TEXTURE_2D, myColorTextures (0)->TextureId(), 0);
+                                          myColorTextures (0)->GetTarget(), myColorTextures (0)->TextureId(), 0);
+#ifdef GL_DEPTH_STENCIL_ATTACHMENT
   theCtx->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT,
-                                          GL_TEXTURE_2D, myDepthStencilTexture->TextureId(), 0);
+                                          myDepthStencilTexture->GetTarget(), myDepthStencilTexture->TextureId(), 0);
+#else
+  theCtx->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
+                                          myDepthStencilTexture->GetTarget(), myDepthStencilTexture->TextureId(), 0);
+  theCtx->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT,
+                                          myDepthStencilTexture->GetTarget(), myDepthStencilTexture->TextureId(), 0);
+#endif
   if (theCtx->arbFBO->glCheckFramebufferStatus (GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
   {
-    theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
-                         GL_DEBUG_TYPE_ERROR_ARB,
-                         0,
-                         GL_DEBUG_SEVERITY_HIGH_ARB,
+    theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
                          "D3DHost_FrameBuffer, OpenGL FBO is incomplete!");
     Release (theCtx.operator->());
   }
@@ -248,25 +249,25 @@ void D3DHost_FrameBuffer::BindBuffer (const Handle(OpenGl_Context)& theCtx)
 // =======================================================================
 void D3DHost_FrameBuffer::LockSurface (const Handle(OpenGl_Context)& theCtx)
 {
+  if (++myLockCount > 1)
+  {
+    return;
+  }
   if (myGlD3dSurf == NULL)
   {
     return;
   }
 
-  if (++myLockCount > 1)
-  {
-    return;
-  }
-
+#if !defined(GL_ES_VERSION_2_0)
   const OpenGl_GlFunctions* aFuncs = theCtx->Functions();
   if (!aFuncs->wglDXLockObjectsNV (myGlD3dDevice, 1, &myGlD3dSurf))
   {
-    theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
-                         GL_DEBUG_TYPE_ERROR_ARB,
-                         0,
-                         GL_DEBUG_SEVERITY_HIGH_ARB,
+    theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
                          "D3DHost_FrameBuffer::LockSurface(), lock failed!");
   }
+#else
+  (void )theCtx;
+#endif
 }
 
 // =======================================================================
@@ -275,16 +276,17 @@ void D3DHost_FrameBuffer::LockSurface (const Handle(OpenGl_Context)& theCtx)
 // =======================================================================
 void D3DHost_FrameBuffer::UnlockSurface (const Handle(OpenGl_Context)& theCtx)
 {
+  if (--myLockCount != 0)
+  {
+    return;
+  }
   if (myGlD3dSurf == NULL)
   {
     return;
   }
 
-  if (--myLockCount != 0)
-  {
-    return;
-  }
-
+#if !defined(GL_ES_VERSION_2_0)
   const OpenGl_GlFunctions* aFuncs = theCtx->Functions();
   aFuncs->wglDXUnlockObjectsNV (myGlD3dDevice, 1, &myGlD3dSurf);
+#endif
 }
