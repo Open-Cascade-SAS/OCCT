@@ -36,6 +36,13 @@ public:
   Standard_EXPORT virtual void Release (OpenGl_Context* theCtx) Standard_OVERRIDE;
 
   //! Initializes OpenGL FBO for Direct3D interoperability or in fallback mode.
+  //! Color pixel format is always GL_RGBA8/D3DFMT_X8R8G8B8, no MSAA; depth-stencil pixel format is GL_DEPTH24_STENCIL8.
+  //! @param theGlCtx       currently bound OpenGL context
+  //! @param theD3DDevice   d3d9 device
+  //! @param theIsD3dEx     d3d9 extended flag (for creating shared texture resource)
+  //! @param theSizeX       texture width
+  //! @param theSizeY       texture height
+  //! @return true on success
   Standard_EXPORT Standard_Boolean Init (const Handle(OpenGl_Context)& theCtx,
                                          IDirect3DDevice9*             theD3DDevice,
                                          const Standard_Boolean        theIsD3dEx,
@@ -43,18 +50,36 @@ public:
                                          const Standard_Integer        theSizeY);
 
   //! Initializes OpenGL FBO for Direct3D interoperability.
+  //! Color pixel format is always GL_RGBA8/D3DFMT_X8R8G8B8, no MSAA.
+  //! @param theGlCtx       currently bound OpenGL context
+  //! @param theD3DDevice   d3d9 device
+  //! @param theIsD3dEx     d3d9 extended flag (for creating shared texture resource)
+  //! @param theSizeX       texture width
+  //! @param theSizeY       texture height
+  //! @param theDepthFormat depth-stencil texture sized format (0 means no depth attachment), e.g. GL_DEPTH24_STENCIL8
+  //! @return true on success
   Standard_EXPORT Standard_Boolean InitD3dInterop (const Handle(OpenGl_Context)& theCtx,
                                                    IDirect3DDevice9*             theD3DDevice,
                                                    const Standard_Boolean        theIsD3dEx,
                                                    const Standard_Integer        theSizeX,
-                                                   const Standard_Integer        theSizeY);
+                                                   const Standard_Integer        theSizeY,
+                                                   const GLint                   theDepthFormat);
 
   //! Initializes OpenGL FBO + Direct3D surface for copying memory using fallback.
+  //! Color pixel format is always GL_RGBA8/D3DFMT_X8R8G8B8, no MSAA.
+  //! @param theGlCtx       currently bound OpenGL context
+  //! @param theD3DDevice   d3d9 device
+  //! @param theIsD3dEx     d3d9 extended flag (for creating shared texture resource)
+  //! @param theSizeX       texture width
+  //! @param theSizeY       texture height
+  //! @param theDepthFormat depth-stencil texture sized format (0 means no depth attachment), e.g. GL_DEPTH24_STENCIL8
+  //! @return true on success
   Standard_EXPORT Standard_Boolean InitD3dFallback (const Handle(OpenGl_Context)& theCtx,
                                                     IDirect3DDevice9*             theD3DDevice,
                                                     const Standard_Boolean        theIsD3dEx,
                                                     const Standard_Integer        theSizeX,
-                                                    const Standard_Integer        theSizeY);
+                                                    const Standard_Integer        theSizeY,
+                                                    const GLint                   theDepthFormat);
 
   //! Binds Direct3D color buffer to OpenGL texture.
   Standard_EXPORT Standard_Boolean registerD3dBuffer (const Handle(OpenGl_Context)& theCtx);

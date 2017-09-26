@@ -23,114 +23,6 @@ IMPLEMENT_STANDARD_RTTIEXT(OpenGl_FrameBuffer,OpenGl_Resource)
 
 namespace
 {
-
-  //! Determine data type from texture sized format.
-  static bool getDepthDataFormat (GLint   theTextFormat,
-                                  GLenum& thePixelFormat,
-                                  GLenum& theDataType)
-  {
-    switch (theTextFormat)
-    {
-      case GL_DEPTH24_STENCIL8:
-      {
-        thePixelFormat = GL_DEPTH_STENCIL;
-        theDataType    = GL_UNSIGNED_INT_24_8;
-        return true;
-      }
-      case GL_DEPTH32F_STENCIL8:
-      {
-        thePixelFormat = GL_DEPTH_STENCIL;
-        theDataType    = GL_FLOAT_32_UNSIGNED_INT_24_8_REV;
-        return true;
-      }
-      case GL_DEPTH_COMPONENT16:
-      {
-        thePixelFormat = GL_DEPTH_COMPONENT;
-        theDataType    = GL_UNSIGNED_SHORT;
-        return true;
-      }
-      case GL_DEPTH_COMPONENT24:
-      {
-        thePixelFormat = GL_DEPTH_COMPONENT;
-        theDataType    = GL_UNSIGNED_INT;
-        return true;
-      }
-      case GL_DEPTH_COMPONENT32F:
-      {
-        thePixelFormat = GL_DEPTH_COMPONENT;
-        theDataType    = GL_FLOAT;
-        return true;
-      }
-    }
-    return false;
-  }
-
-  //! Determine data type from texture sized format.
-  static bool getColorDataFormat (const Handle(OpenGl_Context)& theGlContext,
-                                  GLint   theTextFormat,
-                                  GLenum& thePixelFormat,
-                                  GLenum& theDataType)
-  {
-    switch (theTextFormat)
-    {
-      case GL_RGBA32F:
-      {
-        thePixelFormat = GL_RGBA;
-        theDataType    = GL_FLOAT;
-        return true;
-      }
-      case GL_R32F:
-      {
-        thePixelFormat = GL_RED;
-        theDataType    = GL_FLOAT;
-        return true;
-      }
-      case GL_RGBA16F:
-      {
-        thePixelFormat = GL_RGBA;
-        theDataType    = GL_HALF_FLOAT;
-        if (theGlContext->hasHalfFloatBuffer == OpenGl_FeatureInExtensions)
-        {
-        #if defined(GL_ES_VERSION_2_0)
-          theDataType = GL_HALF_FLOAT_OES;
-        #else
-          theDataType = GL_FLOAT;
-        #endif
-        }
-        return true;
-      }
-      case GL_R16F:
-      {
-        thePixelFormat = GL_RED;
-        theDataType    = GL_HALF_FLOAT;
-        if (theGlContext->hasHalfFloatBuffer == OpenGl_FeatureInExtensions)
-        {
-        #if defined(GL_ES_VERSION_2_0)
-          theDataType = GL_HALF_FLOAT_OES;
-        #else
-          theDataType = GL_FLOAT;
-        #endif
-        }
-        return true;
-      }
-      case GL_RGBA8:
-      case GL_RGBA:
-      {
-        thePixelFormat = GL_RGBA;
-        theDataType    = GL_UNSIGNED_BYTE;
-        return true;
-      }
-      case GL_RGB8:
-      case GL_RGB:
-      {
-        thePixelFormat = GL_RGB;
-        theDataType = GL_UNSIGNED_BYTE;
-        return true;
-      }
-    }
-    return false;
-  }
-
   //! Checks whether two format arrays are equal or not.
   static bool operator== (const OpenGl_ColorFormats& theFmt1,
                           const OpenGl_ColorFormats& theFmt2)
@@ -146,6 +38,119 @@ namespace
     }
     return true;
   }
+}
+
+// =======================================================================
+// function : getDepthDataFormat
+// purpose  :
+// =======================================================================
+bool OpenGl_FrameBuffer::getDepthDataFormat (GLint   theTextFormat,
+                                             GLenum& thePixelFormat,
+                                             GLenum& theDataType)
+{
+  switch (theTextFormat)
+  {
+    case GL_DEPTH24_STENCIL8:
+    {
+      thePixelFormat = GL_DEPTH_STENCIL;
+      theDataType    = GL_UNSIGNED_INT_24_8;
+      return true;
+    }
+    case GL_DEPTH32F_STENCIL8:
+    {
+      thePixelFormat = GL_DEPTH_STENCIL;
+      theDataType    = GL_FLOAT_32_UNSIGNED_INT_24_8_REV;
+      return true;
+    }
+    case GL_DEPTH_COMPONENT16:
+    {
+      thePixelFormat = GL_DEPTH_COMPONENT;
+      theDataType    = GL_UNSIGNED_SHORT;
+      return true;
+    }
+    case GL_DEPTH_COMPONENT24:
+    {
+      thePixelFormat = GL_DEPTH_COMPONENT;
+      theDataType    = GL_UNSIGNED_INT;
+      return true;
+    }
+    case GL_DEPTH_COMPONENT32F:
+    {
+      thePixelFormat = GL_DEPTH_COMPONENT;
+      theDataType    = GL_FLOAT;
+      return true;
+    }
+  }
+  return false;
+}
+
+// =======================================================================
+// function : getColorDataFormat
+// purpose  :
+// =======================================================================
+bool OpenGl_FrameBuffer::getColorDataFormat (const Handle(OpenGl_Context)& theGlContext,
+                                             GLint   theTextFormat,
+                                             GLenum& thePixelFormat,
+                                             GLenum& theDataType)
+{
+  switch (theTextFormat)
+  {
+    case GL_RGBA32F:
+    {
+      thePixelFormat = GL_RGBA;
+      theDataType    = GL_FLOAT;
+      return true;
+    }
+    case GL_R32F:
+    {
+      thePixelFormat = GL_RED;
+      theDataType    = GL_FLOAT;
+      return true;
+    }
+    case GL_RGBA16F:
+    {
+      thePixelFormat = GL_RGBA;
+      theDataType    = GL_HALF_FLOAT;
+      if (theGlContext->hasHalfFloatBuffer == OpenGl_FeatureInExtensions)
+      {
+      #if defined(GL_ES_VERSION_2_0)
+        theDataType = GL_HALF_FLOAT_OES;
+      #else
+        theDataType = GL_FLOAT;
+      #endif
+      }
+      return true;
+    }
+    case GL_R16F:
+    {
+      thePixelFormat = GL_RED;
+      theDataType    = GL_HALF_FLOAT;
+      if (theGlContext->hasHalfFloatBuffer == OpenGl_FeatureInExtensions)
+      {
+      #if defined(GL_ES_VERSION_2_0)
+        theDataType = GL_HALF_FLOAT_OES;
+      #else
+        theDataType = GL_FLOAT;
+      #endif
+      }
+      return true;
+    }
+    case GL_RGBA8:
+    case GL_RGBA:
+    {
+      thePixelFormat = GL_RGBA;
+      theDataType    = GL_UNSIGNED_BYTE;
+      return true;
+    }
+    case GL_RGB8:
+    case GL_RGB:
+    {
+      thePixelFormat = GL_RGB;
+      theDataType = GL_UNSIGNED_BYTE;
+      return true;
+    }
+  }
+  return false;
 }
 
 // =======================================================================

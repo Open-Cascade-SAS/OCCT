@@ -242,7 +242,8 @@ bool D3DHost_View::d3dCreateRenderTarget()
                                                   myD3dDevice,
                                                   myIsD3dEx,
                                                   myWindow->Width(),
-                                                  myWindow->Height());
+                                                  myWindow->Height(),
+                                                  0); // do not request depth-stencil attachment since buffer will be flipped using addition FBO (myToFlipOutput)
   }
   if (toD3dFallback)
   {
@@ -250,7 +251,8 @@ bool D3DHost_View::d3dCreateRenderTarget()
                                        myD3dDevice,
                                        myIsD3dEx,
                                        myWindow->Width(),
-                                       myWindow->Height()))
+                                       myWindow->Height(),
+                                       GL_DEPTH24_STENCIL8))
     {
       return false;
     }

@@ -97,11 +97,11 @@ Standard_Boolean D3DHost_FrameBuffer::Init (const Handle(OpenGl_Context)& theCtx
                                             const Standard_Integer        theSizeX,
                                             const Standard_Integer        theSizeY)
 {
-  if (InitD3dInterop (theCtx, theD3DDevice, theIsD3dEx, theSizeX, theSizeY))
+  if (InitD3dInterop (theCtx, theD3DDevice, theIsD3dEx, theSizeX, theSizeY, GL_DEPTH24_STENCIL8))
   {
     return Standard_True;
   }
-  return InitD3dFallback (theCtx, theD3DDevice, theIsD3dEx, theSizeX, theSizeY);
+  return InitD3dFallback (theCtx, theD3DDevice, theIsD3dEx, theSizeX, theSizeY, GL_DEPTH24_STENCIL8);
 }
 
 // =======================================================================
@@ -112,9 +112,10 @@ Standard_Boolean D3DHost_FrameBuffer::InitD3dFallback (const Handle(OpenGl_Conte
                                                        IDirect3DDevice9*             theD3DDevice,
                                                        const Standard_Boolean        theIsD3dEx,
                                                        const Standard_Integer        theSizeX,
-                                                       const Standard_Integer        theSizeY)
+                                                       const Standard_Integer        theSizeY,
+                                                       const GLint                   theDepthFormat)
 {
-  const Standard_Boolean isGlInit = Init (theCtx, theSizeX, theSizeY, GL_RGBA8, GL_DEPTH24_STENCIL8, 0);
+  const Standard_Boolean isGlInit = OpenGl_FrameBuffer::Init (theCtx, theSizeX, theSizeY, GL_RGBA8, theDepthFormat, 0);
   myD3dFallback = Standard_True;
 
   const Standard_Integer aSizeX = theSizeX > 0 ? theSizeX : 2;
@@ -125,7 +126,7 @@ Standard_Boolean D3DHost_FrameBuffer::InitD3dFallback (const Handle(OpenGl_Conte
   {
     Release (theCtx.operator->());
     theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
-                         TCollection_AsciiString ("D3DHost_FrameBuffer, could not D3DFMT_X8R8G8B8 render target ") + aSizeX + "x" + aSizeY);
+                         TCollection_AsciiString ("D3DHost_FrameBuffer, could not create D3DFMT_X8R8G8B8 render target ") + aSizeX + "x" + aSizeY);
     return Standard_False;
   }
   return isGlInit;
@@ -139,10 +140,12 @@ Standard_Boolean D3DHost_FrameBuffer::InitD3dInterop (const Handle(OpenGl_Contex
                                                       IDirect3DDevice9*             theD3DDevice,
                                                       const Standard_Boolean        theIsD3dEx,
                                                       const Standard_Integer        theSizeX,
-                                                      const Standard_Integer        theSizeY)
+                                                      const Standard_Integer        theSizeY,
+                                                      const GLint                   theDepthFormat)
 {
   Release (theCtx.operator->());
 #if !defined(GL_ES_VERSION_2_0)
+  myDepthFormat = theDepthFormat;
   myVPSizeX = theSizeX;
   myVPSizeY = theSizeY;
   myInitVPSizeX = theSizeX;
@@ -167,7 +170,7 @@ Standard_Boolean D3DHost_FrameBuffer::InitD3dInterop (const Handle(OpenGl_Contex
   {
     Release (theCtx.operator->());
     theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
-                         TCollection_AsciiString ("D3DHost_FrameBuffer, could not D3DFMT_X8R8G8B8 render target ") + aSizeX + "x" + aSizeY);
+                         TCollection_AsciiString ("D3DHost_FrameBuffer, could not create D3DFMT_X8R8G8B8 render target ") + aSizeX + "x" + aSizeY);
     return Standard_False;
   }
 
@@ -189,9 +192,13 @@ Standard_Boolean D3DHost_FrameBuffer::InitD3dInterop (const Handle(OpenGl_Contex
   myIsOwnBuffer = true;
   myIsOwnDepth  = true;
   theCtx->arbFBO->glGenFramebuffers (1, &myGlFBufferId);
-  if (!myDepthStencilTexture->Init (theCtx, GL_DEPTH24_STENCIL8,
-                                    GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8,
-                                    aSizeX, aSizeY, Graphic3d_TOT_2D))
+
+  GLenum aPixelFormat = 0, aDataType = 0;
+  if (myDepthFormat != 0
+  &&  getDepthDataFormat (myDepthFormat, aPixelFormat, aDataType)
+  && !myDepthStencilTexture->Init (theCtx, myDepthFormat,
+                                   aPixelFormat, aDataType,
+                                   aSizeX, aSizeY, Graphic3d_TOT_2D))
   {
     Release (theCtx.operator->());
     theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
@@ -206,6 +213,7 @@ Standard_Boolean D3DHost_FrameBuffer::InitD3dInterop (const Handle(OpenGl_Contex
   (void )theIsD3dEx;
   (void )theSizeX;
   (void )theSizeY;
+  (void )theDepthFormat;
   return Standard_False;
 #endif
 }
@@ -247,6 +255,7 @@ Standard_Boolean D3DHost_FrameBuffer::registerD3dBuffer (const Handle(OpenGl_Con
                                                myColorTextures (0)->TextureId(),
                                                GL_TEXTURE_2D,
                                                WGL_ACCESS_WRITE_DISCARD_NV);
+  theCtx->ResetErrors (true);
   if (myGlD3dSurf == NULL)
   {
     theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
@@ -278,20 +287,54 @@ void D3DHost_FrameBuffer::BindBuffer (const Handle(OpenGl_Context)& theCtx)
 
   theCtx->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
                                           myColorTextures (0)->GetTarget(), myColorTextures (0)->TextureId(), 0);
-#ifdef GL_DEPTH_STENCIL_ATTACHMENT
-  theCtx->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT,
-                                          myDepthStencilTexture->GetTarget(), myDepthStencilTexture->TextureId(), 0);
-#else
-  theCtx->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
-                                          myDepthStencilTexture->GetTarget(), myDepthStencilTexture->TextureId(), 0);
-  theCtx->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT,
-                                          myDepthStencilTexture->GetTarget(), myDepthStencilTexture->TextureId(), 0);
-#endif
+
+  GLenum aDepthPixelFormat = 0, aDepthDataType = 0;
+  getDepthDataFormat (myDepthFormat, aDepthPixelFormat, aDepthDataType);
+  if (myDepthStencilTexture->IsValid())
+  {
+  #ifdef GL_DEPTH_STENCIL_ATTACHMENT
+    theCtx->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, aDepthPixelFormat == GL_DEPTH_STENCIL ? GL_DEPTH_STENCIL_ATTACHMENT : GL_DEPTH_ATTACHMENT,
+                                            myDepthStencilTexture->GetTarget(), myDepthStencilTexture->TextureId(), 0);
+  #else
+    theCtx->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
+                                            myDepthStencilTexture->GetTarget(), myDepthStencilTexture->TextureId(), 0);
+    if (aDepthPixelFormat == GL_DEPTH_STENCIL)
+    {
+      theCtx->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT,
+                                              myDepthStencilTexture->GetTarget(), myDepthStencilTexture->TextureId(), 0);
+    }
+  #endif
+  }
   if (theCtx->arbFBO->glCheckFramebufferStatus (GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
   {
-    theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
-                         "D3DHost_FrameBuffer, OpenGL FBO is incomplete!");
-    Release (theCtx.operator->());
+    if (myDepthStencilTexture->IsValid())
+    {
+    #ifdef GL_DEPTH_STENCIL_ATTACHMENT
+      theCtx->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, aDepthPixelFormat == GL_DEPTH_STENCIL ? GL_DEPTH_STENCIL_ATTACHMENT : GL_DEPTH_ATTACHMENT,
+                                              myDepthStencilTexture->GetTarget(), 0, 0);
+    #else
+      theCtx->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
+                                              myDepthStencilTexture->GetTarget(), 0, 0);
+      if (aDepthPixelFormat == GL_DEPTH_STENCIL)
+      {
+        theCtx->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT,
+                                                myDepthStencilTexture->GetTarget(), 0, 0);
+      }
+    #endif
+    }
+    if (theCtx->arbFBO->glCheckFramebufferStatus (GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+    {
+      theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
+                           "D3DHost_FrameBuffer, OpenGL FBO is incomplete!");
+      Release (theCtx.operator->());
+    }
+    else
+    {
+      myDepthFormat = 0;
+      myDepthStencilTexture->Release (theCtx.get());
+      theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_HIGH,
+                           "D3DHost_FrameBuffer, OpenGL FBO is created without Depth+Stencil attachements!");
+    }
   }
 }
 
