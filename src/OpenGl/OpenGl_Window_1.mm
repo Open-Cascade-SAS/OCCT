@@ -162,7 +162,11 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_GraphicDriver)& theDriver,
           {
             continue;
           }
+
+          // deprecated since macOS 10.12 without replacement
+          Standard_DISABLE_DEPRECATION_WARNINGS
           anAttribs[aLastAttrib++] = NSOpenGLPFAStereo;
+          Standard_ENABLE_DEPRECATION_WARNINGS
         }
 
         anAttribs[aLastAttrib] = 0;

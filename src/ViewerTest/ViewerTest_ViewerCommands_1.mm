@@ -23,6 +23,12 @@
 #include <TCollection_AsciiString.hxx>
 #include <NCollection_DoubleMap.hxx>
 
+#if !defined(MAC_OS_X_VERSION_10_12) || (MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_12)
+  // replacements for macOS versions before 10.12
+  #define NSEventModifierFlagControl NSControlKeyMask
+  #define NSEventModifierFlagShift   NSShiftKeyMask
+#endif
+
 //! Custom Cocoa view to handle events
 @interface ViewerTest_CocoaEventManagerView : NSView
 @end
@@ -227,7 +233,7 @@ static void getMouseCoords (NSView*           theView,
 - (void )mouseDown: (NSEvent* )theEvent
 {
   getMouseCoords (self, theEvent, X_ButtonPress, Y_ButtonPress);
-  VT_ProcessButton1Press (0, NULL, Standard_False, [theEvent modifierFlags] & NSShiftKeyMask);
+  VT_ProcessButton1Press (0, NULL, Standard_False, [theEvent modifierFlags] & NSEventModifierFlagShift);
 }
 
 // =======================================================================
@@ -237,7 +243,7 @@ static void getMouseCoords (NSView*           theView,
 - (void )mouseUp: (NSEvent* )theEvent
 {
   getMouseCoords (self, theEvent, X_Motion, Y_Motion);
-  VT_ProcessButton1Release([theEvent modifierFlags] & NSShiftKeyMask);
+  VT_ProcessButton1Release([theEvent modifierFlags] & NSEventModifierFlagShift);
 }
 
 
@@ -248,7 +254,7 @@ static void getMouseCoords (NSView*           theView,
 - (void )mouseDragged: (NSEvent* )theEvent
 {
   IsDragged = Standard_True;
-  if ([theEvent modifierFlags] & NSControlKeyMask)
+  if ([theEvent modifierFlags] & NSEventModifierFlagControl)
   {
     getMouseCoords (self, theEvent, X_Motion, Y_Motion);
     VT_ProcessControlButton2Motion();
@@ -281,7 +287,7 @@ static void getMouseCoords (NSView*           theView,
 // =======================================================================
 - (void )rightMouseDragged: (NSEvent* )theEvent
 {
-  if ([theEvent modifierFlags] & NSControlKeyMask)
+  if ([theEvent modifierFlags] & NSEventModifierFlagControl)
   {
     getMouseCoords (self, theEvent, X_Motion, Y_Motion);
     VT_ProcessControlButton3Motion();
