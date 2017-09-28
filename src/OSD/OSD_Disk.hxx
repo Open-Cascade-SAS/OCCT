@@ -17,18 +17,9 @@
 #ifndef _OSD_Disk_HeaderFile
 #define _OSD_Disk_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
 #include <TCollection_AsciiString.hxx>
-#include <Standard_Integer.hxx>
 #include <OSD_Error.hxx>
-#include <Standard_CString.hxx>
-#include <Standard_Boolean.hxx>
-class OSD_OSDError;
-class OSD_Path;
-
+#include <OSD_Path.hxx>
 
 //! Disk management (a set of disk oriented tools)
 class OSD_Disk 
@@ -37,7 +28,6 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
   //! Creates a disk object.
   //! This is used only when a class contains a Disk field.
   //! By default, its name is initialized to current working disk.
@@ -67,57 +57,23 @@ public:
   //! Returns free available 512 bytes blocks on disk.
   Standard_EXPORT Standard_Integer DiskFree();
   
-  //! Returns user's disk quota (in Bytes).
-  Standard_EXPORT Standard_Integer DiskQuota();
-  
-  //! Sets user's disk quota (in Bytes).
-  //! Warning: Needs system administrator privilege.
-  Standard_EXPORT void SetDiskQuota (const Standard_Integer QuotaSize);
-  
-  //! Activates user's disk quota
-  //! Warning: Needs system administrator privilege.
-  Standard_EXPORT void SetQuotaOn();
-  
-  //! Deactivates user's disk quota
-  //! Warning: Needs system administrator privilege.
-  Standard_EXPORT void SetQuotaOff();
-  
   //! Returns TRUE if an error occurs
-  Standard_EXPORT Standard_Boolean Failed() const;
-  
+  Standard_Boolean Failed() const { return myError.Failed(); }
+
   //! Resets error counter to zero
-  Standard_EXPORT void Reset();
-  
+  void Reset() { myError.Reset(); }
+
   //! Raises OSD_Error
-  Standard_EXPORT void Perror();
-  
+  void Perror() { myError.Perror(); }
+
   //! Returns error number if 'Failed' is TRUE.
-  Standard_EXPORT Standard_Integer Error() const;
-
-
-
-
-protected:
-
-
-
-
+  Standard_Integer Error() const { return myError.Error(); }
 
 private:
 
-
-
-  TCollection_AsciiString DiskName;
-  Standard_Integer myQuotaSize;
+  TCollection_AsciiString myDiskName;
   OSD_Error myError;
 
-
 };
-
-
-
-
-
-
 
 #endif // _OSD_Disk_HeaderFile

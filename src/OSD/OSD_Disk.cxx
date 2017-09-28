@@ -12,400 +12,220 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _WIN32
-
-
 #include <OSD_Disk.hxx>
+
 #include <OSD_OSDError.hxx>
 #include <OSD_Path.hxx>
 #include <OSD_WhoAmI.hxx>
-
-const OSD_WhoAmI Iam = OSD_WDisk;
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-#if defined(__ANDROID__)
-  #include <sys/vfs.h>
-  #define statvfs  statfs
-  #define fstatvfs fstatfs
-#else
-  #include <sys/statvfs.h>
-#endif
-
-#ifdef __cplusplus
-}
-#endif
-
-#include <errno.h>
-
-OSD_Disk::OSD_Disk() : myQuotaSize(0) {}
-
-
-OSD_Disk::OSD_Disk(const OSD_Path& name){
- DiskName = name.Disk();
- myQuotaSize = 0;
-}
-
-OSD_Disk::OSD_Disk(const Standard_CString name)
-{
- DiskName = name;
- myQuotaSize = 0;
-}
-
-void OSD_Disk::SetName(const OSD_Path& name){
- DiskName = name.Disk();
-}
-
-
-OSD_Path OSD_Disk::Name()const{
- OSD_Path result;
- result.SetDisk(DiskName);
- return(result);
-}
-
-Standard_Integer OSD_Disk::DiskSize(){
-
-struct statvfs buffer;
-
-  if ( statvfs(DiskName.ToCString(),&buffer) == 0 ){
-    int BSize512 = buffer.f_frsize / 512 ;
-    return buffer.f_blocks * BSize512 ;
-  }
-  else {
-    myError.SetValue(errno, Iam, "OSD_Disk: statvfs failed.");
-    return 0;
-  }
-}
-
-Standard_Integer OSD_Disk::DiskFree(){
-
-struct statvfs buffer;
-  if ( statvfs (DiskName.ToCString(),&buffer) == 0 ){
-    int BSize512 = buffer.f_frsize / 512 ;
-    return buffer.f_bavail * BSize512 ;
-  }
-  else {
-    myError.SetValue(errno, Iam, "OSD_Disk: statvfs failed.");
-    return 0;
-  }
-}
-
-Standard_Integer OSD_Disk::DiskQuota(){
-//@@@ A faire
-return 0;
-}
-
-
-void OSD_Disk::SetDiskQuota(const Standard_Integer ){
-// int status;
-// struct dqblk quota_info;
-#ifdef ULTRIX
-// status = quota(Q_SETDLIM,<< User Id>>,&quota_info);
-#else
-// status = quotactl(Q_SETQLIM,"",<< User Id >>,&quota_info);
-#endif
-//@@@ A terminer
-}
-
-
-void OSD_Disk::SetQuotaOff(){
-//int status;
-#ifdef ULTRIX
-// status = setquota("","");
-#else
-// status = quotactl(Q_QUOTAOFF,"",0,NULL);
-#endif
-//@@@ A faire
-}
-
-void OSD_Disk::SetQuotaOn(){
-//TCollection_AsciiString quota_file="????";
-//int status;
-#ifdef ULTRIX
-// status = setquota("",quota_file);
-#else
-// status = quotactl(Q_QUOTAON,"",0,quota_file);
-#endif
-//@@@ A faire
-}
-
-
-void OSD_Disk::Reset(){
- myError.Reset();
-}
-
-Standard_Boolean OSD_Disk::Failed()const{
- return( myError.Failed());
-}
-
-void OSD_Disk::Perror() {
- myError.Perror();
-}
-
-
-Standard_Integer OSD_Disk::Error()const{
- return( myError.Error());
-}
-
-#else
-
-//-------------------------------------------------------------------------------
-//---------------------------- Windows NT System --------------------------------
-//-------------------------------------------------------------------------------
-
-#include <OSD_Disk.hxx>
-#include <OSD_OSDError.hxx>
-#include <OSD_Path.hxx>
 #include <Standard_ProgramError.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_String.hxx>
 #include <TCollection_ExtendedString.hxx>
 
-#include <windows.h>
+#ifdef _WIN32
+  #include <windows.h>
 
-void _osd_wnt_set_error ( OSD_Error&, OSD_WhoAmI, ... );
+  void _osd_wnt_set_error (OSD_Error&, OSD_WhoAmI, ... );
 
-static void __fastcall _osd_wnt_set_disk_name ( TCollection_AsciiString&, const OSD_Path& );
-
-OSD_Disk :: OSD_Disk () {
- DWORD aBuffLen = GetCurrentDirectoryW(0, NULL);
- wchar_t* aBuff = new wchar_t[size_t(aBuffLen) + 1];
- GetCurrentDirectoryW(aBuffLen, aBuff);
- aBuff[aBuffLen - 1] = (aBuff[aBuffLen - 2] == L'\\') ? L'\0' : L'\\';
- aBuff[aBuffLen] = L'\0';
- if (aBuffLen > 3 && aBuff[0] != L'\\')
- {
-   aBuff[3] = L'\0';
-   DiskName = TCollection_AsciiString (aBuff);
-   delete[] aBuff;
- }
- else
- {
-   DiskName = "";
- }
-}  // end constructor ( 1 )
-
-OSD_Disk :: OSD_Disk ( const OSD_Path& Name ) {
-
- _osd_wnt_set_disk_name ( DiskName, Name );
-
-}  // end constructor ( 2 )
-
-OSD_Disk :: OSD_Disk ( const Standard_CString PathName ) {
-
- OSD_Path path ( PathName );
-
- _osd_wnt_set_disk_name ( DiskName, path );
-
-}  // end constructor ( 3 )
-
-OSD_Path OSD_Disk :: Name () const {
-
- return DiskName;
-
-}  // end OSD_Disk :: Name
-
-void OSD_Disk :: SetName ( const OSD_Path& Name ) {
-
- DiskName = Name.Disk ();
-
-}  // end OSD_Disk :: SetName
-
-Standard_Integer OSD_Disk :: DiskSize () {
-
- Standard_Integer retVal = 0;
-
-
-//  DWORD            dwSpC;
-//  DWORD            dwBpS;
-//  DWORD            dwFC;
-//  DWORD            dwC;
-
-//  if (   !GetDiskFreeSpace (  DiskName.ToCString (), &dwSpC, &dwBpS, &dwFC, &dwC  )   )
-
-  ULARGE_INTEGER lpFreeBytesAvailableToCaller; // receives the number of bytes on
-                                                // disk available to the caller
-  ULARGE_INTEGER lpTotalNumberOfBytes;    // receives the number of bytes on disk
-  ULARGE_INTEGER lpTotalNumberOfFreeBytes;// receives the free bytes on disk
-
-  TCollection_ExtendedString DiskNameW(DiskName);
-  if (!GetDiskFreeSpaceExW (DiskNameW.ToWideString(),
-			   &lpFreeBytesAvailableToCaller,
-			   &lpTotalNumberOfBytes,
-			   &lpTotalNumberOfFreeBytes))
-    
-    _osd_wnt_set_error ( myError, OSD_WDisk );
-  
-  else {
-    
-    ULONGLONG  aSize = lpTotalNumberOfBytes.QuadPart /512;
-   
-    retVal = ( Standard_Integer ) aSize; // may be an overflow
-    
-    // retVal = ( Standard_Integer )( dwSpC * dwBpS * dwFC );
-  }
-
-
- return retVal;
-
-}  // end OSD_Disk :: DiskSize
-
-Standard_Integer OSD_Disk :: DiskFree () {
-
- Standard_Integer retVal = -1;
-
-
-//  DWORD            dwSpC;
-//  DWORD            dwBpS;
-//  DWORD            dwFC;
-//  DWORD            dwC;
-
-  ULARGE_INTEGER lpFreeBytesAvailableToCaller; // receives the number of bytes on
-                                                // disk available to the caller
-  ULARGE_INTEGER lpTotalNumberOfBytes;    // receives the number of bytes on disk
-  ULARGE_INTEGER lpTotalNumberOfFreeBytes;// receives the free bytes on disk
-
-  // if (   !GetDiskFreeSpace (  DiskName.ToCString (), &dwSpC, &dwBpS, &dwFC, &dwC  )   )
-  TCollection_ExtendedString DiskNameW(DiskName);
-  if (!GetDiskFreeSpaceExW (DiskNameW.ToWideString(),
-			   &lpFreeBytesAvailableToCaller,
-			   &lpTotalNumberOfBytes,
-			   &lpTotalNumberOfFreeBytes))
-    
-    _osd_wnt_set_error ( myError, OSD_WDisk );
-  
-  else {
-    
-    ULONGLONG  aSize = lpFreeBytesAvailableToCaller.QuadPart /512;
-    
-    retVal = ( Standard_Integer ) aSize; // may be an overflow
-
-    //  retVal = ( Standard_Integer )( dwSpC * dwBpS * dwFC );
-  }
-
- return retVal;
-
-}  // end OSD_Disk :: DiskFree
-
-Standard_Integer OSD_Disk :: DiskQuota () {
-
- return DiskSize ();
-
-}  // end OSD_Disk :: DiskQuota
-
-void OSD_Disk :: SetDiskQuota ( const Standard_Integer /*QuotaSize*/ ) {
-
- SetLastError (  ( DWORD )STG_E_UNIMPLEMENTEDFUNCTION  );
-
- _osd_wnt_set_error ( myError, OSD_WDisk );
-
-}  // end OSD_Disk :: SetDiskQuota
-
-void OSD_Disk :: SetQuotaOn () {
-
- SetLastError (  ( DWORD )STG_E_UNIMPLEMENTEDFUNCTION  );
-
- _osd_wnt_set_error ( myError, OSD_WDisk );
-
-}  // end OSD_Disk :: SetQuotaOn
-
-void OSD_Disk :: SetQuotaOff () {
-
- SetLastError (  ( DWORD )STG_E_UNIMPLEMENTEDFUNCTION  );
-
- _osd_wnt_set_error ( myError, OSD_WDisk );
-
-}  // end OSD_Disk :: SetQuotaOff
-
-Standard_Boolean OSD_Disk :: Failed () const {
-
- return myError.Failed ();
-
-}  // end OSD_Disk :: Failed
-
-void OSD_Disk :: Reset () {
-
- myError.Reset ();
-
-}  // end OSD_Disk :: Reset
-
-void OSD_Disk :: Perror () {
-
- myError.Perror ();
-
-}  // end OSD_Disk :: Perror
-
-Standard_Integer OSD_Disk :: Error () const {
-
- return myError.Error ();
-
-}  // end OSD_Disk :: Error
-
-static void __fastcall _osd_wnt_set_disk_name ( TCollection_AsciiString& result, const OSD_Path& path ) {
-
- TCollection_AsciiString dir;
-
- result = path.Disk ();
-
- if (  result.UsefullLength () == 0  ) {
- 
-  int i, j, k;
-
-  dir = path.Trek ();
-  
-  if (   (  j = dir.UsefullLength ()  ) > 2 &&
-         dir.Value ( 1 ) == '|'     &&
-         dir.Value ( 2 ) == '|'
-  ) {
-  
-   dir.SetValue (  1, '\\');
-   dir.SetValue (  2, '\\');
-   
-   for ( i = 3, k = 0; i <= j; ++i )
-
-    if (  dir.Value ( i ) == '|') {
-    
-     if ( k == 0 ) {
-
-      dir.SetValue (  i, '\\');
-      ++k;
-      continue; 
-     
-     }  // end if
-
-     dir.SetValue (  i, '\\');
-     break;
-     
-    }  /* end if */
-
-    if ( k == 0 )
+  static TCollection_AsciiString _osd_wnt_set_disk_name (const OSD_Path& thePath)
+  {
     {
-     if (  path.Name ().UsefullLength () == 0 && path.Extension ().UsefullLength () == 0  )
-     
-      goto badPath;
-
-     else {
-
-      dir += '\\';
-      dir += path.Name ();
-      dir += path.Extension ();
-      
-     }  // end else    
+      TCollection_AsciiString aDisk = thePath.Disk();
+      if (aDisk.UsefullLength() != 0)
+      {
+        return aDisk + '/';
+      }
     }
 
-    if (   dir.Value (  dir.UsefullLength ()  ) != '\\') dir += '\\';
+    TCollection_AsciiString aDir = thePath.Trek();
+    const int j = aDir.UsefullLength();
+    if (j < 3
+    || aDir.Value (1) != '|'
+    || aDir.Value (2) != '|')
+    {
+      throw Standard_ProgramError ("OSD_Disk: bad disk name");
+    }
 
-    result = dir;
-  
-  } else {
-badPath:  
-   throw Standard_ProgramError ( "OSD_Disk: bad disk name" );
+    aDir.SetValue (1, '\\');
+    aDir.SetValue (2, '\\');
+    int k = 0;
+    for (int i = 3; i <= j; ++i)
+    {
+      if (aDir.Value (i) == '|')
+      {
+        if (k == 0)
+        {
+          aDir.SetValue (i, '\\');
+          ++k;
+          continue;
+        }
 
-  }  // end else
- 
- } else result += '/';
+        aDir.SetValue (i, '\\');
+        break;
+      }
+    }
 
-}  // end _osd_set_disk_name
+    if (k == 0)
+    {
+      if (thePath.Name().UsefullLength() == 0
+       && thePath.Extension().UsefullLength() == 0)
+      {
+        throw Standard_ProgramError ("OSD_Disk: bad disk name");
+      }
+      else
+      {
+        aDir += '\\';
+        aDir += thePath.Name();
+        aDir += thePath.Extension();
+      }
+    }
 
+    if (aDir.Value (aDir.UsefullLength()) != '\\')
+    {
+      aDir += '\\';
+    }
+    return aDir;
+  }
+
+#else
+  const OSD_WhoAmI Iam = OSD_WDisk;
+  extern "C" {
+  #if defined(__ANDROID__)
+    #include <sys/vfs.h>
+    #define statvfs  statfs
+    #define fstatvfs fstatfs
+  #else
+    #include <sys/statvfs.h>
+  #endif
+  }
+  #include <errno.h>
 #endif
+
+// =======================================================================
+// function : OSD_Disk
+// purpose  :
+// =======================================================================
+OSD_Disk::OSD_Disk()
+{
+#ifdef _WIN32
+  const DWORD aBuffLen = GetCurrentDirectoryW (0, NULL);
+  NCollection_Array1<wchar_t> aBuff (0, aBuffLen);
+  GetCurrentDirectoryW (aBuffLen, &aBuff.ChangeFirst());
+  aBuff.ChangeValue (aBuffLen - 1) = (aBuff.Value (aBuffLen - 2) == L'\\') ? L'\0' : L'\\';
+  aBuff.ChangeLast() = L'\0';
+  if (aBuffLen > 3 && aBuff.First() != L'\\')
+  {
+    aBuff.ChangeValue (3) = L'\0';
+    myDiskName = TCollection_AsciiString (&aBuff.ChangeFirst());
+  }
+#endif
+}
+
+// =======================================================================
+// function : OSD_Disk
+// purpose  :
+// =======================================================================
+OSD_Disk::OSD_Disk (const OSD_Path& theName)
+: myDiskName (theName.Disk())
+{
+#ifdef _WIN32
+  myDiskName = _osd_wnt_set_disk_name (theName);
+#endif
+}
+
+OSD_Disk::OSD_Disk (const Standard_CString theName)
+: myDiskName (theName)
+{
+#ifdef _WIN32
+  OSD_Path aPath (theName);
+  myDiskName = _osd_wnt_set_disk_name (aPath);
+#endif
+}
+
+// =======================================================================
+// function : SetName
+// purpose  :
+// =======================================================================
+void OSD_Disk::SetName (const OSD_Path& theName)
+{
+  myDiskName = theName.Disk();
+}
+
+// =======================================================================
+// function : Name
+// purpose  :
+// =======================================================================
+OSD_Path OSD_Disk::Name() const
+{
+#ifdef _WIN32
+  return myDiskName;
+#else
+  OSD_Path aPath;
+  aPath.SetDisk (myDiskName);
+  return aPath;
+#endif
+}
+
+// =======================================================================
+// function : DiskSize
+// purpose  :
+// =======================================================================
+Standard_Integer OSD_Disk::DiskSize()
+{
+#ifdef _WIN32
+  ULARGE_INTEGER aNbFreeAvailableBytes, aNbTotalBytes, aNbTotalFreeBytes;
+  const TCollection_ExtendedString aDiskNameW (myDiskName);
+  if (!GetDiskFreeSpaceExW (aDiskNameW.ToWideString(),
+                            &aNbFreeAvailableBytes,
+                            &aNbTotalBytes,
+                            &aNbTotalFreeBytes))
+  {
+    _osd_wnt_set_error (myError, OSD_WDisk);
+    return 0;
+  }
+
+  ULONGLONG aSize = aNbTotalBytes.QuadPart / 512;
+  return (Standard_Integer )aSize; // may be an overflow
+#else
+  struct statvfs buffer;
+  if (statvfs (myDiskName.ToCString(), &buffer) == 0)
+  {
+    int BSize512 = buffer.f_frsize / 512;
+    return buffer.f_blocks * BSize512;
+  }
+  myError.SetValue (errno, Iam, "OSD_Disk: statvfs failed.");
+  return 0;
+#endif
+}
+
+// =======================================================================
+// function : DiskFree
+// purpose  :
+// =======================================================================
+Standard_Integer OSD_Disk::DiskFree()
+{
+#ifdef _WIN32
+  ULARGE_INTEGER aNbFreeAvailableBytes, aNbTotalBytes, aNbTotalFreeBytes;
+  const TCollection_ExtendedString aDiskNameW (myDiskName);
+  if (!GetDiskFreeSpaceExW (aDiskNameW.ToWideString(),
+                            &aNbFreeAvailableBytes,
+                            &aNbTotalBytes,
+                            &aNbTotalFreeBytes))
+  {
+    _osd_wnt_set_error (myError, OSD_WDisk);
+    return 0;
+  }
+
+  ULONGLONG aSize = aNbFreeAvailableBytes.QuadPart / 512;
+  return (Standard_Integer )aSize; // may be an overflow
+#else
+  struct statvfs buffer;
+  if (statvfs (myDiskName.ToCString(), &buffer) == 0)
+  {
+    int BSize512 = buffer.f_frsize / 512;
+    return buffer.f_bavail * BSize512;
+  }
+  myError.SetValue (errno, Iam, "OSD_Disk: statvfs failed.");
+  return 0;
+#endif
+}

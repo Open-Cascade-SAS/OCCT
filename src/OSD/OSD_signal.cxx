@@ -410,6 +410,8 @@ void OSD::SetSignal (const Standard_Boolean theFloatingSignal)
   else {
     _controlfp (_OSD_FPX, _OSD_FPX); // JR add :
   }
+#else
+  (void)theFloatingSignal; // silence compiler warning on MinGw
 #endif
 }  // end OSD :: SetSignal
 
@@ -635,7 +637,7 @@ typedef void (* SIG_PFV) (int);
 # include <stdlib.h>
 # include <stdio.h>
 #else
-#  ifdef SA_SIGINFO 
+#  ifdef SA_SIGINFO
 #    ifndef _AIX
 #  include <sys/siginfo.h>
 #     endif
@@ -866,11 +868,11 @@ static void SegvHandler(const int theSignal,
 #endif
 
 //============================================================================
-//==== SetSignal 
+//==== SetSignal
 //====     Set the differents signals:
 //============================================================================
 
-void OSD::SetSignal(const Standard_Boolean aFloatingSignal) 
+void OSD::SetSignal(const Standard_Boolean aFloatingSignal)
 {
   struct sigaction act, oact;
   int              stat = 0;
@@ -932,7 +934,7 @@ void OSD::SetSignal(const Standard_Boolean aFloatingSignal)
 #endif
 
   //==== Always detected the signal "SIGFPE" =================================
-  stat = sigaction(SIGFPE,&act,&oact);   // ...... floating point exception 
+  stat = sigaction(SIGFPE,&act,&oact);   // ...... floating point exception
   if (stat) {
 #ifdef OCCT_DEBUG
      cerr << "sigaction does not work !!! KO " << endl;
@@ -941,38 +943,38 @@ void OSD::SetSignal(const Standard_Boolean aFloatingSignal)
   }
 
   //==== Detected the only the "free" signals ================================
-  sigaction(SIGHUP,&act,&oact);    // ...... hangup  
+  sigaction(SIGHUP,&act,&oact);    // ...... hangup
 
 #ifdef OBJS
-  if(oact.sa_handler) 
+  if(oact.sa_handler)
 	sigaction(SIGHUP,&oact,&oact);
 #endif
 
-  sigaction(SIGINT,&act,&oact);   // ...... interrupt   
+  sigaction(SIGINT,&act,&oact);   // ...... interrupt
 
 #ifdef OBJS
-  if(oact.sa_handler) 
+  if(oact.sa_handler)
 	sigaction(SIGINT,&oact,&oact);
 #endif
-            
+
   sigaction(SIGQUIT,&act,&oact);  // ...... quit
 
 #ifdef OBJS
-  if(oact.sa_handler) 
+  if(oact.sa_handler)
 	sigaction(SIGQUIT,&oact,&oact);
 #endif
 
-  sigaction(SIGILL,&act,&oact);   // ...... illegal instruction 
+  sigaction(SIGILL,&act,&oact);   // ...... illegal instruction
 
 #ifdef OBJS
-  if(oact.sa_handler) 
+  if(oact.sa_handler)
 	sigaction(SIGILL,&oact,&oact);
 #endif
 
-  sigaction(SIGBUS,&act,&oact);   // ...... bus error 
+  sigaction(SIGBUS,&act,&oact);   // ...... bus error
 
 #ifdef OBJS
-  if(oact.sa_handler) 
+  if(oact.sa_handler)
 	sigaction(SIGBUS,&oact,&oact);
 #endif
 
@@ -980,7 +982,7 @@ void OSD::SetSignal(const Standard_Boolean aFloatingSignal)
   sigaction(SIGSYS,&act,&oact);   // ...... bad argument to system call
 
 # ifdef OBJS
-  if(oact.sa_handler) 
+  if(oact.sa_handler)
 	sigaction(SIGSYS,&oact,&oact);
 # endif
 #endif
@@ -989,7 +991,7 @@ void OSD::SetSignal(const Standard_Boolean aFloatingSignal)
   sigaction(SIGTRAP,&act,&oact);   // Integer Divide By Zero (IRIX)
 
 # ifdef OBJS
-  if(oact.sa_handler) 
+  if(oact.sa_handler)
 	sigaction(SIGTRAP,&oact,&oact);
 # endif
 #endif
@@ -1004,7 +1006,7 @@ void OSD::SetSignal(const Standard_Boolean aFloatingSignal)
     perror("OSD::SetSignal sigaction( SIGSEGV , &act , &oact ) ") ;
 
 #ifdef OBJS
-  if(oact.sa_handler) 
+  if(oact.sa_handler)
 	sigaction(SIGSEGV,&oact,&oact);
 #endif
 #if defined(__osf__) || defined(DECOSF1)
@@ -1012,7 +1014,7 @@ void OSD::SetSignal(const Standard_Boolean aFloatingSignal)
    action.sa_handler = SIG_IGN;
    action.sa_mask = 0;
    action.sa_flags = 0;
-   
+
    if (sigaction (SIGFPE, &action, &prev_action) == -1) {
      perror ("sigaction");
      exit (1);
@@ -1022,10 +1024,10 @@ void OSD::SetSignal(const Standard_Boolean aFloatingSignal)
 }
 
 //============================================================================
-//==== ControlBreak 
+//==== ControlBreak
 //============================================================================
 
-void OSD :: ControlBreak () 
+void OSD :: ControlBreak ()
 {
   if ( fCtrlBrk ) {
     fCtrlBrk = Standard_False;
