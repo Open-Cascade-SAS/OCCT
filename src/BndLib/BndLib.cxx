@@ -137,71 +137,85 @@ namespace
         addPoint1;
         if (aFin <= 1) break;
       }
+      Standard_FALLTHROUGH
     case 2:
       {
         addPoint2;
         if (aFin <= 2) break;
       }
+      Standard_FALLTHROUGH
     case 3:
       {
         addPoint3;
         if (aFin <= 3) break;
       }
+      Standard_FALLTHROUGH
     case 4:
       {
         addPoint4;
         if (aFin <= 4) break;
       }
+      Standard_FALLTHROUGH
     case 5:
       {
         addPoint5;
         if (aFin <= 5) break;
       }
+      Standard_FALLTHROUGH
     case 6:
       {
         addPoint6;
         if (aFin <= 6) break;
       }
+      Standard_FALLTHROUGH
     case 7:
       {
         addPoint7;
         if (aFin <= 7) break;
       }
+      Standard_FALLTHROUGH
     case 8:
       {
         addPoint0;
         if (aFin <= 8) break;
       }
+      Standard_FALLTHROUGH
     case 9:
       {
         addPoint1;
         if (aFin <= 9) break;
       }  
+      Standard_FALLTHROUGH
     case 10:
       {
         addPoint2;
         if (aFin <= 10) break;
       }
+      Standard_FALLTHROUGH
     case 11:
       {
         addPoint3;
         if (aFin <= 11) break;
       }  
+      Standard_FALLTHROUGH
     case 12:
       {
         addPoint4;
         if (aFin <= 12) break;
       }  
+      Standard_FALLTHROUGH
     case 13:
       {
         addPoint5;
         if (aFin <= 13) break;
       }
+      Standard_FALLTHROUGH
     case 14:
       {
         addPoint6;
         if (aFin <= 14) break;
       }
+      Standard_FALLTHROUGH
     case 15:
       {
         addPoint7;
@@ -1271,41 +1285,49 @@ void BndLib::Add(const gp_Torus& S,const Standard_Real UMin,
       addP0;
       if (Fi2 <= 0) break;
     }
+    Standard_FALLTHROUGH
   case 1 : 
     {
       addP1;
       if (Fi2 <= 1) break;
     }
+    Standard_FALLTHROUGH
   case 2 :  
     {
       addP2;
       if (Fi2 <= 2) break;
     }
+    Standard_FALLTHROUGH
   case 3 :  
     {
       addP3;
       if (Fi2 <= 3) break;
     }
+    Standard_FALLTHROUGH
   case 4 :  
     {
       addP4;
       if (Fi2 <= 4) break;
     }
+    Standard_FALLTHROUGH
   case 5 :  
     {
       addP5;
       if (Fi2 <= 5) break;
     }
+    Standard_FALLTHROUGH
   case 6 :  
     {
       addP6;
       if (Fi2 <= 6) break;
     }
+    Standard_FALLTHROUGH
   case 7 :  
     {
       addP7;
       if (Fi2 <= 7) break;
     }
+    Standard_FALLTHROUGH
   case 8 :  
   default :
     {
@@ -1313,18 +1335,25 @@ void BndLib::Add(const gp_Torus& S,const Standard_Real UMin,
       switch (Fi2) {
       case 15 :  
         addP7;
+        Standard_FALLTHROUGH
       case 14 :  
         addP6;
+        Standard_FALLTHROUGH
       case 13 :  
         addP5;
+        Standard_FALLTHROUGH
       case 12 :  
         addP4;
+        Standard_FALLTHROUGH
       case 11 :  
         addP3;
+        Standard_FALLTHROUGH
       case 10 :  
         addP2;
+        Standard_FALLTHROUGH
       case 9 : 
         addP1;
+        Standard_FALLTHROUGH
       case 8 : 
         break;
       }    

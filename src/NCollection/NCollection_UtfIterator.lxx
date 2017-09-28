@@ -79,10 +79,15 @@ inline void NCollection_UtfIterator<Type>::readUTF8()
   switch (aBytesToRead)
   {
     case 5: myCharUtf32 += *aPos++; myCharUtf32 <<= 6; // remember, illegal UTF-8
+      Standard_FALLTHROUGH
     case 4: myCharUtf32 += *aPos++; myCharUtf32 <<= 6; // remember, illegal UTF-8
+      Standard_FALLTHROUGH
     case 3: myCharUtf32 += *aPos++; myCharUtf32 <<= 6;
+      Standard_FALLTHROUGH
     case 2: myCharUtf32 += *aPos++; myCharUtf32 <<= 6;
+      Standard_FALLTHROUGH
     case 1: myCharUtf32 += *aPos++; myCharUtf32 <<= 6;
+      Standard_FALLTHROUGH
     case 0: myCharUtf32 += *aPos++;
   }
   myCharUtf32 -= offsetsFromUTF8[aBytesToRead];

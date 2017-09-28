@@ -178,12 +178,14 @@ IGESDraw_GeneralModule::IGESDraw_GeneralModule ()    {  }
       IGESDraw_ToolViewsVisible tool;
       tool.OwnImplied(anent,iter);
     }
+    break;
     case 14 : {
       DeclareAndCast(IGESDraw_ViewsVisibleWithAttr,anent,ent);
       if (anent.IsNull()) break;
       IGESDraw_ToolViewsVisibleWithAttr tool;
       tool.OwnImplied(anent,iter);
     }
+    break;
     default : break;
   }
 }

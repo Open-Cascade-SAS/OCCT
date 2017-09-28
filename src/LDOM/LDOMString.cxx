@@ -47,6 +47,7 @@ LDOMString::LDOMString (const LDOMBasicString&          anOther,
     break;
   case LDOM_AsciiFree:
     myType = LDOM_AsciiDoc;
+    Standard_FALLTHROUGH
   case LDOM_AsciiDocClear:
   case LDOM_AsciiDoc:
     {

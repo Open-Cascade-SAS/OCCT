@@ -60,7 +60,8 @@ void InitEpsCurv(Standard_Real&  epsnl ,Standard_Real&  epsdis, Standard_Real& e
 /*********************************************************************************/
 
 static Standard_Integer surfaceCcontinuity (Draw_Interpretor& di, Standard_Integer n, const char** a)
-{ Standard_Real U1, U2, V1, V2, u1, u2, v1, v2;
+{ 
+  Standard_Real U1, U2, V1, V2, u1, u2, v1, v2;
   GeomAbs_Shape TypeCont; 
   Standard_Integer ord;
   Standard_Boolean b1, b2, b3, b4;
@@ -75,86 +76,100 @@ static Standard_Integer surfaceCcontinuity (Draw_Interpretor& di, Standard_Integ
   Handle(Geom_Surface) surf2 = DrawTrSurf::GetSurface(a[5]);
   if (surf2.IsNull()) return 1;
    
-      U1 = Draw::Atof(a[3]);
-      U2 = Draw::Atof(a[6]);
-      V1 = Draw::Atof(a[4]); 
-      V2 = Draw::Atof(a[7]); 
+  U1 = Draw::Atof(a[3]);
+  U2 = Draw::Atof(a[6]);
+  V1 = Draw::Atof(a[4]); 
+  V2 = Draw::Atof(a[7]); 
 
-      ord = Draw::Atoi(a[1]);
+  ord = Draw::Atoi(a[1]);
 
-      surf1->Bounds(u1, u2, v1, v2);
-      b1 = ((((U1>=u1)&&(U1<=u2))||((U1<=u1)&&(U1>=u2))));
-      b3 = ((((V1>=v1)&&(V1<=v2))||((V1<=v1)&&(V1>=v2))));
+  surf1->Bounds(u1, u2, v1, v2);
+  b1 = ((((U1>=u1)&&(U1<=u2))||((U1<=u1)&&(U1>=u2))));
+  b3 = ((((V1>=v1)&&(V1<=v2))||((V1<=v1)&&(V1>=v2))));
 
-      surf2->Bounds(u1, u2, v1, v2);
-      b2 = ((((U2>=u1)&&(U2<=u2))||((U2<=u1)&&(U2>=u2))));
-      b4 = ((((V2>=v1)&&(V2<=v2))||((V2<=v1)&&(V2>=v2))));
-     
-      if (!((b1 && b2)&&(b3 && b4))) return 1;
+  surf2->Bounds(u1, u2, v1, v2);
+  b2 = ((((U2>=u1)&&(U2<=u2))||((U2<=u1)&&(U2>=u2))));
+  b4 = ((((V2>=v1)&&(V2<=v2))||((V2<=v1)&&(V2>=v2))));
 
- 
-       switch ( ord )
-       { case 0 : { TypeCont=GeomAbs_C0;
-                    switch(n)
-			{ case 10  : epsC0= Draw::Atof(a[9]);
-			  case 9   : epsnl = Draw::Atof(a[8]);
-			  case 8 : {} break;
-			  default : return 1;
-			} 
-	            LocalAnalysis_SurfaceContinuity RES (surf1, U1, V1, surf2, U2, V2, 
-                    TypeCont,epsnl,epsC0,epsC1,epsC2,epsG1,perce,maxlen);
-		    //LocalAnalysis::Dump(RES,cout);
-		    Standard_SStream aSStream;
-		    LocalAnalysis::Dump(RES,aSStream);
-		    di << aSStream;
-		  } 
-		  break;
-	 case 1 : { TypeCont=GeomAbs_C1;
-                     switch(n)
-			{ case 11 : epsC1=Draw::Atof(a[10]); 
-                          case 10  : epsC0= Draw::Atof(a[9]);
-			  case 9  : epsnl = Draw::Atof(a[8]);
-			  case 8  : {} break;
-			  default : return 1;
-			} 
-	            LocalAnalysis_SurfaceContinuity RES (surf1, U1, V1, surf2, U2, V2, 
-                    TypeCont,epsnl,epsC0,epsC1,epsC2,epsG1,perce,maxlen );
-		    //LocalAnalysis::Dump(RES,cout);
-		    Standard_SStream aSStream;
-		    LocalAnalysis::Dump(RES,aSStream);
-		    di << aSStream;
-     
-		  } 
-		  break;
-	 case 2 : { TypeCont=GeomAbs_C2;
-                    switch(n)
-		       {
-                          case 12 : epsC2= Draw::Atof(a[11]); 
-                          case 11 : epsC1=Draw::Atof(a[10]); 
-                          case 10 : epsC0= Draw::Atof(a[9]);
-			  case 9  : epsnl = Draw::Atof(a[8]);
-			  case 8  : {} break;
-			  default : return 1;
-			} 
-	            LocalAnalysis_SurfaceContinuity RES (surf1, U1, V1, surf2, U2, V2, 
-                           TypeCont, epsnl,epsC0,epsC1,epsC2,epsG1,perce,maxlen  );
-                    //LocalAnalysis::Dump(RES,cout);    
-		    Standard_SStream aSStream;
-                    LocalAnalysis::Dump(RES,aSStream);    
-		    di << aSStream;
-		  }
-		  break;
+  if (!((b1 && b2)&&(b3 && b4))) return 1;
 
-	 
-        default : {} 
-       }
-   return 0; 
+  switch ( ord )
+  { 
+  case 0 : 
+    { 
+      TypeCont = GeomAbs_C0;
+      switch(n)
+      { 
+      case 10: epsC0 = Draw::Atof(a[9]);
+        Standard_FALLTHROUGH
+      case 9 : epsnl = Draw::Atof(a[8]);
+        Standard_FALLTHROUGH
+      case 8 : break;
+      default : 
+        std::cerr << "Error: invalid number of arguments: expected to get 8 - 10 parameters" << std::endl;
+        return 1;
+      } 
+    } 
+    break;
+
+  case 1 : 
+    { 
+      TypeCont = GeomAbs_C1;
+      switch(n)
+      { 
+      case 11 : epsC1 = Draw::Atof(a[10]); 
+        Standard_FALLTHROUGH
+      case 10 : epsC0 = Draw::Atof(a[9]);
+        Standard_FALLTHROUGH
+      case 9  : epsnl = Draw::Atof(a[8]);
+        Standard_FALLTHROUGH
+      case 8  : break;
+      default : 
+        std::cerr << "Error: invalid number of arguments: expected to get 8 - 11 parameters" << std::endl;
+        return 1;
+      } 
+    } 
+    break;
+
+  case 2 : 
+    { 
+      TypeCont = GeomAbs_C2;
+      switch(n)
+      {
+      case 12 : epsC2 = Draw::Atof(a[11]); 
+        Standard_FALLTHROUGH
+      case 11 : epsC1 = Draw::Atof(a[10]); 
+        Standard_FALLTHROUGH
+      case 10 : epsC0 = Draw::Atof(a[9]);
+        Standard_FALLTHROUGH
+      case 9  : epsnl = Draw::Atof(a[8]);
+        Standard_FALLTHROUGH
+      case 8  : break;
+      default : 
+        std::cerr << "Error: invalid number of arguments: expected to get 8 - 12 parameters" << std::endl;
+        return 1;
+      } 
+    }
+    break;
+  default:
+    std::cerr << "Error: invalid value of parameter 1 (" << a[1] << "): should be 0, 1, or 2" << std::endl;
+    return 1;
+  }
+
+  LocalAnalysis_SurfaceContinuity RES (surf1, U1, V1, surf2, U2, V2, 
+                                       TypeCont, epsnl, epsC0, epsC1, epsC2, epsG1, perce, maxlen);
+  //LocalAnalysis::Dump(RES,cout);    
+  Standard_SStream aSStream;
+  LocalAnalysis::Dump(RES,aSStream);    
+  di << aSStream;
+  return 0; 
 }
 
 /*********************************************************************************/
 
 static Standard_Integer surfaceGcontinuity (Draw_Interpretor& di, Standard_Integer n, const char** a)
-{ Standard_Real U1, U2, V1, V2,u1, u2, v1, v2;
+{ 
+  Standard_Real U1, U2, V1, V2,u1, u2, v1, v2;
   GeomAbs_Shape TypeCont; 
   Standard_Integer ord;
   Standard_Boolean b1, b2, b3, b4;
@@ -169,72 +184,86 @@ static Standard_Integer surfaceGcontinuity (Draw_Interpretor& di, Standard_Integ
   Handle(Geom_Surface) surf2 = DrawTrSurf::GetSurface(a[5]);
   if (surf2.IsNull()) return 1;
    
-      U1 = Draw::Atof(a[3]);
-      U2 = Draw::Atof(a[6]);
-      V1 = Draw::Atof(a[4]); 
-      V2 = Draw::Atof(a[7]); 
+  U1 = Draw::Atof(a[3]);
+  U2 = Draw::Atof(a[6]);
+  V1 = Draw::Atof(a[4]); 
+  V2 = Draw::Atof(a[7]); 
 
-      ord = Draw::Atoi(a[1]);
+  ord = Draw::Atoi(a[1]);
 
-      surf1->Bounds(u1, u2, v1, v2);
-      b1 = ((((U1>=u1)&&(U1<=u2))||((U1<=u1)&&(U1>=u2))));
-      b3 = ((((V1>=v1)&&(V1<=v2))||((V1<=v1)&&(V1>=v2))));
+  surf1->Bounds(u1, u2, v1, v2);
+  b1 = ((((U1>=u1)&&(U1<=u2))||((U1<=u1)&&(U1>=u2))));
+  b3 = ((((V1>=v1)&&(V1<=v2))||((V1<=v1)&&(V1>=v2))));
 
-      surf2->Bounds(u1, u2, v1, v2);
-      b2 = ((((U2>=u1)&&(U2<=u2))||((U2<=u1)&&(U2>=u2))));
-      b4 = ((((V2>=v1)&&(V2<=v2))||((V2<=v1)&&(V2>=v2))));
-     
-      if (!((b1 && b2)&&(b3 && b4))) return 1;
+  surf2->Bounds(u1, u2, v1, v2);
+  b2 = ((((U2>=u1)&&(U2<=u2))||((U2<=u1)&&(U2>=u2))));
+  b4 = ((((V2>=v1)&&(V2<=v2))||((V2<=v1)&&(V2>=v2))));
 
- 
-       switch ( ord )
-       { 
-	 case 1 : { TypeCont=GeomAbs_G1;
-                     switch(n)
-			 { case 11 : epsG1=Draw::Atof(a[10]); 
-                          case 10  : epsC0= Draw::Atof(a[9]);
-			  case 9  : epsnl = Draw::Atof(a[8]);
-			  case 8  : {} break;
-			  default : return 1;
-			} 
-	           LocalAnalysis_SurfaceContinuity RES (surf1, U1, V1, surf2, U2, V2, 
-                      TypeCont,epsnl,epsC0,epsC1,epsC2,epsG1,perce,maxlen );
-		    //LocalAnalysis::Dump(RES,cout);
-		    Standard_SStream aSStream;
-		    LocalAnalysis::Dump(RES,aSStream);
-		    di << aSStream;
-    
-		  } 
-		  break;
-	 case 2 : { TypeCont=GeomAbs_G2;
-                    switch(n)
-		      {   case 13 : maxlen =Draw::Atof (a[12]);
-                          case 12 :  perce=Draw::Atof(a[11]); 
-                          case 11 : epsG1=Draw::Atof(a[10]); 
-                          case 10 : epsC0= Draw::Atof(a[9]);
-			  case 9  : epsnl = Draw::Atof(a[8]);
-			  case 8  : {} break;
-			  default : return 1;
-			} 
-	           LocalAnalysis_SurfaceContinuity RES (surf1, U1, V1, surf2, U2, V2, 
-                          TypeCont, epsnl,epsC0,epsC1,epsC2,epsG1,perce,maxlen  ); 
-		    //LocalAnalysis::Dump(RES,cout);
-		    Standard_SStream aSStream;
-		    LocalAnalysis::Dump(RES,aSStream);
-		    di << aSStream;
-		  }
-		  break;
+  if (!((b1 && b2)&&(b3 && b4))) return 1;
 
-	 
-        default : {} 
-       }
-   return 0;  
+
+  switch ( ord )
+  { 
+  case 1 : 
+    { 
+      TypeCont = GeomAbs_G1;
+      switch(n)
+      { 
+      case 11 : epsG1 = Draw::Atof(a[10]); 
+        Standard_FALLTHROUGH
+      case 10 : epsC0 = Draw::Atof(a[9]);
+        Standard_FALLTHROUGH
+      case 9  : epsnl = Draw::Atof(a[8]);
+        Standard_FALLTHROUGH
+      case 8  : break;
+      default : 
+        std::cerr << "Error: invalid number of arguments: expected to get 8 - 11 parameters" << std::endl;
+        return 1;
+      } 
+    } 
+    break;
+
+  case 2 : 
+    { 
+      TypeCont = GeomAbs_G2;
+      switch(n)
+      {
+      case 13 : maxlen = Draw::Atof (a[12]);
+        Standard_FALLTHROUGH
+      case 12 : perce = Draw::Atof(a[11]); 
+        Standard_FALLTHROUGH
+      case 11 : epsG1 = Draw::Atof(a[10]); 
+        Standard_FALLTHROUGH
+      case 10 : epsC0 = Draw::Atof(a[9]);
+        Standard_FALLTHROUGH
+      case 9  : epsnl = Draw::Atof(a[8]);
+        Standard_FALLTHROUGH
+      case 8  : break;
+      default : 
+        std::cerr << "Error: invalid number of arguments: expected to get 8 - 13 parameters" << std::endl;
+        return 1;
+      } 
+    }
+    break;
+  default:
+    std::cerr << "Error: invalid value of parameter 1 (" << a[1] << "): should be 1 or 2" << std::endl;
+    return 1;
+  }
+  
+  LocalAnalysis_SurfaceContinuity RES (surf1, U1, V1, surf2, U2, V2, 
+                                       TypeCont, epsnl, epsC0, epsC1, epsC2, epsG1, perce, maxlen);
+  //LocalAnalysis::Dump(RES,cout);
+  Standard_SStream aSStream;
+  LocalAnalysis::Dump(RES,aSStream);
+  di << aSStream;
+  return 0;  
 }
 
 /*********************************************************************************/
 
 static Standard_Integer curveGcontinuity(Draw_Interpretor& di, Standard_Integer n, const char** a)
-{ Standard_Real U1, U2, u1, u2;
+{ 
+  Standard_Real U1, U2, u1, u2;
   GeomAbs_Shape  TypeCont; 
   Standard_Integer ord;
   Standard_Boolean b1, b2;
@@ -263,53 +292,69 @@ static Standard_Integer curveGcontinuity(Draw_Interpretor& di, Standard_Integer 
 
   InitEpsCurv( epsnl,epsC0, epsC1, epsC2, epsG1, epsG2, percent,maxlen);
   switch ( ord )
-       { 
-	  case 1 : {
-                    switch(n)
-			{ case 9 :  epsG1=Draw::Atof(a[8]); 
-                          case 8  : epsC0= Draw::Atof(a[7]);
-			  case 7  : epsnl = Draw::Atof(a[6]);
-			  case 6  : {} break;
-			  default : return 1;
-			}                         
-                    TypeCont=GeomAbs_G1;
-	            LocalAnalysis_CurveContinuity RES (curv1, U1, curv2, U2, TypeCont, 
-                    epsnl,epsC0, epsC1, epsC2, epsG1,epsG2,percent,maxlen  );
-                    //LocalAnalysis::Dump(RES,cout); 
-		    Standard_SStream aSStream;
-                    LocalAnalysis::Dump(RES,aSStream); 
-		    di << aSStream;
-		  } 
-		  break;
-	 case 2 : { 
-                    TypeCont=GeomAbs_G2;
-                    switch(n)
-		       {case 12 :maxlen =Draw::Atof(a[11]);
-			case  11 :percent=Draw::Atof(a[10]);
-                        case 10 : epsG2= Draw::Atof(a[9]); 
-                        case 9 : epsG1=Draw::Atof(a[8]); 
-                        case 8  : epsC0= Draw::Atof(a[7]);
-			case 7  : epsnl = Draw::Atof(a[6]);
-			case 6  : {} break;
-			default : return 1;
-			} 
-	             LocalAnalysis_CurveContinuity RES (curv1, U1, curv2, U2, TypeCont,
-                         epsnl,epsC0, epsC1, epsC2, epsG1, epsG2,percent,maxlen  );
-                     //LocalAnalysis::Dump(RES,cout);   
-		    Standard_SStream aSStream;
-		    LocalAnalysis::Dump(RES,aSStream);   
-		    di << aSStream;
-		  }
-		  break; 
-        default : {}
-       }
-    return 0; 
+  { 
+  case 1 : 
+    {
+      TypeCont = GeomAbs_G1;
+      switch(n)
+      { 
+      case 9 :  epsG1 = Draw::Atof(a[8]); 
+        Standard_FALLTHROUGH
+      case 8  : epsC0 = Draw::Atof(a[7]);
+        Standard_FALLTHROUGH
+      case 7  : epsnl = Draw::Atof(a[6]);
+        Standard_FALLTHROUGH
+      case 6  : break;
+      default : 
+        std::cerr << "Error: invalid number of arguments: expected to get 6 - 8 parameters" << std::endl;
+        return 1;
+      }                         
+    } 
+    break;
+  case 2 : 
+    { 
+      TypeCont = GeomAbs_G2;
+      switch(n)
+      {
+      case 12 : maxlen = Draw::Atof(a[11]);
+        Standard_FALLTHROUGH
+      case 11 : percent = Draw::Atof(a[10]);
+        Standard_FALLTHROUGH
+      case 10 : epsG2 = Draw::Atof(a[9]); 
+        Standard_FALLTHROUGH
+      case 9  : epsG1 = Draw::Atof(a[8]); 
+        Standard_FALLTHROUGH
+      case 8  : epsC0 = Draw::Atof(a[7]);
+        Standard_FALLTHROUGH
+      case 7  : epsnl = Draw::Atof(a[6]);
+        Standard_FALLTHROUGH
+      case 6  : break;
+      default : 
+        std::cerr << "Error: invalid number of arguments: expected to get 6 - 12 parameters" << std::endl;
+        return 1;
+      } 
     }
+    break; 
+
+  default:
+    std::cerr << "Error: invalid value of parameter 1 (" << a[1] << "): should be 1 or 2" << std::endl;
+    return 1;
+  }
+
+  LocalAnalysis_CurveContinuity RES (curv1, U1, curv2, U2, TypeCont,
+                                     epsnl, epsC0, epsC1, epsC2, epsG1, epsG2, percent, maxlen);
+  //LocalAnalysis::Dump(RES,cout);   
+  Standard_SStream aSStream;
+  LocalAnalysis::Dump(RES,aSStream);   
+  di << aSStream;
+  return 0; 
+}
 
 /*********************************************************************************/
 
 static Standard_Integer curveCcontinuity(Draw_Interpretor& di, Standard_Integer n, const char** a)
-{ Standard_Real U1, U2, u1, u2;
+{ 
+  Standard_Real U1, U2, u1, u2;
   GeomAbs_Shape  TypeCont; 
   Standard_Integer ord;
   Standard_Boolean b1, b2;
@@ -321,77 +366,94 @@ static Standard_Integer curveCcontinuity(Draw_Interpretor& di, Standard_Integer 
   Handle(Geom_Curve) curv2 = DrawTrSurf::GetCurve(a[4]);
   if (curv2.IsNull()) return 1;
 
-   U1 = Draw::Atof(a[3]);
-   U2 = Draw::Atof(a[5]);
- 
-   ord = Draw::Atoi(a[1]);
+  U1 = Draw::Atof(a[3]);
+  U2 = Draw::Atof(a[5]);
 
-   u1=curv1->FirstParameter();
-   u2=curv1->LastParameter();
-   b1 = ((((U1>=u1)&&(U1<=u2))||((U1<=u1)&&(U1>=u2))));
-   
-   u1=curv2->FirstParameter();
-   u2=curv2->LastParameter();   
-   b2 = ((((U2>=u1)&&(U2<=u2))||((U2<=u1)&&(U2>=u2))));
-     
-   if (!(b1 && b2)) return 1;
+  ord = Draw::Atoi(a[1]);
 
+  u1=curv1->FirstParameter();
+  u2=curv1->LastParameter();
+  b1 = ((((U1>=u1)&&(U1<=u2))||((U1<=u1)&&(U1>=u2))));
 
-   InitEpsCurv( epsnl,epsC0, epsC1, epsC2, epsG1, epsG2, percent,maxlen);
-   switch ( ord )
-       { case 0 : {  switch(n)
-			{ case 8  : epsC0= Draw::Atof(a[7]);
-			  case 7  : epsnl = Draw::Atof(a[6]);
-			  case 6  : {} break;
-			  default : return 1;
-			}                     
-                      TypeCont=GeomAbs_C0;
-	              LocalAnalysis_CurveContinuity  RES (curv1, U1, curv2, U2, TypeCont,
-                       epsnl,epsC0, epsC1, epsC2, epsG1,epsG2,percent,maxlen  );
-		     //LocalAnalysis::Dump(RES,cout);
-		     Standard_SStream aSStream;
-		     LocalAnalysis::Dump(RES,aSStream);
-		     di << aSStream;
+  u1=curv2->FirstParameter();
+  u2=curv2->LastParameter();   
+  b2 = ((((U2>=u1)&&(U2<=u2))||((U2<=u1)&&(U2>=u2))));
 
-		   }  break;
-	 case 1 : { switch(n)
-			{ case 9 : epsC1 =Draw::Atof(a[8]);
-                          case 8  : epsC0= Draw::Atof(a[7]);
-			  case 7  : epsnl = Draw::Atof(a[6]);
-			  case 6  : {} break;
-			  default : return 1;
-			}                          
-                    TypeCont=GeomAbs_C1;
-	            LocalAnalysis_CurveContinuity RES (curv1, U1, curv2, U2, TypeCont, 
-                    epsnl,epsC0, epsC1, epsC2, epsG1,epsG2,percent,maxlen  );
-                    //LocalAnalysis::Dump(RES,cout); 
-		    Standard_SStream aSStream;
-                    LocalAnalysis::Dump(RES,aSStream); 
-		    di << aSStream;
-	           
-		  } break;
-	 case 2 : {  TypeCont=GeomAbs_C2;
-                     switch(n)
-		       {
-                          case 10 : epsC2= Draw::Atof(a[9]); 
-                          case 9  : epsC1=Draw::Atof(a[8]); 
-                          case 8  : epsC0= Draw::Atof(a[7]);
-			  case 7  : epsnl = Draw::Atof(a[6]);
-			  case 6  : {} break;
-			  default : return 1;
-			} 
-	            LocalAnalysis_CurveContinuity RES (curv1, U1, curv2, U2, TypeCont, 
-                    epsnl,epsC0, epsC1, epsC2, epsG1, epsG2,percent,maxlen  );
-                    //LocalAnalysis::Dump(RES,cout);   
-		    Standard_SStream aSStream;
-                    LocalAnalysis::Dump(RES,aSStream);   
-		    di << aSStream;
-		  }
-		  break; 
-        default : {}
-       }
-    return 0;
+  if (!(b1 && b2)) return 1;
+
+  InitEpsCurv( epsnl,epsC0, epsC1, epsC2, epsG1, epsG2, percent,maxlen);
+  switch ( ord )
+  { 
+  case 0 : 
+    {
+      TypeCont = GeomAbs_C0;
+      switch(n)
+      { 
+      case 8  : epsC0 = Draw::Atof(a[7]);
+        Standard_FALLTHROUGH
+      case 7  : epsnl = Draw::Atof(a[6]);
+        Standard_FALLTHROUGH
+      case 6  : break;
+      default : 
+        std::cerr << "Error: invalid number of arguments: expected to get 6 - 8 parameters" << std::endl;
+        return 1;
+      }
+    }  
+    break;
+  case 1 : 
+    { 
+      TypeCont = GeomAbs_C1;
+      switch(n)
+      { 
+      case 9 : epsC1 = Draw::Atof(a[8]);
+        Standard_FALLTHROUGH
+      case 8 : epsC0 = Draw::Atof(a[7]);
+        Standard_FALLTHROUGH
+      case 7 : epsnl = Draw::Atof(a[6]);
+        Standard_FALLTHROUGH
+      case 6 : break;
+      default : 
+        std::cerr << "Error: invalid number of arguments: expected to get 6 - 9 parameters" << std::endl;
+        return 1;
+      }                          
+    } 
+    break;
+
+  case 2 : 
+    {  
+      TypeCont = GeomAbs_C2;
+      switch(n)
+      {
+      case 10 : epsC2 = Draw::Atof(a[9]); 
+        Standard_FALLTHROUGH
+      case 9  : epsC1 = Draw::Atof(a[8]); 
+        Standard_FALLTHROUGH
+      case 8  : epsC0 = Draw::Atof(a[7]);
+        Standard_FALLTHROUGH
+      case 7  : epsnl = Draw::Atof(a[6]);
+        Standard_FALLTHROUGH
+      case 6  : break;
+      default : 
+        std::cerr << "Error: invalid number of arguments: expected to get 6 - 10 parameters" << std::endl;
+        return 1;
+      } 
     }
+    break; 
+
+  default:
+    std::cerr << "Error: invalid value of parameter 1 (" << a[1] << "): should be 0, 1, or 2" << std::endl;
+    return 1;
+  }
+
+  LocalAnalysis_CurveContinuity RES (curv1, U1, curv2, U2, TypeCont, 
+                                     epsnl, epsC0, epsC1, epsC2, epsG1, epsG2, percent, maxlen);
+  //LocalAnalysis::Dump(RES,cout);   
+  Standard_SStream aSStream;
+  LocalAnalysis::Dump(RES,aSStream);   
+  di << aSStream;
+  return 0;
+}
+
 /***************************************************************************/
 void GeometryTest::ContinuityCommands( Draw_Interpretor& theCommands)
 {
@@ -403,8 +465,6 @@ void GeometryTest::ContinuityCommands( Draw_Interpretor& theCommands)
   const char* g;
 
   g = "GEOMETRY curves and surfaces continuity analysis ";
-
-
 
   theCommands.Add("surfaceCcontinuity",
 		  " surfaceCcontinuity   order surf1 parU1 parV1 surf2 parU2 parV2  [eps_nul[ epsC0 [epsC1 [epsC2]]]]",  

@@ -312,8 +312,8 @@ void STEPControl_ActorWrite::SetMode (const STEPControl_StepModelType M)
   case STEPControl_BrepWithVoids :     ModeTrans() = 5; break;
   case STEPControl_FacetedBrep :       ModeTrans() = 1; break;
   case STEPControl_FacetedBrepAndBrepWithVoids : ModeTrans() = 6; break;
-  case STEPControl_ShellBasedSurfaceModel :      ModeTrans() = 2;
-  case STEPControl_GeometricCurveSet :           ModeTrans() = 4;
+  case STEPControl_ShellBasedSurfaceModel :      ModeTrans() = 2; break;
+  case STEPControl_GeometricCurveSet :           ModeTrans() = 4; break;
   case STEPControl_Hybrid : ModeTrans() = 0; break;  // PAS IMPLEMENTE !!
     default: break;
   }

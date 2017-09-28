@@ -354,6 +354,7 @@ void Approx_CurvlinFunc::Trim(const Standard_Real First, const Standard_Real Las
     myC2D2 = ((Adaptor3d_CurveOnSurface *)(&(HCurOnSur->Curve())))->GetCurve();
     mySurf2 = ((Adaptor3d_CurveOnSurface *)(&(HCurOnSur->Curve())))->GetSurface();
 
+    Standard_FALLTHROUGH
   case 2:
     CurOnSur.Load(myC2D1);
     CurOnSur.Load(mySurf1);

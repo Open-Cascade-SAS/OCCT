@@ -624,6 +624,7 @@ void ProjLib_ProjectOnPlane::Load(const Handle(Adaptor3d_HCurve)&    C,
       R1 = R2 = Circ.Radius();
 
     }
+    Standard_FALLTHROUGH
   case GeomAbs_Ellipse:
     {
       if ( Type == GeomAbs_Ellipse) {

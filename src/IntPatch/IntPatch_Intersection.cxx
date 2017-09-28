@@ -166,6 +166,7 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_HSurface)&  S1,
       if (Intersector.IsDone() && Intersector.IsEmpty())
         break;
     }
+    Standard_FALLTHROUGH
   default:
     {
       IntPatch_PrmPrmIntersection interpp;

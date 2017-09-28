@@ -423,62 +423,76 @@ static TopoDS_Shape ShapeWithType(const TopoDS_Shape     theShape,
     switch (aType) {
     case TopAbs_VERTEX: // can't do something from vertex
       break;
-    case TopAbs_EDGE: {// make wire from edges
-      if (theType <= TopAbs_SOLID) break;
-      BRepBuilderAPI_MakeWire aMakeWire;
-      aMakeWire.Add(aShapes);
-      if (!aMakeWire.IsDone()) return theShape;
-      if (theType == TopAbs_WIRE) return aMakeWire.Wire();
-      aShapes.Clear(); // don't break: we can do something more of it
-      aShapes.Append(aMakeWire.Wire());
-      aListIter.Initialize(aShapes);
-    }
-    case TopAbs_WIRE: {// make faceS from wires (one per one)
-      if (theType < TopAbs_SOLID) break;
-      TopTools_ListOfShape aFaces;
-      for(;aListIter.More();aListIter.Next()) {
-	BRepBuilderAPI_MakeFace aMakeFace(TopoDS::Wire(aListIter.Value()));
-	if (!aMakeFace.IsDone()) aFaces.Append(aMakeFace.Face());
+    case TopAbs_EDGE: 
+      {
+        // make wire from edges
+        if (theType <= TopAbs_SOLID) break;
+        BRepBuilderAPI_MakeWire aMakeWire;
+        aMakeWire.Add(aShapes);
+        if (!aMakeWire.IsDone()) return theShape;
+        if (theType == TopAbs_WIRE) return aMakeWire.Wire();
+        aShapes.Clear(); // don't break: we can do something more of it
+        aShapes.Append(aMakeWire.Wire());
+        aListIter.Initialize(aShapes);
       }
-      if (theType == TopAbs_FACE) {
-	if (aFaces.Extent() == 1) return aFaces.First();
-	return theShape;
+      Standard_FALLTHROUGH
+    case TopAbs_WIRE: 
+      {
+        // make faceS from wires (one per one)
+        if (theType < TopAbs_SOLID) break;
+        TopTools_ListOfShape aFaces;
+        for(;aListIter.More();aListIter.Next()) {
+          BRepBuilderAPI_MakeFace aMakeFace(TopoDS::Wire(aListIter.Value()));
+          if (!aMakeFace.IsDone()) aFaces.Append(aMakeFace.Face());
+        }
+        if (theType == TopAbs_FACE) {
+          if (aFaces.Extent() == 1) return aFaces.First();
+          return theShape;
+        }
+        aShapes.Assign(aFaces); // don't break: we can do something more of it
+        aListIter.Initialize(aShapes);
       }
-      aShapes.Assign(aFaces); // don't break: we can do something more of it
-      aListIter.Initialize(aShapes);
-    }
-    case TopAbs_FACE: {// make shell from faces
-      if (theType < TopAbs_SOLID) break;
-      BRep_Builder aShellBuilder;
-      TopoDS_Shell aShell;
-      aShellBuilder.MakeShell(aShell);
-      for(;aListIter.More();aListIter.Next()) aShellBuilder.Add(aShell,TopoDS::Face(aListIter.Value()));
-      aShell.Closed (BRep_Tool::IsClosed (aShell));
-      if (theType == TopAbs_SHELL) return aShell;
-      aShapes.Clear(); // don't break: we can do something more of it
-      aShapes.Append(aShell);
-      aListIter.Initialize(aShapes);
-    }
-    case TopAbs_SHELL: {// make solids from shells (one per one)
-      TopTools_ListOfShape aSolids;
-      for(;aListIter.More();aListIter.Next()) {
-	BRepBuilderAPI_MakeSolid aMakeSolid(TopoDS::Shell(aListIter.Value()));
-	if (aMakeSolid.IsDone()) aSolids.Append(aMakeSolid.Solid());
+      Standard_FALLTHROUGH
+    case TopAbs_FACE: 
+      {
+        // make shell from faces
+        if (theType < TopAbs_SOLID) break;
+        BRep_Builder aShellBuilder;
+        TopoDS_Shell aShell;
+        aShellBuilder.MakeShell(aShell);
+        for(;aListIter.More();aListIter.Next()) aShellBuilder.Add(aShell,TopoDS::Face(aListIter.Value()));
+        aShell.Closed (BRep_Tool::IsClosed (aShell));
+        if (theType == TopAbs_SHELL) return aShell;
+        aShapes.Clear(); // don't break: we can do something more of it
+        aShapes.Append(aShell);
+        aListIter.Initialize(aShapes);
       }
-      if (theType == TopAbs_SOLID) {
-	if (aSolids.Extent() == 1) return aSolids.First();
-	return theShape;
+      Standard_FALLTHROUGH
+    case TopAbs_SHELL: 
+      {
+        // make solids from shells (one per one)
+        TopTools_ListOfShape aSolids;
+        for(;aListIter.More();aListIter.Next()) {
+          BRepBuilderAPI_MakeSolid aMakeSolid(TopoDS::Shell(aListIter.Value()));
+          if (aMakeSolid.IsDone()) aSolids.Append(aMakeSolid.Solid());
+        }
+        if (theType == TopAbs_SOLID) {
+          if (aSolids.Extent() == 1) return aSolids.First();
+          return theShape;
+        }
+        aShapes.Assign(aSolids); // don't break: we can do something more of it
+        aListIter.Initialize(aShapes);
       }
-      aShapes.Assign(aSolids); // don't break: we can do something more of it
-      aListIter.Initialize(aShapes);
-    }
-    case TopAbs_SOLID: {// make compsolid from solids
-      BRep_Builder aCompBuilder;
-      TopoDS_CompSolid aCompSolid;
-      aCompBuilder.MakeCompSolid(aCompSolid);
-      for(;aListIter.More();aListIter.Next()) aCompBuilder.Add(aCompSolid,TopoDS::Solid(aListIter.Value()));
-      if (theType == TopAbs_COMPSOLID) return aCompSolid;
-    }
+      Standard_FALLTHROUGH
+    case TopAbs_SOLID: 
+      {
+        // make compsolid from solids
+        BRep_Builder aCompBuilder;
+        TopoDS_CompSolid aCompSolid;
+        aCompBuilder.MakeCompSolid(aCompSolid);
+        for(;aListIter.More();aListIter.Next()) aCompBuilder.Add(aCompSolid,TopoDS::Solid(aListIter.Value()));
+        if (theType == TopAbs_COMPSOLID) return aCompSolid;
+      }
     }
   }
   return theShape;

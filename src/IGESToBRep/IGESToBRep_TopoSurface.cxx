@@ -1019,14 +1019,15 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferOffsetSurface
     }
   case TopAbs_SHELL :
     {
-      SendWarning(st, "The First Surface only will be transfered.");
       TopoDS_Iterator dabovil(igesShape);
       if (dabovil.More()) {
-	face = TopoDS::Face(dabovil.Value());
-	break;
+        SendWarning(st, "The First Surface only will be transfered.");
+        face = TopoDS::Face(dabovil.Value());
+        break;
       }
       /* else  AddF("... */
     }
+    Standard_FALLTHROUGH
   default:
     {
       Message_Msg msg1156("IGES_1156");

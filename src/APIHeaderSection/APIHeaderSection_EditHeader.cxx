@@ -45,29 +45,34 @@ static Standard_Boolean IsTimeStamp
     case  4 : if (uncar < '0' || uncar > '9') return Standard_False;
       break;
     case  5 : if (uncar != '-') return Standard_False;
+      Standard_FALLTHROUGH
     case  6 : if (uncar != '0' && uncar != '1') return Standard_False;
       break;
     case  7 : if (uncar < '0' || uncar > '9') return Standard_False;
       if (dizmois == '1' && (uncar < '0' || uncar > '2')) return Standard_False;
       break;
     case  8 : if (uncar != '-') return Standard_False;
+      Standard_FALLTHROUGH
     case  9 : if (uncar < '0' || uncar > '3') return Standard_False;
       break;
     case 10 : if (uncar < '0' || uncar > '9') return Standard_False;
       if (dizjour == '3' && (uncar != '0' && uncar != '1')) return Standard_False;
       break;
     case 11 : if (uncar != 'T') return Standard_False;
+      Standard_FALLTHROUGH
     case 12 : if (uncar < '0' || uncar > '2') return Standard_False;
       break;
     case 13 : if (uncar < '0' || uncar > '9') return Standard_False;
       if (dizheur == '2' && (uncar < '0' || uncar > '3')) return Standard_False;
       break;
     case 14 : if (uncar != ':') return Standard_False;
+      Standard_FALLTHROUGH
     case 15 : if (uncar < '0' || uncar > '5') return Standard_False;
       break;
     case 16 : if (uncar < '0' || uncar > '9') return Standard_False;
       break;
     case 17 : if (uncar != ':') return Standard_False;
+      Standard_FALLTHROUGH
     case 18 : if (uncar < '0' || uncar > '5') return Standard_False;
       break;
     case 19 : if (uncar < '0' || uncar > '9') return Standard_False;

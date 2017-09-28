@@ -159,6 +159,7 @@ template <class _Char> static inline Standard_Boolean loadFile (_Char * theBuffe
         aMessage += aString;
         break;
       }
+      Standard_FALLTHROUGH
     case MsgFile_WaitingMessage:
       if (isKeyword == Standard_False)
       {
@@ -168,6 +169,7 @@ template <class _Char> static inline Standard_Boolean loadFile (_Char * theBuffe
         break;
       }
       //      Pass from here to 'case MsgFile_WaitingKeyword'
+      Standard_FALLTHROUGH
     case MsgFile_WaitingKeyword:
       if (isKeyword)
       {

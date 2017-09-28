@@ -102,6 +102,7 @@ void ViewerTest_AutoUpdater::Update()
         return;
       }
     }
+    Standard_FALLTHROUGH
     case ViewerTest_AutoUpdater::RedrawMode_Forced:
     {
       if (!myContext.IsNull())

@@ -342,6 +342,7 @@ void SelectMgr_SelectionManager::Activate (const Handle(SelectMgr_SelectableObje
       theObject->RecomputePrimitives (theMode);
       // pass through SelectMgr_TOU_Partial
     }
+    Standard_FALLTHROUGH
     case SelectMgr_TOU_Partial:
     {
       if(theObject->HasTransformation())
@@ -755,6 +756,7 @@ void SelectMgr_SelectionManager::Update (const Handle(SelectMgr_SelectableObject
           RestoreSelectionStructures (theObject, aSelection->Mode());
           // pass through SelectMgr_TOU_Partial
         }
+        Standard_FALLTHROUGH
         case SelectMgr_TOU_Partial:
         {
           theObject->UpdateTransformations (aSelection);
@@ -822,6 +824,7 @@ void SelectMgr_SelectionManager::Update (const Handle(SelectMgr_SelectableObject
           RestoreSelectionStructures (theObject, aSelection->Mode());
           // pass through SelectMgr_TOU_Partial
         }
+        Standard_FALLTHROUGH
         case SelectMgr_TOU_Partial:
         {
           theObject->UpdateTransformations (aSelection);
@@ -846,6 +849,7 @@ void SelectMgr_SelectionManager::Update (const Handle(SelectMgr_SelectableObject
           RestoreSelectionStructures (theObject, aSelection->Mode(), theSelector);
           // pass through SelectMgr_TOU_Partial
         }
+        Standard_FALLTHROUGH
         case SelectMgr_TOU_Partial:
         {
           if (theObject->HasTransformation())

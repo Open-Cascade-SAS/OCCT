@@ -129,6 +129,7 @@ void Extrema_ExtCS::Perform(const Adaptor3d_Curve& C,
       case GeomAbs_Plane:
         myExtElCS.Perform(C.Line(), myS->Plane());
         if (myExtElCS.IsParallel())   break;
+        Standard_FALLTHROUGH
 
       case GeomAbs_Torus:
       case GeomAbs_Cone:
@@ -233,6 +234,7 @@ void Extrema_ExtCS::Perform(const Adaptor3d_Curve& C,
         break;
       }
     }
+    Standard_FALLTHROUGH
   case GeomAbs_Hyperbola: 
     {
       if(myCtype == GeomAbs_Hyperbola && myStype == GeomAbs_Plane) {
@@ -241,6 +243,7 @@ void Extrema_ExtCS::Perform(const Adaptor3d_Curve& C,
         break;
       }
     }
+    Standard_FALLTHROUGH
   default:
     {
       Extrema_GenExtCS Ext;

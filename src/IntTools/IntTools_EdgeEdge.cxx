@@ -1392,6 +1392,7 @@ Standard_Real ResolutionCoeff(const BRepAdaptor_Curve& theBAC,
       break;
     }
   }
+  Standard_FALLTHROUGH
   case GeomAbs_Hyperbola :
   case GeomAbs_Parabola : 
   case GeomAbs_OtherCurve :{
@@ -1467,6 +1468,7 @@ Standard_Real Resolution(const Handle(Geom_Curve)& theCurve,
       break;
     }
   }
+  Standard_FALLTHROUGH
   default:
     aRes = theResCoeff * theR3D;
     break;

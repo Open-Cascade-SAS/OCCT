@@ -383,52 +383,50 @@ TDataXtd_GeometryEnum  TDataXtd_Geometry::Type (const Handle(TNaming_NamedShape)
       // TopLoc_Location loc;
       Handle(Geom_Curve) curve = BRep_Tool::Curve (edge,first,last);
       if (!curve.IsNull()) {
-	if (curve->IsInstance (STANDARD_TYPE (Geom_TrimmedCurve))) {
-	  curve =  (Handle(Geom_TrimmedCurve)::DownCast (curve))->BasisCurve ();
-	}
-	if (curve->IsInstance(STANDARD_TYPE(Geom_Line))) {
-	  type = TDataXtd_LINE;
-	}
-	else if (curve->IsInstance(STANDARD_TYPE(Geom_Circle))) {
-	  type = TDataXtd_CIRCLE;
-	}
-	else if (curve->IsInstance(STANDARD_TYPE(Geom_Ellipse))) {
-	  type = TDataXtd_ELLIPSE;
-	}
-	break;
+        if (curve->IsInstance (STANDARD_TYPE (Geom_TrimmedCurve))) {
+          curve =  (Handle(Geom_TrimmedCurve)::DownCast (curve))->BasisCurve ();
+        }
+        if (curve->IsInstance(STANDARD_TYPE(Geom_Line))) {
+          type = TDataXtd_LINE;
+        }
+        else if (curve->IsInstance(STANDARD_TYPE(Geom_Circle))) {
+          type = TDataXtd_CIRCLE;
+        }
+        else if (curve->IsInstance(STANDARD_TYPE(Geom_Ellipse))) {
+          type = TDataXtd_ELLIPSE;
+        }
       }
 #ifdef OCCT_DEBUG
       else {
-	throw Standard_Failure("curve Null dans TDataXtd_Geometry");
+        throw Standard_Failure("curve Null dans TDataXtd_Geometry");
       }
 #endif
+      break;
     }
   case TopAbs_FACE : 
     {
       const TopoDS_Face& face = TopoDS::Face(shape);
       Handle(Geom_Surface) surface = BRep_Tool::Surface (face);
       if (!surface.IsNull()) {
-	if (surface->IsInstance(STANDARD_TYPE(Geom_RectangularTrimmedSurface))) { 
-	  surface = Handle(Geom_RectangularTrimmedSurface)::DownCast (surface)->BasisSurface();
-	}
-	if (surface->IsInstance(STANDARD_TYPE(Geom_CylindricalSurface))) {
-	  type = TDataXtd_CYLINDER;
-	}
-	else if (surface->IsInstance(STANDARD_TYPE(Geom_Plane))) {
-	  type = TDataXtd_PLANE;
-	}
+        if (surface->IsInstance(STANDARD_TYPE(Geom_RectangularTrimmedSurface))) { 
+          surface = Handle(Geom_RectangularTrimmedSurface)::DownCast (surface)->BasisSurface();
+        }
+        if (surface->IsInstance(STANDARD_TYPE(Geom_CylindricalSurface))) {
+          type = TDataXtd_CYLINDER;
+        }
+        else if (surface->IsInstance(STANDARD_TYPE(Geom_Plane))) {
+          type = TDataXtd_PLANE;
+        }
       } 
 #ifdef OCCT_DEBUG
       else {
-	throw Standard_Failure("surface Null dans TDataXtd_Geometry");
+        throw Standard_Failure("surface Null dans TDataXtd_Geometry");
       }
 #endif
       break;
     }
     default :
-      {
-	break;
-      }
+      break;
   }
   return type;
 }

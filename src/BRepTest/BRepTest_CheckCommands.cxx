@@ -1091,12 +1091,16 @@ static Standard_Integer shapeG1continuity (Draw_Interpretor& di, Standard_Intege
   nbeval = (Standard_Integer ) Draw::Atof( a[3]);
 
   switch(n)
-    { case 7  : epsG1 = Draw::Atof(a[6]);
-      case 6  : epsC0   = Draw::Atof(a[5]);
-      case 5  : epsnl    = Draw::Atof(a[4]);
-      case 4  : {} break;
-      default : return 1;
-    }
+  { 
+  case 7  : epsG1 = Draw::Atof(a[6]);
+    Standard_FALLTHROUGH
+  case 6  : epsC0 = Draw::Atof(a[5]);
+    Standard_FALLTHROUGH
+  case 5  : epsnl = Draw::Atof(a[4]);
+    Standard_FALLTHROUGH
+  case 4  : break;
+  default : return 1;
+  }
 
 
   Standard_Real pard1, parf1, U, Uf, deltaU, nb = 0;
@@ -1216,12 +1220,14 @@ static Standard_Integer shapeG0continuity (Draw_Interpretor& di, Standard_Intege
   nbeval = (Standard_Integer ) Draw::Atof( a[3]);
 
   switch(n)
-    { case 6  : epsC0   = Draw::Atof(a[5]);
-      case 5  : epsnl    = Draw::Atof(a[4]);
-      case 4  : {} break;
-      default : return 1;
-    }
-
+  { 
+  case 6  : epsC0   = Draw::Atof(a[5]);
+    Standard_FALLTHROUGH
+  case 5  : epsnl    = Draw::Atof(a[4]);
+    Standard_FALLTHROUGH
+  case 4  : break;
+  default : return 1;
+  }
 
   Standard_Real pard1, parf1, U, Uf, deltaU, nb = 0;
   Standard_Boolean isconti = Standard_True;
@@ -1337,15 +1343,20 @@ static Standard_Integer shapeG2continuity (Draw_Interpretor& di, Standard_Intege
   nbeval = (Standard_Integer ) Draw::Atof( a[3]);
 
   switch(n)
-    { 
-      case 9  :  maxlen   = Draw::Atof(a[8]);
-      case 8   : percent   = Draw::Atof(a[7]);      
-      case 7   : epsG1 = Draw::Atof(a[6]);
-      case 6  :  epsC0   = Draw::Atof(a[5]);
-      case 5  :  epsnl   = Draw::Atof(a[4]);
-      case 4  : {} break;
-      default : return 1;
-    }
+  { 
+  case 9  :  maxlen = Draw::Atof(a[8]);
+    Standard_FALLTHROUGH
+  case 8   : percent = Draw::Atof(a[7]);      
+    Standard_FALLTHROUGH
+  case 7   : epsG1 = Draw::Atof(a[6]);
+    Standard_FALLTHROUGH
+  case 6  :  epsC0 = Draw::Atof(a[5]);
+    Standard_FALLTHROUGH
+  case 5  :  epsnl = Draw::Atof(a[4]);
+    Standard_FALLTHROUGH
+  case 4  : break;
+  default : return 1;
+  }
 
 
   Standard_Real pard1, parf1, U, Uf, deltaU, nb = 0;

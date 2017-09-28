@@ -377,6 +377,7 @@ IFSelect_SessionPilot::IFSelect_SessionPilot (const Standard_CString prompt)
       modhelp = 1;
       cout<<"  --  Commands candidate for  xsnew  --"<<endl;
 //  HELP : soit complet (par defaut)  soit limite a xsnew
+      Standard_FALLTHROUGH
     case  0 : {                               //        ****     HELP
       Handle(TColStd_HSequenceOfAsciiString) list;
 //    Help complet : on donne la liste des commandes, sans plus (deja pas mal)

@@ -2495,6 +2495,7 @@ void GeomLib::IsClosed (const Handle(Geom_Surface)& S,
         return;
       }
     }
+    Standard_FALLTHROUGH
     case GeomAbs_Cylinder:
     {
       if(Precision::IsInfinite(v1))

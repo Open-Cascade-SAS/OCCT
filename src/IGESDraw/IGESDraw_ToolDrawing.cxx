@@ -277,6 +277,7 @@ void IGESDraw_ToolDrawing::OwnDump
       break; // Nothing to be dumped here
     case 5 :        // Presently level 5 and 6 have the same Dump
       S << endl;
+      Standard_FALLTHROUGH
     case 6 :
       {
 	Standard_Integer I;
