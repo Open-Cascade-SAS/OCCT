@@ -47,9 +47,9 @@ static
   Standard_Real GetAddToParam(const gp_Lin& L,const Standard_Real P,const Bnd_Box& B);
 
 //gets transition of line <L> passing through/near the edge <e> of faces <f1>, <f2>. <param> is
-// a parameter on the edge where the minimum distance between <l> and <e> was found 
-static Standard_Integer GetTransi(const TopoDS_Face& f1, const TopoDS_Face& f2, const TopoDS_Edge e, 
-                     Standard_Real param, const Geom_Line& L, IntCurveSurface_TransitionOnCurve& trans);
+// a parameter on the edge where the minimum distance between <l> and <e> was found
+static Standard_Integer GetTransi(const TopoDS_Face& f1, const TopoDS_Face& f2, const TopoDS_Edge e,
+                     Standard_Real param, const gp_Lin& L, IntCurveSurface_TransitionOnCurve& trans);
 
 static Standard_Boolean GetNormalOnFaceBound(const TopoDS_Edge& E, const TopoDS_Face& F, Standard_Real param, gp_Dir& OutDir);
 
@@ -560,7 +560,7 @@ static Standard_Integer GetTransi(const TopoDS_Face& f1,
                                   const TopoDS_Face& f2,
                                   const TopoDS_Edge e,
                                   const Standard_Real param,
-                                  const Geom_Line& L,
+                                  const gp_Lin& L,
                                   IntCurveSurface_TransitionOnCurve& trans)
 {
   //return statuses:
@@ -573,7 +573,7 @@ static Standard_Integer GetTransi(const TopoDS_Face& f1,
   if (!GetNormalOnFaceBound(e, f2, param, nf2))
     return -1;
 
-  const gp_Dir& LDir = L.Lin().Direction();
+  const gp_Dir& LDir = L.Direction();
 
   if(Abs(LDir.Dot(nf1)) < Precision::Angular() || Abs(LDir.Dot(nf2)) < Precision::Angular())
   {

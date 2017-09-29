@@ -1245,9 +1245,11 @@ static Standard_Boolean FUN_ngF(const gp_Pnt2d& uv, const TopoDS_Face& F, gp_Vec
       Standard_Boolean nullx = (Abs(uv.X()) < tolu);
       Standard_Boolean apex = nullx && (Abs(uv.Y()) < tolv);
       if (apex) {
-	const gp_Dir& axis = bs.Cone().Axis().Direction();
-	gp_Vec ng(axis); ng.Reverse();
-	ngF = ng; return Standard_True;
+        const gp_Dir axis = bs.Cone().Axis().Direction();
+        gp_Vec ng(axis);
+        ng.Reverse();
+        ngF = ng;
+        return Standard_True;
       }
       else if (du < tolu) {		
 	Standard_Real x = uv.X(); 

@@ -114,8 +114,8 @@ void DrawDim_Distance::DrawOn(Draw_Display& dis) const
   // today we process only planar faces
   if (surf1.GetType() != GeomAbs_Plane)
     return;
-  
-  const gp_Ax1& anAx1 = surf1.Plane().Axis();
+
+  gp_Ax1 anAx1 = surf1.Plane().Axis();
   gp_Vec V = anAx1.Direction();
 
   // output
