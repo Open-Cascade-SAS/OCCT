@@ -94,7 +94,7 @@ public:
   
   //! Is never called in the algorithms.
   //! Nothing is done.
-  Standard_EXPORT static AppDef_MultiLine& MakeMLBetween (const AppDef_MultiLine& ML,
+  Standard_EXPORT static AppDef_MultiLine MakeMLBetween (const AppDef_MultiLine& ML,
                                                           const Standard_Integer I1,
                                                           const Standard_Integer I2,
                                                           const Standard_Integer NbPMin);
@@ -106,27 +106,6 @@ public:
                                                                 const Standard_Integer I2,
                                                                 const Standard_Integer indbad,
                                                                 AppDef_MultiLine& OtherLine);
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _AppDef_MyLineTool_HeaderFile
