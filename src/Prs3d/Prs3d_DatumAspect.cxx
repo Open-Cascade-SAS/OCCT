@@ -85,11 +85,11 @@ void Prs3d_DatumAspect::SetDrawFirstAndSecondAxis (Standard_Boolean theToDraw)
 {
   if (theToDraw)
   {
-    myAxes = Prs3d_DatumAxes(myAxes | Prs3d_DA_XAxis | Prs3d_DA_YAxis);
+    myAxes = ((myAxes & Prs3d_DA_ZAxis) != 0 ? Prs3d_DA_XYZAxis : Prs3d_DA_XYAxis);
   }
   else
   {
-    myAxes = Prs3d_DatumAxes(myAxes & !Prs3d_DA_XAxis & !Prs3d_DA_YAxis);
+    myAxes = Prs3d_DA_ZAxis;
   }
 }
 
@@ -101,11 +101,11 @@ void Prs3d_DatumAspect::SetDrawThirdAxis (Standard_Boolean theToDraw)
 {
   if (theToDraw)
   {
-    myAxes = Prs3d_DatumAxes(myAxes | Prs3d_DA_ZAxis);
+    myAxes = ((myAxes & Prs3d_DA_XYAxis) != 0 ? Prs3d_DA_XYZAxis : Prs3d_DA_ZAxis);
   }
   else
   {
-    myAxes = Prs3d_DatumAxes(myAxes & !Prs3d_DA_ZAxis);
+    myAxes = Prs3d_DA_XYAxis;
   }
 }
 
