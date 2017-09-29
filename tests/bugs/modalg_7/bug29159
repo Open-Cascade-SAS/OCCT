@@ -1,0 +1,31 @@
+puts "========"
+puts "OCC29159"
+puts "========"
+puts ""
+#################################################
+# Sewing fail when using a maximum tolerance
+#################################################
+
+set MaxTol 5e-4
+set ExpLength 97.234
+
+restore [locate_data_file bug29159_F.brep] f
+sewing result 5e-4 f +mint 1e-8 +maxt $MaxTol
+
+regexp {EDGE *: MAX=([-0-9.+eE]+)} [tolerance result] full toler
+
+if {$toler > $MaxTol} {
+  puts "Error: Tolerance after sewing is greater than max allowed tolerance"
+}
+
+if {[regexp "self-interfering" [bopcheck result 2]]} {
+  puts "Error: result of sewing is self-interfering"
+}
+
+checknbshapes result -m "Sewing result" -edge 8 -face 2
+checkprops result -l $ExpLength -skip
+
+smallview +X+Y
+don result
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}_1.png
