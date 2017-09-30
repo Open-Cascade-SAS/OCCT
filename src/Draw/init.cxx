@@ -42,15 +42,15 @@ BOOL RegisterAppClass(HINSTANCE hInstance)
   // Parametres communs aux classes
   //-----
   wndClass.style         = CS_HREDRAW | CS_VREDRAW | CS_CLASSDC;
-  wndClass.cbClsExtra    = 0;  
-  wndClass.hCursor       = LoadCursorW (NULL, IDC_ARROW);
+  wndClass.cbClsExtra    = 0;
+  wndClass.hCursor       = LoadCursor (NULL, IDC_ARROW);
   wndClass.hInstance     = hInstance;
 
   // Enregistrement de la fenetre principale
   //-----
   wndClass.cbWndExtra    = sizeof(void*);
   wndClass.lpfnWndProc   = (WNDPROC)WndProc;
-  wndClass.hIcon         = (HICON )LoadIconW (hInstance, MAKEINTRESOURCE(IDI_ICON1));
+  wndClass.hIcon         = LoadIconW (hInstance, MAKEINTRESOURCEW(IDI_ICON1));
   wndClass.hbrBackground = (HBRUSH) GetStockObject(WHITE_BRUSH);
   wndClass.lpszMenuName  = MAKEINTRESOURCEW(APPMENU);
   wndClass.lpszClassName = APPCLASS;

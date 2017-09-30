@@ -262,7 +262,7 @@ const Handle(Standard_Transient)& ViewerTest::WClass()
   {
     theWClass = new WNT_WClass ("GW3D_Class", (Standard_Address )AdvViewerWindowProc,
                                 CS_VREDRAW | CS_HREDRAW, 0, 0,
-                                ::LoadCursorW (NULL, IDC_ARROW));
+                                ::LoadCursor (NULL, IDC_ARROW));
   }
 #endif
   return theWClass;
