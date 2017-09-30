@@ -344,10 +344,11 @@ public:
 
     if (myVCol != 0)
     {
-      Graphic3d_Vec4ub aColor (Standard_Byte(theR * 255.0),
-                               Standard_Byte(theG * 255.0),
-                               Standard_Byte(theB * 255.0), 255);
-      SetVertexColor (theIndex, *reinterpret_cast<Standard_Integer*>(&aColor));
+      Graphic3d_Vec4ub *aColorPtr = 
+        reinterpret_cast<Graphic3d_Vec4ub* >(myAttribs->changeValue (theIndex - 1) + size_t(myVCol));
+      aColorPtr->SetValues (Standard_Byte(theR * 255.0),
+                            Standard_Byte(theG * 255.0),
+                            Standard_Byte(theB * 255.0), 255);
     }
     myAttribs->NbElements = Max (theIndex, myAttribs->NbElements);
   }
@@ -356,7 +357,23 @@ public:
   void SetVertexColor (const Standard_Integer  theIndex,
                        const Graphic3d_Vec4ub& theColor)
   {
-    SetVertexColor (theIndex, *reinterpret_cast<const Standard_Integer*> (&theColor));
+    if (myAttribs.IsNull())
+    {
+      return;
+    }
+    else if (theIndex < 1
+          || theIndex > myMaxVertexs)
+    {
+      throw Standard_OutOfRange ("BAD VERTEX index");
+    }
+
+    if (myVCol != 0)
+    {
+      Graphic3d_Vec4ub *aColorPtr = 
+        reinterpret_cast<Graphic3d_Vec4ub* >(myAttribs->changeValue (theIndex - 1) + size_t(myVCol));
+      (*aColorPtr) = theColor;
+    }
+    myAttribs->NbElements = Max (theIndex, myAttribs->NbElements);
   }
 
   //! Change the vertex color of rank theIndex> in the array.

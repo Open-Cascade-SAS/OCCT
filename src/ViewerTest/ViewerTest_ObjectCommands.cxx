@@ -2960,7 +2960,7 @@ static int VDrawSphere (Draw_Interpretor& /*di*/, Standard_Integer argc, const c
   Handle(TColStd_HArray1OfInteger) aColorArray = new TColStd_HArray1OfInteger (1, aNumberPoints);
   for (Standard_Integer aNodeId = 1; aNodeId <= aNumberPoints; ++aNodeId)
   {
-    aColorArray->SetValue (aNodeId, *reinterpret_cast<const Standard_Integer*> (&aColor));
+    aColorArray->SetValue (aNodeId, *reinterpret_cast<const Standard_Integer*> (aColor.GetData()));
   }
   aShape->SetColors (aColorArray);
 
