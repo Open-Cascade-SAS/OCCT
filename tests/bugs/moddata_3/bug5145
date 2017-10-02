@@ -1,0 +1,26 @@
+puts "======="
+puts "OCC5145"
+puts "======="
+puts ""
+#####################################################
+# Wrong result of projection of a circle on a sphere.
+#####################################################
+
+restore [locate_data_file bug5145_f1.brep] f1
+restore [locate_data_file bug5145_c.draw] c
+
+mksurface s f1
+
+trim c1 c 0 pi
+trim c2 c pi 2.*pi
+
+project c2d1 c1 s
+project c2d2 c2 s
+
+checklength c2d1 -l 3.68009
+checklength c2d2 -l 3.68009
+
+v2d
+2dfit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

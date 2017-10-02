@@ -1,0 +1,21 @@
+puts "TODO OCC28700 ALL: ERROR: Micro edge is produced."
+
+puts "========"
+puts "OCC28700"
+puts "========"
+puts ""
+#########################################################################
+# BRepBuilderAPI_Sewing produces too small edge covered by its vertices
+#########################################################################
+
+restore [locate_data_file 22770-tramp.brep] a
+restore [locate_data_file 22770-trans.brep] b
+
+sewing result 0.1 a b -p
+checkshape result
+
+foreach e [explode result e] {
+  if {[validrange $e] == "edge has no valid range"} {
+    puts "ERROR: Micro edge is produced. Edge $e is too small."
+  }
+}

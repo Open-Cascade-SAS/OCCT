@@ -1,0 +1,19 @@
+puts "TODO OCC5582 ALL: Faulty shapes in variables faulty_1 to faulty_"
+
+puts "======="
+puts "OCC5582"
+puts "======="
+puts ""
+################################################################
+# Impossible to make offset on the shape with degenerated edge
+################################################################
+
+restore [locate_data_file bug5582_shape1.brep] comp
+
+checkshape comp
+explode comp so
+offsetparameter 0.00001 p a
+offsetload comp_1 1
+offsetperform result
+
+checkshape result

@@ -1,5 +1,3 @@
-puts "TODO OCC82 ALL: Error : Incomplete section of shell by plane"
-
 puts "====="
 puts "OCC82"
 puts "====="
@@ -16,14 +14,14 @@ set length 113.703
 
 set nbshapes_expected "
 Number of shapes in shape
- VERTEX    : 44
+ VERTEX    : 42
  EDGE      : 41
 "
 
 plane f 0 14.8053 0 0 1 0
 mkface f f
 
-section result sh f
+bsection result sh f
 
 checkshape result
 

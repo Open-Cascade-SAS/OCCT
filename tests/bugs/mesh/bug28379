@@ -1,0 +1,31 @@
+puts "========"
+puts "OCC28379"
+puts "========"
+puts ""
+###########################################
+# BRepMesh produces mangled mesh for a cone
+###########################################
+
+pcone s 0 0.1 1
+incmesh s 1e-3
+
+vinit
+vsetdispmode 1
+vdisplay s
+vfit
+
+vleft
+vfit
+checkview -screenshot -3d -path ${imagedir}/${test_image}-left.png
+
+vright
+vfit
+checkview -screenshot -3d -path ${imagedir}/${test_image}-right.png
+
+vfront
+vfit
+checkview -screenshot -3d -path ${imagedir}/${test_image}-front.png
+
+vback
+vfit
+checkview -screenshot -3d -path ${imagedir}/${test_image}-back.png

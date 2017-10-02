@@ -1,0 +1,31 @@
+puts "========"
+puts "OCC28768"
+puts "========"
+puts ""
+#############################################
+# ShapeFix slighly corrupts the source face
+#############################################
+
+binrestore [locate_data_file bug28768_f12g.brep] f12g
+fixshape r12g f12g
+
+explode r12g E
+
+smallview +X+Y
+
+# Picture creation: "should be"
+clear
+display r12g_4
+display r12g_6
+fit
+display r12g_5
+xwd $imagedir/${casename}_should_be.png
+
+# Picture creation: "is"
+clear
+display r12g_4
+display r12g_6
+fit
+display r12g_7
+display r12g_3
+xwd $imagedir/${casename}_is.png

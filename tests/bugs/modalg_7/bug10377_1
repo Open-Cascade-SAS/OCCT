@@ -1,0 +1,17 @@
+puts "========"
+puts "OCC10377"
+puts "========"
+puts ""
+#############################################################
+# Incorrect fuse result when objects tangent by planar face
+#############################################################
+
+restore [locate_data_file bug10377_shapes.brep] c
+
+explode c
+bfuse result c_1 c_2
+checkshape result
+
+checknbshapes result -shell 1 -face 20 -wire 20
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

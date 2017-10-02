@@ -1,0 +1,9 @@
+puts "========"
+puts "OCC28662"
+puts "========"
+puts ""
+############################################################
+# Data Exchange - Exception during reading large STEP file
+############################################################
+
+stepread [locate_data_file bug28662_3741842_A-SEAT_OCCUPANT_UPGRADE_KIT.step] a *

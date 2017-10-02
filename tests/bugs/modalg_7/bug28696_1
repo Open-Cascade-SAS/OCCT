@@ -1,0 +1,22 @@
+puts "TODO OCC28696 ALL: ERROR: Micro edge is produced."
+
+puts "========"
+puts "OCC28696"
+puts "========"
+puts ""
+############################################
+# Offset 2D algorithm produces micro edges
+############################################
+
+restore [locate_data_file OCC16667-wire.brep] a
+
+mkoffset resoffset a 1 20
+renamevar resoffset_1 result
+
+foreach e [explode result e] {
+  if {[validrange $e] == "edge has no valid range"} {
+    regexp {Mass : *([0-9\-+.eE]+)} [lprops $e] dummy len
+    regexp {Tolerance MAX=([0-9\-+.eE]+)} [tolerance $e] dummy tol
+    puts "ERROR: Micro edge is produced. Edge $e (length=$len, tolerance=$tol) is too small"
+  }
+}

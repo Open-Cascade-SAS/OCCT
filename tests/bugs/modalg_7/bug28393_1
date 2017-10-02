@@ -1,0 +1,24 @@
+puts "TODO OCC28393 ALL: Error : The area of result shape is"
+puts "TODO OCC28393 ALL: Error : The volume of result shape is"
+puts "TODO OCC28393 ALL: Error :  is WRONG because number of"
+
+puts "========"
+puts "OCC28393"
+puts "========"
+puts ""
+###################################
+# Boolean cut produce wrong result.
+###################################
+
+restore [locate_data_file bug28393_o.brep] o
+restore [locate_data_file bug28393_t.brep] t
+
+bcut result o t
+
+checkshape result
+bopcheck result
+
+checkprops result -s 70266.5 -v 979408
+checknbshapes result -solid 1 -shell 1 -face 42 -wire 44
+
+checkview -display result -2d -path ${imagedir}/${test_image}-result.png

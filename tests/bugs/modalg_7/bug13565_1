@@ -1,0 +1,17 @@
+puts "========"
+puts "OCC13565"
+puts "========"
+puts ""
+########################################
+# Incorrect result of Common operation
+########################################
+
+restore [locate_data_file bug13565_A.brep] a
+restore [locate_data_file bug13565_B.brep] b
+
+bcommon result a b
+checkshape result
+
+checknbshapes result -shell 1 -face 17 -wire 17
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

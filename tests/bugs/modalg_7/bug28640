@@ -1,0 +1,37 @@
+puts "TODO OCC28640 ALL: Faulty shapes in variables faulty_1"
+
+puts "========"
+puts "OCC28640"
+puts "========"
+puts ""
+##############################################
+# BRepBuilderAPI_Transform build invalid shape
+##############################################
+
+restore [locate_data_file bug28640_origin_copy.brep] a
+
+smallview
+display a
+front
+fit
+
+vinit
+vsetdispmode 1
+vdisplay a
+vfront
+vfit
+
+#
+
+tmirror a 0 0 0 1 0 0
+
+checkshape a
+
+display a
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}-mirror-2d.png
+
+vclear
+vdisplay a
+vfit
+checkview -screenshot -3d -path ${imagedir}/${test_image}-mirror-3d.png

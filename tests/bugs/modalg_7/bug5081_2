@@ -1,0 +1,26 @@
+puts "======="
+puts "OCC5081"
+puts "======="
+puts ""
+####################################################################
+# BRepOffset_MakeOffsetShape algorithm does not return valid result.
+####################################################################
+
+restore [locate_data_file bug5081_shape2.brep] comp
+
+explode comp so
+
+offsetparameter 0.00001 p i
+offsetload comp_1 2
+offsetperform res
+
+checkshape res
+
+set Log [bopcheck res]
+if {[regexp "This shape seems to be OK" ${Log}] != 1} {
+    puts "Error: BRepOffset_MakeOffsetShape algorithm does not return valid result"
+}
+
+smallview
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png
