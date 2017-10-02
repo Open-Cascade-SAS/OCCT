@@ -1,0 +1,29 @@
+puts "TODO OCC28167 ALL: Error: Fillet has strange form at its end"
+
+puts "========"
+puts "OCC28167"
+puts "========"
+puts ""
+#####################################
+# Fillet has strange form at its end
+#####################################
+
+restore [locate_data_file bug28167_solid.brep] s
+
+explode s E
+
+fillet r s 1 s_3
+
+explode r F
+explode r_6 E
+renamevar r_6_1 res
+
+regexp {Mass +: +([-0-9.+eE]+)} [lprops res] full length_r_6_1
+
+set expected_length 1.31899
+set toleranse 1.e-4
+if {[expr abs(${length_r_6_1} - ${expected_length})] <= ${toleranse}} {
+   puts "Error: Fillet has strange form at its end"
+}
+
+checkview -display r_6 -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,18 @@
+puts "TODO OCC28572 ALL: Faulty shapes in variables faulty_1"
+
+puts "========"
+puts "OCC28572"
+puts "========"
+puts ""
+####################################
+# Wrong result of the mkface command
+####################################
+
+restore [locate_data_file bug28572_m.brep] f
+
+mksurface s1 f
+
+explode f W
+
+mkface f1 s1 f_2
+checkshape f1

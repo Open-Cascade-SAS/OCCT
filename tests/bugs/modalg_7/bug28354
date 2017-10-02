@@ -1,0 +1,33 @@
+puts "TODO OCC28354 ALL: Error: Filleting destroys shape if the filleted edge touches a seam edge"
+
+puts "============"
+puts "OCC28354"
+puts "============"
+puts ""
+###################################################################
+# Filleting destroys shape if the filleted edge touches a seam edge
+###################################################################
+
+#pcylinder cylinder 4 8
+#box box -5 -8 4 10 10 10
+#
+#bcut res cylinder box
+#
+
+restore [locate_data_file bug28354.brep] res
+
+explode res e
+
+blend result_1 res 1.5 res_9
+set Log_1 [whatis result_1]
+if {[regexp "shape" ${Log_1}] != 1} {
+    puts "Error: Filleting destroys shape"
+}
+checkview -display result_1 -2d -path ${imagedir}/${test_image}-1.png
+
+catch {blend result_2 res 2.2 res_9}
+set Log_2 [whatis result_2]
+if {[regexp "shape" ${Log_2}] != 1} {
+    puts "Error: Filleting destroys shape if the filleted edge touches a seam edge"
+}
+checkview -display result_2 -2d -path ${imagedir}/${test_image}-2.png

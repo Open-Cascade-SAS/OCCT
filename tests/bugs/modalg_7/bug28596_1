@@ -1,0 +1,31 @@
+puts "TODO OCC28596 ALL: Error: Erroneous fillet"
+
+puts "========"
+puts "OCC28596"
+puts "========"
+puts ""
+##################
+# Erroneous fillet
+##################
+
+restore [locate_data_file bug28596_fil.brep] f
+
+explode f e
+fillet result f 0.05 f_4
+
+checkshape result
+
+set Log [bopcheck result]
+if {[regexp "This shape seems to be OK" ${Log}] != 1} {
+    puts "Error: Erroneous fillet"
+}
+
+vinit
+vdisplay result
+vviewparams -scale 702.276 -proj -0.67842 -0.368345 -0.635663 -up -0.730989 0.424987 0.533892 -at 0.191139 0.100954 0.167229 -eye -4.57791 -2.48838 -4.30125
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}-w.png
+
+vsetdispmode 1
+vselect 100 100
+checkview -screenshot -3d -path ${imagedir}/${test_image}-s.png

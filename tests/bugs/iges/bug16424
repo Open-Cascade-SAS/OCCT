@@ -1,0 +1,17 @@
+puts "========"
+puts "OCC16424"
+puts "========"
+puts ""
+##############################################
+# Exception in reading of attached IGES file
+##############################################
+
+igesread [locate_data_file bug16424_s554_tassello_per_punzone_pos09.igs] a *
+checkshape a
+
+smallview
+clear
+display a
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

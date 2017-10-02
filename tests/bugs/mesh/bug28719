@@ -1,0 +1,25 @@
+puts "TODO OCC28719 ALL: ERROR: OCC28719 is reproduced."
+
+puts "========"
+puts "OCC28719"
+puts "========"
+puts ""
+###################################
+# Display issue for special model
+###################################
+
+restore [locate_data_file bug28719_display_issue.brep] result
+
+vinit
+vdisplay result
+vsetdispmode result 1
+vfit
+
+if {[string trim [vreadpixel 255 169 name]] == "GRAY75 1"} {
+  puts "ERROR: OCC28719 is reproduced. Nontriangulated faces have been detected."
+}
+if {[string trim [vreadpixel 133 241 name]] == "GRAY75 1"} {
+  puts "ERROR: OCC28719 is reproduced. Nontriangulated faces have been detected."
+}
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

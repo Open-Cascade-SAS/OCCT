@@ -1,0 +1,35 @@
+puts "TODO OCC28402 ALL: Error: calculation of properties of complex compounds is slow"
+
+puts "========"
+puts "OCC28402"
+puts "========"
+puts ""
+####################################################################
+# Modeling - calculation of properties of complex compounds is slow
+####################################################################
+
+restore [locate_data_file bug28402_hugeassembly.brep] a
+
+# just show that shape contains just one solid (box)
+nbshapes a
+
+# now calculate properties
+chrono s restart
+vprops a
+chrono s stop counter "CPU vprops compounds"
+
+# now calculate properties simple box
+box b 100 100 100
+chrono s_box restart
+vprops b
+chrono s_box stop counter "CPU vprops box"
+
+regexp {Elapsed time: +([-0-9.+eE]+) Hours +([-0-9.+eE]+) Minutes +([-0-9.+eE]+) Seconds} [dchrono s show]     full a_Hours a_Minutes a_Seconds
+regexp {Elapsed time: +([-0-9.+eE]+) Hours +([-0-9.+eE]+) Minutes +([-0-9.+eE]+) Seconds} [dchrono s_box show] full b_Hours b_Minutes b_Seconds
+
+set a_Time [expr ${a_Hours}*60.*60. + ${a_Minutes}*60. + ${a_Seconds} ]
+set b_Time [expr ${b_Hours}*60.*60. + ${b_Minutes}*60. + ${b_Seconds} ]
+
+if { [expr ${a_Time} / ${b_Time}] > 100. } {
+   puts "Error: calculation of properties of complex compounds is slow"
+}

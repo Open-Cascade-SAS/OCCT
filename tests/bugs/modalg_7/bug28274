@@ -1,0 +1,25 @@
+puts "TODO OCC28274 ALL: Error: BOPAlgo_MakerVolume fails to create solid"
+
+puts "========"
+puts "OCC28274"
+puts "========"
+puts ""
+######################################################
+# BOPAlgo_MakerVolume fails to create solid
+######################################################
+
+restore [locate_data_file bug28274_tmp.brep] a
+
+bnondestructive 1
+
+set Log [eval mkvolume result [explode a f] ]
+
+if {[regexp "Warning" ${Log}] == 1} {
+    puts "Error: BOPAlgo_MakerVolume fails to create solid"
+}
+
+checkshape result
+
+bopcheck result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

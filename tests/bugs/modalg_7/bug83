@@ -1,0 +1,40 @@
+puts "====="
+puts "OCC83"
+puts "====="
+puts ""
+#####################################################################
+# BUC60912. Section of simple BSpline surfaces is performed too slow.
+#####################################################################
+
+restore [locate_data_file BUC60912_sec_slow.brep] c
+
+explode c
+renamevar c_1 sh
+renamevar c_2 pr
+
+plane f 0 0 0 1 0 0
+mkface f f -11 11 -11 11
+
+puts "Info: perform section with plane"
+chrono h1 reset; chrono h1 start
+section r1 f pr
+chrono h1 stop counter "CPU section r1"
+
+puts "Info: perform section with planar BSpline surface"
+chrono h2 reset; chrono h2 start
+section r2 sh pr
+chrono h2 stop counter "CPU section r2"
+
+regexp {Elapsed time: +([-0-9.+eE]+) Hours +([-0-9.+eE]+) Minutes +([-0-9.+eE]+) Seconds} [dchrono h1 show] full h1_Hours h1_Minutes h1_Seconds
+regexp {Elapsed time: +([-0-9.+eE]+) Hours +([-0-9.+eE]+) Minutes +([-0-9.+eE]+) Seconds} [dchrono h2 show] full h2_Hours h2_Minutes h2_Seconds
+
+set h1_Time [expr ${h1_Hours}*60.*60. + ${h1_Minutes}*60. + ${h1_Seconds} ]
+set h2_Time [expr ${h2_Hours}*60.*60. + ${h2_Minutes}*60. + ${h2_Seconds} ]
+
+if { ${h1_Time} > 0.1 } {
+   puts "Error: Section of simple BSpline surfaces_1 is performed too slow"
+}
+
+if { ${h2_Time} > 0.1 } {
+   puts "Error: Section of simple BSpline surfaces_2 is performed too slow"
+}

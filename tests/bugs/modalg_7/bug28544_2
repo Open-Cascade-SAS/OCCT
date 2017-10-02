@@ -1,0 +1,22 @@
+puts "TODO OCC28544 ALL: Error: Big tolerance value is returned by Implicit-parametric algorithm"
+
+puts "========"
+puts "OCC28544"
+puts "========"
+puts ""
+##################################################################
+# Big tolerance value is returned by Implicit-parametric algorithm
+##################################################################
+
+restore [locate_data_file heal-Face1.rle] b1
+restore [locate_data_file Plan.rle] b2
+
+set log_1 [bopcurves b1 b2 -2d]
+regexp {Tolerance Reached=([-0-9.+eE]+)} $log_1 full tol_reached
+
+set log_2 [maxtolerance b1]
+regexp { +Face +: +Min +([-0-9.+eE]+) +Max +([-0-9.+eE]+)} $log_2 full MinFaceTolerance MaxFaceTolerance
+
+if { ${tol_reached} > ${MaxFaceTolerance} } {
+   puts "Error: Big tolerance value is returned by Implicit-parametric algorithm"
+}

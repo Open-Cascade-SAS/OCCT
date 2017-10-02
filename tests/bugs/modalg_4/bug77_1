@@ -1,0 +1,138 @@
+puts "TODO OCC77 ALL: Error : The area of result shape is"
+
+puts "====="
+puts "OCC77"
+puts "====="
+puts ""
+####################################
+# BUC60866. The BRepFill_Pipe fails.
+####################################
+
+restore [locate_data_file buc60866a.rle] Section
+restore [locate_data_file buc60866b.rle] PathBad
+
+set area 1.12049e+07
+
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX    : 15
+ EDGE      : 22
+ WIRE      : 8
+ FACE      : 8
+ SHELL     : 2
+ SOLID     : 0
+ COMPSOLID : 0
+ COMPOUND  : 1
+ SHAPE     : 56
+"
+
+smallview
+display Section
+display PathBad
+fit
+
+
+#
+# Mode = 0 - CorrectedFrenet
+#
+pipe result_0 PathBad Section
+
+checkshape result_0
+
+checkprops result_0 -s ${area}
+
+checknbshapes result_0 -ref ${nbshapes_expected} -t -m "Pipe"
+
+set info [bopcheck result_0]
+if { [regexp "This shape seems to be OK" ${info}] != 1 } {
+    puts "Error : The BRepFill_Pipe fails, 0"
+}
+
+donly result_0
+checkview -screenshot -2d -path ${imagedir}/${test_image}_0.png
+
+
+#
+# Mode = 1 - Frenet
+#
+set Mode 1
+pipe result_1 PathBad Section ${Mode}
+
+checkshape result_1
+
+checkprops result_1 -s ${area}
+
+checknbshapes result_1 -ref ${nbshapes_expected} -t -m "Pipe"
+
+set info [bopcheck result_1]
+if { [regexp "This shape seems to be OK" ${info}] != 1 } {
+    puts "Error : The BRepFill_Pipe fails, 1"
+}
+
+donly result_1
+checkview -screenshot -2d -path ${imagedir}/${test_image}_1.png
+
+
+#####
+##### Approx - force C1-approximation if result is C0
+#####
+set Approx 1
+set Mode 1
+pipe result_1_a PathBad Section ${Mode} ${Approx}
+
+checkshape result_1_a
+
+checkprops result_1_a -s ${area}
+
+checknbshapes result_1_a -ref ${nbshapes_expected} -t -m "Pipe"
+
+set info [bopcheck result_1_a]
+if { [regexp "This shape seems to be OK" ${info}] != 1 } {
+    puts "Error : The BRepFill_Pipe fails, 1a"
+}
+
+donly result_1_a
+checkview -screenshot -2d -path ${imagedir}/${test_image}_1_a.png
+
+
+#
+# Mode = 2 - DiscreteTrihedron
+#
+set Mode 2
+pipe result_2 PathBad Section ${Mode}
+
+checkshape result_2
+
+checkprops result_2 -s ${area}
+
+checknbshapes result_2 -ref ${nbshapes_expected} -t -m "Pipe"
+
+set info [bopcheck result_2]
+if { [regexp "This shape seems to be OK" ${info}] != 1 } {
+    puts "Error : The BRepFill_Pipe fails, 2"
+}
+
+donly result_2
+checkview -screenshot -2d -path ${imagedir}/${test_image}_2.png
+
+
+#####
+##### Approx - force C1-approximation if result is C0
+#####
+set Approx 1
+set Mode 2
+pipe result_2_a PathBad Section ${Mode} ${Approx}
+
+checkshape result_2_a
+
+checkprops result_2_a -s ${area}
+
+checknbshapes result_2_a -ref ${nbshapes_expected} -t -m "Pipe"
+
+set info [bopcheck result_2_a]
+if { [regexp "This shape seems to be OK" ${info}] != 1 } {
+    puts "Error : The BRepFill_Pipe fails, 2a"
+}
+
+donly result_2_a
+checkview -screenshot -2d -path ${imagedir}/${test_image}_2_a.png

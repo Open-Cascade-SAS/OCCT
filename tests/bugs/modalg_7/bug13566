@@ -1,0 +1,16 @@
+puts "========"
+puts "OCC13566"
+puts "========"
+puts ""
+#################################################################
+# Incorrect result of Extrema between a large circle and a line
+#################################################################
+
+restore [locate_data_file bug13566_line.brep] l
+restore [locate_data_file bug13566_circle.brep] c
+
+distmini d l c
+
+if {[dval d_val] > 0.01} {
+  puts "ERROR: OCC13566 is reproduced. Minimum distance is too large."
+}

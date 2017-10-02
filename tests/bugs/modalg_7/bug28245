@@ -1,0 +1,45 @@
+puts "========"
+puts "OCC28245"
+puts "========"
+puts ""
+#################################################################################################
+# Result of Cells Builder algorithm becomes invalid after removal of internal boundaries on faces
+#################################################################################################
+
+circle c1 0 0 0 0 0 1 10
+circle c2 10 0 0 0 0 1 10
+circle c3 5 9 0 0 0 1 10
+
+mkedge e1 c1
+mkedge e2 c2
+mkedge e3 c3
+
+wire w1 e1
+wire w2 e2
+wire w3 e3
+
+mkplane f1 w1
+mkplane f2 w2
+mkplane f3 w3
+
+bclearobjects
+bcleartools
+baddobjects f1 f2 f3
+bfillds
+bcbuild rx
+
+bcadd res f1 1 -m 1
+bcadd res f2 1 f3 0 -m 1
+bcadd res f3 1 f1 0 -m 2
+
+bopcheck res
+if {![regexp "This shape seems to be OK" [bopcheck res]]} {
+  puts "Error: Result of Cells Builder algorithm is invalid"
+}
+checkview -display res -2d -path ${imagedir}/${test_image}-1.png
+
+bcremoveint res
+if {![regexp "This shape seems to be OK" [bopcheck res]]} {
+  puts "Error: Result of Cells Builder algorithm becomes invalid after removal of internal boundaries on faces"
+}
+checkview -display res -2d -path ${imagedir}/${test_image}-2.png

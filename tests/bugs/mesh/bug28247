@@ -1,0 +1,47 @@
+puts "TODO OCC28247 ALL: Error: Effect of minSize parameter of BRepMesh_IncrementalMesh seems to be too strong"
+
+puts "========="
+puts "OCC28247"
+puts "========="
+puts ""
+################################################################################
+# Effect of minSize parameter of BRepMesh_IncrementalMesh seems to be too strong
+################################################################################
+
+restore [locate_data_file bug28247_face.brep] f
+whatis f
+tolerance f
+
+vinit
+vsetdispmode 1
+vdisplay f
+vfit
+
+tclean f
+incmesh f 0.59
+trinfo f
+vdisplay f
+vfit
+checkview -screenshot -3d -path ${imagedir}/${test_image}-1.png
+
+tclean f
+incmesh f 0.59 -a 11.45
+set tri_info_1 [trinfo f]
+regexp { +([-0-9.+eE]+) +triangles} $tri_info_1 full tri_1
+regexp { +([-0-9.+eE]+) +nodes} $tri_info_1 full nod_1
+vdisplay f
+vfit
+checkview -screenshot -3d -path ${imagedir}/${test_image}-2.png
+
+tclean f
+incmesh f 0.59 -a 11.45 -min 0.035
+set tri_info_2 [trinfo f]
+regexp { +([-0-9.+eE]+) +triangles} $tri_info_2 full tri_2
+regexp { +([-0-9.+eE]+) +nodes} $tri_info_2 full nod_2
+vdisplay f
+vfit
+checkview -screenshot -3d -path ${imagedir}/${test_image}-3.png
+
+if { ${tri_1} > ${tri_2} } {
+   puts "Error: Effect of minSize parameter of BRepMesh_IncrementalMesh seems to be too strong"
+}
