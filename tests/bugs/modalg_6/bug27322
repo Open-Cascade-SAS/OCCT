@@ -14,10 +14,11 @@ mk2dcurve c1 en f
 explode f e
 mk2dcurve c2 f_3 f
 2dcvalue c1 0.0025 x y
-2dproj c2 x y
 
-set bug_info [string trim [length ext_1]]
-set bug_info [string trim [string range $bug_info [expr {[string last " " $bug_info] + 1}] [expr {[string length $bug_info] - 1}]]]
-if {$bug_info >= 1.e-9} {
-  puts "ERROR: OCC27322 is reproduced. Incorrect pcurve creation."
+set log [2dproj c2 x y]
+
+if { ![regexp {ext_} $log ] } {
+  puts "Error: empty projection"
+} elseif { ![regexp {point} [whatis ext_1] ] } { 
+  puts "ERROR: OCC27322 is reproduced. Incorrect pcurve creation: too long from the source one"
 }

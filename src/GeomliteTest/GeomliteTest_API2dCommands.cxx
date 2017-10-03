@@ -69,14 +69,23 @@ static Standard_Integer proj (Draw_Interpretor& di, Standard_Integer n, const ch
   Geom2dAPI_ProjectPointOnCurve proj(P,GC,GC->FirstParameter(),
 				          GC->LastParameter());
   
-  for ( Standard_Integer i = 1; i <= proj.NbPoints(); i++) {
-    gp_Pnt2d P1 = proj.Point(i);
-    Handle(Geom2d_Line) L = new Geom2d_Line(P,gp_Vec2d(P,P1));
-    Handle(Geom2d_TrimmedCurve) CT = 
-      new Geom2d_TrimmedCurve(L, 0., P.Distance(P1));
-    Sprintf(name,"%s%d","ext_",i);
-    char* temp = name; // portage WNT
-    DrawTrSurf::Set(temp, CT);
+  for (Standard_Integer i = 1; i <= proj.NbPoints(); i++)
+  {
+    gp_Pnt2d aP1 = proj.Point(i);
+    const Standard_Real aDist = P.Distance(aP1);
+    Sprintf(name, "%s%d", "ext_", i);
+
+    if (aDist > Precision::PConfusion())
+    {
+      Handle(Geom2d_Line) L = new Geom2d_Line(P, gp_Dir2d(aP1.XY() - P.XY()));
+      Handle(Geom2d_TrimmedCurve) CT = new Geom2d_TrimmedCurve(L, 0., aDist);
+      DrawTrSurf::Set(name, CT);
+    }
+    else
+    {
+      DrawTrSurf::Set(name, aP1);
+    }
+
     di << name << " ";
   }
 

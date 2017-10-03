@@ -1,0 +1,9 @@
+# Test for the issue # 0029176
+
+line ll 0 0 0 1
+2dproj ll 0 0.0001
+
+if { ![regexp {point} [whatis ext_1] ] } {
+  puts "Error while projection"
+}
+
