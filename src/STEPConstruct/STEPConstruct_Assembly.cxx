@@ -197,6 +197,8 @@ Standard_Boolean STEPConstruct_Assembly::CheckSRRReversesNAUO(const Interface_Gr
   Handle(StepBasic_ProductDefinition) pd1, pd2;
   Handle(StepRepr_Representation) rep1 = CDSR->RepresentationRelation()->Rep1();
   Handle(StepRepr_Representation) rep2 = CDSR->RepresentationRelation()->Rep2();
+  if( rep1.IsNull() || rep2.IsNull())
+    return Standard_False;
   
   // find SDRs corresponding to Rep1 and Rep2 and remember their PDs
   Handle(Standard_Type) tSDR = STANDARD_TYPE(StepShape_ShapeDefinitionRepresentation);

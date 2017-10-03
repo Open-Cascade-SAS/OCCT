@@ -342,31 +342,6 @@ Standard_Integer StepData_StepReaderData::NextForComplex
   return next;
 }
 
-
-//=======================================================================
-//function : stepstrcmp
-//purpose  : 
-//=======================================================================
-static Standard_Boolean stepstrcmp(const Standard_CString type,
-                                   const Standard_CString name)
-{
-//  name peut etre d un tenant ou de deux : auquel cas il a une partie LONGUE
-//  et une partie COURTE separees par un blanc
-//  Attention : False pour dire OK, True sinon (car remplace strcmp)
-  Standard_Integer i,j = 0; Standard_Boolean res = Standard_False;
-  for (i = 0; name[i] != '\0' && type[i] != '\0' && !res ; i ++) {
-    if (name[i] == ' ' && type[i] == '\0') { j = i; break; }
-    if (type[i] != name[i]) res = Standard_True;
-  }
-  if (!res || (j == 0)) return res;
-//  Pas trouve et un blanc suit : on continue
-  for (i = j+1; name[i] != '\0'; i ++) {
-    if (type[i-j-1] != name[i]) return Standard_True;
-  }
-  return Standard_False;
-}
-
-
 //=======================================================================
 //function : NamedForComplex
 //purpose  : 
@@ -379,7 +354,7 @@ Standard_Boolean  StepData_StepReaderData::NamedForComplex
   //Standard_Boolean stat = Standard_True;
   Standard_Integer n = (num <= 0 ? num0 : NextForComplex(num));
   // sln 04,10.2001. BUC61003. if(n==0) the next  function is not called in order to avoid exception
-  if ((n!=0) && (!stepstrcmp (RecordType(n).ToCString(),name)))
+  if ((n!=0) && (!strcmp( RecordType(n).ToCString(), name )) )
     {  num = n;  return Standard_True;  }
   
   if (n == 0) /*stat =*/ NamedForComplex (name,num0,n,ach);  // on a rembobine
@@ -387,7 +362,7 @@ Standard_Boolean  StepData_StepReaderData::NamedForComplex
   Handle(String) errmess = new String("Parameter n0.%d (%s) not a LIST");
   sprintf (txtmes,errmess->ToCString(),num0,name);
   for (n = num0; n > 0; n = NextForComplex(n)) {
-    if (!stepstrcmp (RecordType(n).ToCString(),name))  {
+    if (!strcmp( RecordType(n).ToCString(), name))  {
       num = n;
       errmess = new String("Complex Record n0.%d, member type %s not in alphabetic order");
       sprintf (txtmes,errmess->ToCString(),num0,name);
@@ -413,18 +388,22 @@ Standard_Boolean  StepData_StepReaderData::NamedForComplex
    Handle(Interface_Check)& ach) const
 {
   Standard_Integer n = (num <= 0 ? num0 : NextForComplex(num));
-  if ((n!=0) && !(stepstrcmp(RecordType(n).ToCString(),theName) &&
-                  stepstrcmp(RecordType(n).ToCString(), theShortName)))
-    {  num = n;  return Standard_True;  }
+ 
+  if ((n!=0) && (!strcmp( RecordType(n).ToCString(), theName) ||
+                 !strcmp(RecordType(n).ToCString(), theShortName)) )
+  {
+    num = n;
+    return Standard_True;
+  }
   
-  if (n == 0) 
-    NamedForComplex (theName, theShortName, num0, n, ach);
   //entities are not in alphabetical order
   Handle(String) errmess = new String("Parameter n0.%d (%s) not a LIST");
   sprintf (txtmes,errmess->ToCString(), num0, theName);
-  for (n = num0; n > 0; n = NextForComplex(n)) {
-    if (!(stepstrcmp(RecordType(n).ToCString(),theName) &&
-          stepstrcmp(RecordType(n).ToCString(), theShortName)))  {
+  for (n = num0; n > 0; n = NextForComplex(n))
+  {
+    if (!strcmp(RecordType(n).ToCString(),theName) ||
+        !strcmp(RecordType(n).ToCString(), theShortName))
+    {
       num = n;
       errmess = new String("Complex Record n0.%d, member type %s not in alphabetic order");
       sprintf (txtmes,errmess->ToCString(), num0, theName);

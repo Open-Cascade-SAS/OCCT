@@ -1,0 +1,15 @@
+puts "# ====================================================================="
+puts "# 0029029: E x c e p t i o n Raised with no Result during reading file 2033zsh1_1.stp"
+puts "# ====================================================================="
+puts ""
+puts "TODO 29029 ALL: Faulty shapes in variables faulty_1 to faulty_2"
+
+set filepath [locate_data_file bug29029_2033zsh1_1.stp]
+stepread $filepath a *
+tpcompound result
+    
+checkshape result
+checkprops result -s 10647.3
+checknbshapes result -wire 196 -face 196 -shell 1 -solid 1 -compound 2
+
+# checkview -display result -2d -path ${imagedir}/${test_image}.png
