@@ -1,0 +1,30 @@
+puts "========"
+puts "OCC29183"
+puts "========"
+puts ""
+#################################################
+# Result of general fuse of shell and edge 
+# produces a shape with too large tolerance
+#################################################
+
+set MaxTol 30
+
+restore [locate_data_file bug29183_shapes.brep] ss
+bclearobjects
+bcleartools
+baddcompound ss
+bfillds
+bbuild r
+
+regexp {Tolerance MAX=([-0-9.+eE]+)} [tolerance r] full toler
+
+if {$toler > $MaxTol} {
+  puts "Error: Tolerance after fusing is too large"
+}
+
+checknbshapes r -m "Fusing result" -edge 18 -face 7
+
+smallview 
+don r
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}_1.png

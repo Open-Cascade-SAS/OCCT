@@ -655,7 +655,7 @@ void BOPTools_AlgoTools2D::MakePCurveOnFace
       aTR = Min(aMaxTol, 0.1*TolReached2d);
       aMaxSegments = 100;
       aMaxDist = 1.e3*TolReached2d;
-      if(!isAnaSurf)
+      if(!isAnaSurf || TolReached2d > 1.)
       {
         aBndPnt = AppParCurves_PassPoint;
       }
