@@ -29,6 +29,7 @@
 #include <BOPDS_Interf.hxx>
 #include <BOPDS_Iterator.hxx>
 #include <BOPDS_ListOfPaveBlock.hxx>
+#include <BOPDS_MapOfPair.hxx>
 #include <BOPDS_MapOfPaveBlock.hxx>
 #include <BOPDS_Pave.hxx>
 #include <BOPDS_PaveBlock.hxx>
@@ -246,28 +247,42 @@ class BOPAlgo_MPC : public BOPAlgo_Algo  {
     {
       OCC_CATCH_SIGNALS
 
-      Standard_Integer iErr;
-      //
-      iErr=1;
-      if (!myEz.IsNull()) {
-        TopoDS_Edge aSpz;
-        //
-        BOPTools_AlgoTools::MakeSplitEdge(myEz,myV1, myT1, 
-                                          myV2, myT2, aSpz);
-        //
-        iErr=
-          BOPTools_AlgoTools2D::AttachExistingPCurve(aSpz, 
-                                                     myE, 
-                                                     myF, 
-                                                     myContext);
+      // Check if edge has pcurve. If no then make its copy to avoid data races,
+      // and use it to build pcurve.
+      TopoDS_Edge aCopyE = myE;
+      Standard_Real f, l;
+      Handle(Geom2d_Curve) aC2d = BRep_Tool::CurveOnSurface(aCopyE, myF, f, l);
+      if (aC2d.IsNull())
+      {
+        aCopyE = BOPTools_AlgoTools::CopyEdge(aCopyE);
+
+        Standard_Integer iErr = 1;
+        if (!myEz.IsNull())
+        {
+          // Attach pcurve from the original edge
+          TopoDS_Edge aSpz;
+          BOPTools_AlgoTools::MakeSplitEdge(myEz, myV1, myT1,
+                                            myV2, myT2, aSpz);
+          iErr = BOPTools_AlgoTools2D::AttachExistingPCurve(aSpz,
+                                                            aCopyE, 
+                                                            myF,
+                                                            myContext);
+        }
+        if (iErr)
+          BOPTools_AlgoTools2D::BuildPCurveForEdgeOnFace(aCopyE, myF, myContext);
+
+        myNewC2d = BRep_Tool::CurveOnSurface(aCopyE, myF, f, l);
+        if (myNewC2d.IsNull())
+        {
+          AddError(new BOPAlgo_AlertBuildingPCurveFailed(TopoDS_Shape()));
+          return;
+        }
+        else
+          myNewTol = BRep_Tool::Tolerance(aCopyE);
       }
-      //
-      if (iErr) { 
-        BOPTools_AlgoTools2D::BuildPCurveForEdgeOnFace(myE, myF, myContext);
-      }
-      // 
+
       if (myFlag) {
-        UpdateVertices(myE, myF);
+        UpdateVertices(aCopyE, myF);
       }
     }
     catch (Standard_Failure)
@@ -275,7 +290,17 @@ class BOPAlgo_MPC : public BOPAlgo_Algo  {
       AddError(new BOPAlgo_AlertBuildingPCurveFailed(TopoDS_Shape()));
     }
   }
-  //
+
+  const Handle(Geom2d_Curve)& GetNewPCurve() const
+  {
+    return myNewC2d;
+  }
+
+  Standard_Real GetNewTolerance() const
+  {
+    return myNewTol;
+  }
+
  protected:
   Standard_Boolean myFlag;
   TopoDS_Edge myE;
@@ -285,6 +310,8 @@ class BOPAlgo_MPC : public BOPAlgo_Algo  {
   Standard_Real myT1;
   TopoDS_Vertex myV2;
   Standard_Real myT2;
+  Handle(Geom2d_Curve) myNewC2d;
+  Standard_Real myNewTol;
   //
   Handle(IntTools_Context) myContext;
 };
@@ -541,7 +568,7 @@ void BOPAlgo_PaveFiller::MakePCurves()
       (!mySectionAttribute.PCurveOnS1() && !mySectionAttribute.PCurveOnS2()))
     return;
   Standard_Boolean bHasPC;
-  Standard_Integer i, nF1, nF2, aNbC, k, nE, aNbFF, aNbFI, nEx;
+  Standard_Integer i, nF1, aNbC, k, nE, aNbFF, aNbFI, nEx;
   Standard_Integer j, aNbPBIn, aNbPBOn;
   BOPDS_ListIteratorOfListOfPaveBlock aItLPB;
   TopoDS_Face aF1F, aF2F;
@@ -637,44 +664,52 @@ void BOPAlgo_PaveFiller::MakePCurves()
     }
   }// for (i=0; i<aNbFI; ++i) {
   //
-  // 2. Process section edges
+  // 2. Process section edges. P-curves on them must already be computed.
+  // However, we must provide the call to UpdateVertices.
   Standard_Boolean bPCurveOnS[2];
-  Standard_Integer m;
-  TopoDS_Face aFf[2];
-  //
   bPCurveOnS[0]=mySectionAttribute.PCurveOnS1();
   bPCurveOnS[1]=mySectionAttribute.PCurveOnS2();
   //
   if (bPCurveOnS[0] || bPCurveOnS[1]) {
+    // container to remember already added edge-face pairs
+    BOPDS_MapOfPair anEFPairs;
     BOPDS_VectorOfInterfFF& aFFs=myDS->InterfFF();
     aNbFF=aFFs.Extent();
     for (i=0; i<aNbFF; ++i) {
       const BOPDS_InterfFF& aFF=aFFs(i);
-      aFF.Indices(nF1, nF2);
+      const BOPDS_VectorOfCurve& aVNC = aFF.Curves();
+      aNbC = aVNC.Extent();
+      if (aNbC == 0)
+        continue;
+      Standard_Integer nF[2];
+      aFF.Indices(nF[0], nF[1]);
       //
-      aFf[0]=(*(TopoDS_Face *)(&myDS->Shape(nF1)));
+      TopoDS_Face aFf[2];
+      aFf[0] = (*(TopoDS_Face *)(&myDS->Shape(nF[0])));
       aFf[0].Orientation(TopAbs_FORWARD);
       //
-      aFf[1]=(*(TopoDS_Face *)(&myDS->Shape(nF2)));
+      aFf[1]=(*(TopoDS_Face *)(&myDS->Shape(nF[1])));
       aFf[1].Orientation(TopAbs_FORWARD);
       //
-      const BOPDS_VectorOfCurve& aVNC=aFF.Curves();
-      aNbC=aVNC.Extent();
-      for (k=0; k<aNbC; ++k) {
+      for (k=0; k<aNbC; ++k)
+      {
         const BOPDS_Curve& aNC=aVNC(k);
         const BOPDS_ListOfPaveBlock& aLPB=aNC.PaveBlocks();
         aItLPB.Initialize(aLPB);
-        for(; aItLPB.More(); aItLPB.Next()) {
+        for(; aItLPB.More(); aItLPB.Next())
+        {
           const Handle(BOPDS_PaveBlock)& aPB=aItLPB.Value();
           nE=aPB->Edge();
           const TopoDS_Edge& aE=(*(TopoDS_Edge *)(&myDS->Shape(nE))); 
           //
-          for (m=0; m<2; ++m) {
-            if (bPCurveOnS[m]) {
-              BOPAlgo_MPC& aMPC=aVMPC.Append1();
+          for (Standard_Integer m = 0; m<2; ++m)
+          {
+            if (bPCurveOnS[m] && anEFPairs.Add(BOPDS_Pair(nE, nF[m])))
+            {
+              BOPAlgo_MPC& aMPC = aVMPC.Append1();
               aMPC.SetEdge(aE);
               aMPC.SetFace(aFf[m]);
-              aMPC.SetFlag(bPCurveOnS[m]);
+              aMPC.SetFlag(Standard_True);
               aMPC.SetProgressIndicator(myProgressIndicator);
             }
           }
@@ -687,17 +722,26 @@ void BOPAlgo_PaveFiller::MakePCurves()
   BOPAlgo_MPCCnt::Perform(myRunParallel, aVMPC, myContext);
   //======================================================
 
-  // Add warnings of the failed projections
+  // Add warnings of the failed projections and update edges with new pcurves
   Standard_Integer aNb = aVMPC.Extent();
   for (i = 0; i < aNb; ++i)
   {
-    if (aVMPC(i).HasErrors())
+    const BOPAlgo_MPC& aMPC = aVMPC(i);
+    if (aMPC.HasErrors())
     {
       TopoDS_Compound aWC;
       BRep_Builder().MakeCompound(aWC);
-      BRep_Builder().Add(aWC, aVMPC(i).Edge());
-      BRep_Builder().Add(aWC, aVMPC(i).Face());
+      BRep_Builder().Add(aWC, aMPC.Edge());
+      BRep_Builder().Add(aWC, aMPC.Face());
       AddWarning(new BOPAlgo_AlertBuildingPCurveFailed(aWC));
+    }
+    else
+    {
+      const Handle(Geom2d_Curve)& aNewPC = aMPC.GetNewPCurve();
+      // if aNewPC is null we do not need to update the edge because it already contains
+      // valid p-curve, and only vertices have been updated.
+      if (!aNewPC.IsNull())
+        BRep_Builder().UpdateEdge(aMPC.Edge(), aNewPC, aMPC.Face(), aMPC.GetNewTolerance());
     }
   }
 }

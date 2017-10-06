@@ -1,0 +1,41 @@
+puts "========"
+puts "OCC29182"
+puts "========"
+puts ""
+#################################################
+# BOPAlgo_PaveFiller sometimes raises exception in parallel mode
+#################################################
+
+# This is synthetic case reproducing the bug.
+# Make a set of cylindrical surface patches intersecting in the same
+# 3d line and run bfillds on them repeatedly 100 times.
+
+cylinder c 0 10 0 1 0 0 10
+mkface fc c pi/3 2*pi/3 -10 10
+
+shape a C
+add fc a
+don a
+
+for {set i 1} {$i <= 10} {incr i} {
+  copy fc f1
+  trotate f1 0 0 0 1 0 0 $i*5
+  add f1 a
+}
+
+brunparallel 1
+bclearobjects
+bcleartools
+baddcompound a
+
+for {set i 1} {$i <= 100} {incr i} {
+  puts "pass $i"
+  set info [string trim [bfillds]]
+  if {$info != "" && [regexp "2D curve" $info]} {
+    break
+  }
+}
+
+if {$i <= 100} {
+  puts "Error: the bug with failure building 2D curve of edge on face is reproduced"
+}

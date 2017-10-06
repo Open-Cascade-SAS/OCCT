@@ -248,7 +248,9 @@ public:
 
   //! Compute a 3D-point on the edge <aEdge> at parameter <aPrm>
   Standard_EXPORT static void PointOnEdge (const TopoDS_Edge& aEdge, const Standard_Real aPrm, gp_Pnt& aP);
-  
+
+  //! Makes a copy of <theEdge> with vertices.
+  Standard_EXPORT static TopoDS_Edge CopyEdge(const TopoDS_Edge& theEdge);
 
   //! Make the edge from base edge <aE1> and two vertices <aV1,aV2>
   //! at parameters <aP1,aP2>

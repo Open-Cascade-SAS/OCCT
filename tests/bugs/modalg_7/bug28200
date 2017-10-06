@@ -33,7 +33,7 @@ donly result
 fit
 checkview -screenshot -2d -path ${imagedir}/${test_image}_1.png
 
-left
+smallview -Y+Z
 fit
 checkview -screenshot -2d -path ${imagedir}/${test_image}_2.png
 
