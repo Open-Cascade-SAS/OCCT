@@ -1,0 +1,24 @@
+puts "========"
+puts "OCC29182"
+puts "========"
+puts ""
+#################################################
+# BOPAlgo_PaveFiller sometimes raises exception in parallel mode
+#################################################
+
+binrestore [locate_data_file bug29182_access_violation.bin] a
+explode a So
+bclearobjects
+bcleartools
+baddobjects a_1
+baddtools a_2 a_3 a_4 a_5 a_6 a_7 a_8 a_9 a_10 a_11 a_12
+brunparallel 1
+bfillds
+bbuild result
+
+checknbshapes result -m result -shell 17 -solid 17
+checkprops result -v 1.18596e+006 -s 1.28028e+006
+checkshape result
+if ![regexp "This shape seems to be OK" [bopcheck result]] {
+  puts "Error: result is self-intersected"
+}

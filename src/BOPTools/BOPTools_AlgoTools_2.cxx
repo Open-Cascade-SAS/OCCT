@@ -133,6 +133,20 @@ void BOPTools_AlgoTools::MakeSectEdge(const IntTools_Curve& aIC,
 }
 
 //=======================================================================
+// function: CopyEdge
+// purpose: 
+//=======================================================================
+TopoDS_Edge BOPTools_AlgoTools::CopyEdge(const TopoDS_Edge& theEdge)
+{
+  TopoDS_Edge aNewEdge = TopoDS::Edge(theEdge.Oriented(TopAbs_FORWARD));
+  aNewEdge.EmptyCopy();
+  for (TopoDS_Iterator it(theEdge, Standard_False); it.More(); it.Next())
+    BRep_Builder().Add(aNewEdge, it.Value());
+  aNewEdge.Orientation(theEdge.Orientation());
+  return aNewEdge;
+}
+
+//=======================================================================
 // function: MakeSplitEdge
 // purpose: 
 //=======================================================================
@@ -143,9 +157,6 @@ void BOPTools_AlgoTools::MakeSplitEdge(const TopoDS_Edge&   aE,
                                        const Standard_Real  aP2,
                                        TopoDS_Edge& aNewEdge)
 {
-  Standard_Real aTol;//f, l, 
-  aTol=BRep_Tool::Tolerance(aE);
-  //
   TopoDS_Edge E = TopoDS::Edge(aE.Oriented(TopAbs_FORWARD));
   E.EmptyCopy();
   //
@@ -157,7 +168,6 @@ void BOPTools_AlgoTools::MakeSplitEdge(const TopoDS_Edge&   aE,
     BB.Add  (E, aV2);
   }
   BB.Range(E, aP1, aP2);
-  BB.UpdateEdge(E, aTol);
   aNewEdge=E;
   aNewEdge.Orientation(aE.Orientation());
 }
