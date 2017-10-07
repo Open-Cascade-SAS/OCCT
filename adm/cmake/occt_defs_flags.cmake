@@ -25,7 +25,7 @@ if (NOT CMAKE_SIZEOF_VOID_P EQUAL 8)
   endif()
 endif()
 
-if (WIN32)
+if (MSVC)
   add_definitions (-D_CRT_SECURE_NO_WARNINGS -D_CRT_NONSTDC_NO_DEPRECATE)
 else()
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions -fPIC")
