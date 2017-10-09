@@ -230,6 +230,45 @@ proc 2ddot {x1 y1 x2 y2} {
     uplevel dval ($x1)*($x2)+($y1)*($y2)
 }
 
+help vecangle {vecangle x1 y1 z1 x2 y2 z2
+  returns angle between two vectors\
+} {Vector and measurement Commands}
+
+proc vecangle {x1 y1 z1 x2 y2 z2} {
+  set d  [uplevel dot $x1 $y1 $z1 $x2 $y2 $z2]
+  set c  [uplevel cross $x1 $y1 $z1 $x2 $y2 $z2]
+  set cm [uplevel module $c]
+  
+  set m1 [uplevel module $x1 $y1 $z1]
+  set m2 [uplevel module $x2 $y2 $z2]
+  set mm [expr $m1*$m2]
+  
+  if { $cm < $d } {
+    expr asin($cm/$mm)
+  } else {
+    expr acos($d/$mm)
+  }
+}
+
+help 2dvecangle {2dvecangle x1 y1 x2 y2
+  returns angle between two vectors\
+} {Vector and measurement Commands}
+
+proc 2dvecangle {x1 y1 x2 y2} {
+  set d  [uplevel 1 2ddot $x1 $y1 $x2 $y2]
+  set c  [uplevel 1 2dcross $x1 $y1 $x2 $y2]
+  
+  set m1 [uplevel 1 2dmodule $x1 $y1]
+  set m2 [uplevel 1 2dmodule $x2 $y2]
+  set mm [expr $m1*$m2]
+  
+  if { $c < $d } {
+    expr asin($c/$mm)
+  } else {
+    expr acos($d/$mm)
+  }
+}
+
 help scale {scale x y z factor
   returns vector multiplied by scalar\
 } {Vector and measurement Commands}

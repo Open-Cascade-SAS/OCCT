@@ -1,0 +1,12 @@
+IMeshTools_Context.hxx
+IMeshTools_CurveTessellator.hxx
+IMeshTools_MeshAlgo.hxx
+IMeshTools_MeshAlgoFactory.hxx
+IMeshTools_MeshBuilder.hxx
+IMeshTools_MeshBuilder.cxx
+IMeshTools_ModelAlgo.hxx
+IMeshTools_ModelBuilder.hxx
+IMeshTools_Parameters.hxx
+IMeshTools_ShapeExplorer.hxx
+IMeshTools_ShapeExplorer.cxx
+IMeshTools_ShapeVisitor.hxx

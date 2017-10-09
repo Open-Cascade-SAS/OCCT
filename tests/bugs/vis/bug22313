@@ -32,6 +32,7 @@ set Artifact_B 0
 # Start
 
 restore [locate_data_file OCC22313-face_shading_problem.brep] result
+incmesh result 0.1
 vinit
 vdisplay result
 vfit

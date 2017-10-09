@@ -19,7 +19,7 @@
 #include <Precision.hxx>
 #include <gp_XY.hxx>
 #include <gp_XYZ.hxx>
-#include <BRepMesh.hxx>
+#include <IMeshData_Types.hxx>
 #include <NCollection_CellFilter.hxx>
 #include <BRepMesh_Vertex.hxx>
 
@@ -31,13 +31,14 @@ public:
 
   //! Constructor.
   //! @param theAllocator memory allocator to be used by internal collections.
-  BRepMesh_VertexInspector (
+  BRepMesh_VertexInspector(
     const Handle(NCollection_IncAllocator)& theAllocator)
-    : myResIndices(theAllocator),
-      myVertices  (new BRepMesh::VectorOfVertex),
-      myDelNodes  (theAllocator)
+    : myIndex(0),
+      myMinSqDist(RealLast()),
+      myVertices(new IMeshData::VectorOfVertex),
+      myDelNodes(theAllocator)
   {
-    SetTolerance( Precision::Confusion() );
+    SetTolerance(Precision::Confusion());
   }
 
   //! Registers the given vertex.
@@ -106,35 +107,32 @@ public:
   //! Set reference point to be checked.
   inline void SetPoint(const gp_XY& thePoint) 
   { 
-    myResIndices.Clear();
-    myPoint = thePoint;
+    myIndex     = 0;
+    myMinSqDist = RealLast();
+    myPoint     = thePoint;
   }
 
   //! Returns index of point coinciding with regerence one.
   inline Standard_Integer GetCoincidentPoint() const
   {
-    if ( myResIndices.Size() > 0 )
-    {
-      return myResIndices.First();
-    }
-    return 0;
+    return myIndex;
   }
   
   //! Returns list with indexes of vertices that have movability attribute 
   //! equal to BRepMesh_Deleted and can be replaced with another node.
-  inline const BRepMesh::ListOfInteger& GetListOfDelPoints() const
+  inline const IMeshData::ListOfInteger& GetListOfDelPoints() const
   {
     return myDelNodes;
   }
 
   //! Returns set of mesh vertices.
-  inline const BRepMesh::HVectorOfVertex& Vertices() const
+  inline const Handle(IMeshData::VectorOfVertex)& Vertices() const
   {
     return myVertices;
   }
 
   //! Returns set of mesh vertices for modification.
-  inline BRepMesh::HVectorOfVertex& ChangeVertices()
+  inline Handle(IMeshData::VectorOfVertex)& ChangeVertices()
   {
     return myVertices;
   }
@@ -153,11 +151,12 @@ public:
 
 private:
 
-  Standard_Real             myTolerance[2];
-  BRepMesh::ListOfInteger   myResIndices;
-  BRepMesh::HVectorOfVertex myVertices;
-  BRepMesh::ListOfInteger   myDelNodes;
-  gp_XY                     myPoint;
+  Standard_Integer                  myIndex;
+  Standard_Real                     myMinSqDist;
+  Standard_Real                     myTolerance[2];
+  Handle(IMeshData::VectorOfVertex) myVertices;
+  IMeshData::ListOfInteger          myDelNodes;
+  gp_XY                             myPoint;
 };
 
 #endif

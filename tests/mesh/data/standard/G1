@@ -9,5 +9,5 @@ if { [string compare $command "mesh"] == 0 } {
    set nb 36
 }
 
-set bug_cross "OCC22687"
-set nbcross([checkplatform]) $nb
+###set bug_cross "OCC22687"
+###set nbcross([checkplatform]) $nb

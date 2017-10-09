@@ -17,7 +17,8 @@ vdefaults -autoTriang 0
 vdisplay result
 vfit
 
-set rel_tol 1
+set rel_tol 0.035439456401028344
+set max_rel_tol_diff 0.001
 set area_eps 1
 
 checkview -screenshot -3d -path ${imagedir}/${test_image}.png

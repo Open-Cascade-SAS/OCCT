@@ -20,7 +20,6 @@
 #include <VrmlData_IndexedFaceSet.hxx>
 #include <VrmlData_IndexedLineSet.hxx>
 #include <VrmlData_ShapeNode.hxx>
-#include <BRepMesh_IncrementalMesh.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
 #include <Geom_Surface.hxx>

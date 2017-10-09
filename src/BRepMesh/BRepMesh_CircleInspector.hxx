@@ -16,7 +16,7 @@
 #ifndef BRepMesh_CircleInspector_Header
 #define BRepMesh_CircleInspector_Header
 
-#include <BRepMesh.hxx>
+#include <IMeshData_Types.hxx>
 #include <BRepMesh_Circle.hxx>
 #include <Precision.hxx>
 #include <gp_XY.hxx>
@@ -37,9 +37,9 @@ public:
     const Standard_Real                     theTolerance,
     const Standard_Integer                  theReservedSize,
     const Handle(NCollection_IncAllocator)& theAllocator)
-  : myTolerance(theTolerance*theTolerance),
+  : mySqTolerance(theTolerance*theTolerance),
     myResIndices(theAllocator),
-    myCircles(theReservedSize)
+    myCircles(theReservedSize, theAllocator)
   {
   }
 
@@ -53,7 +53,7 @@ public:
   }
 
   //! Resutns vector of registered circles.
-  inline const BRepMesh::VectorOfCircle& Circles() const
+  inline const IMeshData::VectorOfCircle& Circles() const
   {
     return myCircles; 
   }
@@ -75,7 +75,7 @@ public:
   }
 
   //! Returns list of circles shot by the reference point.
-  inline BRepMesh::ListOfInteger& GetShotCircles()
+  inline IMeshData::ListOfInteger& GetShotCircles()
   {
     return myResIndices;
   }
@@ -83,8 +83,41 @@ public:
   //! Performs inspection of a circle with the given index.
   //! @param theTargetIndex index of a circle to be checked.
   //! @return status of the check.
-  Standard_EXPORT NCollection_CellFilter_Action Inspect(
-    const Standard_Integer theTargetIndex);
+  inline NCollection_CellFilter_Action Inspect(
+    const Standard_Integer theTargetIndex)
+  {
+    BRepMesh_Circle& aCircle = myCircles(theTargetIndex);
+    const Standard_Real& aRadius = aCircle.Radius();
+    if (aRadius < 0.)
+      return CellFilter_Purge;
+
+    gp_XY& aLoc = const_cast<gp_XY&>(aCircle.Location());
+
+    const Standard_Real aDX = myPoint.ChangeCoord(1) - aLoc.ChangeCoord(1);
+    const Standard_Real aDY = myPoint.ChangeCoord(2) - aLoc.ChangeCoord(2);
+
+    //This check is wrong. It is better to use 
+    //  
+    //  const Standard_Real aR = aRadius + aToler;
+    //  if ((aDX * aDX + aDY * aDY) <= aR * aR)
+    //  {
+    //    ...
+    //  }
+
+    //where aToler = sqrt(mySqTolerance). Taking into account the fact
+    //that the input parameter of the class (see constructor) is linear
+    //(not quadratic) tolerance there is no point in square root computation.
+    //Simply, we do not need to compute square of the input tolerance and to
+    //assign it to mySqTolerance. The input linear tolerance is needed to be used.
+
+    //However, this change leads to hangs the test case "perf mesh bug27119".
+    //So, this correction is better to be implemented in the future.
+
+    if ((aDX * aDX + aDY * aDY) - (aRadius * aRadius) <= mySqTolerance)
+      myResIndices.Append(theTargetIndex);
+
+    return CellFilter_Keep;
+  }
 
   //! Checks indices for equlity.
   static Standard_Boolean IsEqual(
@@ -95,10 +128,10 @@ public:
   }
 
 private:
-  Standard_Real            myTolerance;
-  BRepMesh::ListOfInteger  myResIndices;
-  BRepMesh::VectorOfCircle myCircles;
-  gp_XY                    myPoint;
+  Standard_Real             mySqTolerance;
+  IMeshData::ListOfInteger  myResIndices;
+  IMeshData::VectorOfCircle myCircles;
+  gp_XY                     myPoint;
 };
 
 #endif

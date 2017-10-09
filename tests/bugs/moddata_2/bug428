@@ -1,12 +1,7 @@
 puts "========"
-puts "OCC428"
-puts "SAM1414"
+puts "OCC428: Excep-tion during vizualization on attached shape in application."
+puts "SAM1414: Excep-tion is raised in the package StdPrs."
 puts "========"
-
-################################################
-## Exception during vizualization on attached shape in application.
-## Exception is raised in the package StdPrs.
-################################################
 
 restore [locate_data_file OCC428.brep] result
 
@@ -14,11 +9,15 @@ tclean result
 vinit
 vdisplay result
 vsetdispmode result 1
+vfit
+checkview -screenshot -3d -path ${imagedir}/${test_image}_shade.png
+
 vclear
 
+smallview
 isos result 0
 triangles result
-vfit
+fit
 
-checktrinfo result -tri !5496 -nod !5406
-checkview -screenshot -3d -path ${imagedir}/${test_image}.png
+checktrinfo result -tri 10886 -nod 7830
+checkview -screenshot -2d -path ${imagedir}/${test_image}_axo.png

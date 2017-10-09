@@ -1195,6 +1195,7 @@ static Standard_Integer OCC22 (Draw_Interpretor& di, Standard_Integer argc, cons
 
 #include <TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx>
 #include <BRepMesh_IncrementalMesh.hxx>
+#include <IMeshTools_Parameters.hxx>
 
 //=======================================================================
 //function : OCC24
@@ -1259,10 +1260,10 @@ static Standard_Integer OCC369(Draw_Interpretor& di, Standard_Integer argc, cons
     if(aShape.IsNull()) {di << "OCC369 FAULTY. Entry shape is NULL \n"; return 0;}
 
     // 3. Build mesh
-    BRepMesh_FastDiscret::Parameters aMeshParams;
-    aMeshParams.Relative = Standard_True;
+    IMeshTools_Parameters aMeshParams;
+    aMeshParams.Relative   = Standard_True;
     aMeshParams.Deflection = 0.2;
-    aMeshParams.Angle = M_PI / 6;
+    aMeshParams.Angle      = M_PI / 6.0;
     BRepMesh_IncrementalMesh aMesh(aShape, aMeshParams);
 
   }

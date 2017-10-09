@@ -1,5 +1,5 @@
-puts "TODO OCC12345 ALL: Error: Number of triangles"
-puts "TODO OCC12345 ALL: Error: Number of nodes"
+###puts "TODO OCC12345 ALL: Error: Number of triangles"
+###puts "TODO OCC12345 ALL: Error: Number of nodes"
 puts "TODO OCC12345 ALL: Error : The area of result shape is"
 
 puts "========"
@@ -18,6 +18,6 @@ vclear
 isos result 0
 triangles result
 
-checktrinfo result -tri 32 -nod 28
+checktrinfo result -tri 55 -nod 40
 checkprops result -s 0 
 checkview -display result -3d -path ${imagedir}/${test_image}.png

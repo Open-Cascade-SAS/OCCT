@@ -35,8 +35,8 @@ public:
 
   //! Constructs a link between two vertices.
   BRepMesh_OrientedEdge(
-    const Standard_Integer         theFirstNode,
-    const Standard_Integer         theLastNode)
+    const Standard_Integer theFirstNode,
+    const Standard_Integer theLastNode)
     : myFirstNode(theFirstNode),
       myLastNode(theLastNode)
   {
@@ -57,7 +57,7 @@ public:
   //! Returns hash code for this edge.
   //! @param theUpper upper index in the container.
   //! @return hash code.
-  Standard_Integer HashCode(const Standard_Integer theUpper) const
+  inline Standard_Integer HashCode(const Standard_Integer theUpper) const
   {
     return ::HashCode(myFirstNode + myLastNode, theUpper);
   }
@@ -71,7 +71,7 @@ public:
   }
 
   //! Alias for IsEqual.
-  Standard_Boolean operator ==(const BRepMesh_OrientedEdge& Other) const
+  inline Standard_Boolean operator ==(const BRepMesh_OrientedEdge& Other) const
   {
     return IsEqual(Other);
   }

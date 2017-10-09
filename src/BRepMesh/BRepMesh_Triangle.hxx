@@ -34,14 +34,14 @@ public:
 
   //! Default constructor.
   BRepMesh_Triangle()
-  : myEdge1(0),
-    myEdge2(0),
-    myEdge3(0),
-    myOrientation1(Standard_False),
-    myOrientation2(Standard_False),
-    myOrientation3(Standard_False),
-    myMovability  (BRepMesh_Free)
+    : myMovability  (BRepMesh_Free)
   {
+    myEdges[0] = 0;
+    myEdges[1] = 0;
+    myEdges[2] = 0;
+    myOrientations[0] = Standard_False;
+    myOrientations[1] = Standard_False;
+    myOrientations[2] = Standard_False;
   }
 
   //! Constructor.
@@ -65,12 +65,8 @@ public:
     const Standard_Boolean          (&theOrientations)[3],
     const BRepMesh_DegreeOfFreedom  theMovability)
   {
-    myEdge1        = theEdges[0];
-    myEdge2        = theEdges[1];
-    myEdge3        = theEdges[2];
-    myOrientation1 = theOrientations[0];
-    myOrientation2 = theOrientations[1];
-    myOrientation3 = theOrientations[2];
+    memcpy(myEdges, theEdges, sizeof(theEdges));
+    memcpy(myOrientations, theOrientations, sizeof(theOrientations));
     myMovability   = theMovability;
   }
   
@@ -80,12 +76,8 @@ public:
   inline void Edges(Standard_Integer (&theEdges)[3],
                     Standard_Boolean (&theOrientations)[3]) const
   {
-    theEdges[0]        = myEdge1;
-    theEdges[1]        = myEdge2;
-    theEdges[2]        = myEdge3;
-    theOrientations[0] = myOrientation1;
-    theOrientations[1] = myOrientation2;
-    theOrientations[2] = myOrientation3;
+    memcpy(theEdges, myEdges, sizeof(myEdges));
+    memcpy(theOrientations, myOrientations, sizeof(myOrientations));
   }
   
   //! Returns movability of the triangle.
@@ -103,36 +95,36 @@ public:
   //! Returns hash code for this triangle.
   //! @param theUpper upper index in the container.
   //! @return hash code.
-  Standard_Integer HashCode(const Standard_Integer theUpper) const
+  inline Standard_Integer HashCode(const Standard_Integer theUpper) const
   {
-    return ::HashCode(myEdge1 + myEdge2 + myEdge3, theUpper);
+    return ::HashCode(myEdges[0] + myEdges[1] + myEdges[2], theUpper);
   }
   
   //! Checks for equality with another triangle.
   //! @param theOther triangle to be checked against this one.
   //! @return TRUE if equal, FALSE if not.
-  Standard_Boolean IsEqual(const BRepMesh_Triangle& theOther) const
+  inline Standard_Boolean IsEqual(const BRepMesh_Triangle& theOther) const
   {
     if (myMovability == BRepMesh_Deleted || theOther.myMovability == BRepMesh_Deleted)
       return Standard_False;
 
-    if (myEdge1 == theOther.myEdge1 && 
-        myEdge2 == theOther.myEdge2 && 
-        myEdge3 == theOther.myEdge3)
+    if (myEdges[0] == theOther.myEdges[0] &&
+        myEdges[1] == theOther.myEdges[1] &&
+        myEdges[2] == theOther.myEdges[2])
     {
       return Standard_True;
     }
 
-    if (myEdge1 == theOther.myEdge2 && 
-        myEdge2 == theOther.myEdge3 && 
-        myEdge3 == theOther.myEdge1)
+    if (myEdges[0] == theOther.myEdges[1] &&
+        myEdges[1] == theOther.myEdges[2] &&
+        myEdges[2] == theOther.myEdges[0])
     {
       return Standard_True;
     }
 
-    if (myEdge1 == theOther.myEdge3 && 
-        myEdge2 == theOther.myEdge1 && 
-        myEdge3 == theOther.myEdge2)
+    if (myEdges[0] == theOther.myEdges[2] &&
+        myEdges[1] == theOther.myEdges[0] &&
+        myEdges[2] == theOther.myEdges[1])
     {
       return Standard_True;
     }
@@ -141,19 +133,13 @@ public:
   }
   
   //! Alias for IsEqual.
-  Standard_Boolean operator ==(const BRepMesh_Triangle& theOther) const
+  inline Standard_Boolean operator ==(const BRepMesh_Triangle& theOther) const
   {
     return IsEqual(theOther);
   }
 
-private:
-
-  Standard_Integer          myEdge1;
-  Standard_Integer          myEdge2;
-  Standard_Integer          myEdge3;
-  Standard_Boolean          myOrientation1;
-  Standard_Boolean          myOrientation2;
-  Standard_Boolean          myOrientation3;
+  Standard_Integer          myEdges[3];
+  Standard_Boolean          myOrientations[3];
   BRepMesh_DegreeOfFreedom  myMovability;
 };
 

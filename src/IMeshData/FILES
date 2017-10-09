@@ -1,0 +1,13 @@
+IMeshData_Curve.hxx
+IMeshData_Edge.hxx
+IMeshData_Face.hxx
+IMeshData_Model.hxx
+IMeshData_ParametersList.hxx
+IMeshData_ParametersListArrayAdaptor.hxx
+IMeshData_PCurve.hxx
+IMeshData_Shape.hxx
+IMeshData_Status.hxx
+IMeshData_StatusOwner.hxx
+IMeshData_TessellatedShape.hxx
+IMeshData_Types.hxx
+IMeshData_Wire.hxx

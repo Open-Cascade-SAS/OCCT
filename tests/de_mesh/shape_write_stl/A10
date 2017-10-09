@@ -9,7 +9,7 @@ writestl m $imagedir/${casename}
 readstl res $imagedir/${casename}
 file delete $imagedir/${casename}
 
-checktrinfo res -tri 130 -nod 67
+checktrinfo res -tri 94 -nod 49
 
 # Visual check
 checkview -display res -2d -path ${imagedir}/${test_image}.png

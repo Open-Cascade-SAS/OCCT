@@ -1,25 +1,16 @@
-puts "TODO OCC24938 ALL: Meshing statuses: Failure ReMesh"
-puts "TODO OCC24938 ALL: Error: Number of triangles is equal to 0"
-puts "TODO OCC24938 ALL: Error: Number of nodes is equal to 0"
-#puts "TODO OCC24938 ALL: Error   : area by triangles differs from the actual area by"
-
 puts "=========="
-puts "OCC24938"
+puts "OCC24938: BRepMesh_IncrementalMesh hangs"
 puts "=========="
 puts ""
-########################################
-# BRepMesh_IncrementalMesh hangs
-########################################
 
-# to prevent loops limit to 5 minutes
-cpulimit 300
+cpulimit 100
 
 restore [locate_data_file bug24938_27773.brep] result
 
 tclean result
 incmesh result 1.5 -relative
 
-checktrinfo result -tri -nod
+checktrinfo result -tri 8 -nod 10 -defl 3.1950444624834377e-05
 
 vinit
 vsetdispmode 1

@@ -11,7 +11,7 @@ set BugNumber OCC27119
 restore [locate_data_file bug27119_GrossPlatePart3Step2TransformedFace.brep] result
 
 dchrono t restart
-incmesh result 1.e-6
+incmesh result 1.e-5
 dchrono t stop counter incmesh
 
 set tri 0
@@ -23,9 +23,9 @@ regexp { +([-0-9.+eE]+) +triangles} $tri_info full tri
 regexp { +([-0-9.+eE]+) +nodes} $tri_info full nod
 regexp { deflection +([-0-9.+eE]+)} $tri_info full def
 
-set ref_tri 7855
-set ref_nod 7857
-set ref_def 9.3791641120333225e-013
+set ref_tri 7857
+set ref_nod 7859
+set ref_def 1e-5
 set tol_rel 0.01
 
 # Computes deviation of the value from specified one

@@ -29,7 +29,7 @@
 #include <BRepMesh_Triangle.hxx>
 #include <BRepMesh_DataStructureOfDelaun.hxx>
 #include <TopExp_Explorer.hxx>
-
+#include <BRep_Tool.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(MeshTest_DrawableMesh,Draw_Drawable3D)
 
@@ -86,7 +86,7 @@ void MeshTest_DrawableMesh::Add(const TopoDS_Shape& theShape)
   {
     myMesher = new BRepMesh_IncrementalMesh;
     myMesher->ChangeParameters().Deflection = myDeflection;
-    myMesher->ChangeParameters().Angle = 0.5;
+    myMesher->ChangeParameters().Angle      = 0.5;
   }
   
   myMesher->SetShape(theShape);

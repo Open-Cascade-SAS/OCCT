@@ -16,17 +16,13 @@
 
 #include <BRepMesh_SelectorOfDataStructureOfDelaun.hxx>
 #include <BRepMesh_PairOfIndex.hxx>
+#include <BRepMesh_Edge.hxx>
 
 //=======================================================================
 //function : Default constructor
 //purpose  : 
 //=======================================================================
 BRepMesh_SelectorOfDataStructureOfDelaun::BRepMesh_SelectorOfDataStructureOfDelaun()
-: myAllocator(new NCollection_IncAllocator(BRepMesh::MEMORY_BLOCK_SIZE_HUGE)),
-  myNodes   (10, myAllocator),
-  myLinks   (10, myAllocator),
-  myElements(10, myAllocator),
-  myFrontier(10, myAllocator)
 {
 }
 
@@ -36,12 +32,7 @@ BRepMesh_SelectorOfDataStructureOfDelaun::BRepMesh_SelectorOfDataStructureOfDela
 //=======================================================================
 BRepMesh_SelectorOfDataStructureOfDelaun::BRepMesh_SelectorOfDataStructureOfDelaun(
   const Handle(BRepMesh_DataStructureOfDelaun)& theMesh)
-: myAllocator(new NCollection_IncAllocator(BRepMesh::MEMORY_BLOCK_SIZE_HUGE)),
-  myMesh    (theMesh),
-  myNodes   (10, myAllocator),
-  myLinks   (10, myAllocator),
-  myElements(10, myAllocator),
-  myFrontier(10, myAllocator)
+  : myMesh(theMesh)
 {
 }
 
@@ -76,7 +67,7 @@ void BRepMesh_SelectorOfDataStructureOfDelaun::NeighboursOf(
 void BRepMesh_SelectorOfDataStructureOfDelaun::NeighboursOfNode(
   const Standard_Integer theNodeIndex)
 {
-  BRepMesh::ListOfInteger::Iterator aLinkIt(
+  IMeshData::ListOfInteger::Iterator aLinkIt(
     myMesh->LinksConnectedTo(theNodeIndex));
 
   for (; aLinkIt.More(); aLinkIt.Next())
@@ -135,10 +126,7 @@ void BRepMesh_SelectorOfDataStructureOfDelaun::NeighboursOfElement(
 void BRepMesh_SelectorOfDataStructureOfDelaun::NeighboursByEdgeOf(
   const BRepMesh_Triangle& theElement)
 {
-  Standard_Integer e[3];
-  Standard_Boolean o[3];
-  theElement.Edges(e, o);
-
+  const Standard_Integer(&e)[3] = theElement.myEdges;
   for (Standard_Integer i = 0; i < 3; ++i)
     elementsOfLink(e[i]);
 }

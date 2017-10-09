@@ -14,11 +14,7 @@
 // commercial license or contractual agreement.
 
 #include <BRepMesh_VertexTool.hxx>
-#include <gp_XY.hxx>
-#include <gp_XYZ.hxx>
 #include <Precision.hxx>
-#include <BRepMesh_Vertex.hxx>
-#include <BRepMesh_VertexInspector.hxx>
 
 //=======================================================================
 //function : Inspect
@@ -45,8 +41,16 @@ NCollection_CellFilter_Action BRepMesh_VertexInspector::Inspect(
     inTol = ((aVec.X() * aVec.X()) < myTolerance[0]) && 
             ((aVec.Y() * aVec.Y()) < myTolerance[1]);
   }
+
   if (inTol)
-    myResIndices.Append(theTarget);
+  {
+    const Standard_Real aSqDist = aVec.SquareModulus();
+    if (aSqDist < myMinSqDist)
+    {
+      myMinSqDist = aSqDist;
+      myIndex     = theTarget;
+    }
+  }
 
   return CellFilter_Keep;
 }
@@ -90,7 +94,7 @@ Standard_Integer BRepMesh_VertexTool::Add(
 //function : Delete
 //purpose  : 
 //=======================================================================
-void BRepMesh_VertexTool::Delete(const Standard_Integer theIndex)
+void BRepMesh_VertexTool::DeleteVertex(const Standard_Integer theIndex)
 {
   BRepMesh_Vertex& aV = mySelector.GetVertex(theIndex);
 

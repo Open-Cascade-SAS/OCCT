@@ -8,11 +8,10 @@ puts ""
 
 restore [locate_data_file bug26692_face_bad_shading.brep] a
 
-vinit
-vclear
-
 incmesh a 0.1 -a 2
 
-vdisplay a
-vfit
-vdump ${imagedir}/${casename}.png
+trinfo a
+
+isos a 0
+triangles a
+checkview -display a -2d -path ${imagedir}/${casename}.png

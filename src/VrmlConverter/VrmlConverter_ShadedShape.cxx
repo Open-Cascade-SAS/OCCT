@@ -51,7 +51,6 @@
 #include <Vrml_NormalBinding.hxx>
 #include <Vrml_Separator.hxx>
 #include <Vrml_NormalBinding.hxx>
-#include <BRepMesh_IncrementalMesh.hxx>
 
 //=========================================================================
 // function: Add

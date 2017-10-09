@@ -1,12 +1,7 @@
-puts "TODO OCC26716 ALL: Error: Number of triangles is equal to 0"
-
 puts "============"
-puts "OCC26716"
+puts "OCC26716: Mesher cannot create a mesh of brep model due to ShapeFix_Wire::FixShifted()"
 puts "============"
 puts ""
-################################################################################
-## Mesher cannot create a mesh of brep model due to ShapeFix_Wire::FixShifted()
-################################################################################
 
 restore [locate_data_file bug26716_rev.brep] result
 

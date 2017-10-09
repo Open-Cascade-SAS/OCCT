@@ -5,13 +5,14 @@ set nbcross(All) 1
 set bug_area "OCC22687"
 set bug_freenodes "OCC22687"
 set bug_withouttri "OCC22687"
+set nbwithouttri(ALL) 1
 if { [string compare $command "shading"] == 0 } {
   set rel_tol 1.2
-  set nbwithouttri(ALL) 6
+##set nbwithouttri(ALL) 6
   set nbfreenodes(ALL) 1
 ##set bug_freelinks "OCC22687"
 ##set nbfree(ALL) 2
 } else {
   set nbfreenodes(ALL) 2
-  set nbwithouttri(ALL) 5
+##set nbwithouttri(ALL) 5
 }

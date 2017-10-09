@@ -10,7 +10,6 @@ checkshape s
 incmesh s 0.001
 set trinfo_s [trinfo s]
 regexp {([0-9]+) triangles} $trinfo_s str nbtri_s
-regexp {deflection ([0-9.+e-]+)} $trinfo_s str defl_s
 
 # face converted to NURBS
 nurbsconvert r s
@@ -18,19 +17,16 @@ checkshape r
 incmesh r 0.001
 set trinfo_r [trinfo r]
 regexp {([0-9]+) triangles} $trinfo_r str nbtri_r
-regexp {deflection ([0-9.+e-]+)} $trinfo_r str defl_r
+
 
 # check deflections
-if { $defl_s > 0.001 } {
-    puts "Error: too big deflection on original face ($defl_s > 0.001)"
-}
-if { $defl_r > 0.001 } {
-    puts "Error: too big deflection on NURBS face ($defl_r > 0.001)"
-}
+checktrinfo s -tri -defl 0.001 -tol_abs_defl 1e-6
+checktrinfo r -tri -max_defl 0.001 -tol_abs_defl 1e-6
 
 # compare number of triangles, allow twice more
-if { $nbtri_r > [expr 2. * $nbtri_s] } {
-    puts "Error: too many triangles ($nbtri_r, while ~ $nbtri_s would be sufficient)"
+set exptri_s [expr 2. * $nbtri_s]
+if { $nbtri_r > $exptri_s } {
+    puts "Error: too many triangles ($nbtri_r, while ~ $exptri_s would be sufficient)"
 }
 
 # extra check: deflection on rough mesh on NURBS

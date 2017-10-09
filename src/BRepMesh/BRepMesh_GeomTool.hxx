@@ -27,6 +27,8 @@ class BRepAdaptor_HSurface;
 class gp_Pnt;
 class gp_Pnt2d;
 class gp_Dir;
+class BRepMesh_DefaultRangeSplitter;
+class Adaptor3d_HSurface;
 
 //! Tool class accumulating common geometrical functions as well as 
 //! functionality using shape geometry to produce data necessary for 
@@ -60,13 +62,14 @@ public:
   //! @param theLinDeflection linear deflection.
   //! @param theAngDeflection angular deflection.
   //! @param theMinPointsNb minimum nuber of points to be produced.
-  Standard_EXPORT BRepMesh_GeomTool(const BRepAdaptor_Curve& theCurve,
-                                    const Standard_Real      theFirstParam,
-                                    const Standard_Real      theLastParam,
-                                    const Standard_Real      theLinDeflection,
-                                    const Standard_Real      theAngDeflection,
-                                    const Standard_Integer   theMinPointsNb = 2,
-                                    const Standard_Real      theMinSize = Precision::Confusion());
+  Standard_EXPORT BRepMesh_GeomTool(
+    const BRepAdaptor_Curve& theCurve,
+    const Standard_Real      theFirstParam,
+    const Standard_Real      theLastParam,
+    const Standard_Real      theLinDeflection,
+    const Standard_Real      theAngDeflection,
+    const Standard_Integer   theMinPointsNb = 2,
+    const Standard_Real      theMinSize = Precision::Confusion());
   
   //! Constructor.
   //! Initiates discretization of geometric curve corresponding 
@@ -79,15 +82,16 @@ public:
   //! @param theLinDeflection linear deflection.
   //! @param theAngDeflection angular deflection.
   //! @param theMinPointsNb minimum nuber of points to be produced.
-  Standard_EXPORT BRepMesh_GeomTool(const Handle(BRepAdaptor_HSurface)& theSurface,
-                                    const GeomAbs_IsoType               theIsoType,
-                                    const Standard_Real                 theParamIso,
-                                    const Standard_Real                 theFirstParam,
-                                    const Standard_Real                 theLastParam,
-                                    const Standard_Real                 theLinDeflection,
-                                    const Standard_Real                 theAngDeflection,
-                                    const Standard_Integer              theMinPointsNb = 2,
-                                    const Standard_Real                 theMinSize = Precision::Confusion());
+  Standard_EXPORT BRepMesh_GeomTool(
+    const Handle(BRepAdaptor_HSurface)& theSurface,
+    const GeomAbs_IsoType               theIsoType,
+    const Standard_Real                 theParamIso,
+    const Standard_Real                 theFirstParam,
+    const Standard_Real                 theLastParam,
+    const Standard_Real                 theLinDeflection,
+    const Standard_Real                 theAngDeflection,
+    const Standard_Integer              theMinPointsNb = 2,
+    const Standard_Real                 theMinSize = Precision::Confusion());
 
   //! Adds point to already calculated points (or replaces existing).
   //! @param thePoint point to be added.
@@ -124,12 +128,16 @@ public:
   
   //! Gets parameters of discretization point with the given index.
   //! @param theIndex index of discretization point.
+  //! @param theSurface surface the curve is lying onto.
   //! @param theParam[out] parameter of the point on the curve.
   //! @param thePoint[out] discretization point.
+  //! @param theUV[out] discretization point in parametric space of the surface.
   //! @return TRUE on success, FALSE elsewhere.
   Standard_EXPORT Standard_Boolean Value(const Standard_Integer              theIndex,
+                                         const Handle(BRepAdaptor_HSurface)& theSurface,
                                          Standard_Real&                      theParam,
-                                         gp_Pnt&                             thePoint) const;
+                                         gp_Pnt&                             thePoint,
+                                         gp_Pnt2d&                           theUV) const;
   
 public: //! @name static API
 
@@ -187,6 +195,38 @@ public: //! @name static API
     const Standard_Boolean isConsiderEndPointTouch,
     const Standard_Boolean isConsiderPointOnSegment,
     gp_Pnt2d&              theIntPnt);
+
+  //! Compute deflection of the given segment.
+  static Standard_Real SquareDeflectionOfSegment(
+    const gp_Pnt& theFirstPoint,
+    const gp_Pnt& theLastPoint,
+    const gp_Pnt& theMidPoint)
+  {
+    // 23.03.2010 skl for OCC21645 - change precision for comparison
+    if (theFirstPoint.SquareDistance(theLastPoint) > Precision::SquareConfusion())
+    {
+      gp_Lin aLin(theFirstPoint, gp_Dir(gp_Vec(theFirstPoint, theLastPoint)));
+      return aLin.SquareDistance(theMidPoint);
+    }
+
+    return theFirstPoint.SquareDistance(theMidPoint);
+  }
+
+  // For better meshing performance we try to estimate the acceleration circles grid structure sizes:
+  // For each parametric direction (U, V) we estimate firstly an approximate distance between the future points -
+  // this estimation takes into account the required face deflection and the complexity of the face.
+  // Particularly, the complexity of the faces based on BSpline curves and surfaces requires much more points.
+  // At the same time, for planar faces and linear parts of the arbitrary surfaces usually no intermediate points
+  // are necessary.
+  // The general idea for each parametric direction:
+  // cells_count = 2 ^ log10 ( estimated_points_count )
+  // For linear parametric direction we fall back to the initial vertex count:
+  // cells_count = 2 ^ log10 ( initial_vertex_count )
+  Standard_EXPORT static std::pair<Standard_Integer, Standard_Integer> CellsCount (
+    const Handle (Adaptor3d_HSurface)&   theSurface,
+    const Standard_Integer               theVerticesNb,
+    const Standard_Real                  theDeflection,
+    const BRepMesh_DefaultRangeSplitter* theRangeSplitter);
 
 private:
 

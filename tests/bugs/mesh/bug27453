@@ -1,12 +1,7 @@
-puts "TODO OCC27453 ALL: Not connected mesh"
-
 puts "========"
-puts "OCC27453"
+puts "OCC27453: Wrongly meshed surface"
 puts "========"
 puts ""
-##########################
-# Wrongly meshed surface
-##########################
 
 pload XDE
 
@@ -17,4 +12,6 @@ renamevar a_1_13 result
 checkshape result
 incmesh result 0.01 -a 0.5
 
-tricheck result
+if {[ string compare "" [tricheck result] ] != 0} {
+  puts "Error: Wrongly meshed surface"
+}

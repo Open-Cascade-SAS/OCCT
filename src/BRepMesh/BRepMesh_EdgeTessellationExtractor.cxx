@@ -1,6 +1,6 @@
-// Created on: 2014-08-13
+// Created on: 2016-04-19
+// Copyright (c) 2016 OPEN CASCADE SAS
 // Created by: Oleg AGASHIN
-// Copyright (c) 2011-2014 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -14,48 +14,60 @@
 // commercial license or contractual agreement.
 
 #include <BRepMesh_EdgeTessellationExtractor.hxx>
-#include <Geom2dAdaptor_HCurve.hxx>
-#include <Poly_PolygonOnTriangulation.hxx>
-#include <Poly_Triangulation.hxx>
 #include <BRepMesh_ShapeTool.hxx>
-
-
-IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_EdgeTessellationExtractor,BRepMesh_IEdgeTool)
+#include <gp_Pnt.hxx>
+#include <BRep_Tool.hxx>
+#include <IMeshData_Face.hxx>
+#include <IMeshData_Edge.hxx>
 
 //=======================================================================
 //function : Constructor
 //purpose  : 
 //=======================================================================
-BRepMesh_EdgeTessellationExtractor::BRepMesh_EdgeTessellationExtractor(
-  const TopoDS_Edge&                          theEdge,
-  const Handle(Geom2dAdaptor_HCurve)&         thePCurve,
-  const TopoDS_Face&                          theFace,
-  const Handle(Poly_Triangulation)&           theTriangulation,
-  const Handle(Poly_PolygonOnTriangulation)&  thePolygon,
-  const TopLoc_Location&                      theLocation)
-  : myProvider(theEdge, theFace, thePolygon->Parameters()),
-    myPCurve(thePCurve),
-    myNodes(theTriangulation->Nodes()),
-    myIndices(thePolygon->Nodes()),
-    myLoc(theLocation)
+BRepMesh_EdgeTessellationExtractor::BRepMesh_EdgeTessellationExtractor (
+  const IMeshData::IEdgeHandle& theEdge,
+  const IMeshData::IFaceHandle& theFace)
 {
+  Handle (Poly_Triangulation) aTriangulation =
+    BRep_Tool::Triangulation (theFace->GetFace(), myLoc);
+
+  Handle (Poly_PolygonOnTriangulation) aPolygon =
+    BRep_Tool::PolygonOnTriangulation (theEdge->GetEdge(), aTriangulation, myLoc);
+
+  myNodes   = &aTriangulation->Nodes ();
+  myIndices = &aPolygon->Nodes ();
+  myProvider.Init (theEdge, TopAbs_FORWARD, theFace, aPolygon->Parameters ());
+}
+
+//=======================================================================
+//function : Constructor
+//purpose  : 
+//=======================================================================
+BRepMesh_EdgeTessellationExtractor::~BRepMesh_EdgeTessellationExtractor ()
+{
+}
+
+//=======================================================================
+//function : NbPoints
+//purpose  : 
+//=======================================================================
+Standard_Integer BRepMesh_EdgeTessellationExtractor::PointsNb () const
+{
+  return myIndices->Size ();
 }
 
 //=======================================================================
 //function : Value
 //purpose  : 
 //=======================================================================
-Standard_Boolean BRepMesh_EdgeTessellationExtractor::Value(
+Standard_Boolean BRepMesh_EdgeTessellationExtractor::Value (
   const Standard_Integer theIndex,
-  Standard_Real&         theParameter,
   gp_Pnt&                thePoint,
-  gp_Pnt2d&              theUV)
+  Standard_Real&         theParameter) const
 {
-  const gp_Pnt& theRefPnt = myNodes(myIndices(theIndex));
-  thePoint = BRepMesh_ShapeTool::UseLocation(theRefPnt, myLoc);
+  const gp_Pnt& theRefPnt = (*myNodes) ((*myIndices) (theIndex));
+  thePoint = BRepMesh_ShapeTool::UseLocation (theRefPnt, myLoc);
 
-  theParameter = myProvider.Parameter(theIndex, thePoint);
-  theUV        = myPCurve->Value(theParameter);
-
+  theParameter = myProvider.Parameter (theIndex, thePoint);
   return Standard_True;
 }

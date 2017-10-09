@@ -46,7 +46,7 @@ public:
   }
 
   //! Compute triangulation for set shape.
-  Standard_EXPORT virtual void Perform() = 0;
+  virtual void Perform() = 0;
 
 
   DEFINE_STANDARD_RTTIEXT(BRepMesh_DiscretRoot,Standard_Transient)

@@ -12,7 +12,7 @@ trotate b 0 0 1 0 1 0 90
 bcut res s b
 
 if { [string compare $command "shading"] == 0 } {
-    puts "TODO #23111 ALL: Error : incorrect node"
+###puts "TODO #23111 ALL: Error : incorrect node"
     explode res f
     vinit
     vdisplay res

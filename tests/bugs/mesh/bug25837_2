@@ -1,12 +1,7 @@
-puts "TODO CR25837 ALL: Error : Colors are not equal in default coordinate and in the near coordinates too"
-
 puts "========="
-puts "CR25837"
+puts "CR25837: Bad triangulation when IGES loaded in meters"
 puts "========="
 puts ""
-######################################################
-# Bad triangulation when IGES loaded in meters
-######################################################
 
 pload XDE
 
@@ -23,5 +18,12 @@ vsetdispmode 1
 set x 200
 set y 200
 checkcolor $x $y 0 0 0
+
+set area [triarea result 1.0e-4]
+set t_area [lindex $area 0]
+set g_area [expr abs([lindex $area 1])]
+set r_area [expr $t_area/$g_area]
+
+checkreal "Relative area" $r_area 1.0 0.01 0.0
 
 checkview -screenshot -3d -path ${imagedir}/${test_image}.png

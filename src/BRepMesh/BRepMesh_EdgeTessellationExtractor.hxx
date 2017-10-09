@@ -1,6 +1,6 @@
-// Created on: 2014-08-13
+// Created on: 2016-04-19
+// Copyright (c) 2016 OPEN CASCADE SAS
 // Created by: Oleg AGASHIN
-// Copyright (c) 2011-2014 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -16,72 +16,48 @@
 #ifndef _BRepMesh_EdgeTessellationExtractor_HeaderFile
 #define _BRepMesh_EdgeTessellationExtractor_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <BRepMesh_IEdgeTool.hxx>
+#include <IMeshTools_CurveTessellator.hxx>
+#include <IMeshData_Types.hxx>
 #include <BRepMesh_EdgeParameterProvider.hxx>
-#include <TopLoc_Location.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColStd_Array1OfInteger.hxx>
-
-class Poly_Triangulation;
-class Poly_PolygonOnTriangulation;
-class TopoDS_Edge;
-class TopoDS_Face;
-class Geom2dAdaptor_HCurve;
+#include <TopLoc_Location.hxx>
 
 //! Auxiliary class implements functionality retrieving tessellated
 //! representation of an edge stored in polygon.
-class BRepMesh_EdgeTessellationExtractor : public BRepMesh_IEdgeTool
+class BRepMesh_EdgeTessellationExtractor : public IMeshTools_CurveTessellator
 {
 public:
 
   //! Constructor.
-  //! Initializes extractor.
-  BRepMesh_EdgeTessellationExtractor(
-    const TopoDS_Edge&                          theEdge,
-    const Handle(Geom2dAdaptor_HCurve)&         thePCurve,
-    const TopoDS_Face&                          theFace,
-    const Handle(Poly_Triangulation)&           theTriangulation,
-    const Handle(Poly_PolygonOnTriangulation)&  thePolygon,
-    const TopLoc_Location&                      theLocation);
+  Standard_EXPORT BRepMesh_EdgeTessellationExtractor (
+    const IMeshData::IEdgeHandle& theEdge,
+    const IMeshData::IFaceHandle& theFace);
 
-  //! Returns number of dicretization points.
-  virtual Standard_Integer NbPoints() const Standard_OVERRIDE
-  {
-    return myIndices.Length();
-  }
+  //! Destructor.
+  Standard_EXPORT virtual ~BRepMesh_EdgeTessellationExtractor ();
+
+  //! Returns number of tessellation points.
+  Standard_EXPORT virtual Standard_Integer PointsNb () const Standard_OVERRIDE;
 
   //! Returns parameters of solution with the given index.
   //! @param theIndex index of tessellation point.
   //! @param theParameter parameters on PCurve corresponded to the solution.
   //! @param thePoint tessellation point.
-  //! @param theUV coordinates of tessellation point in parametric space of face.
   //! @return True in case of valid result, false elewhere.
-  virtual Standard_Boolean Value(
+  Standard_EXPORT virtual Standard_Boolean Value (
     const Standard_Integer theIndex,
-    Standard_Real&         theParameter,
     gp_Pnt&                thePoint,
-    gp_Pnt2d&              theUV) Standard_OVERRIDE;
+    Standard_Real&         theParameter) const Standard_OVERRIDE;
 
-  DEFINE_STANDARD_RTTIEXT(BRepMesh_EdgeTessellationExtractor,BRepMesh_IEdgeTool)
-
-private:
-
-  //! Assignment operator.
-  void operator =(const BRepMesh_EdgeTessellationExtractor& /*theOther*/)
-  {
-  }
+  DEFINE_STANDARD_RTTI_INLINE(BRepMesh_EdgeTessellationExtractor, IMeshTools_CurveTessellator)
 
 private:
 
-  BRepMesh_EdgeParameterProvider myProvider;
-  Handle(Geom2dAdaptor_HCurve)   myPCurve;
-  const TColgp_Array1OfPnt&      myNodes;
-  const TColStd_Array1OfInteger& myIndices;
-  const TopLoc_Location          myLoc;
+  BRepMesh_EdgeParameterProvider<Handle(TColStd_HArray1OfReal)>  myProvider;
+  const TColgp_Array1OfPnt*                                      myNodes;
+  const TColStd_Array1OfInteger*                                 myIndices;
+  TopLoc_Location                                                myLoc;
 };
-
-DEFINE_STANDARD_HANDLE(BRepMesh_EdgeTessellationExtractor, BRepMesh_IEdgeTool)
 
 #endif

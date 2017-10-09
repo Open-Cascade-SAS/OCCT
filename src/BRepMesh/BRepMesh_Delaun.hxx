@@ -23,7 +23,7 @@
 #include <BRepMesh_CircleTool.hxx>
 #include <BRepMesh_Triangle.hxx>
 #include <BRepMesh_Edge.hxx>
-#include <BRepMesh.hxx>
+#include <IMeshData_Types.hxx>
 #include <BRepMesh_DataStructureOfDelaun.hxx>
 #include <BRepMesh_GeomTool.hxx>
 #include <TColStd_Array1OfInteger.hxx>
@@ -42,30 +42,30 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Creates the triangulation with an empty Mesh data structure.
-  Standard_EXPORT BRepMesh_Delaun (BRepMesh::Array1OfVertexOfDelaun& theVertices);
+  Standard_EXPORT BRepMesh_Delaun (IMeshData::Array1OfVertexOfDelaun& theVertices);
 
   //! Creates the triangulation with an existent Mesh data structure.
   Standard_EXPORT BRepMesh_Delaun (const Handle(BRepMesh_DataStructureOfDelaun)& theOldMesh,
-                                   BRepMesh::Array1OfVertexOfDelaun&             theVertices);
+                                   IMeshData::Array1OfVertexOfDelaun&            theVertices);
 
   //! Creates the triangulation with an existant Mesh data structure.
   Standard_EXPORT BRepMesh_Delaun (const Handle(BRepMesh_DataStructureOfDelaun)& theOldMesh,
-                                   BRepMesh::Array1OfInteger&                    theVertexIndices);
+                                   IMeshData::VectorOfInteger&                   theVertexIndices);
 
   //! Creates the triangulation with an existant Mesh data structure.
   Standard_EXPORT BRepMesh_Delaun (const Handle (BRepMesh_DataStructureOfDelaun)& theOldMesh,
-                                   BRepMesh::Array1OfInteger&                     theVertexIndices,
+                                   IMeshData::VectorOfInteger&                    theVertexIndices,
                                    const Standard_Integer                         theCellsCountU,
                                    const Standard_Integer                         theCellsCountV);
 
   //! Initializes the triangulation with an array of vertices.
-  Standard_EXPORT void Init (BRepMesh::Array1OfVertexOfDelaun& theVertices);
+  Standard_EXPORT void Init (IMeshData::Array1OfVertexOfDelaun& theVertices);
 
   //! Removes a vertex from the triangulation.
   Standard_EXPORT void RemoveVertex (const BRepMesh_Vertex& theVertex);
 
   //! Adds some vertices into the triangulation.
-  Standard_EXPORT void AddVertices (BRepMesh::Array1OfVertexOfDelaun& theVertices);
+  Standard_EXPORT void AddVertices (IMeshData::VectorOfInteger& theVerticesIndices);
 
   //! Modify mesh to use the edge.
   //! @return True if done
@@ -78,19 +78,19 @@ public:
   }
 
   //! Gives the list of frontier edges.
-  inline BRepMesh::HMapOfInteger Frontier() const
+  inline Handle(IMeshData::MapOfInteger) Frontier() const
   {
     return getEdgesByType (BRepMesh_Frontier);
   }
 
   //! Gives the list of internal edges.
-  inline BRepMesh::HMapOfInteger InternalEdges() const
+  inline Handle(IMeshData::MapOfInteger) InternalEdges() const
   {
     return getEdgesByType (BRepMesh_Fixed);
   }
 
   //! Gives the list of free edges used only one time
-  inline BRepMesh::HMapOfInteger FreeEdges() const
+  inline Handle(IMeshData::MapOfInteger) FreeEdges() const
   {
     return getEdgesByType (BRepMesh_Free);
   }
@@ -137,23 +137,23 @@ private:
     InsertBefore
   };
 
-  typedef NCollection_DataMap<Standard_Integer, BRepMesh::MapOfInteger> DataMapOfMap;
+  typedef NCollection_DataMap<Standard_Integer, IMeshData::MapOfInteger> DataMapOfMap;
 
   //! Add boundig box for edge defined by start & end point to
   //! the given vector of bounding boxes for triangulation edges.
-  void fillBndBox (BRepMesh::SequenceOfBndB2d&   theBoxes,
+  void fillBndBox (IMeshData::SequenceOfBndB2d&  theBoxes,
                    const BRepMesh_Vertex&        theV1,
                    const BRepMesh_Vertex&        theV2);
 
   //! Gives the list of edges with type defined by the input parameter.
   //! If the given type is BRepMesh_Free returns list of edges
   //! that have number of connected elements less or equal 1.
-  BRepMesh::HMapOfInteger getEdgesByType (const BRepMesh_DegreeOfFreedom theEdgeType) const;
+  Handle(IMeshData::MapOfInteger) getEdgesByType (const BRepMesh_DegreeOfFreedom theEdgeType) const;
 
   //! Run triangulation procedure.
-  void perform (BRepMesh::Array1OfInteger& theVertexIndices,
-                const Standard_Integer     theCellsCountU = -1,
-                const Standard_Integer     theCellsCountV = -1);
+  void perform (IMeshData::VectorOfInteger& theVertexIndices,
+                const Standard_Integer      theCellsCountU = -1,
+                const Standard_Integer      theCellsCountV = -1);
 
   //! Build the super mesh.
   void superMesh (const Bnd_Box2d&       theBox,
@@ -162,52 +162,52 @@ private:
 
   //! Computes the triangulation and adds the vertices,
   //! edges and triangles to the Mesh data structure.
-  void compute (BRepMesh::Array1OfInteger& theVertexIndices);
+  void compute (IMeshData::VectorOfInteger& theVertexIndices);
 
   //! Adjust the mesh on the frontier.
   void frontierAdjust();
 
   //! Find left polygon of the given edge and call meshPolygon.
   Standard_Boolean meshLeftPolygonOf(
-    const Standard_Integer  theEdgeIndex,
-    const Standard_Boolean  isForward,
-    BRepMesh::HMapOfInteger theSkipped = NULL);
+    const Standard_Integer          theEdgeIndex,
+    const Standard_Boolean          isForward,
+    Handle(IMeshData::MapOfInteger) theSkipped = NULL);
 
   //! Find next link starting from the given node and has maximum
   //! angle respect the given reference link.
   //! Each time the next link is found other neighbor links at the pivot
   //! node are marked as leprous and will be excluded from consideration
   //! next time until a hanging end is occured.
-  Standard_Integer findNextPolygonLink (const Standard_Integer&            theFirstNode,
-                                        const Standard_Integer&            thePivotNode,
-                                        const BRepMesh_Vertex&             thePivotVertex,
-                                        const gp_Vec2d&                    theRefLinkDir,
-                                        const BRepMesh::SequenceOfBndB2d&  theBoxes,
-                                        const BRepMesh::SequenceOfInteger& thePolygon,
-                                        const BRepMesh::HMapOfInteger      theSkipped,
-                                        const Standard_Boolean&            isSkipLeprous,
-                                        BRepMesh::MapOfInteger&            theLeprousLinks,
-                                        BRepMesh::MapOfInteger&            theDeadLinks,
-                                        Standard_Integer&                  theNextPivotNode,
-                                        gp_Vec2d&                          theNextLinkDir,
-                                        Bnd_B2d&                           theNextLinkBndBox);
+  Standard_Integer findNextPolygonLink (const Standard_Integer&               theFirstNode,
+                                        const Standard_Integer&               thePivotNode,
+                                        const BRepMesh_Vertex&                thePivotVertex,
+                                        const gp_Vec2d&                       theRefLinkDir,
+                                        const IMeshData::SequenceOfBndB2d&    theBoxes,
+                                        const IMeshData::SequenceOfInteger&   thePolygon,
+                                        const Handle(IMeshData::MapOfInteger) theSkipped,
+                                        const Standard_Boolean&               isSkipLeprous,
+                                        IMeshData::MapOfInteger&              theLeprousLinks,
+                                        IMeshData::MapOfInteger&              theDeadLinks,
+                                        Standard_Integer&                     theNextPivotNode,
+                                        gp_Vec2d&                             theNextLinkDir,
+                                        Bnd_B2d&                              theNextLinkBndBox);
 
   //! Check is the given link intersects the polygon boundaries.
   //! Returns bounding box for the given link trough the theLinkBndBox parameter.
-  Standard_Boolean checkIntersection (const BRepMesh_Edge&               theLink,
-                                      const BRepMesh::SequenceOfInteger& thePolygon,
-                                      const BRepMesh::SequenceOfBndB2d&  thePolyBoxes,
-                                      const Standard_Boolean             isConsiderEndPointTouch,
-                                      const Standard_Boolean             isConsiderPointOnEdge,
-                                      const Standard_Boolean             isSkipLastEdge,
-                                      Bnd_B2d&                           theLinkBndBox) const;
+  Standard_Boolean checkIntersection (const BRepMesh_Edge&                theLink,
+                                      const IMeshData::SequenceOfInteger& thePolygon,
+                                      const IMeshData::SequenceOfBndB2d&  thePolyBoxes,
+                                      const Standard_Boolean              isConsiderEndPointTouch,
+                                      const Standard_Boolean              isConsiderPointOnEdge,
+                                      const Standard_Boolean              isSkipLastEdge,
+                                      Bnd_B2d&                            theLinkBndBox) const;
 
   //! Triangulatiion of a closed polygon described by the list
   //! of indexes of its edges in the structure.
   //! (negative index means reversed edge)
-  void meshPolygon (BRepMesh::SequenceOfInteger& thePolygon,
-                    BRepMesh::SequenceOfBndB2d&  thePolyBoxes,
-                    BRepMesh::HMapOfInteger      theSkipped = NULL);
+  void meshPolygon (IMeshData::SequenceOfInteger&   thePolygon,
+                    IMeshData::SequenceOfBndB2d&    thePolyBoxes,
+                    Handle(IMeshData::MapOfInteger) theSkipped = NULL);
 
   //! Decomposes the given closed simple polygon (polygon without glued edges 
   //! and loops) on two simpler ones by adding new link at the most thin part 
@@ -219,27 +219,27 @@ private:
   //! @param thePolygonCut product of decomposition of source polygon (second part of decomposition).
   //! @param thePolyBoxesCut bounding boxes corresponded to resulting polygon's links.
   void decomposeSimplePolygon (
-    BRepMesh::SequenceOfInteger& thePolygon,
-    BRepMesh::SequenceOfBndB2d&  thePolyBoxes,
-    BRepMesh::SequenceOfInteger& thePolygonCut,
-    BRepMesh::SequenceOfBndB2d&  thePolyBoxesCut);
+    IMeshData::SequenceOfInteger& thePolygon,
+    IMeshData::SequenceOfBndB2d&  thePolyBoxes,
+    IMeshData::SequenceOfInteger& thePolygonCut,
+    IMeshData::SequenceOfBndB2d&  thePolyBoxesCut);
 
   //! Triangulation of closed polygon containing only three edges.
-  inline Standard_Boolean meshElementaryPolygon (const BRepMesh::SequenceOfInteger& thePolygon);
+  inline Standard_Boolean meshElementaryPolygon (const IMeshData::SequenceOfInteger& thePolygon);
 
   //! Creates the triangles beetween the given node and the given polyline.
   void createTriangles (const Standard_Integer         theVertexIndex,
-                        BRepMesh::MapOfIntegerInteger& thePoly);
+                        IMeshData::MapOfIntegerInteger& thePoly);
 
   //! Add a triangle based on the given oriented edges into mesh
-  void addTriangle (const Standard_Integer (&theEdgesId)[3],
-                    const Standard_Boolean (&theEdgesOri)[3],
-                    const Standard_Integer (&theNodesId)[3]);
+  inline void addTriangle (const Standard_Integer (&theEdgesId)[3],
+                           const Standard_Boolean (&theEdgesOri)[3],
+                           const Standard_Integer (&theNodesId)[3]);
 
   //! Deletes the triangle with the given index and adds the free edges into the map.
   //! When an edge is suppressed more than one time it is destroyed.
   void deleteTriangle (const Standard_Integer         theIndex,
-                       BRepMesh::MapOfIntegerInteger& theLoopEdges);
+                       IMeshData::MapOfIntegerInteger& theLoopEdges);
 
   //! Returns start and end nodes of the given edge in respect to its orientation.
   void getOrientedNodes (const BRepMesh_Edge&   theEdge,
@@ -248,21 +248,21 @@ private:
 
   //! Processes loop within the given polygon formed by range of its
   //! links specified by start and end link indices.
-  void processLoop (const Standard_Integer             theLinkFrom,
-                    const Standard_Integer             theLinkTo,
-                    const BRepMesh::SequenceOfInteger& thePolygon,
-                    const BRepMesh::SequenceOfBndB2d&  thePolyBoxes);
+  void processLoop (const Standard_Integer              theLinkFrom,
+                    const Standard_Integer              theLinkTo,
+                    const IMeshData::SequenceOfInteger& thePolygon,
+                    const IMeshData::SequenceOfBndB2d&  thePolyBoxes);
 
   //! Creates new link based on the given nodes and updates the given polygon.
-  Standard_Integer createAndReplacePolygonLink (const Standard_Integer       theNodes[],
-                                                const gp_Pnt2d               thePnts [],
-                                                const Standard_Integer       theRootIndex,
-                                                const ReplaceFlag            theReplaceFlag,
-                                                BRepMesh::SequenceOfInteger& thePolygon,
-                                                BRepMesh::SequenceOfBndB2d&  thePolyBoxes);
+  Standard_Integer createAndReplacePolygonLink (const Standard_Integer        theNodes[],
+                                                const gp_Pnt2d                thePnts [],
+                                                const Standard_Integer        theRootIndex,
+                                                const ReplaceFlag             theReplaceFlag,
+                                                IMeshData::SequenceOfInteger& thePolygon,
+                                                IMeshData::SequenceOfBndB2d&  thePolyBoxes);
   
   //! Creates the triangles on new nodes.
-  void createTrianglesOnNewVertices (BRepMesh::Array1OfInteger& theVertexIndices);
+  void createTrianglesOnNewVertices (IMeshData::VectorOfInteger& theVertexIndices);
 
   //! Cleanup mesh from the free triangles.
   void cleanupMesh();
@@ -278,35 +278,35 @@ private:
                                       const Standard_Integer thePrevElementId);
 
   //! Remove internal triangles from the given polygon.
-  void cleanupPolygon (const BRepMesh::SequenceOfInteger& thePolygon,
-                       const BRepMesh::SequenceOfBndB2d&  thePolyBoxes);
+  void cleanupPolygon (const IMeshData::SequenceOfInteger& thePolygon,
+                       const IMeshData::SequenceOfBndB2d&  thePolyBoxes);
 
   //! Checks is the given vertex lies inside the polygon.
-  Standard_Boolean isVertexInsidePolygon (const Standard_Integer&          theVertexId,
-                                          const BRepMesh::VectorOfInteger& thePolygonVertices) const;
+  Standard_Boolean isVertexInsidePolygon (const Standard_Integer&           theVertexId,
+                                          const IMeshData::VectorOfInteger& thePolygonVertices) const;
 
   //! Remove all triangles and edges that are placed inside the polygon or crossed it.
-  void killTrianglesAroundVertex (const Standard_Integer             theZombieNodeId,
-                                  const BRepMesh::VectorOfInteger&   thePolyVertices,
-                                  const BRepMesh::MapOfInteger&      thePolyVerticesFindMap,
-                                  const BRepMesh::SequenceOfInteger& thePolygon,
-                                  const BRepMesh::SequenceOfBndB2d&  thePolyBoxes,
-                                  BRepMesh::MapOfInteger&            theSurvivedLinks,
-                                  BRepMesh::MapOfIntegerInteger&     theLoopEdges);
+  void killTrianglesAroundVertex (const Standard_Integer              theZombieNodeId,
+                                  const IMeshData::VectorOfInteger&   thePolyVertices,
+                                  const IMeshData::MapOfInteger&      thePolyVerticesFindMap,
+                                  const IMeshData::SequenceOfInteger& thePolygon,
+                                  const IMeshData::SequenceOfBndB2d&  thePolyBoxes,
+                                  IMeshData::MapOfInteger&            theSurvivedLinks,
+                                  IMeshData::MapOfIntegerInteger&     theLoopEdges);
 
   //! Checks is the given link crosses the polygon boundary.
   //! If yes, kills its triangles and checks neighbor links on boundary intersection. Does nothing elsewhere.
-  void killTrianglesOnIntersectingLinks (const Standard_Integer&             theLinkToCheckId,
-                                         const BRepMesh_Edge&                theLinkToCheck,
-                                         const Standard_Integer&             theEndPoint,
-                                         const BRepMesh::SequenceOfInteger&  thePolygon,
-                                         const BRepMesh::SequenceOfBndB2d&   thePolyBoxes,
-                                         BRepMesh::MapOfInteger&             theSurvivedLinks,
-                                         BRepMesh::MapOfIntegerInteger&      theLoopEdges);
+  void killTrianglesOnIntersectingLinks (const Standard_Integer&              theLinkToCheckId,
+                                         const BRepMesh_Edge&                 theLinkToCheck,
+                                         const Standard_Integer&              theEndPoint,
+                                         const IMeshData::SequenceOfInteger&  thePolygon,
+                                         const IMeshData::SequenceOfBndB2d&   thePolyBoxes,
+                                         IMeshData::MapOfInteger&             theSurvivedLinks,
+                                         IMeshData::MapOfIntegerInteger&      theLoopEdges);
 
   //! Kill triangles bound to the given link.
-  void killLinkTriangles (const Standard_Integer&        theLinkId,
-                          BRepMesh::MapOfIntegerInteger& theLoopEdges);
+  void killLinkTriangles (const Standard_Integer&         theLinkId,
+                          IMeshData::MapOfIntegerInteger& theLoopEdges);
 
   //! Calculates distances between the given point and edges of triangle.
   Standard_Real calculateDist (const gp_XY            theVEdges[3],
@@ -325,9 +325,9 @@ private:
     gp_Pnt2d&              theIntPnt) const;
 
   //! Returns area of the loop of the given polygon defined by indices of its start and end links.
-  Standard_Real polyArea (const BRepMesh::SequenceOfInteger& thePolygon,
-                          const Standard_Integer             theStartIndex,
-                          const Standard_Integer             theEndIndex) const;
+  Standard_Real polyArea (const IMeshData::SequenceOfInteger& thePolygon,
+                          const Standard_Integer              theStartIndex,
+                          const Standard_Integer              theEndIndex) const;
 
   //! Performs insertion of internal edges into mesh.
   void insertInternalEdges();

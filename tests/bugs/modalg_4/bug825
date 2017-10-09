@@ -1,6 +1,4 @@
-puts "TODO OCC25915 ALL: FAILED during Triangulation"
-puts "TODO OCC25915 ALL: Triangulation FAILED for 1 of 2 Faces"
-puts "TODO OCC25915 ALL: Faulty OCC825"
+#puts "TODO OCC25915 ALL: Faulty OCC825"
 puts "TODO OCC25915 ALL: Faulty shapes in variables faulty_1 to faulty_"
 
 pload QAcommands

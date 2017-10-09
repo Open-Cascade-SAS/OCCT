@@ -13,13 +13,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepMesh_FaceAttribute.hxx>
 #include <Draw_Segment3D.hxx>
 #include <DrawTrSurf_Polygon3D.hxx>
 #include <Draw.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <Poly_Polygon3D.hxx>
+#include <BRepMesh_Edge.hxx>
+#include <BRepMesh_Vertex.hxx>
+#include <BRepMesh_Triangle.hxx>
+#include <BRepMesh_DataStructureOfDelaun.hxx>
 
 // This file defines global functions not declared in any public header,
 // intended for use from debugger prompt (Command Window in Visual Studio)
@@ -28,15 +31,14 @@
 //function : MeshTest_DrawLinks
 //purpose  : Draw links from mesh data structure of type BRepMesh_FaceAttribute
 //=======================================================================
-Standard_EXPORT const char* MeshTest_DrawLinks(const char* theNameStr, void* theFaceAttr)
+Standard_EXPORT const char* MeshTest_DrawLinks(const char* theNameStr, void* theDataStruct)
 {
-  if (theNameStr == 0 || theFaceAttr == 0)
+  if (theNameStr == 0 || theDataStruct == 0)
   {
     return "Error: name or face attribute is null";
   }
   try {
-    const Handle(BRepMesh_FaceAttribute)& aFaceAttr = *(Handle(BRepMesh_FaceAttribute)*)theFaceAttr;
-    const Handle(BRepMesh_DataStructureOfDelaun)& aMeshData = aFaceAttr->ChangeStructure();
+    const Handle(BRepMesh_DataStructureOfDelaun)& aMeshData = *(Handle(BRepMesh_DataStructureOfDelaun)*)theDataStruct;
     if (aMeshData.IsNull())
       return "Null mesh data structure";
     Standard_Integer nbLinks = aMeshData->NbLinks();
@@ -51,9 +53,9 @@ Standard_EXPORT const char* MeshTest_DrawLinks(const char* theNameStr, void* the
       Standard_Integer n2 = aLink.LastNode();
       const BRepMesh_Vertex& aV1 = aMeshData->GetNode(n1);
       const BRepMesh_Vertex& aV2 = aMeshData->GetNode(n2);
-      const gp_Pnt& aP1 = aFaceAttr->GetPoint(aV1);
-      const gp_Pnt& aP2 = aFaceAttr->GetPoint(aV2);
-      Handle(Draw_Segment3D) aSeg = new Draw_Segment3D(aP1, aP2, Draw_bleu);
+      Handle(Draw_Segment3D) aSeg = new Draw_Segment3D(gp_Pnt(aV1.Coord().X(), aV1.Coord().Y(), 0),
+                                                       gp_Pnt(aV2.Coord().X(), aV2.Coord().Y(), 0), 
+                                                       Draw_bleu);
       Draw::Set((aName + "_" + i).ToCString(), aSeg);
     }
     return theNameStr;
@@ -68,16 +70,16 @@ Standard_EXPORT const char* MeshTest_DrawLinks(const char* theNameStr, void* the
 //function : MeshTest_DrawTriangles
 //purpose  : Draw triangles from mesh data structure of type BRepMesh_FaceAttribute
 //=======================================================================
-Standard_EXPORT const char* MeshTest_DrawTriangles(const char* theNameStr, void* theFaceAttr)
+Standard_EXPORT const char* MeshTest_DrawTriangles(const char* theNameStr, void* theDataStruct)
 {
-  if (theNameStr == 0 || theFaceAttr == 0)
+  if (theNameStr == 0 || theDataStruct == 0)
   {
     return "Error: name or face attribute is null";
   }
   try {
-    const Handle(BRepMesh_FaceAttribute)& aFaceAttr =
-      *(Handle(BRepMesh_FaceAttribute)*)theFaceAttr;
-    const Handle(BRepMesh_DataStructureOfDelaun)& aMeshData = aFaceAttr->ChangeStructure();
+    const Handle(BRepMesh_DataStructureOfDelaun)& aMeshData = 
+      *(Handle(BRepMesh_DataStructureOfDelaun)*)theDataStruct;
+
     if (aMeshData.IsNull())
       return "Null mesh data structure";
     Standard_Integer nbElem = aMeshData->NbElements();
@@ -93,8 +95,10 @@ Standard_EXPORT const char* MeshTest_DrawTriangles(const char* theNameStr, void*
       const BRepMesh_Vertex& aV1 = aMeshData->GetNode(n[0]);
       const BRepMesh_Vertex& aV2 = aMeshData->GetNode(n[1]);
       const BRepMesh_Vertex& aV3 = aMeshData->GetNode(n[2]);
-      gp_Pnt aP[4] = { aFaceAttr->GetPoint(aV1), aFaceAttr->GetPoint(aV2), 
-                       aFaceAttr->GetPoint(aV3), aFaceAttr->GetPoint(aV1) };
+      gp_Pnt aP[4] = { gp_Pnt(aV1.Coord().X(), aV1.Coord().Y(), 0),
+                       gp_Pnt(aV2.Coord().X(), aV2.Coord().Y(), 0),
+                       gp_Pnt(aV3.Coord().X(), aV3.Coord().Y(), 0),
+                       gp_Pnt(aV1.Coord().X(), aV1.Coord().Y(), 0) };
       TColgp_Array1OfPnt aPnts(aP[0], 1, 4);
       Handle(Poly_Polygon3D) aPoly = new Poly_Polygon3D(aPnts);
       Handle(DrawTrSurf_Polygon3D) aDPoly = new DrawTrSurf_Polygon3D(aPoly);

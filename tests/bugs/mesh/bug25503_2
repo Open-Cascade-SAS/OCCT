@@ -1,12 +1,7 @@
-puts "TODO CR25469 ALL: Error: second time must be quicker"
-
 puts "============"
-puts "CR25503"
+puts "CR25503: BRepMesh - IncrementalMesh always re-meshes the shape even if existing triangulation satisfies the given deflection"
 puts "============"
 puts ""
-###################################################################################
-# BRepMesh - IncrementalMesh always re-meshes the shape even if existing triangulation satisfies the given deflection
-###################################################################################
 
 puts ""
 puts "===> meshing full sphere"

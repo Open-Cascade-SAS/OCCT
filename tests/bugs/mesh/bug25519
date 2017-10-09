@@ -15,5 +15,5 @@ fit
 isos a 0
 triangles a
 
-checktrinfo a -tri 3347 -nod 1780 -defl 0.08541878790375132 -tol_rel_defl 0.05 -tol_rel_tri 0.05 -tol_rel_nod 0.05
+checktrinfo a -tri 2971 -nod 1592 -defl 0.083467373173701759 -tol_rel_defl 0.05 -tol_rel_tri 0.05 -tol_rel_nod 0.05
 checkview -screenshot -2d -path ${imagedir}/${test_image}.png

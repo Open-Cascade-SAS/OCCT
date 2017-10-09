@@ -15,26 +15,21 @@
 #define _BRepMesh_VertexTool_HeaderFile
 
 #include <NCollection_Array1.hxx>
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Macro.hxx>
+#include <Standard_Transient.hxx>
 #include <BRepMesh_VertexInspector.hxx>
-#include <BRepMesh.hxx>
 #include <Standard_OStream.hxx>
-#include <gp_XYZ.hxx>
 #include <gp_XY.hxx>
+#include <IMeshData_Types.hxx>
 
 class BRepMesh_Vertex;
 
 //! Describes data structure intended to keep mesh nodes 
 //! defined in UV space and implements functionality 
-//! providing their uniqueness regarding thir position.
-class BRepMesh_VertexTool
+//! providing their uniqueness regarding their position.
+class BRepMesh_VertexTool : public Standard_Transient
 {
 public:
 
-  DEFINE_STANDARD_ALLOC
-  
   //! Constructor.
   //! @param theAllocator memory allocator to be used by internal collections.
   Standard_EXPORT BRepMesh_VertexTool(
@@ -101,16 +96,16 @@ public:
     const Standard_Boolean isForceAdd);
 
   //! Deletes vertex with the given index from the tool.
-  Standard_EXPORT void Delete(const Standard_Integer theIndex);
+  Standard_EXPORT void DeleteVertex(const Standard_Integer theIndex);
 
   //! Returns set of mesh vertices.
-  inline const BRepMesh::HVectorOfVertex& Vertices() const
+  inline const Handle(IMeshData::VectorOfVertex)& Vertices() const
   {
     return mySelector.Vertices();
   }
 
   //! Returns set of mesh vertices.
-  inline BRepMesh::HVectorOfVertex& ChangeVertices()
+  inline Handle(IMeshData::VectorOfVertex)& ChangeVertices()
   {
     return mySelector.ChangeVertices();
   }
@@ -150,18 +145,20 @@ public:
   //! Remove last node from the structure.
   inline void RemoveLast()
   {
-    Delete(Extent());
+    DeleteVertex(Extent());
   }
 
   //! Returns the list with indexes of vertices that have movability attribute
   //! equal to BRepMesh_Deleted and can be replaced with another node.
-  inline const BRepMesh::ListOfInteger& GetListOfDelNodes() const
+  inline const IMeshData::ListOfInteger& GetListOfDelNodes() const
   {
     return mySelector.GetListOfDelPoints();
   }
 
   //! Prints statistics.
   Standard_EXPORT void Statistics(Standard_OStream& theStream) const;
+
+  DEFINE_STANDARD_RTTI_INLINE(BRepMesh_VertexTool, Standard_Transient)
 
 private:
   
@@ -181,10 +178,10 @@ private:
 
 private:
 
-  Handle(NCollection_IncAllocator)      myAllocator;
-  BRepMesh::VertexCellFilter            myCellFilter;
-  BRepMesh_VertexInspector              mySelector;
-  Standard_Real                         myTolerance[2];
+  Handle(NCollection_IncAllocator) myAllocator;
+  IMeshData::VertexCellFilter      myCellFilter;
+  BRepMesh_VertexInspector         mySelector;
+  Standard_Real                    myTolerance[2];
 };
 
 #endif

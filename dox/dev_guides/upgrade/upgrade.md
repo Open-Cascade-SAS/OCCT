@@ -1627,3 +1627,48 @@ Now methods *GeomConvert::ConcatG1*, *GeomConvert::ConcatC1*, *Geom2dConvert::Co
 Previously Document format version after restoring by DocumentRetrievalDriver was propagated using static methods of corresponding units (like MDataStd or MNaming) to static variables of these units and after that became accessible to Drivers of these units.
 Now Document format version is available to drivers via RelocationTable. The Relocation table now keeps HeaderData of the document and a format version can be extracted in next way: theRelocTable.GetHeaderData()->StorageVersion().
 Obsolete methods: *static void SetDocumentVersion (const Standard_Integer DocVersion)* and *static Standard_Integer DocumentVersion()* of *BinMDataStd*, *BinMNaming*, *XmlMDataStd* and *XmlMNaming* are removed.
+
+@subsection upgrade_740_changed_api_of_brepmesh BRepMesh - revision of the data model
+
+The entire structure of *BRepMesh* component has been revised and separated into several logically connected classes.
+
+In new version, deflection is controlled more accurately, this may be necessary to tune parameters of call of the BRepMesh algorithm on the application side to obtain the same quality of presentation and/or performance as before.
+
+*BRepMesh_FastDiscret* and *BRepMesh_FastDiscretFace* classes have been removed.
+
+The following changes have been introduced in the API of *BRepMesh_IncrementalMesh*, component entry point:
+* Due to revised logic, *adaptiveMin* parameter of the constructor has been removed as meaningless;
+* *BRepMesh_FastDiscret::Parameters* has been moved to a separate structure called *IMeshTools_Parameters*; the signatures of related methods have been changed correspondingly.
+
+* Interface of *BRepMesh_Delaun* class has been changed.
+
+Example of usage:
+Case 1 (explicit parameters):
+~~~~
+#include <IMeshData_Status.hxx>
+#include <IMeshTools_Parameters.hxx>
+#include <BRepMesh_IncrementalMesh.hxx>
+
+Standard_Boolean meshing_explicit_parameters()
+{
+  BRepMesh_IncrementalMesh aMesher (aShape, 0.1, Standard_False, 0.5, Standard_True);
+  const Standard_Integer aStatus = aMesher.GetStatusFlags();
+  return !aStatus;
+}
+
+Standard_Boolean meshing_new()
+{
+  IMeshTools_Parameters aMeshParams;
+  aMeshParams.Deflection               = 0.1;
+  aMeshParams.Angle                    = 0.5;
+  aMeshParams.Relative                 = Standard_False;
+  aMeshParams.InParallel               = Standard_True;
+  aMeshParams.MinSize                  = Precision::Confusion();
+  aMeshParams.InternalVerticesMode     = Standard_True;
+  aMeshParams.ControlSurfaceDeflection = Standard_True;
+
+  BRepMesh_IncrementalMesh aMesher (aShape, aMeshParams);
+  const Standard_Integer aStatus = aMesher.GetStatusFlags();
+  return !aStatus;
+}
+~~~~

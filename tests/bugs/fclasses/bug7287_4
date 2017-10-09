@@ -1,5 +1,6 @@
 puts "TODO ?OCC7287 Linux: Tcl Exception: Memory leak detected"
 puts "TODO ?OCC7287 Linux: TEST INCOMPLETE"
+puts "TODO ?OCC7287 Linux: Checking trend failed"
 puts "TODO ?OCC7287 MacOS: Tcl Exception: Memory leak detected"
 puts "TODO ?OCC7287 MacOS: TEST INCOMPLETE"
 

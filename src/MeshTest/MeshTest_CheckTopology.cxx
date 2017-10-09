@@ -29,6 +29,29 @@
 #include <Poly_Triangulation.hxx>
 #include <Poly_PolygonOnTriangulation.hxx>
 #include <Poly_Connect.hxx>
+#include <Precision.hxx>
+
+//=======================================================================
+//function : ComputeArea
+//purpose  : Computes area of the triangle given by its three points (either 2D or3D)
+//=======================================================================
+static Standard_Real ComputeArea(const gp_XYZ& theP1,
+                                 const gp_XYZ& theP2,
+                                 const gp_XYZ& theP3)
+{
+  return 0.5*(theP3 - theP1).Crossed(theP2 - theP1).Modulus();
+}
+
+//=======================================================================
+//function : ComputeArea
+//purpose  : Computes area of the triangle given by its three points (either 2D or3D)
+//=======================================================================
+static Standard_Real ComputeArea(const gp_XY& theP1,
+                                 const gp_XY& theP2,
+                                 const gp_XY& theP3)
+{
+  return 0.5*Abs((theP3 - theP1).Crossed(theP2 - theP1));
+}
 
 //=======================================================================
 //function : Perform
@@ -87,25 +110,27 @@ void MeshTest_CheckTopology::Perform (Draw_Interpretor& di)
       }
 
       // check distances between corresponding points
-      Standard_Real aDefle = Max(aT1->Deflection(), aT2->Deflection());
+      Standard_Real aSqDefle = Max(aT1->Deflection(), aT2->Deflection());
+      aSqDefle *= aSqDefle;
       const TColgp_Array1OfPnt& aPoints1 = aT1->Nodes();
       const TColgp_Array1OfPnt& aPoints2 = aT2->Nodes();
       Standard_Integer iF1 = aMapF.FindIndex(aFace1);
       Standard_Integer iF2 = aMapF.FindIndex(aFace2);
       Standard_Integer i1 = aNodes1.Lower();
       Standard_Integer i2 = aNodes2.Lower();
-      gp_Trsf aTrsf1 = aFace1.Location().Transformation();
-      gp_Trsf aTrsf2 = aFace2.Location().Transformation();
+      const gp_Trsf &aTrsf1 = aFace1.Location().Transformation();
+      const gp_Trsf &aTrsf2 = aFace2.Location().Transformation();
       for (; i1 <= aNodes1.Upper(); i1++, i2++) {
-	gp_Pnt aP1 = aPoints1(aNodes1(i1)).Transformed(aTrsf1);
-	gp_Pnt aP2 = aPoints2(aNodes2(i2)).Transformed(aTrsf2);
-	Standard_Real aDist = aP1.Distance(aP2);
-	if (aDist > aDefle) {
+	const gp_Pnt aP1 = aPoints1(aNodes1(i1)).Transformed(aTrsf1);
+	const gp_Pnt aP2 = aPoints2(aNodes2(i2)).Transformed(aTrsf2);
+	const Standard_Real aSqDist = aP1.SquareDistance(aP2);
+        if (aSqDist > aSqDefle)
+        {
 	  myErrors.Append(iF1);
 	  myErrors.Append(i1);
 	  myErrors.Append(iF2);
 	  myErrors.Append(i2);
-	  myErrorsVal.Append(aDist);
+          myErrorsVal.Append(Sqrt(aSqDist));
 	}
       }
     }
@@ -121,6 +146,8 @@ void MeshTest_CheckTopology::Perform (Draw_Interpretor& di)
       di << "face " <<iF <<" has no triangulation\n";
       continue;
     }
+
+    const gp_Trsf &aTrsf = aLoc.Transformation();
 
     // remember boundary nodes
     TColStd_PackedMapOfInteger aMapBndNodes;
@@ -148,6 +175,29 @@ void MeshTest_CheckTopology::Perform (Draw_Interpretor& di)
       aUsedNodes.Add (n[0]);
       aUsedNodes.Add (n[1]);
       aUsedNodes.Add (n[2]);
+
+      const gp_Pnt aPts[3] = {aT->Node(n[0]).Transformed(aTrsf),
+                              aT->Node(n[1]).Transformed(aTrsf),
+                              aT->Node(n[2]).Transformed(aTrsf)};
+
+      Standard_Real anArea = ComputeArea(aPts[0].XYZ(), aPts[1].XYZ(), aPts[2].XYZ());
+      if (anArea < Precision::SquareConfusion())
+      {
+        mySmallTrianglesFaces.Append(iF);
+        mySmallTrianglesTriangles.Append(i);
+      }
+      else if (aT->HasUVNodes())
+      {
+        const gp_XY aPUV[3] = {aT->UVNode(n[0]).XY(),
+                               aT->UVNode(n[1]).XY(),
+                               aT->UVNode(n[2]).XY()};
+        anArea = ComputeArea(aPUV[0], aPUV[1], aPUV[2]);
+        if (anArea < Precision::SquarePConfusion())
+        {
+          mySmallTrianglesFaces.Append(iF);
+          mySmallTrianglesTriangles.Append(i);
+        }
+      }
 
       aConn.Triangles(i, t[0], t[1], t[2]);
       for (j = 0; j < 3; j++) {

@@ -96,7 +96,25 @@ void ElCLib::AdjustPeriodic(const Standard_Real UFirst,
                             Standard_Real& U1,
                             Standard_Real& U2)
 {
+  if (Precision::IsInfinite(UFirst) ||
+      Precision::IsInfinite(ULast))
+  {
+    U1 = UFirst;
+    U2 = ULast;
+    return;
+  }
+  
   Standard_Real period = ULast - UFirst;
+
+  if (period < Epsilon(ULast))
+  {
+    // In order to avoid FLT_Overflow exception
+    // (test bugs moddata_1 bug22757)
+    U1 = UFirst;
+    U2 = ULast;
+    return;
+  }
+
   U1 -= Floor((U1-UFirst)/period) * period;
   if (ULast - U1 < Preci) U1 -= period;
   U2 -= Floor((U2-U1)/period) * period;

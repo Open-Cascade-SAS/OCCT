@@ -16,14 +16,133 @@
 
 #include <BRepMesh_GeomTool.hxx>
 
+#include <BRepMesh_DefaultRangeSplitter.hxx>
+
 #include <TopAbs_Orientation.hxx>
 #include <CSLib.hxx>
 #include <Precision.hxx>
 #include <Adaptor3d_IsoCurve.hxx>
+#include <Adaptor3d_HCurve.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepAdaptor_HSurface.hxx>
 #include <Geom2d_Curve.hxx>
 #include <BRep_Tool.hxx>
+
+namespace
+{
+  void ComputeErrFactors (const Standard_Real               theDeflection,
+                          const Handle(Adaptor3d_HSurface)& theFace,
+                          Standard_Real&                    theErrFactorU,
+                          Standard_Real&                    theErrFactorV)
+  {
+    theErrFactorU = theDeflection * 10.;
+    theErrFactorV = theDeflection * 10.;
+
+    switch (theFace->GetType ())
+    {
+    case GeomAbs_Cylinder:
+    case GeomAbs_Cone:
+    case GeomAbs_Sphere:
+    case GeomAbs_Torus:
+      break;
+
+    case GeomAbs_SurfaceOfExtrusion:
+    case GeomAbs_SurfaceOfRevolution:
+      {
+        Handle(Adaptor3d_HCurve) aCurve = theFace->BasisCurve ();
+        if (aCurve->GetType () == GeomAbs_BSplineCurve && aCurve->Degree () > 2)
+        {
+          theErrFactorV /= (aCurve->Degree () * aCurve->NbKnots ());
+        }
+        break;
+      }
+    case GeomAbs_BezierSurface:
+      {
+        if (theFace->UDegree () > 2)
+        {
+          theErrFactorU /= (theFace->UDegree ());
+        }
+        if (theFace->VDegree () > 2)
+        {
+          theErrFactorV /= (theFace->VDegree ());
+        }
+        break;
+      }
+    case GeomAbs_BSplineSurface:
+      {
+        if (theFace->UDegree () > 2)
+        {
+          theErrFactorU /= (theFace->UDegree () * theFace->NbUKnots ());
+        }
+        if (theFace->VDegree () > 2)
+        {
+          theErrFactorV /= (theFace->VDegree () *  theFace->NbVKnots ());
+        }
+        break;
+      }
+
+    case GeomAbs_Plane:
+    default:
+      theErrFactorU = theErrFactorV = 1.;
+    }
+  }
+
+  void AdjustCellsCounts (const Handle(Adaptor3d_HSurface)& theFace,
+                          const Standard_Integer            theNbVertices,
+                          Standard_Integer&                 theCellsCountU,
+                          Standard_Integer&                 theCellsCountV)
+  {
+    const GeomAbs_SurfaceType aType = theFace->GetType ();
+    if (aType == GeomAbs_OtherSurface)
+    {
+      // fallback to the default behavior
+      theCellsCountU = theCellsCountV = -1;
+      return;
+    }
+
+    Standard_Real aSqNbVert = theNbVertices;
+    if (aType == GeomAbs_Plane)
+    {
+      theCellsCountU = theCellsCountV = (Standard_Integer)Ceiling (Pow (2, Log10 (aSqNbVert)));
+    }
+    else if (aType == GeomAbs_Cylinder || aType == GeomAbs_Cone)
+    {
+      theCellsCountV = (Standard_Integer)Ceiling (Pow (2, Log10 (aSqNbVert)));
+    }
+    else if (aType == GeomAbs_SurfaceOfExtrusion || aType == GeomAbs_SurfaceOfRevolution)
+    {
+      Handle (Adaptor3d_HCurve) aCurve = theFace->BasisCurve ();
+      if (aCurve->GetType () == GeomAbs_Line ||
+         (aCurve->GetType () == GeomAbs_BSplineCurve && aCurve->Degree () < 2))
+      {
+        // planar, cylindrical, conical cases
+        if (aType == GeomAbs_SurfaceOfExtrusion)
+          theCellsCountU = (Standard_Integer)Ceiling (Pow (2, Log10 (aSqNbVert)));
+        else
+          theCellsCountV = (Standard_Integer)Ceiling (Pow (2, Log10 (aSqNbVert)));
+      }
+      if (aType == GeomAbs_SurfaceOfExtrusion)
+      {
+        // V is always a line
+        theCellsCountV = (Standard_Integer)Ceiling (Pow (2, Log10 (aSqNbVert)));
+      }
+    }
+    else if (aType == GeomAbs_BezierSurface || aType == GeomAbs_BSplineSurface)
+    {
+      if (theFace->UDegree () < 2)
+      {
+        theCellsCountU = (Standard_Integer)Ceiling (Pow (2, Log10 (aSqNbVert)));
+      }
+      if (theFace->VDegree () < 2)
+      {
+        theCellsCountV = (Standard_Integer)Ceiling (Pow (2, Log10 (aSqNbVert)));
+      }
+    }
+
+    theCellsCountU = Max (theCellsCountU, 2);
+    theCellsCountV = Max (theCellsCountV, 2);
+  }
+}
 
 //=======================================================================
 //function : Constructor
@@ -76,8 +195,10 @@ BRepMesh_GeomTool::BRepMesh_GeomTool(
 //=======================================================================
 Standard_Boolean BRepMesh_GeomTool::Value(
   const Standard_Integer              theIndex,
+  const Handle(BRepAdaptor_HSurface)& theSurface,
   Standard_Real&                      theParam,
-  gp_Pnt&                             thePoint) const
+  gp_Pnt&                             thePoint,
+  gp_Pnt2d&                           theUV) const
 {
   if (theIndex < 1 || theIndex > NbPoints())
     return Standard_False;
@@ -88,6 +209,14 @@ Standard_Boolean BRepMesh_GeomTool::Value(
   thePoint = myDiscretTool.Value(theIndex);
   theParam = myDiscretTool.Parameter(theIndex);
 
+  const TopoDS_Face& aFace = ((BRepAdaptor_Surface*)&(theSurface->Surface()))->Face();
+
+  Standard_Real aFirst, aLast;
+  Handle(Geom2d_Curve) aCurve = 
+    BRep_Tool::CurveOnSurface(*myEdge, aFace, aFirst, aLast);
+
+  aCurve->D0(theParam, theUV);
+
   return Standard_True;
 }
 
@@ -95,11 +224,12 @@ Standard_Boolean BRepMesh_GeomTool::Value(
 //function : Value
 //purpose  :
 //=======================================================================
-Standard_Boolean BRepMesh_GeomTool::Value(const Standard_Integer theIndex,
-                                          const Standard_Real    theIsoParam,
-                                          Standard_Real&         theParam,
-                                          gp_Pnt&                thePoint,
-                                          gp_Pnt2d&              theUV) const
+Standard_Boolean BRepMesh_GeomTool::Value(
+  const Standard_Integer theIndex,
+  const Standard_Real    theIsoParam,
+  Standard_Real&         theParam,
+  gp_Pnt&                thePoint,
+  gp_Pnt2d&              theUV) const
 {
   if (theIndex < 1 || theIndex > NbPoints())
     return Standard_False;
@@ -286,11 +416,61 @@ BRepMesh_GeomTool::IntFlag BRepMesh_GeomTool::IntSegSeg(
   const Standard_Real aEndPrec = 1 - aPrec;
   for (Standard_Integer i = 0; i < 2; ++i)
   {
-    if( aParam[i] < aPrec || aParam[i] > aEndPrec )
+    if(aParam[i] < aPrec || aParam[i] > aEndPrec )
       return BRepMesh_GeomTool::NoIntersection;
   }
  
   return BRepMesh_GeomTool::Cross;
+}
+
+//=============================================================================
+//function : CellsCount
+//purpose  :
+//=============================================================================
+std::pair<Standard_Integer, Standard_Integer> BRepMesh_GeomTool::CellsCount (
+  const Handle (Adaptor3d_HSurface)&   theSurface,
+  const Standard_Integer               theVerticesNb,
+  const Standard_Real                  theDeflection,
+  const BRepMesh_DefaultRangeSplitter* theRangeSplitter)
+{
+  if (theRangeSplitter == NULL)
+    return std::pair<Standard_Integer, Standard_Integer>(-1, -1);
+
+  const GeomAbs_SurfaceType aType = theSurface->GetType ();
+
+  Standard_Real anErrFactorU, anErrFactorV;
+  ComputeErrFactors(theDeflection, theSurface, anErrFactorU, anErrFactorV);
+
+  const std::pair<Standard_Real, Standard_Real>& aRangeU = theRangeSplitter->GetRangeU();
+  const std::pair<Standard_Real, Standard_Real>& aRangeV = theRangeSplitter->GetRangeV();
+  const std::pair<Standard_Real, Standard_Real>& aDelta  = theRangeSplitter->GetDelta ();
+
+  Standard_Integer aCellsCountU, aCellsCountV;
+  if (aType == GeomAbs_Torus)
+  {
+    aCellsCountU = (Standard_Integer)Ceiling(Pow(2, Log10(
+      (aRangeU.second - aRangeU.first) / aDelta.first)));
+    aCellsCountV = (Standard_Integer)Ceiling(Pow(2, Log10(
+      (aRangeV.second - aRangeV.first) / aDelta.second)));
+  }
+  else if (aType == GeomAbs_Cylinder)
+  {
+    aCellsCountU = (Standard_Integer)Ceiling(Pow(2, Log10(
+      (aRangeU.second - aRangeU.first) / aDelta.first /
+      (aRangeV.second - aRangeV.first))));
+    aCellsCountV = (Standard_Integer)Ceiling(Pow(2, Log10(
+      (aRangeV.second - aRangeV.first) / anErrFactorV)));
+  }
+  else
+  {
+    aCellsCountU = (Standard_Integer)Ceiling(Pow(2, Log10(
+      (aRangeU.second - aRangeU.first) / aDelta.first  / anErrFactorU)));
+    aCellsCountV = (Standard_Integer)Ceiling(Pow(2, Log10(
+      (aRangeV.second - aRangeV.first) / aDelta.second / anErrFactorV)));
+  }
+
+  AdjustCellsCounts(theSurface, theVerticesNb, aCellsCountU, aCellsCountV);
+  return std::pair<Standard_Integer, Standard_Integer>(aCellsCountU, aCellsCountV);
 }
 
 //=============================================================================

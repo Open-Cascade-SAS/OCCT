@@ -14,7 +14,7 @@ incmesh f 1
 
 trinfo f
 
-checktrinfo f -tri 21 -nod 22 -defl 0.3345840532742983 -tol_abs_defl 1.e-3 -tol_rel_defl 0.01
+checktrinfo f -tri 20 -nod 21 -defl 0.3345840532742983 -tol_abs_defl 1.e-3 -tol_rel_defl 0.01
 
 vinit
 vdisplay f

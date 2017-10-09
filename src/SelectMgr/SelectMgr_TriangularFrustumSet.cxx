@@ -37,11 +37,11 @@ void SelectMgr_TriangularFrustumSet::Build (const TColgp_Array1OfPnt2d& thePoint
   Handle(BRepMesh_DataStructureOfDelaun) aMeshStructure = new BRepMesh_DataStructureOfDelaun(anAllocator);
   Standard_Integer aPtsLower = thePoints.Lower();
   Standard_Integer aPtsUpper = thePoints.Upper();
-  BRepMesh::Array1OfInteger anIndexes (0, thePoints.Length() - 1);
+  IMeshData::VectorOfInteger anIndexes(aPtsUpper - aPtsLower, anAllocator);
   for (Standard_Integer aPtIdx = aPtsLower; aPtIdx <= aPtsUpper; ++aPtIdx)
   {
-    BRepMesh_Vertex aVertex (thePoints.Value (aPtIdx).XY(), aPtIdx, BRepMesh_Frontier);
-    anIndexes.ChangeValue (aPtIdx - aPtsLower) = aMeshStructure->AddNode (aVertex);
+    BRepMesh_Vertex aVertex(thePoints.Value(aPtIdx).XY(), aPtIdx, BRepMesh_Frontier);
+    anIndexes.Append(aMeshStructure->AddNode(aVertex));
   }
 
   Standard_Real aPtSum = 0;
@@ -64,11 +64,11 @@ void SelectMgr_TriangularFrustumSet::Build (const TColgp_Array1OfPnt2d& thePoint
   }
 
   BRepMesh_Delaun aTriangulation (aMeshStructure, anIndexes);
-  const BRepMesh::MapOfInteger& aTriangles = aMeshStructure->ElementsOfDomain();
+  const IMeshData::MapOfInteger& aTriangles = aMeshStructure->ElementsOfDomain();
   if (aTriangles.Extent() < 1)
     return;
 
-  BRepMesh::MapOfInteger::Iterator aTriangleIt (aTriangles);
+  IMeshData::IteratorOfMapOfInteger aTriangleIt (aTriangles);
   for (; aTriangleIt.More(); aTriangleIt.Next())
   {
     const Standard_Integer aTriangleId = aTriangleIt.Key();

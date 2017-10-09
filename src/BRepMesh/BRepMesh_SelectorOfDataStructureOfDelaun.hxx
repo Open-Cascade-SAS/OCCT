@@ -14,24 +14,19 @@
 #ifndef _BRepMesh_SelectorOfDataStructureOfDelaun_HeaderFile
 #define _BRepMesh_SelectorOfDataStructureOfDelaun_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Macro.hxx>
+#include <Standard_Transient.hxx>
 #include <BRepMesh_DataStructureOfDelaun.hxx>
-#include <BRepMesh.hxx>
-#include <Standard_Integer.hxx>
 #include <BRepMesh_Triangle.hxx>
+#include <IMeshData_Types.hxx>
 
 class BRepMesh_Vertex;
 class BRepMesh_Edge;
 
 //! Describes a selector and an iterator on a 
 //! selector of components of a mesh.
-class BRepMesh_SelectorOfDataStructureOfDelaun
+class BRepMesh_SelectorOfDataStructureOfDelaun : public Standard_Transient
 {
 public:
-
-  DEFINE_STANDARD_ALLOC
 
   //! Default constructor.
   Standard_EXPORT BRepMesh_SelectorOfDataStructureOfDelaun();
@@ -75,28 +70,30 @@ public:
   }
   
   //! Returns selected nodes.
-  inline const BRepMesh::MapOfInteger& Nodes() const
+  inline const IMeshData::MapOfInteger& Nodes() const
   {
     return myNodes;
   }
   
   //! Returns selected links.
-  inline const BRepMesh::MapOfInteger& Links() const
+  inline const IMeshData::MapOfInteger& Links() const
   {
     return myLinks;
   }
   
   //! Returns selected elements.
-  inline const BRepMesh::MapOfInteger& Elements() const
+  inline const IMeshData::MapOfInteger& Elements() const
   {
     return myElements;
   }
   
   //! Gives the list of incices of frontier links.
-  inline const BRepMesh::MapOfInteger& FrontierLinks() const
+  inline const IMeshData::MapOfInteger& FrontierLinks() const
   {
     return myFrontier;
   }
+
+  DEFINE_STANDARD_RTTI_INLINE(BRepMesh_SelectorOfDataStructureOfDelaun, Standard_Transient)
 
 private:
 
@@ -104,12 +101,11 @@ private:
   void elementsOfLink(const Standard_Integer theIndex);
 
 private:
-  Handle(NCollection_IncAllocator)       myAllocator;
   Handle(BRepMesh_DataStructureOfDelaun) myMesh;
-  BRepMesh::MapOfInteger                 myNodes;
-  BRepMesh::MapOfInteger                 myLinks;
-  BRepMesh::MapOfInteger                 myElements;
-  BRepMesh::MapOfInteger                 myFrontier;
+  IMeshData::MapOfInteger                myNodes;
+  IMeshData::MapOfInteger                myLinks;
+  IMeshData::MapOfInteger                myElements;
+  IMeshData::MapOfInteger                myFrontier;
 };
 
 #endif

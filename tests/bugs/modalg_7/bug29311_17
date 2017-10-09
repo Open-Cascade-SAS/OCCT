@@ -1,11 +1,7 @@
 puts "========"
-puts "OCC29311"
+puts "OCC29311: Implementation of the Oriented Bounding Boxes (OBB) functionality"
 puts "========"
 puts ""
-#################################################
-# Implementation of the Oriented Bounding Boxes (OBB) functionality
-#################################################
-
 
 set NbIters 31
 set step [expr 360.0/($NbIters-1) ]
@@ -41,7 +37,7 @@ for {set i 1} { $i <= $NbIters} { incr i } {
   if { $i != $NbIters } { trotate a 283 162 317 2 7 9 $step }
 }
 
-checkreal {Transformed BndBoxes} $VMax $VMin 0.0 0.3
+checkreal {Transformed BndBoxes} $VMax $VMin 0.0 0.35
 
 puts "The box with maximal volume is achieved in $MaxIteration iteration. See \"amax\" shape."
 puts "The box with minimal volume is achieved in $MinIteration iteration. See \"amin\" shape."

@@ -1,8 +1,3 @@
-puts "TODO OCC12345 ALL: Meshing statuses: OpenWire SelfIntersectingWire Failure ReMesh"
-puts "TODO OCC12345 ALL: Error: Number of triangles"
-puts "TODO OCC12345 ALL: Error: Number of nodes"
-puts "TODO OCC12345 ALL: Error: Maximal deflection"
-
 puts "============"
 puts "OCC15519"
 puts "============"
@@ -19,15 +14,5 @@ tclean result
 set Deflection 1.
 catch {incmesh result ${Deflection} }
 
-if { [checkplatform -windows] }  {
-   set good_tri  96265
-   set good_nod  71339
-   set good_defl 27.956052399907215
-} else {
-   set good_tri  95582
-   set good_nod  70796
-   set good_defl 0.99827404224216676
-}
-
-checktrinfo result -tri ${good_tri} -nod ${good_nod} -defl ${good_defl} -tol_rel_defl 0.001 -tol_rel_tri 0.001 -tol_rel_nod 0.001
+checktrinfo result -tri 52685 -nod 46258 -defl 1.0 -tol_rel_defl 0.001 -tol_rel_tri 0.001 -tol_rel_nod 0.001
 checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -14,21 +14,8 @@
 #ifndef _BRepMesh_IncrementalMesh_HeaderFile
 #define _BRepMesh_IncrementalMesh_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
-#include <BRepMesh_FastDiscret.hxx>
-#include <TopTools_MapOfShape.hxx>
-#include <TopTools_DataMapOfShapeReal.hxx>
 #include <BRepMesh_DiscretRoot.hxx>
-#include <BRepMesh.hxx>
-
-#include <vector>
-
-class Poly_Triangulation;
-class TopoDS_Shape;
-class TopoDS_Edge;
-class TopoDS_Face;
+#include <IMeshTools_Parameters.hxx>
 
 //! Builds the mesh of a shape with respect of their 
 //! correctly triangulated parts 
@@ -51,20 +38,18 @@ public: //! @name mesher API
   //! used for the faces will be the maximum deflection of their edges.
   //! @param theAngDeflection angular deflection.
   //! @param isInParallel if TRUE shape will be meshed in parallel.
-  Standard_EXPORT BRepMesh_IncrementalMesh(
-    const TopoDS_Shape&    theShape,
-    const Standard_Real    theLinDeflection,
-    const Standard_Boolean isRelative = Standard_False,
-    const Standard_Real    theAngDeflection = 0.5,
-    const Standard_Boolean isInParallel = Standard_False,
-    const Standard_Boolean adaptiveMin = Standard_False);  
+  Standard_EXPORT BRepMesh_IncrementalMesh(const TopoDS_Shape&    theShape,
+                                           const Standard_Real    theLinDeflection,
+                                           const Standard_Boolean isRelative = Standard_False,
+                                           const Standard_Real    theAngDeflection = 0.5,
+                                           const Standard_Boolean isInParallel = Standard_False);
 
   //! Constructor.
   //! Automatically calls method Perform.
   //! @param theShape shape to be meshed.
   //! @param theParameters - parameters of meshing
-  Standard_EXPORT BRepMesh_IncrementalMesh (const TopoDS_Shape& theShape,
-                                            const BRepMesh_FastDiscret::Parameters& theParameters);
+  Standard_EXPORT BRepMesh_IncrementalMesh(const TopoDS_Shape&          theShape,
+                                           const IMeshTools_Parameters& theParameters);
 
   //! Performs meshing ot the shape.
   Standard_EXPORT virtual void Perform() Standard_OVERRIDE;
@@ -72,17 +57,17 @@ public: //! @name mesher API
 public: //! @name accessing to parameters.
 
   //! Returns meshing parameters
-  inline const BRepMesh_FastDiscret::Parameters& Parameters() const
+  inline const IMeshTools_Parameters& Parameters() const
   {
     return myParameters;
   }
 
   //! Returns modifiable meshing parameters
-  inline BRepMesh_FastDiscret::Parameters& ChangeParameters()
+  inline IMeshTools_Parameters& ChangeParameters()
   {
     return myParameters;
   }
-  
+
   //! Returns modified flag.
   inline Standard_Boolean IsModified() const
   {
@@ -95,6 +80,18 @@ public: //! @name accessing to parameters.
     return myStatus;
   }
   
+private:
+
+  //! Initializes specific parameters
+  inline void initParameters()
+  {
+    if (myParameters.MinSize < Precision::Confusion())
+    {
+      myParameters.MinSize =
+        Max(IMeshTools_Parameters::RelMinSize() * myParameters.Deflection,
+            Precision::Confusion());
+    }
+  }
 
 public: //! @name plugin API
 
@@ -117,78 +114,13 @@ public: //! @name plugin API
   //! Discret() static method (thus applied only to Mesh Factories).
   Standard_EXPORT static void SetParallelDefault(const Standard_Boolean isInParallel);
 
-  DEFINE_STANDARD_RTTIEXT(BRepMesh_IncrementalMesh,BRepMesh_DiscretRoot)
+  DEFINE_STANDARD_RTTI_INLINE(BRepMesh_IncrementalMesh, BRepMesh_DiscretRoot)
 
 protected:
 
-  Standard_EXPORT virtual void init() Standard_OVERRIDE;
-
-private:
-
-  //! Builds the incremental mesh for the shape.
-  void update();
-
-  //! Checks triangulation of the given face for consistency 
-  //! with the chosen tolerance. If some edge of face has no
-  //! discrete representation triangulation will be calculated.
-  //! @param theFace face to be checked.
-  void update(const TopoDS_Face& theFace);
-
-  //! Checks discretization of the given edge for consistency 
-  //! with the chosen tolerance.
-  //! @param theEdge edge to be checked.
-  void update(const TopoDS_Edge& theEdge);
-
-  //! Collects faces suitable for meshing.
-  void collectFaces();
-
-  //! Discretizes edges that have no associations with faces.
-  void discretizeFreeEdges();
-
-  //! Returns deflection of the given edge.
-  //! @param theEdge edge which tolerance should be taken.
-  Standard_Real edgeDeflection(const TopoDS_Edge& theEdge);
-
-  //! Returns deflection of the given face.
-  //! If relative flag is set, calculates relative deflection of the face 
-  //! as an average value of relative deflection regarding face's edges.
-  //! Returns value of deflection set by user elsewhere.
-  Standard_Real faceDeflection(const TopoDS_Face& theFace);
-
-  //! Prepares the given face for meshing.
-  //! Nullifies triangulation of face and polygons of face's edges.
-  //! @param theFace face to be checked.
-  //! @param isWithCheck if TRUE, checks parameters of triangulation 
-  //! existing in face. If its deflection satisfies the given value and
-  //! each edge of face has polygon corresponded to this triangulation,
-  //! method return FALSE.
-  //! @return TRUE in case if the given face should be meshed.
-  Standard_Boolean toBeMeshed(const TopoDS_Face&     theFace,
-                              const Standard_Boolean isWithCheck);
-
-  //! Stores mesh to the shape.
-  void commit();
-
-  //! Stores mesh of internal edges to the face.
-  void commitEdges(const TopoDS_Face& theFace);
-  
-  //! Clears internal data structures.
-  void clear();
-
-protected:
-
-  BRepMesh::DMapOfEdgeListOfTriangulationBool myEdges;
-  Handle(BRepMesh_FastDiscret)                myMesh;
-  TopTools_DataMapOfShapeReal                 myEdgeDeflection;
-  NCollection_Vector<TopoDS_Face>             myFaces;
-
-  BRepMesh_FastDiscret::Parameters myParameters;
-
-  Standard_Real                               myMaxShapeSize;
-  Standard_Boolean                            myModified;
-  Standard_Integer                            myStatus;
+  IMeshTools_Parameters myParameters;
+  Standard_Boolean      myModified;
+  Standard_Integer      myStatus;
 };
-
-DEFINE_STANDARD_HANDLE(BRepMesh_IncrementalMesh,BRepMesh_DiscretRoot)
 
 #endif

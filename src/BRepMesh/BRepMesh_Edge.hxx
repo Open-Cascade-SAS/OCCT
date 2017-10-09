@@ -76,7 +76,7 @@ public:
   }
 
   //! Alias for IsEqual.
-  Standard_Boolean operator ==(const BRepMesh_Edge& Other) const
+  inline Standard_Boolean operator ==(const BRepMesh_Edge& Other) const
   {
     return IsEqual(Other);
   }

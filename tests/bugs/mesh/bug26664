@@ -8,11 +8,15 @@ puts ""
 
 restore [locate_data_file bug26664_f.brep] a
 
-# adaptive meshing is OK
-tclean a
-incmesh a 1e-4 -adaptive
+set log2 [incmesh a 1e-4]
+vinit
+vsetdispmode 1
+vdisplay a
+vfit
+vdump ${imagedir}/${casename}_1.png
 
-# non-adaptive meshing fails
-puts "TODO 26664 ALL: Meshing statuses: Failure"
-tclean a
-incmesh a 1e-4
+if { [regexp "NoError" ${log2}] == 1 } {
+   puts "OK : Triangulating a very small polygon is good"
+} else {
+   puts "Error : Triangulating a very small polygon fails"
+}

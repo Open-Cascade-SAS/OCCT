@@ -32,7 +32,6 @@
 #include <gp_Pln.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepAlgoAPI_Section.hxx>
-#include <BRepMesh_IncrementalMesh.hxx>
 #include <Precision.hxx>
 #include <Standard_ErrorHandler.hxx>
 

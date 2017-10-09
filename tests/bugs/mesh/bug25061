@@ -1,12 +1,9 @@
-puts "TODO OCC25061 ALL: ERROR: OCC25061 is reproduced."
-
 puts "========"
-puts "OCC25061"
+puts "OCC25061: BRepMesh should skip internal wires with self intersections to produce mesh for the shape anyway"
 puts "========"
 puts ""
-####################################################################################################
-# BRepMesh should skip internal wires with self intersections to produce mesh for the shape anyway
-####################################################################################################
+
+puts "TODO OCC25061 ALL: Not connected mesh inside face 1"
 
 restore [locate_data_file bug25061_a.brep] a
 

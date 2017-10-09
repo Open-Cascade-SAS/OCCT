@@ -10,4 +10,4 @@ restore [locate_data_file bug23105_f372.brep] result
 checkshape result
 
 incmesh result 0.1
-checktrinfo result -tri -max_defl 0.1
+checktrinfo result -tri -defl 0.1 -tol_abs_defl 1e-6

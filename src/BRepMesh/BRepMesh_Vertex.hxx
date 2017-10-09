@@ -15,8 +15,11 @@
 #ifndef _BRepMesh_Vertex_HeaderFile
 #define _BRepMesh_Vertex_HeaderFile
 
-#include <BRepMesh_DegreeOfFreedom.hxx>
+#include <Standard.hxx>
+#include <Standard_DefineAlloc.hxx>
+#include <Standard_Macro.hxx>
 #include <gp_XY.hxx>
+#include <BRepMesh_DegreeOfFreedom.hxx>
 #include <Precision.hxx>
 
 //! Light weighted structure representing vertex 
@@ -104,7 +107,7 @@ public:
   //! Returns hash code for this vertex.
   //! @param theUpper upper index in the container.
   //! @return hash code.
-  Standard_Integer HashCode(const Standard_Integer Upper) const
+  inline Standard_Integer HashCode(const Standard_Integer Upper) const
   {
     return ::HashCode(Floor(1e5 * myUV.X()) * Floor(1e5 * myUV.Y()), Upper);
   }
@@ -112,7 +115,7 @@ public:
   //! Checks for equality with another vertex.
   //! @param theOther vertex to be checked against this one.
   //! @return TRUE if equal, FALSE if not.
-  Standard_Boolean IsEqual(const BRepMesh_Vertex& theOther) const
+  inline Standard_Boolean IsEqual(const BRepMesh_Vertex& theOther) const
   {
     if (myMovability          == BRepMesh_Deleted || 
         theOther.myMovability == BRepMesh_Deleted)
@@ -124,7 +127,7 @@ public:
   }
 
   //! Alias for IsEqual.
-  Standard_Boolean operator ==(const BRepMesh_Vertex& Other) const
+  inline Standard_Boolean operator ==(const BRepMesh_Vertex& Other) const
   {
     return IsEqual(Other);
   }

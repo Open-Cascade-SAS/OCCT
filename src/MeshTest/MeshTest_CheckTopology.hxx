@@ -101,6 +101,23 @@ public:
     theNodeNum = myFreeNodeNums(theIndex);
   }
 
+  //! Returns number of triangles with null area
+  Standard_Integer NbSmallTriangles() const
+  {
+    return mySmallTrianglesFaces.Length();
+  }
+
+  //! returns the number of face containing the Index-th detected 
+  //! small triangle and number of the problematic triangle in
+  //! this face.
+  void GetSmallTriangle(const Standard_Integer theIndex,
+                        Standard_Integer& theFaceNum,
+                        Standard_Integer& theNodeNum) const
+  {
+    theFaceNum = mySmallTrianglesFaces(theIndex);
+    theNodeNum = mySmallTrianglesTriangles(theIndex);
+  }
+
 private:
   TopoDS_Shape myShape;
   NCollection_IndexedDataMap<Standard_Integer,Handle(TColStd_HSequenceOfInteger)>
@@ -112,6 +129,9 @@ private:
   TColStd_SequenceOfInteger myAsyncEdges;
   TColStd_SequenceOfInteger myFreeNodeFaces;
   TColStd_SequenceOfInteger myFreeNodeNums;
+  TColStd_SequenceOfInteger mySmallTrianglesFaces;
+  TColStd_SequenceOfInteger mySmallTrianglesTriangles;
+
 };
 
 #endif

@@ -1,12 +1,10 @@
-puts "TODO CR28500 ALL: Artifact in shaded view of the shape"
-
 puts "======="
-puts "CR28500"
+puts "CR28500: Artifact in shaded view of the shape"
 puts "======="
 puts ""
-######################################
-# Artifact in shaded view of the shape
-######################################
+
+puts "TODO CR28500 ALL: Artifact in shaded view of the shape"
+puts "TODO CR30056 ALL: Meshing statuses: Failure Reused"
 
 restore [locate_data_file bug28500_shape_mesh_artifact.brep] a
 

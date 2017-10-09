@@ -14,17 +14,14 @@
 #ifndef _BRepMesh_DataStructureOfDelaun_HeaderFile
 #define _BRepMesh_DataStructureOfDelaun_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-#include <BRepMesh_VertexTool.hxx>
 #include <Standard_Transient.hxx>
 #include <BRepMesh_Triangle.hxx>
 #include <BRepMesh_PairOfIndex.hxx>
 #include <Standard_OStream.hxx>
-#include <BRepMesh.hxx>
+#include <IMeshData_Types.hxx>
+#include <BRepMesh_VertexTool.hxx>
 
 class BRepMesh_Vertex;
-class BRepMesh_VertexTool;
 class BRepMesh_Edge;
 
 //! Describes the data structure necessary for the mesh algorithms in 
@@ -101,14 +98,14 @@ public: //! @name API for accessing mesh nodes.
     if (isForce || myNodes->FindKey(theIndex).Movability() == BRepMesh_Free)
     {
       if (LinksConnectedTo(theIndex).Extent()==0)
-        myNodes->Delete(theIndex);
+        myNodes->DeleteVertex(theIndex);
     }
   }
 
   //! Get list of links attached to the node with the given index.
   //! @param theIndex index of node whose links should be retrieved.
   //! @return list of links attached to the node.
-  inline const BRepMesh::ListOfInteger& LinksConnectedTo(
+  inline const IMeshData::ListOfInteger& LinksConnectedTo(
     const Standard_Integer theIndex) const
   {
     return linksConnectedTo(theIndex);
@@ -145,7 +142,7 @@ public: //! @name API for accessing mesh links.
   }
 
   //! Returns map of indices of links registered in mesh.
-  inline const BRepMesh::MapOfInteger& LinksOfDomain() const
+  inline const IMeshData::MapOfInteger& LinksOfDomain() const
   {
     return myLinksOfDomain;
   }
@@ -181,7 +178,7 @@ public: //! @name API for accessing mesh elements.
   //! Returns number of links.
   inline Standard_Integer NbElements() const
   {
-    return myElements.Extent();
+    return myElements.Size();
   }
 
   //! Adds element to the mesh if it is not already in the mesh.
@@ -189,24 +186,16 @@ public: //! @name API for accessing mesh elements.
   //! @return index of the element in the structure.
   Standard_EXPORT Standard_Integer AddElement(const BRepMesh_Triangle& theElement);
 
-  //! Finds the index of the given element.
-  //! @param theElement element to find.
-  //! @return index of the given element of zero if element is not in the mesh.
-  Standard_Integer IndexOf(const BRepMesh_Triangle& theElement) const
-  {
-    return myElements.FindIndex(theElement);
-  }
-
   //! Get element by the index.
   //! @param theIndex index of an element.
   //! @return element with the given index.
   const BRepMesh_Triangle& GetElement(const Standard_Integer theIndex)
   {
-    return myElements.FindKey(theIndex);
+    return myElements.ChangeValue(theIndex - 1);
   }
 
   //! Returns map of indices of elements registered in mesh.
-  inline const BRepMesh::MapOfInteger& ElementsOfDomain() const
+  inline const IMeshData::MapOfInteger& ElementsOfDomain() const
   {
     return myElementsOfDomain;
   }
@@ -229,6 +218,8 @@ public: //! @name API for accessing mesh elements.
     const BRepMesh_Triangle& theElement,
     Standard_Integer         (&theNodes)[3]);
 
+  Standard_EXPORT void Dump(Standard_CString theFileNameStr);
+
 
 
 public: //! @name Auxilary API
@@ -244,7 +235,7 @@ public: //! @name Auxilary API
   }
 
   //! Gives the data structure for initialization of cell size and tolerance.
-  inline BRepMesh::HVertexTool& Data()
+  inline const Handle(BRepMesh_VertexTool)& Data()
   {
     return myNodes;
   }
@@ -260,17 +251,17 @@ public: //! @name Auxilary API
     clearDeletedNodes();
   }
 
-  DEFINE_STANDARD_RTTIEXT(BRepMesh_DataStructureOfDelaun,Standard_Transient)
+  DEFINE_STANDARD_RTTI_INLINE(BRepMesh_DataStructureOfDelaun, Standard_Transient)
 
 private: 
 
   //! Get list of links attached to the node with the given index.
   //! @param theIndex index of node whose links should be retrieved.
   //! @return list of links attached to the node.
-  inline BRepMesh::ListOfInteger& linksConnectedTo(
+  inline IMeshData::ListOfInteger& linksConnectedTo(
     const Standard_Integer theIndex) const
   {
-    return (BRepMesh::ListOfInteger&)myNodeLinks.Find(theIndex);
+    return (IMeshData::ListOfInteger&)myNodeLinks.Find(theIndex);
   }
 
   //! Substitutes deleted links by the last one from corresponding map 
@@ -305,15 +296,13 @@ private:
 private:
 
   Handle(NCollection_IncAllocator)      myAllocator;
-  BRepMesh::HVertexTool                 myNodes;
-  BRepMesh::DMapOfIntegerListOfInteger  myNodeLinks;
-  BRepMesh::IDMapOfLink                 myLinks;
-  BRepMesh::ListOfInteger               myDelLinks;
-  BRepMesh::IMapOfElement               myElements;
-  BRepMesh::MapOfInteger                myElementsOfDomain;
-  BRepMesh::MapOfInteger                myLinksOfDomain;
+  Handle(BRepMesh_VertexTool)           myNodes;
+  IMeshData::DMapOfIntegerListOfInteger myNodeLinks;
+  IMeshData::IDMapOfLink                myLinks;
+  IMeshData::ListOfInteger              myDelLinks;
+  IMeshData::VectorOfElements           myElements;
+  IMeshData::MapOfInteger               myElementsOfDomain;
+  IMeshData::MapOfInteger               myLinksOfDomain;
 };
-
-DEFINE_STANDARD_HANDLE(BRepMesh_DataStructureOfDelaun,Standard_Transient)
 
 #endif

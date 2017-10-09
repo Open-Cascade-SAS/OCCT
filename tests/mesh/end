@@ -50,7 +50,7 @@ if { [string compare $bug_area ""] != 0 } {
     if { $rel_tol == 100 } {
 	puts "TODO $bug_area All:^\\s*Error  : The meshing algo cannot create mesh.\\s*$"
     } else {
-	puts "TODO ?$bug_area All:^\\s*Error   : area by triangles differs from the actual area by \[-.0-9\]+ %\\s*$"
+	puts "TODO ?$bug_area All: Error: area difference = .* is not equal to expected"
     }
 }
 
@@ -145,16 +145,8 @@ proc CheckTriArea {shape {eps 0}} {
 
 puts "\nChecking triangulation area (triarea command)..."
 set rel_err [expr abs([CheckTriArea res $area_eps])]
-if { $rel_err > $rel_tol } {
-    puts "Error   : area by triangles differs from the actual area by $rel_err %"
-} else {
-    if { [info exists max_rel_tol_diff] && $max_rel_tol_diff > 0 } {
-      checkreal "area difference" $rel_err $rel_tol $max_rel_tol_diff 0
-    } else {
-      if { $rel_tol > 1 && $rel_tol < 100 } {
-        puts "Error: Improvement: The current area difference is $rel_err instead of $rel_tol"
-      }
-    }
+if { [info exists max_rel_tol_diff] && $max_rel_tol_diff > 0 } {
+  checkreal "area difference" $rel_err $rel_tol $max_rel_tol_diff 0
 }
 
 # Check if topology of mesh is valid

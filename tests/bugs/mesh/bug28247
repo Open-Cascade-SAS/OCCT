@@ -1,5 +1,3 @@
-puts "TODO OCC28247 ALL: Error: Effect of minSize parameter of BRepMesh_IncrementalMesh seems to be too strong"
-
 puts "========="
 puts "OCC28247"
 puts "========="

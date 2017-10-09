@@ -46,6 +46,8 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <Geom2d_BSplineCurve.hxx>
 
 static Standard_Integer mpnames           (Draw_Interpretor& , Standard_Integer , const char** );
 static Standard_Integer mpsetdefaultname  (Draw_Interpretor& , Standard_Integer , const char** );
@@ -82,7 +84,8 @@ void MeshTest::PluginCommands(Draw_Interpretor& theCommands)
   theCommands.Add("mpparallel"       , "mpparallel [toTurnOn] : show / set multi-threading flag for incremental mesh",
     __FILE__, mpparallel, g);
   theCommands.Add("triarea","shape [eps]  (computes triangles and surface area)",__FILE__, triarea, g);
-  theCommands.Add("tricheck", "shape   (checks triangulation of shape)", __FILE__, tricheck, g);
+  theCommands.Add("tricheck", "shape [-small]  (checks triangulation of shape);\n"
+                  "\"-small\"-option allows finding triangles with small area", __FILE__, tricheck, g);
 }
 
 //=======================================================================
@@ -343,9 +346,11 @@ static Standard_Integer tricheck (Draw_Interpretor& di, int n, const char ** a)
   TopoDS_Shape shape = DBRep::Get(a[1]);
   if (shape.IsNull()) return 1;
 
+  const Standard_Boolean isToFindSmallTriangles = (n >= 3) ? (strcmp(a[2], "-small") == 0) : Standard_False;
+
   TopTools_IndexedMapOfShape aMapF;
   TopExp::MapShapes (shape, TopAbs_FACE, aMapF);
-  Standard_CString name = ".";
+  const Standard_CString name = ".";
 
   // execute check
   MeshTest_CheckTopology aCheck(shape);
@@ -443,13 +448,74 @@ static Standard_Integer tricheck (Draw_Interpretor& di, int n, const char ** a)
     di << "\n";
   }
 
-  // output errors summary to DRAW
-  if ( nbFree > 0 || nbErr > 0 || nbAsync > 0 || nbFreeNodes > 0)
-    di << "Free_links " << nbFree
-       << " Cross_face_errors " << nbErr
-       << " Async_edges " << nbAsync 
-       << " Free_nodes " << nbFreeNodes << "\n";
+  const Standard_Integer aNbSmallTriangles = isToFindSmallTriangles? aCheck.NbSmallTriangles() : 0;
+  if (aNbSmallTriangles > 0)
+  {
+    di << "triangles with null area (in pairs: face / triangle): \n";
+    for (i = 1; i <= aNbSmallTriangles; i++)
+    {
+      Standard_Integer aFaceId = 0, aTriID = 0;
+      aCheck.GetSmallTriangle(i, aFaceId, aTriID);
 
+      const TopoDS_Face& aFace = TopoDS::Face(aMapF.FindKey(aFaceId));
+      TopLoc_Location aLoc;
+      const gp_Trsf& aTrsf = aLoc.Transformation();
+      const Handle(Poly_Triangulation) aT = BRep_Tool::Triangulation(aFace, aLoc);
+      const Poly_Triangle &aTri = aT->Triangle(aTriID);
+      Standard_Integer aN1, aN2, aN3;
+      aTri.Get(aN1, aN2, aN3);
+      const TColgp_Array1OfPnt& aPoints = aT->Nodes();
+
+      TColgp_Array1OfPnt aPoles(1, 4);
+      aPoles(1) = aPoles(4) = aPoints(aN1).Transformed(aTrsf);
+      aPoles(2) = aPoints(aN2).Transformed(aTrsf);
+      aPoles(3) = aPoints(aN3).Transformed(aTrsf);
+
+      TColStd_Array1OfInteger aMults(1, 4);
+      aMults(1) = aMults(4) = 2;
+      aMults(2) = aMults(3) = 1;
+
+      TColStd_Array1OfReal aKnots(1, 4);
+      aKnots(1) = 1.0;
+      aKnots(2) = 2.0;
+      aKnots(3) = 3.0;
+      aKnots(4) = 4.0;
+      
+      Handle(Geom_BSplineCurve) aBS = new Geom_BSplineCurve(aPoles, aKnots, aMults, 1);
+
+      DrawTrSurf::Set(name, aBS);
+
+      if (aT->HasUVNodes())
+      {
+        TColgp_Array1OfPnt2d aPoles2d(1, 4);
+        aPoles2d(1) = aPoles2d(4) = aT->UVNodes()(aN1);
+        aPoles2d(2) = aT->UVNodes()(aN2);
+        aPoles2d(3) = aT->UVNodes()(aN3);
+
+        Handle(Geom2d_BSplineCurve) aBS2d = new Geom2d_BSplineCurve(aPoles2d, aKnots, aMults, 1);
+
+        DrawTrSurf::Set(name, aBS2d);
+      }
+
+      di << "{" << aFaceId << " " << aTriID << "} ";
+    }
+
+    di << "\n";
+  }
+
+  // output errors summary to DRAW
+  if (nbFree > 0 ||
+      nbErr > 0 ||
+      nbAsync > 0 ||
+      nbFreeNodes > 0 ||
+      (aNbSmallTriangles > 0))
+  {
+    di << "Free_links " << nbFree
+      << " Cross_face_errors " << nbErr
+      << " Async_edges " << nbAsync
+      << " Free_nodes " << nbFreeNodes
+      << " Small triangles " << aNbSmallTriangles << "\n";
+  }
 
   Standard_Integer aFaceId = 1;
   TopExp_Explorer aFaceExp(shape, TopAbs_FACE);

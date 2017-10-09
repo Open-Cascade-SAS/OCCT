@@ -16,7 +16,6 @@
 #include <Adaptor3d_IsoCurve.hxx>
 #include <Bnd_Box.hxx>
 #include <BRep_Tool.hxx>
-#include <BRepMesh_IncrementalMesh.hxx>
 #include <BRepBndLib.hxx>
 #include <BRepMesh_DiscretFactory.hxx>
 #include <BRepMesh_DiscretRoot.hxx>
