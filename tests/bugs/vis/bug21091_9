@@ -45,22 +45,19 @@ set aFile ${imagedir}/${test_image}.pgf
 vcaps -ffp 1
 vexport ${aFile} PGF
 
-if { [checkplatform -windows] } {
-   set refsize 17918
-} else {
-   set refsize 17794
-}
+set refsize_min 17790
+set refsize_max 17920
 
 if { [file exists ${aFile}] } {
-   puts "Export to PGF file was done"
+   puts "Export to PGF format successful"
    set filesize [file size ${aFile}]
-   if { $filesize != $refsize } {
-      puts "Error: Export to PGF file was done but size of file is incorrect (refsize = $refsize, current = $filesize)."
-	  puts "Error: Compare content of resulting PGF file with reference."
-	  puts "Error: Update refsize if it's necessary."
+   if { $filesize < $refsize_min || $filesize > $refsize_max } {
+      puts "Error: Export to PGF file was done but size of file is incorrect"
+      puts "       (current = $filesize, expected to be in range \[$refsize_min, $refsize_max\])."
+      puts "Error: Update refsize limits if necessary."
    }
 } else {
-   puts "Faulty : Export to PGF file was not done"
+   puts "Error: Export to PGF format has failed"
 }
 
 checkview -screenshot -3d -path ${imagedir}/${test_image}.png

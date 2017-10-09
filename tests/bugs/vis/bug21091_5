@@ -45,22 +45,19 @@ set aFile ${imagedir}/${test_image}.ps
 vcaps -ffp 1
 vexport ${aFile} PS
 
-if { [checkplatform -windows] } {
-   set refsize 9568
-} else {
-   set refsize 9544
-}
+set refsize_min 9540
+set refsize_max 9570
 
 if { [file exists ${aFile}] } {
-   puts "Export to PS format was done"
+   puts "Export to PS format successful"
    set filesize [file size ${aFile}]
-   if { $filesize != $refsize } {
-      puts "Error: Export to PS file was done but size of file is incorrect (refsize = $refsize, current = $filesize)."
-	  puts "Error: Compare content of resulting PS file with reference."
-	  puts "Error: Update refsize if it's necessary."
+   if { $filesize < $refsize_min || $filesize > $refsize_max } {
+      puts "Error: Export to PS file was done but size of file is incorrect"
+      puts "       (current = $filesize, expected to be in range \[$refsize_min, $refsize_max\])."
+      puts "Error: Update refsize limits if necessary."
    }
 } else {
-   puts "Faulty : Export to PS format was not done"
+   puts "Error: Export to PS format has failed"
 }
 
 checkview -screenshot -3d -path ${imagedir}/${test_image}.png

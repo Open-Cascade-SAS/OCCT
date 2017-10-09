@@ -14,10 +14,8 @@ vshowfaceboundary b 1 255 0 0 10 1
 vfit
 vaspects -setwidth 5
 
-if { "[vreadpixel 183 190 rgb name]" != "RED"
-  || "[vreadpixel 314 344 rgb name]" != "RED"
-  || "[vreadpixel  26 267 rgb name]" != "RED"
-} {
+if { "[vreadpixel 314 344 rgb name]" != "RED" ||
+     "[vreadpixel  26 267 rgb name]" != "RED" } {
     puts "Error : Boundary of face is not changed"
 }
 

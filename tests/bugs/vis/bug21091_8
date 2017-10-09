@@ -45,22 +45,19 @@ set aFile ${imagedir}/${test_image}.svg
 vcaps -ffp 1
 vexport ${aFile} SVG
 
-if { [checkplatform -windows] } {
-   set refsize 12127
-} else {
-   set refsize 12113
-}
+set refsize_min 12110
+set refsize_max 12130
 
 if { [file exists ${aFile}] } {
-   puts "Export to SVG file was done"
+   puts "Export to SVG format successful"
    set filesize [file size ${aFile}]
-   if { $filesize != $refsize } {
-      puts "Error: Export to SVG file was done but size of file is incorrect (refsize = $refsize, current = $filesize)."
-	  puts "Error: Compare content of resulting SVG file with reference."
-	  puts "Error: Update refsize if it's necessary."
+   if { $filesize < $refsize_min || $filesize > $refsize_max } {
+      puts "Error: Export to SVG file was done but size of file is incorrect"
+      puts "       (current = $filesize, expected to be in range \[$refsize_min, $refsize_max\])."
+      puts "Error: Update refsize limits if necessary."
    }
 } else {
-   puts "Faulty : Export to SVG file was not done"
+   puts "Error: Export to SVG format has failed"
 }
 
 checkview -screenshot -3d -path ${imagedir}/${test_image}.png
