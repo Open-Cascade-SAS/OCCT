@@ -71,10 +71,7 @@ static
 //purpose  : 
 //=======================================================================
 BOPAlgo_BOP::BOPAlgo_BOP()
-:
-  BOPAlgo_Builder(),
-  myTools(myAllocator),
-  myMapTools(100, myAllocator)
+: BOPAlgo_ToolsProvider()
 {
   Clear();
 }
@@ -82,12 +79,8 @@ BOPAlgo_BOP::BOPAlgo_BOP()
 //function : 
 //purpose  : 
 //=======================================================================
-BOPAlgo_BOP::BOPAlgo_BOP
-  (const Handle(NCollection_BaseAllocator)& theAllocator)
-:
-  BOPAlgo_Builder(theAllocator),
-  myTools(myAllocator),
-  myMapTools(100, myAllocator)
+BOPAlgo_BOP::BOPAlgo_BOP(const Handle(NCollection_BaseAllocator)& theAllocator)
+: BOPAlgo_ToolsProvider(theAllocator)
 {
   Clear();
 }
@@ -105,12 +98,10 @@ BOPAlgo_BOP::~BOPAlgo_BOP()
 void BOPAlgo_BOP::Clear()
 {
   myOperation=BOPAlgo_UNKNOWN;
-  myTools.Clear();
-  myMapTools.Clear();
   myDims[0]=-1;
   myDims[1]=-1;
-  //
-  BOPAlgo_Builder::Clear();
+
+  BOPAlgo_ToolsProvider::Clear();
 }
 //=======================================================================
 //function : SetOperation
@@ -127,31 +118,6 @@ void BOPAlgo_BOP::SetOperation(const BOPAlgo_Operation theOperation)
 BOPAlgo_Operation BOPAlgo_BOP::Operation()const
 {
   return myOperation;
-}
-//=======================================================================
-//function : AddTool
-//purpose  : 
-//=======================================================================
-void BOPAlgo_BOP::AddTool(const TopoDS_Shape& theShape)
-{
-  if (myMapTools.Add(theShape)) {
-    myTools.Append(theShape);
-  }
-}
-//=======================================================================
-//function : SetTools
-//purpose  : 
-//=======================================================================
-void BOPAlgo_BOP::SetTools(const BOPCol_ListOfShape& theShapes)
-{
-  BOPCol_ListIteratorOfListOfShape aIt;
-  //
-  myTools.Clear();
-  aIt.Initialize(theShapes);
-  for (; aIt.More(); aIt.Next()) {
-    const TopoDS_Shape& aS = aIt.Value();
-    AddTool(aS);
-  }
 }
 //=======================================================================
 //function : CheckData

@@ -24,7 +24,7 @@
 #include <TopoDS_Shape.hxx>
 #include <BOPCol_ListOfShape.hxx>
 #include <BOPCol_MapOfShape.hxx>
-#include <BOPAlgo_Builder.hxx>
+#include <BOPAlgo_ToolsProvider.hxx>
 #include <BOPCol_BaseAllocator.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <Standard_Boolean.hxx>
@@ -66,7 +66,7 @@ class BOPAlgo_PaveFiller;
 //! - *BOPAlgo_AlertSolidBuilderFailed* - in case the BuilderSolid algorithm failed to
 //!                          produce the Fused solid.
 //!
-class BOPAlgo_BOP  : public BOPAlgo_Builder
+class BOPAlgo_BOP  : public BOPAlgo_ToolsProvider
 {
 public:
 
@@ -75,17 +75,12 @@ public:
   
   //! Empty constructor
   Standard_EXPORT BOPAlgo_BOP();
-Standard_EXPORT virtual ~BOPAlgo_BOP();
+  Standard_EXPORT virtual ~BOPAlgo_BOP();
   
   Standard_EXPORT BOPAlgo_BOP(const BOPCol_BaseAllocator& theAllocator);
   
   //! Clears internal fields and arguments
   Standard_EXPORT virtual void Clear() Standard_OVERRIDE;
-  
-  //! Adds Tool argument of the operation
-  Standard_EXPORT virtual void AddTool (const TopoDS_Shape& theShape);
-  
-  Standard_EXPORT virtual void SetTools (const BOPCol_ListOfShape& theShapes);
   
   Standard_EXPORT void SetOperation (const BOPAlgo_Operation theOperation);
   
@@ -116,16 +111,11 @@ protected:
   //! all shapes in one of the groups are empty shapes.
   Standard_EXPORT Standard_Boolean TreatEmptyShape();
 
+protected:
 
   BOPAlgo_Operation myOperation;
-  Standard_Integer myDims[2];
-  TopoDS_Shape myRC;
-  BOPCol_ListOfShape myTools;
-  BOPCol_MapOfShape myMapTools;
-
-
-private:
-
+  Standard_Integer  myDims[2];
+  TopoDS_Shape      myRC;
 };
 
 #endif // _BOPAlgo_BOP_HeaderFile
