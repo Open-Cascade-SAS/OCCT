@@ -1,0 +1,22 @@
+puts "TODO OCC21494 ALL: Error: Intersection between cone and sphere fails"
+
+puts "========"
+puts "OCC21494"
+puts "========"
+puts ""
+############################################
+# Intersection between cone and sphere fails
+############################################
+
+pcone c 15 0 10
+psphere s 10
+explode c f
+explode s f
+mksurface sc c_1
+mksurface ss s_1
+
+intersect i sc ss
+
+if { [info exist i_1] == 0 } {
+  puts "Error: Intersection between cone and sphere fails"
+}

@@ -1,0 +1,14 @@
+puts "TODO OCC22642 ALL: Faulty shapes in variables faulty_1 to faulty_"
+
+puts "========"
+puts "OCC22642"
+puts "========"
+puts ""
+######################################################
+# Refactoring of ShapeFix_Wire::FixIntersectingEdges
+######################################################
+
+restore [locate_data_file bug22642_ss_47.brep] f
+fixshape result f -l -o -h -m -d -s +i -n
+
+checkshape result
