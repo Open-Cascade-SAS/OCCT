@@ -19,7 +19,7 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <BOPAlgo_Builder.hxx>
+#include <BOPAlgo_ToolsProvider.hxx>
 
 //! The **Splitter algorithm** is the algorithm for splitting a group of
 //! arbitrary shapes by the other group of arbitrary shapes.<br>
@@ -47,7 +47,7 @@
 //! into result, does not have to be overridden, because its native implementation
 //! performs the necessary actions for the Splitter algorithm - it adds
 //! the split parts of only Objects into result, avoiding the split parts of Tools.
-class BOPAlgo_Splitter : public BOPAlgo_Builder
+class BOPAlgo_Splitter : public BOPAlgo_ToolsProvider
 {
 public:
 
@@ -59,35 +59,13 @@ public:
 
   Standard_EXPORT BOPAlgo_Splitter(const BOPCol_BaseAllocator& theAllocator);
 
-  //! Clears internal fields and arguments
-  Standard_EXPORT virtual void Clear() Standard_OVERRIDE;
-
-  //! Adds Tool argument of the operation
-  Standard_EXPORT virtual void AddTool(const TopoDS_Shape& theShape);
-
-  //! Adds the Tool arguments of the operation
-  Standard_EXPORT virtual void SetTools(const BOPCol_ListOfShape& theShapes);
-
-  //! Returns the Tool arguments of the operation
-  const BOPCol_ListOfShape& Tools() const
-  {
-    return myTools;
-  }
-
   //! Performs the operation
   Standard_EXPORT virtual void Perform() Standard_OVERRIDE;
-
 
 protected:
 
   //! Checks the input data
   Standard_EXPORT virtual void CheckData() Standard_OVERRIDE;
-
-  BOPCol_ListOfShape myTools;
-  BOPCol_MapOfShape myMapTools;
-
-private:
-
 };
 
 #endif // _BOPAlgo_Splitter_HeaderFile

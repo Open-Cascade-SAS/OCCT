@@ -3,6 +3,8 @@ BOPAlgo_Algo.hxx
 BOPAlgo_ArgumentAnalyzer.cxx
 BOPAlgo_ArgumentAnalyzer.hxx
 BOPAlgo_ArgumentAnalyzer.lxx
+BOPAlgo_ToolsProvider.cxx
+BOPAlgo_ToolsProvider.hxx
 BOPAlgo_BOP.cxx
 BOPAlgo_BOP.hxx
 BOPAlgo_Builder.cxx
