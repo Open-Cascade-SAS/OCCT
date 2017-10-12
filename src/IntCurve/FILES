@@ -6,7 +6,6 @@ IntCurve_IntConicConic.cxx
 IntCurve_IntConicConic.hxx
 IntCurve_IntConicConic.lxx
 IntCurve_IntConicConic_1.cxx
-IntCurve_IntConicConic_1.hxx
 IntCurve_IntConicConic_Tool.cxx
 IntCurve_IntConicConic_Tool.hxx
 IntCurve_IntConicCurveGen.gxx

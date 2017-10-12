@@ -1,14 +1,15 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
 
+set LinuxDiff 3
 set filename PRO8843.stp
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 3  ( 0 )  Warnings = 10  ( 32 )  Summary  = 13  ( 32 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 11  ( 32 )  Summary  = 11  ( 32 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 25  ( 25 )  Shell    = 45  ( 45 )  Face     = 198  ( 198 )   Summary  = 1343  ( 1343 )
 STATSHAPE   : Solid    = 25  ( 25 )  Shell    = 45  ( 45 )  Face     = 198  ( 198 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 496  ( 496 )
-TOLERANCE   : MaxTol   =  0.02054327471  (   0.0293421074 )  AvgTol   =  0.0005819945737  (  0.001390253412 )
+TOLERANCE   : MaxTol   =  0.02054327471  (  0.02934181398 )  AvgTol   =  0.000584176674  (   0.00139221264 )
 LABELS      : N0Labels = 3  ( 3 )  N1Labels = 67  ( 67 )  N2Labels = 0  ( 0 )   TotalLabels = 70  ( 70 )   NameLabels = 5  ( 5 )   ColorLabels = 45  ( 45 )   LayerLabels = 45  ( 45 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 2  ( 2 )

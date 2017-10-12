@@ -28,7 +28,6 @@
 #include <IntAna2d_IntPoint.hxx>
 #include <IntCurve_IConicTool.hxx>
 #include <IntCurve_IntConicConic.hxx>
-#include <IntCurve_IntConicConic_1.hxx>
 #include <IntCurve_PConic.hxx>
 #include <IntRes2d_Domain.hxx>
 #include <Precision.hxx>
@@ -37,7 +36,6 @@
 //=======================================================================
 // Perform() for
 //              Line      - Parabola
-//              Line      - Elipse
 //              Line      - Hyperbola
 //              Circle    - Parabola
 //              Circle    - Elipse
@@ -190,34 +188,6 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d&        L,
   }
 }
 
-//=======================================================================
-//function : Perform
-//purpose  : Line - Elipse
-//=======================================================================
-void IntCurve_IntConicConic::Perform(const gp_Lin2d&        L,
-				     const IntRes2d_Domain& DL,
-				     const gp_Elips2d&      E,
-				     const IntRes2d_Domain& DE,
-				     const Standard_Real    TolConf,
-				     const Standard_Real    Tol)
-{
-  
-  this->ResetFields();
-  IntCurve_IConicTool ITool(L);
-  IntCurve_PConic PCurve(E);
-  PCurve.SetAccuracy(20);
-  
-  Inter.SetReversedParameters(ReversedParameters());
-  if(! DE.IsClosed()) {
-    IntRes2d_Domain D(DE);
-    D.SetEquivalentParameters(DE.FirstParameter(),DE.FirstParameter()+M_PI+M_PI);
-    Inter.Perform(ITool,DL,PCurve,D,TolConf,Tol);
-    }
-  else { 
-    Inter.Perform(ITool,DL,PCurve,DE,TolConf,Tol);
-  }
-  this->SetValues(Inter);
-}
 
 //=======================================================================
 //function : Perform
