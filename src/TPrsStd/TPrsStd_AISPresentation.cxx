@@ -800,7 +800,7 @@ void TPrsStd_AISPresentation::AISUpdate()
           if ( !(anObj ==  myAIS) )
           {
             if ( !aContext.IsNull() )
-              aContext->Remove (myAIS, Standard_True);
+              aContext->Remove (myAIS, Standard_False);
 
             // Driver has built new AIS.
             myAIS = anObj;
