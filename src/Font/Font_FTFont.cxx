@@ -35,7 +35,6 @@ Font_FTFont::Font_FTFont (const Handle(Font_FTLibrary)& theFTLib)
   myWidthScaling(1.0),
   myLoadFlags   (FT_LOAD_NO_HINTING | FT_LOAD_TARGET_NORMAL),
   myIsSingleLine(false),
-  myKernAdvance (new FT_Vector()),
   myUChar       (0U)
 {
   if (myFTLib.IsNull())
@@ -51,7 +50,6 @@ Font_FTFont::Font_FTFont (const Handle(Font_FTLibrary)& theFTLib)
 Font_FTFont::~Font_FTFont()
 {
   Release();
-  delete myKernAdvance;
 }
 
 // =======================================================================
@@ -136,7 +134,7 @@ bool Font_FTFont::loadGlyph (const Standard_Utf32Char theUChar)
 {
   if (myUChar == theUChar)
   {
-    return true;
+    return myUChar != 0;
   }
 
   myGlyphImg.Clear();
@@ -239,8 +237,8 @@ float Font_FTFont::LineSpacing() const
 // function : AdvanceX
 // purpose  :
 // =======================================================================
-float Font_FTFont::AdvanceX (const Standard_Utf32Char theUChar,
-                             const Standard_Utf32Char theUCharNext)
+float Font_FTFont::AdvanceX (Standard_Utf32Char theUChar,
+                             Standard_Utf32Char theUCharNext)
 {
   loadGlyph (theUChar);
   return AdvanceX (theUCharNext);
@@ -250,49 +248,65 @@ float Font_FTFont::AdvanceX (const Standard_Utf32Char theUChar,
 // function : AdvanceY
 // purpose  :
 // =======================================================================
-float Font_FTFont::AdvanceY (const Standard_Utf32Char theUChar,
-                             const Standard_Utf32Char theUCharNext)
+float Font_FTFont::AdvanceY (Standard_Utf32Char theUChar,
+                             Standard_Utf32Char theUCharNext)
 {
   loadGlyph (theUChar);
   return AdvanceY (theUCharNext);
+}
+
+bool Font_FTFont::getKerning (FT_Vector& theKern,
+                              Standard_Utf32Char theUCharCurr,
+                              Standard_Utf32Char theUCharNext) const
+{
+  theKern.x = 0;
+  theKern.y = 0;
+  if (theUCharNext != 0 && FT_HAS_KERNING(myFTFace) != 0)
+  {
+    const FT_UInt aCharCurr = FT_Get_Char_Index (myFTFace, theUCharCurr);
+    const FT_UInt aCharNext = FT_Get_Char_Index (myFTFace, theUCharNext);
+    if (aCharCurr == 0 || aCharNext == 0
+     || FT_Get_Kerning (myFTFace, aCharCurr, aCharNext, FT_KERNING_UNFITTED, &theKern) != 0)
+    {
+      theKern.x = 0;
+      theKern.y = 0;
+      return false;
+    }
+    return true;
+  }
+  return false;
 }
 
 // =======================================================================
 // function : AdvanceX
 // purpose  :
 // =======================================================================
-float Font_FTFont::AdvanceX (const Standard_Utf32Char theUCharNext)
+float Font_FTFont::AdvanceX (Standard_Utf32Char theUCharNext) const
 {
   if (myUChar == 0)
   {
     return 0.0f;
   }
 
-  if (FT_HAS_KERNING (myFTFace) == 0 || theUCharNext == 0
-   || FT_Get_Kerning (myFTFace, myUChar, theUCharNext, FT_KERNING_UNFITTED, myKernAdvance) != 0)
-  {
-    return myWidthScaling * fromFTPoints<float> (myFTFace->glyph->advance.x);
-  }
-  return myWidthScaling * fromFTPoints<float> (myKernAdvance->x + myFTFace->glyph->advance.x);
+  FT_Vector aKern;
+  getKerning (aKern, myUChar, theUCharNext);
+  return myWidthScaling * fromFTPoints<float> (myFTFace->glyph->advance.x + aKern.x);
 }
 
 // =======================================================================
 // function : AdvanceY
 // purpose  :
 // =======================================================================
-float Font_FTFont::AdvanceY (const Standard_Utf32Char theUCharNext)
+float Font_FTFont::AdvanceY (Standard_Utf32Char theUCharNext) const
 {
   if (myUChar == 0)
   {
     return 0.0f;
   }
 
-  if (FT_HAS_KERNING (myFTFace) == 0 || theUCharNext == 0
-   || FT_Get_Kerning (myFTFace, myUChar, theUCharNext, FT_KERNING_UNFITTED, myKernAdvance) != 0)
-  {
-    return fromFTPoints<float> (myFTFace->glyph->advance.y);
-  }
-  return fromFTPoints<float> (myKernAdvance->y + myFTFace->glyph->advance.y);
+  FT_Vector aKern;
+  getKerning (aKern, myUChar, theUCharNext);
+  return fromFTPoints<float> (myFTFace->glyph->advance.y + aKern.y);
 }
 
 // =======================================================================

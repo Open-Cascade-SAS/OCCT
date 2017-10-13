@@ -114,23 +114,29 @@ public:
     myWidthScaling = theScaleFactor;
   }
 
-  //! Compute advance to the next character with kerning applied when applicable.
+  //! Compute horizontal advance to the next character with kerning applied when applicable.
   //! Assuming text rendered horizontally.
-  Standard_EXPORT float AdvanceX (const Standard_Utf32Char theUCharNext);
+  //! @param theUCharNext the next character to compute advance from current one
+  Standard_EXPORT float AdvanceX (Standard_Utf32Char theUCharNext) const;
 
-  //! Compute advance to the next character with kerning applied when applicable.
+  //! Compute horizontal advance to the next character with kerning applied when applicable.
   //! Assuming text rendered horizontally.
-  Standard_EXPORT float AdvanceX (const Standard_Utf32Char theUChar,
-                                  const Standard_Utf32Char theUCharNext);
+  //! @param theUChar     the character to be loaded as current one
+  //! @param theUCharNext the next character to compute advance from current one
+  Standard_EXPORT float AdvanceX (Standard_Utf32Char theUChar,
+                                  Standard_Utf32Char theUCharNext);
 
-  //! Compute advance to the next character with kerning applied when applicable.
+  //! Compute vertical advance to the next character with kerning applied when applicable.
   //! Assuming text rendered vertically.
-  Standard_EXPORT float AdvanceY (const Standard_Utf32Char theUCharNext);
+  //! @param theUCharNext the next character to compute advance from current one
+  Standard_EXPORT float AdvanceY (Standard_Utf32Char theUCharNext) const;
 
-  //! Compute advance to the next character with kerning applied when applicable.
+  //! Compute vertical advance to the next character with kerning applied when applicable.
   //! Assuming text rendered vertically.
-  Standard_EXPORT float AdvanceY (const Standard_Utf32Char theUChar,
-                                  const Standard_Utf32Char theUCharNext);
+  //! @param theUChar     the character to be loaded as current one
+  //! @param theUCharNext the next character to compute advance from current one
+  Standard_EXPORT float AdvanceY (Standard_Utf32Char theUChar,
+                                  Standard_Utf32Char theUCharNext);
 
   //! @return glyphs number in this font.
   Standard_EXPORT Standard_Integer GlyphsNumber() const;
@@ -166,6 +172,11 @@ protected:
   //! Load glyph without rendering it.
   Standard_EXPORT bool loadGlyph (const Standard_Utf32Char theUChar);
 
+  //! Wrapper for FT_Get_Kerning - retrieve kerning values.
+  Standard_EXPORT bool getKerning (FT_Vector& theKern,
+                                   Standard_Utf32Char theUCharCurr,
+                                   Standard_Utf32Char theUCharNext) const;
+
 protected:
 
   Handle(Font_FTLibrary) myFTLib;        //!< handle to the FT library object
@@ -177,7 +188,6 @@ protected:
   bool                   myIsSingleLine; //!< single stroke font flag, FALSE by default
 
   Image_PixMap           myGlyphImg;     //!< cached glyph plane
-  FT_Vector*             myKernAdvance;  //!< buffer variable
   Standard_Utf32Char     myUChar;        //!< currently loaded unicode character
 
 public:
