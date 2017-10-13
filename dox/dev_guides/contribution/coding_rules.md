@@ -479,6 +479,8 @@ Inclusion of class header on top verifies consistency of the header (e.g. that h
 
 An exception to the rule is ordering system headers generating a macros declaration conflicts (like "windows.h" or "X11/Xlib.h") - these headers should be placed in the way solving the conflict.
 
+The source or header file should include only minimal set of headers necessary for compilation, without duplicates (considering nested includes).
+
 ~~~~~{.cpp}
 // the header file of implemented class
 #include <PackageName_ClassName.hxx>
