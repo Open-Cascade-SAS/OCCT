@@ -189,7 +189,7 @@ public:
 
   //! @return normal at the given index.
   //! Raises Standard_OutOfRange exception.
-  Standard_EXPORT const gp_Dir Normal (const Standard_Integer theIndex) const;
+  Standard_EXPORT gp_Dir Normal (const Standard_Integer theIndex) const;
 
   //! Changes normal at the given index.
   //! Raises Standard_OutOfRange exception.

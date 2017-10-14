@@ -296,17 +296,16 @@ void Poly_Triangulation::SetNormal (const Standard_Integer theIndex, const gp_Di
 //purpose  : 
 //=======================================================================
 
-const gp_Dir Poly_Triangulation::Normal (const Standard_Integer theIndex) const
+gp_Dir Poly_Triangulation::Normal (const Standard_Integer theIndex) const
 {
   if (myNormals.IsNull() || theIndex < 1 || theIndex > myNodes.Size())
   {
     throw Standard_NullObject ("Poly_Triangulation::Normal : empty array or index out of range");
   }
 
-  gp_Dir N;
-  N.SetX(myNormals->Value(theIndex * 3 - 2));
-  N.SetY(myNormals->Value(theIndex * 3 - 1));
-  N.SetZ(myNormals->Value(theIndex * 3));
+  gp_Dir N(myNormals->Value(theIndex * 3 - 2),
+           myNormals->Value(theIndex * 3 - 1),
+           myNormals->Value(theIndex * 3));
 
   return N;
 }
