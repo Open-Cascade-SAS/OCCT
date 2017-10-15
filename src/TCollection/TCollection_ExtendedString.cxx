@@ -23,6 +23,7 @@
 #include <Standard_OutOfRange.hxx>
 #include <TCollection_AsciiString.hxx>
 
+#include <algorithm>
 #include <cctype>
 #include <cstdio>
 
@@ -371,6 +372,15 @@ void TCollection_ExtendedString::Copy (const TCollection_ExtendedString& fromwhe
       mystring[0] = '\0';
     }
   }
+}
+
+// ----------------------------------------------------------------------------
+// Swap
+// ----------------------------------------------------------------------------
+void TCollection_ExtendedString::Swap (TCollection_ExtendedString& theOther)
+{
+  std::swap (mystring, theOther.mystring);
+  std::swap (mylength, theOther.mylength);
 }
 
 // ----------------------------------------------------------------------------

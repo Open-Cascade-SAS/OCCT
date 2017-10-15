@@ -90,6 +90,23 @@ NCollection_UtfString<Type>::NCollection_UtfString (const NCollection_UtfString&
   strCopy ((Standard_Byte* )myString, (const Standard_Byte* )theCopy.myString, mySize);
 }
 
+#ifndef OCCT_NO_RVALUE_REFERENCE
+// =======================================================================
+// function : NCollection_UtfString
+// purpose  :
+// =======================================================================
+template<typename Type> inline
+NCollection_UtfString<Type>::NCollection_UtfString (NCollection_UtfString&& theOther)
+: myString(theOther.myString),
+  mySize  (theOther.mySize),
+  myLength(theOther.myLength)
+{
+  theOther.myString = NULL;
+  theOther.mySize   = 0;
+  theOther.myLength = 0;
+}
+#endif
+
 // =======================================================================
 // function : NCollection_UtfString
 // purpose  :
@@ -159,11 +176,11 @@ NCollection_UtfString<Type>::~NCollection_UtfString()
 }
 
 // =======================================================================
-// function : operator=
+// function : Assign
 // purpose  :
 // =======================================================================
 template<typename Type> inline
-const NCollection_UtfString<Type>& NCollection_UtfString<Type>::operator= (const NCollection_UtfString<Type>& theOther)
+const NCollection_UtfString<Type>& NCollection_UtfString<Type>::Assign (const NCollection_UtfString<Type>& theOther)
 {
   if (this == &theOther)
   {
@@ -176,6 +193,26 @@ const NCollection_UtfString<Type>& NCollection_UtfString<Type>::operator= (const
   myString = strAlloc (mySize);
   strCopy ((Standard_Byte* )myString, (const Standard_Byte* )theOther.myString, mySize);
   return (*this);
+}
+
+// =======================================================================
+// function : Swap
+// purpose  :
+// =======================================================================
+template<typename Type> inline
+void NCollection_UtfString<Type>::Swap (NCollection_UtfString<Type>& theOther)
+{
+  // Note: we could use std::swap() here, but prefer to not
+  // have dependency on <algorithm> header at that level
+  Type* aString = myString;
+  const Standard_Integer aSize   = mySize;
+  const Standard_Integer aLength = myLength;
+  myString = theOther.myString;
+  mySize   = theOther.mySize;
+  myLength = theOther.myLength;
+  theOther.myString = aString;
+  theOther.mySize   = aSize;
+  theOther.myLength = aLength;
 }
 
 #if !defined(__ANDROID__)

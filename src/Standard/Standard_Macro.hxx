@@ -111,6 +111,13 @@
   #define Standard_ENABLE_DEPRECATION_WARNINGS
 #endif
 
+//! @def OCCT_NO_RVALUE_REFERENCE
+//! Disables methods and constructors that use rvalue references
+//! (C++11 move semantics) not supported by obsolete compilers.
+#if (defined(_MSC_VER) && (_MSC_VER < 1600))
+  #define OCCT_NO_RVALUE_REFERENCE
+#endif
+
 # ifdef _WIN32
 
 // We must be careful including windows.h: it is really poisonous stuff!

@@ -815,6 +815,54 @@ static Standard_Integer QANColTestSequence(Draw_Interpretor& di, Standard_Intege
   return 0;
 }
 
+//=======================================================================
+//function : QANColTestMove
+//purpose  : 
+//=======================================================================
+
+// Return array based on local C array buffer by value.
+// Note that this is expected to cause errors due
+// to the fact that returned copy will keep reference to the
+// buffer allocated in the stack of this function.
+// Unfortunately, this cannot be prevented due to the fact that
+// modern compilers use return value optimization in release mode
+// (object that is returned is constructed once at its target 
+// place and never copied).
+static NCollection_Array1<double> GetArrayByValue()
+{
+  const int aLen = 1024;
+  double aCArray[aLen];
+  NCollection_Array1<double> anArray (aCArray[0], 1, aLen);
+  for (int i = 1; i <= aLen; i++)
+    anArray.SetValue(i, i + 113.);
+  return anArray;
+}
+
+// check array for possible corruption
+static bool CheckArrayByValue(NCollection_Array1<double> theArray)
+{
+  for (int i = 1; i <= theArray.Length(); i++)
+  {
+    if (theArray.Value(i) != i + 113.)
+    {
+      std::cout << "Error at item " << i << ": value = " << theArray.Value(i) << ", expected " << i + 113. << std::endl;
+      return false;
+    }
+  }
+  return true;
+}
+
+static Standard_Integer QANColTestArrayMove (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
+{
+  if ( argc != 1) {
+    di << "Usage : " << argv[0] << "\n";
+    return 1;
+  }
+  NCollection_Array1<double> anArray = GetArrayByValue();
+  di << (CheckArrayByValue(anArray) ? "Error: memory corruption is not detected" : "Expected behavior: memory is corrupted");
+  return 0;
+}
+
 void QANCollection::CommandsTest(Draw_Interpretor& theCommands) {
   const char *group = "QANCollection";
 
@@ -829,4 +877,5 @@ void QANCollection::CommandsTest(Draw_Interpretor& theCommands) {
   theCommands.Add("QANColTestList",           "QANColTestList",           __FILE__, QANColTestList,           group);  
   theCommands.Add("QANColTestSequence",       "QANColTestSequence",       __FILE__, QANColTestSequence,       group);  
   theCommands.Add("QANColTestVector",         "QANColTestVector",         __FILE__, QANColTestVector,         group);  
+  theCommands.Add("QANColTestArrayMove",      "QANColTestArrayMove (is expected to give error)",      __FILE__, QANColTestArrayMove,      group);  
 }

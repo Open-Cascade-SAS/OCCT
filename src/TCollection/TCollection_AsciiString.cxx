@@ -23,9 +23,11 @@
 #include <TCollection_ExtendedString.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+#include <algorithm>
 #include <cctype>
 #include <cstdio>
 #include <cstring>
+
 // Shortcuts to standard allocate and reallocate functions
 static inline Standard_PCharacter Allocate(const Standard_Size aLength)
 {
@@ -414,6 +416,15 @@ void TCollection_AsciiString::Copy(const TCollection_AsciiString& fromwhere)
     mylength = 0;
     mystring[mylength] = '\0';
   }
+}
+
+// ----------------------------------------------------------------------------
+// Swap
+// ----------------------------------------------------------------------------
+void TCollection_AsciiString::Swap (TCollection_AsciiString& theOther)
+{
+  std::swap (mystring, theOther.mystring);
+  std::swap (mylength, theOther.mylength);
 }
 
 // ----------------------------------------------------------------------------

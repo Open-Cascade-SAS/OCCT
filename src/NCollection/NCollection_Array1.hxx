@@ -155,6 +155,7 @@ public:
   // ---------- PUBLIC METHODS ------------
 
   //! Empty constructor; should be used with caution.
+  //! @sa methods Resize() and Move().
   NCollection_Array1()
   : myLowerBound (1),
     myUpperBound (0),
@@ -188,25 +189,36 @@ public:
     Standard_OutOfMemory_Raise_if (!pBegin, "NCollection_Array1 : Allocation failed");
     myData = pBegin - myLowerBound;
 
-    *this = theOther;
+    Assign (theOther);
   }
 
+#ifndef OCCT_NO_RVALUE_REFERENCE
   //! Move constructor
-#if(defined(_MSC_VER) && (_MSC_VER < 1600))
-#else
   NCollection_Array1 (NCollection_Array1&& theOther)
   : myLowerBound (theOther.myLowerBound),
     myUpperBound (theOther.myUpperBound),
     myDeletable  (theOther.myDeletable),
     myData       (theOther.myData)
   {
-    theOther.myUpperBound = theOther.myLowerBound - 1;
     theOther.myDeletable  = false;
-    theOther.myData       = NULL;
   }
 #endif
 
-  //! C array-based constructor
+  //! C array-based constructor.
+  //!
+  //! Makes this array to use the buffer pointed by theBegin
+  //! instead of allocating it dynamically.
+  //! Argument theBegin should be a reference to the first element
+  //! of the pre-allocated buffer (usually local C array buffer),
+  //! with size at least theUpper - theLower + 1 items.
+  //!
+  //! Warning: returning array object created using this constructor
+  //! from function by value will result in undefined behavior
+  //! if compiler performs return value optimization (this is likely
+  //! to be true for all modern compilers in release mode).
+  //! The same happens if array is copied using Move() function
+  //! or move constructor and target object's lifespan is longer
+  //! than that of the buffer.
   NCollection_Array1 (const TheItemType& theBegin,
                       const Standard_Integer theLower,
                       const Standard_Integer theUpper) :
@@ -262,7 +274,9 @@ public:
   Standard_Boolean IsAllocated (void) const
   { return myDeletable; }
 
-  //! Assignment
+  //! Copies data of theOther array to this.
+  //! This array should be pre-allocated and have the same length as theOther;
+  //! otherwise exception Standard_DimensionMismatch is thrown.
   NCollection_Array1& Assign (const NCollection_Array1& theOther)
   {
     if (&theOther == this)
@@ -281,7 +295,10 @@ public:
     return *this;
   }
 
-  //! Move assignment
+  //! Move assignment.
+  //! This array will borrow all the data from theOther.
+  //! The moved object will keep pointer to the memory buffer and
+  //! range, but it will not free the buffer on destruction.
   NCollection_Array1& Move (NCollection_Array1& theOther)
   {
     if (&theOther == this)
@@ -293,26 +310,25 @@ public:
     {
       delete[] &myData[myLowerBound];
     }
+
     myLowerBound = theOther.myLowerBound;
     myUpperBound = theOther.myUpperBound;
     myDeletable  = theOther.myDeletable;
     myData       = theOther.myData;
 
-    theOther.myUpperBound = theOther.myLowerBound - 1;
-    theOther.myDeletable  = Standard_False;
-    theOther.myData       = NULL;
+    theOther.myDeletable = Standard_False;
+
     return *this;
   }
 
-  //! Assignment operator
+  //! Assignment operator; @sa Assign()
   NCollection_Array1& operator= (const NCollection_Array1& theOther)
   { 
     return Assign (theOther);
   }
 
-  //! Move assignment operator.
-#if(defined(_MSC_VER) && (_MSC_VER < 1600))
-#else
+#ifndef OCCT_NO_RVALUE_REFERENCE
+  //! Move assignment operator; @sa Move()
   NCollection_Array1& operator= (NCollection_Array1&& theOther)
   {
     return Move (theOther);
@@ -424,7 +440,10 @@ public:
 
   //! Destructor - releases the memory
   ~NCollection_Array1 (void)
-  { if (myDeletable) delete [] &(myData[myLowerBound]); }
+  { 
+    if (myDeletable) 
+      delete [] &(myData[myLowerBound]);
+  }
 
  protected:
   // ---------- PROTECTED FIELDS -----------
