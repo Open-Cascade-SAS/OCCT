@@ -1,9 +1,5 @@
 # test script on make volume operation
 # cone plane killed by cpulimit 300 
-# ? - because sometimes test is killed by elapsed time
-
-#puts "TODO OCC26020 Windows: Error : The area of result shape is"
-puts "TODO ?OCC26020 ALL: Error: bopcheck failed"
 
 # planar face 
 plane pln_f1 460.8377555733228 -1160 121.87519451048833 -0.17364817766693036 1.1223734950417248e-017 0.98480775301220813

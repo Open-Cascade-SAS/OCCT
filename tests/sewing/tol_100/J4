@@ -1,6 +1,4 @@
-puts "TODO ?OCC24592 ALL: Error : Number of faults is"
-puts "TODO ?OCC24592 ALL: Error: Max tolerance"
-
+puts "TODO OCC24592 ALL: Error: Max tolerance"
 restore [locate_data_file CIN902_intcqhmq.rle] a
 
 sewing result $tol a

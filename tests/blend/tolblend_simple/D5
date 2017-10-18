@@ -1,5 +1,3 @@
-puts "TODO ?OCC24156 MacOS: TEST INCOMPLETE"
-
 wedge s 10 7 10 5 5 5 5
 tscale s 0 0 0 SCALE1 
 explode s E

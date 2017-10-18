@@ -1,6 +1,5 @@
-puts "TODO ?OCC24592 ALL: Error : Number of free edges is"
-puts "TODO ?OCC24592 ALL: Error : Number of faults is"
-
+puts "TODO OCC24592 ALL: Error : Number of free edges is"
+puts "TODO OCC24592 ALL: Error : Number of faults is"
 restore [locate_data_file CNP002_projoiep.rle] a
 
 sewing result $tol a

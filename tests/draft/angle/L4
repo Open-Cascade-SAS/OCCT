@@ -1,8 +1,6 @@
 # Original bug : cts20194
 # Date : 23 Nov 98
-
 puts "TODO OCC22803 All:Faulty shapes in variables faulty_1 to faulty_2"
-puts "TODO ?OCC22803 ALL: Error : The area of the resulting shape is"
 
 restore [locate_data_file CFE903_cts20ggq.rle] base
 

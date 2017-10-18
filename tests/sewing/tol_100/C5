@@ -1,5 +1,3 @@
-puts "TODO ?OCC24592 ALL: Error: Max tolerance"
-
 restore [locate_data_file CFI_pro11907.rle] a
 
 sewing result $tol a

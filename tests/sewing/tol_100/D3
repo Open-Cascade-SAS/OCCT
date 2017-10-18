@@ -1,4 +1,3 @@
-puts "TODO ?OCC24592 ALL: Error: Max tolerance"
 puts "TODO OCC23674 ALL: Error : Number of faults is"
 
 restore [locate_data_file CFI_pro15441.rle] a

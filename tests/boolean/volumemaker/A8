@@ -1,7 +1,6 @@
 # test script on make volume operation
 # plane sphere
-
-puts "TODO ?OCC26020 ALL: Faulty shapes in variables faulty_1 to faulty_"
+puts "TODO OCC26020 ALL: Faulty shapes in variables faulty_1 to faulty_"
 puts "TODO OCC26020 ALL: Error: bopcheck failed"
 puts "TODO OCC26020 ALL: Error : The area of result shape is"
 

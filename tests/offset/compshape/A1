@@ -1,5 +1,5 @@
-puts "TODO ?OCC23068 ALL: ERROR. offsetperform operation not done."
-puts "TODO ?OCC23068 ALL: Error : The volume of result shape "
+puts "TODO OCC23068 ALL: ERROR. offsetperform operation not done."
+puts "TODO OCC23068 ALL: Error : The volume of result shape "
 
 ## ======================================
 ## Grid    : CCV002

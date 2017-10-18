@@ -1,5 +1,3 @@
-puts "TODO ?OCC24156 MacOS: TEST INCOMPLETE"
-
 #restore 5_L12.draw
 #explode 5_L12.draw F
 #sewing s 5_L12.draw_5 5_L12.draw_6 5_L12.draw_9 5_L12.draw_7 

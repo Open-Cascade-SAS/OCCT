@@ -1,5 +1,3 @@
-puts "TODO ?OCC27052 All: Faulty shapes in variables faulty_1 to"
-
 source [locate_data_file equipement_chambre.asm.1.gdml.tcl]
 
 set So_N [llength [explode result So]]
