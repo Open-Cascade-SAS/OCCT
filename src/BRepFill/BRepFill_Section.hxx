@@ -43,9 +43,13 @@ public:
   
   Standard_EXPORT void Set (const Standard_Boolean IsLaw);
   
+    const TopoDS_Shape& OriginalShape() const;
+  
     const TopoDS_Wire& Wire() const;
   
     const TopoDS_Vertex& Vertex() const;
+  
+  Standard_EXPORT TopoDS_Shape ModifiedShape(const TopoDS_Shape& theShape) const;
   
     Standard_Boolean IsLaw() const;
   
@@ -68,6 +72,7 @@ private:
 
 
 
+  TopoDS_Shape myOriginalShape;
   TopoDS_Wire wire;
   TopoDS_Vertex vertex;
   Standard_Boolean islaw;

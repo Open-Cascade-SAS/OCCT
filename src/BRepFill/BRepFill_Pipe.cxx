@@ -102,40 +102,6 @@ static Standard_Boolean UpdateMap(const TopoDS_Shape&                 theKey,
   return !found;
 }
 
-static void ReverseModifiedEdges(TopoDS_Shape& aShape,
-                                 TopTools_MapOfShape& Emap)
-{
-  TopExp_Explorer Explo(aShape, TopAbs_FACE);
-  BRep_Builder BB;
-  
-  for (; Explo.More(); Explo.Next())
-  {
-    TopoDS_Shape aFace = Explo.Current();
-    TopoDS_Iterator itf(aFace);
-    for (; itf.More(); itf.Next())
-    {
-      TopoDS_Shape aWire = itf.Value();
-      TopTools_ListOfShape Ledges;
-      TopoDS_Iterator itw(aWire);
-      for (; itw.More(); itw.Next())
-        Ledges.Append(itw.Value());
-
-      aWire.Free(Standard_True);
-      TopTools_ListIteratorOfListOfShape itl(Ledges);
-      for (; itl.More(); itl.Next())
-        BB.Remove(aWire, itl.Value());
-        
-      for (itl.Initialize(Ledges); itl.More(); itl.Next())
-      {
-        TopoDS_Shape anEdge = itl.Value();
-        if (Emap.Contains(anEdge))
-          anEdge.Reverse();
-        BB.Add(aWire, anEdge);
-      }
-    }
-  }
-}
-
 static void UpdateTolFromTopOrBottomPCurve(const TopoDS_Face& aFace,
                                            TopoDS_Edge& anEdge)
 {
@@ -739,9 +705,6 @@ TopoDS_Shape BRepFill_Pipe::MakeShape(const TopoDS_Shape& S,
       result = MkSw.Shape();
       UpdateMap(TheS.Located(myProfile.Location()), result, myGenMap);
       myErrorOnSurf = MkSw.ErrorOnSurface();
-      //Correct <myFirst> and <myLast>
-      ReverseModifiedEdges(myFirst, myReversedEdges);
-      ReverseModifiedEdges(myLast, myReversedEdges);
 
       // Labeling of elements
       if (mySections.IsNull()) {

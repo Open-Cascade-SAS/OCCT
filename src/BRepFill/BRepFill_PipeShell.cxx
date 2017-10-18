@@ -583,28 +583,15 @@ void BRepFill_PipeShell::SetForceApproxC1(const Standard_Boolean ForceApproxC1)
 //=======================================================================
  void BRepFill_PipeShell::DeleteProfile(const TopoDS_Shape&  Profile)
 {
-  Standard_Boolean isVertex = (Profile.ShapeType() == TopAbs_VERTEX);
-
   Standard_Boolean Trouve=Standard_False;
   Standard_Integer ii;
   for (ii=1; ii<=mySeq.Length() && !Trouve; ii++) {
-    Standard_Boolean found = Standard_False;
-    const TopoDS_Wire& aWire = mySeq.Value(ii).Wire();
-    if (isVertex)
-      {
-	TopExp_Explorer Explo(aWire, TopAbs_VERTEX);
-	for (; Explo.More(); Explo.Next())
-	  if (Profile.IsSame(Explo.Current()))
-	    found = Standard_True;
-      }
-    else if (Profile.IsSame(aWire))
-      found = Standard_True;
-    
-    if (found)
-      {
-	Trouve = Standard_True;
-	mySeq.Remove(ii);
-      }
+    const TopoDS_Shape& aSection = mySeq.Value(ii).OriginalShape();
+    if (Profile.IsSame(aSection))
+    {
+      Trouve = Standard_True;
+      mySeq.Remove(ii);
+    }
   }
 
   if (Trouve) mySection.Nullify();
@@ -914,13 +901,9 @@ const TopoDS_Shape& BRepFill_PipeShell::LastShape() const
 //function : Generated
 //purpose  : 
 //=======================================================================
-//  void BRepFill_PipeShell::Generated(const TopoDS_Shape& ,
-// 				    TopTools_ListOfShape& ) 
 void BRepFill_PipeShell::Generated(const TopoDS_Shape&   theShape,
 				   TopTools_ListOfShape& theList) 
 {
-  //   throw Standard_NotImplemented("Generated:Pas Fait");
-  
   theList.Clear();
 
   if(myGenMap.IsBound(theShape)) {
@@ -1197,9 +1180,6 @@ void BRepFill_PipeShell::Place(const BRepFill_Section& Sec,
 				  Sec.WithCorrection());
   TopoDS_Wire TmpWire =  Sec.Wire();
   aTrsf = Place.Transformation();
-  //TopLoc_Location Loc2(Place.Transformation()), Loc1;
-  //Loc1 = TmpWire.Location();
-  //W.Location(Loc2.Multiplied(Loc1));
   //Transform the copy
   W = TopoDS::Wire(BRepBuilderAPI_Transform(TmpWire, aTrsf, Standard_True));
   ////////////////////////////////////
@@ -1240,37 +1220,40 @@ void BRepFill_PipeShell::BuildHistory(const BRepFill_Sweep& theSweep)
   TopoDS_Iterator itw;
   for (indw = 1; indw <= mySeq.Length(); indw++)
   {
-    const TopoDS_Wire& aSection = mySeq(indw).Wire();
+    const TopoDS_Shape& Section = mySeq(indw).OriginalShape();
+    TopoDS_Wire aSection;
     Standard_Boolean IsPunctual = mySeq(indw).IsPunctual();
     if (IsPunctual)
     {
       //for punctual sections (first or last)
       //we take all the wires generated along the path
-      TopExp_Explorer Explo(aSection, TopAbs_VERTEX);
-      const TopoDS_Shape& VerSection = Explo.Current();
+      
       TopTools_ListOfShape Elist;
       for (Standard_Integer i = 1; i <= anUEdges->UpperRow(); i++)
         for (Standard_Integer j = 1; j <= anUEdges->UpperCol(); j++)
           Elist.Append(anUEdges->Value(i,j));
-      myGenMap.Bind(VerSection, Elist);
+      myGenMap.Bind(Section, Elist);
       continue;
     }
+    else
+      aSection = TopoDS::Wire(Section);
     //Take the real index of section on the path
     Standard_Integer IndOfW = myIndOfSec(indw);
     const TopoDS_Wire& theWire = TopoDS::Wire(WSeq(IndOfW));
     BRepTools_WireExplorer wexp_sec(aSection);
     for (inde = 1; wexp_sec.More(); wexp_sec.Next())
     {
-      const TopoDS_Edge& anEdge = TopoDS::Edge(wexp_sec.Current());
+      const TopoDS_Edge& anOriginalEdge = TopoDS::Edge(wexp_sec.Current());
+      TopoDS_Edge anEdge = TopoDS::Edge(mySeq(indw).ModifiedShape(anOriginalEdge));
       if (BRep_Tool::Degenerated(anEdge))
         continue;
 
       TopoDS_Shell aShell;
       BB.MakeShell(aShell);
       TopoDS_Vertex aVertex [2];
-      TopExp::Vertices(anEdge, aVertex[0], aVertex[1]);
+      TopExp::Vertices(anOriginalEdge, aVertex[0], aVertex[1]);
       Standard_Integer SignOfAnEdge =
-        (anEdge.Orientation() == TopAbs_FORWARD)? 1 : -1;
+        (anOriginalEdge.Orientation() == TopAbs_FORWARD)? 1 : -1;
       
       //For each non-degenerated inde-th edge of <aSection>
       //we find inde-th edge in <theWire>
@@ -1422,7 +1405,7 @@ void BRepFill_PipeShell::BuildHistory(const BRepFill_Sweep& theSweep)
       
       TopTools_ListOfShape ListShell;
       ListShell.Append(aShell);
-      myGenMap.Bind(anEdge, ListShell);
+      myGenMap.Bind(anOriginalEdge, ListShell);
       ////////////////////////
 
       inde++;

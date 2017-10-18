@@ -25,6 +25,7 @@
 #include <BRepFill_TrimShellCorner.hxx>
 #include <BRepLib_MakeEdge.hxx>
 #include <BRepLib_MakeWire.hxx>
+#include <BRepLib_MakeVertex.hxx>
 #include <BRepTools_ReShape.hxx>
 #include <gce_MakeLin.hxx>
 #include <GCPnts_UniformAbscissa.hxx>
@@ -63,6 +64,23 @@
 #include <TopTools_ListOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
 #include <TopTools_SequenceOfShape.hxx>
+#include <BRepExtrema_ExtCC.hxx>
+
+static TopoDS_Edge FindEdgeCloseToBisectorPlane(const TopoDS_Vertex& theVertex,
+                                                TopoDS_Compound&     theComp,
+                                                const gp_Ax1&        theAxis);
+
+static Standard_Boolean FindMiddleEdges(const TopoDS_Vertex&  theVertex1,
+                                        const TopoDS_Vertex&  theVertex2,
+                                        const gp_Ax1&         theAxis,
+                                        TopoDS_Compound&      theComp,
+                                        TopTools_ListOfShape& theElist);
+
+static Standard_Boolean FindCommonVertex(const TopoDS_Edge&   theFirstEdge,
+                                         const TopoDS_Edge&   theLastEdge,
+                                         const TopoDS_Vertex& theFirstVertex,
+                                         const TopoDS_Vertex& theLastVertex,
+                                         TopoDS_Vertex&       theCommonVertex);
 
 static Standard_Boolean FindCommonVertex(const BOPDS_PDS&         theDS,
                                          const Standard_Integer   theEIndex1,
@@ -70,24 +88,6 @@ static Standard_Boolean FindCommonVertex(const BOPDS_PDS&         theDS,
                                          TopoDS_Vertex&           theCommonVertex,
                                          Standard_Real&           theParamOnE1,
                                          Standard_Real&           theParamOnE2);
-
-static Standard_Boolean MakeFacesNonSec(const Standard_Integer                     theIndex,
-                                        const Handle(TopTools_HArray2OfShape)&     theUEdges, 
-                                        const Handle(TopTools_HArray2OfShape)&     theBounds, 
-                                        const BOPDS_PDS&                           theDS,
-                                        const Standard_Integer                     theFaceIndex1, 
-                                        const Standard_Integer                     theFaceIndex2, 
-                                        TopTools_DataMapOfShapeListOfShape&        theHistMap);
-
-static Standard_Boolean MakeFacesSec(const Standard_Integer                     theIndex,
-                                     const Handle(TopTools_HArray2OfShape)&     theUEdges, 
-                                     const Handle(TopTools_HArray2OfShape)&     theBounds, 
-                                     const BOPDS_PDS&                           theDS,
-                                     const Standard_Integer                     theFaceIndex1, 
-                                     const Standard_Integer                     theFaceIndex2, 
-                                     const Standard_Integer                     theSSInterfIndex,
-                                     const gp_Ax2&                              AxeOfBisPlane,
-                                     TopTools_DataMapOfShapeListOfShape&        theHistMap);
 
 static Standard_Boolean SplitUEdges(const Handle(TopTools_HArray2OfShape)&     theUEdges, 
                                     const BOPDS_PDS&                           theDS,
@@ -186,55 +186,27 @@ static Standard_Real ComputeAveragePlaneAndMaxDeviation(const TopoDS_Shape& aWir
                                                         gp_Pln& thePlane,
                                                         Standard_Boolean& IsSingular);
 
-static Standard_Boolean ChooseSection(const TopoDS_Shape& Comp,
-                                      const gp_Ax2& bis,
-                                      TopoDS_Shape& resWire,
-                                      gp_Pln& resPlane,
-                                      Standard_Boolean& IsSingular);
+static void UpdateSectionEdge(TopoDS_Edge&         theEdge,
+                              const TopoDS_Vertex& theConstVertex,
+                              TopoDS_Vertex&       theVertex,
+                              const Standard_Real  theParam);
 
+  
 // ===========================================================================================
 // function: Constructor
 // purpose:
 // ===========================================================================================
 BRepFill_TrimShellCorner::BRepFill_TrimShellCorner(const Handle(TopTools_HArray2OfShape)& theFaces,
-                                                   const gp_Ax2&                          theAxeOfBisPlane,
-                                                   const TopoDS_Face&                     theSecPlane) :
-myAxeOfBisPlane(theAxeOfBisPlane),
-myDone(Standard_False),
-myHasSection(Standard_False)
+                                                   const BRepFill_TransitionStyle         theTransition,
+                                                   const gp_Ax2&                          theAxeOfBisPlane) :
+  myTransition(theTransition),
+  myAxeOfBisPlane(theAxeOfBisPlane),
+  myDone(Standard_False),
+  myHasSection(Standard_False)
 {
   myFaces = new TopTools_HArray2OfShape(theFaces->LowerRow(), theFaces->UpperRow(), 
                                         theFaces->LowerCol(), theFaces->UpperCol());
   myFaces->ChangeArray2() = theFaces->Array2();
-  mySecPln = theSecPlane;
-}
-
-// ===========================================================================================
-// function: Constructor
-// purpose:
-// ===========================================================================================
-BRepFill_TrimShellCorner::BRepFill_TrimShellCorner(const Handle(TopTools_HArray2OfShape)& theFaces,
-                                                   const gp_Ax2&                          theAxeOfBisPlane,
-                                                   const TopoDS_Wire&                     theSpine,
-                                                   const TopoDS_Face&                     theSecPlane):
-myAxeOfBisPlane(theAxeOfBisPlane),
-myDone(Standard_False),
-myHasSection(Standard_False)
-{
-  myFaces = new TopTools_HArray2OfShape(theFaces->LowerRow(), theFaces->UpperRow(), 
-                                        theFaces->LowerCol(), theFaces->UpperCol());
-  myFaces->ChangeArray2() = theFaces->Array2();
-  mySpine = theSpine;
-  mySecPln = theSecPlane;
-}
-
-// ===========================================================================================
-// function: SetSpine
-// purpose:
-// ===========================================================================================
-void BRepFill_TrimShellCorner::SetSpine(const TopoDS_Wire& theSpine) 
-{
-  mySpine = theSpine;
 }
 
 // ===========================================================================================
@@ -351,14 +323,13 @@ void BRepFill_TrimShellCorner::Perform()
         }
 
         if(!bhassec) {
-          if(!MakeFacesNonSec(ii, myUEdges, myBounds, theDS, anIndex1, anIndex2, myHistMap)) {
+          if(!MakeFacesNonSec(ii, theDS, anIndex1, anIndex2)) {
             myHistMap.Clear();
             return;
           }
         }
         else {
-          if(!MakeFacesSec(ii, myUEdges, myBounds, theDS, anIndex1, anIndex2, 
-                           i, myAxeOfBisPlane, myHistMap)) {
+          if(!MakeFacesSec(ii, theDS, anIndex1, anIndex2, i)) {
             myHistMap.Clear();
             return;
           }
@@ -403,23 +374,21 @@ void BRepFill_TrimShellCorner::Modified(const TopoDS_Shape&   theShape,
 }
 
 // ----------------------------------------------------------------------------------------------------
-// static function: MakeFacesNonSec
-// purpose:
+// function: MakeFacesNonSec
+// purpose:         Updates <myHistMap> by new faces in the case when old faces do not intersect
 // ----------------------------------------------------------------------------------------------------
-Standard_Boolean MakeFacesNonSec(const Standard_Integer                     theIndex,
-                                 const Handle(TopTools_HArray2OfShape)&     theUEdges, 
-                                 const Handle(TopTools_HArray2OfShape)&     theBounds, 
-                                 const BOPDS_PDS&                           theDS,
-                                 const Standard_Integer                     theFaceIndex1, 
-                                 const Standard_Integer                     theFaceIndex2, 
-                                 TopTools_DataMapOfShapeListOfShape&        theHistMap)
+Standard_Boolean
+BRepFill_TrimShellCorner::MakeFacesNonSec(const Standard_Integer                     theIndex,
+                                          const BOPDS_PDS&                           theDS,
+                                          const Standard_Integer                     theFaceIndex1, 
+                                          const Standard_Integer                     theFaceIndex2)
 {
   Standard_Boolean bHasNewEdge = Standard_False;
   TopoDS_Edge aNewEdge;
 
   BRep_Builder aBB;
-  const TopoDS_Shape& aE1 = theBounds->Value(theIndex, 1);
-  const TopoDS_Shape& aE2 = theBounds->Value(theIndex, 2);
+  const TopoDS_Shape& aE1 = myBounds->Value(theIndex, 1);
+  const TopoDS_Shape& aE2 = myBounds->Value(theIndex, 2);
 
   // search common vertex between bounds. begin
   TopoDS_Vertex aCommonVertex;
@@ -439,20 +408,20 @@ Standard_Boolean MakeFacesNonSec(const Standard_Integer                     theI
   Standard_Integer ueit = 0, eindex = 0;
 
   for(ueit = 1, eindex = theIndex; ueit <= 2; ueit++, eindex++) {
-    const TopoDS_Shape& aShape1 = theUEdges->Value(eindex, theUEdges->LowerCol());
-    const TopoDS_Shape& aShape2 = theUEdges->Value(eindex, theUEdges->UpperCol());
+    const TopoDS_Shape& aShape1 = myUEdges->Value(eindex, myUEdges->LowerCol());
+    const TopoDS_Shape& aShape2 = myUEdges->Value(eindex, myUEdges->UpperCol());
     TopoDS_Edge aUE1 = TopoDS::Edge(aShape1);
     TopoDS_Edge aUE2 = TopoDS::Edge(aShape2);
 
-    if(theHistMap.IsBound(aShape1)) {
-      const TopTools_ListOfShape& lst = theHistMap.Find(aShape1);
+    if (myHistMap.IsBound(aShape1)) {
+      const TopTools_ListOfShape& lst = myHistMap.Find(aShape1);
 
       if(!lst.IsEmpty())
         aUE1 = TopoDS::Edge(lst.First());
     }
 
-    if(theHistMap.IsBound(aShape2)) {
-      const TopTools_ListOfShape& lst = theHistMap.Find(aShape2);
+    if (myHistMap.IsBound(aShape2)) {
+      const TopTools_ListOfShape& lst = myHistMap.Find(aShape2);
 
       if(!lst.IsEmpty())
         aUE2 = TopoDS::Edge(lst.First());
@@ -499,11 +468,11 @@ Standard_Boolean MakeFacesNonSec(const Standard_Integer                     theI
     aBB.MakeCompound(aComp);
 
     for(ueit = 1, eindex = theIndex; ueit <= 2; ueit++, eindex++) {
-      const TopoDS_Shape& aShape = theUEdges->Value(eindex, theUEdges->LowerCol() + fit - 1);
+      const TopoDS_Shape& aShape = myUEdges->Value(eindex, myUEdges->LowerCol() + fit - 1);
       TopoDS_Shape aUE = aShape;
 
-      if(theHistMap.IsBound(aShape)) {
-        const TopTools_ListOfShape& lst = theHistMap.Find(aShape);
+      if(myHistMap.IsBound(aShape)) {
+        const TopTools_ListOfShape& lst = myHistMap.Find(aShape);
 
         if(!lst.IsEmpty())
           aUE = TopoDS::Edge(lst.First());
@@ -638,7 +607,7 @@ Standard_Boolean MakeFacesNonSec(const Standard_Integer                     theI
     aNewFace.Orientation(aFaceOri);
     TopTools_ListOfShape atmpList;
     atmpList.Append(aNewFace);
-    theHistMap.Bind(aFace, atmpList);
+    myHistMap.Bind(aFace, atmpList);
 
     anExpE.Init(aFace, TopAbs_EDGE);
 
@@ -648,7 +617,7 @@ Standard_Boolean MakeFacesNonSec(const Standard_Integer                     theI
       if(aNewValue.IsNull() || aNewValue.IsSame(anExpE.Current()))
         continue;
 
-      if(theHistMap.IsBound(anExpE.Current()))
+      if (myHistMap.IsBound(anExpE.Current()))
         continue;
       TopTools_ListOfShape aListOfNewEdge;
       TopExp_Explorer anExpE2(aNewValue, TopAbs_EDGE);
@@ -656,7 +625,7 @@ Standard_Boolean MakeFacesNonSec(const Standard_Integer                     theI
       for(; anExpE2.More(); anExpE2.Next()) {
         aListOfNewEdge.Append(anExpE2.Current());
       }
-      theHistMap.Bind(anExpE.Current(), aListOfNewEdge);
+      myHistMap.Bind(anExpE.Current(), aListOfNewEdge);
     }
   }
 
@@ -664,18 +633,15 @@ Standard_Boolean MakeFacesNonSec(const Standard_Integer                     theI
 }
 
 // ----------------------------------------------------------------------------------------------------
-// static function: MakeFacesSec
-// purpose:
+// function: MakeFacesSec
+// purpose:  Updates <myHistMap> by new faces in the case when old faces intersect each other
 // ----------------------------------------------------------------------------------------------------
-Standard_Boolean MakeFacesSec(const Standard_Integer                     theIndex,
-                              const Handle(TopTools_HArray2OfShape)&     theUEdges, 
-                              const Handle(TopTools_HArray2OfShape)&     theBounds, 
-                              const BOPDS_PDS&                           theDS,
-                              const Standard_Integer                     theFaceIndex1, 
-                              const Standard_Integer                     theFaceIndex2, 
-                              const Standard_Integer                     theSSInterfIndex,
-                              const gp_Ax2&                              AxeOfBisPlane,
-                              TopTools_DataMapOfShapeListOfShape&        theHistMap)
+Standard_Boolean
+BRepFill_TrimShellCorner::MakeFacesSec(const Standard_Integer                     theIndex,
+                                       const BOPDS_PDS&                           theDS,
+                                       const Standard_Integer                     theFaceIndex1, 
+                                       const Standard_Integer                     theFaceIndex2, 
+                                       const Standard_Integer                     theSSInterfIndex)
 {
   const BOPDS_VectorOfInterfFF& aFFs = theDS->InterfFF();
   const BOPDS_InterfFF& aFFi = aFFs(theSSInterfIndex);
@@ -687,10 +653,30 @@ Standard_Boolean MakeFacesSec(const Standard_Integer                     theInde
   if(!FilterSectionEdges(aBCurves, aSecPlane, theDS, aSecEdges))
     return Standard_False;
 
+  //Extract vertices on the intersection of correspondent U-edges
+  const TopoDS_Shape& LeftE1  = myUEdges->Value(theIndex, 1);
+  const TopoDS_Shape& LeftE2  = myUEdges->Value(theIndex, 2);
+  const TopoDS_Shape& RightE1 = myUEdges->Value(theIndex+1, 1);
+  const TopoDS_Shape& RightE2 = myUEdges->Value(theIndex+1, 2);
+
+  Standard_Integer IndexOfLeftE1  = theDS->Index(LeftE1);
+  Standard_Integer IndexOfLeftE2  = theDS->Index(LeftE2);
+  Standard_Integer IndexOfRightE1 = theDS->Index(RightE1);
+  Standard_Integer IndexOfRightE2 = theDS->Index(RightE2);
+
+  TopoDS_Vertex FirstVertex, LastVertex;
+  Standard_Real ParamOnLeftE1, ParamOnLeftE2, ParamOnRightE1, ParamOnRightE2;
+  FindCommonVertex(theDS, IndexOfLeftE1, IndexOfLeftE2,
+                   FirstVertex, ParamOnLeftE1, ParamOnLeftE2);
+  FindCommonVertex(theDS, IndexOfRightE1, IndexOfRightE2,
+                   LastVertex, ParamOnRightE1, ParamOnRightE2);
+
   TopoDS_Shape SecWire;
   gp_Pln SecPlane;
   Standard_Boolean IsSingular;
-  Standard_Boolean WireFound = ChooseSection( aSecEdges, AxeOfBisPlane, SecWire, SecPlane, IsSingular );
+  Standard_Boolean WireFound = ChooseSection(aSecEdges,
+                                             FirstVertex, LastVertex,
+                                             SecWire, SecPlane, IsSingular );
 
   if(WireFound) {
     //aSecEdges = SecWire;
@@ -715,19 +701,19 @@ Standard_Boolean MakeFacesSec(const Standard_Integer                     theInde
     TopAbs_Orientation aFaceOri = aFace.Orientation();
     TopoDS_Face aFaceF = aFace;
     aFaceF.Orientation(TopAbs_FORWARD);
-    TopoDS_Edge aBoundEdge = TopoDS::Edge(theBounds->Value(theIndex, theBounds->LowerCol() +fit));
+    TopoDS_Edge aBoundEdge = TopoDS::Edge(myBounds->Value(theIndex, myBounds->LowerCol() +fit));
     Standard_Integer aBoundEdgeIndex = theDS->Index(aBoundEdge);
     TopoDS_Edge aUE1;
     TopoDS_Edge aUE2;
 
-    if(!GetUEdges(theIndex, fit, theUEdges, aBoundEdge, aFaceF, aUE1, aUE2))
+    if(!GetUEdges(theIndex, fit, myUEdges, aBoundEdge, aFaceF, aUE1, aUE2))
       return Standard_False;
 
     TopoDS_Edge aUE1old = aUE1;
     TopoDS_Edge aUE2old = aUE2;
 
-    if(theHistMap.IsBound(aUE1)) {
-      const TopTools_ListOfShape& lst = theHistMap.Find(aUE1);
+    if (myHistMap.IsBound(aUE1)) {
+      const TopTools_ListOfShape& lst = myHistMap.Find(aUE1);
 
       if(!lst.IsEmpty()) {
         const TopoDS_Shape& anEdge = lst.First().Oriented(aUE1.Orientation());
@@ -738,8 +724,8 @@ Standard_Boolean MakeFacesSec(const Standard_Integer                     theInde
       }
     }
 
-    if(theHistMap.IsBound(aUE2)) {
-      const TopTools_ListOfShape& lst = theHistMap.Find(aUE2);
+    if (myHistMap.IsBound(aUE2)) {
+      const TopTools_ListOfShape& lst = myHistMap.Find(aUE2);
 
       if(!lst.IsEmpty()) {
         const TopoDS_Shape& anEdge = lst.First().Oriented(aUE2.Orientation());
@@ -757,12 +743,12 @@ Standard_Boolean MakeFacesSec(const Standard_Integer                     theInde
     Standard_Boolean isPave1OnUEdge = Standard_True;
 
     if(FindFromUEdge(aUE1old, aUE2old, aUE1, aUE2, aFace, aSecEdges, fit, aBoundEdge, aBoundEdgeIndex, 
-                     theDS, theHistMap, aCompOfSecEdges, aListOfWireEdges, aPave1, isPave1OnUEdge)) {
+                     theDS, myHistMap, aCompOfSecEdges, aListOfWireEdges, aPave1, isPave1OnUEdge)) {
       TopTools_ListOfShape aSecondListOfEdges;
       Standard_Boolean bisSectionFound = Standard_False;
 
       if(!FindFromVEdge(aPave1, isPave1OnUEdge, aUE1old, aUE2old, aFace, aCompOfSecEdges, fit, aBoundEdge, 
-                        aBoundEdgeIndex, theDS, theHistMap, aSecondListOfEdges, bisSectionFound)) {
+                        aBoundEdgeIndex, theDS, myHistMap, aSecondListOfEdges, bisSectionFound)) {
         return Standard_False;
       }
 
@@ -792,7 +778,7 @@ Standard_Boolean MakeFacesSec(const Standard_Integer                     theInde
     aNewFace.Orientation(aFaceOri);
     TopTools_ListOfShape atmpList;
     atmpList.Append(aNewFace);
-    theHistMap.Bind(aFace, atmpList);
+    myHistMap.Bind(aFace, atmpList);
 
     TopExp_Explorer anExpE(aFace, TopAbs_EDGE);
 
@@ -802,7 +788,7 @@ Standard_Boolean MakeFacesSec(const Standard_Integer                     theInde
       if(aNewValue.IsNull() || aNewValue.IsSame(anExpE.Current()))
         continue;
 
-      if(theHistMap.IsBound(anExpE.Current()))
+      if (myHistMap.IsBound(anExpE.Current()))
         continue;
       TopTools_ListOfShape aListOfNewEdge;
       TopExp_Explorer anExpE2(aNewValue, TopAbs_EDGE);
@@ -810,10 +796,238 @@ Standard_Boolean MakeFacesSec(const Standard_Integer                     theInde
       for(; anExpE2.More(); anExpE2.Next()) {
         aListOfNewEdge.Append(anExpE2.Current());
       }
-      theHistMap.Bind(anExpE.Current(), aListOfNewEdge);
+      myHistMap.Bind(anExpE.Current(), aListOfNewEdge);
     }
   }
   return Standard_True;
+}
+
+//=======================================================================
+//function : ChooseSection
+//purpose  : 
+//=======================================================================
+Standard_Boolean BRepFill_TrimShellCorner::ChooseSection(const TopoDS_Shape& Comp,
+                                                         const TopoDS_Vertex& theFirstVertex,
+                                                         const TopoDS_Vertex& theLastVertex,
+                                                         TopoDS_Shape& resWire,
+                                                         gp_Pln& resPlane,
+                                                         Standard_Boolean& IsSingular)
+{
+  IsSingular = Standard_False;
+
+  Standard_Integer ind, i, j;
+  BRep_Builder BB;
+
+  if (myTransition == BRepFill_Right &&
+      !theFirstVertex.IsNull() &&
+      !theLastVertex.IsNull()) //the case where section wire goes from
+    //its known first vertex to its known last vertex
+  {
+    TopoDS_Wire NewWire;
+    BB.MakeWire(NewWire);
+    
+    TopoDS_Compound OldComp;
+    BB.MakeCompound( OldComp );
+    TopoDS_Iterator iter( Comp );
+    for (; iter.More(); iter.Next())
+      BB.Add( OldComp, iter.Value() );
+
+    TopoDS_Edge FirstEdge = FindEdgeCloseToBisectorPlane(theFirstVertex,
+                                                          OldComp,
+                                                          myAxeOfBisPlane.Axis());
+    iter.Initialize(OldComp);
+    if (!iter.More())
+    {
+      iter.Initialize(Comp);
+      BB.Add( OldComp, iter.Value() );
+    }
+    TopoDS_Edge LastEdge  = FindEdgeCloseToBisectorPlane(theLastVertex,
+                                                          OldComp,
+                                                          myAxeOfBisPlane.Axis());
+    
+    BB.Add(NewWire, FirstEdge);
+
+    if (!FirstEdge.IsSame(LastEdge))
+    {
+      TopoDS_Vertex aCommonVertex;
+      Standard_Boolean CommonVertexExists = FindCommonVertex(FirstEdge, LastEdge,
+                                                             theFirstVertex, theLastVertex,
+                                                             aCommonVertex);
+      if (CommonVertexExists)
+        BB.Add(NewWire, LastEdge);
+      else
+      {
+        TopoDS_Vertex Vertex1, Vertex2, V1, V2;
+        TopExp::Vertices(FirstEdge, V1, V2);
+        Vertex1 = (theFirstVertex.IsSame(V1))? V2 : V1;
+        TopExp::Vertices(LastEdge, V1, V2);
+        Vertex2 = (theLastVertex.IsSame(V1))? V2 : V1;
+        
+        TopTools_ListOfShape MiddleEdges;
+        if (FindMiddleEdges(Vertex1, Vertex2, myAxeOfBisPlane.Axis(), OldComp, MiddleEdges))
+        {
+          TopTools_ListIteratorOfListOfShape itl(MiddleEdges);
+          for (; itl.More(); itl.Next())
+            BB.Add(NewWire, itl.Value());
+          BB.Add(NewWire, LastEdge);
+        }
+        else
+        {
+          //trim <FirstEdge> and <LastEdge> in the points of extrema
+          //these points become new vertex with centre between them
+          BRepExtrema_ExtCC Extrema(FirstEdge, LastEdge);
+          if (Extrema.IsDone() && Extrema.NbExt() > 0)
+          {
+            Standard_Integer imin = 1;
+            for (i = 2; i <= Extrema.NbExt(); i++)
+              if (Extrema.SquareDistance(i) < Extrema.SquareDistance(imin))
+                imin = i;
+            
+            Standard_Real aMinDist = sqrt(Extrema.SquareDistance(imin));
+            Standard_Real ParamOnFirstEdge = Extrema.ParameterOnE1(imin);
+            Standard_Real ParamOnLastEdge  = Extrema.ParameterOnE2(imin);
+            gp_Pnt PointOnFirstEdge = Extrema.PointOnE1(imin);
+            gp_Pnt PointOnLastEdge  = Extrema.PointOnE2(imin);
+            gp_Pnt MidPnt((PointOnFirstEdge.XYZ() + PointOnLastEdge.XYZ())/2);
+            aCommonVertex = BRepLib_MakeVertex(MidPnt);
+            BB.UpdateVertex(aCommonVertex, 1.001*aMinDist/2);
+            
+            UpdateSectionEdge(FirstEdge, theFirstVertex, aCommonVertex, ParamOnFirstEdge);
+            UpdateSectionEdge(LastEdge,  theLastVertex,  aCommonVertex, ParamOnLastEdge);
+            
+            BB.Add(NewWire, LastEdge);
+          }
+        }
+      }
+    }
+
+    resWire = NewWire;
+    resPlane = gp_Pln(myAxeOfBisPlane);
+    return Standard_True;
+  }
+
+  //General case: try to find continuous section closest to bisector plane
+  TopoDS_Compound OldComp;
+  BRep_Builder B;
+  B.MakeCompound( OldComp );
+  TopoDS_Iterator iter( Comp );
+  for (; iter.More(); iter.Next())
+    B.Add( OldComp, iter.Value() );
+
+  Standard_Boolean anError = Standard_False;
+  //TopoDS_Wire NewWire [2];
+  TopTools_SequenceOfShape Wseq;
+  for (;;)
+  {
+    TopExp_Explorer explo( OldComp, TopAbs_EDGE );
+    if (!explo.More())
+      break;
+    TopoDS_Edge FirstEdge = TopoDS::Edge( explo.Current() );
+    TopoDS_Wire NewWire = BRepLib_MakeWire( FirstEdge );
+    B.Remove( OldComp, FirstEdge );
+    if (NewWire.Closed())
+    {
+      Wseq.Append(NewWire);
+      continue;
+    }
+    
+    for (;;)
+    {
+      TopoDS_Vertex Extremity [2];
+      TopExp::Vertices( NewWire, Extremity[0], Extremity[1] );
+      if (Extremity[0].IsNull() || Extremity[1].IsNull())
+      {
+        anError = Standard_True;
+        break;
+      }
+      TopTools_IndexedDataMapOfShapeListOfShape VEmap;
+      TopExp::MapShapesAndAncestors( OldComp, TopAbs_VERTEX, TopAbs_EDGE, VEmap );
+      TopTools_ListOfShape Vedges [2];
+      for (j = 0; j < 2; j++)
+        if (VEmap.Contains( Extremity[j] ))
+          Vedges[j] = VEmap.FindFromKey( Extremity[j] );
+      if (Vedges[0].IsEmpty() && Vedges[1].IsEmpty())
+        //no more edges in OldComp to continue NewWire
+        break;
+      Standard_Boolean Modified = Standard_False;
+      for (j = 0; j < 2; j++)
+      {
+        if (Vedges[j].Extent() == 1)
+        {
+          const TopoDS_Edge& anEdge = TopoDS::Edge( Vedges[j].First() );
+          NewWire = BRepLib_MakeWire( NewWire, anEdge );
+          B.Remove( OldComp, anEdge );
+          Modified = Standard_True;
+        }
+      }
+      if (!Modified) //only multiple connections
+      {
+        ind = (Vedges[0].IsEmpty())? 1 : 0;
+        TopTools_SequenceOfShape Edges;
+        TopTools_ListIteratorOfListOfShape itl( Vedges[ind] );
+        for (; itl.More(); itl.Next())
+          Edges.Append( itl.Value() );
+        Standard_Integer theind=0;
+        Standard_Real MinDeviation = RealLast();
+        for (j = 1; j <= Edges.Length(); j++)
+        {
+          TopoDS_Wire aWire = BRepLib_MakeWire( NewWire, TopoDS::Edge(Edges(j)) );
+          gp_Pln aPlane;
+          Standard_Boolean issing;
+          Standard_Real Deviation = ComputeAveragePlaneAndMaxDeviation( aWire, aPlane, issing );
+          if (Deviation < MinDeviation)
+          {
+            MinDeviation = Deviation;
+            theind = j;
+          }
+        }
+        NewWire = BRepLib_MakeWire( NewWire, TopoDS::Edge(Edges(theind)) );
+        B.Remove( OldComp, Edges(theind) );
+      }
+      if (NewWire.Closed())
+        break;
+    }
+    Wseq.Append(NewWire);
+    if (anError)
+      break;
+  }
+  
+  Standard_Real MinAngle = RealLast();
+  TopExp_Explorer Explo( OldComp, TopAbs_EDGE );
+  if (!anError && !Explo.More()) //wires are built successfully and compound <OldComp> is empty
+  {
+    if (Wseq.Length() == 1) //only one wire => it becomes result
+    {
+      resWire = Wseq.First();
+      ComputeAveragePlaneAndMaxDeviation( resWire, resPlane, IsSingular );
+      return Standard_True;
+    }
+    else //we must choose the wire which average plane is closest to bisector plane
+    {    //(check angle between axes)
+      for (i = 1; i <= Wseq.Length(); i++)
+      {
+        TopoDS_Wire aWire = TopoDS::Wire( Wseq(i) );
+        gp_Pln aPln;
+        Standard_Boolean issing;
+        ComputeAveragePlaneAndMaxDeviation( aWire, aPln, issing );
+        if (issing)
+          continue;
+        
+        Standard_Real Angle = aPln.Axis().Angle( myAxeOfBisPlane.Axis() );
+        if (Angle > M_PI/2)
+          Angle = M_PI - Angle;
+        
+        if (Angle < MinAngle)
+        {
+          MinAngle = Angle;
+          resWire = aWire;
+          resPlane = aPln;
+        }
+      }
+      return Standard_True;
+    }
+  }
+  return Standard_False;
 }
 
 
@@ -966,13 +1180,15 @@ Standard_Boolean FindCommonVertex(const BOPDS_PDS&         theDS,
         continue;
 
       IntTools_CommonPrt aCP = aEE.CommonPart();
-      if(aCP.Type() == TopAbs_VERTEX) {
+      if(aCP.Type() == TopAbs_VERTEX)
+      {
         theCommonVertex = *(TopoDS_Vertex*)&theDS->Shape(aEE.IndexNew());
-        if (theEIndex1 == aEE.Index1()) {
+        
+        if (theEIndex1 == aEE.Index1())
           IntTools_Tools::VertexParameters(aCP, theParamOnE1, theParamOnE2);
-        } else {
+        else
           IntTools_Tools::VertexParameters(aCP, theParamOnE2, theParamOnE1);
-        }
+       
         //
         bvertexfound = Standard_True;
         break;
@@ -2004,147 +2220,182 @@ static Standard_Real ComputeAveragePlaneAndMaxDeviation(const TopoDS_Shape& aWir
   return MaxDeviation;
 }
 
-//=======================================================================
-//function : ChooseSection
-//purpose  : 
-//=======================================================================
-static Standard_Boolean ChooseSection(const TopoDS_Shape& Comp,
-                                      const gp_Ax2& bis,
-                                      TopoDS_Shape& resWire,
-                                      gp_Pln& resPlane,
-                                      Standard_Boolean& IsSingular)
+
+static void UpdateSectionEdge(TopoDS_Edge&         theEdge,
+                              const TopoDS_Vertex& theConstVertex,
+                              TopoDS_Vertex&       theVertex,
+                              const Standard_Real  theParam)
 {
-  IsSingular = Standard_False;
-  Standard_Real TolDeviation = 0.01; //, TolConf = 1.e-4, TolAng = 1.e-5;
+  TopoDS_Edge F_Edge = theEdge;
+  F_Edge.Orientation(TopAbs_FORWARD);
+  
+  TopAbs_Orientation OrOfVertex;
+  TopoDS_Vertex V1, V2, AnotherVertex;
+  TopExp::Vertices(F_Edge, V1, V2);
+  if (theConstVertex.IsSame(V1))
+  {
+    //OrOfConst = TopAbs_FORWARD;
+    OrOfVertex = TopAbs_REVERSED;
+    AnotherVertex = V2;
+  }
+  else
+  {
+    //OrOfConst = TopAbs_REVERSED;
+    OrOfVertex = TopAbs_FORWARD;
+    AnotherVertex = V1;
+  }
 
-//  Standard_Integer N = 100;
-  Standard_Integer ind, i, j;
+  BRep_Builder BB;
+  Standard_Real fpar, lpar;
+  BRep_Tool::Range(F_Edge, fpar, lpar);
+  if (OrOfVertex == TopAbs_FORWARD)
+    fpar = theParam;
+  else
+    lpar = theParam;
+  BB.Range(F_Edge, fpar, lpar);
 
-  //Simplest case
-  TopoDS_Compound OldComp;
-  BRep_Builder B;
-  B.MakeCompound( OldComp );
-  TopoDS_Iterator iter( Comp );
-  for (; iter.More(); iter.Next())
-    B.Add( OldComp, iter.Value() );
+  F_Edge.Free(Standard_True);
+  BB.Remove(F_Edge, AnotherVertex);
+  theVertex.Orientation(OrOfVertex);
+  BB.Add(F_Edge, theVertex);
+}
 
-  Standard_Boolean anError = Standard_False;
-  //TopoDS_Wire NewWire [2];
-  TopTools_SequenceOfShape Wseq;
-  for (;;)
+//Finds the edge connected to <theVertex> in the compound <theComp>
+//that is closest to bisector plane angularly.
+//Removes found edge from <theComp>
+//<theAxis> is the axis of bisector plane
+static TopoDS_Edge FindEdgeCloseToBisectorPlane(const TopoDS_Vertex& theVertex,
+                                                TopoDS_Compound&     theComp,
+                                                const gp_Ax1&        theAxis)
+{
+  TopTools_IndexedDataMapOfShapeListOfShape VEmap;
+  TopExp::MapShapesAndAncestors( theComp, TopAbs_VERTEX, TopAbs_EDGE, VEmap );
+  
+  TopoDS_Edge MinEdge;
+  if (!VEmap.Contains(theVertex))
+    return MinEdge;
+  
+  BRep_Builder BB;
+  
+  const TopTools_ListOfShape& Edges = VEmap.FindFromKey(theVertex);
+  if (Edges.Extent() == 1)
+    MinEdge = TopoDS::Edge(Edges.First());
+  else
+  {
+    TopTools_ListIteratorOfListOfShape itl(Edges);
+    Standard_Real MinAngle = RealLast();
+    for (; itl.More(); itl.Next())
     {
-      TopExp_Explorer explo( OldComp, TopAbs_EDGE );
-      if (!explo.More())
-        break;
-      TopoDS_Edge FirstEdge = TopoDS::Edge( explo.Current() );
-      TopoDS_Wire NewWire = BRepLib_MakeWire( FirstEdge );
-      B.Remove( OldComp, FirstEdge );
-      if (NewWire.Closed())
-        {
-          Wseq.Append(NewWire);
-          continue;
-        }
-
-      for (;;)
-        {
-          TopoDS_Vertex Extremity [2];
-          TopExp::Vertices( NewWire, Extremity[0], Extremity[1] );
-          if (Extremity[0].IsNull() || Extremity[1].IsNull())
-            {
-              anError = Standard_True;
-              break;
-            }
-          TopTools_IndexedDataMapOfShapeListOfShape VEmap;
-          TopExp::MapShapesAndAncestors( OldComp, TopAbs_VERTEX, TopAbs_EDGE, VEmap );
-          TopTools_ListOfShape Vedges [2];
-          for (j = 0; j < 2; j++)
-            if (VEmap.Contains( Extremity[j] ))
-              Vedges[j] = VEmap.FindFromKey( Extremity[j] );
-          if (Vedges[0].IsEmpty() && Vedges[1].IsEmpty())
-            //no more edges in OldComp to continue NewWire
-            break;
-          Standard_Boolean Modified = Standard_False;
-          for (j = 0; j < 2; j++)
-            {
-              if (Vedges[j].Extent() == 1)
-                {
-                  const TopoDS_Edge& anEdge = TopoDS::Edge( Vedges[j].First() );
-                  NewWire = BRepLib_MakeWire( NewWire, anEdge );
-                  B.Remove( OldComp, anEdge );
-                  Modified = Standard_True;
-                }
-            }
-          if (!Modified) //only multiple connections
-            {
-              ind = (Vedges[0].IsEmpty())? 1 : 0;
-              TopTools_SequenceOfShape Edges;
-              TopTools_ListIteratorOfListOfShape itl( Vedges[ind] );
-              for (; itl.More(); itl.Next())
-                Edges.Append( itl.Value() );
-              Standard_Integer theind=0;
-              Standard_Real MinDeviation = RealLast();
-              for (j = 1; j <= Edges.Length(); j++)
-                {
-                  TopoDS_Wire aWire = BRepLib_MakeWire( NewWire, TopoDS::Edge(Edges(j)) );
-                  gp_Pln aPlane;
-                  Standard_Boolean issing;
-                  Standard_Real Deviation = ComputeAveragePlaneAndMaxDeviation( aWire, aPlane, issing );
-                  if (Deviation < MinDeviation)
-                    {
-                      MinDeviation = Deviation;
-                      theind = j;
-                    }
-                }
-              NewWire = BRepLib_MakeWire( NewWire, TopoDS::Edge(Edges(theind)) );
-              B.Remove( OldComp, Edges(theind) );
-            }
-          if (NewWire.Closed())
-            break;
-        }
-      Wseq.Append(NewWire);
-      if (anError)
-        break;
-    }
-
-  Standard_Real Deviation=0.;
-  Standard_Real MinAngle = RealLast();
-  TopExp_Explorer Explo( OldComp, TopAbs_EDGE );
-  if (!anError && !Explo.More())
-    {
-      if (Wseq.Length() == 1)
-        {
-          resWire = Wseq.First();
-          Deviation = ComputeAveragePlaneAndMaxDeviation( resWire, resPlane, IsSingular );
-          return Standard_True;
-        }
+      const TopoDS_Edge& anEdge = TopoDS::Edge(itl.Value());
+      TopoDS_Wire aWire;
+      BB.MakeWire(aWire);
+      BB.Add(aWire, anEdge);
+      gp_Pln aPln;
+      Standard_Boolean issing;
+      ComputeAveragePlaneAndMaxDeviation( aWire, aPln, issing );
+      Standard_Real anAngle;
+      if (issing) //edge is a segment of line
+      {
+        //<anAngle> is angle between <anEdge> and its projection on bisector plane
+        BRepAdaptor_Curve BAcurve(anEdge);
+        gp_Pnt FirstPnt = BAcurve.Value(BAcurve.FirstParameter());
+        gp_Pnt LastPnt  = BAcurve.Value(BAcurve.LastParameter());
+        gp_Vec EdgeVec(FirstPnt, LastPnt);
+        gp_Ax1 EdgeAxis(FirstPnt, EdgeVec);
+        anAngle = EdgeAxis.Direction().Angle(theAxis.Direction());
+        if (anAngle > M_PI/2)
+          anAngle = M_PI - anAngle;
+        anAngle = M_PI/2 - anAngle;
+      }
       else
-        {
-          for (i = 1; i <= Wseq.Length(); i++)
-            {
-              TopoDS_Wire aWire = TopoDS::Wire( Wseq(i) );
-              gp_Pln aPln;
-              Standard_Boolean issing;
-              Standard_Real aDeviation =
-                ComputeAveragePlaneAndMaxDeviation( aWire, aPln, issing );
-              if (issing)
-                continue;
-
-              Standard_Real Angle = aPln.Axis().Angle( bis.Axis() );
-              if (Angle > M_PI/2)
-                Angle = M_PI - Angle;
-              
-              if (Angle < MinAngle)
-                {
-                  MinAngle = Angle;
-                  resWire = aWire;
-                  resPlane = aPln;
-                  Deviation = aDeviation;
-                }
-            }
-          if (Deviation <= TolDeviation)
-            return Standard_True;
-        }
+      {
+        anAngle = aPln.Axis().Angle( theAxis );
+        if (anAngle > M_PI/2)
+          anAngle = M_PI - anAngle;
+      }
+      
+      if (anAngle < MinAngle)
+      {
+        MinAngle = anAngle;
+        MinEdge  = anEdge;
+      }
     }
+  } //else (more than one edge)
+
+  BB.Remove(theComp, MinEdge);
+  return MinEdge;
+}
+
+static Standard_Boolean FindMiddleEdges(const TopoDS_Vertex&  theVertex1,
+                                        const TopoDS_Vertex&  theVertex2,
+                                        const gp_Ax1&         theAxis,
+                                        TopoDS_Compound&      theComp,
+                                        TopTools_ListOfShape& theElist)
+{
+  TopTools_IndexedDataMapOfShapeListOfShape VEmap;
+  TopExp::MapShapesAndAncestors( theComp, TopAbs_VERTEX, TopAbs_EDGE, VEmap );
+  if (VEmap.IsEmpty())
+    return Standard_False;
+
+  if (!VEmap.Contains(theVertex1) ||
+      !VEmap.Contains(theVertex2))
+    return Standard_False;
+
+  TopoDS_Vertex CurVertex = theVertex1;
+  for (;;)
+  {
+    TopoDS_Edge CurEdge;
+    
+    CurEdge = FindEdgeCloseToBisectorPlane(CurVertex, theComp, theAxis);
+    if (CurEdge.IsNull())
+      return Standard_False;
+    
+    TopoDS_Vertex V1, V2;
+    TopExp::Vertices(CurEdge, V1, V2);
+    CurVertex = (V1.IsSame(CurVertex))? V2 : V1;
+
+    theElist.Append(CurEdge);
+    if (CurVertex.IsSame(theVertex2))
+      return Standard_True;
+  }
+}
+
+static Standard_Boolean FindCommonVertex(const TopoDS_Edge&   theFirstEdge,
+                                         const TopoDS_Edge&   theLastEdge,
+                                         const TopoDS_Vertex& theFirstVertex,
+                                         const TopoDS_Vertex& theLastVertex,
+                                         TopoDS_Vertex&       theCommonVertex)
+{
+  if (!theFirstVertex.IsSame(theLastVertex))
+  {
+    Standard_Boolean CommonVertexExists = TopExp::CommonVertex(theFirstEdge,
+                                                               theLastEdge,
+                                                               theCommonVertex);
+    return CommonVertexExists;
+  }
+
+  TopoDS_Vertex V1, V2, V3, V4;
+  TopExp::Vertices(theFirstEdge, V1, V2);
+  TopExp::Vertices(theLastEdge, V3, V4);
+
+  if (V1.IsSame(theFirstVertex))
+  {
+    if (V2.IsSame(V3) ||
+        V2.IsSame(V4))
+    {
+      theCommonVertex = V2;
+      return Standard_True;
+    }
+  }
+  else
+  {
+    if (V1.IsSame(V3) ||
+        V1.IsSame(V4))
+    {
+      theCommonVertex = V1;
+      return Standard_True;
+    }
+  }
+
   return Standard_False;
-  //end of simplest case
 }
