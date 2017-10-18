@@ -250,6 +250,7 @@ Standard_Integer bopsmt(Draw_Interpretor& di,
   aBOP.AddTool(aS2);
   aBOP.SetOperation(aOp);
   aBOP.SetRunParallel (bRunParallel);
+  aBOP.SetCheckInverted(BOPTest_Objects::CheckInverted());
   //
   aBOP.PerformWithFiller(*pPF);
   BOPTest::ReportAlerts(aBOP);
@@ -310,6 +311,7 @@ Standard_Integer bopsection(Draw_Interpretor& di,
   aBOP.AddArgument(aS1);
   aBOP.AddArgument(aS2);
   aBOP.SetRunParallel (bRunParallel);
+  aBOP.SetCheckInverted(BOPTest_Objects::CheckInverted());
   //
   aBOP.PerformWithFiller(*pPF);
   BOPTest::ReportAlerts(aBOP);
@@ -508,6 +510,7 @@ Standard_Integer bsmt (Draw_Interpretor& di,
   aBOP.AddTool(aS2);
   aBOP.SetOperation(aOp);
   aBOP.SetRunParallel(bRunParallel);
+  aBOP.SetCheckInverted(BOPTest_Objects::CheckInverted());
   // 
   aBOP.PerformWithFiller(aPF);
   BOPTest::ReportAlerts(aBOP);

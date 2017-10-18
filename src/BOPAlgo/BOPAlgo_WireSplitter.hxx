@@ -70,8 +70,6 @@ protected:
 
   Standard_EXPORT virtual void CheckData() Standard_OVERRIDE;
   
-  Standard_EXPORT void MakeConnexityBlocks();
-  
   Standard_EXPORT void MakeWires();
 
   BOPAlgo_PWireEdgeSet myWES;

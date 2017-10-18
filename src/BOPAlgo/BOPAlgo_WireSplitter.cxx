@@ -24,6 +24,7 @@
 #include <BOPCol_NCVector.hxx>
 #include <BOPCol_Parallel.hxx>
 #include <BOPTools.hxx>
+#include <BOPTools_AlgoTools.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
 #include <TopoDS.hxx>
@@ -124,153 +125,12 @@ void BOPAlgo_WireSplitter::Perform()
     myContext = new IntTools_Context;
   }
   //
-  MakeConnexityBlocks();
+  BOPTools_AlgoTools::MakeConnexityBlocks
+    (myWES->StartElements(), TopAbs_VERTEX, TopAbs_EDGE, myLCB);
+
   MakeWires();
 }
 
-//=======================================================================
-//function : MakeConnexityBlocks
-//purpose  : 
-//=======================================================================
-void BOPAlgo_WireSplitter::MakeConnexityBlocks()
-{
-  Standard_Boolean bRegular, bClosed;
-  Standard_Integer i, j, aNbV, aNbVS, aNbVP, k;
-  TopoDS_Iterator aItE;
-  TopoDS_Shape aER;
-  BOPCol_ListIteratorOfListOfShape aIt;
-  //
-  BOPCol_IndexedDataMapOfShapeListOfShape aMVE(100, myAllocator);
-  BOPCol_IndexedMapOfShape aMVP(100, myAllocator);
-  BOPCol_IndexedMapOfShape aMEC(100, myAllocator);
-  BOPCol_MapOfShape aMER(100, myAllocator);
-  BOPCol_MapOfShape aMEP(100, myAllocator);
-  BOPCol_IndexedMapOfShape aMVAdd(100, myAllocator);
-  BOPCol_MapOfShape aMVS(100, myAllocator);
-  //
-  myLCB.Clear();
-  //
-  const BOPCol_ListOfShape& aLSE=myWES->StartElements();
-  aIt.Initialize(aLSE);
-  for (; aIt.More(); aIt.Next()) {
-    const TopoDS_Shape& aE=aIt.Value();
-    if (aMEP.Add(aE)) {
-      BOPTools::MapShapesAndAncestors(aE, TopAbs_VERTEX, TopAbs_EDGE, aMVE);
-    }
-    else {
-      aMER.Add(aE);
-    }
-  }
-  //
-  // 2
-  aNbV=aMVE.Extent();
-  for (i=1; i<=aNbV; ++i) {
-    aNbVS=aMVS.Extent();
-    if (aNbVS==aNbV) {
-      break;
-    }
-    //
-    const TopoDS_Shape& aV=aMVE.FindKey(i);
-    //
-    if (!aMVS.Add(aV)) {
-      continue;
-    }
-        // aMVS - globally processed vertices
-    //
-    //------------------------------------- goal: aMEC
-    aMEC.Clear();    // aMEC - edges of CB
-    aMVP.Clear();    // aMVP - vertices to process right now 
-    aMVAdd.Clear();  // aMVAdd vertices to process on next step of while(1)
-    //
-    aMVP.Add(aV);
-    //
-    for(;;) {
-      aNbVP=aMVP.Extent();
-      for (k=1; k<=aNbVP; ++k) {
-        const TopoDS_Shape& aVP=aMVP(k);
-        const BOPCol_ListOfShape& aLE=aMVE.FindFromKey(aVP);
-        aIt.Initialize(aLE);
-        for (; aIt.More(); aIt.Next()) {
-          const TopoDS_Shape& aE=aIt.Value();
-          if (aMEC.Add(aE)) {
-            aItE.Initialize(aE);
-            for (; aItE.More(); aItE.Next()) {
-              const TopoDS_Shape& aVE=aItE.Value();
-              if (aMVS.Add(aVE)) {
-                aMVAdd.Add(aVE);
-              }
-            }
-          }
-        }
-      }//for (k=1; k<=aNbVP; ++k) {
-      //
-      aNbVP=aMVAdd.Extent();
-      if (!aNbVP) {
-        break; // from while(1)
-      }
-      //
-      aMVP.Clear();
-      //
-      for (k=1; k<=aNbVP; ++k) {
-        const TopoDS_Shape& aVE=aMVAdd(k);
-        aMVP.Add(aVE);
-      }
-      aMVAdd.Clear();
-    }// while(1) {
-
-    //-------------------------------------
-    BOPTools_ConnexityBlock aCB(myAllocator);
-    BOPCol_ListOfShape& aLEC=aCB.ChangeShapes();
-    
-    BOPCol_IndexedDataMapOfShapeListOfShape aMVER(100, myAllocator);
-    //
-    bRegular=Standard_True;
-    Standard_Integer aNbCB = aMEC.Extent();
-    for (j = 1; j <= aNbCB; j++) {
-      aER = aMEC(j);
-      //
-      if (aMER.Contains(aER)) {
-        aER.Orientation(TopAbs_FORWARD);
-        aLEC.Append(aER);
-        aER.Orientation(TopAbs_REVERSED);
-        aLEC.Append(aER);
-        bRegular=Standard_False;
-      }
-      else {
-        aLEC.Append(aER);
-      }
-      //
-      if (bRegular) {
-        BOPTools::MapShapesAndAncestors(aER, TopAbs_VERTEX, TopAbs_EDGE, aMVER);
-      }
-    }
-    //
-    if (bRegular) {
-      Standard_Integer aNbVR, aNbER;
-      //
-      aNbVR=aMVER.Extent();
-      for (k=1; k<=aNbVR; ++k) {
-        const BOPCol_ListOfShape& aLER=aMVER(k);
-        aNbER=aLER.Extent();
-        if (aNbER==1) {
-          const TopoDS_Edge& aEx=TopoDS::Edge(aER);
-          bClosed=BRep_Tool::IsClosed(aEx, myWES->Face());
-          if (!bClosed) {
-            bRegular=!bRegular;
-            break;
-          }
-        }
-        if (aNbER>2) {
-          bRegular=!bRegular;
-          break;
-        }
-      }
-    }
-    //
-    aCB.SetRegular(bRegular);
-    myLCB.Append(aCB);
-  }
-}
 /////////////////////////////////////////////////////////////////////////
 class BOPAlgo_WS_ConnexityBlock {
 public:

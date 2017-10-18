@@ -111,6 +111,7 @@ Standard_Integer bcbuild(Draw_Interpretor& di,
   aCBuilder.SetFuzzyValue(aTol);
   aCBuilder.SetNonDestructive(bNonDestructive);
   aCBuilder.SetGlue(aGlue);
+  aCBuilder.SetCheckInverted(BOPTest_Objects::CheckInverted());
   //
   aCBuilder.PerformWithFiller(aPF); 
   BOPTest::ReportAlerts(aCBuilder);

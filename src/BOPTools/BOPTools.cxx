@@ -71,38 +71,28 @@ void BOPTools::MapShapesAndAncestors
   (const TopoDS_Shape& S, 
    const TopAbs_ShapeEnum TS, 
    const TopAbs_ShapeEnum TA, 
-   BOPCol_IndexedDataMapOfShapeListOfShape& aMEF)
+   BOPCol_IndexedDataMapOfShapeListOfShape& Map)
 {
-  TopExp_Explorer aExS, aExA;
-  //
   // visit ancestors
-  aExA.Init(S, TA);
-  while (aExA.More()) {
+  TopExp_Explorer aExA(S, TA);
+  for (; aExA.More(); aExA.Next())
+  {
     // visit shapes
-    const TopoDS_Shape& aF = aExA.Current();
+    const TopoDS_Shape& anAnc = aExA.Current();
     //
-    aExS.Init(aF, TS);
-    while (aExS.More()) {
-      const TopoDS_Shape& aE= aExS.Current();
-      if (aMEF.Contains(aE)) {
-        aMEF.ChangeFromKey(aE).Append(aF);
-      }
-      else {
-        BOPCol_ListOfShape aLS;
-        aLS.Append(aF);
-        aMEF.Add(aE, aLS);
-      }
-      aExS.Next();
+    TopExp_Explorer aExS(anAnc, TS);
+    for (; aExS.More(); aExS.Next())
+    {
+      const TopoDS_Shape& aSS = aExS.Current();
+      BOPCol_ListOfShape* pLA = Map.ChangeSeek(aSS);
+      if (!pLA)
+        pLA = &Map(Map.Add(aSS, BOPCol_ListOfShape()));
+      pLA->Append(anAnc);
     }
-    aExA.Next();
   }
-  //
+
   // visit shapes not under ancestors
-  aExS.Init(S, TS, TA);
-  while (aExS.More()) {
-    const TopoDS_Shape& aE=aExS.Current();
-    BOPCol_ListOfShape aLS;
-    aMEF.Add(aE, aLS);
-    aExS.Next();
-  }
+  TopExp_Explorer aExS(S, TS, TA);
+  for (; aExS.More(); aExS.Next())
+    Map.Add(aExS.Current(), BOPCol_ListOfShape());
 }

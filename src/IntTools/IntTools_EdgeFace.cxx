@@ -222,7 +222,11 @@ Standard_Boolean IntTools_EdgeFace::IsCoincident()
   //
   GeomAPI_ProjectPointOnSurf& aProjector=myContext->ProjPS(myFace);
 
-  const Standard_Integer aNbSeg=23;
+  Standard_Integer aNbSeg=23;
+  if (myC.GetType() == GeomAbs_Line &&
+      myS.GetType() == GeomAbs_Plane)
+    aNbSeg = 2; // Check only three points for Line/Plane intersection
+
   const Standard_Real aTresh=0.5;
   const Standard_Integer aTreshIdxF = RealToInt((aNbSeg+1)*0.25),
                          aTreshIdxL = RealToInt((aNbSeg+1)*0.75);

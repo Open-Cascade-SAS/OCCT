@@ -6,8 +6,10 @@ puts ""
 # Fuse of two shapes using gluing and non-destructive options gives invalid result
 ##################################################################################
 
-restore [locate_data_file bug28485_parts.brep] a
-explode a
+box b1 10 10 10
+box b2 10 2 2 6 6 6
+nurbsconvert b1 b1
+nurbsconvert b2 b2
 
 bnondestructive 1
 brunparallel 1
@@ -16,13 +18,11 @@ bglue 1
 
 bclearobjects
 bcleartools
-baddobjects a_1
-baddtools a_2
+baddobjects b1
+baddtools b2
 bfillds
 bbop result 1
 
 checkshape result
-checknbshapes result -wire 324 -face 310 -shell 1 -solid 1
-checkprops result -s 103610 -v 111128
-
-checkview -display result -2d -path ${imagedir}/${test_image}.png
+checknbshapes result -vertex 16 -edge 24 -wire 12 -face 11 -shell 1 -solid 1
+checkprops result -s 744 -v 1216

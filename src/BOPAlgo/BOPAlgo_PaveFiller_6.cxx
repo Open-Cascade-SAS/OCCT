@@ -207,34 +207,56 @@ void BOPAlgo_PaveFiller::PerformFF()
   //
   for (; myIterator->More(); myIterator->Next()) {
     myIterator->Value(nF1, nF2);
-    //
-    const TopoDS_Face& aF1=(*(TopoDS_Face *)(&myDS->Shape(nF1)));
-    const TopoDS_Face& aF2=(*(TopoDS_Face *)(&myDS->Shape(nF2)));
-    //
-    if (aMIFence.Add(nF1)) {
-      myDS->UpdateFaceInfoOn(nF1);
-      myDS->UpdateFaceInfoIn(nF1);
-    }
-    if (aMIFence.Add(nF2)) {
-      myDS->UpdateFaceInfoOn(nF2);
-      myDS->UpdateFaceInfoIn(nF2);
-    }
-    //
-    const BRepAdaptor_Surface& aBAS1 = myContext->SurfaceAdaptor(aF1);
-    const BRepAdaptor_Surface& aBAS2 = myContext->SurfaceAdaptor(aF2);
-    if (aBAS1.GetType() == GeomAbs_Plane && 
-        aBAS2.GetType() == GeomAbs_Plane) {
-      // Check if the planes are really interfering
-      Standard_Boolean bToIntersect = CheckPlanes(nF1, nF2);
-      if (!bToIntersect) {
-        BOPDS_InterfFF& aFF=aFFs.Append1();
-        aFF.SetIndices(nF1, nF2);
-        aFF.Init(0, 0);
-        continue;
+
+    // Update/Initialize FaceInfo structure for first face
+    if (myDS->HasFaceInfo(nF1))
+    {
+      if (aMIFence.Add(nF1))
+      {
+        myDS->UpdateFaceInfoOn(nF1);
+        myDS->UpdateFaceInfoIn(nF1);
       }
     }
+    else if (myDS->HasInterfShapeSubShapes(nF2, nF1))
+    {
+      myDS->ChangeFaceInfo(nF1);
+      aMIFence.Add(nF1);
+    }
+
+    // Update/Initialize FaceInfo structure for second face
+    if (myDS->HasFaceInfo(nF2))
+    {
+      if (aMIFence.Add(nF2))
+      {
+        myDS->UpdateFaceInfoOn(nF2);
+        myDS->UpdateFaceInfoIn(nF2);
+      }
+    }
+    else if (myDS->HasInterfShapeSubShapes(nF1, nF2))
+    {
+      myDS->ChangeFaceInfo(nF2);
+      aMIFence.Add(nF2);
+    }
     //
-    if (myGlue == BOPAlgo_GlueOff) {
+    if (myGlue == BOPAlgo_GlueOff)
+    {
+      const TopoDS_Face& aF1 = (*(TopoDS_Face *)(&myDS->Shape(nF1)));
+      const TopoDS_Face& aF2 = (*(TopoDS_Face *)(&myDS->Shape(nF2)));
+      //
+      const BRepAdaptor_Surface& aBAS1 = myContext->SurfaceAdaptor(aF1);
+      const BRepAdaptor_Surface& aBAS2 = myContext->SurfaceAdaptor(aF2);
+      if (aBAS1.GetType() == GeomAbs_Plane &&
+          aBAS2.GetType() == GeomAbs_Plane) {
+        // Check if the planes are really interfering
+        Standard_Boolean bToIntersect = CheckPlanes(nF1, nF2);
+        if (!bToIntersect) {
+          BOPDS_InterfFF& aFF = aFFs.Append1();
+          aFF.SetIndices(nF1, nF2);
+          aFF.Init(0, 0);
+          continue;
+        }
+      }
+      //
       BOPAlgo_FaceFace& aFaceFace=aVFaceFace.Append1();
       //
       aFaceFace.SetIndices(nF1, nF2);

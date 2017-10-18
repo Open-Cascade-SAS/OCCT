@@ -188,6 +188,7 @@ Standard_Integer bbuild(Draw_Interpretor& di,
     }
   }
   aBuilder.SetRunParallel(bRunParallel);
+  aBuilder.SetCheckInverted(BOPTest_Objects::CheckInverted());
   //
   //
   OSD_Timer aTimer;
@@ -298,6 +299,7 @@ Standard_Integer bbop(Draw_Interpretor& di,
   }
   //
   pBuilder->SetRunParallel(bRunParallel);
+  pBuilder->SetCheckInverted(BOPTest_Objects::CheckInverted());
   //
   OSD_Timer aTimer;
   aTimer.Start();
@@ -363,6 +365,7 @@ Standard_Integer bsplit(Draw_Interpretor& di,
   pSplitter->SetRunParallel(BOPTest_Objects::RunParallel());
   pSplitter->SetNonDestructive(BOPTest_Objects::NonDestructive());
   pSplitter->SetFuzzyValue(BOPTest_Objects::FuzzyValue());
+  pSplitter->SetCheckInverted(BOPTest_Objects::CheckInverted());
   //
   // measure the time of the operation
   OSD_Timer aTimer;

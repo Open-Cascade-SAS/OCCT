@@ -121,6 +121,7 @@ void BRepAlgoAPI_Splitter::Build()
   //
   myBuilder->SetRunParallel(myRunParallel);
   myBuilder->SetProgressIndicator(myProgressIndicator);
+  myBuilder->SetCheckInverted(myCheckInverted);
   //
   myBuilder->PerformWithFiller(*myDSFiller);
   //

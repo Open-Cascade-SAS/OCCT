@@ -2718,6 +2718,38 @@ To enable the safe processing mode for the operation in DRAW, it is necessary to
 bnondestructive 1
 ~~~~
 
+@subsection occt_algorithms_11a_4 Disabling check of the input solids for inverted status
+
+By default, all input solids are checked for inverted status, i.e. the solids are classified to understand if they are holes in the space (negative volumes) or normal solids (positive volumes). The possibility to disable the check of the input solids for inverted status is the advanced option in Boolean Operation component. This option can be applied to all Basic operations such as General Fuse, Splitting, Boolean, Section, Maker Volume, Cells building.
+This option allows avoiding time-consuming classification of the input solids and operate with them as with positive volumes, saving up to 10 percent of time on the cases with big number of input solids.
+
+The classification should be disabled only if the user is sure that there are no negative volumes among the input solids, otherwise the result may be invalid.
+
+@subsubsection occt_algorithms_11a_4_1 Usage
+
+#### API level
+
+To enable/disable the classification of the input solids it is necessary to call *SetCheckInverted()* method with the appropriate value:
+~~~~
+BOPAlgo_Builder aGF;
+//
+....
+// disabling the classification of the input solid
+aGF.SetCheckInverted(Standard_False);
+//
+....
+~~~~
+
+#### TCL level
+To enable/disable the classification of the solids in DRAW, it is necessary to call the *bcheckinverted* command with appropriate value:
+* 0 - disabling the classification;
+* 1 - default value, enabling the classification.
+
+~~~~
+bcheckinverted 0
+~~~~
+
+
 @section occt_algorithms_ers Errors and warnings reporting system
 
 The chapter describes the Error/Warning reporting system of the algorithms in the Boolean Component.

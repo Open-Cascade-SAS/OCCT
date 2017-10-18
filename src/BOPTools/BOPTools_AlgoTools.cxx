@@ -120,52 +120,149 @@ static
 //=======================================================================
 void BOPTools_AlgoTools::MakeConnexityBlocks
   (const TopoDS_Shape& theS,
-   const TopAbs_ShapeEnum theType1,
-   const TopAbs_ShapeEnum theType2,
-   BOPCol_ListOfShape& theLCB)
+   const TopAbs_ShapeEnum theConnectionType,
+   const TopAbs_ShapeEnum theElementType,
+   BOPCol_ListOfListOfShape& theLCB,
+   BOPCol_IndexedDataMapOfShapeListOfShape& theConnectionMap)
 {
   // Map shapes to find connected elements
-  BOPCol_IndexedDataMapOfShapeListOfShape aDMSLS;
-  BOPTools::MapShapesAndAncestors(theS, theType1, theType2, aDMSLS);
+  BOPTools::MapShapesAndAncestors(theS, theConnectionType, theElementType, theConnectionMap);
   // Fence map
   BOPCol_MapOfShape aMFence;
-  Standard_Integer i;
-  BRep_Builder aBB;
-  //
-  TopExp_Explorer aExp(theS, theType2);
-  for (; aExp.More(); aExp.Next()) {
+
+  TopExp_Explorer aExp(theS, theElementType);
+  for (; aExp.More(); aExp.Next())
+  {
     const TopoDS_Shape& aS = aExp.Current();
     if (!aMFence.Add(aS)) {
       continue;
     }
     // The block
-    BOPCol_IndexedMapOfShape aMBlock;
-    TopoDS_Compound aBlock;
-    aBB.MakeCompound(aBlock);
+    BOPCol_ListOfShape aLBlock;
     // Start the block
-    aMBlock.Add(aS);
-    aBB.Add(aBlock, aS);
+    aLBlock.Append(aS);
     // Look for connected parts
-    for (i = 1; i <= aMBlock.Extent(); ++i) {
-      const TopoDS_Shape& aS1 = aMBlock(i);
-      TopExp_Explorer aExpSS(aS1, theType1);
-      for (; aExpSS.More(); aExpSS.Next()) {
+    BOPCol_ListIteratorOfListOfShape aItB(aLBlock);
+    for (; aItB.More(); aItB.Next())
+    {
+      const TopoDS_Shape& aS1 = aItB.Value();
+      TopExp_Explorer aExpSS(aS1, theConnectionType);
+      for (; aExpSS.More(); aExpSS.Next())
+      {
         const TopoDS_Shape& aSubS = aExpSS.Current();
-        const BOPCol_ListOfShape& aLS = aDMSLS.FindFromKey(aSubS);
+        const BOPCol_ListOfShape& aLS = theConnectionMap.FindFromKey(aSubS);
         BOPCol_ListIteratorOfListOfShape aItLS(aLS);
-        for (; aItLS.More(); aItLS.Next()) {
+        for (; aItLS.More(); aItLS.Next())
+        {
           const TopoDS_Shape& aS2 = aItLS.Value();
-          if (aMFence.Add(aS2)) {
-            aMBlock.Add(aS2);
-            aBB.Add(aBlock, aS2);
-          }
+          if (aMFence.Add(aS2))
+            aLBlock.Append(aS2);
         }
       }
     }
     // Add the block into result
+    theLCB.Append(aLBlock);
+  }
+}
+
+//=======================================================================
+// function: MakeConnexityBlocks
+// purpose: 
+//=======================================================================
+void BOPTools_AlgoTools::MakeConnexityBlocks
+  (const TopoDS_Shape& theS,
+   const TopAbs_ShapeEnum theConnectionType,
+   const TopAbs_ShapeEnum theElementType,
+   BOPCol_ListOfShape& theLCB)
+{
+  BOPCol_ListOfListOfShape aLBlocks;
+  BOPCol_IndexedDataMapOfShapeListOfShape aCMap;
+  BOPTools_AlgoTools::MakeConnexityBlocks(theS, theConnectionType, theElementType, aLBlocks, aCMap);
+
+  // Make compound from each block
+  BOPCol_ListIteratorOfListOfListOfShape aItB(aLBlocks);
+  for (; aItB.More(); aItB.Next())
+  {
+    const BOPCol_ListOfShape& aLB = aItB.Value();
+
+    TopoDS_Compound aBlock;
+    BRep_Builder().MakeCompound(aBlock);
+    for (BOPCol_ListIteratorOfListOfShape it(aLB); it.More(); it.Next())
+      BRep_Builder().Add(aBlock, it.Value());
+
     theLCB.Append(aBlock);
   }
 }
+
+//=======================================================================
+// function: MakeConnexityBlocks
+// purpose: 
+//=======================================================================
+void BOPTools_AlgoTools::MakeConnexityBlocks
+  (const BOPCol_ListOfShape& theLS,
+   const TopAbs_ShapeEnum theConnectionType,
+   const TopAbs_ShapeEnum theElementType,
+   BOPTools_ListOfConnexityBlock& theLCB)
+{
+  BRep_Builder aBB;
+  // Make connexity blocks from start elements
+  TopoDS_Compound aCStart;
+  aBB.MakeCompound(aCStart);
+
+  BOPCol_MapOfShape aMFence, aMNRegular;
+
+  BOPCol_ListIteratorOfListOfShape aItL(theLS);
+  for (; aItL.More(); aItL.Next())
+  {
+    const TopoDS_Shape& aS = aItL.Value();
+    if (aMFence.Add(aS))
+      aBB.Add(aCStart, aS);
+    else
+      aMNRegular.Add(aS);
+  }
+
+  BOPCol_ListOfListOfShape aLCB;
+  BOPCol_IndexedDataMapOfShapeListOfShape aCMap;
+  BOPTools_AlgoTools::MakeConnexityBlocks(aCStart, theConnectionType, theElementType, aLCB, aCMap);
+
+  // Save the blocks and check their regularity
+  BOPCol_ListIteratorOfListOfListOfShape aItB(aLCB);
+  for (; aItB.More(); aItB.Next())
+  {
+    const BOPCol_ListOfShape& aBlock = aItB.Value();
+
+    BOPTools_ConnexityBlock aCB;
+    BOPCol_ListOfShape& aLCS = aCB.ChangeShapes();
+
+    Standard_Boolean bRegular = Standard_True;
+    for (BOPCol_ListIteratorOfListOfShape it(aBlock); it.More(); it.Next())
+    {
+      TopoDS_Shape aS = it.Value();
+      if (aMNRegular.Contains(aS))
+      {
+        bRegular = Standard_False;
+        aS.Orientation(TopAbs_FORWARD);
+        aLCS.Append(aS);
+        aS.Orientation(TopAbs_REVERSED);
+        aLCS.Append(aS);
+      }
+      else
+      {
+        aLCS.Append(aS);
+        if (bRegular)
+        {
+          // Check if there are no multi-connected shapes
+          for (TopExp_Explorer ex(aS, theConnectionType); ex.More() && bRegular; ex.Next())
+            bRegular = (aCMap.FindFromKey(ex.Current()).Extent() == 2);
+        }
+      }
+    }
+
+    aCB.SetRegular(bRegular);
+    theLCB.Append(aCB);
+  }
+}
+
 //=======================================================================
 // function: OrientEdgesOnWire
 // purpose: Reorient edges on wire for correct ordering
