@@ -28,7 +28,9 @@
 #include <Standard_Boolean.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <BOPTools_ListOfCoupleOfShape.hxx>
+#include <BOPTools_ListOfConnexityBlock.hxx>
 #include <BOPCol_IndexedDataMapOfShapeListOfShape.hxx>
+#include <BOPCol_ListOfListOfShape.hxx>
 #include <TopAbs_State.hxx>
 #include <BOPCol_IndexedMapOfShape.hxx>
 #include <BOPCol_BaseAllocator.hxx>
@@ -188,11 +190,34 @@ public:
   //! theMapAvoid - set of edges to avoid for
   //! the treatment
   Standard_EXPORT static void MakeConnexityBlock (BOPCol_ListOfShape& theLS, BOPCol_IndexedMapOfShape& theMapAvoid, BOPCol_ListOfShape& theLSCB, const BOPCol_BaseAllocator& theAllocator);
-  
-  //! For the compound theS build the blocks
-  //! theLCB (as list of compounds)
-  //! in terms of connexity by the shapes of theType
-  Standard_EXPORT static void MakeConnexityBlocks (const TopoDS_Shape& theS, const TopAbs_ShapeEnum theType1, const TopAbs_ShapeEnum theType2, BOPCol_ListOfShape& theLCB);
+
+  //! For the compound <theS> builds the blocks (compounds) of
+  //! elements of type <theElementType> connected through the shapes
+  //! of the type <theConnectionType>.
+  //! The blocks are stored into the list <theLCB>.
+  Standard_EXPORT static void MakeConnexityBlocks(const TopoDS_Shape& theS,
+                                                  const TopAbs_ShapeEnum theConnectionType,
+                                                  const TopAbs_ShapeEnum theElementType,
+                                                  BOPCol_ListOfShape& theLCB);
+
+  //! For the compound <theS> builds the blocks (compounds) of
+  //! elements of type <theElementType> connected through the shapes
+  //! of the type <theConnectionType>.
+  //! The blocks are stored into the list of lists <theLCB>.
+  //! Returns also the connection map <theConnectionMap>, filled during operation.
+  Standard_EXPORT static void MakeConnexityBlocks(const TopoDS_Shape& theS,
+                                                  const TopAbs_ShapeEnum theConnectionType,
+                                                  const TopAbs_ShapeEnum theElementType,
+                                                  BOPCol_ListOfListOfShape& theLCB,
+                                                  BOPCol_IndexedDataMapOfShapeListOfShape& theConnectionMap);
+
+  //! Makes connexity blocks of elements of the given type with the given type of the
+  //! connecting elements. The blocks are checked on regularity (multi-connectivity)
+  //! and stored to the list of blocks <theLCB>.
+  Standard_EXPORT static void MakeConnexityBlocks(const BOPCol_ListOfShape& theLS,
+                                                  const TopAbs_ShapeEnum theConnectionType,
+                                                  const TopAbs_ShapeEnum theElementType,
+                                                  BOPTools_ListOfConnexityBlock& theLCB);
 
   //! Correctly orients edges on the wire
   Standard_EXPORT static void OrientEdgesOnWire (TopoDS_Shape& theWire);

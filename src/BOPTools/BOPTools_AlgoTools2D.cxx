@@ -66,9 +66,6 @@
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 
-static 
-  Standard_Boolean CheckEdgeLength (const TopoDS_Edge& );
-
 static
   Handle(Geom2d_Curve) BRep_Tool_CurveOnSurface(const TopoDS_Edge& , 
                                                 const TopoDS_Face& ,
@@ -130,9 +127,6 @@ Standard_Boolean BOPTools_AlgoTools2D::EdgeTangent
   
   isdgE = BRep_Tool::Degenerated(anEdge); 
   if (isdgE) {
-    return Standard_False;
-  }
-  if (!CheckEdgeLength(anEdge)) {
     return Standard_False;
   }
 
@@ -686,44 +680,6 @@ void BOPTools_AlgoTools2D::MakePCurveOnFace
   }
 }
 
-//=======================================================================
-//function : CheckEdgeLength
-//purpose  : 
-//=======================================================================
-Standard_Boolean CheckEdgeLength (const TopoDS_Edge& E)
-{
-  BRepAdaptor_Curve BC(E);
-
-  BOPCol_IndexedMapOfShape aM;
-  BOPTools::MapShapes(E, TopAbs_VERTEX, aM);
-  Standard_Integer i, anExtent, aN=10;
-  Standard_Real ln=0., d, t, f, l, dt; 
-  anExtent=aM.Extent();
-
-  if (anExtent!=1) 
-    return Standard_True;
-    
-  gp_Pnt p1, p2;
-  f = BC.FirstParameter();
-  l = BC.LastParameter();
-  dt=(l-f)/aN;
-  
-  BC.D0(f, p1);
-  for (i=1; i<=aN; i++) {
-    t=f+i*dt;
-    
-    if (i==aN) 
-      BC.D0(l, p2);
-    else 
-      BC.D0(t, p2);
-    
-    d=p1.Distance(p2);
-    ln+=d;
-    p1=p2;
-  }
-  //
-  return (ln > Precision::Confusion()); 
-}
 //=======================================================================
 //function : BRep_Tool_CurveOnSurface
 //purpose  : 

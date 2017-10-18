@@ -25,6 +25,7 @@
 #include <BOPCol_DataMapOfShapeListOfShape.hxx>
 #include <BOPCol_DataMapOfShapeShape.hxx>
 #include <BOPCol_IndexedDataMapOfShapeListOfShape.hxx>
+#include <BOPCol_IndexedDataMapOfShapeShape.hxx>
 #include <BOPCol_ListOfShape.hxx>
 #include <BOPCol_MapOfShape.hxx>
 #include <BOPCol_MapOfOrientedShape.hxx>
@@ -50,6 +51,7 @@
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopLoc_Location.hxx>
+#include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Iterator.hxx>
@@ -69,65 +71,7 @@ static
 static
   void MakeInternalWires(const BOPCol_IndexedMapOfShape& ,
                          BOPCol_ListOfShape& );
-static 
-  void GetWire(const TopoDS_Shape& , 
-        TopoDS_Shape& ); 
-//
 
-//
-//=======================================================================
-//class     : BOPAlgo_ShapeBox2D
-//purpose   : Auxiliary class
-//=======================================================================
-class BOPAlgo_ShapeBox2D {
- public:
-  BOPAlgo_ShapeBox2D() {
-    myIsHole=Standard_False;
-  };
-  //
-  ~BOPAlgo_ShapeBox2D() {
-  };
-  //
-  void SetShape(const TopoDS_Shape& aS) {
-    myShape=aS;
-  };
-  //
-  const TopoDS_Shape& Shape()const {
-    return myShape;
-  };
-  //
-  void SetBox2D(const Bnd_Box2d& aBox2D) {
-    myBox2D=aBox2D;
-  };
-  //
-  const Bnd_Box2d& Box2D()const {
-    return myBox2D;
-  };
-  //
-  void SetIsHole(const Standard_Boolean bFlag) {
-    myIsHole=bFlag;
-  };
-  //
-  Standard_Boolean IsHole()const {
-    return myIsHole;
-  };
-  //
- protected:
-  Standard_Boolean myIsHole;
-  TopoDS_Shape myShape;
-  Bnd_Box2d myBox2D;
-};
-//
-typedef NCollection_IndexedDataMap 
-  <Standard_Integer, 
-  BOPAlgo_ShapeBox2D, 
-  TColStd_MapIntegerHasher>  BOPAlgo_IndexedDataMapOfIntegerShapeBox2D; 
-
-typedef NCollection_IndexedDataMap 
-  <TopoDS_Shape, 
-  TopoDS_Shape, 
-  TopTools_ShapeMapHasher> BOPCol_IndexedDataMapOfShapeShape; 
-//
 //=======================================================================
 //function : 
 //purpose  : 
@@ -436,239 +380,198 @@ void BOPAlgo_BuilderFace::PerformLoops()
 //=======================================================================
 void BOPAlgo_BuilderFace::PerformAreas()
 {
-  Standard_Boolean bIsGrowth, bIsHole;
-  Standard_Integer k, aNbS, aNbHoles, aNbDMISB, m, aNbMSH, aNbInOutMap;
-  Standard_Real aTol;
-  TopLoc_Location aLoc;
-  Handle(Geom_Surface) aS;
-  BRep_Builder aBB;
-  TopoDS_Face aFace;
-  BOPCol_ListIteratorOfListOfInteger aItLI;
-  BOPCol_IndexedMapOfShape aMHE;
-  BOPCol_ListIteratorOfListOfShape aIt1;
-  BOPCol_IndexedDataMapOfShapeListOfShape aMSH;
-  BOPCol_IndexedDataMapOfShapeShape aInOutMap;
-  BOPAlgo_IndexedDataMapOfIntegerShapeBox2D aDMISB(100);
-  //
-  BOPCol_Box2DBndTreeSelector aSelector;
-  BOPCol_Box2DBndTree aBBTree;
-  NCollection_UBTreeFiller <Standard_Integer, Bnd_Box2d> aTreeFiller(aBBTree);
-  //
-  aNbHoles=0;
-  //
-  aTol=BRep_Tool::Tolerance(myFace);
-  aS=BRep_Tool::Surface(myFace, aLoc);
-  //
   myAreas.Clear();
-  //
-  if (myLoops.IsEmpty()) {
-    if (myContext->IsInfiniteFace(myFace)) {
+  BRep_Builder aBB;
+  // Location of the myFace
+  TopLoc_Location aLoc;
+  // Get surface from myFace
+  const Handle(Geom_Surface)& aS = BRep_Tool::Surface(myFace, aLoc);
+  // Get tolerance of myFace
+  Standard_Real aTol = BRep_Tool::Tolerance(myFace);
+
+  // Check if there are no loops at all
+  if (myLoops.IsEmpty())
+  {
+    if (myContext->IsInfiniteFace(myFace))
+    {
+      TopoDS_Face aFace;
       aBB.MakeFace(aFace, aS, aLoc, aTol);
-      if (BRep_Tool::NaturalRestriction(myFace)) {
+      if (BRep_Tool::NaturalRestriction(myFace))
         aBB.NaturalRestriction(aFace, Standard_True);
-      }
-      myAreas.Append(aFace); 
+      myAreas.Append(aFace);
     }
     return;
   }
-  //
-  // 1. Growthes and Holes -> aDMISB: [Index/ShapeBox2D]
-  aIt1.Initialize(myLoops);
-  for (k=0 ; aIt1.More(); aIt1.Next(), ++k) {
-    Bnd_Box2d aBox2D;
-    //
-    const TopoDS_Shape& aWire=aIt1.Value();
-    //
+
+  // The new faces
+  BOPCol_ListOfShape aNewFaces;
+  // The hole faces which has to be classified relatively new faces
+  BOPCol_IndexedMapOfShape aHoleFaces;
+  // Map of the edges of the hole faces for quick check of the growths.
+  // If the analyzed wire contains any of the edges from the hole faces
+  // it is considered as growth.
+  BOPCol_IndexedMapOfShape aMHE;
+
+  // Analyze the new wires - classify them to be the holes and growths
+  BOPCol_ListIteratorOfListOfShape aItLL(myLoops);
+  for (; aItLL.More(); aItLL.Next())
+  {
+    const TopoDS_Shape& aWire = aItLL.Value();
+
+    TopoDS_Face aFace;
     aBB.MakeFace(aFace, aS, aLoc, aTol);
-    aBB.Add (aFace, aWire);
-    BRepTools::AddUVBounds(aFace, aBox2D);
-    //
-    bIsGrowth=IsGrowthWire(aWire, aMHE);
-    if (bIsGrowth) {
-      bIsHole=Standard_False;
+    aBB.Add(aFace, aWire);
+
+    Standard_Boolean bIsGrowth = IsGrowthWire(aWire, aMHE);
+    if (!bIsGrowth)
+    {
+      // Fast check did not give the result, run classification
+      IntTools_FClass2d& aClsf = myContext->FClass2d(aFace);
+      bIsGrowth = !aClsf.IsHole();
     }
-    else{
-      // check if a wire is a hole 
-      IntTools_FClass2d& aClsf=myContext->FClass2d(aFace);
-      aClsf.Init(aFace, aTol);
-      //
-      bIsHole=aClsf.IsHole();
-      if (bIsHole) {
-        BOPTools::MapShapes(aWire, TopAbs_EDGE, aMHE);
-        //
-        bIsHole=Standard_True;
-      }
-      else {
-        bIsHole=Standard_False;
-      }
+
+    // Save the face
+    if (bIsGrowth)
+    {
+      aNewFaces.Append(aFace);
     }
-    //
-    BOPAlgo_ShapeBox2D aSB2D;
-    //
-    aSB2D.SetShape(aFace);
-    aSB2D.SetBox2D(aBox2D);
-    aSB2D.SetIsHole(bIsHole);
-    //
-    aDMISB.Add(k, aSB2D);
-  }// for (k=0 ; aIt1.More(); aIt1.Next(), ++k) {
-  //
-  // 2. Prepare TreeFiller
-  aNbDMISB=aDMISB.Extent();
-  for (m=1; m<=aNbDMISB; ++m) { 
-    k=aDMISB.FindKey(m);
-    const BOPAlgo_ShapeBox2D& aSB2D=aDMISB.FindFromIndex(m);
-    //
-    bIsHole=aSB2D.IsHole();
-    if (bIsHole) {
-      const Bnd_Box2d& aBox2D=aSB2D.Box2D();
-      aTreeFiller.Add(k, aBox2D);
-      ++aNbHoles;
+    else
+    {
+      aHoleFaces.Add(aFace);
+      BOPTools::MapShapes(aWire, TopAbs_EDGE, aMHE);
     }
   }
-  //
-  // 3. Shake TreeFiller
+
+  if (aHoleFaces.IsEmpty())
+  {
+    // No holes, stop the analysis
+    myAreas.Append(aNewFaces);
+  }
+
+  // Classify holes relatively faces
+
+  // Prepare tree filler with the boxes of the hole faces
+  BOPCol_Box2DBndTree aBBTree;
+  NCollection_UBTreeFiller <Standard_Integer, Bnd_Box2d> aTreeFiller(aBBTree);
+
+  Standard_Integer i, aNbH = aHoleFaces.Extent();
+  for (i = 1; i <= aNbH; ++i)
+  {
+    const TopoDS_Face& aHFace = TopoDS::Face(aHoleFaces(i));
+    //
+    Bnd_Box2d aBox;
+    BRepTools::AddUVBounds(aHFace, aBox);
+    aTreeFiller.Add(i, aBox);
+  }
+
+  // Shake TreeFiller
   aTreeFiller.Fill();
-  //
-  // 4. Find outer growth shell that is most close 
-  //    to each hole shell
-  for (m=1; m<=aNbDMISB; ++m) {
-    const BOPAlgo_ShapeBox2D& aSB2D=aDMISB.FindFromIndex(m);
-    bIsHole=aSB2D.IsHole();
-    if (bIsHole) {
-      continue;
-    }
-    //
-    const Bnd_Box2d& aBox2DF=aSB2D.Box2D();
-    const TopoDS_Shape aF=aSB2D.Shape();
-    //
-    aSelector.Clear();
-    aSelector.SetBox(aBox2DF);
-    //
-    aNbS = aBBTree.Select(aSelector);
-    if (!aNbS) {
-      continue;
-    }
-    //
-    const BOPCol_ListOfInteger& aLI=aSelector.Indices();
-    //
-    aItLI.Initialize(aLI);
-    for (; aItLI.More(); aItLI.Next()) {
-      k=aItLI.Value();
-      const BOPAlgo_ShapeBox2D& aSB2Dk=aDMISB.FindFromKey(k);
-      const TopoDS_Shape& aHole=aSB2Dk.Shape();
-      //
-      if (!IsInside(aHole, aF, myContext)){
+
+  // Find outer growth face that is most close to each hole face
+  BOPCol_IndexedDataMapOfShapeShape aHoleFaceMap;
+
+  BOPCol_ListIteratorOfListOfShape aItLS(aNewFaces);
+  for (; aItLS.More(); aItLS.Next())
+  {
+    const TopoDS_Face& aFace = TopoDS::Face(aItLS.Value());
+
+    // Build box
+    Bnd_Box2d aBox;
+    BRepTools::AddUVBounds(aFace, aBox);
+
+    BOPCol_Box2DBndTreeSelector aSelector;
+    aSelector.SetBox(aBox);
+    aBBTree.Select(aSelector);
+
+    const BOPCol_ListOfInteger& aLI = aSelector.Indices();
+    BOPCol_ListIteratorOfListOfInteger aItLI(aLI);
+    for (; aItLI.More(); aItLI.Next())
+    {
+      Standard_Integer k = aItLI.Value();
+      const TopoDS_Shape& aHole = aHoleFaces(k);
+      // Check if it is inside
+      if (!IsInside(aHole, aFace, myContext))
         continue;
-      }
-      //
-      if (aInOutMap.Contains(aHole)){
-        TopoDS_Shape& aF2=aInOutMap.ChangeFromKey(aHole);
-        if (IsInside(aF, aF2, myContext)) {
-          aF2=aF;
+
+      // Save the relation
+      TopoDS_Shape* pFaceWas = aHoleFaceMap.ChangeSeek(aHole);
+      if (pFaceWas)
+      {
+        if (IsInside(aFace, *pFaceWas, myContext))
+        {
+          *pFaceWas = aFace;
         }
       }
-      else{
-        aInOutMap.Add(aHole, aF);
+      else
+      {
+        aHoleFaceMap.Add(aHole, aFace);
       }
     }
-  }// for (m=1; m<=aNbDMISB; ++m)
-  //
-  // 5.1 Map [Face/Holes] -> aMSH 
-  aNbInOutMap=aInOutMap.Extent();
-  for (m=1; m<=aNbInOutMap; ++m) {
-    const TopoDS_Shape& aHole=aInOutMap.FindKey(m);
-    const TopoDS_Shape& aF=aInOutMap.FindFromIndex(m);
-    //
-    if (aMSH.Contains(aF)) {
-      BOPCol_ListOfShape& aLH=aMSH.ChangeFromKey(aF);
-      aLH.Append(aHole);
-    }
-    else {
-      BOPCol_ListOfShape aLH;
-      aLH.Append(aHole);
-      aMSH.Add(aF, aLH);
-    }
   }
-  //
-  // 5.2. Add unused holes to the original face
-  if (aNbHoles != aNbInOutMap) {
+
+  // Make the back map from faces to holes
+  BOPCol_IndexedDataMapOfShapeListOfShape aFaceHolesMap;
+
+  aNbH = aHoleFaceMap.Extent();
+  for (i = 1; i <= aNbH; ++i)
+  {
+    const TopoDS_Shape& aHole = aHoleFaceMap.FindKey(i);
+    const TopoDS_Shape& aFace = aHoleFaceMap(i);
+    //
+    BOPCol_ListOfShape* pLHoles = aFaceHolesMap.ChangeSeek(aFace);
+    if (!pLHoles)
+      pLHoles = &aFaceHolesMap(aFaceHolesMap.Add(aFace, BOPCol_ListOfShape()));
+    pLHoles->Append(aHole);
+  }
+
+  // Add unused holes to the original face
+  if (aHoleFaces.Extent() != aHoleFaceMap.Extent())
+  {
     Bnd_Box aBoxF;
     BRepBndLib::Add(myFace, aBoxF);
     if (aBoxF.IsOpenXmin() || aBoxF.IsOpenXmax() ||
         aBoxF.IsOpenYmin() || aBoxF.IsOpenYmax() ||
-        aBoxF.IsOpenZmin() || aBoxF.IsOpenZmax()) {
-      //
-      BOPCol_ListOfShape anUnUsedHoles;
-      for (m = 1; m <= aNbDMISB; ++m) {
-        const BOPAlgo_ShapeBox2D& aSB2D=aDMISB.FindFromIndex(m);
-        if (aSB2D.IsHole()) {
-          const TopoDS_Shape& aHole = aSB2D.Shape();
-          if (!aInOutMap.Contains(aHole)) {
-            anUnUsedHoles.Append(aHole);
-          }
-        }
+        aBoxF.IsOpenZmin() || aBoxF.IsOpenZmax())
+    {
+      TopoDS_Face aFace;
+      aBB.MakeFace(aFace, aS, aLoc, aTol);
+      BOPCol_ListOfShape& anUnUsedHoles = aFaceHolesMap(aFaceHolesMap.Add(aFace, BOPCol_ListOfShape()));
+      aNbH = aHoleFaces.Extent();
+      for (i = 1; i <= aNbH; ++i)
+      {
+        const TopoDS_Shape& aHole = aHoleFaces(i);
+        if (!aHoleFaceMap.Contains(aHole))
+          anUnUsedHoles.Append(aHole);
       }
-      //
-      if (anUnUsedHoles.Extent()) {
-        aBB.MakeFace(aFace, aS, aLoc, aTol);
-        aMSH.Add(aFace, anUnUsedHoles);
-        //
-        BOPAlgo_ShapeBox2D aSB2D;
-        //
-        aSB2D.SetShape(aFace);
-        aSB2D.SetIsHole(Standard_False);
-        //
-        aDMISB.Add(aNbDMISB, aSB2D);
-        ++aNbDMISB;
+      // Save it
+      aNewFaces.Append(aFace);
+    }
+  }
+
+  // Add Holes to Faces and add them to myAreas
+  aItLS.Initialize(aNewFaces);
+  for ( ; aItLS.More(); aItLS.Next())
+  {
+    TopoDS_Face& aFace = *(TopoDS_Face*)&aItLS.Value();
+    const BOPCol_ListOfShape* pLHoles = aFaceHolesMap.Seek(aFace);
+    if (pLHoles)
+    {
+      // update faces with the holes
+      BOPCol_ListIteratorOfListOfShape aItLH(*pLHoles);
+      for (; aItLH.More(); aItLH.Next())
+      {
+        const TopoDS_Shape& aFHole = aItLH.Value();
+        // The hole face contains only one wire
+        TopoDS_Iterator aItW(aFHole);
+        aBB.Add(aFace, aItW.Value());
       }
+
+      // update classifier
+      myContext->FClass2d(aFace).Init(aFace, aTol);
     }
-  }
-  //
-  // 6. Add aHoles to Faces
-  aNbMSH=aMSH.Extent();
-  for (m=1; m<=aNbMSH; ++m) {
-    TopoDS_Face aF=(*(TopoDS_Face *)(&aMSH.FindKey(m)));
-    const BOPCol_ListOfShape& aLH=aMSH.FindFromIndex(m);
-    //
-    aIt1.Initialize(aLH);
-    for (; aIt1.More(); aIt1.Next()) {
-      TopoDS_Shape aWHole;
-      //
-      const TopoDS_Shape& aFHole=aIt1.Value();
-      GetWire(aFHole, aWHole);
-      aBB.Add (aF, aWHole);
-    }
-    //
-    // update classifier 
-    aTol=BRep_Tool::Tolerance(aF);
-    IntTools_FClass2d& aClsf=myContext->FClass2d(aF);
-    aClsf.Init(aF, aTol);
-  }
-  //
-  // 7. Fill myAreas
-  //    NB:These aNewFaces are draft faces that 
-  //    do not contain any internal shapes
-  for (m=1; m<=aNbDMISB; ++m) {
-    const BOPAlgo_ShapeBox2D& aSB2D=aDMISB.FindFromIndex(m);
-    bIsHole=aSB2D.IsHole();
-    if (!bIsHole) {
-      const TopoDS_Shape aF=aSB2D.Shape();
-      myAreas.Append(aF);
-    }
-  }
-}
-//=======================================================================
-//function : GetWire
-//purpose  : 
-//=======================================================================
-void GetWire(const TopoDS_Shape& aF, TopoDS_Shape& aW) 
-{
-  TopoDS_Shape aWx;
-  TopoDS_Iterator aIt;
-  //
-  aIt.Initialize(aF);
-  for (; aIt.More(); aIt.Next()) {
-    aW=aIt.Value();
+
+    // The face is just a draft that does not contain any internal shapes
+    myAreas.Append(aFace);
   }
 }
 //=======================================================================
@@ -851,18 +754,14 @@ Standard_Boolean IsInside(const TopoDS_Shape& theHole,
 Standard_Boolean IsGrowthWire(const TopoDS_Shape& theWire,
                               const BOPCol_IndexedMapOfShape& theMHE)
 {
-  Standard_Boolean bRet;
-  TopoDS_Iterator aIt;
-  // 
-  bRet=Standard_False;
-  if (theMHE.Extent()) {
-    aIt.Initialize(theWire);
-    for(; aIt.More(); aIt.Next()) {
-      const TopoDS_Shape& aE=aIt.Value();
-      if (theMHE.Contains(aE)) {
-        return !bRet;
-      }
+  if (theMHE.Extent())
+  {
+    TopoDS_Iterator aIt(theWire);
+    for(; aIt.More(); aIt.Next())
+    {
+      if (theMHE.Contains(aIt.Value()))
+        return Standard_True;
     }
   }
-  return bRet;
+  return Standard_False;
 }

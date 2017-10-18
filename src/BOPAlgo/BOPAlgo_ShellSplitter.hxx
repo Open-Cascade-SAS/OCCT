@@ -61,8 +61,6 @@ Standard_EXPORT virtual ~BOPAlgo_ShellSplitter();
 
 protected:
 
-  Standard_EXPORT void MakeConnexityBlocks();
-
   Standard_EXPORT void MakeShells();
 
 

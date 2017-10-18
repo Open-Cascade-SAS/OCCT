@@ -55,6 +55,7 @@ class BOPTest_Session {
     myFuzzyValue = 0.;
     myGlue = BOPAlgo_GlueOff;
     myDrawWarnShapes = Standard_False;
+    myCheckInverted = Standard_True;
   };
   //
   // Clear
@@ -142,6 +143,14 @@ class BOPTest_Session {
     return myDrawWarnShapes;
   };
   //
+  void SetCheckInverted(const Standard_Boolean bCheck) {
+    myCheckInverted = bCheck;
+  };
+  //
+  Standard_Boolean CheckInverted() const {
+    return myCheckInverted;
+  };
+  //
 protected:
   //
   BOPTest_Session(const BOPTest_Session&);
@@ -160,6 +169,7 @@ protected:
   Standard_Real myFuzzyValue;
   BOPAlgo_GlueEnum myGlue;
   Standard_Boolean myDrawWarnShapes;
+  Standard_Boolean myCheckInverted;
 };
 //
 //=======================================================================
@@ -368,6 +378,22 @@ void BOPTest_Objects::SetDrawWarnShapes(const Standard_Boolean bDraw)
 Standard_Boolean BOPTest_Objects::DrawWarnShapes()
 {
   return GetSession().DrawWarnShapes();
+}
+//=======================================================================
+//function : SetCheckInverted
+//purpose  : 
+//=======================================================================
+void BOPTest_Objects::SetCheckInverted(const Standard_Boolean bCheck)
+{
+  GetSession().SetCheckInverted(bCheck);
+}
+//=======================================================================
+//function : CheckInverted
+//purpose  : 
+//=======================================================================
+Standard_Boolean BOPTest_Objects::CheckInverted()
+{
+  return GetSession().CheckInverted();
 }
 //=======================================================================
 //function : Allocator1

@@ -87,6 +87,10 @@ public:
 
   Standard_EXPORT static Standard_Boolean DrawWarnShapes();
 
+  Standard_EXPORT static void SetCheckInverted(const Standard_Boolean bCheck);
+
+  Standard_EXPORT static Standard_Boolean CheckInverted();
+
 protected:
 
 private:

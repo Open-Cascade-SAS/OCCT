@@ -353,6 +353,7 @@ void BRepAlgoAPI_BooleanOperation::Build()
   //
   myBuilder->SetRunParallel(myRunParallel);
   myBuilder->SetProgressIndicator(myProgressIndicator);
+  myBuilder->SetCheckInverted(myCheckInverted);
   //
   myBuilder->PerformWithFiller(*myDSFiller);
   //

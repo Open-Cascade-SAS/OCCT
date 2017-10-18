@@ -78,57 +78,6 @@ static
                           BOPCol_ListOfShape& );
 
 //=======================================================================
-//class     : BOPAlgo_BuilderSolid_ShapeBox
-//purpose   : Auxiliary class
-//=======================================================================
-class BOPAlgo_BuilderSolid_ShapeBox {
- public:
-  BOPAlgo_BuilderSolid_ShapeBox() {
-    myIsHole=Standard_False;
-  };
-  //
-  ~BOPAlgo_BuilderSolid_ShapeBox() {
-  };
-  //
-  void SetShape(const TopoDS_Shape& aS) {
-    myShape=aS;
-  };
-  //
-  const TopoDS_Shape& Shape()const {
-    return myShape;
-  };
-  //
-  void SetBox(const Bnd_Box& aBox) {
-    myBox=aBox;
-  };
-  //
-  const Bnd_Box& Box()const {
-    return myBox;
-  };
-  //
-  void SetIsHole(const Standard_Boolean bFlag) {
-    myIsHole=bFlag;
-  };
-  //
-  Standard_Boolean IsHole()const {
-    return myIsHole;
-  };
-  //
- protected:
-  Standard_Boolean myIsHole;
-  TopoDS_Shape myShape;
-  Bnd_Box myBox;
-};
-//
-typedef NCollection_DataMap
-  <Standard_Integer, 
-  BOPAlgo_BuilderSolid_ShapeBox, 
-  TColStd_MapIntegerHasher> BOPAlgo_DataMapOfIntegerBSSB; 
-//
-typedef BOPAlgo_DataMapOfIntegerBSSB::Iterator 
-  BOPAlgo_DataMapIteratorOfDataMapOfIntegerBSSB; 
-//
-//=======================================================================
 //function : BOPAlgo_FacePnt
 //purpose  : 
 //=======================================================================
@@ -300,6 +249,9 @@ void BOPAlgo_BuilderSolid::Perform()
 {
   GetReport()->Clear();
   //
+  if (myShapes.IsEmpty())
+    return;
+
   if (myContext.IsNull()) {
     myContext=new IntTools_Context;
   }
@@ -572,178 +524,158 @@ void BOPAlgo_BuilderSolid::PerformLoops()
 //=======================================================================
 void BOPAlgo_BuilderSolid::PerformAreas()
 {
-  Standard_Boolean bIsGrowth, bIsHole;
-  Standard_Integer i, k, aNbInOut, aNbMSH;
-  BRep_Builder aBB; 
-  BOPCol_ListIteratorOfListOfShape aItLS;
-  BOPCol_ListOfShape aNewSolids, aHoleShells; 
-  BOPCol_IndexedDataMapOfShapeShape aInOutMap;
-  BOPCol_IndexedMapOfShape aMHF;
-  BOPCol_ListIteratorOfListOfInteger aItLI;
-  BOPCol_BoxBndTreeSelector aSelector;
-  BOPCol_BoxBndTree aBBTree;
-  NCollection_UBTreeFiller 
-    <Standard_Integer, Bnd_Box> aTreeFiller(aBBTree);
-  BOPAlgo_DataMapOfIntegerBSSB aDMISB(100);
-  BOPCol_IndexedDataMapOfShapeListOfShape aMSH;
-  BOPAlgo_DataMapIteratorOfDataMapOfIntegerBSSB aItDMISB;
-  //
   myAreas.Clear();
-  //
-  //  Draft solids [aNewSolids]
-  aItLS.Initialize(myLoops);
-  for (k=0; aItLS.More(); aItLS.Next(), ++k) {
-    TopoDS_Solid aSolid;
-    Bnd_Box aBox;
-    BOPAlgo_BuilderSolid_ShapeBox aSB;
-    //
-    const TopoDS_Shape& aShell = aItLS.Value();
-    aSB.SetShape(aShell);
-    //
-    BRepBndLib::Add(aShell, aBox);
-    bIsHole=Standard_False;
-    //
-    bIsGrowth=IsGrowthShell(aShell, aMHF);
-    if (bIsGrowth) {
-      // make a growth solid from a shell
+  BRep_Builder aBB;
+  // The new solids
+  BOPCol_ListOfShape aNewSolids;
+  // The hole shells which has to be classified relatively new solids
+  BOPCol_IndexedMapOfShape aHoleShells;
+  // Map of the faces of the hole shells for quick check of the growths.
+  // If the analyzed shell contains any of the hole faces, it is considered as growth.
+  BOPCol_IndexedMapOfShape aMHF;
+
+  // Analyze the shells
+  BOPCol_ListIteratorOfListOfShape aItLL(myLoops);
+  for (; aItLL.More(); aItLL.Next())
+  {
+    const TopoDS_Shape& aShell = aItLL.Value();
+
+    Standard_Boolean bIsGrowth = IsGrowthShell(aShell, aMHF);
+    if (!bIsGrowth)
+    {
+      // Fast check did not give the result, run classification
+      bIsGrowth = !IsHole(aShell, myContext);
+    }
+
+    // Save the solid
+    if (bIsGrowth)
+    {
+      TopoDS_Solid aSolid;
       aBB.MakeSolid(aSolid);
       aBB.Add (aSolid, aShell);
-      //
       aNewSolids.Append (aSolid);
-      aSB.SetShape(aSolid);
     }
-    else{
-      // check if a shell is a hole
-      bIsHole=IsHole(aShell, myContext);
-      if (bIsHole) {
-        aHoleShells.Append(aShell);
-        BOPTools::MapShapes(aShell, TopAbs_FACE, aMHF);
-        aSB.SetShape(aShell);
-      }
-      else {
-        // make a growth solid from a shell
-        aBB.MakeSolid(aSolid);
-        aBB.Add (aSolid, aShell);
-        //
-        aNewSolids.Append (aSolid);
-        aSB.SetShape(aSolid);
-      }
-    }
-    //
-    aSB.SetBox(aBox);
-    aSB.SetIsHole(bIsHole);
-    aDMISB.Bind(k, aSB);
-  }  
-  //
-  // 2. Prepare TreeFiller
-  aItDMISB.Initialize(aDMISB);
-  for (; aItDMISB.More(); aItDMISB.Next()) {
-    k=aItDMISB.Key();
-    const BOPAlgo_BuilderSolid_ShapeBox& aSB=aItDMISB.Value();
-    //
-    bIsHole=aSB.IsHole();
-    if (bIsHole) {
-      const Bnd_Box& aBox=aSB.Box();
-      aTreeFiller.Add(k, aBox);
+    else
+    {
+      aHoleShells.Add(aShell);
+      BOPTools::MapShapes(aShell, TopAbs_FACE, aMHF);
     }
   }
-  //
-  // 3. Shake TreeFiller
+
+  if (aHoleShells.IsEmpty())
+  {
+    // No holes, stop the analysis
+    myAreas.Append(aNewSolids);
+    return;
+  }
+
+  // Classify holes relatively solids
+
+  // Prepare tree filler with the boxes of the hole shells
+  BOPCol_BoxBndTree aBBTree;
+  NCollection_UBTreeFiller <Standard_Integer, Bnd_Box> aTreeFiller(aBBTree);
+
+  Standard_Integer i, aNbH = aHoleShells.Extent();
+  for (i = 1; i <= aNbH; ++i)
+  {
+    const TopoDS_Shape& aHShell = aHoleShells(i);
+    //
+    Bnd_Box aBox;
+    BRepBndLib::Add(aHShell, aBox);
+    aTreeFiller.Add(i, aBox);
+  }
+
+  // Shake TreeFiller
   aTreeFiller.Fill();
-  //
-  // 4. Find outer growth shell that is most close 
-  //    to each hole shell
-  aItDMISB.Initialize(aDMISB);
-  for (; aItDMISB.More(); aItDMISB.Next()) {
-    k=aItDMISB.Key();
-    const BOPAlgo_BuilderSolid_ShapeBox& aSB=aItDMISB.Value();
-    bIsHole=aSB.IsHole();
-    if (bIsHole) {
-      continue;
-    }
-    //
-    const TopoDS_Shape aSolid=aSB.Shape();
-    const Bnd_Box& aBoxSolid=aSB.Box();
-    //
-    aSelector.Clear();
-    aSelector.SetBox(aBoxSolid);
-    //
+
+  // Find outer growth shell that is most close to each hole shell
+  BOPCol_IndexedDataMapOfShapeShape aHoleSolidMap;
+
+  BOPCol_ListIteratorOfListOfShape aItLS(aNewSolids);
+  for (; aItLS.More(); aItLS.Next())
+  {
+    const TopoDS_Shape& aSolid = aItLS.Value();
+
+    // Build box
+    Bnd_Box aBox;
+    BRepBndLib::Add(aSolid, aBox);
+
+    BOPCol_BoxBndTreeSelector aSelector;
+    aSelector.SetBox(aBox);
     aBBTree.Select(aSelector);
-    //
-    const BOPCol_ListOfInteger& aLI=aSelector.Indices();
-    //
-    aItLI.Initialize(aLI);
-    for (; aItLI.More(); aItLI.Next()) {
-      k=aItLI.Value();
-      const BOPAlgo_BuilderSolid_ShapeBox& aSBk=aDMISB.Find(k);
-      const TopoDS_Shape& aHole=aSBk.Shape();
-      //
-      if (!IsInside(aHole, aSolid, myContext)){
+
+    const BOPCol_ListOfInteger& aLI = aSelector.Indices();
+    BOPCol_ListIteratorOfListOfInteger aItLI(aLI);
+    for (; aItLI.More(); aItLI.Next())
+    {
+      Standard_Integer k = aItLI.Value();
+      const TopoDS_Shape& aHole = aHoleShells(k);
+      // Check if it is inside
+      if (!IsInside(aHole, aSolid, myContext))
         continue;
-      }
-      //
-      if (aInOutMap.Contains (aHole)){
-        const TopoDS_Shape& aSolidWas = aInOutMap.FindFromKey(aHole);
-        if (IsInside(aSolid, aSolidWas, myContext)) {
-          aInOutMap.ChangeFromKey(aHole) = aSolid;
+
+      // Save the relation
+      TopoDS_Shape* pSolidWas = aHoleSolidMap.ChangeSeek(aHole);
+      if (pSolidWas)
+      {
+        if (IsInside(aSolid, *pSolidWas, myContext))
+        {
+          *pSolidWas = aSolid;
         }
       }
-      else{
-        aInOutMap.Add(aHole, aSolid);
+      else
+      {
+        aHoleSolidMap.Add(aHole, aSolid);
       }
     }
-  }//for (i = 1; i <= aNbDMISB; ++i) {
-  //
-  // 5. Map [Solid/Holes] -> aMSH 
-  aNbInOut = aInOutMap.Extent();
-  for (i = 1; i <= aNbInOut; ++i) {
-    const TopoDS_Shape& aHole = aInOutMap.FindKey(i);
-    const TopoDS_Shape& aSolid = aInOutMap(i);
-    //
-    if (aMSH.Contains(aSolid)) {
-      BOPCol_ListOfShape& aLH = aMSH.ChangeFromKey(aSolid);
-      aLH.Append(aHole);
-    }
-    else {
-      BOPCol_ListOfShape aLH;
-      aLH.Append(aHole);
-      aMSH.Add(aSolid, aLH);
-    }
   }
-  //
-  // 6. Add aHoles to Solids
-  aNbMSH = aMSH.Extent();
-  for (i = 1; i <= aNbMSH; ++i) {
-    TopoDS_Solid aSolid=(*(TopoDS_Solid*)(&(aMSH.FindKey(i))));
-    const BOPCol_ListOfShape& aLH = aMSH(i);
+
+  // Make the back map from solids to holes
+  BOPCol_IndexedDataMapOfShapeListOfShape aSolidHolesMap;
+
+  aNbH = aHoleSolidMap.Extent();
+  for (i = 1; i <= aNbH; ++i)
+  {
+    const TopoDS_Shape& aHole = aHoleSolidMap.FindKey(i);
+    const TopoDS_Shape& aSolid = aHoleSolidMap(i);
     //
-    aItLS.Initialize(aLH);
-    for (; aItLS.More(); aItLS.Next()) {
-      const TopoDS_Shape& aHole = aItLS.Value();
-      aBB.Add (aSolid, aHole);
-    }
-    //
-    // update classifier
-    BRepClass3d_SolidClassifier& aSC=
-      myContext->SolidClassifier(aSolid);
-    aSC.Load(aSolid);
-    //
+    BOPCol_ListOfShape* pLHoles = aSolidHolesMap.ChangeSeek(aSolid);
+    if (!pLHoles)
+      pLHoles = &aSolidHolesMap(aSolidHolesMap.Add(aSolid, BOPCol_ListOfShape()));
+    pLHoles->Append(aHole);
   }
-  //
-  // 7. These aNewSolids are draft solids that 
-  // do not contain any internal shapes
+
+  // Add Holes to Solids and add them to myAreas
   aItLS.Initialize(aNewSolids);
-  for ( ; aItLS.More(); aItLS.Next()) {
-    const TopoDS_Shape& aSx=aItLS.Value();
-    myAreas.Append(aSx);
+  for ( ; aItLS.More(); aItLS.Next())
+  {
+    TopoDS_Solid& aSolid = *(TopoDS_Solid*)&aItLS.Value();
+    const BOPCol_ListOfShape* pLHoles = aSolidHolesMap.Seek(aSolid);
+    if (pLHoles)
+    {
+      // update solid
+      BOPCol_ListIteratorOfListOfShape aItLH(*pLHoles);
+      for (; aItLH.More(); aItLH.Next())
+      {
+        const TopoDS_Shape& aHole = aItLH.Value();
+        aBB.Add(aSolid, aHole);
+      }
+
+      // update classifier
+      myContext->SolidClassifier(aSolid).Load(aSolid);
+    }
+
+    myAreas.Append(aSolid);
   }
+
   // Add holes that outside the solids to myAreas
-  aItLS.Initialize(aHoleShells);
-  for (; aItLS.More(); aItLS.Next()) {
-    const TopoDS_Shape& aHole = aItLS.Value();
-    if (!aInOutMap.Contains(aHole)){
+  aNbH = aHoleShells.Extent();
+  for (i = 1; i <= aNbH; ++i)
+  {
+    const TopoDS_Shape& aHole = aHoleShells(i);
+    if (!aHoleSolidMap.Contains(aHole))
+    {
       TopoDS_Solid aSolid;
-      //
       aBB.MakeSolid(aSolid);
       aBB.Add (aSolid, aHole);
       //
@@ -1073,18 +1005,14 @@ Standard_Boolean IsInside(const TopoDS_Shape& theS1,
 Standard_Boolean IsGrowthShell(const TopoDS_Shape& theShell,
                                const BOPCol_IndexedMapOfShape& theMHF)
 {
-  Standard_Boolean bRet;
-  TopoDS_Iterator aIt;
-  // 
-  bRet=Standard_False;
-  if (theMHF.Extent()) {
-    aIt.Initialize(theShell);
-    for(; aIt.More(); aIt.Next()) {
-      const TopoDS_Shape& aF=aIt.Value();
-      if (theMHF.Contains(aF)) {
-        return !bRet;
-      }
+  if (theMHF.Extent())
+  {
+    TopoDS_Iterator aIt(theShell);
+    for(; aIt.More(); aIt.Next())
+    {
+      if (theMHF.Contains(aIt.Value()))
+        return Standard_True;
     }
   }
-  return bRet;
+  return Standard_False;
 }

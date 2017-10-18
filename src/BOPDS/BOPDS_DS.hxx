@@ -468,6 +468,13 @@ Standard_EXPORT virtual ~BOPDS_DS();
   //! of the existing vertices have been increased.
   Standard_EXPORT Standard_Boolean IsValidShrunkData(const Handle(BOPDS_PaveBlock)& thePB);
 
+  //! Computes bounding box <theBox> for the solid with DS-index <theIndex>.
+  //! The flag <theCheckInverted> enables/disables the check of the solid
+  //! for inverted status. By default the solids will be checked.
+  Standard_EXPORT void BuildBndBoxSolid (const Standard_Integer theIndex,
+                                         Bnd_Box& theBox,
+                                         const Standard_Boolean theCheckInverted = Standard_True);
+
 protected:
 
   
@@ -483,10 +490,6 @@ protected:
   Standard_EXPORT Standard_Boolean CheckCoincidence (const Handle(BOPDS_PaveBlock)& thePB1,
                                                      const Handle(BOPDS_PaveBlock)& thePB2,
                                                      const Standard_Real theFuzz);
-
-
-  //! Computes bouding box <theBox> for the solid with DS-index <theIndex>
-  Standard_EXPORT void BuildBndBoxSolid (const Standard_Integer theIndex, Bnd_Box& theBox);
 
 
   BOPCol_BaseAllocator myAllocator;

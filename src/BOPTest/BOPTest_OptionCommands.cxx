@@ -27,6 +27,7 @@ static Standard_Integer bnondestructive(Draw_Interpretor&, Standard_Integer, con
 static Standard_Integer bfuzzyvalue(Draw_Interpretor&, Standard_Integer, const char**);
 static Standard_Integer bGlue(Draw_Interpretor&, Standard_Integer, const char**);
 static Standard_Integer bdrawwarnshapes(Draw_Interpretor&, Standard_Integer, const char**);
+static Standard_Integer bcheckinverted(Draw_Interpretor&, Standard_Integer, const char**);
 
 //=======================================================================
 //function : OptionCommands
@@ -48,6 +49,8 @@ void BOPTest::OptionCommands(Draw_Interpretor& theCommands)
   theCommands.Add("bdrawwarnshapes", "Defines whether to draw warning shapes or not\n"
                   "Usage: bdrawwarnshapes [0 (do not draw) / 1 (draw warning shapes)",
                   __FILE__, bdrawwarnshapes, g);
+  theCommands.Add("bcheckinverted", "Defines whether to check the input solids on inverted status or not\n"
+                                     "Usage: bcheckinverted [0 (off) / 1 (on)]", __FILE__, bcheckinverted, g);
 }
 //=======================================================================
 //function : boptions
@@ -72,6 +75,7 @@ Standard_Integer boptions(Draw_Interpretor& di,
   aFuzzyValue = BOPTest_Objects::FuzzyValue();
   aGlue = BOPTest_Objects::Glue();
   Standard_Boolean bDrawWarnShapes = BOPTest_Objects::DrawWarnShapes();
+  Standard_Boolean bCheckInverted = BOPTest_Objects::CheckInverted();
   //
   Sprintf(buf, " RunParallel: %d\n",  bRunParallel);
   di << buf;
@@ -83,6 +87,8 @@ Standard_Integer boptions(Draw_Interpretor& di,
     ((aGlue == BOPAlgo_GlueFull) ? "Full" : "Shift")));
   di << buf;
   Sprintf(buf, " Draw Warning Shapes: %s\n", bDrawWarnShapes ? "Yes" : "No");
+  di << buf;
+  Sprintf(buf, " Check for inverted solids: %s\n", bCheckInverted ? "Yes" : "No");
   di << buf;
   //
   return 0;
@@ -207,5 +213,23 @@ Standard_Integer bdrawwarnshapes(Draw_Interpretor& di,
   //
   Standard_Integer iDraw = Draw::Atoi(a[1]);
   BOPTest_Objects::SetDrawWarnShapes(iDraw != 0);
+  return 0;
+}
+
+//=======================================================================
+//function : bcheckinverted
+//purpose  : 
+//=======================================================================
+Standard_Integer bcheckinverted(Draw_Interpretor& di,
+                                Standard_Integer n,
+                                const char** a)
+{
+  if (n != 2) {
+    di.PrintHelp(a[0]);
+    return 1;
+  }
+  //
+  Standard_Integer iCheck = Draw::Atoi(a[1]);
+  BOPTest_Objects::SetCheckInverted(iCheck != 0);
   return 0;
 }

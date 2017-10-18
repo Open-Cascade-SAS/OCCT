@@ -51,6 +51,7 @@
 #include <Precision.hxx>
 #include <IntTools_Context.hxx>
 #include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
@@ -61,6 +62,11 @@
 static
   Standard_Boolean HasPaveBlocksOnIn(const BOPDS_FaceInfo& aFI1,
                                      const BOPDS_FaceInfo& aFI2);
+//
+static
+  TopoDS_Face BuildDraftFace(const TopoDS_Face& theFace,
+                             const BOPCol_DataMapOfShapeListOfShape& theImages,
+                             Handle(IntTools_Context)& theCtx);
 //
 typedef BOPCol_NCVector<TopoDS_Shape> BOPAlgo_VectorOfShape;
 //
@@ -240,7 +246,6 @@ void BOPAlgo_Builder::BuildSplitFaces()
 {
   Standard_Boolean bHasFaceInfo, bIsClosed, bIsDegenerated, bToReverse;
   Standard_Integer i, j, k, aNbS, aNbPBIn, aNbPBOn, aNbPBSc, aNbAV, nSp;
-  Standard_Size aNbBF;
   TopoDS_Face aFF, aFSD;
   TopoDS_Edge aSp, aEE;
   TopAbs_Orientation anOriF, anOriE;
@@ -249,7 +254,6 @@ void BOPAlgo_Builder::BuildSplitFaces()
   BOPCol_ListOfInteger aLIAV;
   BOPCol_MapOfShape aMFence;
   Handle(NCollection_BaseAllocator) aAllocator;
-  BOPCol_ListOfShape aLFIm(myAllocator);
   BOPAlgo_VectorOfBuilderFace aVBF;
   //
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~scope f
@@ -258,6 +262,10 @@ void BOPAlgo_Builder::BuildSplitFaces()
   //
   BOPCol_ListOfShape aLE(aAllocator);
   BOPCol_MapOfShape aMDE(100, aAllocator);
+  //
+  // Build temporary map of faces images to avoid rebuilding
+  // of the faces without any IN or section edges
+  BOPCol_IndexedDataMapOfShapeListOfShape aFacesIm;
   //
   aNbS=myDS->NbSourceShapes();
   //
@@ -292,17 +300,32 @@ void BOPAlgo_Builder::BuildSplitFaces()
     if (!aNbPBIn && !aNbPBOn && !aNbPBSc && !aNbAV) { // not compete
       continue;
     }
-    //
+
+    if (!aNbPBIn && !aNbPBSc)
+    {
+      // No internal parts for the face, so just build the draft face
+      // and keep it to pass directly into result.
+      // If the original face has any internal edges, the draft face
+      // will be null, as the internal edges may split the face on parts
+      // (as in the case "bugs modalg_5 bug25245_1").
+      // The BuilderFace algorithm will be called in this case.
+      TopoDS_Face aFD = BuildDraftFace(aF, myImages, myContext);
+      if (!aFD.IsNull())
+      {
+        aFacesIm(aFacesIm.Add(aF, BOPCol_ListOfShape())).Append(aFD);
+        continue;
+      }
+    }
+
     aMFence.Clear();
     //
     anOriF=aF.Orientation();
     aFF=aF;
     aFF.Orientation(TopAbs_FORWARD);
     //
-    // 1. Fill the egdes set for the face aFF -> LE
+    // 1. Fill the edges set for the face aFF -> LE
     aLE.Clear();
-    //
-    //
+
     // 1.1 Bounding edges
     aExp.Init(aFF, TopAbs_EDGE);
     for (; aExp.More(); aExp.Next()) {
@@ -426,33 +449,33 @@ void BOPAlgo_Builder::BuildSplitFaces()
     //
   }// for (i=0; i<aNbS; ++i) {
   //
-  aNbBF=aVBF.Extent();
-  //
   //===================================================
   BOPAlgo_BuilderFaceCnt::Perform(myRunParallel, aVBF);
   //===================================================
   //
-  for (k=0; k<(Standard_Integer)aNbBF; ++k) {
-    aLFIm.Clear();
+  Standard_Integer aNbBF = aVBF.Extent();
+  for (k = 0; k < aNbBF; ++k)
+  {
+    BOPAlgo_BuilderFace& aBF = aVBF(k);
+    aFacesIm.Add(aBF.Face(), aBF.Areas());
+  }
+
+  aNbBF = aFacesIm.Extent();
+  for (k = 1; k <= aNbBF; ++k)
+  {
+    const TopoDS_Face& aF = TopoDS::Face(aFacesIm.FindKey(k));
+    anOriF = aF.Orientation();
+    const BOPCol_ListOfShape& aLFR = aFacesIm(k);
     //
-    BOPAlgo_BuilderFace& aBF=aVBF(k);
-    TopoDS_Face aF=aBF.Face();
-    anOriF=aBF.Orientation();
-    aF.Orientation(anOriF);
-    //
-    const BOPCol_ListOfShape& aLFR=aBF.Areas();
+    BOPCol_ListOfShape* pLFIm = mySplits.Bound(aF, BOPCol_ListOfShape());
     aIt.Initialize(aLFR);
     for (; aIt.More(); aIt.Next()) {
       TopoDS_Shape& aFR=aIt.ChangeValue();
-      if (anOriF==TopAbs_REVERSED) {
+      if (anOriF==TopAbs_REVERSED)
         aFR.Orientation(TopAbs_REVERSED);
-      }
-      //aFR.Orientation(anOriF);
-      aLFIm.Append(aFR);
+      pLFIm->Append(aFR);
     }
-    //
-    mySplits.Bind(aF, aLFIm); 
-  }// for (k=0; k<aNbBF; ++k) {
+  }
   //
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~scope t
 }
@@ -769,4 +792,99 @@ Standard_Boolean HasPaveBlocksOnIn(const BOPDS_FaceInfo& aFI1,
     }
   }
   return bRet;
+}
+
+//=======================================================================
+//function : BuildDraftFace
+//purpose  : Build draft faces, updating the bounding edges,
+//           according to the information stored into the <theImages> map
+//=======================================================================
+TopoDS_Face BuildDraftFace(const TopoDS_Face& theFace,
+                           const BOPCol_DataMapOfShapeListOfShape& theImages,
+                           Handle(IntTools_Context)& theCtx)
+{
+  BRep_Builder aBB;
+  // Take the information from the original face
+  TopLoc_Location aLoc;
+  const Handle(Geom_Surface)& aS = BRep_Tool::Surface(theFace, aLoc);
+  const Standard_Real aTol = BRep_Tool::Tolerance(theFace);
+  // Make the new face, without any wires
+  TopoDS_Face aDraftFace;
+  aBB.MakeFace(aDraftFace, aS, aLoc, aTol);
+
+  // Update wires of the original face and add them to draft face
+  TopoDS_Iterator aItW(theFace.Oriented(TopAbs_FORWARD));
+  for (; aItW.More(); aItW.Next())
+  {
+    const TopoDS_Shape& aW = aItW.Value();
+    if (aW.ShapeType() != TopAbs_WIRE)
+      continue;
+
+    // Rebuild wire using images of edges
+    TopoDS_Iterator aItE(aW.Oriented(TopAbs_FORWARD));
+    if (!aItE.More())
+      continue;
+
+    TopoDS_Wire aNewWire;
+    aBB.MakeWire(aNewWire);
+
+    for (; aItE.More(); aItE.Next())
+    {
+      const TopoDS_Edge& aE = TopoDS::Edge(aItE.Value());
+
+      TopAbs_Orientation anOriE = aE.Orientation();
+      if (anOriE == TopAbs_INTERNAL)
+      {
+        // The internal edges could split the original face on halves.
+        // Thus, use the BuilderFace algorithm to build the new face.
+        TopoDS_Face aNull;
+        return aNull;
+      }
+
+      const BOPCol_ListOfShape* pLEIm = theImages.Seek(aE);
+      if (!pLEIm)
+      {
+        aBB.Add(aNewWire, aE);
+        continue;
+      }
+
+      // Check if the original edge is degenerated
+      Standard_Boolean bIsDegenerated = BRep_Tool::Degenerated(aE);
+      // Check if the original edge is closed on the face
+      Standard_Boolean bIsClosed = BRep_Tool::IsClosed(aE, theFace);
+
+      BOPCol_ListIteratorOfListOfShape aItLEIm(*pLEIm);
+      for (; aItLEIm.More(); aItLEIm.Next())
+      {
+        TopoDS_Edge& aSp = TopoDS::Edge(aItLEIm.Value());
+
+        aSp.Orientation(anOriE);
+        if (bIsDegenerated)
+        {
+          aBB.Add(aNewWire, aSp);
+          continue;
+        }
+
+        // Check closeness of the split edge and if it is not
+        // make the second PCurve
+        if (bIsClosed && !BRep_Tool::IsClosed(aSp, theFace))
+          BOPTools_AlgoTools3D::DoSplitSEAMOnFace(aSp, theFace);
+
+        // Check if the split should be reversed
+        if (BOPTools_AlgoTools::IsSplitToReverse(aSp, aE, theCtx))
+          aSp.Reverse();
+
+        aBB.Add(aNewWire, aSp);
+      }
+    }
+
+    aNewWire.Orientation(aW.Orientation());
+    aNewWire.Closed(BRep_Tool::IsClosed(aNewWire));
+    aBB.Add(aDraftFace, aNewWire);
+  }
+
+  if (theFace.Orientation() == TopAbs_REVERSED)
+    aDraftFace.Reverse();
+
+  return aDraftFace;
 }

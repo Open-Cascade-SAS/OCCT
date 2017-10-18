@@ -133,6 +133,7 @@ Standard_Integer bapibop(Draw_Interpretor& di,
   pBuilder->SetFuzzyValue(aFuzzyValue);
   pBuilder->SetNonDestructive(bNonDestructive);
   pBuilder->SetGlue(aGlue);
+  pBuilder->SetCheckInverted(BOPTest_Objects::CheckInverted());
   //
   pBuilder->Build(); 
   //
@@ -193,6 +194,7 @@ Standard_Integer bapibuild(Draw_Interpretor& di,
   aBuilder.SetFuzzyValue(aFuzzyValue);
   aBuilder.SetNonDestructive(bNonDestructive);
   aBuilder.SetGlue(aGlue);
+  aBuilder.SetCheckInverted(BOPTest_Objects::CheckInverted());
   //
   aBuilder.Build(); 
   //
@@ -257,6 +259,7 @@ Standard_Integer bapisplit(Draw_Interpretor& di,
   aSplitter.SetFuzzyValue(BOPTest_Objects::FuzzyValue());
   aSplitter.SetNonDestructive(BOPTest_Objects::NonDestructive());
   aSplitter.SetGlue(BOPTest_Objects::Glue());
+  aSplitter.SetCheckInverted(BOPTest_Objects::CheckInverted());
   //
   // performing operation
   aSplitter.Build();

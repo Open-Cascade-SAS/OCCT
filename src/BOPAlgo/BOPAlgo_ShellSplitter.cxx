@@ -42,12 +42,6 @@ static
   void RefineShell(TopoDS_Shell& theShell,
                    const BOPCol_IndexedDataMapOfShapeListOfShape& theMEF,
                    BOPCol_ListOfShape& aLShX);
-//
-static
-  void MapEdgesAndFaces
-  (const TopoDS_Shape& aF,
-   BOPCol_IndexedDataMapOfShapeListOfShape& aMEF,
-   const Handle(NCollection_BaseAllocator)& theAllocator);
 
 //=======================================================================
 //class    : BOPAlgo_CBK
@@ -152,162 +146,12 @@ void BOPAlgo_ShellSplitter::Perform()
 {
   GetReport()->Clear();
   //
-  MakeConnexityBlocks();
-  if (HasErrors()) {
-    return;
-  }
+  BOPTools_AlgoTools::MakeConnexityBlocks
+    (myStartShapes, TopAbs_EDGE, TopAbs_FACE, myLCB);
   //
   MakeShells();
 }
-//=======================================================================
-//function : MakeConnexityBlocks
-//purpose  : 
-//=======================================================================
-void BOPAlgo_ShellSplitter::MakeConnexityBlocks()
-{
-  Standard_Boolean bRegular;
-  Standard_Integer i, j, aNbE, aNbES, aNbEP, k, aNbCB;
-  TopoDS_Shape aFR;
-  TopoDS_Iterator aItF, aItW;
-  BOPCol_IndexedDataMapOfShapeListOfShape aMEF(100, myAllocator);
-  BOPCol_IndexedMapOfShape aMEP(100, myAllocator);
-  BOPCol_IndexedMapOfShape aMFC(100, myAllocator);
-  BOPCol_MapOfShape aMER(100, myAllocator);
-  BOPCol_MapOfShape aMFP(100, myAllocator);
-  BOPCol_IndexedMapOfShape aMEAdd(100, myAllocator);
-  BOPCol_MapOfShape aMES(100, myAllocator);
-  BOPCol_ListIteratorOfListOfShape aIt;
-  //
-  myLCB.Clear();
-  //
-  const BOPCol_ListOfShape& aLSE=myStartShapes;
-  aIt.Initialize(aLSE);
-  for (i=1; aIt.More(); aIt.Next(), ++i) {
-    const TopoDS_Shape& aSE=aIt.Value();
-    if (!aMEP.Contains(aSE)) {
-      aMEP.Add(aSE);
-      MapEdgesAndFaces(aSE, aMEF, myAllocator);
-    }
-    else {
-      aMER.Add(aSE);
-    }
-  }
-  //
-  // 2
-  aNbE=aMEF.Extent();
-  for (i=1; i<=aNbE; ++i) {
-    aNbES=aMES.Extent();
-    if (aNbES==aNbE) {
-      break;
-    }
-    //
-    const TopoDS_Shape& aE=aMEF.FindKey(i);
-    //
-    if (!aMES.Add(aE)) {
-      continue;
-    }
-    // aMES - globally processed edges
-    //
-    //------------------------------------- goal: aMEC
-    aMFC.Clear();    // aMEC - edges of CB
-    aMEP.Clear();    // aMVP - edges to process right now 
-    aMEAdd.Clear();  // aMVAdd edges to process on next step of for(;;) {
-    //
-    aMEP.Add(aE);
-    //
-    for(;;) {
-      aNbEP=aMEP.Extent();
-      for (k=1; k<=aNbEP; ++k) {
-        const TopoDS_Shape& aEP=aMEP(k);
-        const BOPCol_ListOfShape& aLF=aMEF.FindFromKey(aEP);
-        aIt.Initialize(aLF);
-        for (; aIt.More(); aIt.Next()) {
-          const TopoDS_Shape& aF=aIt.Value();
-          if (aMFC.Add(aF)) {
-            aItF.Initialize(aF);
-            while (aItF.More()) {
-              const TopoDS_Shape& aW=aItF.Value();  
-              if (aW.ShapeType()!=TopAbs_WIRE) {
-                aItF.Next();
-                continue;
-              }
-              //
-              aItW.Initialize(aW);
-              while (aItW.More()) {
-                const TopoDS_Shape& aEF=aItW.Value();  
-                //
-                if (aMES.Add(aEF)) {
-                  aMEAdd.Add(aEF);
-                }
-                //
-                aItW.Next();
-              }
-              //
-              aItF.Next();
-            }
-          }
-        }
-      }
-      //
-      aNbEP=aMEAdd.Extent();
-      if (!aNbEP) {
-        break; // from for(;;) {
-      }
-      //
-      aMEP.Clear();
-      //
-      for (k=1; k<=aNbEP; ++k) {
-        const TopoDS_Shape& aEF=aMEAdd(k);
-        aMEP.Add(aEF);
-      }
-      aMEAdd.Clear();
-    }// for(;;) {
-    //
-    //-------------------------------------
-    BOPTools_ConnexityBlock aCB(myAllocator);
-    //
-    BOPCol_ListOfShape& aLECB=aCB.ChangeShapes();
-    BOPCol_IndexedDataMapOfShapeListOfShape aMEFR(100, myAllocator);
-    //
-    bRegular=Standard_True;
-    aNbCB = aMFC.Extent();
-    for (j=1; j<=aNbCB; ++j) {
-      aFR = aMFC(j);
-      //
-      if (aMER.Contains(aFR)) {
-        aFR.Orientation(TopAbs_FORWARD);
-        aLECB.Append(aFR);
-        aFR.Orientation(TopAbs_REVERSED);
-        aLECB.Append(aFR);
-        bRegular=Standard_False;
-      }
-      else {
-        aLECB.Append(aFR);
-      }
-      //
-      if (bRegular) {
-        MapEdgesAndFaces(aFR, aMEFR, myAllocator);
-      }
-    }
-    //
-    if (bRegular) {
-      Standard_Integer aNbER, aNbFR; 
-      //
-      aNbER=aMEFR.Extent();
-      for (k=1; k<=aNbER; ++k) {
-        const BOPCol_ListOfShape& aLFR=aMEFR(k);
-        aNbFR=aLFR.Extent();
-        if (aNbFR>2) {
-          bRegular=!bRegular;
-          break;
-        }
-      }
-    }
-    //
-    aCB.SetRegular(bRegular);
-    myLCB.Append(aCB);
-  }
-}
+
 //=======================================================================
 //function : SplitBlock
 //purpose  : 
@@ -749,44 +593,4 @@ void MakeShell(const BOPCol_ListOfShape& aLS,
   }
   //
   BOPTools_AlgoTools::OrientFacesOnShell(aShell);
-}
-//=======================================================================
-// function: MapEdgesAndFaces
-// purpose: 
-//=======================================================================
-void MapEdgesAndFaces
-  (const TopoDS_Shape& aF,
-   BOPCol_IndexedDataMapOfShapeListOfShape& aMEF,
-   const Handle(NCollection_BaseAllocator)& theAllocator)
-{
-  TopoDS_Iterator aItF, aItW;
-  //
-  aItF.Initialize(aF);
-  while (aItF.More()) {
-    const TopoDS_Shape& aW=aItF.Value();  
-    if (aW.ShapeType()!=TopAbs_WIRE) {
-      aItF.Next();
-      continue;
-    }
-    //
-    aItW.Initialize(aW);
-    while (aItW.More()) {
-      const TopoDS_Shape& aE=aItW.Value();  
-      //
-      if (aMEF.Contains(aE)) {
-        BOPCol_ListOfShape& aLF=aMEF.ChangeFromKey(aE);
-        aLF.Append(aF);
-      }
-      else {
-        BOPCol_ListOfShape aLS(theAllocator);
-        //
-        aLS.Append(aF);
-        aMEF.Add(aE, aLS);
-      }
-      //
-      aItW.Next();
-    }
-    //
-    aItF.Next();
-  }
 }

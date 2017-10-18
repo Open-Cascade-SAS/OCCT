@@ -545,58 +545,64 @@ void BOPDS_DS::Init(const Standard_Real theFuzz)
     }//if (aTS==TopAbs_FACE) {
   }//for (j=0; j<myNbSourceShapes; ++j) {
   //
-  // 2.4 Solids
-  for (j=0; j<myNbSourceShapes; ++j) {
-    BOPDS_ShapeInfo& aSI=ChangeShapeInfo(j);
-    //
-    aTS=aSI.ShapeType();
-    if (aTS!=TopAbs_SOLID) {
-      continue;
-    }
-    Bnd_Box& aBox=aSI.ChangeBox();
-    BuildBndBoxSolid(j, aBox); 
-    //
-    //
-    // update sub-shapes by BRep comprising ones
-    aMI.Clear();
-    BOPCol_ListOfInteger& aLI1=aSI.ChangeSubShapes();
-    //
-    aIt1.Initialize(aLI1);
-    for (; aIt1.More(); aIt1.Next()) {
-      n1=aIt1.Value();
-      BOPDS_ShapeInfo& aSI1=ChangeShapeInfo(n1);
-      if (aSI1.ShapeType()!=TopAbs_SHELL) {
+  // For the check mode we need to compute the bounding box for solid.
+  // Otherwise, it will be computed on the building stage
+  Standard_Boolean bCheckMode = (myArguments.Extent() == 1);
+  if (bCheckMode)
+  {
+    // 2.4 Solids
+    for (j=0; j<myNbSourceShapes; ++j) {
+      BOPDS_ShapeInfo& aSI=ChangeShapeInfo(j);
+      //
+      aTS=aSI.ShapeType();
+      if (aTS!=TopAbs_SOLID) {
         continue;
       }
+      Bnd_Box& aBox=aSI.ChangeBox();
+      BuildBndBoxSolid(j, aBox); 
       //
-      const BOPCol_ListOfInteger& aLI2=aSI1.SubShapes(); 
-      aIt2.Initialize(aLI2);
-      for (; aIt2.More(); aIt2.Next()) {
-        n2=aIt2.Value();
-        BOPDS_ShapeInfo& aSI2=ChangeShapeInfo(n2);
-        if (aSI2.ShapeType()!=TopAbs_FACE) {
+      //
+      // update sub-shapes by BRep comprising ones
+      aMI.Clear();
+      BOPCol_ListOfInteger& aLI1=aSI.ChangeSubShapes();
+      //
+      aIt1.Initialize(aLI1);
+      for (; aIt1.More(); aIt1.Next()) {
+        n1=aIt1.Value();
+        BOPDS_ShapeInfo& aSI1=ChangeShapeInfo(n1);
+        if (aSI1.ShapeType()!=TopAbs_SHELL) {
           continue;
         }
         //
-        aMI.Add(n2);
-        //
-        const BOPCol_ListOfInteger& aLI3=aSI2.SubShapes(); 
-        aIt3.Initialize(aLI3);
-        for (; aIt3.More(); aIt3.Next()) {
-          n3=aIt3.Value();
-          aMI.Add(n3);
+        const BOPCol_ListOfInteger& aLI2=aSI1.SubShapes(); 
+        aIt2.Initialize(aLI2);
+        for (; aIt2.More(); aIt2.Next()) {
+          n2=aIt2.Value();
+          BOPDS_ShapeInfo& aSI2=ChangeShapeInfo(n2);
+          if (aSI2.ShapeType()!=TopAbs_FACE) {
+            continue;
+          }
+          //
+          aMI.Add(n2);
+          //
+          const BOPCol_ListOfInteger& aLI3=aSI2.SubShapes(); 
+          aIt3.Initialize(aLI3);
+          for (; aIt3.More(); aIt3.Next()) {
+            n3=aIt3.Value();
+            aMI.Add(n3);
+          }
         }
       }
-    }
-    //
-    aLI1.Clear();
-    aItMI.Initialize(aMI);
-    for (; aItMI.More(); aItMI.Next()) {
-      n1=aItMI.Value();
-      aLI1.Append(n1);
-    }
-    aMI.Clear();
-  }//for (j=0; j<myNbSourceShapes; ++j) {
+      //
+      aLI1.Clear();
+      aItMI.Initialize(aMI);
+      for (; aItMI.More(); aItMI.Next()) {
+        n1=aItMI.Value();
+        aLI1.Append(n1);
+      }
+      aMI.Clear();
+    }//for (j=0; j<myNbSourceShapes; ++j) {
+  }
   //
   aMI.Clear();
   //-----------------------------------------------------
@@ -1866,7 +1872,8 @@ Standard_Real ComputeParameter(const TopoDS_Vertex& aV,
 //purpose  : 
 //=======================================================================
 void BOPDS_DS::BuildBndBoxSolid(const Standard_Integer theIndex,
-                                Bnd_Box& aBoxS)
+                                Bnd_Box& aBoxS,
+                                const Standard_Boolean theCheckInverted)
 {
   Standard_Boolean bIsOpenBox, bIsInverted;
   Standard_Integer nSh, nFc;
@@ -1930,7 +1937,7 @@ void BOPDS_DS::BuildBndBoxSolid(const Standard_Integer theIndex,
   if (bIsOpenBox) {
     aBoxS.SetWhole();
   }
-  else {
+  else if (theCheckInverted) {
     bIsInverted=BOPTools_AlgoTools::IsInvertedSolid(aSolid);
     if (bIsInverted) {
       aBoxS.SetWhole(); 
