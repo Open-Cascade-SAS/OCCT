@@ -1,5 +1,6 @@
 puts "TODO OCC12345 ALL: Faulty OCC565: function intersection works wrongly with trimmed Surfaces"
-puts "TODO ?OCC12345 ALL: Faulty OCC565: function intersection works wrongly with infinite Surfaces"
+puts "TODO OCC12345 Linux: Faulty OCC565: function intersection works wrongly with infinite Surfaces"
+puts "TODO OCC12345 MacOS: Faulty OCC565: function intersection works wrongly with infinite Surfaces"
 
 puts "========"
 puts "OCC567"

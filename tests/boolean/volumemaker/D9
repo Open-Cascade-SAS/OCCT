@@ -1,8 +1,6 @@
 # test script on make volume operation
 # cylinder plane
 
-puts "TODO ?OCC26020 ALL: Faulty shapes in variables faulty_1 to faulty_"
-
 # planar face 
 plane pln_f1 0 825 4.163336342344337e-015 0 -1 -1.1102230246251565e-016
 erase pln_f1

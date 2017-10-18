@@ -1,5 +1,3 @@
-puts "TODO ?OCC24156 MacOS: TEST INCOMPLETE"
-
 restore [locate_data_file 8_J1.draw] s
 tscale s 0 0 0 SCALE
 explode s e

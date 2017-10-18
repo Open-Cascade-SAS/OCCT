@@ -1,7 +1,5 @@
-puts "TODO ?OCC23068 ALL: ERROR. offsetperform operation not done."
-puts "TODO ?OCC23068 ALL: Faulty shapes in variables faulty_1 to faulty_"
-puts "TODO ?OCC23068 ALL: Error : The volume of result shape is"
-puts "TODO ?OCC23068 ALL: TEST INCOMPLETE"
+puts "TODO OCC23068 ALL: Faulty shapes in variables faulty_1 to faulty_"
+puts "TODO OCC23068 ALL: Error : The volume of result shape is"
 
 pcone s 5 0 12 90
 trotate s 0 0 0 0 0 1 90

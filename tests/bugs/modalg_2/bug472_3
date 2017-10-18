@@ -1,5 +1,4 @@
 puts "TODO OCC25917 ALL: Faulty shapes in variables faulty_1 to faulty_"
-puts "TODO ?OCC25917 ALL: Error : The area of result shape is"
 puts "TODO OCC25917 ALL: Error :  is WRONG because number of "
 puts "========================"
 puts " OCC472 "
@@ -9,7 +8,6 @@ puts ""
 #####################################################
 ## Bad result of Fuse Operation (Cut&Common - bad too). SAM1470 (#2634) 
 #####################################################
-
 restore [locate_data_file OCC472a.brep] b1 
 checkshape b1
 

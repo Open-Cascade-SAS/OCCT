@@ -1,0 +1,20 @@
+puts "TODO OCC25110 ALL: An exception was caught"
+puts "TODO OCC25110 ALL: \\*\\* Exception \\*\\*.*"
+puts "TODO OCC25110 ALL: TEST INCOMPLETE"
+
+puts "========"
+puts "OCC25110"
+puts "========"
+puts ""
+########################################################################################
+# TCollection_IndexedDataMap::FindFromKey error when sweeping circle along BezierCurve
+########################################################################################
+
+restore [locate_data_file bug25110_unsweepable1-draw-Sweep-0-spine.brep] Sweep-0-spine
+restore [locate_data_file bug25110_unsweepable1-draw-Sweep-0-section-00-Circle.brep] Sweep-0-section-00-Circle
+
+mksweep Sweep-0-spine
+setsweep -CF
+addsweep Sweep-0-section-00-Circle
+
+buildsweep Sweep -C -S

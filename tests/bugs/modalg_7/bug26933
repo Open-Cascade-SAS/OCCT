@@ -1,5 +1,3 @@
-puts "TODO ?OCC26933 All: Error : The length of result shape is"
-
 puts "========"
 puts "OCC26933"
 puts "========"

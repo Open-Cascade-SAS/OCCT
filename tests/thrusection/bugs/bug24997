@@ -1,0 +1,15 @@
+puts "TODO OCC24997 ALL: An exception was caught"
+puts "TODO OCC24997 ALL: \\*\\* Exception \\*\\*.*"
+puts "TODO OCC24997 ALL: TEST INCOMPLETE"
+
+puts "========"
+puts "OCC24997"
+puts "========"
+puts ""
+#########################################
+# SIGSEGV in BRepOffsetAPI_ThruSections
+#########################################
+
+restore [locate_data_file bug24997_loft3-draw-Loft-00-section.brep] Loft-00-section
+restore [locate_data_file bug24997_loft3-draw-Loft-01-section.brep] Loft-01-section
+thrusections Loft 0 0 Loft-00-section Loft-01-section

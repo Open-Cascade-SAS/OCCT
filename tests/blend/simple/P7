@@ -1,5 +1,3 @@
-puts "TODO ?OCC24156 MacOS: TEST INCOMPLETE"
-
 #pcylinder s1 5 20
 #pcylinder s2 5 12 
 #ttranslate s2 5 0 3
