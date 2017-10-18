@@ -129,13 +129,14 @@ Handle(GeomFill_TrihedronLaw) GeomFill_Frenet::Copy() const
     case GeomAbs_Parabola:
     case GeomAbs_Line:
       {
-	// No probleme
-	isSngl = Standard_False;
+        // No probleme
+        isSngl = Standard_False;
+        break;
       }
      default :
        { 
-	 // We have to search singulaties
-	 Init(); 
+         // We have to search singulaties
+         Init();
        }
     }
   }

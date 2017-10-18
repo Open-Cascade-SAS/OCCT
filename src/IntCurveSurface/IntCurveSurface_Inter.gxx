@@ -916,6 +916,7 @@ void IntCurveSurface_Inter::PerformConicSurf(const gp_Lin&   Line,
   
 
   GeomAbs_SurfaceType SurfaceType = TheSurfaceTool::GetType(surface);
+  Standard_Boolean isAnaProcessed = Standard_True;
   switch(SurfaceType) { 
   case GeomAbs_Plane: 
     {
@@ -937,94 +938,99 @@ void IntCurveSurface_Inter::PerformConicSurf(const gp_Lin&   Line,
     }
   case GeomAbs_Torus: 
     {
-      IntAna_IntLinTorus intlintorus(Line,TheSurfaceTool::Torus(surface));
-      if(intlintorus.IsDone()) { 
-	Standard_Integer nbp = intlintorus.NbPoints();
-	Standard_Real fi,theta,w;
-	for(Standard_Integer i = 1; i<= nbp; i++) { 
-	  const gp_Pnt aDebPnt(intlintorus.Value(i));
-	  (void )aDebPnt;
-	  w = intlintorus.ParamOnLine(i);
-	  intlintorus.ParamOnTorus(i,fi,theta);
-	  AppendPoint(curve,w,surface,fi,theta);
-	}
-	break;
+      IntAna_IntLinTorus intlintorus(Line, TheSurfaceTool::Torus(surface));
+      if (intlintorus.IsDone()) {
+        Standard_Integer nbp = intlintorus.NbPoints();
+        Standard_Real fi, theta, w;
+        for (Standard_Integer i = 1; i <= nbp; i++) {
+          const gp_Pnt aDebPnt(intlintorus.Value(i));
+          (void)aDebPnt;
+          w = intlintorus.ParamOnLine(i);
+          intlintorus.ParamOnTorus(i, fi, theta);
+          AppendPoint(curve, w, surface, fi, theta);
+        }
       }
-    }  //-- Si Done retourne False, On passe dans Default !! 
+      else
+        isAnaProcessed = Standard_False;
+      break;
+    }
   case GeomAbs_Cone:
     {
-      //OCC516(apo)->
       const Standard_Real correction = 1.E+5*Precision::Angular();
       gp_Cone cn = TheSurfaceTool::Cone(surface);
-      if(Abs(cn.SemiAngle()) < M_PI/2.0 - correction){
-	IntAna_IntConicQuad LinCone(Line,cn);
-	AppendIntAna(curve,surface,LinCone);
-	break;
-      }//<-OCC516(apo)
-    }   
-  default: 
-    {
-      Standard_Integer nbsu,nbsv;
-      nbsu = TheSurfaceTool::NbSamplesU(surface,U1,U2);
-      nbsv = TheSurfaceTool::NbSamplesV(surface,V1,V2);
+      if(Abs(cn.SemiAngle()) < M_PI/2.0 - correction) {
+        IntAna_IntConicQuad LinCone(Line, cn);
+        AppendIntAna(curve, surface, LinCone);
+      }
+      else
+        isAnaProcessed = Standard_False;
+      break;
+    }
+  default:
+    isAnaProcessed = Standard_False;
+  }
+  if (!isAnaProcessed)
+  {
+    Standard_Integer nbsu,nbsv;
+    nbsu = TheSurfaceTool::NbSamplesU(surface,U1,U2);
+    nbsv = TheSurfaceTool::NbSamplesV(surface,V1,V2);
 
-      Standard_Boolean U1inf = Precision::IsInfinite(U1);
-      Standard_Boolean U2inf = Precision::IsInfinite(U2);
-      Standard_Boolean V1inf = Precision::IsInfinite(V1);
-      Standard_Boolean V2inf = Precision::IsInfinite(V2);
+    Standard_Boolean U1inf = Precision::IsInfinite(U1);
+    Standard_Boolean U2inf = Precision::IsInfinite(U2);
+    Standard_Boolean V1inf = Precision::IsInfinite(V1);
+    Standard_Boolean V2inf = Precision::IsInfinite(V2);
 
-      Standard_Real U1new=U1, U2new=U2, V1new=V1, V2new=V2;
+    Standard_Real U1new=U1, U2new=U2, V1new=V1, V2new=V2;
 
-      Standard_Boolean NoIntersection = Standard_False;
+    Standard_Boolean NoIntersection = Standard_False;
 
-      if(U1inf || U2inf || V1inf || V2inf ) {
+    if(U1inf || U2inf || V1inf || V2inf ) {
 
-	if(SurfaceType == GeomAbs_SurfaceOfExtrusion) {
+      if(SurfaceType == GeomAbs_SurfaceOfExtrusion) {
 
-	  EstLimForInfExtr(Line, surface, Standard_False, nbsu, 
-			   U1inf, U2inf, V1inf, V2inf, 
-			   U1new, U2new, V1new, V2new, NoIntersection);
-
-	} 
-	else if(SurfaceType == GeomAbs_SurfaceOfRevolution) {
-
-	  EstLimForInfRevl(Line, surface,  
-			   U1inf, U2inf, V1inf, V2inf, 
-			   U1new, U2new, V1new, V2new, NoIntersection);
-
-	} 
-	else if(SurfaceType == GeomAbs_OffsetSurface) {
-
-	  EstLimForInfOffs(Line, surface, nbsu,  
-			   U1inf, U2inf, V1inf, V2inf, 
-			   U1new, U2new, V1new, V2new, NoIntersection);
-	}
-	else {
-	    
-	  EstLimForInfSurf(U1new, U2new, V1new, V2new);
-	}
+        EstLimForInfExtr(Line, surface, Standard_False, nbsu,
+                         U1inf, U2inf, V1inf, V2inf,
+                         U1new, U2new, V1new, V2new, NoIntersection);
 
       }
+      else if (SurfaceType == GeomAbs_SurfaceOfRevolution) {
 
+        EstLimForInfRevl(Line, surface,
+                         U1inf, U2inf, V1inf, V2inf,
+                         U1new, U2new, V1new, V2new, NoIntersection);
 
-      if(NoIntersection) return;
-
-
-      // modified by NIZHNY-OFV  Mon Aug 20 14:56:47 2001 (60963 begin)
-      if(nbsu<20) nbsu=20;
-      if(nbsv<20) nbsv=20;
-      // modified by NIZHNY-OFV  Mon Aug 20 14:57:06 2001 (60963 end)
-      IntCurveSurface_ThePolyhedron polyhedron(surface,nbsu,nbsv,U1new,V1new,U2new,V2new);
-      Intf_Tool                         bndTool;
-      Bnd_Box                          boxLine;
-      bndTool.LinBox(Line,polyhedron.Bounding(),boxLine);
-      for(Standard_Integer nbseg=1; nbseg<= bndTool.NbSegments(); nbseg++) { 
-	Standard_Real pinf = bndTool.BeginParam(nbseg);
-	Standard_Real psup = bndTool.EndParam(nbseg);
-	if((psup - pinf)<1e-10) { pinf-=1e-10; psup+=1e-10; } 
-	IntCurveSurface_ThePolygon polygon(curve, pinf,psup,2);
-	InternalPerform(curve,polygon,surface,polyhedron,U1new,V1new,U2new,V2new);
       }
+      else if (SurfaceType == GeomAbs_OffsetSurface) {
+
+        EstLimForInfOffs(Line, surface, nbsu,
+                         U1inf, U2inf, V1inf, V2inf,
+                         U1new, U2new, V1new, V2new, NoIntersection);
+      }
+      else {
+
+        EstLimForInfSurf(U1new, U2new, V1new, V2new);
+      }
+
+    }
+
+
+    if(NoIntersection) return;
+
+
+    // modified by NIZHNY-OFV  Mon Aug 20 14:56:47 2001 (60963 begin)
+    if(nbsu<20) nbsu=20;
+    if(nbsv<20) nbsv=20;
+    // modified by NIZHNY-OFV  Mon Aug 20 14:57:06 2001 (60963 end)
+    IntCurveSurface_ThePolyhedron polyhedron(surface,nbsu,nbsv,U1new,V1new,U2new,V2new);
+    Intf_Tool                     bndTool;
+    Bnd_Box                       boxLine;
+    bndTool.LinBox(Line,polyhedron.Bounding(),boxLine);
+    for(Standard_Integer nbseg=1; nbseg<= bndTool.NbSegments(); nbseg++) { 
+      Standard_Real pinf = bndTool.BeginParam(nbseg);
+      Standard_Real psup = bndTool.EndParam(nbseg);
+      if((psup - pinf)<1e-10) { pinf-=1e-10; psup+=1e-10; } 
+      IntCurveSurface_ThePolygon polygon(curve, pinf,psup,2);
+      InternalPerform(curve,polygon,surface,polyhedron,U1new,V1new,U2new,V2new);
     }
   }
 }
