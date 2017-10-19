@@ -473,7 +473,7 @@ proc _check_args { args {options {}} {command_name ""}} {
       set get_value              [lindex ${option} 2]
       set local_value ""
       if { [_check_arg ${option_name} local_value ${get_value}] } {
-        upvar ${variable_to_save_value} ${variable_to_save_value}
+        upvar 1 ${variable_to_save_value} ${variable_to_save_value}
         set ${variable_to_save_value} ${local_value}
         set toContinue 1
       }
