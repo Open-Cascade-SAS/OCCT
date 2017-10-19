@@ -30,37 +30,32 @@
 
 typedef void (*FDraw_InitAppli)(Draw_Interpretor&);
 
-#ifndef _WIN32
-Standard_EXPORT Standard_Integer _main_ (Standard_Integer argc, 
-					 Standard_PCharacter argv[], 
-					 const FDraw_InitAppli Draw_InitAppli);
-#else
-#include <windows.h>
-Standard_EXPORT Standard_Integer _WinMain_ (HINSTANCE hInstance, 
-					    HINSTANCE hPrevinstance, 
-					    LPSTR lpCmdLine, 
-					    Standard_Integer nCmdShow,
-					    const FDraw_InitAppli Draw_InitAppli);
-
-Standard_EXPORT Standard_Integer _main_ (int argc, 
-					 char* argv[], 
-					 char* envp[], 
-					 const FDraw_InitAppli Draw_InitAppli);
-#endif
+Standard_EXPORT Standard_Integer Draw_Main (Standard_Integer argc, Standard_PCharacter argv[], const FDraw_InitAppli Draw_InitAppli);
 
 // Declarations of macros DRAW_MAIN to be used in executables instead of explicit main/WinMain
-#ifndef _WIN32
-// main()
-#define DRAW_MAIN int main (Standard_Integer argc, char* argv[])\
-{return _main_ (argc, argv, Draw_InitAppli);}
-#else
-// WinMain() and main()
-#define DRAW_MAIN Standard_Integer PASCAL WinMain (HINSTANCE hInstance, HINSTANCE hPrevinstance, LPSTR lpCmdLine, Standard_Integer nCmdShow)\
-{return _WinMain_ (hInstance, hPrevinstance, lpCmdLine, nCmdShow, Draw_InitAppli);}\
-\
-int main (int argc, char* argv[], char* envp[])\
-{return _main_ (argc, argv, envp, Draw_InitAppli);}  
-#endif
+#ifdef _WIN32
 
+#include <windows.h>
+
+Standard_EXPORT Standard_Integer Draw_WinMain (HINSTANCE hInstance,
+                                               HINSTANCE hPrevinstance, 
+                                               LPSTR lpCmdLine,
+                                               Standard_Integer nCmdShow,
+					       const FDraw_InitAppli Draw_InitAppli);
+
+// WinMain() and main()
+#define DRAW_MAIN Standard_Integer PASCAL WinMain (HINSTANCE hInstance, HINSTANCE hPrevinstance, LPSTR lpCmdLine, Standard_Integer nCmdShow) \
+{ return Draw_WinMain (hInstance, hPrevinstance, lpCmdLine, nCmdShow, Draw_InitAppli); } \
+\
+int main (int argc, char* argv[]) \
+{ return Draw_Main (argc, argv, Draw_InitAppli); }
+
+#else
+
+// main()
+#define DRAW_MAIN int main (Standard_Integer argc, char* argv[]) \
+{ return Draw_Main (argc, argv, Draw_InitAppli); }
+
+#endif
 
 #endif

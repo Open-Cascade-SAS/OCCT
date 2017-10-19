@@ -86,7 +86,7 @@ BOOL CreateProc(HWND hWndFrame)
 |  COMMAND PROCEDURE
 |  		Handler for message WM_COMMAND   
 |     It is used when Draw_IsConsoleSubsystem = Standard_False
-|     i.e. in non-console mode (see _main_() in Draw_Main.cxx).
+|     i.e. in non-console mode (see Draw_main() in Draw_Main.cxx).
 \*--------------------------------------------------------------------------*/
 LRESULT APIENTRY CmdProc(HWND hWndFrame, UINT wMsg, WPARAM /*wParam*/, LPARAM /*lParam*/)
 {

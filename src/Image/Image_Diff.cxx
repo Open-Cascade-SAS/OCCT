@@ -32,7 +32,6 @@ namespace
   {
     Standard_Byte v[3];
     typedef Standard_Byte ComponentType_t;         //!< Component type
-    static Standard_Integer Length() { return 3; } //!< Returns the number of components
   };
 
   static Image_ColorXXX24 operator- (const Image_ColorXXX24& theA,

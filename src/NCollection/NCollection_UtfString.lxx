@@ -14,53 +14,6 @@
 // commercial license or contractual agreement.
 
 // =======================================================================
-// function : strGetAdvance
-// purpose  : Compute advance for specified string.
-// =======================================================================
-template<typename TypeTo> template<typename TypeFrom> inline
-void NCollection_UtfString<TypeTo>::strGetAdvance (const TypeFrom*        theStringUtf,
-                                                   const Standard_Integer theLengthMax,
-                                                   Standard_Integer&      theSizeBytes,
-                                                   Standard_Integer&      theLength)
-{
-  theSizeBytes = 0;
-  theLength    = 0;
-  NCollection_UtfIterator<TypeFrom> anIter (theStringUtf);
-  const Standard_Integer aLengthMax = (theLengthMax > 0) ? theLengthMax : IntegerLast();
-  switch (sizeof(TypeTo))
-  {
-    case sizeof(Standard_Utf8Char):
-    {
-      for (; *anIter != 0 && anIter.Index() < aLengthMax; ++anIter)
-      {
-        theSizeBytes += anIter.AdvanceBytesUtf8();
-      }
-      theLength = anIter.Index();
-      return;
-    }
-    case sizeof(Standard_Utf16Char):
-    {
-      for (; *anIter != 0 && anIter.Index() < aLengthMax; ++anIter)
-      {
-        theSizeBytes += anIter.AdvanceBytesUtf16();
-      }
-      theLength = anIter.Index();
-      return;
-    }
-    case sizeof(Standard_Utf32Char):
-    {
-      for (; *anIter != 0 && anIter.Index() < aLengthMax; ++anIter)
-      {
-        theSizeBytes += anIter.AdvanceBytesUtf32();
-      }
-      theLength = anIter.Index();
-      return;
-    }
-    default: return;
-  }
-}
-
-// =======================================================================
 // function : GetChar
 // purpose  :
 // =======================================================================
@@ -223,55 +176,6 @@ const NCollection_UtfString<Type>& NCollection_UtfString<Type>::operator= (const
   myString = strAlloc (mySize);
   strCopy ((Standard_Byte* )myString, (const Standard_Byte* )theOther.myString, mySize);
   return (*this);
-}
-
-// =======================================================================
-// function : FromUnicode
-// purpose  :
-// =======================================================================
-template<typename Type> template<typename TypeFrom>
-void NCollection_UtfString<Type>::FromUnicode (const TypeFrom*        theStringUtf,
-                                               const Standard_Integer theLength)
-{
-  Type* anOldBuffer = myString; // necessary in case of self-copying
-  NCollection_UtfIterator<TypeFrom> anIterRead (theStringUtf);
-  if (*anIterRead == 0)
-  {
-    // special case
-    Clear();
-    return;
-  }
-
-  switch (sizeof(TypeFrom)) // use switch() rather than if() to shut up msvc compiler
-  {
-    case sizeof(Type):
-    {
-      if (theLength > 0)
-      {
-        // optimized copy
-        for(; *anIterRead != 0 && anIterRead.Index() < theLength; ++anIterRead) {}
-
-        mySize   = Standard_Integer((Standard_Byte* )anIterRead.BufferHere() - (Standard_Byte* )theStringUtf);
-        myLength = anIterRead.Index();
-        myString = strAlloc (mySize);
-        strCopy ((Standard_Byte* )myString, (const Standard_Byte* )theStringUtf, mySize);
-        strFree (anOldBuffer);
-        return;
-      }
-    }
-    default: break;
-  }
-
-  strGetAdvance (theStringUtf, theLength, mySize, myLength);
-  myString = strAlloc (mySize);
-  // reset iterator
-  anIterRead.Init (theStringUtf);
-  Type* anIterWrite = myString;
-  for (; *anIterRead != 0 && anIterRead.Index() < myLength; ++anIterRead)
-  {
-    anIterWrite = anIterRead.GetUtf (anIterWrite);
-  }
-  strFree (anOldBuffer);
 }
 
 #if !defined(__ANDROID__)

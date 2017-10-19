@@ -364,20 +364,20 @@ static void LoadNextLevels(const TopoDS_Shape& S,
 {
   
   if (S.ShapeType() == TopAbs_SOLID) {		    
-    TopExp_Explorer expl(S, TopAbs_FACE);
-    for (; expl.More(); expl.Next()) {
+    TopExp_Explorer aExp(S, TopAbs_FACE);
+    for (; aExp.More(); aExp.Next()) {
       TNaming_Builder bFace(Tagger->NewChild());
-      bFace.Generated(expl.Current());
+      bFace.Generated(aExp.Current());
     }
   } else if (S.ShapeType() == TopAbs_SHELL || S.ShapeType() == TopAbs_FACE) {
     // load faces and all the free edges
     TopTools_IndexedMapOfShape Faces;
     TopExp::MapShapes(S, TopAbs_FACE, Faces);
     if (Faces.Extent() > 1 || (S.ShapeType() == TopAbs_SHELL && Faces.Extent() == 1)) {
-      TopExp_Explorer expl(S, TopAbs_FACE);
-      for (; expl.More(); expl.Next()) {
+      TopExp_Explorer aExp(S, TopAbs_FACE);
+      for (; aExp.More(); aExp.Next()) {
 	TNaming_Builder bFace(Tagger->NewChild());
-	bFace.Generated(expl.Current());
+	bFace.Generated(aExp.Current());
       }
     }
     TopTools_IndexedDataMapOfShapeListOfShape anEdgeAndNeighbourFaces;
@@ -403,16 +403,16 @@ static void LoadNextLevels(const TopoDS_Shape& S,
     if (Edges.Extent() == 1) {
       TNaming_Builder bEdge(Tagger->NewChild());
       bEdge.Generated(Edges.FindKey(1));
-      TopExp_Explorer expl(S, TopAbs_VERTEX);
-      for (; expl.More(); expl.Next()) {
+      TopExp_Explorer aExp(S, TopAbs_VERTEX);
+      for (; aExp.More(); aExp.Next()) {
 	TNaming_Builder bVertex(Tagger->NewChild());
-	bVertex.Generated(expl.Current());    
+	bVertex.Generated(aExp.Current());    
       }
     } else {
-      TopExp_Explorer expl(S, TopAbs_EDGE); 
-      for (; expl.More(); expl.Next()) {
+      TopExp_Explorer aExp(S, TopAbs_EDGE); 
+      for (; aExp.More(); aExp.Next()) {
 	TNaming_Builder bEdge(Tagger->NewChild());
-	bEdge.Generated(expl.Current());
+	bEdge.Generated(aExp.Current());
       }   
       // and load generated vertices.
       TopTools_DataMapOfShapeShape generated;
@@ -422,10 +422,10 @@ static void LoadNextLevels(const TopoDS_Shape& S,
       }
     }
   } else if (S.ShapeType() == TopAbs_EDGE) {
-    TopExp_Explorer expl(S, TopAbs_VERTEX);
-    for (; expl.More(); expl.Next()) {
+    TopExp_Explorer aExp(S, TopAbs_VERTEX);
+    for (; aExp.More(); aExp.Next()) {
       TNaming_Builder bVertex(Tagger->NewChild());
-      bVertex.Generated(expl.Current());    
+      bVertex.Generated(aExp.Current());    
     }
   }
 }

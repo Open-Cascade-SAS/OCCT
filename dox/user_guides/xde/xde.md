@@ -91,18 +91,18 @@ XDE can read and write colors and layers assigned to shapes or their subparts (d
   
  @figure{/user_guides/xde/images/xde_image006.png,"Colors and Layers",240}
 
-@subsection occt_xde_1_7 Geometric Dimensions & Tolerances (GD&T)
+@subsection occt_xde_1_7 Geometric Dimensions & Tolerances (GD\&T)
 
-GD&T are a type of Product and Manufacturing Information (PMI) that can be either computed automatically by a CAD system,
+GD\&T are a type of Product and Manufacturing Information (PMI) that can be either computed automatically by a CAD system,
 or entered manually by the user. For detailed information use <a href="https://www.cax-if.org/documents/rec_pracs_pmi_v40.pdf">CAx-IF Recommended Practices
 for the Representation and Presentation of Product Manufacturing Information (PMI) (AP242)</a>
 
-XDE can read and write GD&T data of the following types:
+XDE can read and write GD\&T data of the following types:
 * dimensions, such as distance, length, radius and so on;
 * geometric tolerances;
 * datums, i.e a theoretically exact geometric references, such as point, line or plane, to which toleranced features are related.
 
-XDE supports two presentations of GD&T data:
+XDE supports two presentations of GD\&T data:
 * semantic presentation, i.e. data is stored in a machine-consumable way and includes all information required to understand the
   specification without the aid of any presentation elements;
 * tessellated presentation, i.e. data is displayed in a human-readable way.
@@ -660,42 +660,42 @@ To remove a Color and all the references to it (so that the related shapes will 
 myColors->RemoveColor(ColLabel); 
 ~~~~~
 
-@subsection occt_xde_2_7 Geometric Dimensions & Tolerances (GD&T)
+@subsection occt_xde_2_7 Geometric Dimensions & Tolerances (GD\&T)
 
-XDE can read and write GD&T assigned to shapes or their subparts (down to the level of faces and edges) to and from STEP formats. 
+XDE can read and write GD\&T assigned to shapes or their subparts (down to the level of faces and edges) to and from STEP formats. 
 
-In an XDE document, GD&T are managed by the class *XCAFDoc_DimTolTool*. It works basing on the same principles as ShapeTool works with Shapes. This tool can be provided on the Main Label or on any sub-label. The GD&T entities themselves are defined as the following sub-classes of *TDF_Attribute*:
+In an XDE document, GD\&T are managed by the class *XCAFDoc_DimTolTool*. It works basing on the same principles as ShapeTool works with Shapes. This tool can be provided on the Main Label or on any sub-label. The GD\&T entities themselves are defined as the following sub-classes of *TDF_Attribute*:
   * *XCAFDoc_Dimension* - for dimensions;
   * *XCAFDoc_GeomTolerance* - for geometric tolerances;
   * *XCAFDoc_Datum* - for geometric tolerance Datums.
-A GD&T type is identified by the attributes listed above, i.e. *XCAFDoc_DimTolTool* methods working with particular entity types check 
+A GD\&T type is identified by the attributes listed above, i.e. *XCAFDoc_DimTolTool* methods working with particular entity types check 
 for presence of the corresponding attributes in passed labels. One can use methods of *XCAFDoc_DimTolTool* beginning with 'Is' for this purpose.
  
-GD&T entities are stored in a child of the starting document label 0.1.4. 
-Each GD&T entity then corresponds to the dedicated label, the property itself is one of access classes:
+GD\&T entities are stored in a child of the starting document label 0.1.4. 
+Each GD\&T entity then corresponds to the dedicated label, the property itself is one of access classes:
   * *XCAFDimTolObject_DimensionObject* - for dimensions;
   * *XCAFDimTolObject_GeomToleranceObject* - for geometric tolerances;
   * *XCAFDimTolObject_DatumObject* - for geometric tolerance Datums.
 
-GD&Ts and Shapes are related to by Graph Nodes. 
+GD\&Ts and Shapes are related to by Graph Nodes. 
 
 These definitions are common to various exchange formats, at least for STEP. 
 
 @subsubsection occt_xde_2_7_1 Initialization
-To query, edit, or initialize a Document to handle GD&Ts of XCAF, use: 
+To query, edit, or initialize a Document to handle GD\&Ts of XCAF, use: 
 ~~~~~
 Handle(XCAFDoc_DimTolTool) myDimTolTool = 
 XCAFDoc_DocumentTool::DimTolTool(Doc->Main()); 
 ~~~~~
-This call can be used at any time. When it is used for the first time, a relevant structure is added to the document. This definition is used for all later GD&T calls and is not repeated for them. 
+This call can be used at any time. When it is used for the first time, a relevant structure is added to the document. This definition is used for all later GD\&T calls and is not repeated for them. 
 
-@subsubsection occt_xde_2_7_2 Adding a GD&T
-*XCAFDoc_DimTolTool* provides methods to create GD&T 'empty' entities:
+@subsubsection occt_xde_2_7_2 Adding a GD\&T
+*XCAFDoc_DimTolTool* provides methods to create GD\&T 'empty' entities:
   * *AddDimension* - for a new dimension;
   * *AddGeomTolerance* - for a new geometric tolerance;
   * *AddDatum* - for a new geometric tolerance datum.
 
-All methods create a sub-label for the corresponding GD&T entity of the tool master label and attach an attribute specific for the
+All methods create a sub-label for the corresponding GD\&T entity of the tool master label and attach an attribute specific for the
 created entity.
 
 Here is an example of adding a new dimension:
@@ -706,10 +706,10 @@ if (!aDimLabel.IsNull())
   // error processing
 }
 ~~~~~
-A similar approach can be used for other GD&T types.
+A similar approach can be used for other GD\&T types.
 
-@subsubsection occt_xde_2_7_3 Editing a GD&T
-A newly added GD&T entity is empty. To set its data a corresponding access object should be used as it is demonstrated
+@subsubsection occt_xde_2_7_3 Editing a GD\&T
+A newly added GD\&T entity is empty. To set its data a corresponding access object should be used as it is demonstrated
 below, where the dimension becomes the linear distance between two points.
 ~~~~~
 Handle(XCAFDoc_Dimension) aDimAttr;
@@ -726,10 +726,10 @@ if (!aDimAttr.IsNull())
   aDimAttr->SetObject(aDimObject);
 }
 ~~~~~
-A similar approach can be used for other GD&T types.
+A similar approach can be used for other GD\&T types.
 
-@subsubsection occt_xde_2_7_4 Linking GD&Ts
-To link a GD&T entity with other OCAF labels (e.g. representing shapes) one should use the following methods:
+@subsubsection occt_xde_2_7_4 Linking GD\&Ts
+To link a GD\&T entity with other OCAF labels (e.g. representing shapes) one should use the following methods:
   * *SetDimension* - for dimensions;
   * *SetGeomTolerance* - for geometric tolerances;
   * SetDatum - for geometric tolerance datums.
@@ -748,20 +748,20 @@ aDGTTool->SetDimension(aShapes1, aShapes2, aDimLabel);
 
 In addition, a special method *SetDatumToGeomTol* should be used to link a datum with a geometric tolerance.
 
-@subsubsection occt_xde_2_7_5 Finding GD&Ts and reference shapes
+@subsubsection occt_xde_2_7_5 Finding GD\&Ts and reference shapes
 
-*XCAFDimTolObjects_Tool* class provides basic capabilities for searching GD&Ts linked to shapes.
+*XCAFDimTolObjects_Tool* class provides basic capabilities for searching GD\&Ts linked to shapes.
 Using the tool one can get sequences of dimensions, geometric tolerances and datums linked with a shape. A series of related datums is also returned for geometric tolerances.
 
-To get reference shapes for a GD&T entity one can use *GetRefShapeLabel* from *XCAFDoc_DimTolTool*.
+To get reference shapes for a GD\&T entity one can use *GetRefShapeLabel* from *XCAFDoc_DimTolTool*.
 
 *XCAFDoc_DimTolTool* provides methods to get lists of all dimensions, geometric tolerances and datums.
 
 @subsubsection occt_xde_2_7_6 Storing custom data
-Every GD&T entity in XDE is represented as a label with attached attribute identifying entity type. All specific data is
+Every GD\&T entity in XDE is represented as a label with attached attribute identifying entity type. All specific data is
 stored in sub-labels in standard OCAF attributes, such as *TDataStd_Integer*, *TDataStd_IntegerArray*, *TDataStd_RealArray* and so on.
 Sub-label tags are reserved for internal use and cannot be used for storing custom data. The following tag ranges are reserved for
-GD&T entities:
+GD\&T entities:
   * 1 - 17 - for dimensions;
   * 1 - 17 - for geometric tolerances;
   * 1 - 19 - for datums.
@@ -834,7 +834,7 @@ for (TDF_LabelSequence::Iterator anIt(aClipPlaneLbls); anIt.More(); anIt.Next())
 
 @subsection occt_xde_2_9 Saved views
 
-In an XDE document, Views are managed by the class *XCAFDoc_ViewTool*. It works basing on the same principles as ShapeTool works with Shapes. This tool can be provided on the Main Label or on any sub-label. Views are stored in a child of the starting document label 0.1.7, where a view itself is defined as *XCAFDoc_View* sub-class of *TDF_Attribute*. Views and selected shapes, clipping planes, GD&Ts and notes are related to by Graph Nodes.
+In an XDE document, Views are managed by the class *XCAFDoc_ViewTool*. It works basing on the same principles as ShapeTool works with Shapes. This tool can be provided on the Main Label or on any sub-label. Views are stored in a child of the starting document label 0.1.7, where a view itself is defined as *XCAFDoc_View* sub-class of *TDF_Attribute*. Views and selected shapes, clipping planes, GD\&Ts and notes are related to by Graph Nodes.
 
 To query, edit, or initialize a Document to handle views of XCAF, use: 
 ~~~~~
@@ -864,7 +864,7 @@ if (!aViewAttr.IsNull())
 }
 ~~~~~ 
 
-To set shapes, clipping planes, GD&Ts and notes selected for the view use one of overloaded *SetView* methods of *XCAFDoc_ViewTool*. 
+To set shapes, clipping planes, GD\&Ts and notes selected for the view use one of overloaded *SetView* methods of *XCAFDoc_ViewTool*. 
 To set only clipping planes one should use *SetClippingPlanes* method.
 ~~~~~
 TDF_LabelSequence aShapes; ...
@@ -891,23 +891,26 @@ for (TDF_LabelSequence::Iterator anIt(aViewLbls); anIt.More(); anIt.Next())
 }
 ~~~~~
 
-To get shapes, clipping planes, GD&Ts or notes associated with a particular view use the following methods:
+To get shapes, clipping planes, GD\&Ts or notes associated with a particular view use the following methods:
   * *GetRefShapeLabel* - returns a sequence of associated shape labels;
   * *GetRefGDTLabel* - returns a sequence of associated GDT labels;
   * *GetRefClippingPlaneLabel* - returns a sequence of associated clipping plane labels;
   * *GetRefNoteLabel* - returns a sequence of associated note labels;
   * *GetRefAnnotationLabel* - returns a sequence of associated annotated labels.
 
-And vice versa, to get views that display a particular clipping plane, GD&T or note use the following methods:
+And vice versa, to get views that display a particular clipping plane, GD\&T or note use the following methods:
   * *GetViewLabelsForShape* - returns a sequence of associated view labels for a shape;
-  * *GetViewLabelsForGDT* - returns a sequence of associated view labels for a GD&T;
+  * *GetViewLabelsForGDT* - returns a sequence of associated view labels for a GD\&T;
   * *GetViewLabelsForClippingPlane* - returns a sequence of associated view labels for a clipping plane;
   * *GetViewLabelsForNote* - returns a sequence of associated view labels for a note;
   * *GetViewLabelsForAnnotation* - returns a sequence of associated view labels for an annotated label.
 
 @subsection occt_xde_2_10 Custom notes
 
-In an XDE document, custom notes are managed by the class *XCAFDoc_NotesTool*. It works basing on the same principles as ShapeTool works with Shapes. This tool can be provided on the Main Label or on any sub-label. The Property itself is defined as sub-class of *XCAFDoc_Note* abstract class, which is a sub-class of *TDF_Attribute* one. 
+In an XDE document, custom notes are managed by the class *XCAFDoc_NotesTool*. 
+It works basing on the same principles as ShapeTool works with Shapes. 
+This tool can be provided on the Main Label or on any sub-label. 
+The Property itself is defined as sub-class of *XCAFDoc_Note* abstract class, which is a sub-class of *TDF_Attribute* one. 
 
 Custom notes are stored in a child of the *XCAFDoc_NotesTool* label, at label 0.1.9.1. Each note then corresponds to a dedicated label. A note may be attached to a document item identified by a label, a sub-shape identified by integer index or an attribute identified by GUID. Annotations are stored in a child of the *XCAFDoc_NotesTool* label, at label 0.1.9.2.
 Notes binding is done through *XCAFDoc_GraphNode* attribute.
@@ -1042,7 +1045,7 @@ The same can be said for Viewing: presentations can be defined from Shapes and C
 
 There are several important points to consider: 
   * Previously defined Readers and Writers for dealing with Shapes only, whether Standard or Advanced, remain unchanged in their form and in their dependencies. In addition, functions other than mapping are also unchanged.
-  * XDE provides mapping with data other than Shapes. Names, Colors, Layers, GD&T, Clipping planes, Views, Validation Properties (Centroid, Volume, Area), and Assembly Structure are hierarchic with rigid motion. Currently, Clipping planes and Views writing supported for XBF format only.
+  * XDE provides mapping with data other than Shapes. Names, Colors, Layers, GD\&T, Clipping planes, Views, Validation Properties (Centroid, Volume, Area), and Assembly Structure are hierarchic with rigid motion. Currently, Clipping planes and Views writing supported for XBF format only.
   * XDE mapping is relevant for use within the Advanced level of Data Exchanges, rather than Standard ones, because a higher level of information is better suited to a higher quality of shapes. In addition, this allows to avoid the multiplicity of combinations between various options. Note that this choice is not one of architecture but of practical usage and packaging.
   * Reader and Writer classes for XDE are generally used like those for Shapes. However, their use is adapted to manage a Document rather than a Shape.
   

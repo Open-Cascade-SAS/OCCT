@@ -277,10 +277,10 @@ Standard_Boolean Draft_Modification::InternalAdd(const TopoDS_Face& F,
     }
   }    
 
-  TopExp_Explorer expl(F,TopAbs_EDGE);
+  TopExp_Explorer aExp(F,TopAbs_EDGE);
   TopTools_MapOfShape MapOfE;
-  while (expl.More() && badShape.IsNull()) {
-    const TopoDS_Edge& edg = TopoDS::Edge(expl.Current());
+  while (aExp.More() && badShape.IsNull()) {
+    const TopoDS_Edge& edg = TopoDS::Edge(aExp.Current());
     if (!myEMap.Contains(edg)) {
       Standard_Boolean addedg  = Standard_False;
       Standard_Boolean addface = Standard_False;
@@ -393,7 +393,7 @@ Standard_Boolean Draft_Modification::InternalAdd(const TopoDS_Face& F,
         }
       }
     }
-    expl.Next();
+    aExp.Next();
   }
   return (badShape.IsNull());
 }

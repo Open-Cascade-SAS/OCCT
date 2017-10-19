@@ -317,8 +317,6 @@ namespace
 {
   class qaclass50_50ANON : public qaclass49_50
   {
-  public:
-    qaclass50_50ANON() {}
   };
 }
 

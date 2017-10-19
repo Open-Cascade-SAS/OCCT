@@ -16,12 +16,16 @@
 #ifndef _NCollection_UtfIterator_H__
 #define _NCollection_UtfIterator_H__
 
-#include <Standard_TypeDef.hxx>
+#include <Standard_Handle.hxx>
 
 //! Template class for Unicode strings support.
+//!
 //! It defines an iterator and provide correct way to read multi-byte text (UTF-8 and UTF-16)
 //! and convert it from one to another.
-//! The current value of iterator returned as UTF-32 Unicode code.
+//! The current value of iterator is returned as UTF-32 Unicode symbol.
+//!
+//! Here and below term "Unicode symbol" is used as 
+//! synonym of "Unicode code point".
 template<typename Type>
 class NCollection_UtfIterator
 {
@@ -56,20 +60,13 @@ public:
     myCharIndex = 0;
   }
 
-  //! Pre-increment operator. Reads the next unicode character.
+  //! Pre-increment operator. Reads the next unicode symbol.
   //! Notice - no protection against overrun!
   NCollection_UtfIterator& operator++()
   {
     myPosition = myPosNext;
     ++myCharIndex;
-    switch (sizeof(Type))
-    {
-      case 1: readUTF8();  break;
-      case 2: readUTF16(); break;
-      case 4: // UTF-32
-      default:
-        myCharUtf32 = *myPosNext++;
-    }
+    readNext (static_cast<const typename CharTypeChooser<Type>::type*>(0));
     return *this;
   }
 
@@ -95,7 +92,7 @@ public:
   }
 
   //! Dereference operator.
-  //! @return the UTF-32 codepoint of the character currently pointed by iterator.
+  //! @return the UTF-32 codepoint of the symbol currently pointed by iterator.
   Standard_Utf32Char operator*() const
   {
     return myCharUtf32;
@@ -111,6 +108,7 @@ public:
   const Type* BufferNext() const { return myPosNext; }
 
   //! @return the index displacement from iterator intialization
+  //!         (first symbol has index 0)
   Standard_Integer Index() const
   {
     return myCharIndex;
@@ -161,24 +159,60 @@ public:
 
   //! @return the advance in TypeWrite chars needed to store current symbol
   template<typename TypeWrite>
-  Standard_Integer AdvanceBytesUtf() const;
+  inline Standard_Integer AdvanceBytesUtf() const
+  { 
+    return advanceBytes(static_cast<const typename CharTypeChooser<TypeWrite>::type*>(0));
+  }
 
   //! Fill the UTF-** buffer within current Unicode symbol.
   //! Use method AdvanceUtf**() to allocate buffer with enough size.
   //! @param theBuffer buffer to fill
   //! @return new buffer position (for next char)
   template<typename TypeWrite>
-  TypeWrite* GetUtf (TypeWrite* theBuffer) const;
+  inline TypeWrite* GetUtf (TypeWrite* theBuffer) const
+  { 
+    return (TypeWrite*)(getUtf (reinterpret_cast<typename CharTypeChooser<TypeWrite>::type*>(theBuffer)));
+  }
 
 private:
 
-  //! Helper function for reading a single UTF8 character from the string.
+  //! Helper template class dispatching its argument class
+  //! to the equivalent (by size) character (Unicode code unit) type.
+  //! The code unit type is defined as nested typedef "type".
+  //! 
+  //! In practice this is relevant for wchar_t type:
+  //! typename CharTypeChooser<wchar_t>::type resolves to
+  //! Standard_Utf16Char on Windows and to Standard_Utf32Char on Linux.
+  template <typename TypeChar>
+  class CharTypeChooser : 
+    public   opencascade::std::conditional< sizeof(TypeChar) == 1, Standard_Utf8Char,
+    typename opencascade::std::conditional< sizeof(TypeChar) == 2, Standard_Utf16Char,
+    typename opencascade::std::conditional< sizeof(TypeChar) == 4, Standard_Utf32Char, void >::type >::type >
+  {
+  };
+
+  //! Helper function for reading a single Unicode symbol from the UTF-8 string.
   //! Updates internal state appropriately.
   void readUTF8();
 
-  //! Helper function for reading a single UTF16 character from the string.
+  //! Helper function for reading a single Unicode symbol from the UTF-16 string.
   //! Updates internal state appropriately.
   void readUTF16();
+
+  //! Helper overload methods to dispatch reading function depending on code unit size
+  void readNext (const Standard_Utf8Char*)  { readUTF8(); }
+  void readNext (const Standard_Utf16Char*) { readUTF16(); }
+  void readNext (const Standard_Utf32Char*) { myCharUtf32 = *myPosNext++; }
+
+  //! Helper overload methods to dispatch advance function depending on code unit size
+  Standard_Integer advanceBytes (const Standard_Utf8Char*)  const { return AdvanceBytesUtf8(); }
+  Standard_Integer advanceBytes (const Standard_Utf16Char*) const { return AdvanceBytesUtf16(); }
+  Standard_Integer advanceBytes (const Standard_Utf32Char*) const { return AdvanceBytesUtf32(); }
+
+  //! Helper overload methods to dispatch getter function depending on code unit size
+  Standard_Utf8Char*  getUtf (Standard_Utf8Char*  theBuffer) const { return GetUtf8 (theBuffer); }
+  Standard_Utf16Char* getUtf (Standard_Utf16Char* theBuffer) const { return GetUtf16(theBuffer); }
+  Standard_Utf32Char* getUtf (Standard_Utf32Char* theBuffer) const { return GetUtf32(theBuffer); }
 
 private: //! @name unicode magic numbers
 
@@ -199,10 +233,10 @@ private: //! @name unicode magic numbers
 
 private: //! @name private fields
 
-  const Type*        myPosition;  //!< buffer position of the first element in the current character
-  const Type*        myPosNext;   //!< buffer position of the first element in the next character
+  const Type*        myPosition;  //!< buffer position of the first element in the current symbol
+  const Type*        myPosNext;   //!< buffer position of the first element in the next symbol
   Standard_Integer   myCharIndex; //!< index displacement from iterator intialization
-  Standard_Utf32Char myCharUtf32; //!< character stored at the current buffer position
+  Standard_Utf32Char myCharUtf32; //!< Unicode symbol stored at the current buffer position
 
 };
 

@@ -317,35 +317,3 @@ Standard_Utf32Char* NCollection_UtfIterator<Type>::GetUtf32 (Standard_Utf32Char*
   *theBuffer++ = myCharUtf32;
   return theBuffer;
 }
-
-// =======================================================================
-// function : AdvanceBytesUtf
-// purpose  :
-// =======================================================================
-template<typename Type> template<typename TypeWrite> inline
-Standard_Integer NCollection_UtfIterator<Type>::AdvanceBytesUtf() const
-{
-  switch (sizeof(TypeWrite))
-  {
-    case sizeof(Standard_Utf8Char):  return AdvanceBytesUtf8();
-    case sizeof(Standard_Utf16Char): return AdvanceBytesUtf16();
-    case sizeof(Standard_Utf32Char): return AdvanceBytesUtf32();
-    default:                         return 0; // invalid case
-  }
-}
-
-// =======================================================================
-// function : GetUtf
-// purpose  :
-// =======================================================================
-template<typename Type> template<typename TypeWrite> inline
-TypeWrite* NCollection_UtfIterator<Type>::GetUtf (TypeWrite* theBuffer) const
-{
-  switch (sizeof(TypeWrite))
-  {
-    case sizeof(Standard_Utf8Char):  return (TypeWrite* )GetUtf8 ((Standard_Utf8UChar* )theBuffer);
-    case sizeof(Standard_Utf16Char): return (TypeWrite* )GetUtf16((Standard_Utf16Char* )theBuffer);
-    case sizeof(Standard_Utf32Char): return (TypeWrite* )GetUtf32((Standard_Utf32Char* )theBuffer);
-    default:                         return NULL; // invalid case
-  }
-}

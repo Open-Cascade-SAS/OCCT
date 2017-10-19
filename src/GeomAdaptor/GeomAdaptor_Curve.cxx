@@ -763,9 +763,8 @@ gp_Vec GeomAdaptor_Curve::DN(const Standard_Real    U,
       return myBSplineCurve->LocalDN(U, aStart, aFinish, N);
     }
     else
-  return myCurve->DN( U, N);
-    break;
-}
+      return myCurve->DN (U, N);
+  }
 
   case GeomAbs_OffsetCurve:
     return myNestedEvaluator->DN(U, N);

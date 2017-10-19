@@ -2399,7 +2399,7 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
       di << "(Real) Underflow";
       //cout.flush();
       di << "\n";
-      Standard_Real res, r=1.0e-308;
+      Standard_Real res, r = RealSmall();
       res = r * r;
       //res = res + 1.;
       //++++ cout<<"-- "<<res<<"="<<r<<"*"<<r<<"   Does not Caught... KO"<<endl;

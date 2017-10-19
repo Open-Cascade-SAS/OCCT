@@ -16,9 +16,7 @@
 #ifndef _NCollection_UtfString_H__
 #define _NCollection_UtfString_H__
 
-#include "NCollection_UtfIterator.hxx"
-
-#include <Standard.hxx>
+#include <NCollection_UtfIterator.hxx>
 
 #include <cstring>
 #include <cstdlib>
@@ -29,6 +27,9 @@
 //!
 //! Notice that changing the string is not allowed
 //! and any modifications should produce new string.
+//!
+//! In comments to this class, terms "Unicode symbol" is used as 
+//! synonym of "Unicode code point".
 template<typename Type>
 class NCollection_UtfString
 {
@@ -40,7 +41,7 @@ public:
     return NCollection_UtfIterator<Type> (myString);
   }
 
-  //! @return the size of the buffer, excluding NULL-termination symbol
+  //! @return the size of the buffer in bytes, excluding NULL-termination symbol
   Standard_Integer Size() const
   {
     return mySize;
@@ -60,7 +61,8 @@ public:
 
   //! Retrieve string buffer at specified position.
   //! Warning! This is a slow access. Iterator should be used for consecutive parsing.
-  //! @param theCharIndex the index of the symbol, should be lesser than Length()
+  //! @param theCharIndex the index of the symbol, should be less than Length()
+  //!        (first symbol of the string has index 0)
   //! @return the pointer to the symbol
   const Type* GetCharBuffer (const Standard_Integer theCharIndex) const;
 
@@ -78,45 +80,67 @@ public:
   //! @param theCopy string to copy.
   NCollection_UtfString (const NCollection_UtfString& theCopy);
 
-  //! Copy constructor from NULL-terminated UTF-8 string.
-  //! @param theCopyUtf8 NULL-terminated UTF-8 string to copy
-  //! @param theLength   the length limit in Unicode symbols (NOT bytes!)
+  //! Copy constructor from UTF-8 string.
+  //! @param theCopyUtf8 UTF-8 string to copy
+  //! @param theLength   optional length limit in Unicode symbols (NOT bytes!)
+  //! The string is copied till NULL symbol or, if theLength >0, 
+  //! till either NULL or theLength-th symbol (which comes first).
   NCollection_UtfString (const char*            theCopyUtf8,
                          const Standard_Integer theLength = -1);
 
-  //! Copy constructor from NULL-terminated UTF-16 string.
-  //! @param theCopyUtf16 NULL-terminated UTF-16 string to copy
+  //! Copy constructor from UTF-16 string.
+  //! @param theCopyUtf16 UTF-16 string to copy
   //! @param theLength    the length limit in Unicode symbols (NOT bytes!)
+  //! The string is copied till NULL symbol or, if theLength >0, 
+  //! till either NULL or theLength-th symbol (which comes first).
   NCollection_UtfString (const Standard_Utf16Char* theCopyUtf16,
                          const Standard_Integer    theLength = -1);
 
-  //! Copy constructor from NULL-terminated UTF-32 string.
-  //! @param theCopyUtf32 NULL-terminated UTF-32 string to copy
+  //! Copy constructor from UTF-32 string.
+  //! @param theCopyUtf32 UTF-32 string to copy
   //! @param theLength    the length limit in Unicode symbols (NOT bytes!)
+  //! The string is copied till NULL symbol or, if theLength >0, 
+  //! till either NULL or theLength-th symbol (which comes first).
   NCollection_UtfString (const Standard_Utf32Char* theCopyUtf32,
                          const Standard_Integer    theLength = -1);
 
 #if !defined(_MSC_VER) || defined(_NATIVE_WCHAR_T_DEFINED) || (defined(_MSC_VER) && _MSC_VER >= 1900)
-  //! Copy constructor from NULL-terminated wide UTF string.
-  //! @param theCopyUtfWide NULL-terminated wide UTF string to copy
+  //! Copy constructor from wide UTF string.
+  //! @param theCopyUtfWide wide UTF string to copy
   //! @param theLength      the length limit in Unicode symbols (NOT bytes!)
+  //! The string is copied till NULL symbol or, if theLength >0, 
+  //! till either NULL or theLength-th symbol (which comes first).
   //!
   //! This constructor is undefined if Standard_WideChar is the same type as Standard_Utf16Char.
   NCollection_UtfString (const Standard_WideChar* theCopyUtfWide,
                          const Standard_Integer   theLength = -1);
 #endif
 
-  //! Copy from NULL-terminated Unicode string.
-  //! @param theStringUtf NULL-terminated Unicode string
+  //! Copy from Unicode string in UTF-8, UTF-16, or UTF-32 encoding,
+  //! determined by size of TypeFrom character type.
+  //! @param theStringUtf Unicode string
   //! @param theLength    the length limit in Unicode symbols
+  //! The string is copied till NULL symbol or, if theLength >0, 
+  //! till either NULL or theLength-th symbol (which comes first).
   template <typename TypeFrom>
-  void FromUnicode (const TypeFrom*        theStringUtf,
-                    const Standard_Integer theLength = -1);
+  inline void FromUnicode (const TypeFrom*        theStringUtf,
+                           const Standard_Integer theLength = -1)
+  {
+    NCollection_UtfIterator<TypeFrom> anIterRead (theStringUtf);
+    if (*anIterRead == 0)
+    {
+      // special case
+      Clear();
+      return;
+    }
+    fromUnicodeImpl (theStringUtf, theLength, anIterRead);
+  }
 
-  //! Copy from NULL-terminated multibyte string in system locale.
-  //! You should avoid this function unless extreme necessity.
-  //! @param theString NULL-terminated multibyte string
+  //! Copy from multibyte string in current system locale.
+  //! @param theString multibyte string
   //! @param theLength the length limit in Unicode symbols
+  //! The string is copied till NULL symbol or, if theLength >0, 
+  //! till either NULL or theLength-th symbol (which comes first).
   void FromLocale (const char*            theString,
                    const Standard_Integer theLength = -1);
 
@@ -153,8 +177,7 @@ public:
   //! @return copy in wide format (UTF-16 on Windows and UTF-32 on Linux)
   const NCollection_UtfString<Standard_WideChar> ToUtfWide() const;
 
-  //! Converts the string into multibyte string.
-  //! You should avoid this function unless extreme necessity.
+  //! Converts the string into string in the current system locale.
   //! @param theBuffer    output buffer
   //! @param theSizeBytes buffer size in bytes
   //! @return true on success
@@ -210,16 +233,50 @@ public: //! @name compare operators
 
 private: //! @name low-level methods
 
-  //! Compute advance for specified string.
-  //! @param theStringUtf pointer to the NULL-terminated Unicode string
-  //! @param theLengthMax length limit (to cut the string), set to -1 to compute up to NULL-termination symbol
-  //! @param theSizeBytes advance in bytes (out)
-  //! @param theLength    string length (out)
+  //! Implementation of copy routine for string of the same type
+  void fromUnicodeImpl (const Type* theStringUtf, const Standard_Integer theLength, NCollection_UtfIterator<Type>& theIterator)
+  {
+    Type* anOldBuffer = myString; // necessary in case of self-copying
+
+    // advance to the end
+    const Standard_Integer aLengthMax = (theLength > 0) ? theLength : IntegerLast();
+    for(; *theIterator != 0 && theIterator.Index() < aLengthMax; ++theIterator) {}
+
+    mySize   = Standard_Integer((Standard_Byte* )theIterator.BufferHere() - (Standard_Byte* )theStringUtf);
+    myLength = theIterator.Index();
+    myString = strAlloc (mySize);
+    strCopy ((Standard_Byte* )myString, (const Standard_Byte* )theStringUtf, mySize);
+
+    strFree (anOldBuffer);
+  }
+
+  //! Implementation of copy routine for string of other types
   template<typename TypeFrom>
-  static void strGetAdvance (const TypeFrom*        theStringUtf,
-                             const Standard_Integer theLengthMax,
-                             Standard_Integer&      theSizeBytes,
-                             Standard_Integer&      theLength);
+  void fromUnicodeImpl (typename opencascade::std::enable_if<! opencascade::std::is_same<Type, TypeFrom>::value, const TypeFrom*>::type theStringUtf, 
+                        const Standard_Integer theLength, NCollection_UtfIterator<TypeFrom>& theIterator)
+  {
+    Type* anOldBuffer = myString; // necessary in case of self-copying
+
+    mySize = 0;
+    const Standard_Integer aLengthMax = (theLength > 0) ? theLength : IntegerLast();
+    for (; *theIterator != 0 && theIterator.Index() < aLengthMax; ++theIterator)
+    {
+      mySize += theIterator.template AdvanceBytesUtf<Type>();
+    }
+    myLength = theIterator.Index();
+
+    myString = strAlloc (mySize);
+
+    // copy string
+    theIterator.Init (theStringUtf);
+    Type* anIterWrite = myString;
+    for (; *theIterator != 0 && theIterator.Index() < myLength; ++theIterator)
+    {
+      anIterWrite = theIterator.GetUtf (anIterWrite);
+    }
+
+    strFree (anOldBuffer);
+  }
 
   //! Allocate NULL-terminated string buffer.
   static Type* strAlloc (const Standard_Size theSizeBytes)

@@ -217,8 +217,10 @@ OSD_Host :: OSD_Host () {
   ZeroMemory (&ms, sizeof(ms));
   ZeroMemory (szHostName, sizeof(char) * (MAX_COMPUTERNAME_LENGTH + 1));
 
-#ifdef _MSC_VER
   // suppress GetVersionEx() deprecation warning
+#if defined(__INTEL_COMPILER)
+  #pragma warning(disable : 1478)
+#elif defined(_MSC_VER)
   #pragma warning(disable : 4996)
 #endif
   if (!GetVersionExW (&osVerInfo))

@@ -215,8 +215,8 @@ TopoDS_Shape ShapeExtend_Explorer::SortedCompound (const TopoDS_Shape& shape,
   BRep_Builder BB;
   BB.MakeCompound(CC);
   //Standard_Integer iena = Standard_False; //szv#4:S4163:12Mar99 unused
-  for (TopExp_Explorer expl (shape,type); expl.More(); expl.Next()) {
-    nb ++;  sh = expl.Current();
+  for (TopExp_Explorer aExp (shape,type); aExp.More(); aExp.Next()) {
+    nb ++;  sh = aExp.Current();
     BB.Add (CC,sh);
   }
   if (nb == 0) CC.Nullify();
