@@ -16,6 +16,7 @@
 #include <BOPAlgo_BuilderSolid.hxx>
 #include <BOPAlgo_MakerVolume.hxx>
 #include <BOPAlgo_PaveFiller.hxx>
+#include <BOPAlgo_Tools.hxx>
 #include <BOPAlgo_Alerts.hxx>
 #include <BOPCol_DataMapOfShapeListOfShape.hxx>
 #include <BOPCol_ListOfShape.hxx>
@@ -29,10 +30,6 @@
 static
   void AddFace(const TopoDS_Shape& theF,
                BOPCol_ListOfShape& theLF);
-static
-  void TreatCompound(const TopoDS_Shape& theS,
-                     BOPCol_MapOfShape& aMFence,
-                     BOPCol_ListOfShape& theLS);
 
 //=======================================================================
 //function : CheckData
@@ -352,7 +349,7 @@ void BOPAlgo_MakerVolume::FillInternalShapes(const BOPCol_ListOfShape& theLSR)
   aIt.Initialize(anArguments);
   for (; aIt.More(); aIt.Next()) {
     const TopoDS_Shape& aS = aIt.Value();
-    TreatCompound(aS, aMFence, aLSC);
+    BOPAlgo_Tools::TreatCompound(aS, aMFence, aLSC);
   }
   //
   aIt.Initialize(aLSC);
@@ -439,27 +436,4 @@ void AddFace(const TopoDS_Shape& theF,
   theLF.Append(aFF);
   aFF.Orientation(TopAbs_REVERSED);
   theLF.Append(aFF);
-}
-
-//=======================================================================
-//function : TreatCompound
-//purpose  : 
-//=======================================================================
-void TreatCompound(const TopoDS_Shape& theS,
-                   BOPCol_MapOfShape& aMFence,
-                   BOPCol_ListOfShape& theLS)
-{
-  TopAbs_ShapeEnum aType = theS.ShapeType();
-  if (aType != TopAbs_COMPOUND) {
-    if (aMFence.Add(theS)) {
-      theLS.Append(theS);
-    }
-    return;
-  }
-  //
-  TopoDS_Iterator aIt(theS);
-  for (; aIt.More(); aIt.Next()) {
-    const TopoDS_Shape& aS = aIt.Value();
-    TreatCompound(aS, aMFence, theLS);
-  }
 }

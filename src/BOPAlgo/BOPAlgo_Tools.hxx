@@ -23,6 +23,8 @@
 #include <BOPDS_IndexedDataMapOfPaveBlockListOfInteger.hxx>
 #include <BOPCol_IndexedDataMapOfShapeReal.hxx>
 #include <BOPCol_ListOfListOfShape.hxx>
+#include <BOPCol_MapOfShape.hxx>
+#include <BOPCol_ListOfShape.hxx>
 #include <BOPDS_IndexedDataMapOfPaveBlockListOfPaveBlock.hxx>
 #include <BOPDS_PDS.hxx>
 #include <Standard_Integer.hxx>
@@ -155,6 +157,12 @@ public:
                                                 const Standard_Real theFuzzyValue,
                                                 BOPCol_ListOfListOfShape& theChains);
 
+  //! Collect in the output list recursively all non-compound subshapes of the first level
+  //! of the given shape theS. If a shape presents in the map theMFence it is skipped.
+  //! All shapes put in the output are also added into theMFence.
+  Standard_EXPORT static void TreatCompound(const TopoDS_Shape& theS,
+                                            BOPCol_MapOfShape& theMFence,
+                                            BOPCol_ListOfShape& theLS);
 };
 
 #endif // _BOPAlgo_Tools_HeaderFile

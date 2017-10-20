@@ -16,6 +16,7 @@
 #include <BOPAlgo_BOP.hxx>
 #include <BOPAlgo_BuilderSolid.hxx>
 #include <BOPAlgo_PaveFiller.hxx>
+#include <BOPAlgo_Tools.hxx>
 #include <BOPAlgo_Alerts.hxx>
 #include <BOPCol_DataMapOfShapeShape.hxx>
 #include <BOPCol_IndexedDataMapOfShapeListOfShape.hxx>
@@ -811,9 +812,11 @@ void BOPAlgo_BOP::BuildShape()
   }
   // make containers
   BOPCol_ListOfShape aLCRes;
+  BOPCol_MapOfShape aMInpFence;
   aItLS.Initialize(aLSC);
   for (; aItLS.More(); aItLS.Next()) {
     const TopoDS_Shape& aSC = aItLS.Value();
+    aMInpFence.Add(aSC);
     //
     BOPTools_AlgoTools::MakeContainer(TopAbs_COMPOUND, aRC);
     //
@@ -895,19 +898,44 @@ void BOPAlgo_BOP::BuildShape()
   for (; aItLS.More(); aItLS.Next()) {
     aBB.Add(aResult, aItLS.Value());
   }
-  //
-  // add the rest of the shapes into result
+
+  // create map of containers
   BOPCol_MapOfShape aMSResult;
   BOPTools::MapShapes(aResult, aMSResult);
-  //
-  aIt.Initialize(myRC);
-  for (; aIt.More(); aIt.Next()) {
-    const TopoDS_Shape& aS = aIt.Value();
-    if (aMSResult.Add(aS)) {
-      aBB.Add(aResult, aS);
+
+  // get input non-container shapes
+  BOPCol_ListOfShape aLSNonCont;
+  for (i = 0; i < 2; ++i)
+  {
+    const BOPCol_ListOfShape& aLS = !i ? myArguments : myTools;
+    aItLS.Initialize(aLS);
+    for (; aItLS.More(); aItLS.Next())
+    {
+      const TopoDS_Shape& aS = aItLS.Value();
+      BOPAlgo_Tools::TreatCompound(aS, aMInpFence, aLSNonCont);
     }
   }
-  //
+
+  // put non-container shapes in the result
+  aItLS.Initialize(aLSNonCont);
+  for (; aItLS.More(); aItLS.Next())
+  {
+    const TopoDS_Shape& aS = aItLS.Value();
+    if (myImages.IsBound(aS))
+    {
+      const BOPCol_ListOfShape& aLSIm = myImages.Find(aS);
+      aItLSIm.Initialize(aLSIm);
+      for (; aItLSIm.More(); aItLSIm.Next())
+      {
+        const TopoDS_Shape& aSIm = aItLSIm.Value();
+        if (aMSRC.Contains(aSIm) && aMSResult.Add(aSIm))
+          aBB.Add(aResult, aSIm);
+      }
+    }
+    else if (aMSRC.Contains(aS) && aMSResult.Add(aS))
+      aBB.Add(aResult, aS);
+  }
+
   myShape = aResult;
 }
 //=======================================================================
