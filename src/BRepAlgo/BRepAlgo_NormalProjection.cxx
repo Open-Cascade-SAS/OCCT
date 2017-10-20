@@ -24,7 +24,7 @@
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepAlgo_NormalProjection.hxx>
 #include <BRepAlgo_SequenceOfSequenceOfInteger.hxx>
-#include <BRepAlgoAPI_Common.hxx>
+#include <BRepAlgoAPI_Section.hxx>
 #include <BRepLib_MakeEdge.hxx>
 #include <BRepLib_MakeVertex.hxx>
 #include <BRepLib_MakeWire.hxx>
@@ -481,9 +481,9 @@ void BRepAlgo_NormalProjection::SetDefaultParams()
             if (!Degenerated) {
               // Perform Boolean COMMON operation to get parts of projected edge
               // inside the face
-              BRepAlgoAPI_Common aCommon(Faces->Value(j), prj);
-              if (aCommon.IsDone()) {
-                const TopoDS_Shape& aRC = aCommon.Shape();
+              BRepAlgoAPI_Section aSection(Faces->Value(j), prj);
+              if (aSection.IsDone()) {
+                const TopoDS_Shape& aRC = aSection.Shape();
                 //
                 TopExp_Explorer aExpE(aRC, TopAbs_EDGE);
                 for (; aExpE.More(); aExpE.Next()) {

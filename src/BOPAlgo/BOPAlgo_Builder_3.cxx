@@ -64,6 +64,7 @@
 #include <BOPTools_Set.hxx>
 //
 #include <BOPAlgo_BuilderSolid.hxx>
+#include <BOPAlgo_Tools.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_IncAllocator.hxx>
 
@@ -73,11 +74,6 @@
 static
   void OwnInternalShapes(const TopoDS_Shape& ,
                          BOPCol_IndexedMapOfShape& );
-
-static
-  void TreatCompound(const TopoDS_Shape& theS,
-                     BOPCol_MapOfShape& aMFence,
-                     BOPCol_ListOfShape& theLS);
 
 //=======================================================================
 // BOPAlgo_BuilderSolid
@@ -941,7 +937,7 @@ void BOPAlgo_Builder::FillInternalShapes()
   aIt.Initialize(aArguments);
   for (; aIt.More(); aIt.Next()) {
     const TopoDS_Shape& aS=aIt.Value();
-    TreatCompound(aS, aMFence, aLSC);
+    BOPAlgo_Tools::TreatCompound(aS, aMFence, aLSC);
   }
   aIt.Initialize(aLSC);
   for (; aIt.More(); aIt.Next()) {
@@ -1144,31 +1140,5 @@ void OwnInternalShapes(const TopoDS_Shape& theS,
     if (aSx.ShapeType()!=TopAbs_SHELL) {
       theMx.Add(aSx);
     }
-  }
-}
-//=======================================================================
-//function : TreatCompound
-//purpose  : 
-//=======================================================================
-void TreatCompound(const TopoDS_Shape& theS,
-                   BOPCol_MapOfShape& aMFence,
-                   BOPCol_ListOfShape& theLS)
-{
-  TopAbs_ShapeEnum aType;
-  //
-  aType = theS.ShapeType();
-  if (aType != TopAbs_COMPOUND) {
-    if (aMFence.Add(theS)) {
-      theLS.Append(theS);
-    }
-    return;
-  }
-  //
-  TopoDS_Iterator aIt;
-  //
-  aIt.Initialize(theS);
-  for (; aIt.More(); aIt.Next()) {
-    const TopoDS_Shape& aS = aIt.Value();
-    TreatCompound(aS, aMFence, theLS);
   }
 }

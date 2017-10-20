@@ -59,12 +59,10 @@ prism f4 l2 0 -1 0
 compound f1 f2 f3 bc
 bfuse r bc f4
 bcut r r f5
-explode r e
-wire w r_4 r_1 r_20 r_21 r_22 r_23 r_24 r_25 r_26 r_7 r_30 r_31 r_32 r_33 r_27 r_28 r_29 r_11 r_38 r_34 r_35 r_36 r_37 r_16 r_17
-tcopy w w1
-tmirror w1 -6 0 0 0 1 0
-wire w w w1
-mkface w p w
+tcopy r r1
+tmirror r1 -6 0 0 0 1 0
+bfuse w r r1
+unifysamedom w w
 donly w
 
 # construct complete snowflake

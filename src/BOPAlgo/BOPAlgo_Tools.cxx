@@ -1089,3 +1089,26 @@ void BOPAlgo_Tools::IntersectVertices(const BOPCol_IndexedDataMapOfShapeReal& th
     }
   }
 }
+
+//=======================================================================
+//function : TreatCompound
+//purpose  : 
+//=======================================================================
+void BOPAlgo_Tools::TreatCompound(const TopoDS_Shape& theS,
+                                  BOPCol_MapOfShape& aMFence,
+                                  BOPCol_ListOfShape& theLS)
+{
+  TopAbs_ShapeEnum aType = theS.ShapeType();
+  if (aType != TopAbs_COMPOUND)
+  {
+    if (aMFence.Add(theS))
+      theLS.Append(theS);
+    return;
+  }
+  TopoDS_Iterator aIt(theS);
+  for (; aIt.More(); aIt.Next())
+  {
+    const TopoDS_Shape& aS = aIt.Value();
+    TreatCompound(aS, aMFence, theLS);
+  }
+}

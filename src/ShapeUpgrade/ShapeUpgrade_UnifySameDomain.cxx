@@ -125,41 +125,6 @@ static Standard_Boolean IsLikeSeam(const TopoDS_Edge& anEdge,
   return Standard_False;
 }
 
-static Standard_Boolean CheckSharedEdgeOri(const TopoDS_Face& theF1,
-                                           const TopoDS_Face& theF2,
-                                           const TopoDS_Edge& theE)
-{
-  TopAbs_Orientation anEOri = theE.Orientation();
-  if (anEOri == TopAbs_EXTERNAL || anEOri == TopAbs_INTERNAL)
-    return Standard_False;
-
-  TopExp_Explorer Exp(theF1, TopAbs_EDGE);
-  for (;Exp.More();Exp.Next())
-  {
-    const TopoDS_Shape& aCE = Exp.Current();
-    if (aCE.IsSame(theE))
-    {
-      anEOri = aCE.Orientation(); 
-      break;
-    }
-  }
-
-  for (Exp.Init(theF2, TopAbs_EDGE);Exp.More();Exp.Next())
-  {
-    const TopoDS_Shape& aCE = Exp.Current();
-    if (aCE.IsSame(theE))
-    {
-      if (aCE.Orientation() == TopAbs::Reverse(anEOri))
-        return Standard_True;
-      else
-        return Standard_False;
-    }
-  }
-
-  return Standard_False;
-
-}
-
 //=======================================================================
 //function : AddOrdinaryEdges
 //purpose  : auxilary
@@ -1234,7 +1199,7 @@ void ShapeUpgrade_UnifySameDomain::UnifyFaces()
   // unify faces in each shell separately
   TopExp_Explorer exps;
   for (exps.Init(myShape, TopAbs_SHELL); exps.More(); exps.Next())
-    IntUnifyFaces(exps.Current(), aGMapEdgeFaces, Standard_False);
+    IntUnifyFaces(exps.Current(), aGMapEdgeFaces);
 
   // gather all faces out of shells in one compound and unify them at once
   BRep_Builder aBB;
@@ -1245,7 +1210,7 @@ void ShapeUpgrade_UnifySameDomain::UnifyFaces()
     aBB.Add(aCmp, exps.Current());
 
   if (nbf > 0)
-    IntUnifyFaces(aCmp, aGMapEdgeFaces, Standard_True);
+    IntUnifyFaces(aCmp, aGMapEdgeFaces);
   
   myShape = myContext->Apply(myShape);
 }
@@ -1274,8 +1239,7 @@ static void SetFixWireModes(ShapeFix_Face& theSff)
 //=======================================================================
 
 void ShapeUpgrade_UnifySameDomain::IntUnifyFaces(const TopoDS_Shape& theInpShape,
-   TopTools_IndexedDataMapOfShapeListOfShape& theGMapEdgeFaces,
-   Standard_Boolean IsCheckSharedEdgeOri)
+   TopTools_IndexedDataMapOfShapeListOfShape& theGMapEdgeFaces)
 {
   // creating map of edge faces for the shape
   TopTools_IndexedDataMapOfShapeListOfShape aMapEdgeFaces;
@@ -1354,9 +1318,6 @@ void ShapeUpgrade_UnifySameDomain::IntUnifyFaces(const TopoDS_Shape& theInpShape
           continue;
 
         if (aProcessed.Contains(anCheckedFace))
-          continue;
-
-        if (IsCheckSharedEdgeOri && !CheckSharedEdgeOri(aFace, anCheckedFace, edge) )
           continue;
 
         if (bCheckNormals) {

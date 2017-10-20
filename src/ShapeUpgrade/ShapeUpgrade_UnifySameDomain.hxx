@@ -133,8 +133,7 @@ protected:
   Standard_EXPORT void UnifyEdges();
 
   void IntUnifyFaces(const TopoDS_Shape& theInpShape,
-                     TopTools_IndexedDataMapOfShapeListOfShape& theGMapEdgeFaces,
-                     Standard_Boolean IsCheckSharedEdgeOri);
+                     TopTools_IndexedDataMapOfShapeListOfShape& theGMapEdgeFaces);
 
   //! Fills the history of the modifications during the operation.
   Standard_EXPORT void FillHistory();
