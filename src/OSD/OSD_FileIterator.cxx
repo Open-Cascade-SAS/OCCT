@@ -176,13 +176,11 @@ static int strcmp_joker(char *fileMask,char *fileName)
 void OSD_FileIterator::Next(){
 int again = 1;
 struct stat stat_buf;
-char full_name[255];
-
  myFlag = false;   // Initialize to nothing found
 
  do {
     myEntry = readdir((DIR *)myDescr);
-   
+
     if (!myEntry){   // No file found
      myEntry = NULL;              // Keep pointer clean
      myFlag = Standard_False;   // No more files/directory
@@ -195,14 +193,8 @@ char full_name[255];
      if (!strcmp(((struct dirent *)myEntry)->d_name,"..")) continue;
 
      // Is it a file ?
-
-     sprintf(full_name,"%s/%s",myPlace.ToCString(),
-	     ((struct dirent *)myEntry)->d_name);		 // LD debug
-#ifdef OCCT_DEBUG
-     cout << "Place : " << myPlace << endl;
-     cout << "FName : " << full_name << endl;
-#endif
-     stat(full_name, &stat_buf);
+     const TCollection_AsciiString aFullName = myPlace + "/" + ((struct dirent* )myEntry)->d_name;
+     stat(aFullName.ToCString(), &stat_buf);
      if (S_ISREG(stat_buf.st_mode))   // LD : Ensure me it's a regular file
       if (strcmp_joker(myMask.ToCString(), ((struct dirent *)myEntry)->d_name)){
 							 // Does it follow mask ?
