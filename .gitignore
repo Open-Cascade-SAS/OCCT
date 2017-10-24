@@ -35,6 +35,8 @@ Release
 *.suo
 *.sdf
 *.opensdf
+*.VC.db
+*.VC.opendb
 *.ipch
 *.aps
 
