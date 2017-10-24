@@ -58,20 +58,30 @@ static void deallocate_message(Standard_CString aMessage)
   }
 }
 
-// Define Standard_THREADLOCAL modifier as C++11 thread_local keyword where it is available.
+//! @def Standard_THREADLOCAL
+//! Define Standard_THREADLOCAL modifier as C++11 thread_local keyword where it is available.
 #if defined(__clang__)
   // CLang version: standard CLang > 3.3 or XCode >= 8 (but excluding 32-bit ARM)
   // Note: this has to be in separate #if to avoid failure of preprocessor on other platforms
   #if __has_feature(cxx_thread_local)
     #define Standard_THREADLOCAL thread_local
-  #else
-    #define Standard_THREADLOCAL
   #endif
-#elif (defined(__INTEL_COMPILER) && __INTEL_COMPILER > 1400) || \
-      (defined(_MSC_VER) && _MSC_VER >= 1900) /* MSVC++ >= 14 */ || \
-      (defined(__GNUC__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 8))) /* GCC >= 4.8 */
+#elif defined(__INTEL_COMPILER)
+  #if (defined(_MSC_VER) && _MSC_VER >= 1900 && __INTEL_COMPILER > 1400)
+    // requires msvcrt vc14+ (Visual Studio 2015+)
+    #define Standard_THREADLOCAL thread_local
+  #elif (!defined(_MSC_VER) && __INTEL_COMPILER > 1500)
+    #define Standard_THREADLOCAL thread_local
+  #endif
+#elif (defined(_MSC_VER) && _MSC_VER >= 1900)
+  // msvcrt coming with vc14+ (VS2015+)
   #define Standard_THREADLOCAL thread_local
-#else
+#elif (defined(__GNUC__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 8)))
+  // GCC >= 4.8
+  #define Standard_THREADLOCAL thread_local
+#endif
+
+#ifndef Standard_THREADLOCAL
   #define Standard_THREADLOCAL
 #endif
 
