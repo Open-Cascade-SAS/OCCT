@@ -121,7 +121,6 @@ public: //! @name object display management
   //! If AllowDecomp = Standard_True and, if the interactive object is of the "Shape" type,
   //! these "standard" selection modes will be automatically activated as a function of the modes present in the Local Context.
   //! The loaded objects will be selectable but displayable in highlighting only when detected by the Selector.
-  //! This method is available only when Local Contexts are open.
   Standard_EXPORT void Load (const Handle(AIS_InteractiveObject)& aniobj, const Standard_Integer SelectionMode = -1, const Standard_Boolean AllowDecomp = Standard_False);
 
   //! Hides the object. The object's presentations are simply flagged as invisible and therefore excluded from redrawing.

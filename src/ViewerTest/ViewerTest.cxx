@@ -4250,6 +4250,11 @@ static int VDisplay2 (Draw_Interpretor& theDI,
     {
       toReDisplay = Standard_True;
     }
+    else if (aNameCase == "-erased"
+          || aNameCase == "-load")
+    {
+      aDispStatus = AIS_DS_Erased;
+    }
     else
     {
       aNamesOfDisplayIO.Append (aName);
@@ -6084,7 +6089,7 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
       "\n\t\t:                                         [offsetX offsetY]]]"
       "\n\t\t:          [-dispMode mode] [-highMode mode]"
       "\n\t\t:          [-layer index] [-top|-topmost|-overlay|-underlay]"
-      "\n\t\t:          [-redisplay]"
+      "\n\t\t:          [-redisplay] [-erased]"
       "\n\t\t:          name1 [name2] ... [name n]"
       "\n\t\t: Displays named objects."
       "\n\t\t: Option -local enables displaying of objects in local"
@@ -6093,6 +6098,7 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
       "\n\t\t:  -noupdate    Suppresses viewer redraw call."
       "\n\t\t:  -mutable     Enables optimizations for mutable objects."
       "\n\t\t:  -neutral     Draws objects in main viewer."
+      "\n\t\t:  -erased      Loads the object into context, but does not display it."
       "\n\t\t:  -layer       Sets z-layer for objects."
       "\n\t\t:               Alternatively -overlay|-underlay|-top|-topmost"
       "\n\t\t:               options can be used for the default z-layers."
