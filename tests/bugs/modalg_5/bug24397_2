@@ -1,0 +1,15 @@
+puts "TODO OCC24397 ALL: Error :  is WRONG because number of"
+
+puts "============"
+puts "OCC24397"
+puts "============"
+puts ""
+#######################################
+# BRepBuilderAPI_Copy works not correct
+#######################################
+
+restore [locate_data_file OCC485b.brep] b 
+
+tcopy b b1
+
+checknbshapes b1 -ref [nbshapes b]

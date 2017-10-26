@@ -1,0 +1,15 @@
+puts "TODO OCC23612 ALL: Faulty shapes in variables faulty_1"
+
+puts "========"
+puts "OCC23612"
+puts "========"
+puts ""
+#######################
+# BRepPrimAPI_MakeTorus
+#######################
+
+ptorus p 10 2 90 270 45
+
+checkshape p
+
+checkview -display p -2d -path ${imagedir}/${test_image}.png

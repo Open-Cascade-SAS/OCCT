@@ -1,0 +1,21 @@
+puts "TODO OCC23669 ALL: Error : bopsection is WRONG"
+
+puts "========"
+puts "OCC23669"
+puts "========"
+puts ""
+#################################################################################################
+# Error in Boolean operations algorithm: section between cylindrical face and prism is incomplete
+#################################################################################################
+
+restore [locate_data_file bug23669_theFace.brep] ff
+restore [locate_data_file bug23669_Prism.brep] pr
+
+bop ff pr
+
+bopsection res
+
+checknbshapes res -edge 2 -m "bopsection"
+bopcheck res
+
+checkview -display res -with {ff} -2d -path ${imagedir}/${test_image}.png

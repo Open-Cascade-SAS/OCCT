@@ -1,0 +1,22 @@
+puts "TODO OCC23660 ALL: Error: tolerance"
+
+puts "========"
+puts "OCC23660"
+puts "========"
+puts ""
+#####################################
+# 'bsection' produces result with gap
+#####################################
+
+restore [locate_data_file bug23660_shell_537.brep] s
+restore [locate_data_file bug23660_face_537.brep] f
+
+bsection r s f -a
+explode r
+
+smallview
+donly r_9 r_10
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png
+
+checkmaxtol r -min_tol 0.001

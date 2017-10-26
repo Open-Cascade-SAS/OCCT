@@ -1,0 +1,16 @@
+puts "========"
+puts "OCC23171"
+puts "========"
+puts ""
+##################################
+# Got wrong result after stitching
+##################################
+
+restore [locate_data_file bug23171_stitch.brep] a
+sewing r 0.000001 a
+
+checkshape r
+
+checknbshapes r -vertex 6 -edge 8
+
+checkmaxtol r -min_tol 0.003

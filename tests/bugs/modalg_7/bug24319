@@ -1,0 +1,21 @@
+puts "========"
+puts "OCC24319"
+puts "========"
+puts ""
+##################################
+# Sewing makes a solid transparent
+##################################
+
+catch {pload XDE}
+
+igesread [locate_data_file bug24421_Rohteil_Pmod.igs] s *
+
+sewing r s
+
+checkview -display r -3d -path ${imagedir}/${test_image}.png
+
+set x 370
+set y 270
+if { [checkcolor $x $y 0.78039216995239258 0.55294120311737061 0.094117648899555206] != 1 } {
+  puts "Error: Sewing makes a solid transparent"
+}

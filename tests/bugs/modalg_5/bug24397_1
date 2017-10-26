@@ -1,0 +1,13 @@
+puts "============"
+puts "OCC24397"
+puts "============"
+puts ""
+#######################################
+# BRepBuilderAPI_Copy works not correct
+#######################################
+
+restore [locate_data_file case_1_wire3.brep] result
+
+tcopy result result1
+
+checkprops result1 -equal result

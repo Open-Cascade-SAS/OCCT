@@ -1,0 +1,18 @@
+puts "========"
+puts "OCC23171"
+puts "========"
+puts ""
+##################################
+# Got wrong result after stitching
+##################################
+
+catch {pload XDE}
+
+igesread [locate_data_file bug23171_tube_surf.igs] s *
+sewing r 0.1 s
+
+checkshape r
+
+checknbshapes r -vertex 4 -edge 6
+
+checkmaxtol r -min_tol 0.2
