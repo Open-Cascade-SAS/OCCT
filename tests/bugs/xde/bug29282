@@ -1,0 +1,32 @@
+puts "=========="
+puts "OCC29282"
+puts "=========="
+puts ""
+###########################################################
+# UpdateAssemblies is not worked for located root assemblies
+###########################################################
+
+pload DCAF
+
+# create test Document
+box b 1 1 1
+compound b c
+ttranslate c 0 1 0
+XNewDoc D
+XAddShape D c
+
+# replace box by another one
+box bb 2 1 1
+XSetShape D 0:1:1:3 bb
+XUpdateAssemblies D
+XGetOneShape result D
+
+# check results
+set props [vprops result]
+regexp {Mass +: +([-0-9.+eE]+).+} $props full mass
+if {$mass != "2"} {
+  puts "Error: Assemblies are not updated."
+}
+
+Close D
+

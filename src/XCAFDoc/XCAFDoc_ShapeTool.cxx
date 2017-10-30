@@ -998,8 +998,12 @@ void XCAFDoc_ShapeTool::UpdateAssemblies()
   // Iterate over the free shapes
   for ( TDF_LabelSequence::Iterator anIt(aRootLabels); anIt.More(); anIt.Next() )
   {
-    const TDF_Label& aRootLab = anIt.Value();
-
+    TDF_Label aRefLabel = anIt.Value();
+    if (IsReference(aRefLabel))
+    {
+      GetReferredShape(aRefLabel, aRefLabel);
+    }
+    const TDF_Label& aRootLab = aRefLabel;
     TopoDS_Shape anAssemblyShape;
     updateComponent(aRootLab, anAssemblyShape);
   }
