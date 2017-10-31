@@ -2365,6 +2365,7 @@ void BRepOffset_Tool::Inter2d (const TopoDS_Face&    F,
 #endif
 	Standard_Real    U1 = 0.,U2 = 0.;
 	gp_Pnt2d         P2d;	
+        Standard_Boolean aCurrentFind = Standard_False;
 	if (itry == 1) {
 	  fl1[0] = C1->FirstParameter(); fl1[1] = C1->LastParameter();
 	  fl2[0] = C2->FirstParameter(); fl2[1] = C2->LastParameter();
@@ -2384,6 +2385,7 @@ void BRepOffset_Tool::Inter2d (const TopoDS_Face&    F,
 		  Abs(fl2[i2]) < Precision::Infinite()   ) {
 		if (P1[i1].IsEqual(P2[i2],TolConf)) {
 		  YaSol = Standard_True;
+                  aCurrentFind = Standard_True;
 		  U1  = fl1[i1]; U2 = fl2[i2];
 		  P2d = C1->Value(U1);
 		}
@@ -2409,7 +2411,8 @@ void BRepOffset_Tool::Inter2d (const TopoDS_Face&    F,
 		      }
             if (Dist2Min <= Precision::SquareConfusion())
 		      {
-			YaSol = Standard_True;
+                        YaSol = Standard_True;
+                        aCurrentFind = Standard_True;
 			P2d = P1[i1];
 			U1 = fl1[i1];
 			U2 = (extr.Point(IndexMin)).Parameter();
@@ -2437,6 +2440,7 @@ void BRepOffset_Tool::Inter2d (const TopoDS_Face&    F,
             if (Dist2Min <= Precision::SquareConfusion())
 		      {
 			YaSol = Standard_True;
+                        aCurrentFind = Standard_True;
 			P2d = P2[i2];
 			U2 = fl2[i2];
 			U1 = (extr.Point(IndexMin)).Parameter();
@@ -2450,13 +2454,15 @@ void BRepOffset_Tool::Inter2d (const TopoDS_Face&    F,
 	  Geom2dInt_GInter Inter (AC1,AC2,TolConf,TolConf);
 	  
 	  if (!Inter.IsEmpty() && Inter.NbPoints() > 0) {
-	    YaSol = Standard_True;
+		  YaSol = Standard_True;
+                  aCurrentFind = Standard_True;
 	    U1  = Inter.Point(1).ParamOnFirst();
 	    U2  = Inter.Point(1).ParamOnSecond();
 	    P2d = Inter.Point(1).Value();
 	  }
 	  else if (!Inter.IsEmpty() && Inter.NbSegments() > 0) {
-	    YaSol = Standard_True;
+	    		  YaSol = Standard_True;
+                  aCurrentFind = Standard_True;
 	    IntRes2d_IntersectionSegment Seg = Inter.Segment(1);
 	    IntRes2d_IntersectionPoint IntP1 = Seg.FirstPoint();
 	    IntRes2d_IntersectionPoint IntP2 = Seg.LastPoint();
@@ -2479,7 +2485,7 @@ void BRepOffset_Tool::Inter2d (const TopoDS_Face&    F,
 	    P2d.SetY( (P2d1.Y() + P2d2.Y()) / 2.);
 	  }
 	}
-	if (YaSol) {
+	if (aCurrentFind) {
 	  gp_Pnt        P   = S->Value(P2d.X(),P2d.Y());
 	  TopoDS_Vertex V = BRepLib_MakeVertex(P);
 	  V.Orientation(TopAbs_INTERNAL);
