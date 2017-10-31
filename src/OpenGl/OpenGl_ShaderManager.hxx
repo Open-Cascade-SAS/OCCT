@@ -444,8 +444,10 @@ protected:
                                                            const Standard_Boolean        theIsFlatNormal = false);
 
   //! Define computeLighting GLSL function depending on current lights configuration
-  //! @param theHasVertColor flag to use getVertColor() instead of Ambient and Diffuse components of active material
-  Standard_EXPORT TCollection_AsciiString stdComputeLighting (const Standard_Boolean theHasVertColor);
+  //! @param theNbLights     [out] number of defined light sources
+  //! @param theHasVertColor [in]  flag to use getVertColor() instead of Ambient and Diffuse components of active material
+  Standard_EXPORT TCollection_AsciiString stdComputeLighting (Standard_Integer& theNbLights,
+                                                              Standard_Boolean  theHasVertColor);
 
   //! Bind specified program to current context and apply state.
   Standard_EXPORT Standard_Boolean bindProgramWithState (const Handle(OpenGl_ShaderProgram)& theProgram);
@@ -522,8 +524,10 @@ protected:
   gp_XYZ                             myLocalOrigin;        //!< local camera transformation
   Standard_Boolean                   myHasLocalOrigin;     //!< flag indicating that local camera transformation has been set
 
-  mutable OpenGl_ShaderLightType       myLightTypeArray  [OpenGLMaxLights];
-  mutable OpenGl_ShaderLightParameters myLightParamsArray[OpenGLMaxLights];
+  mutable NCollection_Array1<OpenGl_ShaderLightType>       myLightTypeArray;
+  mutable NCollection_Array1<OpenGl_ShaderLightParameters> myLightParamsArray;
+  mutable NCollection_Array1<OpenGl_Vec4>                  myClipPlaneArray;
+  mutable NCollection_Array1<OpenGl_Vec4d>                 myClipPlaneArrayFfp;
 
 private:
 

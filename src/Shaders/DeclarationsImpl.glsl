@@ -15,6 +15,7 @@
 
 // This file includes implementation of common functions and properties accessors
 
+#if defined(THE_MAX_LIGHTS) && (THE_MAX_LIGHTS > 0)
 // arrays of light sources
 uniform THE_PREC_ENUM ivec2 occLightSourcesTypes[THE_MAX_LIGHTS]; //!< packed light sources types
 uniform               vec4  occLightSources[THE_MAX_LIGHTS * 4];  //!< packed light sources parameters
@@ -30,6 +31,7 @@ float occLight_ConstAttenuation  (in int theId) { return occLightSources[theId *
 float occLight_LinearAttenuation (in int theId) { return occLightSources[theId * 4 + 3].y; }
 float occLight_SpotCutOff        (in int theId) { return occLightSources[theId * 4 + 3].z; }
 float occLight_SpotExponent      (in int theId) { return occLightSources[theId * 4 + 3].w; }
+#endif
 
 // material state
 uniform vec4 occFrontMaterial[5];

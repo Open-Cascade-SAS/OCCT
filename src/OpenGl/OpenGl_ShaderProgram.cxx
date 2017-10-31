@@ -149,6 +149,8 @@ OpenGl_ShaderProgram::OpenGl_ShaderProgram (const Handle(Graphic3d_ShaderProgram
   myProgramID (NO_PROGRAM),
   myProxy     (theProxy),
   myShareCount(1),
+  myNbLightsMax (0),
+  myNbClipPlanesMax (0),
   myHasTessShader (false)
 {
   memset (myCurrentState, 0, sizeof (myCurrentState));
@@ -327,11 +329,24 @@ Standard_Boolean OpenGl_ShaderProgram::Initialize (const Handle(OpenGl_Context)&
       case Graphic3d_TOS_FRAGMENT:        { aHeaderType = "#define FRAGMENT_SHADER\n";        break; }
     }
 
+    TCollection_AsciiString aHeaderConstants;
+    myNbLightsMax     = !myProxy.IsNull() ? myProxy->NbLightsMax() : 0;
+    myNbClipPlanesMax = !myProxy.IsNull() ? myProxy->NbClipPlanesMax() : 0;
+    if (myNbLightsMax > 0)
+    {
+      aHeaderConstants += TCollection_AsciiString("#define THE_MAX_LIGHTS ") + myNbLightsMax + "\n";
+    }
+    if (myNbClipPlanesMax > 0)
+    {
+      aHeaderConstants += TCollection_AsciiString("#define THE_MAX_CLIP_PLANES ") + myNbClipPlanesMax + "\n";
+    }
+
     const TCollection_AsciiString aSource = aHeaderVer                     // #version   - header defining GLSL version, should be first
                                           + (!aHeaderVer.IsEmpty() ? "\n" : "")
                                           + anExtensions                   // #extension - list of enabled extensions,   should be second
                                           + aPrecisionHeader               // precision  - default precision qualifiers, should be before any code
                                           + aHeaderType                    // auxiliary macros defining a shader stage (type)
+                                          + aHeaderConstants
                                           + Shaders_Declarations_glsl      // common declarations (global constants and Vertex Shader inputs)
                                           + Shaders_DeclarationsImpl_glsl
                                           + anIter.Value()->Source();      // the source code itself (defining main() function)

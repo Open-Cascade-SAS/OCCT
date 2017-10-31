@@ -210,8 +210,18 @@ public:
     return myProgramID;
   }
 
+public:
+
   //! Return TRUE if program defines tessellation stage.
   Standard_Boolean HasTessellationStage() const { return myHasTessShader; }
+
+  //! Return the length of array of light sources (THE_MAX_LIGHTS),
+  //! to be used for initialization occLightSources (OpenGl_OCC_LIGHT_SOURCE_PARAMS).
+  Standard_Integer NbLightsMax() const { return myNbLightsMax; }
+
+  //! Return the length of array of clipping planes (THE_MAX_CLIP_PLANES),
+  //! to be used for initialization occClipPlaneEquations (OpenGl_OCC_CLIP_PLANE_EQUATIONS).
+  Standard_Integer NbClipPlanesMax() const { return myNbClipPlanesMax; }
 
 private:
 
@@ -554,6 +564,8 @@ protected:
   OpenGl_ShaderList               myShaderObjects; //!< List of attached shader objects
   Handle(Graphic3d_ShaderProgram) myProxy;         //!< Proxy shader program (from application layer)
   Standard_Integer                myShareCount;    //!< program users count, initialized with 1 (already shared by one user)
+  Standard_Integer                myNbLightsMax;   //!< length of array of light sources (THE_MAX_LIGHTS)
+  Standard_Integer                myNbClipPlanesMax; //!< length of array of clipping planes (THE_MAX_CLIP_PLANES)
   Standard_Boolean                myHasTessShader; //!< flag indicating that program defines tessellation stage
 
 protected:

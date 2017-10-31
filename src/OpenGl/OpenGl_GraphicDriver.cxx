@@ -406,7 +406,7 @@ Standard_Integer OpenGl_GraphicDriver::InquireLimit (const Graphic3d_TypeOfLimit
   switch (theType)
   {
     case Graphic3d_TypeOfLimit_MaxNbLights:
-      return OpenGLMaxLights;
+      return Graphic3d_ShaderProgram::THE_MAX_LIGHTS_DEFAULT;
     case Graphic3d_TypeOfLimit_MaxNbClipPlanes:
       return !aCtx.IsNull() ? aCtx->MaxClipPlanes() : 0;
     case Graphic3d_TypeOfLimit_MaxNbViews:

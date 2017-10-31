@@ -13,10 +13,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-// This files includes definition of common uniform variables in OCCT GLSL programs
+//! @file Declarations.glsl
+//! This files includes definition of common uniform variables in OCCT GLSL programs
 
-#define THE_MAX_LIGHTS      8
-#define THE_MAX_CLIP_PLANES 8
+//! @def THE_MAX_LIGHTS
+//! Specifies the length of array of lights, which is 8 by default. Defined by Shader Manager.
+// #define THE_MAX_LIGHTS 8
+
+//! @def THE_MAX_CLIP_PLANES
+//! Specifies the length of array of clipping planes, which is 8 by default. Defined by Shader Manager.
+// #define THE_MAX_CLIP_PLANES 8
 
 // compatibility macros
 #if (__VERSION__ >= 130)
@@ -92,6 +98,7 @@ const int OccLightType_Spot   = 3; //!< spot            light source
 
 // Light sources
 uniform               vec4 occLightAmbient;      //!< Cumulative ambient color
+#if defined(THE_MAX_LIGHTS) && (THE_MAX_LIGHTS > 0)
 uniform THE_PREC_ENUM int  occLightSourcesCount; //!< Total number of light sources
 int   occLight_Type              (in int theId); //!< Type of light source
 int   occLight_IsHeadlight       (in int theId); //!< Is light a headlight?
@@ -103,6 +110,7 @@ float occLight_ConstAttenuation  (in int theId); //!< Const attenuation factor o
 float occLight_LinearAttenuation (in int theId); //!< Linear attenuation factor of positional light source
 float occLight_SpotCutOff        (in int theId); //!< Maximum spread angle of the spot light (in radians)
 float occLight_SpotExponent      (in int theId); //!< Attenuation of the spot light intensity (from 0 to 1)
+#endif
 
 // Front material properties accessors
 vec4  occFrontMaterial_Emission(void);     //!< Emission color
@@ -135,5 +143,7 @@ uniform               int       occOitOutput;      //!< Enable bit for writing o
 uniform               float     occOitDepthFactor; //!< Influence of the depth component to the coverage of the accumulated fragment
 
 //! Parameters of clipping planes
+#if defined(THE_MAX_CLIP_PLANES) && (THE_MAX_CLIP_PLANES > 0)
 uniform               vec4 occClipPlaneEquations[THE_MAX_CLIP_PLANES];
 uniform THE_PREC_ENUM int  occClipPlaneCount;   //!< Total number of clip planes
+#endif
