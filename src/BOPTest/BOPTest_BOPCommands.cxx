@@ -158,6 +158,7 @@ Standard_Integer bop(Draw_Interpretor& di,
   pPF->SetRunParallel(bRunParallel);
   pPF->SetNonDestructive(bNonDestructive);
   pPF->SetGlue(aGlue);
+  pPF->SetUseOBB(BOPTest_Objects::UseOBB());
   //
   pPF->Perform();
   BOPTest::ReportAlerts(*pPF);
@@ -427,6 +428,7 @@ Standard_Integer  bsection(Draw_Interpretor& di,
   aSec.SetRunParallel(bRunParallel);
   aSec.SetNonDestructive(bNonDestructive);
   aSec.SetGlue(aGlue);
+  aSec.SetUseOBB(BOPTest_Objects::UseOBB());
   //
   aSec.Build();
   //
@@ -496,6 +498,7 @@ Standard_Integer bsmt (Draw_Interpretor& di,
   aPF.SetRunParallel(bRunParallel);
   aPF.SetNonDestructive(bNonDestructive);
   aPF.SetGlue(aGlue);
+  aPF.SetUseOBB(BOPTest_Objects::UseOBB());
   //
   aPF.Perform();
   BOPTest::ReportAlerts(aPF);
@@ -818,6 +821,7 @@ Standard_Integer mkvolume(Draw_Interpretor& di, Standard_Integer n, const char**
   aMV.SetNonDestructive(bNonDestructive);
   aMV.SetAvoidInternalShapes(bAvoidInternal);
   aMV.SetGlue(aGlue);
+  aMV.SetUseOBB(BOPTest_Objects::UseOBB());
   //
   aMV.Perform();
   BOPTest::ReportAlerts(aMV);

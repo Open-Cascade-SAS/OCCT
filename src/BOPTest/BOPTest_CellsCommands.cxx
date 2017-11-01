@@ -112,6 +112,7 @@ Standard_Integer bcbuild(Draw_Interpretor& di,
   aCBuilder.SetNonDestructive(bNonDestructive);
   aCBuilder.SetGlue(aGlue);
   aCBuilder.SetCheckInverted(BOPTest_Objects::CheckInverted());
+  aCBuilder.SetUseOBB(BOPTest_Objects::UseOBB());
   //
   aCBuilder.PerformWithFiller(aPF); 
   BOPTest::ReportAlerts(aCBuilder);

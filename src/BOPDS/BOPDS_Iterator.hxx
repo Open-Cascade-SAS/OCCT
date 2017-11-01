@@ -27,10 +27,11 @@
 #include <BOPDS_VectorOfPair.hxx>
 #include <BOPDS_VectorOfVectorOfPair.hxx>
 #include <NCollection_BaseAllocator.hxx>
+#include <Precision.hxx>
 #include <Standard_Boolean.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 class BOPDS_DS;
-
+class IntTools_Context;
 
 
 //! The class BOPDS_Iterator is
@@ -81,7 +82,9 @@ public:
 
   //! Perform the intersection algorithm and prepare
   //! the results to be used
-  Standard_EXPORT virtual void Prepare();
+  Standard_EXPORT virtual void Prepare(const Handle(IntTools_Context)& theCtx = Handle(IntTools_Context)(),
+                                       const Standard_Boolean theCheckOBB = Standard_False,
+                                       const Standard_Real theFuzzyValue = Precision::Confusion());
 
   //! Returns the number of intersections founded
   Standard_EXPORT Standard_Integer ExpectedLength() const;
@@ -99,7 +102,9 @@ public:
 
 protected:
 
-  Standard_EXPORT virtual void Intersect();
+  Standard_EXPORT virtual void Intersect(const Handle(IntTools_Context)& theCtx = Handle(IntTools_Context)(),
+                                         const Standard_Boolean theCheckOBB = Standard_False,
+                                         const Standard_Real theFuzzyValue = Precision::Confusion());
 
   Handle(NCollection_BaseAllocator) myAllocator;
   Standard_Integer myLength;

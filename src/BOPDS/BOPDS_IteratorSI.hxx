@@ -68,7 +68,9 @@ Standard_EXPORT virtual ~BOPDS_IteratorSI();
 protected:
 
   
-  Standard_EXPORT virtual void Intersect() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Intersect(const Handle(IntTools_Context)& theCtx = Handle(IntTools_Context)(),
+                                         const Standard_Boolean theCheckOBB = Standard_False,
+                                         const Standard_Real theFuzzyValue = Precision::Confusion()) Standard_OVERRIDE;
 
 
 

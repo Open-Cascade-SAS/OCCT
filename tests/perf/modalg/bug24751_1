@@ -8,6 +8,9 @@ puts ""
 
 pload QAcommands
 
+# enable OBB usage in BOP
+buseobb 1
+
 dchrono h restart
 
 restore [locate_data_file bug24696_cx_e1200_nurbs.brep] cx
@@ -26,5 +29,7 @@ bfillds
 bbuild result
 
 dchrono h stop counter EdgeIntersection
+
+buseobb 0
 
 checkview -display result -2d -path ${imagedir}/${test_image}.png

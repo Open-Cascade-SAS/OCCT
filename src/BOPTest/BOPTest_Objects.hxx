@@ -91,6 +91,10 @@ public:
 
   Standard_EXPORT static Standard_Boolean CheckInverted();
 
+  Standard_EXPORT static void SetUseOBB(const Standard_Boolean bUseOBB);
+
+  Standard_EXPORT static Standard_Boolean UseOBB();
+
 protected:
 
 private:

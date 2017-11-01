@@ -195,6 +195,7 @@ void BOPAlgo_Builder::Perform()
   pPF->SetFuzzyValue(myFuzzyValue);
   pPF->SetNonDestructive(myNonDestructive);
   pPF->SetGlue(myGlue);
+  pPF->SetUseOBB(myUseOBB);
   //
   pPF->Perform();
   //
@@ -212,6 +213,7 @@ void BOPAlgo_Builder::PerformWithFiller(const BOPAlgo_PaveFiller& theFiller)
   myNonDestructive = theFiller.NonDestructive();
   myFuzzyValue = theFiller.FuzzyValue();
   myGlue = theFiller.Glue();
+  myUseOBB = theFiller.UseOBB();
   PerformInternal(theFiller);
 }
 //=======================================================================

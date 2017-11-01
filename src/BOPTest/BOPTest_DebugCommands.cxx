@@ -40,6 +40,7 @@
 #include <TopTools_DataMapOfShapeListOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
 
+#include <IntTools_Context.hxx>
 
 static
   void GetTypeByName(const char* theName,
@@ -239,9 +240,11 @@ Standard_Integer bopiterator (Draw_Interpretor& di,
   char buf[64], aST1[10], aST2[10];
   BOPDS_Iterator aIt;
   //
+  Handle(IntTools_Context) aCtx = new IntTools_Context();
+
   BOPDS_DS& aDS = *pDS;
   aIt.SetDS(&aDS);
-  aIt.Prepare();
+  aIt.Prepare(aCtx, BOPTest_Objects::UseOBB(), BOPTest_Objects::FuzzyValue());
   //
   if (n == 1) {
     // type has not been defined. show all pairs

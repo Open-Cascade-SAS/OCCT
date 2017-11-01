@@ -14,6 +14,7 @@
 
 
 #include <Bnd_Box.hxx>
+#include <Bnd_OBB.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepBndLib.hxx>
@@ -65,6 +66,7 @@ IntTools_Context::IntTools_Context()
   myProjSDataMap(100, myAllocator),
   myBndBoxDataMap(100, myAllocator),
   mySurfAdaptorMap(100, myAllocator),
+  myOBBMap(100, myAllocator),
   myCreateFlag(0),
   myPOnSTolerance(1.e-12)
 {
@@ -86,6 +88,7 @@ IntTools_Context::IntTools_Context
   myProjSDataMap(100, myAllocator),
   myBndBoxDataMap(100, myAllocator),
   mySurfAdaptorMap(100, myAllocator),
+  myOBBMap(100, myAllocator),
   myCreateFlag(1),
   myPOnSTolerance(1.e-12)
 {
@@ -183,6 +186,16 @@ IntTools_Context::~IntTools_Context()
     myAllocator->Free(anAdr);
   }
   mySurfAdaptorMap.Clear();
+  //
+  Bnd_OBB* pOBB;
+  aIt.Initialize(myOBBMap);
+  for (; aIt.More(); aIt.Next()) {
+    anAdr=aIt.Value();
+    pOBB=(Bnd_OBB*)anAdr;
+    (*pOBB).~Bnd_OBB();
+    myAllocator->Free(anAdr);
+  }
+  myOBBMap.Clear();
 }
 //=======================================================================
 //function : BndBox
@@ -470,6 +483,36 @@ Geom2dHatch_Hatcher& IntTools_Context::Hatcher(const TopoDS_Face& aF)
   }
 
   return *pHatcher;
+}
+
+//=======================================================================
+//function : OBB
+//purpose  : 
+//=======================================================================
+Bnd_OBB& IntTools_Context::OBB(const TopoDS_Shape& aS,
+                               const Standard_Real theGap)
+{
+  Standard_Address anAdr;
+  Bnd_OBB* pBox;
+  //
+  if (!myOBBMap.IsBound(aS))
+  {
+    pBox = (Bnd_OBB*)myAllocator->Allocate(sizeof(Bnd_OBB));
+    new (pBox) Bnd_OBB();
+    //
+    Bnd_OBB &aBox = *pBox;
+    BRepBndLib::AddOBB(aS, aBox);
+    aBox.Enlarge(theGap);
+    //
+    anAdr = (Standard_Address)pBox;
+    myOBBMap.Bind(aS, anAdr);
+  }
+  else
+  {
+    anAdr = myOBBMap.Find(aS);
+    pBox = (Bnd_OBB*)anAdr;
+  }
+  return *pBox;
 }
 
 //=======================================================================

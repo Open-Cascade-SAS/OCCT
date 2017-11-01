@@ -211,14 +211,14 @@ void BOPAlgo_PaveFiller::Init()
   myDS->SetArguments(myArguments);
   myDS->Init(myFuzzyValue);
   //
-  // 2.myIterator 
+  // 2 myContext
+  myContext=new IntTools_Context;
+  //
+  // 3.myIterator 
   myIterator=new BOPDS_Iterator(myAllocator);
   myIterator->SetRunParallel(myRunParallel);
   myIterator->SetDS(myDS);
-  myIterator->Prepare();
-  //
-  // 3 myContext
-  myContext=new IntTools_Context;
+  myIterator->Prepare(myContext, myUseOBB, myFuzzyValue);
   //
   // 4 NonDestructive flag
   SetNonDestructive();

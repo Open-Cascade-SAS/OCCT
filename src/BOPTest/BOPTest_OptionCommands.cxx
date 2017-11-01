@@ -28,6 +28,7 @@ static Standard_Integer bfuzzyvalue(Draw_Interpretor&, Standard_Integer, const c
 static Standard_Integer bGlue(Draw_Interpretor&, Standard_Integer, const char**);
 static Standard_Integer bdrawwarnshapes(Draw_Interpretor&, Standard_Integer, const char**);
 static Standard_Integer bcheckinverted(Draw_Interpretor&, Standard_Integer, const char**);
+static Standard_Integer buseobb(Draw_Interpretor&, Standard_Integer, const char**);
 
 //=======================================================================
 //function : OptionCommands
@@ -51,6 +52,8 @@ void BOPTest::OptionCommands(Draw_Interpretor& theCommands)
                   __FILE__, bdrawwarnshapes, g);
   theCommands.Add("bcheckinverted", "Defines whether to check the input solids on inverted status or not\n"
                                      "Usage: bcheckinverted [0 (off) / 1 (on)]", __FILE__, bcheckinverted, g);
+  theCommands.Add("buseobb", "Enables/disables the usage of OBB\n"
+                                     "Usage: buseobb [0 (off) / 1 (on)]", __FILE__, buseobb, g);
 }
 //=======================================================================
 //function : boptions
@@ -76,6 +79,7 @@ Standard_Integer boptions(Draw_Interpretor& di,
   aGlue = BOPTest_Objects::Glue();
   Standard_Boolean bDrawWarnShapes = BOPTest_Objects::DrawWarnShapes();
   Standard_Boolean bCheckInverted = BOPTest_Objects::CheckInverted();
+  Standard_Boolean bUseOBB = BOPTest_Objects::UseOBB();
   //
   Sprintf(buf, " RunParallel: %d\n",  bRunParallel);
   di << buf;
@@ -89,6 +93,8 @@ Standard_Integer boptions(Draw_Interpretor& di,
   Sprintf(buf, " Draw Warning Shapes: %s\n", bDrawWarnShapes ? "Yes" : "No");
   di << buf;
   Sprintf(buf, " Check for inverted solids: %s\n", bCheckInverted ? "Yes" : "No");
+  di << buf;
+  Sprintf(buf, " Use OBB: %s\n", bUseOBB ? "Yes" : "No");
   di << buf;
   //
   return 0;
@@ -231,5 +237,24 @@ Standard_Integer bcheckinverted(Draw_Interpretor& di,
   //
   Standard_Integer iCheck = Draw::Atoi(a[1]);
   BOPTest_Objects::SetCheckInverted(iCheck != 0);
+  return 0;
+}
+
+//=======================================================================
+//function : buseobb
+//purpose  : 
+//=======================================================================
+Standard_Integer buseobb(Draw_Interpretor& di,
+                         Standard_Integer n,
+                         const char** a)
+{
+  if (n != 2)
+  {
+    di.PrintHelp(a[0]);
+    return 1;
+  }
+  //
+  Standard_Integer iUse = Draw::Atoi(a[1]);
+  BOPTest_Objects::SetUseOBB(iUse != 0);
   return 0;
 }

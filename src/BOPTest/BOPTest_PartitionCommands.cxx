@@ -115,6 +115,7 @@ Standard_Integer bfillds(Draw_Interpretor& di,
   aPF.SetNonDestructive(bNonDestructive);
   aPF.SetFuzzyValue(aTol);
   aPF.SetGlue(aGlue);
+  aPF.SetUseOBB(BOPTest_Objects::UseOBB());
   //
   OSD_Timer aTimer;
   aTimer.Start();

@@ -11,6 +11,7 @@ brestore [locate_data_file bug29237_dom8364_s32_c2.rhs.brep] b
 
 bglue 1
 bcheckinverted 0
+buseobb 1
 
 bclearobjects
 bcleartools

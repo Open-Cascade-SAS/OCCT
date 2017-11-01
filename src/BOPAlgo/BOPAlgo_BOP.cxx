@@ -373,6 +373,7 @@ void BOPAlgo_BOP::Perform()
   pPF->SetFuzzyValue(myFuzzyValue);
   pPF->SetNonDestructive(myNonDestructive);
   pPF->SetGlue(myGlue);
+  pPF->SetUseOBB(myUseOBB);
   //
   pPF->Perform();
   //

@@ -13,6 +13,7 @@
 // commercial license or contractual agreement.
 
 #include <Bnd_Box.hxx>
+#include <Bnd_OBB.hxx>
 #include <BOPDS_DS.hxx>
 #include <BOPDS_IndexRange.hxx>
 #include <BOPDS_IteratorSI.hxx>
@@ -23,6 +24,7 @@
 #include <BOPTools_BoxBndTree.hxx>
 #include <BRep_Tool.hxx>
 #include <gp_Pnt.hxx>
+#include <IntTools_Context.hxx>
 #include <NCollection_UBTreeFiller.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <TColStd_DataMapOfIntegerInteger.hxx>
@@ -77,7 +79,9 @@ void BOPDS_IteratorSI::UpdateByLevelOfCheck(const Standard_Integer theLevel)
 // function: Intersect
 // purpose: 
 //=======================================================================
-void BOPDS_IteratorSI::Intersect()
+void BOPDS_IteratorSI::Intersect(const Handle(IntTools_Context)& theCtx,
+                                 const Standard_Boolean theCheckOBB,
+                                 const Standard_Real theFuzzyValue)
 {
   Standard_Integer i, j, iX, aNbS;
   Standard_Integer iTi, iTj;
@@ -137,6 +141,16 @@ void BOPDS_IteratorSI::Intersect()
       //
       BOPDS_Pair aPair(i, j);
       if (aMPFence.Add(aPair)) {
+        if (theCheckOBB)
+        {
+          // Check intersection of Oriented bounding boxes of the shapes
+          Bnd_OBB& anOBBi = theCtx->OBB(aSI.Shape(), theFuzzyValue);
+          Bnd_OBB& anOBBj = theCtx->OBB(aSJ.Shape(), theFuzzyValue);
+
+          if (anOBBi.IsOut(anOBBj))
+            continue;
+        }
+
         iX = BOPDS_Tools::TypeToInteger(aTi, aTj);
         myLists(iX).Append(aPair);
       }// if (aMPKXB.Add(aPKXB)) {

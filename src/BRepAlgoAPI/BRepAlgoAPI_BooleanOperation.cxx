@@ -311,6 +311,7 @@ void BRepAlgoAPI_BooleanOperation::Build()
     myDSFiller->SetFuzzyValue(myFuzzyValue);
     myDSFiller->SetNonDestructive(myNonDestructive);
     myDSFiller->SetGlue(myGlue);
+    myDSFiller->SetUseOBB(myUseOBB);
     //
     SetAttributes();
     //

@@ -91,6 +91,7 @@ void BOPAlgo_Splitter::Perform()
   pPF->SetFuzzyValue(myFuzzyValue);
   pPF->SetNonDestructive(myNonDestructive);
   pPF->SetGlue(myGlue);
+  pPF->SetUseOBB(myUseOBB);
   //
   pPF->Perform();
   //

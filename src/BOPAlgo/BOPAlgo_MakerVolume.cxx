@@ -90,6 +90,7 @@ void BOPAlgo_MakerVolume::Perform()
   pPF->SetFuzzyValue(myFuzzyValue);
   pPF->SetNonDestructive(myNonDestructive);
   pPF->SetGlue(myGlue);
+  pPF->SetUseOBB(myUseOBB);
   pPF->Perform();
   //
   myEntryPoint = 1;

@@ -50,7 +50,8 @@ BOPAlgo_Options::BOPAlgo_Options()
   myAllocator(NCollection_BaseAllocator::CommonBaseAllocator()),
   myReport(new Message_Report),
   myRunParallel(myGlobalRunParallel),
-  myFuzzyValue(Precision::Confusion())
+  myFuzzyValue(Precision::Confusion()),
+  myUseOBB(Standard_False)
 {
   BOPAlgo_LoadMessages();
 }
@@ -65,7 +66,8 @@ BOPAlgo_Options::BOPAlgo_Options
   myAllocator(theAllocator),
   myReport(new Message_Report),
   myRunParallel(myGlobalRunParallel),
-  myFuzzyValue(Precision::Confusion())
+  myFuzzyValue(Precision::Confusion()),
+  myUseOBB(Standard_False)
 {
   BOPAlgo_LoadMessages();
 }

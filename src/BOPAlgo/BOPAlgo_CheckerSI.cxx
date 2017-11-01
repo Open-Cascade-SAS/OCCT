@@ -159,16 +159,16 @@ void BOPAlgo_CheckerSI::Init()
   myDS->SetArguments(myArguments);
   myDS->Init(myFuzzyValue);
   //
-  // 2.myIterator 
+  // 2 myContext
+  myContext=new IntTools_Context;
+  //
+  // 3.myIterator 
   BOPDS_PIteratorSI theIterSI=new BOPDS_IteratorSI(myAllocator);
   theIterSI->SetDS(myDS);
-  theIterSI->Prepare();
+  theIterSI->Prepare(myContext, myUseOBB, myFuzzyValue);
   theIterSI->UpdateByLevelOfCheck(myLevelOfCheck);
   //
   myIterator=theIterSI;
-  //
-  // 3 myContext
-  myContext=new IntTools_Context;
 }
 //=======================================================================
 //function : Perform

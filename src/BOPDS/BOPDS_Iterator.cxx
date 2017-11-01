@@ -17,6 +17,7 @@
 
 
 #include <Bnd_Box.hxx>
+#include <Bnd_OBB.hxx>
 #include <BOPDS_DS.hxx>
 #include <BOPDS_IndexRange.hxx>
 #include <BOPDS_Iterator.hxx>
@@ -25,6 +26,7 @@
 #include <BOPDS_Tools.hxx>
 #include <BOPTools_BoxBndTree.hxx>
 #include <BOPTools_Parallel.hxx>
+#include <IntTools_Context.hxx>
 #include <NCollection_UBTreeFiller.hxx>
 #include <NCollection_Vector.hxx>
 #include <TopoDS_Shape.hxx>
@@ -240,7 +242,9 @@ void BOPDS_Iterator::Value(Standard_Integer& theI1,
 // function: Prepare
 // purpose: 
 //=======================================================================
-void BOPDS_Iterator::Prepare()
+void BOPDS_Iterator::Prepare(const Handle(IntTools_Context)& theCtx,
+                             const Standard_Boolean theCheckOBB,
+                             const Standard_Real theFuzzyValue)
 {
   Standard_Integer i, aNbInterfTypes;
   //
@@ -253,14 +257,16 @@ void BOPDS_Iterator::Prepare()
   if (myDS==NULL){
     return;
   }
-  Intersect();
+  Intersect(theCtx, theCheckOBB, theFuzzyValue);
 }
 //
 //=======================================================================
 // function: Intersect
 // purpose: 
 //=======================================================================
-void BOPDS_Iterator::Intersect()
+void BOPDS_Iterator::Intersect(const Handle(IntTools_Context)& theCtx,
+                               const Standard_Boolean theCheckOBB,
+                               const Standard_Real theFuzzyValue)
 {
   Standard_Integer i, j, iX, i1, i2, iR, aNb, aNbR;
   Standard_Integer iTi, iTj;
@@ -339,6 +345,16 @@ void BOPDS_Iterator::Intersect()
         //
         BOPDS_Pair aPair(i, j);
         if (aMPFence.Add(aPair)) {
+          if (theCheckOBB)
+          {
+            // Check intersection of Oriented bounding boxes of the shapes
+            Bnd_OBB& anOBBi = theCtx->OBB(aSI.Shape(), theFuzzyValue);
+            Bnd_OBB& anOBBj = theCtx->OBB(aSJ.Shape(), theFuzzyValue);
+
+            if (anOBBi.IsOut(anOBBj))
+              continue;
+          }
+
           iX = BOPDS_Tools::TypeToInteger(aTi, aTj);
           myLists(iX).Append(aPair);
         }// if (aMPFence.Add(aPair)) {

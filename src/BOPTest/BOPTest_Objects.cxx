@@ -21,6 +21,7 @@
 #include <BOPAlgo_CellsBuilder.hxx>
 #include <BOPAlgo_Splitter.hxx>
 #include <NCollection_BaseAllocator.hxx>
+#include <Precision.hxx>
 
 static Handle(NCollection_BaseAllocator)& Allocator1();
 
@@ -52,10 +53,11 @@ class BOPTest_Session {
     myBuilder=myBuilderDefault;
     myRunParallel=Standard_False;
     myNonDestructive = Standard_False;
-    myFuzzyValue = 0.;
+    myFuzzyValue = Precision::Confusion();
     myGlue = BOPAlgo_GlueOff;
     myDrawWarnShapes = Standard_False;
     myCheckInverted = Standard_True;
+    myUseOBB = Standard_False;
   };
   //
   // Clear
@@ -151,6 +153,13 @@ class BOPTest_Session {
     return myCheckInverted;
   };
   //
+  void SetUseOBB(const Standard_Boolean bUse) {
+    myUseOBB = bUse;
+  };
+  //
+  Standard_Boolean UseOBB() const {
+    return myUseOBB;
+  };
 protected:
   //
   BOPTest_Session(const BOPTest_Session&);
@@ -170,6 +179,7 @@ protected:
   BOPAlgo_GlueEnum myGlue;
   Standard_Boolean myDrawWarnShapes;
   Standard_Boolean myCheckInverted;
+  Standard_Boolean myUseOBB;
 };
 //
 //=======================================================================
@@ -394,6 +404,22 @@ void BOPTest_Objects::SetCheckInverted(const Standard_Boolean bCheck)
 Standard_Boolean BOPTest_Objects::CheckInverted()
 {
   return GetSession().CheckInverted();
+}
+//=======================================================================
+//function : SetUseOBB
+//purpose  : 
+//=======================================================================
+void BOPTest_Objects::SetUseOBB(const Standard_Boolean bUseOBB)
+{
+  GetSession().SetUseOBB(bUseOBB);
+}
+//=======================================================================
+//function : UseOBB
+//purpose  : 
+//=======================================================================
+Standard_Boolean BOPTest_Objects::UseOBB()
+{
+  return GetSession().UseOBB();
 }
 //=======================================================================
 //function : Allocator1
