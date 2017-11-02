@@ -48,7 +48,6 @@
 #include <TColStd_MapOfInteger.hxx>
 
 class Aspect_Window;
-class Graphic3d_Vector;
 class Quantity_Color;
 class Graphic3d_Vertex;
 class TCollection_ExtendedString;

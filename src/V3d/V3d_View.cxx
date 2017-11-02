@@ -27,7 +27,6 @@
 #include <Graphic3d_MapOfStructure.hxx>
 #include <Graphic3d_Structure.hxx>
 #include <Graphic3d_TextureEnv.hxx>
-#include <Graphic3d_Vector.hxx>
 #include <Image_AlienPixMap.hxx>
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
@@ -515,15 +514,11 @@ void V3d_View::SetBgImageStyle (const Aspect_FillMethod theFillStyle, const Stan
 //function : SetAxis
 //purpose  :
 //=============================================================================
-void V3d_View::SetAxis(const Standard_Real X, const Standard_Real Y, const Standard_Real Z, const Standard_Real Vx, const Standard_Real Vy, const Standard_Real Vz)
+void V3d_View::SetAxis (const Standard_Real theX,  const Standard_Real theY,  const Standard_Real theZ,
+                        const Standard_Real theVx, const Standard_Real theVy, const Standard_Real theVz)
 {
-  Standard_Real D,Nx = Vx,Ny = Vy,Nz = Vz ;
-
-  D = Sqrt( Vx*Vx + Vy*Vy + Vz*Vz ) ;
-  V3d_BadValue_Raise_if ( D <= 0. , "V3d_View::SetAxis, bad axis");
-  Nx /= D ; Ny /= D ; Nz /= D ;
-  MyDefaultViewPoint.SetCoord(X,Y,Z) ;
-  MyDefaultViewAxis.SetCoord(Nx,Ny,Nz) ;
+  myDefaultViewPoint.SetCoord (theX, theY, theZ);
+  myDefaultViewAxis.SetCoord (theVx, theVy, theVz);
 }
 
 //=============================================================================
@@ -732,33 +727,28 @@ void V3d_View::Rotate(const V3d_TypeOfAxe Axe, const Standard_Real angle, const 
 //function : Rotate
 //purpose  :
 //=============================================================================
-void V3d_View::Rotate(const V3d_TypeOfAxe Axe, const Standard_Real angle,
-                      const Standard_Real X, const Standard_Real Y, const Standard_Real Z, const Standard_Boolean Start)
+void V3d_View::Rotate (const V3d_TypeOfAxe theAxe, const Standard_Real theAngle,
+                       const Standard_Real theX, const Standard_Real theY, const Standard_Real theZ, const Standard_Boolean theStart)
 {
-  Standard_Real Angle = angle ;
+  Standard_Real anAngle = theAngle;
 
-  if( Angle > 0. ) while ( Angle > DEUXPI ) Angle -= DEUXPI ;
-  else if( Angle < 0. ) while ( Angle < -DEUXPI ) Angle += DEUXPI ;
+  if (anAngle > 0.0) while (anAngle > DEUXPI) anAngle -= DEUXPI;
+  else if (anAngle < 0.0) while (anAngle < -DEUXPI) anAngle += DEUXPI;
 
   Handle(Graphic3d_Camera) aCamera = Camera();
 
-  if (Start)
+  if (theStart)
   {
-    myGravityReferencePoint.SetCoord (X, Y, Z);
+    myGravityReferencePoint.SetCoord (theX, theY, theZ);
     myCamStartOpUp     = aCamera->Up();
     myCamStartOpEye    = aCamera->Eye();
     myCamStartOpCenter = aCamera->Center();
 
-    switch (Axe) {
-    case V3d_X :
-      myViewAxis.SetCoord(1.,0.,0.) ;
-      break ;
-    case V3d_Y :
-      myViewAxis.SetCoord(0.,1.,0.) ;
-      break ;
-    case V3d_Z :
-      myViewAxis.SetCoord(0.,0.,1.) ;
-      break ;
+    switch (theAxe)
+    {
+      case V3d_X: myViewAxis = gp::DX(); break;
+      case V3d_Y: myViewAxis = gp::DY(); break;
+      case V3d_Z: myViewAxis = gp::DZ(); break;
     }
 
     myCamStartOpUp     = aCamera->Up();
@@ -775,11 +765,11 @@ void V3d_View::Rotate(const V3d_TypeOfAxe Axe, const Standard_Real angle,
   // rotate camera around passed axis
   gp_Trsf aRotation;
   gp_Pnt aRCenter (aVref.X(), aVref.Y(), aVref.Z());
-  gp_Dir aRAxis ((Axe == V3d_X) ? 1.0 : 0.0,
-                  (Axe == V3d_Y) ? 1.0 : 0.0,
-                  (Axe == V3d_Z) ? 1.0 : 0.0);
+  gp_Dir aRAxis ((theAxe == V3d_X) ? 1.0 : 0.0,
+                 (theAxe == V3d_Y) ? 1.0 : 0.0,
+                 (theAxe == V3d_Z) ? 1.0 : 0.0);
 
-  aRotation.SetRotation (gp_Ax1 (aRCenter, aRAxis), Angle);
+  aRotation.SetRotation (gp_Ax1 (aRCenter, aRAxis), anAngle);
 
   aCamera->Transform (aRotation);
 
@@ -807,16 +797,13 @@ void V3d_View::Rotate(const Standard_Real angle, const Standard_Boolean Start)
     myCamStartOpCenter = aCamera->Center();
   }
 
-  const Graphic3d_Vertex& aPnt = MyDefaultViewPoint;
-  const Graphic3d_Vector& anAxis = MyDefaultViewAxis;
-
   aCamera->SetUp     (myCamStartOpUp);
   aCamera->SetEye    (myCamStartOpEye);
   aCamera->SetCenter (myCamStartOpCenter);
 
   gp_Trsf aRotation;
-  gp_Pnt aRCenter (aPnt.X(), aPnt.Y(), aPnt.Z());
-  gp_Dir aRAxis (anAxis.X(), anAxis.Y(), anAxis.Z());
+  gp_Pnt aRCenter (myDefaultViewPoint);
+  gp_Dir aRAxis (myDefaultViewAxis);
   aRotation.SetRotation (gp_Ax1 (aRCenter, aRAxis), Angle);
 
   aCamera->Transform (aRotation);
@@ -918,11 +905,9 @@ void V3d_View::Turn(const Standard_Real angle, const Standard_Boolean Start)
   aCamera->SetEye    (myCamStartOpEye);
   aCamera->SetCenter (myCamStartOpCenter);
 
-  const Graphic3d_Vector& anAxis = MyDefaultViewAxis;
-
   gp_Trsf aRotation;
   gp_Pnt aRCenter = aCamera->Eye();
-  gp_Dir aRAxis (anAxis.X(), anAxis.Y(), anAxis.Z());
+  gp_Dir aRAxis (myDefaultViewAxis);
   aRotation.SetRotation (gp_Ax1 (aRCenter, aRAxis), Angle);
 
   aCamera->Transform (aRotation);
@@ -939,32 +924,19 @@ void V3d_View::Turn(const Standard_Real angle, const Standard_Boolean Start)
 void V3d_View::SetTwist(const Standard_Real angle)
 {
   Standard_Real Angle = angle ;
-  Standard_Boolean TheStatus;
 
   if( Angle > 0. ) while ( Angle > DEUXPI ) Angle -= DEUXPI ;
   else if( Angle < 0. ) while ( Angle < -DEUXPI ) Angle += DEUXPI ;
 
   Handle(Graphic3d_Camera) aCamera = Camera();
 
-  gp_Dir aReferencePlane (aCamera->Direction().Reversed());
-  gp_Dir anUp;
-
-  anUp = gp_Dir (0.0, 0.0, 1.0);
-
-  TheStatus = ScreenAxis(aReferencePlane, anUp,
-    myXscreenAxis,myYscreenAxis,myZscreenAxis) ;
-  if( !TheStatus ) {
-    anUp = gp_Dir (0.0, 1.0, 0.0);
-    TheStatus = ScreenAxis(aReferencePlane, anUp,
-      myXscreenAxis,myYscreenAxis,myZscreenAxis) ;
+  const gp_Dir aReferencePlane (aCamera->Direction().Reversed());
+  if (!screenAxis (aReferencePlane, gp::DZ(), myXscreenAxis, myYscreenAxis, myZscreenAxis)
+   && !screenAxis (aReferencePlane, gp::DY(), myXscreenAxis, myYscreenAxis, myZscreenAxis)
+   && !screenAxis (aReferencePlane, gp::DZ(), myXscreenAxis, myYscreenAxis, myZscreenAxis))
+  {
+    throw V3d_BadValue ("V3d_ViewSetTwist, alignment of Eye,At,Up,");
   }
-  if( !TheStatus ) {
-    anUp = gp_Dir (1.0, 0.0, 0.0);
-    TheStatus = ScreenAxis(aReferencePlane, anUp,
-      myXscreenAxis,myYscreenAxis,myZscreenAxis) ;
-  }
-
-  V3d_BadValue_Raise_if( !TheStatus,"V3d_ViewSetTwist, alignment of Eye,At,Up,");
   
   gp_Pnt aRCenter = aCamera->Center();
   gp_Dir aZAxis (aCamera->Direction().Reversed());
@@ -972,10 +944,7 @@ void V3d_View::SetTwist(const Standard_Real angle)
   gp_Trsf aTrsf;
   aTrsf.SetRotation (gp_Ax1 (aRCenter, aZAxis), Angle);
 
-  Standard_Real myYscreenAxisX, myYscreenAxisY, myYscreenAxisZ;
-  myYscreenAxis.Coord (myYscreenAxisX, myYscreenAxisY, myYscreenAxisZ);
-
-  aCamera->SetUp (gp_Dir (myYscreenAxisX, myYscreenAxisY, myYscreenAxisZ));
+  aCamera->SetUp (gp_Dir (myYscreenAxis));
   aCamera->Transform (aTrsf);
 
   AutoZFit();
@@ -1081,7 +1050,7 @@ void V3d_View::SetProj( const V3d_TypeOfOrientation Orientation )
     Zpn = 1.;
   }
 
-  const Graphic3d_Vector& aBck = V3d::GetProjAxis (Orientation);
+  const gp_Dir aBck = V3d::GetProjAxis (Orientation);
 
   // retain camera panning from origin when switching projection
   Handle(Graphic3d_Camera) aCamera = Camera();
@@ -1127,40 +1096,21 @@ void V3d_View::SetAt(const Standard_Real X,const Standard_Real Y,const Standard_
 //function : SetUp
 //purpose  :
 //=============================================================================
-void V3d_View::SetUp(const Standard_Real Vx,const Standard_Real Vy,const Standard_Real Vz)
+void V3d_View::SetUp (const Standard_Real theVx, const Standard_Real theVy, const Standard_Real theVz)
 {
-  Standard_Boolean TheStatus ;
-  V3d_BadValue_Raise_if( Sqrt(Vx*Vx + Vy*Vy + Vz*Vz) <= 0. ,
-    "V3d_View::SetUp, nullUp vector");
-
   Handle(Graphic3d_Camera) aCamera = Camera();
 
-  gp_Dir aReferencePlane (aCamera->Direction().Reversed());
-  gp_Dir anUp (Vx, Vy, Vz);
-
-  TheStatus = ScreenAxis(aReferencePlane,anUp,
-    myXscreenAxis,myYscreenAxis,myZscreenAxis) ;
-  if( !TheStatus ) {
-    anUp = gp_Dir (0.0, 0.0, 1.0);
-    TheStatus = ScreenAxis(aReferencePlane,anUp,
-      myXscreenAxis,myYscreenAxis,myZscreenAxis) ;
+  const gp_Dir aReferencePlane (aCamera->Direction().Reversed());
+  const gp_Dir anUp (theVx, theVy, theVz);
+  if (!screenAxis (aReferencePlane, anUp,     myXscreenAxis, myYscreenAxis, myZscreenAxis)
+   && !screenAxis (aReferencePlane, gp::DZ(), myXscreenAxis, myYscreenAxis, myZscreenAxis)
+   && !screenAxis (aReferencePlane, gp::DY(), myXscreenAxis, myYscreenAxis, myZscreenAxis)
+   && !screenAxis (aReferencePlane, gp::DX(), myXscreenAxis, myYscreenAxis, myZscreenAxis))
+  {
+    throw V3d_BadValue ("V3d_View::Setup, alignment of Eye,At,Up");
   }
-  if( !TheStatus ) {
-    anUp = gp_Dir (0.0, 1.0, 0.0);
-    TheStatus = ScreenAxis(aReferencePlane,anUp,
-      myXscreenAxis,myYscreenAxis,myZscreenAxis) ;
-  }
-  if( !TheStatus ) {
-    anUp = gp_Dir (1.0, 0.0, 0.0);
-    TheStatus = ScreenAxis(aReferencePlane,anUp,
-      myXscreenAxis,myYscreenAxis,myZscreenAxis) ;
-  }
-  V3d_BadValue_Raise_if( !TheStatus,"V3d_View::Setup, alignment of Eye,At,Up");
 
-  Standard_Real myYscreenAxisX, myYscreenAxisY, myYscreenAxisZ;
-  myYscreenAxis.Coord (myYscreenAxisX, myYscreenAxisY, myYscreenAxisZ);
-
-  aCamera->SetUp (gp_Dir (myYscreenAxisX, myYscreenAxisY, myYscreenAxisZ));
+  aCamera->SetUp (gp_Dir (myYscreenAxis));
 
   AutoZFit();
 
@@ -1171,41 +1121,21 @@ void V3d_View::SetUp(const Standard_Real Vx,const Standard_Real Vy,const Standar
 //function : SetUp
 //purpose  :
 //=============================================================================
-void V3d_View::SetUp( const V3d_TypeOfOrientation Orientation )
+void V3d_View::SetUp (const V3d_TypeOfOrientation theOrientation)
 {
-  Standard_Boolean TheStatus ;
-
   Handle(Graphic3d_Camera) aCamera = Camera();
 
-  gp_Dir aReferencePlane (aCamera->Direction().Reversed());
-  gp_Dir anUp;
-
-  const Graphic3d_Vector& aViewReferenceUp = V3d::GetProjAxis(Orientation) ;
-  anUp = gp_Dir (aViewReferenceUp.X(), aViewReferenceUp.Y(), aViewReferenceUp.Z());
-
-  TheStatus = ScreenAxis(aReferencePlane,anUp,
-    myXscreenAxis,myYscreenAxis,myZscreenAxis) ;
-  if( !TheStatus ) {
-    anUp = gp_Dir (0.,0.,1.);
-    TheStatus = ScreenAxis(aReferencePlane,anUp,
-      myXscreenAxis,myYscreenAxis,myZscreenAxis) ;
+  const gp_Dir aReferencePlane (aCamera->Direction().Reversed());
+  const gp_Dir anUp = V3d::GetProjAxis (theOrientation);
+  if (!screenAxis (aReferencePlane, anUp,     myXscreenAxis, myYscreenAxis, myZscreenAxis)
+   && !screenAxis (aReferencePlane, gp::DZ(), myXscreenAxis, myYscreenAxis, myZscreenAxis)
+   && !screenAxis (aReferencePlane, gp::DY(), myXscreenAxis, myYscreenAxis, myZscreenAxis)
+   && !screenAxis (aReferencePlane, gp::DX(), myXscreenAxis, myYscreenAxis, myZscreenAxis))
+  {
+    throw V3d_BadValue ("V3d_View::SetUp, alignment of Eye,At,Up");
   }
-  if( !TheStatus ) {
-    anUp = gp_Dir (0.,1.,0.);
-    TheStatus = ScreenAxis(aReferencePlane,anUp,
-      myXscreenAxis,myYscreenAxis,myZscreenAxis) ;
-  }
-  if( !TheStatus ) {
-    anUp = gp_Dir (1.,0.,0.);
-    TheStatus = ScreenAxis(aReferencePlane,anUp,
-      myXscreenAxis,myYscreenAxis,myZscreenAxis) ;
-  }
-  V3d_BadValue_Raise_if( !TheStatus, "V3d_View::SetUp, alignment of Eye,At,Up");
 
-  Standard_Real myYscreenAxisX, myYscreenAxisY, myYscreenAxisZ;
-  myYscreenAxis.Coord (myYscreenAxisX, myYscreenAxisY, myYscreenAxisZ);
-
-  aCamera->SetUp (gp_Dir (myYscreenAxisX, myYscreenAxisY, myYscreenAxisZ));
+  aCamera->SetUp (gp_Dir (myYscreenAxis));
 
   AutoZFit();
 
@@ -2253,45 +2183,35 @@ void V3d_View::Up(Standard_Real& Vx, Standard_Real& Vy, Standard_Real& Vz) const
 //=============================================================================
 Standard_Real V3d_View::Twist() const
 {
-  Standard_Real Xup,Yup,Zup,Xpn,Ypn,Zpn,X0,Y0,Z0 ;
-  Standard_Real pvx,pvy,pvz,pvn,sca,angle ;
-  Graphic3d_Vector Xaxis,Yaxis,Zaxis ;
-  Standard_Boolean TheStatus ;
-
-  gp_Dir aReferencePlane (Camera()->Direction().Reversed());
-  gp_Dir anUp;
-
-  Proj(Xpn,Ypn,Zpn);
-  anUp = gp_Dir (0.,0.,1.) ;
-  TheStatus = ScreenAxis (aReferencePlane, anUp,Xaxis,Yaxis,Zaxis) ;
-  if( !TheStatus ) {
-    anUp = gp_Dir (0.,1.,0.) ;
-    TheStatus = ScreenAxis (aReferencePlane, anUp,Xaxis,Yaxis,Zaxis) ;
+  gp_Vec Xaxis, Yaxis, Zaxis;
+  const gp_Dir aReferencePlane (Camera()->Direction().Reversed());
+  if (!screenAxis (aReferencePlane, gp::DZ(), Xaxis, Yaxis, Zaxis)
+   && !screenAxis (aReferencePlane, gp::DY(), Xaxis, Yaxis, Zaxis)
+   && !screenAxis (aReferencePlane, gp::DX(), Xaxis, Yaxis, Zaxis))
+  {
+    //
   }
-  if( !TheStatus ) {
-    anUp = gp_Dir (1.,0.,0.) ;
-    TheStatus = ScreenAxis (aReferencePlane, anUp,Xaxis,Yaxis,Zaxis) ;
-  }
-  Yaxis.Coord(X0,Y0,Z0) ;
 
-  Up(Xup,Yup,Zup) ;
-  /* Compute Cross Vector From Up & Origin */
-  pvx = Y0*Zup - Z0*Yup ;
-  pvy = Z0*Xup - X0*Zup ;
-  pvz = X0*Yup - Y0*Xup ;
-  pvn = pvx*pvx + pvy*pvy + pvz*pvz ;
-  sca = X0*Xup + Y0*Yup + Z0*Zup ;
-  /* Compute Angle */
-  angle = Sqrt(pvn) ;
-  if( angle > 1. ) angle = 1. ;
-  else if( angle < -1. ) angle = -1. ;
-  angle = asin(angle) ;
-  if( sca < 0. ) angle = M_PI - angle ;
-  if( angle > 0. && angle < M_PI ) {
-    sca = pvx*Xpn + pvy*Ypn + pvz*Zpn ;
-    if( sca < 0. ) angle = DEUXPI - angle ;
+  // Compute Cross Vector From Up & Origin
+  const gp_Dir aCameraUp = Camera()->Up();
+  const gp_XYZ aP = Yaxis.XYZ().Crossed (aCameraUp.XYZ());
+
+  // compute Angle
+  Standard_Real anAngle = ASin (Max (Min (aP.Modulus(), 1.0), -1.0));
+  if (Yaxis.Dot (aCameraUp.XYZ()) < 0.0)
+  {
+    anAngle = M_PI - anAngle;
   }
-  return angle ;
+  if (anAngle > 0.0
+   && anAngle < M_PI)
+  {
+    const gp_Dir aProjDir = Camera()->Direction().Reversed();
+    if (aP.Dot (aProjDir.XYZ()) < 0.0)
+    {
+      anAngle = DEUXPI - anAngle;
+    }
+  }
+  return anAngle;
 }
 
 //=============================================================================
@@ -2403,32 +2323,28 @@ Handle(Graphic3d_CView) V3d_View::View() const
 }
 
 //=============================================================================
-//function : ScreenAxis
+//function : screenAxis
 //purpose  :
 //=============================================================================
-Standard_Boolean V3d_View::ScreenAxis( const gp_Dir &Vpn, const gp_Dir &Vup, Graphic3d_Vector &Xaxe, Graphic3d_Vector &Yaxe, Graphic3d_Vector &Zaxe)
+Standard_Boolean V3d_View::screenAxis (const gp_Dir& theVpn, const gp_Dir& theVup,
+                                       gp_Vec& theXaxe, gp_Vec& theYaxe, gp_Vec& theZaxe)
 {
-  Standard_Real Xpn, Ypn, Zpn, Xup, Yup, Zup;
-  Standard_Real dx1, dy1, dz1, xx, yy, zz;
+  theXaxe = theVup.XYZ().Crossed (theVpn.XYZ());
+  if (theXaxe.Magnitude() <= gp::Resolution())
+  {
+    return Standard_False;
+  }
+  theXaxe.Normalize();
 
-  Xpn = Vpn.X(); Ypn = Vpn.Y(); Zpn = Vpn.Z();
-  Xup = Vup.X(); Yup = Vup.Y(); Zup = Vup.Z();
-  xx = Yup*Zpn - Zup*Ypn;
-  yy = Zup*Xpn - Xup*Zpn;
-  zz = Xup*Ypn - Yup*Xpn;
-  Xaxe.SetCoord (xx, yy, zz);
-  if (Xaxe.LengthZero()) return Standard_False;
-  Xaxe.Normalize(); 
-  Xaxe.Coord(dx1, dy1, dz1);
-  xx = Ypn*dz1 - Zpn*dy1;
-  yy = Zpn*dx1 - Xpn*dz1;
-  zz = Xpn*dy1 - Ypn*dx1;
-  Yaxe.SetCoord (xx, yy, zz) ;
-  if (Yaxe.LengthZero()) return Standard_False;
-  Yaxe.Normalize(); 
+  theYaxe = theVpn.XYZ().Crossed (theXaxe.XYZ());
+  if (theYaxe.Magnitude() <= gp::Resolution())
+  {
+    return Standard_False;
+  }
+  theYaxe.Normalize();
 
-  Zaxe.SetCoord (Xpn, Ypn, Zpn);
-  Zaxe.Normalize();
+  theZaxe = theVpn.XYZ();
+  theZaxe.Normalize();
   return Standard_True;
 }
 

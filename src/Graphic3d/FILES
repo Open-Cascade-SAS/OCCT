@@ -150,9 +150,6 @@ Graphic3d_Vec.hxx
 Graphic3d_Vec2.hxx
 Graphic3d_Vec3.hxx
 Graphic3d_Vec4.hxx
-Graphic3d_Vector.cxx
-Graphic3d_Vector.hxx
-Graphic3d_VectorError.hxx
 Graphic3d_Vertex.cxx
 Graphic3d_Vertex.hxx
 Graphic3d_VerticalTextAlignment.hxx

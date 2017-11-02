@@ -23,7 +23,6 @@
 #include <Graphic3d_Group.hxx>
 #include <Graphic3d_Structure.hxx>
 #include <Graphic3d_TextureEnv.hxx>
-#include <Graphic3d_Vector.hxx>
 #include <Quantity_Color.hxx>
 #include <Standard_MultiplyDefined.hxx>
 #include <Standard_TypeMismatch.hxx>

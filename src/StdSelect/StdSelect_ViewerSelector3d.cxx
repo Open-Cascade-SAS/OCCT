@@ -811,14 +811,15 @@ namespace
     //! Normalize the depth values.
     virtual void Flush() Standard_OVERRIDE
     {
-      Standard_Real aFrom  = 0.0;
-      Standard_Real aDelta = 1.0;
+      float aFrom  = 0.0f;
+      float aDelta = 1.0f;
       if (myDepthMin <= myDepthMax)
       {
-        aFrom = myDepthMin;
-        if (myDepthMin != myDepthMax)
+        aFrom  = float(myDepthMin);
+        aDelta = float(myDepthMax) - float(myDepthMin);
+        if (aDelta <= ShortRealEpsilon())
         {
-          aDelta = myDepthMax - myDepthMin;
+          aDelta = 1.0f;
         }
       }
       for (Standard_Size aRowIter = 0; aRowIter < myUnnormImage.SizeY(); ++aRowIter)
@@ -834,7 +835,7 @@ namespace
             continue;
           }
 
-          float aNormDepth = float((Standard_Real(aDepth) - aFrom) / aDelta);
+          float aNormDepth = (aDepth - aFrom) / aDelta;
           if (myToInverse)
           {
             aNormDepth = 1.0f - aNormDepth;
@@ -874,7 +875,7 @@ namespace
 
       const SelectMgr_SortCriterion& aSortCriterion = myMainSel->PickedData (thePicked);
       const float aDepth = float(aSortCriterion.Depth);
-      myImage->SetPixelColor (theCol, theRow, Quantity_ColorRGBA (aDepth, aDepth, aDepth, 1.0f));
+      myImage->SetPixelColor (theCol, theRow, Quantity_ColorRGBA (Graphic3d_Vec4 (aDepth, aDepth, aDepth, 1.0f)));
     }
   };
 

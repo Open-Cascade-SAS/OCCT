@@ -74,19 +74,29 @@ public:
                                  const Standard_Real theAngle = 0.523599);
 
   //! Defines the position of the light source.
-  Standard_EXPORT virtual void SetPosition (const Standard_Real theX,
-                                            const Standard_Real theY,
-                                            const Standard_Real theZ) Standard_OVERRIDE;
+  virtual void SetPosition (Standard_Real theX,
+                            Standard_Real theY,
+                            Standard_Real theZ) Standard_OVERRIDE
+  {
+    myLight.Position.x() = theX;
+    myLight.Position.y() = theY;
+    myLight.Position.z() = theZ;
+  }
 
   //! Defines the direction of the light source.
   //! If the normal vector is NULL.
-  Standard_EXPORT void SetDirection (const Standard_Real theVx,
-                                     const Standard_Real theVy,
-                                     const Standard_Real theVz);
+  void SetDirection (Standard_Real theVx,
+                     Standard_Real theVy,
+                     Standard_Real theVz)
+  {
+    myLight.Direction.x() = static_cast<Standard_ShortReal> (theVx);
+    myLight.Direction.y() = static_cast<Standard_ShortReal> (theVy);
+    myLight.Direction.z() = static_cast<Standard_ShortReal> (theVz);
+  }
 
   //! Defines the direction of the light source
   //! according to a predefined directional vector.
-  Standard_EXPORT void SetDirection (const V3d_TypeOfOrientation theOrientation);
+  Standard_EXPORT void SetDirection (V3d_TypeOfOrientation theOrientation);
 
   //! Defines the coefficients of attenuation.
   //! Warning! raises BadValue from V3d
@@ -117,23 +127,37 @@ public:
                                 const V3d_TypeOfRepresentation theRepresentation) Standard_OVERRIDE;
 
   //! Returns the direction of the light source defined by theVx, theVy, theVz.
-  Standard_EXPORT void Direction (Standard_Real& theVx,
-                                  Standard_Real& theVy,
-                                  Standard_Real& theVz) const;
+  void Direction (Standard_Real& theVx,
+                  Standard_Real& theVy,
+                  Standard_Real& theVz) const
+  {
+    theVx = myLight.Direction.x();
+    theVy = myLight.Direction.y();
+    theVz = myLight.Direction.z();
+  }
 
   //! Returns the position of the light source.
-  Standard_EXPORT void Position (Standard_Real& theX,
-                                 Standard_Real& theY,
-                                 Standard_Real& theZ) const Standard_OVERRIDE;
+  virtual void Position (Standard_Real& theX,
+                         Standard_Real& theY,
+                         Standard_Real& theZ) const Standard_OVERRIDE
+  {
+    theX = myLight.Position.x();
+    theY = myLight.Position.y();
+    theZ = myLight.Position.z();
+  }
 
   //! Returns the attenuation factors A1,A2 of the light source.
-  Standard_EXPORT void Attenuation (Standard_Real& theConstAttentuation,
-                                    Standard_Real& theLinearAttentuation) const;
+  void Attenuation (Standard_Real& theConstAttentuation,
+                    Standard_Real& theLinearAttentuation) const
+  {
+    theConstAttentuation  = myLight.ConstAttenuation();
+    theLinearAttentuation = myLight.LinearAttenuation();
+  }
 
-  Standard_EXPORT Standard_Real Concentration() const;
+  Standard_Real Concentration() const { return myLight.Concentration(); }
 
   //! Returns the spot angle.
-  Standard_EXPORT Standard_Real Angle() const;
+  Standard_Real Angle() const { return myLight.Angle(); }
 
   DEFINE_STANDARD_RTTIEXT(V3d_SpotLight,V3d_PositionLight)
 

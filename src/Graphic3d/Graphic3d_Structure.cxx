@@ -26,9 +26,7 @@
 #include <Graphic3d_StructureDefinitionError.hxx>
 #include <Graphic3d_StructureManager.hxx>
 #include <Graphic3d_TransformError.hxx>
-#include <Graphic3d_Vector.hxx>
 #include <Quantity_Color.hxx>
-#include <Standard_Type.hxx>
 
 #include "Graphic3d_Structure.pxx"
 

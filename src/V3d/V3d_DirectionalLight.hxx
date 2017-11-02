@@ -50,23 +50,23 @@ public:
                                         const Standard_Boolean theIsHeadlight = Standard_False);
 
   //! Defines the direction of the light source by a predefined orientation.
-  Standard_EXPORT void SetDirection (const V3d_TypeOfOrientation theDirection);
+  Standard_EXPORT void SetDirection (V3d_TypeOfOrientation theDirection);
 
   //! Defines the direction of the light source by the predefined vector theXm, theYm, theZm.
   //! Warning: raises  BadValue from V3d if the vector is null.
-  Standard_EXPORT void SetDirection (const Standard_Real theXm,
-                                     const Standard_Real theYm,
-                                     const Standard_Real theZm);
+  Standard_EXPORT void SetDirection (Standard_Real theXm,
+                                     Standard_Real theYm,
+                                     Standard_Real theZm);
 
   //! Defines the point of light source representation.
-  Standard_EXPORT void SetDisplayPosition (const Standard_Real theX,
-                                           const Standard_Real theY,
-                                           const Standard_Real theZ);
+  Standard_EXPORT void SetDisplayPosition (Standard_Real theX,
+                                           Standard_Real theY,
+                                           Standard_Real theZ);
 
   //! Calls SetDisplayPosition method.
-  Standard_EXPORT virtual void SetPosition (const Standard_Real theXp,
-                                            const Standard_Real theYp,
-                                            const Standard_Real theZp) Standard_OVERRIDE;
+  virtual void SetPosition (Standard_Real theXp,
+                            Standard_Real theYp,
+                            Standard_Real theZp) Standard_OVERRIDE { SetDisplayPosition (theXp, theYp, theZp); }
 
   //! Modifies the smoothing angle (in radians)
   Standard_EXPORT void SetSmoothAngle (const Standard_Real theValue);
@@ -84,19 +84,24 @@ public:
                                 const V3d_TypeOfRepresentation theRepresentation) Standard_OVERRIDE;
 
   //! Calls DisplayPosition method.
-  Standard_EXPORT virtual void Position (Standard_Real& theX,
-                                         Standard_Real& theY,
-                                         Standard_Real& theZ) const Standard_OVERRIDE;
+  virtual void Position (Standard_Real& theX,
+                         Standard_Real& theY,
+                         Standard_Real& theZ) const Standard_OVERRIDE { DisplayPosition (theX, theY, theZ); }
 
   //! Returns the chosen position to represent the light source.
-  Standard_EXPORT void DisplayPosition (Standard_Real& theX,
-                                        Standard_Real& theY,
-                                        Standard_Real& theZ) const;
+  void DisplayPosition (Standard_Real& theX,
+                        Standard_Real& theY,
+                        Standard_Real& theZ) const { myDisplayPosition.Coord (theX, theY, theZ); }
 
   //! Returns the theVx, theVy, theVz direction of the light source.
-  Standard_EXPORT void Direction (Standard_Real& theVx,
-                                  Standard_Real& theVy,
-                                  Standard_Real& theVz) const;
+  void Direction (Standard_Real& theVx,
+                  Standard_Real& theVy,
+                  Standard_Real& theVz) const
+  {
+    theVx = myLight.Direction.x();
+    theVy = myLight.Direction.y();
+    theVz = myLight.Direction.z();
+  }
 
   DEFINE_STANDARD_RTTIEXT(V3d_DirectionalLight,V3d_PositionLight)
 
@@ -108,7 +113,7 @@ private:
 
 private:
 
-  Graphic3d_Vertex myDisplayPosition;
+  gp_Pnt myDisplayPosition;
 };
 
 #endif // _V3d_DirectionalLight_HeaderFile

@@ -33,9 +33,9 @@ class V3d_PositionLight : public V3d_Light
 public:
 
   //! Defines the position of the light source. Should be redefined!
-  Standard_EXPORT virtual void SetPosition (const Standard_Real theX,
-                                            const Standard_Real theY,
-                                            const Standard_Real theZ) = 0;
+  Standard_EXPORT virtual void SetPosition (Standard_Real theX,
+                                            Standard_Real theY,
+                                            Standard_Real theZ) = 0;
 
   //! Defines the target of the light (the center of the sphere).
   Standard_EXPORT void SetTarget (const Standard_Real theX,
@@ -91,9 +91,9 @@ public:
                                          Standard_Real& theZ) const = 0;
 
   //! Returns the position of the target of the light source.
-  Standard_EXPORT void Target (Standard_Real& theX,
-                               Standard_Real& theY,
-                               Standard_Real& theZ) const;
+  void Target (Standard_Real& theX,
+               Standard_Real& theY,
+               Standard_Real& theZ) const { myTarget.Coord (theX, theY, theZ); }
 
   DEFINE_STANDARD_RTTIEXT(V3d_PositionLight,V3d_Light)
 
@@ -101,7 +101,9 @@ protected:
 
   Standard_EXPORT V3d_PositionLight (const Handle(V3d_Viewer)& theViewer);
 
-  Graphic3d_Vertex myTarget;
+protected:
+
+  gp_Pnt myTarget;
   V3d_TypeOfRepresentation myTypeOfRepresentation;
 
 private:

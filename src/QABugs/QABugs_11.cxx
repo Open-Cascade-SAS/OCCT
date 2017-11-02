@@ -4505,31 +4505,6 @@ static Standard_Integer OCC20627 (Draw_Interpretor& di, Standard_Integer argc, c
   return 0;
 }
 
-#include <Graphic3d_Vector.hxx>
-Standard_Integer OCC22762 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
-{
-    if (argc!=7)
-	{
-	    di << "Wrong number of arguments\n";
-	    return -1;
-	}
-    Standard_Real X1_Pnt = Draw::Atof(argv[1]);
-    Standard_Real Y1_Pnt = Draw::Atof(argv[2]);
-    Standard_Real Z1_Pnt = Draw::Atof(argv[3]);
-    Standard_Real X2_Pnt = Draw::Atof(argv[4]);
-    Standard_Real Y2_Pnt = Draw::Atof(argv[5]);
-    Standard_Real Z2_Pnt = Draw::Atof(argv[6]);
-    
-    Graphic3d_Vector AV1(X1_Pnt, Y1_Pnt, Z1_Pnt);
-    Graphic3d_Vector AV2(X2_Pnt, Y2_Pnt, Z2_Pnt);
-     
-    di << "Result is: " << (Graphic3d_Vector::IsParallel(AV1, AV2) ? "true" : "false") << "\n" ;
-    return 0;
-}
-    
-    
-
-
 #include <IntCurvesFace_ShapeIntersector.hxx>
 #include <gp_Lin.hxx>
 Standard_Integer OCC17424 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
@@ -4916,7 +4891,6 @@ void QABugs::Commands_11(Draw_Interpretor& theCommands) {
   theCommands.Add("OCC22301", "OCC22301", __FILE__, OCC22301, group);
   theCommands.Add("OCC22736", "OCC22736 X_mirrorFirstPoint Y_mirrorFirstPoint X_mirrorSecondPoint Y_mirrorSecondPoint X_p1 Y_p1 X_p2 Y_p2", __FILE__, OCC22736, group);
   theCommands.Add("OCC22744", "OCC22744", __FILE__, OCC22744, group);
-  theCommands.Add("OCC22762", "OCC22762 x1 y1 z1 x2 y2 z3", __FILE__, OCC22762, group);
   theCommands.Add("OCC22558", "OCC22558 x_vec y_vec z_vec x_dir y_dir z_dit x_pnt y_pnt z_pnt", __FILE__, OCC22558, group);
   theCommands.Add("CR23403", "CR23403 string", __FILE__, CR23403, group);
   theCommands.Add("OCC23429", "OCC23429 res shape tool [appr]", __FILE__, OCC23429, group);

@@ -18,13 +18,6 @@
 #define _V3d_Light_HeaderFile
 
 #include <Graphic3d_CLight.hxx>
-#include <Graphic3d_Vertex.hxx>
-#include <Standard_Transient.hxx>
-#include <Quantity_Color.hxx>
-#include <Standard.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Type.hxx>
 #include <V3d_TypeOfLight.hxx>
 #include <V3d_View.hxx>
 
@@ -80,12 +73,12 @@ protected:
   //! Sets type of the light.
   Standard_EXPORT void SetType (const V3d_TypeOfLight theType);
 
-  //! Returns the symetric point coordinates of "aPoint"
+  //! Returns the symmetric point coordinates of "aPoint"
   //! on the sphere of center "Center" and radius "Radius".
   //! VX,VY,VZ is the project vector of view.
   Standard_EXPORT static void SymetricPointOnSphere (const Handle(V3d_View)& aView,
-                                                     const Graphic3d_Vertex& Center,
-                                                     const Graphic3d_Vertex& aPoint,
+                                                     const gp_Pnt& Center,
+                                                     const gp_Pnt& aPoint,
                                                      const Standard_Real Radius,
                                                      Standard_Real& X, Standard_Real& Y, Standard_Real& Z,
                                                      Standard_Real& VX, Standard_Real& VY, Standard_Real& VZ);

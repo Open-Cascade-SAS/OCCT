@@ -127,8 +127,13 @@ void V3d_Light::SetHeadlight (const Standard_Boolean theValue)
 // function : SymetricPointOnSphere
 // purpose  :
 // =======================================================================
-void V3d_Light::SymetricPointOnSphere (const Handle(V3d_View)& aView, const Graphic3d_Vertex &Center, const Graphic3d_Vertex &aPoint, const Standard_Real Rayon, Standard_Real& X, Standard_Real& Y, Standard_Real& Z, Standard_Real& VX, Standard_Real& VY, Standard_Real& VZ ) {
-
+void V3d_Light::SymetricPointOnSphere (const Handle(V3d_View)& aView,
+                                       const gp_Pnt& Center,
+                                       const gp_Pnt& aPoint,
+                                       const Standard_Real Rayon,
+                                       Standard_Real& X, Standard_Real& Y, Standard_Real& Z,
+                                       Standard_Real& VX, Standard_Real& VY, Standard_Real& VZ )
+{
   Standard_Real X0,Y0,Z0,XP,YP,ZP;
   Standard_Real PXP,PYP,DeltaX,DeltaY,DeltaZ;
   Standard_Real A,B,C,Delta,Lambda;

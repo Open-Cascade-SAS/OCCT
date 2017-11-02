@@ -11,40 +11,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-/***********************************************************************
-     FONCTION :
-     ----------
-        Classe V3d_SpotLight :
-     HISTORIQUE DES MODIFICATIONS   :
-     --------------------------------
-      00-09-92 : GG  ; Creation.
-      18-06-96 : FMN ; Ajout MyGraphicStructure1 pour sauvegarder snopick
-      30-03-98 : ZOV ; PRO6774 (reconstruction of the class hierarchy and suppressing useless methods)
-      02.15.100 : JR : Clutter
-************************************************************************/
-/*----------------------------------------------------------------------*/
-/*
- * Includes
- */
+#include <V3d_SpotLight.hxx>
 
-#include <gp_Ax1.hxx>
-#include <gp_Dir.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Trsf.hxx>
-#include <gp_Vec.hxx>
 #include <Graphic3d_ArrayOfSegments.hxx>
 #include <Graphic3d_AspectLine3d.hxx>
-#include <Graphic3d_AspectMarker3d.hxx>
-#include <Graphic3d_AspectText3d.hxx>
 #include <Graphic3d_Group.hxx>
 #include <Graphic3d_Structure.hxx>
-#include <Graphic3d_Vector.hxx>
-#include <Graphic3d_Vertex.hxx>
-#include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <V3d.hxx>
 #include <V3d_BadValue.hxx>
-#include <V3d_SpotLight.hxx>
 #include <V3d_View.hxx>
 #include <V3d_Viewer.hxx>
 
@@ -66,7 +41,7 @@ V3d_SpotLight::V3d_SpotLight (const Handle(V3d_Viewer)& theViewer,
                               const Standard_Real theAngle)
 : V3d_PositionLight (theViewer)
 {
-  Graphic3d_Vector aDir = V3d::GetProjAxis (theDirection);
+  gp_Dir aDir = V3d::GetProjAxis (theDirection);
   SetType (V3d_SPOT);
   SetColor (theColor);
   SetTarget (theX + aDir.X(), theY + aDir.Y(), theZ + aDir.Z());
@@ -106,38 +81,12 @@ V3d_SpotLight::V3d_SpotLight (const Handle(V3d_Viewer)& theViewer,
 }
 
 // =======================================================================
-// function : SetPosition
-// purpose  :
-// =======================================================================
-void V3d_SpotLight::SetPosition (const Standard_Real theXp,
-                                 const Standard_Real theYp,
-                                 const Standard_Real theZp)
-{
-  myLight.Position.x() = theXp;
-  myLight.Position.y() = theYp;
-  myLight.Position.z() = theZp;
-}
-
-// =======================================================================
 // function : SetDirection
 // purpose  :
 // =======================================================================
-void V3d_SpotLight::SetDirection (const Standard_Real theVx,
-                                  const Standard_Real theVy,
-                                  const Standard_Real theVz)
+void V3d_SpotLight::SetDirection (V3d_TypeOfOrientation theDirection)
 {
-  myLight.Direction.x() = static_cast<Standard_ShortReal> (theVx);
-  myLight.Direction.y() = static_cast<Standard_ShortReal> (theVy);
-  myLight.Direction.z() = static_cast<Standard_ShortReal> (theVz);
-}
-
-// =======================================================================
-// function : SetDirection
-// purpose  :
-// =======================================================================
-void V3d_SpotLight::SetDirection (const V3d_TypeOfOrientation theDirection)
-{
-  Graphic3d_Vector aDir = V3d::GetProjAxis (theDirection);
+  gp_Dir aDir = V3d::GetProjAxis (theDirection);
   SetDirection (aDir.X(), aDir.Y(), aDir.Z());
 }
 
@@ -186,62 +135,6 @@ void V3d_SpotLight::SetAngle (const Standard_Real theAngle)
 
   myLight.ChangeAngle() = static_cast<Standard_ShortReal> (theAngle);
 }
-
-// =======================================================================
-// function : Direction
-// purpose  :
-// =======================================================================
-void V3d_SpotLight::Direction (Standard_Real& theVx,
-                               Standard_Real& theVy,
-                               Standard_Real& theVz) const
-{
-  theVx = myLight.Direction.x();
-  theVy = myLight.Direction.y();
-  theVz = myLight.Direction.z();
-}
-
-// =======================================================================
-// function : Direction
-// purpose  :
-// =======================================================================
-void V3d_SpotLight::Position (Standard_Real& theXp,
-                              Standard_Real& theYp,
-                              Standard_Real& theZp) const
-{
-  theXp = myLight.Position.x();
-  theYp = myLight.Position.y();
-  theZp = myLight.Position.z();
-}
-
-// =======================================================================
-// function : Attenuation
-// purpose  :
-// =======================================================================
-void V3d_SpotLight::Attenuation (Standard_Real& theConstAttenuation,
-                                 Standard_Real& theLinearAttenuation) const
-{
-  theConstAttenuation  = myLight.ConstAttenuation();
-  theLinearAttenuation = myLight.LinearAttenuation();
-}
-
-// =======================================================================
-// function : Concentration
-// purpose  :
-// =======================================================================
-Standard_Real V3d_SpotLight::Concentration ()const
-{
-  return myLight.Concentration();
-}
-
-// =======================================================================
-// function : Concentration
-// purpose  :
-// =======================================================================
-Standard_Real V3d_SpotLight::Angle()const
-{
-  return myLight.Angle();
-}
-
 // =======================================================================
 // function : Symbol
 // purpose  :
@@ -264,7 +157,6 @@ void V3d_SpotLight::Symbol (const Handle(Graphic3d_Group)& theSymbol,
 void V3d_SpotLight::Display (const Handle(V3d_View)& theView,
                              const V3d_TypeOfRepresentation theTPres)
 {
-  Graphic3d_Vertex PText ;
   Standard_Real X,Y,Z,Rayon;
   Standard_Real X0,Y0,Z0,VX,VY,VZ;
   Standard_Real X1,Y1,Z1;
@@ -340,7 +232,7 @@ void V3d_SpotLight::Display (const Handle(V3d_View)& theView,
       V3d::ArrowOfRadius(gExtArrow,X-.1*(X-X0),Y-.1*(Y-Y0),Z-.1*(Z-Z0),X-X0,Y-Y0,Z-Z0,M_PI/15.,Rayon/20.);
       V3d::ArrowOfRadius(gIntArrow,X0,Y0,Z0,X0-X,Y0-Y,Z0-Z,M_PI/15.,Rayon/20.);
       TCollection_AsciiString ValOfRadius(Rayon);
-      PText.SetCoord( .5*(X0+X), .5*(Y0+Y), .5*(Z0+Z) );
+      Graphic3d_Vertex PText ( .5*(X0+X), .5*(Y0+Y), .5*(Z0+Z) );
       gradius->Text(ValOfRadius.ToCString(),PText,0.01);
     }
     

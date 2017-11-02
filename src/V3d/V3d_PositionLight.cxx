@@ -11,29 +11,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-/***********************************************************************
-  V3d_PositionLight.cxx
-  Created:    30-03-98  ZOV (ZELENKOV Oleg)
-************************************************************************/
+#include <V3d_PositionLight.hxx>
 
-#include <gp_Ax1.hxx>
 #include <gp_Dir.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Trsf.hxx>
 #include <gp_Vec.hxx>
 #include <Graphic3d_ArrayOfSegments.hxx>
 #include <Graphic3d_AspectLine3d.hxx>
-#include <Graphic3d_AspectMarker3d.hxx>
-#include <Graphic3d_AspectText3d.hxx>
 #include <Graphic3d_Group.hxx>
 #include <Graphic3d_Structure.hxx>
-#include <Graphic3d_Vector.hxx>
-#include <Graphic3d_Vertex.hxx>
-#include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <V3d.hxx>
 #include <V3d_BadValue.hxx>
-#include <V3d_PositionLight.hxx>
 #include <V3d_SpotLight.hxx>
 #include <V3d_View.hxx>
 #include <V3d_Viewer.hxx>
@@ -79,20 +67,14 @@ void V3d_PositionLight::SetRadius (const Standard_Real theRadius)
   V3d_BadValue_Raise_if( theRadius <= 0. , "V3d_PositionLight::SetRadius, bad radius");
   V3d_BadValue_Raise_if( Type() == V3d_DIRECTIONAL , "V3d_PositionLight::SetRadius, bad light type");
 
-  Standard_Real X0,Y0,Z0, Xn,Yn,Zn, Xp,Yp,Zp;
-  
-  // The target point remains unchanged, only the position of the light is modified
-  // by preserving the direction.
-	Position (Xp,Yp,Zp);
-  Graphic3d_Vector  D(myTarget, Graphic3d_Vertex(Xp, Yp, Zp));
-  D.Normalize();
-  D.Coord(Xn,Yn,Zn);
-  myTarget.Coord(X0,Y0,Z0);
-  Xn = X0 + theRadius*Xn;
-  Yn = Y0 + theRadius*Yn;
-  Zn = Z0 + theRadius*Zn;
+  // The target point remains unchanged, only the position of the light is modified by preserving the direction
+  gp_XYZ aPosOld;
+  Position (aPosOld.ChangeCoord (1), aPosOld.ChangeCoord (2), aPosOld.ChangeCoord (3));
+  gp_XYZ aDir = aPosOld - myTarget.XYZ();
+  aDir.Normalize();
 
-  SetPosition(Xn,Yn,Zn) ;
+  const gp_XYZ aPosNew = myTarget.XYZ() + aDir * theRadius;
+  SetPosition (aPosNew.X(), aPosNew.Y(), aPosNew.Z());
 }
 
 // =======================================================================
@@ -104,8 +86,7 @@ void V3d_PositionLight::OnHideFace (const Handle(V3d_View)& theView)
   Standard_Real Xp,Yp,Zp, X,Y,Z, VX,VY,VZ;
   
   Position (Xp,Yp,Zp);
-  V3d_Light::SymetricPointOnSphere (theView, 
-    myTarget, Graphic3d_Vertex(Xp,Yp,Yp), Radius(), X,Y,Z, VX,VY,VZ);
+  V3d_Light::SymetricPointOnSphere (theView, myTarget, gp_Pnt(Xp,Yp,Yp), Radius(), X,Y,Z, VX,VY,VZ);
 
   // This is a visible point
   if ((VX*(X-Xp) < 0.) && (VY*(Y-Yp) < 0.) && (VZ*(Z-Zp) < 0.))
@@ -121,8 +102,7 @@ void V3d_PositionLight::OnSeeFace (const Handle(V3d_View)& theView)
   Standard_Real Xp,Yp,Zp, X,Y,Z, VX,VY,VZ;
   
   Position (Xp,Yp,Zp);
-  V3d_Light::SymetricPointOnSphere (theView, 
-    myTarget, Graphic3d_Vertex(Xp,Yp,Yp), Radius(), X,Y,Z, VX,VY,VZ);
+  V3d_Light::SymetricPointOnSphere (theView, myTarget, gp_Pnt(Xp,Yp,Yp), Radius(), X,Y,Z, VX,VY,VZ);
 
   // This is a hidden point
   if ((VX*(X-Xp) > 0.) && (VY*(Y-Yp) > 0.) && (VZ*(Z-Zp) > 0.))
@@ -138,8 +118,7 @@ Standard_Boolean V3d_PositionLight::SeeOrHide (const Handle(V3d_View)& theView) 
   Standard_Real Xp,Yp,Zp, X,Y,Z, VX,VY,VZ;
   
   Position (Xp,Yp,Zp);
-  V3d_Light::SymetricPointOnSphere (theView, 
-    myTarget, Graphic3d_Vertex(Xp,Yp,Yp), Radius(), X,Y,Z, VX,VY,VZ);
+  V3d_Light::SymetricPointOnSphere (theView, myTarget, gp_Pnt(Xp,Yp,Yp), Radius(), X,Y,Z, VX,VY,VZ);
 
   // Is it a visible or a hidden point
   return ( (VX*(X-Xp) > 0.) || (VY*(Y-Yp) > 0.) || (VZ*(Z-Zp) > 0.) )?
@@ -147,15 +126,6 @@ Standard_Boolean V3d_PositionLight::SeeOrHide (const Handle(V3d_View)& theView) 
     Standard_False:
     // the source is on the visible face.
     Standard_True;
-}
-
-// =======================================================================
-// function : Target
-// purpose  :
-// =======================================================================
-void V3d_PositionLight::Target (Standard_Real& theXp, Standard_Real& theYp, Standard_Real& theZp) const
-{
-  myTarget.Coord (theXp, theYp, theZp);
 }
 
 // =======================================================================
@@ -295,8 +265,6 @@ void V3d_PositionLight::Tracking (const Handle(V3d_View)& theView,
                                   const Standard_Integer theXpix,
                                   const Standard_Integer theYpix)
 {
-//  Quantity_Color   Col ;
-  Standard_Real    xPos, yPos, zPos;
   Standard_Real    XPp,YPp,PXT,PYT,X,Y,Z,Rayon,Ylim;
   Standard_Real    XMinTrack,XMaxTrack,YMinTrack,YMaxTrack;
   Standard_Real    XT,YT,ZT,X0,Y0,Z0,XP,YP,ZP,VX,VY,VZ,A,B,C,Delta;
@@ -417,10 +385,12 @@ void V3d_PositionLight::Tracking (const Handle(V3d_View)& theView,
       Rayon = Rayon * Rap;
 //                 the source should remain at a fixed position, 
 //                 only the target is modified.
-      Position (xPos, yPos, zPos);
-      Graphic3d_Vector  Dir(Graphic3d_Vertex(xPos,yPos,zPos), myTarget);
-      Dir.Normalize();
-      Dir.Coord(X,Y,Z);
+
+      gp_XYZ aPos;
+      Position (aPos.ChangeCoord (1), aPos.ChangeCoord (2), aPos.ChangeCoord (3));
+      gp_XYZ aDir = myTarget.XYZ() - aPos;
+      aDir.Normalize();
+      aDir.Coord(X,Y,Z);
       X = Xi + Rayon*X;
       Y = Yi + Rayon*Y;
       Z = Zi + Rayon*Z;
@@ -455,7 +425,7 @@ Standard_Real V3d_PositionLight::Radius() const
 }
 
 // =======================================================================
-// function : Radius
+// function : Erase
 // purpose  :
 // =======================================================================
 void V3d_PositionLight::Erase()

@@ -20,7 +20,6 @@
 #include <Graphic3d_AspectMarker3d.hxx>
 #include <Graphic3d_Group.hxx>
 #include <Graphic3d_Structure.hxx>
-#include <Graphic3d_Vertex.hxx>
 #include <Quantity_Color.hxx>
 #include <Standard_Type.hxx>
 #include <TColgp_SequenceOfPnt.hxx>

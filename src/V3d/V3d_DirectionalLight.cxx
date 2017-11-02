@@ -11,44 +11,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-/***********************************************************************
-     FONCTION :
-     ----------
-        Classe V3d_DirectionalLight :
-     HISTORIQUE DES MODIFICATIONS   :
-     --------------------------------
-      00-09-92 : GG  ; Creation.
-      18-06-96 : FMN ; Ajout MyGraphicStructure1 pour sauvegarder snopick
-      24-12-97 : FMN ; Remplacement de math par MathGra
-      31-12-97 : CAL ; Suppression de MathGra
-      21-01-98 : CAL ; Window de Xw et WNT remplacee par Aspect_Window
-      23-02-98 : FMN ; Remplacement PI par Standard_PI
-      30-03-98 : ZOV ; PRO6774 (reconstruction of the class hierarchy and suppressing useless methods)
-************************************************************************/
-/*----------------------------------------------------------------------*/
-/*
- * Includes
- */
+#include <V3d_DirectionalLight.hxx>
 
-#include <Aspect_Window.hxx>
-#include <gp_Ax1.hxx>
-#include <gp_Dir.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Trsf.hxx>
-#include <gp_Vec.hxx>
 #include <Graphic3d_ArrayOfSegments.hxx>
 #include <Graphic3d_AspectLine3d.hxx>
-#include <Graphic3d_AspectMarker3d.hxx>
-#include <Graphic3d_AspectText3d.hxx>
 #include <Graphic3d_Group.hxx>
 #include <Graphic3d_Structure.hxx>
-#include <Graphic3d_Vector.hxx>
-#include <Graphic3d_Vertex.hxx>
-#include <Standard_Type.hxx>
 #include <TColStd_Array2OfReal.hxx>
 #include <V3d.hxx>
 #include <V3d_BadValue.hxx>
-#include <V3d_DirectionalLight.hxx>
 #include <V3d_View.hxx>
 #include <V3d_Viewer.hxx>
 
@@ -64,7 +35,7 @@ V3d_DirectionalLight::V3d_DirectionalLight (const Handle(V3d_Viewer)& theViewer,
                                             const Standard_Boolean theIsHeadlight)
 : V3d_PositionLight (theViewer)
 {
-  Graphic3d_Vector aV = V3d::GetProjAxis (theDirection);
+  gp_Dir aV = V3d::GetProjAxis (theDirection);
   SetType (V3d_DIRECTIONAL);
   SetColor (theColor);
   SetHeadlight (theIsHeadlight);
@@ -112,9 +83,9 @@ void V3d_DirectionalLight::SetSmoothAngle (const Standard_Real theValue)
 // function : SetDirection
 // purpose  :
 // =======================================================================
-void V3d_DirectionalLight::SetDirection (const V3d_TypeOfOrientation theDirection)
+void V3d_DirectionalLight::SetDirection (V3d_TypeOfOrientation theDirection)
 {
-  Graphic3d_Vector aV = V3d::GetProjAxis (theDirection);
+  gp_Dir aV = V3d::GetProjAxis (theDirection);
   SetDirection (aV.X(), aV.Y(), aV.Z());
 }
 
@@ -122,17 +93,11 @@ void V3d_DirectionalLight::SetDirection (const V3d_TypeOfOrientation theDirectio
 // function : SetDirection
 // purpose  :
 // =======================================================================
-void V3d_DirectionalLight::SetDirection (const Standard_Real theVx,
-                                         const Standard_Real theVy,
-                                         const Standard_Real theVz)
+void V3d_DirectionalLight::SetDirection (Standard_Real theVx,
+                                         Standard_Real theVy,
+                                         Standard_Real theVz)
 {
-  V3d_BadValue_Raise_if (Sqrt (theVx * theVx + theVy * theVy + theVz * theVz) <= 0.,
-                         "V3d_DirectionalLight::SetDirection, "
-                         "null vector" );
-
-  Graphic3d_Vector aV (theVx, theVy, theVz);
-  aV.Normalize();
-
+  gp_Dir aV (theVx, theVy, theVz);
   myLight.Direction.x() = static_cast<Standard_ShortReal> (aV.X());
   myLight.Direction.y() = static_cast<Standard_ShortReal> (aV.Y());
   myLight.Direction.z() = static_cast<Standard_ShortReal> (aV.Z());
@@ -142,55 +107,20 @@ void V3d_DirectionalLight::SetDirection (const Standard_Real theVx,
 // function : SetDisplayPosition
 // purpose  :
 // =======================================================================
-void V3d_DirectionalLight::SetDisplayPosition (const Standard_Real theX,
-                                               const Standard_Real theY,
-                                               const Standard_Real theZ)
+void V3d_DirectionalLight::SetDisplayPosition (Standard_Real theX,
+                                               Standard_Real theY,
+                                               Standard_Real theZ)
 {
   myDisplayPosition.SetCoord(theX, theY, theZ);
 
-  Standard_Real aXt, aYt, aZt;
-  Target (aXt, aYt, aZt);
+  gp_XYZ aTarget;
+  Target (aTarget.ChangeCoord (1), aTarget.ChangeCoord (2), aTarget.ChangeCoord (3));
 
-  Standard_Real aXd = aXt - theX;
-  Standard_Real aYd = aYt - theY;
-  Standard_Real aZd = aZt - theZ;
-  if (!Graphic3d_Vector (aXd, aYd, aZd).LengthZero())
+  const gp_XYZ aDispPos = aTarget - gp_XYZ(theX, theY, theZ);
+  if (aDispPos.Modulus() > gp::Resolution())
   {
-    SetDirection (aXd, aYd, aZd);
+    SetDirection (aDispPos.X(), aDispPos.Y(), aDispPos.Z());
   }
-}
-
-// =======================================================================
-// function : SetPosition
-// purpose  :
-// =======================================================================
-void V3d_DirectionalLight::SetPosition (const Standard_Real theXp,
-                                        const Standard_Real theYp,
-                                        const Standard_Real theZp)
-{
-  SetDisplayPosition (theXp, theYp, theZp);
-}
-
-// =======================================================================
-// function : Position
-// purpose  :
-// =======================================================================
-void V3d_DirectionalLight::Position (Standard_Real& theXp,
-                                     Standard_Real& theYp,
-                                     Standard_Real& theZp) const
-{
-  DisplayPosition (theXp, theYp, theZp) ;
-}
-
-// =======================================================================
-// function : DisplayPosition
-// purpose  :
-// =======================================================================
-void V3d_DirectionalLight::DisplayPosition (Standard_Real& theXp,
-                                            Standard_Real& theYp,
-                                            Standard_Real& theZp) const
-{
-  myDisplayPosition.Coord (theXp, theYp, theZp) ;
 }
 
 // =======================================================================
@@ -364,17 +294,4 @@ void V3d_DirectionalLight::Display (const Handle(V3d_View)& theView,
 //    cout << "MyGraphicStructure exploration \n" << flush; MyGraphicStructure->Exploration();
   myTypeOfRepresentation = Pres;
   myGraphicStructure->Display();
-}
-
-// =======================================================================
-// function : Direction
-// purpose  :
-// =======================================================================
-void V3d_DirectionalLight::Direction (Standard_Real& theVx,
-                                      Standard_Real& theVy,
-                                      Standard_Real& theVz) const
-{
-  theVx = myLight.Direction.x();
-  theVy = myLight.Direction.y();
-  theVz = myLight.Direction.z();
 }

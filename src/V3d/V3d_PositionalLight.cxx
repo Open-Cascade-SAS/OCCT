@@ -11,45 +11,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-/***********************************************************************
-     FONCTION :
-     ----------
-        Classe V3d_PositionalLight :
-     HISTORIQUE DES MODIFICATIONS   :
-     --------------------------------
-      00-09-92 : GG  ; Creation.
-      18-06-96 : FMN ; Ajout MyGraphicStructure1 pour sauvegarder snopick
-      24-12-97 : FMN ; Remplacement de math par MathGra
-      31-12-97 : CAL ; Suppression de MathGra
-      21-01-98 : CAL ; Window de Xw et WNT remplacee par Aspect_Window
-      23-02-98 : FMN ; Remplacement PI par Standard_PI
-      30-03-98 : ZOV ; PRO6774 (reconstruction of the class hierarchy and suppressing useless methods)
-************************************************************************/
-/*----------------------------------------------------------------------*/
-/*
- * Includes
- */
+#include <V3d_PositionalLight.hxx>
 
-#include <Aspect_Window.hxx>
-#include <gp_Ax1.hxx>
-#include <gp_Dir.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Trsf.hxx>
-#include <gp_Vec.hxx>
 #include <Graphic3d_ArrayOfSegments.hxx>
 #include <Graphic3d_AspectLine3d.hxx>
-#include <Graphic3d_AspectMarker3d.hxx>
-#include <Graphic3d_AspectText3d.hxx>
 #include <Graphic3d_Group.hxx>
 #include <Graphic3d_Structure.hxx>
-#include <Graphic3d_Vector.hxx>
-#include <Graphic3d_Vertex.hxx>
-#include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TColStd_Array2OfReal.hxx>
 #include <V3d.hxx>
 #include <V3d_BadValue.hxx>
-#include <V3d_PositionalLight.hxx>
 #include <V3d_View.hxx>
 #include <V3d_Viewer.hxx>
 
@@ -112,19 +83,6 @@ void V3d_PositionalLight::SetSmoothRadius (const Standard_Real theValue)
 }
 
 // =======================================================================
-// function : SetPosition
-// purpose  :
-// =======================================================================
-void V3d_PositionalLight::SetPosition (const Standard_Real theXp,
-                                       const Standard_Real theYp,
-                                       const Standard_Real theZp)
-{
-  myLight.Position.x() = theXp;
-  myLight.Position.y() = theYp;
-  myLight.Position.z() = theZp;
-}
-
-// =======================================================================
 // function : SetAttenuation
 // purpose  :
 // =======================================================================
@@ -139,28 +97,6 @@ void V3d_PositionalLight::SetAttenuation (const Standard_Real theConstAttenuatio
 
   myLight.ChangeConstAttenuation()  = static_cast<Standard_ShortReal> (theConstAttenuation);
   myLight.ChangeLinearAttenuation() = static_cast<Standard_ShortReal> (theLinearAttenuation);
-}
-
-// =======================================================================
-// function : Position
-// purpose  :
-// =======================================================================
-void V3d_PositionalLight::Position (Standard_Real& theX, Standard_Real& theY, Standard_Real& theZ) const
-{
-  theX = myLight.Position.x();
-  theY = myLight.Position.y();
-  theZ = myLight.Position.z();
-}
-
-// =======================================================================
-// function : Attenuation
-// purpose  :
-// =======================================================================
-void V3d_PositionalLight::Attenuation (Standard_Real& theConstAttenuation,
-                                       Standard_Real& theLinearAttenuation) const
-{
-  theConstAttenuation  = myLight.ConstAttenuation();
-  theLinearAttenuation = myLight.LinearAttenuation();
 }
 
 // =======================================================================
@@ -226,7 +162,6 @@ void V3d_PositionalLight::Symbol (const Handle(Graphic3d_Group)& theSymbol, cons
 void V3d_PositionalLight::Display (const Handle(V3d_View)& theView,
                                    const V3d_TypeOfRepresentation theRepresentation)
 {
-  Graphic3d_Vertex PText ;
   Standard_Real X,Y,Z,Rayon;
   Standard_Real X0,Y0,Z0,VX,VY,VZ;
   Standard_Real X1,Y1,Z1;
@@ -302,7 +237,7 @@ void V3d_PositionalLight::Display (const Handle(V3d_View)& theView,
       V3d::ArrowOfRadius(gExtArrow,X-.1*(X-X0),Y-.1*(Y-Y0),Z-.1*(Z-Z0),X-X0,Y-Y0,Z-Z0,M_PI/15.,Rayon/20.);
       V3d::ArrowOfRadius(gIntArrow, X0, Y0, Z0, X0-X, Y0-Y, Z0-Z, M_PI / 15., Rayon / 20.);
       TCollection_AsciiString ValOfRadius(Rayon);
-      PText.SetCoord( 0.5*(X0+X), 0.5*(Y0+Y), 0.5*(Z0+Z) );
+      Graphic3d_Vertex PText (0.5*(X0+X), 0.5*(Y0+Y), 0.5*(Z0+Z));
       gradius->Text(ValOfRadius.ToCString(),PText,0.01);
     }
     

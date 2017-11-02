@@ -30,99 +30,10 @@
 #include <Graphic3d_AspectText3d.hxx>
 #include <Graphic3d_Group.hxx>
 #include <Graphic3d_Structure.hxx>
-#include <Graphic3d_Vector.hxx>
 #include <Quantity_NameOfColor.hxx>
 #include <V3d.hxx>
 #include <V3d_View.hxx>
 #include <V3d_Viewer.hxx>
-
-Graphic3d_Vector V3d::GetProjAxis(const V3d_TypeOfOrientation Orientation) {
-Standard_Real Xpn=0,Ypn=0,Zpn=0 ;
-Graphic3d_Vector Vec ;
-
-        switch (Orientation) {
-            case V3d_Xpos :
-                Xpn = 1. ; Ypn = 0. ; Zpn = 0. ;
-                break ;
-            case V3d_Ypos :
-                Xpn = 0. ; Ypn = 1. ; Zpn = 0. ;
-                break ;
-            case V3d_Zpos :
-                Xpn = 0. ; Ypn = 0. ; Zpn = 1. ;
-                break ;
-            case V3d_Xneg :
-                Xpn = -1. ; Ypn = 0. ; Zpn = 0. ;
-                break ;
-            case V3d_Yneg :
-                Xpn = 0. ; Ypn = -1. ; Zpn = 0. ;
-                break ;
-            case V3d_Zneg :
-                Xpn = 0. ; Ypn = 0. ; Zpn = -1. ;
-                break ;
-            case V3d_XposYposZpos :
-                Xpn = 1. ; Ypn = 1. ; Zpn = 1. ;
-                break ;
-            case V3d_XposYposZneg :
-                Xpn = 1. ; Ypn = 1. ; Zpn = -1. ;
-                break ;
-            case V3d_XposYnegZpos :
-                Xpn = 1. ; Ypn = -1. ; Zpn = 1. ;
-                break ;
-            case V3d_XposYnegZneg :
-                Xpn = 1. ; Ypn = -1. ; Zpn = -1. ;
-                break ;
-            case V3d_XnegYposZpos :
-                Xpn = -1. ; Ypn = 1. ; Zpn = 1. ;
-                break ;
-            case V3d_XnegYposZneg :
-                Xpn = -1. ; Ypn = 1. ; Zpn = -1. ;
-                break ;
-            case V3d_XnegYnegZpos :
-                Xpn = -1. ; Ypn = -1. ; Zpn = 1. ;
-                break ;
-            case V3d_XnegYnegZneg :
-                Xpn = -1. ; Ypn = -1. ; Zpn = -1. ;
-                break ;
-            case V3d_XposYpos :
-                Xpn = 1. ; Ypn = 1. ; Zpn = 0. ;
-                break ;
-            case V3d_XposYneg :
-                Xpn = 1. ; Ypn = -1. ; Zpn = 0. ;
-                break ;
-            case V3d_XnegYpos :
-                Xpn = -1. ; Ypn = 1. ; Zpn = 0. ;
-                break ;
-            case V3d_XnegYneg :
-                Xpn = -1. ; Ypn = -1. ; Zpn = 0. ;
-                break ;
-            case V3d_XposZpos :
-                Xpn = 1. ; Ypn = 0. ; Zpn = 1. ;
-                break ;
-            case V3d_XposZneg :
-                Xpn = 1. ; Ypn = 0. ; Zpn = -1. ;
-                break ;
-            case V3d_XnegZpos :
-                Xpn = -1. ; Ypn = 0. ; Zpn = 1. ;
-                break ;
-            case V3d_XnegZneg :
-                Xpn = -1. ; Ypn = 0. ; Zpn = -1. ;
-                break ;
-            case V3d_YposZpos :
-                Xpn = 0. ; Ypn = 1. ; Zpn = 1. ;
-                break ;
-            case V3d_YposZneg :
-                Xpn = 0. ; Ypn = 1. ; Zpn = -1. ;
-                break ;
-            case V3d_YnegZpos :
-                Xpn = 0. ; Ypn = -1. ; Zpn = 1. ;
-                break ;
-            case V3d_YnegZneg :
-                Xpn = 0. ; Ypn = -1. ; Zpn = -1. ;
-                break ;
-        }
-        Vec.SetCoord(Xpn,Ypn,Zpn) ; Vec.Normalize() ;
-        return Vec ;
-}
 
 void V3d::ArrowOfRadius(const Handle(Graphic3d_Group)& garrow,const Standard_Real X0,const Standard_Real Y0,const Standard_Real Z0,const Standard_Real Dx,const Standard_Real Dy,const Standard_Real Dz,const Standard_Real Alpha,const Standard_Real Lng)
 {

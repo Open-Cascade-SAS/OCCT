@@ -38,7 +38,6 @@
 #include <Graphic3d_GraduatedTrihedron.hxx>
 #include <Graphic3d_RenderingParams.hxx>
 #include <Graphic3d_SequenceOfHClipPlane.hxx>
-#include <Graphic3d_Vector.hxx>
 #include <Graphic3d_Vertex.hxx>
 
 #include <Image_PixMap.hxx>
@@ -72,12 +71,9 @@
 
 class Aspect_Grid;
 class Aspect_Window;
-class Bnd_Box;
 class Graphic3d_Group;
 class Graphic3d_Structure;
 class Graphic3d_TextureEnv;
-class Graphic3d_Vector;
-class Quantity_Color;
 class Standard_MultiplyDefined;
 class Standard_TypeMismatch;
 class V3d_BadValue;
@@ -982,7 +978,8 @@ private:
 
   //! Determines the screen axes in the reference
   //! framework of the view.
-  Standard_EXPORT static Standard_Boolean ScreenAxis (const gp_Dir& Vpn, const gp_Dir& Vup, Graphic3d_Vector& Xaxe, Graphic3d_Vector& Yaxe, Graphic3d_Vector& Zaxe);
+  Standard_EXPORT static Standard_Boolean screenAxis (const gp_Dir& theVpn, const gp_Dir& theVup,
+                                                      gp_Vec& theXaxe, gp_Vec& theYaxe, gp_Vec& theZaxe);
   
   //! Transforms the Vertex V according to the matrice Matrix .
   Standard_EXPORT static gp_XYZ TrsPoint (const Graphic3d_Vertex& V, const TColStd_Array2OfReal& Matrix);
@@ -1020,8 +1017,8 @@ private:
 
   V3d_ViewerPointer MyViewer;
   V3d_ListOfLight myActiveLights;
-  Graphic3d_Vector MyDefaultViewAxis;
-  Graphic3d_Vertex MyDefaultViewPoint;
+  gp_Dir myDefaultViewAxis;
+  gp_Pnt myDefaultViewPoint;
   Handle(Aspect_Window) MyWindow;
   V3d_ListOfLight::Iterator myActiveLightsIterator;
   Standard_Integer sx;
@@ -1042,10 +1039,10 @@ private:
   TColStd_Array2OfReal MyTrsf;
   Handle(Graphic3d_Structure) MyGridEchoStructure;
   Handle(Graphic3d_Group) MyGridEchoGroup;
-  Graphic3d_Vector myXscreenAxis;
-  Graphic3d_Vector myYscreenAxis;
-  Graphic3d_Vector myZscreenAxis;
-  Graphic3d_Vector myViewAxis;
+  gp_Vec myXscreenAxis;
+  gp_Vec myYscreenAxis;
+  gp_Vec myZscreenAxis;
+  gp_Dir myViewAxis;
   Graphic3d_Vertex myGravityReferencePoint;
   Standard_Boolean myAutoZFitIsOn;
   Standard_Real myAutoZFitScaleFactor;

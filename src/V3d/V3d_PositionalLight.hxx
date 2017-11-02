@@ -69,9 +69,14 @@ public:
                                        const Standard_Real theLinearAttenuation = 0.0);
 
   //! Defines the position of the light source.
-  Standard_EXPORT virtual void SetPosition (const Standard_Real theX,
-                                            const Standard_Real theY,
-                                            const Standard_Real theZ) Standard_OVERRIDE;
+  virtual void SetPosition (Standard_Real theX,
+                            Standard_Real theY,
+                            Standard_Real theZ) Standard_OVERRIDE
+  {
+    myLight.Position.x() = theX;
+    myLight.Position.y() = theY;
+    myLight.Position.z() = theZ;
+  }
 
   //! Defines the attenuation factors.
   //! Warning: raises BadValue from V3d
@@ -96,13 +101,22 @@ public:
                                 const V3d_TypeOfRepresentation theRepresentation) Standard_OVERRIDE;
 
   //! Returns the position of the light source.
-  Standard_EXPORT void Position (Standard_Real& theX,
-                                 Standard_Real& theY,
-                                 Standard_Real& theZ) const Standard_OVERRIDE;
+  void Position (Standard_Real& theX,
+                 Standard_Real& theY,
+                 Standard_Real& theZ) const Standard_OVERRIDE
+  {
+    theX = myLight.Position.x();
+    theY = myLight.Position.y();
+    theZ = myLight.Position.z();
+  }
 
   //! Returns the attenuation factors.
-  Standard_EXPORT void Attenuation (Standard_Real& theConstAttenuation,
-                                    Standard_Real& theLinearAttenuation) const;
+  void Attenuation (Standard_Real& theConstAttenuation,
+                    Standard_Real& theLinearAttenuation) const
+  {
+    theConstAttenuation  = myLight.ConstAttenuation();
+    theLinearAttenuation = myLight.LinearAttenuation();
+  }
 
   DEFINE_STANDARD_RTTIEXT(V3d_PositionalLight,V3d_PositionLight)
 
