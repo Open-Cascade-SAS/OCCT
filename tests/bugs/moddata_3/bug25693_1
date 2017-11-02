@@ -1,5 +1,3 @@
-puts "TODO OCC25693 Windows: Wire of BSplines fails bopcheck"
-
 puts "============"
 puts "OCC25693"
 puts "============"

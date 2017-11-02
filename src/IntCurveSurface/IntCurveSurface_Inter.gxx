@@ -1436,7 +1436,8 @@ void IntCurveSurface_ComputeTransitions(const TheCurve& curve,
   NSurf = D1U.Crossed(D1V);
   TheCurveTool::D1(curve,w,Psurf,D1U);
   Standard_Real Norm = NSurf.Magnitude();
-  if(Norm>TOLERANCE_ANGULAIRE) { 
+  if(Norm>TOLERANCE_ANGULAIRE &&
+     D1U.SquareMagnitude() > TOLERANCE_ANGULAIRE) { 
     D1U.Normalize();
     CosDir = NSurf.Dot(D1U);
     CosDir/=Norm;

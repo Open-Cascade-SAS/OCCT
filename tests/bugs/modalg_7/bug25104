@@ -1,5 +1,3 @@
-puts "TODO OCC25104 Windows: ERROR: OCC25104 is reproduced."
-
 puts "========"
 puts "OCC25104"
 puts "========"

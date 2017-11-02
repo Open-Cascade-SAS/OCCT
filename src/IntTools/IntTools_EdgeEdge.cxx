@@ -996,15 +996,22 @@ Standard_Boolean IntTools_EdgeEdge::IsIntersection(const Standard_Real aT11,
     }
     //
     Standard_Real anAngleCriteria;
-    Standard_Real anAngle1, anAngle2;
+    Standard_Real anAngle1 = 0.0,
+                  anAngle2 = 0.0;
     //
     anAngleCriteria = 5.e-3;
-    if (bSmall_11_21 && bSmall_12_22) {
-      anAngle1 = aV11.Angle(aV21);
-      anAngle2 = aV12.Angle(aV22);
-    } else {
-      anAngle1 = aV11.Angle(aV22);
-      anAngle2 = aV12.Angle(aV21);
+    if (aV11.SquareMagnitude() > Precision::SquareConfusion() &&
+        aV12.SquareMagnitude() > Precision::SquareConfusion() &&
+        aV21.SquareMagnitude() > Precision::SquareConfusion() &&
+        aV22.SquareMagnitude() > Precision::SquareConfusion() )
+    {
+      if (bSmall_11_21 && bSmall_12_22) {
+        anAngle1 = aV11.Angle(aV21);
+        anAngle2 = aV12.Angle(aV22);
+      } else {
+        anAngle1 = aV11.Angle(aV22);
+        anAngle2 = aV12.Angle(aV21);
+      }
     }
     //
     if (((anAngle1 < anAngleCriteria) || ((M_PI - anAngle1) < anAngleCriteria)) ||
