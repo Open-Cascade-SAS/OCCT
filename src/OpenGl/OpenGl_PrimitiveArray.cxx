@@ -448,13 +448,6 @@ void OpenGl_PrimitiveArray::drawEdges (const OpenGl_Vec4&              theEdgeCo
     return;
   }
 
-#if !defined(GL_ES_VERSION_2_0)
-  if (aGlContext->core11 != NULL)
-  {
-    glDisable (GL_LIGHTING);
-  }
-#endif
-
   const OpenGl_AspectLine* anAspectLineOld = theWorkspace->SetAspectLine (theWorkspace->AspectFace()->AspectEdge());
   const OpenGl_AspectLine* anAspect = theWorkspace->ApplyAspectLine();
 
@@ -474,6 +467,13 @@ void OpenGl_PrimitiveArray::drawEdges (const OpenGl_Vec4&              theEdgeCo
                          && aGlContext->ActiveProgram()->HasTessellationStage()
                          ? GL_PATCHES
                          : myDrawMode;
+#if !defined(GL_ES_VERSION_2_0)
+  if (aGlContext->ActiveProgram().IsNull()
+   && aGlContext->core11 != NULL)
+  {
+    glDisable (GL_LIGHTING);
+  }
+#endif
 
   /// OCC22236 NOTE: draw edges for all situations:
   /// 1) draw elements with GL_LINE style as edges from myPArray->bufferVBO[VBOEdges] indices array

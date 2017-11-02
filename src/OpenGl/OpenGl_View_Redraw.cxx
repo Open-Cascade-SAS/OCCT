@@ -97,7 +97,8 @@ void OpenGl_View::drawBackground (const Handle(OpenGl_Workspace)& theWorkspace)
   {
   #if !defined(GL_ES_VERSION_2_0)
     GLint aShadingModelOld = GL_SMOOTH;
-    if (aCtx->core11 != NULL)
+    if (aCtx->core11 != NULL
+     && aCtx->caps->ffpEnable)
     {
       aCtx->core11fwd->glDisable (GL_LIGHTING);
       aCtx->core11fwd->glGetIntegerv (GL_SHADE_MODEL, &aShadingModelOld);
@@ -108,7 +109,8 @@ void OpenGl_View::drawBackground (const Handle(OpenGl_Workspace)& theWorkspace)
     myBgGradientArray->Render (theWorkspace);
 
   #if !defined(GL_ES_VERSION_2_0)
-    if (aCtx->core11 != NULL)
+    if (aCtx->core11 != NULL
+     && aCtx->caps->ffpEnable)
     {
       aCtx->core11->glShadeModel (aShadingModelOld);
     }
@@ -541,7 +543,10 @@ void OpenGl_View::Redraw()
 
   // reset state for safety
   aCtx->BindProgram (Handle(OpenGl_ShaderProgram)());
-  aCtx->ShaderManager()->PushState (Handle(OpenGl_ShaderProgram)());
+  if (aCtx->caps->ffpEnable)
+  {
+    aCtx->ShaderManager()->PushState (Handle(OpenGl_ShaderProgram)());
+  }
 
   // Swap the buffers
   if (toSwap)
@@ -711,7 +716,10 @@ void OpenGl_View::RedrawImmediate()
 
   // reset state for safety
   aCtx->BindProgram (Handle(OpenGl_ShaderProgram)());
-  aCtx->ShaderManager()->PushState (Handle(OpenGl_ShaderProgram)());
+  if (aCtx->caps->ffpEnable)
+  {
+    aCtx->ShaderManager()->PushState (Handle(OpenGl_ShaderProgram)());
+  }
 
   if (toSwap && !aCtx->caps->buffersNoSwap)
   {
@@ -910,7 +918,8 @@ void OpenGl_View::render (Graphic3d_Camera::Projection theProjection,
 
 #if !defined(GL_ES_VERSION_2_0)
   // Switch off lighting by default
-  if (aContext->core11 != NULL)
+  if (aContext->core11 != NULL
+   && aContext->caps->ffpEnable)
   {
     glDisable(GL_LIGHTING);
   }
@@ -1006,7 +1015,10 @@ void OpenGl_View::render (Graphic3d_Camera::Projection theProjection,
 
   // reset FFP state for safety
   aContext->BindProgram (Handle(OpenGl_ShaderProgram)());
-  aContext->ShaderManager()->PushState (Handle(OpenGl_ShaderProgram)());
+  if (aContext->caps->ffpEnable)
+  {
+    aContext->ShaderManager()->PushState (Handle(OpenGl_ShaderProgram)());
+  }
 
   // ==============================================================
   //      Step 6: Keep shader manager informed about last View

@@ -849,7 +849,8 @@ void OpenGl_Text::render (const Handle(OpenGl_Context)& theCtx,
   myExportHeight = aPointSize / myExportHeight;
 
 #if !defined(GL_ES_VERSION_2_0)
-  if (theCtx->core11 != NULL)
+  if (theCtx->core11 != NULL
+   && theCtx->caps->ffpEnable)
   {
     glDisable (GL_LIGHTING);
   }
