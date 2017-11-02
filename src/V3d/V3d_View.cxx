@@ -384,7 +384,6 @@ void V3d_View::UpdateLights() const
     aLights.Append (anActiveLightIter.Value()->Light());
   }
   myView->SetLights (aLights);
-  Update();
 }
 
 //=============================================================================

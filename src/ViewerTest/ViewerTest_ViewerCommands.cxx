@@ -9318,6 +9318,7 @@ static int VLight (Draw_Interpretor& theDi,
   Handle(V3d_Light) aLightOld;
   Standard_Boolean  isGlobal = Standard_True;
   Standard_Boolean  toCreate = Standard_False;
+  ViewerTest_AutoUpdater anUpdateTool (ViewerTest::GetAISContext(), aView);
   for (Standard_Integer anArgIt = 1; anArgIt < theArgsNb; ++anArgIt)
   {
     Handle(V3d_Light)            aLightCurr = aLightNew.IsNull() ? aLightOld : aLightNew;
@@ -9330,6 +9331,11 @@ static int VLight (Draw_Interpretor& theDi,
     const TCollection_AsciiString anArg (theArgVec[anArgIt]);
     TCollection_AsciiString anArgCase (anArg);
     anArgCase.UpperCase();
+    if (anUpdateTool.parseRedrawMode (anArg))
+    {
+      continue;
+    }
+
     if (anArgCase.IsEqual ("NEW")
      || anArgCase.IsEqual ("ADD")
      || anArgCase.IsEqual ("CREATE"))

@@ -169,7 +169,7 @@ public:
   //! Returns True is The View is empty
   Standard_EXPORT Standard_Boolean IsEmpty() const;
 
-  //! Updates the lights of the view. The view is redrawn.
+  //! Updates the lights of the view.
   Standard_EXPORT void UpdateLights() const;
 
   //! Sets the automatic z-fit mode and its parameters.
