@@ -30,4 +30,10 @@ enum Graphic3d_TypeOfShadingModel
   Graphic3d_TOSM_FRAGMENT
 };
 
+enum
+{
+  //! Auxiliary value defining the overall number of values in enumeration Graphic3d_TypeOfShadingModel
+  Graphic3d_TypeOfShadingModel_NB = Graphic3d_TOSM_FRAGMENT + 1
+};
+
 #endif // _Graphic3d_TypeOfShadingModel_HeaderFile

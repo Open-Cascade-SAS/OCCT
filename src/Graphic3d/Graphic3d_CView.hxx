@@ -409,10 +409,10 @@ public:
   virtual void SetCamera (const Handle(Graphic3d_Camera)& theCamera) = 0;
 
   //! Returns list of lights of the view.
-  virtual const Graphic3d_ListOfCLight& Lights() const = 0;
+  virtual const Handle(Graphic3d_LightSet)& Lights() const = 0;
 
   //! Sets list of lights for the view.
-  virtual void SetLights (const Graphic3d_ListOfCLight& theLights) = 0;
+  virtual void SetLights (const Handle(Graphic3d_LightSet)& theLights) = 0;
 
   //! Returns list of clip planes set for the view.
   virtual const Handle(Graphic3d_SequenceOfHClipPlane)& ClipPlanes() const = 0;

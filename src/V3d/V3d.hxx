@@ -17,13 +17,14 @@
 #ifndef _V3d_HeaderFile
 #define _V3d_HeaderFile
 
+#include <gp_Dir.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
-
-#include <V3d_TypeOfOrientation.hxx>
 #include <Standard_Real.hxx>
+#include <V3d_TypeOfOrientation.hxx>
 
+class Graphic3d_Group;
 class V3d_View;
 
 //! This package contains the set of commands and services

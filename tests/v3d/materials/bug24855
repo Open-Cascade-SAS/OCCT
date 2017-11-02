@@ -12,7 +12,7 @@ vglinfo
 vsetgradientbg 180 200 255 180 180 180 2
 
 # display shape
-vlight change 0 pos -1 1 1
+vlight -change 0 -dir 0.577 -0.577 -0.577
 restore $aShape s
 vsetdispmode 1
 vdisplay s

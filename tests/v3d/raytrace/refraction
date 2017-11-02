@@ -70,6 +70,6 @@ vsettransparency B3 0.8
 vfront
 vturnview 0 -0.3 0
 vfit
-vlight change 0 pos 1 1 1
+vlight -change 0 -dir -0.577 -0.577 -0.577
 vlight add directional
 vrenderparams -raytrace -raydepth 5 -shadows off -reflections -fsaa

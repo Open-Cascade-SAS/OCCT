@@ -1502,3 +1502,21 @@ The following obsolete features have been removed:
 * The container *BiTgte_DataMapOfShapeBox* is replaced with *TopTools_DataMapOfShapeBox*;
 * The class *BOPTools* has been removed as duplicate of the class *TopExp*;
 * The method *BOPAlgo_Builder::Splits()* has been removed as excessive. The method *BOPAlgo_Builder::Images()* can be used instead.
+
+@section upgrade_occt730 Upgrade to OCCT 7.3.0
+
+@subsection upgrade_730_lights Light sources
+
+Multiple changes have been applied to lights management within TKV3d and TKOpenGl:
+* V3d_Light class is now an alias to Graphic3d_CLight.
+  Graphic3d_CLight is now a Handle class with refactored methods for managing light source parameters
+  (preserving most methods of V3d_Light sub-classes to simplify porting).
+* Obsolete debugging functionality for drawing lights source has been removed from V3d_Light.
+  Methods and constructors taking parameters for this drawing and not affecting light definition itself has been also removed.
+* Light constructors taking V3d_Viewer has been marked deprecated.
+  Application may call V3d_Viewer::AddLight() explicitly to register new light sources created by new constructors within V3d_Viewer, but this step is now optional.
+* The upper limit of 8 light sources has been removed.
+* Dedicated classes per light source type V3d_AmbientLight, V3d_DirectionalLight, V3d_PositionalLight and V3d_SpotLight have been preserved,
+  but it is now possible defining light of any type by creating base class Graphic3d_CLight directly.
+  Dedicated classes only hides visibility of unrelated light properties depending on its type.
+* Calling V3d_Viewer::UpdateLights() is no more required after modifying light sources properties (color, position, etc.).

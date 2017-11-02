@@ -161,34 +161,6 @@ const OpenGl_Mat4& OpenGl_WorldViewState::WorldViewMatrixInverse() const
 }
 
 // =======================================================================
-// function : OpenGl_LightSourceState
-// purpose  : Creates uninitialized state of light sources
-// =======================================================================
-OpenGl_LightSourceState::OpenGl_LightSourceState()
-: myLightSources (NULL)
-{
-  //
-}
-
-// =======================================================================
-// function : Set
-// purpose  : Sets new light sources
-// =======================================================================
-void OpenGl_LightSourceState::Set (const OpenGl_ListOfLight* theLightSources)
-{
-  myLightSources = theLightSources;
-}
-
-// =======================================================================
-// function : LightSources
-// purpose  : Returns current list of light sources
-// =======================================================================
-const OpenGl_ListOfLight* OpenGl_LightSourceState::LightSources() const
-{
-  return myLightSources;
-}
-
-// =======================================================================
 // function : OpenGl_ClippingState
 // purpose  : Creates new clipping state
 // =======================================================================

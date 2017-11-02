@@ -59,7 +59,6 @@ class Graphic3d_Group;
 class Graphic3d_Structure;
 class V3d_BadValue;
 class V3d_CircularGrid;
-class V3d_Light;
 class V3d_RectangularGrid;
 class V3d_View;
 class Quantity_Color;
@@ -71,7 +70,6 @@ class Quantity_Color;
 class V3d_Viewer : public Standard_Transient
 {
   friend class V3d_View;
-  friend class V3d_Light;
   DEFINE_STANDARD_RTTIEXT(V3d_Viewer, Standard_Transient)
 public:
 
@@ -258,7 +256,10 @@ public: //! @name lights management
   
   //! Deactivate all the Lights defined in this viewer.
   Standard_EXPORT void SetLightOff();
-  
+
+  //! Adds Light in Sequence Of Lights.
+  Standard_EXPORT void AddLight (const Handle(V3d_Light)& theLight);
+
   //! Delete Light in Sequence Of Lights.
   Standard_EXPORT void DelLight (const Handle(V3d_Light)& theLight);
   
@@ -456,9 +457,6 @@ private:
   
   //! Delete View in Sequence Of Views.
   Standard_EXPORT void DelView (const Handle(V3d_View)& theView);
-  
-  //! Adds Light in Sequence Of Lights.
-  Standard_EXPORT void AddLight (const Handle(V3d_Light)& theLight);
   
 private:
 

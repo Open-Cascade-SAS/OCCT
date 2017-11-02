@@ -680,6 +680,15 @@ void OpenGl_Layer::Render (const Handle(OpenGl_Workspace)&   theWorkspace,
 
   const Standard_Boolean hasLocalCS = !myLayerSettings.OriginTransformation().IsNull();
   const Handle(OpenGl_Context)&   aCtx         = theWorkspace->GetGlContext();
+  const Handle(OpenGl_ShaderManager)& aManager = aCtx->ShaderManager();
+  Handle(Graphic3d_LightSet) aLightsBack = aManager->LightSourceState().LightSources();
+  const bool hasOwnLights = aCtx->ColorMask() && !myLayerSettings.Lights().IsNull() && myLayerSettings.Lights() != aLightsBack;
+  if (hasOwnLights)
+  {
+    myLayerSettings.Lights()->UpdateRevision();
+    aManager->UpdateLightSourceStateTo (myLayerSettings.Lights());
+  }
+
   const Handle(Graphic3d_Camera)& aWorldCamera = theWorkspace->View()->Camera();
   if (hasLocalCS)
   {
@@ -731,6 +740,10 @@ void OpenGl_Layer::Render (const Handle(OpenGl_Workspace)&   theWorkspace,
   // render priority list
   renderAll (theWorkspace);
 
+  if (hasOwnLights)
+  {
+    aManager->UpdateLightSourceStateTo (aLightsBack);
+  }
   if (hasLocalCS)
   {
     aCtx->ShaderManager()->RevertClippingState();

@@ -24,7 +24,6 @@
 #include <Graphic3d_ArrayOfPolylines.hxx>
 #include <Graphic3d_ArrayOfSegments.hxx>
 #include <Graphic3d_Group.hxx>
-#include <Graphic3d_Vertex.hxx>
 #include <Prs3d.hxx>
 #include <Prs3d_Arrow.hxx>
 #include <Prs3d_ArrowAspect.hxx>

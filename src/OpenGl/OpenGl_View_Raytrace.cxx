@@ -42,24 +42,6 @@ namespace
 {
   static const OpenGl_Vec4 THE_WHITE_COLOR (1.0f, 1.0f, 1.0f, 1.0f);
   static const OpenGl_Vec4 THE_BLACK_COLOR (0.0f, 0.0f, 0.0f, 1.0f);
-
-  //! Operator returning TRUE for positional light sources.
-  struct IsLightPositional
-  {
-    bool operator() (const OpenGl_Light& theLight)
-    {
-      return theLight.Type != Graphic3d_TOLS_DIRECTIONAL;
-    }
-  };
-
-  //! Operator returning TRUE for any non-ambient light sources.
-  struct IsNotAmbient
-  {
-    bool operator() (const OpenGl_Light& theLight)
-    {
-      return theLight.Type != Graphic3d_TOLS_AMBIENT;
-    }
-  };
 }
 
 namespace
@@ -2491,68 +2473,75 @@ Standard_Boolean OpenGl_View::uploadRaytraceData (const Handle(OpenGl_Context)& 
 // =======================================================================
 Standard_Boolean OpenGl_View::updateRaytraceLightSources (const OpenGl_Mat4& theInvModelView, const Handle(OpenGl_Context)& theGlContext)
 {
-  std::vector<OpenGl_Light> aLightSources;
-
-  if (myShadingModel != Graphic3d_TOSM_NONE)
+  std::vector<Handle(Graphic3d_CLight)> aLightSources;
+  myRaytraceGeometry.Ambient = BVH_Vec4f (0.f, 0.f, 0.f, 0.f);
+  if (myShadingModel != Graphic3d_TOSM_NONE
+  && !myLights.IsNull())
   {
-    aLightSources.assign (myLights.begin(), myLights.end());
+    const Graphic3d_Vec4& anAmbient = myLights->AmbientColor();
+    myRaytraceGeometry.Ambient = BVH_Vec4f (anAmbient.r(), anAmbient.g(), anAmbient.b(), 0.0f);
 
     // move positional light sources at the front of the list
-    std::partition (aLightSources.begin(), aLightSources.end(), IsLightPositional());
+    aLightSources.reserve (myLights->Extent());
+    for (Graphic3d_LightSet::Iterator aLightIter (myLights, Graphic3d_LightSet::IterationFilter_ExcludeDisabledAndAmbient);
+         aLightIter.More(); aLightIter.Next())
+    {
+      const Graphic3d_CLight& aLight = *aLightIter.Value();
+      if (aLight.Type() != Graphic3d_TOLS_DIRECTIONAL)
+      {
+        aLightSources.push_back (aLightIter.Value());
+      }
+    }
+
+    for (Graphic3d_LightSet::Iterator aLightIter (myLights, Graphic3d_LightSet::IterationFilter_ExcludeDisabledAndAmbient);
+         aLightIter.More(); aLightIter.Next())
+    {
+      if (aLightIter.Value()->Type() == Graphic3d_TOLS_DIRECTIONAL)
+      {
+        aLightSources.push_back (aLightIter.Value());
+      }
+    }
   }
 
   // get number of 'real' (not ambient) light sources
-  const size_t aNbLights = std::count_if (aLightSources.begin(), aLightSources.end(), IsNotAmbient());
-
+  const size_t aNbLights = aLightSources.size();
   Standard_Boolean wasUpdated = myRaytraceGeometry.Sources.size () != aNbLights;
-
   if (wasUpdated)
   {
     myRaytraceGeometry.Sources.resize (aNbLights);
   }
 
-  myRaytraceGeometry.Ambient = BVH_Vec4f (0.f, 0.f, 0.f, 0.f);
-
   for (size_t aLightIdx = 0, aRealIdx = 0; aLightIdx < aLightSources.size(); ++aLightIdx)
   {
-    const OpenGl_Light& aLight = aLightSources[aLightIdx];
-
-    if (aLight.Type == Graphic3d_TOLS_AMBIENT)
-    {
-      myRaytraceGeometry.Ambient += BVH_Vec4f (aLight.Color.r() * aLight.Intensity,
-                                               aLight.Color.g() * aLight.Intensity,
-                                               aLight.Color.b() * aLight.Intensity,
-                                               0.0f);
-      continue;
-    }
-
-    BVH_Vec4f aEmission  (aLight.Color.r() * aLight.Intensity,
-                          aLight.Color.g() * aLight.Intensity,
-                          aLight.Color.b() * aLight.Intensity,
+    const Graphic3d_CLight& aLight = *aLightSources[aLightIdx];
+    const Graphic3d_Vec4& aLightColor = aLight.PackedColor();
+    BVH_Vec4f aEmission  (aLightColor.r() * aLight.Intensity(),
+                          aLightColor.g() * aLight.Intensity(),
+                          aLightColor.b() * aLight.Intensity(),
                           1.0f);
 
-    BVH_Vec4f aPosition (-aLight.Direction.x(),
-                         -aLight.Direction.y(),
-                         -aLight.Direction.z(),
+    BVH_Vec4f aPosition (-aLight.PackedDirection().x(),
+                         -aLight.PackedDirection().y(),
+                         -aLight.PackedDirection().z(),
                          0.0f);
 
-    if (aLight.Type != Graphic3d_TOLS_DIRECTIONAL)
+    if (aLight.Type() != Graphic3d_TOLS_DIRECTIONAL)
     {
-      aPosition = BVH_Vec4f (static_cast<float>(aLight.Position.x()),
-                             static_cast<float>(aLight.Position.y()),
-                             static_cast<float>(aLight.Position.z()),
+      aPosition = BVH_Vec4f (static_cast<float>(aLight.Position().X()),
+                             static_cast<float>(aLight.Position().Y()),
+                             static_cast<float>(aLight.Position().Z()),
                              1.0f);
 
       // store smoothing radius in W-component
-      aEmission.w() = Max (aLight.Smoothness, 0.f);
+      aEmission.w() = Max (aLight.Smoothness(), 0.f);
     }
     else
     {
       // store cosine of smoothing angle in W-component
-      aEmission.w() = cosf (Min (Max (aLight.Smoothness, 0.f), static_cast<Standard_ShortReal> (M_PI / 2.0)));
+      aEmission.w() = cosf (Min (Max (aLight.Smoothness(), 0.f), static_cast<Standard_ShortReal> (M_PI / 2.0)));
     }
 
-    if (aLight.IsHeadlight)
+    if (aLight.IsHeadlight())
     {
       aPosition = theInvModelView * aPosition;
     }

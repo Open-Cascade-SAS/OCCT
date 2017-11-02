@@ -568,6 +568,7 @@ void OpenGl_LayerList::Render (const Handle(OpenGl_Workspace)& theWorkspace,
   Standard_Integer aClearDepthLayerPrev = -1, aClearDepthLayer = -1;
   const bool toPerformDepthPrepass = theWorkspace->View()->RenderingParams().ToEnableDepthPrepass
                                   && aPrevSettings.DepthMask == GL_TRUE;
+  const Handle(Graphic3d_LightSet) aLightsBack = aCtx->ShaderManager()->LightSourceState().LightSources();
   for (OpenGl_FilteredIndexedLayerIterator aLayerIterStart (myLayers, myDefaultLayerIndex, theToDrawImmediate, theLayersToProcess); aLayerIterStart.More();)
   {
     bool hasSkippedDepthLayers = false;
@@ -576,6 +577,7 @@ void OpenGl_LayerList::Render (const Handle(OpenGl_Workspace)& theWorkspace,
       if (aPassIter == 0)
       {
         aCtx->SetColorMask (false);
+        aCtx->ShaderManager()->UpdateLightSourceStateTo (Handle(Graphic3d_LightSet)());
         aDefaultSettings.DepthFunc = aPrevSettings.DepthFunc;
         aDefaultSettings.DepthMask = GL_TRUE;
       }
@@ -586,11 +588,13 @@ void OpenGl_LayerList::Render (const Handle(OpenGl_Workspace)& theWorkspace,
           continue;
         }
         aCtx->SetColorMask (true);
+        aCtx->ShaderManager()->UpdateLightSourceStateTo (aLightsBack);
         aDefaultSettings = aPrevSettings;
       }
       else if (aPassIter == 2)
       {
         aCtx->SetColorMask (true);
+        aCtx->ShaderManager()->UpdateLightSourceStateTo (aLightsBack);
         if (toPerformDepthPrepass)
         {
           aDefaultSettings.DepthFunc = GL_EQUAL;

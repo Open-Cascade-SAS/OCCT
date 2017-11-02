@@ -20,7 +20,7 @@ vdisplay s1 s2
 vsetmaterial s1 Gold
 vsetmaterial s2 Silver
 vsetlocation s1 0.0 0.1 0.0
-vlight change 0 pos -1 1 0.5
+vlight -change 0 -dir 0.667 -0.667 -0.333
 vturnview 3.0 -1.2 -0.1
 vfit
 

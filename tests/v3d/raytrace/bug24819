@@ -37,7 +37,7 @@ vmarkerstest mTest 7 -3 0 PointsOnSide=5 MarkerType=5
 # 3d text
 vdrawtext text0 3D_Text -pos 1 2 2 -color 1.0 0.0 0.0 -halign left -valign bottom -angle 0 -zoom 0 -height 20 -aspect regular -font SansFont
 
-vlight change 0 pos -1 1 1
+vlight -change 0 -dir 0.577 -0.577 -0.577
 
 vfit
 

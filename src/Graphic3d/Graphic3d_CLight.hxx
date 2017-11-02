@@ -14,68 +14,237 @@
 #ifndef _Graphic3d_CLight_HeaderFile
 #define _Graphic3d_CLight_HeaderFile
 
+#include <gp_Dir.hxx>
 #include <Graphic3d_TypeOfLightSource.hxx>
 #include <Graphic3d_Vec.hxx>
 #include <NCollection_List.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <Quantity_ColorRGBA.hxx>
 
-//! Light definition
-struct Graphic3d_CLight
+//! Generic light source definition.
+//! This class defines arbitrary light source - see Graphic3d_TypeOfLightSource enumeration.
+//! Some parameters are applicable only to particular light type;
+//! calling methods unrelated to current type will throw an exception.
+class Graphic3d_CLight : public Standard_Transient
 {
-
+  DEFINE_STANDARD_RTTIEXT(Graphic3d_CLight, Standard_Transient)
 public:
 
-  Graphic3d_Vec3d             Position;    //!< light position
-  Graphic3d_Vec4              Color;       //!< light color
-  Graphic3d_Vec4              Direction;   //!< direction of directional/spot light
-  Graphic3d_Vec4              Params;      //!< packed light parameters
-  Standard_ShortReal          Smoothness;  //!< radius (cone angle) for point (directional) light
-  Standard_ShortReal          Intensity;   //!< intensity multiplier for light
-  Graphic3d_TypeOfLightSource Type;        //!< Graphic3d_TypeOfLightSource enumeration
-  Standard_Boolean            IsHeadlight; //!< flag to mark head light
+  //! Empty constructor, which should be followed by light source properties configuration.
+  Standard_EXPORT Graphic3d_CLight (Graphic3d_TypeOfLightSource theType);
 
-  //! Const attenuation factor of positional light source
-  Standard_ShortReal  ConstAttenuation()  const { return Params.x();  }
+  //! Returns the Type of the Light, cannot be changed after object construction.
+  Graphic3d_TypeOfLightSource Type() const { return myType; }
 
-  //! Linear attenuation factor of positional light source
-  Standard_ShortReal  LinearAttenuation() const { return Params.y();  }
+  //! Returns light source name; empty string by default.
+  const TCollection_AsciiString& Name() const { return myName; }
 
-  //! Const, Linear attenuation factors of positional light source
-  Graphic3d_Vec2      Attenuation()       const { return Params.xy(); }
+  //! Sets light source name.
+  void SetName (const TCollection_AsciiString& theName) { myName = theName; }
 
-  //! Angle in radians of the cone created by the spot
-  Standard_ShortReal  Angle()             const { return Params.z();  }
+  //! Returns the color of the light source; WHITE by default.
+  const Quantity_Color& Color() const { return myColor.GetRGB(); }
 
-  //! Intensity distribution of the spot light, with 0..1 range.
-  Standard_ShortReal  Concentration()     const { return Params.w();  }
+  //! Defines the color of a light source by giving the basic color.
+  Standard_EXPORT void SetColor (const Quantity_Color& theColor);
 
-  Standard_ShortReal& ChangeConstAttenuation()  { return Params.x();  }
-  Standard_ShortReal& ChangeLinearAttenuation() { return Params.y();  }
-  Graphic3d_Vec2&     ChangeAttenuation()       { return Params.xy(); }
-  Standard_ShortReal& ChangeAngle()             { return Params.z();  }
-  Standard_ShortReal& ChangeConcentration()     { return Params.w();  }
+  //! Check that the light source is turned on; TRUE by default.
+  //! This flag affects all occurrences of light sources, where it was registered and activated;
+  //! so that it is possible defining an active light in View which is actually in disabled state.
+  Standard_Boolean IsEnabled() const { return myIsEnabled; }
 
+  //! Change enabled state of the light state.
+  //! This call does not remove or deactivate light source in Views/Viewers;
+  //! instead it turns it OFF so that it just have no effect.
+  Standard_EXPORT void SetEnabled (Standard_Boolean theIsOn);
+
+  //! Returns true if the light is a headlight; FALSE by default.
+  //! Headlight flag means that light position/direction are defined not in a World coordinate system, but relative to the camera orientation.
+  Standard_Boolean IsHeadlight() const { return myIsHeadlight; }
+
+  //! Alias for IsHeadlight().
+  Standard_Boolean Headlight() const { return myIsHeadlight; }
+
+  //! Setup headlight flag.
+  Standard_EXPORT void SetHeadlight (Standard_Boolean theValue);
+
+//! @name positional/spot light properties
 public:
 
-  //! Empty constructor
-  Graphic3d_CLight()
-  : Position      (0.0,  0.0,  0.0),
-    Color         (1.0f, 1.0f, 1.0f, 1.0f),
-    Direction     (0.0f, 0.0f, 0.0f, 0.0f),
-    Params        (0.0f, 0.0f, 0.0f, 0.0f),
-    Smoothness    (0.0f),
-    Intensity     (1.0f),
-    Type          (Graphic3d_TOLS_AMBIENT),
-    IsHeadlight   (Standard_False)
+  //! Returns location of positional/spot light; (0, 0, 0) by default.
+  const gp_Pnt& Position() const { return myPosition; }
+
+  //! Setup location of positional/spot light.
+  Standard_EXPORT void SetPosition (const gp_Pnt& thePosition);
+
+  //! Returns location of positional/spot light.
+  void Position (Standard_Real& theX,
+                 Standard_Real& theY,
+                 Standard_Real& theZ) const
   {
-    //
+    theX = myPosition.X();
+    theY = myPosition.Y();
+    theZ = myPosition.Z();
   }
 
+  //! Setup location of positional/spot light.
+  void SetPosition (Standard_Real theX, Standard_Real theY, Standard_Real theZ) { SetPosition (gp_Pnt (theX, theY, theZ)); }
+
+  //! Returns constant attenuation factor of positional/spot light source; 1.0f by default.
+  //! Distance attenuation factors of reducing positional/spot light intensity depending on the distance from its position:
+  //! @code
+  //!   float anAttenuation = 1.0 / (ConstAttenuation() + LinearAttenuation() * theDistance + QuadraticAttenuation() * theDistance * theDistance);
+  //! @endcode
+  Standard_ShortReal ConstAttenuation()  const { return myParams.x(); }
+
+  //! Returns linear attenuation factor of positional/spot light source; 0.0 by default.
+  //! Distance attenuation factors of reducing positional/spot light intensity depending on the distance from its position:
+  //! @code
+  //!   float anAttenuation = 1.0 / (ConstAttenuation() + LinearAttenuation() * theDistance + QuadraticAttenuation() * theDistance * theDistance);
+  //! @endcode
+  Standard_ShortReal LinearAttenuation() const { return myParams.y(); }
+
+  //! Returns the attenuation factors.
+  void Attenuation (Standard_Real& theConstAttenuation,
+                    Standard_Real& theLinearAttenuation) const
+  {
+    theConstAttenuation  = ConstAttenuation();
+    theLinearAttenuation = LinearAttenuation();
+  }
+
+  //! Defines the coefficients of attenuation; values should be >= 0.0 and their summ should not be equal to 0.
+  Standard_EXPORT void SetAttenuation (Standard_ShortReal theConstAttenuation,
+                                       Standard_ShortReal theLinearAttenuation);
+
+//! @name directional/spot light additional properties
 public:
 
-  DEFINE_STANDARD_ALLOC
+  //! Returns direction of directional/spot light.
+  gp_Dir Direction() const { return gp_Dir (myDirection.x(), myDirection.y(), myDirection.z()); }
+
+  //! Sets direction of directional/spot light.
+  Standard_EXPORT void SetDirection (const gp_Dir& theDir);
+
+  //! Returns the theVx, theVy, theVz direction of the light source.
+  void Direction (Standard_Real& theVx,
+                  Standard_Real& theVy,
+                  Standard_Real& theVz) const
+  {
+    theVx = myDirection.x();
+    theVy = myDirection.y();
+    theVz = myDirection.z();
+  }
+
+  //! Sets direction of directional/spot light.
+  void SetDirection (Standard_Real theVx, Standard_Real theVy, Standard_Real theVz) { SetDirection (gp_Dir (theVx, theVy, theVz)); }
+
+//! @name spotlight additional definition parameters
+public:
+
+  //! Returns an angle in radians of the cone created by the spot; 30 degrees by default.
+  Standard_ShortReal Angle() const { return myParams.z(); }
+
+  //! Angle in radians of the cone created by the spot, should be within range (0.0, M_PI).
+  Standard_EXPORT void SetAngle (Standard_ShortReal theAngle);
+
+  //! Returns intensity distribution of the spot light, within [0.0, 1.0] range; 1.0 by default.
+  //! This coefficient should be converted into spotlight exponent within [0.0, 128.0] range:
+  //! @code
+  //!   float aSpotExponent = Concentration() * 128.0;
+  //!   anAttenuation *= pow (aCosA, aSpotExponent);"
+  //! @endcode
+  //! The concentration factor determines the dispersion of the light on the surface, the default value (1.0) corresponds to a minimum of dispersion.
+  Standard_ShortReal Concentration() const { return myParams.w(); }
+
+  //! Defines the coefficient of concentration; value should be within range [0.0, 1.0].
+  Standard_EXPORT void SetConcentration (Standard_ShortReal theConcentration);
+
+//! @name Ray-Tracing / Path-Tracing light properties
+public:
+
+  //! Returns the intensity of light source; 1.0 by default.
+  Standard_ShortReal Intensity() const { return myIntensity; }
+
+  //! Modifies the intensity of light source, which should be > 0.0.
+  Standard_EXPORT void SetIntensity (Standard_ShortReal theValue);
+
+  //! Returns the smoothness of light source (either smoothing angle for directional light or smoothing radius in case of positional light); 0.0 by default.
+  Standard_ShortReal Smoothness() const { return mySmoothness; }
+
+  //! Modifies the smoothing radius of positional/spot light; should be >= 0.0.
+  Standard_EXPORT void SetSmoothRadius (Standard_ShortReal theValue);
+
+  //! Modifies the smoothing angle (in radians) of directional light source; should be within range [0.0, M_PI/2].
+  Standard_EXPORT void SetSmoothAngle (Standard_ShortReal theValue);
+
+//! @name low-level access methods
+public:
+
+  //! @return light resource identifier string
+  const TCollection_AsciiString& GetId() const { return myId; }
+
+  //! Packed light parameters.
+  const Graphic3d_Vec4& PackedParams() const { return myParams; }
+
+  //! Returns the color of the light source with dummy Alpha component, which should be ignored.
+  const Graphic3d_Vec4& PackedColor() const { return myColor; }
+
+  //! Returns direction of directional/spot light.
+  const Graphic3d_Vec4& PackedDirection() const { return myDirection; }
+
+  //! @return modification counter
+  Standard_Size Revision() const { return myRevision; }
+
+private:
+
+  //! Access positional/spot light constant attenuation coefficient from packed vector.
+  Standard_ShortReal& changeConstAttenuation()  { return myParams.x(); }
+
+  //! Access positional/spot light linear attenuation coefficient from packed vector.
+  Standard_ShortReal& changeLinearAttenuation() { return myParams.y(); }
+
+  //! Access spotlight angle parameter from packed vector.
+  Standard_ShortReal& changeAngle()             { return myParams.z();  }
+
+  //! Access spotlight concentration parameter from packed vector.
+  Standard_ShortReal& changeConcentration()     { return myParams.w();  }
+
+private:
+
+  //! Generate unique object id.
+  void makeId();
+
+  //! Update modification counter.
+  void updateRevisionIf (bool theIsModified)
+  {
+    if (theIsModified)
+    {
+      ++myRevision;
+    }
+  }
+
+private:
+
+  Graphic3d_CLight (const Graphic3d_CLight& );
+  Graphic3d_CLight& operator= (const Graphic3d_CLight& );
+
+protected:
+
+  TCollection_AsciiString           myId;          //!< resource id
+  TCollection_AsciiString           myName;        //!< user given name
+  gp_Pnt                            myPosition;    //!< light position
+  Quantity_ColorRGBA                myColor;       //!< light color
+  Graphic3d_Vec4                    myDirection;   //!< direction of directional/spot light
+  Graphic3d_Vec4                    myParams;      //!< packed light parameters
+  Standard_ShortReal                mySmoothness;  //!< radius for point light or cone angle for directional light
+  Standard_ShortReal                myIntensity;   //!< intensity multiplier for light
+  const Graphic3d_TypeOfLightSource myType;        //!< Graphic3d_TypeOfLightSource enumeration
+  Standard_Size                     myRevision;    //!< modification counter
+  Standard_Boolean                  myIsHeadlight; //!< flag to mark head light
+  Standard_Boolean                  myIsEnabled;   //!< enabled state
 
 };
 
-typedef NCollection_List<Graphic3d_CLight> Graphic3d_ListOfCLight;
+DEFINE_STANDARD_HANDLE(Graphic3d_CLight, Standard_Transient)
 
 #endif // Graphic3d_CLight_HeaderFile

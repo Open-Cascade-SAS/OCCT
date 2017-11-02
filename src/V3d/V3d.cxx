@@ -13,15 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-// Modified     23/02/98 : FMN ; Remplacement PI par Standard_PI
-//              02.15.100 : JR : Clutter
-//-Version
-//-Design       
-//-Warning     
-//-References
-//-Language     C++ 2.1
-//-Declarations
-// for the class
+#include <V3d.hxx>
 
 #include <Aspect_Grid.hxx>
 #include <Aspect_Window.hxx>
@@ -31,7 +23,6 @@
 #include <Graphic3d_Group.hxx>
 #include <Graphic3d_Structure.hxx>
 #include <Quantity_NameOfColor.hxx>
-#include <V3d.hxx>
 #include <V3d_View.hxx>
 #include <V3d_Viewer.hxx>
 

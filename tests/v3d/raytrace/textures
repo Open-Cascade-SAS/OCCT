@@ -70,6 +70,6 @@ vsetcolor wall2 green
 vfront
 vturnview 0 -0.3 0
 vfit
-vlight change 0 pos 1 1 1
+vlight -change 0 -dir -0.577 -0.577 -0.577
 vlight add directional
 vrenderparams -raytrace -raydepth 3 -shadows on -reflections -fsaa

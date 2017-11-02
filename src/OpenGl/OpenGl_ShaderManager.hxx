@@ -204,7 +204,7 @@ public:
   const OpenGl_LightSourceState& LightSourceState() const { return myLightSourceState; }
 
   //! Updates state of OCCT light sources.
-  Standard_EXPORT void UpdateLightSourceStateTo (const OpenGl_ListOfLight* theLights);
+  Standard_EXPORT void UpdateLightSourceStateTo (const Handle(Graphic3d_LightSet)& theLights);
 
   //! Invalidate state of OCCT light sources.
   Standard_EXPORT void UpdateLightSourceState();

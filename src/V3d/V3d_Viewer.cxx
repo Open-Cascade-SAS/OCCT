@@ -457,6 +457,10 @@ void V3d_Viewer::SetDefaultLights()
     DelLight (aLight);
   }
 
-  SetLightOn (new V3d_DirectionalLight (this, V3d_Zneg, Quantity_NOC_WHITE, Standard_True));
-  SetLightOn (new V3d_AmbientLight (this));
+  Handle(V3d_DirectionalLight) aDirLight  = new V3d_DirectionalLight (V3d_Zneg, Quantity_NOC_WHITE, Standard_True);
+  Handle(V3d_AmbientLight)     anAmbLight = new V3d_AmbientLight (Quantity_NOC_WHITE);
+  AddLight (aDirLight);
+  AddLight (anAmbLight);
+  SetLightOn (aDirLight);
+  SetLightOn (anAmbLight);
 }

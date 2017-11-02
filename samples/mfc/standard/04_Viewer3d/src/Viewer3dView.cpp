@@ -416,7 +416,7 @@ GetDocument()->UpdateResultMessageDlg("SetPosition",Message);
         case  CurAction3d_BeginSpotLight :
 			{
 			p1 = ConvertClickToPoint(point.x,point.y,myView);
-			myCurrent_SpotLight = new V3d_SpotLight(myView->Viewer(),0.,0.,1., p1.X(),p1.Y(),p1.Z(),Quantity_NOC_RED);
+			myCurrent_SpotLight = new V3d_SpotLight (p1, gp_Dir (gp_XYZ (0.0, 0.0, 1.0) - p1.XYZ()), Quantity_NOC_RED);
 			myView->SetLightOn(myCurrent_SpotLight);
 			NbActiveLights++;
 			p2 = gp_Pnt(p1.X(),p1.Y(),p1.Z()+1.);
@@ -461,7 +461,7 @@ GetDocument()->UpdateResultMessageDlg("SetAngle",Message);
 				directionalEdgeShape->Set(MakeEdge.Edge());
 				GetDocument()->GetAISContext()->Display (directionalEdgeShape, 0, -1, Standard_True);
 			// Create a directional light
-				myCurrent_DirectionalLight = new V3d_DirectionalLight(myView->Viewer(), p1.X(),p1.Y(),p1.Z(),0.,0.,1.);
+				myCurrent_DirectionalLight = new V3d_DirectionalLight (gp_Dir (p1.XYZ() - gp_XYZ (0.,0.,1.)));
 				myView->SetLightOn(myCurrent_DirectionalLight);
 				NbActiveLights++;
 				((OCC_MainFrame*)AfxGetMainWnd())->SetStatusMessage("Pick the target point");
@@ -745,7 +745,7 @@ void CViewer3dView::OnMouseMove(UINT nFlags, CPoint point)
 					0, p2.Distance(p3), coneHeigth);
 				spotConeShape->Set(MakeCone.Solid());
 				GetDocument()->GetAISContext()->Redisplay(spotConeShape,0,Standard_True);
-				myCurrent_SpotLight->SetAngle(atan(p2.Distance(p3)/p1.Distance(p2))) ;
+				myCurrent_SpotLight->SetAngle((float )atan(p2.Distance(p3)/p1.Distance(p2))) ;
 				myView->UpdateLights();
 			}
 		}
@@ -894,7 +894,7 @@ void CViewer3dView::OnDirectionalLight()
 	myCurrentMode = CurAction3d_BeginDirectionalLight;
 
 TCollection_AsciiString Message("\
-myCurrent_DirectionalLight = new V3d_DirectionalLight(myView->Viewer(), Xt, Yt, Zt, Xp, Yp, Zp);\n\
+myCurrent_DirectionalLight = new V3d_DirectionalLight (gp_Dir (theDirection));\n\
 \n\
 myView->SetLightOn(myCurrent_DirectionalLight);\n\
 \n\
@@ -920,7 +920,7 @@ void CViewer3dView::OnSpotLight()
 	myCurrentMode = CurAction3d_BeginSpotLight;
 
 TCollection_AsciiString Message("\
-myCurrent_SpotLight = new V3d_SpotLight(myView->Viewer(), Xt, Yt, Zt, Xp, Yp, Zp,Quantity_NOC_RED);\n\
+myCurrent_SpotLight = new V3d_SpotLight (gp_Pnt (thePosition), gp_Dir (theDirection), Quantity_NOC_RED);\n\
 \n\
 myView->SetLightOn(myCurrent_SpotLight);\n\
 \n\
@@ -942,14 +942,16 @@ void CViewer3dView::OnPositionalLight()
 		return;
 	}
 
-	myCurrent_PositionalLight=new V3d_PositionalLight(myView->Viewer(),0,0,0,Quantity_NOC_GREEN,1,0);
+	myCurrent_PositionalLight=new V3d_PositionalLight (gp_Pnt (0,0,0), Quantity_NOC_GREEN);
+    myCurrent_PositionalLight->SetAttenuation (1, 0);
 	myView->SetLightOn(myCurrent_PositionalLight);
 	NbActiveLights++;
 	((OCC_MainFrame*)AfxGetMainWnd())->SetStatusMessage("Pick the light position");
 	myCurrentMode = CurAction3d_BeginPositionalLight;
 
 TCollection_AsciiString Message("\
-myCurrent_PositionalLight=new V3d_PositionalLight(myView->Viewer(),Xp, Yp, Zp,Quantity_NOC_GREEN,1,0);\n\
+myCurrent_PositionalLight=new V3d_PositionalLight (gp_Pnt(thePosition),Quantity_NOC_GREEN);\n\
+myCurrent_PositionalLight->SetAttenuation (1, 0);\n\
 \n\
 myView->SetLightOn(myCurrent_PositionalLight) ;\n\
   ");
@@ -971,14 +973,14 @@ void CViewer3dView::OnAmbientLight()
 		return;
 	}
 
-	myCurrent_AmbientLight=new V3d_AmbientLight(myView->Viewer(), Quantity_NOC_GRAY);
+	myCurrent_AmbientLight=new V3d_AmbientLight (Quantity_NOC_GRAY);
 	myView->SetLightOn(myCurrent_AmbientLight) ;	
 	NbActiveLights++;
 
 	myView->UpdateLights();
 
 TCollection_AsciiString Message("\
-myCurrent_AmbientLight=new V3d_AmbientLight(myView->Viewer(), Quantity_NOC_GRAY);\n\
+myCurrent_AmbientLight=new V3d_AmbientLight(Quantity_NOC_GRAY);\n\
 \n\
 myView->SetLightOn(myCurrent_AmbientLight) ;\n\
   ");

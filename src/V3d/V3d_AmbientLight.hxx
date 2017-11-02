@@ -20,21 +20,47 @@
 #include <V3d_Light.hxx>
 
 class V3d_Viewer;
-class V3d_AmbientLight;
-DEFINE_STANDARD_HANDLE(V3d_AmbientLight, V3d_Light)
 
 //! Creation of an ambient light source in a viewer.
-class V3d_AmbientLight : public V3d_Light
+class V3d_AmbientLight : public Graphic3d_CLight
 {
-
+  DEFINE_STANDARD_RTTIEXT(V3d_AmbientLight, Graphic3d_CLight)
 public:
 
   //! Constructs an ambient light source in the viewer.
   //! The default Color of this light source is WHITE.
+  Standard_EXPORT V3d_AmbientLight (const Quantity_Color& theColor = Quantity_NOC_WHITE);
+
+  //! Constructs an ambient light source in the viewer.
+  //! The default Color of this light source is WHITE.
+  Standard_DEPRECATED("This constructor is deprecated - the light source should be added to V3d_Viewer explicitly by method V3d_Viewer::AddLight()")
   Standard_EXPORT V3d_AmbientLight (const Handle(V3d_Viewer)& theViewer,
                                     const Quantity_Color& theColor = Quantity_NOC_WHITE);
 
-  DEFINE_STANDARD_RTTIEXT(V3d_AmbientLight,V3d_Light)
+//! @name hidden properties not applicable to ambient light
+private:
+
+  using Graphic3d_CLight::IsHeadlight;
+  using Graphic3d_CLight::Headlight;
+  using Graphic3d_CLight::SetHeadlight;
+  using Graphic3d_CLight::Position;
+  using Graphic3d_CLight::SetPosition;
+  using Graphic3d_CLight::ConstAttenuation;
+  using Graphic3d_CLight::LinearAttenuation;
+  using Graphic3d_CLight::Attenuation;
+  using Graphic3d_CLight::SetAttenuation;
+  using Graphic3d_CLight::Direction;
+  using Graphic3d_CLight::SetDirection;
+  using Graphic3d_CLight::Angle;
+  using Graphic3d_CLight::SetAngle;
+  using Graphic3d_CLight::Concentration;
+  using Graphic3d_CLight::SetConcentration;
+  using Graphic3d_CLight::Smoothness;
+  using Graphic3d_CLight::SetSmoothRadius;
+  using Graphic3d_CLight::SetSmoothAngle;
+
 };
+
+DEFINE_STANDARD_HANDLE(V3d_AmbientLight, Graphic3d_CLight)
 
 #endif // _V3d_AmbientLight_HeaderFile

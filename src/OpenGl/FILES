@@ -33,7 +33,6 @@ OpenGl_View.hxx
 OpenGl_View.cxx
 OpenGl_View_Raytrace.cxx
 OpenGl_View_Redraw.cxx
-OpenGl_Light.hxx
 OpenGl_GraduatedTrihedron.hxx
 OpenGl_GraduatedTrihedron.cxx
 OpenGl_MapOfZLayerSettings.hxx

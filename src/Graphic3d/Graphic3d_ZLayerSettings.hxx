@@ -16,6 +16,7 @@
 
 #include <gp_XYZ.hxx>
 #include <Geom_Transformation.hxx>
+#include <Graphic3d_LightSet.hxx>
 #include <Graphic3d_PolygonOffset.hxx>
 #include <TCollection_AsciiString.hxx>
 
@@ -47,6 +48,13 @@ struct Graphic3d_ZLayerSettings
 
   //! Set custom name.
   void SetName (const TCollection_AsciiString& theName) { myName = theName; }
+
+  //! Return lights list to be used for rendering presentations within this Z-Layer; NULL by default.
+  //! NULL list (but not empty list!) means that default lights assigned to the View should be used instead of per-layer lights.
+  const Handle(Graphic3d_LightSet)& Lights() const { return myLights; }
+
+  //! Assign lights list to be used.
+  void SetLights (const Handle(Graphic3d_LightSet)& theLights) { myLights = theLights; }
 
   //! Return the origin of all objects within the layer.
   const gp_XYZ& Origin() const { return myOrigin; }
@@ -193,6 +201,7 @@ struct Graphic3d_ZLayerSettings
 protected:
 
   TCollection_AsciiString     myName;                  //!< user-provided name
+  Handle(Graphic3d_LightSet)  myLights;                //!< lights list
   Handle(Geom_Transformation) myOriginTrsf;            //!< transformation to the origin
   gp_XYZ                      myOrigin;                //!< the origin of all objects within the layer
   Standard_Real               myCullingDistance;       //!< distance to discard objects

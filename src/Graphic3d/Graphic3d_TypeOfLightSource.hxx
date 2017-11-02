@@ -17,18 +17,24 @@
 #ifndef _Graphic3d_TypeOfLightSource_HeaderFile
 #define _Graphic3d_TypeOfLightSource_HeaderFile
 
-//! Definition of all the type of light sources
-//!
-//! TOLS_AMBIENT    ambient light
-//! TOLS_DIRECTIONAL    directional light
-//! TOLS_POSITIONAL positional light
-//! TOLS_SPOT       spot light
+//! Definition of all the type of light source.
 enum Graphic3d_TypeOfLightSource
 {
-  Graphic3d_TOLS_AMBIENT,
-  Graphic3d_TOLS_DIRECTIONAL,
-  Graphic3d_TOLS_POSITIONAL,
-  Graphic3d_TOLS_SPOT
+  Graphic3d_TOLS_AMBIENT,     //!< ambient light
+  Graphic3d_TOLS_DIRECTIONAL, //!< directional light
+  Graphic3d_TOLS_POSITIONAL,  //!< positional light
+  Graphic3d_TOLS_SPOT,        //!< spot light
+  // obsolete aliases
+  V3d_AMBIENT     = Graphic3d_TOLS_AMBIENT,
+  V3d_DIRECTIONAL = Graphic3d_TOLS_DIRECTIONAL,
+  V3d_POSITIONAL  = Graphic3d_TOLS_POSITIONAL,
+  V3d_SPOT        = Graphic3d_TOLS_SPOT
+};
+
+enum
+{
+  //! Auxiliary value defining the overall number of values in enumeration Graphic3d_TypeOfLightSource
+  Graphic3d_TypeOfLightSource_NB = Graphic3d_TOLS_SPOT + 1
 };
 
 #endif // _Graphic3d_TypeOfLightSource_HeaderFile

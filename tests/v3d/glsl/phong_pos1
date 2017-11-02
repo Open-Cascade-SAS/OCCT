@@ -23,12 +23,13 @@ vdisplay -dispMode 1 f1 f2
 vsetlocation f2 $anX 0.001 0
 vpoint vl $anX 0 0.001
 vfit
+vzbufftrihedron
 
 # setup light
 vcaps -ffp 0
 vrenderparams -shadingModel phong
-vlight clear
-vlight add positional pos $anX 0 0.001 color RED1 headLight 0
+vlight -layer default -clear
+vlight -layer default -add positional -pos $anX 0 0.001 -color RED1 -headLight 0
 
 set aColor1 [vreadpixel 205 180 rgb name]
 set aColor2 [vreadpixel 205 220 rgb name]

@@ -19,7 +19,7 @@ vdisplay s1 s2
 vsetmaterial s1 Silver
 vsetmaterial s2 Pewter
 vsetlocation s1 0.0 0.1 0.0
-vlight change 0 pos -1 1 1
+vlight -change 0 -dir 0.577 -0.577 -0.577
 vfit
 
 # activate ray-tracing

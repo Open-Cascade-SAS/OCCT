@@ -70,7 +70,8 @@ vclear
 vtop
 vglinfo
 vsetgradientbg 180 200 255 180 180 180 2
-vlight change 0 pos -1 1 1
+
+vlight -change 0 -dir 0.577 -0.577 -0.577
 vsetdispmode 1
 vrenderparams -msaa 8
 

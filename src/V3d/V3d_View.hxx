@@ -77,7 +77,6 @@ class Graphic3d_TextureEnv;
 class Standard_MultiplyDefined;
 class Standard_TypeMismatch;
 class V3d_BadValue;
-class V3d_Light;
 class V3d_UnMapped;
 
 class V3d_View;

@@ -883,10 +883,18 @@ void OpenGl_View::render (Graphic3d_Camera::Projection theProjection,
   myBVHSelector.SetViewportSize (myWindow->Width(), myWindow->Height(), myRenderParams.ResolutionRatio());
   myBVHSelector.CacheClipPtsProjections();
 
-  const Handle(OpenGl_ShaderManager)& aManager   = aContext->ShaderManager();
-  if (StateInfo (myCurrLightSourceState, aManager->LightSourceState().Index()) != myLastLightSourceState)
+  const Handle(OpenGl_ShaderManager)& aManager = aContext->ShaderManager();
+  const Handle(Graphic3d_LightSet)&   aLights  = myShadingModel == Graphic3d_TOSM_NONE ? myNoShadingLight : myLights;
+  Standard_Size aLightsRevision = 0;
+  if (!aLights.IsNull())
   {
-    aManager->UpdateLightSourceStateTo (myShadingModel == Graphic3d_TOSM_NONE ? &myNoShadingLight : &myLights);
+    aLightsRevision = aLights->UpdateRevision();
+  }
+  if (StateInfo (myCurrLightSourceState, aManager->LightSourceState().Index()) != myLastLightSourceState
+   || aLightsRevision != myLightsRevision)
+  {
+    myLightsRevision = aLightsRevision;
+    aManager->UpdateLightSourceStateTo (aLights);
     myLastLightSourceState = StateInfo (myCurrLightSourceState, aManager->LightSourceState().Index());
   }
 

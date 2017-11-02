@@ -30,6 +30,7 @@ Graphic3d_Camera.cxx
 Graphic3d_Camera.hxx
 Graphic3d_CameraTile.hxx
 Graphic3d_CappingFlags.hxx
+Graphic3d_CLight.cxx
 Graphic3d_CLight.hxx
 Graphic3d_ClipPlane.cxx
 Graphic3d_ClipPlane.hxx
@@ -58,6 +59,8 @@ Graphic3d_HorizontalTextAlignment.hxx
 Graphic3d_IndexBuffer.hxx
 Graphic3d_IndexedMapOfAddress.hxx
 Graphic3d_LevelOfTextureAnisotropy.hxx
+Graphic3d_LightSet.cxx
+Graphic3d_LightSet.hxx
 Graphic3d_MapIteratorOfMapOfStructure.hxx
 Graphic3d_MapOfObject.hxx
 Graphic3d_MapOfStructure.hxx

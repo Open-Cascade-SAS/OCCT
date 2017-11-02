@@ -9,7 +9,6 @@ V3d_Coordinate.hxx
 V3d_DirectionalLight.cxx
 V3d_DirectionalLight.hxx
 V3d_ImageDumpOptions.hxx
-V3d_Light.cxx
 V3d_Light.hxx
 V3d_ListOfLight.hxx
 V3d_ListOfView.hxx

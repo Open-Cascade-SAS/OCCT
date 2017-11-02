@@ -17,8 +17,8 @@
 #define _OpenGl_State_HeaderFile
 
 #include <NCollection_List.hxx>
+#include <Graphic3d_LightSet.hxx>
 #include <OpenGl_Element.hxx>
-#include <OpenGl_Light.hxx>
 #include <OpenGl_Vec.hxx>
 
 //! Defines interface for OpenGL state.
@@ -122,17 +122,17 @@ class OpenGl_LightSourceState : public OpenGl_StateInterface
 public:
 
   //! Creates uninitialized state of light sources.
-  Standard_EXPORT OpenGl_LightSourceState();
+  OpenGl_LightSourceState() {}
 
   //! Sets new light sources.
-  Standard_EXPORT void Set (const OpenGl_ListOfLight* theLightSources);
+  void Set (const Handle(Graphic3d_LightSet)& theLightSources) { myLightSources = theLightSources; }
 
   //! Returns current list of light sources.
-  Standard_EXPORT const OpenGl_ListOfLight* LightSources() const;
+  const Handle(Graphic3d_LightSet)& LightSources() const { return myLightSources; }
 
 private:
 
-  const OpenGl_ListOfLight* myLightSources; //!< List of OCCT light sources
+  Handle(Graphic3d_LightSet) myLightSources; //!< List of OCCT light sources
 
 };
 

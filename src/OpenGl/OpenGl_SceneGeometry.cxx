@@ -108,7 +108,7 @@ OpenGl_RaytraceMaterial::OpenGl_RaytraceMaterial (const BVH_Vec4f& theAmbient,
 }
 
 // =======================================================================
-// function : OpenGl_LightSource
+// function : OpenGl_RaytraceLight
 // purpose  : Creates new light source
 // =======================================================================
 OpenGl_RaytraceLight::OpenGl_RaytraceLight (const BVH_Vec4f& theEmission,

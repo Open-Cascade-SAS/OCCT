@@ -137,12 +137,12 @@ void Textures_Presentation::Init()
 //================================================================
 void Textures_Presentation::lightsOnOff(Standard_Boolean isOn)
 {
-  static Handle(V3d_Light) aLight1 = new V3d_DirectionalLight(getViewer(), V3d_XnegYposZneg);
-  static Handle(V3d_Light) aLight2 = new V3d_DirectionalLight(getViewer(), V3d_XnegYnegZpos);
-  static Handle(V3d_Light) aLight3 = new V3d_DirectionalLight(getViewer(), V3d_XposYnegZpos);
-  static Handle(V3d_Light) aLight4 = new V3d_DirectionalLight(getViewer(), V3d_XnegYnegZneg);
-  static Handle(V3d_Light) aLight5 = new V3d_DirectionalLight(getViewer(), V3d_XnegYposZpos);
-  static Handle(V3d_Light) aLight6 = new V3d_DirectionalLight(getViewer(), V3d_XposYposZpos);
+  static Handle(V3d_Light) aLight1 = new V3d_DirectionalLight(V3d_XnegYposZneg);
+  static Handle(V3d_Light) aLight2 = new V3d_DirectionalLight(V3d_XnegYnegZpos);
+  static Handle(V3d_Light) aLight3 = new V3d_DirectionalLight(V3d_XposYnegZpos);
+  static Handle(V3d_Light) aLight4 = new V3d_DirectionalLight(V3d_XnegYnegZneg);
+  static Handle(V3d_Light) aLight5 = new V3d_DirectionalLight(V3d_XnegYposZpos);
+  static Handle(V3d_Light) aLight6 = new V3d_DirectionalLight(V3d_XposYposZpos);
 
   if (isOn)
   {

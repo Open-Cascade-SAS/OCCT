@@ -42,7 +42,6 @@
 #include <OpenGl_FrameBuffer.hxx>
 #include <OpenGl_GraduatedTrihedron.hxx>
 #include <OpenGl_LayerList.hxx>
-#include <OpenGl_Light.hxx>
 #include <OpenGl_LineAttributes.hxx>
 #include <OpenGl_SceneGeometry.hxx>
 #include <OpenGl_Structure.hxx>
@@ -280,10 +279,10 @@ public:
   Standard_EXPORT virtual void SetCamera (const Handle(Graphic3d_Camera)& theCamera) Standard_OVERRIDE;
 
   //! Returns list of lights of the view.
-  virtual const Graphic3d_ListOfCLight& Lights() const Standard_OVERRIDE { return myLights; }
+  virtual const Handle(Graphic3d_LightSet)& Lights() const Standard_OVERRIDE { return myLights; }
 
   //! Sets list of lights for the view.
-  virtual void SetLights (const Graphic3d_ListOfCLight& theLights) Standard_OVERRIDE
+  virtual void SetLights (const Handle(Graphic3d_LightSet)& theLights) Standard_OVERRIDE
   {
     myLights = theLights;
     myCurrLightSourceState = myStateCounter->Increment();
@@ -324,9 +323,6 @@ public:
 
   //! Returns list of OpenGL Z-layers.
   const OpenGl_LayerList& LayerList() const { return myZLayers; }
-
-  //! Returns list of openGL light sources.
-  const OpenGl_ListOfLight& LightList() const { return myLights; }
 
   //! Returns OpenGL window implementation.
   const Handle(OpenGl_Window) GlWindow() const { return myWindow; }
@@ -484,13 +480,14 @@ protected:
   Handle(Graphic3d_TextureEnv)    myTextureEnvData;
   Graphic3d_GraduatedTrihedron    myGTrihedronData;
 
-  OpenGl_ListOfLight              myNoShadingLight;
-  OpenGl_ListOfLight              myLights;
+  Handle(Graphic3d_LightSet)      myNoShadingLight;
+  Handle(Graphic3d_LightSet)      myLights;
   OpenGl_LayerList                myZLayers; //!< main list of displayed structure, sorted by layers
 
   Graphic3d_WorldViewProjState    myWorldViewProjState; //!< camera modification state
   OpenGl_StateCounter*            myStateCounter;
   Standard_Size                   myCurrLightSourceState;
+  Standard_Size                   myLightsRevision;
 
   typedef std::pair<Standard_Size, Standard_Size> StateInfo;
 

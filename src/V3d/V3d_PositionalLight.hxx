@@ -19,25 +19,28 @@
 
 #include <V3d_PositionLight.hxx>
 
-class V3d_PositionalLight;
-DEFINE_STANDARD_HANDLE(V3d_PositionalLight, V3d_PositionLight)
-
-//! Creation and modification of an isolated
-//! (positional) light source.
+//! Creation and modification of an isolated (positional) light source.
+//! It is also defined by the color and two attenuation factors ConstAttentuation() and LinearAttentuation().
+//! The resulting attenuation factor determining the illumination of a surface depends on the following formula:
+//! @code
+//!   F = 1 / (ConstAttenuation() + LinearAttenuation() * Distance)
+//! @endcode
+//! Where Distance is the distance of the isolated source from the surface.
 class V3d_PositionalLight : public V3d_PositionLight
 {
+  DEFINE_STANDARD_RTTIEXT(V3d_PositionalLight, V3d_PositionLight)
 public:
 
-  //! Creates an isolated light source theX, theY, theZ in the viewer.
-  //! It is also defined by the color theColor and
-  //! two attenuation factors theConstAttentuation, theLinearAttentuation.
-  //! The resulting attenuation factor determining the
-  //! illumination of a surface depends on the following
-  //! formula :
-  //! F = 1/(ConstAttenuation + LinearAttenuation*Length)
-  //! Length is the distance of the isolated source
-  //! from the surface.  //! Warning!  raises BadValue from V3d
-  //! if one of the attenuation coefficients is not in range [0, 1].
+  //! Creates an isolated light source in the viewer with default attenuation factors (1.0, 0.0).
+  Standard_EXPORT V3d_PositionalLight (const gp_Pnt& thePos,
+                                       const Quantity_Color& theColor = Quantity_NOC_WHITE);
+
+  using Graphic3d_CLight::Position;
+  using Graphic3d_CLight::SetPosition;
+
+public:
+
+  Standard_DEPRECATED("This constructor is deprecated - the light source should be added to V3d_Viewer explicitly by method V3d_Viewer::AddLight()")
   Standard_EXPORT V3d_PositionalLight (const Handle(V3d_Viewer)& theViewer,
                                        const Standard_Real theX,
                                        const Standard_Real theY,
@@ -46,85 +49,18 @@ public:
                                        const Standard_Real theConstAttenuation = 1.0,
                                        const Standard_Real theLinearAttenuation = 0.0);
 
-  //! Creates a light source of the Positional type in the viewer.
-  //! theXt, theYt, theZt : Coordinate of Target light source.
-  //! theXp, theYp, theZp : Coordinate of Position light source.
-  //! The light source is also defined by the color Color
-  //! and two attenuation factors theConstAttentuation,
-  //! theLinearAttentuation that determine the illumination of a
-  //! surface using the following formula :
-  //! F = 1/(ConstAttenuation + LinearAttenuation*Length)
-  //! Length is the distance of the isolated source
-  //! from the surface.  //! Warning! raises BadValue from V3d
-  //! if one of the attenuation coefficients is not between 0 et 1.
-  Standard_EXPORT V3d_PositionalLight (const Handle(V3d_Viewer)& theViewer,
-                                       const Standard_Real theXt,
-                                       const Standard_Real theYt,
-                                       const Standard_Real theZt,
-                                       const Standard_Real theXp,
-                                       const Standard_Real theYp,
-                                       const Standard_Real theZp,
-                                       const Quantity_Color& theColor = Quantity_NOC_WHITE,
-                                       const Standard_Real theConstAttenuation = 1.0,
-                                       const Standard_Real theLinearAttenuation = 0.0);
-
-  //! Defines the position of the light source.
-  virtual void SetPosition (Standard_Real theX,
-                            Standard_Real theY,
-                            Standard_Real theZ) Standard_OVERRIDE
-  {
-    myLight.Position.x() = theX;
-    myLight.Position.y() = theY;
-    myLight.Position.z() = theZ;
-  }
-
-  //! Defines the attenuation factors.
-  //! Warning: raises BadValue from V3d
-  //! if one of the attenuation coefficients is not between 0 et 1.
-  Standard_EXPORT void SetAttenuation (const Standard_Real theConstAttenuation,
-                                       const Standard_Real theLinearAttenuation);
-
-  //! Modifies the smoothing radius
-  Standard_EXPORT void SetSmoothRadius (const Standard_Real theValue);
-
-  //! Display the graphic structure of light source
-  //! in the chosen view. We have three type of representation
-  //! - SIMPLE   : Only the light source is displayed.
-  //! - PARTIAL  : The light source and the light space are
-  //! displayed.
-  //! - COMPLETE : The light source, the light space and the
-  //! radius of light space are displayed.
-  //! We can choose the "SAMELAST" as parameter of representation
-  //! In this case the graphic structure representation will be
-  //! the last displayed.
-  Standard_EXPORT void Display (const Handle(V3d_View)& theView,
-                                const V3d_TypeOfRepresentation theRepresentation) Standard_OVERRIDE;
-
-  //! Returns the position of the light source.
-  void Position (Standard_Real& theX,
-                 Standard_Real& theY,
-                 Standard_Real& theZ) const Standard_OVERRIDE
-  {
-    theX = myLight.Position.x();
-    theY = myLight.Position.y();
-    theZ = myLight.Position.z();
-  }
-
-  //! Returns the attenuation factors.
-  void Attenuation (Standard_Real& theConstAttenuation,
-                    Standard_Real& theLinearAttenuation) const
-  {
-    theConstAttenuation  = myLight.ConstAttenuation();
-    theLinearAttenuation = myLight.LinearAttenuation();
-  }
-
-  DEFINE_STANDARD_RTTIEXT(V3d_PositionalLight,V3d_PositionLight)
-
+//! @name hidden properties not applicable to positional light
 private:
 
-  //! Defined the representation of the positional light source.
-  Standard_EXPORT void Symbol (const Handle(Graphic3d_Group)& theSymbol,
-                               const Handle(V3d_View)& theView) const Standard_OVERRIDE;
+  using Graphic3d_CLight::Direction;
+  using Graphic3d_CLight::SetDirection;
+  using Graphic3d_CLight::Angle;
+  using Graphic3d_CLight::SetAngle;
+  using Graphic3d_CLight::Concentration;
+  using Graphic3d_CLight::SetConcentration;
+
 };
+
+DEFINE_STANDARD_HANDLE(V3d_PositionalLight, V3d_PositionLight)
 
 #endif // _V3d_PositionalLight_HeaderFile
