@@ -1,0 +1,33 @@
+puts "========"
+puts "OCC29293"
+puts "========"
+puts ""
+#################################################
+# Boolean Operations algorithm does not preserve the orientations of the faces
+#################################################
+
+brestore [locate_data_file bug29293_etchable_face_compound.brep] a
+brestore [locate_data_file bug29293_top_shell.brep] b
+
+bclearobjects
+bcleartools
+baddcompound a
+baddtools b
+bfillds
+bbop result 0
+
+checkshape result
+checkprops result -s 411200
+checknbshapes result -vertex 588 -edge 588 -wire 147 -face 147 -shell 147
+
+
+# Check that the normal directions have been preserved.
+# All faces from input shapes which could pass into result have normals
+# directed stricly to the top (0, 0, 1). So, it is necessary to check
+# that all faces from the result have the same normal direction.
+
+foreach f [explode result f] {
+  if {![regexp "(0, 0, 1)" [normals $f -length 1 -print]]} {
+    puts "Error: the orientation is changed"
+  }
+}
