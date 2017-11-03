@@ -265,7 +265,7 @@ void BOPAlgo_Builder::BuildSplitFaces()
   //
   // Build temporary map of faces images to avoid rebuilding
   // of the faces without any IN or section edges
-  BOPCol_IndexedDataMapOfShapeListOfShape aFacesIm;
+  NCollection_IndexedDataMap<Standard_Integer, BOPCol_ListOfShape> aFacesIm;
   //
   aNbS=myDS->NbSourceShapes();
   //
@@ -312,7 +312,7 @@ void BOPAlgo_Builder::BuildSplitFaces()
       TopoDS_Face aFD = BuildDraftFace(aF, myImages, myContext);
       if (!aFD.IsNull())
       {
-        aFacesIm(aFacesIm.Add(aF, BOPCol_ListOfShape())).Append(aFD);
+        aFacesIm(aFacesIm.Add(i, BOPCol_ListOfShape())).Append(aFD);
         continue;
       }
     }
@@ -457,13 +457,13 @@ void BOPAlgo_Builder::BuildSplitFaces()
   for (k = 0; k < aNbBF; ++k)
   {
     BOPAlgo_BuilderFace& aBF = aVBF(k);
-    aFacesIm.Add(aBF.Face(), aBF.Areas());
+    aFacesIm.Add(myDS->Index(aBF.Face()), aBF.Areas());
   }
 
   aNbBF = aFacesIm.Extent();
   for (k = 1; k <= aNbBF; ++k)
   {
-    const TopoDS_Face& aF = TopoDS::Face(aFacesIm.FindKey(k));
+    const TopoDS_Face& aF = TopoDS::Face(myDS->Shape(aFacesIm.FindKey(k)));
     anOriF = aF.Orientation();
     const BOPCol_ListOfShape& aLFR = aFacesIm(k);
     //
