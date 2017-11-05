@@ -33,7 +33,19 @@ public:
   //! Retrieves view volume's planes equations and its vertices from projection and world-view matrices.
   Standard_EXPORT void SetViewVolume (const Handle(Graphic3d_Camera)& theCamera);
 
-  Standard_EXPORT void SetViewportSize (const Standard_Integer theViewportWidth, const Standard_Integer theViewportHeight);
+  Standard_EXPORT void SetViewportSize (Standard_Integer theViewportWidth,
+                                        Standard_Integer theViewportHeight,
+                                        Standard_Real theResolutionRatio);
+
+  //! Setup distance culling.
+  Standard_EXPORT void SetCullingDistance (Standard_Real theDistance);
+
+  //! Setup size culling.
+  Standard_EXPORT void SetCullingSize (Standard_Real theSize);
+
+  //! Caches view volume's vertices projections along its normals and AABBs dimensions.
+  //! Must be called at the beginning of each BVH tree traverse loop.
+  Standard_EXPORT void CacheClipPtsProjections();
 
   //! Detects if AABB overlaps view volume using separating axis theorem (SAT).
   //! @param theMinPt [in] maximum point of AABB.
@@ -41,10 +53,6 @@ public:
   //! @return Standard_True, if AABB is in viewing area, Standard_False otherwise.
   Standard_EXPORT Standard_Boolean Intersect (const OpenGl_Vec3d& theMinPt,
                                               const OpenGl_Vec3d& theMaxPt) const;
-
-  //! Caches view volume's vertices projections along its normals and AABBs dimensions.
-  //! Must be called at the beginning of each BVH tree traverse loop.
-  Standard_EXPORT void CacheClipPtsProjections();
 
   //! Return the camera definition.
   const Handle(Graphic3d_Camera)& Camera() const { return myCamera; }
@@ -139,6 +147,13 @@ protected:
   Standard_Integer myViewportHeight;
 
   Graphic3d_WorldViewProjState myWorldViewProjState; //!< State of world view projection matrices.
+
+  Graphic3d_Vec3d myCamEye;      //!< camera eye position for distance culling
+  Standard_Real   myCamScaleInv; //!< inverted camera scale for size culling
+  Standard_Real   myDistCull;    //!< culling distance
+  Standard_Real   myPixelSize;   //!< pixel size for size culling
+  Standard_Real   mySizeCull2;   //!< squared culling size
+
 };
 
 #endif // _OpenGl_BVHTreeSelector_HeaderFile

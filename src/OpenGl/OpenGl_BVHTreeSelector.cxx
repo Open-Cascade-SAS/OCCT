@@ -24,7 +24,11 @@
 // purpose  :
 // =======================================================================
 OpenGl_BVHTreeSelector::OpenGl_BVHTreeSelector()
-: myIsProjectionParallel (Standard_True)
+: myIsProjectionParallel (Standard_True),
+  myCamScaleInv (1.0),
+  myDistCull (-1.0),
+  myPixelSize (1.0),
+  mySizeCull2 (-1.0)
 {
   //
 }
@@ -44,6 +48,8 @@ void OpenGl_BVHTreeSelector::SetViewVolume (const Handle(Graphic3d_Camera)& theC
   myProjectionMat      = theCamera->ProjectionMatrix();
   myWorldViewMat       = theCamera->OrientationMatrix();
   myWorldViewProjState = theCamera->WorldViewProjState();
+  myCamEye.SetValues (theCamera->Eye().X(), theCamera->Eye().Y(), theCamera->Eye().Z());
+  myCamScaleInv = 1.0 / myCamera->Scale();
 
   Standard_Real nLeft = 0.0, nRight = 0.0, nTop = 0.0, nBottom = 0.0;
   Standard_Real fLeft = 0.0, fRight = 0.0, fTop = 0.0, fBottom = 0.0;
@@ -124,11 +130,14 @@ void OpenGl_BVHTreeSelector::SetViewVolume (const Handle(Graphic3d_Camera)& theC
 // function : SetViewportSize
 // purpose  :
 // =======================================================================
-void OpenGl_BVHTreeSelector::SetViewportSize (const Standard_Integer theViewportWidth,
-                                              const Standard_Integer theViewportHeight)
+void OpenGl_BVHTreeSelector::SetViewportSize (Standard_Integer theViewportWidth,
+                                              Standard_Integer theViewportHeight,
+                                              Standard_Real theResolutionRatio)
 {
   myViewportHeight = theViewportHeight;
-  myViewportWidth = theViewportWidth;
+  myViewportWidth  = theViewportWidth;
+  myPixelSize = Max (theResolutionRatio / theViewportHeight,
+                     theResolutionRatio / theViewportWidth);
 }
 
 // =======================================================================
@@ -154,9 +163,37 @@ Standard_Real OpenGl_BVHTreeSelector::SignedPlanePointDistance (const OpenGl_Vec
 }
 
 // =======================================================================
+// function : SetCullingDistance
+// purpose  :
+// =======================================================================
+void OpenGl_BVHTreeSelector::SetCullingDistance (Standard_Real theDistance)
+{
+  myDistCull = -1.0;
+  if (!myIsProjectionParallel)
+  {
+    myDistCull = theDistance > 0.0 && !Precision::IsInfinite (theDistance)
+               ? theDistance
+               : -1.0;
+  }
+}
+
+// =======================================================================
+// function : SetCullingSize
+// purpose  :
+// =======================================================================
+void OpenGl_BVHTreeSelector::SetCullingSize (Standard_Real theSize)
+{
+  mySizeCull2 = -1.0;
+  if (theSize > 0.0 && !Precision::IsInfinite (theSize))
+  {
+    mySizeCull2 = (myPixelSize * theSize) / myCamScaleInv;
+    mySizeCull2 *= mySizeCull2;
+  }
+}
+
+// =======================================================================
 // function : CacheClipPtsProjections
-// purpose  : Caches view volume's vertices projections along its normals and AABBs dimensions
-//            Must be called at the beginning of each BVH tree traverse loop
+// purpose  :
 // =======================================================================
 void OpenGl_BVHTreeSelector::CacheClipPtsProjections()
 {
@@ -249,6 +286,27 @@ Standard_Boolean OpenGl_BVHTreeSelector::Intersect (const OpenGl_Vec3d& theMinPt
                 + (aPlane.z() < 0.0 ? aPlane.z() * theMaxPt.z() : aPlane.z() * theMinPt.z());
     if (aBoxProjMin > myMaxClipProjectionPts[aPlaneIter]
      || aBoxProjMax < myMinClipProjectionPts[aPlaneIter])
+    {
+      return Standard_False;
+    }
+  }
+
+  // distance culling - discard node if distance to it's bounding box from camera eye is less than specified culling distance
+  if (myDistCull > 0.0)
+  {
+    // check distance to the bounding sphere as fast approximation
+    const Graphic3d_Vec3d aSphereCenter = (theMinPt + theMaxPt) * 0.5;
+    const Standard_Real   aSphereRadius = (theMaxPt - theMinPt).maxComp() * 0.5;
+    if ((aSphereCenter - myCamEye).Modulus() - aSphereRadius > myDistCull)
+    {
+      return Standard_False;
+    }
+  }
+
+  // size culling - discard node if diagonal of it's bounding box is less than specified culling size
+  if (mySizeCull2 > 0.0)
+  {
+    if ((theMaxPt - theMinPt).SquareModulus() < mySizeCull2)
     {
       return Standard_False;
     }

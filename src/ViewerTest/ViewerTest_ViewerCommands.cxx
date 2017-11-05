@@ -4655,6 +4655,8 @@ inline void printZLayerInfo (Draw_Interpretor& theDI,
     theDI << "  Immediate: TRUE\n";
   }
   theDI << "  Origin: " << theLayer.Origin().X() << " " << theLayer.Origin().Y() << " " << theLayer.Origin().Z() << "\n";
+  theDI << "  Culling distance: "      << theLayer.CullingDistance() << "\n";
+  theDI << "  Culling size: "          << theLayer.CullingSize() << "\n";
   theDI << "  Depth test:   "          << (theLayer.ToEnableDepthTest() ? "enabled" : "disabled") << "\n";
   theDI << "  Depth write:  "          << (theLayer.ToEnableDepthWrite() ? "enabled" : "disabled") << "\n";
   theDI << "  Depth buffer clearing: " << (theLayer.ToClearDepth() ? "enabled" : "disabled") << "\n";
@@ -4883,6 +4885,33 @@ static int VZLayer (Draw_Interpretor& theDI,
         anArgIter += 2;
       }
       aSettings.SetOrigin (anOrigin);
+      aViewer->SetZLayerSettings (aLayerId, aSettings);
+    }
+    else if (aLayerId != Graphic3d_ZLayerId_UNKNOWN
+          && anArgIter + 1 < theArgNb
+          && (anArg == "-cullingdistance"
+           || anArg == "-cullingdist"
+           || anArg == "-culldistance"
+           || anArg == "-culldist"
+           || anArg == "-distcull"
+           || anArg == "-distculling"
+           || anArg == "-distanceculling"))
+    {
+      Graphic3d_ZLayerSettings aSettings = aViewer->ZLayerSettings (aLayerId);
+      const Standard_Real aDist = Draw::Atof (theArgVec[++anArgIter]);
+      aSettings.SetCullingDistance (aDist);
+      aViewer->SetZLayerSettings (aLayerId, aSettings);
+    }
+    else if (aLayerId != Graphic3d_ZLayerId_UNKNOWN
+          && anArgIter + 1 < theArgNb
+          && (anArg == "-cullingsize"
+           || anArg == "-cullsize"
+           || anArg == "-sizecull"
+           || anArg == "-sizeculling"))
+    {
+      Graphic3d_ZLayerSettings aSettings = aViewer->ZLayerSettings (aLayerId);
+      const Standard_Real aSize = Draw::Atof (theArgVec[++anArgIter]);
+      aSettings.SetCullingSize (aSize);
       aViewer->SetZLayerSettings (aLayerId, aSettings);
     }
     else if (anArg == "-settings"
@@ -11548,6 +11577,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
   theCommands.Add("vzlayer",
               "vzlayer [layerId]"
       "\n\t\t:         [-add|-delete|-get|-settings]"
+      "\n\t\t:         [-origin X Y Z] [-cullDist Distance] [-cullSize Size]"
       "\n\t\t:         [-enable|-disable {depthTest|depthWrite|depthClear|depthoffset}]"
       "\n\t\t:         [-enable|-disable {positiveOffset|negativeOffset|textureenv}]"
       "\n\t\t: ZLayer list management:"

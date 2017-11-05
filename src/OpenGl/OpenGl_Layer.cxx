@@ -489,9 +489,15 @@ void OpenGl_Layer::updateBVH() const
 void OpenGl_Layer::renderTraverse (const Handle(OpenGl_Workspace)& theWorkspace) const
 {
   updateBVH();
-
-  OpenGl_BVHTreeSelector& aSelector = theWorkspace->View()->BVHTreeSelector();
-  traverse (aSelector);
+  if (myBVHPrimitives        .Size() != 0
+   || myBVHPrimitivesTrsfPers.Size() != 0)
+  {
+    OpenGl_BVHTreeSelector& aSelector = theWorkspace->View()->BVHTreeSelector();
+    aSelector.SetCullingDistance (myLayerSettings.CullingDistance());
+    aSelector.SetCullingSize (myLayerSettings.CullingSize());
+    aSelector.CacheClipPtsProjections();
+    traverse (aSelector);
+  }
 
   const Standard_Integer aViewId = theWorkspace->View()->Identification();
   for (OpenGl_ArrayOfIndexedMapOfStructure::Iterator aMapIter (myArray); aMapIter.More(); aMapIter.Next())
@@ -516,15 +522,8 @@ void OpenGl_Layer::renderTraverse (const Handle(OpenGl_Workspace)& theWorkspace)
 // function : traverse
 // purpose  :
 // =======================================================================
-void OpenGl_Layer::traverse (OpenGl_BVHTreeSelector& theSelector) const
+void OpenGl_Layer::traverse (const OpenGl_BVHTreeSelector& theSelector) const
 {
-  // handle a case when all objects are infinite
-  if (myBVHPrimitives        .Size() == 0
-   && myBVHPrimitivesTrsfPers.Size() == 0)
-    return;
-
-  theSelector.CacheClipPtsProjections();
-
   opencascade::handle<BVH_Tree<Standard_Real, 3> > aBVHTree;
   for (Standard_Integer aBVHTreeIdx = 0; aBVHTreeIdx < 2; ++aBVHTreeIdx)
   {
@@ -595,9 +594,9 @@ void OpenGl_Layer::traverse (OpenGl_BVHTreeSelector& theSelector) const
       else
       {
         Standard_Integer aIdx = aBVHTree->BegPrimitive (aNode);
-        const OpenGl_Structure* aStruct =
-          isTrsfPers ? myBVHPrimitivesTrsfPers.GetStructureById (aIdx)
-                     : myBVHPrimitives.GetStructureById (aIdx);
+        const OpenGl_Structure* aStruct = isTrsfPers
+                                        ? myBVHPrimitivesTrsfPers.GetStructureById (aIdx)
+                                        : myBVHPrimitives.GetStructureById (aIdx);
         aStruct->MarkAsNotCulled();
         if (aHead < 0)
         {
@@ -696,7 +695,6 @@ void OpenGl_Layer::Render (const Handle(OpenGl_Workspace)&   theWorkspace,
   const Standard_Boolean hasLocalCS = !myLayerSettings.OriginTransformation().IsNull();
   const Handle(OpenGl_Context)&   aCtx         = theWorkspace->GetGlContext();
   const Handle(Graphic3d_Camera)& aWorldCamera = theWorkspace->View()->Camera();
-  Handle(Graphic3d_Camera) aCameraBack;
   if (hasLocalCS)
   {
     // Apply local camera transformation.

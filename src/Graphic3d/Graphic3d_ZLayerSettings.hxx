@@ -33,7 +33,9 @@ struct Graphic3d_ZLayerSettings
 
   //! Default settings.
   Graphic3d_ZLayerSettings()
-  : myIsImmediate       (Standard_False),
+  : myCullingDistance (Precision::Infinite()),
+    myCullingSize     (Precision::Infinite()),
+    myIsImmediate       (Standard_False),
     myUseEnvironmentTexture (Standard_True),
     myToEnableDepthTest (Standard_True),
     myToEnableDepthWrite(Standard_True),
@@ -61,6 +63,30 @@ struct Graphic3d_ZLayerSettings
       myOriginTrsf = new Geom_Transformation();
     }
   }
+
+  //! Return TRUE, if culling of distant objects (distance culling) should be performed; FALSE by default.
+  //! @sa CullingDistance()
+  Standard_Boolean HasCullingDistance() const { return !Precision::IsInfinite (myCullingDistance) && myCullingDistance > 0.0; }
+
+  //! Return the distance to discard drawing of distant objects (distance from camera Eye point); by default it is Infinite (distance culling is disabled).
+  //! Since camera eye definition has no strong meaning within orthographic projection, option is considered only within perspective projection.
+  //! Note also that this option has effect only when frustum culling is enabled.
+  Standard_Real CullingDistance() const { return myCullingDistance; }
+
+  //! Set the distance to discard drawing objects.
+  void SetCullingDistance (Standard_Real theDistance) { myCullingDistance = theDistance; }
+
+  //! Return TRUE, if culling of small objects (size culling) should be performed; FALSE by default.
+  //! @sa CullingSize()
+  Standard_Boolean HasCullingSize() const { return !Precision::IsInfinite (myCullingSize) && myCullingSize > 0.0; }
+
+  //! Return the size to discard drawing of small objects; by default it is Infinite (size culling is disabled).
+  //! Current implementation checks the length of projected diagonal of bounding box in pixels for discarding.
+  //! Note that this option has effect only when frustum culling is enabled.
+  Standard_Real CullingSize() const { return myCullingSize; }
+
+  //! Set the distance to discard drawing objects.
+  void SetCullingSize (Standard_Real theSize) { myCullingSize = theSize; }
 
   //! Return true if this layer should be drawn after all normal (non-immediate) layers.
   Standard_Boolean IsImmediate() const { return myIsImmediate; }
@@ -162,6 +188,8 @@ protected:
   TCollection_AsciiString     myName;                  //!< user-provided name
   Handle(Geom_Transformation) myOriginTrsf;            //!< transformation to the origin
   gp_XYZ                      myOrigin;                //!< the origin of all objects within the layer
+  Standard_Real               myCullingDistance;       //!< distance to discard objects
+  Standard_Real               myCullingSize;           //!< size to discard objects
   Graphic3d_PolygonOffset     myPolygonOffset;         //!< glPolygonOffset() arguments
   Standard_Boolean            myIsImmediate;           //!< immediate layer will be drawn after all normal layers
   Standard_Boolean            myUseEnvironmentTexture; //!< flag to allow/prevent environment texture mapping usage for specific layer

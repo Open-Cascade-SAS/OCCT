@@ -135,7 +135,7 @@ protected:
   void updateBVH() const;
 
   //! Traverses through BVH tree to determine which structures are in view volume.
-  void traverse (OpenGl_BVHTreeSelector& theSelector) const;
+  void traverse (const OpenGl_BVHTreeSelector& theSelector) const;
 
   //! Iterates through the hierarchical list of existing structures and renders them all.
   void renderAll (const Handle(OpenGl_Workspace)& theWorkspace) const;
