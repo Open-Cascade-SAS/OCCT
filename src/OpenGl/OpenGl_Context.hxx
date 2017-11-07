@@ -625,6 +625,12 @@ public: //! @name methods to alter or retrieve current state
     SetDrawBuffer (theBuffer);
   }
 
+  //! Return cached flag indicating writing into color buffer is enabled or disabled (glColorMask).
+  bool ColorMask() const { return myColorMask; }
+
+  //! Enable/disable writing into color buffer (wrapper for glColorMask).
+  Standard_EXPORT bool SetColorMask (bool theToWriteColor);
+
   //! Return back face culling state.
   bool ToCullBackFaces() const { return myToCullBackFaces; }
 
@@ -906,6 +912,7 @@ private: //! @name fields tracking current state
   Standard_Integer              myReadBuffer;      //!< current read buffer
   OpenGl_DrawBuffers            myDrawBuffers;     //!< current draw buffers
   unsigned int                  myDefaultVao;      //!< default Vertex Array Object
+  Standard_Boolean              myColorMask;       //!< flag indicating writing into color buffer is enabled or disabled (glColorMask)
   Standard_Boolean              myIsGlDebugCtx;    //!< debug context initialization state
   TCollection_AsciiString       myVendor;          //!< Graphics Driver's vendor
   TColStd_PackedMapOfInteger    myFilters[6];      //!< messages suppressing filter (for sources from GL_DEBUG_SOURCE_API_ARB to GL_DEBUG_SOURCE_OTHER_ARB)

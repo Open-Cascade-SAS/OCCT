@@ -188,6 +188,7 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
   myReadBuffer (0),
   myDrawBuffers (1),
   myDefaultVao (0),
+  myColorMask (true),
   myIsGlDebugCtx (Standard_False),
   myResolution (Graphic3d_RenderingParams::THE_DEFAULT_RESOLUTION),
   myResolutionRatio (1.0f),
@@ -3677,4 +3678,18 @@ void OpenGl_Context::DisableFeatures() const
       glDisable(GL_TEXTURE_3D_EXT);
   }
 #endif
+}
+
+// =======================================================================
+// function : SetColorMask
+// purpose  :
+// =======================================================================
+bool OpenGl_Context::SetColorMask (bool theToWriteColor)
+{
+  const GLboolean toWrite = theToWriteColor ? GL_TRUE : GL_FALSE;
+  glColorMask (toWrite, toWrite, toWrite, toWrite);
+
+  const bool anOldValue = myColorMask;
+  myColorMask = theToWriteColor;
+  return anOldValue;
 }

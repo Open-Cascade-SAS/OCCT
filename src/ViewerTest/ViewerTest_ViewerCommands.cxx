@@ -9843,6 +9843,7 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
       case V3d_GOURAUD: theDI << "gouraud"; break;
       case V3d_PHONG:   theDI << "phong";   break;
     }
+    theDI << "depth pre-pass: " << (aParams.ToEnableDepthPrepass        ? "on" : "off") << "\n";
     theDI << "\n";
     return 0;
   }
@@ -9972,6 +9973,20 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
       {
         std::cerr << "Error: wrong syntax at argument '" << anArg << "'\n";
         return 1;
+      }
+    }
+    else if (aFlag == "-depthprepass")
+    {
+      if (toPrint)
+      {
+        theDI << (aParams.ToEnableDepthPrepass ? "on " : "off ");
+        continue;
+      }
+      aParams.ToEnableDepthPrepass = Standard_True;
+      if (anArgIter + 1 < theArgNb
+       && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], aParams.ToEnableDepthPrepass))
+      {
+        ++anArgIter;
       }
     }
     else if (aFlag == "-rendscale"
@@ -11946,6 +11961,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "\n      '-raster'                   Disables GPU ray-tracing"
     "\n      '-msaa         0..4'        Specifies number of samples for MSAA"
     "\n      '-oit          off|0.0-1.0' Enables/disables OIT and sets depth weight factor"
+    "\n      '-depthPrePass on|off'      Enables/disables depth pre-pass"
     "\n      '-rendScale    value        Rendering resolution scale factor"
     "\n      '-rayTrace'                 Enables  GPU ray-tracing"
     "\n      '-rayDepth     0..10'       Defines maximum ray-tracing depth"

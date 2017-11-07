@@ -958,7 +958,7 @@ void OpenGl_Text::render (const Handle(OpenGl_Context)& theCtx,
       glDisable (GL_ALPHA_TEST);
     }
   #endif
-    glColorMask (GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+    const bool aColorMaskBack = theCtx->SetColorMask (false);
 
     glClear (GL_STENCIL_BUFFER_BIT);
     glEnable (GL_STENCIL_TEST);
@@ -969,7 +969,7 @@ void OpenGl_Text::render (const Handle(OpenGl_Context)& theCtx,
 
     glStencilFunc (GL_ALWAYS, 0, 0xFF);
 
-    glColorMask (GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+    theCtx->SetColorMask (aColorMaskBack);
   }
 
   // reset OpenGL state

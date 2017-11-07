@@ -73,7 +73,7 @@ namespace
       aContext->ShaderManager()->UpdateClippingState();
 
       glClear (GL_STENCIL_BUFFER_BIT);
-      glColorMask (GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+      const bool aColorMaskBack = aContext->SetColorMask (false);
 
       // override aspects, disable culling
       theWorkspace->SetAspectFace (&theWorkspace->NoneCulling());
@@ -116,7 +116,7 @@ namespace
       aContext->ShaderManager()->UpdateClippingState();
 
       // render capping plane using the generated stencil mask
-      glColorMask (GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+      aContext->SetColorMask (aColorMaskBack);
       if (theWorkspace->UseDepthWrite())
       {
         glDepthMask (GL_TRUE);
