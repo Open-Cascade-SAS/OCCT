@@ -140,10 +140,13 @@ public:
  public:
   // ---------- PUBLIC METHODS ------------
 
+  //! Empty Constructor.
+  NCollection_DataMap() : NCollection_BaseMap (1, Standard_True, Handle(NCollection_BaseAllocator)()) {}
+
   //! Constructor
-  NCollection_DataMap (const Standard_Integer NbBuckets=1,
-                     const Handle(NCollection_BaseAllocator)& theAllocator = 0L)
-    : NCollection_BaseMap (NbBuckets, Standard_True, theAllocator) {}
+  explicit NCollection_DataMap (const Standard_Integer theNbBuckets,
+                                const Handle(NCollection_BaseAllocator)& theAllocator = 0L)
+  : NCollection_BaseMap (theNbBuckets, Standard_True, theAllocator) {}
 
   //! Copy constructor
   NCollection_DataMap (const NCollection_DataMap& theOther)

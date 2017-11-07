@@ -124,10 +124,13 @@ private:
  public:
   // ---------- PUBLIC METHODS ------------
 
+  //! Empty constructor.
+  NCollection_IndexedMap() : NCollection_BaseMap (1, Standard_False, Handle(NCollection_BaseAllocator)()) {}
+
   //! Constructor
-  NCollection_IndexedMap (const Standard_Integer NbBuckets=1,
-                          const Handle(NCollection_BaseAllocator)& theAllocator=0L)
-  : NCollection_BaseMap (NbBuckets, Standard_False, theAllocator) {}
+  explicit NCollection_IndexedMap (const Standard_Integer theNbBuckets,
+                                   const Handle(NCollection_BaseAllocator)& theAllocator=0L)
+  : NCollection_BaseMap (theNbBuckets, Standard_False, theAllocator) {}
 
   //! Copy constructor
   NCollection_IndexedMap (const NCollection_IndexedMap& theOther)

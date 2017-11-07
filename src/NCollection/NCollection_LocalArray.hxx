@@ -24,7 +24,7 @@ template<class theItem, Standard_Integer MAX_ARRAY_SIZE = 1024> class NCollectio
 {
 public:
 
-  NCollection_LocalArray (const size_t theSize)
+  explicit NCollection_LocalArray (const size_t theSize)
   : myPtr (myBuffer)
   {
     Allocate(theSize);

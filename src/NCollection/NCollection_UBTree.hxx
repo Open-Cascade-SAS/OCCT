@@ -238,17 +238,15 @@ public:
   // ---------- PUBLIC METHODS ----------
 
   /**
+   * Empty constructor.
+   */
+  NCollection_UBTree() : myRoot(0L), myLastNode(0L), myAlloc (NCollection_BaseAllocator::CommonBaseAllocator()) {}
+
+  /**
    * Constructor.
    */
-  NCollection_UBTree
-    (const Handle(NCollection_BaseAllocator)& theAllocator=0L)
-      : myRoot(0L), myLastNode(0L)
-  {
-    if (theAllocator.IsNull())
-      myAlloc = NCollection_BaseAllocator::CommonBaseAllocator();
-    else
-      myAlloc = theAllocator;
-  }
+  explicit NCollection_UBTree (const Handle(NCollection_BaseAllocator)& theAllocator)
+  : myRoot(0L), myLastNode(0L), myAlloc (!theAllocator.IsNull() ? theAllocator : NCollection_BaseAllocator::CommonBaseAllocator()) {}
 
   /**
    * Update the tree with a new object and its bounding box.
