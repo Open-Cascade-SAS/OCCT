@@ -12,7 +12,7 @@ if [regexp "Cannot write to the file $file" [binsave b $file]] {
   puts "Error: binrestore"
 } else {
   file delete $file
-  if {[bounding b] != [bounding bb]} {
+  if {[bounding -s b -dump] != [bounding -s bb -dump]} {
     puts "Error: restored shape has another bounding box"
   }
   checkshape bb

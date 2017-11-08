@@ -50,15 +50,35 @@
 #include <DrawTrSurf.hxx>
 #include <Geom_Plane.hxx>
 
+#include <OSD_Timer.hxx>
 #include <Draw_Segment3D.hxx>
 #include <Draw_Marker3D.hxx>
 #include <Draw_MarkerShape.hxx>
-
+#include <BRepPrimAPI_MakeBox.hxx>
 #include <stdio.h>
 
 Standard_IMPORT Draw_Viewer dout;
 
+//=======================================================================
+//function : ConvertBndToShape
+//purpose  : Creates TopoDS_Solid from theBox
+//=======================================================================
+static void ConvertBndToShape(const Bnd_OBB& theBox,
+                              const char* const theName)
+{
+  const gp_Pnt &aBaryCenter = theBox.Center();
+  const gp_XYZ &aXDir = theBox.XDirection(),
+               &aYDir = theBox.YDirection(),
+               &aZDir = theBox.ZDirection();
+  Standard_Real aHalfX = theBox.XHSize(),
+                aHalfY = theBox.YHSize(),
+                aHalfZ = theBox.ZHSize();
 
+  gp_Ax2 anAxes(aBaryCenter, aZDir, aXDir);
+  anAxes.SetLocation(aBaryCenter.XYZ() - aHalfX*aXDir - aHalfY*aYDir - aHalfZ*aZDir);
+  TopoDS_Solid aBox = BRepPrimAPI_MakeBox(anAxes, 2.0*aHalfX, 2.0*aHalfY, 2.0*aHalfZ);
+  DBRep::Set(theName, aBox);
+}
 
 //=======================================================================
 // addpcurve
@@ -401,31 +421,6 @@ static Standard_Integer orientsolid(Draw_Interpretor& ,Standard_Integer n,const 
 }
 
 //=======================================================================
-//function : boundingstr
-//purpose  : 
-//=======================================================================
-static Standard_Integer boundingstr(Draw_Interpretor& di,Standard_Integer n,const char** a)
-{
-  if (n < 2) return 1;
-  TopoDS_Shape S = DBRep::Get(a[1]);
-  if (S.IsNull()) return 1;
-  Bnd_Box B;
-  BRepBndLib::Add(S,B);
-  Standard_Real axmin,aymin,azmin,axmax,aymax,azmax;
-  B.Get(axmin,aymin,azmin,axmax,aymax,azmax);
-  di << axmin<<" "<< aymin<<" "<< azmin<<" "<< axmax<<" "<< aymax<<" "<< azmax;
-  if (n >= 8) {
-    Draw::Set(a[2],axmin) ;
-    Draw::Set(a[3],aymin) ;
-    Draw::Set(a[4],azmin) ;
-    Draw::Set(a[5],axmax) ;
-    Draw::Set(a[6],aymax) ;
-    Draw::Set(a[7],azmax) ;
-  }
-  return 0;
-}
-
-//=======================================================================
 //function : getcoords
 //purpose  : 
 //=======================================================================
@@ -454,76 +449,380 @@ static Standard_Integer getcoords(Draw_Interpretor& di,Standard_Integer n,const 
 }
 
 //=======================================================================
-//function : bounding
+//function : BoundBox
 //purpose  : 
 //=======================================================================
-static Standard_Integer bounding(Draw_Interpretor& di,Standard_Integer n,const char** a)
+static Standard_Integer BoundBox(Draw_Interpretor& theDI,
+                                 Standard_Integer theNArg,
+                                 const char** theArgVal)
 {
-  if (n < 2) return 1;
-  Standard_Real axmin,aymin,azmin,axmax,aymax,azmax;
-  Bnd_Box B; Handle(Draw_Box) DB;
+  if(theNArg < 2)
+  {
+    theDI << "Use: " << theArgVal[0] << " {-s shape | -c xmin ymin zmin xmax ymax zmax} "
+             "[-obb]\n\t\t[-shape name] [-dump] [-notriangulation]\n\t\t"
+             "[-perfmeter name NbIters] [-nodraw] [-optimal] [-exttoler]\n\t\t"
+             "[-save xmin ymin zmin xmax ymax zmax]\n\n\n";
+
+    theDI << "Computes a bounding box (BndBox). Two types of the source data are supported:\n";
+    theDI << "  * \"-s\"-option sets the shape, which will be circumscribed by the BndBox;\n";
+    theDI << "  * \"-c\"-option sets two opposite corners (having (xmin, ymin, zmin) and\n\t"
+             "(xmax, ymax, zmax) coordinates) of the resulting\n\taxis-aligned BndBox (AABB).\n";
+    theDI << "\nThe following options are supported:\n";
+    theDI << "  * \"-obb\". If it is switched on then the oriented BndBox (OBB) will "
+             "be\n\tcreated. Otherwise, AABB will be created.\n";
+    theDI << "  * \"-shape\". If it is switched on then the resulting BndBox will be "
+             "stored\n\tas a shape (solid) with specified name.\n";
+    theDI << "  * \"-nodraw\". If it is switched on then the resulting BndBox will not be\n\t"
+             "drawn as DRAW-object.\n";
+    theDI << "  * \"-dump\". Prints the information about the created BndBox.\n";
+    theDI << "  * \"-notriangulation\". By default, AABB is built from existing mesh.\n\t"
+             "This option allows ignoring triangulation.\n";
+    theDI << "  * \"-save\". Stores the information about created AABB in "
+             "specified variables.\n";
+    theDI << "  * \"-optimal\". If it is switched on then the AABB will be optimal.\n\t"
+             "This option is useful for OBB, too. It allows constructing\n\toptimal "
+             "initial AABB.\n";
+    theDI << "  * \"-exttoler\". If it is switched on then the resulting box will be "
+             "extended\n\ton the tolerance of the source shape.\n";
+    theDI << "  * \"-perfmeter\" - Auxiliary option. It provides compatibility "
+             "with\n\tOCCT-test system. \"name\" is the counter name for "
+             "\"chrono\"-TCL-command.\n\tNbIters is the number of iterations.\n";
+    return 1;
+  }
+
+  TopoDS_Shape aShape;
   
-  if (n == 2) { 
-    TopoDS_Shape S = DBRep::Get(a[1]);
-    if (S.IsNull()) return 1;
-    BRepBndLib::Add(S,B);
-    B.Get(axmin,aymin,azmin,axmax,aymax,azmax);
-    DB = new Draw_Box(gp_Pnt(axmin,aymin,azmin),gp_Pnt(axmax,aymax,azmax),Draw_orange);
-    dout<<DB;
-    di << axmin<<" "<< aymin<<" "<< azmin<<" "<< axmax<<" "<< aymax<<" "<< azmax;
+  Standard_Boolean isOBB = Standard_False;
+  Standard_Boolean hasToPrint = Standard_False,
+                   isTriangulationReq = Standard_True,
+                   isOptimal = Standard_False,
+                   isTolerUsed = Standard_False,
+                   hasToDraw = Standard_True;
+  Standard_Integer aNbIters = 1;
+  Standard_Integer aStartIdxToSave = -1,
+                   aStartIdxToCreate = -1,
+                   aNameToShape = -1,
+                   anIdxCounterName = -1;
+
+  for(Standard_Integer anAIdx = 1; anAIdx < theNArg; anAIdx++)
+  {
+    if(theArgVal[anAIdx][0] != '-')
+    {
+      theDI << "Error: Wrong option \"" << theArgVal[anAIdx] << 
+               "\". Please use \'-\' symbol\n";
+      return 1;
+    }
+
+    if(!strcmp(theArgVal[anAIdx], "-s"))
+    {
+      aShape = DBRep::Get(theArgVal[++anAIdx]);
+      if(aShape.IsNull())
+      {
+        theDI << "Error: Argument " << theArgVal[anAIdx] << " is not a shape.\n";
+        return 1;
+      }
+    }
+    else if(!strcmp(theArgVal[anAIdx], "-c"))
+    {
+      aStartIdxToCreate = anAIdx + 1;
+      anAIdx += 6;
+    }
+    else if(!strncmp(theArgVal[anAIdx], "-obb", 4))
+    {
+      isOBB = Standard_True;
+    }
+    else if(!strncmp(theArgVal[anAIdx], "-shape", 4))
+    {
+      aNameToShape = ++anAIdx;
+    }
+    else if(!strncmp(theArgVal[anAIdx], "-dump", 4))
+    {
+      hasToPrint = Standard_True;
+    }
+    else if(!strncmp(theArgVal[anAIdx], "-save", 4))
+    {
+      aStartIdxToSave = anAIdx+1;
+      anAIdx += 6;
+    }
+    else if(!strncmp(theArgVal[anAIdx], "-notriangulation", 9))
+    {
+      isTriangulationReq = Standard_False;
+    }
+    else if(!strncmp(theArgVal[anAIdx], "-perfmeter", 8))
+    {
+      anIdxCounterName = ++anAIdx;
+      aNbIters = Draw::Atoi(theArgVal[++anAIdx]);
+    }
+    else if(!strncmp(theArgVal[anAIdx], "-optimal", 4))
+    {
+      isOptimal = Standard_True;
+    }
+    else if(!strcmp(theArgVal[anAIdx], "-exttoler"))
+    {
+      isTolerUsed = Standard_True;
+    }
+    else if(!strcmp(theArgVal[anAIdx], "-nodraw"))
+    {
+      hasToDraw = Standard_False;
+    }
+    else
+    {
+      theDI << "Error: Unknown option  \"" << theArgVal[anAIdx] << "\".\n";
+      return 1;
+    }
   }
-  else if (n == 7) {
-    axmin=Draw::Atof(a[1]);
-    aymin=Draw::Atof(a[2]);
-    azmin=Draw::Atof(a[3]);
-    axmax=Draw::Atof(a[4]);
-    aymax=Draw::Atof(a[5]);
-    azmax=Draw::Atof(a[6]);
-    DB = new Draw_Box(gp_Pnt(axmin,aymin,azmin),gp_Pnt(axmax,aymax,azmax),Draw_orange);
-    dout<<DB;
+
+  if(aShape.IsNull() && (aStartIdxToCreate < 0))
+  {
+    theDI << "Error: One of the options \'-s\' or \'-c\' must be set necessarily.\n";
+    return 1;
   }
+
+  if(aStartIdxToCreate > 0)
+  {
+    if(!aShape.IsNull())
+    {
+      theDI << "Error: Options \'-s\' and \'-c\' are fail for using simultaneously.\n";
+      return 1;
+    }
+    else if(isOBB)
+    {
+      theDI << "Error: Options \'-c\' and \"-obb\" are fail for using simultaneously.\n";
+      return 1;
+    }
+  }
+
+  if(isOptimal)
+  {
+    if(aShape.IsNull())
+    {
+      theDI << "Error: Options \"-optimal\" is used without any shape. "
+               "Use \'-s\'-option.\n";
+      return 1;
+    }
+  }
+
+  if(isTolerUsed)
+  {
+    if(aShape.IsNull())
+    {
+      theDI << "Error: Option \"-exttoler\" is used without any shape. "
+        "Use \'-s\'-option.\n";
+      return 1;
+    }
+  }
+
+  Handle(Draw_Box) aDB;
+  OSD_Timer aTimer;
+
+  if(isOBB)
+  {
+    if(aStartIdxToSave > 0)
+    {
+      theDI << "Error: Option \"-save\" work only with axes-aligned boxes.\n";
+      return 1;
+    }
+
+    Bnd_OBB anOBB;
+    Standard_Integer aN = aNbIters;
+
+    aTimer.Start();
+    while(aN-- > 0)
+    {
+      anOBB.SetVoid();
+      BRepBndLib::AddOBB(aShape, anOBB, isTriangulationReq, isOptimal, isTolerUsed);
+    }
+    aTimer.Stop();
+
+    if(anOBB.IsVoid())
+    {
+      theDI << "Void box.\n";
+      hasToPrint = Standard_False;
+    }
+
+    const gp_Pnt &aBaryCenter= anOBB.Center();
+    const gp_XYZ &aXDir = anOBB.XDirection(),
+                 &aYDir = anOBB.YDirection(),
+                 &aZDir = anOBB.ZDirection();
+    Standard_Real aHalfX = anOBB.XHSize(), 
+                  aHalfY = anOBB.YHSize(),
+                  aHalfZ = anOBB.ZHSize();
+
+    if(hasToPrint)
+    {
+      theDI << "Oriented bounding box\n";
+      theDI << "Center: " << aBaryCenter.X() << " " << 
+                             aBaryCenter.Y() << " " <<
+                             aBaryCenter.Z() << "\n";
+      theDI << "X-axis: " << aXDir.X() << " " << aXDir.Y() << " " << aXDir.Z() << "\n";
+      theDI << "Y-axis: " << aYDir.X() << " " << aYDir.Y() << " " << aYDir.Z() << "\n";
+      theDI << "Z-axis: " << aZDir.X() << " " << aZDir.Y() << " " << aZDir.Z() << "\n";
+      theDI << "Half X: " << aHalfX << "\n" << 
+               "Half Y: " << aHalfY << "\n" << "Half Z: " << aHalfZ << "\n";
+    }
+    
+    if(hasToDraw)
+      aDB = new Draw_Box(anOBB, Draw_orange);
+
+    if(aNameToShape > 0)
+    {
+      ConvertBndToShape(anOBB, theArgVal[aNameToShape]);
+    }
+  }
+  else // if(!isOBB)
+  {
+    Standard_Real aXmin = RealFirst(), aYmin = RealFirst(), aZmin = RealFirst(),
+                  aXMax = RealLast(), aYMax = RealLast(), aZMax = RealLast();
+
+    Bnd_Box anAABB;
+
+    if(aStartIdxToCreate < 0)
+    {
+      Standard_Integer aN = aNbIters;
+      if(isOptimal)
+      {
+        aTimer.Start();
+        while(aN-- > 0)
+        {
+          anAABB.SetVoid();
+          BRepBndLib::AddOptimal(aShape, anAABB, isTriangulationReq, isTolerUsed);
+        }
+        aTimer.Stop();
+      }
+      else
+      {
+        aTimer.Start();
+        while(aN-- > 0)
+        {
+          anAABB.SetVoid();
+          BRepBndLib::Add(aShape, anAABB, isTriangulationReq);
+        }
+        aTimer.Stop();
+      }
+    }
+    else
+    {
+      if(anIdxCounterName > 0)
+      {
+        theDI << "Error: Option \"-perfmeter\"does not work if the option \'-c\' "
+                 "is switched on.\n";
+        return 1;
+      }
+
+      Standard_Integer anIdx = aStartIdxToCreate;
+      aXmin = Draw::Atof(theArgVal[anIdx++]);
+      aYmin = Draw::Atof(theArgVal[anIdx++]);
+      aZmin = Draw::Atof(theArgVal[anIdx++]);
+      aXMax = Draw::Atof(theArgVal[anIdx++]);
+      aYMax = Draw::Atof(theArgVal[anIdx++]);
+      aZMax = Draw::Atof(theArgVal[anIdx++]);
+
+      anAABB.Add(gp_Pnt(aXmin, aYmin, aZmin));
+      anAABB.Add(gp_Pnt(aXMax, aYMax, aZMax));
+    }
+
+    if(anAABB.IsVoid())
+    {
+      theDI << "Void box.\n";
+      hasToPrint = Standard_False;
+    }
+
+    if(hasToPrint || (aStartIdxToSave>0))
+    {
+      anAABB.Get(aXmin, aYmin, aZmin, aXMax, aYMax, aZMax);
+
+      if(hasToPrint)
+      {
+        theDI << "Axes-aligned bounding box\n";
+        theDI << "X-range: " << aXmin << " " << aXMax << "\n" <<
+                 "Y-range: " << aYmin << " " << aYMax << "\n" <<
+                 "Z-range: " << aZmin << " " << aZMax << "\n";
+      }
+
+      if(aStartIdxToSave > 0)
+      {
+        Draw::Set(theArgVal[aStartIdxToSave++], aXmin);
+        Draw::Set(theArgVal[aStartIdxToSave++], aYmin);
+        Draw::Set(theArgVal[aStartIdxToSave++], aZmin);
+        Draw::Set(theArgVal[aStartIdxToSave++], aXMax);
+        Draw::Set(theArgVal[aStartIdxToSave++], aYMax);
+        Draw::Set(theArgVal[aStartIdxToSave++], aZMax);
+      }
+    }
+
+    if(hasToDraw)
+      aDB = new Draw_Box(anAABB, Draw_orange);
+
+    if(aNameToShape > 0)
+    {
+      ConvertBndToShape(anAABB, theArgVal[aNameToShape]);
+    }
+  }
+
+  if(hasToDraw)
+    dout << aDB;
+
+  if(anIdxCounterName > 0)
+  {
+    theDI << "COUNTER " << theArgVal[anIdxCounterName] << ": " << aTimer.ElapsedTime() << "\n";
+  }
+
   return 0;
 }
+
 //=======================================================================
-//function : optbounding
+//function : IsBoxesInterfered
 //purpose  : 
 //=======================================================================
-static Standard_Integer optbounding(Draw_Interpretor& di,Standard_Integer n,const char** a)
+static Standard_Integer IsBoxesInterfered(Draw_Interpretor& theDI,
+                                          Standard_Integer theNArg,
+                                          const char** theArgVal)
 {
-  if (n < 2)
+  if(theNArg < 2)
   {
-    di << "Usage: optbounding shape [usetri [usetol]]\n";
-    di << "usetri and usetol can be 0 or 1, by default usetri = 1, usetol = 0\n";
+    theDI << "Use: isbbinterf shape1 shape2 [-o].\n";
     return 1;
   }
-  Standard_Real axmin,aymin,azmin,axmax,aymax,azmax;
-  Bnd_Box B; Handle(Draw_Box) DB;
-  
-  TopoDS_Shape S = DBRep::Get(a[1]);
-  if (S.IsNull()) 
+
+  const TopoDS_Shape aShape1 = DBRep::Get(theArgVal[1]);
+  const TopoDS_Shape aShape2 = DBRep::Get(theArgVal[2]);
+
+  Standard_Boolean isOBB = (theNArg > 3) && (!strcmp(theArgVal[3], "-o"));
+
+  if(isOBB)
   {
-    di << "Null shape\n";
-    return 1;
+    Bnd_OBB anOBB1, anOBB2;
+    BRepBndLib::AddOBB(aShape1, anOBB1);
+    BRepBndLib::AddOBB(aShape2, anOBB2);
+
+    if(anOBB1.IsOut(anOBB2))
+    {
+      theDI << "The shapes are NOT interfered by OBB.\n";
+    }
+    else
+    {
+      theDI << "The shapes are interfered by OBB.\n";
+    }
   }
-  Standard_Boolean useTri = Standard_True;
-  Standard_Boolean useTol = Standard_False;
-  if(n > 2 )
+  else
   {
-    Standard_Integer ii = atoi(a[2]);
-    useTri = ii > 0;
+    Bnd_Box anAABB1, anAABB2;
+    BRepBndLib::Add(aShape1, anAABB1);
+    BRepBndLib::Add(aShape2, anAABB2);
+
+    if(anAABB1.IsOut(anAABB2))
+    {
+      theDI << "The shapes are NOT interfered by AABB.\n";
+    }
+    else
+    {
+      theDI << "The shapes are interfered by AABB.\n";
+    }
   }
-  if(n > 3 )
-  {
-    Standard_Integer ii = atoi(a[3]);
-    useTol = ii > 0;
-  }
-  BRepBndLib::AddOptimal(S, B, useTri, useTol);
-  B.Get(axmin, aymin, azmin, axmax, aymax, azmax);
-  DB = new Draw_Box(gp_Pnt(axmin,aymin,azmin),gp_Pnt(axmax,aymax,azmax),Draw_vert);
-  dout<<DB;
-  di << axmin<<" "<< aymin<<" "<< azmin<<" "<< axmax<<" "<< aymax<<" "<< azmax;
+
   return 0;
 }
+
 //=======================================================================
 //function : gbounding
 //purpose  : 
@@ -600,7 +899,7 @@ static Standard_Integer gbounding(Draw_Interpretor& di,Standard_Integer n,const 
     if (Is3d)
     {
       B.Get(axmin,aymin,azmin,axmax,aymax,azmax);
-      DB = new Draw_Box(gp_Pnt(axmin,aymin,azmin),gp_Pnt(axmax,aymax,azmax),Draw_vert);
+      DB = new Draw_Box(B, Draw_vert);
       dout<<DB;
       di << axmin<<" "<< aymin<<" "<< azmin<<" "<< axmax<<" "<< aymax<<" "<< azmax;
     }
@@ -1208,25 +1507,21 @@ void  BRepTest::BasicCommands(Draw_Interpretor& theCommands)
     __FILE__,
     getcoords,g);
   
-  theCommands.Add("bounding",
-		  "bounding shape [ xmin ymin zmin xmax ymax zmax] ; draw bounds",
-		  __FILE__,
-		  bounding,g);
+  theCommands.Add("bounding", "enter the comand w/o any arguments to obtain the help.",
+                  __FILE__, BoundBox, g);
 
-  theCommands.Add("optbounding",
-		  "optbounding shape [usetri (0/1) [usetol (0/1)]] ; ",
-		  __FILE__,
-		  optbounding,g);
  //
   theCommands.Add("gbounding",
 		  "gbounding surf/curve/curve2d [-o] ",
 		  __FILE__,
 		  gbounding,g);
 
-  theCommands.Add("boundingstr",
-		  "boundingstr shape [ xmin ymin zmin xmax ymax zmax] ; print bounding box",
-		  __FILE__,
-		  boundingstr,g);
+  theCommands.Add("isbbinterf", "isbbinterf shape1 shape2 [-o]\n"
+                  "Checks whether the bounding-boxes created from "
+                  "the given shapes are interfered. If \"-o\"-option "
+                  "is switched on then the oriented boxes will be checked. "
+                  "Otherwise, axes-aligned boxes will be checked.",
+                  __FILE__, IsBoxesInterfered, g);
 
   theCommands.Add("nurbsconvert",
 		  "nurbsconvert result name [result name]",

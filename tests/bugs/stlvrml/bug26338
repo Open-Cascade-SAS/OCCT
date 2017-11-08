@@ -19,10 +19,11 @@ writestl comp $imagedir/${casename}.stl 1
 readstl result $imagedir/${casename}.stl
 
 # check that bounding box is 
-set bnd [boundingstr result]
-checkreal "XMin" [lindex $bnd 0]  0. 1e-5 0.
-checkreal "YMin" [lindex $bnd 1]  0. 1e-5 0.
-checkreal "ZMin" [lindex $bnd 2]  0. 1e-5 0.
-checkreal "XMax" [lindex $bnd 3] 15. 1e-5 0.
-checkreal "YMax" [lindex $bnd 4] 15. 1e-5 0.
-checkreal "ZMax" [lindex $bnd 5] 15. 1e-5 0.
+bounding -s result -save Xmin Ymin Zmin Xmax Ymax Zmax -nodraw
+
+checkreal "Xmin" [dval Xmin] 0.0 1e-5 0.
+checkreal "Ymin" [dval Ymin] 0.0 1e-5 0.
+checkreal "Zmin" [dval Zmin] 0.0 1e-5 0.
+checkreal "Xmax" [dval Xmax] 15. 1e-5 0.
+checkreal "Ymax" [dval Ymax] 15. 1e-5 0.
+checkreal "Zmax" [dval Zmax] 15. 1e-5 0.

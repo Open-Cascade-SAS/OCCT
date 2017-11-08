@@ -24,116 +24,111 @@
 IMPLEMENT_STANDARD_RTTIEXT(Draw_Box,Draw_Drawable3D)
 
 //=======================================================================
-//function : Draw_Box
+//function : Constructor
 //purpose  : 
 //=======================================================================
-Draw_Box::Draw_Box(const gp_Pnt& p1, const gp_Pnt& p2, const Draw_Color& col) :
-   myFirst(p1), myLast(p2),myColor(col)
+Draw_Box::Draw_Box(const Bnd_OBB& theOBB,
+                   const Draw_Color& theColor) :myOBB(theOBB), myColor(theColor)
 {
-  Standard_Real t;
-  if (myLast.X() < myFirst.X()) {
-    t = myFirst.X();
-    myFirst.SetX(myLast.X());
-    myLast.SetX(t);
-  }
-  if (myLast.Y() < myFirst.Y()) {
-    t = myFirst.Y();
-    myFirst.SetY(myLast.Y());
-    myLast.SetY(t);
-  }
-  if (myLast.Z() < myFirst.Z()) {
-    t = myFirst.Z();
-    myFirst.SetZ(myLast.Z());
-    myLast.SetZ(t);
-  }
+}
+
+//=======================================================================
+//function : ToWCS
+//purpose  : 
+//=======================================================================
+void Draw_Box::ToWCS(const Standard_Real theX,
+                     const Standard_Real theY,
+                     const Standard_Real theZ,
+                     gp_Pnt& theP) const
+{
+  const gp_XYZ & aC = myOBB.Center();
+  const gp_XYZ aXDir = myOBB.XDirection(),
+               aYDir = myOBB.YDirection(),
+               aZDir = myOBB.ZDirection();
+
+  theP.SetXYZ(aC + theX*aXDir + theY*aYDir + theZ*aZDir);
+}
+
+//=======================================================================
+//function : MoveX
+//purpose  : 
+//=======================================================================
+void Draw_Box::MoveX(const Standard_Real theShift, gp_Pnt& thePt) const
+{
+  const gp_XYZ aXDir = myOBB.XDirection();
+  thePt.SetXYZ(thePt.XYZ() + theShift*aXDir);
+}
+
+//=======================================================================
+//function : MoveY
+//purpose  : 
+//=======================================================================
+void Draw_Box::MoveY(const Standard_Real theShift, gp_Pnt& thePt) const
+{
+  const gp_XYZ aYDir = myOBB.YDirection();
+  thePt.SetXYZ(thePt.XYZ() + theShift*aYDir);
+}
+
+//=======================================================================
+//function : MoveZ
+//purpose  : 
+//=======================================================================
+void Draw_Box::MoveZ(const Standard_Real theShift, gp_Pnt& thePt) const
+{
+  const gp_XYZ aZDir = myOBB.ZDirection();
+  thePt.SetXYZ(thePt.XYZ() + theShift*aZDir);
 }
 
 //=======================================================================
 //function : DrawOn
 //purpose  : 
 //=======================================================================
-
-void Draw_Box::DrawOn(Draw_Display& dis) const 
+void Draw_Box::DrawOn(Draw_Display& theDIS) const 
 {
-  dis.SetColor(myColor);
-  gp_Pnt P = myFirst;
+  if(myOBB.IsVoid())
+  {
+    return;
+  }
 
-  dis.MoveTo(P);
-  P.SetX(myLast.X());
-  dis.DrawTo(P);
-  P.SetY(myLast.Y());
-  dis.DrawTo(P);
-  P.SetZ(myLast.Z());
-  dis.DrawTo(P);
-  P.SetX(myFirst.X());
-  dis.DrawTo(P);
-  P.SetY(myFirst.Y());
-  dis.DrawTo(P);
-  P.SetZ(myFirst.Z());
-  dis.DrawTo(P);
-
-  P.SetX(myLast.X());
-  dis.MoveTo(P);
-  P.SetZ(myLast.Z());
-  dis.DrawTo(P);
-  P.SetX(myFirst.X());
-  dis.DrawTo(P);
+  theDIS.SetColor(myColor);
   
-  P.SetX(myLast.X());
-  dis.MoveTo(P);
-  P.SetY(myLast.Y());
-  dis.DrawTo(P);
+  const Standard_Real aHx = myOBB.XHSize(),
+                      aHy = myOBB.YHSize(),
+                      aHz = myOBB.ZHSize();
+
+  gp_Pnt aP;
+  ToWCS(-aHx, -aHy, -aHz, aP);
+  theDIS.MoveTo(aP);
+
+  for(Standard_Integer i = 0; i<2; i++)
+  {
+    MoveX(2.0*aHx, aP);
+    theDIS.DrawTo(aP);
+    MoveY(2.0*aHy, aP);
+    theDIS.DrawTo(aP);
+    MoveX(-2.0*aHx, aP);
+    theDIS.DrawTo(aP);
+    MoveY(-2.0*aHy, aP);
+    theDIS.DrawTo(aP);
+
+    ToWCS(-aHx, -aHy, aHz, aP);
+    theDIS.MoveTo(aP);
+  }
   
-  P.SetX(myFirst.X());
-  dis.MoveTo(P);
-  P.SetZ(myFirst.Z());
-  dis.DrawTo(P);
-  P.SetY(myFirst.Y());
-  dis.DrawTo(P);
-  
-  P.SetY(myLast.Y());
-  dis.MoveTo(P);
-  P.SetX(myLast.X());
-  dis.DrawTo(P);
-}
+  for(Standard_Integer i = 0; i < 4; i++)
+  {
+    switch(i)
+    {
+      case 0: ToWCS(-aHx, -aHy, -aHz, aP); break;
+      case 1: ToWCS(aHx, -aHy, -aHz, aP); break;
+      case 2: ToWCS(aHx, aHy, -aHz, aP); break;
+      case 3: ToWCS(-aHx, aHy, -aHz, aP); break;
+      default: break;
+    }
 
-//=======================================================================
-//function : First
-//purpose  : 
-//=======================================================================
-
-const gp_Pnt& Draw_Box::First() const 
-{
-  return myFirst;
-}
-
-//=======================================================================
-//function : First
-//purpose  : 
-//=======================================================================
-
-void Draw_Box::First(const gp_Pnt& P)
-{
-  myFirst = P;
-}
-
-//=======================================================================
-//function : Last
-//purpose  : 
-//=======================================================================
-
-const gp_Pnt& Draw_Box::Last() const 
-{
-  return myLast;
-}
-
-//=======================================================================
-//function : Last
-//purpose  : 
-//=======================================================================
-
-void Draw_Box::Last(const gp_Pnt& P)
-{
-  myLast = P;
+    theDIS.MoveTo(aP);
+    MoveZ(2.0*aHz, aP);
+    theDIS.DrawTo(aP);
+  }
 }
 

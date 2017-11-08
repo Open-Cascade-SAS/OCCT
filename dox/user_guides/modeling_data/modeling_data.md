@@ -1294,3 +1294,99 @@ The following sample code reads a shape from ASCII file and writes it to a binar
   }
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+@section occt_modat_6 Bounding boxes
+
+*Bounding box(es) (BndBox(es))* is used in many OCCT algorithms. In general, it is some filter to avoid check of excess interferences between pairs of shapes (check of interferences between BndBoxes is much simpler then between shapes and if BndBoxes do not interfere then there is no point in searching interferences between the corresponding shapes).
+Generally, BndBoxes can be divided on two main types: 
+  - axis-aligned BndBox (AABB). I.e. the box whose edges are parallel to the axes of World Coordinate System (WCS);
+  - oriented BndBox (OBB). I.e. not AABB.
+In fact, every AABB is a specific case of OBB.<br>
+
+The image below illustrates the example, when using OBB is better than AABB. 
+
+@figure{/user_guides/modeling_data/images/modeling_data_image015.png,"Illustrating the problem with AABB.",320}
+
+AABBs in this picture are interfered. Therefore, many OCCT-algorithms will spend much time to interfere the shapes. However, if we check OBBs, which are not interfered, then searching of interferences between the shapes will not be necessary. At that, creation and analysis of OBBs takes significantly more time than the analogical operations with AABB.
+
+Later in this section, the BndBox having the smallest surface area will be called as <b> optimal </b>.
+
+In OCCT, BndBox(es) are described in Bnd package. In general, Bnd_Box class describes AABB, Bnd_OBB class describes OBB. These classes contain the following common methods (this list is not complete; please see the documentation about corresponding class for detailed information):
+
+  - SetVoid() and IsVoid(). SetVoid method clears the existing BndBox. IsVoid method indicates whether the BndBox is initialized.
+  - Enlarge(...). Extends the current BndBox.
+  - Add(...). Rebuilds the current BndBox in order to cover all previous objects (which it was created from) and the argument of the method.
+  - IsOut(...). Checks whether the argument is inside/outside of the current BndBox.
+  
+Also, BRepBndLib class contains methods to provide creation of BndBox (both AABB and OBB) from the complex shape. 
+
+@subsection occt_modat_6_1 Brief description of some algorithms working with OBB
+
+@subsubsection occt_modat_6_1_1 Creation of OBB from set of points
+
+The algorithm is described in <a href="http://www.idt.mdh.se/~tla/publ/FastOBBs.pdf">"Fast Computation of Tight Fitting Oriented Bounding Boxes" by Thomas Larsson and Linus Källberg</a>. It includes the following steps:
+
+<span>1.</span> Choose \f$ N_{a} (N_{a} \geq 3) \f$ initial axes.<br>
+<span>2.</span> Project every given point to the every chosen (in item 1) axis. At that, "minimal" and "maximal" points of every axis (i.e. point having minimal and maximal parameter (correspondingly) of the projection to this axis) are chosen. I.e. \f$ 2*N_{a} \f$ points will be held and this set can contain equal points. Later (unless otherwise specified) in this algorithm we will work with these \f$ 2*N_{a} \f$ points only.<br>
+<span>3.</span> Choose one pair of points among all pairs of "minimal" and "maximal" points of every axis (from item 1), with two furthest points. Let \f$ p_{0} \f$  and \f$ p_{1} \f$  be the "minimal" and "maximal" point of this pair.<br>
+<span>4.</span> Create an axis \f$ \mathbf{e_{0}}\left \{ \overrightarrow{p_{0}p_{1}} \right \} \f$ (i.e. having direction \f$ \overrightarrow{p_{0}p_{1}} \f$ ).<br>
+<span>5.</span> Choose the point \f$ p_{2} \f$ (from the set defined in item 2) which is in the maximal distance from the infinite line directed along \f$ \mathbf{e_{0}} \f$ axis.<br>
+
+Further, let us consider the triangle \f$ T_{0}\left \langle p_{0}, p_{1}, p_{2} \right \rangle \f$ (i.e. having vertices \f$ p_{0}, p_{1} \f$ and \f$ p_{2} \f$). Namely:
+
+<span>6.</span> Create new axes: \f$ \mathbf{e_{1}}\left \{ \overrightarrow{p_{1}p_{2}} \right \} \f$, \f$ \mathbf{e_{2}}\left \{ \overrightarrow{p_{2}p_{0}} \right \} \f$, \f$ \mathbf{n}\left \{ \overrightarrow{\mathbf{e_{0}}} \times \overrightarrow{\mathbf{e_{1}}}  \right \} \f$, \f$ \mathbf{m_{0}}\left \{ \overrightarrow{\mathbf{e_{0}}} \times \overrightarrow{\mathbf{n}}  \right \} \f$, \f$ \mathbf{m_{1}}\left \{ \overrightarrow{\mathbf{e_{1}}} \times \overrightarrow{\mathbf{n}}  \right \} \f$, \f$ \mathbf{m_{2}}\left \{ \overrightarrow{\mathbf{e_{2}}} \times \overrightarrow{\mathbf{n}}  \right \} \f$.<br>
+<span>7.</span> Create OBBs based on the following axis: \f$ \left \{ \mathbf{e_{0}} \vdots \mathbf{m_{0}} \vdots \mathbf{n} \right \} \f$, \f$ \left \{ \mathbf{e_{1}} \vdots \mathbf{m_{1}} \vdots \mathbf{n} \right \} \f$ and \f$ \left \{ \mathbf{e_{2}} \vdots \mathbf{m_{2}} \vdots \mathbf{n} \right \} \f$ . Choose optimal OBB.<br>
+<span>8.</span> Choose the points \f$ q_{0} \f$ and \f$ q_{1} \f$ (from the set defined in item 2), which are in maximal distance from the plane of the triangle \f$ T_{0} \f$ (from both sides of this plane). At that, \f$ q_{0} \f$ has minimal coordinate along the axis \f$ \mathbf{n} \f$, \f$ q_{1} \f$ has a maximal coordinate.<br>
+<span>9.</span> Repeat the step 6...7 for the triangles \f$ T_{1}\left \langle p_{0}, p_{1}, q_{0} \right \rangle \f$, \f$ T_{2}\left \langle p_{1}, p_{2}, q_{0} \right \rangle \f$, \f$ T_{3}\left \langle p_{0}, p_{2}, q_{0} \right \rangle \f$, \f$ T_{4}\left \langle p_{0}, p_{1}, q_{1} \right \rangle \f$, \f$ T_{5}\left \langle p_{1}, p_{2}, q_{1} \right \rangle \f$, \f$ T_{6}\left \langle p_{0}, p_{2}, q_{1} \right \rangle \f$.<br>
+<span>10.</span> Compute the center of OBB and its half dimensions.<br>
+<span>11.</span> Create OBB using the center, axes and half dimensions.<br>
+
+This algorithm is realized in Bnd_OBB::ReBuild(...) method.
+
+@subsubsection occt_modat_6_1_2 Creation of OBB based on Axes of inertia
+
+The algorithm contains the following steps:
+1. Calculate three inertia axes, which will be the axes of the OBB.
+2. Transform the source object (TopoDS_Shape) into the local coordinate system based on the axes from item 1.
+3. Create an AABB for the shape obtained in the item 2.
+4. Compute the center of AABB and its half dimensions
+5. Transform the center into the WCS
+6. Create OBB using the center, axes and half dimensions.
+
+@subsubsection occt_modat_6_1_3 Method IsOut for a point
+
+1. Project the point to each axis.
+2. Check, whether the absolute value of the projection parameter greater than the correspond half-dimension. In this case, IsOut method will return TRUE.
+
+@subsubsection occt_modat_6_1_4 Method IsOut for another OBB
+
+According to the <a href="http://www.jkh.me/files/tutorials/Separating%20Axis%20Theorem%20for%20Oriented%20Bounding%20Boxes.pdf">"Separating Axis Theorem for Oriented Bounding Boxes"</a>, it is necessary to check the 15 separating axes: 6 axes of the boxes and 9 are their cross products.<br>
+The algorithm of analyzing axis \f$ \mathbf{l} \f$ is following:
+1. Compute the "length" according to the formula: \f$ L_{j}=\sum_{i=0}^{2}{H_{i}\cdot \left | \overrightarrow{\mathbf{a_{i}}} \cdot \overrightarrow{\mathbf{l}} \right |} \f$. Here, \f$ \mathbf{a_{i}} \f$ is an i-th axis (X-axis, Y-axis, Z-axis) of j-th BndBox (j=1...2). \f$ H_{i} \f$ is a half-dimension along i-th axis.
+2. If \f$ \left |\overrightarrow{C_{1}C_{2}} \cdot \overrightarrow{\mathbf{l}}  \right | > L_{1}+L_{2} \f$ (where \f$ C_{j} \f$ is the center of j-th OBB) then the considered OBBs are not interfered in terms of the axis \f$ \mathbf{l} \f$.
+
+If OBBs are not interfered in terms of at least one axis (of 15) then they are not interfered at all.
+
+@subsubsection occt_modat_6_1_5 Method Add for point or another BndBox
+
+Create new OBB (see the section @ref occt_modat_6_1_1) based on the source point and all vertices of the given BndBoxes.
+
+@subsection occt_modat_6_2 Add a shape
+
+Method BRepBndLib::AddOBB(...) allows creating BndBox from the complex object (TopoDS_Shape). This method uses both algorithms described in the sections @ref occt_modat_6_1_1 and sections @ref occt_modat_6_1_2.
+
+The first algorithm is used if the shape outer shell can be represented by a set of points contained in the shape. Namely, only the following elements are the source of set of points:
+
+  - Nodes of triangulation;
+  - Nodes of Poly_Polygon3D;
+  - Vertices of edges with linear 3D-curve lying in the planar face;
+  - Vertices of edges with linear 3D-curve if the source shape does not contain more complex topological structure (e.g. the source shape is a compound of edges);
+  - Vertices if the source shape does not contain more complex topological structure (e.g. the source shape is a compound of vertices).
+
+If required set of points cannot be extracted then the algorithm from section @ref occt_modat_6_1_2 is used for OBB creation.
+
+The package BRepBndLib contains the methods BRepBndLib::Add(...), BRepBndLib::AddClose(...) and BRepBndLib::AddOptimal(...) for creation of AABB of a shape. Please see reference manual for detailed information.
+
+@subsection occt_modat_6_3 Limitations of algorithm for OBB creation.
+
+1. The algorithm described in the section @ref occt_modat_6_1_1 works significantly better (finds resulting OBB with less surface area) and faster than the algorithm from the section @ref occt_modat_6_1_2. Nevertheless, (in general) the result returned by both algorithms is not always optimal (i.e. sometimes another OBB exists having less surface area). Moreover, the first method does not allow computing OBB of shapes with complex geometry.
+2. Currently, the algorithm of OBB creation is implemented for objects in 3D-space only.

@@ -135,7 +135,7 @@ vfit
 
 # add dimension:
 # detect vertices extremal in X direction
-boundingstr snowflake x1 y1 z1 x2 y2 z2
+bounding -s snowflake -save x1 y1 z1 x2 y2 z2
 plane f1 x1 0 0 1 0 0
 plane f2 x2 0 0 1 0 0
 mkface f1 f1

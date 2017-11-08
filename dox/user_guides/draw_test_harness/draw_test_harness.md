@@ -7324,8 +7324,9 @@ buildevol
 Analysis of shapes includes commands to compute length, area, volumes and inertial properties, as well as to compute some aspects impacting shape validity.
 
   * Use **lprops**, **sprops**, **vprops** to compute integral properties.
-  * Use **bounding** to display the bounding box of a shape.
+  * Use **bounding** to compute and to display the bounding box of a shape.
   * Use **distmini** to calculate the minimum distance between two shapes.
+  * Use **isbbinterf** to check if the two shapes are interfered by their bounding boxes. 
   * Use **xdistef**, **xdistcs**, **xdistcc**, **xdistc2dc2dss**, **xdistcc2ds** to check the distance between two objects on even grid.
   * Use **checkshape** to check validity of the shape.
   * Use **tolsphere** to see the tolerance spheres of all vertices in the shape.
@@ -7378,20 +7379,135 @@ I.Z = 314159.265357595
 
 Syntax:      
 ~~~~~
-bounding shape 
+bounding {-s shape | -c xmin ymin zmin xmax ymax zmax} [-obb] [-shape name] [-dump] [-notriangulation] [-perfmeter name NbIters] [-save xmin ymin zmin xmax ymax zmax] [-nodraw] [-optimal] [-exttoler]
 ~~~~~
 
-Displays the bounding box of a shape. The bounding box is a cuboid created with faces parallel to the x, y, and z planes. The command returns the dimension values of the the box, *xmin ymin zmin xmax ymax zmax.* 
+Computes and displays the bounding box (BndBox) of a shape. The bounding box is a cuboid circumscribes the source shape.
+Generaly, bounding boxes can be divided on two main types:
+  - axis-aligned BndBox (AABB). I.e. the box whose edges are parallel to the some axis of World Coordinate System (WCS);
+  - oriented BndBox (OBB). I.e. not AABB.
 
-**Example:** 
+Detailed information about this command is availabe in DRAW help-system (enter "help bounding" in DRAW-application).
+  
+**Example 1: Creation of AABB with given corners** 
 ~~~~~
-# bounding box of a torus 
+bounding -c 50 100 30 180 200 100 -shape result
+# look at the box
+vdisplay result
+vfit
+vsetdispmode 1
+~~~~~
+
+**Example 2: Compare AABB and OBB** 
+~~~~~
+# Create a torus and rotate it
 ptorus t 20 5 
-bounding t 
-==-27.059805107309852              -27.059805107309852 - 
-5.0000001000000003 
-==27.059805107309852               27.059805107309852 
-5.0000001000000003 
+trotate t 5 10 15 1 1 1 28
+
+# Create AABB from the torus
+bounding -s t -shape ra -dump -save x1 y1 z1 x2 y2 z2
+==Axes-aligned bounding box
+==X-range: -26.888704600189307 23.007685197265488
+==Y-range: -22.237699567214314 27.658690230240481
+==Z-range: -13.813966507560762 12.273995247458407
+
+# Obtain the boundaries
+dump x1 y1 z1 x2 y2 z2
+==*********** Dump of x1 *************
+==-26.8887046001893
+
+==*********** Dump of y1 *************
+==-22.2376995672143
+
+==*********** Dump of z1 *************
+==-13.8139665075608
+
+==*********** Dump of x2 *************
+==23.0076851972655
+
+==*********** Dump of y2 *************
+==27.6586902302405
+
+==*********** Dump of z2 *************
+==12.2739952474584
+
+# Compute the volume of AABB
+vprops ra 1.0e-12
+==Mass :         64949.9
+
+# Let us check this value
+dval (x2-x1)*(y2-y1)*(z2-z1)
+==64949.886543606823
+~~~~~
+
+The same result is obtained.
+
+~~~~~
+# Create OBB from the torus
+bounding -s t -shape ro -dump -obb
+==Oriented bounding box
+==Center: -1.9405097014619073 2.7104953315130857 -0.76998563005117782
+==X-axis: 0.31006700219833244 -0.23203206410428409 0.9219650619059514
+==Y-axis: 0.098302309139513336 -0.95673739537318336 -0.27384340837854165
+==Z-axis: 0.94561890324040099 0.17554109923901748 -0.27384340837854493
+==Half X: 5.0000002000000077
+==Half Y: 26.783728747002169
+==Half Z: 26.783728747002165
+
+# Compute the volume of OBB
+vprops ro 1.0e-12
+==Mass :         28694.7
+~~~~~
+
+As we can see, the volume of OBB is significantly less than the volume of AABB.
+
+@subsubsection occt_draw_7_9_2a   isbbinterf
+
+Syntax:      
+~~~~~
+isbbinterf shape1 shape2 [-o]
+~~~~~
+
+Checks whether the bounding-boxes created from the given shapes are interfered. If "-o"-option is switched on then the oriented boxes will be checked. Otherwise, axes-aligned boxes will be checked.
+
+**Example 1: Not interfered AABB** 
+~~~~~
+box b1 100 60 140 20 10 80
+box b2 210 200 80 120 60 90
+isbbinterf b1 b2
+==The shapes are NOT interfered by AABB.
+~~~~~
+
+**Example 2: Interfered AABB** 
+~~~~~
+box b1 300 300 300
+box b2 100 100 100 50 50 50
+isbbinterf b1 b2
+==The shapes are interfered by AABB.
+~~~~~
+
+**Example 3: Not interfered OBB** 
+~~~~~
+box b1 100 150 200
+copy b1 b2
+trotate b1 -150 -150 -150 1 2 3 -40
+trotate b2 -150 -150 -150 1 5 2 60
+
+# Check of interference
+isbbinterf b1 b2 -o
+==The shapes are NOT interfered by OBB.
+~~~~~
+
+**Example 4: Interfered OBB** 
+~~~~~
+box b1 100 150 200
+copy b1 b2
+trotate b1 -50 -50 -50 1 1 1 -40
+trotate b2 -50 -50 -50 1 1 1 60
+
+# Check of interference
+isbbinterf b1 b2 -o
+==The shapes are interfered by OBB.
 ~~~~~
 
 @subsubsection occt_draw_7_9_3  distmini

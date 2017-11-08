@@ -23,17 +23,11 @@ if [catch { igesbrep . a 6425 } res] {
 
 renamevar a_1 a2
 
-set size1 [ bounding a1 ]
-set size2 [ bounding a2 ]
+set size1 [ bounding -s a1 -save x1_a1 yy zz x2_a1 yy zz ]
+set size2 [ bounding -s a2 -save x1_a2 yy zz x2_a2 yy zz ]
 
-set x1_a1 [ lindex $size1 0 ]
-set x2_a1 [ lindex $size1 3 ]
-
-set x1_a2 [ lindex $size2 0 ]
-set x2_a2 [ lindex $size2 3 ]
-
-set dim2 [ expr $x2_a2 - $x1_a2 ]
-set dim1 [ expr $x2_a1 - $x1_a1 ]
+set dim2 [ dval x2_a2-x1_a2 ]
+set dim1 [ dval x2_a1-x1_a1 ]
 
 set siz [expr ${dim1} / ${dim2}]
 if { $siz > 25} {

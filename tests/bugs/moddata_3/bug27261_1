@@ -6,8 +6,8 @@ puts ""
 # Incorrect bounding box is created for the face
 ##############################################################
 
-restore [locate_data_file bug27261_f1.brep] f1
-bounding f1
+restore [locate_data_file bug27261_f1.brep] result
+bounding -s result -dump
 
 # Visual check.
 smallview

@@ -24,6 +24,8 @@ Bnd_Box2d.hxx
 Bnd_HArray1OfBox.hxx
 Bnd_HArray1OfBox2d.hxx
 Bnd_HArray1OfSphere.hxx
+Bnd_OBB.cxx
+Bnd_OBB.hxx
 Bnd_Range.cxx
 Bnd_Range.hxx
 Bnd_SeqOfBox.hxx

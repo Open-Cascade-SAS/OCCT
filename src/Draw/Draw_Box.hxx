@@ -20,10 +20,9 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <gp_Pnt.hxx>
+#include <Bnd_OBB.hxx>
 #include <Draw_Color.hxx>
 #include <Draw_Drawable3D.hxx>
-class gp_Pnt;
 class Draw_Color;
 class Draw_Display;
 
@@ -34,46 +33,41 @@ DEFINE_STANDARD_HANDLE(Draw_Box, Draw_Drawable3D)
 //! a 3d box
 class Draw_Box : public Draw_Drawable3D
 {
-
 public:
+  
+  //! Constructor
+  Standard_EXPORT Draw_Box(const Bnd_OBB& theOBB,
+                           const Draw_Color& theColor);
 
+  //! Draws myOBB
+  Standard_EXPORT void DrawOn (Draw_Display& theDis) const Standard_OVERRIDE;
   
-  Standard_EXPORT Draw_Box(const gp_Pnt& p1, const gp_Pnt& p2, const Draw_Color& col);
-  
-  Standard_EXPORT void DrawOn (Draw_Display& dis) const Standard_OVERRIDE;
-  
-  Standard_EXPORT const gp_Pnt& First() const;
-  
-  Standard_EXPORT void First (const gp_Pnt& P);
-  
-  Standard_EXPORT const gp_Pnt& Last() const;
-  
-  Standard_EXPORT void Last (const gp_Pnt& P);
-
-
-
-
   DEFINE_STANDARD_RTTIEXT(Draw_Box,Draw_Drawable3D)
 
 protected:
 
+  //! Converts the point (theX, theY, theZ) in local coordinate system to WCS.
+  void ToWCS(const Standard_Real theX, 
+             const Standard_Real theY,
+             const Standard_Real theZ,
+             gp_Pnt& theP) const;
 
+  //! Moves the point thePt along X-direction of myOBB on the distance theShift.
+  void MoveX(const Standard_Real theShift, gp_Pnt& thePt) const;
 
+  //! Moves the point thePt along Y-direction of myOBB on the distance theShift.
+  void MoveY(const Standard_Real theShift, gp_Pnt& thePt) const;
+
+  //! Moves the point thePt along Z-direction of myOBB on the distance theShift.
+  void MoveZ(const Standard_Real theShift, gp_Pnt& thePt) const;
 
 private:
 
+  //! Oriented bounding box
+  Bnd_OBB myOBB;
 
-  gp_Pnt myFirst;
-  gp_Pnt myLast;
+  //! Color value
   Draw_Color myColor;
-
-
 };
-
-
-
-
-
-
 
 #endif // _Draw_Box_HeaderFile

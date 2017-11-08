@@ -6,24 +6,17 @@ puts ""
 # STEP import missing surfaces
 #######################################################################################
 
-set BugNumber OCC24595
 stepread [locate_data_file bug24595_281390.stp] a *
 explode a_1 f
-set mlog [nbshapes a_1_3]
 
-set status 1
+checknbshapes a_1_3 -wire 1
 
-if (![regexp {WIRE[ ]+: 1} $mlog]) {
-  set status 0
-}
+bounding -s a_1_3 -dump -save Xmin Ymin Zmin Xmax Ymax Zmax
 
-set mlog [bounding a_1_3]
-if (![regexp {(-7.1677412321949925) (-8.0000000999999994) (-150.00000009999999) (7.1677412321949898) (8.0000000999999994) (-141.99999990000001)} $mlog]) {
-  set status 0
-}                        
-                                
-if {$status == 1} {
-  puts "OK ${BugNumber}"
-} else {
-  puts "Faulty ${BugNumber}"
-}
+checkreal "Xmin" [dval Xmin] -7.1677412321949925 0.1 0.
+checkreal "Ymin" [dval Ymin] -8.0000000999999994 0.1 0.
+checkreal "Zmin" [dval Zmin] -150.00000009999999 0.1 0.
+checkreal "Xmax" [dval Xmax] 7.1677412321949898 0.1 0.
+checkreal "Ymax" [dval Ymax] 8.0000000999999994 0.1 0.
+checkreal "Zmax" [dval Zmax] -141.99999990000001 0.1 0.
+

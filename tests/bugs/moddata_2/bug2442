@@ -25,11 +25,8 @@ set tol_rel 1.e-7
 checkreal "Distance 1 " ${dist1} ${good_dist} ${tol_abs} ${tol_rel}
 checkreal "Distance 2 " ${dist2} ${good_dist} ${tol_abs} ${tol_rel}
 
-set boundbox [boundingstr a]
-set x0 [lindex $boundbox 0]
-set y0 [lindex $boundbox 1]
-set z0 [lindex $boundbox 2]
-ttranslate a [expr -1 * $x0] [expr -1 * $y0] [expr -1 * $z0]
-ttranslate b [expr -1 * $x0] [expr -1 * $y0] [expr -1 * $z0]
+bounding -s a -save x0 y0 z0 x1 y1 z1 -nodraw
+ttranslate a -x0 -y0 -z0
+ttranslate b -x0 -y0 -z0
 
 checkview -display a -with b -2d -path ${imagedir}/${test_image}.png

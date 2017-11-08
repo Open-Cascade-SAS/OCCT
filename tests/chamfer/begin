@@ -37,16 +37,15 @@ proc get_element { type args } {
 	     global $element
 	     distmini dd ver $element
      	     if { [string match "*$type*" [whatis $element]] } {
-	     	set bbox [bounding $element]
+               set bbox [bounding -s $element -save xx1 yy1 zz1 xx2 yy2 zz2 ]
 # Get distance
-		set dv [lindex [dump dd_val] 5]
-		if {	[expr {
-			[lindex $bbox 0] - 1e-2 <= $x  && $x  <= [lindex $bbox 3] + 1e-2
-		   &&	[lindex $bbox 1] - 1e-2 <= $y  && $y  <= [lindex $bbox 4] + 1e-2
-		   &&	[lindex $bbox 2] - 1e-2 <= $z  && $z  <= [lindex $bbox 5] + 1e-2
-		   &&	[lindex $bbox 0] - 1e-2 <= $x1 && $x1 <= [lindex $bbox 3] + 1e-2
-		   &&	[lindex $bbox 1] - 1e-2 <= $y1 && $y1 <= [lindex $bbox 4] + 1e-2
-		   &&	[lindex $bbox 2] - 1e-2 <= $z1 && $z1 <= [lindex $bbox 5] + 1e-2
+               set dv [lindex [dump dd_val] 5]
+               if {[expr {[dval xx1-1e-2] <= $x  && $x  <= [dval xx2+1e-2]
+              && [dval yy1-1e-2] <= $y  && $y  <= [dval yy2+1e-2]
+              && [dval zz1-1e-2] <= $z  && $z  <= [dval zz2+1e-2]
+              && [dval xx1-1e-2] <= $x1 && $x1 <= [dval xx2+1e-2]
+              && [dval yy1-1e-2] <= $y1 && $y1 <= [dval yy2+1e-2]
+              && [dval zz1-1e-2] <= $z1 && $z1 <= [dval zz2+1e-2]
 		   	}]
 		   } {
 		   if { [llength $res] == 0 } {

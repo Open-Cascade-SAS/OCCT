@@ -173,7 +173,7 @@ if !$Create_Doc {
   # NamedShape
   eval box Box $test_boxXYZ $test_boxDX $test_boxDY $test_boxDZ
   if [catch {GetShape D 0:1:6 b}] {puts "Error: NamedShape not found"
-  } elseif {[bounding b] != [bounding Box]} {puts "Error: invalid NamedShape"
+  } elseif {[bounding -s b -dump] != [bounding -s Box -dump]} {puts "Error: invalid NamedShape"
   } else {
     checkshape b
     checkprops b -l [expr $test_boxDX * 8 + $test_boxDY * 8 + $test_boxDZ * 8]

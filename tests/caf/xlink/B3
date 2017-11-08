@@ -30,13 +30,7 @@ set aSetDZ1 300
 
 box aBox1 ${aSetX1} ${aSetY1} ${aSetZ1} ${aSetDX1} ${aSetDY1} ${aSetDZ1}
 
-set aBoundingBox1 [bounding aBox1]
-set X1_Box1 [lindex ${aBoundingBox1} 0]
-set Y1_Box1 [lindex ${aBoundingBox1} 1]
-set Z1_Box1 [lindex ${aBoundingBox1} 2]
-set X2_Box1 [lindex ${aBoundingBox1} 3]
-set Y2_Box1 [lindex ${aBoundingBox1} 4]
-set Z2_Box1 [lindex ${aBoundingBox1} 5]
+bounding -s aBox1 -save X1_Box1 Y1_Box1 Z1_Box1 X2_Box1 Y2_Box1 Z2_Box1
 
 SetShape Doc1 ${aLabel1} aBox1
 
@@ -76,22 +70,20 @@ if { ${IsDone} != 0 } {
 	return
 }
 
-set aBoundingBox2 [bounding aBox2]
-set X1_Box2 [lindex ${aBoundingBox2} 0]
-set Y1_Box2 [lindex ${aBoundingBox2} 1]
-set Z1_Box2 [lindex ${aBoundingBox2} 2]
-set X2_Box2 [lindex ${aBoundingBox2} 3]
-set Y2_Box2 [lindex ${aBoundingBox2} 4]
-set Z2_Box2 [lindex ${aBoundingBox2} 5]
+bounding -s aBox2 -save X1_Box2 Y1_Box2 Z1_Box2 X2_Box2 Y2_Box2 Z2_Box2
 
-if { ${X1_Box1} != ${X1_Box2} || 
-     ${Y1_Box1} != ${Y1_Box2} || 
-     ${Z1_Box1} != ${Z1_Box2} || 
-     ${X2_Box1} != ${X2_Box2} || 
-     ${Y2_Box1} != ${Y2_Box2} || 
-     ${Z2_Box1} != ${Z2_Box2} } {
-	puts "X1_Box1=${X1_Box1} Y1_Box1=${Y1_Box1} Z1_Box1=${Z1_Box1} X2_Box1=${X2_Box1} Y2_Box1=${Y2_Box1} Z2_Box1=${Z2_Box1}"
-	puts "X1_Box2=${X1_Box2} Y1_Box2=${Y1_Box2} Z1_Box2=${Z1_Box2} X2_Box2=${X2_Box2} Y2_Box2=${Y2_Box2} Z2_Box2=${Z2_Box2}"
+if { [dval X1_Box1] != [dval X1_Box2] || 
+     [dval Y1_Box1] != [dval Y1_Box2] || 
+     [dval Z1_Box1] != [dval Z1_Box2] || 
+     [dval X2_Box1] != [dval X2_Box2] || 
+     [dval Y2_Box1] != [dval Y2_Box2] || 
+     [dval Z2_Box1] != [dval Z2_Box2] } {
+	puts "X1_Box1=[dval X1_Box1] X1_Box2=[dval X1_Box2]"
+	puts "Y1_Box1=[dval Y1_Box1] Y1_Box2=[dval Y1_Box2]"
+	puts "Z1_Box1=[dval Z1_Box1] Z1_Box2=[dval Z1_Box2]"
+	puts "X2_Box1=[dval X2_Box1] X2_Box2=[dval X2_Box2]"
+	puts "Y2_Box1=[dval Y2_Box1] Y2_Box2=[dval Y2_Box2]"
+	puts "Z2_Box1=[dval Z2_Box1] Z2_Box2=[dval Z2_Box2]"
 	puts "Get a link between attributes of the same document from restoring document: Error"
 	return
 }

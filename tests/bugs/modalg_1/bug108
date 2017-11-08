@@ -1,4 +1,3 @@
-
 puts "================"
 puts "BUC61037"
 puts "OCC108"
@@ -11,20 +10,10 @@ puts ""
 restore [locate_data_file bug61037.brep] sh1
 checkshape sh1
 
-set rr [bounding sh1]
-regexp { *([-0-9.+eE]+) +([-0-9.+eE]+) +([-0-9.+eE]+) +([-0-9.+eE]+) +([-0-9.+eE]+) +([-0-9.+eE]+)} $rr full v1_x v1_y v1_z v2_x v2_y v2_z
-vertex v1 $v1_x $v1_y $v1_z
-vertex v2 $v2_x $v2_y $v2_z 
-edge result v1 v2
-regexp {Mass +: +([-0-9.+eE]+)} [lprops result] full dis
-if { [expr $dis < 0.201357] } {
-   puts "Faulty BUC61037: Planar circle and bounded face a returns too small bounding box"
-} else {
-   puts "OCC134 OK: bounding box is correct"
-}
+bounding -s sh1 -dump -shape result
+checkprops result -v 5.78576e-005 -s 0.042162
 
-checkprops result -l 0.201357 
-checkshape result
-checksection result
-checkview -display result -2d -path ${imagedir}/${test_image}.png
-
+smallview
+don sh1 result
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

@@ -19,13 +19,7 @@ set aSetDZ1 300
 
 box aBox1 ${aSetX1} ${aSetY1} ${aSetZ1} ${aSetDX1} ${aSetDY1} ${aSetDZ1}
 
-set aBoundingBox1 [bounding aBox1]
-set X1_Box1 [lindex ${aBoundingBox1} 0]
-set Y1_Box1 [lindex ${aBoundingBox1} 1]
-set Z1_Box1 [lindex ${aBoundingBox1} 2]
-set X2_Box1 [lindex ${aBoundingBox1} 3]
-set Y2_Box1 [lindex ${aBoundingBox1} 4]
-set Z2_Box1 [lindex ${aBoundingBox1} 5]
+bounding -s aBox1 -save X1_Box1 Y1_Box1 Z1_Box1 X2_Box1 Y2_Box1 Z2_Box1
 
 set aLabel 0:2
 SetShape D ${aLabel} aBox1
@@ -55,26 +49,20 @@ if { ${IsDone} != 0 } {
 	return
 }
 
-set aBoundingBox5 [bounding aBox5]
-set X1_Box5 [lindex ${aBoundingBox5} 0]
-set Y1_Box5 [lindex ${aBoundingBox5} 1]
-set Z1_Box5 [lindex ${aBoundingBox5} 2]
-set X2_Box5 [lindex ${aBoundingBox5} 3]
-set Y2_Box5 [lindex ${aBoundingBox5} 4]
-set Z2_Box5 [lindex ${aBoundingBox5} 5]
+bounding -s aBox5 -save X1_Box5 Y1_Box5 Z1_Box5 X2_Box5 Y2_Box5 Z2_Box5
 
-if { ${X1_Box1} != ${X1_Box5} || 
-     ${Y1_Box1} != ${Y1_Box5} || 
-     ${Z1_Box1} != ${Z1_Box5} || 
-     ${X2_Box1} != ${X2_Box5} || 
-     ${Y2_Box1} != ${Y2_Box5} || 
-     ${Z2_Box1} != ${Z2_Box5} } {
-	puts "X1_Box1=${X1_Box1} X1_Box5=${X1_Box5}"
-	puts "Y1_Box1=${Y1_Box1} Y1_Box5=${Y1_Box5}"
-	puts "Z1_Box1=${Z1_Box1} Z1_Box5=${Z1_Box5}"
-	puts "X2_Box1=${X2_Box1} X2_Box5=${X2_Box5}"
-	puts "Y2_Box1=${Y2_Box1} Y2_Box5=${Y2_Box5}"
-	puts "Z2_Box1=${Z2_Box1} Z2_Box5=${Z2_Box5}"
+if { [dval X1_Box1] != [dval X1_Box5] || 
+     [dval Y1_Box1] != [dval Y1_Box5] || 
+     [dval Z1_Box1] != [dval Z1_Box5] || 
+     [dval X2_Box1] != [dval X2_Box5] || 
+     [dval Y2_Box1] != [dval Y2_Box5] || 
+     [dval Z2_Box1] != [dval Z2_Box5] } {
+	puts "X1_Box1=[dval X1_Box1] X1_Box5=[dval X1_Box5]"
+	puts "Y1_Box1=[dval Y1_Box1] Y1_Box5=[dval Y1_Box5]"
+	puts "Z1_Box1=[dval Z1_Box1] Z1_Box5=[dval Z1_Box5]"
+	puts "X2_Box1=[dval X2_Box1] X2_Box5=[dval X2_Box5]"
+	puts "Y2_Box1=[dval Y2_Box1] Y2_Box5=[dval Y2_Box5]"
+	puts "Z2_Box1=[dval Z2_Box1] Z2_Box5=[dval Z2_Box5]"
 	puts "Get a value of TDataStd_Shape attribute from restoring document: Error"
 	return
 }

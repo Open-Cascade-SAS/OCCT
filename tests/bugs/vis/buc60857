@@ -15,9 +15,9 @@ set area_RED [lindex ${Property_RED} 2]
 set Property_GREEN [sprops BUC60857_GREEN]
 set area_GREEN [lindex ${Property_GREEN} 2]
 
-boundingstr BUC60857_BLUE xmin_BLUE ymin_BLUE zmin_BLUE xmax_BLUE ymax_BLUE zmax_BLUE
-boundingstr BUC60857_RED xmin_RED ymin_RED zmin_RED xmax_RED ymax_RED zmax_RED
-boundingstr BUC60857_GREEN xmin_GREEN ymin_GREEN zmin_GREEN xmax_GREEN ymax_GREEN zmax_GREEN
+bounding -s BUC60857_BLUE -save xmin_BLUE ymin_BLUE zmin_BLUE xmax_BLUE ymax_BLUE zmax_BLUE -nodraw
+bounding -s BUC60857_RED -save xmin_RED ymin_RED zmin_RED xmax_RED ymax_RED zmax_RED -nodraw
+bounding -s BUC60857_GREEN -save xmin_GREEN ymin_GREEN zmin_GREEN xmax_GREEN ymax_GREEN zmax_GREEN -nodraw
 
 set delta_area_GB [expr abs(${area_GREEN} - ${area_BLUE}) / ${area_BLUE} * 100]
 set delta_area_BR [expr ${area_BLUE} / ${area_RED}]

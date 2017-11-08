@@ -10,24 +10,11 @@ puts ""
 restore [locate_data_file OCC257.brep] result 
 checkshape result
 
-set bb [bounding result]
+bounding -s result -save x1 y1 z1 x2 y2 z2
 
-set list [split ${bb}]
-set listLength [llength ${list}]
-if { ${listLength} < 6 } {
-   puts "Error : listLength = ${listLength}"
-}
-
-set x1 [lindex ${list} 0]
-set y1 [lindex ${list} 1]
-set z1 [lindex ${list} 2]
-set x2 [lindex ${list} 3]
-set y2 [lindex ${list} 4]
-set z2 [lindex ${list} 5]
-
-set len [expr ${x2} - ${x1}]
-set width  [expr ${y2} - ${y1}]
-set height [expr ${z2} - ${z1}]
+set len    [ dval x2-x1]
+set width  [ dval y2-y1]
+set height [ dval z2-z1]
 
 set R 180
 
