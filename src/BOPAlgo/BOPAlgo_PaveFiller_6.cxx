@@ -48,6 +48,7 @@
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
 #include <BRep_TEdge.hxx>
+#include <BRepLib.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepBndLib.hxx>
@@ -1348,6 +1349,9 @@ Standard_Boolean BOPAlgo_PaveFiller::IsExistingPaveBlock
       aTolCheck = Max(aTolE, aTol) + myFuzzyValue;
       iFlag = myContext->ComputePE(aPm, aTolCheck, aE, aTx, aDist);
       if (!iFlag) {
+        if (aDist > aTolE)
+          // Update tolerance of the edge
+          UpdateEdgeTolerance(nE, aDist);
         return bRet;
       }
     }
@@ -2460,54 +2464,74 @@ void BOPAlgo_PaveFiller::UpdateExistingPaveBlocks
 //=======================================================================
 void BOPAlgo_PaveFiller::PutClosingPaveOnCurve(BOPDS_Curve& aNC)
 {
-  Standard_Boolean bIsClosed, bHasBounds, bAdded;
-  Standard_Integer nVC, j;
-  Standard_Real aT[2], aTC, dT, aTx;
-  gp_Pnt aP[2] ; 
-  BOPDS_Pave aPVx;
-  BOPDS_ListIteratorOfListOfPave aItLP;
-  //
-  const IntTools_Curve& aIC=aNC.Curve();
-  const Handle(Geom_Curve)& aC3D=aIC.Curve();
-  if(aC3D.IsNull()) {
+  const IntTools_Curve& aIC = aNC.Curve();
+  const Handle(Geom_Curve)& aC3D = aIC.Curve();
+  // check 3d curve
+  if (aC3D.IsNull())
     return;
-  }
-  //
-  bIsClosed=IntTools_Tools::IsClosed(aC3D);
-  if (!bIsClosed) {
+
+  // check bounds
+  if (!aIC.HasBounds())
     return;
-  }
-  //
-  bHasBounds=aIC.HasBounds ();
-  if (!bHasBounds){
-    return;
-  }
-  // 
-  bAdded=Standard_False;
-  dT=Precision::PConfusion();
-  aIC.Bounds (aT[0], aT[1], aP[0], aP[1]);
-  //
-  Handle(BOPDS_PaveBlock)& aPB=aNC.ChangePaveBlock1();
-  BOPDS_ListOfPave& aLP=aPB->ChangeExtPaves();
-  //
-  aItLP.Initialize(aLP);
-  for (; aItLP.More() && !bAdded; aItLP.Next()) {
-    const BOPDS_Pave& aPC=aItLP.Value();
-    nVC=aPC.Index();
-    aTC=aPC.Parameter();
-    //
-    for (j=0; j<2; ++j) {
-      if (fabs(aTC-aT[j]) < dT) {
-        aTx=(!j) ? aT[1] : aT[0];
-        aPVx.SetIndex(nVC);
-        aPVx.SetParameter(aTx);
-        aLP.Append(aPVx);
-        //
-        bAdded=Standard_True;
+
+  // check closeness
+  Standard_Real aT[2];
+  gp_Pnt aP[2];
+  aIC.Bounds(aT[0], aT[1], aP[0], aP[1]);
+
+  // Find the pave which has been put at one of the ends
+  Standard_Integer nV = -1;
+  // Keep the opposite parameter
+  Standard_Real aTOp = 0.;
+
+  Standard_Boolean bFound = Standard_False;
+
+  Handle(BOPDS_PaveBlock)& aPB = aNC.ChangePaveBlock1();
+  BOPDS_ListOfPave& aLP = aPB->ChangeExtPaves();
+  BOPDS_ListIteratorOfListOfPave aItLP(aLP);
+  for (; aItLP.More() && !bFound; aItLP.Next())
+  {
+    const BOPDS_Pave& aPC = aItLP.Value();
+    Standard_Real aTC = aPC.Parameter();
+    for (Standard_Integer j = 0; j < 2; ++j)
+    {
+      if (Abs(aTC - aT[j]) < Precision::PConfusion())
+      {
+        nV = aPC.Index();
+        aTOp = (!j) ? aT[1] : aT[0];
+        bFound = Standard_True;
         break;
       }
     }
   }
+
+  if (!bFound)
+    return;
+
+  // Check if the curve is closed using the tolerance
+  // of found vertex
+  const TopoDS_Vertex& aV = TopoDS::Vertex(myDS->Shape(nV));
+  const Standard_Real aTolV = BRep_Tool::Tolerance(aV);
+
+  Standard_Real aDist = aP[0].Distance(aP[1]);
+  if (aDist > aTolV)
+    return;
+
+  // Check if there will be valid range on the curve
+  Standard_Real aFirst, aLast;
+  if (!BRepLib::FindValidRange(GeomAdaptor_Curve(aIC.Curve()), aIC.Tolerance(),
+                               aT[0], aP[0], aTolV,
+                               aT[1], aP[1], aTolV,
+                               aFirst, aLast))
+  {
+    return;
+  }
+
+  // Add closing pave to the curve
+  BOPDS_Pave aPave;
+  aPave.SetIndex(nV);
+  aPave.SetParameter(aTOp);
+  aLP.Append(aPave);
 }
 //=======================================================================
 //function : PreparePostTreatFF

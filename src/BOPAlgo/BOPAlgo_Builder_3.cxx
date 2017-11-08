@@ -65,6 +65,7 @@
 //
 #include <BOPAlgo_BuilderSolid.hxx>
 #include <NCollection_Array1.hxx>
+#include <NCollection_IncAllocator.hxx>
 
 #include <algorithm>
 #include <BOPAlgo_Algo.hxx>
@@ -251,99 +252,128 @@ class BOPAlgo_FillIn3DParts : public BOPAlgo_Algo  {
 //=======================================================================
 void BOPAlgo_FillIn3DParts::Perform() 
 {
-  Handle(NCollection_BaseAllocator) aAlr1;
   BOPAlgo_Algo::UserBreak();
-  //  
-  Standard_Integer aNbFP, k, nFP, iIsIN;
-  Standard_Real aTolPC;
-  BOPCol_ListIteratorOfListOfInteger aItLI;
-  BOPCol_ListIteratorOfListOfShape aItLS;
-  BOPCol_BoxBndTreeSelector aSelector; 
-  //
-  aAlr1=
-    NCollection_BaseAllocator::CommonBaseAllocator();
-  //
-  BOPCol_ListOfShape aLCBF(aAlr1);
-  BOPCol_MapOfShape aMFDone(100, aAlr1);
-  BOPCol_IndexedMapOfShape aME(100, aAlr1);
-  BOPCol_IndexedMapOfShape aMF(100, aAlr1);
-  BOPCol_IndexedDataMapOfShapeListOfShape aMEFP(100, aAlr1);
-  BOPCol_IndexedDataMapOfShapeListOfShape aMEF(100, aAlr1);
-  //
-  aTolPC=Precision::Confusion();
+
   myLFIN.Clear();
-  BOPAlgo_VectorOfShapeBox& aVSB=*myVSB;
-  //
-  // 1. aMEF - EF map for myDraftSolid
-  BOPTools::MapShapesAndAncestors(myDraftSolid, 
-                                  TopAbs_EDGE, 
-                                  TopAbs_FACE, 
-                                  aMEF); 
-  
-  //
-  // 2. Faces from myDraftSolid and its own internal faces => aMF 
-  BOPTools::MapShapes(myDraftSolid, TopAbs_FACE, aMF);
-  aItLS.Initialize(myLIF);
-  for (; aItLS.More(); aItLS.Next()) {
-    const TopoDS_Shape& aFI=aItLS.Value();
-    aMF.Add(aFI);
-  }
-  // aME - Edges from DraftSolid [i.e. edges to stop]
+
+  Handle(NCollection_BaseAllocator) aAlr1 = new NCollection_IncAllocator;
+
+  BOPAlgo_VectorOfShapeBox& aVSB = *myVSB;
+
+  // 1. Fill maps of edges and faces of myDraftSolid
+  BOPCol_IndexedMapOfShape aME(1, aAlr1), aMF(1, aAlr1);
   BOPTools::MapShapes(myDraftSolid, TopAbs_EDGE, aME);
-  //
-  // 3. Select boxes of faces that are not out of aBoxS
-  aSelector.Clear();
+  BOPTools::MapShapes(myDraftSolid, TopAbs_FACE, aMF);
+  // Check if the Draft Solid contains any faces
+  Standard_Boolean bIsEmpty = aMF.IsEmpty();
+  // Add own internal faces of myDraftSolid into aMF
+  BOPCol_ListIteratorOfListOfShape aItLS(myLIF);
+  for (; aItLS.More(); aItLS.Next())
+    aMF.Add(aItLS.Value());
+
+  // 2. Select boxes of faces that are not out of aBoxS
+  BOPCol_BoxBndTreeSelector aSelector;
   aSelector.SetBox(myBoxS);
   //
-  aNbFP=myBBTree->Select(aSelector);
-  const BOPCol_ListOfInteger& aLIFPx=aSelector.Indices();
+  myBBTree->Select(aSelector);
+  const BOPCol_ListOfInteger& aLIFP = aSelector.Indices();
   //
-  // 4. aIVec, aLIFP -  faces to process
-  BOPCol_ListOfInteger aLIFP(aAlr1); 
+  // 3. aIVec - faces to process.
+  //    Filter the selected faces with faces of the solid.
   BOPCol_NCVector<Standard_Integer> aIVec(256, aAlr1);
-  //
-  k=0;
-  aItLI.Initialize(aLIFPx);
+
+  BOPCol_ListIteratorOfListOfInteger aItLI(aLIFP);
   for (; aItLI.More(); aItLI.Next()) {
-    nFP=aItLI.Value();
-    const TopoDS_Shape& aFP=aVSB(nFP).Shape();
-    if (!aMF.Contains(aFP)) {
-      MapEdgesAndFaces(aFP, aMEFP, aAlr1);
-      aLIFP.Append(nFP);
-      aIVec.Append1()=nFP;
-      ++k;
-    }
+    Standard_Integer nFP = aItLI.Value();
+    const TopoDS_Shape& aFP = aVSB(nFP).Shape();
+    if (!aMF.Contains(aFP))
+      aIVec.Append1() = nFP;
   }
-  aNbFP=k;
-  //
-  // sort indices
-  std::sort(aIVec.begin(), aIVec.end());
-  //
-  // 5. Collect faces that are IN mySolid [ myLFIN ]
-  for (k=0; k<aNbFP; ++k) {
-    nFP = aIVec(k);
-    const BOPAlgo_ShapeBox& aSBF=aVSB(nFP);
-    const TopoDS_Face& aFP=(*(TopoDS_Face*)&aSBF.Shape());
-    //
-    if (!aMFDone.Add(aFP)) {
+
+  // 4. Classify faces relatively solid.
+  //    Store faces that are IN mySolid into <myLFIN>
+
+  Standard_Integer k, aNbFP = aIVec.Extent();
+  // Sort indices if necessary
+  if (aNbFP > 1)
+    std::sort(aIVec.begin(), aIVec.end());
+
+  if (bIsEmpty)
+  {
+    // The Draft solid is empty as it does not contain any faces.
+    // It could happen when the input solid consists of INTERNAL faces only.
+    // Classification of any point relatively empty solid would always give IN status.
+    // Thus, we consider all selected faces as IN without real classification.
+    for (k = 0; k < aNbFP; ++k)
+      myLFIN.Append(aVSB(aIVec(k)).Shape());
+
+    return;
+  }
+
+  // Prepare EF map of faces to process for building connexity blocks
+  BOPCol_IndexedDataMapOfShapeListOfShape aMEFP(1, aAlr1);
+  if (aNbFP > 1)
+  {
+    for (k = 0; k < aNbFP; ++k)
+      MapEdgesAndFaces(aVSB(aIVec(k)).Shape(), aMEFP, aAlr1);
+  }
+
+  // Map of Edge-Face connection, necessary for solid classification.
+  // It will be filled when first classification is performed.
+  BOPCol_IndexedDataMapOfShapeListOfShape aMEFDS(1, aAlr1);
+
+  // Fence map to avoid processing of the same faces twice
+  BOPCol_MapOfShape aMFDone(1, aAlr1);
+
+  for (k = 0; k < aNbFP; ++k)
+  {
+    Standard_Integer nFP = aIVec(k);
+    const TopoDS_Face& aFP = (*(TopoDS_Face*)&aVSB(nFP).Shape());
+    if (!aMFDone.Add(aFP))
       continue;
-    }
-    //
-    iIsIN=BOPTools_AlgoTools::IsInternalFace
-      (aFP, myDraftSolid, aMEF, aTolPC, myContext);
-    //
+
     // Make connexity blocks of faces, avoiding passing through the
-    // borders of the solid.
-    // It helps to reduce significantly the number of classified faces.
-    aLCBF.Clear();
+    // borders of the solid. It helps to reduce significantly the
+    // number of classified faces.
+    BOPCol_ListOfShape aLCBF(aAlr1);
     MakeConnexityBlock(aFP, aME, aMEFP, aMFDone, aLCBF);
-    //
-    if (iIsIN) {
+
+    // First, try fast classification of the whole block by additional
+    // check on bounding boxes - check that bounding boxes of all vertices
+    // of the block interfere with the box of the solid.
+    // If not, the faces are out.
+    Standard_Boolean bOut = Standard_False;
+    aItLS.Initialize(aLCBF);
+    for (; aItLS.More() && !bOut; aItLS.Next())
+    {
+      TopExp_Explorer anExpV(aItLS.Value(), TopAbs_VERTEX);
+      for (; anExpV.More() && !bOut; anExpV.Next())
+      {
+        const TopoDS_Vertex& aV = TopoDS::Vertex(anExpV.Current());
+        Bnd_Box aBBV;
+        aBBV.Add(BRep_Tool::Pnt(aV));
+        aBBV.SetGap(BRep_Tool::Tolerance(aV));
+        bOut = myBoxS.IsOut(aBBV);
+      }
+    }
+
+    if (bOut)
+      continue;
+
+    if (aMEFDS.IsEmpty())
+      // Fill EF map for myDraftSolid
+      BOPTools::MapShapesAndAncestors(myDraftSolid, TopAbs_EDGE, TopAbs_FACE, aMEFDS);
+
+    // All vertices are interfere with the solids box, run classification.
+    Standard_Boolean bIsIN = BOPTools_AlgoTools::IsInternalFace
+      (aFP, myDraftSolid, aMEFDS, Precision::Confusion(), myContext);
+    if (bIsIN)
+    {
       aItLS.Initialize(aLCBF);
       for (; aItLS.More(); aItLS.Next())
         myLFIN.Append(aItLS.Value());
     }
-  } // for (k=0; k<aNbFP; ++k) {
+  }
 }
 //=======================================================================
 // function: MapEdgesAndFaces
@@ -385,6 +415,8 @@ void BOPAlgo_FillIn3DParts::MakeConnexityBlock
 {
   // Add start element
   theLCB.Append(theFStart);
+  if (theMEF.IsEmpty())
+    return;
 
   BOPCol_ListIteratorOfListOfShape aItCB(theLCB);
   for (; aItCB.More(); aItCB.Next())
@@ -404,8 +436,10 @@ void BOPAlgo_FillIn3DParts::MakeConnexityBlock
         if (theMEAvoid.Contains(aE))
           continue;
 
-        const BOPCol_ListOfShape& aLF = theMEF.FindFromKey(aE);
-        BOPCol_ListIteratorOfListOfShape aItLF(aLF);
+        const BOPCol_ListOfShape* pLF = theMEF.Seek(aE);
+        if (!pLF)
+          continue;
+        BOPCol_ListIteratorOfListOfShape aItLF(*pLF);
         for (; aItLF.More(); aItLF.Next())
         {
           const TopoDS_Shape& aFx = aItLF.Value();
