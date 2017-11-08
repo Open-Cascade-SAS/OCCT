@@ -34,7 +34,8 @@ OpenGl_Layer::OpenGl_Layer (const Standard_Integer theNbPriorities,
   myNbStructures              (0),
   myBVHPrimitivesTrsfPers     (theBuilder),
   myBVHIsLeftChildQueuedFirst (Standard_True),
-  myIsBVHPrimitivesNeedsReset (Standard_False)
+  myIsBVHPrimitivesNeedsReset (Standard_False),
+  myIsCulled (Standard_False)
 {
   myIsBoundingBoxNeedsReset[0] = myIsBoundingBoxNeedsReset[1] = true;
 }
@@ -147,7 +148,7 @@ bool OpenGl_Layer::Remove (const OpenGl_Structure* theStruct,
 // function : InvalidateBVHData
 // purpose  :
 // =======================================================================
-void OpenGl_Layer::InvalidateBVHData() const
+void OpenGl_Layer::InvalidateBVHData()
 {
   myIsBVHPrimitivesNeedsReset = Standard_True;
 }
@@ -429,12 +430,8 @@ void OpenGl_Layer::renderAll (const Handle(OpenGl_Workspace)& theWorkspace) cons
     for (OpenGl_IndexedMapOfStructure::Iterator aStructIter (aStructures); aStructIter.More(); aStructIter.Next())
     {
       const OpenGl_Structure* aStruct = aStructIter.Value();
-      if (!aStruct->IsVisible())
-      {
-        continue;
-      }
-      else if (!aStruct->ViewAffinity.IsNull()
-            && !aStruct->ViewAffinity->IsVisible (aViewId))
+      if (aStruct->IsCulled()
+      || !aStruct->IsVisible (aViewId))
       {
         continue;
       }
@@ -483,51 +480,43 @@ void OpenGl_Layer::updateBVH() const
 }
 
 // =======================================================================
-// function : renderTraverse
+// function : UpdateCulling
 // purpose  :
 // =======================================================================
-void OpenGl_Layer::renderTraverse (const Handle(OpenGl_Workspace)& theWorkspace) const
+void OpenGl_Layer::UpdateCulling (const OpenGl_BVHTreeSelector& theSelector,
+                                  const Standard_Boolean theToTraverse)
 {
   updateBVH();
-  if (myBVHPrimitives        .Size() != 0
-   || myBVHPrimitivesTrsfPers.Size() != 0)
-  {
-    OpenGl_BVHTreeSelector& aSelector = theWorkspace->View()->BVHTreeSelector();
-    aSelector.SetCullingDistance (myLayerSettings.CullingDistance());
-    aSelector.SetCullingSize (myLayerSettings.CullingSize());
-    aSelector.CacheClipPtsProjections();
-    traverse (aSelector);
-  }
 
-  const Standard_Integer aViewId = theWorkspace->View()->Identification();
+  myIsCulled = false;
   for (OpenGl_ArrayOfIndexedMapOfStructure::Iterator aMapIter (myArray); aMapIter.More(); aMapIter.Next())
   {
     const OpenGl_IndexedMapOfStructure& aStructures = aMapIter.Value();
     for (OpenGl_IndexedMapOfStructure::Iterator aStructIter (aStructures); aStructIter.More(); aStructIter.Next())
     {
       const OpenGl_Structure* aStruct = aStructIter.Value();
-      if (aStruct->IsCulled()
-      || !aStruct->IsVisible (aViewId))
-      {
-        continue;
-      }
-
-      aStruct->Render (theWorkspace);
-      aStruct->ResetCullingStatus();
+      aStruct->SetCulled (theToTraverse);
     }
   }
-}
 
-// =======================================================================
-// function : traverse
-// purpose  :
-// =======================================================================
-void OpenGl_Layer::traverse (const OpenGl_BVHTreeSelector& theSelector) const
-{
-  opencascade::handle<BVH_Tree<Standard_Real, 3> > aBVHTree;
+  if (!theToTraverse)
+  {
+    return;
+  }
+  if (myBVHPrimitives        .Size() == 0
+   && myBVHPrimitivesTrsfPers.Size() == 0)
+  {
+    return;
+  }
+
+  myIsCulled = myAlwaysRenderedMap.IsEmpty();
+  OpenGl_BVHTreeSelector::CullingContext aCullCtx;
+  theSelector.SetCullingDistance(aCullCtx, myLayerSettings.CullingDistance());
+  theSelector.SetCullingSize    (aCullCtx, myLayerSettings.CullingSize());
   for (Standard_Integer aBVHTreeIdx = 0; aBVHTreeIdx < 2; ++aBVHTreeIdx)
   {
     const Standard_Boolean isTrsfPers = aBVHTreeIdx == 1;
+    opencascade::handle<BVH_Tree<Standard_Real, 3> > aBVHTree;
     if (isTrsfPers)
     {
       if (myBVHPrimitivesTrsfPers.Size() == 0)
@@ -549,26 +538,23 @@ void OpenGl_Layer::traverse (const OpenGl_BVHTreeSelector& theSelector) const
       aBVHTree = myBVHPrimitives.BVH();
     }
 
-    Standard_Integer aNode = 0; // a root node
-
-    if (!theSelector.Intersect (aBVHTree->MinPoint (0),
-                                aBVHTree->MaxPoint (0)))
+    if (theSelector.IsCulled (aCullCtx, aBVHTree->MinPoint (0), aBVHTree->MaxPoint (0)))
     {
       continue;
     }
 
+    myIsCulled = false;
     Standard_Integer aStack[BVH_Constants_MaxTreeDepth];
     Standard_Integer aHead = -1;
+    Standard_Integer aNode = 0; // a root node
     for (;;)
     {
       if (!aBVHTree->IsOuter (aNode))
       {
         const Standard_Integer aLeftChildIdx  = aBVHTree->Child<0> (aNode);
         const Standard_Integer aRightChildIdx = aBVHTree->Child<1> (aNode);
-        const Standard_Boolean isLeftChildIn  = theSelector.Intersect (aBVHTree->MinPoint (aLeftChildIdx),
-                                                                       aBVHTree->MaxPoint (aLeftChildIdx));
-        const Standard_Boolean isRightChildIn = theSelector.Intersect (aBVHTree->MinPoint (aRightChildIdx),
-                                                                       aBVHTree->MaxPoint (aRightChildIdx));
+        const Standard_Boolean isLeftChildIn  = !theSelector.IsCulled (aCullCtx, aBVHTree->MinPoint (aLeftChildIdx),  aBVHTree->MaxPoint (aLeftChildIdx));
+        const Standard_Boolean isRightChildIn = !theSelector.IsCulled (aCullCtx, aBVHTree->MinPoint (aRightChildIdx), aBVHTree->MaxPoint (aRightChildIdx));
         if (isLeftChildIn
          && isRightChildIn)
         {
@@ -743,7 +729,7 @@ void OpenGl_Layer::Render (const Handle(OpenGl_Workspace)&   theWorkspace,
   }
 
   // render priority list
-  theWorkspace->IsCullingEnabled() ? renderTraverse (theWorkspace) : renderAll (theWorkspace);
+  renderAll (theWorkspace);
 
   if (hasLocalCS)
   {

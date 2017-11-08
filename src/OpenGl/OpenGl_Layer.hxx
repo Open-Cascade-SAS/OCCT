@@ -92,7 +92,7 @@ public:
 
   //! Marks BVH tree for given priority list as dirty and
   //! marks primitive set for rebuild.
-  void InvalidateBVHData() const;
+  void InvalidateBVHData();
 
   //! Marks cached bounding box as obsolete.
   void InvalidateBoundingBox() const
@@ -119,6 +119,14 @@ public:
                                                 const Standard_Integer          theWindowWidth,
                                                 const Standard_Integer          theWindowHeight) const;
 
+  //! Update culling state - should be called before rendering.
+  //! Traverses through BVH tree to determine which structures are in view volume.
+  void UpdateCulling (const OpenGl_BVHTreeSelector& theSelector,
+                      const Standard_Boolean theToTraverse);
+
+  //! Returns TRUE if layer is empty or has been discarded entirely by culling test.
+  bool IsCulled() const { return myNbStructures == 0 || myIsCulled; }
+
   // Render all structures.
   void Render (const Handle(OpenGl_Workspace)&   theWorkspace,
                const OpenGl_GlobalLayerSettings& theDefaultSettings) const;
@@ -134,14 +142,8 @@ protected:
   //! Updates BVH trees if their state has been invalidated.
   void updateBVH() const;
 
-  //! Traverses through BVH tree to determine which structures are in view volume.
-  void traverse (const OpenGl_BVHTreeSelector& theSelector) const;
-
   //! Iterates through the hierarchical list of existing structures and renders them all.
   void renderAll (const Handle(OpenGl_Workspace)& theWorkspace) const;
-
-  //! Iterates through the hierarchical list of existing structures and renders only overlapping ones.
-  void renderTraverse (const Handle(OpenGl_Workspace)& theWorkspace) const;
 
 private:
 
@@ -164,7 +166,7 @@ private:
   mutable NCollection_IndexedMap<const OpenGl_Structure*> myAlwaysRenderedMap;
 
   //! Is needed for implementation of stochastic order of BVH traverse.
-  mutable Standard_Boolean myBVHIsLeftChildQueuedFirst;
+  Standard_Boolean myBVHIsLeftChildQueuedFirst;
 
   //! Defines if the primitive set for BVH is outdated.
   mutable Standard_Boolean myIsBVHPrimitivesNeedsReset;
@@ -172,12 +174,11 @@ private:
   //! Defines if the cached bounding box is outdated.
   mutable bool myIsBoundingBoxNeedsReset[2];
 
+  //! Flag indicating that this layer is marked culled as whole
+  bool myIsCulled;
+
   //! Cached layer bounding box.
   mutable Bnd_Box myBoundingBox[2];
-
-public:
-
-  DEFINE_STANDARD_ALLOC
 
 };
 

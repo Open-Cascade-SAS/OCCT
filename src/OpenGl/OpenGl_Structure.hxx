@@ -119,13 +119,10 @@ public:
   //! Releases structure resources.
   virtual void Release (const Handle(OpenGl_Context)& theGlCtx);
 
-  //! Marks structure as not overlapping view volume (as it is by default).
-  void ResetCullingStatus() const
+  //! Marks structure as culled/not culled.
+  void SetCulled (Standard_Boolean theIsCulled) const
   {
-    if (!IsAlwaysRendered())
-    {
-      myIsCulled = Standard_True;
-    }
+    myIsCulled = theIsCulled && !IsAlwaysRendered();
   }
 
   //! Marks structure as overlapping the current view volume one.

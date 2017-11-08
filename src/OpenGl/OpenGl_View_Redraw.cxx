@@ -881,6 +881,7 @@ void OpenGl_View::render (Graphic3d_Camera::Projection theProjection,
   // note that we pass here window dimensions ignoring Graphic3d_RenderingParams::RenderResolutionScale
   myBVHSelector.SetViewVolume (myCamera);
   myBVHSelector.SetViewportSize (myWindow->Width(), myWindow->Height(), myRenderParams.ResolutionRatio());
+  myBVHSelector.CacheClipPtsProjections();
 
   const Handle(OpenGl_ShaderManager)& aManager   = aContext->ShaderManager();
   if (StateInfo (myCurrLightSourceState, aManager->LightSourceState().Index()) != myLastLightSourceState)
@@ -1057,6 +1058,8 @@ void OpenGl_View::renderStructs (Graphic3d_Camera::Projection theProjection,
     myRenderParams.Method != Graphic3d_RM_RAYTRACING ||
     myRaytraceInitStatus == OpenGl_RT_FAIL ||
     aCtx->IsFeedback();
+
+  myZLayers.UpdateCulling (myWorkspace, theToDrawImmediate);
 
   if (!toRenderGL)
   {

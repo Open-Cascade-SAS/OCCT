@@ -26,9 +26,7 @@
 OpenGl_BVHTreeSelector::OpenGl_BVHTreeSelector()
 : myIsProjectionParallel (Standard_True),
   myCamScaleInv (1.0),
-  myDistCull (-1.0),
-  myPixelSize (1.0),
-  mySizeCull2 (-1.0)
+  myPixelSize (1.0)
 {
   //
 }
@@ -166,14 +164,15 @@ Standard_Real OpenGl_BVHTreeSelector::SignedPlanePointDistance (const OpenGl_Vec
 // function : SetCullingDistance
 // purpose  :
 // =======================================================================
-void OpenGl_BVHTreeSelector::SetCullingDistance (Standard_Real theDistance)
+void OpenGl_BVHTreeSelector::SetCullingDistance (CullingContext& theCtx,
+                                                 Standard_Real theDistance) const
 {
-  myDistCull = -1.0;
+  theCtx.DistCull = -1.0;
   if (!myIsProjectionParallel)
   {
-    myDistCull = theDistance > 0.0 && !Precision::IsInfinite (theDistance)
-               ? theDistance
-               : -1.0;
+    theCtx.DistCull = theDistance > 0.0 && !Precision::IsInfinite (theDistance)
+                    ? theDistance
+                    : -1.0;
   }
 }
 
@@ -181,13 +180,14 @@ void OpenGl_BVHTreeSelector::SetCullingDistance (Standard_Real theDistance)
 // function : SetCullingSize
 // purpose  :
 // =======================================================================
-void OpenGl_BVHTreeSelector::SetCullingSize (Standard_Real theSize)
+void OpenGl_BVHTreeSelector::SetCullingSize (CullingContext& theCtx,
+                                             Standard_Real theSize) const
 {
-  mySizeCull2 = -1.0;
+  theCtx.SizeCull2 = -1.0;
   if (theSize > 0.0 && !Precision::IsInfinite (theSize))
   {
-    mySizeCull2 = (myPixelSize * theSize) / myCamScaleInv;
-    mySizeCull2 *= mySizeCull2;
+    theCtx.SizeCull2 = (myPixelSize * theSize) / myCamScaleInv;
+    theCtx.SizeCull2 *= theCtx.SizeCull2;
   }
 }
 
@@ -232,85 +232,4 @@ void OpenGl_BVHTreeSelector::CacheClipPtsProjections()
     myMaxOrthoProjectionPts[aDim] = aMaxProj;
     myMinOrthoProjectionPts[aDim] = aMinProj;
   }
-}
-
-// =======================================================================
-// function : Intersect
-// purpose  : Detects if AABB overlaps view volume using separating axis theorem (SAT)
-// =======================================================================
-Standard_Boolean OpenGl_BVHTreeSelector::Intersect (const OpenGl_Vec3d& theMinPt,
-                                                    const OpenGl_Vec3d& theMaxPt) const
-{
-  //     E1
-  //    |_ E0
-  //   /
-  //    E2
-
-  // E0 test
-  if (theMinPt.x() > myMaxOrthoProjectionPts[0]
-   || theMaxPt.x() < myMinOrthoProjectionPts[0])
-  {
-    return Standard_False;
-  }
-
-  // E1 test
-  if (theMinPt.y() > myMaxOrthoProjectionPts[1]
-   || theMaxPt.y() < myMinOrthoProjectionPts[1])
-  {
-    return Standard_False;
-  }
-
-  // E2 test
-  if (theMinPt.z() > myMaxOrthoProjectionPts[2]
-   || theMaxPt.z() < myMinOrthoProjectionPts[2])
-  {
-    return Standard_False;
-  }
-
-  Standard_Real aBoxProjMax = 0.0, aBoxProjMin = 0.0;
-  const Standard_Integer anIncFactor = myIsProjectionParallel ? 2 : 1;
-  for (Standard_Integer aPlaneIter = 0; aPlaneIter < 5; aPlaneIter += anIncFactor)
-  {
-    OpenGl_Vec4d aPlane = myClipPlanes[aPlaneIter];
-    aBoxProjMax = (aPlane.x() > 0.0 ? (aPlane.x() * theMaxPt.x()) : aPlane.x() * theMinPt.x())
-                + (aPlane.y() > 0.0 ? (aPlane.y() * theMaxPt.y()) : aPlane.y() * theMinPt.y())
-                + (aPlane.z() > 0.0 ? (aPlane.z() * theMaxPt.z()) : aPlane.z() * theMinPt.z());
-    if (aBoxProjMax > myMinClipProjectionPts[aPlaneIter]
-     && aBoxProjMax < myMaxClipProjectionPts[aPlaneIter])
-    {
-      continue;
-    }
-
-    aBoxProjMin = (aPlane.x() < 0.0 ? aPlane.x() * theMaxPt.x() : aPlane.x() * theMinPt.x())
-                + (aPlane.y() < 0.0 ? aPlane.y() * theMaxPt.y() : aPlane.y() * theMinPt.y())
-                + (aPlane.z() < 0.0 ? aPlane.z() * theMaxPt.z() : aPlane.z() * theMinPt.z());
-    if (aBoxProjMin > myMaxClipProjectionPts[aPlaneIter]
-     || aBoxProjMax < myMinClipProjectionPts[aPlaneIter])
-    {
-      return Standard_False;
-    }
-  }
-
-  // distance culling - discard node if distance to it's bounding box from camera eye is less than specified culling distance
-  if (myDistCull > 0.0)
-  {
-    // check distance to the bounding sphere as fast approximation
-    const Graphic3d_Vec3d aSphereCenter = (theMinPt + theMaxPt) * 0.5;
-    const Standard_Real   aSphereRadius = (theMaxPt - theMinPt).maxComp() * 0.5;
-    if ((aSphereCenter - myCamEye).Modulus() - aSphereRadius > myDistCull)
-    {
-      return Standard_False;
-    }
-  }
-
-  // size culling - discard node if diagonal of it's bounding box is less than specified culling size
-  if (mySizeCull2 > 0.0)
-  {
-    if ((theMaxPt - theMinPt).SquareModulus() < mySizeCull2)
-    {
-      return Standard_False;
-    }
-  }
-
-  return Standard_True;
 }

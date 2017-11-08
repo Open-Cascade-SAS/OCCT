@@ -26,6 +26,16 @@
 class OpenGl_BVHTreeSelector
 {
 public:
+  //! Auxiliary structure holding non-persistent culling options.
+  struct CullingContext
+  {
+    Standard_Real DistCull;  //!< culling distance
+    Standard_Real SizeCull2; //!< squared culling size
+
+    //! Empty constructor.
+    CullingContext() : DistCull (-1.0), SizeCull2 (-1.0) {}
+  };
+public:
 
   //! Creates an empty selector object with parallel projection type by default.
   Standard_EXPORT OpenGl_BVHTreeSelector();
@@ -38,21 +48,30 @@ public:
                                         Standard_Real theResolutionRatio);
 
   //! Setup distance culling.
-  Standard_EXPORT void SetCullingDistance (Standard_Real theDistance);
+  Standard_EXPORT void SetCullingDistance (CullingContext& theCtx,
+                                           Standard_Real theDistance) const;
 
   //! Setup size culling.
-  Standard_EXPORT void SetCullingSize (Standard_Real theSize);
+  Standard_EXPORT void SetCullingSize (CullingContext& theCtx,
+                                       Standard_Real theSize) const;
 
   //! Caches view volume's vertices projections along its normals and AABBs dimensions.
   //! Must be called at the beginning of each BVH tree traverse loop.
   Standard_EXPORT void CacheClipPtsProjections();
 
-  //! Detects if AABB overlaps view volume using separating axis theorem (SAT).
-  //! @param theMinPt [in] maximum point of AABB.
-  //! @param theMaxPt [in] minimum point of AABB.
-  //! @return Standard_True, if AABB is in viewing area, Standard_False otherwise.
-  Standard_EXPORT Standard_Boolean Intersect (const OpenGl_Vec3d& theMinPt,
-                                              const OpenGl_Vec3d& theMaxPt) const;
+  //! Checks whether given AABB should be entirely culled or not.
+  //! @param theCtx   [in] culling properties
+  //! @param theMinPt [in] maximum point of AABB
+  //! @param theMaxPt [in] minimum point of AABB
+  //! @return Standard_True, if AABB is in viewing area, Standard_False otherwise
+  bool IsCulled (const CullingContext& theCtx,
+                 const OpenGl_Vec3d& theMinPt,
+                 const OpenGl_Vec3d& theMaxPt) const
+  {
+    return isFullOut   (theMinPt, theMaxPt)
+        || isTooDistant(theCtx, theMinPt, theMaxPt)
+        || isTooSmall  (theCtx, theMinPt, theMaxPt);
+  }
 
   //! Return the camera definition.
   const Handle(Graphic3d_Camera)& Camera() const { return myCamera; }
@@ -92,6 +111,93 @@ protected:
   //! @param thePnt    [in]
   Standard_EXPORT Standard_Real SignedPlanePointDistance (const OpenGl_Vec4d& theNormal,
                                                           const OpenGl_Vec4d& thePnt);
+
+  //! Detects if AABB overlaps view volume using separating axis theorem (SAT).
+  //! @param theMinPt [in] maximum point of AABB.
+  //! @param theMaxPt [in] minimum point of AABB.
+  //! @return FALSE, if AABB is in viewing area, TRUE otherwise.
+  bool isFullOut (const OpenGl_Vec3d& theMinPt,
+                  const OpenGl_Vec3d& theMaxPt) const
+  {
+    //     E1
+    //    |_ E0
+    //   /
+    //    E2
+
+    // E0 test
+    if (theMinPt.x() > myMaxOrthoProjectionPts[0]
+     || theMaxPt.x() < myMinOrthoProjectionPts[0])
+    {
+      return true;
+    }
+
+    // E1 test
+    if (theMinPt.y() > myMaxOrthoProjectionPts[1]
+     || theMaxPt.y() < myMinOrthoProjectionPts[1])
+    {
+      return true;
+    }
+
+    // E2 test
+    if (theMinPt.z() > myMaxOrthoProjectionPts[2]
+     || theMaxPt.z() < myMinOrthoProjectionPts[2])
+    {
+      return true;
+    }
+
+    Standard_Real aBoxProjMax = 0.0, aBoxProjMin = 0.0;
+    const Standard_Integer anIncFactor = myIsProjectionParallel ? 2 : 1;
+    for (Standard_Integer aPlaneIter = 0; aPlaneIter < 5; aPlaneIter += anIncFactor)
+    {
+      OpenGl_Vec4d aPlane = myClipPlanes[aPlaneIter];
+      aBoxProjMax = (aPlane.x() > 0.0 ? (aPlane.x() * theMaxPt.x()) : aPlane.x() * theMinPt.x())
+                  + (aPlane.y() > 0.0 ? (aPlane.y() * theMaxPt.y()) : aPlane.y() * theMinPt.y())
+                  + (aPlane.z() > 0.0 ? (aPlane.z() * theMaxPt.z()) : aPlane.z() * theMinPt.z());
+      if (aBoxProjMax > myMinClipProjectionPts[aPlaneIter]
+       && aBoxProjMax < myMaxClipProjectionPts[aPlaneIter])
+      {
+        continue;
+      }
+
+      aBoxProjMin = (aPlane.x() < 0.0 ? aPlane.x() * theMaxPt.x() : aPlane.x() * theMinPt.x())
+                  + (aPlane.y() < 0.0 ? aPlane.y() * theMaxPt.y() : aPlane.y() * theMinPt.y())
+                  + (aPlane.z() < 0.0 ? aPlane.z() * theMaxPt.z() : aPlane.z() * theMinPt.z());
+      if (aBoxProjMin > myMaxClipProjectionPts[aPlaneIter]
+       || aBoxProjMax < myMinClipProjectionPts[aPlaneIter])
+      {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  //! Returns TRUE if given AABB should be discarded by distance culling criterion.
+  bool isTooDistant (const CullingContext& theCtx,
+                     const OpenGl_Vec3d& theMinPt,
+                     const OpenGl_Vec3d& theMaxPt) const
+  {
+    if (theCtx.DistCull <= 0.0)
+    {
+      return false;
+    }
+
+    // check distance to the bounding sphere as fast approximation
+    const Graphic3d_Vec3d aSphereCenter = (theMinPt + theMaxPt) * 0.5;
+    const Standard_Real   aSphereRadius = (theMaxPt - theMinPt).maxComp() * 0.5;
+    return (aSphereCenter - myCamEye).Modulus() - aSphereRadius > theCtx.DistCull;
+  }
+
+  //! Returns TRUE if given AABB should be discarded by size culling criterion.
+  bool isTooSmall (const CullingContext& theCtx,
+                   const OpenGl_Vec3d& theMinPt,
+                   const OpenGl_Vec3d& theMaxPt) const
+  {
+    if (theCtx.SizeCull2 <= 0.0)
+    {
+      return false;
+    }
+    return (theMaxPt - theMinPt).SquareModulus() < theCtx.SizeCull2;
+  }
 
 protected:
 
@@ -150,9 +256,7 @@ protected:
 
   Graphic3d_Vec3d myCamEye;      //!< camera eye position for distance culling
   Standard_Real   myCamScaleInv; //!< inverted camera scale for size culling
-  Standard_Real   myDistCull;    //!< culling distance
   Standard_Real   myPixelSize;   //!< pixel size for size culling
-  Standard_Real   mySizeCull2;   //!< squared culling size
 
 };
 

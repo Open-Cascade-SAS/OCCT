@@ -336,7 +336,7 @@ public:
 
   //! Returns selector for BVH tree, providing a possibility to store information
   //! about current view volume and to detect which objects are overlapping it.
-  OpenGl_BVHTreeSelector& BVHTreeSelector() { return myBVHSelector; }
+  const OpenGl_BVHTreeSelector& BVHTreeSelector() const { return myBVHSelector; }
 
   //! Returns true if there are immediate structures to display
   bool HasImmediateStructures() const

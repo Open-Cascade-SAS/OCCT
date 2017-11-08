@@ -510,6 +510,26 @@ void OpenGl_LayerList::SetLayerSettings (const Graphic3d_ZLayerId        theLaye
 }
 
 //=======================================================================
+//function : UpdateCulling
+//purpose  :
+//=======================================================================
+void OpenGl_LayerList::UpdateCulling (const Handle(OpenGl_Workspace)& theWorkspace,
+                                      const Standard_Boolean theToDrawImmediate)
+{
+  const OpenGl_BVHTreeSelector& aSelector = theWorkspace->View()->BVHTreeSelector();
+  for (OpenGl_IndexedLayerIterator anIts (myLayers); anIts.More(); anIts.Next())
+  {
+    OpenGl_Layer& aLayer = *anIts.ChangeValue();
+    if (aLayer.IsImmediate() != theToDrawImmediate)
+    {
+      continue;
+    }
+
+    aLayer.UpdateCulling (aSelector, theWorkspace->IsCullingEnabled());
+  }
+}
+
+//=======================================================================
 //function : Render
 //purpose  :
 //=======================================================================
@@ -588,7 +608,7 @@ void OpenGl_LayerList::Render (const Handle(OpenGl_Workspace)& theWorkspace,
         {
           aClearDepthLayer = aLayerIter.Index();
         }
-        if (aLayer.NbStructures() < 1)
+        if (aLayer.IsCulled())
         {
           continue;
         }
