@@ -49,6 +49,7 @@
 #include <BRep_Tool.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <GeomLib.hxx>
+#include <NCollection_IncAllocator.hxx>
 #include <Precision.hxx>
 #include <IntTools_Context.hxx>
 #include <TopExp_Explorer.hxx>
@@ -59,25 +60,13 @@
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
 
-//
-static
-  Standard_Boolean HasPaveBlocksOnIn(const BOPDS_FaceInfo& aFI1,
-                                     const BOPDS_FaceInfo& aFI2);
+#include <algorithm>
 //
 static
   TopoDS_Face BuildDraftFace(const TopoDS_Face& theFace,
                              const BOPCol_DataMapOfShapeListOfShape& theImages,
                              Handle(IntTools_Context)& theCtx);
-//
-typedef BOPCol_NCVector<TopoDS_Shape> BOPAlgo_VectorOfShape;
-//
-typedef BOPCol_NCVector<BOPAlgo_VectorOfShape> \
-  BOPAlgo_VectorOfVectorOfShape;
-//
-typedef NCollection_IndexedDataMap\
-  <BOPTools_Set, Standard_Integer, BOPTools_SetMapHasher> \
-    BOPAlgo_IndexedDataMapOfSetInteger;
-//
+
 //=======================================================================
 //class    : BOPAlgo_PairOfShapeBoolean
 //purpose  : 
@@ -480,176 +469,199 @@ void BOPAlgo_Builder::BuildSplitFaces()
   //
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~scope t
 }
+
+//=======================================================================
+//function : AddEdgeSet
+//purpose  : 
+//=======================================================================
+typedef
+  NCollection_IndexedDataMap<BOPTools_Set,
+                             BOPCol_ListOfShape,
+                             BOPTools_SetMapHasher> BOPAlgo_IndexedDataMapOfSetListOfShape;
+
+static void AddEdgeSet(const TopoDS_Shape& theS,
+                       BOPAlgo_IndexedDataMapOfSetListOfShape& theMap,
+                       const Handle(NCollection_BaseAllocator)& theAllocator)
+{
+  // Make set
+  BOPTools_Set aSE;
+  aSE.Add(theS, TopAbs_EDGE);
+  // Add set to the map, keeping connection to the shape
+  BOPCol_ListOfShape* pLF = theMap.ChangeSeek(aSE);
+  if (!pLF)
+    pLF = &theMap(theMap.Add(aSE, BOPCol_ListOfShape(theAllocator)));
+  pLF->Append(theS);
+}
+
 //=======================================================================
 //function : FillSameDomainFaces
 //purpose  : 
 //=======================================================================
 void BOPAlgo_Builder::FillSameDomainFaces()
 {
-  Standard_Boolean bFlag;
-  Standard_Integer i, j, k, aNbFFs, nF1, nF2;
-  Handle(NCollection_BaseAllocator) aAllocator;
-  BOPCol_ListIteratorOfListOfShape aItF;
-  BOPCol_MapOfShape aMFence;
-  BOPAlgo_IndexedDataMapOfSetInteger aIDMSS;
-  BOPAlgo_VectorOfVectorOfShape aVVS;
-  //
-  const BOPDS_VectorOfInterfFF& aFFs=myDS->InterfFF();
-  //
-  aNbFFs=aFFs.Extent();
-  if (!aNbFFs) {
+  // It is necessary to analyze all Face/Face intersections
+  // and find all faces with equal sets of edges
+  const BOPDS_VectorOfInterfFF& aFFs = myDS->InterfFF();
+  Standard_Integer aNbFFs = aFFs.Extent();
+  if (!aNbFFs)
     return;
+
+  Handle(NCollection_BaseAllocator) aAllocator = new NCollection_IncAllocator;
+
+  // Vector to store the indices of faces for future sorting
+  // for making the SD face for the group from the face with
+  // smallest index in Data structure
+  BOPCol_NCVector<Standard_Integer> aFIVec(256, aAllocator);
+  // Fence map to avoid repeated checks of the same face.
+  BOPCol_MapOfInteger aMFence(1, aAllocator);
+
+  // Fill the vector with indices of faces
+  for (Standard_Integer i = 0; i < aNbFFs; ++i)
+  {
+    const BOPDS_InterfFF& aFF = aFFs(i);
+    // get indices
+    Standard_Integer nF[2];
+    aFF.Indices(nF[0], nF[1]);
+    // store indices to the vector
+    for (Standard_Integer j = 0; j < 2; ++j)
+    {
+      if (!myDS->HasFaceInfo(nF[j]))
+        continue;
+
+      if (!aMFence.Add(nF[j]))
+        continue;
+
+      aFIVec.Append1() = nF[j];
+    }
   }
-  //
-  for (i=0; i<aNbFFs; ++i) {
-    const BOPDS_InterfFF& aFF=aFFs(i);
-    aFF.Indices(nF1, nF2);
-    //
-    if (!myDS->HasFaceInfo(nF1) || !myDS->HasFaceInfo(nF2) ) {
-      continue;
-    }
-    //
-    const BOPDS_FaceInfo& aFI1=myDS->FaceInfo(nF1);
-    const BOPDS_FaceInfo& aFI2=myDS->FaceInfo(nF2);
-    //
-    const TopoDS_Shape& aF1=myDS->Shape(nF1);
-    const TopoDS_Shape& aF2=myDS->Shape(nF2);
-    //
-    bFlag=HasPaveBlocksOnIn(aFI1, aFI2);
-    bFlag=bFlag && (mySplits.IsBound(aF1) && mySplits.IsBound(aF2));
-    //
-    if (bFlag) {
-      for (k=0; k<2; ++k) {
-        const TopoDS_Shape& aF=(!k) ? aF1 : aF2;
-        const BOPCol_ListOfShape& aLF=mySplits.Find(aF);
-        //
-        aItF.Initialize(aLF);
-        for (; aItF.More(); aItF.Next()) {
-          const TopoDS_Shape& aFx=aItF.Value();
-          //
-          if (aMFence.Add(aFx)) {
-            BOPTools_Set aSTx;
-            //
-            aSTx.Add(aFx, TopAbs_EDGE);
-            //
-            if (!aIDMSS.Contains(aSTx)) {
-              BOPAlgo_VectorOfShape& aVS=aVVS.Append1(); 
-              aVS.Append(aFx);
-              //
-              j=aVVS.Extent()-1;
-              aIDMSS.Add (aSTx, j);
-            }
-            else {
-              j=aIDMSS.ChangeFromKey(aSTx);
-              BOPAlgo_VectorOfShape& aVS=aVVS(j);
-              aVS.Append(aFx);
-            }
-          }
-        }
+
+  // Sort the indices
+  std::sort(aFIVec.begin(), aFIVec.end());
+
+  // Data map of set of edges with all faces having this set
+  NCollection_IndexedDataMap<BOPTools_Set,
+                             BOPCol_ListOfShape,
+                             BOPTools_SetMapHasher> anESetFaces(1, aAllocator);
+  // Map of planar bounded faces. If such faces have the same Edge set
+  // they are considered Same domain, without additional check.
+  BOPCol_MapOfShape aMFPlanar(1, aAllocator);
+
+  Standard_Integer aNbF = aFIVec.Extent();
+  for (Standard_Integer i = 0; i < aNbF; ++i)
+  {
+    const Standard_Integer nF = aFIVec(i);
+    const BOPDS_ShapeInfo& aSI = myDS->ShapeInfo(nF);
+    const TopoDS_Shape& aF = aSI.Shape();
+
+    Standard_Boolean bCheckPlanar = Standard_False;
+    {
+      // At this stage, context should contain adaptor for all intersected faces,
+      // so getting a type of the underlying surface should be done at no cost.
+      if (myContext->SurfaceAdaptor(TopoDS::Face(aF)).GetType() == GeomAbs_Plane)
+      {
+        // Check bounding box of the face - it should not be open in any side
+        const Bnd_Box& aBox = aSI.Box();
+        bCheckPlanar = !(aBox.IsOpenXmin() || aBox.IsOpenXmax() ||
+                         aBox.IsOpenYmin() || aBox.IsOpenYmax() ||
+                         aBox.IsOpenZmin() || aBox.IsOpenZmax());
       }
-    }// if (bFlag) {
-    else {// if (!bFlag) 
-      BOPTools_Set aST1, aST2;
-      //
-      aST1.Add(aF1, TopAbs_EDGE);
-      aST2.Add(aF2, TopAbs_EDGE);
-      //
-      if (aST1.IsEqual(aST2)) {
-        if (!aIDMSS.Contains(aST1)) {
-          BOPAlgo_VectorOfShape& aVS=aVVS.Append1(); 
-          if (aMFence.Add(aF1)) {
-            aVS.Append(aF1);
-          }
-          if (aMFence.Add(aF2)) {
-            aVS.Append(aF2);
-          }
-          //
-          k=aVVS.Extent()-1;
-          aIDMSS.Add (aST1, k);
-        }
-        else {
-          k=aIDMSS.ChangeFromKey(aST1);
-          BOPAlgo_VectorOfShape& aVS=aVVS(k);
-          if (aMFence.Add(aF1)) {
-            aVS.Append(aF1);
-          }
-          if (aMFence.Add(aF2)) {
-            aVS.Append(aF2);
-          }
-        }
-      }//if (aST1.IsEqual(aST2)) {
-    }// else {// if (!bFlag) 
-    //
-  }// for (i=0; i<aNbFFs; ++i) {
-  //
-  aIDMSS.Clear();
-  //
-  Standard_Boolean bFlagSD;
-  Standard_Integer aNbVPSB, aNbVVS, aNbF, aNbF1;
-  BOPAlgo_VectorOfPairOfShapeBoolean aVPSB;
-  //
-  aNbVVS=aVVS.Extent();
-  for (i=0; i<aNbVVS; ++i) {
-    const BOPAlgo_VectorOfShape& aVS=aVVS(i);
-    aNbF=aVS.Extent();
-    if (aNbF<2) {
-      continue;
     }
-    //
-    aNbF1=aNbF-1;
-    for (j=0; j<aNbF1; ++j) {
-      const TopoDS_Shape& aFj=aVS(j);
-      for (k=j+1; k<aNbF; ++k) {
-        const TopoDS_Shape& aFk=aVS(k);
-        BOPAlgo_PairOfShapeBoolean& aPSB=aVPSB.Append1();
-        aPSB.Shape1()=aFj;
-        aPSB.Shape2()=aFk;
+
+    const BOPCol_ListOfShape* pLFSp = mySplits.Seek(aF);
+    if (pLFSp)
+    {
+      BOPCol_ListIteratorOfListOfShape aItLF(*pLFSp);
+      for (; aItLF.More(); aItLF.Next())
+      {
+        AddEdgeSet(aItLF.Value(), anESetFaces, aAllocator);
+        if (bCheckPlanar)
+          aMFPlanar.Add(aItLF.Value());
+      }
+    }
+    else
+    {
+      AddEdgeSet(aF, anESetFaces, aAllocator);
+      if (bCheckPlanar)
+        aMFPlanar.Add(aF);
+    }
+  }
+
+  // Store pairs of faces with equal set of edges to check if they are really Same Domain
+  BOPAlgo_VectorOfPairOfShapeBoolean aVPSB;
+
+  // Back and forth map of SD faces to make the blocks
+  BOPCol_IndexedDataMapOfShapeListOfShape aDMSLS(1, aAllocator);
+
+  Standard_Integer aNbSets = anESetFaces.Extent();
+  for (Standard_Integer i = 1; i <= aNbSets; ++i)
+  {
+    const BOPCol_ListOfShape& aLF = anESetFaces(i);
+    if (aLF.Extent() < 2)
+      continue;
+
+    // All possible pairs from <aLF> should be checked
+    BOPCol_ListIteratorOfListOfShape aIt1(aLF);
+    for (; aIt1.More(); aIt1.Next())
+    {
+      const TopoDS_Shape& aF1 = aIt1.Value();
+      Standard_Boolean bCheckPlanar = aMFPlanar.Contains(aF1);
+
+      BOPCol_ListIteratorOfListOfShape aIt2 = aIt1;
+      for (aIt2.Next(); aIt2.More(); aIt2.Next())
+      {
+        const TopoDS_Shape& aF2 = aIt2.Value();
+        if (bCheckPlanar && aMFPlanar.Contains(aF2))
+        {
+          // Consider planar bounded faces as Same Domain without additional check
+          BOPAlgo_Tools::FillMap<TopoDS_Shape, TopTools_ShapeMapHasher>(aF1, aF2, aDMSLS, aAllocator);
+          continue;
+        }
+        // Add pair for analysis
+        BOPAlgo_PairOfShapeBoolean& aPSB = aVPSB.Append1();
+        aPSB.Shape1() = aF1;
+        aPSB.Shape2() = aF2;
         aPSB.SetFuzzyValue(myFuzzyValue);
         aPSB.SetProgressIndicator(myProgressIndicator);
       }
     }
   }
+
   //================================================================
+  // Perform analysis
   BOPAlgo_BuilderSDFaceCnt::Perform(myRunParallel, aVPSB, myContext);
   //================================================================
-  aAllocator=
-    NCollection_BaseAllocator::CommonBaseAllocator();
-  BOPCol_IndexedDataMapOfShapeListOfShape aDMSLS(100, aAllocator);
+
   NCollection_List<BOPCol_ListOfShape> aMBlocks(aAllocator);
-  //
-  aNbVPSB=aVPSB.Extent();
-  for (i=0; i<aNbVPSB; ++i) {
-    BOPAlgo_PairOfShapeBoolean& aPSB=aVPSB(i);
-    bFlagSD=aPSB.Flag();
-    if (bFlagSD) {
-      const TopoDS_Shape& aFj=aPSB.Shape1();
-      const TopoDS_Shape& aFk=aPSB.Shape2();
-      BOPAlgo_Tools::FillMap<TopoDS_Shape, TopTools_ShapeMapHasher>(aFj, aFk, aDMSLS, aAllocator);
-    }
+  // Fill map with SD faces to make the blocks
+  Standard_Integer aNbPairs = aVPSB.Extent();
+  for (Standard_Integer i = 0; i < aNbPairs; ++i)
+  {
+    BOPAlgo_PairOfShapeBoolean& aPSB = aVPSB(i);
+    if (aPSB.Flag())
+      BOPAlgo_Tools::FillMap<TopoDS_Shape, TopTools_ShapeMapHasher>
+       (aPSB.Shape1(), aPSB.Shape2(), aDMSLS, aAllocator);
   }
   aVPSB.Clear();
-  //
-  // 2. Make blocks
-  BOPAlgo_Tools::MakeBlocks<TopoDS_Shape, TopTools_ShapeMapHasher>(aDMSLS, aMBlocks, aAllocator);
-  //
-  // 3. Fill same domain faces map -> aMSDF
+
+  // Make blocks of SD faces using the back and forth map
+  BOPAlgo_Tools::MakeBlocks<TopoDS_Shape, TopTools_ShapeMapHasher>
+    (aDMSLS, aMBlocks, aAllocator);
+
+  // Fill same domain faces map
   NCollection_List<BOPCol_ListOfShape>::Iterator aItB(aMBlocks);
-  for (; aItB.More(); aItB.Next()) {
+  for (; aItB.More(); aItB.Next())
+  {
     const BOPCol_ListOfShape& aLSD = aItB.Value();
-    //
-    const TopoDS_Shape& aFSD1=aLSD.First();
-    aItF.Initialize(aLSD);
-    for (; aItF.More(); aItF.Next()) {
-      const TopoDS_Shape& aFSD=aItF.Value();
+    // First face will be SD face for all faces in the group
+    const TopoDS_Shape& aFSD1 = aLSD.First();
+    BOPCol_ListIteratorOfListOfShape aItLF(aLSD);
+    for (; aItLF.More(); aItLF.Next())
+    {
+      const TopoDS_Shape& aFSD = aItLF.Value();
       myShapesSD.Bind(aFSD, aFSD1);
-      //
-      // If the face has no splits but are SD face,
-      // it is considered as splitted face
-      if (!mySplits.IsBound(aFSD)) {
-        BOPCol_ListOfShape aLS;
-        aLS.Append(aFSD);
-        mySplits.Bind(aFSD, aLS);
-      }
+      // If the face has no splits but have an SD face, it is considered as being split
+      if (!mySplits.IsBound(aFSD))
+        mySplits.Bound(aFSD, BOPCol_ListOfShape())->Append(aFSD);
     }
   }
   aMBlocks.Clear();
@@ -759,42 +771,6 @@ void BOPAlgo_Builder::FillImagesFaces1()
     }
   }
 }
-//=======================================================================
-//function :HasPaveBlocksOnIn
-//purpose  : 
-//=======================================================================
-Standard_Boolean HasPaveBlocksOnIn(const BOPDS_FaceInfo& aFI1,
-                                   const BOPDS_FaceInfo& aFI2)
-{
-  Standard_Boolean bRet;
-  Standard_Integer i, aNbPB;
-  //
-  bRet=Standard_False;
-  const BOPDS_IndexedMapOfPaveBlock& aMPBOn1 = aFI1.PaveBlocksOn();
-  const BOPDS_IndexedMapOfPaveBlock& aMPBIn1 = aFI1.PaveBlocksIn();
-  //
-  const BOPDS_IndexedMapOfPaveBlock& aMPBOn2 = aFI2.PaveBlocksOn();
-  aNbPB = aMPBOn2.Extent();
-  for (i = 1; i <= aNbPB; ++i) {
-    const Handle(BOPDS_PaveBlock)& aPB = aMPBOn2(i);
-    bRet = aMPBOn1.Contains(aPB) || aMPBIn1.Contains(aPB);
-    if (bRet) {
-      return bRet;
-    }
-  }
-  //
-  const BOPDS_IndexedMapOfPaveBlock& aMPBIn2 = aFI2.PaveBlocksIn();
-  aNbPB = aMPBIn2.Extent();
-  for (i = 1; i <= aNbPB; ++i) {
-    const Handle(BOPDS_PaveBlock)& aPB = aMPBIn2(i);
-    bRet = aMPBOn1.Contains(aPB) || aMPBIn1.Contains(aPB);
-    if (bRet) {
-      return bRet;
-    }
-  }
-  return bRet;
-}
-
 //=======================================================================
 //function : BuildDraftFace
 //purpose  : Build draft faces, updating the bounding edges,
