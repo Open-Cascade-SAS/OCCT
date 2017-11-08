@@ -40,6 +40,7 @@
 #include <AIS_Shape.hxx>
 #include <AIS_DisplayMode.hxx>
 #include <AIS_PointCloud.hxx>
+#include <BRepLib_PointCloudShape.hxx>
 #include <TColStd_MapOfInteger.hxx>
 #include <ViewerTest_AutoUpdater.hxx>
 #include <ViewerTest_DoubleMapOfInteractiveAndName.hxx>
@@ -6250,6 +6251,12 @@ static Standard_Integer VPointCloud (Draw_Interpretor& theDI,
                                      Standard_Integer  theArgNum,
                                      const char**      theArgs)
 {
+  if (theArgNum < 2)
+  {
+     Message::SendFail ("Syntax error: wrong number of arguments");
+     return 1;
+  }
+
   Handle(AIS_InteractiveContext) anAISContext = ViewerTest::GetAISContext();
   if (anAISContext.IsNull())
   {
@@ -6257,83 +6264,114 @@ static Standard_Integer VPointCloud (Draw_Interpretor& theDI,
     return 1;
   }
 
-  // command to execute
-  enum Command
-  {
-    CloudForShape, // generate point cloud for shape
-    CloudSphere,   // generate point cloud for generic sphere
-    Unknow
-  };
+  TCollection_AsciiString aName;
+  TopoDS_Shape aShape;
 
-  // count number of non-optional command arguments
-  Command aCmd = Unknow;
-  Standard_Integer aCmdArgs = 0;
-  for (Standard_Integer anArgIter = 1; anArgIter < theArgNum; ++anArgIter)
-  {
-    Standard_CString anArg = theArgs[anArgIter];
-    TCollection_AsciiString aFlag (anArg);
-    aFlag.LowerCase();
-    if (aFlag.IsRealValue (Standard_True) || aFlag.Search ("-") != 1)
-    {
-      aCmdArgs++;
-    }
-  }
-  switch (aCmdArgs)
-  {
-    case 2  : aCmd = CloudForShape; break;
-    case 7  : aCmd = CloudSphere; break;
-    default :
-      Message::SendFail ("Syntax error: wrong number of arguments! See usage:");
-      theDI.PrintHelp (theArgs[0]);
-      return 1;
-  }
+  TCollection_AsciiString aDistribution;
+  gp_Pnt aDistCenter;
+  Standard_Real aDistRadius = 0.0;
+  Standard_Integer aDistNbPoints = 0;
 
   // parse options
-  Standard_Boolean toRandColors = Standard_False;
-  Standard_Boolean hasNormals   = Standard_True;
-  Standard_Boolean isSetArgNorm = Standard_False;
-  Standard_Boolean hasUV        = Standard_False;
+  bool toRandColors = false;
+  bool hasNormals = true, hasUV = false;
+  bool isDensityPoints = false;
+  Standard_Real aDensity = 0.0, aDist = 0.0;
+  Standard_Real aTol = Precision::Confusion();
   for (Standard_Integer anArgIter = 1; anArgIter < theArgNum; ++anArgIter)
   {
-    Standard_CString anArg = theArgs[anArgIter];
-    TCollection_AsciiString aFlag (anArg);
+    TCollection_AsciiString aFlag (theArgs[anArgIter]);
     aFlag.LowerCase();
     if (aFlag == "-randcolors"
      || aFlag == "-randcolor")
     {
-      if (isSetArgNorm && hasNormals)
-      {
-        Message::SendFail ("Syntax error: normals can not be enabled with colors at the same time");
-        return 1;
-      }
-      toRandColors = Standard_True;
-      hasNormals   = Standard_False;
+      toRandColors = Draw::ParseOnOffIterator (theArgNum, theArgs, anArgIter);
     }
     else if (aFlag == "-normals"
           || aFlag == "-normal")
     {
-      if (toRandColors)
-      {
-        Message::SendFail ("Syntax error: normals can not be enabled with colors at the same time");
-        return 1;
-      }
-      isSetArgNorm = Standard_True;
-      hasNormals   = Standard_True;
+      hasNormals = Draw::ParseOnOffIterator (theArgNum, theArgs, anArgIter);
     }
     else if (aFlag == "-nonormals"
           || aFlag == "-nonormal")
     {
-      isSetArgNorm = Standard_True;
-      hasNormals   = Standard_False;
+      hasNormals = !Draw::ParseOnOffIterator (theArgNum, theArgs, anArgIter);
     }
     else if (aFlag == "-uv"
           || aFlag == "-texels")
     {
-      hasUV = Standard_True;
+      hasUV = Draw::ParseOnOffIterator (theArgNum, theArgs, anArgIter);
+    }
+    else if ((aFlag == "-dist"
+           || aFlag == "-distance")
+          && anArgIter + 1 < theArgNum
+          && Draw::ParseReal (theArgs[anArgIter + 1], aDist))
+    {
+      ++anArgIter;
+      if (aDist < 0.0)
+      {
+        theDI << "Syntax error: -distance value should be >= 0.0";
+        return 1;
+      }
+      aDist = Max (aDist, Precision::Confusion());
+    }
+    else if ((aFlag == "-dens"
+           || aFlag == "-density")
+          && anArgIter + 1 < theArgNum
+          && Draw::ParseReal (theArgs[anArgIter + 1], aDensity))
+    {
+      ++anArgIter;
+      isDensityPoints = Standard_True;
+      if (aDensity <= 0.0)
+      {
+        theDI << "Syntax error: -density value should be > 0.0";
+        return 1;
+      }
+    }
+    else if ((aFlag == "-tol"
+           || aFlag == "-tolerance")
+          && anArgIter + 1 < theArgNum
+          && Draw::ParseReal (theArgs[anArgIter + 1], aTol))
+    {
+      ++anArgIter;
+      if (aTol < Precision::Confusion())
+      {
+        theDI << "Syntax error: -tol value should be >= " << Precision::Confusion();
+        return 1;
+      }
+    }
+    else if ((aFlag == "-surface"
+           || aFlag == "-volume")
+            && anArgIter + 5 < theArgNum)
+    {
+      aDistribution = aFlag;
+      aDistCenter.SetCoord (Draw::Atof (theArgs[anArgIter + 1]),
+                            Draw::Atof (theArgs[anArgIter + 2]),
+                            Draw::Atof (theArgs[anArgIter + 3]));
+      aDistRadius   = Draw::Atof (theArgs[anArgIter + 4]);
+      aDistNbPoints = Draw::Atoi (theArgs[anArgIter + 5]);
+      anArgIter += 5;
+    }
+    else if (aName.IsEmpty())
+    {
+      aName = theArgs[anArgIter];
+    }
+    else if (aShape.IsNull())
+    {
+      aShape = DBRep::Get (theArgs[anArgIter]);
+      if (aShape.IsNull())
+      {
+        theDI << "Syntax error: invalid shape '" << theArgs[anArgIter] << "'";
+        return 1;
+      }
+    }
+    else
+    {
+      theDI << "Syntax error at '" << theArgs[anArgIter] << "'";
+      return 1;
     }
   }
 
-  Standard_CString aName = theArgs[1];
   Graphic3d_ArrayFlags aFlags = Graphic3d_ArrayFlags_None;
   if (hasNormals)
   {
@@ -6350,125 +6388,80 @@ static Standard_Integer VPointCloud (Draw_Interpretor& theDI,
 
   // generate arbitrary set of points
   Handle(Graphic3d_ArrayOfPoints) anArrayPoints;
-  if (aCmd == CloudForShape)
+  if (!aShape.IsNull())
   {
-    Standard_CString aShapeName = theArgs[2];
-    TopoDS_Shape     aShape     = DBRep::Get (aShapeName);
-
-    if (aShape.IsNull())
+    class PointCloudPntFiller : public BRepLib_PointCloudShape
     {
-      Message::SendFail() << "Error: no shape with name '" << aShapeName << "' found";
-      return 1;
-    }
+    public:
+      PointCloudPntFiller (Standard_Real theTol) : BRepLib_PointCloudShape (TopoDS_Shape(), theTol) {}
+      void SetPointArray (const Handle(Graphic3d_ArrayOfPoints)& thePoints) { myPoints = thePoints; }
 
-    // calculate number of points
-    TopLoc_Location  aLocation;
-    Standard_Integer aNbPoints = 0;
-    for (TopExp_Explorer aFaceIt (aShape, TopAbs_FACE); aFaceIt.More(); aFaceIt.Next())
-    {
-      const TopoDS_Face& aFace = TopoDS::Face (aFaceIt.Current());
-      Handle(Poly_Triangulation) aTriangulation = BRep_Tool::Triangulation (aFace, aLocation);
-      if (!aTriangulation.IsNull())
+    protected:
+      virtual void addPoint (const gp_Pnt& thePoint,
+                             const gp_Vec& theNorm,
+                             const gp_Pnt2d& theUV,
+                             const TopoDS_Shape& ) Standard_OVERRIDE
       {
-        aNbPoints += aTriangulation->NbNodes();
-      }
-    }
-    if (aNbPoints < 3)
-    {
-      Message::SendFail ("Error: shape should be triangulated");
-      return 1;
-    }
-
-    anArrayPoints = new Graphic3d_ArrayOfPoints (aNbPoints, aFlags);
-    for (TopExp_Explorer aFaceIt (aShape, TopAbs_FACE); aFaceIt.More(); aFaceIt.Next())
-    {
-      const TopoDS_Face& aFace = TopoDS::Face (aFaceIt.Current());
-      Handle(Poly_Triangulation) aTriangulation = BRep_Tool::Triangulation (aFace, aLocation);
-      if (aTriangulation.IsNull())
-      {
-        continue;
-      }
-
-      const gp_Trsf&            aTrsf  = aLocation.Transformation();
-
-      // extract normals from nodes
-      TColgp_Array1OfDir aNormals (1, hasNormals ? aTriangulation->NbNodes() : 1);
-      if (hasNormals)
-      {
-        Poly_Connect aPolyConnect (aTriangulation);
-        StdPrs_ToolTriangulatedShape::Normal (aFace, aPolyConnect, aNormals);
-      }
-
-      for (Standard_Integer aNodeIter = 1; aNodeIter <= aTriangulation->NbNodes(); ++aNodeIter)
-      {
-        gp_Pnt aPoint = aTriangulation->Node (aNodeIter);
-        if (!aLocation.IsIdentity())
+        const Standard_Integer aPntIndex = myPoints->AddVertex (thePoint, theUV);
+        if (theNorm.SquareMagnitude() > gp::Resolution())
         {
-          aPoint.Transform (aTrsf);
-          if (hasNormals)
-          {
-            aNormals (aNodeIter).Transform (aTrsf);
-          }
+          myPoints->SetVertexNormal (aPntIndex, theNorm);
         }
-
-        // add vertex into array of points
-        const Standard_Integer anIndexOfPoint = anArrayPoints->AddVertex (aPoint);
-        if (toRandColors)
+        if (myPoints->HasVertexColors())
         {
-          Quantity_Color aColor (360.0 * Standard_Real(anIndexOfPoint) / Standard_Real(aNbPoints),
+          Quantity_Color aColor (360.0 * Standard_Real(aPntIndex) / Standard_Real(myPoints->VertexNumberAllocated()),
                                  1.0, 0.5, Quantity_TOC_HLS);
-          anArrayPoints->SetVertexColor (anIndexOfPoint, aColor);
-        }
-
-        if (hasNormals)
-        {
-          anArrayPoints->SetVertexNormal (anIndexOfPoint, aNormals (aNodeIter));
-        }
-        if (hasUV
-         && aTriangulation->HasUVNodes())
-        {
-          anArrayPoints->SetVertexTexel (anIndexOfPoint, aTriangulation->UVNode (aNodeIter));
+          myPoints->SetVertexColor (aPntIndex, aColor);
         }
       }
+
+    private:
+      Handle(Graphic3d_ArrayOfPoints) myPoints;
+    };
+
+    PointCloudPntFiller aPoitCloudTool (aTol);
+    aPoitCloudTool.SetShape (aShape);
+    aPoitCloudTool.SetDistance (aDist);
+
+    Standard_Integer aNbPoints = isDensityPoints
+                               ? aPoitCloudTool.NbPointsByDensity (aDensity)
+                               : aPoitCloudTool.NbPointsByTriangulation();
+    theDI << "Number of the generated points : " << aNbPoints << "\n";
+    anArrayPoints = new Graphic3d_ArrayOfPoints (aNbPoints, aFlags);
+    aPoitCloudTool.SetPointArray (anArrayPoints);
+    Standard_Boolean isDone = isDensityPoints
+                            ? aPoitCloudTool.GeneratePointsByDensity (aDensity)
+                            : aPoitCloudTool.GeneratePointsByTriangulation();
+    if (!isDone)
+    {
+      Message::SendFail() << "Error: Point cloud was not generated";
+      return 1;
     }
   }
-  else if (aCmd == CloudSphere)
+  else if (!aDistribution.IsEmpty())
   {
-    Standard_Real aCenterX       = Draw::Atof (theArgs[2]);
-    Standard_Real aCenterY       = Draw::Atof (theArgs[3]);
-    Standard_Real aCenterZ       = Draw::Atof (theArgs[4]);
-    Standard_Real aRadius        = Draw::Atof (theArgs[5]);
-    Standard_Integer aNbPoints   = Draw::Atoi (theArgs[6]);
+    const bool isSurface = aDistribution == "-surface";
 
-    TCollection_AsciiString aDistribution = TCollection_AsciiString(theArgs[7]);
-    aDistribution.LowerCase();
-    if ( aDistribution != "surface" && aDistribution != "volume" )
+    anArrayPoints = new Graphic3d_ArrayOfPoints (aDistNbPoints, aFlags);
+    std::mt19937 aRandomGenerator(0);
+    std::uniform_real_distribution<> anAlphaDistrib(0.0, 2.0 * M_PI);
+    std::uniform_real_distribution<> aBetaDistrib  (0.0, 2.0 * M_PI);
+    std::uniform_real_distribution<> aRadiusDistrib(0.0, aDistRadius);
+    for (Standard_Integer aPntIt = 0; aPntIt < aDistNbPoints; ++aPntIt)
     {
-      Message::SendFail ("Syntax error: wrong arguments. See usage:");
-      theDI.PrintHelp (theArgs[0]);
-      return 1;
-    }
-    Standard_Boolean isSurface = aDistribution == "surface";
-
-    gp_Pnt aCenter(aCenterX, aCenterY, aCenterZ);
-
-    anArrayPoints = new Graphic3d_ArrayOfPoints (aNbPoints, aFlags);
-    for (Standard_Integer aPntIt = 0; aPntIt < aNbPoints; ++aPntIt)
-    {
-      Standard_Real anAlpha   = (Standard_Real (rand() % 2000) / 1000.0) * M_PI;
-      Standard_Real aBeta     = (Standard_Real (rand() % 2000) / 1000.0) * M_PI;
-      Standard_Real aDistance = isSurface ?
-        aRadius : (Standard_Real (rand() % aNbPoints) / aNbPoints) * aRadius;
+      Standard_Real anAlpha   = anAlphaDistrib(aRandomGenerator);
+      Standard_Real aBeta     = aBetaDistrib  (aRandomGenerator);
+      Standard_Real aDistance = isSurface ? aDistRadius : aRadiusDistrib (aRandomGenerator);
 
       gp_Dir aDir (Cos (anAlpha) * Sin (aBeta),
                    Sin (anAlpha),
                    Cos (anAlpha) * Cos (aBeta));
-      gp_Pnt aPoint = aCenter.Translated (aDir.XYZ() * aDistance);
+      gp_Pnt aPoint = aDistCenter.Translated (aDir.XYZ() * aDistance);
 
       const Standard_Integer anIndexOfPoint = anArrayPoints->AddVertex (aPoint);
       if (toRandColors)
       {
-        Quantity_Color aColor (360.0 * Standard_Real (anIndexOfPoint) / Standard_Real (aNbPoints),
+        Quantity_Color aColor (360.0 * Standard_Real (anIndexOfPoint) / Standard_Real (aDistNbPoints),
                                1.0, 0.5, Quantity_TOC_HLS);
         anArrayPoints->SetVertexColor (anIndexOfPoint, aColor);
       }
@@ -6484,11 +6477,16 @@ static Standard_Integer VPointCloud (Draw_Interpretor& theDI,
       }
     }
   }
+  else
+  {
+    Message::SendFail ("Error: wrong number of arguments");
+    return 1;
+  }
 
   // set array of points in point cloud object
   Handle(AIS_PointCloud) aPointCloud = new AIS_PointCloud();
   aPointCloud->SetPoints (anArrayPoints);
-  VDisplayAISObject (aName, aPointCloud);
+  ViewerTest::Display (aName, aPointCloud);
   return 0;
 }
 
@@ -7149,18 +7147,23 @@ Prints the default vertex draw mode without -set parameter.
 )" /* [vvertexmode] */);
 
   addCmd ("vpointcloud", VPointCloud, /* [vpointcloud] */ R"(
-vpointcloud name shape [-randColor] [-normals] [-noNormals] [-uv]
+vpointcloud name shape [-randColor {0|1}]=0 [-normals {0|1}]=1 [-uv {0|1}]=0
+            [-distance Value]=0.0 [-density Value] [-tolerance Value]
 Create an interactive object for arbitrary set of points from triangulated shape.
 
-vpointcloud name x y z r npts {surface|volume}
-            ... [-randColor] [-normals] [-noNormals] [-uv]
+vpointcloud name {-surface|-volume} x y z r npts
+            [-randColor] [-normals] [-uv]
 Create arbitrary set of points (npts) randomly distributed
 on spheric surface or within spheric volume (x y z r).
 
 Additional options:
- -randColor - generate random color per point
- -normals   - generate normal per point (default)
- -noNormals - do not generate normal per point
+ -normals   generate or not normal per point
+ -uv        generate UV (texel) coordinates per point
+ -randColor generate random color per point
+ -distance  distance from shape into the range [0, Value];
+ -density   density of points to generate randomly on surface;
+ -tolerance cloud generator's tolerance; default value is Precision::Confusion();
+
 )" /* [vpointcloud] */);
 
   addCmd ("vpriority", VPriority, /* [vpriority] */ R"(

@@ -30,8 +30,12 @@ BRepLib_MakeVertex.hxx
 BRepLib_MakeWire.cxx
 BRepLib_MakeWire.hxx
 BRepLib_MakeWire_1.cxx
+BRepLib_PointCloudShape.hxx
+BRepLib_PointCloudShape.cxx
 BRepLib_ShapeModification.hxx
 BRepLib_ShellError.hxx
+BRepLib_ToolTriangulatedShape.hxx
+BRepLib_ToolTriangulatedShape.cxx
 BRepLib_ValidateEdge.cxx
 BRepLib_ValidateEdge.hxx
 BRepLib_WireError.hxx

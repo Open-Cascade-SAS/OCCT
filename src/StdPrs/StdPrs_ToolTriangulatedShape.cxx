@@ -18,24 +18,11 @@
 
 #include <BRepBndLib.hxx>
 #include <BRepMesh_DiscretFactory.hxx>
-#include <BRepMesh_DiscretRoot.hxx>
 #include <BRepTools.hxx>
 #include <BRep_Tool.hxx>
-#include <GeomAbs_SurfaceType.hxx>
-#include <GeomLib.hxx>
-#include <gp_XYZ.hxx>
-#include <Poly.hxx>
-#include <Poly_Connect.hxx>
-#include <Poly_Triangulation.hxx>
-#include <Precision.hxx>
 #include <Prs3d.hxx>
 #include <Prs3d_Drawer.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-#include <TopAbs_Orientation.hxx>
 #include <TopLoc_Location.hxx>
-#include <TShort_HArray1OfShortReal.hxx>
-#include <TShort_Array1OfShortReal.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Face.hxx>
@@ -129,66 +116,6 @@ Standard_Boolean StdPrs_ToolTriangulatedShape::IsClosed (const TopoDS_Shape& the
       // ignore
       return Standard_True;
     }
-  }
-}
-
-//=======================================================================
-//function : ComputeNormals
-//purpose  :
-//=======================================================================
-void StdPrs_ToolTriangulatedShape::ComputeNormals (const TopoDS_Face& theFace,
-                                                   const Handle(Poly_Triangulation)& theTris,
-                                                   Poly_Connect& thePolyConnect)
-{
-  if (theTris.IsNull()
-   || theTris->HasNormals())
-  {
-    return;
-  }
-
-  // take in face the surface location
-  const TopoDS_Face    aZeroFace = TopoDS::Face (theFace.Located (TopLoc_Location()));
-  Handle(Geom_Surface) aSurf     = BRep_Tool::Surface (aZeroFace);
-  if (!theTris->HasUVNodes() || aSurf.IsNull())
-  {
-    // compute normals by averaging triangulation normals sharing the same vertex
-    Poly::ComputeNormals (theTris);
-    return;
-  }
-
-  const Standard_Real aTol = Precision::Confusion();
-  Standard_Integer aTri[3];
-  gp_Dir aNorm;
-  theTris->AddNormals();
-  for (Standard_Integer aNodeIter = 1; aNodeIter <= theTris->NbNodes(); ++aNodeIter)
-  {
-    // try to retrieve normal from real surface first, when UV coordinates are available
-    if (GeomLib::NormEstim (aSurf, theTris->UVNode (aNodeIter), aTol, aNorm) > 1)
-    {
-      if (thePolyConnect.Triangulation() != theTris)
-      {
-        thePolyConnect.Load (theTris);
-      }
-
-      // compute flat normals
-      gp_XYZ eqPlan (0.0, 0.0, 0.0);
-      for (thePolyConnect.Initialize (aNodeIter); thePolyConnect.More(); thePolyConnect.Next())
-      {
-        theTris->Triangle (thePolyConnect.Value()).Get (aTri[0], aTri[1], aTri[2]);
-        const gp_XYZ v1 (theTris->Node (aTri[1]).Coord() - theTris->Node (aTri[0]).Coord());
-        const gp_XYZ v2 (theTris->Node (aTri[2]).Coord() - theTris->Node (aTri[1]).Coord());
-        const gp_XYZ vv = v1 ^ v2;
-        const Standard_Real aMod = vv.Modulus();
-        if (aMod >= aTol)
-        {
-          eqPlan += vv / aMod;
-        }
-      }
-      const Standard_Real aModMax = eqPlan.Modulus();
-      aNorm = (aModMax > aTol) ? gp_Dir (eqPlan) : gp::DZ();
-    }
-
-    theTris->SetNormal (aNodeIter, aNorm);
   }
 }
 

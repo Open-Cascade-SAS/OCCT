@@ -1,0 +1,14 @@
+puts "============"
+puts "0029325: Modeling Algorithms - add tool BRepLib_PointCloudShape for generation point cloud for specified shape"
+puts "============"
+puts ""
+
+pload XDE OCAF MODELING VISUALIZATION
+
+set aNbPntsExpected 27890
+set aTmpPly ${imagedir}/${casename}_tmp.ply
+lappend occ_tmp_files $aTmpPly
+
+restore [locate_data_file bug29325_SANGLE_DE_FIXATION.brep] aShape
+set aNbPnts [writeply aShape $aTmpPly -pointCloud -dist 0.0 -dens 0.5 -colors 0]
+if {$aNbPnts != $aNbPntsExpected} { puts "Error: ($aNbPnts) generated while expected ($aNbPntsExpected)" }

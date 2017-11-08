@@ -454,6 +454,7 @@ t TKRWMesh
 n RWGltf
 n RWMesh
 n RWObj
+n RWPly
 n DFBrowser
 n DFBrowserPane
 n DFBrowserPaneXDE

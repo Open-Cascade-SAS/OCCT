@@ -14,19 +14,13 @@
 #ifndef _StdPrs_ToolTriangulatedShape_HeaderFile
 #define _StdPrs_ToolTriangulatedShape_HeaderFile
 
-#include <Poly_Connect.hxx>
-#include <Poly_Triangulation.hxx>
-#include <Prs3d_Drawer.hxx>
-#include <Standard.hxx>
-#include <Standard_Macro.hxx>
+#include <BRepLib_ToolTriangulatedShape.hxx>
 #include <TColgp_Array1OfDir.hxx>
 
-class TopoDS_Face;
 class TopoDS_Shape;
 class Prs3d_Drawer;
-class Poly_Triangulation;
 
-class StdPrs_ToolTriangulatedShape
+class StdPrs_ToolTriangulatedShape: public BRepLib_ToolTriangulatedShape
 {
 public:
 
@@ -37,26 +31,6 @@ public:
   //! Checks back faces visibility for specified shape (to activate back-face culling). <br>
   //! @return true if shape is closed manifold Solid or compound of such Solids. <br>
   Standard_EXPORT static Standard_Boolean IsClosed (const TopoDS_Shape& theShape);
-
-  //! Computes nodal normals for Poly_Triangulation structure using UV coordinates and surface.
-  //! Does nothing if triangulation already defines normals.
-  //! @param theFace [in] the face
-  //! @param theTris [in] the definition of a face triangulation
-  static void ComputeNormals (const TopoDS_Face& theFace,
-                              const Handle(Poly_Triangulation)& theTris)
-  {
-    Poly_Connect aPolyConnect;
-    ComputeNormals (theFace, theTris, aPolyConnect);
-  }
-
-  //! Computes nodal normals for Poly_Triangulation structure using UV coordinates and surface.
-  //! Does nothing if triangulation already defines normals.
-  //! @param theFace [in] the face
-  //! @param theTris [in] the definition of a face triangulation
-  //! @param thePolyConnect [in,out] optional, initialized tool for exploring triangulation
-  Standard_EXPORT static void ComputeNormals (const TopoDS_Face& theFace,
-                                              const Handle(Poly_Triangulation)& theTris,
-                                              Poly_Connect& thePolyConnect);
 
   //! Evaluate normals for a triangle of a face.
   //! @param[in]  theFace the face.

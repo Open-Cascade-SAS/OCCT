@@ -21,7 +21,7 @@ vrotate 0.2 0.0 0.0
 vdump $::imagedir/${::casename}_green.png
 
 # random colors mode
-vpointcloud p s -randcolors
+vpointcloud p s -randcolors -nonormals
 vdump $::imagedir/${::casename}_rand.png
 
 # texture mapping
