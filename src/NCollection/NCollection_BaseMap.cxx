@@ -29,7 +29,6 @@ Standard_Boolean  NCollection_BaseMap::BeginResize
    NCollection_ListNode**& data1,
    NCollection_ListNode**& data2) const 
 {
-  if (mySaturated) return Standard_False;
   N = NextPrimeForMap(NbBuckets);
   if (N <= myNbBuckets) {
     if (!myData1)
@@ -57,17 +56,17 @@ Standard_Boolean  NCollection_BaseMap::BeginResize
 //=======================================================================
 
 void  NCollection_BaseMap::EndResize
-  (const Standard_Integer NbBuckets,
+  (const Standard_Integer theNbBuckets,
    const Standard_Integer N,
    NCollection_ListNode** data1,
    NCollection_ListNode** data2)
 {
+  (void )theNbBuckets; // obsolete parameter
   if (myData1) 
     myAllocator->Free(myData1);
   if (myData2) 
     myAllocator->Free(myData2);
   myNbBuckets = N;
-  mySaturated = (myNbBuckets <= NbBuckets);
   myData1 = data1;
   myData2 = data2;
 }
@@ -105,7 +104,6 @@ void  NCollection_BaseMap::Destroy (NCollection_DelMapNode fDel,
   mySize = 0;
   if (doReleaseMemory)
   {
-    mySaturated = Standard_False;
     if (myData1) 
       myAllocator->Free(myData1);
     if (isDouble && myData2) 
@@ -124,7 +122,6 @@ void NCollection_BaseMap::Statistics(Standard_OStream& S) const
 {
   S <<"\nMap Statistics\n---------------\n\n";
   S <<"This Map has "<<myNbBuckets<<" Buckets and "<<mySize<<" Keys\n\n";
-  if (mySaturated) S<<"The maximum number of Buckets is reached\n";
   
   if (mySize == 0) return;
 

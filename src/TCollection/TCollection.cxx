@@ -14,8 +14,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <TCollection.hxx>
+
+#include <Standard_OutOfRange.hxx>
 
 // The array of prime numbers used as consequtive steps for 
 // size of array of buckets in the map.
@@ -27,27 +28,47 @@
 // memory overhead in that case is only ~15% as compared with total size of
 // all auxiliary data structures (each map node takes ~24 bytes), 
 // and this proves to pay off in performance (see OCC13189).
-#define NB_PRIMES 12
-static const Standard_Integer Primes[NB_PRIMES+1] = {
-     101,
-    1009,
-    2003,
-    5003,
-   10007,
-   20011,
-   37003,
-   57037,
-   65003,
-  100019,
-  209953,   // The following are Pierpont primes taken from Wikipedia [List of prime numbers]
-  472393,
-  995329
-};  
+#define THE_NB_PRIMES 24
+static const Standard_Integer THE_TCollection_Primes[THE_NB_PRIMES] =
+{
+         101,
+        1009,
+        2003,
+        5003,
+       10007,
+       20011,
+       37003,
+       57037,
+       65003,
+      100019,
+      209953, // The following are Pierpont primes [List of prime numbers]
+      472393,
+      995329,
+     2359297,
+     4478977,
+     9437185,
+    17915905,
+    35831809,
+    71663617,
+   150994945,
+   301989889,
+   573308929,
+  1019215873,
+  2038431745
+};
 
+// =======================================================================
+// function : NextPrimeForMap
+// purpose  :
+// =======================================================================
 Standard_Integer TCollection::NextPrimeForMap(const Standard_Integer N)
 {
-  Standard_Integer i;
-  for (i = 0; i < NB_PRIMES; i++) 
-    if (Primes[i] > N) break;
-  return Primes[i];
+  for (Standard_Integer aPrimeIter = 0; aPrimeIter < THE_NB_PRIMES; ++aPrimeIter)
+  {
+    if (THE_TCollection_Primes[aPrimeIter] > N)
+    {
+      return THE_TCollection_Primes[aPrimeIter];
+    }
+  }
+  throw Standard_OutOfRange ("TCollection::NextPrimeForMap() - requested too big size");
 }
