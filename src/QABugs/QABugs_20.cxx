@@ -2530,6 +2530,65 @@ static Standard_Integer OCC28131 (Draw_Interpretor&, Standard_Integer theNbArgs,
 */
   return 0;
 }
+#include <math_NewtonFunctionRoot.hxx>
+#include <math_TrigonometricFunctionRoots.hxx>
+#include <math_TrigonometricEquationFunction.hxx>
+#include <gp_Elips2d.hxx>
+#include <Geom2d_Ellipse.hxx>
+#include <Geom2dAPI_InterCurveCurve.hxx>
+static Standard_Integer OCC29289(Draw_Interpretor&, Standard_Integer , const char** )
+{
+  gp_Elips2d e1(gp_Ax2d(gp_Pnt2d(0., 0.), gp_Dir2d(1., 0)), 2., 1.);
+  Handle(Geom2d_Ellipse) Ge1 = new Geom2d_Ellipse(e1);
+  gp_Elips2d e2(gp_Ax2d(gp_Pnt2d(0.5, 0.5), gp_Dir2d(1., 1.)), 2., 1.);
+  Handle(Geom2d_Ellipse) Ge2 = new Geom2d_Ellipse(e2);
+
+  Standard_Integer err = 0;
+  Geom2dAPI_InterCurveCurve Intersector;
+  Intersector.Init(Ge1, Ge2, 1.e-7);
+  if (Intersector.NbPoints() == 0)
+  {
+    std::cout << "Error: intersector is not done  \n";
+    err = 1;
+  }
+
+
+  Standard_Real A, B, C, D, E;
+  A = 1.875;
+  B = -.75;
+  C = -.5;
+  D = -.25;
+  E = -.25;
+  math_TrigonometricEquationFunction MyF(A, B, C, D, E);
+  Standard_Real X, Tol1, Eps, Teta, TetaNewton;
+  Tol1 = 1.e-15;
+  Eps = 1.5e-12;
+  Standard_Integer Nit[] = { 5, 6, 7, 6 };
+
+  Standard_Real TetaPrev = 0.;
+  Standard_Integer i;
+  for (i = 1; i <= Intersector.NbPoints(); i++) {
+    Teta = Intersector.Intersector().Point(i).ParamOnFirst();
+    X = Teta - 0.1 * (Teta - TetaPrev);
+    TetaPrev = Teta;
+    math_NewtonFunctionRoot Resol(MyF, X, Tol1, Eps, Nit[i-1]);
+    if (Resol.IsDone()) {
+      TetaNewton = Resol.Root();
+      if (Abs(Teta - TetaNewton) > 1.e-7)
+      {
+        std::cout << "Error: Newton root is wrong for " << Teta << " \n";
+        err = 1;
+      }
+    }
+    else
+    {
+      std::cout << "Error: Newton is not done for " << Teta << " \n";
+      err = 1;
+    }
+  }
+
+  return err;
+}
 
 void QABugs::Commands_20(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
@@ -2559,6 +2618,7 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands) {
                   "\n\t\t: Check interface for reading BRep from memory.",
                   __FILE__, OCC28887, group);
   theCommands.Add("OCC28131", "OCC28131 name: creates face problematic for offset", __FILE__, OCC28131, group);
+  theCommands.Add("OCC29289", "OCC29289 : searching trigonometric root by Newton iterations", __FILE__, OCC29289, group);
 
   return;
 }

@@ -121,6 +121,7 @@ math_SVD.lxx
 math_TrigonometricFunctionRoots.cxx
 math_TrigonometricFunctionRoots.hxx
 math_TrigonometricFunctionRoots.lxx
+math_TrigonometricEquationFunction.hxx
 math_Uzawa.cxx
 math_Uzawa.hxx
 math_Uzawa.lxx

@@ -5529,6 +5529,7 @@ surface_radius c pi 3 c1 c2
 
 * **intersect** computes intersections of surfaces; 
 * **2dintersect** computes intersections of 2d curves.
+* **intconcon** computes intersections of 2d conic curves.
 
 @subsubsection occt_draw_6_7_1  intersect
 
@@ -5547,7 +5548,7 @@ plane p 0 0 40 0 1 5
 intersect e c p 
 ~~~~~
 
-@subsubsection occt_draw_6_7_2  dintersect
+@subsubsection occt_draw_6_7_2  2dintersect
 
 Syntax:      
 ~~~~~
@@ -5562,6 +5563,25 @@ Displays the intersection points between two 2d curves.
 ellipse e1 0 0 5 2 
 ellipse e2 0 0 0 1 5 2 
 2dintersect e1 e2 
+~~~~~
+
+@subsubsection occt_draw_6_7_3 intconcon
+
+Syntax:      
+~~~~~
+intconcon curve1 curve2 
+~~~~~
+
+Displays the intersection points between two 2d curves. 
+Curves must be only conic sections: 2d lines, circles, ellipses,
+hyperbolas, parabolas. Algorithm from IntAna2d_AnaIntersection is used.
+
+**Example:** 
+~~~~~
+# intersect two 2d ellipses 
+ellipse e1 0 0 5 2 
+ellipse e2 0 0 0 1 5 2 
+intconcon e1 e2 
 ~~~~~
 
 @subsection occt_draw_6_8  Approximations

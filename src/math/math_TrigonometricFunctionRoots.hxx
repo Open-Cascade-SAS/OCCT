@@ -54,7 +54,7 @@ public:
   Standard_EXPORT math_TrigonometricFunctionRoots(const Standard_Real D, const Standard_Real E, const Standard_Real InfBound, const Standard_Real SupBound);
   
   //! Given the three coefficients c, d and e, it performs
-  //! the resolution of 2*b*cos(x)*sin(x) + d*sin(x) + e = 0.
+  //! the resolution of c*Cos(x) + d*sin(x) + e = 0.
   //! The solutions must be contained in [InfBound, SupBound].
   //! InfBound and SupBound can be set by default to 0 and 2*PI.
   Standard_EXPORT math_TrigonometricFunctionRoots(const Standard_Real C, const Standard_Real D, const Standard_Real E, const Standard_Real InfBound, const Standard_Real SupBound);

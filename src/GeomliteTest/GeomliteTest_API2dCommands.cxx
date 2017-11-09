@@ -41,7 +41,10 @@
 #include <Geom2d_Circle.hxx>
 #include <IntAna2d_AnaIntersection.hxx>
 #include <IntAna2d_IntPoint.hxx>
+#include <IntAna2d_Conic.hxx>
 #include <IntRes2d_IntersectionPoint.hxx>
+#include <Geom2dAdaptor_GHCurve.hxx>
+#include <memory>
 
 #include <stdio.h>
 #ifdef _WIN32
@@ -359,24 +362,24 @@ static Standard_Integer intersect(Draw_Interpretor& di, Standard_Integer n, cons
 }
 
 //=======================================================================
-//function : intersect
+//function : intersect_ana
 //purpose  : 
 //=======================================================================
 
 static Standard_Integer intersect_ana(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
-  if( n < 2) 
+  if (n < 2)
   {
-    cout<< "2dintana circle circle "<<endl;
+    cout << "2dintana circle circle " << endl;
     return 1;
   }
-  
+
   Handle(Geom2d_Curve) C1 = DrawTrSurf::GetCurve2d(a[1]);
-  if ( C1.IsNull() && !C1->IsKind(STANDARD_TYPE(Geom2d_Circle))) 
+  if (C1.IsNull() && !C1->IsKind(STANDARD_TYPE(Geom2d_Circle)))
     return 1;
 
   Handle(Geom2d_Curve) C2 = DrawTrSurf::GetCurve2d(a[2]);
-  if ( C2.IsNull() && !C2->IsKind(STANDARD_TYPE(Geom2d_Circle)))
+  if (C2.IsNull() && !C2->IsKind(STANDARD_TYPE(Geom2d_Circle)))
     return 1;
 
   Handle(Geom2d_Circle) aCir1 = Handle(Geom2d_Circle)::DownCast(C1);
@@ -386,11 +389,121 @@ static Standard_Integer intersect_ana(Draw_Interpretor& di, Standard_Integer n, 
 
   Standard_Integer i;
 
+  for (i = 1; i <= Intersector.NbPoints(); i++) {
+    gp_Pnt2d P = Intersector.Point(i).Value();
+    di << "Intersection point " << i << " : " << P.X() << " " << P.Y() << "\n";
+    di << "parameter on the fist: " << Intersector.Point(i).ParamOnFirst();
+    di << " parameter on the second: " << Intersector.Point(i).ParamOnSecond() << "\n";
+    Handle(Draw_Marker2D) mark = new Draw_Marker2D(P, Draw_X, Draw_vert);
+    dout << mark;
+  }
+  dout.Flush();
+
+  return 0;
+}
+
+//=======================================================================
+//function : intconcon
+//purpose  : 
+//=======================================================================
+
+static Standard_Integer intconcon(Draw_Interpretor& di, Standard_Integer n, const char** a)
+{
+  if( n < 2) 
+  {
+    cout<< "intconcon con1 con2 "<<endl;
+    return 1;
+  }
+  
+  Handle(Geom2d_Curve) C1 = DrawTrSurf::GetCurve2d(a[1]);
+  if (C1.IsNull())
+  {
+    cout << a[1] << " is Null " << endl;
+    return 1;
+  }
+
+  Handle(Geom2d_Curve) C2 = DrawTrSurf::GetCurve2d(a[2]);
+  if (C2.IsNull())
+  {
+    cout << a[2] << " is Null " << endl;
+    return 1;
+  }
+
+  Geom2dAdaptor_Curve AC1(C1), AC2(C2);
+  GeomAbs_CurveType T1 = AC1.GetType(), T2 = AC2.GetType();
+#if (defined(_MSC_VER) && (_MSC_VER < 1600))
+  std::auto_ptr<IntAna2d_Conic> pCon;
+#else
+  std::unique_ptr<IntAna2d_Conic> pCon;
+#endif  
+  switch (T2)
+  {
+  case GeomAbs_Line:
+  {
+    pCon.reset(new IntAna2d_Conic(AC2.Line()));
+    break;
+  }
+  case GeomAbs_Circle:
+  {
+    pCon.reset(new IntAna2d_Conic(AC2.Circle()));
+    break;
+  }
+  case GeomAbs_Ellipse:
+  {
+    pCon.reset(new IntAna2d_Conic(AC2.Ellipse()));
+    break;
+  }
+  case GeomAbs_Hyperbola:
+  {
+    pCon.reset(new IntAna2d_Conic(AC2.Hyperbola()));
+    break;
+  }
+  case GeomAbs_Parabola:
+  {
+    pCon.reset(new IntAna2d_Conic(AC2.Parabola()));
+    break;
+  }
+  default:
+    cout << a[2] << " is not conic " << endl;
+    return 1;
+  }
+
+  IntAna2d_AnaIntersection Intersector;
+  switch (T1)
+  {
+  case GeomAbs_Line:
+    Intersector.Perform(AC1.Line(), *pCon);
+    break;
+  case GeomAbs_Circle:
+    Intersector.Perform(AC1.Circle(), *pCon);
+    break;
+  case GeomAbs_Ellipse:
+    Intersector.Perform(AC1.Ellipse(), *pCon);
+    break;
+  case GeomAbs_Hyperbola:
+    Intersector.Perform(AC1.Hyperbola(), *pCon);
+    break;
+  case GeomAbs_Parabola:
+    Intersector.Perform(AC1.Parabola(), *pCon);
+    break;
+  default:
+    cout << a[1] << " is not conic " << endl;
+    return 1;
+  }
+  
+  Standard_Integer i;
   for ( i = 1; i <= Intersector.NbPoints(); i++) {
     gp_Pnt2d P = Intersector.Point(i).Value();
     di<<"Intersection point "<<i<<" : "<<P.X()<<" "<<P.Y()<<"\n";
-	di<<"parameter on the fist: "<<Intersector.Point(i).ParamOnFirst();
-	di<<" parameter on the second: "<<Intersector.Point(i).ParamOnSecond()<<"\n";
+    di << "parameter on the fist: " << Intersector.Point(i).ParamOnFirst();
+    if (!Intersector.Point(i).SecondIsImplicit())
+    {
+      di << " parameter on the second: " << Intersector.Point(i).ParamOnSecond() << "\n";
+    }
+    else
+    {
+      di << "\n";
+    }
     Handle(Draw_Marker2D) mark = new Draw_Marker2D( P, Draw_X, Draw_vert); 
     dout << mark;
   }
@@ -430,6 +543,8 @@ void GeomliteTest::API2dCommands(Draw_Interpretor& theCommands)
   theCommands.Add("2dintersect", "intersect curve curve [Tol]",__FILE__,
 		  intersect,g);
 
-  theCommands.Add("2dintanalytical", "intersect curve curve using IntAna",__FILE__,
+  theCommands.Add("2dintanalytical", "intersect circle1 and circle2 using IntAna",__FILE__,
 		  intersect_ana,g);
+  theCommands.Add("intconcon", "intersect conic curve1 and conic curve2 using IntAna", __FILE__,
+    intconcon, g);
 }
