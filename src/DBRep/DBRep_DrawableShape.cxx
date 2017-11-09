@@ -1075,13 +1075,9 @@ void  DBRep_DrawableShape::display(const Handle(Poly_Triangulation)& T,
 
   // allocate the arrays
   TColStd_Array1OfInteger Free (1, Max (1, 2 * nFree));
-  
-  // array is replaced on map because it is impossible
-  // to calculate number of internal edges in advance
-  // due to "internal edges"
-  TColStd_DataMapOfIntegerInteger Internal;
-  
-  Standard_Integer fr = 1, in = 1;
+  NCollection_Vector< NCollection_Vec2<Standard_Integer> > anInternal;
+
+  Standard_Integer fr = 1;
   const Poly_Array1OfTriangle& triangles = T->Triangles();
   Standard_Integer n[3];
   for (i = 1; i <= nbTriangles; i++) {
@@ -1096,9 +1092,7 @@ void  DBRep_DrawableShape::display(const Handle(Poly_Triangulation)& T,
       }
       // internal edge if this triangle has a lower index than the adjacent
       else if (i < t[j]) {
-	Internal.Bind(in, n[j]);
-	Internal.Bind(in+1, n[k]);
-	in += 2;
+        anInternal.Append (NCollection_Vec2<Standard_Integer> (n[j], n[k]));
       }
     }
   }
@@ -1119,15 +1113,11 @@ void  DBRep_DrawableShape::display(const Handle(Poly_Triangulation)& T,
   // internal edges
 
   dis.SetColor(Draw_bleu);
-  TColStd_DataMapIteratorOfDataMapOfIntegerInteger aIt(Internal);
-  for (; aIt.More(); aIt.Next()) {
-    Standard_Integer n1 = aIt.Value();
-    //alvays pair is put
-    aIt.Next();
-    Standard_Integer n2 = aIt.Value();
-    dis.Draw(Nodes(n1).Transformed(tr),
-	     Nodes(n2).Transformed(tr));
-
+  for (NCollection_Vector< NCollection_Vec2<Standard_Integer> >::Iterator anInterIter (anInternal); anInterIter.More(); anInterIter.Next())
+  {
+    const Standard_Integer n1 = anInterIter.Value()[0];
+    const Standard_Integer n2 = anInterIter.Value()[1];
+    dis.Draw (Nodes(n1).Transformed(tr), Nodes(n2).Transformed(tr));
   }
 }
 
