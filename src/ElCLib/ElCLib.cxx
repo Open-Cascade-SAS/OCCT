@@ -1312,8 +1312,10 @@ Standard_Real ElCLib::LineParameter (const gp_Ax1& L, const gp_Pnt& P)
 Standard_Real ElCLib::CircleParameter (const gp_Ax2& Pos,
 				       const gp_Pnt& P)
 {
-  Standard_Real Teta = (Pos.XDirection()) .AngleWithRef
-    (gp_Vec (Pos.Location(), P), Pos.Direction());
+  gp_Vec aVec(Pos.Location(), P);
+  Standard_Real Teta = 0.0;
+  if (aVec.SquareMagnitude() > gp::Resolution())
+    Teta = (Pos.XDirection()).AngleWithRef(aVec, Pos.Direction());
   if      (Teta < -1.e-16)  Teta += PIPI;
   else if (Teta < 0)        Teta = 0;
   return Teta;

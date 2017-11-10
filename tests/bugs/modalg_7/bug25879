@@ -1,5 +1,3 @@
-puts "TODO OCC25879 Windows: Error : result of blend fails the bopcheck"
-
 puts "============"
 puts "OCC25879"
 puts "============"
