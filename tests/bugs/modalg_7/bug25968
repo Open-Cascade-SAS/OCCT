@@ -1,0 +1,98 @@
+puts "============"
+puts "OCC25968"
+puts "============"
+puts ""
+######################################################
+# boolean returning an invalid shape
+######################################################
+
+# Construct resulting shape.
+pcylinder Cylinder004 50 1000
+pcylinder Cylinder005 45 1000
+bcut Cut003 Cylinder004 Cylinder005
+pcylinder Cylinder006 45 102
+trotate Cylinder006 0 0 0 1 0 0 90
+ttranslate Cylinder006 0 51 1000
+#Object Label: Cutout_rowconnector_top001
+bcut Cut004 Cut003 Cylinder006
+pcylinder Cylinder007 45 102
+trotate Cylinder007 0 0 0 1 0 0 90
+ttranslate Cylinder007 0 51 0
+bcut Cut005 Cut004 Cylinder007
+ttranslate Cut005 0 110 0
+pcylinder Cylinder044 50 800
+trotate Cylinder044 0 0 0 1 0 0 90
+ttranslate Cylinder044 0 610 0
+pcylinder Cylinder045 45 795
+trotate Cylinder045 0 0 0 1 0 0 90
+ttranslate Cylinder045 0 605 0
+bcut Cut032 Cylinder044 Cylinder045
+pcylinder Cylinder046 45 55
+pcylinder Cylinder047 45 92
+trotate Cylinder047 0 0 0 1 0 0 90
+ttranslate Cylinder047 0 46 0
+bcut Cut033 Cylinder046 Cylinder047
+bcut Cut039 Cut032 Cut033
+pcylinder Cylinder048 45 55
+pcylinder Cylinder049 45 92
+trotate Cylinder049 0 0 0 1 0 0 90
+ttranslate Cylinder049 0 46 0
+bcut Cut034 Cylinder048 Cylinder049
+ttranslate Cut034 0 110 0
+bcut Cut040 Cut039 Cut034
+pcylinder Cylinder050 45 55
+pcylinder Cylinder051 45 92
+trotate Cylinder051 0 0 0 1 0 0 90
+ttranslate Cylinder051 0 46 0
+bcut Cut035 Cylinder050 Cylinder051
+ttranslate Cut035 0 220 0
+bcut Cut041 Cut040 Cut035
+pcylinder Cylinder052 45 55
+pcylinder Cylinder053 45 92
+trotate Cylinder053 0 0 0 1 0 0 90
+ttranslate Cylinder053 0 46 0
+bcut Cut036 Cylinder052 Cylinder053
+ttranslate Cut036 0 330 0
+bcut Cut042 Cut041 Cut036
+pcylinder Cylinder054 45 55
+pcylinder Cylinder055 45 92
+trotate Cylinder055 0 0 0 1 0 0 90
+ttranslate Cylinder055 0 46 0
+bcut Cut037 Cylinder054 Cylinder055
+ttranslate Cut037 0 440 0
+bcut Cut043 Cut042 Cut037
+pcylinder Cylinder056 45 55
+pcylinder Cylinder057 45 92
+trotate Cylinder057 0 0 0 1 0 0 90
+ttranslate Cylinder057 0 46 0
+bcut Cut038 Cylinder056 Cylinder057
+ttranslate Cut038 0 550 0
+bcut Cut044 Cut043 Cut038
+pcylinder Cylinder058 45 102
+trotate Cylinder058 0 0 0 0 1 0 90
+ttranslate Cylinder058 -51 -190 0
+bcut Cut045 Cut044 Cylinder058
+trotate Cut045 0 0 0 0 1 0 180
+ttranslate Cut045 0 0 1000
+pcylinder Cylinder 50 1000
+pcylinder Cylinder001 45 1000
+bcut Cut Cylinder Cylinder001
+pcylinder Cylinder002 45 102
+trotate Cylinder002 0 0 0 1 0 0 90
+ttranslate Cylinder002 0 51 1000
+bcut Cut001 Cut Cylinder002
+pcylinder Cylinder003 45 102
+trotate Cylinder003 0 0 0 1 0 0 90
+ttranslate Cylinder003 0 51 0
+bcut Cut002 Cut001 Cylinder003
+bfuse Fusion Cut045 Cut002
+bfuse Fusion001 Cut005 Fusion
+
+# Checshape
+checkshape Fusion001
+
+# check properties
+checkprops Fusion001 -s 1.52134e+006
+
+# check number of shapes in resulting
+checknbshapes Fusion001 -vertex 73 -edge 111 -wire 42 -face 32 -shell 1 -solid 1
