@@ -309,22 +309,27 @@ Standard_Boolean BOPTools_AlgoTools3D::GetNormalToSurface
    const Standard_Real V,
    gp_Dir& aDNS)
 {
-  Standard_Boolean bFlag;
-  
   gp_Pnt aP;
   gp_Vec aD1U, aD1V;
 
   aS->D1(U, V, aP, aD1U, aD1V);
-  
-  gp_Dir aDD1U(aD1U); 
-  gp_Dir aDD1V(aD1V); 
-  
-  bFlag=IntTools_Tools::IsDirsCoinside(aDD1U, aDD1U);
-  if (!bFlag) {
+
+  Standard_Real aLenU = aD1U.SquareMagnitude();
+  if (aLenU < gp::Resolution())
+    return Standard_False;
+
+  Standard_Real aLenV = aD1V.SquareMagnitude();
+  if (aLenV < gp::Resolution())
+    return Standard_False;
+
+  gp_Dir aDD1U(aD1U);
+  gp_Dir aDD1V(aD1V);
+
+  Standard_Boolean bFlag = IntTools_Tools::IsDirsCoinside(aDD1U, aDD1U);
+  if (!bFlag)
     return bFlag;
-  }
-  
-  aDNS=aDD1U^aDD1V;
+
+  aDNS = aDD1U^aDD1V;
   return bFlag;
 }
 //=======================================================================

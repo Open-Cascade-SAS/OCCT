@@ -1,5 +1,3 @@
-puts "TODO OCC22750 ALL: Faulty shapes in variables"
-
 puts "========"
 puts "OCC22750"
 puts "========"
@@ -87,31 +85,17 @@ wire w3 f3_3
 mkplane f7 w1 1
 mkplane f8 w3 1
 
-shape rr Sh
-add f3 rr; add f7 rr; add f8 rr
-
-shape so2 So
-add rr so2
-
+mkvolume so2 f3 f7 f8 -ni
 checkshape so2
-# there is a pb of orientation, we have to chage orientation of f8
-
-orientation f8 R
-
-# We rebuild the shell and the solid
-shape rr Sh
-add f3 rr; add f7 rr; add f8 rr
-
-shape so2 So
-add rr so2
-
-checkshape so2
-# the shape is valid
 
 # Step 5: Fuse the Wing to the fuselage
 ttranslate so1 0 0 10
 bop so1 so2
 bopfuse rrr
+
+checkshape rrr
+checknbshapes rrr -face 5 -wire 5 -shell 1 -solid 1
+checkprops rrr -s 57448.9 -v 664969
 
 # Step 6: Create the othe wing using copy and rotation
 tcopy so1 so3
@@ -119,7 +103,10 @@ trotate so3 0 0 0 1 0 0 180
 
 # Step 7: Fuse the Wing to the fuselage
 bop rrr so3
-bopfuse so4
+bopfuse result
 
-checkview -display so4 -3d -path ${imagedir}/${test_image}-3d.png
-checkview -display so4 -2d -path ${imagedir}/${test_image}-2d.png
+checkshape result
+checknbshapes result -wire 8 -face 7 -shell 1 -solid 1
+checkprops result -s 73752.9 -v 784375
+
+checkview -display result -2d -path ${imagedir}/${test_image}-2d.png

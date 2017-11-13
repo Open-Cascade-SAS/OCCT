@@ -386,10 +386,11 @@ protected:
   
 
   //! Updates tolerance of vertex with index <nV>
-  //! to make it interfere with edge
-  Standard_EXPORT void ForceInterfVE(const Standard_Integer nV,
-                                     Handle(BOPDS_PaveBlock)& aPB,
-                                     BOPCol_MapOfInteger& theMEdges);
+  //! to make it interfere with edge.
+  //! Returns TRUE if intersection happened.
+  Standard_EXPORT Standard_Boolean ForceInterfVE(const Standard_Integer nV,
+                                                 Handle(BOPDS_PaveBlock)& aPB,
+                                                 BOPCol_MapOfInteger& theMEdges);
 
   //! Updates tolerance of vertex with index <nV>
   //! to make it interfere with face with index <nF>
@@ -483,6 +484,12 @@ protected:
 
   //! Adds the warning about failed intersection of pair of sub-shapes
   Standard_EXPORT void AddIntersectionFailedWarning(const TopoDS_Shape& theS1, const TopoDS_Shape& theS2);
+
+  //! The method looks for the additional common blocks among pairs of edges
+  //! which did not participate in edges intersection (PerformEE() method)
+  //! due to being rejected by bounding boxes intersection.
+  Standard_EXPORT void ForceInterfEE();
+
 
   BOPCol_ListOfShape myArguments;
   BOPDS_PDS myDS;

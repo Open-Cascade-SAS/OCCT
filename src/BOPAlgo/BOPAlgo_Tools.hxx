@@ -20,13 +20,18 @@
 #include <Standard_Handle.hxx>
 
 #include <BOPCol_BaseAllocator.hxx>
-#include <BOPDS_IndexedDataMapOfPaveBlockListOfInteger.hxx>
+#include <BOPCol_DataMapOfShapeBox.hxx>
+#include <BOPCol_DataMapOfShapeListOfShape.hxx>
+#include <BOPCol_IndexedDataMapOfShapeListOfShape.hxx>
 #include <BOPCol_IndexedDataMapOfShapeReal.hxx>
 #include <BOPCol_ListOfListOfShape.hxx>
 #include <BOPCol_MapOfShape.hxx>
 #include <BOPCol_ListOfShape.hxx>
+
+#include <BOPDS_IndexedDataMapOfPaveBlockListOfInteger.hxx>
 #include <BOPDS_IndexedDataMapOfPaveBlockListOfPaveBlock.hxx>
 #include <BOPDS_PDS.hxx>
+
 #include <Standard_Integer.hxx>
 
 class BOPDS_PaveBlock;
@@ -163,6 +168,28 @@ public:
   Standard_EXPORT static void TreatCompound(const TopoDS_Shape& theS,
                                             BOPCol_MapOfShape& theMFence,
                                             BOPCol_ListOfShape& theLS);
+
+  //! Classifies the faces <theFaces> relatively solids <theSolids>.
+  //! The IN faces for solids are stored into output data map <theInParts>.
+  //!
+  //! The map <theSolidsIF> contains INTERNAL faces of the solids, to avoid
+  //! their additional classification.
+  //!
+  //! Firstly, it checks the intersection of bounding boxes of the shapes.
+  //! If the Box is not stored in the <theShapeBoxMap> map, it builds the box.
+  //! If the bounding boxes of solid and face are interfering the classification is performed.
+  //!
+  //! It is assumed that all faces and solids are already intersected and
+  //! do not have any geometrically coinciding parts without topological
+  //! sharing of these parts
+  Standard_EXPORT static void ClassifyFaces(const BOPCol_ListOfShape& theFaces,
+                                            const BOPCol_ListOfShape& theSolids,
+                                            const Standard_Boolean theRunParallel,
+                                            Handle(IntTools_Context)& theContext,
+                                            BOPCol_IndexedDataMapOfShapeListOfShape& theInParts,
+                                            const BOPCol_DataMapOfShapeBox& theShapeBoxMap = BOPCol_DataMapOfShapeBox(),
+                                            const BOPCol_DataMapOfShapeListOfShape& theSolidsIF = BOPCol_DataMapOfShapeListOfShape());
+
 };
 
 #endif // _BOPAlgo_Tools_HeaderFile

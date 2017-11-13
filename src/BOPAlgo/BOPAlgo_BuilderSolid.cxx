@@ -18,6 +18,7 @@
 #include <BOPAlgo_BuilderSolid.hxx>
 #include <BOPAlgo_ShellSplitter.hxx>
 #include <BOPAlgo_Alerts.hxx>
+#include <BOPAlgo_Tools.hxx>
 #include <BOPCol_BoxBndTree.hxx>
 #include <BOPCol_DataMapOfShapeListOfShape.hxx>
 #include <BOPCol_DataMapOfShapeShape.hxx>
@@ -53,6 +54,7 @@
 #include <TopAbs.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
@@ -76,128 +78,6 @@ static
 static
   void MakeInternalShells(const BOPCol_IndexedMapOfShape& ,
                           BOPCol_ListOfShape& );
-
-//=======================================================================
-//function : BOPAlgo_FacePnt
-//purpose  : 
-//=======================================================================
-class BOPAlgo_FacePnt {
- public:
-  BOPAlgo_FacePnt() {
-  }
-  //
-  virtual ~BOPAlgo_FacePnt() {
-  }
-  //
-  void SetFace(const TopoDS_Face& aFace) {
-    myFace=aFace;
-  }
-  //
-  const TopoDS_Face& Face()const {
-    return myFace;
-  }
-  // 
-  void SetPnt(const gp_Pnt& aPnt) {
-    myPnt=aPnt;
-  }
-  //
-  const gp_Pnt& Pnt()const {
-    return myPnt;
-  }
-  //
- protected:
-  gp_Pnt myPnt;
-  TopoDS_Face myFace;
-};
-//
-typedef BOPCol_NCVector
-  <BOPAlgo_FacePnt> BOPAlgo_VectorOfFacePnt; 
-//
-//=======================================================================
-//function : BOPAlgo_FaceSolid
-//purpose  : 
-//=======================================================================
-class BOPAlgo_FaceSolid : public BOPAlgo_Algo {
- public:
-  DEFINE_STANDARD_ALLOC
-
-  BOPAlgo_FaceSolid() :
-    myIsInternalFace(Standard_False) {
-  }
-  //
-  virtual ~BOPAlgo_FaceSolid() {
-  }
-  //
-  void SetFace(const TopoDS_Face& aFace) {
-    myFace=aFace;
-  }
-  //
-  const TopoDS_Face& Face()const {
-    return myFace;
-  }
-  //
-  void SetSolid(const TopoDS_Solid& aSolid) {
-    mySolid=aSolid;
-  }
-  //
-  const TopoDS_Solid& Solid()const {
-    return mySolid;
-  }
-  //
-  void SetPnt(const gp_Pnt& aPnt) {
-    myPnt=aPnt;
-  }
-  //
-  const gp_Pnt& Pnt()const {
-    return myPnt;
-  }
-  void SetContext(const Handle(IntTools_Context)& aContext) {
-    myContext=aContext;
-  }
-  //
-  const Handle(IntTools_Context)& Context()const {
-    return myContext;
-  }
-  //
-  Standard_Boolean IsInternalFace() const {
-    return myIsInternalFace;
-  }
-  //
-  virtual void Perform () {
-    TopAbs_State aState;
-    //
-    BOPAlgo_Algo::UserBreak();
-    //
-    aState=BOPTools_AlgoTools::ComputeState(myPnt, mySolid,
-                                            Precision::Confusion(),
-                                            myContext);
-    //
-    myIsInternalFace=(aState==TopAbs_IN);
-  }
-  //
- protected:
-  Standard_Boolean myIsInternalFace;
-  gp_Pnt myPnt;
-  TopoDS_Face myFace;
-  TopoDS_Solid mySolid;
-  Handle(IntTools_Context) myContext;
-};
-//=======================================================================
-typedef BOPCol_NCVector
-  <BOPAlgo_FaceSolid> BOPAlgo_VectorOfFaceSolid; 
-//
-typedef BOPCol_ContextFunctor 
-  <BOPAlgo_FaceSolid,
-  BOPAlgo_VectorOfFaceSolid,
-  Handle(IntTools_Context), 
-  IntTools_Context> BOPAlgo_FaceSolidFunctor;
-//
-typedef BOPCol_ContextCnt 
-  <BOPAlgo_FaceSolidFunctor,
-  BOPAlgo_VectorOfFaceSolid,
-  Handle(IntTools_Context)> BOPAlgo_FaceSolidCnt;
-//
-//=======================================================================
 
 //=======================================================================
 //function : 
@@ -255,7 +135,9 @@ void BOPAlgo_BuilderSolid::Perform()
   if (myContext.IsNull()) {
     myContext=new IntTools_Context;
   }
-  //
+
+  myBoxes.Clear();
+
   TopoDS_Compound aC;
   BRep_Builder aBB;
   BOPCol_ListIteratorOfListOfShape aIt;
@@ -565,7 +447,16 @@ void BOPAlgo_BuilderSolid::PerformAreas()
   if (aHoleShells.IsEmpty())
   {
     // No holes, stop the analysis
-    myAreas.Append(aNewSolids);
+    BOPCol_ListIteratorOfListOfShape aItLS(aNewSolids);
+    for (; aItLS.More(); aItLS.Next())
+    {
+      const TopoDS_Shape& aSol = aItLS.Value();
+      myAreas.Append(aSol);
+      // Build box
+      Bnd_Box aBox;
+      BRepBndLib::Add(aSol, aBox);
+      myBoxes.Bind(aSol, aBox);
+    }
     return;
   }
 
@@ -583,6 +474,8 @@ void BOPAlgo_BuilderSolid::PerformAreas()
     Bnd_Box aBox;
     BRepBndLib::Add(aHShell, aBox);
     aTreeFiller.Add(i, aBox);
+
+    myBoxes.Bind(aHShell, aBox);
   }
 
   // Shake TreeFiller
@@ -599,6 +492,8 @@ void BOPAlgo_BuilderSolid::PerformAreas()
     // Build box
     Bnd_Box aBox;
     BRepBndLib::Add(aSolid, aBox);
+
+    myBoxes.Bind(aSolid, aBox);
 
     BOPCol_BoxBndTreeSelector aSelector;
     aSelector.SetBox(aBox);
@@ -680,7 +575,13 @@ void BOPAlgo_BuilderSolid::PerformAreas()
       aBB.Add (aSolid, aHole);
       //
       myAreas.Append(aSolid);
+      // Make an infinite box for the hole
+      Bnd_Box aBox;
+      aBox.SetWhole();
+      myBoxes.Bind(aSolid, aBox);
     }
+
+    myBoxes.UnBind(aHole);
   }
 }
 //=======================================================================
@@ -689,213 +590,119 @@ void BOPAlgo_BuilderSolid::PerformAreas()
 //=======================================================================
 void BOPAlgo_BuilderSolid::PerformInternalShapes()
 {
-  if (myAvoidInternalShapes) {
+  if (myAvoidInternalShapes)
+    // user-defined option to avoid internal parts is in force
     return;
-  }
-  //
-  Standard_Integer aNbFI=myLoopsInternal.Extent();
-  if (!aNbFI) {// nothing to do
+
+  if (myLoopsInternal.IsEmpty())
+    // no internal parts
     return;
-  }
-  // 
-  Standard_Boolean bIsInternalFace;
-  Standard_Integer k, aNbVFS, aNbSLF, aNbVFP, aNbA;
-  BRep_Builder aBB;
-  TopoDS_Iterator aIt;
-  TopExp_Explorer aExp;
-  BOPCol_ListIteratorOfListOfShape  aItLS;
+
+  // Get all faces to classify
   BOPCol_IndexedMapOfShape aMFs;
-  BOPCol_ListOfShape aLSI;
-  BOPAlgo_VectorOfFaceSolid aVFS;
-  BOPAlgo_VectorOfFacePnt aVFP;
-  BOPCol_ListIteratorOfListOfInteger aItLI;
-  BOPCol_BoxBndTreeSelector aSelector;
-  BOPCol_BoxBndTree aBBTree;
-  NCollection_UBTreeFiller 
-    <Standard_Integer, Bnd_Box> aTreeFiller(aBBTree);
-  //
-  aNbA=myAreas.Extent();
-  //
-  // 1. aVFP
-  aItLS.Initialize(myLoopsInternal);
-  for (; aItLS.More(); aItLS.Next()) {
-    const TopoDS_Shape& aShell=aItLS.Value();
-    aIt.Initialize(aShell);
-    for (; aIt.More(); aIt.Next()) {
-      const TopoDS_Face& aF=*((TopoDS_Face*)&aIt.Value());
-      //
-      if (!aMFs.Contains(aF)) {
-        aMFs.Add(aF);
-        //
-        gp_Pnt aP;
-        gp_Pnt2d aP2D;
-        //
-        if (aNbA) {
-          BOPTools_AlgoTools3D::PointInFace(aF, aP, aP2D, myContext);
-        }
-        //
-        BOPAlgo_FacePnt& aFP=aVFP.Append1();
-        aFP.SetFace(aF);
-        aFP.SetPnt(aP);
-      }
-    }
+  BOPCol_ListIteratorOfListOfShape aItLS(myLoopsInternal);
+  for (; aItLS.More(); aItLS.Next())
+  {
+    const TopoDS_Shape& aShell = aItLS.Value();
+    TopoDS_Iterator aIt(aShell);
+    for (; aIt.More(); aIt.Next())
+      aMFs.Add(aIt.Value());
   }
-  //
-  if (!aNbA) {
-    // 7b. "Rest" faces treatment
+
+  BRep_Builder aBB;
+  // Check existence of the growths solids
+  if (myAreas.IsEmpty())
+  {
+    // No areas.
+    // Just make solid of the faces
     TopoDS_Solid aSolid;
     aBB.MakeSolid(aSolid);
     //
+    BOPCol_ListOfShape aLSI;
     MakeInternalShells(aMFs, aLSI);
     //
     aItLS.Initialize(aLSI);
-    for (; aItLS.More(); aItLS.Next()) {
-      const TopoDS_Shape& aSI=aItLS.Value();
-       aBB.Add (aSolid, aSI);
-    }
+    for (; aItLS.More(); aItLS.Next())
+      aBB.Add(aSolid, aItLS.Value());
+
     myAreas.Append(aSolid);
-    //
-    return; // =>
-  }//if (!aNbA) {
-  //
-  // 2. Prepare TreeFiller 
-  aNbVFP=aVFP.Extent();
-  for(k=0; k<aNbVFP; ++k) {
-    Bnd_Box aBox;
-    //
-    const BOPAlgo_FacePnt& aFP=aVFP(k);
-    const TopoDS_Face& aF=aFP.Face();
-    //
-    BRepBndLib::Add(aF, aBox);
-    aTreeFiller.Add(k, aBox);
-  }
-  //
-  aTreeFiller.Fill();
-  //
-  // 3. Face/Solid candidates: aVFS
-  aItLS.Initialize(myAreas);
-  for (; aItLS.More(); aItLS.Next()) {
-    Bnd_Box aBox;
-    //
-    TopoDS_Solid& aSolid=(*(TopoDS_Solid*)(&aItLS.Value()));
-    BRepBndLib::Add(aSolid, aBox);
-    //
-    aMFs.Clear();
-    aExp.Init(aSolid, TopAbs_FACE);
-    for (; aExp.More(); aExp.Next()) {
-      const TopoDS_Shape& aFs=aExp.Current();
-      aMFs.Add(aFs);
-    }
-    //
-    aSelector.Clear();
-    aSelector.SetBox(aBox);
-    //
-    aBBTree.Select(aSelector);
-    //
-    const BOPCol_ListOfInteger& aLI=aSelector.Indices();
-    aItLI.Initialize(aLI);
-    for (; aItLI.More(); aItLI.Next()) {
-      k=aItLI.Value();
-      const BOPAlgo_FacePnt& aFP=aVFP(k);
-      const TopoDS_Face& aF=aFP.Face();
-      if (aMFs.Contains(aF)) {
-        continue;
-      }
-      //
-      const gp_Pnt& aP=aFP.Pnt();
-      //
-      BOPAlgo_FaceSolid& aFS=aVFS.Append1();
-      aFS.SetPnt(aP);
-      aFS.SetFace(aF);
-      aFS.SetSolid(aSolid);
-    }
-  }
-  //
-  aNbVFS=aVFS.Extent();
-  if (!aNbVFS) {
     return;
   }
-  // 4. Refine candidates
-  //=============================================================
-  BOPAlgo_FaceSolidCnt::Perform(myRunParallel, aVFS, myContext);
-  //=============================================================
-  // 
-  // 5. Solid/Faces:  aMSLF
+
+  // Classify faces relatively solids
+
+  // Prepare list of faces to classify
+  BOPCol_ListOfShape aLFaces;
+  Standard_Integer i, aNbF = aMFs.Extent();
+  for (i = 1; i <= aNbF; ++i)
+    aLFaces.Append(aMFs(i));
+
+  // Map of solids with IN faces
   BOPCol_IndexedDataMapOfShapeListOfShape aMSLF;
-  BOPCol_MapOfShape aMFProcessed;
-  //  
-  for (k=0; k < aNbVFS; ++k) {
-    const BOPAlgo_FaceSolid& aFS=aVFS(k);
-    //
-    const TopoDS_Solid& aSolid=aFS.Solid();
-    const TopoDS_Face& aF=aFS.Face();
-    //
-    bIsInternalFace=aFS.IsInternalFace();
-    if (!bIsInternalFace) {
+
+  // Perform classification
+  BOPAlgo_Tools::ClassifyFaces(aLFaces, myAreas, myRunParallel, myContext, aMSLF, myBoxes);
+
+  // Update Solids by internal Faces
+
+  BOPCol_MapOfShape aMFDone;
+
+  Standard_Integer aNbS = aMSLF.Extent();
+  for (i = 1; i <= aNbS; ++i)
+  {
+    const TopoDS_Shape& aSolid = aMSLF.FindKey(i);
+    TopoDS_Shape *pSolid = (TopoDS_Shape*)&aSolid;
+
+    const BOPCol_ListOfShape& aLF = aMSLF(i);
+    if (aLF.IsEmpty())
       continue;
-    }
-    //
-    if (aMSLF.Contains(aSolid)) {
-      BOPCol_ListOfShape& aLF=aMSLF.ChangeFromKey(aSolid);
-      aLF.Append(aF);
-    }
-    else {
-      BOPCol_ListOfShape aLF;
-      //
-      aLF.Append(aF);
-      aMSLF.Add(aSolid, aLF);
-    }
-  }// for (k=0; k < aNbVE; ++k) {
-  //
-  // 6. Update Solids by internal Faces
-  aNbSLF=aMSLF.Extent();
-  for (k=1; k <= aNbSLF; ++k) {
-    const TopoDS_Shape& aSolid=aMSLF.FindKey(k);
-    TopoDS_Shape *pSolid=(TopoDS_Shape*)&aSolid;
-    //
-    const BOPCol_ListOfShape& aLF=aMSLF(k);
-    //
-    aMFs.Clear();
+
+    BOPCol_IndexedMapOfShape aMF;
     aItLS.Initialize(aLF);
-    for (; aItLS.More(); aItLS.Next()) {
-      const TopoDS_Shape& aF=aItLS.Value();
-      aMFs.Add(aF);
-      aMFProcessed.Add(aF);
+    for (; aItLS.More(); aItLS.Next())
+    {
+      const TopoDS_Shape& aF = aItLS.Value();
+      aMF.Add(aF);
+      aMFDone.Add(aF);
     }
     //
-    aLSI.Clear();
-    MakeInternalShells(aMFs, aLSI);
+    BOPCol_ListOfShape aLSI;
+    MakeInternalShells(aMF, aLSI);
     //
     aItLS.Initialize(aLSI);
-    for (; aItLS.More(); aItLS.Next()) {
-      const TopoDS_Shape& aSI=aItLS.Value();
+    for (; aItLS.More(); aItLS.Next())
+    {
+      const TopoDS_Shape& aSI = aItLS.Value();
       aBB.Add (*pSolid, aSI);
     }
   }
-  // 
-  // 7. "Rest" faces treatment (if there are)
-  aMFs.Clear();
-  for (k=0; k < aNbVFS; ++k) {
-    const BOPAlgo_FaceSolid& aFS=aVFS(k);
-    //
-    const TopoDS_Face& aF=aFS.Face();
-    if (!aMFProcessed.Contains(aF)) {
-      aMFs.Add(aF);
-    }
+
+  // Make solid from the unused faces (if any)
+  BOPCol_IndexedMapOfShape aMFUnUsed;
+  for (i = 1; i <= aNbF; ++i)
+  {
+    const TopoDS_Shape& aF = aMFs(i);
+    if (!aMFDone.Contains(aF))
+      aMFUnUsed.Add(aF);
   }
-  //
-  aNbFI=aMFs.Extent();
-  if (aNbFI) {
+
+  if (aMFUnUsed.Extent())
+  {
     TopoDS_Solid aSolid;
     aBB.MakeSolid(aSolid);
     //
-    aLSI.Clear();
-    MakeInternalShells(aMFs, aLSI);
+    BOPCol_ListOfShape aLSI;
+    MakeInternalShells(aMFUnUsed, aLSI);
     //
     aItLS.Initialize(aLSI);
-    for (; aItLS.More(); aItLS.Next()) {
-      const TopoDS_Shape& aSI=aItLS.Value();
+    for (; aItLS.More(); aItLS.Next())
+    {
+      const TopoDS_Shape& aSI = aItLS.Value();
       aBB.Add (aSolid, aSI);
+
+      Bnd_Box aBox;
+      BRepBndLib::Add(aSolid, aBox);
+      myBoxes.Bind(aSolid, aBox);
     }
     myAreas.Append(aSolid);
   }

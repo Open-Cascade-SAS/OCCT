@@ -10,6 +10,7 @@ BOPCol_DataMapOfIntegerMapOfInteger.hxx
 BOPCol_DataMapOfIntegerReal.hxx
 BOPCol_DataMapOfIntegerShape.hxx
 BOPCol_DataMapOfShapeAddress.hxx
+BOPCol_DataMapOfShapeBox.hxx
 BOPCol_DataMapOfShapeInteger.hxx
 BOPCol_DataMapOfShapeListOfShape.hxx
 BOPCol_DataMapOfShapeReal.hxx

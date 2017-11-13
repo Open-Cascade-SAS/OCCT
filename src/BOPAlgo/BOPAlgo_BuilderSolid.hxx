@@ -25,6 +25,7 @@
 #include <TopoDS_Solid.hxx>
 #include <BOPAlgo_BuilderArea.hxx>
 #include <BOPCol_BaseAllocator.hxx>
+#include <BOPCol_DataMapOfShapeBox.hxx>
 class TopoDS_Solid;
 
 
@@ -49,6 +50,12 @@ Standard_EXPORT virtual ~BOPAlgo_BuilderSolid();
   
   //! Performs the algorithm
   Standard_EXPORT virtual void Perform() Standard_OVERRIDE;
+
+  //! Returns the map of solid/box pairs
+  const BOPCol_DataMapOfShapeBox& GetBoxesMap() const
+  {
+    return myBoxes;
+  }
 
 protected:
   
@@ -76,16 +83,8 @@ protected:
 
 private:
 
-
-
-
+  BOPCol_DataMapOfShapeBox myBoxes; // Boxes of the produced solids
 
 };
-
-
-
-
-
-
 
 #endif // _BOPAlgo_BuilderSolid_HeaderFile

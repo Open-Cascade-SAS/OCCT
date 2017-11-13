@@ -285,6 +285,10 @@ void BOPAlgo_PaveFiller::PerformInternal()
   }
   UpdatePaveBlocksWithSDVertices();
   UpdateInterfsWithSDVertices();
+
+  // Force intersection of edges after increase
+  // of the tolerance values of their vertices
+  ForceInterfEE();
   //
   // 22
   PerformFF();
