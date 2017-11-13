@@ -216,9 +216,24 @@ ttranslate sh44547C0_copy 0 0 2.0442502199999999
 ttranslate sh44547C0_copy 0 31.358955689999998 0
 
 # tore 
-plane pln_sh4452990 0 0 0 0 0 1 1.1102230246251565e-016 -1 0
-erase pln_sh4452990
-ptorus sh4452990 pln_sh4452990 5 10 180
+#plane pln_sh4452990 0 0 0 0 0 1 1.1102230246251565e-016 -1 0
+#erase pln_sh4452990
+#ptorus sh4452990 pln_sh4452990 5 10 180
+
+# instead of invalid torus create surface of revolution of almost the same form
+circle c1 0 -5 0 1 0 0 10
+circle c2 0 5 0 1 0 0 10
+mkedge e1 c1
+mkedge e2 c2
+wire w1 e1
+wire w2 e2
+mkplane f1 w1
+mkplane f2 w2
+bcut f12 f1 f2
+revol sh4452990 f12 0 0 0 0 0 1 180
+copy sh4452990 sh4452990_copy
+erase c1 c2 e1 e2 w1 w2 f1 f2 f12 
+
 
 # sphere 
 plane pln_sh4456430 0 0 0 0 0 1 1.1102230246251565e-016 -1 0

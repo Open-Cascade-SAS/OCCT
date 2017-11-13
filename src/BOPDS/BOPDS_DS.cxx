@@ -607,50 +607,34 @@ void BOPDS_DS::Init(const Standard_Real theFuzz)
   aMI.Clear();
   //-----------------------------------------------------
   //
-  for (nE=0; nE<myNbSourceShapes; ++nE) {
-    BOPDS_ShapeInfo& aSI=ChangeShapeInfo(nE);
-    if (aSI.ShapeType()!=TopAbs_EDGE) {
+  // Prepare Vertex-Edge connection map
+  for (nE = 0; nE < myNbSourceShapes; ++nE)
+  {
+    BOPDS_ShapeInfo& aSI = ChangeShapeInfo(nE);
+    if (aSI.ShapeType() != TopAbs_EDGE)
       continue;
-    }
-    //
-    const BOPCol_ListOfInteger& aLV=aSI.SubShapes(); 
+
+    const BOPCol_ListOfInteger& aLV = aSI.SubShapes();
     aIt1.Initialize(aLV);
-    for (; aIt1.More(); aIt1.Next()) {
-      nV=aIt1.Value();
-      if (myMapVE.IsBound(nV)) {
-        BOPCol_ListOfInteger& aLE=myMapVE.ChangeFind(nV);
-        aLE.Append(nE);
+    for (; aIt1.More(); aIt1.Next())
+    {
+      nV = aIt1.Value();
+      BOPCol_ListOfInteger* pLE = myMapVE.ChangeSeek(nV);
+      if (!pLE) {
+        pLE = myMapVE.Bound(nV, BOPCol_ListOfInteger(myAllocator));
+        pLE->Append(nE);
       }
-      else {
-        BOPCol_ListOfInteger aLE(myAllocator);
-        //
-        aLE.Append(nE);
-        myMapVE.Bind(nV, aLE);
+      else
+      {
+        // provide uniqueness of the edges in the list
+        for (aIt2.Initialize(*pLE); aIt2.More(); aIt2.Next())
+        {
+          if (aIt2.Value() == nE)
+            break;
+        }
+        if (!aIt2.More())
+          pLE->Append(nE);
       }
-    }
-  }
-  //
-  BOPCol_DataMapIteratorOfDataMapOfIntegerListOfInteger aItDMILI; 
-  aItDMILI.Initialize(myMapVE);
-  for(; aItDMILI.More(); aItDMILI.Next()) { 
-    BOPCol_MapOfInteger aMFence;
-    BOPCol_ListOfInteger aLEx;
-    //
-    nV=aItDMILI.Key();
-    BOPCol_ListOfInteger& aLE=aItDMILI.ChangeValue();
-    aIt1.Initialize(aLE);
-    for (; aIt1.More(); aIt1.Next()) {
-      nE=aIt1.Value();
-      if(aMFence.Add(nE)) {
-        aLEx.Append(nE);
-      }
-    }
-    //
-    aLE.Clear();
-    aIt1.Initialize(aLEx);
-    for (; aIt1.More(); aIt1.Next()) {
-      nE=aIt1.Value();
-      aLE.Append(nE);
     }
   }
   //-----------------------------------------------------scope_1 t
@@ -2013,17 +1997,13 @@ void BOPDS_DS::UpdateCommonBlockWithSDVertices
 //=======================================================================
 void BOPDS_DS::InitPaveBlocksForVertex(const Standard_Integer theNV)
 {
-  Standard_Integer nE;
-  BOPCol_ListIteratorOfListOfInteger aItLE;
-  //
-  if (myMapVE.IsBound(theNV)) {
-    const BOPCol_ListOfInteger& aLE=myMapVE.Find(theNV);
-    aItLE.Initialize(aLE);
-    for (; aItLE.More(); aItLE.Next()) {
-      nE=aItLE.Value();
-      ChangePaveBlocks(nE);
-    }
-  }
+  const BOPCol_ListOfInteger* pLE = myMapVE.Seek(theNV);
+  if (!pLE)
+    return;
+
+  BOPCol_ListIteratorOfListOfInteger aItLE(*pLE);
+  for (; aItLE.More(); aItLE.Next())
+    ChangePaveBlocks(aItLE.Value());
 }
 
 //=======================================================================

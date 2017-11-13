@@ -660,7 +660,7 @@ void BOPAlgo_Builder::FillSameDomainFaces()
       const TopoDS_Shape& aFSD = aItLF.Value();
       myShapesSD.Bind(aFSD, aFSD1);
       // If the face has no splits but have an SD face, it is considered as being split
-      if (!mySplits.IsBound(aFSD))
+      if (myDS->Index(aFSD) >= 0)
         mySplits.Bound(aFSD, BOPCol_ListOfShape())->Append(aFSD);
     }
   }

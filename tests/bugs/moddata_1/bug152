@@ -1,0 +1,78 @@
+puts "================"
+puts "OCC152"
+puts "SAM1178"
+puts "================"
+puts ""
+#################################################################
+## SAM1178(#1871): Bad escaped result after a cut operation on the shape.
+#################################################################
+
+restore [locate_data_file OCC152.brep] sh 
+explode sh
+
+# the shape sh_1 is self-interfered
+# rebuild it
+eval mkvolume a [explode sh_1 f]
+checkshape a
+
+if {![regexp "OK" [bopcheck a]]} {
+  puts "Error: first argument is still self-interfered"
+}
+
+# Note, that one of the edges of the shape sh_2 contains invalid PCurve
+# on one of the faces of the shape sh_1. Try:
+# explode sh_1 f
+# explode sh_2 e
+# v2d
+# pcurve sh_1_3; 2dfit
+# pcurve c2d sh_2_1 sh_1_3
+# c2d is not adjusted.
+#
+# Boolean Operations algorithm will adjust it itself.
+
+copy sh_2 b
+
+
+# perform intersection
+bclearobjects
+bcleartools
+baddobjects a
+baddtools b
+bfillds
+
+# perform all kinds of Boolean operations
+
+# common
+bbop rcom 0
+checkshape rcom
+checkprops rcom -s 57108.7 -v 436179
+checknbshapes rcom -wire 3 -face 3 -shell 2 -solid 2 -m "Common"
+
+
+# fuse
+bbop rfuse 1
+checkshape rfuse
+checkprops rfuse -s 211120 -v 7.18494e+006
+checknbshapes rfuse -wire 4 -face 4 -shell 1 -solid 1 -m "Fuse"
+
+
+# cut
+bbop rcut 2
+checkshape rcut
+checkprops rcut -s 376623 -v 6.74877e+006
+checknbshapes rcut -wire 9 -face 9 -shell 3 -solid 3 -m "Cut"
+
+
+# tuc
+bbop rtuc 3
+checkshape rtuc
+checkprops rtuc -s empty -v empty
+checknbshapes rtuc -wire 0 -face 0 -shell 0 -solid 0 -m "Cut21"
+
+# gf
+bbuild result
+checkshape result
+checkprops result -s 490840 -v 7.62112e+006
+checknbshapes result -wire 10 -face 10 -shell 5 -solid 5 -m "GF"
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

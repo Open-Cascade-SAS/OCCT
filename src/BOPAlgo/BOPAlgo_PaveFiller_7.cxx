@@ -281,6 +281,20 @@ class BOPAlgo_MPC : public BOPAlgo_Algo  {
         else
           myNewTol = BRep_Tool::Tolerance(aCopyE);
       }
+      else
+      {
+        const BRepAdaptor_Surface& aBAS = myContext->SurfaceAdaptor(myF);
+        if (aBAS.IsUPeriodic() || aBAS.IsVPeriodic())
+        {
+          // The curve already exists. Adjust it for periodic cases.
+          BOPTools_AlgoTools2D::AdjustPCurveOnSurf
+            (myContext->SurfaceAdaptor(myF), f, l, aC2d, myNewC2d);
+          if (myNewC2d != aC2d)
+            myNewTol = BRep_Tool::Tolerance(aCopyE);
+          else
+            myNewC2d.Nullify();
+        }
+      }
 
       if (myFlag) {
         UpdateVertices(aCopyE, myF);

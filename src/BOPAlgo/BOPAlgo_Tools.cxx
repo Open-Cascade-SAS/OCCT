@@ -48,6 +48,8 @@
 #include <BRep_Tool.hxx>
 #include <BRep_Builder.hxx>
 
+#include <BRepBndLib.hxx>
+
 #include <GeomAPI_ProjectPointOnCurve.hxx>
 #include <GeomAPI_ProjectPointOnSurf.hxx>
 
@@ -66,8 +68,11 @@
 #include <BOPTools_AlgoTools2D.hxx>
 
 #include <NCollection_UBTreeFiller.hxx>
+#include <NCollection_IncAllocator.hxx>
 
 #include <IntTools_Context.hxx>
+
+#include <algorithm>
 
 typedef NCollection_IndexedDataMap
   <TopoDS_Shape, gp_Dir, TopTools_ShapeMapHasher> BOPAlgo_IndexedDataMapOfShapeDir;
@@ -129,25 +134,57 @@ void BOPAlgo_Tools::PerformCommonBlocks(BOPDS_IndexedDataMapOfPaveBlockListOfPav
   if (!aNbCB) {
     return;
   }
-  //
-  Handle(BOPDS_CommonBlock) aCB;
+  // Make Blocks of the pave blocks
   NCollection_List<BOPDS_ListOfPaveBlock> aMBlocks(aAllocator);
-  //
   BOPAlgo_Tools::MakeBlocks<Handle(BOPDS_PaveBlock), TColStd_MapTransientHasher>(aMPBLPB, aMBlocks, aAllocator);
-  //
+
+  // Use temporary allocator for the local fence map
+  Handle(NCollection_IncAllocator) anAllocTmp = new NCollection_IncAllocator;
+
   NCollection_List<BOPDS_ListOfPaveBlock>::Iterator aItB(aMBlocks);
   for (; aItB.More(); aItB.Next()) {
     const BOPDS_ListOfPaveBlock& aLPB = aItB.Value();
     Standard_Integer aNbPB = aLPB.Extent();
-    if (aNbPB>1) {
-      aCB=new BOPDS_CommonBlock;
-      aCB->SetPaveBlocks(aLPB);
-      //
-      BOPDS_ListIteratorOfListOfPaveBlock aItLPB(aLPB);
-      for (; aItLPB.More(); aItLPB.Next()) {
-        pDS->SetCommonBlock(aItLPB.Value(), aCB);
+    if (aNbPB < 2)
+      continue;
+
+    // Reset the allocator
+    anAllocTmp->Reset();
+    // New common block
+    Handle(BOPDS_CommonBlock) aCB;
+    // Faces of the common block
+    BOPCol_ListOfInteger aLFaces;
+    // Fence map to avoid duplicates in the list of faces of the common block
+    BOPCol_MapOfInteger aMFaces(1, anAllocTmp);
+
+    BOPDS_ListIteratorOfListOfPaveBlock aItLPB(aLPB);
+    for (; aItLPB.More(); aItLPB.Next())
+    {
+      const Handle(BOPDS_PaveBlock)& aPB = aItLPB.Value();
+      if (pDS->IsCommonBlock(aPB))
+      {
+        const Handle(BOPDS_CommonBlock)& aCBx = pDS->CommonBlock(aPB);
+        // Move all faces to the new common block
+        BOPCol_ListIteratorOfListOfInteger aItLF(aCBx->Faces());
+        for (; aItLF.More(); aItLF.Next())
+        {
+          const Standard_Integer nF = aItLF.Value();
+          // Append to common list avoiding duplicates
+          if (aMFaces.Add(nF))
+            aLFaces.Append(nF);
+        }
+        if (aCB.IsNull())
+          aCB = aCBx;
       }
-    }//if (aNbPB>1) {
+    }
+
+    if (aCB.IsNull())
+      aCB = new BOPDS_CommonBlock;
+
+    aCB->SetPaveBlocks(aLPB);
+    aCB->SetFaces(aLFaces);
+    for (aItLPB.Initialize(aLPB); aItLPB.More(); aItLPB.Next())
+      pDS->SetCommonBlock(aItLPB.Value(), aCB);
   }
 }
 //=======================================================================
@@ -1110,5 +1147,501 @@ void BOPAlgo_Tools::TreatCompound(const TopoDS_Shape& theS,
   {
     const TopoDS_Shape& aS = aIt.Value();
     TreatCompound(aS, aMFence, theLS);
+  }
+}
+
+//=======================================================================
+// Classification of the faces relatively solids
+//=======================================================================
+
+//=======================================================================
+//class     : BOPAlgo_ShapeBox
+//purpose   : Auxiliary class defining ShapeBox structure
+//=======================================================================
+class BOPAlgo_ShapeBox
+{
+public:
+  //! Empty constructor
+  BOPAlgo_ShapeBox() {};
+  //! Sets the shape
+  void SetShape(const TopoDS_Shape& theS)
+  {
+    myShape = theS;
+  };
+  //! Returns the shape
+  const TopoDS_Shape& Shape() const
+  {
+    return myShape;
+  };
+  //! Sets the bounding box
+  void SetBox(const Bnd_Box& theBox)
+  {
+    myBox = theBox;
+  };
+  //! Returns the bounding box
+  const Bnd_Box& Box() const
+  {
+    return myBox;
+  };
+private:
+  TopoDS_Shape myShape;
+  Bnd_Box myBox;
+};
+// Vector of ShapeBox
+typedef BOPCol_NCVector<BOPAlgo_ShapeBox> BOPAlgo_VectorOfShapeBox;
+
+//=======================================================================
+//class : BOPAlgo_FillIn3DParts
+//purpose : Auxiliary class for faces classification in parallel mode
+//=======================================================================
+class BOPAlgo_FillIn3DParts : public BOPAlgo_Algo
+{
+public:
+  DEFINE_STANDARD_ALLOC
+
+  //! Constructor
+  BOPAlgo_FillIn3DParts()
+  {
+    myBBTree = NULL;
+    myVShapeBox = NULL;
+  };
+
+  //! Destructor
+  virtual ~BOPAlgo_FillIn3DParts() {};
+
+  //! Sets the solid
+  void SetSolid(const TopoDS_Solid& theSolid)
+  {
+    mySolid = theSolid;
+  };
+
+  //! Returns the solid
+  const TopoDS_Solid& Solid() const
+  {
+    return mySolid;
+  };
+
+  //! Sets the box for the solid
+  void SetBoxS(const Bnd_Box& theBox)
+  {
+    myBoxS = theBox;
+  };
+
+  //! Returns the solid's box
+  const Bnd_Box& BoxS() const
+  {
+    return myBoxS;
+  };
+
+  //! Sets own INTERNAL faces of the solid
+  void SetOwnIF(const BOPCol_ListOfShape& theLIF)
+  {
+    myOwnIF = theLIF;
+  };
+
+  //! Returns own INTERNAL faces of the solid
+  const BOPCol_ListOfShape& OwnIF() const
+  {
+    return myOwnIF;
+  };
+
+  //! Sets the Bounding Box tree
+  void SetBBTree(const BOPCol_BoxBndTree& theBBTree)
+  {
+    myBBTree = (BOPCol_BoxBndTree*)&theBBTree;
+  };
+
+  //! Sets the ShapeBox structure
+  void SetShapeBoxVector(const BOPAlgo_VectorOfShapeBox& theShapeBox)
+  {
+    myVShapeBox = (BOPAlgo_VectorOfShapeBox*)&theShapeBox;
+  };
+
+  //! Sets the context
+  void SetContext(const Handle(IntTools_Context)& theContext)
+  {
+    myContext = theContext;
+  }
+
+  //! Returns the context
+  const Handle(IntTools_Context)& Context() const
+  {
+    return myContext;
+  }
+
+  //! Performs the classification
+  virtual void Perform();
+
+  //! Returns the faces classified as IN for solid
+  const BOPCol_ListOfShape& InFaces() const
+  {
+    return myInFaces;
+  };
+
+private:
+
+  //! Prepares Edge-Face connection map of the given shape
+  void MapEdgesAndFaces(const TopoDS_Shape& theF,
+                        BOPCol_IndexedDataMapOfShapeListOfShape& theEFMap,
+                        const Handle(NCollection_BaseAllocator)& theAlloc);
+
+  //! Makes the connexity block of faces using the connection map
+  void MakeConnexityBlock(const TopoDS_Face& theF,
+                          const BOPCol_IndexedMapOfShape& theMEToAvoid,
+                          const BOPCol_IndexedDataMapOfShapeListOfShape& theEFMap,
+                          BOPCol_MapOfShape& theMFDone,
+                          BOPCol_ListOfShape& theLCB,
+                          TopoDS_Face& theFaceToClassify);
+
+  TopoDS_Solid mySolid; //! Solid
+  Bnd_Box myBoxS; // Bounding box of the solid
+  BOPCol_ListOfShape myOwnIF; //! Own INTERNAL faces of the solid
+  BOPCol_ListOfShape myInFaces; //! Faces classified as IN
+
+  BOPCol_BoxBndTree* myBBTree; //! UB tree of bounding boxes
+  BOPAlgo_VectorOfShapeBox* myVShapeBox; //! ShapeBoxMap
+
+  TopoDS_Iterator myItF; //! Iterators
+  TopoDS_Iterator myItW;
+
+  Handle(IntTools_Context) myContext; //! Context
+};
+
+//=======================================================================
+//function : BOPAlgo_FillIn3DParts::Perform
+//purpose  : 
+//=======================================================================
+void BOPAlgo_FillIn3DParts::Perform()
+{
+  BOPAlgo_Algo::UserBreak();
+
+  myInFaces.Clear();
+
+  // 1. Select boxes of faces that are not out of aBoxS
+  BOPCol_BoxBndTreeSelector aSelector;
+  aSelector.SetBox(myBoxS);
+  //
+  if (!myBBTree->Select(aSelector))
+    return;
+
+  const BOPCol_ListOfInteger& aLIFP = aSelector.Indices();
+
+  // 2. Fill maps of edges and faces of the solid
+
+  Handle(NCollection_BaseAllocator) anAlloc = new NCollection_IncAllocator;
+
+  BOPAlgo_VectorOfShapeBox& aVShapeBox = *myVShapeBox;
+
+  BOPCol_IndexedMapOfShape aMSE(1, anAlloc), aMSF(1, anAlloc);
+  BOPTools::MapShapes(mySolid, TopAbs_EDGE, aMSE);
+  BOPTools::MapShapes(mySolid, TopAbs_FACE, aMSF);
+
+  // Check if the Solid contains any faces
+  Standard_Boolean bIsEmpty = aMSF.IsEmpty();
+
+  // Add own internal faces of the solid into aMSF
+  BOPCol_ListIteratorOfListOfShape aItLS(myOwnIF);
+  for (; aItLS.More(); aItLS.Next())
+    aMSF.Add(aItLS.Value());
+
+  // 3. aIVec - faces to process.
+  //    Filter the selected faces with faces of the solid.
+  BOPCol_NCVector<Standard_Integer> aIVec(256, anAlloc);
+
+  BOPCol_ListIteratorOfListOfInteger aItLI(aLIFP);
+  for (; aItLI.More(); aItLI.Next()) {
+    Standard_Integer nFP = aItLI.Value();
+    const TopoDS_Shape& aFP = aVShapeBox(nFP).Shape();
+    if (!aMSF.Contains(aFP))
+      aIVec.Append1() = nFP;
+  }
+
+  // 4. Classify faces relatively solid.
+  //    Store faces that are IN mySolid into <myInFaces>
+
+  Standard_Integer k, aNbFP = aIVec.Extent();
+  // Sort indices if necessary
+  if (aNbFP > 1)
+    std::sort(aIVec.begin(), aIVec.end());
+
+  if (bIsEmpty)
+  {
+    // The solid is empty as it does not contain any faces.
+    // It could happen when the input solid consists of INTERNAL faces only.
+    // Classification of any point relatively empty solid would always give IN status.
+    // Thus, we consider all selected faces as IN without real classification.
+    for (k = 0; k < aNbFP; ++k)
+      myInFaces.Append(aVShapeBox(aIVec(k)).Shape());
+
+    return;
+  }
+
+  // Prepare EF map of faces to process for building connexity blocks
+  BOPCol_IndexedDataMapOfShapeListOfShape aMEFP(1, anAlloc);
+  if (aNbFP > 1)
+  {
+    for (k = 0; k < aNbFP; ++k)
+      MapEdgesAndFaces(aVShapeBox(aIVec(k)).Shape(), aMEFP, anAlloc);
+  }
+
+  // Map of Edge-Face connection, necessary for solid classification.
+  // It will be filled when first classification is performed.
+  BOPCol_IndexedDataMapOfShapeListOfShape aMEFDS(1, anAlloc);
+
+  // Fence map to avoid processing of the same faces twice
+  BOPCol_MapOfShape aMFDone(1, anAlloc);
+
+  for (k = 0; k < aNbFP; ++k)
+  {
+    Standard_Integer nFP = aIVec(k);
+    const TopoDS_Face& aFP = (*(TopoDS_Face*)&aVShapeBox(nFP).Shape());
+    if (!aMFDone.Add(aFP))
+      continue;
+
+    // Make connexity blocks of faces, avoiding passing through the
+    // borders of the solid. It helps to reduce significantly the
+    // number of classified faces.
+    BOPCol_ListOfShape aLCBF(anAlloc);
+    // The most appropriate face for classification
+    TopoDS_Face aFaceToClassify;
+    MakeConnexityBlock(aFP, aMSE, aMEFP, aMFDone, aLCBF, aFaceToClassify);
+
+    if (!myBoxS.IsWhole())
+    {
+      // First, try fast classification of the whole block by additional
+      // check on bounding boxes - check that bounding boxes of all vertices
+      // of the block interfere with the box of the solid.
+      // If not, the faces are out.
+      Standard_Boolean bOut = Standard_False;
+      aItLS.Initialize(aLCBF);
+      for (; aItLS.More() && !bOut; aItLS.Next())
+      {
+        TopExp_Explorer anExpV(aItLS.Value(), TopAbs_VERTEX);
+        for (; anExpV.More() && !bOut; anExpV.Next())
+        {
+          const TopoDS_Vertex& aV = TopoDS::Vertex(anExpV.Current());
+          Bnd_Box aBBV;
+          aBBV.Add(BRep_Tool::Pnt(aV));
+          aBBV.SetGap(BRep_Tool::Tolerance(aV));
+          bOut = myBoxS.IsOut(aBBV);
+        }
+      }
+      if (bOut)
+        continue;
+    }
+
+    if (aFaceToClassify.IsNull())
+      aFaceToClassify = aFP;
+
+    if (aMEFDS.IsEmpty())
+      // Fill EF map for Solid
+      BOPTools::MapShapesAndAncestors(mySolid, TopAbs_EDGE, TopAbs_FACE, aMEFDS);
+
+    // All vertices are interfere with the solids box, run classification.
+    Standard_Boolean bIsIN = BOPTools_AlgoTools::IsInternalFace
+      (aFaceToClassify, mySolid, aMEFDS, Precision::Confusion(), myContext);
+    if (bIsIN)
+    {
+      aItLS.Initialize(aLCBF);
+      for (; aItLS.More(); aItLS.Next())
+        myInFaces.Append(aItLS.Value());
+    }
+  }
+}
+//=======================================================================
+// function: MapEdgesAndFaces
+// purpose: 
+//=======================================================================
+void BOPAlgo_FillIn3DParts::MapEdgesAndFaces(const TopoDS_Shape& theF,
+                                             BOPCol_IndexedDataMapOfShapeListOfShape& theEFMap,
+                                             const Handle(NCollection_BaseAllocator)& theAllocator)
+{
+  myItF.Initialize(theF);
+  for (; myItF.More(); myItF.Next())
+  {
+    const TopoDS_Shape& aW = myItF.Value();
+    if (aW.ShapeType() != TopAbs_WIRE)
+      continue;
+
+    myItW.Initialize(aW);
+    for (; myItW.More(); myItW.Next())
+    {
+      const TopoDS_Shape& aE = myItW.Value();
+
+      BOPCol_ListOfShape* pLF = theEFMap.ChangeSeek(aE);
+      if (!pLF)
+        pLF = &theEFMap(theEFMap.Add(aE, BOPCol_ListOfShape(theAllocator)));
+      pLF->Append(theF);
+    }
+  }
+}
+//=======================================================================
+// function: MakeConnexityBlock
+// purpose: 
+//=======================================================================
+void BOPAlgo_FillIn3DParts::MakeConnexityBlock(const TopoDS_Face& theFStart,
+                                               const BOPCol_IndexedMapOfShape& theMEAvoid,
+                                               const BOPCol_IndexedDataMapOfShapeListOfShape& theEFMap,
+                                               BOPCol_MapOfShape& theMFDone,
+                                               BOPCol_ListOfShape& theLCB,
+                                               TopoDS_Face& theFaceToClassify)
+{
+  // Add start element
+  theLCB.Append(theFStart);
+  if (theEFMap.IsEmpty())
+    return;
+
+  BOPCol_ListIteratorOfListOfShape aItCB(theLCB);
+  for (; aItCB.More(); aItCB.Next())
+  {
+    const TopoDS_Shape& aF = aItCB.Value();
+    myItF.Initialize(aF);
+    for (; myItF.More(); myItF.Next())
+    {
+      const TopoDS_Shape& aW = myItF.Value();
+      if (aW.ShapeType() != TopAbs_WIRE)
+        continue;
+
+      myItW.Initialize(aW);
+      for (; myItW.More(); myItW.Next())
+      {
+        const TopoDS_Shape& aE = myItW.Value();
+        if (theMEAvoid.Contains(aE))
+        {
+          if (theFaceToClassify.IsNull())
+            theFaceToClassify = TopoDS::Face(aF);
+          continue;
+        }
+
+        const BOPCol_ListOfShape* pLF = theEFMap.Seek(aE);
+        if (!pLF)
+          continue;
+        BOPCol_ListIteratorOfListOfShape aItLF(*pLF);
+        for (; aItLF.More(); aItLF.Next())
+        {
+          const TopoDS_Shape& aFToAdd = aItLF.Value();
+          if (theMFDone.Add(aFToAdd))
+            theLCB.Append(aFToAdd);
+        }
+      }
+    }
+  }
+}
+
+// Vector of solid classifiers
+typedef BOPCol_NCVector<BOPAlgo_FillIn3DParts> BOPAlgo_VectorOfFillIn3DParts;
+
+// Functors to perform classification
+typedef BOPCol_ContextFunctor<BOPAlgo_FillIn3DParts,
+                              BOPAlgo_VectorOfFillIn3DParts,
+                              Handle(IntTools_Context),
+                              IntTools_Context> BOPCol_FillIn3DPartsFunctor;
+
+typedef BOPCol_ContextCnt<BOPCol_FillIn3DPartsFunctor,
+                          BOPAlgo_VectorOfFillIn3DParts,
+                          Handle(IntTools_Context)> BOPAlgo_FillIn3DPartsCnt;
+
+//=======================================================================
+//function : ClassifyFaces
+//purpose  :
+//=======================================================================
+void BOPAlgo_Tools::ClassifyFaces(const BOPCol_ListOfShape& theFaces,
+                                  const BOPCol_ListOfShape& theSolids,
+                                  const Standard_Boolean theRunParallel,
+                                  Handle(IntTools_Context)& theContext,
+                                  BOPCol_IndexedDataMapOfShapeListOfShape& theInParts,
+                                  const BOPCol_DataMapOfShapeBox& theShapeBoxMap,
+                                  const BOPCol_DataMapOfShapeListOfShape& theSolidsIF)
+{
+  Handle(NCollection_BaseAllocator) anAlloc = new NCollection_IncAllocator;
+
+  // Fill the vector of shape box with faces and its bounding boxes
+  BOPAlgo_VectorOfShapeBox aVSB(256, anAlloc);
+
+  BOPCol_ListIteratorOfListOfShape aItLF(theFaces);
+  for (; aItLF.More(); aItLF.Next())
+  {
+    const TopoDS_Shape& aF = aItLF.Value();
+    // Append face to the vector of shape box
+    BOPAlgo_ShapeBox& aSB = aVSB.Append1();
+    aSB.SetShape(aF);
+
+    // Get bounding box for the face
+    const Bnd_Box* pBox = theShapeBoxMap.Seek(aF);
+    if (pBox)
+      aSB.SetBox(*pBox);
+    else
+    {
+      // Build the bounding box
+      Bnd_Box aBox;
+      BRepBndLib::Add(aF, aBox);
+      aSB.SetBox(aBox);
+    }
+  }
+
+  // Prepare UB tree of bounding boxes of the faces to classify
+  // taking the bounding boxes from the just prepared vector
+  BOPCol_BoxBndTree aBBTree;
+  NCollection_UBTreeFiller <Standard_Integer, Bnd_Box> aTreeFiller(aBBTree);
+
+  Standard_Integer aNbF = aVSB.Extent();
+  for (Standard_Integer i = 0; i < aNbF; ++i)
+  {
+    aTreeFiller.Add(i, aVSB(i).Box());
+  }
+
+  // Shake tree filler
+  aTreeFiller.Fill();
+
+  // Prepare vector of solids to classify
+  BOPAlgo_VectorOfFillIn3DParts aVFIP;
+
+  BOPCol_ListIteratorOfListOfShape aItLS(theSolids);
+  for (; aItLS.More(); aItLS.Next())
+  {
+    const TopoDS_Solid& aSolid = TopoDS::Solid(aItLS.Value());
+    // Append solid to the vector
+    BOPAlgo_FillIn3DParts& aFIP = aVFIP.Append1();
+    aFIP.SetSolid(aSolid);
+
+    // Get bounding box for the solid
+    const Bnd_Box* pBox = theShapeBoxMap.Seek(aSolid);
+    if (pBox)
+      aFIP.SetBoxS(*pBox);
+    else
+    {
+      // Build the bounding box
+      Bnd_Box aBox;
+      BRepBndLib::Add(aSolid, aBox);
+      if (!aBox.IsWhole())
+      {
+        if (BOPTools_AlgoTools::IsInvertedSolid(aSolid))
+          aBox.SetWhole();
+      }
+      aFIP.SetBoxS(aBox);
+    }
+
+    const BOPCol_ListOfShape* pLIF = theSolidsIF.Seek(aSolid);
+    if (pLIF)
+      aFIP.SetOwnIF(*pLIF);
+
+    aFIP.SetBBTree(aBBTree);
+    aFIP.SetShapeBoxVector(aVSB);
+  }
+
+  // Perform classification
+  //================================================================
+  BOPAlgo_FillIn3DPartsCnt::Perform(theRunParallel, aVFIP, theContext);
+  //================================================================
+
+  // Analyze the results and fill the resulting map
+
+  Standard_Integer aNbS = aVFIP.Extent();
+  for (Standard_Integer i = 0; i < aNbS; ++i)
+  {
+    BOPAlgo_FillIn3DParts& aFIP = aVFIP(i);
+    const TopoDS_Shape& aS = aFIP.Solid();
+    const BOPCol_ListOfShape& aLFIn = aFIP.InFaces();
+    theInParts.Add(aS, aLFIn);
   }
 }

@@ -1,0 +1,35 @@
+puts "========"
+puts "OCC29322"
+puts "========"
+puts ""
+#################################################
+# Unify faces classification procedures in Boolean Operations
+#################################################
+
+line line1 0 0 0 0 0 1
+mkedge e1 line1 0 10
+line line2 0 0.5 0 0 0 1
+mkedge e2 line2 0 10
+mkedge e3 line2 -5 15
+erase line1 line2
+
+vertex v1 0 0.25 0
+settolerance v1 0.25
+vertex v2 0 0.25 10
+settolerance v2 0.25
+vertex v3 0 0.25 5
+settolerance v3 0.25
+
+plane p 0 0 0 0 1 0
+mkface f p -5 15 -5 5
+
+bclearobjects
+bcleartools
+baddobjects f e1 e2 e3 v1 v2 v3
+bfillds
+bbuild result
+
+checkshape result
+checknbshapes result -vertex 9 -edge 8 -wire 2 -face 1
+checkprops result -l 90 -s 200
+
