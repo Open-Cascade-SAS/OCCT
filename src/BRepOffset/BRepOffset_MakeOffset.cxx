@@ -112,6 +112,7 @@
 #include <BRepBuilderAPI_Sewing.hxx>
 #include <Geom_Line.hxx>
 #include <NCollection_Vector.hxx>
+#include <NCollection_IncAllocator.hxx>
 //
 #include <BOPAlgo_MakerVolume.hxx>
 #include <BOPTools_AlgoTools.hxx>
@@ -254,7 +255,6 @@ static
 
 static
   Standard_Boolean BuildShellsCompleteInter(const BOPCol_ListOfShape& theLF,
-                                            const BOPCol_IndexedDataMapOfShapeListOfShape& theOrigins,
                                             BRepAlgo_Image& theImage,
                                             TopoDS_Shape& theShells);
 
@@ -2282,6 +2282,19 @@ void BRepOffset_MakeOffset::Intersection3D(BRepOffset_Inter3d& Inter)
     Clock.Start();  
   }
 #endif
+
+  // In the Complete Intersection mode, implemented currently for planar
+  // solids only, there is no need to intersect the faces here.
+  // This intersection will be performed in the method BuildShellsCompleteInter
+  // where the special treatment is applied to produced faces.
+  //
+  // Make sure to match the parameters in which the method
+  // BuildShellsCompleteInter is called.
+  if (myInter && (myJoin == GeomAbs_Intersection) && myIsPlanar &&
+      !myThickening && myFaces.IsEmpty() && IsSolid(myShape))
+    return;
+
+
   TopTools_ListOfShape OffsetFaces;  // list of faces // created.
   MakeList (OffsetFaces,myInitOffsetFace,myFaces);
 
@@ -2920,8 +2933,7 @@ void BRepOffset_MakeOffset::MakeShells ()
   }
 #endif
   //
-  TopTools_IndexedDataMapOfShapeListOfShape anOrigins;
-  //
+  // Prepare list of splits of the offset faces to make the shells
   BOPCol_ListOfShape aLSF;
   const TopTools_ListOfShape& R = myImageOffset.Roots();
   TopTools_ListIteratorOfListOfShape it(R);
@@ -2935,12 +2947,6 @@ void BRepOffset_MakeOffset::MakeShells ()
     for (; it2.More(); it2.Next()) {
       const TopoDS_Shape& aFIm = it2.Value();
       aLSF.Append(aFIm);
-      //
-      TopTools_ListOfShape *pLOr = anOrigins.ChangeSeek(aFIm);
-      if (!pLOr) {
-        pLOr = &anOrigins(anOrigins.Add(aFIm, TopTools_ListOfShape()));
-      }
-      pLOr->Append(aF);
     }
   }
   //
@@ -2968,7 +2974,7 @@ void BRepOffset_MakeOffset::MakeShells ()
       IsSolid(myShape) && myIsPlanar) {
     //
     TopoDS_Shape aShells;
-    bDone = BuildShellsCompleteInter(aLSF, anOrigins, myImageOffset, aShells);
+    bDone = BuildShellsCompleteInter(aLSF, myImageOffset, aShells);
     if (bDone) {
       myOffsetShape = aShells;
     }
@@ -4075,7 +4081,6 @@ void GetEnlargedFaces(const TopoDS_Shape& theShape,
 //           rebuilt using only outer faces.
 //=======================================================================
 Standard_Boolean BuildShellsCompleteInter(const BOPCol_ListOfShape& theLF,
-                                          const BOPCol_IndexedDataMapOfShapeListOfShape& theOrigins,
                                           BRepAlgo_Image& theImage,
                                           TopoDS_Shape& theShells)
 {
@@ -4099,11 +4104,47 @@ Standard_Boolean BuildShellsCompleteInter(const BOPCol_ListOfShape& theLF,
     // result is the alone solid, nothing to do
     return GetSubShapes(aResult1, TopAbs_SHELL, theShells);
   }
-  //
-  // it is necessary to rebuild the solids, avoiding internal faces
-  //
-  // map faces to solids
-  TopTools_IndexedDataMapOfShapeListOfShape aDMFS;
+
+  // Allocators for effective memory allocations
+  // Global allocator for the long-living containers
+  Handle(NCollection_IncAllocator) anAllocGlob = new NCollection_IncAllocator;
+  // Local allocator for the local containers
+  Handle(NCollection_IncAllocator) anAllocLoc = new NCollection_IncAllocator;
+
+  // Since the <theImage> object does not support multiple ancestors,
+  // prepare local copy of the origins, which will be used to resolve
+  // non-manifold solids produced by Maker Volume algorithm by comparison
+  // of the normal directions of the split faces with their origins.
+  TopTools_DataMapOfShapeListOfShape anOrigins(1, anAllocGlob);
+  TopTools_ListIteratorOfListOfShape aItLR(theImage.Roots());
+  for (; aItLR.More(); aItLR.Next())
+  {
+    const TopoDS_Shape& aFR = aItLR.Value();
+
+    // Reset the local allocator
+    anAllocLoc->Reset();
+    // Find the last splits of the root face, including the ones
+    // created during MakeVolume operation
+    TopTools_ListOfShape aLFIm(anAllocLoc);
+    theImage.LastImage(aFR, aLFIm);
+
+    TopTools_ListIteratorOfListOfShape aItLFIm(aLFIm);
+    for (; aItLFIm.More(); aItLFIm.Next())
+    {
+      const TopoDS_Shape& aFIm = aItLFIm.Value();
+      TopTools_ListOfShape *pLFOr = anOrigins.ChangeSeek(aFIm);
+      if (!pLFOr) {
+        pLFOr = anOrigins.Bound(aFIm, TopTools_ListOfShape(anAllocGlob));
+      }
+      pLFOr->Append(aFR);
+    }
+  }
+
+  // Reset the local allocator
+  anAllocLoc->Reset();
+  // It is necessary to rebuild the solids, avoiding internal faces
+  // Map faces to solids
+  TopTools_IndexedDataMapOfShapeListOfShape aDMFS(1, anAllocLoc);
   TopExp::MapShapesAndAncestors(aResult1, TopAbs_FACE, TopAbs_SOLID, aDMFS);
   //
   Standard_Integer i, aNb = aDMFS.Extent();
@@ -4114,18 +4155,18 @@ Standard_Boolean BuildShellsCompleteInter(const BOPCol_ListOfShape& theLF,
   }
   //
   // get faces attached to only one solid
-  BOPCol_ListOfShape aLF2;
+  BOPCol_ListOfShape aLF(anAllocLoc);
   for (i = 1; i <= aNb; ++i) {
     const TopTools_ListOfShape& aLS = aDMFS(i);
     if (aLS.Extent() == 1) {
       const TopoDS_Shape& aF = aDMFS.FindKey(i);
-      aLF2.Append(aF);
+      aLF.Append(aF);
     }
   }
   //
   // make solids from the new list
   BOPAlgo_MakerVolume aMV2;
-  aMV2.SetArguments(aLF2);
+  aMV2.SetArguments(aLF);
   // no need to intersect this time
   aMV2.SetIntersect(Standard_False);
   aMV2.SetAvoidInternalShapes(Standard_True);
@@ -4146,24 +4187,30 @@ Standard_Boolean BuildShellsCompleteInter(const BOPCol_ListOfShape& theLF,
     return bDone;
   }
   //
-  // the result is non-manifold - resolve it comparing normals
+  aLF.Clear();
+  aDMFS.Clear();
+  anAllocLoc->Reset();
+
+  // the result is non-manifold - resolve it comparing normal
   // directions of the offset faces and original faces
-  BOPCol_ListOfShape aLF3;
-  for (; aExp.More(); aExp.Next()) {
+  for (; aExp.More(); aExp.Next())
+  {
     const TopoDS_Face& aF = TopoDS::Face(aExp.Current());
-    //
-    // check orientation
-    if (!theOrigins.Contains(aF)) {
-      aLF3.Append(aF);
+    const TopTools_ListOfShape* pLFOr = anOrigins.Seek(aF);
+    if (!pLFOr)
+    {
+      Standard_ASSERT_INVOKE("BRepOffset_MakeOffset::BuildShellsCompleteInterSplit(): "
+                             "Origins map does not contain the split face");
       continue;
     }
-    //
-    const TopTools_ListOfShape& aLFOr = theOrigins.FindFromKey(aF);
-    TopTools_ListIteratorOfListOfShape aItLF(aLFOr);
-    for (; aItLF.More(); aItLF.Next()) {
-      const TopoDS_Face& aFOr = TopoDS::Face(aItLF.Value());
-      if (BRepOffset_Tool::CheckPlanesNormals(aF, aFOr)) {
-        aLF3.Append(aF);
+    // Check orientation
+    TopTools_ListIteratorOfListOfShape aItLOr(*pLFOr);
+    for (; aItLOr.More(); aItLOr.Next())
+    {
+      const TopoDS_Face& aFOr = TopoDS::Face(aItLOr.Value());
+      if (BRepOffset_Tool::CheckPlanesNormals(aF, aFOr))
+      {
+        aLF.Append(aF);
         break;
       }
     }
@@ -4171,7 +4218,7 @@ Standard_Boolean BuildShellsCompleteInter(const BOPCol_ListOfShape& theLF,
   //
   // make solid from most outer faces with correct normal direction
   BOPAlgo_MakerVolume aMV3;
-  aMV3.SetArguments(aLF3);
+  aMV3.SetArguments(aLF);
   aMV3.SetIntersect(Standard_False);
   aMV3.SetAvoidInternalShapes(Standard_True);
   aMV3.Perform();
