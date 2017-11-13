@@ -22,9 +22,13 @@ whatis result
 explode result
 whatis result_1
 
+if { [regexp "This shape seems to be OK" [bopcheck result] ] != 1 } {
+    puts "Error : The result of General Fuse operation is self-interfered shape"
+}
+
 checkshape result_1
 
-checkprops result_1 -v 15041.2 -s 8245.4
+checkprops result_1 -v 15287.7 -s 8383.16
 
 checkview -display result_1 -2d -path ${imagedir}/${test_image}.png
 

@@ -1,0 +1,35 @@
+puts "========"
+puts "OCC29323"
+puts "========"
+puts ""
+#################################################
+# Intersection algorithm produces the curve with oscillation
+#################################################
+
+set MaxTolReached 0.15
+set GoodNbCurv 1
+set ExpLength 96.268040111795571
+
+restore [locate_data_file bug29323_hb.brep] h
+plane p 0 0 4 0 0 1
+mkface f p -200 200 -200 200
+explode h f
+
+set log [bopcurves h_4 f -2d]
+
+smallview
+donly c_1
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}_1.png
+checklength c_1 -l $ExpLength
+
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} ${log} full Toler NbCurv
+
+if {$Toler > $MaxTolReached} {
+  puts "Error: Big tolerance is returned by intersector"
+}
+
+if {$NbCurv != $GoodNbCurv} {
+  puts "Error: Please check NbCurves for intersector"
+}

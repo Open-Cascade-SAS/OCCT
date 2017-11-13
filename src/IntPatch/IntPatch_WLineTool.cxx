@@ -91,20 +91,80 @@ static void FillPointsHash(const Handle(IntPatch_WLine)         &theWLine,
 //            Static subfunction in ComputePurgedWLine and DeleteOuter.
 //=========================================================================
 static Handle(IntPatch_WLine) MakeNewWLine(const Handle(IntPatch_WLine)         &theWLine,
-                                           const NCollection_Array1<Standard_Integer> &thePointsHash)
+                                           NCollection_Array1<Standard_Integer> &thePointsHash,
+                                           const Standard_Boolean theIsOuter)
 {
   Standard_Integer i;
 
   Handle(IntSurf_LineOn2S) aPurgedLineOn2S = new IntSurf_LineOn2S();
   Handle(IntPatch_WLine) aLocalWLine = new IntPatch_WLine(aPurgedLineOn2S, Standard_False);
-  Standard_Integer anOldLineIdx = 1, aVertexIdx = 1;
+  Standard_Integer anOldLineIdx = 1, aVertexIdx = 1, anIndexPrev = -1, anIdxOld = -1;
+  gp_Pnt aPPrev, aPOld;
   for(i = 1; i <= thePointsHash.Upper(); i++)
   {
     if (thePointsHash(i) == 0)
     {
-      // Store this point.
-      aPurgedLineOn2S->Add(theWLine->Point(i));
-      anOldLineIdx++;
+      // Point has to be added
+
+      const gp_Pnt aP = theWLine->Point(i).Value();
+      const Standard_Real aSqDistPrev = aPPrev.SquareDistance(aPOld);
+      const Standard_Real aSqDist = aPPrev.SquareDistance(aP);
+
+      const Standard_Real aRatio = (aSqDistPrev < gp::Resolution()) ? 0.0 : 9.0*aSqDist / aSqDistPrev;
+
+      if(theIsOuter ||
+         (aRatio < gp::Resolution()) ||
+         ((1.0 < aRatio) && (aRatio < 81.0)) ||
+         (i - anIndexPrev <= 1) ||
+         (i - anIdxOld <= 1))
+      {
+        // difference in distances is satisfactory
+        // (1/9 < aSqDist/aSqDistPrev < 9)
+
+        // Store this point.
+        aPurgedLineOn2S->Add(theWLine->Point(i));
+        anOldLineIdx++;
+        aPOld = aPPrev;
+        aPPrev = aP;
+        anIdxOld = anIndexPrev;
+        anIndexPrev = i;
+      }
+      else if(aSqDist >= aSqDistPrev*9.0)
+      {
+        // current segment is much more longer
+        // (aSqDist/aSqDistPrev >= 9)
+
+        i = (i + anIndexPrev)/2;
+        thePointsHash(i) = 0;
+        i--;
+      }
+      else
+      {
+        //previous segment is much more longer
+        //(aSqDist/aSqDistPrev <= 1/9)
+
+        if(anIndexPrev - anIdxOld > 1)
+        {
+          //Delete aPPrev from WL
+          aPurgedLineOn2S->RemovePoint(aPurgedLineOn2S->NbPoints());
+          anOldLineIdx--;
+
+          // Insert point between aPOld and aPPrev 
+          i = (anIdxOld + anIndexPrev) / 2;
+          thePointsHash(i) = 0;
+
+          aPPrev = aPOld;
+          anIndexPrev = anIdxOld;
+        }
+        else
+        {
+          aPOld = aPPrev;
+          anIdxOld = anIndexPrev;
+        }
+
+        //Next iterations will start from this inserted point.
+        i--;
+      }
     }
     else if (thePointsHash(i) == -1)
     {
@@ -113,7 +173,11 @@ static Handle(IntPatch_WLine) MakeNewWLine(const Handle(IntPatch_WLine)         
       aVertex.SetParameter(anOldLineIdx++);
       aLocalWLine->AddVertex(aVertex);
       aPurgedLineOn2S->Add(theWLine->Point(i));
+      aPPrev = aPOld = theWLine->Point(i).Value();
+      anIndexPrev = anIdxOld = i;
     }
+
+    //Other points will be rejected by purger.
   }
 
   return aLocalWLine;
@@ -241,7 +305,7 @@ static Handle(IntPatch_WLine)
   }
 
   // Build new line and modify geometry of necessary vertexes.
-  Handle(IntPatch_WLine) aLocalWLine = MakeNewWLine(theWLine, aDelOuterPointsHash);
+  Handle(IntPatch_WLine) aLocalWLine = MakeNewWLine(theWLine, aDelOuterPointsHash, Standard_True);
 
   if (aChangedFirst)
   {
@@ -483,7 +547,7 @@ static Handle(IntPatch_WLine)
     }
   }
 
-  return MakeNewWLine(theWLine, aNewPointsHash);
+  return MakeNewWLine(theWLine, aNewPointsHash, Standard_False);
 }
 
 //=======================================================================

@@ -1,5 +1,3 @@
-puts "TODO OCC28989 ALL: Error: result is self-interfered"
-
 puts "======="
 puts "OCC28892"
 puts "======="
