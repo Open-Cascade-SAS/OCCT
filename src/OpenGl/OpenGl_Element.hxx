@@ -56,6 +56,11 @@ public:
 
 public:
 
+  //! Return TRUE if primitive type generates shaded triangulation (to be used in filters).
+  virtual Standard_Boolean IsFillDrawMode() const { return false; }
+
+public:
+
   //! Render element if it passes the filtering procedure. This method should
   //! be used for elements which can be used in scope of rendering algorithms.
   //! E.g. elements of groups during recursive rendering.

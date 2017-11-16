@@ -53,10 +53,10 @@ public:
   Standard_EXPORT virtual ~OpenGl_PrimitiveArray();
 
   //! Render primitives to the window
-  Standard_EXPORT virtual void Render  (const Handle(OpenGl_Workspace)& theWorkspace) const;
+  Standard_EXPORT virtual void Render  (const Handle(OpenGl_Workspace)& theWorkspace) const Standard_OVERRIDE;
 
   //! Release OpenGL resources (VBOs)
-  Standard_EXPORT virtual void Release (OpenGl_Context* theContext);
+  Standard_EXPORT virtual void Release (OpenGl_Context* theContext) Standard_OVERRIDE;
 
   //! Return true if VBOs initialization has been performed.
   //! VBO initialization is performed during first Render() call.
@@ -70,7 +70,7 @@ public:
   GLint DrawMode() const { return myDrawMode; }
 
   //! Return TRUE if primitive type generates shaded triangulation.
-  Standard_Boolean IsFillDrawMode() const { return myIsFillType; }
+  virtual Standard_Boolean IsFillDrawMode() const Standard_OVERRIDE { return myIsFillType; }
 
   //! @return indices array
   const Handle(Graphic3d_IndexBuffer)& Indices() const { return myIndices; }
