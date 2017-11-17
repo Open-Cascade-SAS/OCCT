@@ -29,7 +29,8 @@ BRepAlgoAPI_BuilderAlgo::BRepAlgoAPI_BuilderAlgo()
   myDSFiller(NULL),
   myBuilder(NULL),
   myNonDestructive(Standard_False),
-  myGlue(BOPAlgo_GlueOff)
+  myGlue(BOPAlgo_GlueOff),
+  myCheckInverted(Standard_True)
 {}
 //=======================================================================
 // function: 
@@ -42,7 +43,8 @@ BRepAlgoAPI_BuilderAlgo::BRepAlgoAPI_BuilderAlgo
   myEntryType(0),
   myBuilder(NULL),
   myNonDestructive(Standard_False),
-  myGlue(BOPAlgo_GlueOff)
+  myGlue(BOPAlgo_GlueOff),
+  myCheckInverted(Standard_True)
 {
   BOPAlgo_PaveFiller* pPF=(BOPAlgo_PaveFiller*)&aPF;
   myDSFiller=pPF;

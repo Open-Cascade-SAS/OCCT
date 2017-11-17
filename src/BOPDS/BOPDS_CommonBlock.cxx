@@ -116,6 +116,23 @@ void BOPDS_CommonBlock::AppendFaces(TColStd_ListOfInteger& aLF)
   return myPaveBlocks.First();
 }
 //=======================================================================
+// function:  SetRealPaveBlock
+// purpose: 
+//=======================================================================
+void BOPDS_CommonBlock::SetRealPaveBlock(const Handle(BOPDS_PaveBlock)& thePB)
+{
+  BOPDS_ListIteratorOfListOfPaveBlock it(myPaveBlocks);
+  for (; it.More(); it.Next())
+  {
+    if (it.Value() == thePB)
+    {
+      myPaveBlocks.Prepend(thePB);
+      myPaveBlocks.Remove(it);
+      break;
+    }
+  }
+}
+//=======================================================================
 // function:  PaveBlockOnEdge
 // purpose: 
 //=======================================================================

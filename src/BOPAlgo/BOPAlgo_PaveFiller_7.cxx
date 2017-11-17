@@ -26,6 +26,7 @@
 #include <BOPDS_Interf.hxx>
 #include <BOPDS_Iterator.hxx>
 #include <BOPDS_ListOfPaveBlock.hxx>
+#include <BOPDS_MapOfCommonBlock.hxx>
 #include <BOPDS_MapOfPair.hxx>
 #include <BOPDS_MapOfPaveBlock.hxx>
 #include <BOPDS_Pave.hxx>
@@ -414,12 +415,11 @@ void BOPAlgo_PaveFiller::MakeSplitEdges()
     return;
   }
   //
-  Standard_Boolean bCB, bV1, bV2;
-  Standard_Integer i, nE, nV1, nV2, nSp, aNbPB, aNbVBSE, k;
+  Standard_Integer i, nE, nV1, nV2, nSp, aNbVBSE, k;
   Standard_Real aT1, aT2;
   BOPDS_ListIteratorOfListOfPaveBlock aItPB;
   Handle(BOPDS_PaveBlock) aPB;
-  BOPDS_MapOfPaveBlock aMPB(100);
+  BOPDS_MapOfCommonBlock aMCB(100);
   TopoDS_Vertex aV1, aV2;
   TopoDS_Edge aE;
   BOPAlgo_VectorOfSplitEdge aVBSE;
@@ -429,77 +429,96 @@ void BOPAlgo_PaveFiller::MakeSplitEdges()
   //
   aNbPBP=aPBP.Length();
   //
-  for (i=0; i<aNbPBP; ++i) {
-    BOPDS_ListOfPaveBlock& aLPB=aPBP(i);
-    //
-    aNbPB=aLPB.Extent();
-    if (aNbPB==1) {
-      aPB=aLPB.First();
-      aPB->Indices(nV1, nV2);
-      bV1=myDS->IsNewShape(nV1);
-      bV2=myDS->IsNewShape(nV2);
-      bCB=myDS->IsCommonBlock(aPB);
-      //
-      if (!(bV1 || bV2)) { // no new vertices here
-        if (!myNonDestructive || !bCB) {
-          if (bCB) {
-            if (!aPB->HasEdge()) {
-              const Handle(BOPDS_CommonBlock)& aCB = myDS->CommonBlock(aPB);
-              nE = aCB->PaveBlock1()->OriginalEdge();
-              aCB->SetEdge(nE);
-              // Compute tolerance of the common block and update the edge
-              Standard_Real aTol = BOPAlgo_Tools::ComputeToleranceOfCB(aCB, myDS, myContext);
-              myDS->UpdateEdgeTolerance(nE, aTol);
-            }
-          }
-          else {
-            nE = aPB->OriginalEdge();
-            aPB->SetEdge(nE);
-          }
-          continue;
-        }
-      }
-    }
+  for (i = 0; i < aNbPBP; ++i)
+  {
+    BOPDS_ListOfPaveBlock& aLPB = aPBP(i);
     //
     aItPB.Initialize(aLPB);
     for (; aItPB.More(); aItPB.Next()) {
-      aPB=aItPB.Value();
-      nE=aPB->OriginalEdge();
-      const BOPDS_ShapeInfo& aSIE=myDS->ShapeInfo(nE);
-      if (aSIE.HasFlag()){
+      aPB = aItPB.Value();
+      nE = aPB->OriginalEdge();
+      const BOPDS_ShapeInfo& aSIE = myDS->ShapeInfo(nE);
+      if (aSIE.HasFlag())
+      {
+        // Skip degenerated edges
         continue;
       }
-      //
-      const Handle(BOPDS_CommonBlock)& aCB=myDS->CommonBlock(aPB);
-      bCB=!aCB.IsNull();
-      if (bCB) {
-        aPB=aCB->PaveBlock1();
-      }
-      //
-      if (aMPB.Add(aPB)) {
-        nE=aPB->OriginalEdge();
-        aPB->Indices(nV1, nV2);
-        aPB->Range(aT1, aT2);
-        //
-        aE=(*(TopoDS_Edge *)(&myDS->Shape(nE))); 
-        aE.Orientation(TopAbs_FORWARD);
-        //
-        aV1=(*(TopoDS_Vertex *)(&myDS->Shape(nV1)));
-        aV1.Orientation(TopAbs_FORWARD); 
-        //
-        aV2=(*(TopoDS_Vertex *)(&myDS->Shape(nV2)));
-        aV2.Orientation(TopAbs_REVERSED); 
-        //
-        BOPAlgo_SplitEdge& aBSE=aVBSE.Appended();
-        //
-        aBSE.SetData(aE, aV1, aT1, aV2, aT2);
-        aBSE.SetPaveBlock(aPB);
-        if (bCB) {
-          aBSE.SetCommonBlock(aCB);
+
+      const Handle(BOPDS_CommonBlock)& aCB = myDS->CommonBlock(aPB);
+      Standard_Boolean bCB = !aCB.IsNull();
+      if (bCB && !aMCB.Add(aCB))
+        continue;
+
+      aPB->Indices(nV1, nV2);
+      // Check if it is necessary to make the split of the edge
+      {
+        Standard_Boolean bV1 = myDS->IsNewShape(nV1);
+        Standard_Boolean bV2 = myDS->IsNewShape(nV2);
+
+        Standard_Boolean bToSplit = Standard_True;
+        if (!bV1 && !bV2) // no new vertices here
+        {
+          if (!myNonDestructive || !bCB)
+          {
+            if (bCB)
+            {
+              // Find the edge with these vertices
+              BOPDS_ListIteratorOfListOfPaveBlock it(aCB->PaveBlocks());
+              for (; it.More(); it.Next())
+              {
+                nE = it.Value()->OriginalEdge();
+                if (myDS->PaveBlocks(nE).Extent() == 1)
+                  break;
+              }
+              if (it.More())
+              {
+                // The pave block is found
+                bToSplit = Standard_False;
+                aCB->SetRealPaveBlock(it.Value());
+                aCB->SetEdge(nE);
+                // Compute tolerance of the common block and update the edge
+                Standard_Real aTol = BOPAlgo_Tools::ComputeToleranceOfCB(aCB, myDS, myContext);
+                myDS->UpdateEdgeTolerance(nE, aTol);
+              }
+            }
+            else if (aLPB.Extent() == 1)
+            {
+              bToSplit = Standard_False;
+              aPB->SetEdge(nE);
+            }
+            if (!bToSplit)
+              continue;
+          }
         }
-        aBSE.SetDS(myDS);
-        aBSE.SetProgressIndicator(myProgressIndicator);
       }
+
+      // Split the edge
+      if (bCB)
+      {
+        aPB = aCB->PaveBlock1();
+        nE = aPB->OriginalEdge();
+        aPB->Indices(nV1, nV2);
+      }
+      aPB->Range(aT1, aT2);
+      //
+      aE = (*(TopoDS_Edge *)(&myDS->Shape(nE)));
+      aE.Orientation(TopAbs_FORWARD);
+      //
+      aV1 = (*(TopoDS_Vertex *)(&myDS->Shape(nV1)));
+      aV1.Orientation(TopAbs_FORWARD);
+      //
+      aV2 = (*(TopoDS_Vertex *)(&myDS->Shape(nV2)));
+      aV2.Orientation(TopAbs_REVERSED);
+      //
+      BOPAlgo_SplitEdge& aBSE = aVBSE.Appended();
+      //
+      aBSE.SetData(aE, aV1, aT1, aV2, aT2);
+      aBSE.SetPaveBlock(aPB);
+      if (bCB) {
+        aBSE.SetCommonBlock(aCB);
+      }
+      aBSE.SetDS(myDS);
+      aBSE.SetProgressIndicator(myProgressIndicator);
     } // for (; aItPB.More(); aItPB.Next()) {
   }  // for (i=0; i<aNbPBP; ++i) {      
   //

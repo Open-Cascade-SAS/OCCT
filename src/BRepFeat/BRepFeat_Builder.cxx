@@ -503,9 +503,7 @@
       }
     }
     //
-    mySplits.Bind(aF, aLFIm); 
     if (aLFIm.Extent() == 0) {
-      mySplits.UnBind(aF);
       myImages.UnBind(aF);
     }
   }

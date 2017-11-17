@@ -26,7 +26,7 @@ bop beam_1 cut_2
 bopcut result
 checkshape result
 
-checknbshapes result -solid 2 -shell 2 -face 32 -wire 39
+checknbshapes result -solid 2 -shell 2 -face 33 -wire 40 -t
 checkprops result -v 5.40325e+7
 
 checkview -display result -2d -path ${imagedir}/${test_image}.png
