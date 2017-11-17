@@ -5,6 +5,6 @@ pcylinder c 1 10
 ttranslate c 2.5 2.5 2.5
 bfuse s c b
 explode s E
-blend result s 1 s_3
+blend result s 1 s_2
 
 checkprops result -s 192.343

@@ -5632,14 +5632,8 @@ void UpdateValidEdges(const TopTools_IndexedDataMapOfShapeListOfShape& theFImage
   GetBoundsToUpdate(aLF, theOEImages, theOEOrigins, aMEB,
                     aLABounds, aLAValid, aBounds, theAsDes);
   //
-  // intersect valid splits with bounds and update both
+  // Intersect valid splits with bounds and update both
   BOPAlgo_Builder aGF;
-  // The order is important here, because we need to keep the
-  // unmodified edges from the Bounds in the resulting maps.
-  // In case of total coincidence of the edges with the same vertices
-  // the edges in the common block will not be split and no new
-  // edges will be created and the first pave block
-  // will be used as a real pave block.
   aGF.AddArgument(aBounds);
   aGF.AddArgument(aSplits);
   aGF.Perform();
@@ -5667,18 +5661,56 @@ void UpdateValidEdges(const TopTools_IndexedDataMapOfShapeListOfShape& theFImage
     }
   }
   //
+  // Rebuild the map of edges to avoid, using the intersection results
+  TopTools_IndexedMapOfShape aMEAvoid;
+  // GF's data structure
+  const BOPDS_PDS& pDS = aGF.PDS();
+
   aNbE = theEdgesToAvoid.Extent();
-  for (i = 1; i <= aNbE; ++i) {
+  for (i = 1; i <= aNbE; ++i)
+  {
     const TopoDS_Shape& aE = theEdgesToAvoid(i);
     const TopTools_ListOfShape& aLEIm = aGF.Modified(aE);
-    TopTools_ListIteratorOfListOfShape aItLEIm(aLEIm);
-    for (; aItLEIm.More(); aItLEIm.Next()) {
-      const TopoDS_Shape& aEIm = aItLEIm.Value();
-      if (!aNewEdges.Contains(aEIm)) {
-        theEdgesToAvoid.Add(aEIm);
+
+    // Only untouched and fully coinciding edges should be kept in the avoid map
+    Standard_Boolean bKeep = aLEIm.IsEmpty();
+    if (aLEIm.Extent() == 1 && aE.IsSame(aLEIm.First()))
+    {
+      const BOPDS_ListOfPaveBlock& aLPB = pDS->PaveBlocks(pDS->Index(aE));
+      if (aLPB.Extent() == 1)
+      {
+        const Handle(BOPDS_PaveBlock)& aPB = aLPB.First();
+        const Handle(BOPDS_CommonBlock)& aCB = pDS->CommonBlock(aPB);
+        if (!aCB.IsNull())
+        {
+          const BOPDS_ListOfPaveBlock& aLPBCB = aCB->PaveBlocks();
+          BOPDS_ListIteratorOfListOfPaveBlock aItLPB(aLPBCB);
+          for (; aItLPB.More(); aItLPB.Next())
+          {
+            if (pDS->PaveBlocks(aItLPB.Value()->OriginalEdge()).Extent() > 1)
+              break;
+          }
+          bKeep = !aItLPB.More();
+        }
       }
     }
+
+    if (bKeep)
+    {
+      // keep the original edge
+      aMEAvoid.Add(aE);
+      continue;
+    }
+
+    TopTools_ListIteratorOfListOfShape aItLEIm(aLEIm);
+    for (; aItLEIm.More(); aItLEIm.Next())
+    {
+      const TopoDS_Shape& aEIm = aItLEIm.Value();
+      if (!aNewEdges.Contains(aEIm))
+        aMEAvoid.Add(aEIm);
+    }
   }
+  theEdgesToAvoid = aMEAvoid;
 }
 
 //=======================================================================

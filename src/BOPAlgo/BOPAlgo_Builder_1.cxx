@@ -40,28 +40,22 @@
 //=======================================================================
 void BOPAlgo_Builder::FillImagesVertices()
 {
-  Standard_Integer nV, nVSD;
-  TColStd_DataMapIteratorOfDataMapOfIntegerInteger aIt;
-  //
-  const TColStd_DataMapOfIntegerInteger& aMSDV=myDS->ShapesSD();
-  aIt.Initialize(aMSDV);
-  for (; aIt.More(); aIt.Next()) {
-    nV=aIt.Key();
-    nVSD=aIt.Value();
-    const TopoDS_Shape& aV=myDS->Shape(nV);
-    const TopoDS_Shape& aVSD=myDS->Shape(nVSD);
-    //
-    TopTools_ListOfShape aLVSD(myAllocator);
-    //
-    aLVSD.Append(aVSD);
-    myImages.Bind(aV, aLVSD);
-    //
+  TColStd_DataMapIteratorOfDataMapOfIntegerInteger aIt(myDS->ShapesSD());
+  for (; aIt.More(); aIt.Next())
+  {
+    Standard_Integer nV = aIt.Key();
+    Standard_Integer nVSD = aIt.Value();
+
+    const TopoDS_Shape& aV = myDS->Shape(nV);
+    const TopoDS_Shape& aVSD = myDS->Shape(nVSD);
+    // Add to Images map
+    myImages.Bound(aV, TopTools_ListOfShape(myAllocator))->Append(aVSD);
+    // Add to SD map
     myShapesSD.Bind(aV, aVSD);
-    //
+    // Add to Origins map
     TopTools_ListOfShape* pLOr = myOrigins.ChangeSeek(aVSD);
-    if (!pLOr) {
+    if (!pLOr)
       pLOr = myOrigins.Bound(aVSD, TopTools_ListOfShape());
-    }
     pLOr->Append(aV);
   }
 }
@@ -113,26 +107,6 @@ void BOPAlgo_Builder::FillImagesVertices()
       }
     }
   }
-}
-//=======================================================================
-// function: IsInterferred
-// purpose: 
-//=======================================================================
-  Standard_Boolean BOPAlgo_Builder::IsInterferred(const TopoDS_Shape& theS)const
-{
-  Standard_Boolean bInterferred;
-  TopoDS_Iterator aIt;
-  //
-  bInterferred=Standard_False;
-  aIt.Initialize(theS);
-  for (; aIt.More(); aIt.Next()) {
-    const TopoDS_Shape& aSx=aIt.Value();
-    if (myImages.IsBound(aSx)) {
-      bInterferred=!bInterferred;
-      break;
-    }
-  }
-  return bInterferred;
 }
 //=======================================================================
 //function : BuildResult
@@ -211,45 +185,57 @@ void BOPAlgo_Builder::FillImagesVertices()
   void BOPAlgo_Builder::FillImagesContainer(const TopoDS_Shape& theS,
                                             const TopAbs_ShapeEnum theType)
 {
-  Standard_Boolean bInterferred, bToReverse;
-  TopoDS_Iterator aIt;
-  BRep_Builder aBB;
-  TopTools_ListIteratorOfListOfShape aItIm; 
-  //
-  bInterferred=IsInterferred(theS);
-  if (!bInterferred){
+  // Check if any of the sub-shapes of the container have been modified
+  TopoDS_Iterator aIt(theS);
+  for (; aIt.More(); aIt.Next())
+  {
+    const TopoDS_Shape& aSS = aIt.Value();
+    const TopTools_ListOfShape* pLFIm = myImages.Seek(aSS);
+    if (pLFIm && ((pLFIm->Extent() != 1) || !pLFIm->First().IsSame(aSS)))
+      break;
+  }
+
+  if (!aIt.More())
+  {
+    // Non of the sub-shapes have been modified.
+    // No need to create the new container.
     return;
   }
-  //
+
+  BRep_Builder aBB;
+  // Make the new container of the splits of its sub-shapes
   TopoDS_Shape aCIm;
   BOPTools_AlgoTools::MakeContainer(theType, aCIm);
-  //
+
   aIt.Initialize(theS);
-  for (; aIt.More(); aIt.Next()) {
-    const TopoDS_Shape& aSx=aIt.Value();
-    if (myImages.IsBound(aSx)) {
-      const TopTools_ListOfShape& aLFIm=myImages.Find(aSx);
-      aItIm.Initialize(aLFIm);
-      for (; aItIm.More(); aItIm.Next()) {
-        TopoDS_Shape aSxIm=aItIm.Value();
-        //
-        bToReverse=BOPTools_AlgoTools::IsSplitToReverse(aSxIm, aSx, myContext);
-        if (bToReverse) {
-          aSxIm.Reverse();
-        }
-        aBB.Add(aCIm, aSxIm);
-      }
+  for (; aIt.More(); aIt.Next())
+  {
+    const TopoDS_Shape& aSS = aIt.Value();
+    const TopTools_ListOfShape* pLSSIm = myImages.Seek(aSS);
+
+    if (!pLSSIm)
+    {
+      // No splits, add the sub-shape itself
+      aBB.Add(aCIm, aSS);
+      continue;
     }
-    else {
-      aBB.Add(aCIm, aSx);
+
+    // Add the splits
+    TopTools_ListIteratorOfListOfShape aItIm(*pLSSIm);
+    for (; aItIm.More(); aItIm.Next())
+    {
+      TopoDS_Shape aSSIm = aItIm.Value();
+      if (!aSSIm.IsEqual(aSS) &&
+          BOPTools_AlgoTools::IsSplitToReverse(aSSIm, aSS, myContext))
+      {
+        aSSIm.Reverse();
+      }
+      aBB.Add(aCIm, aSSIm);
     }
   }
-  //
+
   aCIm.Closed(BRep_Tool::IsClosed(aCIm));
-  //
-  TopTools_ListOfShape aLSIm(myAllocator);
-  aLSIm.Append(aCIm);
-  myImages.Bind(theS, aLSIm); 
+  myImages.Bound(theS, TopTools_ListOfShape(myAllocator))->Append(aCIm);
 }
 //=======================================================================
 //function : FillImagesCompound

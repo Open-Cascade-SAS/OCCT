@@ -149,29 +149,21 @@ public:
   
   Standard_EXPORT void Dump() const;
 
-
+  //! Moves the pave blocks in the list to make the given
+  //! pave block to be the first.
+  //! It will be representative for the whole group.
+  Standard_EXPORT void SetRealPaveBlock(const Handle(BOPDS_PaveBlock)& thePB);
 
 
   DEFINE_STANDARD_RTTIEXT(BOPDS_CommonBlock,Standard_Transient)
 
 protected:
 
-
   BOPDS_ListOfPaveBlock myPaveBlocks;
   TColStd_ListOfInteger myFaces;
 
-
 private:
 
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _BOPDS_CommonBlock_HeaderFile

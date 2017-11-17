@@ -250,7 +250,7 @@ void BOPAlgo_Builder::BuildDraftSolid(const TopoDS_Shape& theSolid,
   TopAbs_Orientation aOrF, aOrSh, aOrSd;
   TopoDS_Iterator aIt1, aIt2;
   TopoDS_Shell aShD;
-  TopoDS_Shape aFSDx, aFx;
+  TopoDS_Shape aFx;
   BRep_Builder aBB;
   TopTools_ListIteratorOfListOfShape aItS; 
   //
@@ -281,21 +281,20 @@ void BOPAlgo_Builder::BuildDraftSolid(const TopoDS_Shape& theSolid,
           aFx=aItS.Value();
           //
           if (myShapesSD.IsBound(aFx)) {
-            aFSDx=myShapesSD.Find(aFx);
             //
             if (aOrF==TopAbs_INTERNAL) {
-              aFSDx.Orientation(aOrF);
-              theLIF.Append(aFSDx);
+              aFx.Orientation(aOrF);
+              theLIF.Append(aFx);
             }
             else {
               bToReverse=BOPTools_AlgoTools::IsSplitToReverse
-                (aFSDx, aF, myContext); 
+                (aFx, aF, myContext);
               if (bToReverse) {
-                aFSDx.Reverse();
+                aFx.Reverse();
               }
               //
               iFlag=1;
-              aBB.Add(aShD, aFSDx);
+              aBB.Add(aShD, aFx);
             }
           }//if (myShapesSD.IsBound(aFx)) {
           else {

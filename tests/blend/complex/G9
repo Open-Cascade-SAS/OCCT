@@ -8,6 +8,6 @@ pcylinder c2 5 20
 ttranslate c2 4.9 0 10
 bfuse f c1b c2
 explode f E
-blend result f 4.9 f_5
+blend result f 4.9 f_4
 
 checkprops result -s 2104.35

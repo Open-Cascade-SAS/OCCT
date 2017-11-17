@@ -49,10 +49,10 @@ BOPAlgo_Builder::BOPAlgo_Builder()
   myEntryPoint(0),
   myImages(100, myAllocator),
   myShapesSD(100, myAllocator),
-  mySplits(100, myAllocator),
   myOrigins(100, myAllocator),
   myNonDestructive(Standard_False),
-  myGlue(BOPAlgo_GlueOff)
+  myGlue(BOPAlgo_GlueOff),
+  myCheckInverted(Standard_True)
 {
 }
 //=======================================================================
@@ -70,10 +70,10 @@ BOPAlgo_Builder::BOPAlgo_Builder
   myEntryPoint(0),
   myImages(100, myAllocator), 
   myShapesSD(100, myAllocator),
-  mySplits(100, myAllocator),
   myOrigins(100, myAllocator),
   myNonDestructive(Standard_False),
-  myGlue(BOPAlgo_GlueOff)
+  myGlue(BOPAlgo_GlueOff),
+  myCheckInverted(Standard_True)
 {
 }
 //=======================================================================
@@ -100,7 +100,6 @@ void BOPAlgo_Builder::Clear()
   myMapFence.Clear();
   myImages.Clear();
   myShapesSD.Clear();
-  mySplits.Clear();
   myOrigins.Clear();
 }
 //=======================================================================
@@ -128,95 +127,6 @@ void BOPAlgo_Builder::SetArguments(const TopTools_ListOfShape& theShapes)
     const TopoDS_Shape& aS = aIt.Value();
     AddArgument(aS);
   }
-}
-//=======================================================================
-//function : Arguments
-//purpose  : 
-//=======================================================================
-const TopTools_ListOfShape& BOPAlgo_Builder::Arguments()const
-{
-  return myArguments;
-}
-//=======================================================================
-//function : Images
-//purpose  : 
-//=======================================================================
-const TopTools_DataMapOfShapeListOfShape& BOPAlgo_Builder::Images()const
-{
-  return myImages;
-}
-//=======================================================================
-//function : Origins
-//purpose  : 
-//=======================================================================
-const TopTools_DataMapOfShapeListOfShape& BOPAlgo_Builder::Origins()const
-{
-  return myOrigins;
-}
-
-//=======================================================================
-//function : ShapesSd
-//purpose  : 
-//=======================================================================
-const TopTools_DataMapOfShapeShape& BOPAlgo_Builder::ShapesSD()const
-{
-  return myShapesSD;
-}
-//=======================================================================
-//function : Splits
-//purpose  : 
-//=======================================================================
-const TopTools_DataMapOfShapeListOfShape& BOPAlgo_Builder::Splits()const
-{
-  return mySplits;
-}
-//=======================================================================
-//function : PPaveFiller
-//purpose  : 
-//=======================================================================
-BOPAlgo_PPaveFiller BOPAlgo_Builder::PPaveFiller()
-{
-  return myPaveFiller;
-}
-//=======================================================================
-//function : PDS
-//purpose  : 
-//=======================================================================
-BOPDS_PDS BOPAlgo_Builder::PDS()
-{
-  return myDS;
-}
-//=======================================================================
-//function : SetNonDestructive
-//purpose  : 
-//=======================================================================
-void BOPAlgo_Builder::SetNonDestructive(const Standard_Boolean theFlag)
-{
-  myNonDestructive = theFlag;
-}
-//=======================================================================
-//function : NonDestructive
-//purpose  : 
-//=======================================================================
-Standard_Boolean BOPAlgo_Builder::NonDestructive() const
-{
-  return myNonDestructive;
-}
-//=======================================================================
-//function : SetGlue
-//purpose  : 
-//=======================================================================
-void BOPAlgo_Builder::SetGlue(const BOPAlgo_GlueEnum theGlue)
-{
-  myGlue=theGlue;
-}
-//=======================================================================
-//function : Glue
-//purpose  : 
-//=======================================================================
-BOPAlgo_GlueEnum BOPAlgo_Builder::Glue() const 
-{
-  return myGlue;
 }
 //=======================================================================
 // function: CheckData

@@ -31,8 +31,18 @@ class BOPAlgo_PaveFiller;
 class TopoDS_Shape;
 
 
-
 //! The class contains API level of the General Fuse algorithm.<br>
+//!
+//! Additionally to the options defined in the base class, the algorithm has
+//! the following options:<br>
+//! - *Safe processing mode* - allows to avoid modification of the input
+//!                            shapes during the operation (by default it is off);
+//! - *Gluing options* - allows to speed up the calculation of the intersections
+//!                      on the special cases, in which some sub-shapes are coinciding.
+//! - *Disabling the check for inverted solids* - Disables/Enables the check of the input solids
+//!                          for inverted status (holes in the space). The default value is TRUE,
+//!                          i.e. the check is performed. Setting this flag to FALSE for inverted solids,
+//!                          most likely will lead to incorrect results.
 //!
 //! It returns the following Error statuses:<br>
 //! - 0 - in case of success;<br>
@@ -71,6 +81,19 @@ Standard_EXPORT virtual ~BRepAlgoAPI_BuilderAlgo();
   
   //! Returns the glue option of the algorithm
   Standard_EXPORT BOPAlgo_GlueEnum Glue() const;
+
+  //! Enables/Disables the check of the input solids for inverted status
+  void SetCheckInverted(const Standard_Boolean theCheck)
+  {
+    myCheckInverted = theCheck;
+  }
+
+  //! Returns the flag defining whether the check for input solids on inverted status
+  //! should be performed or not.
+  Standard_Boolean CheckInverted() const
+  {
+    return myCheckInverted;
+  }
 
   //! Sets the arguments
   Standard_EXPORT void SetArguments (const TopTools_ListOfShape& theLS);
@@ -130,20 +153,10 @@ protected:
   Standard_Boolean myNonDestructive;
   TopTools_ListOfShape myArguments;
   BOPAlgo_GlueEnum myGlue;
-
+  Standard_Boolean myCheckInverted;
 
 private:
 
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _BRepAlgoAPI_BuilderAlgo_HeaderFile

@@ -102,8 +102,6 @@ protected:
   
   Standard_EXPORT void BuildSolid();
   
-  Standard_EXPORT Standard_Boolean IsBoundSplits (const TopoDS_Shape& theS, TopTools_IndexedDataMapOfShapeListOfShape& theMEF);
-
   //! Treatment of the cases with empty shapes.<br>
   //! It returns TRUE if there is nothing to do, i.e.
   //! all shapes in one of the groups are empty shapes.

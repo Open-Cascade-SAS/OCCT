@@ -37,10 +37,10 @@ dchrono cpu stop counter OCC29237
 
 # check the result of CUT
 checkshape rcut
-checknbshapes rcut -vertex 640 -edge 1760 -wire 842 -face 842 -shell 1 -solid 1
+checknbshapes rcut -vertex 1200 -edge 2040 -wire 842 -face 842 -shell 1 -solid 1 -t -m "CUT"
 checkprops rcut -s 3.4136e+006 -v 2.9712e+007
 
 # check the result of COMMON
 checkshape rcommon
-checknbshapes rcommon -vertex 616 -edge 1484 -wire 882 -face 882 -shell 147 -solid 147
+checknbshapes rcommon -vertex 1176 -edge 1764 -wire 882 -face 882 -shell 147 -solid 147 -t -m "COMMON"
 checkprops rcommon -s 2.13392e+006 -v 1.6448e+007
