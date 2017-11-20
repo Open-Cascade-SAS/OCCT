@@ -1,0 +1,28 @@
+puts "# ======================================================================"
+puts "# 0029334: Simple offsets complicate geometry"
+puts "# ======================================================================"
+
+puts "Make box, fillet one of its edges, and extract two planar faces connected by fillet"
+box b 10 10 10
+explode b e
+blend r b 1 b_5
+explode r f
+compound r_1 r_3 r_6 shape
+
+puts "Offset these faces using simple offset algo"
+offsetshapesimple result shape 1
+
+puts "Verify that all faces of the result are either planes or cylinders"
+set i 1
+foreach f [explode result f] {
+  mksurface surf_$i $f
+  set surf_dump [dump surf_$i] 
+  if { [regexp {Offset} $surf_dump] } {
+    puts "Error: surface $i is offset, should be plane or cylinder"
+  }
+  if { ! [regexp {Plane|CylindricalSurface} $surf_dump] } {
+    puts "Error: surface $i is not plane or cylinder"
+  }
+  incr i
+}
+

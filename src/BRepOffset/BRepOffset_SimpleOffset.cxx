@@ -233,7 +233,8 @@ void BRepOffset_SimpleOffset::FillFaceData(const TopoDS_Face& theFace)
   if (theFace.Orientation() == TopAbs_REVERSED)
     aMult = -1.0;
 
-  aNFD.myOffsetS = new Geom_OffsetSurface(aS, aMult * myOffsetValue, Standard_True);
+  BRepOffset_Status aStatus; // set by BRepOffset::Surface(), could be used to check result...
+  aNFD.myOffsetS = BRepOffset::Surface (aS, aMult * myOffsetValue, aStatus, Standard_True);
   aNFD.myL = TopLoc_Location(); // Null transformation.
 
   // Save offset surface in map.
