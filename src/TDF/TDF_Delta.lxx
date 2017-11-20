@@ -41,3 +41,6 @@ inline void TDF_Delta::SetName (const TCollection_ExtendedString& theName)
 
 inline TCollection_ExtendedString TDF_Delta::Name () const
 { return myName; }
+
+inline void TDF_Delta::ReplaceDeltaList(const TDF_AttributeDeltaList& theList)
+{ myAttDeltaList = theList;}

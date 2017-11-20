@@ -18,6 +18,8 @@
 #include <Standard_NoMoreObject.hxx>
 #include <Standard_NullObject.hxx>
 #include <Standard_Type.hxx>
+#include <Standard_GUID.hxx>
+#include <NCollection_Array1.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TDF_Attribute.hxx>
 #include <TDF_AttributeDelta.hxx>
@@ -36,6 +38,8 @@
 #include <TDF_LabelNodePtr.hxx>
 #include <TDF_Tool.hxx>
 #include <TDF_Transaction.hxx>
+
+typedef NCollection_Array1<Handle(TDF_AttributeDelta)> TDF_Array1OfAttributeIDelta;
 
 IMPLEMENT_STANDARD_RTTIEXT(TDF_Data,Standard_Transient)
 
@@ -365,15 +369,56 @@ Standard_Boolean TDF_Data::IsApplicable
   return !aDelta.IsNull() && aDelta->IsApplicable(myTime);
 }
 
-
+//=======================================================================
+//function : FixOrder
+//purpose  : 
+//=======================================================================
+void TDF_Data::FixOrder(const Handle(TDF_Delta)& theDelta)
+{
+  const TDF_AttributeDeltaList& attList = theDelta->AttributeDeltas();
+  Handle(TDF_AttributeDelta) attDelta;
+  Handle(TDF_Attribute) att;
+  Standard_Integer i, indx1(0), indx2(0);
+  Standard_GUID aGuid;
+  TDF_ListIteratorOfAttributeDeltaList itr(attList) ;
+  for (i=1; itr.More(); itr.Next(), i++) {
+    attDelta = itr.Value();
+    if(indx1) {
+      att = attDelta->Attribute();
+      if((att->ID() == aGuid) && (attDelta->IsKind(STANDARD_TYPE(TDF_DeltaOnAddition)))) {
+        indx2 = i;
+        break;
+      }
+    } else 
+      if (attDelta->IsKind(STANDARD_TYPE(TDF_DeltaOnRemoval))) {
+        att = attDelta->Attribute();
+        aGuid = att->ID();
+        indx1 = i;
+      }        
+  }
+  if(indx1 && indx2) {
+    TDF_Array1OfAttributeIDelta anArray(1, attList.Extent());
+    itr.Initialize(attList);
+    for (i=1; itr.More(); itr.Next(), i++) 
+      anArray.SetValue(i, itr.Value());
+    Handle(TDF_AttributeDelta) attDelta1, attDelta2;
+    attDelta1 = anArray.Value(indx1);
+    attDelta2 = anArray.Value(indx2);
+    anArray.SetValue(indx1, attDelta2);
+    anArray.SetValue(indx2, attDelta1);
+    TDF_AttributeDeltaList attList2;
+    for(i=1; i<= anArray.Upper(); i++)
+      attList2.Append(anArray.Value(i));
+    theDelta->ReplaceDeltaList(attList2);
+  }
+}
 //=======================================================================
 //function : Undo
 //purpose  : Applies a delta to undo  actions.
 //=======================================================================
 
-Handle(TDF_Delta) TDF_Data::Undo
-(const Handle(TDF_Delta)& aDelta,
- const Standard_Boolean withDelta)
+Handle(TDF_Delta) TDF_Data::Undo(const Handle(TDF_Delta)& aDelta,
+                                 const Standard_Boolean withDelta)
 {
   Handle(TDF_Delta) newDelta;
   if (!aDelta.IsNull ()) {
@@ -385,6 +430,7 @@ Handle(TDF_Delta) TDF_Data::Undo
 #endif
       aDelta->BeforeOrAfterApply(Standard_True);
       myNotUndoMode = Standard_False;
+      FixOrder(aDelta);
       aDelta->Apply ();
       myNotUndoMode = Standard_True;
       if (withDelta) {
