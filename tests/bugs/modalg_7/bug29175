@@ -1,0 +1,20 @@
+puts "========"
+puts "OCC29175"
+puts "========"
+puts ""
+#################################################
+# BRepOffsetAPI_MakeOffset problem
+#################################################
+
+restore [locate_data_file bug29175_Face.brep] f
+mkoffset result f 1 40
+
+checkshape result_1
+checknbshapes result_1 -vertex 24 -edge 24 -wire 3
+checkprops result_1 -l 8339.73
+
+smallview
+don f result_1
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png
