@@ -19,11 +19,11 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <BOPCol_ListOfShape.hxx>
 #include <BOPTools_ListOfConnexityBlock.hxx>
 #include <BOPAlgo_Algo.hxx>
-#include <BOPCol_BaseAllocator.hxx>
 #include <BOPTools_ConnexityBlock.hxx>
+#include <NCollection_BaseAllocator.hxx>
+#include <TopTools_ListOfShape.hxx>
 class TopoDS_Shape;
 
 
@@ -42,19 +42,19 @@ public:
 Standard_EXPORT virtual ~BOPAlgo_ShellSplitter();
   
   //! constructor
-  Standard_EXPORT BOPAlgo_ShellSplitter(const BOPCol_BaseAllocator& theAllocator);
+  Standard_EXPORT BOPAlgo_ShellSplitter(const Handle(NCollection_BaseAllocator)& theAllocator);
   
   //! adds a face <theS> to process
   Standard_EXPORT void AddStartElement (const TopoDS_Shape& theS);
   
   //! return the faces to process
-  Standard_EXPORT const BOPCol_ListOfShape& StartElements() const;
+  Standard_EXPORT const TopTools_ListOfShape& StartElements() const;
   
   //! performs the algorithm
   Standard_EXPORT virtual void Perform() Standard_OVERRIDE;
   
   //! returns the loops
-  Standard_EXPORT const BOPCol_ListOfShape& Shells() const;
+  Standard_EXPORT const TopTools_ListOfShape& Shells() const;
   
   Standard_EXPORT static void SplitBlock (BOPTools_ConnexityBlock& theCB);
 
@@ -64,8 +64,8 @@ protected:
   Standard_EXPORT void MakeShells();
 
 
-  BOPCol_ListOfShape myStartShapes;
-  BOPCol_ListOfShape myShells;
+  TopTools_ListOfShape myStartShapes;
+  TopTools_ListOfShape myShells;
   BOPTools_ListOfConnexityBlock myLCB;
 
 private:

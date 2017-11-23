@@ -25,7 +25,7 @@
 #include <TopoDS_Face.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <BOPAlgo_BuilderArea.hxx>
-#include <BOPCol_BaseAllocator.hxx>
+#include <NCollection_BaseAllocator.hxx>
 class TopoDS_Face;
 
 
@@ -45,7 +45,7 @@ public:
   Standard_EXPORT BOPAlgo_BuilderFace();
 Standard_EXPORT virtual ~BOPAlgo_BuilderFace();
   
-  Standard_EXPORT BOPAlgo_BuilderFace(const BOPCol_BaseAllocator& theAllocator);
+  Standard_EXPORT BOPAlgo_BuilderFace(const Handle(NCollection_BaseAllocator)& theAllocator);
   
   //! Sets the face generatix
   Standard_EXPORT void SetFace (const TopoDS_Face& theFace);

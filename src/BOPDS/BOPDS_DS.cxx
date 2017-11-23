@@ -14,10 +14,6 @@
 
 
 #include <Bnd_Box.hxx>
-#include <BOPCol_DataMapOfIntegerMapOfInteger.hxx>
-#include <BOPCol_DataMapOfShapeInteger.hxx>
-#include <BOPCol_ListOfInteger.hxx>
-#include <BOPCol_MapOfInteger.hxx>
 #include <BOPDS_CommonBlock.hxx>
 #include <BOPDS_DS.hxx>
 #include <BOPDS_FaceInfo.hxx>
@@ -49,16 +45,18 @@
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
-#include <BOPCol_MapOfShape.hxx>
-#include <BOPCol_DataMapOfIntegerListOfInteger.hxx>
-
+#include <TColStd_DataMapOfIntegerListOfInteger.hxx>
+#include <TColStd_ListOfInteger.hxx>
+#include <TColStd_MapOfInteger.hxx>
+#include <TopTools_DataMapOfShapeInteger.hxx>
+#include <TopTools_MapOfShape.hxx>
 #include <algorithm>
 //
 
 static
   void TotalShapes(const TopoDS_Shape& aS, 
                    Standard_Integer& aNbS,
-                   BOPCol_MapOfShape& aMS);
+                   TopTools_MapOfShape& aMS);
 
 static
   Standard_Real ComputeParameter(const TopoDS_Vertex& aV,
@@ -168,7 +166,7 @@ void BOPDS_DS::Clear()
 //function : SetArguments
 //purpose  : 
 //=======================================================================
-void BOPDS_DS::SetArguments(const BOPCol_ListOfShape& theLS)
+void BOPDS_DS::SetArguments(const TopTools_ListOfShape& theLS)
 {
   myArguments=theLS;
 }
@@ -176,7 +174,7 @@ void BOPDS_DS::SetArguments(const BOPCol_ListOfShape& theLS)
 //function : Arguments
 //purpose  : 
 //=======================================================================
-const BOPCol_ListOfShape& BOPDS_DS::Arguments()const
+const TopTools_ListOfShape& BOPDS_DS::Arguments()const
 {
   return myArguments;
 }
@@ -255,8 +253,8 @@ Standard_Integer BOPDS_DS::Append(const BOPDS_ShapeInfo& theSI)
 {
   Standard_Integer iX;
   //
-  myLines.Append1()=theSI;
-  iX=myLines.Extent()-1;
+  myLines.Appended()=theSI;
+  iX=myLines.Length()-1;
   myMapShapeIndex.Bind(theSI.Shape(), iX);
   //
   return iX;
@@ -269,8 +267,8 @@ Standard_Integer BOPDS_DS::Append(const TopoDS_Shape& theS)
 {
   Standard_Integer iX;
   //
-  myLines.Append1().SetShape(theS);
-  iX=myLines.Extent()-1;
+  myLines.Appended().SetShape(theS);
+  iX=myLines.Length()-1;
   myMapShapeIndex.Bind(theS, iX);
   return iX;
 }
@@ -330,11 +328,11 @@ void BOPDS_DS::Init(const Standard_Real theFuzz)
   Standard_Real aTol, aTolAdd;
   TopAbs_ShapeEnum aTS;
   TopoDS_Iterator aItS;
-  BOPCol_ListIteratorOfListOfInteger aIt1, aIt2, aIt3;
-  BOPCol_ListIteratorOfListOfShape aIt;
+  TColStd_ListIteratorOfListOfInteger aIt1, aIt2, aIt3;
+  TopTools_ListIteratorOfListOfShape aIt;
   BOPDS_IndexRange aR;
   Handle(NCollection_BaseAllocator) aAllocator;
-  BOPCol_MapOfShape aMS;
+  TopTools_MapOfShape aMS;
   //
   // 1 Append Source Shapes
   aNb=myArguments.Extent();
@@ -424,7 +422,7 @@ void BOPDS_DS::Init(const Standard_Real theFuzz)
         BRep_Builder aBB;
         BOPDS_ShapeInfo aSIx;
         //
-        BOPCol_ListOfInteger& aLI=aSI.ChangeSubShapes();
+        TColStd_ListOfInteger& aLI=aSI.ChangeSubShapes();
         //
         aEx=aE;
         aEx.Orientation(TopAbs_FORWARD);
@@ -465,7 +463,7 @@ void BOPDS_DS::Init(const Standard_Real theFuzz)
       Bnd_Box& aBox=aSI.ChangeBox();
       BRepBndLib::Add(aE, aBox);
       //
-      const BOPCol_ListOfInteger& aLV=aSI.SubShapes(); 
+      const TColStd_ListOfInteger& aLV=aSI.SubShapes(); 
       aIt1.Initialize(aLV);
       for (; aIt1.More(); aIt1.Next()) {
         nV=aIt1.Value();
@@ -478,8 +476,8 @@ void BOPDS_DS::Init(const Standard_Real theFuzz)
     }
   }
   // 2.3 Face
-  BOPCol_MapOfInteger aMI(100, aAllocator);
-  BOPCol_MapIteratorOfMapOfInteger aItMI;
+  TColStd_MapOfInteger aMI(100, aAllocator);
+  TColStd_MapIteratorOfMapOfInteger aItMI;
   //
   aNbF=0;
   for (j=0; j<myNbSourceShapes; ++j) {
@@ -492,13 +490,13 @@ void BOPDS_DS::Init(const Standard_Real theFuzz)
       Bnd_Box& aBox=aSI.ChangeBox();
       BRepBndLib::Add(aS, aBox);
       //
-      BOPCol_ListOfInteger& aLW=aSI.ChangeSubShapes(); 
+      TColStd_ListOfInteger& aLW=aSI.ChangeSubShapes(); 
       aIt1.Initialize(aLW);
       for (; aIt1.More(); aIt1.Next()) {
         nW=aIt1.Value();
         BOPDS_ShapeInfo& aSIW=ChangeShapeInfo(nW);
         //
-        const BOPCol_ListOfInteger& aLE=aSIW.SubShapes(); 
+        const TColStd_ListOfInteger& aLE=aSIW.SubShapes(); 
         aIt2.Initialize(aLE);
         for (; aIt2.More(); aIt2.Next()) {
           nE=aIt2.Value();
@@ -512,7 +510,7 @@ void BOPDS_DS::Init(const Standard_Real theFuzz)
             aSIE.SetFlag(j);
           }
           //
-          const BOPCol_ListOfInteger& aLV=aSIE.SubShapes(); 
+          const TColStd_ListOfInteger& aLV=aSIE.SubShapes(); 
           aIt3.Initialize(aLV);
           for (; aIt3.More(); aIt3.Next()) {
             nV=aIt3.Value();
@@ -564,7 +562,7 @@ void BOPDS_DS::Init(const Standard_Real theFuzz)
       //
       // update sub-shapes by BRep comprising ones
       aMI.Clear();
-      BOPCol_ListOfInteger& aLI1=aSI.ChangeSubShapes();
+      TColStd_ListOfInteger& aLI1=aSI.ChangeSubShapes();
       //
       aIt1.Initialize(aLI1);
       for (; aIt1.More(); aIt1.Next()) {
@@ -574,7 +572,7 @@ void BOPDS_DS::Init(const Standard_Real theFuzz)
           continue;
         }
         //
-        const BOPCol_ListOfInteger& aLI2=aSI1.SubShapes(); 
+        const TColStd_ListOfInteger& aLI2=aSI1.SubShapes(); 
         aIt2.Initialize(aLI2);
         for (; aIt2.More(); aIt2.Next()) {
           n2=aIt2.Value();
@@ -585,7 +583,7 @@ void BOPDS_DS::Init(const Standard_Real theFuzz)
           //
           aMI.Add(n2);
           //
-          const BOPCol_ListOfInteger& aLI3=aSI2.SubShapes(); 
+          const TColStd_ListOfInteger& aLI3=aSI2.SubShapes(); 
           aIt3.Initialize(aLI3);
           for (; aIt3.More(); aIt3.Next()) {
             n3=aIt3.Value();
@@ -614,14 +612,14 @@ void BOPDS_DS::Init(const Standard_Real theFuzz)
     if (aSI.ShapeType() != TopAbs_EDGE)
       continue;
 
-    const BOPCol_ListOfInteger& aLV = aSI.SubShapes();
+    const TColStd_ListOfInteger& aLV = aSI.SubShapes();
     aIt1.Initialize(aLV);
     for (; aIt1.More(); aIt1.Next())
     {
       nV = aIt1.Value();
-      BOPCol_ListOfInteger* pLE = myMapVE.ChangeSeek(nV);
+      TColStd_ListOfInteger* pLE = myMapVE.ChangeSeek(nV);
       if (!pLE) {
-        pLE = myMapVE.Bound(nV, BOPCol_ListOfInteger(myAllocator));
+        pLE = myMapVE.Bound(nV, TColStd_ListOfInteger(myAllocator));
         pLE->Append(nE);
       }
       else
@@ -653,13 +651,13 @@ void BOPDS_DS::InitShape
 {
   Standard_Integer aIx;
   TopoDS_Iterator aIt;
-  BOPCol_ListIteratorOfListOfInteger aIt1;
+  TColStd_ListIteratorOfListOfInteger aIt1;
   //
   BOPDS_ShapeInfo& aSI=ChangeShapeInfo(aI);
   aSI.SetShapeType(aS.ShapeType());
-  BOPCol_ListOfInteger& aLI=aSI.ChangeSubShapes();
+  TColStd_ListOfInteger& aLI=aSI.ChangeSubShapes();
   //
-  BOPCol_MapOfInteger aM;
+  TColStd_MapOfInteger aM;
   //
   aIt1.Initialize(aLI);
   for (; aIt1.More(); aIt1.Next()) {
@@ -715,11 +713,11 @@ Standard_Boolean BOPDS_DS::HasInterfShapeSubShapes
 {
   Standard_Boolean bRet;
   Standard_Integer n2;
-  BOPCol_ListIteratorOfListOfInteger aIt;
+  TColStd_ListIteratorOfListOfInteger aIt;
   bRet = Standard_False;
   //
   const BOPDS_ShapeInfo& aSI=ShapeInfo(theI2);
-  const BOPCol_ListOfInteger& aLI=aSI.SubShapes(); 
+  const TColStd_ListOfInteger& aLI=aSI.SubShapes(); 
   aIt.Initialize(aLI);
   for (; aIt.More(); aIt.Next()) {
     n2=aIt.Value();
@@ -747,11 +745,11 @@ Standard_Boolean BOPDS_DS::HasInterfSubShapes
 {
   Standard_Boolean bRet;
   Standard_Integer n1;
-  BOPCol_ListIteratorOfListOfInteger aIt;
+  TColStd_ListIteratorOfListOfInteger aIt;
   bRet = Standard_False;
   //
   const BOPDS_ShapeInfo& aSI=ShapeInfo(theI1);
-  const BOPCol_ListOfInteger& aLI=aSI.SubShapes(); 
+  const TColStd_ListOfInteger& aLI=aSI.SubShapes(); 
   aIt.Initialize(aLI);
   for (; aIt.More(); aIt.Next()) {
     n1=aIt.Value();
@@ -835,7 +833,7 @@ void BOPDS_DS::InitPaveBlocks(const Standard_Integer theI)
   Standard_Real aT;
   TopAbs_Orientation aOrE;
   TopoDS_Vertex aV;
-  BOPCol_ListIteratorOfListOfInteger aIt;
+  TColStd_ListIteratorOfListOfInteger aIt;
   BOPDS_Pave aPave;
   Handle(BOPDS_PaveBlock) aPB;
   //
@@ -843,7 +841,7 @@ void BOPDS_DS::InitPaveBlocks(const Standard_Integer theI)
   const TopoDS_Edge& aE=*(TopoDS_Edge*)(&aSI.Shape());
   aOrE=aE.Orientation();
   //
-  const BOPCol_ListOfInteger& aLV=aSI.SubShapes();
+  const TColStd_ListOfInteger& aLV=aSI.SubShapes();
   aNbV=aLV.Extent();
   if (!aNbV) {
     return;
@@ -912,8 +910,8 @@ void BOPDS_DS::InitPaveBlocks(const Standard_Integer theI)
     }
   }
   //
-  BOPDS_ListOfPaveBlock &aLPB=myPaveBlocksPool.Append1();
-  iRef=myPaveBlocksPool.Extent()-1;
+  BOPDS_ListOfPaveBlock &aLPB=myPaveBlocksPool.Appended();
+  iRef=myPaveBlocksPool.Length()-1;
   //
   aPB->Update(aLPB, Standard_False);
   aSI.SetReference(iRef);
@@ -1006,7 +1004,7 @@ void BOPDS_DS::UpdateCommonBlock(const Handle(BOPDS_CommonBlock)& theCB,
     return;
   }
   //
-  const BOPCol_ListOfInteger& aLF=theCB->Faces();
+  const TColStd_ListOfInteger& aLF=theCB->Faces();
   //
   BOPDS_VectorOfListOfPaveBlock& aPBP=myPaveBlocksPool;
   //
@@ -1221,8 +1219,8 @@ void BOPDS_DS::InitFaceInfo(const Standard_Integer theI)
   Standard_Integer iRef;
   //
   BOPDS_ShapeInfo& aSI=ChangeShapeInfo(theI);
-  BOPDS_FaceInfo &aFI=myFaceInfoPool.Append1();
-  iRef=myFaceInfoPool.Extent()-1;
+  BOPDS_FaceInfo &aFI=myFaceInfoPool.Appended();
+  iRef=myFaceInfoPool.Length()-1;
   aSI.SetReference(iRef);
   //
   aFI.SetIndex(theI);
@@ -1243,7 +1241,7 @@ void BOPDS_DS::UpdateFaceInfoIn(const Standard_Integer theI)
     BOPDS_FaceInfo &aFI=myFaceInfoPool(iRef);
     //
     BOPDS_IndexedMapOfPaveBlock& aMPBIn=aFI.ChangePaveBlocksIn();
-    BOPCol_MapOfInteger& aMVIn=aFI.ChangeVerticesIn();
+    TColStd_MapOfInteger& aMVIn=aFI.ChangeVerticesIn();
     aMPBIn.Clear();
     aMVIn.Clear();
     FaceInfoIn(theI, aMPBIn, aMVIn);
@@ -1263,7 +1261,7 @@ void BOPDS_DS::UpdateFaceInfoOn(const Standard_Integer theI)
     BOPDS_FaceInfo &aFI=myFaceInfoPool(iRef);
     //
     BOPDS_IndexedMapOfPaveBlock& aMPBOn=aFI.ChangePaveBlocksOn();
-    BOPCol_MapOfInteger& aMVOn=aFI.ChangeVerticesOn();
+    TColStd_MapOfInteger& aMVOn=aFI.ChangeVerticesOn();
     aMPBOn.Clear();
     aMVOn.Clear();
     FaceInfoOn(theI, aMPBOn, aMVOn);
@@ -1275,14 +1273,14 @@ void BOPDS_DS::UpdateFaceInfoOn(const Standard_Integer theI)
 //=======================================================================
 void BOPDS_DS::FaceInfoOn(const Standard_Integer theF,
                           BOPDS_IndexedMapOfPaveBlock& theMPB,
-                          BOPCol_MapOfInteger& theMI)
+                          TColStd_MapOfInteger& theMI)
 {
   Standard_Integer nS, nSD, nV1, nV2;
-  BOPCol_ListIteratorOfListOfInteger aIt;
+  TColStd_ListIteratorOfListOfInteger aIt;
   BOPDS_ListIteratorOfListOfPaveBlock aItPB;
   //
   const BOPDS_ShapeInfo& aSI=ShapeInfo(theF);
-  const BOPCol_ListOfInteger& aLI=aSI.SubShapes();
+  const TColStd_ListOfInteger& aLI=aSI.SubShapes();
   aIt.Initialize(aLI);
   for (; aIt.More(); aIt.Next()) {
     nS=aIt.Value();
@@ -1314,7 +1312,7 @@ void BOPDS_DS::FaceInfoOn(const Standard_Integer theF,
 //=======================================================================
 void BOPDS_DS::FaceInfoIn(const Standard_Integer theF,
                           BOPDS_IndexedMapOfPaveBlock& theMPB,
-                          BOPCol_MapOfInteger& theMI)
+                          TColStd_MapOfInteger& theMI)
 {
   Standard_Integer i, aNbVF, aNbEF, nV, nE, nVSD;
   TopoDS_Iterator aItS;
@@ -1336,7 +1334,7 @@ void BOPDS_DS::FaceInfoIn(const Standard_Integer theF,
   //
   // 2. aVFs
   BOPDS_VectorOfInterfVF& aVFs=InterfVF();
-  aNbVF=aVFs.Extent();
+  aNbVF=aVFs.Length();
   for (i=0; i<aNbVF; ++i) {
     BOPDS_InterfVF& aVF=aVFs(i);
     if(aVF.Contains(theF)) {
@@ -1350,7 +1348,7 @@ void BOPDS_DS::FaceInfoIn(const Standard_Integer theF,
   //
   // 3. aEFs
   BOPDS_VectorOfInterfEF& aEFs=InterfEF();
-  aNbEF=aEFs.Extent();
+  aNbEF=aEFs.Length();
   for (i=0; i<aNbEF; ++i) {
     BOPDS_InterfEF& aEF=aEFs(i);
     if(aEF.Contains(theF)) {
@@ -1388,7 +1386,7 @@ void BOPDS_DS::RefineFaceInfoOn()
   Standard_Integer i, aNb, nF, aNbPB, j;
   BOPDS_IndexedMapOfPaveBlock aMPB;
   //
-  aNb=myFaceInfoPool.Extent();
+  aNb=myFaceInfoPool.Length();
   for (i=0; i<aNb; ++i) {
     BOPDS_FaceInfo &aFI=myFaceInfoPool(i);
     nF=aFI.Index();
@@ -1413,14 +1411,14 @@ void BOPDS_DS::RefineFaceInfoOn()
 //purpose  : 
 //=======================================================================
 void BOPDS_DS::AloneVertices(const Standard_Integer theI,
-                             BOPCol_ListOfInteger& theLI)const
+                             TColStd_ListOfInteger& theLI)const
 {
   if (HasFaceInfo(theI)) {
     //
     Standard_Integer i, j, nV1, nV2, nV, aNbPB;
-    BOPCol_MapIteratorOfMapOfInteger aItMI;
+    TColStd_MapIteratorOfMapOfInteger aItMI;
     //
-    BOPCol_MapOfInteger aMI(100, myAllocator);
+    TColStd_MapOfInteger aMI(100, myAllocator);
     //
     const BOPDS_FaceInfo& aFI=FaceInfo(theI);
     //
@@ -1437,7 +1435,7 @@ void BOPDS_DS::AloneVertices(const Standard_Integer theI,
     }
     //
     for (i=0; i<2; ++i) {
-      const BOPCol_MapOfInteger& aMIV=
+      const TColStd_MapOfInteger& aMIV=
         (!i) ? aFI.VerticesIn() : aFI.VerticesSc();
       aItMI.Initialize(aMIV);
       for (; aItMI.More(); aItMI.Next()) {
@@ -1458,12 +1456,12 @@ void BOPDS_DS::AloneVertices(const Standard_Integer theI,
 void BOPDS_DS::SubShapesOnIn
   (const Standard_Integer nF1,
    const Standard_Integer nF2,
-   BOPCol_MapOfInteger& theMVOnIn,
+   TColStd_MapOfInteger& theMVOnIn,
    BOPDS_IndexedMapOfPaveBlock& thePBOnIn,
    BOPDS_MapOfPaveBlock& theCommonPB)const
 {
   Standard_Integer i, j, nV, nV1, nV2, aNbPB;
-  BOPCol_MapIteratorOfMapOfInteger aIt;
+  TColStd_MapIteratorOfMapOfInteger aIt;
   BOPDS_IndexedMapOfPaveBlock pMPB[4];
   //
   const BOPDS_FaceInfo& aFI1=FaceInfo(nF1);
@@ -1489,13 +1487,13 @@ void BOPDS_DS::SubShapesOnIn
     }
   }
   //
-  const BOPCol_MapOfInteger& aMVOn1=aFI1.VerticesOn();
-  const BOPCol_MapOfInteger& aMVIn1=aFI1.VerticesIn();
-  const BOPCol_MapOfInteger& aMVOn2=aFI2.VerticesOn();
-  const BOPCol_MapOfInteger& aMVIn2=aFI2.VerticesIn();
+  const TColStd_MapOfInteger& aMVOn1=aFI1.VerticesOn();
+  const TColStd_MapOfInteger& aMVIn1=aFI1.VerticesIn();
+  const TColStd_MapOfInteger& aMVOn2=aFI2.VerticesOn();
+  const TColStd_MapOfInteger& aMVIn2=aFI2.VerticesIn();
   //
   for (i=0; i<2; ++i) {
-    const BOPCol_MapOfInteger& aMV1=(!i) ? aMVOn1 : aMVIn1;
+    const TColStd_MapOfInteger& aMV1=(!i) ? aMVOn1 : aMVIn1;
     aIt.Initialize(aMV1);
     for (; aIt.More(); aIt.Next()) {
       nV=aIt.Value();
@@ -1511,16 +1509,16 @@ void BOPDS_DS::SubShapesOnIn
 //=======================================================================
 void BOPDS_DS::SharedEdges(const Standard_Integer nF1,
       const Standard_Integer nF2,
-      BOPCol_ListOfInteger& theLI,
+      TColStd_ListOfInteger& theLI,
       const Handle(NCollection_BaseAllocator)& aAllocator)
 {
   Standard_Integer nE, nSp;
-  BOPCol_ListIteratorOfListOfInteger aItLI;
+  TColStd_ListIteratorOfListOfInteger aItLI;
   BOPDS_ListIteratorOfListOfPaveBlock aItLPB;
-  BOPCol_MapOfInteger aMI(100, aAllocator);
+  TColStd_MapOfInteger aMI(100, aAllocator);
   //
   const BOPDS_ShapeInfo& aSI1=ShapeInfo(nF1);
-  const BOPCol_ListOfInteger& aLI1=aSI1.SubShapes();
+  const TColStd_ListOfInteger& aLI1=aSI1.SubShapes();
   aItLI.Initialize(aLI1);
   for (; aItLI.More(); aItLI.Next()) {
     nE=aItLI.Value();
@@ -1542,7 +1540,7 @@ void BOPDS_DS::SharedEdges(const Standard_Integer nF1,
   }
   // 
   const BOPDS_ShapeInfo& aSI2=ShapeInfo(nF2);
-  const BOPCol_ListOfInteger& aLI2=aSI2.SubShapes();
+  const TColStd_ListOfInteger& aLI2=aSI2.SubShapes();
   aItLI.Initialize(aLI2);
   for (; aItLI.More(); aItLI.Next()) {
     nE=aItLI.Value();
@@ -1576,7 +1574,7 @@ void BOPDS_DS::SharedEdges(const Standard_Integer nF1,
 //function : ShapesSD
 //purpose  : 
 //=======================================================================
-BOPCol_DataMapOfIntegerInteger& BOPDS_DS::ShapesSD()
+TColStd_DataMapOfIntegerInteger& BOPDS_DS::ShapesSD()
 {
   return myShapesSD;
 }
@@ -1697,10 +1695,10 @@ Standard_Boolean BOPDS_DS::IsSubShape
   Standard_Integer nS;
   bRet = Standard_False;
   //
-  BOPCol_ListIteratorOfListOfInteger aItLI;
+  TColStd_ListIteratorOfListOfInteger aItLI;
   //
   const BOPDS_ShapeInfo& aSI = ShapeInfo(theI2);
-  const BOPCol_ListOfInteger& aLI = aSI.SubShapes();
+  const TColStd_ListOfInteger& aLI = aSI.SubShapes();
   aItLI.Initialize(aLI);
   for(;aItLI.More(); aItLI.Next()) {
     nS = aItLI.Value();
@@ -1768,7 +1766,7 @@ void BOPDS_DS::UpdateEdgeTolerance(const Standard_Integer nE,
   Standard_Integer nV;
   Standard_Real aTolV;
   BRep_Builder aBB;
-  BOPCol_ListIteratorOfListOfInteger aIt;
+  TColStd_ListIteratorOfListOfInteger aIt;
   //
   Standard_Real aTolAdd = Max(theFuzz, Precision::Confusion()) * 0.5;
 
@@ -1779,7 +1777,7 @@ void BOPDS_DS::UpdateEdgeTolerance(const Standard_Integer nE,
   BRepBndLib::Add(aE, aBoxE);
   aBoxE.SetGap(aBoxE.GetGap() + aTolAdd);
   //
-  const BOPCol_ListOfInteger& aLI = aSIE.SubShapes();
+  const TColStd_ListOfInteger& aLI = aSIE.SubShapes();
   aIt.Initialize(aLI);
   for (; aIt.More(); aIt.Next()) {
     nV = aIt.Value();
@@ -1800,7 +1798,7 @@ void BOPDS_DS::UpdateEdgeTolerance(const Standard_Integer nE,
 //=======================================================================
 void TotalShapes(const TopoDS_Shape& aS, 
                  Standard_Integer& aNbS,
-                 BOPCol_MapOfShape& aMS)
+                 TopTools_MapOfShape& aMS)
 {
   if (aMS.Add(aS)) {
     TopoDS_Iterator aIt;
@@ -1862,7 +1860,7 @@ void BOPDS_DS::BuildBndBoxSolid(const Standard_Integer theIndex,
   Standard_Boolean bIsOpenBox, bIsInverted;
   Standard_Integer nSh, nFc;
   Standard_Real aTolS, aTolFc;
-  BOPCol_ListIteratorOfListOfInteger aItLI, aItLI1;
+  TColStd_ListIteratorOfListOfInteger aItLI, aItLI1;
   //
   const BOPDS_ShapeInfo& aSI=ShapeInfo(theIndex);
   const TopoDS_Shape& aS=aSI.Shape();
@@ -1871,7 +1869,7 @@ void BOPDS_DS::BuildBndBoxSolid(const Standard_Integer theIndex,
   bIsOpenBox=Standard_False;
   //
   aTolS=0.;
-  const BOPCol_ListOfInteger& aLISh=aSI.SubShapes();
+  const TColStd_ListOfInteger& aLISh=aSI.SubShapes();
   aItLI.Initialize(aLISh);
   for (; aItLI.More(); aItLI.Next()) {
     nSh=aItLI.Value();
@@ -1880,7 +1878,7 @@ void BOPDS_DS::BuildBndBoxSolid(const Standard_Integer theIndex,
       continue;
     }
     //
-    const BOPCol_ListOfInteger& aLIFc=aSISh.SubShapes();
+    const TColStd_ListOfInteger& aLIFc=aSISh.SubShapes();
     aItLI1.Initialize(aLIFc);
     for (; aItLI1.More(); aItLI1.Next()) {
       nFc=aItLI1.Value();
@@ -1997,11 +1995,11 @@ void BOPDS_DS::UpdateCommonBlockWithSDVertices
 //=======================================================================
 void BOPDS_DS::InitPaveBlocksForVertex(const Standard_Integer theNV)
 {
-  const BOPCol_ListOfInteger* pLE = myMapVE.Seek(theNV);
+  const TColStd_ListOfInteger* pLE = myMapVE.Seek(theNV);
   if (!pLE)
     return;
 
-  BOPCol_ListIteratorOfListOfInteger aItLE(*pLE);
+  TColStd_ListIteratorOfListOfInteger aItLE(*pLE);
   for (; aItLE.More(); aItLE.Next())
     ChangePaveBlocks(aItLE.Value());
 }
@@ -2023,7 +2021,7 @@ void BOPDS_DS::ReleasePaveBlocks()
   // of pave blocks will stay to mark the edge as Deleted.
 
   BOPDS_VectorOfListOfPaveBlock& aPBP = ChangePaveBlocksPool();
-  Standard_Integer aNbPBP = aPBP.Extent();
+  Standard_Integer aNbPBP = aPBP.Length();
   if (!aNbPBP) {
     return;
   }

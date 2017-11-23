@@ -102,7 +102,7 @@
 //function : VerticesIn
 //purpose  : 
 //=======================================================================
-  inline const BOPCol_MapOfInteger& BOPDS_FaceInfo::VerticesIn()const
+  inline const TColStd_MapOfInteger& BOPDS_FaceInfo::VerticesIn()const
 {
   return myVerticesIn;
 }
@@ -110,7 +110,7 @@
 //function : ChangeVerticesIn
 //purpose  : 
 //=======================================================================
-  inline  BOPCol_MapOfInteger& BOPDS_FaceInfo::ChangeVerticesIn()
+  inline  TColStd_MapOfInteger& BOPDS_FaceInfo::ChangeVerticesIn()
 {
   return myVerticesIn;
 }
@@ -135,7 +135,7 @@
 //function : VerticesOn
 //purpose  : 
 //=======================================================================
-  inline const BOPCol_MapOfInteger& BOPDS_FaceInfo::VerticesOn()const
+  inline const TColStd_MapOfInteger& BOPDS_FaceInfo::VerticesOn()const
 {
   return myVerticesOn;
 }
@@ -143,7 +143,7 @@
 //function : ChangeVerticesOn
 //purpose  : 
 //=======================================================================
-  inline BOPCol_MapOfInteger& BOPDS_FaceInfo::ChangeVerticesOn()
+  inline TColStd_MapOfInteger& BOPDS_FaceInfo::ChangeVerticesOn()
 {
   return myVerticesOn;
 }
@@ -168,7 +168,7 @@
 //function : VerticesSc
 //purpose  : 
 //=======================================================================
-  inline const BOPCol_MapOfInteger& BOPDS_FaceInfo::VerticesSc()const
+  inline const TColStd_MapOfInteger& BOPDS_FaceInfo::VerticesSc()const
 {
   return myVerticesSc;
 }
@@ -176,7 +176,7 @@
 //function : ChangeVerticesSc
 //purpose  : 
 //=======================================================================
-  inline BOPCol_MapOfInteger& BOPDS_FaceInfo::ChangeVerticesSc()
+  inline TColStd_MapOfInteger& BOPDS_FaceInfo::ChangeVerticesSc()
 {
   return myVerticesSc;
 }

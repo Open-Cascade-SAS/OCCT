@@ -17,6 +17,7 @@ TopTools_DataMapOfIntegerListOfShape.hxx
 TopTools_DataMapOfIntegerShape.hxx
 TopTools_DataMapOfOrientedShapeInteger.hxx
 TopTools_DataMapOfOrientedShapeShape.hxx
+TopTools_DataMapOfShapeBox.hxx
 TopTools_DataMapOfShapeInteger.hxx
 TopTools_DataMapOfShapeListOfInteger.hxx
 TopTools_DataMapOfShapeListOfShape.hxx
@@ -29,10 +30,12 @@ TopTools_HArray2OfShape.hxx
 TopTools_HSequenceOfShape.hxx
 TopTools_IndexedDataMapOfShapeAddress.hxx
 TopTools_IndexedDataMapOfShapeListOfShape.hxx
+TopTools_IndexedDataMapOfShapeReal.hxx
 TopTools_IndexedDataMapOfShapeShape.hxx
 TopTools_IndexedMapOfOrientedShape.hxx
 TopTools_IndexedMapOfShape.hxx
 TopTools_ListIteratorOfListOfShape.hxx
+TopTools_ListOfListOfShape.hxx
 TopTools_ListOfShape.hxx
 TopTools_LocationSet.cxx
 TopTools_LocationSet.hxx

@@ -22,13 +22,11 @@
 #include <BOPAlgo_Operation.hxx>
 #include <Standard_Integer.hxx>
 #include <TopoDS_Shape.hxx>
-#include <BOPCol_ListOfShape.hxx>
-#include <BOPCol_MapOfShape.hxx>
 #include <BOPAlgo_ToolsProvider.hxx>
-#include <BOPCol_BaseAllocator.hxx>
+#include <NCollection_BaseAllocator.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <Standard_Boolean.hxx>
-#include <BOPCol_IndexedDataMapOfShapeListOfShape.hxx>
+#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 class TopoDS_Shape;
 class BOPAlgo_PaveFiller;
 
@@ -77,7 +75,7 @@ public:
   Standard_EXPORT BOPAlgo_BOP();
   Standard_EXPORT virtual ~BOPAlgo_BOP();
   
-  Standard_EXPORT BOPAlgo_BOP(const BOPCol_BaseAllocator& theAllocator);
+  Standard_EXPORT BOPAlgo_BOP(const Handle(NCollection_BaseAllocator)& theAllocator);
   
   //! Clears internal fields and arguments
   Standard_EXPORT virtual void Clear() Standard_OVERRIDE;
@@ -104,7 +102,7 @@ protected:
   
   Standard_EXPORT void BuildSolid();
   
-  Standard_EXPORT Standard_Boolean IsBoundSplits (const TopoDS_Shape& theS, BOPCol_IndexedDataMapOfShapeListOfShape& theMEF);
+  Standard_EXPORT Standard_Boolean IsBoundSplits (const TopoDS_Shape& theS, TopTools_IndexedDataMapOfShapeListOfShape& theMEF);
 
   //! Treatment of the cases with empty shapes.<br>
   //! It returns TRUE if there is nothing to do, i.e.

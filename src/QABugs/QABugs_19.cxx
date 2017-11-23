@@ -2337,8 +2337,8 @@ static Standard_Integer OCC25043 (Draw_Interpretor& theDI,
     for (; anCheckIter.More(); anCheckIter.Next())
     {
       const BOPAlgo_CheckResult& aCurCheckRes = anCheckIter.Value();
-      const BOPCol_ListOfShape& aCurFaultyShapes = aCurCheckRes.GetFaultyShapes1();
-      BOPCol_ListIteratorOfListOfShape aFaultyIter(aCurFaultyShapes);
+      const TopTools_ListOfShape& aCurFaultyShapes = aCurCheckRes.GetFaultyShapes1();
+      TopTools_ListIteratorOfListOfShape aFaultyIter(aCurFaultyShapes);
       for (; aFaultyIter.More(); aFaultyIter.Next())
       {
         const TopoDS_Shape& aFaultyShape = aFaultyIter.Value();
@@ -2716,10 +2716,8 @@ static Standard_Integer OCC25413 (Draw_Interpretor& di, Standard_Integer narg , 
 #include <BRepAlgoAPI_Cut.hxx>
 #include <BRepAlgoAPI_Section.hxx>
 //
-#include <BOPTools.hxx>
-//
-#include <BOPCol_MapOfShape.hxx>
-#include <BOPCol_ListOfShape.hxx>
+#include <TopExp.hxx>
+#include <TopTools_MapOfShape.hxx>
 //=======================================================================
 //function : OCC25446
 //purpose  :
@@ -2756,7 +2754,7 @@ static Standard_Integer OCC25446 (Draw_Interpretor& theDI,
   aOp = (BOPAlgo_Operation)iOp;
   //
   Standard_Integer iErr;
-  BOPCol_ListOfShape aLS;
+  TopTools_ListOfShape aLS;
   BOPAlgo_PaveFiller aPF;
   //
   aLS.Append(aS1);
@@ -2801,14 +2799,14 @@ static Standard_Integer OCC25446 (Draw_Interpretor& theDI,
   const TopoDS_Shape& aRes = pBuilder->Shape();
   DBRep::Set(argv[1], aRes);
   //
-  BOPCol_MapOfShape aMapArgs, aMapShape;
-  BOPCol_MapIteratorOfMapOfShape aIt;
+  TopTools_MapOfShape aMapArgs, aMapShape;
+  TopTools_MapIteratorOfMapOfShape aIt;
   Standard_Boolean bIsDeletedHist, bIsDeletedMap;
   TopAbs_ShapeEnum aType;
   //
-  BOPTools::MapShapes(aS1, aMapArgs);
-  BOPTools::MapShapes(aS2, aMapArgs);
-  BOPTools::MapShapes(aRes, aMapShape);
+  TopExp::MapShapes(aS1, aMapArgs);
+  TopExp::MapShapes(aS2, aMapArgs);
+  TopExp::MapShapes(aRes, aMapShape);
   //
   aIt.Initialize(aMapArgs);
   for (; aIt.More(); aIt.Next()) {

@@ -20,7 +20,7 @@
 #include <Standard_Handle.hxx>
 
 #include <BOPAlgo_Builder.hxx>
-#include <BOPCol_BaseAllocator.hxx>
+#include <NCollection_BaseAllocator.hxx>
 #include <TopTools_ListOfShape.hxx>
 class BOPAlgo_PaveFiller;
 class TopoDS_Shape;
@@ -47,7 +47,7 @@ public:
   //! Empty constructor
   //!
   //! protected methods
-  Standard_EXPORT BOPAlgo_Section(const BOPCol_BaseAllocator& theAllocator);
+  Standard_EXPORT BOPAlgo_Section(const Handle(NCollection_BaseAllocator)& theAllocator);
   
   Standard_EXPORT virtual void BuildSection();
   

@@ -72,9 +72,9 @@ void BOPAlgo_Splitter::Perform()
   }
   //
   // prepare shapes for intersection
-  BOPCol_ListOfShape aLS;
+  TopTools_ListOfShape aLS;
   //
-  BOPCol_ListIteratorOfListOfShape aItLS(myArguments);
+  TopTools_ListIteratorOfListOfShape aItLS(myArguments);
   for (; aItLS.More(); aItLS.Next()) {
     aLS.Append(aItLS.Value());
   }

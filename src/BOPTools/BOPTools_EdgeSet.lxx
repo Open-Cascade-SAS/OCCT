@@ -80,9 +80,9 @@
 //function : AddEdges
 //purpose  : 
 //=======================================================================
-  inline void BOPTools_EdgeSet::AddEdges(const BOPCol_ListOfShape& theLS)
+  inline void BOPTools_EdgeSet::AddEdges(const TopTools_ListOfShape& theLS)
 {
-  BOPCol_ListIteratorOfListOfShape aIt;
+  TopTools_ListIteratorOfListOfShape aIt;
   //
   aIt.Initialize(theLS);
   for (; aIt.More(); aIt.Next()) {
@@ -106,9 +106,9 @@
 //function : Get 
 //purpose  : 
 //=======================================================================
-  inline void BOPTools_EdgeSet::Get(BOPCol_ListOfShape& theLS)const
+  inline void BOPTools_EdgeSet::Get(TopTools_ListOfShape& theLS)const
 {
-  BOPCol_ListIteratorOfListOfShape aIt;
+  TopTools_ListIteratorOfListOfShape aIt;
   //
   aIt.Initialize(myEdges);
   for (; aIt.More(); aIt.Next()) {
@@ -124,7 +124,7 @@
 {
   Standard_Integer aNbEOther, aNbE;
   Standard_Boolean bRet;
-  BOPCol_ListIteratorOfListOfShape aIt;
+  TopTools_ListIteratorOfListOfShape aIt;
   //
   aNbE=0;
   aNbEOther=theOther.myEdges.Extent();

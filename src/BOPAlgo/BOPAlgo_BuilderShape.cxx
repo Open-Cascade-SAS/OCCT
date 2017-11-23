@@ -132,7 +132,7 @@
 //function : ImagesResult
 //purpose  : 
 //=======================================================================
-  const BOPCol_IndexedDataMapOfShapeListOfShape& 
+  const TopTools_IndexedDataMapOfShapeListOfShape& 
     BOPAlgo_BuilderShape::ImagesResult()const
 {
   return myImagesResult;

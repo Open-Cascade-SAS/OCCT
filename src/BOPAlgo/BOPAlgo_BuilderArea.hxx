@@ -22,10 +22,10 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <BOPCol_ListOfShape.hxx>
-#include <BOPCol_IndexedMapOfOrientedShape.hxx>
 #include <BOPAlgo_Algo.hxx>
-#include <BOPCol_BaseAllocator.hxx>
+#include <NCollection_BaseAllocator.hxx>
+#include <TopTools_ListOfShape.hxx>
+#include <TopTools_IndexedMapOfOrientedShape.hxx>
 class IntTools_Context;
 
 
@@ -43,22 +43,22 @@ public:
   }
 
   //! Returns the input shapes
-  Standard_EXPORT const BOPCol_ListOfShape& Shapes() const {
+  Standard_EXPORT const TopTools_ListOfShape& Shapes() const {
     return myShapes;
   }
 
   //! Sets the shapes for building areas
-  Standard_EXPORT void SetShapes(const BOPCol_ListOfShape& theLS) {
+  Standard_EXPORT void SetShapes(const TopTools_ListOfShape& theLS) {
     myShapes = theLS;
   }
 
   //! Returns the found loops
-  Standard_EXPORT const BOPCol_ListOfShape& Loops() const {
+  Standard_EXPORT const TopTools_ListOfShape& Loops() const {
     return myLoops;
   }
 
   //! Returns the found areas
-  Standard_EXPORT const BOPCol_ListOfShape& Areas() const {
+  Standard_EXPORT const TopTools_ListOfShape& Areas() const {
     return myAreas;
   }
 
@@ -78,7 +78,7 @@ protected:
   Standard_EXPORT BOPAlgo_BuilderArea();
   Standard_EXPORT virtual ~BOPAlgo_BuilderArea();
   
-  Standard_EXPORT BOPAlgo_BuilderArea(const BOPCol_BaseAllocator& theAllocator);
+  Standard_EXPORT BOPAlgo_BuilderArea(const Handle(NCollection_BaseAllocator)& theAllocator);
   
   Standard_EXPORT virtual void PerformShapesToAvoid() = 0;
   
@@ -90,11 +90,11 @@ protected:
 
 
   Handle(IntTools_Context) myContext;
-  BOPCol_ListOfShape myShapes;
-  BOPCol_ListOfShape myLoops;
-  BOPCol_ListOfShape myLoopsInternal;
-  BOPCol_ListOfShape myAreas;
-  BOPCol_IndexedMapOfOrientedShape myShapesToAvoid;
+  TopTools_ListOfShape myShapes;
+  TopTools_ListOfShape myLoops;
+  TopTools_ListOfShape myLoopsInternal;
+  TopTools_ListOfShape myAreas;
+  TopTools_IndexedMapOfOrientedShape myShapesToAvoid;
   Standard_Boolean myAvoidInternalShapes;
 
 private:

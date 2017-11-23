@@ -16,10 +16,6 @@
 // commercial license or contractual agreement.
 
 
-#include <BOPCol_IndexedMapOfShape.hxx>
-#include <BOPCol_MapOfShape.hxx>
-#include <BOPCol_MapOfOrientedShape.hxx>
-#include <BOPTools.hxx>
 #include <BOPTools_AlgoTools.hxx>
 #include <BOPTools_AlgoTools2D.hxx>
 #include <BOPTools_AlgoTools3D.hxx>
@@ -65,6 +61,9 @@
 #include <TopoDS_Solid.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
+#include <TopTools_IndexedMapOfShape.hxx>
+#include <TopTools_MapOfShape.hxx>
+#include <TopTools_MapOfOrientedShape.hxx>
 #include <NCollection_Array1.hxx>
 #include <algorithm>
 
@@ -76,7 +75,7 @@ static
 
 static
   Standard_Boolean FindFacePairs (const TopoDS_Edge& theE,
-                                  const BOPCol_ListOfShape& thLF,
+                                  const TopTools_ListOfShape& thLF,
                                   BOPTools_ListOfCoupleOfShape& theLCFF,
                                   Handle(IntTools_Context)& theContext);
 static
@@ -122,13 +121,13 @@ void BOPTools_AlgoTools::MakeConnexityBlocks
   (const TopoDS_Shape& theS,
    const TopAbs_ShapeEnum theConnectionType,
    const TopAbs_ShapeEnum theElementType,
-   BOPCol_ListOfListOfShape& theLCB,
-   BOPCol_IndexedDataMapOfShapeListOfShape& theConnectionMap)
+   TopTools_ListOfListOfShape& theLCB,
+   TopTools_IndexedDataMapOfShapeListOfShape& theConnectionMap)
 {
   // Map shapes to find connected elements
-  BOPTools::MapShapesAndAncestors(theS, theConnectionType, theElementType, theConnectionMap);
+  TopExp::MapShapesAndAncestors(theS, theConnectionType, theElementType, theConnectionMap);
   // Fence map
-  BOPCol_MapOfShape aMFence;
+  TopTools_MapOfShape aMFence;
 
   TopExp_Explorer aExp(theS, theElementType);
   for (; aExp.More(); aExp.Next())
@@ -138,11 +137,11 @@ void BOPTools_AlgoTools::MakeConnexityBlocks
       continue;
     }
     // The block
-    BOPCol_ListOfShape aLBlock;
+    TopTools_ListOfShape aLBlock;
     // Start the block
     aLBlock.Append(aS);
     // Look for connected parts
-    BOPCol_ListIteratorOfListOfShape aItB(aLBlock);
+    TopTools_ListIteratorOfListOfShape aItB(aLBlock);
     for (; aItB.More(); aItB.Next())
     {
       const TopoDS_Shape& aS1 = aItB.Value();
@@ -150,8 +149,8 @@ void BOPTools_AlgoTools::MakeConnexityBlocks
       for (; aExpSS.More(); aExpSS.Next())
       {
         const TopoDS_Shape& aSubS = aExpSS.Current();
-        const BOPCol_ListOfShape& aLS = theConnectionMap.FindFromKey(aSubS);
-        BOPCol_ListIteratorOfListOfShape aItLS(aLS);
+        const TopTools_ListOfShape& aLS = theConnectionMap.FindFromKey(aSubS);
+        TopTools_ListIteratorOfListOfShape aItLS(aLS);
         for (; aItLS.More(); aItLS.Next())
         {
           const TopoDS_Shape& aS2 = aItLS.Value();
@@ -173,21 +172,21 @@ void BOPTools_AlgoTools::MakeConnexityBlocks
   (const TopoDS_Shape& theS,
    const TopAbs_ShapeEnum theConnectionType,
    const TopAbs_ShapeEnum theElementType,
-   BOPCol_ListOfShape& theLCB)
+   TopTools_ListOfShape& theLCB)
 {
-  BOPCol_ListOfListOfShape aLBlocks;
-  BOPCol_IndexedDataMapOfShapeListOfShape aCMap;
+  TopTools_ListOfListOfShape aLBlocks;
+  TopTools_IndexedDataMapOfShapeListOfShape aCMap;
   BOPTools_AlgoTools::MakeConnexityBlocks(theS, theConnectionType, theElementType, aLBlocks, aCMap);
 
   // Make compound from each block
-  BOPCol_ListIteratorOfListOfListOfShape aItB(aLBlocks);
+  TopTools_ListIteratorOfListOfListOfShape aItB(aLBlocks);
   for (; aItB.More(); aItB.Next())
   {
-    const BOPCol_ListOfShape& aLB = aItB.Value();
+    const TopTools_ListOfShape& aLB = aItB.Value();
 
     TopoDS_Compound aBlock;
     BRep_Builder().MakeCompound(aBlock);
-    for (BOPCol_ListIteratorOfListOfShape it(aLB); it.More(); it.Next())
+    for (TopTools_ListIteratorOfListOfShape it(aLB); it.More(); it.Next())
       BRep_Builder().Add(aBlock, it.Value());
 
     theLCB.Append(aBlock);
@@ -199,7 +198,7 @@ void BOPTools_AlgoTools::MakeConnexityBlocks
 // purpose: 
 //=======================================================================
 void BOPTools_AlgoTools::MakeConnexityBlocks
-  (const BOPCol_ListOfShape& theLS,
+  (const TopTools_ListOfShape& theLS,
    const TopAbs_ShapeEnum theConnectionType,
    const TopAbs_ShapeEnum theElementType,
    BOPTools_ListOfConnexityBlock& theLCB)
@@ -209,9 +208,9 @@ void BOPTools_AlgoTools::MakeConnexityBlocks
   TopoDS_Compound aCStart;
   aBB.MakeCompound(aCStart);
 
-  BOPCol_MapOfShape aMFence, aMNRegular;
+  TopTools_MapOfShape aMFence, aMNRegular;
 
-  BOPCol_ListIteratorOfListOfShape aItL(theLS);
+  TopTools_ListIteratorOfListOfShape aItL(theLS);
   for (; aItL.More(); aItL.Next())
   {
     const TopoDS_Shape& aS = aItL.Value();
@@ -221,21 +220,21 @@ void BOPTools_AlgoTools::MakeConnexityBlocks
       aMNRegular.Add(aS);
   }
 
-  BOPCol_ListOfListOfShape aLCB;
-  BOPCol_IndexedDataMapOfShapeListOfShape aCMap;
+  TopTools_ListOfListOfShape aLCB;
+  TopTools_IndexedDataMapOfShapeListOfShape aCMap;
   BOPTools_AlgoTools::MakeConnexityBlocks(aCStart, theConnectionType, theElementType, aLCB, aCMap);
 
   // Save the blocks and check their regularity
-  BOPCol_ListIteratorOfListOfListOfShape aItB(aLCB);
+  TopTools_ListIteratorOfListOfListOfShape aItB(aLCB);
   for (; aItB.More(); aItB.Next())
   {
-    const BOPCol_ListOfShape& aBlock = aItB.Value();
+    const TopTools_ListOfShape& aBlock = aItB.Value();
 
     BOPTools_ConnexityBlock aCB;
-    BOPCol_ListOfShape& aLCS = aCB.ChangeShapes();
+    TopTools_ListOfShape& aLCS = aCB.ChangeShapes();
 
     Standard_Boolean bRegular = Standard_True;
-    for (BOPCol_ListIteratorOfListOfShape it(aBlock); it.More(); it.Next())
+    for (TopTools_ListIteratorOfListOfShape it(aBlock); it.More(); it.Next())
     {
       TopoDS_Shape aS = it.Value();
       if (aMNRegular.Contains(aS))
@@ -270,8 +269,8 @@ void BOPTools_AlgoTools::MakeConnexityBlocks
 void BOPTools_AlgoTools::OrientEdgesOnWire(TopoDS_Shape& theWire)
 {
   // make vertex-edges connexity map
-  BOPCol_IndexedDataMapOfShapeListOfShape aVEMap;
-  BOPTools::MapShapesAndAncestors(theWire, TopAbs_VERTEX, TopAbs_EDGE, aVEMap);
+  TopTools_IndexedDataMapOfShapeListOfShape aVEMap;
+  TopExp::MapShapesAndAncestors(theWire, TopAbs_VERTEX, TopAbs_EDGE, aVEMap);
   //
   if (aVEMap.IsEmpty()) {
     return;
@@ -282,7 +281,7 @@ void BOPTools_AlgoTools::OrientEdgesOnWire(TopoDS_Shape& theWire)
   TopoDS_Wire aWire;
   aBB.MakeWire(aWire);
   // fence map
-  BOPCol_MapOfOrientedShape aMFence;
+  TopTools_MapOfOrientedShape aMFence;
   //
   TopoDS_Iterator aIt(theWire);
   for (; aIt.More(); aIt.Next()) {
@@ -307,7 +306,7 @@ void BOPTools_AlgoTools::OrientEdgesOnWire(TopoDS_Shape& theWire)
       TopoDS_Shape aVC = !i ? aV1 : aV2;
       //
       for (;;) {
-        const BOPCol_ListOfShape& aLE = aVEMap.FindFromKey(aVC);
+        const TopTools_ListOfShape& aLE = aVEMap.FindFromKey(aVC);
         if (aLE.Extent() != 2) {
           // free vertex or multi-connexity, go to the next edge
           break;
@@ -315,7 +314,7 @@ void BOPTools_AlgoTools::OrientEdgesOnWire(TopoDS_Shape& theWire)
         //
         Standard_Boolean bStop = Standard_True;
         //
-        BOPCol_ListIteratorOfListOfShape aItLE(aLE);
+        TopTools_ListIteratorOfListOfShape aItLE(aLE);
         for (; aItLE.More(); aItLE.Next()) {
           const TopoDS_Edge& aEN = TopoDS::Edge(aItLE.Value());
           if (aMFence.Contains(aEN)) {
@@ -362,26 +361,26 @@ void BOPTools_AlgoTools::OrientFacesOnShell (TopoDS_Shape& aShell)
   TopAbs_Orientation anOrE1, anOrE2;
   TopoDS_Face aF1x, aF2x;
   TopoDS_Shape aShellNew;
-  BOPCol_IndexedDataMapOfShapeListOfShape aEFMap;
-  BOPCol_IndexedMapOfShape aProcessedFaces;
+  TopTools_IndexedDataMapOfShapeListOfShape aEFMap;
+  TopTools_IndexedMapOfShape aProcessedFaces;
   BRep_Builder aBB;
   //
   BOPTools_AlgoTools::MakeContainer(TopAbs_SHELL, aShellNew);
   //
-  BOPTools::MapShapesAndAncestors(aShell, 
+  TopExp::MapShapesAndAncestors(aShell, 
                                   TopAbs_EDGE, TopAbs_FACE, 
                                   aEFMap);
   aNbE=aEFMap.Extent();
   // 
   // One seam edge  in aEFMap contains  2 equivalent faces.
   for (i=1; i<=aNbE; ++i) {
-    BOPCol_ListOfShape& aLF=aEFMap.ChangeFromIndex(i);
+    TopTools_ListOfShape& aLF=aEFMap.ChangeFromIndex(i);
     aNbF=aLF.Extent();
     if (aNbF>1) {
-      BOPCol_ListOfShape aLFTmp;
-      BOPCol_IndexedMapOfShape aFM;
+      TopTools_ListOfShape aLFTmp;
+      TopTools_IndexedMapOfShape aFM;
       //
-      BOPCol_ListIteratorOfListOfShape anIt(aLF);
+      TopTools_ListIteratorOfListOfShape anIt(aLF);
       for (; anIt.More(); anIt.Next()) {
         const TopoDS_Shape& aF=anIt.Value();
         if (!aFM.Contains(aF)) {
@@ -401,7 +400,7 @@ void BOPTools_AlgoTools::OrientFacesOnShell (TopoDS_Shape& aShell)
       continue;
     }
     //
-    const BOPCol_ListOfShape& aLF=aEFMap.FindFromIndex(i);
+    const TopTools_ListOfShape& aLF=aEFMap.FindFromIndex(i);
     aNbF=aLF.Extent();
     if (aNbF!=2) {
       continue;
@@ -466,10 +465,10 @@ void BOPTools_AlgoTools::OrientFacesOnShell (TopoDS_Shape& aShell)
       continue;
     }
     //
-    const BOPCol_ListOfShape& aLF=aEFMap.FindFromIndex(i);
+    const TopTools_ListOfShape& aLF=aEFMap.FindFromIndex(i);
     aNbF=aLF.Extent();
     if (aNbF!=2) {
-      BOPCol_ListIteratorOfListOfShape anIt(aLF);
+      TopTools_ListIteratorOfListOfShape anIt(aLF);
       for(; anIt.More(); anIt.Next()) {
         const TopoDS_Face& aF=(*(TopoDS_Face*)(&anIt.Value()));
         if (!aProcessedFaces.Contains(aF)) {
@@ -506,26 +505,26 @@ TopAbs_Orientation Orientation(const TopoDS_Edge& anE,
 // purpose: 
 //=======================================================================
 void BOPTools_AlgoTools::MakeConnexityBlock 
-  (BOPCol_ListOfShape& theLFIn,
-   BOPCol_IndexedMapOfShape& theMEAvoid,
-   BOPCol_ListOfShape& theLCB,
+  (TopTools_ListOfShape& theLFIn,
+   TopTools_IndexedMapOfShape& theMEAvoid,
+   TopTools_ListOfShape& theLCB,
    const Handle(NCollection_BaseAllocator)& theAllocator)
 {
   Standard_Integer  aNbF, aNbAdd1, aNbAdd, i;
   TopExp_Explorer aExp;
-  BOPCol_ListIteratorOfListOfShape aIt;
+  TopTools_ListIteratorOfListOfShape aIt;
   //
-  BOPCol_IndexedMapOfShape aMCB(100, theAllocator);
-  BOPCol_IndexedMapOfShape aMAdd(100, theAllocator);
-  BOPCol_IndexedMapOfShape aMAdd1(100, theAllocator);
-  BOPCol_IndexedDataMapOfShapeListOfShape aMEF(100, theAllocator);
+  TopTools_IndexedMapOfShape aMCB(100, theAllocator);
+  TopTools_IndexedMapOfShape aMAdd(100, theAllocator);
+  TopTools_IndexedMapOfShape aMAdd1(100, theAllocator);
+  TopTools_IndexedDataMapOfShapeListOfShape aMEF(100, theAllocator);
   //
   // 1. aMEF
   aNbF=theLFIn.Extent();
   aIt.Initialize(theLFIn);
   for (; aIt.More(); aIt.Next()) {
     const TopoDS_Shape& aF=aIt.Value();      
-    BOPTools::MapShapesAndAncestors(aF, TopAbs_EDGE, TopAbs_FACE, aMEF);
+    TopExp::MapShapesAndAncestors(aF, TopAbs_EDGE, TopAbs_FACE, aMEF);
   }
   //
   // 2. aMCB
@@ -546,7 +545,7 @@ void BOPTools_AlgoTools::MakeConnexityBlock
           continue;
         }
         //
-        const BOPCol_ListOfShape& aLF=aMEF.FindFromKey(aE);
+        const TopTools_ListOfShape& aLF=aMEF.FindFromKey(aE);
         aIt.Initialize(aLF);
         for (; aIt.More(); aIt.Next()) {
           const TopoDS_Shape& aFx=aIt.Value();
@@ -616,7 +615,7 @@ TopAbs_State BOPTools_AlgoTools::ComputeState
   (const TopoDS_Face& theF,
    const TopoDS_Solid& theRef,
    const Standard_Real theTol,
-   BOPCol_IndexedMapOfShape& theBounds,
+   TopTools_IndexedMapOfShape& theBounds,
    Handle(IntTools_Context)& theContext)
 {
   TopAbs_State aState;
@@ -750,7 +749,7 @@ TopAbs_State BOPTools_AlgoTools::ComputeState
 Standard_Boolean BOPTools_AlgoTools::IsInternalFace
   (const TopoDS_Face& theFace,
    const TopoDS_Solid& theSolid,
-   BOPCol_IndexedDataMapOfShapeListOfShape& theMEF,
+   TopTools_IndexedDataMapOfShapeListOfShape& theMEF,
    const Standard_Real theTol,
    Handle(IntTools_Context)& theContext)
 {
@@ -759,7 +758,7 @@ Standard_Boolean BOPTools_AlgoTools::IsInternalFace
   TopAbs_Orientation aOr;
   TopoDS_Edge aE1;
   TopExp_Explorer aExp;
-  BOPCol_ListIteratorOfListOfShape aItF;
+  TopTools_ListIteratorOfListOfShape aItF;
   //
   // For all invoked functions: [::IsInternalFace(...)] 
   // the returned value iRet means:
@@ -792,7 +791,7 @@ Standard_Boolean BOPTools_AlgoTools::IsInternalFace
       continue;
     }
     // aE
-    BOPCol_ListOfShape& aLF=theMEF.ChangeFromKey(aE);
+    TopTools_ListOfShape& aLF=theMEF.ChangeFromKey(aE);
     aNbF=aLF.Extent();
     if (!aNbF) {
       return iRet != 0; // it can not be so
@@ -847,9 +846,9 @@ Standard_Boolean BOPTools_AlgoTools::IsInternalFace
   // 2. Classify face using classifier
   //
   TopAbs_State aState;
-  BOPCol_IndexedMapOfShape aBounds;
+  TopTools_IndexedMapOfShape aBounds;
   //
-  BOPTools::MapShapes(theSolid, TopAbs_EDGE, aBounds);
+  TopExp::MapShapes(theSolid, TopAbs_EDGE, aBounds);
   //
   aState=BOPTools_AlgoTools::ComputeState(theFace, theSolid, 
                                           theTol, aBounds, theContext);
@@ -862,7 +861,7 @@ Standard_Boolean BOPTools_AlgoTools::IsInternalFace
 Standard_Integer BOPTools_AlgoTools::IsInternalFace
   (const TopoDS_Face& theFace,
    const TopoDS_Edge& theEdge,
-   BOPCol_ListOfShape& theLF,
+   TopTools_ListOfShape& theLF,
    Handle(IntTools_Context)& theContext)
 {
   Standard_Integer aNbF, iRet;
@@ -1646,7 +1645,7 @@ Standard_Integer BOPTools_AlgoTools::ComputeVV(const TopoDS_Vertex& aV1,
 // function: MakeVertex
 // purpose : 
 //=======================================================================
-void BOPTools_AlgoTools::MakeVertex(const BOPCol_ListOfShape& aLV,
+void BOPTools_AlgoTools::MakeVertex(const TopTools_ListOfShape& aLV,
                                     TopoDS_Vertex& aVnew)
 {
   Standard_Integer aNb = aLV.Extent();
@@ -1695,17 +1694,17 @@ Standard_Boolean BOPTools_AlgoTools::GetEdgeOnFace
 //purpose  : 
 //=======================================================================
 Standard_Boolean FindFacePairs (const TopoDS_Edge& theE,
-                                const BOPCol_ListOfShape& thLF,
+                                const TopTools_ListOfShape& thLF,
                                 BOPTools_ListOfCoupleOfShape& theLCFF,
                                 Handle(IntTools_Context)& theContext)
 {
   Standard_Boolean bFound;
   Standard_Integer i, aNbCEF;
   TopAbs_Orientation aOr, aOrC = TopAbs_FORWARD;
-  BOPCol_MapOfShape aMFP;
+  TopTools_MapOfShape aMFP;
   TopoDS_Face aF1, aF2;
   TopoDS_Edge aEL, aE1;
-  BOPCol_ListIteratorOfListOfShape aItLF;
+  TopTools_ListIteratorOfListOfShape aItLF;
   BOPTools_CoupleOfShape aCEF, aCFF;
   BOPTools_ListOfCoupleOfShape aLCEF, aLCEFx;
   BOPTools_ListIteratorOfListOfCoupleOfShape aIt;
@@ -2181,12 +2180,12 @@ Standard_Boolean BOPTools_AlgoTools::IsOpenShell(const TopoDS_Shell& aSh)
   Standard_Boolean bRet;
   Standard_Integer i, aNbE, aNbF;
   TopAbs_Orientation aOrF;
-  BOPCol_IndexedDataMapOfShapeListOfShape aMEF; 
-  BOPCol_ListIteratorOfListOfShape aItLS;
+  TopTools_IndexedDataMapOfShapeListOfShape aMEF; 
+  TopTools_ListIteratorOfListOfShape aItLS;
   //
   bRet=Standard_False;
   //
-  BOPTools::MapShapesAndAncestors(aSh, TopAbs_EDGE, TopAbs_FACE, aMEF);
+  TopExp::MapShapesAndAncestors(aSh, TopAbs_EDGE, TopAbs_FACE, aMEF);
   // 
   aNbE=aMEF.Extent();
   for (i=1; i<=aNbE; ++i) {
@@ -2196,7 +2195,7 @@ Standard_Boolean BOPTools_AlgoTools::IsOpenShell(const TopoDS_Shell& aSh)
     }
     //
     aNbF=0;
-    const BOPCol_ListOfShape& aLF=aMEF(i);
+    const TopTools_ListOfShape& aLF=aMEF(i);
     aItLS.Initialize(aLF);
     for (; aItLS.More(); aItLS.Next()) {
       const TopoDS_Shape& aF=aItLS.Value();

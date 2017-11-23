@@ -15,9 +15,9 @@
 #ifndef BOPDS_VectorOfFaceInfo_HeaderFile
 #define BOPDS_VectorOfFaceInfo_HeaderFile
 
-#include <BOPCol_NCVector.hxx>
+#include <NCollection_Vector.hxx>
 #include <BOPDS_FaceInfo.hxx>
 
-typedef BOPCol_NCVector<BOPDS_FaceInfo> BOPDS_VectorOfFaceInfo;
+typedef NCollection_Vector<BOPDS_FaceInfo> BOPDS_VectorOfFaceInfo;
 
 #endif

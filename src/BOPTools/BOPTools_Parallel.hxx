@@ -12,8 +12,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _BOPDS_Col_HeaderFile
-#define _BOPDS_Col_HeaderFile
+#ifndef _BOPTools_Parallel_HeaderFile
+#define _BOPTools_Parallel_HeaderFile
 
 #include <Standard_Macro.hxx>
 #include <Standard_NotImplemented.hxx>
@@ -29,15 +29,15 @@
 //
 
 //=======================================================================
-//class    : BOPCol_Functor
+//class    : BOPTools_Functor
 //purpose  : 
 //=======================================================================
 template <class TypeSolver, class TypeSolverVector>
-class BOPCol_Functor
+class BOPTools_Functor
 {
 public:
   //! Constructor.
-  explicit BOPCol_Functor(TypeSolverVector& theSolverVec) 
+  explicit BOPTools_Functor(TypeSolverVector& theSolverVec) 
   : mySolvers(theSolverVec) {}
 
   //! Defines functor interface.
@@ -48,26 +48,26 @@ public:
   }
 
 private:
-  BOPCol_Functor(const BOPCol_Functor&);
-  BOPCol_Functor& operator= (const BOPCol_Functor&);
+  BOPTools_Functor(const BOPTools_Functor&);
+  BOPTools_Functor& operator= (const BOPTools_Functor&);
 
 private:
   TypeSolverVector& mySolvers;
 };
 
 //=======================================================================
-//class    : BOPCol_Cnt
+//class    : BOPTools_Cnt
 //purpose  : 
 //=======================================================================
 template <class TypeFunctor, class TypeSolverVector>
-class BOPCol_Cnt
+class BOPTools_Cnt
 {
 public:
   static void Perform( const Standard_Boolean isRunParallel,
                        TypeSolverVector&      theSolverVector )
   {
     TypeFunctor aFunctor(theSolverVector);
-    OSD_Parallel::For(0, theSolverVector.Extent(), aFunctor, !isRunParallel);
+    OSD_Parallel::For(0, theSolverVector.Length(), aFunctor, !isRunParallel);
   }
 };
 
@@ -76,12 +76,12 @@ public:
 //
 
 //=======================================================================
-//class    : BOPCol_ContextFunctor
+//class    : BOPTools_ContextFunctor
 //purpose  : 
 //=======================================================================
 template <class TypeSolver,  class TypeSolverVector,
           class TypeContext, typename TN>
-class BOPCol_ContextFunctor
+class BOPTools_ContextFunctor
 {
   //! Auxiliary thread ID  hasher.
   struct Hasher
@@ -104,7 +104,7 @@ class BOPCol_ContextFunctor
 public:
 
   //! Constructor
-  explicit BOPCol_ContextFunctor( TypeSolverVector& theVector )
+  explicit BOPTools_ContextFunctor( TypeSolverVector& theVector )
   : mySolverVector(theVector) {}
 
   //! Binds main thread context
@@ -145,8 +145,8 @@ public:
   }
 
 private:
-  BOPCol_ContextFunctor(const BOPCol_ContextFunctor&);
-  BOPCol_ContextFunctor& operator= (const BOPCol_ContextFunctor&);
+  BOPTools_ContextFunctor(const BOPTools_ContextFunctor&);
+  BOPTools_ContextFunctor& operator= (const BOPTools_ContextFunctor&);
 
 private:
   TypeSolverVector&      mySolverVector;
@@ -155,11 +155,11 @@ private:
 };
 
 //=======================================================================
-//class    : BOPCol_ContextCnt
+//class    : BOPTools_ContextCnt
 //purpose  : 
 //=======================================================================
 template <class TypeFunctor, class TypeSolverVector, class TypeContext>
-class BOPCol_ContextCnt
+class BOPTools_ContextCnt
 {
 public:
   static void Perform( const Standard_Boolean isRunParallel,
@@ -169,7 +169,7 @@ public:
     TypeFunctor aFunctor(theSolverVector);
     aFunctor.SetContext(theContext);
 
-    OSD_Parallel::For(0, theSolverVector.Extent(), aFunctor, !isRunParallel);
+    OSD_Parallel::For(0, theSolverVector.Length(), aFunctor, !isRunParallel);
   }
 };
 

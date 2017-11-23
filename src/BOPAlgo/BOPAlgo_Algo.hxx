@@ -24,8 +24,6 @@
 
 #include <BOPAlgo_Options.hxx>
 
-#include <BOPCol_DataMapOfIntegerListOfShape.hxx>
-
 //! The class provides the root interface for the algorithms in Boolean Component.<br>
 class BOPAlgo_Algo : public BOPAlgo_Options
 {
@@ -41,7 +39,7 @@ protected:
   Standard_EXPORT BOPAlgo_Algo();
   Standard_EXPORT virtual ~BOPAlgo_Algo();
 
-  Standard_EXPORT BOPAlgo_Algo(const BOPCol_BaseAllocator& theAllocator);
+  Standard_EXPORT BOPAlgo_Algo(const Handle(NCollection_BaseAllocator)& theAllocator);
 
   //! Checks input data
   Standard_EXPORT virtual void CheckData();

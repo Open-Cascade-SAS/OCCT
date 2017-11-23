@@ -18,14 +18,14 @@
 
 #include <BOPAlgo_Builder.hxx>
 #include <BOPAlgo_PaveFiller.hxx>
-#include <BOPCol_ListOfShape.hxx>
-#include <BOPCol_MapOfShape.hxx>
 #include <BOPDS_DS.hxx>
-#include <BOPTools.hxx>
 #include <BOPTools_AlgoTools.hxx>
 #include <IntTools_Context.hxx>
+#include <TopExp.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
+#include <TopTools_ListOfShape.hxx>
+#include <TopTools_MapOfShape.hxx>
 
 //=======================================================================
 //function : Generated
@@ -46,7 +46,7 @@ const TopTools_ListOfShape& BOPAlgo_Builder::Modified
 {
   Standard_Boolean bHasImage, bToReverse;
   TopAbs_ShapeEnum aType;
-  BOPCol_ListIteratorOfListOfShape aIt;
+  TopTools_ListIteratorOfListOfShape aIt;
   //
   myHistShapes.Clear();
   //
@@ -68,7 +68,7 @@ const TopTools_ListOfShape& BOPAlgo_Builder::Modified
   //
   //PrepareHistory();
   //
-  const BOPCol_ListOfShape& aLSp=myImages.Find(theS);
+  const TopTools_ListOfShape& aLSp=myImages.Find(theS);
   aIt.Initialize(aLSp);
   for (; aIt.More(); aIt.Next()) {
     TopoDS_Shape aSp=aIt.Value();
@@ -104,7 +104,7 @@ Standard_Boolean BOPAlgo_Builder::IsDeleted
 {
   Standard_Boolean bRet;
   TopAbs_ShapeEnum aType;
-  BOPCol_ListIteratorOfListOfShape aIt;
+  TopTools_ListIteratorOfListOfShape aIt;
   //
   bRet = Standard_True;
   //
@@ -123,7 +123,7 @@ Standard_Boolean BOPAlgo_Builder::IsDeleted
     return bRet;
   }
   //
-  const BOPCol_ListOfShape& aLSp = myImages.Find(theS);
+  const TopTools_ListOfShape& aLSp = myImages.Find(theS);
   aIt.Initialize(aLSp);
   for (; aIt.More(); aIt.Next()) {
     const TopoDS_Shape& aSp = aIt.Value();
@@ -154,22 +154,22 @@ void BOPAlgo_Builder::PrepareHistory()
   //
   Standard_Boolean bHasImage;
   TopAbs_ShapeEnum aType;
-  BOPCol_MapOfShape aMS;
-  BOPCol_ListIteratorOfListOfShape aIt;
-  BOPCol_MapIteratorOfMapOfShape aItM;
+  TopTools_MapOfShape aMS;
+  TopTools_ListIteratorOfListOfShape aIt;
+  TopTools_MapIteratorOfMapOfShape aItM;
   //
   // 1. Clearing 
   BOPAlgo_BuilderShape::PrepareHistory();
   //
   // 2. myMapShape - all shapes of result with theirs sub-shapes 
-  BOPTools::MapShapes(myShape, myMapShape);
+  TopExp::MapShapes(myShape, myMapShape);
   //
   // 3. MS - all argument shapes with theirs sub-shapes
-  const BOPCol_ListOfShape& aArguments=myDS->Arguments();
+  const TopTools_ListOfShape& aArguments=myDS->Arguments();
   aIt.Initialize(aArguments);
   for (; aIt.More(); aIt.Next()) {
     const TopoDS_Shape& aSx=aIt.Value();
-    BOPTools::MapShapes(aSx, aMS);
+    TopExp::MapShapes(aSx, aMS);
   }
   //
   // 4. Treatment
@@ -185,7 +185,7 @@ void BOPAlgo_Builder::PrepareHistory()
     // 4.1 .myImagesResult
     bHasImage=myImages.IsBound(aSx); 
     //
-    BOPCol_ListOfShape aLSx;
+    TopTools_ListOfShape aLSx;
     if (!bHasImage) {
       if (myMapShape.Contains(aSx)) {
         aLSx.Append(aSx);
@@ -193,7 +193,7 @@ void BOPAlgo_Builder::PrepareHistory()
       }
     }
     else {
-      const BOPCol_ListOfShape& aLSp=myImages.Find(aSx);
+      const TopTools_ListOfShape& aLSp=myImages.Find(aSx);
       aIt.Initialize(aLSp);
       for (; aIt.More(); aIt.Next()) {
         const TopoDS_Shape& aSp=aIt.Value();

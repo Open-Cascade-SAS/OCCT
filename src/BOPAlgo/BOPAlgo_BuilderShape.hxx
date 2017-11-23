@@ -21,14 +21,14 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
+#include <Standard_Boolean.hxx>
 
+#include <BOPAlgo_Algo.hxx>
+#include <NCollection_BaseAllocator.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopTools_ListOfShape.hxx>
-#include <BOPCol_MapOfShape.hxx>
-#include <Standard_Boolean.hxx>
-#include <BOPCol_IndexedDataMapOfShapeListOfShape.hxx>
-#include <BOPAlgo_Algo.hxx>
-#include <BOPCol_BaseAllocator.hxx>
+#include <TopTools_MapOfShape.hxx>
+#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 class TopoDS_Shape;
 
 
@@ -69,7 +69,7 @@ public:
   //! of arguments has modified shapes.
   Standard_EXPORT Standard_Boolean HasModified() const;
   
-  Standard_EXPORT const BOPCol_IndexedDataMapOfShapeListOfShape& ImagesResult() const;
+  Standard_EXPORT const TopTools_IndexedDataMapOfShapeListOfShape& ImagesResult() const;
 
 
 
@@ -80,7 +80,7 @@ protected:
   Standard_EXPORT BOPAlgo_BuilderShape();
 Standard_EXPORT virtual ~BOPAlgo_BuilderShape();
   
-  Standard_EXPORT BOPAlgo_BuilderShape(const BOPCol_BaseAllocator& theAllocator);
+  Standard_EXPORT BOPAlgo_BuilderShape(const Handle(NCollection_BaseAllocator)& theAllocator);
   
   //! Prepare information for history support
   Standard_EXPORT virtual void PrepareHistory();
@@ -88,26 +88,15 @@ Standard_EXPORT virtual ~BOPAlgo_BuilderShape();
 
   TopoDS_Shape myShape;
   TopTools_ListOfShape myHistShapes;
-  BOPCol_MapOfShape myMapShape;
+  TopTools_MapOfShape myMapShape;
   Standard_Boolean myHasDeleted;
   Standard_Boolean myHasGenerated;
   Standard_Boolean myHasModified;
-  BOPCol_IndexedDataMapOfShapeListOfShape myImagesResult;
+  TopTools_IndexedDataMapOfShapeListOfShape myImagesResult;
   Standard_Boolean myFlagHistory;
-
 
 private:
 
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _BOPAlgo_BuilderShape_HeaderFile

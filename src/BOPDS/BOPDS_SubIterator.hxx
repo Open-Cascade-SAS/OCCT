@@ -19,12 +19,11 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <BOPCol_BaseAllocator.hxx>
 #include <BOPDS_PDS.hxx>
 #include <BOPDS_Pair.hxx>
 #include <BOPDS_VectorOfPair.hxx>
-#include <BOPCol_PListOfInteger.hxx>
-#include <BOPCol_ListOfInteger.hxx>
+#include <NCollection_BaseAllocator.hxx>
+#include <TColStd_ListOfInteger.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 class BOPDS_DS;
@@ -47,7 +46,7 @@ public:
 
   //! Constructor
   //! theAllocator - the allocator to manage the memory
-  Standard_EXPORT BOPDS_SubIterator(const BOPCol_BaseAllocator& theAllocator);
+  Standard_EXPORT BOPDS_SubIterator(const Handle(NCollection_BaseAllocator)& theAllocator);
 
   //! Sets the data structure <pDS> to process.
   //! It is used to access the shapes and their bounding boxes.
@@ -63,25 +62,25 @@ public:
   }
 
   //! Sets the first set of indices <theLI> to process
-  void SetSubSet1 (const BOPCol_ListOfInteger& theLI)
+  void SetSubSet1 (const TColStd_ListOfInteger& theLI)
   {
-    mySubSet1 = (BOPCol_PListOfInteger)&theLI;
+    mySubSet1 = (TColStd_ListOfInteger*)&theLI;
   }
 
   //! Returns the first set of indices to process
-  const BOPCol_ListOfInteger& SubSet1() const
+  const TColStd_ListOfInteger& SubSet1() const
   {
     return *mySubSet1;
   }
 
   //! Sets the second set of indices <theLI> to process
-  void SetSubSet2 (const BOPCol_ListOfInteger& theLI)
+  void SetSubSet2 (const TColStd_ListOfInteger& theLI)
   {
-    mySubSet2 = (BOPCol_PListOfInteger)&theLI;
+    mySubSet2 = (TColStd_ListOfInteger*)&theLI;
   }
 
   //! Returns the second set of indices to process
-  const BOPCol_ListOfInteger& SubSet2() const
+  const TColStd_ListOfInteger& SubSet2() const
   {
     return *mySubSet2;
   }
@@ -113,7 +112,7 @@ public:
   //! Returns the number of interfering pairs
   Standard_Integer ExpectedLength() const
   {
-    return myList.Extent();
+    return myList.Length();
   }
 
 protected:
@@ -121,12 +120,12 @@ protected:
   //! Performs intersection of bounding boxes
   Standard_EXPORT virtual void Intersect();
 
-  BOPCol_BaseAllocator myAllocator;
+  Handle(NCollection_BaseAllocator) myAllocator;
   BOPDS_PDS myDS;
   BOPDS_VectorOfPair myList;
   BOPDS_VectorOfPair::Iterator myIterator;
-  BOPCol_PListOfInteger mySubSet1;
-  BOPCol_PListOfInteger mySubSet2;
+  TColStd_ListOfInteger* mySubSet1;
+  TColStd_ListOfInteger* mySubSet2;
 
 private:
 

@@ -1,5 +1,3 @@
-BOPTools.cxx
-BOPTools.hxx
 BOPTools_AlgoTools.cxx
 BOPTools_AlgoTools.hxx
 BOPTools_AlgoTools2D.cxx
@@ -9,17 +7,21 @@ BOPTools_AlgoTools3D.cxx
 BOPTools_AlgoTools3D.hxx
 BOPTools_AlgoTools_1.cxx
 BOPTools_AlgoTools_2.cxx
+BOPTools_BoxSelector.hxx
+BOPTools_BoxBndTree.hxx
 BOPTools_ConnexityBlock.hxx
 BOPTools_CoupleOfShape.hxx
 BOPTools_DataMapOfShapeSet.hxx
 BOPTools_EdgeSet.cxx
 BOPTools_EdgeSet.hxx
 BOPTools_EdgeSet.lxx
+BOPTools_IndexedDataMapOfSetShape.hxx
 BOPTools_ListOfConnexityBlock.hxx
 BOPTools_ListOfCoupleOfShape.hxx
 BOPTools_ListOfEdgeSet.hxx
 BOPTools_ListOfShapeSet.hxx
 BOPTools_MapOfSet.hxx
+BOPTools_Parallel.hxx
 BOPTools_Set.cxx
 BOPTools_Set.hxx
 BOPTools_SetMapHasher.hxx

@@ -22,10 +22,10 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <BOPCol_BaseAllocator.hxx>
-#include <Standard_Integer.hxx>
 #include <BOPDS_IndexedMapOfPaveBlock.hxx>
-#include <BOPCol_MapOfInteger.hxx>
+#include <NCollection_BaseAllocator.hxx>
+#include <Standard_Integer.hxx>
+#include <TColStd_MapOfInteger.hxx>
 
 
 
@@ -46,7 +46,7 @@ virtual ~BOPDS_FaceInfo();
 
   //! Contructor
   //! theAllocator - the allocator to manage the memory
-    BOPDS_FaceInfo(const BOPCol_BaseAllocator& theAllocator);
+    BOPDS_FaceInfo(const Handle(NCollection_BaseAllocator)& theAllocator);
   
 
   //! Clears the contents
@@ -82,7 +82,7 @@ virtual ~BOPDS_FaceInfo();
   //! Returns the list of indices for vertices
   //! of the face
   //! that have state In
-    const BOPCol_MapOfInteger& VerticesIn() const;
+    const TColStd_MapOfInteger& VerticesIn() const;
   
 
   //! Selector/Modifier
@@ -91,7 +91,7 @@ virtual ~BOPDS_FaceInfo();
   //! that have state In
   //!
   //! On
-    BOPCol_MapOfInteger& ChangeVerticesIn();
+    TColStd_MapOfInteger& ChangeVerticesIn();
   
 
   //! Selector
@@ -111,7 +111,7 @@ virtual ~BOPDS_FaceInfo();
   //! Returns the list of indices for vertices
   //! of the face
   //! that have state On
-    const BOPCol_MapOfInteger& VerticesOn() const;
+    const TColStd_MapOfInteger& VerticesOn() const;
   
 
   //! Selector/Modifier
@@ -120,7 +120,7 @@ virtual ~BOPDS_FaceInfo();
   //! that have state On
   //!
   //! Sections
-    BOPCol_MapOfInteger& ChangeVerticesOn();
+    TColStd_MapOfInteger& ChangeVerticesOn();
   
 
   //! Selector
@@ -134,7 +134,7 @@ virtual ~BOPDS_FaceInfo();
   //! Selector
   //! Returns the list of indices for section  vertices
   //! of the face
-    const BOPCol_MapOfInteger& VerticesSc() const;
+    const TColStd_MapOfInteger& VerticesSc() const;
   
 
   //! Selector/Modifier
@@ -142,7 +142,7 @@ virtual ~BOPDS_FaceInfo();
   //! of the face
   //!
   //! Others
-    BOPCol_MapOfInteger& ChangeVerticesSc();
+    TColStd_MapOfInteger& ChangeVerticesSc();
 
 
 
@@ -151,14 +151,14 @@ protected:
 
 
 
-  BOPCol_BaseAllocator myAllocator;
+  Handle(NCollection_BaseAllocator) myAllocator;
   Standard_Integer myIndex;
   BOPDS_IndexedMapOfPaveBlock myPaveBlocksIn;
-  BOPCol_MapOfInteger myVerticesIn;
+  TColStd_MapOfInteger myVerticesIn;
   BOPDS_IndexedMapOfPaveBlock myPaveBlocksOn;
-  BOPCol_MapOfInteger myVerticesOn;
+  TColStd_MapOfInteger myVerticesOn;
   BOPDS_IndexedMapOfPaveBlock myPaveBlocksSc;
-  BOPCol_MapOfInteger myVerticesSc;
+  TColStd_MapOfInteger myVerticesSc;
 
 
 private:

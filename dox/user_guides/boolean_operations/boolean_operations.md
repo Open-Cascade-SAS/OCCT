@@ -1082,8 +1082,8 @@ It is based on the General Fuse  algorithm, thus all options of the General Fuse
 On the low level the Splitter algorithm is implemented in class *BOPAlgo_Splitter*. The usage of this algorithm looks as follows:
 ~~~~~
 BOPAlgo_Splitter aSplitter;
-BOPCol_ListOfShape aLSObjects = …; // Objects
-BOPCol_ListOfShape aLSTools = …; // Tools
+TopTools_ListOfShape aLSObjects = …; // Objects
+TopTools_ListOfShape aLSTools = …; // Tools
 Standard_Boolean bRunParallel = Standard_False; /* parallel or single mode (the default value is FALSE)*/
 Standard_Real aTol = 0.0; /* fuzzy option (default value is 0)*/
 Standard_Boolean bSafeMode = Standard_False; /* protect or not the arguments from modification*/
@@ -2054,7 +2054,7 @@ This option is useful e.g. for building a solid from the faces of one shell or f
 The usage of the algorithm on the API level:
 ~~~~
 BOPAlgo_MakerVolume aMV;
-BOPCol_ListOfShape aLS = …; // arguments
+TopTools_ListOfShape aLS = …; // arguments
 Standard_Boolean bRunParallel = Standard_False; /* parallel or single mode (the default value is FALSE)*/
 Standard_Boolean bIntersect = Standard_True; /* intersect or not the arguments (the default value is TRUE)*/
 Standard_Real aTol = 0.0; /* fuzzy option (default value is 0)*/
@@ -2148,7 +2148,7 @@ It is possible to create typed Containers from the parts added into result by us
 Here is the example of the algorithm use on the API level:
 ~~~~
 BOPAlgo_CellsBuilder aCBuilder;
-BOPCol_ListOfShape aLS = …; // arguments
+TopTools_ListOfShape aLS = …; // arguments
 Standard_Boolean bRunParallel = Standard_False; /* parallel or single mode (the default value is FALSE)*/
 Standard_Real aTol = 0.0; /* fuzzy option (the default value is 0)*/
 Standard_Boolean bSafeMode = Standard_False; /* protect or not the arguments from modification*/
@@ -2169,8 +2169,8 @@ if (aCBuilder.HasErrors()) { // check error status
 const TopoDS_Shape& anEmptyRes = aCBuilder.Shape(); // empty result, as nothing has been added yet 
 const TopoDS_Shape& anAllCells = aCBuilder.GetAllParts(); //all split parts 
 //
-BOPCol_ListOfShape aLSToTake = ...; // parts of these arguments will be taken into result
-BOPCol_ListOfShape aLSToAvoid = ...; // parts of these arguments will not be taken into result
+TopTools_ListOfShape aLSToTake = ...; // parts of these arguments will be taken into result
+TopTools_ListOfShape aLSToAvoid = ...; // parts of these arguments will not be taken into result
 //
 Standard_Integer iMaterial = 1; // defines the material for the cells
 Standard_Boolean bUpdate = Standard_False; // defines whether to update the result right now or not

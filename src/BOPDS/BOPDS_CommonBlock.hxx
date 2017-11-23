@@ -19,11 +19,11 @@
 #include <Standard_Type.hxx>
 
 #include <BOPDS_ListOfPaveBlock.hxx>
-#include <BOPCol_ListOfInteger.hxx>
-#include <Standard_Transient.hxx>
-#include <BOPCol_BaseAllocator.hxx>
-#include <Standard_Integer.hxx>
+#include <NCollection_BaseAllocator.hxx>
 #include <Standard_Boolean.hxx>
+#include <Standard_Integer.hxx>
+#include <Standard_Transient.hxx>
+#include <TColStd_ListOfInteger.hxx>
 class BOPDS_PaveBlock;
 
 
@@ -51,7 +51,7 @@ public:
 
   //! Contructor
   //! <theAllocator> - the allocator to manage the memory
-  Standard_EXPORT BOPDS_CommonBlock(const BOPCol_BaseAllocator& theAllocator);
+  Standard_EXPORT BOPDS_CommonBlock(const Handle(NCollection_BaseAllocator)& theAllocator);
   
 
   //! Modifier
@@ -77,13 +77,13 @@ public:
   //! Modifier
   //! Sets the list of indices of faces <aLF>
   //! of the common block
-  Standard_EXPORT void SetFaces (const BOPCol_ListOfInteger& aLF);
+  Standard_EXPORT void SetFaces (const TColStd_ListOfInteger& aLF);
 
   //! Modifier
   //! Appends the list of indices of faces <aLF>
   //! to the list of indices of faces
   //! of the common block (the input list is emptied)
-  Standard_EXPORT void AppendFaces(BOPCol_ListOfInteger& aLF);
+  Standard_EXPORT void AppendFaces(TColStd_ListOfInteger& aLF);
 
 
   //! Selector
@@ -95,7 +95,7 @@ public:
   //! Selector
   //! Returns the list of indices of faces
   //! of the common block
-  Standard_EXPORT const BOPCol_ListOfInteger& Faces() const;
+  Standard_EXPORT const TColStd_ListOfInteger& Faces() const;
   
 
   //! Selector
@@ -158,7 +158,7 @@ protected:
 
 
   BOPDS_ListOfPaveBlock myPaveBlocks;
-  BOPCol_ListOfInteger myFaces;
+  TColStd_ListOfInteger myFaces;
 
 
 private:

@@ -19,16 +19,13 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TopoDS_Shape.hxx>
-#include <TopAbs_ShapeEnum.hxx>
 #include <Bnd_Box.hxx>
-#include <BOPCol_ListOfInteger.hxx>
+#include <NCollection_BaseAllocator.hxx>
 #include <Standard_Integer.hxx>
-#include <BOPCol_BaseAllocator.hxx>
 #include <Standard_Boolean.hxx>
-class TopoDS_Shape;
-class Bnd_Box;
-
+#include <TopAbs_ShapeEnum.hxx>
+#include <TColStd_ListOfInteger.hxx>
+#include <TopoDS_Shape.hxx>
 
 
 //! The class BOPDS_ShapeInfo is to store
@@ -48,7 +45,7 @@ virtual ~BOPDS_ShapeInfo();
 
   //! Contructor
   //! theAllocator - the allocator to manage the memory
-    BOPDS_ShapeInfo(const BOPCol_BaseAllocator& theAllocator);
+    BOPDS_ShapeInfo(const Handle(NCollection_BaseAllocator)& theAllocator);
   
 
   //! Modifier
@@ -88,12 +85,12 @@ virtual ~BOPDS_ShapeInfo();
 
   //! Selector
   //! Returns the list of indices of sub-shapes
-    const BOPCol_ListOfInteger& SubShapes() const;
+    const TColStd_ListOfInteger& SubShapes() const;
   
 
   //! Selector/ Modifier
   //! Returns the list of indices of sub-shapes
-    BOPCol_ListOfInteger& ChangeSubShapes();
+    TColStd_ListOfInteger& ChangeSubShapes();
   
 
   //! Query
@@ -157,7 +154,7 @@ protected:
   TopoDS_Shape myShape;
   TopAbs_ShapeEnum myType;
   Bnd_Box myBox;
-  BOPCol_ListOfInteger mySubShapes;
+  TColStd_ListOfInteger mySubShapes;
   Standard_Integer myReference;
   Standard_Integer myFlag;
 

@@ -16,8 +16,6 @@
 
 #include <BOPAlgo_BOP.hxx>
 #include <BOPAlgo_PaveFiller.hxx>
-#include <BOPCol_DataMapOfShapeListOfShape.hxx>
-#include <BOPCol_ListOfShape.hxx>
 #include <BOPDS_DS.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
@@ -266,7 +264,7 @@ void BRepFill_TrimShellCorner::Perform()
   }
   
   BOPAlgo_PaveFiller aPF;
-  BOPCol_ListOfShape aLS;
+  TopTools_ListOfShape aLS;
   aLS.Append(myShape1);
   aLS.Append(myShape2);
   aPF.SetArguments(aLS);
@@ -279,7 +277,7 @@ void BRepFill_TrimShellCorner::Perform()
   const BOPDS_PDS& theDS = aPF.PDS();
   //
   BOPDS_VectorOfInterfFF& aFFs = theDS->InterfFF();
-  Standard_Integer aNbFFs = aFFs.Extent();
+  Standard_Integer aNbFFs = aFFs.Length();
 
   if(!SplitUEdges(myUEdges, theDS, myHistMap)) {
     return;
@@ -300,9 +298,9 @@ void BRepFill_TrimShellCorner::Perform()
       aFFi.Indices(nF1, nF2);
       //
       BOPDS_VectorOfPoint& aVP=aFFi.ChangePoints();
-      aNbP=aVP.Extent();
+      aNbP=aVP.Length();
       const BOPDS_VectorOfCurve& aVC=aFFi.Curves();
-      aNbC=aVC.Extent();
+      aNbC=aVC.Length();
       if (!aNbP && !aNbC) {
 	if (!theDS->HasInterfSubShapes(nF1, nF2)) {
           continue;
@@ -1070,7 +1068,7 @@ Standard_Boolean SplitUEdges(const Handle(TopTools_HArray2OfShape)&     theUEdge
       Standard_Integer vindex1 = theDS->Index(V1);
       Standard_Integer vindex2 = theDS->Index(V2);
       Standard_Integer vvit = 0;
-      Standard_Integer aNbVVs = aVVs.Extent();
+      Standard_Integer aNbVVs = aVVs.Length();
 
       for(vvit = 0; !bvertexfound && (vvit < aNbVVs); vvit++) {
         //const BOPTools_VVInterference& aVV = aVVs(vvit);
@@ -1169,7 +1167,7 @@ Standard_Boolean FindCommonVertex(const BOPDS_PDS&         theDS,
   Standard_Integer eeit = 0;
 
   Standard_Integer aNbEEs;
-  aNbEEs = aEEs.Extent();
+  aNbEEs = aEEs.Length();
   for(eeit = 0; eeit < aNbEEs; ++eeit) {
     const BOPDS_InterfEE& aEE = aEEs(eeit);
 
@@ -2123,7 +2121,7 @@ Standard_Boolean FilterSectionEdges(const BOPDS_VectorOfCurve&       theBCurves,
 
   BRep_Builder aBB;
   aBB.MakeCompound(theResult);
-  Standard_Integer aNbCurves = theBCurves.Extent();
+  Standard_Integer aNbCurves = theBCurves.Length();
   Standard_Integer cit = 0;
   BOPDS_ListIteratorOfListOfPaveBlock aPBIt;
   

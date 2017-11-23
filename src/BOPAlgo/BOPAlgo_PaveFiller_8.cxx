@@ -17,7 +17,6 @@
 
 #include <BOPAlgo_PaveFiller.hxx>
 #include <BOPAlgo_SectionAttribute.hxx>
-#include <BOPCol_ListOfInteger.hxx>
 #include <BOPDS_Curve.hxx>
 #include <BOPDS_DS.hxx>
 #include <BOPDS_FaceInfo.hxx>
@@ -40,6 +39,7 @@
 #include <IntRes2d_IntersectionPoint.hxx>
 #include <IntTools_Context.hxx>
 #include <Precision.hxx>
+#include <TColStd_ListOfInteger.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Vertex.hxx>
@@ -67,7 +67,7 @@ void BOPAlgo_PaveFiller::ProcessDE()
   Standard_Integer nF, aNb, nE, nV, nVSD, aNbPB;
   Handle(NCollection_BaseAllocator) aAllocator;
   Handle(BOPDS_PaveBlock) aPBD;
-  BOPCol_ListIteratorOfListOfInteger aItLI;
+  TColStd_ListIteratorOfListOfInteger aItLI;
   //
   // 1. Find degnerated edges
   //-----------------------------------------------------scope f

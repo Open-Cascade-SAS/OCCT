@@ -15,9 +15,9 @@
 #ifndef BOPDS_VectorOfPair_HeaderFile
 #define BOPDS_VectorOfPair_HeaderFile
 
-#include <BOPCol_NCVector.hxx>
+#include <NCollection_Vector.hxx>
 #include <BOPDS_Pair.hxx>
 
-typedef BOPCol_NCVector<BOPDS_Pair> BOPDS_VectorOfPair;
+typedef NCollection_Vector<BOPDS_Pair> BOPDS_VectorOfPair;
 
 #endif

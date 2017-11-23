@@ -36,7 +36,7 @@
 #include <TColStd_HArray1OfInteger.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <BiTgte_ContactType.hxx>
-#include <BiTgte_DataMapOfShapeBox.hxx>
+#include <TopTools_DataMapOfShapeBox.hxx>
 class BRepAlgo_AsDes;
 class StdFail_NotDone;
 class Standard_OutOfRange;
@@ -190,7 +190,7 @@ private:
   //! Computes the intersections with <Face> and all the
   //! OffsetFaces stored  in <myMapSF>.  Returns <True>
   //! if an intersections ends on a boundary of a Face.
-  Standard_EXPORT Standard_Boolean Intersect (const TopoDS_Shape& Init, const TopoDS_Face& Face, const BiTgte_DataMapOfShapeBox& MapSBox, const BRepOffset_Offset& OF1, BRepOffset_Inter3d& Inter);
+  Standard_EXPORT Standard_Boolean Intersect (const TopoDS_Shape& Init, const TopoDS_Face& Face, const TopTools_DataMapOfShapeBox& MapSBox, const BRepOffset_Offset& OF1, BRepOffset_Inter3d& Inter);
 
 
   Standard_Real myRadius;

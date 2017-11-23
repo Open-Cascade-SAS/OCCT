@@ -97,8 +97,8 @@ IntTools_Context::IntTools_Context
 IntTools_Context::~IntTools_Context()
 {
   Standard_Address anAdr;
-  BOPCol_DataMapIteratorOfDataMapOfShapeAddress aIt;
-  BOPCol_DataMapIteratorOfDataMapOfTransientAddress aIt1;
+  DataMapOfShapeAddress::Iterator aIt;
+  DataMapOfTransientAddress::Iterator aIt1;
   //
   IntTools_FClass2d* pFClass2d;
   //
@@ -1091,7 +1091,7 @@ void IntTools_Context::SetPOnSProjectionTolerance(const Standard_Real theValue)
 void IntTools_Context::clearCachedPOnSProjectors()
 {
   GeomAPI_ProjectPointOnSurf* pProjPS;
-  BOPCol_DataMapIteratorOfDataMapOfShapeAddress aIt(myProjPSMap);
+  DataMapOfShapeAddress::Iterator aIt(myProjPSMap);
   for (; aIt.More(); aIt.Next()) {
     Standard_Address anAdr=aIt.Value();
     pProjPS=(GeomAPI_ProjectPointOnSurf*)anAdr;

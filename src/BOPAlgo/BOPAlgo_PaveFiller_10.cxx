@@ -48,7 +48,7 @@ void BOPAlgo_PaveFiller::SetNonDestructive()
   }
   //
   Standard_Boolean bFlag;
-  BOPCol_ListIteratorOfListOfShape aItLS;
+  TopTools_ListIteratorOfListOfShape aItLS;
   //
   bFlag=Standard_False;
   aItLS.Initialize(myArguments);
@@ -69,10 +69,10 @@ void BOPAlgo_PaveFiller::UpdateEdgeTolerance (const Standard_Integer nE,
   Standard_Integer nV, nVx;
   Standard_Real aTolV;
   BRep_Builder aBB;
-  BOPCol_ListIteratorOfListOfInteger aIt;
+  TColStd_ListIteratorOfListOfInteger aIt;
   //
   BOPDS_ShapeInfo& aSIE=myDS->ChangeShapeInfo(nE);
-  const BOPCol_ListOfInteger& aLI=aSIE.SubShapes();
+  const TColStd_ListOfInteger& aLI=aSIE.SubShapes();
   //
   if (myNonDestructive) {
     bIsNewShape=myDS->IsNewShape(nE);
@@ -196,7 +196,7 @@ void BOPAlgo_PaveFiller::UpdateCommonBlocksWithSDVertices()
   Standard_Integer aNbPBP;
   //
   BOPDS_VectorOfListOfPaveBlock& aPBP=myDS->ChangePaveBlocksPool();
-  aNbPBP=aPBP.Extent();
+  aNbPBP=aPBP.Length();
   if(!aNbPBP) {
     return;
   }
@@ -237,7 +237,7 @@ namespace
   //purpose  : 
   //=======================================================================
   template <class InterfType>
-  void UpdateIntfsWithSDVertices(BOPDS_PDS theDS, BOPCol_NCVector<InterfType>& theInterfs)
+  void UpdateIntfsWithSDVertices(BOPDS_PDS theDS, NCollection_Vector<InterfType>& theInterfs)
   {
     for (Standard_Integer i = 0; i < theInterfs.Length(); i++)
     {

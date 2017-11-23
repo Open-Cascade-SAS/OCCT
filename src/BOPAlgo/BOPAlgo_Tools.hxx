@@ -19,19 +19,17 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <BOPCol_BaseAllocator.hxx>
-#include <BOPCol_DataMapOfShapeBox.hxx>
-#include <BOPCol_DataMapOfShapeListOfShape.hxx>
-#include <BOPCol_IndexedDataMapOfShapeListOfShape.hxx>
-#include <BOPCol_IndexedDataMapOfShapeReal.hxx>
-#include <BOPCol_ListOfListOfShape.hxx>
-#include <BOPCol_MapOfShape.hxx>
-#include <BOPCol_ListOfShape.hxx>
-
 #include <BOPDS_IndexedDataMapOfPaveBlockListOfInteger.hxx>
 #include <BOPDS_IndexedDataMapOfPaveBlockListOfPaveBlock.hxx>
 #include <BOPDS_PDS.hxx>
-
+#include <NCollection_BaseAllocator.hxx>
+#include <TopTools_DataMapOfShapeBox.hxx>
+#include <TopTools_DataMapOfShapeListOfShape.hxx>
+#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
+#include <TopTools_IndexedDataMapOfShapeReal.hxx>
+#include <TopTools_ListOfListOfShape.hxx>
+#include <TopTools_ListOfShape.hxx>
+#include <TopTools_MapOfShape.hxx>
 #include <Standard_Integer.hxx>
 
 class BOPDS_PaveBlock;
@@ -39,6 +37,7 @@ class BOPDS_CommonBlock;
 class IntTools_Context;
 class TopoDS_Shape;
 
+//! Provides tools used in the intersection part of Boolean operations
 class BOPAlgo_Tools
 {
 public:
@@ -47,7 +46,7 @@ public:
   template <class theType, class theTypeHasher>
   static void MakeBlocks(const NCollection_IndexedDataMap<theType, NCollection_List<theType>, theTypeHasher>& theMILI,
                          NCollection_List<NCollection_List<theType>>& theMBlocks,
-                         const BOPCol_BaseAllocator& theAllocator)
+                         const Handle(NCollection_BaseAllocator)& theAllocator)
   {
     NCollection_Map<theType, theTypeHasher> aMFence;
     Standard_Integer i, aNb = theMILI.Extent();
@@ -81,7 +80,7 @@ public:
   static void FillMap(const theType& n1,
                       const theType& n2,
                       NCollection_IndexedDataMap<theType, NCollection_List<theType>, theTypeHasher>& theMILI,
-                      const BOPCol_BaseAllocator& theAllocator)
+                      const Handle(NCollection_BaseAllocator)& theAllocator)
   {
     NCollection_List<theType> *pList1 = theMILI.ChangeSeek(n1);
     if (!pList1) {
@@ -99,14 +98,14 @@ public:
   Standard_EXPORT static void FillMap(const Handle(BOPDS_PaveBlock)& thePB1,
                                       const Standard_Integer theF,
                                       BOPDS_IndexedDataMapOfPaveBlockListOfInteger& theMILI,
-                                      const BOPCol_BaseAllocator& theAllocator);
+                                      const Handle(NCollection_BaseAllocator)& theAllocator);
   
   Standard_EXPORT static void PerformCommonBlocks(BOPDS_IndexedDataMapOfPaveBlockListOfPaveBlock& theMBlocks,
-                                                  const BOPCol_BaseAllocator& theAllocator,
+                                                  const Handle(NCollection_BaseAllocator)& theAllocator,
                                                   BOPDS_PDS& theDS);
 
   Standard_EXPORT static void PerformCommonBlocks(const BOPDS_IndexedDataMapOfPaveBlockListOfInteger& theMBlocks,
-                                                  const BOPCol_BaseAllocator& theAllocator,
+                                                  const Handle(NCollection_BaseAllocator)& theAllocator,
                                                   BOPDS_PDS& pDS);
 
   Standard_EXPORT static Standard_Real ComputeToleranceOfCB
@@ -157,17 +156,17 @@ public:
                                                        const Standard_Real theAngTol = 1.e-8);
 
   //! Finds chains of intersecting vertices
-  Standard_EXPORT static void IntersectVertices(const BOPCol_IndexedDataMapOfShapeReal& theVertices,
+  Standard_EXPORT static void IntersectVertices(const TopTools_IndexedDataMapOfShapeReal& theVertices,
                                                 const Standard_Boolean theRunParallel,
                                                 const Standard_Real theFuzzyValue,
-                                                BOPCol_ListOfListOfShape& theChains);
+                                                TopTools_ListOfListOfShape& theChains);
 
   //! Collect in the output list recursively all non-compound subshapes of the first level
   //! of the given shape theS. If a shape presents in the map theMFence it is skipped.
   //! All shapes put in the output are also added into theMFence.
   Standard_EXPORT static void TreatCompound(const TopoDS_Shape& theS,
-                                            BOPCol_MapOfShape& theMFence,
-                                            BOPCol_ListOfShape& theLS);
+                                            TopTools_MapOfShape& theMFence,
+                                            TopTools_ListOfShape& theLS);
 
   //! Classifies the faces <theFaces> relatively solids <theSolids>.
   //! The IN faces for solids are stored into output data map <theInParts>.
@@ -182,13 +181,13 @@ public:
   //! It is assumed that all faces and solids are already intersected and
   //! do not have any geometrically coinciding parts without topological
   //! sharing of these parts
-  Standard_EXPORT static void ClassifyFaces(const BOPCol_ListOfShape& theFaces,
-                                            const BOPCol_ListOfShape& theSolids,
+  Standard_EXPORT static void ClassifyFaces(const TopTools_ListOfShape& theFaces,
+                                            const TopTools_ListOfShape& theSolids,
                                             const Standard_Boolean theRunParallel,
                                             Handle(IntTools_Context)& theContext,
-                                            BOPCol_IndexedDataMapOfShapeListOfShape& theInParts,
-                                            const BOPCol_DataMapOfShapeBox& theShapeBoxMap = BOPCol_DataMapOfShapeBox(),
-                                            const BOPCol_DataMapOfShapeListOfShape& theSolidsIF = BOPCol_DataMapOfShapeListOfShape());
+                                            TopTools_IndexedDataMapOfShapeListOfShape& theInParts,
+                                            const TopTools_DataMapOfShapeBox& theShapeBoxMap = TopTools_DataMapOfShapeBox(),
+                                            const TopTools_DataMapOfShapeListOfShape& theSolidsIF = TopTools_DataMapOfShapeListOfShape());
 
 };
 

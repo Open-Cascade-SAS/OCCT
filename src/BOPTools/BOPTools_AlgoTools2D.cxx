@@ -13,8 +13,6 @@
 // commercial license or contractual agreement.
 
 
-#include <BOPCol_IndexedMapOfShape.hxx>
-#include <BOPTools.hxx>
 #include <BOPTools_AlgoTools2D.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_CurveRepresentation.hxx>

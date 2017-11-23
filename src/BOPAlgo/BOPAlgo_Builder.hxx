@@ -22,18 +22,17 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <BOPCol_ListOfShape.hxx>
-#include <BOPCol_MapOfShape.hxx>
 #include <BOPAlgo_PPaveFiller.hxx>
+#include <BOPAlgo_BuilderShape.hxx>
 #include <BOPAlgo_GlueEnum.hxx>
 #include <BOPDS_PDS.hxx>
+#include <NCollection_BaseAllocator.hxx>
 #include <Standard_Integer.hxx>
-#include <BOPCol_DataMapOfShapeListOfShape.hxx>
-#include <BOPCol_DataMapOfShapeShape.hxx>
 #include <Standard_Real.hxx>
-#include <BOPAlgo_BuilderShape.hxx>
-#include <BOPCol_BaseAllocator.hxx>
+#include <TopTools_DataMapOfShapeListOfShape.hxx>
+#include <TopTools_DataMapOfShapeShape.hxx>
 #include <TopTools_ListOfShape.hxx>
+#include <TopTools_MapOfShape.hxx>
 #include <Standard_Boolean.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 class IntTools_Context;
@@ -71,7 +70,7 @@ public:
   Standard_EXPORT BOPAlgo_Builder();
 Standard_EXPORT virtual ~BOPAlgo_Builder();
   
-  Standard_EXPORT BOPAlgo_Builder(const BOPCol_BaseAllocator& theAllocator);
+  Standard_EXPORT BOPAlgo_Builder(const Handle(NCollection_BaseAllocator)& theAllocator);
   
   Standard_EXPORT virtual void Clear() Standard_OVERRIDE;
   
@@ -81,9 +80,9 @@ Standard_EXPORT virtual ~BOPAlgo_Builder();
   
   Standard_EXPORT virtual void AddArgument (const TopoDS_Shape& theShape);
   
-  Standard_EXPORT virtual void SetArguments (const BOPCol_ListOfShape& theLS);
+  Standard_EXPORT virtual void SetArguments (const TopTools_ListOfShape& theLS);
   
-  Standard_EXPORT const BOPCol_ListOfShape& Arguments() const;
+  Standard_EXPORT const TopTools_ListOfShape& Arguments() const;
 
   Standard_EXPORT virtual void Perform() Standard_OVERRIDE;
   
@@ -100,18 +99,18 @@ Standard_EXPORT virtual ~BOPAlgo_Builder();
   //! Returns true if the shape theS has been deleted.
   Standard_EXPORT virtual Standard_Boolean IsDeleted (const TopoDS_Shape& theS) Standard_OVERRIDE;
   
-  Standard_EXPORT const BOPCol_DataMapOfShapeListOfShape& Images() const;
+  Standard_EXPORT const TopTools_DataMapOfShapeListOfShape& Images() const;
   
   Standard_EXPORT Standard_Boolean IsInterferred (const TopoDS_Shape& theS) const;
   
   //! Returns myOrigins.
-  Standard_EXPORT const BOPCol_DataMapOfShapeListOfShape& Origins() const;
+  Standard_EXPORT const TopTools_DataMapOfShapeListOfShape& Origins() const;
   
   //! Returns myShapesSD.
-  Standard_EXPORT const BOPCol_DataMapOfShapeShape& ShapesSD() const;
+  Standard_EXPORT const TopTools_DataMapOfShapeShape& ShapesSD() const;
   
   //! Returns mySplits.
-  Standard_EXPORT const BOPCol_DataMapOfShapeListOfShape& Splits() const;
+  Standard_EXPORT const TopTools_DataMapOfShapeListOfShape& Splits() const;
   
   
   //! Sets the flag that defines the mode of treatment.
@@ -161,7 +160,7 @@ protected:
   
   Standard_EXPORT void FillImagesContainer (const TopoDS_Shape& theS, const TopAbs_ShapeEnum theType);
   
-  Standard_EXPORT void FillImagesCompound (const TopoDS_Shape& theS, BOPCol_MapOfShape& theMF);
+  Standard_EXPORT void FillImagesCompound (const TopoDS_Shape& theS, TopTools_MapOfShape& theMF);
   
   Standard_EXPORT void FillImagesFaces();
   
@@ -173,27 +172,27 @@ protected:
   
   Standard_EXPORT void FillImagesSolids();
   
-  Standard_EXPORT void BuildDraftSolid (const TopoDS_Shape& theSolid, TopoDS_Shape& theDraftSolid, BOPCol_ListOfShape& theLIF);
+  Standard_EXPORT void BuildDraftSolid (const TopoDS_Shape& theSolid, TopoDS_Shape& theDraftSolid, TopTools_ListOfShape& theLIF);
   
-  Standard_EXPORT virtual void FillIn3DParts (BOPCol_DataMapOfShapeListOfShape& theInParts, BOPCol_DataMapOfShapeShape& theDraftSolids, const BOPCol_BaseAllocator& theAllocator);
+  Standard_EXPORT virtual void FillIn3DParts (TopTools_DataMapOfShapeListOfShape& theInParts, TopTools_DataMapOfShapeShape& theDraftSolids, const Handle(NCollection_BaseAllocator)& theAllocator);
   
-  Standard_EXPORT void BuildSplitSolids (BOPCol_DataMapOfShapeListOfShape& theInParts, BOPCol_DataMapOfShapeShape& theDraftSolids, const BOPCol_BaseAllocator& theAllocator);
+  Standard_EXPORT void BuildSplitSolids (TopTools_DataMapOfShapeListOfShape& theInParts, TopTools_DataMapOfShapeShape& theDraftSolids, const Handle(NCollection_BaseAllocator)& theAllocator);
   
   Standard_EXPORT void FillInternalShapes();
   
   Standard_EXPORT virtual void PostTreat();
 
 
-  BOPCol_ListOfShape myArguments;
-  BOPCol_MapOfShape myMapFence;
+  TopTools_ListOfShape myArguments;
+  TopTools_MapOfShape myMapFence;
   BOPAlgo_PPaveFiller myPaveFiller;
   BOPDS_PDS myDS;
   Handle(IntTools_Context) myContext;
   Standard_Integer myEntryPoint;
-  BOPCol_DataMapOfShapeListOfShape myImages;
-  BOPCol_DataMapOfShapeShape myShapesSD;
-  BOPCol_DataMapOfShapeListOfShape mySplits;
-  BOPCol_DataMapOfShapeListOfShape myOrigins;
+  TopTools_DataMapOfShapeListOfShape myImages;
+  TopTools_DataMapOfShapeShape myShapesSD;
+  TopTools_DataMapOfShapeListOfShape mySplits;
+  TopTools_DataMapOfShapeListOfShape myOrigins;
   Standard_Boolean myNonDestructive;
   BOPAlgo_GlueEnum myGlue;
 

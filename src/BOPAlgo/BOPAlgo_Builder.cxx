@@ -27,12 +27,11 @@
 #include <TopoDS_Compound.hxx>
 #include <BRep_Builder.hxx>
 
-#include <BOPCol_IndexedMapOfShape.hxx>
-
 #include <BOPDS_ShapeInfo.hxx>
 #include <BOPDS_DS.hxx>
 
 #include <BOPTools_AlgoTools.hxx>
+#include <TopTools_IndexedMapOfShape.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 
 
@@ -118,9 +117,9 @@ void BOPAlgo_Builder::AddArgument(const TopoDS_Shape& theShape)
 //function : SetArguments
 //purpose  : 
 //=======================================================================
-void BOPAlgo_Builder::SetArguments(const BOPCol_ListOfShape& theShapes)
+void BOPAlgo_Builder::SetArguments(const TopTools_ListOfShape& theShapes)
 {
-  BOPCol_ListIteratorOfListOfShape aIt;
+  TopTools_ListIteratorOfListOfShape aIt;
   //
   myArguments.Clear();
   //
@@ -134,7 +133,7 @@ void BOPAlgo_Builder::SetArguments(const BOPCol_ListOfShape& theShapes)
 //function : Arguments
 //purpose  : 
 //=======================================================================
-const BOPCol_ListOfShape& BOPAlgo_Builder::Arguments()const
+const TopTools_ListOfShape& BOPAlgo_Builder::Arguments()const
 {
   return myArguments;
 }
@@ -142,7 +141,7 @@ const BOPCol_ListOfShape& BOPAlgo_Builder::Arguments()const
 //function : Images
 //purpose  : 
 //=======================================================================
-const BOPCol_DataMapOfShapeListOfShape& BOPAlgo_Builder::Images()const
+const TopTools_DataMapOfShapeListOfShape& BOPAlgo_Builder::Images()const
 {
   return myImages;
 }
@@ -150,7 +149,7 @@ const BOPCol_DataMapOfShapeListOfShape& BOPAlgo_Builder::Images()const
 //function : Origins
 //purpose  : 
 //=======================================================================
-const BOPCol_DataMapOfShapeListOfShape& BOPAlgo_Builder::Origins()const
+const TopTools_DataMapOfShapeListOfShape& BOPAlgo_Builder::Origins()const
 {
   return myOrigins;
 }
@@ -159,7 +158,7 @@ const BOPCol_DataMapOfShapeListOfShape& BOPAlgo_Builder::Origins()const
 //function : ShapesSd
 //purpose  : 
 //=======================================================================
-const BOPCol_DataMapOfShapeShape& BOPAlgo_Builder::ShapesSD()const
+const TopTools_DataMapOfShapeShape& BOPAlgo_Builder::ShapesSD()const
 {
   return myShapesSD;
 }
@@ -167,7 +166,7 @@ const BOPCol_DataMapOfShapeShape& BOPAlgo_Builder::ShapesSD()const
 //function : Splits
 //purpose  : 
 //=======================================================================
-const BOPCol_DataMapOfShapeListOfShape& BOPAlgo_Builder::Splits()const
+const TopTools_DataMapOfShapeListOfShape& BOPAlgo_Builder::Splits()const
 {
   return mySplits;
 }
@@ -447,7 +446,7 @@ void BOPAlgo_Builder::PostTreat()
 {
   Standard_Integer i, aNbS;
   TopAbs_ShapeEnum aType;
-  BOPCol_IndexedMapOfShape aMA;
+  TopTools_IndexedMapOfShape aMA;
   if (myPaveFiller->NonDestructive()) {
     // MapToAvoid
     aNbS=myDS->NbSourceShapes();

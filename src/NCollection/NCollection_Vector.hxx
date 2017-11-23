@@ -225,6 +225,13 @@ public: //! @name public methods
     return anAppended;
   }
 
+  //! Appends an empty value and returns the reference to it
+  TheItemType& Appended ()
+  {
+    TheItemType& anAppended = *(TheItemType* )expandV (myLength);
+    return anAppended;
+  }
+
   //! Operator() - query the const value
   const TheItemType& operator() (const Standard_Integer theIndex) const
   {

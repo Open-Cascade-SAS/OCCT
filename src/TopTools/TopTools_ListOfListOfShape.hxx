@@ -1,8 +1,5 @@
-// Created by: Peter KURNEV
-// Copyright (c) 2010-2014 OPEN CASCADE SAS
-// Copyright (c) 2007-2010 CEA/DEN, EDF R&D, OPEN CASCADE
-// Copyright (c) 2003-2007 OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN, CEDRAT,
-//                         EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS
+// Created by: Eugeny MALTCHIKOV
+// Copyright (c) 2017 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -15,15 +12,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#ifndef TopTools_ListOfListOfShape_HeaderFile
+#define TopTools_ListOfListOfShape_HeaderFile
 
-#include <BOPDS_PassKey.hxx>
+#include <TopTools_ListOfShape.hxx>
 
-#include <stdio.h>
+typedef NCollection_List<TopTools_ListOfShape> TopTools_ListOfListOfShape;
+typedef TopTools_ListOfListOfShape::Iterator TopTools_ListIteratorOfListOfListOfShape;
 
-//=======================================================================
-//function : Dump
-//purpose  : 
-//=======================================================================
-  void BOPDS_PassKey::Dump(const Standard_Integer )const
-{
-}
+
+#endif

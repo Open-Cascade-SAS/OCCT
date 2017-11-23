@@ -16,7 +16,6 @@
 #include <BOPAlgo_ArgumentAnalyzer.hxx>
 #include <BOPAlgo_CheckerSI.hxx>
 #include <BOPAlgo_CheckResult.hxx>
-#include <BOPCol_ListOfShape.hxx>
 #include <BOPDS_DS.hxx>
 #include <BOPDS_MapOfPair.hxx>
 #include <BOPTest.hxx>
@@ -31,6 +30,7 @@
 #include <TopExp_Explorer.hxx>
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Shape.hxx>
+#include <TopTools_ListOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 
@@ -41,7 +41,7 @@
 static 
   void MakeShapeForFullOutput (const TCollection_AsciiString&,
                                const Standard_Integer,
-                               const BOPCol_ListOfShape&,
+                               const TopTools_ListOfShape&,
                                Standard_Integer& ,
                                Draw_Interpretor&,
                                Standard_Boolean bCurveOnSurf = Standard_False,
@@ -206,7 +206,7 @@ Standard_Integer bopcheck (Draw_Interpretor& di,
   Standard_Integer iErr, iCnt, n1, n2, iT;
   TopAbs_ShapeEnum aType1, aType2;
   BOPAlgo_CheckerSI aChecker;
-  BOPCol_ListOfShape aLS;
+  TopTools_ListOfShape aLS;
   BOPDS_MapIteratorOfMapOfPair aItMPK;
   //
   if (aLevel < (aNbInterfTypes-1)) {
@@ -581,8 +581,8 @@ Standard_Integer bopargcheck (Draw_Interpretor& di,
         const BOPAlgo_CheckResult& aResult = anIt.Value();
         const TopoDS_Shape & aSS1 = aResult.GetShape1();
         const TopoDS_Shape & aSS2 = aResult.GetShape2();
-        const BOPCol_ListOfShape & aLS1 = aResult.GetFaultyShapes1();
-        const BOPCol_ListOfShape & aLS2 = aResult.GetFaultyShapes2();
+        const TopTools_ListOfShape & aLS1 = aResult.GetFaultyShapes1();
+        const TopTools_ListOfShape & aLS2 = aResult.GetFaultyShapes2();
         Standard_Boolean isL1 = !aLS1.IsEmpty();
         Standard_Boolean isL2 = !aLS2.IsEmpty();
 
@@ -977,7 +977,7 @@ Standard_Integer checkcurveonsurf(Draw_Interpretor& di,
   TopExp_Explorer aExpF, aExpE;
   char buf[200], aFName[10], anEName[10];
   NCollection_DataMap<TopoDS_Shape, Standard_Real, TopTools_ShapeMapHasher> aDMETol;
-  BOPCol_DataMapOfShapeInteger aMSI;
+  TopTools_DataMapOfShapeInteger aMSI;
   //
   anECounter = 0;
   aFCounter  = 0;
@@ -1077,7 +1077,7 @@ Standard_Integer checkcurveonsurf(Draw_Interpretor& di,
 //=======================================================================
 void MakeShapeForFullOutput (const TCollection_AsciiString & aBaseName,
                              const Standard_Integer          aIndex,
-                             const BOPCol_ListOfShape &      aList,
+                             const TopTools_ListOfShape &      aList,
                              Standard_Integer&               aCount,
                              Draw_Interpretor&               di,
                              Standard_Boolean                bCurveOnSurf,
@@ -1092,7 +1092,7 @@ void MakeShapeForFullOutput (const TCollection_AsciiString & aBaseName,
   BRep_Builder BB;
   BB.MakeCompound(cmp);
 
-  BOPCol_ListIteratorOfListOfShape anIt(aList);
+  TopTools_ListIteratorOfListOfShape anIt(aList);
   for(; anIt.More(); anIt.Next()) {
     const TopoDS_Shape & aS = anIt.Value();
     BB.Add(cmp, aS);

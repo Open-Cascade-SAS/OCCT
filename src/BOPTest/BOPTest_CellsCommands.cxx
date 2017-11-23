@@ -80,21 +80,21 @@ Standard_Integer bcbuild(Draw_Interpretor& di,
     return 1;
   }
   //
-  BOPCol_ListIteratorOfListOfShape aIt;
+  TopTools_ListIteratorOfListOfShape aIt;
   //
   BOPAlgo_PaveFiller& aPF = BOPTest_Objects::PaveFiller();
   //
   BOPAlgo_CellsBuilder& aCBuilder = BOPTest_Objects::CellsBuilder();
   aCBuilder.Clear();
   //
-  BOPCol_ListOfShape& aLSObj = BOPTest_Objects::Shapes();
+  TopTools_ListOfShape& aLSObj = BOPTest_Objects::Shapes();
   aIt.Initialize(aLSObj);
   for (; aIt.More(); aIt.Next()) {
     const TopoDS_Shape& aS = aIt.Value();
     aCBuilder.AddArgument(aS);
   }
   //
-  BOPCol_ListOfShape& aLSTool = BOPTest_Objects::Tools();
+  TopTools_ListOfShape& aLSTool = BOPTest_Objects::Tools();
   aIt.Initialize(aLSTool);
   for (; aIt.More(); aIt.Next()) {
     const TopoDS_Shape& aS = aIt.Value();
@@ -202,7 +202,7 @@ Standard_Integer bcadd(Draw_Interpretor& di,
     return 1;
   }
   //
-  BOPCol_ListOfShape aLSToTake, aLSToAvoid;
+  TopTools_ListOfShape aLSToTake, aLSToAvoid;
   Standard_Integer i, iMaterial, iTake, n1;
   Standard_Boolean bUpdate;
   //
@@ -266,7 +266,7 @@ Standard_Integer bcremove(Draw_Interpretor& di,
     return 1;
   }
   //
-  BOPCol_ListOfShape aLSToTake, aLSToAvoid;
+  TopTools_ListOfShape aLSToTake, aLSToAvoid;
   Standard_Integer i, iTake;
   //
   for (i = 2; i < n; i += 2) {

@@ -57,7 +57,7 @@ public:
   Standard_EXPORT BOPAlgo_Splitter();
   Standard_EXPORT virtual ~BOPAlgo_Splitter();
 
-  Standard_EXPORT BOPAlgo_Splitter(const BOPCol_BaseAllocator& theAllocator);
+  Standard_EXPORT BOPAlgo_Splitter(const Handle(NCollection_BaseAllocator)& theAllocator);
 
   //! Performs the operation
   Standard_EXPORT virtual void Perform() Standard_OVERRIDE;

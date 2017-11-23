@@ -831,7 +831,7 @@ static Standard_Boolean IsAutonomVertex(const TopoDS_Shape& aVertex,
   //check if vertex with index "index" is not created in VV or EE or EF interference
   //VV
   BOPDS_VectorOfInterfVV& aVVs=pDS->InterfVV();
-  aNbVVs = aVVs.Extent();
+  aNbVVs = aVVs.Length();
   for(aInt = 0; aInt < aNbVVs; aInt++) {
     const BOPDS_InterfVV& aVV = aVVs(aInt);
     if (aVV.HasIndexNew()) {
@@ -842,7 +842,7 @@ static Standard_Boolean IsAutonomVertex(const TopoDS_Shape& aVertex,
     }
   //EE
   BOPDS_VectorOfInterfEE& aEEs=pDS->InterfEE();
-  aNbEEs = aEEs.Extent();
+  aNbEEs = aEEs.Length();
   for(aInt = 0; aInt < aNbEEs; aInt++) {
     const BOPDS_InterfEE& aEE = aEEs(aInt);
     IntTools_CommonPrt aCP = aEE.CommonPart();
@@ -854,7 +854,7 @@ static Standard_Boolean IsAutonomVertex(const TopoDS_Shape& aVertex,
 	}
   //EF
   BOPDS_VectorOfInterfEF& aEFs=pDS->InterfEF();
-  aNbEFs = aEFs.Extent();
+  aNbEFs = aEFs.Length();
   for(aInt = 0; aInt < aNbEFs; aInt++) {
     const BOPDS_InterfEF& aEF = aEFs(aInt);
     IntTools_CommonPrt aCP = aEF.CommonPart();
@@ -1338,7 +1338,7 @@ static Standard_Boolean CheckIntersFF(const BOPDS_PDS& pDS,
     return Standard_True;
 
   BOPDS_VectorOfInterfFF& aFFs = pDS->InterfFF();
-  Standard_Integer aNb = aFFs.Extent();
+  Standard_Integer aNb = aFFs.Length();
   Standard_Integer i, j, nbe = 0;
 
   TopTools_SequenceOfShape Edges;
@@ -1347,7 +1347,7 @@ static Standard_Boolean CheckIntersFF(const BOPDS_PDS& pDS,
     {
       BOPDS_InterfFF& aFFi=aFFs(i);
       const BOPDS_VectorOfCurve& aBCurves=aFFi.Curves();
-      Standard_Integer aNbCurves = aBCurves.Extent();
+      Standard_Integer aNbCurves = aBCurves.Length();
       
       for (j = 0; j < aNbCurves; ++j) 
 	{
@@ -1618,7 +1618,7 @@ void BRepOffset_Tool::Inter3D(const TopoDS_Face& F1,
   BRepLib::BuildCurves3d(cpF2);
  
   BOPAlgo_PaveFiller aPF1, aPF2;
-  BOPCol_ListOfShape aLS;
+  TopTools_ListOfShape aLS;
   aLS.Append(cpF1);
   aLS.Append(cpF2);
   aPF1.SetArguments(aLS);
@@ -1646,7 +1646,7 @@ void BRepOffset_Tool::Inter3D(const TopoDS_Face& F1,
   
   const BOPDS_PDS& pDS = pPF->PDS();
   BOPDS_VectorOfInterfFF& aFFs=pDS->InterfFF();
-  Standard_Integer aNb = aFFs.Extent();
+  Standard_Integer aNb = aFFs.Length();
   Standard_Integer i = 0, j = 0, k;
   // Store Result
   L1.Clear(); L2.Clear();
@@ -1658,7 +1658,7 @@ void BRepOffset_Tool::Inter3D(const TopoDS_Face& F1,
     BOPDS_InterfFF& aFFi=aFFs(i);
     const BOPDS_VectorOfCurve& aBCurves=aFFi.Curves();
         
-    Standard_Integer aNbCurves = aBCurves.Extent();
+    Standard_Integer aNbCurves = aBCurves.Length();
       
     for (j = 0; j < aNbCurves; j++) {
       const BOPDS_Curve& aBC=aBCurves(j);

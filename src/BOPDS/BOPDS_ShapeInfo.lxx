@@ -107,7 +107,7 @@ inline Bnd_Box& BOPDS_ShapeInfo::ChangeBox()
 //function : SubShapes
 //purpose  : 
 //=======================================================================
-inline const BOPCol_ListOfInteger& BOPDS_ShapeInfo::SubShapes()const
+inline const TColStd_ListOfInteger& BOPDS_ShapeInfo::SubShapes()const
 {
   return mySubShapes;
 }
@@ -115,7 +115,7 @@ inline const BOPCol_ListOfInteger& BOPDS_ShapeInfo::SubShapes()const
 //function : ChangeSubShapes
 //purpose  : 
 //=======================================================================
-inline BOPCol_ListOfInteger& BOPDS_ShapeInfo::ChangeSubShapes()
+inline TColStd_ListOfInteger& BOPDS_ShapeInfo::ChangeSubShapes()
 {
   return mySubShapes;
 }
@@ -127,7 +127,7 @@ inline Standard_Boolean BOPDS_ShapeInfo::HasSubShape
   (const Standard_Integer theI)const
 {
   Standard_Boolean bRet;
-  BOPCol_ListIteratorOfListOfInteger aIt;
+  TColStd_ListIteratorOfListOfInteger aIt;
   //
   bRet=Standard_False;
   aIt.Initialize(mySubShapes);

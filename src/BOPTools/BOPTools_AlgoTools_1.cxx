@@ -16,9 +16,8 @@
 #include <Adaptor3d_CurveOnSurface.hxx>
 #include <Adaptor3d_HCurve.hxx>
 #include <Adaptor3d_HCurveOnSurface.hxx>
-#include <BOPCol_NCVector.hxx>
-#include <BOPCol_Parallel.hxx>
 #include <BOPTools_AlgoTools.hxx>
+#include <BOPTools_Parallel.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_CurveRepresentation.hxx>
 #include <BRep_GCurve.hxx>
@@ -59,6 +58,7 @@
 #include <IntTools_Curve.hxx>
 #include <IntTools_Range.hxx>
 #include <IntTools_Tools.hxx>
+#include <NCollection_Vector.hxx>
 #include <ProjLib_ProjectedCurve.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
@@ -81,12 +81,12 @@
 static 
   void CheckEdge (const TopoDS_Edge& E,
                   const Standard_Real aMaxTol,
-                  const BOPCol_IndexedMapOfShape& aMapToAvoid);
+                  const TopTools_IndexedMapOfShape& aMapToAvoid);
 static 
   void CorrectEdgeTolerance (const TopoDS_Edge& myShape,
                              const TopoDS_Face& S,
                              const Standard_Real aMaxTol,
-                             const BOPCol_IndexedMapOfShape& aMapToAvoid);
+                             const TopTools_IndexedMapOfShape& aMapToAvoid);
 static 
   Standard_Boolean Validate(const Adaptor3d_Curve& CRef,
                             const Adaptor3d_Curve& Other,
@@ -96,22 +96,22 @@ static
 
 static
   void CorrectVertexTolerance(const TopoDS_Edge& aE,
-                              const BOPCol_IndexedMapOfShape& aMapToAvoid);
+                              const TopTools_IndexedMapOfShape& aMapToAvoid);
 
 static
   void CorrectWires(const TopoDS_Face& aF,
-                    const BOPCol_IndexedMapOfShape& aMapToAvoid);
+                    const TopTools_IndexedMapOfShape& aMapToAvoid);
 
 
 
 static
   void UpdateEdges(const TopoDS_Face& aF,
-                   const BOPCol_IndexedMapOfShape& aMapToAvoid);
+                   const TopTools_IndexedMapOfShape& aMapToAvoid);
 
 static
   void UpdateShape(const TopoDS_Shape& aS,
                    const Standard_Real aTol,
-                   const BOPCol_IndexedMapOfShape& aMapToAvoid);
+                   const TopTools_IndexedMapOfShape& aMapToAvoid);
 
 //=======================================================================
 //class    : BOPTools_CPC
@@ -142,7 +142,7 @@ class BOPTools_CPC {
     return myMaxTol;
   }
   //
-  void SetMapToAvoid(const BOPCol_IndexedMapOfShape& aMapToAvoid) {
+  void SetMapToAvoid(const TopTools_IndexedMapOfShape& aMapToAvoid) {
     mypMapToAvoid = &aMapToAvoid;
   }
   //
@@ -154,17 +154,17 @@ class BOPTools_CPC {
  protected:
   Standard_Real myMaxTol;
   TopoDS_Edge myEdge;
-  const BOPCol_IndexedMapOfShape* mypMapToAvoid;
+  const TopTools_IndexedMapOfShape* mypMapToAvoid;
 };
 //
 //=======================================================================
-typedef BOPCol_NCVector<BOPTools_CPC> BOPTools_VectorOfCPC; 
+typedef NCollection_Vector<BOPTools_CPC> BOPTools_VectorOfCPC; 
 //
-typedef BOPCol_Functor 
+typedef BOPTools_Functor 
   <BOPTools_CPC,
   BOPTools_VectorOfCPC> BOPTools_CPCFunctor;
 //
-typedef BOPCol_Cnt 
+typedef BOPTools_Cnt 
   <BOPTools_CPCFunctor,
   BOPTools_VectorOfCPC> BOPTools_CPCCnt;
 //
@@ -184,7 +184,7 @@ class BOPTools_CWT {
     myFace=aF;
   }
   //
-  void SetMapToAvoid(const BOPCol_IndexedMapOfShape& aMapToAvoid) {
+  void SetMapToAvoid(const TopTools_IndexedMapOfShape& aMapToAvoid) {
     mypMapToAvoid = &aMapToAvoid;
   }
   //
@@ -195,16 +195,16 @@ class BOPTools_CWT {
   //
  protected:
   TopoDS_Face myFace;
-  const BOPCol_IndexedMapOfShape* mypMapToAvoid;
+  const TopTools_IndexedMapOfShape* mypMapToAvoid;
 };
 //=======================================================================
-typedef BOPCol_NCVector<BOPTools_CWT> BOPTools_VectorOfCWT; 
+typedef NCollection_Vector<BOPTools_CWT> BOPTools_VectorOfCWT; 
 //
-typedef BOPCol_Functor 
+typedef BOPTools_Functor 
   <BOPTools_CWT,
   BOPTools_VectorOfCWT> BOPTools_CWTFunctor;
 //
-typedef BOPCol_Cnt 
+typedef BOPTools_Cnt 
   <BOPTools_CWTFunctor,
   BOPTools_VectorOfCWT> BOPTools_CWTCnt;
 //
@@ -233,7 +233,7 @@ class BOPTools_CDT {
     myMaxTol=aMaxTol;
   }
   //
-  void SetMapToAvoid(const BOPCol_IndexedMapOfShape& aMapToAvoid) {
+  void SetMapToAvoid(const TopTools_IndexedMapOfShape& aMapToAvoid) {
     mypMapToAvoid = &aMapToAvoid;
   }
   //
@@ -246,16 +246,16 @@ class BOPTools_CDT {
   Standard_Real myMaxTol;
   TopoDS_Edge myEdge;
   TopoDS_Face myFace;
-  const BOPCol_IndexedMapOfShape* mypMapToAvoid;
+  const TopTools_IndexedMapOfShape* mypMapToAvoid;
 };
 //=======================================================================
-typedef BOPCol_NCVector<BOPTools_CDT> BOPTools_VectorOfCDT; 
+typedef NCollection_Vector<BOPTools_CDT> BOPTools_VectorOfCDT; 
 //
-typedef BOPCol_Functor 
+typedef BOPTools_Functor 
   <BOPTools_CDT,
   BOPTools_VectorOfCDT> BOPTools_CDTFunctor;
 //
-typedef BOPCol_Cnt 
+typedef BOPTools_Cnt 
   <BOPTools_CDTFunctor,
   BOPTools_VectorOfCDT> BOPTools_CDTCnt;
 //
@@ -275,7 +275,7 @@ class BOPTools_CVT {
     myEdge=aE;
   }
   //
-  void SetMapToAvoid(const BOPCol_IndexedMapOfShape& aMapToAvoid) {
+  void SetMapToAvoid(const TopTools_IndexedMapOfShape& aMapToAvoid) {
     mypMapToAvoid = &aMapToAvoid;
   }
   //
@@ -286,17 +286,17 @@ class BOPTools_CVT {
   //
  protected:
   TopoDS_Edge myEdge;
-  const BOPCol_IndexedMapOfShape* mypMapToAvoid;
+  const TopTools_IndexedMapOfShape* mypMapToAvoid;
 };
 //
 //=======================================================================
-typedef BOPCol_NCVector<BOPTools_CVT> BOPTools_VectorOfCVT; 
+typedef NCollection_Vector<BOPTools_CVT> BOPTools_VectorOfCVT; 
 //
-typedef BOPCol_Functor 
+typedef BOPTools_Functor 
   <BOPTools_CVT,
   BOPTools_VectorOfCVT> BOPTools_CVTFunctor;
 //
-typedef BOPCol_Cnt 
+typedef BOPTools_Cnt 
   <BOPTools_CVTFunctor,
   BOPTools_VectorOfCVT> BOPTools_CVTCnt;
 //
@@ -316,7 +316,7 @@ class BOPTools_CET {
     myFace=aF;
   }
   //
-  void SetMapToAvoid(const BOPCol_IndexedMapOfShape& aMapToAvoid) {
+  void SetMapToAvoid(const TopTools_IndexedMapOfShape& aMapToAvoid) {
     mypMapToAvoid = &aMapToAvoid;
   }
   //
@@ -327,16 +327,16 @@ class BOPTools_CET {
   //
  protected:
   TopoDS_Face myFace;
-  const BOPCol_IndexedMapOfShape* mypMapToAvoid;
+  const TopTools_IndexedMapOfShape* mypMapToAvoid;
 };
 //=======================================================================
-typedef BOPCol_NCVector<BOPTools_CET> BOPTools_VectorOfCET; 
+typedef NCollection_Vector<BOPTools_CET> BOPTools_VectorOfCET; 
 //
-typedef BOPCol_Functor 
+typedef BOPTools_Functor 
   <BOPTools_CET,
   BOPTools_VectorOfCET> BOPTools_CETFunctor;
 //
-typedef BOPCol_Cnt 
+typedef BOPTools_Cnt 
   <BOPTools_CETFunctor,
   BOPTools_VectorOfCET> BOPTools_CETCnt;
 //
@@ -349,7 +349,7 @@ typedef BOPCol_Cnt
 //=======================================================================
 void BOPTools_AlgoTools::CorrectTolerances
   (const TopoDS_Shape& aShape,
-   const BOPCol_IndexedMapOfShape& aMapToAvoid,
+   const TopTools_IndexedMapOfShape& aMapToAvoid,
    const Standard_Real aMaxTol,
    const Standard_Boolean bRunParallel)
 {
@@ -363,7 +363,7 @@ void BOPTools_AlgoTools::CorrectTolerances
 //=======================================================================
 void BOPTools_AlgoTools::CorrectPointOnCurve
   (const TopoDS_Shape& aS,
-   const BOPCol_IndexedMapOfShape& aMapToAvoid,
+   const TopTools_IndexedMapOfShape& aMapToAvoid,
    const Standard_Real aMaxTol,
    const Standard_Boolean bRunParallel)
 {
@@ -373,7 +373,7 @@ void BOPTools_AlgoTools::CorrectPointOnCurve
   aExp.Init(aS, TopAbs_EDGE);
   for(; aExp.More();  aExp.Next()) {
     const TopoDS_Edge& aE=*((TopoDS_Edge*)&aExp.Current());
-    BOPTools_CPC& aCPC=aVCPC.Append1();
+    BOPTools_CPC& aCPC=aVCPC.Appended();
     aCPC.SetEdge(aE);
     aCPC.SetMaxTol(aMaxTol);
     aCPC.SetMapToAvoid(aMapToAvoid);
@@ -389,7 +389,7 @@ void BOPTools_AlgoTools::CorrectPointOnCurve
 //=======================================================================
 void BOPTools_AlgoTools::CorrectCurveOnSurface
   (const TopoDS_Shape& aS,
-   const BOPCol_IndexedMapOfShape& aMapToAvoid,
+   const TopTools_IndexedMapOfShape& aMapToAvoid,
    const Standard_Real aMaxTol,
    const Standard_Boolean bRunParallel)
 {
@@ -401,7 +401,7 @@ void BOPTools_AlgoTools::CorrectCurveOnSurface
   for (; aExpF.More(); aExpF.Next()) {
     const TopoDS_Face& aF=*((TopoDS_Face*)&aExpF.Current());
     //
-    BOPTools_CWT& aCWT=aVCWT.Append1();
+    BOPTools_CWT& aCWT=aVCWT.Appended();
     aCWT.SetFace(aF);
     aCWT.SetMapToAvoid(aMapToAvoid);
     //
@@ -409,7 +409,7 @@ void BOPTools_AlgoTools::CorrectCurveOnSurface
     for (; aExpE.More(); aExpE.Next()) {
       const TopoDS_Edge& aE=*((TopoDS_Edge*)&aExpE.Current());
       //
-      BOPTools_CDT& aCDT=aVCDT.Append1();
+      BOPTools_CDT& aCDT=aVCDT.Appended();
       aCDT.SetEdge(aE);
       aCDT.SetFace(aF);
       aCDT.SetMaxTol(aMaxTol);
@@ -429,7 +429,7 @@ void BOPTools_AlgoTools::CorrectCurveOnSurface
 //=======================================================================
 void BOPTools_AlgoTools::CorrectShapeTolerances
   (const TopoDS_Shape& aShape,
-   const BOPCol_IndexedMapOfShape& aMapToAvoid,
+   const TopTools_IndexedMapOfShape& aMapToAvoid,
    const Standard_Boolean bRunParallel)
 { 
   TopExp_Explorer aExp;
@@ -439,7 +439,7 @@ void BOPTools_AlgoTools::CorrectShapeTolerances
   aExp.Init(aShape, TopAbs_EDGE);
   for (; aExp.More(); aExp.Next()) {
     const TopoDS_Edge& aE = *(TopoDS_Edge*)&aExp.Current();
-    BOPTools_CVT& aCVT=aVCVT.Append1();
+    BOPTools_CVT& aCVT=aVCVT.Appended();
     aCVT.SetEdge(aE);
     aCVT.SetMapToAvoid(aMapToAvoid);
   }
@@ -451,7 +451,7 @@ void BOPTools_AlgoTools::CorrectShapeTolerances
   aExp.Init(aShape, TopAbs_FACE);
   for (; aExp.More(); aExp.Next()) {
     const TopoDS_Face& aF = *(TopoDS_Face*)&aExp.Current();
-    BOPTools_CET& aCET=aVCET.Append1();
+    BOPTools_CET& aCET=aVCET.Appended();
     aCET.SetFace(aF);
     aCET.SetMapToAvoid(aMapToAvoid);
   }
@@ -467,7 +467,7 @@ void BOPTools_AlgoTools::CorrectShapeTolerances
 //=======================================================================
 void CheckEdge (const TopoDS_Edge& Ed, 
                 const Standard_Real aMaxTol,
-                const BOPCol_IndexedMapOfShape& aMapToAvoid)
+                const TopTools_IndexedMapOfShape& aMapToAvoid)
 {
   TopoDS_Edge aE = Ed;
   aE.Orientation(TopAbs_FORWARD);
@@ -674,7 +674,7 @@ static
 // purpose : 
 //=======================================================================
 void CorrectWires(const TopoDS_Face& aFx,
-                  const BOPCol_IndexedMapOfShape& aMapToAvoid)
+                  const TopTools_IndexedMapOfShape& aMapToAvoid)
 {
   Standard_Integer i, aNbV;
   Standard_Real aTol, aTol2, aD2, aD2max, aT1, aT2, aT;
@@ -756,7 +756,7 @@ void CorrectWires(const TopoDS_Face& aFx,
 void CorrectEdgeTolerance (const TopoDS_Edge& myShape, 
                            const TopoDS_Face& S,
                            const Standard_Real aMaxTol,
-                           const BOPCol_IndexedMapOfShape& aMapToAvoid)
+                           const TopTools_IndexedMapOfShape& aMapToAvoid)
 {
   // 
   // 1. Minimum of conditions to Perform
@@ -976,7 +976,7 @@ void CorrectEdgeTolerance (const TopoDS_Edge& myShape,
 //purpose  : 
 //=======================================================================
 void CorrectVertexTolerance(const TopoDS_Edge& aE,
-                            const BOPCol_IndexedMapOfShape& aMapToAvoid)
+                            const TopTools_IndexedMapOfShape& aMapToAvoid)
 {
   Standard_Real aTolE, aTolV;
   TopoDS_Iterator aIt;
@@ -1110,7 +1110,7 @@ Standard_Boolean Validate(const Adaptor3d_Curve& CRef,
 // purpose : 
 //=======================================================================
 void UpdateEdges(const TopoDS_Face& aF,
-                 const BOPCol_IndexedMapOfShape& aMapToAvoid)
+                 const TopTools_IndexedMapOfShape& aMapToAvoid)
 {
   Standard_Real aTolF, aTolE, aTolV;
   TopoDS_Iterator aItF, aItW, aItE;
@@ -1145,7 +1145,7 @@ void UpdateEdges(const TopoDS_Face& aF,
 //=======================================================================
 void UpdateShape(const TopoDS_Shape& aS,
                  const Standard_Real aTol,
-                 const BOPCol_IndexedMapOfShape& aMapToAvoid)
+                 const TopTools_IndexedMapOfShape& aMapToAvoid)
 {
   if (aMapToAvoid.Contains(aS)) {
     return;

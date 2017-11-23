@@ -15,9 +15,9 @@
 #ifndef BOPDS_VectorOfIndexRange_HeaderFile
 #define BOPDS_VectorOfIndexRange_HeaderFile
 
-#include <BOPCol_NCVector.hxx>
+#include <NCollection_Vector.hxx>
 #include <BOPDS_IndexRange.hxx>
 
-typedef BOPCol_NCVector<BOPDS_IndexRange> BOPDS_VectorOfIndexRange;
+typedef NCollection_Vector<BOPDS_IndexRange> BOPDS_VectorOfIndexRange;
 
 #endif

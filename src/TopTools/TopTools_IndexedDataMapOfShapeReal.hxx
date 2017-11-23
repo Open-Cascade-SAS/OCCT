@@ -1,7 +1,5 @@
-// Created on: 1996-12-16
-// Created by: Bruno DUMORTIER
-// Copyright (c) 1996-1999 Matra Datavision
-// Copyright (c) 1999-2014 OPEN CASCADE SAS
+// Created by: Eugeny MALTCHIKOV
+// Copyright (c) 2017 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -14,16 +12,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef BiTgte_DataMapOfShapeBox_HeaderFile
-#define BiTgte_DataMapOfShapeBox_HeaderFile
+#ifndef TopTools_IndexedDataMapOfShapeReal_HeaderFile
+#define TopTools_IndexedDataMapOfShapeReal_HeaderFile
 
+#include <NCollection_IndexedDataMap.hxx>
+#include <Standard_Real.hxx>
 #include <TopoDS_Shape.hxx>
-#include <Bnd_Box.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
-#include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<TopoDS_Shape,Bnd_Box,TopTools_ShapeMapHasher> BiTgte_DataMapOfShapeBox;
-typedef NCollection_DataMap<TopoDS_Shape,Bnd_Box,TopTools_ShapeMapHasher>::Iterator BiTgte_DataMapIteratorOfDataMapOfShapeBox;
-
+typedef NCollection_IndexedDataMap<TopoDS_Shape, Standard_Real, TopTools_ShapeMapHasher> TopTools_IndexedDataMapOfShapeReal;
 
 #endif

@@ -15,7 +15,7 @@
 
 #include <Bnd_Box.hxx>
 #include <BndLib_Add3dCurve.hxx>
-#include <BOPCol_MapOfInteger.hxx>
+#include <TColStd_MapOfInteger.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <ElCLib.hxx>
@@ -614,7 +614,7 @@ void IntTools_EdgeEdge::MergeSolutions(const IntTools_SequenceOfRanges& theRange
   Standard_Real aTi11, aTi12, aTi21, aTi22;
   Standard_Real aTj11, aTj12, aTj21, aTj22;
   Standard_Real aRes1, aRes2, dTR1, dTR2;
-  BOPCol_MapOfInteger aMI;
+  TColStd_MapOfInteger aMI;
   //
   aRes1 = Resolution(myCurve1.Curve().Curve(), 
                      myCurve1.GetType(), myResCoeff1, myTol);

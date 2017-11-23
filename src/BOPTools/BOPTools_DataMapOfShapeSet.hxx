@@ -15,12 +15,12 @@
 #ifndef BOPTools_DataMapOfShapeSet_HeaderFile
 #define BOPTools_DataMapOfShapeSet_HeaderFile
 
-#include <TopoDS_Shape.hxx>  
+#include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
-  
+#include <BOPTools_Set.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<TopoDS_Shape, BOPTools_Set, TopTools_ShapeMapHasher> BOPTools_DataMapOfShapeSet; 
-typedef BOPTools_DataMapOfShapeSet::Iterator BOPCol_DataMapIteratorOfDataMapOfShapeSet; 
+typedef NCollection_DataMap<TopoDS_Shape, BOPTools_Set, TopTools_ShapeMapHasher> BOPTools_DataMapOfShapeSet;
+typedef BOPTools_DataMapOfShapeSet::Iterator BOPTools_DataMapIteratorOfDataMapOfShapeSet;
 
 #endif

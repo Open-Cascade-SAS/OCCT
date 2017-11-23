@@ -22,18 +22,18 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
+#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
-#include <BOPCol_ListOfShape.hxx>
-#include <Standard_Boolean.hxx>
-#include <TopAbs_ShapeEnum.hxx>
 #include <BOPTools_ListOfCoupleOfShape.hxx>
 #include <BOPTools_ListOfConnexityBlock.hxx>
-#include <BOPCol_IndexedDataMapOfShapeListOfShape.hxx>
-#include <BOPCol_ListOfListOfShape.hxx>
+#include <NCollection_BaseAllocator.hxx>
 #include <TopAbs_State.hxx>
-#include <BOPCol_IndexedMapOfShape.hxx>
-#include <BOPCol_BaseAllocator.hxx>
+#include <TopAbs_ShapeEnum.hxx>
+#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
+#include <TopTools_IndexedMapOfShape.hxx>
+#include <TopTools_ListOfListOfShape.hxx>
+#include <TopTools_ListOfShape.hxx>
 #include <Precision.hxx>
 class TopoDS_Vertex;
 class gp_Pnt;
@@ -60,7 +60,7 @@ public:
                                                      const TopoDS_Vertex& aV2, 
                                                      const Standard_Real theFuzz = Precision::Confusion());
   
-  Standard_EXPORT static void MakeVertex (const BOPCol_ListOfShape& aLV, TopoDS_Vertex& aV);
+  Standard_EXPORT static void MakeVertex (const TopTools_ListOfShape& aLV, TopoDS_Vertex& aV);
   
   Standard_EXPORT static void MakeEdge (const IntTools_Curve& theCurve, const TopoDS_Vertex& theV1, const Standard_Real theT1, const TopoDS_Vertex& theV2, const Standard_Real theT2, const Standard_Real theTolR3D, TopoDS_Edge& theE);
   
@@ -134,14 +134,14 @@ public:
   //!  * 0 state is not IN
   //!  * 1 state is IN
   //!  * 2 state can not be found by the method of angles
-  Standard_EXPORT static Standard_Integer IsInternalFace (const TopoDS_Face& theFace, const TopoDS_Edge& theEdge, BOPCol_ListOfShape& theLF, Handle(IntTools_Context)& theContext);
+  Standard_EXPORT static Standard_Integer IsInternalFace (const TopoDS_Face& theFace, const TopoDS_Edge& theEdge, TopTools_ListOfShape& theLF, Handle(IntTools_Context)& theContext);
   
   //! Returns True if the face theFace is inside the
   //! solid theSolid.
   //! theMEF - Map Edge/Faces for theSolid
   //! theTol - value of precision of computation
   //! theContext- cahed geometrical tools
-  Standard_EXPORT static Standard_Boolean IsInternalFace (const TopoDS_Face& theFace, const TopoDS_Solid& theSolid, BOPCol_IndexedDataMapOfShapeListOfShape& theMEF, const Standard_Real theTol, Handle(IntTools_Context)& theContext);
+  Standard_EXPORT static Standard_Boolean IsInternalFace (const TopoDS_Face& theFace, const TopoDS_Solid& theSolid, TopTools_IndexedDataMapOfShapeListOfShape& theMEF, const Standard_Real theTol, Handle(IntTools_Context)& theContext);
   
   //! For the face theFace gets the edge theEdgeOnF
   //! that is the same as theEdge
@@ -176,7 +176,7 @@ public:
   //! theBounds - set of edges of theFace to avoid
   //! theContext- cahed geometrical tools
   //! Returns 3-D state.
-  Standard_EXPORT static TopAbs_State ComputeState (const TopoDS_Face& theFace, const TopoDS_Solid& theSolid, const Standard_Real theTol, BOPCol_IndexedMapOfShape& theBounds, Handle(IntTools_Context)& theContext);
+  Standard_EXPORT static TopAbs_State ComputeState (const TopoDS_Face& theFace, const TopoDS_Solid& theSolid, const Standard_Real theTol, TopTools_IndexedMapOfShape& theBounds, Handle(IntTools_Context)& theContext);
   
   //! Computes the 3-D state of the shape theShape
   //! toward solid theSolid.
@@ -189,7 +189,7 @@ public:
   //! theLSCB in terms of connexity by edges
   //! theMapAvoid - set of edges to avoid for
   //! the treatment
-  Standard_EXPORT static void MakeConnexityBlock (BOPCol_ListOfShape& theLS, BOPCol_IndexedMapOfShape& theMapAvoid, BOPCol_ListOfShape& theLSCB, const BOPCol_BaseAllocator& theAllocator);
+  Standard_EXPORT static void MakeConnexityBlock (TopTools_ListOfShape& theLS, TopTools_IndexedMapOfShape& theMapAvoid, TopTools_ListOfShape& theLSCB, const Handle(NCollection_BaseAllocator)& theAllocator);
 
   //! For the compound <theS> builds the blocks (compounds) of
   //! elements of type <theElementType> connected through the shapes
@@ -198,7 +198,7 @@ public:
   Standard_EXPORT static void MakeConnexityBlocks(const TopoDS_Shape& theS,
                                                   const TopAbs_ShapeEnum theConnectionType,
                                                   const TopAbs_ShapeEnum theElementType,
-                                                  BOPCol_ListOfShape& theLCB);
+                                                  TopTools_ListOfShape& theLCB);
 
   //! For the compound <theS> builds the blocks (compounds) of
   //! elements of type <theElementType> connected through the shapes
@@ -208,13 +208,13 @@ public:
   Standard_EXPORT static void MakeConnexityBlocks(const TopoDS_Shape& theS,
                                                   const TopAbs_ShapeEnum theConnectionType,
                                                   const TopAbs_ShapeEnum theElementType,
-                                                  BOPCol_ListOfListOfShape& theLCB,
-                                                  BOPCol_IndexedDataMapOfShapeListOfShape& theConnectionMap);
+                                                  TopTools_ListOfListOfShape& theLCB,
+                                                  TopTools_IndexedDataMapOfShapeListOfShape& theConnectionMap);
 
   //! Makes connexity blocks of elements of the given type with the given type of the
   //! connecting elements. The blocks are checked on regularity (multi-connectivity)
   //! and stored to the list of blocks <theLCB>.
-  Standard_EXPORT static void MakeConnexityBlocks(const BOPCol_ListOfShape& theLS,
+  Standard_EXPORT static void MakeConnexityBlocks(const TopTools_ListOfShape& theLS,
                                                   const TopAbs_ShapeEnum theConnectionType,
                                                   const TopAbs_ShapeEnum theElementType,
                                                   BOPTools_ListOfConnexityBlock& theLCB);
@@ -233,7 +233,7 @@ public:
   //! perform.
   Standard_EXPORT static void CorrectTolerances
               (const TopoDS_Shape& theS, 
-               const BOPCol_IndexedMapOfShape& theMapToAvoid,
+               const TopTools_IndexedMapOfShape& theMapToAvoid,
                const Standard_Real theTolMax = 0.0001,
                const Standard_Boolean theRunParallel = Standard_False);
 
@@ -241,7 +241,7 @@ public:
   //! in  terms of BRepCheck_InvalidCurveOnSurface.
   Standard_EXPORT static void CorrectCurveOnSurface
               (const TopoDS_Shape& theS,
-               const BOPCol_IndexedMapOfShape& theMapToAvoid,
+               const TopTools_IndexedMapOfShape& theMapToAvoid,
                const Standard_Real theTolMax = 0.0001,
                const Standard_Boolean theRunParallel = Standard_False);
 
@@ -249,7 +249,7 @@ public:
   //! in  terms of BRepCheck_InvalidPointOnCurve.
   Standard_EXPORT static void CorrectPointOnCurve
               (const TopoDS_Shape& theS,
-               const BOPCol_IndexedMapOfShape& theMapToAvoid,
+               const TopTools_IndexedMapOfShape& theMapToAvoid,
                const Standard_Real theTolMax = 0.0001,
                const Standard_Boolean theRunParallel = Standard_False);
 
@@ -331,7 +331,7 @@ public:
   //! Corrects tolerance values of the sub-shapes of the shape <theS> if needed.
   Standard_EXPORT static void CorrectShapeTolerances
               (const TopoDS_Shape& theS,
-               const BOPCol_IndexedMapOfShape& theMapToAvoid,
+               const TopTools_IndexedMapOfShape& theMapToAvoid,
                const Standard_Boolean theRunParallel = Standard_False);
 
   //! Retutns dimension of the shape <theS>.

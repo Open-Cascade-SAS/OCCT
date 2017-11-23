@@ -116,7 +116,6 @@
 //
 #include <BOPAlgo_MakerVolume.hxx>
 #include <BOPTools_AlgoTools.hxx>
-#include <BOPCol_ListOfShape.hxx>
 
 #include <stdio.h>
 // POP for NT
@@ -254,7 +253,7 @@ static
                         TopTools_ListOfShape& theLSF);
 
 static
-  Standard_Boolean BuildShellsCompleteInter(const BOPCol_ListOfShape& theLF,
+  Standard_Boolean BuildShellsCompleteInter(const TopTools_ListOfShape& theLF,
                                             BRepAlgo_Image& theImage,
                                             TopoDS_Shape& theShells);
 
@@ -2934,7 +2933,7 @@ void BRepOffset_MakeOffset::MakeShells ()
 #endif
   //
   // Prepare list of splits of the offset faces to make the shells
-  BOPCol_ListOfShape aLSF;
+  TopTools_ListOfShape aLSF;
   const TopTools_ListOfShape& R = myImageOffset.Roots();
   TopTools_ListIteratorOfListOfShape it(R);
   //
@@ -2982,7 +2981,7 @@ void BRepOffset_MakeOffset::MakeShells ()
   //
   if (!bDone) {
     BRepTools_Quilt Glue;
-    BOPCol_ListIteratorOfListOfShape aItLS(aLSF);
+    TopTools_ListIteratorOfListOfShape aItLS(aLSF);
     for (; aItLS.More(); aItLS.Next()) {
       Glue.Add(aItLS.Value());
     }
@@ -4080,7 +4079,7 @@ void GetEnlargedFaces(const TopoDS_Shape& theShape,
 //           In case there will be more than just one solid, it will be
 //           rebuilt using only outer faces.
 //=======================================================================
-Standard_Boolean BuildShellsCompleteInter(const BOPCol_ListOfShape& theLF,
+Standard_Boolean BuildShellsCompleteInter(const TopTools_ListOfShape& theLF,
                                           BRepAlgo_Image& theImage,
                                           TopoDS_Shape& theShells)
 {
@@ -4155,7 +4154,7 @@ Standard_Boolean BuildShellsCompleteInter(const BOPCol_ListOfShape& theLF,
   }
   //
   // get faces attached to only one solid
-  BOPCol_ListOfShape aLF(anAllocLoc);
+  TopTools_ListOfShape aLF(anAllocLoc);
   for (i = 1; i <= aNb; ++i) {
     const TopTools_ListOfShape& aLS = aDMFS(i);
     if (aLS.Extent() == 1) {

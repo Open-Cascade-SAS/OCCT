@@ -19,8 +19,6 @@
 
 #include <BOPAlgo_CheckerSI.hxx>
 #include <BOPAlgo_Alerts.hxx>
-#include <BOPCol_MapOfShape.hxx>
-#include <BOPCol_Parallel.hxx>
 #include <BOPDS_DS.hxx>
 #include <BOPDS_Interf.hxx>
 #include <BOPDS_IteratorSI.hxx>
@@ -32,8 +30,11 @@
 #include <BOPDS_VectorOfInterfVE.hxx>
 #include <BOPDS_VectorOfInterfVF.hxx>
 #include <BOPDS_VectorOfInterfVV.hxx>
-#include <BOPTools.hxx>
+#include <BRep_Tool.hxx>
+#include <gp_Torus.hxx>
+#include <TopExp.hxx>
 #include <BOPTools_AlgoTools.hxx>
+#include <BOPTools_Parallel.hxx>
 #include <BRepBuilderAPI_Copy.hxx>
 #include <IntTools_Context.hxx>
 #include <IntTools_Tools.hxx>
@@ -41,8 +42,7 @@
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
 #include <TopTools_ListOfShape.hxx>
-#include <BRep_Tool.hxx>
-#include <gp_Torus.hxx>
+#include <TopTools_MapOfShape.hxx>
 
 //=======================================================================
 //class    : BOPAlgo_FaceSelfIntersect
@@ -102,14 +102,14 @@ class BOPAlgo_FaceSelfIntersect :
 
 //=======================================================================
 
-typedef BOPCol_NCVector
+typedef NCollection_Vector
   <BOPAlgo_FaceSelfIntersect> BOPAlgo_VectorOfFaceSelfIntersect; 
 //
-typedef BOPCol_Functor 
+typedef BOPTools_Functor 
   <BOPAlgo_FaceSelfIntersect,
   BOPAlgo_VectorOfFaceSelfIntersect> BOPAlgo_FaceSelfIntersectFunctor;
 //
-typedef BOPCol_Cnt 
+typedef BOPTools_Cnt 
   <BOPAlgo_FaceSelfIntersectFunctor,
   BOPAlgo_VectorOfFaceSelfIntersect> BOPAlgo_FaceSelfIntersectCnt;
 
@@ -224,7 +224,7 @@ void BOPAlgo_CheckerSI::PostTreat()
 
   // 0
   BOPDS_VectorOfInterfVV& aVVs=myDS->InterfVV();
-  aNb=aVVs.Extent();
+  aNb=aVVs.Length();
   for (i=0; i!=aNb; ++i) {
     const BOPDS_InterfVV& aVV=aVVs(i);
     aVV.Indices(n1, n2);
@@ -237,7 +237,7 @@ void BOPAlgo_CheckerSI::PostTreat()
   //
   // 1
   BOPDS_VectorOfInterfVE& aVEs=myDS->InterfVE();
-  aNb=aVEs.Extent();
+  aNb=aVEs.Length();
   for (i=0; i!=aNb; ++i) {
     const BOPDS_InterfVE& aVE=aVEs(i);
     aVE.Indices(n1, n2);
@@ -250,7 +250,7 @@ void BOPAlgo_CheckerSI::PostTreat()
   //
   // 2
   BOPDS_VectorOfInterfEE& aEEs=myDS->InterfEE();
-  aNb=aEEs.Extent();
+  aNb=aEEs.Length();
   for (i=0; i!=aNb; ++i) {
     const BOPDS_InterfEE& aEE=aEEs(i);
     aEE.Indices(n1, n2);
@@ -263,7 +263,7 @@ void BOPAlgo_CheckerSI::PostTreat()
   //
   // 3
   BOPDS_VectorOfInterfVF& aVFs=myDS->InterfVF();
-  aNb=aVFs.Extent();
+  aNb=aVFs.Length();
   for (i=0; i!=aNb; ++i) {
     const BOPDS_InterfVF& aVF=aVFs(i);
     aVF.Indices(n1, n2);
@@ -276,7 +276,7 @@ void BOPAlgo_CheckerSI::PostTreat()
   //
   // 4
   BOPDS_VectorOfInterfEF& aEFs=myDS->InterfEF();
-  aNb=aEFs.Extent();
+  aNb=aEFs.Length();
   for (i=0; i!=aNb; ++i) {
     const BOPDS_InterfEF& aEF=aEFs(i);
     if (aEF.CommonPart().Type()==TopAbs_SHAPE) {
@@ -292,7 +292,7 @@ void BOPAlgo_CheckerSI::PostTreat()
   //
   // 5
   BOPDS_VectorOfInterfFF& aFFs=myDS->InterfFF();
-  aNb=aFFs.Extent();
+  aNb=aFFs.Length();
   for (i=0; i!=aNb; ++i) {
     Standard_Boolean bTangentFaces, bFlag;
     Standard_Integer aNbC, aNbP, j, iFound;
@@ -301,9 +301,9 @@ void BOPAlgo_CheckerSI::PostTreat()
     aFF.Indices(n1, n2);
     //
     bTangentFaces=aFF.TangentFaces();
-    aNbP=aFF.Points().Extent();
+    aNbP=aFF.Points().Length();
     const BOPDS_VectorOfCurve& aVC=aFF.Curves();
-    aNbC=aVC.Extent();
+    aNbC=aVC.Length();
     if (!aNbP && !aNbC && !bTangentFaces) {
       continue;
     }
@@ -344,7 +344,7 @@ void BOPAlgo_CheckerSI::PostTreat()
   //
   // 6
   BOPDS_VectorOfInterfVZ& aVZs=myDS->InterfVZ();
-  aNb=aVZs.Extent();
+  aNb=aVZs.Length();
   for (i=0; i!=aNb; ++i) {
     //
     const BOPDS_InterfVZ& aVZ=aVZs(i);
@@ -358,7 +358,7 @@ void BOPAlgo_CheckerSI::PostTreat()
   //
   // 7
   BOPDS_VectorOfInterfEZ& aEZs=myDS->InterfEZ();
-  aNb=aEZs.Extent();
+  aNb=aEZs.Length();
   for (i=0; i!=aNb; ++i) {
     //
     const BOPDS_InterfEZ& aEZ=aEZs(i);
@@ -369,7 +369,7 @@ void BOPAlgo_CheckerSI::PostTreat()
   //
   // 8
   BOPDS_VectorOfInterfFZ& aFZs=myDS->InterfFZ();
-  aNb=aFZs.Extent();
+  aNb=aFZs.Length();
   for (i=0; i!=aNb; ++i) {
     //
     const BOPDS_InterfFZ& aFZ=aFZs(i);
@@ -380,7 +380,7 @@ void BOPAlgo_CheckerSI::PostTreat()
   //
   // 9
   BOPDS_VectorOfInterfZZ& aZZs=myDS->InterfZZ();
-  aNb=aZZs.Extent();
+  aNb=aZZs.Length();
   for (i=0; i!=aNb; ++i) {
     //
     const BOPDS_InterfZZ& aZZ=aZZs(i);
@@ -436,7 +436,7 @@ void BOPAlgo_CheckerSI::CheckFaceSelfIntersection()
 
     Standard_Real aTolF = BRep_Tool::Tolerance(aF);
     
-    BOPAlgo_FaceSelfIntersect& aFaceSelfIntersect = aVFace.Append1();
+    BOPAlgo_FaceSelfIntersect& aFaceSelfIntersect = aVFace.Appended();
     //
     aFaceSelfIntersect.SetIndex(i);
     aFaceSelfIntersect.SetFace(aF);
@@ -445,7 +445,7 @@ void BOPAlgo_CheckerSI::CheckFaceSelfIntersection()
     aFaceSelfIntersect.SetProgressIndicator(myProgressIndicator);
   }
   
-  Standard_Integer aNbFace = aVFace.Extent();
+  Standard_Integer aNbFace = aVFace.Length();
   //======================================================
   BOPAlgo_FaceSelfIntersectCnt::Perform(myRunParallel, aVFace);
   //======================================================
