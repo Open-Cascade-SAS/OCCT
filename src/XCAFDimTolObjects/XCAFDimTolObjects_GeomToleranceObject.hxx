@@ -29,7 +29,9 @@
 #include <XCAFDimTolObjects_GeomToleranceModifiersSequence.hxx>
 #include <Standard_Transient.hxx>
 #include <XCAFDimTolObjects_GeomToleranceModif.hxx>
+#include <XCAFDimTolObjects_ToleranceZoneAffectedPlane.hxx>
 #include <gp_Ax2.hxx>
+#include <gp_Pln.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TCollection_HAsciiString.hxx>
 
@@ -168,6 +170,45 @@ public:
     return myPresentationName;
   }
 
+  // Returns true, if affected plane is specified.
+  Standard_EXPORT bool HasAffectedPlane() const
+  {
+    return (myAffectedPlaneType != XCAFDimTolObjects_ToleranceZoneAffectedPlane_None);
+  }
+
+  // Returns type of affected plane.
+  Standard_EXPORT XCAFDimTolObjects_ToleranceZoneAffectedPlane GetAffectedPlaneType() const
+  {
+    return myAffectedPlaneType;
+  }
+
+  // Sets affected plane type.
+  Standard_EXPORT void SetAffectedPlaneType(const XCAFDimTolObjects_ToleranceZoneAffectedPlane theType)
+  {
+    myAffectedPlaneType = theType;
+  }
+
+  //! Sets affected plane.
+  void SetAffectedPlane(const gp_Pln& thePlane)
+  {
+    myAffectedPlane = thePlane;
+  }
+
+  //! Sets affected plane.
+  void SetAffectedPlane(const gp_Pln& thePlane,
+                        const XCAFDimTolObjects_ToleranceZoneAffectedPlane theType)
+  {
+    myAffectedPlaneType = theType;
+    myAffectedPlane = thePlane;
+  }
+
+  //! Returns affected plane.
+  const gp_Pln& GetAffectedPlane() const
+  { 
+    return myAffectedPlane;
+  }
+
+
   DEFINE_STANDARD_RTTIEXT(XCAFDimTolObjects_GeomToleranceObject,Standard_Transient)
 
 private: 
@@ -190,6 +231,8 @@ private:
   Standard_Boolean myHasPntText;
   TopoDS_Shape myPresentation;
   Handle(TCollection_HAsciiString) myPresentationName;
+  XCAFDimTolObjects_ToleranceZoneAffectedPlane myAffectedPlaneType;
+  gp_Pln myAffectedPlane;
 
 };
 

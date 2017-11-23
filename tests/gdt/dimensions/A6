@@ -19,4 +19,4 @@ XSetDimensionDir D  0:1:4:1 1 1 0
 set c_value "6"
 set c_type "Location_Oriented"
 set c_plusminus "lower -0.001 upper 0.002"
-set c_dir "0.70710678118654757;0.70710678118654757;0"
+set c_dir "0.70710678118654746;0.70710678118654746;0"

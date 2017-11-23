@@ -18,6 +18,8 @@
 #include <Draw.hxx>
 #include <DBRep.hxx>
 #include <DDocStd.hxx>
+#include <DrawTrSurf.hxx>
+#include <Geom_Plane.hxx>
 
 #include <STEPCAFControl_GDTProperty.hxx>
 
@@ -2506,6 +2508,89 @@ static Standard_Integer getGDTPresentation (Draw_Interpretor& di, Standard_Integ
   return 0;
 }
 
+static Standard_Integer addGDTAffectedPlane(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+{
+  if (argc != 5) {
+    di << "Use: XSetGDTAffectedPlane Doc GDT_Label plane type[1 - intersection/ 2 - orientation]\n";
+    return 1;
+  }
+  Handle(TDocStd_Document) Doc;
+  DDocStd::GetDocument(argv[1], Doc);
+  if (Doc.IsNull()) { di << argv[1] << " is not a document\n"; return 1; }
+
+  TDF_Label aLabel;
+  TDF_Tool::Label(Doc->GetData(), argv[2], aLabel);
+  if (aLabel.IsNull())
+  {
+    di << "GDT " << argv[2] << " is absent in " << argv[1] << "\n";
+    return 1;
+  }
+
+  Handle(Geom_Surface) aSurf = DrawTrSurf::GetSurface(argv[3]);
+  Handle(Geom_Plane) aPlane = Handle(Geom_Plane)::DownCast(aSurf);
+  if (aPlane.IsNull())
+  {
+    di << "Invalid plane\n";
+    return 1;
+  }
+  Standard_Integer aType = Draw::Atoi(argv[4]);
+
+  // Geometric Tolerance
+  Handle(XCAFDoc_GeomTolerance) aGeomTolerance;
+  if (!aLabel.FindAttribute(XCAFDoc_GeomTolerance::GetID(), aGeomTolerance))
+  {
+    di << "Geometric tolerance is abcent on label" << argv[2] << "\n";
+    return 1;
+  }
+
+  Handle(XCAFDimTolObjects_GeomToleranceObject) anObj = aGeomTolerance->GetObject();
+  anObj->SetAffectedPlane(aPlane->Pln(), (XCAFDimTolObjects_ToleranceZoneAffectedPlane)aType);
+  aGeomTolerance->SetObject(anObj);
+  return 0;
+}
+
+static Standard_Integer getGDTAffectedPlane(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+{
+  if (argc != 4) {
+    di << "Use: XGetGDTAffectedPlane Doc GDT_Label Plane\n";
+    return 1;
+  }
+  Handle(TDocStd_Document) Doc;
+  DDocStd::GetDocument(argv[1], Doc);
+  if (Doc.IsNull()) { di << argv[1] << " is not a document\n"; return 1; }
+
+  TDF_Label aLabel;
+  TDF_Tool::Label(Doc->GetData(), argv[2], aLabel);
+  if (aLabel.IsNull())
+  {
+    di << "GDT " << argv[2] << " is absent in " << argv[1] << "\n";
+    return 1;
+  }
+
+  // Geometric Tolerance
+  Handle(XCAFDoc_GeomTolerance) aGeomTolerance;
+  Handle(Geom_Plane) aPlane;
+  if (aLabel.FindAttribute(XCAFDoc_GeomTolerance::GetID(), aGeomTolerance))
+  {
+    Handle(XCAFDimTolObjects_GeomToleranceObject) anObj = aGeomTolerance->GetObject();
+    if (anObj->GetAffectedPlaneType() == XCAFDimTolObjects_ToleranceZoneAffectedPlane_None)
+    {
+      di << "No affected plane\n";
+      return 0;
+    }
+    gp_Pln aPln = anObj->GetAffectedPlane();
+    aPlane = new Geom_Plane(aPln);
+    if (anObj->GetAffectedPlaneType() == XCAFDimTolObjects_ToleranceZoneAffectedPlane_Intersection)
+      di << "intersection plane\n";
+    if (anObj->GetAffectedPlaneType() == XCAFDimTolObjects_ToleranceZoneAffectedPlane_Orientation)
+      di << "orientation plane\n";
+    DrawTrSurf::Set(argv[3], aPlane);
+  }
+
+  return 0;
+}
+
+
 //=======================================================================
 //function : InitCommands
 //purpose  : 
@@ -2876,4 +2961,12 @@ void XDEDRAW_GDTs::InitCommands(Draw_Interpretor& di)
   di.Add ("XGetGDTPresentation","XGetGDTPresentation Doc GDT_Label Shape"
     "Returns Presentation into Shape",
     __FILE__, getGDTPresentation, g);
+
+  di.Add("XSetGDTAffectedPlane", "XSetGDTAffectedPlane Doc GDT_Label Plane type[1 - intersection/ 2 - orientation]"
+    "Set affectedP plane for geometric tolerance",
+    __FILE__, addGDTAffectedPlane, g);
+
+  di.Add("XGetGDTAffectedPlane", "XGetGDTAffectedPlane Doc GDT_Label Plane"
+    "Returns affected plane into Plane",
+    __FILE__, getGDTAffectedPlane, g);
 }

@@ -1,0 +1,46 @@
+puts "=========="
+puts "OCC29338"
+puts "=========="
+puts ""
+#########################################################
+# Add Planes for Tolerance zones in Geometric tolerances
+#########################################################
+pload ALL
+
+box b 1 1 1
+XNewDoc D
+XAddShape D b
+explode b f
+XAddGeomTolerance D b_1
+plane p 1 2 3 0 1 0
+XSetGDTAffectedPlane D 0:1:4:1 p 2
+SaveAs D ${imagedir}/bug29338.xbf
+Close D
+XOpen ${imagedir}/bug29338.xbf DD
+set type [XGetGDTAffectedPlane DD 0:1:4:1 plane]
+if {[lindex $type 0] != "orientation"} {
+  puts "Error: wrong affected plane type"
+}
+
+set res [dump plane]
+set check [split $res {:, }]
+if {[lindex $check 8] != 1} {
+  puts "Error: wrong affected plane"
+}
+if {[lindex $check 10] != 2} {
+  puts "Error: wrong affected plane"
+}
+if {[lindex $check 12] != 3} {
+  puts "Error: wrong affected plane"
+}
+if {[lindex $check 19] != 0} {
+  puts "Error: wrong affected plane"
+}
+if {[lindex $check 21] != 1} {
+  puts "Error: wrong affected plane"
+}
+if {[lindex $check 23] != 0} {
+  puts "Error: wrong affected plane"
+}
+Close DD
+file delete ${imagedir}/bug29338.xbf
