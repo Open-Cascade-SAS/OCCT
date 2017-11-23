@@ -19,11 +19,11 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TopoDS_Shape.hxx>
-#include <BOPCol_MapOfShape.hxx>
-#include <BOPCol_ListOfShape.hxx>
-#include <BOPCol_BaseAllocator.hxx>
+#include <NCollection_BaseAllocator.hxx>
 #include <Standard_Boolean.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_MapOfShape.hxx>
+#include <TopTools_ListOfShape.hxx>
 class TopoDS_Shape;
 class TopoDS_Edge;
 
@@ -39,7 +39,7 @@ public:
     BOPTools_EdgeSet();
 virtual ~BOPTools_EdgeSet();
   
-    BOPTools_EdgeSet(const BOPCol_BaseAllocator& theAllocator);
+    BOPTools_EdgeSet(const Handle(NCollection_BaseAllocator)& theAllocator);
   
     void SetShape (const TopoDS_Shape& theS);
   
@@ -47,13 +47,13 @@ virtual ~BOPTools_EdgeSet();
   
     void AddEdge (const TopoDS_Edge& theEdge);
   
-  Standard_EXPORT void AddEdges (const BOPCol_ListOfShape& theLS);
+  Standard_EXPORT void AddEdges (const TopTools_ListOfShape& theLS);
   
     void AddEdges (const TopoDS_Shape& theFace);
   
     void Clear();
   
-    void Get (BOPCol_ListOfShape& theLS) const;
+    void Get (TopTools_ListOfShape& theLS) const;
   
     Standard_Boolean Contains (const BOPTools_EdgeSet& theSet) const;
 
@@ -65,8 +65,8 @@ protected:
 
 
   TopoDS_Shape myShape;
-  BOPCol_MapOfShape myMap;
-  BOPCol_ListOfShape myEdges;
+  TopTools_MapOfShape myMap;
+  TopTools_ListOfShape myEdges;
 
 
 private:

@@ -346,7 +346,7 @@ Standard_Integer boptopoblend(Draw_Interpretor& di, Standard_Integer narg, const
   }
 
   BOPAlgo_PaveFiller theDSFiller;
-  BOPCol_ListOfShape aLS;
+  TopTools_ListOfShape aLS;
   aLS.Append(S1); 
   aLS.Append(S2); 
   theDSFiller.SetArguments(aLS);

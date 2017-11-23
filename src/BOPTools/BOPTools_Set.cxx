@@ -13,12 +13,12 @@
 // commercial license or contractual agreement.
 
 
-#include <BOPCol_MapOfShape.hxx>
 #include <BOPTools_Set.hxx>
 #include <BRep_Tool.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Shape.hxx>
+#include <TopTools_MapOfShape.hxx>
 
 static 
   Standard_Integer NormalizedIds(const Standard_Integer aId,
@@ -83,7 +83,7 @@ Standard_Integer BOPTools_Set::NbShapes()const
 //=======================================================================
 BOPTools_Set& BOPTools_Set::Assign(const BOPTools_Set& theOther)
 { 
-  BOPCol_ListIteratorOfListOfShape aIt;
+  TopTools_ListIteratorOfListOfShape aIt;
   //
   myShape=theOther.myShape;
   myNbShapes=theOther.myNbShapes;
@@ -131,8 +131,8 @@ Standard_Boolean BOPTools_Set::IsEqual
     return bRet;
   }
   //
-  BOPCol_MapOfShape aM1;
-  BOPCol_ListIteratorOfListOfShape aIt;
+  TopTools_MapOfShape aM1;
+  TopTools_ListIteratorOfListOfShape aIt;
   //
   aIt.Initialize(myShapes);
   for (; aIt.More(); aIt.Next()) {
@@ -198,7 +198,7 @@ void BOPTools_Set::Add(const TopoDS_Shape& theS,
     return;
   }
   // 
-  BOPCol_ListIteratorOfListOfShape aIt;
+  TopTools_ListIteratorOfListOfShape aIt;
   //
   aIt.Initialize(myShapes);
   for (; aIt.More(); aIt.Next()) {

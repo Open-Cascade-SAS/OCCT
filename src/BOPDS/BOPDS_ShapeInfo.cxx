@@ -14,7 +14,7 @@
 
 
 #include <Bnd_Box.hxx>
-#include <BOPCol_ListOfInteger.hxx>
+#include <TColStd_ListOfInteger.hxx>
 #include <BOPDS_ShapeInfo.hxx>
 #include <TopoDS_Shape.hxx>
 
@@ -29,7 +29,7 @@
   const TopAbs_ShapeEnum aTS = ShapeType();
   printf(" %s", TopAbs::ShapeTypeToString (aTS));
   printf(" {");
-  for (BOPCol_ListIteratorOfListOfInteger aIt(mySubShapes); aIt.More(); aIt.Next()) {
+  for (TColStd_ListOfInteger::Iterator aIt(mySubShapes); aIt.More(); aIt.Next()) {
     Standard_Integer n = aIt.Value();
     printf(" %d", n);
   }

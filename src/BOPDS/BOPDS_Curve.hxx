@@ -19,12 +19,12 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <BOPCol_BaseAllocator.hxx>
-#include <IntTools_Curve.hxx>
-#include <BOPDS_ListOfPaveBlock.hxx>
-#include <BOPCol_ListOfInteger.hxx>
 #include <Bnd_Box.hxx>
+#include <BOPDS_ListOfPaveBlock.hxx>
+#include <IntTools_Curve.hxx>
+#include <NCollection_BaseAllocator.hxx>
 #include <Standard_Boolean.hxx>
+#include <TColStd_ListOfInteger.hxx>
 class IntTools_Curve;
 class Bnd_Box;
 class BOPDS_PaveBlock;
@@ -48,7 +48,7 @@ virtual ~BOPDS_Curve();
 
   //! Contructor
   //! <theAllocator> - the allocator to manage the memory
-    BOPDS_Curve(const BOPCol_BaseAllocator& theAllocator);
+    BOPDS_Curve(const Handle(NCollection_BaseAllocator)& theAllocator);
   
 
   //! Modifier
@@ -104,13 +104,13 @@ virtual ~BOPDS_Curve();
   //! Selector
   //! Returns list of indices of technologic vertices
   //! of the curve
-    const BOPCol_ListOfInteger& TechnoVertices() const;
+    const TColStd_ListOfInteger& TechnoVertices() const;
   
 
   //! Selector/Modifier
   //! Returns list of indices of technologic vertices
   //! of the curve
-    BOPCol_ListOfInteger& ChangeTechnoVertices();
+    TColStd_ListOfInteger& ChangeTechnoVertices();
   
 
   //! Query
@@ -138,10 +138,10 @@ virtual ~BOPDS_Curve();
 
 protected:
 
-  BOPCol_BaseAllocator myAllocator;
+  Handle(NCollection_BaseAllocator) myAllocator;
   IntTools_Curve myCurve;
   BOPDS_ListOfPaveBlock myPaveBlocks;
-  BOPCol_ListOfInteger myTechnoVertices;
+  TColStd_ListOfInteger myTechnoVertices;
   Bnd_Box myBox;
   Standard_Real myTolerance;
 

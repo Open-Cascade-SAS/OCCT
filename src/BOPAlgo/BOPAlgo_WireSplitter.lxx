@@ -85,13 +85,13 @@ typedef NCollection_IndexedDataMap<TopoDS_Shape, \
 //function : MakeWire
 //purpose  : 
 //=======================================================================
-  inline void BOPAlgo_WireSplitter::MakeWire(BOPCol_ListOfShape& aLE, 
+  inline void BOPAlgo_WireSplitter::MakeWire(TopTools_ListOfShape& aLE, 
                                              TopoDS_Wire& aWire)
 {
   BRep_Builder aBB;
   aBB.MakeWire(aWire);
   //
-  BOPCol_ListIteratorOfListOfShape aIt(aLE);
+  TopTools_ListIteratorOfListOfShape aIt(aLE);
   for (; aIt.More(); aIt.Next()){
     aBB.Add(aWire, aIt.Value());
   }

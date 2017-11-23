@@ -1,5 +1,5 @@
-// Created by: Peter KURNEV
-// Copyright (c) 1999-2014 OPEN CASCADE SAS
+// Created by: Eugeny MALTCHIKOV
+// Copyright (c) 2017 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -12,15 +12,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef BOPCol_MapOfShape_HeaderFile
-#define BOPCol_MapOfShape_HeaderFile
+#ifndef BOPTools_BoxBndTree_HeaderFile
+#define BOPTools_BoxBndTree_HeaderFile
 
-#include <TopoDS_Shape.hxx>  
-#include <TopTools_ShapeMapHasher.hxx>
+#include <Bnd_Box.hxx>
+#include <BOPTools_BoxSelector.hxx>
+#include <NCollection_UBTree.hxx>
+#include <Standard_Integer.hxx>
 
-#include <NCollection_Map.hxx>   
+typedef NCollection_UBTree<Standard_Integer, Bnd_Box> BOPTools_BoxBndTree;
+typedef BOPTools_BoxSelector<Bnd_Box> BOPTools_BoxBndTreeSelector;
 
-typedef NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> BOPCol_MapOfShape; 
-typedef BOPCol_MapOfShape::Iterator BOPCol_MapIteratorOfMapOfShape;  
-
-#endif
+#endif 

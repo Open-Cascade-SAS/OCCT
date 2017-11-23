@@ -95,11 +95,11 @@ class BOPTest_Session {
     myBuilder=myBuilderDefault;
   };
   //
-  BOPCol_ListOfShape& Shapes() {
+  TopTools_ListOfShape& Shapes() {
     return myShapes;
   }
   //
-  BOPCol_ListOfShape& Tools() {
+  TopTools_ListOfShape& Tools() {
     return myTools;
   }
   //
@@ -162,8 +162,8 @@ protected:
   BOPAlgo_Builder* myBuilder;
   BOPAlgo_Builder* myBuilderDefault;
   //
-  BOPCol_ListOfShape myShapes;
-  BOPCol_ListOfShape myTools;
+  TopTools_ListOfShape myShapes;
+  TopTools_ListOfShape myTools;
   Standard_Boolean myRunParallel;
   Standard_Boolean myNonDestructive;
   Standard_Real myFuzzyValue;
@@ -287,7 +287,7 @@ BOPAlgo_Splitter& BOPTest_Objects::Splitter()
 //function : Shapes
 //purpose  : 
 //=======================================================================
-BOPCol_ListOfShape& BOPTest_Objects::Shapes()
+TopTools_ListOfShape& BOPTest_Objects::Shapes()
 {
   return GetSession().Shapes();
 }
@@ -295,7 +295,7 @@ BOPCol_ListOfShape& BOPTest_Objects::Shapes()
 //function : Tools
 //purpose  : 
 //=======================================================================
-BOPCol_ListOfShape& BOPTest_Objects::Tools()
+TopTools_ListOfShape& BOPTest_Objects::Tools()
 {
   return GetSession().Tools();
 }

@@ -19,7 +19,6 @@
 #include <BOPAlgo_Operation.hxx>
 #include <BOPAlgo_PaveFiller.hxx>
 #include <BOPAlgo_Section.hxx>
-#include <BOPCol_ListOfShape.hxx>
 #include <BOPDS_DS.hxx>
 #include <BOPTest.hxx>
 #include <BOPTest_Objects.hxx>
@@ -42,6 +41,7 @@
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
+#include <TopTools_ListOfShape.hxx>
 
 #include <stdio.h>
 //
@@ -122,7 +122,7 @@ Standard_Integer bop(Draw_Interpretor& di,
   Standard_Boolean bRunParallel, bNonDestructive;
   Standard_Real aTol;
   TopoDS_Shape aS1, aS2;
-  BOPCol_ListOfShape aLC;
+  TopTools_ListOfShape aLC;
   //
   if (n != 3) {
     di << " use bop s1 s2 \n";
@@ -233,7 +233,7 @@ Standard_Integer bopsmt(Draw_Interpretor& di,
   Standard_Integer aNb;
   BOPAlgo_BOP aBOP;
   //
-  const BOPCol_ListOfShape& aLC=pPF->Arguments();
+  const TopTools_ListOfShape& aLC=pPF->Arguments();
   aNb=aLC.Extent();
   if (aNb!=2) {
     Sprintf (buf, " wrong number of arguments %s\n", aNb);
@@ -295,7 +295,7 @@ Standard_Integer bopsection(Draw_Interpretor& di,
   Standard_Integer aNb;
   BOPAlgo_Section aBOP;
   //
-  const BOPCol_ListOfShape& aLC=pPF->Arguments();
+  const TopTools_ListOfShape& aLC=pPF->Arguments();
   aNb=aLC.Extent();
   if (aNb!=2) {
     Sprintf (buf, " wrong number of arguments %s\n", aNb);
@@ -462,7 +462,7 @@ Standard_Integer bsmt (Draw_Interpretor& di,
 {
   Standard_Boolean bRunParallel, bNonDestructive;
   TopoDS_Shape aS1, aS2;
-  BOPCol_ListOfShape aLC;
+  TopTools_ListOfShape aLC;
   Standard_Real aTol;
   //
   if (n != 4) {
@@ -756,7 +756,7 @@ Standard_Integer mkvolume(Draw_Interpretor& di, Standard_Integer n, const char**
   Standard_Integer i;
   Standard_Real aTol;
   TopoDS_Shape aS;
-  BOPCol_ListOfShape aLS;
+  TopTools_ListOfShape aLS;
   //
   aTol = BOPTest_Objects::FuzzyValue();
   bRunParallel = BOPTest_Objects::RunParallel();
@@ -793,8 +793,8 @@ Standard_Integer mkvolume(Draw_Interpretor& di, Standard_Integer n, const char**
   //
   // treat list of arguments for the case of compounds
   if (bToIntersect && bCompounds) {
-    BOPCol_ListOfShape aLSx;
-    BOPCol_ListIteratorOfListOfShape aItLS;
+    TopTools_ListOfShape aLSx;
+    TopTools_ListIteratorOfListOfShape aItLS;
     //
     aItLS.Initialize(aLS);
     for (; aItLS.More(); aItLS.Next()) {

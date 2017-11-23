@@ -115,7 +115,7 @@
 //function : TechnoVertices
 //purpose  : 
 //=======================================================================
-  inline const BOPCol_ListOfInteger& BOPDS_Curve::TechnoVertices()const
+  inline const TColStd_ListOfInteger& BOPDS_Curve::TechnoVertices()const
 {
   return myTechnoVertices;
 }
@@ -123,7 +123,7 @@
 //function : ChangeTechnoVertices
 //purpose  : 
 //=======================================================================
-  inline BOPCol_ListOfInteger& BOPDS_Curve::ChangeTechnoVertices()
+  inline TColStd_ListOfInteger& BOPDS_Curve::ChangeTechnoVertices()
 {
   return myTechnoVertices;
 }

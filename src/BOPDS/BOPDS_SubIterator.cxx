@@ -17,11 +17,11 @@
 
 #include <Bnd_Box.hxx>
 
-#include <BOPCol_BoxBndTree.hxx>
-
 #include <BOPDS_DS.hxx>
 #include <BOPDS_Pair.hxx>
 #include <BOPDS_MapOfPair.hxx>
+
+#include <BOPTools_BoxBndTree.hxx>
 
 #include <NCollection_UBTreeFiller.hxx>
 
@@ -118,10 +118,10 @@ void BOPDS_SubIterator::Initialize()
   void BOPDS_SubIterator::Intersect()
 {
   Standard_Integer i, j, iTi, iTj;
-  BOPCol_BoxBndTree aBBTree;
+  BOPTools_BoxBndTree aBBTree;
   NCollection_UBTreeFiller <Standard_Integer, Bnd_Box> aTreeFiller(aBBTree);
   //
-  BOPCol_ListIteratorOfListOfInteger aIt(*mySubSet1);
+  TColStd_ListIteratorOfListOfInteger aIt(*mySubSet1);
   for (; aIt.More(); aIt.Next()) {
     i = aIt.Value();
     //
@@ -142,7 +142,7 @@ void BOPDS_SubIterator::Initialize()
     const BOPDS_ShapeInfo& aSI = myDS->ShapeInfo(i);
     const Bnd_Box& aBoxEx = aSI.Box();
     //
-    BOPCol_BoxBndTreeSelector aSelector;
+    BOPTools_BoxBndTreeSelector aSelector;
     aSelector.SetBox(aBoxEx);
     Standard_Integer aNbSD = aBBTree.Select(aSelector);
     if (!aNbSD) {
@@ -151,8 +151,8 @@ void BOPDS_SubIterator::Initialize()
     //
     iTi = BOPDS_Tools::TypeToInteger(aSI.ShapeType());
     //
-    const BOPCol_ListOfInteger& aLI = aSelector.Indices();
-    BOPCol_ListIteratorOfListOfInteger aItLI(aLI);
+    const TColStd_ListOfInteger& aLI = aSelector.Indices();
+    TColStd_ListIteratorOfListOfInteger aItLI(aLI);
     for (; aItLI.More(); aItLI.Next()) {
       j = aItLI.Value();
       //

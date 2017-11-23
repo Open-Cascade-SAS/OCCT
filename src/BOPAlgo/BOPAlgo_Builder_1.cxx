@@ -18,9 +18,6 @@
 
 #include <BOPAlgo_Builder.hxx>
 #include <BOPAlgo_PaveFiller.hxx>
-#include <BOPCol_DataMapOfIntegerInteger.hxx>
-#include <BOPCol_ListOfShape.hxx>
-#include <BOPCol_MapOfShape.hxx>
 #include <BOPDS_DS.hxx>
 #include <BOPDS_ListOfPaveBlock.hxx>
 #include <BOPDS_PaveBlock.hxx>
@@ -31,8 +28,11 @@
 #include <BRep_Tool.hxx>
 #include <IntTools_Context.hxx>
 #include <TopAbs_ShapeEnum.hxx>
+#include <TColStd_DataMapOfIntegerInteger.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
+#include <TopTools_ListOfShape.hxx>
+#include <TopTools_MapOfShape.hxx>
 
 //=======================================================================
 //function : FillImagesVertices
@@ -41,9 +41,9 @@
 void BOPAlgo_Builder::FillImagesVertices()
 {
   Standard_Integer nV, nVSD;
-  BOPCol_DataMapIteratorOfDataMapOfIntegerInteger aIt;
+  TColStd_DataMapIteratorOfDataMapOfIntegerInteger aIt;
   //
-  const BOPCol_DataMapOfIntegerInteger& aMSDV=myDS->ShapesSD();
+  const TColStd_DataMapOfIntegerInteger& aMSDV=myDS->ShapesSD();
   aIt.Initialize(aMSDV);
   for (; aIt.More(); aIt.Next()) {
     nV=aIt.Key();
@@ -51,16 +51,16 @@ void BOPAlgo_Builder::FillImagesVertices()
     const TopoDS_Shape& aV=myDS->Shape(nV);
     const TopoDS_Shape& aVSD=myDS->Shape(nVSD);
     //
-    BOPCol_ListOfShape aLVSD(myAllocator);
+    TopTools_ListOfShape aLVSD(myAllocator);
     //
     aLVSD.Append(aVSD);
     myImages.Bind(aV, aLVSD);
     //
     myShapesSD.Bind(aV, aVSD);
     //
-    BOPCol_ListOfShape* pLOr = myOrigins.ChangeSeek(aVSD);
+    TopTools_ListOfShape* pLOr = myOrigins.ChangeSeek(aVSD);
     if (!pLOr) {
-      pLOr = myOrigins.Bound(aVSD, BOPCol_ListOfShape());
+      pLOr = myOrigins.Bound(aVSD, TopTools_ListOfShape());
     }
     pLOr->Append(aV);
   }
@@ -89,7 +89,7 @@ void BOPAlgo_Builder::FillImagesVertices()
     // Fill the images of the edge from the list of its pave blocks.
     // The small edges, having no pave blocks, will have the empty list
     // of images and, thus, will be avoided in the result.
-    BOPCol_ListOfShape *pLS = myImages.Bound(aE, BOPCol_ListOfShape());
+    TopTools_ListOfShape *pLS = myImages.Bound(aE, TopTools_ListOfShape());
     //
     BOPDS_ListIteratorOfListOfPaveBlock aItPB(aLPB);
     for (; aItPB.More(); aItPB.Next()) {
@@ -100,9 +100,9 @@ void BOPAlgo_Builder::FillImagesVertices()
       const TopoDS_Shape& aSpR = myDS->Shape(nSpR);
       pLS->Append(aSpR);
       //
-      BOPCol_ListOfShape* pLOr = myOrigins.ChangeSeek(aSpR);
+      TopTools_ListOfShape* pLOr = myOrigins.ChangeSeek(aSpR);
       if (!pLOr) {
-        pLOr = myOrigins.Bound(aSpR, BOPCol_ListOfShape());
+        pLOr = myOrigins.Bound(aSpR, TopTools_ListOfShape());
       }
       pLOr->Append(aE);
       //
@@ -142,8 +142,8 @@ void BOPAlgo_Builder::FillImagesVertices()
 {
   TopAbs_ShapeEnum aType;
   BRep_Builder aBB;
-  BOPCol_MapOfShape aM;
-  BOPCol_ListIteratorOfListOfShape aIt, aItIm;
+  TopTools_MapOfShape aM;
+  TopTools_ListIteratorOfListOfShape aIt, aItIm;
   //
   aIt.Initialize(myArguments);
   for (; aIt.More(); aIt.Next()) {
@@ -151,7 +151,7 @@ void BOPAlgo_Builder::FillImagesVertices()
     aType=aS.ShapeType();
     if (aType==theType) {
       if (myImages.IsBound(aS)){
-        const BOPCol_ListOfShape& aLSIm=myImages.Find(aS);
+        const TopTools_ListOfShape& aLSIm=myImages.Find(aS);
         aItIm.Initialize(aLSIm);
         for (; aItIm.More(); aItIm.Next()) {
           const TopoDS_Shape& aSIm=aItIm.Value();
@@ -175,7 +175,7 @@ void BOPAlgo_Builder::FillImagesVertices()
   void BOPAlgo_Builder::FillImagesContainers(const TopAbs_ShapeEnum theType)
 {
   Standard_Integer i, aNbS;
-  BOPCol_MapOfShape aMFP(100, myAllocator);
+  TopTools_MapOfShape aMFP(100, myAllocator);
   //
   aNbS=myDS->NbSourceShapes();
   for (i=0; i<aNbS; ++i) {
@@ -193,7 +193,7 @@ void BOPAlgo_Builder::FillImagesVertices()
   void BOPAlgo_Builder::FillImagesCompounds()
 {
   Standard_Integer i, aNbS;
-  BOPCol_MapOfShape aMFP(100, myAllocator);
+  TopTools_MapOfShape aMFP(100, myAllocator);
   //
   aNbS=myDS->NbSourceShapes();
   for (i=0; i<aNbS; ++i) {
@@ -214,7 +214,7 @@ void BOPAlgo_Builder::FillImagesVertices()
   Standard_Boolean bInterferred, bToReverse;
   TopoDS_Iterator aIt;
   BRep_Builder aBB;
-  BOPCol_ListIteratorOfListOfShape aItIm; 
+  TopTools_ListIteratorOfListOfShape aItIm; 
   //
   bInterferred=IsInterferred(theS);
   if (!bInterferred){
@@ -228,7 +228,7 @@ void BOPAlgo_Builder::FillImagesVertices()
   for (; aIt.More(); aIt.Next()) {
     const TopoDS_Shape& aSx=aIt.Value();
     if (myImages.IsBound(aSx)) {
-      const BOPCol_ListOfShape& aLFIm=myImages.Find(aSx);
+      const TopTools_ListOfShape& aLFIm=myImages.Find(aSx);
       aItIm.Initialize(aLFIm);
       for (; aItIm.More(); aItIm.Next()) {
         TopoDS_Shape aSxIm=aItIm.Value();
@@ -247,7 +247,7 @@ void BOPAlgo_Builder::FillImagesVertices()
   //
   aCIm.Closed(BRep_Tool::IsClosed(aCIm));
   //
-  BOPCol_ListOfShape aLSIm(myAllocator);
+  TopTools_ListOfShape aLSIm(myAllocator);
   aLSIm.Append(aCIm);
   myImages.Bind(theS, aLSIm); 
 }
@@ -256,13 +256,13 @@ void BOPAlgo_Builder::FillImagesVertices()
 //purpose  : 
 //=======================================================================
   void BOPAlgo_Builder::FillImagesCompound(const TopoDS_Shape& theS,
-                                           BOPCol_MapOfShape& theMFP)
+                                           TopTools_MapOfShape& theMFP)
 { 
   Standard_Boolean bInterferred;
   TopAbs_Orientation aOrX;
   TopoDS_Iterator aIt;
   BRep_Builder aBB;
-  BOPCol_ListIteratorOfListOfShape aItIm; 
+  TopTools_ListIteratorOfListOfShape aItIm; 
   //
   if (!theMFP.Add(theS)) {
     return;
@@ -291,7 +291,7 @@ void BOPAlgo_Builder::FillImagesVertices()
     const TopoDS_Shape& aSX=aIt.Value();
     aOrX=aSX.Orientation();
     if (myImages.IsBound(aSX)) {
-      const BOPCol_ListOfShape& aLFIm=myImages.Find(aSX);
+      const TopTools_ListOfShape& aLFIm=myImages.Find(aSX);
       aItIm.Initialize(aLFIm);
       for (; aItIm.More(); aItIm.Next()) {
         TopoDS_Shape aSXIm=aItIm.Value();
@@ -304,7 +304,7 @@ void BOPAlgo_Builder::FillImagesVertices()
     }
   }
   //
-  BOPCol_ListOfShape aLSIm(myAllocator);
+  TopTools_ListOfShape aLSIm(myAllocator);
   aLSIm.Append(aCIm);
   myImages.Bind(theS, aLSIm); 
 }

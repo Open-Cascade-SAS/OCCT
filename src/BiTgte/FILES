@@ -5,8 +5,6 @@ BiTgte_CurveOnEdge.cxx
 BiTgte_CurveOnEdge.hxx
 BiTgte_CurveOnVertex.cxx
 BiTgte_CurveOnVertex.hxx
-BiTgte_DataMapIteratorOfDataMapOfShapeBox.hxx
-BiTgte_DataMapOfShapeBox.hxx
 BiTgte_HCurveOnEdge.hxx
 BiTgte_HCurveOnEdge_0.cxx
 BiTgte_HCurveOnVertex.hxx

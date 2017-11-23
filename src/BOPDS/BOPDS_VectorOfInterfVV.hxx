@@ -15,9 +15,9 @@
 #ifndef BOPDS_VectorOfInterfVV_HeaderFile
 #define BOPDS_VectorOfInterfVV_HeaderFile
 
-#include <BOPCol_NCVector.hxx>
+#include <NCollection_Vector.hxx>
 #include <BOPDS_Interf.hxx>
 
-typedef BOPCol_NCVector<BOPDS_InterfVV> BOPDS_VectorOfInterfVV;
+typedef NCollection_Vector<BOPDS_InterfVV> BOPDS_VectorOfInterfVV;
 
 #endif

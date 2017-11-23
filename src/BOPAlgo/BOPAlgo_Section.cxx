@@ -13,15 +13,10 @@
 // commercial license or contractual agreement.
 
 
-#include <BOPAlgo_BuilderSolid.hxx>
-#include <BOPAlgo_PaveFiller.hxx>
 #include <BOPAlgo_Section.hxx>
 #include <BOPAlgo_Alerts.hxx>
-#include <BOPCol_DataMapOfShapeShape.hxx>
-#include <BOPCol_IndexedDataMapOfShapeListOfShape.hxx>
-#include <BOPCol_IndexedMapOfShape.hxx>
-#include <BOPCol_ListOfShape.hxx>
-#include <BOPCol_MapOfShape.hxx>
+#include <BOPAlgo_BuilderSolid.hxx>
+#include <BOPAlgo_PaveFiller.hxx>
 #include <BOPDS_CommonBlock.hxx>
 #include <BOPDS_DS.hxx>
 #include <BOPDS_FaceInfo.hxx>
@@ -30,20 +25,23 @@
 #include <BOPDS_PaveBlock.hxx>
 #include <BOPDS_VectorOfFaceInfo.hxx>
 #include <BOPDS_VectorOfListOfPaveBlock.hxx>
-#include <BOPTools.hxx>
 #include <BOPTools_AlgoTools.hxx>
 #include <BOPTools_AlgoTools3D.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
 #include <TopAbs_ShapeEnum.hxx>
+#include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
+#include <TopTools_DataMapOfShapeShape.hxx>
+#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
+#include <TopTools_IndexedMapOfShape.hxx>
+#include <TopTools_ListOfShape.hxx>
+#include <TopTools_MapOfShape.hxx>
 
-//
-//
 //=======================================================================
 //function : 
 //purpose  : 
@@ -158,12 +156,14 @@ void BOPAlgo_Section::BuildSection()
   TopoDS_Shape aRC, aRC1;
   BRep_Builder aBB;
   TopExp_Explorer aExp;
-  BOPCol_ListOfShape aLSA, aLS;
-  BOPCol_ListIteratorOfListOfShape aIt, aItIm, aItLS;
-  BOPCol_IndexedDataMapOfShapeInteger aMSI(100, myAllocator);
-  BOPCol_IndexedMapOfShape aMS(100, myAllocator);
-  BOPCol_MapOfShape aMFence(100, myAllocator);
-  BOPCol_MapIteratorOfMapOfInteger aItMI; 
+  TopTools_ListOfShape aLSA, aLS;
+  TopTools_ListIteratorOfListOfShape aIt, aItIm, aItLS;
+  NCollection_IndexedDataMap<TopoDS_Shape,
+                             Standard_Integer,
+                             TopTools_ShapeMapHasher> aMSI(100, myAllocator);
+  TopTools_IndexedMapOfShape aMS(100, myAllocator);
+  TopTools_MapOfShape aMFence(100, myAllocator);
+  TColStd_MapIteratorOfMapOfInteger aItMI; 
   BOPDS_ListIteratorOfListOfPaveBlock aItPB;
   //
   GetReport()->Clear();
@@ -181,7 +181,7 @@ void BOPAlgo_Section::BuildSection()
     const BOPDS_FaceInfo& aFI=myDS->FaceInfo(i);
     //
     // 1.1 Vertices that are section vertices 
-    const BOPCol_MapOfInteger& aMVSc=aFI.VerticesSc();
+    const TColStd_MapOfInteger& aMVSc=aFI.VerticesSc();
     aItMI.Initialize(aMVSc);
     for(; aItMI.More(); aItMI.Next()) {
       nV=aItMI.Key();
@@ -190,7 +190,7 @@ void BOPAlgo_Section::BuildSection()
     }
     //
     // 1.2 Vertices that are in a face 
-    const BOPCol_MapOfInteger& aMI=aFI.VerticesIn();
+    const TColStd_MapOfInteger& aMI=aFI.VerticesIn();
     aItMI.Initialize(aMI);
     for(; aItMI.More(); aItMI.Next()) {
       nV=aItMI.Key();
@@ -226,7 +226,7 @@ void BOPAlgo_Section::BuildSection()
       const Handle(BOPDS_PaveBlock)& aPB=aItPB.Value();
       Handle(BOPDS_CommonBlock) aCB=myDS->CommonBlock(aPB);
       if (!aCB.IsNull()) {
-        const BOPCol_ListOfInteger& aLF=aCB->Faces();
+        const TColStd_ListOfInteger& aLF=aCB->Faces();
         aNbF=aLF.Extent();
         if (aNbF) {
           const Handle(BOPDS_PaveBlock)& aPBR=aCB->PaveBlock1();
@@ -280,17 +280,17 @@ void BOPAlgo_Section::BuildSection()
       const TopoDS_Shape& aS=aItLS.Value();
       //
       if (myImages.IsBound(aS)){
-        const BOPCol_ListOfShape& aLSIm=myImages.Find(aS);
+        const TopTools_ListOfShape& aLSIm=myImages.Find(aS);
         aItIm.Initialize(aLSIm);
         for (; aItIm.More(); aItIm.Next()) {
           const TopoDS_Shape& aSIm=aItIm.Value();
-          BOPTools::MapShapes(aSIm, TopAbs_VERTEX, aMS);
-          BOPTools::MapShapes(aSIm, TopAbs_EDGE  , aMS);
+          TopExp::MapShapes(aSIm, TopAbs_VERTEX, aMS);
+          TopExp::MapShapes(aSIm, TopAbs_EDGE  , aMS);
         }
       }// if (myImages.IsBound(aF)){
       else {
-        BOPTools::MapShapes(aS, TopAbs_VERTEX, aMS);
-        BOPTools::MapShapes(aS, TopAbs_EDGE  , aMS);
+        TopExp::MapShapes(aS, TopAbs_VERTEX, aMS);
+        TopExp::MapShapes(aS, TopAbs_EDGE  , aMS);
       }
     }//for (; aItLS.More(); aItLS.Next()) { 
     //
@@ -311,9 +311,9 @@ void BOPAlgo_Section::BuildSection()
   aMFence.Clear();
   //
   // 4. Build the result
-  BOPCol_IndexedDataMapOfShapeListOfShape aMVE(100, myAllocator);
+  TopTools_IndexedDataMapOfShapeListOfShape aMVE(100, myAllocator);
   // 
-  BOPTools::MapShapesAndAncestors(aRC1, 
+  TopExp::MapShapesAndAncestors(aRC1, 
                                   TopAbs_VERTEX, 
                                   TopAbs_EDGE, 
                                   aMVE);
@@ -323,7 +323,7 @@ void BOPAlgo_Section::BuildSection()
     const TopoDS_Shape& aV=aMSI.FindKey(i);
     const Standard_Integer& iCnt=aMSI.FindFromIndex(i);
     if (iCnt>1) {
-      BOPTools::MapShapesAndAncestors(aV, 
+      TopExp::MapShapesAndAncestors(aV, 
                                       TopAbs_VERTEX, 
                                       TopAbs_EDGE, 
                                       aMVE);
@@ -335,7 +335,7 @@ void BOPAlgo_Section::BuildSection()
   aNbMS=aMVE.Extent();
   for (i=1; i<=aNbMS; ++i) {
     const TopoDS_Shape& aV=aMVE.FindKey(i);
-    const BOPCol_ListOfShape& aLE=aMVE.FindFromIndex(i);
+    const TopTools_ListOfShape& aLE=aMVE.FindFromIndex(i);
     aNbLE=aLE.Extent();
     if (!aNbLE) {
       // alone vertices

@@ -22,10 +22,10 @@
 #include <BOPAlgo_PWireEdgeSet.hxx>
 #include <BOPTools_ListOfConnexityBlock.hxx>
 #include <BOPAlgo_Algo.hxx>
-#include <BOPCol_BaseAllocator.hxx>
-#include <BOPCol_ListOfShape.hxx>
 #include <BOPTools_ConnexityBlock.hxx>
 #include <IntTools_Context.hxx>
+#include <NCollection_BaseAllocator.hxx>
+#include <TopTools_ListOfShape.hxx>
 class BOPAlgo_WireEdgeSet;
 class TopoDS_Wire;
 class TopoDS_Face;
@@ -46,7 +46,7 @@ public:
   Standard_EXPORT BOPAlgo_WireSplitter();
   Standard_EXPORT virtual ~BOPAlgo_WireSplitter();
   
-  Standard_EXPORT BOPAlgo_WireSplitter(const BOPCol_BaseAllocator& theAllocator);
+  Standard_EXPORT BOPAlgo_WireSplitter(const Handle(NCollection_BaseAllocator)& theAllocator);
   
   Standard_EXPORT void SetWES (const BOPAlgo_WireEdgeSet& theWES);
   
@@ -60,7 +60,7 @@ public:
 
   Standard_EXPORT virtual void Perform() Standard_OVERRIDE;
   
-  static void MakeWire(BOPCol_ListOfShape& theLE, TopoDS_Wire& theW);
+  static void MakeWire(TopTools_ListOfShape& theLE, TopoDS_Wire& theW);
   
   Standard_EXPORT static void SplitBlock (const TopoDS_Face& theF,
                                           BOPTools_ConnexityBlock& theCB,

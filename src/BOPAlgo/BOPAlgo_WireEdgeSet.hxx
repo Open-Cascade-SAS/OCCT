@@ -22,9 +22,9 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
+#include <NCollection_BaseAllocator.hxx>
 #include <TopoDS_Face.hxx>
-#include <BOPCol_ListOfShape.hxx>
-#include <BOPCol_BaseAllocator.hxx>
+#include <TopTools_ListOfShape.hxx>
 class TopoDS_Face;
 class TopoDS_Shape;
 
@@ -40,7 +40,7 @@ public:
     BOPAlgo_WireEdgeSet();
  virtual ~BOPAlgo_WireEdgeSet();
   
-    BOPAlgo_WireEdgeSet(const BOPCol_BaseAllocator& theAllocator);
+    BOPAlgo_WireEdgeSet(const Handle(NCollection_BaseAllocator)& theAllocator);
   
     void Clear();
   
@@ -50,11 +50,11 @@ public:
   
     void AddStartElement (const TopoDS_Shape& sS);
   
-    const BOPCol_ListOfShape& StartElements() const;
+    const TopTools_ListOfShape& StartElements() const;
   
     void AddShape (const TopoDS_Shape& sS);
   
-    const BOPCol_ListOfShape& Shapes() const;
+    const TopTools_ListOfShape& Shapes() const;
 
 
 
@@ -64,8 +64,8 @@ protected:
 
 
   TopoDS_Face myFace;
-  BOPCol_ListOfShape myStartShapes;
-  BOPCol_ListOfShape myShapes;
+  TopTools_ListOfShape myStartShapes;
+  TopTools_ListOfShape myShapes;
 
 
 private:

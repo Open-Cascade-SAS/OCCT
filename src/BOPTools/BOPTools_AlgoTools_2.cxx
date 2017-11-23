@@ -36,7 +36,7 @@
 
 static
   void TreatCompound(const TopoDS_Shape& theC1, 
-                     BOPCol_ListOfShape& theLSX);
+                     TopTools_ListOfShape& theLSX);
 
 //=======================================================================
 // function: UpdateVertex
@@ -428,8 +428,8 @@ Standard_Integer BOPTools_AlgoTools::Dimension(const TopoDS_Shape& theS)
 {
   Standard_Integer i, iRet, iRx0 = 0, iRx = 0;
   TopAbs_ShapeEnum aTS;
-  BOPCol_ListOfShape aLS;
-  BOPCol_ListIteratorOfListOfShape aIt;
+  TopTools_ListOfShape aLS;
+  TopTools_ListIteratorOfListOfShape aIt;
   //
   aTS=theS.ShapeType();
   if (aTS!=TopAbs_COMPOUND) {
@@ -479,12 +479,12 @@ Standard_Integer BOPTools_AlgoTools::Dimension(const TopoDS_Shape& theS)
 //purpose  : 
 //=======================================================================
 void TreatCompound(const TopoDS_Shape& theC1, 
-                   BOPCol_ListOfShape& theLSX)
+                   TopTools_ListOfShape& theLSX)
 {
   Standard_Integer aNbC1;
   TopAbs_ShapeEnum aType;
-  BOPCol_ListOfShape aLC, aLC1;
-  BOPCol_ListIteratorOfListOfShape aIt, aIt1;
+  TopTools_ListOfShape aLC, aLC1;
+  TopTools_ListIteratorOfListOfShape aIt, aIt1;
   TopoDS_Iterator aItC;
   //
   aLC.Append (theC1);

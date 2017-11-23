@@ -14,8 +14,6 @@
 
 
 #include <Bnd_Box.hxx>
-#include <BOPCol_IndexedDataMapOfShapeListOfShape.hxx>
-#include <BOPCol_IndexedMapOfShape.hxx>
 #include <BOPTools_AlgoTools2D.hxx>
 #include <BOPTools_AlgoTools3D.hxx>
 #include <BRep_Builder.hxx>
@@ -62,9 +60,10 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
+#include <TopTools_IndexedMapOfShape.hxx>
 
 static void Add(const TopoDS_Shape& aS,
-                BOPCol_IndexedMapOfShape& myShapes, 
+                TopTools_IndexedMapOfShape& myShapes, 
                 Standard_Boolean& bHasGeometry);
 static 
   Standard_Boolean HasGeometry(const TopoDS_Shape& aS);
@@ -631,7 +630,7 @@ Standard_Boolean BOPTools_AlgoTools3D::IsEmptyShape
 {
   Standard_Boolean bHasGeometry=Standard_False;
   //
-  BOPCol_IndexedMapOfShape myShapes;
+  TopTools_IndexedMapOfShape myShapes;
   //
   Add(aS, myShapes, bHasGeometry);
 
@@ -642,7 +641,7 @@ Standard_Boolean BOPTools_AlgoTools3D::IsEmptyShape
 //purpose  : 
 //=======================================================================
 void Add(const TopoDS_Shape& aS,
-         BOPCol_IndexedMapOfShape& myShapes, 
+         TopTools_IndexedMapOfShape& myShapes, 
          Standard_Boolean& bHasGeometry)
 {
   Standard_Integer anIndex; 

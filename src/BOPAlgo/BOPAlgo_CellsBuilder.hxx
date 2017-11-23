@@ -26,11 +26,11 @@
 #include <TopTools_MapOfShape.hxx>
 #include <BOPAlgo_Builder.hxx>
 
-#include <BOPCol_ListOfShape.hxx>
-#include <BOPCol_IndexedDataMapOfShapeListOfShape.hxx>
-#include <BOPCol_DataMapOfIntegerListOfShape.hxx>
-#include <BOPCol_DataMapOfShapeInteger.hxx>
-#include <BOPCol_DataMapOfShapeShape.hxx>
+#include <TopTools_ListOfShape.hxx>
+#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
+#include <TopTools_DataMapOfIntegerListOfShape.hxx>
+#include <TopTools_DataMapOfShapeInteger.hxx>
+#include <TopTools_DataMapOfShapeShape.hxx>
 
 //!
 //! The algorithm is based on the General Fuse algorithm (GFA). The result of
@@ -112,7 +112,7 @@
 //! Examples:<br>
 //! 1. API<br>
 //! BOPAlgo_CellsBuilder aCBuilder;<br>
-//! BOPCol_ListOfShape aLS = ...; // arguments<br>
+//! TopTools_ListOfShape aLS = ...; // arguments<br>
 //! /* parallel or single mode (the default value is FALSE)*/<br>
 //! Standard_Boolean bRunParallel = Standard_False;<br>
 //! /* fuzzy option (default value is 0)*/<br>
@@ -131,8 +131,8 @@
 //! /* all split parts */<br>
 //! const TopoDS_Shape& aRes = aCBuilder.GetAllParts();<br>
 //! //<br>
-//! BOPCol_ListOfShape aLSToTake = ...; // parts of these arguments will be taken into result<br>
-//! BOPCol_ListOfShape aLSToAvoid = ...; // parts of these arguments will not be taken into result<br>
+//! TopTools_ListOfShape aLSToTake = ...; // parts of these arguments will be taken into result<br>
+//! TopTools_ListOfShape aLSToAvoid = ...; // parts of these arguments will not be taken into result<br>
 //! //<br>
 //! /* defines the material common for the cells, i.e. 
 //!    the boundaries between cells with the same material
@@ -202,8 +202,8 @@ class BOPAlgo_CellsBuilder : public BOPAlgo_Builder
   //! cells with the same material will be removed. Default value is 0.<br>
   //! Thus, to remove any boundary the value of this variable should not be equal to 0.<br>
   //! <theUpdate> parameter defines whether to remove boundaries now or not.
-  Standard_EXPORT void AddToResult(const BOPCol_ListOfShape& theLSToTake,
-                                   const BOPCol_ListOfShape& theLSToAvoid,
+  Standard_EXPORT void AddToResult(const TopTools_ListOfShape& theLSToTake,
+                                   const TopTools_ListOfShape& theLSToAvoid,
                                    const Standard_Integer theMaterial = 0,
                                    const Standard_Boolean theUpdate = Standard_False);
 
@@ -219,8 +219,8 @@ class BOPAlgo_CellsBuilder : public BOPAlgo_Builder
   //! <theLSToAvoid> defines the arguments which parts should not be removed from result.<br>
   //! To be removed from the result the part must be IN for all shapes from the list
   //! <theLSToTake> and must be OUT of all shapes from the list <theLSToAvoid>.
-  Standard_EXPORT void RemoveFromResult(const BOPCol_ListOfShape& theLSToTake,
-                                        const BOPCol_ListOfShape& theLSToAvoid);
+  Standard_EXPORT void RemoveFromResult(const TopTools_ListOfShape& theLSToTake,
+                                        const TopTools_ListOfShape& theLSToAvoid);
 
   //! Remove all parts from result.
   Standard_EXPORT void RemoveAllFromResult();
@@ -258,22 +258,22 @@ class BOPAlgo_CellsBuilder : public BOPAlgo_Builder
   Standard_EXPORT void IndexParts();
 
   //! Looking for the parts defined by two lists.
-  Standard_EXPORT void FindParts(const BOPCol_ListOfShape& theLSToTake,
-                                 const BOPCol_ListOfShape& theLSToAvoid,
-                                 BOPCol_ListOfShape& theParts);
+  Standard_EXPORT void FindParts(const TopTools_ListOfShape& theLSToTake,
+                                 const TopTools_ListOfShape& theLSToAvoid,
+                                 TopTools_ListOfShape& theParts);
 
   //! Removes internal boundaries between cells with the same material.<br>
   //! Returns TRUE if any internal boundaries have been removed.
-  Standard_EXPORT Standard_Boolean RemoveInternals(const BOPCol_ListOfShape& theLS,
-                                                   BOPCol_ListOfShape& theLSNew,
+  Standard_EXPORT Standard_Boolean RemoveInternals(const TopTools_ListOfShape& theLS,
+                                                   TopTools_ListOfShape& theLSNew,
                                                    const TopTools_MapOfShape& theMapKeepBnd = TopTools_MapOfShape());
 
   // fields
   TopoDS_Shape myAllParts;
-  BOPCol_IndexedDataMapOfShapeListOfShape myIndex;
-  BOPCol_DataMapOfIntegerListOfShape myMaterials;
-  BOPCol_DataMapOfShapeInteger myShapeMaterial;
-  BOPCol_DataMapOfShapeShape myMapModified;
+  TopTools_IndexedDataMapOfShapeListOfShape myIndex;
+  TopTools_DataMapOfIntegerListOfShape myMaterials;
+  TopTools_DataMapOfShapeInteger myShapeMaterial;
+  TopTools_DataMapOfShapeShape myMapModified;
 };
 
 #endif //_BOPAlgo_CellsBuilder_HeaderFile

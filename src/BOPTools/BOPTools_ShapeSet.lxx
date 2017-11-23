@@ -89,9 +89,9 @@
 //function : Add
 //purpose  : 
 //=======================================================================
-  inline void BOPTools_ShapeSet::Add(const BOPCol_ListOfShape& theLS)
+  inline void BOPTools_ShapeSet::Add(const TopTools_ListOfShape& theLS)
 {
-  BOPCol_ListIteratorOfListOfShape aIt;
+  TopTools_ListIteratorOfListOfShape aIt;
   //
   aIt.Init(theLS);
   for (; aIt.More(); aIt.Next()) {
@@ -113,9 +113,9 @@
 //function : AddEdges
 //purpose  : 
 //=======================================================================
-  inline void BOPTools_ShapeSet::AddEdges(const BOPCol_ListOfShape& theLS)
+  inline void BOPTools_ShapeSet::AddEdges(const TopTools_ListOfShape& theLS)
 {
-  BOPCol_ListIteratorOfListOfShape aIt;
+  TopTools_ListIteratorOfListOfShape aIt;
   //
   aIt.Initialize(theLS);
   for (; aIt.More(); aIt.Next()) {
@@ -139,9 +139,9 @@
 //function : Get 
 //purpose  : 
 //=======================================================================
-  inline void BOPTools_ShapeSet::Get(BOPCol_ListOfShape& theLS)const
+  inline void BOPTools_ShapeSet::Get(TopTools_ListOfShape& theLS)const
 {
-  BOPCol_MapIteratorOfMapOfOrientedShape aIt;
+  TopTools_MapIteratorOfMapOfOrientedShape aIt;
   //
   aIt.Initialize(myMap);
   for (; aIt.More(); aIt.Next()) {
@@ -156,7 +156,7 @@
   inline Standard_Boolean BOPTools_ShapeSet::Contains(const BOPTools_ShapeSet& theOther)const
 {
   Standard_Boolean bRet;
-  BOPCol_MapIteratorOfMapOfOrientedShape aIt;
+  TopTools_MapIteratorOfMapOfOrientedShape aIt;
   //
   aIt.Initialize(theOther.myMap);
   for (; aIt.More(); aIt.Next()) {
@@ -174,7 +174,7 @@
 //=======================================================================
   inline void BOPTools_ShapeSet::Subtract(const BOPTools_ShapeSet& theOther)
 {
-  BOPCol_MapIteratorOfMapOfOrientedShape aIt;
+  TopTools_MapIteratorOfMapOfOrientedShape aIt;
   //
   aIt.Initialize(theOther.myMap);
   for (; aIt.More(); aIt.Next()) {

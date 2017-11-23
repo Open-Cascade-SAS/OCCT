@@ -172,7 +172,7 @@ void BOPAlgo_PaveFiller::SetSectionAttribute
 //function : SetArguments
 //purpose  : 
 //=======================================================================
-void BOPAlgo_PaveFiller::SetArguments(const BOPCol_ListOfShape& theLS)
+void BOPAlgo_PaveFiller::SetArguments(const TopTools_ListOfShape& theLS)
 {
   myArguments=theLS;
 }
@@ -180,7 +180,7 @@ void BOPAlgo_PaveFiller::SetArguments(const BOPCol_ListOfShape& theLS)
 //function : Arguments
 //purpose  : 
 //=======================================================================
-const BOPCol_ListOfShape& BOPAlgo_PaveFiller::Arguments()const
+const TopTools_ListOfShape& BOPAlgo_PaveFiller::Arguments()const
 {
   return myArguments;
 }
@@ -195,7 +195,7 @@ void BOPAlgo_PaveFiller::Init()
     return;
   }
   //
-  BOPCol_ListIteratorOfListOfShape aIt(myArguments);
+  TopTools_ListIteratorOfListOfShape aIt(myArguments);
   for (; aIt.More(); aIt.Next()) {
     if (aIt.Value().IsNull()) {
       AddError (new BOPAlgo_AlertNullInputShapes);

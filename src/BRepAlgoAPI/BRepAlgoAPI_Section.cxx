@@ -363,13 +363,13 @@ Standard_Boolean HasAncestorFaces (const BOPAlgo_PPaveFiller& pPF,
   BOPDS_VectorOfInterfFF& aFFs=pDS->InterfFF();
   //
   //section edges
-  aNbFF=aFFs.Extent();
+  aNbFF=aFFs.Length();
   for (i = 0; i<aNbFF; ++i) {
     BOPDS_InterfFF& aFFi=aFFs(i);
     aFFi.Indices(nF1, nF2);
     //
     const BOPDS_VectorOfCurve& aVC=aFFi.Curves();
-    aNbVC=aVC.Extent();
+    aNbVC=aVC.Length();
     for (j=0; j<aNbVC; j++) {
       const BOPDS_Curve& aBC=aVC(j);
       //

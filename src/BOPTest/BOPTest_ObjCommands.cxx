@@ -72,7 +72,7 @@ Standard_Integer baddcompound (Draw_Interpretor& ,
   //
   aS=DBRep::Get(a[1]);
   //
-  BOPCol_ListOfShape& aLS=BOPTest_Objects::Shapes();
+  TopTools_ListOfShape& aLS=BOPTest_Objects::Shapes();
   aIt.Initialize(aS);
   for (; aIt.More(); aIt.Next()) {
     const TopoDS_Shape& aSx=aIt.Value();
@@ -99,7 +99,7 @@ Standard_Integer baddctools (Draw_Interpretor& ,
   //
   aS=DBRep::Get(a[1]);
   //
-  BOPCol_ListOfShape& aLT=BOPTest_Objects::Tools();
+  TopTools_ListOfShape& aLT=BOPTest_Objects::Tools();
   aIt.Initialize(aS);
   for (; aIt.More(); aIt.Next()) {
     const TopoDS_Shape& aSx=aIt.Value();
@@ -125,7 +125,7 @@ Standard_Integer baddobjects (Draw_Interpretor& ,
   Standard_Integer i;
   TopoDS_Shape aS;
   //
-  BOPCol_ListOfShape& aLS=BOPTest_Objects::Shapes();
+  TopTools_ListOfShape& aLS=BOPTest_Objects::Shapes();
   for (i = 1; i < n; ++i) {
     aS=DBRep::Get(a[i]);
     aLS.Append(aS);
@@ -145,7 +145,7 @@ Standard_Integer bclearobjects (Draw_Interpretor& ,
     printf(" use bclearobjects\n");
     return 0;
   }
-  BOPCol_ListOfShape& aLS=BOPTest_Objects::Shapes();
+  TopTools_ListOfShape& aLS=BOPTest_Objects::Shapes();
   aLS.Clear();
   //
   return 0;
@@ -166,7 +166,7 @@ Standard_Integer baddtools (Draw_Interpretor& ,
   Standard_Integer i;
   TopoDS_Shape aS;
   //
-  BOPCol_ListOfShape& aLS=BOPTest_Objects::Tools();
+  TopTools_ListOfShape& aLS=BOPTest_Objects::Tools();
   for (i = 1; i < n; ++i) {
     aS=DBRep::Get(a[i]);
     aLS.Append(aS);
@@ -186,7 +186,7 @@ Standard_Integer bcleartools (Draw_Interpretor& ,
     printf(" use bcleartools\n");
     return 0;
   }
-  BOPCol_ListOfShape& aLS=BOPTest_Objects::Tools();
+  TopTools_ListOfShape& aLS=BOPTest_Objects::Tools();
   aLS.Clear();
   //
   return 0;

@@ -15,6 +15,8 @@
 #ifndef BOPTools_CoupleOfShape_HeaderFile
 #define BOPTools_CoupleOfShape_HeaderFile
 
+#include <TopoDS_Shape.hxx>
+
 //=======================================================================
 //class : 
 //purpose  : 

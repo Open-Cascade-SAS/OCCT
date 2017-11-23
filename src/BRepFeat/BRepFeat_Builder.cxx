@@ -15,7 +15,6 @@
 
 
 #include <BOPAlgo_BuilderFace.hxx>
-#include <BOPCol_DataMapOfShapeListOfShape.hxx>
 #include <BOPDS_DS.hxx>
 #include <BOPDS_FaceInfo.hxx>
 #include <BOPDS_ListOfPave.hxx>
@@ -23,7 +22,6 @@
 #include <BOPDS_MapOfPaveBlock.hxx>
 #include <BOPDS_Pave.hxx>
 #include <BOPDS_ShapeInfo.hxx>
-#include <BOPTools.hxx>
 #include <BOPTools_AlgoTools.hxx>
 #include <BOPTools_AlgoTools2D.hxx>
 #include <BOPTools_AlgoTools3D.hxx>
@@ -35,11 +33,13 @@
 #include <Geom_Curve.hxx>
 #include <IntTools_Tools.hxx>
 #include <Precision.hxx>
+#include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopTools_DataMapOfShapeListOfShape.hxx>
 
 //=======================================================================
 //function : 
@@ -159,7 +159,7 @@
   TopoDS_Shape aF, aFOr;
   TopExp_Explorer aExp;
   //
-  BOPTools::MapShapes(thePart, myShapes);
+  TopExp::MapShapes(thePart, myShapes);
 }
 
 //=======================================================================
@@ -201,9 +201,9 @@
     return;
   }
   //
-  BOPCol_ListIteratorOfListOfShape aItIm;
+  TopTools_ListIteratorOfListOfShape aItIm;
   //
-  BOPCol_ListOfShape& aLS = myImages.ChangeFind(aArgs1);
+  TopTools_ListOfShape& aLS = myImages.ChangeFind(aArgs1);
   aItIm.Initialize(aLS);
   for (; aItIm.More(); aItIm.Next()) {
     const TopoDS_Shape& aS = aItIm.Value();
@@ -270,12 +270,12 @@
   TopoDS_Edge aSp;
   TopoDS_Shape aSx;
   TopExp_Explorer aExp, aExpE;
-  BOPCol_MapOfShape aME, aMESplit;
-  BOPCol_ListIteratorOfListOfShape aItIm;
+  TopTools_MapOfShape aME, aMESplit;
+  TopTools_ListIteratorOfListOfShape aItIm;
   BOPDS_MapIteratorOfMapOfPaveBlock aItMPB;
-  BOPCol_MapIteratorOfMapOfShape aItM;
+  TopTools_MapIteratorOfMapOfShape aItM;
   BOPTools_MapOfSet aMST;
-  BOPCol_ListOfShape aLE;
+  TopTools_ListOfShape aLE;
   //
   aItM.Initialize(myShapes);
   for (; aItM.More(); aItM.Next()) {
@@ -296,7 +296,7 @@
       const TopoDS_Shape& aS = aSI.Shape();
       //
       if (myImages.IsBound(aS)) {
-        BOPCol_ListOfShape& aLIm = myImages.ChangeFind(aS);
+        TopTools_ListOfShape& aLIm = myImages.ChangeFind(aS);
         aItIm.Initialize(aLIm);
         for (; aItIm.More(); ) {
           const TopoDS_Shape& aSIm = aItIm.Value();
@@ -338,12 +338,12 @@
       bIsDegenerated=BRep_Tool::Degenerated(aE);
       bIsClosed=BRep_Tool::IsClosed(aE, aF);
       if (myImages.IsBound(aE)) {
-        BOPCol_ListOfShape& aLEIm = myImages.ChangeFind(aE);
+        TopTools_ListOfShape& aLEIm = myImages.ChangeFind(aE);
         //
         bRem = Standard_False;
         bIm = Standard_False;
         aME.Clear();
-        BOPCol_ListOfShape aLEImNew;
+        TopTools_ListOfShape aLEImNew;
         //
         aItIm.Initialize(aLEIm);
         for (; aItIm.More(); aItIm.Next()) {
@@ -475,10 +475,10 @@
     
     aBF.Perform();
 
-    BOPCol_ListOfShape& aLFIm = myImages.ChangeFind(aF);
+    TopTools_ListOfShape& aLFIm = myImages.ChangeFind(aF);
     aLFIm.Clear();
 
-    const BOPCol_ListOfShape& aLFR=aBF.Areas();
+    const TopTools_ListOfShape& aLFR=aBF.Areas();
     aItIm.Initialize(aLFR);
     for (; aItIm.More(); aItIm.Next()) {
       TopoDS_Shape& aFR=aItIm.ChangeValue();
@@ -492,9 +492,9 @@
       aSx.Orientation(anOriF);
       aLFIm.Append(aSx);
       //
-      BOPCol_ListOfShape* pLOr = myOrigins.ChangeSeek(aSx);
+      TopTools_ListOfShape* pLOr = myOrigins.ChangeSeek(aSx);
       if (!pLOr) {
-        pLOr = myOrigins.Bound(aSx, BOPCol_ListOfShape());
+        pLOr = myOrigins.Bound(aSx, TopTools_ListOfShape());
       }
       pLOr->Append(aF);
       //
@@ -517,8 +517,8 @@
 //=======================================================================
   void BRepFeat_Builder::RebuildEdge(const TopoDS_Shape& theE,
                                      const TopoDS_Face& theF,
-                                     const BOPCol_MapOfShape& aME,
-                                     BOPCol_ListOfShape& aLIm)
+                                     const TopTools_MapOfShape& aME,
+                                     TopTools_ListOfShape& aLIm)
 {
   Standard_Integer nE, nSp, nV1, nV2, nE1, nV, nVx, nVSD;
   Standard_Integer nV11, nV21;
@@ -529,11 +529,11 @@
   BOPDS_ShapeInfo aSI;
   TopoDS_Vertex aV1, aV2;
   Handle(BOPDS_PaveBlock) aPBNew;
-  BOPCol_MapOfInteger aMI, aMAdd, aMV, aMVOr;
+  TColStd_MapOfInteger aMI, aMAdd, aMV, aMVOr;
   BOPDS_ListIteratorOfListOfPaveBlock aItPB;
-  BOPCol_ListIteratorOfListOfShape aIt;
-  BOPCol_ListIteratorOfListOfInteger aItLI;
-  BOPCol_MapIteratorOfMapOfShape aItM;
+  TopTools_ListIteratorOfListOfShape aIt;
+  TColStd_ListIteratorOfListOfInteger aItLI;
+  TopTools_MapIteratorOfMapOfShape aItM;
   BOPDS_MapOfPaveBlock aMPB;
   BOPDS_MapIteratorOfMapOfPaveBlock aItMPB;
   //
@@ -542,7 +542,7 @@
   //1. collect origin vertices to aMV map.
   nE = myDS->Index(theE);
   const BOPDS_ShapeInfo& aSIE = myDS->ShapeInfo(nE);
-  const BOPCol_ListOfInteger& aLS = aSIE.SubShapes();
+  const TColStd_ListOfInteger& aLS = aSIE.SubShapes();
   aItLI.Initialize(aLS);
   for(; aItLI.More(); aItLI.Next()) {
     nV = aItLI.Value();
@@ -668,16 +668,16 @@
   void BRepFeat_Builder::CheckSolidImages()
 {
   BOPTools_MapOfSet aMST;
-  BOPCol_ListOfShape aLSImNew;
-  BOPCol_MapOfShape aMS;
-  BOPCol_ListIteratorOfListOfShape aIt;
+  TopTools_ListOfShape aLSImNew;
+  TopTools_MapOfShape aMS;
+  TopTools_ListIteratorOfListOfShape aIt;
   TopExp_Explorer aExp, aExpF;
   Standard_Boolean bFlagSD;
   // 
   const TopoDS_Shape& aArgs0=myArguments.First();
   const TopoDS_Shape& aArgs1=myTools.First();
   //
-  const BOPCol_ListOfShape& aLSIm = myImages.Find(aArgs1);
+  const TopTools_ListOfShape& aLSIm = myImages.Find(aArgs1);
   aIt.Initialize(aLSIm);
   for(;aIt.More();aIt.Next()) {
     const TopoDS_Shape& aSolIm = aIt.Value();
@@ -691,7 +691,7 @@
   for(; aExp.More(); aExp.Next()) {
     const TopoDS_Shape& aSolid = aExp.Current();
     if (myImages.IsBound(aSolid)) {
-      BOPCol_ListOfShape& aLSImSol = myImages.ChangeFind(aSolid);
+      TopTools_ListOfShape& aLSImSol = myImages.ChangeFind(aSolid);
       aIt.Initialize(aLSImSol);
       for(;aIt.More();aIt.Next()) {
         const TopoDS_Shape& aSolIm = aIt.Value();
@@ -718,7 +718,7 @@
 //purpose  : 
 //=======================================================================
   void BRepFeat_Builder::FillRemoved(const TopoDS_Shape& S,  
-                                     BOPCol_MapOfShape& M)
+                                     TopTools_MapOfShape& M)
 {
   if (myShapes.Contains(S)) {
     return;
@@ -736,8 +736,8 @@
 //function : FillIn3DParts
 //purpose  : 
 //=======================================================================
-  void BRepFeat_Builder::FillIn3DParts(BOPCol_DataMapOfShapeListOfShape& theInParts,
-                                       BOPCol_DataMapOfShapeShape& theDraftSolids,
+  void BRepFeat_Builder::FillIn3DParts(TopTools_DataMapOfShapeListOfShape& theInParts,
+                                       TopTools_DataMapOfShapeShape& theDraftSolids,
                                        const Handle(NCollection_BaseAllocator)& theAllocator)
 {
   GetReport()->Clear();
@@ -750,16 +750,16 @@
   BRep_Builder aBB;
   TopoDS_Solid aSolidSp; 
   TopoDS_Face aFP;
-  BOPCol_ListIteratorOfListOfShape aItS, aItFP, aItEx;	
-  BOPCol_MapIteratorOfMapOfShape aItMS, aItMS1;
+  TopTools_ListIteratorOfListOfShape aItS, aItFP, aItEx;	
+  TopTools_MapIteratorOfMapOfShape aItMS, aItMS1;
   //
-  BOPCol_ListOfShape aLIF(theAllocator);
-  BOPCol_MapOfShape aMFDone(100, theAllocator);
-  BOPCol_MapOfShape aMSolids(100, theAllocator);
-  BOPCol_MapOfShape aMFaces(100, theAllocator);
-  BOPCol_MapOfShape aMFIN(100, theAllocator);
-  BOPCol_IndexedMapOfShape aMS(100, theAllocator);
-  BOPCol_IndexedDataMapOfShapeListOfShape aMEF(100, theAllocator);
+  TopTools_ListOfShape aLIF(theAllocator);
+  TopTools_MapOfShape aMFDone(100, theAllocator);
+  TopTools_MapOfShape aMSolids(100, theAllocator);
+  TopTools_MapOfShape aMFaces(100, theAllocator);
+  TopTools_MapOfShape aMFIN(100, theAllocator);
+  TopTools_IndexedMapOfShape aMS(100, theAllocator);
+  TopTools_IndexedDataMapOfShapeListOfShape aMEF(100, theAllocator);
   //
   theDraftSolids.Clear();
   //
@@ -778,7 +778,7 @@
       case TopAbs_FACE: {
         // all faces (originals or images)
         if (myImages.IsBound(aS)) {
-          const BOPCol_ListOfShape& aLS=myImages.Find(aS);
+          const TopTools_ListOfShape& aLS=myImages.Find(aS);
           aItS.Initialize(aLS);
           for (; aItS.More(); aItS.Next()) {
             const TopoDS_Shape& aFx=aItS.Value();
@@ -825,37 +825,37 @@
       if (myImages.IsBound(aShell)) {
         bHasImage=Standard_True;
         //
-        const BOPCol_ListOfShape& aLS=myImages.Find(aShell);
+        const TopTools_ListOfShape& aLS=myImages.Find(aShell);
         aItS.Initialize(aLS);
         for (; aItS.More(); aItS.Next()) {
           const TopoDS_Shape& aSx=aItS.Value();
           aMS.Add(aSx);
-          BOPTools::MapShapes(aSx, TopAbs_FACE, aMS);
-          BOPTools::MapShapes(aSx, TopAbs_EDGE, aMS);
-          BOPTools::MapShapesAndAncestors(aSx, TopAbs_EDGE, TopAbs_FACE, aMEF);
+          TopExp::MapShapes(aSx, TopAbs_FACE, aMS);
+          TopExp::MapShapes(aSx, TopAbs_EDGE, aMS);
+          TopExp::MapShapesAndAncestors(aSx, TopAbs_EDGE, TopAbs_FACE, aMEF);
         }
       }
       else {
         //aMS.Add(aShell);
-        BOPTools::MapShapes(aShell, TopAbs_FACE, aMS);
-        BOPTools::MapShapesAndAncestors(aShell, TopAbs_EDGE, TopAbs_FACE, aMEF);
+        TopExp::MapShapes(aShell, TopAbs_FACE, aMS);
+        TopExp::MapShapesAndAncestors(aShell, TopAbs_EDGE, TopAbs_FACE, aMEF);
       }
     }
     //
     // 2 all faces that are not from aSolid [ aLFP1 ]
-    BOPCol_IndexedDataMapOfShapeListOfShape aMEFP(100, theAllocator);
-    BOPCol_ListOfShape aLFP1(theAllocator);
-    BOPCol_ListOfShape aLFP(theAllocator);
-    BOPCol_ListOfShape aLCBF(theAllocator);
-    BOPCol_ListOfShape aLFIN(theAllocator);
-    BOPCol_ListOfShape aLEx(theAllocator);
+    TopTools_IndexedDataMapOfShapeListOfShape aMEFP(100, theAllocator);
+    TopTools_ListOfShape aLFP1(theAllocator);
+    TopTools_ListOfShape aLFP(theAllocator);
+    TopTools_ListOfShape aLCBF(theAllocator);
+    TopTools_ListOfShape aLFIN(theAllocator);
+    TopTools_ListOfShape aLEx(theAllocator);
     //
     // for all non-solid faces build EF map [ aMEFP ]
     aItMS1.Initialize(aMFaces);
     for (; aItMS1.More(); aItMS1.Next()) {
       const TopoDS_Shape& aFace=aItMS1.Value();
       if (!aMS.Contains(aFace)) {
-        BOPTools::MapShapesAndAncestors(aFace, TopAbs_EDGE, TopAbs_FACE, aMEFP);
+        TopExp::MapShapesAndAncestors(aFace, TopAbs_EDGE, TopAbs_FACE, aMEFP);
       }
     }
     //
@@ -868,7 +868,7 @@
       const TopoDS_Shape& aE=aMEFP.FindKey(j);
       //
       if (aMEF.Contains(aE)) { // !!
-        const BOPCol_ListOfShape& aLF=aMEFP(j);
+        const TopTools_ListOfShape& aLF=aMEFP(j);
         aItFP.Initialize(aLF);
         for (; aItFP.More(); aItFP.Next()) {
           const TopoDS_Shape& aF=aItFP.Value();
@@ -885,7 +885,7 @@
     aItEx.Initialize(aLEx);
     for (; aItEx.More(); aItEx.Next()) {
       const TopoDS_Shape& aE=aItEx.Value();
-      const BOPCol_ListOfShape& aLF=aMEFP.FindFromKey(aE);
+      const TopTools_ListOfShape& aLF=aMEFP.FindFromKey(aE);
       aItFP.Initialize(aLF);
       for (; aItFP.More(); aItFP.Next()) {
         const TopoDS_Shape& aF=aItFP.Value();

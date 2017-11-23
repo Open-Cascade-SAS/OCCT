@@ -1453,3 +1453,51 @@ The following public method has been removed:
 
 The methods BuildPCurveForEdgeOnPlane and BuildPCurveForEdgesOnPlane have been moved from the class BOPTools_AlgoTools2D
 to the more lower level class BRepLib.
+
+@subsection upgrade_721_removed Removed features
+
+The following obsolete features have been removed:
+* The package BOPCol has been fully removed:
+  - *BOPCol_BaseAllocator* is replaced with *Handle(NCollection_BaseAllocator)*;
+  - *BOPCol_BoxBndTree* is replaced with *BOPTools_BoxBndTree*;
+  - *BOPCol_Box2DBndTree* is removed as unused;
+  - *BOPCol_DataMapOfIntegerInteger* is replaced with *TColStd_DataMapOfIntegerInteger*;
+  - *BOPCol_DataMapOfIntegerListOfInteger* is replaced with *TColStd_DataMapOfIntegerListOfInteger*;
+  - *BOPCol_DataMapOfIntegerListOfShape* is replaced with *TopTools_DataMapOfIntegerListOfShape*;
+  - *BOPCol_DataMapOfIntegerMapOfInteger.hxx* is removed as unused;
+  - *BOPCol_DataMapOfIntegerReal* is replaced with *TColStd_DataMapOfIntegerReal*;
+  - *BOPCol_DataMapOfIntegerShape* is replaced with *TopTools_DataMapOfIntegerShape*;
+  - *BOPCol_DataMapOfShapeBox* is replaced with *TopTools_DataMapOfShapeBox*;
+  - *BOPCol_DataMapOfShapeInteger* is replaced with *TopTools_DataMapOfShapeInteger*;
+  - *BOPCol_DataMapOfShapeListOfShape* is replaced with *TopTools_DataMapOfShapeListOfShape*;
+  - *BOPCol_DataMapOfShapeReal* is replaced with *TopTools_DataMapOfShapeReal*;
+  - *BOPCol_DataMapOfShapeShape* is replaced with *TopTools_DataMapOfShapeShape*;
+  - *BOPCol_DataMapOfTransientAddress* is removed as unused;
+  - *BOPCol_IndexedDataMapOfIntegerListOfInteger* is removed as unused;
+  - *BOPCol_IndexedDataMapOfShapeBox* is removed as unused;
+  - *BOPCol_IndexedDataMapOfShapeInteger* is removed as unused;
+  - *BOPCol_IndexedDataMapOfShapeListOfShape* is replaced with *TopTools_IndexedDataMapOfShapeListOfShape*;
+  - *BOPCol_IndexedDataMapOfShapeReal* is removed as unused;
+  - *BOPCol_IndexedDataMapOfShapeShape* is replaced with *TopTools_IndexedDataMapOfShapeShape*;
+  - *BOPCol_IndexedMapOfInteger* is replaced with *TColStd_IndexedMapOfInteger*;
+  - *BOPCol_IndexedMapOfOrientedShape* is replaced with *TopTools_IndexedMapOfOrientedShape*;
+  - *BOPCol_IndexedMapOfShape* is replaced with *TopTools_IndexedMapOfShape*;
+  - *BOPCol_ListOfInteger* is replaced with *TColStd_ListOfInteger*;
+  - *BOPCol_ListOfListOfShape* is replaced with *TopTools_ListOfListOfShape*;
+  - *BOPCol_ListOfShape* is replaced with *TopTools_ListOfShape*;
+  - *BOPCol_MapOfInteger* is replaced with *TColStd_MapOfInteger*;
+  - *BOPCol_MapOfOrientedShape* is replaced with *TopTools_MapOfOrientedShape*;
+  - *BOPCol_MapOfShape* is replaced with *TopTools_MapOfShape*;
+  - *BOPCol_PListOfInteger* is removed as unused;
+  - *BOPCol_PInteger* is removed as unused
+  - *BOPCol_SequenceOfPnt2d* is replaced with *TColgp_SequenceOfPnt2d*;
+  - *BOPCol_SequenceOfReal* is replaced with *TColStd_SequenceOfReal*;
+  - *BOPCol_SequenceOfShape* is replaced with *TopTools_SequenceOfShape*;
+  - *BOPCol_Parallel* is replaced with *BOPTools_Parallel*;
+  - *BOPCol_NCVector* is replaced with *NCollection_Vector*;
+* The class *BOPDS_PassKey* and containers for it have been removed as unused.
+* The unused containers from *IntTools* package have been removed:
+  - *IntTools_DataMapOfShapeAddress* is removed as unused;
+  - *IntTools_IndexedDataMapOfTransientAddress* is removed as unused;
+* The container *BiTgte_DataMapOfShapeBox* is replaced with *TopTools_DataMapOfShapeBox*;
+* The class *BOPTools* has been removed as duplicate of the class *TopExp*;

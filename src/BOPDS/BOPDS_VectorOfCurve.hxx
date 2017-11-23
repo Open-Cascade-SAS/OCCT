@@ -15,9 +15,9 @@
 #ifndef BOPDS_VectorOfCurve_HeaderFile
 #define BOPDS_VectorOfCurve_HeaderFile
 
-#include <BOPCol_NCVector.hxx>
+#include <NCollection_Vector.hxx>
 #include <BOPDS_Curve.hxx>
 
-typedef BOPCol_NCVector<BOPDS_Curve> BOPDS_VectorOfCurve;
+typedef NCollection_Vector<BOPDS_Curve> BOPDS_VectorOfCurve;
 
 #endif

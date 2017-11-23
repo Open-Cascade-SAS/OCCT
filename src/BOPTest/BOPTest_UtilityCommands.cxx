@@ -215,7 +215,7 @@ static Standard_Integer BuildPcurvesOnPlane(Draw_Interpretor& theDI,
     BRepAdaptor_Surface aS(aF, Standard_False);
     if (aS.GetType() == GeomAbs_Plane)
     {
-      BOPCol_ListOfShape aLE;
+      TopTools_ListOfShape aLE;
       TopExp_Explorer exp1(aF, TopAbs_EDGE);
       for (; exp1.More(); exp1.Next())
         aLE.Append(exp1.Current());

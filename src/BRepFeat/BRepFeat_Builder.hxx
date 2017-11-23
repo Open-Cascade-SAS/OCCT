@@ -20,15 +20,14 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <BOPCol_MapOfShape.hxx>
-#include <Standard_Integer.hxx>
 #include <BOPAlgo_BOP.hxx>
+#include <NCollection_BaseAllocator.hxx>
 #include <Standard_Boolean.hxx>
+#include <Standard_Integer.hxx>
+#include <TopTools_DataMapOfShapeListOfShape.hxx>
+#include <TopTools_DataMapOfShapeShape.hxx>
 #include <TopTools_ListOfShape.hxx>
-#include <BOPCol_ListOfShape.hxx>
-#include <BOPCol_DataMapOfShapeListOfShape.hxx>
-#include <BOPCol_DataMapOfShapeShape.hxx>
-#include <BOPCol_BaseAllocator.hxx>
+#include <TopTools_MapOfShape.hxx>
 class TopoDS_Shape;
 class TopoDS_Face;
 
@@ -96,7 +95,7 @@ Standard_EXPORT virtual ~BRepFeat_Builder();
   Standard_EXPORT void RebuildFaces();
   
   //! Rebuilds edges in accordance with the kept parts of the tool.
-  Standard_EXPORT void RebuildEdge (const TopoDS_Shape& theE, const TopoDS_Face& theF, const BOPCol_MapOfShape& theME, BOPCol_ListOfShape& aLEIm);
+  Standard_EXPORT void RebuildEdge (const TopoDS_Shape& theE, const TopoDS_Face& theF, const TopTools_MapOfShape& theME, TopTools_ListOfShape& aLEIm);
   
   //! Collects the images of the object, that contains in
   //! the images of the tool.
@@ -106,7 +105,7 @@ Standard_EXPORT virtual ~BRepFeat_Builder();
   Standard_EXPORT void FillRemoved();
   
   //! Adds the shape S and its sub-shapes into myRemoved map.
-  Standard_EXPORT void FillRemoved (const TopoDS_Shape& theS, BOPCol_MapOfShape& theM);
+  Standard_EXPORT void FillRemoved (const TopoDS_Shape& theS, TopTools_MapOfShape& theM);
 
 
 
@@ -118,11 +117,11 @@ protected:
   Standard_EXPORT virtual void Prepare() Standard_OVERRIDE;
   
   //! Function is redefined to avoid the usage of removed faces.
-  Standard_EXPORT virtual void FillIn3DParts (BOPCol_DataMapOfShapeListOfShape& theInParts, BOPCol_DataMapOfShapeShape& theDraftSolids, const BOPCol_BaseAllocator& theAllocator) Standard_OVERRIDE;
+  Standard_EXPORT virtual void FillIn3DParts (TopTools_DataMapOfShapeListOfShape& theInParts, TopTools_DataMapOfShapeShape& theDraftSolids, const Handle(NCollection_BaseAllocator)& theAllocator) Standard_OVERRIDE;
 
 
-  BOPCol_MapOfShape myShapes;
-  BOPCol_MapOfShape myRemoved;
+  TopTools_MapOfShape myShapes;
+  TopTools_MapOfShape myRemoved;
   Standard_Integer myFuse;
 
 

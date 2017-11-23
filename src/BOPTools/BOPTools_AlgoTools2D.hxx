@@ -21,7 +21,6 @@
 
 #include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
-#include <BOPCol_ListOfShape.hxx>
 #include <Standard_Integer.hxx>
 class TopoDS_Edge;
 class TopoDS_Face;

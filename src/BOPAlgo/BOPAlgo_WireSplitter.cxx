@@ -17,22 +17,21 @@
 #include <BOPAlgo_WireEdgeSet.hxx>
 #include <BOPAlgo_WireSplitter.hxx>
 #include <BOPAlgo_Alerts.hxx>
-#include <BOPCol_IndexedDataMapOfShapeListOfShape.hxx>
-#include <BOPCol_IndexedMapOfShape.hxx>
-#include <BOPCol_ListOfShape.hxx>
-#include <BOPCol_MapOfShape.hxx>
-#include <BOPCol_NCVector.hxx>
-#include <BOPCol_Parallel.hxx>
-#include <BOPTools.hxx>
 #include <BOPTools_AlgoTools.hxx>
+#include <BOPTools_Parallel.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
+#include <NCollection_Vector.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Wire.hxx>
+#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
+#include <TopTools_IndexedMapOfShape.hxx>
+#include <TopTools_ListOfShape.hxx>
+#include <TopTools_MapOfShape.hxx>
 
 //=======================================================================
 //function : 
@@ -171,16 +170,16 @@ protected:
   Handle(IntTools_Context) myContext;
 };
 
-typedef BOPCol_NCVector<BOPAlgo_WS_ConnexityBlock> \
+typedef NCollection_Vector<BOPAlgo_WS_ConnexityBlock> \
   BOPAlgo_VectorOfConnexityBlock;
 //
-typedef BOPCol_ContextFunctor
+typedef BOPTools_ContextFunctor
   <BOPAlgo_WS_ConnexityBlock,
   BOPAlgo_VectorOfConnexityBlock,
   Handle(IntTools_Context),
   IntTools_Context> BOPAlgo_SplitBlockFunctor;
 //
-typedef BOPCol_ContextCnt
+typedef BOPTools_ContextCnt
   <BOPAlgo_SplitBlockFunctor,
   BOPAlgo_VectorOfConnexityBlock,
   Handle(IntTools_Context)> BOPAlgo_SplitBlockCnt;
@@ -195,7 +194,7 @@ void BOPAlgo_WireSplitter::MakeWires()
   Standard_Integer aNbVCB, k;
   TopoDS_Wire aW;
   BOPTools_ListIteratorOfListOfConnexityBlock aItCB;
-  BOPCol_ListIteratorOfListOfShape aIt;
+  TopTools_ListIteratorOfListOfShape aIt;
   BOPAlgo_VectorOfConnexityBlock aVCB;
   //
   const TopoDS_Face& aF=myWES->Face();
@@ -205,12 +204,12 @@ void BOPAlgo_WireSplitter::MakeWires()
     BOPTools_ConnexityBlock& aCB=aItCB.ChangeValue();
     bIsRegular=aCB.IsRegular();
     if (bIsRegular) {
-      BOPCol_ListOfShape& aLE=aCB.ChangeShapes();
+      TopTools_ListOfShape& aLE=aCB.ChangeShapes();
       BOPAlgo_WireSplitter::MakeWire(aLE, aW);
       myWES->AddShape(aW);
     }
     else {
-      BOPAlgo_WS_ConnexityBlock& aWSCB = aVCB.Append1();
+      BOPAlgo_WS_ConnexityBlock& aWSCB = aVCB.Appended();
       aWSCB.SetFace(aF);
       aWSCB.SetConnexityBlock(aCB);
     }
@@ -218,10 +217,10 @@ void BOPAlgo_WireSplitter::MakeWires()
   //===================================================
   BOPAlgo_SplitBlockCnt::Perform(myRunParallel, aVCB, myContext);
   //===================================================
-  aNbVCB=aVCB.Extent();
+  aNbVCB=aVCB.Length();
   for (k=0; k<aNbVCB; ++k) {
     const BOPAlgo_WS_ConnexityBlock& aCB=aVCB(k);
-    const BOPCol_ListOfShape& aLW=aCB.ConnexityBlock().Loops();
+    const TopTools_ListOfShape& aLW=aCB.ConnexityBlock().Loops();
     aIt.Initialize(aLW);
     for (; aIt.More(); aIt.Next()) {
       const TopoDS_Shape& aWx=aIt.Value();

@@ -46,7 +46,7 @@
 #include <TopTools_MapOfShape.hxx>
 //
 #include <BRepBndLib.hxx>
-#include <BOPCol_BoxBndTree.hxx>
+#include <BOPTools_BoxBndTree.hxx>
 #include <NCollection_UBTreeFiller.hxx>
 //
 #include <BOPTools_AlgoTools.hxx>
@@ -165,7 +165,7 @@ void BRepOffset_Inter3d::CompletInt(const TopTools_ListOfShape& SetOfFaces,
   //---------------------------------------------------------------
 
   // Prepare tools for sorting the bounding boxes
-  BOPCol_BoxBndTree aBBTree;
+  BOPTools_BoxBndTree aBBTree;
   NCollection_UBTreeFiller <Standard_Integer, Bnd_Box> aTreeFiller(aBBTree);
   //
   NCollection_IndexedDataMap<TopoDS_Shape, Bnd_Box, TopTools_ShapeMapHasher> aMFaces;
@@ -192,12 +192,12 @@ void BRepOffset_Inter3d::CompletInt(const TopTools_ListOfShape& SetOfFaces,
     const TopoDS_Face& aF1 = TopoDS::Face(aItL.Value());
     const Bnd_Box& aBoxF1 = aMFaces.FindFromKey(aF1);
     //
-    BOPCol_BoxBndTreeSelector aSelector;
+    BOPTools_BoxBndTreeSelector aSelector;
     aSelector.SetBox(aBoxF1);
     aBBTree.Select(aSelector);
     //
-    const BOPCol_ListOfInteger& aLI = aSelector.Indices();
-    BOPCol_ListIteratorOfListOfInteger aItLI(aLI);
+    const TColStd_ListOfInteger& aLI = aSelector.Indices();
+    TColStd_ListIteratorOfListOfInteger aItLI(aLI);
     for (; aItLI.More(); aItLI.Next()) {
       Standard_Integer i = aItLI.Value();
       const TopoDS_Face& aF2 = TopoDS::Face(aMFaces.FindKey(i));

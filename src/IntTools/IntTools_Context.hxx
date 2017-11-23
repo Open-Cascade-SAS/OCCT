@@ -18,9 +18,9 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <BOPCol_BaseAllocator.hxx>
-#include <BOPCol_DataMapOfShapeAddress.hxx>
-#include <BOPCol_DataMapOfTransientAddress.hxx>
+#include <NCollection_BaseAllocator.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
 #include <Precision.hxx>
@@ -28,6 +28,7 @@
 #include <TopAbs_State.hxx>
 #include <Standard_Boolean.hxx>
 #include <BRepAdaptor_Surface.hxx>
+#include <TColStd_MapTransientHasher.hxx>
 class IntTools_FClass2d;
 class TopoDS_Face;
 class GeomAPI_ProjectPointOnSurf;
@@ -45,7 +46,6 @@ class IntTools_Curve;
 class Bnd_Box;
 class TopoDS_Shape;
 
-
 //! The intersection Context contains geometrical
 //! and topological toolkit (classifiers, projectors, etc).
 //! The intersection Context is for caching the tools
@@ -58,7 +58,7 @@ public:
   Standard_EXPORT IntTools_Context();
 Standard_EXPORT virtual  ~IntTools_Context();
   
-  Standard_EXPORT IntTools_Context(const BOPCol_BaseAllocator& theAllocator);
+  Standard_EXPORT IntTools_Context(const Handle(NCollection_BaseAllocator)& theAllocator);
   
 
   //! Returns a reference to point classifier
@@ -239,17 +239,23 @@ Standard_EXPORT virtual  ~IntTools_Context();
 
 protected:
 
+  typedef NCollection_DataMap<TopoDS_Shape,
+                              Standard_Address,
+                              TopTools_ShapeMapHasher> DataMapOfShapeAddress;
+  typedef NCollection_DataMap<Handle(Standard_Transient),
+                              Standard_Address,
+                              TColStd_MapTransientHasher> DataMapOfTransientAddress;
 
-  BOPCol_BaseAllocator myAllocator;
-  BOPCol_DataMapOfShapeAddress myFClass2dMap;
-  BOPCol_DataMapOfShapeAddress myProjPSMap;
-  BOPCol_DataMapOfShapeAddress myProjPCMap;
-  BOPCol_DataMapOfShapeAddress mySClassMap;
-  BOPCol_DataMapOfTransientAddress myProjPTMap;
-  BOPCol_DataMapOfShapeAddress myHatcherMap;
-  BOPCol_DataMapOfShapeAddress myProjSDataMap;
-  BOPCol_DataMapOfShapeAddress myBndBoxDataMap;
-  BOPCol_DataMapOfShapeAddress mySurfAdaptorMap;
+  Handle(NCollection_BaseAllocator) myAllocator;
+  DataMapOfShapeAddress myFClass2dMap;
+  DataMapOfShapeAddress myProjPSMap;
+  DataMapOfShapeAddress myProjPCMap;
+  DataMapOfShapeAddress mySClassMap;
+  DataMapOfTransientAddress myProjPTMap;
+  DataMapOfShapeAddress myHatcherMap;
+  DataMapOfShapeAddress myProjSDataMap;
+  DataMapOfShapeAddress myBndBoxDataMap;
+  DataMapOfShapeAddress mySurfAdaptorMap;
   Standard_Integer myCreateFlag;
   Standard_Real myPOnSTolerance;
 

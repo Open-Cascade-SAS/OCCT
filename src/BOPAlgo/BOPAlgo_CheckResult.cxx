@@ -61,12 +61,12 @@ const TopoDS_Shape & BOPAlgo_CheckResult::GetShape2() const
   return myShape2;
 }
 
-const BOPCol_ListOfShape& BOPAlgo_CheckResult::GetFaultyShapes1() const
+const TopTools_ListOfShape& BOPAlgo_CheckResult::GetFaultyShapes1() const
 {
   return myFaulty1;
 }
 
-const BOPCol_ListOfShape& BOPAlgo_CheckResult::GetFaultyShapes2() const
+const TopTools_ListOfShape& BOPAlgo_CheckResult::GetFaultyShapes2() const
 {
   return myFaulty2;
 }

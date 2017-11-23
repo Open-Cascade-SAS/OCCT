@@ -91,7 +91,7 @@ inline const TopoDS_Solid& BOPAlgo_MakerVolume::Box()const
 //function : Faces
 //purpose  : 
 //=======================================================================
-inline const BOPCol_ListOfShape& BOPAlgo_MakerVolume::Faces()const
+inline const TopTools_ListOfShape& BOPAlgo_MakerVolume::Faces()const
 {
   return myFaces;
 }

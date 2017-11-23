@@ -23,7 +23,7 @@
 #include <Standard_Handle.hxx>
 
 #include <BOPDS_Iterator.hxx>
-#include <BOPCol_BaseAllocator.hxx>
+#include <NCollection_BaseAllocator.hxx>
 #include <Standard_Integer.hxx>
 
 
@@ -49,7 +49,7 @@ Standard_EXPORT virtual ~BOPDS_IteratorSI();
 
   //! Contructor
   //! theAllocator - the allocator to manage the memory
-  Standard_EXPORT BOPDS_IteratorSI(const BOPCol_BaseAllocator& theAllocator);
+  Standard_EXPORT BOPDS_IteratorSI(const Handle(NCollection_BaseAllocator)& theAllocator);
   
   //! Updates the lists of possible intersections
   //! according to the value of <theLevel>.

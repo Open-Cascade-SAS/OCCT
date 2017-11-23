@@ -72,9 +72,9 @@ Standard_Integer bfillds(Draw_Interpretor& di,
   Standard_Boolean bRunParallel, bNonDestructive, bShowTime;
   Standard_Integer i, aNbS;
   Standard_Real aTol;
-  BOPCol_ListIteratorOfListOfShape aIt;
-  BOPCol_ListOfShape aLC;
-  BOPCol_ListOfShape& aLS=BOPTest_Objects::Shapes();
+  TopTools_ListIteratorOfListOfShape aIt;
+  TopTools_ListOfShape aLC;
+  TopTools_ListOfShape& aLS=BOPTest_Objects::Shapes();
   aNbS=aLS.Extent();
   if (!aNbS) {
     di << " no objects to process\n";
@@ -94,7 +94,7 @@ Standard_Integer bfillds(Draw_Interpretor& di,
     }
   }
   //
-  BOPCol_ListOfShape& aLT=BOPTest_Objects::Tools();
+  TopTools_ListOfShape& aLT=BOPTest_Objects::Tools();
   //
   aIt.Initialize(aLS);
   for (; aIt.More(); aIt.Next()) {
@@ -158,7 +158,7 @@ Standard_Integer bbuild(Draw_Interpretor& di,
   Standard_Boolean bRunParallel, bShowTime;
   Standard_Integer i;
 
-  BOPCol_ListIteratorOfListOfShape aIt;
+  TopTools_ListIteratorOfListOfShape aIt;
   //
   BOPAlgo_PaveFiller& aPF=BOPTest_Objects::PaveFiller();
   //
@@ -166,14 +166,14 @@ Standard_Integer bbuild(Draw_Interpretor& di,
   BOPAlgo_Builder& aBuilder=BOPTest_Objects::Builder();
   aBuilder.Clear();
   //
-  BOPCol_ListOfShape& aLSObj=BOPTest_Objects::Shapes();
+  TopTools_ListOfShape& aLSObj=BOPTest_Objects::Shapes();
   aIt.Initialize(aLSObj);
   for (; aIt.More(); aIt.Next()) {
     const TopoDS_Shape& aS=aIt.Value();
     aBuilder.AddArgument(aS);
   }
   //
-  BOPCol_ListOfShape& aLSTool=BOPTest_Objects::Tools();
+  TopTools_ListOfShape& aLSTool=BOPTest_Objects::Tools();
   aIt.Initialize(aLSTool);
   for (; aIt.More(); aIt.Next()) {
     const TopoDS_Shape& aS=aIt.Value();
@@ -240,7 +240,7 @@ Standard_Integer bbop(Draw_Interpretor& di,
   Standard_Boolean bRunParallel, bShowTime;
   Standard_Integer iOp, i;
   BOPAlgo_Operation aOp;
-  BOPCol_ListIteratorOfListOfShape aIt; 
+  TopTools_ListIteratorOfListOfShape aIt; 
   //
   iOp=Draw::Atoi(a[2]);
   if (iOp<0 || iOp>4) {
@@ -270,7 +270,7 @@ Standard_Integer bbop(Draw_Interpretor& di,
   //
   pBuilder->Clear();
   //
-  BOPCol_ListOfShape& aLSObj=BOPTest_Objects::Shapes();
+  TopTools_ListOfShape& aLSObj=BOPTest_Objects::Shapes();
   aIt.Initialize(aLSObj);
   for (; aIt.More(); aIt.Next()) {
     const TopoDS_Shape& aS=aIt.Value();
@@ -280,7 +280,7 @@ Standard_Integer bbop(Draw_Interpretor& di,
   if (aOp!=BOPAlgo_SECTION) {
     BOPAlgo_BOP *pBOP=(BOPAlgo_BOP *)pBuilder;
     //
-    BOPCol_ListOfShape& aLSTools=BOPTest_Objects::Tools();
+    TopTools_ListOfShape& aLSTools=BOPTest_Objects::Tools();
     aIt.Initialize(aLSTools);
     for (; aIt.More(); aIt.Next()) {
       const TopoDS_Shape& aS=aIt.Value();
@@ -290,7 +290,7 @@ Standard_Integer bbop(Draw_Interpretor& di,
     pBOP->SetOperation(aOp);
   }
   else {
-    BOPCol_ListOfShape& aLSTools=BOPTest_Objects::Tools();
+    TopTools_ListOfShape& aLSTools=BOPTest_Objects::Tools();
     aIt.Initialize(aLSTools);
     for (; aIt.More(); aIt.Next()) {
       const TopoDS_Shape& aS=aIt.Value();
@@ -354,11 +354,11 @@ Standard_Integer bsplit(Draw_Interpretor& di,
   pSplitter->Clear();
   //
   // set objects
-  const BOPCol_ListOfShape& aLSObjects = BOPTest_Objects::Shapes();
+  const TopTools_ListOfShape& aLSObjects = BOPTest_Objects::Shapes();
   pSplitter->SetArguments(aLSObjects);
   //
   // set tools
-  BOPCol_ListOfShape& aLSTools = BOPTest_Objects::Tools();
+  TopTools_ListOfShape& aLSTools = BOPTest_Objects::Tools();
   pSplitter->SetTools(aLSTools);
   //
   // set options

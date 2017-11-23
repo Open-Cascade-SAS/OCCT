@@ -22,11 +22,11 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <BOPCol_BaseAllocator.hxx>
 #include <Standard_Integer.hxx>
 #include <BOPDS_PDS.hxx>
 #include <BOPDS_VectorOfPair.hxx>
 #include <BOPDS_VectorOfVectorOfPair.hxx>
+#include <NCollection_BaseAllocator.hxx>
 #include <Standard_Boolean.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 class BOPDS_DS;
@@ -51,7 +51,7 @@ public:
 
   //! Contructor
   //! theAllocator - the allocator to manage the memory
-  Standard_EXPORT BOPDS_Iterator(const BOPCol_BaseAllocator& theAllocator);
+  Standard_EXPORT BOPDS_Iterator(const Handle(NCollection_BaseAllocator)& theAllocator);
 
   //! Modifier
   //! Sets the data structure <pDS> to process
@@ -101,7 +101,7 @@ protected:
 
   Standard_EXPORT virtual void Intersect();
 
-  BOPCol_BaseAllocator myAllocator;
+  Handle(NCollection_BaseAllocator) myAllocator;
   Standard_Integer myLength;
   BOPDS_PDS myDS;
   BOPDS_VectorOfVectorOfPair myLists;

@@ -12,15 +12,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef BOPCol_DataMapOfShapeBox_HeaderFile
-#define BOPCol_DataMapOfShapeBox_HeaderFile
+#ifndef BOPTools_IndexedDataMapOfSetShape_HeaderFile
+#define BOPTools_IndexedDataMapOfSetShape_HeaderFile
 
-#include <Bnd_Box.hxx>
-#include <TopoDS_Shape.hxx>  
-#include <TopTools_ShapeMapHasher.hxx>
-  
-#include <NCollection_DataMap.hxx>
+#include <BOPTools_Set.hxx>
+#include <BOPTools_SetMapHasher.hxx>
+#include <NCollection_IndexedDataMap.hxx>
+#include <TopoDS_Shape.hxx>
 
-typedef NCollection_DataMap<TopoDS_Shape, Bnd_Box, TopTools_ShapeMapHasher> BOPCol_DataMapOfShapeBox; 
- 
+typedef NCollection_IndexedDataMap<BOPTools_Set, TopoDS_Shape, BOPTools_SetMapHasher> BOPTools_IndexedDataMapOfSetShape;
+
 #endif

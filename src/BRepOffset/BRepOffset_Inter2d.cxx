@@ -21,6 +21,7 @@
 #include <Adaptor3d_HSurface.hxx>
 #include <Bnd_Box.hxx>
 #include <BndLib_Add3dCurve.hxx>
+#include <BOPTools_AlgoTools.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_CurveRepresentation.hxx>
 #include <BRep_GCurve.hxx>
@@ -76,8 +77,6 @@
 #include <TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_ListOfShape.hxx>
-#include <BOPCol_ListOfShape.hxx>
-#include <BOPTools_AlgoTools.hxx>
 
 #include <stdio.h>
 #ifdef DRAW 
@@ -1702,7 +1701,7 @@ void BRepOffset_Inter2d::ConnexIntByIntInVert
 static void MakeChain(const TopoDS_Shape& theV,
                       const TopTools_IndexedDataMapOfShapeListOfShape& theDMVV,
                       TopTools_MapOfShape& theMDone,
-                      BOPCol_ListOfShape& theChain)
+                      TopTools_ListOfShape& theChain)
 {
   if (theMDone.Add(theV)) {
     theChain.Append(theV);
@@ -1730,7 +1729,7 @@ void BRepOffset_Inter2d::FuseVertices(const TopTools_IndexedDataMapOfShapeListOf
     const TopoDS_Vertex& aV = TopoDS::Vertex(theDMVV.FindKey(i));
     //
     // find chain of vertices
-    BOPCol_ListOfShape aLVChain;
+    TopTools_ListOfShape aLVChain;
     MakeChain(aV, theDMVV, aMVDone, aLVChain);
     //
     if (aLVChain.Extent() < 2) {
@@ -1743,7 +1742,7 @@ void BRepOffset_Inter2d::FuseVertices(const TopTools_IndexedDataMapOfShapeListOf
     //
     TopoDS_Vertex aVNewInt = TopoDS::Vertex(aVNew.Oriented(TopAbs_INTERNAL));
     //
-    BOPCol_ListIteratorOfListOfShape aIt(aLVChain);
+    TopTools_ListIteratorOfListOfShape aIt(aLVChain);
     for (; aIt.More(); aIt.Next()) {
       const TopoDS_Shape& aVOld = aIt.Value();
       // update the parameters on edges

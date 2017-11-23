@@ -22,7 +22,7 @@
 
 #include <TopoDS_Shape.hxx>
 #include <BOPAlgo_CheckStatus.hxx>
-#include <BOPCol_ListOfShape.hxx>
+#include <TopTools_ListOfShape.hxx>
 #include <Standard_Real.hxx>
 class TopoDS_Shape;
 
@@ -58,10 +58,10 @@ public:
   Standard_EXPORT const TopoDS_Shape& GetShape2() const;
   
   //! returns list of faulty shapes for object
-  Standard_EXPORT const BOPCol_ListOfShape& GetFaultyShapes1() const;
+  Standard_EXPORT const TopTools_ListOfShape& GetFaultyShapes1() const;
   
   //! returns list of faulty shapes for tool
-  Standard_EXPORT const BOPCol_ListOfShape& GetFaultyShapes2() const;
+  Standard_EXPORT const TopTools_ListOfShape& GetFaultyShapes2() const;
   
   //! set status of faulty
   Standard_EXPORT void SetCheckStatus (const BOPAlgo_CheckStatus TheStatus);
@@ -109,8 +109,8 @@ private:
   TopoDS_Shape myShape1;
   TopoDS_Shape myShape2;
   BOPAlgo_CheckStatus myStatus;
-  BOPCol_ListOfShape myFaulty1;
-  BOPCol_ListOfShape myFaulty2;
+  TopTools_ListOfShape myFaulty1;
+  TopTools_ListOfShape myFaulty2;
   Standard_Real myMaxDist1;
   Standard_Real myMaxDist2;
   Standard_Real myMaxPar1;

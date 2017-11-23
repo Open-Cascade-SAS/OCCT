@@ -20,8 +20,6 @@
 #include <BOPAlgo_PaveFiller.hxx>
 #include <BOPAlgo_Tools.hxx>
 #include <BOPAlgo_Alerts.hxx>
-#include <BOPCol_NCVector.hxx>
-#include <BOPCol_Parallel.hxx>
 #include <BOPDS_CommonBlock.hxx>
 #include <BOPDS_CoupleOfPaveBlocks.hxx>
 #include <BOPDS_DS.hxx>
@@ -32,6 +30,7 @@
 #include <BOPDS_PaveBlock.hxx>
 #include <BOPDS_VectorOfInterfEE.hxx>
 #include <BOPTools_AlgoTools.hxx>
+#include <BOPTools_Parallel.hxx>
 #include <BndLib_Add3dCurve.hxx>
 #include <BRep_Tool.hxx>
 #include <BRep_Builder.hxx>
@@ -46,6 +45,7 @@
 #include <IntTools_ShrunkRange.hxx>
 #include <IntTools_Tools.hxx>
 #include <NCollection_IncAllocator.hxx>
+#include <NCollection_Vector.hxx>
 #include <Precision.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
@@ -112,14 +112,14 @@ class BOPAlgo_EdgeEdge :
 };
 //
 //=======================================================================
-typedef BOPCol_NCVector
+typedef NCollection_Vector
   <BOPAlgo_EdgeEdge> BOPAlgo_VectorOfEdgeEdge; 
 //
-typedef BOPCol_Functor 
+typedef BOPTools_Functor 
   <BOPAlgo_EdgeEdge,
   BOPAlgo_VectorOfEdgeEdge> BOPAlgo_EdgeEdgeFunctor;
 //
-typedef BOPCol_Cnt 
+typedef BOPTools_Cnt 
   <BOPAlgo_EdgeEdgeFunctor,
   BOPAlgo_VectorOfEdgeEdge> BOPAlgo_EdgeEdgeCnt;
 //
@@ -148,7 +148,7 @@ void BOPAlgo_PaveFiller::PerformEE()
   BOPAlgo_VectorOfEdgeEdge aVEdgeEdge;
   BOPDS_MapIteratorOfMapOfPaveBlock aItPB; 
   // keep modified edges for further update
-  BOPCol_MapOfInteger aMEdges;
+  TColStd_MapOfInteger aMEdges;
   //
   aAllocator=NCollection_BaseAllocator::CommonBaseAllocator();
   //-----------------------------------------------------scope f
@@ -215,7 +215,7 @@ void BOPAlgo_PaveFiller::PerformEE()
         bExpressCompute=((nV11==nV21 && nV12==nV22) ||
                          (nV12==nV21 && nV11==nV22));
         //
-        BOPAlgo_EdgeEdge& anEdgeEdge=aVEdgeEdge.Append1();
+        BOPAlgo_EdgeEdge& anEdgeEdge=aVEdgeEdge.Appended();
         //
         anEdgeEdge.UseQuickCoincidenceCheck(bExpressCompute);
         //
@@ -230,7 +230,7 @@ void BOPAlgo_PaveFiller::PerformEE()
     }//for (; aIt1.More(); aIt1.Next()) {
   }//for (; myIterator->More(); myIterator->Next()) {
   //
-  aNbEdgeEdge=aVEdgeEdge.Extent();
+  aNbEdgeEdge=aVEdgeEdge.Length();
   //======================================================
   BOPAlgo_EdgeEdgeCnt::Perform(myRunParallel, aVEdgeEdge);
   //======================================================
@@ -353,7 +353,7 @@ void BOPAlgo_PaveFiller::PerformEE()
             }
           }
           if (bFlag) {
-            BOPDS_InterfEE& aEE = aEEs.Append1();
+            BOPDS_InterfEE& aEE = aEEs.Appended();
             aEE.SetIndices(nE1, nE2);
             aEE.SetCommonPart(aCPart);
             continue;
@@ -374,7 +374,7 @@ void BOPAlgo_PaveFiller::PerformEE()
           {
             Standard_Integer nVS[2], iFound;
             Standard_Real aTolVx, aD2, aDT2;
-            BOPCol_MapOfInteger aMV;
+            TColStd_MapOfInteger aMV;
             gp_Pnt aPnew, aPx;
             //
             iFound=0;
@@ -413,8 +413,8 @@ void BOPAlgo_PaveFiller::PerformEE()
           }
           //
           // 1
-          BOPDS_InterfEE& aEE=aEEs.Append1();
-          iX=aEEs.Extent()-1;
+          BOPDS_InterfEE& aEE=aEEs.Appended();
+          iX=aEEs.Length()-1;
           aEE.SetIndices(nE1, nE2);
           aEE.SetCommonPart(aCPart);
           // 2
@@ -440,8 +440,8 @@ void BOPAlgo_PaveFiller::PerformEE()
             break;
           }
           // 1
-          BOPDS_InterfEE& aEE=aEEs.Append1();
-          iX=aEEs.Extent()-1;
+          BOPDS_InterfEE& aEE=aEEs.Appended();
+          iX=aEEs.Length()-1;
           aEE.SetIndices(nE1, nE2);
           aEE.SetCommonPart(aCPart);
           // 2
@@ -497,7 +497,7 @@ void BOPAlgo_PaveFiller::PerformNewVertices
   Standard_Real aTolAdd = myFuzzyValue / 2.;
   //
   // 1. Fuse the new vertices
-  BOPCol_IndexedDataMapOfShapeListOfShape aImages;
+  TopTools_IndexedDataMapOfShapeListOfShape aImages;
   TreatNewVertices(theMVCPB, aImages);
   //
   // 2. Add new vertices to myDS and connect indices to CPB structure
@@ -507,7 +507,7 @@ void BOPAlgo_PaveFiller::PerformNewVertices
   Standard_Integer i, aNb = aImages.Extent();
   for (i = 1; i <= aNb; ++i) {
     const TopoDS_Vertex& aV = TopoDS::Vertex(aImages.FindKey(i));
-    const BOPCol_ListOfShape& aLVSD = aImages.FindFromIndex(i);
+    const TopTools_ListOfShape& aLVSD = aImages.FindFromIndex(i);
     //
     BOPDS_ShapeInfo aSI;
     aSI.SetShapeType(TopAbs_VERTEX);
@@ -519,7 +519,7 @@ void BOPAlgo_PaveFiller::PerformNewVertices
     aBox.Add(BRep_Tool::Pnt(aV));
     aBox.SetGap(BRep_Tool::Tolerance(aV) + aTolAdd);
     //
-    BOPCol_ListIteratorOfListOfShape aItLS(aLVSD);
+    TopTools_ListIteratorOfListOfShape aItLS(aLVSD);
     for (; aItLS.More(); aItLS.Next()) {
       const TopoDS_Shape& aVx = aItLS.Value();
       BOPDS_CoupleOfPaveBlocks &aCPB = theMVCPB.ChangeFromKey(aVx);
@@ -540,9 +540,9 @@ void BOPAlgo_PaveFiller::PerformNewVertices
     Handle(BOPDS_PaveBlock) aPB[2];
     aCPB.PaveBlocks(aPB[0], aPB[1]);
     for (Standard_Integer j = 0; j < 2; ++j) {
-      BOPCol_ListOfInteger *pLI = aMPBLI.ChangeSeek(aPB[j]);
+      TColStd_ListOfInteger *pLI = aMPBLI.ChangeSeek(aPB[j]);
       if (!pLI) {
-        pLI = &aMPBLI(aMPBLI.Add(aPB[j], BOPCol_ListOfInteger(theAllocator)));
+        pLI = &aMPBLI(aMPBLI.Add(aPB[j], TColStd_ListOfInteger(theAllocator)));
       }
       pLI->Append(iV);
       //
@@ -561,11 +561,11 @@ void BOPAlgo_PaveFiller::PerformNewVertices
 //=======================================================================
 void BOPAlgo_PaveFiller::TreatNewVertices
   (const BOPDS_IndexedDataMapOfShapeCoupleOfPaveBlocks& theMVCPB,
-   BOPCol_IndexedDataMapOfShapeListOfShape& myImages)
+   TopTools_IndexedDataMapOfShapeListOfShape& myImages)
 {
   //
   // Prepare for intersection
-  BOPCol_IndexedDataMapOfShapeReal aVerts;
+  TopTools_IndexedDataMapOfShapeReal aVerts;
   Standard_Integer i, aNbV = theMVCPB.Extent();
   for (i = 1; i <= aNbV; ++i) {
     const TopoDS_Shape& aV = theMVCPB.FindKey(i);
@@ -574,13 +574,13 @@ void BOPAlgo_PaveFiller::TreatNewVertices
   }
   //
   // Perform intersection
-  BOPCol_ListOfListOfShape aChains;
+  TopTools_ListOfListOfShape aChains;
   BOPAlgo_Tools::IntersectVertices(aVerts, myRunParallel, myFuzzyValue, aChains);
   //
   // Treat the results - make new vertices for each chain
-  BOPCol_ListOfListOfShape::Iterator aItC(aChains);
+  TopTools_ListOfListOfShape::Iterator aItC(aChains);
   for (; aItC.More(); aItC.Next()) {
-    const BOPCol_ListOfShape& aLVSD = aItC.Value();
+    const TopTools_ListOfShape& aLVSD = aItC.Value();
     //
     TopoDS_Vertex aVNew;
     BOPTools_AlgoTools::MakeVertex(aLVSD, aVNew);
@@ -666,7 +666,7 @@ void BOPAlgo_PaveFiller::AnalyzeShrunkData(const Handle(BOPDS_PaveBlock)& thePB,
 //=======================================================================
 Standard_Boolean BOPAlgo_PaveFiller::ForceInterfVE(const Standard_Integer nV,
                                                    Handle(BOPDS_PaveBlock)& aPB,
-                                                   BOPCol_MapOfInteger& theMEdges)
+                                                   TColStd_MapOfInteger& theMEdges)
 {
   Standard_Integer nE, nVx, nVSD, iFlag;
   Standard_Real aT, aTolVNew;
@@ -707,7 +707,7 @@ Standard_Boolean BOPAlgo_PaveFiller::ForceInterfVE(const Standard_Integer nV,
     BOPDS_VectorOfInterfVE& aVEs=myDS->InterfVE();
     aVEs.SetIncrement(10);
     // 1
-    BOPDS_InterfVE& aVE=aVEs.Append1();
+    BOPDS_InterfVE& aVE=aVEs.Appended();
     aVE.SetIndices(nV, nE);
     aVE.SetParameter(aT);
     // 2
@@ -820,7 +820,7 @@ void BOPAlgo_PaveFiller::ForceInterfEE()
   BOPDS_MapOfPaveBlock aMPBFence(1, anAlloc);
 
   BOPDS_VectorOfListOfPaveBlock& aPBP = myDS->ChangePaveBlocksPool();
-  Standard_Integer aNbPBP = aPBP.Extent();
+  Standard_Integer aNbPBP = aPBP.Length();
   for (i = 0; i < aNbPBP; ++i)
   {
     BOPDS_ListOfPaveBlock& aLPB = aPBP(i);
@@ -911,7 +911,7 @@ void BOPAlgo_PaveFiller::ForceInterfEE()
         aPB2->Range(aT21, aT22);
 
         // Add pair for intersection
-        BOPAlgo_EdgeEdge& anEdgeEdge = aVEdgeEdge.Append1();
+        BOPAlgo_EdgeEdge& anEdgeEdge = aVEdgeEdge.Appended();
         anEdgeEdge.UseQuickCoincidenceCheck(Standard_True);
         anEdgeEdge.SetPaveBlock1(aPB1);
         anEdgeEdge.SetPaveBlock2(aPB2);
@@ -923,7 +923,7 @@ void BOPAlgo_PaveFiller::ForceInterfEE()
     }
   }
 
-  Standard_Integer aNbPairs = aVEdgeEdge.Extent();
+  Standard_Integer aNbPairs = aVEdgeEdge.Length();
   if (!aNbPairs)
     return;
 
@@ -968,7 +968,7 @@ void BOPAlgo_PaveFiller::ForceInterfEE()
     const Standard_Integer nE1 = aPB[0]->OriginalEdge();
     const Standard_Integer nE2 = aPB[1]->OriginalEdge();
 
-    BOPDS_InterfEE& aEE = aEEs.Append1();
+    BOPDS_InterfEE& aEE = aEEs.Appended();
     aEE.SetIndices(nE1, nE2);
     aEE.SetCommonPart(aCP);
     myDS->AddInterf(nE1, nE2);

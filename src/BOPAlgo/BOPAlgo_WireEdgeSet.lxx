@@ -76,7 +76,7 @@
 //function : StartElements
 //purpose  : 
 //=======================================================================
-  inline const BOPCol_ListOfShape& BOPAlgo_WireEdgeSet::StartElements()const
+  inline const TopTools_ListOfShape& BOPAlgo_WireEdgeSet::StartElements()const
 {
   return myStartShapes;
 }
@@ -92,7 +92,7 @@
 //function : Shapes
 //purpose  : 
 //=======================================================================
-  inline const BOPCol_ListOfShape& BOPAlgo_WireEdgeSet::Shapes()const
+  inline const TopTools_ListOfShape& BOPAlgo_WireEdgeSet::Shapes()const
 {
   return myShapes;
 }
