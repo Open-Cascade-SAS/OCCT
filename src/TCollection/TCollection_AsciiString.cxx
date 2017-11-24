@@ -59,35 +59,39 @@ TCollection_AsciiString::TCollection_AsciiString()
 // ----------------------------------------------------------------------------
 // Create an asciistring from a Standard_CString
 // ----------------------------------------------------------------------------
-TCollection_AsciiString::TCollection_AsciiString(const Standard_CString astring)
-  : mystring(0), mylength(0)
+TCollection_AsciiString::TCollection_AsciiString (const Standard_CString theString)
+: mystring(0),
+  mylength(0)
 {
-  if (astring) {
-    mylength = Standard_Integer( strlen(astring) );
-    mystring = Allocate(mylength+1);
-    strncpy(mystring,astring,mylength);
-    mystring[mylength] = '\0';
+  if (theString == NULL)
+  {
+    throw Standard_NullObject ("TCollection_AsciiString(): NULL pointer passed to constructor");
   }
-  else {
-    throw Standard_NullObject("TCollection_AsciiString : parameter 'astring'");
-  }
+
+  mylength = Standard_Integer (strlen (theString));
+  mystring = Allocate (mylength + 1);
+  memcpy (mystring, theString, mylength);
+  mystring[mylength] = '\0';
 }
+
 
 // ----------------------------------------------------------------------------
 // Create an asciistring from a Standard_CString
 // ----------------------------------------------------------------------------
-TCollection_AsciiString::TCollection_AsciiString(const Standard_CString astring,
-                                                 const Standard_Integer aLen )
-  : mystring(0), mylength(aLen)
+TCollection_AsciiString::TCollection_AsciiString (const Standard_CString theString,
+                                                  const Standard_Integer theLen)
+: mystring (NULL),
+  mylength (0)
 {
-  if (astring) {
-    mystring = Allocate(mylength+1);
-    strncpy( mystring , astring , mylength );
-    mystring [ mylength ] = '\0' ;
+  if (theString == NULL)
+  {
+    throw Standard_NullObject ("TCollection_AsciiString(): NULL pointer passed to constructor");
   }
-  else {
-    throw Standard_NullObject("TCollection_AsciiString : parameter 'astring'");
-  }
+
+  for (; mylength < theLen && theString[mylength] != '\0'; ++mylength) {}
+  mystring = Allocate (mylength + 1);
+  memcpy (mystring, theString, mylength);
+  mystring[mylength] = '\0';
 }
 
 // ----------------------------------------------------------------------------
@@ -130,7 +134,7 @@ TCollection_AsciiString::TCollection_AsciiString(const Standard_Integer aValue)
   char t [13];
   mylength = Sprintf( t,"%d",aValue);
   mystring = Allocate(mylength+1);
-  strncpy( mystring , t , mylength );
+  memcpy (mystring, t, mylength);
   mystring[mylength] = '\0';
 }
 
@@ -143,77 +147,80 @@ TCollection_AsciiString::TCollection_AsciiString(const Standard_Real aValue)
   char t [50];
   mylength = Sprintf( t,"%g",aValue);
   mystring = Allocate(mylength+1);
-  strncpy( mystring , t , mylength );
+  memcpy (mystring, t, mylength);
   mystring[mylength] = '\0';
 }
 
 // ----------------------------------------------------------------------------
 // Create an asciistring from an asciistring
 // ----------------------------------------------------------------------------
-TCollection_AsciiString::TCollection_AsciiString(const TCollection_AsciiString& astring)
-     : mystring(0)
+TCollection_AsciiString::TCollection_AsciiString (const TCollection_AsciiString& theString)
+: mystring (Allocate (theString.mylength + 1)),
+  mylength (theString.mylength)
 {
-  mylength = astring.mylength;
-  mystring = Allocate(mylength+1);
-  if ( mylength )
-    strncpy(mystring,astring.mystring,mylength);
+  if (mylength != 0)
+  {
+    memcpy (mystring, theString.mystring, mylength);
+  }
   mystring[mylength] = '\0';
 }
 
 // ----------------------------------------------------------------------------
 // Create an asciistring from a character
 // ----------------------------------------------------------------------------
-TCollection_AsciiString::TCollection_AsciiString(
-                         const TCollection_AsciiString& astring ,
-                         const Standard_Character other )
-     : mystring(0)
+TCollection_AsciiString::TCollection_AsciiString (const TCollection_AsciiString& theString,
+                                                  const Standard_Character theChar)
+: mystring (NULL),
+  mylength (theString.mylength + 1)
 {
-  mylength = astring.mylength + 1 ;
-  mystring = Allocate(mylength+1);
-  if ( astring.mylength ) {
-    strncpy( mystring , astring.mystring , astring.mylength ) ;
+  mystring = Allocate (mylength + 1);
+  if (theString.mylength != 0)
+  {
+    memcpy (mystring, theString.mystring, theString.mylength);
   }
-  mystring[mylength-1] = other ;
-  mystring[mylength] = '\0' ;
+  mystring[mylength - 1] = theChar;
+  mystring[mylength] = '\0';
 }
 
 // ----------------------------------------------------------------------------
 // Create an asciistring from an asciistring
 // ----------------------------------------------------------------------------
-TCollection_AsciiString::TCollection_AsciiString(
-                         const TCollection_AsciiString& astring ,
-                         const Standard_CString other )
-     : mystring(0)
+TCollection_AsciiString::TCollection_AsciiString (const TCollection_AsciiString& theString1,
+                                                  const Standard_CString theString2)
+: mystring (0)
 {
-  Standard_Integer otherlength = Standard_Integer( other ? strlen( other ) : 0 );
-  mylength = astring.mylength + otherlength ;
-  mystring = Allocate(mylength+1);
-  if ( astring.mylength ) {
-    strncpy( mystring , astring.mystring , astring.mylength ) ;
+  const Standard_Integer aStr2Len = Standard_Integer (theString2 ? strlen (theString2) : 0);
+  mylength = theString1.mylength + aStr2Len;
+  mystring = Allocate (mylength + 1);
+  if (theString1.mylength != 0)
+  {
+    memcpy (mystring, theString1.mystring, theString1.mylength);
   }
-  if ( otherlength ) {
-    strncpy( mystring + astring.mylength, other, otherlength );
+  if (aStr2Len != 0)
+  {
+    memcpy (mystring + theString1.mylength, theString2, aStr2Len);
   }
-  mystring[ mylength ] = '\0';
+  mystring[mylength] = '\0';
 }
 
 // ----------------------------------------------------------------------------
 // Create an asciistring from an asciistring
 // ----------------------------------------------------------------------------
-TCollection_AsciiString::TCollection_AsciiString(
-                         const TCollection_AsciiString& astring ,
-                         const TCollection_AsciiString& other )
-     : mystring(0)
+TCollection_AsciiString::TCollection_AsciiString (const TCollection_AsciiString& theString1,
+                                                  const TCollection_AsciiString& theString2)
+: mystring (0),
+  mylength (theString1.mylength + theString2.mylength)
 {
-  mylength = astring.mylength + other.mylength ;
-  mystring = Allocate(mylength+1);
-  if ( astring.mylength ) {
-    strncpy( mystring , astring.mystring , astring.mylength ) ;
+  mystring = Allocate (mylength + 1);
+  if (theString1.mylength)
+  {
+    memcpy (mystring, theString1.mystring, theString1.mylength);
   }
-  if ( other.mylength ) {
-    strncpy( mystring + astring.mylength, other.mystring , other.mylength ) ;
+  if (theString2.mylength != 0)
+  {
+    memcpy (mystring + theString1.mylength, theString2.mystring, theString2.mylength);
   }
-  mystring[mylength] = '\0' ;
+  mystring[mylength] = '\0';
 }
 
 //---------------------------------------------------------------------------
@@ -298,33 +305,34 @@ void TCollection_AsciiString::AssignCat(const Standard_Character other)
 // ----------------------------------------------------------------------------
 // AssignCat
 // ----------------------------------------------------------------------------
-void TCollection_AsciiString::AssignCat(const Standard_CString other)
+void TCollection_AsciiString::AssignCat (const Standard_CString theOther)
 {
-  if (other) {
-    Standard_Integer otherlength = Standard_Integer( strlen( other ));
-    if ( otherlength ) {
-      Standard_Integer newlength = mylength+otherlength;
-      mystring = Reallocate (mystring, newlength + 1);
-      strncpy( mystring + mylength, other, otherlength+1 );
-      mylength = newlength;
-    }
-  }
-  else {
+  if (theOther == NULL)
+  {
     throw Standard_NullObject("TCollection_AsciiString::Operator += parameter other");
+  }
+
+  Standard_Integer anOtherLen = Standard_Integer (strlen (theOther));
+  if (anOtherLen != 0)
+  {
+    const Standard_Integer aNewLen = mylength + anOtherLen;
+    mystring = Reallocate (mystring, aNewLen + 1);
+    memcpy (mystring + mylength, theOther, anOtherLen + 1);
+    mylength = aNewLen;
   }
 }
 
 // ----------------------------------------------------------------------------
 // AssignCat
 // ----------------------------------------------------------------------------
-void TCollection_AsciiString::AssignCat(const TCollection_AsciiString& other)
+void TCollection_AsciiString::AssignCat (const TCollection_AsciiString& theOther)
 {
-
-  if (other.mylength) {
-    Standard_Integer newlength = mylength+other.mylength;
-    mystring = Reallocate (mystring, newlength + 1);
-    strncpy( mystring + mylength, other.mystring, other.mylength+1 );
-    mylength = newlength;
+  if (theOther.mylength != 0)
+  {
+    const Standard_Integer aNewLen = mylength + theOther.mylength;
+    mystring = Reallocate (mystring, aNewLen + 1);
+    memcpy (mystring + mylength, theOther.mystring, theOther.mylength + 1);
+    mylength = aNewLen;
   }
 }
 
@@ -394,7 +402,7 @@ void TCollection_AsciiString::Copy(const Standard_CString fromwhere)
   if (fromwhere) {
     mylength = Standard_Integer( strlen( fromwhere ));
     mystring = Reallocate (mystring, mylength + 1);
-    strncpy( mystring, fromwhere, mylength+1 );
+    memcpy (mystring, fromwhere, mylength + 1);
   }
   else {
     mylength = 0;
@@ -410,7 +418,7 @@ void TCollection_AsciiString::Copy(const TCollection_AsciiString& fromwhere)
   if (fromwhere.mystring) {
     mylength = fromwhere.mylength;
     mystring = Reallocate (mystring, mylength + 1);
-    strncpy( mystring, fromwhere.mystring, mylength+1 );
+    memcpy (mystring, fromwhere.mystring, mylength + 1);
   }
   else {
     mylength = 0;
@@ -898,7 +906,7 @@ void TCollection_AsciiString::Read(Standard_IStream& astream)
   // put to string
   mylength = Standard_Integer( strlen( buffer ));
   mystring = Reallocate (mystring, mylength + 1);
-  strncpy(mystring,buffer,mylength);
+  memcpy (mystring, buffer, mylength);
   mystring[mylength] = '\0';
 }
 
@@ -1107,16 +1115,18 @@ Standard_Integer TCollection_AsciiString::SearchFromEnd
 // ----------------------------------------------------------------------------
 // SetValue
 // ----------------------------------------------------------------------------
-void TCollection_AsciiString::SetValue(const Standard_Integer where,
-                                       const Standard_Character what)
+void TCollection_AsciiString::SetValue (const Standard_Integer theWhere,
+                                        const Standard_Character theWhat)
 {
-  if (where > 0 && where <= mylength) {
-    mystring[where-1] = what;
+  if (theWhere <= 0 || theWhere > mylength)
+  {
+    throw Standard_OutOfRange ("TCollection_AsciiString::SetValue(): out of range location");
   }
-  else {
-    throw Standard_OutOfRange("TCollection_AsciiString::SetValue : "
-                              "parameter where");
+  else if (theWhat == '\0')
+  {
+    throw Standard_OutOfRange ("TCollection_AsciiString::SetValue(): NULL terminator is passed");
   }
+  mystring[theWhere - 1] = theWhat;
 }
 
 // ----------------------------------------------------------------------------
@@ -1206,10 +1216,13 @@ void TCollection_AsciiString::SubString(const Standard_Integer FromIndex,
 {
 
   if (ToIndex > mylength || FromIndex <= 0 || FromIndex > ToIndex )
+  {
     throw Standard_OutOfRange();
+  }
+
   Standard_Integer newlength = ToIndex-FromIndex+1;
   res.mystring =Reallocate (res.mystring, newlength + 1);
-  strncpy( res.mystring, mystring + FromIndex - 1, newlength );
+  memcpy (res.mystring, mystring + FromIndex - 1, newlength);
   res.mystring[newlength] = '\0';
   res.mylength = newlength;
   return ;
