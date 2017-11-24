@@ -14,18 +14,15 @@ set SMALL_WIN_HEIGHT 512
 # other
 array set aBoxNames {}
 
-set aWithoutClippingSnapshot $imagedir/${casename}_without.png
-set aWithClippingSnapshot $imagedir/${casename}_with.png
-set aDiffImage $imagedir/${casename}_diff.png
-
 pload VISUALIZATION MODELING
+vclear
 vinit name=small_wnd l=32 t=32 w=$SMALL_WIN_WIDTH h=$SMALL_WIN_HEIGHT
 vactivate small_wnd
+vrenderparams -perfUpdateInterval 0
 vfrustumculling 0
 vautozfit 0
 vviewparams -scale 1.953125 -eye 0.57735026918962573 -0.57735026918962573 0.57735026918962573
 vzrange 1 512
-vclear
 vremove -all -noinfo
 
 set aInnerBoxesNum [expr $BOXES_NUM * $PERCENT_OF_INNER_BOXES / 100]
@@ -63,7 +60,10 @@ for {set i 0} {$i < $BOXES_NUM} {incr i} {
   vdisplay -noupdate $aBoxNames($i)
 }
 puts [vfps]
-vdump $aWithoutClippingSnapshot
+vrenderparams -perfCounters none
+vdump $imagedir/${casename}_cull_off_ref.png
+vrenderparams -perfCounters verbose|nofps|nocpu
+vdump $imagedir/${casename}_cull_off.png
 puts "All boxes were displayed."
 puts ""
 
@@ -75,12 +75,13 @@ for {set i 0} {$i < $BOXES_NUM} {incr i} {
   vdisplay -noupdate $aBoxNames($i)
 }
 puts [vfps]
-vdump $aWithClippingSnapshot
+vrenderparams -perfCounters none
+vdump $imagedir/${casename}_cull_on_ref.png
+vrenderparams -perfCounters verbose|nofps|nocpu
+vdump $imagedir/${casename}_cull_on.png
 puts "All boxes were displayed."
 
-set aDiffImageResult [diffimage $aWithClippingSnapshot $aWithoutClippingSnapshot 0.1 0 0 $aDiffImage]
+set aDiffImageResult [diffimage $imagedir/${casename}_cull_on_ref.png $imagedir/${casename}_cull_off_ref.png 0.1 0 0 $imagedir/${casename}_diff.png]
 if {$aDiffImageResult != 0} {
   puts "ERROR : Test failed: there is a difference between images rendered with and without clipping"
 }
-
-verase

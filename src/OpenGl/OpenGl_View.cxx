@@ -141,6 +141,7 @@ OpenGl_View::~OpenGl_View()
 void OpenGl_View::ReleaseGlResources (const Handle(OpenGl_Context)& theCtx)
 {
   myGraduatedTrihedron.Release (theCtx.operator->());
+  myFrameStatsPrs.Release (theCtx.operator->());
 
   if (!myTextureEnv.IsNull())
   {

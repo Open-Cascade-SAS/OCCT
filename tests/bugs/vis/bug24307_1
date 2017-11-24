@@ -15,18 +15,15 @@ set SMALL_WIN_HEIGHT 512
 # other
 array set aSphereNames {}
 
-set aWithoutClippingSnapshot $imagedir/${casename}_without.png
-set aWithClippingSnapshot $imagedir/${casename}_with.png
-set aDiffImage $imagedir/${casename}_diff.png
-
 pload VISUALIZATION MODELING
+vclear
 vinit name=small_wnd l=32 t=32 w=$SMALL_WIN_WIDTH h=$SMALL_WIN_HEIGHT
 vactivate small_wnd
+vrenderparams -perfUpdateInterval 0
 vfrustumculling 0
 vautozfit 0
 vviewparams -scale 1.953125 -eye 0.57735026918962573 -0.57735026918962573 0.57735026918962573
 vzrange 1 512
-vclear
 vremove -all -noinfo
 
 puts [vdrawsphere tmp_sph $SPHERE_FINENESS]
@@ -60,7 +57,10 @@ for {set i $aInnerSpheresNum} {$i < $SPHERES_NUM} {incr i} {
   set aSphereNames($i) $aCurrName
 }
 puts [vfps]
-vdump $aWithoutClippingSnapshot
+vrenderparams -perfCounters none
+vdump $imagedir/${casename}_cull_off_ref.png
+vrenderparams -perfCounters verbose|nofps|nocpu
+vdump $imagedir/${casename}_cull_off.png
 puts "All spheres were displayed."
 puts ""
 
@@ -70,13 +70,14 @@ puts "Start displaying spheres with clipping..."
 vfrustumculling 1
 vdisplayall
 puts [vfps]
-vdump $aWithClippingSnapshot
+vrenderparams -perfCounters none
+vdump $imagedir/${casename}_cull_on_ref.png
+vrenderparams -perfCounters verbose|nofps|nocpu
+vdump $imagedir/${casename}_cull_on.png
 puts "All spheres were displayed."
 puts ""
 
-set aDiffImageResult [diffimage $aWithClippingSnapshot $aWithoutClippingSnapshot 0.1 0 0 $aDiffImage]
+set aDiffImageResult [diffimage $imagedir/${casename}_cull_on_ref.png $imagedir/${casename}_cull_off_ref.png 0.1 0 0 $imagedir/${casename}_diff.png]
 if {$aDiffImageResult != 0} {
   puts "ERROR : Test failed: there is a difference between images rendered with and without clipping"
 }
-
-verase

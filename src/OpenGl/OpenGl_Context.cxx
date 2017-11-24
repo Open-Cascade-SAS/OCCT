@@ -28,6 +28,7 @@
 #include <OpenGl_ArbTexBindless.hxx>
 #include <OpenGl_GlCore44.hxx>
 #include <OpenGl_FrameBuffer.hxx>
+#include <OpenGl_FrameStats.hxx>
 #include <OpenGl_Sampler.hxx>
 #include <OpenGl_ShaderManager.hxx>
 #include <OpenGl_Workspace.hxx>
@@ -175,6 +176,7 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
   myHasRayTracing (Standard_False),
   myHasRayTracingTextures (Standard_False),
   myHasRayTracingAdaptiveSampling (Standard_False),
+  myFrameStats (new OpenGl_FrameStats()),
 #if !defined(GL_ES_VERSION_2_0)
   myPointSpriteOrig (GL_UPPER_LEFT),
   myRenderMode (GL_RENDER),

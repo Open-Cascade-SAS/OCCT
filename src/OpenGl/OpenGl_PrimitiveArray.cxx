@@ -224,7 +224,8 @@ Standard_Boolean OpenGl_PrimitiveArray::initNormalVbo (const Handle(OpenGl_Conte
     case 10: myVboAttribs = new OpenGl_VertexBufferT<OpenGl_VertexBuffer, 10>(*myAttribs); break;
   }
 
-  if (!myVboAttribs->init (theCtx, 0, myAttribs->NbElements, myAttribs->Data(), GL_NONE, myAttribs->Stride))
+  // specify data type as Byte and NbComponents as Stride, so that OpenGl_VertexBuffer::EstimatedDataSize() will return correct value
+  if (!myVboAttribs->init (theCtx, myAttribs->Stride, myAttribs->NbElements, myAttribs->Data(), GL_UNSIGNED_BYTE, myAttribs->Stride))
   {
     TCollection_ExtendedString aMsg;
     aMsg += "VBO creation for Primitive Array has failed for ";

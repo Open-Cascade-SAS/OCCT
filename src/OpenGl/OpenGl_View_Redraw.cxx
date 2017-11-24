@@ -29,6 +29,7 @@
 
 #include <OpenGl_AspectLine.hxx>
 #include <OpenGl_Context.hxx>
+#include <OpenGl_FrameStats.hxx>
 #include <OpenGl_Matrix.hxx>
 #include <OpenGl_Workspace.hxx>
 #include <OpenGl_View.hxx>
@@ -165,6 +166,7 @@ void OpenGl_View::Redraw()
   const Graphic3d_StereoMode   aStereoMode  = myRenderParams.StereoMode;
   Graphic3d_Camera::Projection aProjectType = myCamera->ProjectionType();
   Handle(OpenGl_Context)       aCtx         = myWorkspace->GetGlContext();
+  aCtx->FrameStats()->FrameStart (myWorkspace);
 
   // release pending GL resources
   aCtx->ReleaseDelayed();
@@ -564,6 +566,7 @@ void OpenGl_View::Redraw()
 
   // reset render mode state
   aCtx->FetchState();
+  aCtx->FrameStats()->FrameEnd (myWorkspace);
 
   myWasRedrawnGL = Standard_True;
 }
@@ -589,6 +592,7 @@ void OpenGl_View::RedrawImmediate()
   const Graphic3d_StereoMode   aStereoMode  = myRenderParams.StereoMode;
   Graphic3d_Camera::Projection aProjectType = myCamera->ProjectionType();
   OpenGl_FrameBuffer*          aFrameBuffer = myFBO.operator->();
+  aCtx->FrameStats()->FrameStart (myWorkspace);
 
   if ( aFrameBuffer == NULL
    && !aCtx->DefaultFrameBuffer().IsNull()
@@ -729,6 +733,7 @@ void OpenGl_View::RedrawImmediate()
   {
     aCtx->core11fwd->glFlush();
   }
+  aCtx->FrameStats()->FrameEnd (myWorkspace);
 
   myWasRedrawnGL = Standard_True;
 }
@@ -1022,6 +1027,10 @@ void OpenGl_View::render (Graphic3d_Camera::Projection theProjection,
         glDisable (GL_CULL_FACE);
     }
   }
+  else
+  {
+    renderFrameStats();
+  }
 
   // reset FFP state for safety
   aContext->BindProgram (Handle(OpenGl_ShaderProgram)());
@@ -1154,6 +1163,20 @@ void OpenGl_View::renderTrihedron (const Handle(OpenGl_Workspace) &theWorkspace)
   if (myToShowGradTrihedron)
   {
     myGraduatedTrihedron.Render (theWorkspace);
+  }
+}
+
+//=======================================================================
+//function : renderFrameStats
+//purpose  :
+//=======================================================================
+void OpenGl_View::renderFrameStats()
+{
+  if (myRenderParams.ToShowStats
+   && myRenderParams.CollectedStats != Graphic3d_RenderingParams::PerfCounters_NONE)
+  {
+    myFrameStatsPrs.Update (myWorkspace);
+    myFrameStatsPrs.Render (myWorkspace);
   }
 }
 

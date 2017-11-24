@@ -61,6 +61,9 @@ public:
   //! Destroy object - will release GPU memory if any
   Standard_EXPORT virtual void Release (OpenGl_Context* theCtx) Standard_OVERRIDE;
 
+  //! Returns estimated GPU memory usage.
+  Standard_EXPORT virtual Standard_Size EstimatedDataSize() const Standard_OVERRIDE;
+
   //! @return key of shared resource
   inline const TCollection_AsciiString& ResourceKey() const
   {

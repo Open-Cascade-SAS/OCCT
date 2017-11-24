@@ -45,6 +45,9 @@ public:
   //! @param theGlCtx - bound GL context, shouldn't be NULL.
   Standard_EXPORT virtual void Release (OpenGl_Context* theGlCtx) = 0;
 
+  //! Returns estimated GPU memory usage for holding data without considering overheads and allocation alignment rules.
+  virtual Standard_Size EstimatedDataSize() const = 0;
+
 private:
 
   //! Copy should be performed only within Handles!

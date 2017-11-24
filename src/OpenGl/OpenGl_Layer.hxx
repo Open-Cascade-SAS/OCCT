@@ -80,6 +80,9 @@ public:
   //! @return the number of structures
   Standard_Integer NbStructures() const { return myNbStructures; }
 
+  //! Number of NOT culled structures in the layer.
+  Standard_Integer NbStructuresNotCulled() const { return myNbStructuresNotCulled; }
+
   //! Returns the number of available priority levels
   Standard_Integer NbPriorities() const { return myArray.Length(); }
 
@@ -125,7 +128,7 @@ public:
                       const Standard_Boolean theToTraverse);
 
   //! Returns TRUE if layer is empty or has been discarded entirely by culling test.
-  bool IsCulled() const { return myNbStructures == 0 || myIsCulled; }
+  bool IsCulled() const { return myNbStructuresNotCulled == 0; }
 
   // Render all structures.
   void Render (const Handle(OpenGl_Workspace)&   theWorkspace,
@@ -137,13 +140,24 @@ public:
     return myBVHPrimitivesTrsfPers.Size();
   }
 
+public:
+
+  //! Returns set of OpenGl_Structures structures for building BVH tree.
+  const OpenGl_BVHClipPrimitiveSet& CullableStructuresBVH() const { return myBVHPrimitives; }
+
+  //! Returns set of transform persistent OpenGl_Structures for building BVH tree.
+  const OpenGl_BVHClipPrimitiveTrsfPersSet& CullableTrsfPersStructuresBVH() const { return myBVHPrimitivesTrsfPers; }
+
+  //! Returns indexed map of always rendered structures.
+  const NCollection_IndexedMap<const OpenGl_Structure*>& NonCullableStructures() const { return myAlwaysRenderedMap; }
+
 protected:
 
   //! Updates BVH trees if their state has been invalidated.
-  void updateBVH() const;
+  Standard_EXPORT void updateBVH() const;
 
   //! Iterates through the hierarchical list of existing structures and renders them all.
-  void renderAll (const Handle(OpenGl_Workspace)& theWorkspace) const;
+  Standard_EXPORT void renderAll (const Handle(OpenGl_Workspace)& theWorkspace) const;
 
 private:
 
@@ -152,6 +166,9 @@ private:
 
   //! Overall number of structures rendered in the layer.
   Standard_Integer myNbStructures;
+
+  //! Number of NOT culled structures in the layer.
+  Standard_Integer myNbStructuresNotCulled;
 
   //! Layer setting flags.
   Graphic3d_ZLayerSettings myLayerSettings;
@@ -173,9 +190,6 @@ private:
 
   //! Defines if the cached bounding box is outdated.
   mutable bool myIsBoundingBoxNeedsReset[2];
-
-  //! Flag indicating that this layer is marked culled as whole
-  bool myIsCulled;
 
   //! Cached layer bounding box.
   mutable Bnd_Box myBoundingBox[2];

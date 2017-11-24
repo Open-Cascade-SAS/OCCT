@@ -54,6 +54,9 @@ public:
   //! @param theContext [in] the resource context.
   Standard_EXPORT virtual void Release (OpenGl_Context* theContext) Standard_OVERRIDE;
 
+  //! Returns estimated GPU memory usage - not implemented.
+  virtual Standard_Size EstimatedDataSize() const Standard_OVERRIDE { return 0; }
+
   //! Return parent clipping plane structure.
   const Handle(Graphic3d_ClipPlane)& Plane() const { return myPlaneRoot; }
 

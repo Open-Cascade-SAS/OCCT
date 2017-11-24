@@ -56,6 +56,9 @@ public:
   //! Release GL resources.
   virtual void Release (OpenGl_Context* theGlCtx) Standard_OVERRIDE;
 
+  //! Returns estimated GPU memory usage - not implemented.
+  virtual Standard_Size EstimatedDataSize() const Standard_OVERRIDE { return 0; }
+
   //! Index of currently selected type of hatch.
   int TypeOfHatch() const { return myTypeOfHatch; }
 

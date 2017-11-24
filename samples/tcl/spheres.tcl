@@ -9,6 +9,8 @@ pload VISUALIZATION
 
 vinit View1 w=1024 h=1024
 vclear
+vdefaults -autoTriang 0
+vrenderparams -stats basic
 
 # parameter NB defines number of spheres by each coordinate
 set NB 10
@@ -23,11 +25,12 @@ for {set i 0} {$i < $NB} {incr i} {
     }
   }
 }
+eval compound $slist c
+incmesh c 0.006
 
 puts "Measuring FPS of display of spheres as separate objects..."
 vaxo
-vsetdispmode 1
-eval vdisplay $slist
+eval vdisplay -dispMode 1 $slist
 vfit
 
 # measure FPS
@@ -35,16 +38,14 @@ puts [set fps_separate [vfps]]
 vclear
 
 puts "Measuring FPS of display of spheres as single object..."
-eval compound $slist c
-vdisplay c
+vdisplay -dispMode 1 c
 
 # measure FPS
 puts [set fps_compound [vfps]]
 vclear
 
 # redisplay individual spheres, trying to avoid unnecessary internal updates
-#vfrustumculling 0 ;# try to disable updates of frustum culling structures
-eval vdisplay -mutable $slist
+eval vdisplay -dispMode 1 $slist
 
 # auxiliary procedure to make random update of variable
 proc upd {theValueName theDeltaName theTime theToRand} {
@@ -69,8 +70,10 @@ proc animateSpheres {{theDuration 10.0}} {
   for {set i 0} {$i < $::NB} {incr i $nb} {
     for {set j 0} {$j < $::NB} {incr j $nb} {
       for {set k 0} {$k < $::NB} {incr k $nb} {
+        # mark animated spheres mutable for faster updates
+        uplevel #0 vdisplay -dispMode 1 -mutable s$i$j$k
 #       vaspects -noupdate s$i$j$k -setcolor red -setmaterial plastic
-        vaspects -noupdate s$i$j$k -setcolor red
+        uplevel #0 vaspects -noupdate s$i$j$k -setcolor red
         set x$i$j$k  0.0
         set y$i$j$k  0.0
         set z$i$j$k  0.0

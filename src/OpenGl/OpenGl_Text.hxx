@@ -114,10 +114,10 @@ protected:
   friend class OpenGl_Trihedron;
   friend class OpenGl_GraduatedTrihedron;
 
-private:
-
   //! Release cached VBO resources
-  void releaseVbos (OpenGl_Context* theCtx);
+  Standard_EXPORT void releaseVbos (OpenGl_Context* theCtx);
+
+private:
 
   //! Setup matrix.
   void setupMatrix (const Handle(OpenGl_Context)& theCtx,

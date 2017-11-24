@@ -44,6 +44,9 @@ public:
   //! Destroys object - will release GPU memory if any.
   Standard_EXPORT virtual void Release (OpenGl_Context* theContext) Standard_OVERRIDE;
 
+  //! Returns estimated GPU memory usage - not implemented.
+  virtual Standard_Size EstimatedDataSize() const Standard_OVERRIDE { return 0; }
+
   //! Creates an uninitialized sampler object.
   Standard_EXPORT Standard_Boolean Create (const Handle(OpenGl_Context)& theContext);
 

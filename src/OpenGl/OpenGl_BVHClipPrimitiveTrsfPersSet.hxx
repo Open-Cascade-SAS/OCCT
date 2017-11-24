@@ -69,6 +69,9 @@ public:
   //! Returns the structure corresponding to the given ID.
   const OpenGl_Structure* GetStructureById (Standard_Integer theId);
 
+  //! Access directly a collection of structures.
+  const NCollection_IndexedMap<const OpenGl_Structure*>& Structures() const { return myStructs; }
+
   //! Marks object state as outdated (needs BVH rebuilding).
   void MarkDirty()
   {

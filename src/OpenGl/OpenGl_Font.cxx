@@ -80,6 +80,20 @@ void OpenGl_Font::Release (OpenGl_Context* theCtx)
 }
 
 // =======================================================================
+// function : EstimatedDataSize
+// purpose  :
+// =======================================================================
+Standard_Size OpenGl_Font::EstimatedDataSize() const
+{
+  Standard_Size aSize = 0;
+  for (NCollection_Vector<Handle(OpenGl_Texture)>::Iterator aTexIter (myTextures); aTexIter.More(); aTexIter.Next())
+  {
+    aSize += aTexIter.Value()->EstimatedDataSize();
+  }
+  return aSize;
+}
+
+// =======================================================================
 // function : Init
 // purpose  :
 // =======================================================================

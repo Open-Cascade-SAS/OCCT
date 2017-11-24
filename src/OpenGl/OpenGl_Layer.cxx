@@ -32,10 +32,10 @@ OpenGl_Layer::OpenGl_Layer (const Standard_Integer theNbPriorities,
                             const Handle(Select3D_BVHBuilder3d)& theBuilder)
 : myArray                     (0, theNbPriorities - 1),
   myNbStructures              (0),
+  myNbStructuresNotCulled     (0),
   myBVHPrimitivesTrsfPers     (theBuilder),
   myBVHIsLeftChildQueuedFirst (Standard_True),
-  myIsBVHPrimitivesNeedsReset (Standard_False),
-  myIsCulled (Standard_False)
+  myIsBVHPrimitivesNeedsReset (Standard_False)
 {
   myIsBoundingBoxNeedsReset[0] = myIsBoundingBoxNeedsReset[1] = true;
 }
@@ -488,15 +488,16 @@ void OpenGl_Layer::UpdateCulling (const OpenGl_BVHTreeSelector& theSelector,
 {
   updateBVH();
 
-  myIsCulled = false;
-  for (OpenGl_ArrayOfIndexedMapOfStructure::Iterator aMapIter (myArray); aMapIter.More(); aMapIter.Next())
+  myNbStructuresNotCulled = myNbStructures;
+  for (OpenGl_IndexedMapOfStructure::Iterator aStructIter (myBVHPrimitives.Structures()); aStructIter.More(); aStructIter.Next())
   {
-    const OpenGl_IndexedMapOfStructure& aStructures = aMapIter.Value();
-    for (OpenGl_IndexedMapOfStructure::Iterator aStructIter (aStructures); aStructIter.More(); aStructIter.Next())
-    {
-      const OpenGl_Structure* aStruct = aStructIter.Value();
-      aStruct->SetCulled (theToTraverse);
-    }
+    const OpenGl_Structure* aStruct = aStructIter.Value();
+    aStruct->SetCulled (theToTraverse);
+  }
+  for (OpenGl_IndexedMapOfStructure::Iterator aStructIter (myBVHPrimitivesTrsfPers.Structures()); aStructIter.More(); aStructIter.Next())
+  {
+    const OpenGl_Structure* aStruct = aStructIter.Value();
+    aStruct->SetCulled (theToTraverse);
   }
 
   if (!theToTraverse)
@@ -509,7 +510,7 @@ void OpenGl_Layer::UpdateCulling (const OpenGl_BVHTreeSelector& theSelector,
     return;
   }
 
-  myIsCulled = myAlwaysRenderedMap.IsEmpty();
+  myNbStructuresNotCulled = myAlwaysRenderedMap.Extent();
   OpenGl_BVHTreeSelector::CullingContext aCullCtx;
   theSelector.SetCullingDistance(aCullCtx, myLayerSettings.CullingDistance());
   theSelector.SetCullingSize    (aCullCtx, myLayerSettings.CullingSize());
@@ -543,7 +544,6 @@ void OpenGl_Layer::UpdateCulling (const OpenGl_BVHTreeSelector& theSelector,
       continue;
     }
 
-    myIsCulled = false;
     Standard_Integer aStack[BVH_Constants_MaxTreeDepth];
     Standard_Integer aHead = -1;
     Standard_Integer aNode = 0; // a root node
@@ -584,6 +584,7 @@ void OpenGl_Layer::UpdateCulling (const OpenGl_BVHTreeSelector& theSelector,
                                         ? myBVHPrimitivesTrsfPers.GetStructureById (aIdx)
                                         : myBVHPrimitives.GetStructureById (aIdx);
         aStruct->MarkAsNotCulled();
+        ++myNbStructuresNotCulled;
         if (aHead < 0)
         {
           break;

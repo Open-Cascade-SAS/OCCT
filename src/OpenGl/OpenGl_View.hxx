@@ -40,6 +40,7 @@
 #include <OpenGl_BVHTreeSelector.hxx>
 #include <OpenGl_Context.hxx>
 #include <OpenGl_FrameBuffer.hxx>
+#include <OpenGl_FrameStatsPrs.hxx>
 #include <OpenGl_GraduatedTrihedron.hxx>
 #include <OpenGl_LayerList.hxx>
 #include <OpenGl_LineAttributes.hxx>
@@ -416,6 +417,9 @@ protected: //! @name Rendering of GL graphics (with prepared drawing buffer).
   //! Renders trihedron.
   void renderTrihedron (const Handle(OpenGl_Workspace) &theWorkspace);
 
+  //! Renders frame statistics.
+  void renderFrameStats();
+
 private:
 
   //! Adds the structure to display lists of the view.
@@ -499,6 +503,7 @@ protected:
   OpenGl_BVHTreeSelector myBVHSelector;
 
   OpenGl_GraduatedTrihedron myGraduatedTrihedron;
+  OpenGl_FrameStatsPrs      myFrameStatsPrs;
 
   Handle(OpenGl_TextureSet) myTextureEnv;
 
@@ -1087,6 +1092,7 @@ public:
   friend class OpenGl_GraphicDriver;
   friend class OpenGl_Workspace;
   friend class OpenGl_LayerList;
+  friend class OpenGl_FrameStats;
 };
 
 #endif // _OpenGl_View_Header

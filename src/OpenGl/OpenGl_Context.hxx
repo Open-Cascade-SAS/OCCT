@@ -138,6 +138,7 @@ class OpenGl_FrameBuffer;
 class OpenGl_Sampler;
 class OpenGl_ShaderProgram;
 class OpenGl_ShaderManager;
+class OpenGl_FrameStats;
 
 enum OpenGl_FeatureFlag
 {
@@ -199,6 +200,8 @@ class OpenGl_Context : public Standard_Transient
   DEFINE_STANDARD_RTTIEXT(OpenGl_Context, Standard_Transient)
   friend class OpenGl_Window;
 public:
+
+  typedef NCollection_Shared< NCollection_DataMap<TCollection_AsciiString, Handle(OpenGl_Resource)> > OpenGl_ResourcesMap;
 
   //! Function for getting power of to number larger or equal to input number.
   //! @param theNumber    number to 'power of two'
@@ -444,6 +447,9 @@ public:
   //! Clean up the delayed release queue.
   Standard_EXPORT void ReleaseDelayed();
 
+  //! Return map of shared resources.
+  const OpenGl_ResourcesMap& SharedResources() const { return *mySharedResources; }
+
   //! @return tool for management of clippings within this context.
   inline OpenGl_Clipping& ChangeClipping() { return myClippingState; }
 
@@ -589,6 +595,9 @@ public:
   }
 
 public: //! @name methods to alter or retrieve current state
+
+  //! Return structure holding frame statistics.
+  const Handle(OpenGl_FrameStats)& FrameStats() const { return myFrameStats; }
 
   //! Return cached viewport definition (x, y, width, height).
   const Standard_Integer* Viewport() const { return myViewport; }
@@ -862,7 +871,6 @@ private: // system-dependent fields
 private: // context info
 
   typedef NCollection_Shared< NCollection_DataMap<TCollection_AsciiString, Standard_Integer> > OpenGl_DelayReleaseMap;
-  typedef NCollection_Shared< NCollection_DataMap<TCollection_AsciiString, Handle(OpenGl_Resource)> > OpenGl_ResourcesMap;
   typedef NCollection_Shared< NCollection_List<Handle(OpenGl_Resource)> > OpenGl_ResourcesStack;
   typedef NCollection_SparseArray<Standard_Integer> OpenGl_DrawBuffers;
 
@@ -898,6 +906,7 @@ private: // context info
 
 private: //! @name fields tracking current state
 
+  Handle(OpenGl_FrameStats)     myFrameStats;      //!< structure accumulating frame statistics
   Handle(OpenGl_ShaderProgram)  myActiveProgram;   //!< currently active GLSL program
   Handle(OpenGl_TextureSet)     myActiveTextures;  //!< currently bound textures
                                                    //!< currently active sampler objects

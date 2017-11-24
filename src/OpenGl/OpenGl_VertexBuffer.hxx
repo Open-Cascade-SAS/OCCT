@@ -225,6 +225,14 @@ public:
 
 public: //! @name advanced methods
 
+  //! Returns estimated GPU memory usage for holding data without considering overheads and allocation alignment rules.
+  virtual Standard_Size EstimatedDataSize() const Standard_OVERRIDE
+  {
+    return IsValid()
+         ? sizeOfGlType (myDataType) * myComponentsNb * myElemsNb
+         : 0;
+  }
+
   //! @return size of specified GL type
   static size_t sizeOfGlType (const GLenum theType)
   {

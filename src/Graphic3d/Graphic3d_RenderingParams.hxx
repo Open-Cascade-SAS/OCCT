@@ -16,7 +16,8 @@
 #ifndef _Graphic3d_RenderingParams_HeaderFile
 #define _Graphic3d_RenderingParams_HeaderFile
 
-#include <Graphic3d_Mat4.hxx>
+#include <Graphic3d_AspectText3d.hxx>
+#include <Graphic3d_TransformPers.hxx>
 #include <Graphic3d_RenderTransparentMethod.hxx>
 #include <Graphic3d_RenderingMode.hxx>
 #include <Graphic3d_StereoMode.hxx>
@@ -42,6 +43,31 @@ public:
     Anaglyph_YellowBlue_Optimized, //!< optimized filter for Yellow-Blue   glasses (RG+B)
     Anaglyph_GreenMagenta_Simple,  //!< simple    filter for Green-Magenta glasses (G+RB)
     Anaglyph_UserDefined           //!< use externally specified matrices
+  };
+
+  //! Statistics display flags.
+  enum PerfCounters
+  {
+    PerfCounters_NONE        = 0x000, //!< no stats
+    PerfCounters_FrameRate   = 0x001, //!< Frame Rate
+    PerfCounters_CPU         = 0x002, //!< CPU utilization
+    PerfCounters_Layers      = 0x004, //!< count layers (groups of structures)
+    PerfCounters_Structures  = 0x008, //!< count low-level Structures (normal unhighlighted Presentable Object is usually represented by 1 Structure)
+    //
+    PerfCounters_Groups      = 0x010, //!< count primitive Groups (1 Structure holds 1 or more primitive Group)
+    PerfCounters_GroupArrays = 0x020, //!< count Arrays within Primitive Groups (optimal primitive Group holds 1 Array)
+    //
+    PerfCounters_Triangles   = 0x040, //!< count Triangles
+    PerfCounters_Points      = 0x080, //!< count Points
+    //
+    PerfCounters_EstimMem    = 0x100, //!< estimated GPU memory usage
+    //! show basic statistics
+    PerfCounters_Basic = PerfCounters_FrameRate | PerfCounters_CPU | PerfCounters_Layers | PerfCounters_Structures,
+    //! extended (verbose) statistics
+    PerfCounters_Extended = PerfCounters_Basic
+                          | PerfCounters_Groups | PerfCounters_GroupArrays
+                          | PerfCounters_Triangles | PerfCounters_Points
+                          | PerfCounters_EstimMem,
   };
 
 public:
@@ -78,7 +104,14 @@ public:
     StereoMode (Graphic3d_StereoMode_QuadBuffer),
     AnaglyphFilter (Anaglyph_RedCyan_Optimized),
     ToReverseStereo (Standard_False),
-
+    //
+    StatsPosition (new Graphic3d_TransformPers (Graphic3d_TMF_2d, Aspect_TOTP_LEFT_UPPER, Graphic3d_Vec2i (20, 20))),
+    StatsTextAspect (new Graphic3d_AspectText3d()),
+    StatsUpdateInterval (1.0),
+    StatsTextHeight (16),
+    CollectedStats (PerfCounters_Basic),
+    ToShowStats (Standard_False),
+    //
     Resolution (THE_DEFAULT_RESOLUTION)
   {
     const Graphic3d_Vec4 aZero (0.0f, 0.0f, 0.0f, 0.0f);
@@ -90,6 +123,13 @@ public:
     AnaglyphRight.SetRow (1, Graphic3d_Vec4 (0.0f,  1.0f,  0.0f, 0.0f));
     AnaglyphRight.SetRow (2, Graphic3d_Vec4 (0.0f,  0.0f,  1.0f, 0.0f));
     AnaglyphRight.SetRow (3, aZero);
+
+    StatsTextAspect->SetColor (Quantity_NOC_WHITE);
+    StatsTextAspect->SetColorSubTitle (Quantity_NOC_BLACK);
+    StatsTextAspect->SetFont (Font_NOF_ASCII_MONO);
+    StatsTextAspect->SetDisplayType (Aspect_TODT_SHADOW);
+    StatsTextAspect->SetTextZoomable (Standard_False);
+    StatsTextAspect->SetTextFontAspect (Font_FA_Regular);
   }
 
   //! Returns resolution ratio.
@@ -135,6 +175,20 @@ public:
   Graphic3d_Mat4                    AnaglyphLeft;                //!< left  anaglyph filter (in normalized colorspace), Color = AnaglyphRight * theColorRight + AnaglyphLeft * theColorLeft;
   Graphic3d_Mat4                    AnaglyphRight;               //!< right anaglyph filter (in normalized colorspace), Color = AnaglyphRight * theColorRight + AnaglyphLeft * theColorLeft;
   Standard_Boolean                  ToReverseStereo;             //!< flag to reverse stereo pair, FALSE by default
+
+  Handle(Graphic3d_TransformPers)   StatsPosition;               //!< location of stats, upper-left position by default
+  Handle(Graphic3d_AspectText3d)    StatsTextAspect;             //!< stats text aspect
+  Standard_ShortReal                StatsUpdateInterval;         //!< time interval between stats updates in seconds, 1.0 second by default;
+                                                                 //!  too often updates might impact performance and will smear text within widgets
+                                                                 //!  (especially framerate, which is better averaging);
+                                                                 //!  0.0 interval will force updating on each frame
+  Standard_Integer                  StatsTextHeight;             //!< stats text size; 16 by default
+  PerfCounters                      CollectedStats;              //!< performance counters to collect, PerfCounters_Basic by default;
+                                                                 //!  too verbose options might impact rendering performance,
+                                                                 //!  because some counters might lack caching optimization (and will require expensive iteration through all data structures)
+  Standard_Boolean                  ToShowStats;                 //!< display performance statistics, FALSE by default;
+                                                                 //!  note that counters specified within CollectedStats will be updated nevertheless
+                                                                 //!  of visibility of widget managed by ToShowStats flag (e.g. stats can be retrieved by application for displaying using other methods)
 
   unsigned int                      Resolution;                  //!< Pixels density (PPI), defines scaling factor for parameters like text size
                                                                  //!  (when defined in screen-space units rather than in 3D) to be properly displayed

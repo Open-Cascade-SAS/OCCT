@@ -13,6 +13,10 @@ OpenGl_AspectMarker.cxx
 OpenGl_AspectMarker.hxx
 OpenGl_AspectText.cxx
 OpenGl_AspectText.hxx
+OpenGl_FrameStats.cxx
+OpenGl_FrameStats.hxx
+OpenGl_FrameStatsPrs.cxx
+OpenGl_FrameStatsPrs.hxx
 OpenGl_Group.hxx
 OpenGl_Group.cxx
 OpenGl_Structure.hxx

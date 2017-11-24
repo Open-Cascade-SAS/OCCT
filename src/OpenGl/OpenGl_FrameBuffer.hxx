@@ -259,6 +259,9 @@ public:
     return myGlDepthRBufferId;
   }
 
+  //! Returns estimated GPU memory usage for holding data without considering overheads and allocation alignment rules.
+  Standard_EXPORT virtual Standard_Size EstimatedDataSize() const Standard_OVERRIDE;
+
 protected:
 
   Standard_Boolean isValidFrameBuffer() const

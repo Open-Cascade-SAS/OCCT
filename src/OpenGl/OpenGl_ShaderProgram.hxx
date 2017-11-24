@@ -176,6 +176,9 @@ public:
   //! Destroys shader program.
   Standard_EXPORT virtual void Release (OpenGl_Context* theCtx) Standard_OVERRIDE;
 
+  //! Returns estimated GPU memory usage - cannot be easily estimated.
+  virtual Standard_Size EstimatedDataSize() const Standard_OVERRIDE { return 0; }
+
   //! Attaches shader object to the program object.
   Standard_EXPORT Standard_Boolean AttachShader (const Handle(OpenGl_Context)&      theCtx,
                                                  const Handle(OpenGl_ShaderObject)& theShader);

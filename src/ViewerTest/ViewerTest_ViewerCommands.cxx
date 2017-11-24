@@ -9822,6 +9822,113 @@ static int VLight (Draw_Interpretor& theDi,
   return 0;
 }
 
+//! Read Graphic3d_RenderingParams::PerfCounters flag.
+static Standard_Boolean parsePerfStatsFlag (const TCollection_AsciiString& theValue,
+                                            Standard_Boolean& theToReset,
+                                            Graphic3d_RenderingParams::PerfCounters& theFlagsRem,
+                                            Graphic3d_RenderingParams::PerfCounters& theFlagsAdd)
+{
+  Graphic3d_RenderingParams::PerfCounters aFlag = Graphic3d_RenderingParams::PerfCounters_NONE;
+  TCollection_AsciiString aVal = theValue;
+  Standard_Boolean toReverse = Standard_False;
+  if (aVal == "none")
+  {
+    theToReset = Standard_True;
+    return Standard_True;
+  }
+  else if (aVal.StartsWith ("-"))
+  {
+    toReverse = Standard_True;
+    aVal = aVal.SubString (2, aVal.Length());
+  }
+  else if (aVal.StartsWith ("no"))
+  {
+    toReverse = Standard_True;
+    aVal = aVal.SubString (3, aVal.Length());
+  }
+  else if (aVal.StartsWith ("+"))
+  {
+    aVal = aVal.SubString (2, aVal.Length());
+  }
+  else
+  {
+    theToReset = Standard_True;
+  }
+
+  if (     aVal == "fps"
+        || aVal == "framerate")  aFlag = Graphic3d_RenderingParams::PerfCounters_FrameRate;
+  else if (aVal == "cpu")        aFlag = Graphic3d_RenderingParams::PerfCounters_CPU;
+  else if (aVal == "layers")     aFlag = Graphic3d_RenderingParams::PerfCounters_Layers;
+  else if (aVal == "structs"
+        || aVal == "structures"
+        || aVal == "objects")    aFlag = Graphic3d_RenderingParams::PerfCounters_Structures;
+  else if (aVal == "groups")     aFlag = Graphic3d_RenderingParams::PerfCounters_Groups;
+  else if (aVal == "arrays")     aFlag = Graphic3d_RenderingParams::PerfCounters_GroupArrays;
+  else if (aVal == "tris"
+        || aVal == "triangles")  aFlag = Graphic3d_RenderingParams::PerfCounters_Triangles;
+  else if (aVal == "pnts"
+        || aVal == "points")     aFlag = Graphic3d_RenderingParams::PerfCounters_Points;
+  else if (aVal == "mem"
+        || aVal == "gpumem"
+        || aVal == "estimmem")   aFlag = Graphic3d_RenderingParams::PerfCounters_EstimMem;
+  else if (aVal == "basic")      aFlag = Graphic3d_RenderingParams::PerfCounters_Basic;
+  else if (aVal == "extended"
+        || aVal == "verbose"
+        || aVal == "extra")      aFlag = Graphic3d_RenderingParams::PerfCounters_Extended;
+  else
+  {
+    return Standard_False;
+  }
+
+  if (toReverse)
+  {
+    theFlagsRem = Graphic3d_RenderingParams::PerfCounters(theFlagsRem | aFlag);
+  }
+  else
+  {
+    theFlagsAdd = Graphic3d_RenderingParams::PerfCounters(theFlagsAdd | aFlag);
+  }
+  return Standard_True;
+}
+
+//! Read Graphic3d_RenderingParams::PerfCounters flags.
+static Standard_Boolean convertToPerfStatsFlags (const TCollection_AsciiString& theValue,
+                                                 Graphic3d_RenderingParams::PerfCounters& theFlags)
+{
+  TCollection_AsciiString aValue = theValue;
+  Graphic3d_RenderingParams::PerfCounters aFlagsRem = Graphic3d_RenderingParams::PerfCounters_NONE;
+  Graphic3d_RenderingParams::PerfCounters aFlagsAdd = Graphic3d_RenderingParams::PerfCounters_NONE;
+  Standard_Boolean toReset = Standard_False;
+  for (;;)
+  {
+    Standard_Integer aSplitPos = aValue.Search ("|");
+    if (aSplitPos <= 0)
+    {
+      if (!parsePerfStatsFlag (aValue, toReset, aFlagsRem, aFlagsAdd))
+      {
+        return Standard_False;
+      }
+      if (toReset)
+      {
+        theFlags = Graphic3d_RenderingParams::PerfCounters_NONE;
+      }
+      theFlags = Graphic3d_RenderingParams::PerfCounters(theFlags |  aFlagsAdd);
+      theFlags = Graphic3d_RenderingParams::PerfCounters(theFlags & ~aFlagsRem);
+      return Standard_True;
+    }
+
+    if (aSplitPos > 1)
+    {
+      TCollection_AsciiString aSubValue = aValue.SubString (1, aSplitPos - 1);
+      if (!parsePerfStatsFlag (aSubValue, toReset, aFlagsRem, aFlagsAdd))
+      {
+        return Standard_False;
+      }
+    }
+    aValue = aValue.SubString (aSplitPos + 1, aValue.Length());
+  }
+}
+
 //=======================================================================
 //function : VRenderParams
 //purpose  : Enables/disables rendering features
@@ -9917,6 +10024,46 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
       case V3d_FLAT:    theDI << "flat";    break;
       case V3d_GOURAUD: theDI << "gouraud"; break;
       case V3d_PHONG:   theDI << "phong";   break;
+    }
+    {
+      theDI << "perfCounters:";
+      if ((aParams.CollectedStats & Graphic3d_RenderingParams::PerfCounters_FrameRate) != 0)
+      {
+        theDI << " fps";
+      }
+      if ((aParams.CollectedStats & Graphic3d_RenderingParams::PerfCounters_CPU) != 0)
+      {
+        theDI << " cpu";
+      }
+      if ((aParams.CollectedStats & Graphic3d_RenderingParams::PerfCounters_Structures) != 0)
+      {
+        theDI << " structs";
+      }
+      if ((aParams.CollectedStats & Graphic3d_RenderingParams::PerfCounters_Groups) != 0)
+      {
+        theDI << " groups";
+      }
+      if ((aParams.CollectedStats & Graphic3d_RenderingParams::PerfCounters_GroupArrays) != 0)
+      {
+        theDI << " arrays";
+      }
+      if ((aParams.CollectedStats & Graphic3d_RenderingParams::PerfCounters_Triangles) != 0)
+      {
+        theDI << " tris";
+      }
+      if ((aParams.CollectedStats & Graphic3d_RenderingParams::PerfCounters_Points) != 0)
+      {
+        theDI << " pnts";
+      }
+      if ((aParams.CollectedStats & Graphic3d_RenderingParams::PerfCounters_EstimMem) != 0)
+      {
+        theDI << " gpumem";
+      }
+      if (aParams.CollectedStats == Graphic3d_RenderingParams::PerfCounters_NONE)
+      {
+        theDI << " none";
+      }
+      theDI << "\n";
     }
     theDI << "depth pre-pass: " << (aParams.ToEnableDepthPrepass        ? "on" : "off") << "\n";
     theDI << "\n";
@@ -10541,6 +10688,39 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
         std::cout << "Error: wrong syntax at argument'" << anArg << "'.\n";
         return 1;
       }
+    }
+    else if (aFlag == "-performancestats"
+          || aFlag == "-performancecounters"
+          || aFlag == "-perfstats"
+          || aFlag == "-perfcounters"
+          || aFlag == "-stats")
+    {
+      if (++anArgIter >= theArgNb)
+      {
+        std::cout << "Error: wrong syntax at argument '" << anArg << "'\n";
+        return 1;
+      }
+
+      TCollection_AsciiString aFlagsStr (theArgVec[anArgIter]);
+      aFlagsStr.LowerCase();
+      Graphic3d_RenderingParams::PerfCounters aFlags = aView->ChangeRenderingParams().CollectedStats;
+      if (!convertToPerfStatsFlags (aFlagsStr, aFlags))
+      {
+        std::cout << "Error: wrong syntax at argument '" << anArg << "'\n";
+        return 1;
+      }
+      aView->ChangeRenderingParams().CollectedStats = aFlags;
+      aView->ChangeRenderingParams().ToShowStats = aFlags != Graphic3d_RenderingParams::PerfCounters_NONE;
+    }
+    else if (aFlag == "-perfupdateinterval"
+          || aFlag == "-statsupdateinterval")
+    {
+      if (++anArgIter >= theArgNb)
+      {
+        std::cout << "Error: wrong syntax at argument '" << anArg << "'\n";
+        return 1;
+      }
+      aView->ChangeRenderingParams().StatsUpdateInterval = (Standard_ShortReal )Draw::Atof (theArgVec[anArgIter]);
     }
     else
     {
@@ -12062,6 +12242,9 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "\n      '-exposure     value'       Exposure value for tone mapping (0.0 value disables the effect)"
     "\n      '-whitepoint   value'       White point value for filmic tone mapping"
     "\n      '-tonemapping  mode'        Tone mapping mode (disabled, filmic)"
+    "\n      '-perfCounters none|fps|cpu|layers|structures|groups|arrays|triagles|points|gpuMem|basic|extended|nofps'"
+    "\n                                  Show/hide performance counters (flags can be combined)"
+    "\n      '-perfUpdateInterval nbSeconds' Performance counters update interval"
     "\n    Unlike vcaps, these parameters dramatically change visual properties."
     "\n    Command is intended to control presentation quality depending on"
     "\n    hardware capabilities and performance.",

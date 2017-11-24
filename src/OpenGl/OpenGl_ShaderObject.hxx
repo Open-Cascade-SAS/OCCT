@@ -55,6 +55,9 @@ public:
   //! Destroys shader object.
   Standard_EXPORT virtual void Release (OpenGl_Context* theCtx) Standard_OVERRIDE;
 
+  //! Returns estimated GPU memory usage - not implemented.
+  virtual Standard_Size EstimatedDataSize() const Standard_OVERRIDE { return 0; }
+
   //! Returns type of shader object.
   GLenum Type() const { return myType; }
   
