@@ -441,18 +441,13 @@ void OpenGl_Context::SetDrawBuffers (const Standard_Integer theNb, const Standar
   Standard_Boolean useDefaultFbo = Standard_False;
   for (Standard_Integer anI = 0; anI < theNb; ++anI)
   {
-#if !defined(GL_ES_VERSION_2_0)
-    const Standard_Integer aDrawBuffer = !myIsStereoBuffers ? stereoToMonoBuffer (theDrawBuffers[anI]) : theDrawBuffers[anI];
-#else
-    const Standard_Integer aDrawBuffer = theDrawBuffers[anI];
-#endif
-    if (aDrawBuffer < GL_COLOR_ATTACHMENT0 && aDrawBuffer != GL_NONE)
+    if (theDrawBuffers[anI] < GL_COLOR_ATTACHMENT0 && theDrawBuffers[anI] != GL_NONE)
     {
       useDefaultFbo = Standard_True;
     }
-    else if (aDrawBuffer != GL_NONE)
+    else if (theDrawBuffers[anI] != GL_NONE)
     {
-      myDrawBuffers.SetValue (anI, aDrawBuffer);
+      myDrawBuffers.SetValue (anI, theDrawBuffers[anI]);
     }
   }
   if (arbFBO != NULL && useDefaultFbo)

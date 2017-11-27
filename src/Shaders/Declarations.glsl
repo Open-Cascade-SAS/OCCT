@@ -24,6 +24,10 @@
 //! Specifies the length of array of clipping planes, which is 8 by default. Defined by Shader Manager.
 // #define THE_MAX_CLIP_PLANES 8
 
+//! @def THE_NB_FRAG_OUTPUTS
+//! Specifies the length of array of Fragment Shader outputs, which is 1 by default. Defined by Shader Manager.
+// #define THE_NB_FRAG_OUTPUTS 1
+
 // compatibility macros
 #if (__VERSION__ >= 130)
   #define THE_ATTRIBUTE  in
@@ -58,20 +62,43 @@
 #elif defined(FRAGMENT_SHADER)
   #if (__VERSION__ >= 130)
     #ifdef OCC_ENABLE_draw_buffers
-      out vec4 occFragColorArray[2];
-      #define occFragColor    occFragColorArray[0]
-      #define occFragCoverage occFragColorArray[1]
+      out vec4 occFragColorArray[THE_NB_FRAG_OUTPUTS];
+      #define occFragColorArrayAlias occFragColorArray
+      #define occFragColor0 occFragColorArray[0]
     #else
-      out vec4 occFragColor;
+      out vec4 occFragColor0;
     #endif
   #else
     #ifdef OCC_ENABLE_draw_buffers
-      #define occFragColor    gl_FragData[0]
-      #define occFragCoverage gl_FragData[1]
+      #define occFragColorArrayAlias gl_FragData
+      #define occFragColor0 gl_FragData[0]
     #else
-      #define occFragColor gl_FragColor
+      #define occFragColor0 gl_FragColor
     #endif
   #endif
+
+  #if (THE_NB_FRAG_OUTPUTS >= 2)
+    #define occFragColor1 occFragColorArrayAlias[1]
+  #else
+    vec4 occFragColor1;
+  #endif
+  #if (THE_NB_FRAG_OUTPUTS >= 3)
+    #define occFragColor2 occFragColorArrayAlias[2]
+  #else
+    vec4 occFragColor2;
+  #endif
+  #if (THE_NB_FRAG_OUTPUTS >= 4)
+    #define occFragColor3 occFragColorArrayAlias[3]
+  #else
+    vec4 occFragColor3;
+  #endif
+
+  // Built-in outputs notation
+  #define occFragColor    occFragColor0
+  #define occFragCoverage occFragColor1
+
+  //! Define the main Fragment Shader output - color value.
+  void occSetFragColor (in vec4 theColor);
 #endif
 
 // Matrix state

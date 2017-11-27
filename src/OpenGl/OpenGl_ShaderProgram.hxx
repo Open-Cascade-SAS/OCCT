@@ -226,6 +226,13 @@ public:
   //! to be used for initialization occClipPlaneEquations (OpenGl_OCC_CLIP_PLANE_EQUATIONS).
   Standard_Integer NbClipPlanesMax() const { return myNbClipPlanesMax; }
 
+  //! Return the length of array of Fragment Shader outputs (THE_NB_FRAG_OUTPUTS),
+  //! to be used for initialization occFragColorArray/occFragColorN.
+  Standard_Integer NbFragmentOutputs() const { return myNbFragOutputs; }
+
+  //! Return true if Fragment Shader color should output the weighted OIT coverage; FALSE by default.
+  Standard_Boolean HasWeightOitOutput() const { return myHasWeightOitOutput; }
+
 private:
 
   //! Returns index of last modification of variables of specified state type.
@@ -569,6 +576,8 @@ protected:
   Standard_Integer                myShareCount;    //!< program users count, initialized with 1 (already shared by one user)
   Standard_Integer                myNbLightsMax;   //!< length of array of light sources (THE_MAX_LIGHTS)
   Standard_Integer                myNbClipPlanesMax; //!< length of array of clipping planes (THE_MAX_CLIP_PLANES)
+  Standard_Integer                myNbFragOutputs; //!< length of array of Fragment Shader outputs (THE_NB_FRAG_OUTPUTS)
+  Standard_Boolean                myHasWeightOitOutput; //!< flag indicating that Fragment Shader includes weighted OIT coverage
   Standard_Boolean                myHasTessShader; //!< flag indicating that program defines tessellation stage
 
 protected:

@@ -151,6 +151,8 @@ OpenGl_ShaderProgram::OpenGl_ShaderProgram (const Handle(Graphic3d_ShaderProgram
   myShareCount(1),
   myNbLightsMax (0),
   myNbClipPlanesMax (0),
+  myNbFragOutputs (1),
+  myHasWeightOitOutput (false),
   myHasTessShader (false)
 {
   memset (myCurrentState, 0, sizeof (myCurrentState));
@@ -180,6 +182,8 @@ Standard_Boolean OpenGl_ShaderProgram::Initialize (const Handle(OpenGl_Context)&
     aShaderMask |= anIter.Value()->Type();
   }
   myHasTessShader = (aShaderMask & (Graphic3d_TOS_TESS_CONTROL | Graphic3d_TOS_TESS_EVALUATION)) != 0;
+  myNbFragOutputs = !myProxy.IsNull() ? myProxy->NbFragmentOutputs() : 1;
+  myHasWeightOitOutput = !myProxy.IsNull() ? myProxy->HasWeightOitOutput() && myNbFragOutputs >= 2 : 1;
 
   // detect the minimum GLSL version required for defined Shader Objects
 #if defined(GL_ES_VERSION_2_0)
@@ -275,19 +279,33 @@ Standard_Boolean OpenGl_ShaderProgram::Initialize (const Handle(OpenGl_Context)&
     }
 
     TCollection_AsciiString anExtensions = "// Enable extensions used in OCCT GLSL programs\n";
-    if (theCtx->hasDrawBuffers)
+    if (myNbFragOutputs > 1)
     {
-      anExtensions += "#define OCC_ENABLE_draw_buffers\n";
-    }
-    if (theCtx->hasDrawBuffers == OpenGl_FeatureInExtensions)
-    {
-      if (theCtx->arbDrawBuffers)
+      if (theCtx->hasDrawBuffers)
       {
-        anExtensions += "#extension GL_ARB_draw_buffers : enable\n";
+        anExtensions += "#define OCC_ENABLE_draw_buffers\n";
+        if (myHasWeightOitOutput)
+        {
+          anExtensions += "#define OCC_WRITE_WEIGHT_OIT_COVERAGE\n";
+        }
       }
-      else if (theCtx->extDrawBuffers)
+      else
       {
-        anExtensions += "#extension GL_EXT_draw_buffers : enable\n";
+        theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
+                             "Error! Multiple draw buffers required by the program, but aren't supported by OpenGL");
+        return Standard_False;
+      }
+
+      if (theCtx->hasDrawBuffers == OpenGl_FeatureInExtensions)
+      {
+        if (theCtx->arbDrawBuffers)
+        {
+          anExtensions += "#extension GL_ARB_draw_buffers : enable\n";
+        }
+        else if (theCtx->extDrawBuffers)
+        {
+          anExtensions += "#extension GL_EXT_draw_buffers : enable\n";
+        }
       }
     }
 
@@ -334,6 +352,7 @@ Standard_Boolean OpenGl_ShaderProgram::Initialize (const Handle(OpenGl_Context)&
     myNbClipPlanesMax = !myProxy.IsNull() ? myProxy->NbClipPlanesMax() : 0;
     aHeaderConstants += TCollection_AsciiString("#define THE_MAX_LIGHTS ") + myNbLightsMax + "\n";
     aHeaderConstants += TCollection_AsciiString("#define THE_MAX_CLIP_PLANES ") + myNbClipPlanesMax + "\n";
+    aHeaderConstants += TCollection_AsciiString("#define THE_NB_FRAG_OUTPUTS ") + myNbFragOutputs + "\n";
 
     const TCollection_AsciiString aSource = aHeaderVer                     // #version   - header defining GLSL version, should be first
                                           + (!aHeaderVer.IsEmpty() ? "\n" : "")

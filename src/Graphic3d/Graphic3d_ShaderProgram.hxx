@@ -43,6 +43,9 @@ public:
   //! Default value of THE_MAX_CLIP_PLANES macros within GLSL program (see Declarations.glsl).
   static const Standard_Integer THE_MAX_CLIP_PLANES_DEFAULT = 8;
 
+  //! Default value of THE_NB_FRAG_OUTPUTS macros within GLSL program (see Declarations.glsl).
+  static const Standard_Integer THE_NB_FRAG_OUTPUTS = 1;
+
 public:
 
   //! Creates new empty program object.
@@ -115,6 +118,21 @@ public:
   //! Should be done before GLSL program initialization.
   Standard_EXPORT void SetVertexAttributes (const Graphic3d_ShaderAttributeList& theAttributes);
 
+  //! Returns the number (1+) of Fragment Shader outputs to be written to
+  //! (more than 1 can be in case of multiple draw buffers); 1 by default.
+  Standard_Integer NbFragmentOutputs() const { return myNbFragOutputs; }
+
+  //! Sets the number of Fragment Shader outputs to be written to.
+  //! Should be done before GLSL program initialization.
+  void SetNbFragmentOutputs (const Standard_Integer theNbOutputs) { myNbFragOutputs = theNbOutputs; }
+
+  //! Return true if Fragment Shader color should output the weighted OIT coverage; FALSE by default.
+  Standard_Boolean HasWeightOitOutput() const { return myHasWeightOitOutput; }
+
+  //! Set if Fragment Shader color should output the weighted OIT coverage.
+  //! Note that weighted OIT also requires at least 2 Fragment Outputs (color + coverage).
+  void SetWeightOitOutput (Standard_Boolean theOutput) { myHasWeightOitOutput = theOutput; }
+
   //! Pushes custom uniform variable to the program.
   //! The list of pushed variables is automatically cleared after applying to GLSL program.
   //! Thus after program recreation even unchanged uniforms should be pushed anew.
@@ -164,6 +182,8 @@ private:
   TCollection_AsciiString       myHeader;        //!< GLSL header with version code and used extensions
   Standard_Integer              myNbLightsMax;   //!< length of array of light sources (THE_MAX_LIGHTS)
   Standard_Integer              myNbClipPlanesMax; //!< length of array of clipping planes (THE_MAX_CLIP_PLANES)
+  Standard_Integer              myNbFragOutputs; //!< length of array of Fragment Shader outputs (THE_NB_FRAG_OUTPUTS)
+  Standard_Boolean              myHasWeightOitOutput; //!< flag indicating that Fragment Shader includes weighted OIT coverage
 
 };
 

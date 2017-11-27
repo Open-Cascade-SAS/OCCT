@@ -736,7 +736,8 @@ static Standard_Integer VShaderProg (Draw_Interpretor& /*theDI*/,
       const TCollection_AsciiString& aShaderSrc = aShader->Source();
 
       const bool hasVertPos   = aShaderSrc.Search ("gl_Position")  != -1;
-      const bool hasFragColor = aShaderSrc.Search ("occFragColor") != -1
+      const bool hasFragColor = aShaderSrc.Search ("occSetFragColor") != -1
+                             || aShaderSrc.Search ("occFragColor") != -1
                              || aShaderSrc.Search ("gl_FragColor") != -1
                              || aShaderSrc.Search ("gl_FragData")  != -1;
       Graphic3d_TypeOfShaderObject aShaderType = aShaderTypeArg;
@@ -766,6 +767,13 @@ static Standard_Integer VShaderProg (Draw_Interpretor& /*theDI*/,
       std::cerr << "Syntax error at '" << anArg << "'\n";
       return 1;
     }
+  }
+
+  if (!aProgram.IsNull()
+    && ViewerTest::CurrentView()->RenderingParams().TransparencyMethod == Graphic3d_RTM_BLEND_OIT)
+  {
+    aProgram->SetNbFragmentOutputs (2);
+    aProgram->SetWeightOitOutput (true);
   }
 
   ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName aGlobalPrsIter (GetMapOfAIS());

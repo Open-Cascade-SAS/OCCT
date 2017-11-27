@@ -186,14 +186,6 @@ void main()
     }
   }
 
-  occFragColor = computeLighting (normalize (Normal),
-                                  normalize (View),
-                                  Position);
-
-  if (occOitOutput != 0)
-  {
-    float aWeight     = occFragColor.a * clamp (1e+2 * pow (1.0 - gl_FragCoord.z * occOitDepthFactor, 3.0), 1e-2, 1e+2);
-    occFragCoverage.r = occFragColor.a * aWeight;
-    occFragColor      = vec4 (occFragColor.rgb * occFragColor.a * aWeight, occFragColor.a);
-  }
+  vec4 aColor = computeLighting (normalize (Normal), normalize (View), Position);
+  occSetFragColor (aColor);
 }

@@ -15,6 +15,21 @@
 
 // This file includes implementation of common functions and properties accessors
 
+#if defined(FRAGMENT_SHADER)
+#if defined(OCC_WRITE_WEIGHT_OIT_COVERAGE)
+//! Output color and coverage for accumulation by OIT algorithm.
+void occSetFragColor (in vec4 theColor)
+{
+  float aWeight     = theColor.a * clamp (1e+2 * pow (1.0 - gl_FragCoord.z * occOitDepthFactor, 3.0), 1e-2, 1e+2);
+  occFragCoverage.r = theColor.a * aWeight;
+  occFragColor      = vec4 (theColor.rgb * theColor.a * aWeight, theColor.a);
+}
+#else
+//! Output color.
+void occSetFragColor (in vec4 theColor) { occFragColor = theColor; }
+#endif
+#endif
+
 #if defined(THE_MAX_LIGHTS) && (THE_MAX_LIGHTS > 0)
 // arrays of light sources
 uniform THE_PREC_ENUM ivec2 occLightSourcesTypes[THE_MAX_LIGHTS]; //!< packed light sources types
