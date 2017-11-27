@@ -77,6 +77,17 @@ public:
   //! previous in the parametric representation of <F>.
   Standard_EXPORT void Init (const TopoDS_Wire& W, const TopoDS_Face& F);
   
+  //! Initializes an exploration of the wire <W>.
+  //! F is used to select the edge connected to the
+  //! previous in the parametric representation of <F>.
+  //! <UMIn>, <UMax>, <VMin>, <VMax> - the UV bounds of the face <F>.
+  Standard_EXPORT void Init(const TopoDS_Wire& W,
+                            const TopoDS_Face& F,
+                            const Standard_Real UMin,
+                            const Standard_Real UMax,
+                            const Standard_Real VMin,
+                            const Standard_Real VMax);
+
   //! Returns True if there  is a current  edge.
   Standard_EXPORT Standard_Boolean More() const;
   

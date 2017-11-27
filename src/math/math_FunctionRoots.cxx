@@ -444,7 +444,7 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
           //-- Find minimum of the function |F| between x0 and x3
           //-- by searching for the zero of the function derivative
           DerivFunction aDerF(F);
-          math_BracketedRoot aBR(aDerF, x0, x3, EpsX);
+          math_BracketedRoot aBR(aDerF, x0, x3, _EpsX);
           if (aBR.IsDone())
           {
             aSolX1 = aBR.Root();

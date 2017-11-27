@@ -16,6 +16,7 @@
 
 
 #include <BRep_Tool.hxx>
+#include <BRepAdaptor_Surface.hxx>
 #include <BRepTools.hxx>
 #include <BRepTools_WireExplorer.hxx>
 #include <Geom2d_Curve.hxx>
@@ -101,14 +102,50 @@ void  BRepTools_WireExplorer::Init(const TopoDS_Wire& W)
 //purpose  : 
 //=======================================================================
 void  BRepTools_WireExplorer::Init(const TopoDS_Wire& W,
-				   const TopoDS_Face& F)
+                                   const TopoDS_Face& F)
 {
   myEdge = TopoDS_Edge();
   myVertex = TopoDS_Vertex();
   myMap.Clear();
   myDoubles.Clear();
 
-  if( W.IsNull() )
+  if (W.IsNull())
+    return;
+
+  Standard_Real UMin(0.0), UMax(0.0), VMin(0.0), VMax(0.0);
+  if (!F.IsNull())
+  {
+    // For the faces based on Cone, BSpline and Bezier compute the
+    // UV bounds to precise the UV tolerance values
+    const GeomAbs_SurfaceType aSurfType = BRepAdaptor_Surface(F, Standard_False).GetType();
+    if (aSurfType == GeomAbs_Cone ||
+        aSurfType == GeomAbs_BSplineSurface ||
+        aSurfType == GeomAbs_BezierSurface)
+    {
+      BRepTools::UVBounds(F, UMin, UMax, VMin, VMax);
+    }
+  }
+
+  Init(W, F, UMin, UMax, VMin, VMax);
+}
+
+//=======================================================================
+//function : Init
+//purpose  : 
+//=======================================================================
+void  BRepTools_WireExplorer::Init(const TopoDS_Wire& W,
+                                   const TopoDS_Face& F,
+                                   const Standard_Real UMin,
+                                   const Standard_Real UMax,
+                                   const Standard_Real VMin,
+                                   const Standard_Real VMax)
+{
+  myEdge = TopoDS_Edge();
+  myVertex = TopoDS_Vertex();
+  myMap.Clear();
+  myDoubles.Clear();
+
+  if (W.IsNull())
     return;
 
   myFace = F;
@@ -116,142 +153,147 @@ void  BRepTools_WireExplorer::Init(const TopoDS_Wire& W,
   myReverse = Standard_False;
 
   if (!myFace.IsNull())
+  {
+    BRepTools::Update(myFace);
+    TopLoc_Location aL;
+    const Handle(Geom_Surface)& aSurf = BRep_Tool::Surface(myFace, aL);
+    GeomAdaptor_Surface aGAS(aSurf);
+    TopExp_Explorer anExp(W, TopAbs_VERTEX);
+    for (; anExp.More(); anExp.Next())
     {
-      BRepTools::Update(myFace);
-      TopLoc_Location aL;  
-      const Handle(Geom_Surface)& aSurf = BRep_Tool::Surface(myFace, aL);
-      GeomAdaptor_Surface aGAS(aSurf);
-      TopExp_Explorer anExp(W, TopAbs_VERTEX);
-      for(; anExp.More(); anExp.Next())
-	{
-	  const TopoDS_Vertex& aV = TopoDS::Vertex(anExp.Current());
-	  dfVertToler = Max(BRep_Tool::Tolerance(aV), dfVertToler);
-	}
-      myTolU = 2. * aGAS.UResolution(dfVertToler);
-      myTolV = 2. * aGAS.VResolution(dfVertToler);
-      
-      // uresolution for cone with infinite vmin vmax is too small.
-      if(aGAS.GetType() == GeomAbs_Cone)
-	{
-	  Standard_Real u1, u2, v1, v2;
-	  BRepTools::UVBounds(myFace, u1, u2, v1, v2);
-	  gp_Pnt aP;
-	  gp_Vec aD1U, aD1V;
-	  aGAS.D1(u1, v1, aP, aD1U, aD1V);
-	  Standard_Real tol1, tol2, maxtol = .0005*(u2-u1);
-	  Standard_Real a = aD1U.Magnitude();
-
-	  if(a <= Precision::Confusion())
-	    tol1 = maxtol;
-	  else
-	    tol1 = Min(maxtol, dfVertToler/a);
-
-	  aGAS.D1(u1, v2, aP, aD1U, aD1V);
-	  a = aD1U.Magnitude();
-	  if(a <= Precision::Confusion())
-	    tol2 = maxtol;
-	  else
-	    tol2 = Min(maxtol, dfVertToler/a);
-
-	  myTolU = 2. * Max(tol1, tol2);
-	}
-
-      if( aGAS.GetType() == GeomAbs_BSplineSurface || 
-	  aGAS.GetType() == GeomAbs_BezierSurface )
-	{
-          Standard_Real maxTol = Max(myTolU, myTolV);
-          gp_Pnt aP;
-          gp_Vec aDU, aDV;
-          Standard_Real u1, u2, v1, v2;
-          BRepTools::UVBounds(myFace, u1, u2, v1, v2);
-          aGAS.D1((u2 - u1) / 2., (v2 - v1) / 2., aP, aDU, aDV);
-          Standard_Real mod = Sqrt(aDU*aDU + aDV*aDV);
-          if (mod * maxTol / dfVertToler < 1.5)
-          {
-            maxTol = 1.5 * dfVertToler / mod;
-          }
-          myTolU = maxTol;
-          myTolV = maxTol;
-        }
-
-      myReverse = (myFace.Orientation() == TopAbs_REVERSED);
+      const TopoDS_Vertex& aV = TopoDS::Vertex(anExp.Current());
+      dfVertToler = Max(BRep_Tool::Tolerance(aV), dfVertToler);
     }
-      
+    if (dfVertToler < Precision::Confusion())
+    {
+      // Use tolerance of edges
+      for (TopoDS_Iterator it(W); it.More(); it.Next())
+        dfVertToler = Max(BRep_Tool::Tolerance(TopoDS::Edge(it.Value())), dfVertToler);
+
+      if (dfVertToler < Precision::Confusion())
+        // empty wire
+        return;
+    }
+    myTolU = 2. * aGAS.UResolution(dfVertToler);
+    myTolV = 2. * aGAS.VResolution(dfVertToler);
+
+    // uresolution for cone with infinite vmin vmax is too small.
+    if (aGAS.GetType() == GeomAbs_Cone)
+    {
+      gp_Pnt aP;
+      gp_Vec aD1U, aD1V;
+      aGAS.D1(UMin, VMin, aP, aD1U, aD1V);
+      Standard_Real tol1, tol2, maxtol = .0005*(UMax - UMin);
+      Standard_Real a = aD1U.Magnitude();
+
+      if (a <= Precision::Confusion())
+        tol1 = maxtol;
+      else
+        tol1 = Min(maxtol, dfVertToler / a);
+
+      aGAS.D1(UMin, VMax, aP, aD1U, aD1V);
+      a = aD1U.Magnitude();
+      if (a <= Precision::Confusion())
+        tol2 = maxtol;
+      else
+        tol2 = Min(maxtol, dfVertToler / a);
+
+      myTolU = 2. * Max(tol1, tol2);
+    }
+
+    if (aGAS.GetType() == GeomAbs_BSplineSurface ||
+      aGAS.GetType() == GeomAbs_BezierSurface)
+    {
+      Standard_Real maxTol = Max(myTolU, myTolV);
+      gp_Pnt aP;
+      gp_Vec aDU, aDV;
+      aGAS.D1((UMax - UMin) / 2., (VMax - VMin) / 2., aP, aDU, aDV);
+      Standard_Real mod = Sqrt(aDU*aDU + aDV*aDV);
+      if (mod > gp::Resolution())
+      {
+        if (mod * maxTol / dfVertToler < 1.5)
+        {
+          maxTol = 1.5 * dfVertToler / mod;
+        }
+        myTolU = maxTol;
+        myTolV = maxTol;
+      }
+    }
+
+    myReverse = (myFace.Orientation() == TopAbs_REVERSED);
+  }
+
   // map of vertices to know if the wire is open
   TopTools_MapOfShape vmap;
-  //  Modified by Sergey KHROMOV - Mon May 13 11:50:48 2002 Begin
   //  map of infinite edges
   TopTools_MapOfShape anInfEmap;
-  //  Modified by Sergey KHROMOV - Mon May 13 11:50:49 2002 End
 
   // list the vertices
-  TopoDS_Vertex V1,V2;
+  TopoDS_Vertex V1, V2;
   TopTools_ListOfShape empty;
 
   TopoDS_Iterator it(W);
   while (it.More())
+  {
+    const TopoDS_Edge& E = TopoDS::Edge(it.Value());
+    TopAbs_Orientation Eori = E.Orientation();
+    if (Eori == TopAbs_INTERNAL || Eori == TopAbs_EXTERNAL)
     {
-      const TopoDS_Edge& E = TopoDS::Edge(it.Value());
-      TopAbs_Orientation Eori = E.Orientation();
-      if (Eori == TopAbs_INTERNAL || Eori == TopAbs_EXTERNAL)
-	{
-	  it.Next();
-	  continue;
-	}
-      TopExp::Vertices(E,V1,V2,Standard_True);
-
-      if( !V1.IsNull() )
-	{
-	  if( !myMap.IsBound(V1) )
-	    myMap.Bind(V1,empty);
-	  myMap(V1).Append(E);
-
-	  // add or remove in the vertex map
-	  V1.Orientation(TopAbs_FORWARD);
-	  if( !vmap.Add(V1) )
-	    vmap.Remove(V1);
-	}
-
-      if( !V2.IsNull() )
-	{
-	  V2.Orientation(TopAbs_REVERSED);
-	  if(!vmap.Add(V2))
-	    vmap.Remove(V2);
-	}
-
-      //  Modified by Sergey KHROMOV - Mon May 13 11:52:20 2002 Begin
-      if (V1.IsNull() || V2.IsNull())
-	{
-	  Standard_Real aF = 0., aL = 0.;
-	  BRep_Tool::Range(E, aF, aL);
-	  
-	  if(Eori == TopAbs_FORWARD)
-	    {
-	      if (aF == -Precision::Infinite())
-		anInfEmap.Add(E);
-	    }
-	  else
-	    { // Eori == TopAbs_REVERSED
-	      if (aL == Precision::Infinite())
-		anInfEmap.Add(E);
-	    }
-	}
-      //  Modified by Sergey KHROMOV - Mon May 13 11:52:20 2002 End
       it.Next();
+      continue;
+    }
+    TopExp::Vertices(E, V1, V2, Standard_True);
+
+    if (!V1.IsNull())
+    {
+      if (!myMap.IsBound(V1))
+        myMap.Bind(V1, empty);
+      myMap(V1).Append(E);
+
+      // add or remove in the vertex map
+      V1.Orientation(TopAbs_FORWARD);
+      if (!vmap.Add(V1))
+        vmap.Remove(V1);
     }
 
+    if (!V2.IsNull())
+    {
+      V2.Orientation(TopAbs_REVERSED);
+      if (!vmap.Add(V2))
+        vmap.Remove(V2);
+    }
+
+    if (V1.IsNull() || V2.IsNull())
+    {
+      Standard_Real aF = 0., aL = 0.;
+      BRep_Tool::Range(E, aF, aL);
+
+      if (Eori == TopAbs_FORWARD)
+      {
+        if (aF == -Precision::Infinite())
+          anInfEmap.Add(E);
+      }
+      else
+      { // Eori == TopAbs_REVERSED
+        if (aL == Precision::Infinite())
+          anInfEmap.Add(E);
+      }
+    }
+    it.Next();
+  }
+
   //Construction of the set of double edges.
-  TopoDS_Iterator it2(W);  
+  TopoDS_Iterator it2(W);
   TopTools_MapOfShape emap;
   while (it2.More()) {
-    if (!emap.Add(it2.Value())) 
+    if (!emap.Add(it2.Value()))
       myDoubles.Add(it2.Value());
     it2.Next();
   }
 
   // if vmap is not empty the wire is open, let us find the first vertex
   if (!vmap.IsEmpty()) {
-    TopTools_MapIteratorOfMapOfShape itt(vmap); // skl : I change "it" to "itt"
+    TopTools_MapIteratorOfMapOfShape itt(vmap);
     while (itt.Key().Orientation() != TopAbs_FORWARD) {
       itt.Next();
       if (!itt.More()) break;
@@ -259,29 +301,26 @@ void  BRepTools_WireExplorer::Init(const TopoDS_Wire& W,
     if (itt.More()) V1 = TopoDS::Vertex(itt.Key());
   }
   else {
-//  Modified by Sergey KHROMOV - Mon May 13 12:05:30 2002 Begin
-//   The wire is infinite Try to find the first vertex. It may be NULL.
+    //   The wire is infinite Try to find the first vertex. It may be NULL.
     if (!anInfEmap.IsEmpty()) {
       TopTools_MapIteratorOfMapOfShape itt(anInfEmap);
 
       for (; itt.More(); itt.Next()) {
-	TopoDS_Edge        anEdge = TopoDS::Edge(itt.Key());
-	TopAbs_Orientation anOri  = anEdge.Orientation();
-	Standard_Real      aF;
-	Standard_Real      aL;
+        TopoDS_Edge        anEdge = TopoDS::Edge(itt.Key());
+        TopAbs_Orientation anOri = anEdge.Orientation();
+        Standard_Real      aF;
+        Standard_Real      aL;
 
-	BRep_Tool::Range(anEdge, aF, aL);
-	if ((anOri == TopAbs_FORWARD  && aF == -Precision::Infinite()) ||
-	    (anOri == TopAbs_REVERSED && aL ==  Precision::Infinite())) {
-	  myEdge   = anEdge;
-	  myVertex = TopoDS_Vertex();
+        BRep_Tool::Range(anEdge, aF, aL);
+        if ((anOri == TopAbs_FORWARD  && aF == -Precision::Infinite()) ||
+          (anOri == TopAbs_REVERSED && aL == Precision::Infinite())) {
+          myEdge = anEdge;
+          myVertex = TopoDS_Vertex();
 
-	  return;
-	}
+          return;
+        }
       }
     }
-//  Modified by Sergey KHROMOV - Mon May 13 12:05:31 2002 End
-
 
     // use the first vertex in iterator
     it.Initialize(W);
@@ -289,23 +328,23 @@ void  BRepTools_WireExplorer::Init(const TopoDS_Wire& W,
       const TopoDS_Edge& E = TopoDS::Edge(it.Value());
       TopAbs_Orientation Eori = E.Orientation();
       if (Eori == TopAbs_INTERNAL || Eori == TopAbs_EXTERNAL) {
-	// JYL 10-03-97 : waiting for correct processing 
-	// of INTERNAL/EXTERNAL edges
-	it.Next();
-	continue;
+        // JYL 10-03-97 : waiting for correct processing 
+        // of INTERNAL/EXTERNAL edges
+        it.Next();
+        continue;
       }
-      TopExp::Vertices(E,V1,V2,Standard_True);
+      TopExp::Vertices(E, V1, V2, Standard_True);
       break;
     }
   }
 
-  if (V1.IsNull() ) return;
+  if (V1.IsNull()) return;
   if (!myMap.IsBound(V1)) return;
-  
+
   TopTools_ListOfShape& l = myMap(V1);
   myEdge = TopoDS::Edge(l.First());
   l.RemoveFirst();
-  myVertex = TopExp::FirstVertex (myEdge, Standard_True);
+  myVertex = TopExp::FirstVertex(myEdge, Standard_True);
 
 }
 
@@ -462,6 +501,12 @@ void  BRepTools_WireExplorer::Next()
       aPCurve->D0(dfMPar, PRefm);
       // Get vector from PRef to PRefm
       gp_Vec2d anERefDir(PRef,PRefm);
+      if (anERefDir.SquareMagnitude() < gp::Resolution())
+      {
+        myEdge = TopoDS_Edge();
+        return;
+      }
+
       // Search the list of edges looking for the edge having hearest
       // 2D point of connected vertex to current one and smallest angle.
       // First process all degenerated edges, then - all others.

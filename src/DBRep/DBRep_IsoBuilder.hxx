@@ -26,9 +26,11 @@
 #include <TColStd_Array1OfInteger.hxx>
 #include <Standard_Integer.hxx>
 #include <Geom2dHatch_Hatcher.hxx>
+#include <NCollection_IndexedDataMap.hxx>
 class TopoDS_Face;
 class DBRep_Face;
-
+class TopoDS_Shape;
+class TopTools_OrientedShapeMapHasher;
 
 //! Creation of isoparametric curves.
 class DBRep_IsoBuilder  : public Geom2dHatch_Hatcher
@@ -42,19 +44,30 @@ public:
   Standard_EXPORT DBRep_IsoBuilder(const TopoDS_Face& TopologicalFace, const Standard_Real Infinite, const Standard_Integer NbIsos);
   
   //! Returns the total number of domains.
-    Standard_Integer NbDomains() const;
+  Standard_Integer NbDomains() const
+  {
+    return myNbDom;
+  }
   
   //! Loading of the isoparametric curves in the
   //! Data Structure of a drawable face.
   Standard_EXPORT void LoadIsos (const Handle(DBRep_Face)& Face) const;
 
-
-
-
 protected:
 
+  typedef NCollection_IndexedDataMap
+    <TopoDS_Shape, Handle(Geom2d_Curve), TopTools_OrientedShapeMapHasher>
+      DataMapOfEdgePCurve;
 
-
+  //! Adds to the hatcher the 2D segments connecting the p-curves
+  //! of the neighboring edges to close the 2D gaps which are
+  //! closed in 3D by the tolerance of vertices shared between edges.
+  //! It will allow trimming correctly the iso-lines passing through
+  //! such gaps.
+  //! The method also trims the intersecting 2D curves of the face,
+  //! forbidding the iso-lines beyond the face boundaries.
+  Standard_EXPORT void FillGaps(const TopoDS_Face& theFace,
+                                DataMapOfEdgePCurve& theEdgePCurveMap);
 
 
 private:
@@ -74,12 +87,6 @@ private:
 
 
 };
-
-
-#include <DBRep_IsoBuilder.lxx>
-
-
-
 
 
 #endif // _DBRep_IsoBuilder_HeaderFile
