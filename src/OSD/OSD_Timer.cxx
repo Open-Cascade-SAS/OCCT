@@ -14,16 +14,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-// Update: J.P. TIRAULT Sep,1993
-//         On heterogeneous platforms we need to use the 
-//         system call gettimeofday. This function is portable and give us
-//         elapsed time in seconds and microseconds.
-
 #include <OSD_Timer.hxx>
 
 #ifndef _WIN32
-
-//---------- No Windows NT Systems ----------------------------------
 
 #include <sys/time.h>
 
@@ -42,7 +35,6 @@ static inline Standard_Real GetWallClockTime ()
 }
 
 #else
-//-------------------  Windows NT  ------------------
 
 #include <windows.h>
 
@@ -69,36 +61,36 @@ static inline Standard_Real GetWallClockTime ()
 
 #endif /* _WIN32 */
 
-// ====================== PLATFORM-INDEPENDENT PART ========================
+namespace
+{
+  //! Auxiliary function splits elapsed time in seconds into Hours, Minutes and Seconds.
+  //! @param theTimeSec [in]  elapsed time in seconds
+  //! @param theHours   [out] clamped elapsed hours
+  //! @param theMinutes [out] clamped elapsed minutes within range [0, 59]
+  //! @param theSeconds [out] clamped elapsed seconds within range [0, 60)
+  static void timeToHoursMinutesSeconds (Standard_Real     theTimeSec,
+                                         Standard_Integer& theHours,
+                                         Standard_Integer& theMinutes,
+                                         Standard_Real&    theSeconds)
+  {
+    Standard_Integer aSec = (Standard_Integer)theTimeSec;
+    theHours   = aSec / 3600;
+    theMinutes = (aSec - theHours * 3600) / 60;
+    theSeconds = theTimeSec - theHours * 3600 - theMinutes * 60;
+  }
+}
 
 //=======================================================================
 //function : OSD_Timer
 //purpose  : 
 //=======================================================================
 
-OSD_Timer::OSD_Timer()
+OSD_Timer::OSD_Timer (Standard_Boolean theThisThreadOnly)
+: OSD_Chronometer (theThisThreadOnly),
+  myTimeStart (0.0),
+  myTimeCumul (0.0)
 {
-  TimeStart = TimeCumul = 0.;
-}
-
-//=======================================================================
-//function : Compute
-//purpose  : Calcul les Heures,Minutes,Secondes,Millisecondes a partir
-//           de deux variables input qui sont:
-//           TimeCumulInt : Contient un periode de temps exprimee en secondes,
-//           MicroCumulInt: Contient cette meme periode exprimee en 
-//                       microsecondes.
-//=======================================================================
-
-static void Compute (Standard_Real     Time,
-		     Standard_Integer& heure,
-		     Standard_Integer& minut,
-		     Standard_Real&    second) 
-{
-  Standard_Integer sec = (Standard_Integer)Time;
-  heure = sec / 3600;
-  minut = (sec - heure * 3600) / 60;
-  second = Time - heure * 3600 - minut * 60;
+  //
 }
 
 //=======================================================================
@@ -108,8 +100,8 @@ static void Compute (Standard_Real     Time,
 
 void OSD_Timer::Reset (const Standard_Real theTimeElapsedSec)
 {
-  TimeStart = 0.0;
-  TimeCumul = theTimeElapsedSec;
+  myTimeStart = 0.0;
+  myTimeCumul = theTimeElapsedSec;
   OSD_Chronometer::Reset();
 }
 
@@ -120,7 +112,7 @@ void OSD_Timer::Reset (const Standard_Real theTimeElapsedSec)
 
 void OSD_Timer::Reset ()
 {
-  TimeStart = TimeCumul = 0.;
+  myTimeStart = myTimeCumul = 0.0;
   OSD_Chronometer::Reset();
 }
 
@@ -131,8 +123,8 @@ void OSD_Timer::Reset ()
 
 void OSD_Timer::Restart ()
 {
-  TimeStart = GetWallClockTime();
-  TimeCumul = 0.;
+  myTimeStart = GetWallClockTime();
+  myTimeCumul = 0.0;
   OSD_Chronometer::Restart();
 }
 
@@ -153,12 +145,12 @@ void OSD_Timer::Show() const
 
 Standard_Real OSD_Timer::ElapsedTime() const
 {
-  if (Stopped)
+  if (myIsStopped)
   {
-    return TimeCumul;
+    return myTimeCumul;
   }
 
-  return TimeCumul + GetWallClockTime() - TimeStart;
+  return myTimeCumul + GetWallClockTime() - myTimeStart;
 }
 
 //=======================================================================
@@ -171,10 +163,10 @@ void OSD_Timer::Show (Standard_Real&    theSeconds,
                       Standard_Integer& theHours,
                       Standard_Real&    theCPUtime) const
 {
-  const Standard_Real aTimeCumul = Stopped
-                                 ? TimeCumul
-                                 : TimeCumul + GetWallClockTime() - TimeStart;
-  Compute (aTimeCumul, theHours, theMinutes, theSeconds);
+  const Standard_Real aTimeCumul = myIsStopped
+                                 ? myTimeCumul
+                                 : myTimeCumul + GetWallClockTime() - myTimeStart;
+  timeToHoursMinutesSeconds (aTimeCumul, theHours, theMinutes, theSeconds);
   OSD_Chronometer::Show (theCPUtime);
 }
 
@@ -183,22 +175,20 @@ void OSD_Timer::Show (Standard_Real&    theSeconds,
 //purpose  : 
 //=======================================================================
 
-void OSD_Timer::Show (Standard_OStream& os) const
+void OSD_Timer::Show (Standard_OStream& theOStream) const
 {
-  const Standard_Real aTimeCumul = Stopped
-                                 ? TimeCumul
-                                 : TimeCumul + GetWallClockTime() - TimeStart;
+  const Standard_Real aTimeCumul = ElapsedTime();
 
   Standard_Integer anHours, aMinutes;
   Standard_Real    aSeconds;
-  Compute (aTimeCumul, anHours, aMinutes, aSeconds);
+  timeToHoursMinutesSeconds (aTimeCumul, anHours, aMinutes, aSeconds);
 
-  std::streamsize prec = os.precision (12);
-  os << "Elapsed time: " << anHours  << " Hours "   <<
-                            aMinutes << " Minutes " <<
-                            aSeconds << " Seconds " << endl;
-  OSD_Chronometer::Show(os);
-  os.precision (prec);
+  std::streamsize prec = theOStream.precision (12);
+  theOStream << "Elapsed time: " << anHours  << " Hours "   <<
+                                    aMinutes << " Minutes " <<
+                                    aSeconds << " Seconds\n";
+  OSD_Chronometer::Show (theOStream);
+  theOStream.precision (prec);
 }
 
 //=======================================================================
@@ -208,11 +198,11 @@ void OSD_Timer::Show (Standard_OStream& os) const
 
 void OSD_Timer::Stop ()
 {
-  if (!Stopped) {
-    TimeCumul += GetWallClockTime () - TimeStart;
+  if (!myIsStopped)
+  {
+    myTimeCumul += GetWallClockTime() - myTimeStart;
     OSD_Chronometer::Stop();
   }
-//  else cout << "WARNING: OSD_Timer already Stopped !\n";
 }
 
 //=======================================================================
@@ -222,9 +212,9 @@ void OSD_Timer::Stop ()
 
 void OSD_Timer::Start()
 {
-  if (Stopped) {
-    TimeStart = GetWallClockTime();
+  if (myIsStopped)
+  {
+    myTimeStart = GetWallClockTime();
     OSD_Chronometer::Start();
   }
-//  else cout << "WARNING: OSD_Timer already Running !\n";
 }

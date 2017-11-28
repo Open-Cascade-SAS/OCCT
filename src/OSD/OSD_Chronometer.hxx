@@ -20,11 +20,8 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
-
-#include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_OStream.hxx>
-
 
 //! This class measures CPU time (both user and system) consumed
 //! by current process or thread. The chronometer can be started
@@ -40,17 +37,18 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
   //! Initializes a stopped Chronometer.
   //!
   //! If ThisThreadOnly is True, measured CPU time will account
   //! time of the current thread only; otherwise CPU of the
   //! process (all threads, and completed children) is measured.
-  Standard_EXPORT OSD_Chronometer(const Standard_Boolean ThisThreadOnly = Standard_False);
+  Standard_EXPORT OSD_Chronometer (Standard_Boolean theThisThreadOnly = Standard_False);
+
+  //! Destructor.
   Standard_EXPORT virtual ~OSD_Chronometer();
 
   //! Return true if timer has been started.
-  Standard_Boolean IsStarted() const { return !Stopped; }
+  Standard_Boolean IsStarted() const { return !myIsStopped; }
 
   //! Stops and Reinitializes the Chronometer.
   Standard_EXPORT virtual void Reset();
@@ -73,16 +71,36 @@ public:
   //! Shows the current CPU user and system time on the output
   //! stream <os>.
   //! The chronometer can be running (laps Time) or stopped.
-  Standard_EXPORT virtual void Show (Standard_OStream& os) const;
-  
+  Standard_EXPORT virtual void Show (Standard_OStream& theOStream) const;
+
+  //! Returns the current CPU user time in seconds.
+  //! The chronometer can be running (laps Time) or stopped.
+  Standard_Real UserTimeCPU() const
+  {
+    Standard_Real aUserTime = 0.0, aSysTime = 0.0;
+    Show (aUserTime, aSysTime);
+    return aUserTime;
+  }
+
+  //! Returns the current CPU system time in seconds.
+  //! The chronometer can be running (laps Time) or stopped.
+  Standard_Real SystemTimeCPU() const
+  {
+    Standard_Real aUserTime = 0.0, aSysTime = 0.0;
+    Show (aUserTime, aSysTime);
+    return aSysTime;
+  }
+
   //! Returns the current CPU user time in a variable.
   //! The chronometer can be running (laps Time) or stopped.
-  Standard_EXPORT void Show (Standard_Real& theUserSeconds) const;
+  void Show (Standard_Real& theUserSeconds) const { theUserSeconds = UserTimeCPU(); }
   
   //! Returns the current CPU user and system time in variables.
   //! The chronometer can be running (laps Time) or stopped.
-  Standard_EXPORT void Show (Standard_Real& theUserSeconds, Standard_Real& theSystemSeconds) const;
-  
+  Standard_EXPORT void Show (Standard_Real& theUserSec, Standard_Real& theSystemSec) const;
+
+public:
+
   //! Returns CPU time (user and system) consumed by the current
   //! process since its start, in seconds. The actual precision of
   //! the measurement depends on granularity provided by the system,
@@ -95,33 +113,15 @@ public:
   //! differently on different platforms and CPUs.
   Standard_EXPORT static void GetThreadCPU (Standard_Real& UserSeconds, Standard_Real& SystemSeconds);
 
-
-
-
 protected:
 
-
-
-  Standard_Boolean Stopped;
-
-
-private:
-
-
-
-  Standard_Boolean ThreadOnly;
-  Standard_Real Start_user;
-  Standard_Real Start_sys;
-  Standard_Real Cumul_user;
-  Standard_Real Cumul_sys;
-
+  Standard_Real    myStartCpuUser;
+  Standard_Real    myStartCpuSys;
+  Standard_Real    myCumulCpuUser;
+  Standard_Real    myCumulCpuSys;
+  Standard_Boolean myIsStopped;
+  Standard_Boolean myIsThreadOnly;
 
 };
-
-
-
-
-
-
 
 #endif // _OSD_Chronometer_HeaderFile
