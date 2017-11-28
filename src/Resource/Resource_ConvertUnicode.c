@@ -21,7 +21,7 @@
 typedef unsigned short char16 ;
 
 #include <Resource_Shiftjis.h>
-#include <Resource_gb2312.h>
+#include <Resource_GB2312.h>
 
 #define isjis(c) (((c)>=0x21 && (c)<=0x7e))
 #define iseuc(c) (((c)>=0xa1 && (c)<=0xfe))

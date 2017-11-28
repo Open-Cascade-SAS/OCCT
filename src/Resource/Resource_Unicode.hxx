@@ -51,6 +51,14 @@ public:
   //! to Unicode ExtendedString <tostr>.
   Standard_EXPORT static void ConvertGBToUnicode (const Standard_CString fromstr, TCollection_ExtendedString& tostr);
   
+  //! Converts non-ASCII CString <fromstr> in GBK format
+  //! to Unicode ExtendedString <tostr>.
+  Standard_EXPORT static Standard_Boolean ConvertGBKToUnicode (const Standard_CString fromstr, TCollection_ExtendedString& tostr);
+  
+  //! Converts non-ASCII CString <fromstr> in Big5 format
+  //! to Unicode ExtendedString <tostr>.
+  Standard_EXPORT static Standard_Boolean ConvertBig5ToUnicode (const Standard_CString fromstr, TCollection_ExtendedString& tostr);
+  
   //! Converts non-ASCII CString <fromstr> in ANSI format
   //! to Unicode ExtendedString <tostr>.
   Standard_EXPORT static void ConvertANSIToUnicode (const Standard_CString fromstr, TCollection_ExtendedString& tostr);

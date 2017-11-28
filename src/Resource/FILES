@@ -1,3 +1,4 @@
+Resource_Big5.h
 Resource_ConvertUnicode.c
 Resource_ConvertUnicode.hxx
 Resource_DataMapIteratorOfDataMapOfAsciiStringAsciiString.hxx
@@ -5,7 +6,8 @@ Resource_DataMapIteratorOfDataMapOfAsciiStringExtendedString.hxx
 Resource_DataMapOfAsciiStringAsciiString.hxx
 Resource_DataMapOfAsciiStringExtendedString.hxx
 Resource_FormatType.hxx
-Resource_gb2312.h
+Resource_GB2312.h
+Resource_GBK.h
 Resource_LexicalCompare.cxx
 Resource_LexicalCompare.hxx
 Resource_Manager.cxx

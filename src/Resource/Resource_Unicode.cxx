@@ -15,7 +15,10 @@
 // commercial license or contractual agreement.
 
 
+#include <NCollection_UtfString.hxx>
+#include <Resource_Big5.h>
 #include <Resource_ConvertUnicode.hxx>
+#include <Resource_GBK.h>
 #include <Resource_Manager.hxx>
 #include <Resource_Unicode.hxx>
 #include <TCollection_AsciiString.hxx>
@@ -124,6 +127,232 @@ void Resource_Unicode::ConvertGBToUnicode(const Standard_CString fromstr,TCollec
       tostr.AssignCat(curext);
     }
   }
+}
+
+Standard_Boolean Resource_Unicode::ConvertGBKToUnicode(const Standard_CString fromstr, TCollection_ExtendedString& tostr)
+{
+  tostr.Clear();
+
+  unsigned char* currentch = ((unsigned char*) fromstr);
+  unsigned int gb1 = 0x00, gb2 = 0x00, gb3 = 0x00;
+
+  while(*currentch != '\0') {
+    if (gb3 != 0x00)
+    {
+      if (!(*currentch >= 0x30 && *currentch <= 0x39))
+      {
+        TCollection_ExtendedString curext3(((char) *currentch));
+        TCollection_ExtendedString curext2(((char) gb3));
+        TCollection_ExtendedString curext1(((char) gb2));
+        tostr.Insert(0, curext3);
+        tostr.Insert(0, curext2);
+        tostr.Insert(0, curext1);
+        gb1 = 0;
+        gb2 = 0;
+        gb3 = 0;
+        return Standard_False;
+      }
+
+      unsigned int codepnt = ((gb1 - 0x81) * (10 * 126 * 10)) + ((gb2 - 0x30) * (10 * 126)) + ((gb3 - 0x81) * 10) + *currentch - 0x30;
+      if (codepnt < 23940)
+      {
+        unsigned short uni = gbkuni [codepnt];
+        Standard_ExtCharacter curcar = ((Standard_ExtCharacter)uni);
+        TCollection_ExtendedString curext(curcar);
+        tostr.AssignCat(curext);
+        currentch++;
+        continue;
+      }
+
+      return Standard_False;
+    }
+    else if (gb2 != 0x00)
+    {
+      if (*currentch >= 0x81 && *currentch <= 0xFE)
+      {
+        gb3 = (unsigned int)(*currentch);
+        currentch++;
+        continue;
+      }
+      TCollection_ExtendedString curext2(((char) *currentch));
+      TCollection_ExtendedString curext1(((char) gb2));
+      tostr.Insert(0, curext2);
+      tostr.Insert(0, curext1);
+      gb1 = 0;
+      gb2 = 0;
+      return Standard_False;
+    }
+    else if (gb1 != 0x00)
+    {
+      if (*currentch >= 0x30 && *currentch <= 0x39)
+      {
+        gb2 = (unsigned int)(*currentch);
+        currentch++;
+        continue;
+      }
+
+      unsigned int lead = gb1;
+      unsigned int pointer = 0;
+      gb1 = 0x00;
+      unsigned int offset = *currentch < 0x7F ? 0x40 : 0x41;
+
+      if ((*currentch >= 0x40 && *currentch <= 0x7E) ||
+          (*currentch >= 0x80 && *currentch <= 0xFE))
+      {
+        pointer = (lead - 0x81) * 190 + (*currentch - offset);
+
+        if (pointer < 23940)
+        {
+          unsigned short uni = gbkuni [pointer];
+          Standard_ExtCharacter curcar = ((Standard_ExtCharacter)uni);
+          TCollection_ExtendedString curext(curcar);
+          tostr.AssignCat(curext);
+          currentch++;
+          continue;
+        }
+      }
+      if (*currentch <= 0x7F)
+      {
+        // ASCII symbol
+        TCollection_ExtendedString curext(((char) *currentch));
+        currentch++;
+        tostr.Insert(0, curext);
+        continue;
+      }
+      return Standard_False;
+    }
+    else
+    {
+      if (*currentch <= 0x7F)
+      {
+        // ASCII symbol
+        TCollection_ExtendedString curext(((char) *currentch));
+        currentch++;
+        tostr.AssignCat(curext);
+      }
+      else if (*currentch == 0x80)
+      {
+        // Special symbol
+        Standard_ExtCharacter curcar = ((Standard_ExtCharacter)((0x20 << 8) | 0xAC));
+        TCollection_ExtendedString curext(curcar);
+        tostr.AssignCat(curext);
+        currentch++;
+      }
+      else if (*currentch >= 0x81 && *currentch <= 0xFE) {
+        // Chinese symbol
+        gb1 = (unsigned int)(*currentch);
+        currentch++;
+      }
+      else
+        return Standard_False;
+    }
+  }
+  return Standard_True;
+}
+
+Standard_Boolean Resource_Unicode::ConvertBig5ToUnicode(const Standard_CString fromstr, TCollection_ExtendedString& tostr)
+{
+  tostr.Clear();
+
+  unsigned char* currentch = ((unsigned char*) fromstr);
+  unsigned int big5lead = 0x00;
+
+  while(*currentch != '\0') {
+    if (big5lead != 0x00)
+    {
+      unsigned int lead = big5lead;
+      unsigned int pointer = 0;
+      big5lead = 0x00;
+      unsigned int offset = *currentch < 0x7F ? 0x40 : 0x62;
+
+      if ((*currentch >= 0x40 && *currentch <= 0x7E) ||
+          (*currentch >= 0xA1 && *currentch <= 0xFE))
+      {
+        pointer = (lead - 0x81) * 157 + (*currentch - offset);
+
+        Standard_Integer aLength = tostr.Length();
+        switch (pointer) {
+        case 1133: {
+          tostr.Insert(aLength+1,(Standard_ExtCharacter)0x00CA);
+          tostr.Insert(aLength+2,(Standard_ExtCharacter)0x0304);
+          currentch++;
+          continue;
+        }
+        case 1135: {
+          tostr.Insert(aLength+1,(Standard_ExtCharacter)0x00CA);
+          tostr.Insert(aLength+2,(Standard_ExtCharacter)0x030C);
+          currentch++;
+          continue;
+        }
+        case 1164: {
+          tostr.Insert(aLength+1,(Standard_ExtCharacter)0x00EA);
+          tostr.Insert(aLength+2,(Standard_ExtCharacter)0x0304);
+          currentch++;
+          continue;
+        }
+        case 1166: {
+          tostr.Insert(aLength+1,(Standard_ExtCharacter)0x00EA);
+          tostr.Insert(aLength+2,(Standard_ExtCharacter)0x030C);
+          currentch++;
+          continue;
+        }
+        default: {
+          if (pointer < 19782)
+          {
+            unsigned int uni = big5uni [pointer];
+            if (uni <= 0xFFFF)
+            {
+              Standard_ExtCharacter curcar = ((Standard_ExtCharacter)uni);
+              tostr.Insert(aLength+1,curcar);
+            }
+            else
+            {
+              Standard_Utf32Char* aChar32 = new Standard_Utf32Char[1];
+              aChar32[0] = uni;
+              NCollection_Utf32String aStr32(aChar32);
+              NCollection_Utf16String aStr16 = aStr32.ToUtf16();
+
+              if (aStr16.Size() != 4) return Standard_False; // not a surrogate pair
+              const Standard_Utf16Char* aChar16 = aStr16.ToCString();
+              tostr.Insert(aLength+1,(Standard_ExtCharacter)(*aChar16));
+              aChar16++;
+              tostr.Insert(aLength+2,(Standard_ExtCharacter)(*aChar16));
+            }
+            currentch++;
+            continue;
+          }
+        }
+        }
+      }
+      if (*currentch <= 0x7F)
+      {
+        // ASCII symbol
+        TCollection_ExtendedString curext(((char) *currentch));
+        currentch++;
+        tostr.Insert(0, curext);
+        continue;
+      }
+      return Standard_False;
+    }
+    else
+    {
+      if (*currentch <= 0x7F)
+      {
+        // ASCII symbol
+        TCollection_ExtendedString curext(((char) *currentch));
+        currentch++;
+        tostr.AssignCat(curext);
+      }
+      else if (*currentch >= 0x81 && *currentch <= 0xFE) {
+        // Chinese symbol
+        big5lead = (unsigned int)(*currentch);
+        currentch++;
+      }
+      else
+        return Standard_False;
+    }
+  }
+  return Standard_True;
 }
 
 void Resource_Unicode::ConvertANSIToUnicode(const Standard_CString fromstr,TCollection_ExtendedString& tostr)
