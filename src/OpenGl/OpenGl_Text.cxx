@@ -919,6 +919,13 @@ void OpenGl_Text::render (const Handle(OpenGl_Context)& theCtx,
       drawText    (theCtx, theTextAspect);
       break;
     }
+    case Aspect_TODT_SHADOW:
+    {
+      theCtx->SetColor4fv (theColorSubs);
+      setupMatrix (theCtx, theTextAspect, OpenGl_Vec3 (+1.0f, -1.0f, 0.00001f));
+      drawText    (theCtx, theTextAspect);
+      break;
+    }
     case Aspect_TODT_DIMENSION:
     case Aspect_TODT_NORMAL:
     {

@@ -2554,6 +2554,8 @@ static int VDrawText (Draw_Interpretor& theDI,
         aDisplayType = Aspect_TODT_DIMENSION;
       else if (aType == "normal")
         aDisplayType = Aspect_TODT_NORMAL;
+      else if (aType == "shadow")
+        aDisplayType = Aspect_TODT_SHADOW;
       else
       {
         std::cout << "Error: wrong display type '" << aType << "'.\n";
@@ -6584,7 +6586,7 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
                    "\n\t\t X and Y define the coordinate origin in 2d space relative to the view window"
                    "\n\t\t Example: X=0 Y=0 is center, X=1 Y=1 is upper right corner etc..."
                    "\n\t\t Z coordinate defines the gap from border of view window (except center position)."
-                   "\n\t\t: [-disptype {blend|decal|subtitle|dimension|normal}=normal}"
+                   "\n\t\t: [-disptype {blend|decal|shadow|subtitle|dimension|normal}=normal}"
                    "\n\t\t: [-subcolor {R G B|name}=white]"
                    "\n\t\t: [-noupdate]"
                    "\n\t\t: [-plane NormX NormY NormZ DirX DirY DirZ]"

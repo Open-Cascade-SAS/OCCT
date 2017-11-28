@@ -17,19 +17,14 @@
 #define _Aspect_TypeOfDisplayText_HeaderFile
 
 //! Define the display type of the text.
-//!
-//! TODT_NORMAL         Default display. Text only.
-//! TODT_SUBTITLE       There is a subtitle under the text.
-//! TODT_DEKALE         The text is displayed with a 3D style.
-//! TODT_BLEND          The text is displayed in XOR.
-//! TODT_DIMENSION      Dimension line under text will be invisible.
 enum Aspect_TypeOfDisplayText
 {
-Aspect_TODT_NORMAL,
-Aspect_TODT_SUBTITLE,
-Aspect_TODT_DEKALE,
-Aspect_TODT_BLEND,
-Aspect_TODT_DIMENSION
+  Aspect_TODT_NORMAL,    //!< default display, text only
+  Aspect_TODT_SUBTITLE,  //!< there is a subtitle under the text
+  Aspect_TODT_DEKALE,    //!< the text is displayed with a 3D style
+  Aspect_TODT_BLEND,     //!< the text is displayed in XOR
+  Aspect_TODT_DIMENSION, //!< dimension line under text will be invisible
+  Aspect_TODT_SHADOW     //!< the text will have a shadow at the right-bottom corner
 };
 
 #endif // _Aspect_TypeOfDisplayText_HeaderFile
