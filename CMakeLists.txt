@@ -1095,10 +1095,6 @@ if (APPLE)
   set (SET_OpenCASCADE_WITH_GLX "set (OpenCASCADE_WITH_GLX       ${USE_GLX})")
 endif()
 
-if (NOT SINGLE_GENERATOR)
-  OCCT_INSERT_CODE_FOR_TARGET()
-endif()
-
 # Configure and install cmake config file
 configure_file("${CMAKE_SOURCE_DIR}/adm/templates/OpenCASCADEConfig.cmake.in" "OpenCASCADEConfig.cmake" @ONLY)
 install(FILES "${CMAKE_BINARY_DIR}/OpenCASCADEConfig.cmake" DESTINATION  "${INSTALL_DIR_CMAKE}")

@@ -142,7 +142,7 @@ foreach (OCCT_MODULE ${OCCT_MODULES})
   endif()
 endforeach()
 
-if (NOT SINGLE_GENERATOR)
+if (WIN32)
   OCCT_INSERT_CODE_FOR_TARGET ()
 endif()
 

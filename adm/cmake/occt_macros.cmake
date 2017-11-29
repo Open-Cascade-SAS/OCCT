@@ -603,7 +603,7 @@ endmacro()
 # prior to version 3.3 not supporting per-configuration install paths
 # for install target files (see https://cmake.org/Bug/view.php?id=14317)
 macro (OCCT_UPDATE_TARGET_FILE)
-  if (NOT SINGLE_GENERATOR)
+  if (WIN32)
     OCCT_INSERT_CODE_FOR_TARGET ()
   endif()
 
