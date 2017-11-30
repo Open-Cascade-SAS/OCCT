@@ -6,7 +6,7 @@ puts ""
 ## [Regression to 6.9.1] smesh/bugs_00/A6: Cut produces an empty shape
 ###############################
 
-set MaxTol 3.8178537637632889e-006
+set MaxTol 2.1243683206633536e-006
 set GoodNbCurv 1
 
 restore [locate_data_file bug27282_cmpd.brep] a

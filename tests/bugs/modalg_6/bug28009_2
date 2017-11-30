@@ -7,7 +7,7 @@ puts ""
 #######################################################################
 
 set NbCurvGood 1
-set ExpToler 7.1928004468800293e-008
+set ExpToler 5.441959818453312e-008
 
 restore [locate_data_file bug28009_shape.brep] a
 

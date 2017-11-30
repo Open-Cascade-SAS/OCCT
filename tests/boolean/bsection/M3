@@ -7,7 +7,7 @@ set GoodNbCurv 1
 set log [bopcurves a_1 a_2 -2d -p 0.20639206339545224 0.69260832843385300 0.0 0.017002507022347624]
 regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} ${log} full Tolerance_Reached NbCurv
 
-set expected_Tolerance_Reached 2.4318051256224198e-07
+set expected_Tolerance_Reached 2.8312498500210269e-07
 set tol_abs_Tolerance_Reached 0.0
 set tol_rel_Tolerance_Reached 1.0e-2
 checkreal "Tolerance Reached" ${Tolerance_Reached} ${expected_Tolerance_Reached} ${tol_abs_Tolerance_Reached} ${tol_rel_Tolerance_Reached}

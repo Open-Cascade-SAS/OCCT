@@ -26,7 +26,7 @@ regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} ${log1} full Tolerance
 regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} ${log2} full Tolerance_Reached2 NbCurv2
 
 set expected_Tolerance_Reached1 2.2611960020325053e-007
-set expected_Tolerance_Reached2 7.6423429413334924e-006
+set expected_Tolerance_Reached2 5.0364838664362801e-006
 
 checkreal "Tolerance Reached" ${Tolerance_Reached1} ${expected_Tolerance_Reached1} ${tol_abs_Tolerance_Reached} ${tol_rel_Tolerance_Reached}
 checkreal "Tolerance Reached" ${Tolerance_Reached2} ${expected_Tolerance_Reached2} ${tol_abs_Tolerance_Reached} ${tol_rel_Tolerance_Reached}

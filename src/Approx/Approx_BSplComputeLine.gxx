@@ -799,23 +799,22 @@ void Approx_BSplComputeLine::Parameters(const MultiLine& Line,
 			       const Standard_Integer lastP,
 			       math_Vector& TheParameters) const
 {
-  Standard_Integer i, j, Nbp, nbP2d, nbP3d;
+  Standard_Integer i, j, nbP2d, nbP3d;
   Standard_Real dist;
-  gp_Pnt P1, P2;
-  gp_Pnt2d P12d, P22d;
-  Nbp = lastP-firstP+1;
+  const Standard_Integer aNbp = lastP - firstP + 1;
 
   
-  if (Nbp == 2) {
+  if (aNbp == 2) {
     TheParameters(firstP) = 0.0;
     TheParameters(lastP)  = 1.0;
   }
-  else if (Par == Approx_ChordLength || Par == Approx_Centripetal) {
+  else if(Par == Approx_ChordLength || Par == Approx_Centripetal)
+  {
     nbP3d = LineTool::NbP3d(Line);
     nbP2d = LineTool::NbP2d(Line);
-    Standard_Integer mynbP3d=nbP3d, mynbP2d=nbP2d;
-    if (nbP3d == 0) mynbP3d = 1;
-    if (nbP2d == 0) mynbP2d = 1;
+    Standard_Integer mynbP3d = nbP3d, mynbP2d = nbP2d;
+    if(nbP3d == 0) mynbP3d = 1;
+    if(nbP2d == 0) mynbP2d = 1;
 
     TheParameters(firstP) = 0.0;
     dist = 0.0;
@@ -824,35 +823,41 @@ void Approx_BSplComputeLine::Parameters(const MultiLine& Line,
     TColgp_Array1OfPnt2d tabP2d(1, mynbP2d);
     TColgp_Array1OfPnt2d tabPP2d(1, mynbP2d);
 
-    for (i = firstP+1; i <= lastP; i++) {
-      if (nbP3d != 0 && nbP2d != 0) LineTool::Value(Line, i-1, tabP, tabP2d);
-      else if (nbP2d != 0)          LineTool::Value(Line, i-1, tabP2d);
-      else if (nbP3d != 0)          LineTool::Value(Line, i-1, tabP);
+    for(i = firstP + 1; i <= lastP; i++)
+    {
+      if(nbP3d != 0 && nbP2d != 0) LineTool::Value(Line, i - 1, tabP, tabP2d);
+      else if(nbP2d != 0)          LineTool::Value(Line, i - 1, tabP2d);
+      else if(nbP3d != 0)          LineTool::Value(Line, i - 1, tabP);
 
-      if (nbP3d != 0 && nbP2d != 0) LineTool::Value(Line, i, tabPP, tabPP2d);
-      else if (nbP2d != 0)          LineTool::Value(Line, i, tabPP2d);
-      else if (nbP3d != 0)          LineTool::Value(Line, i, tabPP);
-      dist = 0;
-      for (j = 1; j <= nbP3d; j++) {
-	P1 = tabP(j);
-	P2 = tabPP(j);
-	dist += P2.Distance(P1);
+      if(nbP3d != 0 && nbP2d != 0) LineTool::Value(Line, i, tabPP, tabPP2d);
+      else if(nbP2d != 0)          LineTool::Value(Line, i, tabPP2d);
+      else if(nbP3d != 0)          LineTool::Value(Line, i, tabPP);
+      dist = 0.0;
+      for(j = 1; j <= nbP3d; j++)
+      {
+        const gp_Pnt &aP1 = tabP(j),
+                     &aP2 = tabPP(j);
+        dist += aP2.SquareDistance(aP1);
       }
-      for (j = 1; j <= nbP2d; j++) {
-	P12d = tabP2d(j);
-	P22d = tabPP2d(j);
-	dist += P22d.Distance(P12d);
+      for(j = 1; j <= nbP2d; j++)
+      {
+        const gp_Pnt2d &aP12d = tabP2d(j),
+                       &aP22d = tabPP2d(j);
+
+        dist += aP22d.SquareDistance(aP12d);
       }
 
-      dist = dist/(nbP3d+nbP2d);
-       
+      dist = Sqrt(dist);
       if(Par == Approx_ChordLength)
-	TheParameters(i) = TheParameters(i-1) + dist;
-      else {// Par == Approx_Centripetal
-	TheParameters(i) = TheParameters(i-1) + Sqrt(dist);
+      {
+        TheParameters(i) = TheParameters(i - 1) + dist;
+      }
+      else
+      {// Par == Approx_Centripetal
+        TheParameters(i) = TheParameters(i - 1) + Sqrt(dist);
       }
     }
-    for (i = firstP; i <= lastP; i++) TheParameters(i) /= TheParameters(lastP);
+    for(i = firstP; i <= lastP; i++) TheParameters(i) /= TheParameters(lastP);
   }
   else {
     for (i = firstP; i <= lastP; i++) {

@@ -29,7 +29,7 @@ bsection result b1 f2
 
 regexp {Tolerance +MAX=([-0-9.+eE]+)} [tolerance result] full MaxTolerance
 
-set expected_MaxTolerance 0.0068942263920076944
+set expected_MaxTolerance 0.0069008006175832973
 set tol_abs_MaxTolerance 0.0
 set tol_rel_MaxTolerance 1.0e-4
 checkreal "MaxTolerance" ${MaxTolerance} ${expected_MaxTolerance} ${tol_abs_MaxTolerance} ${tol_rel_MaxTolerance}

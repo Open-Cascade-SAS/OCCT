@@ -6,8 +6,7 @@ puts ""
 # Very slow boolean cut operations on cylinders
 #################################################
 
-set ExpTol1 3.2300230820477792e-007
-set ExpTol2 3.2198007889220219e-007
+set ExpTol 3.32e-07
 
 set GoodNbCurv 4
 
@@ -20,7 +19,7 @@ explode b2 f
 set log [bopcurves b1_1 b2_1 -2d]
 regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} ${log} full Toler NbCurv
 
-checkreal ToleranceReached ${Toler} ${ExpTol1} 0.0 0.01
+checkreal ToleranceReached ${Toler} ${ExpTol} 0.0 0.01
 
 if {${NbCurv} != ${GoodNbCurv}} {
   puts "Error: Number of curves is bad!"
@@ -29,7 +28,7 @@ if {${NbCurv} != ${GoodNbCurv}} {
 set log [bopcurves b2_1 b1_1 -2d]
 regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} ${log} full Toler NbCurv
 
-checkreal ToleranceReached ${Toler} ${ExpTol2} 0.0 0.01
+checkreal ToleranceReached ${Toler} ${ExpTol} 0.0 0.01
 
 if {${NbCurv} != ${GoodNbCurv}} {
   puts "Error: Number of curves is bad!"

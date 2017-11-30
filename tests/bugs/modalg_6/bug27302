@@ -6,7 +6,7 @@ puts ""
 ## Invalid curves number in intersection result
 ###############################
 
-set MaxTol 6.899054167648517e-007
+set MaxTol 6.5952839365451194e-008
 set GoodNbCurv 1
 
 restore [locate_data_file CTO900_pro12913a.rle] a

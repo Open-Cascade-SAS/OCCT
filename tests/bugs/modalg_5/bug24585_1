@@ -6,7 +6,7 @@ puts ""
 # Wrong pcurve of the section curve
 ###########################################################
 
-set ExpectedTol 6.0859390083974326e-005
+set ExpectedTol 9.8986150909815383e-05
 set NbCurv_OK 1
 
 restore [locate_data_file bug24585_b1.brep] b1
