@@ -325,7 +325,7 @@ void FSD_CmpFile::EndWritePersistentObjectData()
 void FSD_CmpFile::ReadPersistentObjectHeader(Standard_Integer& aRef,
                                              Standard_Integer& aType)
 {
-  char c;
+  char c = '\0';
 
   myStream.get(c);
 
@@ -388,7 +388,7 @@ void FSD_CmpFile::EndReadObjectData()
 
 void FSD_CmpFile::EndReadPersistentObjectData()
 {
-  char c;
+  char c = '\0';
 
   myStream.get(c);
   while (c != '\n' && (c != '\r')) {

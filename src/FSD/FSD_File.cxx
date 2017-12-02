@@ -280,7 +280,7 @@ void FSD_File::ReadExtendedLine(TCollection_ExtendedString& buffer)
 
 void FSD_File::ReadChar(TCollection_AsciiString& buffer, const Standard_Size rsize)
 {
-  char             c;
+  char c = '\0';
   Standard_Size ccount = 0;
 
   buffer.Clear();
@@ -1234,7 +1234,7 @@ Storage_Error FSD_File::BeginReadDataSection()
 void FSD_File::ReadPersistentObjectHeader(Standard_Integer& aRef,
 					  Standard_Integer& aType) 
 {
-  char c;
+  char c = '\0';
 
   myStream.get(c);
 
@@ -1277,7 +1277,7 @@ void FSD_File::ReadPersistentObjectHeader(Standard_Integer& aRef,
 
 void FSD_File::BeginReadPersistentObjectData() 
 {
-  char c;
+  char c = '\0';
   myStream.get(c);
   while (c != '(') {
     if (IsEnd() || (c != ' ') || (c == '\n')) {
@@ -1296,8 +1296,7 @@ void FSD_File::BeginReadPersistentObjectData()
 
 void FSD_File::BeginReadObjectData() 
 {
-
-  char c;
+  char c = '\0';
   myStream.get(c);
   while (c != '(') {
     if (IsEnd() || (c != ' ') || (c == '\n')) {
@@ -1316,8 +1315,7 @@ void FSD_File::BeginReadObjectData()
 
 void FSD_File::EndReadObjectData() 
 {
-
-  char c;
+  char c = '\0';
   myStream.get(c);
   while (c != ')') {
     if (IsEnd() || (c != ' ') || (c == '\n')) {
@@ -1336,8 +1334,7 @@ void FSD_File::EndReadObjectData()
 
 void FSD_File::EndReadPersistentObjectData() 
 {
-
-  char c;
+  char c = '\0';
 
   myStream.get(c);
   while (c != ')') {

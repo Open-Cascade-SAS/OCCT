@@ -25,8 +25,9 @@
 
 
 inline StdObjMgt_ReadData& operator >>
-  (StdObjMgt_ReadData::Object theReadData, gp_Mat2d& theMat)
+  (StdObjMgt_ReadData& theReadData, gp_Mat2d& theMat)
 {
+  StdObjMgt_ReadData::ObjectSentry aSentry (theReadData);
   theReadData
     >> theMat(1, 1) >> theMat(1, 2)
     >> theMat(2, 1) >> theMat(2, 2);
@@ -34,8 +35,10 @@ inline StdObjMgt_ReadData& operator >>
 }
 
 inline StdObjMgt_WriteData& operator <<
-  (StdObjMgt_WriteData::Object theWriteData, const gp_Mat2d& theMat)
+  (StdObjMgt_WriteData& theWriteData, const gp_Mat2d& theMat)
 {
+  StdObjMgt_WriteData::ObjectSentry aSentry (theWriteData);
+
   theWriteData
     << theMat(1, 1) << theMat(1, 2)
     << theMat(2, 1) << theMat(2, 2);
@@ -43,8 +46,9 @@ inline StdObjMgt_WriteData& operator <<
 }
 
 inline StdObjMgt_ReadData& operator >>
-  (StdObjMgt_ReadData::Object theReadData, gp_Mat& theMat)
+  (StdObjMgt_ReadData& theReadData, gp_Mat& theMat)
 {
+  StdObjMgt_ReadData::ObjectSentry aSentry (theReadData);
   theReadData
     >> theMat(1, 1) >> theMat(1, 2) >> theMat(1, 3)
     >> theMat(2, 1) >> theMat(2, 2) >> theMat(2, 3)
@@ -53,8 +57,10 @@ inline StdObjMgt_ReadData& operator >>
 }
 
 inline StdObjMgt_WriteData& operator <<
-  (StdObjMgt_WriteData::Object theWriteData, const gp_Mat& theMat)
+  (StdObjMgt_WriteData& theWriteData, const gp_Mat& theMat)
 {
+  StdObjMgt_WriteData::ObjectSentry aSentry (theWriteData);
+
   theWriteData
     << theMat(1, 1) << theMat(1, 2) << theMat(1, 3)
     << theMat(2, 1) << theMat(2, 2) << theMat(2, 3)
@@ -63,8 +69,10 @@ inline StdObjMgt_WriteData& operator <<
 }
 
 inline StdObjMgt_ReadData& operator >>
-  (StdObjMgt_ReadData::Object theReadData, gp_Trsf2d& theTrsf)
+  (StdObjMgt_ReadData& theReadData, gp_Trsf2d& theTrsf)
 {
+  StdObjMgt_ReadData::ObjectSentry aSentry (theReadData);
+
   Standard_Real    aScale;
   Standard_Integer aForm;
   gp_Mat2d         aMat;
@@ -79,8 +87,10 @@ inline StdObjMgt_ReadData& operator >>
 }
 
 inline StdObjMgt_WriteData& operator <<
-(StdObjMgt_WriteData::Object theWriteData, const gp_Trsf2d& theTrsf)
+  (StdObjMgt_WriteData& theWriteData, const gp_Trsf2d& theTrsf)
 {
+  StdObjMgt_WriteData::ObjectSentry aSentry (theWriteData);
+
   Standard_Real    aScale = theTrsf.ScaleFactor();
   Standard_Integer aForm  = theTrsf.Form();
   const gp_Mat2d&  aMat   = theTrsf.HVectorialPart();
@@ -92,8 +102,10 @@ inline StdObjMgt_WriteData& operator <<
 }
 
 inline StdObjMgt_ReadData& operator >>
-  (StdObjMgt_ReadData::Object theReadData, gp_Trsf& theTrsf)
+  (StdObjMgt_ReadData& theReadData, gp_Trsf& theTrsf)
 {
+  StdObjMgt_ReadData::ObjectSentry aSentry (theReadData);
+
   Standard_Real    aScale;
   Standard_Integer aForm;
   gp_Mat           aMat;
@@ -110,8 +122,10 @@ inline StdObjMgt_ReadData& operator >>
 }
 
 inline StdObjMgt_WriteData& operator <<
-  (StdObjMgt_WriteData::Object theWriteData, const gp_Trsf& theTrsf)
+  (StdObjMgt_WriteData& theWriteData, const gp_Trsf& theTrsf)
 {
+  StdObjMgt_WriteData::ObjectSentry aSentry (theWriteData);
+
   Standard_Real    aScale = theTrsf.ScaleFactor();
   Standard_Integer aForm  = theTrsf.Form();
   const gp_Mat&    aMat   = theTrsf.HVectorialPart();

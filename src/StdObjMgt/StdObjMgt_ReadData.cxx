@@ -47,8 +47,10 @@ Handle(StdObjMgt_Persistent) StdObjMgt_ReadData::ReadReference()
 //purpose  : Read persistent data from a file
 //=======================================================================
 StdObjMgt_ReadData& operator >>
-  (StdObjMgt_ReadData::Object theReadData, Standard_GUID& theGUID)
+  (StdObjMgt_ReadData& theReadData, Standard_GUID& theGUID)
 {
+  StdObjMgt_ReadData::ObjectSentry aSentry (theReadData);
+
   Standard_Integer      a32b;
   Standard_ExtCharacter a16b[3];
   Standard_Character    a8b [6];

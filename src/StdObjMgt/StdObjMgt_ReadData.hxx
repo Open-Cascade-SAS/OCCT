@@ -26,7 +26,24 @@ class Standard_GUID;
 class StdObjMgt_ReadData
 {
 public:
-  class Object;
+  //! Auxiliary class used to automate begin and end of
+  //! reading object (eating opening and closing parenthesis)
+  //! at constructor and destructor
+  class ObjectSentry
+  {
+  public:
+    explicit ObjectSentry (StdObjMgt_ReadData& theData) : myReadData (&theData)
+    { myReadData->myDriver->BeginReadObjectData(); }
+
+    ~ObjectSentry ()
+    { myReadData->myDriver->EndReadObjectData(); }
+
+  private:
+    StdObjMgt_ReadData* myReadData;
+
+    ObjectSentry (const ObjectSentry&);
+    ObjectSentry& operator = (const ObjectSentry&);
+  };
 
   Standard_EXPORT StdObjMgt_ReadData
     (Storage_BaseDriver& theDriver, const Standard_Integer theNumberOfObjects);
@@ -88,31 +105,7 @@ private:
   NCollection_Array1<Handle(StdObjMgt_Persistent)> myPersistentObjects;
 };
 
-class StdObjMgt_ReadData::Object
-{
-public:
-  Object (StdObjMgt_ReadData& theData) : myReadData (&theData)
-    { myReadData->myDriver->BeginReadObjectData(); }
-  Object(const StdObjMgt_ReadData::Object& theOther) : myReadData(theOther.myReadData)
-    { myReadData->myDriver->BeginReadObjectData(); }
-
-  ~Object()
-    { myReadData->myDriver->EndReadObjectData(); }
-
-  operator StdObjMgt_ReadData&()
-    { return *myReadData; }
-
-  template <class Data>
-  StdObjMgt_ReadData& operator >> (Data& theData)
-    { return *myReadData >> theData; }
-
-private:
-  StdObjMgt_ReadData* myReadData;
-
-  StdObjMgt_ReadData::Object& operator = (const StdObjMgt_ReadData::Object&);
-};
-
 Standard_EXPORT StdObjMgt_ReadData& operator >>
-  (StdObjMgt_ReadData::Object theReadData, Standard_GUID& theGUID);
+  (StdObjMgt_ReadData& theReadData, Standard_GUID& theGUID);
 
 #endif // _StdObjMgt_ReadData_HeaderFile

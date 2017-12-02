@@ -25,7 +25,24 @@ class StdObjMgt_WriteData
 {
 public:
 
-  class Object;
+  //! Auxiliary class used to automate begin and end of
+  //! writing object (adding opening and closing parenthesis)
+  //! at constructor and destructor
+  class ObjectSentry
+  {
+  public:
+    explicit ObjectSentry (StdObjMgt_WriteData& theData) : myWriteData(&theData)
+    { myWriteData->myDriver->BeginWriteObjectData(); }
+
+    ~ObjectSentry()
+    { myWriteData->myDriver->EndWriteObjectData(); }
+
+  private:
+    StdObjMgt_WriteData* myWriteData;
+
+    ObjectSentry (const ObjectSentry&);
+    ObjectSentry& operator = (const ObjectSentry&);
+  };
 
   Standard_EXPORT StdObjMgt_WriteData 
     (Storage_BaseDriver& theDriver);
@@ -71,31 +88,7 @@ private:
   Storage_BaseDriver* myDriver;
 };
 
-class StdObjMgt_WriteData::Object
-{
-public:
-  Object (StdObjMgt_WriteData& theData) : myWriteData(&theData)
-    { myWriteData->myDriver->BeginWriteObjectData(); }
-  Object (const StdObjMgt_WriteData::Object& theOther) : myWriteData(theOther.myWriteData)
-    { myWriteData->myDriver->BeginWriteObjectData(); }
-
-  ~Object()
-    { myWriteData->myDriver->EndWriteObjectData(); }
-
-  operator StdObjMgt_WriteData& ()
-    { return *myWriteData; }
-
-  template <class Data>
-  StdObjMgt_WriteData& operator << (Data& theData)
-    { return *myWriteData << theData; }
-
-private:
-  StdObjMgt_WriteData* myWriteData;
-
-  StdObjMgt_WriteData::Object& operator = (const StdObjMgt_WriteData::Object&);
-};
-
 Standard_EXPORT StdObjMgt_WriteData& operator <<
-  (StdObjMgt_WriteData::Object theWriteData, const Standard_GUID& theGUID);
+  (StdObjMgt_WriteData& theWriteData, const Standard_GUID& theGUID);
 
 #endif // _StdObjMgt_WriteData_HeaderFile
