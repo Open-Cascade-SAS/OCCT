@@ -159,10 +159,20 @@ void  BRepTools_WireExplorer::Init(const TopoDS_Wire& W,
       if( aGAS.GetType() == GeomAbs_BSplineSurface || 
 	  aGAS.GetType() == GeomAbs_BezierSurface )
 	{
-	  Standard_Real maxTol = Max(myTolU,myTolV);
-	  myTolU = maxTol;
-	  myTolV = maxTol;
-	}
+          Standard_Real maxTol = Max(myTolU, myTolV);
+          gp_Pnt aP;
+          gp_Vec aDU, aDV;
+          Standard_Real u1, u2, v1, v2;
+          BRepTools::UVBounds(myFace, u1, u2, v1, v2);
+          aGAS.D1((u2 - u1) / 2., (v2 - v1) / 2., aP, aDU, aDV);
+          Standard_Real mod = Sqrt(aDU*aDU + aDV*aDV);
+          if (mod * maxTol / dfVertToler < 1.5)
+          {
+            maxTol = 1.5 * dfVertToler / mod;
+          }
+          myTolU = maxTol;
+          myTolV = maxTol;
+        }
 
       myReverse = (myFace.Orientation() == TopAbs_REVERSED);
     }
