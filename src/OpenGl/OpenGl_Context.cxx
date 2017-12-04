@@ -207,6 +207,10 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
   myViewportVirt[2] = 0;
   myViewportVirt[3] = 0;
 
+  myPolygonOffset.Mode   = Aspect_POM_Off;
+  myPolygonOffset.Factor = 0.0f;
+  myPolygonOffset.Units  = 0.0f;
+
   // system-dependent fields
 #if defined(HAVE_EGL)
   myDisplay  = (Aspect_Display          )EGL_NO_DISPLAY;
@@ -3556,6 +3560,64 @@ Standard_Integer OpenGl_Context::SetPolygonHatchStyle (const Handle(Graphic3d_Ha
   }
 
   return myHatchStyles->SetTypeOfHatch (this, theStyle);
+}
+
+// =======================================================================
+// function : SetPolygonOffset
+// purpose  :
+// =======================================================================
+void OpenGl_Context::SetPolygonOffset (const Graphic3d_PolygonOffset& theOffset)
+{
+  const bool toFillOld = (myPolygonOffset.Mode & Aspect_POM_Fill) == Aspect_POM_Fill;
+  const bool toFillNew = (theOffset.Mode       & Aspect_POM_Fill) == Aspect_POM_Fill;
+  if (toFillNew != toFillOld)
+  {
+    if (toFillNew)
+    {
+      glEnable (GL_POLYGON_OFFSET_FILL);
+    }
+    else
+    {
+      glDisable (GL_POLYGON_OFFSET_FILL);
+    }
+  }
+
+#if !defined(GL_ES_VERSION_2_0)
+  const bool toLineOld = (myPolygonOffset.Mode & Aspect_POM_Line) == Aspect_POM_Line;
+  const bool toLineNew = (theOffset.Mode       & Aspect_POM_Line) == Aspect_POM_Line;
+  if (toLineNew != toLineOld)
+  {
+    if (toLineNew)
+    {
+      glEnable (GL_POLYGON_OFFSET_LINE);
+    }
+    else
+    {
+      glDisable (GL_POLYGON_OFFSET_LINE);
+    }
+  }
+
+  const bool toPointOld = (myPolygonOffset.Mode & Aspect_POM_Point) == Aspect_POM_Point;
+  const bool toPointNew = (theOffset.Mode       & Aspect_POM_Point) == Aspect_POM_Point;
+  if (toPointNew != toPointOld)
+  {
+    if (toPointNew)
+    {
+      glEnable (GL_POLYGON_OFFSET_POINT);
+    }
+    else
+    {
+      glDisable (GL_POLYGON_OFFSET_POINT);
+    }
+  }
+#endif
+
+  if (myPolygonOffset.Factor != theOffset.Factor
+   || myPolygonOffset.Units  != theOffset.Units)
+  {
+    glPolygonOffset (theOffset.Factor, theOffset.Units);
+  }
+  myPolygonOffset = theOffset;
 }
 
 // =======================================================================

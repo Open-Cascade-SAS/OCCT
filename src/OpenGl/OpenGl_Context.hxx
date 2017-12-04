@@ -543,6 +543,12 @@ public:
   //! @return old type of hatch.
   Standard_EXPORT Standard_Integer SetPolygonHatchStyle (const Handle(Graphic3d_HatchStyle)& theStyle);
 
+  //! Sets and applies current polygon offset.
+  Standard_EXPORT void SetPolygonOffset (const Graphic3d_PolygonOffset& theOffset);
+
+  //! Returns currently applied polygon offset parameters.
+  const Graphic3d_PolygonOffset& PolygonOffset() const { return myPolygonOffset; }
+
   //! Applies matrix stored in ModelWorldState to OpenGl.
   Standard_EXPORT void ApplyModelWorldMatrix();
 
@@ -917,6 +923,7 @@ private: //! @name fields tracking current state
   Standard_Integer              myPointSpriteOrig; //!< GL_POINT_SPRITE_COORD_ORIGIN state (GL_UPPER_LEFT by default)
   Standard_Integer              myRenderMode;      //!< value for active rendering mode
   Standard_Integer              myPolygonMode;     //!< currently used polygon rasterization mode (glPolygonMode)
+  Graphic3d_PolygonOffset       myPolygonOffset;   //!< currently applied polygon offset
   bool                          myToCullBackFaces; //!< back face culling mode enabled state (glIsEnabled (GL_CULL_FACE))
   Standard_Integer              myReadBuffer;      //!< current read buffer
   OpenGl_DrawBuffers            myDrawBuffers;     //!< current draw buffers

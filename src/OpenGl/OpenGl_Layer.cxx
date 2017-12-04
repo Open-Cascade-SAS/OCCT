@@ -651,7 +651,8 @@ void OpenGl_Layer::SetLayerSettings (const Graphic3d_ZLayerSettings& theSettings
 void OpenGl_Layer::Render (const Handle(OpenGl_Workspace)&   theWorkspace,
                            const OpenGl_GlobalLayerSettings& theDefaultSettings) const
 {
-  const Graphic3d_PolygonOffset anAppliedOffsetParams = theWorkspace->AppliedPolygonOffset();
+  const Handle(OpenGl_Context)& aCtx = theWorkspace->GetGlContext();
+  const Graphic3d_PolygonOffset anAppliedOffsetParams = aCtx->PolygonOffset();
   // myLayerSettings.ToClearDepth() is handled outside
 
   // handle depth test
@@ -673,14 +674,13 @@ void OpenGl_Layer::Render (const Handle(OpenGl_Workspace)&   theWorkspace,
   }
 
   // handle depth offset
-  theWorkspace->SetPolygonOffset (myLayerSettings.PolygonOffset());
+  aCtx->SetPolygonOffset (myLayerSettings.PolygonOffset());
 
   // handle depth write
   theWorkspace->UseDepthWrite() = myLayerSettings.ToEnableDepthWrite() && theDefaultSettings.DepthMask == GL_TRUE;
   glDepthMask (theWorkspace->UseDepthWrite() ? GL_TRUE : GL_FALSE);
 
   const Standard_Boolean hasLocalCS = !myLayerSettings.OriginTransformation().IsNull();
-  const Handle(OpenGl_Context)&   aCtx         = theWorkspace->GetGlContext();
   const Handle(OpenGl_ShaderManager)& aManager = aCtx->ShaderManager();
   Handle(Graphic3d_LightSet) aLightsBack = aManager->LightSourceState().LightSources();
   const bool hasOwnLights = aCtx->ColorMask() && !myLayerSettings.Lights().IsNull() && myLayerSettings.Lights() != aLightsBack;
@@ -755,7 +755,7 @@ void OpenGl_Layer::Render (const Handle(OpenGl_Workspace)&   theWorkspace,
   }
 
   // always restore polygon offset between layers rendering
-  theWorkspace->SetPolygonOffset (anAppliedOffsetParams);
+  aCtx->SetPolygonOffset (anAppliedOffsetParams);
 
   // restore environment texture
   if (!myLayerSettings.UseEnvironmentTexture())

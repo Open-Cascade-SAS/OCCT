@@ -220,7 +220,7 @@ void OpenGl_Workspace::ResetAppliedAspect()
   myAspectMarkerSet     = &myDefaultAspectMarker;
   myAspectMarkerApplied.Nullify();
   myAspectTextSet       = &myDefaultAspectText;
-  myPolygonOffsetApplied= Graphic3d_PolygonOffset();
+  myGlContext->SetPolygonOffset (Graphic3d_PolygonOffset());
 
   ApplyAspectLine();
   ApplyAspectFace();
@@ -355,12 +355,7 @@ const OpenGl_AspectFace* OpenGl_Workspace::ApplyAspectFace()
   // Aspect_POM_None means: do not change current settings
   if ((myAspectFaceSet->Aspect()->PolygonOffset().Mode & Aspect_POM_None) != Aspect_POM_None)
   {
-    if (myPolygonOffsetApplied.Mode   != myAspectFaceSet->Aspect()->PolygonOffset().Mode
-     || myPolygonOffsetApplied.Factor != myAspectFaceSet->Aspect()->PolygonOffset().Factor
-     || myPolygonOffsetApplied.Units  != myAspectFaceSet->Aspect()->PolygonOffset().Units)
-    {
-      SetPolygonOffset (myAspectFaceSet->Aspect()->PolygonOffset());
-    }
+    myGlContext->SetPolygonOffset (myAspectFaceSet->Aspect()->PolygonOffset());
   }
 
   // Case of hidden line
@@ -389,45 +384,6 @@ const OpenGl_AspectFace* OpenGl_Workspace::ApplyAspectFace()
 
   myAspectFaceApplied = myAspectFaceSet->Aspect();
   return myAspectFaceSet;
-}
-
-//=======================================================================
-//function : SetPolygonOffset
-//purpose  :
-//=======================================================================
-void OpenGl_Workspace::SetPolygonOffset (const Graphic3d_PolygonOffset& theParams)
-{
-  myPolygonOffsetApplied = theParams;
-
-  if ((theParams.Mode & Aspect_POM_Fill) == Aspect_POM_Fill)
-  {
-    glEnable (GL_POLYGON_OFFSET_FILL);
-  }
-  else
-  {
-    glDisable (GL_POLYGON_OFFSET_FILL);
-  }
-
-#if !defined(GL_ES_VERSION_2_0)
-  if ((theParams.Mode & Aspect_POM_Line) == Aspect_POM_Line)
-  {
-    glEnable (GL_POLYGON_OFFSET_LINE);
-  }
-  else
-  {
-    glDisable (GL_POLYGON_OFFSET_LINE);
-  }
-
-  if ((theParams.Mode & Aspect_POM_Point) == Aspect_POM_Point)
-  {
-    glEnable (GL_POLYGON_OFFSET_POINT);
-  }
-  else
-  {
-    glDisable (GL_POLYGON_OFFSET_POINT);
-  }
-#endif
-  glPolygonOffset (theParams.Factor, theParams.Units);
 }
 
 // =======================================================================

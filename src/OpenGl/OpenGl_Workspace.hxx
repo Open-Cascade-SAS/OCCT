@@ -257,12 +257,6 @@ public:
   //! @return applied model structure matrix.
   inline const OpenGl_Matrix* ModelMatrix() const { return StructureMatrix_applied; }
 
-  //! Sets and applies current polygon offset.
-  void SetPolygonOffset (const Graphic3d_PolygonOffset& theParams);
-
-  //! Returns currently applied polygon offset parameters.
-  const Graphic3d_PolygonOffset& AppliedPolygonOffset() { return myPolygonOffsetApplied; }
-
   //! Returns capping algorithm rendering filter.
   const Handle(OpenGl_CappingAlgoFilter)& DefaultCappingAlgoFilter() const
   {
@@ -316,8 +310,6 @@ protected: //! @name fields related to status
   Handle(Graphic3d_PresentationAttributes) myHighlightStyle; //!< active highlight style
 
   OpenGl_Matrix myModelViewMatrix; //!< Model matrix with applied structure transformations
-
-  Graphic3d_PolygonOffset myPolygonOffsetApplied; //!< currently applied polygon offset
 
   OpenGl_AspectFace myAspectFaceHl; //!< Hiddenline aspect
 
