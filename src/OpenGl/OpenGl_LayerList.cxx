@@ -516,6 +516,7 @@ void OpenGl_LayerList::SetLayerSettings (const Graphic3d_ZLayerId        theLaye
 void OpenGl_LayerList::UpdateCulling (const Handle(OpenGl_Workspace)& theWorkspace,
                                       const Standard_Boolean theToDrawImmediate)
 {
+  const Standard_Integer aViewId = theWorkspace->View()->Identification();
   const OpenGl_BVHTreeSelector& aSelector = theWorkspace->View()->BVHTreeSelector();
   for (OpenGl_IndexedLayerIterator anIts (myLayers); anIts.More(); anIts.Next())
   {
@@ -525,7 +526,7 @@ void OpenGl_LayerList::UpdateCulling (const Handle(OpenGl_Workspace)& theWorkspa
       continue;
     }
 
-    aLayer.UpdateCulling (aSelector, theWorkspace->IsCullingEnabled());
+    aLayer.UpdateCulling (aViewId, aSelector, theWorkspace->IsCullingEnabled());
   }
 }
 

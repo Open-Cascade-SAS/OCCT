@@ -304,11 +304,14 @@ void OpenGl_FrameStats::FrameEnd (const Handle(OpenGl_Workspace)& theWorkspace)
                                        || (aBits & Graphic3d_RenderingParams::PerfCounters_Points)    != 0;
   const Standard_Boolean toCountElems   = (aBits & Graphic3d_RenderingParams::PerfCounters_GroupArrays) != 0 || toCountTris || toCountMem;
   const Standard_Boolean toCountGroups  = (aBits & Graphic3d_RenderingParams::PerfCounters_Groups)      != 0 || toCountElems;
-  const Standard_Boolean toCountStructs = (aBits & Graphic3d_RenderingParams::PerfCounters_Structures)  != 0 || toCountGroups;
-  
-  if (toCountStructs)
+  const Standard_Boolean toCountStructs = (aBits & Graphic3d_RenderingParams::PerfCounters_Structures)  != 0
+                                       || (aBits & Graphic3d_RenderingParams::PerfCounters_Layers)      != 0 || toCountGroups;
+
+  myCountersTmp[Counter_NbLayers] = theWorkspace->View()->LayerList().Layers().Size();
+  if (toCountStructs
+   || (aBits & Graphic3d_RenderingParams::PerfCounters_Layers)    != 0)
   {
-    myCountersTmp[Counter_NbLayers] = theWorkspace->View()->LayerList().Layers().Size();
+    const Standard_Integer aViewId = theWorkspace->View()->Identification();
     for (OpenGl_SequenceOfLayers::Iterator aLayerIter (theWorkspace->View()->LayerList().Layers()); aLayerIter.More(); aLayerIter.Next())
     {
       const Handle(OpenGl_Layer)& aLayer = aLayerIter.Value();
@@ -320,9 +323,9 @@ void OpenGl_FrameStats::FrameEnd (const Handle(OpenGl_Workspace)& theWorkspace)
       myCountersTmp[Counter_NbStructsNotCulled] += aLayer->NbStructuresNotCulled();
       if (toCountGroups)
       {
-        updateStructures (aLayer->CullableStructuresBVH().Structures(), toCountStructs, toCountTris, toCountMem);
-        updateStructures (aLayer->CullableTrsfPersStructuresBVH().Structures(), toCountStructs, toCountTris, toCountMem);
-        updateStructures (aLayer->NonCullableStructures(), toCountStructs, toCountTris, toCountMem);
+        updateStructures (aViewId, aLayer->CullableStructuresBVH().Structures(), toCountElems, toCountTris, toCountMem);
+        updateStructures (aViewId, aLayer->CullableTrsfPersStructuresBVH().Structures(), toCountElems, toCountTris, toCountMem);
+        updateStructures (aViewId, aLayer->NonCullableStructures(), toCountElems, toCountTris, toCountMem);
       }
     }
   }
@@ -387,7 +390,8 @@ void OpenGl_FrameStats::FrameEnd (const Handle(OpenGl_Workspace)& theWorkspace)
 // function : updateStructures
 // purpose  :
 // =======================================================================
-void OpenGl_FrameStats::updateStructures (const OpenGl_IndexedMapOfStructure& theStructures,
+void OpenGl_FrameStats::updateStructures (Standard_Integer theViewId,
+                                          const OpenGl_IndexedMapOfStructure& theStructures,
                                           Standard_Boolean theToCountElems,
                                           Standard_Boolean theToCountTris,
                                           Standard_Boolean theToCountMem)
@@ -395,7 +399,8 @@ void OpenGl_FrameStats::updateStructures (const OpenGl_IndexedMapOfStructure& th
   for (OpenGl_IndexedMapOfStructure::Iterator aStructIter (theStructures); aStructIter.More(); aStructIter.Next())
   {
     const OpenGl_Structure* aStruct = aStructIter.Value();
-    if (aStruct->IsCulled())
+    if (aStruct->IsCulled()
+    || !aStruct->IsVisible (theViewId))
     {
       if (theToCountMem)
       {

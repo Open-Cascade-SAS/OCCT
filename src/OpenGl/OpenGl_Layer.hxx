@@ -124,7 +124,8 @@ public:
 
   //! Update culling state - should be called before rendering.
   //! Traverses through BVH tree to determine which structures are in view volume.
-  void UpdateCulling (const OpenGl_BVHTreeSelector& theSelector,
+  void UpdateCulling (const Standard_Integer theViewId,
+                      const OpenGl_BVHTreeSelector& theSelector,
                       const Standard_Boolean theToTraverse);
 
   //! Returns TRUE if layer is empty or has been discarded entirely by culling test.

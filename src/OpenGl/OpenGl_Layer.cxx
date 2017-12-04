@@ -483,7 +483,8 @@ void OpenGl_Layer::updateBVH() const
 // function : UpdateCulling
 // purpose  :
 // =======================================================================
-void OpenGl_Layer::UpdateCulling (const OpenGl_BVHTreeSelector& theSelector,
+void OpenGl_Layer::UpdateCulling (const Standard_Integer theViewId,
+                                  const OpenGl_BVHTreeSelector& theSelector,
                                   const Standard_Boolean theToTraverse)
 {
   updateBVH();
@@ -583,8 +584,11 @@ void OpenGl_Layer::UpdateCulling (const OpenGl_BVHTreeSelector& theSelector,
         const OpenGl_Structure* aStruct = isTrsfPers
                                         ? myBVHPrimitivesTrsfPers.GetStructureById (aIdx)
                                         : myBVHPrimitives.GetStructureById (aIdx);
-        aStruct->MarkAsNotCulled();
-        ++myNbStructuresNotCulled;
+        if (aStruct->IsVisible (theViewId))
+        {
+          aStruct->MarkAsNotCulled();
+          ++myNbStructuresNotCulled;
+        }
         if (aHead < 0)
         {
           break;

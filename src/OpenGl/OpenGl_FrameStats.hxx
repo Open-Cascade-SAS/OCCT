@@ -136,7 +136,8 @@ public:
 protected:
 
   //! Updates counters for structures.
-  Standard_EXPORT virtual void updateStructures (const OpenGl_IndexedMapOfStructure& theStructures,
+  Standard_EXPORT virtual void updateStructures (Standard_Integer theViewId,
+                                                 const OpenGl_IndexedMapOfStructure& theStructures,
                                                  Standard_Boolean theToCountElems,
                                                  Standard_Boolean theToCountTris,
                                                  Standard_Boolean theToCountMem);
