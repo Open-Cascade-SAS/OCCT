@@ -124,7 +124,9 @@
 #include <StepRepr_RepresentationRelationship.hxx>
 #include <StepRepr_RepresentedDefinition.hxx>
 #include <StepRepr_ReprItemAndLengthMeasureWithUnit.hxx>
+#include <StepRepr_ReprItemAndLengthMeasureWithUnitAndQRI.hxx>
 #include <StepRepr_ReprItemAndPlaneAngleMeasureWithUnit.hxx>
+#include <StepRepr_ReprItemAndPlaneAngleMeasureWithUnitAndQRI.hxx>
 #include <StepRepr_SequenceOfRepresentationItem.hxx>
 #include <StepRepr_ShapeAspect.hxx>
 #include <StepRepr_ShapeAspectDerivingRelationship.hxx>
@@ -3064,7 +3066,7 @@ TDF_Label STEPCAFControl_Reader::createGDTObjectInXCAF(const Handle(Standard_Tra
   {
     Standard_Integer anIndex = FindShapeIndexForDGT(aSeqRI1.Value(i), theWS);
     TopoDS_Shape aSh;
-    if(anIndex >0) {
+    if(anIndex > 0) {
       Handle(Transfer_Binder) aBinder = aTP->MapItem(anIndex);
       aSh = TransferBRep::ShapeResult(aBinder);
     }
@@ -3072,7 +3074,20 @@ TDF_Label STEPCAFControl_Reader::createGDTObjectInXCAF(const Handle(Standard_Tra
     {
       TDF_Label aShL;
       aSTool->Search(aSh, aShL, Standard_True, Standard_True, Standard_True);
-      aShLS1.Append(aShL);
+      if (aShL.IsNull() && aSh.ShapeType() == TopAbs_WIRE)
+      {
+        TopExp_Explorer ex(aSh, TopAbs_EDGE, TopAbs_SHAPE);
+        while (ex.More())
+        {
+          TDF_Label edgeL;
+          aSTool->Search(ex.Current(), edgeL, Standard_True, Standard_True, Standard_True);
+          if (!edgeL.IsNull())
+            aShLS1.Append(edgeL);
+          ex.Next();
+        }
+      }
+      if (!aShL.IsNull())
+        aShLS1.Append(aShL);
     }
   }
   if (!aSeqRI2.IsEmpty())
@@ -3090,7 +3105,20 @@ TDF_Label STEPCAFControl_Reader::createGDTObjectInXCAF(const Handle(Standard_Tra
       {
         TDF_Label aShL;
         aSTool->Search(aSh, aShL, Standard_True, Standard_True, Standard_True);
-        aShLS2.Append(aShL);
+        if (aShL.IsNull() && aSh.ShapeType() == TopAbs_WIRE)
+        {
+          TopExp_Explorer ex(aSh, TopAbs_EDGE, TopAbs_SHAPE);
+          while (ex.More())
+          {
+            TDF_Label edgeL;
+            aSTool->Search(ex.Current(), edgeL, Standard_True, Standard_True, Standard_True);
+            if (!edgeL.IsNull())
+              aShLS2.Append(edgeL);
+            ex.Next();
+          }
+        }
+        if (!aShL.IsNull())
+          aShLS2.Append(aShL);
       }
     }
   }
@@ -3172,6 +3200,7 @@ static void setDimObjectToXCAF(const Handle(Standard_Transient)& theEnt,
 
   aDimObj = new XCAFDimTolObjects_DimensionObject();
   Standard_Real aDim1=-1.,aDim2=-1.,aDim3=-1.;
+  Standard_Boolean isPlusMinusTolerance = Standard_False;
   Handle(StepShape_TypeQualifier) aTQ;
   Handle(StepShape_ValueFormatTypeQualifier) aVFTQ;
   Handle(StepShape_ToleranceValue) aTV;
@@ -3205,79 +3234,65 @@ static void setDimObjectToXCAF(const Handle(Standard_Transient)& theEnt,
             Handle(StepRepr_RepresentationItem) aDRI = aHARI->Value(nr);
             if(aDRI.IsNull()) continue;
 
-            if(aDRI->IsKind(STANDARD_TYPE(StepRepr_ReprItemAndLengthMeasureWithUnit))) {
-              //get values
-              Handle(StepRepr_ReprItemAndLengthMeasureWithUnit) aRILMWU =
-                Handle(StepRepr_ReprItemAndLengthMeasureWithUnit)::DownCast(aDRI);
-              Standard_Real aVal = aRILMWU->GetMeasureWithUnit()->ValueComponent();
-              StepBasic_Unit anUnit = aRILMWU->GetMeasureWithUnit()->UnitComponent();
-              Standard_Real aFact=1.;
-              if(anUnit.IsNull()) continue;
-              if( !(anUnit.CaseNum(anUnit.Value())==1) ) continue;
+            if (aDRI->IsKind(STANDARD_TYPE(StepRepr_ReprItemAndMeasureWithUnit))) {
+              // simple value / range
+              Handle(StepRepr_ReprItemAndMeasureWithUnit) aMWU =
+                Handle(StepRepr_ReprItemAndMeasureWithUnit)::DownCast(aDRI);
+              Standard_Real aVal = aMWU->GetMeasureWithUnit()->ValueComponent();
+              StepBasic_Unit anUnit = aMWU->GetMeasureWithUnit()->UnitComponent();
+              Standard_Real aFact = 1.;
+              if (anUnit.IsNull()) 
+                continue;
+              if (!(anUnit.CaseNum(anUnit.Value()) == 1)) 
+                continue;
               Handle(StepBasic_NamedUnit) NU = anUnit.NamedUnit();
-              if(GetLengthConversionFactor(NU,aFact)) aVal=aVal*aFact;
-              if(aDim2 > 0)
-              {
-                if(aDim1 > aDim2)
-                {
-                  Standard_Real aTmp = aDim1;
-                  aDim1 = aDim2;
-                  aDim2 = aTmp;
-                }
-                if(aVal < aDim1)
-                  aDim1 = aVal;
-                else if(aVal > aDim2)
-                  aDim2 = aVal;
-              }
-              else if(aDim1 > 0)
-              {
-                if (aVal > aDim1)
-                  aDim2 = aVal;
-                else
-                {
-                  aDim2 = aDim1;
-                  aDim1 = aVal;
-                }
+              if (aMWU->IsKind(STANDARD_TYPE(StepRepr_ReprItemAndLengthMeasureWithUnit))) {
+                if (GetLengthConversionFactor(NU, aFact))
+                  aVal = aVal * aFact;
               }
               else
+                if (aMWU->IsKind(STANDARD_TYPE(StepRepr_ReprItemAndPlaneAngleMeasureWithUnit))) {
+                  if (GetAngleConversionFactor(NU, aFact))
+                    aVal = aVal * aFact;
+                }
+              Handle(TCollection_HAsciiString) aName = aMWU->Name();
+              if (aName->Search("upper") > 0) // upper limit
+                aDim2 = aVal;
+              else // lower limit or simple nominal value
                 aDim1 = aVal;
             }
-            else if(aDRI->IsKind(STANDARD_TYPE(StepRepr_ReprItemAndPlaneAngleMeasureWithUnit))) {
-              //get values
-              Handle(StepRepr_ReprItemAndPlaneAngleMeasureWithUnit) aRIPAMWU =
-                Handle(StepRepr_ReprItemAndPlaneAngleMeasureWithUnit)::DownCast(aDRI);
-              Standard_Real aVal = aRIPAMWU->GetMeasureWithUnit()->ValueComponent();
-              StepBasic_Unit anUnit = aRIPAMWU->GetMeasureWithUnit()->UnitComponent();
-              Standard_Real aFact=1.;
-              if(anUnit.IsNull()) continue;
-              if( !(anUnit.CaseNum(anUnit.Value())==1) ) continue;
+            else if (aDRI->IsKind(STANDARD_TYPE(StepRepr_ReprItemAndMeasureWithUnitAndQRI))) {
+              // value with qualifier (minimum/maximum/average)
+              Handle(StepRepr_ReprItemAndMeasureWithUnitAndQRI) aMWU =
+                Handle(StepRepr_ReprItemAndMeasureWithUnitAndQRI)::DownCast(aDRI);
+              Standard_Real aVal = aMWU->GetMeasureWithUnit()->ValueComponent();
+              StepBasic_Unit anUnit = aMWU->GetMeasureWithUnit()->UnitComponent();
+              Standard_Real aFact = 1.;
+              if(anUnit.IsNull())
+                continue;
+              if( !(anUnit.CaseNum(anUnit.Value()) == 1) )
+                continue;
               Handle(StepBasic_NamedUnit) NU = anUnit.NamedUnit();
-              if(GetAngleConversionFactor(NU,aFact)) aVal=aVal*aFact;
-              if(aDim2 > 0)
-              {
-                if(aDim1 > aDim2)
-                {
-                  Standard_Real aTmp = aDim1;
-                  aDim1 = aDim2;
-                  aDim2 = aTmp;
-                }
-                if(aVal < aDim1)
-                  aDim1 = aVal;
-                else if(aVal > aDim2)
-                  aDim2 = aVal;
-              }
-              else if(aDim1 > 0)
-              {
-                if (aVal > aDim1)
-                  aDim2 = aVal;
-                else
-                {
-                  aDim2 = aDim1;
-                  aDim1 = aVal;
-                }
+              if (aMWU->IsKind(STANDARD_TYPE(StepRepr_ReprItemAndLengthMeasureWithUnitAndQRI))) {
+                if (GetLengthConversionFactor(NU, aFact))
+                  aVal = aVal * aFact;
               }
               else
+                if (aMWU->IsKind(STANDARD_TYPE(StepRepr_ReprItemAndPlaneAngleMeasureWithUnitAndQRI))) {
+                  if (GetAngleConversionFactor(NU, aFact))
+                    aVal = aVal * aFact;
+                }
+              Handle(StepShape_QualifiedRepresentationItem) aQRI = aMWU->GetQualifiedRepresentationItem();
+              if (aQRI->Qualifiers()->Length() == 0) {
                 aDim1 = aVal;
+                continue;
+              }
+              Handle(StepShape_TypeQualifier) aValueType = aQRI->Qualifiers()->Value(1).TypeQualifier();
+              if (aValueType->Name()->String().IsEqual("minimum"))
+                aDim2 = aVal;
+              else if (aValueType->Name()->String().IsEqual("maximum"))
+                aDim3 = aVal;
+              else aDim1 = aVal;
             }
             else if(aDRI->IsKind(STANDARD_TYPE(StepShape_QualifiedRepresentationItem))) {
               //get qualifier
@@ -3307,6 +3322,7 @@ static void setDimObjectToXCAF(const Handle(Standard_Transient)& theEnt,
     }
     else if (!aPMT.IsNull())
     {
+      isPlusMinusTolerance = Standard_True;
       StepShape_ToleranceMethodDefinition aTMD = aPMT->Range();
       if(aPMT.IsNull()) continue;
       if(aTMD.CaseNumber() == 1)
@@ -3357,6 +3373,11 @@ static void setDimObjectToXCAF(const Handle(Standard_Transient)& theEnt,
   else
   {
     Handle(TColStd_HArray1OfReal) anArr = new TColStd_HArray1OfReal(1,3);
+    if (!isPlusMinusTolerance)
+    {
+      aDim2 = aDim1 - aDim2;
+      aDim3 = aDim3 - aDim1;
+    }
     anArr->SetValue(1,aDim1);
     anArr->SetValue(2,aDim2);
     anArr->SetValue(3,aDim3);

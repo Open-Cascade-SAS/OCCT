@@ -1,0 +1,8 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename bug29362_MMT200.stp
+
+set ref_data {
+Centre of mass: 0 0 0
+Mass: 0
+
+}
