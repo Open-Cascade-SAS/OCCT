@@ -44,6 +44,7 @@
 #include <GeomAdaptor_HSurface.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <GeomInt.hxx>
+#include <GeomLib.hxx>
 #include <GeomProjLib.hxx>
 #include <gp.hxx>
 #include <gp_Cylinder.hxx>
@@ -618,12 +619,25 @@ void BOPTools_AlgoTools2D::MakePCurveOnFace
   }
   //
   TolReached2d=aTolR;
-  //
+
+  // Adjust curve for periodic surface
   Handle(Geom2d_Curve) aC2DA;
   BOPTools_AlgoTools2D::AdjustPCurveOnSurf (*pBAS, aT1, aT2, aC2D, aC2DA);
-  //
-  aC2D=aC2DA;
-  //
+  aC2D = aC2DA;
+
+  // Make sure that the range of the 2D curve is sufficient for representation of the 3D curve.
+  Standard_Real aTCFirst = aC2D->FirstParameter();
+  Standard_Real aTCLast  = aC2D->LastParameter();
+  if ((aTCFirst - aT1) > Precision::PConfusion() ||
+      (aT2 - aTCLast ) > Precision::PConfusion())
+  {
+    if (aTCFirst < aT1) aTCFirst = aT1;
+    if (aTCLast  > aT2) aTCLast  = aT2;
+
+    GeomLib::SameRange(Precision::PConfusion(), aC2D,
+                       aTCFirst, aTCLast, aT1, aT2, aC2D);
+  }
+
   // compute the appropriate tolerance for the edge
   Handle(Geom_Surface) aS = pBAS->Surface().Surface();
   aS = Handle(Geom_Surface)::DownCast(aS->Transformed(pBAS->Trsf()));
