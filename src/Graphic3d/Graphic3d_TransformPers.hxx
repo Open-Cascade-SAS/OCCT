@@ -27,9 +27,21 @@
 
 DEFINE_STANDARD_HANDLE(Graphic3d_TransformPers, Standard_Transient)
 
-//! Class for keeping and computing transformation persistence.
-//! Note that instance of this class can not define
-//! no transformation persistence Graphic3d_TMF_None - NULL handle should be used for this purpose.
+//! Transformation Persistence definition.
+//!
+//! Transformation Persistence defines a mutable Local Coordinate system which depends on camera position,
+//! so that visual appearance of the object becomes partially immutable while camera moves.
+//! Object visually preserves particular property such as size, placement, rotation or their combination.
+//!
+//! Graphic3d_TMF_ZoomPers, Graphic3d_TMF_RotatePers and Graphic3d_TMF_ZoomRotatePers define Local Coordinate system
+//! having origin in specified anchor point defined in World Coordinate system,
+//! while Graphic3d_TMF_TriedronPers and Graphic3d_TMF_2d define origin as 2D offset from screen corner in pixels.
+//!
+//! Graphic3d_TMF_2d, Graphic3d_TMF_TriedronPers and Graphic3d_TMF_ZoomPers defines Local Coordinate system where length units are pixels.
+//! Beware that Graphic3d_RenderingParams::ResolutionRatio() will be ignored!
+//! For other Persistence flags, normal (world) length units will apply.
+//!
+//! WARNING: Graphic3d_TMF_None is not permitted for defining instance of this class - NULL handle should be used for this purpose!
 class Graphic3d_TransformPers : public Standard_Transient
 {
   DEFINE_STANDARD_RTTIEXT(Graphic3d_TransformPers, Standard_Transient)
@@ -73,6 +85,7 @@ public:
   }
 
   //! Set Zoom/Rotate transformation persistence with an anchor 3D point.
+  //! Anchor point defines the origin of Local Coordinate system within World Coordinate system.
   //! Throws an exception if persistence mode is not Graphic3d_TMF_ZoomPers, Graphic3d_TMF_ZoomRotatePers or Graphic3d_TMF_RotatePers.
   Graphic3d_TransformPers (const Graphic3d_TransModeFlags theMode,
                            const gp_Pnt& thePnt)
@@ -82,6 +95,7 @@ public:
   }
 
   //! Set 2d/trihedron transformation persistence with a corner and 2D offset.
+  //! 2D offset defines the origin of Local Coordinate system as projection of 2D point on screen plane into World Coordinate system.
   //! Throws an exception if persistence mode is not Graphic3d_TMF_TriedronPers or Graphic3d_TMF_2d.
   //! The offset is a positive displacement from the view corner in pixels.
   Graphic3d_TransformPers (const Graphic3d_TransModeFlags theMode,
