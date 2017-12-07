@@ -304,15 +304,17 @@ Standard_EXPORT virtual ~BOPDS_DS();
   Standard_EXPORT void RefineFaceInfoOn();
   
 
-  //! Returns information about ON/IN subshapes of the given faces.
+  //! Returns information about ON/IN sub-shapes of the given faces.
   //! @param theMVOnIn  the indices of ON/IN vertices from both faces
+  //! @param theMVCommon the indices of common vertices for both faces
   //! @param thePBOnIn  all On/In pave blocks from both faces
   //! @param theCommonPB  the common pave blocks (that are shared by both faces).
-  Standard_EXPORT void SubShapesOnIn (const Standard_Integer theF1,
-                                      const Standard_Integer theF2,
-                                      TColStd_MapOfInteger& theMVOnIn,
-                                      BOPDS_IndexedMapOfPaveBlock& thePBOnIn,
-                                      BOPDS_MapOfPaveBlock& theCommonPB) const;
+  Standard_EXPORT void SubShapesOnIn(const Standard_Integer theNF1,
+                                     const Standard_Integer theNF2,
+                                     TColStd_MapOfInteger& theMVOnIn,
+                                     TColStd_MapOfInteger& theMVCommon,
+                                     BOPDS_IndexedMapOfPaveBlock& thePBOnIn,
+                                     BOPDS_MapOfPaveBlock& theCommonPB) const;
   
 
   //! Returns the indices of edges that are  shared

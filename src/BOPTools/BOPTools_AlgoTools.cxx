@@ -645,10 +645,14 @@ TopAbs_State BOPTools_AlgoTools::ComputeState
   }
   // !!<- process edges that are all on theRef
   if (!aE1.IsNull()) {
-    BOPTools_AlgoTools3D::PointNearEdge(aE1, theF, 
-                                        aP2D, aP3D, theContext);
-    aState=BOPTools_AlgoTools::ComputeState(aP3D, theRef, theTol, 
-                                            theContext);
+    const Standard_Integer anErrID = BOPTools_AlgoTools3D::PointNearEdge(aE1, theF,
+                                                                         aP2D, aP3D,
+                                                                         theContext);
+    if(anErrID == 0)
+    {
+      aState = BOPTools_AlgoTools::ComputeState(aP3D, theRef, theTol,
+                                                theContext);
+    }
   }
   //
   return aState;

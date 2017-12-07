@@ -1,7 +1,3 @@
-puts "TODO OCC28802 Linux: Faulty shapes in variables faulty_1 to"
-puts "TODO OCC28802 Linux: Error : The area of result shape is"
-puts "TODO OCC28802 Linux: Error : The result of General Fuse operation is self-interfered shape"
-
 puts "=========="
 puts "OCC26938  "
 puts "=========="
@@ -26,5 +22,7 @@ set info [bopcheck result]
 if { [regexp "This shape seems to be OK" ${info}] != 1 } {
     puts "Error : The result of General Fuse operation is self-interfered shape"
 }
+
+checknbshapes result -solid 1 -shell 1 -t -m "Result"
 
 checkview -display result -2d -path ${imagedir}/${test_image}.png
