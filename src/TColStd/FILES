@@ -68,7 +68,6 @@ TColStd_MapIteratorOfMapOfAsciiString.hxx
 TColStd_MapIteratorOfMapOfInteger.hxx
 TColStd_MapIteratorOfMapOfReal.hxx
 TColStd_MapIteratorOfMapOfTransient.hxx
-TColStd_MapIteratorOfPackedMapOfInteger.cxx
 TColStd_MapIteratorOfPackedMapOfInteger.hxx
 TColStd_MapOfAsciiString.hxx
 TColStd_MapOfInteger.hxx

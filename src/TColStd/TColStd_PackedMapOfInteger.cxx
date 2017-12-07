@@ -14,7 +14,7 @@
 // commercial license or contractual agreement.
 
 #include <TColStd_PackedMapOfInteger.hxx>
-#include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
+
 #include <TCollection_MapNode.hxx>
 #include <Standard_Type.hxx>
 
@@ -23,16 +23,8 @@
 // 27 upper bits
 #define MASK_HIGH (~MASK_LOW)
 
-/**
- * Class implementing a block of 32 consecutive integer values as a node of
- * a Map collection. The data are stored in 64 bits as:
- * - bits  0 - 4 : (number of integers stored in the block) - 1;
- * - bits  5 - 31: base address of the block of integers (low bits assumed 0)
- * - bits 32 - 63: 32-bit field where each bit indicates the presence of the
- *                 corresponding integer in the block. Number of non-zero bits
- *                 must be equal to the number expressed in bits 0-4.
- */
-class TColStd_intMapNode : public TCollection_MapNode
+//! Class implementing a block of 32 consecutive integer values as a node of a Map collection.
+class TColStd_PackedMapOfInteger::TColStd_intMapNode : public TCollection_MapNode
 {
 public:
   inline TColStd_intMapNode (TCollection_MapNode * ptr = 0L)
@@ -103,18 +95,6 @@ public:
     return ((myMask >> 5) == (unsigned)theOther);
   }
 
-  /**
-   * Local friend function, used in TColStd_MapIteratorOfPackedMapOfInteger.
-   */
-  friend Standard_Integer TColStd_intMapNode_findNext(const TColStd_intMapNode*,
-                                                      unsigned int& );
-
-  /**
-   * Local friend function.
-   */
-  friend Standard_Integer TColStd_intMapNode_findPrev(const TColStd_intMapNode*,
-                                                      unsigned int& );
-
 private:
   unsigned int      myMask;
   unsigned int      myData;
@@ -126,7 +106,7 @@ private:
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean TColStd_intMapNode::AddValue (const Standard_Integer theValue)
+Standard_Boolean TColStd_PackedMapOfInteger::TColStd_intMapNode::AddValue (const Standard_Integer theValue)
 {
   Standard_Boolean aResult (Standard_False);
   const Standard_Integer aValInt = (1 << (theValue & MASK_LOW));
@@ -143,7 +123,7 @@ Standard_Boolean TColStd_intMapNode::AddValue (const Standard_Integer theValue)
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean TColStd_intMapNode::DelValue (const Standard_Integer theValue)
+Standard_Boolean TColStd_PackedMapOfInteger::TColStd_intMapNode::DelValue (const Standard_Integer theValue)
 {
   Standard_Boolean aResult (Standard_False);
   const Standard_Integer aValInt = (1 << (theValue & MASK_LOW));
@@ -177,14 +157,12 @@ inline size_t TColStd_Population (unsigned int&      theMask,
 
 //=======================================================================
 //function : TColStd_intMapNode_findNext
-//purpose  : Find the smallest non-zero bit under the given mask. Outputs
-//           the new mask that does not contain the detected bit.
+//purpose  :
 //=======================================================================
-
-Standard_Integer TColStd_intMapNode_findNext (const TColStd_intMapNode* theNode,
-                                              unsigned int&             theMask)
+Standard_Integer TColStd_PackedMapOfInteger::TColStd_intMapNode_findNext (const TColStd_intMapNode* theNode,
+                                                                          unsigned int&             theMask)
 {
-  unsigned int val = theNode->myData & theMask;
+  unsigned int val = theNode->Data() & theMask;
   int nZeros (0);
   if (val == 0)
     theMask = ~0U;   // void, nothing to do
@@ -221,14 +199,12 @@ Standard_Integer TColStd_intMapNode_findNext (const TColStd_intMapNode* theNode,
 
 //=======================================================================
 //function : TColStd_intMapNode_findPrev
-//purpose  : Find the highest non-zero bit under the given mask. Outputs
-//           the new mask that does not contain the detected bit.
+//purpose  :
 //=======================================================================
-
-Standard_Integer TColStd_intMapNode_findPrev (const TColStd_intMapNode* theNode,
-                                              unsigned int&             theMask)
+Standard_Integer TColStd_PackedMapOfInteger::TColStd_intMapNode_findPrev (const TColStd_intMapNode* theNode,
+                                                                          unsigned int&             theMask)
 {
-  unsigned int val = theNode->myData & theMask;
+  unsigned int val = theNode->Data() & theMask;
   int nZeros (0);
   if (val == 0)
     theMask = ~0U;   // void, nothing to do

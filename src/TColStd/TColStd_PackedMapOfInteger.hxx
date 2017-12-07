@@ -17,7 +17,9 @@
 #define TColStd_PackedMapOfInteger_HeaderFile
 
 #include <Standard_DefineAlloc.hxx>
+#include <Standard_NoSuchObject.hxx>
 #include <TCollection_BasicMap.hxx>
+#include <TCollection_BasicMapIterator.hxx>
 
 /**
  * Optimized Map of integer values. Each block of 32 integers is stored in 8 bytes in memory.
@@ -28,9 +30,68 @@ class TColStd_PackedMapOfInteger : private TCollection_BasicMap
   // operators new and delete must be defined explicitly 
   // since inherited ones are not accessible
   DEFINE_STANDARD_ALLOC
-  
- public:
-  // ---------- PUBLIC METHODS ----------
+
+public:
+
+  //! Iterator of class TColStd_PackedMapOfInteger.
+  class Iterator : public TCollection_BasicMapIterator
+  {
+  public:
+
+    /// Empty Constructor.
+    Iterator() : myIntMask (~0U), myKey (0) {}
+
+    /// Constructor.
+    Iterator (const TColStd_PackedMapOfInteger& theMap)
+    : TCollection_BasicMapIterator (theMap),
+      myIntMask (~0U)
+    {
+      myKey = myNode != NULL ? TColStd_intMapNode_findNext (reinterpret_cast<const TColStd_intMapNode*>(myNode), myIntMask) : 0;
+    }
+
+    //! Re-initialize with the same or another Map instance.
+    void Initialize (const TColStd_PackedMapOfInteger& theMap)
+    {
+      TCollection_BasicMapIterator::Initialize (theMap);
+      myIntMask = ~0U;
+      myKey = myNode != NULL ? TColStd_intMapNode_findNext (reinterpret_cast<const TColStd_intMapNode*>(myNode), myIntMask) : 0;
+    }
+
+    //! Restart the iteration
+    void Reset()
+    {
+      TCollection_BasicMapIterator::Reset();
+      myIntMask = ~0U;
+      myKey = myNode != NULL ? TColStd_intMapNode_findNext (reinterpret_cast<const TColStd_intMapNode*>(myNode), myIntMask) : 0;
+    }
+
+    //! Query the iterated key.
+    Standard_Integer Key() const
+    {
+      Standard_NoSuchObject_Raise_if ((myIntMask == ~0U), "TColStd_MapIteratorOfPackedMapOfInteger::Key");
+      return myKey;
+    }
+
+    //! Increment the iterator
+    void Next()
+    {
+      for (; myNode != NULL; TCollection_BasicMapIterator::Next())
+      {
+        const TColStd_intMapNode* aNode = reinterpret_cast<const TColStd_intMapNode*>(myNode);
+        myKey = TColStd_intMapNode_findNext (aNode, myIntMask);
+        if (myIntMask != ~0u)
+        {
+          break;
+        }
+      }
+    }
+
+  private:
+    unsigned int     myIntMask; //!< all bits set above the iterated position
+    Standard_Integer myKey;     //!< Currently iterated key
+  };
+
+public:
 
   /// Constructor
   inline  TColStd_PackedMapOfInteger  (const Standard_Integer NbBuckets = 1)
@@ -214,13 +275,28 @@ public:
   inline Standard_Integer InternalExtent () const
   { return TCollection_BasicMap::Extent(); }
 
+private:
 
- private:
-  // ---------- PRIVATE FIELDS ----------
+  //! Class implementing a block of 32 consecutive integer values as a node of a Map collection.
+  //! The data are stored in 64 bits as:
+  //!  - bits  0 - 4 : (number of integers stored in the block) - 1;
+  //!  - bits  5 - 31: base address of the block of integers (low bits assumed 0)
+  //!  - bits 32 - 63: 32-bit field where each bit indicates the presence of the corresponding integer in the block.
+  //!                  Number of non-zero bits must be equal to the number expressed in bits 0-4.
+  class TColStd_intMapNode;
 
-  size_t                myExtent;
+  //! Find the smallest non-zero bit under the given mask.
+  //! Outputs the new mask that does not contain the detected bit.
+  Standard_EXPORT static Standard_Integer TColStd_intMapNode_findNext (const TColStd_intMapNode* theNode,
+                                                                       unsigned int& theMask);
 
-  friend class TColStd_MapIteratorOfPackedMapOfInteger;
+  //! Find the highest non-zero bit under the given mask.
+  //! Outputs the new mask that does not contain the detected bit.
+  Standard_EXPORT static Standard_Integer TColStd_intMapNode_findPrev (const TColStd_intMapNode* theNode,
+                                                                       unsigned int& theMask);
+
+private:
+  size_t myExtent;
 };
 
 #endif
