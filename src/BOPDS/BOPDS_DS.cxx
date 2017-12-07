@@ -1453,56 +1453,71 @@ void BOPDS_DS::AloneVertices(const Standard_Integer theI,
 //function : VerticesOnIn
 //purpose  : 
 //=======================================================================
-void BOPDS_DS::SubShapesOnIn
-  (const Standard_Integer nF1,
-   const Standard_Integer nF2,
-   TColStd_MapOfInteger& theMVOnIn,
-   BOPDS_IndexedMapOfPaveBlock& thePBOnIn,
-   BOPDS_MapOfPaveBlock& theCommonPB)const
+void BOPDS_DS::SubShapesOnIn(const Standard_Integer theNF1,
+                             const Standard_Integer theNF2,
+                             TColStd_MapOfInteger& theMVOnIn,
+                             TColStd_MapOfInteger& theMVCommon,
+                             BOPDS_IndexedMapOfPaveBlock& thePBOnIn,
+                             BOPDS_MapOfPaveBlock& theCommonPB)const
 {
   Standard_Integer i, j, nV, nV1, nV2, aNbPB;
   TColStd_MapIteratorOfMapOfInteger aIt;
   BOPDS_IndexedMapOfPaveBlock pMPB[4];
   //
-  const BOPDS_FaceInfo& aFI1=FaceInfo(nF1);
-  const BOPDS_FaceInfo& aFI2=FaceInfo(nF2);
+  const BOPDS_FaceInfo& aFI1 = FaceInfo(theNF1);
+  const BOPDS_FaceInfo& aFI2 = FaceInfo(theNF2);
   //
-  pMPB[0]=aFI1.PaveBlocksOn();
-  pMPB[1]=aFI1.PaveBlocksIn();
-  pMPB[2]=aFI2.PaveBlocksOn();
-  pMPB[3]=aFI2.PaveBlocksIn();
+  pMPB[0] = aFI1.PaveBlocksOn();
+  pMPB[1] = aFI1.PaveBlocksIn();
+  pMPB[2] = aFI2.PaveBlocksOn();
+  pMPB[3] = aFI2.PaveBlocksIn();
   //
-  for (i=0; i<4; ++i) {
+  for (i = 0; i < 4; ++i)
+  {
     aNbPB = pMPB[i].Extent();
-    for (j = 1; j <= aNbPB; ++j) {
+    for (j = 1; j <= aNbPB; ++j)
+    {
       const Handle(BOPDS_PaveBlock)& aPB = pMPB[i](j);
       thePBOnIn.Add(aPB);
       aPB->Indices(nV1, nV2);
+
       theMVOnIn.Add(nV1);
       theMVOnIn.Add(nV2);
-      if (i < 2) {
+
+      if (i < 2)
+      {
         if (pMPB[2].Contains(aPB) || pMPB[3].Contains(aPB))
+        {
           theCommonPB.Add(aPB);
+          theMVCommon.Add(nV1);
+          theMVCommon.Add(nV2);
+        }
       }
     }
   }
   //
-  const TColStd_MapOfInteger& aMVOn1=aFI1.VerticesOn();
-  const TColStd_MapOfInteger& aMVIn1=aFI1.VerticesIn();
-  const TColStd_MapOfInteger& aMVOn2=aFI2.VerticesOn();
-  const TColStd_MapOfInteger& aMVIn2=aFI2.VerticesIn();
+  const TColStd_MapOfInteger& aMVOn1 = aFI1.VerticesOn();
+  const TColStd_MapOfInteger& aMVIn1 = aFI1.VerticesIn();
+  const TColStd_MapOfInteger& aMVOn2 = aFI2.VerticesOn();
+  const TColStd_MapOfInteger& aMVIn2 = aFI2.VerticesIn();
   //
-  for (i=0; i<2; ++i) {
-    const TColStd_MapOfInteger& aMV1=(!i) ? aMVOn1 : aMVIn1;
+  for (i = 0; i < 2; ++i)
+  {
+    const TColStd_MapOfInteger& aMV1 = (!i) ? aMVOn1 : aMVIn1;
     aIt.Initialize(aMV1);
-    for (; aIt.More(); aIt.Next()) {
-      nV=aIt.Value();
-      if (aMVOn2.Contains(nV) || aMVIn2.Contains(nV)) {
+    for (; aIt.More(); aIt.Next())
+    {
+      nV = aIt.Value();
+      if (aMVOn2.Contains(nV) || aMVIn2.Contains(nV))
+      {
         theMVOnIn.Add(nV);
+
+        // Vertex taken from the 1st face is in the 2nd one.
+        theMVCommon.Add(nV);
       }
     }
   }
-} 
+}
 //=======================================================================
 //function : SharedEdges
 //purpose  : 

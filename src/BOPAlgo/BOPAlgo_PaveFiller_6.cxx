@@ -391,7 +391,7 @@ void BOPAlgo_PaveFiller::MakeBlocks()
     NCollection_BaseAllocator::CommonBaseAllocator();
   //
   TColStd_ListOfInteger aLSE(aAllocator), aLBV(aAllocator);
-  TColStd_MapOfInteger aMVOnIn(100, aAllocator),
+  TColStd_MapOfInteger aMVOnIn(100, aAllocator), aMVCommon(100, aAllocator),
                       aMVStick(100,aAllocator), aMVEF(100, aAllocator),
                       aMI(100, aAllocator), aMVBounds(100, aAllocator);
   BOPDS_IndexedMapOfPaveBlock aMPBOnIn(100, aAllocator);
@@ -432,13 +432,14 @@ void BOPAlgo_PaveFiller::MakeBlocks()
     BOPDS_FaceInfo& aFI2 = myDS->ChangeFaceInfo(nF2);
     //
     aMVOnIn.Clear();
+    aMVCommon.Clear();
     aMPBOnIn.Clear();
     aMPBCommon.Clear();
     aDMBV.Clear();
     aMVTol.Clear();
     aLSE.Clear();
     //
-    myDS->SubShapesOnIn(nF1, nF2, aMVOnIn, aMPBOnIn, aMPBCommon);
+    myDS->SubShapesOnIn(nF1, nF2, aMVOnIn, aMVCommon, aMPBOnIn, aMPBCommon);
     myDS->SharedEdges(nF1, nF2, aLSE, aAllocator);
     //
     Standard_Boolean bHasRealSectionEdge = Standard_False;
@@ -470,7 +471,13 @@ void BOPAlgo_PaveFiller::MakeBlocks()
       // DEBt
       aNC.InitPaveBlock1();
       //
-      PutPavesOnCurve(aMVOnIn, aNC, nF1, nF2, aMI, aMVEF, aMVTol, aDMVLV);
+      // In order to avoid problems connected with
+      // extending tolerance of vertex while putting
+      // (e.g. see "bugs modalg_6 bug26789_1" test case),
+      // all not-common vertices will be checked by
+      // BndBoxes before putting. For common-vertices,
+      // filtering by BndBoxes is not necessary.
+      PutPavesOnCurve(aMVOnIn, aMVCommon, aNC, aMI, aMVEF, aMVTol, aDMVLV);
     }
 
     // if some E-F vertex was put on a curve due to large E-F intersection range,
@@ -706,6 +713,7 @@ void BOPAlgo_PaveFiller::MakeBlocks()
   aMVStick.Clear();
   aMPBOnIn.Clear();
   aMVOnIn.Clear();
+  aMVCommon.Clear();
   aDMExEdges.Clear();
   aMI.Clear();
   aDMNewSD.Clear();
@@ -1570,57 +1578,54 @@ void BOPAlgo_PaveFiller::PutBoundPaveOnCurve(const TopoDS_Face& aF1,
 //function : PutPavesOnCurve
 //purpose  : 
 //=======================================================================
-void BOPAlgo_PaveFiller::PutPavesOnCurve
-  (const TColStd_MapOfInteger& aMVOnIn,
-   BOPDS_Curve& aNC,
-   const Standard_Integer nF1,
-   const Standard_Integer nF2,
-   const TColStd_MapOfInteger& aMI,
-   const TColStd_MapOfInteger& aMVEF,
-   TColStd_DataMapOfIntegerReal& aMVTol,
-   TColStd_DataMapOfIntegerListOfInteger& aDMVLV)
+void BOPAlgo_PaveFiller::PutPavesOnCurve(const TColStd_MapOfInteger& theMVOnIn,
+                                         const TColStd_MapOfInteger& theMVCommon,
+                                         BOPDS_Curve& theNC,
+                                         const TColStd_MapOfInteger& theMI,
+                                         const TColStd_MapOfInteger& theMVEF,
+                                         TColStd_DataMapOfIntegerReal& theMVTol,
+                                         TColStd_DataMapOfIntegerListOfInteger& theDMVLV)
 {
-  Standard_Boolean bInBothFaces;
   Standard_Integer nV;
   TColStd_MapIteratorOfMapOfInteger aIt;
   //
-  const Bnd_Box& aBoxC=aNC.Box();
-  Standard_Real aTolR3D = Max(aNC.Tolerance(), aNC.TangentialTolerance());
+  const Bnd_Box& aBoxC = theNC.Box();
+  const Standard_Real aTolR3D = Max(theNC.Tolerance(), theNC.TangentialTolerance());
   //
   //Put EF vertices first
-  aIt.Initialize(aMVEF);
-  for (; aIt.More(); aIt.Next()) {
-    nV=aIt.Value();
-    PutPaveOnCurve(nV, aTolR3D, aNC, aMI, aMVTol, aDMVLV, 2);
+  aIt.Initialize(theMVEF);
+  for (; aIt.More(); aIt.Next())
+  {
+    nV = aIt.Value();
+    PutPaveOnCurve(nV, aTolR3D, theNC, theMI, theMVTol, theDMVLV, 2);
   }
+
   //Put all other vertices
-  aIt.Initialize(aMVOnIn);
-  for (; aIt.More(); aIt.Next()) {
-    nV=aIt.Value();
-    if (aMVEF.Contains(nV)) {
+  aIt.Initialize(theMVOnIn);
+  for (; aIt.More(); aIt.Next())
+  {
+    nV = aIt.Value();
+    if (theMVEF.Contains(nV))
+    {
       continue;
     }
-    //
-    const BOPDS_ShapeInfo& aSIV=myDS->ShapeInfo(nV);
-    const Bnd_Box& aBoxV=aSIV.Box();
-    //
-    if (aBoxC.IsOut(aBoxV)){
-      continue;
-    }
-    if (!myDS->IsNewShape(nV)) {
-      const BOPDS_FaceInfo& aFI1 = myDS->FaceInfo(nF1);
-      const BOPDS_FaceInfo& aFI2 = myDS->FaceInfo(nF2);
+
+    if (!theMVCommon.Contains(nV))
+    {
+      const BOPDS_ShapeInfo& aSIV = myDS->ShapeInfo(nV);
+      const Bnd_Box& aBoxV = aSIV.Box();
       //
-      bInBothFaces = (aFI1.VerticesOn().Contains(nV) ||
-                      aFI1.VerticesIn().Contains(nV))&&
-                     (aFI2.VerticesOn().Contains(nV) ||
-                      aFI2.VerticesIn().Contains(nV));
-      if (!bInBothFaces) {
+      if (aBoxC.IsOut(aBoxV))
+      {
+        continue;
+      }
+      if (!myDS->IsNewShape(nV))
+      {
         continue;
       }
     }
     //
-    PutPaveOnCurve(nV, aTolR3D, aNC, aMI, aMVTol, aDMVLV, 1);
+    PutPaveOnCurve(nV, aTolR3D, theNC, theMI, theMVTol, theDMVLV, 1);
   }
 }
 

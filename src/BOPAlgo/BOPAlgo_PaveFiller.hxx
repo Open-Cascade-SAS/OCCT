@@ -254,15 +254,16 @@ protected:
   Standard_EXPORT Standard_Boolean IsExistingVertex (const gp_Pnt& theP, const Standard_Real theTol, const TColStd_MapOfInteger& theMVOn) const;
   
 
-  //! Checks and puts paves from <theMVOn> on the curve <theNC>.
-  Standard_EXPORT void PutPavesOnCurve (const TColStd_MapOfInteger& theMVOn, 
-                                BOPDS_Curve& theNC, 
-                                const Standard_Integer nF1, 
-                                const Standard_Integer nF2, 
-                                const TColStd_MapOfInteger& theMI, 
-                                const TColStd_MapOfInteger& theMVEF, 
-                                TColStd_DataMapOfIntegerReal& theMVTol,
-                                TColStd_DataMapOfIntegerListOfInteger& aDMVLV);
+  //! Checks and puts paves from <theMVOnIn> on the curve <theNC>.
+  //! At that, common (from theMVCommon) and not common vertices
+  //! are processed differently.
+  Standard_EXPORT void PutPavesOnCurve(const TColStd_MapOfInteger& theMVOnIn,
+                                       const TColStd_MapOfInteger& theMVCommon,
+                                       BOPDS_Curve& theNC,
+                                       const TColStd_MapOfInteger& theMI,
+                                       const TColStd_MapOfInteger& theMVEF,
+                                       TColStd_DataMapOfIntegerReal& theMVTol,
+                                       TColStd_DataMapOfIntegerListOfInteger& theDMVLV);
 
   Standard_EXPORT void FilterPavesOnCurves(const BOPDS_VectorOfCurve& theVNC);
 

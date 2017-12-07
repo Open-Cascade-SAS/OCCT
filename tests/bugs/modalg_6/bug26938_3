@@ -1,6 +1,6 @@
-puts "TODO OCC28802 Linux: Error : The area of result shape is"
-puts "TODO OCC24694 Windows: Error : The result of cut operation is self-interfered shape"
-
+puts "TODO OCC24694 All: Error : The result of cut operation is self-interfered shape"
+puts "TODO OCC24694 ALL: Result is WRONG because number of SHELL entities in shape \"result\" is 2"
+puts "TODO OCC24694 ALL: Result is WRONG because number of SOLID entities in shape \"result\" is 2"
 puts "=========="
 puts "OCC26938  "
 puts "=========="
@@ -25,5 +25,7 @@ set info [bopcheck result]
 if { [regexp "This shape seems to be OK" ${info}] != 1 } {
     puts "Error : The result of cut operation is self-interfered shape"
 }
+
+checknbshapes result -solid 3 -shell 3 -t -m "Result"
 
 checkview -display result -2d -path ${imagedir}/${test_image}.png
