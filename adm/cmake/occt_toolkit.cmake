@@ -11,6 +11,9 @@ set (PRECOMPILED_DEFS)
 
 if (NOT BUILD_SHARED_LIBS)
   list (APPEND PRECOMPILED_DEFS "-DOCCT_NO_PLUGINS")
+  if (WIN32)
+    list (APPEND PRECOMPILED_DEFS "-DHAVE_NO_DLL")
+  endif()
 endif()
 
 # Get all used packages from toolkit
