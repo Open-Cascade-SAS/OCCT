@@ -1,5 +1,3 @@
-puts "TODO OCC28274 ALL: Error: BOPAlgo_MakerVolume fails to create solid"
-
 puts "========"
 puts "OCC28274"
 puts "========"
@@ -14,12 +12,12 @@ bnondestructive 1
 
 set Log [eval mkvolume result [explode a f] ]
 
-if {[regexp "Warning" ${Log}] == 1} {
-    puts "Error: BOPAlgo_MakerVolume fails to create solid"
-}
-
 checkshape result
 
-bopcheck result
+if ![regexp "OK" [bopcheck result]] {
+  puts "Error: result has self-interferred shapes"
+}
 
+checknbshapes result -solid 3 -shell 3 -face 11 -wire 11
+checkprops result -s 985.692 -v 741.787
 checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -301,53 +301,89 @@ static Standard_Integer extrema(Draw_Interpretor& di, Standard_Integer n, const 
 //=======================================================================
 static Standard_Integer intersect(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
-  if( n < 2) 
+  if (n < 2)
   {
-    cout<< "2dintersect curve curve [Tol]"<<endl;
+    di.PrintHelp(a[0]);
     return 1;
   }
 
-  Standard_Integer k = 1;
-  Handle(Geom2d_Curve) C1 = DrawTrSurf::GetCurve2d(a[k++]);
-  if ( C1.IsNull()) 
+  Handle(Geom2d_Curve) C1 = DrawTrSurf::GetCurve2d(a[1]);
+  if (C1.IsNull())
+  {
+    di << "Curve " << a[1] << " is null\n";
     return 1;
-
-  Standard_Real Tol = 0.001;
-  Geom2dAPI_InterCurveCurve Intersector;
+  }
 
   Handle(Geom2d_Curve) C2;
-  if ( k < n ) {
-    C2 = DrawTrSurf::GetCurve2d(a[k++]);
-    if ( C2.IsNull())
-      return 1;
-  }
-  if(k < n)
-    Tol = Draw::Atof(a[k]);
+  Standard_Real Tol = 0.001;
+  Standard_Boolean bPrintState = Standard_False;
 
-  if(!C2.IsNull())
+  // Retrieve other parameters if any
+  for (Standard_Integer i = 2; i < n; ++i)
   {
-    Intersector.Init(C1,C2,Tol);
+    if (!strcmp(a[i], "-tol"))
+    {
+      Tol = Draw::Atof(a[++i]);
+    }
+    else if (!strcmp(a[i], "-state"))
+    {
+      bPrintState = Standard_True;
+    }
+    else
+    {
+      C2 = DrawTrSurf::GetCurve2d(a[i]);
+      if (C2.IsNull())
+      {
+        di << "Curve " << a[i] << " is null\n";
+        return 1;
+      }
+    }
   }
-  else {
+
+  Geom2dAPI_InterCurveCurve Intersector;
+
+  if (!C2.IsNull())
+    // Curves intersection
+    Intersector.Init(C1, C2, Tol);
+  else
+    // Self-intersection of the curve
     Intersector.Init(C1, Tol);
+
+  const Geom2dInt_GInter& anIntTool = Intersector.Intersector();
+  if (!anIntTool.IsDone())
+  {
+    di << "Intersection failed\n";
+    return 0;
   }
 
-  Standard_Integer i;
+  if (anIntTool.IsEmpty())
+    return 0;
 
-  for ( i = 1; i <= Intersector.NbPoints(); i++) {
+  Standard_Integer aNbPoints = Intersector.NbPoints();
+  for (Standard_Integer i = 1; i <= aNbPoints; i++)
+  {
+    // API simplified result
     gp_Pnt2d P = Intersector.Point(i);
-
-    di<<"Intersection point "<<i<<" : "<<P.X()<<" "<<P.Y()<<"\n";
-    di<<"parameter on the fist: "<<Intersector.Intersector().Point(i).ParamOnFirst();
-    di<<" parameter on the second: "<<Intersector.Intersector().Point(i).ParamOnSecond()<<"\n";
-    Handle(Draw_Marker2D) mark = new Draw_Marker2D( P, Draw_X, Draw_vert); 
+    di << "Intersection point " << i << " : " << P.X() << " " << P.Y() << "\n";
+    // Intersection extended results from intersection tool
+    const IntRes2d_IntersectionPoint& aPInt = anIntTool.Point(i);
+    di << "parameter on the fist: " << aPInt.ParamOnFirst();
+    di << " parameter on the second: " << aPInt.ParamOnSecond() << "\n";
+    if (bPrintState)
+    {
+      di << "Intersection type: " <<
+        (aPInt.TransitionOfFirst().IsTangent() ? "TOUCH" : "INTERSECTION") << "\n";
+    }
+    Handle(Draw_Marker2D) mark = new Draw_Marker2D(P, Draw_X, Draw_vert);
     dout << mark;
   }
   dout.Flush();
 
-  Handle(Geom2d_Curve) S1,S2;
+  Handle(Geom2d_Curve) S1, S2;
   Handle(DrawTrSurf_Curve2d) CD;
-  for ( i = 1; i <= Intersector.NbSegments(); i++) {
+  Standard_Integer aNbSegments = Intersector.NbSegments();
+  for (Standard_Integer i = 1; i <= aNbSegments; i++)
+  {
     di << "Segment #" << i << " found.\n";
     Intersector.Segment(i,S1,S2);
     CD = new DrawTrSurf_Curve2d(S1, Draw_bleu, 30);
@@ -540,8 +576,13 @@ void GeomliteTest::API2dCommands(Draw_Interpretor& theCommands)
 
   g = "GEOMETRY intersections";
 
-  theCommands.Add("2dintersect", "intersect curve curve [Tol]",__FILE__,
-		  intersect,g);
+  theCommands.Add("2dintersect", "2dintersect curve1 [curve2] [-tol tol] [-state]\n"
+                   "Intersects the given 2d curve(s)."
+                   "If only one curve is given, it will be checked on self-intersection.\n"
+                   "Options:\n"
+                   " -tol - allows changing the intersection tolerance (default value is 1.e-3);\n"
+                   " -state - allows printing the intersection state for each point.",
+                   __FILE__, intersect, g);
 
   theCommands.Add("2dintanalytical", "intersect circle1 and circle2 using IntAna",__FILE__,
 		  intersect_ana,g);

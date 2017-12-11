@@ -1,0 +1,14 @@
+if { [array get Draw_Groups "TOPOLOGY Check commands"] == "" } {
+    pload TOPTEST
+    pload AISV
+}
+# To prevent loops limit to 1 minutes
+cpulimit 60
+
+if { [info exists imagedir] == 0 } {
+   set imagedir .
+}
+
+if { [info exists test_image ] == 0 } {
+   set test_image photo
+}

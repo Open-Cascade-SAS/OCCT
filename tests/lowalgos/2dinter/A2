@@ -1,0 +1,8 @@
+restore [locate_data_file bug29368_2.brep] a
+explode a
+mk2dcurve c1 a_1 1
+mk2dcurve c2 a_2 1
+set out [2dintersect c1 c2 -tol 1.e-9 -state]
+if ![regexp "TOUCH" $out] {
+  puts "Error: intersection type is not TOUCH"
+}

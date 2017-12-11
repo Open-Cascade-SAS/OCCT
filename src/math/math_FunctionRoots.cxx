@@ -22,6 +22,7 @@
 #include <math_DirectPolynomialRoots.hxx>
 #include <math_FunctionRoots.hxx>
 #include <math_FunctionWithDerivative.hxx>
+#include <math_BracketedRoot.hxx>
 #include <Standard_RangeError.hxx>
 #include <StdFail_NotDone.hxx>
 #include <TColStd_Array1OfReal.hxx>
@@ -36,6 +37,21 @@
 static Standard_Boolean myDebug = 0;
 static Standard_Integer nbsolve = 0;
 #endif
+
+class DerivFunction: public math_Function
+{
+  math_FunctionWithDerivative *myF;
+
+public:
+  DerivFunction(math_FunctionWithDerivative& theF)
+    : myF (&theF)
+  {}
+
+  virtual Standard_Boolean Value(const Standard_Real theX, Standard_Real& theFval)
+  {
+    return myF->Derivative(theX, theFval);
+  }
+};
 
 static void  AppendRoot(TColStd_SequenceOfReal& Sol,
 			TColStd_SequenceOfInteger& NbStateSol,
@@ -415,78 +431,126 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
 	  }
 	}
 	if(Rediscr) {
-	  //-- --------------------------------------------------
-	  //-- On recherche un extrema entre x0 et x3
-	  //-- x1 et x2 sont tels que x0<x1<x2<x3 
-	  //-- et |f(x0)| > |f(x1)|   et |f(x3)| > |f(x2)|
-	  //--
-	  //-- En entree : a=xm-dx  b=xm c=xm+dx
-	  Standard_Real x0,x1,x2,x3,f0,f3;
-	  Standard_Real R=0.61803399;
-	  Standard_Real C=1.0-R;
-	  Standard_Real tolCR=NEpsX*10.0;
-	  f0=ptrval(im1);
-	  f3=ptrval(ip1);
-	  x0=xm-dx;
-	  x3=xm+dx;
-          if(x0 < X0) x0=X0;
-          if(x3 > XN) x3=XN;
-	  Standard_Boolean recherche_minimum = (f0>0.0);
+          Standard_Real x0 = xm - dx;
+          Standard_Real x3 = xm + dx;
+          if (x0 < X0) x0 = X0;
+          if (x3 > XN) x3 = XN;
+          Standard_Real aSolX1 = 0., aSolX2 = 0.;
+          Standard_Real aVal1 = 0., aVal2 = 0.;
+          Standard_Real aDer1 = 0., aDer2 = 0.;
+          Standard_Boolean isSol1 = Standard_False;
+          Standard_Boolean isSol2 = Standard_False;
+          //-- ----------------------------------------------------
+          //-- Find minimum of the function |F| between x0 and x3
+          //-- by searching for the zero of the function derivative
+          DerivFunction aDerF(F);
+          math_BracketedRoot aBR(aDerF, x0, x3, EpsX);
+          if (aBR.IsDone())
+          {
+            aSolX1 = aBR.Root();
+            F.Value(aSolX1, aVal1);
+            aVal1 = Abs(aVal1);
+            if (aVal1 < EpsF)
+            {
+              isSol1 = Standard_True;
+              aDer1 = aBR.Value();
+            }
+          }
 
-	  if(Abs(x3-xm) > Abs(x0-xm)) { x1=xm; x2=xm+C*(x3-xm); } 
-	  else                        { x2=xm; x1=xm-C*(xm-x0); } 
-	  Standard_Real f1,f2;
-	  F.Value(x1,f1); f1-=K;
-	  F.Value(x2,f2); f2-=K;
-	  //-- printf("\n *************** RECHERCHE MINIMUM **********\n");
-	  Standard_Real tolX = 0.001 * NEpsX;
-	  while(Abs(x3-x0) > tolCR*(Abs(x1)+Abs(x2)) && (Abs(x1 -x2) > tolX)) { 
-	    //-- printf("\n (%10.5g,%10.5g) (%10.5g,%10.5g) (%10.5g,%10.5g) (%10.5g,%10.5g) ", 
-	    //--    x0,f0,x1,f1,x2,f2,x3,f3);
-	    if(recherche_minimum) {  
-	      if(f2<f1) { 
-		x0=x1; x1=x2; x2=R*x1+C*x3;
-		f0=f1; f1=f2; F.Value(x2,f2); f2-=K;
-	      }
-	      else { 
-		x3=x2; x2=x1; x1=R*x2+C*x0;
-		f3=f2; f2=f1; F.Value(x1,f1); f1-=K;
-	      }
-	    }
-	    else { 
-	      if(f2>f1) { 
-		x0=x1; x1=x2; x2=R*x1+C*x3;
-		f0=f1; f1=f2; F.Value(x2,f2); f2-=K;
-	      }
-	      else { 
-		x3=x2; x2=x1; x1=R*x2+C*x0;
-		f3=f2; f2=f1; F.Value(x1,f1); f1-=K;
-	      }
-	    }
-	    //-- On ne fait pas que chercher des extremas. Il faut verifier 
-	    //-- si on ne tombe pas sur une racine 
-	    if(f1*f0 <0.0) { 
-	      //-- printf("\n Recherche entre  (%10.5g,%10.5g) (%10.5g,%10.5g) ",x0,f0,x1,f1);
-	      Solve(F,K,x0,f0,x1,f1,tol,NEpsX,Sol,NbStateSol);
-	    }
-	    if(f2*f3 <0.0)  { 
-	      //-- printf("\n Recherche entre  (%10.5g,%10.5g) (%10.5g,%10.5g) ",x2,f2,x3,f3);
-	      Solve(F,K,x2,f2,x3,f3,tol,NEpsX,Sol,NbStateSol);
-	    }
-	  }
-	  if(f1<f2) { 
-	    //-- x1,f(x1) minimum
-	    if(Abs(f1) < EpsF) { 
-	      AppendRoot(Sol,NbStateSol,x1,F,K,NEpsX);
-	    }
-	  }
-	  else { 
-	    //-- x2.f(x2) minimum
-	    if(Abs(f2) < EpsF) { 
-	      AppendRoot(Sol,NbStateSol,x2,F,K,NEpsX);
-	    }
-	  }
-	} //-- Recherche d un extrema    
+          //-- --------------------------------------------------
+          //-- On recherche un extrema entre x0 et x3
+          //-- x1 et x2 sont tels que x0<x1<x2<x3 
+          //-- et |f(x0)| > |f(x1)|   et |f(x3)| > |f(x2)|
+          //--
+          //-- En entree : a=xm-dx  b=xm c=xm+dx
+          Standard_Real x1, x2, f0, f3;
+          Standard_Real R = 0.61803399;
+          Standard_Real C = 1.0 - R;
+          Standard_Real tolCR = NEpsX*10.0;
+          f0 = ptrval(im1);
+          f3 = ptrval(ip1);
+          Standard_Boolean recherche_minimum = (f0 > 0.0);
+
+          if (Abs(x3 - xm) > Abs(x0 - xm)) { x1 = xm; x2 = xm + C*(x3 - xm); }
+          else                        { x2 = xm; x1 = xm - C*(xm - x0); }
+          Standard_Real f1, f2;
+          F.Value(x1, f1); f1 -= K;
+          F.Value(x2, f2); f2 -= K;
+          //-- printf("\n *************** RECHERCHE MINIMUM **********\n");
+          Standard_Real tolX = 0.001 * NEpsX;
+          while (Abs(x3 - x0) > tolCR*(Abs(x1) + Abs(x2)) && (Abs(x1 - x2) > tolX)) {
+            //-- printf("\n (%10.5g,%10.5g) (%10.5g,%10.5g) (%10.5g,%10.5g) (%10.5g,%10.5g) ", 
+            //--    x0,f0,x1,f1,x2,f2,x3,f3);
+            if (recherche_minimum) {
+              if (f2 < f1) {
+                x0 = x1; x1 = x2; x2 = R*x1 + C*x3;
+                f0 = f1; f1 = f2; F.Value(x2, f2); f2 -= K;
+              }
+              else {
+                x3 = x2; x2 = x1; x1 = R*x2 + C*x0;
+                f3 = f2; f2 = f1; F.Value(x1, f1); f1 -= K;
+              }
+            }
+            else {
+              if (f2 > f1) {
+                x0 = x1; x1 = x2; x2 = R*x1 + C*x3;
+                f0 = f1; f1 = f2; F.Value(x2, f2); f2 -= K;
+              }
+              else {
+                x3 = x2; x2 = x1; x1 = R*x2 + C*x0;
+                f3 = f2; f2 = f1; F.Value(x1, f1); f1 -= K;
+              }
+            }
+            //-- On ne fait pas que chercher des extremas. Il faut verifier 
+            //-- si on ne tombe pas sur une racine 
+            if (f1*f0 < 0.0) {
+              //-- printf("\n Recherche entre  (%10.5g,%10.5g) (%10.5g,%10.5g) ",x0,f0,x1,f1);
+              Solve(F, K, x0, f0, x1, f1, tol, NEpsX, Sol, NbStateSol);
+            }
+            if (f2*f3 < 0.0)  {
+              //-- printf("\n Recherche entre  (%10.5g,%10.5g) (%10.5g,%10.5g) ",x2,f2,x3,f3);
+              Solve(F, K, x2, f2, x3, f3, tol, NEpsX, Sol, NbStateSol);
+            }
+          }
+          if ((recherche_minimum && f1<f2) || (!recherche_minimum && f1>f2)) {
+            //-- x1,f(x1) minimum
+            if (Abs(f1) < EpsF) {
+              isSol2 = Standard_True;
+              aSolX2 = x1;
+              aVal2 = Abs(f1);
+            }
+          }
+          else {
+            //-- x2.f(x2) minimum
+            if (Abs(f2) < EpsF) {
+              isSol2 = Standard_True;
+              aSolX2 = x2;
+              aVal2 = Abs(f2);
+            }
+          }
+          // Choose the best solution between aSolX1, aSolX2
+          if (isSol1 && isSol2)
+          {
+            if (aVal2 - aVal1 > EpsF)
+              AppendRoot(Sol, NbStateSol, aSolX1, F, K, NEpsX);
+            else if (aVal1 - aVal2 > EpsF)
+              AppendRoot(Sol, NbStateSol, aSolX2, F, K, NEpsX);
+            else
+            {
+              aDer1 = Abs(aDer1);
+              F.Derivative(aSolX2, aDer2);
+              aDer2 = Abs(aDer2);
+              if (aDer1 < aDer2)
+                AppendRoot(Sol, NbStateSol, aSolX1, F, K, NEpsX);
+              else
+                AppendRoot(Sol, NbStateSol, aSolX2, F, K, NEpsX);
+            }
+          }
+          else if (isSol1)
+            AppendRoot(Sol, NbStateSol, aSolX1, F, K, NEpsX);
+          else if(isSol2)
+            AppendRoot(Sol, NbStateSol, aSolX2, F, K, NEpsX);
+        } //-- Recherche d un extrema    
       } //-- for     
     }      
     

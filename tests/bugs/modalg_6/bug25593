@@ -10,12 +10,12 @@ restore [locate_data_file bug25593_face1.brep] b
 pcurve b
 
 puts "Intersection 1"
-set info1 [2dintersect b_2 b_3 1.e-10]
+set info1 [2dintersect b_2 b_3 -tol 1.e-10]
 regexp {Intersection point 1 : +([-0-9.+eE]+) +([-0-9.+eE]+)} $info1 full p1x p1y
 regexp {parameter on the fist: +([-0-9.+eE]+) +parameter on the second: +([-0-9.+eE]+)} $info1 full par1f par1s
 
 puts "Intersection 2"
-set info2 [2dintersect b_3 b_2 1.e-10]
+set info2 [2dintersect b_3 b_2 -tol 1.e-10]
 regexp {Intersection point 1 : +([-0-9.+eE]+) +([-0-9.+eE]+)} $info2 full p2x p2y
 regexp {parameter on the fist: +([-0-9.+eE]+) +parameter on the second: +([-0-9.+eE]+)} $info2 full par2f par2s
 

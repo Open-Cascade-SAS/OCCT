@@ -1,4 +1,3 @@
-puts "TODO OCC24694 All: Error : The result of cut operation is self-interfered shape"
 puts "TODO OCC24694 ALL: Result is WRONG because number of SHELL entities in shape \"result\" is 2"
 puts "TODO OCC24694 ALL: Result is WRONG because number of SOLID entities in shape \"result\" is 2"
 puts "=========="

@@ -645,6 +645,9 @@ void BOPAlgo_PaveFiller::AnalyzeShrunkData(const Handle(BOPDS_PaveBlock)& thePB,
         AddWarning (new BOPAlgo_AlertTooSmallEdge (aWarnShape));
       else
         AddWarning (new BOPAlgo_AlertBadPositioning (aWarnShape));
+      Standard_Real aTS1, aTS2;
+      theSR.ShrunkRange(aTS1, aTS2);
+      thePB->SetShrunkData(aTS1, aTS2, Bnd_Box(), Standard_False);
       return;
     }
     //

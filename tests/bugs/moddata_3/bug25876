@@ -15,7 +15,7 @@ explode e2
 mk2dcurve c1 e1_1
 mk2dcurve c2 e2_1
 
-set inter1 [2dintersect c1 c2 1e-3]
+set inter1 [2dintersect c1 c2 -tol 1e-3]
 set int1 [regexp {Intersection point 2} ${inter1}]
 if { ${int1} == 0 } {
     puts "Error : Second intersection is not found"
@@ -27,7 +27,7 @@ view 1 -2D- 728 450 400 400
 xwd ${imagedir}/${test_image}_1.png
 donly c1 c2
 
-set inter2 [2dintersect c1 c2 1e-7]
+set inter2 [2dintersect c1 c2 -tol 1e-7]
 set int2 [regexp {Intersection point 2} ${inter2}]
 if { ${int2} == 0 } {
     puts "Error : Second intersection is not found"

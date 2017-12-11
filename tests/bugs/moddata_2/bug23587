@@ -17,10 +17,10 @@ pcurve c1 a_1 f1
 pcurve c2 a_2 f1
 pcurve c3 a_3 f1
 pcurve c4 a_4 f1
-set inter1 [2dintersect c1 c2 1.e-6]
-set inter2 [2dintersect c3 c2 1.e-6]
-set inter3 [2dintersect c1 c4 1.e-6]
-set inter4 [2dintersect c3 c4 1.e-6]
+set inter1 [2dintersect c1 c2 -tol 1.e-6]
+set inter2 [2dintersect c3 c2 -tol 1.e-6]
+set inter3 [2dintersect c1 c4 -tol 1.e-6]
+set inter4 [2dintersect c3 c4 -tol 1.e-6]
 set int1 [regexp {Intersection point 1} $inter1]
 set int2 [regexp {Intersection point 1} $inter2]
 set int3 [regexp {Intersection point 1} $inter3]

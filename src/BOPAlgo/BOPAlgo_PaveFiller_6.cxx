@@ -1474,6 +1474,58 @@ Standard_Boolean BOPAlgo_PaveFiller::IsExistingPaveBlock
   }
   return bRet;
 }
+
+//=======================================================================
+//function : 
+//purpose  : 
+//=======================================================================
+static void getBoundPaves(const BOPDS_DS* theDS,
+                          BOPDS_Curve& theNC,
+                          Standard_Integer theNV[2])
+{
+  theNV[0] = theNV[1] = -1;
+
+  // get extreme paves
+  Handle(BOPDS_PaveBlock)& aPB = theNC.ChangePaveBlock1();
+  const BOPDS_ListOfPave& aLP = aPB->ExtPaves();
+  Standard_Integer aNbEP = aLP.Extent();
+  if (aNbEP == 0)
+    return;
+  Standard_Real aTmin = RealLast();
+  Standard_Real aTmax = -aTmin;
+  for (BOPDS_ListIteratorOfListOfPave aItLP(aLP); aItLP.More(); aItLP.Next())
+  {
+    const BOPDS_Pave& aPv = aItLP.Value();
+    Standard_Integer nV;
+    Standard_Real aTV;
+    aPv.Contents(nV, aTV);
+    if (aTV < aTmin) {
+      theNV[0] = aPv.Index();
+      aTmin = aTV;
+    }
+    if (aTV > aTmax) {
+      theNV[1] = aPv.Index();
+      aTmax = aTV;
+    }
+  }
+
+  // compare extreme vertices with ends of the curve
+  const IntTools_Curve& aIC = theNC.Curve();
+  Standard_Real aT[2];
+  gp_Pnt aP[2];
+  aIC.Bounds(aT[0], aT[1], aP[0], aP[1]);
+  Standard_Real aTol = Max(theNC.Tolerance(), theNC.TangentialTolerance());
+  aTol += Precision::Confusion();
+  for (Standard_Integer j = 0; j < 2; ++j)
+  {
+    const BOPDS_ShapeInfo& aSIV = theDS->ShapeInfo(theNV[j]);
+    const TopoDS_Vertex& aV = (*(TopoDS_Vertex *)(&aSIV.Shape()));
+    Standard_Integer iFlag = BOPTools_AlgoTools::ComputeVV(aV, aP[j], aTol);
+    if (iFlag != 0)
+      theNV[j] = -1;
+  }
+}
+
 //=======================================================================
 //function : PutBoundPaveOnCurve
 //purpose  : 
@@ -1483,95 +1535,50 @@ void BOPAlgo_PaveFiller::PutBoundPaveOnCurve(const TopoDS_Face& aF1,
                                              BOPDS_Curve& aNC,
                                              TColStd_ListOfInteger& aLVB)
 {
-  Standard_Boolean bVF;
-  Standard_Integer nV, iFlag, nVn, j, aNbEP;
-  Standard_Real aT[2], aTmin, aTmax, aTV, aTol, aTolVnew;
-  gp_Pnt aP[2];
-  TopoDS_Vertex aVn;
-  BOPDS_ListIteratorOfListOfPave aItLP;
-  BOPDS_Pave aPn, aPMM[2];
-  //
-  aTolVnew = Precision::Confusion();
-  //
   const IntTools_Curve& aIC=aNC.Curve();
+  Standard_Real aT[2];
+  gp_Pnt aP[2];
   aIC.Bounds(aT[0], aT[1], aP[0], aP[1]);
   Standard_Real aTolR3D = Max(aNC.Tolerance(), aNC.TangentialTolerance());
+  Handle(BOPDS_PaveBlock)& aPB = aNC.ChangePaveBlock1();
+  // Get numbers of vertices assigned to the ends of the curve
+  Standard_Integer aBndNV[2];
+  getBoundPaves(myDS, aNC, aBndNV);
   //
-  Handle(BOPDS_PaveBlock)& aPB=aNC.ChangePaveBlock1();
-  const BOPDS_ListOfPave& aLP=aPB->ExtPaves();
-  //
-  aNbEP=aLP.Extent();
-  if (aNbEP) {
-    aTmin=1.e10;
-    aTmax=-aTmin;
-    //
-    aItLP.Initialize(aLP);
-    for (; aItLP.More(); aItLP.Next()) {
-      const BOPDS_Pave& aPv=aItLP.Value();
-      aPv.Contents(nV, aTV);
-      if (aTV<aTmin) {
-        aPMM[0]=aPv;
-        aTmin=aTV;
+  Standard_Real aTolVnew = Precision::Confusion();
+  for (Standard_Integer j = 0; j<2; ++j)
+  {
+    if (aBndNV[j] < 0)
+    {
+      // no vertex on this end
+      if (j && aP[1].IsEqual(aP[0], aTolVnew)) {
+        //if curve is closed, process only one bound
+        continue;
       }
-      if (aTV>aTmax) {
-        aPMM[1]=aPv;
-        aTmax=aTV;
-      }
-    }
-  }
-  //
-  for (j=0; j<2; ++j) {
-    //if curve is closed, process only one bound
-    if (j && aP[1].IsEqual(aP[0], aTolVnew)) {
-      continue;
-    }
-    //
-    iFlag=1;
-    //
-    if (aNbEP) {
-      Bnd_Box aBoxP;
-      //
-      aBoxP.Set(aP[j]);
-      aTol = aTolR3D+Precision::Confusion();
-      aBoxP.Enlarge(aTol);
-      const BOPDS_Pave& aPV=aPMM[j];
-      nV=aPV.Index();
-      const BOPDS_ShapeInfo& aSIV=myDS->ShapeInfo(nV);
-      const TopoDS_Vertex& aV=(*(TopoDS_Vertex *)(&aSIV.Shape()));
-      const Bnd_Box& aBoxV=aSIV.Box();
-      if (!aBoxP.IsOut(aBoxV)){
-        iFlag=BOPTools_AlgoTools::ComputeVV(aV, aP[j], aTol);
-      }
-    }
-    if (iFlag) {
-      // 900/L5
-      bVF=myContext->IsValidPointForFaces (aP[j], aF1, aF2, aTolR3D);
+      Standard_Boolean bVF = myContext->IsValidPointForFaces(aP[j], aF1, aF2, aTolR3D);
       if (!bVF) {
         continue;
       }
-      //
-      BOPDS_ShapeInfo aSIVn;
-      //
+      TopoDS_Vertex aVn;
       BOPTools_AlgoTools::MakeNewVertex(aP[j], aTolR3D, aVn);
+      BOPTools_AlgoTools::UpdateVertex(aIC, aT[j], aVn);
+      aTolVnew = BRep_Tool::Tolerance(aVn);
+
+      BOPDS_ShapeInfo aSIVn;
       aSIVn.SetShapeType(TopAbs_VERTEX);
       aSIVn.SetShape(aVn);
-      //
-      nVn=myDS->Append(aSIVn);
-      //
+
+      Bnd_Box& aBox = aSIVn.ChangeBox();
+      BRepBndLib::Add(aVn, aBox);
+      aBox.SetGap(aBox.GetGap() + Precision::Confusion());
+
+      Standard_Integer nVn = myDS->Append(aSIVn);
+
+      BOPDS_Pave aPn;
       aPn.SetIndex(nVn);
       aPn.SetParameter(aT[j]);
       aPB->AppendExtPave(aPn);
-      //
-      aVn=(*(TopoDS_Vertex *)(&myDS->Shape(nVn)));
-      BOPTools_AlgoTools::UpdateVertex (aIC, aT[j], aVn);
-      //
-      aTolVnew = BRep_Tool::Tolerance(aVn);
-      //
-      BOPDS_ShapeInfo& aSIDS=myDS->ChangeShapeInfo(nVn);
-      Bnd_Box& aBoxDS=aSIDS.ChangeBox();
-      BRepBndLib::Add(aVn, aBoxDS);
-      aBoxDS.SetGap(aBoxDS.GetGap() + Precision::Confusion());
-      //
+
       aLVB.Append(nVn);
     }
   }
@@ -1913,7 +1920,7 @@ void BOPAlgo_PaveFiller::GetEFPnts
 }
 
 //=======================================================================
-//function : ProcessUnUsedVertices
+//function : PutStickPavesOnCurve
 //purpose  : 
 //=======================================================================
   void BOPAlgo_PaveFiller::PutStickPavesOnCurve
@@ -1925,6 +1932,14 @@ void BOPAlgo_PaveFiller::GetEFPnts
    TColStd_DataMapOfIntegerReal& aMVTol,
    TColStd_DataMapOfIntegerListOfInteger& aDMVLV)
 {
+  // Get numbers of vertices assigned to the ends of the curve
+  Standard_Integer aBndNV[2];
+  getBoundPaves(myDS, aNC, aBndNV);
+  if (aBndNV[0] >= 0 && aBndNV[1] >= 0)
+  {
+    // both curve ends already have assigned vertices
+    return;
+  }
   TColStd_MapOfInteger aMV;
   aMV.Assign(aMVStick);
   RemoveUsedVertices(aNC, aMV);
@@ -1961,6 +1976,8 @@ void BOPAlgo_PaveFiller::GetEFPnts
       aPV=BRep_Tool::Pnt(aV);
       //
       for (m=0; m<2; ++m) {
+        if (aBndNV[m] >= 0)
+          continue;
         aD2=aPC[m].SquareDistance(aPV);
         if (aD2>aDT2) {// no rich
           continue; 
@@ -1990,8 +2007,6 @@ void BOPAlgo_PaveFiller::GetEFPnts
       }
     }//for (jVU=1; jVU=aNbVU; ++jVU) {
   }
-  //}//if (aTypeC==GeomAbs_BezierCurve || aTypeC==GeomAbs_BSplineCurve) {
-  //}//if(aType1==GeomAbs_Torus  || aType2==GeomAbs_Torus) {
 }
 
 //=======================================================================
@@ -2706,11 +2721,9 @@ void BOPAlgo_PaveFiller::UpdatePaveBlocks
         if (wasRegularEdge && !isDegEdge && nV[0] == nV[1]) {
           // now edge has the same vertex on both ends;
           // check if it is not a regular closed curve.
-          const TopoDS_Edge& aE = TopoDS::Edge(myDS->Shape(nE));
-          const TopoDS_Vertex& aV = TopoDS::Vertex(myDS->Shape(nV[0]));
-          Standard_Real aLength = IntTools::Length(aE);
-          Standard_Real aTolV = BRep_Tool::Tolerance(aV);
-          if (aLength <= aTolV * 2.) {
+          FillShrunkData(aPB);
+          if (!aPB->HasShrunkData())
+          {
             // micro edge, so mark it for removal
             aMicroEdges.Add(nE);
             continue;

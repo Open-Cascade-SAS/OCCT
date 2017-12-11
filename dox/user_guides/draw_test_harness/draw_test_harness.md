@@ -5552,17 +5552,20 @@ intersect e c p
 
 Syntax:      
 ~~~~~
-2dintersect curve1 curve2 
+2dintersect curve1 [curve2] [-tol tol] [-state]
 ~~~~~
 
-Displays the intersection points between two 2d curves. 
+Displays the intersection points between 2d curves.
+Options:
+ -tol - allows changing the intersection tolerance (default value is 1.e-3);
+ -state - allows printing the intersection state for each point.
 
 **Example:** 
 ~~~~~
 # intersect two 2d ellipses 
 ellipse e1 0 0 5 2 
 ellipse e2 0 0 0 1 5 2 
-2dintersect e1 e2 
+2dintersect e1 e2 -tol 1.e-10 -state
 ~~~~~
 
 @subsubsection occt_draw_6_7_3 intconcon
