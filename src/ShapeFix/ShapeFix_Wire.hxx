@@ -230,6 +230,8 @@ public:
   
     Standard_Integer& FixShiftedMode();
   
+    Standard_Boolean& CheckMissingEdgesMode();
+  
     Standard_Integer& FixSameParameterMode();
   
     Standard_Integer& FixVertexToleranceMode();
@@ -478,6 +480,7 @@ protected:
   Standard_Integer myFixAddCurve3dMode;
   Standard_Integer myFixSeamMode;
   Standard_Integer myFixShiftedMode;
+  Standard_Boolean myCheckMissingEdges;
   Standard_Integer myFixSameParameterMode;
   Standard_Integer myFixVertexToleranceMode;
   Standard_Integer myFixNotchedEdgesMode;

@@ -207,6 +207,7 @@ void ShapeFix_Wire::ClearModes()
   myFixAddCurve3dMode = -1;
   myFixSeamMode = -1;
   myFixShiftedMode = -1;
+  myCheckMissingEdges = Standard_True;
   myFixSameParameterMode = -1;
   myFixVertexToleranceMode = -1;
 
@@ -1460,7 +1461,8 @@ Standard_Boolean ShapeFix_Wire::FixShifted()
 
     // abv 23 Feb 00: UKI60107-6 210: additional check for near-degenerated case
     //smh#15 PRO19800. Check if the surface is surface of revolution.
-    if (surf->Surface()->IsKind (STANDARD_TYPE(Geom_SurfaceOfRevolution))) {
+    if (myCheckMissingEdges &&
+        surf->Surface()->IsKind (STANDARD_TYPE(Geom_SurfaceOfRevolution))) {
       if ( ! isDeg && ! vclosed ) {
 	if ( c2d1.IsNull() && ! sae.PCurve ( E1, Face(), c2d1, a1, b1, Standard_True ) ) continue;
 	gp_Pnt2d p1 ( SUF, c2d1->Value(b1).Y() );

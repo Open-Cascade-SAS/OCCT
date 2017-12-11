@@ -306,6 +306,16 @@ inline  Standard_Integer& ShapeFix_Wire::FixShiftedMode()
 }
  
 //=======================================================================
+//function : CheckMissingEdgesMode
+//purpose  : 
+//=======================================================================
+
+inline  Standard_Boolean& ShapeFix_Wire::CheckMissingEdgesMode()
+{
+  return myCheckMissingEdges;
+}
+ 
+//=======================================================================
 //function : FixSameParameterMode
 //purpose  : 
 //=======================================================================
