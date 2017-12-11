@@ -1,0 +1,35 @@
+puts "============"
+puts "OCC28886"
+puts "============"
+puts ""
+###############################
+##  infinite loop at intersecting two faces / surfaces
+###############################
+
+cpulimit 60
+
+restore [locate_data_file bug28886_Faces.brep] ff
+explode ff f
+mksurface ss1 ff_1
+mksurface ss2 ff_2
+
+smallview
+clear
+
+dchrono h2 restart
+set CurveNumb [intersect result ss1 ss2]
+dchrono h2 stop counter bug28886CNB
+
+if { [llength ${CurveNumb}] < 1 } {
+    puts "Error : Bad intersection"
+} else {
+    puts "OK : Good intersection"
+}
+
+fit
+disp ss1 ss2
+nbiso ss1 ss2 4 4
+clpoles ss1
+clpoles ss2
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

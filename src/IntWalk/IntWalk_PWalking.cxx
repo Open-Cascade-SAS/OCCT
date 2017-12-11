@@ -836,7 +836,7 @@ void IntWalk_PWalking::Perform(const TColStd_Array1OfReal& ParDep,
     SvParam[3]=Param(4);
     //
     Standard_Integer aTryNumber = 0;
-    Standard_Real    isBadPoint = Standard_False;
+    Standard_Boolean isBadPoint = Standard_False;
     IntImp_ConstIsoparametric aBestIso = ChoixIso;
     do
     {
@@ -1280,6 +1280,15 @@ void IntWalk_PWalking::Perform(const TColStd_Array1OfReal& ParDep,
                   pasSav[1] = pasuv[1];
                   pasSav[2] = pasuv[2];
                   pasSav[3] = pasuv[3];
+                  
+                  if ((aPrevStatus == IntWalk_PasTropGrand) &&
+                      (LevelOfIterWithoutAppend > 0))
+                  {
+                    pasInit[0] = pasuv[0];
+                    pasInit[1] = pasuv[1];
+                    pasInit[2] = pasuv[2];
+                    pasInit[3] = pasuv[3];
+                  }
                 }
               }
             }//005 if(!Arrive)
