@@ -1,0 +1,163 @@
+puts "Check History of Boolean operations"
+
+puts "Case with intersecting planes (two intersection edges)"
+
+plane p 0 0 0 0 0 1
+mkface f1 p -10 10 -10 10
+
+polyline p -5 0 -5 -5 0 10 5 0 10 5 0 -5 2 0 -5 2 0 5 -2 0 5 -2 0 -5 -5 0 -5
+mkplane f2 p
+
+bclearobjects
+bcleartools
+baddobjects f1
+baddtools f2
+bfillds
+
+puts "Common operation"
+bbop rcom 0
+
+# check that both f1 and f2 have been deleted
+if {[string trim [bisdeleted f1]] != "Deleted"} {
+  puts "Error: Incorrect information about Deleted shapes"
+}
+
+if {[string trim [bisdeleted f2]] != "Deleted"} {
+  puts "Error: Incorrect information about Deleted shapes"
+}
+
+# check that none of the f1 and f2 have been Modified
+if {[string trim [bmodified rm f1]] != "The shape has not been modified"} {
+  puts "Error: Incorrect information about Modified shapes"
+}
+
+if {[string trim [bmodified rm f2]] != "The shape has not been modified"} {
+  puts "Error: Incorrect information about Modified shapes"
+}
+
+# check that none of the f1 and f2 have Generated shapes
+if {[string trim [bgenerated rg f1]] != "No shapes were generated from the shape"} {
+  puts "Error: Incorrect information about Generated shapes"
+}
+
+if {[string trim [bgenerated rg f2]] != "No shapes were generated from the shape"} {
+  puts "Error: Incorrect information about Generated shapes"
+}
+
+
+puts "Fuse operation"
+bbop rfuse 1
+
+# check that both f1 and f2 have not been deleted
+if {[string trim [bisdeleted f1]] != "Not deleted"} {
+  puts "Error: Incorrect information about Deleted shapes"
+}
+
+if {[string trim [bisdeleted f2]] != "Not deleted"} {
+  puts "Error: Incorrect information about Deleted shapes"
+}
+
+# check that both f1 and f2 have been Modified
+bmodified rm f1
+checknbshapes rm -face 1 -m "Information about modification of f1"
+
+bmodified rm f2
+checknbshapes rm -face 3 -m "Information about modification of f2"
+
+# check that both f1 and f2 have Generated edges
+bgenerated rg f1
+checknbshapes rg -edge 2 -m "Information about shapes Generated from f1"
+
+bgenerated rg f1
+checknbshapes rg -edge 2 -m "Information about shapes Generated from f2"
+
+
+puts "CUT operation"
+bbop rcut 2
+
+# check that f1 has not been deleted
+if {[string trim [bisdeleted f1]] != "Not deleted"} {
+  puts "Error: Incorrect information about Deleted shapes"
+}
+
+# check that f2 has been deleted
+if {[string trim [bisdeleted f2]] != "Deleted"} {
+  puts "Error: Incorrect information about Deleted shapes"
+}
+
+# check that f1 has been modified
+bmodified rm f1
+checknbshapes rm -face 1 -m "Information about modification of f1"
+
+# check that f2 has not been modified
+if {[string trim [bmodified rm f2]] != "The shape has not been modified"} {
+  puts "Error: Incorrect information about Modified shapes"
+}
+
+# check that both f1 and f2 have Generated edges
+bgenerated rg f1
+checknbshapes rg -edge 2 -m "Information about shapes Generated from f1"
+
+bgenerated rg f2
+checknbshapes rg -edge 2 -m "Information about shapes Generated from f2"
+
+
+puts "TUC operation"
+bbop rtuc 3
+
+# check that f1 has been deleted
+if {[string trim [bisdeleted f1]] != "Deleted"} {
+  puts "Error: Incorrect information about Deleted shapes"
+}
+
+# check that f2 has not been deleted
+if {[string trim [bisdeleted f2]] != "Not deleted"} {
+  puts "Error: Incorrect information about Deleted shapes"
+}
+
+# check that f1 has not been modified
+if {[string trim [bmodified rm f1]] != "The shape has not been modified"} {
+  puts "Error: Incorrect information about Modified shapes"
+}
+
+# check that f2 has been modified
+bmodified rm f2
+checknbshapes rm -face 3 -m "Information about modification of f1"
+
+
+# check that both f1 and f2 have Generated vertices
+bgenerated rg f1
+checknbshapes rg -edge 2 -m "Information about shapes Generated from f1"
+
+bgenerated rg f2
+checknbshapes rg -edge 2 -m "Information about shapes Generated from f2"
+
+
+
+puts "SECTION operation"
+bbop rsec 4
+
+# check that both f1 and f2 have been deleted
+if {[string trim [bisdeleted f1]] != "Deleted"} {
+  puts "Error: Incorrect information about Deleted shapes"
+}
+
+if {[string trim [bisdeleted f2]] != "Deleted"} {
+  puts "Error: Incorrect information about Deleted shapes"
+}
+
+# check that none of the f1 and f2 have been Modified 
+if {[string trim [bmodified rm f1]] != "The shape has not been modified"} {
+  puts "Error: Incorrect information about Modified shapes"
+}
+
+if {[string trim [bmodified rm f2]] != "The shape has not been modified"} {
+  puts "Error: Incorrect information about Modified shapes"
+}
+
+# check that both f1 and f2 have Generated vertices
+bgenerated rg f1
+checknbshapes rg -edge 2 -m "Information about shapes Generated from f1"
+
+bgenerated rg f2
+checknbshapes rg -edge 2 -m "Information about shapes Generated from f2"

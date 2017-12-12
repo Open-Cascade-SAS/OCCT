@@ -1501,4 +1501,3 @@ The following obsolete features have been removed:
   - *IntTools_IndexedDataMapOfTransientAddress* is removed as unused;
 * The container *BiTgte_DataMapOfShapeBox* is replaced with *TopTools_DataMapOfShapeBox*;
 * The class *BOPTools* has been removed as duplicate of the class *TopExp*;
-* The method *BOPAlgo_Builder::Splits()* has been removed as excessive. The method *BOPAlgo_Builder::Images()* can be used instead.

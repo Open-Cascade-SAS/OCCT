@@ -15,22 +15,17 @@
 
 #include <BOPAlgo_CellsBuilder.hxx>
 
-#include <TopoDS_Compound.hxx>
-
-#include <BRep_Builder.hxx>
-
-#include <TopExp.hxx>
-#include <TopExp_Explorer.hxx>
-
-#include <BOPTools_AlgoTools.hxx>
-
-#include <BOPAlgo_BuilderSolid.hxx>
 #include <BOPAlgo_Alerts.hxx>
-
+#include <BOPAlgo_BuilderSolid.hxx>
+#include <BOPDS_DS.hxx>
+#include <BOPTools_AlgoTools.hxx>
+#include <BOPTools_AlgoTools3D.hxx>
+#include <BRep_Builder.hxx>
+#include <ShapeUpgrade_UnifySameDomain.hxx>
 #include <TColStd_MapOfInteger.hxx>
 #include <TopExp.hxx>
-
-#include <ShapeUpgrade_UnifySameDomain.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS_Compound.hxx>
 
 
 static
@@ -939,118 +934,54 @@ Standard_Boolean BOPAlgo_CellsBuilder::RemoveInternals(const TopTools_ListOfShap
       //
       theLSNew.Append(aSNew);
       bRemoved = Standard_True;
+
+      // Save information about the fuse of the solids into a history map
+      aItS.Initialize(aCB);
+      for (; aItS.More(); aItS.Next())
+        myMapModified.Bind(aItS.Value(), aSNew);
     }
   }
   return bRemoved;
 }
 
 //=======================================================================
-//function : IsDeleted
+//function : LocModified
 //purpose  : 
 //=======================================================================
-Standard_Boolean BOPAlgo_CellsBuilder::IsDeleted(const TopoDS_Shape& theS)
+const TopTools_ListOfShape* BOPAlgo_CellsBuilder::LocModified(const TopoDS_Shape& theS)
 {
-  Standard_Boolean bRet = Standard_True;
-  if (theS.IsNull()) {
-    return bRet;
-  }
-  //
-  TopAbs_ShapeEnum aType = theS.ShapeType();
-  if (!(aType==TopAbs_EDGE || aType==TopAbs_FACE || 
-      aType==TopAbs_VERTEX || aType==TopAbs_SOLID)) {
-    return bRet;
-  }
-  //
-  Standard_Boolean bHasImage, bHasModified;
-  //
-  bHasImage = myImages.IsBound(theS);
-  bHasModified = myMapModified.IsBound(theS);
-  if (!bHasImage && !bHasModified) {
-    bRet = !myMapShape.Contains(theS);
-    return bRet;
-  }
-  //
-  if (bHasModified) {
-    const TopoDS_Shape& aSG = myMapModified.Find(theS);
-    if (myMapShape.Contains(aSG)) {
-      bRet = Standard_False;
-      return bRet;
-    }
-  }
-  //
-  if (bHasImage) {
-    const TopTools_ListOfShape& aLSp = myImages.Find(theS);
-    TopTools_ListIteratorOfListOfShape aIt(aLSp);
-    for (; aIt.More(); aIt.Next()) {
-      const TopoDS_Shape& aSp = aIt.Value();
-      const TopoDS_Shape& aSpR = myShapesSD.IsBound(aSp) ? 
-        myShapesSD.Find(aSp) : aSp;
-      //
-      const TopoDS_Shape& aSpRG = myMapModified.IsBound(aSpR) ?
-        myMapModified.Find(aSpR) : aSpR;
-      if (myMapShape.Contains(aSpRG)) {
-        bRet = Standard_False;
-        break;
-      }
-    }
-  }
-  //
-  return bRet;
-}
+  // Get shape's modification coming from GF operation
+  const TopTools_ListOfShape* pLSp = BOPAlgo_Builder::LocModified(theS);
+  if (myMapModified.IsEmpty())
+    // No local modifications
+    return pLSp;
 
-//=======================================================================
-//function : Modified
-//purpose  : 
-//=======================================================================
-const TopTools_ListOfShape& BOPAlgo_CellsBuilder::Modified(const TopoDS_Shape& theS)
-{
   myHistShapes.Clear();
-  if (theS.IsNull()) {
-    return myHistShapes;
+
+  // Check if the shape (or its splits) has participated in unification
+  if (!pLSp)
+  {
+    // No splits from GF operation.
+    // Check if the shape has been unified with other shapes
+    const TopoDS_Shape* pSU = myMapModified.Seek(theS);
+    if (!pSU)
+      return NULL;
+
+    myHistShapes.Append(*pSU);
   }
-  //
-  TopAbs_ShapeEnum aType = theS.ShapeType();
-  if (!(aType==TopAbs_EDGE || aType==TopAbs_FACE || aType==TopAbs_VERTEX)) {
-    return myHistShapes;
-  }
-  //
-  Standard_Boolean bHasModified = myMapModified.IsBound(theS);
-  if (bHasModified) {
-    const TopoDS_Shape& aSG = myMapModified.Find(theS);
-    if (myMapShape.Contains(aSG)) {
-      myHistShapes.Append(aSG);
-    }
-    return myHistShapes;
-  }
-  //
-  Standard_Boolean bHasImage = myImages.IsBound(theS);
-  if (!bHasImage) {
-    return myHistShapes;
-  }
-  //
-  TopTools_MapOfShape aMFence;
-  const TopTools_ListOfShape& aLSp = myImages.Find(theS);
-  TopTools_ListIteratorOfListOfShape aIt(aLSp);
-  for (; aIt.More(); aIt.Next()) {
-    const TopoDS_Shape aSp = aIt.Value();
-    const TopoDS_Shape& aSpR = myShapesSD.IsBound(aSp) ? 
-      myShapesSD.Find(aSp) : aSp;
-    //
-    if (myMapModified.IsBound(aSpR)) {
-      const TopoDS_Shape& aSG = myMapModified.Find(aSpR);
-      if (myMapShape.Contains(aSG)) {
-        if (aMFence.Add(aSG)) {
-          myHistShapes.Append(aSG);
-        }
-      }
-    }
-    else if (aMFence.Add(aSpR))
+  else
+  {
+    // Process all GF splits and check them for local unification with other shapes
+    TopTools_ListIteratorOfListOfShape aIt(*pLSp);
+    for (; aIt.More(); aIt.Next())
     {
-      myHistShapes.Append(aSpR);
+      const TopoDS_Shape* pSp = &aIt.Value();
+      const TopoDS_Shape* pSU = myMapModified.Seek(*pSp);
+      if (pSU) pSp = pSU;
+      myHistShapes.Append(*pSp);
     }
   }
-  //
-  return myHistShapes;
+  return &myHistShapes;
 }
 
 //=======================================================================

@@ -122,6 +122,7 @@
 {
   myHistShapes.Clear();
   myMapShape.Clear();
+  myImagesResult.Clear();
   myHasDeleted=Standard_False;
   myHasGenerated=Standard_False;
   myHasModified=Standard_False;

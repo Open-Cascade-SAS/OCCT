@@ -15,7 +15,6 @@
 
 #include <BOPAlgo_Section.hxx>
 #include <BOPAlgo_Alerts.hxx>
-#include <BOPAlgo_BuilderSolid.hxx>
 #include <BOPAlgo_PaveFiller.hxx>
 #include <BOPDS_CommonBlock.hxx>
 #include <BOPDS_DS.hxx>
@@ -26,7 +25,6 @@
 #include <BOPDS_VectorOfFaceInfo.hxx>
 #include <BOPDS_VectorOfListOfPaveBlock.hxx>
 #include <BOPTools_AlgoTools.hxx>
-#include <BOPTools_AlgoTools3D.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
 #include <TopAbs_ShapeEnum.hxx>
@@ -36,7 +34,6 @@
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopTools_DataMapOfShapeShape.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
 #include <TopTools_ListOfShape.hxx>
@@ -356,45 +353,4 @@ void BOPAlgo_Section::BuildSection()
   }
   //
   myShape=aRC;
-}
-//=======================================================================
-//function : Generated
-//purpose  : 
-//=======================================================================
-const TopTools_ListOfShape& BOPAlgo_Section::Generated
-  (const TopoDS_Shape& theS)
-{
-  myHistShapes.Clear();
-  if (theS.IsNull()) {
-    return myHistShapes;
-  }
-  //
-  TopAbs_ShapeEnum aType = theS.ShapeType();
-  if (aType != TopAbs_FACE) {
-    return myHistShapes;
-  }
-  //
-  Standard_Integer nS = myDS->Index(theS);
-  if (nS < 0) {
-    return myHistShapes;
-  }
-  //
-  if (!myDS->HasFaceInfo(nS)) {
-    return myHistShapes;
-  }
-  //
-  //collect section edges of the face theS
-  Standard_Integer i, aNb, nSp;
-  //
-  const BOPDS_FaceInfo& aFI = myDS->FaceInfo(nS);
-  const BOPDS_IndexedMapOfPaveBlock& aMPBSc = aFI.PaveBlocksSc();
-  aNb = aMPBSc.Extent();
-  for (i = 1; i <= aNb; ++i) {
-    const Handle(BOPDS_PaveBlock)& aPB = aMPBSc(i);
-    nSp = aPB->Edge();
-    const TopoDS_Shape& aSp = myDS->Shape(nSp);
-    myHistShapes.Append(aSp);
-  }
-  //
-  return myHistShapes;
 }

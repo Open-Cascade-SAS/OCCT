@@ -172,16 +172,38 @@ public: //! @name Performing the operation
 
 public: //! @name History methods
 
-  //! Returns the  list of shapes generated from the
-  //! shape theS.
+  //! Returns the  list of shapes generated from the shape theS.
   Standard_EXPORT virtual const TopTools_ListOfShape& Generated (const TopoDS_Shape& theS) Standard_OVERRIDE;
 
-  //! Returns the list of shapes modified from the shape
-  //! theS.
+  //! Returns the list of shapes modified from the shape theS.
   Standard_EXPORT virtual const TopTools_ListOfShape& Modified (const TopoDS_Shape& theS) Standard_OVERRIDE;
 
   //! Returns true if the shape theS has been deleted.
   Standard_EXPORT virtual Standard_Boolean IsDeleted (const TopoDS_Shape& theS) Standard_OVERRIDE;
+
+protected: //! @name History methods
+
+  //! Prepare information for history support.
+  Standard_EXPORT virtual void PrepareHistory() Standard_OVERRIDE;
+
+  //! Prepare history information for the input shapes taking into account possible
+  //! operation-specific modifications.
+  //! For instance, in the CellsBuilder operation, additionally to splitting input shapes
+  //! the splits of the shapes (or the shapes themselves) may be unified during removal of internal
+  //! boundaries. In this case each split should be linked to the unified shape.
+  //!
+  //! To have correct history information, the method should be redefined in each operation
+  //! where such additional modification is possible. The input shape <theS> should be the one from arguments,
+  //! and the returning list should contain all final elements to which the input shape has evolved,
+  //! including those not contained in the result shape.
+  //!
+  //! The method returns pointer to the list of modified elements.
+  //! NULL pointer means that the shape has not been modified at all.
+  //!
+  //! The General Fuse operation does not perform any other modification than splitting the input
+  //! shapes basing on their intersection information. This information is contained in myImages map.
+  //! Thus, here the method returns only splits (if any) contained in this map.
+  Standard_EXPORT virtual const TopTools_ListOfShape* LocModified(const TopoDS_Shape& theS);
 
 
 public: //! @name Images/Origins
@@ -216,9 +238,6 @@ protected: //! @name Methods for building the result
   //! To build the result of any other operation
   //! it will be necessary to override this method.
   Standard_EXPORT virtual void PerformInternal1 (const BOPAlgo_PaveFiller& thePF);
-
-  //! Prepare information for history support.
-  Standard_EXPORT virtual void PrepareHistory() Standard_OVERRIDE;
 
   //! Builds the result of operation.
   //! The method is called for each of the arguments type and

@@ -43,26 +43,20 @@ public:
   //! Empty constructor
   Standard_EXPORT BOPAlgo_Section();
   Standard_EXPORT virtual ~BOPAlgo_Section();
-  
-  //! Empty constructor
-  //!
-  //! protected methods
-  Standard_EXPORT BOPAlgo_Section(const Handle(NCollection_BaseAllocator)& theAllocator);
-  
-  Standard_EXPORT virtual void BuildSection();
-  
-  //! Returns the  list of shapes generated from the
-  //! shape theS.
-  Standard_EXPORT virtual const TopTools_ListOfShape& Generated (const TopoDS_Shape& theS) Standard_OVERRIDE;
 
+  //! Constructor with allocator
+  Standard_EXPORT BOPAlgo_Section(const Handle(NCollection_BaseAllocator)& theAllocator);
 
 protected:
 
+  //! Checks the data before performing the operation
   Standard_EXPORT virtual void CheckData() Standard_OVERRIDE;
-  
-  //! Performs calculations using prepared Filler
-  //! object <thePF>
-  Standard_EXPORT virtual void PerformInternal1 (const BOPAlgo_PaveFiller& thePF) Standard_OVERRIDE;
+
+  //! Combine the result of section operation
+  Standard_EXPORT virtual void BuildSection();
+
+  //! Performs calculations using prepared Filler object <thePF>
+  Standard_EXPORT virtual void PerformInternal1(const BOPAlgo_PaveFiller& thePF) Standard_OVERRIDE;
 
 private:
 
