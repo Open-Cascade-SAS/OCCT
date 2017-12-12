@@ -90,8 +90,6 @@
 //! IsDeleted() and Modified().<br>
 //! In DRAW Test Harness it is available through the same
 //! commands as for Boolean Operations (bmodified, bgenerated and bisdeleted).<br>
-//! There could be Generated shapes only after removing of the internal boundaries
-//! between faces and edges, i.e. after using ShapeUpgrade_UnifySameDomain tool.<br>
 //!
 //! The algorithm can return the following Error Statuses:
 //! - Error status acquired in the General Fuse algorithm.
@@ -238,15 +236,13 @@ class BOPAlgo_CellsBuilder : public BOPAlgo_Builder
   //! Makes the Containers of proper type from the parts added to result.
   Standard_EXPORT void MakeContainers();
 
-  //! Returns the list of shapes generated from the shape theS.
-  Standard_EXPORT virtual const TopTools_ListOfShape& Modified(const TopoDS_Shape& theS) Standard_OVERRIDE;
-  
-  //! Returns true if the shape theS has been deleted.
-  Standard_EXPORT virtual Standard_Boolean IsDeleted (const TopoDS_Shape& theS) Standard_OVERRIDE;
-
  protected:
 
-   //! Redefined method Prepare - no need to prepare history
+  //! Prepare information for history support taking into account
+  //! local modification map of unified elements - myMapModified.
+  Standard_EXPORT virtual const TopTools_ListOfShape* LocModified(const TopoDS_Shape& theS) Standard_OVERRIDE;
+
+  //! Redefined method Prepare - no need to prepare history
   //! information on the default result as it is empty compound.
   Standard_EXPORT virtual void Prepare() Standard_OVERRIDE;
 
@@ -269,11 +265,11 @@ class BOPAlgo_CellsBuilder : public BOPAlgo_Builder
                                                    const TopTools_MapOfShape& theMapKeepBnd = TopTools_MapOfShape());
 
   // fields
-  TopoDS_Shape myAllParts;
-  TopTools_IndexedDataMapOfShapeListOfShape myIndex;
-  TopTools_DataMapOfIntegerListOfShape myMaterials;
-  TopTools_DataMapOfShapeInteger myShapeMaterial;
-  TopTools_DataMapOfShapeShape myMapModified;
+  TopoDS_Shape myAllParts;                           //!< All split parts of the arguments
+  TopTools_IndexedDataMapOfShapeListOfShape myIndex; //!< Connection map from all splits parts to the argument shapes from which they were created
+  TopTools_DataMapOfIntegerListOfShape myMaterials;  //!< Map of assigned materials (material -> list of shape)
+  TopTools_DataMapOfShapeInteger myShapeMaterial;    //!< Map of assigned materials (shape -> material)
+  TopTools_DataMapOfShapeShape myMapModified;        //!< Local modification map to track unification of the splits
 };
 
 #endif //_BOPAlgo_CellsBuilder_HeaderFile

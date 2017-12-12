@@ -2929,6 +2929,159 @@ Warning: The positioning of the shapes leads to creation of small edges without 
 ~~~~
 
 
+@section occt_algorithms_history History Information
+
+The chapter describes the rules for filling the History Information (or just History) for the arguments of the operations in Boolean Component.
+The History is available only for the VERTICES, EDGES, FACES and SOLIDS from the input arguments.
+
+The History allows tracking the modification of the input shapes during the operation. It consists of the following information:
+* Information about Deleted shapes;
+* Information about Modified shapes;
+* Information about Generated shapes;
+
+All History information is filled basing on the result of current operation. History cannot return any shapes not contained in the result.
+Thus if the result of the operation is empty shape, all input shapes will be considered as Deleted and none will have Modified and Generated shapes.
+
+@subsection occt_algorithms_history_del Deleted shapes
+
+The shape is considered as Deleted if the result shape do not contain the shape itself and none of its splits.
+For example, the result of CUT operation of two overlapping planar faces (see the example below) does not contain any parts from the tool face. Thus, the tool faces is considered as Deleted.
+If the faces are not fully coinciding, the result must contain some parts of the object face. In this case object face will be considered as not deleted.
+But if the faces are fully coinciding, the result must be empty, and both faces will be considered as Deleted.
+
+To get the information about Deleted shapes it is necessary to use the method *Standard_Boolean IsDeleted(const TopoDS_Shape& theS)*.
+
+To get the information about Deleted shapes in DRAW it is necessary to use the command *bisdeleted shape*.
+
+Example of the overlapping faces:
+
+~~~~
+plane p 0 0 0 0 0 1
+mkface f1 p -10 10 -10 10
+mkface f2 p 0 20 -10 10
+
+bclearobjects
+bcleartools
+baddobjects f1
+baddtools f2
+bfillds
+bbop r 2
+
+bisdeleted f1
+# Not deleted
+
+bisdeleted f2
+# Deleted
+~~~~
+
+@subsection occt_algorithms_history_modif Modified shapes
+
+The shape is considered as Modified if the result shape contains any of the splits of the shape, not the shape itself. The shape can be modified only into the shapes with same dimension.
+The splits of the shape contained in the result shape are Modified from the shape.
+
+For example, in the FUSE operation of two edges intersecting in one point (see the example below), both edges will be split by the intersection point. All these splits will be contained in the result.
+Thus, each of the input edges will be Modified into its two splits.
+But in the CUT operation on the same edges, the tool edge will be Deleted from the result and, thus, will not have any Modified shapes.
+
+To get the information about Modified shapes it is necessary to use the method *const TopTools_ListOfShape& Modified(const TopoDS_Shape& theS)*.
+The list of Modified elements will contain only those which are contained in the result of the operation. If the list is empty the shape has not been modified and it is necessary to check if it has been Deleted.
+
+To get the information about Modified shapes in DRAW it is necessary to use the command *bmodified modif shape*.
+
+Example of the intersecting edges:
+
+~~~~
+line l1 0 0 0 1 0 0
+mkedge e1 l1 -10 10
+
+line l2 0 0 0 0 1 0
+mkedge e2 l2 -10 10
+
+bclearobjects
+bcleartools
+baddobjects e1
+baddtools e2
+bfillds
+
+# fuse operation
+bbop r 1
+
+bmodified m1 e1
+nbshapes m1
+# EDGES: 2
+
+bmodified m2 e2
+nbshapes m2
+# EDGES: 2
+
+# cut operation
+bbop r 2
+
+bmodified m1 e1
+nbshapes m1
+# EDGES: 2
+
+bmodified m2 e2
+# The shape has not been modified
+
+~~~~
+
+
+@subsection occt_algorithms_history_gen Generated shapes
+
+In terms of the algorithms in Boolean Component the shape from the arguments can have Generated shapes only if these new shapes have been obtained as a result of pure intersection (not overlapping)
+of this shape with any other shapes from arguments. Thus, the Generated shapes are always:
+* VERTICES created from the intersection points and may be Generated from edges and faces only;
+* EDGES created from the intersection edges and may be Generated from faces only.
+
+So, only EDGES and FACES could have information about Generated shapes. For all other types of shapes the list of Generated shapes will be empty.
+
+For example, the two intersecting edges will both have the intersection vertices Generated from them.
+
+To get the information about Generated shapes it is necessary to use the method *const TopTools_ListOfShape& Generated(const TopoDS_Shape& theS)*.
+The list of Generated elements will contain only those which are contained in the result of the operation. If the list is empty no new shapes have been Generated from the shape.
+
+To get the information about Generated shapes in DRAW it is necessary to use the command *bgenerated gen shape*.
+
+Example of interfering faces
+
+~~~~
+plane p1 0 0 0 0 0 1
+mkface f1 p1 -10 10 -10 10
+
+plane p2 0 0 0 1 0 0
+mkface f2 p2 -10 10 -10 10
+
+bclearobjects
+bcleartools
+baddobjects f1
+baddtools f2
+bfillds
+
+# fuse operation
+bbop r 1
+
+bgenerated gf1 f1
+nbshapes gf1
+# EDGES: 1
+
+bgenerated gf2 f2
+nbshapes gf2
+# EDGES: 1
+
+
+# common operation - result is empty
+bbop r 0
+
+bgenerated gf1 f1
+# No shapes were generated from the shape
+
+bgenerated gf2 f2
+# No shapes were generated from the shape
+
+~~~~
+
+
 @section occt_algorithms_11b Usage 
 
 The chapter contains some examples of the OCCT Boolean Component usage. The usage is possible on two levels: C++ and Tcl. 

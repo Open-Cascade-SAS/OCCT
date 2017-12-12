@@ -1,0 +1,163 @@
+puts "Check History of Boolean operations"
+
+puts "Case with intersecting circles (two intersection points)"
+
+circle c1 0 0 0 10
+mkedge e1 c1
+
+circle c2 10 0 0 10
+mkedge e2 c2
+
+bclearobjects
+bcleartools
+baddobjects e1
+baddtools e2
+bfillds
+
+puts "Common operation"
+bbop rcom 0
+
+# check that both e1 and e2 have been deleted
+if {[string trim [bisdeleted e1]] != "Deleted"} {
+  puts "Error: Incorrect information about Deleted shapes"
+}
+
+if {[string trim [bisdeleted e2]] != "Deleted"} {
+  puts "Error: Incorrect information about Deleted shapes"
+}
+
+# check that none of the e1 and e2 have been Modified
+if {[string trim [bmodified rm e1]] != "The shape has not been modified"} {
+  puts "Error: Incorrect information about Modified shapes"
+}
+
+if {[string trim [bmodified rm e2]] != "The shape has not been modified"} {
+  puts "Error: Incorrect information about Modified shapes"
+}
+
+# check that none of the e1 and e2 have Generated shapes
+if {[string trim [bgenerated rg e1]] != "No shapes were generated from the shape"} {
+  puts "Error: Incorrect information about Generated shapes"
+}
+
+if {[string trim [bgenerated rg e2]] != "No shapes were generated from the shape"} {
+  puts "Error: Incorrect information about Generated shapes"
+}
+
+
+puts "Fuse operation"
+bbop rfuse 1
+
+# check that both e1 and e2 have not been deleted
+if {[string trim [bisdeleted e1]] != "Not deleted"} {
+  puts "Error: Incorrect information about Deleted shapes"
+}
+
+if {[string trim [bisdeleted e2]] != "Not deleted"} {
+  puts "Error: Incorrect information about Deleted shapes"
+}
+
+# check that both e1 and e2 have been Modified
+bmodified rm e1
+checknbshapes rm -edge 3 -m "Information about modification of e1"
+
+bmodified rm e2
+checknbshapes rm -edge 3 -m "Information about modification of e2"
+
+# check that both e1 and e2 have Generated vertices
+bgenerated rg e1
+checknbshapes rg -vertex 2 -m "Information about shapes Generated from e1"
+
+bgenerated rg e2
+checknbshapes rg -vertex 2 -m "Information about shapes Generated from e2"
+
+
+puts "CUT operation"
+bbop rcut 2
+
+# check that e1 has not been deleted
+if {[string trim [bisdeleted e1]] != "Not deleted"} {
+  puts "Error: Incorrect information about Deleted shapes"
+}
+
+# check that e2 has been deleted
+if {[string trim [bisdeleted e2]] != "Deleted"} {
+  puts "Error: Incorrect information about Deleted shapes"
+}
+
+# check that e1 has been modified
+bmodified rm e1
+checknbshapes rm -edge 3 -m "Information about modification of e1"
+
+# check that e2 has not been modified
+if {[string trim [bmodified rm e2]] != "The shape has not been modified"} {
+  puts "Error: Incorrect information about Modified shapes"
+}
+
+# check that both e1 and e2 have Generated vertices
+bgenerated rg e1
+checknbshapes rg -vertex 2 -m "Information about shapes Generated from e1"
+
+bgenerated rg e2
+checknbshapes rg -vertex 2 -m "Information about shapes Generated from e2"
+
+
+puts "TUC operation"
+bbop rtuc 3
+
+# check that e1 has been deleted
+if {[string trim [bisdeleted e1]] != "Deleted"} {
+  puts "Error: Incorrect information about Deleted shapes"
+}
+
+# check that e2 has not been deleted
+if {[string trim [bisdeleted e2]] != "Not deleted"} {
+  puts "Error: Incorrect information about Deleted shapes"
+}
+
+# check that e1 has not been modified
+if {[string trim [bmodified rm e1]] != "The shape has not been modified"} {
+  puts "Error: Incorrect information about Modified shapes"
+}
+
+# check that e2 has been modified
+bmodified rm e2
+checknbshapes rm -edge 3 -m "Information about modification of e1"
+
+
+# check that both e1 and e2 have Generated vertices
+bgenerated rg e1
+checknbshapes rg -vertex 2 -m "Information about shapes Generated from e1"
+
+bgenerated rg e2
+checknbshapes rg -vertex 2 -m "Information about shapes Generated from e2"
+
+
+
+puts "SECTION operation"
+bbop rsec 4
+
+# check that both e1 and e2 have been deleted
+if {[string trim [bisdeleted e1]] != "Deleted"} {
+  puts "Error: Incorrect information about Deleted shapes"
+}
+
+if {[string trim [bisdeleted e2]] != "Deleted"} {
+  puts "Error: Incorrect information about Deleted shapes"
+}
+
+# check that none of the e1 and e2 have been Modified 
+if {[string trim [bmodified rm e1]] != "The shape has not been modified"} {
+  puts "Error: Incorrect information about Modified shapes"
+}
+
+if {[string trim [bmodified rm e2]] != "The shape has not been modified"} {
+  puts "Error: Incorrect information about Modified shapes"
+}
+
+# check that both e1 and e2 have Generated vertices
+bgenerated rg e1
+checknbshapes rg -vertex 2 -m "Information about shapes Generated from e1"
+
+bgenerated rg e2
+checknbshapes rg -vertex 2 -m "Information about shapes Generated from e2"

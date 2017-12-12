@@ -47,19 +47,19 @@ NewCommand D
 erase
 ExploreShape D $CS:2:1 R
 
-# should be 12 edges
+# should be 12 edges and 6 vertices
 set l1 [llength [directory R_*] ]
 
-# should be 12 faces
+# should be 18 faces
 set l2 [llength [directory oldR_*] ]
 
-if { ${l1} == 12 } {
+if { ${l1} == 18 } {
   puts "OK: Good edge number"
 } else {
   puts "Error: Bad edge number"
 }
 
-if { ${l2} == 12 } {
+if { ${l2} == 18 } {
   puts "OK: Good face number"
 } else {
   puts "Error: Bad face number"

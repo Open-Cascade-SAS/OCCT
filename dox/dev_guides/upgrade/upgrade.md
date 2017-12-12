@@ -1520,3 +1520,7 @@ Multiple changes have been applied to lights management within TKV3d and TKOpenG
   but it is now possible defining light of any type by creating base class Graphic3d_CLight directly.
   Dedicated classes only hides visibility of unrelated light properties depending on its type.
 * Calling V3d_Viewer::UpdateLights() is no more required after modifying light sources properties (color, position, etc.).
+
+@subsection upgrade_730_BOPAlgo_Section Changes in BOPAlgo_Section
+
+The public method *BuildSection()* in the class *BOPAlgo_Section* has became protected. The methods *Perform()* or *PerformWithFiller()* should be called for construction of the result of SECTION operation.
