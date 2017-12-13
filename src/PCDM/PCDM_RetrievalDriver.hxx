@@ -25,7 +25,7 @@
 #include <PCDM_SequenceOfReference.hxx>
 
 class CDM_MetaData;
-class CDM_MessageDriver;
+class Message_Messenger;
 class TCollection_AsciiString;
 class TCollection_ExtendedString;
 
@@ -39,11 +39,11 @@ class PCDM_RetrievalDriver : public PCDM_Reader
 public:
   Standard_EXPORT static Standard_Integer DocumentVersion (
     const TCollection_ExtendedString& theFileName,
-    const Handle(CDM_MessageDriver)&  theMsgDriver);
+    const Handle(Message_Messenger)&  theMsgDriver);
 
   Standard_EXPORT static Standard_Integer ReferenceCounter (
     const TCollection_ExtendedString& theFileName,
-    const Handle(CDM_MessageDriver)&  theMsgDriver);
+    const Handle(Message_Messenger)&  theMsgDriver);
 
   Standard_EXPORT void SetFormat (const TCollection_ExtendedString& aformat);
 
@@ -55,7 +55,7 @@ private:
   Standard_EXPORT static void References (
     const TCollection_ExtendedString& theFileName,
     PCDM_SequenceOfReference&         theReferences,
-    const Handle(CDM_MessageDriver)&  theMsgDriver);
+    const Handle(Message_Messenger)&  theMsgDriver);
 
   TCollection_ExtendedString myFormat;
 };

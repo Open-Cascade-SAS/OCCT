@@ -14,7 +14,7 @@
 // commercial license or contractual agreement.
 
 
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TColStd_MapIteratorOfMapOfInteger.hxx>
 #include <TDF_Attribute.hxx>
@@ -32,7 +32,7 @@ IMPLEMENT_DOMSTRING (ExecutionStatus,   "exec")
 //function : XmlMFunction_GraphNodeDriver
 //purpose  : Constructor
 //=======================================================================
-XmlMFunction_GraphNodeDriver::XmlMFunction_GraphNodeDriver(const Handle(CDM_MessageDriver)& theMsgDriver)
+XmlMFunction_GraphNodeDriver::XmlMFunction_GraphNodeDriver(const Handle(Message_Messenger)& theMsgDriver)
       : XmlMDF_ADriver (theMsgDriver, NULL)
 {
 
@@ -52,8 +52,8 @@ Handle(TDF_Attribute) XmlMFunction_GraphNodeDriver::NewEmpty() const
 //purpose  : persistent -> transient (retrieve)
 //=======================================================================
 Standard_Boolean XmlMFunction_GraphNodeDriver::Paste(const XmlObjMgt_Persistent&  theSource,
-						     const Handle(TDF_Attribute)& theTarget,
-						     XmlObjMgt_RRelocationTable&  ) const
+                                                     const Handle(TDF_Attribute)& theTarget,
+                                                     XmlObjMgt_RRelocationTable&  ) const
 {
   Handle(TFunction_GraphNode) G = Handle(TFunction_GraphNode)::DownCast(theTarget);
 
@@ -72,7 +72,7 @@ Standard_Boolean XmlMFunction_GraphNodeDriver::Paste(const XmlObjMgt_Persistent&
     TCollection_ExtendedString aMessageString =
       TCollection_ExtendedString("Cannot retrieve the last index"
                                  " for previous functions of GraphNode attribute");
-    WriteMessage (aMessageString);
+    myMessageDriver->Send (aMessageString, Message_Fail);
     return Standard_False;
   }
 
@@ -84,7 +84,7 @@ Standard_Boolean XmlMFunction_GraphNodeDriver::Paste(const XmlObjMgt_Persistent&
       TCollection_ExtendedString aMessageString =
         TCollection_ExtendedString("Cannot retrieve integer member"
                                    " for previous functions of GraphNode attribute");
-      WriteMessage (aMessageString);
+      myMessageDriver->Send (aMessageString, Message_Fail);
       return Standard_False;
     }
     G->AddPrevious(anInteger);
@@ -102,7 +102,7 @@ Standard_Boolean XmlMFunction_GraphNodeDriver::Paste(const XmlObjMgt_Persistent&
           TCollection_ExtendedString("Cannot retrieve integer member"
                                      " for previous functions of GraphNode attribute as \"")
             + aValueStr + "\"";
-        WriteMessage (aMessageString);
+        myMessageDriver->Send (aMessageString, Message_Fail);
         return Standard_False;
       }
       G->AddPrevious(aValue);
@@ -122,7 +122,7 @@ Standard_Boolean XmlMFunction_GraphNodeDriver::Paste(const XmlObjMgt_Persistent&
     TCollection_ExtendedString aMessageString =
       TCollection_ExtendedString("Cannot retrieve the last index"
                                  " for next functions of GraphNode attribute");
-    WriteMessage (aMessageString);
+    myMessageDriver->Send (aMessageString, Message_Fail);
     return Standard_False;
   }
   aLastIndNext += aLastIndPrev;
@@ -138,7 +138,7 @@ Standard_Boolean XmlMFunction_GraphNodeDriver::Paste(const XmlObjMgt_Persistent&
         TCollection_ExtendedString("Cannot retrieve integer member"
                                    " for next functions of GraphNode attribute as \"")
           + aValueStr + "\"";
-      WriteMessage (aMessageString);
+      myMessageDriver->Send (aMessageString, Message_Fail);
       return Standard_False;
     }
     if (ind < aFirstIndNext)
@@ -153,7 +153,7 @@ Standard_Boolean XmlMFunction_GraphNodeDriver::Paste(const XmlObjMgt_Persistent&
     TCollection_ExtendedString aMessageString =
       TCollection_ExtendedString("Cannot retrieve the execution status"
                                  " for GraphNode attribute");
-    WriteMessage (aMessageString);
+    myMessageDriver->Send (aMessageString, Message_Fail);
     return Standard_False;
   }
   G->SetStatus((TFunction_ExecutionStatus) exec);

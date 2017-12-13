@@ -24,7 +24,7 @@
 #include <XmlObjMgt_RRelocationTable.hxx>
 #include <XmlObjMgt_SRelocationTable.hxx>
 
-class CDM_MessageDriver;
+class Message_Messenger;
 class TDF_Attribute;
 class XmlObjMgt_Persistent;
 
@@ -48,7 +48,7 @@ public:
 
 protected:
 
-  XmlMXCAFDoc_NoteDriver(const Handle(CDM_MessageDriver)& theMsgDriver,
+  XmlMXCAFDoc_NoteDriver(const Handle(Message_Messenger)& theMsgDriver,
                          Standard_CString                 theName);
 
 };

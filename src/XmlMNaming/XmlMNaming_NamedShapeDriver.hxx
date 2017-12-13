@@ -25,7 +25,7 @@
 #include <XmlObjMgt_RRelocationTable.hxx>
 #include <XmlObjMgt_SRelocationTable.hxx>
 #include <XmlObjMgt_Element.hxx>
-class CDM_MessageDriver;
+class Message_Messenger;
 class TDF_Attribute;
 class XmlObjMgt_Persistent;
 class TopTools_LocationSet;
@@ -41,7 +41,7 @@ class XmlMNaming_NamedShapeDriver : public XmlMDF_ADriver
 public:
 
   
-  Standard_EXPORT XmlMNaming_NamedShapeDriver(const Handle(CDM_MessageDriver)& aMessageDriver);
+  Standard_EXPORT XmlMNaming_NamedShapeDriver(const Handle(Message_Messenger)& aMessageDriver);
   
   Standard_EXPORT virtual Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
   

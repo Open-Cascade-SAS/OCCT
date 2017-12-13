@@ -23,7 +23,7 @@
 #include <BinObjMgt_Persistent.hxx>
 #include <CDM_Application.hxx>
 #include <CDM_Document.hxx>
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <FSD_BinaryFile.hxx>
 #include <FSD_FileHeader.hxx>
 #include <OSD_OpenFile.hxx>
@@ -158,7 +158,7 @@ void BinLDrivers_DocumentStorageDriver::Write (const Handle(CDM_Document)& theDo
     if (!myRelocTable.Extent()) {
       // No objects written
 #ifdef OCCT_DEBUG
-      WriteMessage ("BinLDrivers_DocumentStorageDriver, no objects written");
+      myMsgDriver->Send ("BinLDrivers_DocumentStorageDriver, no objects written", Message_Info);
 #endif
       SetIsError(Standard_True);
       SetStoreStatus(PCDM_SS_No_Obj);
@@ -168,9 +168,8 @@ void BinLDrivers_DocumentStorageDriver::Write (const Handle(CDM_Document)& theDo
     if (!theOStream) {
       // A problem with the stream
 #ifdef OCCT_DEBUG
-      TCollection_ExtendedString anErrorStr ("Error: ");
-      WriteMessage (anErrorStr + "BinLDrivers_DocumentStorageDriver, Problem with the file stream, rdstate="
-                    + (Standard_Integer )theOStream.rdstate());
+      TCollection_ExtendedString anErrorStr ("BinLDrivers_DocumentStorageDriver, Problem with the file stream, rdstate = ");
+      myMsgDriver->Send (anErrorStr + (Standard_Integer )theOStream.rdstate(), Message_Info);
 #endif
       SetIsError(Standard_True);
       SetStoreStatus(PCDM_SS_WriteFailure);
@@ -194,7 +193,7 @@ void BinLDrivers_DocumentStorageDriver::UnsupportedAttrMsg
   if (!myMapUnsupported.Contains(theType)) {
     myMapUnsupported.Add(theType);
 #ifdef OCCT_DEBUG
-    WriteMessage (aMsg + theType->Name() + " not found");
+    myMsgDriver->Send (aMsg + theType->Name() + " not found", Message_Info);
 #endif
   }
 }
@@ -281,7 +280,7 @@ void BinLDrivers_DocumentStorageDriver::WriteSubTree
 //=======================================================================
 
 Handle(BinMDF_ADriverTable) BinLDrivers_DocumentStorageDriver::AttributeDrivers
-       (const Handle(CDM_MessageDriver)& theMessageDriver)
+       (const Handle(Message_Messenger)& theMessageDriver)
 {
   return BinLDrivers::AttributeDrivers (theMessageDriver);
 }
@@ -477,19 +476,6 @@ void BinLDrivers_DocumentStorageDriver::WriteInfoSection
   // write the comments
   FSD_BinaryFile::WriteComment(theOStream, theData->Comments());
   
-}
-
-//=======================================================================
-//function : WriteMessage
-//purpose  : write  theMessage  to  the  MessageDriver  of  the
-//           Application
-//=======================================================================
-
-void BinLDrivers_DocumentStorageDriver::WriteMessage
-                         (const TCollection_ExtendedString& theMsg)
-{
-  if (!myMsgDriver.IsNull())
-    myMsgDriver->Write (theMsg.ToExtString());
 }
 
 //=======================================================================

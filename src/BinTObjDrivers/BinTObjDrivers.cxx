@@ -72,7 +72,7 @@ void BinTObjDrivers::DefineFormat (const Handle(TDocStd_Application)& theApp)
 //purpose  : 
 //=======================================================================
 void BinTObjDrivers::AddDrivers (const Handle(BinMDF_ADriverTable)& aDriverTable,
-                                 const Handle(CDM_MessageDriver)&   aMsgDrv)
+                                 const Handle(Message_Messenger)&   aMsgDrv)
 {
   aDriverTable -> AddDriver (new BinTObjDrivers_ModelDriver      (aMsgDrv));
   aDriverTable -> AddDriver (new BinTObjDrivers_ObjectDriver     (aMsgDrv));

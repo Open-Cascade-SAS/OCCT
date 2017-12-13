@@ -28,7 +28,7 @@ class XmlTObjDrivers_XYZDriver : public XmlMDF_ADriver
  public:
 
   Standard_EXPORT XmlTObjDrivers_XYZDriver
-                         (const Handle(CDM_MessageDriver)& theMessageDriver);
+                         (const Handle(Message_Messenger)& theMessageDriver);
   // constructor
 
   Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;

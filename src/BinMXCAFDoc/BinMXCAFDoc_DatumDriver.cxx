@@ -16,7 +16,7 @@
 
 #include <BinMXCAFDoc_DatumDriver.hxx>
 #include <BinObjMgt_Persistent.hxx>
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <TColStd_Array1OfReal.hxx>
@@ -31,7 +31,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BinMXCAFDoc_DatumDriver,BinMDF_ADriver)
 //purpose  : 
 //=======================================================================
 BinMXCAFDoc_DatumDriver::BinMXCAFDoc_DatumDriver
-  (const Handle(CDM_MessageDriver)& theMsgDriver)
+  (const Handle(Message_Messenger)& theMsgDriver)
 : BinMDF_ADriver(theMsgDriver, STANDARD_TYPE(XCAFDoc_Datum)->Name())
 {
 }

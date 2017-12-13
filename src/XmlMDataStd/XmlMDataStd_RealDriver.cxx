@@ -15,7 +15,7 @@
 
 //AGV 150202: Changed prototype XmlObjMgt::SetStringValue()
 
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TDataStd_Real.hxx>
 #include <TDF_Attribute.hxx>
@@ -31,7 +31,7 @@ IMPLEMENT_DOMSTRING (AttributeIDString, "realattguid")
 //purpose  : Constructor
 //=======================================================================
 XmlMDataStd_RealDriver::XmlMDataStd_RealDriver
-                        (const Handle(CDM_MessageDriver)& theMsgDriver)
+                        (const Handle(Message_Messenger)& theMsgDriver)
       : XmlMDF_ADriver (theMsgDriver, NULL)
 {}
 
@@ -60,7 +60,7 @@ Standard_Boolean XmlMDataStd_RealDriver::Paste
     TCollection_ExtendedString aMessageString =
       TCollection_ExtendedString("Cannot retrieve Real attribute from \"")
         + aRealStr + "\"";
-    WriteMessage (aMessageString);
+    myMessageDriver->Send (aMessageString, Message_Fail);
     return Standard_False;
   }
 

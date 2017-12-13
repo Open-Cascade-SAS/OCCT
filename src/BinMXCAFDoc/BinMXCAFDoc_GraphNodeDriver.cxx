@@ -16,7 +16,7 @@
 
 #include <BinMXCAFDoc_GraphNodeDriver.hxx>
 #include <BinObjMgt_Persistent.hxx>
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TDF_Attribute.hxx>
 #include <XCAFDoc_GraphNode.hxx>
@@ -27,7 +27,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BinMXCAFDoc_GraphNodeDriver,BinMDF_ADriver)
 //function :
 //purpose  : 
 //=======================================================================
-BinMXCAFDoc_GraphNodeDriver::BinMXCAFDoc_GraphNodeDriver(const Handle(CDM_MessageDriver)& theMsgDriver)
+BinMXCAFDoc_GraphNodeDriver::BinMXCAFDoc_GraphNodeDriver(const Handle(Message_Messenger)& theMsgDriver)
      : BinMDF_ADriver(theMsgDriver, STANDARD_TYPE(XCAFDoc_GraphNode)->Name()) {
 }
 
@@ -44,8 +44,8 @@ Handle(TDF_Attribute) BinMXCAFDoc_GraphNodeDriver::NewEmpty() const {
 //purpose  : 
 //=======================================================================
 Standard_Boolean BinMXCAFDoc_GraphNodeDriver::Paste(const BinObjMgt_Persistent& theSource,
-						    const Handle(TDF_Attribute)& theTarget,
-						    BinObjMgt_RRelocationTable& theRelocTable) const
+                                                    const Handle(TDF_Attribute)& theTarget,
+                                                    BinObjMgt_RRelocationTable& theRelocTable) const
 {
   Handle(XCAFDoc_GraphNode) aT = Handle(XCAFDoc_GraphNode)::DownCast(theTarget);
   Standard_Integer anID;

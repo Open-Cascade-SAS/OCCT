@@ -24,7 +24,7 @@
 #include <XmlObjMgt_RRelocationTable.hxx>
 #include <XmlObjMgt_SRelocationTable.hxx>
 
-class CDM_MessageDriver;
+class Message_Messenger;
 class TDF_Attribute;
 class XmlObjMgt_Persistent;
 
@@ -36,7 +36,7 @@ class XmlMXCAFDoc_NotesToolDriver : public XmlMDF_ADriver
 {
 public:
   
-  Standard_EXPORT XmlMXCAFDoc_NotesToolDriver(const Handle(CDM_MessageDriver)& theMsgDriver);
+  Standard_EXPORT XmlMXCAFDoc_NotesToolDriver(const Handle(Message_Messenger)& theMsgDriver);
   
   Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
   

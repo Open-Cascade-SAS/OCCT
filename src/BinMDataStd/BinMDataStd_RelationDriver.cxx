@@ -16,7 +16,7 @@
 
 #include <BinMDataStd_RelationDriver.hxx>
 #include <BinObjMgt_Persistent.hxx>
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TDataStd_Relation.hxx>
 #include <TDataStd_Variable.hxx>
@@ -30,7 +30,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BinMDataStd_RelationDriver,BinMDF_ADriver)
 //purpose  : Constructor
 //=======================================================================
 BinMDataStd_RelationDriver::BinMDataStd_RelationDriver
-                        (const Handle(CDM_MessageDriver)& theMsgDriver)
+                        (const Handle(Message_Messenger)& theMsgDriver)
       : BinMDF_ADriver (theMsgDriver, NULL)
 {}
 

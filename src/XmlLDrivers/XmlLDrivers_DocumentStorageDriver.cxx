@@ -16,8 +16,8 @@
 
 #include <CDM_Application.hxx>
 #include <CDM_Document.hxx>
-#include <CDM_MessageDriver.hxx>
-#include <CDM_NullMessageDriver.hxx>
+#include <Message.hxx>
+#include <Message_Messenger.hxx>
 #include <LDOM_DocumentType.hxx>
 #include <LDOM_LDOMImplementation.hxx>
 #include <LDOM_XmlWriter.hxx>
@@ -56,7 +56,7 @@ IMPLEMENT_STANDARD_RTTIEXT(XmlLDrivers_DocumentStorageDriver,PCDM_StorageDriver)
 
 //#define TAKE_TIMES
 static void take_time (const Standard_Integer, const char *,
-                       const Handle(CDM_MessageDriver)&)
+                       const Handle(Message_Messenger)&)
 #ifdef TAKE_TIMES
 ;
 #else
@@ -111,7 +111,7 @@ void XmlLDrivers_DocumentStorageDriver::Write (const Handle(CDM_Document)&      
     TCollection_ExtendedString aMsg = TCollection_ExtendedString("Error: the file ") +
                                       theFileName + " cannot be opened for writing";
 
-    theDocument->Application()->MessageDriver()->Write (aMsg.ToExtString());
+    theDocument->Application()->MessageDriver()->Send (aMsg.ToExtString(), Message_Fail);
     throw Standard_Failure("File cannot be opened for writing");
   }
 }
@@ -123,7 +123,7 @@ void XmlLDrivers_DocumentStorageDriver::Write (const Handle(CDM_Document)&      
 Standard_EXPORT void XmlLDrivers_DocumentStorageDriver::Write (const Handle(CDM_Document)& theDocument,
                                                                Standard_OStream&           theOStream)
 {
-  Handle(CDM_MessageDriver) aMessageDriver = theDocument->Application()->MessageDriver();
+  Handle(Message_Messenger) aMessageDriver = theDocument->Application()->MessageDriver();
   ::take_time (~0, " +++++ Start STORAGE procedures ++++++", aMessageDriver);
 
   // Create new DOM_Document
@@ -148,7 +148,7 @@ Standard_EXPORT void XmlLDrivers_DocumentStorageDriver::Write (const Handle(CDM_
 
       TCollection_ExtendedString aMsg = TCollection_ExtendedString("Error: the stream is bad and") +
                                         " cannot be used for writing";
-      theDocument->Application()->MessageDriver()->Write (aMsg.ToExtString());
+      theDocument->Application()->MessageDriver()->Send (aMsg.ToExtString(), Message_Fail);
       
       throw Standard_Failure("File cannot be opened for writing");
     }
@@ -168,7 +168,7 @@ Standard_Boolean XmlLDrivers_DocumentStorageDriver::WriteToDomDocument (const Ha
                                                                         XmlObjMgt_Element&           theElement)
 {
   SetIsError(Standard_False);
-  Handle(CDM_MessageDriver) aMessageDriver =
+  Handle(Message_Messenger) aMessageDriver =
     theDocument -> Application() -> MessageDriver();
   // 1. Write header information
   Standard_Integer i;
@@ -210,12 +210,12 @@ Standard_Boolean XmlLDrivers_DocumentStorageDriver::WriteToDomDocument (const Ha
       aResourceDir += "/src/XmlOcafResource" ;
       aToSetCSFVariable = Standard_True; //CSF variable to be set later
     }
-#ifdef OCCT_DEBUG
+#ifdef OCCT_DEBUGXML
     else {
       TCollection_ExtendedString aWarn = FAILSTR "Neither ";
       aWarn = (aWarn + aCSFVariable[0] + ", nor " + aCSFVariable[1]
                + " variables have been set");
-      aMessageDriver->Write (aWarn.ToExtString());
+      aMessageDriver->Send (aWarn.ToExtString(), Message_Warning);
     }
 #endif
   }
@@ -228,24 +228,24 @@ Standard_Boolean XmlLDrivers_DocumentStorageDriver::WriteToDomDocument (const Ha
       if (aToSetCSFVariable) {
         OSD_Environment aCSFVarEnv ( aCSFVariable[0], aResourceDir );
         aCSFVarEnv.Build();
-#ifdef OCCT_DEBUG
+#ifdef OCCT_DEBUGXML
         TCollection_ExtendedString aWarn1 = "Variable ";
         aWarn1 = (aWarn1 + aCSFVariable[0]
                   + " has not been explicitly defined. Set to " + aResourceDir);
-        aMessageDriver->Write (aWarn1.ToExtString());
+        aMessageDriver->Send (aWarn1.ToExtString(), Message_Warning);
 #endif
         if ( aCSFVarEnv.Failed() ) {
           TCollection_ExtendedString aWarn = FAILSTR "Failed to initialize ";
           aWarn = aWarn + aCSFVariable[0] + " with " + aResourceDir;
-          aMessageDriver->Write (aWarn.ToExtString());
+          aMessageDriver->Send (aWarn.ToExtString(), Message_Fail);
         }
       }
     }
-#ifdef OCCT_DEBUG
+#ifdef OCCT_DEBUGXML
     else {
       TCollection_ExtendedString aWarn = FAILSTR "Schema definition file ";
       aWarn += (aResourceFileName + " was not found");
-      aMessageDriver->Write (aWarn.ToExtString());
+      aMessageDriver->Send (aWarn.ToExtString(), Message_Warning);
     }
 #endif
     anHTTP = anHTTP + ' ' + aResourceFileName;
@@ -317,14 +317,14 @@ Standard_Boolean XmlLDrivers_DocumentStorageDriver::WriteToDomDocument (const Ha
       SetIsError (Standard_True);
       SetStoreStatus(PCDM_SS_Failure);
       TCollection_ExtendedString anErrorString (anException.GetMessageString());
-      aMessageDriver -> Write (anErrorString.ToExtString());
+      aMessageDriver ->Send (anErrorString.ToExtString(), Message_Fail);
     }
   }
   if (anObjNb <= 0 && IsError() == Standard_False) {
     SetIsError (Standard_True);
     SetStoreStatus(PCDM_SS_No_Obj);
     TCollection_ExtendedString anErrorString ("error occurred");
-    aMessageDriver -> Write (anErrorString.ToExtString());
+    aMessageDriver ->Send (anErrorString.ToExtString(), Message_Fail);
   }
   // 2b. Write number of objects into the info section
   anInfoElem.setAttribute("objnb", anObjNb);
@@ -359,18 +359,20 @@ Standard_Integer XmlLDrivers_DocumentStorageDriver::MakeDocument
 
 //      Find MessageDriver and pass it to AttributeDrivers()
     Handle(CDM_Application) anApplication= theTDoc -> Application();
-    Handle(CDM_MessageDriver) aMessageDriver;
-    if (anApplication.IsNull())
-      aMessageDriver = new CDM_NullMessageDriver;
+    Handle(Message_Messenger) aMessageDriver;
+    if (anApplication.IsNull()) {
+      aMessageDriver = Message::DefaultMessenger();
+      aMessageDriver->ChangePrinters().Clear();
+    }
     else
       aMessageDriver = anApplication -> MessageDriver();
     if (myDrivers.IsNull()) myDrivers = AttributeDrivers (aMessageDriver);
 
 //      Retrieve from DOM_Document
     XmlMDF::FromTo (aTDF, theElement, myRelocTable, myDrivers); 
-#ifdef OCCT_DEBUG
+#ifdef OCCT_DEBUGXML
     aMessage = "First step successfull";
-    aMessageDriver -> Write (aMessage.ToExtString());
+    aMessageDriver -> Send (aMessage.ToExtString(), Message_Warning);
 #endif
     return myRelocTable.Extent();
   }
@@ -385,7 +387,7 @@ Standard_Integer XmlLDrivers_DocumentStorageDriver::MakeDocument
 //purpose  : 
 //=======================================================================
 Handle(XmlMDF_ADriverTable) XmlLDrivers_DocumentStorageDriver::AttributeDrivers
-       (const Handle(CDM_MessageDriver)& theMessageDriver) 
+       (const Handle(Message_Messenger)& theMessageDriver) 
 {
   return XmlLDrivers::AttributeDrivers (theMessageDriver);
 }
@@ -406,7 +408,7 @@ extern "C" int ftime (struct timeb *tp);
 struct timeb  tmbuf0;
 
 static void take_time (const Standard_Integer isReset, const char * aHeader,
-                       const Handle(CDM_MessageDriver)& aMessageDriver)
+                       const Handle(Message_Messenger)& aMessageDriver)
 {
   struct timeb  tmbuf;
   ftime (&tmbuf);
@@ -419,7 +421,7 @@ static void take_time (const Standard_Integer isReset, const char * aHeader,
              double(tmbuf.millitm - tmbuf0.millitm)/1000.);
     aMessage += take_tm_buf;
   }
-  aMessageDriver -> Write (aMessage.ToExtString());
+  aMessageDriver ->Send (aMessage.ToExtString(), Message_Trace);
 }
 #endif
 

@@ -14,7 +14,7 @@
 // commercial license or contractual agreement.
 
 
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <NCollection_LocalArray.hxx>
 #include <Standard_Type.hxx>
 #include <TColStd_HPackedMapOfInteger.hxx>
@@ -39,7 +39,7 @@ IMPLEMENT_DOMSTRING (IsDeltaOn,        "delta")
 //=======================================================================
 
 XmlMDataStd_IntPackedMapDriver::XmlMDataStd_IntPackedMapDriver
-                        (const Handle(CDM_MessageDriver)& theMsgDriver)
+                        (const Handle(Message_Messenger)& theMsgDriver)
       : XmlMDF_ADriver (theMsgDriver, STANDARD_TYPE(TDataStd_IntPackedMap)->Name())
 {}
 
@@ -74,61 +74,61 @@ Standard_Boolean XmlMDataStd_IntPackedMapDriver::Paste
       TCollection_ExtendedString("Cannot retrieve the Map size"
                                  " for IntPackedMap attribute as \"")
         + aSize + "\"";
-      WriteMessage (aMessageString);
+      myMessageDriver->Send (aMessageString, Message_Fail);
       return Standard_False;            
     }
     Handle(TColStd_HPackedMapOfInteger) aHMap = new TColStd_HPackedMapOfInteger ();
     Standard_Boolean Ok = Standard_True;
     if(aSize) {    
       Standard_CString aValueString =
-	Standard_CString(XmlObjMgt::GetStringValue(anElement).GetString());
+        Standard_CString(XmlObjMgt::GetStringValue(anElement).GetString());
 //      Handle(TColStd_HPackedMapOfInteger) aHMap = new TColStd_HPackedMapOfInteger ();
       for (Standard_Integer i = 1; i <= aSize; i++) {
-	Standard_Integer aValue;
-	if (!XmlObjMgt::GetInteger(aValueString, aValue)) {
-	  Ok = Standard_False; break;
-	}
-	if(!aHMap->ChangeMap().Add( aValue )) {
-	  Ok = Standard_False; break;
-	}
+        Standard_Integer aValue;
+        if (!XmlObjMgt::GetInteger(aValueString, aValue)) {
+          Ok = Standard_False; break;
+        }
+        if(!aHMap->ChangeMap().Add( aValue )) {
+          Ok = Standard_False; break;
+        }
       }
       if(!Ok) {
-	TCollection_ExtendedString aMessageString =
-	  TCollection_ExtendedString("Cannot retrieve integer member"
-				     " for IntPackedMap attribute as \"")
-	    + aValueString + "\"";
-	WriteMessage (aMessageString);
-	return Standard_False;
+        TCollection_ExtendedString aMessageString =
+          TCollection_ExtendedString("Cannot retrieve integer member"
+          " for IntPackedMap attribute as \"")
+          + aValueString + "\"";
+        myMessageDriver->Send (aMessageString, Message_Fail);
+        return Standard_False;
       }
       if(aPackedMap->ChangeMap(aHMap))
-	Ok = Standard_True;
+        Ok = Standard_True;
     }
     if(Ok) {
       Standard_Boolean aDelta(Standard_False);
-  
+
       if(XmlMDataStd::DocumentVersion() > 2) {
-	Standard_Integer aDeltaValue;
-	if (!anElement.getAttribute(::IsDeltaOn()).GetInteger(aDeltaValue)) 
-	  {
-	    TCollection_ExtendedString aMessageString =
-	      TCollection_ExtendedString("Cannot retrieve the isDelta value"
-					 " for IntPackedMap attribute as \"")
-		+ aDeltaValue + "\"";
-	    WriteMessage (aMessageString);
-	    return Standard_False;
-	  } 
-	else
-	  aDelta = aDeltaValue != 0;
+        Standard_Integer aDeltaValue;
+        if (!anElement.getAttribute(::IsDeltaOn()).GetInteger(aDeltaValue)) 
+        {
+          TCollection_ExtendedString aMessageString =
+            TCollection_ExtendedString("Cannot retrieve the isDelta value"
+            " for IntPackedMap attribute as \"")
+            + aDeltaValue + "\"";
+          myMessageDriver->Send (aMessageString, Message_Fail);
+          return Standard_False;
+        } 
+        else
+          aDelta = aDeltaValue != 0;
       }
 #ifdef OCCT_DEBUG
       else if(XmlMDataStd::DocumentVersion() == -1)
-	cout << "Current DocVersion field is not initialized. "  <<endl;
+        cout << "Current DocVersion field is not initialized. "  <<endl;
 #endif
       aPackedMap->SetDelta(aDelta);
       return Standard_True;
     }  
   }
-  WriteMessage("error retrieving Map for type TDataStd_IntPackedMap");
+  myMessageDriver->Send("error retrieving Map for type TDataStd_IntPackedMap", Message_Fail);
   return Standard_False;
 }
 
@@ -142,7 +142,7 @@ void XmlMDataStd_IntPackedMapDriver::Paste (const Handle(TDF_Attribute)& theSour
 {
   Handle(TDataStd_IntPackedMap) aS = Handle(TDataStd_IntPackedMap)::DownCast(theSource);
   if (aS.IsNull()) {
-    WriteMessage ("IntPackedMapDriver:: The source attribute is Null.");
+    myMessageDriver->Send ("IntPackedMapDriver:: The source attribute is Null.", Message_Warning);
     return;
   }
 

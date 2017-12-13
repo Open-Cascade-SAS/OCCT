@@ -19,7 +19,7 @@
 #include <BinObjMgt_Persistent.hxx>
 #include <BinObjMgt_RRelocationTable.hxx>
 #include <BinObjMgt_SRelocationTable.hxx>
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TDataStd_AsciiString.hxx>
 #include <TDF_Attribute.hxx>
@@ -32,7 +32,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BinMDataStd_AsciiStringDriver,BinMDF_ADriver)
 //purpose  :
 //=======================================================================
 BinMDataStd_AsciiStringDriver::BinMDataStd_AsciiStringDriver
-                         (const Handle(CDM_MessageDriver)& theMessageDriver)
+                         (const Handle(Message_Messenger)& theMessageDriver)
      : BinMDF_ADriver (theMessageDriver, STANDARD_TYPE(TDataStd_AsciiString)->Name())
 {
 }

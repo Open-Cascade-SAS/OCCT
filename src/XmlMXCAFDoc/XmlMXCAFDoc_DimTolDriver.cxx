@@ -14,7 +14,7 @@
 // commercial license or contractual agreement.
 
 
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <TColStd_HArray1OfReal.hxx>
@@ -36,7 +36,7 @@ IMPLEMENT_DOMSTRING (ValueIndexString, "values")
 //purpose  : Constructor
 //=======================================================================
 XmlMXCAFDoc_DimTolDriver::XmlMXCAFDoc_DimTolDriver
-  (const Handle(CDM_MessageDriver)& theMsgDriver)
+  (const Handle(Message_Messenger)& theMsgDriver)
 : XmlMDF_ADriver (theMsgDriver, "xcaf", "DimTol")
 {}
 
@@ -65,7 +65,7 @@ Standard_Boolean XmlMXCAFDoc_DimTolDriver::Paste
     TCollection_ExtendedString aMessageString =
       TCollection_ExtendedString("Cannot retrieve DimTol attribute kind from \"")
         + anIntStr + "\"";
-    WriteMessage (aMessageString);
+    myMessageDriver->Send (aMessageString, Message_Fail);
     return Standard_False;
   }
   
@@ -75,7 +75,7 @@ Standard_Boolean XmlMXCAFDoc_DimTolDriver::Paste
   if ( aNameStr == NULL || aDescrStr == NULL ) {
     TCollection_ExtendedString aMessageString
       ("Cannot retrieve DimTol attribute name or description");
-    WriteMessage (aMessageString);
+    myMessageDriver->Send (aMessageString, Message_Fail);
     return Standard_False;
   }
 
@@ -91,7 +91,7 @@ Standard_Boolean XmlMXCAFDoc_DimTolDriver::Paste
   else if (!aFirstIndex.GetInteger(aFirstInd)) {
     TCollection_ExtendedString aMessageString
       ("Cannot retrieve the DimTol first index for real array ");
-    WriteMessage (aMessageString);
+    myMessageDriver->Send (aMessageString, Message_Fail);
     return Standard_False;
   }
   XmlObjMgt_DOMString aLastIndex = anElement.getAttribute(::LastIndexString());
@@ -100,7 +100,7 @@ Standard_Boolean XmlMXCAFDoc_DimTolDriver::Paste
   else if (!aLastIndex.GetInteger(aLastInd)) {
     TCollection_ExtendedString aMessageString
       ("Cannot retrieve the DimTol last index for real array ");
-    WriteMessage (aMessageString);
+    myMessageDriver->Send (aMessageString, Message_Fail);
     return Standard_False;
   }
   
@@ -119,7 +119,7 @@ Standard_Boolean XmlMXCAFDoc_DimTolDriver::Paste
           TCollection_ExtendedString("Cannot retrieve real member"
                                      " for real array \"")
             + aValueStr + "\"";
-        WriteMessage (aMessageString);
+        myMessageDriver->Send (aMessageString, Message_Fail);
         return Standard_False;
       }
       aHArr->SetValue(ind, aValue);

@@ -14,7 +14,7 @@
 // commercial license or contractual agreement.
 
 
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <XmlMDF_ADriverTable.hxx>
 #include <XmlMNaming.hxx>
 #include <XmlMNaming_NamedShapeDriver.hxx>
@@ -26,7 +26,7 @@ static Standard_Integer myDocumentVersion = -1;
 //purpose  : 
 //=======================================================================
 void XmlMNaming::AddDrivers (const Handle(XmlMDF_ADriverTable)& aDriverTable,
-                             const Handle(CDM_MessageDriver)&   aMessageDriver)
+                             const Handle(Message_Messenger)&   aMessageDriver)
 {
   aDriverTable->AddDriver (new XmlMNaming_NamedShapeDriver(aMessageDriver));
   aDriverTable->AddDriver (new XmlMNaming_NamingDriver(aMessageDriver));

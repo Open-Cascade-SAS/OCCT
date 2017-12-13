@@ -17,7 +17,7 @@
 #include <BinMDataStd_ReferenceArrayDriver.hxx>
 #include <BinMDataStd.hxx>
 #include <BinObjMgt_Persistent.hxx>
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TDataStd_ReferenceArray.hxx>
 #include <TDF_Attribute.hxx>
@@ -30,7 +30,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BinMDataStd_ReferenceArrayDriver,BinMDF_ADriver)
 //function : BinMDataStd_ReferenceArrayDriver
 //purpose  : Constructor
 //=======================================================================
-BinMDataStd_ReferenceArrayDriver::BinMDataStd_ReferenceArrayDriver(const Handle(CDM_MessageDriver)& theMsgDriver)
+BinMDataStd_ReferenceArrayDriver::BinMDataStd_ReferenceArrayDriver(const Handle(Message_Messenger)& theMsgDriver)
      : BinMDF_ADriver (theMsgDriver, STANDARD_TYPE(TDataStd_ReferenceArray)->Name())
 {
 

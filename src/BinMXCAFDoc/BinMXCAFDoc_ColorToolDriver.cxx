@@ -16,7 +16,7 @@
 
 #include <BinMXCAFDoc_ColorToolDriver.hxx>
 #include <BinObjMgt_Persistent.hxx>
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TDF_Attribute.hxx>
 #include <XCAFDoc_ColorTool.hxx>
@@ -27,7 +27,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BinMXCAFDoc_ColorToolDriver,BinMDF_ADriver)
 //function : 
 //purpose  : 
 //=======================================================================
-BinMXCAFDoc_ColorToolDriver::BinMXCAFDoc_ColorToolDriver(const Handle(CDM_MessageDriver)& theMsgDriver)
+BinMXCAFDoc_ColorToolDriver::BinMXCAFDoc_ColorToolDriver(const Handle(Message_Messenger)& theMsgDriver)
      : BinMDF_ADriver(theMsgDriver, STANDARD_TYPE(XCAFDoc_ColorTool)->Name()) {
 }
 

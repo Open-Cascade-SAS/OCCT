@@ -14,7 +14,7 @@
 // commercial license or contractual agreement.
 
 
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <Standard_PCharacter.hxx>
 #include <Standard_Type.hxx>
 #include <TDF_Attribute.hxx>
@@ -35,7 +35,7 @@ IMPLEMENT_DOMSTRING (FathersString,  "fathers")
 //purpose  : Constructor
 //=======================================================================
 XmlMXCAFDoc_GraphNodeDriver::XmlMXCAFDoc_GraphNodeDriver
-                        (const Handle(CDM_MessageDriver)& theMsgDriver)
+                        (const Handle(Message_Messenger)& theMsgDriver)
       : XmlMDF_ADriver (theMsgDriver, "xcaf", "GraphNode")
 {}
 

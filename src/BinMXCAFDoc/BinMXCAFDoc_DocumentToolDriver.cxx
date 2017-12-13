@@ -16,7 +16,7 @@
 
 #include <BinMXCAFDoc_DocumentToolDriver.hxx>
 #include <BinObjMgt_Persistent.hxx>
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TDF_Attribute.hxx>
 #include <XCAFDoc_DocumentTool.hxx>
@@ -27,7 +27,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BinMXCAFDoc_DocumentToolDriver,BinMDF_ADriver)
 //function :
 //purpose  : 
 //=======================================================================
-BinMXCAFDoc_DocumentToolDriver::BinMXCAFDoc_DocumentToolDriver(const Handle(CDM_MessageDriver)& theMsgDriver) 
+BinMXCAFDoc_DocumentToolDriver::BinMXCAFDoc_DocumentToolDriver(const Handle(Message_Messenger)& theMsgDriver) 
      : BinMDF_ADriver(theMsgDriver, STANDARD_TYPE(XCAFDoc_DocumentTool)->Name()) {
 }
 
@@ -44,8 +44,8 @@ Handle(TDF_Attribute) BinMXCAFDoc_DocumentToolDriver::NewEmpty() const {
 //purpose  : 
 //=======================================================================
 Standard_Boolean BinMXCAFDoc_DocumentToolDriver::Paste(const BinObjMgt_Persistent& /*theSource*/,
-							const Handle(TDF_Attribute)& theTarget,
-							BinObjMgt_RRelocationTable& /*theRelocTable*/) const
+                                                        const Handle(TDF_Attribute)& theTarget,
+                                                        BinObjMgt_RRelocationTable& /*theRelocTable*/) const
 {
   Handle(XCAFDoc_DocumentTool) T = Handle(XCAFDoc_DocumentTool)::DownCast(theTarget);
   T->Init();

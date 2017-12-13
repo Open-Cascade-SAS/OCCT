@@ -14,7 +14,7 @@
 // commercial license or contractual agreement.
 
 
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TDF_Attribute.hxx>
 #include <XCAFDoc_Color.hxx>
@@ -29,7 +29,7 @@ IMPLEMENT_STANDARD_RTTIEXT(XmlMXCAFDoc_ColorDriver,XmlMDF_ADriver)
 //purpose  : Constructor
 //=======================================================================
 XmlMXCAFDoc_ColorDriver::XmlMXCAFDoc_ColorDriver
-                        (const Handle(CDM_MessageDriver)& theMsgDriver)
+                        (const Handle(Message_Messenger)& theMsgDriver)
       : XmlMDF_ADriver (theMsgDriver, "xcaf", "Color")
 {}
 
@@ -58,7 +58,7 @@ Standard_Boolean XmlMXCAFDoc_ColorDriver::Paste
     TCollection_ExtendedString aMessageString =
       TCollection_ExtendedString("Cannot retrieve Color attribute from \"")
         + anIntStr + "\"";
-    WriteMessage (aMessageString);
+    myMessageDriver->Send (aMessageString, Message_Fail);
     return Standard_False;
   }
 

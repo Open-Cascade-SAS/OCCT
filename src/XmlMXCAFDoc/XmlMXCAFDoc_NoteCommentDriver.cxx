@@ -13,7 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TDF_Attribute.hxx>
 #include <XCAFDoc_NoteComment.hxx>
@@ -27,7 +27,7 @@ IMPLEMENT_DOMSTRING(Comment, "comment")
 //function :
 //purpose  : 
 //=======================================================================
-XmlMXCAFDoc_NoteCommentDriver::XmlMXCAFDoc_NoteCommentDriver(const Handle(CDM_MessageDriver)& theMsgDriver)
+XmlMXCAFDoc_NoteCommentDriver::XmlMXCAFDoc_NoteCommentDriver(const Handle(Message_Messenger)& theMsgDriver)
   : XmlMXCAFDoc_NoteDriver(theMsgDriver, STANDARD_TYPE(XCAFDoc_NoteComment)->Name())
 {
 }
@@ -87,7 +87,7 @@ void XmlMXCAFDoc_NoteCommentDriver::Paste(const Handle(TDF_Attribute)& theSource
 //function :
 //purpose  : 
 //=======================================================================
-XmlMXCAFDoc_NoteCommentDriver::XmlMXCAFDoc_NoteCommentDriver(const Handle(CDM_MessageDriver)& theMsgDriver,
+XmlMXCAFDoc_NoteCommentDriver::XmlMXCAFDoc_NoteCommentDriver(const Handle(Message_Messenger)& theMsgDriver,
                                                              Standard_CString                 theName)
   : XmlMXCAFDoc_NoteDriver(theMsgDriver, theName)
 {

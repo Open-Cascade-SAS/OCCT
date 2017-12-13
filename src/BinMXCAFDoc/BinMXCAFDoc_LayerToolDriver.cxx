@@ -16,7 +16,7 @@
 
 #include <BinMXCAFDoc_LayerToolDriver.hxx>
 #include <BinObjMgt_Persistent.hxx>
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TDF_Attribute.hxx>
 #include <XCAFDoc_LayerTool.hxx>
@@ -27,7 +27,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BinMXCAFDoc_LayerToolDriver,BinMDF_ADriver)
 //function :
 //purpose  : 
 //=======================================================================
-BinMXCAFDoc_LayerToolDriver::BinMXCAFDoc_LayerToolDriver(const Handle(CDM_MessageDriver)& theMsgDriver)
+BinMXCAFDoc_LayerToolDriver::BinMXCAFDoc_LayerToolDriver(const Handle(Message_Messenger)& theMsgDriver)
      : BinMDF_ADriver(theMsgDriver, STANDARD_TYPE(XCAFDoc_LayerTool)->Name()) {
 }
 
@@ -44,8 +44,8 @@ Handle(TDF_Attribute) BinMXCAFDoc_LayerToolDriver::NewEmpty() const {
 //purpose  : 
 //=======================================================================
 Standard_Boolean BinMXCAFDoc_LayerToolDriver::Paste(const BinObjMgt_Persistent& /*theSource*/,
-						    const Handle(TDF_Attribute)& /*theTarget*/,
-						    BinObjMgt_RRelocationTable& /*theRelocTable*/) const
+                                                    const Handle(TDF_Attribute)& /*theTarget*/,
+                                                    BinObjMgt_RRelocationTable& /*theRelocTable*/) const
 {
   return Standard_True;
 }
@@ -55,8 +55,8 @@ Standard_Boolean BinMXCAFDoc_LayerToolDriver::Paste(const BinObjMgt_Persistent& 
 //purpose  : 
 //=======================================================================
 void BinMXCAFDoc_LayerToolDriver::Paste(const Handle(TDF_Attribute)& /*theSource*/,
-					BinObjMgt_Persistent& /*theTarget*/,
-					BinObjMgt_SRelocationTable& /*theRelocTable*/) const
+                                        BinObjMgt_Persistent& /*theTarget*/,
+                                        BinObjMgt_SRelocationTable& /*theRelocTable*/) const
 {
 }
 

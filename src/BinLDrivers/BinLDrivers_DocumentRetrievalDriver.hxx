@@ -31,7 +31,7 @@
 #include <Storage_Data.hxx>
 
 class BinMDF_ADriverTable;
-class CDM_MessageDriver;
+class Message_Messenger;
 class TCollection_ExtendedString;
 class PCDM_Document;
 class CDM_Document;
@@ -66,7 +66,7 @@ public:
                                      const Handle(CDM_Document)&     theDoc,
                                      const Handle(CDM_Application)&  theApplication) Standard_OVERRIDE;
   
-  Standard_EXPORT virtual Handle(BinMDF_ADriverTable) AttributeDrivers (const Handle(CDM_MessageDriver)& theMsgDriver);
+  Standard_EXPORT virtual Handle(BinMDF_ADriverTable) AttributeDrivers (const Handle(Message_Messenger)& theMsgDriver);
 
 
 
@@ -101,20 +101,15 @@ protected:
   //! The default implementation: if the version of the file is greater than the
   //! current or lesser than 2, then return false, else true
   Standard_EXPORT virtual Standard_Boolean CheckDocumentVersion (const Standard_Integer theFileVersion, const Standard_Integer theCurVersion);
-  
-  //! write  theMessage  to  the  MessageDriver  of  the
-  //! Application
-  Standard_EXPORT void WriteMessage (const TCollection_ExtendedString& theMessage);
 
   Handle(BinMDF_ADriverTable) myDrivers;
   BinObjMgt_RRelocationTable myRelocTable;
-
+  Handle(Message_Messenger) myMsgDriver;
 
 private:
 
 
   BinObjMgt_Persistent myPAtt;
-  Handle(CDM_MessageDriver) myMsgDriver;
   TColStd_MapOfInteger myMapUnsupported;
   BinLDrivers_VectorOfDocumentSection mySections;
 

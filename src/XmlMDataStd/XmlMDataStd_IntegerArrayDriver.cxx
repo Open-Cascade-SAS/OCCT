@@ -15,7 +15,7 @@
 
 //AGV 150202: Changed prototype XmlObjMgt::SetStringValue()
 
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <NCollection_LocalArray.hxx>
 #include <Standard_Type.hxx>
 #include <TDataStd_IntegerArray.hxx>
@@ -37,7 +37,7 @@ IMPLEMENT_DOMSTRING (AttributeIDString, "intarrattguid")
 //=======================================================================
 
 XmlMDataStd_IntegerArrayDriver::XmlMDataStd_IntegerArrayDriver
-                        (const Handle(CDM_MessageDriver)& theMsgDriver)
+                        (const Handle(Message_Messenger)& theMsgDriver)
       : XmlMDF_ADriver (theMsgDriver, NULL)
 {}
 
@@ -71,7 +71,7 @@ Standard_Boolean XmlMDataStd_IntegerArrayDriver::Paste
       TCollection_ExtendedString("Cannot retrieve the first index"
                                  " for IntegerArray attribute as \"")
         + aFirstIndex + "\"";
-    WriteMessage (aMessageString);
+    myMessageDriver->Send (aMessageString, Message_Fail);
     return Standard_False;
   }
 
@@ -81,7 +81,7 @@ Standard_Boolean XmlMDataStd_IntegerArrayDriver::Paste
       TCollection_ExtendedString("Cannot retrieve the last index"
                                  " for IntegerArray attribute as \"")
         + aFirstIndex + "\"";
-    WriteMessage (aMessageString);
+    myMessageDriver->Send (aMessageString, Message_Fail);
     return Standard_False;
   }
 
@@ -95,7 +95,7 @@ Standard_Boolean XmlMDataStd_IntegerArrayDriver::Paste
       TCollection_ExtendedString aMessageString =
         TCollection_ExtendedString("Cannot retrieve integer member"
                                    " for IntegerArray attribute as \"");
-      WriteMessage (aMessageString);
+      myMessageDriver->Send (aMessageString, Message_Fail);
       return Standard_False;
     }
     anIntArray->SetValue(aFirstInd, anInteger);
@@ -113,7 +113,7 @@ Standard_Boolean XmlMDataStd_IntegerArrayDriver::Paste
           TCollection_ExtendedString("Cannot retrieve integer member"
                                      " for IntegerArray attribute as \"")
             + aValueStr + "\"";
-        WriteMessage (aMessageString);
+        myMessageDriver->Send (aMessageString, Message_Fail);
         return Standard_False;
       }
       anIntArray->SetValue(ind, aValue);
@@ -129,7 +129,7 @@ Standard_Boolean XmlMDataStd_IntegerArrayDriver::Paste
           TCollection_ExtendedString("Cannot retrieve the isDelta value"
                                      " for IntegerArray attribute as \"")
                                      + aDeltaValue + "\"";
-        WriteMessage (aMessageString);
+        myMessageDriver->Send (aMessageString, Message_Fail);
         return Standard_False;
       } 
     else

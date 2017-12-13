@@ -15,7 +15,7 @@
 
 //AGV 150202: Changed prototype XmlObjMgt::SetStringValue()
 
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <NCollection_LocalArray.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_OutOfMemory.hxx>
@@ -40,7 +40,7 @@ IMPLEMENT_DOMSTRING (AttributeIDString, "realarrattguid")
 //=======================================================================
 
 XmlMDataStd_RealArrayDriver::XmlMDataStd_RealArrayDriver
-                        (const Handle(CDM_MessageDriver)& theMsgDriver)
+                        (const Handle(Message_Messenger)& theMsgDriver)
       : XmlMDF_ADriver (theMsgDriver, NULL)
 {}
 
@@ -75,7 +75,7 @@ Standard_Boolean XmlMDataStd_RealArrayDriver::Paste
       TCollection_ExtendedString("Cannot retrieve the first index"
                                  " for RealArray attribute as \"")
         + aFirstIndex + "\"";
-    WriteMessage (aMessageString);
+    myMessageDriver->Send (aMessageString, Message_Fail);
     return Standard_False;
   }
 
@@ -85,7 +85,7 @@ Standard_Boolean XmlMDataStd_RealArrayDriver::Paste
       TCollection_ExtendedString("Cannot retrieve the last index"
                                  " for RealArray attribute as \"")
         + aFirstIndex + "\"";
-    WriteMessage (aMessageString);
+    myMessageDriver->Send (aMessageString, Message_Fail);
     return Standard_False;
   }
 
@@ -105,7 +105,7 @@ Standard_Boolean XmlMDataStd_RealArrayDriver::Paste
         TCollection_ExtendedString("Cannot retrieve array of real members"
                                    " for RealArray attribute from Integer \"")
         + aString + "\"";
-      WriteMessage (aMessageString);
+      myMessageDriver->Send (aMessageString, Message_Fail);
       return Standard_False;
     }
   } else {
@@ -117,7 +117,7 @@ Standard_Boolean XmlMDataStd_RealArrayDriver::Paste
           TCollection_ExtendedString("Cannot retrieve real member"
                                      " for RealArray attribute as \"")
             + aValueStr + "\"";
-        WriteMessage (aMessageString);
+        myMessageDriver->Send (aMessageString, Message_Fail);
         return Standard_False;
       }
       aRealArray->SetValue(ind, aValue);
@@ -133,7 +133,7 @@ Standard_Boolean XmlMDataStd_RealArrayDriver::Paste
           TCollection_ExtendedString("Cannot retrieve the isDelta value"
                                      " for RealArray attribute as \"")
                                      + aDeltaValue + "\"";
-        WriteMessage (aMessageString);
+        myMessageDriver->Send (aMessageString, Message_Fail);
         return Standard_False;
       } 
     else

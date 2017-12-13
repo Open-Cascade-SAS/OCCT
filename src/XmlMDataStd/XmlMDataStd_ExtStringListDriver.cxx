@@ -14,7 +14,7 @@
 // commercial license or contractual agreement.
 
 
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <LDOM_MemManager.hxx>
 #include <Standard_Type.hxx>
 #include <TDataStd_ExtStringList.hxx>
@@ -35,7 +35,7 @@ IMPLEMENT_DOMSTRING (AttributeIDString, "extstrlistattguid")
 //function : XmlMDataStd_ExtStringListDriver
 //purpose  : Constructor
 //=======================================================================
-XmlMDataStd_ExtStringListDriver::XmlMDataStd_ExtStringListDriver(const Handle(CDM_MessageDriver)& theMsgDriver)
+XmlMDataStd_ExtStringListDriver::XmlMDataStd_ExtStringListDriver(const Handle(Message_Messenger)& theMsgDriver)
      : XmlMDF_ADriver (theMsgDriver, NULL)
 {
 
@@ -71,7 +71,7 @@ Standard_Boolean XmlMDataStd_ExtStringListDriver::Paste(const XmlObjMgt_Persiste
       TCollection_ExtendedString("Cannot retrieve the first index"
                                  " for ExtStringList attribute as \"")
         + aFirstIndex + "\"";
-    WriteMessage (aMessageString);
+    myMessageDriver->Send (aMessageString, Message_Fail);
     return Standard_False;
   }
 
@@ -82,7 +82,7 @@ Standard_Boolean XmlMDataStd_ExtStringListDriver::Paste(const XmlObjMgt_Persiste
       TCollection_ExtendedString("Cannot retrieve the last index"
                                  " for ExtStringList attribute as \"")
         + aFirstIndex + "\"";
-    WriteMessage (aMessageString);
+    myMessageDriver->Send (aMessageString, Message_Fail);
     return Standard_False;
   }
 
@@ -92,7 +92,7 @@ Standard_Boolean XmlMDataStd_ExtStringListDriver::Paste(const XmlObjMgt_Persiste
     {
       TCollection_ExtendedString aMessageString = 
         TCollection_ExtendedString("Cannot retrieve a list of extended strings");
-      WriteMessage (aMessageString);
+      myMessageDriver->Send (aMessageString, Message_Fail);
       return Standard_False;
     }
 

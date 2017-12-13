@@ -16,7 +16,7 @@
 
 #include <BinMXCAFDoc_DimTolToolDriver.hxx>
 #include <BinObjMgt_Persistent.hxx>
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TDF_Attribute.hxx>
 #include <XCAFDoc_DimTolTool.hxx>
@@ -28,7 +28,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BinMXCAFDoc_DimTolToolDriver,BinMDF_ADriver)
 //purpose  : 
 //=======================================================================
 BinMXCAFDoc_DimTolToolDriver::BinMXCAFDoc_DimTolToolDriver
-  (const Handle(CDM_MessageDriver)& theMsgDriver)
+  (const Handle(Message_Messenger)& theMsgDriver)
 : BinMDF_ADriver(theMsgDriver, STANDARD_TYPE(XCAFDoc_DimTolTool)->Name())
 {
 }

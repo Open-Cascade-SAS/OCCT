@@ -14,7 +14,7 @@
 // commercial license or contractual agreement.
 
 #include <BinObjMgt_Persistent.hxx>
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TDF_Attribute.hxx>
 #include <BinMXCAFDoc_NoteCommentDriver.hxx>
@@ -26,7 +26,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BinMXCAFDoc_NoteCommentDriver, BinMXCAFDoc_NoteDriver
 //function :
 //purpose  : 
 //=======================================================================
-BinMXCAFDoc_NoteCommentDriver::BinMXCAFDoc_NoteCommentDriver(const Handle(CDM_MessageDriver)& theMsgDriver)
+BinMXCAFDoc_NoteCommentDriver::BinMXCAFDoc_NoteCommentDriver(const Handle(Message_Messenger)& theMsgDriver)
   : BinMXCAFDoc_NoteDriver(theMsgDriver, STANDARD_TYPE(XCAFDoc_NoteComment)->Name())
 {
 }
@@ -69,8 +69,8 @@ Standard_Boolean BinMXCAFDoc_NoteCommentDriver::Paste(const BinObjMgt_Persistent
 //purpose  : 
 //=======================================================================
 void BinMXCAFDoc_NoteCommentDriver::Paste(const Handle(TDF_Attribute)& theSource,
-					                                BinObjMgt_Persistent&        theTarget,
-					                                BinObjMgt_SRelocationTable&  theRelocTable) const
+                                          BinObjMgt_Persistent&        theTarget,
+                                          BinObjMgt_SRelocationTable&  theRelocTable) const
 {
   BinMXCAFDoc_NoteDriver::Paste(theSource, theTarget, theRelocTable);
 
@@ -83,7 +83,7 @@ void BinMXCAFDoc_NoteCommentDriver::Paste(const Handle(TDF_Attribute)& theSource
 //function :
 //purpose  : 
 //=======================================================================
-BinMXCAFDoc_NoteCommentDriver::BinMXCAFDoc_NoteCommentDriver(const Handle(CDM_MessageDriver)& theMsgDriver,
+BinMXCAFDoc_NoteCommentDriver::BinMXCAFDoc_NoteCommentDriver(const Handle(Message_Messenger)& theMsgDriver,
                                                              Standard_CString                 theName)
   : BinMXCAFDoc_NoteDriver(theMsgDriver, theName)
 {

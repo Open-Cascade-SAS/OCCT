@@ -14,7 +14,7 @@
 // commercial license or contractual agreement.
 
 
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <NCollection_LocalArray.hxx>
 #include <Standard_Type.hxx>
 #include <TColStd_ListIteratorOfListOfInteger.hxx>
@@ -33,7 +33,7 @@ IMPLEMENT_DOMSTRING (AttributeIDString, "intlistattguid")
 //function : XmlMDataStd_IntegerListDriver
 //purpose  : Constructor
 //=======================================================================
-XmlMDataStd_IntegerListDriver::XmlMDataStd_IntegerListDriver(const Handle(CDM_MessageDriver)& theMsgDriver)
+XmlMDataStd_IntegerListDriver::XmlMDataStd_IntegerListDriver(const Handle(Message_Messenger)& theMsgDriver)
 : XmlMDF_ADriver (theMsgDriver, NULL)
 {
 
@@ -69,7 +69,7 @@ Standard_Boolean XmlMDataStd_IntegerListDriver::Paste(const XmlObjMgt_Persistent
       TCollection_ExtendedString("Cannot retrieve the first index"
                                  " for IntegerList attribute as \"")
         + aFirstIndex + "\"";
-    WriteMessage (aMessageString);
+    myMessageDriver->Send (aMessageString, Message_Fail);
     return Standard_False;
   }
 
@@ -80,7 +80,7 @@ Standard_Boolean XmlMDataStd_IntegerListDriver::Paste(const XmlObjMgt_Persistent
       TCollection_ExtendedString("Cannot retrieve the last index"
                                  " for IntegerList attribute as \"")
         + aFirstIndex + "\"";
-    WriteMessage (aMessageString);
+    myMessageDriver->Send (aMessageString, Message_Fail);
     return Standard_False;
   }
 
@@ -94,7 +94,7 @@ Standard_Boolean XmlMDataStd_IntegerListDriver::Paste(const XmlObjMgt_Persistent
       TCollection_ExtendedString aMessageString =
         TCollection_ExtendedString("Cannot retrieve integer member"
                                    " for IntegerList attribute as \"");
-      WriteMessage (aMessageString);
+      myMessageDriver->Send (aMessageString, Message_Fail);
       return Standard_False;
     }
     anIntList->Append(anInteger);
@@ -110,7 +110,7 @@ Standard_Boolean XmlMDataStd_IntegerListDriver::Paste(const XmlObjMgt_Persistent
           TCollection_ExtendedString("Cannot retrieve integer member"
                                      " for IntegerList attribute as \"")
             + aValueStr + "\"";
-        WriteMessage (aMessageString);
+        myMessageDriver->Send (aMessageString, Message_Fail);
         return Standard_False;
       }
       anIntList->Append(aValue);

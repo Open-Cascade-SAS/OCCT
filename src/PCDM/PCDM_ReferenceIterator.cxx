@@ -17,7 +17,7 @@
 
 #include <CDM_Application.hxx>
 #include <CDM_Document.hxx>
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <CDM_MetaData.hxx>
 #include <OSD_Path.hxx>
 #include <PCDM_Reference.hxx>
@@ -38,7 +38,7 @@ IMPLEMENT_STANDARD_RTTIEXT(PCDM_ReferenceIterator,Standard_Transient)
 //purpose  : 
 //=======================================================================
 
-PCDM_ReferenceIterator::PCDM_ReferenceIterator (const Handle(CDM_MessageDriver)& theMsgDriver) :
+PCDM_ReferenceIterator::PCDM_ReferenceIterator (const Handle(Message_Messenger)& theMsgDriver) :
       myIterator(0)
 {
   myMessageDriver = theMsgDriver;

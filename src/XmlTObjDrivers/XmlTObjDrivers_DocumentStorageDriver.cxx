@@ -39,7 +39,7 @@ XmlTObjDrivers_DocumentStorageDriver::XmlTObjDrivers_DocumentStorageDriver
 
 Handle(XmlMDF_ADriverTable)
         XmlTObjDrivers_DocumentStorageDriver::AttributeDrivers
-                        (const Handle(CDM_MessageDriver)& theMsgDrv)
+                        (const Handle(Message_Messenger)& theMsgDrv)
 {
   // Standard drivers
   Handle(XmlMDF_ADriverTable) aTable = XmlLDrivers::AttributeDrivers (theMsgDrv);

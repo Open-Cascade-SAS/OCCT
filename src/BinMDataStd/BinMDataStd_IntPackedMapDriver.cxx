@@ -20,7 +20,7 @@
 #include <BinObjMgt_Persistent.hxx>
 #include <BinObjMgt_RRelocationTable.hxx>
 #include <BinObjMgt_SRelocationTable.hxx>
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <TColStd_HPackedMapOfInteger.hxx>
@@ -36,7 +36,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BinMDataStd_IntPackedMapDriver,BinMDF_ADriver)
 //purpose  :
 //=======================================================================
 BinMDataStd_IntPackedMapDriver::BinMDataStd_IntPackedMapDriver
-                         (const Handle(CDM_MessageDriver)& theMessageDriver)
+                         (const Handle(Message_Messenger)& theMessageDriver)
      : BinMDF_ADriver (theMessageDriver, STANDARD_TYPE(TDataStd_IntPackedMap)->Name())
 {
 }
@@ -63,13 +63,13 @@ Standard_Boolean BinMDataStd_IntPackedMapDriver::Paste
 {
   Handle(TDataStd_IntPackedMap) aTagAtt = Handle(TDataStd_IntPackedMap)::DownCast(Target);
   if(aTagAtt.IsNull()) {
-    WriteMessage (TCollection_ExtendedString("IntPackedMapDriver:: The target attribute is Null."));
+    myMessageDriver->Send ("IntPackedMapDriver:: The target attribute is Null.", Message_Fail);
     return Standard_False;
   }
 
   Standard_Integer aSize = 0;
   if (! (Source >> aSize)) {
-    WriteMessage (TCollection_ExtendedString("Cannot retrieve size for IntPackedMap attribute."));
+    myMessageDriver->Send ("Cannot retrieve size for IntPackedMap attribute.", Message_Fail);
     return Standard_False;
   }
   if(aSize) {
@@ -78,7 +78,7 @@ Standard_Boolean BinMDataStd_IntPackedMapDriver::Paste
     for(Standard_Integer i = 0; i< aSize; i++) {
       Standard_Boolean ok = Source >> aKey;
       if (!ok) {
-	WriteMessage ("Cannot retrieve integer member for IntPackedMap attribute.");
+	myMessageDriver->Send ("Cannot retrieve integer member for IntPackedMap attribute.", Message_Fail);
 	return Standard_False;
       }
       if(!aHMap->ChangeMap().Add( aKey )) return Standard_False;
@@ -110,7 +110,7 @@ void BinMDataStd_IntPackedMapDriver::Paste
 {
   Handle(TDataStd_IntPackedMap) anAtt = Handle(TDataStd_IntPackedMap)::DownCast(Source);
   if (anAtt.IsNull()) {
-    WriteMessage ("IntPackedMapDriver:: The source attribute is Null.");
+    myMessageDriver->Send ("IntPackedMapDriver:: The source attribute is Null.", Message_Fail);
     return;
   }
   Standard_Integer aSize = (anAtt->IsEmpty()) ? 0 : anAtt->Extent();

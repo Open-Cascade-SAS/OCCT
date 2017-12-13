@@ -16,7 +16,7 @@
 
 #include <BinMXCAFDoc_ViewToolDriver.hxx>
 #include <BinObjMgt_Persistent.hxx>
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TDF_Attribute.hxx>
 #include <XCAFDoc_ViewTool.hxx>
@@ -28,7 +28,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BinMXCAFDoc_ViewToolDriver, BinMDF_ADriver)
 //purpose  : 
 //=======================================================================
 BinMXCAFDoc_ViewToolDriver::BinMXCAFDoc_ViewToolDriver
-  (const Handle(CDM_MessageDriver)& theMsgDriver)
+  (const Handle(Message_Messenger)& theMsgDriver)
 : BinMDF_ADriver(theMsgDriver, STANDARD_TYPE(XCAFDoc_ViewTool)->Name())
 {
 }

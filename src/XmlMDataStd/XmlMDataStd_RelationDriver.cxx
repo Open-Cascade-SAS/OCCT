@@ -14,7 +14,7 @@
 // commercial license or contractual agreement.
 
 
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TDataStd_Relation.hxx>
 #include <TDataStd_Variable.hxx>
@@ -32,7 +32,7 @@ IMPLEMENT_DOMSTRING (VariablesString, "variables")
 //purpose  : Constructor
 //=======================================================================
 XmlMDataStd_RelationDriver::XmlMDataStd_RelationDriver
-                        (const Handle(CDM_MessageDriver)& theMsgDriver)
+                        (const Handle(Message_Messenger)& theMsgDriver)
       : XmlMDF_ADriver (theMsgDriver, NULL)
 {}
 
@@ -65,7 +65,7 @@ Standard_Boolean XmlMDataStd_RelationDriver::Paste
   TCollection_ExtendedString aString;
   if (!XmlObjMgt::GetExtendedString (theSource, aString))
   {
-    WriteMessage("error retrieving ExtendedString for type TDataStd_Relation");
+    myMessageDriver->Send("error retrieving ExtendedString for type TDataStd_Relation", Message_Fail);
     return Standard_False;
   }
   aC->SetRelation(aString);
@@ -82,7 +82,7 @@ Standard_Boolean XmlMDataStd_RelationDriver::Paste
       aMsgString = TCollection_ExtendedString
         ("XmlMDataStd_RelationDriver: Cannot retrieve reference on first variable from \"")
           + aDOMStr + "\"";
-      WriteMessage (aMsgString);
+      myMessageDriver->Send (aMsgString, Message_Fail);
       return Standard_False;
     }
     Standard_Integer i = 1;

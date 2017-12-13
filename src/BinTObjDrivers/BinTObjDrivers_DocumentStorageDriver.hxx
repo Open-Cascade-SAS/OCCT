@@ -36,7 +36,7 @@ class BinTObjDrivers_DocumentStorageDriver :
   // Constructor
 
   Standard_EXPORT virtual Handle(BinMDF_ADriverTable) AttributeDrivers
-                        (const Handle(CDM_MessageDriver)& theMsgDriver) Standard_OVERRIDE;
+                        (const Handle(Message_Messenger)& theMsgDriver) Standard_OVERRIDE;
 
  public:
   // Declaration of CASCADE RTTI

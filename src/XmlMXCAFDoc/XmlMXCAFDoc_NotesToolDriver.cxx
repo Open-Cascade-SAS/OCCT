@@ -13,7 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TDF_Attribute.hxx>
 #include <XCAFDoc_NotesTool.hxx>
@@ -26,7 +26,7 @@ IMPLEMENT_STANDARD_RTTIEXT(XmlMXCAFDoc_NotesToolDriver, XmlMDF_ADriver)
 //function :
 //purpose  : 
 //=======================================================================
-XmlMXCAFDoc_NotesToolDriver::XmlMXCAFDoc_NotesToolDriver(const Handle(CDM_MessageDriver)& theMsgDriver)
+XmlMXCAFDoc_NotesToolDriver::XmlMXCAFDoc_NotesToolDriver(const Handle(Message_Messenger)& theMsgDriver)
   : XmlMDF_ADriver(theMsgDriver, STANDARD_TYPE(XCAFDoc_NotesTool)->Name())
 {
 }

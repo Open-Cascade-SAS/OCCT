@@ -16,7 +16,7 @@
 
 #include <BinMDF_ADriver.hxx>
 #include <BinObjMgt_Persistent.hxx>
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
@@ -28,20 +28,10 @@ IMPLEMENT_STANDARD_RTTIEXT(BinMDF_ADriver,Standard_Transient)
 //function : BinMDF_ADriver
 //purpose  : Constructor
 //=======================================================================
-BinMDF_ADriver::BinMDF_ADriver (const Handle(CDM_MessageDriver)& theMsgDriver,
+BinMDF_ADriver::BinMDF_ADriver (const Handle(Message_Messenger)& theMsgDriver,
                                 const Standard_CString           theName)
      : myMessageDriver (theMsgDriver)
 {
   if (theName)
     myTypeName = theName;
-}
-//=======================================================================
-//function : WriteMessage
-//purpose  :
-//=======================================================================
-
-void BinMDF_ADriver::WriteMessage
-                              (const TCollection_ExtendedString& aMessage) const
-{
-  myMessageDriver -> Write (aMessage.ToExtString());
 }

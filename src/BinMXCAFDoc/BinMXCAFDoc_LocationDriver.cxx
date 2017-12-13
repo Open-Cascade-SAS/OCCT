@@ -18,7 +18,7 @@
 #include <BinMXCAFDoc_LocationDriver.hxx>
 #include <BinObjMgt_Persistent.hxx>
 #include <BinTools_LocationSet.hxx>
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <gp_Mat.hxx>
 #include <gp_Trsf.hxx>
 #include <gp_XYZ.hxx>
@@ -35,7 +35,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BinMXCAFDoc_LocationDriver,BinMDF_ADriver)
 //function :
 //purpose  : 
 //=======================================================================
-BinMXCAFDoc_LocationDriver::BinMXCAFDoc_LocationDriver(const Handle(CDM_MessageDriver)& theMsgDriver)
+BinMXCAFDoc_LocationDriver::BinMXCAFDoc_LocationDriver(const Handle(Message_Messenger)& theMsgDriver)
      : BinMDF_ADriver(theMsgDriver, STANDARD_TYPE(XCAFDoc_Location)->Name())
      , myLocations(0) {
 }
@@ -53,8 +53,8 @@ Handle(TDF_Attribute) BinMXCAFDoc_LocationDriver::NewEmpty() const {
 //purpose  : 
 //=======================================================================
 Standard_Boolean BinMXCAFDoc_LocationDriver::Paste(const BinObjMgt_Persistent& theSource,
-						   const Handle(TDF_Attribute)& theTarget,
-						   BinObjMgt_RRelocationTable& theRelocTable) const
+                                                   const Handle(TDF_Attribute)& theTarget,
+                                                   BinObjMgt_RRelocationTable& theRelocTable) const
 {
   Handle(XCAFDoc_Location) anAtt = Handle(XCAFDoc_Location)::DownCast(theTarget);
   TopLoc_Location aLoc;
@@ -81,8 +81,8 @@ void BinMXCAFDoc_LocationDriver::Paste(const Handle(TDF_Attribute)& theSource,
 //purpose  : 
 //=======================================================================
 Standard_Boolean BinMXCAFDoc_LocationDriver::Translate(const BinObjMgt_Persistent& theSource,
-						       TopLoc_Location& theLoc,
-						       BinObjMgt_RRelocationTable& theMap) const
+                                                       TopLoc_Location& theLoc,
+                                                       BinObjMgt_RRelocationTable& theMap) const
 {
   Standard_Integer anId = 0;
   theSource >> anId;

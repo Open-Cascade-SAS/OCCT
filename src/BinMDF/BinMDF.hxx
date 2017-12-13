@@ -21,7 +21,7 @@
 #include <Standard_Handle.hxx>
 
 class BinMDF_ADriverTable;
-class CDM_MessageDriver;
+class Message_Messenger;
 class BinMDF_ADriver;
 class BinMDF_ReferenceDriver;
 class BinMDF_TagSourceDriver;
@@ -52,7 +52,7 @@ public:
 
   
   //! Adds the attribute storage drivers to <aDriverTable>.
-  Standard_EXPORT static void AddDrivers (const Handle(BinMDF_ADriverTable)& aDriverTable, const Handle(CDM_MessageDriver)& aMsgDrv);
+  Standard_EXPORT static void AddDrivers (const Handle(BinMDF_ADriverTable)& aDriverTable, const Handle(Message_Messenger)& aMsgDrv);
 
 
 

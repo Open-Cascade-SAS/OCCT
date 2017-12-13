@@ -16,7 +16,7 @@
 
 #include <CDM_Application.hxx>
 #include <CDM_Document.hxx>
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <CDM_MetaData.hxx>
 #include <LDOM_DocumentType.hxx>
 #include <LDOM_LDOMImplementation.hxx>
@@ -60,7 +60,7 @@ IMPLEMENT_STANDARD_RTTIEXT(XmlLDrivers_DocumentRetrievalDriver,PCDM_RetrievalDri
 
 //#define TAKE_TIMES
 static void take_time (const Standard_Integer, const char *,
-                       const Handle(CDM_MessageDriver)&)
+                       const Handle(Message_Messenger)&)
 #ifdef TAKE_TIMES
 ;
 #else
@@ -196,7 +196,7 @@ void XmlLDrivers_DocumentRetrievalDriver::Read
     TCollection_ExtendedString aMsg = TCollection_ExtendedString("Error: the file ") +
                                       theFileName + " cannot be opened for reading";
 
-    theApplication->MessageDriver()->Write (aMsg.ToExtString());
+    theApplication->MessageDriver()->Send (aMsg.ToExtString(), Message_Fail);
     throw Standard_Failure("File cannot be opened for reading");
   }
 }
@@ -210,7 +210,7 @@ void XmlLDrivers_DocumentRetrievalDriver::Read (Standard_IStream&              t
                                                 const Handle(CDM_Document)&    theNewDocument,
                                                 const Handle(CDM_Application)& theApplication)
 {
-  Handle(CDM_MessageDriver) aMessageDriver = theApplication -> MessageDriver();
+  Handle(Message_Messenger) aMessageDriver = theApplication -> MessageDriver();
   ::take_time (~0, " +++++ Start RETRIEVE procedures ++++++", aMessageDriver);
 
   // 1. Read DOM_Document from file
@@ -245,7 +245,7 @@ void XmlLDrivers_DocumentRetrievalDriver::ReadFromDomDocument
                                  const Handle(CDM_Document)&    theNewDocument,
                                  const Handle(CDM_Application)& theApplication)
 {
-  const Handle(CDM_MessageDriver) aMsgDriver =
+  const Handle(Message_Messenger) aMsgDriver =
     theApplication -> MessageDriver();
   // 1. Read info // to be done
   TCollection_AsciiString anAbsoluteDirectory = GetDirFromFile(myFileName);
@@ -262,7 +262,7 @@ void XmlLDrivers_DocumentRetrievalDriver::ReadFromDomDocument
         TCollection_ExtendedString ("Cannot retrieve the current Document version"
                                     " attribute as \"") + aDocVerStr + "\"";
       if(!aMsgDriver.IsNull()) 
-        aMsgDriver->Write(aMsg.ToExtString());
+        aMsgDriver->Send(aMsg.ToExtString(), Message_Fail);
     }
     
     // oan: OCC22305 - check a document verison and if it's greater than
@@ -275,7 +275,7 @@ void XmlLDrivers_DocumentRetrievalDriver::ReadFromDomDocument
                                     XmlLDrivers::StorageVersion();
       myReaderStatus = PCDM_RS_NoVersion;
       if(!aMsgDriver.IsNull()) 
-        aMsgDriver->Write(aMsg.ToExtString());
+        aMsgDriver->Send(aMsg.ToExtString(), Message_Fail);
       return;
     }
 
@@ -302,7 +302,7 @@ void XmlLDrivers_DocumentRetrievalDriver::ReadFromDomDocument
         TCollection_ExtendedString aMsg("Warning: ");
         aMsg = aMsg.Cat("could not read the reference counter").Cat("\0");
         if(!aMsgDriver.IsNull()) 
-    aMsgDriver->Write(aMsg.ToExtString());
+          aMsgDriver->Send(aMsg.ToExtString(), Message_Warning);
       }
     }
     else if (anInfo.Search(MODIFICATION_COUNTER) != -1) {
@@ -316,7 +316,7 @@ void XmlLDrivers_DocumentRetrievalDriver::ReadFromDomDocument
       catch (Standard_Failure) { 
         TCollection_ExtendedString aMsg("Warning: could not read the modification counter\0");
         if(!aMsgDriver.IsNull()) 
-          aMsgDriver->Write(aMsg.ToExtString());
+          aMsgDriver->Send(aMsg.ToExtString(), Message_Warning);
       }
     }
     
@@ -348,9 +348,9 @@ void XmlLDrivers_DocumentRetrievalDriver::ReadFromDomDocument
         }
         if(!aMsgDriver.IsNull()) {
     //      cout << "reference found; ReferenceIdentifier: " << theReferenceIdentifier << "; File:" << thePath << ", version:" << theDocumentVersion;
-    TCollection_ExtendedString aMsg("Warning: ");
-    aMsg = aMsg.Cat("reference found; ReferenceIdentifier:  ").Cat(aRefId).Cat("; File:").Cat(aPath).Cat(", version:").Cat(aDocumentVersion).Cat("\0");
-    aMsgDriver->Write(aMsg.ToExtString());
+          TCollection_ExtendedString aMsg("Warning: ");
+          aMsg = aMsg.Cat("reference found; ReferenceIdentifier:  ").Cat(aRefId).Cat("; File:").Cat(aPath).Cat(", version:").Cat(aDocumentVersion).Cat("\0");
+          aMsgDriver->Send(aMsg.ToExtString(), Message_Warning);
         }
         // Add new ref!
         /////////////
@@ -444,7 +444,7 @@ void XmlLDrivers_DocumentRetrievalDriver::ReadFromDomDocument
     OCC_CATCH_SIGNALS
 #ifdef OCCT_DEBUG
     TCollection_ExtendedString aMessage ("PasteDocument");
-    aMsgDriver -> Write (aMessage.ToExtString());
+    aMsgDriver ->Send (aMessage.ToExtString(), Message_Trace);
 #endif
     if (!MakeDocument(theElement, theNewDocument))
       myReaderStatus = PCDM_RS_MakeFailure;
@@ -454,7 +454,7 @@ void XmlLDrivers_DocumentRetrievalDriver::ReadFromDomDocument
   catch (Standard_Failure const& anException)
   {
     TCollection_ExtendedString anErrorString (anException.GetMessageString());
-    aMsgDriver -> Write (anErrorString.ToExtString());
+    aMsgDriver ->Send (anErrorString.ToExtString(), Message_Fail);
   }
 
   //    Wipe off the shapes written to the <shapes> section
@@ -495,7 +495,7 @@ Standard_Boolean XmlLDrivers_DocumentRetrievalDriver::MakeDocument
 //purpose  : 
 //=======================================================================
 Handle(XmlMDF_ADriverTable) XmlLDrivers_DocumentRetrievalDriver::AttributeDrivers
-       (const Handle(CDM_MessageDriver)& theMessageDriver) 
+       (const Handle(Message_Messenger)& theMessageDriver) 
 {
   return XmlLDrivers::AttributeDrivers (theMessageDriver);
 }
@@ -516,7 +516,7 @@ extern "C" int ftime (struct timeb *tp);
 extern struct timeb  tmbuf0;
 
 static void take_time (const Standard_Integer isReset, const char * aHeader,
-                       const Handle(CDM_MessageDriver)& aMessageDriver)
+                       const Handle(Message_Messenger)& aMessageDriver)
 {
   struct timeb  tmbuf;
   ftime (&tmbuf);
@@ -549,7 +549,7 @@ void XmlLDrivers_DocumentRetrievalDriver::PropagateDocumentVersion(
 //=======================================================================
 Handle(XmlMDF_ADriver) XmlLDrivers_DocumentRetrievalDriver::ReadShapeSection(
                                const XmlObjMgt_Element&       /*theElement*/,
-             const Handle(CDM_MessageDriver)& /*aMsgDriver*/)
+             const Handle(Message_Messenger)& /*aMsgDriver*/)
 {
   Handle(XmlMDF_ADriver) aDriver;
   //empty; to be redefined

@@ -14,7 +14,7 @@
 // commercial license or contractual agreement.
 
 
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TDataXtd_Axis.hxx>
 #include <TDF_Attribute.hxx>
@@ -28,7 +28,7 @@ IMPLEMENT_STANDARD_RTTIEXT(XmlMDataXtd_AxisDriver,XmlMDF_ADriver)
 //purpose  : Constructor
 //=======================================================================
 XmlMDataXtd_AxisDriver::XmlMDataXtd_AxisDriver
-                        (const Handle(CDM_MessageDriver)& theMsgDriver)
+                        (const Handle(Message_Messenger)& theMsgDriver)
       : XmlMDF_ADriver (theMsgDriver, NULL)
 {}
 

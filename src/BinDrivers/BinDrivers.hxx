@@ -21,7 +21,7 @@
 class Standard_Transient;
 class Standard_GUID;
 class BinMDF_ADriverTable;
-class CDM_MessageDriver;
+class Message_Messenger;
 class TCollection_AsciiString;
 class BinDrivers_DocumentStorageDriver;
 class BinDrivers_DocumentRetrievalDriver;
@@ -37,7 +37,7 @@ public:
   Standard_EXPORT static void DefineFormat (const Handle(TDocStd_Application)& theApp);
 
   //! Creates the table of drivers of types supported
-  Standard_EXPORT static Handle(BinMDF_ADriverTable) AttributeDrivers (const Handle(CDM_MessageDriver)& MsgDrv);
+  Standard_EXPORT static Handle(BinMDF_ADriverTable) AttributeDrivers (const Handle(Message_Messenger)& MsgDrv);
   
   //! returns "1"
   Standard_EXPORT static TCollection_AsciiString StorageVersion();

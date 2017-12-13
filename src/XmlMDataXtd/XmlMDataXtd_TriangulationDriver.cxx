@@ -14,7 +14,7 @@
 // commercial license or contractual agreement.
 
 #include <XmlMDataXtd_TriangulationDriver.hxx>
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <NCollection_LocalArray.hxx>
 #include <Standard_Type.hxx>
 #include <TDF_Attribute.hxx>
@@ -32,7 +32,7 @@ IMPLEMENT_DOMSTRING (ExistString, "exists")
 //function : XmlMDataXtd_TriangulationDriver
 //purpose  : Constructor
 //=======================================================================
-XmlMDataXtd_TriangulationDriver::XmlMDataXtd_TriangulationDriver(const Handle(CDM_MessageDriver)& theMsgDriver)
+XmlMDataXtd_TriangulationDriver::XmlMDataXtd_TriangulationDriver(const Handle(Message_Messenger)& theMsgDriver)
   : XmlMDF_ADriver (theMsgDriver, NULL)
 {
 

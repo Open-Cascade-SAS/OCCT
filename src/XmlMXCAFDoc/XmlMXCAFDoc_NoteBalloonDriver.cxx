@@ -13,7 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TDF_Attribute.hxx>
 #include <XCAFDoc_NoteBalloon.hxx>
@@ -26,7 +26,7 @@ IMPLEMENT_STANDARD_RTTIEXT(XmlMXCAFDoc_NoteBalloonDriver, XmlMXCAFDoc_NoteCommen
 //function :
 //purpose  : 
 //=======================================================================
-XmlMXCAFDoc_NoteBalloonDriver::XmlMXCAFDoc_NoteBalloonDriver(const Handle(CDM_MessageDriver)& theMsgDriver)
+XmlMXCAFDoc_NoteBalloonDriver::XmlMXCAFDoc_NoteBalloonDriver(const Handle(Message_Messenger)& theMsgDriver)
   : XmlMXCAFDoc_NoteCommentDriver(theMsgDriver, STANDARD_TYPE(XCAFDoc_NoteBalloon)->Name())
 {
 }
@@ -44,7 +44,7 @@ Handle(TDF_Attribute) XmlMXCAFDoc_NoteBalloonDriver::NewEmpty() const
 //function :
 //purpose  : 
 //=======================================================================
-XmlMXCAFDoc_NoteBalloonDriver::XmlMXCAFDoc_NoteBalloonDriver(const Handle(CDM_MessageDriver)& theMsgDriver,
+XmlMXCAFDoc_NoteBalloonDriver::XmlMXCAFDoc_NoteBalloonDriver(const Handle(Message_Messenger)& theMsgDriver,
                                                              Standard_CString                 theName)
   : XmlMXCAFDoc_NoteCommentDriver(theMsgDriver, theName)
 {

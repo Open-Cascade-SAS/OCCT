@@ -19,7 +19,7 @@
 #include <BinObjMgt_Persistent.hxx>
 #include <BinObjMgt_RRelocationTable.hxx>
 #include <BinObjMgt_SRelocationTable.hxx>
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_MapIteratorOfMapOfInteger.hxx>
@@ -32,7 +32,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BinMFunction_GraphNodeDriver,BinMDF_ADriver)
 //function : BinMFunction_GraphNodeDriver
 //purpose  : 
 //=======================================================================
-BinMFunction_GraphNodeDriver::BinMFunction_GraphNodeDriver(const Handle(CDM_MessageDriver)& theMsgDriver)
+BinMFunction_GraphNodeDriver::BinMFunction_GraphNodeDriver(const Handle(Message_Messenger)& theMsgDriver)
 : BinMDF_ADriver (theMsgDriver, STANDARD_TYPE(TFunction_GraphNode)->Name())
 {
 }

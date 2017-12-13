@@ -17,7 +17,7 @@
 #include <BinMDataStd.hxx>
 #include <BinMDataStd_IntegerArrayDriver.hxx>
 #include <BinObjMgt_Persistent.hxx>
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 #include <TDataStd_IntegerArray.hxx>
@@ -30,7 +30,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BinMDataStd_IntegerArrayDriver,BinMDF_ADriver)
 //purpose  : Constructor
 //=======================================================================
 BinMDataStd_IntegerArrayDriver::BinMDataStd_IntegerArrayDriver
-                        (const Handle(CDM_MessageDriver)& theMsgDriver)
+                        (const Handle(Message_Messenger)& theMsgDriver)
      : BinMDF_ADriver (theMsgDriver, STANDARD_TYPE(TDataStd_IntegerArray)->Name())
 {
 }

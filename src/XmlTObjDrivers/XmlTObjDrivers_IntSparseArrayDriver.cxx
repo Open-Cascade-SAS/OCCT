@@ -16,7 +16,7 @@
 // The original implementation Copyright: (C) RINA S.p.A
 
 #include <XmlTObjDrivers_IntSparseArrayDriver.hxx>
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <TDF_Attribute.hxx>
 #include <XmlObjMgt_Persistent.hxx>
 #include <TObj_TIntSparseArray.hxx>
@@ -36,7 +36,7 @@ IMPLEMENT_STANDARD_RTTIEXT(XmlTObjDrivers_IntSparseArrayDriver,XmlMDF_ADriver)
 //=======================================================================
 
 XmlTObjDrivers_IntSparseArrayDriver::XmlTObjDrivers_IntSparseArrayDriver
-                         (const Handle(CDM_MessageDriver)& theMessageDriver)
+                         (const Handle(Message_Messenger)& theMessageDriver)
 : XmlMDF_ADriver( theMessageDriver, NULL)
 {
 }

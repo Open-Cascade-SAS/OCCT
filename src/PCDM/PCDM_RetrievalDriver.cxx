@@ -17,7 +17,7 @@
 
 #include <CDM_Application.hxx>
 #include <CDM_Document.hxx>
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <CDM_MetaData.hxx>
 #include <PCDM.hxx>
 #include <PCDM_BaseDriverPointer.hxx>
@@ -37,13 +37,13 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(PCDM_RetrievalDriver,PCDM_Reader)
 
-void PCDM_RetrievalDriver::References(const TCollection_ExtendedString& aFileName, PCDM_SequenceOfReference& theReferences, const Handle(CDM_MessageDriver)& theMsgDriver)
+void PCDM_RetrievalDriver::References(const TCollection_ExtendedString& aFileName, PCDM_SequenceOfReference& theReferences, const Handle(Message_Messenger)& theMsgDriver)
   { PCDM_ReadWriter::Reader(aFileName)->ReadReferences(aFileName, theReferences, theMsgDriver);}
 
-Standard_Integer PCDM_RetrievalDriver::DocumentVersion(const TCollection_ExtendedString& aFileName, const Handle(CDM_MessageDriver)& theMsgDriver)
+Standard_Integer PCDM_RetrievalDriver::DocumentVersion(const TCollection_ExtendedString& aFileName, const Handle(Message_Messenger)& theMsgDriver)
   { return PCDM_ReadWriter::Reader(aFileName)->ReadDocumentVersion(aFileName, theMsgDriver); }
 
-Standard_Integer PCDM_RetrievalDriver::ReferenceCounter(const TCollection_ExtendedString& aFileName, const Handle(CDM_MessageDriver)& theMsgDriver)
+Standard_Integer PCDM_RetrievalDriver::ReferenceCounter(const TCollection_ExtendedString& aFileName, const Handle(Message_Messenger)& theMsgDriver)
   { return PCDM_ReadWriter::Reader(aFileName)->ReadReferenceCounter(aFileName, theMsgDriver); }
 
 void PCDM_RetrievalDriver::SetFormat (const TCollection_ExtendedString& aformat)

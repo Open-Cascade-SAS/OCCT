@@ -14,7 +14,7 @@
 // commercial license or contractual agreement.
 
 
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <NCollection_LocalArray.hxx>
 #include <Standard_Type.hxx>
 #include <TColStd_HArray1OfByte.hxx>
@@ -32,7 +32,7 @@ IMPLEMENT_DOMSTRING (AttributeIDString, "boolarrattguid")
 //function : XmlMDataStd_BooleanArrayDriver
 //purpose  : Constructor
 //=======================================================================
-XmlMDataStd_BooleanArrayDriver::XmlMDataStd_BooleanArrayDriver(const Handle(CDM_MessageDriver)& theMsgDriver)
+XmlMDataStd_BooleanArrayDriver::XmlMDataStd_BooleanArrayDriver(const Handle(Message_Messenger)& theMsgDriver)
      : XmlMDF_ADriver (theMsgDriver, NULL)
 {
 
@@ -68,7 +68,7 @@ Standard_Boolean XmlMDataStd_BooleanArrayDriver::Paste(const XmlObjMgt_Persisten
       TCollection_ExtendedString("Cannot retrieve the first index"
                                  " for BooleanArray attribute as \"")
         + aFirstIndex + "\"";
-    WriteMessage (aMessageString);
+    myMessageDriver->Send (aMessageString, Message_Fail);
     return Standard_False;
   }
 
@@ -79,7 +79,7 @@ Standard_Boolean XmlMDataStd_BooleanArrayDriver::Paste(const XmlObjMgt_Persisten
       TCollection_ExtendedString("Cannot retrieve the last index"
                                  " for BooleanArray attribute as \"")
         + aFirstIndex + "\"";
-    WriteMessage (aMessageString);
+    myMessageDriver->Send (aMessageString, Message_Fail);
     return Standard_False;
   }
 
@@ -88,7 +88,7 @@ Standard_Boolean XmlMDataStd_BooleanArrayDriver::Paste(const XmlObjMgt_Persisten
     TCollection_ExtendedString aMessageString =
       TCollection_ExtendedString("The last index is greater than the first index"
                                  " for BooleanArray attribute \"");
-    WriteMessage (aMessageString);
+    myMessageDriver->Send (aMessageString, Message_Fail);
     return Standard_False;
   }
 
@@ -108,7 +108,7 @@ Standard_Boolean XmlMDataStd_BooleanArrayDriver::Paste(const XmlObjMgt_Persisten
         TCollection_ExtendedString("Cannot retrieve integer member"
         " for BooleanArray attribute as \"")
         + aValueStr + "\"";
-      WriteMessage (aMessageString);
+      myMessageDriver->Send (aMessageString, Message_Fail);
       return Standard_False;
     }
     arr.SetValue(i, (Standard_Byte) aValue);

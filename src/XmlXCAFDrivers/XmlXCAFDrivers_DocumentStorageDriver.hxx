@@ -22,7 +22,7 @@
 #include <XmlDrivers_DocumentStorageDriver.hxx>
 class TCollection_ExtendedString;
 class XmlMDF_ADriverTable;
-class CDM_MessageDriver;
+class Message_Messenger;
 
 
 class XmlXCAFDrivers_DocumentStorageDriver;
@@ -37,7 +37,7 @@ public:
   
   Standard_EXPORT XmlXCAFDrivers_DocumentStorageDriver(const TCollection_ExtendedString& theCopyright);
   
-  Standard_EXPORT virtual Handle(XmlMDF_ADriverTable) AttributeDrivers (const Handle(CDM_MessageDriver)& theMsgDriver) Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(XmlMDF_ADriverTable) AttributeDrivers (const Handle(Message_Messenger)& theMsgDriver) Standard_OVERRIDE;
 
 
 

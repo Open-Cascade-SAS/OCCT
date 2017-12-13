@@ -21,7 +21,7 @@
 
 #include <XmlDrivers_DocumentRetrievalDriver.hxx>
 class XmlMDF_ADriverTable;
-class CDM_MessageDriver;
+class Message_Messenger;
 
 
 class XmlXCAFDrivers_DocumentRetrievalDriver;
@@ -36,7 +36,7 @@ public:
   
   Standard_EXPORT XmlXCAFDrivers_DocumentRetrievalDriver();
   
-  Standard_EXPORT virtual Handle(XmlMDF_ADriverTable) AttributeDrivers (const Handle(CDM_MessageDriver)& theMsgDriver) Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(XmlMDF_ADriverTable) AttributeDrivers (const Handle(Message_Messenger)& theMsgDriver) Standard_OVERRIDE;
 
 
 

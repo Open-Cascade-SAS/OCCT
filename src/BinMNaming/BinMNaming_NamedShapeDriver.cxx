@@ -18,7 +18,7 @@
 #include <BinObjMgt_Persistent.hxx>
 #include <BinTools_LocationSet.hxx>
 #include <BinTools_ShapeSet.hxx>
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
@@ -141,7 +141,7 @@ static int TranslateFrom  (const BinObjMgt_Persistent&  theSource,
 //=======================================================================
 
 BinMNaming_NamedShapeDriver::BinMNaming_NamedShapeDriver
-                        (const Handle(CDM_MessageDriver)& theMsgDriver)
+                        (const Handle(Message_Messenger)& theMsgDriver)
      : BinMDF_ADriver (theMsgDriver, STANDARD_TYPE(TNaming_NamedShape)->Name()), myShapeSet(Standard_False),myFormatNb(FORMAT_NUMBER)
 {
 }

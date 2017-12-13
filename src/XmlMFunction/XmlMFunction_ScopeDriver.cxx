@@ -14,7 +14,7 @@
 // commercial license or contractual agreement.
 
 
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <LDOM_MemManager.hxx>
 #include <Standard_Type.hxx>
 #include <TColStd_ListIteratorOfListOfInteger.hxx>
@@ -41,7 +41,7 @@ IMPLEMENT_DOMSTRING (ExtString,      "string")
 //function : XmlMFunction_ScopeDriver
 //purpose  : Constructor
 //=======================================================================
-XmlMFunction_ScopeDriver::XmlMFunction_ScopeDriver(const Handle(CDM_MessageDriver)& theMsgDriver)
+XmlMFunction_ScopeDriver::XmlMFunction_ScopeDriver(const Handle(Message_Messenger)& theMsgDriver)
       : XmlMDF_ADriver (theMsgDriver, NULL)
 {
 
@@ -61,8 +61,8 @@ Handle(TDF_Attribute) XmlMFunction_ScopeDriver::NewEmpty() const
 //purpose  : persistent -> transient (retrieve)
 //=======================================================================
 Standard_Boolean XmlMFunction_ScopeDriver::Paste(const XmlObjMgt_Persistent&  theSource,
-						 const Handle(TDF_Attribute)& theTarget,
-						 XmlObjMgt_RRelocationTable&  ) const
+                                                 const Handle(TDF_Attribute)& theTarget,
+                                                 XmlObjMgt_RRelocationTable&  ) const
 {
   Handle(TFunction_Scope) S = Handle(TFunction_Scope)::DownCast(theTarget);
   TColStd_ListOfInteger   IDs;
@@ -83,7 +83,7 @@ Standard_Boolean XmlMFunction_ScopeDriver::Paste(const XmlObjMgt_Persistent&  th
     TCollection_ExtendedString aMessageString =
       TCollection_ExtendedString("Cannot retrieve the last index"
                                  " for Scope attribute");
-    WriteMessage (aMessageString);
+    myMessageDriver->Send (aMessageString, Message_Fail);
     return Standard_False;
   }
   nbIDs = aLastInd - aFirstInd + 1;
@@ -96,7 +96,7 @@ Standard_Boolean XmlMFunction_ScopeDriver::Paste(const XmlObjMgt_Persistent&  th
       TCollection_ExtendedString aMessageString =
         TCollection_ExtendedString("Cannot retrieve integer member"
                                    " for Scope attribute as \"");
-      WriteMessage (aMessageString);
+      myMessageDriver->Send (aMessageString, Message_Fail);
       return Standard_False;
     }
     IDs.Append(anInteger);
@@ -114,7 +114,7 @@ Standard_Boolean XmlMFunction_ScopeDriver::Paste(const XmlObjMgt_Persistent&  th
           TCollection_ExtendedString("Cannot retrieve integer member"
                                      " for Scope attribute as \"")
             + aValueStr + "\"";
-        WriteMessage (aMessageString);
+        myMessageDriver->Send (aMessageString, Message_Fail);
         return Standard_False;
       }
       IDs.Append(aValue);
@@ -133,7 +133,7 @@ Standard_Boolean XmlMFunction_ScopeDriver::Paste(const XmlObjMgt_Persistent&  th
     TCollection_ExtendedString aMessageString =
       TCollection_ExtendedString("Cannot retrieve the last index"
                                  " for Scope attribute");
-    WriteMessage (aMessageString);
+    myMessageDriver->Send (aMessageString, Message_Fail);
     return Standard_False;
   }
   nbLabels = aLastInd - aFirstInd + 1;
@@ -142,7 +142,7 @@ Standard_Boolean XmlMFunction_ScopeDriver::Paste(const XmlObjMgt_Persistent&  th
   {
     TCollection_ExtendedString aMessageString = 
       TCollection_ExtendedString("Cannot retrieve an array of labels");
-    WriteMessage (aMessageString);
+    myMessageDriver->Send (aMessageString, Message_Fail);
     return Standard_False;
   }
 
@@ -164,7 +164,7 @@ Standard_Boolean XmlMFunction_ScopeDriver::Paste(const XmlObjMgt_Persistent&  th
       TCollection_ExtendedString aMessage =
 	TCollection_ExtendedString ("Cannot retrieve reference from \"")
 	  + aValueStr + '\"';
-      WriteMessage (aMessage);
+      myMessageDriver->Send (aMessage, Message_Fail);
       return Standard_False;
     }
     // Find label by entry
@@ -182,7 +182,7 @@ Standard_Boolean XmlMFunction_ScopeDriver::Paste(const XmlObjMgt_Persistent&  th
   aValueStr = XmlObjMgt::GetStringValue( *aCurElement );
   if (aValueStr == NULL)
   {
-    WriteMessage ("Cannot retrieve reference string from element");
+    myMessageDriver->Send ("Cannot retrieve reference string from element", Message_Fail);
     return Standard_False;
   }
   TCollection_AsciiString anEntry;
@@ -191,7 +191,7 @@ Standard_Boolean XmlMFunction_ScopeDriver::Paste(const XmlObjMgt_Persistent&  th
     TCollection_ExtendedString aMessage =
       TCollection_ExtendedString ("Cannot retrieve reference from \"")
 	+ aValueStr + '\"';
-    WriteMessage (aMessage);
+    myMessageDriver->Send (aMessage, Message_Fail);
     return Standard_False;
   }
   // Find label by entry
@@ -207,7 +207,7 @@ Standard_Boolean XmlMFunction_ScopeDriver::Paste(const XmlObjMgt_Persistent&  th
   {
     TCollection_ExtendedString aMessage =
       TCollection_ExtendedString ("Numbers of IDs & Labels are different");
-    WriteMessage (aMessage);
+    myMessageDriver->Send (aMessage, Message_Fail);
     return Standard_False;
   }
 

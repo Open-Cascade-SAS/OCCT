@@ -31,7 +31,7 @@ class TCollection_ExtendedString;
 class PCDM_Document;
 class CDM_Document;
 class CDM_Application;
-class CDM_MessageDriver;
+class Message_Messenger;
 class XmlMDF_ADriver;
 
 
@@ -56,7 +56,7 @@ public:
                                      const Handle(CDM_Document)&     theDoc,
                                      const Handle(CDM_Application)&  theApplication) Standard_OVERRIDE;
   
-  Standard_EXPORT virtual Handle(XmlMDF_ADriverTable) AttributeDrivers (const Handle(CDM_MessageDriver)& theMsgDriver);
+  Standard_EXPORT virtual Handle(XmlMDF_ADriverTable) AttributeDrivers (const Handle(Message_Messenger)& theMsgDriver);
 
 
 
@@ -70,7 +70,7 @@ protected:
   
   Standard_EXPORT virtual Standard_Boolean MakeDocument (const XmlObjMgt_Element& thePDoc, const Handle(CDM_Document)& theTDoc);
   
-  Standard_EXPORT virtual Handle(XmlMDF_ADriver) ReadShapeSection (const XmlObjMgt_Element& thePDoc, const Handle(CDM_MessageDriver)& theMsgDriver);
+  Standard_EXPORT virtual Handle(XmlMDF_ADriver) ReadShapeSection (const XmlObjMgt_Element& thePDoc, const Handle(Message_Messenger)& theMsgDriver);
   
   Standard_EXPORT virtual void ShapeSetCleaning (const Handle(XmlMDF_ADriver)& theDriver);
   

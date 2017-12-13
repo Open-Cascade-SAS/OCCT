@@ -14,7 +14,7 @@
 // commercial license or contractual agreement.
 
 
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <TNaming_NamedShape.hxx>
 #include <XmlMDF_ADriverTable.hxx>
 #include <XmlMNaming_NamedShapeDriver.hxx>
@@ -47,7 +47,7 @@
 //purpose  : 
 //=======================================================================
 void XmlMXCAFDoc::AddDrivers (const Handle(XmlMDF_ADriverTable)& aDriverTable,
-                              const Handle(CDM_MessageDriver)&   anMsgDrv)
+                              const Handle(Message_Messenger)&   anMsgDrv)
 {
   aDriverTable -> AddDriver (new XmlMXCAFDoc_AreaDriver      (anMsgDrv));
   aDriverTable -> AddDriver (new XmlMXCAFDoc_CentroidDriver  (anMsgDrv));

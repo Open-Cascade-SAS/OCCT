@@ -18,7 +18,7 @@
 #include <BinMNaming.hxx>
 #include <BinMNaming_NamedShapeDriver.hxx>
 #include <BinMNaming_NamingDriver.hxx>
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 
 static Standard_Integer myDocumentVersion = -1;
 //=======================================================================
@@ -26,7 +26,7 @@ static Standard_Integer myDocumentVersion = -1;
 //purpose  : 
 //=======================================================================
 void BinMNaming::AddDrivers (const Handle(BinMDF_ADriverTable)& aDriverTable,
-                             const Handle(CDM_MessageDriver)&   aMessageDriver)
+                             const Handle(Message_Messenger)&   aMessageDriver)
 {
   aDriverTable->AddDriver (new BinMNaming_NamedShapeDriver(aMessageDriver));
   aDriverTable->AddDriver (new BinMNaming_NamingDriver(aMessageDriver));

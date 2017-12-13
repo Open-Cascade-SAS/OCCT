@@ -16,7 +16,7 @@
 
 #include <BinMXCAFDoc_AreaDriver.hxx>
 #include <BinObjMgt_Persistent.hxx>
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TDF_Attribute.hxx>
 #include <XCAFDoc_Area.hxx>
@@ -27,7 +27,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BinMXCAFDoc_AreaDriver,BinMDF_ADriver)
 //function :
 //purpose  : 
 //=======================================================================
-BinMXCAFDoc_AreaDriver::BinMXCAFDoc_AreaDriver(const Handle(CDM_MessageDriver)& theMsgDriver) 
+BinMXCAFDoc_AreaDriver::BinMXCAFDoc_AreaDriver(const Handle(Message_Messenger)& theMsgDriver) 
      : BinMDF_ADriver(theMsgDriver, STANDARD_TYPE(XCAFDoc_Area)->Name()) {
 }
 

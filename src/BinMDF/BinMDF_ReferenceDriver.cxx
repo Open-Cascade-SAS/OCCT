@@ -16,7 +16,7 @@
 
 #include <BinMDF_ReferenceDriver.hxx>
 #include <BinObjMgt_Persistent.hxx>
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TDF_Attribute.hxx>
 #include <TDF_Reference.hxx>
@@ -28,7 +28,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BinMDF_ReferenceDriver,BinMDF_ADriver)
 //purpose  : Constructor
 //=======================================================================
 BinMDF_ReferenceDriver::BinMDF_ReferenceDriver
-                        (const Handle(CDM_MessageDriver)& theMsgDriver)
+                        (const Handle(Message_Messenger)& theMsgDriver)
      : BinMDF_ADriver (theMsgDriver, STANDARD_TYPE(TDF_Reference)->Name())
 {
 }

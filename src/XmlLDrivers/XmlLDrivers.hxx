@@ -22,7 +22,7 @@ class Standard_Transient;
 class Standard_GUID;
 class TCollection_AsciiString;
 class XmlMDF_ADriverTable;
-class CDM_MessageDriver;
+class Message_Messenger;
 class XmlLDrivers_DocumentStorageDriver;
 class XmlLDrivers_DocumentRetrievalDriver;
 class XmlLDrivers_NamespaceDef;
@@ -40,7 +40,7 @@ public:
   //! in the specified application
   Standard_EXPORT static void DefineFormat (const Handle(TDocStd_Application)& theApp);
 
-  Standard_EXPORT static Handle(XmlMDF_ADriverTable) AttributeDrivers (const Handle(CDM_MessageDriver)& theMsgDriver);
+  Standard_EXPORT static Handle(XmlMDF_ADriverTable) AttributeDrivers (const Handle(Message_Messenger)& theMsgDriver);
   
   Standard_EXPORT static int StorageVersion();
   Standard_EXPORT static void SetStorageVersion (const int version);

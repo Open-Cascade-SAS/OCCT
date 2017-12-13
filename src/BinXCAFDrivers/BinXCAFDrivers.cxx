@@ -20,7 +20,7 @@
 #include <BinXCAFDrivers.hxx>
 #include <BinXCAFDrivers_DocumentRetrievalDriver.hxx>
 #include <BinXCAFDrivers_DocumentStorageDriver.hxx>
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <Plugin_Macro.hxx>
 #include <Standard_Failure.hxx>
 #include <Standard_GUID.hxx>
@@ -74,7 +74,7 @@ void BinXCAFDrivers::DefineFormat (const Handle(TDocStd_Application)& theApp)
 //function :
 //purpose  : 
 //=======================================================================
-Handle(BinMDF_ADriverTable) BinXCAFDrivers::AttributeDrivers(const Handle(CDM_MessageDriver)& aMsgDrv) {
+Handle(BinMDF_ADriverTable) BinXCAFDrivers::AttributeDrivers(const Handle(Message_Messenger)& aMsgDrv) {
   // Standard Drivers
   Handle(BinMDF_ADriverTable) aTable = BinDrivers::AttributeDrivers(aMsgDrv);
 

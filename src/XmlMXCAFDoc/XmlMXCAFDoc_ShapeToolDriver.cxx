@@ -14,7 +14,7 @@
 // commercial license or contractual agreement.
 
 
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TDF_Attribute.hxx>
 #include <XCAFDoc_ShapeTool.hxx>
@@ -27,7 +27,7 @@ IMPLEMENT_STANDARD_RTTIEXT(XmlMXCAFDoc_ShapeToolDriver,XmlMDF_ADriver)
 //function :
 //purpose  : 
 //=======================================================================
-XmlMXCAFDoc_ShapeToolDriver::XmlMXCAFDoc_ShapeToolDriver(const Handle(CDM_MessageDriver)& theMsgDriver)
+XmlMXCAFDoc_ShapeToolDriver::XmlMXCAFDoc_ShapeToolDriver(const Handle(Message_Messenger)& theMsgDriver)
       : XmlMDF_ADriver (theMsgDriver, "xcaf", "ShapeTool")
 {
 }
@@ -45,8 +45,8 @@ Handle(TDF_Attribute) XmlMXCAFDoc_ShapeToolDriver::NewEmpty() const {
 //purpose  : 
 //=======================================================================
 Standard_Boolean XmlMXCAFDoc_ShapeToolDriver::Paste(const XmlObjMgt_Persistent& /*theSource*/,
-						    const Handle(TDF_Attribute)& /*theTarget*/,
-						    XmlObjMgt_RRelocationTable& /*theRelocTable*/) const
+                                                    const Handle(TDF_Attribute)& /*theTarget*/,
+                                                    XmlObjMgt_RRelocationTable& /*theRelocTable*/) const
 {
   return Standard_True;
 }
@@ -56,8 +56,8 @@ Standard_Boolean XmlMXCAFDoc_ShapeToolDriver::Paste(const XmlObjMgt_Persistent& 
 //purpose  : 
 //=======================================================================
 void XmlMXCAFDoc_ShapeToolDriver::Paste(const Handle(TDF_Attribute)& /*theSource*/,
-					XmlObjMgt_Persistent& /*theTarget*/,
-					XmlObjMgt_SRelocationTable& /*theRelocTable*/) const
+                                        XmlObjMgt_Persistent& /*theTarget*/,
+                                        XmlObjMgt_SRelocationTable& /*theRelocTable*/) const
 {
 }
 

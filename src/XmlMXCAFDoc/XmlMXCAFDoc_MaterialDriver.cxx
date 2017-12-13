@@ -14,7 +14,7 @@
 // commercial license or contractual agreement.
 
 
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <TDF_Attribute.hxx>
@@ -34,7 +34,7 @@ IMPLEMENT_DOMSTRING (DensTypeIndexString, "dens_type")
 //purpose  : Constructor
 //=======================================================================
 XmlMXCAFDoc_MaterialDriver::XmlMXCAFDoc_MaterialDriver
-  (const Handle(CDM_MessageDriver)& theMsgDriver)
+  (const Handle(Message_Messenger)& theMsgDriver)
 : XmlMDF_ADriver (theMsgDriver, "xcaf", "Material")
 {}
 
@@ -63,7 +63,7 @@ Standard_Boolean XmlMXCAFDoc_MaterialDriver::Paste
     TCollection_ExtendedString aMessageString =
       TCollection_ExtendedString("Cannot retrieve Material attribute density from \"")
         + aRealStr + "\"";
-    WriteMessage (aMessageString);
+    myMessageDriver->Send (aMessageString, Message_Fail);
     return Standard_False;
   }
   
@@ -76,7 +76,7 @@ Standard_Boolean XmlMXCAFDoc_MaterialDriver::Paste
        aDensNameStr == NULL ||aDensTypeStr == NULL ) {
     TCollection_ExtendedString aMessageString
       ("Cannot retrieve Material attribute name or description");
-    WriteMessage (aMessageString);
+    myMessageDriver->Send (aMessageString, Message_Fail);
     return Standard_False;
   }
 

@@ -16,7 +16,7 @@
 
 #include <BinMDataStd_NamedDataDriver.hxx>
 #include <BinObjMgt_Persistent.hxx>
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <TColStd_DataMapIteratorOfDataMapOfStringInteger.hxx>
@@ -42,7 +42,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BinMDataStd_NamedDataDriver,BinMDF_ADriver)
 //function : BinMDataStd_NamedDataDriver
 //purpose  : Constructor
 //=======================================================================
-BinMDataStd_NamedDataDriver::BinMDataStd_NamedDataDriver(const Handle(CDM_MessageDriver)& theMsgDriver)
+BinMDataStd_NamedDataDriver::BinMDataStd_NamedDataDriver(const Handle(Message_Messenger)& theMsgDriver)
      : BinMDF_ADriver (theMsgDriver, STANDARD_TYPE(TDataStd_NamedData)->Name())
 {
 

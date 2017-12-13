@@ -29,7 +29,7 @@ class TCollection_AsciiString;
 class Storage_Data;
 class CDM_Document;
 class TCollection_ExtendedString;
-class CDM_MessageDriver;
+class Message_Messenger;
 class Storage_BaseDriver;
 
 
@@ -54,13 +54,13 @@ public:
   
   Standard_EXPORT virtual void WriteVersion (const Handle(Storage_Data)& aData, const Handle(CDM_Document)& aDocument) const = 0;
   
-  Standard_EXPORT virtual Standard_Integer ReadReferenceCounter (const TCollection_ExtendedString& theFileName, const Handle(CDM_MessageDriver)& theMsgDriver) const = 0;
+  Standard_EXPORT virtual Standard_Integer ReadReferenceCounter (const TCollection_ExtendedString& theFileName, const Handle(Message_Messenger)& theMsgDriver) const = 0;
   
-  Standard_EXPORT virtual void ReadReferences (const TCollection_ExtendedString& aFileName, PCDM_SequenceOfReference& theReferences, const Handle(CDM_MessageDriver)& theMsgDriver) const = 0;
+  Standard_EXPORT virtual void ReadReferences (const TCollection_ExtendedString& aFileName, PCDM_SequenceOfReference& theReferences, const Handle(Message_Messenger)& theMsgDriver) const = 0;
   
-  Standard_EXPORT virtual void ReadExtensions (const TCollection_ExtendedString& aFileName, TColStd_SequenceOfExtendedString& theExtensions, const Handle(CDM_MessageDriver)& theMsgDriver) const = 0;
+  Standard_EXPORT virtual void ReadExtensions (const TCollection_ExtendedString& aFileName, TColStd_SequenceOfExtendedString& theExtensions, const Handle(Message_Messenger)& theMsgDriver) const = 0;
   
-  Standard_EXPORT virtual Standard_Integer ReadDocumentVersion (const TCollection_ExtendedString& aFileName, const Handle(CDM_MessageDriver)& theMsgDriver) const = 0;
+  Standard_EXPORT virtual Standard_Integer ReadDocumentVersion (const TCollection_ExtendedString& aFileName, const Handle(Message_Messenger)& theMsgDriver) const = 0;
   
   Standard_EXPORT static void Open (Storage_BaseDriver& aDriver, const TCollection_ExtendedString& aFileName, const Storage_OpenMode anOpenMode);
   

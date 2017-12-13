@@ -14,7 +14,7 @@
 // commercial license or contractual agreement.
 
 
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TDataStd_Name.hxx>
 #include <TDF_Attribute.hxx>
@@ -31,7 +31,7 @@ IMPLEMENT_DOMSTRING (AttributeIDString, "nameguid")
 //purpose  : Constructor
 //=======================================================================
 XmlMDataStd_NameDriver::XmlMDataStd_NameDriver
-                        (const Handle(CDM_MessageDriver)& theMsgDriver)
+                        (const Handle(Message_Messenger)& theMsgDriver)
       : XmlMDF_ADriver (theMsgDriver, NULL)
 {}
 
@@ -71,7 +71,7 @@ Standard_Boolean XmlMDataStd_NameDriver::Paste
 	  return Standard_True;
     }
   }
-  WriteMessage("error retrieving ExtendedString for type TDataStd_Name");
+  myMessageDriver->Send("error retrieving ExtendedString for type TDataStd_Name", Message_Fail);
   return Standard_False;
 }
 

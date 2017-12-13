@@ -13,7 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TDF_Attribute.hxx>
 #include <XCAFDoc_AssemblyItemRef.hxx>
@@ -29,7 +29,7 @@ IMPLEMENT_DOMSTRING(SubshapeIndex, "subshape_index")
 //function :
 //purpose  : 
 //=======================================================================
-XmlMXCAFDoc_AssemblyItemRefDriver::XmlMXCAFDoc_AssemblyItemRefDriver(const Handle(CDM_MessageDriver)& theMsgDriver)
+XmlMXCAFDoc_AssemblyItemRefDriver::XmlMXCAFDoc_AssemblyItemRefDriver(const Handle(Message_Messenger)& theMsgDriver)
 : XmlMDF_ADriver(theMsgDriver, STANDARD_TYPE(XCAFDoc_AssemblyItemRef)->Name())
 {
 }

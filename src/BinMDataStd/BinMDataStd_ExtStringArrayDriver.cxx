@@ -17,7 +17,7 @@
 #include <BinMDataStd.hxx>
 #include <BinMDataStd_ExtStringArrayDriver.hxx>
 #include <BinObjMgt_Persistent.hxx>
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TColStd_Array1OfExtendedString.hxx>
 #include <TColStd_HArray1OfExtendedString.hxx>
@@ -31,7 +31,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BinMDataStd_ExtStringArrayDriver,BinMDF_ADriver)
 //purpose  : Constructor
 //=======================================================================
 BinMDataStd_ExtStringArrayDriver::BinMDataStd_ExtStringArrayDriver
-                        (const Handle(CDM_MessageDriver)& theMsgDriver)
+                        (const Handle(Message_Messenger)& theMsgDriver)
      : BinMDF_ADriver (theMsgDriver, STANDARD_TYPE(TDataStd_ExtStringArray)->Name())
 {
 }

@@ -14,7 +14,7 @@
 // commercial license or contractual agreement.
 
 
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <XmlDrivers.hxx>
 #include <XmlMDF_ADriverTable.hxx>
@@ -37,7 +37,7 @@ XmlXCAFDrivers_DocumentRetrievalDriver::XmlXCAFDrivers_DocumentRetrievalDriver()
 //=======================================================================
 Handle(XmlMDF_ADriverTable)
         XmlXCAFDrivers_DocumentRetrievalDriver::AttributeDrivers
-                        (const Handle(CDM_MessageDriver)& theMsgDrv) 
+                        (const Handle(Message_Messenger)& theMsgDrv) 
 { 
   // Standard drivers
   Handle(XmlMDF_ADriverTable) aTable = XmlDrivers::AttributeDrivers (theMsgDrv);

@@ -14,7 +14,7 @@
 // commercial license or contractual agreement.
 
 
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <LDOM_MemManager.hxx>
 #include <Standard_Type.hxx>
 #include <TDataStd_ExtStringArray.hxx>
@@ -55,7 +55,7 @@ static Standard_Boolean Contains(const Handle(TDataStd_ExtStringArray)& arr,
 //=======================================================================
 
 XmlMDataStd_ExtStringArrayDriver::XmlMDataStd_ExtStringArrayDriver
-                        ( const Handle(CDM_MessageDriver)& theMsgDriver )
+                        ( const Handle(Message_Messenger)& theMsgDriver )
 : XmlMDF_ADriver( theMsgDriver, NULL )
 {}
 
@@ -90,7 +90,7 @@ Standard_Boolean XmlMDataStd_ExtStringArrayDriver::Paste
       TCollection_ExtendedString("Cannot retrieve the first index"
                                  " for ExtStringArray attribute as \"")
         + aFirstIndex + "\"";
-    WriteMessage (aMessageString);
+    myMessageDriver->Send (aMessageString, Message_Fail);
     return Standard_False;
   }
 
@@ -100,7 +100,7 @@ Standard_Boolean XmlMDataStd_ExtStringArrayDriver::Paste
       TCollection_ExtendedString("Cannot retrieve the last index"
                                  " for ExtStringArray attribute as \"")
         + aFirstIndex + "\"";
-    WriteMessage (aMessageString);
+    myMessageDriver->Send (aMessageString, Message_Fail);
     return Standard_False;
   }
 
@@ -192,7 +192,7 @@ Standard_Boolean XmlMDataStd_ExtStringArrayDriver::Paste
           TCollection_ExtendedString("Cannot retrieve the isDelta value"
                                      " for IntegerArray attribute as \"")
                                      + aDeltaValue + "\"";
-        WriteMessage (aMessageString);
+        myMessageDriver->Send (aMessageString, Message_Fail);
         return Standard_False;
       } 
     else

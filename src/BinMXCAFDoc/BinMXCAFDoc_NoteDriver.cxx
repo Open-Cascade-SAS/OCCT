@@ -14,7 +14,7 @@
 // commercial license or contractual agreement.
 
 #include <BinObjMgt_Persistent.hxx>
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TDF_Attribute.hxx>
 #include <BinMXCAFDoc_NoteDriver.hxx>
@@ -26,7 +26,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BinMXCAFDoc_NoteDriver, BinMDF_ADriver)
 //function :
 //purpose  : 
 //=======================================================================
-BinMXCAFDoc_NoteDriver::BinMXCAFDoc_NoteDriver(const Handle(CDM_MessageDriver)& theMsgDriver,
+BinMXCAFDoc_NoteDriver::BinMXCAFDoc_NoteDriver(const Handle(Message_Messenger)& theMsgDriver,
                                                Standard_CString                 theName)
   : BinMDF_ADriver(theMsgDriver, theName)
 {
@@ -59,8 +59,8 @@ Standard_Boolean BinMXCAFDoc_NoteDriver::Paste(const BinObjMgt_Persistent&  theS
 //purpose  : 
 //=======================================================================
 void BinMXCAFDoc_NoteDriver::Paste(const Handle(TDF_Attribute)& theSource,
-					                         BinObjMgt_Persistent&        theTarget,
-					                         BinObjMgt_SRelocationTable&  /*theRelocTable*/) const
+                                         BinObjMgt_Persistent&        theTarget,
+                                         BinObjMgt_SRelocationTable&  /*theRelocTable*/) const
 {
   Handle(XCAFDoc_Note) aNote = Handle(XCAFDoc_Note)::DownCast(theSource);
   if (!aNote.IsNull())

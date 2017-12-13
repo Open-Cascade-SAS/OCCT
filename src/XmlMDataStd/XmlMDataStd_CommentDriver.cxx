@@ -14,7 +14,7 @@
 // commercial license or contractual agreement.
 
 
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TDataStd_Comment.hxx>
 #include <TDF_Attribute.hxx>
@@ -29,7 +29,7 @@ IMPLEMENT_STANDARD_RTTIEXT(XmlMDataStd_CommentDriver,XmlMDF_ADriver)
 //purpose  : Constructor
 //=======================================================================
 XmlMDataStd_CommentDriver::XmlMDataStd_CommentDriver
-                        (const Handle(CDM_MessageDriver)& theMsgDriver)
+                        (const Handle(Message_Messenger)& theMsgDriver)
       : XmlMDF_ADriver (theMsgDriver, NULL)
 {}
 
@@ -57,7 +57,7 @@ Standard_Boolean XmlMDataStd_CommentDriver::Paste
     Handle(TDataStd_Comment)::DownCast(theTarget) -> Set (aString);
     return Standard_True;
   }
-  WriteMessage("error retrieving ExtendedString for type TDataStd_Comment");
+  myMessageDriver->Send("error retrieving ExtendedString for type TDataStd_Comment", Message_Fail);
   return Standard_False;
 }
 

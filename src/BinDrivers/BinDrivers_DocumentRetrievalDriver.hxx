@@ -25,7 +25,7 @@
 #include <Storage_Position.hxx>
 #include <Standard_Integer.hxx>
 class BinMDF_ADriverTable;
-class CDM_MessageDriver;
+class Message_Messenger;
 class BinLDrivers_DocumentSection;
 
 
@@ -42,7 +42,7 @@ public:
   //! Constructor
   Standard_EXPORT BinDrivers_DocumentRetrievalDriver();
   
-  Standard_EXPORT virtual Handle(BinMDF_ADriverTable) AttributeDrivers (const Handle(CDM_MessageDriver)& theMsgDriver) Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(BinMDF_ADriverTable) AttributeDrivers (const Handle(Message_Messenger)& theMsgDriver) Standard_OVERRIDE;
   
   Standard_EXPORT virtual void ReadShapeSection (BinLDrivers_DocumentSection& theSection, Standard_IStream& theIS, const Standard_Boolean isMess = Standard_False) Standard_OVERRIDE;
   

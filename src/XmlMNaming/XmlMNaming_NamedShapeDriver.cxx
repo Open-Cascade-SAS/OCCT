@@ -16,7 +16,7 @@
 //AGV 150202: Changed prototype LDOM_Node::getOwnerDocument()
 
 #include <BRepTools.hxx>
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <LDOM_OSStream.hxx>
 #include <LDOM_Text.hxx>
 #include <Standard_SStream.hxx>
@@ -64,7 +64,7 @@ IMPLEMENT_DOMSTRING (EvolReplaceString,   "replace")
 //=======================================================================
 
 XmlMNaming_NamedShapeDriver::XmlMNaming_NamedShapeDriver
-                        (const Handle(CDM_MessageDriver)& theMessageDriver)
+                        (const Handle(Message_Messenger)& theMessageDriver)
      : XmlMDF_ADriver (theMessageDriver, NULL),
   myShapeSet (Standard_False) // triangles mode
 {}
@@ -129,7 +129,7 @@ Standard_Boolean XmlMNaming_NamedShapeDriver::Paste
     if ( evol != TNaming_PRIMITIVE && anOldPShape.Element() != NULL )
     {
       if (::doTranslate (anOldPShape, anOldShape, aShapeSet)) {
-        WriteMessage ("NamedShapeDriver: Error reading a shape from array");
+        myMessageDriver->Send ("NamedShapeDriver: Error reading a shape from array", Message_Fail);
         return Standard_False;
       }
     }
@@ -137,7 +137,7 @@ Standard_Boolean XmlMNaming_NamedShapeDriver::Paste
     if (evol != TNaming_DELETE && aNewPShape.Element() != NULL )
     {
       if (::doTranslate (aNewPShape, aNewShape, aShapeSet)) {
-        WriteMessage ("NamedShapeDriver: Error reading a shape from array");
+        myMessageDriver->Send ("NamedShapeDriver: Error reading a shape from array", Message_Fail);
         return Standard_False;
       }
     }

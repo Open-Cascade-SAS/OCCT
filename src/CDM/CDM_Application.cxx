@@ -17,13 +17,13 @@
 
 #include <CDM_Application.hxx>
 #include <CDM_Document.hxx>
-#include <CDM_MessageDriver.hxx>
 #include <CDM_MetaData.hxx>
-#include <CDM_NullMessageDriver.hxx>
 #include <CDM_Reference.hxx>
 #include <Resource_Manager.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_ExtendedString.hxx>
+#include <Message.hxx>
+#include <Message_Messenger.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(CDM_Application,Standard_Transient)
 
@@ -55,11 +55,12 @@ void CDM_Application::SetReferenceCounter
 //purpose  : 
 //=======================================================================
 
-Handle(CDM_MessageDriver) CDM_Application::MessageDriver()
+Handle(Message_Messenger) CDM_Application::MessageDriver()
 {
-  static Handle(CDM_NullMessageDriver) theMessageDriver
-    =new CDM_NullMessageDriver;
-  return theMessageDriver;
+  static Handle(Message_Messenger) theMessenger;
+  if(theMessenger.IsNull()) 
+    theMessenger = Message::DefaultMessenger();
+  return theMessenger;
 }
 
 //=======================================================================
@@ -69,7 +70,7 @@ Handle(CDM_MessageDriver) CDM_Application::MessageDriver()
 
 void CDM_Application::Write(const Standard_ExtString aString)
 {
-  MessageDriver()->Write(aString);
+  MessageDriver()->Send(aString);
 }
 
 //=======================================================================

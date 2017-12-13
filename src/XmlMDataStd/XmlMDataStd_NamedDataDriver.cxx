@@ -14,7 +14,7 @@
 // commercial license or contractual agreement.
 
 
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <LDOM_MemManager.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_ExtendedString.hxx>
@@ -65,7 +65,7 @@ IMPLEMENT_DOMSTRING (Value,     "value")
 //function : XmlMDataStd_NamedDataDriver
 //purpose  : Constructor
 //=======================================================================
-XmlMDataStd_NamedDataDriver::XmlMDataStd_NamedDataDriver(const Handle(CDM_MessageDriver)& theMsgDriver)
+XmlMDataStd_NamedDataDriver::XmlMDataStd_NamedDataDriver(const Handle(Message_Messenger)& theMsgDriver)
      : XmlMDF_ADriver (theMsgDriver, NULL)
 {
 
@@ -102,7 +102,7 @@ static TCollection_ExtendedString SplitItemFromStart(TCollection_ExtendedString&
 }
 //=======================================================================
 Handle(TColStd_HArray1OfInteger) BuildIntArray(const TCollection_AsciiString& ValString, 
-					       const Standard_Integer theLen) 
+                                               const Standard_Integer theLen) 
 {
   Handle(TColStd_HArray1OfInteger) anArr;
   if(ValString.Length() == 0 || !theLen) return anArr;
@@ -117,7 +117,7 @@ Handle(TColStd_HArray1OfInteger) BuildIntArray(const TCollection_AsciiString& Va
 
 //=======================================================================
 Handle(TColStd_HArray1OfReal) BuildRealArray(const TCollection_AsciiString& ValString, 
-					     const Standard_Integer theLen) 
+                                             const Standard_Integer theLen) 
 {
   Handle(TColStd_HArray1OfReal) anArr;
   if(ValString.Length() == 0 || !theLen) return anArr;
@@ -134,8 +134,8 @@ Handle(TColStd_HArray1OfReal) BuildRealArray(const TCollection_AsciiString& ValS
 //purpose  : persistent -> transient (retrieve)
 //=======================================================================
 Standard_Boolean XmlMDataStd_NamedDataDriver::Paste(const XmlObjMgt_Persistent&  theSource,
-						      const Handle(TDF_Attribute)& theTarget,
-						      XmlObjMgt_RRelocationTable&  ) const
+                                                    const Handle(TDF_Attribute)& theTarget,
+                                                    XmlObjMgt_RRelocationTable&  ) const
 {
   Standard_Integer aFirstInd, aLastInd, ind;
   const XmlObjMgt_Element& anElement = theSource;
@@ -150,7 +150,7 @@ Standard_Boolean XmlMDataStd_NamedDataDriver::Paste(const XmlObjMgt_Persistent& 
       TCollection_ExtendedString("Cannot retrieve the first index for NamedData"
                                  " attribute (DataMapOfStringInteger) as \"")
         + aFirstIndex + "\"";
-    WriteMessage (aMessageString);
+    myMessageDriver->Send (aMessageString, Message_Fail);
     return Standard_False;
   }
 
@@ -164,7 +164,7 @@ Standard_Boolean XmlMDataStd_NamedDataDriver::Paste(const XmlObjMgt_Persistent& 
       TCollection_ExtendedString("Cannot retrieve the last index for NamedData"
                                  " attribute (DataMapOfStringInteger) as \"")
         + aLastIndex + "\"";
-    WriteMessage (aMessageString);
+    myMessageDriver->Send (aMessageString, Message_Fail);
     return Standard_False;
   }
   try {
@@ -173,38 +173,38 @@ Standard_Boolean XmlMDataStd_NamedDataDriver::Paste(const XmlObjMgt_Persistent& 
 
     if((aFirstInd | aLastInd) && aLastInd >= aFirstInd) {
       if ( !anElement.hasChildNodes() )
-	{
-	  TCollection_ExtendedString aMessageString =
-	    TCollection_ExtendedString("Cannot retrieve DataMapOfStringInteger");
-	  WriteMessage (aMessageString);
-	  return Standard_False;
-	}
+      {
+        TCollection_ExtendedString aMessageString =
+          TCollection_ExtendedString("Cannot retrieve DataMapOfStringInteger");
+        myMessageDriver->Send (aMessageString, Message_Fail);
+        return Standard_False;
+      }
       aCurNode = anElement.getFirstChild();
       LDOM_Element* aCurElement = (LDOM_Element*)&aCurNode;
       TCollection_ExtendedString aValueStr, aKey;
       TColStd_DataMapOfStringInteger aMap;
       for (ind = aFirstInd; ind < aLastInd; ind++) {
-	XmlObjMgt::GetExtendedString( *aCurElement, aKey );
-	aValueStr = SplitItemFromEnd(aKey);
-	if(aValueStr.Length() == 0) {
-	  TCollection_ExtendedString aMessageString =
-	    TCollection_ExtendedString("Cannot retrieve a value from item = ") + aKey;
-	  WriteMessage (aMessageString);
-	  return Standard_False;
-	}
-	TCollection_AsciiString aVal(aValueStr,'?');
-	Standard_Integer aValue = aVal.IntegerValue();
-	aMap.Bind(aKey, aValue);
-	aCurNode = aCurElement->getNextSibling();
-	aCurElement = (LDOM_Element*)&aCurNode;
+        XmlObjMgt::GetExtendedString( *aCurElement, aKey );
+        aValueStr = SplitItemFromEnd(aKey);
+        if(aValueStr.Length() == 0) {
+          TCollection_ExtendedString aMessageString =
+            TCollection_ExtendedString("Cannot retrieve a value from item = ") + aKey;
+          myMessageDriver->Send (aMessageString, Message_Fail);
+          return Standard_False;
+        }
+        TCollection_AsciiString aVal(aValueStr,'?');
+        Standard_Integer aValue = aVal.IntegerValue();
+        aMap.Bind(aKey, aValue);
+        aCurNode = aCurElement->getNextSibling();
+        aCurElement = (LDOM_Element*)&aCurNode;
       }
       XmlObjMgt::GetExtendedString( *aCurElement, aKey );
       aValueStr = SplitItemFromEnd(aKey);
       if(aValueStr.Length() == 0) {
-	TCollection_ExtendedString aMessageString =
-	  TCollection_ExtendedString("Cannot retrieve a value from item = ") + aKey;
-	WriteMessage (aMessageString);
-	return Standard_False;
+        TCollection_ExtendedString aMessageString =
+          TCollection_ExtendedString("Cannot retrieve a value from item = ") + aKey;
+        myMessageDriver->Send (aMessageString, Message_Fail);
+        return Standard_False;
       }
       TCollection_AsciiString aVal(aValueStr,'?');
       Standard_Integer aValue = aVal.IntegerValue();
@@ -212,74 +212,74 @@ Standard_Boolean XmlMDataStd_NamedDataDriver::Paste(const XmlObjMgt_Persistent& 
       T->ChangeIntegers(aMap);
     }
 
-//DataMapOfStringReal
+    //DataMapOfStringReal
     aFirstIndex = anElement.getAttribute(::FirstRealIndex());
     if (aFirstIndex == NULL)
       aFirstInd = 1;
     else if (!aFirstIndex.GetInteger(aFirstInd)) 
-      {
-	TCollection_ExtendedString aMessageString =
-	  TCollection_ExtendedString("Cannot retrieve the first index for NamedData "
-				     "attribute (DataMapOfStringReal) as \"")
-	    + aFirstIndex + "\"";
-	WriteMessage (aMessageString);
-	return Standard_False;
-      }
+    {
+      TCollection_ExtendedString aMessageString =
+        TCollection_ExtendedString("Cannot retrieve the first index for NamedData "
+        "attribute (DataMapOfStringReal) as \"")
+        + aFirstIndex + "\"";
+      myMessageDriver->Send (aMessageString, Message_Fail);
+      return Standard_False;
+    }
 
-  // Read the LastIndex;
+    // Read the LastIndex;
     aLastIndex = anElement.getAttribute(::LastRealIndex());
     if(aLastIndex == NULL) {
       aFirstInd = 0;
       aLastInd  = 0;
     } else if (!aLastIndex.GetInteger(aLastInd)) {
       TCollection_ExtendedString aMessageString =
-	TCollection_ExtendedString("Cannot retrieve the last index for NamedData"
-				   " attribute (DataMapOfStringReal) as \"")
-	  + aLastIndex + "\"";
-      WriteMessage (aMessageString);
+        TCollection_ExtendedString("Cannot retrieve the last index for NamedData"
+        " attribute (DataMapOfStringReal) as \"")
+        + aLastIndex + "\"";
+      myMessageDriver->Send (aMessageString, Message_Fail);
       return Standard_False;
     }
 
     if((aFirstInd | aLastInd) && aLastInd >= aFirstInd) { 
       if ( !anElement.hasChildNodes())
-	{
-	  TCollection_ExtendedString aMessageString =
-	    TCollection_ExtendedString("Cannot retrieve DataMapOfStringReal");
-	  WriteMessage (aMessageString);
-	  return Standard_False;
-	}
-      
+      {
+        TCollection_ExtendedString aMessageString =
+          TCollection_ExtendedString("Cannot retrieve DataMapOfStringReal");
+        myMessageDriver->Send (aMessageString, Message_Fail);
+        return Standard_False;
+      }
+
       LDOM_Element* aCurElement; 
       if (aCurNode.isNull())
-	    aCurNode = anElement.getFirstChild();
+        aCurNode = anElement.getFirstChild();
       else    
         aCurNode    = ((LDOM_Element*)&aCurNode)->getNextSibling();
-          
+
       aCurElement = (LDOM_Element*)&aCurNode;
       TCollection_ExtendedString aValueStr, aKey;
       TDataStd_DataMapOfStringReal aMap;
       for (ind = aFirstInd; ind < aLastInd; ind++) {
-	XmlObjMgt::GetExtendedString( *aCurElement, aKey );
-	aValueStr = SplitItemFromEnd(aKey);
-	if(aValueStr.Length() == 0) {
-	  TCollection_ExtendedString aMessageString =
-	    TCollection_ExtendedString("Cannot retrieve a value from item = ") + aKey;
-	  WriteMessage (aMessageString);
-	  return Standard_False;
-	}
-	TCollection_AsciiString aVal(aValueStr,'?');
-	Standard_Real aValue = aVal.RealValue();
-	aMap.Bind(aKey, aValue);
-	aCurNode = aCurElement->getNextSibling();
-	aCurElement = (LDOM_Element*)&aCurNode;
+        XmlObjMgt::GetExtendedString( *aCurElement, aKey );
+        aValueStr = SplitItemFromEnd(aKey);
+        if(aValueStr.Length() == 0) {
+          TCollection_ExtendedString aMessageString =
+            TCollection_ExtendedString("Cannot retrieve a value from item = ") + aKey;
+          myMessageDriver->Send (aMessageString, Message_Fail);
+          return Standard_False;
+        }
+        TCollection_AsciiString aVal(aValueStr,'?');
+        Standard_Real aValue = aVal.RealValue();
+        aMap.Bind(aKey, aValue);
+        aCurNode = aCurElement->getNextSibling();
+        aCurElement = (LDOM_Element*)&aCurNode;
       }
       XmlObjMgt::GetExtendedString( *aCurElement, aKey );
       aValueStr = SplitItemFromEnd(aKey);
       if(aValueStr.Length() == 0) {
-	TCollection_ExtendedString aMessageString =
-	  TCollection_ExtendedString("Cannot retrieve a value from item = ") + aKey;
-	WriteMessage (aMessageString);
-	return Standard_False;
+        TCollection_ExtendedString aMessageString =
+          TCollection_ExtendedString("Cannot retrieve a value from item = ") + aKey;
+        myMessageDriver->Send (aMessageString, Message_Fail);
+        return Standard_False;
       }
       TCollection_AsciiString aVal(aValueStr,'?');
       Standard_Real aValue = aVal.RealValue();
@@ -292,66 +292,66 @@ Standard_Boolean XmlMDataStd_NamedDataDriver::Paste(const XmlObjMgt_Persistent& 
     if (aFirstIndex == NULL)
       aFirstInd = 1;
     else if (!aFirstIndex.GetInteger(aFirstInd)) 
-      {
-	TCollection_ExtendedString aMessageString =
-	  TCollection_ExtendedString("Cannot retrieve the first index for NamedData"
-				     " attribute (DataMapOfStringString) as \"")
-	    + aFirstIndex + "\"";
-	WriteMessage (aMessageString);
-	return Standard_False;
-      }
+    {
+      TCollection_ExtendedString aMessageString =
+        TCollection_ExtendedString("Cannot retrieve the first index for NamedData"
+        " attribute (DataMapOfStringString) as \"")
+        + aFirstIndex + "\"";
+      myMessageDriver->Send (aMessageString, Message_Fail);
+      return Standard_False;
+    }
     aLastIndex = anElement.getAttribute(::LastStringIndex());
     if(aLastIndex == NULL) {
       aFirstInd = 0;
       aLastInd  = 0;
     } else if (!aLastIndex.GetInteger(aLastInd)) {
       TCollection_ExtendedString aMessageString =
-	TCollection_ExtendedString("Cannot retrieve the last index for NamedData"
-				   " attribute (DataMapOfStringString) as \"")
-	  + aLastIndex + "\"";
-      WriteMessage (aMessageString);
+        TCollection_ExtendedString("Cannot retrieve the last index for NamedData"
+        " attribute (DataMapOfStringString) as \"")
+        + aLastIndex + "\"";
+      myMessageDriver->Send (aMessageString, Message_Fail);
       return Standard_False;
     }
-    
+
     if((aFirstInd | aLastInd) && aLastInd >= aFirstInd) {
       if ( !anElement.hasChildNodes())
-	{
-	  TCollection_ExtendedString aMessageString =
-	    TCollection_ExtendedString("Cannot retrieve DataMapOfStringString");
-	  WriteMessage (aMessageString);
-	  return Standard_False;
-	}
+      {
+        TCollection_ExtendedString aMessageString =
+          TCollection_ExtendedString("Cannot retrieve DataMapOfStringString");
+        myMessageDriver->Send (aMessageString, Message_Fail);
+        return Standard_False;
+      }
       LDOM_Element* aCurElement;
       if (aCurNode.isNull())
-	    aCurNode = anElement.getFirstChild();
+        aCurNode = anElement.getFirstChild();
       else 
-	    aCurNode = ((LDOM_Element*)&aCurNode)->getNextSibling();
-      
+        aCurNode = ((LDOM_Element*)&aCurNode)->getNextSibling();
+
       aCurElement = (LDOM_Element*)&aCurNode;
       TCollection_ExtendedString aValue, aKey;
       TDataStd_DataMapOfStringString aMap;
       for (ind = aFirstInd; ind < aLastInd; ind++) {
-	XmlObjMgt::GetExtendedString( *aCurElement, aKey );
-	aValue = SplitItemFromStart(aKey); // ==>from start
-	if(aValue.Length() == 0) {
-	  TCollection_ExtendedString aMessageString =
-	    TCollection_ExtendedString("Cannot retrieve a value from item = ") + aKey;
-	  WriteMessage (aMessageString);
-	  return Standard_False;
-	}
-	aMap.Bind(aKey, aValue);
-	aCurNode = aCurElement->getNextSibling();
-	aCurElement = (LDOM_Element*)&aCurNode;
+        XmlObjMgt::GetExtendedString( *aCurElement, aKey );
+        aValue = SplitItemFromStart(aKey); // ==>from start
+        if(aValue.Length() == 0) {
+          TCollection_ExtendedString aMessageString =
+            TCollection_ExtendedString("Cannot retrieve a value from item = ") + aKey;
+          myMessageDriver->Send (aMessageString, Message_Fail);
+          return Standard_False;
+        }
+        aMap.Bind(aKey, aValue);
+        aCurNode = aCurElement->getNextSibling();
+        aCurElement = (LDOM_Element*)&aCurNode;
       }
       XmlObjMgt::GetExtendedString( *aCurElement, aKey );
       aValue = SplitItemFromStart(aKey);
       if(aValue.Length() == 0) {
-	TCollection_ExtendedString aMessageString =
-	  TCollection_ExtendedString("Cannot retrieve a value from item = ") + aKey;
-	WriteMessage (aMessageString);
-	return Standard_False;
+        TCollection_ExtendedString aMessageString =
+          TCollection_ExtendedString("Cannot retrieve a value from item = ") + aKey;
+        myMessageDriver->Send (aMessageString, Message_Fail);
+        return Standard_False;
       }
-      
+
       aMap.Bind(aKey, aValue);
       T->ChangeStrings(aMap);
     }
@@ -361,73 +361,73 @@ Standard_Boolean XmlMDataStd_NamedDataDriver::Paste(const XmlObjMgt_Persistent& 
     if (aFirstIndex == NULL)
       aFirstInd = 1;
     else if (!aFirstIndex.GetInteger(aFirstInd)) 
-      {
-	TCollection_ExtendedString aMessageString =
-	  TCollection_ExtendedString("Cannot retrieve the first index for NamedData "
-				     "attribute (DataMapOfStringByte) as \"")
-	    + aFirstIndex + "\"";
-	WriteMessage (aMessageString);
-	return Standard_False;
-      }
+    {
+      TCollection_ExtendedString aMessageString =
+        TCollection_ExtendedString("Cannot retrieve the first index for NamedData "
+        "attribute (DataMapOfStringByte) as \"")
+        + aFirstIndex + "\"";
+      myMessageDriver->Send (aMessageString, Message_Fail);
+      return Standard_False;
+    }
 
-  // Read the LastIndex;
+    // Read the LastIndex;
     aLastIndex = anElement.getAttribute(::LastByteIndex());
     if(aLastIndex == NULL) {
       aFirstInd = 0;
       aLastInd  = 0;
     } else if (!aLastIndex.GetInteger(aLastInd)) {
       TCollection_ExtendedString aMessageString =
-	TCollection_ExtendedString("Cannot retrieve the last index for NamedData"
-				   " attribute (DataMapOfStringByte) as \"")
-	  + aLastIndex + "\"";
-      WriteMessage (aMessageString);
+        TCollection_ExtendedString("Cannot retrieve the last index for NamedData"
+        " attribute (DataMapOfStringByte) as \"")
+        + aLastIndex + "\"";
+      myMessageDriver->Send (aMessageString, Message_Fail);
       return Standard_False;
     }
-    
+
     if((aFirstInd | aLastInd) && aLastInd >= aFirstInd) { 
       if ( !anElement.hasChildNodes())
-	{
-	  TCollection_ExtendedString aMessageString =
-	    TCollection_ExtendedString("Cannot retrieve DataMapOfStringByte");
-	  WriteMessage (aMessageString);
-	  return Standard_False;
-	}
-      
+      {
+        TCollection_ExtendedString aMessageString =
+          TCollection_ExtendedString("Cannot retrieve DataMapOfStringByte");
+        myMessageDriver->Send (aMessageString, Message_Fail);
+        return Standard_False;
+      }
+
       LDOM_Element* aCurElement;
       if (aCurNode.isNull())
-	    aCurNode = anElement.getFirstChild();
+        aCurNode = anElement.getFirstChild();
       else 
-	    aCurNode = ((LDOM_Element*)&aCurNode)->getNextSibling();
-      
+        aCurNode = ((LDOM_Element*)&aCurNode)->getNextSibling();
+
       aCurElement = (LDOM_Element*)&aCurNode;
       TCollection_ExtendedString aValueStr, aKey;
       TDataStd_DataMapOfStringByte aMap;
       for (ind = aFirstInd; ind < aLastInd; ind++) {
-	XmlObjMgt::GetExtendedString( *aCurElement, aKey );
-	aValueStr = SplitItemFromEnd(aKey);
-	if(aValueStr.Length() == 0) {
-	  TCollection_ExtendedString aMessageString =
-	    TCollection_ExtendedString("Cannot retrieve a value from item = ") + aKey;
-	  WriteMessage (aMessageString);
-	  return Standard_False;
-	}
-	
-	TCollection_AsciiString aVal(aValueStr,'?');
-	Standard_Byte aValue = (Standard_Byte)aVal.IntegerValue();
-	
-	aMap.Bind(aKey, aValue);
-	aCurNode = aCurElement->getNextSibling();
-	aCurElement = (LDOM_Element*)&aCurNode;
+        XmlObjMgt::GetExtendedString( *aCurElement, aKey );
+        aValueStr = SplitItemFromEnd(aKey);
+        if(aValueStr.Length() == 0) {
+          TCollection_ExtendedString aMessageString =
+            TCollection_ExtendedString("Cannot retrieve a value from item = ") + aKey;
+          myMessageDriver->Send (aMessageString, Message_Fail);
+          return Standard_False;
+        }
+
+        TCollection_AsciiString aVal(aValueStr,'?');
+        Standard_Byte aValue = (Standard_Byte)aVal.IntegerValue();
+
+        aMap.Bind(aKey, aValue);
+        aCurNode = aCurElement->getNextSibling();
+        aCurElement = (LDOM_Element*)&aCurNode;
       }
       XmlObjMgt::GetExtendedString( *aCurElement, aKey );
       aValueStr = SplitItemFromEnd(aKey);
       if(aValueStr.Length() == 0) {
-	TCollection_ExtendedString aMessageString =
-	  TCollection_ExtendedString("Cannot retrieve a value from item = ") + aKey;
-	WriteMessage (aMessageString);
-	return Standard_False;
+        TCollection_ExtendedString aMessageString =
+          TCollection_ExtendedString("Cannot retrieve a value from item = ") + aKey;
+        myMessageDriver->Send (aMessageString, Message_Fail);
+        return Standard_False;
       }
-      
+
       TCollection_AsciiString aVal(aValueStr,'?');
       Standard_Byte aValue = (Standard_Byte)aVal.IntegerValue();
       aMap.Bind(aKey, aValue);
@@ -439,14 +439,14 @@ Standard_Boolean XmlMDataStd_NamedDataDriver::Paste(const XmlObjMgt_Persistent& 
     if (aFirstIndex == NULL)
       aFirstInd = 1;
     else if (!aFirstIndex.GetInteger(aFirstInd)) 
-      {
-	TCollection_ExtendedString aMessageString =
-	  TCollection_ExtendedString("Cannot retrieve the first index for NamedData "
-				     "attribute (DataMapOfStringHArray1OfInteger) as \"")
-	    + aFirstIndex + "\"";
-	WriteMessage (aMessageString);
-	return Standard_False;
-      }
+    {
+      TCollection_ExtendedString aMessageString =
+        TCollection_ExtendedString("Cannot retrieve the first index for NamedData "
+        "attribute (DataMapOfStringHArray1OfInteger) as \"")
+        + aFirstIndex + "\"";
+      myMessageDriver->Send (aMessageString, Message_Fail);
+      return Standard_False;
+    }
     
   // Read the LastIndex;
     aLastIndex = anElement.getAttribute(::LastIntArrIndex());
@@ -455,74 +455,74 @@ Standard_Boolean XmlMDataStd_NamedDataDriver::Paste(const XmlObjMgt_Persistent& 
       aLastInd  = 0;
     } else if (!aLastIndex.GetInteger(aLastInd)) {
       TCollection_ExtendedString aMessageString =
-	TCollection_ExtendedString("Cannot retrieve the last index for NamedData"
-				   " attribute (DataMapOfStringHArray1OfInteger) as \"")
-	  + aLastIndex + "\"";
-      WriteMessage (aMessageString);
+        TCollection_ExtendedString("Cannot retrieve the last index for NamedData"
+        " attribute (DataMapOfStringHArray1OfInteger) as \"")
+        + aLastIndex + "\"";
+      myMessageDriver->Send (aMessageString, Message_Fail);
       return Standard_False;
     }
-    
+
     if((aFirstInd | aLastInd) && aLastInd >= aFirstInd) { 
       if ( !anElement.hasChildNodes())
-	{
-	  TCollection_ExtendedString aMessageString =
-	    TCollection_ExtendedString("Cannot retrieve DataMapOfStringHArray1OfInteger");
-	  WriteMessage (aMessageString);
-	  return Standard_False;
-	}
+      {
+        TCollection_ExtendedString aMessageString =
+          TCollection_ExtendedString("Cannot retrieve DataMapOfStringHArray1OfInteger");
+        myMessageDriver->Send (aMessageString, Message_Fail);
+        return Standard_False;
+      }
       LDOM_Element* aCurElement;
       if (aCurNode.isNull())
-	    aCurNode = anElement.getFirstChild();
+        aCurNode = anElement.getFirstChild();
       else 
-	    aCurNode =((LDOM_Element*)&aCurNode)->getNextSibling();
-      
+        aCurNode =((LDOM_Element*)&aCurNode)->getNextSibling();
+
       aCurElement = (LDOM_Element*)&aCurNode;
       TCollection_ExtendedString aKey, aValueStr;
       TDataStd_DataMapOfStringHArray1OfInteger aMap;
-      
+
       for (ind = aFirstInd; ind < aLastInd; ind++) {
-	XmlObjMgt::GetExtendedString( *aCurElement, aKey );// Len - at the end
-	aValueStr = SplitItemFromEnd(aKey);
-	if(aValueStr.Length() == 0) {
-	  TCollection_ExtendedString aMessageString =
-	    TCollection_ExtendedString("Cannot retrieve a value from item = ") + aKey;
-	  WriteMessage (aMessageString);
-	  return Standard_False;
-	}
-	TCollection_AsciiString aVal(aValueStr,'?');
-	Standard_Integer aLen = aVal.IntegerValue();
-	
-	TCollection_AsciiString aValueString = aCurElement->getAttribute(::Value()); 
-	Handle(TColStd_HArray1OfInteger) aValue = BuildIntArray(aValueString, aLen);
-	if(aValue.IsNull()) {
-	  TCollection_ExtendedString aMessageString =
-	    TCollection_ExtendedString("Cannot retrieve a value from item = ") + aKey;
-	  WriteMessage (aMessageString);
-	  return Standard_False;
-	}
-	
-	aMap.Bind(aKey, aValue);
-	aCurNode = aCurElement->getNextSibling();
-	aCurElement = (LDOM_Element*)&aCurNode;
+        XmlObjMgt::GetExtendedString( *aCurElement, aKey );// Len - at the end
+        aValueStr = SplitItemFromEnd(aKey);
+        if(aValueStr.Length() == 0) {
+          TCollection_ExtendedString aMessageString =
+            TCollection_ExtendedString("Cannot retrieve a value from item = ") + aKey;
+          myMessageDriver->Send (aMessageString, Message_Fail);
+          return Standard_False;
+        }
+        TCollection_AsciiString aVal(aValueStr,'?');
+        Standard_Integer aLen = aVal.IntegerValue();
+
+        TCollection_AsciiString aValueString = aCurElement->getAttribute(::Value()); 
+        Handle(TColStd_HArray1OfInteger) aValue = BuildIntArray(aValueString, aLen);
+        if(aValue.IsNull()) {
+          TCollection_ExtendedString aMessageString =
+            TCollection_ExtendedString("Cannot retrieve a value from item = ") + aKey;
+          myMessageDriver->Send (aMessageString, Message_Fail);
+          return Standard_False;
+        }
+
+        aMap.Bind(aKey, aValue);
+        aCurNode = aCurElement->getNextSibling();
+        aCurElement = (LDOM_Element*)&aCurNode;
       }
-      
+
       XmlObjMgt::GetExtendedString( *aCurElement, aKey );
       aValueStr = SplitItemFromEnd(aKey);
       if(aValueStr.Length() == 0) {
-	TCollection_ExtendedString aMessageString =
-	  TCollection_ExtendedString("Cannot retrieve a value from item = ") + aKey;
-	WriteMessage (aMessageString);
-	return Standard_False;
+        TCollection_ExtendedString aMessageString =
+          TCollection_ExtendedString("Cannot retrieve a value from item = ") + aKey;
+        myMessageDriver->Send (aMessageString, Message_Fail);
+        return Standard_False;
       }
       TCollection_AsciiString aVal(aValueStr,'?');
       Standard_Integer aLen = aVal.IntegerValue();
       TCollection_AsciiString aValueString = aCurElement->getAttribute(::Value());
       Handle(TColStd_HArray1OfInteger) aValue = BuildIntArray(aValueString, aLen);
       if(aValue.IsNull()) {
-	TCollection_ExtendedString aMessageString =
-	  TCollection_ExtendedString("Cannot retrieve a value from item = ") + aKey;
-	WriteMessage (aMessageString);
-	return Standard_False;
+        TCollection_ExtendedString aMessageString =
+          TCollection_ExtendedString("Cannot retrieve a value from item = ") + aKey;
+        myMessageDriver->Send (aMessageString, Message_Fail);
+        return Standard_False;
       }
       aMap.Bind(aKey, aValue);
       T->ChangeArraysOfIntegers(aMap);
@@ -533,104 +533,104 @@ Standard_Boolean XmlMDataStd_NamedDataDriver::Paste(const XmlObjMgt_Persistent& 
     if (aFirstIndex == NULL)
       aFirstInd = 1;
     else if (!aFirstIndex.GetInteger(aFirstInd)) 
-      {
-	TCollection_ExtendedString aMessageString =
-	  TCollection_ExtendedString("Cannot retrieve the first index for NamedData "
-				     "attribute (DataMapOfStringHArray1OfReal) as \"")
-	    + aFirstIndex + "\"";
-	WriteMessage (aMessageString);
-	return Standard_False;
-      }
-    
-  // Read the LastIndex;
+    {
+      TCollection_ExtendedString aMessageString =
+        TCollection_ExtendedString("Cannot retrieve the first index for NamedData "
+        "attribute (DataMapOfStringHArray1OfReal) as \"")
+        + aFirstIndex + "\"";
+      myMessageDriver->Send (aMessageString, Message_Fail);
+      return Standard_False;
+    }
+
+    // Read the LastIndex;
     aLastIndex = anElement.getAttribute(::LastRealArrIndex());
     if(aLastIndex == NULL) {
       aFirstInd = 0;
       aLastInd  = 0;
     } else if (!aLastIndex.GetInteger(aLastInd)) {
       TCollection_ExtendedString aMessageString =
-	TCollection_ExtendedString("Cannot retrieve the last index for NamedData"
-                                 " attribute (DataMapOfStringHArray1OfReal) as \"")
-	  + aLastIndex + "\"";
-      WriteMessage (aMessageString);
+        TCollection_ExtendedString("Cannot retrieve the last index for NamedData"
+        " attribute (DataMapOfStringHArray1OfReal) as \"")
+        + aLastIndex + "\"";
+      myMessageDriver->Send (aMessageString, Message_Fail);
       return Standard_False;
     }
-    
+
     if((aFirstInd | aLastInd) && aLastInd >= aFirstInd) { 
       if ( !anElement.hasChildNodes())
-	{
-	  TCollection_ExtendedString aMessageString =
-	    TCollection_ExtendedString("Cannot retrieve DataMapOfStringHArray1OfReal");
-	  WriteMessage (aMessageString);
-	  return Standard_False;
-	}
-      
+      {
+        TCollection_ExtendedString aMessageString =
+          TCollection_ExtendedString("Cannot retrieve DataMapOfStringHArray1OfReal");
+        myMessageDriver->Send (aMessageString, Message_Fail);
+        return Standard_False;
+      }
+
       LDOM_Element* aCurElement;
       if (aCurNode.isNull())
-	    aCurNode = anElement.getFirstChild();
+        aCurNode = anElement.getFirstChild();
       else 
-	    aCurNode =((LDOM_Element*)&aCurNode)->getNextSibling();
-      
+        aCurNode =((LDOM_Element*)&aCurNode)->getNextSibling();
+
       aCurElement = (LDOM_Element*)&aCurNode;
       TCollection_ExtendedString aKey, aValueStr;
       TDataStd_DataMapOfStringHArray1OfReal aMap;
-      
+
       for (ind = aFirstInd; ind < aLastInd; ind++) {
-	XmlObjMgt::GetExtendedString( *aCurElement, aKey );// Len - at the end
-	aValueStr = SplitItemFromEnd(aKey);
-	if(aValueStr.Length() == 0) {
-	  TCollection_ExtendedString aMessageString =
- 	  TCollection_ExtendedString("Cannot retrieve a value from item = ") + aKey;
-	  WriteMessage (aMessageString);
-	  return Standard_False;
-	}
-	TCollection_AsciiString aVal(aValueStr,'?');
-	Standard_Integer aLen = aVal.IntegerValue();      
-	
-	TCollection_AsciiString aValueString = aCurElement->getAttribute(::Value());
-	Handle(TColStd_HArray1OfReal) aValue = BuildRealArray(aValueString, aLen);
-	if(aValue.IsNull()) {
-	  TCollection_ExtendedString aMessageString =
-	    TCollection_ExtendedString("Cannot retrieve a value from item = ") + aKey;
-	  WriteMessage (aMessageString);
-	  return Standard_False;
-	}
-	
-	aMap.Bind(aKey, aValue);
-	aCurNode = aCurElement->getNextSibling();
-	aCurElement = (LDOM_Element*)&aCurNode;
+        XmlObjMgt::GetExtendedString( *aCurElement, aKey );// Len - at the end
+        aValueStr = SplitItemFromEnd(aKey);
+        if(aValueStr.Length() == 0) {
+          TCollection_ExtendedString aMessageString =
+            TCollection_ExtendedString("Cannot retrieve a value from item = ") + aKey;
+          myMessageDriver->Send (aMessageString, Message_Fail);
+          return Standard_False;
+        }
+        TCollection_AsciiString aVal(aValueStr,'?');
+        Standard_Integer aLen = aVal.IntegerValue();      
+
+        TCollection_AsciiString aValueString = aCurElement->getAttribute(::Value());
+        Handle(TColStd_HArray1OfReal) aValue = BuildRealArray(aValueString, aLen);
+        if(aValue.IsNull()) {
+          TCollection_ExtendedString aMessageString =
+            TCollection_ExtendedString("Cannot retrieve a value from item = ") + aKey;
+          myMessageDriver->Send (aMessageString, Message_Fail);
+          return Standard_False;
+        }
+
+        aMap.Bind(aKey, aValue);
+        aCurNode = aCurElement->getNextSibling();
+        aCurElement = (LDOM_Element*)&aCurNode;
       }
-      
+
       XmlObjMgt::GetExtendedString( *aCurElement, aKey );
       aValueStr = SplitItemFromEnd(aKey);
       if(aValueStr.Length() == 0) {
-	TCollection_ExtendedString aMessageString =
-	  TCollection_ExtendedString("Cannot retrieve a value from item = ") + aKey;
-	WriteMessage (aMessageString);
-	return Standard_False;
+        TCollection_ExtendedString aMessageString =
+          TCollection_ExtendedString("Cannot retrieve a value from item = ") + aKey;
+        myMessageDriver->Send (aMessageString, Message_Fail);
+        return Standard_False;
       }
       TCollection_AsciiString aVal(aValueStr,'?');
       Standard_Integer aLen = aVal.IntegerValue();
-      
+
       TCollection_AsciiString aValueString = aCurElement->getAttribute(::Value());
       Handle(TColStd_HArray1OfReal) aValue = BuildRealArray(aValueString, aLen);
       if(aValue.IsNull()) {
-	TCollection_ExtendedString aMessageString =
-	  TCollection_ExtendedString("Cannot retrieve a value from item = ") + aKey;
-	WriteMessage (aMessageString);
-	return Standard_False;
+        TCollection_ExtendedString aMessageString =
+          TCollection_ExtendedString("Cannot retrieve a value from item = ") + aKey;
+        myMessageDriver->Send (aMessageString, Message_Fail);
+        return Standard_False;
       }
-      
+
       aMap.Bind(aKey, aValue);
-    T->ChangeArraysOfReals(aMap);
+      T->ChangeArraysOfReals(aMap);
     } 
   } catch (EXCEPTION) {
     TCollection_ExtendedString aMessageString =
       TCollection_ExtendedString("Unknown exception during data retrieve in NamedDatDriver ");
-    WriteMessage (aMessageString);
-      return Standard_False;} 
-  
-  return Standard_True;
+    myMessageDriver->Send (aMessageString, Message_Fail);
+    return Standard_False;} 
+
+    return Standard_True;
 }
 
 //=======================================================================
@@ -638,12 +638,12 @@ Standard_Boolean XmlMDataStd_NamedDataDriver::Paste(const XmlObjMgt_Persistent& 
 //purpose  : transient -> persistent (store)
 //=======================================================================
 void XmlMDataStd_NamedDataDriver::Paste(const Handle(TDF_Attribute)& theSource,
-					XmlObjMgt_Persistent&        theTarget,
-					XmlObjMgt_SRelocationTable&  ) const
+                                        XmlObjMgt_Persistent&        theTarget,
+                                        XmlObjMgt_SRelocationTable&  ) const
 {
   Handle(TDataStd_NamedData) S = Handle(TDataStd_NamedData)::DownCast(theSource);
   if(S.IsNull()) {
-    WriteMessage ("NamedDataDriver:: The source attribute is Null.");
+    myMessageDriver->Send ("NamedDataDriver:: The source attribute is Null.", Message_Warning);
     return;}
 
   Standard_Integer i=0, up;
@@ -657,7 +657,7 @@ void XmlMDataStd_NamedDataDriver::Paste(const Handle(TDF_Attribute)& theSource,
     TColStd_DataMapIteratorOfDataMapOfStringInteger itr(S->GetIntegersContainer());
     for (i=1; itr.More(); itr.Next(),i++) {
       const TCollection_ExtendedString aValueStr = 
-	itr.Key() + ' ' + TCollection_ExtendedString(itr.Value());// key - value;
+        itr.Key() + ' ' + TCollection_ExtendedString(itr.Value());// key - value;
       XmlObjMgt_Element aCurTarget = aDoc.createElement( ::ExtString() );
       XmlObjMgt::SetExtendedString( aCurTarget, aValueStr );
       anElement.appendChild( aCurTarget );
@@ -669,11 +669,11 @@ void XmlMDataStd_NamedDataDriver::Paste(const Handle(TDF_Attribute)& theSource,
     theTarget.Element().setAttribute(::LastRealIndex(), up);
     TDataStd_DataMapIteratorOfDataMapOfStringReal itr(S->GetRealsContainer());
     for (i=1; itr.More(); itr.Next(),i++) {
-     const TCollection_ExtendedString aValueStr = 
-	itr.Key() + ' ' + TCollection_ExtendedString(itr.Value());// key - value;
-     XmlObjMgt_Element aCurTarget = aDoc.createElement( ::ExtString() );
-     XmlObjMgt::SetExtendedString( aCurTarget, aValueStr );
-     anElement.appendChild( aCurTarget );
+      const TCollection_ExtendedString aValueStr = 
+        itr.Key() + ' ' + TCollection_ExtendedString(itr.Value());// key - value;
+      XmlObjMgt_Element aCurTarget = aDoc.createElement( ::ExtString() );
+      XmlObjMgt::SetExtendedString( aCurTarget, aValueStr );
+      anElement.appendChild( aCurTarget );
     }
   } 
 
@@ -683,7 +683,7 @@ void XmlMDataStd_NamedDataDriver::Paste(const Handle(TDF_Attribute)& theSource,
     TDataStd_DataMapIteratorOfDataMapOfStringString itr(S->GetStringsContainer());
     for (i=1; itr.More(); itr.Next(),i++) {
       const TCollection_ExtendedString aValueStr = 
-	itr.Key() + ' ' + TCollection_ExtendedString(itr.Value());// key(without blanks) - value;
+        itr.Key() + ' ' + TCollection_ExtendedString(itr.Value());// key(without blanks) - value;
       XmlObjMgt_Element aCurTarget = aDoc.createElement( ::ExtString() );
       XmlObjMgt::SetExtendedString( aCurTarget, aValueStr );
       anElement.appendChild( aCurTarget );
@@ -696,7 +696,7 @@ void XmlMDataStd_NamedDataDriver::Paste(const Handle(TDF_Attribute)& theSource,
     TDataStd_DataMapIteratorOfDataMapOfStringByte itr(S->GetBytesContainer());
     for (i=1; itr.More(); itr.Next(),i++) {
       const TCollection_ExtendedString aValueStr = 
-	itr.Key() + ' ' + TCollection_ExtendedString(itr.Value());// key - value;
+        itr.Key() + ' ' + TCollection_ExtendedString(itr.Value());// key - value;
       XmlObjMgt_Element aCurTarget = aDoc.createElement( ::ExtString() );
       XmlObjMgt::SetExtendedString( aCurTarget, aValueStr );
       anElement.appendChild( aCurTarget );
@@ -712,7 +712,7 @@ void XmlMDataStd_NamedDataDriver::Paste(const Handle(TDF_Attribute)& theSource,
       const Standard_Integer aLen = anArr1.Upper() - anArr1.Lower() +1;
 
       const TCollection_ExtendedString aValueStr = 
-	itr.Key() + ' ' + TCollection_ExtendedString(aLen);// key - Num_of_Arr_elements;
+        itr.Key() + ' ' + TCollection_ExtendedString(aLen);// key - Num_of_Arr_elements;
       XmlObjMgt_Element aCurTarget = aDoc.createElement( ::ExtString() );
       XmlObjMgt::SetExtendedString( aCurTarget,  aValueStr); //key
       anElement.appendChild( aCurTarget );
@@ -720,12 +720,12 @@ void XmlMDataStd_NamedDataDriver::Paste(const Handle(TDF_Attribute)& theSource,
       //Value = Array
       TCollection_AsciiString aValueStr2;
       Standard_Integer j = anArr1.Lower();
-       for(;;) {
-	 aValueStr2 += TCollection_AsciiString(anArr1.Value(j));
-	 if (j >= anArr1.Upper()) break;
-	 aValueStr2 += ' ';
-	 j++;
-       }
+      for(;;) {
+        aValueStr2 += TCollection_AsciiString(anArr1.Value(j));
+        if (j >= anArr1.Upper()) break;
+        aValueStr2 += ' ';
+        j++;
+      }
 
       aCurTarget.setAttribute(::Value(), aValueStr2.ToCString());
     }
@@ -741,7 +741,7 @@ void XmlMDataStd_NamedDataDriver::Paste(const Handle(TDF_Attribute)& theSource,
 
       //key
       const TCollection_ExtendedString aValueStr = 
-	itr.Key() + ' ' + TCollection_ExtendedString(aLen);// key - Num_of_Arr_elements;
+        itr.Key() + ' ' + TCollection_ExtendedString(aLen);// key - Num_of_Arr_elements;
       XmlObjMgt_Element aCurTarget = aDoc.createElement( ::ExtString() );
       XmlObjMgt::SetExtendedString( aCurTarget,  aValueStr); //key
       anElement.appendChild( aCurTarget );
@@ -750,13 +750,13 @@ void XmlMDataStd_NamedDataDriver::Paste(const Handle(TDF_Attribute)& theSource,
       TCollection_AsciiString aValueStr2;
       Standard_Integer j = anArr1.Lower();
       for(;;) {
-	char aValueChar[32];
-	Sprintf(aValueChar, "%.15g", anArr1.Value(j));
-	TCollection_AsciiString aValueStr3(aValueChar);
-	aValueStr2 += aValueStr3;
-	if (j >= anArr1.Upper()) break;
-	aValueStr2 += ' ';
-	j++;
+        char aValueChar[32];
+        Sprintf(aValueChar, "%.15g", anArr1.Value(j));
+        TCollection_AsciiString aValueStr3(aValueChar);
+        aValueStr2 += aValueStr3;
+        if (j >= anArr1.Upper()) break;
+        aValueStr2 += ' ';
+        j++;
       }
       aCurTarget.setAttribute(::Value(), aValueStr2.ToCString());
 

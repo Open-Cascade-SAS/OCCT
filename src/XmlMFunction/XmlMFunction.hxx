@@ -21,7 +21,7 @@
 #include <Standard_Handle.hxx>
 
 class XmlMDF_ADriverTable;
-class CDM_MessageDriver;
+class Message_Messenger;
 class XmlMFunction_FunctionDriver;
 class XmlMFunction_ScopeDriver;
 class XmlMFunction_GraphNodeDriver;
@@ -36,7 +36,7 @@ public:
 
   
   //! Adds the attribute storage drivers to <aDriverTable>.
-  Standard_EXPORT static void AddDrivers (const Handle(XmlMDF_ADriverTable)& aDriverTable, const Handle(CDM_MessageDriver)& theMessageDriver);
+  Standard_EXPORT static void AddDrivers (const Handle(XmlMDF_ADriverTable)& aDriverTable, const Handle(Message_Messenger)& theMessageDriver);
 
 
 

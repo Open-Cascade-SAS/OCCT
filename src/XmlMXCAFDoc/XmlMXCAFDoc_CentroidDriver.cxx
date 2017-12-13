@@ -14,7 +14,7 @@
 // commercial license or contractual agreement.
 
 
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <gp_XYZ.hxx>
 #include <Standard_Type.hxx>
 #include <TDF_Attribute.hxx>
@@ -31,7 +31,7 @@ IMPLEMENT_STANDARD_RTTIEXT(XmlMXCAFDoc_CentroidDriver,XmlMDF_ADriver)
 //purpose  : Constructor
 //=======================================================================
 XmlMXCAFDoc_CentroidDriver::XmlMXCAFDoc_CentroidDriver
-                        (const Handle(CDM_MessageDriver)& theMsgDriver)
+                        (const Handle(Message_Messenger)& theMsgDriver)
       : XmlMDF_ADriver (theMsgDriver, "xcaf", "Centroid")
 {}
 
@@ -59,7 +59,7 @@ Standard_Boolean XmlMXCAFDoc_CentroidDriver::Paste
   XmlObjMgt_DOMString aPosStr = XmlObjMgt::GetStringValue(theSource.Element());
   if (aPosStr == NULL)
   {
-    WriteMessage ("Cannot retrieve position string from element");
+    myMessageDriver->Send ("Cannot retrieve position string from element", Message_Fail);
     return Standard_False;
   }
 
@@ -74,7 +74,7 @@ Standard_Boolean XmlMXCAFDoc_CentroidDriver::Paste
       TCollection_ExtendedString
         ("Cannot retrieve X coordinate for XCAFDoc_Centroid attribute as \"")
           + aValueStr + "\"";
-    WriteMessage (aMessageString);
+    myMessageDriver->Send (aMessageString, Message_Fail);
     return Standard_False;
   }
   aPos.SetX(aValue);
@@ -86,7 +86,7 @@ Standard_Boolean XmlMXCAFDoc_CentroidDriver::Paste
       TCollection_ExtendedString
         ("Cannot retrieve Y coordinate for XCAFDoc_Centroid attribute as \"")
           + aValueStr + "\"";
-    WriteMessage (aMessageString);
+    myMessageDriver->Send (aMessageString, Message_Fail);
     return Standard_False;
   }
   aPos.SetY(aValue);
@@ -98,7 +98,7 @@ Standard_Boolean XmlMXCAFDoc_CentroidDriver::Paste
       TCollection_ExtendedString
         ("Cannot retrieve Z coordinate for XCAFDoc_Centroid attribute as \"")
           + aValueStr + "\"";
-    WriteMessage (aMessageString);
+    myMessageDriver->Send (aMessageString, Message_Fail);
     return Standard_False;
   }
   aPos.SetZ(aValue);

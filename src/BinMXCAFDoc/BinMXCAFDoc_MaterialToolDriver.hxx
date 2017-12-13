@@ -23,7 +23,7 @@
 #include <Standard_Boolean.hxx>
 #include <BinObjMgt_RRelocationTable.hxx>
 #include <BinObjMgt_SRelocationTable.hxx>
-class CDM_MessageDriver;
+class Message_Messenger;
 class TDF_Attribute;
 class BinObjMgt_Persistent;
 
@@ -38,7 +38,7 @@ class BinMXCAFDoc_MaterialToolDriver : public BinMDF_ADriver
 public:
 
   
-  Standard_EXPORT BinMXCAFDoc_MaterialToolDriver(const Handle(CDM_MessageDriver)& theMsgDriver);
+  Standard_EXPORT BinMXCAFDoc_MaterialToolDriver(const Handle(Message_Messenger)& theMsgDriver);
   
   Standard_EXPORT virtual Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
   

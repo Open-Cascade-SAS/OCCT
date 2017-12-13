@@ -17,7 +17,7 @@
 #include <BinMDF_ADriverTable.hxx>
 #include <BinXCAFDrivers.hxx>
 #include <BinXCAFDrivers_DocumentRetrievalDriver.hxx>
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(BinXCAFDrivers_DocumentRetrievalDriver,BinDrivers_DocumentRetrievalDriver)
@@ -33,7 +33,7 @@ BinXCAFDrivers_DocumentRetrievalDriver::BinXCAFDrivers_DocumentRetrievalDriver()
 //function : 
 //purpose  :
 //=======================================================================
-Handle(BinMDF_ADriverTable) BinXCAFDrivers_DocumentRetrievalDriver::AttributeDrivers(const Handle(CDM_MessageDriver)& theMsgDriver) {
+Handle(BinMDF_ADriverTable) BinXCAFDrivers_DocumentRetrievalDriver::AttributeDrivers(const Handle(Message_Messenger)& theMsgDriver) {
   return BinXCAFDrivers::AttributeDrivers (theMsgDriver);
 }
 

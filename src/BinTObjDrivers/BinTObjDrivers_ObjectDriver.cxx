@@ -16,7 +16,7 @@
 // The original implementation Copyright: (C) RINA S.p.A
 
 
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <BinObjMgt_Persistent.hxx>
 #include <TDF_Tool.hxx>
 
@@ -36,7 +36,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BinTObjDrivers_ObjectDriver,BinMDF_ADriver)
 //=======================================================================
 
 BinTObjDrivers_ObjectDriver::BinTObjDrivers_ObjectDriver
-                         (const Handle(CDM_MessageDriver)& theMessageDriver)
+                         (const Handle(Message_Messenger)& theMessageDriver)
 : BinMDF_ADriver( theMessageDriver, NULL)
 {
 }
@@ -81,9 +81,9 @@ Standard_Boolean BinTObjDrivers_ObjectDriver::Paste
     {
       TCollection_AsciiString anEntry;
       TDF_Tool::Entry (theTarget->Label(), anEntry);
-      WriteMessage (TCollection_ExtendedString
-                    ("TObj_TObject retrieval: wrong object type name ") +
-                    aName + ", entry " + anEntry);
+      myMessageDriver->Send (TCollection_ExtendedString
+                       ("TObj_TObject retrieval: wrong object type name ") +
+                       aName + ", entry " + anEntry, Message_Fail);
       TObj_Assistant::BindType(0);
       return Standard_False;
     }

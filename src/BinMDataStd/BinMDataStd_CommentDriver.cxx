@@ -16,7 +16,7 @@
 
 #include <BinMDataStd_CommentDriver.hxx>
 #include <BinObjMgt_Persistent.hxx>
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TDataStd_Comment.hxx>
 #include <TDF_Attribute.hxx>
@@ -28,7 +28,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BinMDataStd_CommentDriver,BinMDF_ADriver)
 //purpose  : Constructor
 //=======================================================================
 BinMDataStd_CommentDriver::BinMDataStd_CommentDriver
-                        (const Handle(CDM_MessageDriver)& theMsgDriver)
+                        (const Handle(Message_Messenger)& theMsgDriver)
       : BinMDF_ADriver (theMsgDriver, NULL)
 {}
 

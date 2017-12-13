@@ -24,7 +24,7 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
-class CDM_MessageDriver;
+class Message_Messenger;
 class CDM_Document;
 class CDM_MetaData;
 class CDM_Application;
@@ -41,7 +41,7 @@ public:
 
   
   //! Warning! The constructor does not initialization.
-  Standard_EXPORT PCDM_ReferenceIterator(const Handle(CDM_MessageDriver)& theMessageDriver);
+  Standard_EXPORT PCDM_ReferenceIterator(const Handle(Message_Messenger)& theMessageDriver);
   
   Standard_EXPORT void LoadReferences (const Handle(CDM_Document)& aDocument, const Handle(CDM_MetaData)& aMetaData, const Handle(CDM_Application)& anApplication, const Standard_Boolean UseStorageConfiguration);
   
@@ -73,7 +73,7 @@ private:
 
   PCDM_SequenceOfReference myReferences;
   Standard_Integer myIterator;
-  Handle(CDM_MessageDriver) myMessageDriver;
+  Handle(Message_Messenger) myMessageDriver;
 
 
 };

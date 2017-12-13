@@ -16,7 +16,7 @@
 // The original implementation Copyright: (C) RINA S.p.A
 
 #include <BinTObjDrivers_IntSparseArrayDriver.hxx>
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <TDF_Attribute.hxx>
 #include <BinObjMgt_Persistent.hxx>
 #include <TObj_TIntSparseArray.hxx>
@@ -33,7 +33,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BinTObjDrivers_IntSparseArrayDriver,BinMDF_ADriver)
 //=======================================================================
 
 BinTObjDrivers_IntSparseArrayDriver::BinTObjDrivers_IntSparseArrayDriver
-                         (const Handle(CDM_MessageDriver)& theMessageDriver)
+                         (const Handle(Message_Messenger)& theMessageDriver)
 : BinMDF_ADriver( theMessageDriver, NULL)
 {
 }

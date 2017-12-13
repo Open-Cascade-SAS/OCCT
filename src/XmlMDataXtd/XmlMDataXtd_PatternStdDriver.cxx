@@ -14,7 +14,7 @@
 // commercial license or contractual agreement.
 
 
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TDataStd_Integer.hxx>
 #include <TDataStd_Real.hxx>
@@ -46,7 +46,7 @@ IMPLEMENT_DOMSTRING (TrueString,                "true")
 //purpose  : Constructor
 //=======================================================================
 XmlMDataXtd_PatternStdDriver::XmlMDataXtd_PatternStdDriver
-                        (const Handle(CDM_MessageDriver)& theMsgDriver)
+                        (const Handle(Message_Messenger)& theMsgDriver)
       : XmlMDF_ADriver (theMsgDriver, NULL)
 {}
 
@@ -81,7 +81,7 @@ Standard_Boolean XmlMDataXtd_PatternStdDriver::Paste
     aMsgString = TCollection_ExtendedString
       ("XmlMDataXtd_PatternStdDriver: Bad or undefined value for a \"")
         + ::SignatureString() + "\" attribute (must be integer)";
-    WriteMessage (aMsgString);
+    myMessageDriver->Send (aMsgString, Message_Fail);
     return Standard_False;
   }
   
@@ -103,7 +103,7 @@ Standard_Boolean XmlMDataXtd_PatternStdDriver::Paste
       aMsgString = TCollection_ExtendedString
         ("XmlMDataXtd_PatternStdDriver: Bad or undefined value for a \"")
           + ::Axis1RefString() + "\" attribute (must be integer)";
-      WriteMessage (aMsgString);
+      myMessageDriver->Send (aMsgString, Message_Fail);
       return Standard_False;
     }
     if (theRelocTable.IsBound(aNb))
@@ -120,7 +120,7 @@ Standard_Boolean XmlMDataXtd_PatternStdDriver::Paste
       aMsgString = TCollection_ExtendedString
         ("XmlMDataXtd_PatternStdDriver: Bad or undefined value for a \"")
           + ::Value1RefString() + "\" attribute (must be integer)";
-      WriteMessage (aMsgString);
+      myMessageDriver->Send (aMsgString, Message_Fail);
       return Standard_False;
     }
     if (theRelocTable.IsBound(aNb))
@@ -137,7 +137,7 @@ Standard_Boolean XmlMDataXtd_PatternStdDriver::Paste
       aMsgString = TCollection_ExtendedString
         ("XmlMDataXtd_PatternStdDriver: Bad or undefined value for a \"")
           + ::NbInstances1RefString() + "\" attribute (must be integer)";
-      WriteMessage (aMsgString);
+      myMessageDriver->Send (aMsgString, Message_Fail);
       return Standard_False;
     }
     if (theRelocTable.IsBound(aNb))
@@ -156,7 +156,7 @@ Standard_Boolean XmlMDataXtd_PatternStdDriver::Paste
         aMsgString = TCollection_ExtendedString
           ("XmlMDataXtd_PatternStdDriver: Bad or undefined value for a \"")
             + ::Axis2RefString() + "\" attribute (must be integer)";
-        WriteMessage (aMsgString);
+        myMessageDriver->Send (aMsgString, Message_Fail);
         return Standard_False;
       }
       if (theRelocTable.IsBound(aNb))
@@ -173,7 +173,7 @@ Standard_Boolean XmlMDataXtd_PatternStdDriver::Paste
         aMsgString = TCollection_ExtendedString
           ("XmlMDataXtd_PatternStdDriver: Bad or undefined value for a \"")
             + ::Value2RefString() + "\" attribute (must be integer)";
-        WriteMessage (aMsgString);
+        myMessageDriver->Send (aMsgString, Message_Fail);
         return Standard_False;
       }
       if (theRelocTable.IsBound(aNb))
@@ -190,7 +190,7 @@ Standard_Boolean XmlMDataXtd_PatternStdDriver::Paste
         aMsgString = TCollection_ExtendedString
           ("XmlMDataXtd_PatternStdDriver: Bad or undefined value for a \"")
             + ::NbInstances2RefString() + "\" attribute (must be integer)";
-        WriteMessage (aMsgString);
+        myMessageDriver->Send (aMsgString, Message_Fail);
         return Standard_False;
       }
       if (theRelocTable.IsBound(aNb))
@@ -210,7 +210,7 @@ Standard_Boolean XmlMDataXtd_PatternStdDriver::Paste
       aMsgString = TCollection_ExtendedString
         ("XmlMDataXtd_PatternStdDriver: Bad or undefined value for a \"")
           + ::MirrorRefString() + "\" attribute (must be integer)";
-      WriteMessage (aMsgString);
+      myMessageDriver->Send (aMsgString, Message_Fail);
       return Standard_False;
     }
     if (theRelocTable.IsBound(aNb))

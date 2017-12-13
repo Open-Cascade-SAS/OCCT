@@ -14,7 +14,7 @@
 // commercial license or contractual agreement.
 
 
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <NCollection_LocalArray.hxx>
 #include <Standard_Type.hxx>
 #include <TDataStd_TreeNode.hxx>
@@ -34,7 +34,7 @@ IMPLEMENT_DOMSTRING (ChildrenString, "children")
 //=======================================================================
 
 XmlMDataStd_TreeNodeDriver::XmlMDataStd_TreeNodeDriver
-                        (const Handle(CDM_MessageDriver)& theMsgDriver)
+                        (const Handle(Message_Messenger)& theMsgDriver)
       : XmlMDF_ADriver (theMsgDriver, NULL)
 {}
 

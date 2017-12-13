@@ -15,7 +15,7 @@
 
 #include <BinMDataXtd_TriangulationDriver.hxx>
 #include <BinObjMgt_Persistent.hxx>
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TDataXtd_Triangulation.hxx>
 #include <TDF_Attribute.hxx>
@@ -26,7 +26,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BinMDataXtd_TriangulationDriver,BinMDF_ADriver)
 //function : BinMDataXtd_TriangulationDriver
 //purpose  : Constructor
 //=======================================================================
-BinMDataXtd_TriangulationDriver::BinMDataXtd_TriangulationDriver(const Handle(CDM_MessageDriver)& theMsgDriver)
+BinMDataXtd_TriangulationDriver::BinMDataXtd_TriangulationDriver(const Handle(Message_Messenger)& theMsgDriver)
   : BinMDF_ADriver (theMsgDriver, STANDARD_TYPE(TDataXtd_Triangulation)->Name())
 {
 

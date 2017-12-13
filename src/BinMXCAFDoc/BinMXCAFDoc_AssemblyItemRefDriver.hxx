@@ -24,7 +24,7 @@
 #include <BinObjMgt_RRelocationTable.hxx>
 #include <BinObjMgt_SRelocationTable.hxx>
 
-class CDM_MessageDriver;
+class Message_Messenger;
 class TDF_Attribute;
 class BinObjMgt_Persistent;
 
@@ -35,7 +35,7 @@ class BinMXCAFDoc_AssemblyItemRefDriver : public BinMDF_ADriver
 {
 public:
 
-  Standard_EXPORT BinMXCAFDoc_AssemblyItemRefDriver(const Handle(CDM_MessageDriver)& theMsgDriver);
+  Standard_EXPORT BinMXCAFDoc_AssemblyItemRefDriver(const Handle(Message_Messenger)& theMsgDriver);
 
   Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
 

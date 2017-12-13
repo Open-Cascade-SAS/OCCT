@@ -16,7 +16,7 @@
 
 #include <BinMDataStd_TreeNodeDriver.hxx>
 #include <BinObjMgt_Persistent.hxx>
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <TDataStd_TreeNode.hxx>
@@ -29,7 +29,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BinMDataStd_TreeNodeDriver,BinMDF_ADriver)
 //purpose  : Constructor
 //=======================================================================
 BinMDataStd_TreeNodeDriver::BinMDataStd_TreeNodeDriver
-                        (const Handle(CDM_MessageDriver)& theMsgDriver)
+                        (const Handle(Message_Messenger)& theMsgDriver)
       : BinMDF_ADriver (theMsgDriver, NULL)
 {}
 

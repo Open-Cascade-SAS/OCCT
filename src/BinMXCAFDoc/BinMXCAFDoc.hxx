@@ -21,7 +21,7 @@
 #include <Standard_Handle.hxx>
 
 class BinMDF_ADriverTable;
-class CDM_MessageDriver;
+class Message_Messenger;
 class BinMXCAFDoc_AreaDriver;
 class BinMXCAFDoc_CentroidDriver;
 class BinMXCAFDoc_ClippingPlaneToolDriver;
@@ -53,7 +53,7 @@ public:
 
   
   //! Adds the attribute drivers to <theDriverTable>.
-  Standard_EXPORT static void AddDrivers (const Handle(BinMDF_ADriverTable)& theDriverTable, const Handle(CDM_MessageDriver)& theMsgDrv);
+  Standard_EXPORT static void AddDrivers (const Handle(BinMDF_ADriverTable)& theDriverTable, const Handle(Message_Messenger)& theMsgDrv);
 
 
 

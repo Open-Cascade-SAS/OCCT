@@ -23,7 +23,7 @@
 #include <Standard_Boolean.hxx>
 #include <XmlObjMgt_RRelocationTable.hxx>
 #include <XmlObjMgt_SRelocationTable.hxx>
-class CDM_MessageDriver;
+class Message_Messenger;
 class TDF_Attribute;
 class XmlObjMgt_Persistent;
 
@@ -39,7 +39,7 @@ class XmlMDataXtd_PositionDriver : public XmlMDF_ADriver
 public:
 
   
-  Standard_EXPORT XmlMDataXtd_PositionDriver(const Handle(CDM_MessageDriver)& theMessageDriver);
+  Standard_EXPORT XmlMDataXtd_PositionDriver(const Handle(Message_Messenger)& theMessageDriver);
   
   Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
   

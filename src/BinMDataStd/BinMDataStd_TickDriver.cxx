@@ -19,7 +19,7 @@
 #include <BinObjMgt_Persistent.hxx>
 #include <BinObjMgt_RRelocationTable.hxx>
 #include <BinObjMgt_SRelocationTable.hxx>
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TDataStd_Tick.hxx>
 #include <TDF_Attribute.hxx>
@@ -30,7 +30,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BinMDataStd_TickDriver,BinMDF_ADriver)
 //function : BinMDataStd_TickDriver
 //purpose  : 
 //=======================================================================
-BinMDataStd_TickDriver::BinMDataStd_TickDriver(const Handle(CDM_MessageDriver)& theMsgDriver)
+BinMDataStd_TickDriver::BinMDataStd_TickDriver(const Handle(Message_Messenger)& theMsgDriver)
 : BinMDF_ADriver (theMsgDriver, STANDARD_TYPE(TDataStd_Tick)->Name())
 {
 }

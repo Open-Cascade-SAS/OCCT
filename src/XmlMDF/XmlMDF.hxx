@@ -29,7 +29,7 @@
 class TDF_Data;
 class XmlMDF_ADriverTable;
 class TDF_Label;
-class CDM_MessageDriver;
+class Message_Messenger;
 class XmlMDF_ADriver;
 class XmlMDF_TagSourceDriver;
 class XmlMDF_ReferenceDriver;
@@ -69,7 +69,7 @@ public:
   Standard_EXPORT static Standard_Boolean FromTo (const XmlObjMgt_Element& aSource, Handle(TDF_Data)& aTarget, XmlObjMgt_RRelocationTable& aReloc, const Handle(XmlMDF_ADriverTable)& aDrivers);
   
   //! Adds the attribute storage drivers to <aDriverSeq>.
-  Standard_EXPORT static void AddDrivers (const Handle(XmlMDF_ADriverTable)& aDriverTable, const Handle(CDM_MessageDriver)& theMessageDriver);
+  Standard_EXPORT static void AddDrivers (const Handle(XmlMDF_ADriverTable)& aDriverTable, const Handle(Message_Messenger)& theMessageDriver);
 
 
 

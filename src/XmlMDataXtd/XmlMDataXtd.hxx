@@ -20,7 +20,7 @@
 
 #include <Standard_Integer.hxx>
 class XmlMDF_ADriverTable;
-class CDM_MessageDriver;
+class Message_Messenger;
 class XmlMDataXtd_AxisDriver;
 class XmlMDataXtd_ShapeDriver;
 class XmlMDataXtd_PointDriver;
@@ -41,7 +41,7 @@ public:
 
   
   //! Adds the attribute drivers to <aDriverTable>.
-  Standard_EXPORT static void AddDrivers (const Handle(XmlMDF_ADriverTable)& aDriverTable, const Handle(CDM_MessageDriver)& anMsgDrv);
+  Standard_EXPORT static void AddDrivers (const Handle(XmlMDF_ADriverTable)& aDriverTable, const Handle(Message_Messenger)& anMsgDrv);
   
   Standard_EXPORT static void SetDocumentVersion (const Standard_Integer DocVersion);
   

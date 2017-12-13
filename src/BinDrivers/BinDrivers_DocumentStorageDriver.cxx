@@ -20,7 +20,7 @@
 #include <BinMDF_ADriver.hxx>
 #include <BinMDF_ADriverTable.hxx>
 #include <BinMNaming_NamedShapeDriver.hxx>
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_NotImplemented.hxx>
 #include <Standard_Type.hxx>
@@ -43,7 +43,7 @@ BinDrivers_DocumentStorageDriver::BinDrivers_DocumentStorageDriver ()
 //=======================================================================
 
 Handle(BinMDF_ADriverTable) BinDrivers_DocumentStorageDriver::AttributeDrivers
-       (const Handle(CDM_MessageDriver)& theMessageDriver)
+       (const Handle(Message_Messenger)& theMessageDriver)
 {
   return BinDrivers::AttributeDrivers (theMessageDriver);
 }
@@ -70,7 +70,7 @@ Standard_Boolean BinDrivers_DocumentStorageDriver::IsWithTriangles() const
 //function : SetWithTriangles
 //purpose  :
 //=======================================================================
-void BinDrivers_DocumentStorageDriver::SetWithTriangles (const Handle(CDM_MessageDriver)& theMessageDriver,
+void BinDrivers_DocumentStorageDriver::SetWithTriangles (const Handle(Message_Messenger)& theMessageDriver,
                                                          const Standard_Boolean theWithTriangulation)
 {
   if (myDrivers.IsNull())
@@ -113,10 +113,8 @@ void BinDrivers_DocumentStorageDriver::WriteShapeSection
       aNamedShapeDriver->WriteShapeSection (theOS);
     }
     catch(Standard_Failure const& anException) {
-      TCollection_ExtendedString anErrorStr ("Error: ");
-      TCollection_ExtendedString aStr = 
-	anErrorStr + "BinDrivers_DocumentStorageDriver, Shape Section :";
-      WriteMessage (aStr  + anException.GetMessageString());
+      TCollection_ExtendedString anErrorStr ("BinDrivers_DocumentStorageDriver, Shape Section :");
+      myMsgDriver->Send (anErrorStr  + anException.GetMessageString(), Message_Fail);
     }
   }
    

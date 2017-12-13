@@ -18,7 +18,7 @@
 
 #include <XmlTObjDrivers_XYZDriver.hxx>
 
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <TDF_Attribute.hxx>
 
 #include <XmlObjMgt.hxx>
@@ -39,7 +39,7 @@ IMPLEMENT_DOMSTRING (CoordZ,             "Z")
 //=======================================================================
 
 XmlTObjDrivers_XYZDriver::XmlTObjDrivers_XYZDriver
-                         (const Handle(CDM_MessageDriver)& theMessageDriver)
+                         (const Handle(Message_Messenger)& theMessageDriver)
 : XmlMDF_ADriver( theMessageDriver, NULL)
 {
 }

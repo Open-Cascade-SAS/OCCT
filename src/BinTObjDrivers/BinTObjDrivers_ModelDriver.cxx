@@ -18,7 +18,7 @@
 #include <BinTObjDrivers_ModelDriver.hxx>
 
 #include <BinObjMgt_Persistent.hxx>
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <Standard_GUID.hxx>
 #include <TDF_Attribute.hxx>
 
@@ -37,7 +37,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BinTObjDrivers_ModelDriver,BinMDF_ADriver)
 //=======================================================================
 
 BinTObjDrivers_ModelDriver::BinTObjDrivers_ModelDriver
-                         (const Handle(CDM_MessageDriver)& theMessageDriver)
+                         (const Handle(Message_Messenger)& theMessageDriver)
 : BinMDF_ADriver( theMessageDriver, NULL)
 {
 }
@@ -73,7 +73,7 @@ Standard_Boolean BinTObjDrivers_ModelDriver::Paste
 
   if (aGUID != aCurrentModel->GetGUID())
   {
-    WriteMessage("TObj_TModel retrieval: wrong model GUID");
+    myMessageDriver->Send("TObj_TModel retrieval: wrong model GUID", Message_Fail);
     return Standard_False;
   }
 

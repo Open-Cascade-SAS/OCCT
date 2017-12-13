@@ -14,7 +14,7 @@
 // commercial license or contractual agreement.
 
 
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TDataStd_Tick.hxx>
 #include <TDF_Attribute.hxx>
@@ -27,7 +27,7 @@ IMPLEMENT_STANDARD_RTTIEXT(XmlMDataStd_TickDriver,XmlMDF_ADriver)
 //function : XmlMDataStd_TickDriver
 //purpose  : Constructor
 //=======================================================================
-XmlMDataStd_TickDriver::XmlMDataStd_TickDriver(const Handle(CDM_MessageDriver)& theMsgDriver)
+XmlMDataStd_TickDriver::XmlMDataStd_TickDriver(const Handle(Message_Messenger)& theMsgDriver)
 : XmlMDF_ADriver (theMsgDriver, NULL)
 {
 

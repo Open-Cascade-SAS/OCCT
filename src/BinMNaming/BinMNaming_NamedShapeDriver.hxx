@@ -27,7 +27,7 @@
 #include <BinObjMgt_SRelocationTable.hxx>
 #include <Standard_IStream.hxx>
 #include <Standard_OStream.hxx>
-class CDM_MessageDriver;
+class Message_Messenger;
 class TDF_Attribute;
 class BinObjMgt_Persistent;
 class BinTools_LocationSet;
@@ -43,7 +43,7 @@ class BinMNaming_NamedShapeDriver : public BinMDF_ADriver
 public:
 
   
-  Standard_EXPORT BinMNaming_NamedShapeDriver(const Handle(CDM_MessageDriver)& theMessageDriver);
+  Standard_EXPORT BinMNaming_NamedShapeDriver(const Handle(Message_Messenger)& theMessageDriver);
   
   Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
   

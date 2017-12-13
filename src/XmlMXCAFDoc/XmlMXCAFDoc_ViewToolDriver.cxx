@@ -14,7 +14,7 @@
 // commercial license or contractual agreement.
 
 
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TDF_Attribute.hxx>
 #include <XCAFDoc_ViewTool.hxx>
@@ -28,7 +28,7 @@ IMPLEMENT_STANDARD_RTTIEXT(XmlMXCAFDoc_ViewToolDriver, XmlMDF_ADriver)
 //purpose  : 
 //=======================================================================
 XmlMXCAFDoc_ViewToolDriver::XmlMXCAFDoc_ViewToolDriver
-  (const Handle(CDM_MessageDriver)& theMsgDriver)
+  (const Handle(Message_Messenger)& theMsgDriver)
 : XmlMDF_ADriver (theMsgDriver, "xcaf", "ViewTool")
 {
 }

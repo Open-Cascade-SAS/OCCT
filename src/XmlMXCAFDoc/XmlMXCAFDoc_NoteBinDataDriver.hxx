@@ -26,7 +26,7 @@ class XmlMXCAFDoc_NoteBinDataDriver : public XmlMXCAFDoc_NoteDriver
 {
 public:
 
-  Standard_EXPORT XmlMXCAFDoc_NoteBinDataDriver(const Handle(CDM_MessageDriver)& theMessageDriver);
+  Standard_EXPORT XmlMXCAFDoc_NoteBinDataDriver(const Handle(Message_Messenger)& theMessageDriver);
 
   Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
 

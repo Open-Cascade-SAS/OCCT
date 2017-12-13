@@ -74,7 +74,7 @@ void XmlTObjDrivers::DefineFormat (const Handle(TDocStd_Application)& theApp)
 //purpose  : 
 //=======================================================================
 void XmlTObjDrivers::AddDrivers (const Handle(XmlMDF_ADriverTable)& aDriverTable,
-                                 const Handle(CDM_MessageDriver)&   anMsgDrv)
+                                 const Handle(Message_Messenger)&   anMsgDrv)
 {
   aDriverTable -> AddDriver (new XmlTObjDrivers_ModelDriver         (anMsgDrv));
   aDriverTable -> AddDriver (new XmlTObjDrivers_ObjectDriver        (anMsgDrv));

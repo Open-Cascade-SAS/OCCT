@@ -31,8 +31,7 @@ class CDM_Reference;
 class CDM_MetaData;
 class CDM_Document;
 class Resource_Manager;
-class CDM_MessageDriver;
-
+class Message_Messenger;
 
 class CDM_Application;
 DEFINE_STANDARD_HANDLE(CDM_Application, Standard_Transient)
@@ -48,8 +47,8 @@ public:
   //! used to search for Format.Retrieval  resource items.
   Standard_EXPORT virtual Handle(Resource_Manager) Resources() = 0;
   
-  //! By default returns a NullMessageDriver;
-  Standard_EXPORT virtual Handle(CDM_MessageDriver) MessageDriver();
+  //! Returns default messenger;
+  Standard_EXPORT virtual Handle(Message_Messenger) MessageDriver();
   
   //! this method is called before the update of a document.
   //! By default, writes in MessageDriver().

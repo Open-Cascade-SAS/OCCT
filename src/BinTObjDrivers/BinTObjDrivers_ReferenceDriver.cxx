@@ -17,7 +17,7 @@
 
 
 #include <BinTObjDrivers_ReferenceDriver.hxx>
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <TDF_Attribute.hxx>
 #include <TObj_TReference.hxx>
 #include <BinObjMgt_Persistent.hxx>
@@ -36,7 +36,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BinTObjDrivers_ReferenceDriver,BinMDF_ADriver)
 //=======================================================================
 
 BinTObjDrivers_ReferenceDriver::BinTObjDrivers_ReferenceDriver
-                         (const Handle(CDM_MessageDriver)& theMessageDriver)
+                         (const Handle(Message_Messenger)& theMessageDriver)
 : BinMDF_ADriver( theMessageDriver, NULL)
 {
 }
@@ -81,8 +81,8 @@ Standard_Boolean BinTObjDrivers_ReferenceDriver::Paste
     {
       TCollection_AsciiString anEntry;
       TDF_Tool::Entry (theTarget->Label(), anEntry);
-      WriteMessage (TCollection_ExtendedString ("TObj_TReference retrieval: ")
-                    + "wrong model ID " + aName + ", entry " + anEntry);
+      myMessageDriver->Send (TCollection_ExtendedString ("TObj_TReference retrieval: ")
+                             + "wrong model ID " + aName + ", entry " + anEntry, Message_Fail);
       return Standard_False;
     }
     aDS = aModel->GetLabel().Data();

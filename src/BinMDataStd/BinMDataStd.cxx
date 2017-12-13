@@ -42,7 +42,7 @@
 #include <BinMDataStd_UAttributeDriver.hxx>
 #include <BinMDataStd_VariableDriver.hxx>
 #include <BinMDF_ADriverTable.hxx>
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 
 static Standard_Integer myDocumentVersion = -1;
 //=======================================================================
@@ -51,7 +51,7 @@ static Standard_Integer myDocumentVersion = -1;
 //=======================================================================
 
 void BinMDataStd::AddDrivers (const Handle(BinMDF_ADriverTable)& theDriverTable,
-                              const Handle(CDM_MessageDriver)&   theMsgDriver)
+                              const Handle(Message_Messenger)&   theMsgDriver)
 {
   theDriverTable->AddDriver (new BinMDataStd_CommentDriver     (theMsgDriver) );
   theDriverTable->AddDriver (new BinMDataStd_ExpressionDriver  (theMsgDriver) );

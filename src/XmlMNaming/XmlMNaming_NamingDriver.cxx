@@ -14,7 +14,7 @@
 // commercial license or contractual agreement.
 
 
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TDF_Attribute.hxx>
 #include <TDF_Tool.hxx>
@@ -73,7 +73,7 @@ IMPLEMENT_DOMSTRING (ShShapeString,             "shape")
 //purpose  : Constructor
 //=======================================================================
 XmlMNaming_NamingDriver::XmlMNaming_NamingDriver
-                        (const Handle(CDM_MessageDriver)& theMsgDriver)
+                        (const Handle(Message_Messenger)& theMsgDriver)
       : XmlMDF_ADriver (theMsgDriver, NULL)
 {}
 
@@ -119,7 +119,7 @@ Standard_Boolean XmlMNaming_NamingDriver::Paste
       aMsgString = TCollection_ExtendedString
         ("XmlMNaming_NamingDriver: Cannot retrieve reference "
          "on first Argument from \"") + aDOMStr + "\"";
-      WriteMessage (aMsgString);
+      myMessageDriver->Send (aMsgString, Message_Fail);
       return Standard_False;
     }
     while (aNb > 0)
@@ -147,7 +147,7 @@ Standard_Boolean XmlMNaming_NamingDriver::Paste
       aMsgString = TCollection_ExtendedString
         ("XmlMNaming_NamingDriver: Cannot retrieve reference "
          "on StopNamedShape from \"") + aDOMStr + "\"";
-      WriteMessage (aMsgString);
+      myMessageDriver->Send (aMsgString, Message_Fail);
       return Standard_False;
     }
     if (aNb > 0)
@@ -170,7 +170,7 @@ Standard_Boolean XmlMNaming_NamingDriver::Paste
     aMsgString = TCollection_ExtendedString
       ("XmlMNaming_NamingDriver: Cannot retrieve "
        "integer value of Index from \"") + aDOMStr + "\"";
-    WriteMessage (aMsgString);
+    myMessageDriver->Send (aMsgString, Message_Fail);
     return Standard_False;
   }
   aNgName.Index(aNb);
@@ -178,27 +178,27 @@ Standard_Boolean XmlMNaming_NamingDriver::Paste
   if(XmlMNaming::DocumentVersion() > 3) {
     XmlObjMgt_DOMString aDomEntry = anElem.getAttribute(::ContextLabelString());
     if (aDomEntry != NULL)
-      {	
-	TCollection_AsciiString anEntry;
-	if (XmlObjMgt::GetTagEntryString (aDomEntry, anEntry) == Standard_False)
-	  {
-	    TCollection_ExtendedString aMessage =
-	      TCollection_ExtendedString ("Cannot retrieve Entry from \"")
-		+ aDomEntry + '\"';
-	    WriteMessage (aMessage);
-	    return Standard_False;
-	  }
-    
-	// find label by entry
-	TDF_Label tLab; // Null label.
-	if (anEntry.Length() > 0) {
-	  TDF_Tool::Label(aNg->Label().Data(), anEntry, tLab, Standard_True);
-	    aNgName.ContextLabel(tLab);
-#ifdef OCCT_DEBUG
-	    cout << "Retrieving Context Label = " << anEntry.ToCString() <<endl;
-#endif
-	  }
+    {	
+      TCollection_AsciiString anEntry;
+      if (XmlObjMgt::GetTagEntryString (aDomEntry, anEntry) == Standard_False)
+      {
+        TCollection_ExtendedString aMessage =
+          TCollection_ExtendedString ("Cannot retrieve Entry from \"")
+          + aDomEntry + '\"';
+        myMessageDriver->Send (aMessage, Message_Fail);
+        return Standard_False;
       }
+
+      // find label by entry
+      TDF_Label tLab; // Null label.
+      if (anEntry.Length() > 0) {
+        TDF_Tool::Label(aNg->Label().Data(), anEntry, tLab, Standard_True);
+        aNgName.ContextLabel(tLab);
+#ifdef OCCT_DEBUG
+        cout << "Retrieving Context Label = " << anEntry.ToCString() <<endl;
+#endif
+      }
+    }
 #ifdef OCCT_DEBUG
     else
       cout << "Retrieving Context Label is NULL" <<endl;
@@ -230,7 +230,7 @@ Standard_Boolean XmlMNaming_NamingDriver::Paste
          aMsgString = TCollection_ExtendedString
            ("XmlMNaming_NamingDriver: Cannot retrieve "
             "integer value of orientation from \"") + aDOMStr + "\"";
-         WriteMessage (aMsgString);
+         myMessageDriver->Send (aMsgString, Message_Fail);
          return Standard_False;
        }
        aNgName.Orientation((TopAbs_Orientation)aNb);

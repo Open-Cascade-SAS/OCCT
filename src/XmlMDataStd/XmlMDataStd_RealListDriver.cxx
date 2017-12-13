@@ -14,7 +14,7 @@
 // commercial license or contractual agreement.
 
 
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <NCollection_LocalArray.hxx>
 #include <Standard_Type.hxx>
 #include <TColStd_ListIteratorOfListOfReal.hxx>
@@ -32,7 +32,7 @@ IMPLEMENT_DOMSTRING (AttributeIDString, "reallistattguid")
 //function : XmlMDataStd_RealListDriver
 //purpose  : Constructor
 //=======================================================================
-XmlMDataStd_RealListDriver::XmlMDataStd_RealListDriver(const Handle(CDM_MessageDriver)& theMsgDriver)
+XmlMDataStd_RealListDriver::XmlMDataStd_RealListDriver(const Handle(Message_Messenger)& theMsgDriver)
      : XmlMDF_ADriver (theMsgDriver, NULL)
 {
 
@@ -69,7 +69,7 @@ Standard_Boolean XmlMDataStd_RealListDriver::Paste(const XmlObjMgt_Persistent&  
       TCollection_ExtendedString("Cannot retrieve the first index"
                                  " for RealList attribute as \"")
         + aFirstIndex + "\"";
-    WriteMessage (aMessageString);
+    myMessageDriver->Send (aMessageString, Message_Fail);
     return Standard_False;
   }
 
@@ -80,7 +80,7 @@ Standard_Boolean XmlMDataStd_RealListDriver::Paste(const XmlObjMgt_Persistent&  
       TCollection_ExtendedString("Cannot retrieve the last index"
                                  " for RealList attribute as \"")
         + aFirstIndex + "\"";
-    WriteMessage (aMessageString);
+    myMessageDriver->Send (aMessageString, Message_Fail);
     return Standard_False;
   }
 
@@ -102,7 +102,7 @@ Standard_Boolean XmlMDataStd_RealListDriver::Paste(const XmlObjMgt_Persistent&  
         TCollection_ExtendedString("Cannot retrieve array of real members"
                                    " for RealList attribute from Integer \"")
         + aString + "\"";
-      WriteMessage (aMessageString);
+      myMessageDriver->Send (aMessageString, Message_Fail);
       return Standard_False;
     }
   } 
@@ -116,7 +116,7 @@ Standard_Boolean XmlMDataStd_RealListDriver::Paste(const XmlObjMgt_Persistent&  
           TCollection_ExtendedString("Cannot retrieve real member"
                                      " for RealList attribute as \"")
             + aValueStr + "\"";
-        WriteMessage (aMessageString);
+        myMessageDriver->Send (aMessageString, Message_Fail);
         return Standard_False;
       }
       aRealList->Append(aValue);

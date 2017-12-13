@@ -25,7 +25,7 @@
 #include <XmlObjMgt_RRelocationTable.hxx>
 #include <XmlObjMgt_SRelocationTable.hxx>
 #include <XmlObjMgt_Element.hxx>
-class CDM_MessageDriver;
+class Message_Messenger;
 class TDF_Attribute;
 class XmlObjMgt_Persistent;
 class TopLoc_Location;
@@ -41,7 +41,7 @@ class XmlMXCAFDoc_LocationDriver : public XmlMDF_ADriver
 public:
 
   
-  Standard_EXPORT XmlMXCAFDoc_LocationDriver(const Handle(CDM_MessageDriver)& theMessageDriver);
+  Standard_EXPORT XmlMXCAFDoc_LocationDriver(const Handle(Message_Messenger)& theMessageDriver);
   
   Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
   

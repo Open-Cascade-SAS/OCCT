@@ -17,7 +17,7 @@
 #include <BinMDataStd_RealListDriver.hxx>
 #include <BinMDataStd.hxx>
 #include <BinObjMgt_Persistent.hxx>
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_ListIteratorOfListOfReal.hxx>
@@ -30,7 +30,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BinMDataStd_RealListDriver,BinMDF_ADriver)
 //function : BinMDataStd_RealListDriver
 //purpose  : Constructor
 //=======================================================================
-BinMDataStd_RealListDriver::BinMDataStd_RealListDriver(const Handle(CDM_MessageDriver)& theMsgDriver)
+BinMDataStd_RealListDriver::BinMDataStd_RealListDriver(const Handle(Message_Messenger)& theMsgDriver)
      : BinMDF_ADriver (theMsgDriver, STANDARD_TYPE(TDataStd_RealList)->Name())
 {
 

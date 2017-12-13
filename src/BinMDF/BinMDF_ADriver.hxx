@@ -26,7 +26,7 @@
 #include <Standard_Boolean.hxx>
 #include <BinObjMgt_RRelocationTable.hxx>
 #include <BinObjMgt_SRelocationTable.hxx>
-class CDM_MessageDriver;
+class Message_Messenger;
 class TDF_Attribute;
 class TCollection_AsciiString;
 class BinObjMgt_Persistent;
@@ -62,11 +62,6 @@ public:
   //! into <aTarget>, using the relocation table
   //! <aRelocTable> to keep the sharings.
   Standard_EXPORT virtual void Paste (const Handle(TDF_Attribute)& aSource, BinObjMgt_Persistent& aTarget, BinObjMgt_SRelocationTable& aRelocTable) const = 0;
-  
-  //! Send message to Application (usually when error occurres)
-  Standard_EXPORT void WriteMessage (const TCollection_ExtendedString& theMessage) const;
-
-
 
 
   DEFINE_STANDARD_RTTIEXT(BinMDF_ADriver,Standard_Transient)
@@ -74,15 +69,11 @@ public:
 protected:
 
   
-  Standard_EXPORT BinMDF_ADriver(const Handle(CDM_MessageDriver)& theMsgDriver, const Standard_CString theName = NULL);
+  Standard_EXPORT BinMDF_ADriver(const Handle(Message_Messenger)& theMsgDriver, const Standard_CString theName = NULL);
 
   TCollection_AsciiString myTypeName;
 
-
-private:
-
-
-  Handle(CDM_MessageDriver) myMessageDriver;
+  Handle(Message_Messenger) myMessageDriver;
 
 
 };

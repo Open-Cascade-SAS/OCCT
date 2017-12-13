@@ -14,7 +14,7 @@
 // commercial license or contractual agreement.
 
 #include <BinObjMgt_Persistent.hxx>
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TDF_Attribute.hxx>
 #include <BinMXCAFDoc_NoteBalloonDriver.hxx>
@@ -26,7 +26,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BinMXCAFDoc_NoteBalloonDriver, BinMXCAFDoc_NoteCommen
 //function :
 //purpose  : 
 //=======================================================================
-BinMXCAFDoc_NoteBalloonDriver::BinMXCAFDoc_NoteBalloonDriver(const Handle(CDM_MessageDriver)& theMsgDriver)
+BinMXCAFDoc_NoteBalloonDriver::BinMXCAFDoc_NoteBalloonDriver(const Handle(Message_Messenger)& theMsgDriver)
   : BinMXCAFDoc_NoteCommentDriver(theMsgDriver, STANDARD_TYPE(XCAFDoc_NoteBalloon)->Name())
 {
 }
@@ -44,7 +44,7 @@ Handle(TDF_Attribute) BinMXCAFDoc_NoteBalloonDriver::NewEmpty() const
 //function :
 //purpose  : 
 //=======================================================================
-BinMXCAFDoc_NoteBalloonDriver::BinMXCAFDoc_NoteBalloonDriver(const Handle(CDM_MessageDriver)& theMsgDriver,
+BinMXCAFDoc_NoteBalloonDriver::BinMXCAFDoc_NoteBalloonDriver(const Handle(Message_Messenger)& theMsgDriver,
                                                              Standard_CString                 theName)
   : BinMXCAFDoc_NoteCommentDriver(theMsgDriver, theName)
 {

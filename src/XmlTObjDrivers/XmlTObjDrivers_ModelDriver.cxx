@@ -18,7 +18,7 @@
 
 #include "XmlTObjDrivers_ModelDriver.hxx"
 
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <XmlObjMgt_Persistent.hxx>
 #include <XmlObjMgt_RRelocationTable.hxx>
 #include <XmlObjMgt.hxx>
@@ -40,7 +40,7 @@ IMPLEMENT_STANDARD_RTTIEXT(XmlTObjDrivers_ModelDriver,XmlMDF_ADriver)
 //=======================================================================
 
 XmlTObjDrivers_ModelDriver::XmlTObjDrivers_ModelDriver
-                         (const Handle(CDM_MessageDriver)& theMessageDriver)
+                         (const Handle(Message_Messenger)& theMessageDriver)
 : XmlMDF_ADriver( theMessageDriver, NULL)
 {
 }
@@ -81,10 +81,10 @@ Standard_Boolean XmlTObjDrivers_ModelDriver::Paste
       aTModel->Set( aCurrentModel );
       return Standard_True;
     }
-    WriteMessage("TObj_TModel retrieval: wrong model GUID");
+    myMessageDriver->Send("TObj_TModel retrieval: wrong model GUID", Message_Fail);
     return Standard_False;
   }
-  WriteMessage("error retrieving ExtendedString for type TObj_TModel");
+  myMessageDriver->Send("error retrieving ExtendedString for type TObj_TModel", Message_Fail);
   return Standard_False;
 }
 

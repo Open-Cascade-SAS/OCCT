@@ -18,7 +18,7 @@
 
 #include "XmlTObjDrivers_ReferenceDriver.hxx"
 
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <TDF_Tool.hxx>
 #include <TDF_Attribute.hxx>
 
@@ -44,7 +44,7 @@ IMPLEMENT_DOMSTRING (ReferredModelEntry, "modelentry")
 //=======================================================================
 
 XmlTObjDrivers_ReferenceDriver::XmlTObjDrivers_ReferenceDriver
-                         (const Handle(CDM_MessageDriver)& theMessageDriver)
+                         (const Handle(Message_Messenger)& theMessageDriver)
 : XmlMDF_ADriver( theMessageDriver, NULL)
 {
 }

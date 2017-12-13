@@ -14,7 +14,7 @@
 // commercial license or contractual agreement.
 
 
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
@@ -28,7 +28,7 @@ IMPLEMENT_STANDARD_RTTIEXT(XmlMDF_ADriver,Standard_Transient)
 //function : XmlMDF_ADriver
 //purpose  : Constructor
 //=======================================================================
-XmlMDF_ADriver::XmlMDF_ADriver (const Handle(CDM_MessageDriver)& theMsgDriver,
+XmlMDF_ADriver::XmlMDF_ADriver (const Handle(Message_Messenger)& theMsgDriver,
                                 const Standard_CString           theNS,
                                 const Standard_CString           theName)
      : myMessageDriver (theMsgDriver)
@@ -73,15 +73,4 @@ const TCollection_AsciiString& XmlMDF_ADriver::TypeName () const
   if (myTypeName.Length() == 0 || aString [myTypeName.Length() - 1] == ':')
     (TCollection_AsciiString&)myTypeName += SourceType() -> Name();
   return myTypeName;
-}
-
-//=======================================================================
-//function : WriteMessage
-//purpose  : 
-//=======================================================================
-
-void XmlMDF_ADriver::WriteMessage
-                              (const TCollection_ExtendedString& aMessage) const
-{
-  myMessageDriver -> Write (aMessage.ToExtString());
 }

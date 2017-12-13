@@ -21,7 +21,7 @@
 #include <BinMDF_ADriverTable.hxx>
 #include <BinMNaming.hxx>
 #include <BinMNaming_NamedShapeDriver.hxx>
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
 #include <Standard_IStream.hxx>
@@ -45,7 +45,7 @@ BinDrivers_DocumentRetrievalDriver::BinDrivers_DocumentRetrievalDriver ()
 //=======================================================================
 
 Handle(BinMDF_ADriverTable) BinDrivers_DocumentRetrievalDriver::AttributeDrivers
-       (const Handle(CDM_MessageDriver)& theMessageDriver)
+       (const Handle(Message_Messenger)& theMessageDriver)
 {
   return BinDrivers::AttributeDrivers (theMessageDriver);
 }
@@ -58,7 +58,7 @@ Handle(BinMDF_ADriverTable) BinDrivers_DocumentRetrievalDriver::AttributeDrivers
 void BinDrivers_DocumentRetrievalDriver::ReadShapeSection
                               (BinLDrivers_DocumentSection& /*theSection*/,
                                Standard_IStream&            theIS,
-			       const Standard_Boolean       /*isMess*/)
+                               const Standard_Boolean       /*isMess*/)
 
 {
   // Read Shapes
@@ -74,8 +74,8 @@ void BinDrivers_DocumentRetrievalDriver::ReadShapeSection
     catch(Standard_Failure const& anException) {
       const TCollection_ExtendedString aMethStr
         ("BinDrivers_DocumentRetrievalDriver: ");
-      WriteMessage (aMethStr + "error of Shape Section " +
-        anException.GetMessageString());
+      myMsgDriver ->Send(aMethStr + "error of Shape Section " +
+        anException.GetMessageString(), Message_Fail);
     }
   }
 }
@@ -85,8 +85,8 @@ void BinDrivers_DocumentRetrievalDriver::ReadShapeSection
 //purpose  : 
 //=======================================================================
 void BinDrivers_DocumentRetrievalDriver::CheckShapeSection(
-			      const Storage_Position& /*ShapeSectionPos*/, 
-				 	         Standard_IStream& /*IS*/)
+                              const Storage_Position& /*ShapeSectionPos*/,
+                              Standard_IStream& /*IS*/)
 {}
 
 //=======================================================================
@@ -111,7 +111,7 @@ void BinDrivers_DocumentRetrievalDriver::Clear()
 //purpose  : 
 //=======================================================================
 void BinDrivers_DocumentRetrievalDriver::PropagateDocumentVersion(
-				    const Standard_Integer theDocVersion )
+                                    const Standard_Integer theDocVersion )
 {
   BinMDataStd::SetDocumentVersion(theDocVersion);
   BinMNaming::SetDocumentVersion(theDocVersion);

@@ -21,7 +21,7 @@
 
 #include <BinDrivers_DocumentRetrievalDriver.hxx>
 class BinMDF_ADriverTable;
-class CDM_MessageDriver;
+class Message_Messenger;
 
 
 class BinXCAFDrivers_DocumentRetrievalDriver;
@@ -37,7 +37,7 @@ public:
   //! Constructor
   Standard_EXPORT BinXCAFDrivers_DocumentRetrievalDriver();
   
-  Standard_EXPORT virtual Handle(BinMDF_ADriverTable) AttributeDrivers (const Handle(CDM_MessageDriver)& theMsgDriver) Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(BinMDF_ADriverTable) AttributeDrivers (const Handle(Message_Messenger)& theMsgDriver) Standard_OVERRIDE;
 
 
 

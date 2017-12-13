@@ -21,7 +21,6 @@
 #include <Standard_ErrorHandler.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <TColStd_SequenceOfExtendedString.hxx>
-#include <CDM_COutMessageDriver.hxx>
 #include <Message_Msg.hxx>
 #include <Message_MsgFile.hxx>
 #include <Resource_Manager.hxx>

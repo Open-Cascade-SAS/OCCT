@@ -14,7 +14,7 @@
 // commercial license or contractual agreement.
 
 
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <XmlMDF_ADriverTable.hxx>
 #include <XmlMFunction.hxx>
 #include <XmlMFunction_FunctionDriver.hxx>
@@ -26,7 +26,7 @@
 //purpose  : 
 //=======================================================================
 void XmlMFunction::AddDrivers (const Handle(XmlMDF_ADriverTable)& aDriverTable,
-                               const Handle(CDM_MessageDriver)&   aMessageDriver)
+                               const Handle(Message_Messenger)&   aMessageDriver)
 {
   aDriverTable->AddDriver(new XmlMFunction_FunctionDriver(aMessageDriver));
   aDriverTable->AddDriver(new XmlMFunction_ScopeDriver(aMessageDriver));

@@ -14,7 +14,7 @@
 // commercial license or contractual agreement.
 
 
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <Plugin_Macro.hxx>
 #include <Standard_GUID.hxx>
 #include <TDocStd_Application.hxx>
@@ -80,7 +80,7 @@ void XmlDrivers::DefineFormat (const Handle(TDocStd_Application)& theApp)
 //purpose  : 
 //=======================================================================
 Handle(XmlMDF_ADriverTable) XmlDrivers::AttributeDrivers
-                (const Handle(CDM_MessageDriver)& theMessageDriver)
+                (const Handle(Message_Messenger)& theMessageDriver)
 {
   Handle(XmlMDF_ADriverTable) aTable = new XmlMDF_ADriverTable();
   //

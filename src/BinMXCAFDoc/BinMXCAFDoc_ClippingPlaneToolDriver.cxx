@@ -16,7 +16,7 @@
 
 #include <BinMXCAFDoc_ClippingPlaneToolDriver.hxx>
 #include <BinObjMgt_Persistent.hxx>
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TDF_Attribute.hxx>
 #include <XCAFDoc_ClippingPlaneTool.hxx>
@@ -28,7 +28,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BinMXCAFDoc_ClippingPlaneToolDriver, BinMDF_ADriver)
 //purpose  : 
 //=======================================================================
 BinMXCAFDoc_ClippingPlaneToolDriver::BinMXCAFDoc_ClippingPlaneToolDriver
-  (const Handle(CDM_MessageDriver)& theMsgDriver)
+  (const Handle(Message_Messenger)& theMsgDriver)
   : BinMDF_ADriver(theMsgDriver, STANDARD_TYPE(XCAFDoc_ClippingPlaneTool)->Name())
 {
 }

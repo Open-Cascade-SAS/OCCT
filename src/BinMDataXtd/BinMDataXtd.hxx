@@ -22,7 +22,7 @@
 
 #include <Standard_Integer.hxx>
 class BinMDF_ADriverTable;
-class CDM_MessageDriver;
+class Message_Messenger;
 class BinMDataXtd_PointDriver;
 class BinMDataXtd_AxisDriver;
 class BinMDataXtd_PlaneDriver;
@@ -42,7 +42,7 @@ public:
 
   
   //! Adds the attribute drivers to <theDriverTable>.
-  Standard_EXPORT static void AddDrivers (const Handle(BinMDF_ADriverTable)& theDriverTable, const Handle(CDM_MessageDriver)& aMsgDrv);
+  Standard_EXPORT static void AddDrivers (const Handle(BinMDF_ADriverTable)& theDriverTable, const Handle(Message_Messenger)& aMsgDrv);
   
   Standard_EXPORT static void SetDocumentVersion (const Standard_Integer DocVersion);
   

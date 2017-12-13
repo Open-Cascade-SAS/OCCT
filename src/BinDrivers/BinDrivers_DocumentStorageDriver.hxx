@@ -18,11 +18,11 @@
 
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
-
-#include <BinLDrivers_DocumentStorageDriver.hxx>
 #include <Standard_OStream.hxx>
+#include <BinLDrivers_DocumentStorageDriver.hxx>
+
 class BinMDF_ADriverTable;
-class CDM_MessageDriver;
+class Message_Messenger;
 class BinLDrivers_DocumentSection;
 
 
@@ -39,7 +39,7 @@ public:
   //! Constructor
   Standard_EXPORT BinDrivers_DocumentStorageDriver();
   
-  Standard_EXPORT virtual Handle(BinMDF_ADriverTable) AttributeDrivers (const Handle(CDM_MessageDriver)& theMsgDriver) Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(BinMDF_ADriverTable) AttributeDrivers (const Handle(Message_Messenger)& theMsgDriver) Standard_OVERRIDE;
   
   //! implements the procedure of writing a shape section to file
   Standard_EXPORT virtual void WriteShapeSection (BinLDrivers_DocumentSection& theDocSection, Standard_OStream& theOS) Standard_OVERRIDE;
@@ -48,7 +48,7 @@ public:
   Standard_EXPORT Standard_Boolean IsWithTriangles() const;
 
   //! Set if triangulation should be stored or not.
-  Standard_EXPORT void SetWithTriangles (const Handle(CDM_MessageDriver)& theMessageDriver,
+  Standard_EXPORT void SetWithTriangles (const Handle(Message_Messenger)& theMessageDriver,
                                          const Standard_Boolean theWithTriangulation);
 
   DEFINE_STANDARD_RTTIEXT(BinDrivers_DocumentStorageDriver,BinLDrivers_DocumentStorageDriver)

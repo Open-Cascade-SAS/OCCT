@@ -21,7 +21,7 @@
 #include <Standard_Handle.hxx>
 
 class XmlMDF_ADriverTable;
-class CDM_MessageDriver;
+class Message_Messenger;
 class XmlMXCAFDoc_AreaDriver;
 class XmlMXCAFDoc_CentroidDriver;
 class XmlMXCAFDoc_ColorDriver;
@@ -55,7 +55,7 @@ public:
 
   
   //! Adds the attribute drivers to <aDriverTable>.
-  Standard_EXPORT static void AddDrivers (const Handle(XmlMDF_ADriverTable)& aDriverTable, const Handle(CDM_MessageDriver)& anMsgDrv);
+  Standard_EXPORT static void AddDrivers (const Handle(XmlMDF_ADriverTable)& aDriverTable, const Handle(Message_Messenger)& anMsgDrv);
 
 
 

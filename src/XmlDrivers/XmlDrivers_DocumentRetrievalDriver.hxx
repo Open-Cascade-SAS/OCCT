@@ -23,7 +23,7 @@
 #include <XmlObjMgt_Element.hxx>
 #include <Standard_Integer.hxx>
 class XmlMDF_ADriverTable;
-class CDM_MessageDriver;
+class Message_Messenger;
 class XmlMDF_ADriver;
 
 
@@ -39,9 +39,9 @@ public:
   
   Standard_EXPORT XmlDrivers_DocumentRetrievalDriver();
   
-  Standard_EXPORT virtual Handle(XmlMDF_ADriverTable) AttributeDrivers (const Handle(CDM_MessageDriver)& theMsgDriver) Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(XmlMDF_ADriverTable) AttributeDrivers (const Handle(Message_Messenger)& theMsgDriver) Standard_OVERRIDE;
   
-  Standard_EXPORT virtual Handle(XmlMDF_ADriver) ReadShapeSection (const XmlObjMgt_Element& thePDoc, const Handle(CDM_MessageDriver)& theMsgDriver) Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(XmlMDF_ADriver) ReadShapeSection (const XmlObjMgt_Element& thePDoc, const Handle(Message_Messenger)& theMsgDriver) Standard_OVERRIDE;
   
   Standard_EXPORT virtual void ShapeSetCleaning (const Handle(XmlMDF_ADriver)& theDriver) Standard_OVERRIDE;
   

@@ -14,7 +14,7 @@
 // commercial license or contractual agreement.
 
 
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <TColStd_HArray1OfReal.hxx>
@@ -33,7 +33,7 @@ IMPLEMENT_DOMSTRING (IdIndexString,    "ident")
 //purpose  : Constructor
 //=======================================================================
 XmlMXCAFDoc_DatumDriver::XmlMXCAFDoc_DatumDriver
-  (const Handle(CDM_MessageDriver)& theMsgDriver)
+  (const Handle(Message_Messenger)& theMsgDriver)
 : XmlMDF_ADriver (theMsgDriver, "xcaf", "Datum")
 {}
 
@@ -60,7 +60,7 @@ Standard_Boolean XmlMXCAFDoc_DatumDriver::Paste
   if (aNameStr == NULL) {
     TCollection_ExtendedString aMessageString =
       TCollection_ExtendedString("Cannot retrieve Datum attribute");
-    WriteMessage (aMessageString);
+    myMessageDriver->Send (aMessageString, Message_Fail);
     return Standard_False;
   }
   
@@ -71,7 +71,7 @@ Standard_Boolean XmlMXCAFDoc_DatumDriver::Paste
   if ( aDescrStr == NULL || anIdStr == NULL ) {
     TCollection_ExtendedString aMessageString
       ("Cannot retrieve Datum attribute description or identification");
-    WriteMessage (aMessageString);
+    myMessageDriver->Send (aMessageString, Message_Fail);
     return Standard_False;
   }
 

@@ -25,7 +25,7 @@ class BinMXCAFDoc_NoteBalloonDriver : public BinMXCAFDoc_NoteCommentDriver
 {
 public:
   
-  Standard_EXPORT BinMXCAFDoc_NoteBalloonDriver(const Handle(CDM_MessageDriver)& theMsgDriver);
+  Standard_EXPORT BinMXCAFDoc_NoteBalloonDriver(const Handle(Message_Messenger)& theMsgDriver);
   
   Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
   
@@ -34,7 +34,7 @@ public:
 
 protected:
 
-  BinMXCAFDoc_NoteBalloonDriver(const Handle(CDM_MessageDriver)& theMsgDriver,
+  BinMXCAFDoc_NoteBalloonDriver(const Handle(Message_Messenger)& theMsgDriver,
                                 Standard_CString                 theName);
 
 };

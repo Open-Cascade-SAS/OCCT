@@ -16,7 +16,7 @@
 
 #include <BinMXCAFDoc_CentroidDriver.hxx>
 #include <BinObjMgt_Persistent.hxx>
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TDF_Attribute.hxx>
 #include <XCAFDoc_Centroid.hxx>
@@ -27,7 +27,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BinMXCAFDoc_CentroidDriver,BinMDF_ADriver)
 //function :
 //purpose  : 
 //=======================================================================
-BinMXCAFDoc_CentroidDriver::BinMXCAFDoc_CentroidDriver(const Handle(CDM_MessageDriver)& theMsgDriver)
+BinMXCAFDoc_CentroidDriver::BinMXCAFDoc_CentroidDriver(const Handle(Message_Messenger)& theMsgDriver)
      : BinMDF_ADriver(theMsgDriver, STANDARD_TYPE(XCAFDoc_Centroid)->Name()) {
 }
 

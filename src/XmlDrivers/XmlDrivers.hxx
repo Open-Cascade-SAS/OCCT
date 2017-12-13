@@ -21,7 +21,7 @@
 class Standard_Transient;
 class Standard_GUID;
 class XmlMDF_ADriverTable;
-class CDM_MessageDriver;
+class Message_Messenger;
 class XmlDrivers_DocumentStorageDriver;
 class XmlDrivers_DocumentRetrievalDriver;
 class TDocStd_Application;
@@ -35,7 +35,7 @@ public:
   //! in the specified application
   Standard_EXPORT static void DefineFormat (const Handle(TDocStd_Application)& theApp);
 
-  Standard_EXPORT static Handle(XmlMDF_ADriverTable) AttributeDrivers (const Handle(CDM_MessageDriver)& theMsgDriver);
+  Standard_EXPORT static Handle(XmlMDF_ADriverTable) AttributeDrivers (const Handle(Message_Messenger)& theMsgDriver);
 };
 
 #endif // _XmlDrivers_HeaderFile

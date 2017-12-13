@@ -14,7 +14,7 @@
 // commercial license or contractual agreement.
 
 
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <NCollection_LocalArray.hxx>
 #include <Standard_Type.hxx>
 #include <TDataStd_BooleanList.hxx>
@@ -33,7 +33,7 @@ IMPLEMENT_DOMSTRING (AttributeIDString, "boollistattguid")
 //function : XmlMDataStd_BooleanListDriver
 //purpose  : Constructor
 //=======================================================================
-XmlMDataStd_BooleanListDriver::XmlMDataStd_BooleanListDriver(const Handle(CDM_MessageDriver)& theMsgDriver)
+XmlMDataStd_BooleanListDriver::XmlMDataStd_BooleanListDriver(const Handle(Message_Messenger)& theMsgDriver)
      : XmlMDF_ADriver (theMsgDriver, NULL)
 {
 
@@ -69,7 +69,7 @@ Standard_Boolean XmlMDataStd_BooleanListDriver::Paste(const XmlObjMgt_Persistent
       TCollection_ExtendedString("Cannot retrieve the first index"
                                  " for BooleanList attribute as \"")
         + aFirstIndex + "\"";
-    WriteMessage (aMessageString);
+    myMessageDriver->Send (aMessageString, Message_Fail);
     return Standard_False;
   }
 
@@ -80,7 +80,7 @@ Standard_Boolean XmlMDataStd_BooleanListDriver::Paste(const XmlObjMgt_Persistent
       TCollection_ExtendedString("Cannot retrieve the last index"
                                  " for BooleanList attribute as \"")
         + aFirstIndex + "\"";
-    WriteMessage (aMessageString);
+    myMessageDriver->Send (aMessageString, Message_Fail);
     return Standard_False;
   }
 
@@ -94,7 +94,7 @@ Standard_Boolean XmlMDataStd_BooleanListDriver::Paste(const XmlObjMgt_Persistent
       TCollection_ExtendedString aMessageString =
         TCollection_ExtendedString("Cannot retrieve integer member"
                                    " for BooleanList attribute as \"");
-      WriteMessage (aMessageString);
+      myMessageDriver->Send (aMessageString, Message_Fail);
       return Standard_False;
     }
     aBooleanList->Append(anInteger ? Standard_True : Standard_False);
@@ -110,7 +110,7 @@ Standard_Boolean XmlMDataStd_BooleanListDriver::Paste(const XmlObjMgt_Persistent
           TCollection_ExtendedString("Cannot retrieve integer member"
                                      " for BooleanList attribute as \"")
             + aValueStr + "\"";
-        WriteMessage (aMessageString);
+        myMessageDriver->Send (aMessageString, Message_Fail);
         return Standard_False;
       }
       aBooleanList->Append(aValue ? Standard_True : Standard_False);

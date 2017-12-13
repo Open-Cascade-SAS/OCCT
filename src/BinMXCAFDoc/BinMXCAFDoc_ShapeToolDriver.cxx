@@ -16,7 +16,7 @@
 
 #include <BinMXCAFDoc_ShapeToolDriver.hxx>
 #include <BinObjMgt_Persistent.hxx>
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TDF_Attribute.hxx>
 #include <XCAFDoc_ShapeTool.hxx>
@@ -27,7 +27,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BinMXCAFDoc_ShapeToolDriver,BinMDF_ADriver)
 //function :
 //purpose  : 
 //=======================================================================
-BinMXCAFDoc_ShapeToolDriver::BinMXCAFDoc_ShapeToolDriver(const Handle(CDM_MessageDriver)& theMsgDriver)
+BinMXCAFDoc_ShapeToolDriver::BinMXCAFDoc_ShapeToolDriver(const Handle(Message_Messenger)& theMsgDriver)
      : BinMDF_ADriver(theMsgDriver, STANDARD_TYPE(XCAFDoc_ShapeTool)->Name())
 {
 }
@@ -45,8 +45,8 @@ Handle(TDF_Attribute) BinMXCAFDoc_ShapeToolDriver::NewEmpty() const {
 //purpose  : 
 //=======================================================================
 Standard_Boolean BinMXCAFDoc_ShapeToolDriver::Paste(const BinObjMgt_Persistent& /*theSource*/,
-						    const Handle(TDF_Attribute)& /*theTarget*/,
-						    BinObjMgt_RRelocationTable& /*theRelocTable*/) const
+                                                    const Handle(TDF_Attribute)& /*theTarget*/,
+                                                    BinObjMgt_RRelocationTable& /*theRelocTable*/) const
 {
   return Standard_True;
 }
@@ -56,8 +56,8 @@ Standard_Boolean BinMXCAFDoc_ShapeToolDriver::Paste(const BinObjMgt_Persistent& 
 //purpose  : 
 //=======================================================================
 void BinMXCAFDoc_ShapeToolDriver::Paste(const Handle(TDF_Attribute)& /*theSource*/,
-					BinObjMgt_Persistent& /*theTarget*/,
-					BinObjMgt_SRelocationTable& /*theRelocTable*/) const
+                                        BinObjMgt_Persistent& /*theTarget*/,
+                                        BinObjMgt_SRelocationTable& /*theRelocTable*/) const
 {
 }
 

@@ -13,7 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TDF_Attribute.hxx>
 #include <XCAFDoc_Note.hxx>
@@ -28,7 +28,7 @@ IMPLEMENT_DOMSTRING(TimeStamp, "time_stamp")
 //function :
 //purpose  : 
 //=======================================================================
-XmlMXCAFDoc_NoteDriver::XmlMXCAFDoc_NoteDriver(const Handle(CDM_MessageDriver)& theMsgDriver,
+XmlMXCAFDoc_NoteDriver::XmlMXCAFDoc_NoteDriver(const Handle(Message_Messenger)& theMsgDriver,
                                                Standard_CString                 theName)
   : XmlMDF_ADriver(theMsgDriver, theName)
 {

@@ -16,7 +16,7 @@
 
 #include <BinMXCAFDoc_VolumeDriver.hxx>
 #include <BinObjMgt_Persistent.hxx>
-#include <CDM_MessageDriver.hxx>
+#include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TDF_Attribute.hxx>
 #include <XCAFDoc_Volume.hxx>
@@ -27,7 +27,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BinMXCAFDoc_VolumeDriver,BinMDF_ADriver)
 //function :
 //purpose  : 
 //=======================================================================
-BinMXCAFDoc_VolumeDriver::BinMXCAFDoc_VolumeDriver(const Handle(CDM_MessageDriver)& theMsgDriver)
+BinMXCAFDoc_VolumeDriver::BinMXCAFDoc_VolumeDriver(const Handle(Message_Messenger)& theMsgDriver)
      : BinMDF_ADriver(theMsgDriver, STANDARD_TYPE(XCAFDoc_Volume)->Name()) {
 }
 
@@ -44,8 +44,8 @@ Handle(TDF_Attribute) BinMXCAFDoc_VolumeDriver::NewEmpty() const {
 //purpose  : 
 //=======================================================================
 Standard_Boolean BinMXCAFDoc_VolumeDriver::Paste(const BinObjMgt_Persistent& theSource,
-						 const Handle(TDF_Attribute)& theTarget,
-						 BinObjMgt_RRelocationTable& /*theRelocTable*/) const
+                                                 const Handle(TDF_Attribute)& theTarget,
+                                                 BinObjMgt_RRelocationTable& /*theRelocTable*/) const
 {
   Handle(XCAFDoc_Volume) anAtt = Handle(XCAFDoc_Volume)::DownCast(theTarget);
   Standard_Real aVol;
@@ -60,8 +60,8 @@ Standard_Boolean BinMXCAFDoc_VolumeDriver::Paste(const BinObjMgt_Persistent& the
 //purpose  : 
 //=======================================================================
 void BinMXCAFDoc_VolumeDriver::Paste(const Handle(TDF_Attribute)& theSource,
-				     BinObjMgt_Persistent& theTarget,
-				     BinObjMgt_SRelocationTable& /*theRelocTable*/) const
+                                     BinObjMgt_Persistent& theTarget,
+                                     BinObjMgt_SRelocationTable& /*theRelocTable*/) const
 {
   Handle(XCAFDoc_Volume) anAtt = Handle(XCAFDoc_Volume)::DownCast(theSource);
   theTarget << anAtt->Get();
