@@ -393,7 +393,7 @@ Standard_Boolean IsDistanceIn3DTolerance (const gp_Pnt& thePnt_f,
   }
 
 //=======================================================================
-//function : IsDistanceIn3DTolerance
+//function : IsDistanceIn2DTolerance
 //purpose  : 
 //=======================================================================
 static 
@@ -432,20 +432,32 @@ Standard_Boolean IsDistanceIn2DTolerance (const BRepAdaptor_Surface& aFaceSurfac
     cout << "VFirst = " << aFaceSurface.FirstVParameter();
     cout << "; VLast = " << aFaceSurface.LastVParameter()														<< endl;
     }
-
+#endif
   dumax = aFaceSurface.UResolution(aTol3d);
   dvmax = aFaceSurface.VResolution(aTol3d);
+  gp_Pnt aP;
+  gp_Vec aDU, aDV;
+  Standard_Real um = (thePnt.X() + thePntRef.X()) / 2.;
+  Standard_Real vm = (thePnt.Y() + thePntRef.Y()) / 2.;
+  aFaceSurface.D1(um, vm, aP, aDU, aDV);
+  Standard_Real aMDU = aDU.Magnitude();
+  if (aMDU > Precision::Confusion())
+  {
+    dumax = Max((aTol3d / aMDU), dumax);
+  }
+  Standard_Real aMDV = aDV.Magnitude();
+  if (aMDV > Precision::Confusion())
+  {
+    dvmax = Max((aTol3d / aMDV), dvmax);
+  }
 
+#ifdef OCCT_DEBUG
   if(PrintWarnings)
     {
     cout << "aTol3d = " << aTol3d <<"; URes = " << dumax << "; VRes = " << dvmax		<< endl;
     cout << "thePnt(" << thePnt.X() << "; " << thePnt.Y() << ")"										<< endl;
     cout << "thePntRef(" << thePntRef.X() << "; " << thePntRef.Y() << ")"						<< endl;
     }
-
-#else
-  dumax = aFaceSurface.UResolution(aTol3d);
-  dvmax = aFaceSurface.VResolution(aTol3d);
 #endif
 
   Standard_Real aTol2d = 2*Max(	dumax, dvmax);
@@ -458,7 +470,6 @@ Standard_Boolean IsDistanceIn2DTolerance (const BRepAdaptor_Surface& aFaceSurfac
     }
 #endif
 
-  //Standard_Real Dist = thePntRef.Distance(thePnt);
   Standard_Real Dist = Max(dumin, dvmin);
   
   if (Dist < aTol2d)

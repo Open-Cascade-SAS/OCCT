@@ -1,6 +1,4 @@
-puts "TODO OCC27711 ALL: Faulty shapes in variables faulty_1 to faulty_"
-puts "TODO OCC27711 ALL: ERROR: OCC27711 is reproduced."
-
+puts "TODO OCC27711 ALL: Error: tolerance"
 puts "========"
 puts "OCC27711"
 puts "========"
@@ -48,6 +46,7 @@ set bug_info [string trim [checkshape result]]
 if {$bug_info != "This shape seems to be valid"} {
   puts "ERROR: OCC27711 is reproduced. Result of blend operation is WRONG."
 }
+checkmaxtol result -min_tol 1.e-3
 clear
 display result
 xwd $imagedir/${casename}_step_3.png

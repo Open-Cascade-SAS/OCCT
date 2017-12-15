@@ -1,0 +1,12 @@
+
+puts "========"
+puts "OCC28499"
+puts "========"
+puts ""
+########################################################################
+# Checkshape incorrectly reports BRepCheck_NotClosed when gap is covered by vertex tolerance
+########################################################################
+
+restore [locate_data_file bug28499.brep] f
+
+checkshape f
