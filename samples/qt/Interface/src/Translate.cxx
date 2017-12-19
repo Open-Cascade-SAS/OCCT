@@ -408,34 +408,37 @@ Handle(TopTools_HSequenceOfShape) Translate::importIGES( const QString& file )
 
 Handle(TopTools_HSequenceOfShape) Translate::importSTEP( const QString& file )
 {
-	Handle(TopTools_HSequenceOfShape) aSequence;
-  TCollection_AsciiString  aFilePath = file.toUtf8().data();
-	STEPControl_Reader aReader;
-	IFSelect_ReturnStatus status = aReader.ReadFile( aFilePath.ToCString() );
-	if ( status == IFSelect_RetDone )
+    Handle(TopTools_HSequenceOfShape) aSequence = new TopTools_HSequenceOfShape;
+    TCollection_AsciiString  aFilePath = file.toUtf8().data();
+    STEPControl_Reader aReader;
+    IFSelect_ReturnStatus status = aReader.ReadFile( aFilePath.ToCString() );
+    if ( status != IFSelect_RetDone )
     {
-	    //Interface_TraceFile::SetDefault();
-	    bool failsonly = false;
-	    aReader.PrintCheckLoad( failsonly, IFSelect_ItemsByEntity );
+        return aSequence;
+    }
 
-	    int nbr = aReader.NbRootsForTransfer();
-	    aReader.PrintCheckTransfer( failsonly, IFSelect_ItemsByEntity );
-	    for ( Standard_Integer n = 1; n <= nbr; n++ )
-	    {
-	        bool ok = aReader.TransferRoot( n );
-	        int nbs = aReader.NbShapes();
-	        if ( ok == true && nbs > 0 )
-            {
-	            aSequence = new TopTools_HSequenceOfShape();
-	            for ( int i = 1; i <= nbs; i++ )
-                {
-		            TopoDS_Shape shape = aReader.Shape( i );
-		            aSequence->Append( shape );
-	            }
-            }
+    //Interface_TraceFile::SetDefault();
+    bool failsonly = false;
+    aReader.PrintCheckLoad( failsonly, IFSelect_ItemsByEntity );
+
+    int nbr = aReader.NbRootsForTransfer();
+    aReader.PrintCheckTransfer( failsonly, IFSelect_ItemsByEntity );
+    for ( Standard_Integer n = 1; n <= nbr; n++ )
+    {
+        aReader.TransferRoot( n );
+    }
+
+    int nbs = aReader.NbShapes();
+    if ( nbs > 0 )
+    {
+        for ( int i = 1; i <= nbs; i++ )
+        {
+         TopoDS_Shape shape = aReader.Shape( i );
+         aSequence->Append( shape );
         }
     }
-	return aSequence;
+
+    return aSequence;
 }
 
 // ----------------------------- Export functionality -----------------------------
