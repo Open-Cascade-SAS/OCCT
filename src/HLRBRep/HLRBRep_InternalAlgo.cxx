@@ -165,7 +165,7 @@ void HLRBRep_InternalAlgo::Update ()
       SB.Bounds(v1,v2,e1,e2,f1,f2);
 
       for (Standard_Integer e = e1; e <= e2; e++) {
-        HLRBRep_EdgeData ed = aEDataArray.ChangeValue(e);
+        HLRBRep_EdgeData& ed = aEDataArray.ChangeValue(e);
         HLRAlgo::DecodeMinMax(ed.MinMax(), TheMin, TheMax);
 	if (FirstTime) {
 	  FirstTime = Standard_False;
@@ -307,7 +307,7 @@ void HLRBRep_InternalAlgo::InitEdgeStatus ()
   Standard_Integer nf = myDS->NbFaces();
 
   for (Standard_Integer e = 1; e <= ne; e++) {
-    HLRBRep_EdgeData ed = aEDataArray.ChangeValue(e);
+    HLRBRep_EdgeData& ed = aEDataArray.ChangeValue(e);
     if (ed.Selected()) ed.Status().ShowAll();
   }
 //  for (Standard_Integer f = 1; f <= nf; f++) {
@@ -368,7 +368,7 @@ void HLRBRep_InternalAlgo::Select ()
     Standard_Integer nf = myDS->NbFaces();
     
     for (Standard_Integer e = 1; e <= ne; e++) {
-      HLRBRep_EdgeData ed = aEDataArray.ChangeValue(e);
+      HLRBRep_EdgeData& ed = aEDataArray.ChangeValue(e);
       ed.Selected(Standard_True);
     }
     

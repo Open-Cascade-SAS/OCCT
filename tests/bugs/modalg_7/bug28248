@@ -1,0 +1,35 @@
+puts "======="
+puts "OCC28248"
+puts "======="
+puts ""
+################################################################
+# HLR Algo result is retrieved from the last added shape only
+################################################################
+
+box b1 -10 -10 0 20 20 5
+pcylinder c1 5 10
+
+hprj proj 0 0 0 0 1 0 0 0 1
+hremove
+
+houtl b1_outl b1
+hfill b1_outl proj 0
+hload b1_outl
+
+houtl c1_outl c1
+hfill c1_outl proj 0
+hload c1_outl
+
+hsetprj proj
+hupdate
+hhide
+hres2d
+
+compound vl v1l vnl vol vil hl h1l hnl hol hil result
+
+checknbshapes result -edge 16
+
+don result
+smallview +X+Y
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png
