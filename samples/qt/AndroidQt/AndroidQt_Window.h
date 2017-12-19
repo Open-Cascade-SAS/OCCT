@@ -20,7 +20,7 @@
 //! The main functionality is viewport dimensions.
 class AndroidQt_Window : public Aspect_Window
 {
-
+  DEFINE_STANDARD_RTTIEXT(AndroidQt_Window, Aspect_Window)
 public:
 
   //! Creates a wrapper over existing Window handle
@@ -34,7 +34,8 @@ public:
   //! Returns parent of native Window handle.
   virtual Aspect_Drawable NativeParentHandle() const { return 0; }
 
-  virtual void Destroy() {}
+  //! Returns native Window FB config (GLXFBConfig on Xlib)
+  virtual Aspect_FBConfig NativeFBConfig() const { return 0; }
 
   //! Opens the window <me>
   virtual void Map() const {}
@@ -84,12 +85,6 @@ private:
   int myY1;
   int myY2;
 
-public:
-
-  DEFINE_STANDARD_RTTIEXT(AndroidQt_Window,Aspect_Window)
-
 };
-
-DEFINE_STANDARD_HANDLE(AndroidQt_Window, Aspect_Window)
 
 #endif // ANDROIDQT_WINDOW_H

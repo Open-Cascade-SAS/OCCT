@@ -170,7 +170,7 @@ void AndroidQt::sync()
       //myView->MustBeResized(); // can be used instead of SetWindow() when EGLsurface has not been changed
 
       EGLContext anEglContext = eglGetCurrentContext();
-      myView->SetWindow (aWindow, (Aspect_RenderingContext )anEglContext, NULL, NULL);
+      myView->SetWindow (aWindow, (Aspect_RenderingContext )anEglContext);
     }
   }
 }
@@ -247,7 +247,7 @@ bool AndroidQt::initViewer()
     }
 
     aWindow->SetSize (aWidth, aHeight);
-    myView->SetWindow (aWindow, (Aspect_RenderingContext )anEglContext, NULL, NULL);
+    myView->SetWindow (aWindow, (Aspect_RenderingContext )anEglContext);
   }
 
   Handle(OpenGl_GraphicDriver) aDriver = new OpenGl_GraphicDriver (NULL, Standard_False);
@@ -273,7 +273,7 @@ bool AndroidQt::initViewer()
   Handle(AndroidQt_Window) aWindow = new AndroidQt_Window (aWidth, aHeight);
   myView = myViewer->CreateView();
 
-  myView->SetWindow (aWindow, (Aspect_RenderingContext )anEglContext, NULL, NULL);
+  myView->SetWindow (aWindow, (Aspect_RenderingContext )anEglContext);
   myView->TriedronDisplay (Aspect_TOTP_RIGHT_LOWER, Quantity_NOC_WHITE, 0.08, V3d_ZBUFFER);
 
   return true;
