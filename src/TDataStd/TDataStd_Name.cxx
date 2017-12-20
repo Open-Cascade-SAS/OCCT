@@ -85,7 +85,7 @@ Handle(TDataStd_Name) TDataStd_Name::Set (const TDF_Label&    label,
 //purpose  : Empty Constructor
 //=======================================================================
 
-TDataStd_Name::TDataStd_Name ()
+TDataStd_Name::TDataStd_Name () : myID(GetID())
 {}
 
 //=======================================================================

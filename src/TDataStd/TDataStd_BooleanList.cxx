@@ -55,10 +55,8 @@ static Handle(TDataStd_BooleanList) SetAttr(const TDF_Label&       label,
 //function : TDataStd_BooleanList
 //purpose  : Empty Constructor
 //=======================================================================
-TDataStd_BooleanList::TDataStd_BooleanList() 
-{
-
-}
+TDataStd_BooleanList::TDataStd_BooleanList() : myID(GetID())
+{}
 
 //=======================================================================
 //function : Set

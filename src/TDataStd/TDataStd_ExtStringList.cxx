@@ -56,7 +56,7 @@ static Handle(TDataStd_ExtStringList) SetAttr(const TDF_Label&       label,
 //function : TDataStd_ExtStringList
 //purpose  : Empty Constructor
 //=======================================================================
-TDataStd_ExtStringList::TDataStd_ExtStringList()
+TDataStd_ExtStringList::TDataStd_ExtStringList() : myID(GetID())
 {}
 
 //=======================================================================

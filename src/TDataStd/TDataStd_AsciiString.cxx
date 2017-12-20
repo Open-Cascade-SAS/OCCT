@@ -28,7 +28,7 @@ IMPLEMENT_STANDARD_RTTIEXT(TDataStd_AsciiString,TDF_Attribute)
 //function : TDataStd_AsciiString
 //purpose  : 
 //=======================================================================
-TDataStd_AsciiString::TDataStd_AsciiString()
+TDataStd_AsciiString::TDataStd_AsciiString(): myID(GetID())
 {
   myString.Clear();
 }

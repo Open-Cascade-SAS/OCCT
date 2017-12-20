@@ -55,10 +55,8 @@ static Handle(TDataStd_RealList) SetAttr(const TDF_Label&       label,
 //function : TDataStd_RealList
 //purpose  : Empty Constructor
 //=======================================================================
-TDataStd_RealList::TDataStd_RealList() 
-{
-
-}
+TDataStd_RealList::TDataStd_RealList() : myID(GetID())
+{}
 
 //=======================================================================
 //function : Set

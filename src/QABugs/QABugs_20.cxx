@@ -2590,6 +2590,184 @@ static Standard_Integer OCC29289(Draw_Interpretor&, Standard_Integer , const cha
   return err;
 }
 
+//===============================================================================================
+Standard_Boolean IsSameGuid (const Standard_GUID& aGuidNull, const Standard_GUID& aGuid2)
+{
+  Standard_Boolean isSame (Standard_False);
+  if(Standard_GUID::IsEqual(aGuidNull, aGuid2)) {
+    aGuid2.ShallowDump(cout);
+    isSame = Standard_True;
+  } else {
+    aGuid2.ShallowDump(cout);
+    cout <<endl;
+  }
+  return isSame;
+}
+
+#include <TDataStd_AsciiString.hxx>
+#include <TDataStd_BooleanArray.hxx>
+#include <TDataStd_BooleanList.hxx>
+#include <TDataStd_ByteArray.hxx>
+#include <TDataStd_ExtStringArray.hxx>
+#include <TDataStd_ExtStringList.hxx>
+#include <TDataStd_Integer.hxx>
+#include <TDataStd_IntegerArray.hxx>
+#include <TDataStd_IntegerList.hxx>
+#include <TDataStd_Name.hxx>
+#include <TDataStd_Real.hxx>
+#include <TDataStd_RealArray.hxx>
+#include <TDataStd_RealList.hxx>
+#include <TDataStd_ReferenceArray.hxx>
+#include <TDataStd_ReferenceList.hxx>
+
+#define QCOMPARE(val1, val2) \
+  di << "Checking " #val1 " == " #val2 << \
+        ((val1) == (val2) ? ": OK\n" : ": Error\n")
+
+static Standard_Integer OCC29371 (Draw_Interpretor& di, Standard_Integer n, const char** a)
+{
+  if (n != 1)
+  {
+    std::cout << "Usage : " << a[0] << "\n";
+    return 1;
+  }
+
+  Handle(TDocStd_Application) anApp = DDocStd::GetApplication();
+  Handle(TDocStd_Document) aDoc;
+  anApp->NewDocument ("BinOcaf", aDoc);
+  TDF_Label aLab = aDoc->Main();
+  Standard_GUID aNullGuid("00000000-0000-0000-0000-000000000000");
+  Standard_Boolean IsNullGuid(Standard_False);
+
+  try {
+    //1. Set TDataStd_AsciiString
+    Handle(TDataStd_AsciiString) aStrAtt = new TDataStd_AsciiString();
+    aLab.AddAttribute(aStrAtt);
+    if(!aStrAtt.IsNull()) {
+      Standard_GUID aGuid = aStrAtt->ID();
+      IsNullGuid = IsSameGuid(aNullGuid, aGuid);
+    }
+
+    //2. Set TDataStd_BooleanArray
+    Handle(TDataStd_BooleanArray) aBArAtt = new TDataStd_BooleanArray();
+    aLab.AddAttribute(aBArAtt);
+    if(!aBArAtt.IsNull()) {
+      Standard_GUID aGuid = aBArAtt->ID();
+      IsNullGuid = IsSameGuid(aNullGuid, aGuid);
+    }
+
+    //3. Set TDataStd_BooleanList
+    Handle(TDataStd_BooleanList) aBListAtt = new TDataStd_BooleanList();
+    aLab.AddAttribute(aBListAtt);
+    if(!aBListAtt.IsNull()) {
+      Standard_GUID aGuid = aBListAtt->ID();
+      IsNullGuid = IsSameGuid(aNullGuid, aGuid);
+    }
+
+    //4. Set TDataStd_ByteArray
+    Handle(TDataStd_ByteArray) aByteArAtt = new TDataStd_ByteArray();
+    aLab.AddAttribute(aByteArAtt);
+    if(!aByteArAtt.IsNull()) {
+      Standard_GUID aGuid = aByteArAtt->ID();
+      IsNullGuid = IsSameGuid(aNullGuid, aGuid);
+    }
+
+    //5. Set TDataStd_ExtStringArray
+    Handle(TDataStd_ExtStringArray) anExtStrArAtt = new TDataStd_ExtStringArray();
+    aLab.AddAttribute(anExtStrArAtt);
+    if(!anExtStrArAtt.IsNull()) {
+      Standard_GUID aGuid = anExtStrArAtt->ID();
+      IsNullGuid = IsSameGuid(aNullGuid, aGuid);
+    }
+
+    //6. Set TDataStd_ExtStringList
+    Handle(TDataStd_ExtStringList) anExtStrListAtt = new TDataStd_ExtStringList();
+    aLab.AddAttribute(anExtStrListAtt);
+    if(!anExtStrListAtt.IsNull()) {
+      Standard_GUID aGuid = anExtStrListAtt->ID();
+      IsNullGuid = IsSameGuid(aNullGuid, aGuid);
+    }
+
+    //7. Set TDataStd_Integer
+    Handle(TDataStd_Integer) anIntAtt = new TDataStd_Integer();
+    aLab.AddAttribute(anIntAtt);
+    if(!anIntAtt.IsNull()) {
+      Standard_GUID aGuid = anIntAtt->ID();
+      IsNullGuid = IsSameGuid(aNullGuid, aGuid);
+    }
+
+    //8. Set TDataStd_IntegerArray
+    Handle(TDataStd_IntegerArray) anIntArrAtt = new TDataStd_IntegerArray();
+    aLab.AddAttribute(anIntArrAtt);
+    if(!anIntArrAtt.IsNull()) {
+      Standard_GUID aGuid = anIntArrAtt->ID();
+      IsNullGuid = IsSameGuid(aNullGuid, aGuid);
+    }
+
+    //9. Set TDataStd_IntegerList
+    Handle(TDataStd_IntegerList) anIntListAtt = new TDataStd_IntegerList();
+    aLab.AddAttribute(anIntListAtt);
+    if(!anIntListAtt.IsNull()) {
+      Standard_GUID aGuid = anIntListAtt->ID();
+      IsNullGuid = IsSameGuid(aNullGuid, aGuid);
+    }
+
+    //10. Set TDataStd_Name
+    Handle(TDataStd_Name) aNameAtt = new TDataStd_Name();
+    aLab.AddAttribute(aNameAtt);
+    if(!aNameAtt.IsNull()) {
+      Standard_GUID aGuid = aNameAtt->ID();
+      IsNullGuid = IsSameGuid(aNullGuid, aGuid);
+    }
+
+    //11. Set TDataStd_Real
+    Handle(TDataStd_Real) aRealAtt = new TDataStd_Real();
+    aLab.AddAttribute(aRealAtt);
+    if(!aRealAtt.IsNull()) {
+      Standard_GUID aGuid = aRealAtt->ID();
+      IsNullGuid = IsSameGuid(aNullGuid, aGuid);
+    }
+
+    //12. Set TDataStd_RealArray
+    Handle(TDataStd_RealArray) aRealArrAtt = new TDataStd_RealArray();
+    aLab.AddAttribute(aRealArrAtt);
+    if(!aRealArrAtt.IsNull()) {
+      Standard_GUID aGuid = aRealArrAtt->ID();
+      IsNullGuid = IsSameGuid(aNullGuid, aGuid);
+    }
+
+    //13. Set TDataStd_RealList
+    Handle(TDataStd_RealList) aRealListAtt = new TDataStd_RealList();
+    aLab.AddAttribute(aRealListAtt);
+    if(!aRealListAtt.IsNull()) {
+      Standard_GUID aGuid = aRealListAtt->ID();
+      IsNullGuid = IsSameGuid(aNullGuid, aGuid);
+    }
+
+    //14. Set TDataStd_ReferenceArray
+    Handle(TDataStd_ReferenceArray) aRefArrAtt = new TDataStd_ReferenceArray();
+    aLab.AddAttribute(aRefArrAtt);
+    if(!aRefArrAtt.IsNull()) {
+      Standard_GUID aGuid = aRefArrAtt->ID();
+      IsNullGuid = IsSameGuid(aNullGuid, aGuid);
+    }
+
+    //15. Set TDataStd_ReferenceList
+    Handle(TDataStd_ReferenceList) aRefListAtt = new TDataStd_ReferenceList();
+    aLab.AddAttribute(aRefListAtt);
+    if(!aRefListAtt.IsNull()) {
+      Standard_GUID aGuid = aRefListAtt->ID();
+      IsNullGuid = IsSameGuid(aNullGuid, aGuid);
+    }
+  } catch (...)
+  {
+    IsNullGuid = Standard_True;
+  }
+  QCOMPARE (IsNullGuid, Standard_False);
+  anApp->Close(aDoc);
+  return 0;
+}
+
 void QABugs::Commands_20(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
@@ -2619,6 +2797,6 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands) {
                   __FILE__, OCC28887, group);
   theCommands.Add("OCC28131", "OCC28131 name: creates face problematic for offset", __FILE__, OCC28131, group);
   theCommands.Add("OCC29289", "OCC29289 : searching trigonometric root by Newton iterations", __FILE__, OCC29289, group);
-
+  theCommands.Add ("OCC29371", "OCC29371", __FILE__, OCC29371, group);
   return;
 }

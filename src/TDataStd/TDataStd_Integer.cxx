@@ -82,7 +82,7 @@ Handle(TDataStd_Integer) TDataStd_Integer::Set (const TDF_Label&    L,
 //=======================================================================
 
 TDataStd_Integer::TDataStd_Integer ()
-     : myValue (-1)
+     : myValue (-1), myID(GetID())
  { }
 
 
