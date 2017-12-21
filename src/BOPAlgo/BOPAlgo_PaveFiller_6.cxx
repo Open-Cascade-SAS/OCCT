@@ -690,7 +690,10 @@ void BOPAlgo_PaveFiller::MakeBlocks()
       }
     }
   }//for (i=0; i<aNbFF; ++i) {
-  // 
+
+  // Remove "micro" section edges
+  RemoveMicroSectionEdges(aMSCPB, aMicroEdges);
+
   // post treatment
   MakeSDVerticesFF(aDMVLV, aDMNewSD);
   PostTreatFF(aMSCPB, aDMExEdges, aDMNewSD, aMicroEdges, aVertsOnRejectedPB, aAllocator);
@@ -3232,4 +3235,80 @@ void BOPAlgo_PaveFiller::PutSEInOtherFaces()
       }
     }
   }
+}
+
+//=======================================================================
+//function : RemoveMicroSectionEdges
+//purpose  : 
+//=======================================================================
+void BOPAlgo_PaveFiller::RemoveMicroSectionEdges
+  (BOPDS_IndexedDataMapOfShapeCoupleOfPaveBlocks& theMSCPB,
+   TopTools_IndexedMapOfShape& theMicroEdges)
+{
+  if (theMSCPB.IsEmpty())
+    // no section edges
+    return;
+
+  // Get all F/F interferences
+  BOPDS_VectorOfInterfFF& aFFs = myDS->InterfFF();
+
+  // Build the new map of section edges avoiding the micro edges
+  BOPDS_IndexedDataMapOfShapeCoupleOfPaveBlocks aSEPBMap;
+  // Analyze all section edges
+  Standard_Integer aNbCPB = theMSCPB.Extent();
+  for (Standard_Integer i = 1; i <= aNbCPB; ++i)
+  {
+    const TopoDS_Shape& aSI = theMSCPB.FindKey(i);
+    const BOPDS_CoupleOfPaveBlocks& aCPB = theMSCPB(i);
+
+    if (aSI.ShapeType() != TopAbs_EDGE)
+    {
+      // Not an edge
+      aSEPBMap.Add(aSI, aCPB);
+      continue;
+    }
+
+    // Get pave block for analysis
+    const Handle(BOPDS_PaveBlock)& aPB = aCPB.PaveBlock1();
+    if (aPB->HasEdge())
+    {
+      // Not a real section edge
+      aSEPBMap.Add(aSI, aCPB);
+      continue;
+    }
+
+    if (!BOPTools_AlgoTools::IsMicroEdge(TopoDS::Edge(aSI), myContext, Standard_False))
+    {
+      // Normal edge
+      aSEPBMap.Add(aSI, aCPB);
+      continue;
+    }
+
+    // Micro edge is found, avoid it in the <theMSCPB> map
+    // and remove from the F/F Intersection info structure
+
+    // Get F/F interference which created this micro edge
+    BOPDS_InterfFF& aFF = aFFs(aCPB.IndexInterf());
+    // Get curve from which this edge has been created
+    BOPDS_Curve& aCurve = aFF.ChangeCurves().ChangeValue(aCPB.Index());
+    // Get all section pave blocks created from this curve
+    BOPDS_ListOfPaveBlock& aLPBC = aCurve.ChangePaveBlocks();
+    // Remove pave block from the list
+    for (BOPDS_ListIteratorOfListOfPaveBlock it(aLPBC); it.More(); it.Next())
+    {
+      if (it.Value() == aPB)
+      {
+        aLPBC.Remove(it);
+        break;
+      }
+    }
+
+    // Add the "micro" edge to the map of "micro" edges for
+    // unification of its vertices in the PostTreatFF method
+    theMicroEdges.Add(aSI);
+  }
+
+  // Overwrite the old map if necessary
+  if (aSEPBMap.Extent() != theMSCPB.Extent())
+    theMSCPB = aSEPBMap;
 }

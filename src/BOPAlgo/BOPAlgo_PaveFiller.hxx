@@ -490,6 +490,21 @@ protected:
   //! due to being rejected by bounding boxes intersection.
   Standard_EXPORT void ForceInterfEE();
 
+  //! When all section edges are created and no increase of the tolerance
+  //! of vertices put on the section edges is expected, make sure that
+  //! the created sections have valid range.
+  //! If any of the section edges do not have valid range, remove them
+  //! from Face/Face intersection info and from the input <theMSCPB> map.
+  //! Put such edges into <aMicroEdges> map for further unification of their
+  //! vertices in the PostTreatFF method.
+  //!
+  //! All these section edges have already been checked to have valid range.
+  //! Current check is necessary for the edges whose vertices have also
+  //! been put on other section edges with greater tolerance, which has caused
+  //! increase of the tolerance value of the vertices.
+  Standard_EXPORT void RemoveMicroSectionEdges(BOPDS_IndexedDataMapOfShapeCoupleOfPaveBlocks& theMSCPB,
+                                               TopTools_IndexedMapOfShape& theMicroEdges);
+
 
   TopTools_ListOfShape myArguments;
   BOPDS_PDS myDS;
