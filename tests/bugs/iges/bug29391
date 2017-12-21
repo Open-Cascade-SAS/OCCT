@@ -1,0 +1,41 @@
+puts "========"
+puts "OCC29391"
+puts "========"
+puts ""
+##########################################################################
+# transormations for few entities with type 144 are missing
+##########################################################################
+
+igesbrep [locate_data_file bug29391.igs] a *
+
+explode a
+
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX    : 37090
+ EDGE      : 37571
+ WIRE      : 6695
+ FACE      : 6290
+ SHELL     : 0
+ SOLID     : 0
+ COMPSOLID : 0
+ COMPOUND  : 1
+ SHAPE     : 87647
+"
+checknbshapes a -ref ${nbshapes_expected} -t -m "importing file"
+
+set sprops_s [sprops a_5284]
+set CX -71.5
+set CY 20.4285
+set CZ 15.6103
+
+regexp {X += +([-0-9.+eE]+)} $sprops_s full resCX
+regexp {Y += +([-0-9.+eE]+)} $sprops_s full resCY
+regexp {Z += +([-0-9.+eE]+)} $sprops_s full resCZ
+
+if { ([expr abs($CX - $resCX)] > 1.e-7) ||
+     ([expr abs($CY - $resCY)] > 1.e-7) ||
+     ([expr abs($CZ - $resCZ)] > 1.e-7) } {
+  puts "Error: Tranfrormation problem - translation along X is wrong."
+}
+
