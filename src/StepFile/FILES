@@ -10,3 +10,6 @@ StepFile_Read.hxx
 StepFile_Transfer.hxx
 stepread.c
 stepread.ph
+step.lex
+step.yacc
+
