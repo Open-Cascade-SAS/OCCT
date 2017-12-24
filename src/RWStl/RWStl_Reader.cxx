@@ -235,6 +235,23 @@ static inline bool str_starts_with (const char* theStr, const char* theWord, int
   return !strncmp (theStr, theWord, theN);
 }
 
+static bool ReadVertex (const char* theStr, double& theX, double& theY, double& theZ)
+{
+  const char *aStr = theStr;
+
+  // skip 'vertex'
+  while (isspace ((unsigned char)*aStr) || isalpha ((unsigned char)*aStr)) 
+    ++aStr;
+
+  // read values
+  char *aEnd;
+  theX = Strtod (aStr, &aEnd);
+  theY = Strtod (aStr = aEnd, &aEnd);
+  theZ = Strtod (aStr = aEnd, &aEnd);
+
+  return aEnd != aStr;
+}
+
 //==============================================================================
 //function : ReadAscii
 //purpose  :
@@ -314,11 +331,9 @@ Standard_Boolean RWStl_Reader::ReadAscii (Standard_IStream& theStream,
     aNbLine += 5;
 
     Standard_Real x1, y1, z1, x2, y2, z2, x3, y3, z3;
-    Standard_Integer aReadCount = // read 3 lines "vertex x y z"
-      sscanf_l (aLine1, aLocale, "%*s %lf %lf %lf", &x1, &y1, &z1) +
-      sscanf_l (aLine2, aLocale, "%*s %lf %lf %lf", &x2, &y2, &z2) +
-      sscanf_l (aLine3, aLocale, "%*s %lf %lf %lf", &x3, &y3, &z3);
-    if (aReadCount != 9)
+    if (! ReadVertex (aLine1, x1, y1, z1) ||
+        ! ReadVertex (aLine2, x2, y2, z2) ||
+        ! ReadVertex (aLine3, x3, y3, z3))
     {
       TCollection_AsciiString aStr ("Error: cannot read vertex co-ordinates at line ");
       aStr += aNbLine;

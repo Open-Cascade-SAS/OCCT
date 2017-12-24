@@ -17,73 +17,65 @@
 #ifndef _Standard_CString_HeaderFile
 # define _Standard_CString_HeaderFile
 
-# ifndef _Standard_TypeDef_HeaderFile
-#  include <Standard_TypeDef.hxx>
-# endif
+#include <Standard_Macro.hxx>
+
+# include <string.h>
+# include <stdio.h>
 
 # if defined(_MSC_VER) && ! defined(strcasecmp)
 #  define strcasecmp _stricmp
 # endif
 
-# include <string.h>
-# include <stdio.h>
+// C++ only definitions
+#ifdef __cplusplus
 
-# ifndef _Standard_Integer_HeaderFile
-#  include <Standard_Integer.hxx>
-# endif
+#include <Standard_Integer.hxx>
 
-__Standard_API Standard_Integer HashCode (const Standard_CString,
-                           const Standard_Integer);
-inline Standard_Integer HashCode (const Standard_CString,
-                                  const Standard_Integer,
-                                  const Standard_Integer);
-inline Standard_Integer HashCode (const Standard_CString,
-                                  const Standard_Integer ,
-                                  const Standard_Integer ,
-                                  Standard_Integer& );
-__Standard_API Standard_Integer HashCodes (const Standard_CString,
-                                           const Standard_Integer);
+//! Returns bounded hash code for a null-terminated string, in range [1, theUpper]
+__Standard_API Standard_Integer HashCode (const Standard_CString theStr, const Standard_Integer theUpper);
 
-//! Equivalents of functions from standard C library that use always C locale
-__Standard_API double Atof    (const char* theStr);
-__Standard_API double Strtod  (const char* theStr, char** theNextPtr);
-__Standard_API int    Printf  (const char* theFormat, ...);
-__Standard_API int    Fprintf (FILE* theFile, const char* theFormat, ...);
-__Standard_API int    Sprintf (char* theBuffer, const char* theFormat, ...);
+//! Returns 32-bit hash code for the first theLen characters in the string theStr 
+__Standard_API Standard_Integer HashCodes (const Standard_CString theStr, const Standard_Integer theLen);
 
-//============================================================================
-//==== IsEqual : Returns Standard_True if two booleans have the same value
-//============================================================================
-inline Standard_Boolean IsEqual(const Standard_CString One
-				 ,const Standard_CString Two)
-{
-  return (strcmp(One,Two) == 0);
-}
-
-//============================================================================
-//==== HashCode of CString. Returns the HashCode itself and
-//====                              the HashCode % Upper
-//============================================================================
-inline Standard_Integer HashCode (const Standard_CString Value,
-                                  const Standard_Integer Len ,
-			          const Standard_Integer Upper ,
-                                  Standard_Integer& aHashCode )
-{
-  aHashCode = HashCodes( Value , Len );
-//  return (Abs( aHashCode ) % Upper ) + 1 ;
-  return HashCode( (Standard_Integer)aHashCode , Upper ) ;
-}
-
-//============================================================================
-//==== HashCode of CString. Returns the HashCode itself and
-//====                              the HashCode % Upper
-//============================================================================
-inline Standard_Integer HashCode (const Standard_CString Value,
-                                  const Standard_Integer Len ,
-			          const Standard_Integer Upper )
+//! Returns bounded hash code for the first theLen characters in 
+//! the string theStr, in range [1, theUpper]
+inline Standard_Integer HashCode (const Standard_CString theStr,
+                                  const Standard_Integer theLen,
+                                  const Standard_Integer theUpper)
 {
 //  return (Abs( HashCodes( Value , Len ) ) % Upper ) + 1 ;
-  return HashCode( (Standard_Integer) HashCodes( Value , Len ) , Upper ) ;
+  return HashCode (HashCodes (theStr, theLen), theUpper);
 }
+
+//! Returns Standard_True if two strings are equal
+inline Standard_Boolean IsEqual (const Standard_CString theOne, const Standard_CString theTwo)
+{
+  return strcmp (theOne, theTwo) == 0;
+}
+
+#endif /* __cplusplus */
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
+//! Equivalent of standard C function atof() that always uses C locale
+__Standard_API double Atof (const char* theStr);
+
+//! Optimized equivalent of standard C function strtod() that always uses C locale
+__Standard_API double Strtod (const char* theStr, char** theNextPtr);
+
+//! Equivalent of standard C function printf() that always uses C locale
+__Standard_API int Printf (const char* theFormat, ...);
+
+//! Equivalent of standard C function fprintf() that always uses C locale
+__Standard_API int Fprintf (FILE* theFile, const char* theFormat, ...);
+
+//! Equivalent of standard C function sprintf() that always uses C locale
+__Standard_API int Sprintf (char* theBuffer, const char* theFormat, ...);
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif

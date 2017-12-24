@@ -17,6 +17,27 @@
  *
  ***************************************************************/
 
+/*
+ This code has been downloaded from  http://www.netlib.org/fp/ on 2017-12-16 
+ and adapted for use within Open CASCADE Technology as follows:
+
+ 1. Macro IEEE_8087 is defined unconditionally
+ 2. Forward declarations of strtod() and atof(), and 'extern C' statements are commented out
+ 3. strtod() is renamed to Strtod() (OCCT signature)
+ 4. dtoa(), freedtoa() and supporting functions are disabled (see DISABLE_DTOA)
+ 5. Compiler warnings are suppressed
+
+*/
+
+#include <Standard_CString.hxx>
+
+#define IEEE_8087 1
+#define DISABLE_DTOA
+
+#ifdef _MSC_VER
+#pragma warning(disable: 4706 4244 4127 4334)
+#endif
+
 /* Please send bug reports to David M. Gay (dmg at acm dot org,
  * with " at " changed at "@" and " dot " changed to ".").	*/
 
@@ -339,7 +360,7 @@ static double private_mem[PRIVATE_mem], *pmem_next = private_mem;
 #endif
 
 #ifdef __cplusplus
-extern "C" {
+//extern "C" {
 #endif
 
 #if defined(IEEE_8087) + defined(IEEE_MC68k) + defined(VAX) + defined(IBM) != 1
@@ -1051,7 +1072,39 @@ typedef struct BF96 {		/* Normalized 96-bit software floating point numbers */
 	{ 0xfcf62c1d, 0xee382c42, 0x46729e03, 1073 },
 	{ 0x9e19db92, 0xb4e31ba9, 0x6c07a2c2, 1077 }
 	};
- static short int Lhint[2098] = {
+ 
+static ULLong pfive[27] = {
+		5ll,
+		25ll,
+		125ll,
+		625ll,
+		3125ll,
+		15625ll,
+		78125ll,
+		390625ll,
+		1953125ll,
+		9765625ll,
+		48828125ll,
+		244140625ll,
+		1220703125ll,
+		6103515625ll,
+		30517578125ll,
+		152587890625ll,
+		762939453125ll,
+		3814697265625ll,
+		19073486328125ll,
+		95367431640625ll,
+		476837158203125ll,
+		2384185791015625ll,
+		11920928955078125ll,
+		59604644775390625ll,
+		298023223876953125ll,
+		1490116119384765625ll,
+		7450580596923828125ll
+		};
+
+#ifndef DISABLE_DTOA
+static short int Lhint[2098] = {
 	   /*18,*/19,    19,    19,    19,    20,    20,    20,    21,    21,
 	   21,    22,    22,    22,    23,    23,    23,    23,    24,    24,
 	   24,    25,    25,    25,    26,    26,    26,    26,    27,    27,
@@ -1262,38 +1315,11 @@ typedef struct BF96 {		/* Normalized 96-bit software floating point numbers */
 	  641,   642,   642,   642,   643,   643,   643,   644,   644,   644,
 	  644,   645,   645,   645,   646,   646,   646,   647,   647,   647,
 	  647,   648,   648,   648,   649,   649,   649,   650,   650 };
- static ULLong pfive[27] = {
-		5ll,
-		25ll,
-		125ll,
-		625ll,
-		3125ll,
-		15625ll,
-		78125ll,
-		390625ll,
-		1953125ll,
-		9765625ll,
-		48828125ll,
-		244140625ll,
-		1220703125ll,
-		6103515625ll,
-		30517578125ll,
-		152587890625ll,
-		762939453125ll,
-		3814697265625ll,
-		19073486328125ll,
-		95367431640625ll,
-		476837158203125ll,
-		2384185791015625ll,
-		11920928955078125ll,
-		59604644775390625ll,
-		298023223876953125ll,
-		1490116119384765625ll,
-		7450580596923828125ll
-		};
 
  static int pfivebits[25] = {3, 5, 7, 10, 12, 14, 17, 19, 21, 24, 26, 28, 31,
 			     33, 35, 38, 40, 42, 45, 47, 49, 52, 54, 56, 59};
+#endif
+
 #endif /*}*/
 #endif /*}} NO_LONG_LONG */
 
@@ -1502,9 +1528,9 @@ static unsigned int maxthreads = 0;
 #define Kmax 7
 
 #ifdef __cplusplus
-extern "C" double strtod(const char *s00, char **se);
-extern "C" char *dtoa(double d, int mode, int ndigits,
-			int *decpt, int *sign, char **rve);
+//extern "C" double strtod(const char *s00, char **se);
+//extern "C" char *dtoa(double d, int mode, int ndigits,
+//			int *decpt, int *sign, char **rve);
 #endif
 
  struct
@@ -1597,7 +1623,7 @@ Balloc(int k MTd)
 #else
 		len = (sizeof(Bigint) + (x-1)*sizeof(ULong) + sizeof(double) - 1)
 			/sizeof(double);
-		if (k <= Kmax && pmem_next - private_mem + len <= PRIVATE_mem
+		if (k <= Kmax && (unsigned long)(pmem_next - private_mem) + len <= PRIVATE_mem
 #ifdef MULTIPLE_THREADS
 			&& TI == TI1
 #endif
@@ -2822,6 +2848,7 @@ gethex( const char **sp, U *rvp, int rounding, int sign MTd)
 		  case '-':
 			esign = 1;
 			/* no break */
+                        Standard_FALLTHROUGH
 		  case '+':
 			s++;
 		  }
@@ -3229,7 +3256,7 @@ sulp(U *x, BCinfo *bc)
 bigcomp(U *rv, const char *s0, BCinfo *bc MTd)
 {
 	Bigint *b, *d;
-	int b2, bbits, d2, dd, dig, dsign, i, j, nd, nd0, p2, p5, speccase;
+	int b2, bbits, d2, dd=0, dig, dsign, i, j, nd, nd0, p2, p5, speccase;
 
 	dsign = bc->dsign;
 	nd = bc->nd;
@@ -3429,7 +3456,7 @@ retlow1:
 #endif /* NO_STRTOD_BIGCOMP */
 
  double
-strtod(const char *s00, char **se)
+Strtod(const char *s00, char **se)
 {
 	int bb2, bb5, bbe, bd2, bd5, bbbits, bs2, c, e, e1;
 	int esign, i, j, k, nd, nd0, nf, nz, nz0, nz1, sign;
@@ -3439,7 +3466,7 @@ strtod(const char *s00, char **se)
 	U aadj2, adj, rv, rv0;
 	ULong y, z;
 	BCinfo bc;
-	Bigint *bb, *bb1, *bd, *bd0, *bs, *delta;
+	Bigint *bb=0, *bb1=0, *bd=0, *bd0=0, *bs=0, *delta=0;
 #ifdef USE_BF96
 	ULLong bhi, blo, brv, t00, t01, t02, t10, t11, terv, tg, tlo, yz;
 	const BF96 *p10;
@@ -3479,10 +3506,12 @@ strtod(const char *s00, char **se)
 		case '-':
 			sign = 1;
 			/* no break */
+                        Standard_FALLTHROUGH
 		case '+':
 			if (*++s)
 				goto break2;
 			/* no break */
+                        Standard_FALLTHROUGH
 		case 0:
 			goto ret0;
 		case '\t':
@@ -3609,6 +3638,7 @@ strtod(const char *s00, char **se)
 		switch(c = *++s) {
 			case '-':
 				esign = 1;
+                                Standard_FALLTHROUGH
 			case '+':
 				c = *++s;
 			}
@@ -4849,6 +4879,9 @@ strtod(const char *s00, char **se)
 		*se = (char *)s;
 	return sign ? -dval(&rv) : dval(&rv);
 	}
+
+// disable dtoa() and related functions 
+#ifndef DISABLE_DTOA
 
 #ifndef MULTIPLE_THREADS
  static char *dtoa_result;
@@ -6196,8 +6229,10 @@ dtoa(double dd, int mode, int ndigits, int *decpt, int *sign, char **rve)
 		freedtoa(dtoa_result);
 #endif
 	return dtoa_r(dd, mode, ndigits, decpt, sign, rve, 0, 0);
-	}
+ }
+
+#endif /* DISABLE_DTOA */
 
 #ifdef __cplusplus
-}
+//}
 #endif

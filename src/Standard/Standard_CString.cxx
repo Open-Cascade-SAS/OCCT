@@ -90,10 +90,12 @@ Standard_Integer HashCodes (const Standard_CString Value,
   #define vfprintf_l(theFile,   theLocale, theFormat, theArgPtr) vfprintf(theFile,   theFormat, theArgPtr)
 #endif
 
+/*
 double Strtod (const char* theStr, char** theNextPtr)
 {
   return strtod_l (theStr, theNextPtr, Standard_CLocaleSentry::GetCLocale());
 }
+*/
 
 double Atof (const char* theStr)
 {

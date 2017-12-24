@@ -136,6 +136,9 @@ FreeImage is easy to use, fast, multithreading safe, compatible with all 32-bit 
 and cross-platform (works both with Linux and Mac OS X). FreeImage is optionally used by OCCT to work
 with images, on conditions of the FreeImage Public License (FIPL) (http://freeimage.sourceforge.net/freeimage-license.txt).
 
+**David M. Gay's floating point routines** (dtoa.c) are used for fast reading of floating point values from text strings.
+These routines are available under MIT-like license (see http://www.netlib.org/fp/).
+
 **CMake** is an open-source, cross-platform family of tools designed to build, test and package software. CMake is used to control the software compilation process using simple platform and compiler independent configuration files, and generate native makefiles and workspaces that can be used in the compiler environment of your choice. 
 OCCT uses CMake as a build system. CMake is available under BSD 3-Clause license. See more at https://cmake.org/
 

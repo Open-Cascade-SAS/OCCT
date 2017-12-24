@@ -15,11 +15,9 @@
 #ifndef _BRepMesh_Vertex_HeaderFile
 #define _BRepMesh_Vertex_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Macro.hxx>
-#include <gp_XY.hxx>
 #include <BRepMesh_DegreeOfFreedom.hxx>
+#include <gp_XY.hxx>
+#include <Precision.hxx>
 
 //! Light weighted structure representing vertex 
 //! of the mesh in parametric space. Vertex could be 

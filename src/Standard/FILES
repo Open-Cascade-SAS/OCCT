@@ -79,9 +79,9 @@ Standard_Real.hxx
 Standard_ShortReal.cxx
 Standard_ShortReal.hxx
 Standard_Size.hxx
-Standard_SStream.cxx
 Standard_SStream.hxx
 Standard_Stream.hxx
+Standard_Strtod.cxx
 Standard_ThreadId.hxx
 Standard_Time.hxx
 Standard_TooManyUsers.hxx
@@ -92,7 +92,6 @@ Standard_Type.hxx
 Standard_TypeDef.hxx
 Standard_TypeMismatch.hxx
 Standard_Underflow.hxx
-Standard_UUID.cxx
 Standard_UUID.hxx
 Standard_values.h
 Standard_Version.hxx

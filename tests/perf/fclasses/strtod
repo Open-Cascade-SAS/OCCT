@@ -1,0 +1,48 @@
+puts "================================================================="
+puts "Testing performance of Strtod() vs. standard strtod()"
+puts "================================================================="
+puts ""
+
+pload QAcommands
+
+# Check that performance of Strtod() and Atof() is at least twice better 
+# than that of standard strtod() and atof()
+proc CheckAtof {nbvalues nbdigits min max} {
+  set res [QATestAtof $nbvalues $nbdigits $min $max]
+#  puts $res
+
+  if { ! [regexp {atof\s+([0-9.]+)} $res bidon cpu_atof] ||
+       ! [regexp {Atof\s+([0-9.]+)} $res bidon cpu_Atof] ||
+       ! [regexp {strtod\s+([0-9.]+)} $res bidon cpu_strtod] ||
+       ! [regexp {Strtod\s+([0-9.]+)} $res bidon cpu_Strtod] } {
+    puts "Error: cannot interpret results of test command!"
+  } else {
+    if { $cpu_atof < 2 * $cpu_Atof } {
+      puts "Error: Atof() is expected to be at least 2 times better than atof()!"
+    }
+    if { $cpu_strtod < 2 * $cpu_Strtod } {
+      puts "Error: Strtod() is expected to be at least 2 times better than strtod()!"
+    }
+  }
+}
+
+puts "1M random values, 10 significant digits, in range (-1e9, 1e9)"
+CheckAtof 1000000 10 -1e9 1e9
+
+puts "1M random values, 10 significant digits, in range (-1e305, 1e305)"
+CheckAtof 1000000 10 -1e305 1e305
+
+puts "1M random values, 16 significant digits, in range (-1e9, 1e9)"
+CheckAtof 1000000 16 -1e9 1e9
+
+puts "1M random values, 18 significant digits, in range (-1e305, 1e305)"
+CheckAtof 1000000 16 -1e305 1e305
+
+# Disarm FPE signals - otherwise they will be raised if signaling NAN appears
+dsetsignal 0
+
+puts "Special values + 1M values defined by random binary data, 10 digits"
+CheckAtof 1000000 10 0 0
+
+puts "Special values + 1M values defined by random binary data, 16 digits"
+CheckAtof 1000000 16 0 0
