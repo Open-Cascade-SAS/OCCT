@@ -1,0 +1,21 @@
+puts "========"
+puts "OCC29400"
+puts "========"
+puts ""
+#################################################
+# Fuse of two edges creates self-interfered shape
+#################################################
+
+restore [locate_data_file bug29400_edges.brep] le
+bclearobjects
+bcleartools
+baddcompound le
+bfillds
+bbuild result
+
+checkshape result
+checknbshapes result -vertex 3 -edge 2
+checkprops result -l 1.78839
+if {![regexp "OK" [bopcheck result]]} {
+  puts "Error: the result is self-interfered"
+}

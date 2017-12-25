@@ -392,21 +392,42 @@ void BOPAlgo_PaveFiller::SplitPaveBlocks(const TColStd_MapOfInteger& theMEdges,
         myDS->UpdatePaveBlockWithSDVertices(aPBN);
         FillShrunkData(aPBN);
         //
-        if (!aPBN->HasShrunkData()) {
-          // No valid range, unify vertices
+        Standard_Boolean bHasValidRange = aPBN->HasShrunkData();
+        // Take into account that the edge could have really small valid range,
+        // so that the Pave Block cannot be further split. In this case, check if
+        // the vertices of the Pave Block do not interfere. And if they are, unify them.
+        Standard_Boolean bCheckDist = (bHasValidRange && !aPBN->IsSplittable());
+        if (!bHasValidRange || bCheckDist)
+        {
           Standard_Integer nV1, nV2;
           aPBN->Indices(nV1, nV2);
-          if (nV1 != nV2) {
+          if (nV1 == nV2)
+            // Same vertices -> no valid range, no need to unify vertices
+            continue;
+
+          // Decide whether to unify vertices or not
+          if (bCheckDist)
+          {
+            const TopoDS_Vertex& aV1 = TopoDS::Vertex(myDS->Shape(nV1));
+            const TopoDS_Vertex& aV2 = TopoDS::Vertex(myDS->Shape(nV2));
+            if (BOPTools_AlgoTools::ComputeVV(aV1, aV2, myFuzzyValue) == 0)
+              // vertices are interfering -> no valid range, unify vertices
+              bHasValidRange = Standard_False;
+          }
+
+          if (!bHasValidRange)
+          {
             BOPDS_Pair aPair;
             aPair.SetIndices(nV1, nV2);
-            if (aMPairs.Add(aPair)) {
+            if (aMPairs.Add(aPair))
+            {
               TColStd_ListOfInteger aLV;
               aLV.Append(nV1);
               aLV.Append(nV2);
               MakeSDVertices(aLV, theAddInterfs);
             }
+            continue;
           }
-          continue;
         }
         //
         // Update the list with new pave block
