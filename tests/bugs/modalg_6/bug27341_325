@@ -23,6 +23,5 @@ build3d result
 fit
 
 checkprops result -l 6115.27
-checknbshapes result -vertex 206 -edge 103
 
 checkview -screenshot -2d -path ${imagedir}/${test_image}.png
