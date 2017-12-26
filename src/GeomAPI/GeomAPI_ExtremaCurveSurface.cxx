@@ -86,7 +86,7 @@ void GeomAPI_ExtremaCurveSurface::Init
   Extrema_ExtCS theExtCS(TheCurve,TheSurface,Tol,Tol);
   myExtCS = theExtCS;
 
-  myIsDone = myExtCS.IsDone() && ( myExtCS.NbExt() > 0);
+  myIsDone = myExtCS.IsDone() && (myExtCS.IsParallel() || myExtCS.NbExt() > 0);
 
   if ( myIsDone) {
 
@@ -129,7 +129,7 @@ void GeomAPI_ExtremaCurveSurface::Init
 			      Wmin,Wmax,Umin,Umax,Vmin,Vmax,Tol,Tol);
   myExtCS = theExtCS;
 
-  myIsDone = myExtCS.IsDone() && ( myExtCS.NbExt() > 0);
+  myIsDone = myExtCS.IsDone() && (myExtCS.IsParallel() || myExtCS.NbExt() > 0);
 
   if ( myIsDone) {
 

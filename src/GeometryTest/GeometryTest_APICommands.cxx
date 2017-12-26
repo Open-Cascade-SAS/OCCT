@@ -407,7 +407,8 @@ static Standard_Integer extrema(Draw_Interpretor& di, Standard_Integer n, const 
     }
     // Since GeomAPI cannot provide access to flag directly.
     isInfinitySolutions = Ex.Extrema().IsParallel();
-    aMinDist = Ex.LowerDistance();
+    if (isInfinitySolutions)
+      aMinDist = Ex.LowerDistance();
   }
   else if (C1 && S2)
   {
@@ -425,6 +426,9 @@ static Standard_Integer extrema(Draw_Interpretor& di, Standard_Integer n, const 
       aPrms[2].Append(aU2);
       aPrms[3].Append(aV2);
     }
+    isInfinitySolutions = Ex.Extrema().IsParallel();
+    if (isInfinitySolutions)
+      aMinDist = Ex.LowerDistance();
   }
   else if (S1 && C2)
   {
@@ -442,6 +446,9 @@ static Standard_Integer extrema(Draw_Interpretor& di, Standard_Integer n, const 
       aPrms[1].Append(aV1);
       aPrms[2].Append(aU2);
     }
+    isInfinitySolutions = Ex.Extrema().IsParallel();
+    if (isInfinitySolutions)
+      aMinDist = Ex.LowerDistance();
   }
   else if (S1 && S2)
   {

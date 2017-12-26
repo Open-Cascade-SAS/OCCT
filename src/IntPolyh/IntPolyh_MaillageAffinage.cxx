@@ -29,7 +29,6 @@
 #include <Bnd_HArray1OfBox.hxx>
 #include <gp.hxx>
 #include <gp_Pnt.hxx>
-#include <IntCurveSurface_ThePolyhedronOfHInter.hxx>
 #include <IntPolyh_ListOfCouples.hxx>
 #include <IntPolyh_Couple.hxx>
 #include <IntPolyh_Edge.hxx>
@@ -37,6 +36,7 @@
 #include <IntPolyh_Point.hxx>
 #include <IntPolyh_SectionLine.hxx>
 #include <IntPolyh_StartPoint.hxx>
+#include <IntPolyh_Tools.hxx>
 #include <IntPolyh_Triangle.hxx>
 #include <Precision.hxx>
 #include <TColStd_Array1OfInteger.hxx>
@@ -131,12 +131,6 @@ static
                         const Standard_Integer aIsoDirection,
                         Standard_Integer& aI1,
                         Standard_Integer& aI2);
-static
-  void EnlargeZone(const Handle(Adaptor3d_HSurface)& MaSurface,
-                   Standard_Real &u0, 
-                   Standard_Real &u1, 
-                   Standard_Real &v0, 
-                   Standard_Real &v1);
 
 //=======================================================================
 //class : IntPolyh_BoxBndTreeSelector
@@ -184,6 +178,7 @@ static
   NCollection_UBTreeFiller <Standard_Integer, Bnd_Box> aTreeFiller(aBBTree);
   // 1. Fill the tree with the boxes of the triangles from second surface
   Standard_Integer i, aNbT2 = theTriangles2.NbItems();
+  Standard_Boolean bAdded = Standard_False;
   for (i = 0; i < aNbT2; ++i) {
     IntPolyh_Triangle& aT = theTriangles2[i];
     if (!aT.IsIntersectionPossible() || aT.IsDegenerated()) {
@@ -192,8 +187,13 @@ static
     //
     const Bnd_Box& aBox = aT.BoundingBox(thePoints2);
     aTreeFiller.Add(i, aBox);
+    bAdded = Standard_True;
   }
   //
+  if (!bAdded)
+    // Intersection is not possible for all triangles in theTriangles2
+    return;
+
   // 2. Shake the tree filler
   aTreeFiller.Fill();
   //
@@ -245,8 +245,6 @@ IntPolyh_MaillageAffinage::IntPolyh_MaillageAffinage
   FlecheMax2(0.0), 
   FlecheMin1(0.0), 
   FlecheMin2(0.0),
-  FlecheMoy1(0.0), 
-  FlecheMoy2(0.0), 
   myEnlargeZone(Standard_False) 
 { 
 }
@@ -273,11 +271,23 @@ IntPolyh_MaillageAffinage::IntPolyh_MaillageAffinage
   FlecheMax2(0.0), 
   FlecheMin1(0.0), 
   FlecheMin2(0.0),
-  FlecheMoy1(0.0), 
-  FlecheMoy2(0.0), 
   myEnlargeZone(Standard_False)
 { 
 }
+//=======================================================================
+//function : MakeSampling
+//purpose  :
+//=======================================================================
+void IntPolyh_MaillageAffinage::MakeSampling(const Standard_Integer SurfID,
+                                             TColStd_Array1OfReal& theUPars,
+                                             TColStd_Array1OfReal& theVPars)
+{
+  if (SurfID == 1)
+    IntPolyh_Tools::MakeSampling(MaSurface1, NbSamplesU1, NbSamplesV1, myEnlargeZone, theUPars, theVPars);
+  else
+    IntPolyh_Tools::MakeSampling(MaSurface2, NbSamplesU2, NbSamplesV2, myEnlargeZone, theUPars, theVPars);
+}
+
 //=======================================================================
 //function : FillArrayOfPnt
 //purpose  : Compute points on one surface and fill an array of points
@@ -285,47 +295,10 @@ IntPolyh_MaillageAffinage::IntPolyh_MaillageAffinage
 void IntPolyh_MaillageAffinage::FillArrayOfPnt
   (const Standard_Integer SurfID)
 {
-  Standard_Integer NbSamplesU, NbSamplesV, i, aNbSamplesU1, aNbSamplesV1;
-  Standard_Real u0, u1, v0, v1, aU, aV, dU, dV;
-  //
-  const Handle(Adaptor3d_HSurface)& MaSurface=(SurfID==1)? MaSurface1 : MaSurface2;
-  NbSamplesU=(SurfID==1)? NbSamplesU1:NbSamplesU2;
-  NbSamplesV=(SurfID==1)? NbSamplesV1:NbSamplesV2;
-  //
-  u0 = (MaSurface)->FirstUParameter();  
-  u1 = (MaSurface)->LastUParameter();
-  v0 = (MaSurface)->FirstVParameter();  
-  v1 = (MaSurface)->LastVParameter();  
-
-  if(myEnlargeZone) { 
-    EnlargeZone(MaSurface, u0, u1, v0, v1);
-  }
-  //
-  TColStd_Array1OfReal aUpars(1, NbSamplesU);
-  TColStd_Array1OfReal aVpars(1, NbSamplesV);
-  //
-  aNbSamplesU1=NbSamplesU-1;
-  aNbSamplesV1=NbSamplesV-1;
-  //
-  dU=(u1-u0)/Standard_Real(aNbSamplesU1);
-  dV=(v1-v0)/Standard_Real(aNbSamplesV1);
-  //
-  for (i=0; i<NbSamplesU; ++i) {
-    aU=u0+i*dU;
-    if (i==aNbSamplesU1) {
-      aU=u1;
-    }
-    aUpars.SetValue(i+1, aU);
-  }
-  //
-  for (i=0; i<NbSamplesV; ++i) {
-    aV=v0+i*dV;
-    if (i==aNbSamplesV1) {
-      aV=v1;
-    }
-    aVpars.SetValue(i+1, aV);
-  }
-  //
+  // Make sampling
+  TColStd_Array1OfReal aUpars, aVpars;
+  MakeSampling(SurfID, aUpars, aVpars);
+  // Fill array of points
   FillArrayOfPnt(SurfID, aUpars, aVpars);
 }
 //=======================================================================
@@ -337,47 +310,11 @@ void IntPolyh_MaillageAffinage::FillArrayOfPnt
   (const Standard_Integer SurfID,
    const Standard_Boolean isShiftFwd)
 {
-  Standard_Integer NbSamplesU, NbSamplesV, i, aNbSamplesU1, aNbSamplesV1; 
-  Standard_Real u0, u1, v0, v1, aU, aV, dU, dV;
-  const Handle(Adaptor3d_HSurface)& MaSurface=(SurfID==1)? MaSurface1 : MaSurface2;
-  NbSamplesU=(SurfID==1)? NbSamplesU1:NbSamplesU2;
-  NbSamplesV=(SurfID==1)? NbSamplesV1:NbSamplesV2;
-
-  u0 = (MaSurface)->FirstUParameter();  
-  u1 = (MaSurface)->LastUParameter();
-  v0 = (MaSurface)->FirstVParameter();  
-  v1 = (MaSurface)->LastVParameter();  
-
-  if(myEnlargeZone) {
-    EnlargeZone(MaSurface, u0, u1, v0, v1);
-  }
-  //
-  TColStd_Array1OfReal aUpars(1, NbSamplesU);
-  TColStd_Array1OfReal aVpars(1, NbSamplesV);
-  //
-  aNbSamplesU1=NbSamplesU-1;
-  aNbSamplesV1=NbSamplesV-1;
-  //
-  dU=(u1-u0)/Standard_Real(aNbSamplesU1);
-  dV=(v1-v0)/Standard_Real(aNbSamplesV1);
-  //
-  for (i=0; i<NbSamplesU; ++i) {
-    aU=u0+i*dU;
-    if (i==aNbSamplesU1) {
-      aU=u1;
-    }
-    aUpars.SetValue(i+1, aU);
-  }
-  //
-  for (i=0; i<NbSamplesV; ++i) {
-    aV=v0+i*dV;
-    if (i==aNbSamplesV1) {
-      aV=v1;
-    }
-    aVpars.SetValue(i+1, aV);
-  }
-  //
-  FillArrayOfPnt(SurfID, isShiftFwd, aUpars, aVpars);  
+  // Make sampling
+  TColStd_Array1OfReal aUpars, aVpars;
+  MakeSampling(SurfID, aUpars, aVpars);
+  // Fill array of points
+  FillArrayOfPnt(SurfID, isShiftFwd, aUpars, aVpars);
 }
 //=======================================================================
 //function : FillArrayOfPnt
@@ -386,7 +323,8 @@ void IntPolyh_MaillageAffinage::FillArrayOfPnt
 void IntPolyh_MaillageAffinage::FillArrayOfPnt
   (const Standard_Integer SurfID, 
    const TColStd_Array1OfReal& Upars,
-   const TColStd_Array1OfReal& Vpars)
+   const TColStd_Array1OfReal& Vpars,
+   const Standard_Real *theDeflTol)
 {
   Standard_Boolean bDegI, bDeg;
   Standard_Integer aNbU, aNbV, iCnt, i, j;
@@ -432,10 +370,8 @@ void IntPolyh_MaillageAffinage::FillArrayOfPnt
   //
   TPoints.SetNbItems(iCnt);
   //
-  IntCurveSurface_ThePolyhedronOfHInter polyhedron(aS, Upars, Vpars);
-  //
-  aTol=polyhedron.DeflectionOverEstimation();
-  aTol*=1.2;
+  aTol = !theDeflTol ? IntPolyh_Tools::ComputeDeflection(aS, Upars, Vpars) : *theDeflTol;
+  aTol *= 1.2;
 
   Standard_Real a1,a2,a3,b1,b2,b3;
   //
@@ -446,88 +382,101 @@ void IntPolyh_MaillageAffinage::FillArrayOfPnt
 
 //=======================================================================
 //function : FillArrayOfPnt
+//purpose  :
+//=======================================================================
+void IntPolyh_MaillageAffinage::FillArrayOfPnt(const Standard_Integer SurfID,
+                                               const Standard_Boolean isShiftFwd,
+                                               const IntPolyh_ArrayOfPointNormal& thePointsNorm,
+                                               const TColStd_Array1OfReal& theUPars,
+                                               const TColStd_Array1OfReal& theVPars,
+                                               const Standard_Real theDeflTol)
+{
+  Handle(Adaptor3d_HSurface) aS = (SurfID == 1) ? MaSurface1 : MaSurface2;
+  IntPolyh_ArrayOfPoints& TPoints = (SurfID == 1) ? TPoints1 : TPoints2;
+  Standard_Integer aNbU = (SurfID == 1) ? NbSamplesU1 : NbSamplesU2;
+  Standard_Integer aNbV = (SurfID == 1) ? NbSamplesV1 : NbSamplesV2;
+  Bnd_Box& aBox = (SurfID==1) ? MyBox1 : MyBox2;
+
+  Standard_Integer aJD1(0), aJD2(0), aID1(0), aID2(0);
+  DegeneratedIndex(theVPars, aNbV, aS, 1, aJD1, aJD2);
+  if (!(aJD1 || aJD2))
+    DegeneratedIndex(theUPars, aNbU, aS, 2, aID1, aID2);
+
+  Standard_Boolean bDegI, bDeg;
+  Standard_Integer iCnt(0), i, j;
+  Standard_Real aX, aY, aZ, aU, aV;
+
+  TPoints.Init(thePointsNorm.NbItems());
+
+  for (i = 1; i <= aNbU; ++i)
+  {
+    aU = theUPars(i);
+    bDegI = (aID1 == i || aID2 == i);
+    for (j = 1; j <= aNbV; ++j)
+    {
+      aV = theVPars(j);
+
+      const IntPolyh_PointNormal& aPN = thePointsNorm.Value(iCnt);
+      gp_Vec aNorm = aPN.Normal.Multiplied(1.5*theDeflTol);
+      if (!isShiftFwd)
+        aNorm.Reverse();
+      gp_Pnt aP = aPN.Point.Translated(aNorm);
+
+      IntPolyh_Point& aIP = TPoints[iCnt];
+      aP.Coord(aX, aY, aZ);
+      aIP.Set(aX, aY, aZ, aU, aV);
+      bDeg = bDegI || (aJD1 == j || aJD2 == j);
+      if (bDeg)
+        aIP.SetDegenerated(bDeg);
+
+      ++iCnt;
+      aBox.Add(aP);
+    }
+  }
+
+  TPoints.SetNbItems(iCnt);
+
+  // Update box
+  Standard_Real Tol = theDeflTol*1.2;
+  Standard_Real a1,a2,a3,b1,b2,b3;
+  aBox.Get(a1,a2,a3,b1,b2,b3);
+  aBox.Update(a1-Tol,a2-Tol,a3-Tol,b1+Tol,b2+Tol,b3+Tol);
+  aBox.Enlarge(MyTolerance);
+}
+
+//=======================================================================
+//function : FillArrayOfPnt
 //purpose  : Compute points on one surface and fill an array of points
-//           REMPLISSAGE DU TABLEAU DE POINTS
 //=======================================================================
 void IntPolyh_MaillageAffinage::FillArrayOfPnt
   (const Standard_Integer SurfID,
    const Standard_Boolean isShiftFwd,
    const TColStd_Array1OfReal& Upars,
-   const TColStd_Array1OfReal& Vpars)
+   const TColStd_Array1OfReal& Vpars,
+   const Standard_Real *theDeflTol)
 {
-  Standard_Boolean bDegI, bDeg;
-  Standard_Integer aNbU, aNbV, iCnt, i, j;
-  Standard_Integer aID1, aID2, aJD1, aJD2;
-  Standard_Real Tol, resol, aU, aV, aMag;
-  Standard_Real aX, aY, aZ;
-  gp_Pnt aP;
-  gp_Vec aDU, aDV, aNorm;
-  //
-  aNbU=(SurfID==1)? NbSamplesU1:NbSamplesU2;
-  aNbV=(SurfID==1)? NbSamplesV1:NbSamplesV2; 
-  Bnd_Box& aBox = (SurfID==1) ? MyBox1 : MyBox2;
-  Handle(Adaptor3d_HSurface) aS=(SurfID==1)? MaSurface1:MaSurface2;
-  IntPolyh_ArrayOfPoints &TPoints=(SurfID==1)? TPoints1:TPoints2;
-  //
-  resol = gp::Resolution();
-  //
-  IntCurveSurface_ThePolyhedronOfHInter polyhedron(aS, Upars, Vpars);
-  Tol=polyhedron.DeflectionOverEstimation();
-  aJD1=0;
-  aJD2=0;
-  aID1=0;
-  aID2=0;
-  DegeneratedIndex(Vpars, aNbV, aS, 1, aJD1, aJD2);
-  if (!(aJD1 || aJD2)) {
-    DegeneratedIndex(Upars, aNbU, aS, 2, aID1, aID2);
-  }
-  //
-  TPoints.Init(aNbU*aNbV);
-  iCnt=0;
-  for(i=1; i<=aNbU; ++i){
-    bDegI=(aID1==i || aID2==i);
-    aU = Upars(i);
-    for(j=1; j<=aNbV; ++j){
-      aV = Vpars(j);
-      aS->D1(aU, aV, aP, aDU, aDV);
-      
-      aNorm = aDU.Crossed(aDV);
-      aMag = aNorm.Magnitude();
-      if (aMag > resol) {
-        aNorm /= aMag;
-        aNorm.Multiply(Tol*1.5);
-        //
-        if (isShiftFwd) {
-          aP.Translate(aNorm);
-        }
-        else{
-          aP.Translate(aNorm.Reversed());
-        }
-      }
-      
-      IntPolyh_Point& aIP=TPoints[iCnt];
-      aP.Coord(aX, aY, aZ);
-      aIP.Set(aX, aY, aZ, aU, aV);
-      //
-      bDeg=bDegI || (aJD1==j || aJD2==j);
-      if (bDeg) {
-        aIP.SetDegenerated(bDeg);
-      }
-      ++iCnt;
-      aBox.Add(aP);
-    }
-  }
-  //
-  TPoints.SetNbItems(iCnt);
-  //
-  Tol*=1.2;
-  //
-  Standard_Real a1,a2,a3,b1,b2,b3;
-  //
-  aBox.Get(a1,a2,a3,b1,b2,b3);
-  aBox.Update(a1-Tol,a2-Tol,a3-Tol,b1+Tol,b2+Tol,b3+Tol);
-  aBox.Enlarge(MyTolerance);
+  Handle(Adaptor3d_HSurface) aS = (SurfID == 1) ? MaSurface1 : MaSurface2;
+  // Compute the tolerance
+  Standard_Real aTol = theDeflTol != NULL ? * theDeflTol :
+    IntPolyh_Tools::ComputeDeflection(aS, Upars, Vpars);
+  // Fill array of point normal
+  IntPolyh_ArrayOfPointNormal aPoints;
+  IntPolyh_Tools::FillArrayOfPointNormal(aS, Upars, Vpars, aPoints);
+
+  // Fill array of points
+  FillArrayOfPnt(1, isShiftFwd, aPoints, Upars, Vpars, aTol);
 }
+
+//=======================================================================
+//function : CommonBox
+//purpose  : 
+//=======================================================================
+void IntPolyh_MaillageAffinage::CommonBox()
+{
+  Standard_Real XMin, YMin, ZMin, XMax, YMax, ZMax;
+  CommonBox(GetBox(1), GetBox(2), XMin, YMin, ZMin, XMax, YMax, ZMax);
+}
+
 //=======================================================================
 //function : CommonBox
 //purpose  : Compute the common box  witch is the intersection
@@ -939,12 +888,10 @@ void IntPolyh_MaillageAffinage::ComputeDeflections
   IntPolyh_ArrayOfPoints &TPoints=(SurfID==1)? TPoints1:TPoints2;
   IntPolyh_ArrayOfTriangles &TTriangles=(SurfID==1)? TTriangles1:TTriangles2;
   Standard_Real &FlecheMin=(SurfID==1)? FlecheMin1:FlecheMin2;
-  Standard_Real &FlecheMoy=(SurfID==1)? FlecheMoy1:FlecheMoy2;
   Standard_Real &FlecheMax=(SurfID==1)? FlecheMax1:FlecheMax2;
 
   FlecheMax=-RealLast();
   FlecheMin=RealLast();
-  FlecheMoy=0.0;
   const Standard_Integer FinTT = TTriangles.NbItems();
   
   for(Standard_Integer i = 0; i < FinTT; i++) {
@@ -2878,7 +2825,7 @@ IntPolyh_ListOfCouples &IntPolyh_MaillageAffinage::GetCouples()
 //function : SetEnlargeZone
 //purpose  : 
 //=======================================================================
-void IntPolyh_MaillageAffinage::SetEnlargeZone(Standard_Boolean& EnlargeZone)
+void IntPolyh_MaillageAffinage::SetEnlargeZone(const Standard_Boolean EnlargeZone)
 {
   myEnlargeZone = EnlargeZone;
 }
@@ -3029,30 +2976,4 @@ Standard_Boolean IsDegenerated(const Handle(Adaptor3d_HSurface)& aS,
   }
   //
   return bRet;
-}
-//=======================================================================
-//function : EnlargeZone
-//purpose  : 
-//=======================================================================
-void EnlargeZone(const Handle(Adaptor3d_HSurface)& MaSurface,
-                 Standard_Real &u0, 
-                 Standard_Real &u1, 
-                 Standard_Real &v0, 
-                 Standard_Real &v1) 
-{
-  if(MaSurface->GetType() == GeomAbs_BSplineSurface ||
-     MaSurface->GetType() == GeomAbs_BezierSurface) {
-    if((!MaSurface->IsUClosed() && !MaSurface->IsUPeriodic()) &&
-       (Abs(u0) < 1.e+100 && Abs(u1) < 1.e+100) ) {
-      Standard_Real delta_u = 0.01*Abs(u1 - u0);
-      u0 -= delta_u;
-      u1 += delta_u;
-    }
-    if((!MaSurface->IsVClosed() && !MaSurface->IsVPeriodic()) &&
-       (Abs(v0) < 1.e+100 && Abs(v1) < 1.e+100) ) {
-      Standard_Real delta_v = 0.01*Abs(v1 - v0);
-      v0 -= delta_v;
-      v1 += delta_v;
-    }
-  }
 }

@@ -68,145 +68,10 @@ static
   IntTools_EdgeFace::IntTools_EdgeFace()
 {
   myFuzzyValue = Precision::Confusion();
-  myDiscret = 30;
-  myEpsT   =1e-12;
-  myDeflection=0.01;
   myIsDone=Standard_False;
   myErrorStatus=1;
   myQuickCoincidenceCheck=Standard_False;
 }
-//=======================================================================
-//function : SetContext
-//purpose  : 
-//=======================================================================
-void IntTools_EdgeFace::SetContext(const Handle(IntTools_Context)& theContext) 
-{
-  myContext = theContext;
-}
-
-//=======================================================================
-//function : Context
-//purpose  : 
-//=======================================================================
-const Handle(IntTools_Context)& IntTools_EdgeFace::Context()const 
-{
-  return myContext;
-}
-//=======================================================================
-//function : SetEdge
-//purpose  : 
-//=======================================================================
-void IntTools_EdgeFace::SetEdge(const TopoDS_Edge& anEdge)
-{
-  myEdge=anEdge;
-}
-//=======================================================================
-//function : SetFace
-//purpose  : 
-//=======================================================================
-void IntTools_EdgeFace::SetFace(const TopoDS_Face& aFace)
-{
-  myFace=aFace;
-}
-//=======================================================================
-//function : Edge
-//purpose  : 
-//=======================================================================
-const TopoDS_Edge& IntTools_EdgeFace::Edge()const 
-{
-  return myEdge;
-}
-//=======================================================================
-//function : Face
-//purpose  : 
-//=======================================================================
-const TopoDS_Face& IntTools_EdgeFace::Face()const 
-{
-  return myFace;
-}
-//=======================================================================
-//function : SetFuzzyValue
-//purpose  : 
-//=======================================================================
-void IntTools_EdgeFace::SetFuzzyValue(const Standard_Real theFuzz)
-{
-  myFuzzyValue = Max(theFuzz, Precision::Confusion());
-}
-//=======================================================================
-//function : SetDiscretize
-//purpose  : 
-//=======================================================================
-void IntTools_EdgeFace::SetDiscretize(const Standard_Integer aDiscret)
-{
-  myDiscret=aDiscret;
-}
-//=======================================================================
-//function : SetDeflection
-//purpose  : 
-//=======================================================================
-void IntTools_EdgeFace::SetDeflection(const Standard_Real aDefl) 
-{
-  myDeflection=aDefl;
-} 
-//=======================================================================
-//function : SetEpsilonT
-//purpose  : 
-//=======================================================================
-void IntTools_EdgeFace::SetEpsilonT(const Standard_Real anEpsT) 
-{
-  myEpsT=anEpsT;
-} 
-//=======================================================================
-//function : SetRange
-//purpose  : 
-//=======================================================================
-void IntTools_EdgeFace::SetRange(const Standard_Real aFirst,
-                                 const Standard_Real aLast) 
-{
-  myRange.SetFirst (aFirst);
-  myRange.SetLast  (aLast);
-} 
-
-//=======================================================================
-//function : SetRange
-//purpose  : 
-//=======================================================================
-void IntTools_EdgeFace::SetRange(const IntTools_Range& aRange) 
-{
-  SetRange(aRange.First(), aRange.Last());
-} 
-//=======================================================================
-//function : IsDone
-//purpose  : 
-//=======================================================================
-Standard_Boolean IntTools_EdgeFace::IsDone()const 
-{
-  return myIsDone;
-} 
-//=======================================================================
-//function : ErrorStatus
-//purpose  : 
-//=======================================================================
-Standard_Integer IntTools_EdgeFace::ErrorStatus()const 
-{
-  return myErrorStatus;
-}
-//=======================================================================
-//function : CommonParts
-//purpose  : 
-//=======================================================================
-const IntTools_SequenceOfCommonPrts& IntTools_EdgeFace::CommonParts() const 
-{
-  return mySeqOfCommonPrts;
-}
-//=======================================================================
-//function : Range
-//purpose  : 
-//=======================================================================
-const IntTools_Range&  IntTools_EdgeFace::Range() const
-{
-  return myRange;
-} 
 //=======================================================================
 //function :  IsCoincident
 //purpose  : 
@@ -352,7 +217,7 @@ Standard_Real IntTools_EdgeFace::DistanceFunction
   //
   
   if (!bFlag) {
-    myErrorStatus=11;
+    myErrorStatus = 4;
     return 99.;
   }
   
@@ -597,11 +462,11 @@ Standard_Boolean IntTools_EdgeFace::CheckTouch
     return theflag;
   }
   
-  if (fabs (aTx-aTF) < myEpsT) {
+  if (fabs (aTx-aTF) < Precision::PConfusion()) {
     return !theflag;
   }
 
-  if (fabs (aTx-aTL) < myEpsT) {
+  if (fabs (aTx-aTL) < Precision::PConfusion()) {
     return !theflag;
   }
 
@@ -768,16 +633,6 @@ void IntTools_EdgeFace::Perform()
   }
   myIsDone=Standard_True;
 }
-
-//
-// myErrorStatus
-// 1 - the method Perform() is not invoked  
-// 2,3,4,5 -the method CheckData() fails
-// 6 - PrepareArgs() problems
-// 7 - No Projectable ranges
-// 8,9 - PrepareArgs() problems occured inside  projectable Ranges
-// 11 - can't fill array  aFunc(i) in PrepareArgsFuncArrays 
-
 
 //=======================================================================
 //function : CheckTouch 

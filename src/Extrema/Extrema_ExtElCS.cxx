@@ -33,11 +33,13 @@
 #include <gp_Vec.hxx>
 #include <IntAna_IntConicQuad.hxx>
 #include <IntAna_Quadric.hxx>
+#include <IntAna_QuadQuadGeo.hxx>
 #include <Precision.hxx>
 #include <Standard_NotImplemented.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <StdFail_InfiniteSolutions.hxx>
 #include <StdFail_NotDone.hxx>
+#include <TColStd_ListOfInteger.hxx>
 
 Extrema_ExtElCS::Extrema_ExtElCS() 
 {
@@ -534,19 +536,137 @@ void Extrema_ExtElCS::Perform(const gp_Circ& ,
 
 
 
+//=======================================================================
+//function : Extrema_ExtElCS
+//purpose  : Circle/Sphere
+//=======================================================================
 Extrema_ExtElCS::Extrema_ExtElCS(const gp_Circ& C,
-				 const gp_Sphere& S)
-{  Perform(C, S);}
-
-
-
-//void Extrema_ExtElCS::Perform(const gp_Circ& C,
-//			      const gp_Sphere& S)
-void Extrema_ExtElCS::Perform(const gp_Circ& ,
-			      const gp_Sphere& )
+                                 const gp_Sphere& S)
 {
-  throw Standard_NotImplemented();
+  Perform(C, S);
+}
 
+//=======================================================================
+//function : Perform
+//purpose  : Circle/Sphere
+//=======================================================================
+void Extrema_ExtElCS::Perform(const gp_Circ& C,
+                              const gp_Sphere& S)
+{
+  myDone = Standard_False;
+
+  if (gp_Lin(C.Axis()).SquareDistance(S.Location()) < Precision::SquareConfusion())
+  {
+    // Circle and sphere are parallel
+    myIsPar = Standard_True;
+    myDone = Standard_True;
+
+    // Compute distance from circle to the sphere
+    Standard_Real aSqDistLoc = C.Location().SquareDistance(S.Location());
+    Standard_Real aSqDist = aSqDistLoc + C.Radius() * C.Radius();
+    Standard_Real aDist = sqrt(aSqDist) - S.Radius();
+    mySqDist = new TColStd_HArray1OfReal(1, 1);
+    mySqDist->SetValue(1, aDist * aDist);
+    return;
+  }
+
+  // Intersect sphere with circle's plane
+  gp_Pln CPln(C.Location(), C.Axis().Direction());
+  IntAna_QuadQuadGeo anInter(CPln, S);
+  if (!anInter.IsDone())
+    // not done
+    return;
+
+  if (anInter.TypeInter() != IntAna_Circle)
+  {
+    // Intersection is empty or just a point.
+    // The parallel case has already been considered,
+    // thus, here we have to find only one minimal solution
+    myNbExt = 1;
+    myDone = Standard_True;
+
+    mySqDist = new TColStd_HArray1OfReal(1, 1);
+    myPoint1 = new Extrema_HArray1OfPOnCurv(1, 1);
+    myPoint2 = new Extrema_HArray1OfPOnSurf(1, 1);
+
+    // Compute parameter on circle
+    const Standard_Real aT = ElCLib::Parameter(C, S.Location());
+    // Compute point on circle
+    gp_Pnt aPOnC = ElCLib::Value(aT, C);
+
+    // Compute parameters on sphere
+    Standard_Real aU, aV;
+    ElSLib::Parameters(S, aPOnC, aU, aV);
+    // Compute point on sphere
+    gp_Pnt aPOnS = ElSLib::Value(aU, aV, S);
+
+    // Save solution
+    myPoint1->SetValue(1, Extrema_POnCurv(aT, aPOnC));
+    myPoint2->SetValue(1, Extrema_POnSurf(aU, aV, aPOnS));
+    mySqDist->SetValue(1, aPOnC.SquareDistance(aPOnS));
+    return;
+  }
+
+  // Here, the intersection is a circle
+
+  // Intersection circle
+  gp_Circ aCInt = anInter.Circle(1);
+
+  // Perform intersection of the input circle with the intersection circle
+  Extrema_ExtElC anExtC(C, aCInt);
+  Standard_Boolean isExtremaCircCircValid =  anExtC.IsDone() // Check if intersection is done
+                                          && !anExtC.IsParallel() // Parallel case has already been considered
+                                          && anExtC.NbExt() > 0; // Check that some solutions have been found
+  if (!isExtremaCircCircValid)
+    // not done
+    return;
+
+  myDone = Standard_True;
+
+  // Few solutions
+  Standard_Real aNbExt = anExtC.NbExt();
+  // Find the minimal distance
+  Standard_Real aMinSqDist = ::RealLast();
+  for (Standard_Integer i = 1; i <= aNbExt; ++i)
+  {
+    Standard_Real aSqDist = anExtC.SquareDistance(i);
+    if (aSqDist < aMinSqDist)
+      aMinSqDist = aSqDist;
+  }
+
+  // Collect all solutions close to the minimal one
+  TColStd_ListOfInteger aSols;
+  for (Standard_Integer i = 1; i <= aNbExt; ++i)
+  {
+    Standard_Real aDiff = anExtC.SquareDistance(i) - aMinSqDist;
+    if (aDiff < Precision::SquareConfusion())
+      aSols.Append(i);
+  }
+
+  // Save all minimal solutions
+  myNbExt = aSols.Extent();
+
+  mySqDist = new TColStd_HArray1OfReal(1, myNbExt);
+  myPoint1 = new Extrema_HArray1OfPOnCurv(1, myNbExt);
+  myPoint2 = new Extrema_HArray1OfPOnSurf(1, myNbExt);
+
+  TColStd_ListIteratorOfListOfInteger it(aSols);
+  for (Standard_Integer iSol = 1; it.More(); it.Next(), ++iSol)
+  {
+    Extrema_POnCurv P1, P2;
+    anExtC.Points(it.Value(), P1, P2);
+
+    // Compute parameters on sphere
+    Standard_Real aU, aV;
+    ElSLib::Parameters(S, P1.Value(), aU, aV);
+    // Compute point on sphere
+    gp_Pnt aPOnS = ElSLib::Value(aU, aV, S);
+
+    // Save solution
+    myPoint1->SetValue(iSol, P1);
+    myPoint2->SetValue(iSol, Extrema_POnSurf(aU, aV, aPOnS));
+    mySqDist->SetValue(iSol, P1.Value().SquareDistance(aPOnS));
+  }
 }
 
 Extrema_ExtElCS::Extrema_ExtElCS(const gp_Circ& C,

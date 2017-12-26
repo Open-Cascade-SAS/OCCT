@@ -1,5 +1,3 @@
-puts "TODO OCC25385 ALL: is not equal to expected"
-
 puts "============"
 puts "OCC25385"
 puts "============"
@@ -22,3 +20,5 @@ regexp {Tolerance +MAX=([-0-9.+eE]+)} [tolerance s] full MaxTol_s_2
 set tol_abs_MaxTol 0.0001
 set tol_rel_MaxTol 0.0001
 checkreal "MaxTolerance " ${MaxTol_s_2} ${MaxTol_s_1} ${tol_abs_MaxTol} ${tol_rel_MaxTol}
+
+checkprops r -l 36.2401

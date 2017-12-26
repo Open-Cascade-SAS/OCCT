@@ -113,6 +113,9 @@ void Extrema_ExtCS::Perform(const Adaptor3d_Curve& C,
   NbT = NbU = NbV = 10;
   GeomAbs_CurveType myCtype  = C.GetType();
 
+  myDone = Standard_False;
+  // Try analytic computation of extrema
+  Standard_Boolean isComputeAnalytic = Standard_True;
 
   switch(myCtype) {
 
@@ -233,6 +236,11 @@ void Extrema_ExtCS::Perform(const Adaptor3d_Curve& C,
         myExtElCS.Perform(C.Circle(), myS->Plane());
         break;
       }
+      else if (myStype == GeomAbs_Sphere)
+      {
+        myExtElCS.Perform(C.Circle(), myS->Sphere());
+        break;
+      }
     }
     Standard_FALLTHROUGH
   case GeomAbs_Hyperbola: 
@@ -246,157 +254,225 @@ void Extrema_ExtCS::Perform(const Adaptor3d_Curve& C,
     Standard_FALLTHROUGH
   default:
     {
-      Extrema_GenExtCS Ext;
-      Ext.Initialize(*myS, NbU, NbV, mytolS);
-      if(myCtype == GeomAbs_Hyperbola) {
-        Standard_Real tmin = Max(-20., C.FirstParameter());
-        Standard_Real tmax = Min(20., C.LastParameter());
-        Ext.Perform(C, NbT, tmin, tmax, mytolC); // to avoid overflow
-      }
-      else {
-        if((myCtype == GeomAbs_Circle       && NbT < 13) ||
-           (myCtype == GeomAbs_BSplineCurve && NbT < 13) )
-        {
-          NbT = 13;
-        }
-        Ext.Perform(C, NbT, mytolC);
-      }
+      isComputeAnalytic = Standard_False;
+      break;
+    }
+  }
 
-      myDone = Ext.IsDone();
-      if (myDone) {
-        Standard_Integer NbExt = Ext.NbExt();
-        Standard_Real T,U,V;
-        Extrema_POnCurv PC;
-        Extrema_POnSurf PS;
-        for (i = 1; i <= NbExt; i++) {
-          PC = Ext.PointOnCurve(i);
-          PS = Ext.PointOnSurface(i);
-          T = PC.Parameter();
+  if (isComputeAnalytic)
+  {
+    if (myExtElCS.IsDone())
+    {
+      myDone = Standard_True;
+      myIsPar = myExtElCS.IsParallel();
+      if (myIsPar)
+      {
+        mySqDist.Append(myExtElCS.SquareDistance(1));
+      }
+      else
+      {
+        Standard_Integer NbExt = myExtElCS.NbExt();
+        for (i = 1; i <= NbExt; i++)
+        {
+          Extrema_POnCurv PC;
+          Extrema_POnSurf PS;
+          myExtElCS.Points(i, PC, PS);
+          Standard_Real Ucurve = PC.Parameter();
+          Standard_Real U, V;
           PS.Parameter(U, V);
-          AddSolution(C, T, U, V, PC.Value(), PS.Value(), Ext.SquareDistance(i));
+          AddSolution(C, Ucurve, U, V, PC.Value(), PS.Value(), myExtElCS.SquareDistance(i));
         }
 
-        //Add sharp points
-        Standard_Integer SolNumber = mySqDist.Length();
-        Standard_Address CopyC = (Standard_Address)&C;
-        Adaptor3d_Curve& aC = *(Adaptor3d_Curve*)CopyC;
-        Standard_Integer NbIntervals = aC.NbIntervals(GeomAbs_C1);
-        TColStd_Array1OfReal SharpPoints(1, NbIntervals+1);
-        aC.Intervals(SharpPoints, GeomAbs_C1);
-        
-        Extrema_ExtPS aProjPS;
-        aProjPS.Initialize (*myS,
-                            myS->FirstUParameter(),
-                            myS->LastUParameter(),
-                            myS->FirstVParameter(),
-                            myS->LastVParameter(),
-                            mytolS,
-                            mytolS);
-
-        for (i = 2; i < SharpPoints.Upper(); ++i)
+        if (mySqDist.Length() == 0 && NbExt > 0)
         {
-          T = SharpPoints(i);
-          gp_Pnt aPnt = C.Value(T);
-          aProjPS.Perform (aPnt);
-          if (!aProjPS.IsDone())
-            continue;
-          Standard_Integer NbProj = aProjPS.NbExt(), jmin = 0;
-          Standard_Real MinSqDist = RealLast();
-          for (j = 1; j <= NbProj; j++)
+          // Analytical extrema seem to be out of curve/surface boundaries.
+          // Try extremity points of curve.
+          gp_Pnt aPOnC[2], aPOnS[2];
+          Standard_Real aT[2] = { myucinf, myucsup }, U[2], V[2];
+          Standard_Real aDist[2] = { -1, -1 };
+          for (i = 0; i < 2; ++i)
           {
-            Standard_Real aSqDist = aProjPS.SquareDistance(j);
-            if (aSqDist < MinSqDist)
+            if (Precision::IsInfinite(aT[i]))
+              continue;
+
+            aPOnC[i] = C.Value(aT[i]);
+            switch (myStype)
             {
-              MinSqDist = aSqDist;
-              jmin = j;
+              case GeomAbs_Plane:
+              {
+                ElSLib::Parameters(myS->Plane(), aPOnC[i], U[i], V[i]);
+                aPOnS[i] = ElSLib::Value(U[i], V[i], myS->Plane());
+                break;
+              }
+              case GeomAbs_Sphere:
+              {
+                ElSLib::Parameters(myS->Sphere(), aPOnC[i], U[i], V[i]);
+                aPOnS[i] = ElSLib::Value(U[i], V[i], myS->Sphere());
+                break;
+              }
+              case GeomAbs_Cylinder:
+              {
+                ElSLib::Parameters(myS->Cylinder(), aPOnC[i], U[i], V[i]);
+                aPOnS[i] = ElSLib::Value(U[i], V[i], myS->Cylinder());
+                break;
+              }
+              case GeomAbs_Torus:
+              {
+                ElSLib::Parameters(myS->Torus(), aPOnC[i], U[i], V[i]);
+                aPOnS[i] = ElSLib::Value(U[i], V[i], myS->Torus());
+                break;
+              }
+              case GeomAbs_Cone:
+              {
+                ElSLib::Parameters(myS->Cone(), aPOnC[i], U[i], V[i]);
+                aPOnS[i] = ElSLib::Value(U[i], V[i], myS->Cone());
+                break;
+              }
+              default:
+                continue;
             }
+
+            aDist[i] = aPOnC[i].SquareDistance(aPOnS[i]);
           }
-          if (jmin != 0)
+
+          Standard_Boolean bAdd[2] = {Standard_False, Standard_False};
+
+          // Choose solution to add
+          if (aDist[0] >= 0. && aDist[1] >= 0.)
           {
-            aProjPS.Point(jmin).Parameter(U,V);
-            AddSolution(C, T, U, V,
-                        aPnt, aProjPS.Point(jmin).Value(), MinSqDist);
+            Standard_Real aDiff = aDist[0] - aDist[1];
+            // Both computed -> take only minimal
+            if (Abs(aDiff) < Precision::Confusion())
+              // Add both
+              bAdd[0] = bAdd[1] = Standard_True;
+            else if (aDiff < 0)
+              // Add first
+              bAdd[0] = Standard_True;
+            else
+              // Add second
+              bAdd[1] = Standard_True;
           }
-        }
-        //Cut sharp solutions to keep only minimum and maximum
-        Standard_Integer imin = SolNumber + 1, imax = mySqDist.Length();
-        for (i = SolNumber + 1; i <= mySqDist.Length(); i++)
-        {
-          if (mySqDist(i) < mySqDist(imin))
-            imin = i;
-          if (mySqDist(i) > mySqDist(imax))
-            imax = i;
-        }
-        if (mySqDist.Length() > SolNumber + 2)
-        {
-          Standard_Real MinSqDist = mySqDist(imin);
-          Standard_Real MaxSqDist = mySqDist(imax);
-          Extrema_POnCurv MinPC = myPOnC(imin);
-          Extrema_POnCurv MaxPC = myPOnC(imax);
-          Extrema_POnSurf MinPS = myPOnS(imin);
-          Extrema_POnSurf MaxPS = myPOnS(imax);
+          else if (aDist[0] >= 0.)
+            // Add first
+            bAdd[0] = Standard_True;
+          else if (aDist[1] >= 0.)
+            // Add second
+            bAdd[1] = Standard_True;
 
-          mySqDist.Remove(SolNumber + 1, mySqDist.Length());
-          myPOnC.Remove(SolNumber + 1, myPOnC.Length());
-          myPOnS.Remove(SolNumber + 1, myPOnS.Length());
-
-          mySqDist.Append(MinSqDist);
-          myPOnC.Append(MinPC);
-          myPOnS.Append(MinPS);
-          mySqDist.Append(MaxSqDist);
-          myPOnC.Append(MaxPC);
-          myPOnS.Append(MaxPS);
+          for (i = 0; i < 2; ++i)
+          {
+            if (bAdd[i])
+              AddSolution(C, aT[i], U[i], V[i], aPOnC[i], aPOnS[i], aDist[i]);
+          }
         }
       }
       return;
     }
-    break;
   }
 
-  myDone = myExtElCS.IsDone();
-  if (myDone) {
-    myIsPar = myExtElCS.IsParallel();
-    if (myIsPar) {
-      mySqDist.Append(myExtElCS.SquareDistance(1));
+  // Elementary extrema is not done, try generic solution
+  Extrema_GenExtCS Ext;
+  Ext.Initialize(*myS, NbU, NbV, mytolS);
+  if (myCtype == GeomAbs_Hyperbola) {
+    Standard_Real tmin = Max(-20., C.FirstParameter());
+    Standard_Real tmax = Min(20., C.LastParameter());
+    Ext.Perform(C, NbT, tmin, tmax, mytolC); // to avoid overflow
+  }
+  else {
+    if ((myCtype == GeomAbs_Circle       && NbT < 13) ||
+      (myCtype == GeomAbs_BSplineCurve && NbT < 13))
+    {
+      NbT = 13;
     }
-    else {
-      Standard_Integer NbExt = myExtElCS.NbExt();
-      Standard_Real U, V;
-      for (i = 1; i <= NbExt; i++) {
-        Extrema_POnCurv PC;
-        Extrema_POnSurf PS;
-        myExtElCS.Points(i, PC, PS);
-        Standard_Real Ucurve = PC.Parameter();
-        PS.Parameter(U, V);
-        AddSolution(C, Ucurve, U, V, PC.Value(), PS.Value(), myExtElCS.SquareDistance(i));
-      }
-      if(mySqDist.Length() == 0 && NbExt > 0)
+    Ext.Perform(C, NbT, mytolC);
+  }
+
+  myDone = Ext.IsDone();
+  if (myDone) {
+    Standard_Integer NbExt = Ext.NbExt();
+    Standard_Real T, U, V;
+    Extrema_POnCurv PC;
+    Extrema_POnSurf PS;
+    for (i = 1; i <= NbExt; i++) {
+      PC = Ext.PointOnCurve(i);
+      PS = Ext.PointOnSurface(i);
+      T = PC.Parameter();
+      PS.Parameter(U, V);
+      AddSolution(C, T, U, V, PC.Value(), PS.Value(), Ext.SquareDistance(i));
+    }
+
+    //Add sharp points
+    Standard_Integer SolNumber = mySqDist.Length();
+    Standard_Address CopyC = (Standard_Address)&C;
+    Adaptor3d_Curve& aC = *(Adaptor3d_Curve*)CopyC;
+    Standard_Integer NbIntervals = aC.NbIntervals(GeomAbs_C1);
+    TColStd_Array1OfReal SharpPoints(1, NbIntervals + 1);
+    aC.Intervals(SharpPoints, GeomAbs_C1);
+
+    Extrema_ExtPS aProjPS;
+    aProjPS.Initialize(*myS,
+      myS->FirstUParameter(),
+      myS->LastUParameter(),
+      myS->FirstVParameter(),
+      myS->LastVParameter(),
+      mytolS,
+      mytolS);
+
+    for (i = 2; i < SharpPoints.Upper(); ++i)
+    {
+      T = SharpPoints(i);
+      gp_Pnt aPnt = C.Value(T);
+      aProjPS.Perform(aPnt);
+      if (!aProjPS.IsDone())
+        continue;
+      Standard_Integer NbProj = aProjPS.NbExt(), jmin = 0;
+      Standard_Real MinSqDist = RealLast();
+      for (j = 1; j <= NbProj; j++)
       {
-        //Analytical extremas seem to be out of curve/surface boundaries.
-        //For plane it is possible to add extremity points of curve
-        if(myStype == GeomAbs_Plane)
+        Standard_Real aSqDist = aProjPS.SquareDistance(j);
+        if (aSqDist < MinSqDist)
         {
-          gp_Pln aPln = myS->Plane();
-          gp_Pnt PC, PP;
-          if(!Precision::IsInfinite(myucinf))
-          {
-            PC = C.Value(myucinf);
-            ElSLib::PlaneParameters(aPln.Position(), PC, U, V);
-            PP = ElSLib::PlaneValue(U, V, aPln.Position());
-            AddSolution(C, myucinf, U, V, PC, PP, PC.SquareDistance(PP));
-          }
-          if(!Precision::IsInfinite(myucsup))
-          {
-            PC = C.Value(myucsup);
-            ElSLib::PlaneParameters(aPln.Position(), PC, U, V);
-            PP = ElSLib::PlaneValue(U, V, aPln.Position());
-            AddSolution(C, myucsup, U, V, PC, PP, PC.SquareDistance(PP));
-          }
+          MinSqDist = aSqDist;
+          jmin = j;
         }
       }
+      if (jmin != 0)
+      {
+        aProjPS.Point(jmin).Parameter(U, V);
+        AddSolution(C, T, U, V,
+          aPnt, aProjPS.Point(jmin).Value(), MinSqDist);
+      }
+    }
+    //Cut sharp solutions to keep only minimum and maximum
+    Standard_Integer imin = SolNumber + 1, imax = mySqDist.Length();
+    for (i = SolNumber + 1; i <= mySqDist.Length(); i++)
+    {
+      if (mySqDist(i) < mySqDist(imin))
+        imin = i;
+      if (mySqDist(i) > mySqDist(imax))
+        imax = i;
+    }
+    if (mySqDist.Length() > SolNumber + 2)
+    {
+      Standard_Real MinSqDist = mySqDist(imin);
+      Standard_Real MaxSqDist = mySqDist(imax);
+      Extrema_POnCurv MinPC = myPOnC(imin);
+      Extrema_POnCurv MaxPC = myPOnC(imax);
+      Extrema_POnSurf MinPS = myPOnS(imin);
+      Extrema_POnSurf MaxPS = myPOnS(imax);
+
+      mySqDist.Remove(SolNumber + 1, mySqDist.Length());
+      myPOnC.Remove(SolNumber + 1, myPOnC.Length());
+      myPOnS.Remove(SolNumber + 1, myPOnS.Length());
+
+      mySqDist.Append(MinSqDist);
+      myPOnC.Append(MinPC);
+      myPOnS.Append(MinPS);
+      mySqDist.Append(MaxSqDist);
+      myPOnC.Append(MaxPC);
+      myPOnS.Append(MaxPS);
     }
   }
-
 }
 
 

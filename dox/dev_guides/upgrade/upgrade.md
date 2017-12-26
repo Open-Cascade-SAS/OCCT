@@ -1529,3 +1529,6 @@ The public method *BuildSection()* in the class *BOPAlgo_Section* has became pro
 
 The method BRepAdaptor_CompCurve::SetPeriodic has been eliminated.
 Since new version, the method BRepAdaptor_CompCurve::IsPeriodic() will always return FALSE. Earlier, it could return TRUE in case if the wire contained only one edge based on periodic curve. 
+
+@subsection upgrade_730_removed Removed features
+* The methods *SetDeflection*, *SetEpsilonT*, *SetDiscretize* of the class *IntTools_EdgeFace* have been removed as excessive.

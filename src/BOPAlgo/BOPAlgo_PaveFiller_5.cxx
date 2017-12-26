@@ -167,9 +167,9 @@ void BOPAlgo_PaveFiller::PerformEF()
   Standard_Boolean bV[2], bIsPBSplittable;
   Standard_Boolean bV1, bV2, bExpressCompute;
   Standard_Integer nV1, nV2;
-  Standard_Integer aDiscretize, i, aNbCPrts, iX, nV[2];
+  Standard_Integer i, aNbCPrts, iX, nV[2];
   Standard_Integer aNbEdgeFace, k;
-  Standard_Real aTolE, aTolF, aTS1, aTS2, aT1, aT2, aDeflection;
+  Standard_Real aTolE, aTolF, aTS1, aTS2, aT1, aT2;
   Handle(NCollection_BaseAllocator) aAllocator;
   TopAbs_ShapeEnum aType;
   BOPDS_ListIteratorOfListOfPaveBlock aIt;
@@ -182,9 +182,6 @@ void BOPAlgo_PaveFiller::PerformEF()
   BOPDS_IndexedDataMapOfShapeCoupleOfPaveBlocks aMVCPB(100, aAllocator);
   BOPDS_IndexedDataMapOfPaveBlockListOfInteger aMPBLI(100, aAllocator);
   BOPAlgo_DataMapOfPaveBlockBndBox aDMPBBox(100, aAllocator);
-  //
-  aDiscretize=35;
-  aDeflection=0.01;
   //
   BOPDS_VectorOfInterfEF& aEFs=myDS->InterfEF();
   aEFs.SetIncrement(iSize);
@@ -242,8 +239,6 @@ void BOPAlgo_PaveFiller::PerformEF()
       aEdgeFace.SetEdge (aE);
       aEdgeFace.SetFace (aF);
       aEdgeFace.SetFuzzyValue(myFuzzyValue);
-      aEdgeFace.SetDiscretize (aDiscretize);
-      aEdgeFace.SetDeflection (aDeflection);
       aEdgeFace.UseQuickCoincidenceCheck(bExpressCompute);
       //
       IntTools_Range aSR(aTS1, aTS2);

@@ -7,7 +7,6 @@ IntTools_BaseRangeSample.hxx
 IntTools_BaseRangeSample.lxx
 IntTools_BeanFaceIntersector.cxx
 IntTools_BeanFaceIntersector.hxx
-IntTools_BeanFaceIntersector.lxx
 IntTools_CArray1.gxx
 IntTools_CArray1.lxx
 IntTools_CArray1OfInteger.hxx

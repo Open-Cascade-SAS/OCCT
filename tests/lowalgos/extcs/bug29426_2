@@ -1,0 +1,17 @@
+puts "========"
+puts "OCC29426"
+puts "========"
+puts ""
+########################################
+#  Extrema algorithm fails to find minimal distance between Circle and Sphere
+########################################
+
+circle c 3.53600008984273e-016 11.5073628633636 -3.18494573739955 -3.67401855705945e-017 -0.943656647634893 0.330926172090505 -2.2723161366922e-016 0.330926172090505 0.943656647634893 1.30000000000039
+sphere s 0 2.425 0 0 1 0 1 -0 0 9.712
+
+set log [extrema c s]
+
+if {![regexp "Point" $log]} {
+  set ext_dist [lindex [length ext_1] end]
+  checkreal "Circle/Sphere min distance" $ext_dist 0. 1.e-10 1.e-10
+}

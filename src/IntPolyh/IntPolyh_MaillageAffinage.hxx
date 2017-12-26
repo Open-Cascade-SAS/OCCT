@@ -30,6 +30,7 @@
 #include <IntPolyh_ListOfCouples.hxx>
 #include <Standard_Boolean.hxx>
 #include <TColStd_Array1OfReal.hxx>
+#include <IntPolyh_ArrayOfPointNormal.hxx>
 #include <IntPolyh_ArrayOfSectionLines.hxx>
 #include <IntPolyh_ArrayOfTangentZones.hxx>
 class Adaptor3d_HSurface;
@@ -40,8 +41,9 @@ class IntPolyh_Triangle;
 class IntPolyh_SectionLine;
 
 
-//! Provide the algorythms used in the package
-class IntPolyh_MaillageAffinage 
+//! Low-level algorithm to compute intersection of the surfaces
+//! by computing the intersection of their triangulations.
+class IntPolyh_MaillageAffinage
 {
 public:
 
@@ -52,7 +54,14 @@ public:
   
   Standard_EXPORT IntPolyh_MaillageAffinage(const Handle(Adaptor3d_HSurface)& S1, const Handle(Adaptor3d_HSurface)& S2, const Standard_Integer PRINT);
   
-  //! Compute points on one surface and fill an array of points;
+
+  //! Makes the sampling of the surface -
+  //! Fills the arrays with the parametric values of the sampling points (triangulation nodes).
+  Standard_EXPORT void MakeSampling (const Standard_Integer SurfID,
+                                     TColStd_Array1OfReal& theUPars,
+                                     TColStd_Array1OfReal& theVPars);
+
+  //! Computes points on one surface and fills an array of points;
   //! standard (default) method
   Standard_EXPORT void FillArrayOfPnt (const Standard_Integer SurfID);
   
@@ -63,11 +72,16 @@ public:
   //! direction) is defined by isShiftFwd flag.
   //! Compute points on one surface and fill an array of points;
   //! advanced method
-  Standard_EXPORT void FillArrayOfPnt (const Standard_Integer SurfID, const Standard_Boolean isShiftFwd);
+  Standard_EXPORT void FillArrayOfPnt (const Standard_Integer SurfID,
+                                       const Standard_Boolean isShiftFwd);
   
   //! Compute points on one surface and fill an array of points;
+  //! If given, <theDeflTol> is the deflection tolerance of the given sampling.
   //! standard (default) method
-  Standard_EXPORT void FillArrayOfPnt (const Standard_Integer SurfID, const TColStd_Array1OfReal& Upars, const TColStd_Array1OfReal& Vpars);
+  Standard_EXPORT void FillArrayOfPnt (const Standard_Integer SurfID,
+                                       const TColStd_Array1OfReal& Upars,
+                                       const TColStd_Array1OfReal& Vpars,
+                                       const Standard_Real *theDeflTol = NULL);
   
   //! isShiftFwd flag is added. The purpose is to define shift
   //! of points along normal to the surface in this point. The
@@ -75,9 +89,26 @@ public:
   //! The direction (forward or reversed regarding to normal
   //! direction) is defined by isShiftFwd flag.
   //! Compute points on one surface and fill an array of points;
+  //! If given, <theDeflTol> is the deflection tolerance of the given sampling.
   //! advanced method
-  Standard_EXPORT void FillArrayOfPnt (const Standard_Integer SurfID, const Standard_Boolean isShiftFwd, const TColStd_Array1OfReal& Upars, const TColStd_Array1OfReal& Vpars);
-  
+  Standard_EXPORT void FillArrayOfPnt (const Standard_Integer SurfID,
+                                       const Standard_Boolean isShiftFwd,
+                                       const TColStd_Array1OfReal& Upars,
+                                       const TColStd_Array1OfReal& Vpars,
+                                       const Standard_Real *theDeflTol = NULL);
+
+  //! Fills the array of points for the surface taking into account the shift
+  Standard_EXPORT void FillArrayOfPnt(const Standard_Integer SurfID,
+                                      const Standard_Boolean isShiftFwd,
+                                      const IntPolyh_ArrayOfPointNormal& thePoints,
+                                      const TColStd_Array1OfReal& theUPars,
+                                      const TColStd_Array1OfReal& theVPars,
+                                      const Standard_Real theDeflTol);
+
+  //! Looks for the common box of the surfaces and marks the points
+  //! of the surfaces inside that common box for possible intersection
+  Standard_EXPORT void CommonBox();
+
   //! Compute the common box  witch is the intersection
   //! of the two bounding boxes,  and mark the points of
   //! the two surfaces that are inside.
@@ -156,7 +187,7 @@ public:
   //! This method returns list of couples of contact triangles.
   Standard_EXPORT IntPolyh_ListOfCouples& GetCouples();
   
-  Standard_EXPORT void SetEnlargeZone (Standard_Boolean& EnlargeZone);
+  Standard_EXPORT void SetEnlargeZone (const Standard_Boolean EnlargeZone);
   
   Standard_EXPORT Standard_Boolean GetEnlargeZone() const;
   
@@ -173,7 +204,6 @@ protected:
 private:
 
 
-
   Handle(Adaptor3d_HSurface) MaSurface1;
   Handle(Adaptor3d_HSurface) MaSurface2;
   Bnd_Box MyBox1;
@@ -186,8 +216,6 @@ private:
   Standard_Real FlecheMax2;
   Standard_Real FlecheMin1;
   Standard_Real FlecheMin2;
-  Standard_Real FlecheMoy1;
-  Standard_Real FlecheMoy2;
   // For the arrays of Points, Edges and Triangles we need instant access to the items.
   // Moreover, we might add new items during refinement process in case the deflection
   // is too big, thus the vectors should be used.

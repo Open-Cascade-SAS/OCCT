@@ -26,67 +26,57 @@
 #include <TopoDS.hxx>
 #include <stdio.h>
 
+//=======================================================================
+//function : prj
+//purpose  : Draw command for Conical and Cylindrical projection
+//=======================================================================
 static Standard_Integer prj(Draw_Interpretor& di, Standard_Integer n, const char** a)
-{ 
-  char newname[255];
-  if (n < 7) return 1;
-  TopoDS_Shape InpLine =  DBRep::Get(a[2]);
-  TopoDS_Shape InpShape = DBRep::Get(a[3]);
-  Standard_Real DX=Draw::Atof(a[4]),DY=Draw::Atof(a[5]),DZ=Draw::Atof(a[6]);
-  gp_Dir TD(DX,DY,DZ);
-  BRepProj_Projection Prj(InpLine,InpShape,TD);
-  Standard_Integer i = 1;
-  char* temp = newname;
-
-
-  if (Prj.IsDone()) {
-    while (Prj.More()) {
-      Sprintf(newname,"%s_%d",a[1],i);
-      DBRep::Set(temp,Prj.Current());
-      //cout<<newname<<" ";
-      di<<newname<<" ";
-      i++;
-      Prj.Next();
-    } 
+{
+  if (n != 7)
+  {
+    di.PrintHelp(a[0]);
+    return 1;
   }
-
-  //cout<<endl;
-  di<<"\n";
+  //
+  TopoDS_Shape anInputWire =  DBRep::Get(a[2]);
+  TopoDS_Shape anInputShape = DBRep::Get(a[3]);
+  if (anInputWire.IsNull() || anInputShape.IsNull())
+  {
+    di << "Null input shapes\n";
+    return 1;
+  }
+  //
+  Standard_Real X = Draw::Atof(a[4]),
+                Y = Draw::Atof(a[5]),
+                Z = Draw::Atof(a[6]);
+  //
+  Standard_Boolean bCylProj = !strcmp(a[0], "prj");
+  //
+  BRepProj_Projection aPrj = bCylProj ?
+    BRepProj_Projection(anInputWire, anInputShape, gp_Dir(X, Y, Z)) :
+    BRepProj_Projection(anInputWire, anInputShape, gp_Pnt(X, Y, Z));
+  //
+  if (!aPrj.IsDone())
+  {
+    di << "Not done\n";
+    return 0;
+  }
+  //
+  for (Standard_Integer i = 1; aPrj.More(); aPrj.Next(), ++i)
+  {
+    char name[255];
+    Sprintf(name, "%s_%d", a[1], i);
+    DBRep::Set(name, aPrj.Current());
+    di << name << " ";
+  }
+  //
+  di << "\n";
   return 0;
 }
-
-static Standard_Integer cprj(Draw_Interpretor& di, Standard_Integer n, const char** a)
-{ 
-  char newname[255];
-  if (n < 7) return 1;
-  TopoDS_Shape InpLine =  DBRep::Get(a[2]);
-  TopoDS_Shape InpShape = DBRep::Get(a[3]);
-  Standard_Real PX=Draw::Atof(a[4]),PY=Draw::Atof(a[5]),PZ=Draw::Atof(a[6]);
-  gp_Pnt P(PX,PY,PZ);
-  BRepProj_Projection Prj(InpLine,InpShape,P);
-  Standard_Integer i = 1;
-  char* temp = newname;
-
-  if (Prj.IsDone()) {
-    while (Prj.More()) {
-      Sprintf(newname,"%s_%d",a[1],i);
-      DBRep::Set(temp,Prj.Current());
-      //cout<<newname<<" ";
-      di<<newname<<" ";
-      i++;
-      Prj.Next();
-    }
-  }
-
-  //cout<<endl;
-  di<<"\n";
-  return 0;
-}
-
 
 /*********************************************************************************/
 
-void  BRepTest::ProjectionCommands(Draw_Interpretor& theCommands)
+void BRepTest::ProjectionCommands(Draw_Interpretor& theCommands)
 {
   static Standard_Boolean loaded = Standard_False;
   if (loaded) return;
@@ -94,14 +84,11 @@ void  BRepTest::ProjectionCommands(Draw_Interpretor& theCommands)
 
   const char* g = "Projection of wire commands";
 
-  theCommands.Add("prj","prj result w s x y z: cylindrical projection of w (wire or edge) on s (faces) along direction",
-		  __FILE__,
-		  prj,g);
-
-
-  theCommands.Add("cprj","cprj result w s x y z: conical projection of w (wire or edge) on s (faces)",
-		  __FILE__,
-		  cprj,g);
-
+  theCommands.Add("prj","prj result w s x y z: "
+    "Cylindrical projection of w (wire or edge) on s (faces) along direction.\n",
+    __FILE__, prj, g);
+  //
+  theCommands.Add("cprj","cprj result w s x y z: "
+    "Conical projection of w (wire or edge) on s (faces).\n",
+    __FILE__, prj, g);
 }
-

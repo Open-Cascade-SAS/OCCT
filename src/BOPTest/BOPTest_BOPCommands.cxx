@@ -101,7 +101,10 @@ static Standard_Integer mkvolume   (Draw_Interpretor&, Standard_Integer, const c
   theCommands.Add("bfuse"   , "use bfuse r s1 s2"   , __FILE__,bfuse, g);
   theCommands.Add("bcut"    , "use bcut r s1 s2"    , __FILE__,bcut, g);
   theCommands.Add("btuc"    , "use btuc r s1 s2"    , __FILE__,btuc, g);
-  theCommands.Add("bsection", "use bsection r s1 s2 [-n2d/-n2d1/-n2d2] [-na]", 
+  theCommands.Add("bsection", "use bsection r s1 s2 [-n2d/-n2d1/-n2d2] [-na]"
+                               "Builds section between shapes. Options:\n"
+                               "-n2d/-n2d1/-n2d2 - disable the PCurve construction;\n"
+                               "-na - disables the approximation of the section curves.\n",
                                                       __FILE__, bsection, g);
   //
   theCommands.Add("bopcurves", "use bopcurves F1 F2 [-2d/-2d1/-2d2] "

@@ -1,0 +1,82 @@
+puts "======================="
+puts "Test for Circle/Sphere extrema algorithm"
+puts "Parallel case (center of sphere is on the circle's axis)"
+puts "======================="
+puts ""
+
+# Make sphere
+set x0 0.
+set y0 0.
+set z0 0.
+set sph_radius 10.
+sphere s $x0 $y0 $z0 $sph_radius
+
+# Initially the circle will be made at the same place as sphere with different radius
+# and will be rotated and shifted many times.
+# The distance between circle and sphere is a Abs(sqrt(centers_dist^2 + circ_radius^2) - sph_radius)
+
+# Number of different radius of initial circle
+set nb_radius 7
+# Number of circle's rotations 
+set nbstep 8
+set angle [expr 180. / $nbstep]
+
+# Define the shift
+set shift_start -3
+set shift_end 3
+set shift 4
+
+# Iteration step
+set iStep 1
+
+for {set i 1} {$i < $nb_radius} {incr i} {
+  set circ_radius [expr $i*2.]
+  circle c $x0 $y0 $z0 0 0 1 $circ_radius
+
+  # Circle will be rotated around the line
+  line rotation_line $x0 $y0 $z0 1 0 0
+  # Line rotation
+  for {set j 1} {$j <= $nbstep} {incr j} {
+    rotate rotation_line $x0 $y0 $z0 0 0 1 $angle
+    
+    # Get direction for circle's rotation
+    regexp {Axis   :([-0-9.+eE]*), ([-0-9.+eE]*), ([-0-9.+eE]*)} [dump rotation_line] full dx dy dz
+    
+    # Circle rotation
+    copy c c_rotated
+    for {set k 1} {$k <= $nbstep} {incr k} {
+      rotate c_rotated $x0 $y0 $z0 $dx $dy $dz $angle
+      
+      # Add shift of the circle along its own axis
+      
+      # Get shift direction
+      regexp {Axis   :([-0-9.+eE]*), ([-0-9.+eE]*), ([-0-9.+eE]*)} [dump c_rotated] full dcx dcy dcz
+      
+      set dcx [expr $shift*$dcx]
+      set dcy [expr $shift*$dcy]
+      set dcz [expr $shift*$dcz]
+      
+      # Make the shift
+      for {set t $shift_start} {$t <= $shift_end} {incr t} {
+        copy c_rotated c_shifted
+        translate c_shifted $t*$dcx $t*$dcy $t*$dcz 
+      
+        set log [extrema c_shifted s]
+
+        # save each circle if necessary
+        # copy c_shifted c_$iStep
+      
+        if {![regexp "Infinite number of extremas" $log]} {
+          puts "Error: Extrema has not detected the parallel case on step $iStep"
+        } else {
+          regexp {Center :([-0-9.+eE]*), ([-0-9.+eE]*), ([-0-9.+eE]*)} [dump c_shifted] full x y z
+          set centers_dist [expr sqrt($x*$x + $y*$y + $z*$z)]
+          set real_dist [expr abs(sqrt($centers_dist*$centers_dist + $circ_radius*$circ_radius) - $sph_radius)]
+          set ext_dist [lindex $log end]
+          checkreal "Step $iStep, min distance " $ext_dist $real_dist 1.e-7 1.e-7
+        }
+        incr iStep
+      }
+    }
+  }
+}

@@ -24,8 +24,8 @@ explode line V
 set tol_abs 0.001
 set tol_rel 0
 
-distmini d p_1_1 line_1
+distmini d p_1_1 line_2
 checkreal "Projection, p1" [dval d_val] 0 $tol_abs $tol_rel
 
-distmini d p_1_2 line_2
+distmini d p_1_2 line_1
 checkreal "Projection, p2" [dval d_val] 0 $tol_abs $tol_rel

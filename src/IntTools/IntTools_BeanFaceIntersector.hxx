@@ -120,7 +120,11 @@ public:
   //! Launches the algorithm
   Standard_EXPORT void Perform();
   
-    Standard_Boolean IsDone() const;
+  //! Returns Done/NotDone state of the algorithm.
+  Standard_Boolean IsDone() const
+  {
+    return myIsDone;
+  }
   
   Standard_EXPORT const IntTools_SequenceOfRanges& Result() const;
   
@@ -142,7 +146,12 @@ private:
   
   Standard_EXPORT void ComputeLinePlane();
   
-  Standard_EXPORT Standard_Integer FastComputeExactIntersection();
+  //! Fast check on coincidence of the edge with face for the cases when both shapes are
+  //! based on analytic geometries. The method also computes if the intersection
+  //! between shapes is possible.
+  //! The method returns TRUE if the computation was successful and further computation is unnecessary.
+  //! Otherwise it returns FALSE and computation continues.
+  Standard_EXPORT Standard_Boolean FastComputeAnalytic();
   
   Standard_EXPORT void ComputeUsingExtremum();
   
@@ -179,19 +188,10 @@ private:
   Extrema_ExtCS myExtrema;
   GeomAPI_ProjectPointOnSurf myProjector;
   IntTools_MarkedRangeSet myRangeManager;
-  Standard_Real myDeflection;
   Handle(IntTools_Context) myContext;
   IntTools_SequenceOfRanges myResults;
   Standard_Boolean myIsDone;
 
-
 };
-
-
-#include <IntTools_BeanFaceIntersector.lxx>
-
-
-
-
 
 #endif // _IntTools_BeanFaceIntersector_HeaderFile

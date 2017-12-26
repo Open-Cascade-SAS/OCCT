@@ -1,0 +1,127 @@
+puts "======================="
+puts "Test for Circle/Sphere extrema algorithm"
+puts "Intersection case (two intersection points should be found"
+puts "======================="
+puts ""
+
+# Make sphere
+set x0 0.
+set y0 0.
+set z0 0.
+set sph_radius 10.
+sphere s $x0 $y0 $z0 $sph_radius
+
+# All circles will be to connect the two points - one inside the sphere, another - outside.
+# Such circle will definitely intersect the initial sphere in two points.
+# The points to make the circle will taken two spheres - with smaller and bigger radius.
+
+# Set the number of iterations (number of pairs of spheres)
+set nbpairs 2
+
+# Set ratio to increase/decrease the radius if additional spheres
+set ratio_radius 2.
+
+# Number of sampling points on the spheres
+set nbsamples 5
+
+# Number of circles rotations
+set nbsteps 5
+set angle [expr 180. / $nbsteps]
+
+# Iteration step
+set iStep 1
+
+for {set i 1} {$i <= $nbpairs} {incr i} {
+  # Define the radius for spheres
+  set s_in_radius [expr $sph_radius / ($i * $ratio_radius)]
+  set s_out_radius [expr $sph_radius * ($i * $ratio_radius)]
+  
+  # Make the spheres
+  sphere s_in $x0 $y0 $z0 $s_in_radius
+  sphere s_out $x0 $y0 $z0 $s_out_radius
+  
+  # Make the sampling of the spheres
+  
+  # spheres are the same, so there is no difference from which one to take the parameters
+  bounds s_in umin umax vmin vmax
+  set du [dval (umax-umin)/$nbsteps]
+  set dv [dval (vmax-vmin)/$nbsteps]
+  
+  for {set u1 1} {$u1 <= $nbsamples} {incr u1} {
+    for {set v1 1} {$v1 <= $nbsamples} {incr v1} {
+      
+      # point on inner sphere
+      svalue s_in [dval umin+$u1*$du] [dval vmin+$v1*$dv] x1 y1 z1
+      
+      for {set u2 1} {$u2 <= $nbsamples} {incr u2} {
+        for {set v2 1} {$v2 <= $nbsamples} {incr v2} {
+      
+          # point on outer sphere
+          svalue s_out [dval umin+$u2*$du] [dval vmin+$v2*$dv] x2 y2 z2
+          
+          # rotation direction
+          set dx [dval x2-x1]
+          set dy [dval y2-y1]
+          set dz [dval z2-z1]
+          
+          # center of the circle
+          set xc [dval (x1+x2)/2.]
+          set yc [dval (y1+y2)/2.]
+          set zc [dval (z1+z2)/2.]
+          
+          # compute radius for circle
+          set cir_radius [expr sqrt($dx*$dx + $dy*$dy + $dz*$dz) / 2.]
+          
+          # make plane to get its XAxis
+          plane p $xc $yc $zc $dx $dy $dz
+          
+          regexp {XAxis  :([-0-9.+eE]*), ([-0-9.+eE]*), ([-0-9.+eE]*)} [dump p] full dxx dxy dxz
+          
+          circle c $xc $yc $zc $dxx $dxy $dxz $cir_radius
+          
+          # make rotation
+          copy c c_rotated
+          for {set j 1} {$j <= $nbsteps} {incr j} {
+            rotate c_rotated $xc $yc $zc $dx $dy $dz $angle
+            
+            set log [extrema c_rotated s]
+
+            # save each circle if necessary
+            # copy c_rotated c_$iStep
+
+            set isfound1 0
+            set isfound2 0
+            
+            if {[regexp "ext_1" $log]} {
+              set ext_dist [lindex [length ext_1] end]
+              checkreal "Step $iStep, min distance 1" $ext_dist 0 1.e-7 1.e-7
+              set isfound1 1
+            }
+              
+            if {[regexp "ext_2" $log]} {
+              set ext_dist [lindex [length ext_2] end]
+              checkreal "Step $iStep, min distance 2" $ext_dist 0 1.e-7 1.e-7
+              set isfound2 1
+            }
+            
+            if {[regexp "Extrema 1 is point" $log]} {
+              puts "Check of Step $iStep, min distance 1  OK"
+              set isfound1 1
+            }
+            
+            if {[regexp "Extrema 2 is point" $log]} {
+              puts "Check of Step $iStep, min distance 2  OK"
+              set isfound2 1
+            }
+            
+            if {$isfound1 == 0 || $isfound2 == 0} {
+              puts "Error: Extrema has not detected the intersection case on step $iStep"
+            }
+            
+            incr iStep
+          }
+        }
+      }
+    }
+  }
+}

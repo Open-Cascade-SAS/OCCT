@@ -193,8 +193,6 @@ Standard_EXPORT virtual ~BRepAlgoAPI_Section();
   Standard_EXPORT Standard_Boolean HasAncestorFaceOn2 (const TopoDS_Shape& E, TopoDS_Shape& F) const;
 
 
-
-
 protected:
 
   
@@ -203,24 +201,12 @@ protected:
   Standard_EXPORT virtual void SetAttributes() Standard_OVERRIDE;
 
 
-
-
 private:
 
-
-
-  Standard_Boolean myParametersChanged;
   Standard_Boolean myApprox;
   Standard_Boolean myComputePCurve1;
   Standard_Boolean myComputePCurve2;
 
-
 };
-
-
-
-
-
-
 
 #endif // _BRepAlgoAPI_Section_HeaderFile

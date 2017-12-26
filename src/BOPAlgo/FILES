@@ -55,9 +55,7 @@ BOPAlgo_PSection.hxx
 BOPAlgo_PWireEdgeSet.hxx
 BOPAlgo_Section.cxx
 BOPAlgo_Section.hxx
-BOPAlgo_SectionAttribute.cxx
 BOPAlgo_SectionAttribute.hxx
-BOPAlgo_SectionAttribute.lxx
 BOPAlgo_ShellSplitter.cxx
 BOPAlgo_ShellSplitter.hxx
 BOPAlgo_Tools.cxx

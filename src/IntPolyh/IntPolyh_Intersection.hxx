@@ -21,128 +21,191 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Boolean.hxx>
-#include <Standard_Integer.hxx>
+#include <IntPolyh_ArrayOfPointNormal.hxx>
 #include <IntPolyh_ArrayOfSectionLines.hxx>
 #include <IntPolyh_ArrayOfTangentZones.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <Standard_Real.hxx>
-#include <IntPolyh_PMaillageAffinage.hxx>
 #include <IntPolyh_ListOfCouples.hxx>
+#include <IntPolyh_PMaillageAffinage.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <Standard_Boolean.hxx>
+#include <Standard_Real.hxx>
 class Adaptor3d_HSurface;
 
-
-//! the main   algorithm.  Algorithm   outputs are
-//! lines  and  points like   describe   in the last
-//! paragraph.  The Algorithm provides direct access to
-//! the elements of those   lines  and points. Other
-//! classes  of this package  are for internal use and
-//! only concern the algorithmic part.
-class IntPolyh_Intersection 
+//! API algorithm for intersection of two surfaces by intersection
+//! of their triangulations.
+//!
+//! Algorithm provides possibility to intersect surfaces as without
+//! the precomputed sampling as with it.
+//!
+//! If the numbers of sampling points are not given, it will build the
+//! net of 10x10 sampling points for each surface.
+//!
+//! The intersection is done inside constructors.
+//! Before obtaining the results of intersection it is necessary to check
+//! if intersection has been performed correctly. It can be done by calling
+//! the *IsDone()* method.
+//!
+//! The results of intersection are the intersection lines and points.
+class IntPolyh_Intersection
 {
 public:
 
   DEFINE_STANDARD_ALLOC
 
-  
-  //! Constructor
-  Standard_EXPORT IntPolyh_Intersection(const Handle(Adaptor3d_HSurface)& S1, const Handle(Adaptor3d_HSurface)& S2);
-  
-  //! NbSU1 ... NbSV2 are used to compute the initial
-  //! samples of  the  iso parametric  meshes  on the
-  //! surfaces.
-  Standard_EXPORT IntPolyh_Intersection(const Handle(Adaptor3d_HSurface)& S1, const Standard_Integer NbSU1, const Standard_Integer NbSV1, const Handle(Adaptor3d_HSurface)& S2, const Standard_Integer NbSU2, const Standard_Integer NbSV2);
-  
-  //! D1,  D2 are used to compute the initial
-  //! samples of  the  iso parametric  meshes  on the
-  //! surfaces.
-  Standard_EXPORT IntPolyh_Intersection(const Handle(Adaptor3d_HSurface)& S1, const TColStd_Array1OfReal& anUpars1, const TColStd_Array1OfReal& aVpars1, const Handle(Adaptor3d_HSurface)& S2, const TColStd_Array1OfReal& anUpars2, const TColStd_Array1OfReal& aVpars2);
-  
-  //! Compute the intersection.
+public: //! @name Constructors
+
+  //! Constructor for intersection of two surfaces with default parameters.
+  //! Performs intersection.
+  Standard_EXPORT IntPolyh_Intersection(const Handle(Adaptor3d_HSurface)& theS1,
+                                        const Handle(Adaptor3d_HSurface)& theS2);
+
+  //! Constructor for intersection of two surfaces with the given
+  //! size of the sampling nets:
+  //! - <theNbSU1> x <theNbSV1> - for the first surface <theS1>;
+  //! - <theNbSU2> x <theNbSV2> - for the second surface <theS2>.
+  //! Performs intersection.
+  Standard_EXPORT IntPolyh_Intersection(const Handle(Adaptor3d_HSurface)& theS1,
+                                        const Standard_Integer            theNbSU1,
+                                        const Standard_Integer            theNbSV1,
+                                        const Handle(Adaptor3d_HSurface)& theS2,
+                                        const Standard_Integer            theNbSU2,
+                                        const Standard_Integer            theNbSV2);
+
+  //! Constructor for intersection of two surfaces with the precomputed sampling.
+  //! Performs intersection.
+  Standard_EXPORT IntPolyh_Intersection(const Handle(Adaptor3d_HSurface)& theS1,
+                                        const TColStd_Array1OfReal&       theUPars1,
+                                        const TColStd_Array1OfReal&       theVPars1,
+                                        const Handle(Adaptor3d_HSurface)& theS2,
+                                        const TColStd_Array1OfReal&       theUPars2,
+                                        const TColStd_Array1OfReal&       theVPars2);
+
+
+public: //! @name Getting the results
+
+  //! Returns state of the operation
+  Standard_Boolean IsDone() const
+  {
+    return myIsDone;
+  }
+
+  //! Returns the number of section lines
+  Standard_Integer NbSectionLines() const
+  {
+    return mySectionLines.NbItems();
+  }
+
+  //! Returns the number of points in the given line
+  Standard_Integer NbPointsInLine(const Standard_Integer IndexLine) const
+  {
+    return mySectionLines[IndexLine-1].NbStartPoints();
+  }
+
+  // Returns number of tangent zones
+  Standard_Integer NbTangentZones() const
+  {
+    return myTangentZones.NbItems();
+  }
+
+  //! Returns number of points in tangent zone
+  Standard_Integer NbPointsInTangentZone(const Standard_Integer) const
+  {
+    return 1;
+  }
+
+  //! Gets the parameters of the point in section line
+  Standard_EXPORT void GetLinePoint(const Standard_Integer IndexLine,
+                                    const Standard_Integer IndexPoint,
+                                    Standard_Real& x, Standard_Real& y, Standard_Real& z,
+                                    Standard_Real& u1, Standard_Real& v1,
+                                    Standard_Real& u2, Standard_Real& v2,
+                                    Standard_Real& incidence) const;
+
+  //! Gets the parameters of the point in tangent zone
+  Standard_EXPORT void GetTangentZonePoint(const Standard_Integer IndexLine,
+                                           const Standard_Integer IndexPoint,
+                                           Standard_Real& x, Standard_Real& y, Standard_Real& z,
+                                           Standard_Real& u1, Standard_Real& v1,
+                                           Standard_Real& u2, Standard_Real& v2) const;
+
+
+private: //! @name Performing the intersection
+
+  //! Compute the intersection by first making the sampling of the surfaces.
   Standard_EXPORT void Perform();
-  
-  //! Compute the intersection.
-  Standard_EXPORT void Perform (const TColStd_Array1OfReal& Upars1, const TColStd_Array1OfReal& Vpars1, const TColStd_Array1OfReal& Upars2, const TColStd_Array1OfReal& Vpars2);
-  
-  Standard_EXPORT Standard_Boolean IsDone() const;
-  
-  Standard_EXPORT Standard_Integer NbSectionLines() const;
-  
-  Standard_EXPORT Standard_Integer NbPointsInLine (const Standard_Integer IndexLine) const;
-  
-  Standard_EXPORT void GetLinePoint (const Standard_Integer IndexLine, const Standard_Integer IndexPoint, Standard_Real& x, Standard_Real& y, Standard_Real& z, Standard_Real& u1, Standard_Real& v1, Standard_Real& u2, Standard_Real& v2, Standard_Real& incidence) const;
-  
-  Standard_EXPORT Standard_Integer NbTangentZones() const;
-  
-  Standard_EXPORT Standard_Integer NbPointsInTangentZone (const Standard_Integer IndexLine) const;
-  
-  Standard_EXPORT void GetTangentZonePoint (const Standard_Integer IndexLine, const Standard_Integer IndexPoint, Standard_Real& x, Standard_Real& y, Standard_Real& z, Standard_Real& u1, Standard_Real& v1, Standard_Real& u2, Standard_Real& v2) const;
+
+  //! Compute the intersection on the precomputed sampling.
+  Standard_EXPORT void Perform(const TColStd_Array1OfReal& theUPars1,
+                               const TColStd_Array1OfReal& theVPars1,
+                               const TColStd_Array1OfReal& theUPars2,
+                               const TColStd_Array1OfReal& theVPars2);
+
+  //! Performs the default (standard) intersection of the triangles
+  Standard_EXPORT Standard_Boolean PerformStd(const TColStd_Array1OfReal& theUPars1,
+                                              const TColStd_Array1OfReal& theVPars1,
+                                              const TColStd_Array1OfReal& theUPars2,
+                                              const TColStd_Array1OfReal& theVPars2,
+                                              const Standard_Real         theDeflTol1,
+                                              const Standard_Real         theDeflTol2,
+                                              IntPolyh_PMaillageAffinage& theMaillageS,
+                                              Standard_Integer&           theNbCouples);
+
+  //! Performs the advanced intersection of the triangles - four intersection with
+  //! different shifts of the sampling points.
+  Standard_EXPORT Standard_Boolean PerformAdv(const TColStd_Array1OfReal& theUPars1,
+                                              const TColStd_Array1OfReal& theVPars1,
+                                              const TColStd_Array1OfReal& theUPars2,
+                                              const TColStd_Array1OfReal& theVPars2,
+                                              const Standard_Real         theDeflTol1,
+                                              const Standard_Real         theDeflTol2,
+                                              IntPolyh_PMaillageAffinage& theMaillageFF,
+                                              IntPolyh_PMaillageAffinage& theMaillageFR,
+                                              IntPolyh_PMaillageAffinage& theMaillageRF,
+                                              IntPolyh_PMaillageAffinage& theMaillageRR,
+                                              Standard_Integer&           theNbCouples);
+
+  //! Performs the advanced intersection of the triangles.
+  Standard_EXPORT Standard_Boolean PerformMaillage(const TColStd_Array1OfReal& theUPars1,
+                                                   const TColStd_Array1OfReal& theVPars1,
+                                                   const TColStd_Array1OfReal& theUPars2,
+                                                   const TColStd_Array1OfReal& theVPars2,
+                                                   const Standard_Real         theDeflTol1,
+                                                   const Standard_Real         theDeflTol2,
+                                                   IntPolyh_PMaillageAffinage& theMaillage);
+
+  //! Performs the advanced intersection of the triangles.
+  Standard_EXPORT Standard_Boolean PerformMaillage(const TColStd_Array1OfReal& theUPars1,
+                                                   const TColStd_Array1OfReal& theVPars1,
+                                                   const TColStd_Array1OfReal& theUPars2,
+                                                   const TColStd_Array1OfReal& theVPars2,
+                                                   const Standard_Real         theDeflTol1,
+                                                   const Standard_Real         theDeflTol2,
+                                                   const IntPolyh_ArrayOfPointNormal& thePoints1,
+                                                   const IntPolyh_ArrayOfPointNormal& thePoints2,
+                                                   const Standard_Boolean      theIsFirstFwd,
+                                                   const Standard_Boolean      theIsSecondFwd,
+                                                   IntPolyh_PMaillageAffinage& theMaillage);
+
+  //! Clears the arrays from the duplicate couples, keeping only one instance of it.
+  Standard_EXPORT void MergeCouples(IntPolyh_ListOfCouples& theArrayFF,
+                                    IntPolyh_ListOfCouples& theArrayFR,
+                                    IntPolyh_ListOfCouples& theArrayRF,
+                                    IntPolyh_ListOfCouples& theArrayRR) const;
 
 
+private: //! @name Fields
 
-
-protected:
-
-
-
-
-
-private:
-
-  
-  //! Computes MaillageAffinage
-  Standard_EXPORT Standard_Boolean PerformMaillage (const Standard_Boolean isFirstFwd, const Standard_Boolean isSecondFwd, IntPolyh_PMaillageAffinage& MaillageS);
-  
-  //! The method PerformMaillage(..) is used to compute MaillageAffinage. It is
-  //! called four times (two times for each surface) for creation of inscribed
-  //! and circumscribed mesh for each surface.
-  Standard_EXPORT Standard_Boolean PerformMaillage (IntPolyh_PMaillageAffinage& MaillageS);
-  
-  //! Computes MaillageAffinage
-  Standard_EXPORT Standard_Boolean PerformMaillage (const Standard_Boolean isFirstFwd, const Standard_Boolean isSecondFwd, const TColStd_Array1OfReal& Upars1, const TColStd_Array1OfReal& Vpars1, const TColStd_Array1OfReal& Upars2, const TColStd_Array1OfReal& Vpars2, IntPolyh_PMaillageAffinage& MaillageS);
-  
-  //! The method PerformMaillage(..) is used to compute MaillageAffinage. It is
-  //! called four times (two times for each surface) for creation of inscribed
-  //! and circumscribed mesh for each surface.
-  Standard_EXPORT Standard_Boolean PerformMaillage (const TColStd_Array1OfReal& Upars1, const TColStd_Array1OfReal& Vpars1, const TColStd_Array1OfReal& Upars2, const TColStd_Array1OfReal& Vpars2, IntPolyh_PMaillageAffinage& MaillageS);
-  
-  //! This method analyzes arrays to find same couples. If some
-  //! are detected it leaves the couple in only one array
-  //! deleting from others.
-  Standard_EXPORT void MergeCouples (IntPolyh_ListOfCouples& anArrayFF, IntPolyh_ListOfCouples& anArrayFR, IntPolyh_ListOfCouples& anArrayRF, IntPolyh_ListOfCouples& anArrayRR) const;
-  
-  //! Process default interference
-  Standard_EXPORT Standard_Boolean PerformStd (IntPolyh_PMaillageAffinage& MaillageS, Standard_Integer& NbCouples);
-  
-  //! Process advanced interference
-  Standard_EXPORT Standard_Boolean PerformAdv (IntPolyh_PMaillageAffinage& MaillageFF, IntPolyh_PMaillageAffinage& MaillageFR, IntPolyh_PMaillageAffinage& MaillageRF, IntPolyh_PMaillageAffinage& MaillageRR, Standard_Integer& NbCouples);
-  
-  //! Process default interference
-  Standard_EXPORT Standard_Boolean PerformStd (const TColStd_Array1OfReal& Upars1, const TColStd_Array1OfReal& Vpars1, const TColStd_Array1OfReal& Upars2, const TColStd_Array1OfReal& Vpars2, IntPolyh_PMaillageAffinage& MaillageS, Standard_Integer& NbCouples);
-  
-  //! Process advanced interference
-  Standard_EXPORT Standard_Boolean PerformAdv (const TColStd_Array1OfReal& Upars1, const TColStd_Array1OfReal& Vpars1, const TColStd_Array1OfReal& Upars2, const TColStd_Array1OfReal& Vpars2, IntPolyh_PMaillageAffinage& MaillageFF, IntPolyh_PMaillageAffinage& MaillageFR, IntPolyh_PMaillageAffinage& MaillageRF, IntPolyh_PMaillageAffinage& MaillageRR, Standard_Integer& NbCouples);
-
-
-  Standard_Boolean done;
-  Standard_Integer nbsectionlines;
-  Standard_Integer nbtangentzones;
-  IntPolyh_ArrayOfSectionLines TSectionLines;
-  IntPolyh_ArrayOfTangentZones TTangentZones;
-  Standard_Integer myNbSU1;
-  Standard_Integer myNbSV1;
-  Standard_Integer myNbSU2;
-  Standard_Integer myNbSV2;
-  Handle(Adaptor3d_HSurface) mySurf1;
-  Handle(Adaptor3d_HSurface) mySurf2;
-
-
+  // Inputs
+  Handle(Adaptor3d_HSurface) mySurf1;          //!< First surface
+  Handle(Adaptor3d_HSurface) mySurf2;          //!< Second surface
+  Standard_Integer myNbSU1;                    //!< Number of samples in U direction for first surface
+  Standard_Integer myNbSV1;                    //!< Number of samples in V direction for first surface
+  Standard_Integer myNbSU2;                    //!< Number of samples in U direction for second surface
+  Standard_Integer myNbSV2;                    //!< Number of samples in V direction for second surface
+  // Results
+  Standard_Boolean myIsDone;                   //!< State of the operation
+  IntPolyh_ArrayOfSectionLines mySectionLines; //!< Section lines
+  IntPolyh_ArrayOfTangentZones myTangentZones; //!< Tangent zones
 };
-
-
-
-
-
-
 
 #endif // _IntPolyh_Intersection_HeaderFile
