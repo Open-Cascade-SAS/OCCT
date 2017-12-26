@@ -671,9 +671,9 @@ Standard_Boolean STEPCAFControl_Writer::Transfer (STEPControl_Writer &writer,
     const Handle(XSControl_TransferWriter) &TW = this->ChangeWriter().WS()->TransferWriter();
     const Handle(Transfer_FinderProcess) &FP = TW->FinderProcess();
 
-    for ( int i = 1; i <= labels.Length(); i++ )
+    for ( int i = 1; i <= sublabels.Length(); i++ )
     {
-      TDF_Label L = labels.Value(i);
+      TDF_Label L = sublabels.Value(i);
 
       for ( TDF_ChildIterator it(L, Standard_True); it.More(); it.Next() )
       {

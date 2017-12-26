@@ -1,20 +1,26 @@
-# Original bug : 23384
-# Date : 16 Aug 2012
+puts "=========="
+puts "OCC29403"
+puts "=========="
+puts ""
+#########################################################
+# Subshapes names are not imported from step
+#########################################################
+
+param read.stepcaf.subshapes.name 1
+param write.stepcaf.subshapes.name 1
+
 pload DCAF
-XOpen [locate_data_file bug23384-doc_subshapes_plain.xbf] doc
+
+ReadStep doc [locate_data_file bug29403_ECOR030312.stp]
 set info1 [XStat doc]
 regexp {level N 0 +: +([-0-9.+eE]+)} $info1 full l0
 regexp {level N 1 +: +([-0-9.+eE]+)} $info1 full l1
 regexp {Total number of labels for shapes in the document += +([-0-9.+eE]+)} $info1 full nb
 regexp {Number of labels with name += +([-0-9.+eE]+)} $info1 full nbname
 
-param write.stepcaf.subshapes.name 1
+WriteStep doc $imagedir/doc_subshapes.stp
 
-    WriteStep doc $imagedir/doc_subshapes.stp
-
-param read.stepcaf.subshapes.name 1
-
-    ReadStep after_doc $imagedir/doc_subshapes.stp
+ReadStep after_doc $imagedir/doc_subshapes.stp
 
 set info2 [XStat after_doc]
 regexp {level N 0 +: +([-0-9.+eE]+)} $info2 full l0_1
@@ -23,16 +29,19 @@ regexp {Total number of labels for shapes in the document += +([-0-9.+eE]+)} $in
 regexp {Number of labels with name += +([-0-9.+eE]+)} $info2 full nbname_1
 
 if { ${l0} != ${l0_1} ||
-     ${l0} != "4"     ||
+     ${l0} != "38"    ||
      ${l1} != ${l1_1} ||
-	 ${l1} != "131"   ||
+	 ${l1} != "85"    ||
      ${nb} != ${nb_1} ||
-	 ${nb} != "135"   ||
+	 ${nb} != "123"   ||
      ${nbname} != ${nbname_1} ||
-	 ${nbname} != "135"} {
+	 ${nbname} != "123"} {
     puts "Error : Document is read/written wrong!"
 }
 
 Close doc
 Close after_doc
 file delete -force $imagedir/doc_subshapes.stp
+
+param read.stepcaf.subshapes.name 0
+param write.stepcaf.subshapes.name 0

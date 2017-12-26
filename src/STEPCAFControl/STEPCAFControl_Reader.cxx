@@ -307,16 +307,6 @@ TCollection_AsciiString AddrToString(const TopoDS_Shape& theShape)
 #endif
 
 //=======================================================================
-//function : AllocateSubLabel
-//purpose  :
-//=======================================================================
-
-static TDF_Label AllocateSubLabel(TDF_Label& theRoot)
-{
-  return TDF_TagSource::NewChild(theRoot);
-}
-
-//=======================================================================
 //function : STEPCAFControl_Reader
 //purpose  : 
 //=======================================================================
@@ -4354,7 +4344,7 @@ Standard_Boolean STEPCAFControl_Reader::ReadViews(const Handle(XSControl_WorkSes
 //=======================================================================
 
 TDF_Label STEPCAFControl_Reader::SettleShapeData(const Handle(StepRepr_RepresentationItem)& theItem,
-                                                 TDF_Label& theLab,
+                                                 const TDF_Label& theLab,
                                                  const Handle(XCAFDoc_ShapeTool)& theShapeTool,
                                                  const Handle(Transfer_TransientProcess)& TP) const
 {
@@ -4373,13 +4363,43 @@ TDF_Label STEPCAFControl_Reader::SettleShapeData(const Handle(StepRepr_Represent
     return aResult;
 
   // Allocate sub-Label
-  aResult = AllocateSubLabel(theLab);
+  aResult = theShapeTool->AddSubShape(theLab, aShape);
+  if (aResult.IsNull())
+    return aResult;
 
   TCollection_AsciiString aName = hName->String();
   TDataStd_Name::Set(aResult, aName);
   theShapeTool->SetShape(aResult, aShape);
 
   return aResult;
+}
+
+//=======================================================================
+//function : collectRepresentationItems
+//purpose  : recursive collection of representation items for given representation 
+//           with all representations, related to it.
+//=======================================================================
+
+void collectRepresentationItems(const Interface_Graph& theGraph,
+                                const Handle(StepShape_ShapeRepresentation)& theRepresentation,
+                                NCollection_Sequence<Handle(StepRepr_RepresentationItem)>& theItems)
+{
+  Handle(StepRepr_HArray1OfRepresentationItem) aReprItems = theRepresentation->Items();
+  for (Standard_Integer itemIt = aReprItems->Lower(); itemIt <= aReprItems->Upper(); itemIt++)
+    theItems.Append(aReprItems->Value(itemIt));
+
+  Interface_EntityIterator entIt = theGraph.TypedSharings(theRepresentation, STANDARD_TYPE(StepRepr_RepresentationRelationship));
+  for (entIt.Start(); entIt.More(); entIt.Next())
+  {
+    Handle(StepRepr_RepresentationRelationship) aRelationship = Handle(StepRepr_RepresentationRelationship)::DownCast(entIt.Value());
+    if (aRelationship->Rep1() == theRepresentation)
+    {
+      Handle(StepShape_ShapeRepresentation)
+        aRepr = Handle(StepShape_ShapeRepresentation)::DownCast(aRelationship->Rep2());
+      if (!aRepr.IsNull())
+        collectRepresentationItems(theGraph, aRepr, theItems);
+    }
+  }
 }
 
 //=======================================================================
@@ -4432,24 +4452,29 @@ void STEPCAFControl_Reader::ExpandSubShapes(const Handle(XCAFDoc_ShapeTool)& Sha
       continue;
 
     // Access representation items
-    Handle(StepRepr_HArray1OfRepresentationItem) aReprItems = aShapeRepr->Items();
+    NCollection_Sequence<Handle(StepRepr_RepresentationItem)> aReprItems;
+    collectRepresentationItems(Graph, aShapeRepr, aReprItems);
 
-    if ( aReprItems.IsNull() )
+    if (aReprItems.Length() == 0)
       continue;
 
     if ( !ShapeLabelMap.IsBound(aRootShape) )
       continue;
 
     TDF_Label aRootLab = ShapeLabelMap.Find(aRootShape);
+    // Do not add subshapes to assembly,
+    // they will be processed with corresponding Shape_Product_Definition of necessary part.
+    if (ShapeTool->IsAssembly(aRootLab))
+      continue;
 
     StepRepr_SequenceOfRepresentationItem aMSBSeq;
     StepRepr_SequenceOfRepresentationItem aSBSMSeq;
 
     // Iterate over the top level representation items collecting the
     // topological containers to expand
-    for ( Standard_Integer i = aReprItems->Lower(); i <= aReprItems->Upper(); ++i )
+    for (Standard_Integer i = 1; i <= aReprItems.Length(); ++i)
     {
-      Handle(StepRepr_RepresentationItem) aTRepr = aReprItems->Value(i);
+      Handle(StepRepr_RepresentationItem) aTRepr = aReprItems.Value(i);
       if ( aTRepr->IsKind( STANDARD_TYPE(StepShape_ManifoldSolidBrep) ) )
         aMSBSeq.Append(aTRepr);
       else if ( aTRepr->IsKind( STANDARD_TYPE(StepShape_ShellBasedSurfaceModel) ) )
@@ -4463,16 +4488,11 @@ void STEPCAFControl_Reader::ExpandSubShapes(const Handle(XCAFDoc_ShapeTool)& Sha
     // Expand Manifold Solid BReps
     for ( Standard_Integer i = 1; i <= aMSBSeq.Length(); ++i )
     {
-      const Handle(StepRepr_RepresentationItem)& aManiRepr = aMSBSeq.Value(i);
-
       // Put additional Label for SOLID
-      TDF_Label aManiLab;
-      if ( doInsertSolidLab )
-        aManiLab = SettleShapeData(aManiRepr, aRootLab, ShapeTool, TP);
-      else
-        aManiLab = aRootLab;
+      if (doInsertSolidLab)
+        SettleShapeData(aMSBSeq.Value(i), aRootLab, ShapeTool, TP);
 
-      ExpandManifoldSolidBrep(aManiLab, aMSBSeq.Value(i), TP, ShapeTool);
+      ExpandManifoldSolidBrep(aRootLab, aMSBSeq.Value(i), TP, ShapeTool);
     }
 
     // Expand Shell-Based Surface Models
@@ -4540,7 +4560,7 @@ void STEPCAFControl_Reader::ExpandShell(const Handle(StepShape_ConnectedFaceSet)
                                         const Handle(XCAFDoc_ShapeTool)& ShapeTool) const
 {
   // Record CAF data
-  TDF_Label aShellLab = SettleShapeData(Shell, RootLab, ShapeTool, TP);
+  SettleShapeData(Shell, RootLab, ShapeTool, TP);
 
   // Access faces
   Handle(StepShape_HArray1OfFace) aFaces = Shell->CfsFaces();
@@ -4549,7 +4569,7 @@ void STEPCAFControl_Reader::ExpandShell(const Handle(StepShape_ConnectedFaceSet)
     const Handle(StepShape_Face)& aFace = aFaces->Value(f);
 
     // Record CAF data
-    TDF_Label aFaceLab = SettleShapeData(aFace, aShellLab, ShapeTool, TP);
+    SettleShapeData(aFace, RootLab, ShapeTool, TP);
 
     // Access face bounds
     Handle(StepShape_HArray1OfFaceBound) aWires = aFace->Bounds();
@@ -4558,7 +4578,7 @@ void STEPCAFControl_Reader::ExpandShell(const Handle(StepShape_ConnectedFaceSet)
       const Handle(StepShape_Loop)& aWire = aWires->Value(w)->Bound();
 
       // Record CAF data
-      TDF_Label aWireLab = SettleShapeData(aWire, aFaceLab, ShapeTool, TP);
+      SettleShapeData(aWire, RootLab, ShapeTool, TP);
 
       // Access wire edges
       // Currently only EDGE LOOPs are considered (!)
@@ -4573,15 +4593,15 @@ void STEPCAFControl_Reader::ExpandShell(const Handle(StepShape_ConnectedFaceSet)
         Handle(StepShape_Edge) anEdge = anEdges->Value(e)->EdgeElement();
 
         // Record CAF data
-        TDF_Label anEdgeLab = SettleShapeData(anEdge, aWireLab, ShapeTool, TP);
+        SettleShapeData(anEdge, RootLab, ShapeTool, TP);
 
         // Access vertices
         Handle(StepShape_Vertex) aV1 = anEdge->EdgeStart();
         Handle(StepShape_Vertex) aV2 = anEdge->EdgeEnd();
 
         // Record CAF data
-        SettleShapeData(aV1, anEdgeLab, ShapeTool, TP);
-        SettleShapeData(aV2, anEdgeLab, ShapeTool, TP);
+        SettleShapeData(aV1, RootLab, ShapeTool, TP);
+        SettleShapeData(aV2, RootLab, ShapeTool, TP);
       }
     }
   }

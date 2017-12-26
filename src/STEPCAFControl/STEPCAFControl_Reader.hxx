@@ -222,7 +222,7 @@ protected:
   //! Populates the sub-Label of the passed TDF Label with shape
   //! data associated with the given STEP Representation Item,
   //! including naming and topological information.
-  Standard_EXPORT TDF_Label SettleShapeData (const Handle(StepRepr_RepresentationItem)& theItem, TDF_Label& theLab, const Handle(XCAFDoc_ShapeTool)& theShapeTool, const Handle(Transfer_TransientProcess)& theTP) const;
+  Standard_EXPORT TDF_Label SettleShapeData (const Handle(StepRepr_RepresentationItem)& theItem, const TDF_Label& theLab, const Handle(XCAFDoc_ShapeTool)& theShapeTool, const Handle(Transfer_TransientProcess)& theTP) const;
   
   //! Given the maps of already translated shapes, this method
   //! expands their correspondent Labels in XDE Document so that
