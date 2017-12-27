@@ -19,8 +19,9 @@
 #include <StdStorage_Root.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <NCollection_DataMap.hxx>
+#include <NCollection_IndexedDataMap.hxx>
 
-typedef NCollection_DataMap<TCollection_AsciiString, Handle(StdStorage_Root), TCollection_AsciiString> StdStorage_MapOfRoots;
-typedef NCollection_DataMap<TCollection_AsciiString, Handle(StdStorage_Root), TCollection_AsciiString>::Iterator StdStorage_DataMapIteratorOfMapOfRoots;
+typedef NCollection_IndexedDataMap<TCollection_AsciiString, Handle(StdStorage_Root), TCollection_AsciiString> StdStorage_MapOfRoots;
+typedef NCollection_IndexedDataMap<TCollection_AsciiString, Handle(StdStorage_Root), TCollection_AsciiString>::Iterator StdStorage_DataMapIteratorOfMapOfRoots;
 
 #endif // StdStorage_MapOfRoots_HeaderFile

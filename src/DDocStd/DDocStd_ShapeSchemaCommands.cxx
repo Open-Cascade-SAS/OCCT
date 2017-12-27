@@ -155,12 +155,17 @@ static Standard_Integer DDocStd_fsdread(Draw_Interpretor& theDI,
     theDI << "Usage : fsdread filename shape\n";
     theDI << "        Arguments:\n";
     theDI << "        filename : input file name\n";
-    theDI << "        shape    : name of an output shape,\n";
-    theDI << "                   root shapes will be put into a compound\n";
-    theDI << "                   in case of multiple roots in the file\n";
+    theDI << "        shape    : name of an output shape, or \n";
+    theDI << "                   reserved name = 'restore_with_names';\n";
+    theDI << "                   by default root shapes will be put into \n";
+    theDI << "                   a compound in case of multiple roots in the file;\n";
+    theDI << "                   if name = restore_with_names, the shapes will be put to\n";
+    theDI << "                   separate variables according kept names.\n";
     return 1;
   }
-
+  Standard_Boolean rflag(Standard_False);
+  if (strcmp(theArgs[2],"restore_with_names") == 0) 
+    rflag = Standard_True;
   Handle(StdStorage_Data) aData;
   Storage_Error anError = StdStorage::Read(TCollection_AsciiString(theArgs[1]), aData);
   if (anError != Storage_VSOk)
@@ -186,7 +191,20 @@ static Standard_Integer DDocStd_fsdread(Draw_Interpretor& theDI,
         if (aHShape) // shapes are expected
         {
           TopoDS_Shape aShape = aHShape->Import();
-          aShapes.Append(aShape);
+          if(rflag) {
+            if(!aRoot->Name().IsEmpty())
+              DBRep::Set(aRoot->Name().ToCString(), aShape);
+            else {
+              TCollection_AsciiString aNam("name_");
+              aNam += aRoot->Reference();
+              DBRep::Set(aNam.ToCString(), aShape);
+            }
+#ifdef DEBUG_FSDREAD
+            Standard_Integer indx = aRoot->Reference();
+            theDI << "Ref indx = " <<indx << " Name = " << aRoot->Name().ToCString() << "\n";
+#endif
+          } else
+            aShapes.Append(aShape);
         }
       }
     }
@@ -194,20 +212,21 @@ static Standard_Integer DDocStd_fsdread(Draw_Interpretor& theDI,
 
   theDI << "Info : " << aTypeData->NumberOfTypes() << " type(s)\n";
   theDI << "       " << aRoots->Length() << " root(s)\n";
-  theDI << "       " << aShapes.Length() << " shape(s) translated\n";
 
-  if (aShapes.Length() > 1)
-  {
-    BRep_Builder aB;
-    TopoDS_Compound aC;
-    aB.MakeCompound(aC);
-    for (Standard_Integer i = 1; i <= aShapes.Length(); ++i)
-      aB.Add(aC, aShapes.Value(i));
-    DBRep::Set(theArgs[2], aC);
+  if (!rflag) {
+    if (aShapes.Length() > 1)
+    {
+      theDI << "       " << aShapes.Length() << " shape(s) translated\n";
+      BRep_Builder aB;
+      TopoDS_Compound aC;
+      aB.MakeCompound(aC);
+      for (Standard_Integer i = 1; i <= aShapes.Length(); ++i)
+        aB.Add(aC, aShapes.Value(i));
+      DBRep::Set(theArgs[2], aC);
+    }
+    else
+      DBRep::Set(theArgs[2], aShapes.First());
   }
-  else
-    DBRep::Set(theArgs[2], aShapes.First());
-
   return 0;
 }
 
@@ -229,7 +248,7 @@ void DDocStd::ShapeSchemaCommands(Draw_Interpretor& theCommands)
     __FILE__, DDocStd_fsdwrite, g);
 
   theCommands.Add("fsdread",
-    "fsdread filename shape",
+    "fsdread filename shape [name | or key 'restore_with_names']",
     __FILE__, DDocStd_fsdread, g);
 
 }
