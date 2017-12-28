@@ -60,6 +60,8 @@ public:
   
   Standard_EXPORT Standard_Boolean ChangeMap (const Handle(TColStd_HPackedMapOfInteger)& theMap);
 
+  Standard_EXPORT Standard_Boolean ChangeMap (const TColStd_PackedMapOfInteger& theMap);
+
   const TColStd_PackedMapOfInteger& GetMap() const { return  myMap->Map(); }
 
   const Handle(TColStd_HPackedMapOfInteger)& GetHMap() const { return myMap; }
