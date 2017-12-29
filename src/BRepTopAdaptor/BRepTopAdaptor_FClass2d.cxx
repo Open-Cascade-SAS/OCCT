@@ -30,6 +30,7 @@
 #include <ElCLib.hxx>
 #include <Geom2dInt_Geom2dCurveTool.hxx>
 #include <GeomAbs_SurfaceType.hxx>
+#include <GCPnts_QuasiUniformDeflection.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 #include <Precision.hxx>
@@ -298,7 +299,7 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face& aFace,const 
 	      PClass(im1)=SeqPnt2d.Value(im1);
 	      PClass(nbpnts)=SeqPnt2d.Value(nbpnts);
 
-
+              Standard_Real aPer = 0.;
 //	      for(Standard_Integer ii=1; ii<nbpnts; ii++,im0++,im1++,im2++)
 	      for(Standard_Integer ii=1; ii<nbpnts; ii++,im0++,im1++)
 		{ 
@@ -310,10 +311,86 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face& aFace,const 
 //		  Standard_Real N = A.Magnitude() * B.Magnitude();
 
 		  square += (PClass(im0).X()-PClass(im1).X())*(PClass(im0).Y()+PClass(im1).Y())*.5; 
+                  aPer += (PClass(im0).XY() - PClass(im1).XY()).Modulus();
 
 //		  if(N>1e-16){ Standard_Real a=A.Angle(B); angle+=a; }
 		}
 
+              Standard_Real anExpThick = Max(2. * Abs(square) / aPer, 1e-7);
+              Standard_Real aDefl = Max(FlecheU, FlecheV);
+              Standard_Real aDiscrDefl = Min(aDefl*0.1, anExpThick * 10.);
+              while (aDefl > anExpThick && aDiscrDefl > 1e-7)
+              {
+                // Deflection of the polygon is too much for this ratio of area and perimeter,
+                // and this might lead to self-intersections.
+                // Discretize the wire more tightly to eliminate the error.
+                firstpoint = 1;
+                SeqPnt2d.Clear();
+                FlecheU = 0.0;
+                FlecheV = 0.0;
+                for (WireExplorer.Init(TopoDS::Wire(FaceExplorer.Current()), Face);
+                  WireExplorer.More(); WireExplorer.Next())
+                {
+                  edge = WireExplorer.Current();
+                  Or = edge.Orientation();
+                  if (Or == TopAbs_FORWARD || Or == TopAbs_REVERSED)
+                  {
+                    Standard_Real pfbid, plbid;
+                    BRep_Tool::Range(edge, Face, pfbid, plbid);
+                    if (Abs(plbid - pfbid) < 1.e-9) continue;
+                    BRepAdaptor_Curve2d C(edge, Face);
+                    GCPnts_QuasiUniformDeflection aDiscr(C, aDiscrDefl);
+                    if (!aDiscr.IsDone())
+                      break;
+                    Standard_Integer nbp = aDiscr.NbPoints();
+                    Standard_Integer iStep = 1, i = 1, iEnd = nbp + 1;
+                    if (Or == TopAbs_REVERSED)
+                    {
+                      iStep = -1;
+                      i = nbp;
+                      iEnd = 0;
+                    }
+                    if (firstpoint == 2)
+                      i += iStep;
+                    for (; i != iEnd; i += iStep)
+                    {
+                      gp_Pnt2d aP2d = C.Value(aDiscr.Parameter(i));
+                      SeqPnt2d.Append(aP2d);
+                    }
+                    if (nbp > 2)
+                    {
+                      Standard_Integer ii = SeqPnt2d.Length();
+                      gp_Lin2d Lin(SeqPnt2d(ii - 2), gp_Dir2d(gp_Vec2d(SeqPnt2d(ii - 2), SeqPnt2d(ii))));
+                      Standard_Real ul = ElCLib::Parameter(Lin, SeqPnt2d(ii - 1));
+                      gp_Pnt2d Pp = ElCLib::Value(ul, Lin);
+                      Standard_Real dU = Abs(Pp.X() - SeqPnt2d(ii - 1).X());
+                      Standard_Real dV = Abs(Pp.Y() - SeqPnt2d(ii - 1).Y());
+                      if (dU > FlecheU) FlecheU = dU;
+                      if (dV > FlecheV) FlecheV = dV;
+                    }
+                    firstpoint = 2;
+                  }
+                }
+                nbpnts = SeqPnt2d.Length();
+                PClass.Resize(1, nbpnts, Standard_False);
+                im1 = nbpnts - 1;
+                im0 = 1;
+                PClass(im1) = SeqPnt2d.Value(im1);
+                PClass(nbpnts) = SeqPnt2d.Value(nbpnts);
+                square = 0.;
+                aPer = 0.;
+                for (Standard_Integer ii = 1; ii<nbpnts; ii++, im0++, im1++)
+                {
+                  if (im1 >= nbpnts) im1 = 1;
+                  PClass(ii) = SeqPnt2d.Value(ii);
+                  square += (PClass(im0).X() - PClass(im1).X())*(PClass(im0).Y() + PClass(im1).Y())*.5;
+                  aPer += (PClass(im0).XY() - PClass(im1).XY()).Modulus();
+                }
+
+                anExpThick = Max(2. * Abs(square) / aPer, 1e-7);
+                aDefl = Max(FlecheU, FlecheV);
+                aDiscrDefl = Min(aDiscrDefl * 0.1, anExpThick * 10.);
+              }
       
 	      //-- FlecheU*=10.0;
 	      //-- FlecheV*=10.0;

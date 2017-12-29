@@ -26,6 +26,7 @@
 #include <Geom2dInt_Geom2dCurveTool.hxx>
 #include <GeomAbs_SurfaceType.hxx>
 #include <GeomInt.hxx>
+#include <GCPnts_QuasiUniformDeflection.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 #include <IntTools_FClass2d.hxx>
@@ -44,6 +45,13 @@
 #include <TopoDS_Wire.hxx>
 
 #include <stdio.h>
+
+//#define DEBUG_PCLASS_POLYGON
+#ifdef DEBUG_PCLASS_POLYGON
+#include <DrawTrSurf.hxx>
+#include <Geom2d_BSplineCurve.hxx>
+#endif
+
 //=======================================================================
 //function : IntTools_FClass2d:IntTools:_FClass2d
 //purpose  : 
@@ -386,7 +394,6 @@ void IntTools_FClass2d::Init(const TopoDS_Face& aFace,
         Standard_Integer im2=nbpnts-2;
         Standard_Integer im1=nbpnts-1;
         Standard_Integer im0=1;
-        Standard_Integer ii;
         Standard_Real    angle = 0.0;
         Standard_Real aX0, aY0, aX1, aY1, aS;
         //
@@ -397,7 +404,9 @@ void IntTools_FClass2d::Init(const TopoDS_Face& aFace,
         PClass(im2)=SeqPnt2d.Value(im2);
         PClass(im1)=SeqPnt2d.Value(im1);
         PClass(nbpnts)=SeqPnt2d.Value(nbpnts);
-        for(ii=1; ii<nbpnts; ii++,im0++,im1++,im2++) { 
+        Standard_Real aPer = 0.;
+        for (Standard_Integer ii = 1; ii<nbpnts; ii++, im0++, im1++, im2++)
+        {
           if(im2>=nbpnts) im2=1;
           if(im1>=nbpnts) im1=1;
           PClass(ii)=SeqPnt2d.Value(ii);
@@ -408,6 +417,7 @@ void IntTools_FClass2d::Init(const TopoDS_Face& aFace,
           aP2D0.Coord(aX0, aY0);
           aP2D1.Coord(aX1, aY1);
           aS=aS+(aY0+aY1)*(aX1-aX0); 
+          aPer += aP2D1.Distance(aP2D0);
 
           gp_Vec2d A(PClass(im2),PClass(im1));
           gp_Vec2d B(PClass(im1),PClass(im0));
@@ -455,6 +465,106 @@ void IntTools_FClass2d::Init(const TopoDS_Face& aFace,
         if (!iFlag) {
           angle = 0.; 
         }
+#ifdef DEBUG_PCLASS_POLYGON
+        TColStd_Array1OfReal aKnots(1, nbpnts);
+        TColStd_Array1OfInteger aMults(1, nbpnts);
+        for (int i = 1; i <= nbpnts; i++)
+        {
+          aKnots(i) = i;
+          aMults(i) = 1;
+        }
+        aMults(1) = aMults(nbpnts) = 2;
+        Handle(Geom2d_BSplineCurve) aPol = new Geom2d_BSplineCurve(PClass, aKnots, aMults, 1);
+        DrawTrSurf::Set("pol", aPol);
+#endif
+
+        Standard_Real anExpThick = Max(2. * Abs(aS) / aPer, 1e-7);
+        Standard_Real aDefl = Max(FlecheU, FlecheV);
+        Standard_Real aDiscrDefl = Min(aDefl*0.1, anExpThick * 10.);
+        while (aDefl > anExpThick && aDiscrDefl > 1e-7)
+        {
+          // Deflection of the polygon is too much for this ratio of area and perimeter,
+          // and this might lead to self-intersections.
+          // Discretize the wire more tightly to eliminate the error.
+          firstpoint = 1;
+          SeqPnt2d.Clear();
+          FlecheU = 0.0;
+          FlecheV = 0.0;
+          for (aWExp.Init(TopoDS::Wire(aExpF.Current()), Face);
+            aWExp.More(); aWExp.Next())
+          {
+            edge = aWExp.Current();
+            Or = edge.Orientation();
+            if (Or == TopAbs_FORWARD || Or == TopAbs_REVERSED)
+            {
+              BRep_Tool::Range(edge, Face, pfbid, plbid);
+              if (Abs(plbid - pfbid) < 1.e-9) continue;
+              BRepAdaptor_Curve2d C(edge, Face);
+              GCPnts_QuasiUniformDeflection aDiscr(C, aDiscrDefl);
+              if (!aDiscr.IsDone())
+                break;
+              Standard_Integer nbp = aDiscr.NbPoints();
+              Standard_Integer iStep = 1, i = 1, iEnd = nbp + 1;
+              if (Or == TopAbs_REVERSED)
+              {
+                iStep = -1;
+                i = nbp;
+                iEnd = 0;
+              }
+              if (firstpoint == 2)
+                i += iStep;
+              for (; i != iEnd; i += iStep)
+              {
+                gp_Pnt2d aP2d = C.Value(aDiscr.Parameter(i));
+                SeqPnt2d.Append(aP2d);
+              }
+              if (nbp > 2)
+              {
+                Standard_Integer ii = SeqPnt2d.Length();
+                gp_Lin2d Lin(SeqPnt2d(ii - 2), gp_Dir2d(gp_Vec2d(SeqPnt2d(ii - 2), SeqPnt2d(ii))));
+                Standard_Real ul = ElCLib::Parameter(Lin, SeqPnt2d(ii - 1));
+                gp_Pnt2d Pp = ElCLib::Value(ul, Lin);
+                Standard_Real dU = Abs(Pp.X() - SeqPnt2d(ii - 1).X());
+                Standard_Real dV = Abs(Pp.Y() - SeqPnt2d(ii - 1).Y());
+                if (dU > FlecheU) FlecheU = dU;
+                if (dV > FlecheV) FlecheV = dV;
+              }
+              firstpoint = 2;
+            }
+          }
+          nbpnts = SeqPnt2d.Length();
+          PClass.Resize(1, nbpnts, Standard_False);
+          im1 = nbpnts - 1;
+          im0 = 1;
+          PClass(im1) = SeqPnt2d.Value(im1);
+          PClass(nbpnts) = SeqPnt2d.Value(nbpnts);
+          aS = 0.;
+          aPer = 0.;
+          for (Standard_Integer ii = 1; ii<nbpnts; ii++, im0++, im1++)
+          {
+            if (im1 >= nbpnts) im1 = 1;
+            PClass(ii) = SeqPnt2d.Value(ii);
+            aS += (PClass(im1).X() - PClass(im0).X())*(PClass(im0).Y() + PClass(im1).Y())*.5;
+            aPer += (PClass(im0).XY() - PClass(im1).XY()).Modulus();
+          }
+#ifdef DEBUG_PCLASS_POLYGON
+          TColStd_Array1OfReal aKnots(1, nbpnts);
+          TColStd_Array1OfInteger aMults(1, nbpnts);
+          for (int i = 1; i <= nbpnts; i++)
+          {
+            aKnots(i) = i;
+            aMults(i) = 1;
+          }
+          aMults(1) = aMults(nbpnts) = 2;
+          Handle(Geom2d_BSplineCurve) aPol = new Geom2d_BSplineCurve(PClass, aKnots, aMults, 1);
+          DrawTrSurf::Set("pol1", aPol);
+#endif
+
+          anExpThick = Max(2. * Abs(aS) / aPer, 1e-7);
+          aDefl = Max(FlecheU, FlecheV);
+          aDiscrDefl = Min(aDiscrDefl * 0.1, anExpThick * 10.);
+        }
+
         if(aS>0.){
           myIsHole=Standard_False;
         }
