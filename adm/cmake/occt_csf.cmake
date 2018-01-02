@@ -86,7 +86,7 @@ if (WIN32)
     set (CSF_objc        "objc")
 
     # frameworks
-    find_library (Appkit_LIB NAMES Appkit)
+    find_library (Appkit_LIB NAMES AppKit)
     set (CSF_Appkit ${Appkit_LIB})
 
     find_library (IOKit_LIB NAMES IOKit)

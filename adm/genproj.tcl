@@ -1366,7 +1366,7 @@ proc osutils:csfList { theOS theCsfLibsMap theCsfFrmsMap } {
     set aLibsMap(CSF_dl)           "dl"
     if { "$theOS" == "mac" } {
       set aLibsMap(CSF_objc)       "objc"
-      set aFrmsMap(CSF_Appkit)     "Appkit"
+      set aFrmsMap(CSF_Appkit)     "AppKit"
       set aFrmsMap(CSF_IOKit)      "IOKit"
       set aFrmsMap(CSF_OpenGlLibs) "OpenGL"
       set aFrmsMap(CSF_TclLibs)    "Tcl"
