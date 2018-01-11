@@ -35,7 +35,7 @@ void StdObjMgt_WriteData::WritePersistentObject (const Handle(StdObjMgt_Persiste
 
 StdObjMgt_WriteData& StdObjMgt_WriteData::operator << (const Handle(StdObjMgt_Persistent)& thePersistent)
 {
-  *myDriver << (thePersistent ? thePersistent->RefNum() : 0);
+  myDriver->PutReference(thePersistent ? thePersistent->RefNum() : 0);
   return *this;
 }
 

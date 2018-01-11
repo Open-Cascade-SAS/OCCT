@@ -53,7 +53,7 @@ public:
   template <class Persistent>
   StdObjMgt_WriteData& operator << (const Handle(Persistent)& thePersistent)
   {
-    *myDriver << (thePersistent ? thePersistent->RefNum() : 0);
+    myDriver->PutReference(thePersistent ? thePersistent->RefNum() : 0);
     return *this;
   }
 
