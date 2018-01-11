@@ -348,37 +348,45 @@ inline gp_Ax2  gp_Ax3::Ax2()const
 // function : SetAxis
 // purpose  :
 // =======================================================================
-inline void  gp_Ax3::SetAxis (const gp_Ax1& theA1)
+inline void  gp_Ax3::SetAxis(const gp_Ax1& theA1)
 {
-  Standard_Boolean isDirect = Direct();
-  axis = theA1;
-  vxdir = axis.Direction().CrossCrossed (vxdir, axis.Direction());
-  if (isDirect)
-  {
-    vydir = axis.Direction().Crossed (vxdir);
-  }
-  else
-  {
-    vydir = vxdir.Crossed (axis.Direction());
-  }
+  axis.SetLocation(theA1.Location());
+  SetDirection(theA1.Direction());
 }
 
 // =======================================================================
 // function : SetDirection
 // purpose  :
 // =======================================================================
-inline void  gp_Ax3::SetDirection (const gp_Dir& theV)
+inline void  gp_Ax3::SetDirection(const gp_Dir& theV)
 {
-  Standard_Boolean isDirect = Direct();
-  axis.SetDirection (theV);
-  vxdir = theV.CrossCrossed (vxdir, theV);
-  if (isDirect)
+  Standard_Real aDot = theV.Dot(vxdir);
+  if(1. - Abs(aDot) <= Precision::Angular())
   {
-    vydir = theV.Crossed (vxdir);
+    if(aDot > 0)
+    {
+      vxdir = vydir;
+      vydir = axis.Direction();
+    }
+    else
+    {
+      vxdir = axis.Direction();
+    }
+    axis.SetDirection(theV);
   }
   else
-  {
-    vydir = vxdir.Crossed (theV);
+  { 
+    Standard_Boolean direct = Direct();
+    axis.SetDirection (theV);
+    vxdir = theV.CrossCrossed (vxdir, theV);
+    if (direct)
+    { 
+      vydir = theV.Crossed (vxdir); 
+    }
+    else        
+    { 
+      vydir = vxdir.Crossed (theV); 
+    }
   }
 }
 
@@ -388,15 +396,32 @@ inline void  gp_Ax3::SetDirection (const gp_Dir& theV)
 // =======================================================================
 inline void  gp_Ax3::SetXDirection (const gp_Dir& theVx)
 {
-  Standard_Boolean isDirect = Direct();
-  vxdir = axis.Direction().CrossCrossed (theVx, axis.Direction());
-  if (isDirect)
+  Standard_Real aDot = theVx.Dot(axis.Direction());
+  if (1. - Abs(aDot) <= Precision::Angular())
   {
-    vydir = axis.Direction().Crossed (vxdir);
+    if (aDot > 0)
+    {
+      axis.SetDirection(vxdir);
+      vydir = -vydir;
+    }
+    else
+    {
+      axis.SetDirection(vxdir);
+    }
+    vxdir = theVx;
   }
   else
   {
-    vydir = vxdir.Crossed (axis.Direction());
+    Standard_Boolean direct = Direct();
+    vxdir = axis.Direction().CrossCrossed(theVx, axis.Direction());
+    if (direct)
+    {
+      vydir = axis.Direction().Crossed(vxdir);
+    }
+    else
+    {
+      vydir = vxdir.Crossed(axis.Direction());
+    }
   }
 }
 
@@ -406,12 +431,29 @@ inline void  gp_Ax3::SetXDirection (const gp_Dir& theVx)
 // =======================================================================
 inline void  gp_Ax3::SetYDirection (const gp_Dir& theVy)
 {
-  Standard_Boolean isDirect = Direct();
-  vxdir = theVy.Crossed (axis.Direction());
-  vydir = (axis.Direction()).Crossed (vxdir);
-  if (!isDirect)
+  Standard_Real aDot = theVy.Dot(axis.Direction());
+  if (1. - Abs(aDot) <= Precision::Angular())
   {
-    vxdir.Reverse();
+    if (aDot > 0)
+    {
+      axis.SetDirection(vydir);
+      vxdir = -vxdir;
+    }
+    else
+    {
+      axis.SetDirection(vydir);
+    }
+    vydir = theVy;
+  }
+  else
+  {
+    Standard_Boolean isDirect = Direct();
+    vxdir = theVy.Crossed(axis.Direction());
+    vydir = (axis.Direction()).Crossed(vxdir);
+    if (!isDirect)
+    {
+      vxdir.Reverse();
+    }
   }
 }
 

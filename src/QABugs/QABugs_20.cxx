@@ -4049,6 +4049,130 @@ static Standard_Integer QANullifyShape(Draw_Interpretor& di,
   return 0;
 }
 
+static void CheckAx3Dir(gp_Ax3& theAxis, const gp_Dir& theDir)
+{
+  Standard_Boolean bDirect = theAxis.Direct();
+  theAxis.SetDirection (theDir);
+  if (bDirect != theAxis.Direct())
+  {
+    std::cout << "Error: coordinate system is reversed\n";
+  }
+  if (!theDir.IsEqual(theAxis.Direction(), Precision::Angular()))
+  {
+    std::cout << "Error: main dir was not set properly\n";
+  }
+}
+
+static void CheckAx3DirX(gp_Ax3& theAxis, const gp_Dir& theDir)
+{
+  Standard_Boolean bDirect = theAxis.Direct();
+  theAxis.SetXDirection (theDir);
+  if (bDirect != theAxis.Direct())
+  {
+    std::cout << "Error: coordinate system is reversed\n";
+  }
+  gp_Dir aGoodY = theAxis.Direction().Crossed(theDir);
+  if (theAxis.Direct())
+  {
+    if (!aGoodY.IsEqual(theAxis.YDirection(), Precision::Angular()))
+    {
+      std::cout << "Error: X dir was not set properly\n";
+    }
+  }
+  else
+  {
+    if (!aGoodY.IsOpposite(theAxis.YDirection(), Precision::Angular()))
+    {
+      std::cout << "Error: X dir was not set properly\n";
+    }
+  }
+}
+
+static void CheckAx3DirY(gp_Ax3& theAxis, const gp_Dir& theDir)
+{
+  Standard_Boolean bDirect = theAxis.Direct();
+  theAxis.SetYDirection (theDir);
+  if (bDirect != theAxis.Direct())
+  {
+    std::cout << "Error: coordinate system is reversed\n";
+  }
+  gp_Dir aGoodX = theAxis.Direction().Crossed(theDir);
+  if (theAxis.Direct())
+  {
+    if (!aGoodX.IsOpposite(theAxis.XDirection(), Precision::Angular()))
+    {
+      std::cout << "Error: Y dir was not set properly\n";
+    }
+  }
+  else
+  {
+    if (!aGoodX.IsEqual(theAxis.XDirection(), Precision::Angular()))
+    {
+      std::cout << "Error: Y dir was not set properly\n";
+    }
+  }
+}
+
+static void CheckAx3Ax1(gp_Ax3& theAx, const gp_Ax1& theAx0)
+{
+  Standard_Boolean bDirect = theAx.Direct();
+  theAx.SetAxis (theAx0);
+  if (bDirect != theAx.Direct())
+  {
+    std::cout << "Error: coordinate system is reversed\n";
+  }
+  if (!theAx0.Direction().IsEqual(theAx.Direction(), Precision::Angular()))
+  {
+    std::cout << "Error: main dir was not set properly\n";
+  }
+}
+
+
+static Standard_Integer OCC29406 (Draw_Interpretor&, Standard_Integer, const char**)
+{
+  // Main (Z) direction
+  {
+   // gp_Ax3::SetDirection() test
+    gp_Ax3 anAx1, anAx2, anAx3, anAx4, anAx5, anAx6;
+    anAx3.ZReverse();
+    anAx4.ZReverse();    
+    CheckAx3Dir(anAx1,  gp::DX());
+    CheckAx3Dir(anAx2, -gp::DX());
+    CheckAx3Dir(anAx3,  gp::DX());
+    CheckAx3Dir(anAx4, -gp::DX());
+    // gp_Ax3::SetAxis() test
+    gp_Ax1 anAx0_1 (gp::Origin(),  gp::DX());
+    gp_Ax1 anAx0_2 (gp::Origin(), -gp::DX());
+    CheckAx3Ax1(anAx5, anAx0_1);
+    CheckAx3Ax1(anAx6, anAx0_2);
+  }
+  // X direction
+  {
+    // gp_Ax3::SetXDirection() test
+    gp_Ax3 anAx1, anAx2, anAx3, anAx4;
+    anAx3.XReverse();
+    anAx4.XReverse();
+    CheckAx3DirX(anAx1,  gp::DZ());
+    CheckAx3DirX(anAx2, -gp::DZ());
+    CheckAx3DirX(anAx3,  gp::DZ());
+    CheckAx3DirX(anAx4, -gp::DZ());
+  }
+  // Y direction
+  {
+    // gp_Ax3::SetYDirection() test
+    gp_Ax3 anAx1, anAx2, anAx3, anAx4;
+    anAx3.YReverse();
+    anAx4.YReverse();
+    CheckAx3DirY(anAx1,  gp::DZ());
+    CheckAx3DirY(anAx2, -gp::DZ());
+    CheckAx3DirY(anAx3,  gp::DZ());
+    CheckAx3DirY(anAx4, -gp::DZ());
+  }
+
+  return 0;
+}
+
+
 void QABugs::Commands_20(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
@@ -4131,5 +4255,8 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands) {
                   "Nullify shape. Usage: QANullifyShape shape",
                   __FILE__, QANullifyShape, group);
 
+  theCommands.Add ("OCC29406", 
+                   "Tests the case when newly set axis for gp_Ax3 is parallel to one of current axis", 
+                   __FILE__, OCC29406, group);
   return;
 }

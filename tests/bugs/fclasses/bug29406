@@ -1,0 +1,7 @@
+puts "============"
+puts "0029406: Foundation Classes - gp_Ax3 fails setting direction"
+puts "============"
+puts ""
+
+pload QAcommands
+OCC29406
