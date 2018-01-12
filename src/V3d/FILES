@@ -44,7 +44,6 @@ V3d_View_3.cxx
 V3d_View_4.cxx
 V3d_Viewer.cxx
 V3d_Viewer.hxx
-V3d_Viewer_3.cxx
 V3d_Viewer_4.cxx
 V3d_ViewerPointer.hxx
 V3d_ViewPointer.hxx

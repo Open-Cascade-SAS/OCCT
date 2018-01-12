@@ -15,7 +15,10 @@
 
 #include <Aspect_Grid.hxx>
 #include <Aspect_IdentDefinitionError.hxx>
+#include <Graphic3d_ArrayOfSegments.hxx>
+#include <Graphic3d_AspectLine3d.hxx>
 #include <Graphic3d_AspectMarker3d.hxx>
+#include <Graphic3d_AspectText3d.hxx>
 #include <Graphic3d_GraphicDriver.hxx>
 #include <Graphic3d_Group.hxx>
 #include <Graphic3d_Structure.hxx>
@@ -463,4 +466,85 @@ void V3d_Viewer::SetDefaultLights()
   AddLight (anAmbLight);
   SetLightOn (aDirLight);
   SetLightOn (anAmbLight);
+}
+
+//=======================================================================
+//function : SetPrivilegedPlane
+//purpose  :
+//=======================================================================
+void V3d_Viewer::SetPrivilegedPlane (const gp_Ax3& thePlane)
+{
+  myPrivilegedPlane = thePlane;
+  Grid()->SetDrawMode(Grid()->DrawMode());
+  for (V3d_ListOfView::Iterator anActiveViewIter (myActiveViews); anActiveViewIter.More(); anActiveViewIter.Next())
+  {
+    anActiveViewIter.Value()->SetGrid (myPrivilegedPlane, Grid());
+  }
+
+  if (myDisplayPlane)
+  {
+    DisplayPrivilegedPlane (Standard_True, myDisplayPlaneLength);
+  }
+}
+
+//=======================================================================
+//function : DisplayPrivilegedPlane
+//purpose  :
+//=======================================================================
+void V3d_Viewer::DisplayPrivilegedPlane (const Standard_Boolean theOnOff, const Standard_Real theSize)
+{
+  myDisplayPlane = theOnOff;
+  myDisplayPlaneLength = theSize;
+
+  if (!myDisplayPlane)
+  {
+    if (!myPlaneStructure.IsNull())
+	{
+      myPlaneStructure->Erase();
+    }
+    return;
+  }
+
+  if (myPlaneStructure.IsNull())
+  {
+    myPlaneStructure = new Graphic3d_Structure (StructureManager());
+    myPlaneStructure->SetInfiniteState (Standard_True);
+    myPlaneStructure->Display();
+  }
+  else
+  {
+    myPlaneStructure->Clear();
+  }
+
+  Handle(Graphic3d_Group) aGroup = myPlaneStructure->NewGroup();
+
+  Handle(Graphic3d_AspectLine3d) aLineAttrib = new Graphic3d_AspectLine3d (Quantity_NOC_GRAY60, Aspect_TOL_SOLID, 1.0);
+  aGroup->SetGroupPrimitivesAspect (aLineAttrib);
+
+  Handle(Graphic3d_AspectText3d) aTextAttrib = new Graphic3d_AspectText3d();
+  aTextAttrib->SetColor (Quantity_Color (Quantity_NOC_ROYALBLUE1));
+  aGroup->SetGroupPrimitivesAspect (aTextAttrib);
+
+  Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments (6);
+
+  const gp_Pnt& p0 = myPrivilegedPlane.Location();
+
+  const gp_Pnt pX (p0.XYZ() + myDisplayPlaneLength * myPrivilegedPlane.XDirection().XYZ());
+  aPrims->AddVertex (p0);
+  aPrims->AddVertex (pX);
+  aGroup->Text ("X", Graphic3d_Vertex (pX.X(), pX.Y(), pX.Z()), 1.0 / 81.0);
+
+  const gp_Pnt pY (p0.XYZ() + myDisplayPlaneLength * myPrivilegedPlane.YDirection().XYZ());
+  aPrims->AddVertex (p0);
+  aPrims->AddVertex (pY);
+  aGroup->Text ("Y", Graphic3d_Vertex (pY.X(), pY.Y(), pY.Z()), 1.0 / 81.0);
+
+  const gp_Pnt pZ (p0.XYZ() + myDisplayPlaneLength * myPrivilegedPlane.Direction().XYZ());
+  aPrims->AddVertex (p0);
+  aPrims->AddVertex (pZ);
+  aGroup->Text ("Z", Graphic3d_Vertex (pZ.X(), pZ.Y(), pZ.Z()), 1.0 / 81.0);
+
+  aGroup->AddPrimitiveArray (aPrims);
+
+  myPlaneStructure->Display();
 }

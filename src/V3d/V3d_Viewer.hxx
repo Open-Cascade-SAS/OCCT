@@ -322,7 +322,7 @@ public:
 
 public: //! @name privileged plane management
 
-  Standard_EXPORT gp_Ax3 PrivilegedPlane() const;
+  const gp_Ax3& PrivilegedPlane() const { return myPrivilegedPlane; }
 
   Standard_EXPORT void SetPrivilegedPlane (const gp_Ax3& thePlane);
 
@@ -348,18 +348,17 @@ public: //! @name grid management
   //! marker size : 3.0
   Standard_EXPORT void SetGridEcho (const Handle(Graphic3d_AspectMarker3d)& aMarker);
   
-  //! Returns TRUE when grid echo must be displayed
-  //! at hit point.
-  Standard_EXPORT Standard_Boolean GridEcho() const;
+  //! Returns TRUE when grid echo must be displayed at hit point.
+  Standard_Boolean GridEcho() const { return myGridEcho; }
   
   //! Returns Standard_True if a grid is activated in <me>.
   Standard_EXPORT Standard_Boolean IsActive() const;
   
   //! Returns the defined grid in <me>.
   Standard_EXPORT Handle(Aspect_Grid) Grid() const;
-  
+
   //! Returns the current grid type defined in <me>.
-  Standard_EXPORT Aspect_GridType GridType() const;
+  Aspect_GridType GridType() const { return myGridType; }
   
   //! Returns the current grid draw mode defined in <me>.
   Standard_EXPORT Aspect_GridDrawMode GridDrawMode() const;
