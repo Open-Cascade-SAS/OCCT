@@ -2768,6 +2768,61 @@ static Standard_Integer OCC29371 (Draw_Interpretor& di, Standard_Integer n, cons
   return 0;
 }
 
+#include <NCollection_DoubleMap.hxx>
+#include <NCollection_IndexedMap.hxx>
+#include <NCollection_DataMap.hxx>
+#include <NCollection_IndexedDataMap.hxx>
+#include <OSD_MemInfo.hxx>
+
+// check that copying of empty maps does not allocate extra memory
+template<typename T> void AllocDummyArr (Draw_Interpretor& theDI, int theN1, int theN2)
+{
+  NCollection_Array1<T> aMapArr1(0, theN1), aMapArr2(0, theN2);
+
+  OSD_MemInfo aMemTool;
+  Standard_Size aMem0 = aMemTool.Value (OSD_MemInfo::MemHeapUsage);
+
+  for (int i = 1; i < theN1; i++)
+    aMapArr1(i) = aMapArr1(i-1);
+  for (int i = 1; i < theN2; i++)
+    aMapArr2(i) = aMapArr2(0);
+
+  aMemTool.Update();
+  Standard_Size aMem1 = aMemTool.Value (OSD_MemInfo::MemHeapUsage);
+
+  theDI << "Heap usage before copy = " << (int)aMem0 << ", after = " << (int)aMem1 << "\n";
+  
+  if (aMem1 > aMem0)
+    theDI << "Error: memory increased by " << (int)(aMem1 - aMem0) << " bytes\n";
+};
+
+static Standard_Integer OCC29064 (Draw_Interpretor& theDI, Standard_Integer theArgc, const char** theArgv)
+{
+  if (theArgc < 2)
+  {
+    cout << "Error: give argument indicating type of map (map, doublemap, datamap, indexedmap, indexeddatamap)" << endl;
+    return 1;
+  }
+
+  const int nbm1 = 10000, nbm2 = 10000;
+  if (strcasecmp (theArgv[1], "map") == 0)
+    AllocDummyArr<NCollection_Map<int> > (theDI, nbm1, nbm2);
+  else if (strcasecmp (theArgv[1], "doublemap") == 0)
+    AllocDummyArr<NCollection_DoubleMap<int, int> > (theDI, nbm1, nbm2);
+  else if (strcasecmp (theArgv[1], "datamap") == 0)
+    AllocDummyArr<NCollection_DataMap<int, int> > (theDI, nbm1, nbm2);
+  else if (strcasecmp (theArgv[1], "indexedmap") == 0)
+    AllocDummyArr<NCollection_IndexedMap<int> > (theDI, nbm1, nbm2);
+  else if (strcasecmp (theArgv[1], "indexeddatamap") == 0)
+    AllocDummyArr<NCollection_IndexedDataMap<int, int> > (theDI, nbm1, nbm2);
+  else
+  {
+    cout << "Error: unrecognized argument " << theArgv[1] << endl;
+    return 1;
+  }
+  return 0;
+}
+
 #include <BRepOffsetAPI_MakePipeShell.hxx>
 #include <GC_MakeArcOfCircle.hxx>
 #include <BRepAdaptor_CompCurve.hxx>
@@ -2869,5 +2924,6 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands) {
                               __FILE__, OCC29430, group);
   theCommands.Add("OCC29531", "OCC29531 <step file name>", __FILE__, OCC29531, group);
 
+  theCommands.Add ("OCC29064", "OCC29064: test memory usage by copying empty maps", __FILE__, OCC29064, group);
   return;
 }

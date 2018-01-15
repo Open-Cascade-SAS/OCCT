@@ -190,16 +190,20 @@ private:
       return *this;
 
     Clear();
-    ReSize (theOther.Extent()-1);
-    for (Standard_Integer anIndexIter = 1; anIndexIter <= theOther.Extent(); ++anIndexIter)
+    Standard_Integer anExt = theOther.Extent();
+    if (anExt)
     {
-      const TheKeyType&  aKey1  = theOther.FindKey      (anIndexIter);
-      const TheItemType& anItem = theOther.FindFromIndex(anIndexIter);
-      const Standard_Integer iK1 = Hasher::HashCode (aKey1, NbBuckets());
-      IndexedDataMapNode* pNode = new (this->myAllocator) IndexedDataMapNode (aKey1, anIndexIter, anItem, myData1[iK1]);
-      myData1[iK1]             = pNode;
-      myData2[anIndexIter - 1] = pNode;
-      Increment();
+      ReSize (anExt-1); //mySize is same after resize
+      for (Standard_Integer anIndexIter = 1; anIndexIter <= anExt; ++anIndexIter)
+      {
+        const TheKeyType&  aKey1  = theOther.FindKey      (anIndexIter);
+        const TheItemType& anItem = theOther.FindFromIndex(anIndexIter);
+        const Standard_Integer iK1 = Hasher::HashCode (aKey1, NbBuckets());
+        IndexedDataMapNode* pNode = new (this->myAllocator) IndexedDataMapNode (aKey1, anIndexIter, anItem, myData1[iK1]);
+        myData1[iK1]             = pNode;
+        myData2[anIndexIter - 1] = pNode;
+        Increment();
+      }
     }
     return *this;
   }

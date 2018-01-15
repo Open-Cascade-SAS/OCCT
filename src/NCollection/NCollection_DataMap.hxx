@@ -168,10 +168,14 @@ public:
       return *this;
 
     Clear();
-    ReSize (theOther.Extent()-1);
-    Iterator anIter(theOther);
-    for (; anIter.More(); anIter.Next())
-      Bind (anIter.Key(), anIter.Value());
+    Standard_Integer anExt = theOther.Extent();
+    if (anExt)
+    {
+      ReSize (anExt-1);
+      Iterator anIter(theOther);
+      for (; anIter.More(); anIter.Next())
+        Bind (anIter.Key(), anIter.Value());
+    }
     return *this;
   }
 

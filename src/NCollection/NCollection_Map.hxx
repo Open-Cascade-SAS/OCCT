@@ -147,10 +147,14 @@ public:
       return *this;
 
     Clear();
-    ReSize (theOther.Extent()-1);
-    Iterator anIter(theOther);
-    for (; anIter.More(); anIter.Next())
-      Add (anIter.Key());
+    int anExt = theOther.Extent();
+    if (anExt)
+    {
+      ReSize (anExt-1);
+      Iterator anIter(theOther);
+      for (; anIter.More(); anIter.Next())
+        Add (anIter.Key());
+    }
     return *this;
   }
 

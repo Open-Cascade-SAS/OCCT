@@ -1,0 +1,12 @@
+puts "========"
+puts " 0029064: Copying of empty NCollection map takes excessive memory"
+puts "========"
+puts ""
+
+pload QAcommands
+
+OCC29064 map
+OCC29064 doublemap
+OCC29064 datamap
+OCC29064 indexedmap
+OCC29064 indexeddatamap

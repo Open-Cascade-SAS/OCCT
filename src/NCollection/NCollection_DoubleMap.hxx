@@ -151,20 +151,24 @@ public:
       return *this;
 
     Clear();
-    ReSize (theOther.Extent()-1);
-    Iterator anIter(theOther);
-    for (; anIter.More(); anIter.Next())
+    Standard_Integer anExt = theOther.Extent();
+    if (anExt)
     {
-      TheKey1Type aKey1 = anIter.Key1();
-      TheKey2Type aKey2 = anIter.Key2();
-      Standard_Integer iK1 = Hasher1::HashCode (aKey1, NbBuckets());
-      Standard_Integer iK2 = Hasher2::HashCode (aKey2, NbBuckets());
-      DoubleMapNode * pNode = new (this->myAllocator) DoubleMapNode (aKey1, aKey2, 
-                                                                     myData1[iK1], 
-                                                                     myData2[iK2]);
-      myData1[iK1] = pNode;
-      myData2[iK2] = pNode;
-      Increment();
+      ReSize (anExt-1);
+      Iterator anIter(theOther);
+      for (; anIter.More(); anIter.Next())
+      {
+        TheKey1Type aKey1 = anIter.Key1();
+        TheKey2Type aKey2 = anIter.Key2();
+        Standard_Integer iK1 = Hasher1::HashCode (aKey1, NbBuckets());
+        Standard_Integer iK2 = Hasher2::HashCode (aKey2, NbBuckets());
+        DoubleMapNode * pNode = new (this->myAllocator) DoubleMapNode (aKey1, aKey2, 
+          myData1[iK1], 
+          myData2[iK2]);
+        myData1[iK1] = pNode;
+        myData2[iK2] = pNode;
+        Increment();
+      }
     }
     return *this;
   }
