@@ -385,10 +385,8 @@ BRepFill_PipeShell::BRepFill_PipeShell(const TopoDS_Wire& Spine)
   if (Affich)
     DBRep::Set("theguide", TheGuide);
 #endif
-  // transform the guide in a single curve (periodic if posssible)
-  Handle(BRepAdaptor_HCompCurve) Guide  = 
-    new (BRepAdaptor_HCompCurve) (TheGuide);
-  Guide->ChangeCurve().SetPeriodic(Standard_True);
+  // transform the guide in a single curve
+  Handle(BRepAdaptor_HCompCurve) Guide = new (BRepAdaptor_HCompCurve) (TheGuide);
 
   if (CurvilinearEquivalence) { // trihedron by curvilinear reduced abscissa
     if (KeepContact == BRepFill_Contact ||

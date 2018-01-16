@@ -46,11 +46,9 @@ BRepAdaptor_CompCurve::BRepAdaptor_CompCurve()
 : TFirst  (0.0),
   TLast   (0.0),
   PTol    (0.0),
-  myPeriod(0.0),
   CurIndex(-1),
   Forward (Standard_False),
-  IsbyAC  (Standard_False),
-  Periodic(Standard_False)
+  IsbyAC  (Standard_False)
 {
 }
 
@@ -60,11 +58,9 @@ BRepAdaptor_CompCurve::BRepAdaptor_CompCurve(const TopoDS_Wire&     theWire,
   TFirst  (0.0),
   TLast   (0.0),
   PTol    (0.0),
-  myPeriod(0.0),
   CurIndex(-1),
   Forward (Standard_False),
-  IsbyAC  (theIsAC),
-  Periodic(Standard_False)
+  IsbyAC  (theIsAC)
 {
   Initialize(theWire, theIsAC);
 }
@@ -78,11 +74,9 @@ BRepAdaptor_CompCurve::BRepAdaptor_CompCurve(const TopoDS_Wire& theWire,
   TFirst  (theFirst),
   TLast   (theLast),
   PTol    (theTolerance),
-  myPeriod(0.0),
   CurIndex(-1),
   Forward (Standard_False),
-  IsbyAC  (theIsAC),
-  Periodic(Standard_False)
+  IsbyAC  (theIsAC)
 {
   Initialize(theWire, theIsAC, theFirst, theLast, theTolerance);
 }
@@ -144,13 +138,6 @@ BRepAdaptor_CompCurve::BRepAdaptor_CompCurve(const TopoDS_Wire& theWire,
 
   TFirst = 0;
   TLast = myKnots->Value(myKnots->Length());
-  myPeriod = TLast - TFirst;
-  if (NbEdge == 1)  {
-    Periodic =  myCurves->Value(1).IsPeriodic();
-  }
-  else {
-    Periodic = Standard_False;
-  }
 }
 
  void BRepAdaptor_CompCurve::Initialize(const TopoDS_Wire& W,
@@ -199,15 +186,6 @@ BRepAdaptor_CompCurve::BRepAdaptor_CompCurve(const TopoDS_Wire& theWire,
     myCurves->SetValue(i2, HC->ChangeCurve());
   }
 }
-
-
-void BRepAdaptor_CompCurve::SetPeriodic(const Standard_Boolean isPeriodic)
-{
-  if (myWire.Closed()) {
-    Periodic = isPeriodic;
-  }
-}
-
 
 const TopoDS_Wire& BRepAdaptor_CompCurve::Wire() const
 {
@@ -308,13 +286,13 @@ const TopoDS_Wire& BRepAdaptor_CompCurve::Wire() const
 
  Standard_Boolean BRepAdaptor_CompCurve::IsPeriodic() const
 {
-  return Periodic;
+  return Standard_False;
 
 }
 
  Standard_Real BRepAdaptor_CompCurve::Period() const
 {
-  return myPeriod;
+  return (TLast - TFirst);
 }
 
  gp_Pnt BRepAdaptor_CompCurve::Value(const Standard_Real U) const
@@ -475,12 +453,6 @@ const TopoDS_Wire& BRepAdaptor_CompCurve::Wire() const
 
 
   Wtest = W+Eps; //Offset to discriminate the nodes
-  if(Periodic){
-    Wtest = ElCLib::InPeriod(Wtest,
-			     0,
-			     myPeriod);
-    W = Wtest-Eps;
-  }
 
   // Find the index
   Standard_Boolean Trouve = Standard_False;

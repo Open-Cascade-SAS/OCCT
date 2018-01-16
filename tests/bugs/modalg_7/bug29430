@@ -1,0 +1,46 @@
+puts "========"
+puts "OCC29430"
+puts "========"
+puts ""
+#################################################
+# [Regression] Curve evaluation at boundary point.
+#################################################
+
+pload QAcommands
+
+# After launching the command below we will obtain
+# some wire (stored in "result" variable) containing
+# a single edge based on arc of circle and its first and last
+# 3D-points (p1 and p2 correspondingly) taken from
+# composite curve (BRepAdaptor_CompCurve) built on this wire. 
+
+OCC29430 result p1 p2
+
+vertex v1 p1
+vertex v2 p2
+
+explode result v
+
+# Now, let's check 
+# 1. whether p1 and p2 match the vertices of the wire;
+# 2. whether p1 and p2 are different points.
+
+distmini d11 result_1 v1
+distmini d12 result_1 v2
+distmini d21 result_2 v1
+distmini d22 result_2 v2
+distmini dv12 v1 v2
+
+
+if { ([dval d11_val] > 1.0e-7) && ([dval d21_val] > 1.0e-7) } {
+  puts "Error: Start point of the wire does not match any its vertex."
+}
+if { ([dval d12_val] > 1.0e-7) && ([dval d22_val] > 1.0e-7) } { 
+  puts "Error: End point of the wire does not match any its vertex."
+}
+
+if { [dval dv12_val] < 1.0e-7 } { 
+  puts "Error: Start and End points of the wire are the same."
+}
+
+

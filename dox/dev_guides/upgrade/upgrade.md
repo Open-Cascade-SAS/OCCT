@@ -1524,3 +1524,8 @@ Multiple changes have been applied to lights management within TKV3d and TKOpenG
 @subsection upgrade_730_BOPAlgo_Section Changes in BOPAlgo_Section
 
 The public method *BuildSection()* in the class *BOPAlgo_Section* has became protected. The methods *Perform()* or *PerformWithFiller()* should be called for construction of the result of SECTION operation.
+
+@subsection upgrade_730_BRepAdaptor_CompCurve Changes in BRepAdaptor_CompCurve
+
+The method BRepAdaptor_CompCurve::SetPeriodic has been eliminated.
+Since new version, the method BRepAdaptor_CompCurve::IsPeriodic() will always return FALSE. Earlier, it could return TRUE in case if the wire contained only one edge based on periodic curve. 

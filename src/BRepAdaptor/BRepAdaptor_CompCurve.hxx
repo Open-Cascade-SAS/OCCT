@@ -53,6 +53,9 @@ class Geom_BSplineCurve;
 //! of the BRep topology like a 3D curve.
 //! Warning: With this  class of curve,  C0 and C1 continuities
 //! are not assumed. So be carful with some algorithm!
+//! Please note that BRepAdaptor_CompCurve cannot be
+//! periodic curve at all (even if it contains single 
+//! periodic edge).
 class BRepAdaptor_CompCurve  : public Adaptor3d_Curve
 {
 public:
@@ -74,10 +77,6 @@ public:
   
   //! Sets wire <W> and trimmed  parameter.
   Standard_EXPORT void Initialize (const TopoDS_Wire& W, const Standard_Boolean KnotByCurvilinearAbcissa, const Standard_Real First, const Standard_Real Last, const Standard_Real Tol);
-  
-  //! Set the flag Periodic.
-  //! Warning: This method has no effect if the wire is not closed
-  Standard_EXPORT void SetPeriodic (const Standard_Boolean Periodic);
   
   //! Returns the wire.
   Standard_EXPORT const TopoDS_Wire& Wire() const;
@@ -197,15 +196,11 @@ private:
   Standard_Real TFirst;
   Standard_Real TLast;
   Standard_Real PTol;
-  Standard_Real myPeriod;
   Handle(BRepAdaptor_HArray1OfCurve) myCurves;
   Handle(TColStd_HArray1OfReal) myKnots;
   Standard_Integer CurIndex;
   Standard_Boolean Forward;
   Standard_Boolean IsbyAC;
-  Standard_Boolean Periodic;
-
-
 };
 
 
