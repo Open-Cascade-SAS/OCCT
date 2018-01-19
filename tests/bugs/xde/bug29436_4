@@ -1,0 +1,27 @@
+puts "=========="
+puts "OCC29436"
+puts "=========="
+puts ""
+########################################
+# Extend Expand compounds functionality
+########################################
+pload ALL
+
+XOpen [locate_data_file bug29436_wire.xbf] D
+XExpand D 1 0:1:1:1
+
+# check colors
+set color [XGetShapeColor D 0:1:1:2 c]
+if {$color != "RED"} {
+  puts "Error: metadata lost during expand"
+}
+set color [XGetShapeColor D 0:1:1:2:1]
+if {$color != "RED"} {
+  puts "Error: metadata lost during expand"
+}
+set color [XGetShapeColor D 0:1:1:3:1]
+if {$color != "RED"} {
+  puts "Error: metadata lost during expand"
+}
+
+#Close D

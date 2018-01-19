@@ -484,7 +484,7 @@ static Standard_Integer Expand (Draw_Interpretor& di, Standard_Integer argc, con
   if (argc == 3)
   {
     if(!XCAFDoc_Editor::Expand(Doc->Main(), recurs)){
-      di << "The shape is assembly or not compaund\n";
+      di << "No suitable labels to expand\n";
       return 1;
     }
   }
@@ -502,7 +502,7 @@ static Standard_Integer Expand (Draw_Interpretor& di, Standard_Integer argc, con
 
       if (!aLabel.IsNull()){
         if(!XCAFDoc_Editor::Expand(Doc->Main(), aLabel, recurs)){
-          di << "The shape is assembly or not compaund\n";
+          di << "The shape is assembly or not compound\n";
           return 1;
         }
       }
@@ -534,7 +534,7 @@ void XDEDRAW_Common::InitCommands(Draw_Interpretor& di)
   di.Add("XFileSet", "filename: Set the specified file to be the current one",__FILE__, SetCurWS, g);
   di.Add("XFromShape", "shape: do fromshape command for all the files",__FILE__, FromShape, g);
 
-  di.Add("XExpand", "XExpand Doc recursively(0/1) or XExpand Doc recursively(0/1) label1 abel2 ..."  
+  di.Add("XExpand", "XExpand Doc recursively(0/1) or XExpand Doc recursively(0/1) label1 label2 ..."  
           "or XExpand Doc recursively(0/1) shape1 shape2 ...",__FILE__, Expand, g);
 
 }

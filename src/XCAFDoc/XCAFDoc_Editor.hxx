@@ -35,7 +35,8 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
-  //! Convert Shape(compound) to assembly
+  //! Convert Shape (compound/compsolid/shell/wire) to assembly.
+  //! Only compounds expanded recursively
   Standard_EXPORT static   Standard_Boolean Expand (const TDF_Label& Doc, const TDF_Label& Shape, const Standard_Boolean recursively = Standard_True) ;
   
   //! Convert all compounds in Doc to assembly

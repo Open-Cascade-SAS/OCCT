@@ -404,7 +404,7 @@ public:
   //! Returns null attribute if no SHUO found
   Standard_EXPORT static Standard_Boolean FindSHUO (const TDF_LabelSequence& Labels, Handle(XCAFDoc_GraphNode)& theSHUOAttr);
   
-  //! Convert Shape (compound) to assembly
+  //! Convert Shape (compound/compsolid/shell/wire) to assembly
   Standard_EXPORT Standard_Boolean Expand (const TDF_Label& Shape) ;
 
     //! Make subshape for Part from Shape

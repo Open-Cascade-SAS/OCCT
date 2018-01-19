@@ -1804,11 +1804,17 @@ Standard_Boolean XCAFDoc_ShapeTool::FindSHUO (const TDF_LabelSequence& theLabels
 
 Standard_Boolean XCAFDoc_ShapeTool::Expand (const TDF_Label& Shape)
 {
-  if(Shape.IsNull())
+  if (Shape.IsNull() || IsAssembly(Shape))
     return Standard_False;
 
   TopoDS_Shape aShape = GetShape(Shape);
-  if(!aShape.IsNull() && aShape.ShapeType() == TopAbs_COMPOUND && !IsAssembly(Shape))
+  if (aShape.IsNull())
+    return Standard_False;
+
+  TopAbs_ShapeEnum aShapeType = aShape.ShapeType();
+  Standard_Boolean isExpandedType = aShapeType == TopAbs_COMPOUND || aShapeType == TopAbs_COMPSOLID ||
+                                    aShapeType == TopAbs_SHELL || aShapeType == TopAbs_WIRE;
+  if (isExpandedType)
   {
     //set assembly attribute
     TDataStd_UAttribute::Set ( Shape, XCAFDoc::AssemblyGUID() );
@@ -1818,7 +1824,6 @@ Standard_Boolean XCAFDoc_ShapeTool::Expand (const TDF_Label& Shape)
     {
       TopoDS_Shape aChildShape = anIter.Value();
       TDF_Label aChild = FindShape(aChildShape, Standard_True);
-      
       TDF_TagSource aTag;
       Handle(TDataStd_Name) anAttr;
       //make part for child
@@ -1837,7 +1842,6 @@ Standard_Boolean XCAFDoc_ShapeTool::Expand (const TDF_Label& Shape)
         aChild.FindAttribute(TDataStd_Name::GetID(), anAttr);
         TopLoc_Location nulloc;
         SetShape(aPart, aChildShape.Located(nulloc));
-
       }
       //set name to part
       if(!anAttr.IsNull())
@@ -1895,7 +1899,8 @@ void XCAFDoc_ShapeTool::makeSubShape (const TDF_Label& Part, const TopoDS_Shape&
         TCollection_AsciiString aName (Stream.str().c_str());
         TDataStd_Name::Set(aSubLabel, TCollection_ExtendedString(aName));
       }
-      MakeReference(aChildLabel, aSubLabel, aChildShape.Location());
+      // Create auxiliary link, it will be removed during moving attributes
+      MakeReference(aSubLabel, aChildLabel, aChildShape.Location());
     }
     makeSubShape(Part, aChildShape);
   }
