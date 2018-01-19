@@ -2416,6 +2416,109 @@ static Standard_Boolean SplitOnSegments(Handle(IntPatch_WLine)&        WLine,
 }
 
 //=======================================================================
+//function : IsPointOnBoundary
+//purpose  : Returns TRUE if point <theParam> matches <theBoundary +/- thePeriod>
+//            with given tolerance criterion.
+//            For not-periodic case, thePeriod must be equal to 0.0.
+//=======================================================================
+static Standard_Boolean IsPointOnBoundary(const Standard_Real theToler2D,
+                                          const Standard_Real theBoundary,
+                                          const Standard_Real thePeriod,
+                                          const Standard_Real theParam)
+{
+  Standard_Real aDelta = Abs(theParam - theBoundary);
+  if (thePeriod != 0.0)
+  {
+    aDelta = fmod(aDelta, thePeriod);
+    
+    // 0 <= aDelta < thePeriod
+    return ((aDelta < theToler2D) || ((thePeriod - aDelta) < theToler2D));
+  }
+
+  // Here, thePeriod == 0.0, aDelta > 0.0
+
+  return (aDelta < theToler2D);
+}
+
+//=======================================================================
+//function : DetectOfBoundaryAchievement
+//purpose  : Can change values of theNewLine (by adding the computed point on boundary,
+//            which parameter will be adjusted) and theIsOnBoundary variables.
+//=======================================================================
+static void DetectOfBoundaryAchievement(const Handle(Adaptor3d_HSurface)& theQSurf, // quadric
+                                        const Standard_Boolean theIsReversed,
+                                        const Handle(IntSurf_LineOn2S)& theSourceLine,
+                                        const Standard_Integer thePointIndex,
+                                        const Standard_Real theToler2D,
+                                        Handle(IntSurf_LineOn2S)& theNewLine,
+                                        Standard_Boolean& theIsOnBoundary)
+{
+  const Standard_Real aUPeriod = theQSurf->IsUPeriodic() ? theQSurf->UPeriod() : 0.0,
+                      aVPeriod = theQSurf->IsVPeriodic() ? theQSurf->VPeriod() : 0.0;
+  const Standard_Real aUf = theQSurf->FirstUParameter(),
+                      aUl = theQSurf->LastUParameter(),
+                      aVf = theQSurf->FirstVParameter(),
+                      aVl = theQSurf->LastVParameter();
+
+  const IntSurf_PntOn2S &aPPrev = theSourceLine->Value(thePointIndex - 1),
+                        &aPCurr = theSourceLine->Value(thePointIndex);
+  Standard_Real aUPrev, aVPrev, aUCurr, aVCurr;
+  if (theIsReversed)
+  {
+    aPPrev.ParametersOnS2(aUPrev, aVPrev);   // S2 - quadric, set U,V by Pnt3D
+    aPCurr.ParametersOnS2(aUCurr, aVCurr);   // S2 - quadric, set U,V by Pnt3D
+  }
+  else
+  {
+    aPPrev.ParametersOnS1(aUPrev, aVPrev);    // S1 - quadric, set U,V by Pnt3D
+    aPCurr.ParametersOnS1(aUCurr, aVCurr);    // S1 - quadric, set U,V by Pnt3D
+  }
+
+  // Ignore cases when the WLine goes along the surface boundary completely.
+
+  if (IsPointOnBoundary(theToler2D, aUf, aUPeriod, aUCurr) &&
+      !IsPointOnBoundary(theToler2D, aUf, aUPeriod, aUPrev))
+  {
+    theIsOnBoundary = Standard_True;
+  }
+  else if (IsPointOnBoundary(theToler2D, aUl, aUPeriod, aUCurr) &&
+           !IsPointOnBoundary(theToler2D, aUl, aUPeriod, aUPrev))
+  {
+    theIsOnBoundary = Standard_True;
+  }
+  else if (IsPointOnBoundary(theToler2D, aVf, aVPeriod, aVCurr) &&
+           !IsPointOnBoundary(theToler2D, aVf, aVPeriod, aVPrev))
+  {
+    theIsOnBoundary = Standard_True;
+  }
+  else if (IsPointOnBoundary(theToler2D, aVl, aVPeriod, aVCurr) &&
+           !IsPointOnBoundary(theToler2D, aVl, aVPeriod, aVPrev))
+  {
+    theIsOnBoundary = Standard_True;
+  }
+
+  if (theIsOnBoundary)
+  {
+    // Adjust, to avoid bad jumping of the WLine.
+
+    const Standard_Real aDu = (aUPrev - aUCurr);
+    const Standard_Real aDv = (aVPrev - aVCurr);
+    if (aUPeriod > 0.0 && (2.0*Abs(aDu) > aUPeriod))
+    {
+      aUCurr += Sign(aUPeriod, aDu);
+    }
+
+    if (aVPeriod > 0.0 && (2.0*Abs(aDv) > aVPeriod))
+    {
+      aVCurr += Sign(aVPeriod, aDv);
+    }
+
+    IntSurf_PntOn2S aPoint = aPCurr;
+    aPoint.SetValue(!theIsReversed, aUCurr, aVCurr);
+    theNewLine->Add(aPoint);
+  }
+}
+//=======================================================================
 //function : DecomposeResult
 //purpose  : Split <theLine> in the places where it passes through seam edge
 //            or singularity (apex of cone or pole of sphere).
@@ -2499,7 +2602,6 @@ static Standard_Boolean DecomposeResult(const Handle(IntPatch_PointLine)& theLin
     // reset variables
     flNextLine = Standard_False;
     Standard_Boolean isDecomposited = Standard_False;
-    Standard_Real U1 = 0., U2 = 0., V1 = 0., V2 = 0.;
 
     Handle(IntSurf_LineOn2S) sline = new IntSurf_LineOn2S();
 
@@ -2546,18 +2648,33 @@ static Standard_Boolean DecomposeResult(const Handle(IntPatch_PointLine)& theLin
         continue;
       }
 
-      if(IsReversed)
+      //Check whether the current point is on the boundary of theQSurf.
+      //If that is TRUE then the Walking-line will be decomposed in this point.
+      //However, this boundary is not singular-point (like seam or pole of sphere).
+      //Therefore, its processing will be simplified.
+      Standard_Boolean isOnBoundary = Standard_False;
+
+      // Values of sline and isOnBoundary can be changed by this function
+      DetectOfBoundaryAchievement(theQSurf, IsReversed, aSSLine,
+                                  k, aTOL2D, sline, isOnBoundary);
+
+      aPrePointExist = IsSeamOrPole(theQSurf, aSSLine, IsReversed, k - 1, aDeltaUmax);
+
+      if (isOnBoundary && (aPrePointExist != IntPatch_SPntPoleSeamU))
       {
-        aSSLine->Value(k).ParametersOnS2(U1,V1);   // S2 - quadric, set U,V by Pnt3D
-      }
-      else
-      {
-        aSSLine->Value(k).ParametersOnS1(U1,V1);    // S1 - quadric, set U,V by Pnt3D
+        // If the considered point is on seam then its UV-parameters 
+        // are defined to within the surface period. Therefore, we can
+        // trust already computed parameters of this point.
+        // However, if this point (which is on the surface boundary) is
+        // a sphere pole or cone apex then its (point's) parameters
+        // have to be recomputed in the code below 
+        // (see IntPatch_SpecialPoints::AddSingularPole() method).
+        // E.g. see "bugs modalg_6 bug26684_2" test case.
+
+        aPrePointExist = IntPatch_SPntNone;
       }
 
-      aPrePointExist = IsSeamOrPole(theQSurf, aSSLine, IsReversed, k-1, aDeltaUmax);
-
-      if(aPrePointExist != IntPatch_SPntNone)
+      if (aPrePointExist != IntPatch_SPntNone)
       {
         aBindex = k;
         isDecomposited = Standard_True;
@@ -2601,14 +2718,14 @@ static Standard_Boolean DecomposeResult(const Handle(IntPatch_PointLine)& theLin
             anInfBound(1, 3), aSupBound(1, 3);
 
           //Parameters on parametric surface
-          Standard_Real aUp = 0.0, aVp = 0.0;
+          Standard_Real aUp = 0.0, aVp = 0.0, aUq = 0.0, aVq = 0.0;
           if(IsReversed)
           {
-            aSSLine->Value(k).ParametersOnS1(aUp, aVp);
+            aSSLine->Value(k).Parameters(aUp, aVp, aUq, aVq);
           }
           else
           {
-            aSSLine->Value(k).ParametersOnS2(aUp, aVp);
+            aSSLine->Value(k).Parameters(aUq, aVq, aUp, aVp);
           }
 
           aTol(1) = thePSurf->UResolution(theArcTol);
@@ -2616,7 +2733,7 @@ static Standard_Boolean DecomposeResult(const Handle(IntPatch_PointLine)& theLin
           aTol(3) = theQSurf->UResolution(theArcTol);
           aStartPoint(1) = 0.5*(aU0 + aUp);
           aStartPoint(2) = 0.5*(aV0 + aVp);
-          aStartPoint(3) = 0.5*(aUQuadRef + U1);
+          aStartPoint(3) = 0.5*(aUQuadRef + aUq);
           anInfBound(1) = thePSurf->FirstUParameter();
           anInfBound(2) = thePSurf->FirstVParameter();
           anInfBound(3) = theQSurf->FirstUParameter();
@@ -2631,7 +2748,7 @@ static Standard_Boolean DecomposeResult(const Handle(IntPatch_PointLine)& theLin
         }
         else if(aPrePointExist == IntPatch_SPntPoleSeamU)
         {
-          aPrePointExist = IntPatch_SPntNone;          
+          aPrePointExist = IntPatch_SPntNone;
 
           IntPatch_Point aVert;
           aVert.SetValue(aRefPt);
@@ -2642,6 +2759,15 @@ static Standard_Boolean DecomposeResult(const Handle(IntPatch_PointLine)& theLin
           {
             aPrePointExist = IntPatch_SPntPole;
             aLastType = IntPatch_SPntPole;
+            if (isOnBoundary)
+            {
+              // It is necessary to replace earlier added point on 
+              // the surface boundary with the pole. For that,
+              // here we delete excess point. New point will be added later.
+              isOnBoundary = Standard_False;
+              sline->RemovePoint(sline->NbPoints());
+            }
+
             aCompareTol2D = -1.0;
           } //if(IntPatch_AddSpecialPoints::AddSingularPole(...))
           else
@@ -2673,14 +2799,14 @@ static Standard_Boolean DecomposeResult(const Handle(IntPatch_PointLine)& theLin
                       anInfBound(1, 3), aSupBound(1, 3);
           
           //Parameters on parametric surface
-          Standard_Real aUp = 0.0, aVp = 0.0;
-          if(IsReversed)
+          Standard_Real aUp = 0.0, aVp = 0.0, aUq = 0.0, aVq = 0.0;
+          if (IsReversed)
           {
-            aSSLine->Value(k).ParametersOnS1(aUp, aVp);
+            aSSLine->Value(k).Parameters(aUp, aVp, aUq, aVq);
           }
           else
           {
-            aSSLine->Value(k).ParametersOnS2(aUp, aVp);
+            aSSLine->Value(k).Parameters(aUq, aVq, aUp, aVp);
           }
 
           aTol(1) = thePSurf->UResolution(theArcTol);
@@ -2688,7 +2814,7 @@ static Standard_Boolean DecomposeResult(const Handle(IntPatch_PointLine)& theLin
           aTol(3) = theQSurf->VResolution(theArcTol);
           aStartPoint(1) = 0.5*(aU0 + aUp);
           aStartPoint(2) = 0.5*(aV0 + aVp);
-          aStartPoint(3) = 0.5*(aVQuadRef + V1);
+          aStartPoint(3) = 0.5*(aVQuadRef + aVq);
           anInfBound(1) = thePSurf->FirstUParameter();
           anInfBound(2) = thePSurf->FirstVParameter();
           anInfBound(3) = theQSurf->FirstVParameter();
@@ -2704,28 +2830,46 @@ static Standard_Boolean DecomposeResult(const Handle(IntPatch_PointLine)& theLin
 
         if(!aNewPoint.IsSame(aRefPt, aCompareTol3D, aCompareTol2D))
         {
+          if (isOnBoundary)
+            break;
+
           sline->Add(aNewPoint);
           aPrePointExist = aLastType;
           PrePoint = aNewPoint;
         }
         else
         {
-          if(sline->NbPoints() == 1)
+          if (isOnBoundary || (sline->NbPoints() == 1))
           {
             //FIRST point of the sline is the pole of the quadric.
             //Therefore, there is no point in decomposition.
 
+            // If the considered point is on surface boundary then
+            // it is already marked as vertex. So, decomposition is 
+            // not required, too.
+
             PrePoint = aRefPt;
-            aPrePointExist = aLastType;
+            aPrePointExist = isOnBoundary ? IntPatch_SPntNone : aLastType;
           }
         }
 
         ////
         break;
-      } //if(Abs(U1-AnU1) > aDeltaUmax)
+      } //if (aPrePointExist != IntPatch_SPntNone) cond.
 
-      sline->Add(aSSLine->Value(k));
       PrePoint = aSSLine->Value(k);
+
+      if (isOnBoundary)
+      {
+        aBindex = k;
+        isDecomposited = Standard_True;
+        aPrePointExist = IntPatch_SPntNone;
+        break;
+      }
+      else
+      {
+        sline->Add(aSSLine->Value(k));
+      }
     } //for(Standard_Integer k = aFindex; k <= aLindex; k++)
 
     //Creation of new line as part of existing theLine.
@@ -2780,12 +2924,12 @@ static Standard_Boolean DecomposeResult(const Handle(IntPatch_PointLine)& theLin
                           new IntPatch_WLine(sline,Standard_False,
                           theLine->TransitionOnS1(),theLine->TransitionOnS2());
 
+      Standard_Real aU1 = 0.0, aV1 = 0.0, aU2 = 0.0, aV2 = 0.0;
       gp_Pnt aSPnt(sline->Value(1).Value());
-      sline->Value(1).ParametersOnS1(U1,V1);
-      sline->Value(1).ParametersOnS2(U2,V2);
+      sline->Value(1).Parameters(aU1, aV1, aU2, aV2);
       aTPntF.SetValue(aSPnt,theArcTol,Standard_False);
-      aTPntF.SetParameters(U1,V1,U2,V2);
-      aTPntF.SetParameter(1.);
+      aTPntF.SetParameters(aU1, aV1, aU2, aV2);
+      aTPntF.SetParameter(1.0);
       wline->AddVertex(aTPntF);
       wline->SetFirstPoint(1);
 
@@ -2795,10 +2939,9 @@ static Standard_Boolean DecomposeResult(const Handle(IntPatch_PointLine)& theLin
       }
 
       aSPnt =  sline->Value(sline->NbPoints()).Value();
-      sline->Value(sline->NbPoints()).ParametersOnS1(U1,V1);
-      sline->Value(sline->NbPoints()).ParametersOnS2(U2,V2);
+      sline->Value(sline->NbPoints()).Parameters(aU1, aV1, aU2, aV2);
       aTPntL.SetValue(aSPnt,theArcTol,Standard_False);
-      aTPntL.SetParameters(U1,V1,U2,V2);
+      aTPntL.SetParameters(aU1, aV1, aU2, aV2);
       aTPntL.SetParameter(sline->NbPoints());
       wline->AddVertex(aTPntL);
       wline->SetLastPoint(wline->NbVertex());
@@ -2856,24 +2999,25 @@ static Standard_Boolean DecomposeResult(const Handle(IntPatch_PointLine)& theLin
       
       for(Standard_Integer aFLIndex = 0; aFLIndex < 2; aFLIndex++)
       {
+        Standard_Real aU1 = 0.0, aV1 = 0.0, aU2 = 0.0, aV2 = 0.0;
         if(aFLIndex == 0)
         {
-          aRFirst.Parameters(U1, V1, U2, V2);
+          aRFirst.Parameters(aU1, aV1, aU2, aV2);
           aSPnt.SetXYZ(aRFirst.Value().XYZ());
         }
         else
         {
-          aRLast.Parameters(U1, V1, U2, V2);
+          aRLast.Parameters(aU1, aV1, aU2, aV2);
           aSPnt.SetXYZ(aRLast.Value().XYZ());
         }
 
         if(IsReversed)
         {
-          aPSurf.SetCoord(U1, V1);
+          aPSurf.SetCoord(aU1, aV1);
         }
         else
         {
-          aPSurf.SetCoord(U2, V2);
+          aPSurf.SetCoord(aU2, aV2);
         }
 
         Standard_Real aPar = ElCLib::Parameter(aLin, aPSurf);
@@ -2891,7 +3035,7 @@ static Standard_Boolean DecomposeResult(const Handle(IntPatch_PointLine)& theLin
 
         aTPnt.SetParameter(aPar);
         aTPnt.SetValue(aSPnt,theArcTol,Standard_False);
-        aTPnt.SetParameters(U1, V1, U2, V2);
+        aTPnt.SetParameters(aU1, aV1, aU2, aV2);
 
         aRLine->AddVertex(aTPnt);
       }

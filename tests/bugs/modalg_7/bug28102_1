@@ -1,0 +1,28 @@
+puts "========"
+puts "OCC28102"
+puts "========"
+puts ""
+#######################################################
+# Problem cutting a plate with several holes (670)
+#######################################################
+
+restore [locate_data_file bug28102_plate.brep] pl0
+restore [locate_data_file bug28102_holes.brep] hl
+
+# Incomplete section
+bsection result pl0 hl
+
+regexp {nb alone Vertices : ([-0-9.+eE]+)} [checksection result] full nbv
+if { $nbv != 0 } { puts "Error : Section is incorrect" }
+
+checknbshapes result -vertex 268 -edge 268
+
+checkprops result -l 11.5694
+
+regexp {Tolerance MAX=([-0-9.+eE]+)} [tolerance result] full toler
+
+if {$toler > 1.0e-5} {
+  puts "Error: Tolerance of section is too large"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
