@@ -1,6 +1,7 @@
-puts "TODO OCC24862 ALL: Error :  is WRONG because number of"
-puts "TODO OCC24862 ALL: Error : The area of result shape is"
-puts "TODO OCC24682 ALL: Faulty shapes in variables faulty_1 to faulty_"
+puts "TODO OCC23068 ALL: ERROR. offsetperform operation not done."
+puts "TODO OCC25925 ALL: Error: The command cannot be built"
+puts "TODO OCC25925 ALL: Tcl Exception: result is not a topological shape"
+puts "TODO OCC25925 ALL: TEST INCOMPLETE"
 
 puts "============"
 puts "OCC5805"

@@ -1,6 +1,6 @@
-puts "TODO OCC24862 ALL: Error :  is WRONG because number of"
-puts "TODO OCC24862 ALL: Error : The area of result shape is"
-puts "TODO OCC24682 ALL: Faulty shapes in variables faulty_1 to faulty_"
+puts "TODO OCC23068 ALL: Error :  is WRONG because number of"
+puts "TODO OCC23068 ALL: Error : The area of result shape is"
+puts "TODO OCC23068 ALL: Faulty shapes in variables faulty_1 to faulty_"
 
 puts "============"
 puts "OCC5805"

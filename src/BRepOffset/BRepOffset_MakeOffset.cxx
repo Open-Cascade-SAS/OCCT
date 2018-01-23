@@ -320,6 +320,26 @@ static Standard_Real ComputeMaxDist(const gp_Pln& thePlane,
 
 static void CorrectSolid(TopoDS_Solid& theSol, TopTools_ListOfShape& theSolList);
 //---------------------------------------------------------------------
+
+static TopAbs_Orientation OrientationOfEdgeInFace(const TopoDS_Edge& theEdge,
+                                                  const TopoDS_Face& theFace)
+{
+  TopAbs_Orientation anOr = TopAbs_EXTERNAL;
+  
+  TopExp_Explorer Explo(theFace, TopAbs_EDGE);
+  for (; Explo.More(); Explo.Next())
+  {
+    const TopoDS_Shape& anEdge = Explo.Current();
+    if (anEdge.IsSame(theEdge))
+    {
+      anOr = anEdge.Orientation();
+      break;
+    }
+  }
+
+  return anOr;
+}
+
 //
 static Standard_Boolean FindParameter(const TopoDS_Vertex& V, 
                                       const TopoDS_Edge& E,
@@ -480,7 +500,7 @@ static void GetEdgePoints(const TopoDS_Edge& anEdge,
 //=======================================================================
 static void FillContours(const TopoDS_Shape& aShape,
                          const BRepOffset_Analyse& Analyser,
-                         TopTools_DataMapOfShapeListOfShape& Contours,
+                         TopTools_IndexedDataMapOfShapeListOfShape& Contours,
                          TopTools_DataMapOfShapeShape& MapEF)
 {
   TopTools_ListOfShape Edges;
@@ -533,7 +553,7 @@ static void FillContours(const TopoDS_Shape& aShape,
                 break;
               }
           }
-      Contours.Bind(StartVertex, aContour);
+      Contours.Add(StartVertex, aContour);
     }
 }
 
@@ -2497,18 +2517,17 @@ static void UpdateInitOffset (BRepAlgo_Image&         myInitOffset,
 //=======================================================================
 void BRepOffset_MakeOffset::MakeMissingWalls ()
 {
-  TopTools_DataMapOfShapeListOfShape Contours; //Start vertex + list of connected edges (free boundary)
+  TopTools_IndexedDataMapOfShapeListOfShape Contours; //Start vertex + list of connected edges (free boundary)
   TopTools_DataMapOfShapeShape MapEF; //Edges of contours: edge + face
   Standard_Real OffsetVal = Abs(myOffset);
 
   FillContours(myShape, myAnalyse, Contours, MapEF);
 
-  TopTools_DataMapIteratorOfDataMapOfShapeListOfShape iter(Contours);
-  for (; iter.More(); iter.Next())
+  for (Standard_Integer ic = 1; ic <= Contours.Extent(); ic++)
   {
-    TopoDS_Vertex StartVertex = TopoDS::Vertex(iter.Key());
+    TopoDS_Vertex StartVertex = TopoDS::Vertex(Contours.FindKey(ic));
     TopoDS_Edge StartEdge;
-    const TopTools_ListOfShape& aContour = iter.Value();
+    const TopTools_ListOfShape& aContour = Contours(ic);
     TopTools_ListIteratorOfListOfShape itl(aContour);
     Standard_Boolean FirstStep = Standard_True;
     TopoDS_Edge PrevEdge;
@@ -2517,6 +2536,7 @@ void BRepOffset_MakeOffset::MakeMissingWalls ()
     for (; itl.More(); itl.Next())
     {
       TopoDS_Edge anEdge = TopoDS::Edge(itl.Value());
+      TopoDS_Face aFaceOfEdge = TopoDS::Face(MapEF(anEdge));
 
       // Check for offset existence.
       if (!myInitOffsetEdge.HasImage(anEdge))
@@ -2856,6 +2876,12 @@ void BRepOffset_MakeOffset::MakeMissingWalls ()
       }
       BRepLib::SameParameter(NewFace);
       BRepTools::Update(NewFace);
+      //Check orientation
+      TopAbs_Orientation anOr = OrientationOfEdgeInFace(anEdge, aFaceOfEdge);
+      TopAbs_Orientation OrInNewFace = OrientationOfEdgeInFace(anEdge, NewFace);
+      if (OrInNewFace != TopAbs::Reverse(anOr))
+        NewFace.Reverse();
+      ///////////////////
       myWalls.Append(NewFace);
       if (ArcOnV2)
       {
@@ -2938,7 +2964,9 @@ void BRepOffset_MakeOffset::MakeShells ()
   TopTools_ListIteratorOfListOfShape it(R);
   //
   for (; it.More(); it.Next()) {
-    const TopoDS_Shape& aF = it.Value();
+    TopoDS_Shape aF = it.Value();
+    if (myThickening) //offsetted faces must change their orientations
+      aF.Reverse();
     //
     TopTools_ListOfShape Image;
     myImageOffset.LastImage(aF,Image);

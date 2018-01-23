@@ -8,20 +8,17 @@ puts ""
 
 psphere a 100
 explode a f
-thickshell r a_1 10 i 1.e-7
-explode r
+thickshell result a_1 10 i 1.e-7
+donly result
 
-set bug_info [whatis r]
-if {$bug_info != "r is a shape SOLID FORWARD Free Modified Closed\n"} {
-  puts "ERROR: OCC26233 is reproduced. Shape r has incorrect characteristics."
+checkshape result
+
+checknbshapes result -solid 1 -shell 2 -face 2 -wire 2 -edge 6 -vertex 4 -shape 17
+
+set tolres [checkmaxtol result]
+
+if { ${tolres} > 2.e-7} {
+   puts "Error: bad tolerance of result"
 }
 
-set bug_info [whatis r_1]
-if {$bug_info != "r_1 is a shape SHELL FORWARD Modified Orientable Closed\n"} {
-  puts "ERROR: OCC26233 is reproduced. Shape r_1 has incorrect characteristics."
-}
-
-set bug_info [whatis r_2]
-if {$bug_info != "r_2 is a shape SHELL REVERSED Modified Orientable Closed\n"} {
-  puts "ERROR: OCC26233 is reproduced. Shape r_2 has incorrect characteristics."
-}
+checkprops result -v 1.38649e+006

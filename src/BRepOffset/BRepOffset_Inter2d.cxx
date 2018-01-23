@@ -112,6 +112,28 @@ static TopoDS_Vertex CommonVertex(TopoDS_Edge& E1,
   return V;
 }
 
+static Standard_Boolean IsOrientationChanged(TopTools_IndexedMapOfShape& theMap,
+                                             const TopoDS_Edge& theEdge)
+{
+  Standard_Boolean IsOrChanged = Standard_False;
+  
+  if (!theMap.Contains(theEdge))
+    theMap.Add(theEdge);
+  else
+  {
+    Standard_Integer anInd = theMap.FindIndex(theEdge);
+    const TopoDS_Shape& anEdge = theMap(anInd);
+    if (theEdge.Orientation() != anEdge.Orientation())
+    {
+      theMap.Substitute( anInd, theEdge );
+      IsOrChanged = Standard_True;
+    }
+  }
+
+  return IsOrChanged;
+}
+
+
 //=======================================================================
 //function : Store
 //purpose  : Store the vertices <theLV> into AsDes for the edge <theEdge>.
@@ -1479,7 +1501,10 @@ void BRepOffset_Inter2d::ConnexIntByInt
     wexp.Init(TopoDS::Wire(aLocalWire),TopoDS::Face(aLocalFace));
     if (!wexp.More())
       continue; // Protection from case when explorer does not contain edges.
-    CurE = FirstE  = wexp.Current(); 
+    CurE = FirstE  = wexp.Current();
+    TopTools_IndexedMapOfShape Edges;
+    Standard_Boolean ToReverse1, ToReverse2;
+    ToReverse1 = IsOrientationChanged(Edges, CurE);
     while (!end) {
       wexp.Next();
       if (wexp.More()) {
@@ -1489,6 +1514,8 @@ void BRepOffset_Inter2d::ConnexIntByInt
         NextE = FirstE; end = Standard_True;
       }
       if (CurE.IsSame(NextE)) continue;
+
+      ToReverse2 = IsOrientationChanged(Edges, NextE);
 
       TopoDS_Vertex Vref = CommonVertex(CurE, NextE); 
       gp_Pnt Pref = BRep_Tool::Pnt(Vref);
@@ -1515,6 +1542,9 @@ void BRepOffset_Inter2d::ConnexIntByInt
       else if (Build.IsBound(NextE) && MES.IsBound(CEO)) {
         NE1 = Build(NextE);
         NE2 = MES(CEO);
+        Standard_Boolean Tmp = ToReverse1;
+        ToReverse1 = ToReverse2;
+        ToReverse2 = Tmp;
       }
       else {
         DoInter = 0;
@@ -1526,9 +1556,17 @@ void BRepOffset_Inter2d::ConnexIntByInt
         Standard_Boolean bCoincide;
         TopExp_Explorer Exp1, Exp2;
         for (Exp1.Init(NE1, TopAbs_EDGE); Exp1.More(); Exp1.Next()) {
-          const TopoDS_Edge& aE1 = TopoDS::Edge(Exp1.Current());
+          TopoDS_Edge aE1 = TopoDS::Edge(Exp1.Current());
           for (Exp2.Init(NE2, TopAbs_EDGE); Exp2.More(); Exp2.Next()) {
-            const TopoDS_Edge& aE2 = TopoDS::Edge(Exp2.Current());
+            TopoDS_Edge aE2 = TopoDS::Edge(Exp2.Current());
+
+            //Correct orientation of edges
+            if (ToReverse1)
+              aE1.Reverse();
+            if (ToReverse2)
+              aE2.Reverse();
+            //////////////////////////////
+            
             RefEdgeInter(FIO, BAsurf, aE1, aE2, AsDes2d,
                          Tol, Standard_True, Pref, theDMVV, bCoincide);
           }
@@ -1553,6 +1591,7 @@ void BRepOffset_Inter2d::ConnexIntByInt
         }
       }
       CurE = NextE;
+      ToReverse1 = ToReverse2;
     }
   }
 }

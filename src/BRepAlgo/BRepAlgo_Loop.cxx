@@ -88,6 +88,15 @@ void BRepAlgo_Loop::Init(const TopoDS_Face& F)
 static void Bubble(const TopoDS_Edge&        E,
 		   TopTools_SequenceOfShape& Seq) 
 {
+  //Remove duplicates
+  for (Standard_Integer i = 1; i < Seq.Length(); i++)
+    for (Standard_Integer j = i+1; j <= Seq.Length(); j++)
+      if (Seq(i) == Seq(j))
+      {
+        Seq.Remove(j);
+        j--;
+      }
+  
   Standard_Boolean Invert   = Standard_True;
   Standard_Integer NbPoints = Seq.Length();
   Standard_Real    U1,U2;
