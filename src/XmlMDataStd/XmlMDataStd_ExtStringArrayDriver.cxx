@@ -24,6 +24,7 @@
 #include <XmlObjMgt.hxx>
 #include <XmlObjMgt_Document.hxx>
 #include <XmlObjMgt_Persistent.hxx>
+#include <XmlLDrivers.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(XmlMDataStd_ExtStringArrayDriver,XmlMDF_ADriver)
 IMPLEMENT_DOMSTRING (FirstIndexString, "first")
@@ -238,39 +239,45 @@ void XmlMDataStd_ExtStringArrayDriver::Paste (const Handle(TDF_Attribute)& theSo
 
   // Find a separator.
   Standard_Boolean found(Standard_True);
-  // Preferrable symbols for the separator: - _ . : ^ ~
-  // Don't use a space as a separator: XML low-level parser sometimes "eats" it.
+  // This improvement was defined in the version 8.
+  // So, if the user wants to save the document under the 7th or earlier versions,
+  // don't apply this improvement.
   Standard_Character c = '-';
-  static Standard_Character aPreferable[] = "-_.:^~";
-  for (i = 0; found && aPreferable[i]; i++)
+  if (XmlLDrivers::StorageVersion() > 7)
   {
-    c = aPreferable[i];
-    found = Contains(aExtStringArray, TCollection_ExtendedString(c));
-  }
-  // If all prefferable symbols exist in the array, 
-  // try to use any other simple symbols.
-  if (found)
-  {
-    c = '!';
-    while (found && c < '~')
+    // Preferrable symbols for the separator: - _ . : ^ ~
+    // Don't use a space as a separator: XML low-level parser sometimes "eats" it.
+    static Standard_Character aPreferable[] = "-_.:^~";
+    for (i = 0; found && aPreferable[i]; i++)
     {
-      found = Standard_False;
-#ifdef _DEBUG
-      TCollection_AsciiString cseparator(c); // deb
-#endif
-      TCollection_ExtendedString separator(c);
-      found = Contains(aExtStringArray, separator);
-      if (found)
+      c = aPreferable[i];
+      found = Contains(aExtStringArray, TCollection_ExtendedString(c));
+    }
+    // If all prefferable symbols exist in the array, 
+    // try to use any other simple symbols.
+    if (found)
+    {
+      c = '!';
+      while (found && c < '~')
       {
-        c++;
-        // Skip forbidden symbols for XML.
-        while (c < '~' && (c == '&' || c == '<'))
+        found = Standard_False;
+#ifdef _DEBUG
+        TCollection_AsciiString cseparator(c); // deb
+#endif
+        TCollection_ExtendedString separator(c);
+        found = Contains(aExtStringArray, separator);
+        if (found)
         {
           c++;
+          // Skip forbidden symbols for XML.
+          while (c < '~' && (c == '&' || c == '<'))
+          {
+            c++;
+          }
         }
       }
     }
-  }
+  }// check doc version
   
   if (found)
   {
