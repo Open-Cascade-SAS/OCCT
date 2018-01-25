@@ -207,8 +207,8 @@ Standard_Integer Extrema_FuncExtCS::GetStateNumber()
   Standard_Integer i = 1, nbSol = mySqDist.Length();
   for( ; i <=  nbSol; i++)
   {
-    Standard_Real aU = myPoint1(i).Parameter();
-    if( (myU - aU) * (myU - aU) <= tol2d )
+    Standard_Real aT = myPoint1(i).Parameter();
+    if( (myt - aT) * (myt - aT) <= tol2d )
       break;
   }
   if (i <= nbSol)
