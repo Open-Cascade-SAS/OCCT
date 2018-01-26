@@ -1417,7 +1417,10 @@ void  DBRep::BasicCommands(Draw_Interpretor& theCommands)
   theCommands.Add("vconn","vconn [name1 ...] , edges are colored by number of faces (see vori)",__FILE__,dispor,g);
   theCommands.Add("discretisation","discretisation [nbpoints]",__FILE__,discretisation,g);
   theCommands.Add("compound","compound [name1 name2 ..] compound",__FILE__,compound,g);
-  theCommands.Add("add","add name1 name2",__FILE__,add,g);
+  theCommands.Add("add",
+                  "add what where"
+                  "\n  adds shape \"what\" to shape \"where\" ",
+                  __FILE__,add,g);
   theCommands.Add("explode","explode name [Cd/C/So/Sh/F/W/E/V]",__FILE__,explode,g);
   theCommands.Add("nexplode","stable numbered explode for vertex, edge and face: nexplode name [V/E/F]",__FILE__,nexplode,g);
   theCommands.Add("exwire","exwire wirename",__FILE__,exwire,g);
