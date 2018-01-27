@@ -1443,84 +1443,89 @@ static Standard_Integer copytranslate(Draw_Interpretor& di,
   
 }
 
-Standard_Integer reshape(Draw_Interpretor& di,
-                         Standard_Integer n,
-                         const char** a)
+static Standard_Integer reshape(Draw_Interpretor& /*theDI*/,
+                                Standard_Integer  theArgc,
+                                const char**      theArgv)
 {
-  if ( n < 3 )
+  if ( theArgc < 4 )
   {
-    di << "Error: wrong number of arguments. Type 'help " << a[0] << "'\n";
+    cout << "Error: wrong number of arguments. Type 'help " << theArgv[0] << "'\n";
     return 1;
   }
 
-  TopoDS_Shape source = DBRep::Get(a[2]);
-  if ( source.IsNull() )
+  TopoDS_Shape aSource = DBRep::Get(theArgv[2]);
+  if ( aSource.IsNull() )
   {
-    di << "Error: source shape ('" << a[2] << "') is null\n";
+    cout << "Error: source shape ('" << theArgv[2] << "') is null\n";
     return 1;
   }
 
-  Handle(BRepTools_ReShape) ReShaper = new BRepTools_ReShape;
+  Handle(BRepTools_ReShape) aReShaper = new BRepTools_ReShape;
 
   // Record the requested modifications
-  for ( Standard_Integer i = 1; i < n; ++i )
+  for ( Standard_Integer i = 3; i < theArgc; ++i )
   {
-    Standard_CString        arg = a[i];
-    TCollection_AsciiString opt(arg);
-    opt.LowerCase();
+    Standard_CString        anArg = theArgv[i];
+    TCollection_AsciiString anOpt(anArg);
+    anOpt.LowerCase();
 
-    if ( opt == "-replace" )
+    if ( anOpt == "-replace" )
     {
-      if ( n - i < 3 )
+      if ( theArgc - i < 3 )
       {
-        di << "Error: not enough arguments for replacement\n";
+        cout << "Error: not enough arguments for replacement\n";
         return 1;
       }
 
-      TopoDS_Shape what = DBRep::Get(a[++i]);
-      if ( what.IsNull() )
+      TopoDS_Shape aWhat = DBRep::Get(theArgv[++i]);
+      if ( aWhat.IsNull() )
       {
-        di << "Error: argument shape ('" << a[i] << "') is null\n";
+        cout << "Error: argument shape ('" << theArgv[i] << "') is null\n";
         return 1;
       }
 
-      TopoDS_Shape with = DBRep::Get(a[++i]);
-      if ( with.IsNull() )
+      TopoDS_Shape aWith = DBRep::Get(theArgv[++i]);
+      if ( aWith.IsNull() )
       {
-        di << "Error: replacement shape ('" << a[i] << "') is null\n";
+        cout << "Error: replacement shape ('" << theArgv[i] << "') is null\n";
         return 1;
       }
 
-      ReShaper->Replace(what, with);
+      aReShaper->Replace(aWhat, aWith);
     }
-    else if ( opt == "-remove" )
+    else if ( anOpt == "-remove" )
     {
-      if ( n - i < 2 )
+      if ( theArgc - i < 2 )
       {
-        di << "Error: not enough arguments for removal\n";
+        cout << "Error: not enough arguments for removal\n";
         return 1;
       }
 
-      TopoDS_Shape what = DBRep::Get(a[++i]);
-      if ( what.IsNull() )
+      TopoDS_Shape aWhat = DBRep::Get(theArgv[++i]);
+      if ( aWhat.IsNull() )
       {
-        di << "Error: shape to remove ('" << a[i] << "') is null\n";
+        cout << "Error: shape to remove ('" << theArgv[i] << "') is null\n";
         return 1;
       }
 
-      ReShaper->Remove(what);
+      aReShaper->Remove(aWhat);
+    }
+    else
+    {
+      cout << "Error: invalid syntax at " << anOpt << "\n" ;
+      return 1;
     }
   }
 
   // Apply all the recorded modifications
-  TopoDS_Shape result = ReShaper->Apply(source);
-  if ( result.IsNull() )
+  TopoDS_Shape aResult = aReShaper->Apply(aSource);
+  if ( aResult.IsNull() )
   {
-    di << "Error: result shape is null\n";
+    cout << "Error: result shape is null\n";
     return 1;
   }
 
-  DBRep::Set(a[1], result);
+  DBRep::Set(theArgv[1], aResult);
   return 0;
 }
 
@@ -1641,6 +1646,7 @@ Standard_Integer reshape(Draw_Interpretor& di,
   theCommands.Add ("copytranslate","result shape dx dy dz",__FILE__,copytranslate,g);
 
   theCommands.Add ("reshape",
+    "\n    reshape : result shape [-replace what with] [-remove what]"
     "\n    Basic utility for topological modification: "
     "\n      '-replace what with'   Replaces 'what' sub-shape with 'with' sub-shape"
     "\n      '-remove what'         Removes 'what' sub-shape"
