@@ -49,12 +49,12 @@ Message_PrinterOStream::Message_PrinterOStream (const Standard_CString theFileNa
   myIsFile (Standard_False)
 {
   myTraceLevel = theTraceLevel;
-  if (strcasecmp(theFileName, "cout") == 0)
+  if (strcasecmp(theFileName, "cerr") == 0)
   {
     myStream = &std::cerr;
     return;
   }
-  else if (strcasecmp(theFileName, "cerr") == 0)
+  else if (strcasecmp(theFileName, "cout") == 0)
   {
     myStream = &std::cout;
     return;

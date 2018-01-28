@@ -19,8 +19,6 @@
 #include <CDF_DirectoryIterator.hxx>
 #include <CDF_Session.hxx>
 #include <CDF_Store.hxx>
-#include <Message_Messenger.hxx>
-#include <Message_PrinterOStream.hxx>
 #include <PCDM_RetrievalDriver.hxx>
 #include <PCDM_StorageDriver.hxx>
 #include <Plugin.hxx>
@@ -30,9 +28,7 @@
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_NotImplemented.hxx>
-#include <Standard_Type.hxx>
 #include <TCollection_ExtendedString.hxx>
-#include <TDF_Label.hxx>
 #include <TDocStd_Application.hxx>
 #include <TDocStd_Document.hxx>
 #include <TDocStd_Owner.hxx>
