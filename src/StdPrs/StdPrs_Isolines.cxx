@@ -589,10 +589,14 @@ void StdPrs_Isolines::UVIsoParameters (const TopoDS_Face&      theFace,
 
   BRepTools::UVBounds (theFace, aUmin, aUmax, aVmin, aVmax);
 
-  aUmin = Max (aUmin, -theUVLimit);
-  aUmax = Min (aUmax,  theUVLimit);
-  aVmin = Max (aVmin, -theUVLimit);
-  aVmax = Min (aVmax,  theUVLimit);
+  if (Precision::IsInfinite (aUmin))
+    aUmin = -theUVLimit;
+  if (Precision::IsInfinite (aUmax))
+    aUmax = theUVLimit;
+  if (Precision::IsInfinite (aVmin))
+    aVmin = -theUVLimit;
+  if (Precision::IsInfinite (aVmax))
+    aVmax = theUVLimit;
 
   TopLoc_Location aLocation;
   const Handle(Geom_Surface)& aSurface = BRep_Tool::Surface (theFace, aLocation);

@@ -1,0 +1,23 @@
+# isolines on infinite prism based on spline edge with poles closed to 1.4e+6
+
+if {[info commands testreadiges] == ""} {pload XSDRAW}
+testreadiges [locate_data_file bug29356.igs] a
+
+mksurface s a
+viso c s 0
+dump c
+mkedge e c
+
+haxo
+donly e
+prism r e 0 1 0 Inf
+fit
+xbounds r
+
+vinit
+vdisplay r
+visos r 2 3 1
+vfit
+vzoom 3000
+
+vdump $imagedir/${casename}_zoom.png
