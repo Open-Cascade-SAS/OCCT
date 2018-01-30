@@ -1,0 +1,16 @@
+puts "========"
+puts "OCC29463"
+puts "========"
+puts ""
+#################################################
+# Method BndBox::IsOut() returns true for point lying on the planar face
+#################################################
+
+restore [locate_data_file bug29463_face13_691.brep] f
+
+vertex v 165.16888924444618 16.119975403493935 6.6799998283386177
+set res [isbbinterf f v]
+
+if [regexp "The shapes are NOT interfered by AABB" $res] {
+  puts "Error: bounding box works incorrect"
+}
