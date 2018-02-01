@@ -1,0 +1,29 @@
+puts "============"
+puts "OCC29465"
+puts "============"
+puts ""
+#########################################################################
+# Regression relation to 691 version: Extrema_ExtCC returns IsParallel equal to true for not parallel curves
+#########################################################################
+
+set dist 3.e-5
+
+restore [locate_data_file bug29465.brep] ce
+explode ce e
+mkcurve c1 ce_1
+mkcurve c2 ce_2
+
+CheckExtResult [extrema c1 c2] $dist
+CheckExtResult [extrema c2 c1] $dist
+
+reverse c1
+CheckExtResult [extrema c1 c2] $dist
+CheckExtResult [extrema c2 c1] $dist
+
+reverse c2
+CheckExtResult [extrema c1 c2] $dist
+CheckExtResult [extrema c2 c1] $dist
+
+reverse c1
+CheckExtResult [extrema c1 c2] $dist
+CheckExtResult [extrema c2 c1] $dist

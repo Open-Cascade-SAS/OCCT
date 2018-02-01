@@ -21,6 +21,7 @@
 #include <Standard_OutOfRange.hxx>
 #include <Adaptor3d_Curve.hxx>
 #include <Extrema_CurveTool.hxx>
+#include <Extrema_ExtPC.hxx>
 #include <Extrema_POnCurv.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
@@ -43,6 +44,7 @@
 #define Pnt_hxx <gp_Pnt.hxx>
 #define Vec gp_Vec
 #define Vec_hxx <gp_Vec.hxx>
+#define Extrema_GExtPC Extrema_ExtPC
 #define Extrema_GenExtCC Extrema_ECC
 #define Extrema_GenExtCC_hxx <Extrema_ECC.hxx>
 #include <Extrema_GenExtCC.gxx>

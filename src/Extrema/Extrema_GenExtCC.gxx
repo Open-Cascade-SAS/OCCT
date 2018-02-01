@@ -22,6 +22,7 @@
 #include <Standard_OutOfRange.hxx>
 #include <StdFail_NotDone.hxx>
 #include <TColStd_Array1OfReal.hxx>
+#include <TColStd_ListOfInteger.hxx>
 #include <Precision.hxx>
 #include <NCollection_Vector.hxx>
 #include <NCollection_CellFilter.hxx>
@@ -91,6 +92,29 @@ private:
   gp_XY myCurrent;
   Standard_Boolean myIsFind;
 };
+
+//=======================================================================
+//function : ProjPOnC
+//purpose  : Projects the point on the curve and returns the minimal
+//           projection distance
+//=======================================================================
+static Standard_Real ProjPOnC(const Pnt& theP,
+                              Extrema_GExtPC& theProjTool)
+{
+  Standard_Real aDist = ::RealLast();
+  theProjTool.Perform(theP);
+  if (theProjTool.IsDone() && theProjTool.NbExt())
+  {
+    for (Standard_Integer i = 1; i <= theProjTool.NbExt(); ++i)
+    {
+      Standard_Real aD = theProjTool.SquareDistance(i);
+      if (aD < aDist)
+        aDist = aD;
+    }
+    aDist = sqrt(aDist);
+  }
+  return aDist;
+}
 
 //=======================================================================
 //function : Extrema_GenExtCC
@@ -262,9 +286,10 @@ void Extrema_GenExtCC::Perform()
   aFinder.SetFunctionalMinimalValue(0.0); // Best distance cannot be lower than 0.0.
 
   // Size computed to have cell index inside of int32 value.
-  const Standard_Real aCellSize = Max(anIntervals1.Last() - anIntervals1.First(),
+  const Standard_Real aCellSize = Max(Max(anIntervals1.Last() - anIntervals1.First(),
                                       anIntervals2.Last() - anIntervals2.First())
-                                  * Precision::PConfusion() / (2.0 * Sqrt(2.0));
+                                      * Precision::PConfusion() / (2.0 * Sqrt(2.0)),
+                                      Precision::PConfusion());
   Extrema_CCPointsInspector anInspector(aCellSize);
   NCollection_CellFilter<Extrema_CCPointsInspector> aFilter(aCellSize);
   NCollection_Vector<gp_XY> aPnts;
@@ -329,63 +354,150 @@ void Extrema_GenExtCC::Perform()
     }
   }
 
-  if (aPnts.Size() == 0)
+  const Standard_Integer aNbSol = aPnts.Length();
+  if (aNbSol == 0)
   {
     // No solutions.
     myDone = Standard_False;
     return;
   }
 
+  myDone = Standard_True;
+
+  if (aNbSol == 1)
+  {
+    // Single solution
+    const gp_XY& aSol = aPnts.First();
+    myPoints1.Append(aSol.X());
+    myPoints2.Append(aSol.Y());
+    return;
+  }
+
+  // More than one solution is found.
   // Check for infinity solutions case, for this:
   // Sort points lexicographically and check midpoint between each two neighboring points.
-  // If all midpoints functional value is acceptable
-  // then set myParallel flag to true and return one solution.
+  // If all midpoints functional value is acceptable then check the projection distances
+  // of the bounding points of the curves onto the opposite curves.
+  // If these distances are also acceptable set myParallel flag to true and return one solution.
   std::sort(aPnts.begin(), aPnts.end(), comp);
-  Standard_Boolean isParallel = Standard_False;
+
+  // Solutions to pass into result.
+  // If the parallel segment is found, save only extreme solutions on that segment.
+  // The first and last solutions will always be the extreme ones, thus save them unconditionally.
+  TColStd_ListOfInteger aSolutions;
+
+  // Manages the addition of the solution into result.
+  // Set it to TRUE to add the first solution.
+  Standard_Boolean bSaveSolution = Standard_True;
+
+  // Define direction of the second curve relatively the first one
+  // (it will be needed for projection).
+  Standard_Boolean bDirsCoinside = Standard_True;
+  // Check also if the found solutions are not concentrated in one point
+  // on any of the curves. And if they are, avoid marking the curves as parallel.
+  Standard_Boolean bDifferentSolutions = Standard_False;
+
+  Standard_Boolean isParallel = Standard_True;
   Standard_Real aVal = 0.0;
-  math_Vector aVec(1,2, 0.0);
+  math_Vector aVec(1, 2, 0.0);
 
-  // Avoid mark parallel case when have duplicates out of tolerance.
-  // Bad conditioned task: bug25635_1, bug23706_10, bug23706_13.
-  if (aPnts.Size() >= 2)
+  // Iterate on all solutions and collect the extreme solutions on all parallel segments.
+  for (Standard_Integer anIdx = 0; anIdx < aNbSol - 1; anIdx++)
   {
-    isParallel = Standard_True;
-    for(Standard_Integer anIdx = aPnts.Lower(); anIdx <= aPnts.Upper() - 1; anIdx++)
+    const gp_XY& aCurrent = aPnts(anIdx);
+    const gp_XY& aNext    = aPnts(anIdx + 1);
+
+    aVec(1) = (aCurrent.X() + aNext.X()) * 0.5;
+    aVec(2) = (aCurrent.Y() + aNext.Y()) * 0.5;
+
+    aFunc.Value(aVec, aVal);
+
+    if (Abs(aVal - aF) < Precision::Confusion())
     {
-      const gp_XY& aCurrent = aPnts(anIdx);
-      const gp_XY& aNext    = aPnts(anIdx + 1);
-
-      aVec(1) = (aCurrent.X() + aNext.X()) * 0.5;
-      aVec(2) = (aCurrent.Y() + aNext.Y()) * 0.5;
-
-      aFunc.Value(aVec, aVal);
-
-      if (Abs(aVal - aF) > Precision::Confusion())
+      // It seems the parallel segment is found.
+      // Save only extreme solutions on that segment.
+      if (bSaveSolution)
       {
-        isParallel = Standard_False;
-        break;
+        // Add current solution as the beginning of the parallel segment.
+        aSolutions.Append(anIdx);
+        // Do not keep the next solution in current parallel segment.
+        bSaveSolution = Standard_False;
       }
+    }
+    else
+    {
+      // Mid point does not satisfy the tolerance criteria, curves are not parallel.
+      isParallel = Standard_False;
+      // Add current solution as the last one in previous parallel segment.
+      aSolutions.Append(anIdx);
+      // Save also the next solution as the first one in next parallel segment.
+      bSaveSolution = Standard_True;
+    }
+
+    if (!bDifferentSolutions)
+    {
+      if (aNext.X() > aCurrent.X())
+      {
+        if (aNext.Y() > aCurrent.Y())
+        {
+          bDifferentSolutions = Standard_True;
+          bDirsCoinside = Standard_True;
+        }
+        else if (aNext.Y() < aCurrent.Y())
+        {
+          bDifferentSolutions = Standard_True;
+          bDirsCoinside = Standard_False;
+        }
+      }
+    }
+  }
+  // Save the last solution
+  aSolutions.Append(aNbSol - 1);
+
+  if (!bDifferentSolutions)
+    isParallel = Standard_False;
+
+  if (isParallel)
+  {
+    // For the check on parallel case it is also necessary to check additionally
+    // if the ends of the curves do not diverge. For this, project the bounding
+    // points of the curves on the opposite curves and check the distances.
+
+    Standard_Real aT1[2] = {myLowBorder(1), myUppBorder(1)};
+    Standard_Real aT2[2] = {bDirsCoinside ? myLowBorder(2) : myUppBorder(2),
+                            bDirsCoinside ? myUppBorder(2) : myLowBorder(2)};
+
+    Extrema_GExtPC anExtPC1, anExtPC2;
+    anExtPC1.Initialize(C1, myLowBorder(1), myUppBorder(1));
+    anExtPC2.Initialize(C2, myLowBorder(2), myUppBorder(2));
+
+    for (Standard_Integer iT = 0; isParallel && (iT < 2); ++iT)
+    {
+      Standard_Real aDist1 = ProjPOnC(C1.Value(aT1[iT]), anExtPC2);
+      Standard_Real aDist2 = ProjPOnC(C2.Value(aT2[iT]), anExtPC1);
+      isParallel = (Abs(Min(aDist1, aDist2) - aF) < Precision::Confusion());
     }
   }
 
   if (isParallel)
   {
-    const gp_XY& aCurrent = aPnts.First();
-    myPoints1.Append(aCurrent.X());
-    myPoints2.Append(aCurrent.Y());
+    // Keep only one solution
+    const gp_XY& aSol = aPnts.First();
+    myPoints1.Append(aSol.X());
+    myPoints2.Append(aSol.Y());
     myParallel = Standard_True;
   }
   else
   {
-    for(Standard_Integer anIdx = aPnts.Lower(); anIdx <= aPnts.Upper(); anIdx++)
+    // Keep all saved solutions
+    TColStd_ListIteratorOfListOfInteger aItSol(aSolutions);
+    for (; aItSol.More(); aItSol.Next())
     {
-      const gp_XY& aCurrent = aPnts(anIdx);
-      myPoints1.Append(aCurrent.X());
-      myPoints2.Append(aCurrent.Y());
+      const gp_XY& aSol = aPnts(aItSol.Value());
+      myPoints1.Append(aSol.X());
+      myPoints2.Append(aSol.Y());
     }
   }
-
-  myDone = Standard_True;
 }
 
 //=======================================================================
