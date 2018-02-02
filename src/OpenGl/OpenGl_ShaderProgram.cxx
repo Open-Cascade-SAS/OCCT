@@ -332,14 +332,8 @@ Standard_Boolean OpenGl_ShaderProgram::Initialize (const Handle(OpenGl_Context)&
     TCollection_AsciiString aHeaderConstants;
     myNbLightsMax     = !myProxy.IsNull() ? myProxy->NbLightsMax() : 0;
     myNbClipPlanesMax = !myProxy.IsNull() ? myProxy->NbClipPlanesMax() : 0;
-    if (myNbLightsMax > 0)
-    {
-      aHeaderConstants += TCollection_AsciiString("#define THE_MAX_LIGHTS ") + myNbLightsMax + "\n";
-    }
-    if (myNbClipPlanesMax > 0)
-    {
-      aHeaderConstants += TCollection_AsciiString("#define THE_MAX_CLIP_PLANES ") + myNbClipPlanesMax + "\n";
-    }
+    aHeaderConstants += TCollection_AsciiString("#define THE_MAX_LIGHTS ") + myNbLightsMax + "\n";
+    aHeaderConstants += TCollection_AsciiString("#define THE_MAX_CLIP_PLANES ") + myNbClipPlanesMax + "\n";
 
     const TCollection_AsciiString aSource = aHeaderVer                     // #version   - header defining GLSL version, should be first
                                           + (!aHeaderVer.IsEmpty() ? "\n" : "")
@@ -353,12 +347,7 @@ Standard_Boolean OpenGl_ShaderProgram::Initialize (const Handle(OpenGl_Context)&
     if (!aShader->LoadSource (theCtx, aSource))
     {
       theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH, aSource);
-      const TCollection_ExtendedString aMsg = "Error! Failed to set shader source";
-      theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION,
-                           GL_DEBUG_TYPE_ERROR,
-                           0,
-                           GL_DEBUG_SEVERITY_HIGH,
-                           aMsg);
+      theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH, "Error! Failed to set shader source");
       aShader->Release (theCtx.operator->());
       return Standard_False;
     }
@@ -372,10 +361,7 @@ Standard_Boolean OpenGl_ShaderProgram::Initialize (const Handle(OpenGl_Context)&
       {
         aLog = "Compilation log is empty.";
       }
-      theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION,
-                           GL_DEBUG_TYPE_ERROR,
-                           0,
-                           GL_DEBUG_SEVERITY_HIGH,
+      theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
                            TCollection_ExtendedString ("Failed to compile shader object. Compilation log:\n") + aLog);
       aShader->Release (theCtx.operator->());
       return Standard_False;
@@ -387,10 +373,7 @@ Standard_Boolean OpenGl_ShaderProgram::Initialize (const Handle(OpenGl_Context)&
       if (!aLog.IsEmpty()
        && !aLog.IsEqual ("No errors.\n"))
       {
-        theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION,
-                             GL_DEBUG_TYPE_PORTABILITY,
-                             0,
-                             GL_DEBUG_SEVERITY_LOW,
+        theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_LOW,
                              TCollection_ExtendedString ("Shader compilation log:\n") + aLog);
       }
     }
@@ -426,10 +409,7 @@ Standard_Boolean OpenGl_ShaderProgram::Initialize (const Handle(OpenGl_Context)&
     {
       aLog = "Linker log is empty.";
     }
-    theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION,
-                         GL_DEBUG_TYPE_ERROR,
-                         0,
-                         GL_DEBUG_SEVERITY_HIGH,
+    theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
                          TCollection_ExtendedString ("Failed to link program object! Linker log:\n") + aLog);
     return Standard_False;
   }
@@ -440,10 +420,7 @@ Standard_Boolean OpenGl_ShaderProgram::Initialize (const Handle(OpenGl_Context)&
     if (!aLog.IsEmpty()
      && !aLog.IsEqual ("No errors.\n"))
     {
-      theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION,
-                           GL_DEBUG_TYPE_PORTABILITY,
-                           0,
-                           GL_DEBUG_SEVERITY_LOW,
+      theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_LOW,
                            TCollection_ExtendedString ("GLSL linker log:\n") + aLog);
     }
   }
