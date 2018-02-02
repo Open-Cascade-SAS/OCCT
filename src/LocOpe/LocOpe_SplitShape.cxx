@@ -887,7 +887,7 @@ Standard_Boolean LocOpe_SplitShape::AddOpenWire(const TopoDS_Wire& W,
     aLocalFace  = FaceRef.Oriented(wfirst.Orientation());
     GetDirection(LastEdge, TopoDS::Face(aLocalFace),plast , dlast, Standard_False);
    
-    Standard_Boolean cond;
+    Standard_Boolean cond = Standard_True;
 
     if(IsPeriodic) {
 
@@ -1511,7 +1511,7 @@ Standard_Boolean ChoixUV(const TopoDS_Edge& Last,
 
   BRepAdaptor_Surface surf(F,Standard_False); // no restriction
   surf.D0 (plst.X(), plst.Y(), aPlst);
-
+ 
   gp_Dir2d ref2d(dlst);
 
   Handle(Geom2d_Curve) C2d;
@@ -1524,6 +1524,8 @@ Standard_Boolean ChoixUV(const TopoDS_Edge& Last,
     TopoDS_Edge anEdge = TopoDS::Edge (Poss.FindKey (index));
     
     GetDirection(anEdge, F, p2d, v2d, Standard_True);
+    if(!SameUV(plst,p2d,surf))
+      continue;
 
     surf.D0 (p2d.X(), p2d.Y(), aPCur);
 

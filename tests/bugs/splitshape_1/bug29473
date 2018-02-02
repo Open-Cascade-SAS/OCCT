@@ -1,0 +1,19 @@
+puts "=============="
+puts " splitshape_1 "
+puts "              "
+puts "=============="
+puts ""
+#puts "   0029473   "
+###################################################
+# Operation "splitshape" in the Test Harness give invalid result on the attached case.
+###################################################
+restore [locate_data_file bug29473_Split.brep] a
+explode a
+explode a_1
+explode a_2
+wire w1 a_2_1 a_2_2 a_2_3
+wire w2 a_2_4 a_2_5
+explode a_1_5 e
+splitshape r1 a_1 a_1_1 w1 a_1_3 w2 a_1_4 a_2_6 a_1_5 a_2_7 @ a_1_5_4 a_2_8
+explode r1 f
+copy r1_1 result
