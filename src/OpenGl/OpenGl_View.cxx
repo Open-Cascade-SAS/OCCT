@@ -65,11 +65,7 @@ OpenGl_View::OpenGl_View (const Handle(Graphic3d_StructureManager)& theMgr,
   myCurrLightSourceState (theCounter->Increment()),
   myLightsRevision       (0),
   myLastLightSourceState (0, 0),
-#if !defined(GL_ES_VERSION_2_0)
   myFboColorFormat       (GL_RGBA8),
-#else
-  myFboColorFormat       (GL_RGBA),
-#endif
   myFboDepthFormat       (GL_DEPTH24_STENCIL8),
   myToFlipOutput         (Standard_False),
   myFrameCounter         (0),
