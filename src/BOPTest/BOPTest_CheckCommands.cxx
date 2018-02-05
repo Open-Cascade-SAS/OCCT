@@ -22,6 +22,7 @@
 #include <BOPTest_Objects.hxx>
 #include <BOPTools_AlgoTools.hxx>
 #include <BRep_Builder.hxx>
+#include <BRepAlgoAPI_Check.hxx>
 #include <BRepBuilderAPI_Copy.hxx>
 #include <DBRep.hxx>
 #include <Draw.hxx>
@@ -50,6 +51,7 @@ static
 //
 static Standard_Integer bopcheck   (Draw_Interpretor&, Standard_Integer, const char** );
 static Standard_Integer bopargcheck(Draw_Interpretor&, Standard_Integer, const char** );
+static Standard_Integer bopapicheck(Draw_Interpretor&, Standard_Integer, const char** );
 static Standard_Integer xdistef(Draw_Interpretor&, Standard_Integer, const char** );
 static Standard_Integer checkcurveonsurf (Draw_Interpretor&, Standard_Integer, const char**);
 
@@ -79,6 +81,16 @@ void  BOPTest::CheckCommands(Draw_Interpretor& theCommands)
   theCommands.Add("checkcurveonsurf",
                   "use checkcurveonsurf shape",
                   __FILE__, checkcurveonsurf, g);
+  theCommands.Add("bopapicheck",
+                  "Checks the validity of shape/pair of shapes.\n"
+                  "\t\tUsage: bopapicheck s1 [s2] [-op common/fuse/cut/tuc] [-se] [-si]\n"
+                  "\t\tOptions:\n"
+                  "\t\ts1, s2 - shapes for checking;\n"
+                  "\t\t-op - specifies the type of Boolean operation, for which the validity of shapes should be checked;"
+                             " Should be followed by the operation;\n"
+                  "\t\t-se - disables the check of the shapes on small edges;\n"
+                  "\t\t-si - disables the check of the shapes on self-interference.\n",
+                  __FILE__, bopapicheck, g);
 }
 //=======================================================================
 //class    : BOPTest_Interf
@@ -906,6 +918,123 @@ Standard_Integer bopargcheck (Draw_Interpretor& di,
     } // full output
   } // has faulties
 
+  return 0;
+}
+
+//=======================================================================
+//function : bopapicheck
+//purpose  : 
+//=======================================================================
+Standard_Integer bopapicheck(Draw_Interpretor& di,
+                             Standard_Integer n,
+                             const char** a)
+{
+  if (n < 2)
+  {
+    di.PrintHelp(a[0]);
+    return 1;
+  }
+
+  TopoDS_Shape aS1 = DBRep::Get(a[1]);
+  TopoDS_Shape aS2;
+  if (n > 2)
+  {
+    // Try to get the second shape
+    aS2 = DBRep::Get(a[2]);
+  }
+
+  BOPAlgo_Operation anOp = BOPAlgo_UNKNOWN;
+  Standard_Boolean bTestSE = Standard_True;
+  Standard_Boolean bTestSI = Standard_True;
+
+  for (Standard_Integer i = aS2.IsNull() ? 2 : 3; i < n; ++i)
+  {
+    if (!strcmp(a[i], "-op"))
+    {
+      // Get the operation type
+      ++i;
+      if (!strcmp(a[i], "common"))
+        anOp = BOPAlgo_COMMON;
+      else if (!strcmp(a[i], "fuse"))
+        anOp = BOPAlgo_FUSE;
+      else if (!strcmp(a[i], "cut"))
+        anOp = BOPAlgo_CUT;
+      else if (!strcmp(a[i], "tuc"))
+        anOp = BOPAlgo_CUT21;
+      else if (!strcmp(a[i], "section"))
+        anOp = BOPAlgo_SECTION;
+    }
+    else if (!strcmp(a[i], "-se"))
+    {
+      bTestSE = Standard_False;
+    }
+    else if (!strcmp(a[i], "-si"))
+    {
+      bTestSI = Standard_False;
+    }
+    else
+    {
+      di << "Invalid key: " << a[i] << ". Skipped.\n";
+    }
+  }
+
+  BRepAlgoAPI_Check aChecker(aS1, aS2, anOp, bTestSE, bTestSI);
+  if (aChecker.IsValid())
+  {
+    if (aS2.IsNull())
+      di << "The shape seems to be valid\n";
+    else
+      di << "The shapes seem to be valid\n";
+    return 0;
+  }
+
+  // Shapes seem to be invalid.
+  // Analyze the invalidity.
+
+  Standard_Boolean isInv1 = Standard_False, isInv2 = Standard_False;
+  Standard_Boolean isBadOp = Standard_False;
+  BOPAlgo_ListIteratorOfListOfCheckResult itF(aChecker.Result());
+  for (; itF.More(); itF.Next())
+  {
+    const BOPAlgo_CheckResult& aFaulty = itF.Value();
+    if (aFaulty.GetCheckStatus() == BOPAlgo_BadType)
+    {
+      isBadOp = Standard_True;
+    }
+    else
+    {
+      if (!isInv1)
+      {
+        isInv1 = !aFaulty.GetShape1().IsNull();
+      }
+      if (!isInv2)
+      {
+        isInv2 = !aFaulty.GetShape2().IsNull();
+      }
+    }
+
+    if (isInv1 && isInv2 && isBadOp)
+      break;
+  }
+
+  if (isInv1)
+  {
+    if (aS2.IsNull())
+      di << "The shape is invalid\n";
+    else
+      di << "The first shape is invalid\n";
+  }
+  if (isInv2)
+  {
+    di << "The second shape is invalid\n";
+  }
+  if (isBadOp)
+  {
+    if (aS2.IsNull())
+      di << "The shape is empty\n";
+    else
+      di << "The shapes are not valid for Boolean operation\n";
+  }
   return 0;
 }
 
