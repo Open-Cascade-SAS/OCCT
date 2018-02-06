@@ -88,4 +88,16 @@ DEFINE_ALERT_WITH_SHAPE(BOPAlgo_AlertBuildingPCurveFailed)
 //! other shapes and the argument became self-interfered
 DEFINE_ALERT_WITH_SHAPE(BOPAlgo_AlertAcquiredSelfIntersection)
 
+//! Unsupported type of input shape
+DEFINE_ALERT_WITH_SHAPE(BOPAlgo_AlertUnsupportedType)
+
+//! No faces have been found for removal
+DEFINE_SIMPLE_ALERT(BOPAlgo_AlertNoFacesToRemove)
+
+//! Unable to remove the feature
+DEFINE_ALERT_WITH_SHAPE(BOPAlgo_AlertUnableToRemoveTheFeature)
+
+//! The Feature Removal algorithm has failed
+DEFINE_SIMPLE_ALERT(BOPAlgo_AlertRemoveFeaturesFailed)
+
 #endif // _BOPAlgo_Alerts_HeaderFile

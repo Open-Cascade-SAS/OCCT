@@ -247,7 +247,7 @@ Standard_Integer bopcheck (Draw_Interpretor& di,
   //
   aTimer.Stop();
   //
-  BOPTest::ReportAlerts(aChecker);
+  BOPTest::ReportAlerts(aChecker.GetReport());
   //
   iErr=aChecker.HasErrors();
   //

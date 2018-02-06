@@ -164,7 +164,7 @@ Standard_Integer bop(Draw_Interpretor& di,
   pPF->SetUseOBB(BOPTest_Objects::UseOBB());
   //
   pPF->Perform();
-  BOPTest::ReportAlerts(*pPF);
+  BOPTest::ReportAlerts(pPF->GetReport());
   //
   return 0;
 }
@@ -257,7 +257,7 @@ Standard_Integer bopsmt(Draw_Interpretor& di,
   aBOP.SetCheckInverted(BOPTest_Objects::CheckInverted());
   //
   aBOP.PerformWithFiller(*pPF);
-  BOPTest::ReportAlerts(aBOP);
+  BOPTest::ReportAlerts(aBOP.GetReport());
   if (aBOP.HasErrors()) {
     return 0;
   }
@@ -318,7 +318,7 @@ Standard_Integer bopsection(Draw_Interpretor& di,
   aBOP.SetCheckInverted(BOPTest_Objects::CheckInverted());
   //
   aBOP.PerformWithFiller(*pPF);
-  BOPTest::ReportAlerts(aBOP);
+  BOPTest::ReportAlerts(aBOP.GetReport());
   if (aBOP.HasErrors()) {
     return 0;
   }
@@ -504,7 +504,7 @@ Standard_Integer bsmt (Draw_Interpretor& di,
   aPF.SetUseOBB(BOPTest_Objects::UseOBB());
   //
   aPF.Perform();
-  BOPTest::ReportAlerts(aPF);
+  BOPTest::ReportAlerts(aPF.GetReport());
   if (aPF.HasErrors()) {
     return 0;
   }
@@ -519,7 +519,7 @@ Standard_Integer bsmt (Draw_Interpretor& di,
   aBOP.SetCheckInverted(BOPTest_Objects::CheckInverted());
   // 
   aBOP.PerformWithFiller(aPF);
-  BOPTest::ReportAlerts(aBOP);
+  BOPTest::ReportAlerts(aBOP.GetReport());
   if (aBOP.HasErrors()) {
     return 0;
   }
@@ -827,7 +827,7 @@ Standard_Integer mkvolume(Draw_Interpretor& di, Standard_Integer n, const char**
   aMV.SetUseOBB(BOPTest_Objects::UseOBB());
   //
   aMV.Perform();
-  BOPTest::ReportAlerts(aMV);
+  BOPTest::ReportAlerts(aMV.GetReport());
   if (aMV.HasErrors()) {
     return 0;
   }

@@ -17,6 +17,7 @@
 #define _BRepTools_History_HeaderFile
 
 #include <NCollection_Handle.hxx>
+#include <TopExp.hxx>
 #include <TopTools_DataMapOfShapeListOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
 
@@ -82,6 +83,51 @@ DEFINE_STANDARD_HANDLE(BRepTools_History, Standard_Transient)
 //!   Tj <= M12(Si), Qk <= M23(Tj) ==> Qk <= M13(Si);
 class BRepTools_History: public Standard_Transient
 {
+public: //! @name Constructors for History creation
+
+  //! Empty constructor
+  BRepTools_History() {}
+
+  //! Template constructor for History creation from the algorithm having
+  //! standard history methods such as IsDeleted(), Modified() and Generated().
+  //! @param theArguments [in] Arguments of the algorithm;
+  //! @param theAlgo [in] The algorithm.
+  template <class TheAlgo>
+  BRepTools_History(const TopTools_ListOfShape& theArguments,
+                    TheAlgo& theAlgo)
+  {
+    // Map all argument shapes to save them in history
+    TopTools_IndexedMapOfShape anArgsMap;
+    TopTools_ListIteratorOfListOfShape aIt(theArguments);
+    for (; aIt.More(); aIt.Next())
+      TopExp::MapShapes(aIt.Value(), anArgsMap);
+
+    // Copy the history for all supported shapes from the algorithm
+    Standard_Integer i, aNb = anArgsMap.Extent();
+    for (i = 1; i <= aNb; ++i)
+    {
+      const TopoDS_Shape& aS = anArgsMap(i);
+      if (!IsSupportedType(aS))
+        continue;
+
+      if (theAlgo.IsDeleted(aS))
+      {
+        Remove(aS);
+        continue;
+      }
+
+      // Check Modified
+      const TopTools_ListOfShape& aModified = theAlgo.Modified(aS);
+      for (aIt.Initialize(aModified); aIt.More(); aIt.Next())
+        AddModified(aS, aIt.Value());
+
+      // Check Generated
+      const TopTools_ListOfShape& aGenerated = theAlgo.Generated(aS);
+      for (aIt.Initialize(aGenerated); aIt.More(); aIt.Next())
+        AddGenerated(aS, aIt.Value());
+    }
+  }
+
 public:
 
   //! The types of the historical relations.
@@ -149,6 +195,22 @@ public: //! A method to merge a next history to this history.
 
   //! Merges the next history to this history.
   Standard_EXPORT void Merge(const Handle(BRepTools_History)& theHistory23);
+
+  //! Merges the next history to this history.
+  Standard_EXPORT void Merge(const BRepTools_History& theHistory23);
+
+  //! Template method for merging history of the algorithm having standard
+  //! history methods such as IsDeleted(), Modified() and Generated()
+  //! into current history object.
+  //! @param theArguments [in] Arguments of the algorithm;
+  //! @param theAlgo [in] The algorithm.
+  template<class TheAlgo>
+  void Merge(const TopTools_ListOfShape& theArguments,
+             TheAlgo& theAlgo)
+  {
+    // Create new history object from the given algorithm and merge it into this.
+    Merge(BRepTools_History(theArguments, theAlgo));
+  }
 
 public:
 

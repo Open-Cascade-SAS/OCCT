@@ -121,7 +121,7 @@ Standard_Integer bfillds(Draw_Interpretor& di,
   aTimer.Start();
   //
   aPF.Perform();
-  BOPTest::ReportAlerts(aPF);
+  BOPTest::ReportAlerts(aPF.GetReport());
   if (aPF.HasErrors()) {
     return 0;
   }
@@ -196,7 +196,7 @@ Standard_Integer bbuild(Draw_Interpretor& di,
   aTimer.Start();
   //
   aBuilder.PerformWithFiller(aPF); 
-  BOPTest::ReportAlerts(aBuilder);
+  BOPTest::ReportAlerts(aBuilder.GetReport());
   if (aBuilder.HasErrors()) {
     return 0;
   }
@@ -306,7 +306,7 @@ Standard_Integer bbop(Draw_Interpretor& di,
   aTimer.Start();
   //
   pBuilder->PerformWithFiller(aPF);
-  BOPTest::ReportAlerts(*pBuilder);
+  BOPTest::ReportAlerts(pBuilder->GetReport());
   if (pBuilder->HasErrors()) {
     return 0;
   }
@@ -376,7 +376,7 @@ Standard_Integer bsplit(Draw_Interpretor& di,
   pSplitter->PerformWithFiller(aPF);
   //
   aTimer.Stop();
-  BOPTest::ReportAlerts(*pSplitter);
+  BOPTest::ReportAlerts(pSplitter->GetReport());
   if (pSplitter->HasErrors()) {
     return 0;
   }

@@ -15,4 +15,5 @@ BOPTest_TolerCommands.cxx
 BOPTest_HistoryCommands.cxx
 BOPTest_DebugCommands.cxx
 BOPTest_CellsCommands.cxx
+BOPTest_RemoveFeaturesCommands.cxx
 BOPTest_UtilityCommands.cxx

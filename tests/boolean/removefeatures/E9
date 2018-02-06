@@ -1,0 +1,15 @@
+pload XDE
+
+stepread [locate_data_file bug26689_nist_ctc_01_asme1_ap242.stp] s *
+copy s_1 s
+explode s f
+
+compound s_71 s_93 s_74 s_92 s_75 s_72 s_90 s_91 s_73 s_2 s_1 s_76 s_89 s_94 s_95 s_96 holes
+
+removefeatures result s holes
+checkshape result
+checkprops result -s 759902 -v 1.51258e+007 -deps 1.e-7
+checknbshapes result -vertex 238 -edge 370 -wire 144 -face 135 -shell 1 -solid 1 -t
+CheckIsFeatureRemoved holes {v e f}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

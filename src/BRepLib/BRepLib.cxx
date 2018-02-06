@@ -40,6 +40,7 @@
 #include <BRepBndLib.hxx>
 #include <BRepClass3d_SolidClassifier.hxx>
 #include <BRepLib.hxx>
+#include <BRepLib_MakeFace.hxx>
 #include <BSplCLib.hxx>
 #include <ElSLib.hxx>
 #include <Extrema_LocateExtPC.hxx>
@@ -2664,4 +2665,134 @@ void BRepLib::BoundingVertex(const NCollection_List<TopoDS_Shape>& theLV,
     theNewCenter = aP;
     theNewTol = aDmax;
   }
+}
+
+//=======================================================================
+//function : ExtendFace
+//purpose  :
+//=======================================================================
+void BRepLib::ExtendFace(const TopoDS_Face& theF,
+                         const Standard_Real theExtVal,
+                         const Standard_Boolean theExtUMin,
+                         const Standard_Boolean theExtUMax,
+                         const Standard_Boolean theExtVMin,
+                         const Standard_Boolean theExtVMax,
+                         TopoDS_Face& theFExtended)
+{
+  // Get face bounds
+  BRepAdaptor_Surface aBAS(theF);
+  Standard_Real aFUMin = aBAS.FirstUParameter(),
+                aFUMax = aBAS.LastUParameter(),
+                aFVMin = aBAS.FirstVParameter(),
+                aFVMax = aBAS.LastVParameter();
+  const Standard_Real aTol = BRep_Tool::Tolerance(theF);
+
+  // Surface to build the face
+  Handle(Geom_Surface) aS;
+
+  const GeomAbs_SurfaceType aType = aBAS.GetType();
+  // treat analytical surfaces first
+  if (aType == GeomAbs_Plane ||
+      aType == GeomAbs_Sphere ||
+      aType == GeomAbs_Cylinder ||
+      aType == GeomAbs_Torus ||
+      aType == GeomAbs_Cone)
+  {
+    // Get basis transformed basis surface
+    Handle(Geom_Surface) aSurf = Handle(Geom_Surface)::
+      DownCast(aBAS.Surface().Surface()->Transformed(aBAS.Trsf()));
+
+    // Get bounds of the basis surface
+    Standard_Real aSUMin, aSUMax, aSVMin, aSVMax;
+    aSurf->Bounds(aSUMin, aSUMax, aSVMin, aSVMax);
+
+    if (aBAS.IsUPeriodic())
+    {
+      // Adjust face bounds to first period
+      Standard_Real aDelta = aFUMax - aFUMin;
+      aFUMin = Max(aSUMin, aFUMin + aBAS.UPeriod()*Ceiling((aSUMin - aFUMin)/aBAS.UPeriod()));
+      aFUMax = aFUMin + aDelta;
+    }
+    if (aBAS.IsVPeriodic())
+    {
+      // Adjust face bounds to first period
+      Standard_Real aDelta = aFVMax - aFVMin;
+      aFVMin = Max(aSVMin, aFVMin + aBAS.VPeriod()*Ceiling((aSVMin - aFVMin)/aBAS.VPeriod()));
+      aFVMax = aFVMin + aDelta;
+    }
+
+    // Enlarge the face
+    Standard_Real anURes = 0., aVRes = 0.;
+    if (theExtUMin || theExtUMax)
+      anURes = aBAS.UResolution(theExtVal);
+    if (theExtVMin || theExtVMax)
+      aVRes = aBAS.VResolution(theExtVal);
+
+    if (theExtUMin) aFUMin = Max(aSUMin, aFUMin - anURes);
+    if (theExtUMax) aFUMax = Min(aSUMax, aFUMax + anURes);
+    if (theExtVMin) aFVMin = Max(aSVMin, aFVMin - aVRes);
+    if (theExtVMax) aFVMax = Min(aSVMax, aFVMax + aVRes);
+
+    aS = aSurf;
+  }
+  else
+  {
+    // General case
+
+    Handle(Geom_BoundedSurface) aSB =
+      Handle(Geom_BoundedSurface)::DownCast(BRep_Tool::Surface(theF));
+    if (aSB.IsNull())
+    {
+      theFExtended = theF;
+      return;
+    }
+
+    // Get surfaces bounds
+    Standard_Real aSUMin, aSUMax, aSVMin, aSVMax;
+    aSB->Bounds(aSUMin, aSUMax, aSVMin, aSVMax);
+
+    Standard_Boolean isUClosed = aSB->IsUClosed();
+    Standard_Boolean isVClosed = aSB->IsVClosed();
+
+    // Check if the extension in necessary directions is done
+    Standard_Boolean isExtUMin = Standard_False,
+                     isExtUMax = Standard_False,
+                     isExtVMin = Standard_False,
+                     isExtVMax = Standard_False;
+
+    // UMin
+    if (theExtUMin && !isUClosed && !Precision::IsInfinite(aSUMin)) {
+      GeomLib::ExtendSurfByLength(aSB, theExtVal, 1, Standard_True, Standard_False);
+      isExtUMin = Standard_True;
+    }
+    // UMax
+    if (theExtUMax && !isUClosed && !Precision::IsInfinite(aSUMax)) {
+      GeomLib::ExtendSurfByLength(aSB, theExtVal, 1, Standard_True, Standard_True);
+      isExtUMax = Standard_True;
+    }
+    // VMin
+    if (theExtVMin && !isVClosed && !Precision::IsInfinite(aSVMax)) {
+      GeomLib::ExtendSurfByLength(aSB, theExtVal, 1, Standard_False, Standard_False);
+      isExtVMin = Standard_True;
+    }
+    // VMax
+    if (theExtVMax && !isVClosed && !Precision::IsInfinite(aSVMax)) {
+      GeomLib::ExtendSurfByLength(aSB, theExtVal, 1, Standard_False, Standard_True);
+      isExtVMax = Standard_True;
+    }
+
+    aS = aSB;
+
+    // Get new bounds
+    aS->Bounds(aSUMin, aSUMax, aSVMin, aSVMax);
+    if (isExtUMin) aFUMin = aSUMin;
+    if (isExtUMax) aFUMax = aSUMax;
+    if (isExtVMin) aFVMin = aSVMin;
+    if (isExtVMax) aFVMax = aSVMax;
+  }
+
+  BRepLib_MakeFace aMF(aS, aFUMin, aFUMax, aFVMin, aFVMax, aTol);
+  theFExtended = *(TopoDS_Face*)&aMF.Shape();
+  if (theF.Orientation() == TopAbs_REVERSED)
+    theFExtended.Reverse();
 }

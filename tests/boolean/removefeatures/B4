@@ -1,0 +1,37 @@
+restore [locate_data_file bug29481_ex1.brep] s
+explode s f
+
+removefeatures result s s_4
+checkshape result
+checkprops result -s 462.815 -v 195.248 -deps 1.e-7
+checknbshapes result -vertex 31 -edge 50 -wire 23 -face 20 -shell 1 -solid 1
+CheckIsFeatureRemoved s_4 {v e f}
+
+# check modification of the top face
+rfmodified m1 s_1
+checkprops m1 -s 169.122
+checknbshapes m1 -vertex 12 -edge 12 -wire 3 -face 1
+
+# check modification of the side faces
+rfmodified m3 s_3
+rfmodified m5 s_5
+
+if {![regexp "same shapes" [compare m3 m5]]} {
+  puts "Error: incorrect feature removal"
+}
+
+checkprops m3 -s 9.75
+checknbshapes m3 -vertex 6 -edge 6 -wire 1 -face 1
+
+explode s_3 e
+explode s_5 e
+rfmodified m3_4 s_3_4
+rfmodified m5_2 s_5_2
+
+if {![regexp "same shapes" [compare m3_4 m5_2]]} {
+  puts "Error: incorrect feature removal"
+}
+
+checkprops m3_4 -l 9.5
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

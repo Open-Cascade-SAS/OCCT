@@ -215,6 +215,14 @@ Standard_Boolean BRepTools_History::IsRemoved(
 //==============================================================================
 void BRepTools_History::Merge(const Handle(BRepTools_History)& theHistory23)
 {
+  Merge(*theHistory23.get());
+}
+//==============================================================================
+//function : Merge
+//purpose  :
+//==============================================================================
+void BRepTools_History::Merge(const BRepTools_History& theHistory23)
+{
   // Propagate R23 directly and M23 and G23 fully to M12 and G12.
   // Remember the propagated shapes.
   TopTools_DataMapOfShapeListOfShape* aS1ToGAndM[] =
@@ -234,22 +242,22 @@ void BRepTools_History::Merge(const Handle(BRepTools_History)& theHistory23)
         for (TopTools_ListOfShape::Iterator aSIt2(aL12); aSIt2.More();)
         {
           const TopoDS_Shape& aS2 = aSIt2.Value();
-          if (theHistory23->IsRemoved(aS2))
+          if (theHistory23.IsRemoved(aS2))
           {
-            aL12.Remove(aSIt2);
             aRPropagated.Add(aS2);
+            aL12.Remove(aSIt2);
           }
           else
           {
-            if (theHistory23->myShapeToGenerated.IsBound(aS2))
+            if (theHistory23.myShapeToGenerated.IsBound(aS2))
             {
-              add(aAdditions[0], theHistory23->myShapeToGenerated(aS2));
+              add(aAdditions[0], theHistory23.myShapeToGenerated(aS2));
               aMAndGPropagated.Add(aS2);
             }
 
-            if (theHistory23->myShapeToModified.IsBound(aS2))
+            if (theHistory23.myShapeToModified.IsBound(aS2))
             {
-              add(aAdditions[aI], theHistory23->myShapeToModified(aS2));
+              add(aAdditions[aI], theHistory23.myShapeToModified(aS2));
               aMAndGPropagated.Add(aS2);
 
               aL12.Remove(aSIt2);
@@ -278,7 +286,7 @@ void BRepTools_History::Merge(const Handle(BRepTools_History)& theHistory23)
 
     // Propagate M23 and G23 to M12 and G12 sequentially.
     const TopTools_DataMapOfShapeListOfShape* aS2ToGAndM[] =
-      {&theHistory23->myShapeToGenerated, &theHistory23->myShapeToModified};
+      {&theHistory23.myShapeToGenerated, &theHistory23.myShapeToModified};
     for (Standard_Integer aI = 0; aI < 2; ++aI)
     {
       for (TopTools_DataMapOfShapeListOfShape::Iterator aMIt2(*aS2ToGAndM[aI]);
@@ -310,13 +318,14 @@ void BRepTools_History::Merge(const Handle(BRepTools_History)& theHistory23)
       aMIt1.Next();
       if (aL12.IsEmpty())
       {
+        myRemoved.Add(aS1);
         aS1ToGAndM[aI]->UnBind(aS1);
       }
     }
   }
 
   // Propagate R23 to R12 sequentially.
-  for (TopTools_MapOfShape::Iterator aRIt23(theHistory23->myRemoved);
+  for (TopTools_MapOfShape::Iterator aRIt23(theHistory23.myRemoved);
     aRIt23.More(); aRIt23.Next())
   {
     const TopoDS_Shape& aS2 = aRIt23.Value();

@@ -3035,3 +3035,185 @@ Meshing covers a shape with a triangular mesh. Other than hidden line removal, y
 
 You can obtain information on the shape by first exploring it. To access triangulation of a face in the shape later, use *BRepTool::Triangulation*. To access a polygon, which is the approximation of an edge of the face, use *BRepTool::PolygonOnTriangulation*.
 
+
+@section occt_modalg_defeaturing 3D Model Defeaturing
+
+The Open CASCADE Technology Defeaturing algorithm is intended for removal of the unwanted parts or features from the model. These parts could be the holes, protrusions, gaps, chamfers, fillets etc.
+
+Feature detection is not performed, and all features desired for removal should be defined by the user. The input shape is not modified during Defeaturing, the new shape is built in the result.
+
+On the API level the Defeaturing algorithm is implemented in the *BRepAlgoAPI_Defeaturing* class. On the input the algorithm accepts the shape to remove the features from and the features (one or many) to remove from the shape.
+Currently, the input shape should either be SOLID, or COMPSOLID, or COMPOUND of SOLIDs.
+The features to remove are the sets of faces forming the features. It does not matter how the feature faces are given. It could be the separate faces or the collections of them. The faces should belong to the initial shape, and those that do not belong will be ignored.
+
+The actual features removal is performed by the low-level *BOPAlgo_RemoveFeatures* algorithm. On the API level, all the inputs are passed into the tool and the method *BOPAlgo_RemoveFeatures::Perform()* is called.
+
+Before starting Features removal all the faces requested for removal from the shape are sorted on the connected blocks - each block represents single feature to remove.
+The features will be removed from the shape one by one, which will allow removing all possible features even if there were some problems with the removal of some of them (due to e.g. incorrect input data).
+
+The removed feature is filled by the extension of the faces adjacent to the feature. In general, the algorithm of removing of the single feature from the shape looks as follows:
+* Find the faces adjacent to the feature;
+* Extend the adjacent faces to cover the feature;
+* Trim the extended faces by the bounds of original face (except for bounds common with the feature), so it will cover the feature only;
+* Rebuild the solids with reconstructed adjacent faces avoiding the feature faces.
+
+If the single feature removal was successful, the result shape is overwritten with the new shape, otherwise the results are not kept, and the warning is given.
+Either way the process continues with the next feature.
+
+The Defeaturing algorithm has the following options:
+* History support;
+
+and the options available from base class (*BOPAlgo_Options*):
+* Error/Warning reporting system;
+* Parallel processing mode.
+
+Please note that the other options of the base class are not supported here and will have no effect.
+
+<b>History support</b> allows tracking modification of the input shape in terms of Modified, IsDeleted and Generated. By default, the history is collected, but it is possible to disable it using the method *TrackHistory(false)*.
+On the low-level the history information is collected by the history tool *BRepTools_History*, which can be accessed through the method *BOPAlgo_RemoveFeatures::History()*. 
+
+<b>Error/Warning reporting system</b> - allows obtaining the extended overview of the Errors/Warnings occurred during the operation. As soon as any error appears the algorithm stops working. The warnings allow continuing the job, informing the user that something went wrong. The algorithm returns the following errors/warnings:
+* BOPAlgo_AlertUnsupportedType - the alert will be given as an error if the input shape does not contain any solids, and as a warning if the input shape contains not only solids, but also other shapes;
+* BOPAlgo_AlertNoFacesToRemove - the error alert is given in case there are no faces to remove from the shape (nothing to do);
+* BOPAlgo_AlertUnableToRemoveTheFeature - the warning alert is given to inform the user the removal of the feature is not possible. The algorithm will still try to remove the other features;
+* BOPAlgo_AlertRemoveFeaturesFailed - the error alert is given in case if the operation was aborted by the unknown reason.
+
+For more information on the error/warning reporting system please see the chapter @ref occt_algorithms_ers "Errors and warnings reporting system" of Boolean operations user guide.
+
+<b>Parallel processing mode</b> - allows running the algorithm in parallel mode obtaining the result faster.
+
+The algorithm has certain limitations:
+* Intersection of the surfaces of the connected faces adjacent to the feature should not be empty. It means, that such faces should not be tangent to each other.
+If the intersection of the adjacent faces will be empty, the algorithm will be unable to trim the faces correctly and, most likely, the feature will not be removed.
+* The algorithm does not process the INTERNAL parts of the solids, they are simply removed during reconstruction.
+
+Note, that for successful removal of the feature, the extended faces adjacent to the feature should cover the feature completely, otherwise the solids will not be rebuild.
+Take a look at the simple shape on the image below:
+@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im001.png,"",220}
+
+Removal of all three faces of the gap is not going to work, because there will be no face to fill the transverse part of the step.
+Although, removal of only two faces, keeping one of the transverse faces, will fill the gap with the kept face:
+<table align="center">
+<tr>
+  <td>@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im002.png,"Keeping the right transverse face",220}</td>
+  <td>@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im003.png,"Keeping the left transverse face",220}</td>
+</tr>
+</table>
+
+@subsection occt_modalg_defeaturing_usage Usage
+
+Here is the example of usage of the *BRepAlgoAPI_Defeaturing* algorithm on the C++ level:
+~~~~
+TopoDS_Shape aSolid = ...;               // Input shape to remove the features from
+TopTools_ListOfShape aFeatures = ...;    // Features to remove from the shape
+Standard_Boolean bRunParallel = ...;     // Parallel processing mode
+Standard_Boolean isHistoryNeeded = ...;  // History support
+
+BRepAlgoAPI_Defeaturing aDF;             // Defeaturing algorithm
+aDF.SetShape(aSolid);                    // Set the shape
+aDF.AddFacesToRemove(aFaces);            // Add faces to remove
+aDF.SetRunParallel(bRunParallel);        // Define the processing mode (parallel or single)
+aDF.TrackHistory(isHistoryNeeded);       // Define whether to track the shapes modifications
+aDF.Build();                             // Perform the operation
+if (!aDF.IsDone())                       // Check for the errors
+{
+  // error treatment
+  Standard_SStream aSStream;
+  aDF.DumpErrors(aSStream);
+  return;
+}
+if (aDF.HasWarnings())                   // Check for the warnings
+{
+  // warnings treatment
+  Standard_SStream aSStream;
+  aDF.DumpWarnings(aSStream);
+}
+const TopoDS_Shape& aResult = aDF.Shape(); // Result shape
+~~~~
+
+To track the history of a shape use the API history methods:
+~~~~
+// Obtain modification of the shape
+const TopTools_ListOfShape& BRepAlgoAPI_Defeaturing::Modified(const TopoDS_Shape& theS);
+
+// Obtain shapes generated from the shape
+const TopTools_ListOfShape& BRepAlgoAPI_Defeaturing::Generated(const TopoDS_Shape& theS);
+
+// Check if the shape is removed or not
+Standard_Boolean BRepAlgoAPI_Defeaturing::IsDeleted(const TopoDS_Shape& theS);
+~~~~
+
+For the usage of the Defeaturing algorithm on the Draw level the command <b>removefeatures</b> has been implemented.
+
+To track the history of a shape modification during Defeaturing the following commands can be used:
+* <b>rfmodified</b> Shows the shapes modified from the input shape during Defeaturing.
+* <b>rfgenerated</b> Shows the shapes generated from the input shape during Defeaturing.
+* <b>rfisdeleted</b> Checks if the shape has been deleted during Defeaturing.
+
+For more details on commands above please refer the @ref occt_draw_defeaturing "Defeaturing commands" of the Draw test harness user guide.
+
+To have possibility to access the error/warning shapes of the operation use the *bdrawwarnshapes* command before running the algorithm (see command usage in the @ref occt_algorithms_ers "Errors and warnings reporting system" of Boolean operations user guide).
+
+@subsection occt_modalg_defeaturing_examples Examples
+
+Here are the few examples of defeaturing of the ANC101 model:
+
+@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im004.png,"ANC101 model",220}</td>
+
+<table align="center">
+<tr>
+  <td>@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im005.png,"Removing the cylindrical protrusion",220}</td>
+  <td>@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im006.png,"Result",220}</td></td>
+</tr>
+<tr>
+  <td>@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im007.png,"Removing the cylindrical holes",220}</td>
+  <td>@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im008.png,"Result",220}</td></td>
+</tr>
+<tr>
+  <td>@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im009.png,"Removing the cylindrical holes",220}</td>
+  <td>@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im010.png,"Result",220}</td></td>
+</tr>
+<tr>
+  <td>@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im011.png,"Removing the small gaps in the front",220}</td>
+  <td>@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im012.png,"Result",220}</td></td>
+</tr>
+<tr>
+  <td>@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im013.png,"Removing the gaps in the front completely",220}</td>
+  <td>@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im014.png,"Result",220}</td></td>
+</tr>
+<tr>
+  <td>@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im015.png,"Removing the cylindrical protrusion",220}</td>
+  <td>@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im016.png,"Result",220}</td></td>
+</tr>
+</table>
+
+Here are the few examples of defeaturing of the model containing boxes with blends:
+
+@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im017.png,"Box blend model",220}</td>
+
+<table align="center">
+<tr>
+  <td>@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im018.png,"Removing the blend",220}</td>
+  <td>@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im019.png,"Result",220}</td></td>
+</tr>
+<tr>
+  <td>@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im020.png,"Removing the blend",220}</td>
+  <td>@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im021.png,"Result",220}</td></td>
+</tr>
+<tr>
+  <td>@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im022.png,"Removing the blend",220}</td>
+  <td>@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im023.png,"Result",220}</td></td>
+</tr>
+<tr>
+  <td>@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im024.png,"Removing the blend",220}</td>
+  <td>@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im025.png,"Result",220}</td></td>
+</tr>
+<tr>
+  <td>@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im026.png,"Removing the blend",220}</td>
+  <td>@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im027.png,"Result",220}</td></td>
+</tr>
+<tr>
+  <td>@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im028.png,"Removing the blend",220}</td>
+  <td>@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im029.png,"Result",220}</td></td>
+</tr>
+</table>

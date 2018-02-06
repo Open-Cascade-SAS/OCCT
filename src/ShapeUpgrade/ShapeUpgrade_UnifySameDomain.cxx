@@ -1791,17 +1791,19 @@ void ShapeUpgrade_UnifySameDomain::FillHistory()
   // the history of UnifySameDomain algorithm
   Handle(BRepTools_History) aUSDHistory = new BRepTools_History();
 
-  // Map all Vertices, Edges and Faces in the input shape
+  // Map all Vertices, Edges, Faces and Solids in the input shape
   TopTools_IndexedMapOfShape aMapInputShape;
   TopExp::MapShapes(myInitShape, TopAbs_VERTEX, aMapInputShape);
   TopExp::MapShapes(myInitShape, TopAbs_EDGE  , aMapInputShape);
   TopExp::MapShapes(myInitShape, TopAbs_FACE  , aMapInputShape);
+  TopExp::MapShapes(myInitShape, TopAbs_SOLID , aMapInputShape);
 
-  // Map all Vertices, Edges and Faces in the result shape
+  // Map all Vertices, Edges, Faces and Solids in the result shape
   TopTools_IndexedMapOfShape aMapResultShapes;
   TopExp::MapShapes(myShape, TopAbs_VERTEX, aMapResultShapes);
   TopExp::MapShapes(myShape, TopAbs_EDGE  , aMapResultShapes);
   TopExp::MapShapes(myShape, TopAbs_FACE  , aMapResultShapes);
+  TopExp::MapShapes(myShape, TopAbs_SOLID , aMapResultShapes);
 
   // Iterate on all input shapes and get their modifications
   Standard_Integer i, aNb = aMapInputShape.Extent();
@@ -1831,10 +1833,12 @@ void ShapeUpgrade_UnifySameDomain::FillHistory()
     TopTools_ListIteratorOfListOfShape aItLSIm(aLSImages);
     for (; aItLSIm.More(); aItLSIm.Next())
     {
-      if (aMapResultShapes.Contains(aItLSIm.Value()))
+      const TopoDS_Shape& aSIm = aItLSIm.Value();
+      if (aMapResultShapes.Contains(aSIm))
       {
-        // Image is found in the result, thus the shape has been modified
-        aUSDHistory->AddModified(aS, aItLSIm.Value());
+        if (!aSIm.IsSame(aS))
+          // Image is found in the result, thus the shape has been modified
+          aUSDHistory->AddModified(aS, aSIm);
         bRemoved = Standard_False;
       }
     }

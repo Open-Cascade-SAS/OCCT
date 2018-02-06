@@ -1,0 +1,22 @@
+restore [locate_data_file bug29481_ex1.brep] s
+explode s f
+
+# removal of the step
+removefeatures result s s_6 s_18
+checkshape result
+checkprops result -s 461.315 -v 196.178 -deps 1.e-7
+checknbshapes result -vertex 30 -edge 50 -wire 23 -face 20 -shell 1 -solid 1
+CheckIsFeatureRemoved s_6 {v e f}
+CheckIsFeatureRemoved s_18 {v e f}
+
+# check modification of the top face
+rfmodified m1 s_1
+checkprops m1 -s 172.551
+checknbshapes m1 -vertex 14 -edge 14 -wire 3 -face 1
+
+# check modification of the side face
+rfmodified m19 s_19
+checkprops m19 -s 10
+checknbshapes m19 -vertex 4 -edge 4 -wire 1 -face 1
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

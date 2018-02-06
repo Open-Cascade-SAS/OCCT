@@ -1,0 +1,31 @@
+restore [locate_data_file bug29481_ex1.brep] s
+explode s f
+
+# removal of the hole in the shape
+
+removefeatures result s s_14 s_20
+checkshape result
+checkprops result -s 462.33 -v 197.735 -deps 1.e-7
+checknbshapes result -vertex 32 -edge 51 -wire 21 -face 20 -shell 1 -solid 1
+CheckIsFeatureRemoved s_14 {v e f}
+CheckIsFeatureRemoved s_20 {v e f}
+
+# check modification of the top and bottom faces
+rfmodified m1 s_1
+checkprops m1 -s 174.62
+checknbshapes m1 -vertex 13 -edge 13 -wire 2 -face 1
+
+rfmodified m16 s_16
+checkprops m16 -s 194.429
+checknbshapes m16 -vertex 10 -edge 10 -wire 1 -face 1
+
+# check that no new intersections have been created
+if {![regexp "No shapes were generated" [rfgenerated g1 s_1]]} {
+  puts "Error: incorrect feature removal"
+}
+
+if {![regexp "No shapes were generated" [rfgenerated g16 s_16]]} {
+  puts "Error: incorrect feature removal"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

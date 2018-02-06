@@ -115,7 +115,7 @@ Standard_Integer bcbuild(Draw_Interpretor& di,
   aCBuilder.SetUseOBB(BOPTest_Objects::UseOBB());
   //
   aCBuilder.PerformWithFiller(aPF); 
-  BOPTest::ReportAlerts(aCBuilder);
+  BOPTest::ReportAlerts(aCBuilder.GetReport());
   if (aCBuilder.HasErrors()) {
     return 0;
   }
@@ -162,7 +162,7 @@ Standard_Integer bcaddall(Draw_Interpretor& di,
   //
   aCBuilder.ClearWarnings();
   aCBuilder.AddAllToResult(iMaterial, bUpdate);
-  BOPTest::ReportAlerts(aCBuilder);
+  BOPTest::ReportAlerts(aCBuilder.GetReport());
   //
   const TopoDS_Shape& aR = aCBuilder.Shape();
   //
@@ -246,7 +246,7 @@ Standard_Integer bcadd(Draw_Interpretor& di,
   //
   aCBuilder.ClearWarnings();
   aCBuilder.AddToResult(aLSToTake, aLSToAvoid, iMaterial, bUpdate);
-  BOPTest::ReportAlerts(aCBuilder);
+  BOPTest::ReportAlerts(aCBuilder.GetReport());
   //
   const TopoDS_Shape& aR = aCBuilder.Shape();
   //
@@ -317,7 +317,7 @@ Standard_Integer bcremoveint(Draw_Interpretor& di,
   //
   aCBuilder.ClearWarnings();
   aCBuilder.RemoveInternalBoundaries();
-  BOPTest::ReportAlerts(aCBuilder);
+  BOPTest::ReportAlerts(aCBuilder.GetReport());
   //
   const TopoDS_Shape& aR = aCBuilder.Shape();
   //

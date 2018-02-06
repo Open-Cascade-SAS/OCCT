@@ -53,6 +53,8 @@ BOPAlgo_PBuilder.hxx
 BOPAlgo_PPaveFiller.hxx
 BOPAlgo_PSection.hxx
 BOPAlgo_PWireEdgeSet.hxx
+BOPAlgo_RemoveFeatures.cxx
+BOPAlgo_RemoveFeatures.hxx
 BOPAlgo_Section.cxx
 BOPAlgo_Section.hxx
 BOPAlgo_SectionAttribute.hxx

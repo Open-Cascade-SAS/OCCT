@@ -78,4 +78,16 @@ static const char BOPAlgo_BOPAlgo_msg[] =
   "Warning: Building 2D curve of edge on face has failed\n"
   "\n"
   ".BOPAlgo_AlertAcquiredSelfIntersection\n"
-  "Warning: Some sub-shapes of some of the argument become connected through other shapes and the argument became self-interfered\n";
+  "Warning: Some sub-shapes of some of the argument become connected through other shapes and the argument became self-interfered\n"
+  "\n"
+  ".BOPAlgo_AlertUnsupportedType\n"
+  "Warning: Unsupported type of input shape\n"
+  "\n"
+  ".BOPAlgo_AlertUnableToRemoveTheFeature\n"
+  "Warning: Unable to remove the feature\n"
+  "\n"
+  ".BOPAlgo_AlertNoFacesToRemove\n"
+  "Error: No faces have been found for removal\n"
+  "\n"
+  ".BOPAlgo_AlertRemoveFeaturesFailed\n"
+  "Error: The Feature Removal algorithm has failed\n";

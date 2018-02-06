@@ -1,0 +1,24 @@
+restore [locate_data_file bug29481_ex1.brep] s
+explode s f
+
+# removal of the cylindrical spike on the shape
+
+removefeatures result s s_15 s_21 s_22
+checkshape result
+checkprops result -s 449.707 -v 186.844 -deps 1.e-7
+checknbshapes result -vertex 31 -edge 51 -wire 21 -face 19 -shell 1 -solid 1
+CheckIsFeatureRemoved s_15 {v e f}
+CheckIsFeatureRemoved s_21 {v e f}
+CheckIsFeatureRemoved s_22 {v e f}
+
+# check modification of the top face
+rfmodified m1 s_1
+checkprops m1 -s 175.593
+checknbshapes m1 -vertex 13 -edge 13 -wire 2 -face 1
+
+# check that no new intersections have been created
+if {![regexp "No shapes were generated" [rfgenerated g1 s_1]]} {
+  puts "Error: incorrect feature removal"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

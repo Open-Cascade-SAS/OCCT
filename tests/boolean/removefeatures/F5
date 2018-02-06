@@ -1,0 +1,12 @@
+restore [locate_data_file bug29481_window_slots.brep] s
+explode s f
+
+compound s_84 s_68 s_61 s_57 s_64 s_56 s_62 s_67 s_76 s_85 s_63 s_49 s_52 s_80 s_59 s_70 s_82 s_54 s_86 s_66 s_55 s_69 s_72 s_73 s_58 s_74 s_51 s_77 s_78 s_79 s_81 s_83 s_50 s_65 s_53 s_75 s_71 s_60 s_15 s_33 s_40 s_22 s_13 s_98 s_18 s_35 s_17 s_37 s_27 s_93 s_26 s_24 s_29 s_12 s_94 s_19 s_21 s_39 s_97 s_91 s_96 s_34 s_20 s_23 s_14 s_16 s_92 s_25 s_95 s_31 s_38 s_28 s_99 s_90 s_36 s_32 s_30 pockets
+
+removefeatures result s pockets
+checkshape result
+checkprops result -s 22976.2 -v 68900 -deps 1.e-7
+checknbshapes result -vertex 38 -edge 58 -wire 22 -face 21 -shell 1 -solid 1 -t
+CheckIsFeatureRemoved pockets {v e f}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

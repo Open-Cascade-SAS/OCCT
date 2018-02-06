@@ -5844,6 +5844,7 @@ The following topics are covered in the eight sections of this chapter:
   * Transformations of shapes: translation, copy, etc.
   * Topological operations, or booleans.
   * Drafting and blending.
+  * Defeaturing.
   * Analysis of shapes.
 
 
@@ -7320,6 +7321,43 @@ buildevol
 ==- Reconstruction 0.04s 
 ==- SetRegul 0s 
 ~~~~~
+
+
+@subsection occt_draw_defeaturing Defeaturing
+
+Draw module for @ref occt_modalg_defeaturing "3D Model Defeaturing" includes the command to perform the operation and the commands to access the history of shapes modifications.
+
+@subsubsection occt_draw_defeaturing_op removefeatures
+
+*removefeatures* command performs the removal of the requested features from the shape.
+
+Syntax:
+~~~~
+removefeatures result shape f1 f2 ... [-nohist] [-parallel]
+
+Where:
+result   - result of the operation;
+shape    - the shape to remove the features from;
+f1, f2   - features to remove from the shape;
+
+Options:
+nohist   - disables the history collection;
+parallel - enables the parallel processing mode.
+~~~~
+
+@subsubsection occt_draw_defeaturing_hist rfmodified, rfgenerated, rfisdeleted
+
+To track the history of a shape modification during Defeaturing the following commands can be used:
+* <b>rfmodified</b> Shows the shapes modified from the input shape during Defeaturing.
+* <b>rfgenerated</b> Shows the shapes generated from the input shape during Defeaturing.
+* <b>rfisdeleted</b> Checks if the shape has been deleted during Defeaturing (i.e. has no trace in the result shape).
+
+Syntax:
+~~~~
+rfmodified      : rfmodified c_modified shape
+rfgenerated     : rfgenerated c_generated shape
+rfisdeleted     : rfisdeleted shape
+~~~~
 
 
 @subsection occt_draw_7_9  Analysis of topology and geometry

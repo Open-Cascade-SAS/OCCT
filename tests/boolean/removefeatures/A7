@@ -1,0 +1,63 @@
+pload XDE
+
+stepread [locate_data_file bug29481_L3.step] s *
+
+copy s_1 s
+explode s f
+
+
+# Clear the shape from all features
+compound s_24 s_7 s_1 s_2 s_6 s_8 s_4 s_25 s_31 s_30 s_38 s_36 s_34 s_29 s_32 s_33 s_35 s_13 s_12 s_11 s_37 s_27 s_28 s_26 s_20 s_16 s_17 s_18 s_19 features
+
+removefeatures result s features
+checkshape result
+checkprops result -s 2333.55 -v 1047.62 -deps 1.e-7
+checknbshapes result -vertex 8 -edge 12 -wire 6 -face 6 -shell 1 -solid 1
+CheckIsFeatureRemoved features {v e f}
+
+# check modification of the top face
+rfmodified m5 s_5
+checkprops m5 -s 1102.76
+checknbshapes m5 -vertex 4 -edge 4 -wire 1 -face 1
+
+# check modification of the bottom face
+rfmodified m3 s_3
+checkprops m3 -equal m5
+checknbshapes m5 -vertex 4 -edge 4 -wire 1 -face 1
+
+# check modification of the side faces
+rfmodified m10 s_10
+rfmodified m14 s_14
+
+if {![regexp "same shapes" [compare m10 m14]]} {
+  puts "Error: incorrect feature removal"
+}
+
+checkprops m10 -s 37.43
+checknbshapes m10 -vertex 4 -edge 4 -wire 1 -face 1
+
+
+rfmodified m22 s_22
+checkprops m22 -equal s_22
+
+
+rfmodified m9 s_9
+rfmodified m23 s_23
+
+if {![regexp "same shapes" [compare m9 m23]]} {
+  puts "Error: incorrect feature removal"
+}
+
+checkprops m9 -s 26.5893
+checknbshapes m9 -vertex 4 -edge 4 -wire 1 -face 1
+
+
+rfmodified m15 s_15
+rfmodified m21 s_21
+
+if {![regexp "same shapes" [compare m15 m21]]} {
+  puts "Error: incorrect feature removal"
+}
+
+checkprops m15 -equal m9
+checknbshapes m15 -vertex 4 -edge 4 -wire 1 -face 1

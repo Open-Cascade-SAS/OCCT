@@ -1,0 +1,12 @@
+restore [locate_data_file bug29481_ex4.brep] s
+explode s f
+
+# remove the chamfer
+removefeatures result s s_2 s_3
+checkshape result
+checkprops result -s 334.248 -v 241.372 -deps 1.e-7
+checknbshapes result -vertex 10 -edge 15 -wire 9 -face 8 -shell 1 -solid 1
+CheckIsFeatureRemoved s_2 {v e f}
+CheckIsFeatureRemoved s_3 {v e f}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

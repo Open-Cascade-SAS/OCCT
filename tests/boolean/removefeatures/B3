@@ -1,0 +1,29 @@
+restore [locate_data_file bug29481_ex1.brep] s
+explode s f
+
+# blend removal
+removefeatures result s s_15
+checkshape result
+checkprops result -s 462.273 -v 193.127 -deps 1.e-7
+checknbshapes result -vertex 34 -edge 54 -wire 24 -face 21 -shell 1 -solid 1 -t
+CheckIsFeatureRemoved s_15 {e f}
+
+# check modification of the top face
+rfmodified m1 s_1
+checkprops m1 -s 172.452
+checknbshapes m1 -vertex 14 -edge 14 -wire 3 -face 1
+
+rfgenerated g1 s_1
+checknbshapes g1 -vertex 1 -edge 1
+checkprops g1 -l 6.28319
+
+# check modification of the cylindrical face
+rfmodified m21 s_21
+checkprops m21 -s 12.5664
+checknbshapes m21 -vertex 2 -edge 3 -wire 1 -face 1
+
+rfgenerated g21 s_21
+checknbshapes g21 -vertex 1 -edge 1
+checkprops g21 -equal g1
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

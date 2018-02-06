@@ -1,0 +1,11 @@
+restore [locate_data_file bug28840_1.brep] s
+explode s f
+
+removefeatures result s s_3 s_7
+checkshape result
+checkprops result -s 33645 -v 270128 -deps 1.e-7
+checknbshapes result -vertex 4 -edge 6 -wire 6 -face 5 -shell 1 -solid 1 -t
+CheckIsFeatureRemoved s_3 {e f}
+CheckIsFeatureRemoved s_7 {e f}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

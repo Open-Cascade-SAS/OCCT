@@ -25,12 +25,14 @@
 #include <NCollection_Map.hxx>
 #include <MeshTest.hxx>
 #include <Message.hxx>
+#include <Message_Alert.hxx>
 #include <Message_Msg.hxx>
 #include <Message_Messenger.hxx>
+#include <Message_Report.hxx>
 #include <SWDRAW.hxx>
 #include <TopoDS_AlertWithShape.hxx>
 
-#include <BOPAlgo_Algo.hxx>
+#include <BOPAlgo_Alerts.hxx>
 #include <BOPTest_Objects.hxx>
 
 //=======================================================================
@@ -55,6 +57,7 @@ void  BOPTest::AllCommands(Draw_Interpretor& theCommands)
   BOPTest::DebugCommands     (theCommands);
   BOPTest::CellsCommands     (theCommands);
   BOPTest::UtilityCommands   (theCommands);
+  BOPTest::RemoveFeaturesCommands(theCommands);
 }
 //=======================================================================
 //function : Factory
@@ -84,7 +87,7 @@ DPLUGIN(BOPTest)
 //purpose  : 
 //=======================================================================
 
-void BOPTest::ReportAlerts (const BOPAlgo_Algo& theAlgorithm)
+void BOPTest::ReportAlerts(const Handle(Message_Report)& theReport)
 {
   // first report warnings, then errors
   Message_Gravity anAlertTypes[2] = { Message_Warning, Message_Fail };
@@ -92,11 +95,12 @@ void BOPTest::ReportAlerts (const BOPAlgo_Algo& theAlgorithm)
   {
     // report shapes for the same type of alert together
     NCollection_Map<Handle(Standard_Transient)> aPassedTypes;
-    const Message_ListOfAlert& aList = theAlgorithm.GetReport()->GetAlerts (anAlertTypes[iGravity]);
+    const Message_ListOfAlert& aList = theReport->GetAlerts (anAlertTypes[iGravity]);
     for (Message_ListOfAlert::Iterator aIt (aList); aIt.More(); aIt.Next())
     {
       // check that this type of warnings has not yet been processed
-      if (! aPassedTypes.Add (aIt.Value()->DynamicType()))
+      const Handle(Standard_Type)& aType = aIt.Value()->DynamicType();
+      if (!aPassedTypes.Add(aType))
         continue;
 
       // get alert message
@@ -112,7 +116,9 @@ void BOPTest::ReportAlerts (const BOPAlgo_Algo& theAlgorithm)
         {
           Handle(TopoDS_AlertWithShape) aShapeAlert = Handle(TopoDS_AlertWithShape)::DownCast (aIt2.Value());
 
-          if (! aShapeAlert.IsNull() && ! aShapeAlert->GetShape().IsNull()) 
+          if (!aShapeAlert.IsNull() &&
+              (aType == aShapeAlert->DynamicType()) &&
+              !aShapeAlert->GetShape().IsNull())
           {
             //
             char aName[80];

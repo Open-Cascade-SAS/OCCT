@@ -1,0 +1,12 @@
+restore [locate_data_file bug29481_ex1.brep] s
+explode s f
+
+# removal of the sphere
+removefeatures result s s_8 s_9
+checkshape result
+checkprops result -s 460.84 -v 194.168 -deps 1.e-7
+checknbshapes result -vertex 31 -edge 49 -wire 23 -face 20 -shell 1 -solid 1
+CheckIsFeatureRemoved s_8 {v e f}
+CheckIsFeatureRemoved s_9 {v e f}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
