@@ -1094,46 +1094,61 @@ Standard_Boolean BOPTools_AlgoTools::AreFacesSameDomain
    Handle(IntTools_Context)& theContext,
    const Standard_Real theFuzz)
 {
-  Standard_Boolean bFlag;
-  Standard_Integer iErr;
-  Standard_Real aTolF1, aTolF2, aTol;
-  gp_Pnt2d aP2D;
-  gp_Pnt aP;
-  TopoDS_Face aF1, aF2;
-  TopoDS_Edge aE1;
-  TopExp_Explorer aExp;
-  Standard_Real aFuzz1 = (theFuzz > Precision::Confusion() ? theFuzz : Precision::Confusion());
-  //
-  bFlag=Standard_False;
-  //
-  aF1=theF1;
-  aF1.Orientation(TopAbs_FORWARD);
-  aF2=theF2;
-  aF2.Orientation(TopAbs_FORWARD);
-  //
-  aTolF1=BRep_Tool::Tolerance(aF1);
-  // 1
-  aExp.Init(aF1, TopAbs_EDGE);
-  for (; aExp.More(); aExp.Next()) {
-    aE1=(*(TopoDS_Edge*)(&aExp.Current()));
-    if (!BRep_Tool::Degenerated(aE1)) {
-      Standard_Real aTolE = BRep_Tool::Tolerance(aE1);
-      if (aTolE > aTolF1) {
-        aTolF1 = aTolE;
+  Standard_Boolean bFacesSD = Standard_False;
+
+  // The idea is to find a point inside the first face
+  // and check its validity for the second face.
+  // If valid - the faces are same domain.
+
+  gp_Pnt aP1;
+  gp_Pnt2d aP2D1;
+  // Find point inside the first face
+  Standard_Integer iErr =
+    BOPTools_AlgoTools3D::PointInFace(theF1, aP1, aP2D1, theContext);
+
+  if (iErr != 0)
+  {
+    // unable to find the point
+    return bFacesSD;
+  }
+
+  // Check validity of the point for second face
+
+  // Compute the tolerance to check the validity -
+  // sum of tolerance of faces and fuzzy tolerance
+
+  // Compute the tolerance of the faces, taking into account the deviation
+  // of the edges from the surfaces
+  Standard_Real aTolF1 = BRep_Tool::Tolerance(theF1),
+                aTolF2 = BRep_Tool::Tolerance(theF2);
+
+  // Find maximal tolerance of edges.
+  // The faces should have the same boundaries, thus
+  // it does not matter which face to explore.
+  {
+    Standard_Real aTolEMax = -1.;
+    TopExp_Explorer anExpE(theF1, TopAbs_EDGE);
+    for (; anExpE.More(); anExpE.Next())
+    {
+      const TopoDS_Edge& aE = TopoDS::Edge(anExpE.Current());
+      if (!BRep_Tool::Degenerated(aE))
+      {
+        Standard_Real aTolE = BRep_Tool::Tolerance(aE);
+        if (aTolE > aTolEMax)
+          aTolEMax = aTolE;
       }
     }
+    if (aTolEMax > aTolF1) aTolF1 = aTolEMax;
+    if (aTolEMax > aTolF2) aTolF2 = aTolEMax;
   }
-  // 2
-  aTolF2=BRep_Tool::Tolerance(aF2);
-  aTol = aTolF1 + aTolF2 + aFuzz1;
-  //
-  iErr = BOPTools_AlgoTools3D::PointInFace(aF1, aP, aP2D,
-                                           theContext);
-  if (!iErr) {
-    bFlag=theContext->IsValidPointForFace(aP, aF2, aTol);
-  }
-  //
-  return bFlag;
+
+  // Checking criteria
+  Standard_Real aTol = aTolF1 + aTolF2 + Max(theFuzz, Precision::Confusion());
+
+  // Project and classify the point on second face
+  bFacesSD = theContext->IsValidPointForFace(aP1, theF2, aTol);
+
+  return bFacesSD;
 }
 
 //=======================================================================

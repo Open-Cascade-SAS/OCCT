@@ -1,0 +1,16 @@
+puts "========"
+puts "OCC29488"
+puts "========"
+puts ""
+#################################################
+# Regression: boolean operation " general fuse" creates solid containing 5 not connected shells lying on the one level
+#################################################
+
+restore [locate_data_file bug29488_shapes.brep] s
+eval mkvolume result [lrange [explode s] 1 end] 
+
+checkshape result
+checknbshapes result -wire 77 -face 77 -shell 1 -solid 1
+checkprops result -s 3073.39 -v 10240.8 
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
