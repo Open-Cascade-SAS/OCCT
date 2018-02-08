@@ -345,7 +345,7 @@ void AIS_ColoredShape::SetMaterial (const Graphic3d_MaterialAspect& theMaterial)
 //function : Compute
 //purpose  :
 //=======================================================================
-void AIS_ColoredShape::Compute (const Handle(PrsMgr_PresentationManager3d)& ,
+void AIS_ColoredShape::Compute (const Handle(PrsMgr_PresentationManager3d)& thePrsMgr,
                                 const Handle(Prs3d_Presentation)&           thePrs,
                                 const Standard_Integer                      theMode)
 {
@@ -359,31 +359,45 @@ void AIS_ColoredShape::Compute (const Handle(PrsMgr_PresentationManager3d)& ,
     thePrs->SetInfiniteState (Standard_True);
   }
 
-  if (theMode == AIS_Shaded)
+  switch (theMode)
   {
-    if (myDrawer->IsAutoTriangulation())
+    case AIS_WireFrame:
     {
-      // compute mesh for entire shape beforehand to ensure consistency and optimizations (parallelization)
       StdPrs_ToolTriangulatedShape::ClearOnOwnDeflectionChange (myshape, myDrawer, Standard_True);
 
       // After this call if type of deflection is relative
       // computed deflection coefficient is stored as absolute.
-      Standard_Boolean wasRecomputed = StdPrs_ToolTriangulatedShape::Tessellate (myshape, myDrawer);
-
-      // Set to update wireframe presentation on triangulation.
-      if (myDrawer->IsoOnTriangulation() && wasRecomputed)
-      {
-        SetToUpdate (AIS_WireFrame);
-      }
+      Prs3d::GetDeflection (myshape, myDrawer);
+      break;
     }
-  }
-  else // WireFrame mode
-  {
-    StdPrs_ToolTriangulatedShape::ClearOnOwnDeflectionChange (myshape, myDrawer, Standard_True);
+    case AIS_Shaded:
+    {
+      if (myDrawer->IsAutoTriangulation())
+      {
+        // compute mesh for entire shape beforehand to ensure consistency and optimizations (parallelization)
+        StdPrs_ToolTriangulatedShape::ClearOnOwnDeflectionChange (myshape, myDrawer, Standard_True);
 
-    // After this call if type of deflection is relative
-    // computed deflection coefficient is stored as absolute.
-    Prs3d::GetDeflection (myshape, myDrawer);
+        // After this call if type of deflection is relative
+        // computed deflection coefficient is stored as absolute.
+        Standard_Boolean wasRecomputed = StdPrs_ToolTriangulatedShape::Tessellate (myshape, myDrawer);
+
+        // Set to update wireframe presentation on triangulation.
+        if (myDrawer->IsoOnTriangulation() && wasRecomputed)
+        {
+          SetToUpdate (AIS_WireFrame);
+        }
+      }
+      break;
+    }
+    case 2:
+    {
+      AIS_Shape::Compute (thePrsMgr, thePrs, theMode);
+      return;
+    }
+    default:
+    {
+      return;
+    }
   }
 
   // Extract myShapeColors map (KeyshapeColored -> Color) to subshapes map (Subshape -> Color).

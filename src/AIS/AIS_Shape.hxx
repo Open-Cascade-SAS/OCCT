@@ -19,13 +19,9 @@
 
 #include <AIS_InteractiveObject.hxx>
 #include <Bnd_Box.hxx>
-#include <TopAbs_ShapeEnum.hxx>
 #include <TopoDS_Shape.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_TypeOfHLR.hxx>
-
-class TopoDS_Shape;
-class Bnd_Box;
 
 //! A framework to manage presentation and selection of shapes.
 //! AIS_Shape is the interactive object which is used the
@@ -68,25 +64,31 @@ public:
   //! Initializes construction of the shape shap from wires,
   //! edges and vertices.
   Standard_EXPORT AIS_Shape(const TopoDS_Shape& shap);
-  
+
   //! Returns index 0. This value refers to SHAPE from TopAbs_ShapeEnum
-  Standard_EXPORT virtual Standard_Integer Signature() const Standard_OVERRIDE;
-  
+  virtual Standard_Integer Signature() const Standard_OVERRIDE { return 0; }
+
   //! Returns Object as the type of Interactive Object.
-  Standard_EXPORT virtual AIS_KindOfInteractive Type() const Standard_OVERRIDE;
-  
+  virtual AIS_KindOfInteractive Type() const Standard_OVERRIDE { return AIS_KOI_Shape; }
+
   //! Returns true if the Interactive Object accepts shape decomposition.
-  Standard_EXPORT virtual Standard_Boolean AcceptShapeDecomposition() const Standard_OVERRIDE;
-  
+  virtual Standard_Boolean AcceptShapeDecomposition() const Standard_OVERRIDE { return Standard_True; }
+
+  //! Return true if specified display mode is supported.
+  virtual Standard_Boolean AcceptDisplayMode (const Standard_Integer theMode) const Standard_OVERRIDE { return theMode >= 0 && theMode <= 2; }
+
+  //! Returns this shape object.
+  const TopoDS_Shape& Shape() const { return myshape; }
+
   //! Constructs an instance of the shape object theShape.
-  void Set (const TopoDS_Shape& theShape)
+  void SetShape (const TopoDS_Shape& theShape)
   {
     myshape  = theShape;
     myCompBB = Standard_True;
   }
 
-  //! Returns this shape object.
-  const TopoDS_Shape& Shape() const { return myshape; }
+  //! Alias for ::SetShape().
+  void Set (const TopoDS_Shape& theShape) { SetShape (theShape); }
 
   //! Sets a local value for deviation coefficient for this specific shape.
   Standard_EXPORT Standard_Boolean SetOwnDeviationCoefficient();

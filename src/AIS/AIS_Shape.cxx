@@ -19,7 +19,6 @@
 #include <AIS_GraphicTool.hxx>
 #include <AIS_InteractiveContext.hxx>
 #include <Aspect_TypeOfLine.hxx>
-#include <Bnd_Box.hxx>
 #include <BRep_Builder.hxx>
 #include <BRepBndLib.hxx>
 #include <BRepTools.hxx>
@@ -68,7 +67,6 @@
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS_Iterator.hxx>
-#include <TopoDS_Shape.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(AIS_Shape,AIS_InteractiveObject)
 
@@ -96,28 +94,6 @@ AIS_Shape::AIS_Shape(const TopoDS_Shape& theShape)
 {
   //
 }
-
-//=======================================================================
-//function : Type
-//purpose  : 
-//=======================================================================
-AIS_KindOfInteractive AIS_Shape::Type() const 
-{return AIS_KOI_Shape;}
-
-
-//=======================================================================
-//function : Signature
-//purpose  : 
-//=======================================================================
-Standard_Integer AIS_Shape::Signature() const 
-{return 0;}
-
-//=======================================================================
-//function : AcceptShapeDecomposition
-//purpose  : 
-//=======================================================================
-Standard_Boolean AIS_Shape::AcceptShapeDecomposition() const 
-{return Standard_True;}
 
 //=======================================================================
 //function : Compute
