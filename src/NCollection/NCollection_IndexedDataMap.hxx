@@ -241,7 +241,10 @@ private:
     }
   }
 
-  //! Add
+  //! Returns the Index of already bound Key or appends new Key with specified Item value.
+  //! @param theKey1 Key to search (and to bind, if it was not bound already)
+  //! @param theItem Item value to set for newly bound Key; ignored if Key was already bound
+  //! @return index of Key
   Standard_Integer Add (const TheKeyType& theKey1, const TheItemType& theItem)
   {
     if (Resizable())

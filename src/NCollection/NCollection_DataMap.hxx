@@ -214,9 +214,10 @@ public:
     }
   }
 
-  //! Bind binds Item to Key in map. Returns Standard_True if Key was not
-  //! exist in the map. If the Key was already bound, the Item will be rebinded
-  //! and Standard_False will be returned.
+  //! Bind binds Item to Key in map.
+  //! @param theKey  key to add/update
+  //! @param theItem new item; overrides value previously bound to the key, if any
+  //! @return Standard_True if Key was not bound already
   Standard_Boolean Bind (const TheKeyType& theKey, const TheItemType& theItem)
   {
     if (Resizable()) 
