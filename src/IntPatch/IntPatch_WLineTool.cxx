@@ -1282,8 +1282,7 @@ Handle(IntPatch_WLine) IntPatch_WLineTool::
                      const Handle(Adaptor3d_HSurface)   &theS1,
                      const Handle(Adaptor3d_HSurface)   &theS2,
                      const Handle(Adaptor3d_TopolTool)  &theDom1,
-                     const Handle(Adaptor3d_TopolTool)  &theDom2,
-                     const Standard_Boolean              theRestrictLine)
+                     const Handle(Adaptor3d_TopolTool)  &theDom2)
 {
   Standard_Integer i, k, v, nb, nbvtx;
   Handle(IntPatch_WLine) aResult;
@@ -1386,11 +1385,8 @@ Handle(IntPatch_WLine) IntPatch_WLineTool::
     return aLocalWLine;
   }
 
-  if (theRestrictLine)
-  {
-    // II: Delete out of borders points.
-    aLocalWLine = DeleteOuterPoints(aLocalWLine, theS1, theS2, theDom1, theDom2);
-  }
+  // II: Delete out of borders points.
+  aLocalWLine = DeleteOuterPoints(aLocalWLine, theS1, theS2, theDom1, theDom2);
 
   // III: Delete points by tube criteria.
   Handle(IntPatch_WLine) aLocalWLineTube = 

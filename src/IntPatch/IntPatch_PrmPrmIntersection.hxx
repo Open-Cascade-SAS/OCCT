@@ -68,7 +68,7 @@ public:
   //! Performs the intersection between <Caro1>  and
   //! <Caro2>. The method computes the polyhedron on
   //! each surface.
-  Standard_EXPORT void Perform (const Handle(Adaptor3d_HSurface)& Caro1, const Handle(Adaptor3d_TopolTool)& Domain1, const Handle(Adaptor3d_HSurface)& Caro2, const Handle(Adaptor3d_TopolTool)& Domain2, const Standard_Real TolTangency, const Standard_Real Epsilon, const Standard_Real Deflection, const Standard_Real Increment, IntSurf_ListOfPntOn2S& ListOfPnts, const Standard_Boolean RestrictLine);
+  Standard_EXPORT void Perform (const Handle(Adaptor3d_HSurface)& Caro1, const Handle(Adaptor3d_TopolTool)& Domain1, const Handle(Adaptor3d_HSurface)& Caro2, const Handle(Adaptor3d_TopolTool)& Domain2, const Standard_Real TolTangency, const Standard_Real Epsilon, const Standard_Real Deflection, const Standard_Real Increment, IntSurf_ListOfPntOn2S& ListOfPnts);
   
   //! Performs the intersection between <Caro1>  and
   //! <Caro2>. The method computes the polyhedron on

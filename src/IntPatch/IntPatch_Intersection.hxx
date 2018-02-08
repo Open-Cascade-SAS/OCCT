@@ -70,16 +70,16 @@ public:
   //!
   //! UVMaxStep is  a  parameter   used in  the  walking
   //! algorithms  to    compute the  distance between to
-  //! points in their respective parametrtic spaces.
+  //! points in their respective parametric spaces.
   Standard_EXPORT void SetTolerances (const Standard_Real TolArc, const Standard_Real TolTang, const Standard_Real UVMaxStep, const Standard_Real Fleche);
   
-  //! Flag theIsReqToKeepRLine has been enterred only for
+  //! Flag theIsReqToKeepRLine has been entered only for
   //! compatibility with TopOpeBRep package. It shall be deleted
   //! after deleting TopOpeBRep.
   //! When intersection result returns IntPatch_RLine and another
   //! IntPatch_Line (not restriction) we (in case of theIsReqToKeepRLine==TRUE)
   //! will always keep both lines even if they are coincided.
-  //! Flag theIsReqToPostWLProc has been enterred only for
+  //! Flag theIsReqToPostWLProc has been entered only for
   //! compatibility with TopOpeBRep package. It shall be deleted
   //! after deleting TopOpeBRep.
   //! If theIsReqToPostWLProc == FALSE, then we will work with Walking-line
@@ -88,18 +88,18 @@ public:
   
   //! If isGeomInt == Standard_False, then method
   //! Param-Param intersection will be used.
-  //! Flag theIsReqToKeepRLine has been enterred only for
+  //! Flag theIsReqToKeepRLine has been entered only for
   //! compatibility with TopOpeBRep package. It shall be deleted
   //! after deleting TopOpeBRep.
   //! When intersection result returns IntPatch_RLine and another
   //! IntPatch_Line (not restriction) we (in case of theIsReqToKeepRLine==TRUE)
   //! will always keep both lines even if they are coincided.
-  //! Flag theIsReqToPostWLProc has been enterred only for
+  //! Flag theIsReqToPostWLProc has been entered only for
   //! compatibility with TopOpeBRep package. It shall be deleted
   //! after deleting TopOpeBRep.
   //! If theIsReqToPostWLProc == FALSE, then we will work with Walking-line
-  //! obtained after intersection algorithm directly (wothout any post-processing). 
-  Standard_EXPORT void Perform (const Handle(Adaptor3d_HSurface)& S1, const Handle(Adaptor3d_TopolTool)& D1, const Handle(Adaptor3d_HSurface)& S2, const Handle(Adaptor3d_TopolTool)& D2, const Standard_Real TolArc, const Standard_Real TolTang, IntSurf_ListOfPntOn2S& LOfPnts, const Standard_Boolean RestrictLine = Standard_True, const Standard_Boolean isGeomInt = Standard_True, const Standard_Boolean theIsReqToKeepRLine = Standard_False, const Standard_Boolean theIsReqToPostWLProc = Standard_True);
+  //! obtained after intersection algorithm directly (without any post-processing). 
+  Standard_EXPORT void Perform (const Handle(Adaptor3d_HSurface)& S1, const Handle(Adaptor3d_TopolTool)& D1, const Handle(Adaptor3d_HSurface)& S2, const Handle(Adaptor3d_TopolTool)& D2, const Standard_Real TolArc, const Standard_Real TolTang, IntSurf_ListOfPntOn2S& LOfPnts, const Standard_Boolean isGeomInt = Standard_True, const Standard_Boolean theIsReqToKeepRLine = Standard_False, const Standard_Boolean theIsReqToPostWLProc = Standard_True);
   
   //! Perform with start point
   Standard_EXPORT void Perform (const Handle(Adaptor3d_HSurface)& S1, const Handle(Adaptor3d_TopolTool)& D1, const Handle(Adaptor3d_HSurface)& S2, const Handle(Adaptor3d_TopolTool)& D2, const Standard_Real U1, const Standard_Real V1, const Standard_Real U2, const Standard_Real V2, const Standard_Real TolArc, const Standard_Real TolTang);
@@ -107,14 +107,14 @@ public:
   //! Uses for finding self-intersected surfaces.
   Standard_EXPORT void Perform (const Handle(Adaptor3d_HSurface)& S1, const Handle(Adaptor3d_TopolTool)& D1, const Standard_Real TolArc, const Standard_Real TolTang);
   
-  //! Returns True if the calculus was succesfull.
+  //! Returns True if the calculus was successful.
     Standard_Boolean IsDone() const;
   
   //! Returns true if the is no intersection.
     Standard_Boolean IsEmpty() const;
   
   //! Returns True if the two patches are considered as
-  //! entierly tangent, i-e every restriction arc of one
+  //! entirely tangent, i-e every restriction arc of one
   //! patch is inside the geometric base of the other patch.
     Standard_Boolean TangentFaces() const;
   
@@ -157,15 +157,15 @@ protected:
 private:
 
   
-  Standard_EXPORT void ParamParamPerfom (const Handle(Adaptor3d_HSurface)& S1, const Handle(Adaptor3d_TopolTool)& D1, const Handle(Adaptor3d_HSurface)& S2, const Handle(Adaptor3d_TopolTool)& D2, const Standard_Real TolArc, const Standard_Real TolTang, IntSurf_ListOfPntOn2S& LOfPnts, const Standard_Boolean RestrictLine, const GeomAbs_SurfaceType typs1, const GeomAbs_SurfaceType typs2);
+  Standard_EXPORT void ParamParamPerfom (const Handle(Adaptor3d_HSurface)& S1, const Handle(Adaptor3d_TopolTool)& D1, const Handle(Adaptor3d_HSurface)& S2, const Handle(Adaptor3d_TopolTool)& D2, const Standard_Real TolArc, const Standard_Real TolTang, IntSurf_ListOfPntOn2S& LOfPnts, const GeomAbs_SurfaceType typs1, const GeomAbs_SurfaceType typs2);
   
-  //! Flag theIsReqToKeepRLine has been enterred only for
+  //! Flag theIsReqToKeepRLine has been entered only for
   //! compatibility with TopOpeBRep package. It shall be deleted
   //! after deleting TopOpeBRep.
   //! When intersection result returns IntPatch_RLine and another
   //! IntPatch_Line (not restriction) we (in case of theIsReqToKeepRLine==TRUE)
   //! will always keep both lines even if they are coincided.
-  Standard_EXPORT void GeomGeomPerfom (const Handle(Adaptor3d_HSurface)& S1, const Handle(Adaptor3d_TopolTool)& D1, const Handle(Adaptor3d_HSurface)& S2, const Handle(Adaptor3d_TopolTool)& D2, const Standard_Real TolArc, const Standard_Real TolTang, IntSurf_ListOfPntOn2S& LOfPnts, const Standard_Boolean RestrictLine, const GeomAbs_SurfaceType typs1, const GeomAbs_SurfaceType typs2, const Standard_Boolean theIsReqToKeepRLine = Standard_False);
+  Standard_EXPORT void GeomGeomPerfom (const Handle(Adaptor3d_HSurface)& S1, const Handle(Adaptor3d_TopolTool)& D1, const Handle(Adaptor3d_HSurface)& S2, const Handle(Adaptor3d_TopolTool)& D2, const Standard_Real TolArc, const Standard_Real TolTang, IntSurf_ListOfPntOn2S& LOfPnts, const GeomAbs_SurfaceType typs1, const GeomAbs_SurfaceType typs2, const Standard_Boolean theIsReqToKeepRLine);
   
   Standard_EXPORT void GeomParamPerfom (const Handle(Adaptor3d_HSurface)& S1, const Handle(Adaptor3d_TopolTool)& D1, const Handle(Adaptor3d_HSurface)& S2, const Handle(Adaptor3d_TopolTool)& D2, const Standard_Boolean isNotAnalitical, const GeomAbs_SurfaceType typs1, const GeomAbs_SurfaceType typs2);
 

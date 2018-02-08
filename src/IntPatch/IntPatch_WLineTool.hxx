@@ -34,7 +34,6 @@ public:
   //!
   //! II
   //! Removes point out of borders in case of non periodic surfaces.
-  //! This step is done only if theRestrictLine is true.
   //!
   //! III
   //! Removes exceed points using tube criteria:
@@ -48,8 +47,7 @@ public:
                                               const Handle(Adaptor3d_HSurface) &theS1,
                                               const Handle(Adaptor3d_HSurface) &theS2,
                                               const Handle(Adaptor3d_TopolTool)  &theDom1,
-                                              const Handle(Adaptor3d_TopolTool)  &theDom2,
-                                              const Standard_Boolean      theRestrictLine);
+                                              const Handle(Adaptor3d_TopolTool)  &theDom2);
 
 //! Joins all WLines from theSlin to one if it is possible and records 
 //! the result into theSlin again. Lines will be kept to be splitted if:

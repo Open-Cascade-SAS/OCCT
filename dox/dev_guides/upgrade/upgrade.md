@@ -1532,3 +1532,8 @@ Since new version, the method BRepAdaptor_CompCurve::IsPeriodic() will always re
 
 @subsection upgrade_730_removed Removed features
 * The methods *SetDeflection*, *SetEpsilonT*, *SetDiscretize* of the class *IntTools_EdgeFace* have been removed as excessive.
+
+@subsection upgrade_730_IntersectionAPI Changes in classes responsible for intersection algorithm
+
+Interfaces of the following methods have been changed: IntPatch_WLineTool::ComputePurgedWLine(...), IntPatch_PrmPrmIntersection::Perform(...), IntPatch_Intersection::Perform(...), IntPatch_Intersection::ParamParamPerfom(...), IntPatch_Intersection::GeomGeomPerfom(...). Please see documentation about corresponding methods.
+

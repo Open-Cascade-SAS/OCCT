@@ -6,6 +6,9 @@ puts ""
 # Regression: boolean operation " general fuse" creates solid containing 5 not connected shells lying on the one level
 #################################################
 
+puts "TODO OCC29494 ALL: Error :  is WRONG because number of WIRE entities"
+puts "TODO OCC29494 ALL: Error :  is WRONG because number of FACE entities"
+
 restore [locate_data_file bug29488_shapes.brep] s
 
 bclearobjects

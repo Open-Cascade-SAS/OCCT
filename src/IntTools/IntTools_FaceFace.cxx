@@ -358,8 +358,6 @@ static Standard_Boolean isTreatAnalityc(const BRepAdaptor_Surface& theBAS1,
 void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
                                 const TopoDS_Face& aF2)
 {
-  Standard_Boolean RestrictLine = Standard_False;
-  
   if (myContext.IsNull()) {
     myContext=new IntTools_Context;
   }
@@ -509,14 +507,6 @@ void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
     myIntersector.SetTolerances(TolArc, TolTang, UVMaxStep, Deflection); 
   }
   
-  if((myHS1->IsUClosed() && !myHS1->IsUPeriodic()) || 
-     (myHS1->IsVClosed() && !myHS1->IsVPeriodic()) ||
-     (myHS2->IsUClosed() && !myHS2->IsUPeriodic()) || 
-     (myHS2->IsVClosed() && !myHS2->IsVPeriodic()))
-  {
-    RestrictLine = Standard_True;
-  }
-  //
   if((aType1 != GeomAbs_BSplineSurface) &&
       (aType1 != GeomAbs_BezierSurface)  &&
      (aType1 != GeomAbs_OtherSurface)  &&
@@ -524,33 +514,10 @@ void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
       (aType2 != GeomAbs_BezierSurface)  &&
      (aType2 != GeomAbs_OtherSurface))
   {
-    RestrictLine = Standard_True;
-
     if ((aType1 == GeomAbs_Torus) ||
         (aType2 == GeomAbs_Torus))
     {
       myListOfPnts.Clear();
-    }
-  }
-
-  //
-  if(!RestrictLine)
-  {
-    TopExp_Explorer aExp;
-    for(Standard_Integer i = 0; (!RestrictLine) && (i < 2); i++)
-    {
-      const TopoDS_Face& aF=(!i) ? myFace1 : myFace2;
-      aExp.Init(aF, TopAbs_EDGE);
-      for(; aExp.More(); aExp.Next())
-      {
-        const TopoDS_Edge& aE=TopoDS::Edge(aExp.Current());
-
-        if(BRep_Tool::Degenerated(aE))
-        {
-          RestrictLine = Standard_True;
-          break;
-        }
-      }
     }
   }
 
@@ -581,7 +548,7 @@ void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
     myIntersector.Perform(myHS1, dom1, TolArc, TolTang);
   else
     myIntersector.Perform(myHS1, dom1, myHS2, dom2, TolArc, TolTang, 
-                          myListOfPnts, RestrictLine, isGeomInt);
+                          myListOfPnts, isGeomInt);
 
   myIsDone = myIntersector.IsDone();
 
@@ -590,10 +557,6 @@ void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
     myTangentFaces=myIntersector.TangentFaces();
     if (myTangentFaces) {
       return;
-    }
-    //
-    if(RestrictLine) {
-      myListOfPnts.Clear(); // to use LineConstructor
     }
     //
     const Standard_Integer aNbLinIntersector = myIntersector.NbLines();
