@@ -234,40 +234,6 @@ static void GetLinePoint2d (const Handle(IntPatch_Line)& L,
   V = (1.-par)*vs1+par*vs2;
 }
 
-static void GetWLinePoint (const Handle(IntPatch_WLine)& wlin,
-			  const Standard_Real param,
-			  Standard_Real& U1, Standard_Real& V1,
-			  Standard_Real& U2, Standard_Real& V2,
-			  gp_Pnt& P)
-{
-  Standard_Integer Nbptlin = wlin->NbPnts();
-  Standard_Real par = IntegerPart(param);
-  Standard_Integer Irang = Standard_Integer(par);
-  if (Irang == Nbptlin) {
-    Irang--;
-    par = 1.0;
-  }
-  else
-    par = Abs(param-par);
-
-  const IntSurf_PntOn2S& p2s1 = wlin->Point(Irang);
-  const IntSurf_PntOn2S& p2s2 = wlin->Point(Irang+1);
-  const gp_Pnt& p1 = p2s1.Value();
-  const gp_Pnt& p2 = p2s2.Value();
-  P.ChangeCoord().SetLinearForm(1.-par, p1.XYZ(), par, p2.XYZ());
-
-  Standard_Real us1,vs1,us2,vs2;
-  p2s1.ParametersOnS1(us1,vs1);
-  p2s2.ParametersOnS1(us2,vs2);
-  U1 = (1.-par)*us1+par*us2;
-  V1 = (1.-par)*vs1+par*vs2;
-
-  p2s1.ParametersOnS2(us1,vs1);
-  p2s2.ParametersOnS2(us2,vs2);
-  U2 = (1.-par)*us1+par*us2;
-  V2 = (1.-par)*vs1+par*vs2;
-}
-
 static Standard_Boolean FindParameter(const Handle(IntPatch_Line)& L,
 				      const Handle(Adaptor3d_HSurface)& OtherSurf,
 				      const Standard_Real Tol,
@@ -394,50 +360,6 @@ inline Standard_Boolean ArePnt2dEqual(const gp_Pnt2d& p1, const gp_Pnt2d& p2,
   return Abs(p1.X()-p2.X()) < tolU && Abs(p1.Y()-p2.Y()) < tolV;
 }
 
-static gp_Pnt2d GetPointOnPolygo(const IntPatch_Polygo& Pol,
-				 const Standard_Real param)
-{
-  Standard_Real par = IntegerPart(param);
-  Standard_Integer irang = Standard_Integer(par) + 1;
-  if (irang == Pol.NbPoints()) {
-    irang--;
-    par = 1.;
-  }
-  else {
-    par = Abs(param-par);
-  }
-  gp_Pnt2d p1 = Pol.Point(irang);
-  gp_Pnt2d p2 = Pol.Point(irang+1);
-  gp_Pnt2d p;
-  p.ChangeCoord().SetLinearForm(1.-par,p1.XY(),par,p2.XY());
-  return p;
-}
-
-static Standard_Boolean IsSegment2dSmall(const IntPatch_Polygo& Pol,
-					 const Standard_Real parmin,
-					 const Standard_Real parmax,
-					 const Standard_Real URes,
-					 const Standard_Real VRes)
-{
-  Standard_Integer irang1 = Standard_Integer(IntegerPart(parmin)) + 2;
-  Standard_Integer irang2 = Standard_Integer(IntegerPart(parmax)) + 1;
-  gp_Pnt2d p1,p2;
-  Standard_Real du=0.,dv=0.;
-  p1 = GetPointOnPolygo(Pol,parmin);
-  for (Standard_Integer i=irang1; i <= irang2 && du <= URes && dv <= VRes; i++) {
-    p2 = Pol.Point(i);
-    du += Abs(p2.X()-p1.X());
-    dv += Abs(p2.Y()-p1.Y());
-    p1 = p2;
-  }
-  if (du <= URes && dv <= VRes) {
-    p2 = GetPointOnPolygo(Pol,parmax);
-    du += Abs(p2.X()-p1.X());
-    dv += Abs(p2.Y()-p1.Y());
-  }
-  return du <= URes && dv <= VRes;
-}
-
 //=======================================================================
 //function : PutVertexOnLine
 //purpose  : 
@@ -467,7 +389,6 @@ void IntPatch_RstInt::PutVertexOnLine (const Handle(IntPatch_Line)& L,
   Handle(IntPatch_RLine) rlin (Handle(IntPatch_RLine)::DownCast (L)); //-- aucune verification n est 
   Handle(IntPatch_WLine) wlin (Handle(IntPatch_WLine)::DownCast (L)); //-- faite au cast. 
   Standard_Integer Nbvtx =0; 
-  Standard_Integer Nbptlin =0;
   Standard_Real tolPLin = Surf->UResolution(Precision::Confusion());
   tolPLin = Max (tolPLin, Surf->VResolution(Precision::Confusion()));
   tolPLin = Min (tolPLin, Precision::Confusion());
@@ -491,12 +412,10 @@ void IntPatch_RstInt::PutVertexOnLine (const Handle(IntPatch_Line)& L,
   if (typL == IntPatch_Walking) {
     Nbvtx = wlin->NbVertex();
     PLin.SetWLine(OnFirst,wlin);
-    Nbptlin = wlin->NbPnts();
   }
   else if ( typL == IntPatch_Restriction) {
     Nbvtx = rlin->NbVertex();
     PLin.SetRLine(OnFirst,rlin);
-    Nbptlin = rlin->NbPnts();
   }
   else {
     throw Standard_DomainError();
@@ -553,8 +472,6 @@ void IntPatch_RstInt::PutVertexOnLine (const Handle(IntPatch_Line)& L,
 
     // MSV Oct 15, 2001: use tolerance of this edge if possible
     Standard_Real edgeTol = Tol3d(arc,Domain,Tol);
-    Standard_Real URes = Surf->UResolution(edgeTol);
-    Standard_Real VRes = Surf->VResolution(edgeTol);
 
     IntPatch_HInterTool::Bounds(arc,PFirst,PLast);
     if(Precision::IsNegativeInfinite(PFirst))
@@ -567,26 +484,16 @@ void IntPatch_RstInt::PutVertexOnLine (const Handle(IntPatch_Line)& L,
     //  return;
     //}
 
-    Standard_Boolean isVFirst = Standard_False, isVLast = Standard_False;
     gp_Pnt2d p2dFirst,p2dLast;
-    Standard_Real tolUFirst=0.,tolVFirst=0.,tolULast=0.,tolVLast=0.;
     Domain->Initialize(arc);
     for (Domain->InitVertexIterator(); Domain->MoreVertex(); Domain->NextVertex()) {
       Handle(Adaptor3d_HVertex) vtx = Domain->Vertex();
       Standard_Real prm = IntPatch_HInterTool::Parameter(vtx,arc);
       if (Abs(prm - PFirst) < Precision::PConfusion()) {
 	arc->D0(PFirst,p2dFirst);
-	Standard_Real tol3d = Max (Tol3d(vtx,Domain), edgeTol);
-	tolUFirst = Surf->UResolution(tol3d);
-	tolVFirst = Surf->VResolution(tol3d);
-	isVFirst = Standard_True;
       }
       else if (Abs(prm - PLast) < Precision::PConfusion()) {
 	arc->D0(PLast,p2dLast);
-	Standard_Real tol3d = Max (edgeTol, Tol3d(vtx,Domain));
-	tolULast = Surf->UResolution(tol3d);
-	tolVLast = Surf->VResolution(tol3d);
-	isVLast = Standard_True;
       }
     }
 
@@ -697,472 +604,377 @@ void IntPatch_RstInt::PutVertexOnLine (const Handle(IntPatch_Line)& L,
 	Commun.Perform(PLin,Brise);
 	locpt.Clear();
 	locpt2.Clear();
-	Standard_Integer Commun_NbSectionPoints = Commun.NbSectionPoints();
-	Standard_Integer Commun_NbTangentZones  = Commun.NbTangentZones();
-	Standard_Integer Commun_Section_Tangent = Commun_NbSectionPoints
-	  + Commun_NbTangentZones;
-	for (i=1;i<=Commun_Section_Tangent;i++) {
-	  Standard_Real W1[2],W2[2];
-	  Standard_Boolean refine[2],useWL[2];
-	  Standard_Integer nbpt = 1;
-	  if(i<=Commun_NbSectionPoints) { 
-	    // intersection point
-	    W1[0] = Commun.PntValue(i).ParamOnFirst();
-	    W2[0] = Commun.PntValue(i).ParamOnSecond();
-	    refine[0] = Standard_True;
-	  }
-	  else { 
-	    // tangent zone
-	    Standard_Real UMinCh,UMaxCh;  //-- ligne de cheminement 0..(Nbptlin-1)
-	    Standard_Real UMinAr,UMaxAr;  //-- polyline of arc 0..(NbEchant-1)
-	    Commun.ZoneValue(i-Commun_NbSectionPoints).ParamOnFirst(UMinCh,UMaxCh);
-	    Commun.ZoneValue(i-Commun_NbSectionPoints).ParamOnSecond(UMinAr,UMaxAr);
-	    gp_Pnt2d p1Ar = GetPointOnPolygo(Brise,UMinAr);
-	    gp_Pnt2d p2Ar = GetPointOnPolygo(Brise,UMaxAr);
-	    Standard_Real tolU = URes*2.;
-	    Standard_Real tolV = VRes*2.;
-	    if (isVFirst && ArePnt2dEqual(p1Ar,p2dFirst,tolUFirst,tolVFirst)) {
-	      tolU = Max(tolUFirst,tolU); tolV = Max(tolVFirst,tolV);
-	    }
-	    if (isVLast && ArePnt2dEqual(p2Ar,p2dLast,tolULast,tolVLast)) {
-	      tolU = Max(tolULast,tolU); tolV = Max(tolVLast,tolV);
-	    }
-	    Standard_Real nptCh = UMaxCh-UMinCh;
-	    Standard_Boolean isNptLow = (nptCh < 10. && nptCh < Nbptlin/100.) ||
-	      (!Domain->Has3d() && Standard_Integer(nptCh)+1 < Nbptlin);
-	    if (!isNptLow && !IsSegment2dSmall(Brise,UMinAr,UMaxAr,tolU,tolV)) {
-	      // treat both ends
-	      Standard_Real UMinChP,UMinArP,UMaxArP;
-	      UMinChP = IntegerPart(UMinCh);
-              UMinArP = IntegerPart(UMinAr);
-              UMaxArP = IntegerPart(UMaxAr);
-	      Standard_Integer irangAr1,irangAr2;
-	      irangAr1 = Standard_Integer(UMinArP)+1;
-              irangAr2 = Standard_Integer(UMaxArP)+1;
-	      UMinChP = UMinCh - UMinChP;
-              UMinArP = UMinAr - UMinArP;
-	      //UMaxChP = UMaxCh - UMaxChP; UMaxArP = UMaxAr - UMaxArP;
-	      const Standard_Real eps = 1e-10;
-//	      Standard_Boolean isChExtr1 = irangCh1==1 && UMinChP<eps;
-//	      Standard_Boolean isChExtr2 = irangCh2==Nbptlin;
-	      Standard_Boolean isArExtr1 = irangAr1==1 && UMinArP<eps;
-	      Standard_Boolean isArExtr2 = irangAr2==NbEchant;
-	      // detect orientation
-	      gp_Pnt2d p1Ch = GetPointOnPolygo(PLin,UMinCh);
-	      Standard_Real d11 = p1Ch.SquareDistance(p1Ar);
-	      Standard_Real d12 = p1Ch.SquareDistance(p2Ar);
-	      Standard_Boolean sameOri = d11 < d12;
-	      if (!sameOri) {
-		Standard_Boolean itmp=isArExtr1; isArExtr1=isArExtr2; isArExtr2=itmp;
-		Standard_Real dtmp=UMinAr; UMinAr=UMaxAr; UMaxAr=dtmp;
-	      }
-	      W1[0] = UMinCh; W1[1] = UMaxCh;
-	      W2[0] = UMinAr; W2[1] = UMaxAr;
-	      //refine[0] = ! (isChExtr1 || isArExtr1);
-	      //refine[1] = ! (isChExtr2 || isArExtr2);
-	      refine[0] = refine[1] = Standard_False;
-	      useWL[0] = !isArExtr1;
-	      useWL[1] = !isArExtr2;
-	      nbpt = 2;
-	    }
-	    else {
-	      // treat the middle point as an intersection point
-	      W1[0] = 0.5*(UMinCh+UMaxCh);
-	      W2[0] = 0.5*(UMinAr+UMaxAr);
-	      refine[0] = Standard_True;
-	    }
-	  }
 
-	  Standard_Integer nbTreated = 0;
-	  for (Standard_Integer ip=0; ip < nbpt; ip++) {
-	    GetLinePoint2d (L, W1[ip]+1, !OnFirst, U,V);
+        // We do not need in putting vertex into tangent zone(s).
+        // Therefore, only section points are interested by us.
+        // Boundary of WLine (its first/last points) will be 
+        // marked by some vertex later. See bug #29494.
+        const Standard_Integer aNbSectionPts = Commun.NbSectionPoints();
+        for (i = 1; i <= aNbSectionPts; i++)
+        {
+          const Standard_Real aW1 = Commun.PntValue(i).ParamOnFirst(),
+                              aW2 = Commun.PntValue(i).ParamOnSecond();
 
-	    if (!refine[ip] && useWL[ip]) {
-	      Standard_Real aU1,aV1;
-	      GetLinePoint2d (L, W1[ip]+1, OnFirst, aU1,aV1);
-	      p2d.SetCoord(aU1,aV1);
-	      Standard_Real paramProj;
-	      if (!IntPatch_HInterTool::Project(arc,p2d,paramProj,p2d)) continue;
-	      W = paramProj;
-	    }
-	    else {
-	      Standard_Real par = IntegerPart(W2[ip]);
-	      Standard_Integer Irang = Standard_Integer(par) + 1;
-	      if (Irang == Brise.NbPoints()) {
-		Irang--;
-		par = 1.;
-	      }
-	      else {
-		par =Abs(W2[ip]-par);
-	      }
-	      W = (1.-par)*Brise.Parameter(Irang) + par*Brise.Parameter(Irang+1);
-	    }
+          Standard_Integer nbTreated = 0;
+          GetLinePoint2d (L, aW1+1, !OnFirst, U,V);
 
-	    Standard_Boolean refined = Standard_False;
-            if (refine[ip])
+          Standard_Real par = IntegerPart(aW2);
+          Standard_Integer Irang = Standard_Integer(par) + 1;
+          if (Irang == Brise.NbPoints())
+          {
+            Irang--;
+            par = 1.;
+          }
+          else
+          {
+            par = Abs(aW2 - par);
+          }
+
+          W = (1. - par)*Brise.Parameter(Irang) + par*Brise.Parameter(Irang + 1);
+
+          //------------------------------------------------------------------------
+          //-- On a trouve un point 2d approche Ua,Va  intersection de la ligne
+          //-- de cheminement et de la restriction. 
+          //--
+          //-- On injecte ce point ds les intersections Courbe-Surface
+          //-- 
+          IntPatch_CSFunction thefunc(OtherSurf,arc,Surf);
+          // MSV: extend UV bounds to not miss solution near the boundary
+          const Standard_Real margCoef = 0.004;
+          Standard_Boolean refined = Standard_False;
+          IntPatch_CurvIntSurf IntCS(U,V,W,thefunc,edgeTol,margCoef);
+          if (IntCS.IsDone() && !IntCS.IsEmpty())
+          {
+            ptsommet = IntCS.Point();
+            IntCS.ParameterOnSurface(U2,V2);
+            gp_Pnt anOldPnt, aNewPnt;
+            OtherSurf->D0(U,V, anOldPnt);
+            OtherSurf->D0(U2,V2, aNewPnt);
+            if (anOldPnt.SquareDistance(aNewPnt) < Precision::SquareConfusion())
             {
-              //------------------------------------------------------------------------
-              //-- On a trouve un point 2d approche Ua,Va  intersection de la ligne
-              //-- de cheminement et de la restriction. 
-              //--
-              //-- On injecte ce point ds les intersections Courbe-Surface
-              //-- 
-              IntPatch_CSFunction thefunc(OtherSurf,arc,Surf);
-              // MSV: extend UV bounds to not miss solution near the boundary
-              Standard_Real margCoef = 0.004;
-              IntPatch_CurvIntSurf IntCS(U,V,W,thefunc,edgeTol,margCoef);
-              if (IntCS.IsDone())
-              {
-                if (!IntCS.IsEmpty())
-                {
-                  ptsommet = IntCS.Point();
-                  IntCS.ParameterOnSurface(U2,V2);
-                  gp_Pnt anOldPnt, aNewPnt;
-                  OtherSurf->D0(U,V, anOldPnt);
-                  OtherSurf->D0(U2,V2, aNewPnt);
-                  if (anOldPnt.SquareDistance(aNewPnt) < Precision::Confusion()
-                    * Precision::Confusion())
-                  {
-                    U2 = U;
-                    V2 = V;
-                  }
-                  paramarc = IntCS.ParameterOnCurve();
-                  refined = Standard_True;
-                }
-              }
+              U2 = U;
+              V2 = V;
             }
-	    else {
-	      U2 = U; V2 = V;
-	      paramarc = W;
-	      arc->D0(paramarc,p2d);
-	      Surf->D0(p2d.X(),p2d.Y(),ptsommet);
+            paramarc = IntCS.ParameterOnCurve();
+            refined = Standard_True;
+          }
+
+          if (refined) {
+	    duplicate = Standard_False;
+	    for (j=1; j<=locpt.Length();j++) {
+	      if (ptsommet.Distance(locpt(j)) <= edgeTol) {
+		if (possiblyClosed) {
+		  locpt2(j).Coord(U,V);
+		  if ((OSurfaceIsUClosed && Abs(U-U2) > tolOUClosed) ||
+		      (OSurfaceIsVClosed && Abs(V-V2) > tolOVClosed))
+		    continue;
+		}
+		duplicate = Standard_True;
+		break;
+	      }
 	    }
 
-	    if (!refine[ip] || refined) {
-	      duplicate = Standard_False;
-	      for (j=1; j<=locpt.Length();j++) {
-		if (ptsommet.Distance(locpt(j)) <= edgeTol) {
-		  if (possiblyClosed) {
-		    locpt2(j).Coord(U,V);
-		    if ((OSurfaceIsUClosed && Abs(U-U2) > tolOUClosed) ||
-			(OSurfaceIsVClosed && Abs(V-V2) > tolOVClosed))
-		      continue;
-		  }
-		  duplicate = Standard_True;
-		  break;
+	    if (!duplicate) {
+              Standard_Integer ParamApproxOnLine = Standard_Integer(aW1)+1;
+
+              arc->D1(paramarc,p2d,d2d);
+              U1 = p2d.X(); V1 = p2d.Y();
+              if (typL == IntPatch_Walking && SurfaceIsPeriodic) {
+                if (OnFirst)
+                  Recadre(TypeS1,TypeS2,wlin,ParamApproxOnLine,U1,V1,U2,V2);
+                else
+                  Recadre(TypeS1,TypeS2,wlin,ParamApproxOnLine,U2,V2,U1,V1);
+              }
+	      locpt.Append(ptsommet);
+	      locpt2.Append(gp_Pnt2d(U2,V2));
+
+	      found = FindParameter(L,OtherSurf,edgeTol,ptsommet,gp_Pnt2d(U2,V2),
+				    paramline,tgline,ParamApproxOnLine,OnFirst);
+
+	      if (typL == IntPatch_Walking && found && possiblyClosed) {
+		// check in 2d
+		if (SurfaceIsUClosed || SurfaceIsVClosed) {
+		  GetLinePoint2d (L, paramline, OnFirst, U,V);
+		  if ((SurfaceIsUClosed && Abs(U-U1) > tolUClosed) ||
+		      (SurfaceIsVClosed && Abs(V-V1) > tolVClosed))
+		    found = Standard_False;
+		}
+		if (found && (OSurfaceIsUClosed || OSurfaceIsVClosed)) {
+		  GetLinePoint2d (L, paramline, !OnFirst, U,V);
+		  if ((OSurfaceIsUClosed && Abs(U-U2) > tolOUClosed) ||
+		      (OSurfaceIsVClosed && Abs(V-V2) > tolOVClosed))
+		    found = Standard_False;
 		}
 	      }
+	      if (!found) {
+		continue;
+	      }
 
-	      if (!duplicate) {
-                Standard_Integer ParamApproxOnLine = Standard_Integer(W1[ip])+1;
+	      VtxOnArc = CoincideOnArc(ptsommet,arc,Surf,edgeTol,Domain,vtxarc);
+	      Standard_Real vtxTol;
+	      if (VtxOnArc) {
+		vtxTol = Tol3d(vtxarc,Domain);
+		if (edgeTol > vtxTol) vtxTol = edgeTol;
+	      }
+	      else vtxTol = edgeTol;
 
-                arc->D1(paramarc,p2d,d2d);
-                U1 = p2d.X(); V1 = p2d.Y();
-                if (typL == IntPatch_Walking && SurfaceIsPeriodic) {
-                  if (OnFirst)
-                    Recadre(TypeS1,TypeS2,wlin,ParamApproxOnLine,U1,V1,U2,V2);
-                  else
-                    Recadre(TypeS1,TypeS2,wlin,ParamApproxOnLine,U2,V2,U1,V1);
-                }
-		locpt.Append(ptsommet);
-		locpt2.Append(gp_Pnt2d(U2,V2));
-
-		found = FindParameter(L,OtherSurf,edgeTol,ptsommet,gp_Pnt2d(U2,V2),
-				      paramline,tgline,ParamApproxOnLine,OnFirst);
-
-		if (typL == IntPatch_Walking && found && possiblyClosed) {
-		  // check in 2d
-		  if (SurfaceIsUClosed || SurfaceIsVClosed) {
-		    GetLinePoint2d (L, paramline, OnFirst, U,V);
-		    if ((SurfaceIsUClosed && Abs(U-U1) > tolUClosed) ||
-			(SurfaceIsVClosed && Abs(V-V1) > tolVClosed))
-		      found = Standard_False;
-		  }
-		  if (found && (OSurfaceIsUClosed || OSurfaceIsVClosed)) {
-		    GetLinePoint2d (L, paramline, !OnFirst, U,V);
-		    if ((OSurfaceIsUClosed && Abs(U-U2) > tolOUClosed) ||
-			(OSurfaceIsVClosed && Abs(V-V2) > tolOVClosed))
-		      found = Standard_False;
-		  }
-		}
-		if (!found) {
-		  continue;
-		}
-
-		VtxOnArc = CoincideOnArc(ptsommet,arc,Surf,edgeTol,Domain,vtxarc);
-		Standard_Real vtxTol;
-		if (VtxOnArc) {
-		  vtxTol = Tol3d(vtxarc,Domain);
-		  if (edgeTol > vtxTol) vtxTol = edgeTol;
-		}
-		else vtxTol = edgeTol;
-
-		//-- It is necessary to test that the point does not already exist
-		//--   - It can be already a point on arc
-		//--        BUT on a different arc
-		// MSV 27.03.2002: find the nearest point; add check in 2d
-		Standard_Integer ivtx = 0;
-		Standard_Real dmin = RealLast();
-		for (j=1; j<=Nbvtx; j++) {
-		  const IntPatch_Point& Rptline = (typL == IntPatch_Walking
-					     ? wlin->Vertex(j)
-					     : rlin->Vertex(j));
-		  Standard_Boolean APointOnRstStillExist =
-		    ((OnFirst  && Rptline.IsOnDomS1() && Rptline.ArcOnS1() == arc) ||
-		     (!OnFirst && Rptline.IsOnDomS2() && Rptline.ArcOnS2() == arc));
-		  if(!APointOnRstStillExist) {
-		    if (possiblyClosed) {
-		      if (SurfaceIsUClosed || SurfaceIsVClosed) {
-			if (OnFirst) Rptline.ParametersOnS1(U,V);
-			else         Rptline.ParametersOnS2(U,V);
-			if ((SurfaceIsUClosed && Abs(U-U1) > tolUClosed) ||
-			    (SurfaceIsVClosed && Abs(V-V1) > tolVClosed))
-			  continue;
-		      }
-		      if (OSurfaceIsUClosed || OSurfaceIsVClosed) {
-			if (OnFirst) Rptline.ParametersOnS2(U,V);
-			else         Rptline.ParametersOnS1(U,V);
-			if ((OSurfaceIsUClosed && Abs(U-U2) > tolOUClosed) ||
-			    (OSurfaceIsVClosed && Abs(V-V2) > tolOVClosed))
-			  continue;
-		      }
+	      //-- It is necessary to test that the point does not already exist
+	      //--   - It can be already a point on arc
+	      //--        BUT on a different arc
+	      // MSV 27.03.2002: find the nearest point; add check in 2d
+	      Standard_Integer ivtx = 0;
+	      Standard_Real dmin = RealLast();
+	      for (j=1; j<=Nbvtx; j++) {
+		const IntPatch_Point& Rptline = (typL == IntPatch_Walking
+					    ? wlin->Vertex(j)
+					    : rlin->Vertex(j));
+		Standard_Boolean APointOnRstStillExist =
+		  ((OnFirst  && Rptline.IsOnDomS1() && Rptline.ArcOnS1() == arc) ||
+		    (!OnFirst && Rptline.IsOnDomS2() && Rptline.ArcOnS2() == arc));
+		if(!APointOnRstStillExist) {
+		  if (possiblyClosed) {
+		    if (SurfaceIsUClosed || SurfaceIsVClosed) {
+		      if (OnFirst) Rptline.ParametersOnS1(U,V);
+		      else         Rptline.ParametersOnS2(U,V);
+		      if ((SurfaceIsUClosed && Abs(U-U1) > tolUClosed) ||
+			  (SurfaceIsVClosed && Abs(V-V1) > tolVClosed))
+			continue;
 		    }
-		    Standard_Real dist = ptsommet.Distance(Rptline.Value());
-		    Standard_Real dt = Max(vtxTol, Rptline.Tolerance());
-		    if (dist < dmin) {
-		      if (dist <= dt) {
-			ptline = Rptline;
-			ivtx = j;
-			if( surfacetype == GeomAbs_Cone ) {
-			  ivtx = 0;
-			}
-		      }
-		      else {
-			// cancel previous solution because this point is better
-			// but its tolerance is not large enough
+		    if (OSurfaceIsUClosed || OSurfaceIsVClosed) {
+		      if (OnFirst) Rptline.ParametersOnS2(U,V);
+		      else         Rptline.ParametersOnS1(U,V);
+		      if ((OSurfaceIsUClosed && Abs(U-U2) > tolOUClosed) ||
+			  (OSurfaceIsVClosed && Abs(V-V2) > tolOVClosed))
+			continue;
+		    }
+		  }
+		  Standard_Real dist = ptsommet.Distance(Rptline.Value());
+		  Standard_Real dt = Max(vtxTol, Rptline.Tolerance());
+		  if (dist < dmin) {
+		    if (dist <= dt) {
+		      ptline = Rptline;
+		      ivtx = j;
+		      if( surfacetype == GeomAbs_Cone ) {
 			ivtx = 0;
-		      }
-		      dmin = dist;
-		    } 
-		  }
-		}
-		if (ivtx) {
-		  if (ptline.Tolerance() > vtxTol) {
-		    vtxTol = ptline.Tolerance();
-		    if (!VtxOnArc) {
-		      // now we should repeat attempt to coincide on a bound of arc
-		      VtxOnArc = CoincideOnArc(ptsommet,arc,Surf,vtxTol,Domain,vtxarc);
-		      if (VtxOnArc) {
-			Standard_Real tol = Tol3d(vtxarc,Domain);
-			if (tol > vtxTol) vtxTol = tol;
-		      }
-		    }
-		  }
-		}
-
-		if (typL == IntPatch_Walking)
-		  VerifyTgline(wlin,(Standard_Integer)paramline,edgeTol,tgline);
-
-		Surf->D1(U1,V1,ptbid,d1u,d1v);
-		tgrst.SetLinearForm(d2d.X(),d1u,d2d.Y(),d1v);
-
-		normsurf = d1u.Crossed(d1v);
-		if (normsurf.Magnitude() < gp::Resolution()) {
-		  transline.SetValue(Standard_True,IntSurf_Undecided);
-		  transarc.SetValue(Standard_True,IntSurf_Undecided);
-		}
-		else
-		  IntSurf::MakeTransition(tgline,tgrst,normsurf,transline,transarc);
-
-		if (typL == IntPatch_Walking && !refine[ip]) {
-		  // for new vertex use coordinates from Line
-		  if (OnFirst)
-		    GetWLinePoint (wlin, paramline, U1,V1,U2,V2,ptsommet);
-		  else
-		    GetWLinePoint (wlin, paramline, U2,V2,U1,V1,ptsommet);
-		}
-
-		nbTreated++;
-		if (!ivtx) {
-		  Sommet.SetValue(ptsommet,vtxTol,Standard_False); // pour tangence
-		  if (OnFirst)
-		    Sommet.SetParameters(U1,V1,U2,V2);
-		  else
-		    Sommet.SetParameters(U2,V2,U1,V1);
-
-		  if (VtxOnArc)
-		    Sommet.SetVertex(OnFirst,vtxarc);
-
-		  //---------------------------------------------------------
-		  //-- lbr : On remplace le point d indice paramline sur la -
-		  //-- ligne par le vertex .                                -
-		  //---------------------------------------------------------
-		  Sommet.SetParameter(paramline); // sur ligne d intersection
-		  Sommet.SetArc(OnFirst,arc,paramarc,transline,transarc);
-
-		  if (typL == IntPatch_Walking) {
-		    wlin->AddVertex(Sommet);
-		    Nbvtx++;
-		  }
-		  else {
-		    rlin->AddVertex(Sommet);
-		    Nbvtx++;
-		  }
-		}
-		else {
-		  // CAS DE FIGURE : en appelant s1 la surf sur laquelle on 
-		  //   connait les pts sur restriction, et s2 celle sur laquelle
-		  //   on les cherche. Le point trouve verifie necessairement
-		  //   IsOnDomS1 = True.
-		  //  Pas vtxS1, pas vtxS2 :
-		  //   on recupere le point et on applique SetArcOnS2 et
-		  //   eventuellement SetVertexOnS2. Si on a deja IsOnDomS2,
-		  //   on considere que le point est deja traite, mais ne devrait
-		  //   pas se produire.
-		  //  vtxS1, pas vtxS2     :
-		  //   si pas IsOnDomS2 : pour chaque occurrence, faire SetArcOnS2,
-		  //   et eventuellement SetVertexOnS2.
-		  //   si IsOnDomS2 : impossible, on doit avoir IsVtxOnS2.
-		  //  vtxS1,vtxS2          :
-		  //   on doit avoir VtxOnArc = True. On duplique chaque occurrence
-		  //   "sur S1" du point en changeant ArcOnS2.
-		  //  pas vtxS1, vtxS2     :
-		  //   on doit avoir VtxOnArc = True. On duplique le point sur S1
-		  //   en changeant ArcOnS2.
-		  Standard_Boolean OnDifferentRst =
-		    ((OnFirst  && ptline.IsOnDomS1() && ptline.ArcOnS1() != arc) ||
-		     (!OnFirst && ptline.IsOnDomS2() && ptline.ArcOnS2() != arc));
-		  ptline.SetTolerance(vtxTol);
-		  if (   (!ptline.IsVertexOnS1() &&  OnFirst) 
-		      || (!ptline.IsVertexOnS2() && !OnFirst) 
-		      || (OnDifferentRst))  {
-		    if (  (!ptline.IsOnDomS2() && !OnFirst)
-			||(!ptline.IsOnDomS1() &&  OnFirst)
-			||(OnDifferentRst)) {
-		      ptline.SetArc(OnFirst,arc,paramarc,transline,transarc);
-		      //ptline.SetParameter(paramline); //-- rajout lbr le 20 nov 97
-		      if (VtxOnArc)
-			ptline.SetVertex(OnFirst,vtxarc);
-		      if (typL == IntPatch_Walking) {
-			if(OnDifferentRst) { 
-			  wlin->AddVertex(ptline); 
-			  Nbvtx++;
-			}
-			else { 
-			  wlin->Replace(ivtx,ptline);
-			}
-		      }
-		      else {
-			if(OnDifferentRst) { 
-			  rlin->AddVertex(ptline);
-			  Nbvtx++;
-			}
-			else {
-			  rlin->Replace(ivtx,ptline);
-			}
-		      }
-		    }
-		    else if (  ( OnFirst && ptline.IsVertexOnS2())
-			     ||(!OnFirst && ptline.IsVertexOnS1())) {
-		      Sommet = ptline;
-		      Sommet.SetArc(OnFirst,arc,paramarc,transline,transarc);
-		      if (VtxOnArc)
-			Sommet.SetVertex(OnFirst,vtxarc);
-		      if (typL == IntPatch_Walking) {
-			wlin->AddVertex(Sommet);
-			Nbvtx++;
-		      }
-		      else {
-			rlin->AddVertex(Sommet);
-			Nbvtx++;
 		      }
 		    }
 		    else {
-		      //-- cout << "pb dans RstInt  Type 1 " << endl;
+		      // cancel previous solution because this point is better
+		      // but its tolerance is not large enough
+		      ivtx = 0;
+		    }
+		    dmin = dist;
+		  } 
+		}
+	      }
+	      if (ivtx) {
+		if (ptline.Tolerance() > vtxTol) {
+		  vtxTol = ptline.Tolerance();
+		  if (!VtxOnArc) {
+		    // now we should repeat attempt to coincide on a bound of arc
+		    VtxOnArc = CoincideOnArc(ptsommet,arc,Surf,vtxTol,Domain,vtxarc);
+		    if (VtxOnArc) {
+		      Standard_Real tol = Tol3d(vtxarc,Domain);
+		      if (tol > vtxTol) vtxTol = tol;
 		    }
 		  }
-		  else {
-		    Handle(Adaptor3d_HVertex) vtxref = (OnFirst)? (ptline.VertexOnS1()) : (ptline.VertexOnS2()) ;
-		    if (  ( OnFirst && !ptline.IsOnDomS2())
-			||(!OnFirst && !ptline.IsOnDomS1())) {
-		      ptline.SetArc(OnFirst,arc,paramarc,transline,transarc);
-		      if (VtxOnArc)
-			ptline.SetVertex(OnFirst,vtxarc);
-		      if (typL == IntPatch_Walking) {
+		}
+	      }
+
+	      if (typL == IntPatch_Walking)
+		VerifyTgline(wlin,(Standard_Integer)paramline,edgeTol,tgline);
+
+	      Surf->D1(U1,V1,ptbid,d1u,d1v);
+	      tgrst.SetLinearForm(d2d.X(),d1u,d2d.Y(),d1v);
+
+	      normsurf = d1u.Crossed(d1v);
+	      if (normsurf.Magnitude() < gp::Resolution()) {
+		transline.SetValue(Standard_True,IntSurf_Undecided);
+		transarc.SetValue(Standard_True,IntSurf_Undecided);
+	      }
+	      else
+		IntSurf::MakeTransition(tgline,tgrst,normsurf,transline,transarc);
+
+	      nbTreated++;
+	      if (!ivtx) {
+		Sommet.SetValue(ptsommet,vtxTol,Standard_False); // pour tangence
+		if (OnFirst)
+		  Sommet.SetParameters(U1,V1,U2,V2);
+		else
+		  Sommet.SetParameters(U2,V2,U1,V1);
+
+		if (VtxOnArc)
+		  Sommet.SetVertex(OnFirst,vtxarc);
+
+		//---------------------------------------------------------
+		//-- lbr : On remplace le point d indice paramline sur la -
+		//-- ligne par le vertex .                                -
+		//---------------------------------------------------------
+		Sommet.SetParameter(paramline); // sur ligne d intersection
+		Sommet.SetArc(OnFirst,arc,paramarc,transline,transarc);
+
+		if (typL == IntPatch_Walking) {
+		  wlin->AddVertex(Sommet);
+		  Nbvtx++;
+		}
+		else {
+		  rlin->AddVertex(Sommet);
+		  Nbvtx++;
+		}
+	      }
+	      else {
+		// CAS DE FIGURE : en appelant s1 la surf sur laquelle on 
+		//   connait les pts sur restriction, et s2 celle sur laquelle
+		//   on les cherche. Le point trouve verifie necessairement
+		//   IsOnDomS1 = True.
+		//  Pas vtxS1, pas vtxS2 :
+		//   on recupere le point et on applique SetArcOnS2 et
+		//   eventuellement SetVertexOnS2. Si on a deja IsOnDomS2,
+		//   on considere que le point est deja traite, mais ne devrait
+		//   pas se produire.
+		//  vtxS1, pas vtxS2     :
+		//   si pas IsOnDomS2 : pour chaque occurrence, faire SetArcOnS2,
+		//   et eventuellement SetVertexOnS2.
+		//   si IsOnDomS2 : impossible, on doit avoir IsVtxOnS2.
+		//  vtxS1,vtxS2          :
+		//   on doit avoir VtxOnArc = True. On duplique chaque occurrence
+		//   "sur S1" du point en changeant ArcOnS2.
+		//  pas vtxS1, vtxS2     :
+		//   on doit avoir VtxOnArc = True. On duplique le point sur S1
+		//   en changeant ArcOnS2.
+		Standard_Boolean OnDifferentRst =
+		  ((OnFirst  && ptline.IsOnDomS1() && ptline.ArcOnS1() != arc) ||
+		    (!OnFirst && ptline.IsOnDomS2() && ptline.ArcOnS2() != arc));
+		ptline.SetTolerance(vtxTol);
+		if (   (!ptline.IsVertexOnS1() &&  OnFirst) 
+		    || (!ptline.IsVertexOnS2() && !OnFirst) 
+		    || (OnDifferentRst))  {
+		  if (  (!ptline.IsOnDomS2() && !OnFirst)
+		      ||(!ptline.IsOnDomS1() &&  OnFirst)
+		      ||(OnDifferentRst)) {
+		    ptline.SetArc(OnFirst,arc,paramarc,transline,transarc);
+		    //ptline.SetParameter(paramline); //-- rajout lbr le 20 nov 97
+		    if (VtxOnArc)
+		      ptline.SetVertex(OnFirst,vtxarc);
+		    if (typL == IntPatch_Walking) {
+		      if(OnDifferentRst) { 
+			wlin->AddVertex(ptline); 
+			Nbvtx++;
+		      }
+		      else { 
 			wlin->Replace(ivtx,ptline);
+		      }
+		    }
+		    else {
+		      if(OnDifferentRst) { 
+			rlin->AddVertex(ptline);
+			Nbvtx++;
 		      }
 		      else {
 			rlin->Replace(ivtx,ptline);
 		      }
-
-		      for (k=1; k<=Nbvtx; k++) if (k != ivtx) {
-			if (typL == IntPatch_Walking) {
-			  ptline = wlin->Vertex(k);
-			}
-			else {
-			  ptline = rlin->Vertex(k);
-			}
-			if (   ( OnFirst && ptline.IsVertexOnS1()) 
-			    || (!OnFirst && ptline.IsVertexOnS2())) {
-			  if (Domain->Identical(vtxref, (OnFirst)? (ptline.VertexOnS1()) : (ptline.VertexOnS2()))) { 
-			    if (ptline.Tolerance() < vtxTol) ptline.SetTolerance(vtxTol);
-			    ptline.SetArc(OnFirst,arc,paramarc,transline,transarc);
-			    if (VtxOnArc)
-			      ptline.SetVertex(OnFirst,vtxarc);
-			    if (typL == IntPatch_Walking) {
-			      wlin->Replace(k,ptline);
-			    }
-			    else {
-			      rlin->Replace(k,ptline);
-			    }
-			  }
-			}
-		      }
 		    }
-		    else if(   ( OnFirst && ptline.IsVertexOnS2()) 
-			    || (!OnFirst && ptline.IsVertexOnS1())) {
-		      //                on doit avoir vtxons2 = vtxarc... pas de verif...
-		      Sommet = ptline;
-		      Sommet.SetArc(OnFirst,arc,paramarc,transline,transarc);
-		      if (typL == IntPatch_Walking) {
-			wlin->AddVertex(Sommet);
-			Nbvtx++;
-		      }
-		      else {
-			rlin->AddVertex(Sommet);
-			Nbvtx++;
-		      }
-		      for (k=1; k<=Nbvtx; k++) if (k != ivtx) {
-			if (typL == IntPatch_Walking) {
-			  ptline = wlin->Vertex(k);
-			}
-			else {
-			  ptline = rlin->Vertex(k);
-			}
-			if (  ( OnFirst && ptline.IsVertexOnS1())
-			    ||(!OnFirst && ptline.IsVertexOnS2())) {
-			  if (Domain->Identical(vtxref,(OnFirst)? (ptline.VertexOnS1()) : (ptline.VertexOnS2()))) { 
-			    if (ptline.Tolerance() < vtxTol) ptline.SetTolerance(vtxTol);
-			    Sommet = ptline;
-			    Sommet.SetArc(OnFirst,arc,paramarc,transline,transarc);
-			    if (typL == IntPatch_Walking) {
-			      wlin->Replace(k,ptline);
-			      wlin->AddVertex(Sommet);
-			      Nbvtx++;			      
-			    }
-			    else {
-			      rlin->Replace(k,ptline);
-			      rlin->AddVertex(Sommet);
-			      Nbvtx++;			      
-			    }
-			  }
-			}
-		      }
-
+		  }
+		  else if (  ( OnFirst && ptline.IsVertexOnS2())
+			    ||(!OnFirst && ptline.IsVertexOnS1())) {
+		    Sommet = ptline;
+		    Sommet.SetArc(OnFirst,arc,paramarc,transline,transarc);
+		    if (VtxOnArc)
+		      Sommet.SetVertex(OnFirst,vtxarc);
+		    if (typL == IntPatch_Walking) {
+		      wlin->AddVertex(Sommet);
+		      Nbvtx++;
 		    }
 		    else {
-		      //-- cout << "pb dans RstInt  Type 2 " << endl;
+		      rlin->AddVertex(Sommet);
+		      Nbvtx++;
 		    }
+		  }
+		  else {
+		    //-- cout << "pb dans RstInt  Type 1 " << endl;
+		  }
+		}
+		else {
+		  Handle(Adaptor3d_HVertex) vtxref = (OnFirst)? (ptline.VertexOnS1()) : (ptline.VertexOnS2()) ;
+		  if (  ( OnFirst && !ptline.IsOnDomS2())
+		      ||(!OnFirst && !ptline.IsOnDomS1())) {
+		    ptline.SetArc(OnFirst,arc,paramarc,transline,transarc);
+		    if (VtxOnArc)
+		      ptline.SetVertex(OnFirst,vtxarc);
+		    if (typL == IntPatch_Walking) {
+		      wlin->Replace(ivtx,ptline);
+		    }
+		    else {
+		      rlin->Replace(ivtx,ptline);
+		    }
+
+		    for (k=1; k<=Nbvtx; k++) if (k != ivtx) {
+		      if (typL == IntPatch_Walking) {
+			ptline = wlin->Vertex(k);
+		      }
+		      else {
+			ptline = rlin->Vertex(k);
+		      }
+		      if (   ( OnFirst && ptline.IsVertexOnS1()) 
+			  || (!OnFirst && ptline.IsVertexOnS2())) {
+			if (Domain->Identical(vtxref, (OnFirst)? (ptline.VertexOnS1()) : (ptline.VertexOnS2()))) { 
+			  if (ptline.Tolerance() < vtxTol) ptline.SetTolerance(vtxTol);
+			  ptline.SetArc(OnFirst,arc,paramarc,transline,transarc);
+			  if (VtxOnArc)
+			    ptline.SetVertex(OnFirst,vtxarc);
+			  if (typL == IntPatch_Walking) {
+			    wlin->Replace(k,ptline);
+			  }
+			  else {
+			    rlin->Replace(k,ptline);
+			  }
+			}
+		      }
+		    }
+		  }
+		  else if(   ( OnFirst && ptline.IsVertexOnS2()) 
+			  || (!OnFirst && ptline.IsVertexOnS1())) {
+		    //                on doit avoir vtxons2 = vtxarc... pas de verif...
+		    Sommet = ptline;
+		    Sommet.SetArc(OnFirst,arc,paramarc,transline,transarc);
+		    if (typL == IntPatch_Walking) {
+		      wlin->AddVertex(Sommet);
+		      Nbvtx++;
+		    }
+		    else {
+		      rlin->AddVertex(Sommet);
+		      Nbvtx++;
+		    }
+		    for (k=1; k<=Nbvtx; k++) if (k != ivtx) {
+		      if (typL == IntPatch_Walking) {
+			ptline = wlin->Vertex(k);
+		      }
+		      else {
+			ptline = rlin->Vertex(k);
+		      }
+		      if (  ( OnFirst && ptline.IsVertexOnS1())
+			  ||(!OnFirst && ptline.IsVertexOnS2())) {
+			if (Domain->Identical(vtxref,(OnFirst)? (ptline.VertexOnS1()) : (ptline.VertexOnS2()))) { 
+			  if (ptline.Tolerance() < vtxTol) ptline.SetTolerance(vtxTol);
+			  Sommet = ptline;
+			  Sommet.SetArc(OnFirst,arc,paramarc,transline,transarc);
+			  if (typL == IntPatch_Walking) {
+			    wlin->Replace(k,ptline);
+			    wlin->AddVertex(Sommet);
+			    Nbvtx++;			      
+			  }
+			  else {
+			    rlin->Replace(k,ptline);
+			    rlin->AddVertex(Sommet);
+			    Nbvtx++;			      
+			  }
+			}
+		      }
+		    }
+
+		  }
+		  else {
+		    //-- cout << "pb dans RstInt  Type 2 " << endl;
 		  }
 		}
 	      }

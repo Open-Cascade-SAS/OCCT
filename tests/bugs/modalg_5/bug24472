@@ -6,6 +6,10 @@ puts ""
 ## Wrong section curves
 ###############################
 
+puts "TODO OCC29501 ALL: Error in ii12_22"
+
+set MaxToler 1.5e-4
+
 restore [locate_data_file bug24472_Pipe_1.brep] b1
 
 explode b1 f
@@ -19,43 +23,51 @@ mksurface s3 f3
 puts ""
 puts "First test"
 # 1.1 geometry
-intersect i s1 s2
+intersect ii12 s1 s2
 
-#donly i_22; fit
-
-xdistcs i_22 s1 0 1 10 1e-7
+foreach c [directory ii12*] {
+  bounds $c U1 U2
+  
+  if {[dval U2-U1] < 1.0e-9} {
+    puts "Error: Wrong curve's range!"
+  }
+  
+  xdistcs $c s1 U1 U2 10 $MaxToler
+  xdistcs $c s2 U1 U2 10 $MaxToler
+}
 
 puts ""
 puts "Second test"
 # 1.2 topology
-bsection r f1 f2
-bopcheck r
-# r is self interfered
-explode r e
-mkcurve c r_1
+bsection r12 f1 f2
+bopcheck r12
+# OK
 
-#donly r_1; fit
-
-xdistcs c s1 0.0714822451660209 1 10 1e-12 1e-7
+regexp {Tolerance MAX=([-0-9.+eE]+)} [tolerance r12] full toler
+if { $toler > $MaxToler } { puts "Error: Tolerance of the section r12 is too large" }
 
 puts ""
 puts "Third test"
 # 2.1 geometry
-intersect i s1 s3
+intersect ii13 s1 s3
 
-#donly i_4; fit
-
-xdistcs i_4 s1 0 1 10 1e-6 1e-7
+foreach c [directory ii13*] {
+  bounds $c U1 U2
+  
+  if {[dval U2-U1] < 1.0e-9} {
+    puts "Error: Wrong curve's range!"
+  }
+  
+  xdistcs $c s1 U1 U2 10 $MaxToler
+  xdistcs $c s2 U1 U2 10 $MaxToler
+}
 
 puts ""
 puts "Fourth test"
 # 2.2 topology
-bsection r f1 f3
-bopcheck r
-#r is self interfered
-explode r
-mkcurve c r_1
+bsection r13 f1 f3
+bopcheck r13
+# OK
 
-#donly r_1; fit
-
-xdistcs c s1 0.0714822451660209 1 10 1e-12 1e-7
+regexp {Tolerance MAX=([-0-9.+eE]+)} [tolerance r13] full toler
+if { $toler > $MaxToler } { puts "Error: Tolerance of the section r13 is too large" }
