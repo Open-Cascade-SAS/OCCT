@@ -38,6 +38,7 @@
 #include <Graphic3d_GraduatedTrihedron.hxx>
 #include <Graphic3d_RenderingParams.hxx>
 #include <Graphic3d_SequenceOfHClipPlane.hxx>
+#include <Graphic3d_TypeOfShadingModel.hxx>
 #include <Graphic3d_Vertex.hxx>
 
 #include <Image_PixMap.hxx>
@@ -63,7 +64,6 @@
 
 #include <V3d_TypeOfBackfacingModel.hxx>
 #include <V3d_TypeOfOrientation.hxx>
-#include <V3d_TypeOfShadingModel.hxx>
 #include <V3d_TypeOfView.hxx>
 #include <V3d_TypeOfVisualization.hxx>
 #include <V3d_Viewer.hxx>
@@ -230,7 +230,7 @@ public:
                                 const Standard_Real Vx, const Standard_Real Vy, const Standard_Real Vz);
 
   //! Defines the shading model for the visualization. Various models are available.
-  Standard_EXPORT void SetShadingModel (const V3d_TypeOfShadingModel theShadingModel);
+  Standard_EXPORT void SetShadingModel (const Graphic3d_TypeOfShadingModel theShadingModel);
 
   //! Sets the environment texture to use. No environment texture by default.
   Standard_EXPORT void SetTextureEnv (const Handle(Graphic3d_TextureEnv)& theTexture);
@@ -673,7 +673,7 @@ public:
   Standard_EXPORT Standard_Real Twist() const;
 
   //! Returns the current shading model.
-  Standard_EXPORT V3d_TypeOfShadingModel ShadingModel() const;
+  Standard_EXPORT Graphic3d_TypeOfShadingModel ShadingModel() const;
 
   Standard_EXPORT Handle(Graphic3d_TextureEnv) TextureEnv() const;
 

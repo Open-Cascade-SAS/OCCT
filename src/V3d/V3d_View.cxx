@@ -525,9 +525,9 @@ void V3d_View::SetAxis (const Standard_Real theX,  const Standard_Real theY,  co
 //function : SetShadingModel
 //purpose  :
 //=============================================================================
-void V3d_View::SetShadingModel (const V3d_TypeOfShadingModel theShadingModel)
+void V3d_View::SetShadingModel (const Graphic3d_TypeOfShadingModel theShadingModel)
 {
-  myView->SetShadingModel (static_cast<Graphic3d_TypeOfShadingModel> (theShadingModel));
+  myView->SetShadingModel (theShadingModel);
 }
 
 //=============================================================================
@@ -2218,9 +2218,9 @@ Standard_Real V3d_View::Twist() const
 //function : ShadingModel
 //purpose  :
 //=============================================================================
-V3d_TypeOfShadingModel V3d_View::ShadingModel() const
+Graphic3d_TypeOfShadingModel V3d_View::ShadingModel() const
 {
-  return static_cast<V3d_TypeOfShadingModel> (myView->ShadingModel());
+  return myView->ShadingModel();
 }
 
 //=============================================================================

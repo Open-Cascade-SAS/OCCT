@@ -889,7 +889,7 @@ void OpenGl_View::render (Graphic3d_Camera::Projection theProjection,
   myBVHSelector.CacheClipPtsProjections();
 
   const Handle(OpenGl_ShaderManager)& aManager = aContext->ShaderManager();
-  const Handle(Graphic3d_LightSet)&   aLights  = myShadingModel == Graphic3d_TOSM_NONE ? myNoShadingLight : myLights;
+  const Handle(Graphic3d_LightSet)&   aLights  = myShadingModel == Graphic3d_TOSM_UNLIT ? myNoShadingLight : myLights;
   Standard_Size aLightsRevision = 0;
   if (!aLights.IsNull())
   {
@@ -977,7 +977,7 @@ void OpenGl_View::render (Graphic3d_Camera::Projection theProjection,
   if (aContext->core11 != NULL)
   {
     aContext->core11->glShadeModel (myShadingModel == Graphic3d_TOSM_FACET
-                                 || myShadingModel == Graphic3d_TOSM_NONE ? GL_FLAT : GL_SMOOTH);
+                                 || myShadingModel == Graphic3d_TOSM_UNLIT ? GL_FLAT : GL_SMOOTH);
   }
 #endif
 

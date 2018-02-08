@@ -38,6 +38,7 @@ Graphic3d_CView::Graphic3d_CView (const Handle(Graphic3d_StructureManager)& theM
   myIsInComputedMode       (Standard_False),
   myIsActive               (Standard_False),
   myIsRemoved              (Standard_False),
+  myShadingModel           (Graphic3d_TOSM_FRAGMENT),
   myVisualization          (Graphic3d_TOV_WIREFRAME)
 {
   myId = myStructureManager->Identification (this);
@@ -1087,4 +1088,18 @@ void Graphic3d_CView::CopySettings (const Handle(Graphic3d_CView)& theOther)
   SetCamera                (new Graphic3d_Camera (theOther->Camera()));
   SetLights                (theOther->Lights());
   SetClipPlanes            (theOther->ClipPlanes());
+}
+
+// =======================================================================
+// function : SetShadingModel
+// purpose  :
+// =======================================================================
+void Graphic3d_CView::SetShadingModel (Graphic3d_TypeOfShadingModel theModel)
+{
+  if (theModel == Graphic3d_TOSM_DEFAULT)
+  {
+    throw Standard_ProgramError ("Graphic3d_CView::SetShadingModel() - attempt to set invalid Shading Model!");
+  }
+
+  myShadingModel = theModel;
 }

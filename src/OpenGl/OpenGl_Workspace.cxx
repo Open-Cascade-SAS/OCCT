@@ -362,10 +362,11 @@ const OpenGl_AspectFace* OpenGl_Workspace::ApplyAspectFace()
   if (myAspectFaceSet->Aspect()->InteriorStyle() == Aspect_IS_HIDDENLINE)
   {
     // copy all values including line edge aspect
-    *myAspectFaceHl.Aspect().operator->() = *myAspectFaceSet->Aspect();
+    *myAspectFaceHl.Aspect() = *myAspectFaceSet->Aspect();
     myAspectFaceHl.SetAspectEdge (myAspectFaceSet->AspectEdge());
+    myAspectFaceHl.Aspect()->SetShadingModel (Graphic3d_TOSM_UNLIT);
     myAspectFaceHl.Aspect()->SetInteriorColor (myView->BackgroundColor().GetRGB());
-    myAspectFaceHl.SetNoLighting (true);
+    myAspectFaceHl.SetNoLighting();
     myAspectFaceSet = &myAspectFaceHl;
   }
   else

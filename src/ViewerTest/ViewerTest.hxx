@@ -19,6 +19,7 @@
 #include <Aspect_TypeOfLine.hxx>
 #include <Aspect_TypeOfMarker.hxx>
 #include <Draw_Interpretor.hxx>
+#include <Graphic3d_TypeOfShadingModel.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_CString.hxx>
 #include <Standard_DefineAlloc.hxx>
@@ -199,6 +200,11 @@ public:
   Standard_EXPORT static Standard_Boolean ParseMarkerType (Standard_CString theArg,
                                                            Aspect_TypeOfMarker& theType,
                                                            Handle(Image_PixMap)& theImage);
+
+  //! Parses shading model argument.
+  //! Handles either enumeration (integer) value or string constant.
+  Standard_EXPORT static Standard_Boolean ParseShadingModel (Standard_CString              theArg,
+                                                             Graphic3d_TypeOfShadingModel& theModel);
 
 private:
 

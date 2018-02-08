@@ -64,8 +64,9 @@ OpenGl_AspectFace::OpenGl_AspectFace()
 : myAspect (new Graphic3d_AspectFillArea3d (Aspect_IS_SOLID, Quantity_NOC_WHITE,
                                             Quantity_NOC_WHITE, Aspect_TOL_SOLID, 1.0,
                                             THE_DEFAULT_MATERIAL, THE_DEFAULT_MATERIAL)),
-  myIsNoLighting (false)
+  myShadingModel (Graphic3d_TOSM_UNLIT)
 {
+  myAspect->SetShadingModel (myShadingModel);
   myAspect->SetHatchStyle (Handle(Graphic3d_HatchStyle)());
 }
 
@@ -74,7 +75,7 @@ OpenGl_AspectFace::OpenGl_AspectFace()
 // purpose  :
 // =======================================================================
 OpenGl_AspectFace::OpenGl_AspectFace (const Handle(Graphic3d_AspectFillArea3d)& theAspect)
-: myIsNoLighting (false)
+: myShadingModel (Graphic3d_TOSM_DEFAULT)
 {
   SetAspect (theAspect);
 }
@@ -88,10 +89,13 @@ void OpenGl_AspectFace::SetAspect (const Handle(Graphic3d_AspectFillArea3d)& the
   myAspect = theAspect;
 
   const Graphic3d_MaterialAspect& aMat = theAspect->FrontMaterial();
-  myIsNoLighting = !aMat.ReflectionMode (Graphic3d_TOR_AMBIENT)
-                && !aMat.ReflectionMode (Graphic3d_TOR_DIFFUSE)
-                && !aMat.ReflectionMode (Graphic3d_TOR_SPECULAR)
-                && !aMat.ReflectionMode (Graphic3d_TOR_EMISSION);
+  myShadingModel = theAspect->ShadingModel() != Graphic3d_TOSM_UNLIT
+                && (aMat.ReflectionMode (Graphic3d_TOR_AMBIENT)
+                 || aMat.ReflectionMode (Graphic3d_TOR_DIFFUSE)
+                 || aMat.ReflectionMode (Graphic3d_TOR_SPECULAR)
+                 || aMat.ReflectionMode (Graphic3d_TOR_EMISSION))
+                 ? theAspect->ShadingModel()
+                 : Graphic3d_TOSM_UNLIT;
 
   myAspectEdge.Aspect()->SetColor (theAspect->EdgeColor());
   myAspectEdge.Aspect()->SetType  (theAspect->EdgeLineType());

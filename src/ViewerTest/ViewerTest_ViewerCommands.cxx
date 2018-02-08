@@ -10020,10 +10020,11 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
     theDI << "shadingModel: ";
     switch (aView->ShadingModel())
     {
-      case V3d_COLOR:   theDI << "color";   break;
-      case V3d_FLAT:    theDI << "flat";    break;
-      case V3d_GOURAUD: theDI << "gouraud"; break;
-      case V3d_PHONG:   theDI << "phong";   break;
+      case Graphic3d_TOSM_DEFAULT:  theDI << "default"; break;
+      case Graphic3d_TOSM_UNLIT:    theDI << "unlit";   break;
+      case Graphic3d_TOSM_FACET:    theDI << "flat";    break;
+      case Graphic3d_TOSM_VERTEX:   theDI << "gouraud"; break;
+      case Graphic3d_TOSM_FRAGMENT: theDI << "phong";   break;
     }
     {
       theDI << "perfCounters:";
@@ -10496,10 +10497,11 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
       {
         switch (aView->ShadingModel())
         {
-          case V3d_COLOR:   theDI << "color ";   break;
-          case V3d_FLAT:    theDI << "flat ";    break;
-          case V3d_GOURAUD: theDI << "gouraud "; break;
-          case V3d_PHONG:   theDI << "phong ";   break;
+          case Graphic3d_TOSM_DEFAULT:  theDI << "default";  break;
+          case Graphic3d_TOSM_UNLIT:    theDI << "unlit ";   break;
+          case Graphic3d_TOSM_FACET:    theDI << "flat ";    break;
+          case Graphic3d_TOSM_VERTEX:   theDI << "gouraud "; break;
+          case Graphic3d_TOSM_FRAGMENT: theDI << "phong ";   break;
         }
         continue;
       }
@@ -10509,34 +10511,15 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
         std::cerr << "Error: wrong syntax at argument '" << anArg << "'\n";
       }
 
-      TCollection_AsciiString aMode (theArgVec[anArgIter]);
-      aMode.LowerCase();
-      if (aMode == "color"
-       || aMode == "none")
+      Graphic3d_TypeOfShadingModel aModel = Graphic3d_TOSM_DEFAULT;
+      if (ViewerTest::ParseShadingModel (theArgVec[anArgIter], aModel)
+       && aModel != Graphic3d_TOSM_DEFAULT)
       {
-        aView->SetShadingModel (V3d_COLOR);
-      }
-      else if (aMode == "flat"
-            || aMode == "facet")
-      {
-        aView->SetShadingModel (V3d_FLAT);
-      }
-      else if (aMode == "gouraud"
-            || aMode == "vertex"
-            || aMode == "vert")
-      {
-        aView->SetShadingModel (V3d_GOURAUD);
-      }
-      else if (aMode == "phong"
-            || aMode == "fragment"
-            || aMode == "frag"
-            || aMode == "pixel")
-      {
-        aView->SetShadingModel (V3d_PHONG);
+        aView->SetShadingModel (aModel);
       }
       else
       {
-        std::cout << "Error: unknown shading model '" << aMode << "'\n";
+        std::cout << "Error: unknown shading model '" << theArgVec[anArgIter] << "'\n";
         return 1;
       }
     }

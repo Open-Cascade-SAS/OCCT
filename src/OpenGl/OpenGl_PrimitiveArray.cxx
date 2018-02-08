@@ -459,8 +459,8 @@ void OpenGl_PrimitiveArray::drawEdges (const OpenGl_Vec4&              theEdgeCo
   if (aGlContext->core20fwd != NULL)
   {
     aGlContext->ShaderManager()->BindLineProgram (NULL,
-                                                  anAspect->Aspect()->Type() != Aspect_TOL_SOLID,
-                                                  Standard_False,
+                                                  anAspect->Aspect()->Type(),
+                                                  Graphic3d_TOSM_UNLIT,
                                                   Standard_False,
                                                   anAspect->ShaderProgramRes (aGlContext));
   }
@@ -735,10 +735,8 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
 
   const Standard_Boolean hasColorAttrib = !myVboAttribs.IsNull()
                                         && myVboAttribs->HasColorAttribute();
-  const Standard_Boolean isLightOn = !anAspectFace->IsNoLighting()
-                                  && !myVboAttribs.IsNull()
-                                  &&  myVboAttribs->HasNormalAttribute()
-                                  &&  aCtx->ColorMask();
+  const Graphic3d_TypeOfShadingModel aShadingModel = aCtx->ShaderManager()->ChooseShadingModel (anAspectFace->ShadingModel(),
+                                                                                                !myVboAttribs.IsNull() &&  myVboAttribs->HasNormalAttribute());
 
   // Temporarily disable environment mapping
   Handle(OpenGl_TextureSet) aTextureBack;
@@ -777,11 +775,11 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
                                                    ? anAspectMarker->SpriteHighlightRes (aCtx)
                                                    : aSpriteNormRes;
           aCtx->BindTextures (aSprite);
-          aCtx->ShaderManager()->BindMarkerProgram (aSprite, isLightOn, hasVertColor, anAspectMarker->ShaderProgramRes (aCtx));
+          aCtx->ShaderManager()->BindMarkerProgram (aSprite, aShadingModel, hasVertColor, anAspectMarker->ShaderProgramRes (aCtx));
         }
         else
         {
-          aCtx->ShaderManager()->BindMarkerProgram (Handle(OpenGl_TextureSet)(), isLightOn, hasVertColor, anAspectMarker->ShaderProgramRes (aCtx));
+          aCtx->ShaderManager()->BindMarkerProgram (Handle(OpenGl_TextureSet)(), aShadingModel, hasVertColor, anAspectMarker->ShaderProgramRes (aCtx));
         }
         break;
       }
@@ -789,8 +787,8 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
       case GL_LINE_STRIP:
       {
         aCtx->ShaderManager()->BindLineProgram (NULL,
-                                                anAspectLine->Aspect()->Type() != Aspect_TOL_SOLID,
-                                                isLightOn,
+                                                anAspectLine->Aspect()->Type(),
+                                                aShadingModel,
                                                 hasVertColor,
                                                 anAspectLine->ShaderProgramRes (aCtx));
         break;
@@ -798,14 +796,9 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
       default:
       {
         const Handle(OpenGl_TextureSet)& aTextures = aCtx->ActiveTextures();
-        const Standard_Boolean isLightOnFace = isLightOn
-                                            && (aTextures.IsNull()
-                                             || aTextures->IsEmpty()
-                                             || aTextures->First().IsNull()
-                                             || aTextures->First()->Sampler()->Parameters()->IsModulate());
         const Standard_Boolean toEnableEnvMap = (!aTextures.IsNull() && (aTextures == theWorkspace->EnvironmentTexture()));
         aCtx->ShaderManager()->BindFaceProgram (aTextures,
-                                                isLightOnFace,
+                                                aShadingModel,
                                                 hasVertColor,
                                                 toEnableEnvMap,
                                                 anAspectFace->ShaderProgramRes (aCtx));
@@ -818,7 +811,7 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
     if (aCtx->ActiveProgram().IsNull()
      && aCtx->core11 != NULL)
     {
-      if (!isLightOn)
+      if (aShadingModel == Graphic3d_TOSM_UNLIT)
       {
         glDisable (GL_LIGHTING);
       }

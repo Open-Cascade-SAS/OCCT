@@ -1521,6 +1521,11 @@ Multiple changes have been applied to lights management within TKV3d and TKOpenG
   Dedicated classes only hides visibility of unrelated light properties depending on its type.
 * Calling V3d_Viewer::UpdateLights() is no more required after modifying light sources properties (color, position, etc.).
 
+@subsection upgrade_730_tkopengl Custom low-level OpenGL elements
+
+The following API changes should be considered while porting custom OpenGl_Element objects:
+* OpenGl_ShaderManager::BindFaceProgram(), ::BindLineProgram(), ::BindMarkerProgram() now takes enumeration arguments instead of Boolean flags.
+
 @subsection upgrade_730_BOPAlgo_Section Changes in BOPAlgo_Section
 
 The public method *BuildSection()* in the class *BOPAlgo_Section* has became protected. The methods *Perform()* or *PerformWithFiller()* should be called for construction of the result of SECTION operation.

@@ -32,15 +32,6 @@ IMPLEMENT_STANDARD_RTTIEXT(OpenGl_ShaderManager,Standard_Transient)
 
 namespace
 {
-  //! Suffixes identifying shading model.
-  static const char THE_SHADINGMODEL_KEY_LETTERS[Graphic3d_TypeOfShadingModel_NB] =
-  {
-    'c', // Graphic3d_TOSM_NONE
-    'f', // Graphic3d_TOSM_FACET
-    'g', // Graphic3d_TOSM_VERTEX
-    'p'  // Graphic3d_TOSM_FRAGMENT
-  };
-
   //! Number specifying maximum number of light sources to prepare a GLSL program with unrolled loop.
   const Standard_Integer THE_NB_UNROLLED_LIGHTS_MAX = 32;
 
@@ -357,6 +348,7 @@ const char THE_FRAG_CLIP_PLANES_2[] =
 OpenGl_ShaderManager::OpenGl_ShaderManager (OpenGl_Context* theContext)
 : myFfpProgram (new OpenGl_ShaderProgramFFP()),
   myShadingModel (Graphic3d_TOSM_VERTEX),
+  myUnlitPrograms (new OpenGl_SetOfShaderPrograms()),
   myContext  (theContext),
   myHasLocalOrigin (Standard_False),
   myLastView (NULL)
@@ -381,7 +373,7 @@ void OpenGl_ShaderManager::clear()
 {
   myProgramList.Clear();
   myLightPrograms.Nullify();
-  myFlatPrograms = OpenGl_SetOfShaderPrograms();
+  myUnlitPrograms = new OpenGl_SetOfShaderPrograms();
   myMapOfLightPrograms.Clear();
   myFontProgram.Nullify();
   myBlitProgram.Nullify();
@@ -491,26 +483,22 @@ Standard_Boolean OpenGl_ShaderManager::IsEmpty() const
 void OpenGl_ShaderManager::switchLightPrograms()
 {
   const Handle(Graphic3d_LightSet)& aLights = myLightSourceState.LightSources();
-  TCollection_AsciiString aKey;
-  if (!aLights.IsNull())
+  if (aLights.IsNull())
   {
-    aKey = THE_SHADINGMODEL_KEY_LETTERS[myShadingModel];
-    aKey += "_";
-    if (aLights->NbEnabled() <= THE_NB_UNROLLED_LIGHTS_MAX)
-    {
-      aKey += aLights->KeyEnabledLong();
-    }
-    else
-    {
-      const Standard_Integer aMaxLimit = roundUpMaxLightSources (aLights->NbEnabled());
-      aKey += aLights->KeyEnabledShort();
-      aKey += aMaxLimit;
-    }
+    myLightPrograms = myUnlitPrograms;
+    return;
+  }
+
+  TCollection_AsciiString aKey ("l_");
+  if (aLights->NbEnabled() <= THE_NB_UNROLLED_LIGHTS_MAX)
+  {
+    aKey += aLights->KeyEnabledLong();
   }
   else
   {
-    aKey = THE_SHADINGMODEL_KEY_LETTERS[Graphic3d_TOSM_NONE];
-    aKey += "_";
+    const Standard_Integer aMaxLimit = roundUpMaxLightSources (aLights->NbEnabled());
+    aKey += aLights->KeyEnabledShort();
+    aKey += aMaxLimit;
   }
 
   if (!myMapOfLightPrograms.Find (aKey, myLightPrograms))
@@ -546,6 +534,11 @@ void OpenGl_ShaderManager::UpdateLightSourceState()
 // =======================================================================
 void OpenGl_ShaderManager::SetShadingModel (const Graphic3d_TypeOfShadingModel theModel)
 {
+  if (theModel == Graphic3d_TOSM_DEFAULT)
+  {
+    throw Standard_ProgramError ("OpenGl_ShaderManager::SetShadingModel() - attempt to set invalid Shading Model!");
+  }
+
   myShadingModel = theModel;
   switchLightPrograms();
 }
@@ -1419,11 +1412,11 @@ namespace
 }
 
 // =======================================================================
-// function : prepareStdProgramFlat
+// function : prepareStdProgramUnlit
 // purpose  :
 // =======================================================================
-Standard_Boolean OpenGl_ShaderManager::prepareStdProgramFlat (Handle(OpenGl_ShaderProgram)& theProgram,
-                                                              const Standard_Integer        theBits)
+Standard_Boolean OpenGl_ShaderManager::prepareStdProgramUnlit (Handle(OpenGl_ShaderProgram)& theProgram,
+                                                               const Standard_Integer        theBits)
 {
   Handle(Graphic3d_ShaderProgram) aProgramSrc = new Graphic3d_ShaderProgram();
   TCollection_AsciiString aSrcVert, aSrcVertExtraOut, aSrcVertExtraMain, aSrcVertExtraFunc, aSrcGetAlpha;

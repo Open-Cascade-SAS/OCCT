@@ -16,6 +16,7 @@
 #ifndef _OpenGl_SetOfShaderPrograms_HeaderFile
 #define _OpenGl_SetOfShaderPrograms_HeaderFile
 
+#include <Graphic3d_TypeOfShadingModel.hxx>
 #include <NCollection_DataMap.hxx>
 #include <OpenGl_ShaderProgram.hxx>
 
@@ -38,23 +39,21 @@ enum OpenGl_ProgramOptions
 //! Alias to programs array of predefined length
 class OpenGl_SetOfShaderPrograms : public Standard_Transient
 {
-
+  DEFINE_STANDARD_RTTI_INLINE(OpenGl_SetOfShaderPrograms, Standard_Transient)
 public:
 
   //! Empty constructor
   OpenGl_SetOfShaderPrograms() {}
 
   //! Access program by index
-  Handle(OpenGl_ShaderProgram)& ChangeValue (const Standard_Integer theIndex) { return myPrograms[theIndex]; }
+  Handle(OpenGl_ShaderProgram)& ChangeValue (Graphic3d_TypeOfShadingModel theShadingModel,
+                                             Standard_Integer theProgramBits)
+  {
+    return myPrograms[theShadingModel][theProgramBits];
+  }
 
 protected:
-
-  Handle(OpenGl_ShaderProgram) myPrograms[OpenGl_PO_NB]; //!< programs array
-
-public:
-
-  DEFINE_STANDARD_RTTI_INLINE(OpenGl_SetOfShaderPrograms,Standard_Transient)
-
+  Handle(OpenGl_ShaderProgram) myPrograms[Graphic3d_TypeOfShadingModel_NB][OpenGl_PO_NB]; //!< programs array
 };
 
 DEFINE_STANDARD_HANDLE(OpenGl_SetOfShaderPrograms, Standard_Transient)

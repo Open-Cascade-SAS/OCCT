@@ -255,12 +255,6 @@ public:
   //! Enables or disables frustum culling optimization.
   virtual void SetCullingEnabled (const Standard_Boolean theIsEnabled) Standard_OVERRIDE { myCulling = theIsEnabled; }
 
-  //! Returns shading model of the view.
-  virtual Graphic3d_TypeOfShadingModel ShadingModel() const Standard_OVERRIDE { return myShadingModel; }
-
-  //! Sets shading model of the view.
-  virtual void SetShadingModel (const Graphic3d_TypeOfShadingModel theModel) Standard_OVERRIDE { myShadingModel = theModel; }
-
   //! Return backfacing model used for the view.
   virtual Graphic3d_TypeOfBackfacingModel BackfacingModel() const Standard_OVERRIDE { return myBackfacing; }
 
@@ -472,7 +466,6 @@ protected:
   Standard_Boolean         myWasRedrawnGL;
 
   Standard_Boolean                myCulling;
-  Graphic3d_TypeOfShadingModel    myShadingModel;
   Graphic3d_TypeOfBackfacingModel myBackfacing;
   Quantity_ColorRGBA              myBgColor;
   Handle(Graphic3d_SequenceOfHClipPlane) myClipPlanes;

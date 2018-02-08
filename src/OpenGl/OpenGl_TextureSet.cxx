@@ -14,4 +14,17 @@
 
 #include <OpenGl_TextureSet.hxx>
 
+#include <OpenGl_Texture.hxx>
+
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_TextureSet, Standard_Transient)
+
+// =======================================================================
+// function : IsModulate
+// purpose  :
+// =======================================================================
+bool OpenGl_TextureSet::IsModulate() const
+{
+  return myTextures.IsEmpty()
+      || myTextures.First().IsNull()
+      || myTextures.First()->Sampler()->Parameters()->IsModulate();
+}

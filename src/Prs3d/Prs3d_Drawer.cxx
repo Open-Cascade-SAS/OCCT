@@ -1278,3 +1278,33 @@ bool Prs3d_Drawer::SetShaderProgram (const Handle(Graphic3d_ShaderProgram)& theP
   }
   return false;
 }
+
+// =======================================================================
+// function : SetShadingModel
+// purpose  :
+// =======================================================================
+bool Prs3d_Drawer::SetShadingModel (Graphic3d_TypeOfShadingModel theModel,
+                                    bool theToOverrideDefaults)
+{
+  bool isUpdateNeeded = false;
+
+  if (theToOverrideDefaults
+  && !myHasOwnShadingAspect)
+  {
+    isUpdateNeeded  = true;
+    myShadingAspect = new Prs3d_ShadingAspect();
+    myHasOwnShadingAspect = true;
+    if (!myLink.IsNull())
+    {
+      *myShadingAspect->Aspect() = *myLink->ShadingAspect()->Aspect();
+    }
+  }
+
+  if (!myShadingAspect.IsNull()
+    && myHasOwnShadingAspect)
+  {
+    myShadingAspect->Aspect()->SetShadingModel (theModel);
+  }
+
+  return isUpdateNeeded;
+}

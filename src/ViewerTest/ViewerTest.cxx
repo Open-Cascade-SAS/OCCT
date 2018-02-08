@@ -331,6 +331,60 @@ Standard_Boolean ViewerTest::ParseMarkerType (Standard_CString theArg,
 }
 
 //=======================================================================
+//function : ParseShadingModel
+//purpose  :
+//=======================================================================
+Standard_Boolean ViewerTest::ParseShadingModel (Standard_CString              theArg,
+                                                Graphic3d_TypeOfShadingModel& theModel)
+{
+  TCollection_AsciiString aTypeStr (theArg);
+  aTypeStr.LowerCase();
+  if (aTypeStr == "unlit"
+   || aTypeStr == "color"
+   || aTypeStr == "none")
+  {
+    theModel = Graphic3d_TOSM_UNLIT;
+  }
+  else if (aTypeStr == "flat"
+        || aTypeStr == "facet")
+  {
+    theModel = Graphic3d_TOSM_FACET;
+  }
+  else if (aTypeStr == "gouraud"
+        || aTypeStr == "vertex"
+        || aTypeStr == "vert")
+  {
+    theModel = Graphic3d_TOSM_VERTEX;
+  }
+  else if (aTypeStr == "phong"
+        || aTypeStr == "fragment"
+        || aTypeStr == "frag"
+        || aTypeStr == "pixel")
+  {
+    theModel = Graphic3d_TOSM_FRAGMENT;
+  }
+  else if (aTypeStr == "default"
+        || aTypeStr == "def")
+  {
+    theModel = Graphic3d_TOSM_DEFAULT;
+  }
+  else if (aTypeStr.IsIntegerValue())
+  {
+    const int aTypeInt = aTypeStr.IntegerValue();
+    if (aTypeInt <= Graphic3d_TOSM_DEFAULT || aTypeInt >= Graphic3d_TypeOfShadingModel_NB)
+    {
+      return Standard_False;
+    }
+    theModel = (Graphic3d_TypeOfShadingModel)aTypeInt;
+  }
+  else
+  {
+    return Standard_False;
+  }
+  return Standard_True;
+}
+
+//=======================================================================
 //function : GetTypeNames
 //purpose  :
 //=======================================================================
@@ -1618,52 +1672,56 @@ static int VSetInteriorStyle (Draw_Interpretor& theDI,
 //! Auxiliary structure for VAspects
 struct ViewerTest_AspectsChangeSet
 {
-  Standard_Integer         ToSetVisibility;
-  Standard_Integer         Visibility;
+  Standard_Integer             ToSetVisibility;
+  Standard_Integer             Visibility;
 
-  Standard_Integer         ToSetColor;
-  Quantity_Color           Color;
+  Standard_Integer             ToSetColor;
+  Quantity_Color               Color;
 
-  Standard_Integer         ToSetLineWidth;
-  Standard_Real            LineWidth;
+  Standard_Integer             ToSetLineWidth;
+  Standard_Real                LineWidth;
 
-  Standard_Integer         ToSetTypeOfLine;
-  Aspect_TypeOfLine        TypeOfLine;
+  Standard_Integer             ToSetTypeOfLine;
+  Aspect_TypeOfLine            TypeOfLine;
 
-  Standard_Integer         ToSetTypeOfMarker;
-  Aspect_TypeOfMarker      TypeOfMarker;
-  Handle(Image_PixMap)     MarkerImage;
+  Standard_Integer             ToSetTypeOfMarker;
+  Aspect_TypeOfMarker          TypeOfMarker;
+  Handle(Image_PixMap)         MarkerImage;
 
-  Standard_Integer         ToSetMarkerSize;
-  Standard_Real            MarkerSize;
+  Standard_Integer             ToSetMarkerSize;
+  Standard_Real                MarkerSize;
 
-  Standard_Integer         ToSetTransparency;
-  Standard_Real            Transparency;
+  Standard_Integer             ToSetTransparency;
+  Standard_Real                Transparency;
 
-  Standard_Integer         ToSetMaterial;
-  Graphic3d_NameOfMaterial Material;
-  TCollection_AsciiString  MatName;
+  Standard_Integer             ToSetMaterial;
+  Graphic3d_NameOfMaterial     Material;
+  TCollection_AsciiString      MatName;
 
   NCollection_Sequence<TopoDS_Shape> SubShapes;
 
-  Standard_Integer         ToSetShowFreeBoundary;
-  Standard_Integer         ToSetFreeBoundaryWidth;
-  Standard_Real            FreeBoundaryWidth;
-  Standard_Integer         ToSetFreeBoundaryColor;
-  Quantity_Color           FreeBoundaryColor;
+  Standard_Integer             ToSetShowFreeBoundary;
+  Standard_Integer             ToSetFreeBoundaryWidth;
+  Standard_Real                FreeBoundaryWidth;
+  Standard_Integer             ToSetFreeBoundaryColor;
+  Quantity_Color               FreeBoundaryColor;
 
-  Standard_Integer         ToEnableIsoOnTriangulation;
+  Standard_Integer             ToEnableIsoOnTriangulation;
 
-  Standard_Integer         ToSetMaxParamValue;
-  Standard_Real            MaxParamValue;
+  Standard_Integer             ToSetMaxParamValue;
+  Standard_Real                MaxParamValue;
 
-  Standard_Integer         ToSetSensitivity;
-  Standard_Integer         SelectionMode;
-  Standard_Integer         Sensitivity;
+  Standard_Integer             ToSetSensitivity;
+  Standard_Integer             SelectionMode;
+  Standard_Integer             Sensitivity;
 
-  Standard_Integer         ToSetHatch;
-  Standard_Integer         StdHatchStyle;
-  TCollection_AsciiString  PathToHatchPattern;
+  Standard_Integer             ToSetHatch;
+  Standard_Integer             StdHatchStyle;
+  TCollection_AsciiString      PathToHatchPattern;
+
+  Standard_Integer             ToSetShadingModel;
+  Graphic3d_TypeOfShadingModel ShadingModel;
+  TCollection_AsciiString      ShadingModelName;
 
   //! Empty constructor
   ViewerTest_AspectsChangeSet()
@@ -1689,13 +1747,15 @@ struct ViewerTest_AspectsChangeSet
     ToSetFreeBoundaryColor     (0),
     FreeBoundaryColor          (DEFAULT_FREEBOUNDARY_COLOR),
     ToEnableIsoOnTriangulation (-1),
-    ToSetMaxParamValue (0),
-    MaxParamValue (500000),
-    ToSetSensitivity (0),
-    SelectionMode (-1),
-    Sensitivity (-1),
-    ToSetHatch (0),
-    StdHatchStyle (-1)
+    ToSetMaxParamValue         (0),
+    MaxParamValue              (500000),
+    ToSetSensitivity           (0),
+    SelectionMode              (-1),
+    Sensitivity                (-1),
+    ToSetHatch                 (0),
+    StdHatchStyle              (-1),
+    ToSetShadingModel          (0),
+    ShadingModel               (Graphic3d_TOSM_DEFAULT)
     {}
 
   //! @return true if no changes have been requested
@@ -1711,7 +1771,8 @@ struct ViewerTest_AspectsChangeSet
         && ToSetFreeBoundaryWidth == 0
         && ToSetMaxParamValue     == 0
         && ToSetSensitivity       == 0
-        && ToSetHatch             == 0;
+        && ToSetHatch             == 0
+        && ToSetShadingModel      == 0;
   }
 
   //! @return true if properties are valid
@@ -1766,6 +1827,12 @@ struct ViewerTest_AspectsChangeSet
     if (ToSetHatch == 1 && StdHatchStyle < 0 && PathToHatchPattern == "")
     {
       std::cout << "Error: hatch style must be specified\n";
+      isOk = Standard_False;
+    }
+    if (ToSetShadingModel == 1
+    && (ShadingModel < Graphic3d_TOSM_DEFAULT || ShadingModel > Graphic3d_TOSM_FRAGMENT))
+    {
+      std::cout << "Error: unknown shading model " << ShadingModelName << ".\n";
       isOk = Standard_False;
     }
     return isOk;
@@ -2321,6 +2388,8 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
       aChangeSet->ToSetHatch = -1;
       aChangeSet->StdHatchStyle = -1;
       aChangeSet->PathToHatchPattern.Clear();
+      aChangeSet->ToSetShadingModel = -1;
+      aChangeSet->ShadingModel = Graphic3d_TOSM_DEFAULT;
     }
     else if (anArg == "-isoontriangulation"
           || anArg == "-isoontriang")
@@ -2413,6 +2482,26 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
         aChangeSet->PathToHatchPattern = anArgHatch;
       }
     }
+    else if (anArg == "-setshadingmodel")
+    {
+      if (++anArgIter >= theArgNb)
+      {
+        std::cout << "Error: wrong syntax at " << anArg << "\n";
+        return 1;
+      }
+      aChangeSet->ToSetShadingModel = 1;
+      aChangeSet->ShadingModelName  = theArgVec[anArgIter];
+      if (!ViewerTest::ParseShadingModel (theArgVec[anArgIter], aChangeSet->ShadingModel))
+      {
+        std::cout << "Error: wrong syntax at " << anArg << "\n";
+        return 1;
+      }
+    }
+    else if (anArg == "-unsetshadingmodel")
+    {
+      aChangeSet->ToSetShadingModel = -1;
+      aChangeSet->ShadingModel = Graphic3d_TOSM_DEFAULT;
+    }
     else
     {
       std::cout << "Error: wrong syntax at " << anArg << "\n";
@@ -2503,6 +2592,10 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
     if (aChangeSet->ToSetMaxParamValue != 0)
     {
       aDrawer->SetMaximalParameterValue (aChangeSet->MaxParamValue);
+    }
+    if (aChangeSet->ToSetShadingModel == 1)
+    {
+      aDrawer->ShadingAspect()->Aspect()->SetShadingModel (aChangeSet->ShadingModel);
     }
 
     // redisplay all objects in context
@@ -2699,6 +2792,11 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
           }
           toRedisplay = Standard_True;
         }
+        if (aChangeSet->ToSetShadingModel != 0)
+        {
+          aDrawer->SetShadingModel ((aChangeSet->ToSetShadingModel == -1) ? Graphic3d_TOSM_DEFAULT : aChangeSet->ShadingModel, aChangeSet->ToSetShadingModel != -1);
+          toRedisplay = Standard_True;
+        }
       }
 
       for (aChangesIter.Next(); aChangesIter.More(); aChangesIter.Next())
@@ -2734,6 +2832,11 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
           if (aChangeSet->ToSetSensitivity != 0)
           {
             aCtx->SetSelectionSensitivity (aPrs, aChangeSet->SelectionMode, aChangeSet->Sensitivity);
+          }
+          if (aChangeSet->ToSetShadingModel != 0)
+          {
+            Handle(AIS_ColoredDrawer) aCurColDrawer = aColoredPrs->CustomAspects (aSubShape);
+            aCurColDrawer->SetShadingModel ((aChangeSet->ToSetShadingModel == -1) ? Graphic3d_TOSM_DEFAULT : aChangeSet->ShadingModel, aChangeSet->ToSetShadingModel != -1);
           }
         }
       }
@@ -6235,6 +6338,8 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
       "\n\t\t:          [-setMaxParamValue {value}]"
       "\n\t\t:          [-setSensitivity {selection_mode} {value}]"
       "\n\t\t:          [-setHatch HatchStyle]"
+      "\n\t\t:          [-setShadingModel {color|flat|gouraud|phong}]"
+      "\n\t\t:          [-unsetShadingModel]"
       "\n\t\t: Manage presentation properties of all, selected or named objects."
       "\n\t\t: When -subshapes is specified than following properties will be"
       "\n\t\t: assigned to specified sub-shapes."

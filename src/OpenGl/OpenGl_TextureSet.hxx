@@ -81,6 +81,10 @@ public:
   //! Return the texture at specified position within [0, Size()) range.
   Handle(OpenGl_Texture)& ChangeValue (Standard_Integer theIndex) { return myTextures.ChangeValue (theIndex); }
 
+  //! Return TRUE if texture color modulation has been enabled for the first texture
+  //! or if texture is not set at all.
+  Standard_EXPORT bool IsModulate() const;
+
 protected:
 
   NCollection_Array1<Handle(OpenGl_Texture)> myTextures;

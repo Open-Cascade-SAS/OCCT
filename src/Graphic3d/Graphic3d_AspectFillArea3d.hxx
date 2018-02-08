@@ -27,6 +27,7 @@
 #include <Graphic3d_ShaderProgram.hxx>
 #include <Graphic3d_TextureMap.hxx>
 #include <Graphic3d_TextureSet.hxx>
+#include <Graphic3d_TypeOfShadingModel.hxx>
 #include <Standard.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
@@ -76,6 +77,12 @@ public:
 
   //! Modifies the interior type used for rendering
   void SetInteriorStyle (const Aspect_InteriorStyle theStyle) { myInteriorStyle = theStyle; }
+
+  //! Returns shading model (Graphic3d_TOSM_DEFAULT by default, which means that Shading Model set as default for entire Viewer will be used)
+  Graphic3d_TypeOfShadingModel ShadingModel() const { return myShadingModel; }
+
+  //! Sets shading model
+  void SetShadingModel (const Graphic3d_TypeOfShadingModel theShadingModel) { myShadingModel = theShadingModel; }
 
   //! Return interior color.
   const Quantity_Color& InteriorColor() const { return myInteriorColor.GetRGB(); }
@@ -337,6 +344,7 @@ protected:
   Quantity_ColorRGBA           myBackInteriorColor;
   Quantity_ColorRGBA           myEdgeColor;
   Aspect_InteriorStyle         myInteriorStyle;
+  Graphic3d_TypeOfShadingModel myShadingModel;
   Aspect_TypeOfLine            myEdgeType;
   Standard_ShortReal           myEdgeWidth;
   Handle(Graphic3d_HatchStyle) myHatchStyle;

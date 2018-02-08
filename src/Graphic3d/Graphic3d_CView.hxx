@@ -59,6 +59,8 @@ DEFINE_STANDARD_HANDLE (Graphic3d_CView, Graphic3d_DataStructureManager)
 //! computed (HLR or "view-dependent") structures.
 class Graphic3d_CView : public Graphic3d_DataStructureManager
 {
+  friend class Graphic3d_StructureManager;
+  DEFINE_STANDARD_RTTIEXT(Graphic3d_CView, Graphic3d_DataStructureManager)
 public:
 
   //! Constructor.
@@ -88,6 +90,13 @@ public:
   Standard_Boolean IsRemoved() const { return myIsRemoved; }
 
 public:
+
+  //! Returns default Shading Model of the view; Graphic3d_TOSM_FRAGMENT by default.
+  Graphic3d_TypeOfShadingModel ShadingModel() const { return myShadingModel; }
+
+  //! Sets default Shading Model of the view.
+  //! Will throw an exception on attempt to set Graphic3d_TOSM_DEFAULT.
+  Standard_EXPORT void SetShadingModel (Graphic3d_TypeOfShadingModel theModel);
 
   //! Returns visualization type of the view.
   Graphic3d_TypeOfVisualization VisualizationType() const { return myVisualization; }
@@ -151,8 +160,6 @@ public:
   const Handle(Graphic3d_StructureManager)& StructureManager() const { return myStructureManager; }
 
 private:
-
-  friend class Graphic3d_StructureManager;
 
   //! Is it possible to display the structure in the view?
   Standard_EXPORT Graphic3d_TypeOfAnswer acceptDisplay (const Graphic3d_TypeOfStructure theStructType) const;
@@ -390,12 +397,6 @@ public:
   //! Enables or disables frustum culling optimization.
   virtual void SetCullingEnabled (const Standard_Boolean theIsEnabled) = 0;
 
-  //! Returns shading model of the view.
-  virtual Graphic3d_TypeOfShadingModel ShadingModel() const = 0;
-
-  //! Sets shading model of the view.
-  virtual void SetShadingModel (const Graphic3d_TypeOfShadingModel theModel) = 0;
-
   //! Return backfacing model used for the view.
   virtual Graphic3d_TypeOfBackfacingModel BackfacingModel() const = 0;
 
@@ -465,11 +466,9 @@ protected:
   Standard_Boolean myIsInComputedMode;
   Standard_Boolean myIsActive;
   Standard_Boolean myIsRemoved;
+  Graphic3d_TypeOfShadingModel  myShadingModel;
   Graphic3d_TypeOfVisualization myVisualization;
 
-private:
-
-  DEFINE_STANDARD_RTTIEXT(Graphic3d_CView,Graphic3d_DataStructureManager)
 };
 
 #endif // _Graphic3d_CView_HeaderFile

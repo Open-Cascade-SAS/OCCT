@@ -18,7 +18,6 @@
 
 #include <Graphic3d_ShaderProgram.hxx>
 #include <Graphic3d_StereoMode.hxx>
-#include <Graphic3d_TypeOfShadingModel.hxx>
 
 #include <NCollection_DataMap.hxx>
 #include <NCollection_Sequence.hxx>
@@ -84,7 +83,7 @@ public:
 
   //! Bind program for filled primitives rendering
   Standard_Boolean BindFaceProgram (const Handle(OpenGl_TextureSet)& theTextures,
-                                    const Standard_Boolean           theToLightOn,
+                                    const Graphic3d_TypeOfShadingModel  theShadingModel,
                                     const Standard_Boolean              theHasVertColor,
                                     const Standard_Boolean              theEnableEnvMap,
                                     const Handle(OpenGl_ShaderProgram)& theCustomProgram)
@@ -95,15 +94,19 @@ public:
       return bindProgramWithState (theCustomProgram);
     }
 
+    const Graphic3d_TypeOfShadingModel aShadeModelOnFace = theShadingModel != Graphic3d_TOSM_UNLIT
+                                                        && (theTextures.IsNull() || theTextures->IsModulate())
+                                                        ? theShadingModel
+                                                        : Graphic3d_TOSM_UNLIT;
     const Standard_Integer        aBits    = getProgramBits (theTextures, theHasVertColor, theEnableEnvMap);
-    Handle(OpenGl_ShaderProgram)& aProgram = getStdProgram (theToLightOn, aBits);
+    Handle(OpenGl_ShaderProgram)& aProgram = getStdProgram (aShadeModelOnFace, aBits);
     return bindProgramWithState (aProgram);
   }
 
   //! Bind program for line rendering
   Standard_Boolean BindLineProgram (const Handle(OpenGl_TextureSet)&    theTextures,
-                                    const Standard_Boolean              theStipple,
-                                    const Standard_Boolean              theToLightOn,
+                                    const Aspect_TypeOfLine             theLineType,
+                                    const Graphic3d_TypeOfShadingModel  theShadingModel,
                                     const Standard_Boolean              theHasVertColor,
                                     const Handle(OpenGl_ShaderProgram)& theCustomProgram)
   {
@@ -114,18 +117,18 @@ public:
     }
 
     Standard_Integer aBits = getProgramBits (theTextures, theHasVertColor);
-    if (theStipple)
+    if (theLineType != Aspect_TOL_SOLID)
     {
       aBits |= OpenGl_PO_StippleLine;
     }
 
-    Handle(OpenGl_ShaderProgram)& aProgram = getStdProgram (theToLightOn, aBits);
+    Handle(OpenGl_ShaderProgram)& aProgram = getStdProgram (theShadingModel, aBits);
     return bindProgramWithState (aProgram);
   }
 
   //! Bind program for point rendering
   Standard_Boolean BindMarkerProgram (const Handle(OpenGl_TextureSet)&    theTextures,
-                                      const Standard_Boolean              theToLightOn,
+                                      const Graphic3d_TypeOfShadingModel  theShadingModel,
                                       const Standard_Boolean              theHasVertColor,
                                       const Handle(OpenGl_ShaderProgram)& theCustomProgram)
   {
@@ -136,7 +139,7 @@ public:
     }
 
     const Standard_Integer        aBits    = getProgramBits (theTextures, theHasVertColor) | OpenGl_PO_Point;
-    Handle(OpenGl_ShaderProgram)& aProgram = getStdProgram (theToLightOn, aBits);
+    Handle(OpenGl_ShaderProgram)& aProgram = getStdProgram (theShadingModel, aBits);
     return bindProgramWithState (aProgram);
   }
 
@@ -313,6 +316,32 @@ public:
     return myContext == theCtx;
   }
 
+  //! Choose Shading Model.
+  Graphic3d_TypeOfShadingModel ChooseShadingModel (Graphic3d_TypeOfShadingModel theCustomModel,
+                                                   bool theHasNodalNormals) const
+  {
+    if (!myContext->ColorMask())
+    {
+      return Graphic3d_TOSM_UNLIT;
+    }
+    Graphic3d_TypeOfShadingModel aModel = theCustomModel != Graphic3d_TOSM_DEFAULT ? theCustomModel : myShadingModel;
+    switch (aModel)
+    {
+      case Graphic3d_TOSM_DEFAULT:
+      case Graphic3d_TOSM_UNLIT:
+      case Graphic3d_TOSM_FACET:
+        break;
+      case Graphic3d_TOSM_VERTEX:
+      case Graphic3d_TOSM_FRAGMENT:
+        aModel = theHasNodalNormals ? aModel : Graphic3d_TOSM_UNLIT;
+        break;
+    }
+    return aModel;
+  }
+
+  //! Returns default Shading Model.
+  Graphic3d_TypeOfShadingModel ShadingModel() const { return myShadingModel; }
+
   //! Sets shading model.
   Standard_EXPORT void SetShadingModel (const Graphic3d_TypeOfShadingModel theModel);
 
@@ -377,25 +406,26 @@ protected:
   }
 
   //! Prepare standard GLSL program.
-  Handle(OpenGl_ShaderProgram)& getStdProgram (const Standard_Boolean theToLightOn,
-                                               const Standard_Integer theBits)
+  Handle(OpenGl_ShaderProgram)& getStdProgram (Graphic3d_TypeOfShadingModel theShadingModel,
+                                               Standard_Integer theBits)
   {
-    // If environment map is enabled lighting calculations are
-    // not needed (in accordance with default OCCT behaviour)
-    if (theToLightOn && (theBits & OpenGl_PO_TextureEnv) == 0)
+    if (theShadingModel == Graphic3d_TOSM_UNLIT
+     || (theBits & OpenGl_PO_TextureEnv) != 0)
     {
-      Handle(OpenGl_ShaderProgram)& aProgram = myLightPrograms->ChangeValue (theBits);
+      // If environment map is enabled lighting calculations are
+      // not needed (in accordance with default OCCT behavior)
+      Handle(OpenGl_ShaderProgram)& aProgram = myUnlitPrograms->ChangeValue (Graphic3d_TOSM_UNLIT, theBits);
       if (aProgram.IsNull())
       {
-        prepareStdProgramLight (aProgram, theBits);
+        prepareStdProgramUnlit (aProgram, theBits);
       }
       return aProgram;
     }
 
-    Handle(OpenGl_ShaderProgram)& aProgram = myFlatPrograms.ChangeValue (theBits);
+    Handle(OpenGl_ShaderProgram)& aProgram = myLightPrograms->ChangeValue (theShadingModel, theBits);
     if (aProgram.IsNull())
     {
-      prepareStdProgramFlat (aProgram, theBits);
+      prepareStdProgramLight (aProgram, theShadingModel, theBits);
     }
     return aProgram;
   }
@@ -416,18 +446,20 @@ protected:
   Standard_EXPORT Standard_Boolean prepareStdProgramOitCompositing (const Standard_Boolean theMsaa);
 
   //! Prepare standard GLSL program without lighting.
-  Standard_EXPORT Standard_Boolean prepareStdProgramFlat (Handle(OpenGl_ShaderProgram)& theProgram,
-                                                          const Standard_Integer        theBits);
+  Standard_EXPORT Standard_Boolean prepareStdProgramUnlit (Handle(OpenGl_ShaderProgram)& theProgram,
+                                                           const Standard_Integer        theBits);
 
   //! Prepare standard GLSL program with lighting.
   Standard_Boolean prepareStdProgramLight (Handle(OpenGl_ShaderProgram)& theProgram,
-                                           const Standard_Integer        theBits)
+                                           Graphic3d_TypeOfShadingModel theShadingModel,
+                                           Standard_Integer theBits)
   {
-    switch (myShadingModel)
+    switch (theShadingModel)
     {
-      case Graphic3d_TOSM_NONE:     return prepareStdProgramFlat   (theProgram, theBits);
+      case Graphic3d_TOSM_UNLIT:    return prepareStdProgramUnlit  (theProgram, theBits);
       case Graphic3d_TOSM_FACET:    return prepareStdProgramPhong  (theProgram, theBits, true);
       case Graphic3d_TOSM_VERTEX:   return prepareStdProgramGouraud(theProgram, theBits);
+      case Graphic3d_TOSM_DEFAULT:
       case Graphic3d_TOSM_FRAGMENT: return prepareStdProgramPhong  (theProgram, theBits, false);
     }
     return false;
@@ -501,11 +533,11 @@ protected:
   Graphic3d_TypeOfShadingModel       myShadingModel;       //!< lighting shading model
   OpenGl_ShaderProgramList           myProgramList;        //!< The list of shader programs
   Handle(OpenGl_SetOfShaderPrograms) myLightPrograms;      //!< pointer to active lighting programs matrix
-  OpenGl_SetOfShaderPrograms         myFlatPrograms;       //!< programs matrix without  lighting
+  Handle(OpenGl_SetOfShaderPrograms) myUnlitPrograms;      //!< programs matrix without  lighting
   Handle(OpenGl_ShaderProgram)       myFontProgram;        //!< standard program for textured text
   Handle(OpenGl_ShaderProgram)       myBlitProgram;        //!< standard program for FBO blit emulation
   Handle(OpenGl_ShaderProgram)       myOitCompositingProgram[2]; //!< standard program for OIT compositing (default and MSAA).
-  OpenGl_MapOfShaderPrograms         myMapOfLightPrograms; //!< map of lighting programs depending on shading model and lights configuration
+  OpenGl_MapOfShaderPrograms         myMapOfLightPrograms; //!< map of lighting programs depending on lights configuration
 
   Handle(OpenGl_ShaderProgram)       myStereoPrograms[Graphic3d_StereoMode_NB]; //!< standard stereo programs
 

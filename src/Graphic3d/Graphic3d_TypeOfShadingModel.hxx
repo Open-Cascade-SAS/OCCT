@@ -17,17 +17,41 @@
 #ifndef _Graphic3d_TypeOfShadingModel_HeaderFile
 #define _Graphic3d_TypeOfShadingModel_HeaderFile
 
-//! Definition of the rendering (colour shading) model
-//! Graphic3d_TOSM_NONE     No lighting, only white ambient light
-//! Graphic3d_TOSM_FACET    No interpolation, constant shading      (Flat    Shading)
-//! Graphic3d_TOSM_VERTEX   Interpolation of color based on normals (Gouraud Shading)
-//! Graphic3d_TOSM_FRAGMENT Interpolation of color based on normals (Phong   Shading)
+//! Definition of the color shading model.
 enum Graphic3d_TypeOfShadingModel
 {
-  Graphic3d_TOSM_NONE,
+  //! Use Shading Model, specified as default for entire Viewer.
+  Graphic3d_TOSM_DEFAULT = -1,
+
+  //! Unlit Shading (or shadeless), lighting is ignored and facet is fully filled by its material color.
+  //! This model is useful for artificial/auxiliary objects, not intended to be lit,
+  //! or for objects with pre-calculated lighting information (e.g. captured by camera).
+  Graphic3d_TOSM_UNLIT = 0,
+
+  //! Flat Shading, calculated per-facet basing on facet normal.
+  //! This model is useful for mesh element analysis.
+  //! Note that unlike Graphic3d_TOSM_VERTEX/Graphic3d_TOSM_FRAGMENT,
+  //! this shading model does NOT require normals to be defined within vertex attributes.
   Graphic3d_TOSM_FACET,
+
+  //! Gouraud Shading, calculated per-vertex basing on nodal normal, and then color is interpolated across fragments.
+  //! This shading model was default within Fixed-Function Pipeline of old OpenGL (and Direct3d);
+  //! still can be used as alternative to Graphic3d_TOSM_FRAGMENT for better performance on low-poly (and middle-poly) models
+  //! (per-fragment shading is more optimal for considerably high-poly models, since expensive shading is not computed for discarded fragments).
+  //! Shading model requires normals to be defined within vertex attributes.
   Graphic3d_TOSM_VERTEX,
-  Graphic3d_TOSM_FRAGMENT
+
+  //! Phong Shading, calculated per-fragment basing on nodal normal, so that normal is interpolated across fragments.
+  //! This is a main shading model nowadays, providing the best image quality.
+  //! Shading model requires normals to be defined within vertex attributes.
+  Graphic3d_TOSM_FRAGMENT,
+
+  // obsolete aliases
+  Graphic3d_TOSM_NONE = Graphic3d_TOSM_UNLIT,
+  V3d_COLOR   = Graphic3d_TOSM_NONE,
+  V3d_FLAT    = Graphic3d_TOSM_FACET,
+  V3d_GOURAUD = Graphic3d_TOSM_VERTEX,
+  V3d_PHONG   = Graphic3d_TOSM_FRAGMENT
 };
 
 enum

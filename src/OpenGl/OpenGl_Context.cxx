@@ -3193,7 +3193,7 @@ void OpenGl_Context::SetShadingMaterial (const OpenGl_AspectFace* theAspect,
 
   // do not update material properties in case of zero reflection mode,
   // because GL lighting will be disabled by OpenGl_PrimitiveArray::DrawArray() anyway.
-  if (theAspect->IsNoLighting())
+  if (theAspect->ShadingModel() == Graphic3d_TOSM_UNLIT)
   {
     return;
   }

@@ -1178,8 +1178,11 @@ void AIS_Manipulator::Axis::Compute (const Handle(PrsMgr_PresentationManager)& t
     {
       myHighlightTranslator->Clear();
     }
-    Handle(Graphic3d_Group) aGroup = Prs3d_Root::CurrentGroup (myHighlightTranslator);
-    aGroup->AddPrimitiveArray (myTriangleArray);
+    {
+      Handle(Graphic3d_Group) aGroup = Prs3d_Root::CurrentGroup (myHighlightTranslator);
+      aGroup->SetGroupPrimitivesAspect (theAspect->Aspect());
+      aGroup->AddPrimitiveArray (myTriangleArray);
+    }
   }
 
   if (myHasScaling)
@@ -1199,8 +1202,11 @@ void AIS_Manipulator::Axis::Compute (const Handle(PrsMgr_PresentationManager)& t
     {
       myHighlightScaler->Clear();
     }
-    Handle(Graphic3d_Group) aGroup = Prs3d_Root::CurrentGroup (myHighlightScaler);
-    aGroup->AddPrimitiveArray (myCube.Array());
+    {
+      Handle(Graphic3d_Group) aGroup = Prs3d_Root::CurrentGroup (myHighlightScaler);
+      aGroup->SetGroupPrimitivesAspect (theAspect->Aspect());
+      aGroup->AddPrimitiveArray (myCube.Array());
+    }
   }
 
   if (myHasRotation)
@@ -1219,7 +1225,10 @@ void AIS_Manipulator::Axis::Compute (const Handle(PrsMgr_PresentationManager)& t
     {
       myHighlightRotator->Clear();
     }
-    Handle(Graphic3d_Group) aGroup = Prs3d_Root::CurrentGroup (myHighlightRotator);
-    Prs3d_Root::CurrentGroup (myHighlightRotator)->AddPrimitiveArray (myCircle.Array());
+    {
+      Handle(Graphic3d_Group) aGroup = Prs3d_Root::CurrentGroup (myHighlightRotator);
+      aGroup->SetGroupPrimitivesAspect (theAspect->Aspect());
+      aGroup->AddPrimitiveArray (myCircle.Array());
+    }
   }
 }

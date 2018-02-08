@@ -2475,7 +2475,7 @@ Standard_Boolean OpenGl_View::updateRaytraceLightSources (const OpenGl_Mat4& the
 {
   std::vector<Handle(Graphic3d_CLight)> aLightSources;
   myRaytraceGeometry.Ambient = BVH_Vec4f (0.f, 0.f, 0.f, 0.f);
-  if (myShadingModel != Graphic3d_TOSM_NONE
+  if (myShadingModel != Graphic3d_TOSM_UNLIT
   && !myLights.IsNull())
   {
     const Graphic3d_Vec4& anAmbient = myLights->AmbientColor();

@@ -26,6 +26,7 @@
 
 #include <gp_Ax3.hxx>
 #include <Graphic3d_StructureManager.hxx>
+#include <Graphic3d_TypeOfShadingModel.hxx>
 #include <Graphic3d_Vertex.hxx>
 #include <Graphic3d_ZLayerSettings.hxx>
 
@@ -46,7 +47,6 @@
 #include <V3d_ListOfLight.hxx>
 #include <V3d_ListOfView.hxx>
 #include <V3d_TypeOfOrientation.hxx>
-#include <V3d_TypeOfShadingModel.hxx>
 #include <V3d_TypeOfView.hxx>
 #include <V3d_TypeOfVisualization.hxx>
 
@@ -167,10 +167,10 @@ public:
   void SetDefaultVisualization (const V3d_TypeOfVisualization theType) { myVisualization = theType; }
 
   //! Returns the default type of Shading
-  V3d_TypeOfShadingModel DefaultShadingModel() const { return myShadingModel; }
+  Graphic3d_TypeOfShadingModel DefaultShadingModel() const { return myShadingModel; }
 
   //! Gives the default type of SHADING.
-  void SetDefaultShadingModel (const V3d_TypeOfShadingModel theType) { myShadingModel = theType; }
+  void SetDefaultShadingModel (const Graphic3d_TypeOfShadingModel theType) { myShadingModel = theType; }
 
   void SetDefaultTypeOfView (const V3d_TypeOfView theType) { myDefaultTypeOfView = theType; }
 
@@ -417,7 +417,7 @@ public: //! @name deprecated methods
                               const V3d_TypeOfOrientation theViewProj = V3d_XposYnegZpos,
                               const Quantity_Color& theViewBackground = Quantity_NOC_GRAY30,
                               const V3d_TypeOfVisualization theVisualization = V3d_ZBUFFER,
-                              const V3d_TypeOfShadingModel theShadingModel = V3d_GOURAUD,
+                              const Graphic3d_TypeOfShadingModel theShadingModel = Graphic3d_TOSM_VERTEX,
                               const Standard_Boolean theComputedMode = Standard_True,
                               const Standard_Boolean theDefaultComputedMode = Standard_True);
 
@@ -474,7 +474,7 @@ private:
   Standard_Real myViewSize;
   V3d_TypeOfOrientation myViewProj;
   V3d_TypeOfVisualization myVisualization;
-  V3d_TypeOfShadingModel myShadingModel;
+  Graphic3d_TypeOfShadingModel myShadingModel;
   V3d_TypeOfView myDefaultTypeOfView;
   Graphic3d_RenderingParams myDefaultRenderingParams;
 

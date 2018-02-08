@@ -17,18 +17,8 @@
 #ifndef _V3d_TypeOfShadingModel_HeaderFile
 #define _V3d_TypeOfShadingModel_HeaderFile
 
+#include <Graphic3d_TypeOfShadingModel.hxx>
 
-//! Defines the type of shading for the graphic object:
-//! -   V3d_COLOR: simple surface color (Graphic3d_TOM_NONE),
-//! -   V3d_FLAT: flat shading (Graphic3d_TOM_FACET),
-//! -   V3d_GOURAUD: Gouraud shading (Graphic3d_TOM_VERTEX),
-//! -   V3d_PHONG: Phong shading (Graphic3d_TOM_FRAGMENT).
-enum V3d_TypeOfShadingModel
-{
-V3d_COLOR,
-V3d_FLAT,
-V3d_GOURAUD,
-V3d_PHONG
-};
+typedef Graphic3d_TypeOfShadingModel V3d_TypeOfShadingModel;
 
 #endif // _V3d_TypeOfShadingModel_HeaderFile
