@@ -52,10 +52,12 @@ myTOM(Aspect_TOM_PLUS)
   myHilightDrawer->SetDisplayMode (-99);
   myHilightDrawer->SetPointAspect (new Prs3d_PointAspect (Aspect_TOM_PLUS, Quantity_NOC_GRAY80, 3.0));
   myHilightDrawer->SetColor (Quantity_NOC_GRAY80);
+  myHilightDrawer->SetZLayer (Graphic3d_ZLayerId_UNKNOWN);
   myDynHilightDrawer = new Prs3d_Drawer();
   myDynHilightDrawer->SetDisplayMode (-99);
   myDynHilightDrawer->SetPointAspect (new Prs3d_PointAspect (Aspect_TOM_PLUS, Quantity_NOC_CYAN1, 3.0));
   myDynHilightDrawer->SetColor (Quantity_NOC_CYAN1);
+  myDynHilightDrawer->SetZLayer (Graphic3d_ZLayerId_Top);
 }
 
 //=======================================================================
