@@ -1644,7 +1644,7 @@ void OpenGl_AspectMarker::Resources::BuildSprites (const Handle(OpenGl_Context)&
       }
       else
       {
-        const TCollection_AsciiString anOldKey = mySprite->First()->ResourceId();
+        const TCollection_AsciiString anOldKey = mySpriteA->First()->ResourceId();
         mySpriteA.Nullify(); // we need nullify all handles before ReleaseResource() call
         theCtx->ReleaseResource (anOldKey, Standard_True);
       }
