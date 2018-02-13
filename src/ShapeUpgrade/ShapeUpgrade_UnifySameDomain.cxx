@@ -1645,122 +1645,48 @@ void ShapeUpgrade_UnifySameDomain::IntUnifyFaces(const TopoDS_Shape& theInpShape
 void ShapeUpgrade_UnifySameDomain::UnifyEdges()
 {
   TopoDS_Shape aRes = myContext->Apply(myShape);
-
-  TopTools_IndexedMapOfShape ChangedFaces;
-
   // creating map of edge faces
   TopTools_IndexedDataMapOfShapeListOfShape aMapEdgeFaces;
   TopExp::MapShapesAndAncestors(aRes, TopAbs_EDGE, TopAbs_FACE, aMapEdgeFaces);
-  
   // creating map of vertex edges
   TopTools_IndexedDataMapOfShapeListOfShape aMapEdgesVertex;
   TopExp::MapShapesAndUniqueAncestors(aRes, TopAbs_VERTEX, TopAbs_EDGE, aMapEdgesVertex);
-  
-  TopTools_MapOfShape SharedVert;
-
-  TopTools_IndexedMapOfShape anOldEdges;
-  TopExp::MapShapes(myInitShape, TopAbs_EDGE, anOldEdges);
-
-  TopTools_DataMapOfShapeShape NewEdges2OldEdges;
-  for (int i = 1; i <= anOldEdges.Extent(); i++)
-  {
-    const TopoDS_Shape& anOldEdge = anOldEdges(i);
-    TopoDS_Shape aNewEdge = myContext->Apply(anOldEdge);
-    if (!aNewEdge.IsNull() && !aNewEdge.IsSame(anOldEdge))
-      NewEdges2OldEdges.Bind(aNewEdge, anOldEdge);
-  }
 
   if (mySafeInputMode)
     UpdateMapOfShapes(myKeepShapes, myContext);
 
-  TopExp_Explorer exp;
-  // processing separate wires
-  for (exp.Init(aRes, TopAbs_WIRE, TopAbs_FACE); exp.More(); exp.Next()) 
+  // Sequence of the edges of the shape
+  TopTools_SequenceOfShape aSeqEdges;
+  const Standard_Integer aNbE = aMapEdgeFaces.Extent();
+  for (Standard_Integer i = 1; i <= aNbE; ++i)
+    aSeqEdges.Append(aMapEdgeFaces.FindKey(i));
+
+  // Prepare map of shared vertices (with the number of connected edges greater then 2)
+  TopTools_MapOfShape aSharedVert;
+  CheckSharedVertices(aSeqEdges, aMapEdgesVertex, myKeepShapes, aSharedVert);
+  // Merge the edges avoiding removal of the shared vertices
+  Standard_Boolean isMerged = MergeSeq(aSeqEdges, myAngTol, myLinTol, myConcatBSplines,
+                                       mySafeInputMode, myContext, aSharedVert);
+  // Collect faces to rebuild
+  TopTools_IndexedMapOfShape aChangedFaces;
+  if (isMerged)
   {
-    TopTools_SequenceOfShape SeqEdges;
-    TopExp_Explorer expE(exp.Current(), TopAbs_EDGE);
-    for (; expE.More(); expE.Next())
-      SeqEdges.Append(expE.Current());
-    SharedVert.Clear();
-    CheckSharedVertices(SeqEdges, aMapEdgesVertex, myKeepShapes, SharedVert); 
-    MergeSeq(SeqEdges, myAngTol, myLinTol, myConcatBSplines, mySafeInputMode, myContext,
-      SharedVert);
+    for (Standard_Integer i = 1; i <= aNbE; ++i)
+    {
+      const TopoDS_Shape& aE = aMapEdgeFaces.FindKey(i);
+      if (myContext->IsRecorded(aE))
+      {
+        TopTools_ListIteratorOfListOfShape it(aMapEdgeFaces(i));
+        for (; it.More(); it.Next())
+          aChangedFaces.Add(it.Value());
+      }
+    }
   }
-
-  // processing each face
-  for (exp.Init(aRes, TopAbs_FACE); exp.More(); exp.Next()) {
-    TopoDS_Shape aFace = exp.Current().Oriented(TopAbs_FORWARD);
-    TopTools_IndexedDataMapOfShapeListOfShape aMapFacesEdges;
-    TopTools_SequenceOfShape aNonSharedEdges;
-    for (TopExp_Explorer expe(aFace,TopAbs_EDGE); expe.More(); expe.Next()) {
-      TopoDS_Edge edge = TopoDS::Edge(expe.Current());
-      const TopTools_ListOfShape& aList = aMapEdgeFaces.FindFromKey(edge);
-      TopTools_ListIteratorOfListOfShape anIter(aList);
-      Standard_Integer NbFacesPerEdge = aList.Extent();
-      for ( ; anIter.More(); anIter.Next()) {
-        const TopoDS_Shape& aFace1 = anIter.Value();
-        if (aFace1.IsSame(aFace) && NbFacesPerEdge != 1)
-          continue;
-        if (NbFacesPerEdge == 1)
-          //store non-shared edges separately 
-          aNonSharedEdges.Append(edge);
-        else 
-        {
-          if (aMapFacesEdges.Contains(aFace1))
-            aMapFacesEdges.ChangeFromKey(aFace1).Append(edge);
-          else 
-          {
-            TopTools_ListOfShape ListEdges;
-            ListEdges.Append(edge);
-            aMapFacesEdges.Add(aFace1, ListEdges);
-          }
-        }
-      }
-    }
-      
-    for (Standard_Integer i=1; i<=aMapFacesEdges.Extent(); i++)
-    {
-      const TopTools_ListOfShape& ListEdges = aMapFacesEdges.FindFromIndex(i);
-      TopTools_SequenceOfShape SeqEdges;
-      TopTools_ListIteratorOfListOfShape anIter(ListEdges);
-      for ( ; anIter.More(); anIter.Next())
-        SeqEdges.Append(anIter.Value());
-      if (SeqEdges.Length()==1) 
-        continue;  
-
-      SharedVert.Clear();
-      CheckSharedVertices(SeqEdges, aMapEdgesVertex, myKeepShapes, SharedVert);
-      if (MergeSeq(SeqEdges, myAngTol, myLinTol, myConcatBSplines, mySafeInputMode,
-        myContext, SharedVert))
-      {
-        TopoDS_Face tmpF = TopoDS::Face(exp.Current());
-        if ( !ChangedFaces.Contains(tmpF) )
-          ChangedFaces.Add(tmpF);
-        tmpF = TopoDS::Face(aMapFacesEdges.FindKey(i));
-        if ( !ChangedFaces.Contains(tmpF) )
-          ChangedFaces.Add(tmpF);
-      }
-    }
-    
-    if ( aNonSharedEdges.Length() > 1 )
-    {
-      SharedVert.Clear();
-      CheckSharedVertices(aNonSharedEdges, aMapEdgesVertex, myKeepShapes, SharedVert);
-      if (MergeSeq(aNonSharedEdges, myAngTol, myLinTol, myConcatBSplines, mySafeInputMode,
-        myContext, SharedVert))
-      {
-        TopoDS_Face tmpF = TopoDS::Face(exp.Current());
-        if ( !ChangedFaces.Contains(tmpF) )
-          ChangedFaces.Add(tmpF);
-      }
-    }
-
-  } // end processing each face
 
   // fix changed faces and replace them in the local context
   Standard_Real aPrec = Precision::Confusion();
-  for (Standard_Integer i = 1; i <= ChangedFaces.Extent(); i++) {
-    TopoDS_Face aFace = TopoDS::Face(myContext->Apply(ChangedFaces.FindKey(i)));
+  for (Standard_Integer i = 1; i <= aChangedFaces.Extent(); i++) {
+    TopoDS_Face aFace = TopoDS::Face(myContext->Apply(aChangedFaces.FindKey(i)));
     if (aFace.IsNull())
       continue;
 
@@ -1798,7 +1724,7 @@ void ShapeUpgrade_UnifySameDomain::UnifyEdges()
     myContext->Replace(aFace,aNewFace);
   }
 
-  if (ChangedFaces.Extent() > 0) {
+  if (aChangedFaces.Extent() > 0) {
     // fix changed shell and replace it in the local context
     TopoDS_Shape aRes1 = myContext->Apply(aRes);
     Standard_Boolean isChanged = Standard_False;

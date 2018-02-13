@@ -1,0 +1,19 @@
+puts "============"
+puts "OCC29502"
+puts "============"
+puts ""
+###############################
+## Improve performance of the ShapeUpgrade_UnifySameDomain::UnifyEdges() method
+###############################
+
+restore [locate_data_file bug29502_split_faces.brep] cf
+
+dchrono h restart
+
+unifysamedom result cf -f +b
+
+dchrono h stop counter unifysamedom
+
+checkshape result
+checkprops result -equal cf -skip
+checknbshapes result -vertex 365 -edge 652 -wire 288 -face 288 -t
