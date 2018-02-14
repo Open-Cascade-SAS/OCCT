@@ -1197,8 +1197,10 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramFont()
     aProgramSrc->SetHeader ("#version 150");
   }
 #else
-  if (myContext->IsGlGreaterEqual (3, 0))
+  if (myContext->IsGlGreaterEqual (3, 1))
   {
+    // prefer "100 es" on OpenGL ES 3.0 devices
+    // and    "300 es" on newer devices (3.1+)
     aProgramSrc->SetHeader ("#version 300 es");
   }
 #endif
@@ -1532,6 +1534,12 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramFlat (Handle(OpenGl_Shad
   {
     aProgramSrc->SetNbFragmentOutputs (2);
     aProgramSrc->SetWeightOitOutput (true);
+  #if defined(GL_ES_VERSION_2_0)
+    if (myContext->IsGlGreaterEqual (3, 0))
+    {
+      aProgramSrc->SetHeader ("#version 300 es");
+    }
+  #endif
   }
 
   TCollection_AsciiString aSrcVertEndMain;
@@ -1541,6 +1549,7 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramFlat (Handle(OpenGl_Shad
   #if defined(GL_ES_VERSION_2_0)
     if (myContext->IsGlGreaterEqual (3, 0))
     {
+      aProgramSrc->SetHeader ("#version 300 es");
       hasGlslBitOps = true;
     }
   #else
@@ -1611,8 +1620,10 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramFlat (Handle(OpenGl_Shad
     aProgramSrc->SetHeader ("#version 150");
   }
 #else
-  if (myContext->IsGlGreaterEqual (3, 0))
+  if (myContext->IsGlGreaterEqual (3, 1))
   {
+    // prefer "100 es" on OpenGL ES 3.0 devices
+    // and    "300 es" on newer devices (3.1+)
     aProgramSrc->SetHeader ("#version 300 es");
   }
 #endif
@@ -1885,6 +1896,12 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramGouraud (Handle(OpenGl_S
   {
     aProgramSrc->SetNbFragmentOutputs (2);
     aProgramSrc->SetWeightOitOutput (true);
+  #if defined(GL_ES_VERSION_2_0)
+    if (myContext->IsGlGreaterEqual (3, 0))
+    {
+      aProgramSrc->SetHeader ("#version 300 es");
+    }
+  #endif
   }
 
   Standard_Integer aNbLights = 0;
@@ -1929,8 +1946,10 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramGouraud (Handle(OpenGl_S
     aProgramSrc->SetHeader ("#version 150");
   }
 #else
-  if (myContext->IsGlGreaterEqual (3, 0))
+  if (myContext->IsGlGreaterEqual (3, 1))
   {
+    // prefer "100 es" on OpenGL ES 3.0 devices
+    // and    "300 es" on newer devices (3.1+)
     aProgramSrc->SetHeader ("#version 300 es");
   }
 #endif
@@ -2089,13 +2108,19 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramPhong (Handle(OpenGl_Sha
     aProgramSrc->SetHeader ("#version 150");
   }
 #else
-  if (myContext->IsGlGreaterEqual (3, 0))
+  if (myContext->IsGlGreaterEqual (3, 1))
   {
+    // prefer "100 es" on OpenGL ES 3.0 devices
+    // and    "300 es" on newer devices (3.1+)
     aProgramSrc->SetHeader ("#version 300 es");
   }
   else if (isFlatNormal)
   {
-    if (myContext->oesStdDerivatives)
+    if (myContext->IsGlGreaterEqual (3, 0))
+    {
+      aProgramSrc->SetHeader ("#version 300 es");
+    }
+    else if (myContext->oesStdDerivatives)
     {
       aProgramSrc->SetHeader ("#extension GL_OES_standard_derivatives : enable");
     }
@@ -2325,8 +2350,10 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramStereo (Handle(OpenGl_Sh
     aProgramSrc->SetHeader ("#version 150");
   }
 #else
-  if (myContext->IsGlGreaterEqual (3, 0))
+  if (myContext->IsGlGreaterEqual (3, 1))
   {
+    // prefer "100 es" on OpenGL ES 3.0 devices
+    // and    "300 es" on newer devices (3.1+)
     aProgramSrc->SetHeader ("#version 300 es");
   }
 #endif
