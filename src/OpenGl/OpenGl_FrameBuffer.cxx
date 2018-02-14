@@ -168,6 +168,7 @@ OpenGl_FrameBuffer::OpenGl_FrameBuffer()
   myGlColorRBufferId (NO_RENDERBUFFER),
   myGlDepthRBufferId (NO_RENDERBUFFER),
   myIsOwnBuffer  (false),
+  myIsOwnDepth  (false),
   myDepthStencilTexture (new OpenGl_Texture())
 {
   myColorFormats.Append (GL_RGBA8);
