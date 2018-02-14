@@ -1345,7 +1345,7 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramOitCompositing (const St
       EOL
       EOL"void main()"
       EOL"{"
-      EOL"  ivec2 aTexel  = ivec2 (textureSize (uAccumTexture) * TexCoord);"
+      EOL"  ivec2 aTexel  = ivec2 (vec2 (textureSize (uAccumTexture)) * TexCoord);"
       EOL"  vec4 aAccum   = texelFetch (uAccumTexture,  aTexel, gl_SampleID);"
       EOL"  float aWeight = texelFetch (uWeightTexture, aTexel, gl_SampleID).r;"
       EOL"  occSetFragColor (vec4 (aAccum.rgb / max (aWeight, 0.00001), aAccum.a));"
@@ -1356,9 +1356,13 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramOitCompositing (const St
       aProgramSrc->SetHeader ("#version 400");
     }
   #else
-    if (myContext->IsGlGreaterEqual (3, 0))
+    if (myContext->IsGlGreaterEqual (3, 2))
     {
-      aProgramSrc->SetHeader ("#version 300 es");
+      aProgramSrc->SetHeader ("#version 320 es");
+    }
+    else if (myContext->IsGlGreaterEqual (3, 0))
+    {
+      aProgramSrc->SetHeader ("#version 300 es"); // with GL_OES_sample_variables extension
     }
   #endif
   }
