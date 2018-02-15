@@ -2427,7 +2427,16 @@ Standard_Boolean IntWalk_PWalking::
       {
         aP1.SetXYZ(line->Value(aPInd).Value().XYZ());
         if (aP1.SquareDistance(aPInt) > Precision::SquareConfusion())
+        {
           break;
+        }
+        else if (aPInd == 1)
+        {
+          // After insertion, we will obtain
+          // two coincident points in the line.
+          // Therefore, insertion is forbidden.
+          return isOK;
+        }
       }
 
       for (++aPInd; aPInd <= aNbPnts; aPInd++)
@@ -2468,7 +2477,16 @@ Standard_Boolean IntWalk_PWalking::
       {
         aPCurr.SetXYZ(line->Value(aPInd).Value().XYZ());
         if (aPCurr.SquareDistance(aPInt) > Precision::SquareConfusion())
+        {
           break;
+        }
+        else if (aPInd == aNbPnts)
+        {
+          // After insertion, we will obtain
+          // two coincident points in the line.
+          // Therefore, insertion is forbidden.
+          return isOK;
+        }
       }
 
       for (--aPInd; aPInd > 0; aPInd--)
