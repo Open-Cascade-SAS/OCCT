@@ -1,0 +1,60 @@
+puts "========"
+puts "OCC27747"
+puts "========"
+puts ""
+#################################################
+# Incomplete section curves between faces
+#################################################
+
+set GoodNbCurv 1
+set ToleranceReachedf1f3 6.0605798668789834e-08
+set ToleranceReachedf2f3 7.0639332021089653e-08
+
+restore [locate_data_file bug27747_faces.brep] f
+explode f
+
+# ----
+
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} [bopcurves f_1 f_3 -2d] full Toler NbCurv
+if {${NbCurv} != ${GoodNbCurv}} {
+  puts "Error: Number of curves is bad!"
+}
+checkreal TolReached $Toler $ToleranceReachedf1f3 0.0 0.1
+
+# ----
+
+set Toler 0.0
+set NbCurv 0
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} [bopcurves f_2 f_3 -2d] full Toler NbCurv
+if {${NbCurv} != ${GoodNbCurv}} {
+  puts "Error: Number of curves is bad!"
+}
+checkreal TolReached $Toler $ToleranceReachedf2f3 0.0 0.1
+
+# ----
+
+settolerance f_1 1.e-7
+fixshape f1 f_1
+tolerance f1
+
+set Toler 0.0
+set NbCurv 0
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} [bopcurves f1 f_3 -2d] full Toler NbCurv
+if {${NbCurv} != ${GoodNbCurv}} {
+  puts "Error: Number of curves is bad!"
+}
+checkreal TolReached $Toler $ToleranceReachedf1f3 0.0 0.1
+
+# ----
+
+settolerance f_2 1.e-7
+fixshape f2 f_2
+tolerance f2
+
+set Toler 0.0
+set NbCurv 0
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} [bopcurves f2 f_3 -2d] full Toler NbCurv
+if {${NbCurv} != ${GoodNbCurv}} {
+  puts "Error: Number of curves is bad!"
+}
+checkreal TolReached $Toler $ToleranceReachedf2f3 0.0 0.1
