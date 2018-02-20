@@ -1546,6 +1546,8 @@ Since the new version, the method *BRepAdaptor_CompCurve::IsPeriodic()* will alw
 
 @subsection upgrade_730_removed Removed features
 * The methods *SetDeflection*, *SetEpsilonT*, *SetDiscretize* of the class *IntTools_EdgeFace* have been removed as redundant.
+* Deprecated functionality *V3d_View::Export()*, related enumerations Graphic3d_ExportFormat, Graphic3d_SortType
+  as well as optional dependency from gl2ps library have been removed.
 
 @subsection upgrade_730_BuilderSolid Boolean Operations - Solid Builder algorithm
 

@@ -796,15 +796,6 @@ public:
   //! Returns FALSE when the dump has failed
   Standard_EXPORT Standard_Boolean Dump (const Standard_CString theFile, const Graphic3d_BufferType& theBufferType = Graphic3d_BT_RGB);
 
-  //! Export scene into the one of the Vector graphics formats (SVG, PS, PDF...).
-  //! In contrast to Bitmaps, Vector graphics is scalable (so you may got quality benefits
-  //! on printing to laser printer). Notice however that results may differ a lot and
-  //! do not contain some elements.
-  Standard_DEPRECATED("Export to Vector graphic is incompatible with Programmable Pipeline and should not be used")
-  Standard_EXPORT Standard_Boolean Export (const Standard_CString theFileName,
-                                           const Graphic3d_ExportFormat theFormat,
-                                           const Graphic3d_SortType theSortType = Graphic3d_ST_BSP_Tree);
-
   //! Dumps the full contents of the view to a pixmap with specified parameters.
   Standard_EXPORT Standard_Boolean ToPixMap (Image_PixMap&               theImage,
                                              const V3d_ImageDumpOptions& theParams);

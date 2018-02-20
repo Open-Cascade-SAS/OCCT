@@ -11,14 +11,6 @@ cpulimit 1000
 set rel_tol 0
 set max_rel_tol_diff 0
 
-# On Windows with VC, in typical configuration gl2ps is built with Release
-# mode only which will fail in Debug mode; add TODO for that case in order
-# to handle it once for all tests that can use vexport command
-if { [regexp {Debug mode} [dversion]] } {
-    puts "TODO ?#23540 windows: Error: export of image.*failed"
-    puts "TODO ?#23540 windows: Error: The file has been exported.*different size \[(\]0 "
-}
-
 if { [info exists imagedir] == 0 } {
    set imagedir .
 }

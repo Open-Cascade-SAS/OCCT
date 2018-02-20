@@ -139,9 +139,6 @@ proc wokdep:gui:UpdateList {} {
   wokdep:SearchFreeType  anIncErrs anLib32Errs anLib64Errs anBin32Errs anBin64Errs
   wokdep:SearchX11       anIncErrs anLib32Errs anLib64Errs anBin32Errs anBin64Errs
   if { "$::HAVE_GLES2" == "true" } {
-    if { "$::HAVE_GL2PS" == "true" } {
-      lappend anIncErrs "Error: gl2ps can not be used with OpenGL ES"
-    }
     wokdep:SearchEGL     anIncErrs anLib32Errs anLib64Errs anBin32Errs anBin64Errs
     wokdep:SearchGLES    anIncErrs anLib32Errs anLib64Errs anBin32Errs anBin64Errs
   }
@@ -150,9 +147,6 @@ proc wokdep:gui:UpdateList {} {
   }
   if { "$::HAVE_FFMPEG" == "true" } {
     wokdep:SearchFFmpeg  anIncErrs anLib32Errs anLib64Errs anBin32Errs anBin64Errs
-  }
-  if { "$::HAVE_GL2PS" == "true" } {
-    wokdep:SearchStandardLibrary  anIncErrs anLib32Errs anLib64Errs anBin32Errs anBin64Errs "gl2ps" "gl2ps.h" "gl2ps" {"gl2ps"}
   }
   if { "$::HAVE_TBB" == "true" } {
     wokdep:SearchTBB     anIncErrs anLib32Errs anLib64Errs anBin32Errs anBin64Errs
@@ -415,8 +409,6 @@ entry         .myFrame.mySrchEntry     -textvariable PRODUCTS_PATH -width 80
 ttk::button   .myFrame.mySrchBrowseBtn -text "Browse" -command wokdep:gui:BrowsePartiesRoot
 checkbutton   .myFrame.myChecks.myFImageCheck   -offvalue "false" -onvalue "true" -variable HAVE_FREEIMAGE -command wokdep:gui:UpdateList
 ttk::label    .myFrame.myChecks.myFImageLbl     -text "Use FreeImage"
-checkbutton   .myFrame.myChecks.myGl2psCheck    -offvalue "false" -onvalue "true" -variable HAVE_GL2PS     -command wokdep:gui:UpdateList
-ttk::label    .myFrame.myChecks.myGl2psLbl      -text "Use GL2PS"
 checkbutton   .myFrame.myChecks.myTbbCheck      -offvalue "false" -onvalue "true" -variable HAVE_TBB       -command wokdep:gui:UpdateList
 ttk::label    .myFrame.myChecks.myTbbLbl        -text "Use Intel TBB"
 if { "$::tcl_platform(os)" != "Darwin" } {
@@ -544,9 +536,6 @@ if { "$::tcl_platform(os)" != "Darwin" } {
 #grid .myFrame.myChecks.myOpenClLbl     -row $aCheckRowIter -column 7 -sticky w
 grid .myFrame.myChecks.myZLibCheck     -row $aCheckRowIter -column 6 -sticky e
 grid .myFrame.myChecks.myZLibLbl       -row $aCheckRowIter -column 7 -sticky w
-
-grid .myFrame.myChecks.myGl2psCheck    -row $aCheckRowIter -column 8 -sticky e
-grid .myFrame.myChecks.myGl2psLbl      -row $aCheckRowIter -column 9 -sticky w
 
 grid .myFrame.myChecks.myQt4Check      -row $aCheckRowIter -column 10 -sticky e
 grid .myFrame.myChecks.myQt4Lbl        -row $aCheckRowIter -column 11 -sticky w

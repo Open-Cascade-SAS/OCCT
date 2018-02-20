@@ -1318,9 +1318,6 @@ proc osutils:csfList { theOS theCsfLibsMap theCsfFrmsMap } {
   if { "$::HAVE_FFMPEG" == "true" } {
     set aLibsMap(CSF_FFmpeg) "avcodec avformat swscale avutil"
   }
-  if { "$::HAVE_GL2PS" == "true" } {
-    set aLibsMap(CSF_GL2PS) "gl2ps"
-  }
   if { "$::HAVE_TBB" == "true" } {
     set aLibsMap(CSF_TBB) "tbb tbbmalloc"
   }

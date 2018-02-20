@@ -277,26 +277,6 @@ macro (THIRDPARTY_PRODUCT PRODUCT_NAME HEADER_NAME LIBRARY_CSF_NAME LIBRARY_NAME
             endif()
           endif()
 
-          if("${PRODUCT_NAME}" STREQUAL "GL2PS")
-            get_filename_component(GL2PSLIB ${3RDPARTY_${PRODUCT_NAME}_LIBRARY_${LIBRARY_NAME_SUFFIX}} NAME)
-
-            if (SINGLE_GENERATOR)
-              install (FILES "${ABS_PATH}" DESTINATION "${INSTALL_DIR_LIB}" RENAME ${GL2PSLIB}.1)
-            else()
-              install (FILES "${ABS_PATH}"
-                       CONFIGURATIONS Release
-                       DESTINATION "${INSTALL_DIR_LIB}"
-                       RENAME ${GL2PSLIB}.1)
-              install (FILES "${ABS_PATH}"
-                       CONFIGURATIONS RelWithDebInfo
-                       DESTINATION "${INSTALL_DIR_LIB}i"
-                       RENAME ${GL2PSLIB}.1)
-              install (FILES "${ABS_PATH}"
-                       CONFIGURATIONS Debug
-                       DESTINATION "${INSTALL_DIR_LIB}d"
-                       RENAME ${GL2PSLIB}.1)
-            endif()
-          endif()
         endif()
       else()
         # the library directory for using by the executable

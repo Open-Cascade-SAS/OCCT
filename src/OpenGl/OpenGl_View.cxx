@@ -38,10 +38,6 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_View,Graphic3d_CView)
 
-#ifdef HAVE_GL2PS
-#include <gl2ps.h>
-#endif
-
 // =======================================================================
 // function : Constructor
 // purpose  :
@@ -740,112 +736,6 @@ void OpenGl_View::FBOChangeViewport (const Handle(Standard_Transient)& theFbo,
 
   aFrameBuffer->ChangeViewport (theWidth, theHeight);
 }
-
-// =======================================================================
-// function : Export
-// purpose  :
-// =======================================================================
-#ifdef HAVE_GL2PS
-Standard_Boolean OpenGl_View::Export (const Standard_CString theFileName,
-                                      const Graphic3d_ExportFormat theFormat,
-                                      const Graphic3d_SortType theSortType)
-{
-  // gl2psBeginPage() will call OpenGL functions
-  // so we should activate correct GL context before redraw scene call
-  if (!myWorkspace->Activate())
-  {
-    return Standard_False;
-  }
-
-  Standard_Integer aFormat = -1;
-  Standard_Integer aSortType = Graphic3d_ST_BSP_Tree;
-  switch (theFormat)
-  {
-    case Graphic3d_EF_PostScript:
-      aFormat = GL2PS_PS;
-      break;
-    case Graphic3d_EF_EnhPostScript:
-      aFormat = GL2PS_EPS;
-      break;
-    case Graphic3d_EF_TEX:
-      aFormat = GL2PS_TEX;
-      break;
-    case Graphic3d_EF_PDF:
-      aFormat = GL2PS_PDF;
-      break;
-    case Graphic3d_EF_SVG:
-      aFormat = GL2PS_SVG;
-      break;
-    case Graphic3d_EF_PGF:
-      aFormat = GL2PS_PGF;
-      break;
-    case Graphic3d_EF_EMF:
-      //aFormat = GL2PS_EMF;
-      aFormat = GL2PS_PGF + 1; // 6
-      break;
-    default:
-      // unsupported format
-      return Standard_False;
-  }
-
-  switch (theSortType)
-  {
-    case Graphic3d_ST_Simple:
-      aSortType = GL2PS_SIMPLE_SORT;
-      break;
-    case Graphic3d_ST_BSP_Tree:
-      aSortType = GL2PS_BSP_SORT;
-      break;
-  }
-
-  GLint aViewport[4];
-  aViewport[0] = 0;
-  aViewport[1] = 0;
-  aViewport[2] = myWindow->Width();
-  aViewport[3] = myWindow->Height();
-
-  GLint aBufferSize = 1024 * 1024;
-  GLint anErrCode = GL2PS_SUCCESS;
-
-  // gl2ps uses standard write functions and do not check locale
-  Standard_CLocaleSentry aLocaleSentry;
-
-  while (aBufferSize > 0)
-  {
-    // current patch for EMF support in gl2ps uses WinAPI functions to create file
-    FILE* aFileH = (theFormat != Graphic3d_EF_EMF) ? fopen (theFileName, "wb") : NULL;
-    anErrCode = gl2psBeginPage ("", "", aViewport, aFormat, aSortType,
-                    GL2PS_DRAW_BACKGROUND | GL2PS_OCCLUSION_CULL | GL2PS_BEST_ROOT/* | GL2PS_SIMPLE_LINE_OFFSET*/,
-                    GL_RGBA, 0, NULL,
-                    0, 0, 0, aBufferSize, aFileH, theFileName);
-    if (anErrCode != GL2PS_SUCCESS)
-    {
-      // initialization failed
-      if (aFileH != NULL)
-        fclose (aFileH);
-      break;
-    }
-    Redraw();
-
-    anErrCode = gl2psEndPage();
-    if (aFileH != NULL)
-      fclose (aFileH);
-
-    if (anErrCode == GL2PS_OVERFLOW)
-      aBufferSize *= 2;
-    else
-      break;
-  }
-  return anErrCode == GL2PS_SUCCESS;
-}
-#else
-Standard_Boolean OpenGl_View::Export (const Standard_CString /*theFileName*/,
-                                      const Graphic3d_ExportFormat /*theFormat*/,
-                                      const Graphic3d_SortType /*theSortType*/)
-{
-    return Standard_False;
-}
-#endif
 
 //=======================================================================
 //function : displayStructure

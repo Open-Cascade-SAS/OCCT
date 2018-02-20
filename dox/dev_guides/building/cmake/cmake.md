@@ -82,14 +82,12 @@ The following table gives the full list of environment variables used at the con
 |----------|------|---------|
 | CMAKE_BUILD_TYPE | String | Specifies the build type on single-configuration generators (such as make).  Possible values are Debug, Release and RelWithDebInfo |
 | USE_FREEIMAGE | Boolean flag | Indicates whether FreeImage product should be used in OCCT visualization module for support of popular graphics image formats (PNG, BMP, etc.) |
-| USE_GL2PS | Boolean flag | Indicates whether GL2PS product should be used in OCCT visualization module for support of vector image formats (PS, EPS, etc.) |
 | USE_TBB | Boolean flag | Indicates whether TBB 3rd party is used or not. TBB stands for Threading Building Blocks, the technology of Intel Corp, which comes with different mechanisms and patterns for injecting parallelism into your application. OCCT remains parallel even without TBB product |
 | USE_VTK | Boolean flag | Indicates whether VTK 3rd party is used or not. VTK stands for Visualization ToolKit, the technology of Kitware Inc intended for general-purpose scientific visualization. OCCT comes with a bridge between CAD data representation and VTK by means of its dedicated VIS component (VTK Integration Services). You may skip this 3rd party unless you are planning to use VTK visualization for OCCT geometry. See the official documentation @ref occt_user_guides__vis for the details on VIS |
 | 3RDPARTY_DIR | Path | Defines the root directory where all required 3rd party products will be searched. Once you define this path it is very convenient to click "Configure" button in order to let CMake automatically detect all necessary products|
 | 3RDPARTY_FREETYPE_* | Path | Path to Freetype binaries |
 | 3RDPARTY_TCL_* 3RDPARTY_TK_* | Path | Path to Tcl/Tk binaries |
 | 3RDPARTY_FREEIMAGE* | Path | Path to Freeimage binaries |
-| 3RDPARTY_GL2PS_* | Path | Path to GL2PS binaries |
 | 3RDPARTY_TBB* | Path | Path to TBB binaries |
 | 3RDPARTY_VTK_* | Path | Path to VTK binaries |
 | BUILD_MODULE_<MODULE>| Boolean flag | Indicates whether the corresponding OCCT module should be built or not. It should be noted that some toolkits of a module can be built even if this module is not checked (this happens if some other modules depend on these toolkits). The main modules and their descriptions can be found in @ref user_guides |
@@ -117,7 +115,6 @@ The following table gives the full list of environment variables used at the con
 | INSTALL_DIR_DOC | Path | Relative path to the documentation installation directory (absolute path is ${INSTALL_DIR}/${INSTALL_DIR_DOC}) |
 | INSTALL_FREETYPE | Boolean flag | Indicates whether Freetype binaries should be installed into the installation directory |
 | INSTALL_FREEIMAGE* | Boolean flag | Indicates whether Freeimage binaries should be installed into the installation directory |
-| INSTALL_GL2PS | Boolean flag | Indicates whether GL2PS binaries should be installed into the installation directory |
 | INSTALL_TBB | Boolean flag | Indicates whether TBB binaries should be installed into the installation directory |
 | INSTALL_VTK | Boolean flag | Indicates whether VTK binaries should be installed into the installation directory |
 | INSTALL_TCL | Boolean flag | Indicates whether TCL binaries should be installed into the installation directory |

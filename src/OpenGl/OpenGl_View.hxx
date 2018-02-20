@@ -148,14 +148,6 @@ public:
   Standard_EXPORT virtual Standard_Boolean BufferDump (Image_PixMap& theImage,
                                                        const Graphic3d_BufferType& theBufferType) Standard_OVERRIDE;
 
-  //! Export scene into the one of the Vector graphics formats (SVG, PS, PDF...).
-  //! In contrast to Bitmaps, Vector graphics is scalable (so you may got quality benefits
-  //! on printing to laser printer). Notice however that results may differ a lot and
-  //! do not contain some elements.
-  Standard_EXPORT virtual Standard_Boolean Export (const Standard_CString theFileName,
-                                                   const Graphic3d_ExportFormat theFormat,
-                                                   const Graphic3d_SortType theSortType = Graphic3d_ST_BSP_Tree) Standard_OVERRIDE;
-
   //! Marks BVH tree and the set of BVH primitives of correspondent priority list with id theLayerId as outdated.
   Standard_EXPORT virtual void InvalidateBVHData (const Graphic3d_ZLayerId theLayerId) Standard_OVERRIDE;
 

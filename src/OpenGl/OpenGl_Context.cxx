@@ -63,14 +63,6 @@ IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Context,Standard_Transient)
   #include <GL/glx.h> // glXGetProcAddress()
 #endif
 
-#ifdef HAVE_GL2PS
-  #include <gl2ps.h>
-  #ifdef _MSC_VER
-    #pragma comment (lib, "gl2ps.lib")
-  #endif
-#endif
-
-
 namespace
 {
   static const Handle(OpenGl_Resource) NULL_GL_RESOURCE;
@@ -3323,13 +3315,6 @@ void OpenGl_Context::SetTypeOfLine (const Aspect_TypeOfLine  theType,
 #if !defined(GL_ES_VERSION_2_0)
   if (aPattern != 0xFFFF)
   {
-  #ifdef HAVE_GL2PS
-    if (IsFeedback())
-    {
-      gl2psEnable (GL2PS_LINE_STIPPLE);
-    }
-  #endif
-
     if (core11 != NULL)
     {
       core11fwd->glEnable (GL_LINE_STIPPLE);
@@ -3344,13 +3329,6 @@ void OpenGl_Context::SetTypeOfLine (const Aspect_TypeOfLine  theType,
     {
       core11fwd->glDisable (GL_LINE_STIPPLE);
     }
-
-  #ifdef HAVE_GL2PS
-    if (IsFeedback())
-    {
-      gl2psDisable (GL2PS_LINE_STIPPLE);
-    }
-  #endif
   }
 #endif
 }
@@ -3366,12 +3344,6 @@ void OpenGl_Context::SetLineWidth (const Standard_ShortReal theWidth)
     // glLineWidth() is still defined within Core Profile, but has no effect with values != 1.0f
     core11fwd->glLineWidth (theWidth * myLineWidthScale);
   }
-#ifdef HAVE_GL2PS
-  if (IsFeedback())
-  {
-    gl2psLineWidth (theWidth);
-  }
-#endif
 }
 
 // =======================================================================

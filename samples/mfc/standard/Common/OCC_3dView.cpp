@@ -8,7 +8,6 @@
 #include "OCC_3dBaseDoc.h"
 #include <res\OCC_Resource.h>
 
-#include <Graphic3d_ExportFormat.hxx>
 #include <Graphic3d_Camera.hxx>
 
 #include <OpenGl_GraphicDriver.hxx>

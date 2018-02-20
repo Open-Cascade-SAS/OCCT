@@ -33,8 +33,6 @@
 #include <Graphic3d_VerticalTextAlignment.hxx>
 #include <Graphic3d_GraduatedTrihedron.hxx>
 #include <Graphic3d_TypeOfComposition.hxx>
-#include <Graphic3d_ExportFormat.hxx>
-#include <Graphic3d_SortType.hxx>
 #include <Graphic3d_BufferType.hxx>
 #include <NCollection_DataMap.hxx>
 #include <OpenGl_Context.hxx>

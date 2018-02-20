@@ -58,15 +58,6 @@ if (USE_TCL)
   endif()
 endif()
 
-# GL2PS
-if (NOT DEFINED ANDROID)
-  if (USE_GL2PS)
-    set (CSF_GL2PS "gl2ps")
-  else()
-    set (CSF_GL2PS)
-  endif()
-endif()
-
 if (WIN32)
   set (CSF_advapi32      "advapi32.lib")
   set (CSF_gdi32         "gdi32.lib")

@@ -29,10 +29,6 @@
 #include <Graphic3d_TransformUtils.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-#ifdef HAVE_GL2PS
-  #include <gl2ps.h>
-#endif
-
 namespace
 {
   static const GLdouble THE_IDENTITY_MATRIX[16] =
@@ -42,101 +38,6 @@ namespace
     0.0, 0.0, 1.0, 0.0,
     0.0, 0.0, 0.0, 1.0
   };
-
-#ifdef HAVE_GL2PS
-  static char const* TheFamily[] = {"Helvetica", "Courier", "Times"};
-  static char const* TheItalic[] = {"Oblique",   "Oblique", "Italic"};
-  static char const* TheBase[]   = {"", "", "-Roman"};
-
-  //! Convert font name used for rendering to some "good" font names
-  //! that produce good vector text.
-  static void getGL2PSFontName (const char* theSrcFont,
-                                char*       thePsFont)
-  {
-    if (strstr (theSrcFont, "Symbol"))
-    {
-      sprintf (thePsFont, "%s", "Symbol");
-      return;
-    }
-    else if (strstr (theSrcFont, "ZapfDingbats"))
-    {
-      sprintf (thePsFont, "%s", "WingDings");
-      return;
-    }
-
-    int  aFontId  = 0;
-    bool isBold   = false;
-    bool isItalic = false;
-    if (strstr (theSrcFont, "Courier"))
-    {
-      aFontId = 1;
-    }
-    else if (strstr (theSrcFont, "Times"))
-    {
-      aFontId = 2;
-    }
-
-    if (strstr (theSrcFont, "Bold"))
-    {
-      isBold = true;
-    }
-    if (strstr (theSrcFont, "Italic")
-     || strstr (theSrcFont, "Oblique"))
-    {
-      isItalic = true;
-    }
-
-    if (isBold)
-    {
-      if (isItalic)
-      {
-        sprintf (thePsFont, "%s-Bold%s", TheFamily[aFontId], TheItalic[aFontId]);
-      }
-      else
-      {
-        sprintf (thePsFont, "%s-Bold", TheFamily[aFontId]);
-      }
-    }
-    else if (isItalic)
-    {
-      sprintf (thePsFont, "%s-%s", TheFamily[aFontId], TheItalic[aFontId]);
-    }
-    else
-    {
-      sprintf (thePsFont, "%s%s", TheFamily[aFontId], TheBase[aFontId]);
-    }
-  }
-
-  static void exportText (const NCollection_String& theText,
-                          const Standard_Boolean    theIs2d,
-                          const OpenGl_AspectText&  theAspect,
-                          const Standard_Integer    theHeight)
-  {
-
-    char aPsFont[64];
-    getGL2PSFontName (theAspect.Aspect()->Font().ToCString(), aPsFont);
-
-    (void)theIs2d;
-  #if !defined(GL_ES_VERSION_2_0)
-    if (theIs2d)
-    {
-      glRasterPos2f (0.0f, 0.0f);
-    }
-    else
-    {
-      glRasterPos3f (0.0f, 0.0f, 0.0f);
-    }
-
-    GLubyte aZero = 0;
-    glBitmap (1, 1, 0, 0, 0, 0, &aZero);
-  #endif
-
-    // Standard GL2PS's alignment isn't used, because it doesn't work correctly
-    // for all formats, therefore alignment is calculated manually relative
-    // to the bottom-left corner, which corresponds to the GL2PS_TEXT_BL value
-    gl2psTextOpt (theText.ToCString(), aPsFont, (GLshort)theHeight, GL2PS_TEXT_BL, (float )theAspect.Aspect()->GetTextAngle());
-  }
-#endif
 
   //! Auxiliary tool for setting polygon offset temporarily.
   struct BackPolygonOffsetSentry
@@ -606,17 +507,7 @@ void OpenGl_Text::setupMatrix (const Handle(OpenGl_Context)& theCtx,
 void OpenGl_Text::drawText (const Handle(OpenGl_Context)& theCtx,
                             const OpenGl_AspectText&      theTextAspect) const
 {
-#ifdef HAVE_GL2PS
-  if (theCtx->IsFeedback())
-  {
-    // position of the text and alignment is calculated by transformation matrix
-    exportText (myString, myIs2d, theTextAspect, (Standard_Integer )myExportHeight);
-    return;
-  }
-#else
   (void )theTextAspect;
-#endif
-
   if (myVertsVbo.Length() != myTextures.Length()
    || myTextures.IsEmpty())
   {

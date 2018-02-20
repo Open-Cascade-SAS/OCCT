@@ -17,7 +17,6 @@ There are two types of third-party products, which are  necessary to build OCCT:
 	* FreeType 2.4.10 - 2.5.3.
 * Optional  products: 
 	* TBB 3.x - 4.x;
-	* gl2ps  1.3.5 - 1.3.8;
 	* FreeImage 3.14.1 - 3.16.0
   
 @section dev_guides__building_3rdparty_osx_2 Building Mandatory Third-party Products
@@ -105,33 +104,6 @@ that can be downloaded from http://threadingbuildingblocks.org/.
 Go to the **Download** page, find the release version you need (e.g. *tbb30_018oss*) 
 and  pick the archive for Mac OS X platform. 
 To install, unpack the downloaded archive of TBB 3.0 product (*tbb30_018oss_osx.tgz*).
-
-@subsection dev_guides__building_3rdparty_osx_3_2 gl2ps 1.3.5
-
-Download the necessary archive from http://geuz.org/gl2ps/ and unpack it. 
-
-1. Install or build cmake product from the source file. 
-
-2. Start cmake in GUI mode with the directory, where the source  files of *fl2ps* are located: 
-
-       ccmake GL2PS_SRC_DIR   
-
-   * Press <i>[c]</i> to make the  initial configuration; 
-   * Define the necessary options in *CMAKE_INSTALL_PREFIX*; 
-   * Press <i>[c]</i> to make the final  configuration; 
-   * Press <i>[g]</i> to generate  Makefile and exit. 
-
-   or just run the following command: 
-
-       cmake  –DCMAKE_INSTALL_PREFIX=GL2PS_INSTALL_DIR –DCMAKE_BUILD_TYPE=Release   
-
-3. Start the building of gl2ps 
-
-       make   
-
-4. Start the installation of gl2ps. Binaries will be  installed according to the *CMAKE_INSTALL_PREFIX* option 
-
-       make install   
 
 @subsection dev_guides__building_3rdparty_osx_3_3 FreeImage 3.14.1 or 3.15.x
 

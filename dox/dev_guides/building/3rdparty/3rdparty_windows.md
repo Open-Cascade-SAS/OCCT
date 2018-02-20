@@ -17,7 +17,6 @@ There are two types of third-party products used  by OCCT:
 	* FreeType 2.4.10 -- 2.5.3.
 * Optional  products:
 	* TBB 3.x -- 4.x;
-	* gl2ps 1.3.5 -- 1.3.8;
 	* FreeImage 3.14.1 -- 3.16.0;
 	* VTK 6.1.0.
 
@@ -155,85 +154,6 @@ Go to the **Download** page, find the  release version you need  (e.g. *tbb30_01
 Unpack the downloaded  archive of TBB product into the *3rdparty* folder. 
 
 Further in this document,  this folder is referred to as *tbb*. 
-
-@subsection dev_guides__building_3rdparty_win_3_2  gl2ps
-
-This third-party product should be built as a dynamically loadable library (dll file). 
-You can download its sources from  http://geuz.org/gl2ps/src/. 
-
-### The building procedure
-
-1. Unpack the downloaded  archive of gl2ps product (e.g. *gl2ps-1.3.5.tgz*) into the *3rdparty*  folder. 
-
-   As a result, you will get a folder named, for example, *3rdparty\\gl2ps-1.3.5-source*. 
-
-   Rename it into <i>gl2ps-platform-compiler-building mode</i>, where 
-   * **platform** -- *win32*  or *win64*; 
-   * **compiler** -- *vc8*, *vc9* or *vc10*; 
-   * **building mode** -- *opt*  (for release) or *deb* (for debug). 
-   
-   For example, <i>gl2ps-win64-vc10-deb</i>
-
-   Further in this document,  this folder is referred to as *gl2ps*. 
-
-2. Download (from http://www.cmake.org/cmake/resources/software.html) 
-   and install the *CMake* build system.  
-
-3. Edit the file *gl2ps\\CMakeLists.txt*. 
-
-   After line 113 in *CMakeLists.txt*: 
-
-       set_target_properties(shared PROPERTIES  COMPILE_FLAGS \"-DGL2PSDLL -DGL2PSDLL_EXPORTS\")
-    
-   add the following line:   
-    
-       add_definitions(-D_USE_MATH_DEFINES)  
-
-   Attention: If Cygwin was installed on  your computer, make sure that there is no path to it in the *PATH* variable to avoid possible conflicts during the configuration. 
-
-4. Launch CMake <i>(cmake-gui.exe)</i> using  the Program menu. 
-
-   In CMake: 
-  
-   * Define where the source code is. 
-     This path must point to *gl2ps*  folder. 
-
-   * Define where to build the  binaries. 
-     This path must point to the folder where generated gl2ps project binaries will be placed 
-     (for example, *gl2ps\\bin*). 
-     Further in this document, this folder is referred to as *gl2ps_bin*.
-
-   * Press  **Configure** button. 
-   
-     @figure{/dev_guides/building/3rdparty/images/3rdparty_image004.png}
-
-   * Select the generator (the compiler  and the target platform -- 32 or 64 bit) in the pop-up window. 
-   
-     @figure{/dev_guides/building/3rdparty/images/3rdparty_image005.png}
-
-   * Press **Finish** button to  return to the main CMake window. 
-     Expand the ENABLE group and uncheck  ENABLE_PNG and ENABLE_ZLIB check boxes. 
-	 
-     @figure{/dev_guides/building/3rdparty/images/3rdparty_image006.png}
-
-   * Expand the CMAKE group and define *CMAKE_INSTALL_PREFIX* which is the path where you want to install the build results, for example, *c:\\occ3rdparty\\gl2ps-1.3.5*. 
-   
-     @figure{/dev_guides/building/3rdparty/images/3rdparty_image007.png}
-
-   * Press **Configure** button again, then press **Generate** button to generate Visual Studio projects. After completion, close CMake application. 
-
-5. Open the solution file *gl2ps_bin\\gl2ps.sln* in Visual Studio. 
-
-   * Select a configuration to build 
-     * Choose **Release** to build Release binaries. 
-     * Choose **Debug** to build Debug binaries. 
-   * Select a platform to build. 
-     * Choose **Win32** to build for a 32 bit platform. 
-     * Choose **x64** to build for a 64 bit platform. 
-   * Build the solution. 
-   * Build the *INSTALL* project. 
-    
-As a  result, you should have the installed gl2ps product in the *CMAKE_INSTALL_PREFIX* path. 
 
 @subsection dev_guides__building_3rdparty_win_3_3 FreeImage
 

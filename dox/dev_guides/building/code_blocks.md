@@ -26,7 +26,7 @@ The environment is defined in the file *custom.sh* (on Linux and OS X) or *custo
   * "HardLink* - hard links to headers located in *src* will be created.
 * For optional  third-party libraries, set corresponding environment variable <i>HAVE_<LIBRARY_NAME></i> to either *false*,  e.g.:
 ~~~~~
-       export HAVE_GL2PS=false
+       export HAVE_FREEIMAGE=false
 ~~~~~
 
 Alternatively, or when *custom.sh* or *custom.bat* does not exist, you can launch **genconf** tool to configure environment interactively:

@@ -90,10 +90,6 @@ the copyright allows you to use, modify, and redistribute Tcl/Tk for any purpose
 explicit license agreement and without paying any license fees or royalties. 
 To use Tcl/Tk, please refer to the Licensing Terms (https://www.tcl.tk/software/tcltk/license.html).
 
-**GL2PS** is developed by Christophe Geuzaine and others. It is optionally used by OCCT to
-export content of OpenGL scene to vector graphics formats (PS, PDF, EMF, SVG). 
-The library is licensed under GL2PS license (http://www.geuz.org/gl2ps/COPYING.GL2PS).
-
 **FreeType 2** is developed by Antoine Leca, David Turner, Werner Lemberg and others. 
 It is a software font engine that is designed to be small, efficient, highly customizable and 
 portable while capable of producing high-quality output (glyph images). This product 
@@ -226,7 +222,6 @@ for which OCCT is certified to work.
 | Freetype (for text rendering) | FreeType 2.4.11-2.7.1 https://sourceforge.net/projects/freetype/files/ |
 | FreeImage (optional, for support of common 2D graphic formats) | FreeImage 3.17.0+ https://sourceforge.net/projects/freeimage/files |
 | FFmpeg (optional, for video recording) | FFmpeg 3.1+ https://www.ffmpeg.org/download.html |
-| gl2ps (optional, for export contents of OCCT viewer to vector formats) | gl2ps-1.3.8+  http://geuz.org/gl2ps/ |
 | Intel TBB (optional, for multithreaded algorithms) | TBB 4.x or 5.x https://www.threadingbuildingblocks.org/ |
 | VTK (for VTK Integration Services | VTK 6.1+ http://www.vtk.org/download/ |
 | Doxygen (optional for building documentation) | Doxygen 1.8.5+ https://www.stack.nl/~dimitri/doxygen/download.html |

@@ -2667,17 +2667,6 @@ void V3d_View::Init()
 }
 
 //=============================================================================
-//function : Export
-//purpose  :
-//=============================================================================
-Standard_Boolean V3d_View::Export (const Standard_CString theFileName,
-                                   const Graphic3d_ExportFormat theFormat,
-                                   const Graphic3d_SortType theSortType)
-{
-  return myView->Export (theFileName, theFormat, theSortType);
-}
-
-//=============================================================================
 //function : Dump
 //purpose  :
 //=============================================================================

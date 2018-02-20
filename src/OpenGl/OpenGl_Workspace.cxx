@@ -39,15 +39,6 @@
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Workspace,Standard_Transient)
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_RaytraceFilter,OpenGl_RenderFilter)
 
-#ifdef HAVE_GL2PS
-  #include <gl2ps.h>
-  /* OCC22216 NOTE: linker dependency can be switched off by undefining macro.
-     Pragma comment for gl2ps.lib is defined only here. */
-  #ifdef _MSC_VER
-  #pragma comment( lib, "gl2ps.lib" )
-  #endif
-#endif
-
 namespace
 {
   static const OpenGl_Vec4 THE_WHITE_COLOR (1.0f, 1.0f, 1.0f, 1.0f);
@@ -409,9 +400,6 @@ const OpenGl_AspectMarker* OpenGl_Workspace::ApplyAspectMarker()
     {
     #if !defined(GL_ES_VERSION_2_0)
       glPointSize (myAspectMarkerSet->Aspect()->Scale());
-    #ifdef HAVE_GL2PS
-      gl2psPointSize (myAspectMarkerSet->Aspect()->Scale());
-    #endif
     #endif
     }
     myAspectMarkerApplied = myAspectMarkerSet->Aspect();

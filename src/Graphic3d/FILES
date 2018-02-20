@@ -43,7 +43,6 @@ Graphic3d_CView.hxx
 Graphic3d_DataStructureManager.cxx
 Graphic3d_DataStructureManager.hxx
 Graphic3d_DiagnosticInfo.hxx
-Graphic3d_ExportFormat.hxx
 Graphic3d_GraduatedTrihedron.hxx
 Graphic3d_GraphicDriver.cxx
 Graphic3d_GraphicDriver.hxx
@@ -95,7 +94,6 @@ Graphic3d_ShaderProgram.hxx
 Graphic3d_ShaderVariable.cxx
 Graphic3d_ShaderVariable.hxx
 Graphic3d_ShaderVariable.lxx
-Graphic3d_SortType.hxx
 Graphic3d_StereoMode.hxx
 Graphic3d_Structure.cxx
 Graphic3d_Structure.hxx

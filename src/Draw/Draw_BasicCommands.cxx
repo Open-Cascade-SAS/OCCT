@@ -340,11 +340,6 @@ static Standard_Integer dversion(Draw_Interpretor& di, Standard_Integer, const c
 #else 
   di << "TBB disabled\n";
 #endif
-#ifdef HAVE_GL2PS
-  di << "GL2PS enabled (HAVE_GL2PS)\n";
-#else
-  di << "GL2PS disabled\n";
-#endif
 #ifdef HAVE_FREEIMAGE
   di << "FreeImage enabled (HAVE_FREEIMAGE)\n";
 #else

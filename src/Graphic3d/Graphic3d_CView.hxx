@@ -23,14 +23,12 @@
 #include <Graphic3d_CStructure.hxx>
 #include <Graphic3d_DataStructureManager.hxx>
 #include <Graphic3d_DiagnosticInfo.hxx>
-#include <Graphic3d_ExportFormat.hxx>
 #include <Graphic3d_GraduatedTrihedron.hxx>
 #include <Graphic3d_MapOfStructure.hxx>
 #include <Graphic3d_NMapOfTransient.hxx>
 #include <Graphic3d_RenderingParams.hxx>
 #include <Graphic3d_SequenceOfHClipPlane.hxx>
 #include <Graphic3d_SequenceOfStructure.hxx>
-#include <Graphic3d_SortType.hxx>
 #include <Graphic3d_Structure.hxx>
 #include <Graphic3d_TextureEnv.hxx>
 #include <Graphic3d_TypeOfAnswer.hxx>
@@ -270,14 +268,6 @@ public:
 
   //! Dump active rendering buffer into specified memory buffer.
   virtual Standard_Boolean BufferDump (Image_PixMap& theImage, const Graphic3d_BufferType& theBufferType) = 0;
-
-  //! Export scene into the one of the Vector graphics formats (SVG, PS, PDF...).
-  //! In contrast to Bitmaps, Vector graphics is scalable (so you may got quality benefits
-  //! on printing to laser printer). Notice however that results may differ a lot and
-  //! do not contain some elements.
-  virtual Standard_Boolean Export (const Standard_CString theFileName,
-                                   const Graphic3d_ExportFormat theFormat,
-                                   const Graphic3d_SortType theSortType = Graphic3d_ST_BSP_Tree) = 0;
 
   //! Marks BVH tree and the set of BVH primitives of correspondent priority list with id theLayerId as outdated.
   virtual void InvalidateBVHData (const Graphic3d_ZLayerId theLayerId) = 0;
