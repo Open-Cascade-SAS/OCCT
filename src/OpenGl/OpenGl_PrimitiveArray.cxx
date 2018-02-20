@@ -733,11 +733,6 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
     myIsVboInit = Standard_True;
   }
 
-  const Standard_Boolean hasColorAttrib = !myVboAttribs.IsNull()
-                                        && myVboAttribs->HasColorAttribute();
-  const Graphic3d_TypeOfShadingModel aShadingModel = aCtx->ShaderManager()->ChooseShadingModel (anAspectFace->ShadingModel(),
-                                                                                                !myVboAttribs.IsNull() &&  myVboAttribs->HasNormalAttribute());
-
   // Temporarily disable environment mapping
   Handle(OpenGl_TextureSet) aTextureBack;
   bool toDrawArray = true;
@@ -758,14 +753,19 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
     }
   }
 
+  Graphic3d_TypeOfShadingModel aShadingModel = Graphic3d_TOSM_UNLIT;
   if (toDrawArray)
   {
-    const bool             toHilight    = theWorkspace->ToHighlight();
-    const Standard_Boolean hasVertColor = hasColorAttrib && !toHilight;
+    const bool hasColorAttrib = !myVboAttribs.IsNull()
+                              && myVboAttribs->HasColorAttribute();
+    const bool toHilight    = theWorkspace->ToHighlight();
+    const bool hasVertColor = hasColorAttrib && !toHilight;
+    const bool hasVertNorm  = !myVboAttribs.IsNull() && myVboAttribs->HasNormalAttribute();
     switch (myDrawMode)
     {
       case GL_POINTS:
       {
+        aShadingModel = aCtx->ShaderManager()->ChooseMarkerShadingModel (anAspectFace->ShadingModel(), hasVertNorm);
         const Handle(OpenGl_TextureSet)& aSpriteNormRes = anAspectMarker->SpriteRes (aCtx);
         const OpenGl_PointSprite* aSpriteNorm = !aSpriteNormRes.IsNull() ? dynamic_cast<const OpenGl_PointSprite*> (aSpriteNormRes->First().get()) : NULL;
         if (aSpriteNorm != NULL
@@ -786,6 +786,7 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
       case GL_LINES:
       case GL_LINE_STRIP:
       {
+        aShadingModel = aCtx->ShaderManager()->ChooseLineShadingModel (anAspectFace->ShadingModel(), hasVertNorm);
         aCtx->ShaderManager()->BindLineProgram (NULL,
                                                 anAspectLine->Aspect()->Type(),
                                                 aShadingModel,
@@ -795,6 +796,7 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
       }
       default:
       {
+        aShadingModel = aCtx->ShaderManager()->ChooseFaceShadingModel (anAspectFace->ShadingModel(), hasVertNorm);
         const Handle(OpenGl_TextureSet)& aTextures = aCtx->ActiveTextures();
         const Standard_Boolean toEnableEnvMap = (!aTextures.IsNull() && (aTextures == theWorkspace->EnvironmentTexture()));
         aCtx->ShaderManager()->BindFaceProgram (aTextures,

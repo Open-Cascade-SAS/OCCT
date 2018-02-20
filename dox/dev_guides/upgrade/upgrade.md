@@ -1521,6 +1521,15 @@ Multiple changes have been applied to lights management within TKV3d and TKOpenG
   Dedicated classes only hides visibility of unrelated light properties depending on its type.
 * Calling V3d_Viewer::UpdateLights() is no more required after modifying light sources properties (color, position, etc.).
 
+@subsection upgrade_730_shadingmodels Shading Models
+
+*Graphic3d_AspectFillArea3d* has been extended by a new property ::ShadingModel(), which previously has been defined globally for entire View.
+
+Previously, triangle array without normal vertex attributes was implicitly considered as unshaded,
+but now such array will be shaded using *Graphic3d_TOSM_FACET* model (e.g. by computing per-triangle normals).
+Therefore, *Graphic3d_TOSM_UNLIT* should be explicitly specified for disabling shading or triangles array.
+Alternatively, material without reflectance properties can be used for disabling shading as before.
+
 @subsection upgrade_730_tkopengl Custom low-level OpenGL elements
 
 The following API changes should be considered while porting custom OpenGl_Element objects:

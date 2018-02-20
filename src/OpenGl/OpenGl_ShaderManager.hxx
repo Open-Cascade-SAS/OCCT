@@ -316,9 +316,10 @@ public:
     return myContext == theCtx;
   }
 
-  //! Choose Shading Model.
-  Graphic3d_TypeOfShadingModel ChooseShadingModel (Graphic3d_TypeOfShadingModel theCustomModel,
-                                                   bool theHasNodalNormals) const
+  //! Choose Shading Model for filled primitives.
+  //! Fallbacks to FACET model if there are no normal attributes.
+  Graphic3d_TypeOfShadingModel ChooseFaceShadingModel (Graphic3d_TypeOfShadingModel theCustomModel,
+                                                       bool theHasNodalNormals) const
   {
     if (!myContext->ColorMask())
     {
@@ -330,13 +331,42 @@ public:
       case Graphic3d_TOSM_DEFAULT:
       case Graphic3d_TOSM_UNLIT:
       case Graphic3d_TOSM_FACET:
-        break;
+        return aModel;
       case Graphic3d_TOSM_VERTEX:
       case Graphic3d_TOSM_FRAGMENT:
-        aModel = theHasNodalNormals ? aModel : Graphic3d_TOSM_UNLIT;
-        break;
+        return theHasNodalNormals ? aModel : Graphic3d_TOSM_FACET;
     }
-    return aModel;
+    return Graphic3d_TOSM_UNLIT;
+  }
+
+  //! Choose Shading Model for line primitives.
+  //! Fallbacks to UNLIT model if there are no normal attributes.
+  Graphic3d_TypeOfShadingModel ChooseLineShadingModel (Graphic3d_TypeOfShadingModel theCustomModel,
+                                                       bool theHasNodalNormals) const
+  {
+    if (!myContext->ColorMask())
+    {
+      return Graphic3d_TOSM_UNLIT;
+    }
+    Graphic3d_TypeOfShadingModel aModel = theCustomModel != Graphic3d_TOSM_DEFAULT ? theCustomModel : myShadingModel;
+    switch (aModel)
+    {
+      case Graphic3d_TOSM_DEFAULT:
+      case Graphic3d_TOSM_UNLIT:
+      case Graphic3d_TOSM_FACET:
+        return Graphic3d_TOSM_UNLIT;
+      case Graphic3d_TOSM_VERTEX:
+      case Graphic3d_TOSM_FRAGMENT:
+        return theHasNodalNormals ? aModel : Graphic3d_TOSM_UNLIT;
+    }
+    return Graphic3d_TOSM_UNLIT;
+  }
+
+  //! Choose Shading Model for Marker primitives.
+  Graphic3d_TypeOfShadingModel ChooseMarkerShadingModel (Graphic3d_TypeOfShadingModel theCustomModel,
+                                                         bool theHasNodalNormals) const
+  {
+    return ChooseLineShadingModel (theCustomModel, theHasNodalNormals);
   }
 
   //! Returns default Shading Model.
