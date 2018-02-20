@@ -169,10 +169,16 @@ OpenGl_Workspace::OpenGl_Workspace (OpenGl_View* theView, const Handle(OpenGl_Wi
 
   myDefaultCappingAlgoFilter = new OpenGl_CappingAlgoFilter();
 
+  myFontFaceAspect.Aspect()->SetAlphaMode (Graphic3d_AlphaMode_Mask, 0.285f);
+  myFontFaceAspect.Aspect()->SetShadingModel (Graphic3d_TOSM_UNLIT);
+
   myNoneCulling .Aspect()->SetSuppressBackFaces (false);
   myNoneCulling .Aspect()->SetDrawEdges (false);
+  myNoneCulling .Aspect()->SetAlphaMode (Graphic3d_AlphaMode_Opaque);
+
   myFrontCulling.Aspect()->SetSuppressBackFaces (true);
   myFrontCulling.Aspect()->SetDrawEdges (false);
+  myFrontCulling.Aspect()->SetAlphaMode (Graphic3d_AlphaMode_Opaque);
 }
 
 // =======================================================================
@@ -296,7 +302,10 @@ const OpenGl_AspectFace* OpenGl_Workspace::ApplyAspectFace()
     }
     if (toSuppressBackFaces)
     {
-      if ((float )myAspectFaceSet->Aspect()->FrontMaterial().Transparency() != 0.0f)
+      if (myAspectFaceSet->Aspect()->AlphaMode() == Graphic3d_AlphaMode_Blend
+       || myAspectFaceSet->Aspect()->AlphaMode() == Graphic3d_AlphaMode_Mask
+       || (myAspectFaceSet->Aspect()->AlphaMode() == Graphic3d_AlphaMode_BlendAuto
+        && myAspectFaceSet->Aspect()->FrontMaterial().Transparency() != 0.0f))
       {
         // disable culling in case of translucent shading aspect
         toSuppressBackFaces = false;

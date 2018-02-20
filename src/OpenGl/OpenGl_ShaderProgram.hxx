@@ -63,6 +63,7 @@ enum OpenGl_StateVariable
   OpenGl_OCCT_DISTINGUISH_MODE,
   OpenGl_OCCT_FRONT_MATERIAL,
   OpenGl_OCCT_BACK_MATERIAL,
+  OpenGl_OCCT_ALPHA_CUTOFF,
   OpenGl_OCCT_COLOR,
 
   // Weighted, Blended Order-Independent Transparency rendering state
@@ -229,6 +230,9 @@ public:
   //! Return the length of array of Fragment Shader outputs (THE_NB_FRAG_OUTPUTS),
   //! to be used for initialization occFragColorArray/occFragColorN.
   Standard_Integer NbFragmentOutputs() const { return myNbFragOutputs; }
+
+  //! Return true if Fragment Shader should perform alpha test; FALSE by default.
+  Standard_Boolean HasAlphaTest() const { return myHasAlphaTest; }
 
   //! Return true if Fragment Shader color should output the weighted OIT coverage; FALSE by default.
   Standard_Boolean HasWeightOitOutput() const { return myHasWeightOitOutput; }
@@ -577,6 +581,7 @@ protected:
   Standard_Integer                myNbLightsMax;   //!< length of array of light sources (THE_MAX_LIGHTS)
   Standard_Integer                myNbClipPlanesMax; //!< length of array of clipping planes (THE_MAX_CLIP_PLANES)
   Standard_Integer                myNbFragOutputs; //!< length of array of Fragment Shader outputs (THE_NB_FRAG_OUTPUTS)
+  Standard_Boolean                myHasAlphaTest;  //!< flag indicating that Fragment Shader should perform alpha-test
   Standard_Boolean                myHasWeightOitOutput; //!< flag indicating that Fragment Shader includes weighted OIT coverage
   Standard_Boolean                myHasTessShader; //!< flag indicating that program defines tessellation stage
 

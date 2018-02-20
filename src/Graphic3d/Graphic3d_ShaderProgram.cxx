@@ -80,6 +80,7 @@ Graphic3d_ShaderProgram::Graphic3d_ShaderProgram()
 : myNbLightsMax (THE_MAX_LIGHTS_DEFAULT),
   myNbClipPlanesMax (THE_MAX_CLIP_PLANES_DEFAULT),
   myNbFragOutputs (THE_NB_FRAG_OUTPUTS),
+  myHasAlphaTest (false),
   myHasWeightOitOutput (false)
 {
   myID = TCollection_AsciiString ("Graphic3d_ShaderProgram_")

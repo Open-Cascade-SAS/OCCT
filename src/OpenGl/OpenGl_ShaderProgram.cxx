@@ -67,6 +67,7 @@ Standard_CString OpenGl_ShaderProgram::PredefinedKeywords[] =
   "occDistinguishingMode", // OpenGl_OCCT_DISTINGUISH_MODE
   "occFrontMaterial",      // OpenGl_OCCT_FRONT_MATERIAL
   "occBackMaterial",       // OpenGl_OCCT_BACK_MATERIAL
+  "occAlphaCutoff",        // OpenGl_OCCT_ALPHA_CUTOFF
   "occColor",              // OpenGl_OCCT_COLOR
 
   "occOitOutput",          // OpenGl_OCCT_OIT_OUTPUT
@@ -152,6 +153,7 @@ OpenGl_ShaderProgram::OpenGl_ShaderProgram (const Handle(Graphic3d_ShaderProgram
   myNbLightsMax (0),
   myNbClipPlanesMax (0),
   myNbFragOutputs (1),
+  myHasAlphaTest (false),
   myHasWeightOitOutput (false),
   myHasTessShader (false)
 {
@@ -183,6 +185,7 @@ Standard_Boolean OpenGl_ShaderProgram::Initialize (const Handle(OpenGl_Context)&
   }
   myHasTessShader = (aShaderMask & (Graphic3d_TOS_TESS_CONTROL | Graphic3d_TOS_TESS_EVALUATION)) != 0;
   myNbFragOutputs = !myProxy.IsNull() ? myProxy->NbFragmentOutputs() : 1;
+  myHasAlphaTest  = !myProxy.IsNull() && myProxy->HasAlphaTest();
   myHasWeightOitOutput = !myProxy.IsNull() ? myProxy->HasWeightOitOutput() && myNbFragOutputs >= 2 : 1;
 
   // detect the minimum GLSL version required for defined Shader Objects
@@ -307,6 +310,10 @@ Standard_Boolean OpenGl_ShaderProgram::Initialize (const Handle(OpenGl_Context)&
           anExtensions += "#extension GL_EXT_draw_buffers : enable\n";
         }
       }
+    }
+    if (myHasAlphaTest)
+    {
+      anExtensions += "#define OCC_ALPHA_TEST\n";
     }
 
     if (theCtx->hasSampleVariables == OpenGl_FeatureInExtensions)

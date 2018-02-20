@@ -171,6 +171,7 @@ static const char Shaders_Declarations_glsl[] =
   "//! Parameters of blended order-independent transparency rendering algorithm\n"
   "uniform               int       occOitOutput;      //!< Enable bit for writing output color buffers for OIT (occFragColor, occFragCoverage)\n"
   "uniform               float     occOitDepthFactor; //!< Influence of the depth component to the coverage of the accumulated fragment\n"
+  "uniform               float     occAlphaCutoff;    //!< alpha test cutoff value\n"
   "\n"
   "//! Parameters of clipping planes\n"
   "#if defined(THE_MAX_CLIP_PLANES) && (THE_MAX_CLIP_PLANES > 0)\n"

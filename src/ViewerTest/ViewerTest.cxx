@@ -1694,6 +1694,10 @@ struct ViewerTest_AspectsChangeSet
   Standard_Integer             ToSetTransparency;
   Standard_Real                Transparency;
 
+  Standard_Integer             ToSetAlphaMode;
+  Graphic3d_AlphaMode          AlphaMode;
+  Standard_ShortReal           AlphaCutoff;
+
   Standard_Integer             ToSetMaterial;
   Graphic3d_NameOfMaterial     Material;
   TCollection_AsciiString      MatName;
@@ -1739,6 +1743,9 @@ struct ViewerTest_AspectsChangeSet
     MarkerSize        (1.0),
     ToSetTransparency (0),
     Transparency      (0.0),
+    ToSetAlphaMode    (0),
+    AlphaMode         (Graphic3d_AlphaMode_BlendAuto),
+    AlphaCutoff       (0.5f),
     ToSetMaterial     (0),
     Material          (Graphic3d_NOM_DEFAULT),
     ToSetShowFreeBoundary      (0),
@@ -1764,6 +1771,7 @@ struct ViewerTest_AspectsChangeSet
     return ToSetVisibility        == 0
         && ToSetLineWidth         == 0
         && ToSetTransparency      == 0
+        && ToSetAlphaMode         == 0
         && ToSetColor             == 0
         && ToSetMaterial          == 0
         && ToSetShowFreeBoundary  == 0
@@ -1797,9 +1805,15 @@ struct ViewerTest_AspectsChangeSet
       isOk = Standard_False;
     }
     if (theIsSubPart
-     && ToSetTransparency)
+     && ToSetTransparency != 0)
     {
       std::cout << "Error: the transparency can not be defined for sub-part of object!\n";
+      isOk = Standard_False;
+    }
+    if (ToSetAlphaMode == 1
+     && (AlphaCutoff <= 0.0f || AlphaCutoff >= 1.0f))
+    {
+      std::cout << "Error: alpha cutoff value should be within (0; 1) range (specified " << AlphaCutoff << ")\n";
       isOk = Standard_False;
     }
     if (ToSetMaterial == 1
@@ -2045,6 +2059,53 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
       {
         aChangeSet->ToSetTransparency = -1;
         aChangeSet->Transparency = 0.0;
+      }
+    }
+    else if (anArg == "-setalphamode")
+    {
+      if (++anArgIter >= theArgNb)
+      {
+        std::cout << "Error: wrong syntax at " << anArg << "\n";
+        return 1;
+      }
+      aChangeSet->ToSetAlphaMode = 1;
+      aChangeSet->AlphaCutoff = 0.5f;
+      {
+        TCollection_AsciiString aParam (theArgVec[anArgIter]);
+        aParam.LowerCase();
+        if (aParam == "opaque")
+        {
+          aChangeSet->AlphaMode = Graphic3d_AlphaMode_Opaque;
+        }
+        else if (aParam == "mask")
+        {
+          aChangeSet->AlphaMode = Graphic3d_AlphaMode_Mask;
+        }
+        else if (aParam == "blend")
+        {
+          aChangeSet->AlphaMode = Graphic3d_AlphaMode_Blend;
+        }
+        else if (aParam == "blendauto"
+              || aParam == "auto")
+        {
+          aChangeSet->AlphaMode = Graphic3d_AlphaMode_BlendAuto;
+        }
+        else
+        {
+          std::cout << "Error: wrong syntax at " << aParam << "\n";
+          return 1;
+        }
+      }
+
+      if (anArgIter + 1 < theArgNb
+       && theArgVec[anArgIter + 1][0] != '-')
+      {
+        TCollection_AsciiString aParam2 (theArgVec[anArgIter + 1]);
+        if (aParam2.IsRealValue())
+        {
+          aChangeSet->AlphaCutoff = (float )aParam2.RealValue();
+          ++anArgIter;
+        }
       }
     }
     else if (anArg == "-setvis"
@@ -2376,6 +2437,9 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
       aChangeSet->MarkerSize = 1.0;
       aChangeSet->ToSetTransparency = -1;
       aChangeSet->Transparency = 0.0;
+      aChangeSet->ToSetAlphaMode = -1;
+      aChangeSet->AlphaMode = Graphic3d_AlphaMode_BlendAuto;
+      aChangeSet->AlphaCutoff = 0.5f;
       aChangeSet->ToSetColor = -1;
       aChangeSet->Color = DEFAULT_COLOR;
       aChangeSet->ToSetMaterial = -1;
@@ -2564,6 +2628,10 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
     if (aChangeSet->ToSetTransparency != 0)
     {
       aDrawer->ShadingAspect()->SetTransparency (aChangeSet->Transparency);
+    }
+    if (aChangeSet->ToSetAlphaMode != 0)
+    {
+      aDrawer->ShadingAspect()->Aspect()->SetAlphaMode (aChangeSet->AlphaMode, aChangeSet->AlphaCutoff);
     }
     if (aChangeSet->ToSetMaterial != 0)
     {
@@ -2795,6 +2863,16 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
         if (aChangeSet->ToSetShadingModel != 0)
         {
           aDrawer->SetShadingModel ((aChangeSet->ToSetShadingModel == -1) ? Graphic3d_TOSM_DEFAULT : aChangeSet->ShadingModel, aChangeSet->ToSetShadingModel != -1);
+          toRedisplay = Standard_True;
+        }
+        if (aChangeSet->ToSetAlphaMode != 0)
+        {
+          if (!aDrawer->HasOwnShadingAspect())
+          {
+            aDrawer->SetShadingAspect (new Prs3d_ShadingAspect());
+            *aDrawer->ShadingAspect()->Aspect() = *aCtx->DefaultDrawer()->ShadingAspect()->Aspect();
+          }
+          aDrawer->ShadingAspect()->Aspect()->SetAlphaMode (aChangeSet->AlphaMode, aChangeSet->AlphaCutoff);
           toRedisplay = Standard_True;
         }
       }
@@ -6340,6 +6418,7 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
       "\n\t\t:          [-setHatch HatchStyle]"
       "\n\t\t:          [-setShadingModel {color|flat|gouraud|phong}]"
       "\n\t\t:          [-unsetShadingModel]"
+      "\n\t\t:          [-setAlphaMode {opaque|mask|blend|blendauto} [alphaCutOff=0.5]]"
       "\n\t\t: Manage presentation properties of all, selected or named objects."
       "\n\t\t: When -subshapes is specified than following properties will be"
       "\n\t\t: assigned to specified sub-shapes."

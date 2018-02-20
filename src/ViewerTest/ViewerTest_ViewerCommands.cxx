@@ -10067,6 +10067,7 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
       theDI << "\n";
     }
     theDI << "depth pre-pass: " << (aParams.ToEnableDepthPrepass        ? "on" : "off") << "\n";
+    theDI << "alpha to coverage: " << (aParams.ToEnableAlphaToCoverage  ? "on" : "off") << "\n";
     theDI << "\n";
     return 0;
   }
@@ -10208,6 +10209,21 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
       aParams.ToEnableDepthPrepass = Standard_True;
       if (anArgIter + 1 < theArgNb
        && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], aParams.ToEnableDepthPrepass))
+      {
+        ++anArgIter;
+      }
+    }
+    else if (aFlag == "-samplealphatocoverage"
+          || aFlag == "-alphatocoverage")
+    {
+      if (toPrint)
+      {
+        theDI << (aParams.ToEnableAlphaToCoverage ? "on " : "off ");
+        continue;
+      }
+      aParams.ToEnableAlphaToCoverage = Standard_True;
+      if (anArgIter + 1 < theArgNb
+       && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], aParams.ToEnableAlphaToCoverage))
       {
         ++anArgIter;
       }
@@ -12201,6 +12217,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "\n      '-msaa         0..4'        Specifies number of samples for MSAA"
     "\n      '-oit          off|0.0-1.0' Enables/disables OIT and sets depth weight factor"
     "\n      '-depthPrePass on|off'      Enables/disables depth pre-pass"
+    "\n      '-alphatocoverage on|off'   Enables/disables alpha to coverage (needs MSAA)"
     "\n      '-rendScale    value        Rendering resolution scale factor"
     "\n      '-rayTrace'                 Enables  GPU ray-tracing"
     "\n      '-rayDepth     0..10'       Defines maximum ray-tracing depth"

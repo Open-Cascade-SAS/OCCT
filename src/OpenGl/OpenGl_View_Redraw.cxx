@@ -869,6 +869,7 @@ void OpenGl_View::render (Graphic3d_Camera::Projection theProjection,
   // ==================================
 
   const Handle(OpenGl_Context)& aContext = myWorkspace->GetGlContext();
+  aContext->SetSampleAlphaToCoverage (myRenderParams.ToEnableAlphaToCoverage);
 
 #if !defined(GL_ES_VERSION_2_0)
   // Disable current clipping planes
@@ -1031,6 +1032,9 @@ void OpenGl_View::render (Graphic3d_Camera::Projection theProjection,
   {
     renderFrameStats();
   }
+
+  myWorkspace->ResetAppliedAspect();
+  aContext->SetSampleAlphaToCoverage (false);
 
   // reset FFP state for safety
   aContext->BindProgram (Handle(OpenGl_ShaderProgram)());

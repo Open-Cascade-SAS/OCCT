@@ -453,10 +453,11 @@ void OpenGl_Text::StringSize (const Handle(OpenGl_Context)& theCtx,
 // =======================================================================
 void OpenGl_Text::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
 {
+  theWorkspace->SetAspectFace (&theWorkspace->FontFaceAspect());
+  theWorkspace->ApplyAspectFace();
   const OpenGl_AspectText*      aTextAspect  = theWorkspace->ApplyAspectText();
   const Handle(OpenGl_Context)& aCtx         = theWorkspace->GetGlContext();
   const Handle(OpenGl_TextureSet) aPrevTexture = aCtx->BindTextures (Handle(OpenGl_TextureSet)());
-
 
   // Bind custom shader program or generate default version
   aCtx->ShaderManager()->BindFontProgram (aTextAspect->ShaderProgramRes (aCtx));
@@ -757,8 +758,10 @@ void OpenGl_Text::drawRect (const Handle(OpenGl_Context)& theCtx,
     myBndVertsVbo->Init (theCtx, 2, 4, aQuad[0].GetData());
   }
 
-  // bind flat program
-  theCtx->ShaderManager()->BindFaceProgram (Handle(OpenGl_TextureSet)(), Graphic3d_TOSM_UNLIT, Standard_False, Standard_False, Handle(OpenGl_ShaderProgram)());
+  // bind unlit program
+  theCtx->ShaderManager()->BindFaceProgram (Handle(OpenGl_TextureSet)(), Graphic3d_TOSM_UNLIT,
+                                            Graphic3d_AlphaMode_Opaque, Standard_False, Standard_False,
+                                            Handle(OpenGl_ShaderProgram)());
 
 #if !defined(GL_ES_VERSION_2_0)
   if (theCtx->core11 != NULL
@@ -901,10 +904,6 @@ void OpenGl_Text::render (const Handle(OpenGl_Context)& theCtx,
   GLint aTexEnvParam = GL_REPLACE;
   if (theCtx->core11 != NULL)
   {
-    // setup alpha test
-    glAlphaFunc (GL_GEQUAL, 0.285f);
-    glEnable (GL_ALPHA_TEST);
-
     glDisable (GL_TEXTURE_1D);
     glEnable  (GL_TEXTURE_2D);
     glGetTexEnviv (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, &aTexEnvParam);
@@ -918,6 +917,7 @@ void OpenGl_Text::render (const Handle(OpenGl_Context)& theCtx,
   // setup blending
   glEnable (GL_BLEND);
   glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  const bool anAlphaToCoverageOld = theCtx->SetSampleAlphaToCoverage (false);
 
   // extra drawings
   switch (theTextAspect.Aspect()->DisplayType())
@@ -994,7 +994,6 @@ void OpenGl_Text::render (const Handle(OpenGl_Context)& theCtx,
     if (theCtx->core11 != NULL)
     {
       glDisable (GL_TEXTURE_2D);
-      glDisable (GL_ALPHA_TEST);
     }
   #endif
     const bool aColorMaskBack = theCtx->SetColorMask (false);
@@ -1015,15 +1014,12 @@ void OpenGl_Text::render (const Handle(OpenGl_Context)& theCtx,
   glDisable (GL_BLEND);
   glDisable (GL_STENCIL_TEST);
 #if !defined(GL_ES_VERSION_2_0)
-  if (theCtx->core11 != NULL)
-  {
-    glDisable (GL_ALPHA_TEST);
-  }
   glDisable (GL_COLOR_LOGIC_OP);
 
   theCtx->SetPolygonMode         (aPrevPolygonMode);
   theCtx->SetPolygonHatchEnabled (aPrevHatchingMode);
 #endif
+  theCtx->SetSampleAlphaToCoverage (anAlphaToCoverageOld);
 
   // model view matrix was modified
   theCtx->WorldViewState.Pop();

@@ -126,6 +126,13 @@ public:
   //! Should be done before GLSL program initialization.
   void SetNbFragmentOutputs (const Standard_Integer theNbOutputs) { myNbFragOutputs = theNbOutputs; }
 
+  //! Return true if Fragment Shader should perform alpha test; FALSE by default.
+  Standard_Boolean HasAlphaTest() const { return myHasAlphaTest; }
+
+  //! Set if Fragment Shader should perform alpha test.
+  //! Note that this flag is designed for usage with - custom shader program may discard fragment regardless this flag.
+  void SetAlphaTest (Standard_Boolean theAlphaTest) { myHasAlphaTest = theAlphaTest; }
+
   //! Return true if Fragment Shader color should output the weighted OIT coverage; FALSE by default.
   Standard_Boolean HasWeightOitOutput() const { return myHasWeightOitOutput; }
 
@@ -183,6 +190,7 @@ private:
   Standard_Integer              myNbLightsMax;   //!< length of array of light sources (THE_MAX_LIGHTS)
   Standard_Integer              myNbClipPlanesMax; //!< length of array of clipping planes (THE_MAX_CLIP_PLANES)
   Standard_Integer              myNbFragOutputs; //!< length of array of Fragment Shader outputs (THE_NB_FRAG_OUTPUTS)
+  Standard_Boolean              myHasAlphaTest;       //!< flag indicating that Fragment Shader performs alpha test
   Standard_Boolean              myHasWeightOitOutput; //!< flag indicating that Fragment Shader includes weighted OIT coverage
 
 };

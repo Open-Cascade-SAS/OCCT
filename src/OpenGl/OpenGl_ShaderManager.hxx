@@ -84,6 +84,7 @@ public:
   //! Bind program for filled primitives rendering
   Standard_Boolean BindFaceProgram (const Handle(OpenGl_TextureSet)& theTextures,
                                     const Graphic3d_TypeOfShadingModel  theShadingModel,
+                                    const Graphic3d_AlphaMode           theAlphaMode,
                                     const Standard_Boolean              theHasVertColor,
                                     const Standard_Boolean              theEnableEnvMap,
                                     const Handle(OpenGl_ShaderProgram)& theCustomProgram)
@@ -98,7 +99,7 @@ public:
                                                         && (theTextures.IsNull() || theTextures->IsModulate())
                                                         ? theShadingModel
                                                         : Graphic3d_TOSM_UNLIT;
-    const Standard_Integer        aBits    = getProgramBits (theTextures, theHasVertColor, theEnableEnvMap);
+    const Standard_Integer        aBits    = getProgramBits (theTextures, theAlphaMode, theHasVertColor, theEnableEnvMap);
     Handle(OpenGl_ShaderProgram)& aProgram = getStdProgram (aShadeModelOnFace, aBits);
     return bindProgramWithState (aProgram);
   }
@@ -107,6 +108,7 @@ public:
   Standard_Boolean BindLineProgram (const Handle(OpenGl_TextureSet)&    theTextures,
                                     const Aspect_TypeOfLine             theLineType,
                                     const Graphic3d_TypeOfShadingModel  theShadingModel,
+                                    const Graphic3d_AlphaMode           theAlphaMode,
                                     const Standard_Boolean              theHasVertColor,
                                     const Handle(OpenGl_ShaderProgram)& theCustomProgram)
   {
@@ -116,7 +118,7 @@ public:
       return bindProgramWithState (theCustomProgram);
     }
 
-    Standard_Integer aBits = getProgramBits (theTextures, theHasVertColor);
+    Standard_Integer aBits = getProgramBits (theTextures, theAlphaMode, theHasVertColor, false);
     if (theLineType != Aspect_TOL_SOLID)
     {
       aBits |= OpenGl_PO_StippleLine;
@@ -129,6 +131,7 @@ public:
   //! Bind program for point rendering
   Standard_Boolean BindMarkerProgram (const Handle(OpenGl_TextureSet)&    theTextures,
                                       const Graphic3d_TypeOfShadingModel  theShadingModel,
+                                      const Graphic3d_AlphaMode           theAlphaMode,
                                       const Standard_Boolean              theHasVertColor,
                                       const Handle(OpenGl_ShaderProgram)& theCustomProgram)
   {
@@ -138,7 +141,7 @@ public:
       return bindProgramWithState (theCustomProgram);
     }
 
-    const Standard_Integer        aBits    = getProgramBits (theTextures, theHasVertColor) | OpenGl_PO_Point;
+    const Standard_Integer        aBits    = getProgramBits (theTextures, theAlphaMode, theHasVertColor, false) | OpenGl_PO_Point;
     Handle(OpenGl_ShaderProgram)& aProgram = getStdProgram (theShadingModel, aBits);
     return bindProgramWithState (aProgram);
   }
@@ -267,10 +270,11 @@ public:
   //! Updates state of material.
   void UpdateMaterialStateTo (const OpenGl_Material& theFrontMat,
                               const OpenGl_Material& theBackMat,
+                              const float theAlphaCutoff,
                               const bool theToDistinguish,
                               const bool theToMapTexture)
   {
-    myMaterialState.Set (theFrontMat, theBackMat, theToDistinguish, theToMapTexture);
+    myMaterialState.Set (theFrontMat, theBackMat, theAlphaCutoff, theToDistinguish, theToMapTexture);
     myMaterialState.Update();
   }
 
@@ -392,11 +396,16 @@ protected:
 
   //! Define program bits.
   Standard_Integer getProgramBits (const Handle(OpenGl_TextureSet)& theTextures,
-                                   const Standard_Boolean theHasVertColor,
-                                   const Standard_Boolean theEnableEnvMap = Standard_False)
+                                   Graphic3d_AlphaMode theAlphaMode,
+                                   Standard_Boolean theHasVertColor,
+                                   Standard_Boolean theEnableEnvMap)
 
   {
     Standard_Integer aBits = 0;
+    if (theAlphaMode == Graphic3d_AlphaMode_Mask)
+    {
+      aBits |= OpenGl_PO_AlphaTest;
+    }
 
     const Standard_Integer aNbPlanes = myContext->Clipping().NbClippingOrCappingOn();
     if (aNbPlanes > 0)

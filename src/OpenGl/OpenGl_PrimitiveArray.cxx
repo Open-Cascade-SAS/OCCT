@@ -458,10 +458,8 @@ void OpenGl_PrimitiveArray::drawEdges (const OpenGl_Vec4&              theEdgeCo
 
   if (aGlContext->core20fwd != NULL)
   {
-    aGlContext->ShaderManager()->BindLineProgram (NULL,
-                                                  anAspect->Aspect()->Type(),
-                                                  Graphic3d_TOSM_UNLIT,
-                                                  Standard_False,
+    aGlContext->ShaderManager()->BindLineProgram (Handle(OpenGl_TextureSet)(), anAspect->Aspect()->Type(),
+                                                  Graphic3d_TOSM_UNLIT, Graphic3d_AlphaMode_Opaque, Standard_False,
                                                   anAspect->ShaderProgramRes (aGlContext));
   }
   const GLenum aDrawMode = !aGlContext->ActiveProgram().IsNull()
@@ -569,7 +567,14 @@ void OpenGl_PrimitiveArray::drawMarkers (const Handle(OpenGl_Workspace)& theWork
   #if !defined(GL_ES_VERSION_2_0)
     if (aCtx->core11 != NULL)
     {
-      aCtx->core11fwd->glDisable (GL_ALPHA_TEST);
+      if (aCtx->ShaderManager()->MaterialState().AlphaCutoff() >= ShortRealLast())
+      {
+        aCtx->core11fwd->glDisable (GL_ALPHA_TEST);
+      }
+      else
+      {
+        aCtx->core11fwd->glAlphaFunc (GL_GEQUAL, aCtx->ShaderManager()->MaterialState().AlphaCutoff());
+      }
     }
   #endif
     aCtx->SetPointSize (1.0f);
@@ -775,11 +780,11 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
                                                    ? anAspectMarker->SpriteHighlightRes (aCtx)
                                                    : aSpriteNormRes;
           aCtx->BindTextures (aSprite);
-          aCtx->ShaderManager()->BindMarkerProgram (aSprite, aShadingModel, hasVertColor, anAspectMarker->ShaderProgramRes (aCtx));
+          aCtx->ShaderManager()->BindMarkerProgram (aSprite, aShadingModel, Graphic3d_AlphaMode_Opaque, hasVertColor, anAspectMarker->ShaderProgramRes (aCtx));
         }
         else
         {
-          aCtx->ShaderManager()->BindMarkerProgram (Handle(OpenGl_TextureSet)(), aShadingModel, hasVertColor, anAspectMarker->ShaderProgramRes (aCtx));
+          aCtx->ShaderManager()->BindMarkerProgram (Handle(OpenGl_TextureSet)(), aShadingModel, Graphic3d_AlphaMode_Opaque, hasVertColor, anAspectMarker->ShaderProgramRes (aCtx));
         }
         break;
       }
@@ -790,6 +795,7 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
         aCtx->ShaderManager()->BindLineProgram (NULL,
                                                 anAspectLine->Aspect()->Type(),
                                                 aShadingModel,
+                                                Graphic3d_AlphaMode_Opaque,
                                                 hasVertColor,
                                                 anAspectLine->ShaderProgramRes (aCtx));
         break;
@@ -801,6 +807,7 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
         const Standard_Boolean toEnableEnvMap = (!aTextures.IsNull() && (aTextures == theWorkspace->EnvironmentTexture()));
         aCtx->ShaderManager()->BindFaceProgram (aTextures,
                                                 aShadingModel,
+                                                anAspectFace->Aspect()->AlphaMode(),
                                                 hasVertColor,
                                                 toEnableEnvMap,
                                                 anAspectFace->ShaderProgramRes (aCtx));

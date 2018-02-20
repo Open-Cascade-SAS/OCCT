@@ -1064,6 +1064,16 @@ void OpenGl_ShaderManager::PushMaterialState (const Handle(OpenGl_ShaderProgram)
       return;
     }
 
+    if (myMaterialState.AlphaCutoff() < ShortRealLast())
+    {
+      glAlphaFunc (GL_GEQUAL, myMaterialState.AlphaCutoff());
+      glEnable (GL_ALPHA_TEST);
+    }
+    else
+    {
+      glDisable (GL_ALPHA_TEST);
+    }
+
     const GLenum aFrontFace = myMaterialState.ToDistinguish() ? GL_FRONT : GL_FRONT_AND_BACK;
     myContext->core11->glMaterialfv(aFrontFace, GL_AMBIENT,   aFrontMat.Ambient.GetData());
     myContext->core11->glMaterialfv(aFrontFace, GL_DIFFUSE,   aFrontMat.Diffuse.GetData());
@@ -1082,6 +1092,9 @@ void OpenGl_ShaderManager::PushMaterialState (const Handle(OpenGl_ShaderProgram)
     return;
   }
 
+  theProgram->SetUniform (myContext,
+                          theProgram->GetStateLocation (OpenGl_OCCT_ALPHA_CUTOFF),
+                          myMaterialState.AlphaCutoff());
   theProgram->SetUniform (myContext,
                           theProgram->GetStateLocation (OpenGl_OCCT_TEXTURE_ENABLE),
                           myMaterialState.ToMapTexture()  ? 1 : 0);
@@ -1626,6 +1639,7 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramUnlit (Handle(OpenGl_Sha
 #endif
   aProgramSrc->SetNbLightsMax (0);
   aProgramSrc->SetNbClipPlanesMax (aNbClipPlanes);
+  aProgramSrc->SetAlphaTest ((theBits & OpenGl_PO_AlphaTest) != 0);
   aProgramSrc->AttachShader (Graphic3d_ShaderObject::CreateFromSource (Graphic3d_TOS_VERTEX,   aSrcVert));
   aProgramSrc->AttachShader (Graphic3d_ShaderObject::CreateFromSource (Graphic3d_TOS_FRAGMENT, aSrcFrag));
 
@@ -1952,6 +1966,7 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramGouraud (Handle(OpenGl_S
 #endif
   aProgramSrc->SetNbLightsMax (aNbLights);
   aProgramSrc->SetNbClipPlanesMax (aNbClipPlanes);
+  aProgramSrc->SetAlphaTest ((theBits & OpenGl_PO_AlphaTest) != 0);
   aProgramSrc->AttachShader (Graphic3d_ShaderObject::CreateFromSource (Graphic3d_TOS_VERTEX,   aSrcVert));
   aProgramSrc->AttachShader (Graphic3d_ShaderObject::CreateFromSource (Graphic3d_TOS_FRAGMENT, aSrcFrag));
   TCollection_AsciiString aKey;
@@ -2131,6 +2146,7 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramPhong (Handle(OpenGl_Sha
 #endif
   aProgramSrc->SetNbLightsMax (aNbLights);
   aProgramSrc->SetNbClipPlanesMax (aNbClipPlanes);
+  aProgramSrc->SetAlphaTest ((theBits & OpenGl_PO_AlphaTest) != 0);
   aProgramSrc->AttachShader (Graphic3d_ShaderObject::CreateFromSource (Graphic3d_TOS_VERTEX,   aSrcVert));
   aProgramSrc->AttachShader (Graphic3d_ShaderObject::CreateFromSource (Graphic3d_TOS_FRAGMENT, aSrcFrag));
   TCollection_AsciiString aKey;

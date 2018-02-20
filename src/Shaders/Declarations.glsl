@@ -168,6 +168,7 @@ uniform               float     occPointSize;          //!< point size
 //! Parameters of blended order-independent transparency rendering algorithm
 uniform               int       occOitOutput;      //!< Enable bit for writing output color buffers for OIT (occFragColor, occFragCoverage)
 uniform               float     occOitDepthFactor; //!< Influence of the depth component to the coverage of the accumulated fragment
+uniform               float     occAlphaCutoff;    //!< alpha test cutoff value
 
 //! Parameters of clipping planes
 #if defined(THE_MAX_CLIP_PLANES) && (THE_MAX_CLIP_PLANES > 0)

@@ -80,6 +80,7 @@ public:
     NbMsaaSamples               (0),
     RenderResolutionScale       (1.0f),
     ToEnableDepthPrepass        (Standard_False),
+    ToEnableAlphaToCoverage     (Standard_False),
     // ray tracing parameters
     IsGlobalIlluminationEnabled (Standard_False),
     RaytracingDepth             (THE_DEFAULT_DEPTH),
@@ -147,6 +148,7 @@ public:
   Standard_ShortReal                RenderResolutionScale;       //!< rendering resolution scale factor, 1 by default;
                                                                  //!  incompatible with MSAA (e.g. NbMsaaSamples should be set to 0)
   Standard_Boolean                  ToEnableDepthPrepass;        //!< enables/disables depth pre-pass, False by default
+  Standard_Boolean                  ToEnableAlphaToCoverage;     //!< enables/disables alpha to coverage, False by default
 
   Standard_Boolean                  IsGlobalIlluminationEnabled; //!< enables/disables global illumination effects (path tracing)
   Standard_Integer                  SamplesPerPixel;             //!< number of samples per pixel (SPP)

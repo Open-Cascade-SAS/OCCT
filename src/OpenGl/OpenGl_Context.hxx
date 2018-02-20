@@ -646,6 +646,12 @@ public: //! @name methods to alter or retrieve current state
   //! Enable/disable writing into color buffer (wrapper for glColorMask).
   Standard_EXPORT bool SetColorMask (bool theToWriteColor);
 
+  //! Return GL_SAMPLE_ALPHA_TO_COVERAGE state.
+  bool SampleAlphaToCoverage() const { return myAlphaToCoverage; }
+
+  //! Enable/disable GL_SAMPLE_ALPHA_TO_COVERAGE.
+  Standard_EXPORT bool SetSampleAlphaToCoverage (bool theToEnable);
+
   //! Return back face culling state.
   bool ToCullBackFaces() const { return myToCullBackFaces; }
 
@@ -929,6 +935,7 @@ private: //! @name fields tracking current state
   OpenGl_DrawBuffers            myDrawBuffers;     //!< current draw buffers
   unsigned int                  myDefaultVao;      //!< default Vertex Array Object
   Standard_Boolean              myColorMask;       //!< flag indicating writing into color buffer is enabled or disabled (glColorMask)
+  Standard_Boolean              myAlphaToCoverage; //!< flag indicating GL_SAMPLE_ALPHA_TO_COVERAGE state
   Standard_Boolean              myIsGlDebugCtx;    //!< debug context initialization state
   TCollection_AsciiString       myVendor;          //!< Graphics Driver's vendor
   TColStd_PackedMapOfInteger    myFilters[6];      //!< messages suppressing filter (for sources from GL_DEBUG_SOURCE_API_ARB to GL_DEBUG_SOURCE_OTHER_ARB)

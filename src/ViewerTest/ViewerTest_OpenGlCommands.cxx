@@ -164,7 +164,9 @@ void VUserDrawObj::Render(const Handle(OpenGl_Workspace)& theWorkspace) const
   aTA->Aspect()->Font();
   OpenGl_Vec4 aColor = theWorkspace->LineColor();
 
-  aCtx->ShaderManager()->BindLineProgram (Handle(OpenGl_TextureSet)(), Aspect_TOL_SOLID, Graphic3d_TOSM_UNLIT, false, Handle(OpenGl_ShaderProgram)());
+  aCtx->ShaderManager()->BindLineProgram (Handle(OpenGl_TextureSet)(), Aspect_TOL_SOLID,
+                                          Graphic3d_TOSM_UNLIT, Graphic3d_AlphaMode_Opaque, false,
+                                          Handle(OpenGl_ShaderProgram)());
   aCtx->SetColor4fv (aColor);
 
   const OpenGl_Vec3 aVertArray[4] =

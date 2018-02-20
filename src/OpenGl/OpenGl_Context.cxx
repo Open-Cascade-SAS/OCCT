@@ -191,6 +191,7 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
   myDrawBuffers (1),
   myDefaultVao (0),
   myColorMask (true),
+  myAlphaToCoverage (false),
   myIsGlDebugCtx (Standard_False),
   myResolution (Graphic3d_RenderingParams::THE_DEFAULT_RESOLUTION),
   myResolutionRatio (1.0f),
@@ -3193,20 +3194,27 @@ void OpenGl_Context::SetShadingMaterial (const OpenGl_AspectFace* theAspect,
 
   // do not update material properties in case of zero reflection mode,
   // because GL lighting will be disabled by OpenGl_PrimitiveArray::DrawArray() anyway.
+  const OpenGl_MaterialState& aMatState = myShaderManager->MaterialState();
+  const float anAlphaCutoff = anAspect->AlphaMode() == Graphic3d_AlphaMode_Mask
+                            ? anAspect->AlphaCutoff()
+                            : ShortRealLast();
   if (theAspect->ShadingModel() == Graphic3d_TOSM_UNLIT)
   {
-    return;
+    if (anAlphaCutoff == aMatState.AlphaCutoff())
+    {
+      return;
+    }
   }
-
-  if (myMatFront    == myShaderManager->MaterialState().FrontMaterial()
-   && myMatBack     == myShaderManager->MaterialState().BackMaterial()
-   && toDistinguish == myShaderManager->MaterialState().ToDistinguish()
-   && toMapTexture  == myShaderManager->MaterialState().ToMapTexture())
+  else if (myMatFront    == aMatState.FrontMaterial()
+        && myMatBack     == aMatState.BackMaterial()
+        && toDistinguish == aMatState.ToDistinguish()
+        && toMapTexture  == aMatState.ToMapTexture()
+        && anAlphaCutoff == aMatState.AlphaCutoff())
   {
     return;
   }
 
-  myShaderManager->UpdateMaterialStateTo (myMatFront, myMatBack, toDistinguish, toMapTexture);
+  myShaderManager->UpdateMaterialStateTo (myMatFront, myMatBack, anAlphaCutoff, toDistinguish, toMapTexture);
 }
 
 // =======================================================================
@@ -3241,9 +3249,12 @@ Standard_Boolean OpenGl_Context::CheckIsTransparent (const OpenGl_AspectFace* th
     theAlphaBack  = aMatBackSrc .Alpha();
   }
 
-  const bool isTransparent = theAlphaFront < 1.0f
-                          || theAlphaBack  < 1.0f;
-  return isTransparent;
+  if (anAspect->AlphaMode() == Graphic3d_AlphaMode_BlendAuto)
+  {
+    return theAlphaFront < 1.0f
+        || theAlphaBack  < 1.0f;
+  }
+  return anAspect->AlphaMode() == Graphic3d_AlphaMode_Blend;
 }
 
 // =======================================================================
@@ -3750,5 +3761,34 @@ bool OpenGl_Context::SetColorMask (bool theToWriteColor)
 
   const bool anOldValue = myColorMask;
   myColorMask = theToWriteColor;
+  return anOldValue;
+}
+
+// =======================================================================
+// function : SetSampleAlphaToCoverage
+// purpose  :
+// =======================================================================
+bool OpenGl_Context::SetSampleAlphaToCoverage (bool theToEnable)
+{
+  if (myAlphaToCoverage == theToEnable)
+  {
+    return myAlphaToCoverage;
+  }
+
+  if (core15fwd != NULL)
+  {
+    if (theToEnable)
+    {
+      //core15fwd->core15fwd->glSampleCoverage (1.0f, GL_FALSE);
+      core15fwd->glEnable (GL_SAMPLE_ALPHA_TO_COVERAGE);
+    }
+    else
+    {
+      core15fwd->glDisable (GL_SAMPLE_ALPHA_TO_COVERAGE);
+    }
+  }
+
+  const bool anOldValue = myAlphaToCoverage;
+  myAlphaToCoverage = theToEnable;
   return anOldValue;
 }
