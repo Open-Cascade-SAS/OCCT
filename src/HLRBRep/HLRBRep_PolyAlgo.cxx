@@ -438,13 +438,20 @@ void HLRBRep_PolyAlgo::StoreShell (const TopoDS_Shape& Shape,
 	  PD (f) = new HLRAlgo_PolyData();
 	  psd->PolyData().ChangeValue(iFace) = PD(f);
 	  PID(f) = new HLRAlgo_PolyInternalData(nbN,nbT);
-	  Handle(HLRAlgo_PolyInternalData)& pid = 
-	    *(Handle(HLRAlgo_PolyInternalData)*)&(PID(f));
-	  Handle(Geom_Surface) S = BRep_Tool::Surface(F);
-	  if (S->DynamicType() == STANDARD_TYPE(Geom_RectangularTrimmedSurface))
-	    S = Handle(Geom_RectangularTrimmedSurface)::DownCast(S)->BasisSurface();
-	  GeomAdaptor_Surface AS(S);
-	  pid->Planar(AS.GetType() == GeomAbs_Plane);
+	  Handle(HLRAlgo_PolyInternalData)& pid = *(Handle(HLRAlgo_PolyInternalData)*)&(PID(f));
+	  if (Handle(Geom_Surface) S = BRep_Tool::Surface(F))
+	  {
+	    if (Handle(Geom_RectangularTrimmedSurface) aRectTrimSurf = Handle(Geom_RectangularTrimmedSurface)::DownCast(S))
+	    {
+	      S = aRectTrimSurf->BasisSurface();
+	    }
+	    GeomAdaptor_Surface AS(S);
+	    pid->Planar(AS.GetType() == GeomAbs_Plane);
+	  }
+	  else
+	  {
+	    pid->Planar (false);
+	  }
 	  HLRAlgo_Array1OfTData* TData = &pid->TData();
 	  HLRAlgo_Array1OfPISeg* PISeg = &pid->PISeg();
 	  HLRAlgo_Array1OfPINod* PINod = &pid->PINod();
