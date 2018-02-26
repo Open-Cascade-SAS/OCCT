@@ -48,6 +48,12 @@ public:
   
   Standard_EXPORT XCAFDimTolObjects_GeomToleranceObject(const Handle(XCAFDimTolObjects_GeomToleranceObject)& theObj);
   
+  //! Returns semantic name
+  Standard_EXPORT Handle(TCollection_HAsciiString) GetSemanticName() const;
+
+  //! Sets semantic name
+  Standard_EXPORT void SetSemanticName(const Handle(TCollection_HAsciiString)& theName);
+
   //! Sets type of the object.
   Standard_EXPORT void SetType (const XCAFDimTolObjects_GeomToleranceType theType);
   
@@ -230,6 +236,7 @@ private:
   Standard_Boolean myHasPnt;
   Standard_Boolean myHasPntText;
   TopoDS_Shape myPresentation;
+  Handle(TCollection_HAsciiString) mySemanticName;
   Handle(TCollection_HAsciiString) myPresentationName;
   XCAFDimTolObjects_ToleranceZoneAffectedPlane myAffectedPlaneType;
   gp_Pln myAffectedPlane;

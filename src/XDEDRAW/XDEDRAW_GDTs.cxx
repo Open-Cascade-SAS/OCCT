@@ -139,6 +139,10 @@ static Standard_Integer DumpDGTs (Draw_Interpretor& di, Standard_Integer argc, c
         if (argc > 3)
         {
           di <<" (";
+          if (aDimTolObj->GetSemanticName())
+          {
+            di << " N \"" << aDimTolObj->GetSemanticName()->String() << "\"";
+          }
           di << " T " << aDimTolObj->GetType();
           if(aDimTolObj->IsDimWithRange())
           {
@@ -209,6 +213,10 @@ static Standard_Integer DumpDGTs (Draw_Interpretor& di, Standard_Integer argc, c
         if (argc > 3)
         {
           di <<" (";
+          if (aDimTolObj->GetSemanticName())
+          {
+            di << " N \"" << aDimTolObj->GetSemanticName()->String() << "\"";
+          }
           di << " T " << aDimTolObj->GetType();
           di << " TV " << aDimTolObj->GetTypeOfValue();
           di << ", V " << aDimTolObj->GetValue();
@@ -246,7 +254,6 @@ static Standard_Integer DumpDGTs (Draw_Interpretor& di, Standard_Integer argc, c
               di << " ZMV " <<aDimTolObj->GetValueOfZoneModifier();
             }
           }
-
           di << " )";
         }
         Handle(XCAFDoc_GraphNode) aNode;
@@ -264,7 +271,11 @@ static Standard_Integer DumpDGTs (Draw_Interpretor& di, Standard_Integer argc, c
               di << " Datum."<< i << "."<< j << "."<< k;
               if (argc > 3)
               {
-                di <<" (";
+                di << " (";
+                if (aDimTolObj->GetSemanticName())
+                {
+                  di << " N \"" << aDimTolObj->GetSemanticName()->String() << "\"";
+                }
                 XCAFDimTolObjects_DatumModifiersSequence aModif = 
                   aDatumObj->GetModifiers();
                 if (!aModif.IsEmpty())
@@ -315,6 +326,10 @@ static Standard_Integer DumpDGTs (Draw_Interpretor& di, Standard_Integer argc, c
           if (argc > 3)
           {
             di <<" (";
+            if (aDatumObj->GetSemanticName())
+            {
+              di << " N \"" << aDatumObj->GetSemanticName()->String() << "\"";
+            }
             di << " T " << aDatumObj->GetDatumTargetType();
             if (aDatumObj->GetDatumTargetType() != XCAFDimTolObjects_DatumTargetType_Area)
             {
@@ -2590,6 +2605,96 @@ static Standard_Integer getGDTAffectedPlane(Draw_Interpretor& di, Standard_Integ
   return 0;
 }
 
+static Standard_Integer getGDTSemanticName(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+{
+  if (argc < 3) {
+    di << "Use: XGetGDTSemanticName Doc GDT_Label\n";
+    return 1;
+  }
+  Handle(TDocStd_Document) Doc;
+  DDocStd::GetDocument(argv[1], Doc);
+  if (Doc.IsNull()) { di << argv[1] << " is not a document\n"; return 1; }
+
+  TDF_Label aLabel;
+  TDF_Tool::Label(Doc->GetData(), argv[2], aLabel);
+  if (aLabel.IsNull())
+  {
+    di << "GDT " << argv[2] << " is absent in " << argv[1] << "\n";
+    return 1;
+  }
+  Handle(TCollection_HAsciiString) aSemanticName;
+  // Dimension
+  Handle(XCAFDoc_Dimension) aDimension;
+  if (aLabel.FindAttribute(XCAFDoc_Dimension::GetID(), aDimension))
+  {
+    Handle(XCAFDimTolObjects_DimensionObject) anObj = aDimension->GetObject();
+    aSemanticName = anObj->GetSemanticName();
+  }
+  // Geometric Tolerance
+  Handle(XCAFDoc_GeomTolerance) aGeomTolerance;
+  if (aLabel.FindAttribute(XCAFDoc_GeomTolerance::GetID(), aGeomTolerance))
+  {
+    Handle(XCAFDimTolObjects_GeomToleranceObject) anObj = aGeomTolerance->GetObject();
+    aSemanticName = anObj->GetSemanticName();
+  }
+  // Datum
+  Handle(XCAFDoc_Datum) aDatum;
+  if (aLabel.FindAttribute(XCAFDoc_Datum::GetID(), aDatum))
+  {
+    Handle(XCAFDimTolObjects_DatumObject) anObj = aDatum->GetObject();
+    aSemanticName = anObj->GetSemanticName();
+  }
+  if (aSemanticName)
+  {
+    di << aSemanticName->String();
+  }
+  return 0;
+}
+
+static Standard_Integer setGDTSemanticName(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+{
+  if (argc < 3) {
+    di << "Use: XSetGDTSemanticName Doc GDT_Label Name\n";
+    return 1;
+  }
+  Handle(TDocStd_Document) Doc;
+  DDocStd::GetDocument(argv[1], Doc);
+  if (Doc.IsNull()) { di << argv[1] << " is not a document\n"; return 1; }
+
+  TDF_Label aLabel;
+  TDF_Tool::Label(Doc->GetData(), argv[2], aLabel);
+  if (aLabel.IsNull())
+  {
+    di << "GDT " << argv[2] << " is absent in " << argv[1] << "\n";
+    return 1;
+  }
+  Handle(TCollection_HAsciiString) aSemanticName = new TCollection_HAsciiString(argv[3]);
+  // Dimension
+  Handle(XCAFDoc_Dimension) aDimension;
+  if (aLabel.FindAttribute(XCAFDoc_Dimension::GetID(), aDimension))
+  {
+    Handle(XCAFDimTolObjects_DimensionObject) anObj = aDimension->GetObject();
+    anObj->SetSemanticName(aSemanticName);
+    aDimension->SetObject(anObj);
+  }
+  // Geometric Tolerance
+  Handle(XCAFDoc_GeomTolerance) aGeomTolerance;
+  if (aLabel.FindAttribute(XCAFDoc_GeomTolerance::GetID(), aGeomTolerance))
+  {
+    Handle(XCAFDimTolObjects_GeomToleranceObject) anObj = aGeomTolerance->GetObject();
+    anObj->SetSemanticName(aSemanticName);
+    aGeomTolerance->SetObject(anObj);
+  }
+  // Datum
+  Handle(XCAFDoc_Datum) aDatum;
+  if (aLabel.FindAttribute(XCAFDoc_Datum::GetID(), aDatum))
+  {
+    Handle(XCAFDimTolObjects_DatumObject) anObj = aDatum->GetObject();
+    anObj->SetSemanticName(aSemanticName);
+    aDatum->SetObject(anObj);
+  }
+  return 0;
+}
 
 //=======================================================================
 //function : InitCommands
@@ -2961,7 +3066,6 @@ void XDEDRAW_GDTs::InitCommands(Draw_Interpretor& di)
   di.Add ("XGetGDTPresentation","XGetGDTPresentation Doc GDT_Label Shape"
     "Returns Presentation into Shape",
     __FILE__, getGDTPresentation, g);
-
   di.Add("XSetGDTAffectedPlane", "XSetGDTAffectedPlane Doc GDT_Label Plane type[1 - intersection/ 2 - orientation]"
     "Set affectedP plane for geometric tolerance",
     __FILE__, addGDTAffectedPlane, g);
@@ -2969,4 +3073,10 @@ void XDEDRAW_GDTs::InitCommands(Draw_Interpretor& di)
   di.Add("XGetGDTAffectedPlane", "XGetGDTAffectedPlane Doc GDT_Label Plane"
     "Returns affected plane into Plane",
     __FILE__, getGDTAffectedPlane, g);
+  di.Add("XGetGDTSemanticName", "XGetGDTSemanticName Doc GDT_Label"
+    __FILE__, getGDTSemanticName, g);
+
+  di.Add("XSetGDTSemanticName", "XSetGDTSemanticName Doc GDT_Label Name"
+    "Set semantic name",
+    __FILE__, setGDTSemanticName, g);
 }

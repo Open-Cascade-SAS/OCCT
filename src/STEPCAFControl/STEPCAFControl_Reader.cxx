@@ -2736,21 +2736,27 @@ TDF_Label STEPCAFControl_Reader::createGDTObjectInXCAF(const Handle(Standard_Tra
   {
     return aGDTL;
   }
+
+  Handle(TCollection_HAsciiString) aSemanticName;
+
   // protection against invalid input
   if (theEnt->IsKind(STANDARD_TYPE(StepDimTol_GeometricTolerance))) {
     Handle(StepDimTol_GeometricTolerance) aGeomTol = Handle(StepDimTol_GeometricTolerance)::DownCast(theEnt);
     if (aGeomTol->TolerancedShapeAspect().IsNull())
       return aGDTL;
+    aSemanticName = aGeomTol->Name();
   }
   if (theEnt->IsKind(STANDARD_TYPE(StepShape_DimensionalSize))) {
     Handle(StepShape_DimensionalSize) aDim = Handle(StepShape_DimensionalSize)::DownCast(theEnt);
     if (aDim->AppliesTo().IsNull())
       return aGDTL;
+    aSemanticName = aDim->Name();
   }
   if (theEnt->IsKind(STANDARD_TYPE(StepShape_DimensionalLocation))) {
     Handle(StepShape_DimensionalLocation) aDim = Handle(StepShape_DimensionalLocation)::DownCast(theEnt);
     if (aDim->RelatedShapeAspect().IsNull() || aDim->RelatingShapeAspect().IsNull())
       return aGDTL;
+    aSemanticName = aDim->Name();
   }
 
   Handle(XCAFDoc_ShapeTool) aSTool = XCAFDoc_DocumentTool::ShapeTool( theDoc->Main() );
@@ -3159,6 +3165,13 @@ TDF_Label STEPCAFControl_Reader::createGDTObjectInXCAF(const Handle(Standard_Tra
         anObj->AddModifier(XCAFDimTolObjects_GeomToleranceModif_All_Over);
       aGTol->SetObject(anObj);
     }
+
+    if (aSemanticName)
+    {
+      TCollection_ExtendedString str(aSemanticName->String());
+      TDataStd_Name::Set(aGDTL, str);
+    }
+
     readDatumsAP242(theEnt, aGDTL, theDoc, theWS);
   }
   return aGDTL;

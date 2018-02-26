@@ -52,6 +52,27 @@ XCAFDimTolObjects_DatumObject::XCAFDimTolObjects_DatumObject(const Handle(XCAFDi
   myHasPlane = theObj->myHasPlane;
   myHasPnt = theObj->myHasPnt;
   myHasPntText = theObj->myHasPntText;
+  mySemanticName = theObj->mySemanticName;
+}
+
+//=======================================================================
+//function : 
+//purpose  : 
+//=======================================================================
+
+Handle(TCollection_HAsciiString) XCAFDimTolObjects_DatumObject::GetSemanticName() const
+{
+  return mySemanticName;
+}
+
+//=======================================================================
+//function : 
+//purpose  : 
+//=======================================================================
+
+void XCAFDimTolObjects_DatumObject::SetSemanticName(const Handle(TCollection_HAsciiString)& theName)
+{
+  mySemanticName = theName;
 }
 
 //=======================================================================

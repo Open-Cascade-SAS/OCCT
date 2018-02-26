@@ -172,6 +172,13 @@ Handle(TCollection_HAsciiString) XCAFDoc_Datum::GetIdentification() const
 void XCAFDoc_Datum::SetObject(const Handle(XCAFDimTolObjects_DatumObject)& theObject)
 {
   Backup();
+
+  if (theObject->GetSemanticName())
+  {
+    TCollection_ExtendedString str(theObject->GetSemanticName()->String());
+    TDataStd_Name::Set(Label(), str);
+  }
+
   TDF_ChildIterator anIter(Label());
   for(;anIter.More(); anIter.Next())
   {
@@ -280,6 +287,16 @@ void XCAFDoc_Datum::SetObject(const Handle(XCAFDimTolObjects_DatumObject)& theOb
 Handle(XCAFDimTolObjects_DatumObject) XCAFDoc_Datum::GetObject() const
 {
   Handle(XCAFDimTolObjects_DatumObject) anObj = new XCAFDimTolObjects_DatumObject();
+
+  Handle(TDataStd_Name) aSemanticNameAttr;
+  Handle(TCollection_HAsciiString) aSemanticName;
+  if (Label().FindAttribute(TDataStd_Name::GetID(), aSemanticNameAttr))
+  {
+    const TCollection_ExtendedString& aName = aSemanticNameAttr->Get();
+    if (!aName.IsEmpty())
+      aSemanticName = new TCollection_HAsciiString(aName);
+  }
+  anObj->SetSemanticName(aSemanticName);
 
   Handle(TDataStd_AsciiString) anAttName;
   if(Label().FindChild(ChildLab_Name).FindAttribute(TDataStd_AsciiString::GetID(), anAttName))

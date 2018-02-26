@@ -57,6 +57,27 @@ XCAFDimTolObjects_DimensionObject::XCAFDimTolObjects_DimensionObject(const Handl
   myHasPlane = theObj->myHasPlane;
   myPlane = theObj->myPlane;
   myHasPntText = theObj->myHasPntText;
+  mySemanticName = theObj->mySemanticName;
+}
+
+//=======================================================================
+//function : 
+//purpose  : 
+//=======================================================================
+
+Handle(TCollection_HAsciiString) XCAFDimTolObjects_DimensionObject::GetSemanticName() const
+{
+  return mySemanticName;
+}
+
+//=======================================================================
+//function : 
+//purpose  : 
+//=======================================================================
+
+void XCAFDimTolObjects_DimensionObject::SetSemanticName(const Handle(TCollection_HAsciiString)& theName)
+{
+  mySemanticName = theName;
 }
 
 //=======================================================================

@@ -52,8 +52,29 @@ XCAFDimTolObjects_GeomToleranceObject::XCAFDimTolObjects_GeomToleranceObject(con
   myHasPlane = theObj->myHasPlane;
   myHasPnt = theObj->myHasPnt;
   myHasPntText = theObj->myHasPntText;
+  mySemanticName = theObj->mySemanticName;
   myAffectedPlaneType = theObj->myAffectedPlaneType;
   myAffectedPlane = theObj->myAffectedPlane;
+}
+
+//=======================================================================
+//function : 
+//purpose  : 
+//=======================================================================
+
+Handle(TCollection_HAsciiString) XCAFDimTolObjects_GeomToleranceObject::GetSemanticName() const
+{
+  return mySemanticName;
+}
+
+//=======================================================================
+//function : 
+//purpose  : 
+//=======================================================================
+
+void XCAFDimTolObjects_GeomToleranceObject::SetSemanticName(const Handle(TCollection_HAsciiString)& theName)
+{
+  mySemanticName = theName;
 }
 
 //=======================================================================

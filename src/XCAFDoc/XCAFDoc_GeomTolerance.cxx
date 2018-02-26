@@ -97,7 +97,12 @@ void XCAFDoc_GeomTolerance::SetObject (const Handle(XCAFDimTolObjects_GeomTolera
 {
   Backup();
 
-  //Label().ForForgetAllAttributes();
+  if (theObject->GetSemanticName())
+  {
+    TCollection_ExtendedString str(theObject->GetSemanticName()->String());
+    TDataStd_Name::Set(Label(), str);
+  }
+
   TDF_ChildIterator anIter(Label());
   for(;anIter.More(); anIter.Next())
   {
@@ -190,6 +195,16 @@ void XCAFDoc_GeomTolerance::SetObject (const Handle(XCAFDimTolObjects_GeomTolera
 Handle(XCAFDimTolObjects_GeomToleranceObject) XCAFDoc_GeomTolerance::GetObject()  const
 {
   Handle(XCAFDimTolObjects_GeomToleranceObject) anObj = new XCAFDimTolObjects_GeomToleranceObject();
+
+  Handle(TDataStd_Name) aSemanticNameAttr;
+  Handle(TCollection_HAsciiString) aSemanticName;
+  if (Label().FindAttribute(TDataStd_Name::GetID(), aSemanticNameAttr))
+  {
+    const TCollection_ExtendedString& aName = aSemanticNameAttr->Get();
+    if (!aName.IsEmpty())
+      aSemanticName = new TCollection_HAsciiString(aName);
+  }
+  anObj->SetSemanticName(aSemanticName);
 
   Handle(TDataStd_Integer) aType;
   if(Label().FindChild(ChildLab_Type).FindAttribute(TDataStd_Integer::GetID(), aType))

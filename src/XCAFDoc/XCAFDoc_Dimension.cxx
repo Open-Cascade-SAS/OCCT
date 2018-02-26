@@ -103,7 +103,12 @@ void XCAFDoc_Dimension::SetObject (const Handle(XCAFDimTolObjects_DimensionObjec
 {
   Backup();
 
-  //Label().ForForgetAllAttributes();
+  if (theObject->GetSemanticName())
+  {
+    TCollection_ExtendedString str(theObject->GetSemanticName()->String());
+    TDataStd_Name::Set(Label(), str);
+  }
+
   TDF_ChildIterator anIter(Label());
   for(;anIter.More(); anIter.Next())
   {
@@ -236,6 +241,16 @@ Handle(XCAFDimTolObjects_DimensionObject) XCAFDoc_Dimension::GetObject()  const
 {
   Handle(XCAFDimTolObjects_DimensionObject) anObj = new XCAFDimTolObjects_DimensionObject();
 
+  Handle(TDataStd_Name) aSemanticNameAttr;
+  Handle(TCollection_HAsciiString) aSemanticName;
+  if (Label().FindAttribute(TDataStd_Name::GetID(), aSemanticNameAttr))
+  {
+    const TCollection_ExtendedString& aName = aSemanticNameAttr->Get();
+    if (!aName.IsEmpty())
+      aSemanticName = new TCollection_HAsciiString(aName);
+  }
+  anObj->SetSemanticName(aSemanticName);
+
   Handle(TDataStd_Integer) aType;
   if(Label().FindChild(ChildLab_Type).FindAttribute(TDataStd_Integer::GetID(), aType))
   {
@@ -332,21 +347,17 @@ Handle(XCAFDimTolObjects_DimensionObject) XCAFDoc_Dimension::GetObject()  const
   TDF_Label aLPres = Label().FindChild( ChildLab_Presentation);
   if ( aLPres.FindAttribute(TNaming_NamedShape::GetID(), aNS) ) 
   {
-
     TopoDS_Shape aPresentation = TNaming_Tool::GetShape(aNS);
     if( !aPresentation.IsNull())
     {
-     
       Handle(TDataStd_Name) aNameAtrr;
       Handle(TCollection_HAsciiString) aPresentName;
       if (aLPres.FindAttribute(TDataStd_Name::GetID(),aNameAtrr))
       {
         const TCollection_ExtendedString& aName = aNameAtrr->Get();
-
         if( !aName.IsEmpty())
           aPresentName = new TCollection_HAsciiString(aName);
       }
-
       anObj->SetPresentation(aPresentation, aPresentName);
     }
   }
