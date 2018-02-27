@@ -1,0 +1,6 @@
+ param read.iges.onlyvisible 1
+ newmodel 
+ ReadIges D1 [locate_data_file bug29526.igs]
+ XGetOneShape a1 D1
+ checknbshapes a1 -face 154
+ 

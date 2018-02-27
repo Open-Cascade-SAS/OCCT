@@ -47,6 +47,7 @@
 #include <XCAFDoc_Editor.hxx>
 #include <TDF_Tool.hxx>
 #include <TopoDS_Shape.hxx>
+#include <Interface_Static.hxx>
 
 #include <stdio.h>
 //============================================================
@@ -191,8 +192,11 @@ static Standard_Integer ReadIges (Draw_Interpretor& di, Standard_Integer argc, c
   
   DeclareAndCast(IGESControl_Controller,ctl,XSDRAW::Controller());
   if (ctl.IsNull()) XSDRAW::SetNorm("IGES");
+ 
 
   IGESCAFControl_Reader reader ( XSDRAW::Session(),Standard_True);
+  Standard_Integer onlyvisible = Interface_Static::IVal("read.iges.onlyvisible");
+  reader.SetReadVisible(onlyvisible == 1);
   
   if (argc == 4) {
     Standard_Boolean mode = Standard_True;
