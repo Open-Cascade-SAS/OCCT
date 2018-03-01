@@ -289,6 +289,9 @@ public:
 
 public:
 
+  //! Returns state of OIT uniforms.
+  const OpenGl_OitState& OitState() const { return myOitState; }
+
   //! Set the state of OIT rendering pass.
   //! @param theToEnableOitWrite [in] flag indicating whether the special output should be written for OIT algorithm.
   //! @param theDepthFactor [in] the scalar factor of depth influence to the fragment's coverage.

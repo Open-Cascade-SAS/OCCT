@@ -30,7 +30,7 @@
 //! are declared in this class.
 class OpenGl_TextureBufferArb : public OpenGl_VertexBuffer
 {
-
+  DEFINE_STANDARD_RTTIEXT(OpenGl_TextureBufferArb, OpenGl_VertexBuffer)
 public:
 
   //! Helpful constants
@@ -99,19 +99,15 @@ public:
                                       const Graphic3d_TextureUnit   theTextureUnit) const;
 
   //! Returns name of TBO.
-  GLuint TextureId() const
-  {
-    return myTextureId;
-  }
+  GLuint TextureId() const { return myTextureId; }
+
+  //! Returns internal texture format.
+  GLenum TextureFormat() const { return myTexFormat; }
 
 protected:
 
   GLuint myTextureId; //!< texture id
   GLenum myTexFormat; //!< internal texture format
-
-public:
-
-  DEFINE_STANDARD_RTTIEXT(OpenGl_TextureBufferArb,OpenGl_VertexBuffer) // Type definition
 
 };
 
