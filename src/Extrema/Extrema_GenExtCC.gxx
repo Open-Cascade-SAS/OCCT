@@ -26,6 +26,7 @@
 #include <Precision.hxx>
 #include <NCollection_Vector.hxx>
 #include <NCollection_CellFilter.hxx>
+#include <GCPnts_AbscissaPoint.hxx>
 
 // Comparator, used in std::sort.
 static Standard_Boolean comp(const gp_XY& theA,
@@ -47,6 +48,57 @@ static Standard_Boolean comp(const gp_XY& theA,
   return Standard_False;
 }
 
+static void ChangeIntervals(Handle(TColStd_HArray1OfReal)& theInts, const Standard_Integer theNbInts)
+{
+  Standard_Integer aNbInts = theInts->Length() - 1;
+  Standard_Integer aNbAdd = theNbInts - aNbInts;
+  Handle(TColStd_HArray1OfReal) aNewInts = new TColStd_HArray1OfReal(1, theNbInts + 1);
+  Standard_Integer aNbLast = theInts->Length();
+  Standard_Integer i;
+  if (aNbInts == 1)
+  {
+    aNewInts->SetValue(1, theInts->First());
+    aNewInts->SetValue(theNbInts + 1, theInts->Last());
+    Standard_Real dt = (theInts->Last() - theInts->First()) / theNbInts;
+    Standard_Real t = theInts->First() + dt;
+    for (i = 2; i <= theNbInts; ++i, t += dt)
+    {
+      aNewInts->SetValue(i, t);
+    }
+    theInts = aNewInts;
+    return;
+  }
+  //
+  for (i = 1; i <= aNbLast; ++i)
+  {
+    aNewInts->SetValue(i, theInts->Value(i));
+  }
+  //
+  while (aNbAdd > 0)
+  {
+    Standard_Real anLIntMax = -1.;
+    Standard_Integer aMaxInd = -1;
+    for (i = 1; i < aNbLast; ++i)
+    {
+      Standard_Real anL = aNewInts->Value(i + 1) - aNewInts->Value(i);
+      if (anL > anLIntMax)
+      {
+        anLIntMax = anL;
+        aMaxInd = i;
+      }
+    }
+
+    Standard_Real t = (aNewInts->Value(aMaxInd + 1) + aNewInts->Value(aMaxInd)) / 2.;
+    for (i = aNbLast; i > aMaxInd; --i)
+    {
+      aNewInts->SetValue(i + 1, aNewInts->Value(i));
+    }
+    aNbLast++;
+    aNbAdd--;
+    aNewInts->SetValue(aMaxInd + 1, t);
+  }
+  theInts = aNewInts;
+}
 class Extrema_CCPointsInspector : public NCollection_CellFilter_InspectorXY
 {
 public:
@@ -229,10 +281,65 @@ void Extrema_GenExtCC::Perform()
     aNbInter[1] = C2.NbIntervals(aContinuity);
   }
 
-  TColStd_Array1OfReal anIntervals1(1, aNbInter[0] + 1);
-  TColStd_Array1OfReal anIntervals2(1, aNbInter[1] + 1);
-  C1.Intervals(anIntervals1, aContinuity);
-  C2.Intervals(anIntervals2, aContinuity);
+  Standard_Real anL[2];
+  Standard_Integer indmax = -1, indmin = -1;
+  const Standard_Real mult = 20.;
+  if (!(Precision::IsInfinite(C1.FirstParameter()) || Precision::IsInfinite(C1.LastParameter()) ||
+        Precision::IsInfinite(C2.FirstParameter()) || Precision::IsInfinite(C2.LastParameter())))
+  {
+    anL[0] = GCPnts_AbscissaPoint::Length(C1);
+    anL[1] = GCPnts_AbscissaPoint::Length(C2);
+    if (anL[0] / aNbInter[0] > mult * anL[1] / aNbInter[1])
+    {
+      indmax = 0;
+      indmin = 1;
+    }
+    else if (anL[1] / aNbInter[1] > mult * anL[0] / aNbInter[0])
+    {
+      indmax = 1;
+      indmin = 0;
+    }
+  }
+  Standard_Integer aNbIntOpt = 0;
+  if (indmax >= 0)
+  {
+    aNbIntOpt = RealToInt(anL[indmax] * aNbInter[indmin] / anL[indmin] / (mult / 4.))  + 1;
+    if (aNbIntOpt > 100 || aNbIntOpt < aNbInter[indmax])
+    {
+      indmax = -1;
+    }
+    else
+    {
+      if (aNbIntOpt * aNbInter[indmin] > 100)
+      {
+        aNbIntOpt = 100 / aNbInter[indmin];
+        if (aNbIntOpt < aNbInter[indmax])
+        {
+          indmax = -1;
+        }
+      }
+    }
+  }
+
+  Handle(TColStd_HArray1OfReal) anIntervals1 = new TColStd_HArray1OfReal(1, aNbInter[0] + 1);
+  Handle(TColStd_HArray1OfReal) anIntervals2 = new TColStd_HArray1OfReal(1, aNbInter[1] + 1);
+  C1.Intervals(anIntervals1->ChangeArray1(), aContinuity);
+  C2.Intervals(anIntervals2->ChangeArray1(), aContinuity);
+  if (indmax >= 0)
+  {
+    if (indmax == 0)
+    {
+      //Change anIntervals1
+      ChangeIntervals(anIntervals1, aNbIntOpt);
+      aNbInter[0] = anIntervals1->Length() - 1;
+    }
+    else
+    {
+      //Change anIntervals2;
+      ChangeIntervals(anIntervals2, aNbIntOpt);
+      aNbInter[1] = anIntervals2->Length() - 1;
+    }
+  }
 
   // Lipchitz constant computation.
   const Standard_Real aMaxLC = 10000.;
@@ -286,8 +393,8 @@ void Extrema_GenExtCC::Perform()
   aFinder.SetFunctionalMinimalValue(0.0); // Best distance cannot be lower than 0.0.
 
   // Size computed to have cell index inside of int32 value.
-  const Standard_Real aCellSize = Max(Max(anIntervals1.Last() - anIntervals1.First(),
-                                      anIntervals2.Last() - anIntervals2.First())
+  const Standard_Real aCellSize = Max(Max(anIntervals1->Last() - anIntervals1->First(),
+                                      anIntervals2->Last() - anIntervals2->First())
                                       * Precision::PConfusion() / (2.0 * Sqrt(2.0)),
                                       Precision::PConfusion());
   Extrema_CCPointsInspector anInspector(aCellSize);
@@ -303,10 +410,10 @@ void Extrema_GenExtCC::Perform()
   {
     for(j = 1; j <= aNbInter[1]; j++)
     {
-      aFirstBorderInterval(1) = anIntervals1(i);
-      aFirstBorderInterval(2) = anIntervals2(j); 
-      aSecondBorderInterval(1) = anIntervals1(i + 1);
-      aSecondBorderInterval(2) = anIntervals2(j + 1);
+      aFirstBorderInterval(1) = anIntervals1->Value(i);
+      aFirstBorderInterval(2) = anIntervals2->Value(j); 
+      aSecondBorderInterval(1) = anIntervals1->Value(i + 1);
+      aSecondBorderInterval(2) = anIntervals2->Value(j + 1);
 
       aFinder.SetLocalParams(aFirstBorderInterval, aSecondBorderInterval);
       aFinder.Perform(GetSingleSolutionFlag());
