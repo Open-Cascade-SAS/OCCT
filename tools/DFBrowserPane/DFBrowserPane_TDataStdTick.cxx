@@ -17,8 +17,10 @@
 
 #include <TDataStd_Tick.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QVariant>
 #include <QWidget>
+#include <Standard_WarningsRestore.hxx>
 
 // =======================================================================
 // function : GetValues

@@ -24,6 +24,7 @@
 #include <inspector/View_ViewActionType.hxx>
 #include <inspector/View_Viewer.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QColorDialog>
 #include <QCursor>
 #include <QFileInfo>
@@ -35,6 +36,7 @@
 #include <QRubberBand>
 #include <QStatusBar>
 #include <QStyleFactory>
+#include <Standard_WarningsRestore.hxx>
 
 #include <stdio.h>
 

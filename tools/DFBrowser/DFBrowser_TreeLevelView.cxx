@@ -21,12 +21,13 @@
 #include <inspector/DFBrowserPane_Tools.hxx>
 #include <inspector/TreeModel_ModelBase.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QItemSelectionModel>
-
 #include <QGridLayout>
 #include <QHeaderView>
 #include <QTableView>
 #include <QWidget>
+#include <Standard_WarningsRestore.hxx>
 
 const int LABEL_OR_ATTRIBUTECOLUMN_WIDTH = 160;
 

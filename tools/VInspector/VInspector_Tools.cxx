@@ -29,7 +29,9 @@
 #include <Standard_Version.hxx>
 #include <StdSelect_BRepOwner.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QStringList>
+#include <Standard_WarningsRestore.hxx>
 
 #include <sstream>
 

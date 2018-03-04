@@ -19,12 +19,11 @@
 #include <Standard.hxx>
 #include <TDocStd_Document.hxx>
 
-#ifdef _MSC_VER
-#pragma warning(disable : 4127) // conditional expression is constant
-#endif
+#include <Standard_WarningsDisable.hxx>
 #include <QAbstractTableModel>
 #include <QList>
 #include <QVariant>
+#include <Standard_WarningsRestore.hxx>
 
 //! \class DFBrowserPane_AttributePaneModel
 //! \brief This is an extension of table model to visualize a container of values

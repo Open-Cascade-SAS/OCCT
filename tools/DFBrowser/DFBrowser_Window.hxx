@@ -25,13 +25,12 @@
 #include <TCollection_AsciiString.hxx>
 #include <TDF_Label.hxx>
 
-#ifdef _MSC_VER
-#pragma warning(disable : 4127) // conditional expression is constant
-#endif
+#include <Standard_WarningsDisable.hxx>
 #include <QObject>
 #include <QItemSelection>
 #include <QMainWindow>
 #include <QModelIndexList>
+#include <Standard_WarningsRestore.hxx>
 
 class DFBrowser_DumpView;
 class DFBrowser_Module;

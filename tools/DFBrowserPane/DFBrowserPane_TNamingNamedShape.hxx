@@ -24,8 +24,10 @@
 #include <TNaming_NamedShape.hxx>
 #include <TopoDS_Shape.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QMap>
 #include <QModelIndex>
+#include <Standard_WarningsRestore.hxx>
 
 class DFBrowserPane_TableView;
 class DFBrowserPane_AttributePaneModel;

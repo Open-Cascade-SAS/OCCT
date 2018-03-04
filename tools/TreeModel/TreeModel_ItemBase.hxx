@@ -20,9 +20,7 @@
 #include <Standard_Macro.hxx>
 #include <inspector/TreeModel_ItemRole.hxx>
 
-#ifdef _MSC_VER
-#pragma warning(disable : 4127) // conditional expression is constant
-#endif
+#include <Standard_WarningsDisable.hxx>
 #include <QExplicitlySharedDataPointer>
 #include <QHash>
 #include <QMap>
@@ -31,6 +29,7 @@
 #include <QPair>
 #include <QSharedData>
 #include <QVariant>
+#include <Standard_WarningsRestore.hxx>
 
 class TreeModel_ItemBase;
 

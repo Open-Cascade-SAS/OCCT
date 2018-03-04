@@ -22,7 +22,9 @@
 #include <Standard.hxx>
 #include <Standard_Macro.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QObject>
+#include <Standard_WarningsRestore.hxx>
 
 class DFBrowser_Window;
 

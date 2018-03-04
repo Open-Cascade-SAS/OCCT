@@ -25,12 +25,13 @@
 #include <TDF_ListIteratorOfDeltaList.hxx>
 #include <Standard_Version.hxx>
 
-#include <QVariant>
-#include <QWidget>
-
+#include <Standard_WarningsDisable.hxx>
 #include <QGridLayout>
 #include <QGroupBox>
 #include <QTableView>
+#include <QVariant>
+#include <QWidget>
+#include <Standard_WarningsRestore.hxx>
 
 // =======================================================================
 // function : Constructor
@@ -105,7 +106,7 @@ void DFBrowserPane_TDocStdOwner::GetValues (const Handle(TDF_Attribute)& theAttr
             << aSeparationStr.ToCString() << aSeparationStr.ToCString()
             << "IsSaved" << DFBrowserPane_Tools::BoolToStr (aDocument->IsSaved())
             << "IsChanged" << DFBrowserPane_Tools::BoolToStr (aDocument->IsChanged())
-            << "GetSavedTime" << DFBrowserPane_Tools::BoolToStr (aDocument->GetSavedTime())
+            << "GetSavedTime" << aDocument->GetSavedTime()
             << "GetName" << (aDocument->IsSaved() ? DFBrowserPane_Tools::ToString (aDocument->GetName()) : "")
             << "GetPath" << (aDocument->IsSaved() ? DFBrowserPane_Tools::ToString (aDocument->GetPath()) : "")
             << "GetData" << aDocumentDataInfo.ToCString()

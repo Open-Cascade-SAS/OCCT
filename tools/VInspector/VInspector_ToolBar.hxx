@@ -20,11 +20,10 @@
 #include <Standard_Macro.hxx>
 #include <inspector/VInspector_ToolActionType.hxx>
 
-#ifdef _MSC_VER
-  #pragma warning(disable : 4127 4718) // conditional expression is constant, recursive call has no side effects
-#endif
+#include <Standard_WarningsDisable.hxx>
 #include <QMap>
 #include <QObject>
+#include <Standard_WarningsRestore.hxx>
 
 class QWidget;
 class QPushButton;

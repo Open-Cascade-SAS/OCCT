@@ -27,9 +27,11 @@
 
 #include <TDF_Attribute.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QItemSelectionModel>
 #include <QMap>
 #include <QStackedWidget>
+#include <Standard_WarningsRestore.hxx>
 
 // =======================================================================
 // function : Constructor

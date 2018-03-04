@@ -23,11 +23,10 @@
 #include <TCollection_AsciiString.hxx>
 #include <TDF_Attribute.hxx>
 
-#ifdef _MSC_VER
-#pragma warning(disable : 4127) // conditional expression is constant
-#endif
+#include <Standard_WarningsDisable.hxx>
 #include <QStringList>
 #include <QPair>
+#include <Standard_WarningsRestore.hxx>
 
 class DFBrowser_Module;
 

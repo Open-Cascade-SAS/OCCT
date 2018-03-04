@@ -28,7 +28,9 @@
 #include <TNaming_Builder.hxx>
 #include <TNaming_NamedShape.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QAbstractItemModel>
+#include <Standard_WarningsRestore.hxx>
 
 // =======================================================================
 // function : Constructor

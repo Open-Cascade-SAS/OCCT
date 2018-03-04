@@ -36,11 +36,13 @@
 #include <TDataStd_HDataMapOfStringHArray1OfInteger.hxx>
 #include <TDataStd_NamedData.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QTableView>
 #include <QTabWidget>
 #include <QVariant>
 #include <QVBoxLayout>
 #include <QWidget>
+#include <Standard_WarningsRestore.hxx>
 
 static const QString VALUES_INTEGER =    "values_integer";
 static const QString VALUES_REAL =       "values_real";

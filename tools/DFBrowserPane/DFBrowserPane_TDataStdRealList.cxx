@@ -18,8 +18,10 @@
 #include <TColStd_ListIteratorOfListOfReal.hxx>
 #include <TDataStd_RealList.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QVariant>
 #include <QWidget>
+#include <Standard_WarningsRestore.hxx>
 
 // =======================================================================
 // function : GetValues

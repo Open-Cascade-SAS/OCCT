@@ -18,11 +18,10 @@
 #include <TDataStd_BooleanList.hxx>
 #include <TDataStd_ListIteratorOfListOfByte.hxx>
 
-#ifdef _MSC_VER
-#pragma warning(disable : 4127) // conditional expression is constant
-#endif
+#include <Standard_WarningsDisable.hxx>
 #include <QVariant>
 #include <QWidget>
+#include <Standard_WarningsRestore.hxx>
 
 // =======================================================================
 // function : GetValues

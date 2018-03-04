@@ -20,10 +20,12 @@
 #include <inspector/VInspector_ItemBase.hxx>
 #include <inspector/VInspector_CallBackMode.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QByteArray>
 #include <QHash>
 #include <QMap>
 #include <QObject>
+#include <Standard_WarningsRestore.hxx>
 
 #include <inspector/TreeModel_ModelBase.hxx>
 

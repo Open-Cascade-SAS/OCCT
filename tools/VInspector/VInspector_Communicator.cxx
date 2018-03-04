@@ -20,11 +20,13 @@
 
 #include <AIS_InteractiveContext.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QApplication>
 #include <QDir>
 #include <QLayout>
 #include <QMainWindow>
 #include <QWidget>
+#include <Standard_WarningsRestore.hxx>
 
 // =======================================================================
 // function :  CreateCommunicator

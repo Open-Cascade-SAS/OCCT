@@ -21,8 +21,10 @@
 #include <TopoDS_Shape.hxx>
 #include <inspector/TreeModel_ModelBase.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QMap>
 #include <QObject>
+#include <Standard_WarningsRestore.hxx>
 
 class ShapeView_TreeModel;
 

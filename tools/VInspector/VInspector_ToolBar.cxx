@@ -15,10 +15,11 @@
 
 #include <inspector/VInspector_ToolBar.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QHBoxLayout>
 #include <QPushButton>
 #include <QWidget>
-
+#include <Standard_WarningsRestore.hxx>
 
 // =======================================================================
 // function : Constructor

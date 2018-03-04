@@ -18,7 +18,9 @@
 
 #include <TDataStd_TreeNode.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QAbstractItemModel>
+#include <Standard_WarningsRestore.hxx>
 
 // =======================================================================
 // function : Constructor

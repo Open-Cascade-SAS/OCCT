@@ -19,7 +19,9 @@
 #include <inspector/VInspector_ItemHistoryRoot.hxx>
 #include <inspector/VInspector_ItemHistoryType.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QStringList>
+#include <Standard_WarningsRestore.hxx>
 
 // =======================================================================
 // function : Constructor

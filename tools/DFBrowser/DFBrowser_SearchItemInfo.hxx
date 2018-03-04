@@ -16,12 +16,11 @@
 #ifndef DFBrowser_SearchItemInfo_H
 #define DFBrowser_SearchItemInfo_H
 
-#ifdef _MSC_VER
-#pragma warning(disable : 4127) // conditional expression is constant
-#endif
+#include <Standard_WarningsDisable.hxx>
 #include <QVariant>
 #include <QStringList>
 #include <QString>
+#include <Standard_WarningsRestore.hxx>
 
 //! \class DFBrowser_SearchItemInfo
 //! Information of item in search model

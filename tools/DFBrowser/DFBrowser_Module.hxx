@@ -27,7 +27,9 @@
 #include <TDocStd_Application.hxx>
 #include <TopoDS_Shape.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QObject>
+#include <Standard_WarningsRestore.hxx>
 
 class DFBrowserPane_AttributePaneAPI;
 class DFBrowserPane_AttributePaneCreatorAPI;

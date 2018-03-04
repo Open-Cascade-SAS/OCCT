@@ -18,8 +18,10 @@
 #include <TDataStd_IntPackedMap.hxx>
 #include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QVariant>
 #include <QWidget>
+#include <Standard_WarningsRestore.hxx>
 
 // =======================================================================
 // function : GetValues

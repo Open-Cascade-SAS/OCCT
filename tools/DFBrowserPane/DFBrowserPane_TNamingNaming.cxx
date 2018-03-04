@@ -30,11 +30,13 @@
 
 #include <TopoDS_Compound.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QGridLayout>
 #include <QHeaderView>
 #include <QTableView>
 #include <QVariant>
 #include <QWidget>
+#include <Standard_WarningsRestore.hxx>
 
 // =======================================================================
 // function : Constructor

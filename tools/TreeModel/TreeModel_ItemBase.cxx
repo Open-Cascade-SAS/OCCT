@@ -14,10 +14,11 @@
 // commercial license or contractual agreement. 
 
 #include <inspector/TreeModel_ItemBase.hxx>
-
 #include <inspector/TreeModel_ItemRole.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QStringList>
+#include <Standard_WarningsRestore.hxx>
 
 // =======================================================================
 // function : Constructor

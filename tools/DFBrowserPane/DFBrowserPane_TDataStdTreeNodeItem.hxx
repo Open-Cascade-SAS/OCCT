@@ -21,9 +21,11 @@
 #include <Standard.hxx>
 #include <TDF_Attribute.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QList>
 #include <QMap>
 #include <QVariant>
+#include <Standard_WarningsRestore.hxx>
 
 class DFBrowserPane_TDataStdTreeNodeItem;
 typedef QExplicitlySharedDataPointer<DFBrowserPane_TDataStdTreeNodeItem> DFBrowserPane_TDataStdTreeNodeItemPtr;

@@ -22,9 +22,11 @@
 #include <TDocStd_Application.hxx>
 #include <TDF_Label.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QCompleter>
 #include <QFrame>
 #include <QLineEdit>
+#include <Standard_WarningsRestore.hxx>
 
 class DFBrowser_Module;
 class DFBrowser_SearchLineModel;

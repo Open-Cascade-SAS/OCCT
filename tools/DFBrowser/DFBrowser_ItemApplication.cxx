@@ -23,7 +23,9 @@
 #include <inspector/DFBrowserPane_AttributePane.hxx>
 #include <inspector/DFBrowserPane_ItemRole.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QObject>
+#include <Standard_WarningsRestore.hxx>
 
 // =======================================================================
 // function : createChild

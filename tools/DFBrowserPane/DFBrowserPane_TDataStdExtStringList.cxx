@@ -19,8 +19,10 @@
 #include <TDataStd_ExtStringList.hxx>
 #include <TDataStd_ListIteratorOfListOfExtendedString.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QVariant>
 #include <QWidget>
+#include <Standard_WarningsRestore.hxx>
 
 // =======================================================================
 // function : GetValues

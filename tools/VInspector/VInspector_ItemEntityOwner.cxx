@@ -23,8 +23,10 @@
 #include <Standard_Version.hxx>
 #include <StdSelect_BRepOwner.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QItemSelectionModel>
 #include <QColor>
+#include <Standard_WarningsRestore.hxx>
 
 // =======================================================================
 // function : initValue

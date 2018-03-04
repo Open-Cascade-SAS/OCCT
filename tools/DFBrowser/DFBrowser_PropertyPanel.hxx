@@ -20,8 +20,10 @@
 
 #include <Standard.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QItemSelection>
 #include <QObject>
+#include <Standard_WarningsRestore.hxx>
 
 class DFBrowser_AttributePaneStack;
 

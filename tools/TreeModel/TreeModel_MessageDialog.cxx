@@ -15,12 +15,14 @@
 
 #include <inspector/TreeModel_MessageDialog.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QCheckBox>
 #include <QCursor>
 #include <QGridLayout>
 #include <QLabel>
 #include <QPushButton>
 #include <QWidget>
+#include <Standard_WarningsRestore.hxx>
 
 // =======================================================================
 // function : Constructor

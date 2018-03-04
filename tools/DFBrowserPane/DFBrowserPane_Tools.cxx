@@ -34,11 +34,13 @@
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopAbs_Orientation.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QApplication>
 #include <QPalette>
 #include <QStringList>
 #include <QStyle>
 #include <QWidget>
+#include <Standard_WarningsRestore.hxx>
 
 #include <sstream>
 

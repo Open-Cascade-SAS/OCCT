@@ -24,10 +24,12 @@
 #include <inspector/View_Viewer.hxx>
 #include <inspector/View_Widget.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QComboBox>
 #include <QDockWidget>
 #include <QGridLayout>
 #include <QToolBar>
+#include <Standard_WarningsRestore.hxx>
 
 const int DEFAULT_SPACING = 3;
 

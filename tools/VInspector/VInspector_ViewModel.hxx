@@ -23,10 +23,12 @@
 #include <inspector/TreeModel_ModelBase.hxx>
 #include <inspector/VInspector_ItemBase.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QByteArray>
 #include <QHash>
 #include <QMap>
 #include <QObject>
+#include <Standard_WarningsRestore.hxx>
 
 class OCAFSampleAPI_Module;
 class OCAFSampleModel_DocumentMgr;

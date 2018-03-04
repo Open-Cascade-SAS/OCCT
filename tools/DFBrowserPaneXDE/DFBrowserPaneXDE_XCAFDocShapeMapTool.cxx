@@ -28,6 +28,7 @@
 #include <TopoDS_Compound.hxx>
 #include <XCAFDoc_ShapeMapTool.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QEvent>
 #include <QFileDialog>
 #include <QGridLayout>
@@ -39,6 +40,7 @@
 #include <QTableView>
 #include <QVariant>
 #include <QWidget>
+#include <Standard_WarningsRestore.hxx>
 
 const int COLUMN_EXPORT_WIDTH = 20;
 const int COLUMN_TYPE_WIDTH = 70;

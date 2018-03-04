@@ -26,10 +26,12 @@
 #include <TDF_Label.hxx>
 #include <inspector/TreeModel_ModelBase.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QApplication>
 #include <QColor>
 #include <QFont>
 #include <QIcon>
+#include <Standard_WarningsRestore.hxx>
 
 // =======================================================================
 // function : Init

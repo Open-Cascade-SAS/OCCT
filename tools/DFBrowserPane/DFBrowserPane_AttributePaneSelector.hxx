@@ -18,12 +18,11 @@
 
 #include <Standard.hxx>
 
-#ifdef _MSC_VER
-#pragma warning(disable : 4127) // conditional expression is constant
-#endif
-
+#include <Standard_WarningsDisable.hxx>
 #include <QObject>
 #include <QItemSelection>
+#include <Standard_WarningsRestore.hxx>
+
 #include <list>
 
 class QItemSelectionModel;

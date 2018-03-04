@@ -22,6 +22,7 @@
 
 #include <inspector/DFBrowserPane_Tools.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QAbstractItemModel>
 #include <QFrame>
 #include <QGridLayout>
@@ -32,6 +33,7 @@
 #include <QTableView>
 #include <QToolButton>
 #include <QWidget>
+#include <Standard_WarningsRestore.hxx>
 
 const int HISTORY_SIZE = 10;
 const int MARGIN_SIZE = 2;

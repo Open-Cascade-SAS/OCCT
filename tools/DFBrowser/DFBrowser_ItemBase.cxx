@@ -26,9 +26,11 @@
 #include <TDataStd_Name.hxx>
 #include <TDF_ChildIterator.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QColor>
 #include <QIcon>
 #include <QVariant>
+#include <Standard_WarningsRestore.hxx>
 
 // =======================================================================
 // function : Constructor

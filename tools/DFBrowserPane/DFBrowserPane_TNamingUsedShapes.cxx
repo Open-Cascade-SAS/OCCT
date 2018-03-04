@@ -34,10 +34,12 @@
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Shape.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QItemSelectionModel>
 #include <QTableView>
 #include <QVariant>
 #include <QWidget>
+#include <Standard_WarningsRestore.hxx>
 
 const int COLUMN_TYPE_WIDTH = 70;
 const int COLUMN_POINTER_WIDTH = 90;

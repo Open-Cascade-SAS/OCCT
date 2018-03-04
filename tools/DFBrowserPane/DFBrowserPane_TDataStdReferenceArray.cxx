@@ -22,11 +22,13 @@
 
 #include <TDataStd_ReferenceArray.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QGridLayout>
 #include <QItemSelectionModel>
 #include <QTableView>
 #include <QVariant>
 #include <QWidget>
+#include <Standard_WarningsRestore.hxx>
 
 // =======================================================================
 // function : CreateWidget

@@ -21,13 +21,12 @@
 #include <inspector/View_ViewActionType.hxx>
 #include <inspector/View_Viewer.hxx>
 
-#ifdef _MSC_VER
-  #pragma warning(disable : 4127 4718) // conditional expression is constant, recursive call has no side effects
-#endif
+#include <Standard_WarningsDisable.hxx>
 #include <QAction>
 #include <QMap>
 #include <QString>
 #include <QWidget>
+#include <Standard_WarningsRestore.hxx>
 
 class View_Viewer;
 

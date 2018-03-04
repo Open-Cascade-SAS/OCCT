@@ -17,8 +17,10 @@
 
 #include <inspector/DFBrowser_Module.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QApplication>
 #include <QKeyEvent>
+#include <Standard_WarningsRestore.hxx>
 
 // =======================================================================
 // function : Constructor

@@ -17,7 +17,9 @@
 
 #include <TDataStd_Integer.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QVariant>
+#include <Standard_WarningsRestore.hxx>
 
 // =======================================================================
 // function : GetValues

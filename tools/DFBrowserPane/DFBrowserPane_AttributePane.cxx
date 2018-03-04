@@ -21,11 +21,13 @@
 
 #include <AIS_InteractiveObject.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QGridLayout>
 #include <QHeaderView>
 #include <QItemSelectionModel>
 #include <QTableView>
 #include <QWidget>
+#include <Standard_WarningsRestore.hxx>
 
 // =======================================================================
 // function : Constructor

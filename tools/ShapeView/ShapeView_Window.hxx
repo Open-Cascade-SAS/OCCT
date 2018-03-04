@@ -21,9 +21,7 @@
 #include <inspector/TInspectorAPI_PluginParameters.hxx>
 #include <TopoDS_Shape.hxx>
 
-#ifdef _MSC_VER
-#pragma warning(disable : 4127) // conditional expression is constant
-#endif
+#include <Standard_WarningsDisable.hxx>
 #include <QItemSelection>
 #include <QList>
 #include <QModelIndexList>
@@ -31,6 +29,7 @@
 #include <QPoint>
 #include <QString>
 #include <QTreeView>
+#include <Standard_WarningsRestore.hxx>
 
 class View_Displayer;
 class View_Window;

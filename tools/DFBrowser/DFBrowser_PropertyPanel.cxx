@@ -21,10 +21,12 @@
 #include <inspector/DFBrowser_Window.hxx>
 #include <inspector/DFBrowser_TreeLevelView.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QAbstractItemModel>
 #include <QGridLayout>
 #include <QItemSelectionModel>
 #include <QWidget>
+#include <Standard_WarningsRestore.hxx>
 
 // =======================================================================
 // function : Constructor

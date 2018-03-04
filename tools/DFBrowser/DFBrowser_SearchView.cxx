@@ -22,11 +22,13 @@
 
 #include <inspector/DFBrowserPane_Tools.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QAbstractProxyModel>
 #include <QGridLayout>
 #include <QHeaderView>
 #include <QTableView>
 #include <QWidget>
+#include <Standard_WarningsRestore.hxx>
 
 const int DEFAULT_COLUMN_WIDTH = 500;
 const int DEFAULT_ICON_SIZE = 40;

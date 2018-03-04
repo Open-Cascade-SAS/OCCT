@@ -19,10 +19,12 @@
 #include <TCollection_AsciiString.hxx>
 #include <inspector/TInspector_Window.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QApplication>
 #include <QDir>
 #include <QMainWindow>
 #include <QWidget>
+#include <Standard_WarningsRestore.hxx>
 
 // =======================================================================
 // function : Constructor

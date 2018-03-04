@@ -32,7 +32,9 @@
 
 #include <set>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QStringList>
+#include <Standard_WarningsRestore.hxx>
 
 static std::set<Standard_CString> AttributeTypes;
 

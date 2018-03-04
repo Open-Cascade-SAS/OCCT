@@ -19,11 +19,10 @@
 #include <inspector/DFBrowserPane.hxx>
 #include <TopoDS_Shape.hxx>
 
-#ifdef _MSC_VER
-#pragma warning(disable : 4127) // conditional expression is constant
-#endif
+#include <Standard_WarningsDisable.hxx>
 #include <QObject>
 #include <QModelIndex>
+#include <Standard_WarningsRestore.hxx>
 
 //! \class DFBrowserPane_HelperExport
 //! \brief It performs export to BREP of a shape by button is pressed
@@ -65,7 +64,13 @@ public slots:
   void OnButtonPressed (const QModelIndex& theIndex);
 
 private:
+#ifdef _MSC_VER
+#pragma warning(push, 0) // 4251: class 'QMap<QModelIndex,TopoDS_Shape>' needs to have dll-interface...
+#endif
   QMap<QModelIndex, TopoDS_Shape> myShapes; //!< a container of shapes
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
 };
 
 #endif

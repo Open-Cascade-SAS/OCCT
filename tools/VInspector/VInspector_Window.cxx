@@ -36,6 +36,7 @@
 #include <inspector/View_Widget.hxx>
 #include <inspector/View_Window.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QApplication>
 #include <QDockWidget>
 #include <QHeaderView>
@@ -47,6 +48,7 @@
 #include <QToolButton>
 #include <QTreeView>
 #include <QWidget>
+#include <Standard_WarningsRestore.hxx>
 
 const int FIRST_COLUMN_WIDTH = 230;
 

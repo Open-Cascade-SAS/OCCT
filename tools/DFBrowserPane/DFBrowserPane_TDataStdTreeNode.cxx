@@ -23,6 +23,7 @@
 
 #include <TDataStd_TreeNode.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QHeaderView>
 #include <QVariant>
 #include <QTableView>
@@ -30,6 +31,7 @@
 #include <QVBoxLayout>
 #include <QWidget>
 #include <QItemSelectionModel>
+#include <Standard_WarningsRestore.hxx>
 
 // =======================================================================
 // function : Constructor

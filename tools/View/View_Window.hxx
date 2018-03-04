@@ -19,10 +19,9 @@
 #include <AIS_InteractiveContext.hxx>
 #include <inspector/View_ContextType.hxx>
 
-#ifdef _MSC_VER
-#pragma warning(disable : 4127) // conditional expression is constant
-#endif
+#include <Standard_WarningsDisable.hxx>
 #include <QWidget>
+#include <Standard_WarningsRestore.hxx>
 
 class View_Displayer;
 class View_ToolBar;

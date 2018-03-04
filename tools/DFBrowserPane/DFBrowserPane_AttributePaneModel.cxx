@@ -15,9 +15,11 @@
 
 #include <inspector/DFBrowserPane_AttributePaneModel.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QApplication>
 #include <QFont>
 #include <QColor>
+#include <Standard_WarningsRestore.hxx>
 
 // =======================================================================
 // function : Constructor

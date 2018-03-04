@@ -18,7 +18,9 @@
 
 #include <inspector/DFBrowserPane_ItemRole.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <Qt>
+#include <Standard_WarningsRestore.hxx>
 
 //! Additional data item role for DFBrowser tree item
 enum DFBrowser_ItemRole

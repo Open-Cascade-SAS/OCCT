@@ -25,6 +25,7 @@
 #include <TDF_AttributeIterator.hxx>
 #include <TDF_ChildIterator.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QStringList>
 #include <QWidget>
 #include <QHBoxLayout>
@@ -35,6 +36,7 @@
 #include <QPaintEvent>
 #include <QPainter>
 #include <QStyle>
+#include <Standard_WarningsRestore.hxx>
 
 //! class DFBrowser_LineEdit
 //! Extension of Qt line edit to visualize help text until the line edit control has not been filled yet

@@ -21,8 +21,10 @@
 #include <inspector/VInspector_ItemSensitiveEntity.hxx>
 #include <SelectBasics_EntityOwner.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QItemSelectionModel>
 #include <QStringList>
+#include <Standard_WarningsRestore.hxx>
 
 // =======================================================================
 // function : Constructor

@@ -60,6 +60,7 @@
 #include <TDF_Tool.hxx>
 #include <inspector/TreeModel_MessageDialog.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QAction>
 #include <QApplication>
 #include <QComboBox>
@@ -81,6 +82,7 @@
 #else
 #include <QStyleFactory>
 #endif
+#include <Standard_WarningsRestore.hxx>
 
 const int DFBROWSER_DEFAULT_WIDTH = 650;
 const int DFBROWSER_DEFAULT_HEIGHT = 350;

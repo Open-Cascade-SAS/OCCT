@@ -32,8 +32,10 @@
 
 #include <XCAFApp_Application.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QItemSelectionModel>
 #include <QMessageBox>
+#include <Standard_WarningsRestore.hxx>
 
 // =======================================================================
 // function : Constructor

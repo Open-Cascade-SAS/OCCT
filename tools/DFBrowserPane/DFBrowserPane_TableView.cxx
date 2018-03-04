@@ -16,12 +16,14 @@
 #include <inspector/DFBrowserPane_TableView.hxx>
 #include <inspector/DFBrowserPane_Tools.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QAbstractTableModel>
 #include <QHeaderView>
 #include <QHBoxLayout>
 #include <QScrollBar>
 #include <QTableView>
 #include <QWidget>
+#include <Standard_WarningsRestore.hxx>
 
 static const int DEFAULT_ROW_HEIGHT = 30;
 
@@ -68,7 +70,7 @@ void DFBrowserPane_TableView::SetModel (QAbstractTableModel* theModel)
 // =======================================================================
 void DFBrowserPane_TableView::SetFixedRowCount (const int theCount, QTableView* theView, const bool theScroll)
 {
-  double aHeight = theView->verticalHeader()->defaultSectionSize()*theCount + DFBrowserPane_Tools::HeaderSectionMargin();
+  int aHeight = theView->verticalHeader()->defaultSectionSize() * theCount + DFBrowserPane_Tools::HeaderSectionMargin();
   if (theScroll)
     aHeight += theView->horizontalScrollBar()->sizeHint().height();
 

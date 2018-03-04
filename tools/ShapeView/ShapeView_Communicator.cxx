@@ -21,9 +21,11 @@
 #include <OSD_Path.hxx>
 #include <OSD_Protection.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QApplication>
 #include <QMainWindow>
 #include <QDir>
+#include <Standard_WarningsRestore.hxx>
 
 // =======================================================================
 // function :  CreateCommunicator

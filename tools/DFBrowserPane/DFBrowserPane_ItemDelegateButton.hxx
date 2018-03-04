@@ -19,14 +19,13 @@
 #include <Standard.hxx>
 #include <Standard_Macro.hxx>
 
-#ifdef _MSC_VER
-#pragma warning(disable : 4127) // conditional expression is constant
-#endif
+#include <Standard_WarningsDisable.hxx>
 #include <QStyledItemDelegate>
 #include <QStyleOptionViewItem>
 #include <QModelIndex>
 #include <QString>
 #include <QIcon>
+#include <Standard_WarningsRestore.hxx>
 
 class QObject;
 class QPainter;

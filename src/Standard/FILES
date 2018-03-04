@@ -95,3 +95,5 @@ Standard_Underflow.hxx
 Standard_UUID.hxx
 Standard_values.h
 Standard_Version.hxx
+Standard_WarningsDisable.hxx
+Standard_WarningsRestore.hxx

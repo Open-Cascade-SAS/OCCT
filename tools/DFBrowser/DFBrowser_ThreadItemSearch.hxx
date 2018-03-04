@@ -22,9 +22,11 @@
 #include <Standard.hxx>
 #include <TDF_Label.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QAbstractItemModel>
 #include <QMap>
 #include <QStringList>
+#include <Standard_WarningsRestore.hxx>
 
 class DFBrowser_Module;
 class DFBrowser_SearchLine;

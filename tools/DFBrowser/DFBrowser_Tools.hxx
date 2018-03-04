@@ -25,6 +25,7 @@
 #include <TDF_Attribute.hxx>
 #include <TopoDS_Shape.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QAbstractItemModel>
 #include <QColor>
 #include <QMap>
@@ -32,6 +33,7 @@
 #include <QPixmap>
 #include <QString>
 #include <QIcon>
+#include <Standard_WarningsRestore.hxx>
 
 class DFBrowserPane_AttributePaneAPI;
 

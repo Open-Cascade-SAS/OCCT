@@ -20,12 +20,11 @@
 #include <Standard_Macro.hxx>
 #include <TCollection_AsciiString.hxx>
 
-#ifdef _MSC_VER
-#pragma warning(disable : 4127) // conditional expression is constant
-#endif
+#include <Standard_WarningsDisable.hxx>
 #include <QDialog>
 #include <QItemSelection>
 #include <QStringList>
+#include <Standard_WarningsRestore.hxx>
 
 #include <map>
 

@@ -22,9 +22,11 @@
 #include <Standard.hxx>
 #include <Standard_GUID.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QMap>
 #include <QList>
 #include <QVariant>
+#include <Standard_WarningsRestore.hxx>
 
 class DFBrowser_Item;
 typedef QExplicitlySharedDataPointer<DFBrowser_Item> DFBrowser_ItemPtr;

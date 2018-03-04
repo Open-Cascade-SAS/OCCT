@@ -24,9 +24,11 @@
 #include <TDF_Label.hxx>
 #include <TDocStd_Application.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QByteArray>
 #include <QHash>
 #include <QObject>
+#include <Standard_WarningsRestore.hxx>
 
 class DFBrowser_Module;
 class DFBrowser_TreeModel;

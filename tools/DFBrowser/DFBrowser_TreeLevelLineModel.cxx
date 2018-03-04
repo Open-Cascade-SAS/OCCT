@@ -18,8 +18,10 @@
 #include <inspector/DFBrowser_ItemBase.hxx>
 #include <inspector/TreeModel_ModelBase.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QIcon>
 #include <QWidget>
+#include <Standard_WarningsRestore.hxx>
 
 // =======================================================================
 // function : Init

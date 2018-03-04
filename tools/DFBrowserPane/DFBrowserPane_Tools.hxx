@@ -24,14 +24,13 @@
 #include <TopLoc_Location.hxx>
 #include <TopoDS_Shape.hxx>
 
-#ifdef _MSC_VER
-#pragma warning(disable : 4127) // conditional expression is constant
-#endif
+#include <Standard_WarningsDisable.hxx>
 #include <QApplication>
 #include <QString>
 #include <QStyle>
 #include <QString>
 #include <QVariant>
+#include <Standard_WarningsRestore.hxx>
 
 #define PROPERTY_TABLE_ROW_COUNT 200
 
@@ -70,7 +69,7 @@ public:
   //! Returns "true" or "false" text for the given boolean state
   //! \param theValue a boolean value
   //! \return string value
-  Standard_EXPORT static QString BoolToStr (const bool theValue) { return theValue ? "true" : "false"; }
+  Standard_EXPORT static QString BoolToStr (const Standard_Boolean theValue) { return theValue ? "true" : "false"; }
 
   //! Converts a Qt string to OCCT extended string
   //! \param theValue a converted string

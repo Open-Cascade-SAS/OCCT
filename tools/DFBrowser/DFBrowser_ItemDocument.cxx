@@ -23,9 +23,11 @@
 #include <inspector/DFBrowserPane_AttributePane.hxx>
 #include <inspector/DFBrowserPane_ItemRole.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QIcon>
 #include <QLabel>
 #include <QObject>
+#include <Standard_WarningsRestore.hxx>
 
 // =======================================================================
 // function : GetLabel

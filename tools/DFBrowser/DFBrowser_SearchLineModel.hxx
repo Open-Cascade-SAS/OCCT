@@ -23,13 +23,12 @@
 #include <TDF_Attribute.hxx>
 #include <TDF_Label.hxx>
 
-#ifdef _MSC_VER
-#pragma warning(disable : 4127) // conditional expression is constant
-#endif
+#include <Standard_WarningsDisable.hxx>
 #include <QAbstractTableModel>
 #include <QMap>
 #include <QStringList>
 #include <QVariant>
+#include <Standard_WarningsRestore.hxx>
 
 class QObject;
 class DFBrowser_Module;

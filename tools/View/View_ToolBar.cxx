@@ -16,11 +16,13 @@
                                                           
 #include <inspector/View_ToolBar.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QComboBox>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QToolButton>
 #include <QWidget>
+#include <Standard_WarningsRestore.hxx>
 
 const int DEFAULT_COMBO_WIDTH_MINIMUM = 80;
 const int DEFAULT_SPACING = 3;

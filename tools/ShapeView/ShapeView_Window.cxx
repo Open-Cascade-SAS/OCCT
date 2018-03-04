@@ -33,6 +33,7 @@
 #include <BRep_Builder.hxx>
 #include <BRepTools.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QApplication>
 #include <QAction>
 #include <QComboBox>
@@ -51,6 +52,7 @@
 #include <QTreeView>
 #include <QWidget>
 #include <QVBoxLayout>
+#include <Standard_WarningsRestore.hxx>
 
 const int FIRST_COLUMN_WIDTH = 190;
 const int SIZE_COLUMN_WIDTH = 30;

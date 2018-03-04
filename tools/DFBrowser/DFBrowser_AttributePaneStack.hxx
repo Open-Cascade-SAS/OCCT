@@ -21,10 +21,12 @@
 
 #include <Standard.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QMap>
 #include <QItemSelection>
 #include <QStackedWidget>
 #include <QWidget>
+#include <Standard_WarningsRestore.hxx>
 
 class DFBrowserPane_AttributePaneAPI;
 class DFBrowserPane_AttributePaneSelector;

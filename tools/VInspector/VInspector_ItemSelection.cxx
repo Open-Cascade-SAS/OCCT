@@ -24,9 +24,10 @@
 #include <inspector/VInspector_ItemSensitiveEntity.hxx>
 #include <inspector/VInspector_Tools.hxx>
 
-#include <QStringList>
-
+#include <Standard_WarningsDisable.hxx>
 #include <QColor>
+#include <QStringList>
+#include <Standard_WarningsRestore.hxx>
 
 // =======================================================================
 // function : getSelection

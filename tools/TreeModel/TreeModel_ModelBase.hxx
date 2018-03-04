@@ -19,10 +19,12 @@
 #include <Standard.hxx>
 #include <inspector/TreeModel_ItemBase.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QAbstractItemModel>
 #include <QExplicitlySharedDataPointer>
 #include <QModelIndex>
 #include <QVariant>
+#include <Standard_WarningsRestore.hxx>
 
 //! \class TreeModel_ModelBase
 //! \brief Implementation of the tree item based model of QAbstractItemModel.

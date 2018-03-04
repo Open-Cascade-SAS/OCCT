@@ -31,8 +31,10 @@
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Vertex.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QObject>
 #include <QStringList>
+#include <Standard_WarningsRestore.hxx>
 
 // =======================================================================
 // function : ToString

@@ -23,9 +23,11 @@
 #include <inspector/TInspectorAPI_PluginParameters.hxx>
 #include <inspector/VInspector_CallBack.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QObject>
 #include <QItemSelection>
 #include <QMainWindow>
+#include <Standard_WarningsRestore.hxx>
 
 class TreeModel_MessageDialog;
 

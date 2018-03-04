@@ -21,7 +21,9 @@
 
 #include <inspector/DFBrowser_Window.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QThread>
+#include <Standard_WarningsRestore.hxx>
 
 //! \class DFBrowser_QThread
 //! Internal class to cover QThread in order to process ThreadItem.

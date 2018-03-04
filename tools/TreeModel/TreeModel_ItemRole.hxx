@@ -16,7 +16,9 @@
 #ifndef TreeModel_ItemRole_H
 #define TreeModel_ItemRole_H
 
+#include <Standard_WarningsDisable.hxx>
 #include <Qt>
+#include <Standard_WarningsRestore.hxx>
 
 //! Sets custom item role of Tree view wmodel
 enum TreeModel_ItemRole

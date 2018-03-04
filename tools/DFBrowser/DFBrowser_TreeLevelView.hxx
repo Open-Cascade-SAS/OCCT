@@ -20,8 +20,10 @@
 
 #include <Standard.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QObject>
 #include <QItemSelection>
+#include <Standard_WarningsRestore.hxx>
 
 class QWidget;
 class QTableView;

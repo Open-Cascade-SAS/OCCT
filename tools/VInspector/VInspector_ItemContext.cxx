@@ -20,8 +20,6 @@
 #include <inspector/VInspector_ItemPresentableObject.hxx>
 #include <inspector/VInspector_Tools.hxx>
 
-#include <QStringList>
-
 //#define DEBUG_FREE_OWNERS
 
 // =======================================================================

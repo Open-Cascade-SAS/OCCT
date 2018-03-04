@@ -29,8 +29,10 @@
 #include <inspector/VInspector_ItemSelection.hxx>
 #include <inspector/VInspector_Tools.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QStringList>
 #include <QColor>
+#include <Standard_WarningsRestore.hxx>
 
 // =======================================================================
 // function : GetSensitiveEntity

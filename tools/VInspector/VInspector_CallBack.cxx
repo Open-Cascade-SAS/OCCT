@@ -25,8 +25,6 @@
 #include <inspector/VInspector_Tools.hxx>
 #include <inspector/VInspector_ViewModelHistory.hxx>
 
-#include <QStringList>
-
 #if OCC_VERSION_HEX <= 0x060901
 IMPLEMENT_STANDARD_HANDLE(VInspector_CallBack, Standard_Transient)
 IMPLEMENT_STANDARD_RTTIEXT(VInspector_CallBack, VInspectorAPI_CallBack)

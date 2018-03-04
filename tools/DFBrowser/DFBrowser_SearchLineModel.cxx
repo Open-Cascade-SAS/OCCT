@@ -22,8 +22,10 @@
 #include <inspector/DFBrowserPane_ItemRole.hxx>
 #include <inspector/DFBrowserPane_Tools.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QDir>
 #include <QIcon>
+#include <Standard_WarningsRestore.hxx>
 
 // =======================================================================
 // function : Constructor

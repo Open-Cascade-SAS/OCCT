@@ -20,9 +20,11 @@
 
 #include <Standard.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QAbstractTableModel>
 #include <QObject>
 #include <QList>
+#include <Standard_WarningsRestore.hxx>
 
 //! \class DFBrowser_TreeLevelLineModel
 //! Tree Model of tree line items. It is initialized by OCAF tree model index. Each element of the current model

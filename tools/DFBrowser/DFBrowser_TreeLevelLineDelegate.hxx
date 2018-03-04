@@ -19,10 +19,9 @@
 #include <Standard.hxx>
 #include <Standard_Macro.hxx>
 
-#ifdef _MSC_VER
-#pragma warning(disable : 4127) // conditional expression is constant
-#endif
+#include <Standard_WarningsDisable.hxx>
 #include <QItemDelegate>
+#include <Standard_WarningsRestore.hxx>
 
 //! \class DFBrowser_TreeLevelLineDelegate
 //! Extending standard item delegate by:

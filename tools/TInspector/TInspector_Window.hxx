@@ -22,12 +22,11 @@
 #include <TCollection_AsciiString.hxx>
 #include <inspector/TInspectorAPI_PluginParameters.hxx>
 
-#ifdef _MSC_VER
-#pragma warning(disable : 4127) // conditional expression is constant
-#endif
+#include <Standard_WarningsDisable.hxx>
 #include <QMap>
 #include <QObject>
 #include <QString>
+#include <Standard_WarningsRestore.hxx>
 
 class TInspectorAPI_Communicator;
 

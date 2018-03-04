@@ -21,7 +21,9 @@
 #include <Standard.hxx>
 #include <TopoDS_Shape.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QVariant>
+#include <Standard_WarningsRestore.hxx>
 
 class QWidget;
 class QItemSelectionModel;

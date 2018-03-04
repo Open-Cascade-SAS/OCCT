@@ -19,6 +19,7 @@
 #include <inspector/TInspectorAPI_Communicator.hxx>
 #include <inspector/TInspector_PluginParameters.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QApplication>
 #include <QDockWidget>
 #include <QLabel>
@@ -26,6 +27,7 @@
 #include <QPushButton>
 #include <QStackedWidget>
 #include <QVBoxLayout>
+#include <Standard_WarningsRestore.hxx>
 
 const int TINSPECTOR_DEFAULT_WIDTH = 650;
 const int TINSPECTOR_DEFAULT_HEIGHT = 500;//350;

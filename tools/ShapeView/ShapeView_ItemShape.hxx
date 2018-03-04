@@ -21,8 +21,10 @@
 #include <TCollection_AsciiString.hxx>
 #include <TopoDS_Shape.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QMap>
 #include <QVariant>
+#include <Standard_WarningsRestore.hxx>
 
 class ShapeView_ItemShape;
 typedef QExplicitlySharedDataPointer<ShapeView_ItemShape> ShapeView_ItemShapePtr;
