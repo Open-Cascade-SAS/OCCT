@@ -37,20 +37,21 @@ macro (FIND_QT_PACKAGE PROJECT_LIBRARIES_DEBUG PROJECT_LIBRARIES_RELEASE PROJECT
 endmacro()
 
 
-macro (FIND_AND_WRAP_MOC_FILES SOURCE_FILES)
-
-  SET(CMAKE_AUTOMOC ON)
-
-  foreach (FILE ${SOURCE_FILES})
-    set (src_files ${src_files} ${FILE})
-    unset (MOC_FILE)
-    if (${Qt5_FOUND})
-      qt5_wrap_cpp(MOC_FILE ${FILE})
-    else()
-      qt4_wrap_cpp(MOC_FILE ${FILE})
-    endif()
-    #message (STATUS "... Info: next MOC file ${MOC_FILE}")
-
+macro (FIND_AND_WRAP_MOC_FILES HEADER_FILES GENERATED_MOC_FILES)
+  set (GENERATED_MOC_FILES "")
+  foreach (FILE ${HEADER_FILES})
+    # processing only files where Q_OBJECT exists
+    file(STRINGS "${FILE}" LINES REGEX "Q_OBJECT")
+    if(LINES)
+      unset (MOC_FILE)
+      if (${Qt5_FOUND})
+        qt5_wrap_cpp(MOC_FILE ${FILE})
+      else()
+        qt4_wrap_cpp(MOC_FILE ${FILE})
+      endif()
+      #message (STATUS "... Info: next MOC file ${MOC_FILE}")
+      list(APPEND ${GENERATED_MOC_FILES} ${MOC_FILE})
+     endif(LINES)
   endforeach (FILE)
 
 endmacro()
