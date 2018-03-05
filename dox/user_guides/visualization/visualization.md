@@ -635,7 +635,7 @@ The conception of instancing operates the object hierarchy as follows:
 
 Classes *AIS_ConnectedInteractive* and *AIS_MultipleConnectedInteractive* are used to implement this conception.
 
-*AIS_ConnectedInteractive* is an object instance, which reuses the geometry of the connected object but has its own transformation, material, visibility flag, etc. This connection is propagated down to *OpenGl* level, namely to *OpenGl_Structure*. *OpenGl_Structure* can be connected only to a single other structure.
+*AIS_ConnectedInteractive* is an object instance, which reuses the geometry of the connected object but has its own transformation and visibility flag. This connection is propagated down to *OpenGl* level, namely to *OpenGl_Structure*. *OpenGl_Structure* can be connected only to a single other structure.
 
 *AIS_ConnectedInteractive* can be referenced to any *AIS_InteractiveObject* in general. When it is referenced to another *AIS_ConnectedInteractive*, it just copies the reference.
 
