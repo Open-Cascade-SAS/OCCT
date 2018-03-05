@@ -24,7 +24,7 @@ unifysamedom result r
 
 checkshape result
 
-checknbshapes result -vertex 16 -edge 22 -wire 8 -face 8 -solid 1
+checknbshapes result -vertex 12 -edge 18 -wire 8 -face 8 -solid 1
 checkprops result -s 223704 -v 3.27888e+006
 
 checkview -display result -2d -path ${imagedir}/${test_image}.png

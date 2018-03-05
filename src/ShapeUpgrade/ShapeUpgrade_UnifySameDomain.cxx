@@ -849,7 +849,9 @@ static Standard_Boolean IsMergingPossible(const TopoDS_Edge& edge1, const TopoDS
 
   if (theLineDirectionOk && t2 == GeomAbs_Line)
   {
-    gp_Vec aCurV(theFirstPoint, BRep_Tool::Pnt(TopExp::LastVertex(edge2, Standard_True)));
+    Standard_Real aLast = (edge2.Orientation() == TopAbs_FORWARD) ?
+      ade2.LastParameter() : ade2.FirstParameter();
+    gp_Vec aCurV(theFirstPoint, ade2.Value(aLast));
     Standard_Real aDD = theDirectionVec.CrossSquareMagnitude(aCurV);
     if (aDD > theLinTol*theLinTol)
       return Standard_False;
@@ -876,8 +878,13 @@ static Standard_Boolean GetLineEdgePoints(const TopoDS_Edge& theInpEdge, gp_Pnt&
   if (aCur->DynamicType() != STANDARD_TYPE(Geom_Line))
     return Standard_False;
 
-  theFirstPoint = BRep_Tool::Pnt(TopExp::FirstVertex(theInpEdge, Standard_True));
-  gp_Pnt aLP = BRep_Tool::Pnt(TopExp::LastVertex(theInpEdge, Standard_True));
+  if (theInpEdge.Orientation() == TopAbs_REVERSED) {
+    Standard_Real tmp = f;
+    f = l;
+    l = tmp;
+  }
+  theFirstPoint = aCur->Value(f);
+  gp_Pnt aLP = aCur->Value(l);
   theDirectionVec = aLP.XYZ().Subtracted(theFirstPoint.XYZ());
   theDirectionVec.Normalize();
   return Standard_True;
