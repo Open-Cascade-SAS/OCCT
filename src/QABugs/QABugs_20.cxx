@@ -2802,6 +2802,38 @@ static Standard_Integer OCC29430(Draw_Interpretor& theDI,
   return 0;
 }
 
+#include <STEPCAFControl_Reader.hxx>
+
+//=======================================================================
+//function : OCC29531
+//purpose  : 
+//=======================================================================
+static Standard_Integer OCC29531(Draw_Interpretor&, Standard_Integer, const char** theArgV)
+{
+  Handle(TDocStd_Application) anApp = DDocStd::GetApplication();
+  Handle(TDocStd_Document) aDoc;
+  anApp->NewDocument("BinOcaf", aDoc);
+  aDoc->SetUndoLimit(1);
+
+  STEPCAFControl_Reader Reader;
+  Reader.ReadFile(theArgV[1]);
+  Reader.Transfer(aDoc);
+  TDF_Label aShL, aDL;
+  TDF_Tool::Label(aDoc->GetData(), "0:1:1:2:672", aShL);
+  TDF_Tool::Label(aDoc->GetData(), "0:1:4:10", aDL);
+
+  aDoc->OpenCommand();
+
+  Handle(XCAFDoc_DimTolTool) aDimTolTool = XCAFDoc_DocumentTool::DimTolTool(aDoc->Main());
+  aDimTolTool->SetDimension(aShL, aDL);
+
+  aDoc->CommitCommand();
+
+  aDoc->Undo();
+  aDoc->Redo();
+  return 0;
+}
+
 void QABugs::Commands_20(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
@@ -2835,6 +2867,7 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands) {
   theCommands.Add("OCC29430", "OCC29430 <result wire> "
                               "<result first point> <result last point>",
                               __FILE__, OCC29430, group);
+  theCommands.Add("OCC29531", "OCC29531 <step file name>", __FILE__, OCC29531, group);
 
   return;
 }

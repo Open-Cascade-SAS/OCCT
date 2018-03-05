@@ -147,7 +147,8 @@ protected:
 
 private:
 
-  //! Fixes order of Attributes' Deltas
+  //! Fixes order of Attributes' Deltas to perform undo/redo without exceptions:
+  //! puts OnRemoval deltas to the end of the list.
   void FixOrder(const Handle(TDF_Delta)& theDelta);
   
   //! Increments the transaction number and returns it.

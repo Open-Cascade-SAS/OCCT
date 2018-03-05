@@ -375,42 +375,25 @@ Standard_Boolean TDF_Data::IsApplicable
 //=======================================================================
 void TDF_Data::FixOrder(const Handle(TDF_Delta)& theDelta)
 {
+  // make all OnRemoval (which will cause addition of the attribute) are in the end
+  // to do not put two attributes with the same GUID at one label during undo/redo
+  TDF_AttributeDeltaList anOrderedList;
+
   const TDF_AttributeDeltaList& attList = theDelta->AttributeDeltas();
-  Handle(TDF_AttributeDelta) attDelta;
-  Handle(TDF_Attribute) att;
-  Standard_Integer i, indx1(0), indx2(0);
-  Standard_GUID aGuid;
-  TDF_ListIteratorOfAttributeDeltaList itr(attList) ;
-  for (i=1; itr.More(); itr.Next(), i++) {
-    attDelta = itr.Value();
-    if(indx1) {
-      att = attDelta->Attribute();
-      if((att->ID() == aGuid) && (attDelta->IsKind(STANDARD_TYPE(TDF_DeltaOnAddition)))) {
-        indx2 = i;
-        break;
-      }
-    } else 
-      if (attDelta->IsKind(STANDARD_TYPE(TDF_DeltaOnRemoval))) {
-        att = attDelta->Attribute();
-        aGuid = att->ID();
-        indx1 = i;
-      }        
+  TDF_ListIteratorOfAttributeDeltaList anIt(attList);
+  for (; anIt.More(); anIt.Next()) { // append not-removal
+    Handle(TDF_AttributeDelta) attDelta = anIt.Value();
+    if (!attDelta->IsKind(STANDARD_TYPE(TDF_DeltaOnRemoval))) {
+      anOrderedList.Append(attDelta);
+    }
   }
-  if(indx1 && indx2) {
-    TDF_Array1OfAttributeIDelta anArray(1, attList.Extent());
-    itr.Initialize(attList);
-    for (i=1; itr.More(); itr.Next(), i++) 
-      anArray.SetValue(i, itr.Value());
-    Handle(TDF_AttributeDelta) attDelta1, attDelta2;
-    attDelta1 = anArray.Value(indx1);
-    attDelta2 = anArray.Value(indx2);
-    anArray.SetValue(indx1, attDelta2);
-    anArray.SetValue(indx2, attDelta1);
-    TDF_AttributeDeltaList attList2;
-    for(i=1; i<= anArray.Upper(); i++)
-      attList2.Append(anArray.Value(i));
-    theDelta->ReplaceDeltaList(attList2);
+  for (anIt.Initialize(attList); anIt.More(); anIt.Next()) { // append removal
+    Handle(TDF_AttributeDelta) attDelta = anIt.Value();
+    if (attDelta->IsKind(STANDARD_TYPE(TDF_DeltaOnRemoval))) {
+      anOrderedList.Append(attDelta);
+    }
   }
+  theDelta->ReplaceDeltaList(anOrderedList);
 }
 //=======================================================================
 //function : Undo
