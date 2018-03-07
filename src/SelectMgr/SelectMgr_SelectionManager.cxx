@@ -345,10 +345,7 @@ void SelectMgr_SelectionManager::Activate (const Handle(SelectMgr_SelectableObje
     Standard_FALLTHROUGH
     case SelectMgr_TOU_Partial:
     {
-      if(theObject->HasTransformation())
-      {
-        theObject->UpdateTransformations (aSelection);
-      }
+      theObject->UpdateTransformations (aSelection);
       theSelector->RebuildObjectsTree();
       break;
     }
@@ -846,11 +843,8 @@ void SelectMgr_SelectionManager::Update (const Handle(SelectMgr_SelectableObject
         Standard_FALLTHROUGH
         case SelectMgr_TOU_Partial:
         {
-          if (theObject->HasTransformation())
-          {
-            theObject->UpdateTransformations (aSelection);
-            theSelector->RebuildObjectsTree();
-          }
+          theObject->UpdateTransformations (aSelection);
+          theSelector->RebuildObjectsTree();
           break;
         }
         default:

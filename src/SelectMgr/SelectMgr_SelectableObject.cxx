@@ -265,11 +265,6 @@ void SelectMgr_SelectableObject::UpdateTransformation()
 void SelectMgr_SelectableObject::UpdateTransformations (const Handle(SelectMgr_Selection)& theSel)
 {
   const TopLoc_Location aSelfLocation (Transformation());
-  if (aSelfLocation.IsIdentity())
-  {
-    return;
-  }
-
   for (NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>::Iterator aSelEntIter (theSel->Entities()); aSelEntIter.More(); aSelEntIter.Next())
   {
     if (Handle(Select3D_SensitiveEntity) aSensEntity = Handle(Select3D_SensitiveEntity)::DownCast (aSelEntIter.Value()->BaseSensitive()))
