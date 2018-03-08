@@ -1,0 +1,8 @@
+puts "# ======================================================================="
+puts "# 0027070: Segfault when transferring HLR-created shapes via STEPControl_Writer"
+puts "# ======================================================================="
+puts ""
+
+puts "Check that writing null shape does not produce access violation"
+puts "REQUIRED ALL: Error: translation failed, status = 0"
+stepwrite a a

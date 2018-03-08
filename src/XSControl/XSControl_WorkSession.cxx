@@ -458,7 +458,10 @@ IFSelect_ReturnStatus XSControl_WorkSession::TransferWriteShape (const TopoDS_Sh
   IFSelect_ReturnStatus  status;
   if (myController.IsNull()) return IFSelect_RetError;
   const Handle(Interface_InterfaceModel) &model = Model();
-  if (model.IsNull()) return IFSelect_RetVoid;
+  if (model.IsNull() || shape.IsNull())
+  {
+    return IFSelect_RetVoid;
+  }
 
   status = myTransferWriter->TransferWriteShape (model,shape);
   //  qui s occupe de tout, try/catch inclus
