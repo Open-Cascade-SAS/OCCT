@@ -529,8 +529,9 @@ TCollection_AsciiString ViewerTest::ViewerInit (const Standard_Integer thePxLeft
                                                 const Standard_Integer thePxTop,
                                                 const Standard_Integer thePxWidth,
                                                 const Standard_Integer thePxHeight,
-                                                Standard_CString theViewName,
-                                                Standard_CString theDisplayName)
+                                                const TCollection_AsciiString& theViewName,
+                                                const TCollection_AsciiString& theDisplayName,
+                                                const Handle(V3d_View)& theViewToClone)
 {
   // Default position and dimension of the viewer window.
   // Note that left top corner is set to be sufficiently small to have
@@ -542,6 +543,10 @@ TCollection_AsciiString ViewerTest::ViewerInit (const Standard_Integer thePxLeft
   Standard_Integer aPxWidth  = 409;
   Standard_Integer aPxHeight = 409;
   Standard_Boolean toCreateViewer = Standard_False;
+  if (!theViewToClone.IsNull())
+  {
+    theViewToClone->Window()->Size (aPxWidth, aPxHeight);
+  }
 
   Handle(OpenGl_GraphicDriver) aGraphicDriver;
   ViewerTest_Names aViewNames(theViewName);
@@ -711,7 +716,16 @@ TCollection_AsciiString ViewerTest::ViewerInit (const Standard_Integer thePxLeft
   VT_GetWindow()->SetVirtual (Draw_VirtualWindows);
 
   // View setup
-  Handle(V3d_View) aView = a3DViewer->CreateView();
+  Handle(V3d_View) aView;
+  if (!theViewToClone.IsNull())
+  {
+    aView = new V3d_View (a3DViewer, theViewToClone);
+  }
+  else
+  {
+    aView = new V3d_View (a3DViewer, a3DViewer->DefaultTypeOfView());
+  }
+
   aView->SetWindow (VT_GetWindow());
   ViewerTest::GetAISContext()->RedrawImmediate (a3DViewer);
 
@@ -779,6 +793,7 @@ static int VInit (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const cha
 {
   TCollection_AsciiString aViewName, aDisplayName;
   Standard_Integer aPxLeft = 0, aPxTop = 0, aPxWidth = 0, aPxHeight = 0;
+  Handle(V3d_View) aCopyFrom;
   TCollection_AsciiString aName, aValue;
   for (Standard_Integer anArgIt = 1; anArgIt < theArgsNb; ++anArgIt)
   {
@@ -838,6 +853,15 @@ static int VInit (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const cha
            || anArgCase == "-display"))
     {
       aDisplayName = theArgVec[++anArgIt];
+    }
+    else if (!ViewerTest::CurrentView().IsNull()
+          &&  aCopyFrom.IsNull()
+          && (anArgCase == "-copy"
+           || anArgCase == "-clone"
+           || anArgCase == "-cloneactive"
+           || anArgCase == "-cloneactiveview"))
+    {
+      aCopyFrom = ViewerTest::CurrentView();
     }
     // old syntax
     else if (ViewerTest::SplitParameter (anArg, aName, aValue))
@@ -906,8 +930,7 @@ static int VInit (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const cha
   }
 
   TCollection_AsciiString aViewId = ViewerTest::ViewerInit (aPxLeft, aPxTop, aPxWidth, aPxHeight,
-                                                            aViewName.ToCString(),
-                                                            aDisplayName.ToCString());
+                                                            aViewName, aDisplayName, aCopyFrom);
   theDi << aViewId;
   return 0;
 }
@@ -6404,10 +6427,8 @@ static int VDiffImage (Draw_Interpretor& theDI, Standard_Integer theArgNb, const
                               ? int(anImgRef->SizeY() * 2)
                               : int(anImgRef->SizeY());
   TCollection_AsciiString aDisplayName;
-  TCollection_AsciiString aViewId = ViewerTest::ViewerInit (aPxLeft, aPxTop,
-                                                            aWinSizeX, aWinSizeY,
-                                                            aViewName.ToCString(),
-                                                            aDisplayName.ToCString());
+  TCollection_AsciiString aViewId = ViewerTest::ViewerInit (aPxLeft, aPxTop, aWinSizeX, aWinSizeY,
+                                                            aViewName, aDisplayName);
 
   Standard_Real aRatio = anImgRef->Ratio();
   Standard_Real aSizeX = 1.0;
@@ -11646,7 +11667,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
   const char *group = "ZeViewer";
   theCommands.Add("vinit",
           "vinit [-name viewName] [-left leftPx] [-top topPx] [-width widthPx] [-height heightPx]"
-    "\n\t\t:     [-exitOnClose] [-closeOnEscape]"
+    "\n\t\t:     [-exitOnClose] [-closeOnEscape] [-cloneActive]"
   #if !defined(_WIN32) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
     "\n\t\t:     [-display displayName]"
   #endif
@@ -11662,6 +11683,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
 #endif
     "\n\t\t:  -left,  -top    pixel position of left top corner of the window."
     "\n\t\t:  -width, -height width and heigth of window respectively."
+    "\n\t\t:  -cloneActive floag to copy camera and dimensions of active view."
     "\n\t\t:  -exitOnClose when specified, closing the view will exit application."
     "\n\t\t:  -closeOnEscape when specified, view will be closed on pressing Escape."
     "\n\t\t: Additional commands for operations with views: vclose, vactivate, vviewlist.",

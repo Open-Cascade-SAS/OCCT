@@ -122,14 +122,13 @@ V3d_View::V3d_View (const Handle(V3d_Viewer)& theViewer, const Handle(V3d_View)&
   myView = theViewer->Driver()->CreateView (theViewer->StructureManager());
 
   myView->CopySettings (theView->View());
+  myDefaultViewPoint = theView->myDefaultViewPoint;
+  myDefaultViewAxis  = theView->myDefaultViewAxis;
 
-  myDefaultCamera = new Graphic3d_Camera();
+  myDefaultCamera = new Graphic3d_Camera (theView->DefaultCamera());
 
   myImmediateUpdate = Standard_False;
   SetAutoZFitMode (theView->AutoZFitMode(), theView->AutoZFitScaleFactor());
-  SetAxis (0.0, 0.0, 0.0, 1.0, 1.0, 1.0);
-  SetViewMappingDefault();
-  SetViewOrientationDefault();
   theViewer->AddView (this);
   Init();
   myImmediateUpdate = Standard_True;

@@ -172,6 +172,10 @@ public:
   //! Gives the default type of SHADING.
   void SetDefaultShadingModel (const Graphic3d_TypeOfShadingModel theType) { myShadingModel = theType; }
 
+  //! Returns the default type of View (orthographic or perspective projection) to be returned by CreateView() method.
+  V3d_TypeOfView DefaultTypeOfView() const { return myDefaultTypeOfView; }
+
+  //! Set the default type of View (orthographic or perspective projection) to be returned by CreateView() method.
   void SetDefaultTypeOfView (const V3d_TypeOfView theType) { myDefaultTypeOfView = theType; }
 
   //! Returns the default background colour object.

@@ -24,6 +24,7 @@
 #include <Standard_CString.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Macro.hxx>
+#include <TCollection_AsciiString.hxx>
 #include <TColStd_HArray1OfTransient.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <TopTools_HArray1OfShape.hxx>
@@ -31,8 +32,6 @@
 
 class AIS_InteractiveContext;
 class AIS_InteractiveObject;
-class TCollection_AsciiString;
-class Standard_Transient;
 class Image_PixMap;
 class V3d_View;
 class V3d_Viewer;
@@ -49,14 +48,22 @@ public:
   Standard_EXPORT static void Factory (Draw_Interpretor& theDI);
 
   //! Creates view with default or custom name
-  //! and add this name in map to manage muliple views
-  //! implemented in ViewerTest_ViewerCommands.cxx
+  //! and adds this name in map to manage multiple views.
+  //! Implemented in ViewerTest_ViewerCommands.cxx.
+  //! @param thePxLeft      left position of newly created window
+  //! @param thePxTop       top  position of newly created window
+  //! @param thePxWidth     width of newly created window
+  //! @param thePxHeight    height of newly created window
+  //! @param theViewName    name of newly created View
+  //! @oaram theDisplayName display name
+  //! @param theViewToClone when specified, the new View will copy properties of existing one
   Standard_EXPORT static TCollection_AsciiString ViewerInit (const Standard_Integer thePxLeft   = 0,
                                                              const Standard_Integer thePxTop    = 0,
                                                              const Standard_Integer thePxWidth  = 0,
                                                              const Standard_Integer thePxHeight = 0,
-                                                             const Standard_CString theViewName = "",
-                                                             const Standard_CString theDisplayName = "");
+                                                             const TCollection_AsciiString& theViewName = "",
+                                                             const TCollection_AsciiString& theDisplayName = "",
+                                                             const Handle(V3d_View)& theViewToClone = Handle(V3d_View)());
 
   Standard_EXPORT static void RemoveViewName (const TCollection_AsciiString& theName);
 
