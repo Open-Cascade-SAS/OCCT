@@ -781,8 +781,11 @@ Standard_Integer AIS_InteractiveContext::PurgeViewer(const Handle(V3d_Viewer)& V
 
 Standard_Boolean AIS_InteractiveContext::IsImmediateModeOn()  const 
 {
-  if(!HasOpenedContext()) return Standard_False;
-  return myLocalContexts(myCurLocalIndex)->IsImmediateModeOn();
+  if (HasOpenedContext())
+  {
+    return myLocalContexts(myCurLocalIndex)->IsImmediateModeOn();
+  }
+  return myMainPM->IsImmediateModeOn();
 }
 
 //=======================================================================
@@ -792,8 +795,17 @@ Standard_Boolean AIS_InteractiveContext::IsImmediateModeOn()  const
 
 Standard_Boolean AIS_InteractiveContext::BeginImmediateDraw()
 {
-  return HasOpenedContext()
-      && myLocalContexts (myCurLocalIndex)->BeginImmediateDraw();
+  if (HasOpenedContext())
+  {
+    return myLocalContexts(myCurLocalIndex)->BeginImmediateDraw();
+  }
+
+  if (myMainPM->IsImmediateModeOn())
+  {
+    myMainPM->BeginImmediateDraw();
+    return Standard_True;
+  }
+  return Standard_False;
 }
 
 //=======================================================================
@@ -804,8 +816,18 @@ Standard_Boolean AIS_InteractiveContext::BeginImmediateDraw()
 Standard_Boolean AIS_InteractiveContext::ImmediateAdd (const Handle(AIS_InteractiveObject)& theObj,
                                                        const Standard_Integer               theMode)
 {
-  return HasOpenedContext()
-      && myLocalContexts (myCurLocalIndex)->ImmediateAdd (theObj, theMode);
+  if (HasOpenedContext())
+  {
+    return myLocalContexts(myCurLocalIndex)->ImmediateAdd (theObj, theMode);
+  }
+
+  if (!myMainPM->IsImmediateModeOn())
+  {
+    return Standard_False;
+  }
+
+  myMainPM->AddToImmediateList (myMainPM->Presentation (theObj, theMode)->Presentation());
+  return Standard_True;
 }
 
 //=======================================================================
@@ -815,8 +837,18 @@ Standard_Boolean AIS_InteractiveContext::ImmediateAdd (const Handle(AIS_Interact
 
 Standard_Boolean AIS_InteractiveContext::EndImmediateDraw (const Handle(V3d_View)& theView)
 {
-  return HasOpenedContext()
-      && myLocalContexts (myCurLocalIndex)->EndImmediateDraw (theView->Viewer());
+  if (HasOpenedContext())
+  {
+    return myLocalContexts(myCurLocalIndex)->EndImmediateDraw (theView->Viewer());
+  }
+
+  if (!myMainPM->IsImmediateModeOn())
+  {
+    return Standard_False;
+  }
+
+  myMainPM->EndImmediateDraw (theView->Viewer());
+  return Standard_True;
 }
 
 //=======================================================================
@@ -826,12 +858,18 @@ Standard_Boolean AIS_InteractiveContext::EndImmediateDraw (const Handle(V3d_View
 
 Standard_Boolean AIS_InteractiveContext::EndImmediateDraw()
 {
-  if (!HasOpenedContext())
+  if (HasOpenedContext())
+  {
+    return myLocalContexts(myCurLocalIndex)->EndImmediateDraw (myMainVwr);
+  }
+
+  if (!myMainPM->IsImmediateModeOn())
   {
     return Standard_False;
   }
 
-  return myLocalContexts (myCurLocalIndex)->EndImmediateDraw (myMainVwr);
+  myMainPM->EndImmediateDraw (myMainVwr);
+  return Standard_True;
 }
 
 

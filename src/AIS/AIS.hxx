@@ -46,8 +46,6 @@ class Prs3d_Presentation;
 class AIS_Triangulation;
 class AIS_InteractiveContext;
 class AIS_GraphicTool;
-class AIS_LocalContext;
-class AIS_LocalStatus;
 class AIS_GlobalStatus;
 class AIS_InteractiveObject;
 class AIS_Point;
@@ -87,112 +85,52 @@ class AIS_BadEdgeFilter;
 class AIS_Selection;
 
 
-//! Application Interactive Services provide the means to
-//! create links between an application GUI viewer and
-//! the packages which are used to manage selection
-//! and presentation. The tools AIS defined in order to
-//! do this include different sorts of entities: both the
-//! selectable viewable objects themselves and the
-//! context and attribute managers to define their
-//! selection and display.
-//! To orient the user as he works in a modeling
-//! environment, views and selections must be
-//! comprehensible. There must be several different sorts
-//! of selectable and viewable object defined. These must
-//! also be interactive, that is, connecting graphic
-//! representation and the underlying reference
-//! geometry. These entities are called Interactive
-//! Objects, and are divided into four types:
+//! Application Interactive Services provide the means to create links between an application GUI viewer and
+//! the packages which are used to manage selection and presentation.
+//! The tools AIS defined in order to do this include different sorts of entities:
+//! both the selectable viewable objects themselves and the context and attribute managers to define their selection and display.
+//! To orient the user as he works in a modeling environment, views and selections must be comprehensible.
+//! There must be several different sorts of selectable and viewable object defined.
+//! These must also be interactive, that is, connecting graphic representation and the underlying reference geometry.
+//! These entities are called Interactive Objects, and are divided into four types:
 //! -   the Datum
 //! -   the Relation
 //! -   the Object
 //! -   None.
-//! The Datum groups together the construction elements
-//! such as lines, circles, points, trihedra, plane trihedra,
-//! planes and axes.
-//! The Relation is made up of constraints on one or
-//! more interactive shapes and the corresponding
-//! reference geometry. For example, you might want to
-//! constrain two edges in a parallel relation. This
-//! contraint is considered as an object in its own right,
-//! and is shown as a sensitive primitive. This takes the
-//! graphic form of a perpendicular arrow marked with
-//! the || symbol and lying between the two edges.
-//! The Object type includes topological shapes, and
-//! connections between shapes.
-//! None, in order not to eliminate the object, tells the
-//! application to look further until it finds an object
-//! definition in its generation which is accepted.
-//! Inside these categories, you have the possibility
-//! of   an additional characterization by means of a
-//! signature. The signature provides an index to the
-//! further characterization. By default, the   Interactive
-//! Object has a None type and a signature of 0
-//! (equivalent to None.) If you want to give a particular
-//! type and signature to your interactive object, you must
-//! redefine the two virtual methods: Type and Signature.
-//! In the C++ inheritance structure of the package, each
-//! class representing a specific Interactive Object
-//! inherits AIS_InteractiveObject. Among these
-//! inheriting classes, AIS_Relation functions as the
-//! abstract mother class for tinheriting classes defining
-//! display of specific relational constraints and types of
-//! dimension. Some of these include:
-//! -   display of constraints based on relations of
-//! symmetry, tangency, parallelism and concentricity
-//! -   display of dimensions for angles, offsets,
-//! diameters, radii and chamfers.
-//! No viewer can show everything at once with any
-//! coherence or clarity. Views must be managed
-//! carefully both sequentially and at any given instant.
-//! Another function of the view is that of a context to
-//! carry out design in. The design changes are applied
-//! to the objects in the view and then extended to the
-//! underlying reference geometry by a solver. To make
-//! sense of this complicated visual data, several display
-//! and selection tools are required. To facilitate
-//! management, each object and each construction
-//! element has a selection priority. There are also
-//! means to modify the default priority.
-//! To define an environment of dynamic detection, you
-//! can use standard filter classes or create your own. A
-//! filter questions the owner of the sensitive primitive in
-//! local context to determine if it has the the desired
-//! qualities. If it answers positively, it is kept. If not, it is rejected.
+//! The Datum groups together the construction elements such as lines, circles, points, trihedra, plane trihedra, planes and axes.
+//! The Relation is made up of constraints on one or more interactive shapes and the corresponding reference geometry.
+//! For example, you might want to constrain two edges in a parallel relation.
+//! This contraint is considered as an object in its own right, and is shown as a sensitive primitive.
+//! This takes the graphic form of a perpendicular arrow marked with the || symbol and lying between the two edges.
+//! The Object type includes topological shapes, and connections between shapes.
+//! None, in order not to eliminate the object, tells the application to look further until it finds an object definition in its generation which is accepted.
+//! Inside these categories, you have the possibility of an additional characterization by means of a signature.
+//! The signature provides an index to the further characterization.
+//! By default, the Interactive Object has a None type and a signature of 0 (equivalent to None.)
+//! If you want to give a particular type and signature to your interactive object, you must redefine the two virtual methods: Type and Signature.
+//! In the C++ inheritance structure of the package, each class representing a specific Interactive Object inherits AIS_InteractiveObject.
+//! Among these inheriting classes, AIS_Relation functions as the abstract mother class for tinheriting classes defining display of specific relational constraints and types of dimension.
+//! Some of these include:
+//! -   display of constraints based on relations of symmetry, tangency, parallelism and concentricity
+//! -   display of dimensions for angles, offsets, diameters, radii and chamfers.
+//! No viewer can show everything at once with any coherence or clarity.
+//! Views must be managed carefully both sequentially and at any given instant.
+//! Another function of the view is that of a context to carry out design in.
+//! The design changes are applied to the objects in the view and then extended to the underlying reference geometry by a solver.
+//! To make sense of this complicated visual data, several display and selection tools are required.
+//! To facilitate management, each object and each construction element has a selection priority.
+//! There are also means to modify the default priority.
+//! To define an environment of dynamic detection, you can use standard filter classes or create your own.
+//! A filter questions the owner of the sensitive primitive to determine if it has the the desired qualities.
+//! If it answers positively, it is kept. If not, it is rejected.
 //! The standard filters supplied in AIS include:
-//! AIS_AttributeFilter
-//! AIS_SignatureFilter
-//! AIS_TypeFilter.
-//! Only the type filter can be used in the default
-//! operating mode, the neutral point. The others can
-//! only be used in open local contexts.
-//! Neutral point and local context constitute the two
-//! operating modes of the central entity which pilots
-//! visualizations and selections, the Interactive Context.
-//! It is linked to a main viewer and if you like, a trash bin
-//! viewer as well.
-//! The neutral point, which is the default mode, allows
-//! you to easily visualize and select interactive objects
-//! which have been loaded into the context. Opening
-//! local contexts allows you to prepare and use a
-//! temporary selection environment without disturbing
-//! the neutral point. A set of functions allows you to
-//! choose the interactive objects which you want to act
-//! on, the selection modes which you want to activate,
-//! and the temporary visualizations which you will
-//! execute. When the operation is finished, you close the
-//! current local context and return to the state in which
-//! you were before opening it (neutral point or previous
-//! local context).
-//! An interactive object can have a certain number of
-//! graphic attributes which are specific to it, such as
-//! visualization mode, color, and material. By the same
-//! token, the interactive context has a set of graphic
-//! attributes, the Drawer which is valid by default for the
-//! objects it controls.   When an interactive object is
-//! visualized, the required graphic attributes are first
-//! taken from the object's own Drawer if one exists, or
-//! from the context drawer for the others.
+//! - AIS_AttributeFilter
+//! - AIS_SignatureFilter
+//! - AIS_TypeFilter.
+//! A set of functions allows you to choose the interactive objects which you want to act on, the selection modes which you want to activate.
+//! An interactive object can have a certain number of graphic attributes which are specific to it, such as visualization mode, color, and material.
+//! By the same token, the interactive context has a set of graphic attributes, the Drawer which is valid by default for the objects it controls.
+//! When an interactive object is visualized, the required graphic attributes are first taken from the object's own Drawer if one exists, or from the context drawer for the others.
 class AIS 
 {
 public:
@@ -312,69 +250,6 @@ public:
   
   Standard_EXPORT static void ComputeProjVertexPresentation (const Handle(Prs3d_Presentation)& aPres, const Handle(Prs3d_Drawer)& aDrawer, const TopoDS_Vertex& aVertex, const gp_Pnt& ProjPoint, const Quantity_NameOfColor aColor = Quantity_NOC_PURPLE, const Standard_Real aWidth = 2, const Aspect_TypeOfMarker aProjTOM = Aspect_TOM_PLUS, const Aspect_TypeOfLine aCallTOL = Aspect_TOL_DOT);
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class AIS_Triangulation;
-friend class AIS_InteractiveContext;
-friend class AIS_GraphicTool;
-friend class AIS_LocalContext;
-friend class AIS_LocalStatus;
-friend class AIS_GlobalStatus;
-friend class AIS_InteractiveObject;
-friend class AIS_Point;
-friend class AIS_Axis;
-friend class AIS_Trihedron;
-friend class AIS_PlaneTrihedron;
-friend class AIS_Line;
-friend class AIS_Circle;
-friend class AIS_Plane;
-friend class AIS_Shape;
-friend class AIS_ConnectedInteractive;
-friend class AIS_MultipleConnectedInteractive;
-friend class AIS_DimensionOwner;
-friend class AIS_Relation;
-friend class AIS_EllipseRadiusDimension;
-friend class AIS_MaxRadiusDimension;
-friend class AIS_MinRadiusDimension;
-friend class AIS_Chamf2dDimension;
-friend class AIS_Chamf3dDimension;
-friend class AIS_OffsetDimension;
-friend class AIS_FixRelation;
-friend class AIS_PerpendicularRelation;
-friend class AIS_ParallelRelation;
-friend class AIS_TangentRelation;
-friend class AIS_ConcentricRelation;
-friend class AIS_IdenticRelation;
-friend class AIS_SymmetricRelation;
-friend class AIS_MidPointRelation;
-friend class AIS_EqualRadiusRelation;
-friend class AIS_EqualDistanceRelation;
-friend class AIS_TypeFilter;
-friend class AIS_SignatureFilter;
-friend class AIS_ExclusionFilter;
-friend class AIS_AttributeFilter;
-friend class AIS_C0RegularityFilter;
-friend class AIS_BadEdgeFilter;
-friend class AIS_Selection;
-
 };
-
-
-
-
-
-
 
 #endif // _AIS_HeaderFile

@@ -11,7 +11,6 @@
 #include <res\OCC_Resource.h>
 #include "ImportExport/ImportExport.h"
 #include "AISDialogs.h"
-#include <AIS_LocalContext.hxx>
 #include <AIS_ListOfInteractive.hxx>
 #include <AIS_ListIteratorOfListOfInteractive.hxx>
 #include <TColStd_ListIteratorOfListOfInteger.hxx>

@@ -122,6 +122,7 @@ myCurHighlighted(0),
 myPickingStrategy (SelectMgr_PickingStrategy_FirstAcceptable),
 myIsAutoActivateSelMode(Standard_True)
 {
+  mgrSelector->Add (myMainSel);
   myStyles[Prs3d_TypeOfHighlight_None]          = myDefaultDrawer;
   myStyles[Prs3d_TypeOfHighlight_Selected]      = new Prs3d_Drawer();
   myStyles[Prs3d_TypeOfHighlight_Dynamic]       = new Prs3d_Drawer();
@@ -2694,7 +2695,6 @@ Standard_Boolean AIS_InteractiveContext::IsInLocal (const Handle(AIS_Interactive
 //=======================================================================
 void AIS_InteractiveContext::InitAttributes()
 {
-  mgrSelector->Add (myMainSel);
 
   Graphic3d_MaterialAspect aMat (Graphic3d_NOM_BRASS);
   myDefaultDrawer->ShadingAspect()->SetMaterial (aMat);

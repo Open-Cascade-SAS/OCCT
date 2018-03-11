@@ -303,6 +303,11 @@ AIS_StatusOfDetection AIS_InteractiveContext::MoveTo (const Standard_Integer  th
                                                       const Handle(V3d_View)& theView,
                                                       const Standard_Boolean  theToRedrawOnUpdate)
 {
+  if (theView->Viewer() != myMainVwr)
+  {
+    throw Standard_ProgramError ("AIS_InteractiveContext::MoveTo() - invalid argument");
+  }
+
   if (HasOpenedContext())
   {
     myWasLastMain = Standard_True;
@@ -312,11 +317,6 @@ AIS_StatusOfDetection AIS_InteractiveContext::MoveTo (const Standard_Integer  th
   myCurDetected = 0;
   myCurHighlighted = 0;
   myDetectedSeq.Clear();
-
-  if (theView->Viewer() != myMainVwr)
-  {
-    return AIS_SOD_Error;
-  }
 
   // preliminaires
   myLastPicked  = myLastinMain;
@@ -454,6 +454,11 @@ AIS_StatusOfPick AIS_InteractiveContext::Select (const Standard_Integer  theXPMi
                                                  const Handle(V3d_View)& theView,
                                                  const Standard_Boolean  toUpdateViewer)
 {
+  if (theView->Viewer() != myMainVwr)
+  {
+    throw Standard_ProgramError ("AIS_InteractiveContext::Select() - invalid argument");
+  }
+
   // all objects detected by the selector are taken, previous current objects are emptied,
   // new objects are put...
 
@@ -466,18 +471,11 @@ AIS_StatusOfPick AIS_InteractiveContext::Select (const Standard_Integer  theXPMi
 
   ClearSelected (Standard_False);
 
-  Handle(StdSelect_ViewerSelector3d) aSelector;
-
-  if (theView->Viewer() == myMainVwr)
+  myWasLastMain = Standard_True;
+  myMainSel->Pick (theXPMin, theYPMin, theXPMax, theYPMax, theView);
+  for (Standard_Integer aPickIter = 1; aPickIter <= myMainSel->NbPicked(); ++aPickIter)
   {
-    aSelector = myMainSel;
-    myWasLastMain = Standard_True;
-  }
-
-  aSelector->Pick (theXPMin, theYPMin, theXPMax, theYPMax, theView);
-  for (Standard_Integer aPickIter = 1; aPickIter <= aSelector->NbPicked(); ++aPickIter)
-  {
-    const Handle(SelectMgr_EntityOwner)& aCurOwner = aSelector->Picked (aPickIter);
+    const Handle(SelectMgr_EntityOwner)& aCurOwner = myMainSel->Picked (aPickIter);
     if (aCurOwner.IsNull() || !aCurOwner->HasSelectable() || !myFilters->IsOk (aCurOwner))
       continue;
 
@@ -503,6 +501,11 @@ AIS_StatusOfPick AIS_InteractiveContext::Select (const TColgp_Array1OfPnt2d& the
                                                  const Handle(V3d_View)&     theView,
                                                  const Standard_Boolean      toUpdateViewer)
 {
+  if (theView->Viewer() != myMainVwr)
+  {
+    throw Standard_ProgramError ("AIS_InteractiveContext::Select() - invalid argument");
+  }
+
   // all objects detected by the selector are taken, previous current objects are emptied,
   // new objects are put...
 
@@ -513,18 +516,11 @@ AIS_StatusOfPick AIS_InteractiveContext::Select (const TColgp_Array1OfPnt2d& the
 
   ClearSelected (Standard_False);
 
-  Handle(StdSelect_ViewerSelector3d) aSelector;
-
-  if (theView->Viewer() == myMainVwr)
+  myWasLastMain = Standard_True;
+  myMainSel->Pick (thePolyline, theView);
+  for (Standard_Integer aPickIter = 1; aPickIter <= myMainSel->NbPicked(); ++aPickIter)
   {
-    aSelector = myMainSel;
-    myWasLastMain = Standard_True;
-  }
-
-  aSelector->Pick (thePolyline, theView);
-  for (Standard_Integer aPickIter = 1; aPickIter <= aSelector->NbPicked(); ++aPickIter)
-  {
-    const Handle(SelectMgr_EntityOwner) anOwner = aSelector->Picked (aPickIter);
+    const Handle(SelectMgr_EntityOwner) anOwner = myMainSel->Picked (aPickIter);
     if (anOwner.IsNull() || !anOwner->HasSelectable() || !myFilters->IsOk (anOwner))
       continue;
 
@@ -640,6 +636,11 @@ AIS_StatusOfPick AIS_InteractiveContext::ShiftSelect (const Standard_Integer the
                                                       const Handle(V3d_View)& theView,
                                                       const Standard_Boolean toUpdateViewer)
 {
+  if (theView->Viewer() != myMainVwr)
+  {
+    throw Standard_ProgramError ("AIS_InteractiveContext::ShiftSelect() - invalid argument");
+  }
+
   if (HasOpenedContext())
   {
     return myLocalContexts(myCurLocalIndex)->ShiftSelect (theXPMin, theYPMin, theXPMax, theYPMax,
@@ -648,21 +649,11 @@ AIS_StatusOfPick AIS_InteractiveContext::ShiftSelect (const Standard_Integer the
 
   UnhilightSelected (Standard_False);
 
-  Handle(StdSelect_ViewerSelector3d) aSelector;
-  if (theView->Viewer() == myMainVwr)
+  myWasLastMain = Standard_True;
+  myMainSel->Pick (theXPMin, theYPMin, theXPMax, theYPMax, theView);
+  for (Standard_Integer aPickIter = 1; aPickIter <= myMainSel->NbPicked(); ++aPickIter)
   {
-    aSelector = myMainSel;
-    myWasLastMain = Standard_True;
-  }
-  else
-  {
-    return AIS_SOP_NothingSelected;
-  }
-
-  aSelector->Pick (theXPMin, theYPMin, theXPMax, theYPMax, theView);
-  for (Standard_Integer aPickIter = 1; aPickIter <= aSelector->NbPicked(); ++aPickIter)
-  {
-    const Handle(SelectMgr_EntityOwner) anOwner = aSelector->Picked (aPickIter);
+    const Handle(SelectMgr_EntityOwner) anOwner = myMainSel->Picked (aPickIter);
     if (anOwner.IsNull() || !anOwner->HasSelectable() || !myFilters->IsOk (anOwner))
       continue;
 
@@ -688,6 +679,11 @@ AIS_StatusOfPick AIS_InteractiveContext::ShiftSelect (const TColgp_Array1OfPnt2d
                                                       const Handle(V3d_View)& theView,
                                                       const Standard_Boolean toUpdateViewer)
 {
+  if (theView->Viewer() != myMainVwr)
+  {
+    throw Standard_ProgramError ("AIS_InteractiveContext::ShiftSelect() - invalid argument");
+  }
+
   if (HasOpenedContext())
   {
     return myLocalContexts(myCurLocalIndex)->ShiftSelect (thePolyline, theView, toUpdateViewer);
@@ -695,22 +691,11 @@ AIS_StatusOfPick AIS_InteractiveContext::ShiftSelect (const TColgp_Array1OfPnt2d
 
   UnhilightSelected (Standard_False);
 
-  Handle(StdSelect_ViewerSelector3d) aSelector;
-
-  if (theView->Viewer() == myMainVwr)
+  myWasLastMain = Standard_True;
+  myMainSel->Pick (thePolyline, theView);
+  for (Standard_Integer aPickIter = 1; aPickIter <= myMainSel->NbPicked(); ++aPickIter)
   {
-    aSelector= myMainSel;
-    myWasLastMain = Standard_True;
-  }
-  else
-  {
-    return AIS_SOP_NothingSelected;
-  }
-
-  aSelector->Pick (thePolyline, theView);
-  for (Standard_Integer aPickIter = 1; aPickIter <= aSelector->NbPicked(); ++aPickIter)
-  {
-    const Handle(SelectMgr_EntityOwner) anOwner = aSelector->Picked (aPickIter);
+    const Handle(SelectMgr_EntityOwner) anOwner = myMainSel->Picked (aPickIter);
     if (anOwner.IsNull() || !anOwner->HasSelectable() || !myFilters->IsOk (anOwner))
       continue;
 
@@ -1482,21 +1467,30 @@ Standard_Boolean AIS_InteractiveContext::HasDetected() const
 
 Standard_Boolean AIS_InteractiveContext::HasDetectedShape() const 
 {
-  if(HasOpenedContext())
+  if (HasOpenedContext())
+  {
     return myLocalContexts(myCurLocalIndex)->HasDetectedShape();
-  return Standard_False;
+  }
+
+  Handle(StdSelect_BRepOwner) anOwner = Handle(StdSelect_BRepOwner)::DownCast (myLastPicked);
+  return !anOwner.IsNull()
+       && anOwner->HasShape();
 }
 
 //=======================================================================
 //function : DetectedShape
 //purpose  : 
 //=======================================================================
-
-const TopoDS_Shape&
-AIS_InteractiveContext::DetectedShape() const
+const TopoDS_Shape& AIS_InteractiveContext::DetectedShape() const
 {
-  return myLocalContexts(myCurLocalIndex)->DetectedShape();
-}					    
+  if (HasOpenedContext())
+  {
+    return myLocalContexts(myCurLocalIndex)->DetectedShape();
+  }
+
+  Handle(StdSelect_BRepOwner) anOwner = Handle(StdSelect_BRepOwner)::DownCast (myLastPicked);
+  return anOwner->Shape();
+}
 
 //=======================================================================
 //function : DetectedInteractive
@@ -1696,13 +1690,9 @@ const TopoDS_Shape& AIS_InteractiveContext::DetectedCurrentShape() const
   Standard_DISABLE_DEPRECATION_WARNINGS
   Handle(AIS_Shape) aCurrentShape = Handle(AIS_Shape)::DownCast (DetectedCurrentObject());
   Standard_ENABLE_DEPRECATION_WARNINGS
-
-  if (aCurrentShape.IsNull())
-  {
-    return AIS_InteractiveContext_myDummyShape;
-  }
-
-  return aCurrentShape->Shape();
+  return !aCurrentShape.IsNull()
+        ? aCurrentShape->Shape()
+        : AIS_InteractiveContext_myDummyShape;
 }
 
 //=======================================================================
@@ -1717,8 +1707,8 @@ Handle(AIS_InteractiveObject) AIS_InteractiveContext::DetectedCurrentObject() co
   }
 
   return MoreDetected()
-    ? Handle(AIS_InteractiveObject)::DownCast (myMainSel->Picked (myDetectedSeq (myCurDetected))->Selectable())
-    : NULL;
+       ? Handle(AIS_InteractiveObject)::DownCast (myMainSel->Picked (myDetectedSeq (myCurDetected))->Selectable())
+       : Handle(AIS_InteractiveObject)();
 }
 
 //=======================================================================

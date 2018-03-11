@@ -4,7 +4,6 @@
 #include "DimensionDlg.h"
 
 #include <AIS_InteractiveContext.hxx>
-#include <AIS_LocalContext.hxx>
 #include <AIS_RadiusDimension.hxx>
 #include <AIS_DiameterDimension.hxx>
 #include <ElCLib.hxx>

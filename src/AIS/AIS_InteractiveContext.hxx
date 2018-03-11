@@ -57,7 +57,6 @@ class Prs3d_LineAspect;
 class Prs3d_BasicAspect;
 class SelectMgr_EntityOwner;
 class SelectMgr_Filter;
-class TCollection_AsciiString;
 
 //! The Interactive Context allows you to manage graphic behavior and selection of Interactive Objects in one or more viewers.
 //! Class methods make this highly transparent.
@@ -153,7 +152,7 @@ public: //! @name object display management
   Standard_EXPORT void Remove (const Handle(AIS_InteractiveObject)& theIObj,
                                const Standard_Boolean               theToUpdateViewer);
 
-  //! Removes all the objects from all opened Local Contexts and from the Neutral Point.
+  //! Removes all the objects from Context.
   Standard_EXPORT void RemoveAll (const Standard_Boolean theToUpdateViewer);
 
   //! Recomputes the seen parts presentation of the Object.
@@ -341,7 +340,6 @@ public: //! @name mouse picking logic (detection and dynamic highlighting of ent
 
   //! Relays mouse position in pixels theXPix and theYPix to the interactive context selectors.
   //! This is done by the view theView passing this position to the main viewer and updating it.
-  //! Functions in both Neutral Point and local contexts.
   //! If theToRedrawOnUpdate is set to false, callee should call RedrawImmediate() to highlight detected object.
   //! @sa PickingStrategy()
   Standard_EXPORT AIS_StatusOfDetection MoveTo (const Standard_Integer  theXPix,
@@ -502,7 +500,7 @@ public: //! @name Selection management
   Standard_EXPORT void UnhilightSelected (const Standard_Boolean theToUpdateViewer);
 
   //! Updates the list of selected objects:
-  //! i.e. highlights the newely selected ones and unhighlights previously selected objects.
+  //! i.e. highlights the newly selected ones and unhighlights previously selected objects.
   //! @sa HilightSelected().
   Standard_EXPORT void UpdateSelected (const Standard_Boolean theToUpdateViewer);
 
@@ -646,7 +644,7 @@ public: //! @name management of active Selection Modes
   //! Deactivates all the activated selection mode at all displayed objects.
   Standard_EXPORT void Deactivate();
 
-  //! Returns the list of activated selection modes in an open context.
+  //! Returns the list of activated selection modes.
   Standard_EXPORT void ActivatedModes (const Handle(AIS_InteractiveObject)& anIobj, TColStd_ListOfInteger& theList) const;
 
   //! Returns a collection containing all entity owners created for the interactive object in specified selection mode (in all active modes if the Mode == -1)
@@ -1111,17 +1109,17 @@ public: //! @name Local Context management (deprecated)
   //! If you have opened a local context by loading an object with the default options (<AllowShapeDecomposition >= Standard_True),
   //! all objects of the "Shape" type are also activated with the same modes.
   //! You can act on the state of these "Standard" objects by using SetShapeDecomposition(Status).
-  Standard_DEPRECATED ("Local Context is deprecated - local selection should be used without Local Context")
+  Standard_DEPRECATED ("Local Context is deprecated - ::Activate() and AIS_Shape::SelectionMode() should be used instead")
   Standard_EXPORT void ActivateStandardMode (const TopAbs_ShapeEnum aStandardActivation);
 
   //! Provides an alternative to the Display methods when deactivating specific selection modes.
   //! This has the effect of deactivating the corresponding selection mode aStandardActivation for all objects
   //! in Local Context which accept decomposition into sub-shapes.
-  Standard_DEPRECATED ("Local Context is deprecated - local selection should be used without Local Context")
+  Standard_DEPRECATED ("Local Context is deprecated - ::Deactivate() should be used instead")
   Standard_EXPORT void DeactivateStandardMode (const TopAbs_ShapeEnum aStandardActivation);
 
   //! Returns the list of activated standard selection modes available in a local context.
-  Standard_DEPRECATED ("Local Context is deprecated - local selection should be used without Local Context")
+  Standard_DEPRECATED ("Local Context is deprecated - list of activated Selection Modes should be tracked on application side; see also ::ActivatedModes()")
   Standard_EXPORT const TColStd_ListOfInteger& ActivatedStandardModes() const;
 
   //! returns if possible, the first local context where the object is seen
@@ -1174,51 +1172,51 @@ public:
 
   //! Initializes a scan of the current selected objects in Neutral Point.
   //! Objects selected when there is no open local context are called current objects; those selected in open local context, selected objects.
-  Standard_DEPRECATED ("Local Context is deprecated - local selection should be used without Local Context")
+  Standard_DEPRECATED ("Local Context is deprecated - ::InitSelected() should be called instead")
   Standard_EXPORT void InitCurrent();
 
   //! Returns true if there is another object found by the scan of the list of current objects.
   //! Objects selected when there is no open local context are called current objects; those selected in open local context, selected objects.
-  Standard_DEPRECATED ("Local Context is deprecated - local selection should be used without Local Context")
+  Standard_DEPRECATED ("Local Context is deprecated - ::MoreSelected() should be called instead")
   Standard_EXPORT Standard_Boolean MoreCurrent() const;
   
   //! Continues the scan to the next object in the list of current objects.
   //! Objects selected when there is no open local context are called current objects; those selected in open local context, selected objects.
-  Standard_DEPRECATED ("Local Context is deprecated - local selection should be used without Local Context")
+  Standard_DEPRECATED ("Local Context is deprecated - ::NextSelected() should be called instead")
   Standard_EXPORT void NextCurrent();
 
   //! Returns the current interactive object.
   //! Objects selected when there is no open local context are called current objects; those selected in open local context, selected objects.
-  Standard_DEPRECATED ("Local Context is deprecated - local selection should be used without Local Context")
+  Standard_DEPRECATED ("Local Context is deprecated - ::SelectedInteractive() should be called instead")
   Standard_EXPORT Handle(AIS_InteractiveObject) Current() const;
 
-  Standard_DEPRECATED ("Local Context is deprecated - local selection should be used without Local Context")
+  Standard_DEPRECATED ("Local Context is deprecated - ::NbSelected() should be called instead")
   Standard_EXPORT Standard_Integer NbCurrents();
 
   //! Highlights current objects.
   //! Objects selected when there is no open local context are called current objects; those selected in open local context, selected objects.
-  Standard_DEPRECATED ("Local Context is deprecated - local selection should be used without Local Context")
+  Standard_DEPRECATED ("Local Context is deprecated - ::HilightSelected() should be called instead")
   Standard_EXPORT void HilightCurrents (const Standard_Boolean theToUpdateViewer);
 
   //! Removes highlighting from current objects.
   //! Objects selected when there is no open local context are called current objects; those selected in open local context, selected objects.
-  Standard_DEPRECATED ("Local Context is deprecated - local selection should be used without Local Context")
+  Standard_DEPRECATED ("Local Context is deprecated - ::UnhilightSelected() should be called instead")
   Standard_EXPORT void UnhilightCurrents (const Standard_Boolean theToUpdateViewer);
 
   //! Empties previous current objects in order to get the current objects detected by the selector using UpdateCurrent.
   //! Objects selected when there is no open local context are called current objects; those selected in open local context, selected objects.
-  Standard_DEPRECATED ("Local Context is deprecated - local selection should be used without Local Context")
+  Standard_DEPRECATED ("Local Context is deprecated - ::ClearSelected() should be called instead")
   Standard_EXPORT void ClearCurrents (const Standard_Boolean theToUpdateViewer);
 
   //! @return current mouse-detected shape or empty (null) shape, if current interactive object
   //! is not a shape (AIS_Shape) or there is no current mouse-detected interactive object at all.
   //! @sa DetectedCurrentOwner()/InitDetected()/MoreDetected()/NextDetected().
-  Standard_DEPRECATED ("Local Context is deprecated - local selection should be used without Local Context")
+  Standard_DEPRECATED ("Local Context is deprecated - ::DetectedCurrentOwner() should be called instead")
   Standard_EXPORT const TopoDS_Shape& DetectedCurrentShape() const;
   
   //! @return current mouse-detected interactive object or null object, if there is no currently detected interactives
   //! @sa DetectedCurrentOwner()/InitDetected()/MoreDetected()/NextDetected().
-  Standard_DEPRECATED ("Local Context is deprecated - local selection should be used without Local Context")
+  Standard_DEPRECATED ("Local Context is deprecated - ::DetectedCurrentOwner() should be called instead")
   Standard_EXPORT Handle(AIS_InteractiveObject) DetectedCurrentObject() const;
 
 public: //! @name sub-intensity management (deprecated)

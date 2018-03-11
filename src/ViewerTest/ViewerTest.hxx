@@ -106,22 +106,6 @@ public:
                                                       Handle(TopTools_HArray1OfShape)& thepicked,
                                                       const Standard_Integer           MaxPick = 5);
 
-  //! waits until an interactive object of a given Type
-  //! and signature is picked (default values authorize
-  //! selection of any Interactive Object)
-  //! exit if number of unsuccessful picks =  <MaxPick>
-  Standard_EXPORT static Handle(AIS_InteractiveObject) PickObject (const AIS_KindOfInteractive Type      = AIS_KOI_None,
-                                                                   const Standard_Integer      Signature = -1,
-                                                                   const Standard_Integer      MaxPick   = 5);
-
-  //! selection of several interactive objects.
-  //! Number is given by the size of <thepicked>
-  //! exit if number of unsuccesfull picks =  <MaxPick>
-  Standard_EXPORT static Standard_Boolean PickObjects (Handle(TColStd_HArray1OfTransient)& thepicked,
-                                                       const AIS_KindOfInteractive         Type = AIS_KOI_None,
-                                                       const Standard_Integer              Signature = -1,
-                                                       const Standard_Integer              MaxPick = 5);
-
   Standard_EXPORT static void Commands (Draw_Interpretor& theCommands);
 
   Standard_EXPORT static void ViewerCommands (Draw_Interpretor& theCommands);
@@ -165,8 +149,6 @@ public:
   Standard_EXPORT static Handle(ViewerTest_EventManager) CurrentEventManager();
 
   Standard_EXPORT static void RemoveSelected();
-
-  Standard_EXPORT static void StandardModeActivation (const Standard_Integer Mode);
 
   Standard_EXPORT static Quantity_NameOfColor GetColorFromName (const Standard_CString name);
 

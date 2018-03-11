@@ -1724,9 +1724,30 @@ void VT_ProcessKeyPress (const char* buf_ret)
   else
   {
     // Number
-    Standard_Integer Num = Draw::Atoi(buf_ret);
-    if(Num>=0 && Num<=7)
-      ViewerTest::StandardModeActivation(Num);
+    const Standard_Integer aSelMode = Draw::Atoi(buf_ret);
+    if (aSelMode >= 0 && aSelMode <= 7)
+    {
+      bool toEnable = true;
+      if (const Handle(AIS_InteractiveContext) aCtx = ViewerTest::GetAISContext())
+      {
+        AIS_ListOfInteractive aPrsList;
+        aCtx->DisplayedObjects (aPrsList);
+        for (AIS_ListOfInteractive::Iterator aPrsIter (aPrsList); aPrsIter.More() && toEnable; aPrsIter.Next())
+        {
+          TColStd_ListOfInteger aModes;
+          aCtx->ActivatedModes (aPrsIter.Value(), aModes);
+          for (TColStd_ListOfInteger::Iterator aModeIter (aModes); aModeIter.More() && toEnable; aModeIter.Next())
+          {
+            if (aModeIter.Value() == aSelMode)
+            {
+              toEnable = false;
+            }
+          }
+        }
+      }
+      TCollection_AsciiString aCmd = TCollection_AsciiString ("vselmode ") + aSelMode + (toEnable ? " 1" : " 0");
+      Draw_Interprete (aCmd.ToCString());
+    }
   }
 }
 

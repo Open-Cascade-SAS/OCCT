@@ -6,7 +6,6 @@
 #include "DimensionDlg.h"
 
 #include <AIS_InteractiveContext.hxx>
-#include <AIS_LocalContext.hxx>
 #include <AIS_LengthDimension.hxx>
 #include <AIS_AngleDimension.hxx>
 #include <BRep_Tool.hxx>

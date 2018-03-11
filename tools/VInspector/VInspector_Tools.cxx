@@ -17,9 +17,6 @@
 
 #include <AIS_ListIteratorOfListOfInteractive.hxx>
 #include <AIS_ListOfInteractive.hxx>
-#if OCC_VERSION_HEX < 0x060901
-#include <AIS_LocalContext.hxx>
-#endif
 #include <AIS_Selection.hxx>
 #include <AIS_Shape.hxx>
 #include <AIS_Trihedron.hxx>
@@ -224,23 +221,11 @@ void VInspector_Tools::AddOrRemoveSelectedShapes (const Handle(AIS_InteractiveCo
 
   theContext->UnhilightSelected(Standard_False);
 
-  //TODO: processing in local context only
-#if OCC_VERSION_HEX < 0x060901
-  Handle(AIS_LocalContext) aLContext = theContext->LocalContext();
-  TCollection_AsciiString aSelectionName = aLContext->SelectionName();
-  aLContext->UnhilightPicked(Standard_False);
-#endif
-
   for (NCollection_List<Handle(SelectBasics_EntityOwner)>::Iterator anOwnersIt(theOwners);
        anOwnersIt.More(); anOwnersIt.Next())
   {
     Handle(SelectMgr_EntityOwner) anOwner = Handle(SelectMgr_EntityOwner)::DownCast (anOwnersIt.Value());
-#if OCC_VERSION_HEX > 0x060901
     theContext->AddOrRemoveSelected (anOwner, Standard_False);
-#else
-    AIS_Selection::Selection(aSelectionName.ToCString())->Select(anOwner);
-    anOwner->SetSelected(Standard_True);
-#endif
   }
   theContext->UpdateCurrentViewer();
 }

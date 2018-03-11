@@ -73,7 +73,6 @@
 #include <AIS_Line.hxx>
 #include <AIS_InteractiveContext.hxx>
 #include <AIS_InteractiveObject.hxx>
-#include <AIS_LocalContext.hxx>
 #include <AIS_TextLabel.hxx>
 
 #include <Aspect_TypeOfline.hxx>

@@ -531,13 +531,6 @@ static Standard_Integer mdisplay
         di << "The context is null\n";
       else
       {
-        Standard_DISABLE_DEPRECATION_WARNINGS
-        if (aContext->HasOpenedContext())
-        {
-          aContext->CloseLocalContext();
-        }
-        Standard_ENABLE_DEPRECATION_WARNINGS
-
         aContext->Display (aMesh, Standard_True);
       }
     }
@@ -561,13 +554,6 @@ static Standard_Integer merase
         di << "The context is null\n";
       else
       {
-        Standard_DISABLE_DEPRECATION_WARNINGS
-        if (aContext->HasOpenedContext())
-        {
-          aContext->CloseLocalContext();
-        }
-        Standard_ENABLE_DEPRECATION_WARNINGS
-
         aContext->Erase (aMesh, Standard_True);
       }
     }
