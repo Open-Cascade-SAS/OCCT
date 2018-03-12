@@ -62,9 +62,20 @@ Standard_Boolean XmlMDataStd_RealArrayDriver::Paste
                                          const Handle(TDF_Attribute)& theTarget,
                                          XmlObjMgt_RRelocationTable&  ) const
 {
-  Standard_Integer aFirstInd, aLastInd, ind;
-  Standard_Real aValue;
+
+  Handle(TDataStd_RealArray) aRealArray = Handle(TDataStd_RealArray)::DownCast(theTarget);
   const XmlObjMgt_Element& anElement = theSource;
+
+  // attribute id
+  Standard_GUID aGUID;
+  XmlObjMgt_DOMString aGUIDStr = anElement.getAttribute(::AttributeIDString());
+  if (aGUIDStr.Type() == XmlObjMgt_DOMString::LDOM_NULL)
+    aGUID = TDataStd_RealArray::GetID(); //default case
+  else
+    aGUID = Standard_GUID(Standard_CString(aGUIDStr.GetString())); // user defined case
+  aRealArray->SetID(aGUID);
+
+  Standard_Integer aFirstInd, aLastInd, ind;
 
   // Read the FirstIndex; if the attribute is absent initialize to 1
   XmlObjMgt_DOMString aFirstIndex= anElement.getAttribute(::FirstIndexString());
@@ -89,8 +100,6 @@ Standard_Boolean XmlMDataStd_RealArrayDriver::Paste
     return Standard_False;
   }
 
-  Handle(TDataStd_RealArray) aRealArray =
-    Handle(TDataStd_RealArray)::DownCast(theTarget);
   aRealArray->Init(aFirstInd, aLastInd);
 
   // Check the type of LDOMString
@@ -109,6 +118,7 @@ Standard_Boolean XmlMDataStd_RealArrayDriver::Paste
       return Standard_False;
     }
   } else {
+    Standard_Real aValue;
     Standard_CString aValueStr = Standard_CString(aString.GetString());
     for (ind = aFirstInd; ind <= aLastInd; ind++)
     {
@@ -117,8 +127,9 @@ Standard_Boolean XmlMDataStd_RealArrayDriver::Paste
           TCollection_ExtendedString("Cannot retrieve real member"
                                      " for RealArray attribute as \"")
             + aValueStr + "\"";
-        myMessageDriver->Send (aMessageString, Message_Fail);
-        return Standard_False;
+        myMessageDriver->Send (aMessageString, Message_Warning);
+        // skip to the next space separator
+        while (*aValueStr != 0 && ! IsSpace (*aValueStr)) ++aValueStr;
       }
       aRealArray->SetValue(ind, aValue);
     }
@@ -145,15 +156,6 @@ Standard_Boolean XmlMDataStd_RealArrayDriver::Paste
 #endif
   aRealArray->SetDelta(aDelta);
 
-  // attribute id
-  Standard_GUID aGUID;
-  XmlObjMgt_DOMString aGUIDStr = anElement.getAttribute(::AttributeIDString());
-  if (aGUIDStr.Type() == XmlObjMgt_DOMString::LDOM_NULL)
-    aGUID = TDataStd_RealArray::GetID(); //default case
-  else
-    aGUID = Standard_GUID(Standard_CString(aGUIDStr.GetString())); // user defined case
-
-  aRealArray->SetID(aGUID);
   return Standard_True;
 }
 

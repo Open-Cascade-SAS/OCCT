@@ -1,4 +1,4 @@
-puts "REQUIRED All: XmlDriver warning: failure reading attribute TDataStd_RealArray"
+puts "REQUIRED All: Cannot retrieve real member for RealArray attribute"
 
 puts "================"
 puts "OCC2269"

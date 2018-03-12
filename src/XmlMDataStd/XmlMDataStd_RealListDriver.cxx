@@ -55,11 +55,20 @@ Standard_Boolean XmlMDataStd_RealListDriver::Paste(const XmlObjMgt_Persistent&  
                                                    const Handle(TDF_Attribute)& theTarget,
                                                    XmlObjMgt_RRelocationTable&  ) const
 {
-  Standard_Real aValue;
-  Standard_Integer aFirstInd, aLastInd, ind;
+  const Handle(TDataStd_RealList) aRealList = Handle(TDataStd_RealList)::DownCast(theTarget);
   const XmlObjMgt_Element& anElement = theSource;
 
+  // attribute id
+  Standard_GUID aGUID;
+  XmlObjMgt_DOMString aGUIDStr = anElement.getAttribute(::AttributeIDString());
+  if (aGUIDStr.Type() == XmlObjMgt_DOMString::LDOM_NULL)
+    aGUID = TDataStd_RealList::GetID(); //default case
+  else
+    aGUID = Standard_GUID(Standard_CString(aGUIDStr.GetString())); // user defined case
+  aRealList->SetID(aGUID);
+
   // Read the FirstIndex; if the attribute is absent initialize to 1
+  Standard_Integer aFirstInd, aLastInd, ind;
   XmlObjMgt_DOMString aFirstIndex= anElement.getAttribute(::FirstIndexString());
   if (aFirstIndex == NULL)
     aFirstInd = 1;
@@ -84,7 +93,6 @@ Standard_Boolean XmlMDataStd_RealListDriver::Paste(const XmlObjMgt_Persistent&  
     return Standard_False;
   }
 
-  const Handle(TDataStd_RealList) aRealList = Handle(TDataStd_RealList)::DownCast(theTarget);
   // Check the type of LDOMString
   const XmlObjMgt_DOMString& aString = XmlObjMgt::GetStringValue(anElement);
   if(aLastInd == 0) aFirstInd = 0;
@@ -111,27 +119,19 @@ Standard_Boolean XmlMDataStd_RealListDriver::Paste(const XmlObjMgt_Persistent&  
     Standard_CString aValueStr = Standard_CString(aString.GetString());
     for (ind = aFirstInd; ind <= aLastInd; ind++)
     {
+      Standard_Real aValue;
       if (!XmlObjMgt::GetReal(aValueStr, aValue)) {
         TCollection_ExtendedString aMessageString =
           TCollection_ExtendedString("Cannot retrieve real member"
                                      " for RealList attribute as \"")
             + aValueStr + "\"";
-        myMessageDriver->Send (aMessageString, Message_Fail);
-        return Standard_False;
+        myMessageDriver->Send(aMessageString, Message_Warning);
+        // skip to the next space separator
+        while (*aValueStr != 0 && ! IsSpace (*aValueStr)) ++aValueStr;
       }
       aRealList->Append(aValue);
     }
   }
-
-  // attribute id
-  Standard_GUID aGUID;
-  XmlObjMgt_DOMString aGUIDStr = anElement.getAttribute(::AttributeIDString());
-  if (aGUIDStr.Type() == XmlObjMgt_DOMString::LDOM_NULL)
-    aGUID = TDataStd_RealList::GetID(); //default case
-  else
-    aGUID = Standard_GUID(Standard_CString(aGUIDStr.GetString())); // user defined case
-
-  aRealList->SetID(aGUID);
 
   return Standard_True;
 }
