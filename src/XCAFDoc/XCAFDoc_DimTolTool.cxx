@@ -26,6 +26,8 @@
 #include <TDF_Label.hxx>
 #include <TDF_RelocationTable.hxx>
 #include <XCAFDimTolObjects_DatumObject.hxx>
+#include <XCAFDimTolObjects_DimensionObject.hxx>
+#include <XCAFDimTolObjects_GeomToleranceObject.hxx>
 #include <XCAFDoc.hxx>
 #include <XCAFDoc_Dimension.hxx>
 #include <XCAFDoc_GeomTolerance.hxx>
@@ -991,3 +993,100 @@ void XCAFDoc_DimTolTool::Paste(const Handle(TDF_Attribute)& /*into*/,
 {
 }
 
+//=======================================================================
+//function : GetGDTPresentations
+//purpose  : 
+//=======================================================================
+void XCAFDoc_DimTolTool::GetGDTPresentations(NCollection_IndexedDataMap<TDF_Label, 
+  TopoDS_Shape, TDF_LabelMapHasher>& theGDTLabelToShape) const
+{
+  TDF_LabelSequence aGDTs;
+  GetDimensionLabels(aGDTs);
+  for (Standard_Integer i = 1; i <= aGDTs.Length(); i++) {
+    Handle(XCAFDoc_Dimension) aDimAttr;
+    const TDF_Label& aCL = aGDTs.Value(i);
+    if (!aCL.FindAttribute(XCAFDoc_Dimension::GetID(),aDimAttr)) 
+      continue;
+    Handle(XCAFDimTolObjects_DimensionObject) anObject = aDimAttr->GetObject();
+    if (anObject.IsNull())
+      continue;
+    TopoDS_Shape aShape = anObject->GetPresentation();
+    if (!aShape.IsNull())
+      theGDTLabelToShape.Add(aCL, aShape);
+  }
+
+  aGDTs.Clear();
+  GetGeomToleranceLabels(aGDTs);
+  for (Standard_Integer i = 1; i <= aGDTs.Length(); i++) {
+    Handle(XCAFDoc_GeomTolerance) aGTAttr;
+    const TDF_Label& aCL = aGDTs.Value(i);
+    if (!aCL.FindAttribute(XCAFDoc_GeomTolerance::GetID(),aGTAttr)) 
+      continue;
+    Handle(XCAFDimTolObjects_GeomToleranceObject) anObject = aGTAttr->GetObject();
+    if (anObject.IsNull())
+      continue;
+    TopoDS_Shape aShape = anObject->GetPresentation();
+    if (!aShape.IsNull())
+      theGDTLabelToShape.Add(aCL, aShape);
+  }
+
+  aGDTs.Clear();
+  GetDatumLabels(aGDTs);
+  for (Standard_Integer i = 1; i <= aGDTs.Length(); i++) {
+    Handle(XCAFDoc_Datum) aGTAttr;
+    const TDF_Label& aCL = aGDTs.Value(i);
+    if (!aCL.FindAttribute(XCAFDoc_Datum::GetID(),aGTAttr)) 
+      continue;
+    Handle(XCAFDimTolObjects_DatumObject) anObject = aGTAttr->GetObject();
+    if (anObject.IsNull())
+      continue;
+    TopoDS_Shape aShape = anObject->GetPresentation();
+    if (!aShape.IsNull())
+      theGDTLabelToShape.Add(aCL, aShape);
+  }
+}
+
+//=======================================================================
+//function : SetGDTPresentations
+//purpose  : 
+//=======================================================================
+void XCAFDoc_DimTolTool::SetGDTPresentations(NCollection_IndexedDataMap<TDF_Label, TopoDS_Shape, TDF_LabelMapHasher>& theGDTLabelToPrs)
+{ 
+  for (Standard_Integer i = 1; i <= theGDTLabelToPrs.Extent(); i++)
+  {    
+    const TDF_Label& aCL = theGDTLabelToPrs.FindKey(i);
+    Handle(XCAFDoc_Dimension) aDimAttrDim;
+    if (aCL.FindAttribute(XCAFDoc_Dimension::GetID(),aDimAttrDim)) 
+    {
+      Handle(XCAFDimTolObjects_DimensionObject) anObject = aDimAttrDim->GetObject();
+      if (anObject.IsNull())
+        continue;
+      const TopoDS_Shape& aPrs = theGDTLabelToPrs.FindFromIndex(i);
+      anObject->SetPresentation(aPrs, anObject->GetPresentationName());
+      aDimAttrDim->SetObject(anObject);
+      continue;
+    }
+    Handle(XCAFDoc_GeomTolerance) aDimAttrG;
+    if (aCL.FindAttribute(XCAFDoc_GeomTolerance::GetID(),aDimAttrG)) 
+    {
+      Handle(XCAFDimTolObjects_GeomToleranceObject) anObject = aDimAttrG->GetObject();
+      if (anObject.IsNull())
+        continue;
+      const TopoDS_Shape& aPrs = theGDTLabelToPrs.FindFromIndex(i);
+      anObject->SetPresentation(aPrs, anObject->GetPresentationName());
+      aDimAttrG->SetObject(anObject);
+      continue;
+    }
+    Handle(XCAFDoc_Datum) aDimAttrD;
+    if (aCL.FindAttribute(XCAFDoc_Datum::GetID(),aDimAttrD)) 
+    {
+      Handle(XCAFDimTolObjects_DatumObject) anObject = aDimAttrD->GetObject();
+      if (anObject.IsNull())
+        continue;
+      const TopoDS_Shape& aPrs = theGDTLabelToPrs.FindFromIndex(i);
+      anObject->SetPresentation(aPrs, anObject->GetPresentationName());
+      aDimAttrD->SetObject(anObject);
+      continue;
+    }
+  }
+}
