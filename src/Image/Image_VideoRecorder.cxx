@@ -348,7 +348,7 @@ Standard_Boolean Image_VideoRecorder::openVideoCodec (const Image_VideoParams& t
   else if (aCodecCtx->codec == avcodec_find_encoder_by_name ("vp8")
         || aCodecCtx->codec == avcodec_find_encoder_by_name ("vp9"))
   {
-    av_dict_set (&anOptions, "crf", "20", 0); // quality 4–63, 10 is normal
+    av_dict_set (&anOptions, "crf", "20", 0); // quality 4-63, 10 is normal
   }
 
   // override defaults with specified options
