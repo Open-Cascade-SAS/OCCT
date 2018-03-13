@@ -24,6 +24,7 @@
 //! Sensitive entity covering entire mesh for global selection.
 class MeshVS_CommonSensitiveEntity : public Select3D_SensitiveSet
 {
+  DEFINE_STANDARD_RTTIEXT (MeshVS_CommonSensitiveEntity, Select3D_SensitiveSet)
 public:
 
   //! Default constructor.
@@ -58,9 +59,8 @@ public:
   //! Returns center of a mesh
   Standard_EXPORT virtual gp_Pnt CenterOfGeometry() const Standard_OVERRIDE;
 
-public:
-
-  DEFINE_STANDARD_RTTIEXT (MeshVS_CommonSensitiveEntity, Select3D_SensitiveSet)
+  //! Create a copy.
+  virtual Handle(Select3D_SensitiveEntity) GetConnected() Standard_OVERRIDE { return new MeshVS_CommonSensitiveEntity (*this); }
 
 protected:
 
@@ -75,6 +75,9 @@ protected:
 
   //! Calculates distance from the 3d projection of used-picked screen point to center of the geometry
   Standard_EXPORT virtual Standard_Real distanceToCOG (SelectBasics_SelectingVolumeManager& theMgr) Standard_OVERRIDE;
+
+  //! Protected copy constructor.
+  Standard_EXPORT MeshVS_CommonSensitiveEntity (const MeshVS_CommonSensitiveEntity& theOther);
 
 private:
 

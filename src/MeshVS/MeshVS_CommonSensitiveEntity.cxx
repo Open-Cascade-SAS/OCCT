@@ -88,6 +88,22 @@ MeshVS_CommonSensitiveEntity::MeshVS_CommonSensitiveEntity (const Handle(SelectB
 }
 
 //=======================================================================
+//function : Constructor
+//purpose  :
+//=======================================================================
+MeshVS_CommonSensitiveEntity::MeshVS_CommonSensitiveEntity (const MeshVS_CommonSensitiveEntity& theOther)
+: Select3D_SensitiveSet (theOther.myOwnerId),
+  myDataSource (theOther.myDataSource),
+  myItemIndexes (theOther.myItemIndexes),
+  mySelMethod (theOther.mySelMethod),
+  myMaxFaceNodes (theOther.myMaxFaceNodes),
+  myCOG (theOther.myCOG),
+  myBndBox (theOther.myBndBox)
+{
+  //
+}
+
+//=======================================================================
 //function : Destructor
 //purpose  :
 //=======================================================================

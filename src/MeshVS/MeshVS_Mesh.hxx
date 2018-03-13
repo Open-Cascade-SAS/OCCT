@@ -47,12 +47,14 @@ class MeshVS_Mesh : public AIS_InteractiveObject
 
 public:
 
-  
   //! Constructor.
   //! theIsAllowOverlapped is Standard_True, if it is allowed to draw edges overlapped with beams
   //! Its value is stored in drawer
   Standard_EXPORT MeshVS_Mesh(const Standard_Boolean theIsAllowOverlapped = Standard_False);
-  
+
+  //! Returns true for supported display modes basing on a list of defined builders.
+  Standard_EXPORT virtual Standard_Boolean AcceptDisplayMode (const Standard_Integer theMode) const Standard_OVERRIDE;
+
   //! Computes presentation using builders added to sequence. Each builder computes
   //! own part of mesh presentation according to its type.
   Standard_EXPORT virtual void Compute (const Handle(PrsMgr_PresentationManager3d)& PM, const Handle(Prs3d_Presentation)& Prs, const Standard_Integer DisplayMode) Standard_OVERRIDE;

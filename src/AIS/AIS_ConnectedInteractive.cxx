@@ -223,7 +223,6 @@ void AIS_ConnectedInteractive::ComputeSelection (const Handle(SelectMgr_Selectio
 
   const Handle(SelectMgr_Selection)& TheRefSel = myReference->Selection (theMode);
   Handle(SelectMgr_EntityOwner) anOwner = new SelectMgr_EntityOwner (this);
-  Handle(Select3D_SensitiveEntity) aSensitive, aNewSensitive;
 
   TopLoc_Location aLocation (Transformation());
   anOwner->SetLocation (aLocation);
@@ -235,15 +234,14 @@ void AIS_ConnectedInteractive::ComputeSelection (const Handle(SelectMgr_Selectio
 
   for (NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>::Iterator aSelEntIter (TheRefSel->Entities()); aSelEntIter.More(); aSelEntIter.Next())
   {
-    aSensitive = Handle(Select3D_SensitiveEntity)::DownCast (aSelEntIter.Value()->BaseSensitive());
-    if (!aSensitive.IsNull())
+    if (Handle(Select3D_SensitiveEntity) aSensitive = Handle(Select3D_SensitiveEntity)::DownCast (aSelEntIter.Value()->BaseSensitive()))
     {
       // Get the copy of SE3D
-      aNewSensitive = aSensitive->GetConnected();
-
-      aNewSensitive->Set(anOwner);
-
-      theSelection->Add (aNewSensitive);
+      if (Handle(Select3D_SensitiveEntity) aNewSensitive = aSensitive->GetConnected())
+      {
+        aNewSensitive->Set(anOwner);
+        theSelection->Add (aNewSensitive);
+      }
     }
   }
 }
@@ -296,10 +294,11 @@ void AIS_ConnectedInteractive::computeSubShapeSelection (const Handle(SelectMgr_
     anOwner->SetLocation (Transformation());
     for (SensitiveList::Iterator aListIt (aSEList); aListIt.More(); aListIt.Next())
     {
-      Handle(Select3D_SensitiveEntity) aSE = aListIt.Value();
-      Handle(Select3D_SensitiveEntity) aNewSE = aSE->GetConnected();
-      aNewSE->Set (anOwner);
-      theSelection->Add (aNewSE);
+      if (Handle(Select3D_SensitiveEntity) aNewSE = aListIt.Value()->GetConnected())
+      {
+        aNewSE->Set (anOwner);
+        theSelection->Add (aNewSE);
+      }
     }
   }
 

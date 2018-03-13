@@ -138,6 +138,33 @@ MeshVS_Mesh::MeshVS_Mesh (const Standard_Boolean theIsAllowOverlapped )
 }
 
 //================================================================
+// Function : AcceptDisplayMode
+// Purpose  :
+//================================================================
+Standard_Boolean MeshVS_Mesh::AcceptDisplayMode (const Standard_Integer theMode) const
+{
+  if (theMode <= 0)
+  {
+    return Standard_False;
+  }
+  else if (myBuilders.IsEmpty())
+  {
+    return Standard_True;
+  }
+
+  for (MeshVS_SequenceOfPrsBuilder::Iterator aBuilderIter (myBuilders); aBuilderIter.More(); aBuilderIter.Next())
+  {
+    Handle(MeshVS_PrsBuilder) aBuilder = aBuilderIter.Value();
+    if (!aBuilder.IsNull()
+      && aBuilder->TestFlags (theMode))
+    {
+      return Standard_True;
+    }
+  }
+  return Standard_False;
+}
+
+//================================================================
 // Function : Compute
 // Purpose  :
 //================================================================
@@ -145,56 +172,55 @@ void MeshVS_Mesh::Compute ( const Handle(PrsMgr_PresentationManager3d)& thePrsMg
                             const Handle(Prs3d_Presentation)& thePresentation,
                             const Standard_Integer theMode )
 {
-  OSD_Timer gTimer;
-
-  Standard_Boolean ShowComputeTime = Standard_True;
-  myCurrentDrawer->GetBoolean( MeshVS_DA_ComputeTime, ShowComputeTime );
-
-  if ( ShowComputeTime )
+  Standard_Boolean toShowComputeTime = Standard_True;
+  myCurrentDrawer->GetBoolean (MeshVS_DA_ComputeTime, toShowComputeTime);
+  OSD_Timer aTimer;
+  if (toShowComputeTime)
   {
-    gTimer.Reset();
-    gTimer.Start();
+    aTimer.Reset();
+    aTimer.Start();
   }
 
   // Repair Ids in map if necessary
   Handle( MeshVS_DataSource ) aDS = GetDataSource();
-  if ( aDS.IsNull() )
+  if (aDS.IsNull()
+   || theMode <= 0)
+  {
     return;
+  }
 
   const TColStd_PackedMapOfInteger& aNodes = aDS->GetAllNodes();
   const TColStd_PackedMapOfInteger& aElems = aDS->GetAllElements();
-  Standard_Boolean HasNodes    = !aNodes.IsEmpty(),
-                   HasElements = !aElems.IsEmpty();
+  const Standard_Boolean hasNodes    = !aNodes.IsEmpty();
+  const Standard_Boolean hasElements = !aElems.IsEmpty();
 
   TColStd_PackedMapOfInteger aNodesToExclude, aElemsToExclude;
-
-  thePresentation->Clear();
-  Standard_Integer len = myBuilders.Length();
-  if ( theMode > 0 )
-    for ( Standard_Integer i=1; i<=len; i++ )
+  for (MeshVS_SequenceOfPrsBuilder::Iterator aBuilderIter (myBuilders); aBuilderIter.More(); aBuilderIter.Next())
+  {
+    const Handle(MeshVS_PrsBuilder)& aBuilder = aBuilderIter.Value();
+    if (!aBuilder.IsNull()
+      && aBuilder->TestFlags (theMode))
     {
-      Handle (MeshVS_PrsBuilder) aCurrent = myBuilders.Value ( i );
-      if ( !aCurrent.IsNull() && aCurrent->TestFlags ( theMode ) )
+      aBuilder->SetPresentationManager (thePrsMgr);
+      if (hasNodes)
       {
-        aCurrent->SetPresentationManager( thePrsMgr );
-        if( HasNodes )
-          aCurrent->Build ( thePresentation, aNodes, aNodesToExclude, Standard_False, theMode );
-        if( HasElements )
-          aCurrent->Build ( thePresentation, aElems, aElemsToExclude, Standard_True,  theMode );
+        aBuilder->Build (thePresentation, aNodes, aNodesToExclude, Standard_False, theMode);
+      }
+      if (hasElements)
+      {
+        aBuilder->Build (thePresentation, aElems, aElemsToExclude, Standard_True,  theMode);
       }
     }
+  }
 
-
-  if ( ShowComputeTime )
+  if (toShowComputeTime)
   {
-    Standard_Real sec, cpu;
-    Standard_Integer min, hour;
-
-    gTimer.Show ( sec, min, hour, cpu );
-    cout << "DisplayMode : " << theMode << endl;
-    cout << "Compute : " << sec << " sec" << endl;
-    cout << "Compute CPU : " << cpu << " sec" << endl << endl;
-    gTimer.Stop();
+    Standard_Real aSec, aCpu;
+    Standard_Integer aMin, anHour;
+    aTimer.Show (aSec, aMin, anHour, aCpu);
+    std::cout << "DisplayMode : " << theMode << "\n";
+    std::cout << "Compute : " << aSec << " sec\n";
+    std::cout << "Compute CPU : " << aCpu << " sec\n\n";
   }
 }
 
