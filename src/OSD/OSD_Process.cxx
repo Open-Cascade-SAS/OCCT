@@ -35,13 +35,6 @@ OSD_Process::OSD_Process(){
 }
 
 
-Standard_Integer OSD_Process::Spawn (const TCollection_AsciiString& cmd,
-			 const Standard_Boolean /*ShowWindow*/)
-{
- return system(cmd.ToCString());
-}
-
-
 void OSD_Process::TerminalType(TCollection_AsciiString& Name){
 TCollection_AsciiString which="TERM";
 OSD_Environment term (which,"");
@@ -200,48 +193,6 @@ void _osd_wnt_set_error ( OSD_Error&, OSD_WhoAmI, ... );
 OSD_Process::OSD_Process()
 {
   //
-}
-
-// =======================================================================
-// function : Spawn
-// purpose  :
-// =======================================================================
-Standard_Integer OSD_Process::Spawn (const TCollection_AsciiString& theCmd,
-			                               const Standard_Boolean theToShowWindow)
-{
-#ifndef OCCT_UWP
-  STARTUPINFOW aStartupInfo;
-  ZeroMemory (&aStartupInfo, sizeof(STARTUPINFO));
-  aStartupInfo.cb = sizeof(STARTUPINFO);
-  if (!theToShowWindow)
-  {
-    aStartupInfo.dwFlags     = STARTF_USESHOWWINDOW;
-    aStartupInfo.wShowWindow = SW_HIDE;
-  }
-
-  DWORD aRes = 0;
-  TCollection_ExtendedString aCmdWide (theCmd);
-  wchar_t* aCmdWidePtr = const_cast<wchar_t*>(aCmdWide.ToWideString()); // CreateProcessW() can modify content of this string
-  PROCESS_INFORMATION aProcessInfo;
-  if (!CreateProcessW (NULL, aCmdWidePtr, NULL, NULL, TRUE, CREATE_NEW_CONSOLE, NULL, NULL, &aStartupInfo, &aProcessInfo))
-  {
-    _osd_wnt_set_error (myError, OSD_WProcess);
-    aRes = myError.Error();
-  }
-  else
-  {
-    CloseHandle (aProcessInfo.hThread);
-    WaitForSingleObject (aProcessInfo.hProcess, INFINITE);
-    GetExitCodeProcess  (aProcessInfo.hProcess, &aRes);
-    CloseHandle (aProcessInfo.hProcess);
-  }
-
-  return aRes;
-#else
-  (void )theCmd;
-  (void )theToShowWindow;
-  return 0;
-#endif
 }
 
 void OSD_Process :: TerminalType ( TCollection_AsciiString& Name ) {

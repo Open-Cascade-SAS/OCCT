@@ -45,10 +45,6 @@ public:
   //! Initializes the object and prepare for a possible dump
   Standard_EXPORT OSD_Process();
   
-  //! Issues a shell command
-  //! ShowWindow : flag to allow show/hide of the window ( only used on WNT )
-  Standard_EXPORT Standard_Integer Spawn (const TCollection_AsciiString& cmd, const Standard_Boolean ShowWindow = Standard_True);
-  
   //! Returns the terminal used (vt100, vt200 ,sun-cmd ...)
   Standard_EXPORT void TerminalType (TCollection_AsciiString& Name);
   
@@ -82,28 +78,8 @@ public:
   //! Returns error number if 'Failed' is TRUE.
   Standard_EXPORT Standard_Integer Error() const;
 
-
-
-
-protected:
-
-
-
-
-
 private:
-
-
-
   OSD_Error myError;
-
-
 };
-
-
-
-
-
-
 
 #endif // _OSD_Process_HeaderFile
