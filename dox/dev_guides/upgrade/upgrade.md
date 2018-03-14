@@ -791,6 +791,7 @@ std::stable_sort (aValues.begin(), aValues.end());
 
 The old mechanism for rendering Underlay and Overlay on-screen 2D objects based on *Visual3d_Layer* and immediate drawing model (uncached and thus slow) has been removed.
 Classes *Aspect_Clayer2d, OpenGl_GraphicDriver_Layer, Visual3d_Layer, Visual3d_LayerItem, V3d_LayerMgr* and *V3d_LayerMgrPointer* have been deleted.
+The following auxiliary definition have been removed as well: Aspect_TypeOfPrimitive, Aspect_TypeOfLayer, Aspect_TypeOfEdge, Aspect_TypeOfDrawMode, Aspect_TypeOfConstraint, Aspect_DriverDefinitionError, Aspect_BadAccess.
 
 General AIS interactive objects with transformation persistence flag *Graphic3d_TMF_2d* can be used as a replacement of *Visual3d_LayerItem*.
 The anchor point specified for transformation persistence defines the window corner of  (or center in case of (0, 0) point).
@@ -1523,7 +1524,7 @@ Multiple changes have been applied to lights management within TKV3d and TKOpenG
 
 @subsection upgrade_730_shadingmodels Shading Models
 
-*Graphic3d_AspectFillArea3d* has been extended by a new property ::ShadingModel(), which previously has been defined globally for entire View.
+*Graphic3d_AspectFillArea3d* has been extended by a new property *ShadingModel()*, which previously has been defined globally for entire View.
 
 Previously, triangle array without normal vertex attributes was implicitly considered as unshaded,
 but now such array will be shaded using *Graphic3d_TOSM_FACET* model (e.g. by computing per-triangle normals).
@@ -1533,7 +1534,7 @@ Alternatively, material without reflectance properties can be used for disabling
 @subsection upgrade_730_tkopengl Custom low-level OpenGL elements
 
 The following API changes should be considered while porting custom OpenGl_Element objects:
-* OpenGl_ShaderManager::BindFaceProgram(), ::BindLineProgram(), ::BindMarkerProgram() now takes enumeration arguments instead of Boolean flags.
+* *OpenGl_ShaderManager::BindFaceProgram()*, *BindLineProgram()*, *BindMarkerProgram()* now take enumeration arguments instead of Boolean flags.
 
 @subsection upgrade_730_BOPAlgo_Section Changes in BOPAlgo_Section
 

@@ -3,7 +3,6 @@ Aspect_AspectLineDefinitionError.hxx
 Aspect_AspectMarkerDefinitionError.hxx
 Aspect_Background.cxx
 Aspect_Background.hxx
-Aspect_BadAccess.hxx
 Aspect_CircularGrid.cxx
 Aspect_CircularGrid.hxx
 Aspect_Convert.hxx
@@ -12,7 +11,6 @@ Aspect_DisplayConnection.cxx
 Aspect_DisplayConnection.hxx
 Aspect_DisplayConnectionDefinitionError.hxx
 Aspect_Drawable.hxx
-Aspect_DriverDefinitionError.hxx
 Aspect_FBConfig.hxx
 Aspect_FillMethod.hxx
 Aspect_GenId.cxx
@@ -39,17 +37,12 @@ Aspect_SequenceOfColor.hxx
 Aspect_TypeOfColorScaleData.hxx
 Aspect_TypeOfColorScaleOrientation.hxx
 Aspect_TypeOfColorScalePosition.hxx
-Aspect_TypeOfConstraint.hxx
 Aspect_TypeOfDeflection.hxx
 Aspect_TypeOfDisplayText.hxx
-Aspect_TypeOfDrawMode.hxx
-Aspect_TypeOfEdge.hxx
 Aspect_TypeOfFacingModel.hxx
 Aspect_TypeOfHighlightMethod.hxx
-Aspect_TypeOfLayer.hxx
 Aspect_TypeOfLine.hxx
 Aspect_TypeOfMarker.hxx
-Aspect_TypeOfPrimitive.hxx
 Aspect_TypeOfResize.hxx
 Aspect_TypeOfStyleText.hxx
 Aspect_TypeOfTriedronPosition.hxx
