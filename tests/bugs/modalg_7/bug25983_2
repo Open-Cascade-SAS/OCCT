@@ -1,5 +1,3 @@
-puts "TODO OCC25983 ALL: Faulty shapes in variables faulty_1 to faulty_"
-
 puts "========"
 puts "OCC25983"
 puts "========"
@@ -19,6 +17,12 @@ addsweep DWire
 buildsweep Knurling -C -S
 copy Knurling Clone
 tmirror Clone 0 0 0 1 0 0
+
+bfuzzyvalue 1.e-3
 bfuse result Knurling Clone
 
 checkshape result
+checknbshapes result -wire 24 -face 24 -shell 1 -solid 1
+checkprops result -s 262.476 -v 54.0383
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

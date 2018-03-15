@@ -76,3 +76,18 @@ Warning: Building 2D curve of edge on face has failed
 
 .BOPAlgo_AlertAcquiredSelfIntersection
 Warning: Some sub-shapes of some of the argument become connected through other shapes and the argument became self-interfered
+
+.BOPAlgo_AlertUnsupportedType
+Warning: Unsupported type of input shape
+
+.BOPAlgo_AlertUnableToRemoveTheFeature
+Warning: Unable to remove the feature
+
+.BOPAlgo_AlertNoFacesToRemove
+Error: No faces have been found for removal
+
+.BOPAlgo_AlertRemoveFeaturesFailed
+Error: The Feature Removal algorithm has failed
+
+.BOPAlgo_AlertSolidBuilderUnusedFaces
+Warning: Some of the faces passed to the Solid Builder algorithm have not been classified and not used for solids creation

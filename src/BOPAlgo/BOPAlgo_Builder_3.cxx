@@ -329,10 +329,28 @@ void BOPAlgo_Builder::BuildDraftSolid(const TopoDS_Shape& theSolid,
 }
 
 //=======================================================================
+
+//=======================================================================
+//class : BOPAlgo_SplitSolid
+//purpose  : Auxiliary class to extend the BOPAlgo_BuilderSolid with the solid to split
+//=======================================================================
+class BOPAlgo_SplitSolid : public BOPAlgo_BuilderSolid
+{
+public:
+  //! Sets the solid
+  void SetSolid(const TopoDS_Solid& theSolid) { mySolid = theSolid; }
+
+  //! Returns the solid
+  const TopoDS_Solid& Solid() const { return mySolid; }
+
+private:
+  TopoDS_Solid mySolid; //!< Solid to split
+};
+
 // Vector of Solid Builders
-typedef NCollection_Vector<BOPAlgo_BuilderSolid> BOPAlgo_VectorOfBuilderSolid;
+typedef NCollection_Vector<BOPAlgo_SplitSolid> BOPAlgo_VectorOfBuilderSolid;
 // Functors to split solids
-typedef BOPTools_Functor<BOPAlgo_BuilderSolid,
+typedef BOPTools_Functor<BOPAlgo_SplitSolid,
                        BOPAlgo_VectorOfBuilderSolid> BOPAlgo_BuilderSolidFunctor;
 //
 typedef BOPTools_Cnt<BOPAlgo_BuilderSolidFunctor,
@@ -428,7 +446,7 @@ void BOPAlgo_Builder::BuildSplitSolids
     }
     //
     // 1.3 Build new solids
-    BOPAlgo_BuilderSolid& aBS=aVBS.Appended();
+    BOPAlgo_SplitSolid& aBS=aVBS.Appended();
     aBS.SetSolid(aSolid);
     aBS.SetShapes(aSFS);
     aBS.SetRunParallel(myRunParallel);
@@ -445,8 +463,9 @@ void BOPAlgo_Builder::BuildSplitSolids
   //
   for (k = 0; k < aNbBS; ++k)
   {
-    BOPAlgo_BuilderSolid& aBS = aVBS(k);
+    BOPAlgo_SplitSolid& aBS = aVBS(k);
     aSolidsIm.Add(aBS.Solid(), aBS.Areas());
+    myReport->Merge(aBS.GetReport());
   }
   //
   // Add new solids to images map
