@@ -1763,7 +1763,7 @@ static Standard_Boolean InscribeInterval(const Standard_Real theUfTarget,
   }
   else 
   {
-    if (!theRange.GetMAX(anUpar))
+    if (!theRange.GetMax (anUpar))
     {
       return Standard_False;
     }
