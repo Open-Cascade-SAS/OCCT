@@ -1019,16 +1019,19 @@ void BOPAlgo_BOP::BuildSolid()
   BOPTools_AlgoTools::MakeContainer(TopAbs_COMPOUND, aRC);
   if (aSFS.Extent()) {
     // Build solids from set of faces
-    BOPAlgo_BuilderSolid aSB;
-    aSB.SetContext(myContext);
-    aSB.SetShapes(aSFS);
-    aSB.Perform();
-    if (aSB.HasErrors()) {
+    BOPAlgo_BuilderSolid aBS;
+    aBS.SetContext(myContext);
+    aBS.SetShapes(aSFS);
+    aBS.Perform();
+    if (aBS.HasErrors()) {
       AddError (new BOPAlgo_AlertSolidBuilderFailed); // SolidBuilder failed
       return;
     }
+
+    myReport->Merge(aBS.GetReport());
+
     // new solids
-    const TopTools_ListOfShape& aLSR = aSB.Areas();
+    const TopTools_ListOfShape& aLSR = aBS.Areas();
     //
     // add new solids to result
     aItLS.Initialize(aLSR);

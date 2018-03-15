@@ -90,4 +90,7 @@ static const char BOPAlgo_BOPAlgo_msg[] =
   "Error: No faces have been found for removal\n"
   "\n"
   ".BOPAlgo_AlertRemoveFeaturesFailed\n"
-  "Error: The Feature Removal algorithm has failed\n";
+  "Error: The Feature Removal algorithm has failed\n"
+  "\n"
+  ".BOPAlgo_AlertSolidBuilderUnusedFaces\n"
+  "Warning: Some of the faces passed to the Solid Builder algorithm have not been classified and not used for solids creation\n";

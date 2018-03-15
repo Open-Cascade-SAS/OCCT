@@ -103,22 +103,6 @@ BOPAlgo_BuilderSolid::~BOPAlgo_BuilderSolid()
 {
 }
 //=======================================================================
-//function : SetSolid 
-//purpose  : 
-//=======================================================================
-void BOPAlgo_BuilderSolid::SetSolid(const TopoDS_Solid& aS)
-{
-  mySolid=aS;
-}
-//=======================================================================
-//function : Solid 
-//purpose  : 
-//=======================================================================
-const TopoDS_Solid& BOPAlgo_BuilderSolid::Solid()const
-{
-  return mySolid;
-}
-//=======================================================================
 //function : Perform
 //purpose  : 
 //=======================================================================
@@ -674,8 +658,10 @@ void BOPAlgo_BuilderSolid::PerformInternalShapes()
     }
   }
 
-  // Make solid from the unused faces (if any)
+  // Find all unclassified faces and warn the user about them.
+  // Do not put such faces into result as they will form not closed solid.
   TopTools_IndexedMapOfShape aMFUnUsed;
+
   for (i = 1; i <= aNbF; ++i)
   {
     const TopoDS_Shape& aF = aMFs(i);
@@ -685,24 +671,21 @@ void BOPAlgo_BuilderSolid::PerformInternalShapes()
 
   if (aMFUnUsed.Extent())
   {
-    TopoDS_Solid aSolid;
-    aBB.MakeSolid(aSolid);
-    //
     TopTools_ListOfShape aLSI;
     MakeInternalShells(aMFUnUsed, aLSI);
-    //
-    aItLS.Initialize(aLSI);
-    for (; aItLS.More(); aItLS.Next())
-    {
-      const TopoDS_Shape& aSI = aItLS.Value();
-      aBB.Add (aSolid, aSI);
 
-      Bnd_Box aBox;
-      BRepBndLib::Add(aSolid, aBox);
-      myBoxes.Bind(aSolid, aBox);
+    TopoDS_Shape aWShape;
+    if (aLSI.Extent() == 1)
+      aWShape = aLSI.First();
+    else
+    {
+      aBB.MakeCompound(TopoDS::Compound(aWShape));
+      aItLS.Initialize(aLSI);
+      for (; aItLS.More(); aItLS.Next())
+        aBB.Add(aWShape, aItLS.Value());
     }
-    myAreas.Append(aSolid);
-  }
+
+    AddWarning(new BOPAlgo_AlertSolidBuilderUnusedFaces(aWShape));  }
 }
 //=======================================================================
 //function : MakeInternalShells

@@ -1491,8 +1491,8 @@ void BOPAlgo_FillIn3DParts::MakeConnexityBlock(const TopoDS_Face& theFStart,
       myItW.Initialize(aW);
       for (; myItW.More(); myItW.Next())
       {
-        const TopoDS_Shape& aE = myItW.Value();
-        if (theMEAvoid.Contains(aE))
+        const TopoDS_Edge& aE = TopoDS::Edge(myItW.Value());
+        if (theMEAvoid.Contains(aE) || BRep_Tool::Degenerated(aE))
         {
           if (theFaceToClassify.IsNull())
             theFaceToClassify = TopoDS::Face(aF);

@@ -1552,3 +1552,11 @@ Since new version, the method BRepAdaptor_CompCurve::IsPeriodic() will always re
 
 Interfaces of the following methods have been changed: IntPatch_WLineTool::ComputePurgedWLine(...), IntPatch_PrmPrmIntersection::Perform(...), IntPatch_Intersection::Perform(...), IntPatch_Intersection::ParamParamPerfom(...), IntPatch_Intersection::GeomGeomPerfom(...). Please see documentation about corresponding methods.
 
+@subsection upgrade_730_BuilderSolid Boolean Operations - Solid Builder algorithm
+
+Previously, the unclassified faces of *BOPAlgo_BuilderSolid* algorithm (the faces which have not been used for solids creation and located outside of all created solids) have been used to form an additional solid (not closed one) with INTERNAL orientation.
+Since new version, these unclassified faces are no longer added into resulting solids. Instead, the @ref occt_algorithms_ers "warning" containing these faces appears.
+
+The following public methods of the *BOPAlgo_BuilderSolid* class have been removed as excessive:
+* void SetSolid(const TopoDS_Solid& theSolid);
+* const TopoDS_Solid& Solid() const;
