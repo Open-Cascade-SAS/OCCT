@@ -196,7 +196,7 @@ void CViewer3dDoc::OnSphere()
     myAISContext->SetMaterial (mySphere, Graphic3d_NOM_BRONZE, Standard_False);
     myAISContext->SetDisplayMode (mySphere, 1, Standard_False);
 
-    myAISContext->Display (mySphere, Standard_False);
+    myAISContext->Display (mySphere, Standard_True);
     TCollection_AsciiString Message("\
 BRepPrimAPI_MakeSphere S(gp_Pnt(0,300,0), 100.);\n\
     ");

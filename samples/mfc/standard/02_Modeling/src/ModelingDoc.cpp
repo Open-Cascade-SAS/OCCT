@@ -14,6 +14,7 @@
 
 #include <Adaptor3d_HCurveOnSurface.hxx>
 #include <Adaptor3d_CurveOnSurface.hxx>
+#include <AIS_ColoredShape.hxx>
 #include <AIS_ListOfInteractive.hxx>
 #include <AIS_ListIteratorOfListOfInteractive.hxx>
 #include <TColStd_Array2OfReal.hxx>
@@ -1180,8 +1181,8 @@ Sleep(1000);
 
 TopoDS_Shape FusedShape = BRepAlgoAPI_Fuse(theBox1,theBox2);
 
-myAISContext->Erase(ais1,Standard_True);
-myAISContext->Erase(ais2,Standard_True);
+myAISContext->Erase(ais1,false);
+myAISContext->Erase(ais2,false);
 
 Handle (AIS_Shape)	aFusion = new AIS_Shape(FusedShape);
 myAISContext->SetDisplayMode(aFusion,1,Standard_False);
@@ -1190,7 +1191,7 @@ myAISContext->SetMaterial(aFusion,Graphic3d_NOM_PLASTIC,Standard_False);
 myAISContext->Display(aFusion,Standard_False);
 const Handle(AIS_InteractiveObject)& anIOFusion = aFusion;
 myAISContext->SetSelected (anIOFusion, Standard_False);
-Fit();
+myAISContext->UpdateCurrentViewer();
 
     TCollection_AsciiString Message ("\
 		\n\
@@ -1218,9 +1219,8 @@ TopoDS_Shape theBox = BRepPrimAPI_MakeBox(axe, 60, 80, 100).Shape();
 Handle(AIS_Shape) aboxshape=new AIS_Shape(theBox);
 myAISContext->SetColor(aboxshape,Quantity_NOC_YELLOW,Standard_False);
 myAISContext->SetMaterial(aboxshape,Graphic3d_NOM_PLASTIC,Standard_False);    
-myAISContext->SetDisplayMode(aboxshape,1,Standard_False);
 myAISContext->SetTransparency(aboxshape,0.2,Standard_False);
-myAISContext->Display(aboxshape,Standard_False);
+myAISContext->Display(aboxshape, AIS_Shaded, 0, Standard_False);
 const Handle(AIS_InteractiveObject)& anIOBoxShape = aboxshape;
 myAISContext->SetSelected (anIOBoxShape, Standard_False);
 Fit();
@@ -1235,20 +1235,21 @@ myAISContext->SetTransparency(awedge,0.0,Standard_False);
 myAISContext->Display(awedge,Standard_False);
 const Handle(AIS_InteractiveObject)& anIOWedge = awedge;
 myAISContext->SetSelected (anIOWedge, Standard_False);
-Fit();
+myAISContext->UpdateCurrentViewer();
 Sleep(500);
 
 TopoDS_Shape theCommonSurface = BRepAlgoAPI_Common(theBox,theWedge);
 
-myAISContext->Erase(aboxshape,Standard_True);
-myAISContext->Erase(awedge,Standard_True);
+myAISContext->Erase(aboxshape, false);
+myAISContext->Erase(awedge, false);
 
 Handle(AIS_Shape) acommon = new AIS_Shape(theCommonSurface);
 myAISContext->SetColor(acommon,Quantity_NOC_GREEN,Standard_False); 
 myAISContext->SetMaterial(acommon,Graphic3d_NOM_PLASTIC,Standard_False);    
-myAISContext->Display(acommon,Standard_False);
+myAISContext->Display (acommon, AIS_Shaded, 0,Standard_False);
 const Handle(AIS_InteractiveObject)& anIOCommon = acommon;
 myAISContext->SetSelected (anIOCommon, Standard_False);
+myAISContext->UpdateCurrentViewer();
 
    TCollection_AsciiString Message ("\
 		\n\
@@ -4186,24 +4187,27 @@ if (!aPlane.IsNull()) {	\n\
 
 void CModelingDoc::OnExplorer() 
 {
-	AIS_ListOfInteractive aList;
-	myAISContext->DisplayedObjects(aList);
-	AIS_ListIteratorOfListOfInteractive aListIterator;
-	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
-		myAISContext->Remove (aListIterator.Value(), Standard_False);
-	}
+	myAISContext->RemoveAll (false);
 	
-  TopoDS_Shape aBox = BRepPrimAPI_MakeBox(100, 100, 100).Shape();
+	TopoDS_Shape aBox = BRepPrimAPI_MakeBox(100, 100, 100).Shape();
 	Standard_Integer j(8);
-	Handle(AIS_Shape) theBox = new AIS_Shape(aBox);
+	Handle(AIS_ColoredShape) theBox = new AIS_ColoredShape(aBox);
 	myAISContext->SetColor(theBox,Quantity_NOC_RED,Standard_False);
 	myAISContext->SetMaterial(theBox,Graphic3d_NOM_PLASTIC,Standard_False);  
-	myAISContext->Display(theBox,Standard_False);
+	myAISContext->Display(theBox, AIS_Shaded, 0,Standard_False);
 	Fit();
 	Sleep(500);
 
-	for (TopExp_Explorer exp (aBox,TopAbs_FACE);exp.More();exp.Next()) {
+	for (TopExp_Explorer exp (aBox,TopAbs_FACE);exp.More();exp.Next())
+	{
 		TopoDS_Face aCurrentFace = TopoDS::Face(exp.Current());
+		{
+			Handle(AIS_ColoredDrawer) aSubFaceAspects = theBox->CustomAspects (aCurrentFace);
+			aSubFaceAspects->SetShadingAspect (new Prs3d_ShadingAspect());
+			*aSubFaceAspects->ShadingAspect()->Aspect() = *theBox->Attributes()->ShadingAspect()->Aspect();
+			aSubFaceAspects->ShadingAspect()->Aspect()->ChangeFrontMaterial().SetTransparency (0.8f);
+			myAISContext->Redisplay (theBox, false);
+		}
 
 		//test the orientation of the current face
 		TopAbs_Orientation orient = aCurrentFace.Orientation();
@@ -4224,49 +4228,28 @@ void CModelingDoc::OnExplorer()
 		gp_Ax1 norm = agpPlane.Axis();
 		gp_Dir dir = norm.Direction();
 		gp_Vec move(dir);
-		//Connect
-// new in 2.0 ... AIS_ConnectedInteractive wants a TopLoc_Location instead of a Geom_Transformation
-//		TopLoc_Location aLocation;
-//		Handle (AIS_ConnectedInteractive) theTransformedDisplay = new AIS_ConnectedInteractive();
-//		theTransformedDisplay->Connect(theMovingFace,theMove);
-//		theTransformedDisplay->Connect(theMovingFace, aLocation);
-//		Handle (Geom_Transformation) theMove = new Geom_Transformation(aLocation->Transformation());
-// new in 2.0
-//		myAISContext->Display(theTransformedDisplay);
 
 		TopLoc_Location aLocation;
 		Handle (AIS_ConnectedInteractive) theTransformedDisplay = new AIS_ConnectedInteractive();
 		theTransformedDisplay->Connect(theMovingFace, aLocation);
 
-
-		// = myAISContext->Location(theMovingFace);
 		Handle (Geom_Transformation) theMove = new Geom_Transformation(aLocation.Transformation());
         myAISContext->Display(theTransformedDisplay,Standard_False);
-		Fit();
+		myAISContext->UpdateCurrentViewer();
 		Sleep (500);
 
-		for (Standard_Integer i=1;i<=30;i++) {
-
-		//Build a transformation on the display
-//			theMove->SetTranslation(move*i);
-
-//			if (orient==TopAbs_FORWARD) theTransformedDisplay->SetTransformation(theMove);
-//			else theTransformedDisplay->SetTransformation(theMove->Inverted());
-
-//			myAISContext->Redisplay(theTransformedDisplay);
-
-// new in 2.0			
+		for (Standard_Integer i=1;i<=30;i++)
+		{
 			theMove->SetTranslation(move*i);
 			if (orient==TopAbs_FORWARD) myAISContext->SetLocation(theTransformedDisplay,TopLoc_Location(theMove->Trsf()));
 			else myAISContext->SetLocation(theTransformedDisplay,TopLoc_Location(theMove->Inverted()->Trsf()));
 
-			myAISContext->Redisplay(theTransformedDisplay,Standard_False);
+			myAISContext->Redisplay(theTransformedDisplay,true);
 		}
 		j+=15;
 	}
-	//myAISContext->Erase(theBox,Standard_True,Standard_False);	
-	myAISContext->Remove(theBox, Standard_False);
-	Fit();
+
+	myAISContext->UpdateCurrentViewer();
 	Sleep (500);
 
 	   TCollection_AsciiString Message ("\
