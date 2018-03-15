@@ -3480,7 +3480,7 @@ static Standard_Integer OCC24923(
   const Standard_Real aDeviation = 
     1. - (Standard_Real)(aPointsNb - aFailedNb) / (Standard_Real)aPointsNb;
 
-  theDI << "Number of failed cases: " << aFailedNb << " (Total " << aPointsNb << ")\n";
+  theDI << "Number of incorrect cases: " << aFailedNb << " (Total " << aPointsNb << ")\n";
   if (aDeviation > aMaxDeviation)
   {
     theDI << "Failed. Number of incorrect results is too huge: " << 

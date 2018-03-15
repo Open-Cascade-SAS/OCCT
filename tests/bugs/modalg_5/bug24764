@@ -1,3 +1,5 @@
+puts "TODO CR29596 Windows: Warning: Intersection of pair of shapes has failed"
+
 puts "================"
 puts "OCC24764"
 puts "================"

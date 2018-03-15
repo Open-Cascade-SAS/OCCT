@@ -104,27 +104,44 @@ if { $mist < 1} {
     set tps_1 [tpstat c]
     set colvo [llength $tps_1]
     if { ${colvo} > 0 } {
-    	# Finding all strings with warnings
-	set a [regexp -all -inline {[\t ]+([-0-9.+eE]+)[\t ]+W:} $tps_1]
-	# Extracting counts of warnings
-	set b [regexp -all -inline {([-0-9.+eE]+)} $a]
-	# Calculating total number of warnings 
-	foreach i $b {set war_First [expr $war_First + $i]}
-	set war_First [expr $war_First/4]
+        # Finding failed messages
+        set err_list [regexp -all -inline {[^\r\n:]*failed[^\r\n]*} $tps_1]
+        if { $err_list != 0 } {
+            foreach err_msg $err_list {
+                if { [regexp "\\(" $err_msg] } {
+                    set err_msg [string map {\( \\\\(} $err_msg]
+                }
+                if { [regexp "\\)" $err_msg] } {
+                    set err_msg [string map {\) \\\\)} $err_msg]
+                }
+                if { [regexp {transfer failed[^\r\n]*} $err_msg err_full_msg] } {
+                    set err_msg "$err_full_msg"
+                }
+                if { ![regexp "$err_msg" $todo_msg] } {
+                    append todo_msg $todo_mask $err_msg $end_line
+                }
+            }
+        }
 
-	# Finding all strings with faulties
-	set a [regexp -all -inline {[\t ]+([-0-9.+eE]+)[\t ]+F:} $tps_1]
-	# Extracting counts of faulties
-	set b [regexp -all -inline {([-0-9.+eE]+)} $a]
-	# Calculating total number of faulties 
-	foreach i $b {set fal_First [expr $fal_First + $i]}
-	set fal_First [expr $fal_First/4]
-	# Calculating total number of faulties and warnings
-	set comp_First [expr $fal_First + $war_First]
-	
+        # Finding all strings with warnings
+        set a [regexp -all -inline {[\t ]+([-0-9.+eE]+)[\t ]+W:} $tps_1]
+        # Extracting counts of warnings
+        set b [regexp -all -inline {([-0-9.+eE]+)} $a]
+        # Calculating total number of warnings 
+        foreach i $b {set war_First [expr $war_First + $i]}
+        set war_First [expr $war_First/4]
 
+        # Finding all strings with faulties
+        set a [regexp -all -inline {[\t ]+([-0-9.+eE]+)[\t ]+F:} $tps_1]
+        # Extracting counts of faulties
+        set b [regexp -all -inline {([-0-9.+eE]+)} $a]
+        # Calculating total number of faulties 
+        foreach i $b {set fal_First [expr $fal_First + $i]}
+        set fal_First [expr $fal_First/4]
+        # Calculating total number of faulties and warnings
+        set comp_First [expr $fal_First + $war_First]	
     } else {
-	puts " TPSTAT c checking was NOT provided"
+        puts " TPSTAT c checking was NOT provided"
     } 
     
     # Get DECAF information about (color, layers and properties)
@@ -288,27 +305,44 @@ if { $mist < 1} {
     set tps_1 [tpstat c]
     set colvo [llength $tps_1]
     if { ${colvo} > 0 } {
-    	# Finding all strings with warnings
-	set a [regexp -all -inline {[\t ]+([-0-9.+eE]+)[\t ]+W:} $tps_1]
-	# Extracting counts of warnings
-	set b [regexp -all -inline {([-0-9.+eE]+)} $a]
-	# Calculating total number of warnings 
-	foreach i $b {set war_Second [expr $war_Second + $i]}
-	set war_Second [expr $war_Second/4]
+        # Finding failed messages
+        set err_list [regexp -all -inline {[^\r\n:]*failed[^\r\n]*} $tps_1]
+        if { $err_list != 0 } {
+            foreach err_msg $err_list {
+                if { [regexp "\\(" $err_msg] } {
+                    set err_msg [string map {\( \\\\(} $err_msg]
+                }
+                if { [regexp "\\)" $err_msg] } {
+                    set err_msg [string map {\) \\\\)} $err_msg]
+                }
+                if { [regexp {transfer failed[^\r\n]*} $err_msg err_full_msg] } {
+                    set err_msg "$err_full_msg"
+                }
+                if { ![regexp "$err_msg" $todo_msg] } {
+                    append todo_msg $todo_mask $err_msg $end_line
+                }
+            }
+        }
 
-	# Finding all strings with faulties
-	set a [regexp -all -inline {[\t ]+([-0-9.+eE]+)[\t ]+F:} $tps_1]
-	# Extracting counts of faulties
-	set b [regexp -all -inline {([-0-9.+eE]+)} $a]
-	# Calculating total number of faulties 
-	foreach i $b {set fal_Second [expr $fal_Second + $i]}
-	set fal_Second [expr $fal_Second/4]
-	# Calculating total number of faulties and warnings
-	set comp_Second [expr $fal_Second + $war_Second]
-	
+        # Finding all strings with warnings
+        set a [regexp -all -inline {[\t ]+([-0-9.+eE]+)[\t ]+W:} $tps_1]
+        # Extracting counts of warnings
+        set b [regexp -all -inline {([-0-9.+eE]+)} $a]
+        # Calculating total number of warnings 
+        foreach i $b {set war_Second [expr $war_Second + $i]}
+        set war_Second [expr $war_Second/4]
 
+        # Finding all strings with faulties
+        set a [regexp -all -inline {[\t ]+([-0-9.+eE]+)[\t ]+F:} $tps_1]
+        # Extracting counts of faulties
+        set b [regexp -all -inline {([-0-9.+eE]+)} $a]
+        # Calculating total number of faulties 
+        foreach i $b {set fal_Second [expr $fal_Second + $i]}
+        set fal_Second [expr $fal_Second/4]
+        # Calculating total number of faulties and warnings
+        set comp_Second [expr $fal_Second + $war_Second]
     } else {
-	puts " TPSTAT c checking was NOT provided"
+        puts " TPSTAT c checking was NOT provided"
     }
     
     # Get DECAF information about (color, layers and properties)

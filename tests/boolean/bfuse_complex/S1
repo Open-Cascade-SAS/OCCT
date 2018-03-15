@@ -1,7 +1,8 @@
+puts "TODO CR29596 ALL: Warning: Intersection of pair of shapes has failed"
+
 puts "PRO15946"
 puts "Fuse"
 puts ""
-
 
 restore [locate_data_file CFE900_uki60gfk.rle] base
 restore [locate_data_file uki60919b.brep] cont

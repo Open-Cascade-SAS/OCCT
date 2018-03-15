@@ -8,3 +8,6 @@ if { [string compare $command "shading"] == 0 } {
 } else {
    set rel_tol 0.21
 }
+if { [string compare $command "incmesh"] == 0 } {
+    puts "TODO OCC22687 ALL: Meshing statuses: Failure"
+}

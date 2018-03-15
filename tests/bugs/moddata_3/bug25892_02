@@ -1,3 +1,5 @@
+puts "REQUIRED All: Projection Failed"
+
 puts "============"
 puts "OCC25892"
 puts "============"
@@ -11,6 +13,7 @@ restore [locate_data_file bug25892_f002] f
 
 mksurface s f
 
+# Projection should fail due to big distance between curve and surface
 catch {project cx c s}
 
 #v2d2

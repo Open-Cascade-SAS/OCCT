@@ -1,4 +1,6 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL:   Make Geom_Curve \\(3D\\) failed" 
+puts "TODO CR23096 ALL:  At least one edge failed : wire not done" 
 puts "TODO CR23096 ALL: NBSHAPES : Faulty" 
 
 

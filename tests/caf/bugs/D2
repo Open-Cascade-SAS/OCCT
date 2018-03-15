@@ -204,8 +204,8 @@ if !$Create_Doc {
 
 
   # Function
-  if [catch {GetFunction D 0:1:1 fguid failure}] {puts "Error: Function not found"
-  } elseif {$fguid != $test_guid || $failure != $test_failure} { puts "Error: invalid Function" }
+  if [catch {GetFunction D 0:1:1 fguid failureNb}] {puts "Error: Function not found"
+  } elseif {$fguid != $test_guid || $failureNb != $test_failure} { puts "Error: invalid Function" }
 
 
   # AISPresentation

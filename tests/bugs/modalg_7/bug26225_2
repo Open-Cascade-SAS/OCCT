@@ -1,6 +1,5 @@
-puts "TODO OCC26225 ALL: Tcl Exception: compute of chamfer failed"
+puts "TODO OCC26225 ALL: compute of chamfer failed"
 puts "TODO OCC26225 ALL: TEST INCOMPLETE"
-
 
 puts "========"
 puts "OCC26225"
