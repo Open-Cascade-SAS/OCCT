@@ -5333,6 +5333,52 @@ static Standard_Integer OCC28310 (Draw_Interpretor& /*theDI*/, Standard_Integer 
   return 0;
 }
 
+// repetitive display and removal of multiple small objects in the viewer for 
+// test of memory leak in visualization (OCCT 6.9.0 - 7.0.0)
+static Standard_Integer OCC29412 (Draw_Interpretor& /*theDI*/, Standard_Integer theArgNb, const char** theArgVec)
+{
+  Handle(AIS_InteractiveContext) aCtx = ViewerTest::GetAISContext();
+  if (aCtx.IsNull())
+  {
+    std::cout << "Error: no active view.\n";
+    return 1;
+  }
+
+  const int aNbIters = (theArgNb <= 1 ? 10000 : Draw::Atoi (theArgVec[1]));
+  int aProgressPrev = -1;
+  for (int m_loopIndex = 0; m_loopIndex < aNbIters; m_loopIndex++)
+  {
+    gp_Pnt pos;
+    gp_Vec dir(0, 0,1);
+
+    gp_Ax2 center (pos, dir);
+    gp_Circ circle (center, 1);
+    Handle(AIS_Shape) feature;
+
+    BRepBuilderAPI_MakeEdge builder( circle );
+
+    if( builder.Error() == BRepBuilderAPI_EdgeDone )
+    {
+      TopoDS_Edge E1 = builder.Edge();
+      TopoDS_Shape W2 = BRepBuilderAPI_MakeWire(E1).Wire();
+      feature = new AIS_Shape(W2);
+      aCtx->Display (feature, true);
+    }
+
+    aCtx->CurrentViewer()->Update();
+    ViewerTest::CurrentView()->FitAll();
+    aCtx->Remove (feature, true);
+
+    const int aProgress = (m_loopIndex * 100) / aNbIters;
+    if (aProgress != aProgressPrev)
+    {
+      std::cerr << aProgress << "%\r";
+      aProgressPrev = aProgress;
+    }
+  }
+  return 0;
+}
+
 //========================================================================
 //function : Commands_19
 //purpose  :
@@ -5471,5 +5517,6 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   theCommands.Add("OCC28310",
                   "OCC28310: Tests validness of iterator in AIS_InteractiveContext after an removing object from it",
                   __FILE__, OCC28310, group);
+  theCommands.Add("OCC29412", "OCC29412 [nb cycles]: test display / remove of many small objects", __FILE__, OCC29412, group);
   return;
 }

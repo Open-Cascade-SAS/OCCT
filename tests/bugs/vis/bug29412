@@ -1,0 +1,27 @@
+puts "# ==================================================================="
+puts "# 0029412: Huge Memory leak since I upgraded to OC 6.9.0"
+puts "# ==================================================================="
+puts ""
+
+pload VISUALIZATION
+vcaps -vsync 0
+vinit View1
+vglinfo
+
+OCC29412 100 ;# just to initialize
+
+meminfo
+vmemgpu
+
+set heap_before [meminfo heap]
+OCC29412
+set heap_after [meminfo heap]
+
+meminfo
+vmemgpu 
+
+# check that memory increase is moderate: can be up to 75 KiB on Debian;
+# note that the leak in OCCT 6.9.0 - 7.0.0 was ~ 19 MiB
+if { $heap_after - $heap_before > 100 * 1024 } {
+  puts "Error: memory leak of [expr ($heap_after - $heap_before) / 1024] KiB"
+}
