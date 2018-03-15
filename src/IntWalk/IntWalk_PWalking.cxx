@@ -3497,7 +3497,7 @@ TestArret(const Standard_Boolean DejaReparti,
       }
     }
     if(k!=-1) { 
-      ChoixIso   = ChoixRef[k];
+      ChoixIso = ChoixRef(k);
     }
     else { 
       if((ParC[0]<=Uvd[0]+Epsuv[0]) || (ParC[0]>=Uvf[0]-Epsuv[0])) {

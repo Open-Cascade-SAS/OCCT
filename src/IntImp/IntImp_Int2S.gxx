@@ -25,9 +25,6 @@
 #include <Standard_ConstructionError.hxx>
 #include <Precision.hxx>
 
-
-//Standard_IMPORT extern IntImp_ConstIsoparametric   *ChoixRef;
-
 IntImp_Int2S::IntImp_Int2S(const ThePSurface& surf1,
                            const ThePSurface& surf2,
                            const Standard_Real TolTangency ) :
@@ -131,7 +128,7 @@ IntImp_ConstIsoparametric IntImp_Int2S:: Perform(const TColStd_Array1OfReal& Par
   TColStd_Array1OfReal Duv (DuvBuf[0], 1, 4);
   Standard_Real UVd[4],UVf[4];
   IntImp_ConstIsoparametric ChoixIso[4];
-  IntImp_ConstIsoparametric BestChoix=ChoixRef[0];
+  IntImp_ConstIsoparametric BestChoix = ChoixRef(0);
   const ThePSurface& Caro1 = myZerParFunc.AuxillarSurface1();
   const ThePSurface& Caro2 = myZerParFunc.AuxillarSurface2();
 
@@ -220,7 +217,7 @@ IntImp_ConstIsoparametric IntImp_Int2S:: Perform(const TColStd_Array1OfReal& Par
     }
     else return BestChoix; // on a gagne
     empty = Standard_True;
-    BestChoix = ChoixRef[Iiso]; //en attendant
+    BestChoix = ChoixRef(Iiso); //en attendant
     BestChoix = Perform(Duv,Rsnld,BestChoix);
     if (!empty) { // verification si l on ne deborde pas sur le carreau 
       // reciproque
@@ -247,7 +244,7 @@ IntImp_ConstIsoparametric IntImp_Int2S:: Perform(const TColStd_Array1OfReal& Par
       if(Nc == 4)
         Nc = 0;
       
-      BestChoix = ChoixRef[Nc]; //en attendant
+      BestChoix = ChoixRef(Nc); //en attendant
       BestChoix = Perform(Duv,Rsnld,BestChoix);
     }
   }

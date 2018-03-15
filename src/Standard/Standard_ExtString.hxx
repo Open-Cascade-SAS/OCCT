@@ -27,6 +27,6 @@
 //============================================================================
 //==== HashCode : Returns a HashCode ExtString
 //============================================================================
-__Standard_API Standard_Integer HashCode (const Standard_ExtString, const Standard_Integer);
+Standard_EXPORT Standard_Integer HashCode (const Standard_ExtString, const Standard_Integer);
 
 #endif

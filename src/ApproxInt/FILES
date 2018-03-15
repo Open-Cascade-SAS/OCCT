@@ -1,7 +1,6 @@
 ApproxInt_Approx.gxx
 ApproxInt_ImpPrmSvSurfaces.gxx
 ApproxInt_MultiLine.gxx
-ApproxInt_MultiLineTool.gxx
 ApproxInt_KnotTools.hxx
 ApproxInt_KnotTools.cxx
 ApproxInt_MultiLineTool.lxx

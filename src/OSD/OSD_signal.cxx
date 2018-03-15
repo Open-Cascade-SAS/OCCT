@@ -53,7 +53,7 @@
 #include <Standard_ProgramError.hxx>
 #include <Standard_Mutex.hxx>
 
-#include <OSD_WNT_1.hxx>
+#include <OSD_WNT.hxx>
 
 #ifdef _MSC_VER
 #include <eh.h>

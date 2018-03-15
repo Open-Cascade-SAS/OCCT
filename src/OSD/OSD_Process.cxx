@@ -181,7 +181,7 @@ Standard_Integer OSD_Process::Error()const{
 #include <Standard_PExtCharacter.hxx>
 #include <TCollection_ExtendedString.hxx>
 
-#include <OSD_WNT_1.hxx>
+#include <OSD_WNT.hxx>
 #include <LMCONS.H> // for UNLEN - maximum user name length GetUserName()
 
 void _osd_wnt_set_error ( OSD_Error&, OSD_WhoAmI, ... );

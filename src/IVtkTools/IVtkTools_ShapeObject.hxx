@@ -47,7 +47,7 @@ class IVtkTools_ShapeDataSource;
 //! It stores data of OCC shape (the OccShape instance) in vtkInformation object of vtkDataObject.
 //! Then pass it to the actors through pipelines,
 //! so selection logic can access OccShape easily given the actor instance.
-class IVtkTools_EXPORT IVtkTools_ShapeObject :  public vtkDataObject
+class Standard_EXPORT IVtkTools_ShapeObject :  public vtkDataObject
 {
 public:
   vtkTypeMacro (IVtkTools_ShapeObject, vtkObject)

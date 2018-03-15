@@ -32,10 +32,10 @@
 #include <Standard_Integer.hxx>
 
 //! Returns bounded hash code for a null-terminated string, in range [1, theUpper]
-__Standard_API Standard_Integer HashCode (const Standard_CString theStr, const Standard_Integer theUpper);
+Standard_EXPORT Standard_Integer HashCode (const Standard_CString theStr, const Standard_Integer theUpper);
 
 //! Returns 32-bit hash code for the first theLen characters in the string theStr 
-__Standard_API Standard_Integer HashCodes (const Standard_CString theStr, const Standard_Integer theLen);
+Standard_EXPORT Standard_Integer HashCodes (const Standard_CString theStr, const Standard_Integer theLen);
 
 //! Returns bounded hash code for the first theLen characters in 
 //! the string theStr, in range [1, theUpper]
@@ -60,19 +60,19 @@ extern "C" {
 #endif /* __cplusplus */
 
 //! Equivalent of standard C function atof() that always uses C locale
-__Standard_API double Atof (const char* theStr);
+Standard_EXPORT double Atof (const char* theStr);
 
 //! Optimized equivalent of standard C function strtod() that always uses C locale
-__Standard_API double Strtod (const char* theStr, char** theNextPtr);
+Standard_EXPORT double Strtod (const char* theStr, char** theNextPtr);
 
 //! Equivalent of standard C function printf() that always uses C locale
-__Standard_API int Printf (const char* theFormat, ...);
+Standard_EXPORT int Printf (const char* theFormat, ...);
 
 //! Equivalent of standard C function fprintf() that always uses C locale
-__Standard_API int Fprintf (FILE* theFile, const char* theFormat, ...);
+Standard_EXPORT int Fprintf (FILE* theFile, const char* theFormat, ...);
 
 //! Equivalent of standard C function sprintf() that always uses C locale
-__Standard_API int Sprintf (char* theBuffer, const char* theFormat, ...);
+Standard_EXPORT int Sprintf (char* theBuffer, const char* theFormat, ...);
 
 #ifdef __cplusplus
 }

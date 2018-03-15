@@ -33,19 +33,6 @@ class vtkIdTypeArray;
 class IVtkVTK_ShapeData;
 DEFINE_STANDARD_HANDLE( IVtkVTK_ShapeData, IVtk_IShapeData )
 
-// macros to export static field in class
-#ifndef IVtkVTK_EXPORT
-  #ifdef _WIN32
-    #ifdef __IVtkVTK_DLL
-      #define IVtkVTK_EXPORT __declspec(dllexport)
-    #else
-      #define IVtkVTK_EXPORT __declspec(dllimport)
-    #endif
-  #else
-    #define IVtkVTK_EXPORT
-  #endif
-#endif
-
 //! @class IVtkVTK_ShapeData 
 //! @brief IShapeData implementation for VTK.
 //!
@@ -54,8 +41,8 @@ class IVtkVTK_ShapeData : public IVtk_IShapeData
 {
 public:
 
-  IVtkVTK_EXPORT static const char* const ARRNAME_SUBSHAPE_IDS;
-  IVtkVTK_EXPORT static const char* const ARRNAME_MESH_TYPES;
+  static const char* ARRNAME_SUBSHAPE_IDS() { return "SUBSHAPE_IDS"; }
+  static const char* ARRNAME_MESH_TYPES() { return "MESH_TYPES"; }
 
   typedef Handle(IVtkVTK_ShapeData) Handle;
 

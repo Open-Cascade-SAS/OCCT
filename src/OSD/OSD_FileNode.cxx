@@ -373,7 +373,7 @@ Standard_Integer OSD_FileNode::Error()const{
 #include <Standard_ProgramError.hxx>
 #include <TCollection_ExtendedString.hxx>
 
-#include <OSD_WNT_1.hxx>
+#include <OSD_WNT.hxx>
 
 #ifndef _INC_TCHAR
 # include <tchar.h>

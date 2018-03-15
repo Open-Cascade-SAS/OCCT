@@ -31,7 +31,7 @@ class vtkPolyData;
 
 //! @class IVtkTools_ShapeDataSource.
 //! @brief VTK data source for OCC shapes polygonal data.
-class IVtkTools_EXPORT IVtkTools_ShapeDataSource : public vtkPolyDataAlgorithm
+class Standard_EXPORT IVtkTools_ShapeDataSource : public vtkPolyDataAlgorithm
 {
 public:
 

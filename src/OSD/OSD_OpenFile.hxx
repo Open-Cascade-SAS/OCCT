@@ -33,19 +33,19 @@
 //! @param theName name of file encoded in UTF-16
 //! @param theMode opening mode
 //! @return file handle of opened file
-__Standard_API FILE* OSD_OpenFile (const TCollection_ExtendedString& theName,
+Standard_EXPORT FILE* OSD_OpenFile (const TCollection_ExtendedString& theName,
                                    const char* theMode);
 
 //! Function retrieves file timestamp.
 //! @param theName name of file encoded in UTF-8
 //! @return stat.st_ctime value
-__Standard_API Standard_Time OSD_FileStatCTime (const char* theName);
+Standard_EXPORT Standard_Time OSD_FileStatCTime (const char* theName);
 
 //! Open file descriptor for specified UTF-16 file path.
 //! @param theName name of file encoded in UTF-16
 //! @param theMode opening mode
 //! @return file descriptor on success or -1 on error
-__Standard_API int OSD_OpenFileDescriptor (const TCollection_ExtendedString& theName,
+Standard_EXPORT int OSD_OpenFileDescriptor (const TCollection_ExtendedString& theName,
                                            ::std::ios_base::openmode theMode);
 
 //! Function opens the file buffer.
@@ -141,7 +141,7 @@ extern "C" {
 //! @param theName name of file encoded in UTF-8
 //! @param theMode opening mode
 //! @return file handle of opened file
-__Standard_API FILE* OSD_OpenFile (const char* theName, const char* theMode);
+Standard_EXPORT FILE* OSD_OpenFile (const char* theName, const char* theMode);
 
 #if defined(__cplusplus)
 }

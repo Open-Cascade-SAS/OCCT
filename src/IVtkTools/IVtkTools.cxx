@@ -124,7 +124,7 @@ void InitShapeMapper (vtkMapper* theMapper, vtkLookupTable* theColorTable)
 {
   theMapper->ScalarVisibilityOn();
   theMapper->SetScalarModeToUseCellFieldData();
-  theMapper->SelectColorArray (IVtkVTK_ShapeData::ARRNAME_MESH_TYPES);
+  theMapper->SelectColorArray (IVtkVTK_ShapeData::ARRNAME_MESH_TYPES());
   theMapper->SetColorModeToMapScalars();
   theMapper->SetScalarRange (theColorTable->GetRange());
   theMapper->SetLookupTable (theColorTable);

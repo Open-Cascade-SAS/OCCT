@@ -48,20 +48,44 @@ template <class TheObjType, class TheBndType> class NCollection_EBTree
     : UBTree (theAllocator) {}
 
   /**
+   * Updates the tree with a new object and its bounding box.
    * Extends the functionality of the parent method by maintaining
-   * the map myObjNodeMap. Redefined virtual method
+   * the map myObjNodeMap. Redefined virtual method.
    * @return
    *   False if the tree already contains theObj.
    */ 
-  Standard_EXPORT Standard_Boolean Add    (const TheObjType& theObj,
-                                           const TheBndType& theBnd);
+  Standard_Boolean Add (const TheObjType& theObj, const TheBndType& theBnd) Standard_OVERRIDE
+  {
+    Standard_Boolean result = Standard_False;
+    if (!Contains (theObj))
+    {
+      // Add object in the tree using parent method
+      UBTree::Add (theObj, theBnd);
+
+      // Update the map
+      TreeNode& aNewNode = this->ChangeLastNode ();
+      myObjNodeMap.Bind (theObj, &aNewNode);
+      // If the new node is not the root (has a parent) check the neighbour node
+      if (!aNewNode.IsRoot ())
+      {
+        TreeNode& aNeiNode = aNewNode.ChangeParent ().ChangeChild (0);
+        if (aNeiNode.IsLeaf ())
+        {
+          myObjNodeMap.UnBind (aNeiNode.Object ());
+          myObjNodeMap.Bind (aNeiNode.Object (), &aNeiNode);
+        }
+      }
+      result = Standard_True;
+    }
+    return result;
+  }
 
   /**
    * Removes the given object and updates the tree.
    * @return
    *   False if the tree does not contain theObj
    */
-  Standard_EXPORT Standard_Boolean Remove (const TheObjType& theObj);
+  Standard_Boolean Remove (const TheObjType& theObj);
 
   /**
    * @return
@@ -80,8 +104,11 @@ template <class TheObjType, class TheBndType> class NCollection_EBTree
   /**
    * Clears the contents of the tree. Redefined virtual method
    */
-  void Clear (const Handle(NCollection_BaseAllocator)& aNewAlloc = 0L)
-        { myObjNodeMap.Clear(); UBTree::Clear(aNewAlloc); }
+  void Clear (const Handle(NCollection_BaseAllocator)& aNewAlloc = 0L) Standard_OVERRIDE
+  {
+    myObjNodeMap.Clear ();
+    UBTree::Clear (aNewAlloc);
+  }
 
  private:
   // ---------- PRIVATE METHODS ----------
@@ -99,38 +126,6 @@ template <class TheObjType, class TheBndType> class NCollection_EBTree
 };
 
 // ================== METHODS TEMPLATES =====================
-
-//=======================================================================
-//function : Add
-//purpose  : Updates the tree with a new object and its bounding box.
-//           Returns false if the tree already contains theObj.
-//=======================================================================
-
-template <class TheObjType, class TheBndType>
-Standard_Boolean NCollection_EBTree<TheObjType,TheBndType>::Add
-                        (const TheObjType& theObj,
-                         const TheBndType& theBnd)
-{
-  Standard_Boolean result = Standard_False;
-  if (!Contains (theObj)) {
-    // Add object in the tree using parent method
-    UBTree::Add (theObj, theBnd);
-
-    // Update the map
-    TreeNode& aNewNode = this->ChangeLastNode();
-    myObjNodeMap.Bind (theObj, &aNewNode);
-    // If the new node is not the root (has a parent) check the neighbour node
-    if (!aNewNode.IsRoot()) {
-      TreeNode& aNeiNode = aNewNode.ChangeParent().ChangeChild(0);
-      if (aNeiNode.IsLeaf()) {
-        myObjNodeMap.UnBind (aNeiNode.Object());
-        myObjNodeMap.Bind (aNeiNode.Object(), &aNeiNode);
-      }
-    }
-    result = Standard_True;
-  }
-  return result;
-}
 
 //=======================================================================
 //function : Remove

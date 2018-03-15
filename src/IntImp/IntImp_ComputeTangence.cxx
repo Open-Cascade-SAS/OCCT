@@ -14,6 +14,7 @@
 
 #include <IntImp_ComputeTangence.hxx>
 #include <IntImp_ConstIsoparametric.hxx>
+#include <Standard_OutOfRange.hxx>
 
 static const IntImp_ConstIsoparametric staticChoixRef [4] = {
 IntImp_UIsoparametricOnCaro1,
@@ -22,7 +23,11 @@ IntImp_UIsoparametricOnCaro2,
 IntImp_VIsoparametricOnCaro2,
 };
 
-Standard_EXPORT const IntImp_ConstIsoparametric *ChoixRef = staticChoixRef ;
+IntImp_ConstIsoparametric ChoixRef (Standard_Integer theIndex)
+{
+  Standard_OutOfRange_Raise_if (theIndex < 0 || theIndex > 3, "ChoixRef() in " __FILE__)
+  return staticChoixRef[theIndex];
+}
 
 //=======================================================================
 //function : IntImp_ComputeTangence
@@ -131,7 +136,10 @@ Standard_Boolean IntImp_ComputeTangence(const gp_Vec DPuv[],
      Standard_Boolean triOk = Standard_False;
      Standard_Real t;
      IntImp_ConstIsoparametric ti;
-     for ( i=0;i<=3;i++)  TabIso[i] = ChoixRef[i];
+     for ( i=0;i<=3;i++)
+     {
+       TabIso[i] = staticChoixRef[i];
+     }
      do { 
        triOk = Standard_True;
        for(i=1;i<=3;i++) { 
@@ -168,7 +176,10 @@ Standard_Boolean IntImp_ComputeTangence(const gp_Vec DPuv[],
        NormDuv[II] = NormDuv[j];
        NormDuv[j] = Tampon;
      }
-     for (j=0; j<=3;j++) TabIso[j]=ChoixRef[Irang[j]];     
+     for (j=0; j<=3;j++)
+     {
+       TabIso[j] = staticChoixRef[Irang[j]];     
+     }
 #endif
    }
    return tangent;

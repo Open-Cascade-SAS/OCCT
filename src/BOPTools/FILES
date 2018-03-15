@@ -12,7 +12,6 @@ BOPTools_BoxBndTree.hxx
 BOPTools_ConnexityBlock.hxx
 BOPTools_CoupleOfShape.hxx
 BOPTools_DataMapOfShapeSet.hxx
-BOPTools_EdgeSet.cxx
 BOPTools_EdgeSet.hxx
 BOPTools_EdgeSet.lxx
 BOPTools_IndexedDataMapOfSetShape.hxx

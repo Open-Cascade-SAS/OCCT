@@ -38,7 +38,7 @@ vtkStandardNewMacro(IVtkTools_SubPolyDataFilter)
 //================================================================
 IVtkTools_SubPolyDataFilter::IVtkTools_SubPolyDataFilter()
 {
-  myIdsArrayName = IVtkVTK_ShapeData::ARRNAME_SUBSHAPE_IDS;
+  myIdsArrayName = IVtkVTK_ShapeData::ARRNAME_SUBSHAPE_IDS();
   myDoFiltering = true;
 }
 

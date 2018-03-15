@@ -16,30 +16,18 @@
 
 #include <Standard_Boolean.hxx>
 
-#ifndef __AppBlend_API
-# if defined(_WIN32) && !defined(HAVE_NO_DLL)
-#  ifdef __AppBlend_DLL
-#   define __AppBlend_API __declspec( dllexport )
-#  else
-#   define __AppBlend_API __declspec( dllimport )
-#  endif /*__AppBlend_DLL*/
-# else
-#  define __AppBlend_API
-# endif /*_WIN32*/
-#endif /*__AppBlend_API*/
-
 //****************************************************
 // Functions to change the type of approx.
 //****************************************************
 
 static Standard_Boolean AppBlend_ContextSplineApprox = Standard_False;
-__AppBlend_API extern void AppBlend_SetContextSplineApprox(const Standard_Boolean b) 
+Standard_EXPORT void AppBlend_SetContextSplineApprox(const Standard_Boolean b) 
 { AppBlend_ContextSplineApprox = b; }
-__AppBlend_API extern Standard_Boolean AppBlend_GetContextSplineApprox() 
+Standard_EXPORT Standard_Boolean AppBlend_GetContextSplineApprox() 
 { return AppBlend_ContextSplineApprox; }
 
 static Standard_Boolean AppBlend_ContextApproxWithNoTgt = Standard_False;
-__AppBlend_API extern void AppBlend_SetContextApproxWithNoTgt(const Standard_Boolean b) 
+Standard_EXPORT void AppBlend_SetContextApproxWithNoTgt(const Standard_Boolean b) 
 { AppBlend_ContextApproxWithNoTgt = b; }
-__AppBlend_API extern Standard_Boolean AppBlend_GetContextApproxWithNoTgt() 
+Standard_EXPORT Standard_Boolean AppBlend_GetContextApproxWithNoTgt() 
 { return AppBlend_ContextApproxWithNoTgt; }

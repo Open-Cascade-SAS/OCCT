@@ -30,7 +30,5 @@ MAT2d_MiniPath.hxx
 MAT2d_SequenceOfConnexion.hxx
 MAT2d_SequenceOfSequenceOfCurve.hxx
 MAT2d_SequenceOfSequenceOfGeometry.hxx
-MAT2d_SketchExplorer.cxx
-MAT2d_SketchExplorer.hxx
 MAT2d_Tool2d.cxx
 MAT2d_Tool2d.hxx

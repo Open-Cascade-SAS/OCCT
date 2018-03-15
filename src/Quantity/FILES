@@ -22,8 +22,6 @@ Quantity_Conductivity.hxx
 Quantity_Constant.hxx
 Quantity_Consumption.hxx
 Quantity_Content.hxx
-Quantity_Convert.cxx
-Quantity_Convert.hxx
 Quantity_Date.cxx
 Quantity_Date.hxx
 Quantity_DateDefinitionError.hxx

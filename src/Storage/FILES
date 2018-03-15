@@ -39,8 +39,6 @@ Storage_Schema.hxx
 Storage_Schema.lxx
 Storage_SeqOfRoot.hxx
 Storage_SolveMode.hxx
-Storage_stCONSTclCOM.cxx
-Storage_stCONSTclCOM.hxx
 Storage_StreamExtCharParityError.hxx
 Storage_StreamFormatError.hxx
 Storage_StreamModeError.hxx

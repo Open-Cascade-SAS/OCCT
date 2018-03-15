@@ -30,23 +30,23 @@
 // ==================================
 // Methods implemeted in Standard_Real.cxx
 // ==================================
-__Standard_API Standard_Integer HashCode    (const Standard_Real, const Standard_Integer);  
+Standard_EXPORT Standard_Integer HashCode    (const Standard_Real, const Standard_Integer);  
 
-__Standard_API Standard_Real    ACos        (const Standard_Real );
-__Standard_API Standard_Real    ACosApprox  (const Standard_Real );
-__Standard_API Standard_Real    ASin        (const Standard_Real );
-__Standard_API Standard_Real    ATan2       (const Standard_Real , const Standard_Real );
-__Standard_API Standard_Real    NextAfter   (const Standard_Real , const Standard_Real );
+Standard_EXPORT Standard_Real    ACos        (const Standard_Real );
+Standard_EXPORT Standard_Real    ACosApprox  (const Standard_Real );
+Standard_EXPORT Standard_Real    ASin        (const Standard_Real );
+Standard_EXPORT Standard_Real    ATan2       (const Standard_Real , const Standard_Real );
+Standard_EXPORT Standard_Real    NextAfter   (const Standard_Real , const Standard_Real );
 
 //! Returns |a| if b >= 0; -|a| if b < 0.
-__Standard_API Standard_Real    Sign(const Standard_Real a, const Standard_Real b);
+Standard_EXPORT Standard_Real    Sign(const Standard_Real a, const Standard_Real b);
 
-__Standard_API Standard_Real    ATanh       (const Standard_Real );
-__Standard_API Standard_Real    ACosh       (const Standard_Real );
-__Standard_API Standard_Real    Sinh       (const Standard_Real );
-__Standard_API Standard_Real    Cosh       (const Standard_Real );
-__Standard_API Standard_Real    Log         (const Standard_Real );
-__Standard_API Standard_Real    Sqrt        (const Standard_Real );
+Standard_EXPORT Standard_Real    ATanh       (const Standard_Real );
+Standard_EXPORT Standard_Real    ACosh       (const Standard_Real );
+Standard_EXPORT Standard_Real    Sinh       (const Standard_Real );
+Standard_EXPORT Standard_Real    Cosh       (const Standard_Real );
+Standard_EXPORT Standard_Real    Log         (const Standard_Real );
+Standard_EXPORT Standard_Real    Sqrt        (const Standard_Real );
 
 //-------------------------------------------------------------------
 // RealSmall : Returns the smallest positive real

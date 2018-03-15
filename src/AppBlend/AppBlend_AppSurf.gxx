@@ -36,8 +36,9 @@
 #include <AppDef_Variational.hxx>
 
 static   Standard_Boolean scal = 1;
-extern Standard_Boolean AppBlend_GetContextSplineApprox(); 
-extern Standard_Boolean AppBlend_GetContextApproxWithNoTgt(); 
+
+Standard_EXPORT Standard_Boolean AppBlend_GetContextSplineApprox(); 
+Standard_EXPORT Standard_Boolean AppBlend_GetContextApproxWithNoTgt(); 
 
 //  modified by EAP (Edward AGAPOV) Fri Jan 4 2002, bug OCC9
 //  --- keep pipe parametrized like path

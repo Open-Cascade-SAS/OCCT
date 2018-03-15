@@ -49,28 +49,30 @@ class BRepApprox_TheComputeLineBezierOfApprox;
 class BRepApprox_MyGradientOfTheComputeLineBezierOfApprox;
 class AppParCurves_MultiBSpCurve;
 
-struct Approx_Data 
-{
-  Approx_Data() : myBezierApprox(Standard_True),
-                  Xo(0.0), Yo(0.0), Zo(0.0),
-                  U1o(0.0), V1o(0.0), U2o(0.0), V2o(0.0),
-                  ApproxXYZ(Standard_True),
-                  ApproxU1V1(Standard_True),
-                  ApproxU2V2(Standard_True),
-                  indicemin(0), indicemax(0),
-                  myNbPntMax(30), parametrization(Approx_ChordLength)
-  {
-  }
-
-  Standard_Boolean myBezierApprox;
-  Standard_Real  Xo, Yo, Zo, U1o, V1o, U2o, V2o;
-  Standard_Boolean ApproxXYZ, ApproxU1V1, ApproxU2V2;
-  Standard_Integer indicemin, indicemax, myNbPntMax;
-  Approx_ParametrizationType parametrization;
-};
-
 class BRepApprox_Approx 
 {
+private:
+  struct Approx_Data
+  {
+    Approx_Data () : myBezierApprox (Standard_True),
+      Xo (0.0), Yo (0.0), Zo (0.0),
+      U1o (0.0), V1o (0.0), U2o (0.0), V2o (0.0),
+      ApproxXYZ (Standard_True),
+      ApproxU1V1 (Standard_True),
+      ApproxU2V2 (Standard_True),
+      indicemin (0), indicemax (0),
+      myNbPntMax (30), parametrization (Approx_ChordLength)
+    {
+    }
+
+    Standard_Boolean myBezierApprox;
+    Standard_Real  Xo, Yo, Zo, U1o, V1o, U2o, V2o;
+    Standard_Boolean ApproxXYZ, ApproxU1V1, ApproxU2V2;
+    Standard_Integer indicemin, indicemax, myNbPntMax;
+    Approx_ParametrizationType parametrization;
+  };
+
+
 public:
 
   DEFINE_STANDARD_ALLOC

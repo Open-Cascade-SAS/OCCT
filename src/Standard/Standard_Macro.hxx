@@ -168,8 +168,11 @@
 //! This macro should be used in declarations of public methods 
 //! to ensure that they are exported from DLL on Windows and thus
 //! can be called from other (dependent) libraries or applications.
+//!
+//! If macro OCCT_STATIC_BUILD is defined, then Standard_EXPORT
+//! is set to empty. 
 
-# if defined(_WIN32) && !defined(HAVE_NO_DLL)
+# if defined(_WIN32) && !defined(OCCT_STATIC_BUILD) && !defined(HAVE_NO_DLL)
 
 //======================================================
 // Windows-specific definitions
@@ -217,20 +220,6 @@
 #endif
 
 # endif  /* _WIN32 */
-
-//======================================================
-// Other
-//======================================================
-
-# ifndef __Standard_API
-#   if !defined(_WIN32) || defined(__Standard_DLL) || defined(__FSD_DLL) || defined(__MMgt_DLL) || defined(__OSD_DLL) || defined(__Plugin_DLL) || defined(__Quantity_DLL) || defined(__Resource_DLL) || defined(__SortTools_DLL) || defined(__StdFail_DLL) || defined(__Storage_DLL) || defined(__TColStd_DLL) || defined(__TCollection_DLL) || defined(__TShort_DLL) || defined(__Units_DLL) || defined(__UnitsAPI_DLL) || defined(__Dico_DLL)
-#    define __Standard_API Standard_EXPORT
-#    define __Standard_APIEXTERN Standard_EXPORTEXTERN
-#   else
-#    define __Standard_API Standard_IMPORT
-#    define __Standard_APIEXTERN Standard_IMPORT
-#   endif  // __Standard_DLL
-# endif  // __Standard_API
 
 //! @def OCCT_UWP
 //! This macro is defined on Windows platform in the case if the code

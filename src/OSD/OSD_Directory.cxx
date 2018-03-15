@@ -22,7 +22,7 @@
 #include <NCollection_String.hxx>
 
 #ifdef _WIN32
-  #include <OSD_WNT_1.hxx>
+  #include <OSD_WNT.hxx>
   #include <stdio.h>
 
   #ifndef _INC_TCHAR

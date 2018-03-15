@@ -19,16 +19,6 @@
 #include <IVtk_Types.hxx>
 #include <vtkSmartPointer.h>
 
-#if defined(_WIN32) && !defined(HAVE_NO_DLL)
-  #ifdef __IVtkTools_DLL
-    #define IVtkTools_EXPORT __declspec( dllexport )
-  #else
-    #define IVtkTools_EXPORT __declspec( dllimport )
-  #endif
-#else
-  #define IVtkTools_EXPORT
-#endif
-
 class vtkLookupTable;
 class vtkMapper;
 

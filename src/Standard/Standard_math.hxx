@@ -26,9 +26,9 @@
 
 // MSVC versions prior to 12 did not provided acosh, asinh, atanh functions in standard library
 #if _MSC_VER < 1800
-__Standard_API double __cdecl acosh ( double );
-__Standard_API double __cdecl asinh ( double );
-__Standard_API double __cdecl atanh ( double );
+Standard_EXPORT double __cdecl acosh ( double );
+Standard_EXPORT double __cdecl asinh ( double );
+Standard_EXPORT double __cdecl atanh ( double );
 #endif
 
 #endif  /* _MSC_VER */

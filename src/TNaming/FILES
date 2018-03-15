@@ -49,7 +49,6 @@ TNaming_PtrNode.hxx
 TNaming_PtrRefShape.hxx
 TNaming_RefShape.hxx
 TNaming_RefShape.lxx
-TNaming_SameShapeIterator.cxx
 TNaming_SameShapeIterator.hxx
 TNaming_SameShapeIterator.lxx
 TNaming_Scope.cxx

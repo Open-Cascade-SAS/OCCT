@@ -33,7 +33,7 @@ set (PRECOMPILED_DEFS)
 if (NOT BUILD_SHARED_LIBS)
   list (APPEND PRECOMPILED_DEFS "-DOCCT_NO_PLUGINS")
   if (WIN32)
-    list (APPEND PRECOMPILED_DEFS "-DHAVE_NO_DLL")
+    list (APPEND PRECOMPILED_DEFS "-DOCCT_STATIC_BUILD")
   endif()
 endif()
 
@@ -47,9 +47,9 @@ foreach (OCCT_PACKAGE ${USED_PACKAGES})
     # do nothing
   else()
 
-    if (WIN32)
-      list (APPEND PRECOMPILED_DEFS "-D__${OCCT_PACKAGE}_DLL")
-    endif()
+#    if (WIN32)
+#      list (APPEND PRECOMPILED_DEFS "-D__${OCCT_PACKAGE}_DLL")
+#    endif()
 
     set (SOURCE_FILES)
     set (HEADER_FILES)

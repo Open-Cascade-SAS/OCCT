@@ -29,7 +29,7 @@
 
 #ifdef _WIN32
 
-  #include <OSD_WNT_1.hxx>
+  #include <OSD_WNT.hxx>
 
   #include <stdio.h>
   #include <io.h>

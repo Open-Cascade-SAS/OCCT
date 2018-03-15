@@ -362,14 +362,6 @@ void GetNextEvent (Standard_Boolean  theWait,
 #define DRAWTITLE L"Draw View"
 #define MAXCOLOR  15
 
-#if !defined(__Draw_API) && !defined(HAVE_NO_DLL)
-# ifdef __Draw_DLL
-#  define __Draw_API __declspec( dllexport )
-# else
-#  define __Draw_API __declspec( dllimport )
-# endif
-#endif
-
 // definition de la classe Segment
 
 class DrawWindow;
@@ -421,86 +413,86 @@ public:
    */
   Standard_EXPORT static void RemoveCallbackBeforeTerminate(FCallbackBeforeTerminate theCB);
 
-  __Draw_API DrawWindow();
-  __Draw_API DrawWindow(const char*, Standard_Integer, Standard_Integer,
+  Standard_EXPORT DrawWindow();
+  Standard_EXPORT DrawWindow(const char*, Standard_Integer, Standard_Integer,
 			Standard_Integer, Standard_Integer);
-  __Draw_API DrawWindow(const char*, Standard_Integer, Standard_Integer,
+  Standard_EXPORT DrawWindow(const char*, Standard_Integer, Standard_Integer,
 			Standard_Integer, Standard_Integer, HWND);
   //destructeur
-  __Draw_API virtual ~DrawWindow();
+  Standard_EXPORT virtual ~DrawWindow();
 
   //methods
 public:
-  __Draw_API void Init(Standard_Integer, Standard_Integer,
+  Standard_EXPORT void Init(Standard_Integer, Standard_Integer,
 		       Standard_Integer, Standard_Integer);
 
-  __Draw_API void SetUseBuffer(Standard_Boolean);
+  Standard_EXPORT void SetUseBuffer(Standard_Boolean);
   // Turns on/off usage of off-screen image buffer (can be used for redrawing optimization)
 
   Standard_Boolean GetUseBuffer() const { return myUseBuffer; }
   // Returns Standard_True if off-screen image buffer is being used
 
   //taille et position
-  __Draw_API void SetPosition (Standard_Integer,Standard_Integer);
-  __Draw_API void SetDimension(Standard_Integer,Standard_Integer);
-  __Draw_API void GetPosition (Standard_Integer&,Standard_Integer&);
-  __Draw_API Standard_Integer HeightWin() const;
-  __Draw_API Standard_Integer WidthWin()  const;
+  Standard_EXPORT void SetPosition (Standard_Integer,Standard_Integer);
+  Standard_EXPORT void SetDimension(Standard_Integer,Standard_Integer);
+  Standard_EXPORT void GetPosition (Standard_Integer&,Standard_Integer&);
+  Standard_EXPORT Standard_Integer HeightWin() const;
+  Standard_EXPORT Standard_Integer WidthWin()  const;
 
   //Title
-  __Draw_API void SetTitle (const TCollection_AsciiString& );
-  __Draw_API TCollection_AsciiString GetTitle() const;
+  Standard_EXPORT void SetTitle (const TCollection_AsciiString& );
+  Standard_EXPORT TCollection_AsciiString GetTitle() const;
 
   //Affichage
     //! Return true if window is displayed on the screen.
     bool IsMapped() const;
-  __Draw_API void DisplayWindow();
-  __Draw_API void Hide();
-  __Draw_API void Destroy();
-  __Draw_API void Clear();
+  Standard_EXPORT void DisplayWindow();
+  Standard_EXPORT void Hide();
+  Standard_EXPORT void Destroy();
+  Standard_EXPORT void Clear();
   static void Flush() {} ;
 
   // save snapshot
-  __Draw_API Standard_Boolean Save(const char* theFileName) const;
+  Standard_EXPORT Standard_Boolean Save(const char* theFileName) const;
 
   //Dessin
-  __Draw_API void DrawString(int,int,char*);
-  __Draw_API void DrawSegments(Segment*,int);
+  Standard_EXPORT void DrawString(int,int,char*);
+  Standard_EXPORT void DrawSegments(Segment*,int);
 
-  __Draw_API void InitBuffer();
+  Standard_EXPORT void InitBuffer();
   // Initializes off-screen image buffer according to current window size
 
-  __Draw_API void Redraw();
+  Standard_EXPORT void Redraw();
   // Copies an image from memory buffer to screen
 
   //Couleur
-  __Draw_API void SetColor(Standard_Integer);
-  __Draw_API void SetMode(int);
-  __Draw_API static Standard_Boolean DefineColor ( const Standard_Integer,const char*);
+  Standard_EXPORT void SetColor(Standard_Integer);
+  Standard_EXPORT void SetMode(int);
+  Standard_EXPORT static Standard_Boolean DefineColor ( const Standard_Integer,const char*);
 
   //Gestion des Messages
-  __Draw_API virtual void WExpose ();
-  __Draw_API virtual void WButtonPress(const Standard_Integer,const Standard_Integer,
+  Standard_EXPORT virtual void WExpose ();
+  Standard_EXPORT virtual void WButtonPress(const Standard_Integer,const Standard_Integer,
 				       const Standard_Integer&);
-  __Draw_API virtual void WButtonRelease(const Standard_Integer,const Standard_Integer,
+  Standard_EXPORT virtual void WButtonRelease(const Standard_Integer,const Standard_Integer,
 					 const Standard_Integer&);
-  __Draw_API virtual void WMotionNotify(const Standard_Integer,const Standard_Integer);
-  __Draw_API virtual void WConfigureNotify(const Standard_Integer,const Standard_Integer,
+  Standard_EXPORT virtual void WMotionNotify(const Standard_Integer,const Standard_Integer);
+  Standard_EXPORT virtual void WConfigureNotify(const Standard_Integer,const Standard_Integer,
 					   const Standard_Integer,const Standard_Integer);
-  __Draw_API virtual void WUnmapNotify();
+  Standard_EXPORT virtual void WUnmapNotify();
 
   //Gestion souris
-  __Draw_API static void SelectWait   (HANDLE&,int&,int&,int&);
-  __Draw_API static void SelectNoWait (HANDLE&,int&,int&,int&);
+  Standard_EXPORT static void SelectWait   (HANDLE&,int&,int&,int&);
+  Standard_EXPORT static void SelectNoWait (HANDLE&,int&,int&,int&);
 
   // Procedure de fenetre
-  __Draw_API static LRESULT APIENTRY DrawProc (HWND,UINT,WPARAM,LPARAM);
+  Standard_EXPORT static LRESULT APIENTRY DrawProc (HWND,UINT,WPARAM,LPARAM);
 
 private:
 
-  __Draw_API static HWND CreateDrawWindow(HWND,int);
-  __Draw_API HDC  GetMemDC(HDC);
-  __Draw_API void ReleaseMemDC(HDC);
+  Standard_EXPORT static HWND CreateDrawWindow(HWND,int);
+  Standard_EXPORT HDC  GetMemDC(HDC);
+  Standard_EXPORT void ReleaseMemDC(HDC);
 
   //atributs
 public:
@@ -526,9 +518,9 @@ typedef enum {
 
 // PROCEDURE DE DRAW WINDOW
 
-__Draw_API Standard_Boolean Init_Appli(HINSTANCE,HINSTANCE,int,HWND&);
-__Draw_API void Run_Appli(HWND);
-__Draw_API void Destroy_Appli(HINSTANCE);
+Standard_EXPORT Standard_Boolean Init_Appli(HINSTANCE,HINSTANCE,int,HWND&);
+Standard_EXPORT void Run_Appli(HWND);
+Standard_EXPORT void Destroy_Appli(HINSTANCE);
 
 #endif
 

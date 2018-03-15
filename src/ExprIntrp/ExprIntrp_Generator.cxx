@@ -24,9 +24,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(ExprIntrp_Generator,Standard_Transient)
 
-//#include <ExprIntrp_yaccanal.hxx>
-Standard_EXPORT ExprIntrp_Analysis ExprIntrp_Recept;
-
+#include <ExprIntrp_yaccanal.hxx>
+ExprIntrp_Analysis ExprIntrp_Recept;
 
 ExprIntrp_Generator::ExprIntrp_Generator()
 {

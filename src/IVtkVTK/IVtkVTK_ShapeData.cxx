@@ -31,13 +31,6 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IVtkVTK_ShapeData,IVtk_IShapeData)
 
-const char* const IVtkVTK_ShapeData::ARRNAME_SUBSHAPE_IDS = "SUBSHAPE_IDS";
-
-const char* const IVtkVTK_ShapeData::ARRNAME_MESH_TYPES   = "MESH_TYPES";
-
-//! Handle implementation
-
-
 //================================================================
 // Function : Constructor
 // Purpose  : 
@@ -49,12 +42,12 @@ IVtkVTK_ShapeData::IVtkVTK_ShapeData()
   myPolyData->SetPoints (vtkSmartPointer<vtkPoints>::New());
 
   mySubShapeIDs = vtkSmartPointer<vtkIdTypeArray>::New();
-  mySubShapeIDs->SetName (IVtkVTK_ShapeData::ARRNAME_SUBSHAPE_IDS);
+  mySubShapeIDs->SetName (IVtkVTK_ShapeData::ARRNAME_SUBSHAPE_IDS());
   mySubShapeIDs->SetNumberOfComponents (1);
   myPolyData->GetCellData()->AddArray (mySubShapeIDs);
 
   myMeshTypes = vtkSmartPointer<vtkIdTypeArray>::New();
-  myMeshTypes->SetName (IVtkVTK_ShapeData::ARRNAME_MESH_TYPES);
+  myMeshTypes->SetName (IVtkVTK_ShapeData::ARRNAME_MESH_TYPES());
   myMeshTypes->SetNumberOfComponents (1);
   myPolyData->GetCellData()->AddArray (myMeshTypes);
 }

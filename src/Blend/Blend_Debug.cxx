@@ -16,26 +16,14 @@
 
 #include <Standard_Boolean.hxx>
 
-#ifndef __Blend_API
-# if defined(_WIN32) && !defined(HAVE_NO_DLL)
-#  ifdef __Blend_DLL
-#   define __Blend_API __declspec( dllexport )
-#  else
-#   define __Blend_API __declspec( dllimport )
-#  endif /*__Blend_DLL*/
-# else
-#  define __Blend_API
-# endif /*_WIN32*/
-#endif /*__Blend_API*/
-
 //*************************************************
 // recuperation des surfaces des conges approximes.
 //*************************************************
 
 static Standard_Boolean Blend_traceDRAWSECT = Standard_False;
-__Blend_API extern void Blend_SettraceDRAWSECT(const Standard_Boolean b) 
+void Blend_SettraceDRAWSECT(const Standard_Boolean b) 
 { Blend_traceDRAWSECT = b; }
-__Blend_API extern Standard_Boolean Blend_GettraceDRAWSECT() 
+Standard_Boolean Blend_GettraceDRAWSECT() 
 { return Blend_traceDRAWSECT; }
 
 //*************************************************
@@ -43,7 +31,7 @@ __Blend_API extern Standard_Boolean Blend_GettraceDRAWSECT()
 //*************************************************
 
 static Standard_Boolean Blend_contextNOTESTDEFL = Standard_False;
-__Blend_API extern void Blend_SetcontextNOTESTDEFL(const Standard_Boolean b) 
+void Blend_SetcontextNOTESTDEFL(const Standard_Boolean b) 
 { Blend_contextNOTESTDEFL = b; }
-__Blend_API extern Standard_Boolean Blend_GetcontextNOTESTDEFL() 
+Standard_Boolean Blend_GetcontextNOTESTDEFL() 
 { return Blend_contextNOTESTDEFL; }

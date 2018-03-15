@@ -38,7 +38,7 @@ IVtkTools_DisplayModeFilter::IVtkTools_DisplayModeFilter()
     myDoDisplaySharedVertices (false)
 {
   // Filter according to values in subshapes types array.
-  myIdsArrayName = IVtkVTK_ShapeData::ARRNAME_MESH_TYPES;
+  myIdsArrayName = IVtkVTK_ShapeData::ARRNAME_MESH_TYPES();
 
   IVtk_IdTypeMap aTypes;
 

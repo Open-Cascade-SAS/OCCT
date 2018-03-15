@@ -1727,7 +1727,7 @@ proc osutils:vcproj { theVcVer isUWP theOutDir theToolKit theGuidsMap } {
   regsub -all -- {__TKDEP__} $theProjTmpl $aUsedLibs theProjTmpl
 
   set anIncPaths "..\\..\\..\\inc"
-  set aTKDefines ""
+#  set aTKDefines ""
   set aFilesSection ""
   set aVcFilesX(units) ""
   set listloc [osutils:tk:units $theToolKit]
@@ -1794,13 +1794,13 @@ proc osutils:vcproj { theVcVer isUWP theOutDir theToolKit theGuidsMap } {
     }
 
     # macros
-    append aTKDefines ";__${xlo}_DLL"
+#    append aTKDefines ";__${xlo}_DLL"
     # common includes
 #    append anIncPaths ";..\\..\\..\\src\\${xlo}"
   }
 
   regsub -all -- {__TKINC__}  $theProjTmpl $anIncPaths theProjTmpl
-  regsub -all -- {__TKDEFS__} $theProjTmpl $aTKDefines theProjTmpl
+#  regsub -all -- {__TKDEFS__} $theProjTmpl $aTKDefines theProjTmpl
   regsub -all -- {__FILES__}  $theProjTmpl $aFilesSection theProjTmpl
 
   # write file
@@ -1947,10 +1947,10 @@ proc osutils:vcprojx { theVcVer isUWP theOutDir theToolKit theGuidsMap } {
       puts "Warning : in vcproj there are than one occurences for [file tail $f]"
     }
     #puts "$aProjTmpl $aFilesSection"
-    set aTKDefines ";__${theToolKit}_DLL"
+#    set aTKDefines ";__${theToolKit}_DLL"
     set anIncPaths "..\\..\\..\\inc"
     regsub -all -- {__TKINC__}  $aProjTmpl $anIncPaths    aProjTmpl
-    regsub -all -- {__TKDEFS__} $aProjTmpl $aTKDefines    aProjTmpl
+#    regsub -all -- {__TKDEFS__} $aProjTmpl $aTKDefines    aProjTmpl
     regsub -all -- {__FILES__}  $aProjTmpl $aFilesSection aProjTmpl
     regsub -all -- {__CONF__}   $aProjTmpl Application    aProjTmpl
 
@@ -2162,9 +2162,9 @@ proc osutils:cbptk { theCmpl theOutDir theToolKit thePlatform} {
     }
 
     # macros for correct DLL exports
-    if { $thePlatform == "wnt" || $thePlatform == "uwp" } {
-      lappend aTKDefines "__${xlo}_DLL"
-    }
+#    if { $thePlatform == "wnt" || $thePlatform == "uwp" } {
+#      lappend aTKDefines "__${xlo}_DLL"
+#    }
   }
 
   return [osutils:cbp $theCmpl $theOutDir $theToolKit $thePlatform $aTKSrcFiles $aUsedLibs $aFrameworks $anIncPaths $aTKDefines]
@@ -2281,9 +2281,9 @@ proc osutils:cbpx { theCmpl theOutDir theToolKit thePlatform } {
     }
 
     # macros for correct DLL exports
-    if { $thePlatform == "wnt" || $thePlatform == "uwp" } {
-      lappend aTKDefines "__${theToolKit}_DLL"
-    }
+#    if { $thePlatform == "wnt" || $thePlatform == "uwp" } {
+#      lappend aTKDefines "__${theToolKit}_DLL"
+#    }
 
     # common include paths
     lappend anIncPaths "../../../inc"

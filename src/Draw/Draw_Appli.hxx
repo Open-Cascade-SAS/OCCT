@@ -32,21 +32,6 @@ extern void Draw_Appli(int argc, char** argv,
                        const FDraw_InitAppli Draw_InitAppli);
 #endif
 
-
-
-#if defined(_WIN32) && !defined(HAVE_NO_DLL)
-#ifndef __Draw_API
-# ifdef __Draw_DLL
-#  define __Draw_API __declspec ( dllexport )
-# else
-#  define __Draw_API __declspec ( dllimport )
-# endif
-#endif
-#else
-#  define __Draw_API  
-#endif
-
-
 #ifndef _WIN32
 extern Draw_Viewer dout;
 extern Standard_Boolean Draw_Batch;
@@ -56,7 +41,6 @@ class Draw_SaveAndRestore {
 
   public :
 
-//    __Draw_API Draw_SaveAndRestore 
     Standard_EXPORT Draw_SaveAndRestore 
       (const char* name,
        Standard_Boolean (*test)(const Handle(Draw_Drawable3D)&),

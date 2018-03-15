@@ -167,7 +167,7 @@ int IVtkTools_ShapeDataSource::RequestData(vtkInformation        *vtkNotUsed(the
 vtkSmartPointer<vtkIdTypeArray> IVtkTools_ShapeDataSource::SubShapeIDs()
 {
   vtkSmartPointer<vtkDataArray> arr = 
-    GetOutput()->GetCellData()->GetArray(IVtkVTK_ShapeData::ARRNAME_SUBSHAPE_IDS);
+    GetOutput()->GetCellData()->GetArray(IVtkVTK_ShapeData::ARRNAME_SUBSHAPE_IDS());
   return vtkSmartPointer<vtkIdTypeArray>( 
     vtkIdTypeArray::SafeDownCast(arr.GetPointer()) );
 }
