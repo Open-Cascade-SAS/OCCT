@@ -368,7 +368,7 @@ proc DFOpenImage { img } {
 
   global env
 
-  if {[catch "image create photo -file $env(DRAWHOME)/$img" ret]} {
+  if {[catch "image create photo -file $env(CSF_OCCTResourcePath)/DrawResources/$img" ret]} {
     return ""
   }
   return $ret
