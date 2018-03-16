@@ -46,6 +46,7 @@ Standard_Boolean XCAFDoc_Editor::Expand (const TDF_Label& Doc, const TDF_Label& 
   Handle(XCAFDoc_ColorTool) aColorTool = XCAFDoc_DocumentTool::ColorTool(Doc);
   Handle(XCAFDoc_LayerTool) aLayerTool = XCAFDoc_DocumentTool::LayerTool(Doc);
   Handle(XCAFDoc_ShapeTool) aShapeTool = XCAFDoc_DocumentTool::ShapeTool(Doc);
+  aShapeTool->SetAutoNaming(Standard_False);
 
   TopoDS_Shape aS = aShapeTool->GetShape(Shape);
   if (aShapeTool->Expand(Shape))
@@ -69,15 +70,13 @@ Standard_Boolean XCAFDoc_Editor::Expand (const TDF_Label& Doc, const TDF_Label& 
         if(!aShapeTool->GetShape(aPart.Father()).IsNull())
         {
           TopLoc_Location nulloc;
+          aPart.ForgetAttribute(XCAFDoc::ShapeRefGUID());
+          if (aShapeTool->GetShape(aPart.Father()).ShapeType() == TopAbs_COMPOUND)
           {
-            aPart.ForgetAttribute(XCAFDoc::ShapeRefGUID());
-            if(aShapeTool->GetShape(aPart.Father()).ShapeType() == TopAbs_COMPOUND)
-            {
-              aShapeTool->SetShape(aPart, aShape);
-            }
-            aPart.ForgetAttribute(XCAFDoc_ShapeMapTool::GetID());
-            aChild.ForgetAllAttributes(Standard_False);
+            aShapeTool->SetShape(aPart, aShape);
           }
+          aPart.ForgetAttribute(XCAFDoc_ShapeMapTool::GetID());
+          aChild.ForgetAllAttributes(Standard_False);
         }
         aChild.ForgetAttribute(TNaming_NamedShape::GetID());
         aChild.ForgetAttribute(XCAFDoc_ShapeMapTool::GetID());
@@ -112,7 +111,7 @@ Standard_Boolean XCAFDoc_Editor::Expand (const TDF_Label& Doc, const TDF_Label& 
         if(aShapeTool->GetReferredShape(aChild, aPart))
         {
           TopoDS_Shape aPartShape = aShapeTool->GetShape(aPart);
-          if (aPartShape.ShapeType() == TopAbs_COMPOUND)
+          if (!aPartShape.IsNull() && aPartShape.ShapeType() == TopAbs_COMPOUND)
             Expand(Doc, aPart, recursively);
         }
       }

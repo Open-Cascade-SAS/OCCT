@@ -408,7 +408,7 @@ public:
   Standard_EXPORT Standard_Boolean Expand (const TDF_Label& Shape) ;
 
     //! Make subshape for Part from Shape
-  Standard_EXPORT void makeSubShape (const TDF_Label& Part, const TopoDS_Shape& Shape) ;
+  Standard_EXPORT void makeSubShape (const TDF_Label& thePart, const TopoDS_Shape& theShape, const TopLoc_Location& theLoc) ;
 
 
 
