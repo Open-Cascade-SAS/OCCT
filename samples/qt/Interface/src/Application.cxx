@@ -6,6 +6,8 @@
 #include <stdlib.h>
 #include <QMdiSubWindow>
 
+#include <OSD_Environment.hxx>
+
 ApplicationWindow::ApplicationWindow()
     : ApplicationCommonWindow( ),
       myImportPopup( 0 ),
@@ -210,8 +212,10 @@ void ApplicationWindow::onSelectionChanged()
 QString ApplicationWindow::getIEResourceDir()
 {
   static QString aResourceDir =
-    QString::fromUtf8 (qgetenv ("CSF_IEResourcesDefaults").constData());
-  
+    QString (OSD_Environment ("CSF_IEResourcesDefaults").Value().ToCString());
+  if (aResourceDir.isEmpty())
+    aResourceDir = QString (OSD_Environment ("CSF_OCCTResourcePath").Value().ToCString()) + "/samples";
+
   return aResourceDir;
 }
 

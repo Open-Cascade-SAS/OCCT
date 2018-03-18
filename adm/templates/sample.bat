@@ -16,6 +16,10 @@ if ["%1"] == [""] (
   echo    HLR
   echo    Animation
   echo    Convert
+  echo    AndroidQt
+  echo    FuncDemo
+  echo    IESample
+  echo    Tutorial
   PAUSE
   exit /B
 )

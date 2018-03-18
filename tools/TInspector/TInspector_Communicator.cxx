@@ -37,10 +37,9 @@ TInspector_Communicator::TInspector_Communicator()
     static int argc = 1;
     static char* argv[] = { (char*)"", 0 };
 #if QT_VERSION > 0x050000
-  OSD_Environment anEnvironment ("QTDIR");
-  TCollection_AsciiString aPlugindsDirName = anEnvironment.Value();
-  aPlugindsDirName += "/plugins";
-  QApplication::addLibraryPath (aPlugindsDirName.ToCString());
+  TCollection_AsciiString aPlugindsDirName = OSD_Environment ("QTDIR").Value();
+  if (!aPlugindsDirName.IsEmpty())
+    QApplication::addLibraryPath (QString (aPlugindsDirName.ToCString()) + "/plugins");
 #endif
     new QApplication (argc, argv);
   }

@@ -1,0 +1,9 @@
+AndroidQt.cxx
+AndroidQt.h
+AndroidQt.qrc
+AndroidQt_TouchParameters.cxx
+AndroidQt_TouchParameters.h
+AndroidQt_UserInteractionParameters.h
+AndroidQt_Window.cxx
+AndroidQt_Window.h
+Main.cxx

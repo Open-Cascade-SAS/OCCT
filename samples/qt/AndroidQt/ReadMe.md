@@ -13,8 +13,17 @@ Requirements for building sample:
 * Android SDK  from 2014.07.02 or newer
 * Android NDK r9d or newer
 * Apache Ant 1.9.4 or higher
- 
-Configure project for building sample:
+* OCCT compiled under Android platform and placed in directories:
+  * occt\libs\armeabi-v7a\*.so and occt\inc\*.hxx (libraries and include files of OCCT install)
+  * android\assets\opencascade\shared\Shaders\* (Shaders folder of OCCT install: \share\opencascade\resources\Shaders)
+  * 3rdparty\include\freetype2\*, 3rdparty\include\FreeImage.h and 3rdparty\libs\armeabi-v7a\libFreeImage.so and 3rdparty\libs\armeabi-v7a\libfreetype.so
+
+It is also possible to to correct OCCT.pri file an get resources from another tree of directories.
+
+When AndroidQt will be started, it may be helpful to have some default data files(BRep) on Device for opening in AndroidQt.
+Copy these files into "android\assets\opencascade\shared" and it will be installed to device during compilation procedure.
+
+Having prepared all these products, configure AndroidQt project for building sample:
 
 In QtCreator, open AndroidQt.pro project-file:
 ~~~~
@@ -28,27 +37,52 @@ Tools->Options->Android
 * In JDK location specify path to Java Development Kit
 * In Android SDK location specify path to Android SDK
 * In Android NDK location specify path to Android NDK
+(During this location definition, warning is possible and OK:
+ "Qt version for architecture mips is missing. To add the Qt version, select Options > Build & Run > Qt Versins.")
 * In Ant executable specify path to ant.bat file located in Apache Ant bin directory
 
-Make sure that "Android for armeabi-v7a" kit has been detected
+Make sure that "Android for armeabi-v7a" kit has been detected (present in the list).
 ~~~~
 Tools->Options->Build & Run
 ~~~~ 
 
-The paths to OCCT and 3rdparty libraries are specified in "OCCT.pri" file:
-
-the paths to the headers:
+also or it can be checked or corrected in:
 ~~~~
-INCLUDEPATH += /occt/inc /3rdparty/include
-DEPENDPATH  += /occt/inc /3rdparty/include
+Projects->Android for armeabi-v7a option should be checked
+~~~~ 
+
+Switch On device, connect it to PC and define it in Qt Creator:
+~~~~
+Projects->Manage Kits...->Devices->Device: Run on Android
+~~~~                                                     
+Check that "Current state" is "Ready to use" on this page.
+
+~~~~
+Projects->Build Settings->General: Shadow build is switched OFF
 ~~~~
 
-the libraries location:
+Start configuration:
+
 ~~~~
-LIBS += -L/occt/libs/armeabi-v7a
+Call Build -> Run qmake
+~~~~
+Check content of "Compile Output" view.
+
+In order to perform qmake correctly, for example if you have the following error:
+~~~~
+Running steps for project AndroidQt...
+Could not start process "<qt_dir>\android_armv7\bin\qmake.exe" <occt_dir>\samples\qt\AndroidQt\AndroidQt.pro -r -spec android-g++ "CONFIG+=debug" "CONFIG+=declarative_debug" "CONFIG+=qml_debug"
+Error while building/deploying project AndroidQt (kit: Android for armeabi-v7a (GCC 4.9, Qt 5.3.2))
+When executing step "qmake"
 ~~~~
 
-OCCT resources (Shaders, SHMessage, StdResource, TObj, UnitsAPI and XSMessage folder) should be copied to androidqt_dir/android/assets/opencascade/shared/ directory. Current sample requires at least Shaders folder.
+~~~~
+Projects->Build Settings->General: switch OFF Shadow build
+Build->Build Project "Android Qt"
+Build->Run
+~~~~
 
-Select build configuration: Debug or Release and click Build->Build Project "AndroidQt" or (Ctrl + B).
+Dialog to "Select Android Device" is shown. Select Compatible Device, Ok.
+In case of any error, see log in "Application Output" view.
+
 After successful build the application can be deployed to device or emulator.

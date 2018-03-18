@@ -346,6 +346,7 @@ separate_arguments (BUILD_ADDITIONAL_TOOLKITS)
 if (MSVC)
   set (BUILD_MODULE_MfcSamples OFF CACHE BOOL "${BUILD_MODULE_MfcSamples_DESCR}")
 endif()
+set (BUILD_MODULE_QtSamples OFF CACHE BOOL "${BUILD_MODULE_QtSamples_DESCR}")
 
 set (BUILD_Inspector OFF CACHE BOOL "${BUILD_Inspector_DESCR}")
 
@@ -381,7 +382,7 @@ endif()
 # include the patched or original list of modules
 # list <MODULENAME>_TOOLKITS is created foreach module and contains its toolkits
 # list <OCCT_MODULES> will contain all modules
-OCCT_MODULES_AND_TOOLKITS (OCCT_MODULES)
+OCCT_MODULES_AND_TOOLKITS (MODULES "TOOLKITS" OCCT_MODULES)
 
 foreach (OCCT_MODULE ${OCCT_MODULES})
   BUILD_MODULE (${OCCT_MODULE})
@@ -775,30 +776,31 @@ else()
   set (SCRIPT_EXT sh)
 endif()
 
-# OCCT tools
-# include the patched or original list of tools
-# list <TOOLNAME>_TOOLKITS is created foreach tool and contains its toolkits
-# list <OCCT_TOOLS> will contain all tools
-if (NOT BUILD_Inspector)
-  OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_QT")
-  OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_TQTMALLOC")
-  OCCT_CHECK_AND_UNSET ("INSTALL_QT")
-else()
-  OCCT_TOOLS_AND_TOOLKITS (OCCT_TOOLS)
-  foreach (OCCT_TOOL ${OCCT_TOOLS})
-    list (APPEND BUILD_TOOL_TOOLKITS ${${OCCT_TOOL}_TOOL_TOOLKITS})
-  endforeach()
-
-  # collect all the headers to <binary dir>/inc folder
-  string(TIMESTAMP CURRENT_TIME "%H:%M:%S")
-  message (STATUS "\nInfo: \(${CURRENT_TIME}\) Start collecting all OCCT tool header files into ${CMAKE_BINARY_DIR}/tools/inc ...")
-  COLLECT_AND_INSTALL_OCCT_HEADER_FILES ("${CMAKE_BINARY_DIR}" "${BUILD_TOOL_TOOLKITS}" "${CMAKE_SOURCE_DIR}/tools" "${INSTALL_DIR_INCLUDE}/inspector")
-
-
+if (BUILD_Inspector OR BUILD_MODULE_QtSamples)
   # check qt 3rdparty path
   add_definitions (-DHAVE_QT)
   OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/qt")
   message (STATUS "Info: Qt is used by OCCT")
+else()
+  OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_QT")
+  OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_TQTMALLOC")
+  OCCT_CHECK_AND_UNSET ("INSTALL_QT")
+endif()
+
+# OCCT tools
+# include the patched or original list of tools
+# list <TOOLNAME>_TOOLKITS is created foreach tool and contains its toolkits
+# list <OCCT_TOOLS> will contain all tools
+if (BUILD_Inspector)
+  OCCT_MODULES_AND_TOOLKITS (TOOLS "TOOL_TOOLKITS" OCCT_TOOLS)
+  foreach (OCCT_TOOL ${OCCT_TOOLS})
+    list (APPEND BUILD_TOOL_TOOLKITS ${${OCCT_TOOL}_TOOL_TOOLKITS})
+  endforeach()
+
+  # collect all the headers to <binary dir>/inc/inspector folder
+  string(TIMESTAMP CURRENT_TIME "%H:%M:%S")
+  message (STATUS "\nInfo: \(${CURRENT_TIME}\) Start collecting all OCCT tool header files into ${CMAKE_BINARY_DIR}/inc/inspector ...")
+  COLLECT_AND_INSTALL_OCCT_HEADER_FILES ("${CMAKE_BINARY_DIR}" "${BUILD_TOOL_TOOLKITS}" "${CMAKE_SOURCE_DIR}/tools" "${INSTALL_DIR_INCLUDE}/inspector")
 endif()
 
 # OCCT samples
@@ -896,7 +898,7 @@ OCCT_CONFIGURE_AND_INSTALL ("adm/templates/custom.install.${SCRIPT_EXT}.in" "${S
 # write current custom.bat/sh (for build directory)
 OCCT_CONFIGURE ("adm/templates/custom.build.${SCRIPT_EXT}.in" "${SUB_CUSTOM_NAME}")
 
-if (BUILD_MODULE_MfcSamples)
+if (BUILD_MODULE_MfcSamples OR BUILD_MODULE_QtSamples)
   OCCT_INSTALL_FILE_OR_DIR ("adm/templates/sample.bat" "${INSTALL_DIR_SCRIPT}")
   OCCT_COPY_FILE_OR_DIR    ("adm/templates/sample.bat" "${CMAKE_BINARY_DIR}")
 endif()
@@ -923,6 +925,15 @@ foreach(RESOURCE ${RESOURCES})
     OCCT_INSTALL_FILE_OR_DIR ("src/${RESOURCE}" "${INSTALL_DIR_RESOURCE}")
   endif()
 endforeach()
+
+if (BUILD_MODULE_QtSamples)
+  FILE_TO_LIST ("adm/SAMPLES_RESOURCES" SAMPLES_RESOURCES)
+  foreach(RESOURCE ${SAMPLES_RESOURCES})
+    OCCT_INSTALL_FILE_OR_DIR ("samples/${RESOURCE}" "${INSTALL_DIR_RESOURCE}/samples")
+    #message("Copy Sample resources: samples/${RESOURCE} into ${INSTALL_DIR_RESOURCE}/samples")
+  endforeach()
+endif()
+
 
 # patch installed DrawDefault file if BUILD_SHARED_LIBRARY_NAME_POSTFIX is changed
 if (NOT "${BUILD_SHARED_LIBRARY_NAME_POSTFIX}" STREQUAL "")
@@ -968,9 +979,11 @@ endif()
 
 message (STATUS "Info: \(${CURRENT_TIME}\) OCCT toolkits processed")
 # samples do not support patch usage
-if (BUILD_MODULE_MfcSamples)
+if (BUILD_MODULE_MfcSamples OR BUILD_MODULE_QtSamples)
   set (OCCT_ROOT ${CMAKE_SOURCE_DIR})
+endif()
 
+if (BUILD_MODULE_MfcSamples)
   set (MFC_STANDARD_SAMPLES_DIR ${OCCT_ROOT}/samples/mfc/standard)
   set (COMMON_WINMAIN_FILE      ${MFC_STANDARD_SAMPLES_DIR}/Common/Winmain.cpp)
 
@@ -989,6 +1002,33 @@ if (BUILD_MODULE_MfcSamples)
   message (STATUS "Info: \(${CURRENT_TIME}\) MFC Sample projects added")
 endif()
 
+OCCT_MODULES_AND_TOOLKITS (SAMPLES "SAMPLES_TOOLKITS" OCCT_SAMPLES)
+
+if (BUILD_MODULE_QtSamples)
+  if (NOT Qt5_FOUND OR NOT USE_GLES2)
+    list (REMOVE_ITEM qt_SAMPLES_TOOLKITS AndroidQt)
+    message (STATUS "Info: AndroidQt sample excluded due to Qt5 or GLES2 usage are disabled")
+  endif()
+
+  if (NOT BUILD_Inspector)
+    list (REMOVE_ITEM tools_SAMPLES_TOOLKITS TInspectorEXE)
+    message (STATUS "Info: TInspectorEXE sample excluded due to BUILD_Inspector is disabled")
+  endif()
+
+  foreach (OCCT_SAMPLE ${OCCT_SAMPLES})
+    list (APPEND BUILD_SAMPLE_TOOLKITS ${${OCCT_SAMPLE}_SAMPLES_TOOLKITS})
+
+    # collect all the headers to <binary dir>/inc/samples folder
+    string(TIMESTAMP CURRENT_TIME "%H:%M:%S")
+    message (STATUS "Info: \(${CURRENT_TIME}\) ${OCCT_SAMPLE} Sample projects added")
+
+    # include patched toolkit projects or original ones
+    foreach (BUILD_SAMPLE_TOOLKIT ${${OCCT_SAMPLE}_SAMPLES_TOOLKITS})
+      OCCT_ADD_SUBDIRECTORY ("samples/${OCCT_SAMPLE}/${BUILD_SAMPLE_TOOLKIT}")
+    endforeach()
+  endforeach()
+endif()
+
 if (BUILD_MODULE_UwpSample)
   add_subdirectory(samples/xaml)
 endif()
@@ -1002,11 +1042,6 @@ if (BUILD_TOOL_TOOLKITS)
     install (FILES "${CMAKE_SOURCE_DIR}/adm/templates/inspector.${SCRIPT_EXT}" DESTINATION  "${INSTALL_DIR_SCRIPT}"
             PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_WRITE GROUP_EXECUTE WORLD_READ WORLD_WRITE WORLD_EXECUTE)
   endif()
-
-  set (BUILD_SAMPLE_TOOLKITS TInspectorEXE)
-  foreach (BUILD_SAMPLE_TOOL_TOOLKIT ${BUILD_SAMPLE_TOOLKITS})
-    OCCT_ADD_SUBDIRECTORY ("samples/tools/${BUILD_SAMPLE_TOOL_TOOLKIT}")
-  endforeach()
 
   # patch TInspectorEXE
   OCCT_CONFIGURE ("adm/templates/TInspectorEXE.vcxproj.user.in" "${CMAKE_BINARY_DIR}/samples/tools/TInspectorEXE/TInspectorEXE.vcxproj.user")

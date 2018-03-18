@@ -41,8 +41,15 @@
 #include <QApplication>
 #include "mainwindow.h"
 
+#include <OSD_Environment.hxx>
+
 int main(int argc, char *argv[])
 {
+#if QT_VERSION > 0x050000
+    TCollection_AsciiString aPlugindsDirName = OSD_Environment ("QTDIR").Value();
+    if (!aPlugindsDirName.IsEmpty())
+      QApplication::addLibraryPath (QString (aPlugindsDirName.ToCString()) + "/plugins");
+#endif
     QApplication app(argc, argv);
     MainWindow mainWin;
     mainWin.show();

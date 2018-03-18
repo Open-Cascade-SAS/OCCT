@@ -74,15 +74,11 @@ void setPluginSampleDirectory (const TCollection_AsciiString& theName, TInspecto
 // =======================================================================
 int main (int argc, char** argv)
 {
-  OSD_Environment anEnvironment ("QTDIR");
-  TCollection_AsciiString aPlugindsDirName = anEnvironment.Value();
-  if (aPlugindsDirName.IsEmpty())
-  {
-    std::cout << "QTDIR is not defined" << std::endl;
-    return 0;
-  }
-  aPlugindsDirName += "/plugins";
-  QApplication::addLibraryPath (aPlugindsDirName.ToCString());
+#if QT_VERSION > 0x050000
+  TCollection_AsciiString aPlugindsDirName = OSD_Environment ("QTDIR").Value();
+  if (!aPlugindsDirName.IsEmpty())
+    QApplication::addLibraryPath (QString (aPlugindsDirName.ToCString()) + "/plugins");
+#endif
   QApplication anApp (argc, argv);
 
   std::set<TCollection_AsciiString> aPlugins;

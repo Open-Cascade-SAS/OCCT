@@ -56,7 +56,7 @@ QPushButton* TInspectorEXE_OpenButton::StartButton()
   if (!myStartButton)
   {
     myStartButton = new QPushButton();
-    myStartButton->setIcon (QIcon (":/icons/folder_open.png"));
+    myStartButton->setIcon (QIcon (":folder_open.png"));
     connect (myStartButton, SIGNAL (clicked()), this, SLOT (onStartButtonClicked()));
   }
   return myStartButton;
@@ -138,11 +138,11 @@ TInspectorEXE_OpenFileDialog::TInspectorEXE_OpenFileDialog (QWidget* theParent, 
   aSelectFileLay->addWidget (mySelectedName, 1, 0);
 
   QToolButton* aSelectFileBtn = new QToolButton (aSelectFileBox);
-  aSelectFileBtn->setIcon (QIcon (":/icons/folder_open.png"));
+  aSelectFileBtn->setIcon (QIcon (":folder_open.png"));
   aSelectFileLay->addWidget (aSelectFileBtn, 1, 1);
 
   myFolderApplyOpen = new QToolButton (aSelectFileBox);
-  myFolderApplyOpen->setIcon (QIcon (":/icons/folder_import.png"));
+  myFolderApplyOpen->setIcon (QIcon (":folder_import.png"));
   myFolderApplyOpen->setIconSize (QSize (ICON_SIZE, ICON_SIZE));
   myFolderApplyOpen->setEnabled (false);
   aSelectFileLay->addWidget (myFolderApplyOpen, 0, 2, 2, 1);

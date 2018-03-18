@@ -14,6 +14,8 @@ OCCT_DEFINES = $$(CSF_DEFINES)
 
 DEFINES = $$split(OCCT_DEFINES, ;)
 
+RESOURCES += ./src/FuncDemo.qrc
+
 unix {
     UNAME = $$system(uname -s)
     LIBLIST = $$(LD_LIBRARY_PATH)

@@ -62,7 +62,7 @@ Window {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
 
-        source: "qrc:///icons/res/icons/ic_action_collection.png"
+        source: "qrc:/ic_action_collection.png"
       }
 
       MouseArea {

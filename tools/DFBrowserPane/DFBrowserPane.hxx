@@ -16,7 +16,7 @@
 #ifndef DFBROWSERPANE_H
 #define DFBROWSERPANE_H
 
-#ifdef DFBrowserPane_EXPORTS
+#ifdef __DFBrowserPane_DLL
   #ifdef _WIN32
     #define DFBROWSERPANE_EXPORT __declspec(dllexport)
   #else

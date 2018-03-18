@@ -122,6 +122,11 @@ set (BUILD_MODULE_MfcSamples_DESCR
 These samples show some possibilities of using OCCT and they can be executed
 with script samples.bat from the installation directory (INSTALL_DIR)")
 
+set (BUILD_MODULE_QtSamples_DESCR
+"Indicates whether OCCT Qt samples should be built together with OCCT.
+These samples show some possibilities of using OCCT and they can be executed
+with script samples.bat from the installation directory (INSTALL_DIR)")
+
 set (BUILD_Inspector_DESCR
 "Indicates whether OCCT inspector should be built together with OCCT.
 This inspector provides functionality to interactively inspect low-level content

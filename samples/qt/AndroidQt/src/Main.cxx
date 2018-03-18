@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
   qmlRegisterType<AndroidQt>("AndroidQt", 1, 0, "AndroidQt");
 
   QQmlApplicationEngine engine;
-  engine.load (QUrl (QStringLiteral ("qrc:///res/qml/main.qml")));
+  engine.load (QUrl (QStringLiteral ("qrc:/main.qml")));
 
   return app.exec();
 }

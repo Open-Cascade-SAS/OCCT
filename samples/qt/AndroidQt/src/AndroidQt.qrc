@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file alias="main.qml">../res/qml/main.qml</file>
+    </qresource>
+    <qresource prefix="/">
+        <file alias="ic_action_collection.png">../res/icons/ic_action_collection.png</file>
+    </qresource>
+</RCC>

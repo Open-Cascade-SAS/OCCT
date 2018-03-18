@@ -1,6 +1,8 @@
 #include "ApplicationTut.h"
 #include "DocumentTut.h"
 
+#include <OSD_Environment.hxx>
+
 #include <QFileDialog>
 #include <QStatusBar>
 #include <QMdiSubWindow>
@@ -59,7 +61,8 @@ void ApplicationTut::onMakeBottleAction()
 
 QString ApplicationTut::getTutResourceDir()
 {
-  static QString resDir (qgetenv ("CSF_TutorialResourcesDefaults").constData());
+  static QString resDir (OSD_Environment ("CSF_TutorialResourcesDefaults").Value().ToCString());
+  if (resDir.isEmpty())
+    resDir = QString (OSD_Environment ("CSF_OCCTResourcePath").Value().ToCString()) + "/samples";
   return resDir;
 }
-

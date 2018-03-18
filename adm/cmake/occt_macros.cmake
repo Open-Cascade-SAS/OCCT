@@ -502,11 +502,11 @@ function (OCCT_TOOLKIT_FULL_DEP TOOLKIT_NAME TOOLKIT_FULL_DEPS)
   set (${TOOLKIT_FULL_DEPS} ${LOCAL_TOOLKIT_FULL_DEPS} PARENT_SCOPE)
 endfunction()
 
-# Function to get list of modules and toolkits from file adm/MODULES.
+# Function to get list of modules/toolkits/samples from file adm/${FILE_NAME}.
 # Creates list <$MODULE_LIST> to store list of MODULES and
-# <NAME_OF_MODULE>_TOOLKITS foreach module to store its toolkits.
-function (OCCT_MODULES_AND_TOOLKITS MODULE_LIST)
-  FILE_TO_LIST ("adm/MODULES" FILE_CONTENT)
+# <NAME_OF_MODULE>_TOOLKITS foreach module to store its toolkits, where "TOOLKITS" is defined by TOOLKITS_NAME_SUFFIX.
+function (OCCT_MODULES_AND_TOOLKITS FILE_NAME TOOLKITS_NAME_SUFFIX MODULE_LIST)
+  FILE_TO_LIST ("adm/${FILE_NAME}" FILE_CONTENT)
 
   foreach (CONTENT_LINE ${FILE_CONTENT})
     string (REPLACE " " ";" CONTENT_LINE ${CONTENT_LINE})
@@ -514,28 +514,10 @@ function (OCCT_MODULES_AND_TOOLKITS MODULE_LIST)
     list (REMOVE_AT CONTENT_LINE 0)
     list (APPEND ${MODULE_LIST} ${MODULE_NAME})
     # (!) REMOVE THE LINE BELOW (implicit variables)
-    set (${MODULE_NAME}_TOOLKITS ${CONTENT_LINE} PARENT_SCOPE)
+    set (${MODULE_NAME}_${TOOLKITS_NAME_SUFFIX} ${CONTENT_LINE} PARENT_SCOPE)
   endforeach()
 
   set (${MODULE_LIST} ${${MODULE_LIST}} PARENT_SCOPE)
-endfunction()
-
-# Function to get list of tools and toolkits from file adm/TOOLS.
-# Creates list <$TOOL_LIST> to store list of TOOLS and
-# <NAME_OF_TOOL>_TOOLKITS foreach tool to store its toolkits.
-function (OCCT_TOOLS_AND_TOOLKITS TOOL_LIST)
-  FILE_TO_LIST ("adm/TOOLS" FILE_CONTENT)
-
-  foreach (CONTENT_LINE ${FILE_CONTENT})
-    string (REPLACE " " ";" CONTENT_LINE ${CONTENT_LINE})
-    list (GET CONTENT_LINE 0 TOOL_NAME)
-    list (REMOVE_AT CONTENT_LINE 0)
-    list (APPEND ${TOOL_LIST} ${TOOL_NAME})
-    # (!) REMOVE THE LINE BELOW (implicit variables)
-    set (${TOOL_NAME}_TOOL_TOOLKITS ${CONTENT_LINE} PARENT_SCOPE)
-  endforeach()
-
-  set (${TOOL_LIST} ${${TOOL_LIST}} PARENT_SCOPE)
 endfunction()
 
 # Returns OCC version string from file Standard_Version.hxx (if available)

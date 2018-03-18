@@ -47,7 +47,7 @@ include_directories(
 
 add_definitions(-D__WIN32__)
 add_definitions(-DWNT)
-add_definitions(-D${PROJECT_NAME}_EXPORTS)
+add_definitions(-D__${PROJECT_NAME}_DLL)
 
 # parce EXTERNLIB file
 FILE_TO_LIST ("src/${PROJECT_NAME}/EXTERNLIB" USED_EXTERNLIB_AND_TOOLKITS)

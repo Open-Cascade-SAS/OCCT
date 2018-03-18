@@ -15,6 +15,7 @@
 
 #include <Graphic3d_GraphicDriver.hxx>
 #include <OpenGl_GraphicDriver.hxx>
+#include <OSD_Environment.hxx>
 
 #include <stdlib.h>
 
@@ -583,8 +584,10 @@ void ApplicationCommonWindow::onSetMaterial( int theMaterial )
 QString ApplicationCommonWindow::getResourceDir()
 {
   static QString aResourceDir =
-    QString::fromUtf8 (qgetenv ("CSF_ResourcesDefaults").constData());
-  
+    QString (OSD_Environment ("CSF_ResourcesDefaults").Value().ToCString());
+  if (aResourceDir.isEmpty())
+    aResourceDir = QString (OSD_Environment ("CSF_OCCTResourcePath").Value().ToCString()) + "/samples";
+
   return aResourceDir;
 }
 
