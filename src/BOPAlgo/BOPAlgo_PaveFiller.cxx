@@ -173,22 +173,6 @@ void BOPAlgo_PaveFiller::SetSectionAttribute
   mySectionAttribute = theSecAttr;
 }
 //=======================================================================
-//function : SetArguments
-//purpose  : 
-//=======================================================================
-void BOPAlgo_PaveFiller::SetArguments(const TopTools_ListOfShape& theLS)
-{
-  myArguments=theLS;
-}
-//=======================================================================
-//function : Arguments
-//purpose  : 
-//=======================================================================
-const TopTools_ListOfShape& BOPAlgo_PaveFiller::Arguments()const
-{
-  return myArguments;
-}
-//=======================================================================
 // function: Init
 // purpose: 
 //=======================================================================

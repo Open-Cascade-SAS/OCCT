@@ -17,6 +17,8 @@
 #include <BOPAlgo_PaveFiller.hxx>
 #include <BOPAlgo_Alerts.hxx>
 
+#include <TopoDS_Iterator.hxx>
+
 //=======================================================================
 //function : 
 //purpose  : 
@@ -97,4 +99,32 @@ void BOPAlgo_Splitter::Perform()
   //
   myEntryPoint = 1;
   PerformInternal(*pPF);
+}
+
+//=======================================================================
+//function : BuildResult
+//purpose  : 
+//=======================================================================
+void BOPAlgo_Splitter::BuildResult(const TopAbs_ShapeEnum theType)
+{
+  BOPAlgo_Builder::BuildResult(theType);
+
+  if (theType == TopAbs_COMPOUND)
+  {
+    // The method is called for the last time for this operation.
+    // If there is only one argument shape and it has been modified into
+    // a single shape, or has not been modified at all, the result shape
+    // has to be overwritten to avoid the unnecessary enclosure into compound.
+    if (myArguments.Extent() == 1)
+    {
+      TopoDS_Iterator it(myShape);
+      if (it.More())
+      {
+        const TopoDS_Shape& aSFirst = it.Value();
+        it.Next();
+        if (!it.More())
+          myShape = aSFirst;
+      }
+    }
+  }
 }

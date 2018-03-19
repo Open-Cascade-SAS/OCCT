@@ -1,0 +1,80 @@
+polyline p 0 0 0 10 0 0 10 0 10 5 0 10 5 0 5 0 0 5 0 0 0
+mkplane f p
+prism s f 0 5 0
+
+# make the shape periodic
+makeperiodic sp s -x 10 -z 10 -y 5
+
+checkshape sp
+checknbshapes sp -vertex 16 -edge 24 -wire 10 -face 10 -shell 1 -solid 1 -t
+checkprops sp -s 350 -v 375
+
+# get history of the operation
+savehistory h
+
+# check modification of the bottom and side faces
+explode s f
+modified m h s_1
+
+checknbshapes m -vertex 6 -edge 7 -wire 2 -face 2 -t
+explode m f
+periodictwins t1 m_1
+periodictwins t2 m_2
+
+compound t1 t2 t
+checknbshapes t -face 1 -t
+
+
+explode s f
+modified m h s_2
+
+checknbshapes m -vertex 6 -edge 7 -wire 2 -face 2 -t
+explode m f
+periodictwins t1 m_1
+periodictwins t2 m_2
+
+compound t1 t2 t
+checknbshapes t -face 1 -t
+
+
+# repeat the shape
+repeatshape res -x 1 -y 2
+
+checkshape res
+checknbshapes res -vertex 56 -edge 102 -wire 53 -face 53 -shell 6 -solid 6 -t
+checkprops res -s 2100 -v 2250
+
+
+# get repetition history
+savehistory h
+
+# get generations of bottom face
+generated g h s_1
+
+checkshape g
+checknbshapes g -vertex 20 -edge 31 -wire 12 -face 12 -t
+checkprops g -s 300
+
+# get generations of the top face
+generated g h s_3
+
+checkshape g
+checknbshapes g -vertex 16 -edge 20 -wire 6 -face 6 -t
+checkprops g -s 150
+
+foreach f [explode g f] {
+  periodictwins t $f
+  checkshape t
+  checknbshapes t -wire 11 -face 11 -t
+  checkprops t -s 275
+}
+
+# clear repetitions
+clearrepetitions
+
+savehistory h
+
+# now generated for bottom face should be empty
+if {![regexp "No shapes were generated from the shape." [generated g1 h s_1]]} {
+  puts "Error: history is not cleared"
+}

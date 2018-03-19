@@ -112,32 +112,35 @@ void BOPAlgo_Builder::FillImagesVertices()
 //function : BuildResult
 //purpose  : 
 //=======================================================================
-  void BOPAlgo_Builder::BuildResult(const TopAbs_ShapeEnum theType)
+void BOPAlgo_Builder::BuildResult(const TopAbs_ShapeEnum theType)
 {
-  TopAbs_ShapeEnum aType;
-  BRep_Builder aBB;
-  TopTools_MapOfShape aM;
-  TopTools_ListIteratorOfListOfShape aIt, aItIm;
-  //
-  aIt.Initialize(myArguments);
-  for (; aIt.More(); aIt.Next()) {
-    const TopoDS_Shape& aS=aIt.Value();
-    aType=aS.ShapeType();
-    if (aType==theType) {
-      if (myImages.IsBound(aS)){
-        const TopTools_ListOfShape& aLSIm=myImages.Find(aS);
-        aItIm.Initialize(aLSIm);
-        for (; aItIm.More(); aItIm.Next()) {
-          const TopoDS_Shape& aSIm=aItIm.Value();
-          if (aM.Add(aSIm)) {
-            aBB.Add(myShape, aSIm);
-          }
-        }
-      }
-      else {
-        if (aM.Add(aS)) {
-          aBB.Add(myShape, aS);
-        }
+  // Fence map
+  TopTools_MapOfShape aMFence;
+  // Iterate on all arguments of given type
+  // and add their images into result
+  TopTools_ListIteratorOfListOfShape aItA(myArguments);
+  for (; aItA.More(); aItA.Next())
+  {
+    const TopoDS_Shape& aS = aItA.Value();
+    if (aS.ShapeType() != theType)
+      continue;
+    // Get images
+    const TopTools_ListOfShape* pLSIm = myImages.Seek(aS);
+    if (!pLSIm)
+    {
+      // No images -> add the argument shape itself into result
+      if (aMFence.Add(aS))
+        BRep_Builder().Add(myShape, aS);
+    }
+    else
+    {
+      // Add images of the argument shape into result
+      TopTools_ListIteratorOfListOfShape aItIm(*pLSIm);
+      for (; aItIm.More(); aItIm.Next())
+      {
+        const TopoDS_Shape& aSIm = aItIm.Value();
+        if (aMFence.Add(aSIm))
+          BRep_Builder().Add(myShape, aSIm);
       }
     }
   }

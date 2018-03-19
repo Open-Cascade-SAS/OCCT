@@ -5860,6 +5860,7 @@ The following topics are covered in the eight sections of this chapter:
   * Topological operations, or booleans.
   * Drafting and blending.
   * Defeaturing.
+  * Making shapes periodic in 3D space.
   * Analysis of shapes.
 
 
@@ -7189,6 +7190,66 @@ Options:
 nohist   - disables the history collection;
 parallel - enables the parallel processing mode.
 ~~~~
+
+
+@subsection occt_draw_makeperiodic 3D Model Periodicity
+
+Draw module for @ref occt_modalg_makeperiodic "making the shape periodic" includes the following commands:
+* **makeperiodic** - makes the shape periodic in required directions;
+* **repeatshape** - repeats the periodic shape in requested periodic direction;
+* **periodictwins** - returns the periodic twins for the shape;
+* **clearrepetitions** - clears all previous repetitions of the periodic shape.
+
+@subsubsection occt_draw_makeperiodic_makeperiodic makeperiodic
+
+The command makes the shape periodic in the required directions with the required period.
+If trimming is given it trims the shape to fit the requested period.
+
+Syntax:
+~~~~
+makeperiodic result shape [-x/y/z period [-trim first]]
+
+Where:
+result        - resulting periodic shape;
+shape         - input shape to make it periodic:
+-x/y/z period - option to make the shape periodic in X, Y or Z direction with the given period;
+-trim first   - option to trim the shape to fit the required period, starting the period in first.
+~~~~
+
+@subsubsection occt_draw_makeperiodic_repeatshape repeatshape
+
+The command repeats the periodic shape in periodic direction requested number of time.
+The result contains the all the repeated shapes glued together.
+The command should be called after **makeperiodic** command.
+
+Syntax:
+~~~~
+repeatshape result -x/y/z times
+
+Where:
+result       - resulting shape;
+-x/y/z times - direction for repetition and number of repetitions (negative number of times means the repetition in negative direction).
+~~~~
+
+@subsubsection occt_draw_makeperiodic_periodictwins periodictwins
+
+For the given shape the command returns the identical shapes located on the opposite sides of the periodic direction.
+All periodic twins should have the same geometry.
+The command should be called after **makeperiodic** command.
+
+Syntax:
+~~~~
+periodictwins twins shape
+
+Where:
+twins - periodic twins for the given shape
+shape - shape to find the twins for
+~~~~
+
+@subsubsection occt_draw_makeperiodic_clearrepetitions clearrepetitions
+
+The command clears all previous repetitions of the periodic shape allowing to start the repetitions over.
+No arguments are needed for the command.
 
 
 @subsection occt_draw_7_9  Analysis of topology and geometry
@@ -8551,7 +8612,7 @@ Where:
 
 @subsubsection occt_draw_bop_options_warn Drawing warning shapes
 
-**bdrawwarnshapes** command enables/disables drawing of waring shapes of BOP algorithms.
+**bdrawwarnshapes** command enables/disables drawing of warning shapes of BOP algorithms.
 
 Syntax:
 ~~~~

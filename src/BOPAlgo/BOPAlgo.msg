@@ -100,3 +100,15 @@ Unable to orient the shape correctly
 
 .BOPAlgo_AlertUnknownShape
 Shape is unknown for operation
+
+.BOPAlgo_AlertNoPeriodicityRequired
+No periodicity has been requested for the shape
+
+.BOPAlgo_AlertUnableToTrim
+Unable to trim the shape for making it periodic (BOP Common fails)
+
+.BOPAlgo_AlertUnableToMakeIdentical
+Unable to make the shape to look identical on opposite sides (Splitter fails)
+
+.BOPAlgo_AlertUnableToRepeat
+Unable to repeat the shape (Gluer fails)

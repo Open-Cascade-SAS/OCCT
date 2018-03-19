@@ -11,6 +11,7 @@ BOPTest_Objects.cxx
 BOPTest_Objects.hxx
 BOPTest_OptionCommands.cxx
 BOPTest_PartitionCommands.cxx
+BOPTest_PeriodicityCommands.cxx
 BOPTest_TolerCommands.cxx
 BOPTest_DebugCommands.cxx
 BOPTest_CellsCommands.cxx

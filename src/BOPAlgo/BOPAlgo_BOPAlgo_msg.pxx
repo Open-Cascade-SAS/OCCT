@@ -102,4 +102,16 @@ static const char BOPAlgo_BOPAlgo_msg[] =
   "Unable to orient the shape correctly\n"
   "\n"
   ".BOPAlgo_AlertUnknownShape\n"
-  "Shape is unknown for operation\n";
+  "Shape is unknown for operation\n"
+  "\n"
+  ".BOPAlgo_AlertNoPeriodicityRequired\n"
+  "No periodicity has been requested for the shape\n"
+  "\n"
+  ".BOPAlgo_AlertUnableToTrim\n"
+  "Unable to trim the shape for making it periodic (BOP Common fails)\n"
+  "\n"
+  ".BOPAlgo_AlertUnableToMakeIdentical\n"
+  "Unable to make the shape to look identical on opposite sides (Splitter fails)\n"
+  "\n"
+  ".BOPAlgo_AlertUnableToRepeat\n"
+  "Unable to repeat the shape (Gluer fails)\n";

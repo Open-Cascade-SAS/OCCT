@@ -66,6 +66,12 @@ protected:
 
   //! Checks the input data
   Standard_EXPORT virtual void CheckData() Standard_OVERRIDE;
+
+  //! Adds images of the argument shapes into result.
+  //! When called the for the last time (for compound) it rebuilds the result
+  //! shape to avoid multiple enclosure into compounds.
+  Standard_EXPORT virtual void BuildResult(const TopAbs_ShapeEnum theType) Standard_OVERRIDE;
+
 };
 
 #endif // _BOPAlgo_Splitter_HeaderFile

@@ -3438,3 +3438,168 @@ Here are the few examples of defeaturing of the model containing boxes with blen
   <td>@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im029.png,"Result",220}</td></td>
 </tr>
 </table>
+
+
+@section occt_modalg_makeperiodic 3D Model Periodicity
+
+Open CASCADE Technology provides tools for making an arbitrary 3D model (or just shape) periodic in 3D space in the specified directions.
+
+Periodicity of the shape means that the shape can be repeated in any periodic direction any number of times without creation of the new geometry or splits.
+The idea of this algorithm is to make the shape look similarly on the opposite sides or on the period bounds of periodic directions.
+It does not mean that the opposite sides of the shape will be mirrored. It just means that the opposite sides of the shape should be split by each other and obtain the same geometry on opposite sides.
+Such approach will allow repeating the shape, i.e. translating the copy of a shape on the period, without creation of new geometry because there will be no coinciding parts of different dimension.
+
+For better understanding of what periodicity means lets create a simple prism and make it periodic.
+The following draw script creates the L-shape prism with extensions 10x5x10:
+~~~~
+polyline p 0 0 0 0 0 10 5 0 10 5 0 5 10 0 5 10 0 0 0 0 0
+mkplane f p
+prism s f 0 5 0
+~~~~
+@figure{/user_guides/modeling_algos/images/modeling_algos_mkperiodic_im001.png,"Shape to make periodic",220}
+
+Making this shape periodic in X, Y and Z directions with the periods matching the shape's extensions should make the splits of negative X and Z sides of the shape. The shape is already similar on opposite sides of Y directions, thus no new splits is expected.
+Here is the shape after making it periodic:
+@figure{/user_guides/modeling_algos/images/modeling_algos_mkperiodic_im002.png,"Periodic shape",220}
+And here is the repetition of the shape once in X and Z directions:
+@figure{/user_guides/modeling_algos/images/modeling_algos_mkperiodic_im003.png,"Repeated shape",220}
+
+The OCCT Shape Periodicity tools also allows making the shape periodic with the period not matching the shape's extensions. Let's make the shape periodic with 11, 6 and 11 for X, Y, Z periods accordingly.
+Such values of periods mean that there will be a gap between repeated shapes, and since during repetition the opposite sides do not touch the shape will not be split at all.
+Here is the repetition of the shape once in X and Z directions:
+@figure{/user_guides/modeling_algos/images/modeling_algos_mkperiodic_im004.png,"Repeated shape",220}
+As expected, the shape is not split and the repeated elements do not touch.
+
+If necessary the algorithm will trim the shape to fit into the requested period by splitting it with the planes limiting the shape's requested periods.
+E.g. let's make the L-shape periodic only in X direction with the period 2 starting at X parameter 4:
+@figure{/user_guides/modeling_algos/images/modeling_algos_mkperiodic_im005.png,"Periodic trimmed shape",220}
+
+@subsection occt_modalg_makeperiodic_how_it_works How the shape is made periodic
+
+For making the shape periodic in certain direction the algorithm performs the following steps:
+* Creates the copy of the shape and moves it on the period into negative side of the requested direction;
+* Splits the negative side of the shape by the moved copy, ensuring copying of the geometry from positive side to negative;
+* Creates the copy of the shape (with already split negative side) and moves it on the period into the positive side of the requested direction;
+* Splits the positive side of the shape by the moved copy, ensuring copying of the geometry from negative side to positive.
+
+Repeated copying of the geometry ensures that the corner edges of the periodic shape will have the same geometry on opposite sides of all periodic directions.
+
+Thus, in the periodic shape the geometry from positive side of the shape is always copied on the negative side of periodic directions.
+
+@subsection occt_modalg_makeperiodic_association Opposite shapes association
+
+The algorithm also associates the identical (or twin) shapes located on the opposite sides of the periodic shape. By the construction, the twin shapes should always have the same geometry and distanced from each other on the period.
+It is possible that the shape does not have any twins. It means that when repeating this shape will not touch the opposite side of the shape. In the example when the periods of the shape are grater than its extensions, non of the sub-shapes has a twin.
+
+@subsection occt_modalg_makeperiodic_repetition Periodic shape repetition
+
+The algorithm also provides the methods to repeat the periodic shape in periodic directions. To repeat shape the algorithm makes the requested number of copies of the shape and translates them one by one on the time * period value.
+After all copies are made and translated they are glued to have valid shape.
+The subsequent repetitions are performed on the repeated shape, thus e.g. repeating the shape two times in any periodic direction will create result containing three shapes (original plus two copies).
+Single subsequent repetition in any direction will result already in 6 shapes.
+
+The repetitions can be cleared and started over.
+
+@subsection occt_modalg_makeperiodic_history History support
+
+The algorithm supports the history of shapes modifications, thus it is possible to track how the shapes have been changed to make it periodic and what new shapes have been created during repetitions.
+Both split history and history of periodic shape repetition are available here. Note, that all repeated shapes are stored as generated into the history.
+
+
+*BRepTools_History* is used for history support.
+
+@subsection occt_modalg_makeperiodic_errors Errors/Warnings
+
+The algorithm supports the Error/Warning reporting system which allows obtaining the extended overview of the errors and warning occurred during the operation.
+As soon as any error appears the algorithm stops working. The warnings allow continuing the job, informing the user that something went wrong.
+The algorithm returns the following alerts:
+* *BOPAlgo_AlertNoPeriodicityRequired* - Error alert is given if no periodicity has been requested in any direction;
+* *BOPAlgo_AlertUnableToTrim* - Error alert is given if the trimming of the shape for fitting it into requested period has failed;
+* *BOPAlgo_AlertUnableToMakeIdentical* - Error alert is given if splitting of the shape by its moved copies has failed;
+* *BOPAlgo_AlertUnableToRepeat* - Warning alert is given if the gluing of the repeated shapes has failed.
+
+For more information on the error/warning reporting system please see the chapter @ref occt_algorithms_ers "Errors and warnings reporting system" of Boolean operations user guide.
+
+@subsection occt_modalg_makeperiodic_usage Usage
+
+The algorithm is implemented in the class *BOPAlgo_MakePeriodic*.
+Here is the example of its usage on the API level:
+~~~~
+TopoDS_Shape aShape = ...;                 // The shape to make periodic
+Standard_Boolean bMakeXPeriodic = ...;     // Flag for making or not the shape periodic in X direction
+Standard_Real aXPeriod = ...;              // X period for the shape
+Standard_Boolean isXTrimmed = ...;         // Flag defining whether it is necessary to trimming
+                                           // the shape to fit to X period
+Standard_Real aXFirst = ...;               // Start of the X period
+                                           // (really necessary only if the trimming is requested)
+Standard_Boolean bRunParallel = ...;       // Parallel processing mode or single
+
+BOPAlgo_MakePeriodic aPeriodicityMaker;                   // Periodicity maker
+aPeriodicityMaker.SetShape(aShape);                       // Set the shape
+aPeriodicityMaker.MakeXPeriodic(bMakePeriodic, aXPeriod); // Making the shape periodic in X direction
+aPeriodicityMaker.SetTrimmed(isXTrimmed, aXFirst);        // Trim the shape to fit X period
+aPeriodicityMaker.SetRunParallel(bRunParallel);           // Set the parallel processing mode
+aPeriodicityMaker.Perform();                              // Performing the operation
+
+if (aPeriodicityMaker.HasErrors())                        // Check for the errors
+{
+  // errors treatment
+  Standard_SStream aSStream;
+  aPeriodicityMaker.DumpErrors(aSStream);
+  return;
+}
+if (aPeriodicityMaker.HasWarnings())                      // Check for the warnings
+{
+  // warnings treatment
+  Standard_SStream aSStream;
+  aPeriodicityMaker.DumpWarnings(aSStream);
+}
+const TopoDS_Shape& aPeriodicShape = aPeriodicityMaker.Shape(); // Result periodic shape
+
+aPeriodicityMaker.XRepeat(2);                                    // Making repetitions
+const TopoDS_Shape& aRepeat = aPeriodicityMaker.RepeatedShape(); // Getting the repeated shape
+aPeriodicityMaker.ClearRepetitions();                            // Clearing the repetitions
+~~~~
+
+Please note, that the class is based on the options class *BOPAlgo_Options*, which provides the following options for the algorithm:
+* Error/Warning reporting system;
+* Parallel processing mode.
+The other options of the base class are not supported here and will have no effect.
+
+All the history information obtained during the operation is stored into *BRepTools_History* object and available through *History()* method:
+~~~~
+// Get the history object
+const Handle(BRepTools_History)& BOPAlgo_MakePeriodic::History();
+~~~~
+
+For the usage of the MakePeriodic algorithm on the Draw level the following commands have been implemented:
+* **makeperiodic**
+* **repeatshape**
+* **periodictwins**
+* **clearrepetitions**
+
+For more details on the periodicity commands please refer the @ref occt_draw_makeperiodic "Periodicity commands" of the Draw test harness user guide.
+
+To track the history of a shape modification during MakePeriodic operation the @ref occt_draw_hist "standard history commands" can be used.
+
+To have possibility to access the error/warning shapes of the operation use the *bdrawwarnshapes* command before running the algorithm (see command usage in the @ref occt_algorithms_ers "Errors and warnings reporting system" of Boolean operations user guide).
+
+@subsection occt_modalg_makeperiodic_examples Examples
+
+Imagine that you need to make the drills in the plate on the same distance from each other. To model this process it is necessary to make a lot of cylinders (simulating the drills) and cut these cylinders from the plate.
+With the periodicity tool, the process looks very simple:
+~~~~
+# create plate 100 x 100
+box plate -50 -50 0 100 100 1
+# create a single drill with radius 1
+pcylinder drill 1 1
+# locate the drill in the left corner
+ttranslate drill -48 -48 0
+# make the drill periodic with 4 as X and Y periods, so the distance between drills will be 2
+makeperiodic drill drill -x 4 -trim -50 -y 4 -trim -50
+# repeat the drill to fill the plate, in result we get net of 25 x 25 drills
+repeatshape drills -x 24 -y 24
+# cut the drills from the plate
+bcut result plate drills
+~~~~
+@figure{/user_guides/modeling_algos/images/modeling_algos_mkperiodic_im006.png,"Plate with drills",220}

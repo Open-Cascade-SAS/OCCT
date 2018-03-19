@@ -27,6 +27,8 @@ BOPAlgo_CheckResult.cxx
 BOPAlgo_CheckResult.hxx
 BOPAlgo_CheckStatus.hxx
 BOPAlgo_ListOfCheckResult.hxx
+BOPAlgo_MakePeriodic.cxx
+BOPAlgo_MakePeriodic.hxx
 BOPAlgo_MakerVolume.cxx
 BOPAlgo_MakerVolume.hxx
 BOPAlgo_MakerVolume.lxx

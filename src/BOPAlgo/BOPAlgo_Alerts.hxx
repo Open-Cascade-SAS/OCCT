@@ -30,7 +30,7 @@ DEFINE_SIMPLE_ALERT(BOPAlgo_AlertBuilderFailed)
 //! The intersection of the arguments has failed
 DEFINE_SIMPLE_ALERT(BOPAlgo_AlertIntersectionFailed)
 
-//! The type of Boolean Operation is not set
+//! More than one argument is provided
 DEFINE_SIMPLE_ALERT(BOPAlgo_AlertMultipleArguments)
 
 //! The Pave Filler (the intersection tool) has not been created
@@ -113,5 +113,17 @@ DEFINE_ALERT_WITH_SHAPE(BOPAlgo_AlertUnableToOrientTheShape)
 
 //! Shape is unknown for operation
 DEFINE_ALERT_WITH_SHAPE(BOPAlgo_AlertUnknownShape)
+
+//! No periodicity has been requested for the shape
+DEFINE_SIMPLE_ALERT(BOPAlgo_AlertNoPeriodicityRequired)
+
+//! Unable to trim the shape for making it periodic (BOP Common fails)
+DEFINE_ALERT_WITH_SHAPE(BOPAlgo_AlertUnableToTrim)
+
+//! Unable to make the shape to look identical on opposite sides (Splitter fails)
+DEFINE_ALERT_WITH_SHAPE(BOPAlgo_AlertUnableToMakeIdentical)
+
+//! Unable to repeat the shape (Gluer fails)
+DEFINE_ALERT_WITH_SHAPE(BOPAlgo_AlertUnableToRepeat)
 
 #endif // _BOPAlgo_Alerts_HeaderFile

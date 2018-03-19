@@ -1,0 +1,14 @@
+box b 100 100 1
+
+pcylinder c 2 2
+ttranslate c 2.5 2.5 0
+
+makeperiodic p c -x 5 -trim 0 -y 5 -trim 0
+
+repeatshape r -x 19 -y 19
+
+bcut result b r
+
+checkshape result
+checknbshapes result -vertex 808 -edge 1212 -wire 1206 -face 406 -shell 1 -solid 1 -t
+checkprops result -s 15373.5 -v 4973.45
