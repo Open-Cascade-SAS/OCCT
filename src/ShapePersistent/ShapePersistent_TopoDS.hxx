@@ -43,7 +43,7 @@ public:
     //! Gets persistent child objects
     Standard_EXPORT virtual void PChildren(SequenceOfPersistent& theChildren) const;
     //! Returns persistent type name
-    Standard_EXPORT virtual Standard_CString PName() const { return "PTopoDS_HShape"; }
+    virtual Standard_CString PName() const { return "PTopoDS_HShape"; }
 
   private:
     Handle(StdObjMgt_Persistent) myEntry;

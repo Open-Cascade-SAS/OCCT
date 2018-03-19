@@ -232,7 +232,7 @@ public:
   Standard_EXPORT virtual void SetGradientBackground (const Aspect_GradientBackground& theBackground) Standard_OVERRIDE;
 
   //! Returns background image texture file path.
-  Standard_EXPORT virtual TCollection_AsciiString BackgroundImage() Standard_OVERRIDE { return myBackgroundImagePath; }
+  virtual TCollection_AsciiString BackgroundImage() Standard_OVERRIDE { return myBackgroundImagePath; }
 
   //! Sets background image texture file path.
   Standard_EXPORT virtual void SetBackgroundImage (const TCollection_AsciiString& theFilePath) Standard_OVERRIDE;
@@ -244,7 +244,7 @@ public:
   Standard_EXPORT virtual void SetBackgroundImageStyle (const Aspect_FillMethod theFillStyle) Standard_OVERRIDE;
 
   //! Returns environment texture set for the view.
-  Standard_EXPORT virtual Handle(Graphic3d_TextureEnv) TextureEnv() const Standard_OVERRIDE { return myTextureEnvData; }
+  virtual Handle(Graphic3d_TextureEnv) TextureEnv() const Standard_OVERRIDE { return myTextureEnvData; }
 
   //! Sets environment texture for the view.
   Standard_EXPORT virtual void SetTextureEnv (const Handle(Graphic3d_TextureEnv)& theTextureEnv) Standard_OVERRIDE;

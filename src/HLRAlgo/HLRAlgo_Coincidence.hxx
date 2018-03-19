@@ -42,7 +42,7 @@ class HLRAlgo_Coincidence
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT HLRAlgo_Coincidence() :
+  HLRAlgo_Coincidence() :
     myFE(0),
     myParam(0.),
     myStBef(TopAbs_IN),

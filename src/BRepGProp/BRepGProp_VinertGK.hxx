@@ -63,7 +63,10 @@ public:
 
   
   //! Empty constructor.
-  Standard_EXPORT BRepGProp_VinertGK();
+  BRepGProp_VinertGK()
+    : myErrorReached (0.), myAbsolutError (0.)
+  {
+  }
   
   //! Constructor. Computes the global properties of a region of
   //! 3D space delimited with the naturally restricted surface
@@ -98,7 +101,10 @@ public:
   Standard_EXPORT BRepGProp_VinertGK(BRepGProp_Face& theSurface, BRepGProp_Domain& theDomain, const gp_Pln& thePlane, const gp_Pnt& theLocation, const Standard_Real theTolerance = 0.001, const Standard_Boolean theCGFlag = Standard_False, const Standard_Boolean theIFlag = Standard_False);
   
   //! Sets the vertex that delimit 3D closed region of space.
-    void SetLocation (const gp_Pnt& theLocation);
+  void SetLocation (const gp_Pnt& theLocation)
+  {
+    loc = theLocation;
+  }
   
   //! Computes the global properties of a region of 3D space
   //! delimited with the naturally restricted surface and the
@@ -133,7 +139,10 @@ public:
   Standard_EXPORT Standard_Real Perform (BRepGProp_Face& theSurface, BRepGProp_Domain& theDomain, const gp_Pln& thePlane, const Standard_Real theTolerance = 0.001, const Standard_Boolean theCGFlag = Standard_False, const Standard_Boolean theIFlag = Standard_False);
   
   //! Returns the relative reached computation error.
-    Standard_Real GetErrorReached() const;
+  Standard_Real GetErrorReached () const
+  {
+    return myErrorReached;
+  }
   
   //! Returns the absolut reached computation error.
     Standard_Real GetAbsolutError() const;
@@ -157,15 +166,7 @@ private:
 
   Standard_Real myErrorReached;
   Standard_Real myAbsolutError;
-
-
 };
-
-
-#include <BRepGProp_VinertGK.lxx>
-
-
-
 
 
 #endif // _BRepGProp_VinertGK_HeaderFile

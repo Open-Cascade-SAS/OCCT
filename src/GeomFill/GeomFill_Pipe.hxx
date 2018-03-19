@@ -240,7 +240,7 @@ public:
   //! true in all these specific cases.
   //! Warning
   //! Do not use this function before the surface is built.
-  Standard_EXPORT Standard_Boolean ExchangeUV() const;
+  Standard_Boolean ExchangeUV() const;
   
   //! Sets a flag  to  try to   create as many   planes,
   //! cylinder,...    as  possible.  Default  value   is

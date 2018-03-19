@@ -102,7 +102,7 @@ public:
     static Approx_Status WhatStatus (const GeomInt_TheMultiLineOfWLApprox& ML, const Standard_Integer I1, const Standard_Integer I2);
   
   //! Dump of the current multi-line.
-  Standard_EXPORT static void Dump (const GeomInt_TheMultiLineOfWLApprox& ML);
+  static void Dump (const GeomInt_TheMultiLineOfWLApprox& ML);
 
 
 

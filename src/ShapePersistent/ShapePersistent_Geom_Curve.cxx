@@ -13,6 +13,7 @@
 
 #include <Standard_NullObject.hxx>
 
+#include <ShapePersistent_Geom.hxx>
 #include <ShapePersistent_Geom_Curve.hxx>
 
 #include <Geom_BezierCurve.hxx>

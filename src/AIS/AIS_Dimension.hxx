@@ -281,7 +281,7 @@ public:
 
   //! Unsets user-defined plane. Therefore the plane for dimension will be
   //! computed automatically.
-  Standard_EXPORT void UnsetCustomPlane() { myIsPlaneCustom = Standard_False; }
+  void UnsetCustomPlane() { myIsPlaneCustom = Standard_False; }
 
   //! @return TRUE if text position is set by user with method SetTextPosition().
   Standard_Boolean IsTextPositionCustom() const
@@ -357,9 +357,9 @@ public:
 
   Standard_EXPORT virtual const TCollection_AsciiString& GetModelUnits() const;
 
-  Standard_EXPORT virtual void SetDisplayUnits (const TCollection_AsciiString& /*theUnits*/) { }
+  virtual void SetDisplayUnits (const TCollection_AsciiString& /*theUnits*/) { }
 
-  Standard_EXPORT virtual void SetModelUnits (const TCollection_AsciiString& /*theUnits*/) { }
+  virtual void SetModelUnits (const TCollection_AsciiString& /*theUnits*/) { }
 
   //! Unsets user defined text positioning and enables text positioning
   //!  by other parameters: text alignment, extension size, flyout and custom plane.

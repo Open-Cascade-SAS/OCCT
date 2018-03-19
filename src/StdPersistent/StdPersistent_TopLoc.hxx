@@ -35,9 +35,9 @@ public:
     //! Write persistent data to a file.
     void Write (StdObjMgt_WriteData& theWriteData) const;
     //! Gets persistent child objects
-    Standard_EXPORT virtual void PChildren(SequenceOfPersistent&) const { }
+    virtual void PChildren(SequenceOfPersistent&) const { }
     //! Returns persistent type name
-    Standard_EXPORT virtual Standard_CString PName () const
+    virtual Standard_CString PName () const
       { return "PTopLoc_Datum3D"; }
   };
 
@@ -53,7 +53,7 @@ public:
     //! Gets persistent child objects
     Standard_EXPORT virtual void PChildren(SequenceOfPersistent& theChildren) const;
     //! Returns persistent type name
-    Standard_EXPORT virtual Standard_CString PName () const
+    virtual Standard_CString PName () const
       { return "PTopLoc_ItemLocation"; }
 
     //! Import transient object from the persistent data.

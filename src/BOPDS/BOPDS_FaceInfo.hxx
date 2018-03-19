@@ -50,7 +50,7 @@ virtual ~BOPDS_FaceInfo();
   
 
   //! Clears the contents
-  Standard_EXPORT void Clear();
+  void Clear();
   
 
   //! Modifier

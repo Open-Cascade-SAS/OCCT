@@ -257,8 +257,7 @@ public:
    * @return
    *   always True
    */
-  Standard_EXPORT virtual Standard_Boolean Add (const TheObjType& theObj,
-                                                const TheBndType& theBnd);
+  virtual Standard_Boolean Add (const TheObjType& theObj, const TheBndType& theBnd);
 
   /**
    * Searches in the tree all objects conforming to the given selector.
@@ -323,8 +322,7 @@ public:
    * @return
    *   the number of objects accepted
    */
-  Standard_EXPORT Standard_Integer Select (const TreeNode& theBranch,
-                                           Selector& theSelector) const;
+  Standard_Integer Select (const TreeNode& theBranch, Selector& theSelector) const;
 
  private:
   // ---------- PRIVATE METHODS ----------

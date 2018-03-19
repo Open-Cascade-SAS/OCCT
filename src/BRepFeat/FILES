@@ -13,7 +13,6 @@ BRepFeat_MakeCylindricalHole.hxx
 BRepFeat_MakeCylindricalHole.lxx
 BRepFeat_MakeDPrism.cxx
 BRepFeat_MakeDPrism.hxx
-BRepFeat_MakeDPrism.lxx
 BRepFeat_MakeLinearForm.cxx
 BRepFeat_MakeLinearForm.hxx
 BRepFeat_MakeLinearForm.lxx

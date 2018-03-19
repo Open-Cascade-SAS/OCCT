@@ -155,7 +155,7 @@ public:
   
   //! Returns the fact that the domains were computed
   //! for the IndH-th hatching.
-  Standard_EXPORT Standard_Boolean IsDone (const Standard_Integer IndH) const;
+  Standard_Boolean IsDone (const Standard_Integer IndH) const;
   
   //! Returns the status about the IndH-th hatching.
     HatchGen_ErrorStatus Status (const Standard_Integer IndH) const;

@@ -222,10 +222,10 @@ public:
   Standard_EXPORT virtual TCollection_ExtendedString StorageFormat() const Standard_OVERRIDE;
 
   //! Sets saving mode for empty labels. If Standard_True, empty labels will be saved.
-  Standard_EXPORT  void SetEmptyLabelsSavingMode (const Standard_Boolean isAllowed);
+  void SetEmptyLabelsSavingMode (const Standard_Boolean isAllowed);
 
   //! Returns saving mode for empty labels.
-  Standard_EXPORT  Standard_Boolean EmptyLabelsSavingMode() const;
+  Standard_Boolean EmptyLabelsSavingMode() const;
 
   //! methods for the nested transaction mode
   Standard_EXPORT virtual void ChangeStorageFormat (const TCollection_ExtendedString& newStorageFormat);

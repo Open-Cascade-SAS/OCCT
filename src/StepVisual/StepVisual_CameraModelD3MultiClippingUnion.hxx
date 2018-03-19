@@ -37,12 +37,12 @@ public:
   Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& theName,
                              const Handle(StepVisual_HArray1OfCameraModelD3MultiClippingUnionSelect)& theShapeClipping);
   
-  Standard_EXPORT void SetShapeClipping(const Handle(StepVisual_HArray1OfCameraModelD3MultiClippingUnionSelect)& theShapeClipping)
+  void SetShapeClipping(const Handle(StepVisual_HArray1OfCameraModelD3MultiClippingUnionSelect)& theShapeClipping)
   {
     myShapeClipping = theShapeClipping;
   }
 
-  Standard_EXPORT const Handle(StepVisual_HArray1OfCameraModelD3MultiClippingUnionSelect) ShapeClipping()
+  const Handle(StepVisual_HArray1OfCameraModelD3MultiClippingUnionSelect) ShapeClipping()
   {
     return myShapeClipping;
   }

@@ -87,7 +87,7 @@ Handle(MAT_Bisector) operator() (const Standard_Integer anindex)
   
   Standard_EXPORT void Loop() const;
   
-  Standard_EXPORT Standard_Boolean IsEmpty() const;
+  Standard_Boolean IsEmpty() const;
   
   Standard_EXPORT void Dump (const Standard_Integer ashift, const Standard_Integer alevel);
 

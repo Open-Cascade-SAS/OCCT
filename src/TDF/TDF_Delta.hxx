@@ -98,11 +98,11 @@ protected:
 private:
 
   //! Replaces Attribute Delta List
-  Standard_EXPORT void ReplaceDeltaList(const TDF_AttributeDeltaList& theList);
+  void ReplaceDeltaList(const TDF_AttributeDeltaList& theList);
 
-  Standard_EXPORT void BeforeOrAfterApply (const Standard_Boolean before) const;
+  void BeforeOrAfterApply (const Standard_Boolean before) const;
   
-  Standard_EXPORT void Apply();
+  void Apply();
 
   Standard_Integer myBeginTime;
   Standard_Integer myEndTime;

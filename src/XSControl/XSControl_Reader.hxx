@@ -86,7 +86,9 @@ public:
   //! Controller already set
   //! Virtual destructor
   Standard_EXPORT XSControl_Reader(const Handle(XSControl_WorkSession)& WS, const Standard_Boolean scratch = Standard_True);
-Standard_EXPORT virtual ~XSControl_Reader() {}
+
+  //! Empty virtual destructor
+  virtual ~XSControl_Reader() {}
   
   //! Sets a specific norm to <me>
   //! Returns True if done, False if <norm> is not available

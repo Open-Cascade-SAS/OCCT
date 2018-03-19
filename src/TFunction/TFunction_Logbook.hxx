@@ -66,7 +66,7 @@ public:
   
   //! Sets the label L as a touched label in this logbook.
   //! In other words, L is understood to have been modified by the end user.
-  Standard_EXPORT void SetTouched (const TDF_Label& L);
+  void SetTouched (const TDF_Label& L);
   
   //! Sets the label L as an impacted label in this logbook.
   //! This method is called by execution of the function driver.
@@ -84,20 +84,20 @@ public:
 
   //! Returns the map of touched labels in this logbook.
   //! A touched label is the one modified by the end user.
-  Standard_EXPORT const TDF_LabelMap& GetTouched() const;
+  const TDF_LabelMap& GetTouched() const;
 
   //! Returns the map of impacted labels contained in this logbook.
-  Standard_EXPORT const TDF_LabelMap& GetImpacted() const;
+  const TDF_LabelMap& GetImpacted() const;
   
   //! Returns the map of valid labels in this logbook.
-  Standard_EXPORT const TDF_LabelMap& GetValid() const;
+  const TDF_LabelMap& GetValid() const;
   Standard_EXPORT void GetValid(TDF_LabelMap& Ls) const;
   
   //! Sets status of execution.
-  Standard_EXPORT void Done (const Standard_Boolean status);
+  void Done (const Standard_Boolean status);
   
   //! Returns status of execution.
-  Standard_EXPORT Standard_Boolean IsDone() const;
+  Standard_Boolean IsDone() const;
 
 
   //! The methods inherited from TDF_Attribute

@@ -65,7 +65,7 @@ public:
   //! For elementary surfaces from the gp package (planes,
   //! cones, cylinders, spheres and tori), computes the point
   //! of parameters (U, V).
-  Standard_EXPORT static gp_Pnt Value (const Standard_Real U, const Standard_Real V, const gp_Pln& Pl);
+    static gp_Pnt Value (const Standard_Real U, const Standard_Real V, const gp_Pln& Pl);
   
     static gp_Pnt Value (const Standard_Real U, const Standard_Real V, const gp_Cone& C);
   
@@ -80,7 +80,7 @@ public:
   //! derivative vector of order Nu and Nv in the u and v
   //! parametric directions respectively, at the point of
   //! parameters (U, V).
-  Standard_EXPORT static gp_Vec DN (const Standard_Real U, const Standard_Real V, const gp_Pln& Pl, const Standard_Integer Nu, const Standard_Integer Nv);
+    static gp_Vec DN (const Standard_Real U, const Standard_Real V, const gp_Pln& Pl, const Standard_Integer Nu, const Standard_Integer Nv);
   
     static gp_Vec DN (const Standard_Real U, const Standard_Real V, const gp_Cone& C, const Standard_Integer Nu, const Standard_Integer Nv);
   
@@ -93,7 +93,7 @@ public:
   //! For elementary surfaces from the gp package (planes,
   //! cones, cylinders, spheres and tori), computes the point P
   //! of parameters (U, V).inline
-  Standard_EXPORT static void D0 (const Standard_Real U, const Standard_Real V, const gp_Pln& Pl, gp_Pnt& P);
+    static void D0 (const Standard_Real U, const Standard_Real V, const gp_Pln& Pl, gp_Pnt& P);
   
     static void D0 (const Standard_Real U, const Standard_Real V, const gp_Cone& C, gp_Pnt& P);
   
@@ -109,7 +109,7 @@ public:
   //! -   the point P of parameters (U, V), and
   //! -   the first derivative vectors Vu and Vv at this point in
   //! the u and v parametric directions respectively.
-  Standard_EXPORT static void D1 (const Standard_Real U, const Standard_Real V, const gp_Pln& Pl, gp_Pnt& P, gp_Vec& Vu, gp_Vec& Vv);
+    static void D1 (const Standard_Real U, const Standard_Real V, const gp_Pln& Pl, gp_Pnt& P, gp_Vec& Vu, gp_Vec& Vv);
   
     static void D1 (const Standard_Real U, const Standard_Real V, const gp_Cone& C, gp_Pnt& P, gp_Vec& Vu, gp_Vec& Vv);
   
@@ -126,7 +126,7 @@ public:
   //! -   the first derivative vectors Vu and Vv at this point in
   //! the u and v parametric directions respectively, and
   //! -   the second derivative vectors Vuu, Vvv and Vuv at this point.
-  Standard_EXPORT static void D2 (const Standard_Real U, const Standard_Real V, const gp_Cone& C, gp_Pnt& P, gp_Vec& Vu, gp_Vec& Vv, gp_Vec& Vuu, gp_Vec& Vvv, gp_Vec& Vuv);
+    static void D2 (const Standard_Real U, const Standard_Real V, const gp_Cone& C, gp_Pnt& P, gp_Vec& Vu, gp_Vec& Vv, gp_Vec& Vuu, gp_Vec& Vvv, gp_Vec& Vuv);
   
     static void D2 (const Standard_Real U, const Standard_Real V, const gp_Cylinder& C, gp_Pnt& P, gp_Vec& Vu, gp_Vec& Vv, gp_Vec& Vuu, gp_Vec& Vvv, gp_Vec& Vuv);
   
@@ -144,7 +144,7 @@ public:
   //! this point, and
   //! -   the third derivative vectors Vuuu, Vvvv, Vuuv and
   //! Vuvv at this point.
-  Standard_EXPORT static void D3 (const Standard_Real U, const Standard_Real V, const gp_Cone& C, gp_Pnt& P, gp_Vec& Vu, gp_Vec& Vv, gp_Vec& Vuu, gp_Vec& Vvv, gp_Vec& Vuv, gp_Vec& Vuuu, gp_Vec& Vvvv, gp_Vec& Vuuv, gp_Vec& Vuvv);
+    static void D3 (const Standard_Real U, const Standard_Real V, const gp_Cone& C, gp_Pnt& P, gp_Vec& Vu, gp_Vec& Vv, gp_Vec& Vuu, gp_Vec& Vvv, gp_Vec& Vuv, gp_Vec& Vuuu, gp_Vec& Vvvv, gp_Vec& Vuuv, gp_Vec& Vuvv);
   
     static void D3 (const Standard_Real U, const Standard_Real V, const gp_Cylinder& C, gp_Pnt& P, gp_Vec& Vu, gp_Vec& Vv, gp_Vec& Vuu, gp_Vec& Vvv, gp_Vec& Vuv, gp_Vec& Vuuu, gp_Vec& Vvvv, gp_Vec& Vuuv, gp_Vec& Vuvv);
   

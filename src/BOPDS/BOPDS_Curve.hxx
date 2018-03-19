@@ -75,7 +75,7 @@ virtual ~BOPDS_Curve();
   //! Returns the bounding box of the curve
     Bnd_Box& ChangeBox();
   
-  Standard_EXPORT void SetPaveBlocks (const BOPDS_ListOfPaveBlock& theLPB);
+  void SetPaveBlocks (const BOPDS_ListOfPaveBlock& theLPB);
   
 
   //! Selector

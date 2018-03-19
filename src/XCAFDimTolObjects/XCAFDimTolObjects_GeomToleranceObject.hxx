@@ -151,7 +151,7 @@ public:
   }
    
   //! Set graphical presentation for object.
-  Standard_EXPORT void SetPresentation(const TopoDS_Shape& thePresentation, 
+  void SetPresentation(const TopoDS_Shape& thePresentation, 
     const Handle(TCollection_HAsciiString)& thePresentationName)
   {
     myPresentation = thePresentation;
@@ -159,31 +159,31 @@ public:
   }
 
   //! Returns graphical presentation of the object.
-  Standard_EXPORT TopoDS_Shape GetPresentation() const
+  TopoDS_Shape GetPresentation() const
   {
     return myPresentation;
   }
 
   //! Returns graphical presentation of the object.
-  Standard_EXPORT Handle(TCollection_HAsciiString) GetPresentationName() const
+  Handle(TCollection_HAsciiString) GetPresentationName() const
   {
     return myPresentationName;
   }
 
   // Returns true, if affected plane is specified.
-  Standard_EXPORT bool HasAffectedPlane() const
+  bool HasAffectedPlane() const
   {
     return (myAffectedPlaneType != XCAFDimTolObjects_ToleranceZoneAffectedPlane_None);
   }
 
   // Returns type of affected plane.
-  Standard_EXPORT XCAFDimTolObjects_ToleranceZoneAffectedPlane GetAffectedPlaneType() const
+  XCAFDimTolObjects_ToleranceZoneAffectedPlane GetAffectedPlaneType() const
   {
     return myAffectedPlaneType;
   }
 
   // Sets affected plane type.
-  Standard_EXPORT void SetAffectedPlaneType(const XCAFDimTolObjects_ToleranceZoneAffectedPlane theType)
+  void SetAffectedPlaneType(const XCAFDimTolObjects_ToleranceZoneAffectedPlane theType)
   {
     myAffectedPlaneType = theType;
   }

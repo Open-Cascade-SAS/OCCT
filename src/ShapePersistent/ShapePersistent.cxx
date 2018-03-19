@@ -12,6 +12,8 @@
 // commercial license or contractual agreement.
 
 #include <ShapePersistent.hxx>
+#include <ShapePersistent_Geom.hxx>
+#include <ShapePersistent_Geom2d.hxx>
 #include <StdObjMgt_MapOfInstantiators.hxx>
 
 #include <StdLPersistent_HArray1.hxx>

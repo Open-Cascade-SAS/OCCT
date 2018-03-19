@@ -53,7 +53,7 @@ public:
   }
 
   //! Returns the center point of the sensitive triangle created at construction time.
-  Standard_EXPORT gp_Pnt Center3D() const { return myCentroid; }
+  gp_Pnt Center3D() const { return myCentroid; }
 
   //! Returns the copy of this
   Standard_EXPORT virtual Handle(Select3D_SensitiveEntity) GetConnected() Standard_OVERRIDE;

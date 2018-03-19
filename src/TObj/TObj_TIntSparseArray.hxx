@@ -56,7 +56,7 @@ class TObj_TIntSparseArray : public TDF_Attribute
   //! Methods for access to data
 
   //! Returns the number of stored values in the set
-  Standard_EXPORT Standard_Size Size() const
+  Standard_Size Size() const
   { return myVector.Size(); }
 
   typedef TObj_TIntSparseArray_VecOfData::ConstIterator Iterator;

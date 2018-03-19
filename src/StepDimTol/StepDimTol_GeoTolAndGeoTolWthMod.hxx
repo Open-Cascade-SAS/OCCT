@@ -65,7 +65,7 @@ public:
     myToleranceType = theType;
   }
   
-  Standard_EXPORT StepDimTol_GeometricToleranceType GetToleranceType() const {
+  StepDimTol_GeometricToleranceType GetToleranceType() const {
     return myToleranceType;
   }
 

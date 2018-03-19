@@ -67,7 +67,7 @@ public:
   //! Add splitting edges or wires for whole initial shape
   //! withot additional specification edge->face, edge->edge
   //! This method puts edge on the corresponding faces from initial shape
-  Standard_EXPORT Standard_Boolean Add(const TopTools_SequenceOfShape& theEdges);
+  Standard_Boolean Add(const TopTools_SequenceOfShape& theEdges);
   
   //! Initializes the process on the shape <S>.
     void Init (const TopoDS_Shape& S);

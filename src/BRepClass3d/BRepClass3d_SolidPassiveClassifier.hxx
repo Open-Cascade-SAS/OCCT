@@ -60,7 +60,7 @@ public:
     Standard_Real Parameter() const;
   
   //! Returns True if an intersection is computed.
-  Standard_EXPORT Standard_Boolean HasIntersection() const;
+  Standard_Boolean HasIntersection() const;
   
   //! Returns the intersecting algorithm.
     BRepClass3d_Intersector3d& Intersector();

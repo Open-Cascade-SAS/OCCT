@@ -55,10 +55,10 @@ public:
   Standard_EXPORT void Add (const gp_XY& thePnt);
   
   //! Update the box by a point.
-  Standard_EXPORT void Add (const gp_Pnt2d& thePnt);
+  void Add (const gp_Pnt2d& thePnt);
   
   //! Update the box by another box.
-    void Add (const Bnd_B2f& theBox);
+  void Add (const Bnd_B2f& theBox);
   
   //! Query a box corner: (Center - HSize). You must make sure that
   //! the box is NOT VOID (see IsVoid()), otherwise the method returns

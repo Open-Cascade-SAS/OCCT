@@ -31,7 +31,7 @@ public:
   //! Gets persistent child objects
   Standard_EXPORT virtual void PChildren(StdObjMgt_Persistent::SequenceOfPersistent&) const;
   //! Returns persistent type name
-  Standard_EXPORT virtual Standard_CString PName() const
+  virtual Standard_CString PName() const
     { return "PDocStd_Document"; }
 
   //! Import transient document from the persistent data.

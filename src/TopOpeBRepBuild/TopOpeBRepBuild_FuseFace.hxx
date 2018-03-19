@@ -52,19 +52,19 @@ public:
   
     Standard_Boolean IsModified() const;
   
-  Standard_EXPORT const TopTools_ListOfShape& LFuseFace() const;
+  const TopTools_ListOfShape& LFuseFace() const;
   
-  Standard_EXPORT const TopTools_ListOfShape& LInternEdge() const;
+  const TopTools_ListOfShape& LInternEdge() const;
   
-  Standard_EXPORT const TopTools_ListOfShape& LExternEdge() const;
+  const TopTools_ListOfShape& LExternEdge() const;
   
-  Standard_EXPORT const TopTools_ListOfShape& LModifEdge() const;
+  const TopTools_ListOfShape& LModifEdge() const;
   
-  Standard_EXPORT const TopTools_ListOfShape& LInternVertex() const;
+  const TopTools_ListOfShape& LInternVertex() const;
   
-  Standard_EXPORT const TopTools_ListOfShape& LExternVertex() const;
+  const TopTools_ListOfShape& LExternVertex() const;
   
-  Standard_EXPORT const TopTools_ListOfShape& LModifVertex() const;
+  const TopTools_ListOfShape& LModifVertex() const;
 
 
 

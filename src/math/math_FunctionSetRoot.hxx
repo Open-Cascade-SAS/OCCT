@@ -139,7 +139,7 @@ public:
   //! Is used to redefine the operator <<.
   Standard_EXPORT void Dump (Standard_OStream& o) const;
   
-  Standard_EXPORT Standard_Boolean IsDivergent() const;
+  Standard_Boolean IsDivergent() const;
 
 
 

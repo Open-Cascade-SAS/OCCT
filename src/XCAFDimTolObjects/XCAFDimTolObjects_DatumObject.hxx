@@ -122,37 +122,37 @@ public:
   Standard_EXPORT void SetDatumTargetNumber (const Standard_Integer theNumber);
 
   //! Sets annotation plane.
-  Standard_EXPORT void SetPlane (const gp_Ax2& thePlane)
+  void SetPlane (const gp_Ax2& thePlane)
   {
     myPlane = thePlane;
     myHasPlane = Standard_True;
   }
 
   //! Returns annotation plane.
-  Standard_EXPORT const gp_Ax2& GetPlane() const { return myPlane; }
+  const gp_Ax2& GetPlane() const { return myPlane; }
 
   //! Sets a point on the datum target shape.
-  Standard_EXPORT void SetPoint (const gp_Pnt& thePnt)
+  void SetPoint (const gp_Pnt& thePnt)
   {
     myPnt = thePnt;
     myHasPnt = Standard_True;
   }
 
   //! Gets point on the datum shape.
-  Standard_EXPORT const gp_Pnt& GetPoint() const 
+  const gp_Pnt& GetPoint() const 
   { 
     return myPnt; 
   }
    
   //! Sets a position of the datum text.
-  Standard_EXPORT void SetPointTextAttach (const gp_Pnt& thePntText)
+  void SetPointTextAttach (const gp_Pnt& thePntText)
   {
     myPntText = thePntText;
     myHasPntText = Standard_True;
   }
 
   //! Gets datum text position.
-  Standard_EXPORT const gp_Pnt& GetPointTextAttach() const 
+  const gp_Pnt& GetPointTextAttach() const 
   { 
     return myPntText; 
   }
@@ -164,13 +164,13 @@ public:
   Standard_Boolean HasPoint() const { return myHasPnt; }
 
   //! Returns True if the datum text position is specified.
-  Standard_EXPORT Standard_Boolean HasPointText() const 
+  Standard_Boolean HasPointText() const 
   { 
     return myHasPntText; 
   }
 
   //! Set graphical presentation for object.
-  Standard_EXPORT void SetPresentation(const TopoDS_Shape& thePresentation, 
+  void SetPresentation(const TopoDS_Shape& thePresentation, 
     const Handle(TCollection_HAsciiString)& thePresentationName)
   {
     myPresentation = thePresentation;
@@ -178,19 +178,19 @@ public:
   }
 
   //! Returns graphical presentation of the object.
-  Standard_EXPORT TopoDS_Shape GetPresentation() const
+  TopoDS_Shape GetPresentation() const
   {
     return myPresentation;
   }
 
-   //! Returns graphical presentation of the object.
-  Standard_EXPORT Handle(TCollection_HAsciiString) GetPresentationName() const
+  //! Returns graphical presentation of the object.
+  Handle(TCollection_HAsciiString) GetPresentationName() const
   {
     return myPresentationName;
   }
 
   //! Returns True if the datum has valid parameters for datum target (width, length, circle radius etc)
-  Standard_EXPORT Standard_Boolean HasDatumTargetParams()
+  Standard_Boolean HasDatumTargetParams()
   {
     return myIsValidDT;
   }

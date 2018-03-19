@@ -141,12 +141,12 @@ public:
 
   //! Defines the preventing of addition of internal for solid parts into the result.
   //! By default the internal parts are added into result.
-  Standard_EXPORT void SetAvoidInternalShapes(const Standard_Boolean theAvoidInternal) {
+  void SetAvoidInternalShapes(const Standard_Boolean theAvoidInternal) {
     myAvoidInternalShapes = theAvoidInternal;
   }
 
   //! Returns the AvoidInternalShapes flag
-  Standard_EXPORT Standard_Boolean IsAvoidInternalShapes() const {
+  Standard_Boolean IsAvoidInternalShapes() const {
     return myAvoidInternalShapes;
   }
 

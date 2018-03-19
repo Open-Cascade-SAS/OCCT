@@ -150,7 +150,7 @@ public:
   Standard_EXPORT void ComputeVertexParameters (const Standard_Real Tol);
 
   //! Returns set of intersection points
-  Standard_EXPORT virtual Handle(IntSurf_LineOn2S) Curve() const Standard_OVERRIDE;
+  virtual Handle(IntSurf_LineOn2S) Curve() const Standard_OVERRIDE;
 
   //! Removes vertices from the line (i.e. cleans svtx member)
   virtual void ClearVertexes() Standard_OVERRIDE

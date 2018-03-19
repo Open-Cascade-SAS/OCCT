@@ -215,7 +215,7 @@ public:
   //! Continues the interation scanning for the owners detected at a position in the view,
   //! or continues the iteration scanning for the owner closest to the position in the view.
   Standard_DEPRECATED("Deprecated method More()")
-  Standard_EXPORT Standard_Boolean More() { return morePicked(); }
+  Standard_Boolean More() { return morePicked(); }
 
   //! Returns the next owner found in the iteration. This is
   //! a scan for the owners detected at a position in the view.

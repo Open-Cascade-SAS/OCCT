@@ -169,67 +169,67 @@ public:
   Standard_EXPORT Standard_Boolean SetDirection (const gp_Dir& theDir);
   
   //! Sets position of the dimension text.
-  Standard_EXPORT void SetPointTextAttach (const gp_Pnt& thePntText)
+  void SetPointTextAttach (const gp_Pnt& thePntText)
   {
     myPntText = thePntText;
     myHasPntText = Standard_True;
   }
 
   //! Returns position of the dimension text.
-  Standard_EXPORT const gp_Pnt& GetPointTextAttach() const { return myPntText; }
+  const gp_Pnt& GetPointTextAttach() const { return myPntText; }
 
   //! Returns True if the position of dimension text is specified.
-  Standard_EXPORT Standard_Boolean HasTextPoint() const 
+  Standard_Boolean HasTextPoint() const 
   { 
     return myHasPntText; 
   }
 
   //! Sets annotation plane.
-  Standard_EXPORT void SetPlane (const gp_Ax2& thePlane)
+  void SetPlane (const gp_Ax2& thePlane)
   {
     myPlane    = thePlane;
     myHasPlane = Standard_True;
   }
 
   //! Returns annotation plane.
-  Standard_EXPORT const gp_Ax2& GetPlane() const { return myPlane; }
+  const gp_Ax2& GetPlane() const { return myPlane; }
 
   //! Returns True if the object has annotation plane.
-  Standard_EXPORT Standard_Boolean HasPlane() const { return myHasPlane; }
+  Standard_Boolean HasPlane() const { return myHasPlane; }
 
   //! Returns true, if connection point exists (for dimesional_size),
   //! if connection point for the first shape exists (for dimensional_location).
-  Standard_EXPORT Standard_Boolean HasPoint() const { return myHasPoint1; }
+  Standard_Boolean HasPoint() const { return myHasPoint1; }
 
   // Returns true, if connection point for the second shape exists (for dimensional_location only).
-  Standard_EXPORT Standard_Boolean HasPoint2() const { return myHasPoint2; }
+  Standard_Boolean HasPoint2() const { return myHasPoint2; }
 
   //! Set connection point (for dimesional_size),
   //! Set connection point for the first shape (for dimensional_location).
-  Standard_EXPORT void SetPoint(const gp_Pnt thePnt) {
+  void SetPoint(const gp_Pnt thePnt) {
     myPnt1 = thePnt;
     myHasPoint1 = Standard_True;
   }
 
   // Set connection point for the second shape (for dimensional_location only).
-  Standard_EXPORT void SetPoint2(const gp_Pnt thePnt) {
+  void SetPoint2(const gp_Pnt thePnt) {
     myPnt2 = thePnt;
     myHasPoint2 = Standard_True;
   }
 
   //! Get connection point (for dimesional_size),
   //! Get connection point for the first shape (for dimensional_location).
-  Standard_EXPORT gp_Pnt GetPoint() const {
+  gp_Pnt GetPoint() const {
     return myPnt1;
   }
 
   // Get connection point for the second shape (for dimensional_location only).
-  Standard_EXPORT gp_Pnt GetPoint2() const {
+  gp_Pnt GetPoint2() const {
     return myPnt2;
   }
 
   //! Set graphical presentation for the object.
-  Standard_EXPORT void SetPresentation(const TopoDS_Shape& thePresentation, 
+  void SetPresentation(const TopoDS_Shape& thePresentation, 
     const Handle(TCollection_HAsciiString)& thePresentationName)
   {
     myPresentation = thePresentation;
@@ -237,31 +237,31 @@ public:
   }
 
   //! Returns graphical presentation of the object.
-  Standard_EXPORT TopoDS_Shape GetPresentation() const
+  TopoDS_Shape GetPresentation() const
   {
     return myPresentation;
   }
 
-   //! Returns graphical presentation name of the object.
-  Standard_EXPORT Handle(TCollection_HAsciiString) GetPresentationName() const
+  //! Returns graphical presentation name of the object.
+  Handle(TCollection_HAsciiString) GetPresentationName() const
   {
     return myPresentationName;
   }
 
   //! Returns true, if the object has descriptions.
-  Standard_EXPORT Standard_Boolean HasDescriptions() const
+  Standard_Boolean HasDescriptions() const
   {
     return (myDescriptions.Length() > 0);
   }
 
   //! Returns number of descriptions.
-  Standard_EXPORT Standard_Integer NbDescriptions() const
+  Standard_Integer NbDescriptions() const
   {
     return myDescriptions.Length();
   }
 
   //! Returns description with the given number.
-  Standard_EXPORT Handle(TCollection_HAsciiString) GetDescription(const Standard_Integer theNumber) const
+  Handle(TCollection_HAsciiString) GetDescription(const Standard_Integer theNumber) const
   {
     if (theNumber < myDescriptions.Lower() || theNumber > myDescriptions.Upper())
       return  new TCollection_HAsciiString();
@@ -269,7 +269,7 @@ public:
   }
 
   //! Returns name of description with the given number.
-  Standard_EXPORT Handle(TCollection_HAsciiString) GetDescriptionName(const Standard_Integer theNumber) const
+  Handle(TCollection_HAsciiString) GetDescriptionName(const Standard_Integer theNumber) const
   {
     if (theNumber < myDescriptions.Lower() || theNumber > myDescriptions.Upper())
       return new TCollection_HAsciiString();
@@ -280,7 +280,7 @@ public:
   Standard_EXPORT void RemoveDescription(const Standard_Integer theNumber);
 
   //! Add new description.
-  Standard_EXPORT void AddDescription(const Handle(TCollection_HAsciiString) theDescription, const Handle(TCollection_HAsciiString) theName)
+  void AddDescription(const Handle(TCollection_HAsciiString) theDescription, const Handle(TCollection_HAsciiString) theName)
   {
     myDescriptions.Append(theDescription);
     myDescriptionNames.Append(theName);

@@ -36,7 +36,7 @@ class BRepExtrema_DistanceSS
   DEFINE_STANDARD_ALLOC
 
   //! computes the distance between two Shapes ( face edge vertex). <br>
-  Standard_EXPORT BRepExtrema_DistanceSS(const TopoDS_Shape& S1, const TopoDS_Shape& S2,
+  BRepExtrema_DistanceSS(const TopoDS_Shape& S1, const TopoDS_Shape& S2,
                                          const Bnd_Box& B1, const Bnd_Box& B2,
                                          const Standard_Real DstRef,
                                          const Extrema_ExtFlag F = Extrema_ExtFlag_MINMAX,
@@ -49,7 +49,7 @@ class BRepExtrema_DistanceSS
   //! Parameter theDeflection is used to specify a maximum deviation <br>
   //! of extreme distances from the minimum one. <br>
   //! Default value is Precision::Confusion(). <br>
-  Standard_EXPORT BRepExtrema_DistanceSS(const TopoDS_Shape& S1, const TopoDS_Shape& S2,
+  BRepExtrema_DistanceSS(const TopoDS_Shape& S1, const TopoDS_Shape& S2,
                                          const Bnd_Box& B1, const Bnd_Box& B2,
                                          const Standard_Real DstRef, const Standard_Real aDeflection,
                                          const Extrema_ExtFlag F = Extrema_ExtFlag_MINMAX,
@@ -59,32 +59,32 @@ class BRepExtrema_DistanceSS
     Perform(S1, S2, B1, B2);
   }
   //! True if the distance has been computed <br>
-  Standard_EXPORT Standard_Boolean IsDone() const
+  Standard_Boolean IsDone() const
   {
     return myModif;
   }
   //! returns the distance value <br>
-  Standard_EXPORT Standard_Real DistValue() const
+  Standard_Real DistValue() const
   {
     return myDstRef;
   }
   //! returns the list of solutions on the first shape <br>
-  Standard_EXPORT const BRepExtrema_SeqOfSolution& Seq1Value() const
+  const BRepExtrema_SeqOfSolution& Seq1Value() const
   {
     return SeqSolShape1;
   }
   //! returns the list of solutions on the second shape <br>
-  Standard_EXPORT const BRepExtrema_SeqOfSolution& Seq2Value() const
+  const BRepExtrema_SeqOfSolution& Seq2Value() const
   {
     return SeqSolShape2;
   }
   //! sets the flag controlling minimum and maximum search
-  Standard_EXPORT void SetFlag(const Extrema_ExtFlag F)
+  void SetFlag(const Extrema_ExtFlag F)
   {
     myFlag = F;
   }
   //! sets the flag controlling ...
-  Standard_EXPORT void SetAlgo(const Extrema_ExtAlgo A)
+  void SetAlgo(const Extrema_ExtAlgo A)
   {
     myAlgo = A;
   }

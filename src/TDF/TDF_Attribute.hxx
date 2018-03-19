@@ -143,10 +143,10 @@ public:
 
   //! Sets specific ID of the attribute (supports several attributes 
   //! of one type at the same label feature).
-  Standard_EXPORT virtual void SetID(const Standard_GUID& theGuid);
+  virtual void SetID (const Standard_GUID& /*theGuid*/) {}
 
   //! Sets default ID defined in nested class (to be used for attributes having User ID feature).
-  Standard_EXPORT virtual void SetID();
+  virtual void SetID() {}
 
   //! Returns   the   label to which  the   attribute is
   //! attached. If the  label is not  included in a  DF,

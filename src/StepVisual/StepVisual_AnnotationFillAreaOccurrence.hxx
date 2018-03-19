@@ -38,13 +38,13 @@ public:
                              const Handle(StepGeom_GeometricRepresentationItem)& theFillStyleTarget);
   
   //! Returns field fill_style_target
-  Standard_EXPORT Handle(StepGeom_GeometricRepresentationItem) FillStyleTarget() const
+  Handle(StepGeom_GeometricRepresentationItem) FillStyleTarget() const
   {
     return myFillStyleTarget;
   }
   
   //! Set field fill_style_target
-  Standard_EXPORT void SetFillStyleTarget (const Handle(StepGeom_GeometricRepresentationItem)& theTarget)
+  void SetFillStyleTarget (const Handle(StepGeom_GeometricRepresentationItem)& theTarget)
   {
     myFillStyleTarget = theTarget;
   }

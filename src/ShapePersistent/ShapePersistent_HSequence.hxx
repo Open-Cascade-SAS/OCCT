@@ -42,14 +42,14 @@ class ShapePersistent_HSequence
     Standard_EXPORT virtual void Write (StdObjMgt_WriteData& theWriteData) const;
 
     //! Gets persistent objects
-    Standard_EXPORT virtual void PChildren (SequenceOfPersistent& theChildren) const
+    virtual void PChildren (SequenceOfPersistent& theChildren) const
     {
       theChildren.Append(this->myPreviuos);
       theChildren.Append(this->myNext);
     }
 
     //! Returns persistent type name
-    Standard_EXPORT virtual Standard_CString PName() const
+    virtual Standard_CString PName() const
     {
       Standard_NotImplemented::Raise("ShapePersistent_HSequence::node::PName - not implemented");
       return "";
@@ -79,14 +79,14 @@ class ShapePersistent_HSequence
     Standard_EXPORT virtual void Write (StdObjMgt_WriteData& theWriteData) const;
 
     //! Gets persistent objects
-    Standard_EXPORT virtual void PChildren(SequenceOfPersistent& theChildren) const
+    virtual void PChildren(SequenceOfPersistent& theChildren) const
     {
       theChildren.Append(this->myFirst);
       theChildren.Append(this->myLast);
     }
 
     //! Returns persistent type name
-    Standard_EXPORT virtual Standard_CString PName() const
+    virtual Standard_CString PName() const
     {
       Standard_NotImplemented::Raise("ShapePersistent_HSequence::instance::PName - not implemented");
       return "";

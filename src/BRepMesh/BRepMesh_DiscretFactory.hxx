@@ -47,7 +47,7 @@ public:
   //! Setup meshing algorithm by name. <br>
   //! Returns TRUE if requested tool is available. <br>
   //! On fail Factory will continue to use previous algo.
-  Standard_EXPORT Standard_Boolean SetDefaultName(const TCollection_AsciiString& theName)
+  Standard_Boolean SetDefaultName(const TCollection_AsciiString& theName)
   {
     return SetDefault(theName, myFunctionName);
   }
@@ -61,7 +61,7 @@ public:
   //! Advanced function. Changes function name to retrieve from plugin. <br>
   //! Returns TRUE if requested tool is available. <br>
   //! On fail Factory will continue to use previous algo.
-  Standard_EXPORT Standard_Boolean SetFunctionName(const TCollection_AsciiString& theFuncName)
+  Standard_Boolean SetFunctionName(const TCollection_AsciiString& theFuncName)
   {
     return SetDefault(myDefaultName, theFuncName);
   }

@@ -163,7 +163,7 @@ public:
   //! Removes single vertex from the line
   virtual void RemoveVertex (const Standard_Integer theIndex) Standard_OVERRIDE;
   
-  Standard_EXPORT void InsertVertexBefore (const Standard_Integer theIndex, const IntPatch_Point& thePnt);
+  void InsertVertexBefore (const Standard_Integer theIndex, const IntPatch_Point& thePnt);
   
   //! if (theMode == 0) then prints the information about WLine
   //! if (theMode == 1) then prints the list of 3d-points

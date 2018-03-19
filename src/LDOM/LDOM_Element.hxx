@@ -40,8 +40,7 @@ class LDOM_Element : public LDOM_Node
                     { return (LDOM_Element&) LDOM_Node::operator = (anOther); }
   //    Assignment
 
-  Standard_EXPORT LDOM_Element&
-                operator =              (const LDOM_NullPtr * aNull)
+  LDOM_Element& operator =              (const LDOM_NullPtr * aNull)
                     { return (LDOM_Element&) LDOM_Node::operator = (aNull); }
   //    Nullify
 

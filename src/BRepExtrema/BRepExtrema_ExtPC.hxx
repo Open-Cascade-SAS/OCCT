@@ -30,7 +30,7 @@ class BRepExtrema_ExtPC
 
   DEFINE_STANDARD_ALLOC
   
-  Standard_EXPORT BRepExtrema_ExtPC()
+  BRepExtrema_ExtPC()
   {
   }
   //! It calculates all the distances. <br>
@@ -40,32 +40,32 @@ class BRepExtrema_ExtPC
   //! An exception is raised if the fields have not been initialized. <br>
   Standard_EXPORT void Perform(const TopoDS_Vertex& V);
   //! True if the distances are found. <br>
-  Standard_EXPORT Standard_Boolean IsDone() const
+  Standard_Boolean IsDone() const
   {
     return myExtPC.IsDone();
   }
   //! Returns the number of extremum distances. <br>
-  Standard_EXPORT Standard_Integer NbExt() const
+  Standard_Integer NbExt() const
   {
     return myExtPC.NbExt();
   }
   //! Returns True if the <N>th extremum distance is a minimum. <br>
-  Standard_EXPORT Standard_Boolean IsMin(const Standard_Integer N) const
+  Standard_Boolean IsMin(const Standard_Integer N) const
   {
     return myExtPC.IsMin(N);
   }
   //! Returns the value of the <N>th extremum square distance. <br>
-  Standard_EXPORT Standard_Real SquareDistance(const Standard_Integer N) const
+  Standard_Real SquareDistance(const Standard_Integer N) const
   {
     return myExtPC.SquareDistance(N);
   }
   //! Returns the parameter on the edge of the <N>th extremum distance. <br>
-  Standard_EXPORT Standard_Real Parameter(const Standard_Integer N) const
+  Standard_Real Parameter(const Standard_Integer N) const
   {
     return myExtPC.Point(N).Parameter();
   }
   //! Returns the Point of the <N>th extremum distance. <br>
-  Standard_EXPORT gp_Pnt Point(const Standard_Integer N) const
+  gp_Pnt Point(const Standard_Integer N) const
   {
     return myExtPC.Point(N).Value();
   }
@@ -74,7 +74,7 @@ class BRepExtrema_ExtPC
   //! of parameter FirstParameter <pnt1> and <br>
   //! dist2 is a square distance between <P> and the point <br>
   //! of parameter LastParameter <pnt2>. <br>
-  Standard_EXPORT void TrimmedSquareDistances(Standard_Real& dist1,Standard_Real& dist2,gp_Pnt& pnt1,gp_Pnt& pnt2) const
+  void TrimmedSquareDistances(Standard_Real& dist1,Standard_Real& dist2,gp_Pnt& pnt1,gp_Pnt& pnt2) const
   {
     myExtPC.TrimmedSquareDistances(dist1,dist2,pnt1,pnt2);
   }

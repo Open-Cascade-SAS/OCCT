@@ -35,7 +35,7 @@ public:
   Standard_EXPORT virtual void PChildren(StdObjMgt_Persistent::SequenceOfPersistent&) const;
 
   //! Returns persistent type name
-  Standard_EXPORT virtual Standard_CString PName() const
+  virtual Standard_CString PName() const
     { return "PDataStd_TreeNode"; }
 
   //! Create an empty transient attribuite

@@ -32,7 +32,7 @@ class StdLPersistent_HString
     Standard_EXPORT virtual void Read (StdObjMgt_ReadData& theReadData);
     //! Write persistent data to a file.
     Standard_EXPORT virtual void Write (StdObjMgt_WriteData& theWriteData) const;
-    Standard_EXPORT virtual void PChildren(StdObjMgt_Persistent::SequenceOfPersistent&) const { }
+    virtual void PChildren(StdObjMgt_Persistent::SequenceOfPersistent&) const { }
 
     //! Get/create a label defined by referenced string.
     Standard_EXPORT virtual TDF_Label Label (const Handle(TDF_Data)& theDF) const;

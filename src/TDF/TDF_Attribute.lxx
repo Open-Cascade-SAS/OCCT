@@ -59,11 +59,3 @@ inline Standard_Boolean TDF_Attribute::IsForgotten() const
 inline Standard_OStream& operator << (Standard_OStream& anOS,
                                       const Handle(TDF_Attribute)& anAtt)
 { return anAtt->Dump(anOS); }
-
-//=======================================================================
-inline void TDF_Attribute::SetID(const Standard_GUID& )
-{}
-
-//=======================================================================
-inline void TDF_Attribute::SetID()
-{}

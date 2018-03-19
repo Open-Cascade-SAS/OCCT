@@ -70,7 +70,7 @@ class IGESCAFControl_Reader  : public IGESControl_Reader
   //! Returns True if succeeded, and False in case of fail
   Standard_EXPORT Standard_Boolean Transfer (Handle(TDocStd_Document)& theDoc);
   
-  Standard_EXPORT Standard_Boolean Perform (const TCollection_AsciiString& theFileName, Handle(TDocStd_Document)& theDoc)
+  Standard_Boolean Perform (const TCollection_AsciiString& theFileName, Handle(TDocStd_Document)& theDoc)
   { return Perform (theFileName.ToCString(), theDoc); }
   
   //! Translate IGES file given by filename into the document

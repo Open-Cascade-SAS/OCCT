@@ -37,7 +37,7 @@ class Storage_InternalData : public Standard_Transient
 
 public:
 
-  Standard_EXPORT Handle(Storage_HPArray) ReadArray() {return myReadArray;}
+  Handle(Storage_HPArray) ReadArray() { return myReadArray; }
   
   Standard_EXPORT Storage_InternalData();
   

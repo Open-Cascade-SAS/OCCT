@@ -159,7 +159,7 @@ public:
     Standard_EXPORT void Next ();
 
     //! Returns current index
-    Standard_EXPORT Standard_Size Index () const 
+    Standard_Size Index () const 
     { 
       return myIBlock * myArr->myBlockSize + myInd;
     }

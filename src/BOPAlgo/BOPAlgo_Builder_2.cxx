@@ -33,7 +33,6 @@
 #include <BOPTools_AlgoTools2D.hxx>
 #include <BOPTools_AlgoTools3D.hxx>
 #include <BOPTools_CoupleOfShape.hxx>
-#include <BOPTools_DataMapOfShapeSet.hxx>
 #include <BOPTools_ListOfCoupleOfShape.hxx>
 #include <BOPTools_MapOfSet.hxx>
 #include <BOPTools_Parallel.hxx>

@@ -97,16 +97,15 @@ public:
   //! The result is either:
   //! -   a gp_Pnt point for a curve in 3D space, or
   //! -   a gp_Pnt2d point for a curve in 2D space.
-  Standard_EXPORT static gp_Pnt Value (const Standard_Real U, const gp_Lin& L);
+  static gp_Pnt Value (const Standard_Real U, const gp_Lin& L);
   
-    static gp_Pnt Value (const Standard_Real U, const gp_Circ& C);
+  static gp_Pnt Value (const Standard_Real U, const gp_Circ& C);
   
-    static gp_Pnt Value (const Standard_Real U, const gp_Elips& E);
+  static gp_Pnt Value (const Standard_Real U, const gp_Elips& E);
   
-    static gp_Pnt Value (const Standard_Real U, const gp_Hypr& H);
+  static gp_Pnt Value (const Standard_Real U, const gp_Hypr& H);
   
-    static gp_Pnt Value (const Standard_Real U, const gp_Parab& Prb);
-  
+  static gp_Pnt Value (const Standard_Real U, const gp_Parab& Prb);
 
   //! For elementary curves (lines, circles and conics) from the
   //! gp package, computes:
@@ -115,15 +114,15 @@ public:
   //! The results P and V1 are either:
   //! -   a gp_Pnt point and a gp_Vec vector, for a curve in 3D  space, or
   //! -   a gp_Pnt2d point and a gp_Vec2d vector, for a curve in 2D space.
-  Standard_EXPORT static void D1 (const Standard_Real U, const gp_Lin& L, gp_Pnt& P, gp_Vec& V1);
+  static void D1 (const Standard_Real U, const gp_Lin& L, gp_Pnt& P, gp_Vec& V1);
   
-    static void D1 (const Standard_Real U, const gp_Circ& C, gp_Pnt& P, gp_Vec& V1);
+  static void D1 (const Standard_Real U, const gp_Circ& C, gp_Pnt& P, gp_Vec& V1);
   
-    static void D1 (const Standard_Real U, const gp_Elips& E, gp_Pnt& P, gp_Vec& V1);
+  static void D1 (const Standard_Real U, const gp_Elips& E, gp_Pnt& P, gp_Vec& V1);
   
-    static void D1 (const Standard_Real U, const gp_Hypr& H, gp_Pnt& P, gp_Vec& V1);
+  static void D1 (const Standard_Real U, const gp_Hypr& H, gp_Pnt& P, gp_Vec& V1);
   
-    static void D1 (const Standard_Real U, const gp_Parab& Prb, gp_Pnt& P, gp_Vec& V1);
+  static void D1 (const Standard_Real U, const gp_Parab& Prb, gp_Pnt& P, gp_Vec& V1);
   
   //! For elementary curves (circles and conics) from the gp
   //! package, computes:
@@ -132,13 +131,13 @@ public:
   //! The results, P, V1 and V2, are either:
   //! -   a gp_Pnt point and two gp_Vec vectors, for a curve in 3D space, or
   //! -   a gp_Pnt2d point and two gp_Vec2d vectors, for a curve in 2D space.
-  Standard_EXPORT static void D2 (const Standard_Real U, const gp_Circ& C, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2);
+  static void D2 (const Standard_Real U, const gp_Circ& C, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2);
   
-    static void D2 (const Standard_Real U, const gp_Elips& E, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2);
+  static void D2 (const Standard_Real U, const gp_Elips& E, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2);
   
-    static void D2 (const Standard_Real U, const gp_Hypr& H, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2);
+  static void D2 (const Standard_Real U, const gp_Hypr& H, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2);
   
-    static void D2 (const Standard_Real U, const gp_Parab& Prb, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2);
+  static void D2 (const Standard_Real U, const gp_Parab& Prb, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2);
   
   //! For elementary curves (circles, ellipses and hyperbolae)
   //! from the gp package, computes:
@@ -148,12 +147,11 @@ public:
   //! The results, P, V1, V2 and V3, are either:
   //! -   a gp_Pnt point and three gp_Vec vectors, for a curve in 3D space, or
   //! -   a gp_Pnt2d point and three gp_Vec2d vectors, for a curve in 2D space.
-  Standard_EXPORT static void D3 (const Standard_Real U, const gp_Circ& C, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2, gp_Vec& V3);
+  static void D3 (const Standard_Real U, const gp_Circ& C, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2, gp_Vec& V3);
   
-    static void D3 (const Standard_Real U, const gp_Elips& E, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2, gp_Vec& V3);
+  static void D3 (const Standard_Real U, const gp_Elips& E, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2, gp_Vec& V3);
   
-  Standard_EXPORT static void D3 (const Standard_Real U, const gp_Hypr& H, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2, gp_Vec& V3);
-  
+  static void D3 (const Standard_Real U, const gp_Hypr& H, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2, gp_Vec& V3);
 
   //! For elementary curves (lines, circles and conics) from
   //! the gp package, computes the vector corresponding to
@@ -162,48 +160,47 @@ public:
   //! -   a gp_Vec2d vector for a curve in 2D space.
   //! In the following functions N is the order of derivation
   //! and should be greater than 0
-  Standard_EXPORT static gp_Vec DN (const Standard_Real U, const gp_Lin& L, const Standard_Integer N);
+  static gp_Vec DN (const Standard_Real U, const gp_Lin& L, const Standard_Integer N);
   
-    static gp_Vec DN (const Standard_Real U, const gp_Circ& C, const Standard_Integer N);
+  static gp_Vec DN (const Standard_Real U, const gp_Circ& C, const Standard_Integer N);
   
-    static gp_Vec DN (const Standard_Real U, const gp_Elips& E, const Standard_Integer N);
+  static gp_Vec DN (const Standard_Real U, const gp_Elips& E, const Standard_Integer N);
   
-    static gp_Vec DN (const Standard_Real U, const gp_Hypr& H, const Standard_Integer N);
+  static gp_Vec DN (const Standard_Real U, const gp_Hypr& H, const Standard_Integer N);
   
-    static gp_Vec DN (const Standard_Real U, const gp_Parab& Prb, const Standard_Integer N);
+  static gp_Vec DN (const Standard_Real U, const gp_Parab& Prb, const Standard_Integer N);
   
-    static gp_Pnt2d Value (const Standard_Real U, const gp_Lin2d& L);
+  static gp_Pnt2d Value (const Standard_Real U, const gp_Lin2d& L);
   
-    static gp_Pnt2d Value (const Standard_Real U, const gp_Circ2d& C);
+  static gp_Pnt2d Value (const Standard_Real U, const gp_Circ2d& C);
   
-    static gp_Pnt2d Value (const Standard_Real U, const gp_Elips2d& E);
+  static gp_Pnt2d Value (const Standard_Real U, const gp_Elips2d& E);
   
-    static gp_Pnt2d Value (const Standard_Real U, const gp_Hypr2d& H);
+  static gp_Pnt2d Value (const Standard_Real U, const gp_Hypr2d& H);
   
-    static gp_Pnt2d Value (const Standard_Real U, const gp_Parab2d& Prb);
+  static gp_Pnt2d Value (const Standard_Real U, const gp_Parab2d& Prb);
   
-    static void D1 (const Standard_Real U, const gp_Lin2d& L, gp_Pnt2d& P, gp_Vec2d& V1);
-  
-    static void D1 (const Standard_Real U, const gp_Circ2d& C, gp_Pnt2d& P, gp_Vec2d& V1);
-  
-    static void D1 (const Standard_Real U, const gp_Elips2d& E, gp_Pnt2d& P, gp_Vec2d& V1);
-  
-    static void D1 (const Standard_Real U, const gp_Hypr2d& H, gp_Pnt2d& P, gp_Vec2d& V1);
-  
-    static void D1 (const Standard_Real U, const gp_Parab2d& Prb, gp_Pnt2d& P, gp_Vec2d& V1);
-  
-    static void D2 (const Standard_Real U, const gp_Circ2d& C, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2);
-  
-    static void D2 (const Standard_Real U, const gp_Elips2d& E, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2);
-  
-    static void D2 (const Standard_Real U, const gp_Hypr2d& H, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2);
-  
-    static void D2 (const Standard_Real U, const gp_Parab2d& Prb, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2);
-  
-    static void D3 (const Standard_Real U, const gp_Circ2d& C, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2, gp_Vec2d& V3);
-  
-    static void D3 (const Standard_Real U, const gp_Elips2d& E, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2, gp_Vec2d& V3);
-  
+  static void D1 (const Standard_Real U, const gp_Lin2d& L, gp_Pnt2d& P, gp_Vec2d& V1);
+
+  static void D1 (const Standard_Real U, const gp_Circ2d& C, gp_Pnt2d& P, gp_Vec2d& V1);
+
+  static void D1 (const Standard_Real U, const gp_Elips2d& E, gp_Pnt2d& P, gp_Vec2d& V1);
+
+  static void D1 (const Standard_Real U, const gp_Hypr2d& H, gp_Pnt2d& P, gp_Vec2d& V1);
+
+  static void D1 (const Standard_Real U, const gp_Parab2d& Prb, gp_Pnt2d& P, gp_Vec2d& V1);
+
+  static void D2 (const Standard_Real U, const gp_Circ2d& C, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2);
+
+  static void D2 (const Standard_Real U, const gp_Elips2d& E, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2);
+
+  static void D2 (const Standard_Real U, const gp_Hypr2d& H, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2);
+
+  static void D2 (const Standard_Real U, const gp_Parab2d& Prb, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2);
+
+  static void D3 (const Standard_Real U, const gp_Circ2d& C, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2, gp_Vec2d& V3);
+
+  static void D3 (const Standard_Real U, const gp_Elips2d& E, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2, gp_Vec2d& V3);
 
   //! In the following functions N is the order of derivation
   //! and should be greater than 0

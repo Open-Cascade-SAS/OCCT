@@ -50,7 +50,7 @@ public:
     //! Gets persistent objects
     Standard_EXPORT virtual void PChildren(SequenceOfPersistent& theChildren) const;
     //! Returns persistent type name
-    Standard_EXPORT virtual Standard_CString PName() const { return "PGeom_Geometry"; }
+    virtual Standard_CString PName() const { return "PGeom_Geometry"; }
   };
 
 protected:
@@ -58,14 +58,14 @@ protected:
   struct geometryBase : public DelayedBase<Geometry, Transient> 
   {
     //! Write persistent data to a file.
-    Standard_EXPORT virtual void Write (StdObjMgt_WriteData&) const
+    virtual void Write (StdObjMgt_WriteData&) const
     {
       Standard_NotImplemented::Raise("ShapePersistent_Geom::geometryBase::Write - not implemented");
     }
     //! Gets persistent child objects
-    Standard_EXPORT virtual void PChildren (StdObjMgt_Persistent::SequenceOfPersistent&) const { }
+    virtual void PChildren (StdObjMgt_Persistent::SequenceOfPersistent&) const { }
     //! Returns persistent type name
-    Standard_EXPORT virtual Standard_CString PName() const
+    virtual Standard_CString PName() const
     { 
       Standard_NotImplemented::Raise("ShapePersistent_Geom::geometryBase::PName - not implemented");
       return ""; 
@@ -77,18 +77,18 @@ protected:
   {
   public:
     //! Read persistent data from a file.
-    Standard_EXPORT virtual void Read (StdObjMgt_ReadData& theReadData)
+    virtual void Read (StdObjMgt_ReadData& theReadData)
       { PData().Read (theReadData); }
     //! Write persistent data to a file.
-    Standard_EXPORT virtual void Write (StdObjMgt_WriteData& theWriteData) const
+    virtual void Write (StdObjMgt_WriteData& theWriteData) const
       { PData().Write(theWriteData); }
     //! Gets persistent child objects
-    Standard_EXPORT virtual void PChildren (StdObjMgt_Persistent::SequenceOfPersistent&) const
+    virtual void PChildren (StdObjMgt_Persistent::SequenceOfPersistent&) const
     {
       Standard_NotImplemented::Raise("ShapePersistent_Geom::subBase::PChildren - not implemented");
     }
     //! Returns persistent type name
-    Standard_EXPORT virtual Standard_CString PName() const
+    virtual Standard_CString PName() const
     { 
       Standard_NotImplemented::Raise("ShapePersistent_Geom::subBase::PName - not implemented");
       return ""; 
@@ -100,13 +100,13 @@ protected:
   {
   public:
     //! Read persistent data from a file.
-    Standard_EXPORT virtual void Read (StdObjMgt_ReadData&) { }
+    virtual void Read (StdObjMgt_ReadData&) { }
     //! Write persistent data to a file.
-    Standard_EXPORT virtual void Write (StdObjMgt_WriteData&) const { }
+    virtual void Write (StdObjMgt_WriteData&) const { }
     //! Gets persistent child objects
-    Standard_EXPORT virtual void PChildren (StdObjMgt_Persistent::SequenceOfPersistent&) const { }
+    virtual void PChildren (StdObjMgt_Persistent::SequenceOfPersistent&) const { }
     //! Returns persistent type name
-    Standard_EXPORT virtual Standard_CString PName() const
+    virtual Standard_CString PName() const
     {
       Standard_NotImplemented::Raise("ShapePersistent_Geom::subBase_gp::PName - not implemented");
       return "";
@@ -117,7 +117,7 @@ protected:
   struct subBase_empty : Base  
   { 
     //! Returns persistent type name
-    Standard_EXPORT virtual Standard_CString PName() const
+    virtual Standard_CString PName() const
     {
       Standard_NotImplemented::Raise("ShapePersistent_Geom::subBase_empty::PName - not implemented");
       return "";
@@ -129,21 +129,21 @@ protected:
   {
   public:
     //! Read persistent data from a file.
-    Standard_EXPORT virtual void Read (StdObjMgt_ReadData& theReadData)
+    virtual void Read (StdObjMgt_ReadData& theReadData)
     {
       Data aData;
       theReadData >> aData;
       this->myTransient = new Target(aData);
     }
     //! Gets persistent child objects
-    Standard_EXPORT virtual void PChildren(StdObjMgt_Persistent::SequenceOfPersistent&) const { }
+    virtual void PChildren(StdObjMgt_Persistent::SequenceOfPersistent&) const { }
     //! Write persistent data to a file.
-    Standard_EXPORT virtual void Write(StdObjMgt_WriteData&) const
+    virtual void Write(StdObjMgt_WriteData&) const
     {
       Standard_NotImplemented::Raise("ShapePersistent_Geom::instance::Write - not implemented");
     }
     //! Returns persistent type name
-    Standard_EXPORT virtual Standard_CString PName() const
+    virtual Standard_CString PName() const
     {
       Standard_NotImplemented::Raise("ShapePersistent_Geom::instance::PName - not implemented");
       return "";

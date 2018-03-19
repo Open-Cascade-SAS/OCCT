@@ -38,38 +38,38 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Sets the context for the algorithms
-  Standard_EXPORT void SetContext (const Handle(IntTools_Context)& theContext) {
+  void SetContext (const Handle(IntTools_Context)& theContext) {
     myContext = theContext;
   }
 
   //! Returns the input shapes
-  Standard_EXPORT const TopTools_ListOfShape& Shapes() const {
+  const TopTools_ListOfShape& Shapes() const {
     return myShapes;
   }
 
   //! Sets the shapes for building areas
-  Standard_EXPORT void SetShapes(const TopTools_ListOfShape& theLS) {
+  void SetShapes(const TopTools_ListOfShape& theLS) {
     myShapes = theLS;
   }
 
   //! Returns the found loops
-  Standard_EXPORT const TopTools_ListOfShape& Loops() const {
+  const TopTools_ListOfShape& Loops() const {
     return myLoops;
   }
 
   //! Returns the found areas
-  Standard_EXPORT const TopTools_ListOfShape& Areas() const {
+  const TopTools_ListOfShape& Areas() const {
     return myAreas;
   }
 
   //! Defines the preventing of addition of internal parts into result.
   //! The default value is FALSE, i.e. the internal parts are added into result.
-  Standard_EXPORT void SetAvoidInternalShapes(const Standard_Boolean theAvoidInternal) {
+  void SetAvoidInternalShapes(const Standard_Boolean theAvoidInternal) {
     myAvoidInternalShapes = theAvoidInternal;
   }
 
   //! Returns the AvoidInternalShapes flag
-  Standard_EXPORT Standard_Boolean IsAvoidInternalShapes() const {
+  Standard_Boolean IsAvoidInternalShapes() const {
     return myAvoidInternalShapes;
   }
 
@@ -80,13 +80,13 @@ protected:
   
   Standard_EXPORT BOPAlgo_BuilderArea(const Handle(NCollection_BaseAllocator)& theAllocator);
   
-  Standard_EXPORT virtual void PerformShapesToAvoid() = 0;
+  virtual void PerformShapesToAvoid() = 0;
   
-  Standard_EXPORT virtual void PerformLoops() = 0;
+  virtual void PerformLoops() = 0;
   
-  Standard_EXPORT virtual void PerformAreas() = 0;
+  virtual void PerformAreas() = 0;
   
-  Standard_EXPORT virtual void PerformInternalShapes() = 0;
+  virtual void PerformInternalShapes() = 0;
 
 
   Handle(IntTools_Context) myContext;

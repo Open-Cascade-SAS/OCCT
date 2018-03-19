@@ -183,7 +183,7 @@ public:
     return Array(theNum);
   }
 
-  Standard_EXPORT Standard_Integer& operator()(const Standard_Integer theNum) const
+  Standard_Integer& operator()(const Standard_Integer theNum) const
   {
     return Value(theNum);
   }

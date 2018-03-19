@@ -42,11 +42,11 @@ public:
                              const Handle(StepRepr_HArray1OfRepresentationItem)& theItems,
                              const Handle(StepRepr_RepresentationContext)& theContextOfItems);
   
-  Standard_EXPORT void SetDescription (const Handle(TCollection_HAsciiString)& theDescription) {
+  void SetDescription (const Handle(TCollection_HAsciiString)& theDescription) {
     myDescription = theDescription;
   }
   
-  Standard_EXPORT Handle(TCollection_HAsciiString) Description() const {
+  Handle(TCollection_HAsciiString) Description() const {
     return myDescription;
   }
 

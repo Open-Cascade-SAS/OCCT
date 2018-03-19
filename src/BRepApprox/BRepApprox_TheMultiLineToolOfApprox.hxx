@@ -102,7 +102,7 @@ public:
     static Approx_Status WhatStatus (const BRepApprox_TheMultiLineOfApprox& ML, const Standard_Integer I1, const Standard_Integer I2);
   
   //! Dump of the current multi-line.
-  Standard_EXPORT static void Dump (const BRepApprox_TheMultiLineOfApprox& ML);
+  static void Dump (const BRepApprox_TheMultiLineOfApprox& ML);
 
 
 

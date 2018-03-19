@@ -56,14 +56,14 @@ class TObj_LabelIterator : public TObj_ObjectIterator
   */
   
   //! Returns True if there is a current Item in the iteration.
-  virtual Standard_EXPORT Standard_Boolean More () const Standard_OVERRIDE
+  virtual Standard_Boolean More () const Standard_OVERRIDE
     { return !myNode.IsNull(); }
   
   //! Move to the next Item
   virtual Standard_EXPORT void Next () Standard_OVERRIDE;
    
   //! Returns the current item
-  virtual Standard_EXPORT Handle(TObj_Object) Value () const Standard_OVERRIDE
+  virtual Handle(TObj_Object) Value () const Standard_OVERRIDE
     { return myObject; }
   
   //! Returns the label of the current item
@@ -76,7 +76,7 @@ class TObj_LabelIterator : public TObj_ObjectIterator
   */
   
   //! Shifts iterator to the next object
-  virtual Standard_EXPORT void MakeStep() = 0;
+  virtual void MakeStep() = 0;
   
  protected:
   /**
@@ -84,7 +84,7 @@ class TObj_LabelIterator : public TObj_ObjectIterator
   */
   
   //! Initialize Iterator by the theLabel
-  Standard_EXPORT void Init(const TDF_Label& theLabel,
+  void Init(const TDF_Label& theLabel,
                             const Standard_Boolean isRecursive = Standard_False)
     { myIterator.Initialize(theLabel,isRecursive); }
   

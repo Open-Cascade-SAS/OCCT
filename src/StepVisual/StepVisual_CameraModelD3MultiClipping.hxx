@@ -41,12 +41,12 @@ public:
                              const Handle(StepVisual_ViewVolume)& thePerspectiveOfVolume,
                              const Handle(StepVisual_HArray1OfCameraModelD3MultiClippingInterectionSelect)& theShapeClipping);
   
-  Standard_EXPORT void SetShapeClipping(const Handle(StepVisual_HArray1OfCameraModelD3MultiClippingInterectionSelect)& theShapeClipping)
+  void SetShapeClipping(const Handle(StepVisual_HArray1OfCameraModelD3MultiClippingInterectionSelect)& theShapeClipping)
   {
     myShapeClipping = theShapeClipping;
   }
 
-  Standard_EXPORT const Handle(StepVisual_HArray1OfCameraModelD3MultiClippingInterectionSelect) ShapeClipping()
+  const Handle(StepVisual_HArray1OfCameraModelD3MultiClippingInterectionSelect) ShapeClipping()
   {
     return myShapeClipping;
   }

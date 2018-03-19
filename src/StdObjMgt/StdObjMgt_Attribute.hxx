@@ -27,11 +27,11 @@ class StdObjMgt_Attribute : public Standard_Transient
   {
   public:
     //! Create an empty transient attribuite
-    Standard_EXPORT virtual Handle(TDF_Attribute) CreateAttribute()
+    virtual Handle(TDF_Attribute) CreateAttribute()
       { return myTransient = new Transient; }
 
     //! Get transient attribuite for the persistent data
-    Standard_EXPORT virtual Handle(TDF_Attribute) GetAttribute() const
+    virtual Handle(TDF_Attribute) GetAttribute() const
       { return Handle(TDF_Attribute)(myTransient); }
 
   protected:
@@ -46,13 +46,13 @@ public:
   {
   public:
     //! Read persistent data from a file.
-    Standard_EXPORT virtual void Read (StdObjMgt_ReadData& theReadData)
+    virtual void Read (StdObjMgt_ReadData& theReadData)
       { theReadData >> myData; }
     //! Write persistent data to a file.
-    Standard_EXPORT virtual void Write (StdObjMgt_WriteData& theWriteData) const
+    virtual void Write (StdObjMgt_WriteData& theWriteData) const
       { theWriteData << myData; }
-    Standard_EXPORT virtual void PChildren(StdObjMgt_Persistent::SequenceOfPersistent&) const { }
-    Standard_EXPORT virtual Standard_CString PName() const { return "StdObjMgt_Attribute::undefined"; }
+    virtual void PChildren(StdObjMgt_Persistent::SequenceOfPersistent&) const { }
+    virtual Standard_CString PName() const { return "StdObjMgt_Attribute::undefined"; }
 
   protected:
     DataType myData;
@@ -67,20 +67,20 @@ private:
   {
   public:
     //! Read persistent data from a file.
-    Standard_EXPORT virtual void Read (StdObjMgt_ReadData& theReadData)
+    virtual void Read (StdObjMgt_ReadData& theReadData)
     {
       myPersistent = new Persistent;
       myPersistent->Read (theReadData);
     }
     //! Write persistent data to a file.
-    Standard_EXPORT virtual void Write(StdObjMgt_WriteData& theWriteData) const
+    virtual void Write(StdObjMgt_WriteData& theWriteData) const
       { myPersistent->Write(theWriteData); }
-    Standard_EXPORT virtual void PChildren(StdObjMgt_Persistent::SequenceOfPersistent&) const { }
-    Standard_EXPORT virtual Standard_CString PName() const 
+    virtual void PChildren(StdObjMgt_Persistent::SequenceOfPersistent&) const { }
+    virtual Standard_CString PName() const 
       { return myPersistent->PName(); }
 
     //! Import transient attribuite from the persistent data
-    Standard_EXPORT virtual void ImportAttribute()
+    virtual void ImportAttribute()
     {
       if (myPersistent && this->myTransient)
       {

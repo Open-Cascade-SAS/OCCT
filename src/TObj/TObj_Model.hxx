@@ -323,7 +323,7 @@ class TObj_Model : public Standard_Transient
   //! Returns boolean value is to check model in Init new model
   //! The check could be useful if version of model changed
   //! Default implementation returns FALSE (check turned OFF)
-  virtual Standard_EXPORT Standard_Boolean isToCheck() const
+  virtual Standard_Boolean isToCheck() const
   { return Standard_True; }
 
  public:

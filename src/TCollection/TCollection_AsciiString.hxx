@@ -83,7 +83,7 @@ public:
 
 #ifndef OCCT_NO_RVALUE_REFERENCE
   //! Move constructor
-  Standard_EXPORT TCollection_AsciiString (TCollection_AsciiString&& theOther)
+  TCollection_AsciiString (TCollection_AsciiString&& theOther)
   : mystring (theOther.mystring),
     mylength (theOther.mylength)
   {

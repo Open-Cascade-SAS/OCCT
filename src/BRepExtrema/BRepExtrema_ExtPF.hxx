@@ -34,7 +34,7 @@ class BRepExtrema_ExtPF
 
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT BRepExtrema_ExtPF()
+  BRepExtrema_ExtPF()
   {}
   //! It calculates all the distances. <br>
   Standard_EXPORT BRepExtrema_ExtPF(const TopoDS_Vertex& TheVertex,const TopoDS_Face& TheFace,
@@ -49,37 +49,37 @@ class BRepExtrema_ExtPF
   //! Be careful: this method uses the Face only for classify not for the fields. <br>
   Standard_EXPORT void Perform(const TopoDS_Vertex& TheVertex,const TopoDS_Face& TheFace);
   //! True if the distances are found. <br>
-  Standard_EXPORT Standard_Boolean IsDone() const
+  Standard_Boolean IsDone() const
   {
     return myExtPS.IsDone();
   }
   //! Returns the number of extremum distances. <br>
-  Standard_EXPORT Standard_Integer NbExt() const
+  Standard_Integer NbExt() const
   {
     return myPoints.Length();
   }
   //! Returns the value of the <N>th extremum square distance. <br>
-  Standard_EXPORT Standard_Real SquareDistance(const Standard_Integer N) const
+  Standard_Real SquareDistance(const Standard_Integer N) const
   {
     return mySqDist.Value(N);
   }
   //! Returns the parameters on the Face of the <N>th extremum distance. <br>
-  Standard_EXPORT void Parameter(const Standard_Integer N,Standard_Real& U,Standard_Real& V) const
+  void Parameter(const Standard_Integer N,Standard_Real& U,Standard_Real& V) const
   {
     myPoints.Value(N).Parameter(U, V);
   }
   //! Returns the Point of the <N>th extremum distance. <br>
-  Standard_EXPORT gp_Pnt Point(const Standard_Integer N) const
+  gp_Pnt Point(const Standard_Integer N) const
   {
     return myPoints.Value(N).Value();
   }
 
-  Standard_EXPORT void SetFlag(const Extrema_ExtFlag F)
+  void SetFlag(const Extrema_ExtFlag F)
   {
     myExtPS.SetFlag(F);
   }
 
-  Standard_EXPORT void SetAlgo(const Extrema_ExtAlgo A)
+  void SetAlgo(const Extrema_ExtAlgo A)
   {
     myExtPS.SetAlgo(A);
   }

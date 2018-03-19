@@ -63,7 +63,7 @@ class XSControl_TransferWriter : public Standard_Transient
   { return myController; }
   
   //! Sets a new Controller, also sets a new FinderProcess
-  Standard_EXPORT void SetController (const Handle(XSControl_Controller)& theCtl)
+  void SetController (const Handle(XSControl_Controller)& theCtl)
   {
     myController = theCtl;
     Clear(-1);

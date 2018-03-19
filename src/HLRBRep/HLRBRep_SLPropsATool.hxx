@@ -49,7 +49,7 @@ public:
   //! <V> on the Surface <A>.
     static void D2 (const Standard_Address A, const Standard_Real U, const Standard_Real V, gp_Pnt& P, gp_Vec& D1U, gp_Vec& D1V, gp_Vec& D2U, gp_Vec& D2V, gp_Vec& DUV);
   
-  Standard_EXPORT static gp_Vec DN (const Standard_Address A, const Standard_Real U, const Standard_Real V, const Standard_Integer Nu, const Standard_Integer Nv);
+    static gp_Vec DN (const Standard_Address A, const Standard_Real U, const Standard_Real V, const Standard_Integer Nu, const Standard_Integer Nv);
   
   //! returns the order of   continuity of the   Surface
   //! <A>.  returns  1   :  first  derivative    only is

@@ -44,7 +44,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Constructor preparing A and B parameters only. It does not perform the job.
-  Standard_EXPORT math_BracketMinimum(const Standard_Real A, const Standard_Real B);
+  math_BracketMinimum(const Standard_Real A, const Standard_Real B);
 
   //! Given two initial values this class computes a
   //! bracketing triplet of abscissae Ax, Bx, Cx

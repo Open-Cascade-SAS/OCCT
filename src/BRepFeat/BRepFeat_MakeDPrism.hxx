@@ -69,9 +69,14 @@ public:
   //! operation. If it is inside the basis shape, a local
   //! operation such as glueing can be performed.
   //! Initializes the draft prism class
-    BRepFeat_MakeDPrism(const TopoDS_Shape& Sbase, const TopoDS_Face& Pbase, const TopoDS_Face& Skface, const Standard_Real Angle, const Standard_Integer Fuse, const Standard_Boolean Modify);
+  BRepFeat_MakeDPrism (const TopoDS_Shape& Sbase, const TopoDS_Face& Pbase, const TopoDS_Face& Skface, const Standard_Real Angle, const Standard_Integer Fuse, const Standard_Boolean Modify)
+  {
+    Init (Sbase, Pbase, Skface, Angle, Fuse, Modify);
+  }
   
-  Standard_EXPORT BRepFeat_MakeDPrism();
+  BRepFeat_MakeDPrism() 
+  {
+  }
   
   //! Initializes this algorithm for building draft prisms along surfaces.
   //! A face Pbase is selected in the basis shape Sbase to
@@ -154,12 +159,5 @@ private:
 
 
 };
-
-
-#include <BRepFeat_MakeDPrism.lxx>
-
-
-
-
 
 #endif // _BRepFeat_MakeDPrism_HeaderFile

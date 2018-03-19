@@ -38,7 +38,7 @@ public:
                                         const gp_Pnt& thePnt4);
 
   //! Returns the amount of sub-entities in sensitive
-  Standard_EXPORT virtual Standard_Integer NbSubElements() Standard_OVERRIDE
+  virtual Standard_Integer NbSubElements() Standard_OVERRIDE
   {
     return 1;
   };

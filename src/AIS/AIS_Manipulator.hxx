@@ -106,9 +106,6 @@ public:
   //! Constructs a manipulator object with input location and positions of axes and all parts to be displayed.
   Standard_EXPORT AIS_Manipulator (const gp_Ax2& thePosition);
 
-  //! Destructor.
-  Standard_EXPORT virtual ~AIS_Manipulator() {}
-
   //! Disable or enable visual parts for translation, rotation or scaling for some axis.
   //! By default all parts are enabled (will be displayed).
   //! @warning Enabling or disabling of visual parts of manipulator does not manage the manipulation (selection) mode.
@@ -309,7 +306,7 @@ public: //! @name Presentation computation
                                                  const Standard_Integer theMode) Standard_OVERRIDE;
 
   //! Disables auto highlighting to use HilightSelected() and HilightOwnerWithColor() overridden methods.
-  Standard_EXPORT virtual Standard_Boolean IsAutoHilight() const Standard_OVERRIDE
+  virtual Standard_Boolean IsAutoHilight() const Standard_OVERRIDE
   {
     return Standard_False;
   }

@@ -29,7 +29,7 @@ class BRepExtrema_ExtCC
 
   DEFINE_STANDARD_ALLOC
   
-  Standard_EXPORT BRepExtrema_ExtCC()
+  BRepExtrema_ExtCC ()
   {
   }
   //! It calculates all the distances. <br>
@@ -39,22 +39,22 @@ class BRepExtrema_ExtCC
   //! An exception is raised if the fields have not been initialized. <br>
   Standard_EXPORT void Perform(const TopoDS_Edge& E1);
   //! True if the distances are found. <br>
-  Standard_EXPORT Standard_Boolean IsDone() const
+  Standard_Boolean IsDone() const
   {
     return myExtCC.IsDone();
   }
   //! Returns the number of extremum distances. <br>
-  Standard_EXPORT Standard_Integer NbExt() const
+  Standard_Integer NbExt() const
   {
     return myExtCC.NbExt();
   }
   //! Returns True if E1 and E2 are parallel. <br>
-  Standard_EXPORT Standard_Boolean IsParallel() const
+  Standard_Boolean IsParallel() const
   {
     return myExtCC.IsParallel();
   }
   //! Returns the value of the <N>th extremum square distance. <br>
-  Standard_EXPORT Standard_Real SquareDistance(const Standard_Integer N) const
+  Standard_Real SquareDistance(const Standard_Integer N) const
   {
     return myExtCC.SquareDistance(N);
   }

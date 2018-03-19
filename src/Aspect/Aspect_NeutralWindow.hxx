@@ -41,7 +41,7 @@ public:
 
   //! Set native handle.
   //! @return true if definition has been changed
-  Standard_EXPORT Standard_Boolean SetNativeHandle (Aspect_Drawable theWindow) { return SetNativeHandles (theWindow, 0, 0); }
+  Standard_Boolean SetNativeHandle (Aspect_Drawable theWindow) { return SetNativeHandles (theWindow, 0, 0); }
 
   //! Set native handles.
   //! @return true if definition has been changed

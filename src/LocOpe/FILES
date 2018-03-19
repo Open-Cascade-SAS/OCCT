@@ -39,7 +39,6 @@ LocOpe_Pipe.cxx
 LocOpe_Pipe.hxx
 LocOpe_Pipe.lxx
 LocOpe_PntFace.hxx
-LocOpe_PntFace.lxx
 LocOpe_Prism.cxx
 LocOpe_Prism.hxx
 LocOpe_Revol.cxx
