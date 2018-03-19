@@ -15,7 +15,7 @@
 
 // Mouse and clipboard event tracker for OCC_2dView
 // NO 3D operation are supported (like rotation)
-class AFX_EXT_CLASS OCC_2dDoc : public OCC_BaseDoc
+class Standard_EXPORT OCC_2dDoc : public OCC_BaseDoc
 {
   DECLARE_DYNCREATE(OCC_2dDoc)
 

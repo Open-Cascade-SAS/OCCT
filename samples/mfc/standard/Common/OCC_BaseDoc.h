@@ -20,7 +20,7 @@
 // Common methods:
 // - base events
 // - export into one of supported export formats.
-class AFX_EXT_CLASS OCC_BaseDoc : public CDocument
+class Standard_EXPORT OCC_BaseDoc : public CDocument
 {
 public:
 

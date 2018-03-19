@@ -23,7 +23,7 @@ enum CurAction3d {
   CurAction3d_DynamicRotation
 };
 
-class AFX_EXT_CLASS OCC_3dView : public OCC_BaseView  
+class Standard_EXPORT OCC_3dView : public OCC_BaseView  
 {
 	DECLARE_DYNCREATE(OCC_3dView)
 public:

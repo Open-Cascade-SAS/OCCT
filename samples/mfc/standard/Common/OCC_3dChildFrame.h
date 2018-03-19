@@ -12,7 +12,7 @@
 #include "OCC_BaseChildFrame.h"
 #include <Standard_Macro.hxx>
 
-class AFX_EXT_CLASS OCC_3dChildFrame : public OCC_BaseChildFrame  
+class Standard_EXPORT OCC_3dChildFrame : public OCC_BaseChildFrame  
 {
 	DECLARE_DYNCREATE(OCC_3dChildFrame)
 public:

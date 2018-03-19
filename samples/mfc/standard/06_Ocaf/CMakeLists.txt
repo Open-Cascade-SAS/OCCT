@@ -67,4 +67,4 @@ include_directories (${CMAKE_BINARY_DIR}/inc
                      ${Ocaf_SRC_DIR}
                      ${MFC_STANDARD_SAMPLES_DIR}/Common)
 
-target_link_libraries (Ocaf mfcsample TKLCAF TKVCAF TKBO TKBin TKXml)
+target_link_libraries (Ocaf mfcsample TKLCAF TKVCAF TKBO TKBin TKXml TKBinL TKXmlL)

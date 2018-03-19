@@ -13,14 +13,16 @@
 #include <Standard_Macro.hxx>
 #include <Graphic3d_GraphicDriver.hxx>
 
-class AFX_EXT_CLASS OCC_App : public CWinApp 
+class Standard_EXPORT OCC_App : public CWinApp 
 {
 public:
   void SetSampleName (const wchar_t* theName);
   virtual const wchar_t* GetSampleName() const;
 	const wchar_t* GetInitDataDir() const;
   void SetSamplePath (const wchar_t* thePath);
-	OCC_App();
+
+  virtual BOOL InitApplication ();
+
   Handle(Graphic3d_GraphicDriver) GetGraphicDriver() const
   {
     return myGraphicDriver;

@@ -32,7 +32,6 @@ if ("${BUILD_LIBRARY_TYPE}" STREQUAL "Shared")
   endif()
 else()
   unset (BUILD_SHARED_LIBS)
-  message (STATUS "Info: Only 3rdparty's header files are used for building of static OCCT libraries")
   unset (BUILD_SHARED_LIBRARY_NAME_POSTFIX)
 endif()
 
@@ -703,11 +702,10 @@ else()
   OCCT_CHECK_AND_UNSET ("3RDPARTY_FLEX_EXECUTABLE")
 endif()
 
+# check all 3rdparty include paths
 string (REGEX REPLACE ";" " " 3RDPARTY_NOT_INCLUDED "${3RDPARTY_NOT_INCLUDED}")
-
-# check all 3rdparty paths
 if (3RDPARTY_NOT_INCLUDED)
-  message (FATAL_ERROR "NOT FOUND: ${3RDPARTY_NOT_INCLUDED}" )
+  message (FATAL_ERROR "Could not find headers of used third-party products: ${3RDPARTY_NOT_INCLUDED}" )
 endif()
 
 if (3RDPARTY_INCLUDE_DIRS)
@@ -720,11 +718,26 @@ endif()
 # include <cmake binary folder>/inc
 include_directories (${CMAKE_BINARY_DIR}/${INSTALL_DIR_INCLUDE})
 
-if (3RDPARTY_LIBRARY_DIRS AND BUILD_SHARED_LIBS)
+# check all 3rdparty library paths
+string (REGEX REPLACE ";" " " 3RDPARTY_NO_LIBS "${3RDPARTY_NO_LIBS}")
+if (3RDPARTY_NO_LIBS)
+  if (BUILD_SHARED_LIBS)
+    message (SEND_ERROR "Could not find libraries of used third-party products: ${3RDPARTY_NO_LIBS}" )
+  else()
+    message (WARNING "Could not find libraries of used third-party products: ${3RDPARTY_NO_LIBS}" )
+  endif()
+endif()
+if (3RDPARTY_LIBRARY_DIRS)
   list (REMOVE_DUPLICATES 3RDPARTY_LIBRARY_DIRS)
   string (REGEX REPLACE ";" "\n\t" 3RDPARTY_LIBRARY_DIRS_WITH_ENDS "${3RDPARTY_LIBRARY_DIRS}")
   message (STATUS "Info: The directories of 3rdparty libraries: \n\t${3RDPARTY_LIBRARY_DIRS_WITH_ENDS}")
   link_directories (${3RDPARTY_LIBRARY_DIRS})
+endif()
+
+# report not found 3rdparty dll paths
+string (REGEX REPLACE ";" " " 3RDPARTY_NO_DLLS "${3RDPARTY_NO_DLLS}")
+if (3RDPARTY_NO_DLLS)
+  message (WARNING "Could not find DLLs of used third-party products: ${3RDPARTY_NO_DLLS}" )
 endif()
 
 # build directories

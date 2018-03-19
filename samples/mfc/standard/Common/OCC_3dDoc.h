@@ -15,7 +15,7 @@
 
 // Event tracker for 3D views with support of advanced message dialog operations
 // and dimensions dialog
-class AFX_EXT_CLASS OCC_3dDoc : public OCC_3dBaseDoc
+class Standard_EXPORT OCC_3dDoc : public OCC_3dBaseDoc
 {
 public:
 

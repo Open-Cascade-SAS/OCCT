@@ -14,7 +14,7 @@
 
 // Dialog to dynamically configure 3D Viewer stereo
 // projection properties.
-class AFX_EXT_CLASS OCC_StereoConfigDlg : public CDialog
+class Standard_EXPORT OCC_StereoConfigDlg : public CDialog
 {
 public:
 

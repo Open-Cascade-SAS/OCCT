@@ -14,7 +14,7 @@
 #include "OCC_BaseDoc.h"
 #include "AIS_RubberBand.hxx"
 
-class AFX_EXT_CLASS OCC_BaseView  : public CView
+class Standard_EXPORT OCC_BaseView  : public CView
 {
   
 public:

@@ -22,18 +22,6 @@ END_MESSAGE_MAP()
 
 CImportExportApp::CImportExportApp() : OCC_App()
 {
-  // Set the local system units
-  try
-  {
-    UnitsAPI::SetLocalSystem (UnitsAPI_MDTV);
-  }
-  catch (Standard_Failure)
-  {
-    AfxMessageBox (L"Fatal Error in units initialisation");
-  }
-
-  SampleName = "ImportExport"; //for about dialog
-  SetSamplePath (L"..\\..\\05_ImportExport");
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -46,7 +34,20 @@ CImportExportApp theApp;
 
 BOOL CImportExportApp::InitInstance()
 {
-	AfxEnableControlContainer();
+  // Set the local system units
+  try
+  {
+    UnitsAPI::SetLocalSystem (UnitsAPI_MDTV);
+  }
+  catch (Standard_Failure)
+  {
+    AfxMessageBox (L"Fatal Error in units initialisation");
+  }
+
+  SampleName = "ImportExport"; //for about dialog
+  SetSamplePath (L"..\\..\\05_ImportExport");
+
+  AfxEnableControlContainer();
 
 	// Standard initialization
 	// If you are not using these features and wish to reduce the size

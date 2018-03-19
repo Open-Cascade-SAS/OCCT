@@ -23,7 +23,7 @@ enum CurrentAction2d
   CurAction2d_GlobalPanning,
 };
 
-class AFX_EXT_CLASS OCC_2dView : public OCC_BaseView  
+class Standard_EXPORT OCC_2dView : public OCC_BaseView  
 {
   DECLARE_DYNCREATE(OCC_2dView)
 

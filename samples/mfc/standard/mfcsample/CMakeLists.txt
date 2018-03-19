@@ -3,6 +3,11 @@ cmake_minimum_required (VERSION 2.6)
 project (mfcsample)
 
 add_definitions(-DWINVER=0x0501 -D_AFXEXT -DUNICODE -D_UNICODE)
+
+if (NOT BUILD_SHARED_LIBS AND WIN32)
+  add_definitions ("-DOCCT_STATIC_BUILD")
+endif()
+
 set (CMAKE_MFC_FLAG 2)
 
 # mfcsample
@@ -121,7 +126,7 @@ source_group ("Source Files" FILES    ${mfcsample_SOURCE_FILES}
 source_group ( "Resource Files" FILES ${COMMON_RESOURCE_FILES})
 
 # mfcsample library
-add_library ( mfcsample SHARED ${mfcsample_SOURCE_FILES}
+add_library ( mfcsample        ${mfcsample_SOURCE_FILES}
                                ${COMMON_HEADER_FILES}
                                ${COMMON_SOURCE_FILES}
                                ${COMMON_IE_HEADER_FILES}
@@ -168,8 +173,12 @@ set (mfcsample_USED_LIBS  TKVRML
                           TKIGES
                           TKShHealing
                           TKSTEP
+                          TKSTEPBase
+                          TKSTEP209
+                          TKSTEPAttr
                           TKXSBase
                           TKBool
+                          TKBO
                           TKCAF
                           TKCDF
                           TKernel
@@ -187,6 +196,7 @@ set (mfcsample_USED_LIBS  TKVRML
                           TKService
                           TKTopAlgo
                           TKMesh
-                          TKV3d)
+                          TKV3d
+                          ${CSF_OpenGlLibs})
 
 target_link_libraries (mfcsample ${mfcsample_USED_LIBS})
