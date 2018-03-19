@@ -88,6 +88,15 @@ Standard_Boolean XmlMDataStd_ReferenceListDriver::Paste(const XmlObjMgt_Persiste
   }
 
   const Handle(TDataStd_ReferenceList) aReferenceList = Handle(TDataStd_ReferenceList)::DownCast(theTarget);
+  // attribute id
+  Standard_GUID aGUID;
+  XmlObjMgt_DOMString aGUIDStr = anElement.getAttribute(::AttributeIDString());
+  if (aGUIDStr.Type() == XmlObjMgt_DOMString::LDOM_NULL)
+    aGUID = TDataStd_ReferenceList::GetID(); //default case
+  else
+    aGUID = Standard_GUID(Standard_CString(aGUIDStr.GetString())); // user defined case
+  aReferenceList->SetID(aGUID);
+
   if(aLastInd > 0) {
     if (!anElement.hasChildNodes())
     {
@@ -151,15 +160,6 @@ Standard_Boolean XmlMDataStd_ReferenceListDriver::Paste(const XmlObjMgt_Persiste
   }
   aReferenceList->Append(tLab);
   }
-  // attribute id
-  Standard_GUID aGUID;
-  XmlObjMgt_DOMString aGUIDStr = anElement.getAttribute(::AttributeIDString());
-  if (aGUIDStr.Type() == XmlObjMgt_DOMString::LDOM_NULL)
-    aGUID = TDataStd_ReferenceList::GetID(); //default case
-  else
-    aGUID = Standard_GUID(Standard_CString(aGUIDStr.GetString())); // user defined case
-
-  aReferenceList->SetID(aGUID);
 
   return Standard_True;
 }

@@ -58,8 +58,8 @@ Standard_Boolean XmlMDataStd_IntegerDriver::Paste
     TCollection_ExtendedString aMessageString =
       TCollection_ExtendedString("Cannot retrieve Integer attribute from \"")
         + anIntStr + "\"";
-    myMessageDriver->Send (aMessageString, Message_Fail);
-    return Standard_False;
+    myMessageDriver->Send (aMessageString, Message_Warning);
+    aValue = 0;
   }
 
   Handle(TDataStd_Integer) anInt= Handle(TDataStd_Integer)::DownCast(theTarget);

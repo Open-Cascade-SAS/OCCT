@@ -96,6 +96,17 @@ Standard_Boolean XmlMDataStd_ByteArrayDriver::Paste(const XmlObjMgt_Persistent& 
 
 
   Handle(TDataStd_ByteArray) aByteArray = Handle(TDataStd_ByteArray)::DownCast(theTarget);
+  
+  // attribute id
+  Standard_GUID aGUID;
+  XmlObjMgt_DOMString aGUIDStr = anElement.getAttribute(::AttributeIDString());
+  if (aGUIDStr.Type() == XmlObjMgt_DOMString::LDOM_NULL)
+    aGUID = TDataStd_ByteArray::GetID(); //default case
+  else
+    aGUID = Standard_GUID(Standard_CString(aGUIDStr.GetString())); // user defined case
+
+  aByteArray->SetID(aGUID);
+
   Handle(TColStd_HArray1OfByte) hArr = new TColStd_HArray1OfByte(aFirstInd, aLastInd);
   TColStd_Array1OfByte& arr = hArr->ChangeArray1();
 
@@ -109,8 +120,8 @@ Standard_Boolean XmlMDataStd_ByteArrayDriver::Paste(const XmlObjMgt_Persistent& 
         TCollection_ExtendedString("Cannot retrieve integer member"
                                    " for ByteArray attribute as \"")
                                    + aValueStr + "\"";
-      myMessageDriver->Send (aMessageString, Message_Fail);
-      return Standard_False;
+      myMessageDriver->Send (aMessageString, Message_Warning);
+      aValue = 0;
     }
     arr.SetValue(i, (Standard_Byte) aValue);
   }
@@ -137,16 +148,6 @@ Standard_Boolean XmlMDataStd_ByteArrayDriver::Paste(const XmlObjMgt_Persistent& 
     cout << "Current DocVersion field is not initialized. "  <<endl;
 #endif
   aByteArray->SetDelta(aDelta);
-
-  // attribute id
-  Standard_GUID aGUID;
-  XmlObjMgt_DOMString aGUIDStr = anElement.getAttribute(::AttributeIDString());
-  if (aGUIDStr.Type() == XmlObjMgt_DOMString::LDOM_NULL)
-    aGUID = TDataStd_ByteArray::GetID(); //default case
-  else
-    aGUID = Standard_GUID(Standard_CString(aGUIDStr.GetString())); // user defined case
-
-  aByteArray->SetID(aGUID);
 
   return Standard_True;
 }

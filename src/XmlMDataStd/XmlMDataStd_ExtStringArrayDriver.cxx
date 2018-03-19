@@ -115,6 +115,16 @@ Standard_Boolean XmlMDataStd_ExtStringArrayDriver::Paste
     Handle(TDataStd_ExtStringArray)::DownCast(theTarget);
   aExtStringArray->Init(aFirstInd, aLastInd);
   
+  // attribute id
+  Standard_GUID aGUID;
+  XmlObjMgt_DOMString aGUIDStr = anElement.getAttribute(::AttributeIDString());
+  if (aGUIDStr.Type() == XmlObjMgt_DOMString::LDOM_NULL)
+    aGUID = TDataStd_ExtStringArray::GetID(); //default case
+  else
+    aGUID = Standard_GUID(Standard_CString(aGUIDStr.GetString())); // user defined case
+
+  aExtStringArray->SetID(aGUID);
+
   // Read string values.
   if ( !separator.Length() && anElement.hasChildNodes() )
   {
@@ -204,16 +214,6 @@ Standard_Boolean XmlMDataStd_ExtStringArrayDriver::Paste
     cout << "Current DocVersion field is not initialized. "  <<endl;
 #endif
   aExtStringArray->SetDelta(aDelta);
-
-  // attribute id
-  Standard_GUID aGUID;
-  XmlObjMgt_DOMString aGUIDStr = anElement.getAttribute(::AttributeIDString());
-  if (aGUIDStr.Type() == XmlObjMgt_DOMString::LDOM_NULL)
-    aGUID = TDataStd_ExtStringArray::GetID(); //default case
-  else
-    aGUID = Standard_GUID(Standard_CString(aGUIDStr.GetString())); // user defined case
-
-  aExtStringArray->SetID(aGUID);
 
   return Standard_True;
 }

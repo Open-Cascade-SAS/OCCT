@@ -89,6 +89,16 @@ Standard_Boolean XmlMDataStd_ReferenceArrayDriver::Paste(const XmlObjMgt_Persist
   Handle(TDataStd_ReferenceArray) aReferenceArray = Handle(TDataStd_ReferenceArray)::DownCast(theTarget);
   aReferenceArray->Init(aFirstInd, aLastInd);
   
+  // attribute id
+  Standard_GUID aGUID;
+  XmlObjMgt_DOMString aGUIDStr = anElement.getAttribute(::AttributeIDString());
+  if (aGUIDStr.Type() == XmlObjMgt_DOMString::LDOM_NULL)
+    aGUID = TDataStd_ReferenceArray::GetID(); //default case
+  else
+    aGUID = Standard_GUID(Standard_CString(aGUIDStr.GetString())); // user defined case
+
+  aReferenceArray->SetID(aGUID);
+
   if (!anElement.hasChildNodes())
   {
     TCollection_ExtendedString aMessageString = 
@@ -152,16 +162,6 @@ Standard_Boolean XmlMDataStd_ReferenceArrayDriver::Paste(const XmlObjMgt_Persist
     TDF_Tool::Label(aReferenceArray->Label().Data(), anEntry, tLab, Standard_True);
   }
   aReferenceArray->SetValue(i, tLab);
-
-  // attribute id
-  Standard_GUID aGUID;
-  XmlObjMgt_DOMString aGUIDStr = anElement.getAttribute(::AttributeIDString());
-  if (aGUIDStr.Type() == XmlObjMgt_DOMString::LDOM_NULL)
-    aGUID = TDataStd_ReferenceArray::GetID(); //default case
-  else
-    aGUID = Standard_GUID(Standard_CString(aGUIDStr.GetString())); // user defined case
-
-  aReferenceArray->SetID(aGUID);
 
   return Standard_True;
 }

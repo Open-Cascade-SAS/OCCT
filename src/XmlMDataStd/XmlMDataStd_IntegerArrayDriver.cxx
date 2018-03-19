@@ -89,16 +89,24 @@ Standard_Boolean XmlMDataStd_IntegerArrayDriver::Paste
     Handle(TDataStd_IntegerArray)::DownCast(theTarget);
   anIntArray->Init(aFirstInd, aLastInd);
 
+  // attribute id
+  Standard_GUID aGUID;
+  XmlObjMgt_DOMString aGUIDStr = anElement.getAttribute(::AttributeIDString());
+  if (aGUIDStr.Type() == XmlObjMgt_DOMString::LDOM_NULL)
+    aGUID = TDataStd_IntegerArray::GetID(); //default case
+  else
+    aGUID = Standard_GUID(Standard_CString(aGUIDStr.GetString())); // user defined case
+  anIntArray->SetID(aGUID);
+
   if(aFirstInd == aLastInd) {
-    Standard_Integer anInteger;
-    if(!XmlObjMgt::GetStringValue(anElement).GetInteger( anInteger)) {
+    if(!XmlObjMgt::GetStringValue(anElement).GetInteger( aValue)) {
       TCollection_ExtendedString aMessageString =
         TCollection_ExtendedString("Cannot retrieve integer member"
                                    " for IntegerArray attribute as \"");
-      myMessageDriver->Send (aMessageString, Message_Fail);
-      return Standard_False;
+      myMessageDriver->Send (aMessageString, Message_Warning);
+      aValue = 0;
     }
-    anIntArray->SetValue(aFirstInd, anInteger);
+    anIntArray->SetValue(aFirstInd, aValue);
     
   }
   else {
@@ -113,8 +121,8 @@ Standard_Boolean XmlMDataStd_IntegerArrayDriver::Paste
           TCollection_ExtendedString("Cannot retrieve integer member"
                                      " for IntegerArray attribute as \"")
             + aValueStr + "\"";
-        myMessageDriver->Send (aMessageString, Message_Fail);
-        return Standard_False;
+        myMessageDriver->Send (aMessageString, Message_Warning);
+        aValue = 0;
       }
       anIntArray->SetValue(ind, aValue);
     }
@@ -140,16 +148,6 @@ Standard_Boolean XmlMDataStd_IntegerArrayDriver::Paste
     cout << "Current DocVersion field is not initialized. "  <<endl;
 #endif
   anIntArray->SetDelta(aDelta);
-
-  // attribute id
-  Standard_GUID aGUID;
-  XmlObjMgt_DOMString aGUIDStr = anElement.getAttribute(::AttributeIDString());
-  if (aGUIDStr.Type() == XmlObjMgt_DOMString::LDOM_NULL)
-    aGUID = TDataStd_IntegerArray::GetID(); //default case
-  else
-    aGUID = Standard_GUID(Standard_CString(aGUIDStr.GetString())); // user defined case
-
-  anIntArray->SetID(aGUID);
 
   return Standard_True;
 }

@@ -85,19 +85,29 @@ Standard_Boolean XmlMDataStd_IntegerListDriver::Paste(const XmlObjMgt_Persistent
   }
 
   const Handle(TDataStd_IntegerList) anIntList = Handle(TDataStd_IntegerList)::DownCast(theTarget);
+  
+  // attribute id
+  Standard_GUID aGUID;
+  XmlObjMgt_DOMString aGUIDStr = anElement.getAttribute(::AttributeIDString());
+  if (aGUIDStr.Type() == XmlObjMgt_DOMString::LDOM_NULL)
+    aGUID = TDataStd_IntegerList::GetID(); //default case
+  else
+    aGUID = Standard_GUID(Standard_CString(aGUIDStr.GetString())); // user defined case
+
+  anIntList->SetID(aGUID);
+
   if(aLastInd == 0) aFirstInd = 0;
   if (aFirstInd == aLastInd && aLastInd > 0) 
   {
-    Standard_Integer anInteger;
-    if (!XmlObjMgt::GetStringValue(anElement).GetInteger(anInteger)) 
+    if (!XmlObjMgt::GetStringValue(anElement).GetInteger(aValue)) 
     {
       TCollection_ExtendedString aMessageString =
         TCollection_ExtendedString("Cannot retrieve integer member"
                                    " for IntegerList attribute as \"");
-      myMessageDriver->Send (aMessageString, Message_Fail);
-      return Standard_False;
+      myMessageDriver->Send (aMessageString, Message_Warning);
+      aValue = 0;
     }
-    anIntList->Append(anInteger);
+    anIntList->Append(aValue);
   }
   else if(aLastInd >= 1)
   {
@@ -110,22 +120,12 @@ Standard_Boolean XmlMDataStd_IntegerListDriver::Paste(const XmlObjMgt_Persistent
           TCollection_ExtendedString("Cannot retrieve integer member"
                                      " for IntegerList attribute as \"")
             + aValueStr + "\"";
-        myMessageDriver->Send (aMessageString, Message_Fail);
-        return Standard_False;
+        myMessageDriver->Send (aMessageString, Message_Warning);
+        aValue = 0;
       }
       anIntList->Append(aValue);
     }
   }
-
-  // attribute id
-  Standard_GUID aGUID;
-  XmlObjMgt_DOMString aGUIDStr = anElement.getAttribute(::AttributeIDString());
-  if (aGUIDStr.Type() == XmlObjMgt_DOMString::LDOM_NULL)
-    aGUID = TDataStd_IntegerList::GetID(); //default case
-  else
-    aGUID = Standard_GUID(Standard_CString(aGUIDStr.GetString())); // user defined case
-
-  anIntList->SetID(aGUID);
 
   return Standard_True;
 }

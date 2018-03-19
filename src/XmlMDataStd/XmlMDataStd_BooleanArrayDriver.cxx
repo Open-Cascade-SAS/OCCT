@@ -93,28 +93,6 @@ Standard_Boolean XmlMDataStd_BooleanArrayDriver::Paste(const XmlObjMgt_Persisten
   }
 
   Handle(TDataStd_BooleanArray) aBooleanArray = Handle(TDataStd_BooleanArray)::DownCast(theTarget);
-  aBooleanArray->Init(aFirstInd, aLastInd);
-  Standard_Integer length = aLastInd - aFirstInd + 1;
-  Handle(TColStd_HArray1OfByte) hArr = new TColStd_HArray1OfByte(0, length >> 3);
-  TColStd_Array1OfByte& arr = hArr->ChangeArray1();
-
-  Standard_Integer i = 0, upper = arr.Upper();
-  Standard_CString aValueStr = Standard_CString(XmlObjMgt::GetStringValue(anElement).GetString());
-  for (; i <= upper; i++)
-  {
-    if (!XmlObjMgt::GetInteger(aValueStr, aValue)) 
-    {
-      TCollection_ExtendedString aMessageString =
-        TCollection_ExtendedString("Cannot retrieve integer member"
-        " for BooleanArray attribute as \"")
-        + aValueStr + "\"";
-      myMessageDriver->Send (aMessageString, Message_Fail);
-      return Standard_False;
-    }
-    arr.SetValue(i, (Standard_Byte) aValue);
-  }
-  aBooleanArray->SetInternalArray(hArr);
-
   // attribute id
   Standard_GUID aGUID;
   XmlObjMgt_DOMString aGUIDStr = anElement.getAttribute(::AttributeIDString());
@@ -123,6 +101,29 @@ Standard_Boolean XmlMDataStd_BooleanArrayDriver::Paste(const XmlObjMgt_Persisten
   else
     aGUID = Standard_GUID(Standard_CString(aGUIDStr.GetString())); // user defined case
   aBooleanArray->SetID(aGUID);
+
+  aBooleanArray->Init(aFirstInd, aLastInd);
+  Standard_Integer length = aLastInd - aFirstInd + 1;
+  Handle(TColStd_HArray1OfByte) hArr = new TColStd_HArray1OfByte(0, length >> 3);
+  TColStd_Array1OfByte& arr = hArr->ChangeArray1();
+  Standard_Integer i = 0, upper = arr.Upper();
+  Standard_CString aValueStr = Standard_CString(XmlObjMgt::GetStringValue(anElement).GetString());
+
+  for (; i <= upper; i++)
+  {
+    if (!XmlObjMgt::GetInteger(aValueStr, aValue)) 
+    {
+      TCollection_ExtendedString aMessageString =
+        TCollection_ExtendedString("Cannot retrieve integer member"
+        " for BooleanArray attribute as \"")
+        + aValueStr + "\"";
+      myMessageDriver->Send (aMessageString, Message_Warning);
+      aValue = 0;
+    }
+    arr.SetValue(i, (Standard_Byte) aValue);
+  }
+  aBooleanArray->SetInternalArray(hArr);
+
   return Standard_True;
 }
 
