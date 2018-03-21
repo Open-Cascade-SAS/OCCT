@@ -23,12 +23,14 @@ explode pr4
 
 thrusections r 1 1 vv pr2 pr3 pr4 vv
 
-genthrus r1 pr2_1
-genthrus r2 pr2_2
-genthrus r3 pr2_3
-genthrus r4 pr3_1
-genthrus r5 pr4_1
-genthrus r6 pr4_2
+savehistory hist
+
+generated r1 hist pr2_1
+generated r2 hist pr2_2
+generated r3 hist pr2_3
+generated r4 hist pr3_1
+generated r5 hist pr4_1
+generated r6 hist pr4_2
 
 checknbshapes r1 -face 8
 checkprops r1 -s 1659.7
@@ -47,13 +49,13 @@ explode pr2 v
 explode pr3 v
 explode pr4 v
 
-genthrus r7 vv
-genthrus r8 pr2_1
-genthrus r9 pr2_2
-genthrus r10 pr2_3
-genthrus r11 pr3_1
-genthrus r12 pr4_1
-genthrus r13 pr4_2
+generated r7 hist vv
+generated r8 hist pr2_1
+generated r9 hist pr2_2
+generated r10 hist pr2_3
+generated r11 hist pr3_1
+generated r12 hist pr4_1
+generated r13 hist pr4_2
 
 checknbshapes r7 -edge 20
 checkprops r7 -l 1386.75

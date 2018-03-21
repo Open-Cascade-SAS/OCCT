@@ -21,6 +21,8 @@
 
 #include <BRepAlgoAPI_Defeaturing.hxx>
 
+#include <BRepTest_Objects.hxx>
+
 #include <DBRep.hxx>
 #include <Draw.hxx>
 
@@ -28,15 +30,6 @@
 #include <TopoDS_Compound.hxx>
 
 static Standard_Integer RemoveFeatures (Draw_Interpretor&, Standard_Integer, const char**);
-// History commands
-static Standard_Integer rfModified  (Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer rfGenerated (Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer rfIsDeleted (Draw_Interpretor&, Standard_Integer, const char**);
-
-namespace
-{
-  static BRepAlgoAPI_Defeaturing TheDefeaturingTool;
-}
 
 //=======================================================================
 //function : RemoveFeaturesCommands
@@ -58,16 +51,6 @@ void BOPTest::RemoveFeaturesCommands(Draw_Interpretor& theCommands)
                   "\t\tnohist   - disables the history collection;\n"
                   "\t\tparallel - enables the parallel processing mode.",
                   __FILE__, RemoveFeatures, group);
-
-  theCommands.Add("rfmodified", "rfmodified c_modified shape\n"
-                  "\t\tShows the shapes <c_modified> modified from the shape <shape> during Defeaturing.",
-                  __FILE__, rfModified, group);
-  theCommands.Add("rfgenerated", "rfgenerated c_generated shape\n"
-                  "\t\tShows the shapes <c_generated> generated from the shape <shape> during Defeaturing.",
-                  __FILE__, rfGenerated, group);
-  theCommands.Add("rfisdeleted", "rfisdeleted shape\n"
-                  "\t\tChecks if the shape has been deleted during Defeaturing.",
-                  __FILE__, rfIsDeleted, group);
 }
 
 //=======================================================================
@@ -127,143 +110,14 @@ Standard_Integer RemoveFeatures(Draw_Interpretor& theDI,
   // Check for the errors/warnings
   BOPTest::ReportAlerts(aRF.GetReport());
 
+  if (aRF.HasHistory())
+    BRepTest_Objects::SetHistory(aRF.GetHistory());
+
   if (aRF.HasErrors())
     return 0;
 
   const TopoDS_Shape& aResult = aRF.Shape();
   DBRep::Set(theArgv[1], aResult);
-
-  TheDefeaturingTool = aRF;
-
-  return 0;
-}
-
-//=======================================================================
-//function : CheckHistory
-//purpose  : Checks if the history available for the shape
-//=======================================================================
-Standard_Boolean IsHistoryAvailable(const TopoDS_Shape& theS,
-                                    Draw_Interpretor& theDI)
-{
-  if (theS.IsNull())
-  {
-    theDI << "Null shape.\n";
-    return Standard_False;
-  }
-
-  if (!BRepTools_History::IsSupportedType(theS))
-  {
-    theDI << "The history is not supported for this kind of shape.\n";
-    return Standard_False;
-  }
-
-  if (!TheDefeaturingTool.HasHistory())
-  {
-    theDI << "The history has not been prepared.\n";
-    return Standard_False;
-  }
-  return Standard_True;
-}
-
-//=======================================================================
-//function : rfModified
-//purpose  : 
-//=======================================================================
-Standard_Integer rfModified(Draw_Interpretor& theDI,
-                            Standard_Integer  theArgc,
-                            const char ** theArgv)
-{
-  if (theArgc != 3)
-  {
-    theDI.PrintHelp(theArgv[0]);
-    return 1;
-  }
-
-  const TopoDS_Shape& aS = DBRep::Get(theArgv[2]);
-  if (!IsHistoryAvailable(aS, theDI))
-    return 0;
-
-  const TopTools_ListOfShape& aLSIm = TheDefeaturingTool.Modified(aS);
-  if (aLSIm.IsEmpty())
-  {
-    theDI << "The shape has not been modified.\n";
-    return 0;
-  }
-
-  TopoDS_Shape aCModified;
-  if (aLSIm.Extent() == 1)
-    aCModified = aLSIm.First();
-  else
-  {
-    BRep_Builder().MakeCompound(TopoDS::Compound(aCModified));
-    TopTools_ListIteratorOfListOfShape itLS(aLSIm);
-    for (; itLS.More(); itLS.Next())
-      BRep_Builder().Add(aCModified, itLS.Value());
-  }
-
-  DBRep::Set(theArgv[1], aCModified);
-
-  return 0;
-}
-//=======================================================================
-//function : rfGenerated
-//purpose  : 
-//=======================================================================
-Standard_Integer rfGenerated(Draw_Interpretor& theDI,
-                             Standard_Integer  theArgc,
-                             const char ** theArgv)
-{
-  if (theArgc != 3)
-  {
-    theDI.PrintHelp(theArgv[0]);
-    return 1;
-  }
-
-  const TopoDS_Shape& aS = DBRep::Get(theArgv[2]);
-  if (!IsHistoryAvailable(aS, theDI))
-    return 0;
-
-  const TopTools_ListOfShape& aLSGen = TheDefeaturingTool.Generated(aS);
-  if (aLSGen.IsEmpty())
-  {
-    theDI << "No shapes were generated from the shape.\n";
-    return 0;
-  }
-
-  TopoDS_Shape aCGenerated;
-  if (aLSGen.Extent() == 1)
-    aCGenerated = aLSGen.First();
-  else
-  {
-    BRep_Builder().MakeCompound(TopoDS::Compound(aCGenerated));
-    TopTools_ListIteratorOfListOfShape itLS(aLSGen);
-    for (; itLS.More(); itLS.Next())
-      BRep_Builder().Add(aCGenerated, itLS.Value());
-  }
-
-  DBRep::Set(theArgv[1], aCGenerated);
-
-  return 0;
-}
-//=======================================================================
-//function : rfIsDeleted
-//purpose  : 
-//=======================================================================
-Standard_Integer rfIsDeleted(Draw_Interpretor& theDI,
-                             Standard_Integer  theArgc,
-                             const char ** theArgv)
-{
-  if (theArgc != 2)
-  {
-    theDI.PrintHelp(theArgv[0]);
-    return 1;
-  }
-
-  const TopoDS_Shape& aS = DBRep::Get(theArgv[1]);
-  if (!IsHistoryAvailable(aS, theDI))
-    return 0;
-
-  theDI << (TheDefeaturingTool.IsDeleted(aS) ? "Deleted" : "Not deleted") << "\n";
 
   return 0;
 }

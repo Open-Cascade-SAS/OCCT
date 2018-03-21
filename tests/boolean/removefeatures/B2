@@ -8,21 +8,24 @@ checkprops result -s 462.33 -v 194.594 -deps 1.e-7
 checknbshapes result -vertex 34 -edge 54 -wire 24 -face 21 -shell 1 -solid 1 -t
 CheckIsFeatureRemoved s_14 {e f}
 
+# get history of the operation
+savehistory rf_hist
+
 # check modification of the top face
-rfmodified m1 s_1
+modified m1 rf_hist s_1
 checkprops m1 -s 171.478
 checknbshapes m1 -vertex 14 -edge 14 -wire 3 -face 1
 
-rfgenerated g1 s_1
+generated g1 rf_hist s_1
 checknbshapes g1 -vertex 1 -edge 1
 checkprops g1 -l 6.28319
 
 # check modification of the cylindrical face
-rfmodified m20 s_20
+modified m20 rf_hist s_20
 checkprops m20 -s 6.28319
 checknbshapes m20 -vertex 2 -edge 3 -wire 1 -face 1
 
-rfgenerated g20 s_20
+generated g20 rf_hist s_20
 checknbshapes g20 -vertex 1 -edge 1
 checkprops g20 -equal g1
 

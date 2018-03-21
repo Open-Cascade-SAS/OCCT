@@ -212,6 +212,17 @@ public: //! A method to merge a next history to this history.
     Merge(BRepTools_History(theArguments, theAlgo));
   }
 
+public: //! A method to dump a history
+
+  //! Prints the brief description of the history into a stream
+  void Dump(Standard_OStream& theS)
+  {
+    theS << "History contains:\n";
+    theS << " - " << myRemoved.Extent() << " Deleted shapes;\n";
+    theS << " - " << myShapeToModified.Extent() << " Modified shapes;\n";
+    theS << " - " << myShapeToGenerated.Extent() << " Generated shapes.\n";
+  }
+
 public:
 
   //! Define the OCCT RTTI for the type.

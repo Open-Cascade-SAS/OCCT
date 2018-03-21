@@ -32,31 +32,37 @@ bcremoveall
 # add to result all parts of f1 with material 1
 bcadd result f1 1 -m 1
 
+# get history of the operation
+savehistory cells_hist
+
 # check modification of f1
-bmodified rm1 f1
+modified rm1 cells_hist f1
 checknbshapes rm1 -face 4 -m "Information about modification of f1"
 
 # check modification of f2
-bmodified rm2 f2
+modified rm2 cells_hist f2
 checknbshapes rm2 -face 2 -m "Information about modification of f2"
 
 # check modification of f3
-bmodified rm3 f3
+modified rm3 cells_hist f3
 checknbshapes rm3 -face 2 -m "Information about modification of f3"
 
 # make one face from result
 bcremoveint result
 
+# update cells history
+savehistory cells_hist
+
 # check modification of f1
-bmodified rm1u f1
+modified rm1u cells_hist f1
 checknbshapes rm1u -face 1 -m "Information about modification of f1"
 
 # check modification of f2
-bmodified rm2u f2
+modified rm2u cells_hist f2
 checknbshapes rm2u -face 1 -m "Information about modification of f2"
 
 # check modification of f3
-bmodified rm3u f3
+modified rm3u cells_hist f3
 checknbshapes rm3u -face 1 -m "Information about modification of f3"
 
 compound rm1u rm2u rm3u cfu
@@ -70,62 +76,68 @@ bcremoveall
 bcadd result f1 1 f3 0 -m 1
 bcadd result f2 1 f3 0 -m 1
 
+# update cells history
+savehistory cells_hist
+
 # check modification of f1
-bmodified rm1 f1
+modified rm1 cells_hist f1
 checknbshapes rm1 -face 2 -m "Information about modification of f1"
 
 # check modification of f2
-bmodified rm2 f2
+modified rm2 cells_hist f2
 checknbshapes rm2 -face 2 -m "Information about modification of f2"
 
 # check modification of f3
-if {[string trim [bmodified rm3 f3]] != "The shape has not been modified"} {
+if {[string trim [modified rm3 cells_hist f3]] != "The shape has not been modified."} {
   puts "Error: Incorrect information about Modification of f3"
 }
 
 # check deletion of f1
-if {[string trim [bisdeleted f1]] != "Not deleted"} {
+if {[string trim [isdeleted cells_hist f1]] != "Not deleted."} {
   puts "Error: Incorrect information about Deletion of f1"
 }
 
 # check deletion of f2
-if {[string trim [bisdeleted f2]] != "Not deleted"} {
+if {[string trim [isdeleted cells_hist f2]] != "Not deleted."} {
   puts "Error: Incorrect information about Deletion of f2"
 }
 
 # check deletion of f3
-if {[string trim [bisdeleted f3]] != "Deleted"} {
+if {[string trim [isdeleted cells_hist f3]] != "Deleted."} {
   puts "Error: Incorrect information about Deletion of f3"
 }
 
 # make one face from result
 bcremoveint result
 
+# update cells history
+savehistory cells_hist
+
 # check modification of f1
-bmodified rm1 f1
+modified rm1 cells_hist f1
 checknbshapes rm1 -face 1 -m "Information about modification of f1"
 
 # check modification of f2
-bmodified rm2 f2
+modified rm2 cells_hist f2
 checknbshapes rm2 -face 1 -m "Information about modification of f2"
 
 # check modification of f3
-if {[string trim [bmodified rm3 f3]] != "The shape has not been modified"} {
+if {[string trim [modified rm3 cells_hist f3]] != "The shape has not been modified."} {
   puts "Error: Incorrect information about Modification of f3"
 }
 
 # check deletion of f1
-if {[string trim [bisdeleted f1]] != "Not deleted"} {
+if {[string trim [isdeleted cells_hist f1]] != "Not deleted."} {
   puts "Error: Incorrect information about Deletion of f1"
 }
 
 # check deletion of f2
-if {[string trim [bisdeleted f2]] != "Not deleted"} {
+if {[string trim [isdeleted cells_hist f2]] != "Not deleted."} {
   puts "Error: Incorrect information about Deletion of f2"
 }
 
 # check deletion of f3
-if {[string trim [bisdeleted f3]] != "Deleted"} {
+if {[string trim [isdeleted cells_hist f3]] != "Deleted."} {
   puts "Error: Incorrect information about Deletion of f3"
 }
 
@@ -137,31 +149,37 @@ bcadd result f1 1 -m 1
 bcadd result f2 1 f1 0 -m 2
 bcadd result f3 1 f1 0 -m 2
 
+# update cells history
+savehistory cells_hist
+
 # at this point all splits of faces are contained in the result
 # check modification of f1
-bmodified rm1 f1
+modified rm1 cells_hist f1
 checknbshapes rm1 -face 4 -m "Information about modification of f1"
 
 # check modification of f2
-bmodified rm2 f2
+modified rm2 cells_hist f2
 checknbshapes rm2 -face 4 -m "Information about modification of f2"
 
 # check modification of f3
-bmodified rm3 f3
+modified rm3 cells_hist f3
 checknbshapes rm3 -face 4 -m "Information about modification of f3"
 
 # unify faces with same material
 bcremoveint result
 
+# update cells history
+savehistory cells_hist
+
 # check modification of f1
-bmodified rm1u f1
+modified rm1u cells_hist f1
 checknbshapes rm1u -face 1 -m "Information about modification of f1"
 
 # check modification of f2
-bmodified rm2u f2
+modified rm2u cells_hist f2
 checknbshapes rm2u -face 2 -m "Information about modification of f2"
 
 # check modification of f3
-bmodified rm3u f3
+modified rm3u cells_hist f3
 checknbshapes rm3u -face 2 -m "Information about modification of f3"
 

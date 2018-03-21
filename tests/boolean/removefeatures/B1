@@ -8,30 +8,33 @@ checkprops result -s 463.068 -v 194.214 -deps 1.e-7
 checknbshapes result -vertex 32 -edge 53 -wire 24 -face 21 -shell 1 -solid 1
 CheckIsFeatureRemoved s_13 {v e f}
 
+# get history of the operation
+savehistory rf_hist
+
 # check modification of the side faces
-rfmodified m2 s_2
+modified m2 rf_hist s_2
 checkprops m2 -s 20
 checknbshapes m2 -vertex 4 -edge 4 -wire 1 -face 1
 
-rfmodified m12 s_12
+modified m12 rf_hist s_12
 checkprops m12 -s 8
 checknbshapes m12 -vertex 4 -edge 4 -wire 1 -face 1
 
-rfmodified m17 s_17
+modified m17 rf_hist s_17
 checkprops m17 -s 10
 checknbshapes m17 -vertex 4 -edge 4 -wire 1 -face 1
 
-rfgenerated g17 s_17
+generated g17 rf_hist s_17
 checkprops g17 -l 12
 
 explode s_17 e
-rfmodified m17_1 s_17_1
+modified m17_1 rf_hist s_17_1
 checkprops m17_1 -l 1
-rfmodified m17_3 s_17_3
+modified m17_3 rf_hist s_17_3
 checkprops m17_3 -l 1
 
 # check modification of the top face
-rfmodified m1 s_1
+modified m1 rf_hist s_1
 checkprops m1 -s 172.551
 
 checkview -display result -2d -path ${imagedir}/${test_image}.png

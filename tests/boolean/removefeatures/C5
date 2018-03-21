@@ -16,13 +16,16 @@ if {![regexp "OK" [bopcheck res1]]} {
   puts "Error: sharing is lost after removal"
 }
 
+# get history of the operation
+savehistory rf_hist
+
 # check modification of the common face
-rfmodified m6 s_6
+modified m6 rf_hist s_6
 checkprops m6 -s 100
 
 # check modification of the solid 1
 explode s
-rfmodified m1 s_1
+modified m1 rf_hist s_1
 checkprops m1 -s 600 -v 1000
 
 
@@ -32,16 +35,19 @@ checkprops res2 -s 1200 -v 1875
 checknbshapes res2 -vertex 21 -edge 35 -wire 17 -face 17 -shell 2 -solid 2
 CheckIsFeatureRemoved gap2 {e f}
 
+# get history of the operation
+savehistory rf_hist2
+
 # check that the common face is still shared
 if {![regexp "OK" [bopcheck res2]]} {
   puts "Error: sharing is lost after removal"
 }
 
 # check modification of the common face
-rfmodified m6 s_6
+modified m6 rf_hist2 s_6
 checkprops m6 -s 100
 
 # check modification of the solid 1
 explode s
-rfmodified m2 s_2
+modified m2 rf_hist2 s_2
 checkprops m2 -s 600 -v 1000

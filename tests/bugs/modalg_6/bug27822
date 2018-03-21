@@ -20,7 +20,7 @@ mksweep w3
 addsweep w1
 addsweep w2
 
-if {[catch {buildsweep result}]} {
+if {[regexp "Buildsweep : Not Done" [buildsweep result]]} {
   puts "OCC27822 is fixed."
 } else {
   puts "ERROR: OCC27822 does not fixed correctly."

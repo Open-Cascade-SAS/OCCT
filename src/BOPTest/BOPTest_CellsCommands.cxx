@@ -23,6 +23,7 @@
 #include <BOPAlgo_PaveFiller.hxx>
 #include <BOPAlgo_CellsBuilder.hxx>
 
+#include <BRepTest_Objects.hxx>
 
 static Standard_Integer bcbuild (Draw_Interpretor&, Standard_Integer, const char**);
 static Standard_Integer bcaddall (Draw_Interpretor&, Standard_Integer, const char**);
@@ -116,6 +117,10 @@ Standard_Integer bcbuild(Draw_Interpretor& di,
   //
   aCBuilder.PerformWithFiller(aPF); 
   BOPTest::ReportAlerts(aCBuilder.GetReport());
+
+  // Store the history of the Cells Builder into the session
+  BRepTest_Objects::SetHistory(aCBuilder.Arguments(), aCBuilder);
+
   if (aCBuilder.HasErrors()) {
     return 0;
   }
@@ -165,7 +170,10 @@ Standard_Integer bcaddall(Draw_Interpretor& di,
   BOPTest::ReportAlerts(aCBuilder.GetReport());
   //
   const TopoDS_Shape& aR = aCBuilder.Shape();
-  //
+
+  // Update the history of the Cells Builder
+  BRepTest_Objects::SetHistory(aCBuilder.Arguments(), aCBuilder);
+
   DBRep::Set(a[1], aR);
   return 0;
 }
@@ -186,7 +194,10 @@ Standard_Integer bcremoveall(Draw_Interpretor& di,
   BOPAlgo_CellsBuilder& aCBuilder = BOPTest_Objects::CellsBuilder();
   //
   aCBuilder.RemoveAllFromResult();
-  //
+
+  // Update the history of the Cells Builder
+  BRepTest_Objects::SetHistory(aCBuilder.Arguments(), aCBuilder);
+
   return 0;
 }
 
@@ -249,7 +260,10 @@ Standard_Integer bcadd(Draw_Interpretor& di,
   BOPTest::ReportAlerts(aCBuilder.GetReport());
   //
   const TopoDS_Shape& aR = aCBuilder.Shape();
-  //
+
+  // Update the history of the Cells Builder
+  BRepTest_Objects::SetHistory(aCBuilder.Arguments(), aCBuilder);
+
   DBRep::Set(a[1], aR);
   return 0;
 }
@@ -295,7 +309,10 @@ Standard_Integer bcremove(Draw_Interpretor& di,
   aCBuilder.RemoveFromResult(aLSToTake, aLSToAvoid);
   //
   const TopoDS_Shape& aR = aCBuilder.Shape();
-  //
+
+  // Update the history of the Cells Builder
+  BRepTest_Objects::SetHistory(aCBuilder.Arguments(), aCBuilder);
+
   DBRep::Set(a[1], aR);
   return 0;
 }
@@ -320,7 +337,10 @@ Standard_Integer bcremoveint(Draw_Interpretor& di,
   BOPTest::ReportAlerts(aCBuilder.GetReport());
   //
   const TopoDS_Shape& aR = aCBuilder.Shape();
-  //
+
+  // Update the history of the Cells Builder
+  BRepTest_Objects::SetHistory(aCBuilder.Arguments(), aCBuilder);
+
   DBRep::Set(a[1], aR);
   return 0;
 }

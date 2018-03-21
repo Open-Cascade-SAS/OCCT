@@ -17,16 +17,18 @@ setsweep -CN -0.0101004948353626 0 0.999948988700964
 addsweep pr_1
 buildsweep q
 
+savehistory sweep_hist
+
 explode pr_1
 
-gensweep r1 pr_1_1
-gensweep r2 pr_1_2
-gensweep r3 pr_1_3
-gensweep r4 pr_1_4
+generated r1 sweep_hist pr_1_1
+generated r2 sweep_hist pr_1_2
+generated r3 sweep_hist pr_1_3
+generated r4 sweep_hist pr_1_4
 
 explode pr_1 v
 
-gensweep r1 pr_1_1
-gensweep r2 pr_1_2
-gensweep r3 pr_1_3
-gensweep r4 pr_1_4
+generated r1 sweep_hist pr_1_1
+generated r2 sweep_hist pr_1_2
+generated r3 sweep_hist pr_1_3
+generated r4 sweep_hist pr_1_4

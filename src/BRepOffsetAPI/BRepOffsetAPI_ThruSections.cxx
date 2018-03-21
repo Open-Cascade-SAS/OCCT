@@ -296,6 +296,7 @@ void BRepOffsetAPI_ThruSections::Init(const Standard_Boolean isSolid, const Stan
 void BRepOffsetAPI_ThruSections::AddWire(const TopoDS_Wire& wire)
 {
   myWires.Append(wire);
+  myInputWires.Append(wire);
 }
 
 //=======================================================================
@@ -319,6 +320,7 @@ void BRepOffsetAPI_ThruSections::AddVertex(const TopoDS_Vertex& aVertex)
   DegWire.Closed( Standard_True );
 
   myWires.Append( DegWire );
+  myInputWires.Append(DegWire);
 }
 
 //=======================================================================

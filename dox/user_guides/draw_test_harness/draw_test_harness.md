@@ -7325,11 +7325,7 @@ buildevol
 
 @subsection occt_draw_defeaturing Defeaturing
 
-Draw module for @ref occt_modalg_defeaturing "3D Model Defeaturing" includes the command to perform the operation and the commands to access the history of shapes modifications.
-
-@subsubsection occt_draw_defeaturing_op removefeatures
-
-*removefeatures* command performs the removal of the requested features from the shape.
+Draw command **removefeatures** is intended for performing @ref occt_modalg_defeaturing "3D Model Defeaturing", i.e. it performs the removal of the requested features from the shape.
 
 Syntax:
 ~~~~
@@ -7343,20 +7339,6 @@ f1, f2   - features to remove from the shape;
 Options:
 nohist   - disables the history collection;
 parallel - enables the parallel processing mode.
-~~~~
-
-@subsubsection occt_draw_defeaturing_hist rfmodified, rfgenerated, rfisdeleted
-
-To track the history of a shape modification during Defeaturing the following commands can be used:
-* <b>rfmodified</b> Shows the shapes modified from the input shape during Defeaturing.
-* <b>rfgenerated</b> Shows the shapes generated from the input shape during Defeaturing.
-* <b>rfisdeleted</b> Checks if the shape has been deleted during Defeaturing (i.e. has no trace in the result shape).
-
-Syntax:
-~~~~
-rfmodified      : rfmodified c_modified shape
-rfgenerated     : rfgenerated c_generated shape
-rfisdeleted     : rfisdeleted shape
 ~~~~
 
 
@@ -8050,6 +8032,163 @@ Options:
  * -a AngTol - angular tolerance used for distinguishing the planar faces;
  * -s Shared(0/1) - boolean flag which defines whether the input edges are already shared or have to be intersected.
 
+@subsection occt_draw_hist History commands
+
+Draw module for @ref occt_modalg_hist "History Information support" includes the command to save history into a drawable object and the actual history commands:
+
+* *savehistory*;
+* *isdeleted*;
+* *modified*;
+* *generated*.
+
+@subsubsection occt_draw_hist_save savehistory
+
+*savehistory* command saves the history from the session into a drawable object with the given name.
+
+Syntax:
+~~~~
+savehistory     : savehistory name
+~~~~
+
+If the history of some operation is needed the *savehistory* command should be called after the command performing the operation.
+If some other operation supporting history will be performed before the history of first operation is saved it will be overwritten with the new history.
+
+Example:
+~~~~
+box b1 10 10 10
+box b2 5 0 0 10 10 15
+bfuse r b1 b2
+savehistory fuse_hist
+
+dump fuse_hist
+#*********** Dump of fuse_hist *************
+# History contains:
+# - 4 Deleted shapes;
+# - 20 Modified shapes;
+# - 6 Generated shapes.
+
+unifysamedom ru r
+savehistory usd_hist
+dump usd_hist
+#*********** Dump of usd_hist *************
+#History contains:
+# - 14 Deleted shapes;
+# - 28 Modified shapes;
+# - 0 Generated shapes.
+~~~~
+
+@subsubsection occt_draw_hist_isdel isdeleted
+
+*isdeleted* command checks if the given shape has been deleted in the given history.
+
+Syntax:
+~~~~
+isdeleted       : isdeleted history shape
+~~~~
+
+Example:
+~~~~
+box b1 4 4 4 2 2 2
+box b2 10 10 10
+bcommon r b1 b2
+
+savehistory com_hist
+# all vertices, edges and faces of the b2 are deleted
+foreach s [join [list [explode b2 v] [explode b2 e] [explode b2 f] ] ] {
+  isdeleted com_hist $s
+  # Deleted
+}
+~~~~
+
+@subsubsection occt_draw_hist_mod modified
+
+*modified* command returns the shapes Modified from the given shape in the given history. All modified shapes are put into compound. If the shape has not been modified the resulting compound will be empty. Note that if the shape has been modified into a single shape only, it will be returned without enclosure into compound.
+
+Syntax:
+~~~~
+modified        : modified modified_shapes history shape
+~~~~
+
+Example:
+~~~~
+box b 10 10 10
+explode b e
+fillet r b 2 b_1
+
+savehistory fillet_hist
+
+explode b f
+
+modified m3 fillet_hist b_3
+modified m5 fillet_hist b_5
+~~~~
+
+@subsubsection occt_draw_hist_gen generated
+
+*generated* command returns the shapes Generated from the given shape in the given history. All generated shapes are put into compound. If no shapes have been generated from the shape the resulting compound will be empty. Note that if the shape has generated a single shape only, it will be returned without enclosure into compound.
+
+Syntax:
+~~~~
+generated       : generated generated_shapes history shape
+~~~~
+
+Example:
+~~~~
+polyline w1 0 0 0 10 0 0 10 10 0
+polyline w2 5 1 10 9 1 10 9 5 10
+
+thrusections r 0 0 w1 w2
+
+savehistory loft_hist
+
+explode w1 e
+explode w2 e
+
+generated g11 loft_hist w1_1
+generated g12 loft_hist w1_2
+generated g21 loft_hist w2_1
+generated g22 loft_hist w2_2
+
+compare g11 g21
+# equal shapes
+
+compare g12 g22
+# equal shapes
+~~~~
+
+@subsubsection occt_draw_hist_extension Enabling Draw history support for the algorithms
+
+Draw History mechanism allows fast and easy enabling of the Draw history support for the OCCT algorithms supporting standard history methods.
+To enable History commands for the algorithm it is necessary to save the history of the algorithm into the session.
+For that, it is necessary to put the following code into the command implementation just after the command is done:
+~~~~
+BRepTest_Objects::SetHistory(ListOfArguments, Algorithm);
+~~~~
+
+Here is the example of how it is done in the command performing Split operation (see implementation of the *bapisplit* command):
+~~~~
+BRepAlgoAPI_Splitter aSplitter;
+// setting arguments
+aSplitter.SetArguments(BOPTest_Objects::Shapes());
+// setting tools
+aSplitter.SetTools(BOPTest_Objects::Tools());
+
+// setting options
+aSplitter.SetRunParallel(BOPTest_Objects::RunParallel());
+aSplitter.SetFuzzyValue(BOPTest_Objects::FuzzyValue());
+aSplitter.SetNonDestructive(BOPTest_Objects::NonDestructive());
+aSplitter.SetGlue(BOPTest_Objects::Glue());
+aSplitter.SetCheckInverted(BOPTest_Objects::CheckInverted());
+aSplitter.SetUseOBB(BOPTest_Objects::UseOBB());
+
+// performing operation
+aSplitter.Build();
+
+// Store the history for the Objects (overwrites the history in the session)
+BRepTest_Objects::SetHistory(BOPTest_Objects::Shapes(), aSplitter);
+// Add the history for the Tools
+BRepTest_Objects::AddHistory(BOPTest_Objects::Tools(), aSplitter);
+~~~~
 
 @subsection occt_draw_7_12  Texture Mapping to a Shape
 

@@ -151,6 +151,11 @@ public:
   //! S can be an edge or a vertex of a given Profile (see methods AddWire and AddVertex).
   Standard_EXPORT virtual const TopTools_ListOfShape& Generated (const TopoDS_Shape& S) Standard_OVERRIDE;
 
+  //! Returns the list of original wires
+  const TopTools_ListOfShape& Wires() const
+  {
+    return myInputWires;
+  }
 
 
 protected:
@@ -174,7 +179,8 @@ private:
                                                          const Standard_Boolean vClosed) const;
 
 
-  TopTools_SequenceOfShape myWires;
+  TopTools_ListOfShape myInputWires; //!< List of input wires
+  TopTools_SequenceOfShape myWires;  //!< Working wires
   TopTools_DataMapOfShapeListOfInteger myEdgeNewIndices;
   TopTools_DataMapOfShapeInteger myVertexIndex;
   Standard_Integer myNbEdgesInSection;

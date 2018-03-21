@@ -28,6 +28,7 @@
 #include <BRepAlgoAPI_Cut.hxx>
 #include <BRepAlgoAPI_Fuse.hxx>
 #include <BRepAlgoAPI_Section.hxx>
+#include <BRepTest_Objects.hxx>
 #include <DBRep.hxx>
 #include <Draw.hxx>
 #include <DrawTrSurf.hxx>
@@ -258,6 +259,10 @@ Standard_Integer bopsmt(Draw_Interpretor& di,
   //
   aBOP.PerformWithFiller(*pPF);
   BOPTest::ReportAlerts(aBOP.GetReport());
+
+  // Store the history of Boolean operation into the session
+  BRepTest_Objects::SetHistory(pPF->Arguments(), aBOP);
+
   if (aBOP.HasErrors()) {
     return 0;
   }
@@ -319,6 +324,10 @@ Standard_Integer bopsection(Draw_Interpretor& di,
   //
   aBOP.PerformWithFiller(*pPF);
   BOPTest::ReportAlerts(aBOP.GetReport());
+
+  // Store the history of Section operation into the session
+  BRepTest_Objects::SetHistory(pPF->Arguments(), aBOP);
+
   if (aBOP.HasErrors()) {
     return 0;
   }
@@ -434,6 +443,10 @@ Standard_Integer  bsection(Draw_Interpretor& di,
   aSec.SetUseOBB(BOPTest_Objects::UseOBB());
   //
   aSec.Build();
+
+  // Store the history of Section operation into the session
+  BRepTest_Objects::SetHistory(aSec.DSFiller()->Arguments(), aSec);
+
   //
   if (aSec.HasWarnings()) {
     Standard_SStream aSStream;
@@ -520,6 +533,10 @@ Standard_Integer bsmt (Draw_Interpretor& di,
   // 
   aBOP.PerformWithFiller(aPF);
   BOPTest::ReportAlerts(aBOP.GetReport());
+
+  // Store the history of Boolean operation into the session
+  BRepTest_Objects::SetHistory(aPF.Arguments(), aBOP);
+
   if (aBOP.HasErrors()) {
     return 0;
   }
@@ -828,6 +845,10 @@ Standard_Integer mkvolume(Draw_Interpretor& di, Standard_Integer n, const char**
   //
   aMV.Perform();
   BOPTest::ReportAlerts(aMV.GetReport());
+
+  // Store the history of Volume Maker into the session
+  BRepTest_Objects::SetHistory(aLS, aMV);
+
   if (aMV.HasErrors()) {
     return 0;
   }

@@ -10,21 +10,24 @@ checknbshapes result -vertex 32 -edge 51 -wire 21 -face 20 -shell 1 -solid 1
 CheckIsFeatureRemoved s_14 {v e f}
 CheckIsFeatureRemoved s_20 {v e f}
 
+# get history of the operation
+savehistory rf_hist
+
 # check modification of the top and bottom faces
-rfmodified m1 s_1
+modified m1 rf_hist s_1
 checkprops m1 -s 174.62
 checknbshapes m1 -vertex 13 -edge 13 -wire 2 -face 1
 
-rfmodified m16 s_16
+modified m16 rf_hist s_16
 checkprops m16 -s 194.429
 checknbshapes m16 -vertex 10 -edge 10 -wire 1 -face 1
 
 # check that no new intersections have been created
-if {![regexp "No shapes were generated" [rfgenerated g1 s_1]]} {
+if {![regexp "No shapes were generated" [generated g1 rf_hist s_1]]} {
   puts "Error: incorrect feature removal"
 }
 
-if {![regexp "No shapes were generated" [rfgenerated g16 s_16]]} {
+if {![regexp "No shapes were generated" [generated g16 rf_hist s_16]]} {
   puts "Error: incorrect feature removal"
 }
 

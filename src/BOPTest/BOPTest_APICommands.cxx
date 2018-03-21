@@ -23,6 +23,7 @@
 #include <BRepAlgoAPI_Fuse.hxx>
 #include <BRepAlgoAPI_Section.hxx>
 #include <BRepAlgoAPI_Splitter.hxx>
+#include <BRepTest_Objects.hxx>
 #include <DBRep.hxx>
 #include <Draw.hxx>
 #include <TopoDS_Shape.hxx>
@@ -129,7 +130,12 @@ Standard_Integer bapibop(Draw_Interpretor& di,
   pBuilder->SetUseOBB(BOPTest_Objects::UseOBB());
   //
   pBuilder->Build(); 
-  //
+
+  // Store the history for the Objects (overwrites the history in the session)
+  BRepTest_Objects::SetHistory(BOPTest_Objects::Shapes(), *pBuilder);
+  // Add the history for the Tools
+  BRepTest_Objects::AddHistory(BOPTest_Objects::Tools(), *pBuilder);
+
   if (pBuilder->HasWarnings()) {
     Standard_SStream aSStream;
     pBuilder->DumpWarnings(aSStream);
@@ -188,7 +194,12 @@ Standard_Integer bapibuild(Draw_Interpretor& di,
   aBuilder.SetUseOBB(BOPTest_Objects::UseOBB());
   //
   aBuilder.Build(); 
-  //
+
+  // Store the history for the Objects (overwrites the history in the session)
+  BRepTest_Objects::SetHistory(BOPTest_Objects::Shapes(), aBuilder);
+  // Add the history for the Tools
+  BRepTest_Objects::AddHistory(BOPTest_Objects::Tools(), aBuilder);
+
   if (aBuilder.HasWarnings()) {
     Standard_SStream aSStream;
     aBuilder.DumpWarnings(aSStream);
@@ -240,6 +251,12 @@ Standard_Integer bapisplit(Draw_Interpretor& di,
   //
   // performing operation
   aSplitter.Build();
+
+  // Store the history for the Objects (overwrites the history in the session)
+  BRepTest_Objects::SetHistory(BOPTest_Objects::Shapes(), aSplitter);
+  // Add the history for the Tools
+  BRepTest_Objects::AddHistory(BOPTest_Objects::Tools(), aSplitter);
+
   // check warning status
   if (aSplitter.HasWarnings()) {
     Standard_SStream aSStream;

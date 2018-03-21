@@ -98,6 +98,8 @@ public:
   //! Defines the commands to project a wire on a shape.
   Standard_EXPORT static void ProjectionCommands (Draw_Interpretor& DI);
 
+  //! Defines the History commands for the algorithms.
+  Standard_EXPORT static void HistoryCommands (Draw_Interpretor& DI);
 
 
 

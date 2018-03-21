@@ -1,0 +1,35 @@
+puts "Check History of Boolean operations"
+
+puts "Case with two interfering boxes"
+
+box b1 10 10 10
+box b2 5 5 5 10 10 10
+
+bfuse r b1 b2
+
+savehistory fuse_hist
+
+compound edges
+
+foreach f [explode b1 f] {
+  if {![regexp "No shapes were generated from the shape" [generated g fuse_hist $f]]} {
+    foreach e [explode g e] { add $e edges }
+  }
+}
+
+set list {}
+
+foreach e [explode edges e] {
+  lappend list 2;
+  lappend list $e;
+}
+
+
+blend result r {*}$list
+
+
+checkshape result
+checkprops result -s 1027.65 -v 1905.35
+checknbshapes result -vertex 26 -edge 42 -wire 18 -face 18 -shell 1 -solid 1
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -7,14 +7,17 @@ checkprops result -s 462.815 -v 195.248 -deps 1.e-7
 checknbshapes result -vertex 31 -edge 50 -wire 23 -face 20 -shell 1 -solid 1
 CheckIsFeatureRemoved s_4 {v e f}
 
+# get history of the operation
+savehistory rf_hist
+
 # check modification of the top face
-rfmodified m1 s_1
+modified m1 rf_hist s_1
 checkprops m1 -s 169.122
 checknbshapes m1 -vertex 12 -edge 12 -wire 3 -face 1
 
 # check modification of the side faces
-rfmodified m3 s_3
-rfmodified m5 s_5
+modified m3 rf_hist s_3
+modified m5 rf_hist s_5
 
 if {![regexp "same shapes" [compare m3 m5]]} {
   puts "Error: incorrect feature removal"
@@ -25,8 +28,8 @@ checknbshapes m3 -vertex 6 -edge 6 -wire 1 -face 1
 
 explode s_3 e
 explode s_5 e
-rfmodified m3_4 s_3_4
-rfmodified m5_2 s_5_2
+modified m3_4 rf_hist s_3_4
+modified m5_2 rf_hist s_5_2
 
 if {![regexp "same shapes" [compare m3_4 m5_2]]} {
   puts "Error: incorrect feature removal"

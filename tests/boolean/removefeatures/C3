@@ -9,13 +9,16 @@ checkprops result -s 1200 -v 2000
 checknbshapes result -vertex 12 -edge 20 -wire 11 -face 11 -shell 2 -solid 2
 CheckIsFeatureRemoved gap {v e f}
 
+# get history of the operation
+savehistory rf_hist
+
 # check that the common face is still shared
 if {![regexp "OK" [bopcheck result]]} {
   puts "Error: sharing is lost after removal"
 }
 
 # check modification of the common face
-rfmodified m6 s_6
+modified m6 rf_hist s_6
 checkprops m6 -s 100
 checknbshapes m6 -vertex 4 -edge 4 -wire 1 -face 1
 

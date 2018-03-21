@@ -15,6 +15,7 @@
 // commercial license or contractual agreement.
 
 #include <BRepTest.hxx>
+#include <BRepTest_Objects.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <DBRep.hxx>
 #include <Draw_Interpretor.hxx>
@@ -176,6 +177,12 @@ static Standard_Integer BLEND(Draw_Interpretor& di, Standard_Integer narg, const
   if(!nbedge) return 1;
   Rakk->Build();
   if(!Rakk->IsDone()) return 1;
+
+  // Save history for fillet
+  TopTools_ListOfShape anArg;
+  anArg.Append(V);
+  BRepTest_Objects::SetHistory(anArg, *Rakk);
+
   TopoDS_Shape res = Rakk->Shape();
   DBRep::Set(a[1],res);
   return 0;

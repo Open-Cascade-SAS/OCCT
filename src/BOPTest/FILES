@@ -12,7 +12,6 @@ BOPTest_Objects.hxx
 BOPTest_OptionCommands.cxx
 BOPTest_PartitionCommands.cxx
 BOPTest_TolerCommands.cxx
-BOPTest_HistoryCommands.cxx
 BOPTest_DebugCommands.cxx
 BOPTest_CellsCommands.cxx
 BOPTest_RemoveFeaturesCommands.cxx

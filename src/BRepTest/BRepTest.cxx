@@ -48,6 +48,7 @@ void  BRepTest::AllCommands(Draw_Interpretor& theCommands)
   BRepTest::CheckCommands(theCommands);
 //  BRepTest::PlacementCommands(theCommands) ;
   BRepTest::ProjectionCommands(theCommands) ;
+  BRepTest::HistoryCommands(theCommands);
 
   // define the TCL variable Draw_TOPOLOGY
   const char* com = "set Draw_TOPOLOGY 1";

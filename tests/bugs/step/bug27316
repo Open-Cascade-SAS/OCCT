@@ -167,10 +167,10 @@ copy rgf_1 v_upper
 set edges [explode edges_fillet e];
 set nbe [llength $edges]
 
+savehistory gf_hist
 for {set i 1} {$i <= $nbe} {incr i} {
-  bmodified em edges_fillet_$i;
-  explode em e;
-  blend v_upper v_upper 1.5 em_1;
+  modified em gf_hist edges_fillet_$i;
+  blend v_upper v_upper 1.5 em;
 }
 
 #vdisplay v_upper;

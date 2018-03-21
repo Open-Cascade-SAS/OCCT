@@ -22,6 +22,7 @@
 #include <BRep_Builder.hxx>
 #include <BRepBuilderAPI.hxx>
 #include <BRepBuilderAPI_Transform.hxx>
+#include <BRepTest_Objects.hxx>
 #include <BRepTools.hxx>
 #include <BRepTools_ReShape.hxx>
 #include <DBRep.hxx>
@@ -1360,62 +1361,9 @@ static Standard_Integer unifysamedom(Draw_Interpretor& di, Standard_Integer n, c
   Unifier().Build();
   TopoDS_Shape Result = Unifier().Shape();
 
+  BRepTest_Objects::SetHistory(Unifier().History());
+
   DBRep::Set(a[1], Result);
-  return 0;
-}
-
-Standard_Integer unifysamedommod(Draw_Interpretor& di,
-                                 Standard_Integer n,
-                                 const char** a)
-{
-  if (n != 3) {
-    di << "use unifysamedommod newshape oldshape\n";
-    return 0;
-  }
-  TopoDS_Shape aShape;
-  aShape = DBRep::Get(a[2]);
-  if (aShape.IsNull()) {
-    di << "Null shape is not allowed here\n";
-    return 1;
-  }
-
-  const TopTools_ListOfShape& aLS = Unifier().History()->Modified(aShape);
-
-  if (aLS.Extent() > 1) {
-    BRep_Builder aBB;
-    TopoDS_Compound aRes;
-    aBB.MakeCompound(aRes);
-    TopTools_ListIteratorOfListOfShape aIt(aLS);
-    for (; aIt.More(); aIt.Next()) {
-      const TopoDS_Shape& aCurrentShape = aIt.Value();
-      aBB.Add(aRes, aCurrentShape);
-    }
-    DBRep::Set(a[1], aRes);
-  }
-  else if (aLS.Extent() == 1) {
-    DBRep::Set(a[1], aLS.First());
-  }
-  else {
-    di << "The shape has not been modified\n";
-  }
-  return 0;
-}
-
-Standard_Integer unifysamedomisdel(Draw_Interpretor& di,
-                                   Standard_Integer n,
-                                   const char** a)
-{
-  if (n < 2) {
-    di << "Use: unifysamedomisdel shape\n";
-    return 1;
-  }
-  TopoDS_Shape aShape = DBRep::Get(a[1]);
-  if (aShape.IsNull()) {
-    di << "Null shape is not allowed here\n";
-    return 1;
-  }
-  Standard_Boolean IsDeleted = Unifier().History()->IsRemoved(aShape);
-  di << "The shape has" << (IsDeleted ? " " : " not ") << "been deleted" << "\n";
   return 0;
 }
 
@@ -1634,15 +1582,6 @@ static Standard_Integer reshape(Draw_Interpretor& /*theDI*/,
                    "unifysamedom result shape [s1 s2 ...] [-f] [-e] [-nosafe] [+b] [+i] [-t val] [-a val]",
                     __FILE__,unifysamedom,g);
 
-  theCommands.Add("unifysamedommod",
-                  "unifysamedommod newshape oldshape : get new shape modified "
-                  "by unifysamedom command from the old one",
-                  __FILE__, unifysamedommod, g);
-
-  theCommands.Add("unifysamedomisdel",
-                  "unifysamedomisdel shape : shape is deleted ",
-                  __FILE__, unifysamedomisdel, g);
-  
   theCommands.Add ("copytranslate","result shape dx dy dz",__FILE__,copytranslate,g);
 
   theCommands.Add ("reshape",

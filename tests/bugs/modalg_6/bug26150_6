@@ -18,10 +18,12 @@ explode w1
 
 thrusections r 1 0 v1 w1 w2 w3 v2
 
-genthrus r1 w1_1
-genthrus r2 w1_2
-genthrus r3 w1_3
-genthrus r4 w1_4
+savehistory hist
+
+generated r1 hist w1_1
+generated r2 hist w1_2
+generated r3 hist w1_3
+generated r4 hist w1_4
 
 checknbshapes r1 -face 2
 checkprops r1 -s 1970.62
@@ -32,8 +34,8 @@ checkprops r3 -s 1690.2
 checknbshapes r4 -face 2
 checkprops r4 -s 1859.72
 
-genthrus r5 v1
-genthrus r6 v2
+generated r5 hist v1
+generated r6 hist v2
 
 checknbshapes r5 -edge 8
 checkprops r5 -l 902.911

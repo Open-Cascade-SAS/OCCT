@@ -302,6 +302,7 @@ void BRepTools_History::Merge(const BRepTools_History& theHistory23)
 
           TopTools_ListOfShape aM2 = aMIt2.Value();
           ((*aS1ToGAndM[aI])(aS2)).Append(aM2);
+          myRemoved.Remove(aS2);
         }
       }
     }

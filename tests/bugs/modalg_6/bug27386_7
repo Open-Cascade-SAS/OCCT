@@ -16,14 +16,16 @@ buildsweep q -R
 
 explode pr
 
-gensweep r1 pr_1
-gensweep r2 pr_2
-gensweep r3 pr_3
-gensweep r4 pr_4
+savehistory sweep_hist
+
+generated r1 sweep_hist pr_1
+generated r2 sweep_hist pr_2
+generated r3 sweep_hist pr_3
+generated r4 sweep_hist pr_4
 
 explode pr v
 
-gensweep r1 pr_1
-gensweep r2 pr_2
-gensweep r3 pr_3
-gensweep r4 pr_4
+generated r1 sweep_hist pr_1
+generated r2 sweep_hist pr_2
+generated r3 sweep_hist pr_3
+generated r4 sweep_hist pr_4

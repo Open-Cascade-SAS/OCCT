@@ -12,9 +12,10 @@ baddtools c
 bfillds
 bbop model 2
 
+savehistory bop_hist
 # find face to remove - top face of the model
 explode s f
-bmodified feature s_3
+modified feature bop_hist s_3
 
 # remove features
 removefeatures result model feature

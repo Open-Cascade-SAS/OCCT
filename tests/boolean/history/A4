@@ -16,22 +16,25 @@ baddtools es
 bfillds
 bbuild r
 
-bmodified fs_m fs
+# get history of the operation
+savehistory gf_hist
+
+modified fs_m gf_hist fs
 checknbshapes fs_m -face 1 -m "Information about Modification of fs"
 
-bmodified es_m es
+modified es_m gf_hist es
 checknbshapes es_m -edge 2 -m "Information about Modification of es"
 
-bgenerated fs_g fs
+generated fs_g gf_hist fs
 checknbshapes fs_g -vertex 1 -m "Information about shapes Generated from fs"
 
-bgenerated es_g es
+generated es_g gf_hist es
 checknbshapes es_g -vertex 1 -m "Information about shapes Generated from es"
 
 
 # In General Fuse operation there should be no Deleted elements
 foreach s [join [list es fs [explode es v] [explode fs e] [explode fs v]]] {
-  if {[string trim [bisdeleted $s]] != "Not deleted"} {
+  if {[string trim [isdeleted gf_hist $s]] != "Not deleted."} {
     puts "Error: Incorrect information about Deleted shapes"
   }
 }

@@ -22,6 +22,7 @@
 #include <BOPTest.hxx>
 #include <BOPTest_DrawableShape.hxx>
 #include <BOPTest_Objects.hxx>
+#include <BRepTest_Objects.hxx>
 #include <DBRep.hxx>
 #include <Draw.hxx>
 #include <Draw_Color.hxx>
@@ -197,6 +198,10 @@ Standard_Integer bbuild(Draw_Interpretor& di,
   //
   aBuilder.PerformWithFiller(aPF); 
   BOPTest::ReportAlerts(aBuilder.GetReport());
+
+  // Set history of GF operation into the session
+  BRepTest_Objects::SetHistory(aPF.Arguments(), aBuilder);
+
   if (aBuilder.HasErrors()) {
     return 0;
   }
@@ -307,6 +312,10 @@ Standard_Integer bbop(Draw_Interpretor& di,
   //
   pBuilder->PerformWithFiller(aPF);
   BOPTest::ReportAlerts(pBuilder->GetReport());
+
+  // Set history of Boolean operation into the session
+  BRepTest_Objects::SetHistory(aPF.Arguments(), *pBuilder);
+
   if (pBuilder->HasErrors()) {
     return 0;
   }
@@ -377,6 +386,10 @@ Standard_Integer bsplit(Draw_Interpretor& di,
   //
   aTimer.Stop();
   BOPTest::ReportAlerts(pSplitter->GetReport());
+
+  // Set history of Split operation into the session
+  BRepTest_Objects::SetHistory(aPF.Arguments(), *pSplitter);
+
   if (pSplitter->HasErrors()) {
     return 0;
   }
@@ -388,7 +401,7 @@ Standard_Integer bsplit(Draw_Interpretor& di,
     di << buf;
   }
   //
-  // DRAW history support
+  // Debug commands support
   BOPTest_Objects::SetBuilder(pSplitter);
   //
   const TopoDS_Shape& aR = pSplitter->Shape();

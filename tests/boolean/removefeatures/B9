@@ -11,13 +11,16 @@ CheckIsFeatureRemoved s_15 {v e f}
 CheckIsFeatureRemoved s_21 {v e f}
 CheckIsFeatureRemoved s_22 {v e f}
 
+# get history of the operation
+savehistory rf_hist
+
 # check modification of the top face
-rfmodified m1 s_1
+modified m1 rf_hist s_1
 checkprops m1 -s 175.593
 checknbshapes m1 -vertex 13 -edge 13 -wire 2 -face 1
 
 # check that no new intersections have been created
-if {![regexp "No shapes were generated" [rfgenerated g1 s_1]]} {
+if {![regexp "No shapes were generated" [generated g1 rf_hist s_1]]} {
   puts "Error: incorrect feature removal"
 }
 

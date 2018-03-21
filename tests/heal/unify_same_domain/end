@@ -9,12 +9,15 @@ if {[isdraw result]} {
   eval compound [explode a v] input_verts
   eval compound [explode a e] input_edges
 
+  # get usd history
+  savehistory usd_hist
+
   # check deleted
 
   # get removed vertices through the history
   compound rem_verts
   foreach v [explode input_verts] {
-    if {[regexp "The shape has been deleted" [unifysamedomisdel $v]]} {
+    if {[regexp "Deleted." [isdeleted usd_hist $v]]} {
       add $v rem_verts;
     }
   }
@@ -22,7 +25,7 @@ if {[isdraw result]} {
   # get removed edges through the history
   compound rem_edges
   foreach e [explode input_edges] {
-    if {[regexp "The shape has been deleted" [unifysamedomisdel $e]]} {
+    if {[regexp "Deleted." [isdeleted usd_hist $e]]} {
       add $e rem_edges;
     }
   }
@@ -40,7 +43,7 @@ if {[isdraw result]} {
 
   # faces should not be removed at all
   foreach f [explode a f] {
-    if {[regexp "The shape has been deleted" [unifysamedomisdel $f]]} {
+    if {[regexp "Deleted." [isdeleted usd_hist $f]]} {
       puts "Error: the faces should not be removed during unification."
       break;
     }
@@ -56,10 +59,10 @@ if {[isdraw result]} {
   compound all_hist_shapes
   foreach comp {input_verts input_edges input_faces} {
     foreach s [explode $comp] {
-      if {[regexp "The shape has been deleted" [unifysamedomisdel $s]]} {
+      if {[regexp "Deleted." [isdeleted usd_hist $s]]} {
         continue;
       }
-      if {[regexp "The shape has not been modified" [unifysamedommod s_mod $s]]} {
+      if {[regexp "The shape has not been modified." [modified s_mod usd_hist $s]]} {
         add $s all_hist_shapes;
         continue;
       }

@@ -19,12 +19,14 @@ explode w3
 
 thrusections r 0 0 w1 w2 w3
 
-genthrus r1 w1_1
-genthrus r2 w1_2
-genthrus r3 w1_3
-genthrus r4 w2_1
-genthrus r5 w2_2
-genthrus r6 w3_1
+savehistory hist
+
+generated r1 hist w1_1
+generated r2 hist w1_2
+generated r3 hist w1_3
+generated r4 hist w2_1
+generated r5 hist w2_2
+generated r6 hist w3_1
 
 checknbshapes r1 -face 1
 checkprops r1 -s 574.919
@@ -43,15 +45,15 @@ explode w1 v
 explode w2 v
 explode w3 v
 
-genthrus r7 w1_1
-genthrus r8 w1_2
-genthrus r9 w1_3
-genthrus r10 w1_4
-genthrus r11 w2_1
-genthrus r12 w2_2
-genthrus r13 w2_3
-genthrus r14 w3_1
-genthrus r15 w3_2
+generated r7 hist w1_1
+generated r8 hist w1_2
+generated r9 hist w1_3
+generated r10 hist w1_4
+generated r11 hist w2_1
+generated r12 hist w2_2
+generated r13 hist w2_3
+generated r14 hist w3_1
+generated r15 hist w3_2
 
 checkprops r7 -l 41.4735
 checkprops r8 -l 42.8862

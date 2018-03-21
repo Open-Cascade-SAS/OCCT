@@ -20,15 +20,17 @@ buildsweep q
 
 explode pr2
 
-gensweep r1 pr2_1
-gensweep r2 pr2_2
-gensweep r3 pr2_3
+savehistory sweep_hist
+
+generated r1 sweep_hist pr2_1
+generated r2 sweep_hist pr2_2
+generated r3 sweep_hist pr2_3
 
 explode pr2 v
 
-gensweep r1 pr2_1
-gensweep r2 pr2_2
-gensweep r3 pr2_3
+generated r1 sweep_hist pr2_1
+generated r2 sweep_hist pr2_2
+generated r3 sweep_hist pr2_3
 
-gensweep r4 sp_1
-gensweep r5 sp_2
+generated r4 sweep_hist sp_1
+generated r5 sweep_hist sp_2

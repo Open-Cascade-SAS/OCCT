@@ -1283,6 +1283,109 @@ Standard_DomainError::Raise
 TopoDS_Edge E = ME; 
 ~~~~~
 
+
+@subsection occt_modalg_hist History support
+
+All topological API algorithms support the history of shapes modifications (or just History) for their arguments.
+Generally, the history is available for the following types of sub-shapes of input shapes:
+* Vertex
+* Edge
+* Face
+
+Some algorithms also support the history for Solids.
+
+The history information consists of the following information:
+* Information about Deleted shapes;
+* Information about Modified shapes;
+* Information about Generated shapes.
+
+The History is filled basing on the result of the operation. History cannot return any shapes not contained in the result.
+Thus, if the result of the operation is empty shape, all input shapes will be considered as Deleted and none will have Modified and Generated shapes.
+
+The history information can be accessed by the API methods:
+* *Standard_Boolean IsDeleted(const TopoDS_Shape& theS)* - to check if the shape has been Deleted during the operation;
+* *const TopTools_ListOfShape& Modified(const TopoDS_Shape& theS)* - to get the shapes Modified from the given shape;
+* *const TopTools_ListOfShape& Generated(const TopoDS_Shape& theS)* - to get the shapes Generated from the given shape.
+
+@subsubsection occt_modalg_hist_del Deleted shapes
+
+The shape is considered as Deleted during the operation if all of the following conditions are met:
+* The shape is the part of the argument shapes of the operation;
+* The result shape does not contain the shape itself;
+* The result shape does not contain any of the splits of the shape.
+
+For example, in the CUT operation between two intersecting solids all vertices/edges/faces located completely inside the Tool solid will be Deleted during the operation.
+
+@subsubsection occt_modalg_hist_mod Modified shapes
+
+The shape is considered as Modified during the operation if the result shape contains the splits of the shape, not the shape itself. The shape can be modified only into the shapes with same dimension.
+The splits of the shape contained in the result shape are Modified from the shape.
+The Modified shapes are created from the sub-shapes of the input shapes and, generally, repeat their geometry.
+
+The list of Modified elements will contain only those which are contained in the result of the operation. If the list is empty the shape has not been modified and it is necessary to check if it has been Deleted.
+
+For example, after translation of the shape in any direction all its sub-shapes will be modified into their translated copies.
+
+@subsubsection occt_modalg_hist_gen Generated shapes
+
+The shapes contained in the result shape are considered as Generated from the input shape if they were produced during the operation and have different dimension with the shapes from which they were created.
+
+The list of Generated elements will contain only those which are contained in the result of the operation. If the list is empty no new shapes have been Generated from the shape.
+
+For example, extrusion of the edge in some direction will create a face. This face will be generated from the edge.
+
+@subsubsection occt_modalg_hist_tool BRepTools_History
+
+*BRepTools_History* is the general History tool intended for unification of the histories of different algorithms.
+
+BRepTools_History can be created from any algorithm supporting the standard history methods (IsDeleted(), Modified() and Generated()):
+~~~~
+// The arguments of the operation
+TopoDS_Shape aS = ...;
+
+// Perform transformation on the shape
+gp_Trsf aTrsf;
+aTrsf.SetTranslationPart(gp_Vec(0, 0, 1));
+BRepBuilderAPI_Transform aTransformer(aS, aTrsf); // Transformation API algorithm
+const TopoDS_Shape& aRes = aTransformer.Shape();
+
+// Create the translation history object
+TopTools_ListOfShape anArguments;
+anArguments.Append(aS);
+BRepTools_History aHistory(anArguments, aTransformer);
+~~~~
+
+BRepTools_History also allows merging of the histories. Thus, if you have two or more subsequent operations you can get one final history combined from histories of these operations:
+
+~~~~
+Handle(BRepTools_History) aHist1 = ...; // History of first operation
+Handle(BRepTools_History) aHist2 = ...; // History of second operation
+~~~~
+
+It is possible to merge the second history into the first one:
+~~~~
+aHist1->Merge(aHist2);
+~~~~
+
+Or create the new history keeping the two histories unmodified:
+~~~~
+Handle(BRepTools_History) aResHistory = new BRepTools_History;
+aResHistory->Merge(aHist1);
+aResHistory->Merge(aHist2);
+~~~~
+
+The possibility of Merging of the histories and its creation from the API algorithms allows providing easy History support for the new algorithms.
+
+@subsubsection occt_modalg_hist_draw DRAW history support
+
+DRAW History support for the algorithms supporting history is provided by three basic commands:
+* *isdeleted*; 
+* *modified*;
+* *generated*.
+
+For more information on the Draw History mechanism please refer the corresponding chapter in the Draw users guide - @ref occt_draw_hist "History commands".
+
+
 @section occt_modalg_3 Standard  Topological Objects
 
 The following  standard topological objects can be created:
@@ -3145,10 +3248,7 @@ Standard_Boolean BRepAlgoAPI_Defeaturing::IsDeleted(const TopoDS_Shape& theS);
 
 For the usage of the Defeaturing algorithm on the Draw level the command <b>removefeatures</b> has been implemented.
 
-To track the history of a shape modification during Defeaturing the following commands can be used:
-* <b>rfmodified</b> Shows the shapes modified from the input shape during Defeaturing.
-* <b>rfgenerated</b> Shows the shapes generated from the input shape during Defeaturing.
-* <b>rfisdeleted</b> Checks if the shape has been deleted during Defeaturing.
+To track the history of a shape modification during Defeaturing the @ref occt_draw_hist "standard history commands" can be used.
 
 For more details on commands above please refer the @ref occt_draw_defeaturing "Defeaturing commands" of the Draw test harness user guide.
 

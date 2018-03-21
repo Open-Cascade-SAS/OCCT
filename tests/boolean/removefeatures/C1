@@ -10,10 +10,13 @@ removefeatures res s step
 
 compound s_4 s_15 s_21 s_22 s_7 s_11 s_8 s_9 s_10 s_14 s_20 s_13 features
 
+# get history of the operation
+savehistory rf_hist
+
 # check modification of the features
 compound mf
 foreach f [explode features f] {
-  if { [regexp "The shape has not been modified" [rfmodified m $f]]} {
+  if { [regexp "The shape has not been modified" [modified m rf_hist $f]]} {
     add $f mf
   } else {
     add m mf

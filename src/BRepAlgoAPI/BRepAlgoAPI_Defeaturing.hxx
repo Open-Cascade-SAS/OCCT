@@ -182,6 +182,12 @@ public: //! @name History Methods
   //! Otherwise it returns false.
   Standard_EXPORT virtual Standard_Boolean IsDeleted(const TopoDS_Shape& theS) Standard_OVERRIDE;
 
+  //! Returns the History of shapes modifications
+  Handle(BRepTools_History) GetHistory()
+  {
+    return myFeatureRemovalTool.History();
+  }
+
 
 protected: //! @name Setting the algorithm into default state
 

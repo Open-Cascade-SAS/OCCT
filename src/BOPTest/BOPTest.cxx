@@ -53,7 +53,6 @@ void  BOPTest::AllCommands(Draw_Interpretor& theCommands)
   BOPTest::PartitionCommands (theCommands);
   BOPTest::APICommands       (theCommands);
   BOPTest::OptionCommands    (theCommands);
-  BOPTest::HistoryCommands   (theCommands);
   BOPTest::DebugCommands     (theCommands);
   BOPTest::CellsCommands     (theCommands);
   BOPTest::UtilityCommands   (theCommands);

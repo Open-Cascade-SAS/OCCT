@@ -973,6 +973,7 @@ const TopTools_ListOfShape* BOPAlgo_CellsBuilder::LocModified(const TopoDS_Shape
   }
   else
   {
+    TopTools_MapOfShape aMFence;
     // Process all GF splits and check them for local unification with other shapes
     TopTools_ListIteratorOfListOfShape aIt(*pLSp);
     for (; aIt.More(); aIt.Next())
@@ -980,7 +981,8 @@ const TopTools_ListOfShape* BOPAlgo_CellsBuilder::LocModified(const TopoDS_Shape
       const TopoDS_Shape* pSp = &aIt.Value();
       const TopoDS_Shape* pSU = myMapModified.Seek(*pSp);
       if (pSU) pSp = pSU;
-      myHistShapes.Append(*pSp);
+      if (aMFence.Add(*pSp))
+        myHistShapes.Append(*pSp);
     }
   }
   return &myHistShapes;
