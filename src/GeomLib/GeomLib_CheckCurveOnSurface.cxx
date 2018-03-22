@@ -123,7 +123,7 @@ class GeomLib_CheckCurveOnSurface_TargetFunc :
 
   //returns 1st derivative of the the one-dimension-function when
   //parameter is equal to theX
-  Standard_Boolean Derive(const Standard_Real theX, Standard_Real& theDeriv) const
+  Standard_Boolean Derive(const Standard_Real theX, Standard_Real& theDeriv1, Standard_Real* const theDeriv2 = 0) const
   {
     try
     {
@@ -134,14 +134,28 @@ class GeomLib_CheckCurveOnSurface_TargetFunc :
       }
       //
       gp_Pnt aP1, aP2;
-      gp_Vec aDC1, aDC2;
+      gp_Vec aDC1, aDC2, aDCC1, aDCC2;
       //
-      myCurve1.D1(theX, aP1, aDC1);
-      myCurve2.D1(theX, aP2, aDC2);
+      if (!theDeriv2)
+      {
+        myCurve1.D1(theX, aP1, aDC1);
+        myCurve2.D1(theX, aP2, aDC2);
+      }
+      else
+      {
+        myCurve1.D2(theX, aP1, aDC1, aDCC1);
+        myCurve2.D2(theX, aP2, aDC2, aDCC2);
+      }
 
       const gp_Vec aVec1(aP1, aP2), aVec2(aDC2-aDC1);
       //
-      theDeriv = -2.0*aVec1.Dot(aVec2);
+      theDeriv1 = -2.0*aVec1.Dot(aVec2);
+
+      if (theDeriv2)
+      {
+        const gp_Vec aVec3(aDCC2 - aDCC1);
+        *theDeriv2 = -2.0*(aVec2.SquareMagnitude() + aVec1.Dot(aVec3));
+      }
     }
     catch(Standard_Failure)
     {
@@ -179,12 +193,10 @@ class GeomLib_CheckCurveOnSurface_TargetFunc :
       return Standard_False;
     }
     //
-    if (!Gradient(theX, theGrad))
+    if (!Derive(theX(1), theGrad(1), &theHessian(1, 1)))
     {
       return Standard_False;
     }
-    //
-    theHessian(1,1) = theGrad(1);
     //
     return Standard_True;
   }
