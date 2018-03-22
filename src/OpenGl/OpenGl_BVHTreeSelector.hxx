@@ -196,7 +196,18 @@ protected:
     {
       return false;
     }
-    return (theMaxPt - theMinPt).SquareModulus() < theCtx.SizeCull2;
+
+    const Standard_Real aBoxDiag2 = (theMaxPt - theMinPt).SquareModulus();
+    if (myIsProjectionParallel)
+    {
+      return aBoxDiag2 < theCtx.SizeCull2;
+    }
+
+    // note that distances behind the Eye (aBndDist < 0) are not scaled correctly here,
+    // but majority of such objects should be culled by frustum
+    const OpenGl_Vec3d  aBndCenter = (theMinPt + theMaxPt) * 0.5;
+    const Standard_Real aBndDist   = (aBndCenter - myCamEye).Dot (myCamDir);
+    return aBoxDiag2 < theCtx.SizeCull2 * aBndDist * aBndDist;
   }
 
 protected:
@@ -255,7 +266,8 @@ protected:
   Graphic3d_WorldViewProjState myWorldViewProjState; //!< State of world view projection matrices.
 
   Graphic3d_Vec3d myCamEye;      //!< camera eye position for distance culling
-  Standard_Real   myCamScaleInv; //!< inverted camera scale for size culling
+  Graphic3d_Vec3d myCamDir;      //!< camera direction for size culling
+  Standard_Real   myCamScale;    //!< camera scale for size culling
   Standard_Real   myPixelSize;   //!< pixel size for size culling
 
 };

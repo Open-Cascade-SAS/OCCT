@@ -25,7 +25,7 @@
 // =======================================================================
 OpenGl_BVHTreeSelector::OpenGl_BVHTreeSelector()
 : myIsProjectionParallel (Standard_True),
-  myCamScaleInv (1.0),
+  myCamScale (1.0),
   myPixelSize (1.0)
 {
   //
@@ -41,13 +41,17 @@ void OpenGl_BVHTreeSelector::SetViewVolume (const Handle(Graphic3d_Camera)& theC
     return;
 
   myIsProjectionParallel = theCamera->IsOrthographic();
+  const gp_Dir aCamDir = theCamera->Direction();
 
   myCamera             = theCamera;
   myProjectionMat      = theCamera->ProjectionMatrix();
   myWorldViewMat       = theCamera->OrientationMatrix();
   myWorldViewProjState = theCamera->WorldViewProjState();
   myCamEye.SetValues (theCamera->Eye().X(), theCamera->Eye().Y(), theCamera->Eye().Z());
-  myCamScaleInv = 1.0 / myCamera->Scale();
+  myCamDir.SetValues (aCamDir.X(), aCamDir.Y(), aCamDir.Z());
+  myCamScale = theCamera->IsOrthographic()
+             ? theCamera->Scale()
+             : 2.0 * Tan (theCamera->FOVy() * M_PI / 360.0); // same as theCamera->Scale()/theCamera->Distance()
 
   Standard_Real nLeft = 0.0, nRight = 0.0, nTop = 0.0, nBottom = 0.0;
   Standard_Real fLeft = 0.0, fRight = 0.0, fTop = 0.0, fBottom = 0.0;
@@ -186,7 +190,8 @@ void OpenGl_BVHTreeSelector::SetCullingSize (CullingContext& theCtx,
   theCtx.SizeCull2 = -1.0;
   if (theSize > 0.0 && !Precision::IsInfinite (theSize))
   {
-    theCtx.SizeCull2 = (myPixelSize * theSize) / myCamScaleInv;
+    theCtx.SizeCull2 = myPixelSize * theSize;
+    theCtx.SizeCull2 *= myCamScale;
     theCtx.SizeCull2 *= theCtx.SizeCull2;
   }
 }
