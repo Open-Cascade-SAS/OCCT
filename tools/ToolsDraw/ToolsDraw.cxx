@@ -14,7 +14,6 @@
 // commercial license or contractual agreement. 
 
 #include <inspector/ToolsDraw.hxx>
-#include <inspector/ToolsDraw.hxx>
 
 #include <AIS_InteractiveContext.hxx>
 #include <BRep_Builder.hxx>
@@ -26,10 +25,12 @@
 #include <NCollection_DataMap.hxx>
 #include <Standard_Stream.hxx>
 #include <TDocStd_Application.hxx>
-#include <inspector/TInspector_Communicator.hxx>
 #include <TopoDS_Shape.hxx>
 #include <ViewerTest.hxx>
 #include <ViewerTest_DoubleMapOfInteractiveAndName.hxx>
+
+#include <inspector/TInspectorAPI_PluginParameters.hxx>
+#include <inspector/TInspector_Communicator.hxx>
 
 #if ! defined(_WIN32)
 extern ViewerTest_DoubleMapOfInteractiveAndName& GetMapOfAIS();
@@ -84,7 +85,7 @@ void getArgumentPlugins (Standard_Integer theArgsNb, const char** theArgs, Stand
 // function : tinspector
 // purpose  : 
 // =======================================================================
-static int tinspector (Draw_Interpretor&/* di*/, Standard_Integer theArgsNb, const char** theArgs)
+static int tinspector (Draw_Interpretor& di, Standard_Integer theArgsNb, const char** theArgs)
 {
   if (theArgsNb < 1)
   {
@@ -99,7 +100,10 @@ static int tinspector (Draw_Interpretor&/* di*/, Standard_Integer theArgsNb, con
   TCollection_AsciiString aPluginNameToActivate;
   Standard_Boolean aNeedToUpdateContent = Standard_False,
                    aNeedToHideInspector = Standard_False,
-                   aNeedToShowInspector = Standard_False;
+                   aNeedToShowInspector = Standard_False,
+                   aNeedToPrintState = Standard_False,
+                   aNeedDirectory = Standard_False;
+  TCollection_AsciiString aTemporaryDirectory;
 
   NCollection_List<Handle(Standard_Transient)> aDefaultParameters;
   TCollection_AsciiString aDefaultOpenFileParameter;
@@ -115,7 +119,7 @@ static int tinspector (Draw_Interpretor&/* di*/, Standard_Integer theArgsNb, con
     if (aParam.IsEqual ("-plugins")) // [-plugins {name1 [name2] ... [name3] | all}]
     {
       anIt++;
-      getArgumentPlugins(theArgsNb, theArgs, anIt, aPlugins);
+      getArgumentPlugins (theArgsNb, theArgs, anIt, aPlugins);
     }
     else if (aParam.IsEqual ("-activate")) // [-activate name]
     {
@@ -145,17 +149,22 @@ static int tinspector (Draw_Interpretor&/* di*/, Standard_Integer theArgsNb, con
         return 1;
       }
       NCollection_List<TCollection_AsciiString> anArgPlugins;
-      getArgumentPlugins(theArgsNb, theArgs, anIt, anArgPlugins);
+      getArgumentPlugins (theArgsNb, theArgs, anIt, anArgPlugins);
+
       if (anArgPlugins.IsEmpty())
-        aDefaultParameters.Append(aShape.TShape());
+      {
+        aDefaultParameters.Append (aShape.TShape());
+        anItemNamesToSelect.Append (TInspectorAPI_PluginParameters::ParametersToString (aShape));
+      }
       else
       {
         for (NCollection_List<TCollection_AsciiString>::Iterator anArgIt (anArgPlugins);
-          anArgIt.More(); anArgIt.Next())
+             anArgIt.More(); anArgIt.Next())
         {
           NCollection_List<Handle(Standard_Transient)> aPluginParameters;
-          aParameters.Find(anArgIt.Value(), aPluginParameters);
-          aPluginParameters.Append(aShape.TShape());
+          aParameters.Find (anArgIt.Value(), aPluginParameters);
+          aPluginParameters.Append (aShape.TShape());
+          anItemNamesToSelect.Append (TInspectorAPI_PluginParameters::ParametersToString (aShape));
           aParameters.Bind (anArgIt.Value(), aPluginParameters);
         }
       }
@@ -181,10 +190,26 @@ static int tinspector (Draw_Interpretor&/* di*/, Standard_Integer theArgsNb, con
           anArgIt.More(); anArgIt.Next())
         {
           NCollection_List<Handle(Standard_Transient)> aPluginParameters;
-          aParameters.Find(anArgIt.Value(), aPluginParameters);
-          anOpenFileParameters.Bind(anArgIt.Value(), aFileName);
+          aParameters.Find (anArgIt.Value(), aPluginParameters);
+          anOpenFileParameters.Bind (anArgIt.Value(), aFileName);
         }
       }
+    }
+    else if (aParam.IsEqual ("-directory")) // [-directory path]"
+    {
+      anIt++;
+      if (anIt == theArgsNb)
+      {
+        cout << "Empty argument of '" << aParam << "'.\n";
+        return 1;
+      }
+      aNeedDirectory = true;
+      aParam = theArgs[anIt];
+      aTemporaryDirectory = aParam.IsEqual ("default") ? "" : aParam;
+    }
+    else if (aParam.IsEqual ("-state")) // [-state]
+    {
+      aNeedToPrintState = Standard_True;
     }
     else if (aParam.IsEqual ("-update")) // [-update]
     {
@@ -202,15 +227,16 @@ static int tinspector (Draw_Interpretor&/* di*/, Standard_Integer theArgsNb, con
       TopoDS_Shape aShape = DBRep::Get (theArgs[anIt]);
       if (!aShape.IsNull())
       {
-        anObjectsToSelect.Append(aShape.TShape());
+        anObjectsToSelect.Append (aShape.TShape());
+        anItemNamesToSelect.Append (TInspectorAPI_PluginParameters::ParametersToString (aShape));
       }
       // search prsentations with given name
-      if (GetMapOfAIS().IsBound2(theArgs[anIt]))
+      if (GetMapOfAIS().IsBound2 (theArgs[anIt]))
       {
         Handle(AIS_InteractiveObject) anIO = Handle(AIS_InteractiveObject)::DownCast
           (GetMapOfAIS().Find2 (theArgs[anIt]));
         if (!anIO.IsNull())
-        anObjectsToSelect.Append(anIO);
+        anObjectsToSelect.Append (anIO);
       }
       // give parameters as a container of names
       aParam = TCollection_AsciiString (theArgs[anIt]);
@@ -258,8 +284,8 @@ static int tinspector (Draw_Interpretor&/* di*/, Standard_Integer theArgsNb, con
   if (!anApplication.IsNull())
   {
     NCollection_List<Handle(Standard_Transient)> aDFBrowserParameters;
-    aParameters.Find("TKDFBrowser", aDFBrowserParameters);
-    aDFBrowserParameters.Append(anApplication);
+    aParameters.Find ("TKDFBrowser", aDFBrowserParameters);
+    aDFBrowserParameters.Append (anApplication);
     aParameters.Bind ("TKDFBrowser", aDFBrowserParameters);
   }
 
@@ -268,9 +294,9 @@ static int tinspector (Draw_Interpretor&/* di*/, Standard_Integer theArgsNb, con
   {
     if (aPlugins.IsEmpty())
     {
-      aPlugins.Append("TKDFBrowser");
-      aPlugins.Append("TKShapeView");
-      aPlugins.Append("TKVInspector");
+      aPlugins.Append ("TKDFBrowser");
+      aPlugins.Append ("TKShapeView");
+      aPlugins.Append ("TKVInspector");
     }
     aPluginNameToActivate = !aPluginNameToActivate.IsEmpty() ? aPluginNameToActivate : aPlugins.First();
   }
@@ -289,7 +315,7 @@ static int tinspector (Draw_Interpretor&/* di*/, Standard_Integer theArgsNb, con
     NCollection_List<Handle(Standard_Transient)> aParameterValues;
     aParameters.Find (aPluginName, aParameterValues);
 
-    for (NCollection_List<Handle(Standard_Transient)>::Iterator aDefIt(aDefaultParameters);
+    for (NCollection_List<Handle(Standard_Transient)>::Iterator aDefIt (aDefaultParameters);
          aDefIt.More(); aDefIt.Next())
       aParameterValues.Append (aDefIt.Value());
     MyCommunicator->Init (aPluginName, aParameterValues, Standard_True);
@@ -302,16 +328,19 @@ static int tinspector (Draw_Interpretor&/* di*/, Standard_Integer theArgsNb, con
   {
     for (NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString >::Iterator anOpenIt
       (anOpenFileParameters); anOpenIt.More(); anOpenIt.Next())
-      MyCommunicator->OpenFile(anOpenIt.Key(), anOpenIt.Value());
+      MyCommunicator->OpenFile (anOpenIt.Key(), anOpenIt.Value());
   }
   else if (!aDefaultOpenFileParameter.IsEmpty()) // open file in active plugin
-    MyCommunicator->OpenFile("", aDefaultOpenFileParameter);
+    MyCommunicator->OpenFile ("", aDefaultOpenFileParameter);
 
   if (!anObjectsToSelect.IsEmpty())
-    MyCommunicator->SetSelected(anObjectsToSelect);
+    MyCommunicator->SetSelected (anObjectsToSelect);
 
   if (!anItemNamesToSelect.IsEmpty())
-    MyCommunicator->SetSelected(anItemNamesToSelect);
+    MyCommunicator->SetSelected (anItemNamesToSelect);
+
+  if (aNeedDirectory)
+    MyCommunicator->SetTemporaryDirectory (aTemporaryDirectory);
 
   if (aNeedToUpdateContent)
     MyCommunicator->UpdateContent();
@@ -321,6 +350,13 @@ static int tinspector (Draw_Interpretor&/* di*/, Standard_Integer theArgsNb, con
 
   if (aNeedToHideInspector)
     MyCommunicator->SetVisible (false);
+
+  if (aNeedToPrintState)
+  {
+    Standard_SStream aSStream;
+    MyCommunicator->Dump (aSStream);
+    di << aSStream << "\n";
+  }
 
   return 0;
 }
@@ -342,6 +378,8 @@ void ToolsDraw::Commands(Draw_Interpretor& theCommands)
     "\n\t\t:            [-update]"
     "\n\t\t:            [-select {object | name1 ... [nameN]}]"
     "\n\t\t:            [-show {0|1} = 1]"
+    "\n\t\t:            [-directory path|<default>]"
+    "\n\t\t:            [-state]"
     "\n\t\t: Starts tool of inspection."
     "\n\t\t: Options:"
     "\n\t\t:  -plugins enters plugins that should be added in the inspector."
@@ -360,8 +398,11 @@ void ToolsDraw::Commands(Draw_Interpretor& theCommands)
     "\n\t\t:          ShapeView: 'object' is an instance of TopoDS_Shape TShape,"
     "\n\t\t:          DFBrowser: 'name' is an entry of TDF_Label and name2(optionaly) for TDF_Attribute type name,"
     "\n\t\t:          VInspector: 'object' is an instance of AIS_InteractiveObject;"
-    "\n\t\t:  -show sets Inspector view visible or hidden. The first call of this command will show it.",
+    "\n\t\t:  -show sets Inspector view visible or hidden. The first call of this command will show it."
+    "\n\t\t:  -directory sets Inspector temporary directory. Preferences file is stored there."
+    "\n\t\t:  -state print some current information about inspector, like name of active plugin, temporary director.",
       __FILE__, tinspector, group);
+
 }
 
 // =======================================================================

@@ -53,32 +53,15 @@ public:
   virtual TreeModel_ItemBasePtr RootItem(const int theColumn) const Standard_OVERRIDE
   { return myRootItems[theColumn]; }
 
-  //! Returns count of columns in the model.
-  //! \param theParent an index of the parent item
-  //! \return integer value
-  virtual int columnCount (const QModelIndex& theParent = QModelIndex()) const Standard_OVERRIDE
-  { (void)theParent; return 7; }
-
-  //! Returns the header data for the given role and section in the header with the specified orientation.
-  //! \param theSection the header section. For horizontal headers - column number, for vertical headers - row number.
-  //! \param theOrientation a header orientation
-  //! \param theRole a data role
-  //! \return the header data
-  Standard_EXPORT virtual QVariant headerData (int theSection, Qt::Orientation theOrientation,
-                                               int theRole = Qt::DisplayRole ) const Standard_OVERRIDE;
   //! Returns model index of the shape.
   //! \param theShape a shape object
   //! \return the model index
   QModelIndex FindIndex (const TopoDS_Shape& theShape) const;
 
-    //! Returns single selected item in the cell of given orientation. If the orientation is Horizontal,
-  //! in the cell id colum, one row should be selected.
-  //! \param theIndices a container of selected indices
-  //! \param theCellId column index if orientation is horizontal, row index otherwise
-  //! \param theOrientation an orientation to apply the cell index
-  //! \return model index from the list
-  Standard_EXPORT static QModelIndex SingleSelected (const QModelIndexList& theIndices, const int theCellId,
-                                                     const Qt::Orientation theOrientation = Qt::Horizontal);
+protected:
+  //! Creates root item
+  //! \param theColumnId index of a column
+  virtual void createRootItem (const int theColumnId) Standard_OVERRIDE;
 
 private:
   QMap<int, TreeModel_ItemBasePtr> myRootItems; //!< container of root items, for each column own root item

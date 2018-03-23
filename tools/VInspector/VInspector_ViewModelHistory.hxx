@@ -56,19 +56,11 @@ public:
   //! \return root item instance
   virtual TreeModel_ItemBasePtr RootItem(const int theColumn) const Standard_OVERRIDE { return myRootItems[theColumn]; }
 
-  //! Returns count of columns in the model
-  //! \param theParent an index of the parent item
-  //! \return integer value
-  virtual int columnCount (const QModelIndex& theParent = QModelIndex()) const Standard_OVERRIDE
-  { (void)theParent; return 6; }
+protected:
 
-  //! Returns the header data for the given role and section in the header with the specified orientation.
-  //! \param theSection the header section. For horizontal headers - column number, for vertical headers - row number.
-  //! \param theOrientation a header orientation
-  //! \param theRole a data role
-  //! \return the header data
-  Standard_EXPORT virtual QVariant headerData (int theSection, Qt::Orientation theOrientation,
-                                               int theRole = Qt::DisplayRole ) const Standard_OVERRIDE;
+  //! Creates root item
+  //! \param theColumnId index of a column
+  virtual void createRootItem (const int theColumnId) Standard_OVERRIDE;
 
 private:
 

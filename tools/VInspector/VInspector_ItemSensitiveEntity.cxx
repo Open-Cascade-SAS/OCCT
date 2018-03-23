@@ -61,52 +61,34 @@ QVariant VInspector_ItemSensitiveEntity::initValue (int theItemRole) const
     {
       switch (Column())
       {
-        case 0:
-          return myEntity->DynamicType()->Name();
-        case 2:
-        {
-          return theItemRole == Qt::ToolTipRole ? "Owner pointer" : VInspector_Tools::GetPointerInfo (
-                             GetSensitiveEntity()->BaseSensitive()->OwnerId(), true).ToCString();
-        }
+        case 0: return myEntity->DynamicType()->Name();
+        case 2: return VInspector_Tools::GetPointerInfo (GetSensitiveEntity()->BaseSensitive()->OwnerId(), true).ToCString();
         case 3:
         {
-          if (theItemRole == Qt::ToolTipRole)
-            return "Owner Shape type";
-          else
-          {
-            Handle(StdSelect_BRepOwner) BROwnr = Handle(StdSelect_BRepOwner)::DownCast (anOwner);
-            if (!BROwnr.IsNull())
-            {
-              const TopoDS_Shape& aShape = BROwnr->Shape();
-              if (!aShape.IsNull())
-                return VInspector_Tools::GetShapeTypeInfo (aShape.ShapeType()).ToCString();
-            }
-          }
-          break;
+          Handle(StdSelect_BRepOwner) BROwnr = Handle(StdSelect_BRepOwner)::DownCast (anOwner);
+          if (BROwnr.IsNull())
+            return QVariant();
+
+          const TopoDS_Shape& aShape = BROwnr->Shape();
+          if (aShape.IsNull())
+            return QVariant();
+
+          return VInspector_Tools::GetShapeTypeInfo (aShape.ShapeType()).ToCString();
         }
-        case 4: return theItemRole == Qt::ToolTipRole ? "IsActiveForSelection"
+        case 13: return
 #if OCC_VERSION_HEX <= 0x060901
-                           : ("none");
+                       ("none");
 #else
-                           : myEntity->IsActiveForSelection() ? QString ("true") : QString ("false");
+                       myEntity->IsActiveForSelection() ? QString ("true") : QString ("false");
 #endif
-        case 5: return theItemRole == Qt::ToolTipRole ? "SelectBasics_SensitiveEntity"
-                                                      : getEntityOwner()->DynamicType()->Name();
-        case 6: return theItemRole == Qt::ToolTipRole ? "SensitivityFactor"
-                       : QString::number (GetSensitiveEntity()->BaseSensitive()->SensitivityFactor());
-        case 7: return theItemRole == Qt::ToolTipRole ? "NbSubElements"
-                           : QString::number (GetSensitiveEntity()->BaseSensitive()->NbSubElements());
-        case 8:
+        case 14: return QString::number (GetSensitiveEntity()->BaseSensitive()->SensitivityFactor());
+        case 15: return QString::number (GetSensitiveEntity()->BaseSensitive()->NbSubElements());
+        case 16:
         {
-          if (theItemRole == Qt::ToolTipRole)
-            return "Owner priority";
-          else
-          {
-            Handle(StdSelect_BRepOwner) BROwnr = Handle(StdSelect_BRepOwner)::DownCast (anOwner);
-            if (!BROwnr.IsNull())
-              return anOwner->Priority();
-          }
-          break;
+          Handle(StdSelect_BRepOwner) BROwnr = Handle(StdSelect_BRepOwner)::DownCast (anOwner);
+          if (BROwnr.IsNull())
+            return QVariant();
+          return anOwner->Priority();
         }
         default:
           break;
@@ -157,11 +139,19 @@ void VInspector_ItemSensitiveEntity::Init()
 
   int aRowId = Row();
   int aCurrentId = 0;
+#if OCC_VERSION_HEX < 0x070201
+  for (aSelection->Init(); aSelection->More(); aSelection->Next(), aCurrentId++)
+#else
   for (NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>::Iterator aSelEntIter (aSelection->Entities()); aSelEntIter.More(); aSelEntIter.Next(), aCurrentId++)
+#endif
   {
     if (aCurrentId != aRowId)
       continue;
+#if OCC_VERSION_HEX < 0x070201
+    myEntity = aSelection->Sensitive();
+#else
     myEntity = aSelEntIter.Value();
+#endif
     break;
   }
   TreeModel_ItemBase::Init();

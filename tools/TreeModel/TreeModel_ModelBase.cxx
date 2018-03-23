@@ -16,13 +16,20 @@
 #include <inspector/TreeModel_ModelBase.hxx>
 
 #include <inspector/TreeModel_ItemBase.hxx>
+#include <inspector/TreeModel_Tools.hxx>
+#include <inspector/TreeModel_VisibilityState.hxx>
+
+#include <Standard_WarningsDisable.hxx>
+#include <QIcon>
+#include <Standard_WarningsRestore.hxx>
 
 // =======================================================================
 // function : Constructor
 // purpose :
 // =======================================================================
 TreeModel_ModelBase::TreeModel_ModelBase (QObject* theParent)
-: QAbstractItemModel (theParent), m_pRootItem (0)
+: QAbstractItemModel (theParent), m_pRootItem (0), m_pUseVisibilityColumn (false),
+  myVisibilityState (0)
 {
 }
 
@@ -43,7 +50,11 @@ TreeModel_ItemBasePtr TreeModel_ModelBase::GetItemByIndex (const QModelIndex& th
 void TreeModel_ModelBase::Reset()
 {
   for (int aColId = 0, aNbColumns = columnCount(); aColId < aNbColumns; aColId++)
-    RootItem (aColId)->Reset();
+  {
+    TreeModel_ItemBasePtr aRootItem = RootItem (aColId);
+    if (aRootItem)
+      aRootItem->Reset();
+  }
 }
 
 // =======================================================================
@@ -77,6 +88,27 @@ QVariant TreeModel_ModelBase::data (const QModelIndex& theIndex, int theRole) co
 {
   if (!theIndex.isValid())
     return QVariant ("undefined");
+
+  if (IsUseVisibilityColumn() && theIndex.column() == TreeModel_ColumnType_Visibility)
+  {
+    if (theRole != Qt::DecorationRole)
+      return QVariant();
+
+    TreeModel_ItemBasePtr anItem = GetItemByIndex (theIndex);
+    if (!anItem->data (theIndex, theRole).isNull()) // value is already in cache
+      return anItem->data (theIndex, theRole);
+
+    if (!anItem->IsInitialized())
+      anItem->Init();
+
+    if (!myVisibilityState || !myVisibilityState->CanBeVisible (theIndex))
+      return QVariant();
+
+    QVariant aValue = QIcon (myVisibilityState->IsVisible (theIndex) ? ":/icons/item_visible.png"
+                                                                     : ":/icons/item_invisible.png");
+    anItem->SetCustomData (aValue, theRole);
+    return aValue;
+  }
 
   TreeModel_ItemBasePtr anItem = GetItemByIndex (theIndex);
   return anItem->data (theIndex, theRole);
@@ -112,6 +144,21 @@ Qt::ItemFlags TreeModel_ModelBase::flags (const QModelIndex& theIndex) const
 }
 
 // =======================================================================
+// function : headerData
+// purpose :
+// =======================================================================
+QVariant TreeModel_ModelBase::headerData (int theSection, Qt::Orientation theOrientation, int theRole) const
+{
+  if (theOrientation != Qt::Horizontal || theRole != Qt::DisplayRole)
+    return QVariant();
+
+  if (IsUseVisibilityColumn() && theSection == TreeModel_ColumnType_Visibility)
+    return QVariant();
+
+  return GetHeaderItem (theSection).GetName();
+}
+
+// =======================================================================
 // function :  rowCount
 // purpose :
 // =======================================================================
@@ -131,12 +178,50 @@ int TreeModel_ModelBase::rowCount (const QModelIndex& theParent) const
 }
 
 // =======================================================================
-// function :  emitLayoutChanged
+// function : EmitLayoutChanged
 // purpose :
 // =======================================================================
 void TreeModel_ModelBase::EmitLayoutChanged()
 {
   emit layoutChanged();
+}
+
+// =======================================================================
+// function : EmitLayoutChanged
+// purpose :
+// =======================================================================
+void TreeModel_ModelBase::EmitDataChanged (const QModelIndex& theTopLeft, const QModelIndex& theBottomRight,
+                                           const QVector<int>& theRoles,
+                                           const bool isResetItem)
+{
+  TreeModel_ItemBasePtr anItemBase = TreeModel_ModelBase::GetItemByIndex (theTopLeft);
+  if (anItemBase && isResetItem)
+    anItemBase->Reset();
+
+#if QT_VERSION < 0x050000
+  (void)theRoles;
+  emit dataChanged (theTopLeft, theBottomRight);
+#else
+  emit dataChanged (theTopLeft, theBottomRight, theRoles);
+#endif
+}
+
+// =======================================================================
+// function : SingleSelected
+// purpose :
+// =======================================================================
+QModelIndex TreeModel_ModelBase::SingleSelected (const QModelIndexList& theIndices, const int theCellId,
+                                                 const Qt::Orientation theOrientation)
+{
+  QModelIndexList aFirstColumnSelectedIndices;
+  for (QModelIndexList::const_iterator anIndicesIt = theIndices.begin(); anIndicesIt != theIndices.end(); anIndicesIt++)
+  {
+    QModelIndex anIndex = *anIndicesIt;
+    if ((theOrientation == Qt::Horizontal && anIndex.column() == theCellId) ||
+        (theOrientation == Qt::Vertical && anIndex.row() == theCellId))
+      aFirstColumnSelectedIndices.append (anIndex);
+  }
+  return aFirstColumnSelectedIndices.size() == 1 ? aFirstColumnSelectedIndices.first() : QModelIndex();
 }
 
 // =======================================================================

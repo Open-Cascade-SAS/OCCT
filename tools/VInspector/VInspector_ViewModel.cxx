@@ -15,6 +15,7 @@
 
 #include <inspector/VInspector_ViewModel.hxx>
 
+#include <inspector/TreeModel_Tools.hxx>
 #include <inspector/VInspector_ItemContext.hxx>
 #include <inspector/VInspector_ItemEntityOwner.hxx>
 #include <inspector/VInspector_ItemPresentableObject.hxx>
@@ -26,6 +27,11 @@
 #include <QStringList>
 #include <Standard_WarningsRestore.hxx>
 
+const int COLUMN_NAME_WIDTH = 260;
+const int COLUMN_SIZE_WIDTH = 30;
+const int COLUMN_POINTER_WIDTH = 70;
+const int COLUMN_SHAPE_TYPE_WIDTH = 75;
+
 // =======================================================================
 // function : Constructor
 // purpose :
@@ -33,19 +39,51 @@
 VInspector_ViewModel::VInspector_ViewModel (QObject* theParent)
   : TreeModel_ModelBase (theParent)
 {
-  for (int aColumnId = 0, aNbColumns = columnCount(); aColumnId < aNbColumns; aColumnId++)
-    myRootItems.insert (aColumnId, VInspector_ItemContext::CreateItem (TreeModel_ItemBasePtr(), 0, aColumnId));
+  SetHeaderItem (0, TreeModel_HeaderSection ("Name", COLUMN_NAME_WIDTH));
+  SetHeaderItem (1, TreeModel_HeaderSection ("Size", COLUMN_SIZE_WIDTH));
+  SetHeaderItem (2, TreeModel_HeaderSection ("Pointer", COLUMN_POINTER_WIDTH));
+  SetHeaderItem (3, TreeModel_HeaderSection ("ShapeType", COLUMN_SHAPE_TYPE_WIDTH)); // ItemPresentableObject, ItemSelection
+  SetHeaderItem (4, TreeModel_HeaderSection ("SelectedOwners", -1)); // ItemContext, ItemPresentableObject, ItemSelection
+  SetHeaderItem (5, TreeModel_HeaderSection ("ActivatedModes", -1)); // ItemPresentableObject
+  SetHeaderItem (6, TreeModel_HeaderSection ("DeviationCoefficient", -1, true)); // ItemContext, ItemPresentableObject
+  SetHeaderItem (7, TreeModel_HeaderSection ("Deflection", -1, true)); // ItemPresentableObject
+  SetHeaderItem (8, TreeModel_HeaderSection ("IsAutoTriangulation", -1, true)); // ItemPresentableObject
 
-  m_pRootItem = myRootItems[0];
+  SetHeaderItem (9, TreeModel_HeaderSection ("SelectionState", -1)); // ItemSelection
+  SetHeaderItem (10, TreeModel_HeaderSection ("Sensitivity", -1, true)); // ItemSelection
+  SetHeaderItem (11, TreeModel_HeaderSection ("UpdateStatus", -1, true)); // ItemSelection
+  SetHeaderItem (12, TreeModel_HeaderSection ("BVHUpdateStatus", -1, true)); // ItemSelection
+
+  SetHeaderItem (13, TreeModel_HeaderSection ("IsActiveForSelection", -1, true)); // ItemSensitiveEntity
+  SetHeaderItem (14, TreeModel_HeaderSection ("SensitivityFactor", -1, true)); // ItemSensitiveEntity
+  SetHeaderItem (15, TreeModel_HeaderSection ("NbSubElements", -1, true)); // ItemSensitiveEntity
+  SetHeaderItem (16, TreeModel_HeaderSection ("Priority", -1, true)); // ItemSensitiveEntity
+
+  SetHeaderItem (17, TreeModel_HeaderSection ("TShape", COLUMN_POINTER_WIDTH, true)); // ItemEntityOwner
+  SetHeaderItem (18, TreeModel_HeaderSection ("Orientation", -1, true)); // ItemEntityOwner
+  SetHeaderItem (19, TreeModel_HeaderSection ("Location", -1, true)); // ItemEntityOwner
+
+  SetHeaderItem (20, TreeModel_HeaderSection ("Color", -1)); // ItemPresentableObject
+}
+
+// =======================================================================
+// function : createRootItem
+// purpose :
+// =======================================================================
+void VInspector_ViewModel::createRootItem (const int theColumnId)
+{
+  myRootItems.insert (theColumnId, VInspector_ItemContext::CreateItem (TreeModel_ItemBasePtr(), 0, theColumnId));
+  if (theColumnId == 0)
+      m_pRootItem = myRootItems[0];
 }
 
 // =======================================================================
 // function : GetContext
 // purpose :
 // =======================================================================
-const Handle(AIS_InteractiveContext)& VInspector_ViewModel::GetContext() const
+Handle(AIS_InteractiveContext) VInspector_ViewModel::GetContext() const
 {
-  return itemDynamicCast<VInspector_ItemContext>(RootItem (0))->GetContext();
+  return itemDynamicCast<VInspector_ItemContext> (RootItem (0))->GetContext();
 }
 
 // =======================================================================
@@ -104,32 +142,6 @@ QModelIndex VInspector_ViewModel::FindIndex (const Handle(AIS_InteractiveObject)
 }
 
 // =======================================================================
-// function : headerData
-// purpose :
-// =======================================================================
-QVariant VInspector_ViewModel::headerData (int theSection, Qt::Orientation theOrientation, int theRole) const
-{
-  if (theOrientation != Qt::Horizontal || theRole != Qt::DisplayRole)
-    return QVariant();
-
-  switch (theSection)
-  {
-    case 0: return "Name";
-    case 1: return "Size";
-    case 2: return "Pointer";
-    case 3: return "Shape type";
-    case 4: return "Selection";
-    case 5: return "Base Sensitive";
-    case 6: return "Sensitivity";
-    case 7: return "SubElements"; 
-    case 8: return "Deviation/Deflectiton/Update/Priority";
-      //Auto Triangulation
-    default: break;
-  }
-  return QVariant();
-}
-
-// =======================================================================
 // function : GetSelectedOwners
 // purpose :
 // =======================================================================
@@ -170,4 +182,14 @@ void VInspector_ViewModel::GetSelectedOwners (QItemSelectionModel* theSelectionM
     if (!anEntityOwner.IsNull())
       theOwners.Append (anEntityOwner);
   }
+}
+
+// =======================================================================
+// function : UpdateTreeModel
+// purpose :
+// =======================================================================
+void VInspector_ViewModel::UpdateTreeModel()
+{
+  Reset();
+  EmitLayoutChanged();
 }

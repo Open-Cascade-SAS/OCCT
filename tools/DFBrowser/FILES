@@ -30,15 +30,11 @@ DFBrowser_SearchLineModel.cxx
 DFBrowser_SearchLineModel.hxx
 DFBrowser_SearchView.cxx
 DFBrowser_SearchView.hxx
-DFBrowser_Shortcut.cxx
-DFBrowser_Shortcut.hxx
 DFBrowser_Thread.cxx
 DFBrowser_Thread.hxx
 DFBrowser_ThreadItem.hxx
 DFBrowser_ThreadItemSearch.cxx
 DFBrowser_ThreadItemSearch.hxx
-DFBrowser_ThreadItemUsedShapesMap.cxx
-DFBrowser_ThreadItemUsedShapesMap.hxx
 DFBrowser_Tools.cxx
 DFBrowser_Tools.hxx
 DFBrowser_TreeLevelLine.cxx
@@ -53,7 +49,5 @@ DFBrowser_TreeLevelViewModel.cxx
 DFBrowser_TreeLevelViewModel.hxx
 DFBrowser_TreeModel.cxx
 DFBrowser_TreeModel.hxx
-DFBrowser_TreeView.cxx
-DFBrowser_TreeView.hxx
 DFBrowser_Window.cxx
 DFBrowser_Window.hxx

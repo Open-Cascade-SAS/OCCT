@@ -19,6 +19,14 @@
 #include <inspector/ShapeView_ItemRoot.hxx>
 #include <inspector/ShapeView_ItemShape.hxx>
 
+const int COLUMN_NAME_WIDTH = 190;
+const int COLUMN_SIZE_WIDTH = 30;
+const int COLUMN_POINTER_WIDTH = 70;
+const int COLUMN_SHAPE_TYPE_WIDTH = 75;
+
+const int COLUMN_ORIENTATION_WIDTH = 70;
+const int COLUMN_LOCATION_WIDTH = 120;
+
 // =======================================================================
 // function : Constructor
 // purpose :
@@ -26,10 +34,40 @@
 ShapeView_TreeModel::ShapeView_TreeModel (QObject* theParent)
 : TreeModel_ModelBase (theParent)
 {
-  for (int aColumnId = 0, aNbColumns = columnCount(); aColumnId < aNbColumns; aColumnId++)
-    myRootItems.insert(aColumnId, ShapeView_ItemRoot::CreateItem(TreeModel_ItemBasePtr(), 0, aColumnId));
+  SetHeaderItem (0, TreeModel_HeaderSection ("Name", COLUMN_NAME_WIDTH));
+  // column 1 is reserved for visiblity state
+  SetHeaderItem (2, TreeModel_HeaderSection ("Size", COLUMN_SIZE_WIDTH));
+  SetHeaderItem (3, TreeModel_HeaderSection ("Pointer", COLUMN_POINTER_WIDTH));
+  SetHeaderItem (4, TreeModel_HeaderSection ("Orientation", COLUMN_ORIENTATION_WIDTH));
+  SetHeaderItem (5, TreeModel_HeaderSection ("Location", COLUMN_LOCATION_WIDTH));
 
-  m_pRootItem = myRootItems[0];
+  SetHeaderItem (6, TreeModel_HeaderSection ("Checked", -1, true));
+  SetHeaderItem (7, TreeModel_HeaderSection ("Closed", -1, true));
+  SetHeaderItem (8, TreeModel_HeaderSection ("Infinite", -1, true));
+  SetHeaderItem (9, TreeModel_HeaderSection ("Locked", -1, true));
+  SetHeaderItem (10, TreeModel_HeaderSection ("Modified", -1, true));
+  SetHeaderItem (11, TreeModel_HeaderSection ("Orientable", -1, true));
+
+  SetHeaderItem (12, TreeModel_HeaderSection ("VERTEX: (X, Y, Z)", -1, true));
+
+  SetHeaderItem (13, TreeModel_HeaderSection ("EDGE: Length", -1, true));
+  SetHeaderItem (14, TreeModel_HeaderSection ("DynamicType", -1, true));
+  SetHeaderItem (15, TreeModel_HeaderSection ("First", -1, true));
+  SetHeaderItem (16, TreeModel_HeaderSection ("Last", -1, true));
+  SetHeaderItem (17, TreeModel_HeaderSection ("Continuity", -1, true));
+  SetHeaderItem (18, TreeModel_HeaderSection ("IsClosed", -1, true));
+  SetHeaderItem (19, TreeModel_HeaderSection ("IsPeriodic", -1, true));
+}
+
+// =======================================================================
+// function : createRootItem
+// purpose :
+// =======================================================================
+void ShapeView_TreeModel::createRootItem (const int theColumnId)
+{
+  myRootItems.insert (theColumnId, ShapeView_ItemRoot::CreateItem (TreeModel_ItemBasePtr(), 0, theColumnId));
+  if (theColumnId == 0)
+      m_pRootItem = myRootItems[0];
 }
 
 // =======================================================================
@@ -64,31 +102,6 @@ void ShapeView_TreeModel::RemoveAllShapes()
 }
 
 // =======================================================================
-// function : headerData
-// purpose :
-// =======================================================================
-QVariant ShapeView_TreeModel::headerData (int theSection, Qt::Orientation theOrientation, int theRole) const
-{
-  if (theOrientation != Qt::Horizontal || theRole != Qt::DisplayRole)
-    return QVariant();
-  {
-    switch (theSection)
-    {
-      case 0: return "Name";
-      case 1: return "Size";
-      case 2: return "Pointer";
-      case 3: return "Orientation";
-      case 4: return "Location";
-      case 5: return "Flags"; // Checked/Closed/Infinite/Locked/Modified/Orientable
-      case 7: return "Other";
-        //Auto Triangulation
-      default: break;
-    }
-  }
-  return QVariant();
-}
-
-// =======================================================================
 // function : FindIndex
 // purpose :
 // =======================================================================
@@ -104,22 +117,4 @@ QModelIndex ShapeView_TreeModel::FindIndex (const TopoDS_Shape& theShape) const
       return anIndex;
   }
   return QModelIndex();
-}
-
-// =======================================================================
-// function : SingleSelected
-// purpose :
-// =======================================================================
-QModelIndex ShapeView_TreeModel::SingleSelected (const QModelIndexList& theIndices, const int theCellId,
-                                                 const Qt::Orientation theOrientation)
-{
-  QModelIndexList aFirstColumnSelectedIndices;
-  for (QModelIndexList::const_iterator anIndicesIt = theIndices.begin(); anIndicesIt != theIndices.end(); anIndicesIt++)
-  {
-    QModelIndex anIndex = *anIndicesIt;
-    if ((theOrientation == Qt::Horizontal && anIndex.column() == theCellId) ||
-        (theOrientation == Qt::Vertical && anIndex.row() == theCellId))
-      aFirstColumnSelectedIndices.append (anIndex);
-  }
-  return aFirstColumnSelectedIndices.size() == 1 ? aFirstColumnSelectedIndices.first() : QModelIndex();
 }

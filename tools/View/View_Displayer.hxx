@@ -21,6 +21,7 @@
 
 #include <NCollection_DataMap.hxx>
 #include <NCollection_Shared.hxx>
+#include <TopoDS_Shape.hxx>
 #include <Quantity_Color.hxx>
 #include <inspector/View_PresentationType.hxx>
 
@@ -53,6 +54,10 @@ public:
   //! \param theToKeepPresentation boolean state
   void KeepPresentations (const bool theToKeepPresentations) { myIsKeepPresentations = theToKeepPresentations; }
 
+  //! Stores flag whether the FitAll shoud be done automatically for each display
+  //! \param theFitAllActive boolean value
+  void SetFitAllActive (const bool theFitAllActive) { myFitAllActive = theFitAllActive; }
+
   //! Stores display mode and changes display mode of displayed presentations
   //! \param theDisplayMode a mode: 0 - AIS_WireFrame, 1 - AIS_Shaded
   //! \param theType presentation type
@@ -73,6 +78,12 @@ public:
                                             const View_PresentationType theType = View_PresentationType_Main,
                                             const bool theToUpdateViewer = true);
 
+  //! Redisplays the parameter presentation in current context
+  //! \param thePresentation a presentation, it will be casted to AIS_InteractiveObject
+  //! \param isToUpdateView boolean state if viewer should be updated
+  Standard_EXPORT void RedisplayPresentation (const Handle(Standard_Transient)& thePresentation,
+                                              const bool theToUpdateViewer = true);
+
   //! Erases all presentations from viewer. Iterates by internal map of displayed presentations and 
   //! erase these presentations.
   //! \param isToUpdateView boolean state if viewer should be updated
@@ -83,6 +94,25 @@ public:
   //! \param isToUpdateView boolean state if viewer should be updated
   Standard_EXPORT void ErasePresentations (const View_PresentationType theType = View_PresentationType_Main,
                                            const bool theToUpdateViewer = true);
+
+  //! Erase presentation from viewer
+  //! \param thePresentation a presentation, it will be casted to AIS_InteractiveObject
+  //! \param theType presentation type
+  //! \param isToUpdateView boolean state if viewer should be updated
+  Standard_EXPORT void ErasePresentation (const Handle(Standard_Transient)& thePresentation,
+                                          const View_PresentationType theType = View_PresentationType_Main,
+                                          const bool theToUpdateViewer = true);
+
+  //! Sets shape visible/invisible
+  //! \theShape shape instance
+  //! \theState visibility state
+  Standard_EXPORT void SetVisible (const TopoDS_Shape& theShape, const bool theState,
+                                   const View_PresentationType theType = View_PresentationType_Main);
+
+  //! Returns visibility state value
+  //! \theShape shape instance
+  Standard_EXPORT bool IsVisible (const TopoDS_Shape& theShape,
+                                  const View_PresentationType theType = View_PresentationType_Main) const;
 
   //! Calls UpdateCurrentViewer of context
   Standard_EXPORT void UpdateViewer();
@@ -97,10 +127,22 @@ public:
   //! \param thePresentations a container to be filled
   //! \param theType presentation type
   Standard_EXPORT void DisplayedPresentations (NCollection_Shared<AIS_ListOfInteractive>& thePresentations,
-                                               const View_PresentationType theType = View_PresentationType_Main);
+                                               const View_PresentationType theType = View_PresentationType_Main) const;
 
   //! Returns all displayed by the trihedron objects
   const NCollection_DataMap<View_PresentationType, NCollection_Shared<AIS_ListOfInteractive>>& GetDisplayed() const { return myDisplayed; }
+
+  //! Returns presentation if there is displayed AIS_Shape presentation for the parameter shape
+  //! \param theShape a shape instance
+  //! \param theType presentation type
+  //! \return presentation instance or NULL
+  Standard_EXPORT Handle(AIS_InteractiveObject) FindPresentation (const TopoDS_Shape& theShape,
+    const View_PresentationType theType = View_PresentationType_Main) const;
+
+  //! Creates AIS_Shape for the shape
+  //! \param theShape a shape
+  //! \return presentation
+  Standard_EXPORT static Handle(Standard_Transient) CreatePresentation (const TopoDS_Shape& theShape);
 
 private:
 
@@ -110,6 +152,9 @@ private:
   //! Returns 3d view
   Handle(V3d_View) GetView() const;
 
+  //! Fit all view
+  void fitAllView();
+
 private:
 
   Handle(AIS_InteractiveContext) myContext; //!< context, where the displayer works
@@ -117,6 +162,7 @@ private:
   NCollection_DataMap<View_PresentationType, Quantity_Color> myColorAttributes; //!< color properties of presentations
 
   bool myIsKeepPresentations; //!< flag if previously shown presentations stays in the context by displaying a new one
+  bool myFitAllActive; //!< flag if Fit All should be peformed automatically by each Display
   int myDisplayMode; //!< display mode: 0 - AIS_WireFrame, 1 - AIS_Shaded
 };
 

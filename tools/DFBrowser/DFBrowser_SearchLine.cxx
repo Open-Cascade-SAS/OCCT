@@ -20,6 +20,8 @@
 #include <inspector/DFBrowserPane_Tools.hxx>
 #include <inspector/DFBrowser_Module.hxx>
 
+#include <inspector/ViewControl_Tools.hxx>
+
 #include <TDocStd_Application.hxx>
 #include <TDocStd_Document.hxx>
 #include <TDF_AttributeIterator.hxx>
@@ -108,7 +110,7 @@ DFBrowser_SearchLine::DFBrowser_SearchLine (QWidget* theParent)
   connect (myLineControl, SIGNAL (returnPressed()), this, SLOT (onReturnPressed()));
   connect (mySearchButton, SIGNAL (clicked()), this, SLOT (onSearchButtonClicked()));
 
-  DFBrowser_Window::SetWhiteBackground (this);
+  ViewControl_Tools::SetWhiteBackground (this);
 }
 
 // =======================================================================

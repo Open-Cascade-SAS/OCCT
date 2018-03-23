@@ -50,6 +50,16 @@ public:
   //! \param theParent a parent class
   Standard_EXPORT virtual void SetParent (void* theParent) = 0;
 
+  //! Provide container for actions available in inspector on general level
+  //! \param theMenu if Qt implementation, it is QMenu object
+  Standard_EXPORT virtual void FillActionsMenu (void* theMenu) { (void)theMenu; }
+
+  //! Returns plugin preferences, empty implementation by default
+  virtual void GetPreferences (TInspectorAPI_PreferencesDataMap&) {}
+
+  //! Applies plugin preferences, empty implementation by default
+  virtual void SetPreferences (const TInspectorAPI_PreferencesDataMap&) {}
+
   //! Calls update of the plugin's content
   Standard_EXPORT virtual void UpdateContent() = 0;
 

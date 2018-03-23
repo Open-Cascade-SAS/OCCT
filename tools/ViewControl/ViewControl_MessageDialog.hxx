@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#ifndef TreeModel_MessageDialog_H
-#define TreeModel_MessageDialog_H
+#ifndef ViewControl_MessageDialog_H
+#define ViewControl_MessageDialog_H
 
 #include <Standard.hxx>
 #include <Standard_Macro.hxx>
@@ -27,22 +27,21 @@
 #include <QString>
 #include <Standard_WarningsRestore.hxx>
 
-class DFBrowser_Module;
 class QWidget;
 
-//! \class TreeModel_MessageDialog
+//! \class ViewControl_MessageDialog
 //! Dialog providing information and a question.
 //! It has a check box to do not the dialog again. In this case the previous value will be used as a result
-class TreeModel_MessageDialog : public QDialog
+class ViewControl_MessageDialog : public QDialog
 {
   Q_OBJECT
 public:
 
   //! Constructor
-  Standard_EXPORT TreeModel_MessageDialog (QWidget* theParent, const QString& theInformation, const QString& theQuestion);
+  Standard_EXPORT ViewControl_MessageDialog (QWidget* theParent, const QString& theInformation, const QString& theQuestion);
 
   //! Destructor
-  virtual ~TreeModel_MessageDialog() {}
+  virtual ~ViewControl_MessageDialog() {}
 
   //! Fills message dialog with the information
   //! \param theInformation text

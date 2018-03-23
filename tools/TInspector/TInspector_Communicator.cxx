@@ -37,9 +37,10 @@ TInspector_Communicator::TInspector_Communicator()
     static int argc = 1;
     static char* argv[] = { (char*)"", 0 };
 #if QT_VERSION > 0x050000
-  TCollection_AsciiString aPlugindsDirName = OSD_Environment ("QTDIR").Value();
-  if (!aPlugindsDirName.IsEmpty())
-    QApplication::addLibraryPath (QString (aPlugindsDirName.ToCString()) + "/plugins");
+  OSD_Environment anEnvironment ("QTDIR");
+  TCollection_AsciiString aPlugindsDirName = anEnvironment.Value();
+  aPlugindsDirName += "/plugins";
+  QApplication::addLibraryPath (aPlugindsDirName.ToCString());
 #endif
     new QApplication (argc, argv);
   }
@@ -57,4 +58,13 @@ void TInspector_Communicator::SetVisible (const bool theVisible)
   // window is not visualized on X11 patform under DRAW tool without the next row
   QApplication::processEvents();
 #endif
+}
+
+// =======================================================================
+// function : Move
+// purpose :
+// =======================================================================
+void TInspector_Communicator::Move (const int theXPosition, const int theYPosition)
+{
+  myWindow->GetMainWindow()->move (theXPosition, theYPosition);
 }

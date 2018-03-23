@@ -15,7 +15,6 @@
 
 #include <inspector/DFBrowser_Thread.hxx>
 #include <inspector/DFBrowser_ThreadItemSearch.hxx>
-#include <inspector/DFBrowser_ThreadItemUsedShapesMap.hxx>
 #include <inspector/DFBrowser_TreeLevelLine.hxx>
 #include <inspector/DFBrowser_SearchLine.hxx>
 
@@ -67,21 +66,6 @@ DFBrowser_Thread::DFBrowser_Thread (DFBrowser_Window* theWindow)
 {
   DFBrowser_SearchLine* aSearchLine = theWindow->GetTreeLevelLine()->GetSearchLine();
   myItems.append (new DFBrowser_ThreadItemSearch(aSearchLine));
-  myItems.append (new DFBrowser_ThreadItemUsedShapesMap());
-}
-
-// =======================================================================
-// function : SetModule
-// purpose :
-// =======================================================================
-void DFBrowser_Thread::SetModule (DFBrowser_Module* theModule)
-{
-  for (int anItemId = 0, aSize = myItems.size(); anItemId < aSize; anItemId++)
-  {
-    DFBrowser_ThreadItemUsedShapesMap* aShapesItem = dynamic_cast<DFBrowser_ThreadItemUsedShapesMap*> (myItems[anItemId]);
-    if (aShapesItem)
-      aShapesItem->SetModule (theModule);
-  }
 }
 
 // =======================================================================

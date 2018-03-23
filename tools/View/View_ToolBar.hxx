@@ -44,7 +44,7 @@ class View_ToolBar : public QObject
 
 public:
   //! Constructor
-  Standard_EXPORT View_ToolBar (QWidget* theParent);
+  Standard_EXPORT View_ToolBar (QWidget* theParent, const bool isUseKeepView = true);
 
   //! Destructor
   virtual ~View_ToolBar() Standard_OVERRIDE {}

@@ -13,25 +13,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <inspector/DFBrowser_TreeView.hxx>
+#include <inspector/TreeModel_VisibilityState.hxx>
 
 // =======================================================================
-// function : SetPredefinedSize
+// function : OnClicked
 // purpose :
 // =======================================================================
-void DFBrowser_TreeView::SetPredefinedSize (int theDefaultWidth, int theDefaultHeight)
+void TreeModel_VisibilityState::OnClicked (const QModelIndex& theIndex)
 {
-  myDefaultWidth = theDefaultWidth;
-  myDefaultHeight = theDefaultHeight;
-}
+  if (theIndex.column() != TreeModel_ColumnType_Visibility)
+    return;
 
-// =======================================================================
-// function : sizeHint
-// purpose :
-// =======================================================================
-QSize DFBrowser_TreeView::sizeHint() const
-{
-  if (myDefaultWidth > 0 && myDefaultHeight > 0)
-    return QSize (myDefaultWidth, myDefaultHeight);
-  return QTreeView::sizeHint();
+  if (!CanBeVisible (theIndex))
+    return;
+
+  SetVisible (theIndex, !IsVisible (theIndex), true);
+  emit itemClicked (theIndex);
 }

@@ -33,19 +33,23 @@
 #include <inspector/DFBrowser_PropertyPanel.hxx>
 #include <inspector/DFBrowser_SearchLine.hxx>
 #include <inspector/DFBrowser_SearchView.hxx>
-#include <inspector/DFBrowser_Shortcut.hxx>
 #include <inspector/DFBrowser_Thread.hxx>
 #include <inspector/DFBrowser_ThreadItemSearch.hxx>
-#include <inspector/DFBrowser_ThreadItemUsedShapesMap.hxx>
 #include <inspector/DFBrowser_Tools.hxx>
 #include <inspector/DFBrowser_TreeLevelLine.hxx>
 #include <inspector/DFBrowser_TreeLevelView.hxx>
 #include <inspector/DFBrowser_TreeModel.hxx>
-#include <inspector/DFBrowser_TreeView.hxx>
 
 #include <inspector/DFBrowserPane_AttributePaneSelector.hxx>
 #include <inspector/DFBrowserPane_SelectionKind.hxx>
 #include <inspector/DFBrowserPane_Tools.hxx>
+
+#include <inspector/TreeModel_ContextMenu.hxx>
+#include <inspector/TreeModel_Tools.hxx>
+
+#include <inspector/ViewControl_TreeView.hxx>
+
+#include <inspector/View_Tools.hxx>
 
 #include <OSD_Directory.hxx>
 #include <OSD_Environment.hxx>
@@ -58,7 +62,8 @@
 #include <inspector/View_Window.hxx>
 
 #include <TDF_Tool.hxx>
-#include <inspector/TreeModel_MessageDialog.hxx>
+#include <inspector/ViewControl_MessageDialog.hxx>
+#include <inspector/ViewControl_Tools.hxx>
 
 #include <Standard_WarningsDisable.hxx>
 #include <QAction>
@@ -94,7 +99,6 @@ const int DFBROWSER_DEFAULT_VIEW_HEIGHT = 300;
 const int DFBROWSER_DEFAULT_POSITION_X = 200;
 const int DFBROWSER_DEFAULT_POSITION_Y = 60;
 
-const int OCAF_BROWSER_COLUMN_WIDTH_0 = 300;
 const int DEFAULT_PROPERTY_PANEL_HEIGHT = 200;
 const int DEFAULT_BROWSER_HEIGHT = 800;
 
@@ -108,21 +112,16 @@ DFBrowser_Window::DFBrowser_Window()
   myMainWindow = new QMainWindow (0);
 
   // tree view
-  myTreeView = new DFBrowser_TreeView (myMainWindow);
+  myTreeView = new ViewControl_TreeView (myMainWindow);
   myTreeView->setContextMenuPolicy (Qt::CustomContextMenu);
   connect (myTreeView, SIGNAL (customContextMenuRequested (const QPoint&)),
            this, SLOT (onTreeViewContextMenuRequested (const QPoint&)));
-  ((DFBrowser_TreeView*)myTreeView)->SetPredefinedSize (DFBROWSER_DEFAULT_TREE_VIEW_WIDTH,
-                                                        DFBROWSER_DEFAULT_TREE_VIEW_HEIGHT);
+  new TreeModel_ContextMenu (myTreeView);
+  ((ViewControl_TreeView*)myTreeView)->SetPredefinedSize (QSize (DFBROWSER_DEFAULT_TREE_VIEW_WIDTH,
+                                                                 DFBROWSER_DEFAULT_TREE_VIEW_HEIGHT));
   myTreeView->setHeaderHidden (true);
   myTreeView->setSortingEnabled (Standard_False);
-
-  QDockWidget* aTreeViewWidget = new QDockWidget (tr ("TreeView"), myMainWindow);
-  aTreeViewWidget->setTitleBarWidget (new QWidget(myMainWindow));
-  aTreeViewWidget->setFeatures (QDockWidget::NoDockWidgetFeatures);
-  aTreeViewWidget->setWidget (myTreeView);
-  myMainWindow->addDockWidget (Qt::LeftDockWidgetArea, aTreeViewWidget);
-  myMainWindow->setCorner (Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
+  myMainWindow->setCentralWidget (myTreeView);
 
 #if QT_VERSION < 0x050000
   myTreeView->setStyle (new QWindowsStyle);
@@ -137,21 +136,10 @@ DFBrowser_Window::DFBrowser_Window()
   connect (myTreeLevelLine, SIGNAL (updateClicked()), this, SLOT (onUpdateClicked()));
 
   QDockWidget* aTreeLineDockWidget = new QDockWidget (tr ("Tree Level Line"), myMainWindow);
+  aTreeLineDockWidget->setObjectName (aTreeLineDockWidget->windowTitle());
   aTreeLineDockWidget->setTitleBarWidget (new QWidget(myMainWindow));
-  aTreeLineDockWidget->setFeatures (QDockWidget::NoDockWidgetFeatures);
   aTreeLineDockWidget->setWidget (myTreeLevelLine->GetControl());
   myMainWindow->addDockWidget (Qt::TopDockWidgetArea, aTreeLineDockWidget);
-
-  // dump view window
-  QWidget* aDumpWidget = new QWidget (myMainWindow);
-  QVBoxLayout* aDumpLay = new QVBoxLayout (aDumpWidget);
-  aDumpLay->setMargin (0);
-  myDumpView = new DFBrowser_DumpView (aDumpWidget);
-  aDumpLay->addWidget (myDumpView->GetControl());
-  QDockWidget* aDumpDockWidget = new QDockWidget (tr ("Dump"), myMainWindow);
-
-  aDumpDockWidget->setWidget (aDumpWidget);
-  myMainWindow->addDockWidget (Qt::BottomDockWidgetArea, aDumpDockWidget);
 
   // property panel
   myPropertyPanel = new DFBrowser_PropertyPanel (myMainWindow);
@@ -173,27 +161,44 @@ DFBrowser_Window::DFBrowser_Window()
   connect (aLevelView, SIGNAL (indexDoubleClicked (const QModelIndex&)),
            this, SLOT (onLevelDoubleClicked (const QModelIndex&)));
 
-  myMainWindow->setCentralWidget (myPropertyPanel->GetControl());
+  QDockWidget* aPropertyPanelWidget = new QDockWidget (tr ("PropertyPanel"), myMainWindow);
+  aPropertyPanelWidget->setObjectName (aPropertyPanelWidget->windowTitle());
+  aPropertyPanelWidget->setTitleBarWidget (new QWidget(myMainWindow));
+  aPropertyPanelWidget->setWidget (myPropertyPanel->GetControl());
+  myMainWindow->addDockWidget (Qt::RightDockWidgetArea, aPropertyPanelWidget);
+
+  // dump view window
+  QWidget* aDumpWidget = new QWidget(myMainWindow);
+  QVBoxLayout* aDumpLay = new QVBoxLayout(aDumpWidget);
+  aDumpLay->setMargin(0);
+  myDumpView = new DFBrowser_DumpView(aDumpWidget);
+  aDumpLay->addWidget(myDumpView->GetControl());
+  QDockWidget* aDumpDockWidget = new QDockWidget(tr("Dump"), myMainWindow);
+  aDumpDockWidget->setObjectName(aDumpDockWidget->windowTitle());
+
+  aDumpDockWidget->setWidget(aDumpWidget);
+  myMainWindow->addDockWidget(Qt::RightDockWidgetArea, aDumpDockWidget);
 
   // view
   myViewWindow = new View_Window (myMainWindow);
   myViewWindow->GetView()->SetPredefinedSize (DFBROWSER_DEFAULT_VIEW_WIDTH, DFBROWSER_DEFAULT_VIEW_HEIGHT);
 
   QDockWidget* aViewDockWidget = new QDockWidget (tr ("View"), myMainWindow);
+  aViewDockWidget->setObjectName (aViewDockWidget->windowTitle());
   aViewDockWidget->setTitleBarWidget (myViewWindow->GetViewToolBar()->GetControl());
   aViewDockWidget->setWidget (myViewWindow);
-  myMainWindow->addDockWidget (Qt::BottomDockWidgetArea, aViewDockWidget);
+  myMainWindow->addDockWidget (Qt::RightDockWidgetArea, aViewDockWidget);
 
   QColor aHColor (229, 243, 255);
   myViewWindow->GetDisplayer()->SetAttributeColor (Quantity_Color(aHColor.red() / 255., aHColor.green() / 255.,
                                                    aHColor.blue() / 255., Quantity_TOC_RGB), View_PresentationType_Additional);
+
+  myMainWindow->splitDockWidget(aPropertyPanelWidget, aViewDockWidget, Qt::Vertical);
   myMainWindow->tabifyDockWidget (aDumpDockWidget, aViewDockWidget);
 
-  aTreeViewWidget->resize (DFBROWSER_DEFAULT_TREE_VIEW_WIDTH, DFBROWSER_DEFAULT_TREE_VIEW_HEIGHT);
+  myTreeView->resize (DFBROWSER_DEFAULT_TREE_VIEW_WIDTH, DFBROWSER_DEFAULT_TREE_VIEW_HEIGHT);
 
   myThread = new DFBrowser_Thread (this);
-
-  myShortcut = new DFBrowser_Shortcut (myMainWindow);
 }
 
 // =======================================================================
@@ -217,6 +222,62 @@ void DFBrowser_Window::SetParent (void* theParent)
     QLayout* aLayout = myParent->layout();
     if (aLayout)
       aLayout->addWidget (GetMainWindow());
+  }
+}
+
+// =======================================================================
+// function : FillActionsMenu
+// purpose :
+// =======================================================================
+void DFBrowser_Window::FillActionsMenu (void* theMenu)
+{
+  QMenu* aMenu = (QMenu*)theMenu;
+  QList<QDockWidget*> aDockwidgets = myMainWindow->findChildren<QDockWidget*>();
+  for (QList<QDockWidget*>::iterator it = aDockwidgets.begin(); it != aDockwidgets.end(); ++it)
+  {
+    QDockWidget* aDockWidget = *it;
+    if (aDockWidget->parentWidget() == myMainWindow)
+      aMenu->addAction (aDockWidget->toggleViewAction());
+  }
+}
+
+// =======================================================================
+// function : GetPreferences
+// purpose :
+// =======================================================================
+void DFBrowser_Window::GetPreferences (TInspectorAPI_PreferencesDataMap& theItem)
+{
+  theItem.Clear();
+  theItem.Bind ("geometry",  TreeModel_Tools::ToString (myMainWindow->saveState()).toStdString().c_str());
+
+  QMap<QString, QString> anItems;
+  TreeModel_Tools::SaveState (myTreeView, anItems);
+  View_Tools::SaveState(myViewWindow, anItems);
+
+  for (QMap<QString, QString>::const_iterator anItemsIt = anItems.begin(); anItemsIt != anItems.end(); anItemsIt++)
+    theItem.Bind (anItemsIt.key().toStdString().c_str(), anItemsIt.value().toStdString().c_str());
+}
+
+// =======================================================================
+// function : SetPreferences
+// purpose :
+// =======================================================================
+void DFBrowser_Window::SetPreferences (const TInspectorAPI_PreferencesDataMap& theItem)
+{
+  if (theItem.IsEmpty())
+  {
+    TreeModel_Tools::SetDefaultHeaderSections (myTreeView);
+    return;
+  }
+
+  for (TInspectorAPI_IteratorOfPreferencesDataMap anItemIt (theItem); anItemIt.More(); anItemIt.Next())
+  {
+    if (anItemIt.Key().IsEqual ("geometry"))
+      myMainWindow->restoreState (TreeModel_Tools::ToByteArray (anItemIt.Value().ToCString()));
+    else if (TreeModel_Tools::RestoreState (myTreeView, anItemIt.Key().ToCString(), anItemIt.Value().ToCString()))
+      continue;
+    else if (View_Tools::RestoreState(myViewWindow, anItemIt.Key().ToCString(), anItemIt.Value().ToCString()))
+      continue;
   }
 }
 
@@ -370,9 +431,6 @@ void DFBrowser_Window::Init (const NCollection_List<Handle(Standard_Transient)>&
   myTreeLevelLine->GetSearchLine()->SetModule (myModule);
   myPropertyPanel->GetAttributesStack()->GetSearchView()->InitModels();
 
-  myShortcut->SetModule (myModule);
-  myThread->SetModule (myModule);
-
   connect (myModule, SIGNAL (beforeUpdateTreeModel()), this, SLOT (onBeforeUpdateTreeModel()));
 
   if (!aContext.IsNull())
@@ -506,7 +564,6 @@ void DFBrowser_Window::setExpandedLevels (QTreeView* theTreeView, const QModelIn
 void DFBrowser_Window::setOCAFModel (QAbstractItemModel* theModel)
 {
   myTreeView->setModel (theModel);
-  myTreeView->setColumnWidth (0, OCAF_BROWSER_COLUMN_WIDTH_0);
 
   QItemSelectionModel* aSelectionModel = new QItemSelectionModel (theModel);
   myTreeView->setSelectionModel (aSelectionModel);
@@ -536,19 +593,7 @@ void DFBrowser_Window::onBeforeUpdateTreeModel()
 // =======================================================================
 void DFBrowser_Window::ClearThreadCache()
 {
-  DFBrowser_ThreadItemUsedShapesMap::ClearSortedReferences (myModule);
   DFBrowser_ThreadItemSearch::ClearValues (GetTreeLevelLine()->GetSearchLine());
-}
-
-// =======================================================================
-// function : SetWhiteBackground
-// purpose :
-// =======================================================================
-void DFBrowser_Window::SetWhiteBackground (QWidget* theControl)
-{
-  QPalette aPalette = theControl->palette();
-  aPalette.setColor (QPalette::All, QPalette::Foreground, Qt::white);
-  theControl->setPalette (aPalette);
 }
 
 // =======================================================================
@@ -583,48 +628,18 @@ TCollection_AsciiString DFBrowser_Window::TmpDirectory()
 }
 
 // =======================================================================
-// function : SingleSelected
-// purpose :
-// =======================================================================
-QModelIndex DFBrowser_Window::SingleSelected (const QModelIndexList& theIndices, const int theCellId,
-                                              const Qt::Orientation theOrientation)
-{
-  QModelIndexList aFirstColumnSelectedIndices;
-  for (QModelIndexList::const_iterator anIndicesIt = theIndices.begin(), aLast = theIndices.end();
-       anIndicesIt != aLast; anIndicesIt++)
-  {
-    QModelIndex anIndex = *anIndicesIt;
-    if ((theOrientation == Qt::Horizontal && anIndex.column() == theCellId) ||
-        (theOrientation == Qt::Vertical && anIndex.row() == theCellId))
-      aFirstColumnSelectedIndices.append (anIndex);
-  }
-  return aFirstColumnSelectedIndices.size() == 1 ? aFirstColumnSelectedIndices.first() : QModelIndex();
-}
-
-// =======================================================================
 // function : onTreeViewContextMenuRequested
 // purpose :
 // =======================================================================
 void DFBrowser_Window::onTreeViewContextMenuRequested (const QPoint& thePosition)
 {
   QMenu* aMenu = new QMenu(GetMainWindow());
-  aMenu->addAction (createAction (tr ("Expand"), SLOT (onExpand())));
-  aMenu->addAction (createAction (tr ("Expand All"), SLOT (onExpandAll())));
-  aMenu->addAction (createAction (tr ("Collapse All"), SLOT (onCollapseAll())));
+  aMenu->addAction (ViewControl_Tools::CreateAction (tr ("Expand"), SLOT (onExpand()), GetMainWindow(), this));
+  aMenu->addAction (ViewControl_Tools::CreateAction (tr ("Expand All"), SLOT (onExpandAll()), GetMainWindow(), this));
+  aMenu->addAction (ViewControl_Tools::CreateAction (tr ("Collapse All"), SLOT (onCollapseAll()), GetMainWindow(), this));
 
   QPoint aPoint = myTreeView->mapToGlobal (thePosition);
   aMenu->exec (aPoint);
-}
-
-// =======================================================================
-// function : createAction
-// purpose :
-// =======================================================================
-QAction* DFBrowser_Window::createAction (const QString& theText, const char* theSlot)
-{
-  QAction* anAction = new QAction (theText, GetMainWindow());
-  connect (anAction, SIGNAL (triggered(bool)), this, theSlot);
-  return anAction;
 }
 
 // =======================================================================
@@ -694,7 +709,7 @@ void DFBrowser_Window::onTreeViewSelectionChanged (const QItemSelection& theSele
   anAttributePaneStack->GetTreeLevelView()->UpdateByTreeSelectionChanged (theSelected, theDeselected);
 
   QModelIndexList aSelectedIndices = theSelected.indexes();
-  QModelIndex aSelectedIndex = DFBrowser_Window::SingleSelected (aSelectedIndices, 0);
+  QModelIndex aSelectedIndex = TreeModel_ModelBase::SingleSelected (aSelectedIndices, 0);
 
   myTreeView->scrollTo (aSelectedIndex);
   View_Displayer* aDisplayer = myViewWindow->GetDisplayer();
@@ -736,8 +751,12 @@ void DFBrowser_Window::onPaneSelectionChanged (const QItemSelection&,
       if (myParameters->FindParameters (aPluginName))
         aParameters = myParameters->Parameters (aPluginName);
 
+      NCollection_List<TCollection_AsciiString> anItemNames;
+      if (myParameters->FindSelectedNames (aPluginName))
+        anItemNames = myParameters->GetSelectedNames (aPluginName);
+
       int aParametersCount = aParameters.Extent();
-      anAttributePane->GetSelectionParameters (aSelectionModel, aParameters);
+      anAttributePane->GetSelectionParameters (aSelectionModel, aParameters, anItemNames);
       if (aParametersCount != aParameters.Extent()) // some TShapes are added
       {
         TCollection_AsciiString aPluginShortName = aPluginName.SubString (3, aPluginName.Length());
@@ -747,11 +766,12 @@ void DFBrowser_Window::onPaneSelectionChanged (const QItemSelection&,
         QString aQuestion = QString ("Would you like to activate %1 immediately?\n")
           .arg (aPluginShortName.ToCString()).toStdString().c_str();
         if (!myExportToShapeViewDialog)
-          myExportToShapeViewDialog = new TreeModel_MessageDialog (myParent, aMessage, aQuestion);
+          myExportToShapeViewDialog = new ViewControl_MessageDialog (myParent, aMessage, aQuestion);
         else
           myExportToShapeViewDialog->SetInformation (aMessage);
         myExportToShapeViewDialog->Start();
 
+        myParameters->SetSelectedNames (aPluginName, anItemNames);
         myParameters->SetParameters (aPluginName, aParameters, myExportToShapeViewDialog->IsAccepted());
       }
       return;

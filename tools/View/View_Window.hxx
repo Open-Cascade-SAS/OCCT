@@ -40,7 +40,7 @@ class View_Window : public QWidget
 public:
 
   //! Constructor
-  Standard_EXPORT View_Window (QWidget* theParent);
+  Standard_EXPORT View_Window (QWidget* theParent, const bool isUseKeepView = true, const bool isFitAllActive = true);
 
   //! Destructor
   virtual ~View_Window() {}
@@ -62,6 +62,10 @@ public:
   //! \param theContext an AIS context
   Standard_EXPORT void SetContext (View_ContextType theType, const Handle(AIS_InteractiveContext)& theContext);
 
+signals:
+  //! Signals about calling erasing all presentations in context
+  void eraseAllPerformed();
+
 protected slots:
 
   //! Processing context change:
@@ -70,8 +74,20 @@ protected slots:
   //! - sets the current view enabled only if a current context type is View_ContextType_Own
   void onViewSelectorActivated();
 
+  //! Processing widget action checked state changed: for Fit All action, if checked, displayer do FitAll automatically
+  //! \param theActionId a clicked action
+  //! \param theState a result checked state
+  void onCheckedStateChanged (int theActionId, bool theState);
+
   //! Processing window tool bar actions
   void onToolBarActionClicked (const int theActionId);
+
+  //! Shows context menu for view. It contains set view orientation actions.
+  //! \param thePosition a clicked point
+  void onViewContextMenuRequested (const QPoint& thePosition);
+
+  //! Sets the view scene orientation by the text of selected action
+  void onSetOrientation();
 
   //! Sets selected display mode in the current context
   void onDisplayModeChanged();

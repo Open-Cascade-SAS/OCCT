@@ -106,7 +106,7 @@ void DFBrowserPane_TDocStdOwner::GetValues (const Handle(TDF_Attribute)& theAttr
             << aSeparationStr.ToCString() << aSeparationStr.ToCString()
             << "IsSaved" << DFBrowserPane_Tools::BoolToStr (aDocument->IsSaved())
             << "IsChanged" << DFBrowserPane_Tools::BoolToStr (aDocument->IsChanged())
-            << "GetSavedTime" << aDocument->GetSavedTime()
+            << "GetSavedTime" << QString::number (aDocument->GetSavedTime())
             << "GetName" << (aDocument->IsSaved() ? DFBrowserPane_Tools::ToString (aDocument->GetName()) : "")
             << "GetPath" << (aDocument->IsSaved() ? DFBrowserPane_Tools::ToString (aDocument->GetPath()) : "")
             << "GetData" << aDocumentDataInfo.ToCString()

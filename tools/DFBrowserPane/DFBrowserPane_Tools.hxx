@@ -25,9 +25,7 @@
 #include <TopoDS_Shape.hxx>
 
 #include <Standard_WarningsDisable.hxx>
-#include <QApplication>
 #include <QString>
-#include <QStyle>
 #include <QString>
 #include <QVariant>
 #include <Standard_WarningsRestore.hxx>
@@ -44,10 +42,6 @@ public:
   //! \param theColumnId a column index
   //! \returns value
   Standard_EXPORT static int DefaultPanelColumnWidth (const int theColumnId);
-
-  //! Returns header margin, defined in style settings of application
-  //! \return integer value
-  Standard_EXPORT static int HeaderSectionMargin() { return qApp->style()->pixelMetric (QStyle::PM_HeaderMargin); }
 
   //! Returns a string presentation of the label
   //! \param theLabel a label object
@@ -69,7 +63,7 @@ public:
   //! Returns "true" or "false" text for the given boolean state
   //! \param theValue a boolean value
   //! \return string value
-  Standard_EXPORT static QString BoolToStr (const Standard_Boolean theValue) { return theValue ? "true" : "false"; }
+  Standard_EXPORT static QString BoolToStr (const bool theValue) { return theValue ? "true" : "false"; }
 
   //! Converts a Qt string to OCCT extended string
   //! \param theValue a converted string

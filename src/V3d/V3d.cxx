@@ -26,6 +26,17 @@
 #include <V3d_View.hxx>
 #include <V3d_Viewer.hxx>
 
+namespace
+{
+  static Standard_CString V3d_Table_PrintTypeOfOrientation[26] =
+  {
+    "XPOS", "YPOS", "ZPOS", "XNEG", "YNEG", "ZNEG", "XPOSYPOS", "XPOSZPOS", "XPOSZPOS", "XNEGYNEG",
+    "XNEGYPOS", "XNEGZNEG", "XNEGZPOS", "YNEGZNEG", "YNEGZPOS", "XPOSYNEG", "XPOSZNEG", "YPOSZNEG",
+    "XPOSYPOSZPOS", "XPOSYNEGZPOS", "XPOSYPOSZNEG", "XNEGYPOSZPOS", "XPOSYNEGZNEG", "XNEGYPOSZNEG",
+    "XNEGYNEGZPOS", "XNEGYNEGZNEG"
+  };
+}
+
 void V3d::ArrowOfRadius(const Handle(Graphic3d_Group)& garrow,const Standard_Real X0,const Standard_Real Y0,const Standard_Real Z0,const Standard_Real Dx,const Standard_Real Dy,const Standard_Real Dz,const Standard_Real Alpha,const Standard_Real Lng)
 {
   Standard_Real Xc, Yc, Zc, Xi, Yi, Zi, Xj, Yj, Zj;
@@ -133,4 +144,34 @@ void V3d::SwitchViewsinWindow(const Handle(V3d_View)& aPreviousView,
     aNextView->SetWindow(aPreviousView->Window());
   aNextView->Viewer()->SetViewOn(aNextView);
     
+}
+
+//=======================================================================
+//function : TypeOfOrientationToString
+//purpose  :
+//=======================================================================
+Standard_CString V3d::TypeOfOrientationToString (V3d_TypeOfOrientation theType)
+{
+  return V3d_Table_PrintTypeOfOrientation[theType];
+}
+
+//=======================================================================
+//function : TypeOfOrientationFromString
+//purpose  :
+//=======================================================================
+Standard_Boolean V3d::TypeOfOrientationFromString (Standard_CString theTypeString,
+                                                   V3d_TypeOfOrientation& theType)
+{
+  TCollection_AsciiString aName (theTypeString);
+  aName.UpperCase();
+  for (Standard_Integer aTypeIter = 0; aTypeIter <= V3d_XnegYnegZneg; ++aTypeIter)
+  {
+    Standard_CString aTypeName = V3d_Table_PrintTypeOfOrientation[aTypeIter];
+    if (aName == aTypeName)
+    {
+      theType = V3d_TypeOfOrientation (aTypeIter);
+      return Standard_True;
+    }
+  }
+  return Standard_False;
 }

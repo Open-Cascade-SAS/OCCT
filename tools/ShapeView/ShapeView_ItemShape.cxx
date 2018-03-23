@@ -97,21 +97,6 @@ QString ToName (const GeomAbs_Shape& theType)
 }
 
 // =======================================================================
-// function : ToFlags
-// purpose :
-// =======================================================================
-void ToFlags (const TopoDS_Shape& theShape, QVariant& theValue, QVariant& theInfo)
-{
-  QStringList aValues;
-  aValues << ToString (theShape.Checked()) << ToString (theShape.Closed())
-          << ToString (theShape.Infinite()) << ToString (theShape.Locked())
-          << ToString (theShape.Modified()) << ToString (theShape.Orientable());
-
-  theValue = aValues.join ("/");
-  theInfo = "Checked/Closed/Infinite/Locked/Modified/Orientable";
-}
-
-// =======================================================================
 // function : ToOtherInfo
 // purpose :
 // =======================================================================
@@ -171,14 +156,6 @@ void ToOtherInfo (const TopoDS_Shape& theShape, QVariant& theValue, QVariant& th
       theInfo = QString ("%1:\n%2").arg (anInfo.join (" / ")).arg (aValues.join ("\n"));
       break;
     }
-    case TopAbs_VERTEX:
-    {
-      TopoDS_Vertex aVertex = TopoDS::Vertex (theShape);
-      gp_Pnt aPoint = BRep_Tool::Pnt (aVertex);
-      theValue = ToString (aPoint);
-      theInfo = "(X, Y, Z) of gp_Pnt";
-      break;
-    }
     case TopAbs_SHAPE:
     default:
       break;
@@ -235,25 +212,59 @@ QVariant ShapeView_ItemShape::initValue(const int theRole) const
   if (theRole != Qt::DisplayRole && theRole != Qt::ToolTipRole)
     return QVariant();
 
-  bool isDisplayRole = theRole == Qt::DisplayRole;
   switch (Column())
   {
-    case 0: return isDisplayRole ? ToName (aShape.ShapeType()) : "ShapeType";
-    case 1: return isDisplayRole ? (rowCount() > 0 ? QVariant (rowCount()) : QVariant())
-                                 : QVariant ("Number of sub shapes");
-    case 2: return isDisplayRole ? TShapePointer().ToCString() : "TShape pointer";
-    case 3: return isDisplayRole ? ToName(aShape.Orientation()) : "Orientation";
-    case 4: return isDisplayRole ? locationInfo(aShape.Location()) : "Location";
-    case 5:
-    case 6:
-    case 7:
+    case 0: return ToName (aShape.ShapeType());
+    case 2: return rowCount() > 0 ? QVariant (rowCount()) : QVariant();
+    case 3: return TShapePointer().ToCString();
+    case 4: return ToName(aShape.Orientation());
+    case 5: return locationInfo(aShape.Location());
+    case 6: return ToString (aShape.Checked());
+    case 7: return ToString (aShape.Closed());
+    case 8: return ToString (aShape.Infinite());
+    case 9: return ToString (aShape.Locked());
+    case 10: return ToString (aShape.Modified());
+    case 11: return ToString (aShape.Orientable());
+    case 12:
     {
-      QVariant aDataInfo, aTooTipInfo;
-      if (Column() == 5)
-        ToFlags(aShape, aDataInfo, aTooTipInfo);
-      else if (Column() == 6)
-        ToOtherInfo(aShape, aDataInfo, aTooTipInfo);
-      return isDisplayRole ? aDataInfo : aTooTipInfo;
+      if (aShape.ShapeType() != TopAbs_VERTEX)
+        return QVariant();
+      TopoDS_Vertex aVertex = TopoDS::Vertex (aShape);
+      gp_Pnt aPoint = BRep_Tool::Pnt (aVertex);
+      return ToString (aPoint);
+    }
+    case 13:
+    case 14:
+    case 15:
+    case 16:
+    case 17:
+    case 18:
+    case 19:
+    {
+      if (aShape.ShapeType() != TopAbs_EDGE)
+        return QVariant();
+
+      TopoDS_Edge anEdge = TopoDS::Edge(aShape);
+      double aFirst, aLast;
+      Handle(Geom_Curve) aCurve = BRep_Tool::Curve(anEdge, aFirst, aLast);
+
+      GeomAdaptor_Curve aAdaptor(aCurve, aFirst, aLast);
+      gp_Pnt aFirstPnt = aAdaptor.Value(aFirst);
+      gp_Pnt aLastPnt = aAdaptor.Value(aLast);
+
+      BRepAdaptor_Curve aBRepAdaptor = BRepAdaptor_Curve(anEdge);
+      Adaptor3d_Curve* anAdaptor3d = &aBRepAdaptor;
+
+      switch (Column())
+      {
+        case 13: return QString::number (GCPnts_AbscissaPoint::Length(*anAdaptor3d));
+        case 14: return aCurve->DynamicType()->Name();
+        case 15: return ToString (aFirstPnt);
+        case 16: return ToString (aLastPnt);
+        case 17: return ToName (aCurve->Continuity());
+        case 18: return ToString (aCurve->IsClosed());
+        case 19: return aCurve->IsPeriodic() ? QString::number (aCurve->Period()) : ToString (aCurve->IsPeriodic());
+      }
     }
     default: break;
   }

@@ -18,13 +18,18 @@
 
 #include <Standard.hxx>
 #include <inspector/TreeModel_ItemBase.hxx>
+#include <inspector/TreeModel_HeaderSection.hxx>
 
 #include <Standard_WarningsDisable.hxx>
 #include <QAbstractItemModel>
 #include <QExplicitlySharedDataPointer>
+#include <QMap>
 #include <QModelIndex>
 #include <QVariant>
+#include <QVector>
 #include <Standard_WarningsRestore.hxx>
+
+class TreeModel_VisibilityState;
 
 //! \class TreeModel_ModelBase
 //! \brief Implementation of the tree item based model of QAbstractItemModel.
@@ -59,6 +64,26 @@ public:
   //! Emits the layoutChanged signal from outside of this class
   Standard_EXPORT void EmitLayoutChanged();
 
+  //! Emits the dataChanged signal from outside of this class
+  Standard_EXPORT void EmitDataChanged (const QModelIndex& theTopLeft, const QModelIndex& theBottomRight,
+                                        const QVector<int>& theRoles = QVector<int>(), const bool isResetItem = true);
+
+  //! Sets state whether visibility column (0) is used in the model
+  //! \param theState state
+  void SetUseVisibilityColumn (const bool theState) { m_pUseVisibilityColumn = theState; }
+
+  //! Returns state whether visibility column (0) is used in the model
+  //! \param theState state
+  bool IsUseVisibilityColumn() const { return m_pUseVisibilityColumn; }
+
+  //!< Fills visibility state checker
+  //!< \param theController the checker interface
+  void SetVisibilityState (TreeModel_VisibilityState* theController) { myVisibilityState = theController; }
+
+  //!< Returns visibility state checker
+  //!< \return the checker interface
+  TreeModel_VisibilityState* GetVisibilityState () const { return myVisibilityState; }
+
   //! Returns the index of the item in the model specified by the given row, column and parent index.
   //! Saves an internal pointer at the createIndex. This pointer is a shared pointer to the class,
   //! that realizes a base item interface. If the parent is invalid, a root item is used, otherwise a new item
@@ -92,8 +117,7 @@ public:
   //! \param theRole a data role
   //! \return the header data
   Standard_EXPORT virtual QVariant headerData (int theSection, Qt::Orientation theOrientation,
-                                               int theRole = Qt::DisplayRole) const Standard_OVERRIDE
-  { (void)theSection, (void)theOrientation; (void)theRole; return QVariant(); }
+                                               int theRole = Qt::DisplayRole) const Standard_OVERRIDE;
 
   //! Returns the number of rows under the given parent. When the parent is valid it means that rowCount is returning
   //! the number of children of parent.
@@ -101,13 +125,40 @@ public:
   //! \return the number of rows
   Standard_EXPORT virtual int rowCount (const QModelIndex& theParent = QModelIndex()) const Standard_OVERRIDE;
 
-  //! Returns the number of columns for the children of the given parent.
-  //! \param theParent a parent model index
-  //! \return the number of columns
+  //! Returns whether the column is hidden by default
+  //! \param theColumnId a column index
+  //! \return header section values container
+  TreeModel_HeaderSection GetHeaderItem (const int theColumnId) const { return myHeaderValues[theColumnId]; }
+
+  //! Set header properties item.
+  //! \param theColumnId a column index
+  //! \param theSection a section value
+  void SetHeaderItem (const int theColumnId, const TreeModel_HeaderSection& theSection)
+  { myHeaderValues[theColumnId] = theSection; createRootItem (theColumnId); }
+
+  //! Returns count of columns in the model
+  //! \param theParent an index of the parent item
+  //! \return integer value
   virtual int columnCount (const QModelIndex& theParent = QModelIndex()) const Standard_OVERRIDE
-  { (void)theParent; return 1; }
+  { (void)theParent; return myHeaderValues.size(); }
+
+  //! Returns default value of the visibility column
+  //! \return integer value
+  static int ColumnVisibilityWidth() { return 20; }
+
+  //! Returns single selected item in the cell of given orientation. If the orientation is Horizontal,
+  //! in the cell id colum, one row should be selected.
+  //! \param theIndices a container of selected indices
+  //! \param theCellId column index if orientation is horizontal, row index otherwise
+  //! \param theOrientation an orientation to apply the cell index
+  //! \return model index from the list
+  Standard_EXPORT static QModelIndex SingleSelected (const QModelIndexList& theIndices, const int theCellId,
+                                                     const Qt::Orientation theOrientation = Qt::Horizontal);
 
 protected:
+  //! Creates root item
+  //! \param theColumnId index of a column
+  virtual void createRootItem (const int theColumnId) = 0;
 
   //! Converts the item shared pointer to void* type
   //! \param theItem
@@ -117,7 +168,11 @@ protected:
 protected:
 
   TreeModel_ItemBasePtr m_pRootItem; //!< the model root item. It should be created in the
+  QMap<int, TreeModel_HeaderSection> myHeaderValues; //!< header values
   //!< model subclass. The model is fulfilled by this item content
+
+  bool m_pUseVisibilityColumn; //!< the state whether column=0 is reserved for Visibility state
+  TreeModel_VisibilityState* myVisibilityState; //!< the interface of item visibility
 };
 
 #endif

@@ -42,6 +42,16 @@
 // =======================================================================
 QVariant VInspector_ItemPresentableObject::initValue (int theItemRole) const
 {
+  if (Column() == 20 && theItemRole == Qt::BackgroundRole) {
+    Handle(AIS_InteractiveObject) anIO = GetInteractiveObject();
+    if (!anIO.IsNull() && anIO->HasColor())
+    {
+      Quantity_Color aColor;
+      anIO->Color(aColor);
+      return QColor ((int)(aColor.Red()*255.), (int)(aColor.Green()*255.), (int)(aColor.Blue()*255.));
+    }
+  }
+
   if (theItemRole == Qt::DisplayRole || theItemRole == Qt::ToolTipRole)
   {
     Handle(AIS_InteractiveObject) anIO = GetInteractiveObject();
@@ -78,46 +88,74 @@ QVariant VInspector_ItemPresentableObject::initValue (int theItemRole) const
       }
       case 4:
       {
-        if (theItemRole == Qt::ToolTipRole)
-          return "SelectedOwners";
-        else
+        int aNbSelected = VInspector_Tools::SelectedOwners (GetContext(), anIO, false);
+        return aNbSelected > 0 ? QString::number (aNbSelected) : "";
+      }
+      case 5:
+      {
+        TColStd_ListOfInteger aModes;
+        Handle(AIS_InteractiveContext) aContext = GetContext();
+        aContext->ActivatedModes(anIO, aModes);
+        TCollection_AsciiString aModesInfo;
+        for (TColStd_ListIteratorOfListOfInteger itr (aModes); itr.More(); itr.Next())
         {
-          Handle(AIS_InteractiveContext) aContext = GetContext();
-          int aCount = VInspector_Tools::SelectedOwners (aContext, anIO, false);
-          if (aCount > 0)
-            return aCount;
+          if (!aModesInfo.IsEmpty())
+            aModesInfo += ", ";
+          aModesInfo += VInspector_Tools::GetShapeTypeInfo (AIS_Shape::SelectionType(itr.Value()));
         }
-        break;
+        return aModesInfo.ToCString();
+      }
+      break;
+      case 6:
+      {
+        double aDeviationCoefficient = 0;
+        Handle(AIS_Shape) anAISShape = Handle(AIS_Shape)::DownCast (anIO);
+        if (!anAISShape.IsNull())
+        {
+          Standard_Real aPreviousCoefficient;
+          anAISShape->OwnDeviationCoefficient(aDeviationCoefficient, aPreviousCoefficient);
+        }
+        return QString::number(aDeviationCoefficient);
+      }
+      case 7:
+      {
+        double aShapeDeflection = 0;
+        Handle(AIS_Shape) aShapeIO = Handle(AIS_Shape)::DownCast (anIO);
+        if (!aShapeIO.IsNull())
+        {
+          const TopoDS_Shape& aShape = aShapeIO->Shape();
+          if (!aShape.IsNull())
+            aShapeDeflection = Prs3d::GetDeflection(aShape, anIO->Attributes());
+        }
+        return QString::number (aShapeDeflection);
       }
       case 8:
       {
-        if (theItemRole == Qt::ToolTipRole)
-          return QString ("%1 / %2 / %3").arg ("OwnDeviationCoefficient")
-                                         .arg ("ShapeDeflection")
-                                         .arg ("IsAutoTriangulation");
-        else
+        double aDeviationCoefficient = 0;
+        Handle(AIS_Shape) anAISShape = Handle(AIS_Shape)::DownCast (anIO);
+        if (!anAISShape.IsNull())
         {
-          double aDeviationCoefficient = 0;
-          Handle(AIS_Shape) anAISShape = Handle(AIS_Shape)::DownCast (anIO);
-          if (!anAISShape.IsNull())
-          {
-            Standard_Real aPreviousCoefficient;
-            anAISShape->OwnDeviationCoefficient(aDeviationCoefficient, aPreviousCoefficient);
-          }
-          double aShapeDeflection = 0;
-          Handle(AIS_Shape) aShapeIO = Handle(AIS_Shape)::DownCast (anIO);
-          if (!aShapeIO.IsNull())
-          {
-            const TopoDS_Shape& aShape = aShapeIO->Shape();
-            if (!aShape.IsNull())
-              aShapeDeflection = Prs3d::GetDeflection(aShape, anIO->Attributes());
-          }
-          bool anIsAutoTriangulation = anIO->Attributes()->IsAutoTriangulation();
-          return QString ("%1 / %2 / %3").arg (aDeviationCoefficient)
-                                         .arg (aShapeDeflection)
-                                         .arg (anIsAutoTriangulation);
+          Standard_Real aPreviousCoefficient;
+          anAISShape->OwnDeviationCoefficient(aDeviationCoefficient, aPreviousCoefficient);
         }
-        break;
+        Handle(AIS_Shape) aShapeIO = Handle(AIS_Shape)::DownCast (anIO);
+        bool anIsAutoTriangulation = aNullIO ? false : anIO->Attributes()->IsAutoTriangulation();
+        return anIsAutoTriangulation ? QString ("true") : QString ("false");
+      }
+      case 17:
+      case 18:
+      case 19:
+        {
+        Handle(AIS_Shape) aShapeIO = Handle(AIS_Shape)::DownCast (anIO);
+        if (aShapeIO.IsNull())
+          return QVariant();
+        const TopoDS_Shape& aShape = aShapeIO->Shape();
+        if (aShape.IsNull())
+          return QVariant();
+
+        return Column() == 17 ? VInspector_Tools::GetPointerInfo (aShape.TShape(), true).ToCString()
+              : Column() == 18 ? VInspector_Tools::OrientationToName (aShape.Orientation()).ToCString()
+              :           /*19*/ VInspector_Tools::LocationToName (aShape.Location()).ToCString();
       }
       default: break;
     }
@@ -155,9 +193,19 @@ QVariant VInspector_ItemPresentableObject::initValue (int theItemRole) const
 int VInspector_ItemPresentableObject::initRowCount() const
 {
   Handle(AIS_InteractiveObject) anIO = GetInteractiveObject();
+#if OCC_VERSION_HEX < 0x070201
+  int aRows = 0;
+  if (anIO.IsNull())
+    return aRows;
+  // iteration through sensitive privitives
+  for (anIO->Init(); anIO->More(); anIO->Next())
+    aRows++;
+  return aRows;
+#else
   return !anIO.IsNull()
         ? anIO->Selections().Size()
         : 0;
+#endif
 }
 
 // =======================================================================
@@ -186,10 +234,11 @@ void VInspector_ItemPresentableObject::Init()
     AIS_ListOfInteractive aListOfIO;
     GetContext()->DisplayedObjects (aListOfIO); // the presentation is in displayed objects of Context
     GetContext()->ErasedObjects (aListOfIO); // the presentation is in erased objects of Context
+    int aDeltaIndex = 1; // properties item
     int aCurrentIndex = 0;
     for (AIS_ListIteratorOfListOfInteractive anIOIt (aListOfIO); anIOIt.More(); anIOIt.Next(), aCurrentIndex++)
     {
-      if (aCurrentIndex != aRowId)
+      if (aCurrentIndex != aRowId - aDeltaIndex)
         continue;
       anIO = anIOIt.Value();
       break;

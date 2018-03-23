@@ -32,7 +32,7 @@ struct VInspector_ItemHistoryTypeInfo
 
   //! Append new element
   //! \param theInfo an information element
-  void AddElement (const QList<QVariant>& theInfo) { myElements.append(theInfo); }
+  void AddElement (const QList<QVariant>& theInfo) { myElements.append (theInfo); }
 
   VInspector_CallBackMode myMode; //!< history element mode
   QList<QList<QVariant>> myElements; //!< container of elements information

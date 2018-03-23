@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#ifndef DFBrowser_Shortcut_H
-#define DFBrowser_Shortcut_H
+#ifndef TInspector_Shortcut_H
+#define TInspector_Shortcut_H
 
 #include <Standard.hxx>
 #include <Standard_Macro.hxx>
@@ -23,31 +23,27 @@
 #include <QObject>
 #include <Standard_WarningsRestore.hxx>
 
-class DFBrowser_Module;
+class TInspector_Window;
 class QEvent;
 
-//! \class DFBrowser_Shortcut
+//! \class TInspector_Shortcut
 //! Listens application KeyRelease event. Processes key event:
-//! - <Key_F5>: updates tree view model
-class DFBrowser_Shortcut : public QObject
+//! - <Key_F5>: updates content (tree view model) of the active plugin
+class TInspector_Shortcut : public QObject
 {
 public:
 
   //! Constructor
-  Standard_EXPORT DFBrowser_Shortcut (QObject* theParent);
+  Standard_EXPORT TInspector_Shortcut (QObject* theParent, TInspector_Window* theWindow);
 
   //! Destructor
-  virtual ~DFBrowser_Shortcut() {}
-
-  //! Sets the current module
-  //! \param theModule a module
-  void SetModule (DFBrowser_Module* theModule) { myModule = theModule; }
+  virtual ~TInspector_Shortcut() {}
 
   //! Processes key release event to update view model, otherwise do usual QObject functionality
   Standard_EXPORT virtual bool eventFilter (QObject *theObject, QEvent* theEvent) Standard_OVERRIDE;
 
 private:
-  DFBrowser_Module* myModule; //!< the current module
+  TInspector_Window* myWindow; //!< the current window
 };
 
 

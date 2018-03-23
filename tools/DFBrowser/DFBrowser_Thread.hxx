@@ -42,10 +42,6 @@ public:
   //! Destructor
   virtual ~DFBrowser_Thread() {}
 
-  //! Sets module to the started thread items
-  //! \param theModule a current module
-  Standard_EXPORT void SetModule (DFBrowser_Module* theModule);
-
   //! Starts all candidate thread items
   Standard_EXPORT void ProcessApplication();
 

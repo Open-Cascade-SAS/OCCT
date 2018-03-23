@@ -18,12 +18,11 @@
 
 #include <Standard_Macro.hxx>
 
-#ifdef _MSC_VER
-#pragma warning(disable : 4127) // conditional expression is constant
-#endif
+#include <Standard_WarningsDisable.hxx>
 #include <QAbstractTableModel>
 #include <QStringList>
 #include <QItemDelegate>
+#include <Standard_WarningsRestore.hxx>
 
 class QObject;
 class QPainter;

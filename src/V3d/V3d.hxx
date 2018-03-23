@@ -93,6 +93,28 @@ public:
 
   Standard_EXPORT static void SwitchViewsinWindow (const Handle(V3d_View)& aPreviousView, const Handle(V3d_View)& aNextView);
 
+  //! Returns the string name for a given orientation type.
+  //! @param theType orientation type
+  //! @return string identifier from the list Xpos, Ypos, Zpos and others
+  Standard_EXPORT static Standard_CString TypeOfOrientationToString (V3d_TypeOfOrientation theType);
+
+  //! Returns the orientation type from the given string identifier (using case-insensitive comparison).
+  //! @param theTypeString string identifier
+  //! @return orientation type or V3d_TypeOfOrientation if string identifier is invalid
+  static V3d_TypeOfOrientation TypeOfOrientationFromString (Standard_CString theTypeString)
+  {
+    V3d_TypeOfOrientation aType = V3d_Xpos;
+    TypeOfOrientationFromString (theTypeString, aType);
+    return aType;
+  }
+
+  //! Determines the shape type from the given string identifier (using case-insensitive comparison).
+  //! @param theTypeString string identifier
+  //! @param theType detected shape type
+  //! @return TRUE if string identifier is known
+  Standard_EXPORT static Standard_Boolean TypeOfOrientationFromString (const Standard_CString theTypeString,
+                                                                       V3d_TypeOfOrientation& theType);
+
 };
 
 #endif // _V3d_HeaderFile

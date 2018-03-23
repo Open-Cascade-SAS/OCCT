@@ -20,11 +20,13 @@
 
 #include <OSD_Environment.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QAction>
 #include <QApplication>
 #include <QDir>
 #include <QMainWindow>
 #include <QToolBar>
+#include <Standard_WarningsRestore.hxx>
 
 #include <set>
 

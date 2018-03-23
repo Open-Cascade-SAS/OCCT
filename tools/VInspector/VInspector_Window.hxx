@@ -20,6 +20,7 @@
 #include <NCollection_List.hxx>
 #include <SelectBasics_EntityOwner.hxx>
 #include <Standard.hxx>
+
 #include <inspector/TInspectorAPI_PluginParameters.hxx>
 #include <inspector/VInspector_CallBack.hxx>
 
@@ -29,7 +30,7 @@
 #include <QMainWindow>
 #include <Standard_WarningsRestore.hxx>
 
-class TreeModel_MessageDialog;
+class ViewControl_MessageDialog;
 
 class VInspector_ToolBar;
 class View_Window;
@@ -63,6 +64,18 @@ public:
   //! \param theParameters a parameters container
   void SetParameters (const Handle(TInspectorAPI_PluginParameters)& theParameters) { myParameters = theParameters; }
 
+  //! Provide container for actions available in inspector on general level
+  //! \param theMenu if Qt implementation, it is QMenu object
+  Standard_EXPORT void FillActionsMenu (void* theMenu);
+
+  //! Returns plugin preferences: dock widgets state, tree view columns.
+  //! \param theItem container of preference elements
+  Standard_EXPORT void GetPreferences (TInspectorAPI_PreferencesDataMap& theItem);
+
+  //! Applies plugin preferences
+  //! \param theItem container of preference elements
+  Standard_EXPORT void SetPreferences (const TInspectorAPI_PreferencesDataMap& theItem);
+
   //! Applyes parameters to Init controls, opens files if there are in parameters, updates OCAF tree view model
   Standard_EXPORT void UpdateContent();
 
@@ -74,11 +87,11 @@ private:
   //! Fills controls of the plugin by parameters:
   //! - Fine AIS_InteractiveObject and fills View if it if it differs from the current context
   //! \param theParameters a parameters container
-  void Init (const NCollection_List<Handle(Standard_Transient)>& theParameters);
+  bool Init (const NCollection_List<Handle(Standard_Transient)>& theParameters);
 
   //! Read BREP file, creates AIS presentation for the shape and visualize it in the current context
   //! \param theFileName a name of BREP file
-  void OpenFile (const TCollection_AsciiString& theFileName);
+  bool OpenFile (const TCollection_AsciiString& theFileName);
 
 private slots:
 
@@ -120,12 +133,6 @@ private:
   //! Updates tree model
   void UpdateTreeModel();
 
-  //! Creates an action with the given text connected to the slot
-  //! \param theText an action text value
-  //! \param theSlot a listener of triggered signal of the new action
-  //! \return a new action
-  QAction* createAction(const QString& theText, const char* theSlot);
-
   //! Set selected in tree view presentations displayed or erased in the current context. Note that erased presentations
   //! still belongs to the current context until Remove is called.
   //! \param theToDisplay if true, presentation is displayed otherwise erased
@@ -145,7 +152,7 @@ private:
   QTreeView* myHistoryView; //!< history of AIS context calls
   Handle(VInspector_CallBack) myCallBack; //!< AIS context call back, if set
 
-  TreeModel_MessageDialog* myExportToShapeViewDialog; //!< dialog about exporting TopoDS_Shape to ShapeView plugin
+  ViewControl_MessageDialog* myExportToShapeViewDialog; //!< dialog about exporting TopoDS_Shape to ShapeView plugin
   View_Window* myViewWindow; //!< temporary view window, it is created if Open is called but context is still NULL
 
   Handle(TInspectorAPI_PluginParameters) myParameters; //!< plugins parameters container

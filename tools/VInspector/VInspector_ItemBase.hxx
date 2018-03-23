@@ -41,12 +41,12 @@ public:
 
   //! Returns the current contex. It iterates up by list of parents to found context item and return context
   //! \return a context
-  Standard_EXPORT const Handle(AIS_InteractiveContext)& GetContext() const;
+  Standard_EXPORT Handle(AIS_InteractiveContext) GetContext() const;
 
 protected:
 
   //! Initialize the current item. It creates a backup of the specific item information
-  virtual void initItem() const {};// = 0;
+  virtual void initItem() const {}
 
 protected:
 

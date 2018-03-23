@@ -3,5 +3,9 @@ TInspector_Communicator.cxx
 TInspector_Communicator.hxx
 TInspector_PluginParameters.cxx
 TInspector_PluginParameters.hxx
+TInspector_Preferences.cxx
+TInspector_Preferences.hxx
+TInspector_Shortcut.cxx
+TInspector_Shortcut.hxx
 TInspector_Window.cxx
 TInspector_Window.hxx

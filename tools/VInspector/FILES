@@ -8,6 +8,8 @@ VInspector_ItemBase.cxx
 VInspector_ItemBase.hxx
 VInspector_ItemContext.cxx
 VInspector_ItemContext.hxx
+VInspector_ItemFolderObject.cxx
+VInspector_ItemFolderObject.hxx
 VInspector_ItemEntityOwner.cxx
 VInspector_ItemEntityOwner.hxx
 VInspector_ItemHistoryElement.cxx
@@ -21,6 +23,8 @@ VInspector_ItemPresentableObject.cxx
 VInspector_ItemPresentableObject.hxx
 VInspector_ItemSelection.cxx
 VInspector_ItemSelection.hxx
+VInspector_ItemSelectMgrFilter.cxx
+VInspector_ItemSelectMgrFilter.hxx
 VInspector_ItemSensitiveEntity.cxx
 VInspector_ItemSensitiveEntity.hxx
 VInspector_SelectionType.hxx

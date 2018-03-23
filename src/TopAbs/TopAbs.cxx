@@ -71,6 +71,27 @@ Standard_CString TopAbs::ShapeOrientationToString (TopAbs_Orientation theOrienta
 }
 
 //=======================================================================
+//function : ShapeOrientationFromString
+//purpose  :
+//=======================================================================
+Standard_Boolean TopAbs::ShapeOrientationFromString (const Standard_CString theOrientationString,
+                                                     TopAbs_Orientation& theOrientation)
+{
+  TCollection_AsciiString aName (theOrientationString);
+  aName.UpperCase();
+  for (Standard_Integer anOrientationIter = 0; anOrientationIter <= TopAbs_EXTERNAL; ++anOrientationIter)
+  {
+    Standard_CString anOrientationName = TopAbs_Table_PrintOrientation[anOrientationIter];
+    if (aName == anOrientationName)
+    {
+      theOrientation = TopAbs_Orientation(anOrientationIter);
+      return Standard_True;
+    }
+  }
+  return Standard_False;
+}
+
+//=======================================================================
 //function : TopAbs_Compose
 //purpose  : Compose two orientations
 //=======================================================================

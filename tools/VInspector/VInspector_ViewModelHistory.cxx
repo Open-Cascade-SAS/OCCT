@@ -23,6 +23,20 @@
 #include <QStringList>
 #include <Standard_WarningsRestore.hxx>
 
+const int COLUMN_NAME_WIDTH = 230;
+const int COLUMN_SIZE_WIDTH = 30;
+const int COLUMN_POINTER_WIDTH = 70;
+const int COLUMN_SHAPE_TYPE_WIDTH = 75;
+const int COLUMN_AIS_NAME_WIDTH = 75;
+const int COLUMN_SELECTED_WIDTH = 75;
+
+const int COLUMN_5_WIDTH = 120;
+const int COLUMN_6_WIDTH = 65;
+const int COLUMN_7_WIDTH = 70;
+
+const int HISTORY_AIS_NAME_COLUMN_WIDTH = 140;
+
+
 // =======================================================================
 // function : Constructor
 // purpose :
@@ -30,13 +44,30 @@
 VInspector_ViewModelHistory::VInspector_ViewModelHistory (QObject* theParent, const int theHistoryTypesMaxAmount)
 : TreeModel_ModelBase (theParent)
 {
+  SetHeaderItem (0, TreeModel_HeaderSection ("Name", COLUMN_NAME_WIDTH));
+  SetHeaderItem (1, TreeModel_HeaderSection ("Size", COLUMN_SIZE_WIDTH));
+  SetHeaderItem (2, TreeModel_HeaderSection ("Pointer", COLUMN_POINTER_WIDTH));
+  SetHeaderItem (3, TreeModel_HeaderSection ("Shape type", COLUMN_SHAPE_TYPE_WIDTH));
+  SetHeaderItem (4, TreeModel_HeaderSection ("AIS Name", COLUMN_AIS_NAME_WIDTH));
+  SetHeaderItem (5, TreeModel_HeaderSection ("Selected/Highlighted", -1));
+
   for (int aColumnId = 0, aNbColumns = columnCount(); aColumnId < aNbColumns; aColumnId++)
   {
-    myRootItems.insert(aColumnId, VInspector_ItemHistoryRoot::CreateItem(TreeModel_ItemBasePtr(), 0, aColumnId));
-    VInspector_ItemHistoryRootPtr aRootItem = itemDynamicCast<VInspector_ItemHistoryRoot>(myRootItems[aColumnId]);
-    aRootItem->SetHistoryTypesMaxAmount(theHistoryTypesMaxAmount);
+    VInspector_ItemHistoryRootPtr aRootItem = itemDynamicCast<VInspector_ItemHistoryRoot> (myRootItems[aColumnId]);
+    aRootItem->SetHistoryTypesMaxAmount (theHistoryTypesMaxAmount);
   }
-  m_pRootItem = myRootItems[0];
+}
+
+
+// =======================================================================
+// function : createRootItem
+// purpose :
+// =======================================================================
+void VInspector_ViewModelHistory::createRootItem (const int theColumnId)
+{
+  myRootItems.insert (theColumnId, VInspector_ItemHistoryRoot::CreateItem (TreeModel_ItemBasePtr(), 0, theColumnId));
+  if (theColumnId == 0)
+      m_pRootItem = myRootItems[0];
 }
 
 // =======================================================================
@@ -88,26 +119,4 @@ QStringList VInspector_ViewModelHistory::GetSelectedPointers (const QModelIndex&
     }
   }
   return aPointers;
-}
-
-// =======================================================================
-// function : headerData
-// purpose :
-// =======================================================================
-QVariant VInspector_ViewModelHistory::headerData (int theSection, Qt::Orientation theOrientation, int theRole) const
-{
-  if (theOrientation != Qt::Horizontal || theRole != Qt::DisplayRole)
-    return QVariant();
-
-  switch (theSection)
-  {
-    case 0: return "Name";
-    case 1: return "Size";
-    case 2: return "Pointer";
-    case 3: return "Shape type";
-    case 4: return "AIS Name";
-    case 5: return "Selected/Highlighted";
-    default: break;
-  }
-  return QVariant();
 }

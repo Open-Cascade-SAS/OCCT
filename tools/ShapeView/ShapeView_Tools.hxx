@@ -32,11 +32,6 @@ public:
   //! \param theFileName a file name
   //! \return shape or NULL
   Standard_EXPORT static TopoDS_Shape ReadShape (const TCollection_AsciiString& theFileName);
-
-  //! Creates AIS_Shape for the shape
-  //! \param theShape a shape
-  //! \return presentation
-  Standard_EXPORT static Handle(Standard_Transient) CreatePresentation (const TopoDS_Shape& theShape);
 };
 
 #endif

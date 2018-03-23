@@ -14,5 +14,7 @@ ShapeView_Tools.cxx
 ShapeView_Tools.hxx
 ShapeView_TreeModel.cxx
 ShapeView_TreeModel.hxx
+ShapeView_VisibilityState.cxx
+ShapeView_VisibilityState.hxx
 ShapeView_Window.cxx
 ShapeView_Window.hxx

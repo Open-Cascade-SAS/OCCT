@@ -9,9 +9,9 @@ macro (FIND_QT_PACKAGE PROJECT_LIBRARIES_DEBUG PROJECT_LIBRARIES_RELEASE PROJECT
   if (${Qt5_FOUND})
     #message (STATUS "Qt5 cmake configuration")
 
-    set(PROJECT_INCLUDES "${Qt5Widgets_INCLUDE_DIRS}" "${Qt5Quick_INCLUDE_DIRS}")
-    set(PROJECT_LIBRARIES_DEBUG "${Qt5Widgets_LIBRARIES}" "${Qt5Quick_LIBRARIES}")
-    set(PROJECT_LIBRARIES_RELEASE "${Qt5Widgets_LIBRARIES}" "${Qt5Quick_LIBRARIES}")
+    set(PROJECT_INCLUDES "${Qt5Widgets_INCLUDE_DIRS}" "${Qt5Quick_INCLUDE_DIRS}" "${Qt5Xml_INCLUDE_DIRS}")
+    set(PROJECT_LIBRARIES_DEBUG "${Qt5Widgets_LIBRARIES}" "${Qt5Quick_LIBRARIES}" "${Qt5Xml_LIBRARIES}")
+    set(PROJECT_LIBRARIES_RELEASE "${Qt5Widgets_LIBRARIES}" "${Qt5Quick_LIBRARIES}" "${Qt5Xml_LIBRARIES}")
 
     # processing *.ts files to generate *.qm
     find_package(Qt5LinguistTools)
@@ -24,11 +24,11 @@ macro (FIND_QT_PACKAGE PROJECT_LIBRARIES_DEBUG PROJECT_LIBRARIES_RELEASE PROJECT
     #message (STATUS "Qt4 cmake configuration")
     set(PROJECT_INCLUDES ${QT_INCLUDES})
     if (WIN32)
-      set(PROJECT_LIBRARIES_DEBUG "${3RDPARTY_QT_DIR}/lib/QtCored4.lib;${3RDPARTY_QT_DIR}/lib/QtGuid4.lib")
-      set(PROJECT_LIBRARIES_RELEASE "${3RDPARTY_QT_DIR}/lib/QtCore4.lib;${3RDPARTY_QT_DIR}/lib/QtGui4.lib")
+      set(PROJECT_LIBRARIES_DEBUG "${3RDPARTY_QT_DIR}/lib/QtCored4.lib;${3RDPARTY_QT_DIR}/lib/QtGuid4.lib;${3RDPARTY_QT_DIR}/lib/QtXmld4.lib")
+      set(PROJECT_LIBRARIES_RELEASE "${3RDPARTY_QT_DIR}/lib/QtCore4.lib;${3RDPARTY_QT_DIR}/lib/QtGui4.lib;${3RDPARTY_QT_DIR}/lib/QtXml4.lib")
     else()
-      set(PROJECT_LIBRARIES_DEBUG "${3RDPARTY_QT_DIR}/lib/libQtCore.so;${3RDPARTY_QT_DIR}/lib/libQtGui.so")
-      set(PROJECT_LIBRARIES_RELEASE "${3RDPARTY_QT_DIR}/lib/libQtCore.so;${3RDPARTY_QT_DIR}/lib/libQtGui.so")
+      set(PROJECT_LIBRARIES_DEBUG "${3RDPARTY_QT_DIR}/lib/libQtCore.so;${3RDPARTY_QT_DIR}/lib/libQtGui.so;${3RDPARTY_QT_DIR}/lib/libQtXml.so")
+      set(PROJECT_LIBRARIES_RELEASE "${3RDPARTY_QT_DIR}/lib/libQtCore.so;${3RDPARTY_QT_DIR}/lib/libQtGui.so;${3RDPARTY_QT_DIR}/lib/libQtXml.so")
     endif(WIN32)
     find_program(QT_LRELEASE_EXECUTABLE lrelease)
   endif()

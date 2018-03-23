@@ -29,7 +29,16 @@
 DFBrowserPane_TDataStdTreeNodeModel::DFBrowserPane_TDataStdTreeNodeModel (QObject* theParent)
 : TreeModel_ModelBase (theParent)
 {
-  m_pRootItem = DFBrowserPane_TDataStdTreeNodeItem::CreateItem (TreeModel_ItemBasePtr(), 0, 0);
+  createRootItem(0);
+}
+
+// =======================================================================
+// function : createRootItem
+// purpose :
+// =======================================================================
+void DFBrowserPane_TDataStdTreeNodeModel::createRootItem (const int theColumnId)
+{
+  m_pRootItem = DFBrowserPane_TDataStdTreeNodeItem::CreateItem (TreeModel_ItemBasePtr(), 0, theColumnId);
 }
 
 // =======================================================================

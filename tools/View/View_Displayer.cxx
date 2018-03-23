@@ -18,6 +18,9 @@
 #include <AIS_InteractiveContext.hxx>
 #include <AIS_InteractiveObject.hxx>
 #include <AIS_ListIteratorOfListOfInteractive.hxx>
+#include <AIS_Shape.hxx>
+#include <AIS_Trihedron.hxx>
+#include <Prs3d_PointAspect.hxx>
 #include <V3d_View.hxx>
 #include <V3d_Viewer.hxx>
 #include <inspector/View_Viewer.hxx>
@@ -28,7 +31,7 @@
 // purpose :
 // =======================================================================
 View_Displayer::View_Displayer()
-: myIsKeepPresentations (false), myDisplayMode (-1)
+: myIsKeepPresentations (false), myFitAllActive (false), myDisplayMode (-1)
 {
 }
 
@@ -107,16 +110,30 @@ void View_Displayer::DisplayPresentation (const Handle(Standard_Transient)& theP
     aDisplayed.Append (aPresentation);
   }
 
-  if (!myIsKeepPresentations)
-  {
-    Handle(V3d_View) aView = GetView();
-    if (!aView.IsNull())
-    {
-      aView->FitAll();
-      aView->Redraw();
-    }
-  }
+  if (!myIsKeepPresentations || myFitAllActive)
+    fitAllView();
+
   myDisplayed.Bind (theType, aDisplayed);
+
+  if (theToUpdateViewer)
+    UpdateViewer();
+}
+
+// =======================================================================
+// function : RedisplayPresentation
+// purpose :
+// =======================================================================
+void View_Displayer::RedisplayPresentation (const Handle(Standard_Transient)& thePresentation,
+                                            const bool theToUpdateViewer)
+{
+  Handle(AIS_InteractiveObject) aPresentation = Handle(AIS_InteractiveObject)::DownCast (thePresentation);
+  if (aPresentation.IsNull() || aPresentation->GetContext().IsNull())
+    return;
+
+  GetContext()->Redisplay (aPresentation, false);
+
+  if (myFitAllActive)
+    fitAllView();
 
   if (theToUpdateViewer)
     UpdateViewer();
@@ -149,10 +166,78 @@ void View_Displayer::ErasePresentations (const View_PresentationType theType, co
   DisplayedPresentations (aDisplayed, theType);
 
   for (AIS_ListIteratorOfListOfInteractive aDisplayedIt (aDisplayed); aDisplayedIt.More(); aDisplayedIt.Next())
+  {
+    if (aDisplayedIt.Value()->IsKind(STANDARD_TYPE (AIS_Trihedron)))
+      continue;
+
     GetContext()->Remove (aDisplayedIt.Value(), Standard_False);
+  }
+
+  aDisplayed.Clear();
+  myDisplayed.Bind (theType, aDisplayed);
 
   if (theToUpdateViewer)
     UpdateViewer();
+}
+
+// =======================================================================
+// function : ErasePresentation
+// purpose :
+// =======================================================================
+void View_Displayer::ErasePresentation (const Handle(Standard_Transient)& thePresentation,
+                                        const View_PresentationType theType,
+                                        const bool theToUpdateViewer)
+{
+  if (GetContext().IsNull())
+    return;
+
+  Handle(AIS_InteractiveObject) aPresentation = Handle(AIS_InteractiveObject)::DownCast (thePresentation);
+  if (aPresentation.IsNull())
+    return;
+
+  GetContext()->Remove (aPresentation, Standard_False);
+
+  NCollection_Shared<AIS_ListOfInteractive> aDisplayed;
+  DisplayedPresentations (aDisplayed, theType);
+  aDisplayed.Remove (aPresentation);
+  myDisplayed.Bind (theType, aDisplayed);
+
+  if (myFitAllActive)
+    fitAllView();
+
+  if (theToUpdateViewer)
+    UpdateViewer();
+}
+
+// =======================================================================
+// function : SetVisible
+// purpose :
+// =======================================================================
+void View_Displayer::SetVisible (const TopoDS_Shape& theShape, const bool theState, const View_PresentationType theType)
+{
+  if (theShape.IsNull())
+    return;
+
+  if (theState)
+    DisplayPresentation (CreatePresentation (theShape), View_PresentationType_Main, Standard_False);
+  else
+  {
+    Handle(AIS_InteractiveObject) aPresentation = FindPresentation (theShape, theType);
+    if (!aPresentation.IsNull())
+      ErasePresentation (aPresentation, theType, Standard_False);
+  }
+
+  UpdateViewer();
+}
+
+// =======================================================================
+// function : IsVisible
+// purpose :
+// =======================================================================
+bool View_Displayer::IsVisible (const TopoDS_Shape& theShape, const View_PresentationType theType) const
+{
+  Handle(AIS_InteractiveObject) aPresentation = FindPresentation (theShape, theType);
+  return !aPresentation.IsNull();
 }
 
 // =======================================================================
@@ -181,7 +266,7 @@ void View_Displayer::SetAttributeColor (const Quantity_Color& theColor, const Vi
 // purpose :
 // =======================================================================
 void View_Displayer::DisplayedPresentations (NCollection_Shared<AIS_ListOfInteractive>& thePresentations,
-                                             const View_PresentationType theType)
+                                             const View_PresentationType theType) const
 {
   myDisplayed.Find (theType, thePresentations);
 }
@@ -204,4 +289,54 @@ Handle(V3d_View) View_Displayer::GetView() const
       aView = aViewer->ActiveView();
   }
   return aView;
+}
+
+// =======================================================================
+// function : FindPresentation
+// purpose :
+// =======================================================================
+Handle(AIS_InteractiveObject) View_Displayer::FindPresentation (const TopoDS_Shape& theShape,
+                                                                const View_PresentationType theType) const
+{
+  if (theShape.IsNull())
+    return Handle(AIS_InteractiveObject)();
+
+  NCollection_Shared<AIS_ListOfInteractive> aDisplayed;
+  DisplayedPresentations (aDisplayed, theType);
+
+  for (AIS_ListIteratorOfListOfInteractive aDisplayedIt (aDisplayed); aDisplayedIt.More(); aDisplayedIt.Next())
+  {
+    Handle(AIS_Shape) aPresentation = Handle(AIS_Shape)::DownCast (aDisplayedIt.Value());
+    if (aPresentation->Shape().IsEqual (theShape))
+      return aPresentation;
+  }
+
+  return Handle(AIS_InteractiveObject)();
+}
+
+// =======================================================================
+// function : CreatePresentation
+// purpose :
+// =======================================================================
+Handle(Standard_Transient) View_Displayer::CreatePresentation (const TopoDS_Shape& theShape)
+{
+  Handle(AIS_Shape) aShape = new AIS_Shape (theShape);
+
+  aShape->Attributes()->SetPointAspect (new Prs3d_PointAspect (Aspect_TOM_POINT, Quantity_NOC_WHITE, 1.0));
+
+  return aShape;
+}
+
+// =======================================================================
+// function : fitAllView
+// purpose :
+// =======================================================================
+void  View_Displayer::fitAllView()
+{
+  Handle(V3d_View) aView = GetView();
+  if (!aView.IsNull())
+  {
+    aView->FitAll();
+    aView->Redraw();
+  }
 }

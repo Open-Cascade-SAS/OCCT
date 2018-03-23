@@ -22,6 +22,11 @@
 
 #include <inspector/DFBrowserPane_Tools.hxx>
 
+#include <inspector/TreeModel_ModelBase.hxx>
+#include <inspector/TreeModel_Tools.hxx>
+
+#include <inspector/ViewControl_Tools.hxx>
+
 #include <Standard_WarningsDisable.hxx>
 #include <QAbstractProxyModel>
 #include <QGridLayout>
@@ -46,7 +51,7 @@ DFBrowser_SearchView::DFBrowser_SearchView (QWidget* theParent)
 
   myTableView = new QTableView (myMainWindow);
   myTableView->verticalHeader()->setVisible (false);
-  myTableView->verticalHeader()->setDefaultSectionSize (DEFAULT_ICON_SIZE + DFBrowserPane_Tools::HeaderSectionMargin());
+  myTableView->verticalHeader()->setDefaultSectionSize (DEFAULT_ICON_SIZE + TreeModel_Tools::HeaderSectionMargin());
   myTableView->setIconSize (QSize (DEFAULT_ICON_SIZE, DEFAULT_ICON_SIZE));
   myTableView->horizontalHeader()->setVisible (false);
   myTableView->horizontalHeader()->setStretchLastSection (true);
@@ -56,7 +61,7 @@ DFBrowser_SearchView::DFBrowser_SearchView (QWidget* theParent)
 
   aLayout->addWidget (myTableView);
 
-  DFBrowser_Window::SetWhiteBackground (myTableView);
+  ViewControl_Tools::SetWhiteBackground (myTableView);
   myTableView->setGridStyle (Qt::NoPen);
 }
 
@@ -69,7 +74,7 @@ void DFBrowser_SearchView::InitModels()
   QAbstractItemModel* aModel = mySearchLine->GetCompletionModel();
   myTableView->setModel (aModel);
   myTableView->setColumnWidth (0, 0); // to hide column
-  myTableView->setColumnWidth (1, DEFAULT_ICON_SIZE + DFBrowserPane_Tools::HeaderSectionMargin());
+  myTableView->setColumnWidth (1, DEFAULT_ICON_SIZE + TreeModel_Tools::HeaderSectionMargin());
 
   QItemSelectionModel* aSelectionModel = new QItemSelectionModel (aModel);
   myTableView->setSelectionMode (QAbstractItemView::SingleSelection);
@@ -89,7 +94,7 @@ void DFBrowser_SearchView::onTableSelectionChanged (const QItemSelection&,
 {
   QItemSelectionModel* aSelectionModel = myTableView->selectionModel();
   QModelIndexList aSelectedIndices = aSelectionModel->selectedIndexes();
-  QModelIndex aSelectedIndex = DFBrowser_Window::SingleSelected (aSelectedIndices, 2);
+  QModelIndex aSelectedIndex = TreeModel_ModelBase::SingleSelected (aSelectedIndices, 2);
   if (!aSelectedIndex.isValid())
     return;
   QAbstractProxyModel* aTableModel = dynamic_cast<QAbstractProxyModel*> (myTableView->model());

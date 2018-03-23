@@ -19,14 +19,16 @@
 #include <SelectMgr_EntityOwner.hxx>
 #include <SelectMgr_Selection.hxx>
 #include <SelectMgr_SensitiveEntity.hxx>
+#include <Standard_Version.hxx>
 #include <inspector/VInspector_ItemContext.hxx>
 #include <inspector/VInspector_ItemPresentableObject.hxx>
 #include <inspector/VInspector_ItemSensitiveEntity.hxx>
 #include <inspector/VInspector_Tools.hxx>
 
 #include <Standard_WarningsDisable.hxx>
-#include <QColor>
 #include <QStringList>
+
+#include <QColor>
 #include <Standard_WarningsRestore.hxx>
 
 // =======================================================================
@@ -46,7 +48,14 @@ Handle(SelectMgr_Selection) VInspector_ItemSelection::getSelection() const
 int VInspector_ItemSelection::initRowCount() const
 {
   Handle(SelectMgr_Selection) aSelection = getSelection();
+#if OCC_VERSION_HEX < 0x070201
+  int aRows = 0;
+  for (aSelection->Init(); aSelection->More(); aSelection->Next())
+    aRows++;
+  return aRows;
+#else
   return aSelection->Entities().Size();
+#endif
 }
 
 // =======================================================================
@@ -85,28 +94,34 @@ QVariant VInspector_ItemSelection::initValue (int theItemRole) const
             if (aState == SelectMgr_SOS_Activated || aState == SelectMgr_SOS_Any)
             {
               Handle(AIS_InteractiveContext) aContext = GetContext();
+#if OCC_VERSION_HEX < 0x070201
+              for (mySelection->Init(); mySelection->More(); mySelection->Next())
+              {
+                const Handle(SelectBasics_EntityOwner)& anOwner = mySelection->Sensitive()->BaseSensitive()->OwnerId();
+#else
               for (NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>::Iterator aSelEntIter (mySelection->Entities()); aSelEntIter.More(); aSelEntIter.Next())
               {
                 const Handle(SelectBasics_EntityOwner)& anOwner = aSelEntIter.Value()->BaseSensitive()->OwnerId();
+#endif
                 if (VInspector_Tools::IsOwnerSelected(aContext, anOwner))
                   aNbSelected++;
               }
             }
-            QString aStateValue = VInspector_Tools::ToName (VInspector_SelectionType_StateOfSelection, aState).ToCString();
-            return QVariant (aNbSelected > 0 ? QString ("%1 : %2").arg (aStateValue).arg (aNbSelected) : aStateValue);
+            return aNbSelected > 0 ? QString::number (aNbSelected) : "";
           }
         }
-        case 6: return theItemRole == Qt::ToolTipRole ? "Sensitivity" : QString::number (getSelection()->Sensitivity());
-        case 8:
+        case 9:
         {
-          if (theItemRole == Qt::ToolTipRole)
-            return QString ("%1 / %2").arg ("SelectMgr_TypeOfUpdate").arg ("SelectMgr_TypeOfBVHUpdate");
-          else
-            return QString ("%1 / %2").arg (VInspector_Tools::ToName (VInspector_SelectionType_TypeOfUpdate,
-                                                                      getSelection()->UpdateStatus()).ToCString())
-                                      .arg (VInspector_Tools::ToName (VInspector_SelectionType_TypeOfBVHUpdate,
-                                                                      getSelection()->BVHUpdateStatus()).ToCString());
+          SelectMgr_StateOfSelection aState = getSelection()->GetSelectionState();
+          return VInspector_Tools::ToName (VInspector_SelectionType_StateOfSelection, aState).ToCString();
         }
+        case 10: return QString::number (getSelection()->Sensitivity());
+        case 11:
+          return VInspector_Tools::ToName (VInspector_SelectionType_TypeOfUpdate,
+                                           getSelection()->UpdateStatus()).ToCString();
+        case 12:
+          return VInspector_Tools::ToName (VInspector_SelectionType_TypeOfBVHUpdate,
+                                           getSelection()->BVHUpdateStatus()).ToCString();
         default:
           break;
       }
@@ -142,11 +157,19 @@ void VInspector_ItemSelection::Init()
 
   int aRowId = Row();
   int aCurrentId = 0;
+#if OCC_VERSION_HEX < 0x070201
+  for (anIO->Init(); anIO->More(); anIO->Next(), aCurrentId++)
+#else
   for (SelectMgr_SequenceOfSelection::Iterator aSelIter (anIO->Selections()); aSelIter.More(); aSelIter.Next(), aCurrentId++)
+#endif
   {
     if (aCurrentId != aRowId)
       continue;
+#if OCC_VERSION_HEX < 0x070201
+    mySelection = anIO->CurrentSelection();
+#else
     mySelection = aSelIter.Value();
+#endif
     break;
   }
   TreeModel_ItemBase::Init();

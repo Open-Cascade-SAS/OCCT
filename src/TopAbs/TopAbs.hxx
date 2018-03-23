@@ -141,6 +141,22 @@ public:
   //! @return string identifier from the list FORWARD, REVERSED, INTERNAL, EXTERNAL
   Standard_EXPORT static Standard_CString ShapeOrientationToString (TopAbs_Orientation theOrientation);
 
+  //! Returns the shape orientation from the given string identifier (using case-insensitive comparison).
+  //! @param theOrientationString string identifier
+  //! @return shape orientation or TopAbs_FORWARD if string identifier is invalid
+  static TopAbs_Orientation ShapeOrientationFromString (const Standard_CString theOrientationString)
+  {
+    TopAbs_Orientation aType = TopAbs_FORWARD;
+    ShapeOrientationFromString (theOrientationString, aType);
+    return aType;
+  }
+
+  //! Determines the shape orientation from the given string identifier (using case-insensitive comparison).
+  //! @param theOrientationString string identifier
+  //! @param theOrientation detected shape orientation
+  //! @return TRUE if string identifier is known
+  Standard_EXPORT static Standard_Boolean ShapeOrientationFromString (const Standard_CString theOrientationString,
+                                                                      TopAbs_Orientation& theOrientation);
 };
 
 #endif // _TopAbs_HeaderFile

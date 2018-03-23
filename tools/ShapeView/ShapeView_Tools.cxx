@@ -31,12 +31,3 @@ TopoDS_Shape ShapeView_Tools::ReadShape (const TCollection_AsciiString& theFileN
   BRepTools::Read (aShape, theFileName.ToCString(), aBuilder);
   return aShape;
 }
-
-// =======================================================================
-// function : CreatePresentation
-// purpose :
-// =======================================================================
-Handle(Standard_Transient) ShapeView_Tools::CreatePresentation (const TopoDS_Shape& theShape)
-{
-  return new AIS_Shape (theShape);
-}

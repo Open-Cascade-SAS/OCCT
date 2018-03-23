@@ -87,6 +87,10 @@ public:
   //! If the item has internal values, there should be reseted here.
   Standard_EXPORT virtual void Reset();
 
+  //! Resets the item cached value for the parameter role.
+  //! \param theRole an item role
+  Standard_EXPORT virtual void Reset(int theRole);
+
   //! Gets the parent of the item, or TreeModel_ItemBasePtr() if it has no parent.
   //! \return pointer to the item
   TreeModel_ItemBasePtr Parent() const { return m_pParent; };
@@ -107,6 +111,11 @@ public:
   //! \param isToCreate the flag whether the item should be created if it is not created yet
   //! \return the child item or TreeModel_ItemBasePtr() if it does not exist
   Standard_EXPORT TreeModel_ItemBasePtr Child (int theRow, int theColumn, const bool isToCreate = true);
+
+  //! Sets a custom value for the role in an internal cache
+  //! \param theValue a value
+  //! \param theRole a value role
+  void SetCustomData(const QVariant theValue, int theRole) { myCachedValues.insert (theRole, theValue); }
 
   //! Returns the data stored under the given role for the current item
   //! \param theIndex the item model index
@@ -154,7 +163,7 @@ private:
   typedef QHash< QPair<int, int>, TreeModel_ItemBasePtr > PositionToItemHash;
   PositionToItemHash m_ChildItems; //!< the hash of item children
 
-  QMap<int, QVariant> mycachedValues; //!< cached values, should be cleared by reset
+  QMap<int, QVariant> myCachedValues; //!< cached values, should be cleared by reset
   TreeModel_ItemBasePtr m_pParent; //!< the parent item
   int m_iRow;          //!< the item row position in the parent item
   int m_iColumn;       //!< the item column position in the parent item

@@ -24,6 +24,9 @@ typedef QExplicitlySharedDataPointer<VInspector_ItemContext> VInspector_ItemCont
 
 //! \class VInspector_ItemContext
 //! Parent item, that corresponds to AIS_InteractiveContext
+//! Children of the item are:
+//! - "Property" item to show context attributes such as selection filters and drawer properties
+//! - presentation items to show all interactive elements displayed/erased in the context
 class VInspector_ItemContext : public VInspector_ItemBase
 {
 public:

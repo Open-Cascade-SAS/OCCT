@@ -22,6 +22,7 @@
 #include <inspector/DFBrowserPane_SelectionKind.hxx>
 #include <inspector/DFBrowserPane_TableView.hxx>
 #include <inspector/DFBrowserPane_Tools.hxx>
+#include <inspector/TInspectorAPI_PluginParameters.hxx>
 
 #include <AIS_InteractiveObject.hxx>
 #include <AIS_Shape.hxx>
@@ -367,7 +368,8 @@ int DFBrowserPane_TNamingNamedShape::GetSelectionKind (QItemSelectionModel* theM
 // purpose :
 // =======================================================================
 void DFBrowserPane_TNamingNamedShape::GetSelectionParameters (QItemSelectionModel* theModel,
-                                                              NCollection_List<Handle(Standard_Transient)>& theParameters)
+                                                              NCollection_List<Handle(Standard_Transient)>& theParameters,
+                                                              NCollection_List<TCollection_AsciiString>& theItemNames)
 {
   QTableView* aTableView = myTableView->GetTableView();
   if (aTableView->selectionModel() != theModel)
@@ -385,6 +387,7 @@ void DFBrowserPane_TNamingNamedShape::GetSelectionParameters (QItemSelectionMode
   if (aShape.IsNull())
     return;
   theParameters.Append (aShape.TShape());
+  theItemNames.Append (TInspectorAPI_PluginParameters::ParametersToString (aShape));
 }
 
 // =======================================================================

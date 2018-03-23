@@ -29,11 +29,14 @@
 #include <Standard_WarningsRestore.hxx>
 
 class TInspectorAPI_Communicator;
+class TInspector_Shortcut;
 
+class QButtonGroup;
 class QMainWindow;
 class QHBoxLayout;
 class QPushButton;
 class QStackedWidget;
+class QToolButton;
 
 //! \class Inspector_Window
 //! Control that contains:
@@ -117,10 +120,41 @@ public:
   //! \param theInfo an output parameter for plugin info
   Standard_EXPORT bool LoadPlugin (const TCollection_AsciiString& thePluginName, TInspector_ToolInfo& theInfo);
 
+  //! Sets path to a directory for temporary plugin files. If parameter is empty, using default directory
+  //! \param thePath a path
+  void SetTemporaryDirectory (const TCollection_AsciiString& thePath)
+  { myParameters->SetTemporaryDirectory (thePath.IsEmpty() ? myDefaultDirectory : thePath); }
+
+  //! Returns path to a directory for temporary plugin files
+  //! \return path
+  TCollection_AsciiString GetTemporaryDirectory() const { return myParameters->GetTemporaryDirectory(); }
+
+  //! Returns plugin preferences: dock widgets state, tree view columns.
+  //! \param theItem container of preference elements
+  Standard_EXPORT void GetPreferences (TInspectorAPI_PreferencesDataMap& theItem);
+
+  //! Applies plugin preferences
+  //! \param theItem container of preference elements
+  Standard_EXPORT void SetPreferences (const TInspectorAPI_PreferencesDataMap& theItem);
+
+  //! Puts in the stream information about communicator
+  //! \param theStream stream for output
+  Standard_EXPORT void Dump (Standard_OStream& theStream) const;
+
+public slots:
+  //! Stores preferences (current state) of all plugins into a preferences file
+  Standard_EXPORT void OnStorePreferences();
+
+  //! Remove preferences file
+  Standard_EXPORT void OnRemovePreferences();
+
 protected slots:
 
   //! Activates plugin correspnded to the clicked button
   void onButtonClicked();
+
+  //! Updates available actions by the active plugin
+  void onShowActionsMenu();
 
   //! Updates the TInspector window title giving object name of plugin widget (available only in Qt5)
   void onCommuncatorNameChanged();
@@ -129,15 +163,22 @@ protected:
 
   //! Activates plugin by the plugin info 
   //! \param theToolInfo an information about plugin
-  bool ActiveToolInfo (TInspector_ToolInfo& theToolInfo) const;
+  bool activeToolInfo (TInspector_ToolInfo& theToolInfo) const;
 
   //! Returns true if there is plugin registered by the given name
   //! \param thePluginName a name of the plugin
   //! \param theToolInfo an output parameter for plugin information
   //! \param theToolId an index in internal map
   //! \return true if the plugin is found
-  bool FindPlugin (const TCollection_AsciiString& thePluginName, TInspector_ToolInfo& theToolInfo,
+  bool findPlugin (const TCollection_AsciiString& thePluginName, TInspector_ToolInfo& theToolInfo,
                    int& theToolId);
+
+  //! Applies desktop preferences to window
+  void applyPreferences();
+
+  //! Generate default temp directory by 'TEMP' or 'TMP' environment variables
+  //! \return generated path
+  TCollection_AsciiString defaultTemporaryDirectory() const;
 
 private:
 
@@ -147,8 +188,12 @@ private:
   QWidget* myButtonWidget; //!< container of plugin buttons
   QPushButton* myOpenButton; //!< button to open file for the active plugin
   QHBoxLayout* myButtonLay; //!< layout of plugin buttons
+  QButtonGroup* myButtonGroup; //!< exclusive toggled button
+  QToolButton* myActionsWidget; //!< tool button for plugin actions
   QList<TInspector_ToolInfo> myToolNames; //!< container of plugin names
   Handle(TInspectorAPI_PluginParameters) myParameters; //!< plugins parameters container
+  TInspector_Shortcut* myShortcut; //!< listener of key events
+  TCollection_AsciiString myDefaultDirectory; //!< default directory
 };
 
 #endif

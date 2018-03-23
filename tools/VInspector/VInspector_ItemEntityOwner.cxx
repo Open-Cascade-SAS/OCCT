@@ -47,58 +47,34 @@ QVariant VInspector_ItemEntityOwner::initValue(int theItemRole) const
       switch (Column())
       {
         case 0: return anOwner->DynamicType()->Name();
-        case 2: return theItemRole == Qt::ToolTipRole ? "Owner pointer"
-                                    : VInspector_Tools::GetPointerInfo (anOwner, true).ToCString();
+        case 2: return VInspector_Tools::GetPointerInfo (anOwner, true).ToCString();
         case 3:
         {
-          if (theItemRole == Qt::ToolTipRole)
-            return "Owner Shape type";
-          else
-          {
-            Handle(StdSelect_BRepOwner) BROwnr = Handle(StdSelect_BRepOwner)::DownCast (anOwner);
-            if (!BROwnr.IsNull())
-            {
-              const TopoDS_Shape& aShape = BROwnr->Shape();
-              if (!aShape.IsNull())
-                return VInspector_Tools::GetShapeTypeInfo (aShape.ShapeType()).ToCString();
-            }
-          }
-          break;
+          Handle(StdSelect_BRepOwner) BROwnr = Handle(StdSelect_BRepOwner)::DownCast (anOwner);
+          if (BROwnr.IsNull())
+            return QVariant();
+
+          const TopoDS_Shape& aShape = BROwnr->Shape();
+          if (aShape.IsNull())
+            return QVariant();
+
+          return VInspector_Tools::GetShapeTypeInfo (aShape.ShapeType()).ToCString();
         }
-        case 5:
-        {
-          if (theItemRole == Qt::ToolTipRole)
-            return "TShape pointer";
-          else
+        case 17:
+        case 18:
+        case 19:
           {
-            Handle(StdSelect_BRepOwner) BROwnr = Handle(StdSelect_BRepOwner)::DownCast (anOwner);
-            if (!BROwnr.IsNull())
-            {
-              const TopoDS_Shape& aShape = BROwnr->Shape();
-              if (!aShape.IsNull())
-                return VInspector_Tools::GetPointerInfo (aShape.TShape(), true).ToCString();
-            }
-          }
-          break;
-        }
-        case 8:
-        {
-          if (theItemRole == Qt::ToolTipRole)
-            return "Shape Location : Shape Orientation";
-          else
-          {
-            Handle(StdSelect_BRepOwner) aBROwnr = Handle(StdSelect_BRepOwner)::DownCast (anOwner);
-            if (!aBROwnr.IsNull())
-            {
-              const TopoDS_Shape& aShape = aBROwnr->Shape();
-              if (!aShape.IsNull())
-                return  QString ("%1 : %2")
-                        .arg (VInspector_Tools::LocationToName(aShape.Location()).ToCString())
-                        .arg (VInspector_Tools::OrientationToName(aShape.Orientation()).ToCString());
-              return VInspector_Tools::GetShapeTypeInfo (aShape.ShapeType()).ToCString();
-            }
-          }
-          break;
+          Handle(StdSelect_BRepOwner) BROwnr = Handle(StdSelect_BRepOwner)::DownCast (anOwner);
+          if (BROwnr.IsNull())
+            return QVariant();
+
+          const TopoDS_Shape& aShape = BROwnr->Shape();
+          if (aShape.IsNull())
+            return QVariant();
+
+          return Column() == 17 ? VInspector_Tools::GetPointerInfo (aShape.TShape(), true).ToCString()
+               : Column() == 18 ? VInspector_Tools::OrientationToName (aShape.Orientation()).ToCString()
+               :           /*19*/ VInspector_Tools::LocationToName (aShape.Location()).ToCString();
         }
         default: break;
       }
@@ -148,12 +124,21 @@ void VInspector_ItemEntityOwner::Init()
 
       int aRowId = Row();
       int aCurrentIndex = 0;
+#if OCC_VERSION_HEX < 0x070201
+      for (anIO->Init(); anIO->More() && anOwner.IsNull(); anIO->Next())
+      {
+        const Handle(SelectMgr_Selection)& aSelection = anIO->CurrentSelection();
+        for (aSelection->Init(); aSelection->More() && anOwner.IsNull(); aSelection->Next())
+        {
+          Handle(SelectMgr_SensitiveEntity) anEntity = aSelection->Sensitive();
+#else
       for (SelectMgr_SequenceOfSelection::Iterator aSelIter (anIO->Selections()); aSelIter.More() && anOwner.IsNull(); aSelIter.Next())
       {
         const Handle(SelectMgr_Selection)& aSelection = aSelIter.Value();
         for (NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>::Iterator aSelEntIter (aSelection->Entities()); aSelEntIter.More() && anOwner.IsNull(); aSelEntIter.Next())
         {
           Handle(SelectMgr_SensitiveEntity) anEntity = aSelEntIter.Value();
+#endif
           const Handle(SelectBasics_SensitiveEntity)& aBase = anEntity->BaseSensitive();
           if (!aBase.IsNull())
           {

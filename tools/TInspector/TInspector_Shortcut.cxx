@@ -13,9 +13,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <inspector/DFBrowser_Shortcut.hxx>
+#include <inspector/TInspector_Shortcut.hxx>
 
-#include <inspector/DFBrowser_Module.hxx>
+#include <inspector/TInspector_Window.hxx>
 
 #include <Standard_WarningsDisable.hxx>
 #include <QApplication>
@@ -26,8 +26,8 @@
 // function : Constructor
 // purpose :
 // =======================================================================
-DFBrowser_Shortcut::DFBrowser_Shortcut (QObject* theParent)
-: QObject (theParent), myModule (0)
+TInspector_Shortcut::TInspector_Shortcut (QObject* theParent, TInspector_Window* theWindow)
+: QObject (theParent), myWindow (theWindow)
 {
   qApp->installEventFilter (this);
 }
@@ -36,9 +36,9 @@ DFBrowser_Shortcut::DFBrowser_Shortcut (QObject* theParent)
 // function : eventFilter
 // purpose :
 // =======================================================================
-bool DFBrowser_Shortcut::eventFilter (QObject* theObject, QEvent* theEvent)
+bool TInspector_Shortcut::eventFilter (QObject* theObject, QEvent* theEvent)
 {
-  if (!myModule || theEvent->type() != QEvent::KeyRelease)
+  if (!myWindow || theEvent->type() != QEvent::KeyRelease)
     return QObject::eventFilter (theObject, theEvent);
 
   QKeyEvent* aKeyEvent = dynamic_cast<QKeyEvent*> (theEvent);
@@ -46,7 +46,7 @@ bool DFBrowser_Shortcut::eventFilter (QObject* theObject, QEvent* theEvent)
   {
     case Qt::Key_F5:
     {
-      myModule->UpdateTreeModel();
+      myWindow->UpdateContent();
       return true;
     }
     default: break;

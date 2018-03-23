@@ -31,7 +31,6 @@
 #include <QTreeView>
 #include <Standard_WarningsRestore.hxx>
 
-class View_Displayer;
 class View_Window;
 
 class QAction;
@@ -46,7 +45,7 @@ class ShapeView_Window : public QObject
 public:
 
   //! Constructor
-  Standard_EXPORT ShapeView_Window (QWidget* theParent, const TCollection_AsciiString& theTemporaryDirectory);
+  Standard_EXPORT ShapeView_Window (QWidget* theParent);
 
   //! Destructor
   Standard_EXPORT virtual ~ShapeView_Window();
@@ -60,6 +59,18 @@ public:
   //! \param theParameters a parameters container
   void SetParameters (const Handle(TInspectorAPI_PluginParameters)& theParameters) { myParameters = theParameters; }
 
+  //! Provide container for actions available in inspector on general level
+  //! \param theMenu if Qt implementation, it is QMenu object
+  Standard_EXPORT virtual void FillActionsMenu (void* theMenu);
+
+  //! Returns plugin preferences: dock widgets state, tree view columns.
+  //! \param theItem container of preference elements
+  Standard_EXPORT void GetPreferences (TInspectorAPI_PreferencesDataMap& theItem);
+
+  //! Applies plugin preferences
+  //! \param theItem container of preference elements
+  Standard_EXPORT void SetPreferences (const TInspectorAPI_PreferencesDataMap& theItem);
+
   //! Applyes parameters to Init controls, opens files if there are in parameters, updates OCAF tree view model
   Standard_EXPORT void UpdateContent();
 
@@ -70,7 +81,7 @@ public:
   QTreeView* GetTreeView() const { return myTreeView; }
 
   //! Returns path to temporary directory
-  TCollection_AsciiString GetTemporaryDirectory() const { return myTemporaryDirectory; }
+  TCollection_AsciiString GetTemporaryDirectory() const { return myParameters->GetTemporaryDirectory(); }
 
   //! Removes all shapes in tree view model, remove all stored BREP files
   Standard_EXPORT void RemoveAllShapes();
@@ -93,15 +104,12 @@ private:
 
 protected slots:
 
-  //! Displays shapes obtained by selected indices
-  //! \param theSelected a container of selected indices in tree view
-  //! \param theDeselected a container of deselected indices in tree view
-  void onTreeViewSelectionChanged (const QItemSelection& theSelected, const QItemSelection& theDeselected)
-  { (void)theDeselected; displaySelectedShapes(theSelected.indexes()); }
-
   //! Shows context menu for tree view selected item. It contains expand/collapse actions.
   //! \param thePosition a clicked point
   void onTreeViewContextMenuRequested (const QPoint& thePosition);
+
+  //! Updates visibility states by erase all in context
+  void onEraseAllPerformed();
 
   //! Exports shape to BREP file and view result file
   void onBREPDirectory();
@@ -148,17 +156,13 @@ protected:
   //! \return string value
   TCollection_AsciiString getNextTmpName (const TCollection_AsciiString& thePointerInfo);
 
-  //! Finds shapes for selected items in tree view and display presentations for the shapes
-  //! \param theSelected a list of selected indices in tree view
-  void displaySelectedShapes (const QModelIndexList& theSelected);
-
 private:
 
   QMainWindow* myMainWindow; //!< main control, parent for all ShapeView controls
+
   View_Window* myViewWindow; //!< OCC 3d view to visualize presentations
   QTreeView* myTreeView; //!< tree view visualized shapes
 
-  TCollection_AsciiString myTemporaryDirectory; //!< path to the temporary directory
   int myNextPosition; //!< delta of moving control of view BREP file
 
   QList<QWidget*> myBREPViews; //!< list of view BREP file controls

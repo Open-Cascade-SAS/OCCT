@@ -26,10 +26,10 @@ class ShapeView_Communicator : public TInspectorAPI_Communicator
 public:
 
   //! Constructor
-  Standard_EXPORT ShapeView_Communicator();
+  ShapeView_Communicator() : TInspectorAPI_Communicator(), myWindow (new ShapeView_Window (0)) {}
 
   //! Destructor
-  Standard_EXPORT virtual ~ShapeView_Communicator() Standard_OVERRIDE;
+  virtual ~ShapeView_Communicator() Standard_OVERRIDE { myWindow->RemoveAllShapes(); }
 
   //! Provides the container with a parent where this container should be inserted.
   //! If Qt implementation, it should be QWidget with QLayout set inside
@@ -40,6 +40,20 @@ public:
   //! \param theParameters a parameters container
   virtual void SetParameters (const Handle(TInspectorAPI_PluginParameters)& theParameters) Standard_OVERRIDE
   { myWindow->SetParameters (theParameters); }
+
+  //! Provide container for actions available in inspector on general level
+  //! \param theMenu if Qt implementation, it is QMenu object
+  Standard_EXPORT virtual void FillActionsMenu(void* theMenu) Standard_OVERRIDE { myWindow->FillActionsMenu (theMenu); }
+
+  //! Returns plugin preferences, empty implementation by default
+  //! \param theItem container of preference elements
+  virtual void GetPreferences (TInspectorAPI_PreferencesDataMap& theItem) Standard_OVERRIDE
+  { myWindow->GetPreferences (theItem); }
+
+  //! Stores plugin preferences, empty implementation by default
+  //! \param theItem container of preference elements
+  virtual void SetPreferences (const TInspectorAPI_PreferencesDataMap& theItem) Standard_OVERRIDE
+  { myWindow->SetPreferences (theItem); }
 
   //! Calls update of the plugin's content
   virtual void UpdateContent() Standard_OVERRIDE { myWindow->UpdateContent(); }

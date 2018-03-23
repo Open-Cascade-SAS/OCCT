@@ -17,6 +17,9 @@
 
 #include <AIS_ListIteratorOfListOfInteractive.hxx>
 #include <AIS_ListOfInteractive.hxx>
+#if OCC_VERSION_HEX < 0x060901
+#include <AIS_LocalContext.hxx>
+#endif
 #include <AIS_Selection.hxx>
 #include <AIS_Shape.hxx>
 #include <AIS_Trihedron.hxx>
@@ -143,6 +146,16 @@ NCollection_List<Handle(SelectBasics_EntityOwner)> VInspector_Tools::ContextOwne
     Handle(AIS_InteractiveObject) anIO = aIt.Value();
     if (anIO.IsNull())
       continue;
+#if OCC_VERSION_HEX < 0x070201
+    for (anIO->Init(); anIO->More(); anIO->Next())
+    {
+      Handle(SelectMgr_Selection) aSelection = anIO->CurrentSelection();
+      if (aSelection.IsNull())
+        continue;
+      for (aSelection->Init(); aSelection->More(); aSelection->Next())
+      {
+        Handle(SelectMgr_SensitiveEntity) anEntity = aSelection->Sensitive();
+#else
     for (SelectMgr_SequenceOfSelection::Iterator aSelIter (anIO->Selections()); aSelIter.More(); aSelIter.Next())
     {
       Handle(SelectMgr_Selection) aSelection = aSelIter.Value();
@@ -151,6 +164,7 @@ NCollection_List<Handle(SelectBasics_EntityOwner)> VInspector_Tools::ContextOwne
       for (NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>::Iterator aSelEntIter (aSelection->Entities()); aSelEntIter.More(); aSelEntIter.Next())
       {
         Handle(SelectMgr_SensitiveEntity) anEntity = aSelEntIter.Value();
+#endif
         if (anEntity.IsNull())
           continue;
         const Handle(SelectBasics_SensitiveEntity)& aBase = anEntity->BaseSensitive();
@@ -223,11 +237,23 @@ void VInspector_Tools::AddOrRemoveSelectedShapes (const Handle(AIS_InteractiveCo
 
   theContext->UnhilightSelected(Standard_False);
 
+  //TODO: processing in local context only
+#if OCC_VERSION_HEX < 0x060901
+  Handle(AIS_LocalContext) aLContext = theContext->LocalContext();
+  TCollection_AsciiString aSelectionName = aLContext->SelectionName();
+  aLContext->UnhilightPicked(Standard_False);
+#endif
+
   for (NCollection_List<Handle(SelectBasics_EntityOwner)>::Iterator anOwnersIt(theOwners);
        anOwnersIt.More(); anOwnersIt.Next())
   {
     Handle(SelectMgr_EntityOwner) anOwner = Handle(SelectMgr_EntityOwner)::DownCast (anOwnersIt.Value());
+#if OCC_VERSION_HEX > 0x060901
     theContext->AddOrRemoveSelected (anOwner, Standard_False);
+#else
+    AIS_Selection::Selection(aSelectionName.ToCString())->Select(anOwner);
+    anOwner->SetSelected(Standard_True);
+#endif
   }
   theContext->UpdateCurrentViewer();
 }

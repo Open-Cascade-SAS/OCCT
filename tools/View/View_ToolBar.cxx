@@ -31,7 +31,7 @@ const int DEFAULT_SPACING = 3;
 // function : Constructor
 // purpose :
 // =======================================================================
-View_ToolBar::View_ToolBar (QWidget* theParent)
+View_ToolBar::View_ToolBar (QWidget* theParent, const bool isUseKeepView)
 : QObject (theParent)
 {
   myMainWindow = new QWidget (theParent);
@@ -63,22 +63,25 @@ View_ToolBar::View_ToolBar (QWidget* theParent)
   myViewContexts[View_ContextType_Own] = Handle(AIS_InteractiveContext)();
   myViewContexts[View_ContextType_External] = Handle(AIS_InteractiveContext)();
 
-  myActionsMap[View_ToolActionType_KeepViewId] = new QToolButton (theParent);
-  myActionsMap[View_ToolActionType_KeepViewId]->setIcon (QIcon (":/icons/keep_view_on.png"));
-  myActionsMap[View_ToolActionType_KeepViewId]->setText (tr ("Multi"));
-  myActionsMap[View_ToolActionType_KeepViewId]->setToolTip (tr ("Keep View On: does not clear previously shown presentation"));
-  myActionsMap[View_ToolActionType_KeepViewId]->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-  myActionsMap[View_ToolActionType_KeepViewId]->setCheckable (true);
-  myActionsMap[View_ToolActionType_KeepViewId]->setChecked (false);
+  if (isUseKeepView)
+  {
+    myActionsMap[View_ToolActionType_KeepViewId] = new QToolButton (theParent);
+    myActionsMap[View_ToolActionType_KeepViewId]->setIcon (QIcon (":/icons/keep_view_on.png"));
+    myActionsMap[View_ToolActionType_KeepViewId]->setText (tr ("Multi"));
+    myActionsMap[View_ToolActionType_KeepViewId]->setToolTip (tr ("Keep View On: does not clear previously shown presentation"));
+    myActionsMap[View_ToolActionType_KeepViewId]->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+    myActionsMap[View_ToolActionType_KeepViewId]->setCheckable (true);
+    myActionsMap[View_ToolActionType_KeepViewId]->setChecked (false);
 
-  myActionsMap[View_ToolActionType_KeepViewOffId] = new QToolButton (theParent);
-  myActionsMap[View_ToolActionType_KeepViewOffId]->setIcon (QIcon (":/icons/keep_view_off.png"));
-  myActionsMap[View_ToolActionType_KeepViewOffId]->setText (QObject::tr ("Single"));
-  myActionsMap[View_ToolActionType_KeepViewOffId]->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-  myActionsMap[View_ToolActionType_KeepViewOffId]->setToolTip (tr ("Keep View Off: clear previously shown presentation"));
-  myActionsMap[View_ToolActionType_KeepViewOffId]->setCheckable (true);
-  myActionsMap[View_ToolActionType_KeepViewOffId]->setChecked (true);
-  
+    myActionsMap[View_ToolActionType_KeepViewOffId] = new QToolButton (theParent);
+    myActionsMap[View_ToolActionType_KeepViewOffId]->setIcon (QIcon (":/icons/keep_view_off.png"));
+    myActionsMap[View_ToolActionType_KeepViewOffId]->setText (QObject::tr ("Single"));
+    myActionsMap[View_ToolActionType_KeepViewOffId]->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+    myActionsMap[View_ToolActionType_KeepViewOffId]->setToolTip (tr ("Keep View Off: clear previously shown presentation"));
+    myActionsMap[View_ToolActionType_KeepViewOffId]->setCheckable (true);
+    myActionsMap[View_ToolActionType_KeepViewOffId]->setChecked (true);
+  }
+
   myActionsMap[View_ToolActionType_ClearViewId] = new QToolButton (theParent);
   myActionsMap[View_ToolActionType_ClearViewId]->setIcon (QIcon (":/icons/view_clear.png"));
   myActionsMap[View_ToolActionType_ClearViewId]->setText (tr ( "Clear View"));

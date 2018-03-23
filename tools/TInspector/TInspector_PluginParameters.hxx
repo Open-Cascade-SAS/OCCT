@@ -20,7 +20,10 @@
 #include <Standard_Macro.hxx>
 
 #include <inspector/TInspectorAPI_PluginParameters.hxx>
+#include <inspector/TInspector_Preferences.hxx>
 #include <inspector/TInspector_Window.hxx>
+
+class TInspector_ReportCallBack;
 
 //! \class TInspector_PluginParameters.
 //! \brief This is plugin parameters extended by a possibility to activate module during setting new parameters
@@ -29,7 +32,7 @@ class TInspector_PluginParameters : public TInspectorAPI_PluginParameters
 public:
 
   //! Constructor
-  Standard_EXPORT TInspector_PluginParameters (TInspector_Window* theWindow) : myWindow (theWindow) {}
+  Standard_EXPORT TInspector_PluginParameters (TInspector_Window* theWindow);
 
   //! Destructor
   virtual ~TInspector_PluginParameters() Standard_OVERRIDE {}
@@ -42,9 +45,34 @@ public:
                                       const NCollection_List<Handle(Standard_Transient)>& theParameters,
                                       const Standard_Boolean& theToActivatePlugin = Standard_False) Standard_OVERRIDE;
 
+  //! Sets path to a directory for temporary plugin files. Sets the directory into preferences loader
+  //! \param thePath a path
+  virtual void SetTemporaryDirectory (const TCollection_AsciiString& thePath) Standard_OVERRIDE;
+
+  //! Returns plugin preferences
+  //! \param thePluginName a plugin name
+  virtual void GetPreferences (const TCollection_AsciiString& thePluginName,
+                               TInspectorAPI_PreferencesDataMap& theItem) Standard_OVERRIDE
+  { myPreferences->GetPreferences (thePluginName, theItem); }
+
+  //! Stores plugin preferences
+  //! \param thePluginName a plugin name
+  //! \theItem container of plugin preferences values in form: <name, value>
+  virtual void SetPreferences (const TCollection_AsciiString& thePluginName,
+                               const TInspectorAPI_PreferencesDataMap& theItem) Standard_OVERRIDE
+   { myPreferences->SetPreferences (thePluginName, theItem); }
+
+  //! Store plugin preferences into a preferences file
+  void StorePreferences() { myPreferences->StorePreferences(); }
+
+  //! Remove plugin preferences file
+  void RemovePreferences() { myPreferences->RemovePreferences(); }
+
 private:
 
   TInspector_Window* myWindow; //!< the current window
+  Handle(TInspector_ReportCallBack) myReportCallBack; //!< inspector report callback for automatic view update
+  TInspector_Preferences* myPreferences; //!< the preferences loader
 };
 
 #endif

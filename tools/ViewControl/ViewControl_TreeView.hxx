@@ -13,41 +13,39 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#ifndef DFBrowser_TreeView_H
-#define DFBrowser_TreeView_H
+#ifndef ViewControl_TreeView_H
+#define ViewControl_TreeView_H
 
 #include <Standard.hxx>
-#include <Standard_Macro.hxx>
 
 #include <Standard_WarningsDisable.hxx>
+#include <QSize>
 #include <QTreeView>
 #include <Standard_WarningsRestore.hxx>
 
-//! \class DFBrowser_TreeView
+class QWidget;
+
+//! \class ViewControl_TreeView
 //! Extended tree view control with possibility to set predefined size.
-class DFBrowser_TreeView : public QTreeView
+class ViewControl_TreeView : public QTreeView
 {
 public:
-
   //! Constructor
-  Standard_EXPORT DFBrowser_TreeView (QWidget* theParent)
-  : QTreeView (theParent), myDefaultWidth (-1), myDefaultHeight (-1) {}
+  ViewControl_TreeView (QWidget* theParent) : QTreeView (theParent) {}
 
   //! Destructor
-  virtual ~DFBrowser_TreeView() {}
+  virtual ~ViewControl_TreeView() {}
 
   //! Sets default size of control, that is used by the first control show
   //! \param theDefaultWidth the width value
   //! \param theDefaultHeight the height value
-  Standard_EXPORT void SetPredefinedSize(int theDefaultWidth, int theDefaultHeight);
+  void SetPredefinedSize (const QSize& theSize) { myDefaultSize = theSize;}
 
   //! Returns predefined size if both values are positive, otherwise parent size hint
-  Standard_EXPORT virtual QSize sizeHint() const Standard_OVERRIDE;
+  virtual QSize sizeHint() const Standard_OVERRIDE { return myDefaultSize.isValid() ? myDefaultSize : QTreeView::sizeHint(); }
 
 private:
-
-  int myDefaultWidth; //!< default width, -1 if it should not be used
-  int myDefaultHeight; //!< default height, -1 if it should not be used
+  QSize myDefaultSize; //! default size, empty isze if it should not be used
 };
 
 #endif

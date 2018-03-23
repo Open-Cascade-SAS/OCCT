@@ -75,8 +75,10 @@ public:
   //! Returns selection parameters, that may be useful for communicate between tools
   //! \param theModel one of selection models provided by this pane
   //! \theParameters a container of parameters, might be extended depending on the pane state(e.g. selection)
+  //! \theItemNames names to be selected for each selection parameter
   Standard_EXPORT virtual void GetSelectionParameters (QItemSelectionModel* theModel,
-                                       NCollection_List<Handle(Standard_Transient)>& theParameters) Standard_OVERRIDE;
+                                       NCollection_List<Handle(Standard_Transient)>& theParameters,
+                                       NCollection_List<TCollection_AsciiString>& theItemNames) Standard_OVERRIDE;
 
   //! Returns container of Label references to the attribute
   //! \param theAttribute a current attribute

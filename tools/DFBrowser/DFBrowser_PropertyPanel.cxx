@@ -21,6 +21,10 @@
 #include <inspector/DFBrowser_Window.hxx>
 #include <inspector/DFBrowser_TreeLevelView.hxx>
 
+#include <inspector/TreeModel_ModelBase.hxx>
+
+#include <inspector/ViewControl_Tools.hxx>
+
 #include <Standard_WarningsDisable.hxx>
 #include <QAbstractItemModel>
 #include <QGridLayout>
@@ -36,7 +40,7 @@ DFBrowser_PropertyPanel::DFBrowser_PropertyPanel (QWidget* theParent)
 : QObject (theParent), myAttributesStack (0)
 {
   myMainWindow = new QWidget (theParent);
-  DFBrowser_Window::SetWhiteBackground (myMainWindow);
+  ViewControl_Tools::SetWhiteBackground (myMainWindow);
 
   QGridLayout* aLayout = new QGridLayout (myMainWindow);
   aLayout->setContentsMargins (0, 0, 0, 0);
@@ -55,6 +59,6 @@ void DFBrowser_PropertyPanel::UpdateBySelectionChanged (const QItemSelection& th
 {
   GetAttributesStack()->GetSearchView()->Reset();
 
-  QModelIndex anIndex = DFBrowser_Window::SingleSelected (theSelected.indexes(), 0);
+  QModelIndex anIndex = TreeModel_ModelBase::SingleSelected (theSelected.indexes(), 0);
   myAttributesStack->SetCurrentItem (anIndex);
 }

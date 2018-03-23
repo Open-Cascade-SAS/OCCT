@@ -25,6 +25,7 @@
 #include <QAction>
 #include <QMap>
 #include <QString>
+#include <QToolButton>
 #include <QWidget>
 #include <Standard_WarningsRestore.hxx>
 
@@ -73,7 +74,7 @@ protected:
 public:
 
   //! Constructor
-  Standard_EXPORT View_Widget (QWidget* theParent);
+  Standard_EXPORT View_Widget (QWidget* theParent, const bool isFitAllActive);
 
   //! Destructor
   virtual ~View_Widget() {}
@@ -88,8 +89,12 @@ public:
   Standard_EXPORT void Init();
 
   //! Returns an action for the given action type
-  //! \param theActionId an action indes
+  //! \param theActionId an action index
   QAction* GetViewAction (const View_ViewActionType theActionId) const { return myViewActions[theActionId]; };
+
+  //! Retuns an action widget if exist. Implemented for fit all widget.
+  //! \param theActionId an action index
+  QWidget* GetWidget (const View_ViewActionType theActionId) const { return theActionId == View_ViewActionType_FitAllId ? myFitAllAction : 0; };
 
   //! \returns 0 - AIS_WireFrame, 1 - AIS_Shaded
   Standard_EXPORT int GetDisplayMode() const;
@@ -97,6 +102,17 @@ public:
   //! Enable/disable view and tool bar actions depending on the parameter
   //! \param theIsEnabled boolean value
   Standard_EXPORT void SetEnabledView (const bool theIsEnabled);
+
+  //!< widget for fit all, processed double click to perform action automatically
+  //! \param theIsEnabled boolean value
+  bool IsActionChecked (const View_ViewActionType theActionId) { if (theActionId == View_ViewActionType_FitAllId) return myFitAllAction->isChecked(); }
+
+  //!< Setx initial camera position
+  //! \param theVx direction on Ox
+  //! \param theVy direction on Oy
+  //! \param theVz direction on Oz
+  void SetInitProj (const Standard_Real theVx, const Standard_Real theVy, const Standard_Real theVz)
+  { myHasInitProj = Standard_True; myInitVx = theVx; myInitVy = theVy; myInitVz = theVz; }
 
   //! Get paint engine for the OpenGL viewer. Avoid default execution of Qt Widget.
   virtual QPaintEngine* paintEngine() const Standard_OVERRIDE { return 0; }
@@ -111,6 +127,11 @@ signals:
 
   //! Sends a signal about display mode change
   void displayModeClicked();
+
+  //! Sends a signal about checked state is changed
+  //! \param theActionId an action index
+  //! \param theState the checked state
+  void checkedStateChanged (const int theActionId, bool theState);
 
 public slots:
 
@@ -128,6 +149,11 @@ public slots:
 
   //! Stores state about onRotate to use it by the mouse move
   void OnRotate() { myCurrentMode = View_CurrentAction3d_DynamicRotation; }
+
+  //! Updates states of widget actions
+  //! 
+  //! - if the state is checked, uncheck all other actions
+  Standard_EXPORT void onCheckedStateChanged (bool isOn);
 
   //! Updates states of tool actions:
   //! - if the action is display mode, it changes an icon for action(wireframe or shading)
@@ -256,7 +282,6 @@ protected:
   void drawRectangle (const Standard_Integer theMinX, const Standard_Integer theMinY, const Standard_Integer theMaxX,
                       const Standard_Integer theMaxY, const Standard_Boolean theToDraw);
 private:
-
   //! Creates action and stores it in a map of actions
   //! \param theActionId an identifier of action in internal map
   //! \param theIcon an icon name and place according to qrc resource file, e.g. ":/icons/view_fitall.png"
@@ -274,14 +299,15 @@ private:
 private:
 
   View_Viewer* myViewer; //!< connector to context, V3d viewer and V3d View
+  QToolButton* myFitAllAction; //!< widget for fit all, processed double click to perform action automatically
   QMap<View_ViewActionType, QAction*> myViewActions; //!< tool bar view actions
   QMap<View_CursorMode, QCursor> myCursors; //!< possible cursors for view actions
 
   View_CurrentAction3d myCurrentMode; //!< an active action mode for viewer
-  bool myFirst; //!< flag to Init view by the first resize/paint call
-  int myDefaultWidth; //!< default width for the first sizeHint
-  int myDefaultHeight; //!< default height for the first sizeHint
-  bool myViewIsEnabled; //!< flag if the view and tool bar view actions are enabled/disabled
+  Standard_Boolean myFirst; //!< flag to Init view by the first resize/paint call
+  Standard_Integer myDefaultWidth; //!< default width for the first sizeHint
+  Standard_Integer myDefaultHeight; //!< default height for the first sizeHint
+  Standard_Boolean myViewIsEnabled; //!< flag if the view and tool bar view actions are enabled/disabled
   Standard_Integer myXmin; //!< cached X minimal position by mouse press event
   Standard_Integer myYmin; //!< cached Y minimal position by mouse press event
   Standard_Integer myXmax; //!< cached X maximum position by mouse press event
@@ -292,6 +318,12 @@ private:
   Standard_Integer myDragMultiButtonDownY; //!< cached Y button down by multi drag event
   Standard_Boolean myIsRectVisible; //!< true if rectangle is visible now
   QRubberBand* myRectBand; //!< selection rectangle rubber band
+
+  Standard_Boolean myHasInitProj; //!< is initial camera position defined
+  Standard_Real myInitVx; //!< initial camera position on X
+  Standard_Real myInitVy; //!< initial camera position on Y
+  Standard_Real myInitVz; //!< initial camera position on Z
+
 };
 
 #endif

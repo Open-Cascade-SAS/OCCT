@@ -21,7 +21,9 @@
 #include <Standard_Version.hxx>
 #include <Standard_Transient.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <TCollection_AsciiString.hxx>
+#include <TopoDS_Shape.hxx>
+
+#include <inspector/TInspectorAPI_PreferencesDataMap.hxx>
 
 class TInspectorAPI_PluginParameters;
 DEFINE_STANDARD_HANDLE (TInspectorAPI_PluginParameters, Standard_Transient)
@@ -36,7 +38,7 @@ class TInspectorAPI_PluginParameters : public Standard_Transient
 public:
 
   //! Constructs the container.
-  Standard_EXPORT TInspectorAPI_PluginParameters();
+  Standard_EXPORT TInspectorAPI_PluginParameters() {}
 
   //! Destructor
   Standard_EXPORT virtual ~TInspectorAPI_PluginParameters() Standard_OVERRIDE {}
@@ -81,8 +83,7 @@ public:
   //! Returns parameters set for the given plugin
   //! \param thePluginName a plugin name
   //! \return container of objects
-  Standard_EXPORT const NCollection_List<Handle(Standard_Transient)>& Parameters (
-                                                      const TCollection_AsciiString& thePluginName);
+  Standard_EXPORT const NCollection_List<Handle(Standard_Transient)>& Parameters (const TCollection_AsciiString& thePluginName);
 
   //! Returns true if there are file names set for the given plugin
   //! \param thePluginName a plugin name
@@ -92,8 +93,7 @@ public:
   //! Returns file names set for the given plugin
   //! \param thePluginName a plugin name
   //! \return container of names
-  Standard_EXPORT const NCollection_List<TCollection_AsciiString>& FileNames(
-                                                      const TCollection_AsciiString& thePluginName);
+  Standard_EXPORT const NCollection_List<TCollection_AsciiString>& FileNames (const TCollection_AsciiString& thePluginName);
 
   //! Returns true if there are file names set for the given plugin
   //! \param thePluginName a plugin name
@@ -112,6 +112,36 @@ public:
   Standard_EXPORT Standard_Boolean GetSelectedObjects (const TCollection_AsciiString& thePluginName,
                                                        NCollection_List<Handle(Standard_Transient)>& theObjects);
 
+  //! Sets path to a directory for temporary plugin files
+  //! \param thePath a path
+  virtual void SetTemporaryDirectory (const TCollection_AsciiString& thePath) { myTemporaryDirectory = thePath; }
+
+  //! Returns path to a directory for temporary plugin files
+  //! \return path
+  TCollection_AsciiString GetTemporaryDirectory() const { return myTemporaryDirectory; }
+
+  //! Returns plugin preferences
+  //! \param thePluginName a plugin name
+  Standard_EXPORT virtual void GetPreferences (const TCollection_AsciiString& thePluginName,
+                                               TInspectorAPI_PreferencesDataMap& theItem) = 0;
+
+  //! Stores plugin preferences
+  //! \param thePluginName a plugin name
+  //! \theItem container of plugin preferences values in form: <name, value>
+  Standard_EXPORT virtual void SetPreferences (const TCollection_AsciiString& thePluginName,
+                                               const TInspectorAPI_PreferencesDataMap& theItem) = 0;
+
+  //! Converts a Shape parameters excepting TShape into a string value
+  //! \param theShape processed shape 
+  //! \return string instance
+  Standard_EXPORT static TCollection_AsciiString ParametersToString (const TopoDS_Shape& theShape);
+
+  //! Converts a Shape parameters exceptin TShape into a string value
+  //! \param theValue parameters string value (without TShape information)
+  //! \param theShape processed shape 
+  Standard_EXPORT static void ParametersToShape (const TCollection_AsciiString& theValue, TopoDS_Shape& theShape);
+
+
 #if OCC_VERSION_HEX <= 0x060901
   DEFINE_STANDARD_RTTI (TInspectorAPI_PluginParameters)
 #else
@@ -126,6 +156,8 @@ private:
   NCollection_DataMap<TCollection_AsciiString, NCollection_List<TCollection_AsciiString> > mySelectedItemNames;
   //! container of select objects
   NCollection_DataMap<TCollection_AsciiString, NCollection_List<Handle(Standard_Transient)> > mySelectedObjects;
+  //! temporary directory for saving plugin preferences
+  TCollection_AsciiString myTemporaryDirectory;
 };
 
 #endif
