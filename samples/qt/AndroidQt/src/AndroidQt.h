@@ -29,7 +29,7 @@
 
 #include <QMutex>
 
-#include <AndroidQt_TouchParameters.h>
+#include "AndroidQt_TouchParameters.h"
 
 //! QML item with embedded OCCT viewer.
 class AndroidQt : public QQuickItem
@@ -67,7 +67,8 @@ private slots:
 private:
 
   //! (Re-)initialize viewer on OpenGL context change.
-  bool initViewer();
+  //! \param theWin handle to GUI window
+  bool initViewer (Aspect_Drawable theWin);
 
   //! Close viewer
   void release();
@@ -77,6 +78,8 @@ private:
   Handle(V3d_Viewer)             myViewer;       //!< 3D viewer
   Handle(V3d_View)               myView;         //!< 3D view
   Handle(AIS_InteractiveContext) myContext;      //!< interactive context
+  Graphic3d_Vec2i                myWinTopLeft;   //!< cached window position (top-left)
+  Graphic3d_Vec2i                myWinSize;      //!< cached window width-height
 
   QMutex                         myMutex;        //!< mutex for interconnection with rendering thread
   QSize                          myViewportSize; //!< QML item size

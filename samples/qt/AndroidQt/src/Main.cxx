@@ -14,10 +14,18 @@
 #include <QApplication>
 #include <QQmlApplicationEngine>
 
-#include <AndroidQt.h>
+#include "AndroidQt.h"
+
+#include <OSD_Environment.hxx>
 
 int main(int argc, char *argv[])
 {
+#if defined(_WIN32) && (QT_VERSION > 0x050000)
+  TCollection_AsciiString aPlugindsDirName = OSD_Environment ("QTDIR").Value();
+  if (!aPlugindsDirName.IsEmpty())
+    QApplication::addLibraryPath (QString (aPlugindsDirName.ToCString()) + "/plugins");
+#endif
+
   QApplication app(argc, argv);
 
   qmlRegisterType<AndroidQt>("AndroidQt", 1, 0, "AndroidQt");

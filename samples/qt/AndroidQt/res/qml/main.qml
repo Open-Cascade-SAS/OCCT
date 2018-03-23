@@ -28,6 +28,9 @@ Window {
   id: root_window
   visible: true
 
+  width:  (Qt.platform.os == "android" || Qt.platform.os == "ios") ? Screen.width : 600
+  height: (Qt.platform.os == "android" || Qt.platform.os == "ios") ? Screen.height : 400
+
   Item {
     id: root_item
     anchors.fill: parent
@@ -52,8 +55,8 @@ Window {
       anchors.left: parent.left
 
       // size
-      width:  200
-      height: 200
+      width:  (Qt.platform.os == "android" || Qt.platform.os == "ios") ? 200 : 150
+      height: (Qt.platform.os == "android" || Qt.platform.os == "ios") ? 200 : 150
 
       color: "white"
 

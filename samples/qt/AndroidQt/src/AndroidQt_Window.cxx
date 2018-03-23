@@ -11,7 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <AndroidQt_Window.h>
+#include "AndroidQt_Window.h"
 
 IMPLEMENT_STANDARD_RTTIEXT(AndroidQt_Window, Aspect_Window)
 

@@ -11,7 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <AndroidQt_TouchParameters.h>
+#include "AndroidQt_TouchParameters.h"
 
 // =======================================================================
 // function : AndroidQt_TouchParameters

@@ -11,13 +11,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <AndroidQt_Window.h>
-#include <AndroidQt.h>
-#include <AndroidQt_UserInteractionParameters.h>
+#if defined(_WIN32)
+  #include <windows.h>
+#endif
+
+#include "AndroidQt.h"
+#include "AndroidQt_UserInteractionParameters.h"
+#include "AndroidQt_Window.h"
 
 #include <AIS_Shape.hxx>
 #include <BRepTools.hxx>
 #include <BRep_Builder.hxx>
+#include <Message.hxx>
+#include <Message_Messenger.hxx>
 #include <OpenGl_GraphicDriver.hxx>
 #include <Quantity_Color.hxx>
 #include <Standard_ErrorHandler.hxx>
@@ -25,6 +31,7 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <UnitsAPI.hxx>
+#include <WNT_Window.hxx>
 
 #include <EGL/egl.h>
 #include <QFileInfo>
@@ -36,7 +43,7 @@
 AndroidQt::AndroidQt()
 : myFitAllAction (false)
 {
-  connect (this, SIGNAL(windowChanged(QQuickWindow*)), this, SLOT(handleWindowChanged(QQuickWindow*)));
+  connect (this, SIGNAL (windowChanged (QQuickWindow*)), this, SLOT (handleWindowChanged (QQuickWindow*)));
 
   // set shaders location variable
   QByteArray aDataRoot = "/data/data/org.qtproject.example.AndroidQt/files/opencascade/shared";
@@ -138,7 +145,7 @@ void AndroidQt::handleWindowChanged (QQuickWindow* theWin)
     return;
   }
 
-  connect(theWin, SIGNAL(beforeSynchronizing()), this, SLOT(sync()), Qt::DirectConnection);
+  connect (theWin, SIGNAL (beforeSynchronizing()), this, SLOT (sync()), Qt::DirectConnection);
 
   theWin->setClearBeforeRendering (false);
 }
@@ -151,28 +158,54 @@ void AndroidQt::sync()
 {
   myViewportSize = window()->size() * window()->devicePixelRatio();
 
+  Graphic3d_Vec2i aWinTopLeft (window()->x(), window()->y());
+  Graphic3d_Vec2i aWinSize (myViewportSize.width(), myViewportSize.height());
+  const bool isChangedLeft = (myWinTopLeft.x() != aWinTopLeft.x());
+  const bool isChangedTop = (myWinTopLeft.y() != aWinTopLeft.y());
+  myWinTopLeft = aWinTopLeft;
+
   if (myViewer.IsNull())
   {
-    initViewer();
-    connect (window(), SIGNAL(beforeRendering()), this, SLOT(paint()), Qt::DirectConnection);
+    initViewer (Aspect_Drawable (window()->winId()));
+    connect (window(), SIGNAL (beforeRendering()), this, SLOT (paint()), Qt::DirectConnection);
   }
   else
   {
     Handle(OpenGl_GraphicDriver) aDriver = Handle(OpenGl_GraphicDriver)::DownCast (myViewer->Driver());
+  #ifdef __ANDROID__
     if (aDriver->getRawGlContext() != eglGetCurrentContext())
     {
-      initViewer();
+      initViewer (Aspect_Drawable (window()->winId()));
     }
     else
+  #endif
     {
-      Handle(AndroidQt_Window) aWindow = Handle(AndroidQt_Window)::DownCast (myView->Window());
+    #ifdef __ANDROID__
+      Handle(AndroidQt_Window) aWindow = Handle(AndroidQt_Window)::DownCast(myView->Window());
       aWindow->SetSize (myViewportSize.width(), myViewportSize.height());
       //myView->MustBeResized(); // can be used instead of SetWindow() when EGLsurface has not been changed
 
       EGLContext anEglContext = eglGetCurrentContext();
       myView->SetWindow (aWindow, (Aspect_RenderingContext )anEglContext);
+    #else
+      if (aWinSize.x() != myWinSize.x()
+       || aWinSize.y() != myWinSize.y())
+      {
+        myView->MustBeResized();
+        myView->Invalidate();
+      }
+      else if (isChangedTop)
+      {
+        myView->MustBeResized();
+      }
+      else if (isChangedLeft)
+      {
+        myView->MustBeResized();
+      }
+    #endif
     }
   }
+  myWinSize = aWinSize;
 }
 
 // =======================================================================
@@ -183,7 +216,7 @@ void AndroidQt::paint()
 {
   myMutex.lock();
 
-  if (Abs(myTouchPoint.DevX()) + Abs(myTouchPoint.DevY()) > 1)
+  if (Abs (myTouchPoint.DevX()) + Abs (myTouchPoint.DevY()) > 1)
   {
     myView->StartRotation (myTouchPoint.X().first,  myTouchPoint.Y().first);
     myView->Rotation      (myTouchPoint.X().second, myTouchPoint.Y().second);
@@ -206,10 +239,12 @@ void AndroidQt::paint()
 // function : initViewer
 // purpose  :
 // =======================================================================
-bool AndroidQt::initViewer()
+bool AndroidQt::initViewer (Aspect_Drawable theWin)
 {
-  EGLint aCfgId = 0;
   int aWidth = 0, aHeight = 0;
+  Handle(Aspect_DisplayConnection) aDisplayConnection;
+#ifdef __ANDROID__
+  EGLint aCfgId = 0;
   EGLDisplay anEglDisplay = eglGetCurrentDisplay();
   EGLContext anEglContext = eglGetCurrentContext();
   EGLSurface anEglSurf    = eglGetCurrentSurface (EGL_DRAW);
@@ -232,6 +267,7 @@ bool AndroidQt::initViewer()
 
   if (eglChooseConfig (anEglDisplay, aConfigAttribs, &anEglConfig, 1, &aNbConfigs) != EGL_TRUE)
   {
+    Message::DefaultMessenger()->Send ("Error: EGL does not provide compatible configurations", Message_Fail);
     release();
     return false;
   }
@@ -242,6 +278,7 @@ bool AndroidQt::initViewer()
     Handle(AndroidQt_Window)     aWindow = Handle(AndroidQt_Window)::DownCast (myView->Window());
     if (!aDriver->InitEglContext (anEglDisplay, anEglContext, anEglConfig))
     {
+      Message::DefaultMessenger()->Send ("Error: OpenGl_GraphicDriver can not be initialized", Message_Fail);
       release();
       return false;
     }
@@ -251,14 +288,45 @@ bool AndroidQt::initViewer()
   }
 
   Handle(OpenGl_GraphicDriver) aDriver = new OpenGl_GraphicDriver (NULL, Standard_False);
-  aDriver->ChangeOptions().buffersNoSwap = Standard_True;
-  //aDriver->ChangeOptions().glslWarnings  = Standard_True; // for GLSL shaders debug
-
-  if (!aDriver->InitEglContext (anEglDisplay, anEglContext, anEglConfig))
+#elif defined(_WIN32)
+  HWND  aWinHandle = (HWND)theWin;
+  HDC   aWindowDC = wglGetCurrentDC();
+  HGLRC aRendCtx   = wglGetCurrentContext();
+  if (aWinHandle == NULL
+   || aWindowDC  == NULL
+   || aRendCtx   == NULL)
   {
+    Message::DefaultMessenger()->Send ("Error: No active WGL context!", Message_Fail);
     release();
     return false;
   }
+
+  RECT aRect;
+  ::GetClientRect (aWinHandle, &aRect);
+  aWidth  = aRect.right - aRect.left;
+  aHeight = aRect.bottom - aRect.top;
+  myWinSize.x() = aWidth;
+  myWinSize.y() = aHeight;
+  if (!myViewer.IsNull())
+  {
+    Handle(WNT_Window) aWindow = new WNT_Window (aWinHandle);
+    myView->SetWindow (aWindow, (Aspect_RenderingContext)aRendCtx);
+    return true;
+  }
+  Handle(OpenGl_GraphicDriver) aDriver = new OpenGl_GraphicDriver (aDisplayConnection, Standard_False);
+#endif
+
+  aDriver->ChangeOptions().buffersNoSwap = Standard_True;
+  //aDriver->ChangeOptions().glslWarnings  = Standard_True; // for GLSL shaders debug
+
+#ifdef __ANDROID__
+  if (!aDriver->InitEglContext (anEglDisplay, anEglContext, anEglConfig))
+  {
+    Message::DefaultMessenger()->Send ("Error: OpenGl_GraphicDriver can not be initialized", Message_Fail);
+    release();
+    return false;
+  }
+#endif
 
   // create viewer
   myViewer = new V3d_Viewer (aDriver);
@@ -270,10 +338,20 @@ bool AndroidQt::initViewer()
   myContext = new AIS_InteractiveContext (myViewer);
   myContext->SetDisplayMode (AIS_Shaded, false);
 
+#ifdef __ANDROID__
   Handle(AndroidQt_Window) aWindow = new AndroidQt_Window (aWidth, aHeight);
-  myView = myViewer->CreateView();
+#elif defined(_WIN32)
+  Handle(WNT_Window)       aWindow = new WNT_Window (aWinHandle);
+#endif
 
+  myView = myViewer->CreateView();
+  myView->SetImmediateUpdate (Standard_False);
+
+#ifdef __ANDROID__
   myView->SetWindow (aWindow, (Aspect_RenderingContext )anEglContext);
+#else
+  myView->SetWindow (aWindow, (Aspect_RenderingContext )aRendCtx);
+#endif
   myView->TriedronDisplay (Aspect_TOTP_RIGHT_LOWER, Quantity_NOC_WHITE, 0.08, V3d_ZBUFFER);
 
   return true;
