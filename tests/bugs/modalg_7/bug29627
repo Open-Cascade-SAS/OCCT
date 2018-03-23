@@ -1,0 +1,24 @@
+puts "========"
+puts "OCC29627"
+puts "========"
+puts ""
+#################################################
+# BRepOffsetAPI_NormalProjection class changes orientation of the result
+#################################################
+
+restore [locate_data_file bug29627_edge.brep] e
+restore [locate_data_file bug29627_face.brep] f
+nproject result e f
+
+explode result e
+
+set e_ori [lindex [whatis e] 5]
+set r_ori [lindex [whatis result_1] 5]
+
+if {$e_ori != $r_ori} {
+  puts "Error: BRepOffsetAPI_NormalProjection changes orientation of projected edge"
+}
+
+checkshape result
+checkprops result -l 0.000374916
+checknbshapes result -vertex 2 -edge 1
