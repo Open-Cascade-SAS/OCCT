@@ -31,7 +31,7 @@ bfillds
 bbuild result
 
 checkshape result
-checknbshapes result -vertex 4 -edge 14 -wire 10 -face 10 -shell 3 -solid 3 -t
+checknbshapes result -vertex 4 -edge 16 -wire 10 -face 10 -shell 3 -solid 3 -t
 checkprops result -s 3879.55 -v 6295.15
 
 checkview -display result -2d -path ${imagedir}/${test_image}.png

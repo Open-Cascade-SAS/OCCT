@@ -24,7 +24,8 @@
 #include <gp_Ax1.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS_Shape.hxx>
-
+#include <TopTools_DataMapOfShapeListOfShape.hxx>
+#include <BRepTools_ReShape.hxx>
 // perform checks on the argument
 static const TopoDS_Shape& check(const TopoDS_Shape& S)
 {
@@ -83,19 +84,131 @@ void  BRepPrimAPI_MakeRevol::Build()
   BRepLib::UpdateInnerTolerances(myShape);
   
   Done();
-// Modified by skv - Fri Mar  4 15:50:09 2005 Begin
+  myHist.Nullify();
   myDegenerated.Clear();
+  TopTools_DataMapOfShapeListOfShape aDegE;
+  BRep_Builder aBB;
 
   TopExp_Explorer anExp(myShape, TopAbs_EDGE);
-
+  //Problem is that some degenerated edges can be shared by different faces.
+  //It is not valid for correct shape.
+  //To solve problem it is possible to copy shared degenerated edge for each face, which has it, and 
+  //replace shared edge by its copy
   for (; anExp.More(); anExp.Next()) {
     const TopoDS_Shape &anEdge = anExp.Current();
     Handle(BRep_TEdge)  aTEdge = Handle(BRep_TEdge)::DownCast(anEdge.TShape());
 
     if (aTEdge->Degenerated())
-      myDegenerated.Append(anEdge);
+    {
+      TopTools_ListOfShape* anL = aDegE.ChangeSeek(anEdge);
+      if (anL)
+      {
+        //Make the copy if degenerated edge occurs more then once
+        TopoDS_Shape aCopyE = anEdge.EmptyCopied();
+        aCopyE.Orientation(TopAbs_FORWARD);
+        TopoDS_Iterator aVIter(anEdge.Oriented(TopAbs_FORWARD), Standard_False);
+        for (; aVIter.More(); aVIter.Next())
+        {
+          aBB.Add(aCopyE, aVIter.Value());
+        }
+        aCopyE.Orientation(anEdge.Orientation());
+        anL->Append(aCopyE);
+        myDegenerated.Append(aCopyE);
+      }
+      else
+      {
+        anL = aDegE.Bound(anEdge, TopTools_ListOfShape());
+        anL->Append(anEdge);
+        myDegenerated.Append(anEdge);
+      }
+    }
   }
-// Modified by skv - Fri Mar  4 15:50:09 2005 End
+  if (!myDegenerated.IsEmpty())
+  {
+    BRepTools_ReShape aSubs;
+    TopTools_DataMapOfShapeListOfShape aDegF;
+    Standard_Boolean isReplaced = Standard_False;
+    anExp.Init(myShape, TopAbs_FACE);
+    //Replace degenerated edge by its copies for different faces
+    //First, for each face list of d.e. is created
+    for (; anExp.More(); anExp.Next())
+    {
+      const TopoDS_Shape& aF = anExp.Current();
+      TopExp_Explorer anExpE(aF, TopAbs_EDGE);
+      for (; anExpE.More(); anExpE.Next())
+      {
+        const TopoDS_Shape &anE = anExpE.Current();
+        if (BRep_Tool::Degenerated(TopoDS::Edge(anE)))
+        {
+          TopTools_ListOfShape* anL = aDegF.ChangeSeek(aF);
+          if (!anL)
+          {
+            anL = aDegF.Bound(aF, TopTools_ListOfShape());
+          }
+          anL->Append(anE);
+        }
+      }
+    }
+    //
+    //Second, replace edges by copies using ReShape
+    BRepTools_ReShape aSubsF;
+    TopTools_DataMapIteratorOfDataMapOfShapeListOfShape aFIter(aDegF);
+    for (; aFIter.More(); aFIter.Next())
+    {
+      aSubs.Clear();
+      isReplaced = Standard_False;
+      const TopoDS_Shape& aF = aFIter.Key();
+      const TopTools_ListOfShape& aDEL = aFIter.ChangeValue();
+      TopTools_ListIteratorOfListOfShape anEIter(aDEL);
+      for (; anEIter.More(); anEIter.Next())
+      {
+        const TopoDS_Shape& anE = anEIter.Value();
+        if (aDegE.IsBound(anE))
+        {
+          TopTools_ListOfShape& aCEL = aDegE.ChangeFind(anE);
+          TopTools_ListIteratorOfListOfShape anIt(aCEL);
+          for (; anIt.More(); anIt.Next())
+          {
+            if (anIt.Value().IsEqual(anE))
+            {
+              //First occurence of initial deg. edge is not replaced
+              aCEL.Remove(anIt);
+              break;
+            }
+            if (anIt.Value().Orientation() == anE.Orientation())
+            {
+              //All other occurences of anE are replaced by any copy
+              //with suitable orientation
+              isReplaced = Standard_True;
+              aSubs.Replace(anE, anIt.Value());
+              aCEL.Remove(anIt);
+              break;
+            }
+          }
+        }
+      }
+      if (isReplaced)
+      {
+        TopoDS_Shape aNF = aSubs.Apply(aF);
+        aSubsF.Replace(aF, aNF);
+        if (myHist.IsNull())
+        {
+          myHist = aSubs.History();
+        }
+        else
+        {
+          myHist->Merge(aSubs.History());
+        }
+        myShape = aSubsF.Apply(myShape);
+        myHist->Merge(aSubsF.History());
+        //Pair aF->aNF is in history after first replacing of edge by aNF = aSubs.Apply(aF)
+        //After merging history for replacing faces, modified list for aF contains two exemplar of aNF
+        //So, using ReplaceModified clears modified list for aF and leaves only one exemplar of aNF
+        myHist->ReplaceModified(aF, aNF);
+        aSubsF.Clear();
+      }
+    }
+  }
 }
 
 
@@ -120,22 +233,46 @@ TopoDS_Shape BRepPrimAPI_MakeRevol::LastShape()
   return myRevol.LastShape();
 }
 
-
 //=======================================================================
 //function : Generated
 //purpose  : 
 //=======================================================================
-
 const TopTools_ListOfShape& BRepPrimAPI_MakeRevol::Generated (const TopoDS_Shape& S)
 {
   myGenerated.Clear();
-  if (!myRevol.Shape (S).IsNull())
-    myGenerated.Append (myRevol.Shape (S));
+  TopoDS_Shape aGS = myRevol.Shape(S);
+  if (!aGS.IsNull())
+  { 
+    if (BRepTools_History::IsSupportedType(aGS))
+    {
+      if (myHist.IsNull())
+      {
+        myGenerated.Append(aGS);
+        return myGenerated;
+      }
+      if (myHist->Modified(aGS).IsEmpty())
+      {
+        myGenerated.Append(aGS);
+        return myGenerated;
+      }
+      //
+      TopTools_ListIteratorOfListOfShape anIt(myHist->Modified(aGS));
+      for (; anIt.More(); anIt.Next())
+      {
+        myGenerated.Append(anIt.Value());
+      }
+      if (aGS.ShapeType() == TopAbs_EDGE)
+      {
+        if (BRep_Tool::Degenerated(TopoDS::Edge(aGS)))
+        {
+          //Append initial common deg. edge
+          myGenerated.Append(aGS);
+        }
+      }
+    }
+  }
   return myGenerated;
 }
-
-
-// Modified by skv - Fri Mar  4 15:50:09 2005 Begin
 
 //=======================================================================
 //function : FirstShape
@@ -180,4 +317,4 @@ const TopTools_ListOfShape& BRepPrimAPI_MakeRevol::Degenerated () const
 {
   return myDegenerated;
 }
-// Modified by skv - Fri Mar  4 15:50:09 2005 End
+

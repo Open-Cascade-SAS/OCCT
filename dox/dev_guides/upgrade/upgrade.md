@@ -1578,3 +1578,8 @@ Class *Message_PrinterOStream* can be used instead of *CDM_COutMessageDriver* to
 If custom driver class is used in the application, that class shall be reimplemented inheriting from *Message_Printer* instead of *CDM_MessageDriver*.
 Method *Send()* should be redefined instead of method *Write()* of *CDM_MessageDriver*.
 To use the custom printer in OCAF, it can be either added to default messenger or set into the custom *Message_Messenger* object created in the method *MessageDriver()* of a class inheriting *CDF_Application*.
+
+@section upgrade_occt740 Upgrade to OCCT 7.4.0
+
+@subsection upgrade_740_BRepPrimAPI_MakeRevol Changes in BRepPrimAPI_MakeRevol algorithm
+Previously the algorithm could create a shape with the same degenerated edge shared between some faces. Now it is prevented. The algorithm creates the different copy of this edge for each face. The method *Generated(...)* has been changed in order to apply restriction to the input shape: input shape can be only of type VERTEX, EDGE, FACE or SOLID. For input shape of another type the method always returns empty list.

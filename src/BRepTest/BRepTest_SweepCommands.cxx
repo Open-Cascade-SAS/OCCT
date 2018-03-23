@@ -100,7 +100,6 @@ static Standard_Integer prism(Draw_Interpretor& , Standard_Integer n, const char
 //=======================================================================
 // revol
 //=======================================================================
-
 static Standard_Integer revol(Draw_Interpretor& ,
 			      Standard_Integer n, const char** a)
 {
@@ -117,9 +116,17 @@ static Standard_Integer revol(Draw_Interpretor& ,
   
   Standard_Boolean copy = n > 10;
 
-  TopoDS_Shape res = BRepPrimAPI_MakeRevol(base,A,angle,copy);
+
+  BRepPrimAPI_MakeRevol Revol(base, A, angle, copy);
+
+  TopoDS_Shape res = Revol.Shape();
 
   DBRep::Set(a[1],res);
+
+  //History 
+  TopTools_ListOfShape anArgs;
+  anArgs.Append(base);
+  BRepTest_Objects::SetHistory(anArgs, Revol);
 
   return 0;
 }

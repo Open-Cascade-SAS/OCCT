@@ -1,0 +1,43 @@
+puts "========"
+puts "OCC29586"
+puts "========"
+puts ""
+#################################################
+# Revolution creates solid with degenerated edges shared among faces
+#################################################
+
+circle c1 0 -5 0 1 0 0 10
+circle c2 0 5 0 1 0 0 10
+mkedge e1 c1
+mkedge e2 c2
+wire w1 e1
+wire w2 e2
+mkplane f1 w1
+mkplane f2 w2
+bcut f12 f1 f2
+revol r f12 0 0 0 0 0 1 180
+
+explode r f
+
+explode r_1 e
+
+explode r_2 e
+
+explode r_3 e
+
+if {[regexp "same shapes" [compare r_1_1 r_2_1]]} { puts "Error" }
+# Error
+
+if {[regexp "same shapes" [compare r_3_2 r_2_2]]} { puts "Error" }
+# Error
+
+#testing generated
+savehistory h
+explode f12 v
+generated g1 h f12_1
+checknbshapes g1 -edge 2
+generated g2 h f12_2
+checknbshapes g2 -edge 1
+generated g3 h f12_3
+checknbshapes g3 -edge 2
+
