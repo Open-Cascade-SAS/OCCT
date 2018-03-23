@@ -3415,7 +3415,7 @@ static void setDimObjectToXCAF(const Handle(Standard_Transient)& theEnt,
     aDimObj->SetClassOfTolerance(aHolle, aFV, aG);
   }
 
-  if (!aCRI.IsNull() && aCRI->ItemElement()->Length() > 0)
+  if (!aCRI.IsNull() && !aCRI->ItemElement().IsNull() && aCRI->ItemElement()->Length() > 0)
   {
     //get modifiers
     XCAFDimTolObjects_DimensionModifiersSequence aModifiers;
