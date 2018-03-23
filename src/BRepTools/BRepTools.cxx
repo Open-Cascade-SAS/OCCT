@@ -25,6 +25,7 @@
 #include <BRepTools.hxx>
 #include <BRepTools_MapOfVertexPnt2d.hxx>
 #include <BRepTools_ShapeSet.hxx>
+#include <BRepAdaptor_Surface.hxx>
 #include <ElCLib.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
@@ -64,6 +65,27 @@
 #include <TopTools_SequenceOfShape.hxx>
 #include <GeomLib_CheckCurveOnSurface.hxx>
 #include <errno.h>
+
+
+//=======================================================================
+//function : IsPCurveUiso
+//purpose  : 
+//=======================================================================
+
+static Standard_Boolean IsPCurveUiso(const Handle(Geom2d_Curve)& thePCurve,
+                                     Standard_Real theFirstPar,
+                                     Standard_Real theLastPar)
+{
+  gp_Pnt2d FirstP2d = thePCurve->Value(theFirstPar);
+  gp_Pnt2d LastP2d  = thePCurve->Value(theLastPar);
+
+  Standard_Real DeltaU = Abs(FirstP2d.X() - LastP2d.X());
+  Standard_Real DeltaV = Abs(FirstP2d.Y() - LastP2d.Y());
+
+  return (DeltaU < DeltaV);
+}
+
+
 //=======================================================================
 //function : UVBounds
 //purpose  : 
@@ -992,6 +1014,43 @@ Standard_Boolean BRepTools::IsReallyClosed(const TopoDS_Edge& E,
     }
   }
   return nbocc == 2;
+}
+
+//=======================================================================
+//function : DetectClosedness
+//purpose  : 
+//=======================================================================
+
+void BRepTools::DetectClosedness(const TopoDS_Face& theFace,
+                                 Standard_Boolean&  theUclosed,
+                                 Standard_Boolean&  theVclosed)
+{
+  theUclosed = theVclosed = Standard_False;
+  
+  BRepAdaptor_Surface BAsurf(theFace, Standard_False);
+  Standard_Boolean IsSurfUclosed = BAsurf.IsUClosed();
+  Standard_Boolean IsSurfVclosed = BAsurf.IsVClosed();
+  if (!IsSurfUclosed && !IsSurfVclosed)
+    return;
+  
+  TopExp_Explorer Explo(theFace, TopAbs_EDGE);
+  for (; Explo.More(); Explo.Next())
+  {
+    const TopoDS_Edge& anEdge = TopoDS::Edge(Explo.Current());
+    if (BRepTools::IsReallyClosed(anEdge, theFace))
+    {
+      Standard_Real fpar, lpar;
+      Handle(Geom2d_Curve) aPCurve = BRep_Tool::CurveOnSurface(anEdge, theFace, fpar, lpar);
+      Standard_Boolean IsUiso = IsPCurveUiso(aPCurve, fpar, lpar);
+      if (IsSurfUclosed && IsUiso)
+        theUclosed = Standard_True;
+      if (IsSurfVclosed && !IsUiso)
+        theVclosed = Standard_True;
+      
+      if (theUclosed && theVclosed)
+        break;
+    }
+  }
 }
 
 //=======================================================================

@@ -186,6 +186,11 @@ public:
   //! the face <F> before calling BRep_Tool::IsClosed.
   Standard_EXPORT static Standard_Boolean IsReallyClosed (const TopoDS_Edge& E, const TopoDS_Face& F);
   
+  //! Detect closedness of face in U and V directions
+  Standard_EXPORT static void DetectClosedness (const TopoDS_Face& theFace,
+                                                Standard_Boolean&  theUclosed,
+                                                Standard_Boolean&  theVclosed);
+  
   //! Dumps the topological structure and the geometry
   //! of <Sh> on the stream <S>.
   Standard_EXPORT static void Dump (const TopoDS_Shape& Sh, Standard_OStream& S);
