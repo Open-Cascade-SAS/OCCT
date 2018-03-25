@@ -25,8 +25,8 @@ set y_sel_tol 400
 
 set x_notol 374
 set y_notol 309
-set x_tol 370
-set y_tol 312
+set x_tol 372
+set y_tol 310
 
 vselmode b 2 1
 
@@ -78,3 +78,4 @@ checkcolor ${x_on_edge} ${y_on_edge} 1 1 0
 checkcolor $x_on_vert $y_on_vert 0 1 1
 
 vdump ${imagedir}/${casename}.png
+vseldump ${imagedir}/${casename}_sel_ent.png -type entity

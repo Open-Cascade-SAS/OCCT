@@ -39,7 +39,7 @@ void SelectMgr_RectangularFrustum::segmentSegmentDistance (const gp_Pnt& theSegP
   Standard_Real aSn = aCoef;
   Standard_Real aTc, aTn, aTd = aCoef;
 
-  if (aCoef < Precision::Confusion())
+  if (aCoef < gp::Resolution())
   {
     aTn = anE;
     aTd = aC;
@@ -68,7 +68,7 @@ void SelectMgr_RectangularFrustum::segmentSegmentDistance (const gp_Pnt& theSegP
   {
     aTn = aTd;
   }
-  aTc = (Abs (aTn) < Precision::Confusion() ? 0.0 : aTn / aTd);
+  aTc = (Abs (aTd) < gp::Resolution() ? 0.0 : aTn / aTd);
 
   gp_Pnt aClosestPnt = myNearPickedPnt.XYZ() + myViewRayDir.XYZ() * aTc;
   theDepth = myNearPickedPnt.Distance (aClosestPnt) * myScale;

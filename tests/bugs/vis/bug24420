@@ -1,12 +1,9 @@
 puts "============"
-puts "CR24420"
+puts "CR24420: Test for type of sensitivity of AIS_Plane"
 puts "============"
 puts ""
 
-#######################################################################
-#  Test for type of sensitivity of AIS_Plane
-#######################################################################
-
+pload VISUALIZATION
 set aV "Driver1/Viewer1/View1"
 vinit name=$aV l=32 t=32 w=400 h=400
 vactivate $aV
@@ -20,7 +17,7 @@ puts "Testing Select3D_TOS_INTERIOR type of sensitivity:"
 vplane pl1 p1 p2 p3 0
 vfit
 
-vmoveto 200 200
+vmoveto 210 210
 checkcolor 395 200 0 1 1
 
 if { $stat != 1 } {
@@ -34,7 +31,7 @@ puts "Testing Select3D_TOS_BOUNDARY type of sensitivity:"
 vplane pl2 p1 p2 p3 1
 vfit
 
-vmoveto 200 200
+vmoveto 210 210
 checkcolor 395 200 0.5 0.8 0.9
 
 if { $stat != 1 } {

@@ -321,6 +321,12 @@ private: // implementation of deprecated methods
     return myCurRank <= myIndexes->Length();
   }
 
+  //! Compute 3d position for detected entity.
+  void updatePoint3d (SelectMgr_SortCriterion& theCriterion,
+                      const Handle(SelectBasics_SensitiveEntity)& theEntity,
+                      const gp_GTrsf& theInversedTrsf,
+                      const SelectMgr_SelectingVolumeManager& theMgr) const;
+
 protected:
 
   Standard_Boolean                              preferclosest;
@@ -331,6 +337,9 @@ protected:
   SelectMgr_ToleranceMap                        myTolerances;
   NCollection_DataMap<Graphic3d_ZLayerId, Standard_Integer> myZLayerOrderMap;
   Handle(Select3D_BVHBuilder3d)                 myEntitySetBuilder;
+  gp_Pnt                                        myCameraEye;
+  gp_Dir                                        myCameraDir;
+  Standard_Real                                 myCameraScale;
 
 private:
 

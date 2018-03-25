@@ -59,29 +59,47 @@ namespace {
     const SelectMgr_IndexedDataMapOfOwnerCriterion&  myMapOfCriterion;
   };
 
-  //! Compute 3d position for detected entity.
-  inline void updatePoint3d (SelectMgr_SortCriterion& theCriterion,
-                             const gp_GTrsf& theInversedTrsf,
-                             SelectMgr_SelectingVolumeManager& theMgr)
-  {
-    if (theMgr.GetActiveSelectionType() != SelectMgr_SelectingVolumeManager::Point)
-    {
-      return;
-    }
+  static const Graphic3d_Mat4d SelectMgr_ViewerSelector_THE_IDENTITY_MAT;
+}
 
-    theCriterion.Point = theMgr.DetectedPoint (theCriterion.Depth);
-    gp_GTrsf anInvTrsf = theInversedTrsf;
-    if (theCriterion.Entity->HasInitLocation())
-    {
-      anInvTrsf = theCriterion.Entity->InvInitLocation() * anInvTrsf;
-    }
-    if (anInvTrsf.Form() != gp_Identity)
-    {
-      anInvTrsf.Inverted().Transforms (theCriterion.Point.ChangeCoord());
-    }
+//=======================================================================
+// function : updatePoint3d
+// purpose  :
+//=======================================================================
+void SelectMgr_ViewerSelector::updatePoint3d (SelectMgr_SortCriterion& theCriterion,
+                                              const Handle(SelectBasics_SensitiveEntity)& theEntity,
+                                              const gp_GTrsf& theInversedTrsf,
+                                              const SelectMgr_SelectingVolumeManager& theMgr) const
+{
+  if (theMgr.GetActiveSelectionType() != SelectMgr_SelectingVolumeManager::Point)
+  {
+    return;
   }
 
-  static const Graphic3d_Mat4d SelectMgr_ViewerSelector_THE_IDENTITY_MAT;
+  theCriterion.Point = theMgr.DetectedPoint (theCriterion.Depth);
+  gp_GTrsf anInvTrsf = theInversedTrsf;
+  if (theCriterion.Entity->HasInitLocation())
+  {
+    anInvTrsf = theCriterion.Entity->InvInitLocation() * anInvTrsf;
+  }
+  if (anInvTrsf.Form() != gp_Identity)
+  {
+    anInvTrsf.Inverted().Transforms (theCriterion.Point.ChangeCoord());
+  }
+
+  if (mySelectingVolumeMgr.Camera().IsNull())
+  {
+    theCriterion.Tolerance = theEntity->SensitivityFactor() / 33.0;
+  }
+  else if (mySelectingVolumeMgr.Camera()->IsOrthographic())
+  {
+    theCriterion.Tolerance = myCameraScale * theEntity->SensitivityFactor();
+  }
+  else
+  {
+    const Standard_Real aDistFromEye = (theCriterion.Point.XYZ() - myCameraEye.XYZ()).Dot (myCameraDir.XYZ());
+    theCriterion.Tolerance = aDistFromEye * myCameraScale * theEntity->SensitivityFactor();
+  }
 }
 
 //==================================================
@@ -91,6 +109,7 @@ namespace {
 SelectMgr_ViewerSelector::SelectMgr_ViewerSelector():
 preferclosest(Standard_True),
 myToUpdateTolerance (Standard_True),
+myCameraScale (1.0),
 myCurRank (0),
 myIsLeftChildQueuedFirst (Standard_False),
 myEntityIdx (0)
@@ -249,7 +268,6 @@ void SelectMgr_ViewerSelector::checkOverlap (const Handle(SelectBasics_Sensitive
   aCriterion.Priority  = anOwner->Priority();
   aCriterion.Depth     = aPickResult.Depth();
   aCriterion.MinDist   = aPickResult.DistToGeomCenter();
-  aCriterion.Tolerance = theEntity->SensitivityFactor() / 33.0;
   aCriterion.ToPreferClosest = preferclosest;
 
   if (SelectMgr_SortCriterion* aPrevCriterion = mystored.ChangeSeek (anOwner))
@@ -260,7 +278,7 @@ void SelectMgr_ViewerSelector::checkOverlap (const Handle(SelectBasics_Sensitive
     {
       if (aCriterion > *aPrevCriterion)
       {
-        updatePoint3d (aCriterion, theInversedTrsf, theMgr);
+        updatePoint3d (aCriterion, theEntity, theInversedTrsf, theMgr);
         *aPrevCriterion = aCriterion;
       }
     }
@@ -268,7 +286,7 @@ void SelectMgr_ViewerSelector::checkOverlap (const Handle(SelectBasics_Sensitive
   else
   {
     aCriterion.NbOwnerMatches = 1;
-    updatePoint3d (aCriterion, theInversedTrsf, theMgr);
+    updatePoint3d (aCriterion, theEntity, theInversedTrsf, theMgr);
     mystored.Add (anOwner, aCriterion);
   }
 }
@@ -477,6 +495,17 @@ void SelectMgr_ViewerSelector::TraverseSensitives()
                                  mySelectingVolumeMgr.WorldViewMatrix(),
                                  mySelectingVolumeMgr.WorldViewProjState(),
                                  aWidth, aHeight);
+  const Handle(Graphic3d_Camera)& aCamera = mySelectingVolumeMgr.Camera();
+  if (!aCamera.IsNull())
+  {
+    myCameraEye = aCamera->Eye().XYZ();
+    myCameraDir = aCamera->Direction().XYZ();
+    myCameraScale = aCamera->IsOrthographic()
+                  ? aCamera->Scale()
+                  : 2.0 * Tan (aCamera->FOVy() * M_PI / 360.0);
+    const double aPixelSize = Max (1.0 / aWidth, 1.0 / aHeight);
+    myCameraScale *= aPixelSize;
+  }
 
   for (Standard_Integer aBVHSetIt = 0; aBVHSetIt < SelectMgr_SelectableObjectSet::BVHSubsetNb; ++aBVHSetIt)
   {
@@ -521,7 +550,6 @@ void SelectMgr_ViewerSelector::TraverseSensitives()
       aMgr = mySelectingVolumeMgr;
     }
 
-    const Handle(Graphic3d_Camera)& aCamera = mySelectingVolumeMgr.Camera();
     const Graphic3d_Mat4d& aProjectionMat   = mySelectingVolumeMgr.ProjectionMatrix();
     const Graphic3d_Mat4d& aWorldViewMat    = aBVHSubset != SelectMgr_SelectableObjectSet::BVHSubset_2dPersistent
                                             ? mySelectingVolumeMgr.WorldViewMatrix()
