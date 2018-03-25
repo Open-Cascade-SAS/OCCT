@@ -13,6 +13,7 @@
 #include "ModelClippingDlg.h"
 #include "TrihedronDlg.h"
 
+#include <AIS_RubberBand.hxx>
 #include <V3d_AmbientLight.hxx>
 #include <V3d_DirectionalLight.hxx>
 #include <V3d_PositionalLight.hxx>
@@ -109,7 +110,7 @@ CViewer3dView::CViewer3dView()
   myCurZoom (0.0),
   NbActiveLights (2), // There are 2 default active lights
   myHlrModeIsOn (Standard_False),
-  m_Pen (NULL),
+  myRect (new AIS_RubberBand (Quantity_NOC_WHITE, Aspect_TOL_SOLID, 1.0)),
   myAxisKey (0),
   myScaleDirection (0)
 {
@@ -120,7 +121,6 @@ CViewer3dView::CViewer3dView()
 CViewer3dView::~CViewer3dView()
 {
   myView->Remove();
-  if (m_Pen) delete m_Pen;
 }
 
 BOOL CViewer3dView::PreCreateWindow(CREATESTRUCT& cs)
@@ -646,7 +646,6 @@ void CViewer3dView::OnMouseMove(UINT nFlags, CPoint point)
         {
          case CurAction3d_Nothing :
 
-       	   DrawRectangle(myXmin,myYmin,myXmax,myYmax,Standard_False);
            myXmax = point.x;      myYmax = point.y;
            if (nFlags & MK_SHIFT)		
        	     GetDocument()->ShiftDragEvent(myXmax,myYmax,0,myView);
@@ -661,8 +660,7 @@ void CViewer3dView::OnMouseMove(UINT nFlags, CPoint point)
          break;
          case CurAction3d_WindowZooming :
 		   myXmax = point.x; myYmax = point.y;	
-       	   DrawRectangle(myXmin,myYmin,myXmax,myYmax,Standard_False,LongDash);
-       	   DrawRectangle(myXmin,myYmin,myXmax,myYmax,Standard_True,LongDash);
+       	   DrawRectangle(myXmin,myYmin,myXmax,myYmax,Standard_True, Aspect_TOL_DASH);
 
          break;
          case CurAction3d_DynamicPanning :
@@ -799,60 +797,34 @@ void CViewer3dView::OnUpdateBUTTONRot(CCmdUI* pCmdUI)
 	pCmdUI->Enable   (myCurrentMode != CurAction3d_DynamicRotation);	
 }
 
-void CViewer3dView::DrawRectangle(const Standard_Integer  MinX    ,
-					                    const Standard_Integer  MinY    ,
-                                        const Standard_Integer  MaxX ,
-					                    const Standard_Integer  MaxY ,
-					                    const Standard_Boolean  Draw , 
-                                        const LineStyle aLineStyle)
+void CViewer3dView::DrawRectangle (Standard_Integer theMinX,
+                                   Standard_Integer theMinY,
+                                   Standard_Integer theMaxX,
+                                   Standard_Integer theMaxY,
+                                   Standard_Boolean theToDraw,
+                                   Aspect_TypeOfLine theLineType)
 {
-    static int m_DrawMode;
-    if  (!m_Pen && aLineStyle ==Solid )
-        {m_Pen = new CPen(PS_SOLID, 1, RGB(0,0,0)); m_DrawMode = R2_MERGEPENNOT;}
-    else if (!m_Pen && aLineStyle ==Dot )
-        {m_Pen = new CPen(PS_DOT, 1, RGB(0,0,0));   m_DrawMode = R2_XORPEN;}
-    else if (!m_Pen && aLineStyle == ShortDash)
-        {m_Pen = new CPen(PS_DASH, 1, RGB(255,0,0));	m_DrawMode = R2_XORPEN;}
-    else if (!m_Pen && aLineStyle == LongDash)
-        {m_Pen = new CPen(PS_DASH, 1, RGB(0,0,0));	m_DrawMode = R2_NOTXORPEN;}
-    else if (aLineStyle == Default) 
-        { m_Pen = NULL;	m_DrawMode = R2_MERGEPENNOT;}
+  const Handle(AIS_InteractiveContext)& aCtx = GetDocument()->GetAISContext();
+  if (!theToDraw)
+  {
+    aCtx->Remove (myRect, false);
+    aCtx->CurrentViewer()->RedrawImmediate();
+    return;
+  }
 
-    CPen* aOldPen = NULL;
-    CClientDC clientDC(this);
-    if (m_Pen) aOldPen = clientDC.SelectObject(m_Pen);
-    clientDC.SetROP2(m_DrawMode);
-
-    static		Standard_Integer StoredMinX, StoredMaxX, StoredMinY, StoredMaxY;
-    static		Standard_Boolean m_IsVisible;
-
-    if ( m_IsVisible && !Draw) // move or up  : erase at the old position 
-    {
-     clientDC.MoveTo(StoredMinX,StoredMinY); 
-     clientDC.LineTo(StoredMinX,StoredMaxY); 
-     clientDC.LineTo(StoredMaxX,StoredMaxY); 
-	   clientDC.LineTo(StoredMaxX,StoredMinY); 
-     clientDC.LineTo(StoredMinX,StoredMinY);
-     m_IsVisible = false;
-    }
-
-    StoredMinX = Min ( MinX, MaxX );
-    StoredMinY = Min ( MinY, MaxY );
-    StoredMaxX = Max ( MinX, MaxX );
-    StoredMaxY = Max ( MinY, MaxY);
-
-    if (Draw) // move : draw
-    {
-     clientDC.MoveTo(StoredMinX,StoredMinY); 
-     clientDC.LineTo(StoredMinX,StoredMaxY); 
-     clientDC.LineTo(StoredMaxX,StoredMaxY); 
-	   clientDC.LineTo(StoredMaxX,StoredMinY); 
-     clientDC.LineTo(StoredMinX,StoredMinY);
-     m_IsVisible = true;
-   }
-
-    if (m_Pen) 
-      clientDC.SelectObject(aOldPen);
+  CRect aRect;
+  GetWindowRect (aRect);
+  myRect->SetLineType (theLineType);
+  myRect->SetRectangle (theMinX, aRect.Height() - theMinY, theMaxX, aRect.Height() - theMaxY);
+  if (!aCtx->IsDisplayed (myRect))
+  {
+    aCtx->Display (myRect, false);
+  }
+  else
+  {
+    aCtx->Redisplay (myRect, false);
+  }
+  aCtx->CurrentViewer()->RedrawImmediate();
 }
 
 void CViewer3dView::OnModifyChangeBackground() 

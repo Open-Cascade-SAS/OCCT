@@ -7,6 +7,7 @@
 #include "OCCDemoDoc.h"
 #include "OCCDemoView.h"
 
+#include <AIS_RubberBand.hxx>
 #include <Graphic3d_GraphicDriver.hxx>
 
 #define ValZWMin 1
@@ -69,7 +70,7 @@ COCCDemoView::COCCDemoView()
   myCurZoom=0;
   myCurrentMode = CurAction3d_Nothing;
   myVisMode = VIS_SHADE;
-  m_Pen = NULL;
+  myRect = new AIS_RubberBand (Quantity_NOC_WHITE, Aspect_TOL_SOLID, 1.0);
   myGraphicDriver = ((COCCDemoApp*)AfxGetApp())->GetGraphicDriver();
 }
 
@@ -77,8 +78,6 @@ COCCDemoView::~COCCDemoView()
 {
 	if (!myView.IsNull())
     myView->Remove();
-  if (m_Pen)
-    delete m_Pen;
 }
 
 BOOL COCCDemoView::PreCreateWindow(CREATESTRUCT& cs)
@@ -336,8 +335,7 @@ void COCCDemoView::OnMouseMove(UINT nFlags, CPoint point)
         break;
       case CurAction3d_WindowZooming :
         myXmax = point.x; myYmax = point.y;	
-        DrawRectangle(myXmin,myYmin,myXmax,myYmax,Standard_False,LongDash);
-        DrawRectangle(myXmin,myYmin,myXmax,myYmax,Standard_True,LongDash);
+        DrawRectangle (myXmin, myYmin, myXmax, myYmax, Standard_True, Aspect_TOL_DASH);
         break;
       case CurAction3d_DynamicPanning :
         myView->Pan(point.x-myXmax,myYmax-point.y); // Realize the panning
@@ -407,67 +405,34 @@ void COCCDemoView::OnUpdateBUTTONRot(CCmdUI* pCmdUI)
 	pCmdUI->Enable   (myCurrentMode != CurAction3d_DynamicRotation);	
 }
 
-void COCCDemoView::DrawRectangle(const Standard_Integer  MinX,
-                                        const Standard_Integer  MinY,
-                                        const Standard_Integer  MaxX,
-                                        const Standard_Integer  MaxY,
-                                        const Standard_Boolean  Draw, 
-                                        const LineStyle aLineStyle)
+void COCCDemoView::DrawRectangle (Standard_Integer theMinX,
+                                  Standard_Integer theMinY,
+                                  Standard_Integer theMaxX,
+                                  Standard_Integer theMaxY,
+                                  Standard_Boolean theToDraw,
+                                  Aspect_TypeOfLine theLineType)
 {
-  static int m_DrawMode;
-  if  (!m_Pen && aLineStyle ==Solid )
+  const Handle(AIS_InteractiveContext)& aCtx = GetDocument()->GetAISContext();
+  if (!theToDraw)
   {
-    m_Pen = new CPen(PS_SOLID, 1, RGB(0,0,0)); m_DrawMode = R2_MERGEPENNOT;
-  }
-  else if (!m_Pen && aLineStyle ==Dot )
-  {
-    m_Pen = new CPen(PS_DOT, 1, RGB(0,0,0));   m_DrawMode = R2_XORPEN;
-  }
-  else if (!m_Pen && aLineStyle == ShortDash)
-  {
-    m_Pen = new CPen(PS_DASH, 1, RGB(255,0,0));	m_DrawMode = R2_XORPEN;
-  }
-  else if (!m_Pen && aLineStyle == LongDash)
-  {
-    m_Pen = new CPen(PS_DASH, 1, RGB(0,0,0));	m_DrawMode = R2_NOTXORPEN;
-  }
-  else if (aLineStyle == Default) 
-  {
-    m_Pen = NULL;	m_DrawMode = R2_MERGEPENNOT;
+    aCtx->Remove (myRect, false);
+    aCtx->CurrentViewer()->RedrawImmediate();
+    return;
   }
 
-  CPen* aOldPen = NULL;
-  CClientDC clientDC(this);
-  if (m_Pen) 
-    aOldPen = clientDC.SelectObject(m_Pen);
-  clientDC.SetROP2(m_DrawMode);
-
-  static		Standard_Integer StoredMinX, StoredMaxX, StoredMinY, StoredMaxY;
-  static		Standard_Boolean m_IsVisible = Standard_False;
-
-  if ( m_IsVisible && !Draw) // move or up  : erase at the old position 
+  CRect aRect;
+  GetWindowRect (aRect);
+  myRect->SetLineType (theLineType);
+  myRect->SetRectangle (theMinX, aRect.Height() - theMinY, theMaxX, aRect.Height() - theMaxY);
+  if (!aCtx->IsDisplayed (myRect))
   {
-    clientDC.MoveTo(StoredMinX,StoredMinY); clientDC.LineTo(StoredMinX,StoredMaxY); 
-    clientDC.LineTo(StoredMaxX,StoredMaxY); 
-    clientDC.LineTo(StoredMaxX,StoredMinY); clientDC.LineTo(StoredMinX,StoredMinY);
-    m_IsVisible = false;
+    aCtx->Display (myRect, false);
   }
-
-  StoredMinX = Min ( MinX, MaxX );
-  StoredMinY = Min ( MinY, MaxY );
-  StoredMaxX = Max ( MinX, MaxX );
-  StoredMaxY = Max ( MinY, MaxY);
-
-  if (Draw) // move : draw
+  else
   {
-    clientDC.MoveTo(StoredMinX,StoredMinY); clientDC.LineTo(StoredMinX,StoredMaxY); 
-    clientDC.LineTo(StoredMaxX,StoredMaxY); 
-    clientDC.LineTo(StoredMaxX,StoredMinY); clientDC.LineTo(StoredMinX,StoredMinY);
-    m_IsVisible = true;
+    aCtx->Redisplay (myRect, false);
   }
-
-  if (m_Pen) 
-    clientDC.SelectObject(aOldPen);
+  aCtx->CurrentViewer()->RedrawImmediate();
 }
 
 void COCCDemoView::InitButtons()

@@ -13,6 +13,8 @@
 #include "AnimationDoc.h"
 #include "..\..\Common\res\OCC_Resource.h"
 
+class AIS_RubberBand;
+
 enum View3D_CurrentAction { 
   CurrentAction3d_Nothing,
   CurrentAction3d_DynamicZooming,
@@ -146,14 +148,9 @@ private:
   double               m_Focus ;
 
 private:
-	enum LineStyle { Solid, Dot, ShortDash, LongDash, Default };
-	CPen*  m_Pen;
-    virtual void DrawRectangle (const Standard_Integer  MinX  ,
-    					        const Standard_Integer  MinY  ,
-                                const Standard_Integer  MaxX  ,
-				    	        const Standard_Integer  MaxY  ,
-					            const Standard_Boolean  Draw  ,
-                                const LineStyle aLineStyle = Default  );
+  Handle(AIS_RubberBand) myRect; //!< Rubber rectangle for selection
+  void DrawRectangle (Standard_Integer theMinX, Standard_Integer theMinY, Standard_Integer theMaxX, Standard_Integer theMaxY,
+                      Standard_Boolean theToDraw, Aspect_TypeOfLine theLineType = Aspect_TOL_SOLID);
 };
 
 #ifndef _DEBUG  // debug version in AnimationView.cpp
