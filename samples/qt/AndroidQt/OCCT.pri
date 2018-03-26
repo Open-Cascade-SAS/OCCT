@@ -4,9 +4,6 @@ DEPENDPATH  += $$_PRO_FILE_PWD_/occt/inc $$_PRO_FILE_PWD_/3rdparty/include
 
 DEFINES += OCC_CONVERT_SIGNALS
 
-QMAKE_CFLAGS   += -fexceptions -Wno-ignored-qualifiers
-QMAKE_CXXFLAGS += -fexceptions -Wno-ignored-qualifiers
-
 CONFIG(debug,debug|release) {
   DEFINES += DEB
 }
@@ -16,9 +13,19 @@ occt_lib_subpath = libs/armeabi-v7a
 occt_lib_path      = $$_PRO_FILE_PWD_/occt/$$occt_lib_subpath
 3rdparty_lib_path  = $$_PRO_FILE_PWD_/3rdparty/$$occt_lib_subpath
 
+android {
+    QMAKE_CFLAGS   += -fexceptions -Wno-ignored-qualifiers
+    QMAKE_CXXFLAGS += -fexceptions -Wno-ignored-qualifiers
+    LIBS += -L$$occt_lib_path -lEGL
+}
+win32 {
+    QMAKE_CXXFLAGS_WARN_ON += -W4
+    INCLUDEPATH += $$(CSF_OCCTIncludePath)
+    LIBS += -L$(CSF_OCCTLibPath);$(CSF_PRODLibPath)
+    LIBS += -lopengl32
+}
 
-LIBS += -L$$occt_lib_path \
-        -lTKernel \
+LIBS += -lTKernel \
         -lTKMath \
         -lTKG2d \
         -lTKG3d \
@@ -31,8 +38,7 @@ LIBS += -L$$occt_lib_path \
         -lTKMesh \
         -lTKHLR \
         -lTKV3d \
-        -lTKOpenGl \
-        -lEGL
+        -lTKOpenGl
 
 # IMPORTANT. load libraries in a proper order
 ANDROID_EXTRA_LIBS =  $$3rdparty_lib_path/libfreeimage.so \
