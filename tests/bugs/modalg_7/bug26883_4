@@ -1,6 +1,3 @@
-puts "TODO OCC26883 ALL: Faulty shapes in variables faulty_1 to"
-puts "TODO OCC26883 ALL: Error :  is WRONG because number of SOLID entities in shape"
-
 puts "========"
 puts "OCC26883"
 puts "========"
@@ -21,7 +18,7 @@ bfillds
 bbop result 1
 
 checkshape result
-
-checknbshapes result -solid 1
+checkprops result -s 2116.44 -v 607.276
+checknbshapes result -wire 39 -face 32 -shell 3 -solid 1
 
 checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -1,4 +1,3 @@
-
 puts "========================"
 puts "BUC60703"
 puts "================================="
@@ -10,22 +9,12 @@ puts ""
 ############################################
 
 restore [locate_data_file buc60703c.brep] a 
-checkshape a
-
 restore [locate_data_file buc60703e.brep] b
-checkshape b
 
+bfuse result a b
 
-if [catch {bfuse result a b } catch_result] {
-    puts "Faulty  BUC60703: here is problem with FUSE operation"
-} else {
-    puts "OK BUC60703: function FUSE works ok"		
-    if [catch {checkshape result } catch_result] {
-	puts "WARNING BUC60703 : Function checkshape gives bad result"
-	puts " See also OCC438: 919 D3 and D4"
-    } else {
-	puts "BUC60703  OK in checkshape"
-    }	
-}
-checkprops result -s 236.72 
+checkshape result
+checkprops result -s 172.662 -v 129.604
+checknbshapes result -wire 10 -face 10 -shell 1 -solid 1
+
 checkview -display result -2d -path ${imagedir}/${test_image}.png

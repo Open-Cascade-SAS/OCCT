@@ -708,45 +708,53 @@ void MakeInternalWires(const TopTools_IndexedMapOfShape& theME,
 //function : IsInside
 //purpose  : 
 //=======================================================================
-Standard_Boolean IsInside(const TopoDS_Shape& theHole,
-                          const TopoDS_Shape& theF2,
+Standard_Boolean IsInside(const TopoDS_Shape& theWire,
+                          const TopoDS_Shape& theF,
                           Handle(IntTools_Context)& theContext)
 {
-  Standard_Boolean bRet;
-  Standard_Real aT, aU, aV;
-  
-  TopAbs_State aState;
-  TopExp_Explorer aExp;
-  TopTools_IndexedMapOfShape aME2;
-  gp_Pnt2d aP2D;
-  //
-  bRet=Standard_False;
-  aState=TopAbs_UNKNOWN;
-  const TopoDS_Face& aF2=(*(TopoDS_Face *)(&theF2));
-  //
-  TopExp::MapShapes(aF2, TopAbs_EDGE, aME2);//AA
-  //
-  aExp.Init(theHole, TopAbs_EDGE);
-  if (aExp.More()) {
-    const TopoDS_Edge& aE =(*(TopoDS_Edge *)(&aExp.Current()));
-    if (aME2.Contains(aE)) {
-      return bRet;
-    }
-    if (!BRep_Tool::Degenerated(aE)) {
-      //
-      aT=BOPTools_AlgoTools2D::IntermediatePoint(aE);
-      BOPTools_AlgoTools2D::PointOnSurface(aE, aF2, aT, aU, aV, theContext);
-      aP2D.SetCoord(aU, aV);
-      //
-      IntTools_FClass2d& aClsf=theContext->FClass2d(aF2);
-      aState=aClsf.Perform(aP2D);
-      bRet=(aState==TopAbs_IN);
-    }
-  }
-  //
-  return bRet;
-}
+  // Check if the wire is located inside the face:
+  // take unique point from the wire and classify it relatively the face
 
+  // Avoid edges of the face
+  TopTools_IndexedMapOfShape aFaceEdgesMap;
+  TopExp::MapShapes(theF, TopAbs_EDGE, aFaceEdgesMap);
+
+  // Get classification tool from the context
+  const TopoDS_Face& aF = TopoDS::Face(theF);
+  IntTools_FClass2d& aClassifier = theContext->FClass2d(aF);
+
+  Standard_Boolean isInside = Standard_False;
+
+  // Iterate on wire edges until first classification is performed
+  TopExp_Explorer anExp(theWire, TopAbs_EDGE);
+  for (; anExp.More(); anExp.Next())
+  {
+    const TopoDS_Edge& aE = TopoDS::Edge(anExp.Current());
+    if (BRep_Tool::Degenerated(aE))
+      // Avoid checking degenerated edges.
+      continue;
+
+    if (aFaceEdgesMap.Contains(aE))
+      // Face contains the edge from the wire, thus the wire cannot be
+      // inside that face.
+      return isInside;
+
+    // Get 2d curve of the edge on the face
+    Standard_Real aT1, aT2;
+    const Handle(Geom2d_Curve)& aC2D = BRep_Tool::CurveOnSurface(aE, aF, aT1, aT2);
+    if (aC2D.IsNull())
+      continue;
+
+    // Get middle point on the curve
+    gp_Pnt2d aP2D = aC2D->Value((aT1 + aT2) / 2.);
+
+    // Classify the point
+    TopAbs_State aState = aClassifier.Perform(aP2D);
+    isInside = (aState == TopAbs_IN);
+    break;
+  }
+  return isInside;
+}
 //=======================================================================
 //function : IsGrowthWire
 //purpose  : 

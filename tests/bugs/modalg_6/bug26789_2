@@ -19,7 +19,7 @@ bfillds
 bbop result 1
 
 checkshape result
-checknbshapes result -solid 1 -shell 2
+checknbshapes result -wire 20 -face 20 -solid 1 -shell 2
 checkprops result -s 3583.27 -v 11455.2
 
 checkview -display result -2d -path ${imagedir}/${test_image}.png

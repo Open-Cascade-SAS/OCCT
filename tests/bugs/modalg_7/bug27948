@@ -1,5 +1,3 @@
-puts "TODO OCC27948 ALL: ERROR: OCC27948 is reproduced."
-
 puts "========"
 puts "OCC27948"
 puts "========"
@@ -11,18 +9,10 @@ puts ""
 restore [locate_data_file bug27948_a.brep] a
 restore [locate_data_file bug27948_b.brep] b
 
-bcut res a b
-explode res F
+bcut result a b
 
-vinit
-vdisplay res
-vfit
-vdisplay res_16
-vsetdispmode res_16 1
+checkshape result
+checkprops result -s 135.137 -v 40.573
+checknbshapes result -wire 19 -face 17 -shell 1 -solid 1
 
-set bug_info [string trim [vreadpixel 340 280 name]]
-if {$bug_info == "DARKGOLDENROD3 1"} {
-  puts "ERROR: OCC27948 is reproduced."
-}
-
-checkview -screenshot -3d -path ${imagedir}/${test_image}.png
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -803,8 +803,8 @@ void BOPAlgo_PaveFiller::ForceInterfEE()
   Handle(NCollection_IncAllocator) anAlloc = new NCollection_IncAllocator;
 
   // Initialize pave blocks for all SD vertices
-  Standard_Integer i, aNbS = myDS->NbSourceShapes();
-  for (i = 0; i < aNbS; ++i)
+  const Standard_Integer aNbS = myDS->NbSourceShapes();
+  for (Standard_Integer i = 0; i < aNbS; ++i)
   {
     const BOPDS_ShapeInfo& aSI = myDS->ShapeInfo(i);
     if (aSI.ShapeType() == TopAbs_VERTEX)
@@ -822,11 +822,22 @@ void BOPAlgo_PaveFiller::ForceInterfEE()
   // Fence map of pave blocks
   BOPDS_MapOfPaveBlock aMPBFence(1, anAlloc);
 
-  BOPDS_VectorOfListOfPaveBlock& aPBP = myDS->ChangePaveBlocksPool();
-  Standard_Integer aNbPBP = aPBP.Length();
-  for (i = 0; i < aNbPBP; ++i)
+  for (Standard_Integer i = 0; i < aNbS; ++i)
   {
-    BOPDS_ListOfPaveBlock& aLPB = aPBP(i);
+    const BOPDS_ShapeInfo& aSI = myDS->ShapeInfo(i);
+    if (aSI.ShapeType() != TopAbs_EDGE)
+      // Not an edge
+      continue;
+
+    if (!aSI.HasReference())
+      // Edge has no pave blocks
+      continue;
+
+    if (aSI.HasFlag())
+      // Degenerated edge
+      continue;
+
+    const BOPDS_ListOfPaveBlock& aLPB = myDS->PaveBlocks(i);
     BOPDS_ListIteratorOfListOfPaveBlock aItLPB(aLPB);
     for (; aItLPB.More(); aItLPB.Next())
     {
@@ -852,23 +863,11 @@ void BOPAlgo_PaveFiller::ForceInterfEE()
   if (!aNbPB)
     return;
 
-  // Find pairs of Pave Blocks having the same SD vertices,
-  // rejecting the pairs of edges that have already been intersected
-
-  // Prepare map of pairs of intersected edges
-  BOPDS_MapOfPair aMEEDone(1, anAlloc);
-  myIterator->Initialize(TopAbs_EDGE, TopAbs_EDGE);
-  for (; myIterator->More(); myIterator->Next())
-  {
-    Standard_Integer nE1, nE2;
-    myIterator->Value(nE1, nE2);
-    aMEEDone.Add(BOPDS_Pair(nE1, nE2));
-  }
-
-  // Vector of pairs for intersection
+  // Find pairs of Pave Blocks having the same SD vertices
+  // and put them into the vector for parallel intersection.
   BOPAlgo_VectorOfEdgeEdge aVEdgeEdge;
 
-  for (i = 1; i <= aNbPB; ++i)
+  for (Standard_Integer i = 1; i <= aNbPB; ++i)
   {
     const BOPDS_ListOfPaveBlock& aLPB = aPBMap(i);
     if (aLPB.Extent() < 2)
@@ -891,6 +890,7 @@ void BOPAlgo_PaveFiller::ForceInterfEE()
     for (; aItLPB1.More(); aItLPB1.Next())
     {
       const Handle(BOPDS_PaveBlock)& aPB1 = aItLPB1.Value();
+      const Handle(BOPDS_CommonBlock)& aCB1 = myDS->CommonBlock(aPB1);
       const Standard_Integer nE1 = aPB1->OriginalEdge();
       const TopoDS_Edge& aE1 = TopoDS::Edge(myDS->Shape(nE1));
       Standard_Real aT11, aT12;
@@ -900,14 +900,19 @@ void BOPAlgo_PaveFiller::ForceInterfEE()
       for (aItLPB2.Next(); aItLPB2.More(); aItLPB2.Next())
       {
         const Handle(BOPDS_PaveBlock)& aPB2 = aItLPB2.Value();
+        const Handle(BOPDS_CommonBlock)& aCB2 = myDS->CommonBlock(aPB2);
         const Standard_Integer nE2 = aPB2->OriginalEdge();
-
-        if (aMEEDone.Contains(BOPDS_Pair(nE1, nE2)))
-          continue;
 
         // Make sure that the edges came from different arguments
         if (myDS->Rank(nE1) == myDS->Rank(nE2))
           continue;
+
+        // Check that the Pave blocks do not form the Common block already
+        if (!aCB1.IsNull() && !aCB2.IsNull())
+        {
+          if (aCB1 == aCB2)
+            continue;
+        }
 
         const TopoDS_Edge& aE2 = TopoDS::Edge(myDS->Shape(nE2));
         Standard_Real aT21, aT22;
@@ -932,7 +937,6 @@ void BOPAlgo_PaveFiller::ForceInterfEE()
 
   aPBMap.Clear();
   aMPBFence.Clear();
-  aMEEDone.Clear();
   anAlloc->Reset();
 
   // Perform intersection of the found pairs
@@ -947,7 +951,7 @@ void BOPAlgo_PaveFiller::ForceInterfEE()
 
   BOPDS_IndexedDataMapOfPaveBlockListOfPaveBlock aMPBLPB(1, anAlloc);
 
-  for (i = 0; i < aNbPairs; ++i)
+  for (Standard_Integer i = 0; i < aNbPairs; ++i)
   {
     BOPAlgo_EdgeEdge& anEdgeEdge = aVEdgeEdge(i);
     if (!anEdgeEdge.IsDone() || anEdgeEdge.HasErrors())
