@@ -3863,7 +3863,11 @@ Standard_Integer VTexture (Draw_Interpretor& theDi, Standard_Integer theArgsNb, 
       {
         aTextureVecNew.SetValue (aTexIndex, Handle(Graphic3d_Texture2Dmanual)());
       }
-      aTextureVecNew.ChangeValue (aTexIndex)->GetParams()->SetTextureUnit ((Graphic3d_TextureUnit )aTexIndex);
+
+      if (aTextureVecNew.Value (aTexIndex))
+      {
+        aTextureVecNew.ChangeValue(aTexIndex)->GetParams()->SetTextureUnit((Graphic3d_TextureUnit)aTexIndex);
+      }
     }
     else
     {

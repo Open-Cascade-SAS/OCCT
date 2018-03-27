@@ -1,0 +1,17 @@
+puts "========"
+puts "OCC29651"
+puts "========"
+puts ""
+##########################################
+# ViewerTest - vtexture command crashes
+##########################################
+
+vinit
+vsetdispmode 1
+box b 1 2 3
+vdisplay b
+vfit
+vtexture b 0
+vtexture b off
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
