@@ -1,0 +1,17 @@
+puts "========"
+puts "OCC29606"
+puts "========"
+puts ""
+#######################################################
+#0029606: [Regression vs 7.0] BRepClass3d_SolidClassifier 
+#classifies the point as IN while it is ON
+#######################################################
+
+restore [locate_data_file bug29606.brep] s
+
+point p1 621.05410336809734 47.416378469999998 111.25010709375
+
+if {![regexp "The point is ON" [bclassify s p1]]} {
+  puts "Error: The Solid classification algorithm fails to classify the point"
+}
+

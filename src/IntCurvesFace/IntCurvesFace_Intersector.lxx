@@ -58,7 +58,10 @@ inline TopAbs_State IntCurvesFace_Intersector::State(const Standard_Integer i) c
 }
 //  Modified by skv - Wed Sep  3 15:34:20 2003 OCC578 End
 //============================================================================
-inline const TopoDS_Face&  IntCurvesFace_Intersector::Face() const { 
+inline Standard_Boolean IntCurvesFace_Intersector::IsParallel() const {
+  return myIsParallel;
+}
+inline const TopoDS_Face&  IntCurvesFace_Intersector::Face() const {
   return(face);
 }
 //============================================================================

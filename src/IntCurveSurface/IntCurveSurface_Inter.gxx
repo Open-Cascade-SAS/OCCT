@@ -1252,9 +1252,11 @@ void IntCurveSurface_Inter::AppendIntAna(const TheCurve& curve,
   if(intana_ConicQuad.IsDone()) { 
     if(intana_ConicQuad.IsInQuadric()) { 
       //-- cout<<" Courbe Dans la Quadrique !!! Non Traite !!!"<<endl;
+      myIsParallel = Standard_True;
     }
     else if(intana_ConicQuad.IsParallel()) { 
       //-- cout<<" Courbe // a la Quadrique !!! Non Traite !!!"<<endl;
+      myIsParallel = Standard_True;
     }
     else { 
       Standard_Integer nbp = intana_ConicQuad.NbPoints();

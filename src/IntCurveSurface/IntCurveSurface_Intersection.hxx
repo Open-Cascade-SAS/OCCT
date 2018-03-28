@@ -64,7 +64,12 @@ public:
   //! the computation has not been done
   //! raises OutOfRange if Index is not in the range <1..NbSegment>
   Standard_EXPORT const IntCurveSurface_IntersectionSegment& Segment (const Standard_Integer Index) const;
-  
+
+  //! Returns true if curve is parallel or belongs surface
+  //! This case is recognized only for some pairs 
+  //! of analytical curves and surfaces (plane - line, ...)
+  Standard_EXPORT Standard_Boolean IsParallel() const;
+
   //! Dump all the fields.
   Standard_EXPORT void Dump() const;
 
@@ -101,6 +106,9 @@ protected:
 
 
   Standard_Boolean done;
+  Standard_Boolean myIsParallel; //Curve is "parallel" surface
+  //This case is recognized only for some pairs 
+  //of analytical curves and surfaces (plane - line, ...)
 
 
 private:

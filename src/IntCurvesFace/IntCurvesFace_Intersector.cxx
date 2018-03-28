@@ -135,7 +135,8 @@ IntCurvesFace_Intersector::IntCurvesFace_Intersector(const TopoDS_Face& Face,
   nbpnt(0),
   PtrOnPolyhedron(NULL),
   PtrOnBndBounding(NULL),
-  myUseBoundTol (UseBToler)
+  myUseBoundTol (UseBToler),
+  myIsParallel(Standard_False)
 { 
   BRepAdaptor_Surface surface;
   face = Face;
@@ -336,6 +337,10 @@ void IntCurvesFace_Intersector::InternalCall(const IntCurveSurface_HInter &HICS,
       } //-- classifier state is IN or ON
     } //-- Loop on Intersection points.
   } //-- HICS.IsDone()
+  else if (HICS.IsDone())
+  {
+    myIsParallel = HICS.IsParallel();
+  }
 }
 //=======================================================================
 //function : Perform
