@@ -716,7 +716,7 @@ static TopoDS_Edge BuildEdge(Handle(Geom_Curve)& C3d,
 //  P2  = BT.Pnt(VL);
   P2  = BRep_Tool::Pnt(VL);
 //  Tol2 = BT.Tolerance(VF);
-  Tol2 = BRep_Tool::Tolerance(VF);
+  Tol2 = BRep_Tool::Tolerance(VL);
   Tol = Max(Tol1, Tol2);
 
   if (VF.IsSame(VL) || 
