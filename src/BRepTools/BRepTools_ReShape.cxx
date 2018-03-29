@@ -363,8 +363,8 @@ TopoDS_Shape BRepTools_ReShape::Apply (const TopoDS_Shape& shape,
     return res;
   }
 
-  TopAbs_ShapeEnum st = shape.ShapeType(); //, subt;
-  if ( st >= until ) return newsh;    // critere d arret
+  TopAbs_ShapeEnum st = shape.ShapeType();
+  if (st > until || (st == until && until > TopAbs_COMPOUND)) return newsh; // stopping criteria
   if(st == TopAbs_VERTEX || st == TopAbs_SHAPE)
     return shape;
   // define allowed types of components

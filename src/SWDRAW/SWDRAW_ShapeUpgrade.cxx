@@ -1414,6 +1414,8 @@ static Standard_Integer reshape(Draw_Interpretor& /*theDI*/,
 
   Handle(BRepTools_ReShape) aReShaper = new BRepTools_ReShape;
 
+  TopAbs_ShapeEnum aShapeLevel = TopAbs_SHAPE;
+
   // Record the requested modifications
   for ( Standard_Integer i = 3; i < theArgc; ++i )
   {
@@ -1462,6 +1464,50 @@ static Standard_Integer reshape(Draw_Interpretor& /*theDI*/,
 
       aReShaper->Remove(aWhat);
     }
+    else if (anOpt == "-until")
+    {
+      if (theArgc - i < 2)
+      {
+        std::cout << "Error: not enough arguments for level specification\n";
+        return 1;
+      }
+
+      Standard_CString aLevelCStr = theArgv[++i];
+      TCollection_AsciiString aLevelStr(aLevelCStr);
+      aLevelStr.LowerCase();
+      if (aLevelStr == "compound" ||
+          aLevelStr == "cd")
+        aShapeLevel = TopAbs_COMPOUND;
+      else if (aLevelStr == "compsolid" ||
+               aLevelStr == "c")
+        aShapeLevel = TopAbs_COMPSOLID;
+      else if (aLevelStr == "solid" ||
+               aLevelStr == "so")
+        aShapeLevel = TopAbs_SOLID;
+      else if (aLevelStr == "shell" ||
+               aLevelStr == "sh")
+        aShapeLevel = TopAbs_SHELL;
+      else if (aLevelStr == "face" ||
+               aLevelStr == "f")
+        aShapeLevel = TopAbs_FACE;
+      else if (aLevelStr == "wire" ||
+               aLevelStr == "w")
+        aShapeLevel = TopAbs_WIRE;
+      else if (aLevelStr == "edge" ||
+               aLevelStr == "e")
+        aShapeLevel = TopAbs_EDGE;
+      else if (aLevelStr == "vertex" ||
+               aLevelStr == "v")
+        aShapeLevel = TopAbs_VERTEX;
+      else if (aLevelStr == "shape" ||
+               aLevelStr == "s")
+        aShapeLevel = TopAbs_SHAPE;
+      else
+      {
+        std::cout << "Error: unknown shape type '" << theArgv[i] << "'\n";
+        return 1;
+      }
+    }
     else
     {
       std::cout << "Error: invalid syntax at " << anOpt << "\n" ;
@@ -1470,7 +1516,7 @@ static Standard_Integer reshape(Draw_Interpretor& /*theDI*/,
   }
 
   // Apply all the recorded modifications
-  TopoDS_Shape aResult = aReShaper->Apply(aSource);
+  TopoDS_Shape aResult = aReShaper->Apply(aSource, aShapeLevel);
   if ( aResult.IsNull() )
   {
     std::cout << "Error: result shape is null\n";
@@ -1589,10 +1635,12 @@ static Standard_Integer reshape(Draw_Interpretor& /*theDI*/,
   theCommands.Add ("copytranslate","result shape dx dy dz",__FILE__,copytranslate,g);
 
   theCommands.Add ("reshape",
-    "\n    reshape : result shape [-replace what with] [-remove what]"
+    "\n    reshape : result shape [-replace what with] [-remove what] [-until level]"
     "\n    Basic utility for topological modification: "
     "\n      '-replace what with'   Replaces 'what' sub-shape with 'with' sub-shape"
     "\n      '-remove what'         Removes 'what' sub-shape"
-    "\n    Requests '-replace' and '-remove' can be repeated many times.",
+    "\n    Requests '-replace' and '-remove' can be repeated many times."
+    "\n    '-until level' specifies level until which shape for replcement/removal"
+    "\n    will be searched.",
     __FILE__, reshape, g);
 }
