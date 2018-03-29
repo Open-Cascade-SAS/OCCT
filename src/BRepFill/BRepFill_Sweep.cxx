@@ -859,24 +859,44 @@ static Standard_Boolean Filling(const TopoDS_Shape& EF,
   Prof1 = BRep_Tool::Curve(E1, f1, l1);
 //  Prof2 = BT.Curve(E2, f2, l2);
   Prof2 = BRep_Tool::Curve(E2, f2, l2);
-  gp_Pnt P1, P2, P;
-  gp_Pnt2d p1, p2;
-  gp_Trsf Tf;
-  Tf.SetTransformation(Axe);
 
-// Choose the angle of opening
-  P1 = Prof1->Value((f1+l1)/2);
-  P2 = Prof2->Value((f2+l2)/2);
-  P1.Transform(Tf);
-  P2.Transform(Tf);
-  p1.SetCoord(P1.Z(), P1.X());
-  p2.SetCoord(P2.Z(), P2.X());
-  gp_Vec2d v1(gp::Origin2d(), p1);
-  gp_Vec2d v2(gp::Origin2d(), p2);
-  if (v1.Magnitude() <= gp::Resolution() ||
-      v2.Magnitude() <= gp::Resolution())
+  // Indeed, both Prof1 and Prof2 are the same curves but in different positions
+
+  gp_Pnt P1, P2, P;
+
+  // Choose the angle of opening
+  gp_Trsf aTf;
+  aTf.SetTransformation(Axe);
+
+  // Choose the furthest point from the "center of revolution"
+  // to provide correct angle measurement.
+  const Standard_Real aPrm[] = {f1, 0.5*(f1 + l1), l1};
+  const gp_Pnt aP1[] = {Prof1->Value(aPrm[0]).Transformed(aTf),
+                        Prof1->Value(aPrm[1]).Transformed(aTf),
+                        Prof1->Value(aPrm[2]).Transformed(aTf)};
+
+  Standard_Integer aMaxIdx = -1;
+  Standard_Real aMaxDist = RealFirst();
+  for (Standard_Integer i = 0; i < 3; i++)
+  {
+    const Standard_Real aDist = aP1[i].X()*aP1[i].X() + aP1[i].Z()*aP1[i].Z();
+    if (aDist > aMaxDist)
+    {
+      aMaxDist = aDist;
+      aMaxIdx = i;
+    }
+  }
+
+  const gp_Pnt aP2 = Prof2->Value(aPrm[aMaxIdx]).Transformed(aTf);
+  const gp_Vec2d aV1(aP1[aMaxIdx].Z(), aP1[aMaxIdx].X());
+  const gp_Vec2d aV2(aP2.Z(), aP2.X());
+  if (aV1.SquareMagnitude() <= gp::Resolution() ||
+      aV2.SquareMagnitude() <= gp::Resolution())
+  {
     return Standard_False;
-  Angle = v1.Angle(v2);
+  }
+
+  Angle = aV1.Angle(aV2);
 
   gp_Ax1 axe(Axe.Location(), Axe.YDirection());
 
@@ -887,7 +907,7 @@ static Standard_Boolean Filling(const TopoDS_Shape& EF,
 
   Handle(Geom_SurfaceOfRevolution) Rev = 
     new (Geom_SurfaceOfRevolution) (Prof1, axe);
-  
+
   Handle(Geom_Surface) Surf = 
     new (Geom_RectangularTrimmedSurface) (Rev, 0, Angle, f1, l1);
 
@@ -1185,19 +1205,40 @@ static Standard_Boolean Filling(const TopoDS_Shape& EF,
     B.MakeEdge(Aux2);
 
   // Set the orientation
-  gp_Vec D1U, D1V, N1, N2;
-  C1->D0( (f1+l1)/2, P2d);
-  Surf->D1(P2d.X(), P2d.Y(), P, D1U, D1V);
-  N1 = D1U^D1V;
+
+  // Provide correct normals computation
+  // (the normal will be computed not in 
+  // singularity point definitely).
+  Angle = RealFirst();
+  for (Standard_Integer i = 0; i < 3; i++)
+  {
+    gp_Vec D1U, D1V, N1, N2;
+    C1->D0(aPrm[i], P2d);
+    Surf->D1(P2d.X(), P2d.Y(), P, D1U, D1V);
+    N1 = D1U^D1V;
+
+    if (N1.SquareMagnitude() < Precision::SquareConfusion())
+      continue;
+
+    //  C1 = BT.CurveOnSurface(E1, TopoDS::Face(F1), f2, l2);
+    C1 = BRep_Tool::CurveOnSurface(E1, TopoDS::Face(F1), f2, l2);
+    C1->D0(aPrm[i], P2d);
+    Handle(BRepAdaptor_HSurface) AS = new BRepAdaptor_HSurface(TopoDS::Face(F1));
+    AS->D1(P2d.X(), P2d.Y(), P, D1U, D1V);
+    N2 = D1U^D1V;
+
+    if (N2.SquareMagnitude() < Precision::SquareConfusion())
+      continue;
+
+    Angle = N1.Angle(N2);
+
+    break;
+  }
   
-//  C1 = BT.CurveOnSurface(E1, TopoDS::Face(F1), f2, l2);
-  C1 = BRep_Tool::CurveOnSurface(E1, TopoDS::Face(F1), f2, l2);
-  C1->D0( (f1+l1)/2, P2d);
-  Handle(BRepAdaptor_HSurface) AS = new BRepAdaptor_HSurface(TopoDS::Face(F1));
-  AS->D1(P2d.X(), P2d.Y(), P, D1U, D1V);
-  N2 = D1U^D1V;
-  
-  if ( (F1.Orientation() == TopAbs_REVERSED) ^ (N1.Angle(N2)>M_PI/2) )
+  if (Angle == RealFirst())
+    return Standard_False;
+
+  if ( (F1.Orientation() == TopAbs_REVERSED) ^ (Angle>M_PI/2))
     Result.Orientation(TopAbs_REVERSED);
   else  Result.Orientation(TopAbs_FORWARD);
 
