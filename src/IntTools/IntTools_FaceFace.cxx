@@ -717,8 +717,8 @@ void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
   IntPatch_IType typl;
   Handle(Geom_Curve) newc;
   //
-  const Standard_Real TOLCHECK   =0.0000001;
-  const Standard_Real TOLANGCHECK=0.1;
+  const Standard_Real TOLCHECK    = 1.e-7;
+  const Standard_Real TOLANGCHECK = 1.e-6;
   //
   rejectSurface = Standard_False;
   reApprox = Standard_False;

@@ -781,11 +781,45 @@ void BOPAlgo_PaveFiller::PostTreatFF
   aPF.SetNonDestructive(myNonDestructive);
   //
   BOPDS_VectorOfInterfFF& aFFs=myDS->InterfFF();
+  Standard_Integer aNbFF = aFFs.Length();
   //
+
+  //Find unused vertices
+  TopTools_IndexedMapOfShape VertsUnused;
+  TColStd_MapOfInteger IndMap;
+  for (Standard_Integer i = 0; i < aNbFF; i++)
+  {
+    BOPDS_InterfFF& aFF = aFFs(i);
+    Standard_Integer nF1, nF2;
+    aFF.Indices(nF1, nF2);
+    
+    TColStd_MapOfInteger aMV, aMVEF, aMI;
+    GetStickVertices(nF1, nF2, aMV, aMVEF, aMI);
+    BOPDS_VectorOfCurve& aVC = aFF.ChangeCurves();
+    Standard_Integer aNbC = aVC.Length();
+    for (j = 0; j < aNbC; j++)
+    {
+      BOPDS_Curve& aNC = aVC.ChangeValue(j);
+      RemoveUsedVertices(aNC, aMV);
+    }
+
+    TColStd_MapIteratorOfMapOfInteger itmap(aMV);
+    for(; itmap.More(); itmap.Next())
+    {
+      Standard_Integer indV = itmap.Value();
+      const TopoDS_Shape& aVertex = myDS->Shape(indV);
+      if (IndMap.Add(indV))
+        VertsUnused.Add(aVertex);
+      else
+        VertsUnused.RemoveKey(aVertex);
+    }
+  }
+  /////////////////////
+  
   Standard_Integer aNbME = theMicroEdges.Extent();
   Standard_Integer aNbVOnRPB = theVertsOnRejectedPB.Extent();
   // 0
-  if (aNbS==1 && (aNbME == 0) && (aNbVOnRPB == 0)) {
+  if (aNbS==1 && (aNbME == 0) && (aNbVOnRPB == 0) && VertsUnused.IsEmpty()) {
     const TopoDS_Shape& aS=theMSCPB.FindKey(1);
     const BOPDS_CoupleOfPaveBlocks &aCPB=theMSCPB.FindFromIndex(1);
     //
@@ -887,16 +921,22 @@ void BOPAlgo_PaveFiller::PostTreatFF
 
   // Add vertices put on the real section curves to unify them with the
   // vertices of the edges, by which these sections curves have been rejected
-  for (Standard_Integer i = 1; i <= aNbVOnRPB; ++i)
+  // and with unused vertices
+  const TopTools_IndexedMapOfShape* VerMap [2] = {&theVertsOnRejectedPB, &VertsUnused};
+  for (Standard_Integer imap = 0; imap < 2; imap++)
   {
-    TopoDS_Shape aVer = theVertsOnRejectedPB(i);
-    Standard_Integer iVer = myDS->Index(aVer);
-    const Standard_Integer* pSD = aDMNewSD.Seek(iVer);
-    if (pSD)
-      aVer = myDS->Shape(*pSD);
-
-    if (anAddedSD.Add(aVer))
-      aLS.Append(aVer);
+    Standard_Integer NbVer = VerMap[imap]->Extent();
+    for (Standard_Integer i = 1; i <= NbVer; ++i)
+    {
+      TopoDS_Shape aVer = VerMap[imap]->FindKey(i);
+      Standard_Integer iVer = myDS->Index(aVer);
+      const Standard_Integer* pSD = aDMNewSD.Seek(iVer);
+      if (pSD)
+        aVer = myDS->Shape(*pSD);
+      
+      if (anAddedSD.Add(aVer))
+        aLS.Append(aVer);
+    }
   }
   //
   // 2 Fuse shapes
@@ -2091,23 +2131,24 @@ void BOPAlgo_PaveFiller::GetFullShapeMap(const Standard_Integer nF,
 // function: RemoveUsedVertices
 // purpose: 
 //=======================================================================
-void BOPAlgo_PaveFiller::RemoveUsedVertices(BOPDS_Curve& aNC,
+void BOPAlgo_PaveFiller::RemoveUsedVertices(const BOPDS_Curve& aNC,
                                             TColStd_MapOfInteger& aMV)
 {
   if (!aMV.Extent()) {
     return;
   }
-  Standard_Integer nV;
-  BOPDS_Pave aPave;
-  BOPDS_ListIteratorOfListOfPave aItLP;
-  //
-  Handle(BOPDS_PaveBlock)& aPB=aNC.ChangePaveBlock1();
-  const BOPDS_ListOfPave& aLP = aPB->ExtPaves();
-  aItLP.Initialize(aLP);
-  for (;aItLP.More();aItLP.Next()) {
-    aPave = aItLP.Value();
-    nV = aPave.Index();
-    aMV.Remove(nV);
+
+  const BOPDS_ListOfPaveBlock& aLPBC = aNC.PaveBlocks();
+  BOPDS_ListIteratorOfListOfPaveBlock itPB(aLPBC);
+  for (; itPB.More(); itPB.Next())
+  {
+    const BOPDS_ListOfPave& aLP = itPB.Value()->ExtPaves();
+    BOPDS_ListIteratorOfListOfPave aItLP(aLP);
+    for (;aItLP.More();aItLP.Next()) {
+      BOPDS_Pave aPave = aItLP.Value();
+      Standard_Integer nV = aPave.Index();
+      aMV.Remove(nV);
+    }
   }
 }
 

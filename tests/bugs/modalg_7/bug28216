@@ -1,5 +1,3 @@
-puts "TODO OCC28216 ALL: Error : bopcommon is WRONG"
-
 puts "============"
 puts "OCC28216"
 puts "============"
@@ -14,11 +12,11 @@ restore [locate_data_file bug28216_solid.brep] o
 bop s o
 
 bopsection r_section
-checknbshapes r_section -vertex 4 -edge 3 -m "bopsection"
+checknbshapes r_section -vertex 4 -edge 4 -m "bopsection"
 bopcheck r_section
 
 bopcommon r_common
-checknbshapes r_common -vertex 4 -edge 3 -m "bopcommon"
+checknbshapes r_common -vertex 4 -edge 4 -face 1 -m "bopcommon"
 bopcheck r_common
 
 checkview -display r_section -2d -path ${imagedir}/${test_image}-section.png

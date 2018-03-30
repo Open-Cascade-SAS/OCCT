@@ -8,9 +8,6 @@ puts ""
 
 pload ALL
 
-set MaxTol1 0.00042926432143107718
-set MaxTol2 0.00042926432143107718
-
 set GoodNbCurv 4
 
 restore [locate_data_file OCC13116_sh1.brep] b1
@@ -23,8 +20,9 @@ set log1 [bopcurves b1_3 b2_1 -2d]
 
 regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} ${log1} full Toler NbCurv
 
-# Before fixing: Tolerance Reached=27.904993728420369
-checkreal ToleranceReached ${Toler} ${MaxTol1} 0.0 0.01
+if { ${Toler} > 0.0005} {
+   puts "Error: bad tolerance of result"
+}
 
 smallview
 don b1_3 b2_1 c_*
@@ -52,8 +50,9 @@ set log2 [bopcurves b1_3 b2_1 -2d]
 
 regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} ${log2} full Toler NbCurv
 
-# Before fixing: Tolerance Reached=40.000000093341022
-checkreal ToleranceReached ${Toler} ${MaxTol2} 0.0 0.01
+if { ${Toler} > 0.0005} {
+   puts "Error: bad tolerance of result"
+}
 
 smallview
 don b1_3 b2_1 c_*

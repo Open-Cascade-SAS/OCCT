@@ -341,7 +341,7 @@ protected:
   //! Removes indices of vertices that are already on the
   //! curve <theNC> from the map <theMV>.
   //! It is used in PutEFPavesOnCurve and PutStickPavesOnCurve methods.
-  Standard_EXPORT void RemoveUsedVertices (BOPDS_Curve& theNC, TColStd_MapOfInteger& theMV);
+  Standard_EXPORT void RemoveUsedVertices (const BOPDS_Curve& theNC, TColStd_MapOfInteger& theMV);
   
 
   //! Puts the pave nV on the curve theNC.

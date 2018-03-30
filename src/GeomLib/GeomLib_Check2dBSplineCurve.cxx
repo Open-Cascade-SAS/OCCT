@@ -28,98 +28,96 @@
 //purpose  : 
 //=======================================================================
 GeomLib_Check2dBSplineCurve::GeomLib_Check2dBSplineCurve(const Handle(Geom2d_BSplineCurve)& Curve,
-						     const Standard_Real Tolerance,
-						     const Standard_Real AngularTolerance)
-:myCurve(Curve),
-myDone(Standard_False),
-myFixFirstTangent(Standard_False),
-myFixLastTangent(Standard_False),
-myAngularTolerance(Abs(AngularTolerance)),
-myTolerance(Abs(Tolerance)),
-myFirstPole(1.0,0.0e0),
-myLastPole(1.0e0,0.0e0)
+                                                         const Standard_Real Tolerance,
+                                                         const Standard_Real AngularTolerance)
+ : myCurve(Curve),
+   myDone(Standard_False),
+   myFixFirstTangent(Standard_False),
+   myFixLastTangent(Standard_False),
+   myAngularTolerance(Abs(AngularTolerance)),
+   myTolerance(Abs(Tolerance)),
+   myIndSecondPole(-1),
+   myIndPrelastPole(-1)
 {
-  
-
   Standard_Integer ii,
     num_poles ;
   Standard_Real tangent_magnitude,
     value,
-    angular_value,
-    factor,
     vector_magnitude ;
-  num_poles = Curve->NbPoles() ;
+  num_poles = myCurve->NbPoles() ;
+  
   if (( ! myCurve->IsPeriodic() )&& num_poles >= 4) {
     
-    gp_Vec2d tangent,
-      diff,
-      a_vector;
-    for (ii = 1 ; ii <= 2 ; ii++) {
-      tangent.SetCoord(ii,myCurve->Pole(2).Coord(ii) - myCurve->Pole(1).Coord(ii))  ;
-      a_vector.SetCoord(ii, myCurve->Pole(3).Coord(ii) - myCurve->Pole(1).Coord(ii)) ;
-    }
-    tangent_magnitude = tangent.Magnitude() ;
-    vector_magnitude = a_vector.Magnitude() ;
-    if (tangent_magnitude > myTolerance &&
-	vector_magnitude > myTolerance)
-      {
-        value = tangent.Dot(a_vector) ;
-        if ( value < 0.0e0) {
-	  for (ii = 1 ; ii <= 2 ; ii++) {
-	    diff.SetCoord(ii, (tangent.Coord(ii) / tangent_magnitude) + (a_vector.Coord(ii) / vector_magnitude)) ; 
-          } 
-	  angular_value = 
-	    diff.Magnitude() ;
-          if (angular_value < myAngularTolerance) {
-	    myFixFirstTangent = Standard_True ;
-	    factor = 1.0e0 ;
-	    if (tangent_magnitude > 0.5e0 * vector_magnitude) {
-	      factor = 0.5e0 *  vector_magnitude / tangent_magnitude ;
-	    }
-	    for (ii = 1 ; ii <= 2 ; ii++) {
-	      myFirstPole.SetCoord(ii, myCurve->Pole(1).Coord(ii)  - factor * tangent.Coord(ii))  ;
-	    }
-          }
-	  
-	}
-      }
-    for (ii = 1 ; ii <= 2 ; ii++) {
-      tangent.SetCoord(ii,myCurve->Pole(num_poles-1).Coord(ii) - myCurve->Pole(num_poles).Coord(ii))  ;
-      a_vector.SetCoord(ii, myCurve->Pole(num_poles-2).Coord(ii) - myCurve->Pole(num_poles).Coord(ii)) ;
-    }
-    tangent_magnitude = tangent.Magnitude() ;
-    vector_magnitude = a_vector.Magnitude() ;
+    gp_Vec2d tangent, tangent_normalized,
+      a_vector, avector_normalized;
+
+    const Standard_Real CrossProdTol = myAngularTolerance;
     
-    if (tangent_magnitude > myTolerance &&
-	vector_magnitude > myTolerance)
+    //Near first
+    tangent = gp_Vec2d(myCurve->Pole(1), myCurve->Pole(2));
+    tangent_magnitude = tangent.Magnitude() ;
+    if (tangent_magnitude > myTolerance)
+      tangent_normalized = tangent/tangent_magnitude;
+    
+    for (ii = 3; ii <= num_poles; ii++)
+    {
+      a_vector = gp_Vec2d(myCurve->Pole(1), myCurve->Pole(ii));
+      vector_magnitude = a_vector.Magnitude() ;
+      
+      if (tangent_magnitude > myTolerance &&
+          vector_magnitude  > myTolerance)
       {
+        avector_normalized = a_vector/vector_magnitude;
+
+        Standard_Real CrossProd = tangent_normalized ^ avector_normalized;
+        if (Abs(CrossProd) > CrossProdTol)
+          break;
+        
         value = tangent.Dot(a_vector) ;
-	if (value < 0.0e0) {
-	  for (ii = 1 ; ii <= 2 ; ii++) {
-	    diff.SetCoord(ii, (tangent.Coord(ii) / tangent_magnitude) + (a_vector.Coord(ii) / vector_magnitude)) ; 
-          } 
-	  angular_value = 
-	    diff.Magnitude() ;
-	  if ( angular_value < myAngularTolerance) {
-	    myFixLastTangent = Standard_True ;
-	    factor = 1.0e0 ;
-	    if (tangent_magnitude > 0.5e0 * vector_magnitude) {
-	      factor = 0.5e0 *  vector_magnitude / tangent_magnitude ;
-	    }
-	    for (ii = 1 ; ii <= 2 ; ii++) {
-	      myLastPole.SetCoord(ii, myCurve->Pole(num_poles).Coord(ii)  - factor * tangent.Coord(ii))  ;
-	    }
-	  }
-	  
+        if ( value < 0.0e0)
+        {
+          myFixFirstTangent = Standard_True ;
+          myIndSecondPole = ii;
+          break;
         }
       }
+    }
+
+    //Near last
+    tangent = gp_Vec2d(myCurve->Pole(num_poles), myCurve->Pole(num_poles-1));
+    tangent_magnitude = tangent.Magnitude() ;
+    if (tangent_magnitude > myTolerance)
+      tangent_normalized = tangent/tangent_magnitude;
+
+    for (ii = num_poles-2; ii >= 1; ii--)
+    {
+      a_vector = gp_Vec2d(myCurve->Pole(num_poles), myCurve->Pole(ii));
+      vector_magnitude = a_vector.Magnitude() ;
     
-  }
+      if (tangent_magnitude > myTolerance &&
+          vector_magnitude  > myTolerance)
+      {
+        avector_normalized = a_vector/vector_magnitude;
+
+        Standard_Real CrossProd = tangent_normalized ^ avector_normalized;
+        if (Abs(CrossProd) > CrossProdTol)
+          break;
+        
+        value = tangent.Dot(a_vector) ;
+        if (value < 0.0e0)
+        {
+          myFixLastTangent = Standard_True ;
+          myIndPrelastPole = ii;
+          break;
+        }
+      }
+    }
+  } //if (( ! myCurve->IsPeriodic() )&& num_poles >= 4)
   else {
     myDone = Standard_True ;
   }
 }
-  
+
 //=======================================================================
 //function : NeedTangentFix
 //purpose  : 
@@ -129,52 +127,71 @@ void GeomLib_Check2dBSplineCurve::NeedTangentFix(Standard_Boolean & FirstFlag,
 					       Standard_Boolean & LastFlag) const 
 {
   FirstFlag = myFixFirstTangent ;
-  LastFlag = myFixLastTangent ;
+  LastFlag  = myFixLastTangent ;
 }
+
 //=======================================================================
 //function : FixTangent
 //purpose  : 
 //=======================================================================
 
 Handle(Geom2d_BSplineCurve)  GeomLib_Check2dBSplineCurve::FixedTangent(const Standard_Boolean FirstFlag,
-								 const Standard_Boolean LastFlag)
-{ 
+                                                                       const Standard_Boolean LastFlag)
+{
   Handle(Geom2d_BSplineCurve) new_curve ;
   if ((myFixFirstTangent && FirstFlag) ||(myFixLastTangent && LastFlag)) {
     new_curve =
       Handle(Geom2d_BSplineCurve)::DownCast(myCurve->Copy()) ;
     
+    FixTangentOnCurve(new_curve, FirstFlag, LastFlag);
   }
-  if (myFixFirstTangent && FirstFlag) {
-    new_curve->SetPole(2,
-		     myFirstPole) ;
-  }
-  if (myFixLastTangent && LastFlag) {
-    Standard_Integer num_poles = myCurve->NbPoles() ;
-    new_curve->SetPole(num_poles-1,
-		     myLastPole) ;
-  }
-  
-  myDone = Standard_True ;
   return new_curve ;
-}				   
+}
+
 //=======================================================================
 //function : FixTangent
 //purpose  : 
 //=======================================================================
 
 void GeomLib_Check2dBSplineCurve::FixTangent(const Standard_Boolean FirstFlag,
-								 const Standard_Boolean LastFlag)
-{ 
+                                             const Standard_Boolean LastFlag)
+{
+  FixTangentOnCurve(myCurve, FirstFlag, LastFlag);
+}
 
+//=======================================================================
+//function : FixTangentOnCurve
+//purpose  : 
+//=======================================================================
+
+void GeomLib_Check2dBSplineCurve::FixTangentOnCurve(Handle(Geom2d_BSplineCurve)& theCurve,
+                                                    const Standard_Boolean FirstFlag,
+                                                    const Standard_Boolean LastFlag)
+{ 
   if (myFixFirstTangent && FirstFlag) {
-    myCurve->SetPole(2,
-		     myFirstPole) ;
+    gp_XY XY1 = theCurve->Pole(1).XY();
+    gp_XY XY2 = theCurve->Pole(myIndSecondPole).XY();
+    Standard_Real NbSamples = myIndSecondPole - 1;
+    for (Standard_Integer i = 2; i < myIndSecondPole; i++)
+    {
+      Standard_Real ii = i-1;
+      gp_Pnt2d aNewPole((1. - ii/NbSamples)*XY1 + ii/NbSamples*XY2);
+      theCurve->SetPole(i, aNewPole);
+    }
   }
+  
   if (myFixLastTangent && LastFlag) {
-    Standard_Integer num_poles = myCurve->NbPoles() ;
-    myCurve->SetPole(num_poles-1,
-		     myLastPole) ;
+    Standard_Integer num_poles = theCurve->NbPoles() ;
+    
+    gp_XY XY1 = theCurve->Pole(num_poles).XY();
+    gp_XY XY2 = theCurve->Pole(myIndPrelastPole).XY();
+    Standard_Real NbSamples = num_poles - myIndPrelastPole;
+    for (Standard_Integer i = num_poles-1; i > myIndPrelastPole; i--)
+    {
+      Standard_Real ii = num_poles-i;
+      gp_Pnt2d aNewPole((1. - ii/NbSamples)*XY1 + ii/NbSamples*XY2);
+      theCurve->SetPole(i, aNewPole);
+    }
   }
   
   myDone = Standard_True ;

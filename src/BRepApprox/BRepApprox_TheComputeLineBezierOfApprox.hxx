@@ -179,7 +179,6 @@ private:
   AppParCurves_Constraint myfirstC;
   AppParCurves_Constraint mylastC;
   Standard_Integer myMultiLineNb;
-  Standard_Integer myNbPlusOnePoint;
   Standard_Boolean myIsClear;
 
 

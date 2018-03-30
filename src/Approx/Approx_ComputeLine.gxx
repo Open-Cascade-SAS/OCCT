@@ -133,6 +133,8 @@ static Standard_Boolean CheckMultiCurve(const AppParCurves_MultiCurve& theMultiC
 {
   const Standard_Integer nbp3d = LineTool::NbP3d(theLine);
   const Standard_Integer nbp2d = LineTool::NbP2d(theLine);
+
+  const Standard_Real coeff = 4.; //2*2
   
   if (nbp3d > 1) //only simple cases are analysed
     return Standard_True;
@@ -207,6 +209,15 @@ static Standard_Boolean CheckMultiCurve(const AppParCurves_MultiCurve& theMultiC
     //Check: may be it is a real loop
     if (LoopFound)
     {
+#ifdef DRAW
+      for (Standard_Integer ipoint = theIndfirst; ipoint <= theIndlast; ipoint++)
+      {
+        LineTool::Value(theLine, ipoint, tabP);
+        gp_Pnt aPnt = tabP(1);
+        sprintf(name, "p%d", ipoint);
+        DrawTrSurf::Set(name, aPnt);
+      }
+#endif
       for (Standard_Integer FirstInd = theIndfirst;
            FirstInd <= theIndlast - 2; FirstInd++)
       {
@@ -243,6 +254,7 @@ static Standard_Boolean CheckMultiCurve(const AppParCurves_MultiCurve& theMultiC
     {
       //search <indbad>
       Standard_Real MaxSqDist = 0.;
+      Standard_Real MinSqDist = RealLast();
       for (Standard_Integer k = theIndfirst+1; k <= theIndlast; k++)
       {
         LineTool::Value(theLine, k-1, tabP);
@@ -255,24 +267,31 @@ static Standard_Boolean CheckMultiCurve(const AppParCurves_MultiCurve& theMultiC
           MaxSqDist = aSqDist;
           indbads[1] = k;
         }
+        if (aSqDist > gp::Resolution() &&
+            aSqDist < MinSqDist)
+          MinSqDist = aSqDist;
       }
-      for (Standard_Integer indcur = 2; indcur <= NbCur; indcur++)
-      {
-        MaxSqDist = 0.;
-        for (Standard_Integer k = theIndfirst+1; k <= theIndlast; k++)
+      Standard_Real Relation = MaxSqDist / MinSqDist;
+      if (Relation < coeff)
+        LoopFound = Standard_False;
+      else
+        for (Standard_Integer indcur = 2; indcur <= NbCur; indcur++)
         {
-          LineTool::Value(theLine, k-1, tabP2d);
-          gp_Pnt2d PrevPnt = tabP2d(indcur-1);
-          LineTool::Value(theLine, k, tabP2d);
-          gp_Pnt2d CurPnt  = tabP2d(indcur-1);
-          Standard_Real aSqDist = PrevPnt.SquareDistance(CurPnt);
-          if (aSqDist > MaxSqDist)
+          MaxSqDist = 0.;
+          for (Standard_Integer k = theIndfirst+1; k <= theIndlast; k++)
           {
-            MaxSqDist = aSqDist;
-            indbads[indcur] = k;
+            LineTool::Value(theLine, k-1, tabP2d);
+            gp_Pnt2d PrevPnt = tabP2d(indcur-1);
+            LineTool::Value(theLine, k, tabP2d);
+            gp_Pnt2d CurPnt  = tabP2d(indcur-1);
+            Standard_Real aSqDist = PrevPnt.SquareDistance(CurPnt);
+            if (aSqDist > MaxSqDist)
+            {
+              MaxSqDist = aSqDist;
+              indbads[indcur] = k;
+            }
           }
         }
-      }
     }
   } //if (myNbP3d == 1)
   else //2d case
@@ -307,6 +326,15 @@ static Standard_Boolean CheckMultiCurve(const AppParCurves_MultiCurve& theMultiC
     //Check: may be it is a real loop
     if (LoopFound)
     {
+#ifdef DRAW
+      for (Standard_Integer ipoint = theIndfirst; ipoint <= theIndlast; ipoint++)
+      {
+        LineTool::Value(theLine, ipoint, tabP2d);
+        gp_Pnt2d aPnt2d = tabP2d(1);
+        sprintf(name, "p%d", ipoint);
+        DrawTrSurf::Set(name, aPnt2d);
+      }
+#endif
       for (Standard_Integer FirstInd = theIndfirst;
            FirstInd <= theIndlast - 2; FirstInd++)
       {
@@ -345,6 +373,7 @@ static Standard_Boolean CheckMultiCurve(const AppParCurves_MultiCurve& theMultiC
       for (Standard_Integer indcur = 1; indcur <= NbCur; indcur++)
       {
         Standard_Real MaxSqDist = 0.;
+        Standard_Real MinSqDist = RealLast();
         for (Standard_Integer k = theIndfirst+1; k <= theIndlast; k++)
         {
           LineTool::Value(theLine, k-1, tabP2d);
@@ -357,21 +386,27 @@ static Standard_Boolean CheckMultiCurve(const AppParCurves_MultiCurve& theMultiC
             MaxSqDist = aSqDist;
             indbads[indcur] = k;
           }
+          if (aSqDist > gp::Resolution() &&
+              aSqDist < MinSqDist)
+            MinSqDist = aSqDist;
         }
+        Standard_Real Relation = MaxSqDist / MinSqDist;
+        if (Relation < coeff)
+          LoopFound = Standard_False;
       }
     }
   }
 
   //Define <indbad>
-  if (indbads[1] != 0 && indbads[2] != 0)
-  {
-    if (indbads[1] != indbads[2])
-      LoopFound = Standard_False;
-    else if (indbads[3] != 0 && indbads[1] != indbads[3])
-      LoopFound = Standard_False;
-  }
-  if (LoopFound)
-    theIndbad = indbads[1];
+  for (Standard_Integer i = 1; i <= 3; i++)
+    if (indbads[i] != 0)
+    {
+      theIndbad = indbads[i];
+      break;
+    }
+
+  if (!LoopFound)
+    theIndbad = 0;
   
   return (!LoopFound);
 }
@@ -650,7 +685,6 @@ Approx_ComputeLine::Approx_ComputeLine
 		     const Standard_Boolean cutting,
 		     const Standard_Boolean Squares)
 : myMultiLineNb (0),
-  myNbPlusOnePoint (0),
   myIsClear (Standard_False)
 {
   myfirstParam = new TColStd_HArray1OfReal(Parameters.Lower(), 
@@ -684,7 +718,6 @@ Approx_ComputeLine::Approx_ComputeLine
 		     const Standard_Boolean cutting,
 		     const Standard_Boolean Squares)
 : myMultiLineNb (0),
-  myNbPlusOnePoint (0),
   myIsClear (Standard_False)
 {
   myfirstParam = new TColStd_HArray1OfReal(Parameters.Lower(), 
@@ -716,7 +749,6 @@ Approx_ComputeLine::Approx_ComputeLine
 		     const Approx_ParametrizationType parametrization,
 		     const Standard_Boolean Squares)
 : myMultiLineNb (0),
-  myNbPlusOnePoint (0),
   myIsClear (Standard_False)
 {
   myConstraints = new AppParCurves_HArray1OfConstraintCouple(1, 2);
@@ -745,7 +777,6 @@ Approx_ComputeLine::Approx_ComputeLine
 		     const Approx_ParametrizationType parametrization,
 		     const Standard_Boolean Squares)
 : myMultiLineNb (0),
-  myNbPlusOnePoint (0),
   myIsClear (Standard_False)
 {
   myConstraints = new AppParCurves_HArray1OfConstraintCouple(1, 2);
@@ -778,7 +809,6 @@ void Approx_ComputeLine::Perform(const MultiLine& Line)
     Tolers3d.Clear();
     Tolers2d.Clear();
     myMultiLineNb = 0;
-    //myNbPlusOnePoint = 0;
   }
   else myIsClear = Standard_False;
 
@@ -825,7 +855,6 @@ void Approx_ComputeLine::Perform(const MultiLine& Line)
     {
       myIsClear = Standard_True;
       //++myMultiLineNb;
-      myNbPlusOnePoint++;
       Perform(anOtherLine0);
       alldone = Standard_True;
     }
@@ -927,7 +956,6 @@ void Approx_ComputeLine::Perform(const MultiLine& Line)
             {
               myIsClear = Standard_True;
               //++myMultiLineNb;
-              myNbPlusOnePoint++;
               Par = SavePar;
               Perform(anOtherLine2);
               Ok = Standard_True;
@@ -955,7 +983,6 @@ void Approx_ComputeLine::Perform(const MultiLine& Line)
               {
                 myIsClear = Standard_True;
                 //++myMultiLineNb;
-                myNbPlusOnePoint++;
                 Perform (anOtherLine2);
                 Ok = Standard_True;
               }
@@ -997,7 +1024,6 @@ void Approx_ComputeLine::Perform(const MultiLine& Line)
               {
                 myIsClear = Standard_True;
                 //++myMultiLineNb;
-                myNbPlusOnePoint++;
                 Perform(anOtherLine3);
                 myfirstpt = mylastpt;
                 mylastpt = Thelastpt;
@@ -1108,22 +1134,8 @@ void Approx_ComputeLine::Perform(const MultiLine& Line)
 	}
 
 	TheMultiCurve = AppParCurves_MultiCurve();
-        MultiLine anOtherLine4;
-        Standard_Boolean isOtherLine4Made = Standard_False;
         Standard_Integer indbad = 0;
 	Ok = Compute(Line, myfirstpt, mylastpt, Param, thetol3d, thetol2d, indbad);
-        if (indbad != 0)
-        {
-          isOtherLine4Made = LineTool::MakeMLOneMorePoint (Line, myfirstpt, mylastpt, indbad, anOtherLine4);
-        }
-        if (isOtherLine4Made)
-        {
-          myIsClear = Standard_True;
-          //++myMultiLineNb;
-          myNbPlusOnePoint++;
-          Perform (anOtherLine4);
-          Ok = Standard_True;
-        }
         if (myfirstpt == Thelastpt)
         {
           Finish = Standard_True;
@@ -1310,8 +1322,7 @@ Standard_Boolean Approx_ComputeLine::Compute(const MultiLine& Line,
 #ifdef OCCT_DEBUG
         if (mydebug) DUMP(mySCU);
 #endif
-        if (myNbPlusOnePoint != 0 &&
-            !CheckMultiCurve(mySCU, Line,
+        if (!CheckMultiCurve(mySCU, Line,
                              fpt, lpt,
                              indbad))
         {

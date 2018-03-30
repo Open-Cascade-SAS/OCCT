@@ -38,7 +38,9 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
-  Standard_EXPORT GeomLib_Check2dBSplineCurve(const Handle(Geom2d_BSplineCurve)& Curve, const Standard_Real Tolerance, const Standard_Real AngularTolerance);
+  Standard_EXPORT GeomLib_Check2dBSplineCurve(const Handle(Geom2d_BSplineCurve)& Curve,
+                                              const Standard_Real Tolerance,
+                                              const Standard_Real AngularTolerance);
   
     Standard_Boolean IsDone() const;
   
@@ -64,6 +66,9 @@ protected:
 
 private:
 
+  void FixTangentOnCurve(Handle(Geom2d_BSplineCurve)& theCurve,
+                         const Standard_Boolean FirstFlag,
+                         const Standard_Boolean LastFlag);
 
 
   Handle(Geom2d_BSplineCurve) myCurve;
@@ -72,10 +77,9 @@ private:
   Standard_Boolean myFixLastTangent;
   Standard_Real myAngularTolerance;
   Standard_Real myTolerance;
-  gp_Pnt2d myFirstPole;
-  gp_Pnt2d myLastPole;
 
-
+  Standard_Integer myIndSecondPole;
+  Standard_Integer myIndPrelastPole;
 };
 
 

@@ -26,8 +26,8 @@ inline GeomInt_IntSS::GeomInt_IntSS ()
  : myNbrestr(0),
    myTolReached2d(0.0),
    myTolReached3d(0.0),
-   myTolCheck(0.0000001),
-   myTolAngCheck(0.3)
+   myTolCheck(1.e-7),
+   myTolAngCheck(1.e-6)
 {}
 
 //=======================================================================
@@ -43,8 +43,8 @@ inline GeomInt_IntSS::GeomInt_IntSS ()
  : myNbrestr(0),
    myTolReached2d(0.0),
    myTolReached3d(0.0),
-   myTolCheck(0.0000001),
-   myTolAngCheck(0.3)
+   myTolCheck(1.e-7),
+   myTolAngCheck(1.e-6)
 {
   Perform(S1,S2,Tol,Approx,ApproxS1,ApproxS2);
 }

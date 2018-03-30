@@ -309,6 +309,9 @@ Standard_Boolean  TopOpeBRepTool_CurveTool::MakeCurves
  Handle(Geom2d_Curve)& PC1new, Handle(Geom2d_Curve)& PC2new,
  Standard_Real& TolReached3d, Standard_Real& TolReached2d) const
 {
+  const Standard_Real TOLCHECK    = 1.e-7;
+  const Standard_Real TOLANGCHECK = 1.e-6;
+  
   Standard_Boolean CompC3D = myGeomTool.CompC3D();
 
   //cout << "MakeCurves begin" << endl;
@@ -681,7 +684,7 @@ Standard_Boolean  TopOpeBRepTool_CurveTool::MakeCurves
 
   Handle(Geom_BSplineCurve) Curve (Handle(Geom_BSplineCurve)::DownCast(C3Dnew));
   if(!Curve.IsNull()) {
-    GeomLib_CheckBSplineCurve cbsc(Curve, 1.e-7, 0.1);
+    GeomLib_CheckBSplineCurve cbsc(Curve, TOLCHECK, TOLANGCHECK);
     cbsc.NeedTangentFix(bf, bl);
 
 #ifdef OCCT_DEBUG
@@ -697,7 +700,7 @@ Standard_Boolean  TopOpeBRepTool_CurveTool::MakeCurves
   
   Handle(Geom2d_BSplineCurve) Curve2df (Handle(Geom2d_BSplineCurve)::DownCast(PC1new));
   if(!Curve2df.IsNull()) {
-    GeomLib_Check2dBSplineCurve cbsc2df(Curve2df, 1.e-7, 0.1);
+    GeomLib_Check2dBSplineCurve cbsc2df(Curve2df, TOLCHECK, TOLANGCHECK);
     cbsc2df.NeedTangentFix(bf, bl);
 #ifdef OCCT_DEBUG
     if (TopOpeBRepTool_GettraceCHKBSPL()) {
@@ -712,7 +715,7 @@ Standard_Boolean  TopOpeBRepTool_CurveTool::MakeCurves
   
   Handle(Geom2d_BSplineCurve) Curve2ds (Handle(Geom2d_BSplineCurve)::DownCast(PC2new));
   if(!Curve2ds.IsNull()) {
-    GeomLib_Check2dBSplineCurve cbsc2ds(Curve2ds, 1.e-7, 0.1);
+    GeomLib_Check2dBSplineCurve cbsc2ds(Curve2ds, TOLCHECK, TOLANGCHECK);
     cbsc2ds.NeedTangentFix(bf, bl);
 #ifdef OCCT_DEBUG
     if (TopOpeBRepTool_GettraceCHKBSPL()) {

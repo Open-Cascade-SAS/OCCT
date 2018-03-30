@@ -6,7 +6,6 @@ puts ""
 # Wrong pcurve of the section curve
 ###########################################################
 
-set ExpectedTol 9.8986150909815383e-05
 set NbCurv_OK 1
 
 restore [locate_data_file bug24585_b1.brep] b1
@@ -23,9 +22,9 @@ if {${NbCurv} != ${NbCurv_OK}} {
   puts "Error: ${NbCurv_OK} curve(s) expected, but ${NbCurv} found."
 }
 
-set tol_abs 0.0
-set tol_rel 0.01
-checkreal "Tolerance Reached" ${Toler} ${ExpectedTol} ${tol_abs} ${tol_rel}
+if { ${Toler} > 5.e-5} {
+   puts "Error: bad tolerance of result"
+}
 
 bounds c2d1_1 U1 U2
 2dcvalue c2d1_1 U1 U_begin V_begin
