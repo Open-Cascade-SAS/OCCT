@@ -218,8 +218,10 @@ namespace
 
         if (theHasTexels && aUVNodes.Upper() == aNodes.Upper())
         {
-          const gp_Pnt2d aTexel = gp_Pnt2d ((-theUVOrigin.X() + (theUVRepeat.X() * (aUVNodes (aNodeIter).X() - aUmin)) / dUmax) / theUVScale.X(),
-                                            (-theUVOrigin.Y() + (theUVRepeat.Y() * (aUVNodes (aNodeIter).Y() - aVmin)) / dVmax) / theUVScale.Y());
+          const gp_Pnt2d aTexel = (dUmax == 0.0 || dVmax == 0.0)
+                                ? aUVNodes (aNodeIter)
+                                : gp_Pnt2d ((-theUVOrigin.X() + (theUVRepeat.X() * (aUVNodes(aNodeIter).X() - aUmin)) / dUmax) / theUVScale.X(),
+                                            (-theUVOrigin.Y() + (theUVRepeat.Y() * (aUVNodes(aNodeIter).Y() - aVmin)) / dVmax) / theUVScale.Y());
           anArray->AddVertex (aPoint, aNorm, aTexel);
         }
         else
