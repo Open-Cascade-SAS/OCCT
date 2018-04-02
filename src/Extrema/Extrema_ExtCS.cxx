@@ -23,8 +23,6 @@
 #include <ElCLib.hxx>
 #include <ElSLib.hxx>
 #include <Extrema_ExtCS.hxx>
-#include <Extrema_ExtPElC.hxx>
-#include <Extrema_ExtPElS.hxx>
 #include <Extrema_ExtPS.hxx>
 #include <Extrema_GenExtCS.hxx>
 #include <Extrema_POnCurv.hxx>
@@ -147,53 +145,34 @@ void Extrema_ExtCS::Perform(const Adaptor3d_Curve& C,
           Standard_Real ufirst = myS->FirstUParameter(), ulast = myS->LastUParameter(), 
             vfirst = myS->FirstVParameter(), vlast = myS->LastVParameter();
 
-          if(Precision::IsInfinite(Abs(cfirst)) || Precision::IsInfinite(Abs(clast))) {
-
+          if (!(Precision::IsInfinite(ufirst) || Precision::IsInfinite(ulast) ||
+            Precision::IsInfinite(vfirst) || Precision::IsInfinite(vlast)))
+          {
+            Standard_Real tmin = Precision::Infinite(), tmax = -tmin;
+            Standard_Real xmin, ymin, zmin, xmax, ymax, zmax;
             Bnd_Box aSurfBox;
             BndLib_AddSurface::Add(*myS, ufirst, ulast, vfirst, vlast, Precision::Confusion(), aSurfBox);
-            Standard_Real xmin, ymin, zmin, xmax, ymax, zmax;
             aSurfBox.Get(xmin, ymin, zmin, xmax, ymax, zmax);
-            Standard_Real tmin = Precision::Infinite(), tmax = -tmin;
             gp_Lin aLin = C.Line();
+            Standard_Real aParOnLin;
+            gp_Pnt aLimPntArray[8];
 
+            aLimPntArray[0].SetCoord(xmin, ymin, zmin);
+            aLimPntArray[1].SetCoord(xmax, ymin, zmin);
+            aLimPntArray[2].SetCoord(xmin, ymax, zmin);
+            aLimPntArray[3].SetCoord(xmax, ymax, zmin);
+            aLimPntArray[4].SetCoord(xmin, ymin, zmax);
+            aLimPntArray[5].SetCoord(xmax, ymin, zmax);
+            aLimPntArray[6].SetCoord(xmin, ymax, zmax);
+            aLimPntArray[7].SetCoord(xmax, ymax, zmax);
 
-            if(!( Precision::IsInfinite(Abs(xmin)) || Precision::IsInfinite(Abs(xmax)) || 
-              Precision::IsInfinite(Abs(ymin)) || Precision::IsInfinite(Abs(ymax)) || 
-              Precision::IsInfinite(Abs(zmin)) || Precision::IsInfinite(Abs(zmax)))  ) {
-
-                Extrema_ExtPElC anExt;
-                Extrema_POnCurv aPntOnLin;
-                Standard_Real aParOnLin;
-                Standard_Real lim = Precision::Infinite();
-                gp_Pnt aLimPntArray[8];
-
-                aLimPntArray[0].SetCoord(xmin, ymin, zmin);
-                aLimPntArray[1].SetCoord(xmax, ymin, zmin);
-                aLimPntArray[2].SetCoord(xmin, ymax, zmin);
-                aLimPntArray[3].SetCoord(xmax, ymax, zmin);
-                aLimPntArray[4].SetCoord(xmin, ymin, zmax);
-                aLimPntArray[5].SetCoord(xmax, ymin, zmax);
-                aLimPntArray[6].SetCoord(xmin, ymax, zmax);
-                aLimPntArray[7].SetCoord(xmax, ymax, zmax);
-
-                for(i = 0; i <= 7; i++) {
-                  anExt.Perform(aLimPntArray[i], aLin, Precision::Confusion(), -lim, lim);
-                  aPntOnLin = anExt.Point(1);
-                  aParOnLin = aPntOnLin.Parameter();
-                  tmin = Min(aParOnLin, tmin);
-                  tmax = Max(aParOnLin, tmax);
-                }
-
+            for (i = 0; i <= 7; i++) {
+              aParOnLin = ElCLib::Parameter(aLin, aLimPntArray[i]);
+              tmin = Min(aParOnLin, tmin);
+              tmax = Max(aParOnLin, tmax);
             }
-            else {
-              tmin = -1.e+50;
-              tmax =  1.e+50;
-            }
-
-
             cfirst = Max(cfirst, tmin);
-            clast  = Min(clast,  tmax);
-
+            clast = Min(clast, tmax);
           }
 
           if (myS->IsUPeriodic())
@@ -219,7 +198,6 @@ void Extrema_ExtCS::Perform(const Adaptor3d_Curve& C,
             }
           }
           return;
-
         }
       }
       break;

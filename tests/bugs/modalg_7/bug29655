@@ -1,0 +1,19 @@
+puts "========"
+puts "OCC29655"
+puts "========"
+puts ""
+#################################################
+# 0029655: [Regression to 6.9.1] Distance between cylinder and straight line
+#################################################
+
+restore [locate_data_file bug29655.brep] s
+explode s
+distmini res s_1 s_2
+
+
+if { [isdraw res] } {
+  checknbshapes res -vertex 1 -edge 0
+} else { puts "Error : result of distmini is wrong" }
+
+
+
