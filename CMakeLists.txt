@@ -912,8 +912,8 @@ OCCT_CONFIGURE_AND_INSTALL ("adm/templates/custom.install.${SCRIPT_EXT}.in" "${S
 OCCT_CONFIGURE ("adm/templates/custom.build.${SCRIPT_EXT}.in" "${SUB_CUSTOM_NAME}")
 
 if (BUILD_MODULE_MfcSamples OR BUILD_MODULE_QtSamples)
-  OCCT_INSTALL_FILE_OR_DIR ("adm/templates/sample.bat" "${INSTALL_DIR_SCRIPT}")
-  OCCT_COPY_FILE_OR_DIR    ("adm/templates/sample.bat" "${CMAKE_BINARY_DIR}")
+  OCCT_INSTALL_FILE_OR_DIR ("adm/templates/sample.${SCRIPT_EXT}" "${INSTALL_DIR_SCRIPT}")
+  OCCT_COPY_FILE_OR_DIR    ("adm/templates/sample.${SCRIPT_EXT}" "${CMAKE_BINARY_DIR}")
 endif()
 
 # env script for draw in building environment
@@ -1017,14 +1017,19 @@ endif()
 
 OCCT_MODULES_AND_TOOLKITS (SAMPLES "SAMPLES_TOOLKITS" OCCT_SAMPLES)
 
-if (BUILD_MODULE_QtSamples)
-  if (NOT Qt5_FOUND OR NOT WIN32)
-    list (REMOVE_ITEM qt_SAMPLES_TOOLKITS AndroidQt)
-    message (STATUS "Info: AndroidQt sample excluded due to Qt5 usage is disabled or OS is not Windows")
+if (BUILD_Inspector OR BUILD_MODULE_QtSamples)
+  if (BUILD_MODULE_QtSamples)
+    if (NOT Qt5_FOUND OR NOT WIN32)
+      list (REMOVE_ITEM qt_SAMPLES_TOOLKITS AndroidQt)
+      message (STATUS "Info: AndroidQt sample excluded due to Qt5 usage is disabled or OS is not Windows")
+    endif()
+  else()
+    list (REMOVE_ITEM OCCT_SAMPLES qt)
+    message (STATUS "Info: qt samples excluded due to BUILD_MODULE_QtSamples is disabled")
   endif()
 
   if (NOT BUILD_Inspector)
-    list (REMOVE_ITEM tools_SAMPLES_TOOLKITS TInspectorEXE)
+    list (REMOVE_ITEM OCCT_SAMPLES tools)
     message (STATUS "Info: TInspectorEXE sample excluded due to BUILD_Inspector is disabled")
   endif()
 
