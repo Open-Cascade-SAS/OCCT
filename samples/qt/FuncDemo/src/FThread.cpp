@@ -19,24 +19,24 @@ FThread::~FThread()
 
 }
 
-void FThread::setIterator(const TFunction_Iterator& itr)
+void FThread::setIterator(const TFunction_Iterator& theItr)
 {
-    this->itr = itr;
+    this->itr = theItr;
 }
 
-void FThread::setLogbook(const Handle(TFunction_Logbook)& log)
+void FThread::setLogbook(const Handle(TFunction_Logbook)& theLog)
 {
-    this->log = log;
+    this->log = theLog;
 }
 
-void FThread::setGraph(GraphWidget* graph)
+void FThread::setGraph(GraphWidget* theGraph)
 {
-    this->graph = graph;
+    this->graph = theGraph;
 }
 
-void FThread::setThreadIndex(const int thread_index)
+void FThread::setThreadIndex(const int theIndex)
 {
-    this->thread_index = thread_index;
+    this->thread_index = theIndex;
 }
 
 // Returns any free (not executed yet) function

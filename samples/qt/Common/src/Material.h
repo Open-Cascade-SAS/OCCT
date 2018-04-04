@@ -1,9 +1,11 @@
 #ifndef MATERIAL_H
 #define MATERIAL_H
 
+#include <Standard_WarningsDisable.hxx>
 #include <QDialog>
 #include <QList>
 #include <QPushButton>
+#include <Standard_WarningsRestore.hxx>
 
 #include <AIS_InteractiveContext.hxx>
 

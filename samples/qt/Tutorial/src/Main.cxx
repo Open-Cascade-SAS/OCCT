@@ -2,8 +2,10 @@
 
 #include <OSD_Environment.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QApplication>
 #include <QTranslator>
+#include <Standard_WarningsRestore.hxx>
 
 int main ( int argc, char* argv[] )
 {

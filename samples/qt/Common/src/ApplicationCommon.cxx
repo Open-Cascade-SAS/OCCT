@@ -3,6 +3,7 @@
 #include "DocumentCommon.h"
 #include "View.h"
 
+#include <Standard_WarningsDisable.hxx>
 #include <QFrame>
 #include <QVBoxLayout>
 #include <QMenuBar>
@@ -12,6 +13,7 @@
 #include <QMessageBox>
 #include <QApplication>
 #include <QSignalMapper>
+#include <Standard_WarningsRestore.hxx>
 
 #include <Graphic3d_GraphicDriver.hxx>
 #include <OpenGl_GraphicDriver.hxx>

@@ -1,7 +1,10 @@
 #ifndef MDIWINDOW_H
 #define MDIWINDOW_H
 
+#include <Standard_WarningsDisable.hxx>
 #include <QMainWindow>
+#include <Standard_WarningsRestore.hxx>
+
 #include "CommonSample.h"
 
 class DocumentCommon;

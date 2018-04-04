@@ -3,12 +3,14 @@
 
 #include "DocumentCommon.h"
 
+#include <Standard_WarningsDisable.hxx>
 #include <QMainWindow>
 #include <QAction>
 #include <QToolBar>
 #include <QMenu>
 #include <QMdiArea>
 #include <QList>
+#include <Standard_WarningsRestore.hxx>
 
 
 class COMMONSAMPLE_EXPORT ApplicationCommonWindow: public QMainWindow

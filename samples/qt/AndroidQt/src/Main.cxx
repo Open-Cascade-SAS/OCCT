@@ -11,8 +11,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <Standard_WarningsDisable.hxx>
 #include <QApplication>
 #include <QQmlApplicationEngine>
+#include <Standard_WarningsRestore.hxx>
 
 #include "AndroidQt.h"
 

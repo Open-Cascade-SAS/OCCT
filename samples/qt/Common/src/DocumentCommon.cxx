@@ -4,10 +4,12 @@
 #include "Transparency.h"
 #include "Material.h"
 
+#include <Standard_WarningsDisable.hxx>
 #include <QStatusBar>
 #include <QApplication>
 #include <QColor>
 #include <QColorDialog>
+#include <Standard_WarningsRestore.hxx>
 
 #include <Aspect_DisplayConnection.hxx>
 #include <AIS_InteractiveObject.hxx>
@@ -188,7 +190,8 @@ void DocumentCommon::onColor()
     {
         Quantity_Color aShapeColor;
         myContext->Color( Current, aShapeColor );
-        aColor.setRgb( aShapeColor.Red() * 255, aShapeColor.Green() * 255, aShapeColor.Blue() * 255 );
+        aColor.setRgb( (Standard_Integer)(aShapeColor.Red() * 255), (Standard_Integer)(aShapeColor.Green() * 255),
+                       (Standard_Integer)(aShapeColor.Blue() * 255));
     }
     else
         aColor.setRgb( 255, 255, 255 );

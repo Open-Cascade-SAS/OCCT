@@ -38,10 +38,12 @@
 **
 ****************************************************************************/
 
+#include <Standard_WarningsDisable.hxx>
 #include <QGraphicsScene>
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 #include <QStyleOption>
+#include <Standard_WarningsRestore.hxx>
 
 #include "edge.h"
 #include "node.h"

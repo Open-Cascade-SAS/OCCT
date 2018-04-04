@@ -16,18 +16,19 @@
 
 #include <OpenGl_Context.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 // workaround broken definitions in Qt
 #define GLdouble GLdouble
 
+#include <QMutex>
 #include <QtQuick/qquickwindow.h>
 #include <QtQuick/QQuickItem>
 
 #undef GLdouble
+#include <Standard_WarningsRestore.hxx>
 
 #include <AIS_InteractiveContext.hxx>
 #include <V3d_View.hxx>
-
-#include <QMutex>
 
 #include "AndroidQt_TouchParameters.h"
 

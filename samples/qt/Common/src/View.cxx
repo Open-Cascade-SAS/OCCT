@@ -5,6 +5,7 @@
 #include "View.h"
 #include "ApplicationCommon.h"
 
+#include <Standard_WarningsDisable.hxx>
 #include <QApplication>
 #include <QPainter>
 #include <QMenu>
@@ -19,6 +20,7 @@
 #if !defined(_WIN32) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX)) && QT_VERSION < 0x050000
   #include <QX11Info>
 #endif
+#include <Standard_WarningsRestore.hxx>
 
 
 #include <Graphic3d_ExportFormat.hxx>
@@ -997,7 +999,7 @@ void View::onBackground()
     Standard_Real G1;
     Standard_Real B1;
     myView->BackgroundColor(Quantity_TOC_RGB,R1,G1,B1);
-    aColor.setRgb(R1*255,G1*255,B1*255);
+    aColor.setRgb((Standard_Integer)(R1 * 255), (Standard_Integer)(G1 * 255), (Standard_Integer)(B1 * 255));
 
     QColor aRetColor = QColorDialog::getColor(aColor);
 

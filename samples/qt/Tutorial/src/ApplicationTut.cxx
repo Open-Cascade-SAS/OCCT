@@ -3,9 +3,11 @@
 
 #include <OSD_Environment.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QFileDialog>
 #include <QStatusBar>
 #include <QMdiSubWindow>
+#include <Standard_WarningsRestore.hxx>
 
 ApplicationTut::ApplicationTut()
     : ApplicationCommonWindow( )

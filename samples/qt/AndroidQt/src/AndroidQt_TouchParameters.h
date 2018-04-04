@@ -14,7 +14,9 @@
 #ifndef ANDROIDQT_TOUCHPARAMETERS_H
 #define ANDROIDQT_TOUCHPARAMETERS_H
 
+#include <Standard_WarningsDisable.hxx>
 #include <QPair>
+#include <Standard_WarningsRestore.hxx>
 
 //! Class holding touch event state.
 class AndroidQt_TouchParameters

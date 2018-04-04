@@ -38,7 +38,9 @@
 **
 ****************************************************************************/
 
+#include <Standard_WarningsDisable.hxx>
 #include <QApplication>
+#include <Standard_WarningsRestore.hxx>
 #include "mainwindow.h"
 
 #include <OSD_Environment.hxx>

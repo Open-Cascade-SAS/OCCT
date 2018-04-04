@@ -3,7 +3,10 @@
 
 #include <Aspect_Window.hxx>
 
+#include <Standard_WarningsDisable.hxx>
 #include <QWidget>
+#include <Standard_WarningsRestore.hxx>
+
 class OcctWindow;
 
 /*

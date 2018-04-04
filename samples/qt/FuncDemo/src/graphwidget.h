@@ -41,7 +41,9 @@
 #ifndef GRAPHWIDGET_H
 #define GRAPHWIDGET_H
 
+#include <Standard_WarningsDisable.hxx>
 #include <QGraphicsView>
+#include <Standard_WarningsRestore.hxx>
 
 #include "FThread.h"
 

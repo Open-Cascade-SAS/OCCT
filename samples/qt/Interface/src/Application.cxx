@@ -2,11 +2,14 @@
 
 #include "Translate.h"
 
+#include <Standard_WarningsDisable.hxx>
 #include <QMessageBox>
-#include <stdlib.h>
 #include <QMdiSubWindow>
+#include <Standard_WarningsRestore.hxx>
 
 #include <OSD_Environment.hxx>
+
+#include <stdlib.h>
 
 ApplicationWindow::ApplicationWindow()
     : ApplicationCommonWindow( ),
@@ -200,13 +203,13 @@ void ApplicationWindow::onSelectionChanged()
   QMdiArea* ws = getWorkspace();
   DocumentCommon* doc = qobject_cast<MDIWindow*>( ws->activeSubWindow()->widget() )->getDocument();
   Handle(AIS_InteractiveContext) context = doc->getContext();
-  int numSel = context->NbSelected();
+  bool anEnabled = (context->NbSelected() > 0);
 
-  myCasCadeTranslateActions.at( FileExportBREPId )->setEnabled( numSel );
-  myCasCadeTranslateActions.at( FileExportIGESId )->setEnabled( numSel );
-  myCasCadeTranslateActions.at( FileExportSTEPId )->setEnabled( numSel );
-  myCasCadeTranslateActions.at( FileExportSTLId )->setEnabled( numSel );
-  myCasCadeTranslateActions.at( FileExportVRMLId )->setEnabled( numSel );
+  myCasCadeTranslateActions.at( FileExportBREPId )->setEnabled( anEnabled );
+  myCasCadeTranslateActions.at( FileExportIGESId )->setEnabled( anEnabled );
+  myCasCadeTranslateActions.at( FileExportSTEPId )->setEnabled( anEnabled );
+  myCasCadeTranslateActions.at( FileExportSTLId )->setEnabled( anEnabled );
+  myCasCadeTranslateActions.at( FileExportVRMLId )->setEnabled( anEnabled );
 }
 
 QString ApplicationWindow::getIEResourceDir()

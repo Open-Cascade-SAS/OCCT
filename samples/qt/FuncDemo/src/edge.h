@@ -41,7 +41,9 @@
 #ifndef EDGE_H
 #define EDGE_H
 
+#include <Standard_WarningsDisable.hxx>
 #include <QGraphicsItem>
+#include <Standard_WarningsRestore.hxx>
 
 class Node;
 

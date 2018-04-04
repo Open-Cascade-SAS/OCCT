@@ -4,6 +4,7 @@
 #include "DocumentCommon.h"
 #include "ApplicationCommon.h"
 
+#include <Standard_WarningsDisable.hxx>
 #include <QFrame>
 #include <QToolBar>
 #include <QFileDialog>
@@ -14,6 +15,7 @@
 #include <QFileInfo>
 #include <QMainWindow> 
 #include <QVBoxLayout>
+#include <Standard_WarningsRestore.hxx>
 
 MDIWindow::MDIWindow(View* aView,
                      DocumentCommon* aDocument, 

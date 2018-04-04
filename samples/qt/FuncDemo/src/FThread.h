@@ -1,7 +1,9 @@
 #ifndef _FTHREAD_H_
 #define _FTHREAD_H_
 
+#include <Standard_WarningsDisable.hxx>
 #include <QThread>
+#include <Standard_WarningsRestore.hxx>
 
 #include <TFunction_Logbook.hxx>
 #include <TFunction_Iterator.hxx>

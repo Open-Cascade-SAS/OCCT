@@ -42,10 +42,12 @@
 #include "edge.h"
 #include "node.h"
 
+#include <Standard_WarningsDisable.hxx>
 #include <QDebug>
 #include <QGraphicsScene>
 #include <QWheelEvent>
 #include <QApplication>
+#include <Standard_WarningsRestore.hxx>
 
 #include <math.h>
 

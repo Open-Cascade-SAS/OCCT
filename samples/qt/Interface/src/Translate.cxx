@@ -2,6 +2,7 @@
 
 #include "Application.h"
 
+#include <Standard_WarningsDisable.hxx>
 #include <QDir>
 #include <QLayout>
 #include <QComboBox>
@@ -12,6 +13,7 @@
 #include <QApplication>
 #include <QWidget>
 #include <QStyleFactory>
+#include <Standard_WarningsRestore.hxx>
 
 #include <AIS_Shape.hxx>
 #include <AIS_InteractiveObject.hxx>
@@ -305,7 +307,7 @@ QString Translate::selectFileName( const int format, const bool import )
     if ( idx != -1 )
     {
       QString tail = selFilter.mid( idx + 3 );
-			int idx = tail.indexOf( " " );
+			idx = tail.indexOf( " " );
       if ( idx == -1 )
         idx = tail.indexOf( ")" );
       QString ext = tail.left( idx );

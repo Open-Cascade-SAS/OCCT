@@ -41,7 +41,10 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <Standard_WarningsDisable.hxx>
 #include <QMainWindow>
+#include <Standard_WarningsRestore.hxx>
+
 #include <AppStd_Application.hxx>
 
 class QAction;

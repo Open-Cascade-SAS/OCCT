@@ -4,8 +4,10 @@
 #include "MDIWindow.h"
 //#include "IESample.h"
 
+#include <Standard_WarningsDisable.hxx>
 #include <QObject>
 #include <QList>
+#include <Standard_WarningsRestore.hxx>
 
 #include <AIS_InteractiveContext.hxx>
 #include <V3d_Viewer.hxx>

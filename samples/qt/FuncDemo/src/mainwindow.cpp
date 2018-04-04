@@ -38,12 +38,6 @@
 **
 ****************************************************************************/
 
-#include <QtGui>
-#include <QtGlobal>
-#if QT_VERSION > QT_VERSION_CHECK(5, 0, 0)
-#include <QtWidgets>
-#endif
-
 #include "mainwindow.h"
 #include "graphwidget.h"
 #include "node.h"
@@ -77,6 +71,15 @@
 #include <TDataStd_Name.hxx>
 #include <TDataStd_Real.hxx>
 #include <TDataStd_RealArray.hxx>
+
+#include <Standard_WarningsDisable.hxx>
+#include <QtGui>
+#include <QtGlobal>
+#if QT_VERSION > QT_VERSION_CHECK(5, 0, 0)
+#include <QtWidgets>
+#endif
+#include <Standard_WarningsRestore.hxx>
+
 #ifdef __GNUC__
 #include <unistd.h>
 #endif

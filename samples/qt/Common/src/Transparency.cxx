@@ -1,7 +1,9 @@
 #include "Transparency.h"
 
+#include <Standard_WarningsDisable.hxx>
 #include <QHBoxLayout>
 #include <QSpinBox>
+#include <Standard_WarningsRestore.hxx>
 
 DialogTransparency::DialogTransparency( QWidget* parent, Qt::WindowFlags f, bool modal )
 : QDialog( parent, f )

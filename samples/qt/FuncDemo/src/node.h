@@ -41,8 +41,10 @@
 #ifndef NODE_H
 #define NODE_H
 
+#include <Standard_WarningsDisable.hxx>
 #include <QGraphicsItem>
 #include <QList>
+#include <Standard_WarningsRestore.hxx>
 
 #include <TDF_Label.hxx>
 

@@ -34,7 +34,10 @@
 #include <WNT_Window.hxx>
 
 #include <EGL/egl.h>
+
+#include <Standard_WarningsDisable.hxx>
 #include <QFileInfo>
+#include <Standard_WarningsRestore.hxx>
 
 // =======================================================================
 // function : AndroidQt
@@ -218,8 +221,8 @@ void AndroidQt::paint()
 
   if (Abs (myTouchPoint.DevX()) + Abs (myTouchPoint.DevY()) > 1)
   {
-    myView->StartRotation (myTouchPoint.X().first,  myTouchPoint.Y().first);
-    myView->Rotation      (myTouchPoint.X().second, myTouchPoint.Y().second);
+    myView->StartRotation ((Standard_Integer)myTouchPoint.X().first,  (Standard_Integer)myTouchPoint.Y().first);
+    myView->Rotation      ((Standard_Integer)myTouchPoint.X().second, (Standard_Integer)myTouchPoint.Y().second);
 
     myTouchPoint.ClearDev();
   }

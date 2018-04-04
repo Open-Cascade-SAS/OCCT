@@ -38,7 +38,9 @@
 **
 ****************************************************************************/
 
+#include <Standard_WarningsDisable.hxx>
 #include <QPainter>
+#include <Standard_WarningsRestore.hxx>
 
 #include "edge.h"
 #include "node.h"
