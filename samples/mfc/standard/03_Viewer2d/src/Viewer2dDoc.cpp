@@ -330,8 +330,7 @@ void CViewer2dDoc::OnBUTTONTestImage()
     Handle(Sample2D_Image) anImage = new Sample2D_Image (aFileName);
     anImage->SetCoord (40,50) ;
     anImage->SetScale (1.0);
-    myAISContext->Display (anImage, Standard_False);
-    myAISContext->SetDisplayMode (anImage,3,Standard_False);
+    myAISContext->Display (anImage, AIS_Shaded, 0, Standard_False);
     FitAll2DViews (Standard_True);
   }
 }
@@ -365,48 +364,41 @@ void CViewer2dDoc::OnBUTTONMultipleImage()
     Handle(Sample2D_Image) anImage = new Sample2D_Image (aFileName);
     anImage->SetCoord (40, 50);
     anImage->SetScale (0.5);
-    myAISContext->Display (anImage, Standard_False);
-    myAISContext->SetDisplayMode (anImage, 3, Standard_False);
+    myAISContext->Display (anImage, AIS_Shaded, 0, Standard_False);
     }
     {  // 2
     Handle(Sample2D_Image) anImage = new Sample2D_Image (aFileName);
     anImage->SetCoord (100, 50);
     anImage->SetScale (0.9);
-    myAISContext->Display (anImage, Standard_False);
-    myAISContext->SetDisplayMode (anImage, 3, Standard_False);
+    myAISContext->Display (anImage, AIS_Shaded, 0, Standard_False);
     }
     {  // 3
     Handle(Sample2D_Image) anImage = new Sample2D_Image (aFileName);
     anImage->SetCoord (40, 40);
     anImage->SetScale (0.3);
-    myAISContext->Display (anImage, Standard_False);
-    myAISContext->SetDisplayMode (anImage, 3, Standard_False);
+    myAISContext->Display (anImage, AIS_Shaded, 0, Standard_False);
     }
     {  // 4
     Handle(Sample2D_Image) anImage = new Sample2D_Image (aFileName);
     anImage->SetCoord (50, 40);
-    myAISContext->Display (anImage, Standard_False);
-    myAISContext->SetDisplayMode (anImage, 3, Standard_False);
+    myAISContext->Display (anImage, AIS_Shaded, 0, Standard_False);
     }
     {  // 5
     Handle(Sample2D_Image) anImage = new Sample2D_Image (aFileName);
     anImage->SetCoord (80, 45);
     anImage->SetScale (2);
-    myAISContext->Display (anImage, Standard_False);
-    myAISContext->SetDisplayMode (anImage, 3, Standard_False);
+    myAISContext->Display (anImage, AIS_Shaded, 0, Standard_False);
     }
     {  // 6
     Handle(Sample2D_Image) anImage = new Sample2D_Image (aFileName);
     anImage->SetCoord (20, -20);
-    myAISContext->Display (anImage, Standard_False);
-    myAISContext->SetDisplayMode (anImage, 3, Standard_False);
+    myAISContext->Display (anImage, AIS_Shaded, 0, Standard_False);
     }
     {  // 7
     Handle(Sample2D_Image) anImage = new Sample2D_Image (aFileName);
     anImage->SetCoord (0, 0);
     anImage->SetScale (0.5);
-    myAISContext->Display (anImage, Standard_False);
-    myAISContext->SetDisplayMode (anImage, 3, Standard_False);
+    myAISContext->Display (anImage, AIS_Shaded, 0, Standard_False);
     }
     FitAll2DViews (Standard_True); // Update Viewer
   }
