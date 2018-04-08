@@ -595,12 +595,10 @@ proc checkprops {shape args} {
                 if { $m == 0 } {
                     puts "Error : The command is not valid. The $prop is 0."
                 }
-                if { $mass > 0 } {
-                    puts "The expected $prop is $mass"
-                }
-                #check of change of area is < 1%
-                if { ($mass != 0 && [expr 1.*abs($mass - $m)/$mass] > $depsilon) || ($mass == 0 && $m != 0) } {
-                    puts "Error : The $prop of result shape is $m"
+                # check of change of area is < 1%
+                if { ($mass != 0 && abs (($mass - $m) / double($mass)) > $depsilon) || 
+                     ($mass == 0 && $m != 0) } {
+                    puts "Error : The $prop of result shape is $m, expected $mass"
                 }
             } else {
                 if { $m != 0 } {
