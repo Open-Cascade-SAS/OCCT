@@ -424,7 +424,7 @@ GetDocument()->UpdateResultMessageDlg("SetPosition",Message);
 			BRepPrimAPI_MakeCone MakeCone(gp_Ax2(p1, gp_Dir(gp_Vec(p1, p2))), 
 				0, (p1.Distance(p2))/tan(1.04), coneHeigth);
 			spotConeShape->Set(MakeCone.Solid());
-			GetDocument()->GetAISContext()->Display (spotConeShape, 0, -1, Standard_True);
+			GetDocument()->GetAISContext()->Display (spotConeShape, 0, -1, false);
 			((OCC_MainFrame*)AfxGetMainWnd())->SetStatusMessage("Pick the target point");
 			myCurrentMode = CurAction3d_TargetSpotLight;
 
@@ -708,6 +708,7 @@ void CViewer3dView::OnMouseMove(UINT nFlags, CPoint point)
 				GetDocument()->GetAISContext()->Redisplay(directionalEdgeShape,0,Standard_True);
 				myCurrent_DirectionalLight->SetDirection(p2.X()-p1.X(),p2.Y()-p1.Y(),p2.Z()-p1.Z());
 				myView->UpdateLights();
+				myView->Redraw();
 			}
 		}
 		else if (myCurrentMode ==  CurAction3d_BeginPositionalLight) 
@@ -716,6 +717,7 @@ void CViewer3dView::OnMouseMove(UINT nFlags, CPoint point)
 			//Update the light dynamically
 			myCurrent_PositionalLight->SetPosition(p2.X(),p2.Y(),p2.Z());
 			myView->UpdateLights();
+			myView->Redraw();
 		}
 		else if (myCurrentMode ==  CurAction3d_TargetSpotLight) 
 		{
@@ -730,6 +732,7 @@ void CViewer3dView::OnMouseMove(UINT nFlags, CPoint point)
 				GetDocument()->GetAISContext()->Redisplay(spotConeShape,0,Standard_True);
 				myCurrent_SpotLight->SetDirection(p2.X()-p1.X(),p2.Y()-p1.Y(),p2.Z()-p1.Z());
 				myView->UpdateLights();
+				myView->Redraw();
 			}
 		}
 		else if (myCurrentMode ==  CurAction3d_EndSpotLight) 
@@ -745,12 +748,17 @@ void CViewer3dView::OnMouseMove(UINT nFlags, CPoint point)
 				GetDocument()->GetAISContext()->Redisplay(spotConeShape,0,Standard_True);
 				myCurrent_SpotLight->SetAngle((float )atan(p2.Distance(p3)/p1.Distance(p2))) ;
 				myView->UpdateLights();
+				myView->Redraw();
 			}
 		}
-		if (nFlags & MK_SHIFT)
+		else if (nFlags & MK_SHIFT)
+		{
 			GetDocument()->ShiftMoveEvent(point.x,point.y,myView);
+		}
 		else
+		{
 			GetDocument()->MoveEvent(point.x,point.y,myView);
+		}
 	}
 }
 
@@ -950,6 +958,7 @@ void CViewer3dView::OnAmbientLight()
 	NbActiveLights++;
 
 	myView->UpdateLights();
+	myView->Redraw();
 
 TCollection_AsciiString Message("\
 myCurrent_AmbientLight=new V3d_AmbientLight(Quantity_NOC_GRAY);\n\
