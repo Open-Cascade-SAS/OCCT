@@ -1,0 +1,38 @@
+puts "========"
+puts "OCC29682"
+puts "========"
+puts ""
+#################################################
+# Boolean intersection with fuzzy-option hangs
+#################################################
+
+restore [locate_data_file bug29682_f1.brep] s1
+restore [locate_data_file bug29682_f2.brep] s2
+
+copy s1 f1
+copy s2 f2
+
+bfuzzyvalue 0.0
+dchrono h1 restart
+bsection r1 f1 f2
+dchrono h1 stop counter BSectionNoFV
+
+checknbshapes r1 -vertex 2 -edge 1
+checkprops r1 -l 2995.33
+
+copy s1 f1
+copy s2 f2
+
+bfuzzyvalue 0.2
+dchrono h2 restart
+bsection r2 f1 f2
+dchrono h2 stop counter BSectionFV
+
+checknbshapes r2 -vertex 2 -edge 1
+checkprops r2 -l 2995.33
+
+smallview
+don s1 s2 r2
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

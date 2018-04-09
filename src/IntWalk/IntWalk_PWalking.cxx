@@ -963,10 +963,21 @@ void IntWalk_PWalking::Perform(const TColStd_Array1OfReal& ParDep,
             }			
             else
             {
-              pasuv[0]*=0.5; 
-              pasuv[1]*=0.5; 
-              pasuv[2]*=0.5; 
-              pasuv[3]*=0.5;
+              if (aStatus != IntWalk_StepTooSmall)
+              {
+                // Bug #0029682 (Boolean intersection with
+                // fuzzy-option hangs). 
+                // If aStatus == IntWalk_StepTooSmall then
+                // the counter "LevelOfIterWithoutAppend" will
+                // be nulified in the future if the step is smaller
+                // (see "case IntWalk_StepTooSmall:" below).
+                // Here, we forbid this nulification and thereby provide out from
+                // the algorithm.
+                pasuv[0] *= 0.5;
+                pasuv[1] *= 0.5;
+                pasuv[2] *= 0.5;
+                pasuv[3] *= 0.5;
+              }
             }
           }
         }

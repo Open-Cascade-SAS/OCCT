@@ -149,6 +149,9 @@ public:
     if (anIdx <= myTangentIdx)
     {
       myTangentIdx--;
+
+      if (myTangentIdx < 1)
+        myTangentIdx = 1;
     }
 
     line->RemovePoint(anIdx);
@@ -228,8 +231,14 @@ private:
   Standard_Boolean close;
   Standard_Boolean tgfirst;
   Standard_Boolean tglast;
+
+  //! Index of point on the surface boundary.
+  //! It is used for transition computation
   Standard_Integer myTangentIdx;
+
+  //! Tangent to WLine in the point with index myTangentIdx
   gp_Dir tgdir;
+
   Standard_Real fleche;
   Standard_Real pasMax;
   Standard_Real tolconf;
