@@ -1,6 +1,4 @@
-// Created on: 2017-02-10
-// Created by: Sergey NIKONOV
-// Copyright (c) 2000-2017 OPEN CASCADE SAS
+// Copyright (c) 2017-2018 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -13,26 +11,55 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <XCAFDoc_Note.hxx>
+
+#include <gp_Pln.hxx>
 #include <Standard_GUID.hxx>
+#include <TDataXtd_Geometry.hxx>
+#include <TDataXtd_Plane.hxx>
+#include <TDataXtd_Point.hxx>
 #include <TDF_AttributeIterator.hxx>
+#include <TDF_ChildIterator.hxx>
 #include <TDF_Label.hxx>
+#include <TNaming_Builder.hxx>
+#include <TNaming_NamedShape.hxx>
+#include <TNaming_Tool.hxx>
 #include <XCAFDoc.hxx>
 #include <XCAFDoc_GraphNode.hxx>
-#include <XCAFDoc_Note.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(XCAFDoc_Note, TDF_Attribute)
 
-Standard_Boolean 
+enum ChildLab
+{
+  ChildLab_PntText = 1,
+  ChildLab_Plane,
+  ChildLab_Pnt,
+  ChildLab_Presentation
+};
+
+// =======================================================================
+// function : IsMine
+// purpose  :
+// =======================================================================
+Standard_Boolean
 XCAFDoc_Note::IsMine(const TDF_Label& theLabel)
 {
   return !Get(theLabel).IsNull();
 }
 
+// =======================================================================
+// function : XCAFDoc_Note
+// purpose  :
+// =======================================================================
 XCAFDoc_Note::XCAFDoc_Note()
 {
 }
 
-Handle(XCAFDoc_Note) 
+// =======================================================================
+// function : Get
+// purpose  :
+// =======================================================================
+Handle(XCAFDoc_Note)
 XCAFDoc_Note::Get(const TDF_Label& theLabel)
 {
   Handle(XCAFDoc_Note) aNote;
@@ -45,7 +72,11 @@ XCAFDoc_Note::Get(const TDF_Label& theLabel)
   return aNote;
 }
 
-void 
+// =======================================================================
+// function : Set
+// purpose  :
+// =======================================================================
+void
 XCAFDoc_Note::Set(const TCollection_ExtendedString& theUserName,
                   const TCollection_ExtendedString& theTimeStamp)
 {
@@ -55,41 +86,138 @@ XCAFDoc_Note::Set(const TCollection_ExtendedString& theUserName,
   myTimeStamp = theTimeStamp;
 }
 
-const TCollection_ExtendedString& 
-XCAFDoc_Note::UserName() const
-{
-  return myUserName;
-}
-
-const TCollection_ExtendedString& 
-XCAFDoc_Note::TimeStamp() const
-{
-  return myTimeStamp;
-}
-
-Standard_Boolean 
-XCAFDoc_Note::IsOrphan() const
+// =======================================================================
+// function : IsOrphan
+// purpose  :
+// =======================================================================
+Standard_Boolean XCAFDoc_Note::IsOrphan() const
 {
   Handle(XCAFDoc_GraphNode) aFather;
   return !Label().FindAttribute(XCAFDoc::NoteRefGUID(), aFather) ||
          (aFather->NbChildren() == 0);
 }
 
-void 
+// =======================================================================
+// function : GetObject
+// purpose  :
+// =======================================================================
+Handle(XCAFNoteObjects_NoteObject) XCAFDoc_Note::GetObject() const
+{
+  Handle(XCAFNoteObjects_NoteObject) anObj = new XCAFNoteObjects_NoteObject();
+
+  Handle(TDataXtd_Point) aPnt;
+  if (Label().FindChild(ChildLab_Pnt).FindAttribute(TDataXtd_Point::GetID(), aPnt))
+  {
+    gp_Pnt aP;
+    if (TDataXtd_Geometry::Point(aPnt->Label(), aP))
+    {
+      anObj->SetPoint(aP);
+    }
+  }
+
+  Handle(TDataXtd_Plane) aPln;
+  if (Label().FindChild(ChildLab_Plane).FindAttribute(TDataXtd_Plane::GetID(), aPln))
+  {
+    gp_Pln aP;
+    if (TDataXtd_Geometry::Plane(aPln->Label(), aP))
+    {
+      anObj->SetPlane(aP.Position().Ax2());
+    }
+  }
+
+  Handle(TDataXtd_Point) aPntText;
+  if (Label().FindChild(ChildLab_PntText).FindAttribute(TDataXtd_Point::GetID(), aPntText))
+  {
+    gp_Pnt aP;
+    if (TDataXtd_Geometry::Point(aPntText->Label(), aP))
+    {
+      anObj->SetPointText(aP);
+    }
+  }
+
+  Handle(TNaming_NamedShape) aNS;
+  TDF_Label aLPres = Label().FindChild(ChildLab_Presentation);
+  if (aLPres.FindAttribute(TNaming_NamedShape::GetID(), aNS))
+  {
+    TopoDS_Shape aPresentation = TNaming_Tool::GetShape(aNS);
+    if (!aPresentation.IsNull())
+    {
+      anObj->SetPresentation(aPresentation);
+    }
+  }
+
+  return anObj;
+}
+
+// =======================================================================
+// function : SetObject
+// purpose  :
+// =======================================================================
+void XCAFDoc_Note::SetObject (const Handle(XCAFNoteObjects_NoteObject)& theObject)
+{
+  Backup();
+
+  for (TDF_ChildIterator anIter(Label()); anIter.More(); anIter.Next())
+  {
+    anIter.Value().ForgetAllAttributes();
+  }
+
+  if (theObject->HasPoint())
+  {
+    gp_Pnt aPnt1 = theObject->GetPoint();
+    TDataXtd_Point::Set (Label().FindChild (ChildLab_Pnt), aPnt1);
+  }
+
+  if (theObject->HasPlane())
+  {
+    gp_Ax2 anAx = theObject->GetPlane();
+
+    gp_Pln aP (anAx);
+    TDataXtd_Plane::Set (Label().FindChild (ChildLab_Plane), aP);
+  }
+
+  if (theObject->HasPointText())
+  {
+    gp_Pnt aPntText = theObject->GetPointText();
+    TDataXtd_Point::Set (Label().FindChild (ChildLab_PntText), aPntText);
+  }
+
+  TopoDS_Shape aPresentation = theObject->GetPresentation();
+  if (!aPresentation.IsNull())
+  {
+    TDF_Label aLPres = Label().FindChild (ChildLab_Presentation);
+    TNaming_Builder aBuilder (aLPres);
+    aBuilder.Generated (aPresentation);
+  }
+}
+
+// =======================================================================
+// function : Restore
+// purpose  :
+// =======================================================================
+void
 XCAFDoc_Note::Restore(const Handle(TDF_Attribute)& theAttr)
 {
   myUserName = Handle(XCAFDoc_Note)::DownCast(theAttr)->myUserName;
   myTimeStamp = Handle(XCAFDoc_Note)::DownCast(theAttr)->myTimeStamp;
 }
 
-void 
+// =======================================================================
+// function : Paste
+// purpose  :
+// =======================================================================
+void
 XCAFDoc_Note::Paste(const Handle(TDF_Attribute)&       theAttrInto,
                     const Handle(TDF_RelocationTable)& /*theRT*/) const
 {
   Handle(XCAFDoc_Note)::DownCast(theAttrInto)->Set(myUserName, myTimeStamp);
 }
 
-Standard_OStream& 
+// =======================================================================
+// function : Dump
+// purpose  :
+// =======================================================================
+Standard_OStream&
 XCAFDoc_Note::Dump(Standard_OStream& theOS) const
 {
   TDF_Attribute::Dump(theOS);

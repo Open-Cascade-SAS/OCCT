@@ -1,6 +1,4 @@
-// Created on: 2017-02-13
-// Created by: Sergey NIKONOV
-// Copyright (c) 2000-2017 OPEN CASCADE SAS
+// Copyright (c) 2017-2018 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -19,14 +17,22 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(XCAFDoc_NoteComment, XCAFDoc_Note)
 
-const Standard_GUID& 
+// =======================================================================
+// function : GetID
+// purpose  :
+// =======================================================================
+const Standard_GUID&
 XCAFDoc_NoteComment::GetID()
 {
   static Standard_GUID s_ID("FDEA4C52-0F54-484c-B590-579E18F7B5D4");
   return s_ID;
 }
 
-Handle(XCAFDoc_NoteComment) 
+// =======================================================================
+// function : Get
+// purpose  :
+// =======================================================================
+Handle(XCAFDoc_NoteComment)
 XCAFDoc_NoteComment::Get(const TDF_Label& theLabel)
 {
   Handle(XCAFDoc_NoteComment) aThis;
@@ -34,7 +40,11 @@ XCAFDoc_NoteComment::Get(const TDF_Label& theLabel)
   return aThis;
 }
 
-Handle(XCAFDoc_NoteComment) 
+// =======================================================================
+// function : Set
+// purpose  :
+// =======================================================================
+Handle(XCAFDoc_NoteComment)
 XCAFDoc_NoteComment::Set(const TDF_Label&                  theLabel,
                          const TCollection_ExtendedString& theUserName,
                          const TCollection_ExtendedString& theTimeStamp,
@@ -51,11 +61,19 @@ XCAFDoc_NoteComment::Set(const TDF_Label&                  theLabel,
   return aNoteComment;
 }
 
+// =======================================================================
+// function : XCAFDoc_NoteComment
+// purpose  :
+// =======================================================================
 XCAFDoc_NoteComment::XCAFDoc_NoteComment()
 {
 }
 
-void 
+// =======================================================================
+// function : Set
+// purpose  :
+// =======================================================================
+void
 XCAFDoc_NoteComment::Set(const TCollection_ExtendedString& theComment)
 {
   Backup();
@@ -63,25 +81,31 @@ XCAFDoc_NoteComment::Set(const TCollection_ExtendedString& theComment)
   myComment = theComment;
 }
 
-const TCollection_ExtendedString& 
-XCAFDoc_NoteComment::Comment() const
-{
-  return myComment;
-}
-
-const Standard_GUID& 
+// =======================================================================
+// function : ID
+// purpose  :
+// =======================================================================
+const Standard_GUID&
 XCAFDoc_NoteComment::ID() const
 {
   return GetID();
 }
 
-Handle(TDF_Attribute) 
+// =======================================================================
+// function : NewEmpty
+// purpose  :
+// =======================================================================
+Handle(TDF_Attribute)
 XCAFDoc_NoteComment::NewEmpty() const
 {
   return new XCAFDoc_NoteComment();
 }
 
-void 
+// =======================================================================
+// function : Restore
+// purpose  :
+// =======================================================================
+void
 XCAFDoc_NoteComment::Restore(const Handle(TDF_Attribute)& theAttr)
 {
   XCAFDoc_Note::Restore(theAttr);
@@ -91,7 +115,11 @@ XCAFDoc_NoteComment::Restore(const Handle(TDF_Attribute)& theAttr)
     myComment = aMine->myComment;
 }
 
-void 
+// =======================================================================
+// function : Paste
+// purpose  :
+// =======================================================================
+void
 XCAFDoc_NoteComment::Paste(const Handle(TDF_Attribute)&       theAttrInto,
                            const Handle(TDF_RelocationTable)& theRT) const
 {
@@ -102,7 +130,11 @@ XCAFDoc_NoteComment::Paste(const Handle(TDF_Attribute)&       theAttrInto,
     aMine->Set(myComment);
 }
 
-Standard_OStream& 
+// =======================================================================
+// function : Dump
+// purpose  :
+// =======================================================================
+Standard_OStream&
 XCAFDoc_NoteComment::Dump(Standard_OStream& theOS) const
 {
   XCAFDoc_Note::Dump(theOS);

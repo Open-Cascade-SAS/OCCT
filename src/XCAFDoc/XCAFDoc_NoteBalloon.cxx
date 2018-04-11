@@ -1,6 +1,4 @@
-// Created on: 2017-08-10
-// Created by: Sergey NIKONOV
-// Copyright (c) 2000-2017 OPEN CASCADE SAS
+// Copyright (c) 2017-2018 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -19,13 +17,21 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(XCAFDoc_NoteBalloon, XCAFDoc_NoteComment)
 
-const Standard_GUID& 
+// =======================================================================
+// function : GetID
+// purpose  :
+// =======================================================================
+const Standard_GUID&
 XCAFDoc_NoteBalloon::GetID()
 {
   static Standard_GUID s_ID("1127951D-87D5-4ecc-89D5-D1406576C43F");
   return s_ID;
 }
 
+// =======================================================================
+// function : Get
+// purpose  :
+// =======================================================================
 Handle(XCAFDoc_NoteBalloon)
 XCAFDoc_NoteBalloon::Get(const TDF_Label& theLabel)
 {
@@ -34,6 +40,10 @@ XCAFDoc_NoteBalloon::Get(const TDF_Label& theLabel)
   return aThis;
 }
 
+// =======================================================================
+// function : Set
+// purpose  :
+// =======================================================================
 Handle(XCAFDoc_NoteBalloon)
 XCAFDoc_NoteBalloon::Set(const TDF_Label&                  theLabel,
                          const TCollection_ExtendedString& theUserName,
@@ -51,17 +61,29 @@ XCAFDoc_NoteBalloon::Set(const TDF_Label&                  theLabel,
   return aNoteBalloon;
 }
 
+// =======================================================================
+// function : XCAFDoc_NoteBalloon
+// purpose  :
+// =======================================================================
 XCAFDoc_NoteBalloon::XCAFDoc_NoteBalloon()
 {
 }
 
-const Standard_GUID& 
+// =======================================================================
+// function : ID
+// purpose  :
+// =======================================================================
+const Standard_GUID&
 XCAFDoc_NoteBalloon::ID() const
 {
   return GetID();
 }
 
-Handle(TDF_Attribute) 
+// =======================================================================
+// function : NewEmpty
+// purpose  :
+// =======================================================================
+Handle(TDF_Attribute)
 XCAFDoc_NoteBalloon::NewEmpty() const
 {
   return new XCAFDoc_NoteBalloon();

@@ -952,6 +952,26 @@ if (!myCommentNote.IsNull()) {
   myCommentNote->Set("New comment");
 }
 ~~~~~
+In order to edit auxiliary note data such as text and attachment position, plane for rendering and tesselated presentation,
+one should use a transfer object *XCAFNoteObjects_NoteObject* by GetObject and SetObject methods of *XCAFDoc_Note* class.
+*XCAFNoteObjects_NoteObject* class provides the following functionality:
+- HasPlane, GetPlane and SetPlane methods test, get and set plane for note rendering
+- HasPoint, GetPoint and SetPoint methods test, get and set note attachment position on the annotated object
+- HasPointText, GetPointText, SetPointText methods test, get and set test position
+- GetPresentation and SetPresentation methods allow to test for and specify tesselated presentation
+
+After getting, the transfer object can be edited and set back to the note:
+~~~~~
+Handle(XCAFNoteObjects_NoteObject) aNoteObj = myNote->GetObject();
+if (!aNoteObj.IsNull())
+{
+  gp_Pnt aPntTxt (...);
+  aNoteObj->SetPointText (aPntTxt);
+  TopoDS_Shape aS = ...;
+  aNoteObj->SetPresentation (aS);
+  myNote->SetObject (aNoteObj);
+}
+~~~~~
 
 @subsubsection occt_xde_2_10_4 Adding Notes
 

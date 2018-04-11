@@ -1264,6 +1264,37 @@ noteDump(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
     }
   }
 
+  Handle(XCAFNoteObjects_NoteObject) aNoteObj = aNote->GetObject();
+  if (!aNoteObj.IsNull())
+  {
+    di << "text point : ";
+    if (aNoteObj->HasPointText())
+    {
+      const gp_Pnt& aP = aNoteObj->GetPointText();
+      di << "[ " << aP.X() << " " << aP.Y() << " " << aP.Z() << " ]\n";
+    }
+    else
+      di << " not specified\n";
+    di << "plane : ";
+    if (aNoteObj->HasPlane())
+    {
+      const gp_Ax2& anAx = aNoteObj->GetPlane();
+      const gp_Pnt& aP = anAx.Location();
+      di << "P : [ " << aP.X() << " " << aP.Y() << " " << aP.Z() << " ]";
+      const gp_Dir& aN = anAx.Direction();
+      di << "N : [ " << aN.X() << " " << aN.Y() << " " << aN.Z() << " ]";
+    }
+    di << "attachment point : ";
+    if (aNoteObj->HasPoint())
+    {
+      const gp_Pnt& aP = aNoteObj->GetPoint();
+      di << "[ " << aP.X() << " " << aP.Y() << " " << aP.Z() << " ]\n";
+    }
+    else
+      di << " not specified\n";
+    di << "presentation : " << (aNoteObj->GetPresentation().IsNull() ? "no" : "specified");
+  }
+
   return 0;
 }
 

@@ -1866,6 +1866,7 @@ proc osutils:tk:files { tkloc thePlatform } {
          "t" { set utyp "toolkit" }
          "n" { set utyp "nocdlpack" }
          "x" { set utyp "executable" }
+         default { error "Error: Cannot determine type of unit $loc, check adm/UDLIST!" }
     }
     if [array exists map] { unset map }
     osutils:tk:loadunit $loc map

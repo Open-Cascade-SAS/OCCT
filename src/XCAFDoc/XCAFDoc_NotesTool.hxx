@@ -1,6 +1,4 @@
-// Created on: 2017-02-10
-// Created by: Sergey NIKONOV
-// Copyright (c) 2000-2017 OPEN CASCADE SAS
+// Copyright (c) 2017-2018 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -30,9 +28,6 @@ class TDF_RelocationTable;
 class XCAFDoc_Note;
 class XCAFDoc_AssemblyItemId;
 class XCAFDoc_AssemblyItemRef;
-
-class XCAFDoc_NotesTool;
-DEFINE_STANDARD_HANDLE(XCAFDoc_NotesTool, TDF_Attribute)
 
 //! A tool to annotate items in the hierarchical product structure.
 //! There are two basic entities, which operates the notes tool: notes
@@ -84,6 +79,7 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(XCAFDoc_NotesTool, TDF_Attribute)
 
+  //! Returns default attribute GUID
   Standard_EXPORT static const Standard_GUID& GetID();
 
   //! Create (if not exist) a notes tool from XCAFDoc on theLabel.
@@ -515,5 +511,7 @@ public:
   Standard_EXPORT Standard_OStream& Dump(Standard_OStream& theOS) const Standard_OVERRIDE;
 
 };
+
+DEFINE_STANDARD_HANDLE(XCAFDoc_NotesTool, TDF_Attribute)
 
 #endif // _XCAFDoc_NotesTool_HeaderFile

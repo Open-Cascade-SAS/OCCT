@@ -1,6 +1,4 @@
-// Created on: 2017-02-13
-// Created by: Sergey NIKONOV
-// Copyright (c) 2000-2017 OPEN CASCADE SAS
+// Copyright (c) 2017-2018 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -18,9 +16,6 @@
 
 #include <XCAFDoc_Note.hxx>
 
-class XCAFDoc_NoteComment;
-DEFINE_STANDARD_HANDLE(XCAFDoc_NoteComment, XCAFDoc_Note)
-
 //! A comment note attribute.
 //! Contains a textual comment.
 class XCAFDoc_NoteComment : public XCAFDoc_Note
@@ -29,6 +24,7 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(XCAFDoc_NoteComment, XCAFDoc_Note)
 
+  //! Returns default attribute GUID
   Standard_EXPORT static const Standard_GUID& GetID();
 
   //! Finds a reference attribute on the given label and returns it, if it is found
@@ -51,7 +47,7 @@ public:
   Standard_EXPORT void Set(const TCollection_ExtendedString& theComment);
 
   //! Returns the comment text.
-  Standard_EXPORT const TCollection_ExtendedString& Comment() const;
+  const TCollection_ExtendedString& Comment() const { return myComment; }
 
 public:
 
@@ -68,5 +64,7 @@ protected:
   TCollection_ExtendedString myComment; ///< Comment text.
 
 };
+
+DEFINE_STANDARD_HANDLE(XCAFDoc_NoteComment, XCAFDoc_Note)
 
 #endif // _XCAFDoc_NoteComment_HeaderFile

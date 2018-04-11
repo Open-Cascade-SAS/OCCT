@@ -1,6 +1,4 @@
-// Created on: 2017-02-13
-// Created by: Sergey NIKONOV
-// Copyright (c) 2000-2017 OPEN CASCADE SAS
+// Copyright (c) 2017-2018 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -20,13 +18,21 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(XCAFDoc_NoteBinData, XCAFDoc_Note)
 
-const Standard_GUID& 
+// =======================================================================
+// function : GetID
+// purpose  :
+// =======================================================================
+const Standard_GUID&
 XCAFDoc_NoteBinData::GetID()
 {
   static Standard_GUID s_ID("E9055501-F0FC-4864-BE4B-284FDA7DDEAC");
   return s_ID;
 }
 
+// =======================================================================
+// function : Get
+// purpose  :
+// =======================================================================
 Handle(XCAFDoc_NoteBinData)
 XCAFDoc_NoteBinData::Get(const TDF_Label& theLabel)
 {
@@ -35,7 +41,11 @@ XCAFDoc_NoteBinData::Get(const TDF_Label& theLabel)
   return aThis;
 }
 
-Handle(XCAFDoc_NoteBinData) 
+// =======================================================================
+// function : Set
+// purpose  :
+// =======================================================================
+Handle(XCAFDoc_NoteBinData)
 XCAFDoc_NoteBinData::Set(const TDF_Label&                  theLabel,
                          const TCollection_ExtendedString& theUserName,
                          const TCollection_ExtendedString& theTimeStamp,
@@ -56,7 +66,11 @@ XCAFDoc_NoteBinData::Set(const TDF_Label&                  theLabel,
   return aNoteBinData;
 }
 
-Handle(XCAFDoc_NoteBinData) 
+// =======================================================================
+// function : Set
+// purpose  :
+// =======================================================================
+Handle(XCAFDoc_NoteBinData)
 XCAFDoc_NoteBinData::Set(const TDF_Label&                     theLabel,
                          const TCollection_ExtendedString&    theUserName,
                          const TCollection_ExtendedString&    theTimeStamp,
@@ -75,11 +89,19 @@ XCAFDoc_NoteBinData::Set(const TDF_Label&                     theLabel,
   return aNoteBinData;
 }
 
+// =======================================================================
+// function : XCAFDoc_NoteBinData
+// purpose  :
+// =======================================================================
 XCAFDoc_NoteBinData::XCAFDoc_NoteBinData()
 {
 }
 
-Standard_Boolean 
+// =======================================================================
+// function : Set
+// purpose  :
+// =======================================================================
+Standard_Boolean
 XCAFDoc_NoteBinData::Set(const TCollection_ExtendedString& theTitle,
                          const TCollection_AsciiString&    theMIMEtype,
                          OSD_File&                         theFile)
@@ -104,7 +126,11 @@ XCAFDoc_NoteBinData::Set(const TCollection_ExtendedString& theTitle,
   return Standard_True;
 }
 
-void 
+// =======================================================================
+// function : Set
+// purpose  :
+// =======================================================================
+void
 XCAFDoc_NoteBinData::Set(const TCollection_ExtendedString&    theTitle, 
                          const TCollection_AsciiString&       theMIMEtype,
                          const Handle(TColStd_HArray1OfByte)& theData)
@@ -116,43 +142,31 @@ XCAFDoc_NoteBinData::Set(const TCollection_ExtendedString&    theTitle,
   myMIMEtype = theMIMEtype;
 }
 
-const TCollection_ExtendedString& 
-XCAFDoc_NoteBinData::Title() const
-{
-  return myTitle;
-}
-
-const TCollection_AsciiString& 
-XCAFDoc_NoteBinData::MIMEtype() const
-{
-  return myMIMEtype;
-}
-
-Standard_Integer 
-XCAFDoc_NoteBinData::Size() const
-{
-  return (!myData.IsNull() ? myData->Length() : 0);
-}
-
-const Handle(TColStd_HArray1OfByte)& 
-XCAFDoc_NoteBinData::Data() const
-{
-  return myData;
-}
-
-const 
+// =======================================================================
+// function : ID
+// purpose  :
+// =======================================================================
+const
 Standard_GUID& XCAFDoc_NoteBinData::ID() const
 {
   return GetID();
 }
 
-Handle(TDF_Attribute) 
+// =======================================================================
+// function : NewEmpty
+// purpose  :
+// =======================================================================
+Handle(TDF_Attribute)
 XCAFDoc_NoteBinData::NewEmpty() const
 {
   return new XCAFDoc_NoteBinData();
 }
 
-void 
+// =======================================================================
+// function : Restore
+// purpose  :
+// =======================================================================
+void
 XCAFDoc_NoteBinData::Restore(const Handle(TDF_Attribute)& theAttr)
 {
   XCAFDoc_Note::Restore(theAttr);
@@ -166,7 +180,11 @@ XCAFDoc_NoteBinData::Restore(const Handle(TDF_Attribute)& theAttr)
   }
 }
 
-void 
+// =======================================================================
+// function : Paste
+// purpose  :
+// =======================================================================
+void
 XCAFDoc_NoteBinData::Paste(const Handle(TDF_Attribute)&       theAttrInto,
                            const Handle(TDF_RelocationTable)& theRT) const
 {
@@ -177,7 +195,11 @@ XCAFDoc_NoteBinData::Paste(const Handle(TDF_Attribute)&       theAttrInto,
     aMine->Set(myTitle, myMIMEtype, myData);
 }
 
-Standard_OStream& 
+// =======================================================================
+// function : Dump
+// purpose  :
+// =======================================================================
+Standard_OStream&
 XCAFDoc_NoteBinData::Dump(Standard_OStream& theOS) const
 {
   XCAFDoc_Note::Dump(theOS);
