@@ -211,7 +211,7 @@ public:
   //! discontinuities are treated like round
   //! corner. The corner is treated as rotation
   //! of the profile around an axis which
-  //! passes through the point of the spine?s
+  //! passes through the point of the spine's
   //! fracture. This axis is based on cross
   //! product of directions tangent to the
   //! adjacent segments of the spine at their common point.
@@ -284,7 +284,6 @@ private:
 
 
   Handle(BRepFill_PipeShell) myPipe;
-
 
 };
 

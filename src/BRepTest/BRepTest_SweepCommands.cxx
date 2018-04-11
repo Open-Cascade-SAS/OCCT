@@ -263,48 +263,98 @@ static Standard_Integer geompipe(Draw_Interpretor&,
 Standard_Integer evolved(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
   if (n == 1) {
-    //cout << " 1) evolved result base profil : "<< endl;
-    //cout << "        The relative position of the profil on the base" << endl;
-    //cout << "        is given in the referencial axis. " << endl;
-    //cout << " 2) evolved result base profil o : "<< endl;
-    //cout << "        This position is automatically computed." << endl;
-    di << " 1) evolved result base profil : \n";
-    di << "        The relative position of the profil on the base\n";
-    di << "        is given in the referencial axis. \n";
-    di << " 2) evolved result base profil o : \n";
-    di << "        This position is automatically computed.\n";
+    di << " evolved result -s spine -p profile [-solid] [-v] [-a] [-t toler] [-parallel] : \n";
+    di << "   Make evolved profile on spine.\n";
+    di << "   -solid means make closed solid.\n";
+    di << "   -v means use alternative algorithm (volume mode).\n";
+    di << "   -a means referencial CS is automatically computed, otherwise global CS is used. \n";
+    di << "   -t sets the tolerance.\n";
+    di << "   -parallel turns on parallel execution.\n";
     return 0;
   }
 
   if (n < 4) return 1;
-  Standard_Boolean IsAFace = Standard_False;
-  Standard_Boolean Solid = (!strcmp(a[0], "evolvedsolid"));
+  Standard_Boolean Solid   = Standard_False;  
+  Standard_Boolean isVolume = Standard_False;
+  Standard_Boolean hasToComputeAxes = Standard_False;
+  Standard_Real aTolerance = 0.0;
+  TopoDS_Shape Base;
+  TopoDS_Wire Prof;
+  Standard_Boolean isParallel = Standard_True;
 
+  for (Standard_Integer i = 2; i < n; i++)
+  {
+    if (a[i][0] != '-')
+    {
+      di << "Error: wrong option!\n";
+      return 1;
+    }
 
+    if (!Solid && !strcmp(a[i], "-solid"))
+    {
+      Solid = Standard_True;
+      continue;
+    }
 
-  TopoDS_Shape Base = DBRep::Get(a[2], TopAbs_WIRE, Standard_False);
-  if (Base.IsNull()) {
-    Base = DBRep::Get(a[2], TopAbs_FACE, Standard_False);
-    IsAFace = Standard_True;
+    if (!strcmp(a[i], "-stm"))
+    {
+      isParallel = Standard_False;
+      continue;
+    }
+
+    switch (a[i][1])
+    {
+      case 's':
+      {
+        Base = DBRep::Get(a[++i], TopAbs_WIRE, Standard_False);
+        if (Base.IsNull())
+        {
+          Base = DBRep::Get(a[i], TopAbs_FACE, Standard_False);
+        }
+      }
+      break;
+
+      case 'p':
+      {
+        Prof = TopoDS::Wire(DBRep::Get(a[++i], TopAbs_WIRE, Standard_False));
+      }
+      break;
+
+      case 'v':
+      {
+        isVolume = Standard_True;
+      }
+      break;
+
+      case 'a':
+      {
+        hasToComputeAxes = Standard_True;
+      }
+      break;
+
+      case 't':
+      {
+        aTolerance = Draw::Atof(a[++i]);
+      }
+      break;
+
+      default: 
+        di << "Error: Unknown option!\n";
+        break;
+    }
   }
-  if (Base.IsNull()) return 1;
-
-  TopoDS_Shape InpuTShape(DBRep::Get(a[3], TopAbs_WIRE, Standard_False));
-  TopoDS_Wire Prof = TopoDS::Wire(InpuTShape);
-  //  TopoDS_Wire Prof = 
-  //    TopoDS::Wire(DBRep::Get(a[3],TopAbs_WIRE,Standard_False));
-  if (Prof.IsNull()) return 1;
-
-  if (IsAFace) {
-    TopoDS_Shape Volevo
-      = BRepOffsetAPI_MakeEvolved(TopoDS::Face(Base), Prof, GeomAbs_Arc, n == 4, Solid);
-    DBRep::Set(a[1], Volevo);
+ 
+  if (Base.IsNull() || Prof.IsNull())
+  {
+    di << "spine (face or wire) and profile (wire) are expected\n";
+    return 1;
   }
-  else {
-    TopoDS_Shape Volevo
-      = BRepOffsetAPI_MakeEvolved(TopoDS::Wire(Base), Prof, GeomAbs_Arc, n == 4, Solid);
-    DBRep::Set(a[1], Volevo);
-  }
+
+  TopoDS_Shape Volevo = BRepOffsetAPI_MakeEvolved(Base, Prof, GeomAbs_Arc, !hasToComputeAxes,
+                                                  Solid, Standard_False, 
+                                                  aTolerance, isVolume, isParallel);
+
+  DBRep::Set(a[1],Volevo);
 
   return 0;
 }
@@ -942,10 +992,6 @@ void  BRepTest::SweepCommands(Draw_Interpretor& theCommands)
     __FILE__, pipe, g);
 
   theCommands.Add("evolved",
-    "evolved , no args to get help",
-    __FILE__, evolved, g);
-
-  theCommands.Add("evolvedsolid",
     "evolved , no args to get help",
     __FILE__, evolved, g);
 

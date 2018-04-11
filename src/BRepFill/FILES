@@ -2,6 +2,8 @@ BRepFill.cxx
 BRepFill.hxx
 BRepFill_ACRLaw.cxx
 BRepFill_ACRLaw.hxx
+BRepFill_AdvancedEvolved.cxx
+BRepFill_AdvancedEvolved.hxx
 BRepFill_ApproxSeewing.cxx
 BRepFill_ApproxSeewing.hxx
 BRepFill_CompatibleWires.cxx

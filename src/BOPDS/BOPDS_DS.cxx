@@ -1385,6 +1385,44 @@ void BOPDS_DS::RefineFaceInfoOn()
     }
   }
 }
+
+//=======================================================================
+//function : RefineFaceInfoIn
+//purpose  : 
+//=======================================================================
+void BOPDS_DS::RefineFaceInfoIn()
+{
+  for (Standard_Integer i = 0; i < myNbSourceShapes; ++i)
+  {
+    const BOPDS_ShapeInfo& aSI = ShapeInfo(i);
+    if (aSI.ShapeType() != TopAbs_FACE)
+      continue;
+
+    if (!aSI.HasReference())
+      continue;
+
+    BOPDS_FaceInfo& aFI = ChangeFaceInfo(i);
+
+    const BOPDS_IndexedMapOfPaveBlock& aMPBOn = aFI.PaveBlocksOn();
+    BOPDS_IndexedMapOfPaveBlock& aMPBIn = aFI.ChangePaveBlocksIn();
+
+    if (aMPBIn.IsEmpty() || aMPBOn.IsEmpty())
+      continue;
+
+    BOPDS_IndexedMapOfPaveBlock aMPBInNew;
+
+    const Standard_Integer aNbPBIn = aMPBIn.Extent();
+    for (Standard_Integer j = 1; j <= aNbPBIn; ++j)
+    {
+      if (!aMPBOn.Contains(aMPBIn(j)))
+        aMPBInNew.Add(aMPBIn(j));
+    }
+
+    if (aMPBInNew.Extent() < aNbPBIn)
+      aMPBIn = aMPBInNew;
+  }
+}
+
 //=======================================================================
 //function : AloneVertices
 //purpose  : 

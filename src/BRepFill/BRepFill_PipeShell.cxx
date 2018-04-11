@@ -690,7 +690,7 @@ void BRepFill_PipeShell::SetForceApproxC1(const Standard_Boolean ForceApproxC1)
 //function : Build
 //purpose  : Construct the Shell and the history
 //=======================================================================
- Standard_Boolean BRepFill_PipeShell::Build() 
+ Standard_Boolean BRepFill_PipeShell::Build()
 {
   Standard_Boolean Ok;
   Standard_Real FirstS, LastS;
@@ -744,8 +744,9 @@ void BRepFill_PipeShell::SetForceApproxC1(const Standard_Boolean ForceApproxC1)
   MkSw.SetTolerance(myTol3d, myBoundTol, 1.e-5, myTolAngular);
   MkSw.SetAngularControl(angmin, angmax);
   MkSw.SetForceApproxC1(myForceApproxC1);
-  MkSw.SetBounds(TopoDS::Wire(myFirst), 
-		 TopoDS::Wire(myLast));
+  MkSw.SetBounds(TopoDS::Wire(myFirst),
+                 TopoDS::Wire(myLast));
+
   GeomAbs_Shape theContinuity = GeomAbs_C2;
   if (myTrihedron == GeomFill_IsDiscreteTrihedron)
     theContinuity = GeomAbs_C0;

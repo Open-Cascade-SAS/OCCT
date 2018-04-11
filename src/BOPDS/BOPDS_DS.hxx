@@ -303,6 +303,8 @@ Standard_EXPORT virtual ~BOPDS_DS();
   //! ++
   Standard_EXPORT void RefineFaceInfoOn();
   
+  //! Removes any pave block from list of having IN state if it has also the state ON.
+  Standard_EXPORT void RefineFaceInfoIn();
 
   //! Returns information about ON/IN sub-shapes of the given faces.
   //! @param theMVOnIn  the indices of ON/IN vertices from both faces

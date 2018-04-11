@@ -1,0 +1,30 @@
+puts "=========="
+puts "OCC29523"
+puts "=========="
+
+restore [locate_data_file bug29523_cut_extrudewire03.brep] sw 
+restore [locate_data_file bug29523_cut_toolwire03.brep] tw
+
+evolved result -s sw -p tw -solid -a -v
+
+checkprops result -s 3.02832e+010 -v 4.97434e+013
+checkshape result
+
+checknbshapes result -solid 1 -shell 1
+
+if {[regexp "Faulties" [bopargcheck result]]} {
+  puts "Error: bopargcheck has found some faulties in res2"
+}
+
+# Attention. Tolerance > 1 is quite big. However,
+# the dimensions of the shape "result" are about 1.0e+5.
+# So, this tolerance seems to be OK.
+
+checkmaxtol result -ref 1.000010000005457
+
+smallview
+don result sw tw
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png
+

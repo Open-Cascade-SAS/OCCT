@@ -165,15 +165,19 @@ void math_NewtonMinimum::Perform(math_MultipleVarFunctionWithHessian& F,
       Standard_Real aMult = RealLast();
       for(Standard_Integer anIdx = 1; anIdx <= myLeft.Upper(); anIdx++)
       {
+        const Standard_Real anAbsStep = Abs(TheStep(anIdx));
+        if (anAbsStep < gp::Resolution())
+          continue;
+
         if (suivant->Value(anIdx) < myLeft(anIdx))
         {
-          Standard_Real aValue = Abs(precedent->Value(anIdx) - myLeft(anIdx)) / Abs(TheStep(anIdx));
+          Standard_Real aValue = Abs(precedent->Value(anIdx) - myLeft(anIdx)) / anAbsStep;
           aMult = Min (aValue, aMult);
         }
 
         if (suivant->Value(anIdx) > myRight(anIdx))
         {
-          Standard_Real aValue = Abs(precedent->Value(anIdx) - myRight(anIdx)) / Abs(TheStep(anIdx));
+          Standard_Real aValue = Abs(precedent->Value(anIdx) - myRight(anIdx)) / anAbsStep;
           aMult = Min (aValue, aMult);
         }
       }

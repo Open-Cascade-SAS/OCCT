@@ -22,101 +22,116 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Wire.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS.hxx>
+#include <Standard_NotImplemented.hxx>
+
+static const TopTools_ListOfShape anEmptyList;
 
 //=======================================================================
-//function : BRepOffsetAPI_MakeEvolved
+//function : Constructor
 //purpose  : 
 //=======================================================================
 BRepOffsetAPI_MakeEvolved::BRepOffsetAPI_MakeEvolved()
 {
 }
 
-
 //=======================================================================
-//function : BRepOffsetAPI_MakeEvolved
+//function : Constructor
 //purpose  : 
 //=======================================================================
-
-BRepOffsetAPI_MakeEvolved::BRepOffsetAPI_MakeEvolved(const TopoDS_Wire&     Spine,
-					 const TopoDS_Wire&     Profil, 
-					 const GeomAbs_JoinType Join,
-					 const Standard_Boolean AxeProf,
-					 const Standard_Boolean Solid,
-					 const Standard_Boolean ProfOnSpine,
-					 const Standard_Real    Tol)
+BRepOffsetAPI_MakeEvolved::BRepOffsetAPI_MakeEvolved(const TopoDS_Shape&    Spine,
+                                                     const TopoDS_Wire&     Profil,
+                                                     const GeomAbs_JoinType Join,
+                                                     const Standard_Boolean AxeProf,
+                                                     const Standard_Boolean Solid,
+                                                     const Standard_Boolean ProfOnSpine,
+                                                     const Standard_Real    Tol,
+                                                     const Standard_Boolean theIsVolume,
+                                                     const Standard_Boolean theRunInParallel)
+  : myIsVolume (theIsVolume)
 {
-  gp_Ax3 Axis(gp_Pnt(0.,0.,0.),
-	      gp_Dir(0.,0.,1.),
-	      gp_Dir(1.,0.,0.));
+  if (Spine.ShapeType() != TopAbs_WIRE && Spine.ShapeType() != TopAbs_FACE)
+  {
+    Standard_TypeMismatch::Raise ("BRepOffsetAPI_MakeEvolved: face or wire is expected as a spine");
+  }
+  if (theIsVolume)
+  {
+    myVolume.SetParallelMode(theRunInParallel);
+    TopoDS_Wire aSpine;
+    if (Spine.ShapeType() == TopAbs_WIRE)
+    {
+      aSpine = TopoDS::Wire(Spine);
+    }
+    else
+    {
+      aSpine = TopoDS::Wire(TopoDS_Iterator(Spine).Value());
+    }
+    myVolume.Perform(aSpine, Profil, Tol, Solid);
+    if (!myVolume.IsDone())
+    {
+      return;
+    }
+  }
+  else
+  {
+    gp_Ax3 Axis(gp::Origin(), gp::DZ(), gp::DX());
 
-  if ( !AxeProf) {
-    Standard_Boolean POS;
-    BRepFill::Axe(Spine,Profil,Axis,POS,Tol);
-    if (ProfOnSpine && !POS) return;
+    if (!AxeProf)
+    {
+      Standard_Boolean POS;
+      BRepFill::Axe(Spine, Profil, Axis, POS, Max(Tol, Precision::Confusion()));
+      if (ProfOnSpine && !POS) return;
+    }
+    if (Spine.ShapeType() == TopAbs_WIRE)
+    {
+      myEvolved.Perform(TopoDS::Wire(Spine), Profil, Axis, Join, Solid);
+    }
+    else
+    {
+      myEvolved.Perform(TopoDS::Face(Spine), Profil, Axis, Join, Solid);
+    }
   }
 
-  myEvolved.Perform(Spine,Profil,Axis,Join,Solid);
-  Build();
-  Done();
-}
-
-
-//=======================================================================
-//function : BRepOffsetAPI_MakeEvolved
-//purpose  : 
-//=======================================================================
-
-BRepOffsetAPI_MakeEvolved::BRepOffsetAPI_MakeEvolved(const TopoDS_Face&     Spine,
-					 const TopoDS_Wire&     Profil,
-					 const GeomAbs_JoinType Join,
-					 const Standard_Boolean AxeProf,
-					 const Standard_Boolean Solid,
-					 const Standard_Boolean ProfOnSpine,
-					 const Standard_Real    Tol)
-{
-  gp_Ax3 Axis(gp_Pnt(0.,0.,0.),
-	      gp_Dir(0.,0.,1.),
-	      gp_Dir(1.,0.,0.));
-
-  if ( !AxeProf) {
-    Standard_Boolean POS;
-    BRepFill::Axe(Spine,Profil,Axis,POS,Tol);
-    if (ProfOnSpine && !POS) return;
-  }
-
-  myEvolved.Perform(Spine,Profil,Axis,Join,Solid);
   Build();
 }
-
 
 //=======================================================================
 //function : BRepFill_Evolved&
 //purpose  : 
 //=======================================================================
 
-const BRepFill_Evolved& BRepOffsetAPI_MakeEvolved::Evolved() const 
+const BRepFill_Evolved& BRepOffsetAPI_MakeEvolved::Evolved() const
 {
+  if (myIsVolume)
+  {
+    Standard_TypeMismatch::Raise ("BRepOffsetAPI_MakeEvolved: myEvolved is accessed while in volume mode");
+  }
   return myEvolved;
 }
 
-
 //=======================================================================
-//function :
+//function : Build
 //purpose  : 
 //=======================================================================
-
 void BRepOffsetAPI_MakeEvolved::Build()
 {
-  myShape = myEvolved.Shape();
-  if (myEvolved.IsDone())  Done();
+  if (myEvolved.IsDone())
+  {
+    myShape = myEvolved.Shape();
+  }
+  else if (myVolume.IsDone())
+  {
+    myShape = myVolume.Shape();
+  }
+  
+  Done();
 }
-
 
 //=======================================================================
 //function : Top
 //purpose  : 
 //=======================================================================
-
 const TopoDS_Shape&  BRepOffsetAPI_MakeEvolved::Top() const 
 {
   return myEvolved.Top();
@@ -126,7 +141,6 @@ const TopoDS_Shape&  BRepOffsetAPI_MakeEvolved::Top() const
 //function : Bottom
 //purpose  : 
 //=======================================================================
-
 const TopoDS_Shape&  BRepOffsetAPI_MakeEvolved::Bottom() const 
 {
   return myEvolved.Bottom();
@@ -136,11 +150,12 @@ const TopoDS_Shape&  BRepOffsetAPI_MakeEvolved::Bottom() const
 //function : GeneratedShapes
 //purpose  : 
 //=======================================================================
-
-const TopTools_ListOfShape&  BRepOffsetAPI_MakeEvolved::GeneratedShapes ( 
-   const TopoDS_Shape& SpineShape,
-   const TopoDS_Shape& ProfShape )
-const 
+const TopTools_ListOfShape&
+        BRepOffsetAPI_MakeEvolved::GeneratedShapes(const TopoDS_Shape& SpineShape,
+                                                   const TopoDS_Shape& ProfShape) const 
 {
+  if (!myEvolved.IsDone())
+    return anEmptyList;
+
   return myEvolved.GeneratedShapes(SpineShape,ProfShape);
 }

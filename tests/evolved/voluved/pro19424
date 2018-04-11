@@ -8,7 +8,7 @@ checkshape b
 restore [locate_data_file pro19424b.brep] p
 checkshape p
 
-if [catch {evolved result -s b -p p -a } catch_result] {
+if [catch {evolved result -s b -p p -a -v } catch_result] {
   puts "Faulty PRO19424 : function EVOLVED works wrongly"
 } else {
   puts "PRO19424 OK: function EVOLVED works properly"

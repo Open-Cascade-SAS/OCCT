@@ -1,0 +1,28 @@
+puts "=========="
+puts "OCC29523"
+puts "=========="
+
+cpulimit 60
+
+restore [locate_data_file bug29523_cut_extrudewire09.brep] sw 
+restore [locate_data_file bug29523_cut_toolwire09.brep] tw
+
+evolved result -s sw -p tw -solid -a -v
+
+checkprops result -s 21088.8 -v 75993.1
+checkshape result
+
+checknbshapes result -solid 1 -shell 1
+
+if {[regexp "Faulties" [bopargcheck result]]} {
+  puts "Error: bopargcheck has found some faulties in res2"
+}
+
+checkmaxtol result -ref 0.031968491076118669
+
+smallview
+don result sw tw
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png
+

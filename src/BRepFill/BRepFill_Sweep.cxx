@@ -19,6 +19,7 @@
 #include <Approx_CurveOnSurface.hxx>
 #include <Approx_SameParameter.hxx>
 #include <Bnd_Box.hxx>
+#include <BOPTools_AlgoTools.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_CurveRepresentation.hxx>
 #include <BRep_GCurve.hxx>
@@ -702,7 +703,7 @@ static TopoDS_Edge BuildEdge(Handle(Geom_Curve)& C3d,
 			     const Standard_Real l,
 			     const Standard_Real Tol3d)
 {
-  gp_Pnt P1, P2, P;
+  gp_Pnt P;
   Standard_Real Tol1, Tol2, Tol, d;
 // Class BRep_Tool without fields and without Constructor :
 //  BRep_Tool BT;
@@ -710,11 +711,11 @@ static TopoDS_Edge BuildEdge(Handle(Geom_Curve)& C3d,
   TopoDS_Edge E;
 
 //  P1  = BT.Pnt(VF);
-  P1  = BRep_Tool::Pnt(VF);
+  const gp_Pnt P1  = BRep_Tool::Pnt(VF);
 //  Tol1 = BT.Tolerance(VF);
   Tol1 = BRep_Tool::Tolerance(VF);
 //  P2  = BT.Pnt(VL);
-  P2  = BRep_Tool::Pnt(VL);
+  const gp_Pnt P2  = BRep_Tool::Pnt(VL);
 //  Tol2 = BT.Tolerance(VF);
   Tol2 = BRep_Tool::Tolerance(VL);
   Tol = Max(Tol1, Tol2);
@@ -750,8 +751,6 @@ static TopoDS_Edge BuildEdge(Handle(Geom_Curve)& C3d,
   if (d > Tol1)
       B.UpdateVertex(VF, d);
 
-//  P1 = BT.Pnt(VL);
-  P1 = BRep_Tool::Pnt(VL);
   C3d->D0(l, P);
   d = P2.Distance(P);
   if (d > Tol2)
@@ -776,6 +775,19 @@ static TopoDS_Edge BuildEdge(Handle(Geom_Curve)& C3d,
   E = MkE.Edge();
   TopLoc_Location Loc;
   B.UpdateEdge(E, C2d, S, Loc, Tol3d);
+
+  const Handle(IntTools_Context) aNullCtx;
+  if (BOPTools_AlgoTools::IsMicroEdge(E, aNullCtx))
+  {
+    TopoDS_Vertex aV = VF;
+    B.UpdateVertex(aV, P1.Distance(P2));
+    B.MakeEdge(E);
+    B.UpdateEdge(E, C2d, S, TopLoc_Location(), Tol);
+    B.Add(E, TopoDS::Vertex(aV.Oriented(TopAbs_FORWARD)));
+    B.Add(E, TopoDS::Vertex(aV.Oriented(TopAbs_REVERSED)));
+    B.Range(E, f, l);
+    B.Degenerated(E, Standard_True);
+  }
 
   return E;
 }
@@ -914,7 +926,7 @@ static Standard_Boolean Filling(const TopoDS_Shape& EF,
   // Control the direction of the rotation
   Standard_Boolean ToReverseResult = Standard_False;
   gp_Vec d1u;
-  d1u = Surf->DN(0, (f1+l1)/2, 1, 0);
+  d1u = Surf->DN(0, aPrm[aMaxIdx], 1, 0);
   if (d1u.Angle(TangentOnPart1) > M_PI/2) { //Invert everything
     ToReverseResult = Standard_True;
     /*
@@ -1815,8 +1827,6 @@ BRepFill_Sweep::BRepFill_Sweep(const Handle(BRepFill_SectionLaw)& Section,
 			       const Standard_Boolean WithKPart) : 
 			       isDone(Standard_False),
 			       KPart(WithKPart)
-
-
 {
  mySec = Section;
  myLoc = Location;
@@ -3380,7 +3390,8 @@ TopoDS_Shape BRepFill_Sweep::Tape(const Standard_Integer Index) const
 	  // Filling
 	  B = Filling(It1.Value(), myFaces->Value(ii, I1),
 		      It2.Value(), myFaces->Value(ii, I2),
-		      myVEdgesModified, myTol3d, Axe, T1, Bord1, Bord2, FF);
+                      myVEdgesModified, myTol3d, Axe, T1,
+                      Bord1, Bord2, FF);
 	  
 	  if (B) {
 	    myAuxShape.Append(FF);
