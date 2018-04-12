@@ -227,16 +227,6 @@ BRepFill_MultiLine::BRepFill_MultiLine(const TopoDS_Face&     Face1,
       Precision::PConfusion(),
       Vmin, Vmax);
   }
-  if (GAS1.GetType() == GeomAbs_Sphere) {
-    if (myIsoU1)
-      ElCLib::AdjustPeriodic(-M_PI/2.,M_PI/2.,
-      Precision::PConfusion(),
-      Umin, Umax);
-    else
-      ElCLib::AdjustPeriodic(-M_PI/2.,M_PI/2.,
-      Precision::PConfusion(),
-      Vmin, Vmax);
-  }
   // end try duplication
 
   myU1 = Geom2dAdaptor_Curve(GeomProjLib::Curve2d(UU1, BasisPlane),
@@ -340,16 +330,6 @@ BRepFill_MultiLine::BRepFill_MultiLine(const TopoDS_Face&     Face1,
   if ( VV2->IsPeriodic()) {
     ElCLib::AdjustPeriodic(VV2->FirstParameter(),
       VV2->LastParameter(),
-      Precision::PConfusion(),
-      Vmin, Vmax);
-  }
-  if (GAS2.GetType() == GeomAbs_Sphere) {
-    if (myIsoU2)
-      ElCLib::AdjustPeriodic(-M_PI/2.,M_PI/2.,
-      Precision::PConfusion(),
-      Umin, Umax);
-    else
-      ElCLib::AdjustPeriodic(-M_PI/2.,M_PI/2.,
       Precision::PConfusion(),
       Vmin, Vmax);
   }
