@@ -57,7 +57,7 @@ add_executable (Viewer3d WIN32 ${Viewer3d_SOURCE_FILES}
                                ${COMMON_WINMAIN_FILE}
                                ${Viewer3d_RESOURCE_FILES})
 
-set_property (TARGET Viewer3d PROPERTY FOLDER Samples)
+set_property (TARGET Viewer3d PROPERTY FOLDER "Samples/mfc")
 
 if (SINGLE_GENERATOR)
   install (TARGETS Viewer3d DESTINATION "${INSTALL_DIR_BIN}")

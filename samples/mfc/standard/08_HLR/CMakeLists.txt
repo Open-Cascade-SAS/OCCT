@@ -61,7 +61,7 @@ add_executable (HLR WIN32 ${HLR_SOURCE_FILES}
                           ${HLR_RESOURCE_HEADER}
                           ${HLR_RESOURCE_FILES} )
 
-set_property (TARGET HLR PROPERTY FOLDER Samples)
+set_property (TARGET HLR PROPERTY FOLDER "Samples/mfc")
 
 if (SINGLE_GENERATOR)
   install (TARGETS HLR DESTINATION "${INSTALL_DIR_BIN}")

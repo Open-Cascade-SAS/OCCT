@@ -139,7 +139,7 @@ add_library ( mfcsample        ${mfcsample_SOURCE_FILES}
                                ${COMMON_ISESSION2D_SOURCE_FILES}
                                ${COMMON_RESOURCE_FILES})
 
-set_property (TARGET mfcsample PROPERTY FOLDER Samples)
+set_property (TARGET mfcsample PROPERTY FOLDER "Samples/mfc")
 
 if (SINGLE_GENERATOR)
   install (TARGETS mfcsample

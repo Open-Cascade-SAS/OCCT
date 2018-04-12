@@ -61,7 +61,7 @@ add_executable (Convert WIN32 ${Convert_SOURCE_FILES}
                               ${COMMON_WINMAIN_FILE}
                               ${WNT_RESOURCE_FILES} )
 
-set_property (TARGET Convert PROPERTY FOLDER Samples)
+set_property (TARGET Convert PROPERTY FOLDER "Samples/mfc")
 
 if (SINGLE_GENERATOR)
   install (TARGETS Convert DESTINATION "${INSTALL_DIR_BIN}")

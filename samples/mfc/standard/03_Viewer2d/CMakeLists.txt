@@ -33,7 +33,7 @@ add_executable (Viewer2d WIN32 ${Viewer2d_SOURCE_FILES}
                                ${Viewer2d_RESOURCE_HEADER}
                                ${Viewer2d_RESOURCE_FILES})
 
-set_property (TARGET Viewer2d PROPERTY FOLDER Samples)
+set_property (TARGET Viewer2d PROPERTY FOLDER "Samples/mfc")
 
 if (SINGLE_GENERATOR)
   install (TARGETS Viewer2d DESTINATION "${INSTALL_DIR_BIN}")

@@ -117,12 +117,12 @@ want to build some particular libraries (toolkits) only, then you may uncheck
 all modules in the corresponding BUILD_MODUE_* options and provide the list of
 necessary libraries here. Of course, all dependencies will be resolved automatically")
 
-set (BUILD_MODULE_MfcSamples_DESCR
+set (BUILD_SAMPLES_MFC_DESCR
 "Indicates whether OCCT MFC samples should be built together with OCCT.
 These samples show some possibilities of using OCCT and they can be executed
 with script samples.bat from the installation directory (INSTALL_DIR)")
 
-set (BUILD_MODULE_QtSamples_DESCR
+set (BUILD_SAMPLES_QT_DESCR
 "Indicates whether OCCT Qt samples should be built together with OCCT.
 These samples show some possibilities of using OCCT and they can be executed
 with script samples.bat from the installation directory (INSTALL_DIR)")

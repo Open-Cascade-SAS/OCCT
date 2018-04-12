@@ -65,7 +65,7 @@ add_executable (Geometry WIN32 ${Geometry_SOURCE_FILES}
                                ${Geometry_RESOURCE_FILES}
                                ${Geometry_RESOURCE_HEADER})
 
-set_property(TARGET Geometry PROPERTY FOLDER Samples)
+set_property(TARGET Geometry PROPERTY FOLDER "Samples/mfc")
 
 if (SINGLE_GENERATOR)
   install (TARGETS Geometry DESTINATION "${INSTALL_DIR_BIN}")

@@ -44,7 +44,7 @@ add_executable (Animation WIN32 ${Animation_SOURCE_FILES}
                                 ${COMMON_WINMAIN_FILE}
                                 ${Animation_RESOURCE_FILES})
 
-set_property (TARGET Animation PROPERTY FOLDER Samples)
+set_property (TARGET Animation PROPERTY FOLDER "Samples/mfc")
 
 if (SINGLE_GENERATOR)
   install (TARGETS Animation DESTINATION "${INSTALL_DIR_BIN}")

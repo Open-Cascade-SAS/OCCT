@@ -39,7 +39,7 @@ add_executable (Triangulation WIN32 ${Triangulation_SOURCE_FILES}
                                     ${Triangulation_RESOURCE_HEADER}
                                     ${Triangulation_RESOURCE_FILES})
 
-set_property (TARGET Triangulation PROPERTY FOLDER Samples)
+set_property (TARGET Triangulation PROPERTY FOLDER "Samples/mfc")
 
 if (SINGLE_GENERATOR)
   install (TARGETS Triangulation DESTINATION "${INSTALL_DIR_BIN}")

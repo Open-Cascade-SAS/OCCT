@@ -37,7 +37,7 @@ add_executable ( Modeling WIN32 ${Modeling_SOURCE_FILES}
                                 ${Modeling_RESOURCE_HEADER}
                                 ${Modeling_RESOURCE_FILES})
 
-set_property (TARGET Modeling PROPERTY FOLDER Samples)
+set_property (TARGET Modeling PROPERTY FOLDER "Samples/mfc")
 
 if (SINGLE_GENERATOR)
   install (TARGETS Modeling DESTINATION "${INSTALL_DIR_BIN}")

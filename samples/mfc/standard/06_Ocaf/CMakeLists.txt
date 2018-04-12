@@ -49,7 +49,7 @@ add_executable (Ocaf WIN32 ${Ocaf_SOURCE_FILES}
                            ${Ocaf_RESOURCE_FILES} )
 
 
-set_property (TARGET Ocaf PROPERTY FOLDER Samples)
+set_property (TARGET Ocaf PROPERTY FOLDER "Samples/mfc")
 
 if (SINGLE_GENERATOR)
   install (TARGETS Ocaf DESTINATION "${INSTALL_DIR_BIN}")

@@ -343,9 +343,9 @@ set (BUILD_ADDITIONAL_TOOLKITS "" CACHE STRING "${BUILD_ADDITIONAL_TOOLKITS_DESC
 separate_arguments (BUILD_ADDITIONAL_TOOLKITS)
 
 if (MSVC)
-  set (BUILD_MODULE_MfcSamples OFF CACHE BOOL "${BUILD_MODULE_MfcSamples_DESCR}")
+  set (BUILD_SAMPLES_MFC OFF CACHE BOOL "${BUILD_SAMPLES_MFC_DESCR}")
 endif()
-set (BUILD_MODULE_QtSamples OFF CACHE BOOL "${BUILD_MODULE_QtSamples_DESCR}")
+set (BUILD_SAMPLES_QT OFF CACHE BOOL "${BUILD_SAMPLES_QT_DESCR}")
 
 set (BUILD_Inspector OFF CACHE BOOL "${BUILD_Inspector_DESCR}")
 
@@ -789,7 +789,7 @@ else()
   set (SCRIPT_EXT sh)
 endif()
 
-if (BUILD_Inspector OR BUILD_MODULE_QtSamples)
+if (BUILD_Inspector OR BUILD_SAMPLES_QT)
   # check qt 3rdparty path
   add_definitions (-DHAVE_QT)
   OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/qt")
@@ -913,7 +913,7 @@ OCCT_CONFIGURE_AND_INSTALL ("adm/templates/custom.install.${SCRIPT_EXT}.in" "${S
 # write current custom.bat/sh (for build directory)
 OCCT_CONFIGURE ("adm/templates/custom.build.${SCRIPT_EXT}.in" "${SUB_CUSTOM_NAME}")
 
-if (BUILD_MODULE_MfcSamples OR BUILD_MODULE_QtSamples)
+if (BUILD_SAMPLES_MFC OR BUILD_SAMPLES_QT)
   OCCT_INSTALL_FILE_OR_DIR ("adm/templates/sample.${SCRIPT_EXT}" "${INSTALL_DIR_SCRIPT}")
   OCCT_COPY_FILE_OR_DIR    ("adm/templates/sample.${SCRIPT_EXT}" "${CMAKE_BINARY_DIR}")
 endif()
@@ -941,7 +941,7 @@ foreach(RESOURCE ${RESOURCES})
   endif()
 endforeach()
 
-if (BUILD_MODULE_QtSamples)
+if (BUILD_SAMPLES_QT)
   FILE_TO_LIST ("adm/SAMPLES_RESOURCES" SAMPLES_RESOURCES)
   foreach(RESOURCE ${SAMPLES_RESOURCES})
     OCCT_INSTALL_FILE_OR_DIR ("samples/${RESOURCE}" "${INSTALL_DIR_RESOURCE}/samples")
@@ -994,11 +994,11 @@ endif()
 
 message (STATUS "Info: \(${CURRENT_TIME}\) OCCT toolkits processed")
 # samples do not support patch usage
-if (BUILD_MODULE_MfcSamples OR BUILD_MODULE_QtSamples)
+if (BUILD_SAMPLES_MFC OR BUILD_SAMPLES_QT)
   set (OCCT_ROOT ${CMAKE_SOURCE_DIR})
 endif()
 
-if (BUILD_MODULE_MfcSamples)
+if (BUILD_SAMPLES_MFC)
   set (MFC_STANDARD_SAMPLES_DIR ${OCCT_ROOT}/samples/mfc/standard)
   set (COMMON_WINMAIN_FILE      ${MFC_STANDARD_SAMPLES_DIR}/Common/Winmain.cpp)
 
@@ -1019,15 +1019,15 @@ endif()
 
 OCCT_MODULES_AND_TOOLKITS (SAMPLES "SAMPLES_TOOLKITS" OCCT_SAMPLES)
 
-if (BUILD_Inspector OR BUILD_MODULE_QtSamples)
-  if (BUILD_MODULE_QtSamples)
+if (BUILD_Inspector OR BUILD_SAMPLES_QT)
+  if (BUILD_SAMPLES_QT)
     if (NOT Qt5_FOUND OR "${Qt5Gui_EGL_INCLUDE_DIRS}" STREQUAL "" OR NOT WIN32)
       list (REMOVE_ITEM qt_SAMPLES_TOOLKITS AndroidQt)
       message (STATUS "Info: AndroidQt sample excluded due to OS is not Windows or Qt is configured without ANGLE")
     endif()
   else()
     list (REMOVE_ITEM OCCT_SAMPLES qt)
-    message (STATUS "Info: qt samples excluded due to BUILD_MODULE_QtSamples is disabled")
+    message (STATUS "Info: qt samples excluded due to BUILD_SAMPLES_QT is disabled")
   endif()
 
   foreach (OCCT_SAMPLE ${OCCT_SAMPLES})
