@@ -14,6 +14,7 @@
 // commercial license or contractual agreement. 
 
 #include <inspector/TInspectorAPI_PluginParameters.hxx>
+#include <inspector/TInspectorAPI_Version.hxx>
 
 #if OCC_VERSION_HEX <= 0x060901
 IMPLEMENT_STANDARD_HANDLE (TInspectorAPI_PluginParameters, Standard_Transient)
@@ -274,6 +275,7 @@ void TInspectorAPI_PluginParameters::ParametersToShape (const TCollection_AsciiS
     return;
   anOrientationStr.Split (anOrientationStr.Length() - 1);
 
+#if TINSPECTORAPI_VERSION_HEX > 0x070200
   TopAbs_Orientation anOrientation;
   if (!TopAbs::ShapeOrientationFromString (anOrientationStr.ToCString(), anOrientation))
     return;
@@ -282,4 +284,7 @@ void TInspectorAPI_PluginParameters::ParametersToShape (const TCollection_AsciiS
 
   theShape.Location (aLocation);
   theShape.Orientation (anOrientation);
+#else
+  (void)theValue; (void)theShape;
+#endif
 }

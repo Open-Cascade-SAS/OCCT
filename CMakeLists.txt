@@ -805,6 +805,8 @@ endif()
 # list <TOOLNAME>_TOOLKITS is created foreach tool and contains its toolkits
 # list <OCCT_TOOLS> will contain all tools
 if (BUILD_Inspector)
+  add_definitions (-DHAVE_Inspector)
+
   OCCT_MODULES_AND_TOOLKITS (TOOLS "TOOL_TOOLKITS" OCCT_TOOLS)
   foreach (OCCT_TOOL ${OCCT_TOOLS})
     list (APPEND BUILD_TOOL_TOOLKITS ${${OCCT_TOOL}_TOOL_TOOLKITS})
@@ -1028,11 +1030,6 @@ if (BUILD_Inspector OR BUILD_MODULE_QtSamples)
     message (STATUS "Info: qt samples excluded due to BUILD_MODULE_QtSamples is disabled")
   endif()
 
-  if (NOT BUILD_Inspector)
-    list (REMOVE_ITEM OCCT_SAMPLES tools)
-    message (STATUS "Info: TInspectorEXE sample excluded due to BUILD_Inspector is disabled")
-  endif()
-
   foreach (OCCT_SAMPLE ${OCCT_SAMPLES})
     list (APPEND BUILD_SAMPLE_TOOLKITS ${${OCCT_SAMPLE}_SAMPLES_TOOLKITS})
 
@@ -1061,8 +1058,9 @@ if (BUILD_TOOL_TOOLKITS)
             PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_WRITE GROUP_EXECUTE WORLD_READ WORLD_WRITE WORLD_EXECUTE)
   endif()
 
+  set (OpenCASCADE_BINARY_DIR "${INSTALL_DIR}/${INSTALL_DIR_BIN}")
   # patch TInspectorEXE
-  OCCT_CONFIGURE ("adm/templates/TInspectorEXE.vcxproj.user.in" "${CMAKE_BINARY_DIR}/samples/tools/TInspectorEXE/TInspectorEXE.vcxproj.user")
+  OCCT_CONFIGURE ("adm/templates/TInspectorEXE.vcxproj.user.in" "${CMAKE_BINARY_DIR}/tools/TInspectorEXE/TInspectorEXE.vcxproj.user")
 endif()
 
 # Prepare variables for configuration of OpenCASCADE cmake config file

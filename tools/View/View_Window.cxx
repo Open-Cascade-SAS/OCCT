@@ -19,6 +19,8 @@
 
 #include <inspector/View_Window.hxx>
 
+#include <inspector/TInspectorAPI_Version.hxx>
+
 #include <inspector/View_Displayer.hxx>
 #include <inspector/View_ToolBar.hxx>
 #include <inspector/View_Tools.hxx>
@@ -156,6 +158,7 @@ void View_Window::onCheckedStateChanged (int theActionId, bool theState)
 // =======================================================================
 void View_Window::onViewContextMenuRequested (const QPoint& thePosition)
 {
+#if TINSPECTORAPI_VERSION_HEX > 0x070200
   QMenu* aMenu = new QMenu (this);
   QMenu* anOrientationSubMenu = aMenu->addMenu ("Set View Orientation");
 
@@ -169,6 +172,9 @@ void View_Window::onViewContextMenuRequested (const QPoint& thePosition)
 
   QPoint aPoint = myView->mapToGlobal (thePosition);
   aMenu->exec (aPoint);
+#else
+  (void)thePosition;
+#endif
 }
 
 // =======================================================================
@@ -177,6 +183,7 @@ void View_Window::onViewContextMenuRequested (const QPoint& thePosition)
 // =======================================================================
 void View_Window::onSetOrientation()
 {
+#if TINSPECTORAPI_VERSION_HEX > 0x070200
   QAction* anAction = (QAction*)(sender());
 
   TCollection_AsciiString anOrientationStr (anAction->text().toStdString().c_str());
@@ -192,6 +199,7 @@ void View_Window::onSetOrientation()
   aView->SetProj (anOrientationType);
   aView->FitAll();
   aView->Redraw();
+#endif
 }
 
 // =======================================================================

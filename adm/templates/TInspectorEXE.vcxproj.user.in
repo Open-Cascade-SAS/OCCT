@@ -4,7 +4,7 @@
   <LocalDebuggerEnvironment>CASROOT=@CMAKE_SOURCE_DIR@
 CSF_OCCTDataPath=@CMAKE_SOURCE_DIR@/data
 QTDIR=@3RDPARTY_QT_DIR@
-PATH=@3RDPARTY_DLL_DIRS_FOR_PATH@;%PATH%
+PATH=@3RDPARTY_DLL_DIRS_FOR_PATH@;@OpenCASCADE_BINARY_DIR@;%PATH%
  </LocalDebuggerEnvironment>
  <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
  <LocalDebuggerWorkingDirectory>@CMAKE_BINARY_DIR@</LocalDebuggerWorkingDirectory>
@@ -13,7 +13,7 @@ PATH=@3RDPARTY_DLL_DIRS_FOR_PATH@;%PATH%
   <LocalDebuggerEnvironment>CASROOT=@CMAKE_SOURCE_DIR@
 CSF_OCCTDataPath=@CMAKE_SOURCE_DIR@/data
 QTDIR=@3RDPARTY_QT_DIR@
-PATH=@3RDPARTY_DLL_DIRS_FOR_PATH@;%PATH%
+PATH=@3RDPARTY_DLL_DIRS_FOR_PATH@;@OpenCASCADE_BINARY_DIR@i;%PATH%
  </LocalDebuggerEnvironment>
  <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
  <LocalDebuggerWorkingDirectory>@CMAKE_BINARY_DIR@</LocalDebuggerWorkingDirectory>
@@ -22,7 +22,7 @@ PATH=@3RDPARTY_DLL_DIRS_FOR_PATH@;%PATH%
   <LocalDebuggerEnvironment>CASROOT=@CMAKE_SOURCE_DIR@
 CSF_OCCTDataPath=@CMAKE_SOURCE_DIR@/data
 QTDIR=@3RDPARTY_QT_DIR@
-PATH=@3RDPARTY_DLL_DIRS_FOR_PATH@;%PATH%
+PATH=@3RDPARTY_DLL_DIRS_FOR_PATH@;@OpenCASCADE_BINARY_DIR@d;%PATH%
  </LocalDebuggerEnvironment>
  <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
  <LocalDebuggerWorkingDirectory>@CMAKE_BINARY_DIR@</LocalDebuggerWorkingDirectory>
