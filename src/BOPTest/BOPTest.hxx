@@ -62,6 +62,8 @@ public:
 
   Standard_EXPORT static void PeriodicityCommands (Draw_Interpretor& aDI);
 
+  Standard_EXPORT static void MkConnectedCommands (Draw_Interpretor& aDI);
+
   //! Prints errors and warnings if any and draws attached shapes 
   //! if flag BOPTest_Objects::DrawWarnShapes() is set
   Standard_EXPORT static void ReportAlerts (const Handle(Message_Report)& theReport);

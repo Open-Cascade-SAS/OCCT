@@ -126,4 +126,16 @@ DEFINE_ALERT_WITH_SHAPE(BOPAlgo_AlertUnableToMakeIdentical)
 //! Unable to repeat the shape (Gluer fails)
 DEFINE_ALERT_WITH_SHAPE(BOPAlgo_AlertUnableToRepeat)
 
+//! Multi-dimensional arguments
+DEFINE_SIMPLE_ALERT(BOPAlgo_AlertMultiDimensionalArguments)
+
+//! Unable to make the shape periodic
+DEFINE_ALERT_WITH_SHAPE(BOPAlgo_AlertUnableToMakePeriodic)
+
+//! Unable to glue the shapes
+DEFINE_ALERT_WITH_SHAPE(BOPAlgo_AlertUnableToGlue)
+
+//! The shape is not periodic
+DEFINE_ALERT_WITH_SHAPE(BOPAlgo_AlertShapeIsNotPeriodic)
+
 #endif // _BOPAlgo_Alerts_HeaderFile

@@ -112,3 +112,15 @@ Unable to make the shape to look identical on opposite sides (Splitter fails)
 
 .BOPAlgo_AlertUnableToRepeat
 Unable to repeat the shape (Gluer fails)
+
+.BOPAlgo_AlertMultiDimensionalArguments
+Multi-dimensional arguments
+
+.BOPAlgo_AlertUnableToMakePeriodic
+Unable to make the shape periodic
+
+.BOPAlgo_AlertUnableToGlue
+Unable to glue the shapes
+
+.BOPAlgo_AlertShapeIsNotPeriodic
+The shape is not periodic

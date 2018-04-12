@@ -114,4 +114,16 @@ static const char BOPAlgo_BOPAlgo_msg[] =
   "Unable to make the shape to look identical on opposite sides (Splitter fails)\n"
   "\n"
   ".BOPAlgo_AlertUnableToRepeat\n"
-  "Unable to repeat the shape (Gluer fails)\n";
+  "Unable to repeat the shape (Gluer fails)\n"
+  "\n"
+  ".BOPAlgo_AlertMultiDimensionalArguments\n"
+  "Multi-dimensional arguments\n"
+  "\n"
+  ".BOPAlgo_AlertUnableToMakePeriodic\n"
+  "Unable to make the shape periodic\n"
+  "\n"
+  ".BOPAlgo_AlertUnableToGlue\n"
+  "Unable to glue the shapes\n"
+  "\n"
+  ".BOPAlgo_AlertShapeIsNotPeriodic\n"
+  "The shape is not periodic\n";

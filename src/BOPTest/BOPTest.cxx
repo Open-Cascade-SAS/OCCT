@@ -58,6 +58,7 @@ void  BOPTest::AllCommands(Draw_Interpretor& theCommands)
   BOPTest::UtilityCommands   (theCommands);
   BOPTest::RemoveFeaturesCommands(theCommands);
   BOPTest::PeriodicityCommands(theCommands);
+  BOPTest::MkConnectedCommands(theCommands);
 }
 //=======================================================================
 //function : Factory

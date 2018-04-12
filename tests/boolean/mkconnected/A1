@@ -1,0 +1,61 @@
+polyline p 0 0 0 10 0 0 10 0 10 5 0 10 5 0 5 0 0 5 0 0 0
+mkplane f p
+prism b1 f 0 5 0
+box b2 0 0 5 5 5 5
+box b3 0 5 0 10 5 10
+
+# make the shapes connected
+makeconnected c b3 b1 b2
+
+checkshape c
+checknbshapes c -vertex 18 -edge 31 -wire 17 -face 17 -shell 3 -solid 3 -t
+checkprops c -s 900 -v 1000
+
+savehistory h
+
+modified m3 h b3
+checknbshapes m3 -face 7 -t
+
+# make the shape periodic
+cmakeperiodic cp -x 10 -y 10 -z 10
+checknbshapes cp -vertex 26 -edge 42 -wire 20 -face 20 -shell 3 -solid 3 -t
+
+savehistory h
+
+modified m1 h b1
+checknbshapes m1 -face 10 -t
+
+modified m2 h b2
+checknbshapes m2 -ref [nbshapes b2] -t
+
+modified m3 h b3
+checknbshapes m3 -face 8 -t
+
+
+# check material associations
+explode b3 f
+
+# the face b3_3 is REVERSED
+# materials on negative side should be only b3
+# materials on positive side should be b1 and b2
+
+modified mf h b3_3
+
+compound pos 
+compound neg
+
+foreach f [explode mf f] {
+  if {![regexp "No materials on this side" [cmaterialson p + $f]]} {
+    add p pos
+  }
+  if {![regexp "No materials on this side" [cmaterialson n - $f]]} {
+    add n neg
+  }
+}
+
+# check that neg contains b3 only
+checkprops neg -equal b3 -skip
+
+# check that pos contains both 
+compound b1 b2 comp
+checkprops pos -equal comp -skip

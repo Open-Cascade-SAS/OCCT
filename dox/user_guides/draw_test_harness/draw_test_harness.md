@@ -5861,6 +5861,7 @@ The following topics are covered in the eight sections of this chapter:
   * Drafting and blending.
   * Defeaturing.
   * Making shapes periodic in 3D space.
+  * Making shapes connected.
   * Analysis of shapes.
 
 
@@ -7250,6 +7251,100 @@ shape - shape to find the twins for
 
 The command clears all previous repetitions of the periodic shape allowing to start the repetitions over.
 No arguments are needed for the command.
+
+
+@subsection occt_draw_makeconnected Making the touching shapes connected
+
+Draw module for @ref occt_modalg_makeconnected "making the touching same-dimensional shapes connected" includes the following commands:
+* **makeconnected** - make the input shapes connected or glued, performs material associations;
+* **cmaterialson** - returns the materials located on the requested side of a shape;
+* **cmakeperiodic** - makes the connected shape periodic in requested directions;
+* **crepeatshape** - repeats the periodic connected shape in requested directions requested number of times;
+* **cperiodictwins** - returns all periodic twins for the shape;
+* **cclearrepetitions** - clears all previous repetitions of the periodic shape, keeping the shape periodic.
+
+@subsubsection occt_draw_makeconnected_makeconnected makeconnected
+
+The command makes the input touching shapes connected.
+
+Syntax:
+~~~~
+makeconnected result shape1 shape2 ...
+
+Where:
+result            - resulting connected shape.
+shape1 shape2 ... - shapes to be made connected.
+~~~~
+
+@subsubsection occt_draw_makeconnected_cmaterialson cmaterialson
+
+The command returns the materials located on the requested side of the shape.
+The command should be called after the shapes have been made connected, i.e. after the command **makeconnected**.
+
+Syntax:
+~~~~
+cmaterialson result +/- shape
+
+Where:
+result - material shapes
+shape  - shape for which the materials are needed
++/-    - side of a given shape ('+' for positive side, '-' - for negative).
+~~~~
+
+@subsubsection occt_draw_makeconnected_cmakeperiodic cmakeperiodic
+
+The command makes the connected shape periodic in the required directions with the required period.
+The command should be called after the shapes have been made connected, i.e. after the command **makeconnected**.
+
+Syntax:
+~~~~
+cmakeperiodic result [-x/y/z period [-trim first]]
+ 
+Where:
+result        - resulting periodic shape;
+shape         - input shape to make it periodic:
+-x/y/z period - option to make the shape periodic in X, Y or Z direction with the given period;
+-trim first   - option to trim the shape to fit the required period, starting the period in first.
+~~~~
+
+@subsubsection occt_draw_makeconnected_crepeatshape crepeatshape
+
+The command repeats the connected periodic shape in the required periodic directions required number of times.
+The command should be called after the shapes have been made connected and periodic, i.e. after the commands **makeconnected** and **cmakeperiodic**.
+
+Syntax:
+~~~~
+crepeatshape result -x/y/z times
+
+Where:
+result       - resulting shape;
+-x/y/z times - direction for repetition and number of repetitions (negative number of times means the repetition in negative direction).
+~~~~
+
+@subsubsection occt_draw_makeconnected_cperiodictwins cperiodictwins
+
+The command returns all periodic twins for the shape.
+The command should be called after the shapes have been made connected and periodic, i.e. after the commands **makeconnected** and **cmakeperiodic**.
+
+Syntax:
+~~~~
+cperiodictwins twins shape
+
+Where:
+twins - periodic twins of a shape.
+shape - input shape.
+~~~~
+
+@subsubsection occt_draw_makeconnected_cclearrepetitions cclearrepetitions
+
+The command clears all previous repetitions of the periodic shape keeping the shape periodic.
+The command should be called after the shapes have been made connected, periodic and the repetitions have been applied to the periodic shape, i.e. after the commands **makeconnected**, **cmakeperiodic** and **crepeatshape**.
+Otherwise the command will have no effect.
+
+Syntax:
+~~~~
+cclearrepetitions [result]
+~~~~
 
 
 @subsection occt_draw_7_9  Analysis of topology and geometry

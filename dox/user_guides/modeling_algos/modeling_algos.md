@@ -3603,3 +3603,147 @@ repeatshape drills -x 24 -y 24
 bcut result plate drills
 ~~~~
 @figure{/user_guides/modeling_algos/images/modeling_algos_mkperiodic_im006.png,"Plate with drills",220}
+
+
+@section occt_modalg_makeconnected Making touching shapes connected
+
+Open CASCADE Technology provides tools for making the same-dimensional touching shapes connected (or glued), i.e. for making the coinciding geometries topologically shared among shapes.
+To make the shapes connected they are glued by the means of @ref occt_algorithms_7 "General Fuse algorithm". The option BOPAlgo_GlueShift is used, thus if the input shapes have been interfering the algorithm will be unable to recognize this.
+
+Making the group of shapes connected can be useful e.g. before meshing the group. It will allow making the resulting mesh conformal.
+
+The algorithm for making the shapes connected is implemented in the class *BOPAlgo_MakeConnected*.
+
+@subsection occt_modalg_makeconnected_materials Material association
+
+In frames of this tool the input shapes are called materials, and each input shape has a unique material.
+
+After making the shapes connected, the border elements of the input shapes are associated with the shapes to which they belong. At that, the orientation of the border elements in the shape is taken into account.
+The associations are made for the following types:
+* For input SOLIDS the resulting FACES are associated with the input solids;
+* For input FACES the resulting EDGES are associated with the input faces;
+* For input EDGES the resulting VERTICES are associated with the input edges.
+The association process is called the material association. It allows finding the coinciding elements for the opposite input shapes. These elements will be associated to at least two materials (one on the positive side of the shape, the other - on negative).
+
+For obtaining the material information the following methods should be used
+* *MaterialsOnPositiveSide()* - returns the original shapes (materials) located on the positive side of the given shape (i.e. with FORWARD orientation);
+* *MaterialsOnNegativeSide()* - returns the original shapes (materials) located on the negative side of the given shape (i.e. with REVERSED orientation);
+
+~~~~
+// Returns the original shapes which images contain the given shape with FORWARD orientation.
+const TopTools_ListOfShape& BOPAlgo_MakeConnected::MaterialsOnPositiveSide(const TopoDS_Shape& theS)
+
+// Returns the original shapes which images contain the given shape with REVERSED orientation.
+const TopTools_ListOfShape& BOPAlgo_MakeConnected::MaterialsOnNegativeSide(const TopoDS_Shape& theS)
+~~~~
+
+@subsection occt_modalg_makeconnected_makeperiodic Making connected shape periodic
+
+The tool provides possibility to make the connected shape @ref occt_modalg_makeperiodic "periodic".
+Since by making the shape periodic it ensures that the geometry of coinciding shapes on the opposite sides will be the same it allows reusing the mesh of the shape for its periodic twins.
+
+After making the shape periodic the material associations are updated to correspond to the actual state of the result shape. Repetition of the periodic shape is also possible from here. Material associations are not going to be lost.
+
+@subsection occt_modalg_makeconnected_history History support
+
+The algorithm supports history of shapes modifications during the operation. Additionally to standard history method provided by *BRepTools_History* and used here as a history tool, the algorithm also provides the method to track the back connection - from resulting shapes to the input ones.
+The method is called *GetOrigins()*:
+~~~~
+// Returns the list of original shapes from which the current shape has been created.
+const TopTools_ListOfShape& BOPAlgo_MakeConnected::GetOrigins(const TopoDS_Shape& theS);
+~~~~
+
+Both Gluing history and history of making the shape periodic and periodic shape repetition are available here. Note, that all repeated shapes are stored as generated into the history.
+
+@subsection occt_modalg_makeconnected_errors Errors/Warnings
+
+The algorithm supports the Error/Warning reporting system which allows obtaining the extended overview of the errors and warning occurred during the operation.
+As soon as any error appears the algorithm stops working. The warnings allow continuing the job, informing the user that something went wrong.
+The algorithm returns the following alerts:
+* *BOPAlgo_AlertTooFewArguments* - error alert is given on the attempt to run the algorithm without the arguments;
+* *BOPAlgo_AlertMultiDimensionalArguments* - error alert is given on the attempt to run the algorithm on multi-dimensional arguments;
+* *BOPAlgo_AlertUnableToGlue* - error alert is given if the gluer algorithm is unable to glue the given arguments;
+* *BOPAlgo_AlertUnableToMakePeriodic* - warning alert is given if the periodicity maker is unable to make the connected shape periodic with given options;
+* *BOPAlgo_AlertShapeIsNotPeriodic* - warning alert is given on the attempt to repeat the shape before making it periodic.
+
+For more information on the error/warning reporting system please see the chapter @ref occt_algorithms_ers "Errors and warnings reporting system" of Boolean operations user guide.
+
+@subsection occt_modalg_makeconnected_usage Usage
+
+Here is the example of usage of the *BOPAlgo_MakePeriodic* algorithm on the API level:
+~~~~
+TopTools_ListOfShape anArguments = ...;  // Shapes to make connected
+Standard_Boolean bRunParallel = ...;     // Parallel processing mode
+
+BOPAlgo_MakeConnected aMC;               // Tool for making the shapes connected
+aMC.SetArguments(anArguments);           // Set the shapes
+aMC.SetRunParallel(bRunParallel);        // Set parallel processing mode
+aMC.Perform();                           // Perform the operation
+
+if (aMC.HasErrors())                     // Check for the errors
+{
+  // errors treatment
+  Standard_SStream aSStream;
+  aMC.DumpErrors(aSStream);
+  return;
+}
+if (aMC.HasWarnings())                   // Check for the warnings
+{
+  // warnings treatment
+  Standard_SStream aSStream;
+  aMC.DumpWarnings(aSStream);
+}
+
+const TopoDS_Shape& aGluedShape = aMC.Shape(); // Connected shape
+
+// Checking material associations
+TopAbs_ShapeEnum anElemType = ...;       // Type of border element
+TopExp_Explorer anExp(anArguments.First(), anElemType);
+for (; anExp.More(); anExp.Next())
+{
+  const TopoDS_Shape& anElement = anExp.Current();
+  const TopTools_ListOfShape& aNegativeM = aMC.MaterialsOnNegativeSide(anElement);
+  const TopTools_ListOfShape& aPositiveM = aMC.MaterialsOnPositiveSide(anElement);
+}
+
+// Making the connected shape periodic
+BOPAlgo_MakePeriodic::PeriodicityParams aParams = ...; // Options for periodicity of the connected shape
+aMC.MakePeriodic(aParams);
+
+// Shape repetition after making it periodic
+// Check if the shape has been made periodic successfully
+if (aMC.PeriodicityTool().HasErrors())
+{
+  // Periodicity maker error treatment
+}
+
+// Shape repetition in periodic directions
+aMC.RepeatShape(0, 2);
+
+const TopoDS_Shape& aShape = aMC.PeriodicShape(); // Periodic and repeated shape
+~~~~
+
+Please note, that the class is based on the options class *BOPAlgo_Options*, which provides the following options for the algorithm:
+* Error/Warning reporting system;
+* Parallel processing mode.
+The other options of the base class are not supported here and will have no effect.
+
+All the history information obtained during the operation is stored into *BRepTools_History* object and available through *History()* method:
+~~~~
+// Get the history object
+const Handle(BRepTools_History)& BOPAlgo_MakeConnected::History();
+~~~~
+
+For the usage of the MakeConnected algorithm on the Draw level the following commands have been implemented:
+* **makeconnected**
+* **cmaterialson**
+* **cmakeperiodic**
+* **crepeatshape**
+* **cperiodictwins**
+* **cclearrepetitions**
+
+For more details on the connexity commands please refer the @ref occt_draw_makeconnected "MakeConnected commands" of the Draw test harness user guide.
+
+To track the history of a shape modification during MakeConnected operation the @ref occt_draw_hist "standard history commands" can be used.
+
+To have possibility to access the error/warning shapes of the operation use the *bdrawwarnshapes* command before running the algorithm (see command usage in the @ref occt_algorithms_ers "Errors and warnings reporting system" of Boolean operations user guide).

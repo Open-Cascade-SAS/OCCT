@@ -1,0 +1,63 @@
+box b1 5 5 10
+box b2 5 0 0 5 5 5
+box b3 0 5 0 5 5 5
+
+makeconnected r b1 b2 b3
+checknbshapes r -wire 18 -face 18 -shell 3 -solid 3 -t
+
+cmakeperiodic rp -x 10 -y 10
+checknbshapes rp -wire 20 -face 20 -shell 3 -solid 3 -t
+
+savehistory h
+
+explode b2 f
+modified m2 h b2_2
+cperiodictwins m2_twin m2
+
+cmaterialson m2_pos + m2
+cmaterialson m2_neg - m2_twin
+
+if {![regexp "same shapes" [compare m2_pos b2]]} {
+  puts "Error: incorrect material associations"
+}
+
+if {![regexp "same shapes" [compare m2_neg b1]]} {
+  puts "Error: incorrect material associations"
+}
+
+
+crepeatshape r -x 1 -y 1
+checknbshapes r -wire 76 -face 76 -shell 12 -solid 12 -t
+
+savehistory h
+generated g2 h b2_2
+checknbshapes g2 -face 4 -t
+
+cclearrepetitions r
+checknbshapes r -wire 20 -face 20 -shell 3 -solid 3 -t
+
+savehistory h
+
+modified m2 h b2_2
+cperiodictwins m2_twin m2
+
+cmaterialson m2_pos + m2
+cmaterialson m2_neg - m2_twin
+
+if {![regexp "same shapes" [compare m2_pos b2]]} {
+  puts "Error: incorrect material associations"
+}
+
+if {![regexp "same shapes" [compare m2_neg b1]]} {
+  puts "Error: incorrect material associations"
+}
+
+crepeatshape r -y 1
+checknbshapes r -wire 39 -face 39 -shell 6 -solid 6 -t
+
+savehistory h
+
+modified m2 h b2_2
+cperiodictwins m2_twin m2
+
+checknbshapes m2_twin -face 3 -t

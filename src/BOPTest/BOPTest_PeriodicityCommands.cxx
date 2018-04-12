@@ -72,8 +72,8 @@ void BOPTest::PeriodicityCommands(Draw_Interpretor& theCommands)
                   "\t\t-x/y/z times - direction for repetition and number of repetitions.",
                   __FILE__, RepeatShape, group);
 
-  theCommands.Add("clearrepetitions", "clearrepetitions\n"
-                  "\t\tClears all previous repetitions of the periodic shape (used without any arguments).",
+  theCommands.Add("clearrepetitions", "clearrepetitions [result]\n"
+                  "\t\tClears all previous repetitions of the periodic shape.",
                   __FILE__, ClearRepetitions, group);
 }
 
@@ -280,14 +280,17 @@ Standard_Integer RepeatShape(Draw_Interpretor& theDI,
 //purpose  : 
 //=======================================================================
 Standard_Integer ClearRepetitions(Draw_Interpretor&,
-                                  Standard_Integer,
-                                  const char **)
+                                  Standard_Integer theArgc,
+                                  const char **theArgv)
 {
   // Clear all previous repetitions
   ThePeriodicityMaker.ClearRepetitions();
 
   // Set the history of the operation in session
   BRepTest_Objects::SetHistory(ThePeriodicityMaker.History());
+
+  if (theArgc > 1)
+    DBRep::Set(theArgv[1], ThePeriodicityMaker.Shape());
 
   return 0;
 }
