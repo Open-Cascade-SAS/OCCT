@@ -58,6 +58,10 @@ class BOPAlgo_PaveFiller;
 //!                          i.e. the check is performed. Setting this flag to FALSE for inverted solids,
 //!                          most likely will lead to incorrect results.
 //!
+//! The algorithm returns the following warnings:
+//! - *BOPAlgo_AlertUnableToOrientTheShape* - in case the check on the orientation of the split shape
+//!                                           to match the orientation of the original shape has failed.
+//!
 //! The algorithm returns the following Error statuses:
 //! - *BOPAlgo_AlertTooFewArguments* - in case there are no enough arguments to perform the operation;
 //! - *BOPAlgo_AlertNoFiller* - in case the intersection tool has not been created;

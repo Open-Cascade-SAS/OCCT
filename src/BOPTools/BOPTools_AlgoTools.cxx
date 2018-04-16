@@ -17,6 +17,7 @@
 
 
 #include <BOPTools_AlgoTools.hxx>
+#include <BOPAlgo_Alerts.hxx>
 #include <BOPTools_AlgoTools2D.hxx>
 #include <BOPTools_AlgoTools3D.hxx>
 #include <BOPTools_CoupleOfShape.hxx>
@@ -64,6 +65,7 @@
 #include <TopTools_IndexedMapOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
 #include <TopTools_MapOfOrientedShape.hxx>
+#include <Message_Report.hxx>
 #include <NCollection_Array1.hxx>
 #include <algorithm>
 
@@ -77,7 +79,7 @@ static
   Standard_Boolean FindFacePairs (const TopoDS_Edge& theE,
                                   const TopTools_ListOfShape& thLF,
                                   BOPTools_ListOfCoupleOfShape& theLCFF,
-                                  Handle(IntTools_Context)& theContext);
+                                  const Handle(IntTools_Context)& theContext);
 static
   TopAbs_Orientation Orientation(const TopoDS_Edge& anE,
                                  const TopoDS_Face& aF);
@@ -91,7 +93,7 @@ static
                               const Standard_Boolean theSmallFaces,
                               gp_Dir& aDN,
                               gp_Dir& aDB,
-                              Handle(IntTools_Context)& theContext,
+                              const Handle(IntTools_Context)& theContext,
                               GeomAPI_ProjectPointOnSurf& aProjPL,
                               const Standard_Real aDt);
 static
@@ -99,7 +101,7 @@ static
                                    const gp_Pnt& aP,
                                    gp_Dir& aDB,
                                    gp_Pnt& aPOut,
-                                   Handle(IntTools_Context)& theContext,
+                                   const Handle(IntTools_Context)& theContext,
                                    GeomAPI_ProjectPointOnSurf& aProjPL,
                                    const Standard_Real aDt,
                                    const Standard_Real aTolE);
@@ -108,7 +110,7 @@ static
                           const TopoDS_Face& theF1,
                           const BOPTools_ListOfCoupleOfShape& theLCS,
                           const gp_Pnt& aP,
-                          Handle(IntTools_Context)& theContext,
+                          const Handle(IntTools_Context)& theContext,
                           Standard_Boolean& theSmallFaces);
 
 
@@ -589,7 +591,7 @@ TopAbs_State BOPTools_AlgoTools::ComputeStateByOnePoint
   (const TopoDS_Shape& theS,
    const TopoDS_Solid& theRef,
    const Standard_Real theTol,
-   Handle(IntTools_Context)& theContext)
+   const Handle(IntTools_Context)& theContext)
 {
   TopAbs_State aState;
   TopAbs_ShapeEnum aType;
@@ -616,7 +618,7 @@ TopAbs_State BOPTools_AlgoTools::ComputeState
    const TopoDS_Solid& theRef,
    const Standard_Real theTol,
    TopTools_IndexedMapOfShape& theBounds,
-   Handle(IntTools_Context)& theContext)
+   const Handle(IntTools_Context)& theContext)
 {
   TopAbs_State aState;
   TopExp_Explorer aExp; 
@@ -665,7 +667,7 @@ TopAbs_State BOPTools_AlgoTools::ComputeState
   (const TopoDS_Vertex& theV,
    const TopoDS_Solid& theRef,
    const Standard_Real theTol,
-   Handle(IntTools_Context)& theContext)
+   const Handle(IntTools_Context)& theContext)
 {
   TopAbs_State aState;
   gp_Pnt aP3D; 
@@ -683,7 +685,7 @@ TopAbs_State BOPTools_AlgoTools::ComputeState
   (const TopoDS_Edge& theE,
    const TopoDS_Solid& theRef,
    const Standard_Real theTol,
-   Handle(IntTools_Context)& theContext)
+   const Handle(IntTools_Context)& theContext)
 {
   Standard_Real aT1, aT2, aT = 0.;
   TopAbs_State aState;
@@ -735,7 +737,7 @@ TopAbs_State BOPTools_AlgoTools::ComputeState
   (const gp_Pnt& theP,
    const TopoDS_Solid& theRef,
    const Standard_Real theTol,
-   Handle(IntTools_Context)& theContext)
+   const Handle(IntTools_Context)& theContext)
 {
   TopAbs_State aState;
   //
@@ -755,7 +757,7 @@ Standard_Boolean BOPTools_AlgoTools::IsInternalFace
    const TopoDS_Solid& theSolid,
    TopTools_IndexedDataMapOfShapeListOfShape& theMEF,
    const Standard_Real theTol,
-   Handle(IntTools_Context)& theContext)
+   const Handle(IntTools_Context)& theContext)
 {
   Standard_Boolean bDegenerated;
   Standard_Integer aNbF, iRet, iFound;
@@ -866,7 +868,7 @@ Standard_Integer BOPTools_AlgoTools::IsInternalFace
   (const TopoDS_Face& theFace,
    const TopoDS_Edge& theEdge,
    TopTools_ListOfShape& theLF,
-   Handle(IntTools_Context)& theContext)
+   const Handle(IntTools_Context)& theContext)
 {
   Standard_Integer aNbF, iRet;
   //
@@ -911,7 +913,7 @@ Standard_Integer BOPTools_AlgoTools::IsInternalFace
    const TopoDS_Edge& theEdge,
    const TopoDS_Face& theFace1,
    const TopoDS_Face& theFace2,
-   Handle(IntTools_Context)& theContext)
+   const Handle(IntTools_Context)& theContext)
 {
   Standard_Boolean bRet;
   Standard_Integer iRet;
@@ -965,7 +967,7 @@ Standard_Boolean BOPTools_AlgoTools::GetFaceOff
    const TopoDS_Face& theF1,
    BOPTools_ListOfCoupleOfShape& theLCSOff,
    TopoDS_Face& theFOff,
-   Handle(IntTools_Context)& theContext)
+   const Handle(IntTools_Context)& theContext)
 {
   Standard_Boolean bRet, bIsComputed;
   Standard_Real aT, aT1, aT2, aAngle, aTwoPI, aAngleMin, aDt3D;
@@ -1091,7 +1093,7 @@ Standard_Boolean BOPTools_AlgoTools::GetEdgeOff(const TopoDS_Edge& theE1,
 Standard_Boolean BOPTools_AlgoTools::AreFacesSameDomain
   (const TopoDS_Face& theF1,
    const TopoDS_Face& theF2,
-   Handle(IntTools_Context)& theContext,
+   const Handle(IntTools_Context)& theContext,
    const Standard_Real theFuzz)
 {
   Standard_Boolean bFacesSD = Standard_False;
@@ -1152,42 +1154,12 @@ Standard_Boolean BOPTools_AlgoTools::AreFacesSameDomain
 }
 
 //=======================================================================
-//function : CheckSameGeom
-//purpose  : 
-//=======================================================================
-Standard_Boolean BOPTools_AlgoTools::CheckSameGeom
-  (const TopoDS_Face& theF1,
-   const TopoDS_Face& theF2,
-   Handle(IntTools_Context)& theContext)
-{
-  Standard_Boolean bRet;
-  Standard_Real aTolF1, aTolF2, aTol;
-  gp_Pnt2d aP2D;
-  gp_Pnt aP;
-  TopExp_Explorer aExp;
-  //
-  bRet=Standard_False;
-  aExp.Init(theF1, TopAbs_EDGE);
-  for (; aExp.More(); aExp.Next()) {
-    const TopoDS_Edge& aE=(*(TopoDS_Edge*)(&aExp.Current()));
-    if (!BRep_Tool::Degenerated(aE)) {
-      aTolF1=BRep_Tool::Tolerance(theF1);
-      aTolF2=BRep_Tool::Tolerance(theF2);
-      aTol=aTolF1+aTolF2;
-      BOPTools_AlgoTools3D::PointNearEdge(aE, theF1, aP2D, aP, theContext);
-      bRet=theContext->IsValidPointForFace(aP, theF2, aTol);
-      break;
-    }
-  }
-  return bRet;
-}
-//=======================================================================
 // function: Sense
 // purpose: 
 //=======================================================================
-Standard_Integer BOPTools_AlgoTools::Sense (const TopoDS_Face& theF1,
-                                            const TopoDS_Face& theF2,
-                                            const Handle(IntTools_Context)& theContext)
+Standard_Integer BOPTools_AlgoTools::Sense(const TopoDS_Face& theF1,
+                                           const TopoDS_Face& theF2,
+                                           const Handle(IntTools_Context)& theContext)
 {
   Standard_Integer iSense=0;
   gp_Dir aDNF1, aDNF2;
@@ -1235,7 +1207,8 @@ Standard_Integer BOPTools_AlgoTools::Sense (const TopoDS_Face& theF1,
 Standard_Boolean BOPTools_AlgoTools::IsSplitToReverse
   (const TopoDS_Shape& theSp,
    const TopoDS_Shape& theSr,
-   Handle(IntTools_Context)& theContext)
+   const Handle(IntTools_Context)& theContext,
+   Standard_Integer *theError)
 {
   Standard_Boolean bRet;
   TopAbs_ShapeEnum aType;
@@ -1247,22 +1220,49 @@ Standard_Boolean BOPTools_AlgoTools::IsSplitToReverse
     case TopAbs_EDGE: {
       const TopoDS_Edge& aESp=(*(TopoDS_Edge*)(&theSp));
       const TopoDS_Edge& aESr=(*(TopoDS_Edge*)(&theSr));
-      bRet=BOPTools_AlgoTools::IsSplitToReverse(aESp, aESr, theContext);
+      bRet=BOPTools_AlgoTools::IsSplitToReverse(aESp, aESr, theContext, theError);
     }
       break;
       //
     case TopAbs_FACE: {
       const TopoDS_Face& aFSp=(*(TopoDS_Face*)(&theSp));
       const TopoDS_Face& aFSr=(*(TopoDS_Face*)(&theSr));
-      bRet=BOPTools_AlgoTools::IsSplitToReverse(aFSp, aFSr, theContext);
+      bRet=BOPTools_AlgoTools::IsSplitToReverse(aFSp, aFSr, theContext, theError);
     }
       break;
       //
     default:
+      if (theError)
+        *theError = 100;
       break;
   }
   return bRet;
 }
+
+//=======================================================================
+//function : IsSplitToReverseWithWarn
+//purpose  :
+//=======================================================================
+Standard_Boolean BOPTools_AlgoTools::IsSplitToReverseWithWarn(const TopoDS_Shape& theSplit,
+                                                              const TopoDS_Shape& theShape,
+                                                              const Handle(IntTools_Context)& theContext,
+                                                              const Handle(Message_Report)& theReport)
+{
+  Standard_Integer anErr;
+  Standard_Boolean isToReverse = BOPTools_AlgoTools::IsSplitToReverse(theSplit, theShape, theContext, &anErr);
+  if (anErr != 0 && !theReport.IsNull())
+  {
+    // The error occurred during the check.
+    // Add warning to the report, storing the shapes into the warning.
+    TopoDS_Compound aWC;
+    BRep_Builder().MakeCompound(aWC);
+    BRep_Builder().Add(aWC, theSplit);
+    BRep_Builder().Add(aWC, theShape);
+    theReport->AddAlert(Message_Warning, new BOPAlgo_AlertUnableToOrientTheShape(aWC));
+  }
+  return isToReverse;
+}
+
 //=======================================================================
 //function :IsSplitToReverse
 //purpose  : 
@@ -1270,8 +1270,13 @@ Standard_Boolean BOPTools_AlgoTools::IsSplitToReverse
 Standard_Boolean BOPTools_AlgoTools::IsSplitToReverse
   (const TopoDS_Face& theFSp,
    const TopoDS_Face& theFSr,
-   Handle(IntTools_Context)& theContext)
+   const Handle(IntTools_Context)& theContext,
+   Standard_Integer *theError)
 {
+  // Set OK error status
+  if (theError)
+    *theError = 0;
+
   // Compare surfaces
   Handle(Geom_Surface) aSFSp = BRep_Tool::Surface(theFSp);
   Handle(Geom_Surface) aSFOr = BRep_Tool::Surface(theFSr);
@@ -1305,6 +1310,8 @@ Standard_Boolean BOPTools_AlgoTools::IsSplitToReverse
     }
     //
     if (!anExp.More()) {
+      if (theError)
+        *theError = 1;
       // The point has not been found.
       return bDone;
     }
@@ -1315,6 +1322,8 @@ Standard_Boolean BOPTools_AlgoTools::IsSplitToReverse
   bDone = BOPTools_AlgoTools3D::GetNormalToSurface
     (aSFSp, aP2DFSp.X(), aP2DFSp.Y(), aDNFSp);
   if (!bDone) {
+    if (theError)
+      *theError = 2;
     return bDone;
   }
   //
@@ -1328,6 +1337,8 @@ Standard_Boolean BOPTools_AlgoTools::IsSplitToReverse
   aProjector.Perform(aPFSp);
   bDone = (aProjector.NbPoints() > 0);
   if (!bDone) {
+    if (theError)
+      *theError = 3;
     return bDone;
   }
   // UV coordinates of the point on the original face
@@ -1338,6 +1349,8 @@ Standard_Boolean BOPTools_AlgoTools::IsSplitToReverse
   gp_Dir aDNFOr;
   bDone = BOPTools_AlgoTools3D::GetNormalToSurface(aSFOr, aU, aV, aDNFOr);
   if (!bDone) {
+    if (theError)
+      *theError = 4;
     return bDone;
   }
   //
@@ -1354,51 +1367,88 @@ Standard_Boolean BOPTools_AlgoTools::IsSplitToReverse
 //purpose  : 
 //=======================================================================
 Standard_Boolean BOPTools_AlgoTools::IsSplitToReverse
-  (const TopoDS_Edge& aEF1,
-   const TopoDS_Edge& aEF2,
-   Handle(IntTools_Context)& theContext)
+  (const TopoDS_Edge& theESp,
+   const TopoDS_Edge& theEOr,
+   const Handle(IntTools_Context)& theContext,
+   Standard_Integer *theError)
 {
-  Standard_Boolean bRet, bIsDegenerated;
-  //
-  bRet=Standard_False;
-  bIsDegenerated=(BRep_Tool::Degenerated(aEF1) || 
-                  BRep_Tool::Degenerated(aEF2));
-  if (bIsDegenerated) {
-    return bRet;
+  // The idea is to compare the tangent vectors of two edges computed in
+  // the same point. Thus, we need to take the point on split edge (since it is
+  // shorter) and project it onto original edge to find corresponding parameter.
+
+  if (BRep_Tool::Degenerated(theESp) ||
+      BRep_Tool::Degenerated(theEOr))
+  {
+    if (theError)
+      *theError = 1;
+    return Standard_False;
   }
-  //
-  Standard_Real a, b;
-  TopAbs_Orientation aOrE, aOrSp;
-  Handle(Geom_Curve)aC1, aC2;
-  //
-  aC2=BRep_Tool::Curve(aEF2, a, b);
-  aC1=BRep_Tool::Curve(aEF1, a, b);
-  //
-  if (aC1==aC2) {
-    aOrE=aEF2.Orientation();
-    aOrSp=aEF1.Orientation();
-    bRet=(aOrE!=aOrSp);
-    return bRet;
+
+  // Set OK error status
+  if (theError)
+    *theError = 0;
+
+  // Get the curves from the edges
+  Standard_Real f, l;
+  Handle(Geom_Curve) aCSp = BRep_Tool::Curve(theESp, f, l);
+  Handle(Geom_Curve) aCOr = BRep_Tool::Curve(theEOr, f, l);
+
+  // If the curves are the same, compare orientations only
+  if (aCSp == aCOr)
+    return theESp.Orientation() != theEOr.Orientation();
+
+  // Find valid range of the split edge, to ensure that the point for computing
+  // tangent vectors will be inside both edges.
+  if (!BRepLib::FindValidRange(theESp, f, l))
+    BRep_Tool::Range(theESp, f, l);
+
+  // Error code
+  Standard_Integer anErr = 0;
+  // Try a few sample points on the split edge until first valid found
+  const Standard_Integer aNbP = 11;
+  const Standard_Real aDT = (l - f) / aNbP;
+  for (Standard_Integer i = 1; i < aNbP; ++i)
+  {
+    const Standard_Real aTm = f + i*aDT;
+    // Compute tangent vector on split edge
+    gp_Vec aVSpTgt;
+    if (!BOPTools_AlgoTools2D::EdgeTangent(theESp, aTm, aVSpTgt))
+    {
+      // Unable to compute the tangent vector on the split edge
+      // in this point -> take the next point
+      anErr = 2;
+      continue;
+    }
+
+    // Find corresponding parameter on the original edge
+    Standard_Real aTmOr;
+    if (!theContext->ProjectPointOnEdge(aCSp->Value(aTm), theEOr, aTmOr))
+    {
+      // Unable to project the point inside the split edge
+      // onto the original edge -> take the next point
+      anErr = 3;
+      continue;
+    }
+
+    // Compute tangent vector on original edge
+    gp_Vec aVOrTgt;
+    if (!BOPTools_AlgoTools2D::EdgeTangent(theEOr, aTmOr, aVOrTgt))
+    {
+      // Unable to compute the tangent vector on the original edge
+      // in this point -> take the next point
+      anErr = 4;
+      continue;
+    }
+
+    // Compute the Dot product
+    Standard_Real aCos = aVSpTgt.Dot(aVOrTgt);
+    return (aCos < 0.);
   }
-  //
-  Standard_Real aT1, aT2, aScPr;
-  gp_Vec aV1, aV2;
-  gp_Pnt aP;
-  //
-  aT1=BOPTools_AlgoTools2D::IntermediatePoint(a, b);
-  aC1->D0(aT1, aP);
-  BOPTools_AlgoTools2D::EdgeTangent(aEF1, aT1, aV1);
-  gp_Dir aDT1(aV1);
-  //
-  theContext->ProjectPointOnEdge(aP, aEF2, aT2);
-  //
-  BOPTools_AlgoTools2D::EdgeTangent(aEF2, aT2, aV2);
-  gp_Dir aDT2(aV2);
-  //
-  aScPr=aDT1*aDT2;
-  bRet=(aScPr<0.);
-  //
-  return bRet;
+
+  if (theError)
+    *theError = anErr;
+
+  return Standard_False;
 }
 
 //=======================================================================
@@ -1715,7 +1765,7 @@ Standard_Boolean BOPTools_AlgoTools::GetEdgeOnFace
 Standard_Boolean FindFacePairs (const TopoDS_Edge& theE,
                                 const TopTools_ListOfShape& thLF,
                                 BOPTools_ListOfCoupleOfShape& theLCFF,
-                                Handle(IntTools_Context)& theContext)
+                                const Handle(IntTools_Context)& theContext)
 {
   Standard_Boolean bFound;
   Standard_Integer i, aNbCEF;
@@ -1841,7 +1891,7 @@ Standard_Boolean BOPTools_AlgoTools::IsBlockInOnFace
   (const IntTools_Range& aShrR,
    const TopoDS_Face& aF,
    const TopoDS_Edge& aE1,
-   Handle(IntTools_Context)& aContext)
+   const Handle(IntTools_Context)& aContext)
 {
   Standard_Boolean bFlag;
   Standard_Real f1, l1, ULD, VLD;
@@ -1978,7 +2028,7 @@ Standard_Boolean GetFaceDir(const TopoDS_Edge& aE,
                             const Standard_Boolean theSmallFaces,
                             gp_Dir& aDN,
                             gp_Dir& aDB,
-                            Handle(IntTools_Context)& theContext,
+                            const Handle(IntTools_Context)& theContext,
                             GeomAPI_ProjectPointOnSurf& aProjPL,
                             const Standard_Real aDt)
 {
@@ -2022,7 +2072,7 @@ Standard_Boolean FindPointInFace(const TopoDS_Face& aF,
                                  const gp_Pnt& aP,
                                  gp_Dir& aDB,
                                  gp_Pnt& aPOut,
-                                 Handle(IntTools_Context)& theContext,
+                                 const Handle(IntTools_Context)& theContext,
                                  GeomAPI_ProjectPointOnSurf& aProjPL,
                                  const Standard_Real aDt,
                                  const Standard_Real aTolE)
@@ -2092,7 +2142,7 @@ Standard_Real MinStep3D(const TopoDS_Edge& theE1,
                         const TopoDS_Face& theF1,
                         const BOPTools_ListOfCoupleOfShape& theLCS,
                         const gp_Pnt& aP,
-                        Handle(IntTools_Context)& theContext,
+                        const Handle(IntTools_Context)& theContext,
                         Standard_Boolean& theSmallFaces)
 {
   Standard_Real aDt, aTolE, aTolF, aDtMax, aDtMin;

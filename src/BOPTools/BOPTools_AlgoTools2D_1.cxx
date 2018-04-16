@@ -40,7 +40,7 @@
 #include <IntTools_Context.hxx>
 #include <IntTools_Tools.hxx>
 
-#include <BOPTools_AlgoTools2D.hxx>
+#include <BOPTools_AlgoTools.hxx>
 
 
 
@@ -49,10 +49,6 @@ static
                                       const TopoDS_Edge& ,
                                       const TopoDS_Face& , 
                                       const Handle(IntTools_Context)& );
-static
-  Standard_Boolean IsToReverse(const TopoDS_Edge& ,
-                               const TopoDS_Edge& ,
-                               const Handle(IntTools_Context)& );
 static
   Standard_Boolean IsClosed(const TopoDS_Edge& ,
                             const TopoDS_Face& );
@@ -85,7 +81,7 @@ Standard_Integer BOPTools_AlgoTools2D::AttachExistingPCurve
   //
   aC2DoldC=Handle(Geom2d_Curve)::DownCast(aC2Dold->Copy());
   //
-  bIsToReverse=IsToReverse(aE2, aE1, aCtx);
+  bIsToReverse = BOPTools_AlgoTools::IsSplitToReverse(aE1, aE2, aCtx);
   if (bIsToReverse) {
     Standard_Real aT21r, aT22r;
     //
@@ -279,49 +275,6 @@ Standard_Integer UpdateClosedPCurve(const TopoDS_Edge& aEold,
     aBB.UpdateEdge(aEnew, aC2DTnew, aC2D , aF, aTol);
   }
   return iRet;
-}
-//=======================================================================
-//function : IsToReverse
-//purpose  : 
-//=======================================================================
-Standard_Boolean IsToReverse(const TopoDS_Edge& aEold,
-                             const TopoDS_Edge& aEnew,
-                             const Handle(IntTools_Context)& aCtx)
-{
-  Standard_Boolean bRet, bIsDegenerated;
-  Standard_Real aTnew, aTold, aScPr, aTa, aTb, aT1, aT2;
-  gp_Vec aVold, aVnew, aVE, aVS;
-  gp_Pnt aP;
-  Handle(Geom_Curve) aCold, aCnew;
-  //
-  bRet=Standard_False;
-  //
-  bIsDegenerated=(BRep_Tool::Degenerated(aEold) ||
-                  BRep_Tool::Degenerated(aEnew));
-  if (bIsDegenerated) {
-    return bRet;
-  }
-  //
-  aCold=BRep_Tool::Curve(aEold, aT1, aT2);
-  aCnew=BRep_Tool::Curve(aEnew, aTa, aTb);
-  //
-  if (aCold==aCnew) {
-    return bRet;
-  }
-  //
-  aTnew=BOPTools_AlgoTools2D::IntermediatePoint(aTa, aTb);
-  aCnew->D1(aTnew, aP, aVnew);
-  aVnew.Normalize(); 
-  //
-  if (!aCtx->ProjectPointOnEdge(aP, aEold, aTold))
-    return Standard_False;
-  aCold->D1(aTold, aP, aVold);
-  aVold.Normalize(); 
-  //
-  aScPr=aVnew*aVold;
-  bRet=(aScPr<0.);
-  //
-  return bRet;
 }
 //=======================================================================
 //function : IsClosed

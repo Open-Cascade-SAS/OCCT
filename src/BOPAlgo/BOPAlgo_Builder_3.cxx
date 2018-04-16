@@ -287,8 +287,8 @@ void BOPAlgo_Builder::BuildDraftSolid(const TopoDS_Shape& theSolid,
               theLIF.Append(aFx);
             }
             else {
-              bToReverse=BOPTools_AlgoTools::IsSplitToReverse
-                (aFx, aF, myContext);
+              bToReverse=BOPTools_AlgoTools::IsSplitToReverseWithWarn
+                (aFx, aF, myContext, myReport);
               if (bToReverse) {
                 aFx.Reverse();
               }

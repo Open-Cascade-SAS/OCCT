@@ -226,7 +226,7 @@ void BOPAlgo_Builder::FillImagesVertices()
     {
       TopoDS_Shape aSSIm = aItIm.Value();
       if (!aSSIm.IsEqual(aSS) &&
-          BOPTools_AlgoTools::IsSplitToReverse(aSSIm, aSS, myContext))
+          BOPTools_AlgoTools::IsSplitToReverseWithWarn(aSSIm, aSS, myContext, myReport))
       {
         aSSIm.Reverse();
       }

@@ -1503,6 +1503,7 @@ The following obsolete features have been removed:
 * The container *BiTgte_DataMapOfShapeBox* is replaced with *TopTools_DataMapOfShapeBox*;
 * The class *BOPTools* has been removed as duplicate of the class *TopExp*;
 * The method *BOPAlgo_Builder::Splits()* has been removed as excessive. The method *BOPAlgo_Builder::Images()* can be used instead.
+* The method *BOPTools_AlgoTools::CheckSameGeom()* has been removed as excessive. The method *BOPTools_AlgoTools::AreFacesSameDomain()* can be used instead.
 
 @section upgrade_occt730 Upgrade to OCCT 7.3.0
 

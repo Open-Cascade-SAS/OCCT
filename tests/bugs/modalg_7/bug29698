@@ -1,0 +1,43 @@
+puts "============"
+puts "OCC29698"
+puts "============"
+puts ""
+###############################
+## Regression vs 7.2.0: Common operation raises FLT_INVALID_OPERATION exception
+###############################
+
+# the case is a copy of the test case
+# bugs/modalg_6/bug26952_1
+# to test the BOP operation on the same arguments
+# with FPE signals switched on
+
+restore [locate_data_file bug26952_B41.brep] b1
+restore [locate_data_file bug26952_Tank41_1.brep] b2
+
+# enable FPE signals
+dsetsignal 1
+
+bclearobjects
+bcleartools
+baddobjects b1
+baddtools b2
+bfillds
+bbop result 0
+
+# disable FPE signals
+dsetsignal 0
+
+checkprops result -s 424.666
+checknbshapes result -wire 2 -face 1
+
+# check modification of the front face of the solid
+savehistory h
+explode b2 f
+modified f_mod h b2_12
+
+explode result f
+checkprops f_mod -equal result_1
+
+checknbshapes f_mod -ref [nbshapes result_1]
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
