@@ -14,18 +14,7 @@
 // commercial license or contractual agreement.
 
 #include <BVH_Triangulation.hxx>
-
-#ifdef HAVE_TBB
-  // On Windows, function TryEnterCriticalSection has appeared in Windows NT
-  // and is surrounded by #ifdef in MS VC++ 7.1 headers.
-  // Thus to use it we need to define appropriate macro saying that we will
-  // run on Windows NT 4.0 at least
-  #if defined(_WIN32) && !defined(_WIN32_WINNT)
-    #define _WIN32_WINNT 0x0501
-  #endif
-
-  #include <tbb/tbb.h>
-#endif
+#include <OSD_Parallel.hxx>
 
 // =======================================================================
 // function : BVH_DistanceField
@@ -407,8 +396,6 @@ namespace BVH
 
 #undef BVH_DOT3
 
-#ifdef HAVE_TBB
-
 //! Tool object for parallel construction of distance field (uses Intel TBB).
 template<class T, int N>
 class BVH_ParallelDistanceFieldBuilder
@@ -430,13 +417,11 @@ public:
     //
   }
 
-  void operator() (const tbb::blocked_range<Standard_Integer>& theRange) const
+  void operator() (const Standard_Integer theIndex) const
   {
-    myOutField->BuildSlices (*myGeometry, theRange.begin(), theRange.end());
+    myOutField->BuildSlices (*myGeometry, theIndex, theIndex + 1);
   }
 };
-
-#endif
 
 // =======================================================================
 // function : BuildSlices
@@ -510,16 +495,7 @@ Standard_Boolean BVH_DistanceField<T, N>::Build (BVH_Geometry<T, N>& theGeometry
   myVoxelSize.y() = (myCornerMax.y() - myCornerMin.y()) / myDimensionY;
   myVoxelSize.z() = (myCornerMax.z() - myCornerMin.z()) / myDimensionZ;
 
-#ifdef HAVE_TBB
-  
-  tbb::parallel_for (tbb::blocked_range<Standard_Integer> (0, myDimensionZ),
-    BVH_ParallelDistanceFieldBuilder<T, N> (this, &theGeometry));
-
-#else
-
-  BuildSlices (theGeometry, 0, myDimensionZ);
-
-#endif
+  OSD_Parallel::For (0, myDimensionZ, BVH_ParallelDistanceFieldBuilder<T, N> (this, &theGeometry));
 
   return Standard_True;
 }

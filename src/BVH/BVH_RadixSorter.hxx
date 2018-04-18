@@ -20,20 +20,9 @@
 #include <BVH_Builder.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_Shared.hxx>
+#include <OSD_Parallel.hxx>
 
 #include <algorithm>
-
-#ifdef HAVE_TBB
-  // On Windows, function TryEnterCriticalSection has appeared in Windows NT
-  // and is surrounded by #ifdef in MS VC++ 7.1 headers.
-  // Thus to use it we need to define appropriate macro saying that we will
-  // run on Windows NT 4.0 at least
-  #if defined(_WIN32) && !defined(_WIN32_WINNT)
-    #define _WIN32_WINNT 0x0501
-  #endif
-
-  #include <tbb/parallel_invoke.h>
-#endif
 
 //! Pair of Morton code and primitive ID.
 typedef std::pair<Standard_Integer, Standard_Integer> BVH_EncodedLink;
@@ -113,21 +102,21 @@ namespace BVH
 
   private:
 
-    //! TBB functor class to run sorting.
-    struct Functor
+    //! Structure defining sorting range.
+    struct SortRange
     {
       LinkIterator     myStart; //!< Start element of exclusive sorting range
       LinkIterator     myFinal; //!< Final element of exclusive sorting range
       Standard_Integer myDigit; //!< Bit number used for partition operation
+    };
 
-      //! Creates new sorting functor.
-      Functor (LinkIterator theStart, LinkIterator theFinal, Standard_Integer theDigit)
-      : myStart (theStart), myFinal (theFinal), myDigit (theDigit) {}
-
+    //! Functor class to run sorting in parallel.
+    struct Functor
+    {
       //! Runs sorting function for the given range.
-      void operator() () const
+      void operator()(const SortRange& theRange) const
       {
-        RadixSorter::Sort (myStart, myFinal, myDigit);
+        RadixSorter::Sort (theRange.myStart, theRange.myFinal, theRange.myDigit);
       }
     };
 
@@ -135,7 +124,6 @@ namespace BVH
 
     static void Sort (LinkIterator theStart, LinkIterator theFinal, Standard_Integer theDigit)
     {
-    #ifdef HAVE_TBB
       if (theDigit < 24)
       {
         BVH::RadixSorter::perform (theStart, theFinal, theDigit);
@@ -143,12 +131,13 @@ namespace BVH
       else
       {
         LinkIterator anOffset = std::partition (theStart, theFinal, BitPredicate (theDigit));
-        tbb::parallel_invoke (Functor (theStart, anOffset, theDigit - 1),
-                              Functor (anOffset, theFinal, theDigit - 1));
+        SortRange aSplits[2] = {
+          {theStart, anOffset, theDigit - 1},
+          {anOffset, theFinal, theDigit - 1}
+        };
+
+        OSD_Parallel::ForEach (std::begin (aSplits), std::end (aSplits), Functor ());
       }
-    #else
-      BVH::RadixSorter::perform (theStart, theFinal, theDigit);
-    #endif
     }
 
   protected:
