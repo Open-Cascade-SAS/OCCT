@@ -83,7 +83,9 @@ public:
 
 public:
   BRepClass3d_BndBoxTreeSelectorLine(const TopTools_IndexedMapOfShape& theMapOfShape) 
-    : BRepClass3d_BndBoxTreeSelectorLine::Selector(), myMapOfShape (theMapOfShape)
+    : BRepClass3d_BndBoxTreeSelectorLine::Selector(),
+      myMapOfShape(theMapOfShape),
+      myIsValid(Standard_True)
   {}
 
   Standard_Boolean Reject (const Bnd_Box& theBox) const
@@ -135,6 +137,13 @@ public:
   {
     myEP.Clear();
     myVP.Clear();
+    myIsValid = Standard_True;
+  }
+
+  //! Returns TRUE if correct classification is possible
+  Standard_Boolean IsCorrect() const
+  {
+    return myIsValid;
   }
 
 private:
@@ -147,6 +156,7 @@ private:
   NCollection_Sequence<EdgeParam> myEP; //output result (edge vs line)
   NCollection_Sequence<VertParam> myVP; //output result (vertex vs line)
   GeomAdaptor_Curve myLC;
+  Standard_Boolean myIsValid;
 };
 
 #endif

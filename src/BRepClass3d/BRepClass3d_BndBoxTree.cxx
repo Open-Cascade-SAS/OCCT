@@ -83,35 +83,43 @@ Standard_Boolean BRepClass3d_BndBoxTreeSelectorLine::Accept (const Standard_Inte
   if (sht == TopAbs_EDGE)
   {
     const TopoDS_Edge& E = TopoDS::Edge(shp);
-    Standard_Real EdgeTSq  = BRep_Tool::Tolerance(E);
+    Standard_Real EdgeTSq = BRep_Tool::Tolerance(E);
     EdgeTSq *= EdgeTSq;
     Standard_Real f, l;
     BRepAdaptor_Curve C(E);
-    BRep_Tool::Range(E,f,l);
+    BRep_Tool::Range(E, f, l);
 
     // Edge-Line interference.
     Extrema_ExtCC ExtCC(C, myLC, f, l, myLC.FirstParameter(), myLC.LastParameter());
-    if (ExtCC.IsDone() && ExtCC.NbExt() > 0)
-    { 
-      Standard_Boolean IsInside = Standard_False;
-      for (Standard_Integer i = 1; i <= ExtCC.NbExt(); i++)
+    if (ExtCC.IsDone())
+    {
+      if (ExtCC.IsParallel())
       {
-        if (ExtCC.SquareDistance(i) < EdgeTSq)
-        {
-          Extrema_POnCurv P1, P2;
-          ExtCC.Points(i,P1, P2);
-
-          EdgeParam EP;
-          EP.myE = E;
-          EP.myParam = P1.Parameter(); // Original curve is the first parameter.
-          EP.myLParam = P2.Parameter(); // Linear curve is the second parameter.
-
-          myEP.Append(EP);
-          IsInside = Standard_True;
-        }
+        // Tangent case is invalid for classification
+        myIsValid = Standard_False;
       }
-      if (IsInside)
-        return Standard_True;
+      else if (ExtCC.NbExt() > 0)
+      {
+        Standard_Boolean IsInside = Standard_False;
+        for (Standard_Integer i = 1; i <= ExtCC.NbExt(); i++)
+        {
+          if (ExtCC.SquareDistance(i) < EdgeTSq)
+          {
+            Extrema_POnCurv P1, P2;
+            ExtCC.Points(i, P1, P2);
+
+            EdgeParam EP;
+            EP.myE = E;
+            EP.myParam = P1.Parameter(); // Original curve is the first parameter.
+            EP.myLParam = P2.Parameter(); // Linear curve is the second parameter.
+
+            myEP.Append(EP);
+            IsInside = Standard_True;
+          }
+        }
+        if (IsInside)
+          return Standard_True;
+      }
     }
   }
   else if (sht == TopAbs_VERTEX)

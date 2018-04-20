@@ -1898,7 +1898,7 @@ void FindSplitPoint(SplitDS &theSplitDS,
   anExtCC.SetRange(2, theMinParam, theMaxParam);
   anExtCC.Perform();
 
-  if (anExtCC.IsDone())
+  if (anExtCC.IsDone() && !anExtCC.IsParallel())
   {
     const Standard_Integer aNbExt = anExtCC.NbExt();
     for (Standard_Integer anIdx = 1; anIdx <= aNbExt; ++anIdx)

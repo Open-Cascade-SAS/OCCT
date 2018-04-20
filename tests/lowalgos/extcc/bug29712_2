@@ -1,0 +1,19 @@
+puts "========"
+puts "OCC29712"
+puts "========"
+puts ""
+#################################################
+# Extrema algorithm raises exception
+#################################################
+
+# Curves c1 and c2 lie on parallel lines.
+# However, they are bounded (B-spline) curves
+# and are shifted relatively to each other. So,
+# perpendicular between these curves does not exist but
+# extrema must be found as in case "Not-parallel". 
+
+bsplinecurve c1 1 2 0 2 1 2 0 0 0 1 1 0 0 1
+bsplinecurve c2 1 2 0 2 1 2 3 4 0 1 4 4 0 1
+
+extrema c1 c2
+checklength ext_1 -l [expr sqrt(20)] -eps 2.0e-8

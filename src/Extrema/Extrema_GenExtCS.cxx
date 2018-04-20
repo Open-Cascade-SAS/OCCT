@@ -384,7 +384,11 @@ Standard_Integer Extrema_GenExtCS::NbExt() const
 //=======================================================================
 Standard_Real Extrema_GenExtCS::SquareDistance(const Standard_Integer N) const 
 {
-  if (!IsDone()) { throw StdFail_NotDone(); }
+  if (N < 1 || N > NbExt())
+  {
+    throw Standard_OutOfRange();
+  }
+
   return myF.SquareDistance(N);
 }
 
@@ -394,7 +398,11 @@ Standard_Real Extrema_GenExtCS::SquareDistance(const Standard_Integer N) const
 //=======================================================================
 const Extrema_POnCurv& Extrema_GenExtCS::PointOnCurve(const Standard_Integer N) const 
 {
-  if (!IsDone()) { throw StdFail_NotDone(); }
+  if (N < 1 || N > NbExt())
+  {
+    throw Standard_OutOfRange();
+  }
+
   return myF.PointOnCurve(N);
 }
 
@@ -404,7 +412,11 @@ const Extrema_POnCurv& Extrema_GenExtCS::PointOnCurve(const Standard_Integer N) 
 //=======================================================================
 const Extrema_POnSurf& Extrema_GenExtCS::PointOnSurface(const Standard_Integer N) const 
 {
-  if (!IsDone()) { throw StdFail_NotDone(); }
+  if (N < 1 || N > NbExt())
+  {
+    throw Standard_OutOfRange();
+  }
+
   return myF.PointOnSurface(N);
 }
 

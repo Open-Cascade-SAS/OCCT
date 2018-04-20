@@ -622,7 +622,8 @@ Standard_Boolean Extrema_GenExtCC::IsDone() const
 //=======================================================================
 Standard_Boolean Extrema_GenExtCC::IsParallel() const 
 {
-  return myParallel; 
+  if (!IsDone()) throw StdFail_NotDone();
+  return myParallel;
 }
 
 //=======================================================================
@@ -631,8 +632,7 @@ Standard_Boolean Extrema_GenExtCC::IsParallel() const
 //=======================================================================
 Standard_Integer Extrema_GenExtCC::NbExt() const
 {
-  StdFail_NotDone_Raise_if (!myDone, "Extrema_GenExtCC::NbExt()")
-
+  if (!IsDone()) throw StdFail_NotDone();
   return myPoints1.Length();
 }
 
@@ -642,8 +642,10 @@ Standard_Integer Extrema_GenExtCC::NbExt() const
 //=======================================================================
 Standard_Real Extrema_GenExtCC::SquareDistance(const Standard_Integer N) const
 {
-  StdFail_NotDone_Raise_if (!myDone, "Extrema_GenExtCC::SquareDistance()")
-  Standard_OutOfRange_Raise_if ((N < 1 || N > NbExt()), "Extrema_GenExtCC::SquareDistance()")
+  if (N < 1 || N > NbExt())
+  {
+    throw Standard_OutOfRange();
+  }
 
   return Tool1::Value(*((Curve1*)myC[0]), myPoints1(N)).SquareDistance(Tool2::Value(*((Curve2*)myC[1]), myPoints2(N)));
 }
@@ -656,8 +658,15 @@ void Extrema_GenExtCC::Points(const Standard_Integer N,
                               POnC& P1,
                               POnC& P2) const
 {
-  StdFail_NotDone_Raise_if (!myDone, "Extrema_GenExtCC::Points()")
-  Standard_OutOfRange_Raise_if ((N < 1 || N > NbExt()), "Extrema_GenExtCC::Points()")
+  if (IsParallel())
+  {
+    throw StdFail_InfiniteSolutions();
+  }
+
+  if (N < 1 || N > NbExt())
+  {
+    throw Standard_OutOfRange();
+  }
 
   P1.SetValues(myPoints1(N), Tool1::Value(*((Curve1*)myC[0]), myPoints1(N)));
   P2.SetValues(myPoints2(N), Tool2::Value(*((Curve2*)myC[1]), myPoints2(N)));

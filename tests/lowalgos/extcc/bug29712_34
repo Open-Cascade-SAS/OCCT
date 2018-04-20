@@ -1,0 +1,72 @@
+puts "========"
+puts "OCC29712"
+puts "========"
+puts ""
+#################################################
+# Extrema algorithm raises exception
+#################################################
+
+# Curves c1 and c2 are concentric circles.
+# However, they are bounded (trimmed) curves
+# and are shifted relatively to each other.
+# Please pay attention to the fact that the extrema
+# algorithm works anti-symmetrically in this case.
+# It is connected with the following:
+# 1. In case Extrema "c1 c2" the last point of curve c2 
+# is projected to c1 one. As result, two 
+# extremas (point-circle) are found and they are returned.
+# 2. The parallel regions (with infinite number of solution) is
+# ignored because single pair is found with two nearest points.
+# 3. In case Extrema "c2 c1" the first point of curve c1
+# is projected to c2 one. As result, one extrema is found and it
+# is returned. At that the last point of c1 is not projected at all
+# because because it is included in parallel region (see item 2).
+
+circle c1 0 0 0 0 0 1 100
+circle c2 0 0 0 0 0 1 50
+trim c1 c1 0 pi
+trim c2 c2 -2.0 0.0
+
+smallview
+
+# Case 1
+
+don c1 c2
+
+foreach a [ directory ext_* ] { unset $a }
+extrema c1 c2
+if { [llength [ directory ext_* ] ] != 2 } {
+  puts "Error: Wrong number of solutions (c1 c2)"
+}
+
+fit
+checkview -2d -screenshot -path ${imagedir}/${test_image}_1.png
+
+regexp {The length ext_1 is +([-0-9.+eE]+)} [length ext_1] full l11
+regexp {The length ext_2 is +([-0-9.+eE]+)} [length ext_2] full l12
+
+if { $l11 > $l12} {
+  set tmp1 $l11
+  set l11 $l12
+  set l12 $tmp1
+}
+
+checkreal MinL1 $l11 50.0 1.0e-7 0.0
+checkreal MaxL1 $l12 150.0 1.0e-7 0.0
+
+# Case 2
+
+don c1 c2
+
+foreach a [ directory ext_* ] { unset $a }
+extrema c2 c1
+if { [llength [ directory ext_* ] ] != 1 } {
+  puts "Error: Wrong number of solutions (c2 c1). See comment above."
+}
+
+fit
+checkview -2d -screenshot -path ${imagedir}/${test_image}_2.png
+
+regexp {The length ext_1 is +([-0-9.+eE]+)} [length ext_1] full l21
+
+checkreal MinL2 $l21 50.0 1.0e-7 0.0

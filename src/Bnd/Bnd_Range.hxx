@@ -145,6 +145,26 @@ public:
     theLastPar = myLast;
     return Standard_True;
   }
+
+  //! Obtain theParameter satisfied to the equation
+  //!     (theParameter-MIN)/(MAX-MIN) == theLambda.
+  //!   *  theLambda == 0 --> MIN boundary will be returned;
+  //!   *  theLambda == 0.5 --> Middle point will be returned;
+  //!   *  theLambda == 1 --> MAX boundary will be returned;
+  //!   *  theLambda < 0 --> the value less than MIN will be returned;
+  //!   *  theLambda > 1 --> the value greater than MAX will be returned.
+  //! If <this> is VOID the method returns false.
+  Standard_Boolean GetIntermediatePoint(const Standard_Real theLambda,
+                                        Standard_Real& theParameter) const
+  {
+    if (IsVoid())
+    {
+      return Standard_False;
+    }
+
+    theParameter = myFirst + theLambda*(myLast - myFirst);
+    return Standard_True;
+  }
   
   //! Returns range value (MAX-MIN). Returns negative value for VOID range.
   Standard_Real Delta() const

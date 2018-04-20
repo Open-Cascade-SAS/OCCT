@@ -210,7 +210,16 @@ static Standard_Boolean IsExtremum (const Standard_Real U, const Standard_Real V
 
 Extrema_ExtPRevS::Extrema_ExtPRevS() 
 {
+  myvinf = myvsup = 0.0;
+  mytolv = Precision::Confusion();
   myDone = Standard_False;
+  myNbExt = 0;
+  myIsAnalyticallyComputable = Standard_False;
+
+  for (Standard_Integer i = 0; i < 8; i++)
+  {
+    mySqDist[i] = RealLast();
+  }
 }
 //=======================================================================
 //function : Extrema_ExtPRevS
@@ -272,6 +281,10 @@ void Extrema_ExtPRevS::Initialize (const Handle(GeomAdaptor_HSurfaceOfRevolution
   myvinf = theVmin;
   myvsup = theVsup;
   mytolv = theTolV;
+
+  myDone = Standard_False;
+  myNbExt = 0;
+  myIsAnalyticallyComputable = Standard_False;
 
   Handle(Adaptor3d_HCurve) anACurve = theS->BasisCurve();
   
@@ -535,8 +548,10 @@ Standard_Integer Extrema_ExtPRevS::NbExt() const
 
 Standard_Real Extrema_ExtPRevS::SquareDistance(const Standard_Integer N) const
 {
-  if (!IsDone()) { throw StdFail_NotDone(); }
-  if ((N < 1) || (N > myNbExt)) { throw Standard_OutOfRange(); }
+  if ((N < 1) || (N > NbExt()))
+  {
+    throw Standard_OutOfRange();
+  }
   if (myIsAnalyticallyComputable)
     return mySqDist[N-1];
   else
@@ -549,8 +564,10 @@ Standard_Real Extrema_ExtPRevS::SquareDistance(const Standard_Integer N) const
 
 const Extrema_POnSurf& Extrema_ExtPRevS::Point(const Standard_Integer N) const
 {
-  if (!IsDone()) { throw StdFail_NotDone(); }
-  if ((N < 1) || (N > myNbExt)) { throw Standard_OutOfRange(); }
+  if ((N < 1) || (N > NbExt()))
+  {
+    throw Standard_OutOfRange();
+  }
   if (myIsAnalyticallyComputable)
     return myPoint[N-1];
   else

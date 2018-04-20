@@ -1,0 +1,40 @@
+puts "========"
+puts "OCC29712"
+puts "========"
+puts ""
+#################################################
+# Extrema algorithm raises exception
+#################################################
+
+# Curves c1 and c2 are concentric circles.
+# However, they are bounded (trimmed) curves
+# and are shifted relatively to each other.
+
+set ExpDist 50.0
+
+circle c1 0 0 0 0 0 1 100
+circle c2 0 0 0 0 0 1 50
+trim c1 c1 0 3
+trim c2 c2 3 5
+
+foreach a [ directory ext_* ] { unset $a }
+if { [regexp {Infinite} [extrema c1 c2]] } {
+  puts "Error: Extrema (c1 c2) returned infinite number of solution"
+}
+
+if { [llength [ directory ext_* ] ] != 1 } {
+  puts "Error: Wrong number of solutions (c1 c2)"
+}
+
+checklength ext_1 -l $ExpDist
+
+foreach a [ directory ext_* ] { unset $a }
+if { [regexp {Infinite} [extrema c2 c1]] } {
+  puts "Error: Extrema (c2 c1) returned infinite number of solution"
+}
+
+if { [llength [ directory ext_* ] ] != 1 } {
+  puts "Error: Wrong number of solutions (c2 c1)"
+}
+
+checklength ext_1 -l $ExpDist

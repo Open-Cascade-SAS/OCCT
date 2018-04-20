@@ -20,6 +20,7 @@
 //                            fois la meme solution 
 
 #include <Adaptor3d_Curve.hxx>
+#include <Bnd_Range.hxx>
 #include <ElCLib.hxx>
 #include <Extrema_CurveTool.hxx>
 #include <Extrema_ECC.hxx>
@@ -58,7 +59,10 @@ Extrema_ExtCC::Extrema_ExtCC (const Standard_Real TolC1,
   myDone (Standard_False)
 {
   myC[0] = 0; myC[1] = 0;
+  myInf[0] = myInf[1] = -Precision::Infinite();
+  mySup[0] = mySup[1] = Precision::Infinite();
   myTol[0] = TolC1; myTol[1] = TolC2;
+  mydist11 = mydist12 = mydist21 = mydist22 = RealFirst();
 }
 
 //=======================================================================
@@ -82,6 +86,7 @@ Extrema_ExtCC::Extrema_ExtCC(const Adaptor3d_Curve& C1,
   SetCurve (2, C2, V1, V2);
   SetTolerance (1, TolC1);
   SetTolerance (2, TolC2);
+  mydist11 = mydist12 = mydist21 = mydist22 = RealFirst();
   Perform();
 }
 
@@ -103,6 +108,7 @@ Extrema_ExtCC::Extrema_ExtCC(const Adaptor3d_Curve& C1,
   SetCurve (2, C2, C2.FirstParameter(), C2.LastParameter());
   SetTolerance (1, TolC1);
   SetTolerance (2, TolC2);
+  mydist11 = mydist12 = mydist21 = mydist22 = RealFirst();
   Perform();
 }
 
@@ -177,8 +183,6 @@ void Extrema_ExtCC::Perform()
   GeomAbs_CurveType type1 = (*((Adaptor3d_Curve*)myC[0])).GetType();
   GeomAbs_CurveType type2 = (*((Adaptor3d_Curve*)myC[1])).GetType();
   Standard_Real U11, U12, U21, U22, Tol = Min(myTol[0], myTol[1]);
-  mynbext = 0;
-  inverse = Standard_False;
 
   U11 = myInf[0];
   U12 = mySup[0];
@@ -209,8 +213,9 @@ void Extrema_ExtCC::Perform()
     //analytical case - one curve is always a line
     Standard_Integer anInd1 = 0, anInd2 = 1;
     GeomAbs_CurveType aType2 = type2;
-    inverse = (type1 > type2);
-    if (inverse) {
+    Standard_Boolean isInverse = (type1 > type2);
+    if (isInverse)
+    {
       //algorithm uses inverse order of arguments
       anInd1 = 1;
       anInd2 = 0;
@@ -219,27 +224,27 @@ void Extrema_ExtCC::Perform()
     switch (aType2) {
     case GeomAbs_Line: {
       Extrema_ExtElC Xtrem((*((Adaptor3d_Curve*)myC[anInd1])).Line(), (*((Adaptor3d_Curve*)myC[anInd2])).Line(), Tol);
-      Results(Xtrem, U11, U12, U21, U22);
+      PrepareResults(Xtrem, isInverse, U11, U12, U21, U22);
       break;
     }
     case GeomAbs_Circle: {
       Extrema_ExtElC Xtrem((*((Adaptor3d_Curve*)myC[anInd1])).Line(), (*((Adaptor3d_Curve*)myC[anInd2])).Circle(), Tol);
-      Results(Xtrem, U11, U12, U21, U22);
+      PrepareResults(Xtrem, isInverse, U11, U12, U21, U22);
       break;
     }
     case GeomAbs_Ellipse: {
       Extrema_ExtElC Xtrem((*((Adaptor3d_Curve*)myC[anInd1])).Line(), (*((Adaptor3d_Curve*)myC[anInd2])).Ellipse());
-      Results(Xtrem, U11, U12, U21, U22);
+      PrepareResults(Xtrem, isInverse, U11, U12, U21, U22);
       break;
     }
     case GeomAbs_Hyperbola: {
       Extrema_ExtElC Xtrem((*((Adaptor3d_Curve*)myC[anInd1])).Line(), (*((Adaptor3d_Curve*)myC[anInd2])).Hyperbola());
-      Results(Xtrem, U11, U12, U21, U22);
+      PrepareResults(Xtrem, isInverse, U11, U12, U21, U22);
       break;
     }
     case GeomAbs_Parabola: {
       Extrema_ExtElC Xtrem((*((Adaptor3d_Curve*)myC[anInd1])).Line(), (*((Adaptor3d_Curve*)myC[anInd2])).Parabola());
-      Results(Xtrem, U11, U12, U21, U22);
+      PrepareResults(Xtrem, isInverse, U11, U12, U21, U22);
       break;
     }
     default: break;
@@ -250,15 +255,15 @@ void Extrema_ExtCC::Perform()
     Extrema_ExtElC CCXtrem ((*((Adaptor3d_Curve*)myC[0])).Circle(), (*((Adaptor3d_Curve*)myC[1])).Circle());
     bIsDone = CCXtrem.IsDone();
     if(bIsDone) {
-      Results(CCXtrem, U11, U12, U21, U22);
+      PrepareResults(CCXtrem, Standard_False, U11, U12, U21, U22);
     }
     else {
       myECC.Perform();
-      Results(myECC, U11, U12, U21, U22);
+      PrepareResults(myECC, U11, U12, U21, U22);
     }
   } else {
     myECC.Perform();
-    Results(myECC, U11, U12, U21, U22);
+    PrepareResults(myECC, U11, U12, U21, U22);
   }
 }
 
@@ -280,6 +285,11 @@ Standard_Boolean Extrema_ExtCC::IsDone() const
 
 Standard_Boolean Extrema_ExtCC::IsParallel() const
 {
+  if (!IsDone())
+  {
+    throw StdFail_NotDone();
+  }
+
   return myIsPar;
 }
 
@@ -291,8 +301,7 @@ Standard_Boolean Extrema_ExtCC::IsParallel() const
 
 Standard_Real Extrema_ExtCC::SquareDistance(const Standard_Integer N) const 
 {
-  if(!myDone) throw StdFail_NotDone();
-  if ((N <= 0) || (N > mynbext)) throw Standard_OutOfRange();
+  if ((N < 1) || (N > NbExt())) throw Standard_OutOfRange();
   return mySqDist.Value(N);
 }
 
@@ -305,7 +314,7 @@ Standard_Real Extrema_ExtCC::SquareDistance(const Standard_Integer N) const
 Standard_Integer Extrema_ExtCC::NbExt() const
 {
   if(!myDone) throw StdFail_NotDone();
-  return mynbext;
+  return mySqDist.Length();
 }
 
 
@@ -318,10 +327,18 @@ void Extrema_ExtCC::Points(const Standard_Integer N,
 			    Extrema_POnCurv& P1,
 			    Extrema_POnCurv& P2) const
 {
-  if(!myDone) throw StdFail_NotDone();
-  if ((N <= 0) || (N > mynbext)) throw Standard_OutOfRange();
-  P1 = mypoints.Value(2*N-1);
-  P2 = mypoints.Value(2*N);
+  if (IsParallel())
+  {
+    throw StdFail_InfiniteSolutions();
+  }
+
+  if (N < 1 || N > NbExt())
+  {
+    throw Standard_OutOfRange();
+  }
+
+  P1 = mypoints.Value(2 * N - 1);
+  P2 = mypoints.Value(2 * N);
 }
 
 
@@ -350,18 +367,339 @@ void Extrema_ExtCC::TrimmedSquareDistances(Standard_Real& dist11,
   P22 = P2l;
 }
 
+//=======================================================================
+//function : ParallelResult
+//purpose  : 
+//=======================================================================
+void Extrema_ExtCC::PrepareParallelResult(const Standard_Real theUt11,
+                                          const Standard_Real theUt12,
+                                          const Standard_Real theUt21,
+                                          const Standard_Real theUt22,
+                                          const Standard_Real theSqDist)
+{
+  if (!myIsPar)
+    return;
 
+  const GeomAbs_CurveType aType1 = Extrema_CurveTool::GetType(*((Adaptor3d_Curve*) myC[0]));
+  const GeomAbs_CurveType aType2 = Extrema_CurveTool::GetType(*((Adaptor3d_Curve*) myC[1]));
+  
+  if (((aType1 != GeomAbs_Line) && (aType1 != GeomAbs_Circle)) ||
+      ((aType2 != GeomAbs_Line) && (aType2 != GeomAbs_Circle)))
+  {
+    mySqDist.Append(theSqDist);
+    myDone = Standard_True;
+    myIsPar = Standard_True;
+    return;
+  }
+  
+  // Parallel case is only for line-line, circle-circle and circle-line!!!
+  // But really for trimmed curves extremas can not exist!
+  if (aType1 != aType2)
+  {
+    //The projection of the circle's location to the trimmed line must exist.
+    const Standard_Boolean isReversed = (aType1 != GeomAbs_Circle);
+    const gp_Pnt aPonC = !isReversed ?
+                      Extrema_CurveTool::Value(*((Adaptor3d_Curve*) myC[0]), theUt11) :
+                      Extrema_CurveTool::Value(*((Adaptor3d_Curve*) myC[1]), theUt21);
+
+    const gp_Lin aL = !isReversed ? ((Adaptor3d_Curve*) myC[1])->Line() :
+                                    ((Adaptor3d_Curve*) myC[0])->Line();
+    const Extrema_ExtPElC ExtPLin(aPonC, aL, Precision::Confusion(),
+                                  !isReversed ? theUt21 : theUt11,
+                                  !isReversed ? theUt22 : theUt12);
+
+    if (ExtPLin.IsDone())
+    {
+      mySqDist.Append(theSqDist);
+    }
+    else
+    {
+      myIsPar = Standard_False;
+    }
+
+    return;
+  }
+
+  if (aType1 == GeomAbs_Line)
+  {
+    // Line - Line
+
+    const Standard_Real isFirstInfinite = (Precision::IsInfinite(theUt11) &&
+                                           Precision::IsInfinite(theUt12));
+    const Standard_Real isLastInfinite = (Precision::IsInfinite(theUt21) &&
+                                          Precision::IsInfinite(theUt22));
+
+    if (isFirstInfinite || isLastInfinite)
+    {
+      // Infinite number of solution
+
+      mySqDist.Append(theSqDist);
+    }
+    else
+    {
+      // The range created by projection of both ends of the 1st line
+      // to the 2nd one must intersect the (native) trimmed range of
+      // the 2nd line.
+
+      myIsPar = Standard_False;
+
+      const gp_Lin aLin1 = ((Adaptor3d_Curve*) myC[0])->Line();
+      const gp_Lin aLin2 = ((Adaptor3d_Curve*) myC[1])->Line();
+      const Standard_Boolean isOpposite(aLin1.Direction().Dot(aLin2.Direction()) < 0.0);
+
+      Bnd_Range aRange2(theUt21, theUt22);
+      Bnd_Range aProjRng12;
+
+      if (Precision::IsInfinite(theUt11))
+      {
+        if (isOpposite)
+          aProjRng12.Add(Precision::Infinite());
+        else
+          aProjRng12.Add(-Precision::Infinite());
+      }
+      else
+      {
+        const gp_Pnt aPonC1 = ElCLib::Value(theUt11, aLin1);
+        const Standard_Real aPar = ElCLib::Parameter(aLin2, aPonC1);
+        aProjRng12.Add(aPar);
+      }
+
+      if (Precision::IsInfinite(theUt12))
+      {
+        if (isOpposite)
+          aProjRng12.Add(-Precision::Infinite());
+        else
+          aProjRng12.Add(Precision::Infinite());
+      }
+      else
+      {
+        const gp_Pnt aPonC1 = ElCLib::Value(theUt12, aLin1);
+        const Standard_Real aPar = ElCLib::Parameter(aLin2, aPonC1);
+        aProjRng12.Add(aPar);
+      }
+
+      aRange2.Common(aProjRng12);
+      if (aRange2.Delta() > Precision::Confusion())
+      {
+        ClearSolutions();
+        mySqDist.Append(theSqDist);
+        myIsPar = Standard_True;
+      }
+      else if (!aRange2.IsVoid())
+      {
+        //Case like this:
+
+        //  **************     aLin1
+        //               o
+        //               o
+        //               ***************  aLin2
+
+        ClearSolutions();
+        Standard_Real aPar1 = 0.0, aPar2 = 0.0;
+        aRange2.GetBounds(aPar1, aPar2);
+        aPar2 = 0.5*(aPar1 + aPar2);
+        gp_Pnt aP = ElCLib::Value(aPar2, aLin2);
+        const Extrema_POnCurv aP2(aPar2, aP);
+        aPar1 = ElCLib::Parameter(aLin1, aP);
+        aP = ElCLib::Value(aPar1, aLin1);
+        const Extrema_POnCurv aP1(aPar1, aP);
+        mypoints.Append(aP1);
+        mypoints.Append(aP2);
+        mySqDist.Append(theSqDist);
+      }
+    }
+  }
+  else
+  {
+    // Circle - Circle
+    myIsPar = Standard_False;
+
+    //Two arcs with ranges [U1, U2] and [V1, V2] correspondingly are
+    //considered to be parallel in the following case:
+    //  The range created by projection both points U1 and U2 of the
+    //  1st circle to the 2nd one intersects either the range [V1, V2] or
+    //  the range [V1-PI, V2-PI]. All ranges must be adjusted to correspond
+    //  periodic range before checking of intersection.
+
+    const gp_Circ aWorkCirc = ((Adaptor3d_Curve*) myC[1])->Circle();
+    const Standard_Real aPeriod = M_PI + M_PI;
+    gp_Vec aVTg1;
+    gp_Pnt aP11;
+    const gp_Pnt aP12 = Extrema_CurveTool::Value(*((Adaptor3d_Curve*) myC[0]), theUt12);
+    Extrema_CurveTool::D1(*((Adaptor3d_Curve*) myC[0]), theUt11, aP11, aVTg1);
+
+    const Bnd_Range aRange(theUt21, theUt22);
+    Bnd_Range aProjRng1;
+
+    // Project arc of the 1st circle between points theUt11 and theUt12 to the
+    // 2nd circle. It is necessary to chose correct arc from two possible ones.
+
+    Standard_Real aPar1 = ElCLib::InPeriod(ElCLib::Parameter(aWorkCirc, aP11),
+                                           theUt21, theUt21 + aPeriod);
+    const gp_Vec aVTg2 = Extrema_CurveTool::DN(*((Adaptor3d_Curve*) myC[1]), aPar1, 1);
+    
+    // Check if circles have same/opposite directions
+    const Standard_Boolean isOpposite(aVTg1.Dot(aVTg2) < 0.0);
+
+    Standard_Real aPar2 = ElCLib::InPeriod(ElCLib::Parameter(aWorkCirc, aP12),
+                                           theUt21, theUt21 + aPeriod);
+
+    if (isOpposite)
+    {
+      // Must be aPar2 < aPar1
+      if ((aRange.Delta() > Precision::Angular()) &&
+          ((aPar1 - aPar2) < Precision::Angular()))
+      {
+        aPar2 -= aPeriod;
+      }
+    }
+    else
+    {
+      // Must be aPar2 > aPar1
+      if ((aRange.Delta() > Precision::Angular()) &&
+          ((aPar2 - aPar1) < Precision::Angular()))
+      {
+        aPar1 -= aPeriod;
+      }
+    }
+
+    // Now the projection result is the range [aPar1, aPar2]
+    // if aPar1 < aPar2 or the range [aPar2, aPar1], otherwise.
+
+    Standard_Real aMinSquareDist = RealLast();
+
+    aProjRng1.Add(aPar1 - M_PI);
+    aProjRng1.Add(aPar2 - M_PI);
+    for (Standard_Integer i = 0; i < 2; i++)
+    {
+      // Repeat computation twice
+
+      Bnd_Range aRng = aProjRng1;
+      aRng.Common(aRange);
+
+      //Cases are possible and processed below:
+      //1. Extrema does not exist. In this case all common ranges are VOID.
+      //2. Arcs are parallel and distance between them is equal to sqrt(theSqDist).
+      //    In this case myIsPar = TRUE definitely.
+      //3. Arcs are parallel and distance between them is equal to (sqrt(theSqDist) + R),
+      //    where R is the least radius of the both circles. In this case myIsPar flag
+      //    will temporary be set to TRUE but check will be continued until less
+      //    distance will be found. At that, region with the least distance can be
+      //    either a local point or continuous range. In 1st case myIsPar = FALSE and
+      //    several (or single) extremas will be returned. In the 2nd one
+      //    myIsPar = TRUE and only the least distance will be returned.
+      //4. Arcs are not parallel. Then several (or single) extremas will be returned.
+
+      if (aRng.Delta() > Precision::Angular())
+      {
+        Standard_Real aPar = 0.0;
+        aRng.GetIntermediatePoint(0.5, aPar);
+        const gp_Pnt aPCirc2 = ElCLib::Value(aPar, aWorkCirc);
+        Extrema_ExtPElC ExtPCir(aPCirc2,
+                                Extrema_CurveTool::Circle(*((Adaptor3d_Curve*) myC[0])),
+                                Precision::Confusion(), theUt11, theUt12);
+
+        Standard_Real aMinSqD = ExtPCir.SquareDistance(1);
+        for (Standard_Integer anExtID = 2; anExtID <= ExtPCir.NbExt(); anExtID++)
+        {
+          aMinSqD = Min(aMinSqD, ExtPCir.SquareDistance(anExtID));
+        }
+
+        if (aMinSqD <= aMinSquareDist)
+        {
+          ClearSolutions();
+          mySqDist.Append(aMinSqD);
+          myIsPar = Standard_True;
+
+          const Standard_Real aDeltaSqDist = aMinSqD - theSqDist;
+          const Standard_Real aSqD = Max(aMinSqD, theSqDist);
+
+          //  0 <= Dist1-Dist2 <= Eps
+          //  0 <= Dist1^2 - Dist2^2 < Eps*(Dist1+Dist2)
+
+          //If Dist1 ~= Dist2 ==> Dist1+Dist2 ~= 2*Dist2.
+          //Consequently,
+          //  0 <= Dist1^2 - Dist2^2 <= 2*Dist2*Eps
+
+          //Or
+          //  (Dist1^2 - Dist2^2)^2 <= 4*Dist2^2*Eps^2
+
+          if (aDeltaSqDist*aDeltaSqDist < 4.0*aSqD*Precision::SquareConfusion())
+          {
+            // New solution is found
+            break;
+          }
+        }
+
+        //Nearer solution can be found
+      }
+      else if (!aRng.IsVoid())
+      {
+        //Check cases like this:
+
+        //  **************     aCirc1
+        //               o
+        //               o
+        //               ***************  aCirc2
+
+        Standard_Real aPar = 0.0;
+        aRng.GetIntermediatePoint(0.5, aPar);
+        const gp_Pnt aPCirc2 = ElCLib::Value(aPar, aWorkCirc);
+        const Extrema_POnCurv aP2(aPar, aPCirc2);
+
+        Extrema_ExtPElC ExtPCir(aPCirc2,
+                                Extrema_CurveTool::Circle(*((Adaptor3d_Curve*) myC[0])),
+                                Precision::Confusion(), theUt11, theUt12);
+
+        Standard_Boolean isFound = !myIsPar;
+
+        if (!isFound)
+        {
+          //If the flag myIsPar was set earlier then it does not mean that
+          //we have found the minimal distance. Here we check it. If there is
+          //a pair of points, which are in less distance then myIsPar flag
+          //was unset and the algorithm will return these nearest points.
+
+          for (Standard_Integer anExtID = 1; anExtID <= ExtPCir.NbExt(); anExtID++)
+          {
+            if (ExtPCir.SquareDistance(anExtID) < aMinSquareDist)
+            {
+              isFound = Standard_True;
+              break;
+            }
+          }
+        }
+
+        if (isFound)
+        {
+          ClearSolutions();
+          myIsPar = Standard_False;
+          for (Standard_Integer anExtID = 1; anExtID <= ExtPCir.NbExt(); anExtID++)
+          {
+            mypoints.Append(ExtPCir.Point(anExtID));
+            mypoints.Append(aP2);
+            mySqDist.Append(ExtPCir.SquareDistance(anExtID));
+            aMinSquareDist = Min(aMinSquareDist, ExtPCir.SquareDistance(anExtID));
+          }
+        }
+      }
+
+      aProjRng1.Shift(M_PI);
+    }
+  }
+}
 
 //=======================================================================
 //function : Results
 //purpose  : 
 //=======================================================================
 
-void Extrema_ExtCC::Results(const Extrema_ExtElC&  AlgExt,
-			     const Standard_Real    Ut11,
-			     const Standard_Real    Ut12,
-			     const Standard_Real    Ut21,
-			     const Standard_Real    Ut22)
+void Extrema_ExtCC::PrepareResults(const Extrema_ExtElC&  AlgExt,
+                                   const Standard_Boolean theIsInverse,
+                                   const Standard_Real    Ut11,
+                                   const Standard_Real    Ut12,
+                                   const Standard_Real    Ut21,
+                                   const Standard_Real    Ut22)
 {
   Standard_Integer i, NbExt;
   Standard_Real Val, U, U2;
@@ -371,265 +709,15 @@ void Extrema_ExtCC::Results(const Extrema_ExtElC&  AlgExt,
   if (myDone) {
     myIsPar = AlgExt.IsParallel();
     if (myIsPar) {
-      GeomAbs_CurveType type = Extrema_CurveTool::GetType(*((Adaptor3d_Curve*)myC[0]));
-      GeomAbs_CurveType type2 = Extrema_CurveTool::GetType(*((Adaptor3d_Curve*)myC[1]));
-      // Parallel case is only for line-line, circle-circle and circle-line!!!
-      // But really for trimmed curves extremas can not exist!
-      Extrema_POnCurv dummypoint(0., gp_Pnt(0.,0.,0.));
-      if(type != type2) {
-	mySqDist.Append(AlgExt.SquareDistance(1));
-	if(type == GeomAbs_Circle) {
-	  gp_Pnt PonC1 = Extrema_CurveTool::Value(*((Adaptor3d_Curve*)myC[0]), Ut11);
-	  P1.SetValues(Ut11, PonC1);
-	  Extrema_ExtPElC ExtPLin(PonC1, Extrema_CurveTool::Line(*((Adaptor3d_Curve*)myC[1])), Precision::Confusion(), Ut21, Ut22);
-	  if(ExtPLin.IsDone()) {
-	    mynbext = 1;
-	    P2 = ExtPLin.Point(1);
-	    mypoints.Append(P1);
-	    mypoints.Append(P2);
-	  }
-	  else {
-	    myIsPar = Standard_False;
-	    mynbext = 0;
-	    mypoints.Append(dummypoint);
-	    mypoints.Append(dummypoint);
-	  }
-	}
-	else {
-	  gp_Pnt PonC2 = Extrema_CurveTool::Value(*((Adaptor3d_Curve*)myC[1]), Ut21);
-	  P2.SetValues(Ut21, PonC2);
-	  Extrema_ExtPElC ExtPLin(PonC2, Extrema_CurveTool::Line(*((Adaptor3d_Curve*)myC[0])), Precision::Confusion(), Ut11, Ut12);
-	  if(ExtPLin.IsDone()) {
-	    mynbext = 1;
-	    P1 = ExtPLin.Point(1);
-	    mypoints.Append(P1);
-	    mypoints.Append(P2);
-	  }
-	  else {
-	    myIsPar = Standard_False;
-	    mynbext = 0;
-	    mypoints.Append(dummypoint);
-	    mypoints.Append(dummypoint);
-	  }
-	}
-	return;
-      }
-	  
-      if(type == GeomAbs_Line) {
-	Standard_Boolean infinite = Precision::IsInfinite(Ut11) &&
-	                            Precision::IsInfinite(Ut12) &&
-			            Precision::IsInfinite(Ut21) &&
-			            Precision::IsInfinite(Ut22);
-
-	if(infinite) {
-	  mynbext = 1;
-	  mySqDist.Append(AlgExt.SquareDistance(1));
-	  gp_Pnt PonC1 = Extrema_CurveTool::Value(*((Adaptor3d_Curve*)myC[0]), 0.); 
-	  P1.SetValues(0., PonC1);
-	  Extrema_ExtPElC ExtPLin(PonC1, Extrema_CurveTool::Line(*((Adaptor3d_Curve*)myC[1])), Precision::Confusion(), Ut21, Ut22);
-	  if(ExtPLin.IsDone()) {
-	    P2 = ExtPLin.Point(1);
-	    mypoints.Append(P1);
-	    mypoints.Append(P2);
-	  }
-	  else {
-	    myIsPar = Standard_False;
-	    mypoints.Append(dummypoint);
-	    mypoints.Append(dummypoint);
-	  }
-	}
-	else {
-	  Standard_Boolean finish = Standard_False;
-	  if(!Precision::IsInfinite(Ut11)) {
-	    gp_Pnt PonC1 = Extrema_CurveTool::Value(*((Adaptor3d_Curve*)myC[0]), Ut11);  
-	    Extrema_ExtPElC ExtPLin(PonC1, Extrema_CurveTool::Line(*((Adaptor3d_Curve*)myC[1])), Precision::Confusion(), Ut21, Ut22);
-	    if(ExtPLin.IsDone() && ExtPLin.NbExt() > 0) {
-	      mynbext = 1;
-	      mySqDist.Append(AlgExt.SquareDistance(1));
-	      P1.SetValues(Ut11, PonC1);
-	      P2 = ExtPLin.Point(1);
-	      mypoints.Append(P1);
-	      mypoints.Append(P2);
-	      finish = Standard_True;
-	    }
-	  }
-	  if(!finish) {
-	    if(!Precision::IsInfinite(Ut12)) {
-	      gp_Pnt PonC1 = Extrema_CurveTool::Value(*((Adaptor3d_Curve*)myC[0]), Ut12);  
-	      Extrema_ExtPElC ExtPLin(PonC1, Extrema_CurveTool::Line(*((Adaptor3d_Curve*)myC[1])), Precision::Confusion(), Ut21, Ut22);
-	      if(ExtPLin.IsDone() && ExtPLin.NbExt() > 0) {
-		mynbext = 1;
-		mySqDist.Append(AlgExt.SquareDistance(1));
-		P1.SetValues(Ut12, PonC1);
-		P2 = ExtPLin.Point(1);
-		mypoints.Append(P1);
-		mypoints.Append(P2);
-		finish = Standard_True;
-	      }
-	    }
-	  }
-	  if(!finish) {
-	    if(!Precision::IsInfinite(Ut21)) {
-	      gp_Pnt PonC2 = Extrema_CurveTool::Value(*((Adaptor3d_Curve*)myC[1]), Ut21);  
-	      Extrema_ExtPElC ExtPLin(PonC2, Extrema_CurveTool::Line(*((Adaptor3d_Curve*)myC[0])), Precision::Confusion(), Ut11, Ut12);
-	      if(ExtPLin.IsDone() && ExtPLin.NbExt() > 0) {
-		mynbext = 1;
-		mySqDist.Append(AlgExt.SquareDistance(1));
-		P2.SetValues(Ut21, PonC2);
-		P1 = ExtPLin.Point(1);
-		mypoints.Append(P1);
-		mypoints.Append(P2);
-		finish = Standard_True;
-	      }
-	    }
-	  }
-	  if(!finish) {
-	    if(!Precision::IsInfinite(Ut22)) {
-	      gp_Pnt PonC2 = Extrema_CurveTool::Value(*((Adaptor3d_Curve*)myC[1]), Ut22);  
-	      Extrema_ExtPElC ExtPLin(PonC2, Extrema_CurveTool::Line(*((Adaptor3d_Curve*)myC[0])), Precision::Confusion(), Ut11, Ut12);
-	      if(ExtPLin.IsDone() && ExtPLin.NbExt() > 0) {
-		mynbext = 1;
-		mySqDist.Append(AlgExt.SquareDistance(1));
-		P2.SetValues(Ut22, PonC2);
-		P1 = ExtPLin.Point(1);
-		mypoints.Append(P1);
-		mypoints.Append(P2);
-		finish = Standard_True;
-	      }
-	    }
-	  }
-	  if(!finish) {
-	    mynbext = 0;
-	    myIsPar = Standard_False;
-	    mySqDist.Append(AlgExt.SquareDistance(1));
-	    mypoints.Append(dummypoint);
-	    mypoints.Append(dummypoint);
-	  }
-	}
-	  
-      }
-      else {
-	Standard_Boolean finish = Standard_False;
-	gp_Pnt PonC1 = Extrema_CurveTool::Value(*((Adaptor3d_Curve*)myC[0]), Ut11);  
-	P1.SetValues(Ut11, PonC1);
-	Extrema_ExtPElC ExtPCir(PonC1, Extrema_CurveTool::Circle(*((Adaptor3d_Curve*)myC[1])), Precision::Confusion(), Ut21, Ut22);
-	if(ExtPCir.IsDone() && ExtPCir.NbExt() > 0) {
-	  for(i = 1; i <= ExtPCir.NbExt(); i++) {
-	    mynbext++;
-	    P2 = ExtPCir.Point(i);
-	    mySqDist.Append(ExtPCir.SquareDistance(i));
-	    mypoints.Append(P1);
-	    mypoints.Append(P2);
-	  }
-	  if(mynbext == 2)  finish = Standard_True;
-	}
-	if(!finish) {
-	  PonC1 = Extrema_CurveTool::Value(*((Adaptor3d_Curve*)myC[0]), Ut12);  
-	  ExtPCir.Perform(PonC1, Extrema_CurveTool::Circle(*((Adaptor3d_Curve*)myC[1])), Precision::Confusion(), Ut21, Ut22);
-	  P1.SetValues(Ut12, PonC1);
-	  if(ExtPCir.IsDone() && ExtPCir.NbExt() > 0) {
-	    if(mynbext == 0) {
-	      for(i = 1; i <= ExtPCir.NbExt(); i++) {
-		mynbext++;
-		P2 = ExtPCir.Point(i);
-		mySqDist.Append(ExtPCir.SquareDistance(i));
-		mypoints.Append(P1);
-		mypoints.Append(P2);
-	      }
-	    }
-	    else {
-	      for(i = 1; i <= ExtPCir.NbExt(); i++) {
-		Standard_Real dist = mySqDist(1);
-		if(Abs(dist - ExtPCir.SquareDistance(i)) > Precision::Confusion()) {
-		  mynbext++;
-		  P2 = ExtPCir.Point(i);
-		  mySqDist.Append(ExtPCir.SquareDistance(i));
-		  mypoints.Append(P1);
-		  mypoints.Append(P2);
-		}
-	      }
-	    }
-		
-	    if(mynbext == 2)  finish = Standard_True;
-	  }
-	}  
-	if(!finish) {
-	  gp_Pnt PonC2 = Extrema_CurveTool::Value(*((Adaptor3d_Curve*)myC[1]), Ut21);  
-	  ExtPCir.Perform(PonC2, Extrema_CurveTool::Circle(*((Adaptor3d_Curve*)myC[0])), Precision::Confusion(), Ut11, Ut12);
-	  P2.SetValues(Ut21, PonC2);
-	  if(ExtPCir.IsDone() && ExtPCir.NbExt() > 0) {
-	    if(mynbext == 0) {
-	      for(i = 1; i <= ExtPCir.NbExt(); i++) {
-		mynbext++;
-		P1 = ExtPCir.Point(i);
-		mySqDist.Append(ExtPCir.SquareDistance(i));
-		mypoints.Append(P1);
-		mypoints.Append(P2);
-	      }
-	    }
-	    else {
-	      for(i = 1; i <= ExtPCir.NbExt(); i++) {
-		Standard_Real dist = mySqDist(1);
-		if(Abs(dist - ExtPCir.SquareDistance(i)) > Precision::Confusion()) {
-		  mynbext++;
-		  P1 = ExtPCir.Point(i);
-		  mySqDist.Append(ExtPCir.SquareDistance(i));
-		  mypoints.Append(P1);
-		  mypoints.Append(P2);
-		}
-	      }
-	    }
-		
-	    if(mynbext == 2)  finish = Standard_True;
-	  }
-	}  
-	if(!finish) {
-	  gp_Pnt PonC2 = Extrema_CurveTool::Value(*((Adaptor3d_Curve*)myC[1]), Ut22);  
-	  ExtPCir.Perform(PonC2, Extrema_CurveTool::Circle(*((Adaptor3d_Curve*)myC[0])), Precision::Confusion(), Ut11, Ut12);
-	  P2.SetValues(Ut22, PonC2);
-	  if(ExtPCir.IsDone() && ExtPCir.NbExt() > 0) {
-	    if(mynbext == 0) {
-	      for(i = 1; i <= ExtPCir.NbExt(); i++) {
-		mynbext++;
-		P1 = ExtPCir.Point(i);
-		mySqDist.Append(ExtPCir.SquareDistance(i));
-		mypoints.Append(P1);
-		mypoints.Append(P2);
-	      }
-	    }
-	    else {
-	      for(i = 1; i <= ExtPCir.NbExt(); i++) {
-		Standard_Real dist = mySqDist(1);
-		if(Abs(dist - ExtPCir.SquareDistance(i)) > Precision::Confusion()) {
-		  mynbext++;
-		  P1 = ExtPCir.Point(i);
-		  mySqDist.Append(ExtPCir.SquareDistance(i));
-		  mypoints.Append(P1);
-		  mypoints.Append(P2);
-		}
-	      }
-	    }
-		
-	    if(mynbext == 2)  finish = Standard_True;
-	  }
-	}  
-	if(mynbext == 0) {
-	  myIsPar = Standard_False;
-	  mySqDist.Append(AlgExt.SquareDistance(1));
-	  mypoints.Append(dummypoint);
-	  mypoints.Append(dummypoint);
-	  mySqDist.Append(AlgExt.SquareDistance(2));
-	  mypoints.Append(dummypoint);
-	  mypoints.Append(dummypoint);
-	}
-      }	
+      PrepareParallelResult(Ut11, Ut12, Ut21, Ut22, AlgExt.SquareDistance());
     }
     else {
       NbExt = AlgExt.NbExt();
       for (i = 1; i <= NbExt; i++) {
 	// Verification de la validite des parametres
 	AlgExt.Points(i, P1, P2);
-	if (!inverse) {
+        if (!theIsInverse)
+        {
 	  U = P1.Parameter();
 	  U2 = P2.Parameter();
 	}
@@ -649,10 +737,10 @@ void Extrema_ExtCC::Results(const Extrema_ExtElC&  AlgExt,
 	    (U  <= Ut12 + RealEpsilon())  &&
 	    (U2 >= Ut21 - RealEpsilon())  &&
 	    (U2 <= Ut22 + RealEpsilon())) {
-	  mynbext++;
 	  Val = AlgExt.SquareDistance(i);
 	  mySqDist.Append(Val);
-	  if (!inverse) {
+          if (!theIsInverse)
+          {
 	    P1.SetValues(U, P1.Value());
 	    P2.SetValues(U2, P2.Value());
 	    mypoints.Append(P1);
@@ -677,11 +765,11 @@ void Extrema_ExtCC::Results(const Extrema_ExtElC&  AlgExt,
 //purpose  : 
 //=======================================================================
 
-void Extrema_ExtCC::Results(const Extrema_ECC&   AlgExt,
-			     const Standard_Real  Ut11,
-			     const Standard_Real  Ut12,
-			     const Standard_Real  Ut21,
-			     const Standard_Real  Ut22)
+void Extrema_ExtCC::PrepareResults(const Extrema_ECC&   AlgExt,
+                                   const Standard_Real  Ut11,
+                                   const Standard_Real  Ut12,
+                                   const Standard_Real  Ut21,
+                                   const Standard_Real  Ut22)
 {
   Standard_Integer i, NbExt;
   Standard_Real Val, U, U2;
@@ -691,35 +779,41 @@ void Extrema_ExtCC::Results(const Extrema_ECC&   AlgExt,
   if (myDone)
   {
     myIsPar = AlgExt.IsParallel();
-    NbExt = AlgExt.NbExt();
-    for (i = 1; i <= NbExt; i++)
+    if (myIsPar)
     {
-      AlgExt.Points(i, P1, P2);
-      U = P1.Parameter();
-      U2 = P2.Parameter();
+      PrepareParallelResult(Ut11, Ut12, Ut21, Ut22, AlgExt.SquareDistance());
+    }
+    else
+    {
+      NbExt = AlgExt.NbExt();
+      for (i = 1; i <= NbExt; i++)
+      {
+        AlgExt.Points(i, P1, P2);
+        U = P1.Parameter();
+        U2 = P2.Parameter();
 
-      // Check points to be into param space.
-      if (Extrema_CurveTool::IsPeriodic(*((Adaptor3d_Curve*)myC[0])))
-      {
-        U = ElCLib::InPeriod(U, Ut11, Ut11+Extrema_CurveTool::Period(*((Adaptor3d_Curve*)myC[0])));
-      }
-      if (Extrema_CurveTool::IsPeriodic(*((Adaptor3d_Curve*)myC[1])))
-      {
-        U2 = ElCLib::InPeriod(U2, Ut21, Ut21+Extrema_CurveTool::Period(*((Adaptor3d_Curve*)myC[1])));
-      }
+        // Check points to be into param space.
+        if (Extrema_CurveTool::IsPeriodic(*((Adaptor3d_Curve*) myC[0])))
+        {
+          U = ElCLib::InPeriod(U, Ut11, Ut11 + Extrema_CurveTool::Period(*((Adaptor3d_Curve*) myC[0])));
+        }
+        if (Extrema_CurveTool::IsPeriodic(*((Adaptor3d_Curve*) myC[1])))
+        {
+          U2 = ElCLib::InPeriod(U2, Ut21, Ut21 + Extrema_CurveTool::Period(*((Adaptor3d_Curve*) myC[1])));
+        }
 
-      if ((U  >= Ut11 - RealEpsilon())  &&
-          (U  <= Ut12 + RealEpsilon())  &&
-          (U2 >= Ut21 - RealEpsilon())  &&
-          (U2 <= Ut22 + RealEpsilon())   )
-      {
-        mynbext++;
-        Val = AlgExt.SquareDistance(i);
-        mySqDist.Append(Val);
-        P1.SetValues(U, P1.Value());
-        P2.SetValues(U2, P2.Value());
-        mypoints.Append(P1);
-        mypoints.Append(P2);
+        if ((U >= Ut11 - RealEpsilon()) &&
+            (U <= Ut12 + RealEpsilon()) &&
+            (U2 >= Ut21 - RealEpsilon()) &&
+            (U2 <= Ut22 + RealEpsilon()))
+        {
+          Val = AlgExt.SquareDistance(i);
+          mySqDist.Append(Val);
+          P1.SetValues(U, P1.Value());
+          P2.SetValues(U2, P2.Value());
+          mypoints.Append(P1);
+          mypoints.Append(P2);
+        }
       }
     }
   }

@@ -1,0 +1,25 @@
+puts "========"
+puts "OCC29712"
+puts "========"
+puts ""
+#################################################
+# Extrema algorithm raises exception
+#################################################
+
+# Curves c1 and c2 are concentric circles.
+# However, they are bounded (trimmed) curves
+# and are shifted relatively to each other.
+
+set ExpDist 150.0
+
+circle c1 0 0 0 0 0 1 100
+lmirror c1 0 0 0 1 0 0 
+circle c2 0 0 0 0 0 1 50 
+trim c1 c1 3 6.5 
+trim c2 c2 4 6 
+
+regexp {Infinite number of extremas, distance = +([-0-9.+eE]+)} [extrema c1 c2] full aDist1
+checkreal Distance $aDist1 $ExpDist 1.0e-7 0.0
+
+regexp {Infinite number of extremas, distance = +([-0-9.+eE]+)} [extrema c2 c1] full aDist2
+checkreal Distance $aDist2 $ExpDist 1.0e-7 0.0

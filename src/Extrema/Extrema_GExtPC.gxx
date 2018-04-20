@@ -530,8 +530,7 @@ Standard_Boolean Extrema_GExtPC::IsDone() const
 
 Standard_Real Extrema_GExtPC::SquareDistance(const Standard_Integer N) const 
 {
-  if(!mydone) throw StdFail_NotDone();
-  if ((N < 1) || (N > mySqDist.Length())) throw Standard_OutOfRange();
+  if ((N < 1) || (N > NbExt())) throw Standard_OutOfRange();
   return mySqDist.Value(N);
 }
 
@@ -543,7 +542,7 @@ Standard_Real Extrema_GExtPC::SquareDistance(const Standard_Integer N) const
 
 Standard_Integer Extrema_GExtPC::NbExt() const
 {
-  if(!mydone) throw StdFail_NotDone();
+  if (!IsDone()) throw StdFail_NotDone();
   return mySqDist.Length();
 }
 
@@ -555,8 +554,7 @@ Standard_Integer Extrema_GExtPC::NbExt() const
 
 Standard_Boolean Extrema_GExtPC::IsMin(const Standard_Integer N) const
 {
-  if(!mydone) throw StdFail_NotDone();
-  if ((N < 1) || (N > mySqDist.Length())) throw Standard_OutOfRange();
+  if ((N < 1) || (N > NbExt())) throw Standard_OutOfRange();
   return myismin.Value(N);
 }
 
@@ -569,8 +567,7 @@ Standard_Boolean Extrema_GExtPC::IsMin(const Standard_Integer N) const
 
 const ThePOnC & Extrema_GExtPC::Point(const Standard_Integer N) const
 {
-  if(!mydone) throw StdFail_NotDone();
-  if ((N < 1) || (N > mySqDist.Length())) throw Standard_OutOfRange();
+  if ((N < 1) || (N > NbExt())) throw Standard_OutOfRange();
   return mypoint.Value(N);
 }
 

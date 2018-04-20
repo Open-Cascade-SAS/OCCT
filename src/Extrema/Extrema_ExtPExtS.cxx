@@ -153,7 +153,7 @@ Extrema_ExtPExtS::Extrema_ExtPExtS()
   mytolv(0.0),
   myIsAnalyticallyComputable(Standard_False),
   myDone(Standard_False),
-  myNbExt(Standard_False)
+  myNbExt(0)
 {
 }
 
@@ -176,7 +176,7 @@ Extrema_ExtPExtS::Extrema_ExtPExtS (const gp_Pnt&                               
   myS   (theS),
   myIsAnalyticallyComputable(Standard_False),
   myDone(Standard_False),
-  myNbExt(Standard_False)
+  myNbExt(0)
 {
   Initialize (theS,
               theUmin,
@@ -203,7 +203,7 @@ Extrema_ExtPExtS::Extrema_ExtPExtS (const gp_Pnt&                               
   myS   (theS),
   myIsAnalyticallyComputable(Standard_False),
   myDone(Standard_False),
-  myNbExt(Standard_False)
+  myNbExt(0)
 {
   Initialize (theS,
               theS->FirstUParameter(),
@@ -237,6 +237,10 @@ void Extrema_ExtPExtS::Initialize (const Handle(GeomAdaptor_HSurfaceOfLinearExtr
   myvsup = theVsup;
   mytolv = theTolV;
   
+  myIsAnalyticallyComputable = Standard_False;
+  myDone = Standard_False;
+  myNbExt = 0;
+
   Handle(Adaptor3d_HCurve) anACurve = theS->BasisCurve();
 
   myF.Initialize (theS->ChangeSurface());
@@ -448,8 +452,10 @@ Standard_Integer Extrema_ExtPExtS::NbExt () const
 
 Standard_Real Extrema_ExtPExtS::SquareDistance (const Standard_Integer N) const
 {
-  if (!IsDone()) { throw StdFail_NotDone(); }
-  if ((N < 1) || (N > myNbExt)) { throw Standard_OutOfRange(); }
+  if ((N < 1) || (N > NbExt()))
+  {
+    throw Standard_OutOfRange();
+  }
   if (myIsAnalyticallyComputable)
     // modified by NIZHNY-MKK  Thu Sep 18 14:48:39 2003.BEGIN
     //     return myValue[N];
@@ -462,8 +468,10 @@ Standard_Real Extrema_ExtPExtS::SquareDistance (const Standard_Integer N) const
 
 const Extrema_POnSurf& Extrema_ExtPExtS::Point (const Standard_Integer N) const
 {
-  if (!IsDone()) { throw StdFail_NotDone(); }
-  if ((N < 1) || (N > myNbExt)) { throw Standard_OutOfRange(); }
+  if ((N < 1) || (N > NbExt()))
+  {
+    throw Standard_OutOfRange();
+  }
   if (myIsAnalyticallyComputable) {
     // modified by NIZHNY-MKK  Thu Sep 18 14:47:40 2003.BEGIN
     //     return myPoint[N];

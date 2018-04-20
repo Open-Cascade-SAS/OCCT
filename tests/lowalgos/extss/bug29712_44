@@ -1,0 +1,20 @@
+puts "========"
+puts "OCC29712"
+puts "========"
+puts ""
+#################################################
+# Extrema algorithm raises exception
+#################################################
+
+# Planes s1 and s2 are parallel.
+
+set ExpDist 10.0
+
+plane s1 0 0 0 0 0 1
+plane s2 0 0 10 0 0 1
+
+regexp {Infinite number of extremas, distance = +([-0-9.+eE]+)} [extrema s1 s1] full aDist1
+checkreal Distance $aDist1 $ExpDist 1.0e-7 0.0
+
+regexp {Infinite number of extremas, distance = +([-0-9.+eE]+)} [extrema s2 s2] full aDist2
+checkreal Distance $aDist2 $ExpDist 1.0e-7 0.0

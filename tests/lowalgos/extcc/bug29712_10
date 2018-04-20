@@ -1,0 +1,33 @@
+puts "========"
+puts "OCC29712"
+puts "========"
+puts ""
+#################################################
+# Extrema algorithm raises exception
+#################################################
+
+# Curves c1 and c2 lie on parallel lines.
+# However, they are bounded (trimmed) curves
+# and are shifted relatively to each other. So,
+# there exists single perpendicular only. 
+
+line c1 1 0 0 0 0 1 
+line c2 5 0 0 0 0 1
+trim c1 c1 -1.0e100 5
+trim c2 c2 5 20
+
+foreach a [ directory ext_* ] { unset $a }
+extrema c1 c2
+if { [llength [ directory ext_* ] ] != 1 } {
+  puts "Error: Wrong number of solutions (c1 c2)"
+}
+
+checklength ext_1 -l 4.0 -eps 2.0e-8
+
+foreach a [ directory ext_* ] { unset $a }
+extrema c2 c1
+if { [llength [ directory ext_* ] ] != 1 } {
+  puts "Error: Wrong number of solutions (c1 c2)"
+}
+
+checklength ext_1 -l 4.0 -eps 2.0e-8

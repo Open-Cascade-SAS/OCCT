@@ -232,6 +232,13 @@ ExtremaExtElC_TrigonometricRoots::
 Extrema_ExtElC::Extrema_ExtElC () 
 {
   myDone = Standard_False; 
+  myIsPar = Standard_False;
+  myNbExt = 0;
+
+  for (Standard_Integer i = 0; i < 6; i++)
+  {
+    mySqDist[i] = RealLast();
+  }
 }
 //=======================================================================
 //function : Extrema_ExtElC
@@ -312,7 +319,8 @@ Extrema_ExtElC::Extrema_ExtElC (const gp_Lin& theC1,
 
   if (myIsPar)
   {
-    mySqDist[0] = mySqDist[1] = theC2.SquareDistance(theC1.Location());
+    mySqDist[0] = theC2.SquareDistance(theC1.Location());
+    myNbExt = 1;
     myDone = Standard_True;
     return;
   }
@@ -558,6 +566,7 @@ Extrema_ExtElC::Extrema_ExtElC (const gp_Lin& C1,
   if (Sol.InfiniteRoots()) { 
     myIsPar = Standard_True;
     mySqDist[0] = R*R;
+    myNbExt = 1;
     myDone = Standard_True;
     return; 
   }
@@ -901,128 +910,134 @@ Extrema_ExtElC::Extrema_ExtElC (const gp_Circ& C1,
   if (!bIsSamePlane) {
     return;
   }
+
+  // Here, both circles are in the same plane.
+
   //
   aDC2=aPc1.SquareDistance(aPc2);
   bIsSameAxe=aDC2<aTolD2;
   //
-  if(bIsSameAxe) {
+  if(bIsSameAxe)
+  {
     myIsPar = Standard_True;
-    Standard_Real dR = C1.Radius() - C2.Radius();
-    Standard_Real dC = C1.Location().Distance(C2.Location());
-    mySqDist[0] = dR*dR + dC*dC;
-    dR = C1.Radius() + C2.Radius();
-    mySqDist[1] = dR*dR + dC*dC;
-    myDone = Standard_True; 
+    myNbExt = 1;
+    myDone = Standard_True;
+    const Standard_Real aDR = C1.Radius() - C2.Radius();
+    mySqDist[0] = aDR*aDR;
+    return;
   }
-  else {
-    Standard_Boolean bIn, bOut;
-    Standard_Integer j1, j2;
-    Standard_Real aR1, aR2, aD12, aT11, aT12, aT21, aT22;
-    gp_Circ aC1, aC2;
-    gp_Pnt aP11, aP12, aP21, aP22;
+
+  Standard_Boolean bIn, bOut;
+  Standard_Integer j1, j2;
+  Standard_Real aR1, aR2, aD12, aT11, aT12, aT21, aT22;
+  gp_Circ aC1, aC2;
+  gp_Pnt aP11, aP12, aP21, aP22;
+  //
+  myDone = Standard_True;
+  //
+  aR1 = C1.Radius();
+  aR2 = C2.Radius();
+  //
+  j1 = 0;
+  j2 = 1;
+  aC1 = C1;
+  aC2 = C2;
+  if (aR2 > aR1)
+  {
+    j1 = 1;
+    j2 = 0;
+    aC1 = C2;
+    aC2 = C1;
+  }
+  //
+  aR1 = aC1.Radius(); // max radius
+  aR2 = aC2.Radius(); // min radius
+  //
+  aPc1 = aC1.Location();
+  aPc2 = aC2.Location();
+  //
+  aD12 = aPc1.Distance(aPc2);
+  gp_Vec aVec12(aPc1, aPc2);
+  gp_Dir aDir12(aVec12);
+  //
+  // 1. Four common solutions
+  myNbExt = 4;
+  //
+  aP11.SetXYZ(aPc1.XYZ() - aR1*aDir12.XYZ());
+  aP12.SetXYZ(aPc1.XYZ() + aR1*aDir12.XYZ());
+  aP21.SetXYZ(aPc2.XYZ() - aR2*aDir12.XYZ());
+  aP22.SetXYZ(aPc2.XYZ() + aR2*aDir12.XYZ());
+  //
+  aT11 = ElCLib::Parameter(aC1, aP11);
+  aT12 = ElCLib::Parameter(aC1, aP12);
+  aT21 = ElCLib::Parameter(aC2, aP21);
+  aT22 = ElCLib::Parameter(aC2, aP22);
+  //
+  // P11, P21
+  myPoint[0][j1].SetValues(aT11, aP11);
+  myPoint[0][j2].SetValues(aT21, aP21);
+  mySqDist[0] = aP11.SquareDistance(aP21);
+  // P11, P22
+  myPoint[1][j1].SetValues(aT11, aP11);
+  myPoint[1][j2].SetValues(aT22, aP22);
+  mySqDist[1] = aP11.SquareDistance(aP22);
+  //
+  // P12, P21
+  myPoint[2][j1].SetValues(aT12, aP12);
+  myPoint[2][j2].SetValues(aT21, aP21);
+  mySqDist[2] = aP12.SquareDistance(aP21);
+  //
+  // P12, P22
+  myPoint[3][j1].SetValues(aT12, aP12);
+  myPoint[3][j2].SetValues(aT22, aP22);
+  mySqDist[3] = aP12.SquareDistance(aP22);
+  //
+  // 2. Check for intersections
+  bOut = aD12 > (aR1 + aR2 + aTolD);
+  bIn = aD12 < (aR1 - aR2 - aTolD);
+  if (!bOut && !bIn)
+  {
+    Standard_Boolean bNbExt6;
+    Standard_Real aAlpha, aBeta, aT[2], aVal, aDist2;
+    gp_Pnt aPt, aPL1, aPL2;
+    gp_Dir aDLt;
     //
-    myDone = Standard_True; 
+    aAlpha = 0.5*(aR1*aR1 - aR2*aR2 + aD12*aD12) / aD12;
+    aVal = aR1*aR1 - aAlpha*aAlpha;
+    if (aVal < 0.)
+    {// see pkv/900/L4 for details
+      aVal = -aVal;
+    }
+    aBeta = Sqrt(aVal);
+    //aBeta=Sqrt(aR1*aR1-aAlpha*aAlpha);
+    //--
+    aPt.SetXYZ(aPc1.XYZ() + aAlpha*aDir12.XYZ());
     //
-    aR1=C1.Radius();
-    aR2=C2.Radius();
+    aDLt = aDc1^aDir12;
+    aPL1.SetXYZ(aPt.XYZ() + aBeta*aDLt.XYZ());
+    aPL2.SetXYZ(aPt.XYZ() - aBeta*aDLt.XYZ());
     //
-    j1=0;
-    j2=1;
-    aC1=C1;
-    aC2=C2;
-    if (aR2>aR1) {
-      j1=1;
-      j2=0;
-      aC1=C2;
-      aC2=C1;
+    aDist2 = aPL1.SquareDistance(aPL2);
+    bNbExt6 = aDist2 > aTolD2;
+    //
+    myNbExt = 5;// just in case. see pkv/900/L4 for details
+    aT[j1] = ElCLib::Parameter(aC1, aPL1);
+    aT[j2] = ElCLib::Parameter(aC2, aPL1);
+    myPoint[4][j1].SetValues(aT[j1], aPL1);
+    myPoint[4][j2].SetValues(aT[j2], aPL1);
+    mySqDist[4] = 0.;
+    //
+    if (bNbExt6)
+    {
+      myNbExt = 6;
+      aT[j1] = ElCLib::Parameter(aC1, aPL2);
+      aT[j2] = ElCLib::Parameter(aC2, aPL2);
+      myPoint[5][j1].SetValues(aT[j1], aPL2);
+      myPoint[5][j2].SetValues(aT[j2], aPL2);
+      mySqDist[5] = 0.;
     }
     //
-    aR1=aC1.Radius(); // max radius
-    aR2=aC2.Radius(); // min radius
-    //
-    aPc1=aC1.Location();
-    aPc2=aC2.Location();
-    //
-    aD12=aPc1.Distance(aPc2);
-    gp_Vec aVec12(aPc1, aPc2);
-    gp_Dir aDir12(aVec12);
-    //
-    // 1. Four common solutions
-    myNbExt=4;
-    //
-    aP11.SetXYZ(aPc1.XYZ()-aR1*aDir12.XYZ());
-    aP12.SetXYZ(aPc1.XYZ()+aR1*aDir12.XYZ());
-    aP21.SetXYZ(aPc2.XYZ()-aR2*aDir12.XYZ());
-    aP22.SetXYZ(aPc2.XYZ()+aR2*aDir12.XYZ());
-    //
-    aT11=ElCLib::Parameter(aC1, aP11);
-    aT12=ElCLib::Parameter(aC1, aP12);
-    aT21=ElCLib::Parameter(aC2, aP21);
-    aT22=ElCLib::Parameter(aC2, aP22);
-    //
-    // P11, P21
-    myPoint[0][j1].SetValues(aT11, aP11);
-    myPoint[0][j2].SetValues(aT21, aP21);
-    mySqDist[0]=aP11.SquareDistance(aP21);
-    // P11, P22
-    myPoint[1][j1].SetValues(aT11, aP11);
-    myPoint[1][j2].SetValues(aT22, aP22);
-    mySqDist[1]=aP11.SquareDistance(aP22);
-    //
-    // P12, P21
-    myPoint[2][j1].SetValues(aT12, aP12);
-    myPoint[2][j2].SetValues(aT21, aP21);
-    mySqDist[2]=aP12.SquareDistance(aP21);
-    //
-    // P12, P22
-    myPoint[3][j1].SetValues(aT12, aP12);
-    myPoint[3][j2].SetValues(aT22, aP22);
-    mySqDist[3]=aP12.SquareDistance(aP22);
-    //
-    // 2. Check for intersections
-    bOut=aD12>(aR1+aR2+aTolD);
-    bIn =aD12<(aR1-aR2-aTolD);
-    if (!bOut && !bIn) {
-      Standard_Boolean bNbExt6;
-      Standard_Real aAlpha, aBeta, aT[2], aVal, aDist2;
-      gp_Pnt aPt, aPL1, aPL2;
-      gp_Dir aDLt;
-      //
-      aAlpha=0.5*(aR1*aR1-aR2*aR2+aD12*aD12)/aD12;
-      aVal=aR1*aR1-aAlpha*aAlpha;
-      if (aVal<0.) {// see pkv/900/L4 for details
-	aVal=-aVal;
-      }
-      aBeta=Sqrt(aVal);
-      //aBeta=Sqrt(aR1*aR1-aAlpha*aAlpha);
-      //--
-      aPt.SetXYZ(aPc1.XYZ()+aAlpha*aDir12.XYZ());
-      //
-      aDLt=aDc1^aDir12;
-      aPL1.SetXYZ(aPt.XYZ()+aBeta*aDLt.XYZ());
-      aPL2.SetXYZ(aPt.XYZ()-aBeta*aDLt.XYZ());
-      //
-      aDist2=aPL1.SquareDistance(aPL2);
-      bNbExt6=aDist2>aTolD2;
-      //
-      myNbExt=5;// just in case. see pkv/900/L4 for details
-      aT[j1]=ElCLib::Parameter(aC1, aPL1);
-      aT[j2]=ElCLib::Parameter(aC2, aPL1);
-      myPoint[4][j1].SetValues(aT[j1], aPL1);
-      myPoint[4][j2].SetValues(aT[j2], aPL1);
-      mySqDist[4]=0.;
-      //
-      if (bNbExt6) {
-	myNbExt=6;
-	aT[j1]=ElCLib::Parameter(aC1, aPL2);
-	aT[j2]=ElCLib::Parameter(aC2, aPL2);
-	myPoint[5][j1].SetValues(aT[j1], aPL2);
-	myPoint[5][j2].SetValues(aT[j2], aPL2);
-	mySqDist[5]=0.;
-      }
-      //
-    }// if (!bOut || !bIn) {
-  }// else
+  }// if (!bOut || !bIn) {
 }
 
 //=======================================================================
@@ -1049,8 +1064,9 @@ Standard_Boolean Extrema_ExtElC::IsParallel () const
 //=======================================================================
 Standard_Integer Extrema_ExtElC::NbExt () const
 {
-  if (IsParallel()) {
-    throw StdFail_InfiniteSolutions();
+  if (!IsDone())
+  {
+    throw StdFail_NotDone();
   }
   return myNbExt;
 }
@@ -1060,20 +1076,12 @@ Standard_Integer Extrema_ExtElC::NbExt () const
 //=======================================================================
 Standard_Real Extrema_ExtElC::SquareDistance (const Standard_Integer N) const
 {
-  if (!myDone) { 
-    throw StdFail_NotDone();
+  if (N < 1 || N > NbExt())
+  {
+    throw Standard_OutOfRange();
   }
-  if (myIsPar) {
-    if (N < 1 || N > 2) { 
-      throw Standard_OutOfRange();
-    }
-  }
-  else {  
-    if (N < 1 || N > NbExt()) { 
-      throw Standard_OutOfRange();
-    }
-  }
-  return mySqDist[N-1];
+
+  return mySqDist[N - 1];
 }
 //=======================================================================
 //function : Points
@@ -1083,9 +1091,16 @@ void Extrema_ExtElC::Points (const Standard_Integer N,
 			     Extrema_POnCurv& P1, 
 			     Extrema_POnCurv& P2) const
 {
-  if (N < 1 || N > NbExt()) { 
+  if (IsParallel())
+  {
+    throw StdFail_InfiniteSolutions();
+  }
+
+  if (N < 1 || N > NbExt())
+  {
     throw Standard_OutOfRange();
   }
+
   P1 = myPoint[N-1][0];
   P2 = myPoint[N-1][1];
 }

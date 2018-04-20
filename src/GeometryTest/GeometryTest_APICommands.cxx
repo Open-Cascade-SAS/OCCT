@@ -347,13 +347,9 @@ static Standard_Integer extrema(Draw_Interpretor& di, Standard_Integer n, const 
     return 1;
   }
 
-  Handle(Geom_Curve)   GC1, GC2;
+  Handle(Geom_Curve) GC1, GC2;
   Handle(Geom_Surface) GS1, GS2;
 
-  Standard_Boolean C1 = Standard_False;
-  Standard_Boolean C2 = Standard_False;
-  Standard_Boolean S1 = Standard_False;
-  Standard_Boolean S2 = Standard_False;
   Standard_Boolean isInfinitySolutions = Standard_False;
   Standard_Real aMinDist = RealLast();
 
@@ -364,11 +360,10 @@ static Standard_Integer extrema(Draw_Interpretor& di, Standard_Integer n, const 
     GS1 = DrawTrSurf::GetSurface(a[1]);
     if ( GS1.IsNull())
       return 1;
-    S1 = Standard_True;
+
     GS1->Bounds(U1f,U1l,V1f,V1l);
   }
   else {
-    C1 = Standard_True;
     U1f = GC1->FirstParameter();
     U1l = GC1->LastParameter();
   }
@@ -378,23 +373,29 @@ static Standard_Integer extrema(Draw_Interpretor& di, Standard_Integer n, const 
     GS2 = DrawTrSurf::GetSurface(a[2]);
     if ( GS2.IsNull())
       return 1;
-    S2 = Standard_True;
     GS2->Bounds(U2f,U2l,V2f,V2l);
   }
   else {
-    C2 = Standard_True;
     U2f = GC2->FirstParameter();
     U2l = GC2->LastParameter();
   }
 
   NCollection_Vector<gp_Pnt> aPnts1, aPnts2;
   NCollection_Vector<Standard_Real> aPrms[4];
-  if (C1 && C2)
+  if (!GC1.IsNull() && !GC2.IsNull())
   {
     GeomAPI_ExtremaCurveCurve Ex(GC1, GC2, U1f, U1l, U2f, U2l);
-
-    for (Standard_Integer aJ = 1; aJ <= Ex.NbExtrema(); ++aJ)
+    
+    // Since GeomAPI cannot provide access to flag directly.
+    isInfinitySolutions = Ex.Extrema().IsParallel();
+    if (isInfinitySolutions)
     {
+      aMinDist = Ex.LowerDistance();
+    }
+    else
+    {
+      for (Standard_Integer aJ = 1; aJ <= Ex.NbExtrema(); ++aJ)
+      {
         gp_Pnt aP1, aP2;
         Ex.Points(aJ, aP1, aP2);
         aPnts1.Append(aP1);
@@ -404,69 +405,86 @@ static Standard_Integer extrema(Draw_Interpretor& di, Standard_Integer n, const 
         Ex.Parameters(aJ, aU1, aU2);
         aPrms[0].Append(aU1);
         aPrms[2].Append(aU2);
+      }
     }
+  }
+  else if (!GC1.IsNull() && !GS2.IsNull())
+  {
+    GeomAPI_ExtremaCurveSurface Ex(GC1, GS2, U1f, U1l, U2f, U2l, V2f, V2l);
+
+    isInfinitySolutions = Ex.Extrema().IsParallel();
+    if (isInfinitySolutions)
+    {
+      aMinDist = Ex.LowerDistance();
+    }
+    else
+    {
+      for (Standard_Integer aJ = 1; aJ <= Ex.NbExtrema(); ++aJ)
+      {
+        gp_Pnt aP1, aP2;
+        Ex.Points(aJ, aP1, aP2);
+        aPnts1.Append(aP1);
+        aPnts2.Append(aP2);
+
+        Standard_Real aU1, aU2, aV2;
+        Ex.Parameters(aJ, aU1, aU2, aV2);
+        aPrms[0].Append(aU1);
+        aPrms[2].Append(aU2);
+        aPrms[3].Append(aV2);
+      }
+    }
+  }
+  else if (!GS1.IsNull() && !GC2.IsNull())
+  {
+    GeomAPI_ExtremaCurveSurface Ex(GC2, GS1, U2f, U2l, U1f, U1l, V1f, V1l);
+
+    isInfinitySolutions = Ex.Extrema().IsParallel();
+    if (isInfinitySolutions)
+    {
+      aMinDist = Ex.LowerDistance();
+    }
+    else
+    {
+      for (Standard_Integer aJ = 1; aJ <= Ex.NbExtrema(); ++aJ)
+      {
+        gp_Pnt aP2, aP1;
+        Ex.Points(aJ, aP2, aP1);
+        aPnts1.Append(aP1);
+        aPnts2.Append(aP2);
+
+        Standard_Real aU1, aV1, aU2;
+        Ex.Parameters(aJ, aU2, aU1, aV1);
+        aPrms[0].Append(aU1);
+        aPrms[1].Append(aV1);
+        aPrms[2].Append(aU2);
+      }
+    }
+  }
+  else if (!GS1.IsNull() && !GS2.IsNull())
+  {
+    GeomAPI_ExtremaSurfaceSurface Ex(GS1, GS2, U1f, U1l, V1f, V1l, U2f, U2l, V2f, V2l);
     // Since GeomAPI cannot provide access to flag directly.
     isInfinitySolutions = Ex.Extrema().IsParallel();
     if (isInfinitySolutions)
-      aMinDist = Ex.LowerDistance();
-  }
-  else if (C1 && S2)
-  {
-    GeomAPI_ExtremaCurveSurface Ex(GC1, GS2, U1f, U1l, U2f, U2l, V2f, V2l);
-    for (Standard_Integer aJ = 1; aJ <= Ex.NbExtrema(); ++aJ)
     {
-      gp_Pnt aP1, aP2;
-      Ex.Points(aJ, aP1, aP2);
-      aPnts1.Append(aP1);
-      aPnts2.Append(aP2);
-
-      Standard_Real aU1, aU2, aV2;
-      Ex.Parameters(aJ, aU1, aU2, aV2);
-      aPrms[0].Append(aU1);
-      aPrms[2].Append(aU2);
-      aPrms[3].Append(aV2);
+      aMinDist = Ex.LowerDistance();
     }
-    isInfinitySolutions = Ex.Extrema().IsParallel();
-    if (isInfinitySolutions)
-      aMinDist = Ex.LowerDistance();
-  }
-  else if (S1 && C2)
-  {
-    GeomAPI_ExtremaCurveSurface Ex(GC2, GS1, U2f, U2l, U1f, U1l, V1f, V1l);
-    for (Standard_Integer aJ = 1; aJ <= Ex.NbExtrema(); ++aJ)
+    else
     {
-      gp_Pnt aP2, aP1;
-      Ex.Points(aJ, aP2, aP1);
-      aPnts1.Append(aP1);
-      aPnts2.Append(aP2);
+      for (Standard_Integer aJ = 1; aJ <= Ex.NbExtrema(); ++aJ)
+      {
+        gp_Pnt aP1, aP2;
+        Ex.Points(aJ, aP1, aP2);
+        aPnts1.Append(aP1);
+        aPnts2.Append(aP2);
 
-      Standard_Real aU1, aV1, aU2;
-      Ex.Parameters(aJ, aU2, aU1, aV1);
-      aPrms[0].Append(aU1);
-      aPrms[1].Append(aV1);
-      aPrms[2].Append(aU2);
-    }
-    isInfinitySolutions = Ex.Extrema().IsParallel();
-    if (isInfinitySolutions)
-      aMinDist = Ex.LowerDistance();
-  }
-  else if (S1 && S2)
-  {
-    GeomAPI_ExtremaSurfaceSurface Ex(
-      GS1, GS2, U1f, U1l, V1f, V1l, U2f, U2l, V2f, V2l);
-    for (Standard_Integer aJ = 1; aJ <= Ex.NbExtrema(); ++aJ)
-    {
-      gp_Pnt aP1, aP2;
-      Ex.Points(aJ, aP1, aP2);
-      aPnts1.Append(aP1);
-      aPnts2.Append(aP2);
-
-      Standard_Real aU1, aV1, aU2, aV2;
-      Ex.Parameters(aJ, aU1, aV1, aU2, aV2);
-      aPrms[0].Append(aU1);
-      aPrms[1].Append(aV1);
-      aPrms[2].Append(aU2);
-      aPrms[3].Append(aV2);
+        Standard_Real aU1, aV1, aU2, aV2;
+        Ex.Parameters(aJ, aU1, aV1, aU2, aV2);
+        aPrms[0].Append(aU1);
+        aPrms[1].Append(aV1);
+        aPrms[2].Append(aU2);
+        aPrms[3].Append(aV2);
+      }
     }
   }
 

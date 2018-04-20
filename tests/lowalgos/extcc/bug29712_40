@@ -1,0 +1,19 @@
+puts "========"
+puts "OCC29712"
+puts "========"
+puts ""
+#################################################
+# Extrema algorithm raises exception
+#################################################
+
+set ExpDist 5
+
+circle c1 0 0 0 0 0 1 5
+line c2 0 0 0 0 0 1
+trim c2 c2 -1 -5e-8
+
+regexp {Infinite number of extremas, distance = +([-0-9.+eE]+)} [extrema c1 c2] full aDist1
+checkreal Distance $aDist1 $ExpDist 1.0e-7 0.0
+
+regexp {Infinite number of extremas, distance = +([-0-9.+eE]+)} [extrema c2 c1] full aDist2
+checkreal Distance $aDist2 $ExpDist 1.0e-7 0.0

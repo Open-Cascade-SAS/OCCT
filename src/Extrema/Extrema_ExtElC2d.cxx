@@ -32,9 +32,21 @@
 #include <StdFail_InfiniteSolutions.hxx>
 #include <StdFail_NotDone.hxx>
 
-//=============================================================================
-Extrema_ExtElC2d::Extrema_ExtElC2d () { myDone = Standard_False; }
-//=============================================================================
+//=======================================================================
+//function : Extrema_ExtElC2d
+//purpose  :
+//=======================================================================
+Extrema_ExtElC2d::Extrema_ExtElC2d()
+{
+  myDone = Standard_False;
+  myIsPar = Standard_False;
+  myNbExt = 0;
+
+  for (Standard_Integer i = 0; i < 8; i++)
+  {
+    mySqDist[i] = RealLast();
+  }
+}
 
 //=======================================================================
 //function : Extrema_ExtElC2d
@@ -67,6 +79,7 @@ Method:
   {
     myIsPar = Standard_True;
     mySqDist[0] = C2.SquareDistance(C1.Location());
+    myNbExt = 1;
   }
   else
   {
@@ -283,9 +296,14 @@ Extrema_ExtElC2d::Extrema_ExtElC2d (const gp_Circ2d& C1, const gp_Circ2d& C2)
   gp_Pnt2d O2 = C2.Location();
 
   gp_Vec2d DO1O2 (O1, O2);
-  if (DO1O2.Magnitude() < Precision::Confusion()) { 
+  const Standard_Real aSqDCenters = DO1O2.SquareMagnitude();
+  if (aSqDCenters < Precision::SquareConfusion()) { 
     myIsPar = Standard_True;
-    return; 
+    myNbExt = 1;
+    myDone = Standard_True;
+    const Standard_Real aDR = C1.Radius() - C2.Radius();
+    mySqDist[0] = aDR*aDR;
+    return;
   }
 
   Standard_Integer NoSol, kk;
@@ -293,7 +311,7 @@ Extrema_ExtElC2d::Extrema_ExtElC2d (const gp_Circ2d& C1, const gp_Circ2d& C2)
   Standard_Real r1 = C1.Radius(), r2 = C2.Radius();
   Standard_Real Usol2[2], Usol1[2];
   gp_Pnt2d P1[2], P2[2];
-  gp_Dir2d O1O2(DO1O2);
+  gp_Vec2d O1O2(DO1O2/Sqrt(aSqDCenters));
 
   P1[0] = O1.Translated(r1*O1O2);
   Usol1[0] = ElCLib::Parameter(C1, P1[0]);
@@ -417,17 +435,23 @@ Standard_Boolean Extrema_ExtElC2d::IsParallel () const
 
 Standard_Integer Extrema_ExtElC2d::NbExt () const
 {
-  if (IsParallel()) { throw StdFail_InfiniteSolutions(); }
+  if (!IsDone())
+  {
+    throw StdFail_NotDone();
+  }
+
   return myNbExt;
 }
 //============================================================================
 
 Standard_Real Extrema_ExtElC2d::SquareDistance (const Standard_Integer N) const
 {
-  if (!(N == 1 && myDone)) {
-    if (N < 1 || N > NbExt()) { throw Standard_OutOfRange(); }
+  if (N < 1 || N > NbExt())
+  {
+    throw Standard_OutOfRange();
   }
-  return mySqDist[N-1];
+
+  return mySqDist[N - 1];
 }
 //============================================================================
 
@@ -435,6 +459,11 @@ void Extrema_ExtElC2d::Points (const Standard_Integer N,
 			       Extrema_POnCurv2d& P1, 
 			       Extrema_POnCurv2d& P2) const
 {
+  if (IsParallel())
+  {
+    throw StdFail_InfiniteSolutions();
+  }
+
   if (N < 1 || N > NbExt()) { throw Standard_OutOfRange(); }
   P1 = myPoint[N-1][0];
   P2 = myPoint[N-1][1];

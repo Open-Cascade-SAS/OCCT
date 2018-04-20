@@ -33,7 +33,17 @@
 //function : Extrema_ExtPElC
 //purpose  : 
 //=======================================================================
-Extrema_ExtPElC::Extrema_ExtPElC () { myDone = Standard_False; }
+Extrema_ExtPElC::Extrema_ExtPElC()
+{
+  myDone = Standard_False;
+  myNbExt = 0;
+
+  for (Standard_Integer i = 0; i < 4; i++)
+  {
+    mySqDist[i] = RealLast();
+    myIsMin[i] = Standard_False;
+  }
+}
 
 //=======================================================================
 //function : Extrema_ExtPElC
@@ -419,7 +429,7 @@ Method:
       Cu = ElCLib::Value(Us,C);
       DejaEnr = Standard_False;
       for (NoExt = 0; NoExt < myNbExt; NoExt++) {
-    if (TbExt[NoExt].SquareDistance(Cu) < Precision::SquareConfusion()) {
+        if (TbExt[NoExt].SquareDistance(Cu) < Precision::SquareConfusion()) {
 	  DejaEnr = Standard_True;
 	  break;
 	}

@@ -29,7 +29,15 @@
 static const Standard_Real ExtPElS_MyEps = Epsilon(2. * M_PI);
 //=============================================================================
 
-Extrema_ExtPElS::Extrema_ExtPElS () { myDone = Standard_False; }
+Extrema_ExtPElS::Extrema_ExtPElS()
+{
+  myDone = Standard_False;
+  myNbExt = 0;
+  for (Standard_Integer i = 0; i < 4; i++)
+  {
+    mySqDist[i] = RealLast();
+  }
+}
 //=============================================================================
 
 Extrema_ExtPElS::Extrema_ExtPElS (const gp_Pnt& P, 
@@ -416,16 +424,20 @@ Standard_Integer Extrema_ExtPElS::NbExt () const
 
 Standard_Real Extrema_ExtPElS::SquareDistance (const Standard_Integer N) const
 {
-  if (!IsDone()) { throw StdFail_NotDone(); }
-  if ((N < 1) || (N > myNbExt)) { throw Standard_OutOfRange(); }
+  if ((N < 1) || (N > NbExt()))
+  {
+    throw Standard_OutOfRange();
+  }
   return mySqDist[N-1];
 }
 //=============================================================================
 
 const Extrema_POnSurf& Extrema_ExtPElS::Point (const Standard_Integer N) const
 {
-  if (!IsDone()) { throw StdFail_NotDone(); }
-  if ((N < 1) || (N > myNbExt)) { throw Standard_OutOfRange(); }
+  if ((N < 1) || (N > NbExt()))
+  {
+    throw Standard_OutOfRange();
+  }
   return myPoint[N-1];
 }
 //=============================================================================

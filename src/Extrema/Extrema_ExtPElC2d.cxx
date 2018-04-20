@@ -32,7 +32,18 @@
 #include <StdFail_NotDone.hxx>
 
 //=============================================================================
-Extrema_ExtPElC2d::Extrema_ExtPElC2d () { myDone = Standard_False; }
+Extrema_ExtPElC2d::Extrema_ExtPElC2d()
+{
+  myDone = Standard_False;
+  myNbExt = 0;
+
+  for (Standard_Integer i = 0; i < 4; i++)
+  {
+    mySqDist[i] = RealLast();
+    myIsMin[i] = Standard_False;
+  }
+}
+
 //=============================================================================
 
 Extrema_ExtPElC2d::Extrema_ExtPElC2d 
@@ -162,6 +173,8 @@ void Extrema_ExtPElC2d::Perform (const gp_Pnt2d&     P,
   const Standard_Real Uinf, 
   const Standard_Real Usup)
 {
+  myDone = Standard_False;
+  myNbExt = 0;
   //  gp_Pnt2d OR, P1, P2;
   gp_Pnt2d OR;
   OR = E.Location();
@@ -173,7 +186,7 @@ void Extrema_ExtPElC2d::Perform (const gp_Pnt2d&     P,
 
   if (OR.IsEqual(P, Precision::Confusion()) &&
     (Abs(A-B) <= Tol)) {
-      myDone = Standard_False;
+      return;
   }
   else {
     Standard_Real X = V.Dot(gp_Vec2d(E.XAxis().Direction()));

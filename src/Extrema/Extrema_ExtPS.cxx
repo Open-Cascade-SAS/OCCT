@@ -371,22 +371,21 @@ Standard_Boolean Extrema_ExtPS::IsDone() const
 
 Standard_Real Extrema_ExtPS::SquareDistance(const Standard_Integer N) const
 {
-  if(!myDone) throw StdFail_NotDone();
-  if ((N < 1) || (N > mySqDist.Length())) throw Standard_OutOfRange();
+  if ((N < 1) || (N > NbExt())) throw Standard_OutOfRange();
   return mySqDist.Value(N);
 }
 
 
 Standard_Integer Extrema_ExtPS::NbExt() const
 {
-  if(!myDone) throw StdFail_NotDone();
+  if (!IsDone()) throw StdFail_NotDone();
   return mySqDist.Length();
 }
 
 
 const Extrema_POnSurf& Extrema_ExtPS::Point(const Standard_Integer N) const
 {
-  if(!myDone) throw StdFail_NotDone();
+  if ((N < 1) || (N > NbExt())) throw Standard_OutOfRange();
   return myPoints.Value(N);
 }
 
