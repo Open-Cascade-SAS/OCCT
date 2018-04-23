@@ -72,6 +72,7 @@
 #include <TColgp_SequenceOfVec.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
+#include <Message_ProgressIndicator.hxx>
 
 #include <stdio.h>
 // pour la verif G2
@@ -455,7 +456,7 @@ void GeomPlate_BuildPlateSurface::
 //fonction : Perform
 // Calcul la surface de remplissage avec les contraintes chargees
 //---------------------------------------------------------
-void GeomPlate_BuildPlateSurface::Perform()
+void GeomPlate_BuildPlateSurface::Perform(const Handle(Message_ProgressIndicator) & aProgress)
 { 
 #ifdef OCCT_DEBUG
   // Chronmetrage
@@ -488,7 +489,7 @@ void GeomPlate_BuildPlateSurface::Perform()
   // Surface Initiale
   //======================================================================
   if (!mySurfInitIsGive)
-    ComputeSurfInit();
+    ComputeSurfInit(aProgress);
 
   else {
    if (NTLinCont>=2)
@@ -658,13 +659,19 @@ void GeomPlate_BuildPlateSurface::Perform()
 	  //====================================================================
 	  //Resolution de la surface
 	  //====================================================================
-	  myPlate.SolveTI(myDegree, ComputeAnisotropie());
+
+	  myPlate.SolveTI(myDegree, ComputeAnisotropie(), aProgress);
+
+	  if (!aProgress.IsNull() && aProgress->UserBreak())
+	  {
+	    return;
+	  }
+
           if (!myPlate.IsDone())
           {
 #ifdef OCCT_DEBUG
             cout << "WARNING : GeomPlate : abort calcul of Plate." << endl;
 #endif
-
             return;
           }
 
@@ -692,7 +699,13 @@ void GeomPlate_BuildPlateSurface::Perform()
 	  //====================================================================
 	  //Resolution de la surface
 	  //====================================================================
-	  myPlate.SolveTI(myDegree, ComputeAnisotropie());
+	  myPlate.SolveTI(myDegree, ComputeAnisotropie(), aProgress);
+
+	  if (!aProgress.IsNull() && aProgress->UserBreak())
+	  {
+	    return;
+	  }
+
           if (!myPlate.IsDone())
           {
 #ifdef OCCT_DEBUG
@@ -1354,7 +1367,7 @@ Standard_Boolean GeomPlate_BuildPlateSurface::
 // il y a des contraintes ponctuelles
 //-------------------------------------------------------------------------
 
-void GeomPlate_BuildPlateSurface::ComputeSurfInit()
+void GeomPlate_BuildPlateSurface::ComputeSurfInit(const Handle(Message_ProgressIndicator) & aProgress)
 {
   Standard_Integer nopt=2, popt=2, Np=1;
   Standard_Boolean isHalfSpace = Standard_True;
@@ -1719,7 +1732,12 @@ void GeomPlate_BuildPlateSurface::ComputeSurfInit()
       //====================================================================
       //Resolution de la surface
       //====================================================================
-      myPlate.SolveTI(2, ComputeAnisotropie());
+      myPlate.SolveTI(2, ComputeAnisotropie(), aProgress);
+      if (!aProgress.IsNull() && aProgress->UserBreak())
+      {
+          return;
+      }
+
       if (!myPlate.IsDone())
       {
 #ifdef OCCT_DEBUG

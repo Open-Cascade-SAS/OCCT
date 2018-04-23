@@ -28,7 +28,8 @@
 #include <StdFail_NotDone.hxx>
 
 math_Gauss::math_Gauss(const math_Matrix& A, 
-                           const Standard_Real MinPivot) 
+                       const Standard_Real MinPivot, 
+                       const Handle(Message_ProgressIndicator) & aProgress) 
                            : LU   (1, A.RowNumber(), 1, A.ColNumber()),
                              Index(1, A.RowNumber()) {
 
@@ -37,7 +38,8 @@ math_Gauss::math_Gauss(const math_Matrix& A,
       Standard_Integer Error = LU_Decompose(LU, 
                                   Index, 
                                   D,
-                                  MinPivot);
+                                  MinPivot, 
+                                  aProgress);
       if(!Error) {
         Done = Standard_True;
       }

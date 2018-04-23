@@ -33,6 +33,7 @@
 
 #include <Standard_Failure.hxx>
 #include <Standard_NotImplemented.hxx>
+#include <Message_ProgressSentry.hxx>
 
 #include <math_Vector.hxx>
 #include <math_IntegerVector.hxx>
@@ -175,13 +176,16 @@ Standard_Integer LU_Decompose(math_Matrix& a,
                      math_IntegerVector& indx, 
                      Standard_Real&   d, 
                      math_Vector& vv,
-                     Standard_Real    TINY) { 
+                     Standard_Real    TINY,
+                     const Handle(Message_ProgressIndicator) & aProgress) { 
 
      Standard_Integer i, imax=0, j, k;
      Standard_Real big, dum, sum, temp;
 
      Standard_Integer n = a.RowNumber();
      d = 1.0;
+
+     Message_ProgressSentry aPSentry(aProgress, "", 0, n, 1);
 
      for(i = 1; i <= n; i++) {
        big = 0.0;
@@ -192,7 +196,8 @@ Standard_Integer LU_Decompose(math_Matrix& a,
        }
        vv(i) = 1.0 / big;
      }
-     for(j = 1; j <= n; j++) {
+
+     for(j = 1; j <= n && aPSentry.More(); j++, aPSentry.Next()) {
        for(i = 1; i < j; i++) {
          sum = a(i,j);
          for(k = 1; k < i; k++)
@@ -232,16 +237,23 @@ Standard_Integer LU_Decompose(math_Matrix& a,
 	   a(i,j) *= dum;
        }
      }
+
+     if (j <= n)
+     {
+        return math_Status_UserAborted;
+     }
+
      return math_Status_OK;
 }
 
 Standard_Integer LU_Decompose(math_Matrix& a, 
                     math_IntegerVector& indx, 
                     Standard_Real&   d, 
-                    Standard_Real    TINY) { 
+                    Standard_Real    TINY,
+                    const Handle(Message_ProgressIndicator) & aProgress) { 
 
      math_Vector vv(1, a.RowNumber());
-     return LU_Decompose(a, indx, d, vv, TINY);
+     return LU_Decompose(a, indx, d, vv, TINY, aProgress);
 }
 
 void LU_Solve(const math_Matrix& a,

@@ -18,12 +18,14 @@
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
+#include <Standard_Handle.hxx>
 
 class math_IntegerVector;
 class math_Vector;
 class math_Matrix;
+class Message_ProgressIndicator;
 
-
+const Standard_Integer math_Status_UserAborted         = -1;
 const Standard_Integer math_Status_OK                  = 0;
 const Standard_Integer math_Status_SingularMatrix      = 1;
 const Standard_Integer math_Status_ArgumentError       = 2;
@@ -32,7 +34,8 @@ const Standard_Integer math_Status_NoConvergence       = 3;
 Standard_EXPORT Standard_Integer  LU_Decompose(math_Matrix& a, 
 					  math_IntegerVector& indx, 
 					  Standard_Real&   d,
-					  Standard_Real    TINY = 1.0e-20);
+					  Standard_Real    TINY = 1.0e-20, 
+                      const Handle(Message_ProgressIndicator) & aProgress = Handle(Message_ProgressIndicator)());
 
 // Given a matrix a(1..n, 1..n), this routine computes its LU decomposition, 
 // The matrix a is replaced by this LU decomposition and the vector indx(1..n)
@@ -44,7 +47,8 @@ Standard_EXPORT Standard_Integer LU_Decompose(math_Matrix& a,
 					 math_IntegerVector& indx, 
 					 Standard_Real&   d, 
 					 math_Vector& vv,
-					 Standard_Real    TINY = 1.0e-30);
+					 Standard_Real    TINY = 1.0e-30, 
+                     const Handle(Message_ProgressIndicator) & aProgress = Handle(Message_ProgressIndicator)());
 
 // Idem to the previous LU_Decompose function. But the input Vector vv(1..n) is
 // used internally as a scratch area.
