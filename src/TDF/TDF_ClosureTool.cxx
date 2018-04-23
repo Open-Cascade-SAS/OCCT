@@ -72,7 +72,8 @@ void TDF_ClosureTool::Closure
     const TDF_Label& lab = labLItr.Value();
     if (lab.HasAttribute())
       TDF_ClosureTool::LabelAttributes(lab,labMap,attMap,aFilter,aMode);
-    TDF_ClosureTool::Closure(lab,labMap,attMap,aFilter,aMode); 
+    if (aMode.Descendants())
+      TDF_ClosureTool::Closure(lab,labMap,attMap,aFilter,aMode); 
   }
 }
 

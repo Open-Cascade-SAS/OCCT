@@ -153,12 +153,25 @@ void TDF_CopyTool::CopyLabels
   // Does the same for the children.
   for (TDF_ChildIterator childItr(aSLabel); childItr.More(); childItr.Next()){
     const TDF_Label& childSLab = childItr.Value();
-    if (aSrcLabelMap.Contains(childSLab)) {
-      TDF_Label childTIns = aTargetLabel.FindChild(childSLab.Tag());
-      aLabMap.Bind(childSLab,childTIns);
-      TDF_CopyTool::CopyLabels(childSLab,childTIns,
-        aLabMap,aAttMap,
-        aSrcLabelMap,aSrcAttributeMap);
+    if (aSrcLabelMap.Contains(childSLab))
+    {
+      TDF_Label childTIns;
+      if (aLabMap.IsBound (childSLab))
+      {
+        childTIns = aLabMap.Find (childSLab);
+      }
+      else
+      {
+        childTIns = aTargetLabel.FindChild (childSLab.Tag ());
+        aLabMap.Bind (childSLab, childTIns);
+      }
+
+      TDF_CopyTool::CopyLabels
+        (
+          childSLab,childTIns,
+          aLabMap,aAttMap,
+          aSrcLabelMap,aSrcAttributeMap
+        );
     }
   }
 }
