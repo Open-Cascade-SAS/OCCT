@@ -23,6 +23,7 @@
 #include <BRepAdaptor_HSurface.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <Adaptor3d_IsoCurve.hxx>
+#include <Adaptor3d_HCurve.hxx>
 
 #include <BRep_ListIteratorOfListOfPointRepresentation.hxx>
 #include <BRep_PointRepresentation.hxx>
@@ -162,6 +163,119 @@ namespace
   private:
     const TopoDS_Vertex& myVertex;
   };
+
+  void ComputeErrFactors (const Standard_Real               theDeflection, 
+                          const Handle(Adaptor3d_HSurface)& theFace,
+                          Standard_Real&                    theErrFactorU,
+                          Standard_Real&                    theErrFactorV)
+  {
+    theErrFactorU = theDeflection * 10.;
+    theErrFactorV = theDeflection * 10.;
+
+    switch (theFace->GetType ())
+    {
+    case GeomAbs_Cylinder:
+    case GeomAbs_Cone:
+    case GeomAbs_Sphere:
+    case GeomAbs_Torus:
+      break;
+
+    case GeomAbs_SurfaceOfExtrusion:
+    case GeomAbs_SurfaceOfRevolution:
+      {
+        Handle (Adaptor3d_HCurve) aCurve = theFace->BasisCurve ();
+        if (aCurve->GetType () == GeomAbs_BSplineCurve && aCurve->Degree () > 2)
+        {
+          theErrFactorV /= (aCurve->Degree () * aCurve->NbKnots ());
+        }
+        break;
+      }
+    case GeomAbs_BezierSurface:
+      {
+        if (theFace->UDegree () > 2)
+        {
+          theErrFactorU /= (theFace->UDegree ());
+        }
+        if (theFace->VDegree () > 2)
+        {
+          theErrFactorV /= (theFace->VDegree ());
+        }
+        break;
+      }
+    case GeomAbs_BSplineSurface:
+      {
+        if (theFace->UDegree () > 2)
+        {
+          theErrFactorU /= (theFace->UDegree () * theFace->NbUKnots ());
+        }
+        if (theFace->VDegree () > 2)
+        {
+          theErrFactorV /= (theFace->VDegree () *  theFace->NbVKnots ());
+        }
+        break;
+      }
+
+    case GeomAbs_Plane:
+    default:
+      theErrFactorU = theErrFactorV = 1.;
+    }
+  }
+
+  void AdjustCellsCounts (const Handle(Adaptor3d_HSurface)& theFace,
+                          const Standard_Integer            theNbVertices,
+                          Standard_Integer&                 theCellsCountU,
+                          Standard_Integer&                 theCellsCountV)
+  {
+    const GeomAbs_SurfaceType aType = theFace->GetType ();
+    if (aType == GeomAbs_OtherSurface)
+    {
+      // fallback to the default behavior
+      theCellsCountU = theCellsCountV = -1;
+      return;
+    }
+
+    Standard_Real aSqNbVert = theNbVertices;
+    if (aType == GeomAbs_Plane)
+    {
+      theCellsCountU = theCellsCountV = (Standard_Integer)Ceiling (Pow (2, Log10 (aSqNbVert)));
+    }
+    else if (aType == GeomAbs_Cylinder || aType == GeomAbs_Cone)
+    {
+      theCellsCountV = (Standard_Integer)Ceiling (Pow (2, Log10 (aSqNbVert)));
+    }
+    else if (aType == GeomAbs_SurfaceOfExtrusion || aType == GeomAbs_SurfaceOfRevolution)
+    {
+      Handle (Adaptor3d_HCurve) aCurve = theFace->BasisCurve ();
+      if (aCurve->GetType () == GeomAbs_Line ||
+          (aCurve->GetType () == GeomAbs_BSplineCurve && aCurve->Degree () < 2))
+      {
+        // planar, cylindrical, conical cases
+        if (aType == GeomAbs_SurfaceOfExtrusion)
+          theCellsCountU = (Standard_Integer)Ceiling (Pow (2, Log10 (aSqNbVert)));
+        else
+          theCellsCountV = (Standard_Integer)Ceiling (Pow (2, Log10 (aSqNbVert)));
+      }
+      if (aType == GeomAbs_SurfaceOfExtrusion)
+      {
+        // V is always a line
+        theCellsCountV = (Standard_Integer)Ceiling (Pow (2, Log10 (aSqNbVert)));
+      }
+    }
+    else if (aType == GeomAbs_BezierSurface || aType == GeomAbs_BSplineSurface)
+    {
+      if (theFace->UDegree () < 2)
+      {
+        theCellsCountU = (Standard_Integer)Ceiling (Pow (2, Log10 (aSqNbVert)));
+      }
+      if (theFace->VDegree () < 2)
+      {
+        theCellsCountV = (Standard_Integer)Ceiling (Pow (2, Log10 (aSqNbVert)));
+      }
+    }
+
+    theCellsCountU = Max (theCellsCountU, 2);
+    theCellsCountV = Max (theCellsCountV, 2);
+  }
 }
 
 
@@ -359,7 +473,56 @@ void BRepMesh_FastDiscretFace::add(const Handle(BRepMesh_FaceAttribute)& theAttr
   for ( Standard_Integer i = 1; i <= nbVertices; ++i )
     tabvert_corr(i) = i;
 
-  BRepMesh_Delaun trigu(myStructure, tabvert_corr);
+  Handle (Adaptor3d_HSurface) aSurface (myAttribute->Surface ());
+  GeomAbs_SurfaceType aType = aSurface->GetType ();
+
+  while (aType == GeomAbs_OffsetSurface)
+  {
+    aSurface = aSurface->BasisSurface ();
+    aType = aSurface->GetType ();
+  }
+
+  // For better meshing performance we try to estimate the acceleration circles grid structure sizes:
+  // For each parametric direction (U, V) we estimate firstly an approximate distance between the future points -
+  // this estimation takes into account the required face deflection and the complexity of the face.
+  // Particularly, the complexity of the faces based on BSpline curves and surfaces requires much more points.
+  // At the same time, for planar faces and linear parts of the arbitrary surfaces usually no intermediate points
+  // are necessary.
+  // The general idea for each parametric direction:
+  // cells_count = 2 ^ log10 ( estimated_points_count )
+  // For linear parametric direction we fall back to the initial vertex count:
+  // cells_count = 2 ^ log10 ( initial_vertex_count )
+
+  Standard_Real anErrFactorU, anErrFactorV;
+  ComputeErrFactors(myAttribute->GetDefFace (), aSurface, anErrFactorU, anErrFactorV);
+
+  Standard_Integer aCellsCountU, aCellsCountV;
+  if (aType == GeomAbs_Torus)
+  {
+    aCellsCountU = (Standard_Integer)Ceiling(Pow(2, Log10(
+      (myAttribute->GetUMax() - myAttribute->GetUMin()) / myAttribute->GetDeltaX())));
+    aCellsCountV = (Standard_Integer)Ceiling(Pow(2, Log10(
+      (myAttribute->GetVMax() - myAttribute->GetVMin()) / myAttribute->GetDeltaY())));
+  }
+  else if (aType == GeomAbs_Cylinder)
+  {
+    aCellsCountU = (Standard_Integer)Ceiling(Pow(2, Log10(
+      (myAttribute->GetUMax() - myAttribute->GetUMin()) / myAttribute->GetDeltaX() /
+      (myAttribute->GetVMax() - myAttribute->GetVMin()))));
+    aCellsCountV = (Standard_Integer)Ceiling(Pow(2, Log10(
+      (myAttribute->GetVMax() - myAttribute->GetVMin()) / anErrFactorV)));
+  }
+  else
+  {
+    aCellsCountU = (Standard_Integer)Ceiling(Pow(2, Log10(
+      (myAttribute->GetUMax() - myAttribute->GetUMin()) / myAttribute->GetDeltaX() / anErrFactorU)));
+    aCellsCountV = (Standard_Integer)Ceiling(Pow(2, Log10(
+      (myAttribute->GetVMax() - myAttribute->GetVMin()) / myAttribute->GetDeltaY() / anErrFactorV)));
+  }
+
+  AdjustCellsCounts(aSurface, nbVertices, aCellsCountU, aCellsCountV);
+
+  BRepMesh_Delaun trigu(myStructure, tabvert_corr, aCellsCountU, aCellsCountV);
 
   //removed all free edges from triangulation
   const Standard_Integer nbLinks = myStructure->NbLinks();
@@ -376,16 +539,13 @@ void BRepMesh_FastDiscretFace::add(const Handle(BRepMesh_FaceAttribute)& theAttr
     }
   }
 
-  const Handle(BRepAdaptor_HSurface)& gFace = myAttribute->Surface();
-  GeomAbs_SurfaceType thetype = gFace->GetType();
-
   Standard_Boolean rajout = 
-    (thetype == GeomAbs_Sphere || thetype == GeomAbs_Torus);
+    (aType == GeomAbs_Sphere || aType == GeomAbs_Torus);
 
   // Check the necessity to fill the map of parameters
-  const Standard_Boolean useUVParam = (thetype == GeomAbs_Torus         ||
-                                       thetype == GeomAbs_BezierSurface ||
-                                       thetype == GeomAbs_BSplineSurface);
+  const Standard_Boolean useUVParam = (aType == GeomAbs_Torus         ||
+                                       aType == GeomAbs_BezierSurface ||
+                                       aType == GeomAbs_BSplineSurface);
 
   const Standard_Real umax = myAttribute->GetUMax();
   const Standard_Real umin = myAttribute->GetUMin();
@@ -405,12 +565,12 @@ void BRepMesh_FastDiscretFace::add(const Handle(BRepMesh_FaceAttribute)& theAttr
       aDef = control(trigu, Standard_True);
       rajout = (aDef > myAttribute->GetDefFace() || aDef < 0.);
     }
-    if (thetype != GeomAbs_Plane)
+    if (aType != GeomAbs_Plane)
     {
       if (!rajout && useUVParam)
       {
         rajout = (myVParam.Extent() > 2 &&
-          (gFace->IsUClosed() || gFace->IsVClosed()));
+          (aSurface->IsUClosed() || aSurface->IsVClosed()));
       }
 
       if (rajout)

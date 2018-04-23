@@ -1,5 +1,3 @@
-puts "TODO CR26889 ALL: Error: the mesh takes too long to be built"
-
 puts "========="
 puts "CR26889"
 puts "========="
@@ -18,16 +16,6 @@ dlog on
 dchrono t restart
 incmesh a_1 0.1 1
 dchrono t stop counter incmesh
-
-set info [dlog get]
-dlog reset
-dlog off
-
-regexp {COUNTER incmesh: +([-0-9.+eE]+)} ${info} full Time
-
-if { ${Time} > 30. } {
-  puts "Error: the mesh takes too long to be built"
-}
 
 checktrinfo a_1 -tri -nod
 

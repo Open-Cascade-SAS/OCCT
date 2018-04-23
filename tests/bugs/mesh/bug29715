@@ -1,0 +1,15 @@
+puts "======="
+puts "0029715: Mesh - Estimate the grid size of the acceleration structure by the complexity of the face"
+puts "======="
+puts ""
+
+if {[info commands stepread] == ""} {pload XSDRAW}
+
+stepread [locate_data_file bug29715_slow.stp] a *
+renamevar a_1 a
+
+chrono h reset start
+incmesh a 0.0027
+chrono h stop show COUNTER Meshing
+
+tricheck a
