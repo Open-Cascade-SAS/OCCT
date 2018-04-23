@@ -1156,6 +1156,10 @@ Standard_Boolean ShapeFix_Face::FixOrientation(TopTools_DataMapOfShapeListOfShap
       for(;ew.More(); ew.Next()) {
         TopoDS_Edge ed = TopoDS::Edge (ew.Value());
         Handle(Geom2d_Curve) cw = BRep_Tool::CurveOnSurface (ed,myFace,cf,cl);
+        if (cw.IsNull ())
+        {
+          continue;
+        }
         Geom2dAdaptor_Curve gac;
         Standard_Real aFirst = cw->FirstParameter();
         Standard_Real aLast = cw->LastParameter();
@@ -1888,6 +1892,7 @@ Standard_Boolean ShapeFix_Face::FixSmallAreaWire(const Standard_Boolean theIsRem
 
   TopoDS_Shape anEmptyCopy = myFace.EmptyCopied();
   TopoDS_Face  aFace = TopoDS::Face(anEmptyCopy);
+  aFace.Orientation (TopAbs_FORWARD);
 
   const Standard_Real aTolerance3d = ShapeFix_Root::Precision();
   for (TopoDS_Iterator aWIt(myFace, Standard_False); aWIt.More(); aWIt.Next())
@@ -1931,8 +1936,9 @@ Standard_Boolean ShapeFix_Face::FixSmallAreaWire(const Standard_Boolean theIsRem
 #ifdef OCCT_DEBUG
   std::cout << "Warning: ShapeFix_Face: " << nbRemoved << " small area wire(s) removed" << std::endl;
 #endif
-  if ( !Context().IsNull() )
-    Context()->Replace(myFace, aFace);
+  aFace.Orientation (myFace.Orientation ());
+  if (!Context ().IsNull ())
+    Context ()->Replace (myFace, aFace);
 
   myFace = aFace;
   return Standard_True;

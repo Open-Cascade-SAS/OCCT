@@ -1,28 +1,13 @@
-puts "REQUIRED All: Faulty shapes in variables faulty_1 to faulty_"
 puts "========"
-puts "OCC25923"
+puts "0025923: Remove small wires on face read from STEP"
 puts "========"
 puts ""
-#############################################
-# Remove small wires on face read from STEP
-#############################################
 
-smallview
 restore [locate_data_file OCC25923_FixSmallWire_Orientation.brep] a
-fit
 
 checkshape a
 
-fixshape r1 a +s +o 1e-3
+fixshape r a +s +o 1e-3
 
-fixshape r2 r1 +o
-
-if {[regexp {This shape seems to be valid} [checkshape r1] ]} {
-  puts "ERRROR: OCC25923 is reproduced. Algorythm of removing small wires on face does not work."
-}
-
-if {![regexp {This shape seems to be valid} [checkshape r2] ]} {
-  puts "ERRROR: OCC25923 is reproduced. Algorythm of removing small wires on face does not work."
-}
-
-checkview -screenshot -2d -path ${imagedir}/${test_image}.png
+checkshape r
+checknbshapes r -face 1 -wire 2 -edge 32 -vertex 32
