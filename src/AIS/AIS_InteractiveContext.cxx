@@ -2492,6 +2492,33 @@ void AIS_InteractiveContext::ClearGlobalPrs (const Handle(AIS_InteractiveObject)
 }
 
 //=======================================================================
+//function : ClearDetected
+//purpose  :
+//=======================================================================
+Standard_Boolean AIS_InteractiveContext::ClearDetected (Standard_Boolean theToRedrawImmediate)
+{
+  myCurDetected = 0;
+  myCurHighlighted = 0;
+  myDetectedSeq.Clear();
+  myLastPicked  = myLastinMain;
+  myWasLastMain = Standard_True;
+  Standard_Boolean toUpdate = Standard_False;
+  if (!myLastPicked.IsNull() && myLastPicked->HasSelectable())
+  {
+    toUpdate = Standard_True;
+    clearDynamicHighlight();
+  }
+  myLastinMain.Nullify();
+  myLastPicked.Nullify();
+  myMainSel->ClearPicked();
+  if (toUpdate && theToRedrawImmediate)
+  {
+    myMainVwr->RedrawImmediate();
+  }
+  return toUpdate;
+}
+
+//=======================================================================
 //function : DrawHiddenLine
 //purpose  :
 //=======================================================================

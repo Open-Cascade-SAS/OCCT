@@ -112,6 +112,9 @@ public:
   //! Returns the number of detected owners.
   Standard_Integer NbPicked() const { return mystored.Extent(); }
 
+  //! Clears picking results.
+  Standard_EXPORT void ClearPicked();
+
   //! Returns the entity Owner for the object picked at specified position.
   //! @param theRank rank of detected object within range 1...NbPicked()
   Standard_EXPORT Handle(SelectMgr_EntityOwner) Picked (const Standard_Integer theRank) const;

@@ -347,6 +347,11 @@ public: //! @name mouse picking logic (detection and dynamic highlighting of ent
                                                 const Handle(V3d_View)& theView,
                                                 const Standard_Boolean  theToRedrawOnUpdate);
 
+  //! Clears the list of entities detected by MoveTo() and resets dynamic highlighting.
+  //! @param theToRedrawImmediate if TRUE, the main Viewer will be redrawn on update
+  //! @return TRUE if viewer needs to be updated (e.g. there were actually dynamically highlighted entities)
+  Standard_EXPORT Standard_Boolean ClearDetected (Standard_Boolean theToRedrawImmediate = Standard_False);
+
   //! Returns true if there is a mouse-detected entity in context.
   //! @sa DetectedOwner()/HasNextDetected()/HilightPreviousDetected()/HilightNextDetected().
   Standard_EXPORT Standard_Boolean HasDetected() const;

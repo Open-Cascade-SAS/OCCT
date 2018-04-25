@@ -26,6 +26,7 @@
 #include <AIS_InteractiveObject.hxx>
 #include <AIS_ListOfInteractive.hxx>
 #include <AIS_ListIteratorOfListOfInteractive.hxx>
+#include <Aspect_Grid.hxx>
 #include <DBRep.hxx>
 #include <Draw_ProgressIndicator.hxx>
 #include <Graphic3d_ArrayOfPolylines.hxx>
@@ -6667,23 +6668,69 @@ static Standard_Integer VSelect (Draw_Interpretor& di,
 //function : VMoveTo
 //purpose  : Emulates cursor movement to defined pixel position
 //=======================================================================
-static Standard_Integer VMoveTo (Draw_Interpretor& di,
-                                Standard_Integer argc,
-                                const char ** argv)
+static Standard_Integer VMoveTo (Draw_Interpretor& ,
+                                Standard_Integer theNbArgs,
+                                const char**     theArgVec)
 {
-  if(argc != 3)
+  const Handle(AIS_InteractiveContext)& aContext = ViewerTest::GetAISContext();
+  const Handle(V3d_View)&               aView    = ViewerTest::CurrentView();
+  if (aContext.IsNull())
   {
-    di << "Usage : " << argv[0] << " x y\n";
+    std::cout << "Error: no active View\n";
     return 1;
   }
 
-  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
-  if(aContext.IsNull())
+  Graphic3d_Vec2i aMousePos (IntegerLast(), IntegerLast());
+  for (Standard_Integer anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
   {
-    di << "use 'vinit' command before " << argv[0] << "\n";
+    TCollection_AsciiString anArgStr (theArgVec[anArgIter]);
+    anArgStr.LowerCase();
+    if (anArgStr == "-reset"
+     || anArgStr == "-clear")
+    {
+      if (anArgIter + 1 < theNbArgs)
+      {
+        std::cout << "Syntax error at '" << theArgVec[anArgIter + 1] << "'\n";
+        return 1;
+      }
+
+      const Standard_Boolean toEchoGrid = aContext->CurrentViewer()->Grid()->IsActive()
+                                       && aContext->CurrentViewer()->GridEcho();
+      if (toEchoGrid)
+      {
+        aContext->CurrentViewer()->HideGridEcho (aView);
+      }
+      if (aContext->ClearDetected() || toEchoGrid)
+      {
+        aContext->CurrentViewer()->RedrawImmediate();
+      }
+      return 0;
+    }
+    else if (aMousePos.x() == IntegerLast()
+          && anArgStr.IsIntegerValue())
+    {
+      aMousePos.x() = anArgStr.IntegerValue();
+    }
+    else if (aMousePos.y() == IntegerLast()
+          && anArgStr.IsIntegerValue())
+    {
+      aMousePos.y() = anArgStr.IntegerValue();
+    }
+    else
+    {
+      std::cout << "Syntax error at '" << theArgVec[anArgIter] << "'\n";
+      return 1;
+    }
+  }
+
+  if (aMousePos.x() == IntegerLast()
+   || aMousePos.y() == IntegerLast())
+  {
+    std::cout << "Syntax error: wrong number of arguments\n";
     return 1;
   }
-  ViewerTest::CurrentEventManager()->MoveTo(atoi(argv[1]),atoi(argv[2]));
+
+  ViewerTest::CurrentEventManager()->MoveTo (aMousePos.x(), aMousePos.y());
   return 0;
 }
 
@@ -12161,8 +12208,9 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "- 5) any of these selections with shift button pressed",
     __FILE__, VSelect, group);
   theCommands.Add ("vmoveto",
-    "vmoveto x y"
-    "- emulates cursor movement to pixel postion (x,y)",
+    "vmoveto [x y] [-reset]"
+    "\n\t\t: Emulates cursor movement to pixel position (x,y)."
+    "\n\t\t:   -reset resets current highlighting",
     __FILE__, VMoveTo, group);
   theCommands.Add ("vviewparams",
               "vviewparams [-args] [-scale [s]]"

@@ -624,6 +624,15 @@ void SelectMgr_ViewerSelector::TraverseSensitives()
 }
 
 //==================================================
+// Function: ClearPicked
+// Purpose :
+//==================================================
+void SelectMgr_ViewerSelector::ClearPicked()
+{
+  mystored.Clear();
+}
+
+//==================================================
 // Function: Picked
 // Purpose :
 //==================================================
