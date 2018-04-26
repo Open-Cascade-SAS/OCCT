@@ -130,7 +130,7 @@ void BOPAlgo_RemoveFeatures::Perform()
   {
     OCC_CATCH_SIGNALS
 
-    if (myTrackHistory)
+    if (HasHistory())
       myHistory = new BRepTools_History();
 
     // Check the input data
@@ -225,7 +225,7 @@ void BOPAlgo_RemoveFeatures::CheckData()
 
       myShape = aCS;
 
-      if (myTrackHistory)
+      if (HasHistory())
       {
         // Make non solid shapes removed in the history
         MakeRemoved(anOtherShapes, *myHistory.get());
@@ -494,7 +494,7 @@ private: //! @name Private methods performing the operation
 
       anIntResult = aGFInter.Shape();
 
-      myHistory->Merge<BOPAlgo_Builder>(aGFInter.Arguments(), aGFInter);
+      myHistory->Merge(aGFInter.History());
     }
     else
       anIntResult = aGFInter.Arguments().First();
@@ -679,7 +679,7 @@ private: //! @name Private methods performing the operation
     }
 
     // Update history after intersection of the extended face with bounds
-    myHistory->Merge<BOPAlgo_Builder>(aGFTrim.Arguments(), aGFTrim);
+    myHistory->Merge(aGFTrim.History());
 
     // Update history with all removed shapes
     BRepTools_History aHistRem;
@@ -782,7 +782,7 @@ void BOPAlgo_RemoveFeatures::RemoveFeatures()
 
     // No need to fill the history for solids if the history is not
     // requested and the current feature is the last one.
-    Standard_Boolean isSolidsHistoryNeeded = myTrackHistory || (i < (aNbF - 1));
+    Standard_Boolean isSolidsHistoryNeeded = HasHistory() || (i < (aNbF - 1));
 
     // Perform removal of the single feature
     RemoveFeature(aFG.Feature(), aFG.Solids(), aFG.FeatureFacesMap(),
@@ -895,7 +895,7 @@ void BOPAlgo_RemoveFeatures::RemoveFeature
       aFacesToBeKept.Add(anAdjF);
     }
 
-    if (myTrackHistory)
+    if (HasHistory())
     {
       // Look for internal edges in the original adjacent faces
       const TopoDS_Shape& aFOr = theAdjFaces.FindKey(i);
@@ -990,9 +990,9 @@ void BOPAlgo_RemoveFeatures::RemoveFeature
   // History of adjacent faces reconstruction
   myHistory->Merge(theAdjFacesHistory);
   // History of intersection
-  myHistory->Merge<BOPAlgo_MakerVolume>(aMV.Arguments(), aMV);
+  myHistory->Merge(aMV.History());
 
-  if (myTrackHistory)
+  if (HasHistory())
   {
     // Map the result to check if the shape is removed
     TopTools_IndexedMapOfShape aMSRes;
@@ -1037,11 +1037,12 @@ void BOPAlgo_RemoveFeatures::RemoveFeature
 //=======================================================================
 void BOPAlgo_RemoveFeatures::UpdateHistory()
 {
-  if (!myTrackHistory)
+  if (!HasHistory())
     return;
 
   // Map the result
-  TopExp::MapShapes(myShape, myResultMap);
+  myMapShape.Clear();
+  TopExp::MapShapes(myShape, myMapShape);
 
   // Update the history
   BRepTools_History aHistory;
@@ -1060,14 +1061,14 @@ void BOPAlgo_RemoveFeatures::UpdateHistory()
     const TopTools_ListOfShape& aLSIm = myHistory->Modified(aS);
     if (aLSIm.IsEmpty())
     {
-      if (!myResultMap.Contains(aS))
+      if (!myMapShape.Contains(aS))
         aHistory.Remove(aS);
     }
 
     TopTools_ListIteratorOfListOfShape itLSIm(aLSIm);
     for (; itLSIm.More(); itLSIm.Next())
     {
-      if (!myResultMap.Contains(itLSIm.Value()))
+      if (!myMapShape.Contains(itLSIm.Value()))
         aHistory.Remove(itLSIm.Value());
     }
   }
@@ -1089,20 +1090,20 @@ void BOPAlgo_RemoveFeatures::SimplifyResult()
   // Do not allow producing internal edges
   aSDTool.AllowInternalEdges(Standard_False);
   // Avoid removal of the input edges and vertices
-  if (myResultMap.IsEmpty())
-    TopExp::MapShapes(myShape, myResultMap);
+  if (myMapShape.IsEmpty())
+    TopExp::MapShapes(myShape, myMapShape);
 
   const Standard_Integer aNbS = myInputsMap.Extent();
   for (Standard_Integer i = 1; i <= aNbS; ++i)
   {
-    if (myResultMap.Contains(myInputsMap(i)))
+    if (myMapShape.Contains(myInputsMap(i)))
       aSDTool.KeepShape(myInputsMap(i));
   }
 
   // Perform unification
   aSDTool.Build();
   myShape = aSDTool.Shape();
-  if (myTrackHistory)
+  if (HasHistory())
     myHistory->Merge(aSDTool.History());
 }
 

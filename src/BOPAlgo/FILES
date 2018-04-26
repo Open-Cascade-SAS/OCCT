@@ -17,7 +17,6 @@ BOPAlgo_BuilderArea.cxx
 BOPAlgo_BuilderArea.hxx
 BOPAlgo_BuilderFace.cxx
 BOPAlgo_BuilderFace.hxx
-BOPAlgo_BuilderShape.cxx
 BOPAlgo_BuilderShape.hxx
 BOPAlgo_BuilderSolid.cxx
 BOPAlgo_BuilderSolid.hxx

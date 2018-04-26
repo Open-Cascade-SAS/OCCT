@@ -19,7 +19,7 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <BOPAlgo_Options.hxx>
+#include <BOPAlgo_BuilderShape.hxx>
 #include <BRepTools_History.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
@@ -79,7 +79,7 @@
 //! available through the methods of the history tool *BRepTools_History*,
 //! which can be accessed here through the method *History()*.
 //! By default, the history is collected, but it is possible to disable it
-//! using the method *TrackHistory(false)*;
+//! using the method *SetToFillHistory(false)*;
 //!
 //! <b>Error/Warning reporting system</b> - allows obtaining the extended overview
 //! of the Errors/Warnings occurred during the operation. As soon as any error
@@ -124,7 +124,7 @@
 //! aRF.SetShape(aSolid);                   // Set the shape
 //! aRF.AddFacesToRemove(aFaces);           // Add faces to remove
 //! aRF.SetRunParallel(bRunParallel);       // Define the processing mode (parallel or single)
-//! aRF.TrackHistory(isHistoryNeeded);      // Define whether to track the shapes modifications
+//! aRF.SetToFillHistory(isHistoryNeeded);  // Define whether to track the shapes modifications
 //! aRF.Perform();                          // Perform the operation
 //! if (aRF.HasErrors())                    // Check for the errors
 //! {
@@ -144,7 +144,7 @@
 //! When all possible features are removed, the shape is simplified by
 //! removing extra edges and vertices, created during operation, from the result shape.
 //!
-class BOPAlgo_RemoveFeatures: public BOPAlgo_Options
+class BOPAlgo_RemoveFeatures: public BOPAlgo_BuilderShape
 {
 public:
   DEFINE_STANDARD_ALLOC
@@ -154,10 +154,8 @@ public: //! @name Constructors
   //! Empty constructor
   BOPAlgo_RemoveFeatures()
   :
-    BOPAlgo_Options(),
-    myTrackHistory(Standard_True)
-  {
-  }
+    BOPAlgo_BuilderShape()
+  {}
 
 
 public: //! @name Setting input data for the algorithm
@@ -203,47 +201,21 @@ public: //! @name Setting input data for the algorithm
 public: //! @name Performing the operation
 
   //! Performs the operation
-  Standard_EXPORT void Perform();
+  Standard_EXPORT virtual void Perform() Standard_OVERRIDE;
 
 
 public: //! @name Clearing the contents of the algorithm
 
   //! Clears the contents of the algorithm from previous run,
   //! allowing reusing it for following removals.
-  void Clear()
+  virtual void Clear() Standard_OVERRIDE
   {
-    BOPAlgo_Options::Clear();
-    myHistory.Nullify();
+    BOPAlgo_BuilderShape::Clear();
     myInputShape.Nullify();
     myShape.Nullify();
     myFacesToRemove.Clear();
     myFeatures.Clear();
     myInputsMap.Clear();
-    myResultMap.Clear();
-  }
-
-
-public: //! @name History support
-
-  //! Defines whether to track the modification of the shapes or not
-  void TrackHistory(const Standard_Boolean theFlag)
-  {
-    myTrackHistory = theFlag;
-  }
-
-  //! Gets the History object
-  Handle(BRepTools_History) History()
-  {
-    return (myTrackHistory ? myHistory : NULL);
-  }
-
-
-public: //! @name Obtaining the results
-
-  //! Returns the resulting shape
-  const TopoDS_Shape& Shape() const
-  {
-    return myShape;
   }
 
 
@@ -254,7 +226,7 @@ protected: //! @name Protected methods performing the removal
   //! If the input shape is not a solid, the method looks for the solids
   //! in <myInputShape> and uses only them. All other shapes are simply removed.
   //! If no solids were found, the Error of unsupported type is returned.
-  Standard_EXPORT void CheckData();
+  Standard_EXPORT virtual void CheckData() Standard_OVERRIDE;
 
   //! Prepares the faces to remove:
   //! - Gets only faces contained in the input solids;
@@ -298,18 +270,11 @@ protected: //! @name Fields
   // Inputs
   TopoDS_Shape myInputShape;              //!< Input shape
   TopTools_ListOfShape myFacesToRemove;   //!< Faces to remove
-  Standard_Boolean myTrackHistory;        //!< Defines whether to track the history of shapes
-                                          //! modifications or not (true by default)
 
   // Intermediate
   TopTools_ListOfShape myFeatures;        //!< List of not connected features to remove
                                           //! (each feature is a compound of faces)
   TopTools_IndexedMapOfShape myInputsMap; //!< Map of all sub-shapes of the input shape
-  TopTools_MapOfShape myResultMap;        //!< Map of all sub-shapes of the result shape
-
-  // Results
-  TopoDS_Shape myShape;                   //!< Result shape
-  Handle(BRepTools_History) myHistory;    //!< History tool
 };
 
 #endif // _BOPAlgo_RemoveFeatures_HeaderFile

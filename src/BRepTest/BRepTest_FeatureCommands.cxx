@@ -2238,9 +2238,12 @@ static Standard_Integer BOSS(Draw_Interpretor& theCommands,
     dout.Flush();
 
     // Save history for fillet
-    TopTools_ListOfShape anArg;
-    anArg.Append(V);
-    BRepTest_Objects::SetHistory(anArg, *Rakk);
+    if (BRepTest_Objects::IsHistoryNeeded())
+    {
+      TopTools_ListOfShape anArg;
+      anArg.Append(V);
+      BRepTest_Objects::SetHistory(anArg, *Rakk);
+    }
 
     return 0;
   }

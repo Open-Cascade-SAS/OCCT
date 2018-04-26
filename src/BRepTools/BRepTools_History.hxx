@@ -35,8 +35,13 @@ DEFINE_STANDARD_HANDLE(BRepTools_History, Standard_Transient)
 //!
 //! The last relation means that:
 //! 1) shape Si is not an output shape and
-//! 2) no any shape is generated or modified (produced) from shape Si:
-//! R(Si) == 1 ==> Si != Tj, G(Si) == 0, M(Si) == 0.
+//! 2) no any shape is modified (produced) from shape Si:
+//! R(Si) == 1 ==> Si != Tj, M(Si) == 0.
+//!
+//! It means that the input shape cannot be removed and modified
+//! simultaneously. However, the shapes may be generated from the
+//! removed shape. For instance, in Fillet operation the edges
+//! generate faces and then are removed.
 //!
 //! No any shape could be generated and modified from the same shape
 //! simultaneously: sets G(Si) and M(Si) are not intersected
@@ -56,7 +61,7 @@ DEFINE_STANDARD_HANDLE(BRepTools_History, Standard_Transient)
 //! 3) a shape is generated from input shapes of the same dimension if it is
 //!   produced by joining shapes generated from these shapes;
 //! 4) a shape is modified from an input shape if it replaces the input shape by
-//!   changes of the location, the tolerance, the bounds of the parametrical
+//!   changes of the location, the tolerance, the bounds of the parametric
 //!   space (the faces for a solid), the parametrization and/or by applying of
 //!   an approximation;
 //! 5) a shape is modified from input shapes of the same dimension if it is
@@ -111,10 +116,7 @@ public: //! @name Constructors for History creation
         continue;
 
       if (theAlgo.IsDeleted(aS))
-      {
         Remove(aS);
-        continue;
-      }
 
       // Check Modified
       const TopTools_ListOfShape& aModified = theAlgo.Modified(aS);
@@ -190,6 +192,15 @@ public: //! Methods to read the history.
   //! Returns 'true' if the shape is removed.
   Standard_EXPORT
   Standard_Boolean IsRemoved(const TopoDS_Shape& theInitial) const;
+
+  //! Returns 'true' if there any shapes with Generated elements present
+  Standard_Boolean HasGenerated() const { return !myShapeToGenerated.IsEmpty(); }
+
+  //! Returns 'true' if there any Modified shapes present
+  Standard_Boolean HasModified() const { return !myShapeToModified.IsEmpty(); }
+
+  //! Returns 'true' if there any removed shapes present
+  Standard_Boolean HasRemoved() const { return !myRemoved.IsEmpty(); }
 
 public: //! A method to merge a next history to this history.
 

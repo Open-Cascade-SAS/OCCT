@@ -242,10 +242,6 @@ class BOPAlgo_CellsBuilder : public BOPAlgo_Builder
   //! local modification map of unified elements - myMapModified.
   Standard_EXPORT virtual const TopTools_ListOfShape* LocModified(const TopoDS_Shape& theS) Standard_OVERRIDE;
 
-  //! Redefined method Prepare - no need to prepare history
-  //! information on the default result as it is empty compound.
-  Standard_EXPORT virtual void Prepare() Standard_OVERRIDE;
-
   //! Redefined method PerformInternal1 - makes all split parts,
   //! nullifies the result <myShape>, and index all parts.
   Standard_EXPORT virtual void PerformInternal1 (const BOPAlgo_PaveFiller& thePF) Standard_OVERRIDE;

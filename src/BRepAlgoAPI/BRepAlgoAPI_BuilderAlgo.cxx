@@ -13,41 +13,44 @@
 // commercial license or contractual agreement.
 
 
+#include <BRepAlgoAPI_BuilderAlgo.hxx>
+
 #include <BOPAlgo_Builder.hxx>
 #include <BOPAlgo_PaveFiller.hxx>
-#include <BRepAlgoAPI_BuilderAlgo.hxx>
+#include <BOPDS_DS.hxx>
+#include <ShapeUpgrade_UnifySameDomain.hxx>
 #include <TopoDS_Shape.hxx>
 
 //=======================================================================
-// function: 
+// function: BRepAlgoAPI_BuilderAlgo
 // purpose: 
 //=======================================================================
 BRepAlgoAPI_BuilderAlgo::BRepAlgoAPI_BuilderAlgo()
 :
   BRepAlgoAPI_Algo(),
-  myEntryType(1),
-  myDSFiller(NULL),
-  myBuilder(NULL),
   myNonDestructive(Standard_False),
   myGlue(BOPAlgo_GlueOff),
-  myCheckInverted(Standard_True)
+  myCheckInverted(Standard_True),
+  myFillHistory(Standard_True),
+  myIsIntersectionNeeded(Standard_True),
+  myDSFiller(NULL),
+  myBuilder(NULL)
 {}
 //=======================================================================
-// function: 
+// function: BRepAlgoAPI_BuilderAlgo
 // purpose: 
 //=======================================================================
-BRepAlgoAPI_BuilderAlgo::BRepAlgoAPI_BuilderAlgo
-  (const BOPAlgo_PaveFiller& aPF)
+BRepAlgoAPI_BuilderAlgo::BRepAlgoAPI_BuilderAlgo(const BOPAlgo_PaveFiller& aPF)
 :
   BRepAlgoAPI_Algo(),
-  myEntryType(0),
-  myBuilder(NULL),
   myNonDestructive(Standard_False),
   myGlue(BOPAlgo_GlueOff),
-  myCheckInverted(Standard_True)
+  myCheckInverted(Standard_True),
+  myFillHistory(Standard_True),
+  myIsIntersectionNeeded(Standard_False),
+  myBuilder(NULL)
 {
-  BOPAlgo_PaveFiller* pPF=(BOPAlgo_PaveFiller*)&aPF;
-  myDSFiller=pPF;
+  myDSFiller = (BOPAlgo_PaveFiller*)&aPF;
 }
 //=======================================================================
 // function: ~
@@ -58,69 +61,27 @@ BRepAlgoAPI_BuilderAlgo::~BRepAlgoAPI_BuilderAlgo()
   Clear();
 }
 //=======================================================================
-//function : SetNonDestructive
-//purpose  : 
-//=======================================================================
-void BRepAlgoAPI_BuilderAlgo::SetNonDestructive(const Standard_Boolean theFlag)
-{
-  myNonDestructive = theFlag;
-}
-//=======================================================================
-//function : NonDestructive
-//purpose  : 
-//=======================================================================
-Standard_Boolean BRepAlgoAPI_BuilderAlgo::NonDestructive() const
-{
-  return myNonDestructive;
-}
-//=======================================================================
-//function : SetGlue
-//purpose  : 
-//=======================================================================
-void BRepAlgoAPI_BuilderAlgo::SetGlue(const BOPAlgo_GlueEnum theGlue)
-{
-  myGlue=theGlue;
-}
-//=======================================================================
-//function : Glue
-//purpose  : 
-//=======================================================================
-BOPAlgo_GlueEnum BRepAlgoAPI_BuilderAlgo::Glue() const 
-{
-  return myGlue;
-}
-//=======================================================================
 //function : Clear
 //purpose  : 
 //=======================================================================
 void BRepAlgoAPI_BuilderAlgo::Clear()
 {
   BRepAlgoAPI_Algo::Clear();
-  if (myDSFiller && myEntryType) {
+  if (myDSFiller && myIsIntersectionNeeded)
+  {
     delete myDSFiller;
-    myDSFiller=NULL;
+    myDSFiller = NULL;
   }
-  if (myBuilder) {
+  if (myBuilder)
+  {
     delete myBuilder;
     myBuilder=NULL;
   }
-}
-//=======================================================================
-//function : SetArguments
-//purpose  : 
-//=======================================================================
-void BRepAlgoAPI_BuilderAlgo::SetArguments
-  (const TopTools_ListOfShape& theLS)
-{
-  myArguments=theLS;
-}
-//=======================================================================
-//function : Arguments
-//purpose  : 
-//=======================================================================
-const TopTools_ListOfShape& BRepAlgoAPI_BuilderAlgo::Arguments()const
-{
-  return myArguments;
+  if (myHistory)
+    myHistory.Nullify();
+
+  if (mySimplifierHistory)
+    mySimplifierHistory.Nullify();
 }
 //=======================================================================
 //function : Build
@@ -128,93 +89,143 @@ const TopTools_ListOfShape& BRepAlgoAPI_BuilderAlgo::Arguments()const
 //=======================================================================
 void BRepAlgoAPI_BuilderAlgo::Build()
 {
+  // Setting not done status
   NotDone();
-  //
+  // Destroy the tools if necessary
   Clear();
-  //
-  if (myEntryType) {
-    if (myDSFiller) {
-      delete myDSFiller;
-    }
-    myDSFiller=new BOPAlgo_PaveFiller(myAllocator);
-    //
-    myDSFiller->SetArguments(myArguments);
-    //
-    myDSFiller->SetRunParallel(myRunParallel);
-    myDSFiller->SetProgressIndicator(myProgressIndicator);
-    myDSFiller->SetFuzzyValue(myFuzzyValue);
-    myDSFiller->SetNonDestructive(myNonDestructive);
-    myDSFiller->SetGlue(myGlue);
-    myDSFiller->SetUseOBB(myUseOBB);
-    //
-    myDSFiller->Perform();
-    //
-    GetReport()->Merge (myDSFiller->GetReport());
-    if (HasErrors())
-    {
-      return;
-    }
-  }// if (myEntryType) {
-  // 
-  if (myBuilder) {
-    delete myBuilder;
-    myBuilder = NULL;
-  }
-  myBuilder=new BOPAlgo_Builder(myAllocator);
-  //
+  // If necessary perform intersection of the argument shapes
+  IntersectShapes(myArguments);
+  if (HasErrors())
+    return;
+
+  // Initialization of the Building tool
+  myBuilder = new BOPAlgo_Builder(myAllocator);
+  // Set arguments to builder
   myBuilder->SetArguments(myArguments);
-  //
+
+  // Build the result basing on intersection results
+  BuildResult();
+}
+
+//=======================================================================
+//function : IntersectShapes
+//purpose  : Intersects the given shapes with the intersection tool
+//=======================================================================
+void BRepAlgoAPI_BuilderAlgo::IntersectShapes(const TopTools_ListOfShape& theArgs)
+{
+  if (!myIsIntersectionNeeded)
+    return;
+
+  if (myDSFiller)
+    delete myDSFiller;
+
+  // Create new Filler
+  myDSFiller = new BOPAlgo_PaveFiller(myAllocator);
+  // Set arguments for intersection
+  myDSFiller->SetArguments(theArgs);
+  // Set options for intersection
+  myDSFiller->SetRunParallel(myRunParallel);
+  myDSFiller->SetProgressIndicator(myProgressIndicator);
+  myDSFiller->SetFuzzyValue(myFuzzyValue);
+  myDSFiller->SetNonDestructive(myNonDestructive);
+  myDSFiller->SetGlue(myGlue);
+  myDSFiller->SetUseOBB(myUseOBB);
+  // Set Face/Face intersection options to the intersection algorithm
+  SetAttributes();
+  // Perform intersection
+  myDSFiller->Perform();
+  // Check for the errors during intersection
+  GetReport()->Merge(myDSFiller->GetReport());
+}
+//=======================================================================
+//function : BuildResult
+//purpose  : Builds the result shape
+//=======================================================================
+void BRepAlgoAPI_BuilderAlgo::BuildResult()
+{
+  // Set options to the builder
   myBuilder->SetRunParallel(myRunParallel);
   myBuilder->SetProgressIndicator(myProgressIndicator);
   myBuilder->SetCheckInverted(myCheckInverted);
-  //
+  myBuilder->SetToFillHistory(myFillHistory);
+  // Perform building of the result with pre-calculated intersections
   myBuilder->PerformWithFiller(*myDSFiller);
-  //
-  GetReport()->Merge (myBuilder->GetReport());
-  //
+  // Merge the warnings of the Building part
+  GetReport()->Merge(myBuilder->GetReport());
+  // Check for the errors
+  if (myBuilder->HasErrors())
+    return;
+  // Set done status
   Done();
-  myShape=myBuilder->Shape();
+  // Get the result shape
+  myShape = myBuilder->Shape();
+  // Fill history
+  if (myFillHistory)
+  {
+    myHistory = new BRepTools_History;
+    myHistory->Merge(myBuilder->History());
+  }
 }
 //=======================================================================
-//function : Generated
+//function : SimplifyResult
 //purpose  : 
 //=======================================================================
-const TopTools_ListOfShape& BRepAlgoAPI_BuilderAlgo::Generated
-  (const TopoDS_Shape& aS) 
+void BRepAlgoAPI_BuilderAlgo::SimplifyResult(const Standard_Boolean theUnifyEdges,
+                                             const Standard_Boolean theUnifyFaces,
+                                             const Standard_Real    theAngularTol)
 {
-  if (myBuilder==NULL) {
-    myGenerated.Clear();
-    return myGenerated;
-  }
-  myGenerated = myBuilder->Generated(aS);
-  return myGenerated;
+  if (HasErrors())
+    return;
+
+  if (!theUnifyEdges && !theUnifyFaces)
+    return;
+
+  // Simplification tool
+  ShapeUpgrade_UnifySameDomain anUnifier(myShape, theUnifyEdges, theUnifyFaces, Standard_True);
+  // Pass options
+  anUnifier.SetLinearTolerance(myFuzzyValue);
+  anUnifier.SetAngularTolerance(theAngularTol);
+  anUnifier.SetSafeInputMode(myNonDestructive);
+  anUnifier.AllowInternalEdges(Standard_False);
+  // Perform simplification
+  anUnifier.Build();
+  // Overwrite result with simplified shape
+  myShape = anUnifier.Shape();
+  // Keep simplification history
+  mySimplifierHistory = anUnifier.History();
+  if (myFillHistory)
+    // Merge simplification history into result history
+    myHistory->Merge(mySimplifierHistory);
 }
 //=======================================================================
 //function : Modified
 //purpose  : 
 //=======================================================================
-const TopTools_ListOfShape& BRepAlgoAPI_BuilderAlgo::Modified
-  (const TopoDS_Shape& aS) 
+const TopTools_ListOfShape& BRepAlgoAPI_BuilderAlgo::Modified(const TopoDS_Shape& theS)
 {
-  if (myBuilder==NULL) {
-    myGenerated.Clear();
-    return myGenerated;
-  }
-  myGenerated = myBuilder->Modified(aS);
+  if (myFillHistory && myHistory)
+    return myHistory->Modified(theS);
+  myGenerated.Clear();
+  return myGenerated;
+}
+//=======================================================================
+//function : Generated
+//purpose  : 
+//=======================================================================
+const TopTools_ListOfShape& BRepAlgoAPI_BuilderAlgo::Generated(const TopoDS_Shape& theS)
+{
+  if (myFillHistory && myHistory)
+    return myHistory->Generated(theS);
+  myGenerated.Clear();
   return myGenerated;
 }
 //=======================================================================
 //function : IsDeleted
 //purpose  : 
 //=======================================================================
-Standard_Boolean BRepAlgoAPI_BuilderAlgo::IsDeleted
-  (const TopoDS_Shape& aS) 
+Standard_Boolean BRepAlgoAPI_BuilderAlgo::IsDeleted(const TopoDS_Shape& theS)
 {
-  Standard_Boolean bDeleted = Standard_True; 
-  if (myBuilder != NULL) {
-    bDeleted=myBuilder->IsDeleted(aS);
-  }
-  return bDeleted; 
+  return (myFillHistory && myHistory ? myHistory->IsRemoved(theS) : Standard_False);
 }
 //=======================================================================
 //function : HasModified
@@ -222,10 +233,7 @@ Standard_Boolean BRepAlgoAPI_BuilderAlgo::IsDeleted
 //=======================================================================
 Standard_Boolean BRepAlgoAPI_BuilderAlgo::HasModified() const
 {
-  if (myBuilder==NULL) {
-    return Standard_False;
-  }
-  return myBuilder->HasModified();
+  return (myFillHistory && myHistory ? myHistory->HasModified() : Standard_False);
 }
 //=======================================================================
 //function : HasGenerated
@@ -233,10 +241,7 @@ Standard_Boolean BRepAlgoAPI_BuilderAlgo::HasModified() const
 //=======================================================================
 Standard_Boolean BRepAlgoAPI_BuilderAlgo::HasGenerated() const
 {
-  if (myBuilder==NULL) {
-    return Standard_False;
-  }
-  return myBuilder->HasGenerated();
+  return (myFillHistory && myHistory ? myHistory->HasGenerated() : Standard_False);
 }
 //=======================================================================
 //function : HasDeleted
@@ -244,8 +249,66 @@ Standard_Boolean BRepAlgoAPI_BuilderAlgo::HasGenerated() const
 //=======================================================================
 Standard_Boolean BRepAlgoAPI_BuilderAlgo::HasDeleted() const
 {
-  if (myBuilder==NULL) {
-    return Standard_False;
+  return (myFillHistory && myHistory ? myHistory->HasRemoved() : Standard_False);
+}
+//=======================================================================
+//function : SectionEdges
+//purpose  : 
+//=======================================================================
+const TopTools_ListOfShape& BRepAlgoAPI_BuilderAlgo::SectionEdges()
+{
+  myGenerated.Clear();
+  if (myBuilder == NULL)
+    return myGenerated;
+
+  // Fence map to avoid duplicated section edges in the result list
+  TopTools_MapOfShape aMFence;
+  // Intersection results
+  const BOPDS_PDS& pDS = myDSFiller->PDS();
+  // Iterate on all Face/Face interferences and take section edges
+  BOPDS_VectorOfInterfFF& aFFs = pDS->InterfFF();
+  const Standard_Integer aNbFF = aFFs.Length();
+  for (Standard_Integer i = 0; i < aNbFF; ++i)
+  {
+    BOPDS_InterfFF& aFFi = aFFs(i);
+    // Section curves between pair of faces
+    const BOPDS_VectorOfCurve& aSectionCurves = aFFi.Curves();
+    const Standard_Integer aNbC = aSectionCurves.Length();
+    for (Standard_Integer j = 0; j < aNbC; ++j)
+    {
+      const BOPDS_Curve& aCurve = aSectionCurves(j);
+      // Section edges created from the curve
+      const BOPDS_ListOfPaveBlock& aSectionEdges = aCurve.PaveBlocks();
+      BOPDS_ListIteratorOfListOfPaveBlock aItPB(aSectionEdges);
+      for (; aItPB.More(); aItPB.Next())
+      {
+        const Handle(BOPDS_PaveBlock)& aPB = aItPB.Value();
+        const TopoDS_Shape& aSE = pDS->Shape(aPB->Edge());
+        if (!aMFence.Add(aSE))
+          continue;
+        // Take into account simplification of the result shape
+        if (mySimplifierHistory)
+        {
+          if (mySimplifierHistory->IsRemoved(aSE))
+            continue;
+
+          const TopTools_ListOfShape& aLSEIm = mySimplifierHistory->Modified(aSE);
+          if (!aLSEIm.IsEmpty())
+          {
+            TopTools_ListIteratorOfListOfShape aItLEIm(aLSEIm);
+            for (; aItLEIm.More(); aItLEIm.Next())
+            {
+              if (aMFence.Add(aItLEIm.Value()))
+                myGenerated.Append(aItLEIm.Value());
+            }
+          }
+          else
+            myGenerated.Append(aSE);
+        }
+        else
+          myGenerated.Append(aSE);
+      }
+    }
   }
-  return myBuilder->HasDeleted();
+  return myGenerated;
 }

@@ -47,6 +47,13 @@ public:
 
   //! Returns the history from the session.
   Standard_EXPORT static Handle(BRepTools_History) History();
+
+  //! Enables/Disables the history saving
+  Standard_EXPORT static void SetToFillHistory(const Standard_Boolean theFillHist);
+
+  //! Returns the flag controlling the history collection
+  Standard_EXPORT static Standard_Boolean IsHistoryNeeded();
+
 };
 
 #endif

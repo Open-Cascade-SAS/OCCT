@@ -1587,3 +1587,13 @@ Previously the algorithm could create a shape with the same degenerated edge sha
 @subsection upgrade_740_extremaalgo Changes in behavior of Extrema algorithms
 
 Since OCCT 7.4.0 exception is thrown on the attempt of taking points in case of infinite number of solution (IsParallel status). Request of distances is available as before. Method NbExt() always returns 1 in such cases. 
+
+@subsection upgrade_740_removed Removed features
+* The following methods of the class *BRepAlgoAPI_BooleanOperation* have been removed as obsolete or replaced:
+  - *BuilderCanWork* can be replaced with *IsDone* or *HasErrors* method.
+  - *FuseEdges* removed as obsolete.
+  - *RefineEdges* replaced with new method *SimplifyResult*.
+* The method *ImagesResult* of the class *BOPAlgo_BuilderShape* has been removed as unused. The functionality of this method can be completely replaced by the history methods *Modified* and *IsDeleted*.
+* The method *TrackHistory* of the classes *BOPAlgo_RemoveFeatures* and *BRepAlgoAPI_Defeaturing* has been renamed to *SetToFillHistory*.
+* The method *GetHistory* of the class *BRepAlgoAPI_Defeaturing* has been renamed to *History*.
+

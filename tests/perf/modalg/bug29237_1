@@ -11,6 +11,7 @@ brestore [locate_data_file bug29237_tc_43.1_rhs.brep] b
 
 bglue 1
 bcheckinverted 0
+setfillhistory 0
 
 bclearobjects
 bcleartools
@@ -34,6 +35,9 @@ bcadd rcommon a 1 b 1
 # stop chronometer
 dchrono cpu stop counter OCC29237
 
+# restore default options
+boptions -default
+setfillhistory 1
 
 # check the result of CUT
 checkshape rcut

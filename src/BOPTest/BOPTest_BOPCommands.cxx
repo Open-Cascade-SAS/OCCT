@@ -256,12 +256,14 @@ Standard_Integer bopsmt(Draw_Interpretor& di,
   aBOP.SetOperation(aOp);
   aBOP.SetRunParallel (bRunParallel);
   aBOP.SetCheckInverted(BOPTest_Objects::CheckInverted());
+  aBOP.SetToFillHistory(BRepTest_Objects::IsHistoryNeeded());
   //
   aBOP.PerformWithFiller(*pPF);
   BOPTest::ReportAlerts(aBOP.GetReport());
 
   // Store the history of Boolean operation into the session
-  BRepTest_Objects::SetHistory(pPF->Arguments(), aBOP);
+  if (BRepTest_Objects::IsHistoryNeeded())
+    BRepTest_Objects::SetHistory(aBOP.History());
 
   if (aBOP.HasErrors()) {
     return 0;
@@ -321,12 +323,14 @@ Standard_Integer bopsection(Draw_Interpretor& di,
   aBOP.AddArgument(aS2);
   aBOP.SetRunParallel (bRunParallel);
   aBOP.SetCheckInverted(BOPTest_Objects::CheckInverted());
+  aBOP.SetToFillHistory(BRepTest_Objects::IsHistoryNeeded());
   //
   aBOP.PerformWithFiller(*pPF);
   BOPTest::ReportAlerts(aBOP.GetReport());
 
   // Store the history of Section operation into the session
-  BRepTest_Objects::SetHistory(pPF->Arguments(), aBOP);
+  if (BRepTest_Objects::IsHistoryNeeded())
+    BRepTest_Objects::SetHistory(aBOP.History());
 
   if (aBOP.HasErrors()) {
     return 0;
@@ -445,7 +449,8 @@ Standard_Integer  bsection(Draw_Interpretor& di,
   aSec.Build();
 
   // Store the history of Section operation into the session
-  BRepTest_Objects::SetHistory(aSec.DSFiller()->Arguments(), aSec);
+  if (BRepTest_Objects::IsHistoryNeeded())
+    BRepTest_Objects::SetHistory(aSec.History());
 
   //
   if (aSec.HasWarnings()) {
@@ -530,12 +535,14 @@ Standard_Integer bsmt (Draw_Interpretor& di,
   aBOP.SetOperation(aOp);
   aBOP.SetRunParallel(bRunParallel);
   aBOP.SetCheckInverted(BOPTest_Objects::CheckInverted());
-  // 
+  aBOP.SetToFillHistory(BRepTest_Objects::IsHistoryNeeded());
+  //
   aBOP.PerformWithFiller(aPF);
   BOPTest::ReportAlerts(aBOP.GetReport());
 
   // Store the history of Boolean operation into the session
-  BRepTest_Objects::SetHistory(aPF.Arguments(), aBOP);
+  if (BRepTest_Objects::IsHistoryNeeded())
+    BRepTest_Objects::SetHistory(aPF.Arguments(), aBOP);
 
   if (aBOP.HasErrors()) {
     return 0;
@@ -842,12 +849,14 @@ Standard_Integer mkvolume(Draw_Interpretor& di, Standard_Integer n, const char**
   aMV.SetAvoidInternalShapes(bAvoidInternal);
   aMV.SetGlue(aGlue);
   aMV.SetUseOBB(BOPTest_Objects::UseOBB());
+  aMV.SetToFillHistory(BRepTest_Objects::IsHistoryNeeded());
   //
   aMV.Perform();
   BOPTest::ReportAlerts(aMV.GetReport());
 
   // Store the history of Volume Maker into the session
-  BRepTest_Objects::SetHistory(aLS, aMV);
+  if (BRepTest_Objects::IsHistoryNeeded())
+    BRepTest_Objects::SetHistory(aLS, aMV);
 
   if (aMV.HasErrors()) {
     return 0;

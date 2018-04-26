@@ -8,7 +8,7 @@ puts ""
 
 restore [locate_data_file bug28343_shape2.brep] s
 
-unifysamedom result s -a 1.e-4
+unifysamedom result s -a 0.005
 checkshape result
 bopargcheck result
 

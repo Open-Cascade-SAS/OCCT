@@ -1,0 +1,41 @@
+# History of section operation
+
+# extract faces of the box, enlarge them and intersect
+box b 10 10 10
+
+compound faces
+
+foreach f [explode b f] {
+  mksurface s $f
+  mkface fn s -100 100 -100 100
+  add fn faces
+}
+
+# perform intersection
+bclearobjects
+bcleartools
+baddcompound faces
+bfillds
+# enable history collection
+setfillhistory 1
+bbop result 4
+
+savehistory history
+
+# check that all faces have been deleted, have not been modified
+# and each face has generated edges
+
+foreach f [explode faces] {
+  if {![regexp "Deleted" [isdeleted history $f]]} {
+    puts "Error: Incorrect information about deleted shapes"
+  }
+  
+  if {![regexp "The shape has not been modified" [modified modif history $f]]} {
+    puts "Error: Incorrect information about modified shapes"
+  }
+
+  if {[regexp "No shapes were generated from the shape" [generated gen history $f]]} {
+    puts "Error: Incorrect information about generated shapes"
+  }
+  checknbshapes gen -edge 12
+}

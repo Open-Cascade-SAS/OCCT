@@ -112,17 +112,11 @@ void BRepTools_History::Remove(const TopoDS_Shape& theRemoved)
   // Apply the limitations.
   Standard_ASSERT_RETURN(IsSupportedType(theRemoved), myMsgUnsupportedType,);
 
-  if (myShapeToGenerated.UnBind(theRemoved))
-  {
-    Standard_ASSERT_INVOKE_(, myMsgGeneratedAndRemoved);
-  }
-
   if (myShapeToModified.UnBind(theRemoved))
   {
     Standard_ASSERT_INVOKE_(, myMsgModifiedAndRemoved);
   }
 
-  //
   myRemoved.Add(theRemoved);
 }
 
@@ -348,11 +342,6 @@ Standard_Boolean BRepTools_History::prepareGenerated(
 {
   Standard_ASSERT_RETURN(theInitial.IsNull() ||
     IsSupportedType(theInitial), myMsgUnsupportedType, Standard_False);
-
-  if (myRemoved.Remove(theInitial))
-  {
-    Standard_ASSERT_INVOKE_(, myMsgGeneratedAndRemoved);
-  }
 
   if (myShapeToModified.IsBound(theInitial) &&
     myShapeToModified(theInitial).Remove(theGenerated))

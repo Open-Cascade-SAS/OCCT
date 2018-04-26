@@ -95,7 +95,7 @@ BOPAlgo_Builder::~BOPAlgo_Builder()
 //=======================================================================
 void BOPAlgo_Builder::Clear()
 {
-  BOPAlgo_Algo::Clear();
+  BOPAlgo_BuilderShape::Clear();
   myArguments.Clear();
   myMapFence.Clear();
   myImages.Clear();
@@ -167,7 +167,6 @@ void BOPAlgo_Builder::Prepare()
   // 1. myShape is empty compound
   aBB.MakeCompound(aC);
   myShape=aC;
-  myFlagHistory=Standard_True;
 }
 //=======================================================================
 //function : Perform

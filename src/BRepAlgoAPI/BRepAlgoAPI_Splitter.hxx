@@ -53,30 +53,42 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
+public: //! @name Constructors
+
   //! Empty constructor
   Standard_EXPORT BRepAlgoAPI_Splitter();
-  Standard_EXPORT virtual ~BRepAlgoAPI_Splitter();
 
-  //! Constructor with already filled PaveFiller
+  //! Constructor with already prepared intersection tool - PaveFiller
   Standard_EXPORT BRepAlgoAPI_Splitter(const BOPAlgo_PaveFiller& thePF);
 
-  //! Performs the algorithm.<br>
-  //! Performs the intersection of the objects with tools and build the result of the operation.
+
+public: //! @name Setters/Getters for the Tools
+
+  //! Sets the Tool arguments
+  void SetTools (const TopTools_ListOfShape& theLS)
+  {
+    myTools = theLS;
+  }
+
+  //! Returns the Tool arguments
+  const TopTools_ListOfShape& Tools() const
+  {
+    return myTools;
+  }
+
+
+public: //! @name Performing the operation
+
+  //! Performs the Split operation.
+  //! Performs the intersection of the argument shapes (both objects and tools)
+  //! and splits objects by the tools.
   Standard_EXPORT virtual void Build() Standard_OVERRIDE;
 
-  //! Sets the tools
-  Standard_EXPORT void SetTools (const TopTools_ListOfShape& theLS);
-  
-  //! Gets the tools
-  Standard_EXPORT const TopTools_ListOfShape& Tools() const;
 
-protected:
+protected: //! @name Fields
 
-  //! Tools arguments of the operation
-  TopTools_ListOfShape myTools;
-
-private:
+  TopTools_ListOfShape myTools; //!< Tool arguments of the operation
 
 };
 
-#endif // _BRepAlgoAPI_BuilderAlgo_HeaderFile
+#endif // _BRepAlgoAPI_Splitter_HeaderFile

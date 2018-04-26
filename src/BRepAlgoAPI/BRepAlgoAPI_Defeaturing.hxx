@@ -77,7 +77,7 @@
 //! aDF.SetShape(aSolid);                    // Set the shape
 //! aDF.AddFacesToRemove(aFaces);            // Add faces to remove
 //! aDF.SetRunParallel(bRunParallel);        // Define the processing mode (parallel or single)
-//! aDF.TrackHistory(isHistoryNeeded);       // Define whether to track the shapes modifications
+//! aDF.SetToFillHistory(isHistoryNeeded);   // Define whether to track the shapes modifications
 //! aDF.Build();                             // Perform the operation
 //! if (!aDF.IsDone())                       // Check for the errors
 //! {
@@ -110,7 +110,7 @@ public: //! @name Constructors
   BRepAlgoAPI_Defeaturing()
   :
     BRepAlgoAPI_Algo(),
-    myTrackHistory(Standard_True)
+    myFillHistory(Standard_True)
   {}
 
 
@@ -163,13 +163,13 @@ public: //! @name Performing the operation
 public: //! @name History Methods
 
   //! Defines whether to track the modification of the shapes or not.
-  void TrackHistory(const Standard_Boolean theFlag)
+  void SetToFillHistory(const Standard_Boolean theFlag)
   {
-    myTrackHistory = theFlag;
+    myFillHistory = theFlag;
   }
 
   //! Returns whether the history was requested or not.
-  Standard_Boolean HasHistory() const { return myTrackHistory; }
+  Standard_Boolean HasHistory() const { return myFillHistory; }
 
   //! Returns the list of shapes modified from the shape <theS> during the operation.
   Standard_EXPORT virtual const TopTools_ListOfShape& Modified(const TopoDS_Shape& theS) Standard_OVERRIDE;
@@ -182,8 +182,17 @@ public: //! @name History Methods
   //! Otherwise it returns false.
   Standard_EXPORT virtual Standard_Boolean IsDeleted(const TopoDS_Shape& theS) Standard_OVERRIDE;
 
+  //! Returns true if any of the input shapes has been modified during operation.
+  Standard_EXPORT virtual Standard_Boolean HasModified() const;
+
+  //! Returns true if any of the input shapes has generated shapes during operation.
+  Standard_EXPORT virtual Standard_Boolean HasGenerated() const;
+
+  //! Returns true if any of the input shapes has been deleted during operation.
+  Standard_EXPORT virtual Standard_Boolean HasDeleted() const;
+
   //! Returns the History of shapes modifications
-  Handle(BRepTools_History) GetHistory()
+  Handle(BRepTools_History) History()
   {
     return myFeatureRemovalTool.History();
   }
@@ -202,7 +211,7 @@ protected: //! @name Fields
 
   TopoDS_Shape myInputShape;                   //!< Input shape to remove the features from
   TopTools_ListOfShape myFacesToRemove;        //!< Features to remove from the shape
-  Standard_Boolean myTrackHistory;             //!< Defines whether to track the history of
+  Standard_Boolean myFillHistory;              //!< Defines whether to track the history of
                                                //! shapes modifications or not (true by default)
   BOPAlgo_RemoveFeatures myFeatureRemovalTool; //!< Tool for the features removal
 

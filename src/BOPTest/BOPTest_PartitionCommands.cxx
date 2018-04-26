@@ -191,6 +191,7 @@ Standard_Integer bbuild(Draw_Interpretor& di,
   }
   aBuilder.SetRunParallel(bRunParallel);
   aBuilder.SetCheckInverted(BOPTest_Objects::CheckInverted());
+  aBuilder.SetToFillHistory(BRepTest_Objects::IsHistoryNeeded());
   //
   //
   OSD_Timer aTimer;
@@ -200,7 +201,8 @@ Standard_Integer bbuild(Draw_Interpretor& di,
   BOPTest::ReportAlerts(aBuilder.GetReport());
 
   // Set history of GF operation into the session
-  BRepTest_Objects::SetHistory(aPF.Arguments(), aBuilder);
+  if (BRepTest_Objects::IsHistoryNeeded())
+    BRepTest_Objects::SetHistory(aPF.Arguments(), aBuilder);
 
   if (aBuilder.HasErrors()) {
     return 0;
@@ -306,6 +308,7 @@ Standard_Integer bbop(Draw_Interpretor& di,
   //
   pBuilder->SetRunParallel(bRunParallel);
   pBuilder->SetCheckInverted(BOPTest_Objects::CheckInverted());
+  pBuilder->SetToFillHistory(BRepTest_Objects::IsHistoryNeeded());
   //
   OSD_Timer aTimer;
   aTimer.Start();
@@ -314,7 +317,8 @@ Standard_Integer bbop(Draw_Interpretor& di,
   BOPTest::ReportAlerts(pBuilder->GetReport());
 
   // Set history of Boolean operation into the session
-  BRepTest_Objects::SetHistory(aPF.Arguments(), *pBuilder);
+  if (BRepTest_Objects::IsHistoryNeeded())
+    BRepTest_Objects::SetHistory(aPF.Arguments(), *pBuilder);
 
   if (pBuilder->HasErrors()) {
     return 0;
@@ -376,6 +380,7 @@ Standard_Integer bsplit(Draw_Interpretor& di,
   pSplitter->SetNonDestructive(BOPTest_Objects::NonDestructive());
   pSplitter->SetFuzzyValue(BOPTest_Objects::FuzzyValue());
   pSplitter->SetCheckInverted(BOPTest_Objects::CheckInverted());
+  pSplitter->SetToFillHistory(BRepTest_Objects::IsHistoryNeeded());
   //
   // measure the time of the operation
   OSD_Timer aTimer;
@@ -388,7 +393,8 @@ Standard_Integer bsplit(Draw_Interpretor& di,
   BOPTest::ReportAlerts(pSplitter->GetReport());
 
   // Set history of Split operation into the session
-  BRepTest_Objects::SetHistory(aPF.Arguments(), *pSplitter);
+  if (BRepTest_Objects::IsHistoryNeeded())
+    BRepTest_Objects::SetHistory(aPF.Arguments(), *pSplitter);
 
   if (pSplitter->HasErrors()) {
     return 0;

@@ -179,9 +179,12 @@ static Standard_Integer BLEND(Draw_Interpretor& di, Standard_Integer narg, const
   if(!Rakk->IsDone()) return 1;
 
   // Save history for fillet
-  TopTools_ListOfShape anArg;
-  anArg.Append(V);
-  BRepTest_Objects::SetHistory(anArg, *Rakk);
+  if (BRepTest_Objects::IsHistoryNeeded())
+  {
+    TopTools_ListOfShape anArg;
+    anArg.Append(V);
+    BRepTest_Objects::SetHistory(anArg, *Rakk);
+  }
 
   TopoDS_Shape res = Rakk->Shape();
   DBRep::Set(a[1],res);

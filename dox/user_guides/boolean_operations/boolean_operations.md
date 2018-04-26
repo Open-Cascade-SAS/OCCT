@@ -3070,6 +3070,50 @@ generated gf2 com_hist f2
 
 ~~~~
 
+@section occt_algorithms_simplification BOP result simplification
+
+The API algorithms implementing Boolean Operations provide possibility to simplify the result shape by unification of the connected tangential edges and faces.
+This simplification is performed by the method *SimplifyResult* which is implemented in the class *BRepAlgoAPI_BuilderAlgo* (General Fuse operation).
+It makes it available for users of the classes *BRepAlgoAPI_BooleanOperation* (all Boolean Operations) and *BRepAlgoAPI_Splitter* (split operation).
+
+The simplification is performed by the means of *ShapeUpgrade_UnifySameDom* algorithm. The result of operation is overwritten with the simplified result.
+
+The simplification is performed without creation of the Internal shapes, i.e. shapes connections will never be broken. It is performed on the whole result shape.
+Thus, if the input shapes contained connected tangent edges or faces unmodified during the operation they will also be unified.
+
+History of the simplification is merged into the main history of operation, thus it will be accounted when asking for Modified, Generated and Deleted shapes.
+
+Some options of the main operation are passed into the Unifier:
+- Fuzzy tolerance of the operation is given to the Unifier as the linear tolerance.
+- Non destructive mode here controls the safe input mode in Unifier.
+
+For controlling this possibility in DRAW the command **bsimplify** has been implemented. Please see the @ref occt_draw_bop_options "Boolean Operations options" chapter in draw user guide.
+
+
+@subsection occt_algorithms_simplification_examples Examples
+
+Here is the simple example of simplification of the result of Fuse operation of two boxes:
+
+~~~~
+bsimplify -f 1
+
+box b1 10 10 15
+box b2 3 7 0 10 10 15
+bclearobjects
+bcleartools
+baddobjects b1
+baddtools b2
+bfillds
+bapibop r 1
+~~~~
+
+<table align="center">
+  <tr>
+    <td>@figure{/user_guides/boolean_operations/images/bop_simple_001.png, "Not simplified result", 420}</td>
+    <td>@figure{/user_guides/boolean_operations/images/bop_simple_002.png, "Simplified result", 420}</td>
+  </tr>
+</table>
+
 
 @section occt_algorithms_11b Usage 
 

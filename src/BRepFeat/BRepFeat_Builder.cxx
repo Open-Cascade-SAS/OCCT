@@ -175,8 +175,6 @@
   aBB.MakeCompound(aC);
   myShape=aC;
   //
-  myFlagHistory=Standard_True;
-  //
   FillRemoved();
 }
 

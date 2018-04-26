@@ -14,27 +14,27 @@ checknbshapes result1 -face 1 -wire 1 -edge 984
 checkprops result1 -l 10402.1
 
 #safeInputMode is true for USD
-unifysamedom result2 s1 -a 0.001
+unifysamedom result2 s1 -a 0.06
 checkshape result2
 checknbshapes result2 -face 1 -wire 1 -edge 983
 checkprops result2 -l 10402.1
 
-unifysamedom result3 s1 -a 1.0
+unifysamedom result3 s1 -a 57
 checkshape result3
 checknbshapes result3 -face 1 -wire 1 -edge 983
 checkprops result3 -l 10402.1
 
-unifysamedom result4 s1 -t 0.01 -a 0.1
+unifysamedom result4 s1 -t 0.01 -a 5.7
 checkshape result4
 checknbshapes result4 -face 1 -wire 1 -edge 510
 checkprops result4 -l 10402.1
 
-unifysamedom result5 s1 -t 0.1 -a 0.1
+unifysamedom result5 s1 -t 0.1 -a 5.7
 checkshape result5
 checknbshapes result5 -face 1 -wire 1 -edge 198
 checkprops result5 -l 10402.1
 
-unifysamedom result6 s1 -t 1.0 -a 0.1
+unifysamedom result6 s1 -t 1.0 -a 5.7
 checkshape result6
 checknbshapes result6 -face 1 -wire 1 -edge 65
 checkprops result6 -l 10401.9

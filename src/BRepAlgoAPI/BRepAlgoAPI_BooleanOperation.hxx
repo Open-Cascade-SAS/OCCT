@@ -21,150 +21,120 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TopTools_ListOfShape.hxx>
 #include <BOPAlgo_Operation.hxx>
-#include <Standard_Boolean.hxx>
-#include <TopTools_DataMapOfShapeShape.hxx>
 #include <BRepAlgoAPI_BuilderAlgo.hxx>
 class BOPAlgo_PaveFiller;
 class TopoDS_Shape;
 
-
-
-//! The abstract class BooleanOperation is the root
-//! class of Boolean Operations (see Overview).
-//! Boolean Operations algorithm is divided onto two parts:<br>
-//! - The first one is computing interference between arguments;<br>
-//! - The second one is building the result of operation;<br>
-//! The class BooleanOperation provides API level of both parts.<br>
+//! The root API class for performing Boolean Operations on arbitrary shapes.
 //!
-//! Additionally to the errors of the parent class the algorithm
-//! returns the following Error statuses:<br>
-//! - 0 - in case of success;<br>
+//! The arguments of the operation are divided in two groups - *Objects* and *Tools*.
+//! Each group can contain any number of shapes, but each shape should be valid
+//! in terms of *BRepCheck_Analyzer* and *BOPAlgo_ArgumentAnalyzer*.
+//! The algorithm builds the splits of the given arguments using the intersection
+//! results and combines the result of Boolean Operation of given type:
+//! - *FUSE* - union of two groups of objects;
+//! - *COMMON* - intersection of two groups of objects;
+//! - *CUT* - subtraction of one group from the other;
+//! - *SECTION* - section edges and vertices of all arguments;
+//!
+//! The rules for the arguments and type of the operation are the following:
+//! - For Boolean operation *FUSE* all arguments should have equal dimensions;
+//! - For Boolean operation *CUT* the minimal dimension of *Tools* should not be
+//!   less than the maximal dimension of *Objects*;
+//! - For Boolean operation *COMMON* the arguments can have any dimension.
+//! - For Boolean operation *SECTION* the arguments can be of any type.
+//!
+//! Additionally to the errors of the base class the algorithm returns
+//! the following Errors:<br>
 //! - *BOPAlgo_AlertBOPNotSet* - in case the type of Boolean Operation is not set.<br>
-//!
 class BRepAlgoAPI_BooleanOperation  : public BRepAlgoAPI_BuilderAlgo
 {
 public:
 
   DEFINE_STANDARD_ALLOC
 
-  
-  //! Returns the first argument involved in this Boolean operation.
-  //! Obsolete
-  Standard_EXPORT const TopoDS_Shape& Shape1() const;
-  
-  //! Returns the second argument involved in this Boolean operation.
-  //! Obsolete
-  Standard_EXPORT const TopoDS_Shape& Shape2() const;
-  
-  //! Sets the tools
-  Standard_EXPORT void SetTools (const TopTools_ListOfShape& theLS);
-  
-  //! Gets the tools
-  Standard_EXPORT const TopTools_ListOfShape& Tools() const;
-  
-  //! Sets the type of Boolean operation
-  Standard_EXPORT void SetOperation (const BOPAlgo_Operation anOp);
-  
-  //! Returns the type of Boolean Operation
-  Standard_EXPORT BOPAlgo_Operation Operation() const;
-Standard_EXPORT virtual ~BRepAlgoAPI_BooleanOperation();
-  
-  //! Performs the algorithm
-  //! Filling interference Data Structure (if it is necessary)
-  //! Building the result of the operation.
-  Standard_EXPORT virtual void Build() Standard_OVERRIDE;
-  
-  //! Returns True if there was no errors occured
-  //! obsolete
-  Standard_EXPORT Standard_Boolean BuilderCanWork() const;
-  
-  //! Returns the flag of edge refining
-  Standard_EXPORT Standard_Boolean FuseEdges() const;
-  
-  //! Fuse C1 edges
-  Standard_EXPORT void RefineEdges();
-  
-  //! Returns a list of section edges.
-  //! The edges represent the result of intersection between arguments of
-  //! Boolean Operation. They are computed during operation execution.
-  Standard_EXPORT const TopTools_ListOfShape& SectionEdges();
-  
-  //! Returns the list  of shapes modified from the shape <S>.
-  Standard_EXPORT virtual const TopTools_ListOfShape& Modified (const TopoDS_Shape& aS) Standard_OVERRIDE;
-  
-  //! Returns true if the shape S has been deleted. The
-  //! result shape of the operation does not contain the shape S.
-  Standard_EXPORT virtual Standard_Boolean IsDeleted (const TopoDS_Shape& aS) Standard_OVERRIDE;
-  
-  //! Returns the list  of shapes generated from the shape <S>.
-  //! For use in BRepNaming.
-  Standard_EXPORT virtual const TopTools_ListOfShape& Generated (const TopoDS_Shape& S) Standard_OVERRIDE;
-  
-  //! Returns true if there is at least one modified shape.
-  //! For use in BRepNaming.
-  Standard_EXPORT virtual Standard_Boolean HasModified() const Standard_OVERRIDE;
-  
-  //! Returns true if there is at least one generated shape.
-  //! For use in BRepNaming.
-  Standard_EXPORT virtual Standard_Boolean HasGenerated() const Standard_OVERRIDE;
-  
-  //! Returns true if there is at least one deleted shape.
-  //! For use in BRepNaming.
-  Standard_EXPORT virtual Standard_Boolean HasDeleted() const Standard_OVERRIDE;
+public: //! @name Constructors
 
-protected:
-  
   //! Empty constructor
   Standard_EXPORT BRepAlgoAPI_BooleanOperation();
-  
-  //! Empty constructor
-  //! <PF> - PaveFiller object that is carried out
-  Standard_EXPORT BRepAlgoAPI_BooleanOperation(const BOPAlgo_PaveFiller& PF);
-  
-  //! Constructor with two arguments
-  //! <S1>, <S2>  -arguments
-  //! <anOperation> - the type of the operation
+
+  //! Constructor with precomputed intersections of arguments.
+  Standard_EXPORT BRepAlgoAPI_BooleanOperation(const BOPAlgo_PaveFiller& thePF);
+
+
+public: //! @name Setting/getting arguments
+
+  //! Returns the first argument involved in this Boolean operation.
   //! Obsolete
-  Standard_EXPORT BRepAlgoAPI_BooleanOperation(const TopoDS_Shape& S1, const TopoDS_Shape& S2, const BOPAlgo_Operation anOperation);
-  
-  //! Constructor with two arguments
-  //! <S1>, <S2>  -arguments
-  //! <anOperation> - the type of the operation
-  //! <PF> - PaveFiller object that is carried out
+  const TopoDS_Shape& Shape1() const
+  {
+    return myArguments.First();
+  }
+
+  //! Returns the second argument involved in this Boolean operation.
   //! Obsolete
-  Standard_EXPORT BRepAlgoAPI_BooleanOperation(const TopoDS_Shape& S1, const TopoDS_Shape& S2, const BOPAlgo_PaveFiller& PF, const BOPAlgo_Operation anOperation);
-  
-  Standard_EXPORT virtual void Clear() Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void SetAttributes();
-  
-  //! Returns the list  of shapes generated from the shape <S>.
-  //! For use in BRepNaming.
-  Standard_EXPORT const TopTools_ListOfShape& RefinedList (const TopTools_ListOfShape& theL);
+  const TopoDS_Shape& Shape2() const
+  {
+    return myTools.First();
+  }
+
+  //! Sets the Tool arguments
+  void SetTools(const TopTools_ListOfShape& theLS)
+  {
+    myTools = theLS;
+  }
+
+  //! Returns the Tools arguments
+  const TopTools_ListOfShape& Tools() const
+  {
+    return myTools;
+  }
 
 
-  TopTools_ListOfShape myTools;
-  BOPAlgo_Operation myOperation;
-  Standard_Boolean myBuilderCanWork;
+public: //! @name Setting/Getting the type of Boolean operation
+
+  //! Sets the type of Boolean operation
+  void SetOperation(const BOPAlgo_Operation theBOP)
+  {
+    myOperation = theBOP;
+  }
+
+  //! Returns the type of Boolean Operation
+  BOPAlgo_Operation Operation() const
+  {
+    return myOperation;
+  }
 
 
-private:
+public: //! @name Performing the operation
+
+  //! Performs the Boolean operation.
+  Standard_EXPORT virtual void Build() Standard_OVERRIDE;
 
 
+protected: //! @name Constructors
 
-  Standard_Boolean myFuseEdges;
-  TopTools_DataMapOfShapeShape myModifFaces;
-  TopTools_DataMapOfShapeShape myEdgeMap;
+  //! Constructor to perform Boolean operation on only two arguments.
+  //! Obsolete
+  Standard_EXPORT BRepAlgoAPI_BooleanOperation(const TopoDS_Shape& theS1,
+                                               const TopoDS_Shape& theS2,
+                                               const BOPAlgo_Operation theOperation);
 
+  //! Constructor to perform Boolean operation on only two arguments
+  //! with precomputed intersection results.
+  //! Obsolete
+  Standard_EXPORT BRepAlgoAPI_BooleanOperation(const TopoDS_Shape& theS1,
+                                               const TopoDS_Shape& theS2,
+                                               const BOPAlgo_PaveFiller& thePF,
+                                               const BOPAlgo_Operation theOperation);
+
+
+protected: //! @name Fields
+
+  TopTools_ListOfShape myTools;  //!< Tool arguments of operation
+  BOPAlgo_Operation myOperation; //!< Type of Boolean Operation
 
 };
-
-
-
-
-
-
 
 #endif // _BRepAlgoAPI_BooleanOperation_HeaderFile

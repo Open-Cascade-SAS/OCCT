@@ -128,13 +128,16 @@ Standard_Integer bapibop(Draw_Interpretor& di,
   pBuilder->SetGlue(aGlue);
   pBuilder->SetCheckInverted(BOPTest_Objects::CheckInverted());
   pBuilder->SetUseOBB(BOPTest_Objects::UseOBB());
+  pBuilder->SetToFillHistory(BRepTest_Objects::IsHistoryNeeded());
   //
-  pBuilder->Build(); 
+  pBuilder->Build();
+  pBuilder->SimplifyResult(BOPTest_Objects::UnifyEdges(),
+                           BOPTest_Objects::UnifyFaces(),
+                           BOPTest_Objects::Angular());
 
-  // Store the history for the Objects (overwrites the history in the session)
-  BRepTest_Objects::SetHistory(BOPTest_Objects::Shapes(), *pBuilder);
-  // Add the history for the Tools
-  BRepTest_Objects::AddHistory(BOPTest_Objects::Tools(), *pBuilder);
+  // Store the history of operation into the session
+  if (BRepTest_Objects::IsHistoryNeeded())
+    BRepTest_Objects::SetHistory(pBuilder->History());
 
   if (pBuilder->HasWarnings()) {
     Standard_SStream aSStream;
@@ -192,13 +195,16 @@ Standard_Integer bapibuild(Draw_Interpretor& di,
   aBuilder.SetGlue(aGlue);
   aBuilder.SetCheckInverted(BOPTest_Objects::CheckInverted());
   aBuilder.SetUseOBB(BOPTest_Objects::UseOBB());
+  aBuilder.SetToFillHistory(BRepTest_Objects::IsHistoryNeeded());
   //
-  aBuilder.Build(); 
+  aBuilder.Build();
+  aBuilder.SimplifyResult(BOPTest_Objects::UnifyEdges(),
+                          BOPTest_Objects::UnifyFaces(),
+                          BOPTest_Objects::Angular());
 
-  // Store the history for the Objects (overwrites the history in the session)
-  BRepTest_Objects::SetHistory(BOPTest_Objects::Shapes(), aBuilder);
-  // Add the history for the Tools
-  BRepTest_Objects::AddHistory(BOPTest_Objects::Tools(), aBuilder);
+  // Store the history of operation into the session
+  if (BRepTest_Objects::IsHistoryNeeded())
+    BRepTest_Objects::SetHistory(aBuilder.History());
 
   if (aBuilder.HasWarnings()) {
     Standard_SStream aSStream;
@@ -248,14 +254,17 @@ Standard_Integer bapisplit(Draw_Interpretor& di,
   aSplitter.SetGlue(BOPTest_Objects::Glue());
   aSplitter.SetCheckInverted(BOPTest_Objects::CheckInverted());
   aSplitter.SetUseOBB(BOPTest_Objects::UseOBB());
+  aSplitter.SetToFillHistory(BRepTest_Objects::IsHistoryNeeded());
   //
   // performing operation
   aSplitter.Build();
+  aSplitter.SimplifyResult(BOPTest_Objects::UnifyEdges(),
+                           BOPTest_Objects::UnifyFaces(),
+                           BOPTest_Objects::Angular());
 
-  // Store the history for the Objects (overwrites the history in the session)
-  BRepTest_Objects::SetHistory(BOPTest_Objects::Shapes(), aSplitter);
-  // Add the history for the Tools
-  BRepTest_Objects::AddHistory(BOPTest_Objects::Tools(), aSplitter);
+  // Store the history of operation into the session
+  if (BRepTest_Objects::IsHistoryNeeded())
+    BRepTest_Objects::SetHistory(aSplitter.History());
 
   // check warning status
   if (aSplitter.HasWarnings()) {

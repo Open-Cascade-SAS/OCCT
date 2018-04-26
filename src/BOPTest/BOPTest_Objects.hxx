@@ -66,7 +66,9 @@ public:
   Standard_EXPORT static void SetBuilder (const BOPAlgo_PBuilder& theBuilder);
   
   Standard_EXPORT static void SetBuilderDefault();
-  
+
+  Standard_EXPORT static void SetDefaultOptions();
+
   Standard_EXPORT static void SetRunParallel (const Standard_Boolean theFlag);
   
   Standard_EXPORT static Standard_Boolean RunParallel();
@@ -94,6 +96,15 @@ public:
   Standard_EXPORT static void SetUseOBB(const Standard_Boolean bUseOBB);
 
   Standard_EXPORT static Standard_Boolean UseOBB();
+
+  Standard_EXPORT static void SetUnifyEdges(const Standard_Boolean bUE);
+  Standard_EXPORT static Standard_Boolean UnifyEdges();
+
+  Standard_EXPORT static void SetUnifyFaces(const Standard_Boolean bUF);
+  Standard_EXPORT static Standard_Boolean UnifyFaces();
+
+  Standard_EXPORT static void SetAngular(const Standard_Real bAngTol);
+  Standard_EXPORT static Standard_Real Angular();
 
 protected:
 

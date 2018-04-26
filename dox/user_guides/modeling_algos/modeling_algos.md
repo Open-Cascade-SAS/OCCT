@@ -2055,7 +2055,7 @@ TopoDS_Solid R2 = BRepPrimAPI_MakeRevol(F,axis,ang);
 
 @section occt_modalg_5 Boolean  Operations
 
-Boolean operations are  used to create new shapes from the combinations of two shapes. 
+Boolean operations are used to create new shapes from the combinations of two groups of shapes.
 
 | Operation | Result |
 | :---- | :------ |
@@ -3172,7 +3172,7 @@ and the options available from base class (*BOPAlgo_Options*):
 
 Note that the other options of the base class are not supported here and will have no effect.
 
-<b>History support</b> allows tracking modification of the input shape in terms of Modified, IsDeleted and Generated. By default, the history is collected, but it is possible to disable it using the method *TrackHistory(false)*.
+<b>History support</b> allows tracking modification of the input shape in terms of Modified, IsDeleted and Generated. By default, the history is collected, but it is possible to disable it using the method *SetToFillHistory(false)*.
 On the low-level the history information is collected by the history tool *BRepTools_History*, which can be accessed through the method *BOPAlgo_RemoveFeatures::History()*. 
 
 <b>Error/Warning reporting system</b> allows obtaining the extended overview of the Errors/Warnings occurred during the operation. As soon as any error appears, the algorithm stops working. The warnings allow continuing the job and informing the user that something went wrong. The algorithm returns the following errors/warnings:
@@ -3216,7 +3216,7 @@ BRepAlgoAPI_Defeaturing aDF;             // Defeaturing algorithm
 aDF.SetShape(aSolid);                    // Set the shape
 aDF.AddFacesToRemove(aFaces);            // Add faces to remove
 aDF.SetRunParallel(bRunParallel);        // Define the processing mode (parallel or single)
-aDF.TrackHistory(isHistoryNeeded);       // Define whether to track the shapes modifications
+aDF.SetToFillHistory(isHistoryNeeded);   // Define whether to track the shapes modifications
 aDF.Build();                             // Perform the operation
 if (!aDF.IsDone())                       // Check for the errors
 {

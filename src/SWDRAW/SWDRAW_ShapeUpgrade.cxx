@@ -1299,7 +1299,7 @@ static Standard_Integer unifysamedom(Draw_Interpretor& di, Standard_Integer n, c
     di << "+b to switch on 'concat bspline' mode\n";
     di << "+i to switch on 'allow internal edges' mode\n";
     di << "-t val to set linear tolerance\n";
-    di << "-a val to set angular tolerance\n";
+    di << "-a val to set angular tolerance (in degrees)\n";
     di << "'unify-faces' and 'unify-edges' modes are switched on by default";
     return 1;
   }
@@ -1341,7 +1341,10 @@ static Standard_Integer unifysamedom(Draw_Interpretor& di, Standard_Integer n, c
         {
           if (++i < n)
           {
-            (a[i-1][1] == 't' ? aLinTol : aAngTol) = Draw::Atof(a[i]);
+            if (a[i-1][1] == 't')
+              aLinTol = Draw::Atof(a[i]);
+            else
+              aAngTol = Draw::Atof(a[i]) * (M_PI / 180.0);
           }
           else
           {
@@ -1361,7 +1364,8 @@ static Standard_Integer unifysamedom(Draw_Interpretor& di, Standard_Integer n, c
   Unifier().Build();
   TopoDS_Shape Result = Unifier().Shape();
 
-  BRepTest_Objects::SetHistory(Unifier().History());
+  if (BRepTest_Objects::IsHistoryNeeded())
+    BRepTest_Objects::SetHistory(Unifier().History());
 
   DBRep::Set(a[1], Result);
   return 0;

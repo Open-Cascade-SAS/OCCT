@@ -26,10 +26,11 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>
 
-static Standard_Integer SaveHistory(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer Modified   (Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer Generated  (Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer IsDeleted  (Draw_Interpretor&, Standard_Integer, const char**);
+static Standard_Integer SetFillHistory(Draw_Interpretor&, Standard_Integer, const char**);
+static Standard_Integer SaveHistory   (Draw_Interpretor&, Standard_Integer, const char**);
+static Standard_Integer Modified      (Draw_Interpretor&, Standard_Integer, const char**);
+static Standard_Integer Generated     (Draw_Interpretor&, Standard_Integer, const char**);
+static Standard_Integer IsDeleted     (Draw_Interpretor&, Standard_Integer, const char**);
 
 //=======================================================================
 //function : HistoryCommands
@@ -44,6 +45,13 @@ void BRepTest::HistoryCommands(Draw_Interpretor& theCommands)
   const char* group = "History commands";
 
   // Commands
+  theCommands.Add("setfillhistory" , "Controls the history collection by the algorithms and its saving into the session after algorithm is done.\n"
+                  "\t\tUsage: setfillhistory [flag]\n"
+                  "\t\tw/o arguments prints the current state of the option;\n"
+                  "\t\tflag == 0 - history will not be collected and saved;\n"
+                  "\t\tflag != 0 - history will be collected and saved into the session (default).",
+                  __FILE__, SetFillHistory , group);
+
   theCommands.Add("savehistory" , "savehistory name\n"
                   "\t\tSaves the history from the session into a drawable object with the name <name>.",
                   __FILE__, SaveHistory , group);
@@ -59,6 +67,33 @@ void BRepTest::HistoryCommands(Draw_Interpretor& theCommands)
   theCommands.Add("isdeleted", "isdeleted history shape\n"
                   "\t\tChecks if the given shape has been deleted in the given history",
                   __FILE__, IsDeleted, group);
+}
+
+//=======================================================================
+//function : SetFillHistory
+//purpose  : 
+//=======================================================================
+Standard_Integer SetFillHistory(Draw_Interpretor& theDI,
+                                Standard_Integer theArgc,
+                                const char** theArgv)
+{
+  if (theArgc > 2)
+  {
+    theDI.PrintHelp(theArgv[0]);
+    return 1;
+  }
+
+  if (theArgc == 1)
+  {
+    theDI << "Filling of the history is " <<
+      (BRepTest_Objects::IsHistoryNeeded() ? "enabled." : "disabled.");
+  }
+  else
+  {
+    Standard_Integer iHist = Draw::Atoi(theArgv[1]);
+    BRepTest_Objects::SetToFillHistory(iHist != 0);
+  }
+  return 0;
 }
 
 //=======================================================================

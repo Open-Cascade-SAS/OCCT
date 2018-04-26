@@ -431,7 +431,8 @@ Standard_Integer thrusections(Draw_Interpretor&, Standard_Integer n, const char*
     TopoDS_Shape Shell = Generator->Shape();
     DBRep::Set(a[index-1], Shell);
     // Save history of the lofting
-    BRepTest_Objects::SetHistory(Generator->Wires(), *Generator);
+    if (BRepTest_Objects::IsHistoryNeeded())
+      BRepTest_Objects::SetHistory(Generator->Wires(), *Generator);
   }
   else {
     cout << "Algorithm is not done" << endl;
@@ -776,9 +777,12 @@ static Standard_Integer buildsweep(Draw_Interpretor& di,
     result = Sweep->Shape();
     DBRep::Set(a[1],result);
     // Save history of sweep
-    TopTools_ListOfShape aProfiles;
-    Sweep->Profiles(aProfiles);
-    BRepTest_Objects::SetHistory(aProfiles, *Sweep);
+    if (BRepTest_Objects::IsHistoryNeeded())
+    {
+      TopTools_ListOfShape aProfiles;
+      Sweep->Profiles(aProfiles);
+      BRepTest_Objects::SetHistory(aProfiles, *Sweep);
+    }
   }
 
   return 0;

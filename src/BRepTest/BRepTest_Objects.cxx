@@ -24,7 +24,16 @@ class BRepTest_Session
 public:
 
   //! Empty constructor
-  BRepTest_Session() {}
+  BRepTest_Session()
+  {
+    SetDefaultValues();
+  }
+
+  //! Sets the default values for the options
+  void SetDefaultValues()
+  {
+    myFillHistory = Standard_True;
+  }
 
   //! Sets the History in the session
   void SetHistory(const Handle(BRepTools_History)& theHistory)
@@ -46,9 +55,19 @@ public:
     return myHistory;
   }
 
+  //! Enables/Disables the history saving
+  void SetToFillHistory(const Standard_Boolean theFillHist)
+  {
+    myFillHistory = theFillHist;
+  }
+
+  //! Returns the flag controlling the history saving
+  Standard_Boolean IsHistoryNeeded() const { return myFillHistory; }
+
 private:
 
   Handle(BRepTools_History) myHistory;
+  Standard_Boolean myFillHistory;
 };
 
 //=======================================================================
@@ -86,4 +105,22 @@ void BRepTest_Objects::AddHistory(const Handle(BRepTools_History)& theHistory)
 Handle(BRepTools_History) BRepTest_Objects::History()
 {
   return GetSession().History();
+}
+
+//=======================================================================
+//function : SetToFillHistory
+//purpose  : 
+//=======================================================================
+void BRepTest_Objects::SetToFillHistory(const Standard_Boolean theFillHist)
+{
+  return GetSession().SetToFillHistory(theFillHist);
+}
+
+//=======================================================================
+//function : IsHistoryNeeded
+//purpose  : 
+//=======================================================================
+Standard_Boolean BRepTest_Objects::IsHistoryNeeded()
+{
+  return GetSession().IsHistoryNeeded();
 }

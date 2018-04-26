@@ -99,35 +99,29 @@ const TopoDS_Shape& BOPAlgo_CellsBuilder::GetAllParts() const
 }
 
 //=======================================================================
-//function : Prepare
-//purpose  : 
-//=======================================================================
-void BOPAlgo_CellsBuilder::Prepare()
-{
-  BOPAlgo_Builder::Prepare();
-  //
-  myFlagHistory=Standard_False;
-}
-
-//=======================================================================
 //function : PerformInternal1
 //purpose  : 
 //=======================================================================
 void BOPAlgo_CellsBuilder::PerformInternal1(const BOPAlgo_PaveFiller& theFiller)
 {
+  // Avoid filling history after GF operation as later
+  // in this method the result shape will be nullified
+  Standard_Boolean isHistory = HasHistory();
+  SetToFillHistory(Standard_False);
+  // Perform splitting of the arguments
   BOPAlgo_Builder::PerformInternal1(theFiller);
-  //
   if (HasErrors()) {
     return;
   }
-  //
+
   // index all the parts to its origins
   IndexParts();
-  //
+
   // and nullify <myShape> for building the result;
   RemoveAllFromResult();
-  //
-  myFlagHistory = Standard_True;
+
+  // Restore user's history settings
+  SetToFillHistory(isHistory);
 }
 
 //=======================================================================

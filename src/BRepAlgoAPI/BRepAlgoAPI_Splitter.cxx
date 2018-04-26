@@ -14,9 +14,8 @@
 
 #include <BRepAlgoAPI_Splitter.hxx>
 
-#include <BOPAlgo_PaveFiller.hxx>
-#include <BOPAlgo_Splitter.hxx>
 #include <BOPAlgo_Alerts.hxx>
+#include <BOPAlgo_Splitter.hxx>
 
 //=======================================================================
 // function: Empty constructor
@@ -26,37 +25,11 @@ BRepAlgoAPI_Splitter::BRepAlgoAPI_Splitter()
   : BRepAlgoAPI_BuilderAlgo() {}
 
 //=======================================================================
-// function: Constructor with already filled PaveFiller
+// function: Constructor with already prepared PaveFiller
 // purpose: 
 //=======================================================================
 BRepAlgoAPI_Splitter::BRepAlgoAPI_Splitter(const BOPAlgo_PaveFiller& thePF)
   : BRepAlgoAPI_BuilderAlgo(thePF) {}
-
-//=======================================================================
-// function: Destructor
-// purpose: 
-//=======================================================================
-BRepAlgoAPI_Splitter::~BRepAlgoAPI_Splitter()
-{
-}
-
-//=======================================================================
-// function: SetTools
-// purpose: 
-//=======================================================================
-void BRepAlgoAPI_Splitter::SetTools(const TopTools_ListOfShape& theLS)
-{
-  myTools = theLS;
-}
-
-//=======================================================================
-// function: Tools
-// purpose: 
-//=======================================================================
-const TopTools_ListOfShape& BRepAlgoAPI_Splitter::Tools() const
-{
-  return myTools;
-}
 
 //=======================================================================
 // function: Build
@@ -64,70 +37,37 @@ const TopTools_ListOfShape& BRepAlgoAPI_Splitter::Tools() const
 //=======================================================================
 void BRepAlgoAPI_Splitter::Build()
 {
+  // Set Not Done status by default
   NotDone();
-  //
+  // Clear the contents
   Clear();
-  //
+  // Check for availability of arguments and tools
   if (myArguments.IsEmpty() ||
-    (myArguments.Extent() + myTools.Extent()) < 2) {
+     (myArguments.Extent() + myTools.Extent()) < 2)
+  {
     AddError (new BOPAlgo_AlertTooFewArguments);
     return;
   }
-  //
-  if (myEntryType) {
-    if (myDSFiller) {
-      delete myDSFiller;
-    }
-    myDSFiller = new BOPAlgo_PaveFiller(myAllocator);
-    //
-    TopTools_ListOfShape aLArgs;
-    TopTools_ListIteratorOfListOfShape aItLA(myArguments);
-    for (; aItLA.More(); aItLA.Next()) {
-      aLArgs.Append(aItLA.Value());
-    }
-    //
-    aItLA.Initialize(myTools);
-    for (; aItLA.More(); aItLA.Next()) {
-      aLArgs.Append(aItLA.Value());
-    }
-    //
-    myDSFiller->SetArguments(aLArgs);
-    //
-    myDSFiller->SetRunParallel(myRunParallel);
-    myDSFiller->SetProgressIndicator(myProgressIndicator);
-    myDSFiller->SetFuzzyValue(myFuzzyValue);
-    myDSFiller->SetNonDestructive(myNonDestructive);
-    myDSFiller->SetGlue(myGlue);
-    myDSFiller->SetUseOBB(myUseOBB);
-    //
-    myDSFiller->Perform();
-    //
-    GetReport()->Merge (myDSFiller->GetReport());
-    if (HasErrors()) 
-    {
-      return;
-    }
-  }
-  //
-  if (myBuilder) {
-    delete myBuilder;
-  }
-  //
+
+  // If necessary perform intersection of the argument shapes
+  if (myIsIntersectionNeeded)
   {
-    BOPAlgo_Splitter *pSplitter = new BOPAlgo_Splitter(myAllocator);
-    pSplitter->SetArguments(myArguments);
-    pSplitter->SetTools(myTools);
-    myBuilder = pSplitter;
+    // Combine Arguments and Tools for intersection into a single list
+    TopTools_ListOfShape aLArgs = myArguments;
+    for (TopTools_ListOfShape::Iterator it(myTools); it.More(); it.Next())
+      aLArgs.Append(it.Value());
+
+    // Perform intersection
+    IntersectShapes(aLArgs);
+    if (HasErrors())
+      return;
   }
-  //
-  myBuilder->SetRunParallel(myRunParallel);
-  myBuilder->SetProgressIndicator(myProgressIndicator);
-  myBuilder->SetCheckInverted(myCheckInverted);
-  //
-  myBuilder->PerformWithFiller(*myDSFiller);
-  //
-  GetReport()->Merge (myBuilder->GetReport());
-  //
-  Done();
-  myShape = myBuilder->Shape();
+
+  // Initialization of the building tool
+  myBuilder = new BOPAlgo_Splitter(myAllocator);
+  myBuilder->SetArguments(myArguments);
+  ((BOPAlgo_Splitter*)myBuilder)->SetTools(myTools);
+
+  // Build result shape basing on the intersection results
+  BuildResult();
 }

@@ -43,12 +43,11 @@ void BOPTest::RemoveFeaturesCommands(Draw_Interpretor& theCommands)
   // Chapter's name
   const char* group = "BOPTest commands";
   // Commands
-  theCommands.Add("removefeatures", "removefeatures result shape f1 f2 ... [-nohist] [-parallel]\n"
+  theCommands.Add("removefeatures", "removefeatures result shape f1 f2 ... [-parallel]\n"
                   "\t\tRemoves user-defined features (faces) from the shape.\n"
                   "\t\tresult   - result of the operation;\n"
                   "\t\tshape    - the shape to remove the features from;\n"
                   "\t\tf1, f2   - features to remove from the shape;\n"
-                  "\t\tnohist   - disables the history collection;\n"
                   "\t\tparallel - enables the parallel processing mode.",
                   __FILE__, RemoveFeatures, group);
 }
@@ -84,13 +83,7 @@ Standard_Integer RemoveFeatures(Draw_Interpretor& theDI,
     TopoDS_Shape aF = DBRep::Get(theArgv[i]);
     if (aF.IsNull())
     {
-      // Check for the options
-      if (!strcmp(theArgv[i], "-nohist"))
-      {
-        // disable the history collection
-        aRF.TrackHistory(Standard_False);
-      }
-      else if (!strcmp(theArgv[i], "-parallel"))
+      if (!strcmp(theArgv[i], "-parallel"))
       {
         // enable the parallel processing mode
         aRF.SetRunParallel(Standard_True);
@@ -104,14 +97,16 @@ Standard_Integer RemoveFeatures(Draw_Interpretor& theDI,
     aRF.AddFaceToRemove(aF);
   }
 
+  aRF.SetToFillHistory(BRepTest_Objects::IsHistoryNeeded());
+
   // Perform the removal
   aRF.Build();
 
   // Check for the errors/warnings
   BOPTest::ReportAlerts(aRF.GetReport());
 
-  if (aRF.HasHistory())
-    BRepTest_Objects::SetHistory(aRF.GetHistory());
+  if (BRepTest_Objects::IsHistoryNeeded())
+    BRepTest_Objects::SetHistory(aRF.History());
 
   if (aRF.HasErrors())
     return 0;

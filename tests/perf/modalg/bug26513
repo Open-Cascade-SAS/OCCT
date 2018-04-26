@@ -12,7 +12,7 @@ smallview
 
 restore [locate_data_file bug26513-offset_input.brep] a
 
-unifysamedom s a -a 1.e-8
+unifysamedom s a -a 5.7e-7
 offsetparameter 1.e-7 c i
 offsetload s 5
 offsetperform result

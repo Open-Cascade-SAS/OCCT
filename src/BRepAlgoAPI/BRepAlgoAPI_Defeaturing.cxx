@@ -32,7 +32,7 @@ void BRepAlgoAPI_Defeaturing::Build()
   // Set the inputs to BOPAlgo_RemoveFeatures algorithm
   myFeatureRemovalTool.SetShape(myInputShape);
   myFeatureRemovalTool.AddFacesToRemove(myFacesToRemove);
-  myFeatureRemovalTool.TrackHistory(myTrackHistory);
+  myFeatureRemovalTool.SetToFillHistory(myFillHistory);
   myFeatureRemovalTool.SetRunParallel(myRunParallel);
 
   // Perform the features removal
@@ -57,10 +57,7 @@ void BRepAlgoAPI_Defeaturing::Build()
 //=======================================================================
 const TopTools_ListOfShape& BRepAlgoAPI_Defeaturing::Modified(const TopoDS_Shape& theS)
 {
-  myGenerated.Clear();
-  if (!myFeatureRemovalTool.History().IsNull())
-    myGenerated = myFeatureRemovalTool.History()->Modified(theS);
-  return myGenerated;
+  return myFeatureRemovalTool.Modified(theS);
 }
 
 //=======================================================================
@@ -69,10 +66,7 @@ const TopTools_ListOfShape& BRepAlgoAPI_Defeaturing::Modified(const TopoDS_Shape
 //=======================================================================
 const TopTools_ListOfShape& BRepAlgoAPI_Defeaturing::Generated(const TopoDS_Shape& theS)
 {
-  myGenerated.Clear();
-  if (!myFeatureRemovalTool.History().IsNull())
-    myGenerated = myFeatureRemovalTool.History()->Generated(theS);
-  return myGenerated;
+  return myFeatureRemovalTool.Generated(theS);
 }
 
 //=======================================================================
@@ -81,6 +75,32 @@ const TopTools_ListOfShape& BRepAlgoAPI_Defeaturing::Generated(const TopoDS_Shap
 //=======================================================================
 Standard_Boolean BRepAlgoAPI_Defeaturing::IsDeleted(const TopoDS_Shape& theS)
 {
-  return (!myFeatureRemovalTool.History().IsNull() ?
-    myFeatureRemovalTool.History()->IsRemoved(theS) : Standard_False);
+  return myFeatureRemovalTool.IsDeleted(theS);
+}
+
+//=======================================================================
+//function : HasModified
+//purpose  : 
+//=======================================================================
+Standard_Boolean BRepAlgoAPI_Defeaturing::HasModified() const
+{
+  return myFeatureRemovalTool.HasModified();
+}
+
+//=======================================================================
+//function : HasGenerated
+//purpose  : 
+//=======================================================================
+Standard_Boolean BRepAlgoAPI_Defeaturing::HasGenerated() const
+{
+  return myFeatureRemovalTool.HasGenerated();
+}
+
+//=======================================================================
+//function : HasDeleted
+//purpose  : 
+//=======================================================================
+Standard_Boolean BRepAlgoAPI_Defeaturing::HasDeleted() const
+{
+  return myFeatureRemovalTool.HasDeleted();
 }
