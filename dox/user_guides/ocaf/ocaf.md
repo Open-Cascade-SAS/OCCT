@@ -440,6 +440,9 @@ current.Add (INT); // INT is now attached to current
 current.Add (INT); // causes failure 
 TDF_Label attach = INT->Label(); 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Note. There is an exception from this rule for some sub-set of Standard attributes. See for details chapter 6.Standard Attributes.
+
 @subsubsection occt_ocaf_3_5_4 Testing the attachment to a label
 
 You can test whether an attribute is attached to a label or not by using *TDF_Attribute::IsA* with the GUID of the attribute as an argument. In the example below, you test whether the current label has an integer attribute, and then, if that is so, how many attributes are attached to it. *TDataStd_Integer::GetID* provides the GUID argument needed by the method IsAttribute. 
@@ -1102,6 +1105,30 @@ Standard attributes are ready-to-use attributes, which allow creating and modify
 
 All attributes inherit class *TDF_Attribute*, so, each attribute has its own GUID and standard methods for attribute creation, manipulation, getting access to the data framework. 
 
+### Attributes supporting several attributes of the same type on the same label
+
+By default only one attribute of the same type on the same lable is supported. For example, you can set only one TDataStd_Real attribute
+on the same label.  This limitation was removed for some predefined sub-set of standard attributes by adding so called 'user defined ID' 
+feature to the attribute. 
+The listed below attributes received this new feature:
+
+  * **TDataStd_AsciiString**
+  * **TDataStd_Integer**
+  * **TDataStd_Name**
+  * **TDataStd_Real**
+  * **TDataStd_BooleanArray**
+  * **TDataStd_BooleanList**
+  * **TDataStd_ByteArray**
+  * **TDataStd_ExtStringArray**
+  * **TDataStd_ExtStringList**
+  * **TDataStd_IntegerArray**
+  * **TDataStd_IntegerList**
+  * **TDataStd_RealArray**
+  * **TDataStd_RealList**
+  * **TDataStd_ReferenceArray**
+  * **TDataStd_ReferenceList**
+
+See for details paragraph 6.4.
 
 @subsection occt_ocaf_6_2 Services common to all attributes
 
@@ -1227,6 +1254,60 @@ It is possible to describe any model by means of standard OCAF attributes.
    
   Most of the models may be implemented using only standard OCAF attributes. 
   Some other models need special treatment and require implementation of new OCAF attributes.
+
+
+ @subsection occt_ocaf_6_4 Standard Attributes with User Defined GUID
+
+ The listed above attributes allow to set at the same Label as many attributes of the same type as you want thanks to specific user's ID.
+ Let's consider it on the example of the TDataStd_Real attribute. The previous version of the attribute allowed to set the attribute using 
+ static method Set in next way:
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
+static Handle(TDataStd_Real) Set (const TDF_Label& label, const Standard_Real value);
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+ This is a default form which is kept by the attribute. It uses the default GUID for the attribute identification - TDataStd_Real::GetID(). 
+ In case if you want to use the new feature (user defined Real attribute), for example to define several attributes which should keep a value 
+ of the same type - Standard_Real, but to be associated with different user's notions (or objects) the new static method Set should be used. 
+ In our example we will define two Real attributes which presents two customer's objects - Density and Volume and will be put on the same Label.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
+#define DENSITY Standard_GUID("12e9454b-6dbc-11d4-b9c8-0060b0ee2810")
+#define VOLUME  Standard_GUID("161595c0-3628-4737-915a-c160ce94c6f7")
+
+TDF_Label aLabel = ...;
+
+// Real attribute type with user defined GUID associated with user's object "Density"
+TDataStd_Real::Set(aLabel, DENSITY, 1.2);
+
+// Real attribute type with user defined GUID associated with user's object "Volume"
+TDataStd_Real::Set(aLabel, VOLUME, 185.5);
+
+ To find an user defined Real attribute just use a corresponding GUID:
+Handle (TDataStd_Real) anAtt;
+aLabel.FindAttribute (DENSITY, anAtt);
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @subsection occt_ocaf_6_4_1  Creation Attributes with User Defined GUID.
+
+ You can create a new instance of an attribute with user define GUID and add it to label in two ways.
+ 1. Using static method ::Set(). For example:
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
+    TDF_Label aLabel = ...;
+    Standard_Integer aValue = ...;
+    Standard_GUID aGuid = TDataStd_Integer::GetID();
+    TDataStd_Integer::Set(aLabel, aGuid, aValue);
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+ 2. Using the default constructor
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
+    Handle(TDataStd_Integer) anInt = new TDataStd_Integer();
+    anInt->SetID(aGuid);
+    aLabel.Add(anInt);
+    anInt->Set(aValue);
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     
 @section occt_ocaf_7 Visualization Attributes
