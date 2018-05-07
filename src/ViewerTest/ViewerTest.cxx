@@ -2956,7 +2956,7 @@ static int VDonly2 (Draw_Interpretor& ,
     }
 
     const Handle(AIS_InteractiveObject) aShape = Handle(AIS_InteractiveObject)::DownCast (anIter.Key1());
-    if (aShape.IsNull())
+    if (!aShape.IsNull())
     {
       aCtx->Erase (aShape, Standard_False);
     }

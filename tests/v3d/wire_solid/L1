@@ -1,0 +1,13 @@
+puts "========"
+puts "0029739: Draw Harness - vdonly does not hide displayed objects"
+puts "========"
+
+box b1 0 0 0 1 2 3
+box b2 2 0 0 3 2 1
+vclear
+vaxo
+vdisplay -dispMode 1 b1 b2
+vfit
+vdonly b1
+if {[vreadpixel 100 100 rgb name] == "BLACK"} {puts "Error: wrong prs erased"}
+if {[vreadpixel 300 300 rgb name] != "BLACK"} {puts "Error: wrong prs erased"}
