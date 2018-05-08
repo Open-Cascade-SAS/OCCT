@@ -84,6 +84,11 @@
 #include <unistd.h>
 #endif
 
+#ifdef HAVE_Inspector
+#include <inspector/TInspector_Communicator.hxx>
+static TInspector_Communicator* MyTCommunicator;
+#endif
+
 MainWindow::MainWindow()
 {
     graph = new GraphWidget(this);
@@ -224,6 +229,30 @@ void MainWindow::nbThreads()
         graph->setNbThreads(nb);
 }
 
+#ifdef HAVE_Inspector
+void MainWindow::startDFBrowser()
+{
+  Handle(AppStd_Application) anApplication = getApplication();
+  if (!anApplication.IsNull())
+  {
+    if (!MyTCommunicator)
+    {
+      MyTCommunicator = new TInspector_Communicator();
+
+      NCollection_List<Handle(Standard_Transient)> aParameters;
+      aParameters.Append(anApplication);
+
+      MyTCommunicator->RegisterPlugin("TKDFBrowser");
+
+      MyTCommunicator->Init(aParameters);
+      MyTCommunicator->Activate("TKDFBrowser");
+
+    }
+    MyTCommunicator->SetVisible(true);
+  }
+}
+#endif
+
 void MainWindow::about()
 {
    QMessageBox::about(this, tr("Test-application of the advanced Function Mechanism"),
@@ -250,6 +279,12 @@ void MainWindow::createActions()
     nbThreadsAct->setStatusTip(tr("Number of threads"));
     connect(nbThreadsAct, SIGNAL(triggered()), this, SLOT(nbThreads()));
 
+#ifdef HAVE_Inspector
+    dfBrowserAct = new QAction(tr("DFBrowser"), this);
+    dfBrowserAct->setStatusTip(tr("OCAF structure presentation"));
+    connect(dfBrowserAct, SIGNAL(triggered()), this, SLOT(startDFBrowser()));
+#endif
+
     exitAct = new QAction(tr("E&xit"), this);
     exitAct->setShortcut(tr("Ctrl+Q"));
     exitAct->setStatusTip(tr("Exit the application"));
@@ -269,6 +304,10 @@ void MainWindow::createMenus()
     computeMenu->addAction(computeAct);
     computeMenu->addAction(nbThreadsAct);
     computeMenu->addSeparator();
+#ifdef HAVE_Inspector
+    computeMenu->addAction(dfBrowserAct);
+    computeMenu->addSeparator();
+#endif
     computeMenu->addAction(exitAct);
 
     menuBar()->addSeparator();
