@@ -71,66 +71,29 @@ void DFBrowserPane_TNamingUsedShapes::GetValues (const Handle(TDF_Attribute)& th
     return;
 
   std::list<TCollection_AsciiString> aReferences;
-  if (myAttributeRefs.Find (anAttribute, aReferences))
+  TNaming_DataMapOfShapePtrRefShape& aMap = anAttribute->Map();
+  for (TNaming_DataMapIteratorOfDataMapOfShapePtrRefShape aRefIt (aMap); aRefIt.More(); aRefIt.Next())
   {
-    QMap<TCollection_AsciiString, QList<QVariant> > anEntryValues;
-    QList<QVariant> aValues;
-    TNaming_DataMapOfShapePtrRefShape& aMap = anAttribute->Map();
-    for (TNaming_DataMapIteratorOfDataMapOfShapePtrRefShape aRefIt (aMap); aRefIt.More(); aRefIt.Next())
+    TopoDS_Shape aShape = aRefIt.Key();
+    TNaming_PtrRefShape aPtrRefShape = aRefIt.Value();
+      
+    if (!aShape.IsNull())
     {
-      TCollection_AsciiString anEntry = DFBrowserPane_Tools::GetEntry (aRefIt.Value()->Label());
-      aValues.clear();
-      TopoDS_Shape aShape = aRefIt.Key();
-      aValues.append (!aShape.IsNull() ? DFBrowserPane_Tools::ToName (DB_SHAPE_TYPE, aShape.ShapeType()).ToCString()
-                                       : "EMPTY SHAPE");
-      aValues.append (!aShape.IsNull() ? DFBrowserPane_Tools::GetPointerInfo (aShape.TShape()->This()).ToCString() : "");
-      const TopoDS_Shape aValueShape = aRefIt.Value()->Shape();
-      aValues.append (!aValueShape.IsNull() ?
-                                    DFBrowserPane_Tools::GetPointerInfo (aValueShape.TShape()->This()).ToCString() : "");
-      anEntryValues[anEntry] = aValues;
+      theValues.append(DFBrowserPane_Tools::ToName(DB_SHAPE_TYPE, aShape.ShapeType()).ToCString());
+      theValues.append(DFBrowserPane_Tools::GetPointerInfo(aShape.TShape()->This()).ToCString());
     }
+    else
+      theValues << "EMPTY SHAPE" << "";
 
-    for (std::list<TCollection_AsciiString>::const_iterator aRefIt = aReferences.begin(); aRefIt != aReferences.end(); aRefIt++)
+    if (aPtrRefShape && aPtrRefShape->FirstUse())
     {
-      aValues = anEntryValues[*aRefIt];
-      theValues << aValues[0] << aValues[1] << QString ((*aRefIt).ToCString()) << aValues[2];
+      theValues.append(DFBrowserPane_Tools::GetEntry(aPtrRefShape->Label()).ToCString());
+      const TopoDS_Shape& aValueShape = aPtrRefShape->Shape();
+      theValues.append(!aValueShape.IsNull() ? DFBrowserPane_Tools::GetPointerInfo(aValueShape.TShape()->This()).ToCString() : "");
     }
+    else
+      theValues << "" << "";
   }
-  else
-  {
-    TNaming_DataMapOfShapePtrRefShape& aMap = anAttribute->Map();
-    for (TNaming_DataMapIteratorOfDataMapOfShapePtrRefShape aRefIt (aMap); aRefIt.More(); aRefIt.Next())
-    {
-      TopoDS_Shape aShape = aRefIt.Key();
-      theValues.append (!aShape.IsNull() ? DFBrowserPane_Tools::ToName (DB_SHAPE_TYPE, aShape.ShapeType()).ToCString()
-                                         : "EMPTY SHAPE");
-      theValues.append (!aShape.IsNull() ? DFBrowserPane_Tools::GetPointerInfo (aShape.TShape()->This()).ToCString() : "");
-      theValues.append (DFBrowserPane_Tools::GetEntry (aRefIt.Value()->Label()).ToCString());
-      const TopoDS_Shape aValueShape = aRefIt.Value()->Shape();
-      theValues.append (!aValueShape.IsNull() ? DFBrowserPane_Tools::GetPointerInfo (aValueShape.TShape()->This()).ToCString() : "");
-    }
-  }
-}
-
-// =======================================================================
-// function : GetAttributeInfo
-// purpose :
-// =======================================================================
-QVariant DFBrowserPane_TNamingUsedShapes::GetAttributeInfo (const Handle(TDF_Attribute)& theAttribute, int theRole,
-                                                            int theColumnId)
-{
-  if (theColumnId != 0)
-    return DFBrowserPane_AttributePane::GetAttributeInfo (theAttribute, theRole, theColumnId);
-
-  switch (theRole)
-  {
-    case Qt::ForegroundRole: return QColor (myAttributeRefs.IsEmpty() ? Qt::gray : Qt::black);
-    case Qt::ToolTipRole:
-      return QVariant (myAttributeRefs.IsEmpty() ? QString (QObject::tr ("Content is not sorted yet")) : "");
-    default:
-      break;
-  }
-  return DFBrowserPane_AttributePane::GetAttributeInfo (theAttribute, theRole, theColumnId);
 }
 
 // =======================================================================
@@ -165,8 +128,12 @@ void DFBrowserPane_TNamingUsedShapes::GetAttributeReferences (const Handle(TDF_A
 
   for (TNaming_DataMapIteratorOfDataMapOfShapePtrRefShape aRefIt (anAttribute->Map()); aRefIt.More(); aRefIt.Next())
   {
-    if (aSelectedEntries.contains (DFBrowserPane_Tools::GetEntry (aRefIt.Value()->Label()).ToCString()))
-      theRefAttributes.Append (aRefIt.Value()->NamedShape());
+    TNaming_PtrRefShape aPtrRefShape = aRefIt.Value();
+    if (!aPtrRefShape || !aPtrRefShape->FirstUse())
+      continue;
+
+    if (aSelectedEntries.contains (DFBrowserPane_Tools::GetEntry (aPtrRefShape->Label()).ToCString()))
+      theRefAttributes.Append (aPtrRefShape->NamedShape());
   }
 }
 

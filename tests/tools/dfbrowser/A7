@@ -1,0 +1,6 @@
+puts "========"
+puts "0029743: Samples - Inspector tool - crash by selecting TNaming_UsedShapes tree item"
+puts "========"
+
+pload INSPECTOR
+tinspector -plugins dfbrowser -open [locate_data_file bug29743.cbf] -select 0 TNaming_UsedShapes

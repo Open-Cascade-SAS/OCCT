@@ -18,7 +18,6 @@
 
 #include <inspector/DFBrowserPane_AttributePane.hxx>
 
-#include <NCollection_DataMap.hxx>
 #include <Standard.hxx>
 #include <TCollection_AsciiString.hxx>
 
@@ -36,14 +35,6 @@ public:
   //! Destructor
   virtual ~DFBrowserPane_TNamingUsedShapes() {}
 
-  //! Sets cache of sorted references. If it exists, table view values are obtained not from the attibute
-  //! \param theAttributeRefs container of references
-  void SetSortedReferences (NCollection_DataMap<Handle(TDF_Attribute), std::list<TCollection_AsciiString> >& theAttributeRefs)
-  { myAttributeRefs = theAttributeRefs; }
-
-  //! Clears cache container of sorted references
-  void ClearSortedReferences() { myAttributeRefs.Clear(); }
-
   //! Returns values to fill the table view model
   //! \param theAttribute a current attribute
   //! \param theValues a container of values
@@ -55,14 +46,6 @@ public:
   //! \param theValues a result list of values
   Standard_EXPORT virtual void GetShortAttributeInfo (const Handle(TDF_Attribute)& theAttribute,
                                                       QList<QVariant>& theValues) Standard_OVERRIDE;
-
-  //! Returns information for the given attribute
-  //! \param theAttribute a current attribute
-  //! \param theRole a role of information, used by tree model (e.g. DisplayRole, icon, background and so on)
-  //! \param theColumnId a tree model column
-  //! \return value, interpreted by tree model depending on the role
-  Standard_EXPORT virtual QVariant GetAttributeInfo (const Handle(TDF_Attribute)& theAttribute,
-                                                     int theRole, int theColumnId) Standard_OVERRIDE;
 
   //! Returns container of Attribute references to the attribute
   //! \param theAttribute a current attribute
@@ -77,9 +60,6 @@ protected:
   //! \return container of widths
   Standard_EXPORT virtual QMap<int, int> getTableColumnWidths() const;
 
-private:
-
-  NCollection_DataMap<Handle(TDF_Attribute), std::list<TCollection_AsciiString> > myAttributeRefs;
 };
 
 #endif

@@ -722,6 +722,7 @@ void TNaming_Builder::Delete(const TopoDS_Shape& oldShape)
   TNaming_Node*     pdn = new TNaming_Node(pos,pns);   
   myAtt->Add(pdn);
   UpdateFirstUseOrNextSameShape (pos,pdn);
+  UpdateFirstUseOrNextSameShape (pns,pdn);
 }
 
 //=======================================================================
