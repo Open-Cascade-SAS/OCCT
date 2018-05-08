@@ -167,7 +167,6 @@ void ShapeView_Window::FillActionsMenu (void* theMenu)
 // =======================================================================
 void ShapeView_Window::GetPreferences (TInspectorAPI_PreferencesDataMap& theItem)
 {
-  theItem.Clear();
   theItem.Bind ("geometry",  TreeModel_Tools::ToString (myMainWindow->saveState()).toStdString().c_str());
 
   QMap<QString, QString> anItems;

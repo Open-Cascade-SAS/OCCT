@@ -222,6 +222,9 @@ void DFBrowser_Window::SetParent (void* theParent)
     QLayout* aLayout = myParent->layout();
     if (aLayout)
       aLayout->addWidget (GetMainWindow());
+
+    if (!myOpenedFileName.isEmpty())
+      myParent->setObjectName(myOpenedFileName);
   }
 }
 
@@ -247,7 +250,6 @@ void DFBrowser_Window::FillActionsMenu (void* theMenu)
 // =======================================================================
 void DFBrowser_Window::GetPreferences (TInspectorAPI_PreferencesDataMap& theItem)
 {
-  theItem.Clear();
   theItem.Bind ("geometry",  TreeModel_Tools::ToString (myMainWindow->saveState()).toStdString().c_str());
 
   QMap<QString, QString> anItems;
@@ -498,6 +500,8 @@ void DFBrowser_Window::OpenFile (const TCollection_AsciiString& theFileName)
   
   if (myParent)
     myParent->setObjectName (isSTEPFileName ? QString (TCollection_AsciiString (theFileName).ToCString()) : getWindowTitle());
+  else
+    myOpenedFileName = isSTEPFileName ? QString(TCollection_AsciiString(theFileName).ToCString()) : getWindowTitle();
 
   if (anApplication.IsNull())
   {

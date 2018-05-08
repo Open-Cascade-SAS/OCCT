@@ -34,13 +34,13 @@
 // function : fileNameInDataDir
 // purpose :
 // =======================================================================
-TCollection_AsciiString fileNameInDataDir(const TCollection_AsciiString& theEnvironmentDir,
-                                              const TCollection_AsciiString& theName)
+TCollection_AsciiString fileNameInDataDir (const TCollection_AsciiString& theEnvironmentDir,
+                                           const TCollection_AsciiString& theName)
 {
-  OSD_Environment anEnvironment(theEnvironmentDir);
+  OSD_Environment anEnvironment (theEnvironmentDir);
   
   TCollection_AsciiString aFileName = anEnvironment.Value();
-  aFileName += TCollection_AsciiString("/") + theName;
+  aFileName += TCollection_AsciiString ("/") + theName;
 
   return aFileName;
 }
@@ -52,22 +52,31 @@ TCollection_AsciiString fileNameInDataDir(const TCollection_AsciiString& theEnvi
 void setPluginSampleDirectory (const TCollection_AsciiString& theName, TInspector_Communicator* theCommunicator,
                                TInspectorEXE_OpenButton* theButtonControl)
 {
-  if (theName.IsEqual ("TKDFBrowser"))
+  QStringList aRecentlyOpenedFiles;
+  TInspectorEXE_OpenFileDialog::GetPluginRecentlyOpenedFiles (theName, theCommunicator, aRecentlyOpenedFiles);
+  TCollection_AsciiString aFileName, anAdditionalFileName;
+  if (!aRecentlyOpenedFiles.isEmpty())
+    aFileName = TCollection_AsciiString (aRecentlyOpenedFiles.last().toUtf8().data());
+  if (aFileName.IsEmpty())
   {
-    theCommunicator->OpenFile (theName, fileNameInDataDir ("CSF_OCCTDataPath", "step/screw.step"));
-    theButtonControl->SetPluginDir (theName, fileNameInDataDir ("CSF_OCCTDataPath", "step"));
+    if (theName.IsEqual ("TKDFBrowser"))
+      aFileName = fileNameInDataDir ("CSF_OCCTDataPath", "step/screw.step");
+    else if (theName.IsEqual ("TKShapeView"))
+      aFileName = fileNameInDataDir ("CSF_OCCTDataPath", "occ/hammer.brep");
+    else if (theName.IsEqual ("TKVInspector"))
+    {
+      aFileName = fileNameInDataDir ("CSF_OCCTDataPath", "occ/face1.brep");
+      anAdditionalFileName = fileNameInDataDir ("CSF_OCCTDataPath", "occ/face2.brep");
+    }
+    aRecentlyOpenedFiles.append (aFileName.ToCString());
+    if (!anAdditionalFileName.IsEmpty())
+      aRecentlyOpenedFiles.append (anAdditionalFileName.ToCString());
   }
-  else if (theName.IsEqual ("TKShapeView"))
-  {
-    theCommunicator->OpenFile (theName, fileNameInDataDir ("CSF_OCCTDataPath", "occ/hammer.brep"));
-    theButtonControl->SetPluginDir (theName, fileNameInDataDir ("CSF_OCCTDataPath", "occ"));
-  }
-  else if (theName.IsEqual ("TKVInspector"))
-  {
-    theCommunicator->OpenFile (theName, fileNameInDataDir ("CSF_OCCTDataPath", "occ/face1.brep"));
-    theCommunicator->OpenFile (theName, fileNameInDataDir ("CSF_OCCTDataPath", "occ/face2.brep"));
-    theButtonControl->SetPluginDir (theName, fileNameInDataDir ("CSF_OCCTDataPath", "occ"));
-  }
+  theCommunicator->OpenFile (theName, aFileName.ToCString());
+  if (!anAdditionalFileName.IsEmpty())
+    theCommunicator->OpenFile (theName, anAdditionalFileName);
+
+  theButtonControl->SetPluginRecentlyOpenedFiles (theName, aRecentlyOpenedFiles);
 }
 
 // =======================================================================

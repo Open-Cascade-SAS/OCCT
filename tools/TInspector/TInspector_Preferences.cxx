@@ -31,7 +31,6 @@
 void TInspector_Preferences::GetPreferences (const TCollection_AsciiString& thePluginName,
                                              TInspectorAPI_PreferencesDataMap& theItem)
 {
-  theItem.Clear();
   if (!myIsLoadedPreferences)
   {
     loadPreferences();

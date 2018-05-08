@@ -131,6 +131,9 @@ public:
   Standard_EXPORT virtual void SetPreferences (const TCollection_AsciiString& thePluginName,
                                                const TInspectorAPI_PreferencesDataMap& theItem) = 0;
 
+  //! Store plugin preferences into a preferences file
+  Standard_EXPORT virtual void StorePreferences() = 0;
+
   //! Converts a Shape parameters excepting TShape into a string value
   //! \param theShape processed shape 
   //! \return string instance

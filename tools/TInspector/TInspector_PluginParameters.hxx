@@ -63,7 +63,7 @@ public:
    { myPreferences->SetPreferences (thePluginName, theItem); }
 
   //! Store plugin preferences into a preferences file
-  void StorePreferences() { myPreferences->StorePreferences(); }
+  virtual void StorePreferences() Standard_OVERRIDE { myPreferences->StorePreferences(); }
 
   //! Remove plugin preferences file
   void RemovePreferences() { myPreferences->RemovePreferences(); }

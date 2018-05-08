@@ -17,6 +17,7 @@
 #define TInspector_Communicator_H
 
 #include <inspector/TInspector_Window.hxx>
+#include <inspector/TInspectorAPI_PluginParameters.hxx>
 
 #include <NCollection_List.hxx>
 #include <Standard.hxx>
@@ -107,8 +108,10 @@ public:
   //! \param theStream stream for output
   void Dump (Standard_OStream& theStream) const { return myWindow->Dump (theStream); }
 
-private:
+  //! Returns plugins parameters container
+  Handle(TInspectorAPI_PluginParameters) const GetPluginParameters() { return myWindow->GetPluginParameters(); }
 
+private:
   TInspector_Window* myWindow; //!< current window
 };
 

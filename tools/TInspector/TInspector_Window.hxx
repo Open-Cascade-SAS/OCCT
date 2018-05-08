@@ -129,6 +129,10 @@ public:
   //! \return path
   TCollection_AsciiString GetTemporaryDirectory() const { return myParameters->GetTemporaryDirectory(); }
 
+  //! Returns plugins parameters container
+  //! \return instance of parameters container
+  Handle(TInspectorAPI_PluginParameters) GetPluginParameters() const { return myParameters; }
+
   //! Returns plugin preferences: dock widgets state, tree view columns.
   //! \param theItem container of preference elements
   Standard_EXPORT void GetPreferences (TInspectorAPI_PreferencesDataMap& theItem);

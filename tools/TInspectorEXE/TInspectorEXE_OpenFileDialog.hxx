@@ -16,7 +16,10 @@
 #ifndef TInspectorEXE_OpenFileDialog_H
 #define TInspectorEXE_OpenFileDialog_H
 
+#include <inspector/TInspectorAPI_PreferencesDataMap.hxx>
+
 #include <NCollection_DataMap.hxx>
+#include <NCollection_List.hxx>
 #include <TCollection_AsciiString.hxx>
 
 #include <Standard_WarningsDisable.hxx>
@@ -56,8 +59,9 @@ public:
   QPushButton* StartButton();
 
   //! Sets the default directory of plugin.
-  void SetPluginDir (const TCollection_AsciiString& thePluginName, const TCollection_AsciiString& theDefaultDir)
-  { myDefaultDirs.Bind (thePluginName, theDefaultDir); }
+  void SetPluginRecentlyOpenedFiles (const TCollection_AsciiString& thePluginName,
+                                     const QStringList& theRecentlyOpenedFiles)
+  { myRecentlyOpenedFiles[thePluginName] = theRecentlyOpenedFiles; }
 
 private slots:
 
@@ -67,7 +71,8 @@ private slots:
 private:
 
   QPushButton* myStartButton; //!< processed button
-  NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString> myDefaultDirs; //!< plugins default directories
+  //!< plugins recently opened files
+  QMap<TCollection_AsciiString, QStringList> myRecentlyOpenedFiles;
 };
 
 //! \class TInspectorEXE_OpenFileDialog
@@ -80,7 +85,7 @@ class TInspectorEXE_OpenFileDialog : public QDialog
 private:
 
   //! Constructor
-  TInspectorEXE_OpenFileDialog (QWidget* theParent, const QString& theDataDirName);
+  Standard_EXPORT TInspectorEXE_OpenFileDialog (QWidget* theParent, const QStringList& theRecentlyOpenedFiles);
 
 public:
 
@@ -91,22 +96,34 @@ public:
   //! \param theParent a parent for the new dialog
   //! \param theDataDirName path to default samples directory
   //! \returns a file name from the open file dialog
-  static QString OpenFile (QWidget* theParent, const QString& theDataDirName);
+  Standard_EXPORT static QString OpenFile (QWidget* theParent, const QStringList& theRecentlyOpenedFiles);
 
   //! Returns selection name from the dialog
   QString GetFileName() const { return myFileName; }
 
   //! Returns communicator, if this is the first call, create a communicator instance
-  static TInspector_Communicator* Communicator();
+  Standard_EXPORT static TInspector_Communicator* Communicator();
+
+  //! Returns preferences: previous opened documents.
+  //! \param thePluginName name of the plugin
+  //! \param theCommunicator source of preferences
+  //! \param theFileNames [out] container of recently opened file names
+  Standard_EXPORT static void GetPluginRecentlyOpenedFiles (const TCollection_AsciiString& thePluginName,
+                                                            TInspector_Communicator* theCommunicator,
+                                                            QStringList& theFileNames);
+
+  //! Sets preferences: previous opened documents.
+  //! \param thePluginName name of the plugin
+  //! \param theCommunicator source of preferences
+  //! \param theFileNames container of recently opened file names to be set into communicator preferences
+  Standard_EXPORT static void SetPluginRecentlyOpenedFiles (const TCollection_AsciiString& thePluginName,
+                                                            TInspector_Communicator* theCommunicator,
+                                                            QStringList& theFileNames);
 
 private slots:
 
   //! Stores name of selected sample file
   void onSampleSelectionChanged (const QItemSelection& theSelected, const QItemSelection& theDeselected);
-
-  //! Updates enabling state of Open file button, it is enabled if the file by the entered path exists
-  //! \param theText a file name text in line edit
-  void onNameChanged (const QString& theText);
 
   //! Open file dialog to select a file name. Fills file name line, enable import button
   void onSelectClicked();
@@ -126,17 +143,12 @@ private:
   //! \return model
   QAbstractItemModel* createModel (const QStringList& theFileNames);
 
-  //! Generates container of file names in samples directory
-  //! \return container of names
-  QStringList readSampleNames();
-
 private:
 
-  QString myDataDir; //!< samples directory
+  QStringList myRecentlyOpenedFiles; //!< recently opened files
   QString myFileName; //!< result file name
   QTableView* mySamplesView; //! <view of sample file names
   QLineEdit* mySelectedName; //!< alternative control to open file
-  QToolButton* myFolderApplyOpen; //! button to open file
 };
 
 #endif

@@ -366,8 +366,7 @@ bool TInspector_Window::LoadPlugin (const TCollection_AsciiString& thePluginName
 // =======================================================================
 void TInspector_Window::GetPreferences (TInspectorAPI_PreferencesDataMap& theItem)
 {
-  theItem.Clear();
-  theItem.Bind ("geometry",  TreeModel_Tools::ToString (myMainWindow->saveGeometry()).toStdString().c_str());
+  theItem.Bind ("geometry", TreeModel_Tools::ToString (myMainWindow->saveGeometry()).toStdString().c_str());
 }
 
 // =======================================================================
@@ -414,6 +413,7 @@ void TInspector_Window::OnStorePreferences()
     if (!anInfo.myCommunicator)
       continue;
 
+    aParameters->GetPreferences (anInfo.myName, aPreferences);
     anInfo.myCommunicator->GetPreferences (aPreferences);
     myParameters->SetPreferences (anInfo.myName, aPreferences);
   }

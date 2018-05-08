@@ -193,7 +193,6 @@ void VInspector_Window::FillActionsMenu (void* theMenu)
 // =======================================================================
 void VInspector_Window::GetPreferences (TInspectorAPI_PreferencesDataMap& theItem)
 {
-  theItem.Clear();
   theItem.Bind ("geometry",  TreeModel_Tools::ToString (myMainWindow->saveState()).toStdString().c_str());
 
   QMap<QString, QString> anItems;

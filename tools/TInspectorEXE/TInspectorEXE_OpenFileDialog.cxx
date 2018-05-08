@@ -47,6 +47,8 @@ const int OPEN_DIALOG_HEIGHT = 200;
 const int MARGIN_DIALOG = 4;
 const int SPACING_DIALOG = 2;
 
+const int RECENT_FILES_CACHE_SIZE = 10;
+
 TInspector_Communicator* MyCommunicator;
 
 // =======================================================================
@@ -75,15 +77,36 @@ void TInspectorEXE_OpenButton::onStartButtonClicked()
   if (aPluginName.IsEmpty())
     return;
   
-  QString aDataDirName = QDir::currentPath();
-  if (myDefaultDirs.IsBound (aPluginName))
-    aDataDirName = myDefaultDirs.Find (aPluginName).ToCString();
+  QStringList aPluginRecentlyOpenedFiles;
+  if (myRecentlyOpenedFiles.contains(aPluginName))
+  {
+    QStringList aFileNames = myRecentlyOpenedFiles[aPluginName];
+    for (int i = 0; i < aFileNames.size(); i++)
+    {
+      QFileInfo aFileInfo (aFileNames[i]);
+      if (aFileInfo.exists() && aFileInfo.isFile())
+        aPluginRecentlyOpenedFiles.append(aFileInfo.absoluteFilePath());
+    }
+  }
 
-  QString aFileName = TInspectorEXE_OpenFileDialog::OpenFile (0, aDataDirName);
+  QString aFileName = TInspectorEXE_OpenFileDialog::OpenFile (0, aPluginRecentlyOpenedFiles);
   aFileName = QDir().toNativeSeparators (aFileName);
   if (!aFileName.isEmpty()) {
     QApplication::setOverrideCursor (Qt::WaitCursor);
     TInspectorEXE_OpenFileDialog::Communicator()->OpenFile (aPluginName, TCollection_AsciiString (aFileName.toUtf8().data()));
+
+    QFileInfo aFileInfo (aFileName);
+    if (!aPluginRecentlyOpenedFiles.contains (aFileInfo.absoluteFilePath()))
+    {
+      myRecentlyOpenedFiles[aPluginName].append (aFileInfo.absoluteFilePath());
+      for (int i = 0; i < myRecentlyOpenedFiles[aPluginName].size() - RECENT_FILES_CACHE_SIZE; i++)
+        myRecentlyOpenedFiles[aPluginName].removeFirst();
+      TInspectorEXE_OpenFileDialog::SetPluginRecentlyOpenedFiles (aPluginName,
+        TInspectorEXE_OpenFileDialog::Communicator(), myRecentlyOpenedFiles[aPluginName]);
+
+      TInspectorEXE_OpenFileDialog::Communicator()->GetPluginParameters()->StorePreferences();
+    }
+
     QApplication::restoreOverrideCursor();
   }
 }
@@ -102,26 +125,21 @@ void changeMargins (QBoxLayout* theLayout)
 // function : Constructor
 // purpose :
 // =======================================================================
-TInspectorEXE_OpenFileDialog::TInspectorEXE_OpenFileDialog (QWidget* theParent, const QString& theDataDirName)
-: QDialog(theParent), myDataDir (theDataDirName)
+TInspectorEXE_OpenFileDialog::TInspectorEXE_OpenFileDialog (QWidget* theParent, const QStringList& theRecentlyOpenedFiles)
+: QDialog (theParent), myRecentlyOpenedFiles (theRecentlyOpenedFiles)
 {
-  setWindowTitle (theDataDirName);
+  setWindowTitle (tr ("Open File"));
 
   QVBoxLayout* aDialogLay = new QVBoxLayout (this);
   changeMargins (aDialogLay);
 
-  // Title label
-  QLabel* aTitleLabel = new QLabel (this);
-  aTitleLabel->setText (tr ("Open File"));
-  aDialogLay->addWidget (aTitleLabel);
-
   // Samples View
   QGroupBox* aSamplesBox = new QGroupBox (this);
-  aSamplesBox->setTitle (tr ("Samples"));
+  aSamplesBox->setTitle (tr ("Recent files"));
   aDialogLay->addWidget (aSamplesBox);
   QVBoxLayout* aSampleLay = new QVBoxLayout (aSamplesBox);
   changeMargins (aSampleLay);
-  mySamplesView = createTableView (readSampleNames());
+  mySamplesView = createTableView (theRecentlyOpenedFiles);
   aSampleLay->addWidget (mySamplesView);
 
   // Select file
@@ -143,16 +161,8 @@ TInspectorEXE_OpenFileDialog::TInspectorEXE_OpenFileDialog (QWidget* theParent, 
   aSelectFileBtn->setIcon (QIcon (":folder_open.png"));
   aSelectFileLay->addWidget (aSelectFileBtn, 1, 1);
 
-  myFolderApplyOpen = new QToolButton (aSelectFileBox);
-  myFolderApplyOpen->setIcon (QIcon (":folder_import.png"));
-  myFolderApplyOpen->setIconSize (QSize (ICON_SIZE, ICON_SIZE));
-  myFolderApplyOpen->setEnabled (false);
-  aSelectFileLay->addWidget (myFolderApplyOpen, 0, 2, 2, 1);
-
-  connect (mySelectedName, SIGNAL (textChanged (const QString&)),
-           this, SLOT (onNameChanged (const QString&)));
   connect (aSelectFileBtn, SIGNAL (clicked()), this, SLOT (onSelectClicked()));
-  connect (myFolderApplyOpen, SIGNAL (clicked()), this, SLOT (onApplySelectClicked()));
+  connect (mySelectedName, SIGNAL (returnPressed()), this, SLOT (onApplySelectClicked()));
 
   resize (OPEN_DIALOG_WIDTH, OPEN_DIALOG_HEIGHT);
 }
@@ -161,10 +171,10 @@ TInspectorEXE_OpenFileDialog::TInspectorEXE_OpenFileDialog (QWidget* theParent, 
 // function : OpenFile
 // purpose :
 // =======================================================================
-QString TInspectorEXE_OpenFileDialog::OpenFile (QWidget* theParent, const QString& theDataDirName)
+QString TInspectorEXE_OpenFileDialog::OpenFile (QWidget* theParent, const QStringList& theRecentlyOpenedFiles)
 {
   QString aFileName;
-  TInspectorEXE_OpenFileDialog* aDialog = new TInspectorEXE_OpenFileDialog(theParent, theDataDirName);
+  TInspectorEXE_OpenFileDialog* aDialog = new TInspectorEXE_OpenFileDialog (theParent, theRecentlyOpenedFiles);
   if (aDialog->exec() == QDialog::Accepted)
     aFileName = aDialog->GetFileName();
 
@@ -180,6 +190,47 @@ TInspector_Communicator* TInspectorEXE_OpenFileDialog::Communicator()
   if (!MyCommunicator)
     MyCommunicator = new TInspector_Communicator();
   return MyCommunicator;
+}
+
+// =======================================================================
+// function : GetPluginRecentlyOpenedFiles
+// purpose :
+// =======================================================================
+void TInspectorEXE_OpenFileDialog::GetPluginRecentlyOpenedFiles (const TCollection_AsciiString& thePluginName,
+                                                                 TInspector_Communicator* theCommunicator,
+                                                                 QStringList& theFileNames)
+{
+  Handle(TInspectorAPI_PluginParameters) aParameters = theCommunicator->GetPluginParameters();
+  TInspectorAPI_PreferencesDataMap aPreferencesItem;
+  aParameters->GetPreferences (thePluginName, aPreferencesItem);
+
+  for (TInspectorAPI_IteratorOfPreferencesDataMap anItemIt (aPreferencesItem); anItemIt.More(); anItemIt.Next())
+  {
+    if (!anItemIt.Key().IsEqual("recently_opened_files"))
+      continue;
+    theFileNames = QString(anItemIt.Value().ToCString()).split(";", QString::SkipEmptyParts);
+    if (theFileNames.size() > RECENT_FILES_CACHE_SIZE)
+      for (int i = 0; i < theFileNames.size() - RECENT_FILES_CACHE_SIZE; i++)
+        theFileNames.removeFirst();
+    break;
+  }
+}
+
+// =======================================================================
+// function : SetPluginRecentlyOpenedFiles
+// purpose :
+// =======================================================================
+void TInspectorEXE_OpenFileDialog::SetPluginRecentlyOpenedFiles (const TCollection_AsciiString& thePluginName,
+                                                                 TInspector_Communicator* theCommunicator,
+                                                                 QStringList& theFileNames)
+{
+  Handle(TInspectorAPI_PluginParameters) aParameters = theCommunicator->GetPluginParameters();
+
+  TInspectorAPI_PreferencesDataMap aPreferencesItem;
+  aParameters->GetPreferences (thePluginName, aPreferencesItem);
+  aPreferencesItem.Bind ("recently_opened_files", TCollection_AsciiString (theFileNames.join (";").toUtf8().data()));
+
+  aParameters->SetPreferences (thePluginName, aPreferencesItem);
 }
 
 // =======================================================================
@@ -201,17 +252,6 @@ void TInspectorEXE_OpenFileDialog::onSampleSelectionChanged (const QItemSelectio
 
   myFileName = aSelectionModel->model()->data (anIndex, Qt::ToolTipRole).toString();
   accept();
-}
-
-// =======================================================================
-// function : onNameChanged
-// purpose :
-// =======================================================================
-void TInspectorEXE_OpenFileDialog::onNameChanged (const QString& theText)
-{
-  QFileInfo aFileInfo (theText);
-  bool anExists = aFileInfo.exists() && aFileInfo.isFile();
-  myFolderApplyOpen->setEnabled (anExists);
 }
 
 // =======================================================================
@@ -245,6 +285,12 @@ void TInspectorEXE_OpenFileDialog::onSelectClicked()
 // =======================================================================
 void TInspectorEXE_OpenFileDialog::onApplySelectClicked()
 {
+  QString aFileName = mySelectedName->text();
+
+  QFileInfo aFileInfo (aFileName);
+  if (!aFileInfo.exists() || !aFileInfo.isFile())
+    return;
+
   myFileName = mySelectedName->text();
   accept();
 }
@@ -290,25 +336,4 @@ QAbstractItemModel* TInspectorEXE_OpenFileDialog::createModel (const QStringList
   TInspectorEXE_OpenFileViewModel* aModel = new TInspectorEXE_OpenFileViewModel (this);
   aModel->Init (theFileNames);
   return aModel;
-}
-
-// =======================================================================
-// function : readSampleNames
-// purpose :
-// =======================================================================
-QStringList TInspectorEXE_OpenFileDialog::readSampleNames()
-{
-  QStringList aNames;
-
-  QDir aDir(myDataDir);
-  aDir.setSorting(QDir::Name);
-
-  QFileInfoList aDirEntries = aDir.entryInfoList();
-  for (int aDirId = 0; aDirId < aDirEntries.size(); ++aDirId)
-  {
-    QFileInfo aFileInfo = aDirEntries.at(aDirId);
-    if (aFileInfo.isFile())
-      aNames.append (aFileInfo.absoluteFilePath());
-  }
-  return aNames;
 }

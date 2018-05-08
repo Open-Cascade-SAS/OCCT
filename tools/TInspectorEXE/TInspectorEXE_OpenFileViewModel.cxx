@@ -36,7 +36,7 @@ void TInspectorEXE_OpenFileItemDelegate::paint (QPainter* thePainter, const QSty
     thePainter->fillRect (theOption.rect, myColor);
 
   // action icon for all indices before the last one
-  QIcon anIcon (":/icons/folder_import.png");
+  QIcon anIcon (":folder_import.png");
   QSize anIconSize (ICON_SIZE, ICON_SIZE);
   int aDX = (theOption.rect.width() - anIconSize.width()) / 2;
   int aMargin = qApp->style()->pixelMetric (QStyle::PM_HeaderMargin);

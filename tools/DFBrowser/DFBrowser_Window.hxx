@@ -226,6 +226,7 @@ private:
   DFBrowser_Thread* myThread; //!< Threads manipulator, starting thread items, listens finalizing
   ViewControl_MessageDialog* myExportToShapeViewDialog; //!< dialog about exporting TopoDS_Shape to ShapeView plugin
   Handle(TInspectorAPI_PluginParameters) myParameters; //!< contains application, context, files that should be opened
+  QString myOpenedFileName; //!< cached name of opened file between parent is set, apply it by parent setting and nullify
 };
 
 #endif
