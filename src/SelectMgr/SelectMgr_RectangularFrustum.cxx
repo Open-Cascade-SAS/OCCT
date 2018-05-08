@@ -637,7 +637,7 @@ Standard_Real SelectMgr_RectangularFrustum::DistToGeometryCenter (const gp_Pnt& 
 // =======================================================================
 gp_Pnt SelectMgr_RectangularFrustum::DetectedPoint (const Standard_Real theDepth) const
 {
-  return myNearPickedPnt.XYZ() + myViewRayDir.Normalized().XYZ() * theDepth;
+  return myNearPickedPnt.XYZ() + myViewRayDir.Normalized().XYZ() * theDepth / myScale;
 }
 
 // =======================================================================
