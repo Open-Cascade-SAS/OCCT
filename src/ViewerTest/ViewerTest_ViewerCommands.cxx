@@ -169,6 +169,59 @@ Aspect_Handle GetWindowHandle(const Handle(Aspect_Window)& theWindow)
 }
 #endif
 
+//! Setting additional flag to store 2D mode of the View to avoid scene rotation by mouse/key events
+class ViewerTest_V3dView : public V3d_View
+{
+  DEFINE_STANDARD_RTTI_INLINE(ViewerTest_V3dView, V3d_View)
+public:
+  //! Initializes the view.
+  ViewerTest_V3dView (const Handle(V3d_Viewer)& theViewer, const V3d_TypeOfView theType = V3d_ORTHOGRAPHIC,
+                      bool theIs2dMode = false)
+  : V3d_View (theViewer, theType), myIs2dMode (theIs2dMode) {}
+
+  //! Initializes the view by copying.
+  ViewerTest_V3dView (const Handle(V3d_Viewer)& theViewer, const Handle(V3d_View)& theView)
+  : V3d_View (theViewer, theView), myIs2dMode (false)
+  {
+    if (Handle(ViewerTest_V3dView) aV3dView = Handle(ViewerTest_V3dView)::DownCast (theView))
+    {
+      myIs2dMode = aV3dView->IsViewIn2DMode();
+    }
+  }
+
+  //! Returns true if 2D mode is set for the view
+  bool IsViewIn2DMode() const { return myIs2dMode; }
+
+  //! Sets 2D mode for the view
+  void SetView2DMode (bool the2dMode) { myIs2dMode = the2dMode; }
+
+public:
+
+  //! Returns true if active view in 2D mode.
+  static bool IsCurrentViewIn2DMode()
+  {
+    if (Handle(ViewerTest_V3dView) aV3dView = Handle(ViewerTest_V3dView)::DownCast (ViewerTest::CurrentView()))
+    {
+      return aV3dView->IsViewIn2DMode();
+    }
+    return false;
+  }
+
+  //! Set if active view in 2D mode.
+  static void SetCurrentView2DMode (bool theIs2d)
+  {
+    if (Handle(ViewerTest_V3dView) aV3dView = Handle(ViewerTest_V3dView)::DownCast (ViewerTest::CurrentView()))
+    {
+      aV3dView->SetView2DMode (theIs2d);
+    }
+  }
+
+private:
+
+  Standard_Boolean myIs2dMode; //!< 2D mode flag
+
+};
+
 NCollection_DoubleMap <TCollection_AsciiString, Handle(V3d_View)> ViewerTest_myViews;
 static NCollection_DoubleMap <TCollection_AsciiString, Handle(AIS_InteractiveContext)>  ViewerTest_myContexts;
 static NCollection_DoubleMap <TCollection_AsciiString, Handle(Graphic3d_GraphicDriver)> ViewerTest_myDrivers;
@@ -719,11 +772,11 @@ TCollection_AsciiString ViewerTest::ViewerInit (const Standard_Integer thePxLeft
   Handle(V3d_View) aView;
   if (!theViewToClone.IsNull())
   {
-    aView = new V3d_View (a3DViewer, theViewToClone);
+    aView = new ViewerTest_V3dView (a3DViewer, theViewToClone);
   }
   else
   {
-    aView = new V3d_View (a3DViewer, a3DViewer->DefaultTypeOfView());
+    aView = new ViewerTest_V3dView (a3DViewer, a3DViewer->DefaultTypeOfView());
   }
 
   aView->SetWindow (VT_GetWindow());
@@ -795,6 +848,7 @@ static int VInit (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const cha
   Standard_Integer aPxLeft = 0, aPxTop = 0, aPxWidth = 0, aPxHeight = 0;
   Handle(V3d_View) aCopyFrom;
   TCollection_AsciiString aName, aValue;
+  int is2dMode = -1;
   for (Standard_Integer anArgIt = 1; anArgIt < theArgsNb; ++anArgIt)
   {
     const TCollection_AsciiString anArg = theArgVec[anArgIt];
@@ -847,6 +901,18 @@ static int VInit (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const cha
       {
         ++anArgIt;
       }
+    }
+    else if (anArgCase == "-2d_mode"
+          || anArgCase == "-2dmode"
+          || anArgCase == "-2d")
+    {
+      bool toEnable = true;
+      if (anArgIt + 1 < theArgsNb
+       && ViewerTest::ParseOnOff (theArgVec[anArgIt + 1], toEnable))
+      {
+        ++anArgIt;
+      }
+      is2dMode = toEnable ? 1 : 0;
     }
     else if (anArgIt + 1 < theArgsNb
           && (anArgCase == "-disp"
@@ -926,11 +992,19 @@ static int VInit (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const cha
   {
     TCollection_AsciiString aCommand = TCollection_AsciiString ("vactivate ") + aViewNames.GetViewName();
     theDi.Eval (aCommand.ToCString());
+    if (is2dMode != -1)
+    {
+      ViewerTest_V3dView::SetCurrentView2DMode (is2dMode == 1);
+    }
     return 0;
   }
 
   TCollection_AsciiString aViewId = ViewerTest::ViewerInit (aPxLeft, aPxTop, aPxWidth, aPxHeight,
                                                             aViewName, aDisplayName, aCopyFrom);
+  if (is2dMode != -1)
+  {
+    ViewerTest_V3dView::SetCurrentView2DMode (is2dMode == 1);
+  }
   theDi << aViewId;
   return 0;
 }
@@ -1545,12 +1619,14 @@ void VT_ProcessKeyPress (const char* buf_ret)
   const Handle(V3d_View) aView = ViewerTest::CurrentView();
   // Letter in alphabetic order
 
-  if (!strcasecmp (buf_ret, "A"))
+  if (!strcasecmp (buf_ret, "A")
+   && !ViewerTest_V3dView::IsCurrentViewIn2DMode())
   {
     // AXO
     aView->SetProj(V3d_XposYnegZpos);
   }
-  else if (!strcasecmp (buf_ret, "D"))
+  else if (!strcasecmp (buf_ret, "D")
+        && !ViewerTest_V3dView::IsCurrentViewIn2DMode())
   {
     // Reset
     aView->Reset();
@@ -1645,22 +1721,26 @@ void VT_ProcessKeyPress (const char* buf_ret)
     }
 
   }
-  else if (!strcasecmp (buf_ret, "T"))
+  else if (!strcasecmp (buf_ret, "T")
+        && !ViewerTest_V3dView::IsCurrentViewIn2DMode())
   {
     // Top
     aView->SetProj(V3d_Zpos);
   }
-  else if (!strcasecmp (buf_ret, "B"))
+  else if (!strcasecmp (buf_ret, "B")
+        && !ViewerTest_V3dView::IsCurrentViewIn2DMode())
   {
     // Bottom
     aView->SetProj(V3d_Zneg);
   }
-  else if (!strcasecmp (buf_ret, "L"))
+  else if (!strcasecmp (buf_ret, "L")
+        && !ViewerTest_V3dView::IsCurrentViewIn2DMode())
   {
     // Left
     aView->SetProj(V3d_Xneg);
   }
-  else if (!strcasecmp (buf_ret, "R"))
+  else if (!strcasecmp (buf_ret, "R")
+        && !ViewerTest_V3dView::IsCurrentViewIn2DMode())
   {
     // Right
     aView->SetProj(V3d_Xpos);
@@ -1847,6 +1927,11 @@ void VT_ProcessButton1Release (Standard_Boolean theIsShift)
 //==============================================================================
 void VT_ProcessButton3Press()
 {
+  if (ViewerTest_V3dView::IsCurrentViewIn2DMode())
+  {
+    return;
+  }
+
   Start_Rot = 1;
   HasHlrOnBeforeRotation = ViewerTest::CurrentView()->ComputedMode();
   if (HasHlrOnBeforeRotation)
@@ -6982,6 +7067,59 @@ static int VViewParams (Draw_Interpretor& theDi, Standard_Integer theArgsNb, con
 }
 
 //==============================================================================
+//function : V2DMode
+//purpose  :
+//==============================================================================
+static Standard_Integer V2DMode (Draw_Interpretor&, Standard_Integer theArgsNb, const char** theArgVec)
+{
+  bool is2dMode = true;
+  Handle(ViewerTest_V3dView) aV3dView = Handle(ViewerTest_V3dView)::DownCast (ViewerTest::CurrentView());
+  if (aV3dView.IsNull())
+  {
+    std::cout << "Error: no active view.\n";
+    return 1;
+  }
+  for (Standard_Integer anArgIt = 1; anArgIt < theArgsNb; ++anArgIt)
+  {
+    const TCollection_AsciiString anArg = theArgVec[anArgIt];
+    TCollection_AsciiString anArgCase = anArg;
+    anArgCase.LowerCase();
+    if (anArgIt + 1 < theArgsNb
+     && anArgCase == "-name")
+    {
+      ViewerTest_Names aViewNames (theArgVec[++anArgIt]);
+      TCollection_AsciiString aViewName = aViewNames.GetViewName();
+      if (!ViewerTest_myViews.IsBound1 (aViewName))
+      {
+        std::cout << "Syntax error: unknown view '" << theArgVec[anArgIt - 1] << "'.\n";
+        return 1;
+      }
+      aV3dView = Handle(ViewerTest_V3dView)::DownCast (ViewerTest_myViews.Find1 (aViewName));
+    }
+    else if (anArgCase == "-mode")
+    {
+      if (anArgIt + 1 < theArgsNb
+       && ViewerTest::ParseOnOff (theArgVec[anArgIt + 1], is2dMode))
+      {
+        ++anArgIt;
+      }
+    }
+    else if (ViewerTest::ParseOnOff (theArgVec[anArgIt], is2dMode))
+    {
+      //
+    }
+    else
+    {
+      std::cout << "Syntax error: unknown argument " << anArg << ".\n";
+      return 1;
+    }
+  }
+
+  aV3dView->SetView2DMode (is2dMode);
+  return 0;
+}
+
+//==============================================================================
 //function : VAnimation
 //purpose  :
 //==============================================================================
@@ -11688,7 +11826,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
   const char *group = "ZeViewer";
   theCommands.Add("vinit",
           "vinit [-name viewName] [-left leftPx] [-top topPx] [-width widthPx] [-height heightPx]"
-    "\n\t\t:     [-exitOnClose] [-closeOnEscape] [-cloneActive]"
+    "\n\t\t:     [-exitOnClose] [-closeOnEscape] [-cloneActive] [-2d_mode {on|off}=off]"
   #if !defined(_WIN32) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
     "\n\t\t:     [-display displayName]"
   #endif
@@ -11707,6 +11845,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "\n\t\t:  -cloneActive floag to copy camera and dimensions of active view."
     "\n\t\t:  -exitOnClose when specified, closing the view will exit application."
     "\n\t\t:  -closeOnEscape when specified, view will be closed on pressing Escape."
+    "\n\t\t:  -2d_mode when on, view will not react on rotate scene events"
     "\n\t\t: Additional commands for operations with views: vclose, vactivate, vviewlist.",
     __FILE__,VInit,group);
   theCommands.Add("vclose" ,
@@ -12041,6 +12180,16 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
       "\n\t\t:                 or changes the size of its maximum dimension"
       "\n\t\t:   -args         prints vviewparams arguments for restoring current view",
     __FILE__, VViewParams, group);
+
+  theCommands.Add("v2dmode",
+    "v2dmode [-name viewName] [-mode {-on|-off}=-on]"
+    "\n\t\t:   name   - name of existing view, if not defined, the active view is changed"
+    "\n\t\t:   mode   - switches On/Off rotation mode"
+    "\n\t\t: Set 2D mode of the active viewer manipulating. The following mouse and key actions are disabled:"
+    "\n\t\t:   - rotation of the view by 3rd mouse button with Ctrl active"
+    "\n\t\t:   - set view projection using key buttons: A/D/T/B/L/R for AXO, Reset, Top, Bottom, Left, Right"
+    "\n\t\t: View camera position might be changed only by commands.",
+    __FILE__, V2DMode, group);
 
   theCommands.Add("vanimation", "Alias for vanim",
     __FILE__, VAnimation, group);
