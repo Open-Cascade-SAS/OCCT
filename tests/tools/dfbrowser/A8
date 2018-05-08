@@ -1,0 +1,7 @@
+puts "========"
+puts "0029733: TInspector can't open several cbf files"
+puts "========"
+
+pload INSPECTOR
+tinspector -plugins dfbrowser -open [locate_data_file bug29743.cbf]
+tinspector -open [locate_data_file bug29733.cbf]
