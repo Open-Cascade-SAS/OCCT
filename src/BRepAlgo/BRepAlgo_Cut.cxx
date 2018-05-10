@@ -18,6 +18,8 @@
 #include <BRepAlgo_Cut.hxx>
 #include <TopoDS_Shape.hxx>
 
+Standard_DISABLE_DEPRECATION_WARNINGS
+
 //=======================================================================
 //function : BRepAlgo_Cut
 //purpose  : 
@@ -30,3 +32,5 @@ BRepAlgo_Cut::BRepAlgo_Cut(const TopoDS_Shape& S1,
   PerformDS();
   Perform(TopAbs_OUT,TopAbs_IN);
 }
+
+Standard_ENABLE_DEPRECATION_WARNINGS

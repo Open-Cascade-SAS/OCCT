@@ -54,7 +54,8 @@ class Geom_Surface;
 //! S.Build();
 //! TopoDS_Shape R = S.Shape();
 //! On Null Shapes of geometries, NotDone() is called.
-class BRepAlgo_Section  : public BRepAlgo_BooleanOperation
+class Standard_DEPRECATED("This class is deprecated - BRepAlgoAPI_Section should be used instead")
+  BRepAlgo_Section  : public BRepAlgo_BooleanOperation
 {
 public:
 

@@ -1515,7 +1515,7 @@ Multiple changes have been applied to lights management within TKV3d and TKOpenG
   (preserving most methods of V3d_Light sub-classes to simplify porting).
 * Obsolete debugging functionality for drawing lights source has been removed from V3d_Light.
   Methods and constructors taking parameters for this drawing and not affecting light definition itself has been also removed.
-* Light constructors taking V3d_Viewer has been marked deprecated.
+* Light constructors taking V3d_Viewer have been marked deprecated.
   Application may call V3d_Viewer::AddLight() explicitly to register new light sources created by new constructors within V3d_Viewer, but this step is now optional.
 * The upper limit of 8 light sources has been removed.
 * Dedicated classes per light source type V3d_AmbientLight, V3d_DirectionalLight, V3d_PositionalLight and V3d_SpotLight have been preserved,
@@ -1561,3 +1561,12 @@ Since new version, these unclassified faces are no longer added into resulting s
 The following public methods of the *BOPAlgo_BuilderSolid* class have been removed as excessive:
 * void SetSolid(const TopoDS_Solid& theSolid);
 * const TopoDS_Solid& Solid() const;
+
+@subsection upgrade_730_BRepAlgoBO Boolean Operation classes in BRepAlgo are deprecated
+
+The API classes in the package BRepAlgo providing access to old Boolean operations are marked as deprecated:
+* BRepAlgo_Fuse
+* BRepAlgo_Common
+* BRepAlgo_Cut
+* BRepAlgo_Section
+Corresponding classes from the package BRepAlgoAPI should be used instead.

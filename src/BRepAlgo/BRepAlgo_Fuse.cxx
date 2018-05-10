@@ -18,6 +18,8 @@
 #include <BRepAlgo_Fuse.hxx>
 #include <TopoDS_Shape.hxx>
 
+Standard_DISABLE_DEPRECATION_WARNINGS
+
 //=======================================================================
 //function : BRepAlgo_Fuse
 //purpose  : 
@@ -30,3 +32,5 @@ BRepAlgo_Fuse::BRepAlgo_Fuse(const TopoDS_Shape& S1,
   PerformDS();
   Perform(TopAbs_OUT,TopAbs_OUT);
 }
+
+Standard_ENABLE_DEPRECATION_WARNINGS

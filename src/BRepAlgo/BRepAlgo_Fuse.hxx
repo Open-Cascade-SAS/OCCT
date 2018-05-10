@@ -31,7 +31,8 @@ class TopoDS_Shape;
 //! - defining the construction of a fused shape,
 //! - implementing the construction algorithm, and
 //! - consulting the result.
-class BRepAlgo_Fuse  : public BRepAlgo_BooleanOperation
+class Standard_DEPRECATED("This class is deprecated - BRepAlgoAPI_Fuse should be used instead")
+  BRepAlgo_Fuse  : public BRepAlgo_BooleanOperation
 {
 public:
 
