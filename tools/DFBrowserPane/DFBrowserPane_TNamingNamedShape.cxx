@@ -65,9 +65,9 @@ DFBrowserPane_TNamingNamedShape::DFBrowserPane_TNamingNamedShape()
   getPaneModel()->SetColumnCount (5);
 
   myEvolutionPaneModel = new DFBrowserPane_AttributePaneModel();
-  myEvolutionPaneModel->SetColumnCount (11);
+  myEvolutionPaneModel->SetColumnCount (10);
   QList<int> anItalicColumns;
-  anItalicColumns << 2 << 6;
+  anItalicColumns << 1 << 5;
   myEvolutionPaneModel->SetItalicColumns (anItalicColumns);
   QItemSelectionModel* aSelectionModel = new QItemSelectionModel (myEvolutionPaneModel);
   mySelectionModels.push_back (aSelectionModel);
@@ -115,18 +115,18 @@ QWidget* DFBrowserPane_TNamingNamedShape::CreateWidget (QWidget* theParent)
   aTableView->setSelectionModel (*aSelectionModelsIt);
 
   aTableView->horizontalHeader()->setStretchLastSection (false);
-  aTableView->setColumnWidth (5, COLUMN_EXPORT_WIDTH);
-  aTableView->setColumnWidth (10, COLUMN_EXPORT_WIDTH);
+  aTableView->setColumnWidth (4, COLUMN_EXPORT_WIDTH);
+  aTableView->setColumnWidth (9, COLUMN_EXPORT_WIDTH);
 
   anItemDelegate = new DFBrowserPane_ItemDelegateButton (myEvolutionTableView->GetTableView(), ":/icons/export_shape.png");
   QObject::connect (anItemDelegate, SIGNAL (buttonPressed (const QModelIndex&)),
                     &myHelperExport, SLOT (OnButtonPressed (const QModelIndex&)));
-  myEvolutionTableView->GetTableView()->setItemDelegateForColumn (5, anItemDelegate);
+  myEvolutionTableView->GetTableView()->setItemDelegateForColumn (4, anItemDelegate);
 
   anItemDelegate = new DFBrowserPane_ItemDelegateButton (myEvolutionTableView->GetTableView(), ":/icons/export_shape.png");
   QObject::connect (anItemDelegate, SIGNAL (buttonPressed (const QModelIndex&)),
                     &myHelperExport, SLOT (OnButtonPressed (const QModelIndex&)));
-  myEvolutionTableView->GetTableView()->setItemDelegateForColumn (10, anItemDelegate);
+  myEvolutionTableView->GetTableView()->setItemDelegateForColumn (9, anItemDelegate);
 
   QGridLayout* aLay = new QGridLayout (aMainWidget);
   aLay->setContentsMargins (0, 0, 0, 0);
@@ -214,8 +214,7 @@ void DFBrowserPane_TNamingNamedShape::Init (const Handle(TDF_Attribute)& theAttr
     const TopoDS_Shape& aNewShape = aShapeAttrIt.NewShape();
 
     Handle(TNaming_NamedShape) anOldAttr = TNaming_Tool::NamedShape (anOldShape, aShapeAttr->Label());
-    aValues << DFBrowserPane_Tools::ToName (DB_NS_TYPE, aShapeAttrIt.Evolution()).ToCString()
-            << (aShapeAttrIt.IsModification() ? "modified" : "-");
+    aValues << DFBrowserPane_Tools::ToName (DB_NS_TYPE, aShapeAttrIt.Evolution()).ToCString();
     aHasModified = aHasModified | aShapeAttrIt.IsModification();
 
     aValues << "New:";
@@ -258,15 +257,15 @@ void DFBrowserPane_TNamingNamedShape::Init (const Handle(TDF_Attribute)& theAttr
       if (!aNewShape.IsNull())
       {
         anIndices.clear();
-        anIndices << myEvolutionPaneModel->index (aRowId, 3) << myEvolutionPaneModel->index (aRowId, 4)
-                  << myEvolutionPaneModel->index (aRowId, 5);
+        anIndices << myEvolutionPaneModel->index (aRowId, 2) << myEvolutionPaneModel->index (aRowId, 3)
+                  << myEvolutionPaneModel->index (aRowId, 4);
         myHelperExport.AddShape (aNewShape, anIndices);
       }
       if (!anOldShape.IsNull())
       {
         anIndices.clear();
-        anIndices << myEvolutionPaneModel->index (aRowId, 7) << myEvolutionPaneModel->index (aRowId, 8)
-                  << myEvolutionPaneModel->index (aRowId, 10);
+        anIndices << myEvolutionPaneModel->index (aRowId, 6) << myEvolutionPaneModel->index (aRowId, 7)
+                  << myEvolutionPaneModel->index (aRowId, 9);
         myHelperExport.AddShape (anOldShape, anIndices);
       }
     }
