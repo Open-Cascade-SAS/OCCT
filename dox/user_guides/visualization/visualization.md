@@ -138,7 +138,7 @@ Selectable object stores information about all created selection modes and sensi
 All successors of a selectable object must implement the method that splits its presentation into sensitive entities according to the given mode. The computed entities are arranged in one selection and added to the list of all selections of this object. No selection will be removed from the list until the object is deleted permanently.
 
 For all standard OCCT shapes, zero mode is supposed to select the whole object (but it may be redefined easily in the custom object). For example, the standard OCCT selection mechanism and *AIS_Shape* determine the following modes:
-  - 0 -- selection of entire object (AIS_Shape);
+  - 0 -- selection of the entire object *(AIS_Shape)*;
   - 1 -- selection of the vertices;
   - 2 -- selection of the edges;
   - 3 -- selection of the wires;
@@ -765,10 +765,10 @@ theCtx->SetDisplayMode (2, true);
 The Local Selection is defined by index (Selection Mode). The Selection Modes implemented by a specific interactive object and their meaning should be checked within the documentation of this class.
 See, for example, *MeshVS_SelectionModeFlags* for *MeshVS_Mesh* object.
 
-The interactive object, which is used the most by applications, is *AIS_Shape*. Consequently, there are standard functions, which allow you to easily prepare selection operations on the constituent elements of shapes (selection of vertices, edges, faces, etc.). The Selection Mode for a specific shape type (*TopAbs_ShapeEnum*) is returned by method *AIS_Shape::SelectionMode()*.
+*AIS_Shape* is the most used interactive object. It provides API to manage selection operations on the constituent elements of shapes (selection of vertices, edges, faces, etc.). The Selection Mode for a specific shape type (*TopAbs_ShapeEnum*) is returned by method *AIS_Shape::SelectionMode()*.
 
-The function *AIS_InteractiveObject::Display* (without argument taking Selection Mode) activates the object's default Selection Mode.
-The functions *AIS_InteractiveContext::Activate* and *AIS_InteractiveContext::Deactivate* activate and deactivate specific Selection Mode.
+The method *AIS_InteractiveObject::Display()* without a Selection Mode argument activates the default Selection Mode of the object.
+The methods *AIS_InteractiveContext::Activate()* and *AIS_InteractiveContext::Deactivate()* activate and deactivate a specific Selection Mode.
 
 More than one Selection Mode can be activated at the same time (but default 0 mode for selecting entire object is exclusive - it cannot be combined with others).
 The list of active modes can be retrieved using function *AIS_InteractiveContext::ActivatedModes*.
@@ -843,8 +843,8 @@ After using the *Select* and *ShiftSelect* functions, you can explore the list o
   * *AIS_InteractiveContext::NextSelected* -- moves the iterator to the next position;
   * *AIS_InteractiveContext::SelectedOwner* -- returns an entity at the current iterator position.
 
-The owner object *SelectMgr_EntityOwner* is a key object identifying selectable entitiy in the viewer (returned by methods *AIS_InteractiveContext::DetectedOwner* and *AIS_InteractiveContext::SelectedOwner*).
-The Interactive Object itself can be retrieved by method *SelectMgr_EntityOwner::Selectable*, while identifying sub-part depends on type of Interactive Object.
+The owner object *SelectMgr_EntityOwner* is a key object identifying the selectable entity in the viewer (returned by methods *AIS_InteractiveContext::DetectedOwner* and *AIS_InteractiveContext::SelectedOwner*).
+The Interactive Object itself can be retrieved by method *SelectMgr_EntityOwner::Selectable*, while identifying a sub-part depends on the type of Interactive Object.
 In case of *AIS_Shape*, the (sub)shape is returned by method *StdSelect_BRepOwner::Shape*.
 
 #### Example
@@ -1121,9 +1121,9 @@ The root is the top of a structure hierarchy or structure network. The attribute
   * Have a type, a scale factor, and a color,
   * Have a size, shape, and orientation independent of transformations.
 * **Triangulation**
-  * Have at least three vertices,
-  * Have nodal normals defined for shading,
-  * Have interior attributes -- style, color, front and back material, texture and reflection ratio,
+  * Has at least three vertices,
+  * Has nodal normals defined for shading,
+  * Has interior attributes -- style, color, front and back material, texture and reflection ratio.
 * **Polylines** or **Segments**
   * Have two or more vertices,
   * Have the following attributes -- type, width scale factor, color.
@@ -1196,7 +1196,7 @@ aGroup->SetGroupPrimitivesAspect (myDrawer->ShadingAspect()->Aspect());
 
 @subsubsection occt_visu_4_2_5 Text primitive
 
-TKOpenGL toolkit renders text labels using texture fonts. *Graphic3d* text primitives have the following features:
+*TKOpenGL* toolkit renders text labels using texture fonts. *Graphic3d* text primitives have the following features:
   * fixed size (non-zoomable) or zoomable,
   * can be rotated to any angle in the view plane,
   * support unicode charset.
@@ -1213,8 +1213,16 @@ void Graphic3d_Group::Text (const Standard_CString theText,
                             const Graphic3d_VerticalTextAlignment theVta,
                             const Standard_Boolean theToEvalMinMax);
 ~~~~~
-*theText* parameter is the text string, *thePoint* is the three-dimensional position of the text, *theHeight* is the text height, *theAngle* is the orientation of the text (at the moment, this parameter has no effect, but you can specify the text orientation through  the *Graphic3d_AspectText3d* attributes).
-*theTp* parameter defines the text path, *theHta* is the horizontal alignment of the text, *theVta* is the vertical alignment of the text.
+
+The meaning of these parameters is as follows: 
+* *theText* - the text string,
+* *thePoint* - the three-dimensional position of the text,
+* *theHeight* - the text height,
+* *theAngle* - the text orientation (at the moment, this parameter has no effect, but you can specify the text orientation through the *Graphic3d_AspectText3d* attributes).
+* *theTp* defines the text path,
+* *theHta* - the horizontal alignment of the text,
+* *theVta* - the vertical alignment of the text.
+
 You can pass FALSE as *theToEvalMinMax* if you do not want the graphic3d structure boundaries to be affected by the text position.
 
 **Note** that the text orientation angle can be defined by *Graphic3d_AspectText3d* attributes.

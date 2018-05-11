@@ -193,9 +193,9 @@ Use prefix <i>bug</i> followed by Mantis issue ID and, if necessary, additional 
 	*	To check expected output which should be obtained as the test result, add @ref testmanual_3_7 "REQUIRED" statement for each line of output to mark it as required.
 	*	If the test case produces error messages (contained in parse.rules), which are expected in that test and should not be considered as its failure (e.g. test for *checkshape* command), add REQUIRED statement for each error to mark it as required output.
 4.	To check whether the data files needed for the test are already present in the database, use DRAW command *testfile* (see below).
-    If the data file is already present, use it for new test instead of adding a duplicate.
-    If the data file(s) are not yet present in the test database, put them to some folder and add it to the environment variable *CSF_TestDataPath* to be found by the test system.
-    Information on where the data files can be accessed by OCC team for putting to official database should be provided in comment to Mantis issue, clearly indicating how names of the files used by the test script match the actual names of the files.
+    If the data file is already present, use it for a new test instead of adding a duplicate.
+    If the data file(s) are not yet present in the test database, put them to a folder and add it to the environment variable *CSF_TestDataPath* to be found by the test system.
+    The location of the data files, which need to be accessed by OCC team and put to the official database, should be provided in the comment to Mantis issue, clearly indicating how the names of the files used by the test script match the actual names of the files.
     The simplest way is to attach the data files to the Mantis issue, with the same names as used by the test script.
 5.	Check that the test case runs as expected (test for fix: OK with the fix, FAILED without the fix; test for existing problem: BAD), and integrate it to the Git branch created for the issue.
 
@@ -222,8 +222,8 @@ fixshape result a 0.01 0.01
 checkshape result
 ~~~~~
 
-DRAW command testfile should be used to check the data files being used by the test for possible duplication of content or names.
-The command accepts list of paths to files being checked as single argument, and will give conclusion on each of the files, for instance:
+DRAW command *testfile* should be used to check the data files used by the test for possible duplication of content or names.
+The command accepts the list of paths to files to be checked (as a single argument) and gives a conclusion on each of the files, for instance:
 
 ~~~~~
 Draw[1]> testfile [glob /my/data/path/bug12345*]

@@ -5577,7 +5577,7 @@ intconcon curve1 curve2
 
 Displays the intersection points between two 2d curves. 
 Curves must be only conic sections: 2d lines, circles, ellipses,
-hyperbolas, parabolas. Algorithm from IntAna2d_AnaIntersection is used.
+hyperbolas, parabolas. The algorithm from *IntAna2d_AnaIntersection* is used.
 
 **Example:** 
 ~~~~~
@@ -7405,12 +7405,12 @@ Syntax:
 bounding {-s shape | -c xmin ymin zmin xmax ymax zmax} [-obb] [-shape name] [-dump] [-notriangulation] [-perfmeter name NbIters] [-save xmin ymin zmin xmax ymax zmax] [-nodraw] [-optimal] [-exttoler]
 ~~~~~
 
-Computes and displays the bounding box (BndBox) of a shape. The bounding box is a cuboid circumscribes the source shape.
-Generaly, bounding boxes can be divided on two main types:
-  - axis-aligned BndBox (AABB). I.e. the box whose edges are parallel to the some axis of World Coordinate System (WCS);
+Computes and displays the bounding box (BndBox) of a shape. The bounding box is a cuboid that circumscribes the source shape.
+Generaly, bounding boxes can be divided into two main types:
+  - axis-aligned BndBox (AABB). I.e. the box whose edges are parallel to an axis of World Coordinate System (WCS);
   - oriented BndBox (OBB). I.e. not AABB.
 
-Detailed information about this command is availabe in DRAW help-system (enter "help bounding" in DRAW-application).
+Detailed information about this command is availabe in DRAW help-system (enter "help bounding" in DRAW application).
   
 **Example 1: Creation of AABB with given corners** 
 ~~~~~
@@ -7491,7 +7491,7 @@ Syntax:
 isbbinterf shape1 shape2 [-o]
 ~~~~~
 
-Checks whether the bounding-boxes created from the given shapes are interfered. If "-o"-option is switched on then the oriented boxes will be checked. Otherwise, axes-aligned boxes will be checked.
+Checks whether the bounding boxes created from the given shapes are interfered. If "-o"-option is switched on then the oriented boxes will be checked. Otherwise, axis-aligned boxes will be checked.
 
 **Example 1: Not interfered AABB** 
 ~~~~~
@@ -7540,7 +7540,7 @@ Syntax:
 distmini name Shape1 Shape2 
 ~~~~~
 
-Calculates the minimum distance between two shapes. The calculation returns the number of solutions, If more than one solution exists. The options are displayed in the viewer(red) and the results are listed in the shell window. The *distmini* lines are considered as shapes which have a value v. 
+Calculates the minimum distance between two shapes. The calculation returns the number of solutions, if more than one solution exists. The options are displayed in the viewer in red and the results are listed in the shell window. The *distmini* lines are considered as shapes which have a value v. 
 
 **Example:** 
 ~~~~~
@@ -7610,8 +7610,8 @@ checkshape [-top] shape [result] [-short]
 
 Where: 
 * *top* -- optional parameter, which allows checking only topological validity of a shape. 
-* *shape* -- the only required parameter which represents the name of the shape to check. 
-* *result* -- optional parameter which is the prefix of the output shape names. 
+* *shape* -- the only required parameter, defines the name of the shape to check. 
+* *result* -- optional parameter, defines custom prefix for the output shape names.
 * *short* -- a short description of the check. 
 
 **checkshape** examines the selected object for topological and geometric coherence. The object should be a three dimensional shape. 
@@ -7656,9 +7656,9 @@ validrange edge [(out) u1 u2]
 
 Where: 
 * *edge* -- the name of the edge to analyze. 
-* *u1*, *u2* -- optional names of variables to put the range into.
+* *u1*, *u2* -- optional names of variables to put into the range.
 
-**validrange** computes valid range of the edge. If *u1* and *u2* are not given it returns first and last parameters. Otherwise, it sets the variables u1 and u2.
+**validrange** computes valid range of the edge. If *u1* and *u2* are not given, it returns the first and the last parameters. Otherwise, it sets variables *u1* and *u2*.
 
 **Example:** 
 ~~~~~
@@ -8034,7 +8034,7 @@ Options:
 
 @subsection occt_draw_hist History commands
 
-Draw module for @ref occt_modalg_hist "History Information support" includes the command to save history into a drawable object and the actual history commands:
+Draw module for @ref occt_modalg_hist "History Information support" includes the command to save history of modifications performed by Boolean operation or sibling commands into a drawable object and the actual history commands:
 
 * *savehistory*;
 * *isdeleted*;
@@ -8050,8 +8050,8 @@ Syntax:
 savehistory     : savehistory name
 ~~~~
 
-If the history of some operation is needed the *savehistory* command should be called after the command performing the operation.
-If some other operation supporting history will be performed before the history of first operation is saved it will be overwritten with the new history.
+If the history of shape modifications performed during an operation is needed, the *savehistory* command should be called after the command performing the operation.
+If another operation supporting history will be performed before the history of the first operation is saved it will be overwritten with the new history.
 
 Example:
 ~~~~
@@ -8102,7 +8102,7 @@ foreach s [join [list [explode b2 v] [explode b2 e] [explode b2 f] ] ] {
 
 @subsubsection occt_draw_hist_mod modified
 
-*modified* command returns the shapes Modified from the given shape in the given history. All modified shapes are put into compound. If the shape has not been modified the resulting compound will be empty. Note that if the shape has been modified into a single shape only, it will be returned without enclosure into compound.
+*modified* command returns the shapes Modified from the given shape in the given history. All modified shapes are put into a compound. If the shape has not been modified, the resulting compound will be empty. Note that if the shape has been modified into a single shape only, it will be returned without enclosure into the compound.
 
 Syntax:
 ~~~~
@@ -8125,7 +8125,7 @@ modified m5 fillet_hist b_5
 
 @subsubsection occt_draw_hist_gen generated
 
-*generated* command returns the shapes Generated from the given shape in the given history. All generated shapes are put into compound. If no shapes have been generated from the shape the resulting compound will be empty. Note that if the shape has generated a single shape only, it will be returned without enclosure into compound.
+*generated* command returns the shapes Generated from the given shape in the given history. All generated shapes are put into a compound. If no shapes have been generated from the shape, the resulting compound will be empty. Note that; if the shape has generated a single shape only, it will be returned without enclosure into the compound.
 
 Syntax:
 ~~~~
@@ -11020,24 +11020,24 @@ tinspector [-plugins {name1 ... [nameN] | all}]
            [-select {object | name1 ... [nameN]}]
            [-show {0|1} = 1]
 ~~~~~
-Starts tool of inspection.
+Starts inspection tool.
 Options:
 * *plugins* enters plugins that should be added in the inspector.
-Available names are: dfbrowser, vinspector and shapeview.
-Plugins order will be the same as defined in arguments.
+Available names are: *dfbrowser*, *vinspector* and *shapeview*.
+Plugins order will be the same as defined in the arguments.
 'all' adds all available plugins in the order:
 DFBrowser, VInspector and ShapeView.
-If at the first call this option is not used, 'all' option is applyed;
+If at the first call this option is not used, 'all' option is applied;
 * *activate* activates the plugin in the tool view.
 If at the first call this option is not used, the first plugin is activated;
-* *shape* initializes plugin/s by the shape object. If 'name' is empty, initializes all plugins;
-* *open* gives the file to the plugin/s. If the plugin is active, after open, update content will be done;
+* *shape* initializes plugin(s) by the shape object. If 'name' is empty, initializes all plugins;
+* *open* gives the file to the plugin(s). If the plugin is active after open, the content will be updated;
 * *update* updates content of the active plugin;
 * *select* sets the parameter that should be selected in an active tool view.
-Depending on active tool the parameter is:
-ShapeView: 'object' is an instance of TopoDS_Shape TShape,
-DFBrowser: 'name' is an entry of TDF_Label and name2(optionaly) for TDF_Attribute type name,
-VInspector: 'object' is an instance of AIS_InteractiveObject;
+Depending on the active tool the parameter is:
+ShapeView: 'object' is an instance of *TopoDS_Shape TShape*,
+DFBrowser: 'name' is an entry of *TDF_Label* and 'name2' (optionally) for *TDF_Attribute* type name,
+VInspector: 'object' is an instance of *AIS_InteractiveObject*;
 * *show* sets Inspector view visible or hidden. The first call of this command will show it.
 
 **Example:** 

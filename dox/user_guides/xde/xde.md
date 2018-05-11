@@ -100,7 +100,7 @@ for the Representation and Presentation of Product Manufacturing Information (PM
 XDE can read and write GD\&T data of the following types:
 * dimensions, such as distance, length, radius and so on;
 * geometric tolerances;
-* datums, i.e a theoretically exact geometric references, such as point, line or plane, to which toleranced features are related.
+* datums, i.e theoretically exact geometric references, such as point, line or plane, to which toleranced features are related.
 
 XDE supports two presentations of GD\&T data:
 * semantic presentation, i.e. data is stored in a machine-consumable way and includes all information required to understand the
@@ -116,7 +116,7 @@ XDE provides capabilities for adding, editing and removing clipping planes.
 
 @subsection occt_xde_1_9 Saved views
 
-XDE supports reading from STEP views. Views allow to save information about camera parameters (position, direction, zoom factor, etc.)
+XDE supports reading from STEP views. Views allow saving information about camera parameters (position, direction, zoom factor, etc.)
 and visible shapes, PMIs, used clipping planes and notes. Currently, XDE supports saving of clipping planes in XBF format only.
 
 XDE provides the following view management capabilities:
@@ -677,7 +677,7 @@ Each GD\&T entity then corresponds to the dedicated label, the property itself i
   * *XCAFDimTolObject_GeomToleranceObject* - for geometric tolerances;
   * *XCAFDimTolObject_DatumObject* - for geometric tolerance Datums.
 
-GD\&Ts and Shapes are related to by Graph Nodes. 
+GD\&Ts and Shapes are related by Graph Nodes. 
 
 These definitions are common to various exchange formats, at least for STEP. 
 
@@ -710,7 +710,7 @@ A similar approach can be used for other GD\&T types.
 
 @subsubsection occt_xde_2_7_3 Editing a GD\&T
 A newly added GD\&T entity is empty. To set its data a corresponding access object should be used as it is demonstrated
-below, where the dimension becomes the linear distance between two points.
+below, where the dimension becomes a linear distance between two points.
 ~~~~~
 Handle(XCAFDoc_Dimension) aDimAttr;
 aDimLabel.FindAttribute(XCAFDoc_Dimension::GetID(), aDimAttr);
@@ -732,7 +732,7 @@ A similar approach can be used for other GD\&T types.
 To link a GD\&T entity with other OCAF labels (e.g. representing shapes) one should use the following methods:
   * *SetDimension* - for dimensions;
   * *SetGeomTolerance* - for geometric tolerances;
-  * SetDatum - for geometric tolerance datums.
+  * *SetDatum* - for geometric tolerance datums.
 
 These methods can take a single label or a sequence of labels. All previous links will be removed.
 
@@ -751,7 +751,7 @@ In addition, a special method *SetDatumToGeomTol* should be used to link a datum
 @subsubsection occt_xde_2_7_5 Finding GD\&Ts and reference shapes
 
 *XCAFDimTolObjects_Tool* class provides basic capabilities for searching GD\&Ts linked to shapes.
-Using the tool one can get sequences of dimensions, geometric tolerances and datums linked with a shape. A series of related datums is also returned for geometric tolerances.
+The tool provides sequences of dimensions, geometric tolerances and datums linked with a shape. A series of related datums is also returned for geometric tolerances.
 
 To get reference shapes for a GD\&T entity one can use *GetRefShapeLabel* from *XCAFDoc_DimTolTool*.
 
@@ -798,7 +798,7 @@ if (!myClipPlaneTool->RemoveClippingPlane(aClipPlnLbl))
 ~~~~~
 The plane will not be removed if it is referenced in at least one view.
 
-To change clipping plane and its name use *UpdateClippingPlane* method, e.g.:
+To change the clipping plane and its name use *UpdateClippingPlane* method, e.g.:
 ~~~~~
 gp_Pln aPln = ...
 myClipPlaneTool->UpdateClippingPlane(aClipPlnLbl, aPln, "New name of plane");
@@ -810,7 +810,7 @@ Standard_Boolean aCapping = ...
 myClipPlaneTool->SetCapping(aClipPlnLbl, aCapping);
 ~~~~~
 
-*XCAFDoc_ClippingPlaneTool* can be used to get all clipping plane labels and to check if a label belongs to the ClippingPlane table, e.g.:
+*XCAFDoc_ClippingPlaneTool* can be used to get all clipping plane labels and to check if a label belongs to the *ClippingPlane table*, e.g.:
 ~~~~~
 TDF_LabelSequence aClipPlaneLbls;
 myClipPlaneTool->GetClippingPlanes(aClipPlaneLbls);
@@ -834,7 +834,7 @@ for (TDF_LabelSequence::Iterator anIt(aClipPlaneLbls); anIt.More(); anIt.Next())
 
 @subsection occt_xde_2_9 Saved views
 
-In an XDE document, Views are managed by the class *XCAFDoc_ViewTool*. It works basing on the same principles as ShapeTool works with Shapes. This tool can be provided on the Main Label or on any sub-label. Views are stored in a child of the starting document label 0.1.7, where a view itself is defined as *XCAFDoc_View* sub-class of *TDF_Attribute*. Views and selected shapes, clipping planes, GD\&Ts and notes are related to by Graph Nodes.
+In an XDE document, Views are managed by the class *XCAFDoc_ViewTool*. It works basing on the same principles as ShapeTool works with Shapes. This tool can be provided on the Main Label or on any sub-label. Views are stored in a child of the starting document label 0.1.7, where a view itself is defined as *XCAFDoc_View* sub-class of *TDF_Attribute*. Views and selected shapes, clipping planes, GD\&Ts and notes are related by Graph Nodes.
 
 To query, edit, or initialize a Document to handle views of XCAF, use: 
 ~~~~~
@@ -899,11 +899,11 @@ To get shapes, clipping planes, GD\&Ts or notes associated with a particular vie
   * *GetRefAnnotationLabel* - returns a sequence of associated annotated labels.
 
 And vice versa, to get views that display a particular clipping plane, GD\&T or note use the following methods:
-  * *GetViewLabelsForShape* - returns a sequence of associated view labels for a shape;
-  * *GetViewLabelsForGDT* - returns a sequence of associated view labels for a GD\&T;
-  * *GetViewLabelsForClippingPlane* - returns a sequence of associated view labels for a clipping plane;
-  * *GetViewLabelsForNote* - returns a sequence of associated view labels for a note;
-  * *GetViewLabelsForAnnotation* - returns a sequence of associated view labels for an annotated label.
+  * *GetViewLabelsForShape* - returns a sequence of view labels associated with a shape;
+  * *GetViewLabelsForGDT* - returns a sequence of view labels associated with a GD\&T;
+  * *GetViewLabelsForClippingPlane* - returns a sequence of view labels associated with a clipping plane;
+  * *GetViewLabelsForNote* - returns a sequence of view labels associated with a note;
+  * *GetViewLabelsForAnnotation* - returns a sequence of view labels associated with an annotated label.
 
 @subsection occt_xde_2_10 Custom notes
 

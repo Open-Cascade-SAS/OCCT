@@ -1286,11 +1286,11 @@ TopoDS_Edge E = ME;
 
 @subsection occt_modalg_hist History support
 
-All topological API algorithms support the history of shapes modifications (or just History) for their arguments.
+All topological API algorithms support the history of shape modifications (or just History) for their arguments.
 Generally, the history is available for the following types of sub-shapes of input shapes:
-* Vertex
-* Edge
-* Face
+* Vertex;
+* Edge;
+* Face.
 
 Some algorithms also support the history for Solids.
 
@@ -1300,7 +1300,7 @@ The history information consists of the following information:
 * Information about Generated shapes.
 
 The History is filled basing on the result of the operation. History cannot return any shapes not contained in the result.
-Thus, if the result of the operation is empty shape, all input shapes will be considered as Deleted and none will have Modified and Generated shapes.
+If the result of the operation is an empty shape, all input shapes will be considered as Deleted and none will have Modified and Generated shapes.
 
 The history information can be accessed by the API methods:
 * *Standard_Boolean IsDeleted(const TopoDS_Shape& theS)* - to check if the shape has been Deleted during the operation;
@@ -1310,7 +1310,7 @@ The history information can be accessed by the API methods:
 @subsubsection occt_modalg_hist_del Deleted shapes
 
 The shape is considered as Deleted during the operation if all of the following conditions are met:
-* The shape is the part of the argument shapes of the operation;
+* The shape is a part of the argument shapes of the operation;
 * The result shape does not contain the shape itself;
 * The result shape does not contain any of the splits of the shape.
 
@@ -1318,19 +1318,19 @@ For example, in the CUT operation between two intersecting solids all vertices/e
 
 @subsubsection occt_modalg_hist_mod Modified shapes
 
-The shape is considered as Modified during the operation if the result shape contains the splits of the shape, not the shape itself. The shape can be modified only into the shapes with same dimension.
+The shape is considered as Modified during the operation if the result shape contains the splits of the shape, not the shape itself. The shape can be modified only into the shapes with the same dimension.
 The splits of the shape contained in the result shape are Modified from the shape.
 The Modified shapes are created from the sub-shapes of the input shapes and, generally, repeat their geometry.
 
-The list of Modified elements will contain only those which are contained in the result of the operation. If the list is empty the shape has not been modified and it is necessary to check if it has been Deleted.
+The list of Modified elements will contain only those contributing to the result of the operation. If the list is empty, the shape has not been modified and it is necessary to check if it has been Deleted.
 
 For example, after translation of the shape in any direction all its sub-shapes will be modified into their translated copies.
 
 @subsubsection occt_modalg_hist_gen Generated shapes
 
-The shapes contained in the result shape are considered as Generated from the input shape if they were produced during the operation and have different dimension with the shapes from which they were created.
+The shapes contained in the result shape are considered as Generated from the input shape if they were produced during the operation and have a different dimension from the shapes from which they were created.
 
-The list of Generated elements will contain only those which are contained in the result of the operation. If the list is empty no new shapes have been Generated from the shape.
+The list of Generated elements will contain only those included in the result of the operation. If the list is empty, no new shapes have been Generated from the shape.
 
 For example, extrusion of the edge in some direction will create a face. This face will be generated from the edge.
 
@@ -1338,7 +1338,7 @@ For example, extrusion of the edge in some direction will create a face. This fa
 
 *BRepTools_History* is the general History tool intended for unification of the histories of different algorithms.
 
-BRepTools_History can be created from any algorithm supporting the standard history methods (IsDeleted(), Modified() and Generated()):
+*BRepTools_History* can be created from any algorithm supporting the standard history methods *(IsDeleted(), Modified()* and *Generated())*:
 ~~~~
 // The arguments of the operation
 TopoDS_Shape aS = ...;
@@ -1355,7 +1355,7 @@ anArguments.Append(aS);
 BRepTools_History aHistory(anArguments, aTransformer);
 ~~~~
 
-BRepTools_History also allows merging of the histories. Thus, if you have two or more subsequent operations you can get one final history combined from histories of these operations:
+*BRepTools_History* also allows merging histories. Thus, if you have two or more subsequent operations you can get one final history combined from histories of these operations:
 
 ~~~~
 Handle(BRepTools_History) aHist1 = ...; // History of first operation
@@ -1374,27 +1374,27 @@ aResHistory->Merge(aHist1);
 aResHistory->Merge(aHist2);
 ~~~~
 
-The possibility of Merging of the histories and its creation from the API algorithms allows providing easy History support for the new algorithms.
+The possibilities of Merging histories and history creation from the API algorithms allow providing easy History support for the new algorithms.
 
 @subsubsection occt_modalg_hist_draw DRAW history support
 
-DRAW History support for the algorithms supporting history is provided by three basic commands:
+DRAW History support for the algorithms is provided by three basic commands:
 * *isdeleted*; 
 * *modified*;
 * *generated*.
 
-For more information on the Draw History mechanism please refer the corresponding chapter in the Draw users guide - @ref occt_draw_hist "History commands".
+For more information on the Draw History mechanism please refer to the corresponding chapter in the Draw users guide - @ref occt_draw_hist "History commands".
 
 
 @section occt_modalg_3 Standard  Topological Objects
 
 The following  standard topological objects can be created:
-  * Vertices
-  * Edges
-  * Faces
-  * Wires
-  * Polygonal wires
-  * Shells
+  * Vertices;
+  * Edges;
+  * Faces;
+  * Wires;
+  * Polygonal wires;
+  * Shells;
   * Solids.
 
 There are two root classes for their construction and modification: 
@@ -3141,23 +3141,23 @@ You can obtain information on the shape by first exploring it. To access triangu
 
 @section occt_modalg_defeaturing 3D Model Defeaturing
 
-The Open CASCADE Technology Defeaturing algorithm is intended for removal of the unwanted parts or features from the model. These parts could be the holes, protrusions, gaps, chamfers, fillets etc.
+The Open CASCADE Technology Defeaturing algorithm is intended for removal of the unwanted parts or features from the model. These parts can be holes, protrusions, gaps, chamfers, fillets, etc.
 
-Feature detection is not performed, and all features desired for removal should be defined by the user. The input shape is not modified during Defeaturing, the new shape is built in the result.
+Feature detection is not performed, and all features to be removed should be defined by the user. The input shape is not modified during Defeaturing, the new shape is built in the result.
 
-On the API level the Defeaturing algorithm is implemented in the *BRepAlgoAPI_Defeaturing* class. On the input the algorithm accepts the shape to remove the features from and the features (one or many) to remove from the shape.
-Currently, the input shape should either be SOLID, or COMPSOLID, or COMPOUND of SOLIDs.
-The features to remove are the sets of faces forming the features. It does not matter how the feature faces are given. It could be the separate faces or the collections of them. The faces should belong to the initial shape, and those that do not belong will be ignored.
+On the API level the Defeaturing algorithm is implemented in the *BRepAlgoAPI_Defeaturing* class. At input the algorithm accepts the shape to remove the features from and the features (one or many) to be removed from the shape.
+Currently, the input shape should be either SOLID, or COMPSOLID, or COMPOUND of SOLIDs.
+The features to be removed are defined by the sets of faces forming them. It does not matter how the feature faces are given: as separate faces or their collections. The faces should belong to the initial shape, else they are ignored.
 
-The actual features removal is performed by the low-level *BOPAlgo_RemoveFeatures* algorithm. On the API level, all the inputs are passed into the tool and the method *BOPAlgo_RemoveFeatures::Perform()* is called.
+The actual features removal is performed by the low-level *BOPAlgo_RemoveFeatures* algorithm. On the API level, all inputs are passed into the tool and the method *BOPAlgo_RemoveFeatures::Perform()* is called.
 
-Before starting Features removal all the faces requested for removal from the shape are sorted on the connected blocks - each block represents single feature to remove.
-The features will be removed from the shape one by one, which will allow removing all possible features even if there were some problems with the removal of some of them (due to e.g. incorrect input data).
+Before removing features, all faces to be removed from the shape are sorted into connected blocks - each block represents a single feature to be removed.
+The features are removed from the shape one by one, which allows removing all possible features even if there are some problems with their removal (e.g. due to incorrect input data).
 
-The removed feature is filled by the extension of the faces adjacent to the feature. In general, the algorithm of removing of the single feature from the shape looks as follows:
+The removed feature is filled by the extension of the faces adjacent to it. In general, the algorithm removing a single feature from the shape goes as follows:
 * Find the faces adjacent to the feature;
 * Extend the adjacent faces to cover the feature;
-* Trim the extended faces by the bounds of original face (except for bounds common with the feature), so it will cover the feature only;
+* Trim the extended faces by the bounds of the original face (except for the bounds common with the feature), so that they cover the feature only;
 * Rebuild the solids with reconstructed adjacent faces avoiding the feature faces.
 
 If the single feature removal was successful, the result shape is overwritten with the new shape, otherwise the results are not kept, and the warning is given.
@@ -3170,27 +3170,27 @@ and the options available from base class (*BOPAlgo_Options*):
 * Error/Warning reporting system;
 * Parallel processing mode.
 
-Please note that the other options of the base class are not supported here and will have no effect.
+Note that the other options of the base class are not supported here and will have no effect.
 
 <b>History support</b> allows tracking modification of the input shape in terms of Modified, IsDeleted and Generated. By default, the history is collected, but it is possible to disable it using the method *TrackHistory(false)*.
 On the low-level the history information is collected by the history tool *BRepTools_History*, which can be accessed through the method *BOPAlgo_RemoveFeatures::History()*. 
 
-<b>Error/Warning reporting system</b> - allows obtaining the extended overview of the Errors/Warnings occurred during the operation. As soon as any error appears the algorithm stops working. The warnings allow continuing the job, informing the user that something went wrong. The algorithm returns the following errors/warnings:
-* BOPAlgo_AlertUnsupportedType - the alert will be given as an error if the input shape does not contain any solids, and as a warning if the input shape contains not only solids, but also other shapes;
-* BOPAlgo_AlertNoFacesToRemove - the error alert is given in case there are no faces to remove from the shape (nothing to do);
-* BOPAlgo_AlertUnableToRemoveTheFeature - the warning alert is given to inform the user the removal of the feature is not possible. The algorithm will still try to remove the other features;
-* BOPAlgo_AlertRemoveFeaturesFailed - the error alert is given in case if the operation was aborted by the unknown reason.
+<b>Error/Warning reporting system</b> allows obtaining the extended overview of the Errors/Warnings occurred during the operation. As soon as any error appears, the algorithm stops working. The warnings allow continuing the job and informing the user that something went wrong. The algorithm returns the following errors/warnings:
+* *BOPAlgo_AlertUnsupportedType* - the alert will be given as an error if the input shape does not contain any solids, and as a warning if the input shape contains not only solids, but also other shapes;
+* *BOPAlgo_AlertNoFacesToRemove* - the error alert is given in case there are no faces to remove from the shape (nothing to do);
+* *BOPAlgo_AlertUnableToRemoveTheFeature* - the warning alert is given to inform the user the removal of the feature is not possible. The algorithm will still try to remove the other features;
+* *BOPAlgo_AlertRemoveFeaturesFailed* - the error alert is given in case if the operation was aborted by the unknown reason.
 
 For more information on the error/warning reporting system please see the chapter @ref occt_algorithms_ers "Errors and warnings reporting system" of Boolean operations user guide.
 
 <b>Parallel processing mode</b> - allows running the algorithm in parallel mode obtaining the result faster.
 
 The algorithm has certain limitations:
-* Intersection of the surfaces of the connected faces adjacent to the feature should not be empty. It means, that such faces should not be tangent to each other.
+* Intersection of the surfaces of the connected faces adjacent to the feature should not be empty. It means, that such faces should not be tangent to each other. 
 If the intersection of the adjacent faces will be empty, the algorithm will be unable to trim the faces correctly and, most likely, the feature will not be removed.
 * The algorithm does not process the INTERNAL parts of the solids, they are simply removed during reconstruction.
 
-Note, that for successful removal of the feature, the extended faces adjacent to the feature should cover the feature completely, otherwise the solids will not be rebuild.
+Note, that for successful removal of the feature, the extended faces adjacent to the feature should cover the feature completely, otherwise the solids will not be rebuild. 
 Take a look at the simple shape on the image below:
 @figure{/user_guides/modeling_algos/images/modeling_algos_rf_im001.png,"",220}
 
@@ -3234,7 +3234,7 @@ if (aDF.HasWarnings())                   // Check for the warnings
 const TopoDS_Shape& aResult = aDF.Shape(); // Result shape
 ~~~~
 
-To track the history of a shape use the API history methods:
+Use the API history methods to track the history of a shape:
 ~~~~
 // Obtain modification of the shape
 const TopTools_ListOfShape& BRepAlgoAPI_Defeaturing::Modified(const TopoDS_Shape& theS);
@@ -3246,17 +3246,15 @@ const TopTools_ListOfShape& BRepAlgoAPI_Defeaturing::Generated(const TopoDS_Shap
 Standard_Boolean BRepAlgoAPI_Defeaturing::IsDeleted(const TopoDS_Shape& theS);
 ~~~~
 
-For the usage of the Defeaturing algorithm on the Draw level the command <b>removefeatures</b> has been implemented.
+The command <b>removefeatures</b> allows using the Defeaturing algorithm on the Draw level.
 
-To track the history of a shape modification during Defeaturing the @ref occt_draw_hist "standard history commands" can be used.
+The @ref occt_draw_hist "standard history commands" can be used to track the history of shape modification during Defeaturing. 
 
-For more details on commands above please refer the @ref occt_draw_defeaturing "Defeaturing commands" of the Draw test harness user guide.
-
-To have possibility to access the error/warning shapes of the operation use the *bdrawwarnshapes* command before running the algorithm (see command usage in the @ref occt_algorithms_ers "Errors and warnings reporting system" of Boolean operations user guide).
+For more details on commands above, refer to the @ref occt_draw_defeaturing "Defeaturing commands" of the Draw test harness user guide.
 
 @subsection occt_modalg_defeaturing_examples Examples
 
-Here are the few examples of defeaturing of the ANC101 model:
+Here are the examples of defeaturing of the ANC101 model:
 
 @figure{/user_guides/modeling_algos/images/modeling_algos_rf_im004.png,"ANC101 model",220}</td>
 

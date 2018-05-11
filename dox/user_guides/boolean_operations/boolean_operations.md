@@ -2171,7 +2171,7 @@ aMV.SetArguments(aLS);
 // setting options for this algorithm is similar to setting options for GF algorithm (see "GF Usage" chapter)
 ...
 // Additional option of the algorithm
-Standard_Boolean bAvoidInternalShapes = Standard_False; /* Avoid or not the internal for solids shapes in the result*/
+Standard_Boolean bAvoidInternalShapes = Standard_False; // Set to True to exclude from the result any shapes internal to the solids
 aMV.SetAvoidInternalShapes(bAvoidInternalShapes);
 
 // Perform the operation
@@ -2819,10 +2819,10 @@ To enable the safe processing mode for the operation in DRAW, it is necessary to
 bnondestructive 1
 ~~~~
 
-@subsection occt_algorithms_11a_4 Disabling check of the input solids for inverted status
+@subsection occt_algorithms_11a_4 How to disable check of input solids for inverted status
 
-By default, all input solids are checked for inverted status, i.e. the solids are classified to understand if they are holes in the space (negative volumes) or normal solids (positive volumes). The possibility to disable the check of the input solids for inverted status is the advanced option in Boolean Operation component. This option can be applied to all Basic operations such as General Fuse, Splitting, Boolean, Section, Maker Volume, Cells building.
-This option allows avoiding time-consuming classification of the input solids and operate with them as with positive volumes, saving up to 10 percent of time on the cases with big number of input solids.
+By default, all input solids are checked for inverted status, i.e. the solids are classified to understand if they are holes in the space (negative volumes) or normal solids (positive volumes). The possibility to disable the check of the input solids for inverted status is the advanced option in Boolean Operation component. This option can be applied to all Basic operations, such as General Fuse, Splitting, Boolean, Section, Maker Volume and Cells building.
+This option allows avoiding time-consuming classification of the input solids and processing them in the same way as positive volumes, saving up to 10 percent of time on the cases with a big number of input solids.
 
 The classification should be disabled only if the user is sure that there are no negative volumes among the input solids, otherwise the result may be invalid.
 
@@ -2842,7 +2842,7 @@ aGF.SetCheckInverted(Standard_False);
 ~~~~
 
 #### TCL level
-To enable/disable the classification of the solids in DRAW, it is necessary to call the *bcheckinverted* command with appropriate value:
+To enable/disable the classification of the solids in DRAW, it is necessary to call *bcheckinverted* command with the appropriate value:
 * 0 - disabling the classification;
 * 1 - default value, enabling the classification.
 
@@ -2852,7 +2852,7 @@ bcheckinverted 0
 
 @subsection occt_algorithms_11a_5_obb Usage of Oriented Bounding Boxes
 
-Since Oriented Bounding Boxes are usually much tighter than Axes Aligned Bounding Boxes (for more information on OBB please see the @ref occt_modat_6 "Bounding boxes" chapter of Modeling data User guide) its usage can significantly speed-up the intersection stage of the operation by reducing the number of interfering objects.
+Since Oriented Bounding Boxes are usually much tighter than Axes Aligned Bounding Boxes (for more information on OBB see the @ref occt_modat_6 "Bounding boxes" chapter of Modeling data User guide) its usage can significantly speed-up the intersection stage of the operation by reducing the number of interfering objects.
 
 @subsubsection occt_algorithms_11a_5_obb_1 Usage
 
@@ -3026,7 +3026,7 @@ modified m2 cut_hist e2
 
 @subsubsection occt_algorithms_history_gen Generated shapes
 
-The two intersecting edges will both have the intersection vertices Generated from them.
+Two intersecting edges will both have the intersection vertices Generated from them.
 
 As for the operation with intersecting faces, consider the following example:
 

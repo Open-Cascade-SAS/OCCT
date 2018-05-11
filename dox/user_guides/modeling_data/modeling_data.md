@@ -1296,28 +1296,29 @@ The following sample code reads a shape from ASCII file and writes it to a binar
 
 @section occt_modat_6 Bounding boxes
 
-*Bounding box(es) (BndBox(es))* is used in many OCCT algorithms. In general, it is some filter to avoid check of excess interferences between pairs of shapes (check of interferences between BndBoxes is much simpler then between shapes and if BndBoxes do not interfere then there is no point in searching interferences between the corresponding shapes).
-Generally, BndBoxes can be divided on two main types: 
-  - axis-aligned BndBox (AABB). I.e. the box whose edges are parallel to the axes of World Coordinate System (WCS);
-  - oriented BndBox (OBB). I.e. not AABB.
-In fact, every AABB is a specific case of OBB.<br>
+Bounding boxes are used in many OCCT algorithms. The most common use is as a filter avoiding check of excess interferences between pairs of shapes (check of interferences between bounding boxes is much simpler then between shapes and if they do not interfere then there is no point in searching interferences between the corresponding shapes).
+Generally, bounding boxes can be divided into two main types: 
+  - axis-aligned bounding box (AABB) is the box whose edges are parallel to the axes of the World Coordinate System (WCS);
+  - oriented BndBox (OBB) is defined in its own coordinate system that can be rotated with respect to the WCS.
+Indeed, an AABB is a specific case of OBB.<br>
 
 The image below illustrates the example, when using OBB is better than AABB. 
 
 @figure{/user_guides/modeling_data/images/modeling_data_image015.png,"Illustrating the problem with AABB.",320}
 
-AABBs in this picture are interfered. Therefore, many OCCT-algorithms will spend much time to interfere the shapes. However, if we check OBBs, which are not interfered, then searching of interferences between the shapes will not be necessary. At that, creation and analysis of OBBs takes significantly more time than the analogical operations with AABB.
+AABBs in this picture are interfered. Therefore, many OCCT algorithms will spend much time to interfere the shapes. However, if we check OBBs, which are not interfered, then searching of interferences between the shapes will not be necessary. At that, creation and analysis of OBBs takes significantly more time than the analogical operations with AABB.
 
-Later in this section, the BndBox having the smallest surface area will be called as <b> optimal </b>.
+Later in this section, the bounding boxes having the smallest surface area will be called *optimal*.
 
-In OCCT, BndBox(es) are described in Bnd package. In general, Bnd_Box class describes AABB, Bnd_OBB class describes OBB. These classes contain the following common methods (this list is not complete; please see the documentation about corresponding class for detailed information):
+In OCCT, bounding boxes are defined in *Bnd* package. *Bnd_Box* class defines AABB, *Bnd_OBB* class defines OBB. These classes contain the following common methods (this list is not complete; see the documentation about the corresponding class for detailed information):
 
-  - SetVoid() and IsVoid(). SetVoid method clears the existing BndBox. IsVoid method indicates whether the BndBox is initialized.
-  - Enlarge(...). Extends the current BndBox.
-  - Add(...). Rebuilds the current BndBox in order to cover all previous objects (which it was created from) and the argument of the method.
-  - IsOut(...). Checks whether the argument is inside/outside of the current BndBox.
+  - *IsVoid* method indicates whether the bounding box is empty (uninitialized).
+  - *SetVoid* method clears the existing bounding box.
+  - *Enlarge(...)* extends the current bounding box.
+  - *Add(...)* extends the bounding box as necessary to include the object (a point, a shape, etc.) passed as the argument.
+  - *IsOut(...)* checks whether the argument is inside/outside of the current BndBox.
   
-Also, BRepBndLib class contains methods to provide creation of BndBox (both AABB and OBB) from the complex shape. 
+BRepBndLib class contains methods for creation of bounding boxes (both AABB and OBB) from the shapes.
 
 @subsection occt_modat_6_1 Brief description of some algorithms working with OBB
 
@@ -1340,22 +1341,22 @@ Further, let us consider the triangle \f$ T_{0}\left \langle p_{0}, p_{1}, p_{2}
 <span>10.</span> Compute the center of OBB and its half dimensions.<br>
 <span>11.</span> Create OBB using the center, axes and half dimensions.<br>
 
-This algorithm is realized in Bnd_OBB::ReBuild(...) method.
+This algorithm is implemented in the *Bnd_OBB::ReBuild(...)* method.
 
 @subsubsection occt_modat_6_1_2 Creation of OBB based on Axes of inertia
 
 The algorithm contains the following steps:
 1. Calculate three inertia axes, which will be the axes of the OBB.
-2. Transform the source object (TopoDS_Shape) into the local coordinate system based on the axes from item 1.
+2. Transform the source object *(TopoDS_Shape)* into the local coordinate system based on the axes from item 1.
 3. Create an AABB for the shape obtained in the item 2.
-4. Compute the center of AABB and its half dimensions
-5. Transform the center into the WCS
+4. Compute the center of AABB and its half dimensions.
+5. Transform the center into the WCS.
 6. Create OBB using the center, axes and half dimensions.
 
 @subsubsection occt_modat_6_1_3 Method IsOut for a point
 
 1. Project the point to each axis.
-2. Check, whether the absolute value of the projection parameter greater than the correspond half-dimension. In this case, IsOut method will return TRUE.
+2. Check, whether the absolute value of the projection parameter greater than the correspond half-dimension. In this case, *IsOut* method will return TRUE.
 
 @subsubsection occt_modat_6_1_4 Method IsOut for another OBB
 
@@ -1366,27 +1367,27 @@ The algorithm of analyzing axis \f$ \mathbf{l} \f$ is following:
 
 If OBBs are not interfered in terms of at least one axis (of 15) then they are not interfered at all.
 
-@subsubsection occt_modat_6_1_5 Method Add for point or another BndBox
+@subsubsection occt_modat_6_1_5 Method Add for point or another bounding box
 
-Create new OBB (see the section @ref occt_modat_6_1_1) based on the source point and all vertices of the given BndBoxes.
+Create a new OBB (see the section @ref occt_modat_6_1_1) based on the source point and all vertices of the given bounding boxes.
 
 @subsection occt_modat_6_2 Add a shape
 
-Method BRepBndLib::AddOBB(...) allows creating BndBox from the complex object (TopoDS_Shape). This method uses both algorithms described in the sections @ref occt_modat_6_1_1 and sections @ref occt_modat_6_1_2.
+Method *BRepBndLib::AddOBB(...)* allows creating the bounding box from a complex object *(TopoDS_Shape)*. This method uses both algorithms described in the sections @ref occt_modat_6_1_1 and sections @ref occt_modat_6_1_2.
 
-The first algorithm is used if the shape outer shell can be represented by a set of points contained in the shape. Namely, only the following elements are the source of set of points:
+The first algorithm is used if the outer shell of the shape can be represented by a set of points contained in it. Namely, only the following elements are the source of set of points:
 
   - Nodes of triangulation;
-  - Nodes of Poly_Polygon3D;
-  - Vertices of edges with linear 3D-curve lying in the planar face;
-  - Vertices of edges with linear 3D-curve if the source shape does not contain more complex topological structure (e.g. the source shape is a compound of edges);
-  - Vertices if the source shape does not contain more complex topological structure (e.g. the source shape is a compound of vertices).
+  - Nodes of *Poly_Polygon3D*;
+  - Vertices of edges with a linear 3D-curve lying in the planar face;
+  - Vertices of edges with a linear 3D-curve if the source shape does not contain a more complex topological structure (e.g. the source shape is a compound of edges);
+  - Vertices if the source shape does not contain a more complex topological structure (e.g. the source shape is a compound of vertices).
 
-If required set of points cannot be extracted then the algorithm from section @ref occt_modat_6_1_2 is used for OBB creation.
+If the required set of points cannot be extracted then the algorithm from section @ref occt_modat_6_1_2 is used for OBB creation.
 
-The package BRepBndLib contains the methods BRepBndLib::Add(...), BRepBndLib::AddClose(...) and BRepBndLib::AddOptimal(...) for creation of AABB of a shape. Please see reference manual for detailed information.
+The package *BRepBndLib* contains methods *BRepBndLib::Add(...), BRepBndLib::AddClose(...)* and *BRepBndLib::AddOptimal(...)* for creation of AABB of a shape. See the reference manual for the detailed information.
 
 @subsection occt_modat_6_3 Limitations of algorithm for OBB creation.
 
-1. The algorithm described in the section @ref occt_modat_6_1_1 works significantly better (finds resulting OBB with less surface area) and faster than the algorithm from the section @ref occt_modat_6_1_2. Nevertheless, (in general) the result returned by both algorithms is not always optimal (i.e. sometimes another OBB exists having less surface area). Moreover, the first method does not allow computing OBB of shapes with complex geometry.
-2. Currently, the algorithm of OBB creation is implemented for objects in 3D-space only.
+1. The algorithm described in the section @ref occt_modat_6_1_1 works significantly better (finds resulting OBB with less surface area) and faster than the algorithm from the section @ref occt_modat_6_1_2. Nevertheless, (in general) the result returned by both algorithms is not always optimal (i.e. sometimes another OBB exists with a smaller surface area). Moreover, the first method does not allow computing OBBs of shapes with a complex geometry.
+2. Currently, the algorithm of OBB creation is implemented for objects in 3D space only.

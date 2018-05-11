@@ -140,7 +140,7 @@ The official repository contains:
   @figure{OCCT_GitGuide_V2_image006.png,"",320}
 
   Optionally, you can set up TortoiseGit to use visual diff utility for SVG images used in OCCT documentation.
-  For that, click on item "Diff Viewer" in the Settings dialog, then click button "Advanced..." on the right tab add new record with the following parameters:
+  For that, click on item "Diff Viewer" in the Settings dialog, then click button "Advanced..." in the right tab to add a new record with the following parameters:
   - Extension: <code>.svg</code>
   - External program: <code>&lt;path_to_OCCT&gt;\\adm\\svgdiff.bat %%base %%mine %%bname %%yname</code>
 
