@@ -2810,7 +2810,7 @@ Standard_Boolean AIS_InteractiveContext::PlaneSize (Standard_Real& theX,
 //purpose  :
 //=======================================================================
 void AIS_InteractiveContext::SetZLayer (const Handle(AIS_InteractiveObject)& theIObj,
-                                        const Standard_Integer theLayerId)
+                                        const Graphic3d_ZLayerId theLayerId)
 {
   if (theIObj.IsNull())
     return;
@@ -2822,7 +2822,7 @@ void AIS_InteractiveContext::SetZLayer (const Handle(AIS_InteractiveObject)& the
 //function : GetZLayer
 //purpose  :
 //=======================================================================
-Standard_Integer AIS_InteractiveContext::GetZLayer (const Handle(AIS_InteractiveObject)& theIObj) const
+Graphic3d_ZLayerId AIS_InteractiveContext::GetZLayer (const Handle(AIS_InteractiveObject)& theIObj) const
 {
   return !theIObj.IsNull()
        ?  theIObj->ZLayer()

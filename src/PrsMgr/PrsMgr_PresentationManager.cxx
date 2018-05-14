@@ -524,7 +524,7 @@ Standard_Boolean PrsMgr_PresentationManager::RemovePresentation (const Handle(Pr
 // purpose  :
 // =======================================================================
 void PrsMgr_PresentationManager::SetZLayer (const Handle(PrsMgr_PresentableObject)& thePrsObj,
-                                            const Standard_Integer                  theLayerId)
+                                            const Graphic3d_ZLayerId                theLayerId)
 {
   for (PrsMgr_ListOfPresentableObjectsIter anIter (thePrsObj->Children()); anIter.More(); anIter.Next())
   {
@@ -542,7 +542,7 @@ void PrsMgr_PresentationManager::SetZLayer (const Handle(PrsMgr_PresentableObjec
 // function : GetZLayer
 // purpose  :
 // =======================================================================
-Standard_Integer PrsMgr_PresentationManager::GetZLayer (const Handle(PrsMgr_PresentableObject)& thePrsObj) const
+Graphic3d_ZLayerId PrsMgr_PresentationManager::GetZLayer (const Handle(PrsMgr_PresentableObject)& thePrsObj) const
 {
   return thePrsObj->ZLayer();
 }

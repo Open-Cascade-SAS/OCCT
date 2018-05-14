@@ -280,7 +280,7 @@ public:
                                    const Graphic3d_SortType theSortType = Graphic3d_ST_BSP_Tree) = 0;
 
   //! Marks BVH tree and the set of BVH primitives of correspondent priority list with id theLayerId as outdated.
-  virtual void InvalidateBVHData (const Standard_Integer theLayerId) = 0;
+  virtual void InvalidateBVHData (const Graphic3d_ZLayerId theLayerId) = 0;
 
   //! Add a new top-level z layer with ID <theLayerId> for
   //! the view. Z layers allow drawing structures in higher layers

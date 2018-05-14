@@ -274,7 +274,7 @@ void V3d_Viewer::DelView (const Handle(V3d_View)& theView)
 //function : AddZLayer
 //purpose  :
 //=======================================================================
-Standard_Boolean V3d_Viewer::AddZLayer (Standard_Integer& theLayerId)
+Standard_Boolean V3d_Viewer::AddZLayer (Graphic3d_ZLayerId& theLayerId)
 {
   try
   {
@@ -297,7 +297,7 @@ Standard_Boolean V3d_Viewer::AddZLayer (Standard_Integer& theLayerId)
 //function : RemoveZLayer
 //purpose  : 
 //=======================================================================
-Standard_Boolean V3d_Viewer::RemoveZLayer (const Standard_Integer theLayerId)
+Standard_Boolean V3d_Viewer::RemoveZLayer (const Graphic3d_ZLayerId theLayerId)
 {
   if (!myLayerIds.Contains (theLayerId)
     || theLayerId < myZLayerGenId.Lower()
@@ -326,7 +326,7 @@ void V3d_Viewer::GetAllZLayers (TColStd_SequenceOfInteger& theLayerSeq) const
 //function : SetZLayerSettings
 //purpose  :
 //=======================================================================
-void V3d_Viewer::SetZLayerSettings (const Standard_Integer theLayerId, const Graphic3d_ZLayerSettings& theSettings)
+void V3d_Viewer::SetZLayerSettings (const Graphic3d_ZLayerId theLayerId, const Graphic3d_ZLayerSettings& theSettings)
 {
   myDriver->SetZLayerSettings (theLayerId, theSettings);
 }
@@ -335,7 +335,7 @@ void V3d_Viewer::SetZLayerSettings (const Standard_Integer theLayerId, const Gra
 //function : ZLayerSettings
 //purpose  :
 //=======================================================================
-Graphic3d_ZLayerSettings V3d_Viewer::ZLayerSettings (const Standard_Integer theLayerId)
+Graphic3d_ZLayerSettings V3d_Viewer::ZLayerSettings (const Graphic3d_ZLayerId theLayerId)
 {
   return myDriver->ZLayerSettings (theLayerId);
 }

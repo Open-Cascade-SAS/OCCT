@@ -192,18 +192,18 @@ public:
   //! The Z layers are controlled entirely by viewer, it is not possible to add a layer to a particular view.
   //! The method returns Standard_False if the layer can not be created.
   //! The layer mechanism allows to display structures in higher layers in overlay of structures in lower layers.
-  Standard_EXPORT Standard_Boolean AddZLayer (Standard_Integer& theLayerId);
+  Standard_EXPORT Standard_Boolean AddZLayer (Graphic3d_ZLayerId& theLayerId);
 
   //! Remove Z layer with ID <theLayerId>.
   //! Method returns Standard_False if the layer can not be removed or doesn't exists.
   //! By default, there are always default bottom-level layer that can't be removed.
-  Standard_EXPORT Standard_Boolean RemoveZLayer (const Standard_Integer theLayerId);
+  Standard_EXPORT Standard_Boolean RemoveZLayer (const Graphic3d_ZLayerId theLayerId);
 
   //! Returns the settings of a single Z layer.
-  Standard_EXPORT Graphic3d_ZLayerSettings ZLayerSettings (const Standard_Integer theLayerId);
+  Standard_EXPORT Graphic3d_ZLayerSettings ZLayerSettings (const Graphic3d_ZLayerId theLayerId);
 
   //! Sets the settings for a single Z layer.
-  Standard_EXPORT void SetZLayerSettings (const Standard_Integer theLayerId, const Graphic3d_ZLayerSettings& theSettings);
+  Standard_EXPORT void SetZLayerSettings (const Graphic3d_ZLayerId theLayerId, const Graphic3d_ZLayerSettings& theSettings);
 
 public:
 
