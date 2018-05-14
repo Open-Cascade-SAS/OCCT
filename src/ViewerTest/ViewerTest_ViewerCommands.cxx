@@ -8681,10 +8681,12 @@ static int VClipPlane (Draw_Interpretor& theDi, Standard_Integer theArgsNb, cons
       return 0;
     }
     else if (aChangeArg == "-set"
-          || aChangeArg == "-unset")
+          || aChangeArg == "-unset"
+          || aChangeArg == "-setoverrideglobal")
     {
       // set / unset plane command
-      Standard_Boolean toSet = aChangeArg == "-set";
+      const Standard_Boolean toSet            = aChangeArg.StartsWith ("-set");
+      const Standard_Boolean toOverrideGlobal = aChangeArg == "-setoverrideglobal";
       Standard_Integer anIt = 1;
       for (; anIt < aNbChangeArgs; ++anIt)
       {
@@ -8694,7 +8696,8 @@ static int VClipPlane (Draw_Interpretor& theDi, Standard_Integer theArgsNb, cons
         {
           break;
         }
-        else if (ViewerTest_myViews.IsBound1 (anEntityName))
+        else if (!toOverrideGlobal
+               && ViewerTest_myViews.IsBound1 (anEntityName))
         {
           Handle(V3d_View) aView = ViewerTest_myViews.Find1 (anEntityName);
           if (toSet)
@@ -8717,6 +8720,10 @@ static int VClipPlane (Draw_Interpretor& theDi, Standard_Integer theArgsNb, cons
           else
           {
             aIObj->RemoveClipPlane (aClipPlane);
+          }
+          if (!aIObj->ClipPlanes().IsNull())
+          {
+            aIObj->ClipPlanes()->SetOverrideGlobal (toOverrideGlobal);
           }
         }
         else
@@ -12387,7 +12394,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
   theCommands.Add("vclipplane",
               "vclipplane planeName [{0|1}]"
       "\n\t\t:   [-equation A B C D]"
-      "\n\t\t:   [-set|-unset [objects|views]]"
+      "\n\t\t:   [-set|-unset|-setOverrideGlobal [objects|views]]"
       "\n\t\t:   [-maxPlanes]"
       "\n\t\t:   [-capping {0|1}]"
       "\n\t\t:     [-color R G B] [-hatch {on|off|ID}]"

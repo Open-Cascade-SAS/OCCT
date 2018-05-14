@@ -605,7 +605,7 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
       for (OpenGl_ClippingIterator aPlaneIt (aCtx->Clipping()); aPlaneIt.More(); aPlaneIt.Next())
       {
         const Handle(Graphic3d_ClipPlane)& aPlane = aPlaneIt.Value();
-        if (!aPlane->IsOn())
+        if (aPlaneIt.IsDisabled())
         {
           continue;
         }
