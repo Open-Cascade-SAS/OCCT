@@ -159,10 +159,11 @@ inline size_t TColStd_Population (unsigned int&      theMask,
 //function : TColStd_intMapNode_findNext
 //purpose  :
 //=======================================================================
-Standard_Integer TColStd_PackedMapOfInteger::TColStd_intMapNode_findNext (const TColStd_intMapNode* theNode,
-                                                                          unsigned int&             theMask)
+Standard_Integer TColStd_PackedMapOfInteger::TColStd_intMapNode_findNext (const Standard_Address theNode,
+                                                                          unsigned int&          theMask)
 {
-  unsigned int val = theNode->Data() & theMask;
+  const TColStd_intMapNode* aNode = reinterpret_cast<const TColStd_intMapNode*> (theNode);
+  unsigned int val = aNode->Data() & theMask;
   int nZeros (0);
   if (val == 0)
     theMask = ~0U;   // void, nothing to do
@@ -194,17 +195,18 @@ Standard_Integer TColStd_PackedMapOfInteger::TColStd_intMapNode_findNext (const 
     }
     theMask = (aMask << 1);
   }
-  return nZeros + theNode->Key();
+  return nZeros + aNode->Key();
 }
 
 //=======================================================================
 //function : TColStd_intMapNode_findPrev
 //purpose  :
 //=======================================================================
-Standard_Integer TColStd_PackedMapOfInteger::TColStd_intMapNode_findPrev (const TColStd_intMapNode* theNode,
-                                                                          unsigned int&             theMask)
+Standard_Integer TColStd_PackedMapOfInteger::TColStd_intMapNode_findPrev (const Standard_Address theNode,
+                                                                          unsigned int&          theMask)
 {
-  unsigned int val = theNode->Data() & theMask;
+  const TColStd_intMapNode* aNode = reinterpret_cast<const TColStd_intMapNode*> (theNode);
+  unsigned int val = aNode->Data() & theMask;
   int nZeros (0);
   if (val == 0)
     theMask = ~0U;   // void, nothing to do
@@ -236,7 +238,7 @@ Standard_Integer TColStd_PackedMapOfInteger::TColStd_intMapNode_findPrev (const 
     }
     theMask = (aMask >> 1);
   }
-  return (31 - nZeros) + theNode->Key();
+  return (31 - nZeros) + aNode->Key();
 }
 
 //=======================================================================
@@ -455,7 +457,7 @@ Standard_Integer TColStd_PackedMapOfInteger::GetMinimalMapped () const
     }
     if (pFoundNode) {
       unsigned int aFullMask (0xffffffff);
-      aResult = TColStd_intMapNode_findNext (pFoundNode, aFullMask);
+      aResult = TColStd_intMapNode_findNext ((const Standard_Address )pFoundNode, aFullMask);
     }
   }
   return aResult;
@@ -484,7 +486,7 @@ Standard_Integer TColStd_PackedMapOfInteger::GetMaximalMapped () const
     }
     if (pFoundNode) {
       unsigned int aFullMask (0xffffffff);
-      aResult = TColStd_intMapNode_findPrev (pFoundNode, aFullMask);
+      aResult = TColStd_intMapNode_findPrev ((const Standard_Address )pFoundNode, aFullMask);
     }
   }
   return aResult;

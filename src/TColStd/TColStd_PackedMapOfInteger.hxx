@@ -46,7 +46,7 @@ public:
     : TCollection_BasicMapIterator (theMap),
       myIntMask (~0U)
     {
-      myKey = myNode != NULL ? TColStd_intMapNode_findNext (reinterpret_cast<const TColStd_intMapNode*>(myNode), myIntMask) : 0;
+      myKey = myNode != NULL ? TColStd_intMapNode_findNext (myNode, myIntMask) : 0;
     }
 
     //! Re-initialize with the same or another Map instance.
@@ -54,7 +54,7 @@ public:
     {
       TCollection_BasicMapIterator::Initialize (theMap);
       myIntMask = ~0U;
-      myKey = myNode != NULL ? TColStd_intMapNode_findNext (reinterpret_cast<const TColStd_intMapNode*>(myNode), myIntMask) : 0;
+      myKey = myNode != NULL ? TColStd_intMapNode_findNext (myNode, myIntMask) : 0;
     }
 
     //! Restart the iteration
@@ -62,7 +62,7 @@ public:
     {
       TCollection_BasicMapIterator::Reset();
       myIntMask = ~0U;
-      myKey = myNode != NULL ? TColStd_intMapNode_findNext (reinterpret_cast<const TColStd_intMapNode*>(myNode), myIntMask) : 0;
+      myKey = myNode != NULL ? TColStd_intMapNode_findNext (myNode, myIntMask) : 0;
     }
 
     //! Query the iterated key.
@@ -77,8 +77,7 @@ public:
     {
       for (; myNode != NULL; TCollection_BasicMapIterator::Next())
       {
-        const TColStd_intMapNode* aNode = reinterpret_cast<const TColStd_intMapNode*>(myNode);
-        myKey = TColStd_intMapNode_findNext (aNode, myIntMask);
+        myKey = TColStd_intMapNode_findNext (myNode, myIntMask);
         if (myIntMask != ~0u)
         {
           break;
@@ -287,12 +286,12 @@ private:
 
   //! Find the smallest non-zero bit under the given mask.
   //! Outputs the new mask that does not contain the detected bit.
-  Standard_EXPORT static Standard_Integer TColStd_intMapNode_findNext (const TColStd_intMapNode* theNode,
+  Standard_EXPORT static Standard_Integer TColStd_intMapNode_findNext (const Standard_Address theNode,
                                                                        unsigned int& theMask);
 
   //! Find the highest non-zero bit under the given mask.
   //! Outputs the new mask that does not contain the detected bit.
-  Standard_EXPORT static Standard_Integer TColStd_intMapNode_findPrev (const TColStd_intMapNode* theNode,
+  Standard_EXPORT static Standard_Integer TColStd_intMapNode_findPrev (const Standard_Address theNode,
                                                                        unsigned int& theMask);
 
 private:
