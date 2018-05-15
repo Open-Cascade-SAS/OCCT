@@ -162,12 +162,29 @@ void BOPTools_AlgoTools::MakeSplitEdge(const TopoDS_Edge&   aE,
   //
   BRep_Builder BB;
   if (!aV1.IsNull()) {
-    BB.Add  (E, aV1);
+    if (aP1 < aP2) {
+      BB.Add (E, TopoDS::Vertex(aV1.Oriented(TopAbs_FORWARD)));
+    }
+    else {
+      BB.Add (E, TopoDS::Vertex(aV1.Oriented(TopAbs_REVERSED)));
+    }
   }
   if (!aV2.IsNull()) {
-    BB.Add  (E, aV2);
+    if (aP1 < aP2) {
+      BB.Add (E, TopoDS::Vertex(aV2.Oriented(TopAbs_REVERSED)));
+    }
+    else {
+      BB.Add (E, TopoDS::Vertex(aV2.Oriented(TopAbs_FORWARD)));
+    }
   }
-  BB.Range(E, aP1, aP2);
+  
+  if (aP1 < aP2) {
+    BB.Range(E, aP1, aP2);
+  }
+  else {
+    BB.Range(E, aP2, aP1);
+  }
+  
   aNewEdge=E;
   aNewEdge.Orientation(aE.Orientation());
 }
