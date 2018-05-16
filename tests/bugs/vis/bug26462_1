@@ -29,6 +29,9 @@ if {$aNbSelected != "0"} {
   puts "ERROR: no boxes must be selected!"
 }
 
+puts "0029779: Visualization, SelectMgr_SelectableObject - sensitivity change for object not activated in given mode leads to crash"
+vaspects b1 -setSensitivity 3 4
+
 # increase tolerance for b1
 vaspects b1 -setSensitivity 2 4
 

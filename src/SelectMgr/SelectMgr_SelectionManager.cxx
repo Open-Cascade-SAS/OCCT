@@ -957,7 +957,7 @@ void SelectMgr_SelectionManager::SetSelectionSensitivity (const Handle(SelectMgr
   }
 
   const Handle(SelectMgr_Selection)& aSel = theObject->Selection (theMode);
-  if (theObject.IsNull())
+  if (aSel.IsNull())
   {
     return;
   }
