@@ -26,7 +26,7 @@ foreach r {r0 r1 r2 r3 r4} {
 }
 
 checknbshapes r0 -wire 6 -face 6 -shell 1 -solid 1
-checkprops r0 -s 4.8 -v 0.405134
+checkprops r0 -s 5.2 -v 0.42
 
 checknbshapes r1 -wire 25 -face 25 -shell 1 -solid 1
 checkprops r1 -s 45921.2 -v 6839.09
@@ -37,6 +37,6 @@ checkprops r2 -s 45780.6 -v 6784.77
 checknbshapes r3 -wire 10 -face 10 -shell 2 -solid 2
 checkprops r3 -s 142.969 -v 39.5572
 
-checkprops r4 -l 14.8225
+checkprops r4 -l 14.2568
 
 checkview -display r2 -2d -path ${imagedir}/${test_image}.png

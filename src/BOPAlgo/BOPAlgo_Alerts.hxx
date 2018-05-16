@@ -104,6 +104,10 @@ DEFINE_SIMPLE_ALERT(BOPAlgo_AlertRemoveFeaturesFailed)
 //! and not used for solids creation
 DEFINE_ALERT_WITH_SHAPE(BOPAlgo_AlertSolidBuilderUnusedFaces)
 
+//! Some of the edges passed to the Face Builder algorithm have not been classified
+//! and not used for faces creation
+DEFINE_ALERT_WITH_SHAPE(BOPAlgo_AlertFaceBuilderUnusedEdges)
+
 //! Unable to orient the shape correctly
 DEFINE_ALERT_WITH_SHAPE(BOPAlgo_AlertUnableToOrientTheShape)
 

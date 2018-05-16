@@ -425,11 +425,9 @@ void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
     Standard_Real umin, umax, vmin, vmax;
     //
     myContext->UVBounds(myFace1, umin, umax, vmin, vmax);
-    CorrectPlaneBoundaries(umin, umax, vmin, vmax);
     myHS1->ChangeSurface().Load(S1, umin, umax, vmin, vmax);
     //
     myContext->UVBounds(myFace2, umin, umax, vmin, vmax);
-    CorrectPlaneBoundaries(umin, umax, vmin, vmax);
     myHS2->ChangeSurface().Load(S2, umin, umax, vmin, vmax);
     //
     Standard_Real TolAng = 1.e-8;

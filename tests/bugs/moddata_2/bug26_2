@@ -1,5 +1,3 @@
-puts "TODO CR25432 ALL: Error : The area of result shape is"
-
 puts "================"
 puts "OCC26"
 puts "================"
@@ -12,5 +10,6 @@ checkshape a_2
 
 bfuse result a_2 a_1
 
-checkprops result -s 41539.9
+checkprops result -s 41539.9 -v 348665
+checknbshapes result -wire 44 -face 41 -shell 1 -solid 1
 checkview -display result -2d -path ${imagedir}/${test_image}.png

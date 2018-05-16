@@ -95,5 +95,8 @@ static const char BOPAlgo_BOPAlgo_msg[] =
   ".BOPAlgo_AlertSolidBuilderUnusedFaces\n"
   "Warning: Some of the faces passed to the Solid Builder algorithm have not been classified and not used for solids creation\n"
   "\n"
+  ".BOPAlgo_AlertFaceBuilderUnusedEdges\n"
+  "Warning: Some of the edges passed to the Face Builder algorithm have not been classified and not used for faces creation\n"
+  "\n"
   ".BOPAlgo_AlertUnableToOrientTheShape\n"
   "Warning: Unable to orient the shape correctly\n";

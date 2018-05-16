@@ -92,5 +92,8 @@ Error: The Feature Removal algorithm has failed
 .BOPAlgo_AlertSolidBuilderUnusedFaces
 Warning: Some of the faces passed to the Solid Builder algorithm have not been classified and not used for solids creation
 
+.BOPAlgo_AlertFaceBuilderUnusedEdges
+Warning: Some of the edges passed to the Face Builder algorithm have not been classified and not used for faces creation
+
 .BOPAlgo_AlertUnableToOrientTheShape
 Warning: Unable to orient the shape correctly

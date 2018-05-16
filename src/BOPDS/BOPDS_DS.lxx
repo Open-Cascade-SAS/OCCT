@@ -104,11 +104,24 @@ inline Standard_Integer BOPDS_DS::NbInterfTypes()
 //function : AddInterf
 //purpose  : 
 //=======================================================================
-inline void BOPDS_DS::AddInterf(const Standard_Integer theI1,
-                                const Standard_Integer theI2)
+inline Standard_Boolean BOPDS_DS::AddInterf(const Standard_Integer theI1,
+                                            const Standard_Integer theI2)
 {
-  BOPDS_Pair aPK(theI1, theI2);
-  myInterfTB.Add(aPK);
+  if (myInterfTB.Add(BOPDS_Pair(theI1, theI2)))
+  {
+    myInterfered.Add(theI1);
+    myInterfered.Add(theI2);
+    return Standard_True;
+  }
+  return Standard_False;
+}
+//=======================================================================
+//function : HasInterf
+//purpose  : 
+//=======================================================================
+inline Standard_Boolean BOPDS_DS::HasInterf(const Standard_Integer theI) const
+{
+  return myInterfered.Contains(theI);
 }
 //=======================================================================
 //function : HasInterf

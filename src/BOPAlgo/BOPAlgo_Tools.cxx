@@ -112,7 +112,8 @@ void BOPAlgo_Tools::FillMap(const Handle(BOPDS_PaveBlock)& aPB,
 //=======================================================================
 void BOPAlgo_Tools::PerformCommonBlocks(BOPDS_IndexedDataMapOfPaveBlockListOfPaveBlock& aMPBLPB,
                                         const Handle(NCollection_BaseAllocator)& aAllocator,
-                                        BOPDS_PDS& pDS)
+                                        BOPDS_PDS& pDS,
+                                        const Handle(IntTools_Context)& theContext)
 {
   Standard_Integer aNbCB;
   //
@@ -171,6 +172,10 @@ void BOPAlgo_Tools::PerformCommonBlocks(BOPDS_IndexedDataMapOfPaveBlockListOfPav
     aCB->SetFaces(aLFaces);
     for (aItLPB.Initialize(aLPB); aItLPB.More(); aItLPB.Next())
       pDS->SetCommonBlock(aItLPB.Value(), aCB);
+
+    // Compute tolerance for Common Block
+    Standard_Real aTolCB = BOPAlgo_Tools::ComputeToleranceOfCB(aCB, pDS, theContext);
+    aCB->SetTolerance(aTolCB);
   }
 }
 //=======================================================================
@@ -179,7 +184,8 @@ void BOPAlgo_Tools::PerformCommonBlocks(BOPDS_IndexedDataMapOfPaveBlockListOfPav
 //=======================================================================
 void BOPAlgo_Tools::PerformCommonBlocks(const BOPDS_IndexedDataMapOfPaveBlockListOfInteger& aMPBLI,
                                         const Handle(NCollection_BaseAllocator)& ,//aAllocator
-                                        BOPDS_PDS& pDS)
+                                        BOPDS_PDS& pDS,
+                                        const Handle(IntTools_Context)& theContext)
 {
   Standard_Integer nF, i, aNb;
   TColStd_ListIteratorOfListOfInteger aItLI;
@@ -216,6 +222,9 @@ void BOPAlgo_Tools::PerformCommonBlocks(const BOPDS_IndexedDataMapOfPaveBlockLis
     }
     aCB->AppendFaces(aNewFaces);
     pDS->SetCommonBlock(aPB, aCB);
+    // Compute tolerance for Common Block
+    Standard_Real aTolCB = BOPAlgo_Tools::ComputeToleranceOfCB(aCB, pDS, theContext);
+    aCB->SetTolerance(aTolCB);
   }
 }
 //=======================================================================
@@ -253,6 +262,10 @@ Standard_Real BOPAlgo_Tools::ComputeToleranceOfCB
   aPBR->Range(aT1, aT2);
   aDt = (aT2 - aT1) / (aNbPnt + 1);
   //
+  Handle(IntTools_Context) aCtx = theContext;
+  if (aCtx.IsNull())
+    aCtx = new IntTools_Context();
+
   // compute max tolerance for common blocks on edges
   if (aLPB.Extent() > 1) {
     // compute max distance between edges
@@ -270,7 +283,7 @@ Standard_Real BOPAlgo_Tools::ComputeToleranceOfCB
       const TopoDS_Edge& aE = *(TopoDS_Edge*)&theDS->Shape(nE);
       aTol = BRep_Tool::Tolerance(aE);
       //
-      aProjPC = theContext->ProjPC(aE);
+      aProjPC = aCtx->ProjPC(aE);
       //
       aT = aT1;
       for (Standard_Integer i=1; i <= aNbPnt; i++) {
@@ -299,7 +312,7 @@ Standard_Real BOPAlgo_Tools::ComputeToleranceOfCB
       const TopoDS_Face& aF = *(TopoDS_Face*)&theDS->Shape(nF);
       aTol = BRep_Tool::Tolerance(aF);
       //
-      aProjPS = theContext->ProjPS(aF);
+      aProjPS = aCtx->ProjPS(aF);
       //
       aT = aT1;
       for (Standard_Integer i=1; i <= aNbPnt; i++) {

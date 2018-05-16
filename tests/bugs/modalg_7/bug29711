@@ -1,0 +1,33 @@
+puts "========"
+puts "OCC29711: General Fuse operation produces invalid result"
+puts "========"
+puts ""
+
+
+binrestore [locate_data_file bug29711_faces.bin] cf
+
+bclearobjects
+bcleartools
+eval baddobjects [explode cf f]
+bfillds
+bbuild gf
+
+# check each face on self-interference
+foreach f [explode gf f] {
+  if {![regexp "OK" [bopcheck $f]]} {
+    puts "Error: face $f is self-interfering"
+  }
+}
+
+checkshape gf
+checkprops gf -s 1995.07
+checknbshapes gf -wire 256 -face 256
+
+# make volumes from the faces
+mkvolume result gf -ni
+
+checkshape result
+checkprops result -s 1996.57 -v 674.739
+checknbshapes result -wire 256 -face 256 -shell 12 -solid 9
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

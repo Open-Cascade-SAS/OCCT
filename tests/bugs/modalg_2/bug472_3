@@ -1,5 +1,6 @@
 puts "TODO OCC25917 ALL: Faulty shapes in variables faulty_1 to faulty_"
 puts "TODO OCC25917 ALL: Error :  is WRONG because number of "
+puts "TODO OCC25917 ALL: Error : The area of result shape is "
 puts "========================"
 puts " OCC472 "
 puts "(case 3)"

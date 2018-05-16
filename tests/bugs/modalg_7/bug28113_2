@@ -14,7 +14,7 @@ bfillds
 bsplit result
 
 checkshape result
-checknbshapes result -wire 34 -face 34 -shell 3 -solid 3
+checknbshapes result -wire 33 -face 33 -shell 3 -solid 3
 checkprops result -s 26451 -v 107642
 
 checkview -display result -2d -path ${imagedir}/${test_image}.png

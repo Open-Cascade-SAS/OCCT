@@ -74,6 +74,9 @@ Standard_EXPORT virtual ~IntTools_ShrunkRange();
     return myIsSplittable;
   }
 
+  //! Returns the length of the edge if computed.
+  Standard_Real Length() const { return myLength; }
+
 protected:
 
   TopoDS_Edge myEdge;
@@ -87,6 +90,7 @@ protected:
   Handle(IntTools_Context) myCtx;
   Standard_Boolean myIsDone;
   Standard_Boolean myIsSplittable;
+  Standard_Real myLength;
 
 private:
 

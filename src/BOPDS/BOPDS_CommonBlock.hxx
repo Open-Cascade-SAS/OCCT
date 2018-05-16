@@ -61,9 +61,7 @@ public:
   
 
   //! Modifier
-  //! Adds the list of pave blocks <aLPB>
-  //! to the list of pave blocks
-  //! of the common block
+  //! Sets the list of pave blocks for the common block
   Standard_EXPORT void SetPaveBlocks (const BOPDS_ListOfPaveBlock& aLPB);
   
 
@@ -154,13 +152,25 @@ public:
   //! It will be representative for the whole group.
   Standard_EXPORT void SetRealPaveBlock(const Handle(BOPDS_PaveBlock)& thePB);
 
+  //! Sets the tolerance for the common block
+  void SetTolerance(const Standard_Real theTol)
+  {
+    myTolerance = theTol;
+  }
+
+  //! Return the tolerance of common block
+  Standard_Real Tolerance() const
+  {
+    return myTolerance;
+  }
 
   DEFINE_STANDARD_RTTIEXT(BOPDS_CommonBlock,Standard_Transient)
 
 protected:
 
-  BOPDS_ListOfPaveBlock myPaveBlocks;
-  TColStd_ListOfInteger myFaces;
+  BOPDS_ListOfPaveBlock myPaveBlocks; //!< Pave blocks of the common block
+  TColStd_ListOfInteger myFaces;      //!< Faces on which the pave blocks are lying
+  Standard_Real myTolerance;          //!< Tolerance of the common block
 
 private:
 
