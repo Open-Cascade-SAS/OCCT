@@ -52,10 +52,13 @@ class Geom_BSplineCurve;
 //! The Curve from BRepAdaptor allows to use a Wire
 //! of the BRep topology like a 3D curve.
 //! Warning: With this  class of curve,  C0 and C1 continuities
-//! are not assumed. So be carful with some algorithm!
+//! are not assumed. So be careful with some algorithm!
 //! Please note that BRepAdaptor_CompCurve cannot be
 //! periodic curve at all (even if it contains single 
 //! periodic edge).
+//!
+//! BRepAdaptor_CompCurve can only work on valid wires where all edges are
+//! connected to each other to make a chain.
 class BRepAdaptor_CompCurve  : public Adaptor3d_Curve
 {
 public:
