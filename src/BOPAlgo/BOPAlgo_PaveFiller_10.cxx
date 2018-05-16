@@ -63,59 +63,40 @@ void BOPAlgo_PaveFiller::SetNonDestructive()
 //purpose  : 
 //=======================================================================
 void BOPAlgo_PaveFiller::UpdateEdgeTolerance (const Standard_Integer nE,
-                                              const Standard_Real aTol)
+                                              const Standard_Real theTol)
 {
-  Standard_Boolean bIsNewShape, bHasShapeSD;
-  Standard_Integer nV, nVx;
-  Standard_Real aTolV;
-  BRep_Builder aBB;
-  TColStd_ListIteratorOfListOfInteger aIt;
-  //
-  BOPDS_ShapeInfo& aSIE=myDS->ChangeShapeInfo(nE);
-  const TColStd_ListOfInteger& aLI=aSIE.SubShapes();
-  //
-  if (myNonDestructive) {
-    bIsNewShape=myDS->IsNewShape(nE);
-    if (!bIsNewShape) {
+  BOPDS_ShapeInfo& aSIE = myDS->ChangeShapeInfo(nE);
+  const TColStd_ListOfInteger& aLI = aSIE.SubShapes();
+
+  // For the safe input mode avoid modifying the input shapes
+  if (myNonDestructive)
+  {
+    if (!myDS->IsNewShape(nE))
       return;
-    }
-    //
-    aIt.Initialize(aLI);
-    for (; aIt.More(); aIt.Next()) {
-      nV = aIt.Value();
-      bHasShapeSD=myDS->HasShapeSD(nV, nVx);
-      if (bHasShapeSD) {
-        continue;
-      }
-      bIsNewShape=myDS->IsNewShape(nV);
-      if (!bIsNewShape) {
+
+    TColStd_ListIteratorOfListOfInteger itLI(aLI);
+    for (; itLI.More(); itLI.Next())
+    {
+      Standard_Integer nV = itLI.Value(), nVSD;
+      if (!myDS->IsNewShape(nV) &&
+          !myDS->HasShapeSD(nV, nVSD))
         return;
-      }
     }
   }
-  //
+
+  // Update edge
   const TopoDS_Edge& aE = *(TopoDS_Edge*)&myDS->Shape(nE);
-  aBB.UpdateEdge(aE, aTol);
-  Bnd_Box& aBoxE=aSIE.ChangeBox();
+  BRep_Builder().UpdateEdge(aE, theTol);
+  Bnd_Box& aBoxE = aSIE.ChangeBox();
   BRepBndLib::Add(aE, aBoxE);
   aBoxE.SetGap(aBoxE.GetGap() + Precision::Confusion());
-  //
-  aIt.Initialize(aLI);
-  for (; aIt.More(); aIt.Next()) {
-    nV = aIt.Value();
-    bHasShapeSD=myDS->HasShapeSD(nV, nVx);
-    if (bHasShapeSD) {
-      nV=nVx;
-    }
-    const TopoDS_Vertex& aV = *(TopoDS_Vertex*)&myDS->Shape(nV);
-    aTolV = BRep_Tool::Tolerance(aV);
-    if (aTolV < aTol) {
-      aBB.UpdateVertex(aV, aTol);
-      BOPDS_ShapeInfo& aSIV = myDS->ChangeShapeInfo(nV);
-      Bnd_Box& aBoxV = aSIV.ChangeBox();
-      BRepBndLib::Add(aV, aBoxV);
-      aBoxV.SetGap(aBoxV.GetGap() + Precision::Confusion());
-    }
+
+  // Update vertices
+  TColStd_ListIteratorOfListOfInteger itLI(aLI);
+  for (; itLI.More(); itLI.Next())
+  {
+    Standard_Integer nV = itLI.Value();
+    UpdateVertex(nV, theTol);
   }
 }
 //=======================================================================
@@ -143,6 +124,7 @@ Standard_Integer BOPAlgo_PaveFiller::UpdateVertex
       Bnd_Box& aBoxV = aSIV.ChangeBox();
       BRepBndLib::Add(aVSD, aBoxV);
       aBoxV.SetGap(aBoxV.GetGap() + Precision::Confusion());
+      myIncreasedSS.Add(nV);
     }
     return nVNew;
   }
@@ -172,7 +154,13 @@ Standard_Integer BOPAlgo_PaveFiller::UpdateVertex
   myDS->AddShapeSD(nV, nVNew);
   //
   myDS->InitPaveBlocksForVertex(nV);
-  //
+
+  // Add new vertex to map of vertices to avoid further extension
+  myVertsToAvoidExtension.Add(nVNew);
+
+  if (aTolV < aTolNew)
+    myIncreasedSS.Add(nV);
+
   return nVNew;
 }
 //=======================================================================

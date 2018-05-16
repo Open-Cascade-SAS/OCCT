@@ -26,6 +26,7 @@
 #include <BOPDS_PDS.hxx>
 #include <BOPDS_VectorOfPair.hxx>
 #include <BOPDS_VectorOfVectorOfPair.hxx>
+#include <BOPTools_BoxBndTree.hxx>
 #include <NCollection_BaseAllocator.hxx>
 #include <Precision.hxx>
 #include <Standard_Boolean.hxx>
@@ -33,12 +34,11 @@
 class BOPDS_DS;
 class IntTools_Context;
 
-
 //! The class BOPDS_Iterator is
 //! 1.to compute intersections between BRep sub-shapes
 //! of arguments of an operation (see the class BOPDS_DS)
 //! in terms of theirs bounding boxes
-//! 2.provides interface to iterare the pairs of
+//! 2.provides interface to iterate the pairs of
 //! intersected sub-shapes of given type
 class BOPDS_Iterator 
 {
@@ -86,6 +86,10 @@ public:
                                        const Standard_Boolean theCheckOBB = Standard_False,
                                        const Standard_Real theFuzzyValue = Precision::Confusion());
 
+  //! Updates the tree of Bounding Boxes with increased boxes and
+  //! intersects such elements with the tree.
+  Standard_EXPORT void PrepareExt(const TColStd_MapOfInteger& theIndicies);
+
   //! Returns the number of intersections founded
   Standard_EXPORT Standard_Integer ExpectedLength() const;
 
@@ -100,20 +104,40 @@ public:
   //! Returns the flag of parallel processing
   Standard_EXPORT Standard_Boolean RunParallel() const;
 
-protected:
 
+public: //! @name Number of extra interfering types
+
+  // Extra lists contain only V/V, V/E, V/F interfering pairs.
+  // Although E/E is also initialized (but never filled) for code simplicity.
+  static Standard_Integer NbExtInterfs() { return 4; }
+
+protected: //! @name Protected methods for bounding boxes intersection
+
+  //! Intersects the Bounding boxes of sub-shapes of the arguments with the tree
+  //! and saves the interfering pairs for further geometrical intersection.
   Standard_EXPORT virtual void Intersect(const Handle(IntTools_Context)& theCtx = Handle(IntTools_Context)(),
                                          const Standard_Boolean theCheckOBB = Standard_False,
                                          const Standard_Real theFuzzyValue = Precision::Confusion());
 
-  Handle(NCollection_BaseAllocator) myAllocator;
-  Standard_Integer myLength;
-  BOPDS_PDS myDS;
-  BOPDS_VectorOfVectorOfPair myLists;
-  BOPDS_VectorOfPair::Iterator myIterator;
-  Standard_Boolean myRunParallel;
+  //! Intersects the bounding boxes of the shapes with given indices in DS
+  //! with the tree of bounding boxes and saves the interfering pairs in
+  //! extra lists for further geometrical intersection.
+  Standard_EXPORT void IntersectExt(const TColStd_MapOfInteger& theIndices);
 
-private:
+
+protected: //! @name Fields
+
+  Handle(NCollection_BaseAllocator) myAllocator; //!< Allocator
+  Standard_Integer myLength;                     //!< Length of the intersection vector of
+                                                 //! particular intersection type
+  BOPDS_PDS myDS;                                //!< Data Structure
+  BOPDS_VectorOfVectorOfPair myLists;            //!< Pairs with interfering bounding boxes
+  BOPDS_VectorOfPair::Iterator myIterator;       //!< Iterator on each interfering type
+  Standard_Boolean myRunParallel;                //!< Flag for parallel processing
+  BOPTools_BoxBndTree myBoxTree;                 //!< Unbalanced tree of bounding boxes
+  BOPDS_VectorOfVectorOfPair myExtLists;         //!< Extra pairs of sub-shapes found after
+                                                 //! intersection of increased sub-shapes
+  Standard_Boolean myUseExt;                     //!< Information flag for using the extra lists
 
 };
 

@@ -685,7 +685,8 @@ void BOPAlgo_BuilderSolid::PerformInternalShapes()
         aBB.Add(aWShape, aItLS.Value());
     }
 
-    AddWarning(new BOPAlgo_AlertSolidBuilderUnusedFaces(aWShape));  }
+    AddWarning(new BOPAlgo_AlertSolidBuilderUnusedFaces(aWShape));
+  }
 }
 //=======================================================================
 //function : MakeInternalShells

@@ -34,6 +34,7 @@
   myTS2=myT1;
   myIsDone=Standard_False;
   myIsSplittable=Standard_False;
+  myLength = 0.0;
 }
 //=======================================================================
 //function : ~
@@ -59,6 +60,7 @@ void IntTools_ShrunkRange::SetData(const TopoDS_Edge& aE,
   myT2=aT2;
   myIsDone=Standard_False;
   myIsSplittable=Standard_False;
+  myLength = 0.0;
 }
 //=======================================================================
 //function : SetContext
@@ -178,9 +180,8 @@ void IntTools_ShrunkRange::Perform()
   if (aPTolE > aPTolEMin) {
     aPTolE = aPTolEMin;
   }
-  Standard_Real anEdgeLength =
-    GCPnts_AbscissaPoint::Length(aBAC, myTS1, myTS2, aPTolE);
-  if (anEdgeLength < aDTol) {
+  myLength = GCPnts_AbscissaPoint::Length(aBAC, myTS1, myTS2, aPTolE);
+  if (myLength < aDTol) {
     // micro edge
     return;
   }
@@ -192,11 +193,10 @@ void IntTools_ShrunkRange::Perform()
   // for the edge to have possibility to be split at least once:
   // 2*TolE - minimal diameter of tolerance sphere of splitting vertex
   // 2*Precision::Confusion() - minimal length of the new edges
-  if (anEdgeLength > (2 * aTolE + 2 * aDTol)) {
+  if (myLength > (2 * aTolE + 2 * aDTol)) {
     myIsSplittable = Standard_True;
   }
   //
   // build bounding box for the edge on the shrunk range
-  BndLib_Add3dCurve::Add(aBAC, myTS1, myTS2,
-      aTolE + aDTol, myBndBox);
+  BndLib_Add3dCurve::Add(aBAC, myTS1, myTS2, aTolE + aDTol, myBndBox);
 }

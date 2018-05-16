@@ -1,5 +1,3 @@
-puts "TODO OCC23660 ALL: Error: tolerance"
-
 puts "========"
 puts "OCC23660"
 puts "========"
@@ -20,3 +18,7 @@ fit
 checkview -screenshot -2d -path ${imagedir}/${test_image}.png
 
 checkmaxtol r -min_tol 0.001
+checkprops r -l 19.0858
+if {[regexp "alone_5" [checksection r]]} {
+  puts "Error: section with gap"
+}

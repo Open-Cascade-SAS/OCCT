@@ -179,6 +179,10 @@ void BOPAlgo_PaveFiller::PerformVE()
       continue;
     }
     //
+    if (myDS->HasInterf(nV, nE)) {
+      continue;
+    }
+    //
     if (myDS->HasInterfShapeSubShapes(nV, nE)) {
       continue;
     }

@@ -184,10 +184,18 @@ void BOPAlgo_PaveFiller::PerformVF()
   //
   aVFs.SetIncrement(iSize);
   //
+  // Avoid repeated intersection of the same vertex with face in case
+  // the group of vertices formed a single SD vertex
+  NCollection_DataMap<BOPDS_Pair, TColStd_MapOfInteger, BOPDS_PairMapHasher> aMVFPairs;
+
   for (; myIterator->More(); myIterator->Next()) {
     myIterator->Value(nV, nF);
     //
     if (myDS->IsSubShape(nV, nF)) {
+      continue;
+    }
+    //
+    if (myDS->HasInterf(nV, nF)) {
       continue;
     }
     //
@@ -201,12 +209,23 @@ void BOPAlgo_PaveFiller::PerformVF()
       nVx=nVSD;
     }
     //
+    BOPDS_Pair aVFPair(nVx, nF);
+    TColStd_MapOfInteger* pMV = aMVFPairs.ChangeSeek(aVFPair);
+    if (pMV)
+    {
+      pMV->Add(nV);
+      continue;
+    }
+
+    pMV = aMVFPairs.Bound(aVFPair, TColStd_MapOfInteger());
+    pMV->Add(nV);
+
     const TopoDS_Vertex& aV=(*(TopoDS_Vertex *)(&myDS->Shape(nVx))); 
     const TopoDS_Face& aF=(*(TopoDS_Face *)(&myDS->Shape(nF))); 
     //
     BOPAlgo_VertexFace& aVertexFace=aVVF.Appended();
     //
-    aVertexFace.SetIndices(nV, nF);
+    aVertexFace.SetIndices(nVx, nF);
     aVertexFace.SetVertex(aV);
     aVertexFace.SetFace(aF);
     aVertexFace.SetFuzzyValue(myFuzzyValue);
@@ -231,22 +250,30 @@ void BOPAlgo_PaveFiller::PerformVF()
       continue;
     }
     //
-    aVertexFace.Indices(nV, nF);
+    aVertexFace.Indices(nVx, nF);
     aVertexFace.Parameters(aT1, aT2);
-    // 1
-    BOPDS_InterfVF& aVF=aVFs.Appended();
-    aVF.SetIndices(nV, nF);
-    aVF.SetUV(aT1, aT2);
-    // 2
-    myDS->AddInterf(nV, nF);
-    //
-    // 3 update vertex V/F if necessary
     Standard_Real aTolVNew = aVertexFace.VertexNewTolerance();
-    nVx=UpdateVertex(nV, aTolVNew);
-    //
-    // 4
-    if (myDS->IsNewShape(nVx)) {
-      aVF.SetIndexNew(nVx);
+
+    BOPDS_Pair aVFPair(nVx, nF);
+    const TColStd_MapOfInteger& aMV = aMVFPairs.Find(aVFPair);
+    TColStd_MapIteratorOfMapOfInteger itMV(aMV);
+    for (; itMV.More(); itMV.Next())
+    {
+      nV = itMV.Value();
+      // 1
+      BOPDS_InterfVF& aVF = aVFs.Appended();
+      aVF.SetIndices(nV, nF);
+      aVF.SetUV(aT1, aT2);
+      // 2
+      myDS->AddInterf(nV, nF);
+      //
+      // 3 update vertex V/F if necessary
+      nVx = UpdateVertex(nV, aTolVNew);
+      //
+      // 4
+      if (myDS->IsNewShape(nVx)) {
+        aVF.SetIndexNew(nVx);
+      }
     }
     // 5 update FaceInfo
     BOPDS_FaceInfo& aFI=myDS->ChangeFaceInfo(nF);

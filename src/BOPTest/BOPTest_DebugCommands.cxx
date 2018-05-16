@@ -128,7 +128,7 @@ void BOPTest::DebugCommands(Draw_Interpretor& theCommands)
                   __FILE__, bopindex,    g);
   theCommands.Add("bopsd", "Gets the Same domain shape. Use: bopsd #",
                    __FILE__, bopsd,      g);
-  theCommands.Add("bopsc", "Shows the section curves. Use: bopsc [nF1 nF2]",
+  theCommands.Add("bopsc", "Shows the section curves. Use: bopsc [nF1 [nF2]]",
                   __FILE__, bopsc,       g);
   theCommands.Add("boppb", "Shows information about pave blocks. Use: boppb [#e]",
                   __FILE__, boppb,       g);
@@ -637,8 +637,8 @@ Standard_Integer bopsc(Draw_Interpretor& di,
                        Standard_Integer n,
                        const char** a)
 {
-  if (n != 1 && n != 3) {
-    di << "Shows the section curves. Use: bopsc [nF1 nF2]\n";
+  if (n > 3) {
+    di.PrintHelp(a[0]);
     return 1;
   }
   //
@@ -658,11 +658,11 @@ Standard_Integer bopsc(Draw_Interpretor& di,
   BOPDS_ListIteratorOfListOfPaveBlock aItLPB;
   //
   nSF1 = nSF2 = -1;
-  if (n == 3) {
+  if (n > 1)
     nSF1 = Draw::Atoi(a[1]);
+  if (n > 2)
     nSF2 = Draw::Atoi(a[2]);
-  }
-  //
+
   BOPDS_VectorOfInterfFF& aFFs = pDS->InterfFF();
   //
   iCnt = 0;
@@ -675,6 +675,10 @@ Standard_Integer bopsc(Draw_Interpretor& di,
         continue;
       }
       iPriz = 1;
+    }
+    else if (n == 2) {
+      if (!aFF.Contains(nSF1))
+        continue;
     }
     //
     aFF.Indices(nF1, nF2);

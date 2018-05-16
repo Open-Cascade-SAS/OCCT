@@ -593,8 +593,8 @@ Standard_Integer IntTools_Context::ComputePE
       {
         gp_Pnt aPV = BRep_Tool::Pnt(aV);
         aTolSum = aTolP1 + BRep_Tool::Tolerance(aV) + Precision::Confusion();
-        Standard_Real aDist1 = aP1.SquareDistance(aPV);
-        if (aDist1 < aDist && aDist1 < Square(aTolSum))
+        Standard_Real aDist1 = aP1.Distance(aPV);
+        if (aDist1 < aDist && aDist1 < aTolSum)
         {
           aDist = aDist1;
           aT = BRep_Tool::Parameter(aV, aEFwd);

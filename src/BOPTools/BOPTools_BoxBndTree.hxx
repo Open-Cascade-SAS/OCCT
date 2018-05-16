@@ -17,10 +17,10 @@
 
 #include <Bnd_Box.hxx>
 #include <BOPTools_BoxSelector.hxx>
-#include <NCollection_UBTree.hxx>
+#include <NCollection_EBTree.hxx>
 #include <Standard_Integer.hxx>
 
-typedef NCollection_UBTree<Standard_Integer, Bnd_Box> BOPTools_BoxBndTree;
+typedef NCollection_EBTree<Standard_Integer, Bnd_Box> BOPTools_BoxBndTree;
 typedef BOPTools_BoxSelector<Bnd_Box> BOPTools_BoxBndTreeSelector;
 
-#endif 
+#endif

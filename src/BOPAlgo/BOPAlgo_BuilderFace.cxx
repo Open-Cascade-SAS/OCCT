@@ -39,7 +39,7 @@
 #include <IntTools_FClass2d.hxx>
 #include <NCollection_DataMap.hxx>
 #include <NCollection_UBTreeFiller.hxx>
-#include <TColStd_MapIntegerHasher.hxx>
+#include <TColStd_MapOfInteger.hxx>
 #include <TopAbs.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
@@ -443,6 +443,7 @@ void BOPAlgo_BuilderFace::PerformAreas()
   {
     // No holes, stop the analysis
     myAreas.Append(aNewFaces);
+    return;
   }
 
   // Classify holes relatively faces
@@ -580,76 +581,132 @@ void BOPAlgo_BuilderFace::PerformAreas()
 //=======================================================================
 void BOPAlgo_BuilderFace::PerformInternalShapes()
 {
-  if (myAvoidInternalShapes) {
+  if (myAvoidInternalShapes)
+    // User-defined option to avoid internal edges
+    // in the result is in force.
     return;
-  }
-  //
-  Standard_Integer aNbWI=myLoopsInternal.Extent();
-  if (!aNbWI) {// nothing to do
+
+  if (myLoopsInternal.IsEmpty())
+    // No edges left for classification
     return;
+
+  // Prepare tree filler with the boxes of the edges to classify
+  NCollection_UBTree<Standard_Integer, Bnd_Box2d> aBBTree;
+  NCollection_UBTreeFiller <Standard_Integer, Bnd_Box2d> aTreeFiller(aBBTree);
+
+  // Map of edges to classify
+  TopTools_IndexedMapOfShape anEdgesMap;
+
+  // Fill the tree and the map
+  TopTools_ListIteratorOfListOfShape itLE(myLoopsInternal);
+  for (; itLE.More(); itLE.Next())
+  {
+    TopoDS_Iterator itE(itLE.Value());
+    for (; itE.More(); itE.Next())
+    {
+      const TopoDS_Edge& aE = TopoDS::Edge(itE.Value());
+      if (!anEdgesMap.Contains(aE))
+      {
+        Bnd_Box2d aBoxE;
+        BRepTools::AddUVBounds(myFace, aE, aBoxE);
+        // Make sure the index of edge in the map and
+        // of the box in the tree is the same
+        aTreeFiller.Add(anEdgesMap.Add(aE), aBoxE);
+      }
+    }
   }
-  // 
-  //Standard_Real aTol;
-  Standard_Integer i;
-  BRep_Builder aBB;
-  TopTools_ListIteratorOfListOfShape aIt1, aIt2;
-  TopoDS_Iterator aIt; 
-  TopTools_IndexedMapOfShape aME1, aME2, aMEP;
-  TopTools_IndexedDataMapOfShapeListOfShape aMVE;
+
+  // Shake the tree
+  aTreeFiller.Fill();
+
+  // Fence map
+  TColStd_MapOfInteger aMEDone;
+
+  // Classify edges relatively faces
+  TopTools_ListIteratorOfListOfShape itLF(myAreas);
+  for (; itLF.More(); itLF.Next())
+  {
+    TopoDS_Face& aF = *(TopoDS_Face*)&itLF.Value();
+
+    // Build box
+    Bnd_Box2d aBoxF;
+    BRepTools::AddUVBounds(aF, aBoxF);
+
+    // Select edges for the classification
+    BOPTools_BoxSelector<Bnd_Box2d> aSelector;
+    aSelector.SetBox(aBoxF);
+    if (!aBBTree.Select(aSelector))
+      continue;
+
+    // Collect edges inside the face
+    TopTools_IndexedMapOfShape anEdgesInside;
+
+    const TColStd_ListOfInteger& aLI = aSelector.Indices();
+    TColStd_ListIteratorOfListOfInteger itLI(aLI);
+    for (; itLI.More(); itLI.Next())
+    {
+      const Standard_Integer nE = itLI.Value();
+      if (aMEDone.Contains(nE))
+        continue;
+
+      const TopoDS_Edge& aE = TopoDS::Edge(anEdgesMap(nE));
+      if (IsInside(aE, aF, myContext))
+      {
+        anEdgesInside.Add(aE);
+        aMEDone.Add(nE);
+      }
+    }
+
+    if (anEdgesInside.IsEmpty())
+      continue;
+
+    // Make internal wires
+    TopTools_ListOfShape aLSI;
+    MakeInternalWires(anEdgesInside, aLSI);
+
+    // Add wires to a face
+    TopTools_ListIteratorOfListOfShape itLSI(aLSI);
+    for (; itLSI.More(); itLSI.Next())
+    {
+      const TopoDS_Shape& aWI = itLSI.Value();
+      BRep_Builder().Add(aF, aWI);
+    }
+
+    // Condition of early exit
+    if (aMEDone.Extent() == anEdgesMap.Extent())
+      // All edges are classified and added into the faces
+      return;
+  }
+
+  // Some edges are left unclassified - warn user about them
+  TopTools_IndexedMapOfShape anEdgesUnUsed;
+  for (Standard_Integer i = 1; i <= anEdgesMap.Extent(); ++i)
+  {
+    if (!aMEDone.Contains(i))
+      anEdgesUnUsed.Add(anEdgesMap(i));
+  }
+
+  // Make internal wires
   TopTools_ListOfShape aLSI;
-  //
-  // 1. All internal edges
-  aIt1.Initialize(myLoopsInternal);
-  for (; aIt1.More(); aIt1.Next()) {
-    const TopoDS_Shape& aWire=aIt1.Value();
-    aIt.Initialize(aWire);
-    for (; aIt.More(); aIt.Next()) {
-      const TopoDS_Shape& aE=aIt.Value();
-      aME1.Add(aE);
-    }
+  MakeInternalWires(anEdgesUnUsed, aLSI);
+
+  // Make compound
+  TopoDS_Compound aWShape;
+  BRep_Builder().MakeCompound(aWShape);
+  BRep_Builder().Add(aWShape, myFace);
+  if (aLSI.Extent() == 1)
+    BRep_Builder().Add(aWShape, aLSI.First());
+  else
+  {
+    TopoDS_Compound aCE;
+    BRep_Builder().MakeCompound(aCE);
+    for (TopTools_ListIteratorOfListOfShape it(aLSI); it.More(); it.Next())
+      BRep_Builder().Add(aCE, it.Value());
+    BRep_Builder().Add(aWShape, aCE);
   }
-  //
-  // 2 Process faces
-  aIt2.Initialize(myAreas);
-  for ( ; aIt2.More(); aIt2.Next()) {
-    TopoDS_Face& aF=(*(TopoDS_Face *)(&aIt2.Value()));
-    //
-    aMVE.Clear();
-    TopExp::MapShapesAndAncestors(aF, TopAbs_VERTEX, TopAbs_EDGE, aMVE);
-    //
-    // 2.1 Separate faces to process aMEP
-    aME2.Clear();
-    aMEP.Clear();
-    aNbWI = aME1.Extent();
-    for (i = 1; i <= aNbWI; ++i) {
-      const TopoDS_Edge& aE=(*(TopoDS_Edge *)(&aME1(i)));
-      if (IsInside(aE, aF, myContext)) {
-        aMEP.Add(aE);
-      }
-      else {
-        aME2.Add(aE);
-      }
-    }
-    //
-    // 2.2 Make Internal Wires
-    aLSI.Clear();
-    MakeInternalWires(aMEP, aLSI);
-    //
-    // 2.3 Add them to aF
-    aIt1.Initialize(aLSI);
-    for (; aIt1.More(); aIt1.Next()) {
-      const TopoDS_Shape& aSI=aIt1.Value();
-      aBB.Add (aF, aSI);
-    }
-    //
-    // 2.4 Remove faces aMFP from aMF
-    aME1 = aME2;
-    //
-    aNbWI = aME1.Extent();
-    if (!aNbWI) {
-      break;
-    }
-  } //for ( ; aIt2.More(); aIt2.Next()) {
+
+  // Add warning
+  AddWarning(new BOPAlgo_AlertFaceBuilderUnusedEdges(aWShape));
 }
 //=======================================================================
 //function : MakeInternalWires

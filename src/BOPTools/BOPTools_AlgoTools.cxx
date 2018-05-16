@@ -764,7 +764,6 @@ Standard_Boolean BOPTools_AlgoTools::IsInternalFace
    const Handle(IntTools_Context)& theContext)
 {
   Standard_Boolean bDegenerated;
-  Standard_Integer aNbF, iRet, iFound;
   TopAbs_Orientation aOr;
   TopoDS_Edge aE1;
   TopExp_Explorer aExp;
@@ -775,22 +774,14 @@ Standard_Boolean BOPTools_AlgoTools::IsInternalFace
   // iRet=0;  - state is not IN
   // iRet=1;  - state is IN
   // iRet=2;  - state can not be found by the method of angles
-  //
-  // For this function the returned value iRet means:
-  // iRet=0;  - state is not IN
-  // iRet=1;  - state is IN
-  //
-  iRet=0; 
+  Standard_Integer iRet = 0;
   // 1 Try to find an edge from theFace in theMEF
-  iFound=0;
   aExp.Init(theFace, TopAbs_EDGE);
   for(; aExp.More(); aExp.Next()) {
     const TopoDS_Edge& aE=(*(TopoDS_Edge*)(&aExp.Current()));
     if (!theMEF.Contains(aE)) {
       continue;
     }
-    //
-    ++iFound;
     //
     aOr=aE.Orientation();
     if (aOr==TopAbs_INTERNAL) {
@@ -802,18 +793,13 @@ Standard_Boolean BOPTools_AlgoTools::IsInternalFace
     }
     // aE
     TopTools_ListOfShape& aLF=theMEF.ChangeFromKey(aE);
-    aNbF=aLF.Extent();
-    if (!aNbF) {
-      return iRet != 0; // it can not be so
-    }
-    //
-    else if (aNbF==1) {
+    Standard_Integer aNbF = aLF.Extent();
+    if (aNbF==1) {
       // aE is internal edge on aLF.First()
       const TopoDS_Face& aF1=(*(TopoDS_Face*)(&aLF.First()));
       BOPTools_AlgoTools::GetEdgeOnFace(aE, aF1, aE1);
-      if (aE1.Orientation()!=TopAbs_INTERNAL) {
-        iRet=2; 
-        break;
+      if (aE1.Orientation() != TopAbs_INTERNAL) {
+        continue;
       }
       //
       iRet=BOPTools_AlgoTools::IsInternalFace(theFace, aE, aF1, aF1, 
@@ -824,31 +810,14 @@ Standard_Boolean BOPTools_AlgoTools::IsInternalFace
     else if (aNbF==2) {
       const TopoDS_Face& aF1=(*(TopoDS_Face*)(&aLF.First()));
       const TopoDS_Face& aF2=(*(TopoDS_Face*)(&aLF.Last()));
-      //
-      if (aF2.IsSame(aF1) && BRep_Tool::IsClosed(aE, aF1)) {
-        // treat as it was for 1 face
-        iRet=BOPTools_AlgoTools::IsInternalFace(theFace, aE, aF1, aF2, 
-                                                theContext);
-        break;
-      }
-    }
-    //
-    if (aNbF%2) {
-      return Standard_False; // it can not be so
-    }
-    else { // aNbF=2,4,6,8,...
-      iRet=BOPTools_AlgoTools::IsInternalFace(theFace, aE, aLF, 
+      iRet=BOPTools_AlgoTools::IsInternalFace(theFace, aE, aF1, aF2,
                                               theContext);
       break;
     }
   }//for(; aExp.More(); aExp.Next()) {
   //
-  if (!iFound) {
-    // the face has no shared edges with the solid
-    iRet=2;
-  }
-  //
-  if (iRet!=2) {
+  if (aExp.More() && iRet != 2)
+  {
     return iRet == 1;
   }
   //

@@ -24,4 +24,4 @@ fit
 
 checkview -screenshot -2d -path ${imagedir}/${test_image}.png
 
-checkprops result -l 945.22 -deps 0.1
+checkprops result -l 2638.31 -deps 0.1

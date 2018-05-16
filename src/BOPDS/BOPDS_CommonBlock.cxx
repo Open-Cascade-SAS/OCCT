@@ -23,7 +23,9 @@ IMPLEMENT_STANDARD_RTTIEXT(BOPDS_CommonBlock,Standard_Transient)
 // function:  
 // purpose: 
 //=======================================================================
-  BOPDS_CommonBlock::BOPDS_CommonBlock()
+BOPDS_CommonBlock::BOPDS_CommonBlock()
+:
+  myTolerance(0.0)
 {
 }
 //=======================================================================
@@ -33,7 +35,8 @@ IMPLEMENT_STANDARD_RTTIEXT(BOPDS_CommonBlock,Standard_Transient)
   BOPDS_CommonBlock::BOPDS_CommonBlock(const Handle(NCollection_BaseAllocator)& theAllocator)
 :
   myPaveBlocks(theAllocator),
-  myFaces(theAllocator)
+  myFaces(theAllocator),
+  myTolerance(0.0)
 {
 }
 //=======================================================================

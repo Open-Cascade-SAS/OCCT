@@ -1,7 +1,3 @@
-puts "TODO OCC28393 ALL: Error : The area of result shape is"
-puts "TODO OCC28393 ALL: Error : The volume of result shape is"
-puts "TODO OCC28393 ALL: Error :  is WRONG because number of"
-
 puts "========"
 puts "OCC28393"
 puts "========"
@@ -13,9 +9,15 @@ puts ""
 restore [locate_data_file bug28393_o.brep] o
 restore [locate_data_file bug28393_t.brep] t
 
+# object is self-interfering shape
+bopcheck o
+
 bcut result o t
 
 checkshape result
+
+# the self-interfering part of the object is not affected
+# by the tool, and passed into result as is
 bopcheck result
 
 checkprops result -s 70266.5 -v 979408

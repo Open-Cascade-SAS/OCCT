@@ -461,6 +461,7 @@ void BOPAlgo_Builder::BuildSplitFaces()
   {
     BOPAlgo_BuilderFace& aBF = aVBF(k);
     aFacesIm.Add(myDS->Index(aBF.Face()), aBF.Areas());
+    myReport->Merge(aBF.GetReport());
   }
 
   aNbBF = aFacesIm.Extent();

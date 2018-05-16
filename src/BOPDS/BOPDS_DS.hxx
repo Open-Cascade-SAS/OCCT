@@ -395,27 +395,23 @@ Standard_EXPORT virtual ~BOPDS_DS();
   
 
   //! Returns the number of types of the interferences
-    static Standard_Integer NbInterfTypes();
-  
+  static Standard_Integer NbInterfTypes();
 
   //! Modifier
   //! Adds the information about an interference between
   //! shapes with indices theI1, theI2 to the summary
   //! table of interferences
-    void AddInterf (const Standard_Integer theI1, const Standard_Integer theI2);
-  
+  Standard_Boolean AddInterf (const Standard_Integer theI1, const Standard_Integer theI2);
 
   //! Query
   //! Returns true if the shape with index theI
   //! is interferred
-  Standard_EXPORT Standard_Boolean HasInterf (const Standard_Integer theI) const;
-  
+  Standard_Boolean HasInterf (const Standard_Integer theI) const;
 
   //! Query
   //! Returns true if the shapes with indices theI1, theI2
   //! are interferred
-    Standard_Boolean HasInterf (const Standard_Integer theI1, const Standard_Integer theI2) const;
-  
+  Standard_Boolean HasInterf (const Standard_Integer theI1, const Standard_Integer theI2) const;
 
   //! Query
   //! Returns true if the shape with index theI1 is interfered
@@ -444,12 +440,6 @@ Standard_EXPORT virtual ~BOPDS_DS();
   //! Fills theLP with sorted paves
   //! of the shape with index theIndex
   Standard_EXPORT void Paves (const Standard_Integer theIndex, BOPDS_ListOfPave& theLP);
-  
-
-  //! Updates tolerance of the sub-shapes of the shape with index <theIndex>.
-  Standard_EXPORT void UpdateEdgeTolerance (const Standard_Integer theIndex,
-                                            const Standard_Real theTolerance,
-                                            const Standard_Real theFuzz = Precision::Confusion());
 
   //! Update the pave blocks for all shapes in data structure
   Standard_EXPORT void UpdatePaveBlocksWithSDVertices();
@@ -518,6 +508,7 @@ protected:
   BOPDS_VectorOfInterfEZ myInterfEZ;
   BOPDS_VectorOfInterfFZ myInterfFZ;
   BOPDS_VectorOfInterfZZ myInterfZZ;
+  TColStd_MapOfInteger myInterfered;
 
 
 private:

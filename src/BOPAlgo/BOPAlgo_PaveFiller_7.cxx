@@ -478,7 +478,7 @@ void BOPAlgo_PaveFiller::MakeSplitEdges()
                 aCB->SetEdge(nE);
                 // Compute tolerance of the common block and update the edge
                 Standard_Real aTol = BOPAlgo_Tools::ComputeToleranceOfCB(aCB, myDS, myContext);
-                myDS->UpdateEdgeTolerance(nE, aTol);
+                UpdateEdgeTolerance(nE, aTol);
               }
             }
             else if (aLPB.Extent() == 1)
@@ -527,10 +527,6 @@ void BOPAlgo_PaveFiller::MakeSplitEdges()
   BOPAlgo_SplitEdgeCnt::Perform(myRunParallel, aVBSE, myContext);
   //======================================================
   //
-  BOPDS_ShapeInfo aSI;
-  //
-  aSI.SetShapeType(TopAbs_EDGE);
-  //
   for (k=0; k < aNbVBSE; ++k) {
     BOPAlgo_SplitEdge& aBSE=aVBSE(k);
     //
@@ -540,13 +536,18 @@ void BOPAlgo_PaveFiller::MakeSplitEdges()
     Handle(BOPDS_PaveBlock) aPBk=aBSE.PaveBlock();
     Handle(BOPDS_CommonBlock)& aCBk=aBSE.CommonBlock();
     //
+    BOPDS_ShapeInfo aSI;
+    aSI.SetShapeType(TopAbs_EDGE);
     aSI.SetShape(aSp);
     aSI.ChangeBox()=aBox;
+    TColStd_ListOfInteger& aSubShapes = aSI.ChangeSubShapes();
+    aSubShapes.Append(aPBk->Pave1().Index());
+    aSubShapes.Append(aPBk->Pave2().Index());
     //
     nSp=myDS->Append(aSI);
     //
     if (!aCBk.IsNull()) {
-      myDS->UpdateEdgeTolerance(nSp, aBSE.Tolerance());
+      UpdateEdgeTolerance(nSp, aBSE.Tolerance());
       aCBk->SetEdge(nSp);
     }
     else {
@@ -644,54 +645,53 @@ void BOPAlgo_PaveFiller::MakePCurves()
         continue;
       }
       //
-      Handle(BOPDS_CommonBlock) aCB=myDS->CommonBlock(aPB);
-      if (aCB.IsNull()) {
-        continue;
-      }
-      //
-      const BOPDS_ListOfPaveBlock& aLPB=aCB->PaveBlocks();
-      if (aLPB.Extent()<2) {
-        continue;
-      }
-      //
-      BOPAlgo_MPC& aMPC=aVMPC.Appended();
-      //
-      aItLPB.Initialize(aLPB);
-      for(; aItLPB.More(); aItLPB.Next()) {
-        const Handle(BOPDS_PaveBlock)& aPBx=aItLPB.Value();
-        if (aPBx==aPB) {
-          continue;
+      BOPAlgo_MPC& aMPC = aVMPC.Appended();
+
+      Handle(BOPDS_CommonBlock) aCB = myDS->CommonBlock(aPB);
+
+      if (!aCB.IsNull())
+      {
+        const BOPDS_ListOfPaveBlock& aLPB = aCB->PaveBlocks();
+        if (aLPB.Extent() >= 2)
+        {
+          aItLPB.Initialize(aLPB);
+          for(; aItLPB.More(); aItLPB.Next()) {
+            const Handle(BOPDS_PaveBlock)& aPBx=aItLPB.Value();
+            if (aPBx==aPB) {
+              continue;
+            }
+            //
+            nEx=aPBx->OriginalEdge();
+            const TopoDS_Edge& aEx=(*(TopoDS_Edge *)(&myDS->Shape(nEx))); 
+            bHasPC=BOPTools_AlgoTools2D::HasCurveOnSurface (aEx, aF1F);
+            if (!bHasPC) {
+              continue;
+            }
+            //
+            Standard_Integer nV1x, nV2x;
+            Standard_Real aT1x, aT2x;
+            TopoDS_Vertex aV1x, aV2x;
+            TopoDS_Edge aEz;
+            //
+            aEz=aEx;
+            aEz.Orientation(TopAbs_FORWARD);
+            //
+            aPBx->Indices(nV1x, nV2x);
+            aPBx->Range(aT1x, aT2x);
+            //
+            aV1x=(*(TopoDS_Vertex *)(&myDS->Shape(nV1x)));
+            aV1x.Orientation(TopAbs_FORWARD); 
+            //
+            aV2x=(*(TopoDS_Vertex *)(&myDS->Shape(nV2x)));
+            aV2x.Orientation(TopAbs_REVERSED); 
+            //
+            aMPC.SetData(aEz, aV1x, aT1x, aV2x, aT2x);
+            //
+            break;
+          }
         }
-        //
-        nEx=aPBx->OriginalEdge();
-        const TopoDS_Edge& aEx=(*(TopoDS_Edge *)(&myDS->Shape(nEx))); 
-        bHasPC=BOPTools_AlgoTools2D::HasCurveOnSurface (aEx, aF1F);
-        if (!bHasPC) {
-          continue;
-        }
-        //
-        Standard_Integer nV1x, nV2x;
-        Standard_Real aT1x, aT2x;
-        TopoDS_Vertex aV1x, aV2x;
-        TopoDS_Edge aEz;
-        //
-        aEz=aEx;
-        aEz.Orientation(TopAbs_FORWARD);
-        //
-        aPBx->Indices(nV1x, nV2x);
-        aPBx->Range(aT1x, aT2x);
-        //
-        aV1x=(*(TopoDS_Vertex *)(&myDS->Shape(nV1x)));
-        aV1x.Orientation(TopAbs_FORWARD); 
-        //
-        aV2x=(*(TopoDS_Vertex *)(&myDS->Shape(nV2x)));
-        aV2x.Orientation(TopAbs_REVERSED); 
-        //
-        aMPC.SetData(aEz, aV1x, aT1x, aV2x, aT2x);
-        //
-        break;
       }
-      //
+
       aMPC.SetEdge(aE);
       aMPC.SetFace(aF1F);
       aMPC.SetProgressIndicator(myProgressIndicator);

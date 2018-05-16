@@ -352,11 +352,6 @@ Standard_Boolean IntTools_EdgeFace::CheckTouch
   (const IntTools_CommonPrt& aCP,
    Standard_Real&            aTx) 
 {
-  if (myC.GetType() == GeomAbs_Line &&
-      myS.GetType() == GeomAbs_Plane) {
-    return Standard_False;
-  }
-  //
   Standard_Real aTF, aTL, Tol, U1f, U1l, V1f, V1l, af, al,aDist2, aMinDist2;
   Standard_Boolean theflag=Standard_False;
   Standard_Integer aNbExt, iLower;

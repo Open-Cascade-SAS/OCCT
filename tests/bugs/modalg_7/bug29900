@@ -1,0 +1,37 @@
+puts "TODO CR29596 All: Intersection of pair of shapes has failed"
+
+puts "========"
+puts "OCC29900: Invalid result of FUSE operation"
+puts "========"
+puts ""
+
+cpulimit 3000
+
+brestore [locate_data_file bug29900_rotated.brep] s1
+brestore [locate_data_file bug29900_sewedShape.brep] s2
+
+bdrawwarnshapes 1
+bfuzzyvalue 2.1e-5
+brunparallel 1
+
+bclearobjects
+bcleartools
+baddobjects s1
+baddtools s2
+bfillds
+bbop result 1
+
+checkshape result
+checknbshapes result -wire 39 -face 39 -shell 1 -solid 1
+checkprops result -s 0.0199382 -v 3.24449e-005
+
+if {![regexp "Meshing statuses: NoError" [incmesh result 0.00001]]} {
+  puts "Error: Meshing not done"
+}
+
+boptions -default
+
+smallview +Y+Z
+don result
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

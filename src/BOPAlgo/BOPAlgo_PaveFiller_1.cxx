@@ -68,14 +68,27 @@ void BOPAlgo_PaveFiller::PerformVV()
   for (; myIterator->More(); myIterator->Next()) {
     myIterator->Value(n1, n2);
     //
-    const TopoDS_Vertex& aV1=(*(TopoDS_Vertex *)(&myDS->Shape(n1))); 
-    const TopoDS_Vertex& aV2=(*(TopoDS_Vertex *)(&myDS->Shape(n2))); 
-    //
-    iFlag=BOPTools_AlgoTools::ComputeVV(aV1, aV2, myFuzzyValue);
+    if (myDS->HasInterf(n1, n2))
+    {
+      BOPAlgo_Tools::FillMap<Standard_Integer, TColStd_MapIntegerHasher>(n1, n2, aMILI, aAllocator);
+      continue;
+    }
+
+    // Check for SD vertices
+    Standard_Integer n1SD = n1;
+    myDS->HasShapeSD(n1, n1SD);
+
+    Standard_Integer n2SD = n2;
+    myDS->HasShapeSD(n2, n2SD);
+
+    const TopoDS_Vertex& aV1=(*(TopoDS_Vertex *)(&myDS->Shape(n1SD)));
+    const TopoDS_Vertex& aV2=(*(TopoDS_Vertex *)(&myDS->Shape(n2SD)));
+
+    iFlag = BOPTools_AlgoTools::ComputeVV(aV1, aV2, myFuzzyValue);
     if (!iFlag) {
       BOPAlgo_Tools::FillMap<Standard_Integer, TColStd_MapIntegerHasher>(n1, n2, aMILI, aAllocator);
     }
-  } 
+  }
   //
   // 2. Make blocks
   BOPAlgo_Tools::MakeBlocks<Standard_Integer, TColStd_MapIntegerHasher>(aMILI, aMBlocks, aAllocator);
@@ -182,11 +195,12 @@ Standard_Integer BOPAlgo_PaveFiller::MakeSDVertices
       }
       //
       if (theAddInterfs) {
-        myDS->AddInterf(n1, n2);
-        BOPDS_InterfVV& aVV = aVVs.Appended();
-        //
-        aVV.SetIndices(n1, n2);
-        aVV.SetIndexNew(nV);
+        if (myDS->AddInterf(n1, n2))
+        {
+          BOPDS_InterfVV& aVV = aVVs.Appended();
+          aVV.SetIndices(n1, n2);
+          aVV.SetIndexNew(nV);
+        }
       }
     }
   }

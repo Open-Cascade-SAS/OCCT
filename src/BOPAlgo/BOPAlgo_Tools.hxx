@@ -99,14 +99,19 @@ public:
                                       const Standard_Integer theF,
                                       BOPDS_IndexedDataMapOfPaveBlockListOfInteger& theMILI,
                                       const Handle(NCollection_BaseAllocator)& theAllocator);
-  
+
+  //! Create Common Blocks from the groups of pave blocks of <theMBlocks>
+  //! connection map.
   Standard_EXPORT static void PerformCommonBlocks(BOPDS_IndexedDataMapOfPaveBlockListOfPaveBlock& theMBlocks,
                                                   const Handle(NCollection_BaseAllocator)& theAllocator,
-                                                  BOPDS_PDS& theDS);
+                                                  BOPDS_PDS& theDS,
+                                                  const Handle(IntTools_Context)& theContext = Handle(IntTools_Context)());
 
+  //! Create Common Blocks on faces using the PB->Faces connection map <theMBlocks>.
   Standard_EXPORT static void PerformCommonBlocks(const BOPDS_IndexedDataMapOfPaveBlockListOfInteger& theMBlocks,
                                                   const Handle(NCollection_BaseAllocator)& theAllocator,
-                                                  BOPDS_PDS& pDS);
+                                                  BOPDS_PDS& pDS,
+                                                  const Handle(IntTools_Context)& theContext = Handle(IntTools_Context)());
 
   Standard_EXPORT static Standard_Real ComputeToleranceOfCB
                                         (const Handle(BOPDS_CommonBlock)& theCB,

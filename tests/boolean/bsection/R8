@@ -8,6 +8,6 @@ restore [locate_data_file ger61235b.brep] object
 
 bsection result object tool 
 
-checkprops result -l 11.8242
+checkprops result -l 16.4762
 checksection result
 checkview -display result -2d -otherwise { object tool  } -l -path ${imagedir}/${test_image}.png
