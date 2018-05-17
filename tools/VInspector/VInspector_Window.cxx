@@ -310,6 +310,10 @@ bool VInspector_Window::Init (const NCollection_List<Handle(Standard_Transient)>
   if (!aCallBack.IsNull() && aCallBack != myCallBack)
   {
     myCallBack = aCallBack;
+    VInspector_ViewModelHistory* aHistoryModel = dynamic_cast<VInspector_ViewModelHistory*>
+      (myHistoryView->model());
+    myCallBack->SetContext(aContext);
+    myCallBack->SetHistoryModel(aHistoryModel);
   }
   return true;
 }
@@ -569,10 +573,9 @@ void VInspector_Window::displaySelectedPresentations(const bool theToDisplay)
 
   for (NCollection_List<Handle(AIS_InteractiveObject)>::Iterator anIOIt(aSelectedPresentations); anIOIt.More(); anIOIt.Next())
   {
-    Handle(AIS_InteractiveObject) aPresentation = Handle(AIS_Shape)::DownCast(anIOIt.Value());
-    if (aPresentation.IsNull())
-      continue;
-    if (theToDisplay) {
+    Handle(AIS_InteractiveObject) aPresentation = anIOIt.Value();
+    if (theToDisplay)
+    {
       aContext->Display(aPresentation, false);
       aContext->Load(aPresentation, -1, true);
     }
