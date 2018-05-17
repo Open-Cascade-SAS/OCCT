@@ -826,6 +826,43 @@ void BRepTools::Clean(const TopoDS_Shape& theShape)
     aBuilder.UpdateEdge (aEdge, aNullPoly3d);  
   }
 }
+//=======================================================================
+//function : CleanGeometry
+//purpose  : 
+//=======================================================================
+
+void BRepTools::CleanGeometry(const TopoDS_Shape& theShape)
+{
+  if (theShape.IsNull())
+    return;
+
+  BRep_Builder aBuilder;
+
+  for (TopExp_Explorer aFaceIt(theShape, TopAbs_FACE); aFaceIt.More(); aFaceIt.Next())
+  {
+    TopLoc_Location aLocation;
+    const TopoDS_Face& aFace = TopoDS::Face(aFaceIt.Current());
+    const Handle(Geom_Surface)& aSurface = BRep_Tool::Surface(aFace, aLocation);
+
+    for (TopExp_Explorer aEdgeIt(aFace, TopAbs_EDGE); aEdgeIt.More(); aEdgeIt.Next())
+    {
+      const TopoDS_Edge& anEdge = TopoDS::Edge(aEdgeIt.Current());
+      aBuilder.UpdateEdge(anEdge, Handle(Geom2d_Curve)(), aSurface,
+        aLocation, BRep_Tool::Tolerance(anEdge));
+    }
+
+    aBuilder.UpdateFace(aFace, Handle(Geom_Surface)(), aFace.Location(), BRep_Tool::Tolerance(aFace));
+  }
+
+  for (TopExp_Explorer aEdgeIt2(theShape, TopAbs_EDGE); aEdgeIt2.More(); aEdgeIt2.Next())
+  {
+    const TopoDS_Edge& anEdge = TopoDS::Edge(aEdgeIt2.Current());
+
+    aBuilder.UpdateEdge(anEdge, Handle(Geom_Curve)(),
+      TopLoc_Location(), BRep_Tool::Tolerance(anEdge));
+  }
+}
+
 
 //=======================================================================
 //function : RemoveUnusedPCurves

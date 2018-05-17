@@ -7209,14 +7209,25 @@ Analysis of shapes includes commands to compute length, area, volumes and inerti
 
 Syntax:      
 ~~~~~
-lprops shape 
-sprops shape 
-vprops shape 
+lprops shape  [x y z] [-skip] [-full] [-tri]
+sprops shape [epsilon] [c[losed]] [x y z] [-skip] [-full] [-tri]
+vprops shape [epsilon] [c[losed]] [x y z] [-skip] [-full] [-tri] 
 ~~~~~
 
 * **lprops** computes the mass properties of all edges in the shape with a linear density of 1;
 * **sprops** of all faces with a surface density of 1;
 * **vprops** of all solids with a density of 1. 
+
+For computation of properties of the shape, exact geomery (curves, surfaces) or
+some discrete data (polygons, triangulations) can be used for calculations.
+The epsilon, if given, defines relative precision of computation.
+The **closed** flag, if present, forces computation only closed shells of the shape.
+The centroid coordinates will be put to DRAW variables x y z (if given).
+Shared entities will be taken in account only one time in the **skip** mode.
+All values are output with the full precision in the **full** mode.
+Preferable source of geometry data are triangulations in case if it exists, 
+if the **-tri** key is used, otherwise preferable data is exact geometry.
+If epsilon is given, exact geometry (curves, surfaces) are used for calculations independently of using key **-tri**.
 
 All three commands print the mass, the coordinates of the center of gravity, the matrix of inertia and the moments. Mass is either the length, the area or the volume. The center and the main axis of inertia are displayed. 
 

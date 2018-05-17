@@ -24,3 +24,7 @@ BRepGProp_Vinert.cxx
 BRepGProp_Vinert.hxx
 BRepGProp_VinertGK.cxx
 BRepGProp_VinertGK.hxx
+BRepGProp_MeshCinert.hxx
+BRepGProp_MeshCinert.cxx
+BRepGProp_MeshProps.hxx
+BRepGProp_MeshProps.cxx

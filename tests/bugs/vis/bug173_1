@@ -11,8 +11,8 @@ puts ""
 restore [locate_data_file OCC173.brep] result
 checkshape result
 
-vinit result
-tclean 
+vinit 
+tclean result
 vdisplay result
 vfit
 vsetdispmode result 1

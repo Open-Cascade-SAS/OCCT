@@ -155,6 +155,9 @@ public:
   //! edges.
   Standard_EXPORT static void Clean (const TopoDS_Shape& S);
   
+  //! Removes geometry (curves and surfaces) from all edges and faces of the shape
+  Standard_EXPORT static void CleanGeometry(const TopoDS_Shape& theShape);
+
   //! Removes all the pcurves of the edges of <S> that
   //! refer to surfaces not belonging to any face of <S>
   Standard_EXPORT static void RemoveUnusedPCurves (const TopoDS_Shape& S);

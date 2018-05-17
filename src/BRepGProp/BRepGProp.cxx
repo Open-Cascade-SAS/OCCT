@@ -16,6 +16,8 @@
 #include <BRepGProp_Cinert.hxx>
 #include <BRepGProp_Sinert.hxx>
 #include <BRepGProp_Vinert.hxx>
+#include <BRepGProp_MeshProps.hxx>
+#include <BRepGProp_MeshCinert.hxx>
 #include <BRepGProp_VinertGK.hxx>
 #include <GProp_PGProps.hxx>
 #include <BRepGProp_Face.hxx>
@@ -29,6 +31,7 @@
 #include <TopTools_MapOfShape.hxx>
 #include <BRepCheck_Shell.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
+
 #ifdef OCCT_DEBUG
 static Standard_Integer AffichEps = 0;
 #endif
@@ -38,18 +41,45 @@ static gp_Pnt roughBaryCenter(const TopoDS_Shape& S){
   gp_XYZ xyz(0,0,0);
   for (ex.Init(S,TopAbs_VERTEX), i = 0; ex.More(); ex.Next(), i++) 
     xyz += BRep_Tool::Pnt(TopoDS::Vertex(ex.Current())).XYZ();
-  if ( i > 0 ) xyz /= i;
+  if (i > 0)
+  {
+    xyz /= i;
+  }
+  else
+  {
+    //Try using triangulation
+    ex.Init(S, TopAbs_FACE);
+    for (; ex.More(); ex.Next())
+    {
+      const TopoDS_Shape& aF = ex.Current();
+      TopLoc_Location aLocDummy;
+      const Handle(Poly_Triangulation)& aTri =
+        BRep_Tool::Triangulation(TopoDS::Face(aF), aLocDummy);
+      if (!aTri.IsNull())
+      {
+        xyz = aTri->Node(1).XYZ();
+        if (!aLocDummy.IsIdentity())
+        {
+          aLocDummy.Transformation().Transforms(xyz);
+        }
+        break;
+      }
+    }
+  }
   return gp_Pnt(xyz);
 }
 
-void  BRepGProp::LinearProperties(const TopoDS_Shape& S, GProp_GProps& SProps, const Standard_Boolean SkipShared){
+
+
+void  BRepGProp::LinearProperties(const TopoDS_Shape& S, GProp_GProps& SProps, const Standard_Boolean SkipShared,
+                                  const Standard_Boolean UseTriangulation)
+{
   // find the origin
   gp_Pnt P(0,0,0);
   P.Transform(S.Location());
   SProps = GProp_GProps(P);
 
   BRepAdaptor_Curve   BAC;
-  Standard_Real eps = Epsilon(1.);
   TopTools_MapOfShape anEMap;
   TopExp_Explorer ex;
   for (ex.Init(S,TopAbs_EDGE); ex.More(); ex.Next()) {
@@ -58,27 +88,35 @@ void  BRepGProp::LinearProperties(const TopoDS_Shape& S, GProp_GProps& SProps, c
     {
       continue;
     }
-    if(!BRep_Tool::IsGeometric(aE))
+
+    Handle(TColgp_HArray1OfPnt) theNodes;
+    Standard_Boolean IsGeom = BRep_Tool::IsGeometric(aE);
+    if (UseTriangulation || !IsGeom)
     {
-      GProp_PGProps aPProps;
-      TopoDS_Iterator anIter(aE);
-      for(; anIter.More(); anIter.Next())
-      {
-        const TopoDS_Vertex& aV = TopoDS::Vertex(anIter.Value());
-        aPProps.AddPoint(BRep_Tool::Pnt(aV), eps);
-      }
-      SProps.Add(aPProps);
+      BRepGProp_MeshCinert::PreparePolygon(aE, theNodes);
+    }
+    if(!theNodes.IsNull())
+    {
+      BRepGProp_MeshCinert MG;
+      MG.SetLocation(P);
+      MG.Perform(theNodes->Array1());
+      SProps.Add(MG);
     }
     else
     {
-      BAC.Initialize(aE);
-      BRepGProp_Cinert CG(BAC,P);
-      SProps.Add(CG);
+      if (IsGeom)
+      {
+        BAC.Initialize(aE);
+        BRepGProp_Cinert CG(BAC, P);
+        SProps.Add(CG);
+      }
     }
   }
 }
 
-static Standard_Real surfaceProperties(const TopoDS_Shape& S, GProp_GProps& Props, const Standard_Real Eps, const Standard_Boolean SkipShared){
+static Standard_Real surfaceProperties(const TopoDS_Shape& S, GProp_GProps& Props, const Standard_Real Eps, const Standard_Boolean SkipShared,
+                                       const Standard_Boolean UseTriangulation)
+{
   Standard_Integer i;
 #ifdef OCCT_DEBUG
   Standard_Integer iErrorMax = 0;
@@ -87,66 +125,90 @@ static Standard_Real surfaceProperties(const TopoDS_Shape& S, GProp_GProps& Prop
   TopExp_Explorer ex; 
   gp_Pnt P(roughBaryCenter(S));
   BRepGProp_Sinert G;  G.SetLocation(P);
+  BRepGProp_MeshProps MG(BRepGProp_MeshProps::Sinert);  
+  MG.SetLocation(P);
 
   BRepGProp_Face   BF;
   BRepGProp_Domain BD;
   TopTools_MapOfShape aFMap;
   TopLoc_Location aLocDummy;
 
-  for (ex.Init(S,TopAbs_FACE), i = 1; ex.More(); ex.Next(), i++) {
+  for (ex.Init(S, TopAbs_FACE), i = 1; ex.More(); ex.Next(), i++) {
     const TopoDS_Face& F = TopoDS::Face(ex.Current());
-    if(SkipShared && !aFMap.Add(F))
+    if (SkipShared && !aFMap.Add(F))
     {
       continue;
     }
 
+    Standard_Boolean NoSurf = Standard_False, NoTri = Standard_False;
     {
-      const Handle(Geom_Surface)& aSurf = BRep_Tool::Surface (F, aLocDummy);
+      const Handle(Geom_Surface)& aSurf = BRep_Tool::Surface(F, aLocDummy);
       if (aSurf.IsNull())
       {
-        // skip faces without geometry
+        NoSurf = Standard_True;
+      }
+      const Handle(Poly_Triangulation)& aTri = BRep_Tool::Triangulation(F, aLocDummy);
+      if (aTri.IsNull())
+      {
+        NoTri = Standard_True;
+      }
+      if (NoTri && NoSurf)
+      {
         continue;
       }
     }
 
-    BF.Load(F);
-    Standard_Boolean IsNatRestr = (F.NbChildren() == 0);
-    if(!IsNatRestr) BD.Init(F);
-    if(Eps < 1.0) {
-      G.Perform(BF, BD, Eps); 
-      Error = G.GetEpsilon();
-      if(ErrorMax < Error) {
-        ErrorMax = Error;
-#ifdef OCCT_DEBUG
-        iErrorMax = i;
-#endif
-      }
-    } else {
-      if(IsNatRestr) G.Perform(BF);
-      else G.Perform(BF, BD);
+    if ((UseTriangulation && !NoTri) || (NoSurf && !NoTri))
+    {
+      TopAbs_Orientation anOri = F.Orientation();
+      const Handle(Poly_Triangulation)& aTri = BRep_Tool::Triangulation(F, aLocDummy);
+      MG.Perform(aTri, aLocDummy, anOri);
+      Props.Add(MG);
     }
-    Props.Add(G);
+    else
+    {
+      BF.Load(F);
+      Standard_Boolean IsNatRestr = (F.NbChildren() == 0);
+      if (!IsNatRestr) BD.Init(F);
+      if (Eps < 1.0) {
+        G.Perform(BF, BD, Eps);
+        Error = G.GetEpsilon();
+        if (ErrorMax < Error) {
+          ErrorMax = Error;
 #ifdef OCCT_DEBUG
-    if(AffichEps) cout<<"\n"<<i<<":\tEpsArea = "<< G.GetEpsilon();
+          iErrorMax = i;
 #endif
+        }
+      }
+      else {
+        if (IsNatRestr) G.Perform(BF);
+        else G.Perform(BF, BD);
+      }
+      Props.Add(G);
+#ifdef OCCT_DEBUG
+      if(AffichEps) cout<<"\n"<<i<<":\tEpsArea = "<< G.GetEpsilon();
+#endif
+    }
   }
 #ifdef OCCT_DEBUG
   if(AffichEps) cout<<"\n-----------------\n"<<iErrorMax<<":\tMaxError = "<<ErrorMax<<"\n";
 #endif
   return ErrorMax;
 }
-void  BRepGProp::SurfaceProperties(const TopoDS_Shape& S, GProp_GProps& Props, const Standard_Boolean SkipShared){
+void  BRepGProp::SurfaceProperties(const TopoDS_Shape& S, GProp_GProps& Props, const Standard_Boolean SkipShared,
+                                   const Standard_Boolean UseTriangulation)
+{
   // find the origin
   gp_Pnt P(0,0,0);
   P.Transform(S.Location());
   Props = GProp_GProps(P);
-  surfaceProperties(S,Props,1.0, SkipShared);
+  surfaceProperties(S,Props,1.0, SkipShared, UseTriangulation);
 }
 Standard_Real BRepGProp::SurfaceProperties(const TopoDS_Shape& S, GProp_GProps& Props, const Standard_Real Eps, const Standard_Boolean SkipShared){ 
   // find the origin
   gp_Pnt P(0,0,0);  P.Transform(S.Location());
   Props = GProp_GProps(P);
-  Standard_Real ErrorMax = surfaceProperties(S,Props,Eps,SkipShared);
+  Standard_Real ErrorMax = surfaceProperties(S,Props,Eps,SkipShared, Standard_False);
   return ErrorMax;
 }
 
@@ -155,7 +217,9 @@ Standard_Real BRepGProp::SurfaceProperties(const TopoDS_Shape& S, GProp_GProps& 
 //purpose  : 
 //=======================================================================
 
-static Standard_Real volumeProperties(const TopoDS_Shape& S, GProp_GProps& Props, const Standard_Real Eps, const Standard_Boolean SkipShared){
+static Standard_Real volumeProperties(const TopoDS_Shape& S, GProp_GProps& Props, const Standard_Real Eps, const Standard_Boolean SkipShared,
+                                      const Standard_Boolean UseTriangulation)
+{
   Standard_Integer i;
 #ifdef OCCT_DEBUG
   Standard_Integer iErrorMax = 0;
@@ -164,6 +228,8 @@ static Standard_Real volumeProperties(const TopoDS_Shape& S, GProp_GProps& Props
   TopExp_Explorer ex; 
   gp_Pnt P(roughBaryCenter(S)); 
   BRepGProp_Vinert G;  G.SetLocation(P);
+  BRepGProp_MeshProps MG(BRepGProp_MeshProps::Vinert);
+  MG.SetLocation(P);
 
   BRepGProp_Face   BF;
   BRepGProp_Domain BD;
@@ -187,37 +253,56 @@ static Standard_Real volumeProperties(const TopoDS_Shape& S, GProp_GProps& Props
         continue;
       }
     }
+    Standard_Boolean NoSurf = Standard_False, NoTri = Standard_False;
     {
       const Handle(Geom_Surface)& aSurf = BRep_Tool::Surface (F, aLocDummy);
       if (aSurf.IsNull())
       {
-        // skip faces without geometry
+        NoSurf = Standard_True;
+      }
+      const Handle(Poly_Triangulation)& aTri = BRep_Tool::Triangulation(F, aLocDummy);
+      if (aTri.IsNull())
+      {
+        NoTri = Standard_True;
+      }
+      if (NoTri && NoSurf)
+      {
         continue;
       }
     }
 
-    if (isFwd || isRvs){
-      BF.Load(F);
-      Standard_Boolean IsNatRestr = (F.NbChildren () == 0);
-      if(!IsNatRestr) BD.Init(F);
-      if(Eps < 1.0) {
-        G.Perform(BF, BD, Eps); 
-        Error = G.GetEpsilon();
-        if(ErrorMax < Error) {
-          ErrorMax = Error;
+    if (isFwd || isRvs)
+    {
+      if ((UseTriangulation && !NoTri) || (NoSurf && !NoTri))
+      {
+        const Handle(Poly_Triangulation)& aTri = BRep_Tool::Triangulation(F, aLocDummy);
+        MG.Perform(aTri, aLocDummy, anOri);
+        Props.Add(MG);
+      }
+      else
+      {
+        BF.Load(F);
+        Standard_Boolean IsNatRestr = (F.NbChildren () == 0);
+        if (!IsNatRestr) BD.Init(F);
+        if (Eps < 1.0) {
+          G.Perform(BF, BD, Eps);
+          Error = G.GetEpsilon();
+          if (ErrorMax < Error) {
+            ErrorMax = Error;
 #ifdef OCCT_DEBUG
-          iErrorMax = i;
+            iErrorMax = i;
 #endif
+          }
         }
-      }
-      else {
-        if(IsNatRestr) G.Perform(BF);
-        else G.Perform(BF, BD);
-      }
-      Props.Add(G);
+        else {
+          if (IsNatRestr) G.Perform(BF);
+          else G.Perform(BF, BD);
+        }
+        Props.Add(G);
 #ifdef OCCT_DEBUG
-      if(AffichEps) cout<<"\n"<<i<<":\tEpsVolume = "<< G.GetEpsilon();
+        if(AffichEps) cout<<"\n"<<i<<":\tEpsVolume = "<< G.GetEpsilon();
 #endif
+      }
     }
   }
 #ifdef OCCT_DEBUG
@@ -225,7 +310,9 @@ static Standard_Real volumeProperties(const TopoDS_Shape& S, GProp_GProps& Props
 #endif
   return ErrorMax;
 }
-void  BRepGProp::VolumeProperties(const TopoDS_Shape& S, GProp_GProps& Props, const Standard_Boolean OnlyClosed, const Standard_Boolean SkipShared){
+void  BRepGProp::VolumeProperties(const TopoDS_Shape& S, GProp_GProps& Props, const Standard_Boolean OnlyClosed, const Standard_Boolean SkipShared,
+                                  const Standard_Boolean UseTriangulation)
+{
   // find the origin
   gp_Pnt P(0,0,0);  P.Transform(S.Location());
   Props = GProp_GProps(P);
@@ -238,9 +325,9 @@ void  BRepGProp::VolumeProperties(const TopoDS_Shape& S, GProp_GProps& Props, co
       {
         continue;
       }
-      if(BRep_Tool::IsClosed(Sh)) volumeProperties(Sh,Props,1.0,SkipShared);
+      if(BRep_Tool::IsClosed(Sh)) volumeProperties(Sh,Props,1.0,SkipShared, UseTriangulation);
     }
-  } else volumeProperties(S,Props,1.0,SkipShared);
+  } else volumeProperties(S,Props,1.0,SkipShared, UseTriangulation);
 }
 
 //=======================================================================
@@ -269,7 +356,7 @@ Standard_Real BRepGProp::VolumeProperties(const TopoDS_Shape& S, GProp_GProps& P
         continue;
       }
       if(BRep_Tool::IsClosed(Sh)) {
-        Error = volumeProperties(Sh,Props,Eps,SkipShared);
+        Error = volumeProperties(Sh,Props,Eps,SkipShared, Standard_False);
         if(ErrorMax < Error) {
           ErrorMax = Error;
 #ifdef OCCT_DEBUG
@@ -278,7 +365,7 @@ Standard_Real BRepGProp::VolumeProperties(const TopoDS_Shape& S, GProp_GProps& P
         }
       }
     }
-  } else ErrorMax = volumeProperties(S,Props,Eps,SkipShared);
+  } else ErrorMax = volumeProperties(S,Props,Eps,SkipShared, Standard_False);
 #ifdef OCCT_DEBUG
   if(AffichEps) cout<<"\n\n==================="<<iErrorMax<<":\tMaxEpsVolume = "<<ErrorMax<<"\n";
 #endif

@@ -41,16 +41,25 @@ Standard_IMPORT Draw_Viewer dout;
 Standard_Integer props(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
   if (n < 2) {
-    di << "Use: " << a[0] << " shape [epsilon] [c[losed]] [x y z] [-skip] [-full]\n";
-    di << "Compute properties of the shape\n";
+    di << "Use: " << a[0] << " shape [epsilon] [c[losed]] [x y z] [-skip] [-full] [-tri]\n";
+    di << "Compute properties of the shape, exact geometry (curves, surfaces) or\n";
+    di << "some discrete data (polygons, triangulations) can be used for calculations\n";
     di << "The epsilon, if given, defines relative precision of computation\n";
     di << "The \"closed\" flag, if present, do computation only closed shells of the shape\n";
     di << "The centroid coordinates will be put to DRAW variables x y z (if given)\n";
     di << "Shared entities will be take in account only one time in the skip mode\n";
-    di << "All values are outputted with the full precision in the full mode.\n\n";
+    di << "All values are outputted with the full precision in the full mode.\n";
+    di << "Preferable source of geometry data are triangulations in case if it exists, if the -tri key is used.\n";
+    di << "If epsilon is given, exact geometry (curves, surfaces) are used for calculations independently of using key -tri\n\n";
     return 1;
   }
 
+  Standard_Boolean UseTriangulation = Standard_False;
+  if (n >= 2 && strcmp(a[n - 1], "-tri") == 0)
+  {
+    UseTriangulation = Standard_True;
+    --n;
+  }
   Standard_Boolean isFullMode = Standard_False;
   if (n >= 2 && strcmp(a[n-1], "-full") == 0)
   {
@@ -86,11 +95,11 @@ Standard_Integer props(Draw_Interpretor& di, Standard_Integer n, const char** a)
   }
   else {
     if (*a[0] == 'l')
-      BRepGProp::LinearProperties(S,G,SkipShared);
+      BRepGProp::LinearProperties(S, G, SkipShared, UseTriangulation);
     else if (*a[0] == 's')
-      BRepGProp::SurfaceProperties(S,G,SkipShared);
+      BRepGProp::SurfaceProperties(S, G, SkipShared, UseTriangulation);
     else 
-      BRepGProp::VolumeProperties(S,G,onlyClosed,SkipShared);
+      BRepGProp::VolumeProperties(S,G,onlyClosed,SkipShared, UseTriangulation);
   }
   
   gp_Pnt P = G.CentreOfMass();
@@ -313,6 +322,7 @@ Standard_Integer vpropsgk(Draw_Interpretor& di, Standard_Integer n, const char**
 }
 
 
+
 //=======================================================================
 //function : GPropCommands
 //purpose  : 
@@ -328,11 +338,11 @@ void  BRepTest::GPropCommands(Draw_Interpretor& theCommands)
 
   const char* g = "Global properties";
   theCommands.Add("lprops",
-    "lprops name [x y z] [-skip] [-full] : compute linear properties",
+    "lprops name [x y z] [-skip] [-full] [-tri]: compute linear properties",
     __FILE__, props, g);
-  theCommands.Add("sprops", "sprops name [epsilon] [x y z] [-skip] [-full] :\n"
+  theCommands.Add("sprops", "sprops name [epsilon] [x y z] [-skip] [-full] [-tri]:\n"
 "  compute surfacic properties", __FILE__, props, g);
-  theCommands.Add("vprops", "vprops name [epsilon] [c[losed]] [x y z] [-skip] [-full] :\n"
+  theCommands.Add("vprops", "vprops name [epsilon] [c[losed]] [x y z] [-skip] [-full] [-tri]:\n"
 "  compute volumic properties", __FILE__, props, g);
 
   theCommands.Add("vpropsgk",
