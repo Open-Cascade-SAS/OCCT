@@ -18,7 +18,7 @@ modeling (CAD), manufacturing / measuring (CAM) or numerical simulation (CAE).
 @section OCCT_OVW_SECTION_2 Copyrights
 
 Open CASCADE Technology and all materials, including this documentation, is 
-Copyright (c) 1999-2017 by OPEN CASCADE S.A.S. All rights reserved.
+Copyright (c) 1999-2018 by OPEN CASCADE S.A.S. All rights reserved.
 
 @htmlonly<center>@endhtmlonly
 https://www.opencascade.com
@@ -223,7 +223,7 @@ for which OCCT is certified to work.
 | Graphic library | OpenGL 3.3+, OpenGL ES 2.0+ <br> Direct3D 9 |
 | Qt (for samples and demos) | Desktop: Qt 4.8.6+ https://www.qt.io/download/ <br> Android: Qt 5.3.2+ https://www.qt.io/download/ |
 | TCL (for testing tools)    | Tcl/Tk 8.6.3+ https://www.tcl.tk/software/tcltk/download.html <br> or ActiveTcl 8.6 https://www.activestate.com/activetcl/downloads (for Windows)| 
-| Freetype (for text rendering) | FreeType 2.4.11-2.5.5 https://sourceforge.net/projects/freetype/files/ |
+| Freetype (for text rendering) | FreeType 2.4.11-2.7.1 https://sourceforge.net/projects/freetype/files/ |
 | FreeImage (optional, for support of common 2D graphic formats) | FreeImage 3.17.0+ https://sourceforge.net/projects/freeimage/files |
 | FFmpeg (optional, for video recording) | FFmpeg 3.1+ https://www.ffmpeg.org/download.html |
 | gl2ps (optional, for export contents of OCCT viewer to vector formats) | gl2ps-1.3.8+  http://geuz.org/gl2ps/ |
@@ -286,13 +286,13 @@ When the installation is complete, you will find the directories for 3rd party p
 
 @figure{/overview/images/overview_3rdparty.png}
 
-The contents of the OCCT-7.0.0 directory (called further "OCCT root", or $CASROOT) are as follows:
+The contents of the OCCT-7.3.0 directory (called further "OCCT root", or $CASROOT) are as follows:
 
 @figure{/overview/images/overview_installation.png, "The directory tree"}
 
   * **adm**   This folder contains administration files, which allow rebuilding OCCT;
   * **adm/cmake**  This folder contains files of CMake building procedure;
-  * **adm/msvc**  This folder contains Visual Studio projects for Visual C++  2005, 2008, 2010, 2012 and 2013 which allow rebuilding OCCT under Windows platform in 32 and 64-bit mode;
+  * **adm/msvc**  This folder contains Visual Studio projects for Visual C++ 2010, 2012, 2013, 2015 and 2017 which allow rebuilding OCCT under Windows platform in 32 and 64-bit mode;
   * **data**  This folder contains CAD files in different formats, which can be used to test the OCCT functionality;
   * **doc**  This folder contains OCCT documentation in HTML and PDF format;
   * **dox**  This folder contains sources of OCCT documentation in plain text (MarkDown) format;
@@ -300,6 +300,7 @@ The contents of the OCCT-7.0.0 directory (called further "OCCT root", or $CASROO
   * **samples**  This folder contains sample applications.
   * **src**  This folder contains OCCT source files. They are organized in folders, one per development unit;
   * **tests**  This folder contains scripts for OCCT testing.
+  * **tools**  This folder contains sources of Inspector tool.
   * **win64/vc10**  This folder contains executable and library files built in optimize mode for Windows platform by Visual C++  2010;
 
 @section OCCT_OVW_SECTION_4_2 Environment Variables
@@ -310,7 +311,7 @@ To run any Open CASCADE Technology application you need to set the environment v
 
 You can define the environment variables with env.bat script located in the 
 $CASROOT folder. This script accepts two arguments to be used: 
-the version of Visual Studio (vc8 -- vc12) and the architecture (win32 or win64).
+the version of Visual Studio (vc10 -- vc141) and the architecture (win32 or win64).
 
 The additional environment settings necessary for compiling OCCT libraries and samples 
 by Microsoft Visual Studio can be set using script custom.bat located in the same folder. 
