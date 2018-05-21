@@ -1509,58 +1509,52 @@ The following obsolete features have been removed:
 
 @subsection upgrade_730_lights Light sources
 
-Multiple changes have been applied to lights management within TKV3d and TKOpenGl:
-* V3d_Light class is now an alias to Graphic3d_CLight.
-  Graphic3d_CLight is now a Handle class with refactored methods for managing light source parameters
-  (preserving most methods of V3d_Light sub-classes to simplify porting).
-* Obsolete debugging functionality for drawing lights source has been removed from V3d_Light.
-  Methods and constructors taking parameters for this drawing and not affecting light definition itself has been also removed.
-* Light constructors taking V3d_Viewer have been marked deprecated.
-  Application may call V3d_Viewer::AddLight() explicitly to register new light sources created by new constructors within V3d_Viewer, but this step is now optional.
+Multiple changes have been applied to lights management within *TKV3d* and *TKOpenGl*:
+* *V3d_Light* class is now an alias to *Graphic3d_CLight*.
+  *Graphic3d_CLight* is now a Handle class with refactored methods for managing light source parameters.
+  Most methods of *V3d_Light* sub-classes have been preserved to simplify porting.
+* Obsolete debugging functionality for drawing a light source has been removed from *V3d_Light*.
+  Methods and constructors that take parameters for debug display and do not affect the light definition itself have also been removed.
+* Light constructors taking *V3d_Viewer* have been marked as deprecated.
+  Use method *AddLight()* of the class *V3d_Viewer* or *V3d_View* to add new light sources to a scene or a single view, respectively.
 * The upper limit of 8 light sources has been removed.
-* Dedicated classes per light source type V3d_AmbientLight, V3d_DirectionalLight, V3d_PositionalLight and V3d_SpotLight have been preserved,
-  but it is now possible defining light of any type by creating base class Graphic3d_CLight directly.
-  Dedicated classes only hides visibility of unrelated light properties depending on its type.
-* Calling V3d_Viewer::UpdateLights() is no more required after modifying light sources properties (color, position, etc.).
+* The classes for specific light source types: *V3d_AmbientLight, V3d_DirectionalLight, V3d_PositionalLight* and *V3d_SpotLight* have been preserved, but it is now possible to define the light of any type by creating base class *Graphic3d_CLight* directly. The specific classes only hide unrelated light properties depending on the type of light source.
+* It is no more required to call *V3d_Viewer::UpdateLights()* after modifying the properties of light sources (color, position, etc.)
 
 @subsection upgrade_730_shadingmodels Shading Models
 
-*Graphic3d_AspectFillArea3d* has been extended by a new property *ShadingModel()*, which previously has been defined globally for entire View.
+*Graphic3d_AspectFillArea3d* has been extended by a new property *ShadingModel()*, which previously has been defined globally for the entire View.
 
-Previously, triangle array without normal vertex attributes was implicitly considered as unshaded,
+Previously, a triangle array without normal vertex attributes was implicitly considered as unshaded,
 but now such array will be shaded using *Graphic3d_TOSM_FACET* model (e.g. by computing per-triangle normals).
-Therefore, *Graphic3d_TOSM_UNLIT* should be explicitly specified for disabling shading or triangles array.
-Alternatively, material without reflectance properties can be used for disabling shading as before.
+Therefore, *Graphic3d_TOSM_UNLIT* should be explicitly specified to disable shading of triangles array.
+Alternatively, a material without reflectance properties can be used to disable shading (as before).
 
 @subsection upgrade_730_tkopengl Custom low-level OpenGL elements
 
-The following API changes should be considered while porting custom OpenGl_Element objects:
+The following API changes should be considered while porting custom *OpenGl_Element* objects:
 * *OpenGl_ShaderManager::BindFaceProgram()*, *BindLineProgram()*, *BindMarkerProgram()* now take enumeration arguments instead of Boolean flags.
 
 @subsection upgrade_730_BOPAlgo_Section Changes in BOPAlgo_Section
 
-The public method *BuildSection()* in the class *BOPAlgo_Section* has became protected. The methods *Perform()* or *PerformWithFiller()* should be called for construction of the result of SECTION operation.
+The public method *BuildSection()* in the class *BOPAlgo_Section* has become protected. The methods *Perform()* or *PerformWithFiller()* should be called for construction of the result of SECTION operation.
 
 @subsection upgrade_730_BRepAdaptor_CompCurve Changes in BRepAdaptor_CompCurve
 
-The method BRepAdaptor_CompCurve::SetPeriodic has been eliminated.
-Since new version, the method BRepAdaptor_CompCurve::IsPeriodic() will always return FALSE. Earlier, it could return TRUE in case if the wire contained only one edge based on periodic curve. 
+The method *BRepAdaptor_CompCurve::SetPeriodic* has been eliminated.
+Since the new version, the method *BRepAdaptor_CompCurve::IsPeriodic()* will always return FALSE. Earlier, it could return TRUE in case if the wire contained only one edge based on a periodic curve. 
 
 @subsection upgrade_730_removed Removed features
-* The methods *SetDeflection*, *SetEpsilonT*, *SetDiscretize* of the class *IntTools_EdgeFace* have been removed as excessive.
-
-@subsection upgrade_730_IntersectionAPI Changes in classes responsible for intersection algorithm
-
-Interfaces of the following methods have been changed: IntPatch_WLineTool::ComputePurgedWLine(...), IntPatch_PrmPrmIntersection::Perform(...), IntPatch_Intersection::Perform(...), IntPatch_Intersection::ParamParamPerfom(...), IntPatch_Intersection::GeomGeomPerfom(...). Please see documentation about corresponding methods.
+* The methods *SetDeflection*, *SetEpsilonT*, *SetDiscretize* of the class *IntTools_EdgeFace* have been removed as redundant.
 
 @subsection upgrade_730_BuilderSolid Boolean Operations - Solid Builder algorithm
 
-Previously, the unclassified faces of *BOPAlgo_BuilderSolid* algorithm (the faces which have not been used for solids creation and located outside of all created solids) have been used to form an additional solid (not closed one) with INTERNAL orientation.
-Since new version, these unclassified faces are no longer added into resulting solids. Instead, the @ref occt_algorithms_ers "warning" containing these faces appears.
+Previously, the unclassified faces of *BOPAlgo_BuilderSolid* algorithm (i.e. the faces not used for solids creation and located outside of all created solids) were used to form an additional (not closed) solid with INTERNAL orientation.
+Since the new version, these unclassified faces are no longer added into the resulting solids. Instead, the @ref occt_algorithms_ers "warning" with a list of these faces appears.
 
-The following public methods of the *BOPAlgo_BuilderSolid* class have been removed as excessive:
-* void SetSolid(const TopoDS_Solid& theSolid);
-* const TopoDS_Solid& Solid() const;
+The following public methods of the *BOPAlgo_BuilderSolid* class have been removed as redundant:
+* *void SetSolid(const TopoDS_Solid& theSolid);*
+* *const TopoDS_Solid& Solid() const;*
 
 @subsection upgrade_730_BRepAlgoBO Boolean Operation classes in BRepAlgo are deprecated
 
