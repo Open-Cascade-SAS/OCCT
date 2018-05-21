@@ -4580,6 +4580,8 @@ void STEPCAFControl_Reader::ExpandShell(const Handle(StepShape_ConnectedFaceSet)
   for ( Standard_Integer f = aFaces->Lower(); f <= aFaces->Upper(); ++f )
   {
     const Handle(StepShape_Face)& aFace = aFaces->Value(f);
+    if (aFace.IsNull())
+      continue;
 
     // Record CAF data
     SettleShapeData(aFace, RootLab, ShapeTool, TP);
