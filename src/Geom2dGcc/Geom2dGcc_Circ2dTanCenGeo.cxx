@@ -41,12 +41,13 @@ Geom2dGcc_Circ2dTanCenGeo (const Geom2dGcc_QCurve&  Qualified1,
 //========================================================================
 //   Initialisation des champs.                                          +
 //========================================================================
-
-  cirsol(1,2)    ,
-  qualifier1(1,2),
-  pnttg1sol(1,2) ,
-  par1sol(1,2)   ,
-  pararg1(1,2)   
+  WellDone(Standard_False),
+  NbrSol(0),
+  cirsol(1, 2),
+  qualifier1(1, 2),
+  pnttg1sol(1, 2),
+  par1sol(1, 2),
+  pararg1(1, 2)
 {
   Standard_Real Tol = Abs(Tolerance);
   TColgp_Array1OfPnt2d pTan(1,2);
@@ -60,23 +61,19 @@ Geom2dGcc_Circ2dTanCenGeo (const Geom2dGcc_QCurve&  Qualified1,
   gp_Dir2d dirx(1.0,0.0);
   Standard_Real thePar;
   Geom2dAdaptor_Curve curve = Qualified1.Qualified();
-  Extrema_ExtPC2d distmin(Pcenter,curve,Geom2dGcc_CurveTool::NbSamples(curve),
-    Geom2dGcc_CurveTool::EpsX(curve,Tol),Tol);
+  Extrema_ExtPC2d distmin(Pcenter, curve, Geom2dGcc_CurveTool::FirstParameter(curve),
+                          Geom2dGcc_CurveTool::LastParameter(curve), Tol);
   if (!distmin.IsDone() ) { throw Standard_Failure(); }
   Standard_Integer nbext = distmin.NbExt();
   if(nbext==0) { throw Standard_Failure(); }
   while (i<=nbext) {
     thePar = distmin.Point(i).Parameter();
-    if (distmin.SquareDistance(i)<theDist2(1) && 
-      thePar>=Geom2dGcc_CurveTool::FirstParameter(curve) && 
-      thePar <= Geom2dGcc_CurveTool::LastParameter(curve)) {
+    if (distmin.SquareDistance(i)<theDist2(1)) {
         theDist2(1) = distmin.SquareDistance(i);
         theParam(1) = thePar;
         pTan(1) = distmin.Point(i).Value();
     }
-    if (distmin.SquareDistance(i)>theDist2(2) && 
-      thePar>=Geom2dGcc_CurveTool::FirstParameter(curve) && 
-      thePar <= Geom2dGcc_CurveTool::LastParameter(curve)) {
+    if (distmin.SquareDistance(i)>theDist2(2)) {
         theDist2(2) = distmin.SquareDistance(i);
         theParam(2) = thePar;
         pTan(2) = distmin.Point(i).Value();

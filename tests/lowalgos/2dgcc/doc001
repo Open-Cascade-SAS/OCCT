@@ -1,0 +1,10 @@
+point p 0 0 
+line l 10 0 -1 1 
+cirtang c -p p -c l -r 4 
+
+smallview -2D-
+don c_1 c_2
+2dfit
+disp l p
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,18 @@
+puts "========"
+puts "0029694: Geom2dGcc_Circ2dTanCenGeo crash"
+puts "========"
+puts ""
+
+point pp 1 1
+2dbsplinecurve cc 1 2 0 2 1 2 -10 -5 1 10 -5 1
+
+if { ![regexp {Solution of type C-P is} [cirtang result -p pp -c cc] ] } {
+  puts "Error: Cannot find any solution"
+}
+
+regexp "Center\\s*:\\s*(\[-0-9.+eE\]+)\\s*,\\s*(\[-0-9.+eE\]+)\\s*" [dump result_1] full pcx pcy
+
+checkreal CenterX $pcx 1.0 1.0e-7 0
+checkreal CenterX $pcy 1.0 1.0e-7 0
+
+checkdump result_1 -name Radius -ref 6

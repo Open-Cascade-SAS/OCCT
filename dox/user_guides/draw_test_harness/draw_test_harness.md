@@ -5684,18 +5684,33 @@ projponf f pnt
 
 Syntax: 
 ~~~~~
-cirtang cname curve/point/radius curve/point/radius curve/point/radius 
+cirtang result [-t <Tolerance>] -c <curve> -p <point> -r <Radius>...
 ~~~~~
 
-Builds all circles satisfying the three constraints which are either a curve (the circle must be tangent to that curve), a point (the circle must pass through that point), or a radius for the circle. Only one constraint can be a radius. The solutions will be stored in variables *name_1*, *name_2*, etc. 
+Builds all circles satisfying the condition: 
+1. the circle must be tangent to every given curve;
+2. the circle must pass through every given point;
+3. the radius of the circle must be equal to the requested one. 
+
+Only following set of input data is supported: Curve-Curve-Curve, Curve-Curve-Point, Curve-Curve-Radius, Curve-Point-Point, Curve-Point-Radius, Point-Point-Point, Point-Point-Radius. The solutions will be stored in variables *result_1*, *result_2*, etc.
 
 **Example:** 
 ~~~~~
-# a point, a line and a radius. 2 solutions 
+# a point, a line and a radius. 2 solutions of type Curve-Point-Radius (C-P-R)
 point p 0 0 
-line 1 10 0 -1 1 
-cirtang c p 1 4 
-== c_1 c_2 
+line l 10 0 -1 1 
+cirtang c -p p -c l -r 4 
+== Solution of type C-P-R is: c_1 c_2
+~~~~~
+
+Additionally it is possible to create a circle(s) with given center and tangent to the given curve (Curve-Point type).
+
+**Example:** 
+~~~~~
+point pp 1 1
+2dbsplinecurve cc 1 2 0 2 1 2 -10 -5 1 10 -5 1
+cirtang r -p pp -c cc 
+== Solution of type C-P is: r_1 r_2 
 ~~~~~
 
 @subsubsection occt_draw_6_10_2  lintan

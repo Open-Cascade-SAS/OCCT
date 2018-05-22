@@ -83,8 +83,7 @@ static Standard_Integer solutions(Draw_Interpretor& di,
     for (Standard_Integer i = 1 ; i <= ct3.NbSolutions() ; i++) {
       Handle(Geom2d_Circle) C = new Geom2d_Circle(ct3.ThisSolution(i));
       Sprintf(solname,"%s_%d",name,i);
-      char* temp = solname; // pour portage WNT
-      DrawTrSurf::Set(temp,C);
+      DrawTrSurf::Set(solname, C);
       di << solname << " ";
     }
     return 0;
@@ -107,8 +106,7 @@ static Standard_Integer solutions(Draw_Interpretor& di,
     for (Standard_Integer i = 1 ; i <= ct3.NbSolutions() ; i++) {
       Handle(Geom2d_Circle) C = new Geom2d_Circle(ct3.ThisSolution(i));
       Sprintf(solname,"%s_%d",name,i);
-      char* temp = solname; // pour portage WNT
-      DrawTrSurf::Set(temp,C);
+      DrawTrSurf::Set(solname, C);
       di << solname << " ";
     }
     return 0;
@@ -120,260 +118,211 @@ static Standard_Integer solutions(Draw_Interpretor& di,
 }
 
 //=======================================================================
-//function : cirtang
+//function : solutions
 //purpose  : 
 //=======================================================================
-
-static Standard_Integer cirtang (Draw_Interpretor& di,Standard_Integer n, const char** a)
+static Standard_Integer solutions(Draw_Interpretor& theDI,
+                                  Geom2dGcc_Circ2dTanCen& theCt2,
+                                  const char* theName)
 {
-  if (n < 5) return 1;
+  char solname[200];
 
-  Handle(Geom2d_Curve) C1 = DrawTrSurf::GetCurve2d(a[2]);
-  Handle(Geom2d_Curve) C2 = DrawTrSurf::GetCurve2d(a[3]);
-  Handle(Geom2d_Curve) C3 = DrawTrSurf::GetCurve2d(a[4]);
-  gp_Pnt2d P1,P2,P3;
-  Standard_Boolean ip1 = DrawTrSurf::GetPoint2d(a[2],P1);
-  Standard_Boolean ip2 = DrawTrSurf::GetPoint2d(a[3],P2);
-  Standard_Boolean ip3 = DrawTrSurf::GetPoint2d(a[4],P3);
+  Draw_Color col = DrawTrSurf_CurveColor(Draw_Color(Draw_vert));
+  DrawTrSurf_CurveColor(col);
 
-  Standard_Real tol = Precision::Confusion();
-  if (n > 5) tol = Draw::Atof(a[5]);
-
-
-  if (!C1.IsNull()) {
-    // C-...
-    if (!C2.IsNull()) {
-      // C-C-...
-      if (!C3.IsNull()) {
-        // C-C-C
-        Geom2dGcc_Circ2d3Tan ct3(Geom2dGcc::Unqualified(C1),
-          Geom2dGcc::Unqualified(C2),
-          Geom2dGcc::Unqualified(C3),
-          tol,0,0,0);
-        return solutions(di,ct3,a[1]);
-      }
-
-      else if (ip3) {
-        // C-C-P
-        Geom2dGcc_Circ2d3Tan ct3(Geom2dGcc::Unqualified(C1),
-          Geom2dGcc::Unqualified(C2),
-          new Geom2d_CartesianPoint(P3),
-          tol,0,0);
-        return solutions(di,ct3,a[1]);
-      }
-
-      else {
-        // C-C-R
-        Geom2dGcc_Circ2d2TanRad ct3(Geom2dGcc::Unqualified(C1),
-          Geom2dGcc::Unqualified(C2),
-          Draw::Atof(a[4]),tol);
-        return solutions(di,ct3,a[1]);
-      }
+  if (theCt2.IsDone())
+  {
+    for (Standard_Integer i = 1; i <= theCt2.NbSolutions(); i++)
+    {
+      Handle(Geom2d_Circle) C = new Geom2d_Circle(theCt2.ThisSolution(i));
+      Sprintf(solname, "%s_%d", theName, i);
+      DrawTrSurf::Set(solname, C);
+      theDI << solname << " ";
     }
-    else if (ip2) {
-      // C-P-..
-      if (!C3.IsNull()) {
-        // C-P-C
-        Geom2dGcc_Circ2d3Tan ct3(Geom2dGcc::Unqualified(C1),
-          Geom2dGcc::Unqualified(C3),
-          new Geom2d_CartesianPoint(P2),
-          tol,0,0);
-        return solutions(di,ct3,a[1]);
-      }
+    return 0;
+  }
+  else
+  {
+    theDI << "Circ2dTanCen Not done";
+    return 1;
+  }
+}
 
-      else if (ip3) {
-        // C-P-P
-        Geom2dGcc_Circ2d3Tan ct3(Geom2dGcc::Unqualified(C1),
-          new Geom2d_CartesianPoint(P2),
-          new Geom2d_CartesianPoint(P3),
-          tol,0);
-        return solutions(di,ct3,a[1]);
-      }
-
-      else {
-        // C-P-R
-        Geom2dGcc_Circ2d2TanRad ct3(Geom2dGcc::Unqualified(C1),
-          new Geom2d_CartesianPoint(P2),
-          Draw::Atof(a[4]),tol);
-        return solutions(di,ct3,a[1]);
-      }
-    }
-
-    else {
-      // C-R-..
-      if (!C3.IsNull()) {
-        // C-R-C
-        Geom2dGcc_Circ2d2TanRad ct3(Geom2dGcc::Unqualified(C1),
-          Geom2dGcc::Unqualified(C3),
-          Draw::Atof(a[3]),
-          tol);
-        return solutions(di,ct3,a[1]);
-      }
-
-      else if (ip3) {
-        // C-R-P
-        Geom2dGcc_Circ2d2TanRad ct3(Geom2dGcc::Unqualified(C1),
-          new Geom2d_CartesianPoint(P3),
-          Draw::Atof(a[3]),
-          tol);
-        return solutions(di,ct3,a[1]);
-      }
-
-      else {
-        // C-R-R
-        di << "Curve, radius, radius ???\n";
-        return 1;
-      }
-    }
+//=======================================================================
+//function : Cirtang
+//purpose  : 
+//=======================================================================
+static Standard_Integer Cirtang(Draw_Interpretor& theDI,
+                                Standard_Integer theNArgs,
+                                const char** theArgVals)
+{
+  if (theNArgs < 3)
+  {
+    theDI << "Use: " << theArgVals[0] << "result [-t <Tolerance>] -c <curve> -p <point> -r <Radius>...\n";
+    return 1;
   }
 
-  else if (ip1) {
-    // P-...
-    if (!C2.IsNull()) {
-      // P-C-...
-      if (!C3.IsNull()) {
-        // P-C-C
-        Geom2dGcc_Circ2d3Tan ct3(Geom2dGcc::Unqualified(C2),
-          Geom2dGcc::Unqualified(C3),
-          new Geom2d_CartesianPoint(P1),
-          tol,0,0);
-        return solutions(di,ct3,a[1]);
-      }
+  Standard_Real aTol = Precision::Confusion();
+  Handle(Geom2d_Curve) aC[3];
+  gp_Pnt2d aP[3];
+  Standard_Real aRadius = -1.0;
 
-      else if (ip3) {
-        // P-C-P
-        Geom2dGcc_Circ2d3Tan ct3(Geom2dGcc::Unqualified(C2),
-          new Geom2d_CartesianPoint(P1),
-          new Geom2d_CartesianPoint(P3),
-          tol,0);
-        return solutions(di,ct3,a[1]);
-      }
+  Standard_Integer aNbCurves = 0, aNbPnts = 0;
 
-      else {
-        // P-C-R
-        Geom2dGcc_Circ2d2TanRad ct3(Geom2dGcc::Unqualified(C2),
-          new Geom2d_CartesianPoint(P1),
-          Draw::Atof(a[4]),tol);
-        return solutions(di,ct3,a[1]);
-      }
+  for (Standard_Integer anArgID = 2; anArgID < theNArgs; anArgID++)
+  {
+    if (theArgVals[anArgID][0] != '-')
+    {
+      theDI << "Cannot interpret the argument #" << anArgID << " (" << theArgVals[anArgID] << ")\n";
+      return 1;
     }
-    else if (ip2) {
-      // P-P-..
-      if (!C3.IsNull()) {
-        // P-P-C
-        Geom2dGcc_Circ2d3Tan ct3(Geom2dGcc::Unqualified(C3),
-          new Geom2d_CartesianPoint(P1),
-          new Geom2d_CartesianPoint(P2),
-          tol,0);
-        return solutions(di,ct3,a[1]);
-      }
-
-      else if (ip3) {
-        // P-P-P
-        Geom2dGcc_Circ2d3Tan ct3(new Geom2d_CartesianPoint(P1),
-          new Geom2d_CartesianPoint(P2),
-          new Geom2d_CartesianPoint(P3),
-          tol);
-        return solutions(di,ct3,a[1]);
-      }
-
-      else {
-        // P-P-R
-        Geom2dGcc_Circ2d2TanRad ct3(new Geom2d_CartesianPoint(P1),
-          new Geom2d_CartesianPoint(P2),
-          Draw::Atof(a[4]),tol);
-        return solutions(di,ct3,a[1]);
-      }
-    }
-
-    else {
-      // P-R-..
-      if (!C3.IsNull()) {
-        // P-R-C
-        Geom2dGcc_Circ2d2TanRad ct3(Geom2dGcc::Unqualified(C3),
-          new Geom2d_CartesianPoint(P1),
-          Draw::Atof(a[3]),
-          tol);
-        return solutions(di,ct3,a[1]);
-      }
-
-      else if (ip3) {
-        // P-R-P
-        Geom2dGcc_Circ2d2TanRad ct3(new Geom2d_CartesianPoint(P1),
-          new Geom2d_CartesianPoint(P3),
-          Draw::Atof(a[3]),
-          tol);
-        return solutions(di,ct3,a[1]);
-      }
-
-      else {
-        // P-R-R
-        di << "Point, radius, radius ???\n";
-        return 1;
-      }
-    }
-  }
-
-  else {
-    // R-...
-    if (!C2.IsNull()) {
-      // R-C-...
-      if (!C3.IsNull()) {
-        // R-C-C
-        Geom2dGcc_Circ2d2TanRad ct3(Geom2dGcc::Unqualified(C2),
-          Geom2dGcc::Unqualified(C3),
-          Draw::Atof(a[2]),
-          tol);
-        return solutions(di,ct3,a[1]);
-      }
-
-      else if (ip3) {
-        // R-C-P
-        Geom2dGcc_Circ2d2TanRad ct3(Geom2dGcc::Unqualified(C2),
-          new Geom2d_CartesianPoint(P3),
-          Draw::Atof(a[2]),
-          tol);
-        return solutions(di,ct3,a[1]);
-      }
-
-      else {
-        // R-C-R
-        di << "Radius - Curve - Radius ??\n";
-        return 1;
-      }
-    }
-    else if (ip2) {
-      // R-P-..
-      if (!C3.IsNull()) {
-        // R-P-C
-        Geom2dGcc_Circ2d2TanRad ct3(Geom2dGcc::Unqualified(C3),
-          new Geom2d_CartesianPoint(P2),
-          Draw::Atof(a[2]),
-          tol);
-        return solutions(di,ct3,a[1]);
-      }
-
-      else if (ip3) 
+    else if (!strcmp(theArgVals[anArgID], "-c"))
+    {
+      if (aNbCurves >= 3)
       {
-        // R-P-P
-        Geom2dGcc_Circ2d2TanRad ct3(new Geom2d_CartesianPoint(P2),
-          new Geom2d_CartesianPoint(P3),
-          Draw::Atof(a[2]),
-          tol);
-        return solutions(di,ct3,a[1]);
-      }      
-      else {
-        // R-P-R
-        di << "Radius - Point - Radius ??\n";
+        theDI << "A lot of curves are given (not greater than 3 ones are expected)\n";
         return 1;
       }
+
+      aC[aNbCurves] = DrawTrSurf::GetCurve2d(theArgVals[++anArgID]);
+      if (aC[aNbCurves].IsNull())
+      {
+        theDI << "Error: " << theArgVals[anArgID] << " is not a curve\n";
+        return 1;
+      }
+
+      aNbCurves++;
     }
-    else {
-      // R-R-..
-      di << "radius, radius ???\n";
+    else if (!strcmp(theArgVals[anArgID], "-p"))
+    {
+      if (aNbPnts >= 3)
+      {
+        theDI << "A lot of points are given (not greater than 3 ones are expected)\n";
+        return 1;
+      }
+
+      if (!DrawTrSurf::GetPoint2d(theArgVals[++anArgID], aP[aNbPnts]))
+      {
+        theDI << "Error: " << theArgVals[anArgID] << " is not a point\n";
+        return 1;
+      }
+
+      aNbPnts++;
+    }
+    else if (!strcmp(theArgVals[anArgID], "-r"))
+    {
+      aRadius = Draw::Atof(theArgVals[++anArgID]);
+    }
+    else if (!strcmp(theArgVals[anArgID], "-t"))
+    {
+      aTol = Draw::Atof(theArgVals[++anArgID]);
+    }
+    else
+    {
+      theDI << "Unknown option " << theArgVals[anArgID] << "\n";
       return 1;
     }
   }
+
+  if (aNbCurves == 3)
+  {
+    // C-C-C
+    Geom2dGcc_Circ2d3Tan aCt3(Geom2dGcc::Unqualified(aC[0]),
+                              Geom2dGcc::Unqualified(aC[1]),
+                              Geom2dGcc::Unqualified(aC[2]),
+                              aTol, 0, 0, 0);
+    theDI << "Solution of type C-C-C is: ";
+    return solutions(theDI, aCt3, theArgVals[1]);
+  }
+  else if (aNbCurves == 2)
+  {
+    if (aNbPnts >= 1)
+    {
+      // C-C-P
+      Geom2dGcc_Circ2d3Tan aCt3(Geom2dGcc::Unqualified(aC[0]),
+                                Geom2dGcc::Unqualified(aC[1]),
+                                new Geom2d_CartesianPoint(aP[0]),
+                                aTol, 0, 0);
+      theDI << "Solution of type C-C-P is: ";
+      return solutions(theDI, aCt3, theArgVals[1]);
+    }
+    else if (aRadius > 0)
+    {
+      // C-C-R
+      Geom2dGcc_Circ2d2TanRad aCt3(Geom2dGcc::Unqualified(aC[0]),
+                                   Geom2dGcc::Unqualified(aC[1]),
+                                   aRadius, aTol);
+      theDI << "Solution of type C-C-R is: ";
+      return solutions(theDI, aCt3, theArgVals[1]);
+    }
+
+    theDI << "Error: Unsupported set of input data!\n";
+    return 1;
+  }
+  else if (aNbCurves == 1)
+  {
+    if (aNbPnts == 2)
+    {
+      //C-P-P
+      Geom2dGcc_Circ2d3Tan aCt3(Geom2dGcc::Unqualified(aC[0]),
+                                new Geom2d_CartesianPoint(aP[0]),
+                                new Geom2d_CartesianPoint(aP[1]),
+                                aTol,0);
+      theDI << "Solution of type C-P-P is: ";
+      return solutions(theDI, aCt3, theArgVals[1]);
+    }
+    else if (aNbPnts == 1)
+    {
+      if (aRadius > 0.0)
+      {
+        //C-P-R
+        Geom2dGcc_Circ2d2TanRad aCt3(Geom2dGcc::Unqualified(aC[0]),
+                                     new Geom2d_CartesianPoint(aP[0]),
+                                     aRadius, aTol);
+        theDI << "Solution of type C-P-R is: ";
+        return solutions(theDI, aCt3, theArgVals[1]);
+      }
+      else
+      {
+        // C-P
+        Geom2dGcc_Circ2dTanCen aCt2(Geom2dGcc::Unqualified(aC[0]),
+                                    new Geom2d_CartesianPoint(aP[0]), aTol);
+        theDI << "Solution of type C-P is: ";
+        return solutions(theDI, aCt2, theArgVals[1]);
+      }
+    }
+
+    theDI << "Error: Unsupported set of input data!\n";
+    return 1;
+  }
+  else if (aNbPnts >= 2)
+  {
+    if (aNbPnts == 3)
+    {
+      //P-P-P
+      Geom2dGcc_Circ2d3Tan aCt3(new Geom2d_CartesianPoint(aP[0]),
+                                new Geom2d_CartesianPoint(aP[1]),
+                                new Geom2d_CartesianPoint(aP[2]),
+                                aTol);
+      theDI << "Solution of type P-P-P is: ";
+      return solutions(theDI, aCt3, theArgVals[1]);
+    }
+    else if (aRadius > 0)
+    {
+      //P-P-R
+      Geom2dGcc_Circ2d2TanRad aCt3(new Geom2d_CartesianPoint(aP[0]),
+                                   new Geom2d_CartesianPoint(aP[1]),
+                                   aRadius, aTol);
+      theDI << "Solution of type P-P-R is: ";
+      return solutions(theDI, aCt3, theArgVals[1]);
+    }
+
+    theDI << "Error: Unsupported set of input data!\n";
+    return 1;
+  }
+
+  theDI << "Error: Unsupported set of input data!\n";
+  return 1;
 }
 
 
@@ -805,9 +754,9 @@ void  GeometryTest::ConstraintCommands(Draw_Interpretor& theCommands)
   g = "GEOMETRY Constraints";
 
   theCommands.Add("cirtang",
-    "cirtang cname curve/point/radius curve/point/radius curve/point/radius",
+    "cirtang cname [-t <Tolerance>] -c <curve> -p <point> -r <Radius>...",
     __FILE__,
-    cirtang,g);
+    Cirtang, g);
 
   theCommands.Add("lintan",
     "lintan lname curve1 curve2 [angle]",

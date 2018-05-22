@@ -18,7 +18,10 @@ to2d 2d_curve_1 3d_curve_1
 to2d 2d_curve_2 3d_curve_2
 to2d 2d_curve_3 3d_curve_3
 
-set circles_Nb [llength [cirtang cir 2d_curve_1 2d_curve_2 2d_curve_3] ]
+foreach a [directory cir*] { unset $a }
+cirtang cir -c 2d_curve_1 -c 2d_curve_2 -c 2d_curve_3
+
+set circles_Nb [llength [directory cir*] ]
 
 if { ${circles_Nb} != 8 } {
    puts "Error: GccAna_Circ2d3Tan does not find a circle"

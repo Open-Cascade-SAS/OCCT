@@ -10,7 +10,7 @@ puts ""
 circle c1 500 1800 500 
 circle c2 500 1900 400 
 circle c3 700 1900 200 
-cirtang result c1 c2 c3
+cirtang result -c c1 -c c2 -c c3
 
 checklength result_1 -l 2513.2741228703289
 checklength result_2 -l 837.75804095727631

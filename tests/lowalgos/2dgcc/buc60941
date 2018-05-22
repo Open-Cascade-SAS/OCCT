@@ -13,7 +13,7 @@ set knots { { 0 4 } { 8.6971225126475 1 } { 16.903955884905 1 } { 28.00871675581
 
 eval 2dbsplinecurve curve_2 3 [ llength $knots ] [ join $knots ] [ join $poles ]
 
-if [catch {cirtang result curve_1 curve_2 2} catch_result] {
+if [catch {cirtang result -c curve_1 -c curve_2 -r 2} catch_result] {
     puts "Faulty BUC60941: function cirtang works wrongly"
 } else {
     puts "BUC60941  OK: function cirtang works properly"
