@@ -25,6 +25,7 @@
 #include <Standard_Overflow.hxx>
 
 #include <NCollection_Vector.hxx>
+#include <NCollection_IncAllocator.hxx>
 
 #define ItemType gp_Pnt
 #define Key1Type Standard_Real
@@ -238,6 +239,23 @@ static void TestList (QANCollection_ListFunc&     theL)
   // Assign
   AssignCollection (theL, aL);
 
+  // Different allocators
+  {
+    // The joining of list having different allocator can cause memory error
+    // if the fact of different allocator is not taken into account.
+    Handle(NCollection_IncAllocator) anAlloc = new NCollection_IncAllocator;
+    QANCollection_ListFunc aS2(anAlloc);
+    aS2.Append(anItem);
+    theL.Prepend(aS2);
+    aS2.Append(anItem);
+    theL.Append(aS2);
+    aS2.Append(anItem);
+    QANCollection_ListFunc::Iterator anIter(theL);
+    theL.InsertBefore(aS2, anIter);
+    aS2.Append(anItem);
+    theL.InsertAfter(aS2, anIter);
+  }
+
   // Clear
   aL.Clear();
 }
@@ -293,6 +311,22 @@ static void TestSequence (QANCollection_SequenceFunc& theS)
 
   // Assign
   AssignCollection (theS, aS);
+
+  // Different allocators
+  {
+    // The joining of sequence having different allocator can cause memory error
+    // if the fact of different allocator is not taken into account.
+    Handle(NCollection_IncAllocator) anAlloc = new NCollection_IncAllocator;
+    QANCollection_SequenceFunc aS2(anAlloc);
+    aS2.Append(anItem);
+    theS.Prepend(aS2);
+    aS2.Append(anItem);
+    theS.Append(aS2);
+    aS2.Append(anItem);
+    theS.InsertBefore(1, aS2);
+    aS2.Append(anItem);
+    theS.InsertAfter(1, aS2);
+  }
 
   // Clear
   aS.Clear();
@@ -1113,8 +1147,10 @@ void QANCollection::CommandsTest(Draw_Interpretor& theCommands) {
   const char *group = "QANCollection";
 
   // from agvCollTest/src/CollectionEXE/FuncTestEXE.cxx
-  theCommands.Add("QANColTestArray1",         "QANColTestArray1",         __FILE__, QANColTestArray1,         group);  
-  theCommands.Add("QANColTestArray2",         "QANColTestArray2",         __FILE__, QANColTestArray2,         group);  
+  theCommands.Add("QANColTestArray1",         "QANColTestArray1 Lower Upper",
+    __FILE__, QANColTestArray1, group);
+  theCommands.Add("QANColTestArray2",         "QANColTestArray2 LowerRow UpperRow LowerCol UpperCol",
+    __FILE__, QANColTestArray2, group);  
   theCommands.Add("QANColTestMap",            "QANColTestMap",            __FILE__, QANColTestMap,            group);  
   theCommands.Add("QANColTestDataMap",        "QANColTestDataMap",        __FILE__, QANColTestDataMap,        group);  
   theCommands.Add("QANColTestDoubleMap",      "QANColTestDoubleMap",      __FILE__, QANColTestDoubleMap,      group);  

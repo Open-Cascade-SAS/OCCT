@@ -1,0 +1,3 @@
+puts "Check NCollection_Array2 functionality"
+
+QANColTestArray2 1 5 1 3

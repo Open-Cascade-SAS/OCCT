@@ -274,8 +274,6 @@ public:
     else
     {
       // No - this list has different memory scope
-      Standard_NoSuchObject_Raise_if (!theIter.More(), "NCollection_List::InsertAfter");
-
       Iterator anIter;
       anIter.myPrevious = theIter.myCurrent;
       anIter.myCurrent = theIter.myCurrent->Next();

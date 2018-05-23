@@ -176,14 +176,10 @@ public:
   //! This method does not change the internal allocator.
   NCollection_Sequence& Assign (const NCollection_Sequence& theOther)
   { 
-    if (this == &theOther) 
-      return *this;
-    Clear ();
-    Node * pCur = (Node *) theOther.myFirstItem;
-    while (pCur) {
-      Node* pNew = new (this->myAllocator) Node (pCur->Value());
-      PAppend (pNew);
-      pCur = (Node *) pCur->Next();
+    if (this != &theOther)
+    {
+      Clear();
+      appendSeq((const Node *)theOther.myFirstItem);
     }
     return * this;
   }
@@ -214,8 +210,20 @@ public:
   //! Append another sequence (making it empty)
   void Append (NCollection_Sequence& theSeq)
   {
-    if (myFirstItem == theSeq.myFirstItem) Assign (theSeq);
-    PAppend (theSeq);
+    if (this == &theSeq || theSeq.IsEmpty())
+      return;
+    if (this->myAllocator == theSeq.myAllocator)
+    {
+      // Then we take the sequence and glue it to our end - 
+      // deallocation will bring no problem
+      PAppend(theSeq);
+    }
+    else
+    {
+      // No - this sequence has different memory scope
+      appendSeq((const Node *)theSeq.myFirstItem);
+      theSeq.Clear();
+    }
   }
 
   //! Prepend one item
@@ -225,8 +233,20 @@ public:
   //! Prepend another sequence (making it empty)
   void Prepend (NCollection_Sequence& theSeq)
   {
-    if (myFirstItem == theSeq.myFirstItem) Assign (theSeq);
-    PPrepend (theSeq);
+    if (this == &theSeq || theSeq.IsEmpty())
+      return;
+    if (this->myAllocator == theSeq.myAllocator)
+    {
+      // Then we take the sequence and glue it to our head - 
+      // deallocation will bring no problem
+      PPrepend(theSeq);
+    }
+    else
+    {
+      // No - this sequence has different memory scope
+      prependSeq((const Node *)theSeq.myFirstItem, 1);
+      theSeq.Clear();
+    }
   }
 
   //! InsertBefore theIndex theItem
@@ -234,7 +254,7 @@ public:
                      const TheItemType&     theItem)
   { InsertAfter (theIndex-1, theItem); }
 
-  //! InsertBefore theIndex another sequence
+  //! InsertBefore theIndex another sequence (making it empty)
   void InsertBefore (const Standard_Integer theIndex,
                      NCollection_Sequence&  theSeq)
   { InsertAfter (theIndex-1, theSeq); }
@@ -244,12 +264,27 @@ public:
                      const TheItemType&     theItem)
   { PInsertAfter (thePosition, new (this->myAllocator) Node (theItem)); }
 
-  //! InsertAfter theIndex theItem
+  //! InsertAfter theIndex another sequence (making it empty)
   void InsertAfter  (const Standard_Integer theIndex,
                      NCollection_Sequence&  theSeq)
-  { PInsertAfter (theIndex, theSeq); }
+  {
+    if (this == &theSeq || theSeq.IsEmpty())
+      return;
+    if (this->myAllocator == theSeq.myAllocator)
+    {
+      // Then we take the list and glue it to our head - 
+      // deallocation will bring no problem
+      PInsertAfter(theIndex, theSeq);
+    }
+    else
+    {
+      // No - this sequence has different memory scope
+      prependSeq((const Node *)theSeq.myFirstItem, theIndex + 1);
+      theSeq.Clear();
+    }
+  }
 
-  //! InsertAfter theIndex another sequence
+  //! InsertAfter theIndex theItem
   void InsertAfter (const Standard_Integer  theIndex, 
                     const TheItemType&      theItem)
   {
@@ -334,6 +369,31 @@ public:
 
   // ---------- FRIEND CLASSES ------------
   friend class Iterator;
+
+  // ----------- PRIVATE METHODS -----------
+
+  //! append the sequence headed by the given Node
+  void appendSeq(const Node * pCur)
+  {
+    while (pCur)
+    {
+      Node* pNew = new (this->myAllocator) Node(pCur->Value());
+      PAppend(pNew);
+      pCur = (const Node *)pCur->Next();
+    }
+  }
+
+  //! insert the sequence headed by the given Node before the item with the given index
+  void prependSeq(const Node * pCur, Standard_Integer ind)
+  {
+    ind--;
+    while (pCur)
+    {
+      Node* pNew = new (this->myAllocator) Node(pCur->Value());
+      PInsertAfter(ind++, pNew);
+      pCur = (const Node *)pCur->Next();
+    }
+  }
 
 };
 

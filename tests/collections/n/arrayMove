@@ -1,0 +1,4 @@
+puts "Check moving of NCollection_Array1 functionality"
+
+puts "REQUIRED ALL: Error at item"
+QANColTestArrayMove
