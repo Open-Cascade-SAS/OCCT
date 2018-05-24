@@ -675,17 +675,14 @@ void SelectMgr_RectangularFrustum::computeClippingRange (const Graphic3d_Sequenc
     }
 
     // compute distance to point of pick line intersection with the plane
-    Standard_Real aParam = aDistance / aDotProduct;
-
-    // check if ray intersects the plane, in case aIntDist < 0
-    // the plane is "behind" the ray
+    const Standard_Real aParam = aDistance / aDotProduct;
+    const gp_Pnt anIntersectionPt = myNearPickedPnt.XYZ() + myViewRayDir.XYZ() * aParam;
+    Standard_Real aDistToPln = anIntersectionPt.Distance (myNearPickedPnt);
     if (aParam < 0.0)
     {
-      continue;
+      // the plane is "behind" the ray
+      aDistToPln = -aDistToPln;
     }
-
-    const gp_Pnt anIntersectionPt = myNearPickedPnt.XYZ() + myViewRayDir.XYZ() * aParam;
-    const Standard_Real aDistToPln = anIntersectionPt.Distance (myNearPickedPnt);
 
     // change depth limits for case of opposite and directed planes
     if (aDotProduct < 0.0)
