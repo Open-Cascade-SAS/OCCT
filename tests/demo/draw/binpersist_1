@@ -2,7 +2,7 @@
 
 pload TOPTEST
 
-set file binpersist.bin
+set file $imagedir/${casename}.bin
 
 box b 10 20 30 100 200 300
 

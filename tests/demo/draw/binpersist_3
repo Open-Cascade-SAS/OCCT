@@ -2,7 +2,7 @@
 
 pload TOPTEST
 
-set file binpersist.bin
+set file $imagedir/${casename}.bin
 
 restore [locate_data_file OCC615.brep] b
 
