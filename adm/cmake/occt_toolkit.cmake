@@ -191,7 +191,7 @@ foreach (OCCT_MODULE ${OCC_MODULES_LIST})
   endif()
 endforeach()
 
-if (WIN32)
+if (MSVC)
   OCCT_INSERT_CODE_FOR_TARGET ()
 endif()
 
