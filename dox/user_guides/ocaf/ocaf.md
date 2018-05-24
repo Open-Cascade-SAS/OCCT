@@ -1291,7 +1291,7 @@ aLabel.FindAttribute (DENSITY, anAtt);
   @subsection occt_ocaf_6_4_1  Creation Attributes with User Defined GUID.
 
  You can create a new instance of an attribute with user define GUID and add it to label in two ways.
- 1. Using static method ::Set(). For example:
+ 1. Using static method Set(). For example:
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
     TDF_Label aLabel = ...;

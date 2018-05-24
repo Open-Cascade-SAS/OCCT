@@ -73,8 +73,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1"
-     inkscape:cx="128.94698"
-     inkscape:cy="215.23058"
+     inkscape:cx="529.17338"
+     inkscape:cy="317.0623"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -85,10 +85,10 @@
      inkscape:showpageshadow="false"
      inkscape:snap-nodes="false"
      inkscape:snap-global="false"
-     inkscape:window-width="1522"
+     inkscape:window-width="1332"
      inkscape:window-height="784"
-     inkscape:window-x="1725"
-     inkscape:window-y="5"
+     inkscape:window-x="581"
+     inkscape:window-y="97"
      inkscape:window-maximized="0" />
   <metadata
      id="metadata3732">
@@ -200,5 +200,19 @@
        inkscape:export-filename="D:\OCCT\master_CR29018\dox\user_guides\inspector\images\selection_in_tree_view.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90" />
+    <image
+       y="55.529915"
+       x="167.95375"
+       id="image1593"
+       xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABkAAAAZCAIAAABLixI0AAAAA3NCSVQICAjb4U/gAAAAsElEQVQ4
+jcWU4QnEIAyFtWSKCg4hbucmzuQUYufI/fCQeG1VTODer5TCx3tJjA4hKCGBc857zwfFGKFW1tpt
+Ss65FgffUVPHQkQxFlMdS2stxpLMyPQF9AMRG+6ROzYObz9KuVi+qIw5xVjqFnM6mdF+0ZgrkUdz
+NOasiFKulciT/aq4xd7N92t9CP9+27rXM2vxDVH7tN68ORXx05P9+3Vv7nfv283mCJRSKSU+SFgf
+ylJCrIGwaxIAAAAASUVORK5CYII=
+"
+       style="image-rendering:optimizeSpeed"
+       preserveAspectRatio="none"
+       height="6.6145835"
+       width="6.6145835" />
   </g>
 </svg>
