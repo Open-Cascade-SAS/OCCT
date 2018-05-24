@@ -1957,9 +1957,7 @@ Standard_Boolean XCAFDoc_ShapeTool::updateComponent(const TDF_Label& theItemLabe
   // Compare the number of components in XDE structure with the number of
   // components in topological structure. A component may happen to be removed,
   // so we have to update the assembly compound
-  Standard_Integer aNumTopoComponents = 0;
-  for ( TopoDS_Iterator aTopIt(aCurrentRootShape); aTopIt.More(); aTopIt.Next() )
-    aNumTopoComponents++;
+  Standard_Integer aNumTopoComponents = aCurrentRootShape.NbChildren();
   //
   if ( aNumTopoComponents != aComponentLabs.Length() )
     isModified = Standard_True;

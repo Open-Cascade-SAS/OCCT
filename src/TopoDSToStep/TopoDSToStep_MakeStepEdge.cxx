@@ -47,7 +47,6 @@
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
-#include <TopoDS_Iterator.hxx>
 #include <TopoDSToStep_MakeStepEdge.hxx>
 #include <TopoDSToStep_MakeStepVertex.hxx>
 #include <TopoDSToStep_Tool.hxx>
@@ -111,7 +110,6 @@ void TopoDSToStep_MakeStepEdge::Init(const TopoDS_Edge& aEdge,
   }
 
 #define Nbpt 21
-  TopoDS_Iterator  It;
   Standard_Integer i;
   Standard_Real    U, U1, U2;
   gp_Pnt           P;

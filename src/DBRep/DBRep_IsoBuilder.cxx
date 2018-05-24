@@ -375,14 +375,11 @@ void DBRep_IsoBuilder::FillGaps(const TopoDS_Face& theFace,
 
     // Check the number of edges in the wire, not to
     // miss the wires containing one edge only
-    Standard_Boolean SingleEdge = Standard_True;
+    if (aW.NbChildren() == 0)
     {
-      TopoDS_Iterator itE(aW);
-      if (!itE.More())
-        continue;
-      itE.Next();
-      SingleEdge = !itE.More();
+      continue;
     }
+    Standard_Boolean SingleEdge = (aW.NbChildren() == 1);
 
     TopoDS_Edge aPrevEdge, aCurrEdge;
 

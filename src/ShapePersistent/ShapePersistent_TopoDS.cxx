@@ -213,13 +213,7 @@ ShapePersistent_TopoDS::Translate (const TopoDS_Shape& theShape,
     S.Orientation(TopAbs_FORWARD);
     S.Location(TopLoc_Location());
     // Count the number of <sub-shape> of the Shape's TShape
-    Standard_Integer nbElem = 0;
-    TopoDS_Iterator anItCount(S);
-    while (anItCount.More()) {
-      ++nbElem;
-      anItCount.Next();
-    }
-
+    Standard_Integer nbElem = S.NbChildren();
     if (nbElem > 0)
     {
       Handle(StdLPersistent_HArray1OfPersistent) aShapes =

@@ -23,7 +23,6 @@
 #include <ShapeProcess_ShapeContext.hxx>
 #include <ShapeProcessAPI_ApplySequence.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx>
 

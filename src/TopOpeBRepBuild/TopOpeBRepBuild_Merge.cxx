@@ -145,11 +145,7 @@ static void CorrectUnclosedWire(TopoDS_Shape& aWire)
   for(; tdi.More(); tdi.Next()) {
     nbe++;
     const TopoDS_Shape& ed = tdi.Value();
-    Standard_Integer nbv = 0;
-    TopoDS_Iterator tdie(ed, Standard_False, Standard_False);
-    for(; tdie.More(); tdie.Next()) {
-      nbv++;
-    }
+    Standard_Integer nbv = ed.NbChildren();
 //    cout << "Edge " << nbe << " : " << nbv << endl;
     if(nbv <= 1) {
 //      cout << "Remove bad edge" << endl;

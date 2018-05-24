@@ -117,9 +117,7 @@ Standard_Boolean ShapeFix_Shell::Perform(const Handle(Message_ProgressIndicator)
     TopoDS_Shape S = Context()->Apply(myShell);
 
     // Get the number of faces for progress indication
-    Standard_Integer aNbFaces = 0;
-    for ( TopExp_Explorer aFaceExp(S, TopAbs_FACE); aFaceExp.More(); aFaceExp.Next() )
-      ++aNbFaces;
+    Standard_Integer aNbFaces = S.NbChildren();
 
     // Start progress scope (no need to check if progress exists -- it is safe)
     Message_ProgressSentry aPSentry(theProgress, "Fixing face", 0, aNbFaces, 1);

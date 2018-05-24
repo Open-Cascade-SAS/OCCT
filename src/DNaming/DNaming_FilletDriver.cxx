@@ -179,11 +179,8 @@ void DNaming_FilletDriver::LoadNamingDS (const TDF_Label& theResultLabel,
   TopoDS_Shape aResult = theMkFillet.Shape();
 
   if (aResult.ShapeType() == TopAbs_COMPOUND) {
-    Standard_Integer nbSubResults = 0;
-    TopoDS_Iterator itr(aResult);
-    for (; itr.More(); itr.Next()) nbSubResults++;
-    if (nbSubResults == 1) {
-      itr.Initialize(aResult);
+    if (aResult.NbChildren() == 1) {
+      TopoDS_Iterator itr (aResult);
       if (itr.More()) aResult = itr.Value();
     }
   }

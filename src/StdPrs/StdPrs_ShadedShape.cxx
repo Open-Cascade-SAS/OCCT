@@ -313,8 +313,7 @@ namespace
     for (TopExp_Explorer aFaceIter (theShape, TopAbs_FACE); aFaceIter.More(); aFaceIter.Next())
     {
       const TopoDS_Face& aFace = TopoDS::Face (aFaceIter.Current());
-      TopoDS_Iterator aSubShapeIter (aFace);
-      if (!aSubShapeIter.More())
+      if (aFace.NbChildren() == 0)
       {
         // handle specifically faces without boundary definition (triangulation-only)
         StdPrs_WFShape::AddEdgesOnTriangulation (aSeqPntsExtra, aFace, Standard_False);
@@ -554,15 +553,13 @@ void StdPrs_ShadedShape::Add (const Handle (Prs3d_Presentation)& thePrs,
     aBuilder.MakeCompound (anOpened);
     ExploreSolids (theShape, aBuilder, aClosed, anOpened, Standard_True);
 
-    TopoDS_Iterator aShapeIter (aClosed);
-    if (aShapeIter.More())
+    if (aClosed.NbChildren() > 0)
     {
       shadeFromShape (aClosed, thePrs, theDrawer,
                       theHasTexels, theUVOrigin, theUVRepeat, theUVScale, true);
     }
 
-    aShapeIter.Initialize (anOpened);
-    if (aShapeIter.More())
+    if (anOpened.NbChildren() > 0)
     {
       shadeFromShape (anOpened, thePrs, theDrawer,
                       theHasTexels, theUVOrigin, theUVRepeat, theUVScale, false);

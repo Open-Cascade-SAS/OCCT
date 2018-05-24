@@ -94,13 +94,10 @@ void IVtkOCC_SelectableObject::ComputeSelection (const Handle(SelectMgr_Selectio
 
   TopoDS_Shape anOcctShape = myShape->GetShape();
 
-  if (anOcctShape.ShapeType() == TopAbs_COMPOUND)
+  if (anOcctShape.ShapeType() == TopAbs_COMPOUND && anOcctShape.NbChildren() == 0)
   {
-    TopoDS_Iterator anExplor (anOcctShape);
-    if (!anExplor.More()) // Shape empty -> go away
-    {
-      return;
-    }
+    // Shape empty -> go away
+    return;
   }
 
   TopAbs_ShapeEnum aTypeOfSel = AIS_Shape::SelectionType (theMode);
@@ -160,14 +157,11 @@ const Bnd_Box& IVtkOCC_SelectableObject::BoundingBox()
 
   TopoDS_Shape anOcctShape = myShape->GetShape();
 
-  if (anOcctShape.ShapeType() == TopAbs_COMPOUND)
+  if (anOcctShape.ShapeType() == TopAbs_COMPOUND && anOcctShape.NbChildren() == 0)
   {
-    TopoDS_Iterator anExplor (anOcctShape);
-    if (!anExplor.More())
-    { // Shape empty -> nothing to do
-      myBndBox.SetVoid();
-      return myBndBox;
-    }
+    // Shape empty -> nothing to do
+    myBndBox.SetVoid ();
+    return myBndBox;
   }
 
   if (myBndBox.IsVoid())

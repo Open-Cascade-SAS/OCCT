@@ -23,7 +23,6 @@ TopoDS_ListOfShape.hxx
 TopoDS_LockedShape.hxx
 TopoDS_Shape.cxx
 TopoDS_Shape.hxx
-TopoDS_Shape.lxx
 TopoDS_Shell.hxx
 TopoDS_Shell.lxx
 TopoDS_Solid.hxx
@@ -42,7 +41,6 @@ TopoDS_TFace.hxx
 TopoDS_TFace.lxx
 TopoDS_TShape.cxx
 TopoDS_TShape.hxx
-TopoDS_TShape.lxx
 TopoDS_TShell.cxx
 TopoDS_TShell.hxx
 TopoDS_TShell.lxx

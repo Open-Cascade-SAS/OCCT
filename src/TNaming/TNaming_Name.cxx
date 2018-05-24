@@ -793,31 +793,28 @@ static Standard_Boolean Intersection (const TDF_Label&                  L,
 #ifdef OCCT_DEBUG_INT
     cout <<"Kept: indxE = " << indxE  <<" maxENum = " << nbE << " indxW = " <<indxW << " nbW = " <<nbW<<endl;
 #endif      
-    Standard_Integer aNbW(0), aCaseW(0);
-    TopoDS_Iterator it2(aS);
-    for (;it2.More();it2.Next()) aNbW++;  
+    Standard_Integer aCaseW(0);
+    Standard_Integer aNbW = aS.NbChildren();
     if(aNbW == nbW) aCaseW = 1;//exact solution for wire (nb of wires is kept)
     else aCaseW = 2; // indefinite description ==> compound which can include expected wire    
     if(aCaseW == 1) {      
       TopoDS_Shape aWire;
-      Standard_Integer i(1);
-      it2.Initialize(aS);
-      for (;it2.More();it2.Next(),i++) {
+      Standard_Integer i = 1;
+      for (TopoDS_Iterator it2 (aS); it2.More(); it2.Next(), i++)
+      {
 	if(indxW == i) {
 	  aWire = it2.Value();
 	  break;
 	}
       }
-      Standard_Integer aNbE(0), aCaseE(0);
-      it2.Initialize(aWire);
-      for (;it2.More();it2.Next()) aNbE++;
+      Standard_Integer aCaseE(0);
+      Standard_Integer aNbE = aWire.NbChildren();
       if(aNbE == nbE) aCaseE = 1;//exact solution for edge
       else aCaseE = 2;
       if(aCaseE == 1) {
 	i=1;
 	TopoDS_Shape anEdge;
-	it2.Initialize(aWire);
-	for (;it2.More();it2.Next(),i++) {
+	for (TopoDS_Iterator it2 (aWire); it2.More(); it2.Next(), i++) {
 	  if(indxE == i) {
 	    anEdge = it2.Value();
 	    break;

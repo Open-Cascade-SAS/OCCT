@@ -2386,9 +2386,7 @@ Standard_Boolean CheckInvertedBlock(const TopoDS_Shape& theCB,
 {
   // For possible removal of the block:
   // 1. There should be more than just one face in the block
-  TopoDS_Iterator aItF(theCB);
-  aItF.Next();
-  if (!aItF.More()) {
+  if (theCB.NbChildren() < 2) {
     return Standard_False;
   }
   //

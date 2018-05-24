@@ -225,8 +225,7 @@ void XCAFPrs_AISObject::Compute (const Handle(PrsMgr_PresentationManager3d)& the
 
   if (myshape.ShapeType() == TopAbs_COMPOUND)
   {
-    TopoDS_Iterator anExplor (myshape);
-    if (!anExplor.More())
+    if (myshape.NbChildren() == 0)
     {
       return;
     }

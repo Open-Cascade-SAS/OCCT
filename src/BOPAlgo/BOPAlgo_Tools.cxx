@@ -712,8 +712,7 @@ Standard_Boolean BOPAlgo_Tools::WiresToFaces(const TopoDS_Shape& theWires,
   BOPTools_AlgoTools::CorrectShapeTolerances(aRFaces, aMEmpty, Standard_False);
   //
   theFaces = aRFaces;
-  TopoDS_Iterator aItF(theFaces);
-  return aItF.More();
+  return theFaces.NbChildren() > 0;
 }
 
 //=======================================================================

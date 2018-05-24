@@ -398,9 +398,7 @@ void BRepOffsetAPI_ThruSections::Build()
       if (Georges.IsDegeneratedFirstSection())
         IndFirstSec = 2;
       TopoDS_Shape aWorkingSection = WorkingSections(IndFirstSec);
-      TopoDS_Iterator itw(aWorkingSection);
-      for (; itw.More(); itw.Next())
-        myNbEdgesInSection++;
+      myNbEdgesInSection += aWorkingSection.NbChildren();
       for (Standard_Integer ii = 1; ii <= myWires.Length(); ii++)
       {
         TopExp_Explorer Explo(myWires(ii), TopAbs_EDGE);
@@ -419,7 +417,7 @@ void BRepOffsetAPI_ThruSections::Build()
           {
             const TopoDS_Edge& aNewEdge = TopoDS::Edge(itl.Value());
             Standard_Integer inde = 1;
-            for (itw.Initialize(aWorkingSection); itw.More(); itw.Next(),inde++)
+            for (TopoDS_Iterator itw (aWorkingSection); itw.More(); itw.Next(), inde++)
             {
               const TopoDS_Shape& aWorkingEdge = itw.Value();
               if (aWorkingEdge.IsSame(aNewEdge))

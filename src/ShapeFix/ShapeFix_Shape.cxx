@@ -147,9 +147,7 @@ Standard_Boolean ShapeFix_Shape::Perform(const Handle(Message_ProgressIndicator)
     Standard_Integer savFixSameParameterMode = myFixSameParameterMode;
     myFixSameParameterMode = Standard_False;
     myFixVertexTolMode = Standard_False;
-    Standard_Integer aShapesNb = 0;
-    for ( TopoDS_Iterator anIter(S); anIter.More(); anIter.Next() )
-      ++aShapesNb;
+    Standard_Integer aShapesNb = S.NbChildren();
 
     // Open progress indication scope for sub-shape fixing
     Message_ProgressSentry aPSentrySubShape(theProgress, "Fixing sub-shape", 0, aShapesNb, 1);

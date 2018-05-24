@@ -2182,15 +2182,12 @@ static Standard_Real ComputeAveragePlaneAndMaxDeviation(const TopoDS_Shape& aWir
                                                         gp_Pln& thePlane,
                                                         Standard_Boolean& IsSingular)
 {
-  Standard_Integer N = 40, nedges = 0;
-
-  TopoDS_Iterator iter( aWire );
-  for (; iter.More(); iter.Next())
-    nedges++;
+  Standard_Integer N = 40;
+  Standard_Integer nedges = aWire.NbChildren();
 
   TColgp_Array1OfPnt Pnts( 1, nedges*N );
   Standard_Integer ind = 1, i;
-  for (iter.Initialize(aWire); iter.More(); iter.Next())
+  for (TopoDS_Iterator iter (aWire); iter.More(); iter.Next())
     {
       const TopoDS_Edge& anEdge = TopoDS::Edge( iter.Value() );
       BRepAdaptor_Curve aCurve(anEdge);

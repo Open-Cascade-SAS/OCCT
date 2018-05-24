@@ -69,7 +69,6 @@
 #include <StepVisual_SurfaceStyleUsage.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <TColStd_HSequenceOfTransient.hxx>
-#include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
 #include <Transfer_Binder.hxx>
 #include <TransferBRep.hxx>

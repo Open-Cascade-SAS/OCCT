@@ -18,6 +18,7 @@
 #include <Standard_Type.hxx>
 #include <TopAbs.hxx>
 #include <TopoDS_TEdge.hxx>
+#include <TopoDS_Shape.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(TopoDS_TEdge,TopoDS_TShape)
 

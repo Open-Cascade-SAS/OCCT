@@ -76,7 +76,6 @@
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Face.hxx>
-#include <TopoDS_Iterator.hxx>
 #include <TopoDSToStep.hxx>
 #include <TopoDSToStep_MakeStepFace.hxx>
 #include <TopoDSToStep_MakeStepWire.hxx>
@@ -152,7 +151,6 @@ void TopoDSToStep_MakeStepFace::Init(const TopoDS_Face& aFace,
     return;
   }
   
-  TopoDS_Iterator  It;
   Standard_Integer i;
   
   //BRepAdaptor_Surface SA = BRepAdaptor_Surface(ForwardFace);  

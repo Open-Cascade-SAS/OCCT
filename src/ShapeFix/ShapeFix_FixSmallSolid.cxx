@@ -368,7 +368,7 @@ static TopoDS_Shape MergeShells (
   }
   
   // If there are no elements in the new shell, return null shape
-  if (!TopoDS_Iterator (aNewShell).More())
+  if (aNewShell.NbChildren() == 0)
     return TopoDS_Shape();
 
   return aNewShell;

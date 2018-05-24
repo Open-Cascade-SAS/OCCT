@@ -724,11 +724,8 @@ void DNaming::LoadResult(const TDF_Label& ResultLabel, BRepAlgoAPI_BooleanOperat
   TNaming_Builder Builder (ResultLabel);
   TopoDS_Shape aResult = MS.Shape();
   if (aResult.ShapeType() == TopAbs_COMPOUND) {
-    Standard_Integer nbSubResults = 0;
-    TopoDS_Iterator itr(aResult);
-    for (; itr.More(); itr.Next()) nbSubResults++;
-    if (nbSubResults == 1) {
-      itr.Initialize(aResult);
+    if (aResult.NbChildren() == 1) {
+      TopoDS_Iterator itr (aResult);
       if (itr.More()) aResult = itr.Value();
     }
   }

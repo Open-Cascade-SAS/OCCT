@@ -94,7 +94,7 @@ void TopoDS_Builder::Add (TopoDS_Shape& aShape,
     const unsigned int iS=(unsigned int)aShape.ShapeType();
     //
     if ((aTb[iC] & (1<<iS)) != 0) {
-      TopoDS_ListOfShape& L = aShape.TShape()->ChangeShapes();
+      TopoDS_ListOfShape& L = aShape.TShape()->myShapes;
       L.Append(aComponent);
       TopoDS_Shape& S = L.Last();
       //
@@ -137,7 +137,7 @@ void TopoDS_Builder::Remove (TopoDS_Shape& aShape,
     S.Reverse();
   S.Location(S.Location().Predivided(aShape.Location()));
 
-  TopoDS_ListOfShape& L = aShape.TShape()->ChangeShapes();
+  TopoDS_ListOfShape& L = aShape.TShape()->myShapes;
   TopoDS_ListIteratorOfListOfShape It(L);
   while (It.More()) {
     if (It.Value() == S) {

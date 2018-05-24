@@ -373,8 +373,7 @@ Standard_Boolean DNaming_BooleanOperationDriver::CheckAndLoad
 
   if (theMkOpe.IsDone() && !theMkOpe.Shape().IsNull()) {
     if (theMkOpe.Shape().ShapeType() == TopAbs_COMPOUND) {
-      TopoDS_Iterator anItr(theMkOpe.Shape());
-      if(!anItr.More()) {
+      if (theMkOpe.Shape().NbChildren() == 0) {
 	theFunction->SetFailure(NULL_RESULT);
 	return Standard_False;
       }      

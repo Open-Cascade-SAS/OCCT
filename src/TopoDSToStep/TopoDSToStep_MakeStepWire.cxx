@@ -40,7 +40,6 @@
 #include <TColStd_SequenceOfTransient.hxx>
 #include <TopExp.hxx>
 #include <TopoDS.hxx>
-#include <TopoDS_Iterator.hxx>
 #include <TopoDS_Wire.hxx>
 #include <TopoDSToStep_MakeStepEdge.hxx>
 #include <TopoDSToStep_MakeStepVertex.hxx>
@@ -90,7 +89,6 @@ void TopoDSToStep_MakeStepWire::Init(const TopoDS_Wire& aWire,
     return;
   }
 
-  TopoDS_Iterator  It;
   Standard_Integer i;
   
   if (aWire.Orientation() == TopAbs_INTERNAL ||

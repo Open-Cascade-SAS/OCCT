@@ -21,7 +21,6 @@
 #include <StepShape_FacetedBrep.hxx>
 #include <StepShape_TopologicalRepresentationItem.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shell.hxx>
 #include <TopoDS_Solid.hxx>
 #include <TopoDSToStep.hxx>

@@ -303,8 +303,7 @@ void XCAFPrs::CollectStyleSettings (const TDF_Label& theLabel,
     TopoDS_Shape aSubshape = XCAFDoc_ShapeTool::GetShape (aLabel);
     if (aSubshape.ShapeType() == TopAbs_COMPOUND)
     {
-      const TopoDS_Iterator aShapeIter (aSubshape);
-      if (!aShapeIter.More())
+      if (aSubshape.NbChildren() == 0)
       {
         continue;
       }

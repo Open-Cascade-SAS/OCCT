@@ -65,8 +65,6 @@
 #include <StdSelect_DisplayMode.hxx>
 #include <TColStd_ListIteratorOfListOfInteger.hxx>
 #include <TopExp.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TopoDS_Iterator.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(AIS_Shape,AIS_InteractiveObject)
 
@@ -112,12 +110,9 @@ void AIS_Shape::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresentat
     aPrs->SetDisplayPriority(TheType+2);
   }
   // Shape vide -> Assemblage vide.
-  if (myshape.ShapeType() == TopAbs_COMPOUND) {
-    TopoDS_Iterator anExplor (myshape);
-
-    if (!anExplor.More()) {
-      return;
-    }
+  if (myshape.ShapeType() == TopAbs_COMPOUND && myshape.NbChildren() == 0)
+  {
+    return;
   }
 
   if (IsInfinite())
@@ -227,8 +222,7 @@ void AIS_Shape::computeHlrPresentation (const Handle(Prs3d_Projector)& theProjec
     }
     case TopAbs_COMPOUND:
     {
-      TopoDS_Iterator anExplor (theShape);
-      if (!anExplor.More())
+      if (theShape.NbChildren() == 0)
       {
         return;
       }
@@ -293,11 +287,10 @@ void AIS_Shape::ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
                                               const Standard_Integer aMode)
 {
   if(myshape.IsNull()) return;
-  if (myshape.ShapeType() == TopAbs_COMPOUND) {
-    TopoDS_Iterator anExplor (myshape);
-
-    if (!anExplor.More()) // empty Shape -> empty Assembly.
-      return;
+  if (myshape.ShapeType() == TopAbs_COMPOUND && myshape.NbChildren() == 0)
+  {
+    // empty Shape -> empty Assembly.
+    return;
   }
 
   TopAbs_ShapeEnum TypOfSel = AIS_Shape::SelectionType(aMode);
@@ -982,13 +975,11 @@ void AIS_Shape::LoadRecomputable(const Standard_Integer TheMode)
 
 const Bnd_Box& AIS_Shape::BoundingBox()  
 {
-  if (myshape.ShapeType() == TopAbs_COMPOUND) {
-    TopoDS_Iterator anExplor (myshape);
-
-    if (!anExplor.More()) { // empty Shape  -> empty Assembly.
-      myBB.SetVoid();
-      return myBB;
-    }
+  if (myshape.ShapeType() == TopAbs_COMPOUND && myshape.NbChildren() == 0)
+  {
+    // empty Shape  -> empty Assembly.
+    myBB.SetVoid ();
+    return myBB;
   }
 
   if(myCompBB) {

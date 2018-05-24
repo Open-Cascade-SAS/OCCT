@@ -14,11 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
-#include <Standard_ConstructionError.hxx>
-#include <Standard_Type.hxx>
-#include <TopoDS_Builder.hxx>
-#include <TopoDS_Iterator.hxx>
 #include <TopoDS_TShape.hxx>
+#include <TopoDS_Shape.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(TopoDS_TShape,Standard_Transient)

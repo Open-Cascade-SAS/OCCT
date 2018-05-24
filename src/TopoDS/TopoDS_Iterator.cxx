@@ -38,7 +38,7 @@ void TopoDS_Iterator::Initialize(const TopoDS_Shape& S,
     myOrientation = S.Orientation();
   else
     myOrientation = TopAbs_FORWARD;
-  myShapes.Initialize(S.TShape()->Shapes());
+  myShapes.Initialize(S.TShape()->myShapes);
   if (More()) {
     myShape = myShapes.Value();
     myShape.Orientation(TopAbs::Compose(myOrientation,myShape.Orientation()));

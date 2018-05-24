@@ -60,11 +60,7 @@ TopoDS_Shape ShapeCustom::ApplyModifier (const TopoDS_Shape &S,
     BRep_Builder B;
     B.MakeCompound ( C );
 
-    Standard_Integer aShapeCount = 0;
-    {
-      for (TopoDS_Iterator it(SF); it.More(); it.Next()) ++aShapeCount;
-    }
-
+    Standard_Integer aShapeCount = SF.NbChildren();
     Message_ProgressSentry aPSentry(aProgress, "Applying Modifier For Solids", 0, aShapeCount, 1);
     for ( TopoDS_Iterator it(SF); it.More() && aPSentry.More(); it.Next(), aPSentry.Next() ) {
       TopoDS_Shape shape = it.Value();

@@ -17,14 +17,10 @@
 #ifndef _TopoDS_TShape_HeaderFile
 #define _TopoDS_TShape_HeaderFile
 
-#include <Standard.hxx>
 #include <Standard_Type.hxx>
-
-#include <TopoDS_ListOfShape.hxx>
-#include <Standard_Integer.hxx>
-#include <Standard_Transient.hxx>
-#include <Standard_Boolean.hxx>
+#include <TopAbs.hxx>
 #include <TopAbs_ShapeEnum.hxx>
+#include <TopoDS_ListOfShape.hxx>
 
 class TopoDS_Iterator;
 class TopoDS_Builder;
@@ -33,9 +29,6 @@ class TopoDS_Builder;
 #ifdef Convex
   #undef Convex
 #endif
-
-class TopoDS_TShape;
-DEFINE_STANDARD_HANDLE(TopoDS_TShape, Standard_Transient)
 
 //! A TShape  is a topological  structure describing a
 //! set of points in a 2D or 3D space.
@@ -67,55 +60,61 @@ class TopoDS_TShape : public Standard_Transient
 
 public:
 
-  
   //! Returns the free flag.
-    Standard_Boolean Free() const;
-  
+  Standard_Boolean Free() const { return ((myFlags & TopoDS_TShape_Flags_Free) != 0); }
+
   //! Sets the free flag.
-    void Free (const Standard_Boolean F);
-  
+  void Free (Standard_Boolean theIsFree) { setFlag (TopoDS_TShape_Flags_Free, theIsFree); }
+
   //! Returns the locked flag.
-    Standard_Boolean Locked() const;
-  
+  Standard_Boolean Locked() const { return ((myFlags & TopoDS_TShape_Flags_Locked) != 0); }
+
   //! Sets the locked flag.
-    void Locked (const Standard_Boolean F);
-  
+  void Locked (Standard_Boolean theIsLocked) { setFlag (TopoDS_TShape_Flags_Locked, theIsLocked); }
+
   //! Returns the modification flag.
-    Standard_Boolean Modified() const;
-  
+  Standard_Boolean Modified() const { return ((myFlags & TopoDS_TShape_Flags_Modified) != 0); }
+
   //! Sets the modification flag.
-    void Modified (const Standard_Boolean M);
-  
+  void Modified (Standard_Boolean theIsModified)
+  {
+    setFlag (TopoDS_TShape_Flags_Modified, theIsModified);
+    if (theIsModified)
+    {
+      setFlag (TopoDS_TShape_Flags_Checked, false); // when a TShape is modified it is also unchecked
+    }
+  }
+
   //! Returns the checked flag.
-    Standard_Boolean Checked() const;
-  
+  Standard_Boolean Checked() const { return ((myFlags & TopoDS_TShape_Flags_Checked) != 0); }
+
   //! Sets the checked flag.
-    void Checked (const Standard_Boolean C);
-  
+  void Checked (Standard_Boolean theIsChecked) { setFlag (TopoDS_TShape_Flags_Checked, theIsChecked); }
+
   //! Returns the orientability flag.
-    Standard_Boolean Orientable() const;
-  
+  Standard_Boolean Orientable() const { return ((myFlags & TopoDS_TShape_Flags_Orientable) != 0); }
+
   //! Sets the orientability flag.
-    void Orientable (const Standard_Boolean C);
-  
+  void Orientable (Standard_Boolean theIsOrientable) { setFlag (TopoDS_TShape_Flags_Orientable, theIsOrientable); }
+
   //! Returns the closedness flag.
-    Standard_Boolean Closed() const;
-  
+  Standard_Boolean Closed() const { return ((myFlags & TopoDS_TShape_Flags_Closed) != 0); }
+
   //! Sets the closedness flag.
-    void Closed (const Standard_Boolean C);
-  
+  void Closed (Standard_Boolean theIsClosed) { setFlag (TopoDS_TShape_Flags_Closed, theIsClosed); }
+
   //! Returns the infinity flag.
-    Standard_Boolean Infinite() const;
-  
+  Standard_Boolean Infinite() const { return ((myFlags & TopoDS_TShape_Flags_Infinite) != 0); }
+
   //! Sets the infinity flag.
-    void Infinite (const Standard_Boolean C);
-  
+  void Infinite (Standard_Boolean theIsInfinite) { setFlag (TopoDS_TShape_Flags_Infinite, theIsInfinite); }
+
   //! Returns the convexness flag.
-    Standard_Boolean Convex() const;
-  
+  Standard_Boolean Convex() const { return ((myFlags & TopoDS_TShape_Flags_Convex) != 0); }
+
   //! Sets the convexness flag.
-    void Convex (const Standard_Boolean C);
-  
+  void Convex (Standard_Boolean theIsConvex) { setFlag (TopoDS_TShape_Flags_Convex, theIsConvex); }
+
   //! Returns the type as a term of the ShapeEnum enum :
   //! VERTEX, EDGE, WIRE, FACE, ....
   Standard_EXPORT virtual TopAbs_ShapeEnum ShapeType() const = 0;
@@ -123,6 +122,9 @@ public:
   //! Returns a copy  of the  TShape  with no sub-shapes.
   Standard_EXPORT virtual Handle(TopoDS_TShape) EmptyCopy() const = 0;
 
+  //! Returns the number of direct sub-shapes (children).
+  //! @sa TopoDS_Iterator for accessing sub-shapes
+  Standard_Integer NbChildren() const { return myShapes.Size(); }
 
 friend class TopoDS_Iterator;
 friend class TopoDS_Builder;
@@ -132,7 +134,6 @@ friend class TopoDS_Builder;
 
 protected:
 
-  
   //! Constructs an empty TShape.
   //! Free       : True
   //! Modified   : True
@@ -141,28 +142,40 @@ protected:
   //! Closed     : False
   //! Infinite   : False
   //! Convex     : False
-    TopoDS_TShape();
-
-
+  TopoDS_TShape()
+  : myFlags (TopoDS_TShape_Flags_Free
+           | TopoDS_TShape_Flags_Modified
+           | TopoDS_TShape_Flags_Orientable) {}
 
 private:
 
-  
-    const TopoDS_ListOfShape& Shapes() const;
-  
-    TopoDS_ListOfShape& ChangeShapes();
+  // Defined mask values
+  enum TopoDS_TShape_Flags
+  {
+    TopoDS_TShape_Flags_Free       = 0x001,
+    TopoDS_TShape_Flags_Modified   = 0x002,
+    TopoDS_TShape_Flags_Checked    = 0x004,
+    TopoDS_TShape_Flags_Orientable = 0x008,
+    TopoDS_TShape_Flags_Closed     = 0x010,
+    TopoDS_TShape_Flags_Infinite   = 0x020,
+    TopoDS_TShape_Flags_Convex     = 0x040,
+    TopoDS_TShape_Flags_Locked     = 0x080
+  };
+
+  //! Set bit flag.
+  void setFlag (TopoDS_TShape_Flags theFlag,
+                Standard_Boolean    theIsOn)
+  {
+    if (theIsOn) myFlags |=  (Standard_Integer )theFlag;
+    else         myFlags &= ~(Standard_Integer )theFlag;
+  }
+
+private:
 
   TopoDS_ListOfShape myShapes;
-  Standard_Integer myFlags;
-
-
+  Standard_Integer   myFlags;
 };
 
-
-#include <TopoDS_TShape.lxx>
-
-
-
-
+DEFINE_STANDARD_HANDLE(TopoDS_TShape, Standard_Transient)
 
 #endif // _TopoDS_TShape_HeaderFile

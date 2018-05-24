@@ -38,13 +38,14 @@
 #include <gp_Circ.hxx>
 #include <TopTools_MapOfShape.hxx>
 #include <TopExp_Explorer.hxx>
-#include <TopoDS_Iterator.hxx>
 #include <gp_Ax3.hxx>
 #include <gp_Pln.hxx>
 #include <DrawTrSurf.hxx>
+
 #ifdef _MSC_VER
 #include <stdio.h>
 #endif
+
 //=======================================================================
 //function : DrawDim_DISTANCE
 //purpose  : 

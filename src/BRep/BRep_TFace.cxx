@@ -21,7 +21,7 @@
 #include <Standard_Type.hxx>
 #include <TopAbs.hxx>
 #include <TopLoc_Location.hxx>
-#include <TopoDS_TShape.hxx>
+#include <TopoDS_Shape.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(BRep_TFace,TopoDS_TFace)
 

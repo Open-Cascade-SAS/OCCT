@@ -110,8 +110,7 @@ static Standard_Real surfaceProperties(const TopoDS_Shape& S, GProp_GProps& Prop
     }
 
     BF.Load(F);
-    TopoDS_Iterator aWIter(F);
-    Standard_Boolean IsNatRestr = !aWIter.More();
+    Standard_Boolean IsNatRestr = (F.NbChildren() == 0);
     if(!IsNatRestr) BD.Init(F);
     if(Eps < 1.0) {
       G.Perform(BF, BD, Eps); 
@@ -199,8 +198,7 @@ static Standard_Real volumeProperties(const TopoDS_Shape& S, GProp_GProps& Props
 
     if (isFwd || isRvs){
       BF.Load(F);
-      TopoDS_Iterator aWIter(F);
-      Standard_Boolean IsNatRestr = !aWIter.More();
+      Standard_Boolean IsNatRestr = (F.NbChildren () == 0);
       if(!IsNatRestr) BD.Init(F);
       if(Eps < 1.0) {
         G.Perform(BF, BD, Eps); 
@@ -348,8 +346,7 @@ static Standard_Real volumePropertiesGK(const TopoDS_Shape     &theShape,
     if (isFwd || isRvs){
         aPropFace.Load(aFace);
 
-        TopoDS_Iterator aWIter(aFace);
-        Standard_Boolean IsNatRestr = !aWIter.More();
+        Standard_Boolean IsNatRestr = (aFace.NbChildren () == 0);
         if(IsNatRestr)
           aLocalError = aVProps.Perform(aPropFace, aTol, CGFlag, IFlag);
         else {
@@ -496,8 +493,7 @@ static Standard_Real volumePropertiesGK(const TopoDS_Shape     &theShape,
     if (isFwd || isRvs){
         aPropFace.Load(aFace);
 
-        TopoDS_Iterator aWIter(aFace);
-        Standard_Boolean IsNatRestr = !aWIter.More();
+        Standard_Boolean IsNatRestr = (aFace.NbChildren () == 0);
         if(IsNatRestr)
           aLocalError = aVProps.Perform(aPropFace, thePln, aTol, CGFlag, IFlag);
         else {

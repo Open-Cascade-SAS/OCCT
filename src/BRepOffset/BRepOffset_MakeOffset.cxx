@@ -2229,36 +2229,30 @@ void BRepOffset_MakeOffset::CorrectConicalFaces()
         }
       }
     }
-    TopoDS_Iterator anIt(Sol);
-    Standard_Boolean SolIsNull = !anIt.More();
+    Standard_Integer nbs = Sol.NbChildren();
+    Standard_Boolean SolIsNull = (nbs == 0);
     //Checking solid
-    if(!SolIsNull)
+    if (nbs > 1)
     {
-      Standard_Integer nbs = 0;
-      while(anIt.More()) {anIt.Next(); ++nbs;}
-      if(nbs > 1)
+      BRepCheck_Analyzer aCheck (Sol, Standard_False);
+      if (!aCheck.IsValid ())
       {
-        BRepCheck_Analyzer aCheck(Sol, Standard_False);
-        if(!aCheck.IsValid())
+        TopTools_ListOfShape aSolList;
+        CorrectSolid (Sol, aSolList);
+        if (!aSolList.IsEmpty ())
         {
-          TopTools_ListOfShape aSolList;
-          CorrectSolid(Sol, aSolList);
-          if(!aSolList.IsEmpty())
+          BB.Add (NC, Sol);
+          TopTools_ListIteratorOfListOfShape aSLIt (aSolList);
+          for (; aSLIt.More (); aSLIt.Next ())
           {
-            BB.Add(NC, Sol);
-            TopTools_ListIteratorOfListOfShape aSLIt(aSolList);
-            for(; aSLIt.More(); aSLIt.Next())
-            {
-              BB.Add(NC, aSLIt.Value());
-            }
-            SolIsNull = Standard_True;
+            BB.Add (NC, aSLIt.Value ());
           }
+          SolIsNull = Standard_True;
         }
       }
     }
     //
-    anIt.Initialize(NC);
-    Standard_Boolean NCIsNull = !anIt.More();
+    Standard_Boolean NCIsNull = (NC.NbChildren() == 0);
     if((!SolIsNull) && (!NCIsNull))
     {
       BB.Add(NC, Sol);
@@ -3072,35 +3066,29 @@ void BRepOffset_MakeOffset::MakeSolid ()
       }
     }
   }
-  TopoDS_Iterator anIt(Sol);
-  Standard_Boolean SolIsNull = !anIt.More();
+  Standard_Integer nbs = Sol.NbChildren();
+  Standard_Boolean SolIsNull = (nbs == 0);
   //Checking solid
-  if(!SolIsNull)
+  if (nbs > 1)
   {
-    Standard_Integer nbs = 0;
-    while(anIt.More()) {anIt.Next(); ++nbs;}
-    if(nbs > 1)
+    BRepCheck_Analyzer aCheck (Sol, Standard_False);
+    if (!aCheck.IsValid ())
     {
-      BRepCheck_Analyzer aCheck(Sol, Standard_False);
-      if(!aCheck.IsValid())
+      TopTools_ListOfShape aSolList;
+      CorrectSolid (Sol, aSolList);
+      if (!aSolList.IsEmpty ())
       {
-        TopTools_ListOfShape aSolList;
-        CorrectSolid(Sol, aSolList);
-        if(!aSolList.IsEmpty())
+        B.Add (NC, Sol);
+        TopTools_ListIteratorOfListOfShape aSLIt (aSolList);
+        for (; aSLIt.More (); aSLIt.Next ())
         {
-          B.Add(NC, Sol);
-          TopTools_ListIteratorOfListOfShape aSLIt(aSolList);
-          for(; aSLIt.More(); aSLIt.Next())
-          {
-            B.Add(NC, aSLIt.Value());
-          }
-          SolIsNull = Standard_True;
+          B.Add (NC, aSLIt.Value ());
         }
+        SolIsNull = Standard_True;
       }
     }
   }
-  anIt.Initialize(NC);
-  Standard_Boolean NCIsNull = !anIt.More();
+  Standard_Boolean NCIsNull = (NC.NbChildren() == 0);
   if((!SolIsNull) && (!NCIsNull))
   {
     B.Add(NC, Sol);

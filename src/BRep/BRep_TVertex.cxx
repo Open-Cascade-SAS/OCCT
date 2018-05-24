@@ -19,7 +19,7 @@
 #include <gp_Pnt.hxx>
 #include <Standard_Type.hxx>
 #include <TopAbs.hxx>
-#include <TopoDS_TShape.hxx>
+#include <TopoDS_Shape.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(BRep_TVertex,TopoDS_TVertex)
 

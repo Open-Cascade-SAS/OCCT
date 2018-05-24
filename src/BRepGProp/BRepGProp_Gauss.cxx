@@ -585,8 +585,7 @@ Standard_Real BRepGProp_Gauss::Compute(
   //
   const Standard_Integer NumSubs = SUBS_POWER;
   const TopoDS_Face& aF = theSurface.GetFace(); 
-  TopoDS_Iterator aWIter(aF);
-  const Standard_Boolean isNaturalRestriction = !aWIter.More(); //theSurface.NaturalRestriction();
+  const Standard_Boolean isNaturalRestriction = (aF.NbChildren () == 0); //theSurface.NaturalRestriction();
 
   Standard_Real CIx, CIy, CIz, CIxy, CIxz, CIyz;
   Standard_Real CDim[2], CIxx[2], CIyy[2], CIzz[2];
