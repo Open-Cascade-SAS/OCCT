@@ -28,6 +28,7 @@
 //==                           C Y L I N D R E   Q U A D R I Q U E
 //======================================================================
 
+#include <ElSLib.hxx>
 #include <gp_Ax2.hxx>
 #include <gp_Ax3.hxx>
 #include <gp_Cone.hxx>
@@ -40,6 +41,75 @@
 #include <Standard_DomainError.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <StdFail_NotDone.hxx>
+
+//=======================================================================
+//function : AddSpecialPoints
+//purpose  : Sometimes the boundaries theTheta1 and theTheta2 are
+//            computed with some inaccuracy. At that, some special points
+//            (cone apex or sphere pole(s)), which are true intersection
+//            points lie out of the domain [theTheta1, theTheta2] of the ALine.
+//           This function corrects these boundaries to make them be included 
+//            in the domain of the ALine.
+//           Parameters Theta1 and Theta2 must be initialized
+//            before calling this function.
+//=======================================================================
+template <class gpSmth>
+static void AddSpecialPoints(const IntAna_Quadric& theQuad,
+                             const gpSmth& theGpObj,
+                             Standard_Real& theTheta1,
+                             Standard_Real& theTheta2)
+{
+  const Standard_Real aPeriod = M_PI + M_PI;
+  const NCollection_List<gp_Pnt> &aLSP = theQuad.SpecialPoints();
+
+  if (aLSP.IsEmpty())
+    return;
+
+  Standard_Real aU = 0.0, aV = 0.0;
+  Standard_Real aMaxDelta = 0.0;
+  for (NCollection_List<gp_Pnt>::Iterator anItr(aLSP); anItr.More(); anItr.Next())
+  {
+    const gp_Pnt &aPt = anItr.Value();
+    ElSLib::Parameters(theGpObj, aPt, aU, aV);
+    const gp_Pnt aPProj(ElSLib::Value(aU, aV, theGpObj));
+
+    if (aPt.SquareDistance(aPProj) > Precision::SquareConfusion())
+    {
+      // aPt is not an intersection point
+      continue;
+    }
+
+    Standard_Real aDelta1 = Min(aU - theTheta1, 0.0),
+                  aDelta2 = Max(aU - theTheta2, 0.0);
+
+    if (aDelta1 < -M_PI)
+    {
+      // Must be aDelta1 = Min(aU - theTheta1 + aPeriod, 0.0).
+      // But aU - theTheta1 + aPeriod >= 0 always.
+      aDelta1 = 0.0;
+    }
+
+    if (aDelta2 > M_PI)
+    {
+      // Must be aDelta2 = Max(aU - theTheta2 - aPeriod, 0.0).
+      // But aU - theTheta2 - aPeriod <= 0 always.
+      aDelta2 = 0.0;
+    }
+
+    const Standard_Real aDelta = Max(-aDelta1, aDelta2);
+    aMaxDelta = Max(aMaxDelta, aDelta);
+  }
+
+  if(aMaxDelta != 0.0)
+  {
+    theTheta1 -= aMaxDelta;
+    theTheta2 += aMaxDelta;
+    if ((theTheta2 - theTheta1) > aPeriod)
+    {
+      theTheta2 = theTheta1 + aPeriod;
+    }
+  }
+}
 
 //=======================================================================
 //class : TrigonometricRoots
@@ -486,13 +556,15 @@ void IntAna_IntQuadQuad::Perform(const gp_Cylinder& Cyl,
 		//
 		qwet=MTF.Value(autrepar);
 		if(qwet>=0.) { 
+                  Standard_Real aParam = Theta1 + PIpPI;
+                  AddSpecialPoints(Quad, Cyl, Theta1, aParam);
 		  TheCurve[NbCurves].SetCylinderQuadValues(Cyl,Qxx,Qyy,Qzz,Qxy,Qxz,Qyz,Qx,Qy,Qz,Q1,
-							   myEpsilon,Theta1,Theta1+PIpPI,
+							   myEpsilon,Theta1,aParam,
 							   UN_SEUL_Z_PAR_THETA,
 							   Z_POSITIF);
 		  NbCurves++;
 		  TheCurve[NbCurves].SetCylinderQuadValues(Cyl,Qxx,Qyy,Qzz,Qxy,Qxz,Qyz,Qx,Qy,Qz,Q1,
-							   myEpsilon,Theta1,Theta1+PIpPI,
+							   myEpsilon,Theta1,aParam,
 							   UN_SEUL_Z_PAR_THETA,
 							   Z_NEGATIF);
 		  NbCurves++;
@@ -534,6 +606,7 @@ void IntAna_IntQuadQuad::Perform(const gp_Cylinder& Cyl,
 		//ft
 		if((Theta3-Theta2)<5.e-8) { 
 		//
+                  AddSpecialPoints(Quad, Cyl, Theta1, Theta2);
 		  TheCurve[NbCurves].SetCylinderQuadValues(Cyl,Qxx,Qyy,Qzz,Qxy,Qxz,Qyz,Qx,Qy,Qz,Q1,
 							   myEpsilon,Theta1,Theta2,
 							   UN_SEUL_Z_PAR_THETA,
@@ -546,6 +619,7 @@ void IntAna_IntQuadQuad::Perform(const gp_Cylinder& Cyl,
 		  NbCurves++;
 		}
 		else { 
+                  AddSpecialPoints(Quad, Cyl, Theta1, Theta2);
 		  TheCurve[NbCurves].SetCylinderQuadValues(Cyl,Qxx,Qyy,Qzz,Qxy,Qxz,Qyz,Qx,Qy,Qz,Q1,
 							   myEpsilon,Theta1,Theta2,
 							   DEUX_Z_PAR_THETA,

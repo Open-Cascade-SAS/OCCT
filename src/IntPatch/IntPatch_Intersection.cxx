@@ -1432,8 +1432,32 @@ void IntPatch_Intersection::GeomGeomPerfom(const Handle(Adaptor3d_HSurface)& the
                                 theS1->IsVPeriodic()? theS1->VPeriod() : 0.0,
                                 theS2->IsUPeriodic()? theS2->UPeriod() : 0.0,
                                 theS2->IsVPeriodic()? theS2->VPeriod() : 0.0};
+
+    NCollection_List<gp_Pnt> aListOfCriticalPoints;
+
+    if (theS1->GetType() == GeomAbs_Cone)
+    {
+      aListOfCriticalPoints.Append(theS1->Cone().Apex());
+    }
+    else if (theS1->GetType() == GeomAbs_Sphere)
+    {
+      aListOfCriticalPoints.Append(theS1->Value(0.0, M_PI_2));
+      aListOfCriticalPoints.Append(theS1->Value(0.0, -M_PI_2));
+    }
+
+    if (theS2->GetType() == GeomAbs_Cone)
+    {
+      aListOfCriticalPoints.Append(theS2->Cone().Apex());
+    }
+    else if (theS2->GetType() == GeomAbs_Sphere)
+    {
+      aListOfCriticalPoints.Append(theS2->Value(0.0, M_PI_2));
+      aListOfCriticalPoints.Append(theS2->Value(0.0, -M_PI_2));
+    }
+
     IntPatch_WLineTool::ExtendTwoWLines(slin, theS1, theS2, TolTang,
-                                        anArrOfPeriod, aBx1, aBx2);
+                                        anArrOfPeriod, aBx1, aBx2,
+                                        aListOfCriticalPoints);
   }
 }
 

@@ -11,33 +11,51 @@ restore [locate_data_file bug23176_surface2_draw.draw] s2
 
 intersect result s1 s2
 
-# first result curve
-cvalue result_1 0 x y z
-vertex v0 x y z
-cvalue result_1 1 x y z
-vertex v1 x y z
+set che [whatis result]
+set ind [string first "3d curve" $che]
+if {${ind} >= 0} {
+  #Only variable "result" exists
+  renamevar result result_1
+}
 
-# second result curve
-cvalue result_2 0 x y z
-vertex v2 x y z
-cvalue result_2 1 x y z
-vertex v3 x y z
+bclearobjects
+bcleartools
 
-set tol_abs_dist 1.0e-7
-set tol_rel_dist 0.001
+set ic 1
+set AllowRepeat 1
+while { $AllowRepeat != 0 } {
+  set che [whatis result_$ic]
+  set ind [string first "3d curve" $che]
+  if {${ind} < 0} {
+    set AllowRepeat 0
+  } else {
+   
+    bounds result_$ic U1 U2
+    
+    if {[dval U2-U1] < 1.0e-20} {
+      puts "Error: Wrong curve's range!"
+    }
+    
+    xdistcs result_$ic s1 U1 U2 10 2.0e-7
+    xdistcs result_$ic s2 U1 U2 10 2.0e-7
+    
+    mkedge ee result_$ic
+    baddobjects ee
+    incr ic
+  }
+}
 
-distmini d_f v0 v1
-regexp {([-0-9.+eE]+)} [dump d_f_val] full dist_1
-set expected_dist_1 408.093320004435
-checkreal "Length first curve" ${dist_1} ${expected_dist_1} ${tol_abs_dist} ${tol_rel_dist}
+# Check gaps in result
+bfillds
+bbuild rw
 
-distmini d_s v2 v3
-regexp {([-0-9.+eE]+)} [dump d_s_val] full dist_2
-set expected_dist_2 408.093320004435
-checkreal "Length second curve" ${dist_2} ${expected_dist_2} ${tol_abs_dist} ${tol_rel_dist}
+checksection rw -r 0
+checkmaxtol rw -min_tol 2.0e-7
+
+checknbshapes rw -edge 4 -vertex 4
 
 smallview
-donly result*
+don result*
 fit
 display s1 s2
 checkview -screenshot -2d -path ${imagedir}/${test_image}.png

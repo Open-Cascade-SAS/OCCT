@@ -25,3 +25,8 @@ checknbshapes result -edge 5 -vertex 6
 checkmaxtol result -ref 6.02982e-007
 
 checkprops result -l 94.3164
+
+smallview
+don f1 f2 result
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

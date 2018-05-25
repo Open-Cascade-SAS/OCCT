@@ -40,7 +40,7 @@ class Geom_ConicalSurface;
 DEFINE_STANDARD_HANDLE(Geom_ConicalSurface, Geom_ElementarySurface)
 
 //! Describes a cone.
-//! A cone is defined by the half-angle at its apex, and
+//! A cone is defined by the half-angle (can be negative) at its apex, and
 //! is positioned in space by a coordinate system (a
 //! gp_Ax3 object) and a reference radius as follows:
 //! - The "main Axis" of the coordinate system is the
@@ -79,7 +79,8 @@ public:
   
 
   //! A3 defines the local coordinate system of the conical surface.
-  //! Ang is the conical surface semi-angle ]0, PI/2[.
+  //! Ang is the conical surface semi-angle. Its absolute value is in range
+  //! ]0, PI/2[.
   //! Radius is the radius of the circle Viso in the placement plane
   //! of the conical surface defined with "XAxis" and "YAxis".
   //! The "ZDirection" of A3 defines the direction of the surface's
@@ -90,8 +91,8 @@ public:
   //! such that the normal Vector (N = D1U ^ D1V) is oriented towards
   //! the "outside region" of the surface.
   //!
-  //! Raised if Radius < 0.0 or Ang < Resolution from gp or
-  //! Ang >= PI/2 - Resolution
+  //! Raised if Radius < 0.0 or Abs(Ang) < Resolution from gp or
+  //! Abs(Ang) >= PI/2 - Resolution
   Standard_EXPORT Geom_ConicalSurface(const gp_Ax3& A3, const Standard_Real Ang, const Standard_Real Radius);
   
 
@@ -112,9 +113,11 @@ public:
   
 
   //! Changes the semi angle of the conical surface.
-  //!
-  //! Raised if Ang < Resolution or Ang >= PI/2 - Resolution
-  Standard_EXPORT void SetSemiAngle (const Standard_Real Ang);
+  //! Semi-angle can be negative. Its absolute value
+  //! Abs(Ang) is in range ]0,PI/2[.
+  //! Raises ConstructionError if Abs(Ang) < Resolution from gp or
+  //! Abs(Ang) >= PI/2 - Resolution
+  Standard_EXPORT void SetSemiAngle(const Standard_Real Ang);
   
 
   //! returns a non transient cone with the same geometric properties
@@ -206,7 +209,8 @@ public:
   Standard_EXPORT Standard_Real RefRadius() const;
   
 
-  //! returns the semi-angle of the conical surface ]0.0, PI/2[.
+  //! Returns the semi-angle at the apex of this cone.
+  //! Attention! Semi-angle can be negative.
   Standard_EXPORT Standard_Real SemiAngle() const;
   
   //! returns True.

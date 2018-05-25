@@ -41,7 +41,8 @@ enum IntPatchWT_WLsConnectionType
 {
   IntPatchWT_NotConnected,
   IntPatchWT_Singular,
-  IntPatchWT_EachOther
+  IntPatchWT_Common,
+  IntPatchWT_ReqExtend
 };
 
 //=======================================================================
@@ -849,17 +850,23 @@ static IntPatchWT_WLsConnectionType
                                            const Standard_Real* const theArrPeriods)
 {
   const Standard_Real aSqToler = theToler3D*theToler3D;
-
+  IntPatchWT_WLsConnectionType aRetVal = IntPatchWT_NotConnected;
   if(theVec3.SquareMagnitude() <= aSqToler)
   {
-    return IntPatchWT_NotConnected;
+    if ((theVec1.Angle(theVec2) > IntPatch_WLineTool::myMaxConcatAngle))
+    {
+      return aRetVal;
+    }
+    else
+    {
+      aRetVal = IntPatchWT_Common;
+    }
   }
-
-  if((theVec1.Angle(theVec2) > IntPatch_WLineTool::myMaxConcatAngle) ||
-     (theVec1.Angle(theVec3) > IntPatch_WLineTool::myMaxConcatAngle) ||
-     (theVec2.Angle(theVec3) > IntPatch_WLineTool::myMaxConcatAngle))
+  else if((theVec1.Angle(theVec2) > IntPatch_WLineTool::myMaxConcatAngle) ||
+          (theVec1.Angle(theVec3) > IntPatch_WLineTool::myMaxConcatAngle) ||
+          (theVec2.Angle(theVec3) > IntPatch_WLineTool::myMaxConcatAngle))
   {
-    return IntPatchWT_NotConnected;
+    return aRetVal;
   }
 
   const gp_Pnt aPmid(0.5*(thePtWL1.Value().XYZ()+thePtWL2.Value().XYZ()));
@@ -973,7 +980,12 @@ static IntPatchWT_WLsConnectionType
     return IntPatchWT_Singular;
   }
 
-  return IntPatchWT_EachOther;
+  if (aRetVal == IntPatchWT_Common)
+  {
+    return IntPatchWT_Common;
+  }
+
+  return IntPatchWT_ReqExtend;
 }
 
 //=======================================================================
@@ -984,12 +996,47 @@ static IntPatchWT_WLsConnectionType
 Standard_Boolean CheckArgumentsToJoin(const Handle(Adaptor3d_HSurface)& theS1,
                                       const Handle(Adaptor3d_HSurface)& theS2,
                                       const IntSurf_PntOn2S& thePnt,
+                                      const gp_Pnt& theP1,
+                                      const gp_Pnt& theP2,
+                                      const gp_Pnt& theP3,
                                       const Standard_Real theMinRad)
 {
-  const Standard_Real aRad = 
-        IntPatch_PointLine::CurvatureRadiusOfIntersLine(theS1, theS2, thePnt);
+  const Standard_Real aRad =
+    IntPatch_PointLine::CurvatureRadiusOfIntersLine(theS1, theS2, thePnt);
 
-  return (aRad > theMinRad);
+  if (aRad > theMinRad)
+  {
+    return Standard_True;
+  }
+  else if (aRad > 0.0)
+  {
+    return Standard_False;
+  }
+
+  // Curvature radius cannot be computed.
+  // Check smoothness of polygon.
+
+  //                  theP2
+  //                    *
+  //                    |
+  //                    |
+  //       *            o         *
+  //      theP1         O       theP3
+
+  //Joining is enabled if two conditions are satisfied together:
+  //  1. Angle (theP1, theP2, theP3) is quite big;
+  //  2. Modulus of perpendicular (O->theP2) to the segment (theP1->theP3)
+  //  is less than 0.01*<modulus of this segment>.
+
+  const gp_Vec aV12f(theP1, theP2), aV12l(theP2, theP3);
+
+  if (aV12f.Angle(aV12l) > IntPatch_WLineTool::myMaxConcatAngle)
+    return Standard_False;
+
+  const gp_Vec aV13(theP1, theP3);
+  const Standard_Real aSq13 = aV13.SquareMagnitude();
+
+  return (aV12f.CrossSquareMagnitude(aV13) < 1.0e-4*aSq13*aSq13);
 }
 
 //=======================================================================
@@ -1482,18 +1529,14 @@ void IntPatch_WLineTool::JoinWLines(IntPatch_SequenceOfLine& theSlin,
       const Standard_Real aSqMinFDist = Min(aSqDistF, aSqDistL);
       if (aSqMinFDist < Precision::SquareConfusion())
       {
-        if (CheckArgumentsToJoin(theS1, theS2, aPntFWL1, aMinRad))
+        const Standard_Boolean isFM = (aSqDistF < aSqDistL);
+        const IntSurf_PntOn2S& aPt1 = aWLine1->Point(2);
+        const IntSurf_PntOn2S& aPt2 = isFM ? aWLine2->Point(2) :
+                                             aWLine2->Point(aNbPntsWL2 - 1);
+        if (!IsSeamOrBound(aPt1, aPt2, aPntFWL1,
+                            anArrPeriods, anArrFBonds, anArrLBonds))
         {
-          const Standard_Boolean isFM = (aSqDistF < aSqDistL);
-          const IntSurf_PntOn2S& aPt1 = aWLine1->Point(2);
-          const IntSurf_PntOn2S& aPt2 = isFM ? aWLine2->Point(2) :
-                                                      aWLine2->Point(aNbPntsWL2 - 1);
-
-          if (!IsSeamOrBound(aPt1, aPt2, aPntFWL1,
-                              anArrPeriods, anArrFBonds, anArrLBonds))
-          {
-            isFirstConnected = Standard_True;
-          }
+          isFirstConnected = Standard_True;
         }
       }
 
@@ -1503,18 +1546,14 @@ void IntPatch_WLineTool::JoinWLines(IntPatch_SequenceOfLine& theSlin,
       const Standard_Real aSqMinLDist = Min(aSqDistF, aSqDistL);
       if (aSqMinLDist < Precision::SquareConfusion())
       {
-        if (CheckArgumentsToJoin(theS1, theS2, aPntLWL1, aMinRad))
+        const Standard_Boolean isFM = (aSqDistF < aSqDistL);
+        const IntSurf_PntOn2S& aPt1 = aWLine1->Point(aNbPntsWL1 - 1);
+        const IntSurf_PntOn2S& aPt2 = isFM ? aWLine2->Point(2) :
+                                             aWLine2->Point(aNbPntsWL2 - 1);
+        if (!IsSeamOrBound(aPt1, aPt2, aPntLWL1,
+                           anArrPeriods, anArrFBonds, anArrLBonds))
         {
-          const Standard_Boolean isFM = (aSqDistF < aSqDistL);
-          const IntSurf_PntOn2S& aPt1 = aWLine1->Point(aNbPntsWL1 - 1);
-          const IntSurf_PntOn2S& aPt2 = isFM ? aWLine2->Point(2) :
-                                               aWLine2->Point(aNbPntsWL2 - 1);
-
-          if (!IsSeamOrBound(aPt1, aPt2, aPntLWL1,
-                              anArrPeriods, anArrFBonds, anArrLBonds))
-          {
-            isLastConnected = Standard_True;
-          }
+          isLastConnected = Standard_True;
         }
       }
 
@@ -1549,15 +1588,29 @@ void IntPatch_WLineTool::JoinWLines(IntPatch_SequenceOfLine& theSlin,
 
     const Standard_Integer anIndexWL2 = isFirstConnected ? aListFC.First() : aListLC.First();
     Handle(IntPatch_WLine) aWLine2(Handle(IntPatch_WLine)::DownCast(theSlin.Value(anIndexWL2)));
-    
     const Standard_Integer aNbPntsWL2 = aWLine2->NbPnts();
     const IntSurf_PntOn2S& aPntFWL2 = aWLine2->Point(1);
-
-    aWLine1->ClearVertexes();
-
+    const IntSurf_PntOn2S& aPntLWL2 = aWLine2->Point(aNbPntsWL2);
+    
     if (isFirstConnected)
     {
-      if (aPntFWL1.IsSame(aPntFWL2, Precision::Confusion()))
+      const Standard_Real aSqDistF = aPntFWL1.Value().SquareDistance(aPntFWL2.Value());
+      const Standard_Real aSqDistL = aPntFWL1.Value().SquareDistance(aPntLWL2.Value());
+      const Standard_Boolean isFM = (aSqDistF < aSqDistL);
+
+      const IntSurf_PntOn2S& aPt1 = aWLine1->Point(2);
+      const IntSurf_PntOn2S& aPt2 = isFM ? aWLine2->Point(2) : 
+                                           aWLine2->Point(aNbPntsWL2 - 1);
+
+      if (!CheckArgumentsToJoin(theS1, theS2, aPntFWL1, aPt1.Value(),
+                                aPntFWL1.Value(), aPt2.Value(), aMinRad))
+      {
+        continue;
+      }
+
+      aWLine1->ClearVertexes();
+
+      if (isFM)
       {
         //First-First-connection
         for (Standard_Integer aNPt = 1; aNPt <= aNbPntsWL2; aNPt++)
@@ -1578,10 +1631,26 @@ void IntPatch_WLineTool::JoinWLines(IntPatch_SequenceOfLine& theSlin,
     }
     else //if (isLastConnected)
     {
-      if (aPntLWL1.IsSame(aPntFWL2, Precision::Confusion()))
+      const Standard_Real aSqDistF = aPntLWL1.Value().SquareDistance(aPntFWL2.Value());
+      const Standard_Real aSqDistL = aPntLWL1.Value().SquareDistance(aPntLWL2.Value());
+
+      const Standard_Boolean isFM = (aSqDistF < aSqDistL);
+      const IntSurf_PntOn2S& aPt1 = aWLine1->Point(aNbPntsWL1 - 1);
+      const IntSurf_PntOn2S& aPt2 = isFM ? aWLine2->Point(2) :
+                                           aWLine2->Point(aNbPntsWL2 - 1);
+
+      if (!CheckArgumentsToJoin(theS1, theS2, aPntLWL1, aPt1.Value(),
+                                aPntFWL1.Value(), aPt2.Value(), aMinRad))
+      {
+        continue;
+      }
+      
+      aWLine1->ClearVertexes();
+      
+      if (isFM)
       {
         //Last-First connection
-        for(Standard_Integer aNPt = 1; aNPt <= aNbPntsWL2; aNPt++)
+        for (Standard_Integer aNPt = 1; aNPt <= aNbPntsWL2; aNPt++)
         {
           const IntSurf_PntOn2S& aPt = aWLine2->Point(aNPt);
           aWLine1->Curve()->Add(aPt);
@@ -1609,13 +1678,15 @@ void IntPatch_WLineTool::JoinWLines(IntPatch_SequenceOfLine& theSlin,
 //purpose  : Performs extending theWLine1 and theWLine2 through their
 //            respecting end point.
 //=======================================================================
-void IntPatch_WLineTool::ExtendTwoWLines(IntPatch_SequenceOfLine& theSlin,
-                                         const Handle(Adaptor3d_HSurface)& theS1,
-                                         const Handle(Adaptor3d_HSurface)& theS2,
-                                         const Standard_Real theToler3D,
-                                         const Standard_Real* const theArrPeriods,
-                                         const Bnd_Box2d& theBoxS1,
-                                         const Bnd_Box2d& theBoxS2)
+void IntPatch_WLineTool::
+        ExtendTwoWLines(IntPatch_SequenceOfLine& theSlin,
+                        const Handle(Adaptor3d_HSurface)& theS1,
+                        const Handle(Adaptor3d_HSurface)& theS2,
+                        const Standard_Real theToler3D,
+                        const Standard_Real* const theArrPeriods,
+                        const Bnd_Box2d& theBoxS1,
+                        const Bnd_Box2d& theBoxS2,
+                        const NCollection_List<gp_Pnt>& theListOfCriticalPoints)
 {
   if(theSlin.Length() < 2)
     return;
@@ -1676,6 +1747,46 @@ void IntPatch_WLineTool::ExtendTwoWLines(IntPatch_SequenceOfLine& theSlin,
           aPntLWL1.IsSame(aPntFWL2, theToler3D))
       {
         aCheckResult |= IntPatchWT_DisLastFirst | IntPatchWT_DisLastLast;
+      }
+
+      if (!theListOfCriticalPoints.IsEmpty())
+      {
+        for (NCollection_List<gp_Pnt>::Iterator anItr(theListOfCriticalPoints);
+             anItr.More(); anItr.Next())
+        {
+          const gp_Pnt &aPt = anItr.Value();
+          if (!(aCheckResult & (IntPatchWT_DisFirstFirst | IntPatchWT_DisFirstLast)))
+          {
+            if (aPt.SquareDistance(aPntFWL1.Value()) < Precision::Confusion())
+            {
+              aCheckResult |= IntPatchWT_DisFirstFirst | IntPatchWT_DisFirstLast;
+            }
+          }
+
+          if (!(aCheckResult & (IntPatchWT_DisLastFirst | IntPatchWT_DisLastLast)))
+          {
+            if (aPt.SquareDistance(aPntLWL1.Value()) < Precision::Confusion())
+            {
+              aCheckResult |= IntPatchWT_DisLastFirst | IntPatchWT_DisLastLast;
+            }
+          }
+
+          if (!(aCheckResult & (IntPatchWT_DisFirstFirst | IntPatchWT_DisLastFirst)))
+          {
+            if (aPt.SquareDistance(aPntFWL2.Value()) < Precision::Confusion())
+            {
+              aCheckResult |= IntPatchWT_DisFirstFirst | IntPatchWT_DisLastFirst;
+            }
+          }
+
+          if (!(aCheckResult & (IntPatchWT_DisFirstLast | IntPatchWT_DisLastLast)))
+          {
+            if (aPt.SquareDistance(aPntLWL2.Value()) < Precision::Confusion())
+            {
+              aCheckResult |= IntPatchWT_DisFirstLast | IntPatchWT_DisLastLast;
+            }
+          }
+        }
       }
     }
 

@@ -225,14 +225,13 @@ void BoundedArc (const TheArc& A,
   // Creer l echantillonage (math_FunctionSample ou classe heritant)
   // Appel a math_FunctionAllRoots
 
-  Standard_Real EpsX = TheArcTool::Resolution(A,Precision::Confusion());
   //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
   //@@@ La Tolerance est asociee a l arc  ( Incoherence avec le cheminement )
   //@@@   ( EpsX ~ 1e-5   et ResolutionU et V ~ 1e-9 )
   //@@@   le vertex trouve ici n'est pas retrouve comme point d arret d une 
   //@@@   ligne de cheminement
   //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-  EpsX = 0.0000000001;
+  Standard_Real EpsX = 1.e-10;
   //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
   //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
   //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@

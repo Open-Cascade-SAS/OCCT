@@ -1,0 +1,42 @@
+puts "========"
+puts "0029807: Impossible to cut cone from prism"
+puts "========"
+puts ""
+
+# The aim of this test is to obtain the same result on
+# different platforms (Windows, Linux, MacOS etc.)
+
+pload QAcommands
+restore [locate_data_file OCC13116_sh1.brep] b1
+restore [locate_data_file OCC13116_sh2.brep] b2
+
+explode b1 f
+explode b2 f
+
+mksurface s1 b1_3
+mksurface s2 b2_1
+
+regexp {Radius of curvature is +([-0-9.+eE]+)} [OCC29807 s1 s2 1.5704836137868956 3.0501269066007808e-007 3.9658833912538207 1.5704836137865030] full R1
+if {$R1 != -1.0} {
+  puts "Error in R1 computation"
+}
+
+regexp {Radius of curvature is +([-0-9.+eE]+)} [OCC29807 s1 s2 1.6025602743734420 -6.1366790760075673e-007 0.82433854035089271 1.5390323792163476] full R2
+if {$R2 != -1.0} {
+  puts "Error in R2 computation"
+}
+
+regexp {Radius of curvature is +([-0-9.+eE]+)} [OCC29807 s1 s2 1.6375006167098363 -8.0934069046634249e-007 0.82433889938148752 1.5040920368799497] full R3
+if {$R3 != -1.0} {
+  puts "Error in R3 computation"
+}
+
+regexp {Radius of curvature is +([-0-9.+eE]+)} [OCC29807 s1 s2 1.7042049066248015 -1.1250135685259011e-006 0.82433908359918306 1.4373877469650012] full R4
+if {$R4 != -1.0} {
+  puts "Error in R4 computation"
+}
+
+regexp {Radius of curvature is +([-0-9.+eE]+)} [OCC29807 s1 s2 1.7772619860554566 -1.3863691492588259e-006 0.82433916835888565 1.3643306675343436] full R5
+if { abs($R5-19.71766721319873) > 1.0e-7} {
+  puts "Error in R5 computation"
+}

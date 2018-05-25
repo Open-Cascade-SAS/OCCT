@@ -12,8 +12,6 @@ trimv tc1 c1 0 42.4264068711929
 trimv tc2 c2 0 42.4264068711929
 mkface f1 tc1
 mkface f2 tc2
-donly f1 f2
-fit
 
 bop f1 f2
 bopsection result
@@ -25,3 +23,8 @@ checknbshapes result -edge 2 -vertex 3
 checkmaxtol result -ref 5.21731e-007
 
 checkprops result -l 88.9692
+
+smallview
+don f1 f2 result
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

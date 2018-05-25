@@ -222,7 +222,10 @@ private:
   Standard_Real para;
   Standard_Real tol;
   Standard_Boolean tgt;
+
+  //TRUE if the point is in several intersection lines
   Standard_Boolean mult;
+
   Standard_Boolean onS1;
   Standard_Boolean vtxonS1;
   Handle(Adaptor3d_HVertex) vS1;

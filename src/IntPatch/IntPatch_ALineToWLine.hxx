@@ -80,11 +80,18 @@ protected:
                                                  const Standard_Real theMaxDeflection,
                                                  Standard_Real& theStep) const;
 
-
+  //! Compares distances from theMidPt to every quadrics with theMaxDeflection
+  //! (maximal distance of two ones is taken into account).
+  //! Returns the result of this comparison: -1 - small distance, +1 - big distance,
+  //! 0 - Dist == theMaxDeflection. Comparisons are done with internal tolerances.
   Standard_EXPORT Standard_Integer CheckDeflection(const gp_XYZ& theMidPt,
                                                    const Standard_Real theMaxDeflection) const;
 
-
+  //! Returns radius of a circle obtained by intersection the quadric with a plane
+  //! goes through thePnt3d perpendicular to the quadric axis. This radius is computed
+  //! for both quadrics and minimal value is returned.
+  //! This check is made for cone and sphere only.
+  Standard_EXPORT Standard_Real GetSectionRadius(const gp_Pnt& thePnt3d) const;
 
 private:
 

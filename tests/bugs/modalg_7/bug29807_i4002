@@ -1,0 +1,29 @@
+puts "========"
+puts "0029807: Impossible to cut cone from prism"
+puts "========"
+puts ""
+
+restore [locate_data_file bug29807-obj.brep] b1
+restore [locate_data_file bug29807-cone.brep] f2
+
+trotate f2 +23.85857157145715500000 +12.00000000000000000000 +5.50000000000000000000 7 -7.14142842854285 0 5
+removeloc f2 f2
+
+explode b1 f
+nurbsconvert f1 b1_5
+smallview
+don f1 f2
+fit
+
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} [bopcurves f1 f2 -2d] full Toler NbCurv
+
+checkreal Tolerance $Toler 2.9119209602049977e-007 0.0 0.01
+
+if {$NbCurv != 2} {
+  puts "Error: Please check NbCurves for intersector"
+}
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}_3d.png
+smallview -2D-
+2dfit
+checkview -screenshot -2d -path ${imagedir}/${test_image}_2d.png
