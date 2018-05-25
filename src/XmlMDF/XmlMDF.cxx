@@ -36,6 +36,7 @@
 #include <XmlLDrivers.hxx>
 #include <TDocStd_Owner.hxx>
 #include <TDocStd_Document.hxx>
+#include <Standard_GUID.hxx>
 
 IMPLEMENT_DOMSTRING (TagString,         "tag")
 IMPLEMENT_DOMSTRING (LabelString,       "label")
@@ -257,8 +258,24 @@ Standard_Integer XmlMDF::ReadSubTree (const XmlObjMgt_Element&    theElement,
             tAtt = Handle(TDF_Attribute)::DownCast(theRelocTable.Find(anID));
           else
             tAtt = driver -> NewEmpty();
-	  if (tAtt->Label().IsNull())
-	    theLabel.AddAttribute (tAtt);
+
+          if (tAtt->Label().IsNull())
+          {
+            try
+            {
+              theLabel.AddAttribute (tAtt);
+            }
+            catch (const Standard_DomainError&)
+            {
+              // For attributes that can have arbitrary GUID (e.g. TDataStd_Integer), exception
+              // will be raised in valid case if attribute of that type with default GUID is already
+              // present  on the same label; the reason is that actual GUID will be read later.
+              // To avoid this, set invalid (null) GUID to the newly added attribute (see #29669)
+              static const Standard_GUID fbidGuid;
+              tAtt->SetID (fbidGuid);
+              theLabel.AddAttribute (tAtt);
+            }
+          }
 	  else
 	    driver->myMessageDriver->Send
 	      (TCollection_ExtendedString("XmlDriver warning: ") +

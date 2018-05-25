@@ -1,0 +1,41 @@
+puts " =================================================================== "
+puts " 0029669: Crash on opening a document with same Ocaf attributes with different IDs"
+puts " =================================================================== "
+puts ""
+
+set aLabel 0:1
+
+set aVal1 123
+set aVal2 321
+
+set aGuid1 "12e94541-6dbc-11d4-b9c8-0060b0ee281b"
+set aGuid2 "12e94541-6dbc-11d4-b9c8-0060b0ee281d"
+
+foreach format {{XmlOcaf xml} {BinOcaf cbf}} {
+
+  NewDocument D [lindex $format 0]
+
+  SetInteger D $aLabel $aVal1 $aGuid1
+  SetInteger D $aLabel 100
+  SetInteger D $aLabel $aVal2 $aGuid2
+
+  set aFile ${imagedir}/${casename}.[lindex $format 1]
+  SaveAs D $aFile
+  Close D
+
+  if { ! [file exists $aFile] } {
+    puts "Error: cannot find file $aFile, document not saved"
+  }
+
+  Open $aFile D
+  set val1 [GetInteger D $aLabel $aGuid1]
+  set val2 [GetInteger D $aLabel $aGuid2]
+  if { $val1 != $aVal1 } {
+    puts "Error: found $val1 while expected $aVal1"
+  }
+  if { $val2 != $aVal2 } {
+    puts "Error: found $val2 while expected $aVal2"
+  }
+  Close D
+}
+ 

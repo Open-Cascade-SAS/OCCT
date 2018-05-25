@@ -358,8 +358,24 @@ Standard_Integer BinLDrivers_DocumentRetrievalDriver::ReadSubTree
         tAtt = Handle(TDF_Attribute)::DownCast(myRelocTable.Find(anID));
       else
         tAtt = aDriver->NewEmpty();
+
       if (tAtt->Label().IsNull())
-        theLabel.AddAttribute (tAtt);
+      {
+        try
+        {
+          theLabel.AddAttribute (tAtt);
+        }
+        catch (const Standard_DomainError&)
+        {
+          // For attributes that can have arbitrary GUID (e.g. TDataStd_Integer), exception
+          // will be raised in valid case if attribute of that type with default GUID is already
+          // present  on the same label; the reason is that actual GUID will be read later.
+          // To avoid this, set invalid (null) GUID to the newly added attribute (see #29669)
+          static const Standard_GUID fbidGuid;
+          tAtt->SetID (fbidGuid);
+          theLabel.AddAttribute (tAtt);
+        }
+      }
       else
         myMsgDriver->Send (aMethStr +
                      "warning: attempt to attach attribute " +
