@@ -119,8 +119,13 @@ Standard_Real IntPatch_PointLine::
   const gp_Vec aCTan(aN1.Crossed(aN2));
   const Standard_Real aSqMagnFDer = aCTan.SquareMagnitude();
   
-  if(aSqMagnFDer < aSqSmallValue)
+  if (aSqMagnFDer < 1.0e-8)
+  {
+    // Use 1.0e-4 (instead of aSmallValue) to provide
+    // stable computation between different platforms.
+    // See test bugs modalg_7 bug29807_sc01
     return -1.0;
+  }
 
   Standard_Real aDuS1 = 0.0, aDvS1 = 0.0, aDuS2 = 0.0, aDvS2 = 1.0;
 
@@ -160,7 +165,8 @@ Standard_Real IntPatch_PointLine::
   const Standard_Real aDetSyst = aB*aB - aA*aC;
 
   if(Abs(aDetSyst) < aSmallValue)
-  {//Indetermined system solution
+  {
+    //Undetermined system solution
     return -1.0;
   }
 

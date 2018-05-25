@@ -10,6 +10,10 @@ puts ""
 restore [locate_data_file bug27267_cmpd.brep] a
 explode a f
 
+smallview
+don a_7; fit
+disp a_1
+
 #############################
 set log [bopcurves a_1 a_7 -2d]
 #############################
@@ -33,4 +37,4 @@ for {set i 1} {$i <= ${NbCurv}} {incr i} {
   }
 }
 
-
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

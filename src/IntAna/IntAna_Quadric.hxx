@@ -17,17 +17,8 @@
 #ifndef _IntAna_Quadric_HeaderFile
 #define _IntAna_Quadric_HeaderFile
 
-#include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
-#include <Standard_Real.hxx>
-class gp_Pln;
-class gp_Sphere;
-class gp_Cylinder;
-class gp_Cone;
-class gp_Ax3;
-
+#include <NCollection_List.hxx>
 
 //! This class provides a description of Quadrics by their
 //! Coefficients in natural coordinate system.
@@ -78,7 +69,11 @@ public:
   //! in the local coordinates system defined by Axis
   Standard_EXPORT void NewCoefficients (Standard_Real& xCXX, Standard_Real& xCYY, Standard_Real& xCZZ, Standard_Real& xCXY, Standard_Real& xCXZ, Standard_Real& xCYZ, Standard_Real& xCX, Standard_Real& xCY, Standard_Real& xCZ, Standard_Real& xCCte, const gp_Ax3& Axis) const;
 
-
+  //! Returns the list of special points (with singularities)
+  const NCollection_List<gp_Pnt>& SpecialPoints() const
+  {
+    return mySpecialPoints;
+  }
 
 
 protected:
@@ -101,7 +96,7 @@ private:
   Standard_Real CY;
   Standard_Real CZ;
   Standard_Real CCte;
-
+  NCollection_List<gp_Pnt> mySpecialPoints;
 
 };
 

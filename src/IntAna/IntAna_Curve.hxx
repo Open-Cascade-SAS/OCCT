@@ -21,16 +21,9 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
 #include <GeomAbs_SurfaceType.hxx>
 #include <gp_Ax3.hxx>
-class Standard_DomainError;
-class gp_Cylinder;
-class gp_Cone;
-class gp_Pnt;
-class gp_Vec;
-
+#include <TColStd_ListOfReal.hxx>
 
 //! Definition of a parametric Curve which is the result
 //! of the intersection between two quadrics.
@@ -57,7 +50,7 @@ public:
   Standard_EXPORT Standard_Boolean IsOpen() const;
   
   //! Returns the paramatric domain of the curve.
-  Standard_EXPORT void Domain (Standard_Real& Theta1, Standard_Real& Theta2) const;
+  Standard_EXPORT void Domain(Standard_Real& theFirst, Standard_Real& theLast) const;
   
   //! Returns TRUE if the function is constant.
   Standard_EXPORT Standard_Boolean IsConstant() const;
@@ -77,11 +70,11 @@ public:
   
   //! Tries to find the parameter of the point P on the curve.
   //! If the method returns False, the "projection" is
-  //! impossible, and the value of Para is not significant.
-  //! If the method returns True, Para is the parameter of the
-  //! nearest intersection between the curve and the iso-theta
-  //! containing P.
-  Standard_EXPORT Standard_Boolean FindParameter (const gp_Pnt& P, Standard_Real& Para) const;
+  //! impossible.
+  //! If the method returns True at least one parameter has been found.
+  //! theParams is always sorted in ascending order.
+  Standard_EXPORT void FindParameter(const gp_Pnt& P,
+                                     TColStd_ListOfReal& theParams) const;
   
   //! If flag is True, the Curve is not defined at the
   //! first parameter of its domain.
@@ -91,10 +84,8 @@ public:
   //! first parameter of its domain.
   Standard_EXPORT void SetIsLastOpen (const Standard_Boolean Flag);
   
-  //! Protected function.
-  Standard_EXPORT void InternalUVValue (const Standard_Real Param, Standard_Real& U, Standard_Real& V, Standard_Real& A, Standard_Real& B, Standard_Real& C, Standard_Real& Co, Standard_Real& Si, Standard_Real& Di) const;
-  
-  Standard_EXPORT void SetDomain (const Standard_Real Theta1, const Standard_Real Theta2);
+  //! Trims this curve
+  Standard_EXPORT void SetDomain(const Standard_Real theFirst, const Standard_Real theLast);
 
 
 
@@ -105,6 +96,8 @@ protected:
   //! Protected function.
   Standard_EXPORT gp_Pnt InternalValue (const Standard_Real Theta1, const Standard_Real Theta2) const;
 
+  //! Protected function.
+  Standard_EXPORT void InternalUVValue (const Standard_Real Param, Standard_Real& U, Standard_Real& V, Standard_Real& A, Standard_Real& B, Standard_Real& C, Standard_Real& Co, Standard_Real& Si, Standard_Real& Di) const;
 
 
 
@@ -133,8 +126,9 @@ private:
   Standard_Boolean TwoCurves;
   Standard_Boolean TakeZPositive;
   Standard_Real Tolerance;
-  Standard_Real DomainInf;
-  Standard_Real DomainSup;
+
+  //! Internal fields defining the default domain
+  Standard_Real DomainInf, DomainSup;
   Standard_Boolean RestrictedInf;
   Standard_Boolean RestrictedSup;
   Standard_Boolean firstbounded;
@@ -143,6 +137,9 @@ private:
   Standard_Real RCyl;
   Standard_Real Angle;
   gp_Ax3 Ax3;
+
+  //! Trim boundaries
+  Standard_Real myFirstParameter, myLastParameter;
 
 
 };

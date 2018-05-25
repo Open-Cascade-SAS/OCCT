@@ -1534,25 +1534,6 @@ static Standard_Integer OCC24271 (Draw_Interpretor& di,
 #include <GeomInt_IntSS.hxx>
 #include <Geom_ConicalSurface.hxx>
 #include <Standard_ErrorHandler.hxx>
-//=======================================================================
-//function : OCC23972
-//purpose  : 
-//=======================================================================
-static void DoGeomIntSSTest (const Handle(Geom_Surface)& theSurf1,
-			     const Handle(Geom_Surface)& theSurf2,
-			     const Standard_Integer theNbSol,
-			     Draw_Interpretor& di)
-{
-  try {
-    OCC_CATCH_SIGNALS
-	 GeomInt_IntSS anInter;
-	 anInter.Perform (theSurf1, theSurf2, Precision::Confusion(), Standard_True);
-	 QVERIFY (anInter.IsDone());
-	 QCOMPARE (anInter.NbLines(), theNbSol);
-  } catch (...) {
-    QVERIFY (Standard_False);
-  }
-}
 
 namespace {
   static Handle(Geom_ConicalSurface) CreateCone (const gp_Pnt& theLoc,
@@ -1569,28 +1550,30 @@ namespace {
   }
 }
 
-static Standard_Integer OCC23972 (Draw_Interpretor& di,Standard_Integer n, const char**)
+static Standard_Integer OCC23972(Draw_Interpretor& /*theDI*/,
+                                 Standard_Integer theNArg, const char** theArgs)
 {
-  if (n != 1) return 1;
+  if (theNArg != 3) return 1;
 
-  //process specific cones, cannot read them from files because due to rounding the original error
-  //in math_FunctionRoots gets hidden
-  Handle(Geom_Surface) aS1 = CreateCone (
-					 gp_Pnt (123.694345356663, 789.9, 68.15),
-					 gp_Dir (-1, 3.48029791472957e-016, -8.41302743359754e-017),
-					 gp_Dir (-3.48029791472957e-016, -1, -3.17572289932207e-016),
-					 3.28206830417112,
-					 0.780868809443031,
-					 0.624695047554424);
-  Handle(Geom_Surface) aS2 = CreateCone (
-					 gp_Pnt (123.694345356663, 784.9, 68.15),
-					 gp_Dir (-1, -2.5209507537117e-016, -1.49772808948866e-016),
-					 gp_Dir (1.49772808948866e-016, 3.17572289932207e-016, -1),
-					 3.28206830417112,
-					 0.780868809443031,
-					 0.624695047554424);
+  //process specific cones, cannot read them from files because 
+  //due to rounding the original error in math_FunctionRoots gets hidden
+  const Handle(Geom_Surface) aS1 = CreateCone(
+                              gp_Pnt(123.694345356663, 789.9, 68.15),
+                              gp_Dir(-1, 3.48029791472957e-016, -8.41302743359754e-017),
+                              gp_Dir(-3.48029791472957e-016, -1, -3.17572289932207e-016),
+                              3.28206830417112,
+                              0.780868809443031,
+                              0.624695047554424);
+  const Handle(Geom_Surface) aS2 = CreateCone(
+                              gp_Pnt(123.694345356663, 784.9, 68.15),
+                              gp_Dir(-1, -2.5209507537117e-016, -1.49772808948866e-016),
+                              gp_Dir(1.49772808948866e-016, 3.17572289932207e-016, -1),
+                              3.28206830417112,
+                              0.780868809443031,
+                              0.624695047554424);
   
-  DoGeomIntSSTest (aS1, aS2, 2, di);
+  DrawTrSurf::Set(theArgs[1], aS1);
+  DrawTrSurf::Set(theArgs[2], aS2);
 
   return 0;
 }

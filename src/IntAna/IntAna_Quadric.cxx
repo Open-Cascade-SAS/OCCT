@@ -28,6 +28,7 @@
 #include <gp_Trsf.hxx>
 #include <gp_Vec.hxx>
 #include <IntAna_Quadric.hxx>
+#include <ElSLib.hxx>
 
 //----------------------------------------------------------------------
 //-- 
@@ -85,22 +86,27 @@ IntAna_Quadric::IntAna_Quadric(const gp_Cylinder& Cyl) {
 //----------------------------------------------------------------------
 //-- Cone -----> Quadric
 //----------------------------------------------------------------------
-IntAna_Quadric::IntAna_Quadric(const gp_Cone& Cone) {
-  Cone.Coefficients(CXX,CYY,CZZ,CXY,CXZ,CYZ,CX,CY,CZ,CCte);  
+IntAna_Quadric::IntAna_Quadric(const gp_Cone& Cone)
+{
+  SetQuadric(Cone);
 }
 
 void IntAna_Quadric::SetQuadric(const gp_Cone& Cone) {
   Cone.Coefficients(CXX,CYY,CZZ,CXY,CXZ,CYZ,CX,CY,CZ,CCte);  
+  const Standard_Real aVParam = -Cone.RefRadius() / Sin(Cone.SemiAngle());
+  mySpecialPoints.Append(ElSLib::Value(0.0, aVParam, Cone));
 }
 //----------------------------------------------------------------------
 //-- Sphere -----> Quadric
 //----------------------------------------------------------------------
 void IntAna_Quadric::SetQuadric(const gp_Sphere& Sph) {
   Sph.Coefficients(CXX,CYY,CZZ,CXY,CXZ,CYZ,CX,CY,CZ,CCte);
+  mySpecialPoints.Append(ElSLib::Value(0.0, -M_PI_2, Sph));
+  mySpecialPoints.Append(ElSLib::Value(0.0, M_PI_2, Sph));
 }
 
 IntAna_Quadric::IntAna_Quadric(const gp_Sphere& Sph) {
-  Sph.Coefficients(CXX,CYY,CZZ,CXY,CXZ,CYZ,CX,CY,CZ,CCte);
+  SetQuadric(Sph);
 }
 //----------------------------------------------------------------------
 //-- Returns the Coefficients of the Quadric

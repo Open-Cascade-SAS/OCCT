@@ -2889,6 +2889,56 @@ static Standard_Integer OCC29531(Draw_Interpretor&, Standard_Integer, const char
   return 0;
 }
 
+//=======================================================================
+//function : OCC29807
+//purpose  : 
+//=======================================================================
+#include <GeomAdaptor_HSurface.hxx>
+#include <IntPatch_PointLine.hxx>
+#include <IntSurf_PntOn2S.hxx>
+static Standard_Integer OCC29807(Draw_Interpretor& theDI, Standard_Integer theNArg, const char** theArgV)
+{
+  if (theNArg != 7)
+  {
+    theDI << "Use: " << theArgV[0] << "surface1 surface2 u1 v1 u2 v2\n";
+    return 1;
+  }
+
+  const Handle(Geom_Surface) aS1 = DrawTrSurf::GetSurface(theArgV[1]);
+  const Handle(Geom_Surface) aS2 = DrawTrSurf::GetSurface(theArgV[2]);
+
+  if (aS1.IsNull() || aS2.IsNull())
+  {
+    theDI << "Error. Null surface is not supported.\n";
+    return 1;
+  }
+
+  const Standard_Real aU1 = Draw::Atof(theArgV[3]);
+  const Standard_Real aV1 = Draw::Atof(theArgV[4]);
+  const Standard_Real aU2 = Draw::Atof(theArgV[5]);
+  const Standard_Real aV2 = Draw::Atof(theArgV[6]);
+
+  const Handle(GeomAdaptor_HSurface) anAS1 = new GeomAdaptor_HSurface(aS1);
+  const Handle(GeomAdaptor_HSurface) anAS2 = new GeomAdaptor_HSurface(aS2);
+
+  const gp_Pnt aP1 = anAS1->Value(aU1, aV1);
+  const gp_Pnt aP2 = anAS2->Value(aU2, aV2);
+
+  if (aP1.SquareDistance(aP2) > Precision::SquareConfusion())
+  {
+    theDI << "Error. True intersection point must be specified. "
+             "Please check parameters: u1 v1 u2 v2.\n";
+    return 1;
+  }
+
+  IntSurf_PntOn2S aPOn2S;
+  aPOn2S.SetValue(0.5*(aP1.XYZ() + aP2.XYZ()), aU1, aV1, aU2, aV2);
+
+  const Standard_Real aCurvatureRadius = IntPatch_PointLine::CurvatureRadiusOfIntersLine(anAS1, anAS2, aPOn2S);
+  theDI << "Radius of curvature is " << aCurvatureRadius << "\n";
+  return 0;
+}
+
 void QABugs::Commands_20(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
@@ -2925,5 +2975,7 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands) {
   theCommands.Add("OCC29531", "OCC29531 <step file name>", __FILE__, OCC29531, group);
 
   theCommands.Add ("OCC29064", "OCC29064: test memory usage by copying empty maps", __FILE__, OCC29064, group);
+  theCommands.Add("OCC29807", "OCC29807 surface1 surface2 u1 v1 u2 v2", __FILE__, OCC29807, group);
+
   return;
 }

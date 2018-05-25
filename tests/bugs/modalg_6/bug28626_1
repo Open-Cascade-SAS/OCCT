@@ -18,3 +18,8 @@ checknbshapes result -solid 1 -shell 1 -face 10 -wire 10 -edge 20 -vertex 12
 checkmaxtol result -ref 8.00001e-007
 
 checkprops result -v 1.35999e+006
+
+smallview
+don b result
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

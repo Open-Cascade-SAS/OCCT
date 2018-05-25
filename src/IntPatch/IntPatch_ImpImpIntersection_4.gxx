@@ -29,12 +29,10 @@ static void ShortCosForm( const Standard_Real theCosFactor,
                           Standard_Real& theCoeff,
                           Standard_Real& theAngle);
 //
-static 
-  Standard_Boolean ExploreCurve(const gp_Cylinder& aCy,
-				const gp_Cone& aCo,
-				IntAna_Curve& aC,
-				const Standard_Real aTol,
-				IntAna_ListOfCurve& aLC);
+static Standard_Boolean ExploreCurve(const gp_Cone& theCo,
+                                     IntAna_Curve& aC,
+                                     const Standard_Real aTol,
+                                     IntAna_ListOfCurve& aLC);
 
 static Standard_Boolean InscribePoint(const Standard_Real theUfTarget,
                                       const Standard_Real theUlTarget,
@@ -511,13 +509,6 @@ private:
   const Standard_Boolean myIsReverse;
 };
 
-static 
-  Standard_Boolean ExploreCurve(const gp_Cylinder& aCy,
-				const gp_Cone& aCo,
-				IntAna_Curve& aC,
-				const Standard_Real aTol,
-				IntAna_ListOfCurve& aLC);
-
 static void SeekAdditionalPoints( const IntSurf_Quadric& theQuad1,
                                   const IntSurf_Quadric& theQuad2,
                                   const Handle(IntSurf_LineOn2S)& theLine,
@@ -840,6 +831,7 @@ void ProcessBounds(const Handle(IntPatch_ALine)& alig,          //-- ligne coura
 	if (!procf) {
 	  d=ptf.Distance(ptsol.Value());
 	  if (d <= Tol) {
+            ptsol.SetTolerance(Tol);
 	    if (!ptsol.IsMultiple()) {
 	      //-- le point ptsol (de aligold) est declare multiple sur aligold
 	      Multpoint = Standard_True;
@@ -858,6 +850,7 @@ void ProcessBounds(const Handle(IntPatch_ALine)& alig,          //-- ligne coura
 	}
 	if (!procl) {
 	  if (ptl.Distance(ptsol.Value()) <= Tol) {
+            ptsol.SetTolerance(Tol);
 	    if (!ptsol.IsMultiple()) {
 	      Multpoint = Standard_True;
 	      ptsol.SetMultiple(Standard_True);
@@ -888,6 +881,8 @@ void ProcessBounds(const Handle(IntPatch_ALine)& alig,          //-- ligne coura
       }
     }
   }
+  
+  ptsol.SetTolerance(Tol);
   if (!procf && !procl) {
     Quad1.Parameters(ptf,U1,V1);
     Quad2.Parameters(ptf,U2,V2);
@@ -4136,7 +4131,7 @@ Standard_Boolean IntCyCo(const IntSurf_Quadric& Quad1,
 	//curvsol = anaint.Curve(i);
 	aC=anaint.Curve(i);
 	aLC.Clear();
-	ExploreCurve(Cy, Co, aC, 10.*Tol, aLC);
+	ExploreCurve(Co, aC, 10.*Tol, aLC);
 	//
 	aIt.Initialize(aLC);
 	for (; aIt.More(); aIt.Next()) {
@@ -4209,61 +4204,69 @@ Standard_Boolean IntCyCo(const IntSurf_Quadric& Quad1,
 }
 //=======================================================================
 //function : ExploreCurve
-//purpose  : 
+//purpose  : Splits aC on several curves in the cone apex points.
 //=======================================================================
-Standard_Boolean ExploreCurve(const gp_Cylinder& ,//aCy,
-			      const gp_Cone& aCo,
-			      IntAna_Curve& aC,
-			      const Standard_Real aTol,
-			      IntAna_ListOfCurve& aLC)
-			      
+Standard_Boolean ExploreCurve(const gp_Cone& theCo,
+                              IntAna_Curve& theCrv,
+                              const Standard_Real theTol,
+                              IntAna_ListOfCurve& theLC)
 {
-  Standard_Boolean bFind=Standard_False;
-  Standard_Real aTheta, aT1, aT2, aDst;
-  gp_Pnt aPapx, aPx;
+  const Standard_Real aSqTol = theTol*theTol;
+  const gp_Pnt aPapx(theCo.Apex());
+
+  Standard_Real aT1, aT2;
+  theCrv.Domain(aT1, aT2);
+
+  theLC.Clear();
   //
-  //aC.Dump();
-  //
-  aLC.Clear();
-  aLC.Append(aC);
-  //
-  aPapx=aCo.Apex();
-  //
-  aC.Domain(aT1, aT2);
-  //
-  aPx=aC.Value(aT1);
-  aDst=aPx.Distance(aPapx);
-  if (aDst<aTol) {
-    return bFind;
+  TColStd_ListOfReal aLParams;
+  theCrv.FindParameter(aPapx, aLParams);
+  if (aLParams.IsEmpty())
+  {
+    theLC.Append(theCrv);
+    return Standard_False;
   }
-  aPx=aC.Value(aT2);
-  aDst=aPx.Distance(aPapx);
-  if (aDst<aTol) {
-    return bFind;
+
+  for (TColStd_ListIteratorOfListOfReal anItr(aLParams); anItr.More(); anItr.Next())
+  {
+    Standard_Real aPrm = anItr.Value();
+
+    if ((aPrm - aT1) < Precision::PConfusion())
+      continue;
+
+    Standard_Boolean isLast = Standard_False;
+    if ((aT2 - aPrm) < Precision::PConfusion())
+    {
+      aPrm = aT2;
+      isLast = Standard_True;
+    }
+
+    const gp_Pnt aP = theCrv.Value(aPrm);
+    const Standard_Real aSqD = aP.SquareDistance(aPapx);
+    if (aSqD < aSqTol)
+    {
+      IntAna_Curve aC1 = theCrv;
+      aC1.SetDomain(aT1, aPrm);
+      aT1 = aPrm;
+      theLC.Append(aC1);
+    }
+
+    if (isLast)
+      break;
   }
-  //
-  bFind=aC.FindParameter(aPapx, aTheta);
-  if (!bFind){
-    return bFind;
+
+  if (theLC.IsEmpty())
+  {
+    theLC.Append(theCrv);
+    return Standard_False;
   }
-  //
-  aPx=aC.Value(aTheta);
-  aDst=aPx.Distance(aPapx);
-  if (aDst>aTol) {
-    return !bFind;
+
+  if ((aT2 - aT1) > Precision::PConfusion())
+  {
+    IntAna_Curve aC1 = theCrv;
+    aC1.SetDomain(aT1, aT2);
+    theLC.Append(aC1);
   }
-  //
-  // need to be splitted at aTheta
-  IntAna_Curve aC1, aC2;
-  //
-  aC1=aC;
-  aC1.SetDomain(aT1, aTheta);
-  aC2=aC;
-  aC2.SetDomain(aTheta, aT2);
-  //
-  aLC.Clear();
-  aLC.Append(aC1);
-  aLC.Append(aC2);
-  //
-  return bFind;
+
+  return Standard_True;
 }

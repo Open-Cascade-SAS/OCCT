@@ -1,28 +1,48 @@
 puts "============"
-puts "OCC20964"
+puts "OCC20964: Wrong result of cut operation for given shapes"
 puts "============"
 puts ""
-#######################################################################
-# Wrong result of cut operation for given shapes
-#######################################################################
 
-set BugNumber OCC20964
-
-puts "Load first shape ..."
 restore [locate_data_file OCC20964_revsolid.brep] b1 
-puts "Load second shape ..."
 restore [locate_data_file OCC20964_sphere.brep] b2 
 
-puts "Prepare boolean operation ..."
-bop b1 b2
+bclearobjects
+bcleartools
+baddobjects b1
+baddtools b2
+bfillds
 
-puts "Start boolean operation ..."
-bopcommon result
-puts "Finish boolean operation ..."
+# COMMON
+bbop result 0
 
-checkprops result -s 5164.66 
+checkprops result -s 5158.93
 checkshape result
 
-checknbshapes result -vertex 8 -edge 12 -wire 6 -face 5 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 34
+set NbShapesRef "
+Number of shapes in .*
+ VERTEX : 8
+ EDGE : 12
+ WIRE : 6
+ FACE : 5
+ SHELL : 1
+ SOLID : 1
+ COMPSOLID : 0
+ COMPOUND : 1
+ SHAPE : 34
+"
 
-checkview -display result -2d -path ${imagedir}/${test_image}.png
+checknbshapes result -ref $NbShapesRef
+
+checkmaxtol result -ref 0.013928665225777443
+
+checkview -display result -2d -path ${imagedir}/${test_image}_axo.png
+
+vdisplay result
+vsetdispmode 1
+vviewparams -scale 15.9695 -proj 0.0161244 -0.535424 0.84443 -up -0.773936 0.528029 0.349583 -at 117.532 248.227 -4.41145e-007 -eye 118.783 206.661 65.5549
+
+if { [string compare "" [tricheck result] ] } {
+  puts "Error in triangulation"
+}
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}_shade.png

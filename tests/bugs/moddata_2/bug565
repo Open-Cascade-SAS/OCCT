@@ -1,9 +1,7 @@
-puts "========| OCC565 |========"
-##################################
-## Can not intersect two trimmed conical surfaces 
-##################################
-
-puts "TODO OCC28016 Linux: Error: 1 is expected but .* is found!"
+puts "========"
+puts "OCC565: Can not intersect two trimmed conical surfaces"
+puts "========"
+puts ""
 
 set GoodNbCurv 1
 

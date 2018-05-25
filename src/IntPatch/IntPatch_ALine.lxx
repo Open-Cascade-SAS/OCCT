@@ -62,9 +62,10 @@ inline Standard_Boolean IntPatch_ALine::D1(const Standard_Real U, gp_Pnt& P, gp_
   return curv.D1u(U,P,Du); // D1u leve l exception DomainError
 }
 
-inline Standard_Boolean IntPatch_ALine::FindParameter(const gp_Pnt& P, Standard_Real& Para) const
+inline void IntPatch_ALine::FindParameter(const gp_Pnt& theP,
+                                          TColStd_ListOfReal& theParams) const
 {
-  return curv.FindParameter(P,Para);
+  curv.FindParameter(theP, theParams);
 }
 
 inline Standard_Boolean IntPatch_ALine::HasFirstPoint () const

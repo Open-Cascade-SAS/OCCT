@@ -298,9 +298,25 @@ static Standard_Integer checksection(Draw_Interpretor& di,
 				     Standard_Integer narg, const char** a)
 {
   if (narg < 2) {
+    di << a[0] << " shape [-r <ref_val>]\n";
     return 1;
   }
+
+  Standard_Integer aCompareValue = -1;
   TopoDS_Shape S = DBRep::Get(a[1]);
+
+  for (Standard_Integer anAI = 2; anAI < narg; anAI++)
+  {
+    if (!strcmp(a[anAI], "-r"))
+    {
+      aCompareValue = Draw::Atoi(a[++anAI]);
+    }
+    else
+    {
+      di << "Error: Wrong option" << a[anAI] << "\n";
+    }
+  }
+
   TopTools_MapOfShape theVertices;
   TopExp_Explorer exp;
   for (exp.Init(S, TopAbs_VERTEX); exp.More(); exp.Next()) {
@@ -309,6 +325,20 @@ static Standard_Integer checksection(Draw_Interpretor& di,
   }
   //cout << " nb alone Vertices : " << theVertices.Extent() << endl;
   di << " nb alone Vertices : " << theVertices.Extent() << "\n";
+
+  if (aCompareValue >= 0)
+  {
+    if (theVertices.Extent() == aCompareValue)
+    {
+      di << "Section is OK\n";
+    }
+    else
+    {
+      di << "Error: "<< aCompareValue << " vertices are expected but " <<
+                        theVertices.Extent() << " are found.\n";
+    }
+  }
+
   char Name[32];
   Standard_Integer ipp=0;
   TopTools_MapIteratorOfMapOfShape itvx;
@@ -1698,7 +1728,8 @@ void BRepTest::CheckCommands(Draw_Interpretor& theCommands)
 //  Modified by skv - Tue Apr 27 13:35:39 2004 End
 
   theCommands.Add("checksection", 
-		  "checks the closure of a section : checksection name",
+		  "checks the closure of a section : checksection name [-r <RefVal>]\n"
+                  "\"-r\" - allowed number of allone vertices.",
 		  __FILE__,
 		  checksection,
 		  g);

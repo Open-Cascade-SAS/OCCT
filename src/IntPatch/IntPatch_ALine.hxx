@@ -17,31 +17,21 @@
 #ifndef _IntPatch_ALine_HeaderFile
 #define _IntPatch_ALine_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
+#include <Standard_Handle.hxx>
 
 #include <IntAna_Curve.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Integer.hxx>
-#include <IntPatch_SequenceOfPoint.hxx>
 #include <IntPatch_Line.hxx>
-#include <IntSurf_TypeTrans.hxx>
-#include <IntSurf_Situation.hxx>
-#include <Standard_Real.hxx>
-#include <gp_Pnt.hxx>
-class Standard_DomainError;
-class Standard_OutOfRange;
+#include <IntPatch_SequenceOfPoint.hxx>
+#include <TColStd_ListOfReal.hxx>
+
 class IntAna_Curve;
 class IntPatch_Point;
-class gp_Pnt;
-class gp_Vec;
-
-
 class IntPatch_ALine;
+
 DEFINE_STANDARD_HANDLE(IntPatch_ALine, IntPatch_Line)
 
 //! Implementation of an intersection line described by a
-//! parametrised curve.
+//! parametrized curve.
 class IntPatch_ALine : public IntPatch_Line
 {
 
@@ -97,13 +87,13 @@ public:
   //! intersection.
     Standard_Boolean D1 (const Standard_Real U, gp_Pnt& P, gp_Vec& Du);
   
-  //! Tries to find the parameter of the point P on the curve.
+  //! Tries to find the parameters of the point P on the curve.
   //! If the method returns False, the "projection" is
-  //! impossible, and the value of Para is not significant.
-  //! If the method returns True, Para is the parameter of the
-  //! nearest intersection between the curve and the iso-theta
-  //! containing P.
-    Standard_Boolean FindParameter (const gp_Pnt& P, Standard_Real& Para) const;
+  //! impossible.
+  //! If the method returns True at least one parameter has been found.
+  //! theParams is always sorted in ascending order.
+  void FindParameter(const gp_Pnt& P,
+                     TColStd_ListOfReal& theParams) const;
   
   //! Returns True if the line has a known First point.
   //! This point is given by the method FirstPoint().
@@ -126,6 +116,12 @@ public:
   //! Returns the vertex of range Index on the line.
     const IntPatch_Point& Vertex (const Standard_Integer Index) const;
   
+  //! Allows modifying the vertex with index theIndex on the line.
+  IntPatch_Point& ChangeVertex(const Standard_Integer theIndex)
+  {
+    return svtx.ChangeValue(theIndex);
+  }
+
   //! Set the parameters of all the vertex on the line.
   //! if a vertex is already in the line,
   //! its parameter is modified

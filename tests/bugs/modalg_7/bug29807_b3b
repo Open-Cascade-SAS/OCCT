@@ -1,0 +1,57 @@
+puts "========"
+puts "0029807: Impossible to cut cone from prism"
+puts "========"
+puts ""
+
+restore [locate_data_file bug29807-obj.brep] b1
+restore [locate_data_file bug29807-tool.brep] b2
+
+trotate b2 +23.85857157145715500000 +12.00000000000000000000 +5.50000000000000000000 7 -7.14142842854285 0 -5 
+removeloc b2 b2
+
+explode b2 v
+settolerance b2_2 1.0e-7
+
+checkshape b2
+
+bclearobjects
+bcleartools
+baddobjects b1
+baddtools b2
+bfillds
+
+# CUT operation
+bbop result 2
+
+savehistory ResHist
+
+checkshape result
+checkprops result -v 9465.07 -s 4012.74
+checknbshapes result -face 9 -wire 9
+
+if {[regexp "Faulties" [bopargcheck result]]} {
+  puts "Error: bopargcheck has found some faulties in result"
+}
+
+explode b2 f
+modified reshm ResHist b2_2
+
+checknbshapes reshm -face 2
+
+foreach a [explode reshm f] {
+  # Every modified face must contain degenerated edge
+  
+  if { ![regexp {degenerated} [dump $a] ] } {
+    puts "Error: Degenerated edge is not found"
+  }
+}
+
+vdisplay result
+vsetdispmode 1
+vviewparams -scale 52.4803 -proj 0.285421 0.0158136 0.958272 -up -0.810772 0.537155 0.232624 -at 29.6172 13.0268 3.82234 -eye 47.7439 14.0311 64.6808
+
+if { [regexp {no triangulation} [tricheck result] ] } {
+  puts "Error: Result contains not triangulated face"
+}
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

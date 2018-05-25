@@ -42,24 +42,26 @@ static void PutPointsOnLine(const Handle(Adaptor3d_HSurface)& S1,
 			    const Standard_Boolean,
 			    const Standard_Real);
 
-static Standard_Boolean MultiplePoint (const IntPatch_SequenceOfPathPointOfTheSOnBounds&,
-				       const Handle(Adaptor3d_TopolTool)&,
-				       const IntSurf_Quadric&,
-		                       const gp_Vec&,
-		                       const IntPatch_SequenceOfLine&,
-                                       TColStd_Array1OfInteger&,
-                                       TColStd_Array1OfInteger&,
-                                       const Standard_Integer,
-		                       const Standard_Boolean);
+static Standard_Boolean MultiplePoint(const IntPatch_SequenceOfPathPointOfTheSOnBounds& listpnt,
+                                      const Handle(Adaptor3d_TopolTool)& Domain,
+                                      const IntSurf_Quadric& QuadSurf,
+                                      const gp_Vec&    Normale,
+                                      const IntPatch_SequenceOfLine& slin,
+                                      TColStd_Array1OfInteger& Done,
+                                      TColStd_Array1OfInteger& UsedLine,
+                                      const Standard_Integer Index,
+                                      const Standard_Boolean OnFirst,
+                                      const Standard_Real theToler);
 
-static Standard_Boolean PointOnSecondDom (const IntPatch_SequenceOfPathPointOfTheSOnBounds&,
-					  const Handle(Adaptor3d_TopolTool)&,
-					  const IntSurf_Quadric&,
-		                          const gp_Vec&,
-		                          const gp_Vec&,
-		                          const Handle(IntPatch_Line)&,
-                                          TColStd_Array1OfInteger&,
-                                          const Standard_Integer);
+static Standard_Boolean PointOnSecondDom(const IntPatch_SequenceOfPathPointOfTheSOnBounds& listpnt,
+                                         const Handle(Adaptor3d_TopolTool)& Domain,
+                                         const IntSurf_Quadric& QuadSurf,
+                                         const gp_Vec&    Normale,
+                                         const gp_Vec&    Vtgint,
+                                         const Handle(IntPatch_Line)& lin,
+                                         TColStd_Array1OfInteger& Done,
+                                         const Standard_Integer Index,
+                                         const Standard_Real theToler);
 
 static Standard_Boolean SingleLine (const gp_Pnt&,
 				    const Handle(IntPatch_Line)&,
@@ -68,17 +70,19 @@ static Standard_Boolean SingleLine (const gp_Pnt&,
 				    gp_Vec&);
 
 
-static Standard_Boolean FindLine (gp_Pnt&,
-				  const IntPatch_SequenceOfLine&,
-				  const Standard_Real,
-				  Standard_Real&,
-				  gp_Vec&,
-				  Standard_Integer&,
-				  Standard_Integer,
-				  const Handle(Adaptor2d_HCurve2d)&,
-				  Standard_Real&,
-				  gp_Pnt& pointonarc,
-				  const IntSurf_Quadric&);
+static Standard_Boolean FindLine(gp_Pnt& Psurf,
+                                 const IntPatch_SequenceOfLine& slin,
+                                 const Standard_Real Tol,
+                                 TColStd_ListOfReal& theLParams,
+                                 gp_Vec& Vtgtint,
+                                 Standard_Integer& theLineIdx,
+                                 Standard_Integer OnlyThisLine,
+                                 const Handle(Adaptor2d_HCurve2d)& thearc,
+                                 Standard_Real& theparameteronarc,
+                                 gp_Pnt& thepointonarc,
+                                 const IntSurf_Quadric& QuadSurf1,
+                                 const IntSurf_Quadric& QuadSurf2,
+                                 Standard_Real& theOutputToler);
 
 static void ProcessSegments (const IntPatch_SequenceOfSegmentOfTheSOnBounds&,
 			     IntPatch_SequenceOfLine&,
@@ -102,8 +106,7 @@ Standard_Boolean IntersectionWithAnArc(gp_Pnt& PSurf,
 				       gp_Pnt& thepointonarc,
 				       const IntSurf_Quadric& QuadSurf,
 				       const Standard_Real u0alin,
-				       const Standard_Real u1alin,
-				       Standard_Real& actualdist) { 
+				       const Standard_Real u1alin) { 
   Standard_Real dtheta,theta;
 #ifdef OCCT_DEBUG
   //Standard_Real u,v,A,B,C,cost,sint,sign;
@@ -221,7 +224,6 @@ Standard_Boolean IntersectionWithAnArc(gp_Pnt& PSurf,
       thepointonarc = alin->Value(para);
       cpasok=Standard_False;
 //--      printf("\nt:%d",nbiter);
-      actualdist = bestdist;
       return(Standard_True);
     }
     else { 
@@ -249,7 +251,6 @@ Standard_Boolean IntersectionWithAnArc(gp_Pnt& PSurf,
     _theparameteronarc=bestpara;
     thepointonarc = alin->Value(para);
 //--     printf("\nT:%d",nbiter);
-    actualdist=bestdist;
     return(Standard_True);
   }
 //--   printf("\nF:%d",nbiter);
@@ -383,7 +384,7 @@ void PutPointsOnLine(const Handle(Adaptor3d_HSurface)& S1,
   //
   Standard_Integer i,k;
   Standard_Integer linenumber;
-  Standard_Real paraint = 0.,currentparameter,tolerance;
+  Standard_Real currentparameter,tolerance;
   Standard_Real U1,V1,U2,V2;
   Standard_Boolean goon;
   
@@ -429,10 +430,10 @@ void PutPointsOnLine(const Handle(Adaptor3d_HSurface)& S1,
 	Vtgrst.SetLinearForm(d2d.X(),d1u,d2d.Y(),d1v);
 #endif      
         goon = MultiplePoint(listpnt,Domain,QuadSurf,Normale,slin,Done, UsedLine,
-			     i,OnFirst);
+                             i, OnFirst, Tolarc);
       }
       if (goon) {
-	Standard_Boolean linefound;
+        Standard_Boolean linefound = Standard_False;
 	
 	for(Standard_Integer indiceline = 1; indiceline <=slin.Length(); indiceline++) { 
 	  if( UsedLine(indiceline) != 0 )
@@ -470,8 +471,11 @@ void PutPointsOnLine(const Handle(Adaptor3d_HSurface)& S1,
 	  //  Modified by skv - Thu Jan 15 15:57:15 2004 OCC4455 End
 	  gp_Pnt pointonarc;
 	  Vtgint.SetCoord(0,0,0);
-	  linefound = FindLine(Psurf,slin,tolerance,paraint,Vtgint,linenumber,indiceline,
-			       currentarc,currentparameter,pointonarc,QuadSurf);  
+          Standard_Real aVertTol = Tolarc;
+          TColStd_ListOfReal aLParams;
+          linefound = FindLine(Psurf, slin, tolerance, aLParams, Vtgint, linenumber,
+                               indiceline, currentarc, currentparameter,
+                               pointonarc, QuadSurf, OtherQuad, aVertTol);
 	  if (linefound) {
 	    
 #if 1 
@@ -493,14 +497,14 @@ void PutPointsOnLine(const Handle(Adaptor3d_HSurface)& S1,
 	      // deuxieme surface
 	      
 	      goon = PointOnSecondDom (listpnt, Domain, QuadSurf, Normale, 
-				       Vtgint, lin, Done, i);
+                                       Vtgint, lin, Done, i, aVertTol);
 	    }
 	    
 	    if (goon) {
 	      //-- Modification du 4 avril 97    tolerance->Tolarc
 	      //-- on replace sur le vertex la tolerance d entree et 
 	      //-- non la tolerance qui a servi au FindLine
-	      solpnt.SetValue(Psurf,Tolarc,Standard_False);
+              solpnt.SetValue(Psurf, aVertTol, Standard_False);
 	      
 	      U1 = p2d.X(); V1 = p2d.Y();
 	      OtherQuad.Parameters(Psurf,U2,V2);
@@ -513,7 +517,6 @@ void PutPointsOnLine(const Handle(Adaptor3d_HSurface)& S1,
 		Recadre(S1,S2,U2,V2,U1,V1);
 		solpnt.SetParameters(U2,V2,U1,V1);
 	      }
-	      solpnt.SetParameter(paraint);
 	      
 	      if (! currentpointonrst.IsNew()) {
 		vtx = currentpointonrst.Vertex();
@@ -532,12 +535,21 @@ void PutPointsOnLine(const Handle(Adaptor3d_HSurface)& S1,
 	      }
 	      solpnt.SetArc(OnFirst,currentarc, currentparameter,
 			    Transline,Transarc);
-	      if (TheType == IntPatch_Analytic) {
-		Handle(IntPatch_ALine)::DownCast (lin)->AddVertex(solpnt);
-	      }
-	      else {
-		Handle(IntPatch_GLine)::DownCast (lin)->AddVertex(solpnt);
-	      }
+
+              for (TColStd_ListIteratorOfListOfReal anItr(aLParams);
+                   anItr.More(); anItr.Next())
+              {
+                solpnt.SetParameter(anItr.Value());
+                if (TheType == IntPatch_Analytic)
+                {
+                  Handle(IntPatch_ALine)::DownCast(lin)->AddVertex(solpnt);
+                }
+                else
+                {
+                  Handle(IntPatch_GLine)::DownCast(lin)->AddVertex(solpnt);
+                }
+              }
+
 	      Done(i) = 1;
 	      
 	      if (goon) {
@@ -550,6 +562,7 @@ void PutPointsOnLine(const Handle(Adaptor3d_HSurface)& S1,
 		      }		      
 		      else if (Domain->Identical(vtx, vtxbis)) {
 			solpnt.SetVertex(OnFirst,vtxbis);
+                        solpnt.SetTolerance(Tolarc);
 			currentarc = currentpointonrst.Arc();
 			currentparameter = currentpointonrst.Parameter();
 			
@@ -599,7 +612,8 @@ Standard_Boolean  MultiplePoint (const IntPatch_SequenceOfPathPointOfTheSOnBound
                                  TColStd_Array1OfInteger& Done,
                                  TColStd_Array1OfInteger& UsedLine,
                                  const Standard_Integer Index,
-		                 const Standard_Boolean OnFirst) {
+		                 const Standard_Boolean OnFirst,
+                                 const Standard_Real theToler) {
 
 // Traitement des points "multiples".
 
@@ -696,7 +710,7 @@ Standard_Boolean  MultiplePoint (const IntPatch_SequenceOfPathPointOfTheSOnBound
 
 	  intpt.SetArc(OnFirst,currentarc,currentparameter,
 		       Transline,Transarc);
-
+          intpt.SetTolerance(theToler);
 
 	  if (TheType == IntPatch_Analytic) {
 	    Handle(IntPatch_ALine)::DownCast (slinValueii)->Replace(jj,intpt);
@@ -728,6 +742,7 @@ Standard_Boolean  MultiplePoint (const IntPatch_SequenceOfPathPointOfTheSOnBound
 		    }
 	            intpt.SetArc(OnFirst,currentarc,currentparameter,
                                  Transline,Transarc);
+                    intpt.SetTolerance(theToler);
 	            if (TheType == IntPatch_Analytic) {
 	              Handle(IntPatch_ALine)::DownCast (slinValueii)->AddVertex(intpt);
 	            }
@@ -770,7 +785,8 @@ Standard_Boolean PointOnSecondDom (const IntPatch_SequenceOfPathPointOfTheSOnBou
 				   const gp_Vec&    Vtgint,
 				   const Handle(IntPatch_Line)& lin,
 				   TColStd_Array1OfInteger& Done,
-				   const Standard_Integer Index)
+				   const Standard_Integer Index,
+                                   const Standard_Real theToler)
      
 
 // Duplication des points sur domaine de l autre surface.
@@ -841,6 +857,8 @@ Standard_Boolean PointOnSecondDom (const IntPatch_SequenceOfPathPointOfTheSOnBou
 	}
 	intpt.SetArc(Standard_False,currentarc,currentparameter,
 	             Transline,Transarc);
+        intpt.SetTolerance(theToler);
+
 	if (TheType == IntPatch_Analytic) {
 	  Handle(IntPatch_ALine)::DownCast (lin)->Replace(jj,intpt);
 	}
@@ -871,6 +889,7 @@ Standard_Boolean PointOnSecondDom (const IntPatch_SequenceOfPathPointOfTheSOnBou
 		  }
 	          intpt.SetArc(Standard_False,currentarc,currentparameter,
                                Transline,Transarc);
+                  intpt.SetTolerance(theToler);
 	          if (TheType == IntPatch_Analytic) {
 	            Handle(IntPatch_ALine)::DownCast (lin)->AddVertex(intpt);
 	          }
@@ -905,31 +924,36 @@ Standard_Boolean PointOnSecondDom (const IntPatch_SequenceOfPathPointOfTheSOnBou
 
 
 
-Standard_Boolean FindLine (gp_Pnt& Psurf,
-			   const IntPatch_SequenceOfLine& slin,
-			   const Standard_Real Tol,
-			   Standard_Real& Paraint,
-			   gp_Vec& Vtgtint,
-			   Standard_Integer& Range,
-			   Standard_Integer OnlyThisLine,
-			   const Handle(Adaptor2d_HCurve2d)& thearc,
-			   Standard_Real& theparameteronarc,
-			   gp_Pnt& thepointonarc,
-			   const IntSurf_Quadric& QuadSurf)
-{		 
+Standard_Boolean FindLine(gp_Pnt& Psurf,
+                          const IntPatch_SequenceOfLine& slin,
+                          const Standard_Real Tol,
+                          TColStd_ListOfReal& theLParams,
+                          gp_Vec& Vtgtint,
+                          Standard_Integer& theLineIdx,
+                          Standard_Integer OnlyThisLine,
+                          const Handle(Adaptor2d_HCurve2d)& thearc,
+                          Standard_Real& theparameteronarc,
+                          gp_Pnt& thepointonarc,
+                          const IntSurf_Quadric& QuadSurf1,
+                          const IntSurf_Quadric& QuadSurf2,
+                          Standard_Real& theOutputToler)
+{
+  if ((QuadSurf1.Distance(Psurf) > Tol) || (QuadSurf2.Distance(Psurf) > Tol))
+    return Standard_False;
 
 // Traitement du point de depart ayant pour representation Psurf
 // dans l espace. On recherche la ligne d intersection contenant ce point.
 // On a en sortie la ligne, et le parametre et sa tangente du point sur
 // la ligne d intersection.
-
-  Standard_Real distmin = RealLast();
-  Standard_Real dist,para;
+  const Standard_Real aSqTol = Tol*Tol;
+  Standard_Real aSqDistMin = RealLast();
+  Standard_Real aSqDist, para;
   Standard_Real lower,upper;
   gp_Pnt pt;
   Standard_Integer i;
   IntPatch_IType typarc;
 
+  Standard_Real aParaInt = RealLast();
   Standard_Integer nblin = slin.Length();
   for (i=1; i<=nblin; i++) {
     if(OnlyThisLine) { i=OnlyThisLine; nblin=0; }
@@ -961,11 +985,12 @@ Standard_Boolean FindLine (gp_Pnt& Psurf,
 	para = ElCLib::Parameter(Handle(IntPatch_GLine)::DownCast (lin)->Line(),Psurf);
 	if (para <= upper && para >= lower) {
 	  pt = ElCLib::Value(para,Handle(IntPatch_GLine)::DownCast (lin)->Line());
-	  dist = Psurf.Distance(pt);
-	  if (dist< distmin) {
-	    distmin = dist;
-	    Paraint = para;
-	    Range = i;
+          aSqDist = Psurf.SquareDistance(pt);
+          if ((aSqDist < aSqTol) && (aSqDist < aSqDistMin))
+          {
+            aSqDistMin = aSqDist;
+            aParaInt = para;
+            theLineIdx = i;
 	  }
 	}
       }
@@ -977,11 +1002,12 @@ Standard_Boolean FindLine (gp_Pnt& Psurf,
 	    (para + 2.*M_PI <=upper && para + 2.*M_PI >= lower) ||
 	    (para - 2.*M_PI <=upper && para - 2.*M_PI >= lower)) {
 	  pt = ElCLib::Value(para,Handle(IntPatch_GLine)::DownCast (lin)->Circle());
-	  dist = Psurf.Distance(pt);
-	  if (dist< distmin) {
-	    distmin = dist;
-	    Paraint = para;
-	    Range = i;
+          aSqDist = Psurf.SquareDistance(pt);
+          if ((aSqDist < aSqTol) && (aSqDist < aSqDistMin))
+          {
+            aSqDistMin = aSqDist;
+            aParaInt = para;
+            theLineIdx = i;
 	  }
 	}
       }
@@ -993,11 +1019,12 @@ Standard_Boolean FindLine (gp_Pnt& Psurf,
 	    (para + 2.*M_PI <=upper && para + 2.*M_PI >= lower) ||
 	    (para - 2.*M_PI <=upper && para - 2.*M_PI >= lower)) {
 	  pt = ElCLib::Value(para,Handle(IntPatch_GLine)::DownCast (lin)->Ellipse());
-	  dist = Psurf.Distance(pt);
-	  if (dist< distmin) {
-	    distmin = dist;
-	    Paraint = para;
-	    Range = i;
+          aSqDist = Psurf.SquareDistance(pt);
+          if ((aSqDist < aSqTol) && (aSqDist < aSqDistMin))
+          {
+            aSqDistMin = aSqDist;
+            aParaInt = para;
+            theLineIdx = i;
 	  }
 	}
       }
@@ -1030,24 +1057,28 @@ Standard_Boolean FindLine (gp_Pnt& Psurf,
 	    Standard_Real parabis = para+0.0000001;
 	    
 	    pt = ElCLib::Value(para,Parab);
-	    dist = Psurf.Distance(pt);
+            aSqDist = Psurf.SquareDistance(pt);
 	    
-	    gp_Pnt ptbis = ElCLib::Value(parabis,Parab);
-	    Standard_Real distbis = Psurf.Distance(ptbis);
-	    
-	    Standard_Real ddist = distbis-dist;
+	    const gp_Pnt ptbis = ElCLib::Value(parabis,Parab);
+	    const Standard_Real distbis = Psurf.Distance(ptbis);
+            const Standard_Real aDist = Sqrt(aSqDist);
+            const Standard_Real ddist = distbis - aDist;
 	    
 	    //--cout<<" para: "<<para<<"    dist:"<<dist<<"   ddist:"<<ddist<<endl;
 	    
-	    if (dist< distmin) {
-	      distmin = dist;
-	      Paraint = para;
-	      Range = i;
+            if ((aSqDist < aSqTol) && (aSqDist < aSqDistMin))
+            {
+              aSqDistMin = aSqDist;
+              aParaInt = para;
+              theLineIdx = i;
 	    }
-	    if(dist<1.0e-9 && dist>-1.0e-9) { amelioration=100; } 
+            if (aSqDist < Precision::SquarePConfusion())
+            {
+              amelioration = 100;
+            }
 	      
 	    if(ddist>1.0e-9 || ddist<-1.0e-9 ) { 
-	      para=para-dist*(parabis-para)/ddist;
+              para = para - aDist*(parabis - para) / ddist;
 	    }
 	    else { 
 	      amelioration=100;
@@ -1065,11 +1096,12 @@ Standard_Boolean FindLine (gp_Pnt& Psurf,
 	para = ElCLib::Parameter(Handle(IntPatch_GLine)::DownCast (lin)->Hyperbola(),Psurf);
 	if (para <= upper && para >= lower) {
 	  pt = ElCLib::Value(para,Handle(IntPatch_GLine)::DownCast (lin)->Hyperbola());
-	  dist = Psurf.Distance(pt);
-	  if (dist< distmin) {
-	    distmin = dist;
-	    Paraint = para;
-	    Range = i;
+          aSqDist = Psurf.SquareDistance(pt);
+          if ((aSqDist < aSqTol) && (aSqDist < aSqDistMin))
+          {
+            aSqDistMin = aSqDist;
+            aParaInt = para;
+            theLineIdx = i;
 	  }
 	}
       }
@@ -1077,17 +1109,33 @@ Standard_Boolean FindLine (gp_Pnt& Psurf,
 
     case IntPatch_Analytic :
       {
-	Handle(IntPatch_ALine) alin (Handle(IntPatch_ALine)::DownCast (lin));
-	Standard_Boolean FindIsOk = alin->FindParameter(Psurf,para);
-	if (FindIsOk) {
-	  pt = alin->Value(para);
-	  dist = Psurf.Distance(pt);
-	  if (dist< distmin) {
-	    distmin = dist;
-	    Paraint = para;
-	    Range = i;
-	  }
-	}
+        Handle(IntPatch_ALine) alin(Handle(IntPatch_ALine)::DownCast(lin));
+        TColStd_ListOfReal aLParams;
+        alin->FindParameter(Psurf, aLParams);
+        if (!aLParams.IsEmpty())
+        {
+          // All found distances are already in some internal tolerance
+          // set in alin->FindParameter(...) method.
+
+          aSqDist = RealLast();
+          for (TColStd_ListIteratorOfListOfReal anItr(aLParams);
+               anItr.More(); anItr.Next())
+          {
+            pt = alin->Value(anItr.Value());
+            const Standard_Real aSqD = Psurf.SquareDistance(pt);
+            if (aSqD < aSqDist)
+            {
+              aSqDist = aSqD;
+            }
+          }
+
+          if (aSqDist < aSqDistMin)
+          {
+            aSqDistMin = aSqDist;
+            theLParams = aLParams;
+            theLineIdx = i;
+          }
+        }
 	else { 
 	  //-- le point n a pas ete trouve par bete projection.
 	  //-- on essaie l intersection avec la restriction en 2d
@@ -1096,19 +1144,20 @@ Standard_Boolean FindLine (gp_Pnt& Psurf,
 //	  Standard_Real anpara=para;
 //#endif
 	  gp_Pnt CopiePsurf=Psurf;
-	  Standard_Boolean IntersectIsOk=IntersectionWithAnArc(CopiePsurf,alin,para,thearc,theparamonarc,thepointonarc,QuadSurf,lower,upper,dist);
-
-	  //--printf("\nIntersectionWithAnArc   %d \n Psurf(%g,%g,%g)->(%g,%g,%g)  dist=%g\n para(%g)->(%g)\n paraonarc(%g)->(%g)",
-	  //--   ok,Psurf.X(),Psurf.Y(),Psurf.Z(),thepointonarc.X(),thepointonarc.Y(),thepointonarc.Z(),dist,
-	  //--    anpara,para,theparameteronarc,theparamonarc);
-	  dist = CopiePsurf.Distance(Psurf);
+          Standard_Boolean IntersectIsOk = IntersectionWithAnArc(CopiePsurf, alin, para, 
+                                                                 thearc, theparamonarc,
+                                                                 thepointonarc,
+                                                                 QuadSurf1,
+                                                                 lower, upper);
+          aSqDist = CopiePsurf.SquareDistance(Psurf);
 	  if(IntersectIsOk) {
-	    if(dist<Tol) { 
+            if (aSqDist < aSqTol)
+            {
 	      theparameteronarc = theparamonarc;
 	      Psurf = thepointonarc;
-	      distmin = dist;
-	      Paraint = para;
-	      Range = i;
+              aSqDistMin = aSqDist;
+              theLParams.Append(para);
+              theLineIdx = i;
 	    }
 	  }
 	}
@@ -1124,86 +1173,47 @@ Standard_Boolean FindLine (gp_Pnt& Psurf,
     }
   }
 
-  if (distmin > Tol) {
+  if (aSqDistMin == RealLast())
     return Standard_False;
-  }
 
-  typarc = slin.Value(Range)->ArcType();
+  theOutputToler = Max(theOutputToler, Sqrt(aSqDistMin));
 
-  // Calcul de la tangente.
+  typarc = slin.Value(theLineIdx)->ArcType();
+
+  // Computation of tangent vector
   switch (typarc) {
   case IntPatch_Lin :
-    Vtgtint = (*((Handle(IntPatch_GLine)*)&slin(Range)))->Line().Direction();
+    theLParams.Append(aParaInt);
+    Vtgtint = (*((Handle(IntPatch_GLine)*)&slin(theLineIdx)))->Line().Direction();
     break;
   case IntPatch_Circle :
-    Vtgtint = ElCLib::DN(Paraint,(*((Handle(IntPatch_GLine)*)&slin(Range)))->Circle(),1);
+    theLParams.Append(aParaInt);
+    Vtgtint = ElCLib::DN(aParaInt, (*((Handle(IntPatch_GLine)*)&slin(theLineIdx)))->Circle(), 1);
     break;
   case IntPatch_Ellipse :
-    Vtgtint = ElCLib::DN(Paraint,(*((Handle(IntPatch_GLine)*)&slin(Range)))->Ellipse(),1);
+    theLParams.Append(aParaInt);
+    Vtgtint = ElCLib::DN(aParaInt, (*((Handle(IntPatch_GLine)*)&slin(theLineIdx)))->Ellipse(), 1);
     break;
   case IntPatch_Parabola :
-    Vtgtint = ElCLib::DN(Paraint,(*((Handle(IntPatch_GLine)*)&slin(Range)))->Parabola(),1);
+    theLParams.Append(aParaInt);
+    Vtgtint = ElCLib::DN(aParaInt, (*((Handle(IntPatch_GLine)*)&slin(theLineIdx)))->Parabola(), 1);
     break;
   case IntPatch_Hyperbola :
-    Vtgtint = ElCLib::DN(Paraint,(*((Handle(IntPatch_GLine)*)&slin(Range)))->Hyperbola(),1);
+    theLParams.Append(aParaInt);
+    Vtgtint = ElCLib::DN(aParaInt, (*((Handle(IntPatch_GLine)*)&slin(theLineIdx)))->Hyperbola(), 1);
     break;
 
   case IntPatch_Analytic:
     {
-      const Handle(IntPatch_ALine)& alin = (*((Handle(IntPatch_ALine)*)&slin(Range)));
-      Standard_Boolean abid = alin->D1(Paraint,pt,Vtgtint);
-      if (!abid) { 
-	Standard_Real domaininf,domainsup,paramproche;
-	Standard_Boolean boolbid;
-	domaininf = alin->FirstParameter(boolbid);
-	domainsup = alin->LastParameter(boolbid);
-	if(Paraint>=domaininf && Paraint<=domainsup) { 
-	  Standard_Real DeltaParam = 0.001 * (domainsup-domaininf);
-	  if(Paraint-domaininf >= domainsup-Paraint) {
-	    //-- On decale le point vers le parametre le plus eloigne.
-	    DeltaParam = -DeltaParam;
-	  }
-	  Standard_Integer kountbid = 0;
-	  Standard_Boolean bornok = Standard_True;
-	  paramproche = Paraint;
-	  do { 
-	    paramproche+=DeltaParam;
-	    kountbid++;
-	    gp_Pnt ptbid;
-	    if(paramproche>=domaininf && paramproche<=domainsup) {
-	      abid = alin->D1(paramproche,ptbid,Vtgtint);   
-	    }
-	    else { 
-	      bornok = Standard_False; 
-	    } 
-	  }
-	  while(abid==Standard_False && kountbid<5 && bornok);
-	  //-- Attention aux points de tangence (croisement de 4 lignes )
-	  bornok = Standard_True;
-	  kountbid = 0;
-	  gp_Vec OVtgtint(0.0,0.0,0.0);
-	  paramproche = Paraint;
-	  do { 
-	    paramproche-=DeltaParam;
-	    kountbid++;
-	    gp_Pnt ptbid;
-	    if(paramproche>=domaininf && paramproche<=domainsup) {
-	      abid = alin->D1(paramproche,ptbid,OVtgtint);   
-	    }
-	    else { 
-	      bornok = Standard_False; 
-	    } 
-	  }
-	  while(abid==Standard_False && kountbid<5 && bornok);
-	  if(bornok) { 
-	    paramproche = Vtgtint.Dot(OVtgtint);
-	    if(paramproche<=0.0) abid = Standard_False; 
-	  }
-	}
-	if(!abid) { 
-	  //-- cout << "Pb sur Calcul de derivee 111 " << endl;
-	  Vtgtint.SetCoord(0.,0.,0.);
-	}
+      if (!Handle(IntPatch_ALine)::DownCast(slin(theLineIdx))->D1(theLParams.Last(), pt, Vtgtint))
+      {
+        //Previously (before the fix #29807) this code tried to process case
+        //when Handle(IntPatch_ALine)::D1(...) method returns FALSE and
+        //computed Vtgtint input argument value. Currently, any singularities
+        //must be processed by high-level algorithms (IntPatch_SpecialPoints class).
+        //Therefore this code has been deleted as deprecated.
+
+        Vtgtint.SetCoord(0.0, 0.0, 0.0);
       }
     }
     break;
@@ -1218,26 +1228,26 @@ Standard_Boolean FindLine (gp_Pnt& Psurf,
   return Standard_True;
 }
 
-
-Standard_Boolean  SingleLine (const gp_Pnt& Psurf,
-			      const Handle(IntPatch_Line)& lin,
-			      const Standard_Real Tol,
-			      Standard_Real& Paraint,
-			      gp_Vec& Vtgtint) {		 
-
-// Traitement du point de depart ayant pour representation Psurf
-// dans l espace. On le replace sur la ligne d intersection; On a en sortie
-// son parametre et sa tangente sur la ligne d intersection.
-// La fonction renvoie False si le point projete est a une distance
-// superieure a Tol du point a projeter.
-
+//=======================================================================
+//function : SingleLine
+//purpose  : Traitement du point de depart ayant pour representation Psurf
+//            dans l espace. On le replace sur la ligne d intersection; On a en sortie
+//            son parametre et sa tangente sur la ligne d intersection.
+//            La fonction renvoie False si le point projete est a une distance
+//            superieure a Tol du point a projeter.
+//=======================================================================
+Standard_Boolean  SingleLine(const gp_Pnt& Psurf,
+                             const Handle(IntPatch_Line)& lin,
+                             const Standard_Real Tol,
+                             Standard_Real& Paraint,
+                             gp_Vec& Vtgtint)
+{
   IntPatch_IType typarc = lin->ArcType();
 
   Standard_Real parproj = 0.;
   gp_Vec tgint;
   gp_Pnt ptproj;
   Standard_Boolean retvalue;
-
 
   switch (typarc) {
   case IntPatch_Lin :
@@ -1262,46 +1272,30 @@ Standard_Boolean  SingleLine (const gp_Pnt& Psurf,
     break;
   case IntPatch_Analytic :
     {
-      Handle(IntPatch_ALine) alin (Handle(IntPatch_ALine)::DownCast (lin));
-      Standard_Boolean ok = alin->FindParameter(Psurf,parproj);
-      if (ok) {
-	gp_Pnt ptbid;
-	Standard_Boolean bid = alin->D1(parproj,ptbid,tgint);
-	if (!bid) { 
-	  Standard_Real domaininf,domainsup,paramproche;
-	  Standard_Boolean boolbid;
-	  domaininf = alin->FirstParameter(boolbid);
-	  domainsup = alin->LastParameter(boolbid);
-	  if(parproj>=domaininf && parproj<=domainsup) { 
-	    Standard_Real DeltaParam = 0.001 * (domainsup-domaininf);
-	    if(parproj-domaininf >= domainsup-parproj) {
-	      //-- On decale le point vers le parametre le plus eloigne.
-	      DeltaParam = -DeltaParam;
-	    }
-	    Standard_Integer kountbid = 0;
-	    paramproche = parproj;
-	    do { 
-	      paramproche+=DeltaParam;
-	      kountbid++;
-	      bid = alin->D1(paramproche,ptbid,tgint);   
-	    }
-	    while(bid==Standard_False && kountbid<5);
-	    ptproj = Psurf; 
-	  }
-	  if(!bid) { 
-	    //-- cout << "Pb sur Calcul de derivee ALine " << endl;
-	    tgint.SetCoord(0.,0.,0.);
-	    return(Standard_False);
-	  }
-	}
-	else { 
-	  ptproj = Psurf; 
-	}
+      Handle(IntPatch_ALine) alin(Handle(IntPatch_ALine)::DownCast(lin));
+      TColStd_ListOfReal aLParams;
+      alin->FindParameter(Psurf, aLParams);
+      if (!aLParams.IsEmpty())
+      {
+        ptproj = Psurf;
+        parproj = aLParams.Last();
+        gp_Pnt aPtemp;
+        if (!alin->D1(parproj, aPtemp, tgint))
+        {
+          //Previously (before the fix #29807) this code tried to process case
+          //when Handle(IntPatch_ALine)::D1(...) method returns FALSE and
+          //computed Vtgtint input argument value. Currently, any singularities
+          //must be processed by high-level algorithms (IntPatch_SpecialPoints class).
+          //Therefore this code has been deleted as deprecated.
+
+          tgint.SetCoord(0.0, 0.0, 0.0);
+        }
       }
-      else {
-	//-- cout << "---- Pb sur ligne analytique dans SingleLine" << endl;
-	//-- cout << "     Find Parameter"<<endl;
-	return Standard_False;
+      else
+      {
+        //-- cout << "---- Pb sur ligne analytique dans SingleLine" << endl;
+        //-- cout << "     Find Parameter"<<endl;
+        return Standard_False;
       }
     }
     break;
@@ -1485,6 +1479,7 @@ void ProcessSegments (const IntPatch_SequenceOfSegmentOfTheSOnBounds& listedg,
 	  if (EdgeDegenere==Standard_False && dofirst) {
 	    if (ptvtx.Value().Distance(PStartf.Value()) <=TolArc) {
 	      ptvtx.SetMultiple(Standard_True);
+              ptvtx.SetTolerance(TolArc);
 	      if (typ == IntPatch_Analytic) {
 		Handle(IntPatch_ALine)::DownCast (slinj)->Replace(k,ptvtx);
 	      }
@@ -1549,6 +1544,7 @@ void ProcessSegments (const IntPatch_SequenceOfSegmentOfTheSOnBounds& listedg,
 	  if (EdgeDegenere==Standard_False && dolast) {
 	    if (ptvtx.Value().Distance(PStartl.Value()) <=TolArc) {
 	      ptvtx.SetMultiple(Standard_True);
+              ptvtx.SetTolerance(TolArc);
 	      if (typ == IntPatch_Analytic) {
 		Handle(IntPatch_ALine)::DownCast (slinj)->Replace(k,ptvtx);
 	      }
@@ -1988,6 +1984,7 @@ void ProcessRLine (IntPatch_SequenceOfLine& slin,
 	      }
 	      if (keeppoint) {
 		Ptvtx.SetMultiple(Standard_True);
+                Ptvtx.SetTolerance(_TolArc);
 		newptvtx.SetMultiple(Standard_True);
 		
 		if (typ2 == IntPatch_Analytic) {

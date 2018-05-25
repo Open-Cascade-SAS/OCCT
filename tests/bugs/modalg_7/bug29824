@@ -1,0 +1,54 @@
+puts "========"
+puts "0029824: Intersection of cylinder and sphere is incorrect"
+puts "========"
+puts ""
+
+restore [locate_data_file OCC20964_revsolid.brep] b1 
+restore [locate_data_file OCC20964_sphere.brep] b2 
+explode b1 f
+explode b2 f
+donly b1_7 b2_1
+
+bop b1_7 b2_1
+bopsection result
+
+checknbshapes result -edge 3
+
+foreach a [explode result e] {
+  mkcurve cc $a
+  bounds cc U1 U2
+  
+  if {[dval U2-U1] < 1.0e-9} {
+    puts "Error: Wrong curve's range!"
+  }
+  
+  set aStep [expr [dval U2-U1]/100.0 ]
+  set isFirst 1
+  set aCosPrev 1.0
+  dset dx1 0.0
+  dset dy1 0.0
+  dset dz1 0.0
+  for {set aU [dval U1]} {$aU <= [dval U2]} {set aU [expr $aU + $aStep]} {
+    cvalue cc $aU xx yy zz dx dy dz
+    
+    if {!$isFirst} {
+      set m1 [module dx1 dy1 dz1]
+      set m2 [module dx dy dz]
+      set aCos [dval dx1*dx+dy1*dy+dz1*dz]
+      set aCos [expr $aCos/($m1*$m2)]
+      
+      if {abs([expr $aCos - $aCosPrev]) > 0.05} {
+        puts "Error: It seems that the curve $a change it direction at the point $aU. Please recheck."
+        break
+      }
+      
+      set aCosPrev $aCos
+    }
+    
+    set isFirst 0
+    
+    dset dx1 dx
+    dset dy1 dy
+    dset dz1 dz
+  }
+}

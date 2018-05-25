@@ -24,6 +24,9 @@
 #include <Standard_Handle.hxx>
 
 class Adaptor3d_HSurface;
+class gp_Cone;
+class gp_Vec;
+class gp_XYZ;
 class IntPatch_Point;
 class IntSurf_PntOn2S;
 class math_Vector;
@@ -51,12 +54,18 @@ public:
   //! theRefPt is used to correct adjusting parameters.
   //! If theIsReversed is TRUE then theQSurf corresponds to the 
   //! second (otherwise, the first) surface while forming
-  //! intersection point IntSurf_PntOn2S.  
+  //! intersection point IntSurf_PntOn2S.
+  //! All math_Vector-objects must be filled as follows:
+  //!   [1] - U-parameter of thePSurf;
+  //!   [2] - V-parameter of thePSurf;
+  //!   [3] - U- (if V-isoline is considered) or V-parameter
+  //!         (if U-isoline is considered) of theQSurf.
   Standard_EXPORT static Standard_Boolean
                       AddPointOnUorVIso(const Handle(Adaptor3d_HSurface)& theQSurf,
                                         const Handle(Adaptor3d_HSurface)& thePSurf,
                                         const IntSurf_PntOn2S& theRefPt,
                                         const Standard_Boolean theIsU,
+                                        const Standard_Real theIsoParameter,
                                         const math_Vector& theToler,
                                         const math_Vector& theInitPoint,
                                         const math_Vector& theInfBound,
@@ -80,7 +89,6 @@ public:
                       AddSingularPole(const Handle(Adaptor3d_HSurface)& theQSurf,
                                       const Handle(Adaptor3d_HSurface)& thePSurf,
                                       const IntSurf_PntOn2S& thePtIso,
-                                      const Standard_Real theTol3d,
                                       IntPatch_Point& theVertex,
                                       IntSurf_PntOn2S& theAddedPoint,                                      
                                       const Standard_Boolean theIsReversed =
@@ -120,6 +128,39 @@ public:
                                            const Standard_Real theArrPeriods[4],
                                            IntSurf_PntOn2S &theNewPoint,
                                            IntPatch_Point* const theVertex = 0);
+
+protected:
+  //! Computes "special point" in the sphere
+  //! The parameter will be found in the range [0, 2*PI].
+  //! Therefore it must be adjusted to valid range by
+  //! the high-level algorithm
+  static Standard_EXPORT Standard_Boolean ProcessSphere(const IntSurf_PntOn2S& thePtIso,
+                                                        const gp_Vec& theDUofPSurf,
+                                                        const gp_Vec& theDVofPSurf,
+                                                        const Standard_Boolean theIsReversed,
+                                                        const Standard_Real theVquad,
+                                                        Standard_Real& theUquad,
+                                                        Standard_Boolean& theIsIsoChoosen);
+
+  //! Computes "special point" in the cone.
+  //! The parameter will be found in the range [0, 2*PI].
+  //! Therefore it must be adjusted to valid range by
+  //! the high-level algorithm.
+  static Standard_EXPORT Standard_Boolean ProcessCone(const IntSurf_PntOn2S& thePtIso,
+                                                      const gp_Vec& theDUofPSurf,
+                                                      const gp_Vec& theDVofPSurf,
+                                                      const gp_Cone& theCone,
+                                                      const Standard_Boolean theIsReversed,
+                                                      Standard_Real& theUquad,
+                                                      Standard_Boolean& theIsIsoChoosen);
+
+  //! Computes vector tangent to the intersection line in cone apex.
+  //! There exist not more than 2 tangent. They will be stores in theResult vector.
+  //! Returns the number of found tangents.
+  //! thePlnNormal is the normalized vector of the normal to the plane intersected the cone.
+  static Standard_EXPORT Standard_Integer GetTangentToIntLineForCone(const Standard_Real theConeSemiAngle,
+                                                                     const gp_XYZ& thePlnNormal,
+                                                                     gp_XYZ theResult[2]);
 };
 
 #endif // _IntPatch_AddSpecialPoints_HeaderFile

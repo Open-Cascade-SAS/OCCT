@@ -35,7 +35,7 @@ class gp_Vec;
 
 
 //! Defines an infinite conical surface.
-//! A cone is defined by its half-angle at the apex and
+//! A cone is defined by its half-angle (can be negative) at the apex and
 //! positioned in space with a coordinate system (a gp_Ax3
 //! object) and a "reference radius" where:
 //! -   the "main Axis" of the coordinate system is the axis of   revolution of the cone,
@@ -76,12 +76,13 @@ public:
 
   //! Creates an infinite conical surface. A3 locates the cone
   //! in the space and defines the reference plane of the surface.
-  //! Ang is the conical surface semi-angle between 0 and PI/2 radians.
+  //! Ang is the conical surface semi-angle. Its absolute value is in range
+  //! ]0, PI/2[.
   //! Radius is the radius of the circle in the reference plane of
   //! the cone.
   //! Raises ConstructionError
-  //! . if Radius is lower than 0.0
-  //! . Ang < Resolution from gp  or Ang >= (PI/2) - Resolution.
+  //! * if Radius is lower than 0.0
+  //! * Abs(Ang) < Resolution from gp  or Abs(Ang) >= (PI/2) - Resolution.
     gp_Cone(const gp_Ax3& A3, const Standard_Real Ang, const Standard_Real Radius);
   
   //! Changes the symmetry axis of the cone.  Raises ConstructionError
@@ -105,8 +106,9 @@ public:
   
 
   //! Changes the semi-angle of the cone.
-  //! Ang is the conical surface semi-angle  ]0,PI/2[.
-  //! Raises ConstructionError if Ang < Resolution from gp or Ang >= PI/2 - Resolution
+  //! Semi-angle can be negative. Its absolute value
+  //! Abs(Ang) is in range ]0,PI/2[.
+  //! Raises ConstructionError if Abs(Ang) < Resolution from gp or Abs(Ang) >= PI/2 - Resolution
     void SetSemiAngle (const Standard_Real Ang);
   
 
@@ -146,6 +148,7 @@ public:
     Standard_Real RefRadius() const;
   
   //! Returns the half-angle at the apex of this cone.
+  //! Attention! Semi-angle can be negative.
     Standard_Real SemiAngle() const;
   
   //! Returns the XAxis of the reference plane.

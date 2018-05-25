@@ -1,10 +1,6 @@
 # test script on make volume operation
 # cone plane
 
-puts "TODO CR28503 ALL: Error : The area of result shape is"
-puts "TODO CR28503 ALL: Error :  is WRONG because number of SOLID entities in shape"
-puts "TODO CR28503 ALL: Faulty shapes in variables faulty_"
-
 # planar face 
 plane pln_f1 27.577164466275352 -1038.2137499999999 27.577164466275359 0.70710678118654746 4.4408920985006262e-016 0.70710678118654768
 erase pln_f1
@@ -38,6 +34,6 @@ mkface f6 con_f6 0 6.2831853071795862 0 1000000
 # make volume operation 
 mkvolume result f1 f2 f3 f4 f5 f6
 
-checkprops result -s 5.19571e+006
+checkprops result -s 5.5768e+006
 
-checknbshapes result -solid 16
+checknbshapes result -solid 17
