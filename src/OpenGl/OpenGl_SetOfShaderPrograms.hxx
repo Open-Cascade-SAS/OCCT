@@ -31,10 +31,12 @@ enum OpenGl_ProgramOptions
   OpenGl_PO_StippleLine = 0x020, //!< stipple line
   OpenGl_PO_ClipPlanes1 = 0x040, //!< handle 1 clipping plane
   OpenGl_PO_ClipPlanes2 = 0x080, //!< handle 2 clipping planes
+  //OpenGl_PO_ClipPlanes3 = OpenGl_PO_ClipPlanes1|OpenGl_PO_ClipPlanes2, //!< handle 3 clipping planes - not implemented
   OpenGl_PO_ClipPlanesN = 0x100, //!< handle N clipping planes
-  OpenGl_PO_AlphaTest   = 0x200, //!< discard fragment by alpha test (defined by cutoff value)
-  OpenGl_PO_WriteOit    = 0x400, //!< write coverage buffer for Blended Order-Independent Transparency
-  OpenGl_PO_NB          = 0x800  //!< overall number of combinations
+  OpenGl_PO_ClipChains  = 0x200, //!< handle chains of clipping planes
+  OpenGl_PO_AlphaTest   = 0x400, //!< discard fragment by alpha test (defined by cutoff value)
+  OpenGl_PO_WriteOit    = 0x800, //!< write coverage buffer for Blended Order-Independent Transparency
+  OpenGl_PO_NB          = 0x1000 //!< overall number of combinations
 };
 
 //! Alias to programs array of predefined length

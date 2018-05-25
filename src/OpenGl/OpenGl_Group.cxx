@@ -396,7 +396,8 @@ void OpenGl_Group::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
   const Handle(OpenGl_RenderFilter)& aFilter = theWorkspace->GetRenderFilter();
 
   // Setup aspects
-  theWorkspace->SetAllowFaceCulling (myIsClosed);
+  theWorkspace->SetAllowFaceCulling (myIsClosed
+                                 && !theWorkspace->GetGlContext()->Clipping().IsClippingOrCappingOn());
   const OpenGl_AspectLine*   aBackAspectLine   = theWorkspace->AspectLine();
   const OpenGl_AspectFace*   aBackAspectFace   = theWorkspace->AspectFace();
   const OpenGl_AspectMarker* aBackAspectMarker = theWorkspace->AspectMarker();

@@ -193,6 +193,26 @@ public:
     }
   }
 
+  //! Trims the First value in range by the given lower limit.
+  //! Marks range as Void if the given Lower value is greater than range Max.
+  void TrimFrom (const Standard_Real theValLower)
+  {
+    if (!IsVoid())
+    {
+      myFirst = Max (myFirst, theValLower);
+    }
+  }
+
+  //! Trim the Last value in range by the given Upper limit.
+  //! Marks range as Void if the given Upper value is smaller than range Max.
+  void TrimTo (const Standard_Real theValUpper)
+  {
+    if (!IsVoid())
+    {
+      myLast = Min (myLast, theValUpper);
+    }
+  }
+
   //! Returns True if the value is out of this range.
   Standard_Boolean IsOut (Standard_Real theValue) const
   {

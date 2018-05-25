@@ -17,19 +17,50 @@
 #define _Graphic3d_SequenceOfHClipPlane_HeaderFile
 
 #include <NCollection_Sequence.hxx>
-#include <NCollection_Shared.hxx>
 #include <Graphic3d_ClipPlane.hxx>
 
-//! Class defining the sequence of clipping planes.
-class Graphic3d_SequenceOfHClipPlane : public Standard_Transient, public NCollection_Sequence<Handle(Graphic3d_ClipPlane)>
+//! Class defines a Clipping Volume as a logical OR (disjunction) operation between Graphic3d_ClipPlane in sequence.
+//! Each Graphic3d_ClipPlane represents either a single Plane clipping a halfspace (direction is specified by normal),
+//! or a sub-chain of planes defining a logical AND (conjunction) operation.
+//! Therefore, this collection allows defining a Clipping Volume through the limited set of Boolean operations between clipping Planes.
+//!
+//! The Clipping Volume can be assigned either to entire View or to a specific Object;
+//! in the latter case property ToOverrideGlobal() will specify if Object planes should override (suppress) globally defined ones
+//! or extend their definition through logical OR (disjunction) operation.
+//!
+//! Note that defining (many) planes will lead to performance degradation, and Graphics Driver may limit
+//! the overall number of simultaneously active clipping planes - but at least 6 planes should be supported on all configurations.
+class Graphic3d_SequenceOfHClipPlane : public Standard_Transient
 {
-DEFINE_STANDARD_RTTI_INLINE(Graphic3d_SequenceOfHClipPlane,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(Graphic3d_SequenceOfHClipPlane, Standard_Transient)
 public:
-  DEFINE_STANDARD_ALLOC
-  DEFINE_NCOLLECTION_ALLOC
+
+  //! Iterator through clipping planes.
+  class Iterator : public NCollection_Sequence<Handle(Graphic3d_ClipPlane)>::Iterator
+  {
+  public:
+    Iterator() {}
+    Iterator (const Graphic3d_SequenceOfHClipPlane& thePlanes) : NCollection_Sequence<Handle(Graphic3d_ClipPlane)>::Iterator (thePlanes.myItems) {}
+    Iterator (const Handle(Graphic3d_SequenceOfHClipPlane)& thePlanes) { Init (thePlanes); }
+
+    void Init (const Graphic3d_SequenceOfHClipPlane& thePlanes) { NCollection_Sequence<Handle(Graphic3d_ClipPlane)>::Iterator::Init (thePlanes.myItems); }
+    void Init (const Handle(Graphic3d_SequenceOfHClipPlane)& thePlanes)
+    {
+      if (!thePlanes.IsNull())
+      {
+        NCollection_Sequence<Handle(Graphic3d_ClipPlane)>::Iterator::Init (thePlanes->myItems);
+      }
+      else
+      {
+        *this = Iterator();
+      }
+    }
+  };
+
+public:
 
   //! Empty constructor.
-  Graphic3d_SequenceOfHClipPlane() : myToOverrideGlobal (Standard_False) {}
+  Standard_EXPORT Graphic3d_SequenceOfHClipPlane();
 
   //! Return true if local properties should override global properties.
   Standard_Boolean ToOverrideGlobal() const { return myToOverrideGlobal; }
@@ -37,8 +68,35 @@ public:
   //! Setup flag defining if local properties should override global properties.
   void SetOverrideGlobal (const Standard_Boolean theToOverride) { myToOverrideGlobal = theToOverride; }
 
-private:
+  //! Return TRUE if sequence is empty.
+  bool IsEmpty() const { return myItems.IsEmpty(); }
 
+  //! Return the number of items in sequence.
+  Standard_Integer Size() const { return myItems.Size(); }
+
+  //! Append a plane.
+  //! @return TRUE if new item has been added (FALSE if item already existed)
+  Standard_EXPORT bool Append (const Handle(Graphic3d_ClipPlane)& theItem);
+
+  //! Remove a plane.
+  //! @return TRUE if item has been found and removed
+  Standard_EXPORT bool Remove (const Handle(Graphic3d_ClipPlane)& theItem);
+
+  //! Remove a plane.
+  void Remove (Iterator& theItem) { myItems.Remove (theItem); }
+
+  //! Clear the items out.
+  void Clear()
+  {
+    myItems.Clear();
+  }
+
+  //! Return the first item in sequence.
+  const Handle(Graphic3d_ClipPlane)& First() const { return myItems.First(); }
+
+protected:
+
+  NCollection_Sequence<Handle(Graphic3d_ClipPlane)> myItems;
   Standard_Boolean myToOverrideGlobal;
 
 };

@@ -83,6 +83,7 @@ Graphic3d_RenderingMode.hxx
 Graphic3d_RenderingParams.hxx
 Graphic3d_RenderTransparentMethod.hxx
 Graphic3d_SequenceOfGroup.hxx
+Graphic3d_SequenceOfHClipPlane.cxx
 Graphic3d_SequenceOfHClipPlane.hxx
 Graphic3d_SequenceOfStructure.hxx
 Graphic3d_ShaderAttribute.cxx

@@ -1205,7 +1205,7 @@ void OpenGl_View::renderScene (Graphic3d_Camera::Projection theProjection,
   const Handle(OpenGl_Context)& aContext = myWorkspace->GetGlContext();
 
   // Specify clipping planes in view transformation space
-  aContext->ChangeClipping().Reset (aContext, myClipPlanes);
+  aContext->ChangeClipping().Reset (myClipPlanes);
   if (!myClipPlanes.IsNull()
    && !myClipPlanes->IsEmpty())
   {
@@ -1218,7 +1218,7 @@ void OpenGl_View::renderScene (Graphic3d_Camera::Projection theProjection,
   // Apply restored view matrix.
   aContext->ApplyWorldViewMatrix();
 
-  aContext->ChangeClipping().Reset (aContext, Handle(Graphic3d_SequenceOfHClipPlane)());
+  aContext->ChangeClipping().Reset (Handle(Graphic3d_SequenceOfHClipPlane)());
   if (!myClipPlanes.IsNull()
    && !myClipPlanes->IsEmpty())
   {

@@ -16,6 +16,7 @@
 #include <OpenGl_CappingAlgo.hxx>
 #include <OpenGl_Context.hxx>
 #include <OpenGl_GlCore11.hxx>
+#include <OpenGl_ClippingIterator.hxx>
 #include <OpenGl_GraphicDriver.hxx>
 #include <OpenGl_ShaderManager.hxx>
 #include <OpenGl_ShaderProgram.hxx>
@@ -23,9 +24,6 @@
 #include <OpenGl_Vec.hxx>
 #include <OpenGl_View.hxx>
 #include <OpenGl_Workspace.hxx>
-
-#include <Graphic3d_SequenceOfHClipPlane.hxx>
-
 
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Structure,Graphic3d_CStructure)
 
@@ -551,7 +549,7 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
   }
 
   // Collect clipping planes of structure scope
-  aCtx->ChangeClipping().SetLocalPlanes (aCtx, myClipPlanes);
+  aCtx->ChangeClipping().SetLocalPlanes (myClipPlanes);
 
   // True if structure is fully clipped
   bool isClipped = false;
@@ -562,7 +560,7 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
     if (!myClipPlanes.IsNull()
       && myClipPlanes->ToOverrideGlobal())
     {
-      aCtx->ChangeClipping().DisableGlobal (aCtx);
+      aCtx->ChangeClipping().DisableGlobal();
       hasDisabled = aCtx->Clipping().HasDisabled();
     }
     else if (!myTrsfPers.IsNull())
@@ -583,9 +581,8 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
           }
 
           // check for clipping
-          const Graphic3d_Vec4d& aPlaneEquation = aPlane->GetEquation();
           const Graphic3d_Vec4d aCheckPnt (anAnchor.X(), anAnchor.Y(), anAnchor.Z(), 1.0);
-          if (aPlaneEquation.Dot (aCheckPnt) < 0.0) // vertex is outside the half-space
+          if (aPlane->ProbePoint (aCheckPnt) == Graphic3d_ClipState_Out)
           {
             isClipped = true;
             break;
@@ -593,7 +590,7 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
         }
       }
 
-      aCtx->ChangeClipping().DisableGlobal (aCtx);
+      aCtx->ChangeClipping().DisableGlobal();
       hasDisabled = aCtx->Clipping().HasDisabled();
     }
 
@@ -610,26 +607,15 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
           continue;
         }
 
-        // check for clipping
-        const Graphic3d_Vec4d& aPlaneEquation = aPlane->GetEquation();
-        const Graphic3d_Vec4d aMaxPnt (aPlaneEquation.x() > 0.0 ? aBBox.CornerMax().x() : aBBox.CornerMin().x(),
-                                       aPlaneEquation.y() > 0.0 ? aBBox.CornerMax().y() : aBBox.CornerMin().y(),
-                                       aPlaneEquation.z() > 0.0 ? aBBox.CornerMax().z() : aBBox.CornerMin().z(),
-                                       1.0);
-        if (aPlaneEquation.Dot (aMaxPnt) < 0.0) // max vertex is outside the half-space
+        const Graphic3d_ClipState aBoxState = aPlane->ProbeBox (aBBox);
+        if (aBoxState == Graphic3d_ClipState_Out)
         {
           isClipped = true;
           break;
         }
-
-        // check for no intersection (e.g. object is "entirely not clipped")
-        const Graphic3d_Vec4d aMinPnt (aPlaneEquation.x() > 0.0 ? aBBox.CornerMin().x() : aBBox.CornerMax().x(),
-                                       aPlaneEquation.y() > 0.0 ? aBBox.CornerMin().y() : aBBox.CornerMax().y(),
-                                       aPlaneEquation.z() > 0.0 ? aBBox.CornerMin().z() : aBBox.CornerMax().z(),
-                                       1.0);
-        if (aPlaneEquation.Dot (aMinPnt) > 0.0) // min vertex is inside the half-space
+        else if (aBoxState == Graphic3d_ClipState_In)
         {
-          aCtx->ChangeClipping().SetEnabled (aCtx, aPlaneIt, Standard_False);
+          aCtx->ChangeClipping().SetEnabled (aPlaneIt, false);
           hasDisabled = true;
         }
       }
@@ -667,9 +653,9 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
   if (hasDisabled)
   {
     // enable planes that were previously disabled
-    aCtx->ChangeClipping().RestoreDisabled (aCtx);
+    aCtx->ChangeClipping().RestoreDisabled();
   }
-  aCtx->ChangeClipping().SetLocalPlanes (aCtx, Handle(Graphic3d_SequenceOfHClipPlane)());
+  aCtx->ChangeClipping().SetLocalPlanes (Handle(Graphic3d_SequenceOfHClipPlane)());
   if ((!myClipPlanes.IsNull() && !myClipPlanes->IsEmpty())
     || hasDisabled)
   {

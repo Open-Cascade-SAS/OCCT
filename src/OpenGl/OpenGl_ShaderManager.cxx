@@ -20,7 +20,7 @@
 #include <OpenGl_AspectLine.hxx>
 #include <OpenGl_AspectMarker.hxx>
 #include <OpenGl_AspectText.hxx>
-#include <OpenGl_Clipping.hxx>
+#include <OpenGl_ClippingIterator.hxx>
 #include <OpenGl_Context.hxx>
 #include <OpenGl_ShaderManager.hxx>
 #include <OpenGl_ShaderProgram.hxx>
@@ -238,6 +238,25 @@ const char THE_FRAG_CLIP_PLANES_N[] =
   EOL"    }"
   EOL"  }";
 
+//! Process chains of clipping planes in Fragment Shader.
+const char THE_FRAG_CLIP_CHAINS_N[] =
+EOL"  for (int aPlaneIter = 0; aPlaneIter < occClipPlaneCount;)"
+EOL"  {"
+EOL"    vec4 aClipEquation = occClipPlaneEquations[aPlaneIter];"
+EOL"    if (dot (aClipEquation.xyz, PositionWorld.xyz / PositionWorld.w) + aClipEquation.w < 0.0)"
+EOL"    {"
+EOL"      if (occClipPlaneChains[aPlaneIter] == 1)"
+EOL"      {"
+EOL"        discard;"
+EOL"      }"
+EOL"      aPlaneIter += 1;"
+EOL"    }"
+EOL"    else"
+EOL"    {"
+EOL"      aPlaneIter += occClipPlaneChains[aPlaneIter];"
+EOL"    }"
+EOL"  }";
+
 //! Process 1 clipping plane in Fragment Shader.
 const char THE_FRAG_CLIP_PLANES_1[] =
   EOL"  vec4 aClipEquation0 = occClipPlaneEquations[0];"
@@ -255,6 +274,16 @@ const char THE_FRAG_CLIP_PLANES_2[] =
   EOL"  {"
   EOL"    discard;"
   EOL"  }";
+
+//! Process a chain of 2 clipping planes in Fragment Shader (3/4 section).
+const char THE_FRAG_CLIP_CHAINS_2[] =
+EOL"  vec4 aClipEquation0 = occClipPlaneEquations[0];"
+EOL"  vec4 aClipEquation1 = occClipPlaneEquations[1];"
+EOL"  if (dot (aClipEquation0.xyz, PositionWorld.xyz / PositionWorld.w) + aClipEquation0.w < 0.0"
+EOL"   && dot (aClipEquation1.xyz, PositionWorld.xyz / PositionWorld.w) + aClipEquation1.w < 0.0)"
+EOL"  {"
+EOL"    discard;"
+EOL"  }";
 
 #if !defined(GL_ES_VERSION_2_0)
 
@@ -930,10 +959,14 @@ void OpenGl_ShaderManager::PushClippingState (const Handle(OpenGl_ShaderProgram)
 
     Standard_Integer aPlaneId = 0;
     Standard_Boolean toRestoreModelView = Standard_False;
+    const Handle(Graphic3d_ClipPlane)& aCappedChain = myContext->Clipping().CappedChain();
     for (OpenGl_ClippingIterator aPlaneIter (myContext->Clipping()); aPlaneIter.More(); aPlaneIter.Next())
     {
       const Handle(Graphic3d_ClipPlane)& aPlane = aPlaneIter.Value();
-      if (aPlaneIter.IsDisabled())
+      if (aPlaneIter.IsDisabled()
+       || aPlane->IsChain()
+       || (aPlane == aCappedChain
+        && myContext->Clipping().IsCappingEnableAllExcept()))
       {
         continue;
       }
@@ -995,21 +1028,21 @@ void OpenGl_ShaderManager::PushClippingState (const Handle(OpenGl_ShaderProgram)
   }
 
   const Standard_Integer aNbClipPlanesMax = theProgram->NbClipPlanesMax();
-  const GLint aNbPlanes = Min (myContext->Clipping().NbClippingOrCappingOn(), aNbClipPlanesMax);
-  theProgram->SetUniform (myContext,
-                          theProgram->GetStateLocation (OpenGl_OCC_CLIP_PLANE_COUNT),
-                          aNbPlanes);
+  const Standard_Integer aNbPlanes = Min (myContext->Clipping().NbClippingOrCappingOn(), aNbClipPlanesMax);
   if (aNbPlanes < 1)
   {
+    theProgram->SetUniform (myContext, theProgram->GetStateLocation (OpenGl_OCC_CLIP_PLANE_COUNT), 0);
     return;
   }
 
   if (myClipPlaneArray.Size() < aNbClipPlanesMax)
   {
     myClipPlaneArray.Resize (0, aNbClipPlanesMax - 1, false);
+    myClipChainArray.Resize (0, aNbClipPlanesMax - 1, false);
   }
 
   Standard_Integer aPlaneId = 0;
+  const Handle(Graphic3d_ClipPlane)& aCappedChain = myContext->Clipping().CappedChain();
   for (OpenGl_ClippingIterator aPlaneIter (myContext->Clipping()); aPlaneIter.More(); aPlaneIter.Next())
   {
     const Handle(Graphic3d_ClipPlane)& aPlane = aPlaneIter.Value();
@@ -1017,29 +1050,64 @@ void OpenGl_ShaderManager::PushClippingState (const Handle(OpenGl_ShaderProgram)
     {
       continue;
     }
-    else if (aPlaneId >= aNbClipPlanesMax)
+
+    if (myContext->Clipping().IsCappingDisableAllExcept())
     {
-      myContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_MEDIUM,
-                              TCollection_AsciiString("Warning: clipping planes limit (") + aNbClipPlanesMax + ") has been exceeded.");
+      // enable only specific (sub) plane
+      if (aPlane != aCappedChain)
+      {
+        continue;
+      }
+
+      Standard_Integer aSubPlaneIndex = 1;
+      for (const Graphic3d_ClipPlane* aSubPlaneIter = aCappedChain.get(); aSubPlaneIter != NULL; aSubPlaneIter = aSubPlaneIter->ChainNextPlane().get(), ++aSubPlaneIndex)
+      {
+        if (aSubPlaneIndex == myContext->Clipping().CappedSubPlane())
+        {
+          addClippingPlane (aPlaneId, *aSubPlaneIter, aSubPlaneIter->GetEquation(), 1);
+          break;
+        }
+      }
       break;
     }
-
-    const Graphic3d_ClipPlane::Equation& anEquation = aPlane->GetEquation();
-    OpenGl_Vec4& aPlaneEq = myClipPlaneArray.ChangeValue (aPlaneId);
-    aPlaneEq.x() = float(anEquation.x());
-    aPlaneEq.y() = float(anEquation.y());
-    aPlaneEq.z() = float(anEquation.z());
-    aPlaneEq.w() = float(anEquation.w());
-    if (myHasLocalOrigin)
+    else if (aPlane == aCappedChain) // && myContext->Clipping().IsCappingEnableAllExcept()
     {
-      const gp_XYZ        aPos = aPlane->ToPlane().Position().Location().XYZ() - myLocalOrigin;
-      const Standard_Real aD   = -(anEquation.x() * aPos.X() + anEquation.y() * aPos.Y() + anEquation.z() * aPos.Z());
-      aPlaneEq.w() = float(aD);
+      // enable sub-planes within processed Chain as reversed and ORed, excluding filtered plane
+      if (aPlaneId + aPlane->NbChainNextPlanes() - 1 > aNbClipPlanesMax)
+      {
+        myContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_HIGH,
+                                TCollection_AsciiString("Error: clipping planes limit (") + aNbClipPlanesMax + ") has been exceeded.");
+        break;
+      }
+
+      Standard_Integer aSubPlaneIndex = 1;
+      for (const Graphic3d_ClipPlane* aSubPlaneIter = aPlane.get(); aSubPlaneIter != NULL; aSubPlaneIter = aSubPlaneIter->ChainNextPlane().get(), ++aSubPlaneIndex)
+      {
+        if (aSubPlaneIndex != -myContext->Clipping().CappedSubPlane())
+        {
+          addClippingPlane (aPlaneId, *aSubPlaneIter, aSubPlaneIter->ReversedEquation(), 1);
+        }
+      }
     }
-    ++aPlaneId;
+    else
+    {
+      // normal case
+      if (aPlaneId + aPlane->NbChainNextPlanes() > aNbClipPlanesMax)
+      {
+        myContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_HIGH,
+                                TCollection_AsciiString("Error: clipping planes limit (") + aNbClipPlanesMax + ") has been exceeded.");
+        break;
+      }
+      for (const Graphic3d_ClipPlane* aSubPlaneIter = aPlane.get(); aSubPlaneIter != NULL; aSubPlaneIter = aSubPlaneIter->ChainNextPlane().get())
+      {
+        addClippingPlane (aPlaneId, *aSubPlaneIter, aSubPlaneIter->GetEquation(), aSubPlaneIter->NbChainNextPlanes());
+      }
+    }
   }
 
+  theProgram->SetUniform (myContext, theProgram->GetStateLocation (OpenGl_OCC_CLIP_PLANE_COUNT), aPlaneId);
   theProgram->SetUniform (myContext, aLocEquations, aNbClipPlanesMax, &myClipPlaneArray.First());
+  theProgram->SetUniform (myContext, theProgram->GetStateLocation (OpenGl_OCC_CLIP_PLANE_CHAINS), aNbClipPlanesMax, &myClipChainArray.First());
 }
 
 // =======================================================================
@@ -1532,12 +1600,16 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramUnlit (Handle(OpenGl_Sha
     else if ((theBits & OpenGl_PO_ClipPlanes2) != 0)
     {
       aNbClipPlanes = 2;
-      aSrcFragExtraMain += THE_FRAG_CLIP_PLANES_2;
+      aSrcFragExtraMain += (theBits & OpenGl_PO_ClipChains) != 0
+                         ? THE_FRAG_CLIP_CHAINS_2
+                         : THE_FRAG_CLIP_PLANES_2;
     }
     else
     {
       aNbClipPlanes = Graphic3d_ShaderProgram::THE_MAX_CLIP_PLANES_DEFAULT;
-      aSrcFragExtraMain += THE_FRAG_CLIP_PLANES_N;
+      aSrcFragExtraMain += (theBits & OpenGl_PO_ClipChains) != 0
+                          ? THE_FRAG_CLIP_CHAINS_N
+                          : THE_FRAG_CLIP_PLANES_N;
     }
   }
   if ((theBits & OpenGl_PO_WriteOit) != 0)
@@ -1895,12 +1967,16 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramGouraud (Handle(OpenGl_S
     else if ((theBits & OpenGl_PO_ClipPlanes2) != 0)
     {
       aNbClipPlanes = 2;
-      aSrcFragExtraMain += THE_FRAG_CLIP_PLANES_2;
+      aSrcFragExtraMain += (theBits & OpenGl_PO_ClipChains) != 0
+                          ? THE_FRAG_CLIP_CHAINS_2
+                          : THE_FRAG_CLIP_PLANES_2;
     }
     else
     {
       aNbClipPlanes = Graphic3d_ShaderProgram::THE_MAX_CLIP_PLANES_DEFAULT;
-      aSrcFragExtraMain += THE_FRAG_CLIP_PLANES_N;
+      aSrcFragExtraMain += (theBits & OpenGl_PO_ClipChains) != 0
+                         ? THE_FRAG_CLIP_CHAINS_N
+                         : THE_FRAG_CLIP_PLANES_N;
     }
   }
   if ((theBits & OpenGl_PO_WriteOit) != 0)
@@ -2054,12 +2130,16 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramPhong (Handle(OpenGl_Sha
     else if ((theBits & OpenGl_PO_ClipPlanes2) != 0)
     {
       aNbClipPlanes = 2;
-      aSrcFragExtraMain += THE_FRAG_CLIP_PLANES_2;
+      aSrcFragExtraMain += (theBits & OpenGl_PO_ClipChains) != 0
+                         ? THE_FRAG_CLIP_CHAINS_2
+                         : THE_FRAG_CLIP_PLANES_2;
     }
     else
     {
       aNbClipPlanes = Graphic3d_ShaderProgram::THE_MAX_CLIP_PLANES_DEFAULT;
-      aSrcFragExtraMain += THE_FRAG_CLIP_PLANES_N;
+      aSrcFragExtraMain += (theBits & OpenGl_PO_ClipChains) != 0
+                         ? THE_FRAG_CLIP_CHAINS_N
+                         : THE_FRAG_CLIP_PLANES_N;
     }
   }
   if ((theBits & OpenGl_PO_WriteOit) != 0)

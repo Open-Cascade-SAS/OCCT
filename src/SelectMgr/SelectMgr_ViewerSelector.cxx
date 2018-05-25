@@ -225,9 +225,8 @@ void SelectMgr_ViewerSelector::checkOverlap (const Handle(SelectBasics_Sensitive
             continue;
           }
 
-          const Graphic3d_Vec4d& aPlaneEquation = aPlane->GetEquation();
-          const Graphic3d_Vec4d  aCheckPnt (anAnchor.X(), anAnchor.Y(), anAnchor.Z(), 1.0);
-          if (aPlaneEquation.Dot (aCheckPnt) < 0.0) // vertex is outside the half-space
+          const Graphic3d_Vec4d aCheckPnt (anAnchor.X(), anAnchor.Y(), anAnchor.Z(), 1.0);
+          if (aPlane->ProbePoint (aCheckPnt) == Graphic3d_ClipState_Out)
           {
             return;
           }

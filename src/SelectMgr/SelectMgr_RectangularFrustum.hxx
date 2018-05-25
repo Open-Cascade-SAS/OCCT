@@ -149,8 +149,7 @@ protected:
 
   //! Computes valid depth range for the given clipping planes
   Standard_EXPORT void computeClippingRange (const Graphic3d_SequenceOfHClipPlane& thePlanes,
-                                             Standard_Real& theDepthMin,
-                                             Standard_Real& theDepthMax);
+                                             SelectMgr_ViewClipRange& theRange);
 
   //! Returns false if theDepth must be clipped by current view clip range
   Standard_EXPORT Standard_Boolean isViewClippingOk (const Standard_Real theDepth) const;

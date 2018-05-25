@@ -1,10 +1,8 @@
+puts "REQUIRED All: Error: clipping planes limit"
 puts "==========="
-puts "OCC25052"
+puts "OCC25052: Visualization - activation of all Clipping Planes within driver limit leads to broken planes management"
 puts "==========="
 puts ""
-##########################################################################
-# Visualization - activation of all Clipping Planes within driver limit leads to broken planes management
-##########################################################################
 
 set Image1 ${imagedir}/${casename}_1.png
 set Image9 ${imagedir}/${casename}_9.png

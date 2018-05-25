@@ -15,6 +15,7 @@
 
 #include <OpenGl_CappingAlgo.hxx>
 
+#include <OpenGl_ClippingIterator.hxx>
 #include <OpenGl_Workspace.hxx>
 #include <OpenGl_Context.hxx>
 #include <OpenGl_PrimitiveArray.hxx>
@@ -37,6 +38,7 @@ namespace
     const Handle(OpenGl_Context)& aContext = theWorkspace->GetGlContext();
     thePlane->Update (aContext, theAspectFace != NULL ? theAspectFace->Aspect() : Handle(Graphic3d_AspectFillArea3d)());
 
+    bool wasCullAllowed = theWorkspace->SetAllowFaceCulling (true);
     const OpenGl_AspectFace* aFaceAspect = theWorkspace->AspectFace();
     theWorkspace->SetAspectFace (thePlane->AspectFace());
 
@@ -50,13 +52,15 @@ namespace
     aContext->ModelWorldState.Pop();
     aContext->ApplyModelViewMatrix();
 
+    theWorkspace->SetAllowFaceCulling (wasCullAllowed);
     theWorkspace->SetAspectFace (aFaceAspect);
   }
 
   //! Render capping for specific structure.
   static void renderCappingForStructure (const Handle(OpenGl_Workspace)& theWorkspace,
                                          const OpenGl_Structure&         theStructure,
-                                         const OpenGl_ClippingIterator&  thePlaneIter,
+                                         const Handle(Graphic3d_ClipPlane)& theClipChain,
+                                         const Standard_Integer          theSubPlaneIndex,
                                          const Handle(OpenGl_CappingPlaneResource)& thePlane)
   {
     const Handle(OpenGl_Context)&      aContext     = theWorkspace->GetGlContext();
@@ -69,7 +73,7 @@ namespace
       }
 
       // enable only the rendering plane to generate stencil mask
-      aContext->ChangeClipping().DisableAllExcept (aContext, thePlaneIter);
+      aContext->ChangeClipping().DisableAllExcept (theClipChain, theSubPlaneIndex);
       aContext->ShaderManager()->UpdateClippingState();
 
       glClear (GL_STENCIL_BUFFER_BIT);
@@ -112,7 +116,7 @@ namespace
       theWorkspace->ApplyAspectFace();
 
       // enable all clip plane except the rendered one
-      aContext->ChangeClipping().EnableAllExcept (aContext, thePlaneIter);
+      aContext->ChangeClipping().EnableAllExcept (theClipChain, theSubPlaneIndex);
       aContext->ShaderManager()->UpdateClippingState();
 
       // render capping plane using the generated stencil mask
@@ -128,19 +132,18 @@ namespace
         glEnable (GL_DEPTH_TEST);
       }
 
-      renderPlane (theWorkspace, thePlane, aRenderPlane->ToUseObjectProperties()
-                                         ? aGroupIter.Value()->AspectFace()
-                                         : NULL);
+      renderPlane (theWorkspace, thePlane,
+                   aRenderPlane->ToUseObjectProperties() ? aGroupIter.Value()->AspectFace() : NULL);
 
       // turn on the current plane to restore initial state
-      aContext->ChangeClipping().SetEnabled (aContext, thePlaneIter, Standard_True);
+      aContext->ChangeClipping().ResetCappingFilter();
       aContext->ShaderManager()->RevertClippingState();
       aContext->ShaderManager()->RevertClippingState();
     }
 
     if (theStructure.InstancedStructure() != NULL)
     {
-      renderCappingForStructure (theWorkspace, *theStructure.InstancedStructure(), thePlaneIter, thePlane);
+      renderCappingForStructure (theWorkspace, *theStructure.InstancedStructure(), theClipChain, theSubPlaneIndex, thePlane);
     }
   }
 }
@@ -181,28 +184,32 @@ void OpenGl_CappingAlgo::RenderCapping (const Handle(OpenGl_Workspace)& theWorks
   for (OpenGl_ClippingIterator aCappingIt (aContext->Clipping()); aCappingIt.More(); aCappingIt.Next())
   {
     // get plane being rendered
-    const Handle(Graphic3d_ClipPlane)& aRenderPlane = aCappingIt.Value();
-    if (!aRenderPlane->IsCapping()
+    const Handle(Graphic3d_ClipPlane)& aClipChain = aCappingIt.Value();
+    if (!aClipChain->IsCapping()
       || aCappingIt.IsDisabled())
     {
       continue;
     }
 
-    // get resource for the plane
-    const TCollection_AsciiString& aResId = aRenderPlane->GetId();
-    Handle(OpenGl_CappingPlaneResource) aPlaneRes;
-    if (!aContext->GetResource (aResId, aPlaneRes))
+    Standard_Integer aSubPlaneIndex = 1;
+    for (const Graphic3d_ClipPlane* aSubPlaneIter = aClipChain.get(); aSubPlaneIter != NULL; aSubPlaneIter = aSubPlaneIter->ChainNextPlane().get(), ++aSubPlaneIndex)
     {
-      // share and register for release once the resource is no longer used
-      aPlaneRes = new OpenGl_CappingPlaneResource (aRenderPlane);
-      aContext->ShareResource (aResId, aPlaneRes);
+      // get resource for the plane
+      const TCollection_AsciiString& aResId = aSubPlaneIter->GetId();
+      Handle(OpenGl_CappingPlaneResource) aPlaneRes;
+      if (!aContext->GetResource (aResId, aPlaneRes))
+      {
+        // share and register for release once the resource is no longer used
+        aPlaneRes = new OpenGl_CappingPlaneResource (aSubPlaneIter);
+        aContext->ShareResource (aResId, aPlaneRes);
+      }
+
+      renderCappingForStructure (theWorkspace, theStructure, aClipChain, aSubPlaneIndex, aPlaneRes);
+
+      // set delayed resource release
+      aPlaneRes.Nullify();
+      aContext->ReleaseResource (aResId, Standard_True);
     }
-
-    renderCappingForStructure (theWorkspace, theStructure, aCappingIt, aPlaneRes);
-
-    // set delayed resource release
-    aPlaneRes.Nullify();
-    aContext->ReleaseResource (aResId, Standard_True);
   }
 
   // restore previous application state

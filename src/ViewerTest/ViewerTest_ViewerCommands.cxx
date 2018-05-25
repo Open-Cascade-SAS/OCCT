@@ -8375,8 +8375,8 @@ static int VClipPlane (Draw_Interpretor& theDi, Standard_Integer theArgsNb, cons
     {
       aClipPlane->SetOn (toEnable);
     }
-    else if (aChangeArg == "-equation"
-          || aChangeArg == "equation")
+    else if (aChangeArg.StartsWith ("-equation")
+          || aChangeArg.StartsWith ("equation"))
     {
       if (aNbChangeArgs < 5)
       {
@@ -8384,12 +8384,73 @@ static int VClipPlane (Draw_Interpretor& theDi, Standard_Integer theArgsNb, cons
         return 1;
       }
 
-      Standard_Real aCoeffA = Draw::Atof (aChangeArgs [1]);
-      Standard_Real aCoeffB = Draw::Atof (aChangeArgs [2]);
-      Standard_Real aCoeffC = Draw::Atof (aChangeArgs [3]);
-      Standard_Real aCoeffD = Draw::Atof (aChangeArgs [4]);
-      aClipPlane->SetEquation (gp_Pln (aCoeffA, aCoeffB, aCoeffC, aCoeffD));
+      Standard_Integer aSubIndex = 1;
+      Standard_Integer aPrefixLen = 8 + (aChangeArg.Value (1) == '-' ? 1 : 0);
+      if (aPrefixLen < aChangeArg.Length())
+      {
+        TCollection_AsciiString aSubStr = aChangeArg.SubString (aPrefixLen + 1, aChangeArg.Length());
+        if (!aSubStr.IsIntegerValue()
+          || aSubStr.IntegerValue() <= 0)
+        {
+          std::cout << "Syntax error: unknown argument '" << aChangeArg << "'.\n";
+          return 1;
+        }
+        aSubIndex = aSubStr.IntegerValue();
+      }
+
+      Standard_Real aCoeffA = Draw::Atof (aChangeArgs[1]);
+      Standard_Real aCoeffB = Draw::Atof (aChangeArgs[2]);
+      Standard_Real aCoeffC = Draw::Atof (aChangeArgs[3]);
+      Standard_Real aCoeffD = Draw::Atof (aChangeArgs[4]);
+      Handle(Graphic3d_ClipPlane) aSubPln = aClipPlane;
+      for (Standard_Integer aSubPlaneIter = 1; aSubPlaneIter < aSubIndex; ++aSubPlaneIter)
+      {
+        if (aSubPln->ChainNextPlane().IsNull())
+        {
+          aSubPln->SetChainNextPlane (new Graphic3d_ClipPlane (*aSubPln));
+        }
+        aSubPln = aSubPln->ChainNextPlane();
+      }
+      aSubPln->SetChainNextPlane (Handle(Graphic3d_ClipPlane)());
+      aSubPln->SetEquation (gp_Pln (aCoeffA, aCoeffB, aCoeffC, aCoeffD));
       anArgIter += 4;
+    }
+    else if ((aChangeArg == "-boxinterior"
+           || aChangeArg == "-boxint"
+           || aChangeArg == "-box")
+            && aNbChangeArgs >= 7)
+    {
+      Graphic3d_BndBox3d aBndBox;
+      aBndBox.Add (Graphic3d_Vec3d (Draw::Atof (aChangeArgs[1]), Draw::Atof (aChangeArgs[2]), Draw::Atof (aChangeArgs[3])));
+      aBndBox.Add (Graphic3d_Vec3d (Draw::Atof (aChangeArgs[4]), Draw::Atof (aChangeArgs[5]), Draw::Atof (aChangeArgs[6])));
+      anArgIter += 6;
+
+      Standard_Integer aNbSubPlanes = 6;
+      const Graphic3d_Vec3d aDirArray[6] =
+      {
+        Graphic3d_Vec3d (-1, 0, 0),
+        Graphic3d_Vec3d ( 1, 0, 0),
+        Graphic3d_Vec3d ( 0,-1, 0),
+        Graphic3d_Vec3d ( 0, 1, 0),
+        Graphic3d_Vec3d ( 0, 0,-1),
+        Graphic3d_Vec3d ( 0, 0, 1),
+      };
+      Handle(Graphic3d_ClipPlane) aSubPln = aClipPlane;
+      for (Standard_Integer aSubPlaneIter = 0; aSubPlaneIter < aNbSubPlanes; ++aSubPlaneIter)
+      {
+        const Graphic3d_Vec3d& aDir = aDirArray[aSubPlaneIter];
+        const Standard_Real aW = -aDir.Dot ((aSubPlaneIter % 2 == 1) ? aBndBox.CornerMax() : aBndBox.CornerMin());
+        aSubPln->SetEquation (gp_Pln (aDir.x(), aDir.y(), aDir.z(), aW));
+        if (aSubPlaneIter + 1 == aNbSubPlanes)
+        {
+          aSubPln->SetChainNextPlane (Handle(Graphic3d_ClipPlane)());
+        }
+        else
+        {
+          aSubPln->SetChainNextPlane (new Graphic3d_ClipPlane (*aSubPln));
+        }
+        aSubPln = aSubPln->ChainNextPlane();
+      }
     }
     else if (aChangeArg == "-capping"
           || aChangeArg == "capping")
@@ -12300,7 +12361,9 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     __FILE__,VHLRType,group);
   theCommands.Add("vclipplane",
               "vclipplane planeName [{0|1}]"
-      "\n\t\t:   [-equation A B C D]"
+      "\n\t\t:   [-equation1 A B C D]"
+      "\n\t\t:   [-equation2 A B C D]"
+      "\n\t\t:   [-boxInterior MinX MinY MinZ MaxX MaxY MaxZ]"
       "\n\t\t:   [-set|-unset|-setOverrideGlobal [objects|views]]"
       "\n\t\t:   [-maxPlanes]"
       "\n\t\t:   [-capping {0|1}]"

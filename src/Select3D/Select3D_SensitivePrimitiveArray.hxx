@@ -19,6 +19,7 @@
 #include <Graphic3d_Buffer.hxx>
 #include <Graphic3d_IndexBuffer.hxx>
 #include <Graphic3d_TypeOfPrimitiveArray.hxx>
+#include <NCollection_Shared.hxx>
 #include <Select3D_SensitiveSet.hxx>
 #include <Select3D_BVHIndexBuffer.hxx>
 #include <TColStd_HPackedMapOfInteger.hxx>

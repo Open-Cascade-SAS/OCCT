@@ -414,6 +414,11 @@ protected:
     if (aNbPlanes > 0)
     {
       aBits |= OpenGl_PO_ClipPlanesN;
+      if (myContext->Clipping().HasClippingChains())
+      {
+        aBits |= OpenGl_PO_ClipChains;
+      }
+
       if (aNbPlanes == 1)
       {
         aBits |= OpenGl_PO_ClipPlanes1;
@@ -570,6 +575,29 @@ protected:
 
 protected:
 
+  //! Append clipping plane definition to temporary buffers.
+  void addClippingPlane (Standard_Integer& thePlaneId,
+                         const Graphic3d_ClipPlane& thePlane,
+                         const Graphic3d_Vec4d& theEq,
+                         const Standard_Integer theChainFwd) const
+  {
+    myClipChainArray.SetValue (thePlaneId, theChainFwd);
+    OpenGl_Vec4& aPlaneEq = myClipPlaneArray.ChangeValue (thePlaneId);
+    aPlaneEq.x() = float(theEq.x());
+    aPlaneEq.y() = float(theEq.y());
+    aPlaneEq.z() = float(theEq.z());
+    aPlaneEq.w() = float(theEq.w());
+    if (myHasLocalOrigin)
+    {
+      const gp_XYZ        aPos = thePlane.ToPlane().Position().Location().XYZ() - myLocalOrigin;
+      const Standard_Real aD   = -(theEq.x() * aPos.X() + theEq.y() * aPos.Y() + theEq.z() * aPos.Z());
+      aPlaneEq.w() = float(aD);
+    }
+    ++thePlaneId;
+  }
+
+protected:
+
   Handle(OpenGl_ShaderProgramFFP)    myFfpProgram;
 
   Graphic3d_TypeOfShadingModel       myShadingModel;       //!< lighting shading model
@@ -602,6 +630,7 @@ protected:
   mutable NCollection_Array1<OpenGl_ShaderLightParameters> myLightParamsArray;
   mutable NCollection_Array1<OpenGl_Vec4>                  myClipPlaneArray;
   mutable NCollection_Array1<OpenGl_Vec4d>                 myClipPlaneArrayFfp;
+  mutable NCollection_Array1<Standard_Integer>             myClipChainArray;
 
 private:
 

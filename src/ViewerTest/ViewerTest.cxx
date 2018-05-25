@@ -2626,8 +2626,13 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
 
   for (ViewTest_PrsIter aPrsIter (aNames); aPrsIter.More(); aPrsIter.Next())
   {
-    const TCollection_AsciiString& aName   = aPrsIter.CurrentName();
-    Handle(AIS_InteractiveObject)  aPrs    = aPrsIter.Current();
+    const TCollection_AsciiString& aName = aPrsIter.CurrentName();
+    Handle(AIS_InteractiveObject)  aPrs  = aPrsIter.Current();
+    if (aPrs.IsNull())
+    {
+      return 1;
+    }
+
     Handle(Prs3d_Drawer)           aDrawer = aPrs->Attributes();
     Handle(AIS_ColoredShape) aColoredPrs;
     Standard_Boolean toDisplay = Standard_False;

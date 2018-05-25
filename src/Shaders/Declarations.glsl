@@ -173,5 +173,6 @@ uniform               float     occAlphaCutoff;    //!< alpha test cutoff value
 //! Parameters of clipping planes
 #if defined(THE_MAX_CLIP_PLANES) && (THE_MAX_CLIP_PLANES > 0)
 uniform               vec4 occClipPlaneEquations[THE_MAX_CLIP_PLANES];
+uniform THE_PREC_ENUM int  occClipPlaneChains[THE_MAX_CLIP_PLANES]; //! Indicating the number of planes in the Chain
 uniform THE_PREC_ENUM int  occClipPlaneCount;   //!< Total number of clip planes
 #endif

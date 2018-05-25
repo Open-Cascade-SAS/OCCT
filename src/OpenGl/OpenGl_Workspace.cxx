@@ -280,20 +280,12 @@ const OpenGl_AspectFace* OpenGl_Workspace::ApplyAspectFace()
 {
   if (myView->BackfacingModel() == Graphic3d_TOBM_AUTOMATIC)
   {
-    // manage back face culling mode, disable culling when clipping is enabled
     bool toSuppressBackFaces = myToAllowFaceCulling
                             && myAspectFaceSet->Aspect()->ToSuppressBackFaces();
     if (toSuppressBackFaces)
     {
-      if (myGlContext->Clipping().IsClippingOrCappingOn()
-       || myAspectFaceSet->Aspect()->InteriorStyle() == Aspect_IS_HATCH)
-      {
-        toSuppressBackFaces = false;
-      }
-    }
-    if (toSuppressBackFaces)
-    {
-      if (myAspectFaceSet->Aspect()->AlphaMode() == Graphic3d_AlphaMode_Blend
+      if (myAspectFaceSet->Aspect()->InteriorStyle() == Aspect_IS_HATCH
+       || myAspectFaceSet->Aspect()->AlphaMode() == Graphic3d_AlphaMode_Blend
        || myAspectFaceSet->Aspect()->AlphaMode() == Graphic3d_AlphaMode_Mask
        || (myAspectFaceSet->Aspect()->AlphaMode() == Graphic3d_AlphaMode_BlendAuto
         && myAspectFaceSet->Aspect()->FrontMaterial().Transparency() != 0.0f))

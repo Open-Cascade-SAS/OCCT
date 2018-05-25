@@ -50,6 +50,7 @@ enum OpenGl_StateVariable
 
   // OpenGL clip planes state
   OpenGl_OCC_CLIP_PLANE_EQUATIONS,
+  OpenGl_OCC_CLIP_PLANE_CHAINS,
   OpenGl_OCC_CLIP_PLANE_COUNT,
 
   // OpenGL light state
@@ -224,7 +225,7 @@ public:
   Standard_Integer NbLightsMax() const { return myNbLightsMax; }
 
   //! Return the length of array of clipping planes (THE_MAX_CLIP_PLANES),
-  //! to be used for initialization occClipPlaneEquations (OpenGl_OCC_CLIP_PLANE_EQUATIONS).
+  //! to be used for initialization occClipPlaneEquations (OpenGl_OCC_CLIP_PLANE_EQUATIONS) and occClipPlaneChains (OpenGl_OCC_CLIP_PLANE_CHAINS).
   Standard_Integer NbClipPlanesMax() const { return myNbClipPlanesMax; }
 
   //! Return the length of array of Fragment Shader outputs (THE_NB_FRAG_OUTPUTS),

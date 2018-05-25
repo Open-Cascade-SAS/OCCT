@@ -122,7 +122,7 @@ public:
   //! @return true if depth writing is enabled.
   Standard_Boolean& UseDepthWrite() { return myUseDepthWrite; }
 
-  //! @return true if clipping algorithm enabled
+  //! @return true if frustum culling algorithm is enabled
   Standard_EXPORT Standard_Boolean IsCullingEnabled() const;
 
   //// RELATED TO STATUS ////
@@ -133,7 +133,12 @@ public:
   //! Allow or disallow face culling.
   //! This call does NOT affect current state of back face culling;
   //! ApplyAspectFace() should be called to update state.
-  void SetAllowFaceCulling (bool theToAllow) { myToAllowFaceCulling = theToAllow; }
+  bool SetAllowFaceCulling (bool theToAllow)
+  {
+    const bool wasAllowed = myToAllowFaceCulling;
+    myToAllowFaceCulling = theToAllow;
+    return wasAllowed;
+  }
 
   //! Return true if following structures should apply highlight color.
   bool ToHighlight() const { return !myHighlightStyle.IsNull(); }

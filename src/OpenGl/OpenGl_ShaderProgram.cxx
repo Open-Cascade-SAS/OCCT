@@ -56,6 +56,7 @@ Standard_CString OpenGl_ShaderProgram::PredefinedKeywords[] =
   "occProjectionMatrixInverseTranspose", // OpenGl_OCC_PROJECTION_MATRIX_INVERSE_TRANSPOSE
 
   "occClipPlaneEquations", // OpenGl_OCC_CLIP_PLANE_EQUATIONS
+  "occClipPlaneChains",    // OpenGl_OCC_CLIP_PLANE_CHAINS
   "occClipPlaneCount",     // OpenGl_OCC_CLIP_PLANE_COUNT
 
   "occLightSourcesCount",  // OpenGl_OCC_LIGHT_SOURCE_COUNT
