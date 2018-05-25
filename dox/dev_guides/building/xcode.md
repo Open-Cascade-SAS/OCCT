@@ -49,6 +49,13 @@ For instance, in Terminal application:
   $ ./genproj
 ~~~~~
 
+Option **-static** can be used with XCode to build static libraries.
+
+~~~~~
+  $ cd /dev/OCCT/opencascade-7.0.0
+  $ ./genproj xcd -static
+~~~~~
+
 @section build_xcode_build Building
 
 To start **Xcode**, launch script *xcode.sh*.
