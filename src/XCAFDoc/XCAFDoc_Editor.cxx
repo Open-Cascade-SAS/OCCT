@@ -46,6 +46,7 @@ Standard_Boolean XCAFDoc_Editor::Expand (const TDF_Label& Doc, const TDF_Label& 
   Handle(XCAFDoc_ColorTool) aColorTool = XCAFDoc_DocumentTool::ColorTool(Doc);
   Handle(XCAFDoc_LayerTool) aLayerTool = XCAFDoc_DocumentTool::LayerTool(Doc);
   Handle(XCAFDoc_ShapeTool) aShapeTool = XCAFDoc_DocumentTool::ShapeTool(Doc);
+  Standard_Boolean isAutoNaming = aShapeTool->AutoNaming();
   aShapeTool->SetAutoNaming(Standard_False);
 
   TopoDS_Shape aS = aShapeTool->GetShape(Shape);
@@ -91,10 +92,10 @@ Standard_Boolean XCAFDoc_Editor::Expand (const TDF_Label& Doc, const TDF_Label& 
           for (Standard_Integer i = 1; i <= aUsers.Length(); i++)
           {
             TDF_Label aSubLabel = aUsers.Value(i);
-            setParams(Doc, aSubLabel, aColors, aLayers, aName);
             //remove unnecessary links
             aSubLabel.ForgetAttribute(XCAFDoc::ShapeRefGUID());
             aSubLabel.ForgetAttribute(XCAFDoc_ShapeMapTool::GetID());
+            setParams(Doc, aSubLabel, aColors, aLayers, aName);
           }
           aChild.ForgetAllAttributes(Standard_False);
         }
@@ -116,8 +117,10 @@ Standard_Boolean XCAFDoc_Editor::Expand (const TDF_Label& Doc, const TDF_Label& 
         }
       }
     }
+    aShapeTool->SetAutoNaming(isAutoNaming);
     return Standard_True;
   }
+  aShapeTool->SetAutoNaming(isAutoNaming);
   return Standard_False;
 }
 

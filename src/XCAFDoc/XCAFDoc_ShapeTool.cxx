@@ -1057,24 +1057,34 @@ Standard_Boolean XCAFDoc_ShapeTool::FindSubShape (const TDF_Label &shapeL,
                                                   const TopoDS_Shape &sub,
                                                   TDF_Label &L) const
 {
-  // this code is used instead of the following for performance reasons
-  if ( TNaming_Tool::HasLabel(Label(), sub) ) {
+  if (sub.IsNull())
+    return Standard_False;
+
+  if (TNaming_Tool::HasLabel(Label(), sub)) {
     int TransDef = 0;
     L = TNaming_Tool::Label(Label(), sub, TransDef);
-    return ( ! L.IsNull() && L.Father() == shapeL );
+    if (L.IsNull())
+      return Standard_False;
+    if (L.Father() == shapeL)
+      return Standard_True;
+  }
+  else
+  {
+    return Standard_False;
   }
 
-/*
-  TDF_ChildIterator chldLabIt(shapeL);
-  for (; chldLabIt.More(); chldLabIt.Next() ) {
-    TDF_Label subLabel = chldLabIt.Value();
-    TopoDS_Shape S;
-    if ( GetShape ( subLabel, S ) && S.IsSame ( sub ) ) {
-      L = subLabel;
+  // if subshape was found wrong, try to do it manually
+  // it can be possible if several part shapes has the same subshapes
+  L = TDF_Label();
+  TDF_ChildIterator aChldLabIt(shapeL);
+  for (; aChldLabIt.More(); aChldLabIt.Next() ) {
+    TDF_Label aSubLabel = aChldLabIt.Value();
+    TopoDS_Shape aSubShape;
+    if (GetShape(aSubLabel, aSubShape) && aSubShape.IsSame(sub)) {
+      L = aSubLabel;
       return Standard_True;
     }
   }
-*/
   return Standard_False;
 }
 
@@ -1820,8 +1830,6 @@ Standard_Boolean XCAFDoc_ShapeTool::Expand (const TDF_Label& theShapeL)
                                     aShapeType == TopAbs_SHELL || aShapeType == TopAbs_WIRE;
   if (isExpandedType)
   {
-    //set assembly attribute
-    TDataStd_UAttribute::Set(theShapeL, XCAFDoc::AssemblyGUID());
     TopoDS_Iterator anIter(aShape);
     for(; anIter.More(); anIter.Next())
     {
@@ -1829,18 +1837,7 @@ Standard_Boolean XCAFDoc_ShapeTool::Expand (const TDF_Label& theShapeL)
       TDF_Label aChild, aPart;
 
       // Find child shape as subshape of expanded shape
-      if (!FindSubShape(theShapeL, aChildShape, aChild)) {
-        // Fast searchig using FindSubShape() can find only the first apparation, try to find manually
-        TDF_ChildIterator anIt(theShapeL);
-        for (; anIt.More(); anIt.Next()) {
-          TDF_Label aSubLabel = anIt.Value();
-          TopoDS_Shape aSubS;
-          if (GetShape(aSubLabel, aSubS) && aSubS.IsSame(aChildShape)) {
-            aChild = aSubLabel;
-            break;
-          }
-        }
-      }
+      FindSubShape(theShapeL, aChildShape, aChild);
       Handle(TDataStd_Name) anAttr;
       //make child (if color isn't set or if it is compound)
       if (aChild.IsNull()) {
@@ -1857,7 +1854,6 @@ Standard_Boolean XCAFDoc_ShapeTool::Expand (const TDF_Label& theShapeL)
         // Create new part to link child shape
         aPart = AddShape(aChildShape.Located(TopLoc_Location()), Standard_False, Standard_False);
       }
-
       // Add shape manually, if already existed subshape found instead of creation of new part
       if (!aPart.IsNull() && !IsTopLevel(aPart)) {
         if (!GetReferredShape(aPart, aPart)) {
@@ -1878,8 +1874,10 @@ Standard_Boolean XCAFDoc_ShapeTool::Expand (const TDF_Label& theShapeL)
         TDataStd_Name::Set(aPart, TCollection_ExtendedString(aName));
       }
       MakeReference(aChild, aPart, aChildShape.Location());
-      makeSubShape(aPart, aChildShape, aChildShape.Location());
+      makeSubShape(theShapeL, aPart, aChildShape, aChildShape.Location());
     }
+    //set assembly attribute
+    TDataStd_UAttribute::Set(theShapeL, XCAFDoc::AssemblyGUID());
     return Standard_True;
   }
   return Standard_False;
@@ -1890,17 +1888,18 @@ Standard_Boolean XCAFDoc_ShapeTool::Expand (const TDF_Label& theShapeL)
 //purpose  : 
 //=======================================================================
 
-void XCAFDoc_ShapeTool::makeSubShape (const TDF_Label& thePart,
+void XCAFDoc_ShapeTool::makeSubShape (const TDF_Label& theMainShapeL,
+                                      const TDF_Label& thePart,
                                       const TopoDS_Shape& theShape,
                                       const TopLoc_Location& theLoc)
 {
   TopoDS_Iterator anIter(theShape);
   Standard_Boolean isCompoundPart = (GetShape(thePart).ShapeType() == TopAbs_COMPOUND);
-
   for(; anIter.More(); anIter.Next()) {
     TopoDS_Shape aChildShape = anIter.Value();
-    TDF_Label aChildLabel = FindShape(aChildShape,Standard_True);
-    if(!aChildLabel.IsNull()) { 
+    TDF_Label aChildLabel;
+    FindSubShape(theMainShapeL, aChildShape, aChildLabel);
+    if(!aChildLabel.IsNull()) {
       //get name
       Handle(TDataStd_Name) anAttr;
       aChildLabel.FindAttribute(TDataStd_Name::GetID(), anAttr);
@@ -1929,7 +1928,7 @@ void XCAFDoc_ShapeTool::makeSubShape (const TDF_Label& thePart,
         aChildLabel.ForgetAllAttributes();
       }
     }
-    makeSubShape(thePart, aChildShape, theLoc);
+    makeSubShape(theMainShapeL, thePart, aChildShape, theLoc);
   }
 }
 

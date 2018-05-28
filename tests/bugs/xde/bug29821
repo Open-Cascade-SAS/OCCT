@@ -1,0 +1,47 @@
+puts "=========="
+puts "OCC29821"
+puts "=========="
+puts ""
+#############################################
+# Wrong processing of subshapes in ShapeTool
+#############################################
+pload ALL
+
+# create test document
+box b 1 1 1
+box bb 2 0 0 1 1 1
+compound b bb c
+XNewDoc D
+XAddShape D c 0
+# 0:1:1:1
+XAddShape D b
+# 0:1:1:2
+explode b f
+# b_1 b_2 b_3 b_4 b_5 b_6
+XAddSubShape D b_1 0:1:1:1
+# 0:1:1:1:1
+XAddSubShape D b_1 0:1:1:2
+# 0:1:1:2:1
+
+# FindSubShape check
+set first_find1 [XFindSubShape D b_1 0:1:1:1]
+if {$first_find1 != "0:1:1:1:1"} {
+  puts "Error: wrong subshape is found"
+}
+set first_find2 [XFindSubShape D b_1 0:1:1:2]
+if {$first_find2 != "0:1:1:2:1"} {
+  puts "Error: wrong subshape is found"
+}
+
+# FindSubShape check#2
+ForgetAll D 0:1:1:1:1
+set second_find1 [XFindSubShape D b_1 0:1:1:1]
+if {$second_find1 != ""} {
+  puts "Error: wrong subshape is found"
+}
+set second_find2 [XFindSubShape D b_1 0:1:1:2]
+if {$second_find2 != "0:1:1:2:1"} {
+  puts "Error: wrong subshape is found"
+}
+
+Close D

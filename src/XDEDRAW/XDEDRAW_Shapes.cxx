@@ -180,6 +180,61 @@ static Standard_Integer findShape (Draw_Interpretor& di, Standard_Integer argc, 
   return 0;
 }
 
+static Standard_Integer findSubShape(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+{
+  if (argc != 4) {
+    di << "Use: " << argv[0] << " DocName Shape ParentLabel\n";
+    return 1;
+  }
+  Handle(TDocStd_Document) aDoc;
+  DDocStd::GetDocument(argv[1], aDoc);
+  if (aDoc.IsNull()) {
+    di << argv[1] << " is not a document\n";
+    return 1;
+  }
+
+  TopoDS_Shape aShape;
+  aShape = DBRep::Get(argv[2]);
+
+  TDF_Label aParentLabel;
+  TDF_Tool::Label(aDoc->GetData(), argv[3], aParentLabel);
+
+  TDF_Label aLabel;
+  Handle(XCAFDoc_ShapeTool) aShapeTool = XCAFDoc_DocumentTool::ShapeTool(aDoc->Main());
+  aShapeTool->FindSubShape(aParentLabel, aShape, aLabel);
+
+  TCollection_AsciiString anEntry;
+  TDF_Tool::Entry(aLabel, anEntry);
+  di << anEntry.ToCString();
+  return 0;
+}
+
+static Standard_Integer addSubShape(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+{
+  if (argc != 4) {
+    di << "Use: " << argv[0] << " DocName Shape ParentLabel\n";
+    return 1;
+  }
+  Handle(TDocStd_Document) aDoc;
+  DDocStd::GetDocument(argv[1], aDoc);
+  if (aDoc.IsNull()) { di << argv[1] << " is not a document\n"; return 1; }
+
+  TopoDS_Shape aShape;
+  aShape = DBRep::Get(argv[2]);
+
+  TDF_Label aParentLabel;
+  TDF_Tool::Label(aDoc->GetData(), argv[3], aParentLabel);
+
+  TDF_Label aLabel;
+  Handle(XCAFDoc_ShapeTool) aShapeTool = XCAFDoc_DocumentTool::ShapeTool(aDoc->Main());
+  aLabel = aShapeTool->AddSubShape(aParentLabel, aShape);
+
+  TCollection_AsciiString anEntry;
+  TDF_Tool::Entry(aLabel, anEntry);
+  di << anEntry.ToCString();
+  return 0;
+}
+
 static Standard_Integer labelInfo (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc!=3) {
@@ -877,6 +932,12 @@ void XDEDRAW_Shapes::InitCommands(Draw_Interpretor& di)
 
   di.Add ("XFindShape","Doc Shape \t: Find and print label with indicated top-level shape",
                    __FILE__, findShape, g);
+
+  di.Add("XFindSubShape", "Doc Shape ParentLabel \t: Find subshape under given parent shape label",
+    __FILE__, findSubShape, g);
+
+  di.Add("XAddSubShape", "Doc Shape ParentLabel \t: Add subshape under given parent shape label",
+    __FILE__, addSubShape, g);
 
   di.Add ("XLabelInfo","Doc Label \t: Print information about object at following label",
                    __FILE__, labelInfo, g);

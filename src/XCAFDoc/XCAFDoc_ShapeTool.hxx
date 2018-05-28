@@ -407,10 +407,6 @@ public:
   //! Convert Shape (compound/compsolid/shell/wire) to assembly
   Standard_EXPORT Standard_Boolean Expand (const TDF_Label& Shape) ;
 
-    //! Make subshape for Part from Shape
-  Standard_EXPORT void makeSubShape (const TDF_Label& thePart, const TopoDS_Shape& theShape, const TopLoc_Location& theLoc) ;
-
-
 
   DEFINE_STANDARD_RTTIEXT(XCAFDoc_ShapeTool,TDF_Attribute)
 
@@ -434,6 +430,10 @@ private:
   //! Makes a shape on label L to be a reference to shape refL
   //! with location loc
   Standard_EXPORT static void MakeReference (const TDF_Label& L, const TDF_Label& refL, const TopLoc_Location& loc);
+
+  //! Auxiliary method for Expand
+  //! Make subshape for thePart from theShape after expanding theMainShapeL
+  Standard_EXPORT void makeSubShape(const TDF_Label& theMainShapeL, const TDF_Label& thePart, const TopoDS_Shape& theShape, const TopLoc_Location& theLoc);
 
   XCAFDoc_DataMapOfShapeLabel myShapeLabels;
   XCAFDoc_DataMapOfShapeLabel mySubShapes;
