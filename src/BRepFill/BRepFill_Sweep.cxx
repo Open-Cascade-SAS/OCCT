@@ -2092,11 +2092,11 @@ BRepFill_Sweep::BRepFill_Sweep(const Handle(BRepFill_SectionLaw)& Section,
   BRep_Builder B;
   Standard_Integer NbPath = ILast - IFirst;
   Standard_Integer NbLaw =  mySec->NbLaw();
-  Standard_Boolean uclose, vclose,  constSection, hasdegen = Standard_False;
+  Standard_Boolean uclose, vclose, global_vclose, constSection, hasdegen = Standard_False;
   constSection = mySec->IsConstant();
   uclose = mySec->IsUClosed();
-  vclose = (mySec->IsVClosed() && myLoc->IsClosed()) && 
-           (NbPath == myLoc->NbLaw()) && (myLoc->IsG1(0, myTol3d)>= 0);
+  global_vclose = (myLoc->IsClosed()) && (myLoc->IsG1(0, myTol3d)>= 0);
+  vclose = global_vclose && (mySec->IsVClosed()) && (NbPath == myLoc->NbLaw());
   Error = 0.;
 
   // (1) Construction of all surfaces
@@ -2675,7 +2675,10 @@ BRepFill_Sweep::BRepFill_Sweep(const Handle(BRepFill_SectionLaw)& Section,
 					   myTol3d);
 	else
         {
-          if (ipath != NbPath || vclose)
+          if (ipath != NbPath ||
+              vclose ||
+              (global_vclose && ILast == myLoc->NbLaw()+1))
+            
             UpdateEdge(TopoDS::Edge(VEdge(isec, ipath+1)), 
                        S, exuv, VLast);
           else //ipath == NbPath && !vclose => rebuild last edge
