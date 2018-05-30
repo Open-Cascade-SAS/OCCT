@@ -65,12 +65,12 @@ public:
     v[2] = theZ;
   }
 
-  //! Constructor from 2-components vector.
-  explicit NCollection_Vec3 (const NCollection_Vec2<Element_t>& theVec2)
+  //! Constructor from 2-components vector + optional 3rd value.
+  explicit NCollection_Vec3 (const NCollection_Vec2<Element_t>& theVec2, Element_t theZ = Element_t(0))
   {
     v[0] = theVec2[0];
     v[1] = theVec2[1];
-    v[2] = Element_t(0);
+    v[2] = theZ;
   }
 
   //! Assign new values to the vector.
@@ -80,6 +80,14 @@ public:
   {
     v[0] = theX;
     v[1] = theY;
+    v[2] = theZ;
+  }
+
+  //! Assign new values to the vector.
+  void SetValues (const NCollection_Vec2<Element_t>& theVec2, Element_t theZ)
+  {
+    v[0] = theVec2.x();
+    v[1] = theVec2.y();
     v[2] = theZ;
   }
 
@@ -126,18 +134,6 @@ public:
 
   //! Alias to 3rd component as BLUE channel in RGB.
   Element_t& b() { return v[2]; }
-
-  //! @return XY-components modifiable vector
-  NCollection_Vec2<Element_t>& xy()
-  {
-    return *((NCollection_Vec2<Element_t>* )&v[0]);
-  }
-
-  //! @return YZ-components modifiable vector
-  NCollection_Vec2<Element_t>& yz()
-  {
-    return *((NCollection_Vec2<Element_t>* )&v[1]);
-  }
 
   //! Check this vector with another vector for equality (without tolerance!).
   bool IsEqual (const NCollection_Vec3& theOther) const
@@ -295,7 +291,7 @@ public:
   }
 
   //! Compute per-component division by scale factor.
-  NCollection_Vec3 operator/ (const Element_t theInvFactor)
+  NCollection_Vec3 operator/ (const Element_t theInvFactor) const
   {
     NCollection_Vec3 aResult (*this);
     return aResult /= theInvFactor;

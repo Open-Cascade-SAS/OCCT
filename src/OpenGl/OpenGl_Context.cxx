@@ -3365,12 +3365,16 @@ void OpenGl_Context::SetTextureMatrix (const Handle(Graphic3d_TextureParams)& th
     }
 
     // pack transformation parameters
-    OpenGl_Vec4 aTrsf[2];
-    aTrsf[0].x()  = -theParams->Translation().x();
-    aTrsf[0].y()  = -theParams->Translation().y();
-    aTrsf[0].zw() = theParams->Scale();
-    aTrsf[1].x()  = std::sin (-theParams->Rotation() * static_cast<float> (M_PI / 180.0));
-    aTrsf[1].y()  = std::cos (-theParams->Rotation() * static_cast<float> (M_PI / 180.0));
+    OpenGl_Vec4 aTrsf[2] =
+    {
+      OpenGl_Vec4 (-theParams->Translation().x(),
+                   -theParams->Translation().y(),
+                    theParams->Scale().x(),
+                    theParams->Scale().y()),
+      OpenGl_Vec4 (static_cast<float> (std::sin (-theParams->Rotation() * M_PI / 180.0)),
+                   static_cast<float> (std::cos (-theParams->Rotation() * M_PI / 180.0)),
+                   0.0f, 0.0f)
+    };
     myActiveProgram->SetUniform (this, aUniLoc, 2, aTrsf);
     return;
   }

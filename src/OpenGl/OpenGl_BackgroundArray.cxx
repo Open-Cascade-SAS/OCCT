@@ -211,24 +211,24 @@ Standard_Boolean OpenGl_BackgroundArray::createGradientArray() const
   {
     case Aspect_GFM_HOR:
     {
-      aCorners[0] = myGradientParams.color2.xyz().ChangeData();
-      aCorners[1] = myGradientParams.color2.xyz().ChangeData();
-      aCorners[2] = myGradientParams.color1.xyz().ChangeData();
-      aCorners[3] = myGradientParams.color1.xyz().ChangeData();
+      aCorners[0] = myGradientParams.color2.ChangeData();
+      aCorners[1] = myGradientParams.color2.ChangeData();
+      aCorners[2] = myGradientParams.color1.ChangeData();
+      aCorners[3] = myGradientParams.color1.ChangeData();
       break;
     }
     case Aspect_GFM_VER:
     {
-      aCorners[0] = myGradientParams.color2.xyz().ChangeData();
-      aCorners[1] = myGradientParams.color1.xyz().ChangeData();
-      aCorners[2] = myGradientParams.color2.xyz().ChangeData();
-      aCorners[3] = myGradientParams.color1.xyz().ChangeData();
+      aCorners[0] = myGradientParams.color2.ChangeData();
+      aCorners[1] = myGradientParams.color1.ChangeData();
+      aCorners[2] = myGradientParams.color2.ChangeData();
+      aCorners[3] = myGradientParams.color1.ChangeData();
       break;
     }
     case Aspect_GFM_DIAG1:
     {
-      aCorners[0] = myGradientParams.color2.xyz().ChangeData();
-      aCorners[3] = myGradientParams.color1.xyz().ChangeData();
+      aCorners[0] = myGradientParams.color2.ChangeData();
+      aCorners[3] = myGradientParams.color1.ChangeData();
       aDiagCorner1[0] = aDiagCorner2[0] = 0.5f * (aCorners[0][0] + aCorners[3][0]);
       aDiagCorner1[1] = aDiagCorner2[1] = 0.5f * (aCorners[0][1] + aCorners[3][1]);
       aDiagCorner1[2] = aDiagCorner2[2] = 0.5f * (aCorners[0][2] + aCorners[3][2]);
@@ -238,8 +238,8 @@ Standard_Boolean OpenGl_BackgroundArray::createGradientArray() const
     }
     case Aspect_GFM_DIAG2:
     {
-      aCorners[1] = myGradientParams.color1.xyz().ChangeData();
-      aCorners[2] = myGradientParams.color2.xyz().ChangeData();
+      aCorners[1] = myGradientParams.color1.ChangeData();
+      aCorners[2] = myGradientParams.color2.ChangeData();
       aDiagCorner1[0] = aDiagCorner2[0] = 0.5f * (aCorners[1][0] + aCorners[2][0]);
       aDiagCorner1[1] = aDiagCorner2[1] = 0.5f * (aCorners[1][1] + aCorners[2][1]);
       aDiagCorner1[2] = aDiagCorner2[2] = 0.5f * (aCorners[1][2] + aCorners[2][2]);
@@ -254,18 +254,18 @@ Standard_Boolean OpenGl_BackgroundArray::createGradientArray() const
       aVertices[2] = OpenGl_Vec2(float(myViewWidth), 0.0f);
       aVertices[3] = OpenGl_Vec2(0.0f,               0.0f);
 
-      aCorners[0] = myGradientParams.color2.xyz().ChangeData();
-      aCorners[1] = myGradientParams.color1.xyz().ChangeData();
-      aCorners[2] = myGradientParams.color2.xyz().ChangeData();
-      aCorners[3] = myGradientParams.color2.xyz().ChangeData();
+      aCorners[0] = myGradientParams.color2.ChangeData();
+      aCorners[1] = myGradientParams.color1.ChangeData();
+      aCorners[2] = myGradientParams.color2.ChangeData();
+      aCorners[3] = myGradientParams.color2.ChangeData();
       break;
     }
     case Aspect_GFM_CORNER2:
     {
-      aCorners[0] = myGradientParams.color2.xyz().ChangeData();
-      aCorners[1] = myGradientParams.color1.xyz().ChangeData();
-      aCorners[2] = myGradientParams.color2.xyz().ChangeData();
-      aCorners[3] = myGradientParams.color2.xyz().ChangeData();
+      aCorners[0] = myGradientParams.color2.ChangeData();
+      aCorners[1] = myGradientParams.color1.ChangeData();
+      aCorners[2] = myGradientParams.color2.ChangeData();
+      aCorners[3] = myGradientParams.color2.ChangeData();
       break;
     }
     case Aspect_GFM_CORNER3:
@@ -275,18 +275,18 @@ Standard_Boolean OpenGl_BackgroundArray::createGradientArray() const
       aVertices[2] = OpenGl_Vec2(float(myViewWidth), 0.0f);
       aVertices[3] = OpenGl_Vec2(0.0f,               0.0f);
 
-      aCorners[0] = myGradientParams.color2.xyz().ChangeData();
-      aCorners[1] = myGradientParams.color2.xyz().ChangeData();
-      aCorners[2] = myGradientParams.color1.xyz().ChangeData();
-      aCorners[3] = myGradientParams.color2.xyz().ChangeData();
+      aCorners[0] = myGradientParams.color2.ChangeData();
+      aCorners[1] = myGradientParams.color2.ChangeData();
+      aCorners[2] = myGradientParams.color1.ChangeData();
+      aCorners[3] = myGradientParams.color2.ChangeData();
       break;
     }
     case Aspect_GFM_CORNER4:
     {
-      aCorners[0] = myGradientParams.color2.xyz().ChangeData();
-      aCorners[1] = myGradientParams.color2.xyz().ChangeData();
-      aCorners[2] = myGradientParams.color1.xyz().ChangeData();
-      aCorners[3] = myGradientParams.color2.xyz().ChangeData();
+      aCorners[0] = myGradientParams.color2.ChangeData();
+      aCorners[1] = myGradientParams.color2.ChangeData();
+      aCorners[2] = myGradientParams.color1.ChangeData();
+      aCorners[3] = myGradientParams.color2.ChangeData();
       break;
     }
     case Aspect_GFM_NONE:

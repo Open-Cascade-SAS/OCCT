@@ -219,8 +219,7 @@ void OpenGl_Text::Init (const Handle(OpenGl_Context)&     theCtx,
   }
   myIs2d       = true;
   myParams     = theParams;
-  myPoint.xy() = thePoint;
-  myPoint.z()  = 0.0f;
+  myPoint.SetValues (thePoint, 0.0f);
   myString.FromUnicode (theText.ToExtString());
 }
 

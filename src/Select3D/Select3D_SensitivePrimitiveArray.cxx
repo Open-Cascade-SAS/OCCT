@@ -365,7 +365,7 @@ bool Select3D_SensitivePrimitiveArray::InitTriangulation (const Handle(Graphic3d
       const Graphic3d_Vec2& aNode1 = getPosVec2 (aTriNodes[0]);
       const Graphic3d_Vec2& aNode2 = getPosVec2 (aTriNodes[1]);
       const Graphic3d_Vec2& aNode3 = getPosVec2 (aTriNodes[2]);
-      aCenter.xy() += (aNode1 + aNode2 + aNode3) / 3.0;
+      aCenter += Graphic3d_Vec3((aNode1 + aNode2 + aNode3) / 3.0);
     }
     if (myBvhIndices.HasPatches())
     {
@@ -543,7 +543,7 @@ bool Select3D_SensitivePrimitiveArray::InitPoints (const Handle(Graphic3d_Buffer
     else
     {
       aPnt2d = &getPosVec2 (aPointIndex);
-      aCenter.xy() += *aPnt2d;
+      aCenter += Graphic3d_Vec3(*aPnt2d);
     }
 
     if (myBvhIndices.HasPatches())

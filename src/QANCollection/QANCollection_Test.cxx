@@ -1143,10 +1143,49 @@ static Standard_Integer QATestAtof (Draw_Interpretor& di, Standard_Integer argc,
   return 0;
 }
 
+// Test operations with NCollection_Vec4 that caused generation of invalid code by GCC
+// due to reinterpret_cast conversions of Vec4 internal buffer to Vec3 (see #29825)
+static Standard_Integer QANColTestVec4 (Draw_Interpretor& theDI, Standard_Integer /*theNbArgs*/, const char** /*theArgVec*/)
+{
+  NCollection_Mat4<float> aMatrix;
+  aMatrix.Translate (NCollection_Vec3<float> (4.0f, 3.0f, 1.0f));
+
+  NCollection_Vec4<float> aPoints1[8];
+  for (int aX = 0; aX < 2; ++aX)
+  {
+    for (int aY = 0; aY < 2; ++aY)
+    {
+      for (int aZ = 0; aZ < 2; ++aZ)
+      {
+        aPoints1[aX * 2 * 2 + aY * 2 + aZ] = NCollection_Vec4<float> (-1.0f + 2.0f * float(aX),
+                                                                      -1.0f + 2.0f * float(aY),
+                                                                      -1.0f + 2.0f * float(aZ),
+                                                                       1.0f);
+      }
+    }
+  }
+
+  NCollection_Vec3<float> aPoints2[8];
+  for (int aPntIdx = 0; aPntIdx < 8; ++aPntIdx)
+  {
+    // NB: the evaluation of line below could be dropped by GCC optimizer
+    // while retrieving xyz() value the line after
+    aPoints1[aPntIdx] = aMatrix * aPoints1[aPntIdx];
+    aPoints2[aPntIdx] = aPoints1[aPntIdx].xyz() / aPoints1[aPntIdx].w();
+    //aPoints2[aPntIdx] = NCollection_Vec3<float> (aPoints1[aPntIdx].x(), aPoints1[aPntIdx].y(), aPoints1[aPntIdx].z()) / aPoints1[aPntIdx].w();
+  }
+
+  for (int aPntIter = 0; aPntIter < 8; ++aPntIter) { theDI << aPoints2[aPntIter].SquareModulus() << " "; }
+  if ((int )(aPoints2[7].SquareModulus() + 0.5f) != 45)
+  {
+    theDI << "Error: method 'NCollection_Vec4::xyz()' failed.";
+  }
+  return 0;
+}
+
 void QANCollection::CommandsTest(Draw_Interpretor& theCommands) {
   const char *group = "QANCollection";
 
-  // from agvCollTest/src/CollectionEXE/FuncTestEXE.cxx
   theCommands.Add("QANColTestArray1",         "QANColTestArray1 Lower Upper",
     __FILE__, QANColTestArray1, group);
   theCommands.Add("QANColTestArray2",         "QANColTestArray2 LowerRow UpperRow LowerCol UpperCol",
@@ -1160,5 +1199,6 @@ void QANCollection::CommandsTest(Draw_Interpretor& theCommands) {
   theCommands.Add("QANColTestSequence",       "QANColTestSequence",       __FILE__, QANColTestSequence,       group);  
   theCommands.Add("QANColTestVector",         "QANColTestVector",         __FILE__, QANColTestVector,         group);  
   theCommands.Add("QANColTestArrayMove",      "QANColTestArrayMove (is expected to give error)", __FILE__, QANColTestArrayMove, group);  
+  theCommands.Add("QANColTestVec4",           "QANColTestVec4 test Vec4 implementation", __FILE__, QANColTestVec4, group);
   theCommands.Add("QATestAtof", "QATestAtof [nbvalues [nbdigits [min [max]]]]", __FILE__, QATestAtof, group);
 }

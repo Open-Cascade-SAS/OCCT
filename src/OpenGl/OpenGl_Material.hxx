@@ -39,8 +39,8 @@ struct OpenGl_Material
   void SetColor (const OpenGl_Vec4& theColor)
   {
     // apply the same formula as in Graphic3d_MaterialAspect::SetColor()
-    Ambient.xyz() = theColor.rgb() * 0.25f;
-    Diffuse.xyz() = theColor.rgb();
+    Ambient.SetValues (theColor.rgb() * 0.25f, Ambient.a());
+    Diffuse.SetValues (theColor.rgb(), Diffuse.a());
   }
 
   //! Initialize material

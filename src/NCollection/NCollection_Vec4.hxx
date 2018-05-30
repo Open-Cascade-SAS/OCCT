@@ -66,18 +66,11 @@ public:
     v[2] = v[3] = Element_t (0);
   }
 
-  //! Constructor from 3-components vector.
-  explicit NCollection_Vec4(const NCollection_Vec3<Element_t>& theVec3)
+  //! Constructor from 3-components vector + optional 4th value.
+  explicit NCollection_Vec4(const NCollection_Vec3<Element_t>& theVec3, const Element_t theW = Element_t(0))
   {
     std::memcpy (this, &theVec3, sizeof(NCollection_Vec3<Element_t>));
-    v[3] = Element_t (0);
-  }
-
-  //! Constructor from 3-components vector + alpha value.
-  explicit NCollection_Vec4(const NCollection_Vec3<Element_t>& theVec3,
-                            const Element_t                    theAlpha) {
-    std::memcpy (this, &theVec3, sizeof(NCollection_Vec3<Element_t>));
-    v[3] = theAlpha;
+    v[3] = theW;
   }
 
   //! Assign new values to the vector.
@@ -89,6 +82,15 @@ public:
     v[0] = theX;
     v[1] = theY;
     v[2] = theZ;
+    v[3] = theW;
+  }
+
+  //! Assign new values as 3-component vector and a 4-th value.
+  void SetValues (const NCollection_Vec3<Element_t>& theVec3, const Element_t theW)
+  {
+    v[0] = theVec3.x();
+    v[1] = theVec3.y();
+    v[2] = theVec3.z();
     v[3] = theW;
   }
 
@@ -156,36 +158,6 @@ public:
 
   //! Alias to 4th component as ALPHA channel in RGBA.
   Element_t& a() { return v[3]; }
-
-  //! @return XY-components modifiable vector
-  NCollection_Vec2<Element_t>& xy()
-  {
-    return *((NCollection_Vec2<Element_t>* )&v[0]);
-  }
-
-  //! @return YZ-components modifiable vector
-  NCollection_Vec2<Element_t>& yz()
-  {
-    return *((NCollection_Vec2<Element_t>* )&v[1]);
-  }
-
-  //! @return YZ-components modifiable vector
-  NCollection_Vec2<Element_t>& zw()
-  {
-    return *((NCollection_Vec2<Element_t>* )&v[2]);
-  }
-
-  //! @return XYZ-components modifiable vector
-  NCollection_Vec3<Element_t>& xyz()
-  {
-    return *((NCollection_Vec3<Element_t>* )&v[0]);
-  }
-
-  //! @return YZW-components modifiable vector
-  NCollection_Vec3<Element_t>& yzw()
-  {
-    return *((NCollection_Vec3<Element_t>* )&v[1]);
-  }
 
   //! Check this vector with another vector for equality (without tolerance!).
   bool IsEqual (const NCollection_Vec4& theOther) const
