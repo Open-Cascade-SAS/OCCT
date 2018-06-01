@@ -273,7 +273,7 @@ public:
   
   //! Adds a component given by its label and location to the assembly
   //! Note: assembly must be IsAssembly() or IsSimpleShape()
-  Standard_EXPORT TDF_Label AddComponent (const TDF_Label& assembly, const TDF_Label& comp, const TopLoc_Location& Loc) const;
+  Standard_EXPORT TDF_Label AddComponent (const TDF_Label& assembly, const TDF_Label& comp, const TopLoc_Location& Loc);
   
   //! Adds a shape (located) as a component to the assembly
   //! If necessary, creates an additional top-level shape for

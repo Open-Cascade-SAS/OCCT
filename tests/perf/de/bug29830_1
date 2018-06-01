@@ -1,0 +1,2 @@
+set use_sharing 1
+source "$dirname/$groupname/$gridname/bug29830_dir/script"

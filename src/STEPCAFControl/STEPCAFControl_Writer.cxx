@@ -937,7 +937,9 @@ static Standard_Boolean getStyledItem(const TopoDS_Shape& S,
     // search for PSA of Monifold solid
     if ( !anSelItmHArr.IsNull() )
     {
-      for (Standard_Integer si = 1; si <= anSelItmHArr->Length(); si++) {
+      TColStd_SequenceOfTransient aNewseqRI;
+      Standard_Boolean isFilled = Standard_False;
+      for (Standard_Integer si = 1; si <= anSelItmHArr->Length() && !found; si++) {
         Handle(StepVisual_StyledItem) aSelItm =
           Handle(StepVisual_StyledItem)::DownCast(anSelItmHArr->Value(si));
 
@@ -945,13 +947,16 @@ static Standard_Boolean getStyledItem(const TopoDS_Shape& S,
           continue;
 
         // check that it is a stiled item for monifold solid brep
-        TopLoc_Location Loc;
-        TColStd_SequenceOfTransient aNewseqRI;
-        FindEntities ( Styles.FinderProcess(), aTopLevSh, Loc, aNewseqRI );
+        if (!isFilled)
+        {
+          TopLoc_Location Loc;
+          FindEntities(Styles.FinderProcess(), aTopLevSh, Loc, aNewseqRI);
+          isFilled = Standard_True;
+        }
         if ( aNewseqRI.Length() > 0 )
         {
           
-          Handle(StepRepr_RepresentationItem) anItem = aSelItm->Item();
+          const Handle(StepRepr_RepresentationItem)& anItem = aSelItm->Item();
           Standard_Boolean isSameMonSolBR = Standard_False;
           for (Standard_Integer mi = 1; mi <= aNewseqRI.Length(); mi++) {
             if ( !anItem.IsNull() && anItem == aNewseqRI.Value( mi ) ) {
@@ -965,7 +970,7 @@ static Standard_Boolean getStyledItem(const TopoDS_Shape& S,
         
         
         for (Standard_Integer jsi = 1; jsi <= aSelItm->NbStyles() && !found; jsi++) {
-          Handle(StepVisual_PresentationStyleAssignment) aFatherPSA = aSelItm->StylesValue(jsi);
+          const Handle(StepVisual_PresentationStyleAssignment)& aFatherPSA = aSelItm->StylesValue(jsi);
           // check for PSA for top-level (not Presentation style by contex for NAUO)
           if (aFatherPSA.IsNull() || aFatherPSA->IsKind(STANDARD_TYPE(StepVisual_PresentationStyleByContext)))
             continue;

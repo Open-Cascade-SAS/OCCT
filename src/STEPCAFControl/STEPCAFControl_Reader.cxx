@@ -658,7 +658,7 @@ Standard_Boolean STEPCAFControl_Reader::Transfer (STEPControl_Reader &reader,
   
   // read colors
   if ( GetColorMode() )
-    ReadColors ( reader.WS(), doc, PDFileMap, map );
+    ReadColors ( reader.WS(), doc, map );
   
   // read names
   if ( GetNameMode() )
@@ -737,7 +737,7 @@ TDF_Label STEPCAFControl_Reader::AddShape (const TopoDS_Shape &S,
   Standard_Boolean isAssembly = Standard_False;
   Standard_Integer nbComponents = 0;
   TopoDS_Iterator it;
-  for ( it.Initialize(S); it.More(); it.Next(), nbComponents++ ) {
+  for ( it.Initialize(S); it.More() && !isAssembly; it.Next(), nbComponents++ ) {
     TopoDS_Shape Sub0 = it.Value();
     TopLoc_Location loc;
     Sub0.Location ( loc );
@@ -781,13 +781,15 @@ TDF_Label STEPCAFControl_Reader::AddShape (const TopoDS_Shape &S,
   
   // or as assembly, component-by-component
   TDF_Label L = STool->NewShape();
+  nbComponents = 0;
   for ( it.Initialize(S); it.More(); it.Next(), nbComponents++ ) {
     TopoDS_Shape Sub0 = it.Value();
     TopLoc_Location loc;
     Sub0.Location ( loc );
     TDF_Label subL = AddShape ( Sub0, STool, NewShapesMap, ShapePDMap, PDFileMap, ShapeLabelMap );
     if ( ! subL.IsNull() ) {
-      STool->AddComponent ( L, subL, it.Value().Location() );
+      TDF_Label instL = STool->AddComponent ( L, subL, it.Value().Location() );
+      ShapeLabelMap.Bind(it.Value(), instL);
     }
   }
   if ( SHAS.Length() >0 ) STool->SetExternRefs(L,SHAS);
@@ -841,21 +843,6 @@ Handle(STEPCAFControl_ExternFile) STEPCAFControl_Reader::ReadExternFile (const S
   return EF;
 }
 
-
-//=======================================================================
-//function : SetColorToSubshape
-//purpose  : auxilary
-//=======================================================================
-static void SetColorToSubshape(const Handle(XCAFDoc_ColorTool) & CTool,
-			       const TopoDS_Shape & S,
-			       const Quantity_Color& col,
-			       const XCAFDoc_ColorType type)
-{
-  for (TopoDS_Iterator it(S); it.More(); it.Next())
-    if (! CTool->SetColor( it.Value(), col, type)) break;
-}
-
-
 //=======================================================================
 //function : findStyledSR
 //purpose  : auxilary
@@ -886,8 +873,7 @@ static void findStyledSR (const Handle(StepVisual_StyledItem) &style,
 //=======================================================================
 
 Standard_Boolean STEPCAFControl_Reader::ReadColors (const Handle(XSControl_WorkSession) &WS,
-						    Handle(TDocStd_Document)& Doc,
-                                                    const STEPCAFControl_DataMapOfPDExternFile &PDFileMap,
+                                                    Handle(TDocStd_Document)& Doc,
                                                     const XCAFDoc_DataMapOfShapeLabel &ShapeLabelMap) const
 {
   STEPConstruct_Styles Styles ( WS );
@@ -903,6 +889,8 @@ Standard_Boolean STEPCAFControl_Reader::ReadColors (const Handle(XSControl_WorkS
   
   Handle(XCAFDoc_ColorTool) CTool = XCAFDoc_DocumentTool::ColorTool( Doc->Main() );
   if ( CTool.IsNull() ) return Standard_False;
+  Handle(XCAFDoc_ShapeTool) STool = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
+  if (STool.IsNull()) return Standard_False;
 
   // parse and search for color attributes
   Standard_Integer nb = Styles.NbStyles();
@@ -979,7 +967,7 @@ Standard_Boolean STEPCAFControl_Reader::ReadColors (const Handle(XSControl_WorkS
           TopoDS_Shape aSh;
           // PTV 10.02.2003 to find component of assembly CORRECTLY
           STEPConstruct_Tool Tool( WS );
-          TDF_Label aShLab = FindInstance ( NAUO, CTool->ShapeTool(), Tool, PDFileMap, ShapeLabelMap );
+          TDF_Label aShLab = FindInstance ( NAUO, CTool->ShapeTool(), Tool, ShapeLabelMap );
           aSh = CTool->ShapeTool()->GetShape(aShLab);
           if (!aSh.IsNull()) {
             S = aSh;
@@ -994,29 +982,51 @@ Standard_Boolean STEPCAFControl_Reader::ReadColors (const Handle(XSControl_WorkS
       if ( S.IsNull() )
         continue;
       
-      if ( ! SurfCol.IsNull() ) {
-        Quantity_Color col;
-        Styles.DecodeColor ( SurfCol, col );
-        if ( ! CTool->SetColor ( S, col, XCAFDoc_ColorSurf ))
-          SetColorToSubshape( CTool, S, col, XCAFDoc_ColorSurf );
-      }
-      if ( ! BoundCol.IsNull() ) {
-        Quantity_Color col;
-        Styles.DecodeColor ( BoundCol, col );
-        if ( ! CTool->SetColor ( S, col, XCAFDoc_ColorCurv ))
-          SetColorToSubshape(  CTool, S, col, XCAFDoc_ColorCurv );
-      }
-      if ( ! CurveCol.IsNull() ) {
-        Quantity_Color col;
-        Styles.DecodeColor ( CurveCol, col );
-        if ( ! CTool->SetColor ( S, col, XCAFDoc_ColorCurv ))
-          SetColorToSubshape(  CTool, S, col, XCAFDoc_ColorCurv );
-      }
-      if ( !IsVisible ) {
-        // sets the invisibility for shape.
-        TDF_Label aInvL;
-        if ( CTool->ShapeTool()->Search( S, aInvL ) )
-          CTool->SetVisibility( aInvL, Standard_False );
+      if (!SurfCol.IsNull() || !BoundCol.IsNull() || !CurveCol.IsNull() || !IsVisible)
+      {
+        TDF_Label aL;
+        Standard_Boolean isFound = STool->SearchUsingMap(S, aL, Standard_False, Standard_True);
+        if (!SurfCol.IsNull() || !BoundCol.IsNull() || !CurveCol.IsNull())
+        {
+          Quantity_Color aSCol, aBCol, aCCol;
+          if (!SurfCol.IsNull())
+            Styles.DecodeColor(SurfCol, aSCol);
+          if (!BoundCol.IsNull())
+            Styles.DecodeColor(BoundCol, aBCol);
+          if (!CurveCol.IsNull())
+            Styles.DecodeColor(CurveCol, aCCol);
+          if (isFound)
+          {
+            if (!SurfCol.IsNull())
+              CTool->SetColor(aL, aSCol, XCAFDoc_ColorSurf);
+            if (!BoundCol.IsNull())
+              CTool->SetColor(aL, aBCol, XCAFDoc_ColorCurv);
+            if (!CurveCol.IsNull())
+              CTool->SetColor(aL, aCCol, XCAFDoc_ColorCurv);
+          }
+          else
+          {
+            for (TopoDS_Iterator it(S); it.More(); it.Next())
+            {
+              TDF_Label aL1;
+              if (STool->SearchUsingMap(it.Value(), aL1, Standard_False, Standard_True))
+              {
+                if (!SurfCol.IsNull())
+                  CTool->SetColor(aL1, aSCol, XCAFDoc_ColorSurf);
+                if (!BoundCol.IsNull())
+                  CTool->SetColor(aL1, aBCol, XCAFDoc_ColorCurv);
+                if (!CurveCol.IsNull())
+                  CTool->SetColor(aL1, aCCol, XCAFDoc_ColorCurv);
+              }
+            }
+          }
+        }
+        if (!IsVisible)
+        {
+          // sets the invisibility for shape.
+          if (isFound)
+            CTool->SetVisibility(aL, Standard_False);
+        }
       }
     }
   }
@@ -1050,7 +1060,6 @@ static TDF_Label GetLabelFromPD (const Handle(StepBasic_ProductDefinition) &PD,
   S = TransferBRep::ShapeResult ( TP, binder );
   if ( S.IsNull() ) return L;
 
-  if ( S.IsNull() ) return L;
   if ( ShapeLabelMap.IsBound ( S ) )
     L = ShapeLabelMap.Find ( S );
   if ( L.IsNull() )
@@ -1066,7 +1075,6 @@ static TDF_Label GetLabelFromPD (const Handle(StepBasic_ProductDefinition) &PD,
 TDF_Label STEPCAFControl_Reader::FindInstance (const Handle(StepRepr_NextAssemblyUsageOccurrence) &NAUO,
 					       const Handle(XCAFDoc_ShapeTool) &STool,
 					       const STEPConstruct_Tool &Tool,
-					       const STEPCAFControl_DataMapOfPDExternFile &PDFileMap,
 					       const XCAFDoc_DataMapOfShapeLabel &ShapeLabelMap)
 {
   TDF_Label L;
@@ -1089,50 +1097,11 @@ TDF_Label STEPCAFControl_Reader::FindInstance (const Handle(StepRepr_NextAssembl
     return L;
   }
 
-  // find component`s original label
-  Handle(StepBasic_ProductDefinition) PD = NAUO->RelatedProductDefinition();
-  if ( PD.IsNull() ) return L;
-  TDF_Label Lref = GetLabelFromPD ( PD, STool, TP, PDFileMap, ShapeLabelMap );
-  if ( Lref.IsNull() ) return L;
-  
-  // find main shape (assembly) label
-  PD.Nullify();
-  PD = NAUO->RelatingProductDefinition();
-  if ( PD.IsNull() ) return L;
-  TDF_Label L0 = GetLabelFromPD ( PD, STool, TP, PDFileMap, ShapeLabelMap );
-  if ( L0.IsNull() ) return L;
-  
-  // if CDSR and NAUO are reversed, swap labels
-  Handle(StepShape_ContextDependentShapeRepresentation) CDSR;
-  Interface_EntityIterator subs1 = Tool.Graph().Sharings(NAUO);
-  for (subs1.Start(); subs1.More(); subs1.Next()) {
-    Handle(StepRepr_ProductDefinitionShape) PDS = 
-      Handle(StepRepr_ProductDefinitionShape)::DownCast(subs1.Value());
-    if(PDS.IsNull()) continue;
-    Interface_EntityIterator subs2 = Tool.Graph().Sharings(PDS);
-    for (subs2.Start(); subs2.More(); subs2.Next()) {
-      Handle(StepShape_ContextDependentShapeRepresentation) CDSRtmp = 
-        Handle(StepShape_ContextDependentShapeRepresentation)::DownCast(subs2.Value());
-      if (CDSRtmp.IsNull()) continue;
-      CDSR = CDSRtmp;
-    }
-  }
-  if (CDSR.IsNull()) return L;
-//  if ( STEPConstruct_Assembly::CheckSRRReversesNAUO ( Tool.Model(), CDSR ) ) {
-//    TDF_Label Lsw = L0; L0 = Lref; Lref = Lsw;
-//  }
-  
-  // iterate on components to find proper one
-  TDF_LabelSequence seq;
-  XCAFDoc_ShapeTool::GetComponents ( L0, seq );
-  for ( Standard_Integer k=1; L.IsNull() && k <= seq.Length(); k++ ) {
-    TDF_Label Lcomp = seq(k), Lref2;
-    if ( XCAFDoc_ShapeTool::GetReferredShape ( Lcomp, Lref2 ) && 
-	Lref2 == Lref &&
-	S.Location() == XCAFDoc_ShapeTool::GetLocation ( Lcomp ) ) 
-      L = Lcomp;
-  }
-  
+  if (ShapeLabelMap.IsBound(S))
+    L = ShapeLabelMap(S);
+  else
+    STool->Search(S, L, Standard_True, Standard_True, Standard_False);
+
   return L;
 }
 
@@ -1183,7 +1152,7 @@ Standard_Boolean STEPCAFControl_Reader::ReadNames (const Handle(XSControl_WorkSe
         else name = new TCollection_HAsciiString;
       }
       // find proper label
-      L = FindInstance ( NAUO, STool, Tool, PDFileMap, ShapeLabelMap );
+      L = FindInstance ( NAUO, STool, Tool, ShapeLabelMap );
       if ( L.IsNull() ) continue;
       TCollection_ExtendedString str ( name->String() );
       TDataStd_Name::Set ( L, str );
@@ -1293,7 +1262,7 @@ Standard_Boolean STEPCAFControl_Reader::ReadValProps (const Handle(XSControl_Wor
             NAUO = Handle(StepRepr_NextAssemblyUsageOccurrence)::DownCast(subs1.Value());
         }
         if ( !NAUO.IsNull() ) {
-          L = FindInstance ( NAUO, STool, WS, PDFileMap, ShapeLabelMap );
+          L = FindInstance ( NAUO, STool, WS, ShapeLabelMap );
           if ( L.IsNull() ) continue;
         }
         else {
@@ -1476,7 +1445,7 @@ static Standard_Boolean findNextSHUOlevel (const Handle(XSControl_WorkSession) &
   // get label of NAUO next level
   TDF_Label NULab;
   STEPConstruct_Tool Tool( WS );
-  NULab = STEPCAFControl_Reader::FindInstance ( NUNAUO, STool, Tool, PDFileMap, ShapeLabelMap ); 
+  NULab = STEPCAFControl_Reader::FindInstance ( NUNAUO, STool, Tool, ShapeLabelMap ); 
 //   STool->Search(NUSh, NUlab);
   if (NULab.IsNull())
     return Standard_False;
@@ -1524,8 +1493,8 @@ static TDF_Label setSHUOintoDoc (const Handle(XSControl_WorkSession) &WS,
   // get first labels for first SHUO attribute
   TDF_Label UULab, NULab;
   STEPConstruct_Tool Tool( WS );
-  UULab = STEPCAFControl_Reader::FindInstance ( UUNAUO, STool, Tool, PDFileMap, ShapeLabelMap ); 
-  NULab = STEPCAFControl_Reader::FindInstance ( NUNAUO, STool, Tool, PDFileMap, ShapeLabelMap ); 
+  UULab = STEPCAFControl_Reader::FindInstance ( UUNAUO, STool, Tool, ShapeLabelMap ); 
+  NULab = STEPCAFControl_Reader::FindInstance ( NUNAUO, STool, Tool, ShapeLabelMap ); 
   
 //   STool->Search(UUSh, UULab);
 //   STool->Search(NUSh, NULab);

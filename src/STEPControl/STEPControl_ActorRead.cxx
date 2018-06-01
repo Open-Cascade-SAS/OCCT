@@ -658,7 +658,7 @@ static void getSDR(const Handle(StepRepr_ProductDefinitionShape)& PDS,
 Handle(TransferBRep_ShapeBinder) STEPControl_ActorRead::TransferEntity(const Handle(StepRepr_NextAssemblyUsageOccurrence)& NAUO ,
                                                                        const Handle(Transfer_TransientProcess)& TP)
 {
- Handle(TransferBRep_ShapeBinder) shbinder;
+  Handle(TransferBRep_ShapeBinder) shbinder;
   Handle(StepBasic_ProductDefinition) PD;
   const Interface_Graph& graph = TP->Graph();
   gp_Trsf Trsf;
@@ -685,21 +685,24 @@ Handle(TransferBRep_ShapeBinder) STEPControl_ActorRead::TransferEntity(const Han
       // find real ProductDefinition used rep
       Interface_EntityIterator subs3 = TP->Graph().Sharings(rep);
       for (subs3.Start(); subs3.More(); subs3.Next()) {
-        if ( subs3.Value()->IsKind(STANDARD_TYPE(StepShape_ShapeDefinitionRepresentation))) {
-          DeclareAndCast(StepShape_ShapeDefinitionRepresentation,SDR,subs3.Value());
+        const Handle(Standard_Transient)& aSubs3Val = subs3.Value();
+        if (Handle(StepShape_ShapeDefinitionRepresentation) SDR = 
+            Handle(StepShape_ShapeDefinitionRepresentation)::DownCast (aSubs3Val))
+        {
           Handle(StepRepr_ProductDefinitionShape) PDS1 = 
             Handle(StepRepr_ProductDefinitionShape)::DownCast(SDR->Definition().PropertyDefinition());
           if(PDS1.IsNull()) continue;
           Interface_EntityIterator subs4 = graph.Shareds(PDS1);
-          for (subs4.Start(); subs4.More(); subs4.Next()) {
-            Handle(StepBasic_ProductDefinition) PD1 = 
-              Handle(StepBasic_ProductDefinition)::DownCast(subs4.Value());
-            if(PD1.IsNull()) continue;
-            PD=PD1;
+          for (subs4.Start(); PD.IsNull() && subs4.More(); subs4.Next())
+          {
+            PD = Handle(StepBasic_ProductDefinition)::DownCast(subs4.Value());
           }
         }
-        else if(subs3.Value()->IsKind(STANDARD_TYPE(StepRepr_ShapeRepresentationRelationship))) {
-          SRR = Handle(StepRepr_ShapeRepresentationRelationship)::DownCast(subs3.Value());
+        else if (aSubs3Val->IsKind (STANDARD_TYPE(StepRepr_ShapeRepresentationRelationship)))
+        {
+          // NB: C cast is used instead of DownCast() to improve performance on some cases.
+          // This saves ~10% of elapsed time on "testgrid perf de bug29* -parallel 0".
+          SRR = (StepRepr_ShapeRepresentationRelationship*)(aSubs3Val.get());
         }
       }
     }

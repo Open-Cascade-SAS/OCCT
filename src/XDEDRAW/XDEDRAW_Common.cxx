@@ -193,8 +193,13 @@ static Standard_Integer ReadIges (Draw_Interpretor& di, Standard_Integer argc, c
   DeclareAndCast(IGESControl_Controller,ctl,XSDRAW::Controller());
   if (ctl.IsNull()) XSDRAW::SetNorm("IGES");
  
+  TCollection_AsciiString fnom, rnom;
+  Standard_Boolean modfic = XSDRAW::FileAndVar(argv[2], argv[1], "IGES", fnom, rnom);
+  if (modfic) di << " File IGES to read : " << fnom.ToCString() << "\n";
+  else        di << " Model taken from the session : " << fnom.ToCString() << "\n";
+  //  di<<" -- Names of variables BREP-DRAW prefixed by : "<<rnom<<"\n";
 
-  IGESCAFControl_Reader reader ( XSDRAW::Session(),Standard_True);
+  IGESCAFControl_Reader reader ( XSDRAW::Session(),modfic);
   Standard_Integer onlyvisible = Interface_Static::IVal("read.iges.onlyvisible");
   reader.SetReadVisible(onlyvisible == 1);
   
@@ -209,11 +214,6 @@ static Standard_Integer ReadIges (Draw_Interpretor& di, Standard_Integer argc, c
       case 'l' : reader.SetLayerMode (mode); break;
       }
   }
-  TCollection_AsciiString fnom,rnom;
-  Standard_Boolean modfic = XSDRAW::FileAndVar (argv[2],argv[1],"IGES",fnom,rnom);
-  if (modfic) di<<" File IGES to read : "<<fnom.ToCString()<<"\n";
-  else        di<<" Model taken from the session : "<<fnom.ToCString()<<"\n";
-//  di<<" -- Names of variables BREP-DRAW prefixed by : "<<rnom<<"\n";
   IFSelect_ReturnStatus readstat = IFSelect_RetVoid;
   if (modfic) readstat = reader.ReadFile (fnom.ToCString());
   else  if (XSDRAW::Session()->NbStartingEntities() > 0) readstat = IFSelect_RetDone;
@@ -282,10 +282,18 @@ static Standard_Integer WriteIges (Draw_Interpretor& di, Standard_Integer argc, 
   }
   writer.Transfer ( Doc );
 
-  di << "Writig IGES model to file " << argv[2] << "\n";
-  if ( writer.Write ( argv[2] ) ) di<<" Write OK\n";
-  else di<<" Write failed\n";
-
+  TCollection_AsciiString fnom, rnom;
+  Standard_Boolean modfic = XSDRAW::FileAndVar(argv[2], argv[1], "IGES", fnom, rnom);
+  if (modfic)
+  {
+    di << "Writig IGES model to file " << argv[2] << "\n";
+    if ( writer.Write ( argv[2] ) ) di<<" Write OK\n";
+    else di<<" Write failed\n";
+  }
+  else
+  {
+    di << "Document has been translated into the session";
+  }
   return 0;
 }
 
@@ -304,7 +312,13 @@ static Standard_Integer ReadStep (Draw_Interpretor& di, Standard_Integer argc, c
   DeclareAndCast(STEPControl_Controller,ctl,XSDRAW::Controller());
   if (ctl.IsNull()) XSDRAW::SetNorm("STEP");
 
-  STEPCAFControl_Reader reader ( XSDRAW::Session(),Standard_True);
+  TCollection_AsciiString fnom, rnom;
+  Standard_Boolean modfic = XSDRAW::FileAndVar(argv[2], argv[1], "STEP", fnom, rnom);
+  if (modfic) di << " File STEP to read : " << fnom.ToCString() << "\n";
+  else        di << " Model taken from the session : " << fnom.ToCString() << "\n";
+  //  di<<" -- Names of variables BREP-DRAW prefixed by : "<<rnom<<"\n";
+
+  STEPCAFControl_Reader reader ( XSDRAW::Session(),modfic);
   
   if (argc == 4) {
     Standard_Boolean mode = Standard_True;
@@ -319,11 +333,6 @@ static Standard_Integer ReadStep (Draw_Interpretor& di, Standard_Integer argc, c
       }
   }
   
-  TCollection_AsciiString fnom,rnom;
-  Standard_Boolean modfic = XSDRAW::FileAndVar (argv[2],argv[1],"STEP",fnom,rnom);
-  if (modfic) di<<" File STEP to read : "<<fnom.ToCString()<<"\n";
-  else        di<<" Model taken from the session : "<<fnom.ToCString()<<"\n";
-//  di<<" -- Names of variables BREP-DRAW prefixed by : "<<rnom<<"\n";
   IFSelect_ReturnStatus readstat = IFSelect_RetVoid;
   if (modfic) readstat = reader.ReadFile (fnom.ToCString());
   else  if (XSDRAW::Session()->NbStartingEntities() > 0) readstat = IFSelect_RetDone;
@@ -452,20 +461,28 @@ static Standard_Integer WriteStep (Draw_Interpretor& di, Standard_Integer argc, 
     }
   }
   
+  TCollection_AsciiString fnom, rnom;
+  Standard_Boolean modfic = XSDRAW::FileAndVar(argv[2], argv[1], "STEP", fnom, rnom);
+  if (modfic)
+  {
+    di << "Writing STEP file " << argv[2] << "\n";
+    IFSelect_ReturnStatus stat = writer.Write(argv[2]);
+    switch (stat) {
+      case IFSelect_RetVoid : di<<"No file written\n"; break;
+      case IFSelect_RetDone : {
+        di<<"File "<<argv[2]<<" written\n";
 
-  di << "Writing STEP file " << argv[2] << "\n";
-  IFSelect_ReturnStatus stat = writer.Write(argv[2]);
-  switch (stat) {
-    case IFSelect_RetVoid : di<<"No file written\n"; break;
-    case IFSelect_RetDone : {
-      di<<"File "<<argv[2]<<" written\n";
-
-      NCollection_DataMap<TCollection_AsciiString, Handle(STEPCAFControl_ExternFile)> DicFile = writer.ExternFiles();
-      FillDicWS( DicFile );
-      AddWS( argv[2], XSDRAW::Session() );
-      break;
+        NCollection_DataMap<TCollection_AsciiString, Handle(STEPCAFControl_ExternFile)> DicFile = writer.ExternFiles();
+        FillDicWS( DicFile );
+        AddWS( argv[2], XSDRAW::Session() );
+        break;
+      }
+      default : di<<"Error on writing file\n"; break;
     }
-    default : di<<"Error on writing file\n"; break;
+  }
+  else
+  {
+    di << "Document has been translated into the session";
   }
   return 0;
 }

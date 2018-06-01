@@ -63,7 +63,7 @@ Transfer_SimpleBinderOfTransient::Transfer_SimpleBinderOfTransient () { }
       Handle(Transfer_SimpleBinderOfTransient)::DownCast(bn);
     bn = bn->NextResult();
     if (trb.IsNull()) continue;
-    Handle(Standard_Transient) rs = trb->Result();
+    const Handle(Standard_Transient)& rs = trb->Result();
     if (rs.IsNull()) continue;
     if (!rs->IsKind(atype)) continue;
     res = rs;

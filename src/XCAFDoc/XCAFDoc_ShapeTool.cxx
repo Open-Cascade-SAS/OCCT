@@ -932,7 +932,7 @@ Standard_Boolean XCAFDoc_ShapeTool::GetReferredShape (const TDF_Label& L,
 
 TDF_Label XCAFDoc_ShapeTool::AddComponent (const TDF_Label& assembly, 
 					   const TDF_Label& compL, 
-					   const TopLoc_Location &Loc) const
+					   const TopLoc_Location &Loc)
 {
   TDF_Label L;
   
@@ -948,6 +948,14 @@ TDF_Label XCAFDoc_ShapeTool::AddComponent (const TDF_Label& assembly,
   TDF_TagSource aTag;
   L = aTag.NewChild(assembly);
   MakeReference ( L, compL, Loc );
+
+  // map shape to label
+  TopoDS_Shape aShape;
+  if (GetShape(L, aShape))
+  {
+    if (!myShapeLabels.IsBound(aShape))
+      myShapeLabels.Bind(aShape, L);
+  }
 
   return L;
 }

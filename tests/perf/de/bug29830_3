@@ -1,0 +1,24 @@
+puts "========"
+puts "0029830: Data Exchange, STEPCAFControl_Reader poor performance - quadratic dependence"
+puts "========"
+puts "Test on stack overflow during destructing the STEP model"
+
+set ncomp 1000
+
+box a 1 1 1
+shape co C
+for {set i 0} {$i < $ncomp} {incr i} {
+  tcopy a a1
+  add a1 co
+}
+if [info exists D] {Close D}
+XNewDoc D
+XAddShape D co
+
+puts "Writing STEP model"
+WriteStep D .
+Close D
+
+puts "Destructing model"
+#crash
+newmodel

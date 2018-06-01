@@ -20,8 +20,6 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepVisual_StyledItem,StepRepr_RepresentationItem)
 
-StepVisual_StyledItem::StepVisual_StyledItem ()  {}
-
 void StepVisual_StyledItem::Init(
   const Handle(TCollection_HAsciiString)& aName,
   const Handle(StepVisual_HArray1OfPresentationStyleAssignment)& aStyles,
@@ -30,6 +28,7 @@ void StepVisual_StyledItem::Init(
   // --- classe own fields ---
   myStyles = aStyles;
   myItem = aItem;
+  myReprItem = Handle(StepRepr_RepresentationItem)::DownCast(aItem);
   // --- classe inherited fields ---
   StepRepr_RepresentationItem::Init(aName);
 }
@@ -39,35 +38,16 @@ void StepVisual_StyledItem::SetStyles(const Handle(StepVisual_HArray1OfPresentat
   myStyles = aStyles;
 }
 
-Handle(StepVisual_HArray1OfPresentationStyleAssignment) StepVisual_StyledItem::Styles() const
-{
-  return myStyles;
-}
-
-Handle(StepVisual_PresentationStyleAssignment) StepVisual_StyledItem::StylesValue(const Standard_Integer num) const
-{
-  return myStyles->Value(num);
-}
-
-Standard_Integer StepVisual_StyledItem::NbStyles () const
-{
-  if (myStyles.IsNull()) return 0;
-  return myStyles->Length();
-}
-
 void StepVisual_StyledItem::SetItem(const Handle(StepRepr_RepresentationItem)& aItem)
 {
   myItem = aItem;
+  myReprItem = aItem;
 }
 
 void StepVisual_StyledItem::SetItem(const StepVisual_StyledItemTarget& theItem)
 {
   myItem = theItem.Value();
-}
-
-Handle(StepRepr_RepresentationItem) StepVisual_StyledItem::Item() const
-{
-  return Handle(StepRepr_RepresentationItem)::DownCast(myItem);
+  myReprItem = Handle(StepRepr_RepresentationItem)::DownCast(myItem);
 }
 
 StepVisual_StyledItemTarget StepVisual_StyledItem::ItemAP242() const

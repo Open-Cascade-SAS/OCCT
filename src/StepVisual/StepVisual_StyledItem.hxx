@@ -40,21 +40,35 @@ public:
 
   
   //! Returns a StyledItem
-  Standard_EXPORT StepVisual_StyledItem();
-  
+  StepVisual_StyledItem()
+  {}
+
   Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepVisual_HArray1OfPresentationStyleAssignment)& aStyles, const Handle(Standard_Transient)& aItem);
   
   Standard_EXPORT void SetStyles (const Handle(StepVisual_HArray1OfPresentationStyleAssignment)& aStyles);
   
-  Standard_EXPORT Handle(StepVisual_HArray1OfPresentationStyleAssignment) Styles() const;
+  const Handle(StepVisual_HArray1OfPresentationStyleAssignment)& Styles() const
+  {
+    return myStyles;
+  }
   
-  Standard_EXPORT Handle(StepVisual_PresentationStyleAssignment) StylesValue (const Standard_Integer num) const;
-  
-  Standard_EXPORT Standard_Integer NbStyles() const;
-  
+  const Handle(StepVisual_PresentationStyleAssignment)& StylesValue
+    (const Standard_Integer num) const
+  {
+    return myStyles->Value(num);
+  }
+
+  Standard_Integer NbStyles() const
+  {
+    return myStyles.IsNull() ? 0 : myStyles->Length();
+  }
+
   Standard_EXPORT void SetItem (const Handle(StepRepr_RepresentationItem)& aItem);
   
-  Standard_EXPORT Handle(StepRepr_RepresentationItem) Item() const;
+  const Handle(StepRepr_RepresentationItem)& Item() const
+  {
+    return myReprItem;
+  }
 
   Standard_EXPORT void SetItem (const StepVisual_StyledItemTarget& aItem);
   
@@ -73,8 +87,10 @@ private:
 
 
   Handle(StepVisual_HArray1OfPresentationStyleAssignment) myStyles;
-  // May be StepRepr_RepresentationItem for AP214(203) and StepVisual_StyledItemTarget for AP242
+  //! May be StepRepr_RepresentationItem for AP214(203) and StepVisual_StyledItemTarget for AP242
   Handle(Standard_Transient) myItem;
+  //! This is downcasted from myItem
+  Handle(StepRepr_RepresentationItem) myReprItem;
 
 };
 

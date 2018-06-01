@@ -134,8 +134,8 @@ public:
   //! it (adding messages, or replacing it)
   Standard_EXPORT Handle(Interface_Check) CCheck();
 
-
-
+  //! Destructor
+  Standard_EXPORT ~Transfer_Binder();
 
   DEFINE_STANDARD_RTTIEXT(Transfer_Binder,Standard_Transient)
 
@@ -165,6 +165,7 @@ private:
   Transfer_StatusExec theexecst;
   Handle(Interface_Check) thecheck;
   Handle(Transfer_Binder) thenextr;
+  Handle(Transfer_Binder) theendr;
 
 
 };

@@ -77,20 +77,17 @@ void  Transfer_Binder::AddResult (const Handle(Transfer_Binder)& next)
     thenextr = next;
   else {
     //Modification of recursive to cycle
-    Handle(Transfer_Binder) theBinder = thenextr;
+    Handle(Transfer_Binder) theBinder = theendr.IsNull() ? thenextr : theendr;
     while( theBinder != next ) { 
       if( theBinder->NextResult().IsNull() ) {
         theBinder->AddResult(next);
+        theendr = next;
         return;
       }
       else
         theBinder = theBinder->NextResult();
     }
   }
-  //former recursive
-  // if (thenextr.IsNull()) thenextr = next;
-  // else if (thenextr == next) return;
-  // else thenextr->AddResult (next);
 }
 
 //=======================================================================
@@ -101,7 +98,11 @@ void  Transfer_Binder::AddResult (const Handle(Transfer_Binder)& next)
 void  Transfer_Binder::CutResult (const Handle(Transfer_Binder)& next)
 {
   if (thenextr.IsNull()) return;
-  if (thenextr == next) thenextr.Nullify();
+  if (thenextr == next)
+  {
+    thenextr.Nullify();
+    theendr.Nullify();
+  }
   //else thenextr->CutResult (next);
   else {
     Handle(Transfer_Binder) currBinder = thenextr, currNext;
@@ -223,3 +224,27 @@ Handle(Interface_Check) Transfer_Binder::CCheck ()
   return thecheck;
 }
 
+//=======================================================================
+//function : Destructor
+//purpose  : 
+//=======================================================================
+
+Transfer_Binder::~Transfer_Binder()
+{
+  // To prevent stack overflow on long chains it is needed
+  // to avoid recursive destruction of the field thenextr
+  if (!thenextr.IsNull())
+  {
+    Handle(Transfer_Binder) aCurr = thenextr;
+    theendr.Nullify();
+    thenextr.Nullify();
+    // we check GetRefCount in order to not destroy a chain if it belongs also
+    // to another upper level chain (two chains continue at the same binder)
+    while (!aCurr->thenextr.IsNull() && aCurr->thenextr->GetRefCount() == 1)
+    {
+      Handle(Transfer_Binder) aPrev = aCurr;
+      aCurr = aCurr->thenextr;
+      aPrev->thenextr.Nullify();
+    }
+  }
+}
