@@ -19,10 +19,10 @@ CheckLabel D 0:1
 set res1 [CheckLabel D 0:1]
 set indexReal1 [lsearch ${res1} TDataStd_Real]
 set indexInt1  [lsearch ${res1} TDataStd_Integer]
-if { ${indexReal1} != 5} {
+if { ${indexReal1} != 11} {
     puts "Error: Wrong position 1 of TDataStd_Real attribute."
 }
-if { ${indexInt1} != 11} {
+if { ${indexInt1} != 5} {
     puts "Error: Wrong position 1 of TDataStd_Integer attribute."
 }
 

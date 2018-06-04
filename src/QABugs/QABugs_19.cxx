@@ -1935,10 +1935,10 @@ static Standard_Integer OCC24755 (Draw_Interpretor& di, Standard_Integer n, cons
 
   TDF_AttributeIterator i (aLab);
   Handle(TDF_Attribute) anAttr = i.Value();
-  QCOMPARE (anAttr->IsKind (STANDARD_TYPE (TDataStd_Name)), Standard_True);
+  QCOMPARE (anAttr->IsKind (STANDARD_TYPE (TDataStd_Integer)), Standard_True);
   i.Next();
   anAttr = i.Value();
-  QCOMPARE (anAttr->IsKind (STANDARD_TYPE (TDataStd_Integer)), Standard_True);
+  QCOMPARE (anAttr->IsKind (STANDARD_TYPE (TDataStd_Name)), Standard_True);
   i.Next();
   anAttr = i.Value();
   QCOMPARE (anAttr->IsKind (STANDARD_TYPE (TDataStd_Real)), Standard_True);

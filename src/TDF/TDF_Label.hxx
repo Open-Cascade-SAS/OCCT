@@ -117,7 +117,7 @@ public:
   
   //! Adds an Attribute  to the current label. Raises if
   //! there is already one.
-  Standard_EXPORT void AddAttribute (const Handle(TDF_Attribute)& anAttribute, const Standard_Boolean append = Standard_False) const;
+  Standard_EXPORT void AddAttribute (const Handle(TDF_Attribute)& anAttribute, const Standard_Boolean append = Standard_True) const;
   
   //! Forgets an  Attribute   from the  current  label,
   //! setting its   forgotten status true and  its valid
