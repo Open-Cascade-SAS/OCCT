@@ -17,10 +17,10 @@ proc CheckAtof {nbvalues nbdigits min max} {
        ! [regexp {Strtod\s+([0-9.]+)} $res bidon cpu_Strtod] } {
     puts "Error: cannot interpret results of test command!"
   } else {
-    if { $cpu_atof < 2 * $cpu_Atof } {
+    if { $cpu_atof < 1.5 * $cpu_Atof } {
       puts "Error: Atof() is expected to be at least 2 times better than atof()!"
     }
-    if { $cpu_strtod < 2 * $cpu_Strtod } {
+    if { $cpu_strtod < 1.5 * $cpu_Strtod } {
       puts "Error: Strtod() is expected to be at least 2 times better than strtod()!"
     }
   }
