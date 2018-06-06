@@ -27,29 +27,6 @@ IMPLEMENT_STANDARD_RTTIEXT(Image_Diff,Standard_Transient)
 namespace
 {
 
-  //! POD structure for packed RGB color value (3 bytes)
-  struct Image_ColorXXX24
-  {
-    Standard_Byte v[3];
-    typedef Standard_Byte ComponentType_t;         //!< Component type
-  };
-
-  static Image_ColorXXX24 operator- (const Image_ColorXXX24& theA,
-                                     const Image_ColorXXX24& theB)
-  {
-    return Image_ColorSub3 (theA, theB);
-  }
-
-  //! Dot squared for difference of two colors
-  static Standard_Integer dotSquared (const Image_ColorXXX24& theColor)
-  {
-    // explicitly convert to integer
-    const Standard_Integer r = theColor.v[0];
-    const Standard_Integer g = theColor.v[1];
-    const Standard_Integer b = theColor.v[2];
-    return r * r + g * g + b * b;
-  }
-
   //! Number of neighbor pixels.
   static const Standard_Size Image_Diff_NbOfNeighborPixels = 8;
 
@@ -78,10 +55,10 @@ namespace
       case Image_Format_RGBA:
       case Image_Format_BGRA:
       {
-        const Image_ColorXXX24& aColor = theData.Value<Image_ColorXXX24> (theY, theX);
-        return aColor.v[0] == 0
-            && aColor.v[1] == 0
-            && aColor.v[2] == 0;
+        const Standard_Byte* aColor = theData.RawValue (theY, theX);
+        return aColor[0] == 0
+            && aColor[1] == 0
+            && aColor[2] == 0;
       }
       default:
       {
@@ -201,15 +178,13 @@ Standard_Integer Image_Diff::Compare()
     case Image_Format_Alpha:
     {
       // Tolerance of comparison operation for color
-      Standard_Integer aDiff = 255;
-      const Standard_Real    aMaxDiffColor  = aDiff * aDiff;
-      const Standard_Integer aDiffThreshold = Standard_Integer(aMaxDiffColor * myColorTolerance);
+      const Standard_Integer aDiffThreshold = Standard_Integer(255.0 * myColorTolerance);
       for (Standard_Size aRow = 0; aRow < myImageRef->SizeY(); ++aRow)
       {
         for (Standard_Size aCol = 0; aCol < myImageRef->SizeX(); ++aCol)
         {
-          aDiff = Standard_Integer(myImageNew->Value<unsigned char> (aRow, aCol)) - Standard_Integer(myImageRef->Value<unsigned char> (aRow, aCol));
-          if (aDiff * aDiff > aDiffThreshold)
+          const Standard_Integer aDiff = Standard_Integer(myImageNew->Value<unsigned char> (aRow, aCol)) - Standard_Integer(myImageRef->Value<unsigned char> (aRow, aCol));
+          if (Abs (aDiff) > aDiffThreshold)
           {
             myDiffPixels.Append (PackXY ((uint16_t)aCol, (uint16_t)aRow));
             ++aNbDiffColors;
@@ -227,9 +202,7 @@ Standard_Integer Image_Diff::Compare()
     {
       // Tolerance of comparison operation for color
       // Maximum difference between colors (white - black) = 100%
-      Image_ColorXXX24 aDiff = {{255, 255, 255}};
-      const Standard_Real    aMaxDiffColor  = dotSquared (aDiff);
-      const Standard_Integer aDiffThreshold = Standard_Integer(aMaxDiffColor * myColorTolerance);
+      const Standard_Integer aDiffThreshold = Standard_Integer(255.0 * myColorTolerance);
 
       // we don't care about RGB/BGR/RGBA/BGRA/RGB32/BGR32 differences
       // because we just compute summ of r g b components
@@ -237,8 +210,13 @@ Standard_Integer Image_Diff::Compare()
       {
         for (Standard_Size aCol = 0; aCol < myImageRef->SizeX(); ++aCol)
         {
-          aDiff = myImageNew->Value<Image_ColorXXX24> (aRow, aCol) - myImageRef->Value<Image_ColorXXX24> (aRow, aCol);
-          if (dotSquared (aDiff) > aDiffThreshold)
+          // compute Chebyshev distance between two colors
+          const Standard_Byte* aColorRef = myImageRef->RawValue (aRow, aCol);
+          const Standard_Byte* aColorNew = myImageNew->RawValue (aRow, aCol);
+          const int aDiff = NCollection_Vec3<int> (int(aColorRef[0]) - int(aColorNew[0]),
+                                                   int(aColorRef[1]) - int(aColorNew[1]),
+                                                   int(aColorRef[2]) - int(aColorNew[2])).cwiseAbs().maxComp();
+          if (aDiff > aDiffThreshold)
           {
             myDiffPixels.Append (PackXY ((uint16_t)aCol, (uint16_t)aRow));
             ++aNbDiffColors;
@@ -251,19 +229,18 @@ Standard_Integer Image_Diff::Compare()
     {
       // Tolerance of comparison operation for color
       // Maximum difference between colors (white - black) = 100%
-      NCollection_Vec3<float> aDiff (1.0f, 1.0f, 1.0f);
-      const Standard_Real    aMaxDiffColor  = aDiff.SquareModulus();
-      const Standard_Integer aDiffThreshold = Standard_Integer(aMaxDiffColor * myColorTolerance);
+      const float aDiffThreshold = float(myColorTolerance);
       for (Standard_Size aRow = 0; aRow < myImageRef->SizeY(); ++aRow)
       {
         for (Standard_Size aCol = 0; aCol < myImageRef->SizeX(); ++aCol)
         {
+          // compute Chebyshev distance between two colors
           const Quantity_ColorRGBA aPixel1Rgba = myImageRef->PixelColor (Standard_Integer(aCol), Standard_Integer(aRow));
           const Quantity_ColorRGBA aPixel2Rgba = myImageNew->PixelColor (Standard_Integer(aCol), Standard_Integer(aRow));
           const NCollection_Vec3<float>& aPixel1 = aPixel1Rgba.GetRGB();
           const NCollection_Vec3<float>& aPixel2 = aPixel2Rgba.GetRGB();
-          aDiff = aPixel2 - aPixel1;
-          if (aDiff.SquareModulus() > aDiffThreshold)
+          const float aDiff = (aPixel2 - aPixel1).cwiseAbs().maxComp();
+          if (aDiff > aDiffThreshold)
           {
             myDiffPixels.Append (PackXY ((uint16_t)aCol, (uint16_t)aRow));
             ++aNbDiffColors;
@@ -304,7 +281,6 @@ Standard_Boolean Image_Diff::SaveDiffImage (Image_PixMap& theDiffImage) const
     }
   }
 
-  const Image_ColorXXX24   aWhite24 = {{255, 255, 255}};
   const Quantity_ColorRGBA aWhiteRgba (1.0f, 1.0f, 1.0f, 1.0f);
 
   // initialize black image for dump
@@ -336,7 +312,7 @@ Standard_Boolean Image_Diff::SaveDiffImage (Image_PixMap& theDiffImage) const
       {
         for (NCollection_Vector<Standard_Integer>::Iterator aPixelIter (myDiffPixels); aPixelIter.More(); aPixelIter.Next())
         {
-          theDiffImage.ChangeValue<Image_ColorXXX24> (UnpackY(aPixelIter.Value()), UnpackX(aPixelIter.Value())) = aWhite24;
+          memset (theDiffImage.ChangeRawValue (UnpackY(aPixelIter.Value()), UnpackX(aPixelIter.Value())), 255, 3);
         }
         break;
       }
@@ -383,7 +359,7 @@ Standard_Boolean Image_Diff::SaveDiffImage (Image_PixMap& theDiffImage) const
         for (TColStd_MapIteratorOfPackedMapOfInteger aPixelIter (aGroup->Map()); aPixelIter.More(); aPixelIter.Next())
         {
           Standard_Integer aDiffPixel (aPixelIter.Key());
-          theDiffImage.ChangeValue<Image_ColorXXX24> (UnpackY(aDiffPixel), UnpackX(aDiffPixel)) = aWhite24;
+          memset (theDiffImage.ChangeValue<Standard_Byte*> (UnpackY(aDiffPixel), UnpackX(aDiffPixel)), 255, 3);
         }
         break;
       }

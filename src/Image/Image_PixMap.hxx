@@ -263,6 +263,22 @@ public: //! @name low-level API for batch-processing (pixels reading / compariso
     return *reinterpret_cast<ColorType_t* >(myData.ChangeValue (theRow, theCol));
   }
 
+  //! Access image pixel as raw data pointer.
+  //! This method does not perform any type checks - use on own risk (check Format() before)!
+  const Standard_Byte* RawValue (Standard_Size theRow,
+                                 Standard_Size theCol) const
+  {
+    return myData.Value (theRow, theCol);
+  }
+
+  //! Access image pixel as raw data pointer.
+  //! This method does not perform any type checks - use on own risk (check Format() before)!
+  Standard_Byte* ChangeRawValue (Standard_Size theRow,
+                                 Standard_Size theCol)
+  {
+    return myData.ChangeValue (theRow, theCol);
+  }
+
 public:
 
   Standard_DEPRECATED("This member is deprecated, use Image_Format enumeration instead")
