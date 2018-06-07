@@ -1,0 +1,21 @@
+puts "========"
+puts "OCC29845:UnifySameDomain does not account the accumulated angle when unifying edges"
+puts "========"
+puts ""
+
+brestore [locate_data_file bug29845_wire.brep] w
+
+# set the linear deflection very high, so the unification
+# will be controlled by the angular deflection only.
+# with the angular deflection of 5 degrees the resulting
+# wire should preserve all the features of the original wire
+
+unifysamedom result w -t 10000 -a 5
+checkshape result
+checknbshapes result -vertex 77 -edge 77
+checkprops result -l 2805.11
+
+smallview +X+Z
+don result
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

@@ -849,11 +849,19 @@ static Standard_Boolean IsMergingPossible(const TopoDS_Edge& edge1, const TopoDS
 
   if (theLineDirectionOk && t2 == GeomAbs_Line)
   {
+    // Check that the accumulated deflection does not exceed the linear tolerance
     Standard_Real aLast = (edge2.Orientation() == TopAbs_FORWARD) ?
       ade2.LastParameter() : ade2.FirstParameter();
     gp_Vec aCurV(theFirstPoint, ade2.Value(aLast));
     Standard_Real aDD = theDirectionVec.CrossSquareMagnitude(aCurV);
     if (aDD > theLinTol*theLinTol)
+      return Standard_False;
+
+    // Check that the accumulated angle does not exceed the angular tolerance.
+    // For symmetry, check the angle between vectors of:
+    // - first edge and resulting curve, and
+    // - the last edge and resulting curve.
+    if (theDirectionVec.Angle(aCurV) > theAngTol || Diff2.Angle(aCurV) > theAngTol)
       return Standard_False;
   }
 
