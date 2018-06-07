@@ -62,7 +62,8 @@ private:
 // purpose :
 // =======================================================================
 DFBrowser_Thread::DFBrowser_Thread (DFBrowser_Window* theWindow)
-: QObject (theWindow), myPostponedItem (0), myIsFinishProcessing (false)
+: QObject (theWindow), myPostponedItem (0), myIsFinishProcessing (false),
+  myIsProcessPostponed (Standard_False)
 {
   DFBrowser_SearchLine* aSearchLine = theWindow->GetTreeLevelLine()->GetSearchLine();
   myItems.append (new DFBrowser_ThreadItemSearch(aSearchLine));
@@ -74,6 +75,11 @@ DFBrowser_Thread::DFBrowser_Thread (DFBrowser_Window* theWindow)
 // =======================================================================
 void DFBrowser_Thread::ProcessApplication()
 {
+  if (!myStartedThreads.empty())
+  {
+    myIsProcessPostponed = Standard_True;
+    return;
+  }
   for (int anItemId = 0, aSize = myItems.size(); anItemId < aSize; anItemId++)
     startThread (myItems[anItemId]);
 }
@@ -134,5 +140,11 @@ void DFBrowser_Thread::onFinished()
   {
     myPostponedItem->ApplyValues();
     myPostponedItem = 0;
+  }
+
+  if (myIsProcessPostponed)
+  {
+    myIsProcessPostponed = Standard_False;
+    ProcessApplication();
   }
 }

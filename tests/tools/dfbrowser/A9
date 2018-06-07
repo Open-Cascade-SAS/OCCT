@@ -1,0 +1,12 @@
+puts "========"
+puts "0029841: Test cases from tools/dfbrowser periodically hang on Windows platform"
+puts "========"
+
+pload INSPECTOR
+
+tinspector -plugins dfbrowser
+
+for { set i 1 } { ${i} <= 10 } { incr i } {
+  tinspector -open [locate_data_file bug29743.cbf] -select 0 TNaming_UsedShapes
+  tinspector -open [locate_data_file bug29733.cbf] -select 0 TNaming_UsedShapes
+}

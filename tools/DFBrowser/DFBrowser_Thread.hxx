@@ -67,6 +67,7 @@ private:
   QList<QThread*> myStartedThreads; //!< container of started threads
   DFBrowser_ThreadItem* myPostponedItem; //!< currently processed item in onFinished()
   bool myIsFinishProcessing; //!< blocking state if onFinished() is started but has not been finished yet
+  Standard_Boolean myIsProcessPostponed; //!< state if process application should be done by finish active thread
 };
 
 
