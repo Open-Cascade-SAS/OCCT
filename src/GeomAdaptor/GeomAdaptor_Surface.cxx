@@ -670,12 +670,9 @@ void GeomAdaptor_Surface::RebuildCache(const Standard_Real theU,
     if (mySurfaceCache.IsNull())
       mySurfaceCache = new BSplSLib_Cache(
         aDegU, aBezier->IsUPeriodic(), aFlatKnotsU,
-        aDegV, aBezier->IsVPeriodic(), aFlatKnotsV,
-        aBezier->Poles(), aBezier->Weights());
-    mySurfaceCache->BuildCache(theU, theV,
-      aDegU, aBezier->IsUPeriodic(), aFlatKnotsU,
-      aDegV, aBezier->IsVPeriodic(), aFlatKnotsV,
-      aBezier->Poles(), aBezier->Weights());
+        aDegV, aBezier->IsVPeriodic(), aFlatKnotsV, aBezier->Weights());
+    mySurfaceCache->BuildCache (theU, theV, aFlatKnotsU, aFlatKnotsV,
+                                aBezier->Poles(), aBezier->Weights());
   }
   else if (mySurfaceType == GeomAbs_BSplineSurface)
   {
@@ -684,11 +681,9 @@ void GeomAdaptor_Surface::RebuildCache(const Standard_Real theU,
       mySurfaceCache = new BSplSLib_Cache(
         myBSplineSurface->UDegree(), myBSplineSurface->IsUPeriodic(), myBSplineSurface->UKnotSequence(),
         myBSplineSurface->VDegree(), myBSplineSurface->IsVPeriodic(), myBSplineSurface->VKnotSequence(),
-        myBSplineSurface->Poles(), myBSplineSurface->Weights());
-    mySurfaceCache->BuildCache(theU, theV,
-      myBSplineSurface->UDegree(), myBSplineSurface->IsUPeriodic(), myBSplineSurface->UKnotSequence(),
-      myBSplineSurface->VDegree(), myBSplineSurface->IsVPeriodic(), myBSplineSurface->VKnotSequence(),
-      myBSplineSurface->Poles(), myBSplineSurface->Weights());
+        myBSplineSurface->Weights());
+    mySurfaceCache->BuildCache (theU, theV, myBSplineSurface->UKnotSequence(), myBSplineSurface->VKnotSequence(),
+                                myBSplineSurface->Poles(), myBSplineSurface->Weights());
   }
 }
 

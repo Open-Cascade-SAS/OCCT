@@ -31,154 +31,60 @@ static Standard_Real* ConvertArray(const Handle(TColStd_HArray2OfReal)& theHArra
   return (Standard_Real*) &(anArray(anArray.LowerRow(), anArray.LowerCol()));
 }
 
-
-BSplSLib_Cache::BSplSLib_Cache()
-{
-  myPolesWeights.Nullify();
-  myIsRational = Standard_False;
-  mySpanStart[0]  = mySpanStart[1]  = 0.0;
-  mySpanLength[0] = mySpanLength[1] = 0.0;
-  mySpanIndex[0]  = mySpanIndex[1]  = 0;
-  myDegree[0]     = myDegree[1]     = 0;
-  myFlatKnots[0].Nullify();
-  myFlatKnots[1].Nullify();
-}
-
 BSplSLib_Cache::BSplSLib_Cache(const Standard_Integer&        theDegreeU,
                                const Standard_Boolean&        thePeriodicU,
                                const TColStd_Array1OfReal&    theFlatKnotsU,
                                const Standard_Integer&        theDegreeV,
                                const Standard_Boolean&        thePeriodicV,
                                const TColStd_Array1OfReal&    theFlatKnotsV,
-                               const TColgp_Array2OfPnt&      thePoles,
                                const TColStd_Array2OfReal*    theWeights)
+: myIsRational(theWeights != NULL),
+  myParamsU (theDegreeU, thePeriodicU, theFlatKnotsU),
+  myParamsV (theDegreeV, thePeriodicV, theFlatKnotsV)
 {
-  Standard_Real aU = theFlatKnotsU.Value(theFlatKnotsU.Lower() + theDegreeU);
-  Standard_Real aV = theFlatKnotsV.Value(theFlatKnotsV.Lower() + theDegreeV);
-
-  BuildCache(aU, aV, 
-             theDegreeU, thePeriodicU, theFlatKnotsU, 
-             theDegreeV, thePeriodicV, theFlatKnotsV, 
-             thePoles, theWeights);
+  Standard_Integer aMinDegree = Min (theDegreeU, theDegreeV);
+  Standard_Integer aMaxDegree = Max (theDegreeU, theDegreeV);
+  Standard_Integer aPWColNumber = (myIsRational ? 4 : 3);
+  myPolesWeights = new TColStd_HArray2OfReal(1, aMaxDegree + 1, 1, aPWColNumber * (aMinDegree + 1));
 }
-
 
 Standard_Boolean BSplSLib_Cache::IsCacheValid(Standard_Real theParameterU,
                                               Standard_Real theParameterV) const
 {
-  Standard_Real aNewU = theParameterU;
-  Standard_Real aNewV = theParameterV;
-  if (!myFlatKnots[0].IsNull())
-    PeriodicNormalization(myDegree[0], myFlatKnots[0]->Array1(), aNewU);
-  if (!myFlatKnots[1].IsNull())
-    PeriodicNormalization(myDegree[1], myFlatKnots[1]->Array1(), aNewV);
-
-  Standard_Real aDelta0 = aNewU - mySpanStart[0];
-  Standard_Real aDelta1 = aNewV - mySpanStart[1];
-  return ((aDelta0 >= -mySpanLength[0] || mySpanIndex[0] == mySpanIndexMin[0]) &&
-          (aDelta0 < mySpanLength[0] || mySpanIndex[0] == mySpanIndexMax[0]) &&
-          (aDelta1 >= -mySpanLength[1] || mySpanIndex[1] == mySpanIndexMin[1]) &&
-          (aDelta1 < mySpanLength[1] || mySpanIndex[1] == mySpanIndexMax[1]));
+  return myParamsU.IsCacheValid (theParameterU) && 
+         myParamsV.IsCacheValid (theParameterV);
 }
 
-void BSplSLib_Cache::PeriodicNormalization(const Standard_Integer& theDegree, 
-                                           const TColStd_Array1OfReal& theFlatKnots, 
-                                           Standard_Real& theParameter) const
-{
-  Standard_Real aPeriod = theFlatKnots.Value(theFlatKnots.Upper() - theDegree) - 
-                          theFlatKnots.Value(theDegree + 1) ;
-  if (theParameter < theFlatKnots.Value(theDegree + 1))
-  {
-    Standard_Real aScale = IntegerPart(
-        (theFlatKnots.Value(theDegree + 1) - theParameter) / aPeriod);
-    theParameter += aPeriod * (aScale + 1.0);
-  }
-  if (theParameter > theFlatKnots.Value(theFlatKnots.Upper() - theDegree))
-  {
-    Standard_Real aScale = IntegerPart(
-        (theParameter - theFlatKnots.Value(theFlatKnots.Upper() - theDegree)) / aPeriod);
-    theParameter -= aPeriod * (aScale + 1.0);
-  }
-}
-
-
-void BSplSLib_Cache::BuildCache(const Standard_Real&           theParameterU, 
-                                const Standard_Real&           theParameterV, 
-                                const Standard_Integer&        theDegreeU, 
-                                const Standard_Boolean&        thePeriodicU, 
-                                const TColStd_Array1OfReal&    theFlatKnotsU, 
-                                const Standard_Integer&        theDegreeV, 
-                                const Standard_Boolean&        thePeriodicV, 
-                                const TColStd_Array1OfReal&    theFlatKnotsV, 
-                                const TColgp_Array2OfPnt&      thePoles, 
+void BSplSLib_Cache::BuildCache(const Standard_Real&           theParameterU,
+                                const Standard_Real&           theParameterV,
+                                const TColStd_Array1OfReal&    theFlatKnotsU,
+                                const TColStd_Array1OfReal&    theFlatKnotsV,
+                                const TColgp_Array2OfPnt&      thePoles,
                                 const TColStd_Array2OfReal*    theWeights)
 {
   // Normalize the parameters for periodical B-splines
-  Standard_Real aNewParamU = theParameterU;
-  if (thePeriodicU)
-  {
-    PeriodicNormalization(theDegreeU, theFlatKnotsU, aNewParamU);
-    myFlatKnots[0] = new TColStd_HArray1OfReal(1, theFlatKnotsU.Length());
-    myFlatKnots[0]->ChangeArray1() = theFlatKnotsU;
-  }
-  else if (!myFlatKnots[0].IsNull()) // Periodical curve became non-periodical
-    myFlatKnots[0].Nullify();
+  Standard_Real aNewParamU = myParamsU.PeriodicNormalization (theParameterU);
+  Standard_Real aNewParamV = myParamsV.PeriodicNormalization (theParameterV);
 
-  Standard_Real aNewParamV = theParameterV;
-  if (thePeriodicV)
-  {
-    PeriodicNormalization(theDegreeV, theFlatKnotsV, aNewParamV);
-    myFlatKnots[1] = new TColStd_HArray1OfReal(1, theFlatKnotsV.Length());
-    myFlatKnots[1]->ChangeArray1() = theFlatKnotsV;
-  }
-  else if (!myFlatKnots[1].IsNull()) // Periodical curve became non-periodical
-    myFlatKnots[1].Nullify();
+  myParamsU.LocateParameter (aNewParamU, theFlatKnotsU);
+  myParamsV.LocateParameter (aNewParamV, theFlatKnotsV);
 
-  Standard_Integer aMinDegree = Min(theDegreeU, theDegreeV);
-  Standard_Integer aMaxDegree = Max(theDegreeU, theDegreeV);
-
-  // Change the size of cached data if needed
-  myIsRational = (theWeights != NULL);
-  Standard_Integer aPWColNumber = myIsRational ? 4 : 3;
-  if (theDegreeU > myDegree[0] || theDegreeV > myDegree[1])
-    myPolesWeights = new TColStd_HArray2OfReal(1, aMaxDegree + 1, 1, aPWColNumber * (aMinDegree + 1));
-
-  myDegree[0] = theDegreeU;
-  myDegree[1] = theDegreeV;
-  mySpanIndex[0] = mySpanIndex[1] = 0;
-  BSplCLib::LocateParameter(theDegreeU, theFlatKnotsU, BSplCLib::NoMults(), aNewParamU, 
-                            thePeriodicU, mySpanIndex[0], aNewParamU);
-  BSplCLib::LocateParameter(theDegreeV, theFlatKnotsV, BSplCLib::NoMults(), aNewParamV, 
-                            thePeriodicV, mySpanIndex[1], aNewParamV);
-
-  // Protection against Out of Range exception.
-  if (mySpanIndex[0] >= theFlatKnotsU.Length()) {
-    mySpanIndex[0] = theFlatKnotsU.Length() - 1;
-  }
-
-  mySpanLength[0] = (theFlatKnotsU.Value(mySpanIndex[0] + 1) - theFlatKnotsU.Value(mySpanIndex[0])) * 0.5;
-  mySpanStart[0]  = theFlatKnotsU.Value(mySpanIndex[0]) + mySpanLength[0];
-
-  // Protection against Out of Range exception.
-  if (mySpanIndex[1] >= theFlatKnotsV.Length()) {
-    mySpanIndex[1] = theFlatKnotsV.Length() - 1;
-  }
-
-  mySpanLength[1] = (theFlatKnotsV.Value(mySpanIndex[1] + 1) - theFlatKnotsV.Value(mySpanIndex[1])) * 0.5;
-  mySpanStart[1]  = theFlatKnotsV.Value(mySpanIndex[1]) + mySpanLength[1];
-  mySpanIndexMin[0] = thePeriodicU ? 0 : theDegreeU + 1;
-  mySpanIndexMax[0] = theFlatKnotsU.Length() - 1 - theDegreeU;
-  mySpanIndexMin[1] = thePeriodicV ? 0 : theDegreeV + 1;
-  mySpanIndexMax[1] = theFlatKnotsV.Length() - 1 - theDegreeV;
+  // BSplSLib uses different convention for span parameters than BSplCLib
+  // (Start is in the middle of the span and length is half-span),
+  // thus we need to amend them here
+  Standard_Real aSpanLengthU = 0.5 * myParamsU.SpanLength;
+  Standard_Real aSpanStartU = myParamsU.SpanStart + aSpanLengthU;
+  Standard_Real aSpanLengthV = 0.5 * myParamsV.SpanLength;
+  Standard_Real aSpanStartV = myParamsV.SpanStart + aSpanLengthV;
 
   // Calculate new cache data
-  BSplSLib::BuildCache(mySpanStart[0],  mySpanStart[1], 
-                       mySpanLength[0], mySpanLength[1], 
-                       thePeriodicU,    thePeriodicV, 
-                       theDegreeU,      theDegreeV, 
-                       mySpanIndex[0],  mySpanIndex[1], 
-                       theFlatKnotsU,   theFlatKnotsV, 
-                       thePoles, theWeights, myPolesWeights->ChangeArray2());
+  BSplSLib::BuildCache (aSpanStartU,  aSpanStartV,
+                        aSpanLengthU, aSpanLengthV,
+                        myParamsU.IsPeriodic, myParamsV.IsPeriodic,
+                        myParamsU.Degree,     myParamsV.Degree,
+                        myParamsU.SpanIndex,  myParamsV.SpanIndex,
+                        theFlatKnotsU,        theFlatKnotsV,
+                        thePoles, theWeights, myPolesWeights->ChangeArray2());
 }
 
 
@@ -186,24 +92,29 @@ void BSplSLib_Cache::D0(const Standard_Real& theU,
                         const Standard_Real& theV, 
                               gp_Pnt&        thePoint) const
 {
-  Standard_Real aNewU = theU;
-  Standard_Real aNewV = theV;
-  if (!myFlatKnots[0].IsNull()) // B-spline is U-periodical
-    PeriodicNormalization(myDegree[0], myFlatKnots[0]->Array1(), aNewU);
-  aNewU = (aNewU - mySpanStart[0]) / mySpanLength[0];
-  if (!myFlatKnots[1].IsNull()) // B-spline is V-periodical
-    PeriodicNormalization(myDegree[1], myFlatKnots[1]->Array1(), aNewV);
-  aNewV = (aNewV - mySpanStart[1]) / mySpanLength[1];
+  Standard_Real aNewU = myParamsU.PeriodicNormalization (theU);
+  Standard_Real aNewV = myParamsV.PeriodicNormalization (theV);
+
+  // BSplSLib uses different convention for span parameters than BSplCLib
+  // (Start is in the middle of the span and length is half-span),
+  // thus we need to amend them here
+  Standard_Real aSpanLengthU = 0.5 * myParamsU.SpanLength;
+  Standard_Real aSpanStartU = myParamsU.SpanStart + aSpanLengthU;
+  Standard_Real aSpanLengthV = 0.5 * myParamsV.SpanLength;
+  Standard_Real aSpanStartV = myParamsV.SpanStart + aSpanLengthV;
+
+  aNewU = (aNewU - aSpanStartU) / aSpanLengthU;
+  aNewV = (aNewV - aSpanStartV) / aSpanLengthV;
 
   Standard_Real* aPolesArray = ConvertArray(myPolesWeights);
   Standard_Real aPoint[4];
 
   Standard_Integer aDimension = myIsRational ? 4 : 3;
   Standard_Integer aCacheCols = myPolesWeights->RowLength();
-  Standard_Integer aMinMaxDegree[2] = {Min(myDegree[0], myDegree[1]), 
-                                       Max(myDegree[0], myDegree[1])};
+  Standard_Integer aMinMaxDegree[2] = {Min(myParamsU.Degree, myParamsV.Degree),
+                                       Max(myParamsU.Degree, myParamsV.Degree)};
   Standard_Real aParameters[2];
-  if (myDegree[0] > myDegree[1])
+  if (myParamsU.Degree > myParamsV.Degree)
   {
     aParameters[0] = aNewV;
     aParameters[1] = aNewU;
@@ -238,16 +149,21 @@ void BSplSLib_Cache::D1(const Standard_Real& theU,
                               gp_Vec&        theTangentU, 
                               gp_Vec&        theTangentV) const
 {
-  Standard_Real aNewU = theU;
-  Standard_Real aNewV = theV;
-  Standard_Real anInvU = 1.0 / mySpanLength[0];
-  Standard_Real anInvV = 1.0 / mySpanLength[1];
-  if (!myFlatKnots[0].IsNull()) // B-spline is U-periodical
-    PeriodicNormalization(myDegree[0], myFlatKnots[0]->Array1(), aNewU);
-  aNewU = (aNewU - mySpanStart[0]) * anInvU;
-  if (!myFlatKnots[1].IsNull()) // B-spline is V-periodical
-    PeriodicNormalization(myDegree[1], myFlatKnots[1]->Array1(), aNewV);
-  aNewV = (aNewV - mySpanStart[1]) * anInvV;
+  Standard_Real aNewU = myParamsU.PeriodicNormalization (theU);
+  Standard_Real aNewV = myParamsV.PeriodicNormalization (theV);
+
+  // BSplSLib uses different convention for span parameters than BSplCLib
+  // (Start is in the middle of the span and length is half-span),
+  // thus we need to amend them here
+  Standard_Real aSpanLengthU = 0.5 * myParamsU.SpanLength;
+  Standard_Real aSpanStartU = myParamsU.SpanStart + aSpanLengthU;
+  Standard_Real aSpanLengthV = 0.5 * myParamsV.SpanLength;
+  Standard_Real aSpanStartV = myParamsV.SpanStart + aSpanLengthV;
+
+  Standard_Real anInvU = 1.0 / aSpanLengthU;
+  Standard_Real anInvV = 1.0 / aSpanLengthV;
+  aNewU = (aNewU - aSpanStartU) * anInvU;
+  aNewV = (aNewV - aSpanStartV) * anInvV;
 
   Standard_Real* aPolesArray = ConvertArray(myPolesWeights);
   Standard_Real aPntDeriv[16]; // result storage (point and derivative coordinates)
@@ -255,11 +171,11 @@ void BSplSLib_Cache::D1(const Standard_Real& theU,
 
   Standard_Integer aDimension = myIsRational ? 4 : 3;
   Standard_Integer aCacheCols = myPolesWeights->RowLength();
-  Standard_Integer aMinMaxDegree[2] = {Min(myDegree[0], myDegree[1]), 
-                                       Max(myDegree[0], myDegree[1])};
+  Standard_Integer aMinMaxDegree[2] = {Min(myParamsU.Degree, myParamsV.Degree),
+                                       Max(myParamsU.Degree, myParamsV.Degree)};
 
   Standard_Real aParameters[2];
-  if (myDegree[0] > myDegree[1])
+  if (myParamsU.Degree > myParamsV.Degree)
   {
     aParameters[0] = aNewV;
     aParameters[1] = aNewU;
@@ -293,7 +209,7 @@ void BSplSLib_Cache::D1(const Standard_Real& theU,
   }
 
   thePoint.SetCoord(aResult[0], aResult[1], aResult[2]);
-  if (myDegree[0] > myDegree[1])
+  if (myParamsU.Degree > myParamsV.Degree)
   {
     theTangentV.SetCoord(aResult[aDimension], aResult[aDimension + 1], aResult[aDimension + 2]);
     Standard_Integer aShift = aDimension<<1;
@@ -319,16 +235,21 @@ void BSplSLib_Cache::D2(const Standard_Real& theU,
                               gp_Vec&        theCurvatureV, 
                               gp_Vec&        theCurvatureUV) const
 {
-  Standard_Real aNewU = theU;
-  Standard_Real aNewV = theV;
-  Standard_Real anInvU = 1.0 / mySpanLength[0];
-  Standard_Real anInvV = 1.0 / mySpanLength[1];
-  if (!myFlatKnots[0].IsNull()) // B-spline is U-periodical
-    PeriodicNormalization(myDegree[0], myFlatKnots[0]->Array1(), aNewU);
-  aNewU = (aNewU - mySpanStart[0]) * anInvU;
-  if (!myFlatKnots[1].IsNull()) // B-spline is V-periodical
-    PeriodicNormalization(myDegree[1], myFlatKnots[1]->Array1(), aNewV);
-  aNewV = (aNewV - mySpanStart[1]) * anInvV;
+  Standard_Real aNewU = myParamsU.PeriodicNormalization (theU);
+  Standard_Real aNewV = myParamsV.PeriodicNormalization (theV);
+
+  // BSplSLib uses different convention for span parameters than BSplCLib
+  // (Start is in the middle of the span and length is half-span),
+  // thus we need to amend them here
+  Standard_Real aSpanLengthU = 0.5 * myParamsU.SpanLength;
+  Standard_Real aSpanStartU = myParamsU.SpanStart + aSpanLengthU;
+  Standard_Real aSpanLengthV = 0.5 * myParamsV.SpanLength;
+  Standard_Real aSpanStartV = myParamsV.SpanStart + aSpanLengthV;
+
+  Standard_Real anInvU = 1.0 / aSpanLengthU;
+  Standard_Real anInvV = 1.0 / aSpanLengthV;
+  aNewU = (aNewU - aSpanStartU) * anInvU;
+  aNewV = (aNewV - aSpanStartV) * anInvV;
 
   Standard_Real* aPolesArray = ConvertArray(myPolesWeights);
   Standard_Real aPntDeriv[36]; // result storage (point and derivative coordinates)
@@ -336,11 +257,11 @@ void BSplSLib_Cache::D2(const Standard_Real& theU,
 
   Standard_Integer aDimension = myIsRational ? 4 : 3;
   Standard_Integer aCacheCols = myPolesWeights->RowLength();
-  Standard_Integer aMinMaxDegree[2] = {Min(myDegree[0], myDegree[1]), 
-                                       Max(myDegree[0], myDegree[1])};
+  Standard_Integer aMinMaxDegree[2] = {Min(myParamsU.Degree, myParamsV.Degree),
+                                       Max(myParamsU.Degree, myParamsV.Degree)};
 
   Standard_Real aParameters[2];
-  if (myDegree[0] > myDegree[1])
+  if (myParamsU.Degree > myParamsV.Degree)
   {
     aParameters[0] = aNewV;
     aParameters[1] = aNewU;
@@ -390,7 +311,7 @@ void BSplSLib_Cache::D2(const Standard_Real& theU,
   }
 
   thePoint.SetCoord(aResult[0], aResult[1], aResult[2]);
-  if (myDegree[0] > myDegree[1])
+  if (myParamsU.Degree > myParamsV.Degree)
   {
     theTangentV.SetCoord(aResult[aDimension], aResult[aDimension + 1], aResult[aDimension + 2]);
     Standard_Integer aShift = aDimension<<1;

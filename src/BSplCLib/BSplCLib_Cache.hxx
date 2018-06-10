@@ -19,7 +19,6 @@
 #include <Standard_Type.hxx>
 #include <Standard_Transient.hxx>
 
-
 #include <gp_Pnt2d.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec2d.hxx>
@@ -31,6 +30,8 @@
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 
+#include <BSplCLib_CacheParams.hxx>
+
 //! \brief A cache class for Bezier and B-spline curves.
 //!
 //! Defines all data, that can be cached on a span of a curve.
@@ -38,11 +39,10 @@
 class BSplCLib_Cache : public Standard_Transient
 {
 public:
-  //! Default constructor
-  Standard_EXPORT BSplCLib_Cache();
-  //! Constructor for caching of 2D curves
+
+  //! Constructor, prepares data structures for caching values on a 2d curve.
   //! \param theDegree     degree of the curve
-  //! \param thePeriodic   identify the curve is periodic
+  //! \param thePeriodic   identify whether the curve is periodic
   //! \param theFlatKnots  knots of Bezier/B-spline curve (with repetitions)
   //! \param thePoles2d    array of poles of 2D curve
   //! \param theWeights    array of weights of corresponding poles
@@ -51,9 +51,10 @@ public:
                                  const TColStd_Array1OfReal&    theFlatKnots,
                                  const TColgp_Array1OfPnt2d&    thePoles2d,
                                  const TColStd_Array1OfReal*    theWeights = NULL);
-  //! Constructor for caching of 3D curves
+
+  //! Constructor, prepares data structures for caching values on a 3d curve.
   //! \param theDegree     degree of the curve
-  //! \param thePeriodic   identify the curve is periodic
+  //! \param thePeriodic   identify whether the curve is periodic
   //! \param theFlatKnots  knots of Bezier/B-spline curve (with repetitions)
   //! \param thePoles      array of poles of 3D curve
   //! \param theWeights    array of weights of corresponding poles
@@ -69,27 +70,20 @@ public:
 
   //! Recomputes the cache data for 2D curves. Does not verify validity of the cache
   //! \param theParameter  the value on the knot's axis to identify the span
-  //! \param theDegree     degree of the curve
-  //! \param thePeriodic   identify the curve is periodic
   //! \param theFlatKnots  knots of Bezier/B-spline curve (with repetitions)
   //! \param thePoles2d    array of poles of 2D curve
   //! \param theWeights    array of weights of corresponding poles
   Standard_EXPORT void BuildCache(const Standard_Real&           theParameter,
-                                  const Standard_Integer&        theDegree,
-                                  const Standard_Boolean&        thePeriodic,
                                   const TColStd_Array1OfReal&    theFlatKnots,
                                   const TColgp_Array1OfPnt2d&    thePoles2d,
-                                  const TColStd_Array1OfReal*    theWeights = NULL);
+                                  const TColStd_Array1OfReal*    theWeights);
+
   //! Recomputes the cache data for 3D curves. Does not verify validity of the cache
   //! \param theParameter  the value on the knot's axis to identify the span
-  //! \param theDegree     degree of the curve
-  //! \param thePeriodic   identify the curve is periodic
   //! \param theFlatKnots  knots of Bezier/B-spline curve (with repetitions)
   //! \param thePoles      array of poles of 3D curve
   //! \param theWeights    array of weights of corresponding poles
   Standard_EXPORT void BuildCache(const Standard_Real&           theParameter,
-                                  const Standard_Integer&        theDegree,
-                                  const Standard_Boolean&        thePeriodic,
                                   const TColStd_Array1OfReal&    theFlatKnots,
                                   const TColgp_Array1OfPnt&      thePoles,
                                   const TColStd_Array1OfReal*    theWeights = NULL);
@@ -142,10 +136,6 @@ public:
   DEFINE_STANDARD_RTTIEXT(BSplCLib_Cache,Standard_Transient)
 
 protected:
-  //! Normalizes the parameter for periodical curves
-  //! \param theFlatKnots knots with repetitions
-  //! \param theParameter the value to be normalized into the knots array
-  void PeriodicNormalization(const TColStd_Array1OfReal& theFlatKnots, Standard_Real& theParameter) const;
 
   //! Fills array of derivatives in the selected point of the curve
   //! \param[in]  theParameter  parameter of the calculation
@@ -156,21 +146,18 @@ protected:
                            const Standard_Integer& theDerivative, 
                                  Standard_Real&    theDerivArray) const;
 
+  // copying is prohibited
+  BSplCLib_Cache (const BSplCLib_Cache&);
+  void operator = (const BSplCLib_Cache&);
+
 private:
-  Handle(TColStd_HArray2OfReal) myPolesWeights; ///< array of poles and weights of calculated cache
+  Standard_Boolean myIsRational;                //!< identifies the rationality of Bezier/B-spline curve
+  BSplCLib_CacheParams myParams;                //!< cache parameters
+  Handle(TColStd_HArray2OfReal) myPolesWeights; //!< array of poles and weights of calculated cache
                                                 // the array has following structure:
                                                 //       x1 y1 [z1] [w1]
                                                 //       x2 y2 [z2] [w2] etc
                                                 // for 2D-curves there is no z conponent, for non-rational curves there is no weight
-
-  Standard_Boolean              myIsRational; ///< identifies the rationality of Bezier/B-spline curve
-  Standard_Real                 mySpanStart;  ///< parameter for the first point of the span
-  Standard_Real                 mySpanLength; ///< length of the span
-  Standard_Integer              mySpanIndex;  ///< index of the span on Bezier/B-spline curve
-  Standard_Integer              mySpanIndexMin; ///< minimal index of span on Bezier/B-spline curve
-  Standard_Integer              mySpanIndexMax; ///< maximal number of spans on Bezier/B-spline curve
-  Standard_Integer              myDegree;     ///< degree of Bezier/B-spline
-  Handle(TColStd_HArray1OfReal) myFlatKnots;  ///< knots of Bezier/B-spline (used for periodic normalization of parameters, exists only for periodical splines)
 };
 
 DEFINE_STANDARD_HANDLE(BSplCLib_Cache, Standard_Transient)

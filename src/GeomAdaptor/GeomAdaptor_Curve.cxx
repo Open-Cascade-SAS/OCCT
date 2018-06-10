@@ -539,8 +539,7 @@ void GeomAdaptor_Curve::RebuildCache(const Standard_Real theParameter) const
     if (myCurveCache.IsNull())
       myCurveCache = new BSplCLib_Cache(aDeg, aBezier->IsPeriodic(), aFlatKnots,
         aBezier->Poles(), aBezier->Weights());
-    myCurveCache->BuildCache(theParameter, aDeg, aBezier->IsPeriodic(), aFlatKnots,
-        aBezier->Poles(), aBezier->Weights());
+    myCurveCache->BuildCache (theParameter, aFlatKnots, aBezier->Poles(), aBezier->Weights());
 }
   else if (myTypeCurve == GeomAbs_BSplineCurve)
 {
@@ -548,9 +547,8 @@ void GeomAdaptor_Curve::RebuildCache(const Standard_Real theParameter) const
     if (myCurveCache.IsNull())
       myCurveCache = new BSplCLib_Cache(myBSplineCurve->Degree(), myBSplineCurve->IsPeriodic(),
         myBSplineCurve->KnotSequence(), myBSplineCurve->Poles(), myBSplineCurve->Weights());
-    myCurveCache->BuildCache(theParameter, myBSplineCurve->Degree(),
-        myBSplineCurve->IsPeriodic(), myBSplineCurve->KnotSequence(),
-        myBSplineCurve->Poles(), myBSplineCurve->Weights());
+    myCurveCache->BuildCache (theParameter, myBSplineCurve->KnotSequence(),
+                              myBSplineCurve->Poles(), myBSplineCurve->Weights());
 }
 }
 

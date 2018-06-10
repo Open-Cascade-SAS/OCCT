@@ -29,6 +29,8 @@
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_Array2OfReal.hxx>
 
+#include <BSplCLib_CacheParams.hxx>
+
 //! \brief A cache class for Bezier and B-spline surfaces.
 //!
 //! Defines all data, that can be cached on a span of the surface.
@@ -36,8 +38,7 @@
 class BSplSLib_Cache : public Standard_Transient
 {
 public:
-  //! Default constructor
-  Standard_EXPORT BSplSLib_Cache();
+
   //! Constructor for caching of the span for the surface
   //! \param theDegreeU    degree along the first parameter (U) of the surface
   //! \param thePeriodicU  identify the surface is periodical along U axis
@@ -45,7 +46,6 @@ public:
   //! \param theDegreeV    degree alogn the second parameter (V) of the surface
   //! \param thePeriodicV  identify the surface is periodical along V axis
   //! \param theFlatKnotsV knots of the surface (with repetition) along V axis
-  //! \param thePoles      array of poles of the surface
   //! \param theWeights    array of weights of corresponding poles
   Standard_EXPORT BSplSLib_Cache(const Standard_Integer&        theDegreeU,
                                  const Standard_Boolean&        thePeriodicU,
@@ -53,7 +53,6 @@ public:
                                  const Standard_Integer&        theDegreeV,
                                  const Standard_Boolean&        thePeriodicV,
                                  const TColStd_Array1OfReal&    theFlatKnotsV,
-                                 const TColgp_Array2OfPnt&      thePoles,
                                  const TColStd_Array2OfReal*    theWeights = NULL);
 
   //! Verifies validity of the cache using parameters of the point
@@ -73,14 +72,10 @@ public:
   //! \param theFlatKnotsV  flat knots of the surface along V axis
   //! \param thePoles       array of poles of the surface
   //! \param theWeights     array of weights of corresponding poles
-  Standard_EXPORT void BuildCache(const Standard_Real&           theParameterU, 
-                                  const Standard_Real&           theParameterV, 
-                                  const Standard_Integer&        theDegreeU, 
-                                  const Standard_Boolean&        thePeriodicU, 
-                                  const TColStd_Array1OfReal&    theFlatKnotsU, 
-                                  const Standard_Integer&        theDegreeV, 
-                                  const Standard_Boolean&        thePeriodicV, 
-                                  const TColStd_Array1OfReal&    theFlatKnotsV, 
+  Standard_EXPORT void BuildCache(const Standard_Real&           theParameterU,
+                                  const Standard_Real&           theParameterV,
+                                  const TColStd_Array1OfReal&    theFlatKnotsU,
+                                  const TColStd_Array1OfReal&    theFlatKnotsV,
                                   const TColgp_Array2OfPnt&      thePoles, 
                                   const TColStd_Array2OfReal*    theWeights = NULL);
 
@@ -123,32 +118,20 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(BSplSLib_Cache,Standard_Transient)
 
-protected:
-  //! Normalizes the parameter for periodical surfaces
-  //! \param[in]     theDegree     degree along selected direction
-  //! \param[in]     theFlatKnots  knots with repetitions along selected direction
-  //! \param[in,out] theParameter  the value to be normalized into the knots array
-  void PeriodicNormalization(const Standard_Integer& theDegree, 
-                             const TColStd_Array1OfReal& theFlatKnots, 
-                                   Standard_Real& theParameter) const;
+private:
+  // copying is prohibited
+  BSplSLib_Cache (const BSplSLib_Cache&);
+  void operator = (const BSplSLib_Cache&);
 
 private:
-  Handle(TColStd_HArray2OfReal) myPolesWeights; ///< array of poles and weights of calculated cache
+  Standard_Boolean myIsRational;                //!< identifies the rationality of Bezier/B-spline surface
+  BSplCLib_CacheParams myParamsU, myParamsV;    //!< cach parameters by U and V directions
+  Handle(TColStd_HArray2OfReal) myPolesWeights; //!< array of poles and weights of calculated cache
                                                 // the array has following structure:
                                                 //       x11 y11 z11 [w11] x12 y12 z12 [w12] ...
                                                 //       x21 y21 z21 [w21] x22 y22 z22 [w22] etc
                                                 // for non-rational surfaces there is no weight;
                                                 // size of array: (max(myDegree)+1) * A*(min(myDegree)+1), where A = 4 or 3
-
-  Standard_Boolean              myIsRational;    ///< identifies the rationality of Bezier/B-spline surface
-  Standard_Real                 mySpanStart[2];  ///< parameters (u, v) for the frst point of the span
-  Standard_Real                 mySpanLength[2]; ///< lengths of the span along corresponding parameter
-  Standard_Integer              mySpanIndex[2];  ///< indexes of the span on Bezier/B-spline surface
-  Standard_Integer              mySpanIndexMin[2]; ///< minimal indexes of span
-  Standard_Integer              mySpanIndexMax[2]; ///< maximal indexes of span
-  Standard_Integer              myDegree[2];     ///< degrees of Bezier/B-spline for each parameter
-  Handle(TColStd_HArray1OfReal) myFlatKnots[2];  ///< arrays of knots of Bezier/B-spline 
-                                                 // (used for periodic normalization of parameters, Null for non-periodical splines)
 };
 
 DEFINE_STANDARD_HANDLE(BSplSLib_Cache, Standard_Transient)
