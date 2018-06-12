@@ -901,11 +901,11 @@ Standard_Boolean IntPatch_InterferencePolyhedron::TangentZoneValue
 	if (nob<0) break;
       }
       if (nob>=0) {
-	while (nob<nbNoInserted) {
+	nbNoInserted--;
+	while (nob < nbNoInserted) {
 	  piToInsert[nob]=piToInsert[nob+1];
 	  nob++;
 	}
-	nbNoInserted--;
 	nob=nbNoInserted-1;
       }
     }
