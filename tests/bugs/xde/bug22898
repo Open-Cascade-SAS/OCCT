@@ -43,7 +43,7 @@ checkarea step_1 3.978e8 1e6 0.001
 # STL
 incmesh hammer 38.9076
 writestl hammer $imagedir/hammer.stl 
-readstl stl $imagedir/hammer.stl
+readstl stl $imagedir/hammer.stl -brep
 checkshape stl
 tolerance stl
 checkarea stl 3.978e8 1e6 0.001

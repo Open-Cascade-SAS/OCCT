@@ -19,7 +19,7 @@ set fd [open ${imagedir}/${casename}_one_ascii_dos.stl w]
 fconfigure $fd -translation crlf
 puts $fd $minimal_ascii_stl
 close $fd
-readstl res_one_ascii_dos ${imagedir}/${casename}_one_ascii_dos.stl
+readstl res_one_ascii_dos ${imagedir}/${casename}_one_ascii_dos.stl -brep
 checknbshapes res_one_ascii_dos -face 1
 
 puts "\n#======================================================================"
@@ -29,7 +29,7 @@ set fd [open ${imagedir}/${casename}_one_ascii_unix.stl w]
 fconfigure $fd -translation lf
 puts $fd $minimal_ascii_stl
 close $fd
-readstl res_one_ascii_unix ${imagedir}/${casename}_one_ascii_unix.stl
+readstl res_one_ascii_unix ${imagedir}/${casename}_one_ascii_unix.stl -brep
 checknbshapes res_one_ascii_unix -face 1
 
 puts "\n#======================================================================"
@@ -39,7 +39,7 @@ set fd [open ${imagedir}/${casename}_one_ascii_noeol.stl w]
 fconfigure $fd -translation lf
 puts -nonewline $fd $minimal_ascii_stl
 close $fd
-readstl res_one_ascii_noeol ${imagedir}/${casename}_one_ascii_noeol.stl
+readstl res_one_ascii_noeol ${imagedir}/${casename}_one_ascii_noeol.stl -brep
 checknbshapes res_one_ascii_noeol -face 1
 
 puts "\n#======================================================================"
@@ -49,7 +49,7 @@ set fd [open ${imagedir}/${casename}_zero_ascii_dos.stl w]
 fconfigure $fd -translation crlf
 puts $fd "solid \nendsolid"
 close $fd
-readstl res_zero_ascii_dos ${imagedir}/${casename}_zero_ascii_dos.stl
+readstl res_zero_ascii_dos ${imagedir}/${casename}_zero_ascii_dos.stl -brep
 
 puts "\n#======================================================================"
 puts "# Ascii file with no facets, LF"
@@ -58,7 +58,7 @@ set fd [open ${imagedir}/${casename}_zero_ascii_unix.stl w]
 fconfigure $fd -translation lf
 puts $fd "solid \nendsolid"
 close $fd
-readstl res_zero_ascii_unix ${imagedir}/${casename}_zero_ascii_unix.stl
+readstl res_zero_ascii_unix ${imagedir}/${casename}_zero_ascii_unix.stl -brep
 
 puts "\n#======================================================================"
 puts "# Binary file with single facet"
@@ -68,7 +68,7 @@ fconfigure $fd -translation binary
 puts -nonewline $fd "stl [string repeat { } 76]"
 puts -nonewline $fd [binary format if3f3f3f3t 1 {0 0 1} {0 0 0} {1 0 0} {0 1 0} 0]
 close $fd
-readstl res_one_binary ${imagedir}/${casename}_one_binary.stl
+readstl res_one_binary ${imagedir}/${casename}_one_binary.stl -brep
 checknbshapes res_one_binary -face 1
 
 puts "\n#======================================================================"
@@ -79,7 +79,7 @@ set fd [open ${imagedir}/${casename}_zero_binary.stl w]
 fconfigure $fd -translation binary
 puts -nonewline $fd "stl [string repeat { } 76][binary format i 0]"
 close $fd
-readstl res_zero_binary ${imagedir}/${casename}_zero_binary.stl
+readstl res_zero_binary ${imagedir}/${casename}_zero_binary.stl -brep
 
 puts "\n#======================================================================"
 puts "# Empty file"
@@ -87,5 +87,5 @@ puts "#======================================================================"
 puts "REQUIRED ALL: Error: unexpected format of facet at line 2"
 set fd [open ${imagedir}/${casename}_empty.stl w]
 close $fd
-readstl res_empty ${imagedir}/${casename}_empty.stl
+readstl res_empty ${imagedir}/${casename}_empty.stl -brep
 

@@ -18,7 +18,7 @@ puts ""
 set BugNumber OCC22670
 
 set filepath [locate_data_file OMF6391_box.stl]
-if { [catch { readstl res_mesh $filepath } catch_result] } {
+if { [catch { readstl res_mesh $filepath -brep } catch_result] } {
     puts "Faulty ${BugNumber}: here is reading problem"
 } else {
     set aFile $imagedir/${test_image}.stl
@@ -30,7 +30,7 @@ if { [catch { readstl res_mesh $filepath } catch_result] } {
     writestl res_mesh ${aFile} ${anASCIImode}
     catch {exec chmod 777 ${aFile}}
 
-    readstl result ${aFile}
+    readstl result ${aFile} -brep
 
     checknbshapes result -vertex 8 -edge 18 -wire 12 -face 12 -shell 1 -solid 0 -compsolid 0 -compound 0 -shape 51
 }

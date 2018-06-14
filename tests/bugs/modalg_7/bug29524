@@ -4,7 +4,7 @@ puts "========"
 puts ""
 
 pload VISUALIZATION XDE MODELING
-readstl m [locate_data_file model_stl_045.stl] triangulation
+readstl m [locate_data_file model_stl_045.stl]
 vclear
 vinit View1
 vdisplay -dispMode 1 m

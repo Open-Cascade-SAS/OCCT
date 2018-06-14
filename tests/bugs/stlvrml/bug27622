@@ -6,7 +6,7 @@ puts ""
 # Data Exchange - STL file having less than 4 triangles cannot be read
 ########################################################################
 
-readstl result [locate_data_file bug27622_Design1.stl]
+readstl result [locate_data_file bug27622_Design1.stl] -brep
 
 set nbshapes_expected "
 Number of shapes in result

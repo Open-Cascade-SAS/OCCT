@@ -6,7 +6,7 @@ incmesh m 1.0
 
 # Save, read and delete file
 writestl m $imagedir/${casename}
-readstl res $imagedir/${casename} triangulation
+readstl res $imagedir/${casename}
 file delete $imagedir/${casename}
 
 checktrinfo res -tri 22748 -nod 11376

@@ -1,4 +1,4 @@
-readstl m [locate_data_file model_stl_005.stl] triangulation
+readstl m [locate_data_file model_stl_005.stl]
 
 # Number of triangles check
 checktrinfo m -tri 10526 -nod 5265

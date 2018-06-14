@@ -16,7 +16,7 @@ incmesh comp 1.
 writestl comp $imagedir/${casename}.stl 1
 
 # load STL
-readstl result $imagedir/${casename}.stl
+readstl result $imagedir/${casename}.stl -brep
 
 # check that bounding box is 
 bounding -s result -save Xmin Ymin Zmin Xmax Ymax Zmax -nodraw

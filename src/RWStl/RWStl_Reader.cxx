@@ -416,7 +416,7 @@ Standard_Boolean RWStl_Reader::ReadBinary (Standard_IStream& theStream,
       const std::streamsize aDataToRead = aNbFacesInBuffer * aFaceDataLen;
       if (theStream.read (aBuffer, aDataToRead).gcount() != aDataToRead)
       {
-        Message::DefaultMessenger()->Send ("Error: read filed", Message_Fail);
+        Message::DefaultMessenger()->Send ("Error: binary STL read failed", Message_Fail);
         return false;
       }
       aBufferPtr = aBuffer;
