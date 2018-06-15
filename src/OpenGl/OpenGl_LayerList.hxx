@@ -120,65 +120,6 @@ public:
 
 protected:
 
-  //! Filter of TKOpenGl elements for processing only shading geometry and
-  //! for collecting number of skipped elements to an external counter.
-  class OpenGl_OpaqueFilter : public OpenGl_RenderFilter
-  {
-  public:
-
-    //! Constructor.
-    //! @param thePrevFilter [in] the previously active filter that should have additive effect.
-    OpenGl_OpaqueFilter() : mySkippedCounter (0) {}
-
-    //! Sets the current active filter in workspace.
-    //! @param thePrevFilter [in] the previously active filter that should have additive effect.
-    void SetPreviousFilter (const Handle(OpenGl_RenderFilter)& thePrevFitler) { myFilter = thePrevFitler; }
-
-    //! Sets the value of the skipped elements counter.
-    void SetSkippedCounter (const Standard_Size theCounter) { mySkippedCounter = theCounter; }
-
-    //! Returns number of skipped elements.
-    Standard_Size NbSkipped() const { return mySkippedCounter; }
-
-    //! Checks whether the element should be rendered or skipped.
-    //! @param theWorkspace [in] the currently used workspace for rendering.
-    //! @param theGlElement [in] the TKOpenGl rendering queue element that should be checked before streaming to GPU.
-    Standard_EXPORT virtual Standard_Boolean ShouldRender (const Handle(OpenGl_Workspace)& theWorkspace,
-                                                           const OpenGl_Element*           theGlElement) Standard_OVERRIDE;
-
-    DEFINE_STANDARD_RTTI_INLINE (OpenGl_OpaqueFilter, OpenGl_RenderFilter)
-
-  private:
-
-    Standard_Size mySkippedCounter;   //!< Counter of skipped elements.
-    Handle(OpenGl_RenderFilter) myFilter; //!< Previous active filter that should be combined.
-  };
-
-  //! Filter of TKOpenGl elements for keeping only shading geometry with transparency.
-  class OpenGl_TransparentFilter : public OpenGl_RenderFilter
-  {
-  public:
-
-    //! Constructor.
-    OpenGl_TransparentFilter() {}
-
-    //! Sets the current active filter in workspace.
-    //! @param thePrevFilter [in] the previously active filter that should have additive effect.
-    void SetPreviousFilter (const Handle(OpenGl_RenderFilter)& thePrevFitler) { myFilter = thePrevFitler; }
-
-    //! Checks whether the element should be rendered or skipped.
-    //! @param theWorkspace [in] the currently used workspace for rendering.
-    //! @param theGlElement [in] the TKOpenGl rendering queue element that should be checked before streaming to GPU.
-    Standard_EXPORT virtual Standard_Boolean ShouldRender (const Handle(OpenGl_Workspace)& theWorkspace,
-                                                           const OpenGl_Element*           theGlElement) Standard_OVERRIDE;
-
-    DEFINE_STANDARD_RTTI_INLINE (OpenGl_TransparentFilter, OpenGl_RenderFilter)
-
-  private:
-
-    Handle(OpenGl_RenderFilter) myFilter; //!< Previous active filter that should be combined.
-  };
-
   //! Stack of references to existing layers of predefined maximum size.
   class OpenGl_LayerStack
   {
@@ -260,9 +201,6 @@ protected:
 
   //! Collection of references to layers with transparency gathered during rendering pass.
   mutable OpenGl_LayerStack myTransparentToProcess;
-
-  Handle(OpenGl_OpaqueFilter)      myRenderOpaqueFilter; //!< rendering filter for opaque drawing pass (blended OIT).
-  Handle(OpenGl_TransparentFilter) myRenderTranspFilter; //!< rendering filter for transparency drawing pass (blended OIT).
 
 public:
 

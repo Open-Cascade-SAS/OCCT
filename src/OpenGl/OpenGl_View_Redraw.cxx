@@ -1095,11 +1095,6 @@ void OpenGl_View::renderStructs (Graphic3d_Camera::Projection theProjection,
       const Standard_Integer aSizeY = theReadDrawFbo != NULL ? theReadDrawFbo->GetVPSizeY() : myWindow->Height();
       myOpenGlFBO ->InitLazy (aCtx, aSizeX, aSizeY, myFboColorFormat, myFboDepthFormat, 0);
 
-      if (myRaytraceFilter.IsNull())
-        myRaytraceFilter = new OpenGl_RaytraceFilter;
-
-      myRaytraceFilter->SetPrevRenderFilter (myWorkspace->GetRenderFilter());
-
       if (theReadDrawFbo != NULL)
         theReadDrawFbo->UnbindBuffer (aCtx);
 
@@ -1109,7 +1104,8 @@ void OpenGl_View::renderStructs (Graphic3d_Camera::Projection theProjection,
         // Render bottom OSD layer
         myZLayers.Render (myWorkspace, theToDrawImmediate, OpenGl_LF_Bottom, theReadDrawFbo, theOitAccumFbo);
 
-        myWorkspace->SetRenderFilter (myRaytraceFilter);
+        const Standard_Integer aPrevFilter = myWorkspace->RenderFilter() & ~(Standard_Integer )(OpenGl_RenderFilter_NonRaytraceableOnly);
+        myWorkspace->SetRenderFilter (aPrevFilter | OpenGl_RenderFilter_NonRaytraceableOnly);
         {
           if (theReadDrawFbo != NULL)
           {
@@ -1123,7 +1119,7 @@ void OpenGl_View::renderStructs (Graphic3d_Camera::Projection theProjection,
           // Render non-polygonal elements in default layer
           myZLayers.Render (myWorkspace, theToDrawImmediate, OpenGl_LF_Default, theReadDrawFbo, theOitAccumFbo);
         }
-        myWorkspace->SetRenderFilter (myRaytraceFilter->PrevRenderFilter());
+        myWorkspace->SetRenderFilter (aPrevFilter);
       }
 
       if (theReadDrawFbo != NULL)

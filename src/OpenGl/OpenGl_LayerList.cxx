@@ -148,9 +148,7 @@ OpenGl_LayerList::OpenGl_LayerList (const Standard_Integer theNbPriorities)
   myNbPriorities (theNbPriorities),
   myNbStructures (0),
   myImmediateNbStructures (0),
-  myModifStateOfRaytraceable (0),
-  myRenderOpaqueFilter (new OpenGl_OpaqueFilter()),
-  myRenderTranspFilter (new OpenGl_TransparentFilter())
+  myModifStateOfRaytraceable (0)
 {
   // insert default priority layers
   myLayers.Append (new OpenGl_Layer (myNbPriorities, myBVHBuilder));
@@ -558,10 +556,8 @@ void OpenGl_LayerList::Render (const Handle(OpenGl_Workspace)& theWorkspace,
   // was preallocated before going into this method and has enough space to keep
   // maximum number of references to layers, therefore it will not increase memory
   // fragmentation during regular rendering.
-  const Handle(OpenGl_RenderFilter) aPrevFilter = theWorkspace->GetRenderFilter();
-  myRenderOpaqueFilter->SetPreviousFilter (aPrevFilter);
-  myRenderTranspFilter->SetPreviousFilter (aPrevFilter);
-  theWorkspace->SetRenderFilter (myRenderOpaqueFilter);
+  const Standard_Integer aPrevFilter = theWorkspace->RenderFilter() & ~(Standard_Integer )(OpenGl_RenderFilter_OpaqueOnly | OpenGl_RenderFilter_TransparentOnly);
+  theWorkspace->SetRenderFilter (aPrevFilter | OpenGl_RenderFilter_OpaqueOnly);
 
   myTransparentToProcess.Clear();
 
@@ -647,12 +643,12 @@ void OpenGl_LayerList::Render (const Handle(OpenGl_Workspace)& theWorkspace,
         // Render opaque OpenGl elements of a layer and count the number of skipped.
         // If a layer has skipped (e.g. transparent) elements it should be added into
         // the transparency post-processing stack.
-        myRenderOpaqueFilter->SetSkippedCounter (0);
+        theWorkspace->ResetSkippedCounter();
 
         aLayer.Render (theWorkspace, aDefaultSettings);
 
         if (aPassIter != 0
-         && myRenderOpaqueFilter->NbSkipped() > 0)
+         && theWorkspace->NbSkippedTransparentElements() > 0)
         {
           myTransparentToProcess.Push (&aLayer);
         }
@@ -716,7 +712,8 @@ void OpenGl_LayerList::renderTransparent (const Handle(OpenGl_Workspace)&   theW
   OpenGl_View* aView = theWorkspace->View();
   const float aDepthFactor =  aView != NULL ? aView->RenderingParams().OitDepthFactor : 0.0f;
 
-  theWorkspace->SetRenderFilter (myRenderTranspFilter);
+  const Standard_Integer aPrevFilter = theWorkspace->RenderFilter() & ~(Standard_Integer )(OpenGl_RenderFilter_OpaqueOnly | OpenGl_RenderFilter_TransparentOnly);
+  theWorkspace->SetRenderFilter (aPrevFilter | OpenGl_RenderFilter_TransparentOnly);
 
   aCtx->core11fwd->glEnable (GL_BLEND);
 
@@ -764,7 +761,7 @@ void OpenGl_LayerList::renderTransparent (const Handle(OpenGl_Workspace)&   theW
     aCtx->SetDrawBuffers (1, aDrawBuffers);
   }
 
-  theWorkspace->SetRenderFilter (myRenderOpaqueFilter);
+  theWorkspace->SetRenderFilter (aPrevFilter | OpenGl_RenderFilter_OpaqueOnly);
   if (isEnabledOit)
   {
     const Standard_Boolean isMSAA = theReadDrawFbo && theReadDrawFbo->NbSamples() > 0;
@@ -814,56 +811,4 @@ void OpenGl_LayerList::renderTransparent (const Handle(OpenGl_Workspace)&   theW
   aCtx->core11fwd->glBlendFunc (GL_ONE, GL_ZERO);
   aCtx->core11fwd->glDepthMask (theGlobalSettings.DepthMask);
   aCtx->core11fwd->glDepthFunc (theGlobalSettings.DepthFunc);
-}
-
-//=======================================================================
-//class    : OpenGl_OpaqueFilter
-//function : ShouldRender
-//purpose  : Checks whether the element should be rendered or skipped.
-//=======================================================================
-Standard_Boolean OpenGl_LayerList::OpenGl_OpaqueFilter::ShouldRender (const Handle(OpenGl_Workspace)& theWorkspace,
-                                                                      const OpenGl_Element*           theGlElement)
-{
-  if (!myFilter.IsNull()
-   && !myFilter->ShouldRender (theWorkspace, theGlElement))
-  {
-    return Standard_False;
-  }
-
-  if (!theGlElement->IsFillDrawMode())
-  {
-    return Standard_True;
-  }
-
-  if (OpenGl_Context::CheckIsTransparent (theWorkspace->AspectFace(),
-                                          theWorkspace->HighlightStyle()))
-  {
-    ++mySkippedCounter;
-    return Standard_False;
-  }
-
-  return Standard_True;
-}
-
-//=======================================================================
-//class    : OpenGl_TransparentFilter
-//function : ShouldRender
-//purpose  : Checks whether the element should be rendered or skipped.
-//=======================================================================
-Standard_Boolean OpenGl_LayerList::OpenGl_TransparentFilter::ShouldRender (const Handle(OpenGl_Workspace)& theWorkspace,
-                                                                           const OpenGl_Element*           theGlElement)
-{
-  if (!myFilter.IsNull()
-   && !myFilter->ShouldRender (theWorkspace, theGlElement))
-  {
-    return Standard_False;
-  }
-
-  if (!theGlElement->IsFillDrawMode())
-  {
-    return dynamic_cast<const OpenGl_AspectFace*> (theGlElement) != NULL;
-  }
-
-  return OpenGl_Context::CheckIsTransparent (theWorkspace->AspectFace(),
-                                             theWorkspace->HighlightStyle());
 }

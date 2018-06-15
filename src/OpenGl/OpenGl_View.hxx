@@ -1027,9 +1027,6 @@ protected: //! @name fields related to ray-tracing
   //! Set of IDs of non-raytracable elements (to detect updates).
   std::set<Standard_Integer> myNonRaytraceStructureIDs;
 
-  //! Render filter to filter out all raytracable structures.
-  Handle(OpenGl_RaytraceFilter) myRaytraceFilter;
-
   //! Marks if environment map should be updated.
   Standard_Boolean myToUpdateEnvironmentMap;
 

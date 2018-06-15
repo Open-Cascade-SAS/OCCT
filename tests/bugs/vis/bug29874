@@ -1,0 +1,23 @@
+puts "============"
+puts "0029874: Visualization - capping plane transparency does not work"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+box b1 -30 0  30 20 20 20
+box b2 -30 0   0 20 20 20
+box b3 -30 0 -30 20 20 20
+box b4 -30 0 -60 20 20 20
+vclear
+vinit View1
+vzbufftrihedron
+vdisplay -dispMode 1 b1 b2 b3 b4
+vviewparams -scale 12.7 -proj 0.6 -0.16 0.79 -up -0.65 0.5 0.58 -at -24 12.4 -1.1
+vaspects b1 b4 -setTransparency 0.5
+vaspects b2 -setColor RED
+vaspects b3 -setColor GREEN
+
+vclipplane pln1 -set b1 b2 -equation -0.707 0.707 0 -25 -capping on -useObjMaterial 1
+vclipplane pln2 -set b3 b4 -equation -0.707 0.707 0 -25 -capping on -color 0.5 0.5 0.9 -transparency 0.2
+
+vdump $imagedir/${casename}.png

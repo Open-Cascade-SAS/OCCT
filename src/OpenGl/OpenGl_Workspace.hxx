@@ -23,55 +23,16 @@
 #include <OpenGl_FrameBuffer.hxx>
 #include <OpenGl_Material.hxx>
 #include <OpenGl_Matrix.hxx>
-#include <OpenGl_RenderFilter.hxx>
 #include <OpenGl_ShaderObject.hxx>
 #include <OpenGl_ShaderProgram.hxx>
 #include <OpenGl_TextParam.hxx>
 #include <OpenGl_TextureBufferArb.hxx>
+#include <OpenGl_RenderFilter.hxx>
 #include <OpenGl_Vec.hxx>
 #include <OpenGl_Window.hxx>
 
 class OpenGl_View;
 class Image_PixMap;
-
-class OpenGl_RaytraceFilter;
-DEFINE_STANDARD_HANDLE (OpenGl_RaytraceFilter, OpenGl_RenderFilter)
-
-//! Graphical ray-tracing filter.
-//! Filters out all raytracable structures.
-class OpenGl_RaytraceFilter : public OpenGl_RenderFilter
-{
-public:
-
-  //! Default constructor.
-  OpenGl_RaytraceFilter() {}
-
-  //! Returns the previously set filter.
-  const Handle(OpenGl_RenderFilter)& PrevRenderFilter()
-  {
-    return myPrevRenderFilter;
-  }
-
-  //! Remembers the previously set filter.
-  void SetPrevRenderFilter (const Handle(OpenGl_RenderFilter)& theFilter)
-  {
-    myPrevRenderFilter = theFilter;
-  }
-
-  //! Checks whether the element can be rendered or not.
-  //! @param theElement [in] the element to check.
-  //! @return True if element can be rendered.
-  virtual Standard_Boolean ShouldRender (const Handle(OpenGl_Workspace)& theWorkspace,
-                                         const OpenGl_Element*           theElement) Standard_OVERRIDE;
-
-private:
-
-  Handle(OpenGl_RenderFilter) myPrevRenderFilter;
-
-public:
-
-  DEFINE_STANDARD_RTTIEXT(OpenGl_RaytraceFilter,OpenGl_RenderFilter)
-};
 
 class OpenGl_Workspace;
 DEFINE_STANDARD_HANDLE(OpenGl_Workspace,Standard_Transient)
@@ -240,21 +201,26 @@ public:
   //! Clear the applied aspect state to default values.
   void ResetAppliedAspect();
 
-  //! Set filter for restricting rendering of particular elements.
-  //! Filter can be applied for rendering passes used by recursive
-  //! rendering algorithms for rendering elements of groups.
-  //! @param theFilter [in] the filter instance.
-  inline void SetRenderFilter (const Handle(OpenGl_RenderFilter)& theFilter)
-  {
-    myRenderFilter = theFilter;
-  }
-
   //! Get rendering filter.
-  //! @return filter instance.
-  inline const Handle(OpenGl_RenderFilter)& GetRenderFilter() const
-  {
-    return myRenderFilter;
-  }
+  //! @sa ShouldRender()
+  Standard_Integer RenderFilter() const { return myRenderFilter; }
+
+  //! Set filter for restricting rendering of particular elements.
+  //! @sa ShouldRender()
+  void SetRenderFilter (Standard_Integer theFilter) { myRenderFilter = theFilter; }
+
+  //! Checks whether the element can be rendered or not.
+  //! @param theElement [in] the element to check
+  //! @return True if element can be rendered
+  bool ShouldRender (const OpenGl_Element* theElement);
+
+  //! Return the number of skipped transparent elements within active OpenGl_RenderFilter_OpaqueOnly filter.
+  //! @sa OpenGl_LayerList::Render()
+  Standard_Integer NbSkippedTransparentElements() { return myNbSkippedTranspElems; }
+
+  //! Reset skipped transparent elements counter.
+  //! @sa OpenGl_LayerList::Render()
+  void ResetSkippedCounter() { myNbSkippedTranspElems = 0; }
 
   //! @return applied view matrix.
   inline const OpenGl_Matrix* ViewMatrix() const { return ViewMatrix_applied; }
@@ -264,9 +230,6 @@ public:
 
   //! Returns face aspect for textured font rendering.
   const OpenGl_AspectFace& FontFaceAspect() const { return myFontFaceAspect; }
-
-  //! Returns capping algorithm rendering filter.
-  const Handle(OpenGl_CappingAlgoFilter)& DefaultCappingAlgoFilter() const { return myDefaultCappingAlgoFilter; }
 
   //! Returns face aspect for none culling mode.
   const OpenGl_AspectFace& NoneCulling() const { return myNoneCulling; }
@@ -287,14 +250,15 @@ protected: //! @name protected fields
   Handle(OpenGl_Context)           myGlContext;
   Standard_Boolean                 myUseZBuffer;
   Standard_Boolean                 myUseDepthWrite;
-  Handle(OpenGl_CappingAlgoFilter) myDefaultCappingAlgoFilter;
   OpenGl_AspectFace                myNoneCulling;
   OpenGl_AspectFace                myFrontCulling;
   OpenGl_AspectFace                myFontFaceAspect;
 
 protected: //! @name fields related to status
 
-  Handle(OpenGl_RenderFilter) myRenderFilter;
+  Standard_Integer myNbSkippedTranspElems; //!< counter of skipped transparent elements for OpenGl_LayerList two rendering passes method
+  Standard_Integer myRenderFilter;         //!< active filter for skipping rendering of elements by some criteria (multiple render passes)
+
   const OpenGl_AspectLine*   myAspectLineSet;
   const OpenGl_AspectFace*   myAspectFaceSet;
   Handle(Graphic3d_AspectFillArea3d) myAspectFaceApplied;

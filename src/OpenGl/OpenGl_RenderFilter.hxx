@@ -16,31 +16,16 @@
 #ifndef _OpenGl_RenderFilter_H__
 #define _OpenGl_RenderFilter_H__
 
-#include <Standard_Type.hxx>
-#include <Standard_Transient.hxx>
-
-class OpenGl_RenderFilter;
-DEFINE_STANDARD_HANDLE (OpenGl_RenderFilter, Standard_Transient)
-
-class OpenGl_Element;
-class OpenGl_Workspace;
-
-//! Base class for defining element rendering filters.
-//! This class can be used in pair with advance rendering passes, and for 
-//! disabling rendering (setting up) graphical aspects.
-class OpenGl_RenderFilter : public Standard_Transient
+//! Filter for rendering elements.
+enum OpenGl_RenderFilter
 {
-public:
+  OpenGl_RenderFilter_Empty               = 0x000, //!< disabled filter
 
-  //! Checks whether the element can be rendered or not.
-  //! @param theWorkspace [in] the current workspace.
-  //! @param theElement [in] the element to check.
-  //! @return True if element can be rendered.
-  virtual Standard_Boolean ShouldRender (const Handle(OpenGl_Workspace)& theWorkspace, const OpenGl_Element* theElement) = 0;
+  OpenGl_RenderFilter_OpaqueOnly          = 0x001, //!< render only opaque elements and any non-filling elements   (conflicts with OpenGl_RenderFilter_TransparentOnly)
+  OpenGl_RenderFilter_TransparentOnly     = 0x002, //!< render only semitransparent elements and OpenGl_AspectFace (conflicts with OpenGl_RenderFilter_OpaqueOnly)
 
-public:
-
-  DEFINE_STANDARD_RTTIEXT(OpenGl_RenderFilter, Standard_Transient)
+  OpenGl_RenderFilter_NonRaytraceableOnly = 0x004, //!< render only non-raytraceable elements
+  OpenGl_RenderFilter_FillModeOnly        = 0x008, //!< render only filled elements
 };
 
 #endif

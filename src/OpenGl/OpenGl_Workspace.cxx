@@ -37,7 +37,6 @@
 #include <NCollection_AlignedAllocator.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Workspace,Standard_Transient)
-IMPLEMENT_STANDARD_RTTIEXT(OpenGl_RaytraceFilter,OpenGl_RenderFilter)
 
 namespace
 {
@@ -126,6 +125,9 @@ OpenGl_Workspace::OpenGl_Workspace (OpenGl_View* theView, const Handle(OpenGl_Wi
   myUseZBuffer    (Standard_True),
   myUseDepthWrite (Standard_True),
   //
+  myNbSkippedTranspElems (0),
+  myRenderFilter (OpenGl_RenderFilter_Empty),
+  //
   myAspectLineSet (&myDefaultAspectLine),
   myAspectFaceSet (&myDefaultAspectFace),
   myAspectMarkerSet (&myDefaultAspectMarker),
@@ -157,8 +159,6 @@ OpenGl_Workspace::OpenGl_Workspace (OpenGl_View* theView, const Handle(OpenGl_Wi
     glHint (GL_POLYGON_SMOOTH_HINT, GL_FASTEST);
   #endif
   }
-
-  myDefaultCappingAlgoFilter = new OpenGl_CappingAlgoFilter();
 
   myFontFaceAspect.Aspect()->SetAlphaMode (Graphic3d_AlphaMode_Mask, 0.285f);
   myFontFaceAspect.Aspect()->SetShadingModel (Graphic3d_TOSM_UNLIT);
@@ -483,14 +483,51 @@ Standard_Boolean OpenGl_Workspace::BufferDump (const Handle(OpenGl_FrameBuffer)&
 // function : ShouldRender
 // purpose  :
 // =======================================================================
-Standard_Boolean OpenGl_RaytraceFilter::ShouldRender (const Handle(OpenGl_Workspace)& theWorkspace,
-                                                      const OpenGl_Element*           theElement)
+bool OpenGl_Workspace::ShouldRender (const OpenGl_Element* theElement)
 {
-  Standard_Boolean aPrevFilterResult = Standard_True;
-  if (!myPrevRenderFilter.IsNull())
+  // render only non-raytracable elements when RayTracing is enabled
+  if ((myRenderFilter & OpenGl_RenderFilter_NonRaytraceableOnly) != 0)
   {
-    aPrevFilterResult = myPrevRenderFilter->ShouldRender (theWorkspace, theElement);
+    if (OpenGl_Raytrace::IsRaytracedElement (theElement))
+    {
+      return false;
+    }
   }
-  return aPrevFilterResult &&
-    !OpenGl_Raytrace::IsRaytracedElement (theElement);
+  else if ((myRenderFilter & OpenGl_RenderFilter_FillModeOnly) != 0)
+  {
+    if (!theElement->IsFillDrawMode())
+    {
+      return false;
+    }
+  }
+
+  // handle opaque/transparency render passes
+  if ((myRenderFilter & OpenGl_RenderFilter_OpaqueOnly) != 0)
+  {
+    if (!theElement->IsFillDrawMode())
+    {
+      return true;
+    }
+
+    if (OpenGl_Context::CheckIsTransparent (myAspectFaceSet, myHighlightStyle))
+    {
+      ++myNbSkippedTranspElems;
+      return false;
+    }
+  }
+  else if ((myRenderFilter & OpenGl_RenderFilter_TransparentOnly) != 0)
+  {
+    if (!theElement->IsFillDrawMode())
+    {
+      if (dynamic_cast<const OpenGl_AspectFace*> (theElement) == NULL)
+      {
+        return false;
+      }
+    }
+    else if (!OpenGl_Context::CheckIsTransparent (myAspectFaceSet, myHighlightStyle))
+    {
+      return false;
+    }
+  }
+  return true;
 }

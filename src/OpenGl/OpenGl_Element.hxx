@@ -17,6 +17,7 @@
 #define OpenGl_Element_Header
 
 #include <OpenGl_RenderFilter.hxx>
+#include <Standard_Type.hxx>
 
 class OpenGl_Workspace;
 class OpenGl_Context;
@@ -58,30 +59,6 @@ public:
 
   //! Return TRUE if primitive type generates shaded triangulation (to be used in filters).
   virtual Standard_Boolean IsFillDrawMode() const { return false; }
-
-public:
-
-  //! Render element if it passes the filtering procedure. This method should
-  //! be used for elements which can be used in scope of rendering algorithms.
-  //! E.g. elements of groups during recursive rendering.
-  //! If render filter is null, pure rendering is performed.
-  //! @param theWorkspace [in] the rendering workspace.
-  //! @param theFilter [in] the rendering filter to check whether the element
-  //! should be rendered or not.
-  //! @return True if element passes the check and renders,
-  inline Standard_Boolean
-    RenderFiltered (const Handle(OpenGl_Workspace)& theWorkspace,
-                    const Handle(OpenGl_RenderFilter)& theFilter) const
-  {
-    if (!theFilter.IsNull() && !theFilter->ShouldRender (theWorkspace, this))
-    {
-      return Standard_False;
-    }
-
-    Render (theWorkspace);
-
-    return Standard_True;
-  }
 
 protected:
 

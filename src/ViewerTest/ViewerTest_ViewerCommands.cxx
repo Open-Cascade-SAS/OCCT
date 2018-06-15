@@ -8539,6 +8539,49 @@ static int VClipPlane (Draw_Interpretor& theDi, Standard_Integer theArgsNb, cons
       aClipPlane->SetCappingMaterial (aMat);
       anArgIter += aNbParsed;
     }
+    else if ((aChangeArg == "-transparency"
+           || aChangeArg == "-transp")
+          && aNbChangeArgs >= 2)
+    {
+      TCollection_AsciiString aValStr (aChangeArgs[1]);
+      Handle(Graphic3d_AspectFillArea3d) anAspect = aClipPlane->CappingAspect();
+      if (aValStr.IsRealValue())
+      {
+        Graphic3d_MaterialAspect aMat = aClipPlane->CappingMaterial();
+        aMat.SetTransparency ((float )aValStr.RealValue());
+        anAspect->SetAlphaMode (Graphic3d_AlphaMode_BlendAuto);
+        aClipPlane->SetCappingMaterial (aMat);
+      }
+      else
+      {
+        aValStr.LowerCase();
+        Graphic3d_AlphaMode aMode = Graphic3d_AlphaMode_BlendAuto;
+        if (aValStr == "opaque")
+        {
+          aMode = Graphic3d_AlphaMode_Opaque;
+        }
+        else if (aValStr == "mask")
+        {
+          aMode = Graphic3d_AlphaMode_Mask;
+        }
+        else if (aValStr == "blend")
+        {
+          aMode = Graphic3d_AlphaMode_Blend;
+        }
+        else if (aValStr == "blendauto")
+        {
+          aMode = Graphic3d_AlphaMode_BlendAuto;
+        }
+        else
+        {
+          std::cout << "Syntax error at '" << aValStr << "'\n";
+          return 1;
+        }
+        anAspect->SetAlphaMode (aMode);
+        aClipPlane->SetCappingAspect (anAspect);
+      }
+      anArgIter += 1;
+    }
     else if (aChangeArg == "-texname"
           || aChangeArg == "texname")
     {
@@ -12367,7 +12410,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
       "\n\t\t:   [-set|-unset|-setOverrideGlobal [objects|views]]"
       "\n\t\t:   [-maxPlanes]"
       "\n\t\t:   [-capping {0|1}]"
-      "\n\t\t:     [-color R G B] [-hatch {on|off|ID}]"
+      "\n\t\t:     [-color R G B] [-transparency Value] [-hatch {on|off|ID}]"
       "\n\t\t:     [-texName Texture] [-texScale SX SY] [-texOrigin TX TY]"
       "\n\t\t:       [-texRotate Angle]"
       "\n\t\t:     [-useObjMaterial {0|1}] [-useObjTexture {0|1}]"
@@ -12383,6 +12426,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
       "\n\t\t: Capping options:"
       "\n\t\t:   -capping {off|on|0|1} turn capping on/off"
       "\n\t\t:   -color R G B          set capping color"
+      "\n\t\t:   -transparency Value   set capping transparency 0..1"
       "\n\t\t:   -texName Texture      set capping texture"
       "\n\t\t:   -texScale SX SY       set capping tex scale"
       "\n\t\t:   -texOrigin TX TY      set capping tex origin"

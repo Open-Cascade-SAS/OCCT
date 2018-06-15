@@ -27,8 +27,30 @@
 #include <Graphic3d_ArrayOfPrimitives.hxx>
 #include <Graphic3d_GroupDefinitionError.hxx>
 
-
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Group,Graphic3d_Group)
+
+namespace
+{
+  //! Render element if it passes the filtering procedure. This method should
+  //! be used for elements which can be used in scope of rendering algorithms.
+  //! E.g. elements of groups during recursive rendering.
+  //! If render filter is null, pure rendering is performed.
+  //! @param theWorkspace [in] the rendering workspace.
+  //! @param theFilter [in] the rendering filter to check whether the element
+  //! should be rendered or not.
+  //! @return True if element passes the check and renders,
+  static bool renderFiltered (const Handle(OpenGl_Workspace)& theWorkspace,
+                              OpenGl_Element* theElement)
+  {
+    if (!theWorkspace->ShouldRender (theElement))
+    {
+      return false;
+    }
+
+    theElement->Render (theWorkspace);
+    return true;
+  }
+}
 
 // =======================================================================
 // function : OpenGl_Group
@@ -393,8 +415,6 @@ void OpenGl_Group::AddElement (OpenGl_Element* theElem)
 // =======================================================================
 void OpenGl_Group::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
 {
-  const Handle(OpenGl_RenderFilter)& aFilter = theWorkspace->GetRenderFilter();
-
   // Setup aspects
   theWorkspace->SetAllowFaceCulling (myIsClosed
                                  && !theWorkspace->GetGlContext()->Clipping().IsClippingOrCappingOn());
@@ -402,15 +422,15 @@ void OpenGl_Group::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
   const OpenGl_AspectFace*   aBackAspectFace   = theWorkspace->AspectFace();
   const OpenGl_AspectMarker* aBackAspectMarker = theWorkspace->AspectMarker();
   const OpenGl_AspectText*   aBackAspectText   = theWorkspace->AspectText();
-  Standard_Boolean isLineSet   = myAspectLine   && myAspectLine->RenderFiltered (theWorkspace, aFilter);
-  Standard_Boolean isFaceSet   = myAspectFace   && myAspectFace->RenderFiltered (theWorkspace, aFilter);
-  Standard_Boolean isMarkerSet = myAspectMarker && myAspectMarker->RenderFiltered (theWorkspace, aFilter);
-  Standard_Boolean isTextSet   = myAspectText   && myAspectText->RenderFiltered (theWorkspace, aFilter);
+  const bool isLineSet   = myAspectLine   && renderFiltered (theWorkspace, myAspectLine);
+  const bool isFaceSet   = myAspectFace   && renderFiltered (theWorkspace, myAspectFace);
+  const bool isMarkerSet = myAspectMarker && renderFiltered (theWorkspace, myAspectMarker);
+  const bool isTextSet   = myAspectText   && renderFiltered (theWorkspace, myAspectText);
 
   // Render group elements
   for (OpenGl_ElementNode* aNodeIter = myFirst; aNodeIter != NULL; aNodeIter = aNodeIter->next)
   {
-    aNodeIter->elem->RenderFiltered (theWorkspace, aFilter);
+    renderFiltered (theWorkspace, aNodeIter->elem);
   }
 
   // Restore aspects
