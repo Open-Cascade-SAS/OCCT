@@ -693,6 +693,7 @@ static TopoDS_Edge FindCreatedEdge
   return E1;
 }
 
+#ifdef DRAW
 //=======================================================================
 //function : Bubble
 //purpose  : Sets in increasing order the sequence of vertices. 
@@ -826,6 +827,8 @@ static void CutEdge (const TopoDS_Edge&          E,
     V1 = V2;
   }
 }
+#endif
+
 //======================== END OF STATIC FUNCTIONS ============
 
 
@@ -2316,25 +2319,6 @@ void BiTgte_Blend::ComputeShape()
   }
 #endif
   // end debug
-
-  //
-  // modify the tubes on edge for partition of edges.
-  //
-  Standard_Integer NbS = NbSurfaces();
-  for (Standard_Integer i = 1; i <= NbS; i++) {
-    const TopoDS_Shape& S1 = SupportShape1(i);
-
-    if ( S1.ShapeType() == TopAbs_EDGE) {
-      const TopoDS_Edge& E1   = TopoDS::Edge(S1);
-      // it is required to replace in F the cut edges of E1, that
-      // represent CutE
-      const TopTools_ListOfShape& VonE = myCutEdges(E1);
-      TopTools_ListOfShape NewE;
-      CutEdge(E1,VonE,NewE);
-      
-    }
-  }
-
 
   TopTools_DataMapOfShapeShape Created;
 

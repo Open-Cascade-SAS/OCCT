@@ -1,0 +1,22 @@
+puts "============"
+puts "OCC29861"
+puts "============"
+puts ""
+##############################################################################################
+# Modeling Algorithms - BiTgte_Blend gives exception
+##############################################################################################
+
+set BugNumber OCC29861
+
+cylinder s1 0 360 0  0 0 1  0 1 0  160
+cylinder s2 0 0 0  0 1 0  80
+mkface f1 s1 0 2.*pi -113.2000012 113.2000012
+mkface f2 s2 0 2.*pi 168.4 600
+compound f1 f2 s
+
+brollingball result s 30 @ f1 f2
+
+checkshape result
+checknbshapes result -vertex 10 -edge 17 -wire 7 -face 6 -shell 1
+checkprops result -s 246256
+checkview -display result -2d -path ${imagedir}/${test_image}.png

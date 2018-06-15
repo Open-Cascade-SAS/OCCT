@@ -555,6 +555,7 @@ void BRepAlgo_Loop::Perform()
   TopTools_IndexedDataMapOfShapeListOfShape MVE;
 
   // add cut edges.
+  TopTools_MapOfShape Emap;
   for (itl.Initialize(myEdges); itl.More(); itl.Next())
   {
     const TopTools_ListOfShape* pLCE = myCutEdges.Seek (itl.Value());
@@ -562,6 +563,8 @@ void BRepAlgo_Loop::Perform()
     {
       for (itl1.Initialize(*pLCE); itl1.More(); itl1.Next()) {
         TopoDS_Edge& E = TopoDS::Edge(itl1.Value());
+        if (!Emap.Add(E))
+          continue;
         StoreInMVE(myFace,E,MVE,YaCouture,myVerticesForSubstitute);
       }
     }

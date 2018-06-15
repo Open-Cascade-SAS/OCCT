@@ -1,0 +1,23 @@
+puts "TODO OCC29957 ALL: Error : The area of result shape is"
+
+puts "============"
+puts "OCC22864"
+puts "============"
+puts ""
+##############################################################################################
+# The algorithm BiTgte_Blend obtains instable results
+##############################################################################################
+
+set BugNumber OCC22864
+
+cone s1 0 0 0  0 0 1  30 0
+mkface f1 s1 0 2.*pi -40 0
+cone s2 25 0 -15  1 0 0  10 0
+mkface f2 s2 0 2.*pi -55 0
+compound f1 f2 s
+
+brollingball result s 2. @ f1 f2
+
+checkprops result -s 3523.97
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

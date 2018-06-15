@@ -1,0 +1,21 @@
+puts "============"
+puts "OCC22864"
+puts "============"
+puts ""
+##############################################################################################
+# The algorithm BiTgte_Blend obtains instable results
+##############################################################################################
+
+set BugNumber OCC22864
+
+restore [locate_data_file bug22864_face1.brep] f1 
+restore [locate_data_file bug22864_face2.brep] f2 
+
+compound f1 f2 s
+
+brollingball result s 15 @ f1 f2
+
+checkshape result
+checknbshapes result -vertex 7 -edge 9 -wire 4 -face 3 -shell 1
+checkprops result -s 39642.2
+checkview -display result -2d -path ${imagedir}/${test_image}.png
