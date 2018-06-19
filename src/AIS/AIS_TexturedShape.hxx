@@ -172,6 +172,9 @@ public: //! @name methods to alter texture mapping properties
   //! @return true if texture color modulation is turned on
   Standard_Boolean TextureModulate() const { return myModulate; }
 
+  //! Return true if specified display mode is supported (extends AIS_Shape with Display Mode 3).
+  virtual Standard_Boolean AcceptDisplayMode (const Standard_Integer theMode) const Standard_OVERRIDE { return theMode >= 0 && theMode <= 3; }
+
 protected: //! @name overridden methods
 
   //! Compute presentation with texture mapping support.
