@@ -135,10 +135,10 @@ void  BRepClass_Intersector::Perform(const gp_Lin2d& L,
   IntRes2d_Domain DL;
   //
   if(P!=RealLast()) {
-    DL.SetValues(L.Location(),0.,aTolZ,ElCLib::Value(P,L),P,aTolZ);
+    DL.SetValues(L.Location(),0.,Precision::PConfusion(),ElCLib::Value(P,L),P,Precision::PConfusion());
   }
   else { 
-    DL.SetValues(L.Location(),0.,aTolZ,Standard_True);
+    DL.SetValues(L.Location(),0.,Precision::PConfusion(),Standard_True);
   }
 
   IntRes2d_Domain DE(pdeb,deb,toldeb,pfin,fin,tolfin);

@@ -1,0 +1,28 @@
+puts "========"
+puts "OCC29887: Wrong result of CUT operation due to incorrect point-face classification"
+puts "========"
+puts ""
+
+brestore [locate_data_file bug29887_ar_shape_to_cuts.brep] s1
+
+point p 11.633693861603586 -0.88940231049090079
+
+if { ![regexp {IN} [ b2dclassifx s1 p ] ] } {
+    puts "Error : Wrong result of 2d classifier algorithm"
+} else {
+    puts "OK : Good result of 2d classifier algorithm"
+}
+
+if { ![regexp {IN} [ b2dclassify s1 p ] ] } {
+    puts "Error : Wrong result of 2d classifier algorithm"
+} else {
+    puts "OK : Good result of 2d classifier algorithm"
+}
+
+smallview -2D-
+2dclear
+display p
+pcurve s1
+2dfit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,24 @@
+puts "========"
+puts "OCC29887: Wrong result of CUT operation due to incorrect point-face classification"
+puts "========"
+puts ""
+
+brestore [locate_data_file bug29887_ar_shape_to_cuts.brep] s1
+brestore [locate_data_file bug29887_ar_cutting_shapes.brep] s2
+
+bcut result s1 s2
+checknbshapes result -face 2 -wire 2
+
+checkshape result
+
+if {[regexp "Faulties" [bopargcheck result]]} {
+  puts "Error: bopargcheck has found some faulties in result"
+}
+
+checkprops result -s 319.71
+
+smallview 
+don result
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png
