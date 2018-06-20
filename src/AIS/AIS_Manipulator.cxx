@@ -17,13 +17,11 @@
 
 #include <AIS_InteractiveContext.hxx>
 #include <AIS_ManipulatorOwner.hxx>
+#include <Extrema_ExtElC.hxx>
 #include <gce_MakeDir.hxx>
-#include <GeomAPI_ExtremaCurveCurve.hxx>
-#include <GeomAPI_IntCS.hxx>
 #include <Geom_Circle.hxx>
-#include <Geom_Line.hxx>
-#include <Geom_Plane.hxx>
 #include <Geom_Transformation.hxx>
+#include <IntAna_IntConicQuad.hxx>
 #include <Prs3d_Arrow.hxx>
 #include <Prs3d_Root.hxx>
 #include <Prs3d_ShadingAspect.hxx>
@@ -416,40 +414,56 @@ Standard_Boolean AIS_Manipulator::ObjectTransformation (const Standard_Integer t
   switch (myCurrentMode)
   {
     case AIS_MM_Translation:
+    case AIS_MM_Scaling:
     {
-      gp_Lin aLine (myStartPick, myAxes[myCurrentIndex].Position().Direction());
-      Handle(Geom_Curve) anInputCurve = new Geom_Line (anInputLine);
-      Handle(Geom_Curve) aCurve = new Geom_Line (aLine);
-      GeomAPI_ExtremaCurveCurve anExtrema (anInputCurve, aCurve);
-      gp_Pnt aP1, aP2;
-      anExtrema.NearestPoints (aP1, aP2);
-      const gp_Pnt aNewPosition = aP2;
+      const gp_Lin aLine (myStartPosition.Location(), myAxes[myCurrentIndex].Position().Direction());
+      Extrema_ExtElC anExtrema (anInputLine, aLine, Precision::Angular());
+      if (!anExtrema.IsDone()
+        || anExtrema.NbExt() != 1)
+      {
+        // translation cannot be done co-directed with camera
+        return Standard_False;
+      }
 
+      Extrema_POnCurv anExPnts[2];
+      anExtrema.Points (1, anExPnts[0], anExPnts[1]);
+      const gp_Pnt aNewPosition = anExPnts[1].Value();
       if (!myHasStartedTransformation)
       {
         myStartPick = aNewPosition;
         myHasStartedTransformation = Standard_True;
         return Standard_True;
       }
-
-      if (aNewPosition.Distance (myStartPick) < Precision::Confusion())
+      else if (aNewPosition.Distance (myStartPick) < Precision::Confusion())
       {
         return Standard_False;
       }
 
       gp_Trsf aNewTrsf;
-      aNewTrsf.SetTranslation (gp_Vec(myStartPick, aNewPosition));
-      theTrsf *= aNewTrsf;
+      if (myCurrentMode == AIS_MM_Translation)
+      {
+        aNewTrsf.SetTranslation (gp_Vec(myStartPick, aNewPosition));
+        theTrsf *= aNewTrsf;
+      }
+      else if (myCurrentMode == AIS_MM_Scaling)
+      {
+        if (aNewPosition.Distance (myStartPosition.Location()) < Precision::Confusion())
+        {
+          return Standard_False;
+        }
+
+        Standard_Real aCoeff = myStartPosition.Location().Distance (aNewPosition)
+                             / myStartPosition.Location().Distance (myStartPick);
+        aNewTrsf.SetScale (myPosition.Location(), aCoeff);
+        theTrsf = aNewTrsf;
+      }
       return Standard_True;
     }
     case AIS_MM_Rotation:
     {
       const gp_Pnt aPosLoc   = myStartPosition.Location();
       const gp_Ax1 aCurrAxis = getAx1FromAx2Dir (myStartPosition, myCurrentIndex);
-
-      Handle(Geom_Curve) anInputCurve = new Geom_Line (anInputLine);
-      Handle(Geom_Surface) aSurface = new Geom_Plane (aPosLoc, aCurrAxis.Direction());
-      GeomAPI_IntCS aIntersector (anInputCurve, aSurface);
+      IntAna_IntConicQuad aIntersector (anInputLine, gp_Pln (aPosLoc, aCurrAxis.Direction()), Precision::Angular(), Precision::Intersection());
       if (!aIntersector.IsDone() || aIntersector.NbPoints() < 1)
       {
         return Standard_False;
@@ -493,36 +507,6 @@ Standard_Boolean AIS_Manipulator::ObjectTransformation (const Standard_Integer t
       aNewTrsf.SetRotation (aCurrAxis, anAngle);
       theTrsf *= aNewTrsf;
       myPrevState = anAngle;
-      return Standard_True;
-    }
-    case AIS_MM_Scaling:
-    {
-      gp_Lin aLine (myStartPosition.Location(), myAxes[myCurrentIndex].Position().Direction());
-      Handle(Geom_Curve) anInputCurve = new Geom_Line (anInputLine);
-      Handle(Geom_Curve) aCurve = new Geom_Line (aLine);
-      GeomAPI_ExtremaCurveCurve anExtrema (anInputCurve, aCurve);
-      gp_Pnt aNewPosition, aTmp;
-      anExtrema.NearestPoints (aTmp, aNewPosition);
-
-      if (!myHasStartedTransformation)
-      {
-        myStartPick = aNewPosition;
-        myHasStartedTransformation = Standard_True;
-        return Standard_True;
-      }
-
-      if (aNewPosition.Distance (myStartPick) < Precision::Confusion() 
-       || aNewPosition.Distance (myStartPosition.Location()) < Precision::Confusion())
-      {
-        return Standard_False;
-      }
-
-      Standard_Real aCoeff = myStartPosition.Location().Distance (aNewPosition)
-                           / myStartPosition.Location().Distance (myStartPick);
-      gp_Trsf aNewTrsf;
-      aNewTrsf.SetScale (myPosition.Location(), aCoeff);
-
-      theTrsf = aNewTrsf;
       return Standard_True;
     }
     case AIS_MM_None:
