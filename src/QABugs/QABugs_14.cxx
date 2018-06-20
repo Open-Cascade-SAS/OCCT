@@ -710,28 +710,6 @@ static Standard_Integer  OCC984 (Draw_Interpretor& di, Standard_Integer argc, co
   return 0;
 }
 
-static Standard_Integer OCC1786 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
-{
-  if( argc != 2)
-  {
-    di << "Usage : " << argv[0] << " AutoHilight=0/1\n";
-    return 1;
-  }
-  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
-  if(aContext.IsNull()) 
-  {
-    cerr << "use 'vinit' command before " << argv[0] << "\n";
-    return 1;
-  }
-  Standard_Integer AutoHilightInteger =  Draw::Atoi(argv[1]);
-  Standard_Boolean AutoHilightBoolean = Standard_False;
-  if (AutoHilightInteger != 0) {
-     AutoHilightBoolean = Standard_True;
-  }
-  aContext->SetAutomaticHilight(AutoHilightBoolean);
-  return 0;
-}
-
 //#include <math.h>
 // See QAOCC.cxx OCC6143
 //static Standard_Integer OCC1723 (Draw_Interpretor& /*di*/, Standard_Integer argc, const char ** argv)
@@ -1075,8 +1053,6 @@ void QABugs::Commands_14(Draw_Interpretor& theCommands) {
   theCommands.Add ("BUC60920", "BUC60920", __FILE__, BUC60920, group);
   theCommands.Add ("OCC983", "OCC983 file", __FILE__, OCC983, group);
   theCommands.Add ("OCC984", "OCC984 file", __FILE__, OCC984, group);
-
-  theCommands.Add ("OCC1786", "OCC1786 AutoHilight=0/1", __FILE__, OCC1786, group);
 
 //  theCommands.Add ("OCC1723", "OCC1723", __FILE__, OCC1723, group);
 

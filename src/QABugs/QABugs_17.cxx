@@ -243,53 +243,6 @@ static Standard_Integer BUC60970 (Draw_Interpretor& di, Standard_Integer argc, c
   return 0;
 }
 
-static Standard_Integer  BUC60818(Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
-{
-  if(argc!=1)
-  {
-    di << "Usage : " << argv[0] << "\n";
-    return -1;
-  }
-
-  Handle(AIS_InteractiveContext) myAISContext = ViewerTest::GetAISContext();
-  if(myAISContext.IsNull()) 
-  {
-    di << "use 'vinit' command before " << argv[0] << "\n";
-    return -1;
-  }
-
-  // TRIHEDRON
-  Handle(AIS_Trihedron) aTrihedron;
-  Handle(Geom_Axis2Placement) aTrihedronAxis=new Geom_Axis2Placement(gp::XOY());
-  aTrihedron=new AIS_Trihedron(aTrihedronAxis);
-  myAISContext->Display (aTrihedron, Standard_True);
-
-  Standard_DISABLE_DEPRECATION_WARNINGS
-  myAISContext->OpenLocalContext(); 
-  Standard_ENABLE_DEPRECATION_WARNINGS
-  myAISContext->Load(aTrihedron,0); 
-
-  myAISContext->SetAutomaticHilight(  Standard_False );
-
-  Handle(V3d_View) myV3dView = ViewerTest::CurrentView();
-  double Xv,Yv;
-  myV3dView->Project(0,0,0,Xv,Yv);
-
-  Standard_Integer Xp,Yp;
-  myV3dView->Convert(Xv,Yv,Xp,Yp);
-
-  myAISContext->MoveTo (Xp,Yp, myV3dView, Standard_False);
-  myAISContext->MoveTo (Xp,Yp, myV3dView, Standard_True);
-
-  if (myAISContext->HasDetected(  )) 
-    di << "has detected shape : OK"   << "\n";
-  else       di << "has detected shape : bugged - Faulty "   << "\n";
-
-  myAISContext->SetAutomaticHilight(  Standard_True );
-
-  return 0;
-}
-
 static Standard_Integer BUC60915_1(Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
   if (argc > 1) {
@@ -543,64 +496,6 @@ static Standard_Integer OCC280 (Draw_Interpretor& di, Standard_Integer argc, con
   }
 
   return 0;
-}
-
-static Standard_Integer  OCC232 (Draw_Interpretor& di, Standard_Integer /*argc*/, const char ** argv)
-{
-  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
-  if(aContext.IsNull()) { 
-    di << "use 'vinit' command before " << argv[0] << "\n";
-    return 1;
-  }
-
-  BRep_Builder builder;
-  TopoDS_Compound comp;
-  TopoDS_CompSolid cs1, cs2;
-
-  builder.MakeCompound(comp);
-  builder.MakeCompSolid(cs1);
-  builder.MakeCompSolid(cs2);
-
-  TopoDS_Shape sh1 = BRepPrimAPI_MakeBox(gp_Pnt(0, 0, 0), 100, 100, 100).Shape();
-  TopoDS_Shape sh2 = BRepPrimAPI_MakeBox(gp_Pnt(100, 0, 0), 100, 100, 100).Shape();
-  TopoDS_Shape sh3 = BRepPrimAPI_MakeBox(gp_Pnt(200, 0, 0), 100, 100, 100).Shape();
-  builder.Add(cs1, sh1);
-  builder.Add(cs1, sh2);
-  builder.Add(cs1, sh3);
-
-  TopoDS_Shape sh4 = BRepPrimAPI_MakeBox(gp_Pnt(0, 500, 0), 100, 100, 100).Shape();
-  TopoDS_Shape sh5 = BRepPrimAPI_MakeBox(gp_Pnt(100, 500, 0), 100, 100, 100).Shape();
-  TopoDS_Shape sh6 = BRepPrimAPI_MakeBox(gp_Pnt(200, 500, 0), 100, 100, 100).Shape();
-
-  builder.Add(cs2, sh4);
-  builder.Add(cs2, sh5);
-  builder.Add(cs2, sh6);
-
-  builder.Add(comp, cs1);
-  builder.Add(comp, cs2);
-
-  Handle(AIS_Shape) ais = new AIS_Shape(comp);
-  aContext->Display (ais, Standard_False);
-
-  TopExp_Explorer exp(comp,  TopAbs_COMPSOLID);
-  while(exp.More())
-  {
-    //printf("\n TopAbs_COMPSOLID is  there \n");
-    di << "\n TopAbs_COMPSOLID is  there \n";
-    exp.Next();
-  }
-
-  Handle (StdSelect_ShapeTypeFilter) filt = new StdSelect_ShapeTypeFilter(TopAbs_COMPSOLID);
-  aContext->AddFilter(filt);
-  Standard_DISABLE_DEPRECATION_WARNINGS
-  aContext->CloseAllContexts (Standard_False);
-  aContext->OpenLocalContext(); 
-  aContext->ActivateStandardMode(TopAbs_SOLID);
-  Standard_ENABLE_DEPRECATION_WARNINGS
-
-  aContext->UpdateCurrentViewer();
-
-  return 0; 
 }
 
 static Standard_Integer  OCC138LC (Draw_Interpretor& di, Standard_Integer /*argc*/, const char ** argv)
@@ -1669,12 +1564,10 @@ void QABugs::Commands_17(Draw_Interpretor& theCommands) {
   theCommands.Add ("BUC60842", "BUC60842", __FILE__, BUC60842, group);
   theCommands.Add ("BUC60843", "BUC60843 result_shape name_of_circle name_of_curve [ par1 [ tol ] ]", __FILE__, BUC60843, group);
   theCommands.Add ("BUC60970", "BUC60970 shape result", __FILE__, BUC60970, group);
-  theCommands.Add ("BUC60818", "BUC60818", __FILE__, BUC60818, group);
   theCommands.Add ("BUC60915", "BUC60915", __FILE__, BUC60915_1, group);
   theCommands.Add ("OCC138", "OCC138", __FILE__, OCC138, group);
   theCommands.Add ("OCC353","OCC353",__FILE__,OCC353,group);
   theCommands.Add ("OCC280","OCC280 hlr=0/1 setsurfecedetail=0/1; set perspecrive view",__FILE__,OCC280,group);
-  theCommands.Add ("OCC232", "OCC232", __FILE__, OCC232 , group);
   theCommands.Add ("OCC138LC", "OCC138LC", __FILE__, OCC138LC, group);
   theCommands.Add ("OCC566", "OCC566 shape [ xmin ymin zmin xmax ymax zmax] ; print bounding box", __FILE__, OCC566, group);
   theCommands.Add ("OCC570", "OCC570 result", __FILE__, OCC570, group);

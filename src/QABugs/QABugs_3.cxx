@@ -26,6 +26,8 @@
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Graphic3d_ClipPlane.hxx>
+#include <ViewerTest.hxx>
+#include <AIS_Shape.hxx>
 
 #include <fstream>
 
@@ -64,70 +66,9 @@ static int BUC60623(Draw_Interpretor& di, Standard_Integer argc, const char ** a
   return 0;
 }
 
-#include<ViewerTest.hxx>
-#include<AIS_InteractiveContext.hxx>
-#include<AIS_Shape.hxx>
-  
-static int BUC60569(Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
-{
-  if(argc!=2)
-  {
-    di << "Usage : " << argv[0] << " shape\n";
-    return -1;
-  }
-
-  Handle(AIS_InteractiveContext) myAISContext = ViewerTest::GetAISContext();
-  if(myAISContext.IsNull()) {
-    di << "use 'vinit' command before " << argv[0] << "\n";
-    return -1;
-  }
-
-  TopoDS_Shape theShape =  DBRep::Get(argv[1]);
-
-  Handle(AIS_Shape) anAISShape = new AIS_Shape( theShape ); 
-  myAISContext->Display( anAISShape, Standard_True );
-
-  Standard_DISABLE_DEPRECATION_WARNINGS
-  myAISContext->OpenLocalContext(); 
-  myAISContext->ActivateStandardMode(TopAbs_FACE);
-  Standard_ENABLE_DEPRECATION_WARNINGS
-
-  return 0;
-}
-
-static int BUC60614(Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
-{
-  if(argc!=2)
-  {
-    di << "Usage : "<< argv[0] << " shape\n";
-    return -1;
-  }
-
-  //  di.Eval("vinit");
-
-  TopoDS_Shape theShape =  DBRep::Get(argv[1]);
-
-//  ViewerTest::GetAISContext(); 
-  Handle(AIS_InteractiveContext) myAISContext = ViewerTest::GetAISContext();
-  if(myAISContext.IsNull()) {
-    di << "use 'vinit' command before " << argv[0] << "\n";
-    return -1;    
-  }
-  Handle(AIS_Shape) anAISShape = new AIS_Shape( theShape ); 
-  myAISContext->Display( anAISShape, Standard_True );
-
-  Standard_DISABLE_DEPRECATION_WARNINGS
-  myAISContext->OpenLocalContext(); 
-  myAISContext->ActivateStandardMode(TopAbs_COMPOUND);
-  Standard_ENABLE_DEPRECATION_WARNINGS
-//  myAISContext->ActivateStandardMode(TopAbs_SOLID);
-//  di.Eval("vfit");
-//  cout << "vfini" << endl;
-  return 0;
-}
-
 #include<BRepBuilderAPI_MakeVertex.hxx>
 #include<TCollection_ExtendedString.hxx>
+#include<AIS_InteractiveContext.hxx>
 #include<AIS_LengthDimension.hxx>
 
 static Standard_Integer BUC60632(Draw_Interpretor& di, Standard_Integer /*n*/, const char ** a)
@@ -183,36 +124,6 @@ static Standard_Integer BUC60652(Draw_Interpretor& di, Standard_Integer argc, co
   return 0; 
 }
 
-#include <Geom_Axis2Placement.hxx>
-#include <AIS_Trihedron.hxx>
-
-static Standard_Integer BUC60574(Draw_Interpretor& di, Standard_Integer /*n*/, const char ** a)
-{
-  
-  Handle(AIS_InteractiveContext) myAISContext = ViewerTest::GetAISContext();
-  if(myAISContext.IsNull()) {
-    di << "use 'vinit' command before " << a[0] << "\n";
-    return -1;
-  }
-  
-  Handle(Geom_Axis2Placement) atrihedronAxis = new Geom_Axis2Placement(gp::XOY()); 
-  Handle(AIS_Trihedron) atri = new AIS_Trihedron(atrihedronAxis); 
-  gp_Trsf aTrsf; 
-  gp_Vec trans(5,5,5); 
-  aTrsf.SetTranslation(trans); 
-  TopLoc_Location aLoc(aTrsf); 
-  myAISContext->SetLocation(atri,aLoc); 
-  myAISContext->Display(atri,0,-1,Standard_True, Standard_True);
-
-  Standard_DISABLE_DEPRECATION_WARNINGS
-  myAISContext->OpenLocalContext(Standard_False, Standard_True, Standard_False, Standard_False);
-  Standard_ENABLE_DEPRECATION_WARNINGS
-
-  myAISContext->Load(atri,3,Standard_True);
-
-  return 0;
-}
-
 #include <TopoDS_Solid.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
@@ -221,110 +132,6 @@ static Standard_Integer BUC60574(Draw_Interpretor& di, Standard_Integer /*n*/, c
 
 #include <V3d_View.hxx>
 #include <gce_MakePln.hxx>
-
-#define DEFAULT_COLOR    Quantity_NOC_GOLDENROD
-
-//=======================================================================
-//function : GetColorFromName
-//purpose  : get the Quantity_NameOfColor from a string
-//=======================================================================
-
-static Quantity_NameOfColor GetColorFromName( const char *name ) 
-{ 
-  Quantity_NameOfColor ret = DEFAULT_COLOR;
-  
-  Standard_Boolean Found = Standard_False;
-  Standard_CString colstring;
-  for(Standard_Integer i=0;i<=514 && !Found;i++)
-    {
-      colstring = Quantity_Color::StringName(Quantity_NameOfColor(i));
-      if (!strcasecmp(name,colstring)) {
-	ret = (Quantity_NameOfColor)i;
-	Found = Standard_True;
-      }
-    }
-  
-  return ret;
-}
-   
-static Standard_Integer setcolor (Draw_Interpretor& di,Standard_Integer argc, const char ** argv )
-{
-
-Handle(AIS_InteractiveContext) myAISContext = ViewerTest::GetAISContext();
-if(myAISContext.IsNull()) { 
-    di << "use 'vinit' command before " << argv[0] << "\n";
-    return -1;
-  }
-
-Handle(V3d_View) myV3dView = ViewerTest::CurrentView();
-
-switch (argc){
-
- case 2:
-   {
-     di <<"case 2 : This command will change the background color to " << argv[1]<< "\n";
-//   setcolor <name> 
-//   Change the background color of the view with a predefined name Graphic3d_NOC_<name>  
-
-     myV3dView -> SetBackgroundColor(GetColorFromName(argv[1]));
-     myV3dView -> Redraw();
-   break;
-   }
-
- case 3:
-   {
-     di <<"case 3 : This command will change the color of the objects to "<< argv[2]<< "\n";
-//   setcolor <object> <name> 
-//   Change the object color with a predefined name 
-
-     TopoDS_Shape aShape = DBRep::Get(argv[1]);
-     Handle(AIS_InteractiveObject) myShape = new AIS_Shape (aShape);
-     myAISContext->SetColor(myShape,GetColorFromName(argv[2]),Standard_True);
-     myAISContext->Display(myShape,Standard_True);
-     myAISContext->UpdateCurrentViewer();
-//     return 0;
-   break;
-   }
- case 4:
-   {
-     di <<"case 4 : This command will change the background color to <r> <g> <b> :"<< argv[1] << argv[2] << argv[3] << "\n";
-
-//   setcolor <r> <g> <b> 
-//   Change the background color of the view with the color values <r>,<g>,<b> 
-//   A color value must be defined in the space [0.,1.] 
-
-     Standard_Real QuantityOfRed   = Draw::Atoi(argv[1]);
-     Standard_Real QuantityOfGreen = Draw::Atoi(argv[2]);
-     Standard_Real QuantityOfBlue  = Draw::Atoi(argv[3]);
-     myV3dView->SetBackgroundColor(Quantity_TOC_RGB,QuantityOfRed,QuantityOfGreen,QuantityOfBlue);
-     myV3dView->Redraw();
-   break;
-   }
-
- case 5:
-   {
-    di <<"case 5 : This command will change the color of the objects to <r> <g> <b> : "<<argv[2]<< argv[3]<< argv[4]<< "\n";
-
-//  setcolor <object> <r> <g> <b> 
-//  change the object color with RGB values. 
-
-
-    Standard_Real QuantityOfRed   = Draw::Atof(argv[2]);
-    Standard_Real QuantityOfGreen = Draw::Atof(argv[3]);
-    Standard_Real QuantityOfBlue  = Draw::Atof(argv[4]);
-
-    TopoDS_Shape aShape = DBRep::Get(argv[1]);
-    Handle(AIS_InteractiveObject) myShape =  new AIS_Shape (aShape);
-    myAISContext->SetColor(myShape,Quantity_Color(QuantityOfRed,QuantityOfGreen,QuantityOfBlue,Quantity_TOC_RGB),Standard_True);
-    myAISContext->Display(myShape,Standard_True);
-    myAISContext->UpdateCurrentViewer();
-//  myShape->SetColor(Quantity_Color(QuantityOfRed,QuantityOfGreen,QuantityOfBlue,Quantity_TOC_RGB));
-//  myShape->Redisplay();
-   break;
-   }
- }
-return 0;
-}
 
 #include <Bnd_BoundSortBox.hxx>
 #include <BRepBndLib.hxx>
@@ -1446,15 +1253,9 @@ void QABugs::Commands_3(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
   theCommands.Add("BUC60623","BUC60623 result Shape1 Shape2",__FILE__,BUC60623,group);
-  theCommands.Add("BUC60569","BUC60569 shape",__FILE__,BUC60569,group);
-  theCommands.Add("BUC60614","BUC60614 shape",__FILE__,BUC60614,group);
   theCommands.Add("BUC60632","BUC60632 mode length",__FILE__,BUC60632,group);
   theCommands.Add("BUC60652","BUC60652 face",__FILE__,BUC60652,group);
-  theCommands.Add("BUC60574","BUC60574 ",__FILE__,BUC60574,group);
-
-  theCommands.Add("GER61351","GER61351 name/object name/r g b/object r g b",__FILE__,setcolor,group);
-  theCommands.Add("setcolor","setcolor name/object name/r g b/object r g b",__FILE__,setcolor,group);
-
+  
   theCommands.Add("BUC60729","BUC60729",__FILE__,BUC60729,group);
   theCommands.Add("BUC60724","BUC60724",__FILE__,BUC60724,group);
   theCommands.Add("BUC60727","BUC60727",__FILE__,BUC60727,group);

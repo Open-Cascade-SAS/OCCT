@@ -2278,7 +2278,7 @@ static LRESULT WINAPI AdvViewerWindowProc( HWND hwnd,
           {
             int aHeight = aRect.bottom - aRect.top;
             GetRubberBand()->SetRectangle (X_ButtonPress, aHeight - Y_ButtonPress, X_Motion, aHeight - Y_Motion);
-            ViewerTest::GetAISContext()->Display (GetRubberBand(), 0, -1, Standard_False, Standard_True, AIS_DS_Displayed);
+            ViewerTest::GetAISContext()->Display (GetRubberBand(), 0, -1, Standard_False, AIS_DS_Displayed);
             toRedraw = true;
           }
           if (toRedraw)
@@ -2702,7 +2702,7 @@ int ViewerMainLoop(Standard_Integer argc, const char** argv)
             unsigned int aWidth, aHeight, aBorderWidth, aDepth;
             XGetGeometry (aDisplay, aWindow, &aRoot, &anX, &anY, &aWidth, &aHeight, &aBorderWidth, &aDepth);
             GetRubberBand()->SetRectangle (X_ButtonPress, aHeight - Y_ButtonPress, X_Motion, aHeight - Y_Motion);
-            ViewerTest::GetAISContext()->Display (GetRubberBand(), 0, -1, Standard_False, Standard_True, AIS_DS_Displayed);
+            ViewerTest::GetAISContext()->Display (GetRubberBand(), 0, -1, Standard_False, AIS_DS_Displayed);
             ViewerTest::GetAISContext()->CurrentViewer()->RedrawImmediate();
           }
           else

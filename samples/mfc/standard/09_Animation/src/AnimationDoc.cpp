@@ -133,8 +133,8 @@ CAnimationDoc::CAnimationDoc()
 	myAISContext->SetColor(myAisEngineBlock,   Quantity_NOC_WHITE, Standard_False);
 	myAISContext->SetMaterial(myAisEngineBlock,Graphic3d_NOM_PLASTIC, Standard_False);
 
-	myAISContext->Display(myAisCylinderHead ,1,-1,Standard_False,Standard_False);
-	myAISContext->Display(myAisEngineBlock  ,1,-1,Standard_False,Standard_False);
+	myAISContext->Display(myAisCylinderHead ,1,-1,Standard_False);
+	myAISContext->Display(myAisEngineBlock  ,1,-1,Standard_False);
 
 	myAisCrankArm     = new AIS_Shape (CrankArm);
 	myAISContext->SetColor   (myAisCrankArm, Quantity_NOC_HOTPINK, Standard_False);
@@ -146,9 +146,9 @@ CAnimationDoc::CAnimationDoc()
 	myAISContext->SetColor   (myAisPropeller, Quantity_NOC_RED, Standard_False);
 	myAISContext->SetMaterial(myAisPropeller, Graphic3d_NOM_PLASTIC, Standard_False);
 
-	myAISContext->Display(myAisCrankArm     ,1,-1,Standard_False,Standard_False);
-	myAISContext->Display(myAisPropeller    ,1,-1,Standard_False,Standard_False);
-	myAISContext->Display(myAisPiston       ,1,-1,Standard_True,Standard_False);
+	myAISContext->Display(myAisCrankArm,  1,-1,Standard_False);
+	myAISContext->Display(myAisPropeller, 1,-1,Standard_False);
+	myAISContext->Display(myAisPiston,    1,-1,Standard_True);
 
 	m_Xmin = -300. ;
 	m_Ymin = -300. ;

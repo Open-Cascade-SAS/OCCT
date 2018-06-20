@@ -1597,3 +1597,14 @@ Since OCCT 7.4.0 exception is thrown on the attempt of taking points in case of 
 * The method *TrackHistory* of the classes *BOPAlgo_RemoveFeatures* and *BRepAlgoAPI_Defeaturing* has been renamed to *SetToFillHistory*.
 * The method *GetHistory* of the class *BRepAlgoAPI_Defeaturing* has been renamed to *History*.
 
+@subsection upgrade_740_localcontext Local Context removal
+
+Previously deprecated Local Context functionality has been removed from AIS package,
+so that related methods have been removed from AIS_InteractiveContext interface:
+::HasOpenedContext(), ::HighestIndex(), ::LocalContext(), ::LocalSelector(), ::OpenLocalContext(), ::CloseLocalContext(),
+::IndexOfCurrentLocal(), ::CloseAllContexts(), ::ResetOriginalState(), ::ClearLocalContext(), ::UseDisplayedObjects(), ::NotUseDisplayedObjects(),
+::SetShapeDecomposition(), ::SetTemporaryAttributes(), ::ActivateStandardMode(), ::DeactivateStandardMode(), ::KeepTemporary(),
+::SubIntensityOn(), ::SubIntensityOff(), ::ActivatedStandardModes(), ::IsInLocal() ::AddOrRemoveSelected() taking TopoDS_Shape.
+
+A set of deprecated methods previously related to Local Context and now redirecting to other methods has been preserved to simplify porting; they will be removed in next release.
+

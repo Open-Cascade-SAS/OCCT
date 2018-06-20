@@ -356,7 +356,7 @@ bool VInspector_Window::OpenFile(const TCollection_AsciiString& theFileName)
 
   Handle(AIS_Shape) aPresentation = new AIS_Shape (aShape);
   aContext->Display (aPresentation, false);
-  aContext->Load (aPresentation, -1/*selection mode*/, true);
+  aContext->Load (aPresentation, -1/*selection mode*/);
   aContext->UpdateCurrentViewer();
 
   UpdateTreeModel();
@@ -576,7 +576,7 @@ void VInspector_Window::displaySelectedPresentations(const bool theToDisplay)
     if (theToDisplay)
     {
       aContext->Display(aPresentation, false);
-      aContext->Load(aPresentation, -1, true);
+      aContext->Load(aPresentation, -1);
     }
     else
       aContext->Erase(aPresentation, false);

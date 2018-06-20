@@ -17,20 +17,12 @@
 #ifndef _AIS_DisplayStatus_HeaderFile
 #define _AIS_DisplayStatus_HeaderFile
 
-
 //! To give the display status of an Interactive Object.
-//! This will be one of the following:
-//! -   DS_Displayed: the Interactive Object is
-//! displayed in the main viewer;
-//! -   DS_Erased: the Interactive Object is hidden in main viewer;
-//! -   DS_Temporary: the Interactive Object is temporarily displayed;
-//! -   DS_None: the Interactive Object is nowhere displayed.
 enum AIS_DisplayStatus
 {
-AIS_DS_Displayed,
-AIS_DS_Erased,
-AIS_DS_Temporary,
-AIS_DS_None
+  AIS_DS_Displayed, //!< the Interactive Object is displayed in the main viewer
+  AIS_DS_Erased,    //!< the Interactive Object is hidden in main viewer
+  AIS_DS_None       //!< the Interactive Object is nowhere displayed
 };
 
 #endif // _AIS_DisplayStatus_HeaderFile

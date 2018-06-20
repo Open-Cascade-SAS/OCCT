@@ -4343,7 +4343,6 @@ static Standard_Integer VSetSelectionMode (Draw_Interpretor& /*di*/,
   }
 
   NCollection_Sequence<TCollection_AsciiString> anObjNames;
-  Standard_Integer toOpenLocalCtx = -1;
   Standard_Integer aSelectionMode = -1;
   Standard_Boolean toTurnOn = Standard_True;
   AIS_SelectionModesConcurrency aSelModeConcurrency = AIS_SelectionModesConcurrency_GlobalOrLocal;
@@ -4351,15 +4350,10 @@ static Standard_Integer VSetSelectionMode (Draw_Interpretor& /*di*/,
   {
     TCollection_AsciiString anArgCase (theArgv[anArgIter]);
     anArgCase.LowerCase();
-    if (toOpenLocalCtx == -1
-     && anArgCase == "-local")
-    {
-      toOpenLocalCtx = 1;
-    }
-    else if (anArgCase == "-set"
-          || anArgCase == "-replace"
-          || anArgCase == "-single"
-          || anArgCase == "-exclusive")
+    if (anArgCase == "-set"
+     || anArgCase == "-replace"
+     || anArgCase == "-single"
+     || anArgCase == "-exclusive")
     {
       aSelModeConcurrency = AIS_SelectionModesConcurrency_Single;
     }
@@ -4428,27 +4422,9 @@ static Standard_Integer VSetSelectionMode (Draw_Interpretor& /*di*/,
     anAISContext->DisplayedObjects (aTargetIOs);
   }
 
-  Standard_DISABLE_DEPRECATION_WARNINGS
-  if (aSelectionMode == 0 && anAISContext->HasOpenedContext())
-  {
-    anAISContext->CloseLocalContext();
-  }
-  else if (aSelectionMode != 0 && toTurnOn)
-  {
-    if (!anAISContext->HasOpenedContext() && toOpenLocalCtx == 1)
-    {
-      anAISContext->OpenLocalContext (Standard_False);
-    }
-  }
-  Standard_ENABLE_DEPRECATION_WARNINGS
-
   for (AIS_ListIteratorOfListOfInteractive aTargetIt (aTargetIOs); aTargetIt.More(); aTargetIt.Next())
   {
     const Handle(AIS_InteractiveObject)& anIO = aTargetIt.Value();
-    if (toOpenLocalCtx == 1 && toTurnOn && aSelectionMode != 0)
-    {
-      anAISContext->Load (anIO, -1, Standard_True);
-    }
     anAISContext->SetSelectionModeActive (anIO, aSelectionMode, toTurnOn, aSelModeConcurrency);
   }
   return 0;

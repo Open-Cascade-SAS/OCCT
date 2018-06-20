@@ -41,7 +41,6 @@
 #include <AIS_Relation.hxx>
 #include <AIS_TypeFilter.hxx>
 #include <AIS_SignatureFilter.hxx>
-#include <AIS_LocalContext.hxx>
 #include <AIS_ListOfInteractive.hxx>
 #include <AIS_ListIteratorOfListOfInteractive.hxx>
 #include <Aspect_InteriorStyle.hxx>
@@ -2904,13 +2903,6 @@ static int VDonly2 (Draw_Interpretor& ,
     return 1;
   }
 
-  Standard_DISABLE_DEPRECATION_WARNINGS
-  if (aCtx->HasOpenedContext())
-  {
-    aCtx->CloseLocalContext();
-  }
-  Standard_ENABLE_DEPRECATION_WARNINGS
-
   Standard_Integer anArgIter = 1;
   for (; anArgIter < theArgNb; ++anArgIter)
   {
@@ -2992,7 +2984,6 @@ int VRemove (Draw_Interpretor& theDI,
   Standard_Boolean isContextOnly = Standard_False;
   Standard_Boolean toRemoveAll   = Standard_False;
   Standard_Boolean toPrintInfo   = Standard_True;
-  Standard_Boolean toRemoveLocal = Standard_False;
 
   Standard_Integer anArgIter = 1;
   for (; anArgIter < theArgNb; ++anArgIter)
@@ -3011,10 +3002,6 @@ int VRemove (Draw_Interpretor& theDI,
     {
       toPrintInfo = Standard_False;
     }
-    else if (anArg == "-local")
-    {
-      toRemoveLocal = Standard_True;
-    }
     else if (anUpdateTool.parseRedrawMode (anArg))
     {
       continue;
@@ -3030,18 +3017,6 @@ int VRemove (Draw_Interpretor& theDI,
     std::cerr << "Error: wrong syntax!\n";
     return 1;
   }
-
-  Standard_DISABLE_DEPRECATION_WARNINGS
-  if (toRemoveLocal && !aCtx->HasOpenedContext())
-  {
-    std::cerr << "Error: local selection context is not open.\n";
-    return 1;
-  }
-  else if (!toRemoveLocal && aCtx->HasOpenedContext())
-  {
-    aCtx->CloseAllContexts (Standard_False);
-  }
-  Standard_ENABLE_DEPRECATION_WARNINGS
 
   NCollection_List<TCollection_AsciiString> anIONameList;
   if (toRemoveAll)
@@ -3106,17 +3081,6 @@ int VRemove (Draw_Interpretor& theDI,
       GetMapOfAIS().UnBind2 (anIter.Value());
     }
   }
-
-  // Close local context if it is empty
-  TColStd_MapOfTransient aLocalIO;
-  Standard_DISABLE_DEPRECATION_WARNINGS
-  if (aCtx->HasOpenedContext()
-   && !aCtx->LocalContext()->DisplayedObjects (aLocalIO))
-  {
-    aCtx->CloseAllContexts (Standard_False);
-  }
-  Standard_ENABLE_DEPRECATION_WARNINGS
-
   return 0;
 }
 
@@ -3141,7 +3105,6 @@ int VErase (Draw_Interpretor& theDI,
   const Standard_Boolean toEraseAll = TCollection_AsciiString (theArgNb > 0 ? theArgVec[0] : "") == "veraseall";
 
   Standard_Integer anArgIter = 1;
-  Standard_Boolean toEraseLocal  = Standard_False;
   Standard_Boolean toEraseInView = Standard_False;
   TColStd_SequenceOfAsciiString aNamesOfEraseIO;
   for (; anArgIter < theArgNb; ++anArgIter)
@@ -3151,10 +3114,6 @@ int VErase (Draw_Interpretor& theDI,
     if (anUpdateTool.parseRedrawMode (anArgCase))
     {
       continue;
-    }
-    else if (anArgCase == "-local")
-    {
-      toEraseLocal = Standard_True;
     }
     else if (anArgCase == "-view"
           || anArgCase == "-inview")
@@ -3172,18 +3131,6 @@ int VErase (Draw_Interpretor& theDI,
     std::cerr << "Error: wrong syntax, " << theArgVec[0] << " too much arguments.\n";
     return 1;
   }
-
-  Standard_DISABLE_DEPRECATION_WARNINGS
-  if (toEraseLocal && !aCtx->HasOpenedContext())
-  {
-    std::cerr << "Error: local selection context is not open.\n";
-    return 1;
-  }
-  else if (!toEraseLocal && aCtx->HasOpenedContext())
-  {
-    aCtx->CloseAllContexts (Standard_False);
-  }
-  Standard_ENABLE_DEPRECATION_WARNINGS
 
   if (!aNamesOfEraseIO.IsEmpty())
   {
@@ -3215,7 +3162,6 @@ int VErase (Draw_Interpretor& theDI,
   else if (!toEraseAll && aCtx->NbSelected() > 0)
   {
     // Erase selected objects
-    const Standard_Boolean aHasOpenedContext = aCtx->HasOpenedContext();
     for (ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName anIter (GetMapOfAIS());
          anIter.More(); anIter.Next())
     {
@@ -3227,10 +3173,6 @@ int VErase (Draw_Interpretor& theDI,
         if (toEraseInView)
         {
           aCtx->SetViewAffinity (anIO, aView, Standard_False);
-        }
-        else if (aHasOpenedContext)
-        {
-          aCtx->Erase (anIO, Standard_False);
         }
       }
     }
@@ -3282,16 +3224,11 @@ static int VDisplayAll (Draw_Interpretor& ,
   }
 
   Standard_Integer anArgIter = 1;
-  Standard_Boolean toDisplayLocal = Standard_False;
   for (; anArgIter < theArgNb; ++anArgIter)
   {
     TCollection_AsciiString anArgCase (theArgVec[anArgIter]);
     anArgCase.LowerCase();
-    if (anArgCase == "-local")
-    {
-      toDisplayLocal = Standard_True;
-    }
-    else if (anUpdateTool.parseRedrawMode (anArgCase))
+    if (anUpdateTool.parseRedrawMode (anArgCase))
     {
       continue;
     }
@@ -3305,18 +3242,6 @@ static int VDisplayAll (Draw_Interpretor& ,
     std::cout << theArgVec[0] << "Error: wrong syntax\n";
     return 1;
   }
-
-  Standard_DISABLE_DEPRECATION_WARNINGS
-  if (toDisplayLocal && !aCtx->HasOpenedContext())
-  {
-    std::cerr << "Error: local selection context is not open.\n";
-    return 1;
-  }
-  else if (!toDisplayLocal && aCtx->HasOpenedContext())
-  {
-    aCtx->CloseLocalContext (Standard_False);
-  }
-  Standard_ENABLE_DEPRECATION_WARNINGS
 
   for (ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName anIter (GetMapOfAIS());
        anIter.More(); anIter.Next())
@@ -4173,7 +4098,6 @@ static int VDisplay2 (Draw_Interpretor& theDI,
   ViewerTest_AutoUpdater anUpdateTool (aCtx, ViewerTest::CurrentView());
   Standard_Integer   isMutable      = -1;
   Graphic3d_ZLayerId aZLayer        = Graphic3d_ZLayerId_UNKNOWN;
-  Standard_Boolean   toDisplayLocal = Standard_False;
   Standard_Boolean   toReDisplay    = Standard_False;
   Standard_Integer   isSelectable   = -1;
   Standard_Integer   anObjDispMode  = -2;
@@ -4376,11 +4300,6 @@ static int VDisplay2 (Draw_Interpretor& theDI,
     {
       toDisplayInView = Standard_True;
     }
-    else if (aNameCase == "-local")
-    {
-      aDispStatus = AIS_DS_Temporary;
-      toDisplayLocal = Standard_True;
-    }
     else if (aNameCase == "-redisplay")
     {
       toReDisplay = Standard_True;
@@ -4401,18 +4320,6 @@ static int VDisplay2 (Draw_Interpretor& theDI,
     std::cerr << theArgVec[0] << "Error: wrong number of arguments.\n";
     return 1;
   }
-
-  // Prepare context for display
-  Standard_DISABLE_DEPRECATION_WARNINGS
-  if (toDisplayLocal && !aCtx->HasOpenedContext())
-  {
-    aCtx->OpenLocalContext (Standard_False);
-  }
-  else if (!toDisplayLocal && aCtx->HasOpenedContext())
-  {
-    aCtx->CloseAllContexts (Standard_False);
-  }
-  Standard_ENABLE_DEPRECATION_WARNINGS
 
   // Display interactive objects
   for (Standard_Integer anIter = 1; anIter <= aNamesOfDisplayIO.Length(); ++anIter)
@@ -4445,9 +4352,8 @@ static int VDisplay2 (Draw_Interpretor& theDI,
         {
           aShape->SetHilightMode (anObjHighMode);
         }
-        if (!toDisplayLocal)
-          GetMapOfAIS().Bind (aShape, aName);
 
+        GetMapOfAIS().Bind (aShape, aName);
         Standard_Integer aDispMode = aShape->HasDisplayMode()
                                    ? aShape->DisplayMode()
                                    : (aShape->AcceptDisplayMode (aCtx->DisplayMode())
@@ -4459,9 +4365,7 @@ static int VDisplay2 (Draw_Interpretor& theDI,
           aSelMode = aShape->GlobalSelectionMode();
         }
 
-        aCtx->Display (aShape, aDispMode, aSelMode,
-                       Standard_False, aShape->AcceptShapeDecomposition(),
-                       aDispStatus);
+        aCtx->Display (aShape, aDispMode, aSelMode, Standard_False, aDispStatus);
         if (toDisplayInView)
         {
           for (V3d_ListOfViewIterator aViewIter (aCtx->CurrentViewer()->DefinedViewIterator()); aViewIter.More(); aViewIter.Next())
@@ -4538,9 +4442,7 @@ static int VDisplay2 (Draw_Interpretor& theDI,
       {
         aCtx->Erase (aShape, Standard_False);
       }
-      aCtx->Display (aShape, aDispMode, aSelMode,
-                     Standard_False, aShape->AcceptShapeDecomposition(),
-                     aDispStatus);
+      aCtx->Display (aShape, aDispMode, aSelMode, Standard_False, aDispStatus);
       if (toDisplayInView)
       {
         aCtx->SetViewAffinity (aShape, ViewerTest::CurrentView(), Standard_True);
@@ -4580,7 +4482,7 @@ static Standard_Integer VNbDisplayed (Draw_Interpretor& theDi,
   }
 
   AIS_ListOfInteractive aListOfIO;
-  aContextAIS->DisplayedObjects(aListOfIO, false);
+  aContextAIS->DisplayedObjects (aListOfIO);
 
   theDi << aListOfIO.Extent() << "\n";
   return 0;
@@ -4842,9 +4744,8 @@ static Standard_Integer VState (Draw_Interpretor& theDI,
   if (toPrintEntities)
   {
     theDI << "Detected entities:\n";
-    Standard_DISABLE_DEPRECATION_WARNINGS
-    Handle(StdSelect_ViewerSelector3d) aSelector = aCtx->HasOpenedContext() ? aCtx->LocalSelector() : aCtx->MainSelector();
-    Standard_ENABLE_DEPRECATION_WARNINGS
+    Handle(StdSelect_ViewerSelector3d) aSelector = aCtx->MainSelector();
+
     SelectMgr_SelectingVolumeManager aMgr = aSelector->GetManager();
     for (Standard_Integer aPickIter = 1; aPickIter <= aSelector->NbPicked(); ++aPickIter)
     {
@@ -4894,12 +4795,10 @@ static Standard_Integer VState (Draw_Interpretor& theDI,
   }
 
   NCollection_Map<Handle(AIS_InteractiveObject)> aDetected;
-  Standard_DISABLE_DEPRECATION_WARNINGS
   for (aCtx->InitDetected(); aCtx->MoreDetected(); aCtx->NextDetected())
   {
-    aDetected.Add (aCtx->DetectedCurrentObject());
+    aDetected.Add (Handle(AIS_InteractiveObject)::DownCast (aCtx->DetectedCurrentOwner()->Selectable()));
   }
-  Standard_ENABLE_DEPRECATION_WARNINGS
 
   const Standard_Boolean toShowAll = (theArgNb >= 2 && *theArgVec[1] == '*');
   if (theArgNb >= 2
@@ -4924,7 +4823,7 @@ static Standard_Integer VState (Draw_Interpretor& theDI,
     return 0;
   }
 
-  if (!aCtx->HasOpenedContext() && aCtx->NbSelected() > 0 && !toShowAll)
+  if (aCtx->NbSelected() > 0 && !toShowAll)
   {
     NCollection_DataMap<Handle(SelectMgr_EntityOwner), TopoDS_Shape> anOwnerShapeMap;
     for (aCtx->InitSelected(); aCtx->MoreSelected(); aCtx->NextSelected())
@@ -4965,10 +4864,6 @@ static Standard_Integer VState (Draw_Interpretor& theDI,
     theDI << "\n";
   }
   printLocalSelectionInfo (aCtx, theDI);
-  Standard_DISABLE_DEPRECATION_WARNINGS
-  if (aCtx->HasOpenedContext())
-    printLocalSelectionInfo (aCtx->LocalContext(), theDI);
-  Standard_ENABLE_DEPRECATION_WARNINGS
   return 0;
 }
 
@@ -5777,20 +5672,10 @@ static Standard_Integer VLoadSelection (Draw_Interpretor& /*theDi*/,
 
   // Parse input arguments
   TColStd_SequenceOfAsciiString aNamesOfIO;
-  Standard_Boolean isLocal = Standard_False;
   for (Standard_Integer anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
   {
-    const TCollection_AsciiString aName     = theArgVec[anArgIter];
-    TCollection_AsciiString       aNameCase = aName;
-    aNameCase.LowerCase();
-    if (aNameCase == "-local")
-    {
-      isLocal = Standard_True;
-    }
-    else
-    {
-      aNamesOfIO.Append (aName);
-    }
+    const TCollection_AsciiString aName = theArgVec[anArgIter];
+    aNamesOfIO.Append (aName);
   }
 
   if (aNamesOfIO.IsEmpty())
@@ -5798,18 +5683,6 @@ static Standard_Integer VLoadSelection (Draw_Interpretor& /*theDi*/,
     std::cerr << theArgVec[0] << "Error: wrong number of arguments.\n";
     return 1;
   }
-
-  // Prepare context
-  Standard_DISABLE_DEPRECATION_WARNINGS
-  if (isLocal && !aCtx->HasOpenedContext())
-  {
-    aCtx->OpenLocalContext (Standard_False);
-  }
-  else if (!isLocal && aCtx->HasOpenedContext())
-  {
-    aCtx->CloseAllContexts (Standard_False);
-  }
-  Standard_ENABLE_DEPRECATION_WARNINGS
 
   // Load selection of interactive objects
   for (Standard_Integer anIter = 1; anIter <= aNamesOfIO.Length(); ++anIter)
@@ -5829,7 +5702,7 @@ static Standard_Integer VLoadSelection (Draw_Interpretor& /*theDi*/,
         GetMapOfAIS().Bind (aShape, aName);
       }
 
-      aCtx->Load (aShape, -1, Standard_False);
+      aCtx->Load (aShape, -1);
       aCtx->Activate (aShape, aShape->GlobalSelectionMode(), Standard_True);
     }
   }
@@ -5935,17 +5808,13 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
 		  __FILE__,VDonly2,group);
 
   theCommands.Add("vdisplayall",
-      "vidsplayall [-local]"
-      "\n\t\t: Displays all erased interactive objects (see vdir and vstate)."
-      "\n\t\t: Option -local enables displaying of the objects in local"
-      "\n\t\t: selection context.",
+      "vdisplayall"
+      "\n\t\t: Displays all erased interactive objects (see vdir and vstate).",
       __FILE__, VDisplayAll, group);
 
   theCommands.Add("veraseall",
-      "veraseall [-local]"
-      "\n\t\t: Erases all objects displayed in the viewer."
-      "\n\t\t: Option -local enables erasing of the objects in local"
-      "\n\t\t: selection context.",
+      "veraseall"
+      "\n\t\t: Erases all objects displayed in the viewer.",
       __FILE__, VErase, group);
 
   theCommands.Add("verasetype",
@@ -6181,8 +6050,7 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
 
   theCommands.Add ("vloadselection",
     "vloadselection [-context] [name1] ... [nameN] : allows to load selection"
-    "\n\t\t: primitives for the shapes with names given without displaying them."
-    "\n\t\t:   -local - open local context before selection computation",
+    "\n\t\t: primitives for the shapes with names given without displaying them.",
     __FILE__, VLoadSelection, group);
 
   theCommands.Add("vbsdf", "vbsdf [name] [options]"

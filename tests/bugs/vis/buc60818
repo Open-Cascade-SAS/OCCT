@@ -1,9 +1,0 @@
-puts "==========="
-puts "BUC60818"
-puts "==========="
-
-vinit
-BUC60818
-
-checkview -screenshot -3d -path ${imagedir}/${test_image}.png
-

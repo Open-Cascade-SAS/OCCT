@@ -16,7 +16,6 @@
 #include <QABugs.hxx>
 
 #include <AIS_InteractiveContext.hxx>
-#include <AIS_LocalContext.hxx>
 #include <AIS_Shape.hxx>
 #include <BRepAlgoAPI_Cut.hxx>
 #include <BRepOffsetAPI_MakePipe.hxx>
@@ -3221,103 +3220,6 @@ static Standard_Integer OCC24881 (Draw_Interpretor& di, Standard_Integer narg , 
 }
 
 //=======================================================================
-//function : OCC26172
-//purpose  :
-//=======================================================================
-static Standard_Integer OCC26172 (Draw_Interpretor& theDI, Standard_Integer theArgNb, const char** theArgVec)
-{
-  if (theArgNb != 1)
-  {
-    std::cerr << "Error: wrong number of arguments! See usage:\n";
-    theDI.PrintHelp (theArgVec[0]);
-    return 1;
-  }
-
-  Handle(AIS_InteractiveContext) anAISContext = ViewerTest::GetAISContext();
-  if(anAISContext.IsNull())
-  {
-    std::cerr << "Error: no active view. Please call vinit.\n";
-    return 1;
-  }
-
-  gp_Pnt aStart (100, 100, 100);
-  gp_Pnt anEnd (300, 400, 600);
-  BRepBuilderAPI_MakeEdge anEdgeBuilder (aStart, anEnd);
-  TopoDS_Edge anEdge = anEdgeBuilder.Edge();
-  Handle(AIS_Shape) aTestAISShape = new AIS_Shape (anEdge);
-  anAISContext->Display (aTestAISShape, Standard_True);
-
-  // 2. activate it in selection modes
-  TColStd_SequenceOfInteger aModes;
-  aModes.Append (AIS_Shape::SelectionMode ((TopAbs_ShapeEnum) TopAbs_VERTEX));
-  aModes.Append (AIS_Shape::SelectionMode ((TopAbs_ShapeEnum) TopAbs_EDGE));
-
-  Standard_DISABLE_DEPRECATION_WARNINGS
-  anAISContext->OpenLocalContext();
-  Standard_ENABLE_DEPRECATION_WARNINGS
-  anAISContext->Deactivate (aTestAISShape);
-  anAISContext->Load (aTestAISShape, -1, true);
-  for (Standard_Integer anIt = 1; anIt <= aModes.Length(); ++anIt)
-  {
-    anAISContext->Activate (aTestAISShape, aModes (anIt));
-  }
-
-  // select entities in vertex selection mode
-  Handle(SelectMgr_Selection) aSelection = aTestAISShape->Selection (aModes (1));
-  Standard_DISABLE_DEPRECATION_WARNINGS
-  for (aSelection->Init(); aSelection->More(); aSelection->Next())
-  {
-    Handle(SelectBasics_SensitiveEntity) anEntity = aSelection->Sensitive()->BaseSensitive();
-    if (anEntity.IsNull())
-    {
-      continue;
-    }
-
-    Handle(SelectMgr_EntityOwner) anOwner =
-      Handle(SelectMgr_EntityOwner)::DownCast (anEntity->OwnerId());
-
-    if (anOwner.IsNull())
-    {
-      continue;
-    }
-
-    anAISContext->LocalContext()->AddOrRemoveSelected (anOwner);
-  }
-  Standard_ENABLE_DEPRECATION_WARNINGS
-
-  // select entities in edge selection mode
-  aSelection = aTestAISShape->Selection (aModes (2));
-  Standard_DISABLE_DEPRECATION_WARNINGS
-  for (aSelection->Init(); aSelection->More(); aSelection->Next())
-  {
-    Handle(SelectBasics_SensitiveEntity) anEntity = aSelection->Sensitive()->BaseSensitive();
-    if (anEntity.IsNull())
-    {
-      continue;
-    }
-
-    Handle(SelectMgr_EntityOwner) anOwner =
-      Handle(SelectMgr_EntityOwner)::DownCast (anEntity->OwnerId());
-
-    if (anOwner.IsNull())
-    {
-      continue;
-    }
-
-    anAISContext->LocalContext()->AddOrRemoveSelected (anOwner);
-  }
-  Standard_ENABLE_DEPRECATION_WARNINGS
-
-  // deactivate vertex mode and check clearing of outdated selection
-  anAISContext->Deactivate (aTestAISShape, aModes (1));
-  Standard_DISABLE_DEPRECATION_WARNINGS
-  anAISContext->LocalContext()->ClearOutdatedSelection (aTestAISShape, true);
-  Standard_ENABLE_DEPRECATION_WARNINGS
-
-  return 0;
-}
-
-//=======================================================================
 //function : OCC26284
 //purpose  :
 //=======================================================================
@@ -4775,162 +4677,6 @@ static Standard_Integer OCC26746(
   return 0;     
 }
 
-DEFINE_STANDARD_HANDLE(QABugs_VertexFilter, SelectMgr_Filter)
-class QABugs_VertexFilter: public SelectMgr_Filter
-{
-public:
-  Standard_EXPORT QABugs_VertexFilter() : SelectMgr_Filter() {}
-
-  Standard_EXPORT virtual Standard_Boolean IsOk(const Handle(SelectMgr_EntityOwner)&) const
-  {
-    return Standard_False;
-  }
-};
-
-//=======================================================================
-//function : BUC26658 
-//purpose  : Checks selection in the context after using a selection filter
-//=======================================================================
-static Standard_Integer BUC26658 (Draw_Interpretor& theDI,
-                                  Standard_Integer  /*theNArg*/,
-                                  const char ** theArgVal)
-{
-  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
-  if(aContext.IsNull()) {
-    theDI << "use 'vinit' command before " << theArgVal[0] << "\n";
-    return 1;
-  }
-
-  TopoDS_Shape aBoxShape = BRepPrimAPI_MakeBox(20,20,20).Shape();
-  Handle(AIS_Shape) anAISIO = new AIS_Shape(aBoxShape);
-
-  // visualization of the box in the local mode with possibility to
-  // select box vertices
-  Standard_DISABLE_DEPRECATION_WARNINGS
-  aContext->OpenLocalContext();
-  Standard_ENABLE_DEPRECATION_WARNINGS
-
-  int aDispMode = 0;// wireframe
-  anAISIO->SetDisplayMode(aDispMode);
-  aContext->Display(anAISIO, aDispMode, 0, false, true, AIS_DS_Displayed); 
-  theDI.Eval(" vfit");
-
-  aContext->Load(anAISIO, -1, true); /// load allowing decomposition
-  aContext->Deactivate(anAISIO);
-  aContext->Activate(anAISIO, AIS_Shape::SelectionMode(TopAbs_VERTEX), false);
-  aContext->UpdateCurrentViewer();
-
-  // select a point on the box
-  Handle(V3d_View) myV3dView = ViewerTest::CurrentView();
-  double Xv,Yv;
-  myV3dView->Project(20,20,0,Xv,Yv);
-  Standard_Integer Xp,Yp;
-  myV3dView->Convert(Xv,Yv,Xp,Yp);
-
-  aContext->MoveTo (Xp, Yp, myV3dView, Standard_False);
-  aContext->Select (Standard_False);
-  bool aHasSelected = false;
-  for (aContext->InitSelected(); aContext->MoreSelected() && !aHasSelected; aContext->NextSelected()) {
-    Handle(AIS_InteractiveObject) anIO = aContext->SelectedInteractive();
-    if (!anIO.IsNull()) {
-      const TopoDS_Shape aShape = aContext->SelectedShape();
-      if (!aShape.IsNull() && aShape.ShapeType() == TopAbs_VERTEX)
-        aHasSelected = true;
-    }
-  }
-  if (aHasSelected)
-     cout << "has selected vertex : OK"   << endl;
-  else {
-    theDI << "has selected vertex : bugged - Faulty\n";
-    return 1;
-  }
-  // filter to deny any selection in the viewer
-  Handle(QABugs_VertexFilter) aFilter = new QABugs_VertexFilter();
-  aContext->AddFilter(aFilter);
-
-  // update previous selection by hand
-  Standard_DISABLE_DEPRECATION_WARNINGS
-  aContext->LocalContext()->ClearOutdatedSelection(anAISIO, true);
-  Standard_ENABLE_DEPRECATION_WARNINGS
-
-  // check that there are no selected vertices
-  aContext->Select (Standard_True);
-  aHasSelected = false;
-  for (aContext->InitSelected(); aContext->MoreSelected() && !aHasSelected; aContext->NextSelected()) {
-    Handle(AIS_InteractiveObject) anIO = aContext->SelectedInteractive();
-    if (!anIO.IsNull()) {
-      const TopoDS_Shape aShape = aContext->SelectedShape();
-      if (!aShape.IsNull() && aShape.ShapeType() == TopAbs_VERTEX)
-        aHasSelected = true;
-    }
-  }
-  if (!aHasSelected) cout << "has no selected vertex after filter : OK"   << endl;
-  else {
-    theDI << "has no selected vertex after filter : bugged - Faulty\n";
-    return 1;
-  }
-
-  return 0;
-}
-
-//=======================================================================
-//function : OCC26945_open
-//purpose  : Opens local context and activates given standard selection mode
-//=======================================================================
-static Standard_Integer OCC26945_open (Draw_Interpretor& theDI, Standard_Integer theArgc, const char** theArgv)
-{
-  const Handle(AIS_InteractiveContext)& aCtx = ViewerTest::GetAISContext();
-  if (aCtx.IsNull())
-  {
-    std::cout << "No interactive context. Use 'vinit' command before " << theArgv[0] << "\n";
-    return 1;
-  }
-
-  if (theArgc < 2)
-  {
-    std::cout << "Not enough arguments. See usage:\n";
-    theDI.PrintHelp (theArgv[0]);
-    return 1;
-  }
-
-  const TopAbs_ShapeEnum aSelType = AIS_Shape::SelectionType (Draw::Atoi (theArgv[1]));
-  Standard_DISABLE_DEPRECATION_WARNINGS
-  Standard_Integer aLocalCtxIdx = aCtx->OpenLocalContext();
-  aCtx->ActivateStandardMode (aSelType);
-  Standard_ENABLE_DEPRECATION_WARNINGS
-  theDI << aLocalCtxIdx;
-
-  return 0;
-}
-
-//=======================================================================
-//function : OCC26945_close
-//purpose  : Closes local context with the id given
-//=======================================================================
-static Standard_Integer OCC26945_close (Draw_Interpretor& theDI, Standard_Integer theArgc, const char** theArgv)
-{
-  const Handle(AIS_InteractiveContext)& aCtx = ViewerTest::GetAISContext();
-  if (aCtx.IsNull())
-  {
-    std::cout << "No interactive context. Use 'vinit' command before " << theArgv[0] << "\n";
-    return 1;
-  }
-
-  if (theArgc < 2)
-  {
-    std::cout << "Not enough arguments. See usage:\n";
-    theDI.PrintHelp (theArgv[0]);
-    return 1;
-  }
-
-  const Standard_Integer aCtxToClose = Draw::Atoi (theArgv[1]);
-  Standard_DISABLE_DEPRECATION_WARNINGS
-  aCtx->CloseLocalContext (aCtxToClose);
-  Standard_ENABLE_DEPRECATION_WARNINGS
-
-  return 0;
-}
-
 //=======================================================================
 //function : OCC27048
 //purpose  : Calculate value of B-spline surface N times
@@ -5098,7 +4844,7 @@ static Standard_Integer OCC27523 (Draw_Interpretor& theDI, Standard_Integer theA
   aModes.Append (AIS_Shape::SelectionMode ((TopAbs_ShapeEnum) TopAbs_VERTEX));
 
   anAISContext->Deactivate (aTestAISShape);
-  anAISContext->Load (aTestAISShape, -1, true);
+  anAISContext->Load (aTestAISShape, -1);
   anAISContext->Activate (aTestAISShape, 0);
   anAISContext->Deactivate (aTestAISShape, 0);
 
@@ -5446,7 +5192,6 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
                    __FILE__, OCC25545, group);
   theCommands.Add ("OCC25547", "OCC25547", __FILE__, OCC25547, group);
   theCommands.Add ("OCC24881", "OCC24881 shape", __FILE__, OCC24881, group);
-  theCommands.Add ("OCC26172", "OCC26172", __FILE__, OCC26172, group);
   theCommands.Add ("xprojponf", "xprojponf p f", __FILE__, xprojponf, group);
   theCommands.Add ("OCC24923", "OCC24923", __FILE__, OCC24923, group);
   theCommands.Add ("OCC26139", "OCC26139 [-boxsize value] [-boxgrid value] [-compgrid value]", __FILE__, OCC26139, group);
@@ -5476,17 +5221,6 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC26750", "OCC26750", __FILE__, OCC26750, group);
   theCommands.Add ("OCC25574", "OCC25574", __FILE__, OCC25574, group);
   theCommands.Add ("OCC26746", "OCC26746 torus [toler NbCheckedPoints] ", __FILE__, OCC26746, group);
-
-  theCommands.Add ("BUC26658", "BUC26658 unexpected selection in the context using a selection filter", __FILE__, BUC26658, group);
-  theCommands.Add ("OCC26945_open",
-                   "OCC26945 selectionModeToActivate"
-                   "\n\t\t: Opens a new local context with selectionModeToActivate activated."
-                   "\n\t\t: Prints the ID of newely opened local context in case of success.",
-                   __FILE__, OCC26945_open, group);
-  theCommands.Add ("OCC26945_close",
-                   "OCC26945 localCtxToClose"
-                   "\n\t\t: Closes local context with the ID localCtxToClose",
-                   __FILE__, OCC26945_close, group);
 
   theCommands.Add ("OCC27048",
                    "OCC27048 surf U V N\nCalculate value of surface N times in the point (U, V)",

@@ -5,8 +5,6 @@ SelectMgr_BaseFrustum.hxx
 SelectMgr_CompositionFilter.cxx
 SelectMgr_CompositionFilter.hxx
 SelectMgr_CompositionFilter.lxx
-SelectMgr_DataMapIteratorOfDataMapOfObjectSelectors.hxx
-SelectMgr_DataMapOfObjectSelectors.hxx
 SelectMgr_EntityOwner.cxx
 SelectMgr_EntityOwner.hxx
 SelectMgr_Filter.cxx
@@ -41,7 +39,6 @@ SelectMgr_SensitiveEntitySet.hxx
 SelectMgr_SequenceOfFilter.hxx
 SelectMgr_SequenceOfOwner.hxx
 SelectMgr_SequenceOfSelection.hxx
-SelectMgr_SequenceOfSelector.hxx
 SelectMgr_SOPtr.hxx
 SelectMgr_SortCriterion.hxx
 SelectMgr_StateOfSelection.hxx

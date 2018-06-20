@@ -39,11 +39,9 @@ AIS_ConcentricRelation.hxx
 AIS_ConnectedInteractive.cxx
 AIS_ConnectedInteractive.hxx
 AIS_ConnectStatus.hxx
-AIS_DataMapIteratorOfDataMapOfILC.hxx
 AIS_DataMapIteratorOfDataMapofIntegerListOfinteractive.hxx
 AIS_DataMapIteratorOfDataMapOfIOStatus.hxx
 AIS_DataMapIteratorOfDataMapOfSelStat.hxx
-AIS_DataMapOfILC.hxx
 AIS_DataMapofIntegerListOfinteractive.hxx
 AIS_DataMapOfIOStatus.hxx
 AIS_DataMapOfSelStat.hxx
@@ -96,13 +94,6 @@ AIS_Line.cxx
 AIS_Line.hxx
 AIS_ListIteratorOfListOfInteractive.hxx
 AIS_ListOfInteractive.hxx
-AIS_LocalContext.cxx
-AIS_LocalContext.hxx
-AIS_LocalContext.lxx
-AIS_LocalContext_1.cxx
-AIS_LocalStatus.cxx
-AIS_LocalStatus.hxx
-AIS_LocalStatus.lxx
 AIS_Manipulator.hxx
 AIS_Manipulator.cxx
 AIS_ManipulatorMode.hxx

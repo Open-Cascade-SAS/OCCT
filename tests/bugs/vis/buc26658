@@ -1,9 +1,0 @@
-puts "==========="
-puts "BUC26658"
-puts "==========="
-puts "=================================="
-puts "It takes visual check for this BUG"
-puts "=================================="
-
-vinit 
-BUC26658 
