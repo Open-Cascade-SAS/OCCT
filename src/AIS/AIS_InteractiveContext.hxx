@@ -491,12 +491,32 @@ public: //! @name Selection management
   //! Infinite objects are ignored if infinite state of AIS_InteractiveObject is set to true.
   Standard_EXPORT void FitSelected (const Handle(V3d_View)& theView);
 
+  //! Return value specified whether selected object must be hilighted when mouse cursor is moved above it
+  //! @sa MoveTo()
+  Standard_Boolean ToHilightSelected() const { return myToHilightSelected; }
+
   //! Specify whether selected object must be hilighted when mouse cursor is moved above it (in MoveTo method).
   //! By default this value is false and selected object is not hilighted in this case.
+  //! @sa MoveTo()
   void SetToHilightSelected (const Standard_Boolean toHilight) { myToHilightSelected = toHilight; }
 
-  //! Return value specified whether selected object must be hilighted when mouse cursor is moved above it
-  Standard_Boolean ToHilightSelected() const { return myToHilightSelected; }
+  //! Returns true if the automatic highlight mode is active; TRUE by default.
+  //! @sa MoveTo(), Select(), HilightWithColor(), Unhilight()
+  Standard_Boolean AutomaticHilight() const { return myAutoHilight; }
+
+  //! Sets the highlighting status of detected and selected entities.
+  //! This function allows you to disconnect the automatic mode.
+  //!
+  //! MoveTo() will fill the list of detected entities
+  //! and Select() will set selected state to detected objects regardless of this flag,
+  //! but with disabled AutomaticHiligh() their highlighting state will be left unaffected,
+  //! so that application will be able performing custom highlighting in a different way, if needed.
+  //!
+  //! This API should be distinguished from SelectMgr_SelectableObject::SetAutoHilight()
+  //! that is used to implement custom highlighting logic for a specific interactive object class.
+  //!
+  //! @sa MoveTo(), Select(), HilightWithColor(), Unhilight()
+  void SetAutomaticHilight (Standard_Boolean theStatus) { myAutoHilight = theStatus; }
 
   //! Unhighlights previously selected owners and marks them as not selected.
   //! Marks owner given as selected and highlights it.
@@ -1038,15 +1058,6 @@ public: //! @name iso-line display attributes
 
   //! Returns true if drawing isolines on triangulation algorithm is enabled.
   Standard_EXPORT Standard_Boolean IsoOnTriangulation() const;
-
-public: //! @name Local Context management (deprecated)
-
-  //! Sets the highlighting status of detected and selected entities.
-  //! This function allows you to disconnect the automatic mode.
-  void SetAutomaticHilight (Standard_Boolean theStatus) { myAutoHilight = theStatus; }
-
-  //! Returns true if the automatic highlight mode is active.
-  Standard_Boolean AutomaticHilight() const { return myAutoHilight; }
 
 public:
 

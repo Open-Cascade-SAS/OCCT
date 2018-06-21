@@ -11075,70 +11075,6 @@ static int VFrustumCulling (Draw_Interpretor& theDI,
 }
 
 //=======================================================================
-//function : VHighlightSelected
-//purpose  : 
-//=======================================================================
-static int VHighlightSelected (Draw_Interpretor& theDI,
-                               Standard_Integer  theArgNb,
-                               const char**      theArgVec)
-{
-  if (ViewerTest::GetAISContext().IsNull())
-  {
-    std::cout << theArgVec[0] << " error : Context is not created. Please call vinit before.\n";
-    return 1;
-  }
-
-  const Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
-
-  if (theArgNb < 2)
-  {
-    theDI << (aContext->ToHilightSelected() ? "on" : "off");
-    return 0;
-  }
-
-  if (theArgNb != 2)
-  {
-    std::cout  << theArgVec[0] << " error : wrong number of parameters."
-          << "Type 'help" << theArgVec[0] << "' for more information.";
-    return 1;
-  }
-
-  // Parse parameter
-  TCollection_AsciiString aMode (theArgVec[1]);
-  aMode.LowerCase();
-  Standard_Boolean toEnable = Standard_False;
-  if (aMode.IsEqual ("on"))
-  {
-    toEnable = Standard_True;
-  }
-  else if (aMode.IsEqual ("off"))
-  {
-    toEnable = Standard_False;
-  }
-  else
-  {
-    toEnable = Draw::Atoi (theArgVec[1]) != 0;
-  }
-
-  if (toEnable != aContext->ToHilightSelected())
-  {
-    aContext->SetToHilightSelected (toEnable);
-
-    // Move cursor to null position and  back to process updating of detection
-    // and highlighting of selected object immediatly.
-    Standard_Integer aPixX = 0;
-    Standard_Integer aPixY = 0;
-    const Handle(ViewerTest_EventManager)& anEventManager =  ViewerTest::CurrentEventManager();
-
-    anEventManager->GetCurrentPosition (aPixX, aPixY);
-    anEventManager->MoveTo (0, 0);
-    anEventManager->MoveTo (aPixX, aPixY);
-  }
-
-  return 0;
-}
-
-//=======================================================================
 //function : VXRotate
 //purpose  :
 //=======================================================================
@@ -11489,6 +11425,29 @@ static int VSelectionProperties (Draw_Interpretor& theDi,
     return 1;
   }
 
+  if (TCollection_AsciiString (theArgVec[0]) == "vhighlightselected")
+  {
+    // handle obsolete alias
+    bool toEnable = true;
+    if (theArgsNb < 2)
+    {
+      theDi << (aCtx->ToHilightSelected() ? "on" : "off");
+      return 0;
+    }
+    else if (theArgsNb != 2
+         || !ViewerTest::ParseOnOff (theArgVec[1], toEnable))
+    {
+      std::cout << "Syntax error: wrong number of parameters.";
+      return 1;
+    }
+    if (toEnable != aCtx->ToHilightSelected())
+    {
+      aCtx->ClearDetected();
+      aCtx->SetToHilightSelected (toEnable);
+    }
+    return 0;
+  }
+
   Standard_Boolean toPrint  = theArgsNb == 1;
   Standard_Boolean toRedraw = Standard_False;
   Standard_Integer anArgIter = 1;
@@ -11553,6 +11512,35 @@ static int VSelectionProperties (Draw_Interpretor& theDi,
         ++anArgIter;
       }
       aCtx->SetAutoActivateSelection (toEnable);
+    }
+    else if (anArg == "-automatichighlight"
+          || anArg == "-automatichilight"
+          || anArg == "-autohighlight"
+          || anArg == "-autohilight")
+    {
+      Standard_Boolean toEnable = Standard_True;
+      if (anArgIter + 1 < theArgsNb
+       && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], toEnable))
+      {
+        ++anArgIter;
+      }
+      aCtx->ClearSelected (false);
+      aCtx->ClearDetected();
+      aCtx->SetAutomaticHilight (toEnable);
+      toRedraw = true;
+    }
+    else if (anArg == "-highlightselected"
+          || anArg == "-hilightselected")
+    {
+      Standard_Boolean toEnable = Standard_True;
+      if (anArgIter + 1 < theArgsNb
+       && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], toEnable))
+      {
+        ++anArgIter;
+      }
+      aCtx->ClearDetected();
+      aCtx->SetToHilightSelected (toEnable);
+      toRedraw = true;
     }
     else if (anArg == "-pickstrategy"
           || anArg == "-pickingstrategy")
@@ -11731,6 +11719,8 @@ static int VSelectionProperties (Draw_Interpretor& theDi,
     const Handle(Prs3d_Drawer)& aHiStyle  = aCtx->HighlightStyle();
     const Handle(Prs3d_Drawer)& aSelStyle = aCtx->SelectionStyle();
     theDi << "Auto-activation                : " << (aCtx->GetAutoActivateSelection() ? "On" : "Off") << "\n";
+    theDi << "Auto-highlight                 : " << (aCtx->AutomaticHilight() ? "On" : "Off") << "\n";
+    theDi << "Highlight selected             : " << (aCtx->ToHilightSelected() ? "On" : "Off") << "\n";
     theDi << "Selection pixel tolerance      : " << aCtx->MainSelector()->PixelTolerance() << "\n";
     theDi << "Selection color                : " << Quantity_Color::StringName (aSelStyle->Color().Name()) << "\n";
     theDi << "Dynamic highlight color        : " << Quantity_Color::StringName (aHiStyle->Color().Name()) << "\n";
@@ -12513,10 +12503,6 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
   theCommands.Add("vfrustumculling",
     "vfrustumculling [toEnable]: enables/disables objects clipping",
     __FILE__,VFrustumCulling,group);
-  theCommands.Add("vhighlightselected",
-    "vhighlightselected [0|1] or vhighlightselected [on|off]: enables/disables highlighting of selected objects.\n"
-    "Without arguments it shows if highlighting of selected objects is enabled now.",
-    __FILE__,VHighlightSelected,group);
   theCommands.Add ("vplace",
             "vplace dx dy"
     "\n\t\t: Places the point (in pixels) at the center of the window",
@@ -12554,6 +12540,8 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "\n    vselprops [dynHighlight|localDynHighlight|selHighlight|localSelHighlight] [options]"
     "\n    Customizes selection and dynamic highlight parameters for the whole interactive context:"
     "\n    -autoActivate {0|1}     : disables|enables default computation and activation of global selection mode"
+    "\n    -autoHighlight {0|1}    : disables|enables automatic highlighting in 3D Viewer"
+    "\n    -highlightSelected {0|1}: disables|enables highlighting of detected object in selected state"
     "\n    -pickStrategy {first|topmost} : defines picking strategy"
     "\n                            'first'   to pick first acceptable (default)"
     "\n                            'topmost' to pick only topmost (and nothing, if topmost is rejected by filters)"
@@ -12565,6 +12553,9 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "\n    -material  material     : sets highlight material"
     "\n    -print                  : prints current state of all mentioned parameters",
     __FILE__, VSelectionProperties, group);
+  theCommands.Add ("vhighlightselected",
+                   "vhighlightselected [0|1]: alias for vselprops -highlightSelected.\n",
+                   __FILE__, VSelectionProperties, group);
 
   theCommands.Add ("vseldump",
                    "vseldump file -type {depth|unnormDepth|object|owner|selMode|entity}=depth -pickedIndex Index=1"

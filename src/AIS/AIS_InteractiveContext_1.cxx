@@ -383,7 +383,9 @@ AIS_StatusOfDetection AIS_InteractiveContext::MoveTo (const Standard_Integer  th
     // highlight detected object if it is not selected or myToHilightSelected flag is true
     if (myLastPicked->HasSelectable())
     {
-      if (!myLastPicked->IsSelected() || myToHilightSelected)
+      if (myAutoHilight
+       && (!myLastPicked->IsSelected()
+         || myToHilightSelected))
       {
         highlightWithColor (myLastPicked, theView->Viewer());
         toUpdateViewer = Standard_True;
@@ -399,7 +401,9 @@ AIS_StatusOfDetection AIS_InteractiveContext::MoveTo (const Standard_Integer  th
     // previously detected object is unhilighted if it is not selected or hilighted
     // with selection color if it is selected
     aStatus = AIS_SOD_Nothing;
-    if (!myLastPicked.IsNull() && myLastPicked->HasSelectable())
+    if (myAutoHilight
+    && !myLastPicked.IsNull()
+     && myLastPicked->HasSelectable())
     {
       clearDynamicHighlight();
       toUpdateViewer = Standard_True;
@@ -523,12 +527,12 @@ AIS_StatusOfPick AIS_InteractiveContext::Select (const TColgp_Array1OfPnt2d& the
 //=======================================================================
 AIS_StatusOfPick AIS_InteractiveContext::Select (const Standard_Boolean toUpdateViewer)
 {
-  if (myAutoHilight)
-  {
-    clearDynamicHighlight();
-  }
   if (myWasLastMain && !myLastinMain.IsNull())
   {
+    if (myAutoHilight)
+    {
+      clearDynamicHighlight();
+    }
     if (!myLastinMain->IsSelected()
       || myLastinMain->IsForcedHilight()
       || NbSelected() > 1)
@@ -542,16 +546,7 @@ AIS_StatusOfPick AIS_InteractiveContext::Select (const Standard_Boolean toUpdate
   }
   else
   {
-    if (myAutoHilight)
-    {
-      unhighlightSelected (Standard_True);
-    }
-
-    mySelection->Clear();
-    if (toUpdateViewer && myWasLastMain)
-    {
-        UpdateCurrentViewer();
-    }
+    ClearSelected (toUpdateViewer);
   }
 
   Standard_Integer aSelNum = NbSelected();
@@ -760,6 +755,13 @@ void AIS_InteractiveContext::ClearSelected (const Standard_Boolean theToUpdateVi
   if (myAutoHilight)
   {
     unhighlightSelected();
+  }
+  else
+  {
+    for (AIS_NListOfEntityOwner::Iterator aSelIter (mySelection->Objects()); aSelIter.More(); aSelIter.Next())
+    {
+      aSelIter.Value()->SetSelected (Standard_False);
+    }
   }
 
   mySelection->Clear();
