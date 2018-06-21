@@ -432,7 +432,8 @@ private:
   Standard_EXPORT static void MakeReference (const TDF_Label& L, const TDF_Label& refL, const TopLoc_Location& loc);
 
   //! Auxiliary method for Expand
-  //! Make subshape for thePart from theShape after expanding theMainShapeL
+  //! Add declared under expanded theMainShapeL subshapes to new part label thePart
+  //! Recursively iterate all subshapes of shape from thePart, current shape to iterate its subshapes is theShape.
   Standard_EXPORT void makeSubShape(const TDF_Label& theMainShapeL, const TDF_Label& thePart, const TopoDS_Shape& theShape, const TopLoc_Location& theLoc);
 
   XCAFDoc_DataMapOfShapeLabel myShapeLabels;

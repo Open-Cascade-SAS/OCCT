@@ -1097,6 +1097,9 @@ TDF_Label XCAFDoc_ShapeTool::AddSubShape (const TDF_Label &shapeL,
                                           const TopoDS_Shape &sub) const
 {
   TDF_Label L;
+  if (!IsSimpleShape(shapeL) || !IsTopLevel(shapeL))
+    return L;
+
   if ( FindSubShape ( shapeL, sub, L ) ) return L;
   
   if (!IsSubShape(shapeL, sub))
@@ -1833,7 +1836,7 @@ Standard_Boolean XCAFDoc_ShapeTool::Expand (const TDF_Label& theShapeL)
     TopoDS_Iterator anIter(aShape);
     for(; anIter.More(); anIter.Next())
     {
-      TopoDS_Shape aChildShape = anIter.Value();
+      const TopoDS_Shape& aChildShape = anIter.Value();
       TDF_Label aChild, aPart;
 
       // Find child shape as subshape of expanded shape
@@ -1895,11 +1898,18 @@ void XCAFDoc_ShapeTool::makeSubShape (const TDF_Label& theMainShapeL,
 {
   TopoDS_Iterator anIter(theShape);
   Standard_Boolean isCompoundPart = (GetShape(thePart).ShapeType() == TopAbs_COMPOUND);
+  Standard_Boolean isAssembly = IsAssembly(thePart);
   for(; anIter.More(); anIter.Next()) {
-    TopoDS_Shape aChildShape = anIter.Value();
+    const TopoDS_Shape& aChildShape = anIter.Value();
     TDF_Label aChildLabel;
     FindSubShape(theMainShapeL, aChildShape, aChildLabel);
     if(!aChildLabel.IsNull()) {
+      if (isAssembly) {
+        aChildLabel.ForgetAllAttributes();
+        makeSubShape(theMainShapeL, thePart, aChildShape, theLoc);
+        continue;
+      }
+
       //get name
       Handle(TDataStd_Name) anAttr;
       aChildLabel.FindAttribute(TDataStd_Name::GetID(), anAttr);
