@@ -49,11 +49,15 @@ Standard_Boolean XCAFDoc_Editor::Expand (const TDF_Label& Doc, const TDF_Label& 
   Standard_Boolean isAutoNaming = aShapeTool->AutoNaming();
   aShapeTool->SetAutoNaming(Standard_False);
 
-  TopoDS_Shape aS = aShapeTool->GetShape(Shape);
-  if (aShapeTool->Expand(Shape))
+  TDF_Label aCompoundPartL = Shape;
+  if (aShapeTool->IsReference(Shape))
+    aShapeTool->GetReferredShape(aCompoundPartL, aCompoundPartL);
+
+  TopoDS_Shape aS = aShapeTool->GetShape(aCompoundPartL);
+  if (aShapeTool->Expand(aCompoundPartL))
   {
     //move attributes
-    TDF_ChildIterator anIter(Shape, Standard_True);
+    TDF_ChildIterator anIter(aCompoundPartL, Standard_True);
     for(; anIter.More(); anIter.Next())
     {
       TDF_Label aChild = anIter.Value();
@@ -104,7 +108,7 @@ Standard_Boolean XCAFDoc_Editor::Expand (const TDF_Label& Doc, const TDF_Label& 
     //if assembly contains compound, expand it recursively(if flag recursively is true)
     if(recursively)
     {
-      anIter.Initialize(Shape);
+      anIter.Initialize(aCompoundPartL);
       for(; anIter.More(); anIter.Next())
       {
         TDF_Label aChild = anIter.Value();
