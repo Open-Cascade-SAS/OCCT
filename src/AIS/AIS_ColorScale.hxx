@@ -133,7 +133,7 @@ public:
                    Quantity_Color& theMaxColor) const
   {
     theMinColor.SetValues (hueToValidRange (myColorHlsMin[0]), myColorHlsMin[1], myColorHlsMin[2], Quantity_TOC_HLS);
-    theMaxColor.SetValues (hueToValidRange (myColorHlsMin[0]), myColorHlsMin[1], myColorHlsMin[2], Quantity_TOC_HLS);
+    theMaxColor.SetValues (hueToValidRange (myColorHlsMax[0]), myColorHlsMax[1], myColorHlsMax[2], Quantity_TOC_HLS);
   }
 
   //! Sets color range corresponding to minimum and maximum values.
