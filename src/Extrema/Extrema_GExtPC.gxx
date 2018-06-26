@@ -452,16 +452,39 @@ void Extrema_GExtPC::IntervalPerform(const ThePoint& P)
       }
       if ((U >= myuinf - mytolu) && (U <= myusup + mytolu))
       {
-        PC.SetValues(U, PC.Value());
-        mySqDist.Append(myExtPC.SquareDistance(i));
-        myismin.Append(myExtPC.IsMin(i));
-        mypoint.Append(PC);
+        AddSol(U, PC.Value(),
+               myExtPC.SquareDistance(i),
+               myExtPC.IsMin(i));
       }
     }
   }
 }
 
 
+//=======================================================================
+//function : AddSol
+//purpose  : 
+//=======================================================================
+
+void Extrema_GExtPC::AddSol(const Standard_Real theU, const ThePoint& theP,
+                            const Standard_Real theSqDist, 
+                            const Standard_Boolean isMin)
+{
+  Standard_Integer i, NbExt = mypoint.Length();
+  for (i = 1; i <= NbExt; i++)
+  {
+    Standard_Real t = mypoint.Value(i).Parameter();
+    if (Abs(t - theU) <= mytolu)
+    {
+      return;
+    }
+  }
+  ThePOnC PC(theU, theP);
+  mySqDist.Append(theSqDist);
+  myismin.Append(isMin);
+  mypoint.Append(PC);
+
+ }
 
 
 //=======================================================================

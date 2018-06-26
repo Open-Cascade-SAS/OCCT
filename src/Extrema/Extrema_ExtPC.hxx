@@ -114,6 +114,10 @@ protected:
   
   Standard_EXPORT void IntervalPerform (const gp_Pnt& P);
 
+  Standard_EXPORT void AddSol(const Standard_Real theU, 
+                              const gp_Pnt& theP,
+                              const Standard_Real theSqDist, 
+                              const Standard_Boolean isMin);
 
 
 
