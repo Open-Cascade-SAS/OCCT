@@ -62,6 +62,8 @@
 #include <HLRBRep_PolyHLRToShape.hxx>
 #include <HLRBRep_PolyAlgo.hxx>
 
+#include <Standard_Failure.hxx>
+
 #include <limits>
 
 //=======================================================================
@@ -2889,6 +2891,55 @@ static Standard_Integer OCC29531(Draw_Interpretor&, Standard_Integer, const char
   return 0;
 }
 
+//=======================================================================
+//function : OCC29925
+//purpose  : check safety of functions like IsSpace(), LowerCase(), etc. for all chars
+//=======================================================================
+static Standard_Integer OCC29925 (Draw_Interpretor& theDI, Standard_Integer, const char**)
+{
+  // iterate by all valid ASCII chars (including extended)
+  for (int i = 0; i < 256; i++)
+  {
+    Standard_Character c = (char)(unsigned char)i;
+//    if (c != i) theDI << c << " != " << i << "\n";
+    const char* anOp = "";
+    try {
+      anOp = "IsAlphabetic";
+      IsAlphabetic (c);
+      anOp = "IsDigit";
+      IsDigit (c);
+      anOp = "IsXDigit";
+      IsXDigit (c);
+      anOp = "IsAlphanumeric";
+      IsAlphanumeric (c);
+      anOp = "IsControl";
+      IsControl (c);
+      anOp = "IsGraphic";
+      IsGraphic (c);
+      anOp = "IsLowerCase";
+      IsLowerCase (c);
+      anOp = "IsPrintable";
+      IsPrintable (c);
+      anOp = "IsPunctuation";
+      IsPunctuation (c);
+      anOp = "IsSpace";
+      IsSpace (c);
+      anOp = "IsUpperCase";
+      IsUpperCase (c);
+      anOp = "LowerCase";
+      LowerCase (c);
+      anOp = "UpperCase";
+      UpperCase (c);
+    }
+    catch (const Handle(Standard_Failure)& e)
+    {
+      theDI << anOp << "() fails for " << c << " (" << e->DynamicType()->Name() << ")\n";
+    }
+  }
+
+  return 0;
+}
+
 void QABugs::Commands_20(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
@@ -2925,5 +2976,6 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands) {
   theCommands.Add("OCC29531", "OCC29531 <step file name>", __FILE__, OCC29531, group);
 
   theCommands.Add ("OCC29064", "OCC29064: test memory usage by copying empty maps", __FILE__, OCC29064, group);
+  theCommands.Add ("OCC29925", "OCC29925: check safety of character classification functions", __FILE__, OCC29925, group);
   return;
 }

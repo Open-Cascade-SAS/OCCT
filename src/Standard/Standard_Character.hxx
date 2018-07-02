@@ -123,12 +123,12 @@ inline Standard_Boolean IsUpperCase(const Standard_Character me)
 // LowerCase : Returns a lowercase character
 // ==================================================================
 inline Standard_Character LowerCase(const Standard_Character me) 
-{ return (Standard_Character)(unsigned char)std::tolower(me); }
+{ return (Standard_Character)(unsigned char)std::tolower((unsigned char)me); }
 
 // ==================================================================
 // UpperCase : Returns a uppercase character
 // ==================================================================
 inline Standard_Character UpperCase(const Standard_Character me) 
-{ return (Standard_Character)(unsigned char)std::toupper(me); }
+{ return (Standard_Character)(unsigned char)std::toupper((unsigned char)me); }
 
 #endif

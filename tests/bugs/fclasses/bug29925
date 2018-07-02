@@ -1,0 +1,9 @@
+puts "# ======================================================================"
+puts "# 0029925: Foundation Classes - add missing cast to LowerCase() and UpperCase() arguments"
+puts "# ======================================================================"
+puts ""
+
+pload QAcommands
+
+puts "Check safety of character classification functions for all valid chars"
+OCC29925
