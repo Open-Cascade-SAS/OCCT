@@ -24,6 +24,7 @@
 #include <OpenGl_Context.hxx>
 #include <OpenGl_ShaderManager.hxx>
 #include <OpenGl_ShaderProgram.hxx>
+#include <OpenGl_VertexBufferCompat.hxx>
 #include <OpenGl_Workspace.hxx>
 
 #include <TCollection_ExtendedString.hxx>
@@ -406,6 +407,8 @@ void OpenGl_ShaderManager::clear()
   myMapOfLightPrograms.Clear();
   myFontProgram.Nullify();
   myBlitProgram.Nullify();
+  myBoundBoxProgram.Nullify();
+  myBoundBoxVertBuffer.Nullify();
   for (Standard_Integer aModeIter = 0; aModeIter < Graphic3d_StereoMode_NB; ++aModeIter)
   {
     myStereoPrograms[aModeIter].Nullify();
@@ -2466,6 +2469,95 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramStereo (Handle(OpenGl_Sh
   theProgram->SetSampler (myContext, "uLeftSampler",  Graphic3d_TextureUnit_0);
   theProgram->SetSampler (myContext, "uRightSampler", Graphic3d_TextureUnit_1);
   myContext->BindProgram (NULL);
+  return Standard_True;
+}
+
+// =======================================================================
+// function : prepareStdProgramBoundBox
+// purpose  :
+// =======================================================================
+Standard_Boolean OpenGl_ShaderManager::prepareStdProgramBoundBox()
+{
+  Handle(Graphic3d_ShaderProgram) aProgramSrc = new Graphic3d_ShaderProgram();
+  TCollection_AsciiString aSrcVert =
+    EOL"uniform vec3 occBBoxCenter;"
+    EOL"uniform vec3 occBBoxSize;"
+    EOL
+    EOL"void main()"
+    EOL"{"
+    EOL"  vec4 aCenter = vec4(occVertex.xyz * occBBoxSize + occBBoxCenter, 1.0);"
+    EOL"  vec4 aPos    = vec4(occVertex.xyz * occBBoxSize + occBBoxCenter, 1.0);"
+    EOL"  gl_Position = occProjectionMatrix * occWorldViewMatrix * occModelWorldMatrix * aPos;"
+    EOL"}";
+
+  TCollection_AsciiString aSrcFrag =
+    EOL"void main()"
+    EOL"{"
+    EOL"  occSetFragColor (occColor);"
+    EOL"}";
+
+#if !defined(GL_ES_VERSION_2_0)
+  if (myContext->core32 != NULL)
+  {
+    aProgramSrc->SetHeader ("#version 150");
+  }
+#else
+  if (myContext->IsGlGreaterEqual (3, 1))
+  {
+    // prefer "100 es" on OpenGL ES 3.0 devices
+    // and    "300 es" on newer devices (3.1+)
+    aProgramSrc->SetHeader ("#version 300 es");
+  }
+#endif
+
+  aProgramSrc->SetNbLightsMax (0);
+  aProgramSrc->SetNbClipPlanesMax (0);
+  aProgramSrc->AttachShader (Graphic3d_ShaderObject::CreateFromSource (Graphic3d_TOS_VERTEX,   aSrcVert));
+  aProgramSrc->AttachShader (Graphic3d_ShaderObject::CreateFromSource (Graphic3d_TOS_FRAGMENT, aSrcFrag));
+  TCollection_AsciiString aKey;
+  if (!Create (aProgramSrc, aKey, myBoundBoxProgram))
+  {
+    myBoundBoxProgram = new OpenGl_ShaderProgram(); // just mark as invalid
+    return Standard_False;
+  }
+
+  const OpenGl_Vec4 aMin (-0.5f, -0.5f, -0.5f, 1.0f);
+  const OpenGl_Vec4 anAxisShifts[3] =
+  {
+    OpenGl_Vec4 (1.0f, 0.0f, 0.0f, 0.0f),
+    OpenGl_Vec4 (0.0f, 1.0f, 0.0f, 0.0f),
+    OpenGl_Vec4 (0.0f, 0.0f, 1.0f, 0.0f)
+  };
+
+  const OpenGl_Vec4 aLookup1 (0.0f, 1.0f, 0.0f, 1.0f);
+  const OpenGl_Vec4 aLookup2 (0.0f, 0.0f, 1.0f, 1.0f);
+  OpenGl_Vec4 aLinesVertices[24];
+  for (int anAxis = 0, aVertex = 0; anAxis < 3; ++anAxis)
+  {
+    for (int aCompIter = 0; aCompIter < 4; ++aCompIter)
+    {
+      aLinesVertices[aVertex++] = aMin
+        + anAxisShifts[(anAxis + 1) % 3] * aLookup1[aCompIter]
+        + anAxisShifts[(anAxis + 2) % 3] * aLookup2[aCompIter];
+
+      aLinesVertices[aVertex++] = aMin
+        + anAxisShifts[anAxis]
+        + anAxisShifts[(anAxis + 1) % 3] * aLookup1[aCompIter]
+        + anAxisShifts[(anAxis + 2) % 3] * aLookup2[aCompIter];
+    }
+  }
+  if (myContext->ToUseVbo())
+  {
+    myBoundBoxVertBuffer = new OpenGl_VertexBuffer();
+    if (myBoundBoxVertBuffer->Init (myContext, 4, 24, aLinesVertices[0].GetData()))
+    {
+      myContext->ShareResource ("OpenGl_ShaderManager_BndBoxVbo", myBoundBoxVertBuffer);
+      return Standard_True;
+    }
+  }
+  myBoundBoxVertBuffer = new OpenGl_VertexBufferCompat();
+  myBoundBoxVertBuffer->Init (myContext, 4, 24, aLinesVertices[0].GetData());
+  myContext->ShareResource ("OpenGl_ShaderManager_BndBoxVbo", myBoundBoxVertBuffer);
   return Standard_True;
 }
 

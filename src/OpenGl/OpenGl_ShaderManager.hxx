@@ -32,6 +32,7 @@
 #include <OpenGl_Texture.hxx>
 
 class OpenGl_View;
+class OpenGl_VertexBuffer;
 
 //! List of shader programs.
 typedef NCollection_Sequence<Handle(OpenGl_ShaderProgram)> OpenGl_ShaderProgramList;
@@ -203,6 +204,19 @@ public:
     return !aProgram.IsNull()
          && myContext->BindProgram (aProgram);
   }
+
+  //! Bind program for rendering bounding box.
+  Standard_Boolean BindBoundBoxProgram()
+  {
+    if (myBoundBoxProgram.IsNull())
+    {
+      prepareStdProgramBoundBox();
+    }
+    return bindProgramWithState (myBoundBoxProgram);
+  }
+
+  //! Returns bounding box vertex buffer.
+  const Handle(OpenGl_VertexBuffer)& BoundBoxVertBuffer() const { return myBoundBoxVertBuffer; }
 
 public:
 
@@ -538,6 +552,9 @@ protected:
   Standard_EXPORT Standard_Boolean prepareStdProgramStereo (Handle(OpenGl_ShaderProgram)& theProgram,
                                                             const Graphic3d_StereoMode    theStereoMode);
 
+  //! Prepare standard GLSL program for bounding box.
+  Standard_EXPORT Standard_Boolean prepareStdProgramBoundBox();
+
 protected:
 
   //! Packed properties of light source
@@ -606,10 +623,13 @@ protected:
   Handle(OpenGl_SetOfShaderPrograms) myUnlitPrograms;      //!< programs matrix without  lighting
   Handle(OpenGl_ShaderProgram)       myFontProgram;        //!< standard program for textured text
   Handle(OpenGl_ShaderProgram)       myBlitProgram;        //!< standard program for FBO blit emulation
+  Handle(OpenGl_ShaderProgram)       myBoundBoxProgram;    //!< standard program for bounding box
   Handle(OpenGl_ShaderProgram)       myOitCompositingProgram[2]; //!< standard program for OIT compositing (default and MSAA).
   OpenGl_MapOfShaderPrograms         myMapOfLightPrograms; //!< map of lighting programs depending on lights configuration
 
   Handle(OpenGl_ShaderProgram)       myStereoPrograms[Graphic3d_StereoMode_NB]; //!< standard stereo programs
+
+  Handle(OpenGl_VertexBuffer)        myBoundBoxVertBuffer; //!< bounding box vertex buffer
 
   OpenGl_Context*                    myContext;            //!< OpenGL context
 

@@ -27,96 +27,76 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Structure,Graphic3d_CStructure)
 
-//! Auxiliary class for bounding box presentation
-class OpenGl_BndBoxPrs : public OpenGl_Element
+// =======================================================================
+// function : renderBoundingBox
+// purpose  :
+// =======================================================================
+void OpenGl_Structure::renderBoundingBox (const Handle(OpenGl_Workspace)& theWorkspace) const
 {
-
-public:
-
-  //! Main constructor
-  OpenGl_BndBoxPrs (const Graphic3d_BndBox3d& theBndBox)
+  if (!myBndBox.IsValid())
   {
-    const float Xm = (float )theBndBox.CornerMin().x();
-    const float Ym = (float)theBndBox.CornerMin().y();
-    const float Zm = (float)theBndBox.CornerMin().z();
-    const float XM = (float)theBndBox.CornerMax().x();
-    const float YM = (float)theBndBox.CornerMax().y();
-    const float ZM = (float)theBndBox.CornerMax().z();
-
-    myVerts[0]  = OpenGl_Vec3 (Xm, Ym, Zm);
-    myVerts[1]  = OpenGl_Vec3 (Xm, Ym, ZM);
-    myVerts[2]  = OpenGl_Vec3 (Xm, YM, ZM);
-    myVerts[3]  = OpenGl_Vec3 (Xm, YM, Zm);
-    myVerts[4]  = OpenGl_Vec3 (Xm, Ym, Zm);
-    myVerts[5]  = OpenGl_Vec3 (XM, Ym, Zm);
-    myVerts[6]  = OpenGl_Vec3 (XM, Ym, ZM);
-    myVerts[7]  = OpenGl_Vec3 (XM, YM, ZM);
-    myVerts[8]  = OpenGl_Vec3 (XM, YM, Zm);
-    myVerts[9]  = OpenGl_Vec3 (XM, Ym, Zm);
-    myVerts[10] = OpenGl_Vec3 (XM, YM, Zm);
-    myVerts[11] = OpenGl_Vec3 (Xm, YM, Zm);
-    myVerts[12] = OpenGl_Vec3 (Xm, YM, ZM);
-    myVerts[13] = OpenGl_Vec3 (XM, YM, ZM);
-    myVerts[14] = OpenGl_Vec3 (XM, Ym, ZM);
-    myVerts[15] = OpenGl_Vec3 (Xm, Ym, ZM);
+    return;
   }
 
-  //! Render presentation
-  virtual void Render  (const Handle(OpenGl_Workspace)& theWorkspace) const
+  const Handle(OpenGl_Context)& aCtx = theWorkspace->GetGlContext();
+  const Handle(OpenGl_TextureSet) aPrevTexture = aCtx->BindTextures (Handle(OpenGl_TextureSet)());
+  const Graphic3d_ZLayerSettings& aLayer = myGraphicDriver->ZLayerSettings (myZLayer);
+  const Graphic3d_Vec3d aMoveVec = myTrsfPers.IsNull()
+                               && !aLayer.OriginTransformation().IsNull()
+                                 ? -Graphic3d_Vec3d (aLayer.Origin().X(), aLayer.Origin().Y(), aLayer.Origin().Z())
+                                 :  Graphic3d_Vec3d (0.0, 0.0, 0.0);
+  if (aCtx->core20fwd != NULL
+   && aCtx->ShaderManager()->BindBoundBoxProgram())
   {
-  #if !defined(GL_ES_VERSION_2_0)
-    const Handle(OpenGl_Context)& aCtx = theWorkspace->GetGlContext();
-    if (aCtx->core11 == NULL)
+    const Graphic3d_Vec3d aCenter = myBndBox.Center() + aMoveVec;
+    const Graphic3d_Vec3d aSize   = myBndBox.Size();
+    aCtx->ActiveProgram()->SetUniform (aCtx, "occBBoxCenter", Graphic3d_Vec3 ((float )aCenter.x(), (float )aCenter.y(), (float )aCenter.z()));
+    aCtx->ActiveProgram()->SetUniform (aCtx, "occBBoxSize",   Graphic3d_Vec3 ((float )aSize.x(),   (float )aSize.y(),   (float )aSize.z()));
+    aCtx->SetColor4fv (theWorkspace->LineColor());
+
+    const Handle(OpenGl_VertexBuffer)& aBoundBoxVertBuffer = aCtx->ShaderManager()->BoundBoxVertBuffer();
+    aBoundBoxVertBuffer->BindAttribute  (aCtx, Graphic3d_TOA_POS);
+    aCtx->core20fwd->glDrawArrays (GL_LINES, 0, aBoundBoxVertBuffer->GetElemsNb());
+    aBoundBoxVertBuffer->UnbindAttribute(aCtx, Graphic3d_TOA_POS);
+  }
+#if !defined(GL_ES_VERSION_2_0)
+  else if (aCtx->core11 != NULL)
+  {
+    const Graphic3d_Vec3d aMind = myBndBox.CornerMin() + aMoveVec;
+    const Graphic3d_Vec3d aMaxd = myBndBox.CornerMax() + aMoveVec;
+    const Graphic3d_Vec3 aMin ((float )aMind.x(), (float )aMind.y(), (float )aMind.z());
+    const Graphic3d_Vec3 aMax ((float )aMaxd.x(), (float )aMaxd.y(), (float )aMaxd.z());
+    const OpenGl_Vec3 aVerts[16] =
     {
-      return;
-    }
+      OpenGl_Vec3 (aMin.x(), aMin.y(), aMin.z()),
+      OpenGl_Vec3 (aMin.x(), aMin.y(), aMax.z()),
+      OpenGl_Vec3 (aMin.x(), aMax.y(), aMax.z()),
+      OpenGl_Vec3 (aMin.x(), aMax.y(), aMin.z()),
+      OpenGl_Vec3 (aMin.x(), aMin.y(), aMin.z()),
+      OpenGl_Vec3 (aMax.x(), aMin.y(), aMin.z()),
+      OpenGl_Vec3 (aMax.x(), aMin.y(), aMax.z()),
+      OpenGl_Vec3 (aMax.x(), aMax.y(), aMax.z()),
+      OpenGl_Vec3 (aMax.x(), aMax.y(), aMin.z()),
+      OpenGl_Vec3 (aMax.x(), aMin.y(), aMin.z()),
+      OpenGl_Vec3 (aMax.x(), aMax.y(), aMin.z()),
+      OpenGl_Vec3 (aMin.x(), aMax.y(), aMin.z()),
+      OpenGl_Vec3 (aMin.x(), aMax.y(), aMax.z()),
+      OpenGl_Vec3 (aMax.x(), aMax.y(), aMax.z()),
+      OpenGl_Vec3 (aMax.x(), aMin.y(), aMax.z()),
+      OpenGl_Vec3 (aMin.x(), aMin.y(), aMax.z())
+    };
 
-    const Handle(OpenGl_TextureSet) aPrevTexture = aCtx->BindTextures (Handle(OpenGl_TextureSet)());
-    aCtx->BindProgram (Handle(OpenGl_ShaderProgram)());
-    aCtx->ShaderManager()->PushState (Handle(OpenGl_ShaderProgram)());
-
-    glDisable (GL_LIGHTING);
-
-    // Use highlight colors
-    aCtx->core11->glColor3fv (theWorkspace->LineColor().GetData());
-
-    glEnableClientState (GL_VERTEX_ARRAY);
-    glVertexPointer (3, GL_FLOAT, 0, (GLfloat* )&myVerts);
-    glDrawArrays (GL_LINE_STRIP, 0, 16);
-    glDisableClientState (GL_VERTEX_ARRAY);
-
-    // restore aspects
-    if (!aPrevTexture.IsNull())
-    {
-      aCtx->BindTextures (aPrevTexture);
-    }
-  #else
-    (void )theWorkspace;
-  #endif
+    aCtx->ShaderManager()->BindLineProgram (Handle(OpenGl_TextureSet)(), Aspect_TOL_SOLID, Graphic3d_TOSM_UNLIT, Graphic3d_AlphaMode_Opaque, false, Handle(OpenGl_ShaderProgram)());
+    aCtx->SetColor4fv (theWorkspace->LineColor());
+    aCtx->core11fwd->glDisable (GL_LIGHTING);
+    aCtx->core11->glEnableClientState (GL_VERTEX_ARRAY);
+    aCtx->core11->glVertexPointer (3, GL_FLOAT, 0, aVerts[0].GetData());
+    aCtx->core11fwd->glDrawArrays (GL_LINE_STRIP, 0, 16);
+    aCtx->core11->glDisableClientState (GL_VERTEX_ARRAY);
   }
-
-  //! Release graphical resources
-  virtual void Release (OpenGl_Context*)
-  {
-    //
-  }
-
-protected:
-
-  //! Protected destructor
-  virtual ~OpenGl_BndBoxPrs() {}
-
-private:
-
-  OpenGl_Vec3 myVerts[16]; //!< vertices array
-
-public:
-
-  DEFINE_STANDARD_ALLOC
-
-};
-
-/*----------------------------------------------------------------------*/
+#endif
+  aCtx->BindTextures (aPrevTexture);
+}
 
 // =======================================================================
 // function : OpenGl_Structure
@@ -208,63 +188,13 @@ void OpenGl_Structure::updateLayerTransformation()
 }
 
 // =======================================================================
-// function : clearHighlightBox
-// purpose  :
-// =======================================================================
-void OpenGl_Structure::clearHighlightBox (const Handle(OpenGl_Context)& theGlCtx)
-{
-  if (!myHighlightBox.IsNull())
-  {
-    myHighlightBox->Release (theGlCtx);
-    myHighlightBox.Nullify();
-  }
-}
-
-// =======================================================================
-// function : HighlightWithBndBox
-// purpose  :
-// =======================================================================
-void OpenGl_Structure::highlightWithBndBox (const Handle(Graphic3d_Structure)& theStruct)
-{
-  const Handle(OpenGl_Context)& aContext = GlDriver()->GetSharedContext();
-
-  if (!myHighlightBox.IsNull())
-  {
-    myHighlightBox->Release (aContext);
-  }
-  else
-  {
-    myHighlightBox = new OpenGl_Group (theStruct);
-  }
-
-  myHighlightBox->SetGroupPrimitivesAspect (new Graphic3d_AspectLine3d (myHighlightStyle->Color(), Aspect_TOL_SOLID, 1.0));
-
-  OpenGl_BndBoxPrs* aBndBoxPrs = new OpenGl_BndBoxPrs (myBndBox);
-  myHighlightBox->AddElement (aBndBoxPrs);
-}
-
-// =======================================================================
 // function : GraphicHighlight
 // purpose  :
 // =======================================================================
-void OpenGl_Structure::GraphicHighlight (const Handle(Graphic3d_PresentationAttributes)& theStyle,
-                                         const Handle(Graphic3d_Structure)& theStruct)
+void OpenGl_Structure::GraphicHighlight (const Handle(Graphic3d_PresentationAttributes)& theStyle)
 {
-  if (!myHighlightStyle.IsNull()
-    && myHighlightStyle->Method() == Aspect_TOHM_BOUNDBOX
-    && theStyle->Method() != Aspect_TOHM_BOUNDBOX)
-  {
-    const Handle(OpenGl_Context)& aContext = GlDriver()->GetSharedContext();
-    clearHighlightBox (aContext);
-  }
-
   myHighlightStyle = theStyle;
-
   highlight = 1;
-  if (myHighlightStyle->Method() == Aspect_TOHM_BOUNDBOX)
-  {
-    highlightWithBndBox (theStruct);
-  }
 }
 
 // =======================================================================
@@ -274,13 +204,6 @@ void OpenGl_Structure::GraphicHighlight (const Handle(Graphic3d_PresentationAttr
 void OpenGl_Structure::GraphicUnhighlight()
 {
   highlight = 0;
-
-  if (myHighlightStyle->Method() == Aspect_TOHM_BOUNDBOX)
-  {
-    const Handle(OpenGl_Context)& aContext = GlDriver()->GetSharedContext();
-    clearHighlightBox (aContext);
-  }
-
   myHighlightStyle.Nullify();
 }
 
@@ -488,7 +411,7 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
   const Handle(OpenGl_Context)& aCtx = theWorkspace->GetGlContext();
 
   // Render named status
-  if (highlight && myHighlightBox.IsNull())
+  if (highlight && !myHighlightStyle.IsNull() && myHighlightStyle->Method() != Aspect_TOHM_BOUNDBOX)
   {
     theWorkspace->SetHighlightStyle (myHighlightStyle);
   }
@@ -666,10 +589,6 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
   // Restore local transformation
   aCtx->ModelWorldState.Pop();
   aCtx->SetGlNormalizeEnabled (anOldGlNormalize);
-  if (!myTrsfPers.IsNull())
-  {
-    aCtx->WorldViewState.Pop();
-  }
 
   // Restore aspects
   theWorkspace->SetAspectLine   (aPrevAspectLine);
@@ -678,10 +597,18 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
   theWorkspace->SetAspectText   (aPrevAspectText);
 
   // Apply highlight box
-  if (!myHighlightBox.IsNull())
+  if (!isClipped
+   && !myHighlightStyle.IsNull()
+   &&  myHighlightStyle->Method() == Aspect_TOHM_BOUNDBOX)
   {
+    aCtx->ApplyModelViewMatrix();
     theWorkspace->SetHighlightStyle (myHighlightStyle);
-    myHighlightBox->Render (theWorkspace);
+    renderBoundingBox (theWorkspace);
+  }
+
+  if (!myTrsfPers.IsNull())
+  {
+    aCtx->WorldViewState.Pop();
   }
 
   // Restore named status
@@ -696,7 +623,6 @@ void OpenGl_Structure::Release (const Handle(OpenGl_Context)& theGlCtx)
 {
   // Release groups
   Clear (theGlCtx);
-  clearHighlightBox (theGlCtx);
   myHighlightStyle.Nullify();
 }
 
@@ -709,10 +635,6 @@ void OpenGl_Structure::ReleaseGlResources (const Handle(OpenGl_Context)& theGlCt
   for (OpenGl_Structure::GroupIterator aGroupIter (myGroups); aGroupIter.More(); aGroupIter.Next())
   {
     aGroupIter.ChangeValue()->Release (theGlCtx);
-  }
-  if (!myHighlightBox.IsNull())
-  {
-    myHighlightBox->Release (theGlCtx.operator->());
   }
 }
 

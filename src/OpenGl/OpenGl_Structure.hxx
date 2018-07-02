@@ -88,8 +88,7 @@ public:
 
   //! Highlights structure according to the given style and updates corresponding class fields
   //! (highlight status and style)
-  Standard_EXPORT virtual void GraphicHighlight (const Handle(Graphic3d_PresentationAttributes)& theStyle,
-                                                 const Handle(Graphic3d_Structure)&  theStruct) Standard_OVERRIDE;
+  Standard_EXPORT virtual void GraphicHighlight (const Handle(Graphic3d_PresentationAttributes)& theStyle) Standard_OVERRIDE;
 
   //! Unighlights structure and updates corresponding class fields (highlight status and style)
   Standard_EXPORT virtual void GraphicUnhighlight() Standard_OVERRIDE;
@@ -177,15 +176,10 @@ protected:
   Standard_EXPORT void renderGeometry (const Handle(OpenGl_Workspace)& theWorkspace,
                                        bool&                           theHasClosed) const;
 
-  //! Highlight structure using boundary box
-  Standard_EXPORT void highlightWithBndBox (const Handle(Graphic3d_Structure)& theStruct);
-
-  //! Invalidates highlight box and releases graphic resources it uses
-  Standard_EXPORT void clearHighlightBox (const Handle(OpenGl_Context)& theGlCtx);
+  //! Render the bounding box.
+  Standard_EXPORT void renderBoundingBox(const Handle(OpenGl_Workspace)& theWorkspace) const;
 
 protected:
-
-  Handle(OpenGl_Group)       myHighlightBox;
 
   OpenGl_Structure*          myInstancedStructure;
   Graphic3d_Mat4             myRenderTrsf; //!< transformation, actually used for rendering (includes Local Origin shift)

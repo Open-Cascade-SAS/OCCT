@@ -118,8 +118,7 @@ public:
   virtual void Disconnect (Graphic3d_CStructure& theStructure) = 0;
 
   //! Highlights structure with the given style
-  virtual void GraphicHighlight (const Handle(Graphic3d_PresentationAttributes)& theStyle,
-                                 const Handle(Graphic3d_Structure)& theStruct) = 0;
+  virtual void GraphicHighlight (const Handle(Graphic3d_PresentationAttributes)& theStyle) = 0;
 
   //! Unhighlights the structure and invalidates pointer to structure's highlight
   //! style

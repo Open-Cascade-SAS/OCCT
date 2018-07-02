@@ -260,7 +260,7 @@ void Graphic3d_Structure::Highlight (const Handle(Graphic3d_PresentationAttribut
 
   SetDisplayPriority (Structure_MAX_PRIORITY - 1);
 
-  myCStructure->GraphicHighlight (theStyle, this);
+  myCStructure->GraphicHighlight (theStyle);
 
   if (!theToUpdateMgr)
   {
