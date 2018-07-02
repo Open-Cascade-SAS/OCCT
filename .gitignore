@@ -1,14 +1,10 @@
 
 # standard directories for derived files in CASROOT
 /.adm
-/sun
 /lin
 /mac
-/ao1
-/sil
 /wnt
 /doc
-/drv
 /inc
 /work
 
