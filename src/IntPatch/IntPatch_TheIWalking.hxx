@@ -49,6 +49,7 @@ class Adaptor3d_HSurfaceTool;
 class IntPatch_TheSurfFunction;
 class IntPatch_TheIWLineOfTheIWalking;
 class IntSurf_PntOn2S;
+class math_FunctionSetRoot;
 
 class IntPatch_TheIWalking 
 {
@@ -150,6 +151,12 @@ protected:
   //! Clears up internal containers
   Standard_EXPORT void Clear();
 
+  //! Returns TRUE if thePOn2S is in one of existing lines.
+  Standard_EXPORT Standard_Boolean IsPointOnLine(const IntSurf_PntOn2S& thePOn2S,
+                                                 const math_Vector& theInfBounds,
+                                                 const math_Vector& theSupBounds,
+                                                 math_FunctionSetRoot& theSolver,
+                                                 IntPatch_TheSurfFunction& theFunc);
 
 
 

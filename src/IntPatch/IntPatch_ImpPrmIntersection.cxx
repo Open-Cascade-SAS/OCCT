@@ -686,13 +686,9 @@ void IntPatch_ImpPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
   NbPointDep=seqpdep.Length();
   //
   if (NbPointDep || NbPointIns) {
-    IntPatch_TheIWalking iwalk(TolTang,Fleche,Pas);
-    if (!reversed) {
-      iwalk.Perform(seqpdep,seqpins,Func,Surf2);
-    }
-    else {
-      iwalk.Perform(seqpdep,seqpins,Func,Surf1,Standard_True);
-    }
+    IntPatch_TheIWalking iwalk(TolTang, Fleche, Pas);
+    iwalk.Perform(seqpdep, seqpins, Func, reversed ? Surf1 : Surf2, reversed);
+
     if(!iwalk.IsDone()) {
       return;
     }

@@ -23,13 +23,11 @@
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <IntPatch_SequenceOfPoint.hxx>
-#include <Bnd_Box2d.hxx>
-#include <Bnd_Box.hxx>
 #include <Standard_Real.hxx>
 #include <IntPatch_PointLine.hxx>
-#include <IntSurf_TypeTrans.hxx>
+#include <IntSurf_LineOn2S.hxx>
 #include <IntSurf_Situation.hxx>
-class IntSurf_LineOn2S;
+#include <IntSurf_TypeTrans.hxx>
 class Adaptor2d_HCurve2d;
 class Standard_OutOfRange;
 class Standard_DomainError;
@@ -129,12 +127,26 @@ public:
   //! Returns set of intersection points
   Standard_EXPORT virtual Handle(IntSurf_LineOn2S) Curve() const Standard_OVERRIDE;
   
-  Standard_EXPORT Standard_Boolean IsOutSurf1Box (const gp_Pnt2d& P1);
+  //! Returns TRUE if theP is out of the box built from
+  //! the points on 1st surface
+  Standard_Boolean IsOutSurf1Box (const gp_Pnt2d& theP) const Standard_OVERRIDE
+  {
+    return curv->IsOutSurf1Box(theP);
+  }
   
-  Standard_EXPORT Standard_Boolean IsOutSurf2Box (const gp_Pnt2d& P1);
+  //! Returns TRUE if theP is out of the box built from
+  //! the points on 2nd surface
+  Standard_Boolean IsOutSurf2Box(const gp_Pnt2d& theP) const Standard_OVERRIDE
+  {
+    return curv->IsOutSurf2Box(theP);
+  }
   
-  Standard_EXPORT Standard_Boolean IsOutBox (const gp_Pnt& P);
-  
+  //! Returns TRUE if theP is out of the box built from 3D-points.
+  Standard_Boolean IsOutBox(const gp_Pnt& theP) const Standard_OVERRIDE
+  {
+    return curv->IsOutBox(theP);
+  }
+
   Standard_EXPORT void SetPeriod (const Standard_Real pu1, const Standard_Real pv1, const Standard_Real pu2, const Standard_Real pv2);
   
   Standard_EXPORT Standard_Real U1Period() const;
@@ -200,9 +212,6 @@ private:
   Standard_Integer indf;
   Standard_Integer indl;
   IntPatch_SequenceOfPoint svtx;
-  Bnd_Box2d Buv1;
-  Bnd_Box2d Buv2;
-  Bnd_Box Bxyz;
   Standard_Real u1period;
   Standard_Real v1period;
   Standard_Real u2period;

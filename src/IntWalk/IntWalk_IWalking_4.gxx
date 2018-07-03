@@ -118,12 +118,21 @@ void IntWalk_IWalking::ComputeCloseLine(const TColStd_SequenceOfReal& Umult,
     }
   }
 
+  TheIWFunction aFuncForDuplicate = Func;
+
   for (I = 1;I<=nbLoop;I++) {
     if (wd2[I].etat > 12)
     { // start point of closed line
       LoopPnt = Pnts2.Value(I);
-      previousPoint.SetValue(ThePointOfLoopTool::Value3d(LoopPnt),reversed,
-           wd2[I].ustart,wd2[I].vstart);
+      previousPoint.SetValue(ThePointOfLoopTool::Value3d(LoopPnt), reversed,
+                             wd2[I].ustart, wd2[I].vstart);
+
+      if (IsPointOnLine(previousPoint, BornInf, BornSup, Rsnld, aFuncForDuplicate))
+      {
+        wd2[I].etat = -wd2[I].etat; //mark point as processed
+        continue;
+      }
+
       previousd3d = ThePointOfLoopTool::Direction3d(LoopPnt);
       previousd2d = ThePointOfLoopTool::Direction2d(LoopPnt);
 

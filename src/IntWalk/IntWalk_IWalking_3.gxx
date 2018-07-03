@@ -99,20 +99,29 @@ void IntWalk_IWalking::ComputeOpenLine(const TColStd_SequenceOfReal& Umult,
   }
   // modified by NIZHNY-MKK  Fri Oct 27 12:32:38 2000.END
 
+  TheIWFunction aFuncForDuplicate = Func;
+
   for (I = 1; I <= nbPath; I++) {
     //start point of the progression
     //     if (wd1[I].etat > 11) {                
     // modified by NIZHNY-MKK  Fri Oct 27 12:33:37 2000.BEGIN
     if ((wd1[I].etat > 11) || ((wd1[I].etat < -11) && (movementdirectioninfo[I]!=0))) {
     // modified by NIZHNY-MKK  Fri Oct 27 12:33:43 2000.END
-      PathPnt = Pnts1.Value(I);     
+      PathPnt = Pnts1.Value(I);
+      UVap(1) = wd1[I].ustart;
+      UVap(2) = wd1[I].vstart;
+      MakeWalkingPoint(11, UVap(1), UVap(2), Func, previousPoint);
+
+      if (IsPointOnLine(previousPoint, BornInf, BornSup, Rsnld, aFuncForDuplicate))
+      {
+        wd1[I].etat = -Abs(wd1[I].etat); //mark point as processed
+        continue;
+      }
+
       CurrentLine = new IntWalk_TheIWLine (new NCollection_IncAllocator());
       CurrentLine->SetTangencyAtBegining(Standard_False);
       Tgtend = Standard_False;
       CurrentLine->AddStatusFirst(Standard_False, Standard_True, I, PathPnt);
-      UVap(1) = wd1[I].ustart;
-      UVap(2) = wd1[I].vstart;
-      MakeWalkingPoint(11, UVap(1), UVap(2), Func, previousPoint);
       previousd3d = Func.Direction3d();
       previousd2d = Func.Direction2d();
       CurrentLine->AddPoint(previousPoint);
@@ -139,7 +148,7 @@ void IntWalk_IWalking::ComputeOpenLine(const TColStd_SequenceOfReal& Umult,
       // modified by NIZHNY-MKK  Fri Oct 27 12:34:37 2000.END
 
       //  Modified by Sergey KHROMOV - Tue Nov 20 10:41:45 2001 Begin
-      wd1[I].etat = - abs(wd1[I].etat);
+      wd1[I].etat = -Abs(wd1[I].etat);
       movementdirectioninfo[I] = (movementdirectioninfo[I]==0) ? StepSign : 0;
 //  Modified by Sergey KHROMOV - Tue Nov 20 10:41:56 2001 End
       // first step of advancement

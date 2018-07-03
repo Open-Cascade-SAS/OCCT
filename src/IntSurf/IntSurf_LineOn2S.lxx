@@ -18,8 +18,21 @@
 
 
 inline void IntSurf_LineOn2S::Add(const IntSurf_PntOn2S& P) {
-
   mySeq.Append(P);
+  if (!myBxyz.IsWhole())
+  {
+    myBxyz.Add(P.Value());
+  }
+
+  if (!myBuv1.IsWhole())
+  {
+    myBuv1.Add(P.ValueOnSurface(Standard_True));
+  }
+
+  if (!myBuv2.IsWhole())
+  {
+    myBuv2.Add(P.ValueOnSurface(Standard_False));
+  }
 }
 
 
@@ -53,10 +66,22 @@ inline void IntSurf_LineOn2S::SetUV(const Standard_Integer Index,
 				    const Standard_Real V)
 {
   mySeq(Index).SetValue(OnFirst,U,V);
+
+  if (OnFirst && !myBuv1.IsWhole())
+  {
+    myBuv1.Add(gp_Pnt2d(U,V));
+  }
+  else if (!OnFirst && !myBuv2.IsWhole())
+  {
+    myBuv2.Add(gp_Pnt2d(U,V));
+  }
 }
 
 inline void IntSurf_LineOn2S::Clear ()
 {
   mySeq.Clear();
+  myBuv1.SetWhole();
+  myBuv2.SetWhole();
+  myBxyz.SetWhole();
 }
 

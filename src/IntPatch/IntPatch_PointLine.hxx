@@ -20,6 +20,8 @@
 #include <IntPatch_Line.hxx>
 #include <Standard_Type.hxx>
 
+class gp_Pnt;
+class gp_Pnt2d;
 class IntSurf_PntOn2S;
 class IntSurf_LineOn2S;
 class IntPatch_Point;
@@ -67,6 +69,17 @@ public:
   //! Returns set of intersection points
   Standard_EXPORT virtual Handle(IntSurf_LineOn2S) Curve() const = 0;
 
+  //! Returns TRUE if P1 is out of the box built from
+  //! the points on 1st surface
+  Standard_EXPORT virtual Standard_Boolean IsOutSurf1Box(const gp_Pnt2d& P1) const = 0;
+
+  //! Returns TRUE if P2 is out of the box built from
+  //! the points on 2nd surface
+  Standard_EXPORT virtual Standard_Boolean IsOutSurf2Box(const gp_Pnt2d& P2) const = 0;
+
+  //! Returns TRUE if P is out of the box built from 3D-points.
+  Standard_EXPORT virtual Standard_Boolean IsOutBox(const gp_Pnt& P) const = 0;
+
   //! Returns the radius of curvature of
   //! the intersection line in given point.
   //! Returns negative value if computation is not possible.
@@ -74,7 +87,6 @@ public:
             CurvatureRadiusOfIntersLine(const Handle(Adaptor3d_HSurface)& theS1,
                                         const Handle(Adaptor3d_HSurface)& theS2,
                                         const IntSurf_PntOn2S& theUVPoint);
-
 
   DEFINE_STANDARD_RTTIEXT(IntPatch_PointLine,IntPatch_Line)
 

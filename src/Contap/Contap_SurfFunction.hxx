@@ -106,7 +106,11 @@ public:
   
     const Handle(Adaptor3d_HSurface)& Surface() const;
 
-
+  //! Method is entered for compatibility with IntPatch_TheSurfFunction.
+  const Handle(Adaptor3d_HSurface)& PSurface() const
+  {
+    return Surface();
+  }
 
 
 protected:

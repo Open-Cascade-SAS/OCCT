@@ -25,10 +25,10 @@
 #include <Standard_Integer.hxx>
 #include <IntPatch_SequenceOfPoint.hxx>
 #include <IntPatch_PointLine.hxx>
-#include <IntSurf_TypeTrans.hxx>
+#include <IntSurf_LineOn2S.hxx>
 #include <IntSurf_Situation.hxx>
+#include <IntSurf_TypeTrans.hxx>
 class Adaptor2d_HCurve2d;
-class IntSurf_LineOn2S;
 class Standard_DomainError;
 class Standard_OutOfRange;
 class IntPatch_Point;
@@ -151,6 +151,26 @@ public:
 
   //! Returns set of intersection points
   virtual Handle(IntSurf_LineOn2S) Curve() const Standard_OVERRIDE;
+
+  //! Returns TRUE if theP is out of the box built from
+  //! the points on 1st surface
+  virtual Standard_Boolean IsOutSurf1Box(const gp_Pnt2d& theP) const Standard_OVERRIDE
+  {
+    return curv->IsOutSurf1Box(theP);
+  }
+
+  //! Returns TRUE if theP is out of the box built from
+  //! the points on 2nd surface
+  virtual Standard_Boolean IsOutSurf2Box(const gp_Pnt2d& theP) const Standard_OVERRIDE
+  {
+    return curv->IsOutSurf2Box(theP);
+  }
+
+  //! Returns TRUE if theP is out of the box built from 3D-points.
+  virtual Standard_Boolean IsOutBox(const gp_Pnt& theP) const Standard_OVERRIDE
+  {
+    return curv->IsOutBox(theP);
+  }
 
   //! Removes vertices from the line (i.e. cleans svtx member)
   virtual void ClearVertexes() Standard_OVERRIDE
