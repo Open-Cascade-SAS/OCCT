@@ -482,7 +482,7 @@ Standard_Boolean IGESData_IGESWriter::Print (Standard_OStream& S) const
   Standard_Boolean fnes = (themodew >= 10);
   if(!isGood)
     return isGood;
-  char ligne[81];
+  char ligne[256];
 #ifdef PATIENCELOG
   Standard_Integer lignespatience = 1000;
 #endif
@@ -590,7 +590,7 @@ Standard_Boolean IGESData_IGESWriter::Print (Standard_OStream& S) const
   blancs[MaxcarsP] = '\0';
   for (i = 1; i <= nbd && isGood; i ++) {
     for (Standard_Integer j = thepnum.Value(i); j < thepnum.Value(i+1); j ++) {
-      char finlin[20];
+      char finlin[32];
       sprintf(finlin," %7.7dP%7.7d",2*i-1,j);
       line = thepars->Value(j);
 //      line->LeftJustify(MaxcarsP,' ');  remplace par plus economique ! :

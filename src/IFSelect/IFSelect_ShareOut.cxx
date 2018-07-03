@@ -333,7 +333,7 @@ IFSelect_ShareOut::IFSelect_ShareOut ()
 //  Si nbpack = 0 ou 1, num = 1 pas de suffixe, sinon suffixe "_num" tel quel
 //  MODIF du 3-NOV-1995 -> pour eviter toute confusion, num = 1 donne aussi _1
     Standard_Integer nbch = 0;
-    char format[10],suffixe[30];  format[1] = ' ';
+    char format[30],suffixe[30];  format[1] = ' ';
     if (npac >= num) {
       Standard_Integer nbpa = 1;
       while (nbpa <= npac)  {  nbpa *= 10; nbch ++;  }
