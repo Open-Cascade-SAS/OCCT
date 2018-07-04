@@ -175,11 +175,14 @@ void BRepGProp_Face::Bounds(Standard_Real& U1,
 //purpose  : 
 //=======================================================================
 
-void BRepGProp_Face::Load(const TopoDS_Edge& E) 
+bool BRepGProp_Face::Load(const TopoDS_Edge& E)
 { 
   Standard_Real a,b;
-  Handle(Geom2d_Curve) C = 
-    BRep_Tool::CurveOnSurface(E, mySurface.Face(), a,b);
+  Handle(Geom2d_Curve) C = BRep_Tool::CurveOnSurface(E, mySurface.Face(), a,b);
+  if (C.IsNull())
+  {
+    return false;
+  }
   if (E.Orientation() == TopAbs_REVERSED) { 
     Standard_Real x = a;
     a = C->ReversedParameter(b);
@@ -187,6 +190,7 @@ void BRepGProp_Face::Load(const TopoDS_Edge& E)
     C = C->Reversed();
   }
   myCurve.Load(C,a,b);
+  return true;
 }
 
 //=======================================================================

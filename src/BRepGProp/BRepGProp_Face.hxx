@@ -101,7 +101,8 @@ public:
   Standard_EXPORT void Normal (const Standard_Real U, const Standard_Real V, gp_Pnt& P, gp_Vec& VNor) const;
   
   //! Loading the boundary arc.
-  Standard_EXPORT void Load (const TopoDS_Edge& E);
+  //! Returns FALSE if edge has no P-Curve.
+  Standard_EXPORT bool Load (const TopoDS_Edge& E);
   
   //! Returns the parametric value of the start point of
   //! the current arc of curve.
