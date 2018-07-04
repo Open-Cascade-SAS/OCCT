@@ -1,19 +1,17 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: NBSHAPES : Faulty" 
 puts "TODO CR23096 ALL: STATSHAPE : Faulty" 
 puts "TODO CR23096 ALL: TOLERANCE : Faulty" 
 puts "TODO CR23096 ALL: LABELS : Faulty" 
 
-
-set LinuxDiff 5
-set LinuxFaulties {CHECKSHAPE}
 set filename USA60022.igs
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 1 )  Summary  = 0  ( 1 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 152  ( 2003 )  Summary  = 152  ( 2003 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 153  ( 2003 )  Summary  = 153  ( 2003 )
 CHECKSHAPE  : Wires    = 7  ( 14 )  Faces    = 9  ( 15 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
-NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 666  ( 634 )   Summary  = 25078  ( 24995 )
-STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 666  ( 634 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 11901  ( 11872 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 666  ( 634 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 666  ( 634 )   FreeWire = 0  ( 0 ) 
 TOLERANCE   : MaxTol   =      6.4081268  (    1.331845935 )  AvgTol   =  0.002669846957  (  0.002299131368 )
 LABELS      : N0Labels = 1  ( 1 )  N1Labels = 634  ( 634 )  N2Labels = 0  ( 0 )   TotalLabels = 635  ( 635 )   NameLabels = 635  ( 635 )   ColorLabels = 634  ( 635 )   LayerLabels = 634  ( 635 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )

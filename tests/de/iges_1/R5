@@ -2,15 +2,16 @@
 puts "TODO CR23096 ALL: LABELS : Faulty" 
 puts "TODO CR23096 ALL: LAYERS : Faulty" 
 
+
 set filename BUC50048.igs
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 2 )  Summary  = 0  ( 2 )
 TPSTAT      : Faulties = 0  ( 0 )  Warnings = 2  ( 314 )  Summary  = 2  ( 314 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
-NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 328  ( 328 )   Summary  = 8546  ( 8546 )
-STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 328  ( 328 )   FreeWire = 53  ( 53 )   FreeEdge  = 1431 ( 1431 )   SharedEdge = 3217  ( 3217 )
-TOLERANCE   : MaxTol   =   0.4274072109  (   0.4274072101 )  AvgTol   =  0.001825084327  (  0.001863351234 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 328  ( 328 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 328  ( 328 )   FreeWire = 53  ( 53 ) 
+TOLERANCE   : MaxTol   =   0.4274072109  (   0.4274072101 )  AvgTol   =  0.001825084321  (  0.001863351234 )
 LABELS      : N0Labels = 10  ( 10 )  N1Labels = 1565  ( 2865 )  N2Labels = 0  ( 0 )   TotalLabels = 1575  ( 2875 )   NameLabels = 1575  ( 1851 )   ColorLabels = 1570  ( 2870 )   LayerLabels = 1570  ( 2870 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 8  ( 8 )

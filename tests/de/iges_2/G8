@@ -1,5 +1,4 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
-puts "TODO CR23096 ALL: NBSHAPES : Faulty" 
 puts "TODO CR23096 ALL: TOLERANCE : Faulty" 
 puts "TODO CR23096 ALL: LABELS : Faulty" 
 puts "TODO CR23096 ALL: COLORS : Faulty" 
@@ -8,12 +7,12 @@ puts "TODO CR23096 ALL: COLORS : Faulty"
 set filename PRO5236.igs
 
 set ref_data {
-DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 2 )  Warnings = 145  ( 1619 )  Summary  = 145  ( 1621 )
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 1 )  Summary  = 0  ( 1 )
+TPSTAT      : Faulties = 0  ( 2 )  Warnings = 128  ( 1661 )  Summary  = 128  ( 1663 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
-NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 253  ( 253 )   Summary  = 5359  ( 5363 )
-STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 253  ( 253 )   FreeWire = 7  ( 10 )   FreeEdge  = 78 ( 78 )   SharedEdge = 2412  ( 2412 )
-TOLERANCE   : MaxTol   =  0.04838312754  (   0.0483782783 )  AvgTol   =  0.002925020972  (  0.002891060102 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 253  ( 253 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 253  ( 253 )   FreeWire = 7  ( 10 ) 
+TOLERANCE   : MaxTol   =  0.04838312754  (   0.0483782783 )  AvgTol   =  0.002925043567  (  0.002891369257 )
 LABELS      : N0Labels = 8  ( 8 )  N1Labels = 269  ( 2700 )  N2Labels = 0  ( 0 )   TotalLabels = 277  ( 2708 )   NameLabels = 277  ( 384 )   ColorLabels = 272  ( 2706 )   LayerLabels = 272  ( 2706 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 3  ( 4 )

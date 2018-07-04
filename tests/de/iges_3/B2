@@ -3,16 +3,16 @@ puts "TODO CR23096 ALL: CHECKSHAPE : Faulty"
 puts "TODO CR23096 ALL: TOLERANCE : Faulty" 
 puts "TODO CR23096 ALL: LABELS : Faulty" 
 
-set LinuxDiff 3
+
 set filename 1stpunch-mcsrfs.igs
 
 set ref_data {
-DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 1 )  Summary  = 0  ( 1 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 885  ( 1951 )  Summary  = 885  ( 1951 )
-CHECKSHAPE  : Wires    = 6  ( 4 )  Faces    = 3  ( 3 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
-NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 1223  ( 1223 )   Summary  = 68996  ( 68971 )
-STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 1223  ( 1223 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 33290  ( 33278 )
-TOLERANCE   : MaxTol   = 0.002714431471  ( 0.001436622896 )  AvgTol   =  1.636929841e-006  (  9.67254762e-006 )
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 2792 )  Summary  = 0  ( 2792 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 883  ( 1953 )  Summary  = 883  ( 1953 )
+CHECKSHAPE  : Wires    = 4  ( 2 )  Faces    = 2  ( 2 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 1223  ( 1223 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 1223  ( 1223 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   = 0.002714431471  ( 0.001436622896 )  AvgTol   =  1.621537502e-006  (  9.779578932e-006 )
 LABELS      : N0Labels = 1215  ( 1215 )  N1Labels = 0  ( 0 )  N2Labels = 0  ( 0 )   TotalLabels = 1215  ( 1215 )   NameLabels = 1215  ( 1215 )   ColorLabels = 0  ( 0 )   LayerLabels = 1207  ( 1215 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 0  ( 0 )

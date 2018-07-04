@@ -1,18 +1,17 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
 puts "TODO CR23096 ALL:  Update of 3D-Parameters has failed" 
-puts "TODO CR23096 ALL: NBSHAPES : Faulty" 
 puts "TODO CR23096 ALL: LABELS : Faulty" 
 
-set LinuxDiff 3
+
 set filename r76sy.stp
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 4 )  Warnings = 71  ( 103 )  Summary  = 71  ( 107 )
+TPSTAT      : Faulties = 0  ( 4 )  Warnings = 70  ( 102 )  Summary  = 70  ( 106 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
-NBSHAPES    : Solid    = 23  ( 23 )  Shell    = 47  ( 47 )  Face     = 194  ( 194 )   Summary  = 1351  ( 1357 )
-STATSHAPE   : Solid    = 23  ( 23 )  Shell    = 47  ( 47 )  Face     = 194  ( 194 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 503  ( 504 )
-TOLERANCE   : MaxTol   =   0.0205434719  (  0.02934184848 )  AvgTol   =  0.0005829973732  (  0.001382749784 )
+NBSHAPES    : Solid    = 23  ( 23 )  Shell    = 47  ( 47 )  Face     = 194  ( 194 ) 
+STATSHAPE   : Solid    = 23  ( 23 )  Shell    = 47  ( 47 )  Face     = 194  ( 194 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   =   0.0205434719  (  0.02934184848 )  AvgTol   =  0.0005829961655  (  0.001382717754 )
 LABELS      : N0Labels = 3  ( 3 )  N1Labels = 69  ( 67 )  N2Labels = 0  ( 0 )   TotalLabels = 72  ( 70 )   NameLabels = 5  ( 5 )   ColorLabels = 47  ( 45 )   LayerLabels = 43  ( 45 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 2  ( 2 )

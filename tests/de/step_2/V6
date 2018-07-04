@@ -1,15 +1,13 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
-
-
 set filename trj9_b2-oc-214.stp
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 10  ( 5 )  Summary  = 10  ( 5 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 0  ( 3 )  Summary  = 0  ( 3 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
-NBSHAPES    : Solid    = 1  ( 1 )  Shell    = 1  ( 1 )  Face     = 250  ( 250 )   Summary  = 1618  ( 1618 )
-STATSHAPE   : Solid    = 1  ( 1 )  Shell    = 1  ( 1 )  Face     = 250  ( 250 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 672  ( 672 )
-TOLERANCE   : MaxTol   = 0.002562040373  ( 0.005004494964 )  AvgTol   =  2.080413824e-005  (  6.882111124e-005 )
+NBSHAPES    : Solid    = 1  ( 1 )  Shell    = 1  ( 1 )  Face     = 250  ( 250 ) 
+STATSHAPE   : Solid    = 1  ( 1 )  Shell    = 1  ( 1 )  Face     = 250  ( 250 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   = 0.002562014753  (  0.00500444492 )  AvgTol   =  2.08016045e-005  (  7.028243124e-005 )
 LABELS      : N0Labels = 1  ( 1 )  N1Labels = 0  ( 0 )  N2Labels = 0  ( 0 )   TotalLabels = 1  ( 1 )   NameLabels = 1  ( 1 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 1  ( 1 )  Volume   = 1  ( 1 )  Area     = 1  ( 1 )
 NCOLORS     : NColors  = 0  ( 0 )

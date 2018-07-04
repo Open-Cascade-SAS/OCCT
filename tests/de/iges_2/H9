@@ -1,20 +1,16 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
-puts "TODO CR23096 ALL: NBSHAPES : Faulty" 
 puts "TODO CR23096 ALL: TOLERANCE : Faulty" 
 puts "TODO CR23096 ALL: LABELS : Faulty" 
 puts "TODO CR23096 ALL: COLORS : Faulty" 
 
-
-set LinuxDiff 4
-set LinuxFaulties {STATSHAPE}
 set filename coque-sup.igs
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
 TPSTAT      : Faulties = 0  ( 2 )  Warnings = 1956  ( 4570 )  Summary  = 1956  ( 4572 )
 CHECKSHAPE  : Wires    = 1  ( 2 )  Faces    = 3  ( 3 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
-NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 1628  ( 1628 )   Summary  = 39228  ( 39278 )
-STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 1628  ( 1628 )   FreeWire = 22  ( 26 )   FreeEdge  = 135 ( 135 )   SharedEdge = 17933  ( 17950 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 1628  ( 1628 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 1628  ( 1628 )   FreeWire = 22  ( 26 ) 
 TOLERANCE   : MaxTol   = 9.510579727e+086  ( 8.081584677e+086 )  AvgTol   =  8.579374427e+082  (  6.555234696e+083 )
 LABELS      : N0Labels = 6  ( 6 )  N1Labels = 1643  ( 9836 )  N2Labels = 0  ( 0 )   TotalLabels = 1649  ( 9842 )   NameLabels = 1649  ( 2893 )   ColorLabels = 1645  ( 9841 )   LayerLabels = 489  ( 4144 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )

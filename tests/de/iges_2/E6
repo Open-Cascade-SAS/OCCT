@@ -1,16 +1,16 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
 puts "TODO CR23096 ALL: LABELS : Faulty" 
 
-set LinuxDiff 1
+
 set filename ims010.igs
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 15  ( 524 )  Summary  = 15  ( 524 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 14  ( 524 )  Summary  = 14  ( 524 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
-NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 1177  ( 1177 )   Summary  = 18232  ( 18230 )
-STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 1177  ( 1177 )   FreeWire = 5  ( 5 )   FreeEdge  = 714 ( 714 )   SharedEdge = 7614  ( 7614 )
-TOLERANCE   : MaxTol   =   0.8261873294  (   0.8261873283 )  AvgTol   =   0.01075755448  (   0.01076339213 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 1177  ( 1177 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 1177  ( 1177 )   FreeWire = 5  ( 5 ) 
+TOLERANCE   : MaxTol   =   0.8261873294  (   0.8261873283 )  AvgTol   =   0.01075754234  (   0.01076339151 )
 LABELS      : N0Labels = 1884  ( 1885 )  N1Labels = 0  ( 1036 )  N2Labels = 0  ( 0 )   TotalLabels = 1884  ( 2921 )   NameLabels = 1884  ( 1885 )   ColorLabels = 1873  ( 2920 )   LayerLabels = 1873  ( 2920 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 7  ( 7 )

@@ -2,16 +2,16 @@
 puts "TODO CR23096 ALL: LABELS : Faulty" 
 puts "TODO CR23096 ALL: COLORS : Faulty" 
 
-set LinuxDiff 1
+
 set filename FRA10072.igs
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 178  ( 440 )  Summary  = 178  ( 440 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 178  ( 454 )  Summary  = 178  ( 454 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
-NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 304  ( 304 )   Summary  = 3791  ( 3791 )
-STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 304  ( 304 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 1599  ( 1599 )
-TOLERANCE   : MaxTol   =   0.4659394289  (   0.4659394289 )  AvgTol   =   0.01079423666  (   0.01079517963 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 304  ( 304 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 304  ( 304 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   =   0.4659394289  (   0.4659394289 )  AvgTol   =   0.01079422073  (   0.01079529744 )
 LABELS      : N0Labels = 1  ( 1 )  N1Labels = 304  ( 1400 )  N2Labels = 0  ( 0 )   TotalLabels = 305  ( 1401 )   NameLabels = 305  ( 429 )   ColorLabels = 304  ( 1400 )   LayerLabels = 304  ( 1400 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 2  ( 3 )

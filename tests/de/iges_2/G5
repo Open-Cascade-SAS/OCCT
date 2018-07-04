@@ -2,16 +2,16 @@
 puts "TODO CR23096 ALL: LABELS : Faulty" 
 puts "TODO CR23096 ALL: COLORS : Faulty" 
 
-set LinuxDiff 4
+
 set filename PRO11641.igs
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 43  ( 1750 )  Summary  = 43  ( 1750 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 43  ( 1740 )  Summary  = 43  ( 1740 )
 CHECKSHAPE  : Wires    = 7  ( 7 )  Faces    = 7  ( 7 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
-NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 1424  ( 1424 )   Summary  = 23704  ( 23704 )
-STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 1424  ( 1424 )   FreeWire = 23  ( 23 )   FreeEdge  = 461 ( 461 )   SharedEdge = 10206  ( 10206 )
-TOLERANCE   : MaxTol   =  0.01698924283  (  0.03769875288 )  AvgTol   =  0.0002746484976  (  0.0003801335989 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 1424  ( 1424 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 1424  ( 1424 )   FreeWire = 23  ( 23 ) 
+TOLERANCE   : MaxTol   =  0.01698924283  (  0.03769875288 )  AvgTol   =  0.0002758460767  (  0.0003813154776 )
 LABELS      : N0Labels = 1784  ( 1784 )  N1Labels = 0  ( 1660 )  N2Labels = 0  ( 0 )   TotalLabels = 1784  ( 3444 )   NameLabels = 1784  ( 1784 )   ColorLabels = 1761  ( 3444 )   LayerLabels = 1761  ( 1784 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 7  ( 8 )

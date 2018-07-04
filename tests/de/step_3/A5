@@ -2,12 +2,12 @@
 set filename trj8_pm6-hc-214.stp
 
 set ref_data {
-DATA        : Faulties = 0  ( 20 )  Warnings = 0  ( 60 )  Summary  = 0  ( 80 )
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 80 )  Summary  = 0  ( 80 )
 TPSTAT      : Faulties = 0  ( 0 )  Warnings = 14  ( 545 )  Summary  = 14  ( 545 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
-NBSHAPES    : Solid    = 98  ( 98 )  Shell    = 98  ( 98 )  Face     = 1506  ( 1506 )   Summary  = 9228  ( 9224 )
-STATSHAPE   : Solid    = 272  ( 272 )  Shell    = 272  ( 272 )  Face     = 3216  ( 3216 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 3297  ( 3293 )
-TOLERANCE   : MaxTol   =   0.9320948364  (      3.3196868 )  AvgTol   =  0.0006692799479  (  0.003731717341 )
+NBSHAPES    : Solid    = 98  ( 98 )  Shell    = 98  ( 98 )  Face     = 1506  ( 1506 ) 
+STATSHAPE   : Solid    = 272  ( 272 )  Shell    = 272  ( 272 )  Face     = 3216  ( 3216 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   =   0.9320948364  (      3.3196868 )  AvgTol   =  0.0006692755906  (  0.003731702354 )
 LABELS      : N0Labels = 230  ( 230 )  N1Labels = 1909  ( 1909 )  N2Labels = 0  ( 0 )   TotalLabels = 2139  ( 2139 )   NameLabels = 633  ( 633 )   ColorLabels = 1604  ( 1604 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 161  ( 161 )  Volume   = 161  ( 161 )  Area     = 161  ( 161 )
 NCOLORS     : NColors  = 6  ( 6 )

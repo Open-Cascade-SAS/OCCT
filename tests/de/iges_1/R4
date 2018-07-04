@@ -7,11 +7,11 @@ set filename BUC50030.igs
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 19  ( 394 )  Summary  = 19  ( 394 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 22  ( 389 )  Summary  = 22  ( 389 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
-NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 771  ( 771 )   Summary  = 15422  ( 15404 )
-STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 771  ( 771 )   FreeWire = 0  ( 0 )   FreeEdge  = 1291 ( 1291 )   SharedEdge = 6301  ( 6303 )
-TOLERANCE   : MaxTol   =   0.9439922085  (    0.944086605 )  AvgTol   =  0.005963915093  (  0.005983396104 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 771  ( 771 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 771  ( 771 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   =   0.9439922076  (    0.944086605 )  AvgTol   =   0.00596714602  (  0.005985964057 )
 LABELS      : N0Labels = 2062  ( 2062 )  N1Labels = 6  ( 1161 )  N2Labels = 0  ( 0 )   TotalLabels = 2068  ( 3223 )   NameLabels = 2062  ( 2062 )   ColorLabels = 2037  ( 3223 )   LayerLabels = 2037  ( 3223 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 3  ( 4 )

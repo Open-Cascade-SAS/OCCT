@@ -1,5 +1,4 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
-puts "TODO CR23096 ALL: NBSHAPES : Faulty" 
 puts "TODO CR23096 ALL: LABELS : Faulty" 
 
 
@@ -7,11 +6,11 @@ set filename BUC60216.igs
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 57  ( 653 )  Summary  = 57  ( 653 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 57  ( 658 )  Summary  = 57  ( 658 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
-NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 218  ( 218 )   Summary  = 33194  ( 33225 )
-STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 218  ( 218 )   FreeWire = 77  ( 108 )   FreeEdge  = 2656 ( 2656 )   SharedEdge = 15767  ( 15767 )
-TOLERANCE   : MaxTol   =   0.1504135906  (   0.1504135906 )  AvgTol   =  0.0004235230987  (  0.0004477161756 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 218  ( 218 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 218  ( 218 )   FreeWire = 77  ( 108 ) 
+TOLERANCE   : MaxTol   =   0.1504135906  (   0.1504135906 )  AvgTol   =  0.0004235230718  (  0.0004485369972 )
 LABELS      : N0Labels = 2  ( 2 )  N1Labels = 1279  ( 3474 )  N2Labels = 0  ( 0 )   TotalLabels = 1281  ( 3476 )   NameLabels = 1281  ( 1491 )   ColorLabels = 1280  ( 3475 )   LayerLabels = 284  ( 2422 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 4  ( 4 )

@@ -1,5 +1,4 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
-puts "TODO CR23096 ALL: NBSHAPES : Faulty" 
 puts "TODO CR23096 ALL: LABELS : Faulty" 
 
 
@@ -9,9 +8,9 @@ set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
 TPSTAT      : Faulties = 0  ( 0 )  Warnings = 345  ( 5241 )  Summary  = 345  ( 5241 )
 CHECKSHAPE  : Wires    = 8  ( 12 )  Faces    = 12  ( 12 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
-NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 5163  ( 5163 )   Summary  = 68372  ( 68420 )
-STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 5163  ( 5163 )   FreeWire = 10  ( 10 )   FreeEdge  = 283 ( 283 )   SharedEdge = 29053  ( 29079 )
-TOLERANCE   : MaxTol   =   0.9874083984  (   0.9875071265 )  AvgTol   =   0.01115263424  (   0.01115875402 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 5163  ( 5163 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 5163  ( 5163 )   FreeWire = 10  ( 10 ) 
+TOLERANCE   : MaxTol   =   0.9874083984  (   0.9875071265 )  AvgTol   =   0.01115263465  (   0.01115875316 )
 LABELS      : N0Labels = 5392  ( 5458 )  N1Labels = 18  ( 4483 )  N2Labels = 0  ( 0 )   TotalLabels = 5410  ( 9941 )   NameLabels = 5392  ( 5458 )   ColorLabels = 5391  ( 9875 )   LayerLabels = 5391  ( 9875 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 4  ( 4 )

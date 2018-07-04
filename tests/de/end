@@ -463,12 +463,11 @@ if { $mist < 1 } {
 	set check_check "CHECKSHAPE : Faulty" 
 	append todo_msg $todo_mask $check_check $end_line
     }
-    if { ($isIGES == 0 && $shpp_First > $shpp_Second) || 
-         ($isIGES == 1 && ($shpp_First - $co_First) > ($shpp_Second - $co_Second))} {
+	if { $so_First < $so_Second || $sh_First < $sh_Second || $fa_First < $fa_Second  } {
 	set nbsh_check "NBSHAPES : Faulty" 
 	append todo_msg $todo_mask $nbsh_check $end_line
     }
-    if { $sol_First < $sol_Second || $she_First < $she_Second || $fac_First < $fac_Second || $fwir_First < $fwir_Second || $fedg_First < $fedg_Second} {
+	if { $sol_First < $sol_Second || $she_First < $she_Second || $fac_First < $fac_Second || $fwir_First < $fwir_Second } {
 	set ststh_check "STATSHAPE : Faulty"
 	append todo_msg $todo_mask $ststh_check $end_line
     }
@@ -505,10 +504,10 @@ if { $mist != 1 } {
 	      $fal_Second $fal_First $war_Second $war_First $comp_Second $comp_First ] 
   append result [format "CHECKSHAPE  : Wires    = %s  ( %s )  Faces    = %s  ( %s )  Shells   = %s  ( %s )   Solids   = %s ( %s )\n" \
 	      $chwi_Second $chwi_First $chfa_Second $chfa_First $chsh_Second $chsh_First $chso_Second $chso_First ]
-  append result [format "NBSHAPES    : Solid    = %s  ( %s )  Shell    = %s  ( %s )  Face     = %s  ( %s )   Summary  = %s  ( %s )\n" \
-	      $so_Second $so_First $sh_Second $sh_First $fa_Second $fa_First $shpp_Second $shpp_First ]
-  append result [format "STATSHAPE   : Solid    = %s  ( %s )  Shell    = %s  ( %s )  Face     = %s  ( %s )   FreeWire = %s  ( %s )   FreeEdge  = %s ( %s )   SharedEdge = %s  ( %s )\n" \
-	      $sol_Second $sol_First $she_Second $she_First $fac_Second $fac_First $fwir_Second $fwir_First $fedg_Second $fedg_First $sedg_Second $sedg_First ] 
+  append result [format "NBSHAPES    : Solid    = %s  ( %s )  Shell    = %s  ( %s )  Face     = %s  ( %s ) \n" \
+	      $so_Second $so_First $sh_Second $sh_First $fa_Second $fa_First ]
+  append result [format "STATSHAPE   : Solid    = %s  ( %s )  Shell    = %s  ( %s )  Face     = %s  ( %s )   FreeWire = %s  ( %s ) \n" \
+	      $sol_Second $sol_First $she_Second $she_First $fac_Second $fac_First $fwir_Second $fwir_First ] 
   append result [format "TOLERANCE   : MaxTol   = %14.10g  ( %14.10g )  AvgTol   =  %14.10g  (  %14.10g )\n" \
 	      $MaxTol_Second $MaxTol_First $AvgTol_Second $AvgTol_First ]
   append result [format "LABELS      : N0Labels = %s  ( %s )  N1Labels = %s  ( %s )  N2Labels = %s  ( %s )   TotalLabels = %s  ( %s )   NameLabels = %s  ( %s )   ColorLabels = %s  ( %s )   LayerLabels = %s  ( %s )\n" \
@@ -579,22 +578,19 @@ if { $dump_file == 1 } {
     set fd_stream  [open $dirname/$groupname/$gridname/$casename w] 
     puts $fd_stream "# !!!! This file is generated automatically, do not edit manually! See end script"
     if { $todo_msg != "" } {
-        puts  $fd_stream $todo_msg 
-        puts $fd_stream ""
+	    set ind [string first "differences" $todo_msg 0]
+		if { $ind == -1 } {
+			puts  $fd_stream $todo_msg 
+			puts $fd_stream ""
+		}
     }
+	
     if {[info exist LinuxFaulties] && [llength $LinuxFaulties] != 0} {
         for {set i 0} { $i < [llength $LinuxFaulties] } { incr i } {
             puts $fd_stream "$Mandriva_todo_mask [lindex $LinuxFaulties $i] : Faulty $end_line"
         }
     }
-    if {[info exist LinuxDiff] && $LinuxDiff != 0} {
-        puts $fd_stream "$Mandriva_todo_mask Error : $LinuxDiff differences with reference data found :$end_line"
-    }
 
-    if {[info exist LinuxDiff] && $LinuxDiff != 0} {
-        puts $fd_stream "set LinuxDiff $LinuxDiff"
-        set LinuxDiff 0
-    }
     if {[info exist LinuxFaulties] && [llength $LinuxFaulties] != 0} {
         puts $fd_stream "set LinuxFaulties \{$LinuxFaulties\}"
         set LinuxFaulties {}

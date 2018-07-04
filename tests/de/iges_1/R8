@@ -1,17 +1,18 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: NBSHAPES : Faulty" 
 puts "TODO CR23096 ALL: STATSHAPE : Faulty" 
 puts "TODO CR23096 ALL: LABELS : Faulty" 
 
-set LinuxDiff 5
+
 set filename BUC60743.igs
 
 set ref_data {
 DATA        : Faulties = 0  ( 2 )  Warnings = 0  ( 0 )  Summary  = 0  ( 2 )
 TPSTAT      : Faulties = 3  ( 59 )  Warnings = 2206  ( 4736 )  Summary  = 2209  ( 4795 )
-CHECKSHAPE  : Wires    = 10  ( 18 )  Faces    = 8  ( 13 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
-NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 3350  ( 2837 )   Summary  = 45945  ( 39211 )
-STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 3350  ( 3349 )   FreeWire = 6  ( 6 )   FreeEdge  = 67 ( 67 )   SharedEdge = 19616  ( 16778 )
-TOLERANCE   : MaxTol   =    3.742696236  (    5.769095076 )  AvgTol   =   0.01622292522  (   0.01748590756 )
+CHECKSHAPE  : Wires    = 8  ( 18 )  Faces    = 7  ( 13 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 3350  ( 2837 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 3350  ( 3349 )   FreeWire = 6  ( 6 ) 
+TOLERANCE   : MaxTol   =    3.742696236  (    5.769095076 )  AvgTol   =   0.01622288473  (   0.01748586758 )
 LABELS      : N0Labels = 11  ( 11 )  N1Labels = 2891  ( 6329 )  N2Labels = 0  ( 0 )   TotalLabels = 2902  ( 6340 )   NameLabels = 2900  ( 5879 )   ColorLabels = 2891  ( 6329 )   LayerLabels = 2411  ( 5260 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 4  ( 4 )

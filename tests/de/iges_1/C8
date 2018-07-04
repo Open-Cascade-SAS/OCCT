@@ -2,12 +2,12 @@
 set filename CTS21866.igs
 
 set ref_data {
-DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 1 )  Summary  = 0  ( 1 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 82  ( 85 )  Summary  = 82  ( 85 )
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 11531 )  Summary  = 0  ( 11531 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 89  ( 91 )  Summary  = 89  ( 91 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
-NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 1459  ( 1459 )   Summary  = 19160  ( 19160 )
-STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 1459  ( 1459 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 8093  ( 8093 )
-TOLERANCE   : MaxTol   =   0.9346509485  (   0.9346509437 )  AvgTol   =   0.02356731391  (   0.02356733517 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 1459  ( 1459 ) 
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 1459  ( 1459 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   =   0.9346509485  (   0.9346509437 )  AvgTol   =   0.02356720346  (   0.02356775059 )
 LABELS      : N0Labels = 1459  ( 1459 )  N1Labels = 0  ( 0 )  N2Labels = 0  ( 0 )   TotalLabels = 1459  ( 1459 )   NameLabels = 1459  ( 1459 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 0  ( 0 )

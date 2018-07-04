@@ -1,17 +1,19 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
 puts "TODO CR23096 ALL:  Update of 3D-Parameters has failed" 
 puts "TODO CR23096 ALL: CHECKSHAPE : Faulty" 
+puts "TODO CR23096 ALL: NBSHAPES : Faulty" 
 puts "TODO CR23096 ALL: STATSHAPE : Faulty" 
+
 
 set filename Z8M6SAT.stp
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 940  ( 3170 )  Summary  = 940  ( 3170 )
-CHECKSHAPE  : Wires    = 45  ( 44 )  Faces    = 46  ( 42 )  Shells   = 0  ( 2 )   Solids   = 0 ( 0 )
-NBSHAPES    : Solid    = 28  ( 28 )  Shell    = 768  ( 30 )  Face     = 3240  ( 3239 )   Summary  = 29368  ( 28620 )
-STATSHAPE   : Solid    = 28  ( 28 )  Shell    = 768  ( 30 )  Face     = 3240  ( 3239 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 12582  ( 12573 )
-TOLERANCE   : MaxTol   =    15.00300076  (    20.46526799 )  AvgTol   =   0.02248945623  (   0.03724082116 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 922  ( 3168 )  Summary  = 922  ( 3168 )
+CHECKSHAPE  : Wires    = 45  ( 42 )  Faces    = 46  ( 40 )  Shells   = 0  ( 2 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 28  ( 28 )  Shell    = 768  ( 30 )  Face     = 3240  ( 3239 ) 
+STATSHAPE   : Solid    = 28  ( 28 )  Shell    = 768  ( 30 )  Face     = 3240  ( 3239 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   =    15.00151489  (    20.46526799 )  AvgTol   =   0.02219114253  (   0.03611458186 )
 LABELS      : N0Labels = 3  ( 3 )  N1Labels = 2  ( 2 )  N2Labels = 0  ( 0 )   TotalLabels = 5  ( 5 )   NameLabels = 5  ( 5 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 0  ( 0 )
