@@ -42,8 +42,8 @@ static void ComputeTrsf3d(const Handle(TheWLine)& theline,
   const Standard_Integer aNbPnts = theline->NbPnts();
   Standard_Real aXmin = RealLast(), aYmin = RealLast(), aZmin = RealLast();
   for(Standard_Integer i=1;i<=aNbPnts;i++)
-  { 
-    const gp_Pnt& P = theline->Point(i).Value();
+  {
+    const gp_Pnt P = theline->Point(i).Value();
     aXmin = Min(P.X(), aXmin);
     aYmin = Min(P.Y(), aYmin);
     aZmin = Min(P.Z(), aZmin);
@@ -75,8 +75,8 @@ static void ComputeTrsf2d(const Handle(TheWLine)& theline,
     pfunc = &IntSurf_PntOn2S::ParametersOnS2;
   
   for(Standard_Integer i=1; i<=aNbPnts; i++)
-  { 
-    const IntSurf_PntOn2S&  POn2S = theline->Point(i);
+  {
+    const IntSurf_PntOn2S POn2S = theline->Point(i);
     Standard_Real  U,V;
     (POn2S.*pfunc)(U,V);
     aUmin = Min(U, aUmin);

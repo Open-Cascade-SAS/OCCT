@@ -156,9 +156,9 @@ Standard_Integer ApproxInt_MultiLine::NbP2d() const {
 }
 //================================================================================
 void ApproxInt_MultiLine::Value(const Standard_Integer  Index,
-                                TColgp_Array1OfPnt&     TabPnt)  const 
-{ 
-  const gp_Pnt& aP = myLine->Point(Index).Value();
+                                TColgp_Array1OfPnt&     TabPnt)  const
+{
+  const gp_Pnt aP = myLine->Point(Index).Value();
   TabPnt(1).SetCoord(aP.X()+Xo, aP.Y()+Yo, aP.Z()+Zo);
 }
 
