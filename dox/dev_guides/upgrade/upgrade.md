@@ -1124,7 +1124,7 @@ The following classes have been changed:
 * *BRepTools_Modifier* class now has two modes of work. They are defined by the boolean parameter *MutableInput*, which is turned off by default. This means that the algorithm always makes a copy of a sub-shape (e.g. vertex) if its tolerance is to be increased in the output shape. The old mode corresponds to *MutableInput* turned on. This change may impact an application if it implements a class derived from *BRepTools_Modifier*.
 * The second parameter *theIsOuterWire* of method *ShapeAnalysis_Wire::CheckSmallArea* has been removed.
 * In class *GeomPlate_CurveConstraint*, two constructors taking boundary curves of different types have been replaced with one constructor taking the curve of an abstract type.
-*  The last optional argument *RemoveInvalidFaces* has been removed from the constructor of class  *BRepOffset_MakeOffset* and method *Initialize*.
+* The last optional argument *RemoveInvalidFaces* has been removed from the constructor of class  *BRepOffset_MakeOffset* and method *Initialize*.
 * The public method *BOPDS_DS::VerticesOnIn* has been renamed into *SubShapesOnIn* and the new output parameter *theCommonPB* has been added.
 
 @section upgrade_occt720 Upgrade to OCCT 7.2.0
@@ -1601,10 +1601,10 @@ Since OCCT 7.4.0 exception is thrown on the attempt of taking points in case of 
 
 Previously deprecated Local Context functionality has been removed from AIS package,
 so that related methods have been removed from AIS_InteractiveContext interface:
-::HasOpenedContext(), ::HighestIndex(), ::LocalContext(), ::LocalSelector(), ::OpenLocalContext(), ::CloseLocalContext(),
-::IndexOfCurrentLocal(), ::CloseAllContexts(), ::ResetOriginalState(), ::ClearLocalContext(), ::UseDisplayedObjects(), ::NotUseDisplayedObjects(),
-::SetShapeDecomposition(), ::SetTemporaryAttributes(), ::ActivateStandardMode(), ::DeactivateStandardMode(), ::KeepTemporary(),
-::SubIntensityOn(), ::SubIntensityOff(), ::ActivatedStandardModes(), ::IsInLocal() ::AddOrRemoveSelected() taking TopoDS_Shape.
+*HasOpenedContext()*, *HighestIndex()*, *LocalContext()*, *LocalSelector()*, *OpenLocalContext()*, *CloseLocalContext()*,
+*IndexOfCurrentLocal()*, *CloseAllContexts()*, *ResetOriginalState()*, *ClearLocalContext()*, *UseDisplayedObjects()*, *NotUseDisplayedObjects()*,
+*SetShapeDecomposition()*, *SetTemporaryAttributes()*, *ActivateStandardMode()*, *DeactivateStandardMode()*, *KeepTemporary()*,
+*SubIntensityOn()*, *SubIntensityOff()*, *ActivatedStandardModes()*, *IsInLocal()*, *AddOrRemoveSelected()* taking TopoDS_Shape.
 
 A set of deprecated methods previously related to Local Context and now redirecting to other methods has been preserved to simplify porting; they will be removed in next release.
 
