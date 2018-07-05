@@ -782,6 +782,21 @@ public:
   //! idem than WindowFit
   Standard_EXPORT void WindowFitAll (const Standard_Integer Xmin, const Standard_Integer Ymin, const Standard_Integer Xmax, const Standard_Integer Ymax);
 
+  //! Transform camera eye, center and scale to fit in the passed bounding box specified in WCS.
+  //! @param theCamera [in] the camera
+  //! @param theBox    [in] the bounding box
+  //! @param theMargin [in] the margin coefficient for view borders
+  //! @param theResolution [in] the minimum size of projection of bounding box in Xv or Yv direction when it considered to be a thin plane or point (without a volume);
+  //!                           in this case only the center of camera is adjusted
+  //! @param theToEnlargeIfLine [in] when TRUE - in cases when the whole bounding box projected into thin line going along Z-axis of screen,
+  //!                                the view plane is enlarged such thatwe see the whole line on rotation, otherwise only the center of camera is adjusted.
+  //! @return TRUE if the fit all operation can be done
+  Standard_EXPORT Standard_Boolean FitMinMax (const Handle(Graphic3d_Camera)& theCamera,
+                                              const Bnd_Box& theBox,
+                                              const Standard_Real theMargin,
+                                              const Standard_Real theResolution = 0.0,
+                                              const Standard_Boolean theToEnlargeIfLine = Standard_True) const;
+
   //! Defines or Updates the definition of the
   //! grid in <me>
   Standard_EXPORT void SetGrid (const gp_Ax3& aPlane, const Handle(Aspect_Grid)& aGrid);
@@ -897,25 +912,6 @@ public:
   //! Turn on/off automatic culling of objects outside frustrum (ON by default)
   Standard_EXPORT void SetFrustumCulling (const Standard_Boolean theMode);
 
-friend   
-  //! Activates all of the views of a viewer attached
-  //! to a window.
-  Standard_EXPORT void V3d_Viewer::SetViewOn();
-friend   
-  //! Activates a particular view in the Viewer .
-  //! Must be call if the Window attached to the view
-  //! has been Deiconified .
-  Standard_EXPORT void V3d_Viewer::SetViewOn (const Handle(V3d_View)& View);
-friend   
-  //! Deactivates all the views of a Viewer
-  //! attached to a window.
-  Standard_EXPORT void V3d_Viewer::SetViewOff();
-friend   
-  //! Deactivates a particular view in the Viewer.
-  //! Must be call if the Window attached to the view
-  //! has been Iconified .
-  Standard_EXPORT void V3d_Viewer::SetViewOff (const Handle(V3d_View)& View);
-
   //! Fill in the dictionary with diagnostic info.
   //! Should be called within rendering thread.
   //!
@@ -933,23 +929,6 @@ friend
 protected:
 
   Standard_EXPORT void ImmediateUpdate() const;
-
-  //! Transform camera eye, center and scale to fit in the
-  //! passed bounding box specified in WCS.
-  //! @param theCamera [in] the camera.
-  //! @param theBox [in] the bounding box.
-  //! @param theMargin [in] the margin coefficient for view borders.
-  //! @param theResolution [in] the minimum size of projection of
-  //! bounding box in Xv or Yv direction when it considered to
-  //! be a thin plane or point (without a volume).
-  //! In this case only the center of camera is adjusted.
-  //! @param theToEnlargeIfLine [in] if passed TRUE - in cases when the
-  //! whole bounding box projected into thin line going along
-  //! Z-axis of screen, the view plane is enlarged such that
-  //! we see the whole line on rotation, otherwise only the
-  //! center of camera is adjusted.
-  //! @return TRUE if the fit all operation can be done.
-  Standard_EXPORT Standard_Boolean FitMinMax (const Handle(Graphic3d_Camera)& theCamera, const Bnd_Box& theBox, const Standard_Real theMargin, const Standard_Real theResolution = 0.0, const Standard_Boolean theToEnlargeIfLine = Standard_True) const;
 
   //! Scales camera to fit the view frame of defined width and height
   //! keeping the aspect. For orthogonal camera the method changes scale,
