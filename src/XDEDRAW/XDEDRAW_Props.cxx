@@ -898,6 +898,97 @@ static Standard_Integer SetMaterial (Draw_Interpretor& di, Standard_Integer argc
   return 0;
 }
 
+static Standard_Integer GetValidationProps(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+{
+  if (argc< 2) {
+    di<<"Use: "<<argv[0]<<" Doc {Label|Shape}\n";
+    return 1;
+  }
+  Handle(TDocStd_Document) Doc;   
+  DDocStd::GetDocument(argv[1], Doc);
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
+  Handle(XCAFDoc_ShapeTool) STool = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
+  TDF_LabelSequence aLabels;
+  if( argc == 2)
+    STool->GetShapes (aLabels);
+  else
+  {
+    TDF_Label aLabel;
+    TopoDS_Shape aShape = DBRep::Get(argv[2]);
+    if( aShape.IsNull())
+    {
+      TDF_Label aLabel;
+      TDF_Tool::Label(Doc->GetData(), argv[2], aLabel);
+    }
+    else
+    {
+      aLabel = STool->FindShape(aShape);
+    }
+    if( !aLabel.IsNull())
+      aLabels.Append(aLabel);
+  }
+   
+  
+  enum
+  {
+    Vol =0,
+    Area = 1,
+    Centroid = 2
+  };
+  Standard_Integer nbProps[3];
+  Standard_Integer j =0;
+  for( ; j <= Centroid; j++)
+    nbProps[j] = 0;
+  Standard_Integer i = 1;
+  for( ; i <= aLabels.Length() ; i++)
+  {
+    TDF_Label aLabel = aLabels(i);
+    
+    Standard_Real aProp[2];
+    
+    aProp[0] = 0.;
+    aProp[1] = 0.;
+    
+
+    gp_Pnt aP(Precision::Infinite(), Precision::Infinite(), Precision::Infinite());
+    XCAFDoc_Volume::Get(aLabel, aProp[Vol]);
+    XCAFDoc_Area::Get(aLabel, aProp[Area]);
+
+    Handle(XCAFDoc_Centroid) aCentroid = new (XCAFDoc_Centroid);
+    if (aLabel.FindAttribute (XCAFDoc_Centroid::GetID(), aCentroid)) 
+      XCAFDoc_Centroid::Get(aLabel, aP);
+        
+    if(aProp[Vol] > 0 || aProp[Area] > 0 || !Precision::IsInfinite(aP.X()) )
+    {
+      TCollection_AsciiString str;
+      TDF_Tool::Entry ( aLabel, str );
+      di<<"Label : "<<str;
+      
+      for(j = 0 ; j <= Area; j++)
+      {
+        if( aProp[j] > 0)
+        {
+          di<<(j == Vol ? "; Volume - " : "; Area - ")<<aProp[j];
+          nbProps[j]++;
+        }
+      }
+
+      if( !Precision::IsInfinite(aP.X()) )
+      {      
+        di<< "; Centroid -  "<< aP.X()<<" "<<aP.Y()<<" "<<aP.Z();
+        nbProps[Centroid]++;
+      }
+       di<<"\n";
+    }
+  }
+  di<<"========================================================="<<"\n";
+  di<< "Number of the validation properties : ";
+  for( i = Vol; i <= Centroid; i++)
+    di<< ( i == Vol ? "Volume" : (i == Area ? "Area" : "Centroid"))<<" : "<<nbProps[i]<<" ; "; 
+    
+  di<<"\n";
+  return 0;
+}
 
 //=======================================================================
 //function : InitCommands
@@ -944,5 +1035,6 @@ void XDEDRAW_Props::InitCommands(Draw_Interpretor& di)
 		   __FILE__,ShapeMassProps , g);
   di.Add ("XSetMaterial","Doc {Label|Shape} name density(g/cu sm) \t: Set material to shape given by Label",
 		   __FILE__, SetMaterial, g);
-
+  di.Add ("XGetValProps","Doc {Label|Shape}",__FILE__, GetValidationProps, g);
+ 
 }

@@ -57,6 +57,7 @@
 #include <StepShape_ShapeRepresentation.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <TopLoc_Location.hxx>
+#include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
 #include <Transfer_Binder.hxx>
 #include <Transfer_SimpleBinderOfTransient.hxx>
@@ -338,7 +339,7 @@ Standard_Boolean STEPConstruct_ValidationProps::AddProp (const StepRepr_Characte
 {
   // FINALLY, create a structure of 5 entities describing a link between a shape and its property
   Handle(TCollection_HAsciiString) PropDefName = 
-    new TCollection_HAsciiString ( "geometric_validation_property" );
+    new TCollection_HAsciiString ( "geometric validation property" );
   Handle(TCollection_HAsciiString) PropDefDescr = new TCollection_HAsciiString ( Descr );
   Handle(StepRepr_PropertyDefinition) propdef = new StepRepr_PropertyDefinition;
   propdef->Init ( PropDefName, Standard_True, PropDefDescr, target );
@@ -493,11 +494,20 @@ Standard_Boolean STEPConstruct_ValidationProps::LoadProps (TColStd_SequenceOfTra
     Handle(StepRepr_PropertyDefinitionRepresentation) PDR = 
       Handle(StepRepr_PropertyDefinitionRepresentation)::DownCast ( enti );
     
-    // check that PDR is for validation props
+    // Check that PDR is for validation props.
     Handle(StepRepr_PropertyDefinition) PD = PDR->Definition().PropertyDefinition();
-    if ( PD.IsNull() || PD->Name().IsNull() 
-         || PD->Name()->String() != "geometric_validation_property" ) 
-      continue;
+    if (!PD.IsNull() && !PD->Name().IsNull())
+    {
+      // Note: according to "Recommended Practices for Geometric and Assembly Validation Properties" Release 4.4
+      // as of Augist 17, 2016, item 4.6, the name of PropertyDefinition should be "geometric validation property"
+      // with words separated by spaces; however older versions of the same RP document used underscores.
+      // To be able to read files written using older convention, we convert all underscores to spaces for this check.
+      TCollection_AsciiString aName = PD->Name()->String();
+      aName.ChangeAll('_', ' ', Standard_False);
+      aName.LowerCase();
+      if (aName != "geometric validation property")
+        continue;
+    }
 
     seq.Append ( PDR );
   }
