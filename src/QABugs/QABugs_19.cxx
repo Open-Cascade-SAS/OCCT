@@ -39,6 +39,7 @@
 #include <OSD_Parallel.hxx>
 #include <OSD_PerfMeter.hxx>
 #include <OSD_Timer.hxx>
+#include <OSD_ThreadPool.hxx>
 #include <Precision.hxx>
 #include <Prs3d_ShadingAspect.hxx>
 #include <Prs3d_Text.hxx>
@@ -55,9 +56,16 @@
 #include <TDataStd_Real.hxx>
 #include <Standard_Atomic.hxx>
 
+#ifdef HAVE_TBB
+  #include <tbb/parallel_for.h>
+  #include <tbb/parallel_for_each.h>
+  #include <tbb/blocked_range.h>
+#endif
+
 #include <cstdio>
 #include <cmath>
 #include <iostream>
+#include <random>
 
 #define QCOMPARE(val1, val2) \
   di << "Checking " #val1 " == " #val2 << \
@@ -2512,19 +2520,25 @@ static Standard_Integer OCC25340 (Draw_Interpretor& /*theDI*/,
 class ParallelTest_Saxpy
 {
 public:
-  typedef NCollection_Array1<Standard_Real> Vector;
-
   //! Constructor
-  ParallelTest_Saxpy(const Vector& theX, Vector& theY, Standard_Real theScalar)
-  : myX(theX),
-    myY(theY),
-    myScalar(theScalar)
+  ParallelTest_Saxpy (const NCollection_Array1<Standard_Real>& theX,
+                      NCollection_Array1<Standard_Real>& theY,
+                      Standard_Real theScalar)
+  : myX (theX), myY (theY), myScalar (theScalar) {}
+
+  int Begin() const { return 0; }
+  int End()   const { return myX.Size(); }
+
+  //! Dummy calculation
+  void operator() (Standard_Integer theIndex) const
   {
+    myY(theIndex) = myScalar * myX(theIndex) + myY(theIndex);
   }
 
   //! Dummy calculation
-  void operator() (const Standard_Integer theIndex) const
+  void operator() (Standard_Integer theThreadIndex, Standard_Integer theIndex) const
   {
+    (void )theThreadIndex;
     myY(theIndex) = myScalar * myX(theIndex) + myY(theIndex);
   }
 
@@ -2532,18 +2546,51 @@ private:
   ParallelTest_Saxpy( const ParallelTest_Saxpy& );
   ParallelTest_Saxpy& operator =( ParallelTest_Saxpy& );
 
-private:
-  const Vector&       myX;
-  Vector&             myY;
+protected:
+  const NCollection_Array1<Standard_Real>& myX;
+  NCollection_Array1<Standard_Real>& myY;
   const Standard_Real myScalar;
+};
+
+class ParallelTest_SaxpyBatch : private ParallelTest_Saxpy
+{
+public:
+  static const Standard_Integer THE_BATCH_SIZE = 10000000;
+
+  ParallelTest_SaxpyBatch (const NCollection_Array1<Standard_Real>& theX,
+                           NCollection_Array1<Standard_Real>& theY,
+                           Standard_Real theScalar)
+  : ParallelTest_Saxpy (theX, theY, theScalar),
+    myNbBatches ((int )Ceiling ((double )theX.Size() / THE_BATCH_SIZE)) {}
+
+  int Begin() const { return 0; }
+  int End()   const { return myNbBatches; }
+
+  void operator() (int theBatchIndex) const
+  {
+    const int aLower  = theBatchIndex * THE_BATCH_SIZE;
+    const int anUpper = Min (aLower + THE_BATCH_SIZE - 1, myX.Upper());
+    for (int i = aLower; i <= anUpper; ++i)
+    {
+      myY(i) = myScalar * myX(i) + myY(i);
+    }
+  }
+
+  void operator() (int theThreadIndex, int theBatchIndex) const
+  {
+    (void )theThreadIndex;
+    (*this)(theBatchIndex);
+  }
+private:
+  int myNbBatches;
 };
 
 //---------------------------------------------------------------------
 static Standard_Integer OCC24826(Draw_Interpretor& theDI,
-                                 Standard_Integer  trheArgc,
+                                 Standard_Integer  theArgc,
                                  const char**      theArgv)
 {
-  if ( trheArgc != 2 )
+  if ( theArgc != 2 )
   {
     theDI << "Usage: "
           << theArgv[0]
@@ -2556,38 +2603,240 @@ static Standard_Integer OCC24826(Draw_Interpretor& theDI,
 
   NCollection_Array1<Standard_Real> aX (0, aLength - 1);
   NCollection_Array1<Standard_Real> anY(0, aLength - 1);
-
   for ( Standard_Integer i = 0; i < aLength; ++i )
   {
     aX(i) = anY(i) = (Standard_Real) i;
   }
 
-  OSD_Timer aTimer;
-
-  aTimer.Start();
-
-  //! Serial proccesing
-  for ( Standard_Integer i = 0; i < aLength; ++i )
+  //! Serial processing
+  NCollection_Array1<Standard_Real> anY1 = anY;
+  Standard_Real aTimeSeq = 0.0;
   {
-    anY(i) = 1e-6 * aX(i) + anY(i);
+    OSD_Timer aTimer;
+    aTimer.Start();
+    const ParallelTest_Saxpy aFunctor (aX, anY1, 1e-6);
+    for (Standard_Integer i = 0; i < aLength; ++i)
+    {
+      aFunctor(i);
+    }
+
+    aTimer.Stop();
+    std::cout << "  Processing time (sequential mode): 1x [reference]\n";
+    aTimeSeq = aTimer.ElapsedTime();
+    aTimer.Show (std::cout);
   }
 
-  aTimer.Stop();
-  cout << "Processing time (sequential mode):\n";
-  aTimer.Show();
+  // Parallel processing
+  for (Standard_Integer aMode = 0; aMode <= 4; ++aMode)
+  {
+    NCollection_Array1<Standard_Real> anY2 = anY;
+    OSD_Timer aTimer;
+    aTimer.Start();
+    const char* aModeDesc = NULL;
+    const ParallelTest_Saxpy      aFunctor1 (aX, anY2, 1e-6);
+    const ParallelTest_SaxpyBatch aFunctor2 (aX, anY2, 1e-6);
+    switch (aMode)
+    {
+      case 0:
+      {
+        aModeDesc = "OSD_Parallel::For()";
+        OSD_Parallel::For (aFunctor1.Begin(), aFunctor1.End(), aFunctor1);
+        break;
+      }
+      case 1:
+      {
+        aModeDesc = "OSD_ThreadPool::Launcher";
+        OSD_ThreadPool::Launcher aLauncher (*OSD_ThreadPool::DefaultPool());
+        aLauncher.Perform (aFunctor1.Begin(), aFunctor1.End(), aFunctor1);
+        break;
+      }
+      case 2:
+      {
+        aModeDesc = "OSD_Parallel::Batched()";
+        OSD_Parallel::For (aFunctor2.Begin(), aFunctor2.End(), aFunctor2);
+        break;
+      }
+      case 3:
+      {
+        aModeDesc = "OSD_ThreadPool::Launcher, Batched";
+        OSD_ThreadPool::Launcher aLauncher (*OSD_ThreadPool::DefaultPool());
+        aLauncher.Perform (aFunctor2.Begin(), aFunctor2.End(), aFunctor2);
+        break;
+      }
+      case 4:
+      {
+    #ifdef HAVE_TBB
+        aModeDesc = "tbb::parallel_for";
+        tbb::parallel_for (aFunctor1.Begin(), aFunctor1.End(), aFunctor1);
+        break;
+    #else
+        continue;
+    #endif
+      }
+    }
+    aTimer.Stop();
+    std::cout << "  " << aModeDesc << ": "
+              << aTimeSeq / aTimer.ElapsedTime() << "x " << (aTimer.ElapsedTime() < aTimeSeq ? "[boost]" : "[slow-down]") << "\n";
+    aTimer.Show (std::cout);
 
-  const ParallelTest_Saxpy aFunctor(aX, anY, 1e-6);
+    for (Standard_Integer i = 0; i < aLength; ++i)
+    {
+      if (anY2(i) != anY1(i))
+      {
+        std::cerr << "Error: Parallel algorithm produced invalid result!\n";
+        break;
+      }
+    }
+  }
+  return 0;
+}
 
-  aTimer.Reset();
-  aTimer.Start();
+//! Initializes the given square matrix with values that are generated by the given generator function.
+template<class GeneratorT> void initRandMatrix (NCollection_Array2<double>& theMat, GeneratorT& theGen)
+{
+  for (int i = theMat.LowerRow(); i <= theMat.UpperRow(); ++i)
+  {
+    for (int j = theMat.LowerCol(); j <= theMat.UpperCol(); ++j)
+    {
+      theMat(i, j) = static_cast<double>(theGen());
+    }
+  }
+}
+
+//! Compute the product of two square matrices in parallel.
+class ParallelTest_MatMult
+{
+public:
+  ParallelTest_MatMult (const NCollection_Array2<double>& theMat1,
+                        const NCollection_Array2<double>& theMat2,
+                        NCollection_Array2<double>& theResult, int theSize)
+  : myMat1 (theMat1), myMat2 (theMat2), myResult (theResult), mySize (theSize) {}
+
+  int Begin() const { return 0; }
+  int End()   const { return mySize; }
+
+  void operator() (int theIndex) const
+  {
+    for (int j = 0; j < mySize; ++j)
+    {
+      double aTmp = 0;
+      for (int k = 0; k < mySize; ++k)
+      {
+        aTmp += myMat1(theIndex, k) * myMat2(k, j);
+      }
+      myResult(theIndex, j) = aTmp;
+    }
+  }
+
+  void operator() (int theThreadIndex, int theIndex) const
+  {
+    (void )theThreadIndex;
+    (*this)(theIndex);
+  }
+
+private:
+  ParallelTest_MatMult (const ParallelTest_MatMult& );
+  ParallelTest_MatMult& operator= (ParallelTest_MatMult& );
+
+protected:
+  const NCollection_Array2<double>& myMat1;
+  const NCollection_Array2<double>& myMat2;
+  NCollection_Array2<double>& myResult;
+  int mySize;
+};
+
+//---------------------------------------------------------------------
+static Standard_Integer OCC29935(Draw_Interpretor& ,
+                                 Standard_Integer  theArgc,
+                                 const char**      theArgv)
+{
+  if (theArgc != 2)
+  {
+    std::cout << "Syntax error: wrong number of arguments\n";
+    return 1;
+  }
+
+  // Generate data;
+  Standard_Integer aSize = Draw::Atoi (theArgv[1]);
+
+  opencascade::std::mt19937 aGen (42);
+  NCollection_Array2<double> aMat1     (0, aSize - 1, 0, aSize - 1);
+  NCollection_Array2<double> aMat2     (0, aSize - 1, 0, aSize - 1);
+  NCollection_Array2<double> aMatResRef(0, aSize - 1, 0, aSize - 1);
+  NCollection_Array2<double> aMatRes   (0, aSize - 1, 0, aSize - 1);
+  initRandMatrix (aMat1, aGen);
+  initRandMatrix (aMat2, aGen);
+
+  //! Serial processing
+  Standard_Real aTimeSeq = 0.0;
+  {
+    OSD_Timer aTimer;
+    aTimer.Start();
+    ParallelTest_MatMult aFunctor (aMat1, aMat2, aMatResRef, aSize);
+    for (int i = aFunctor.Begin(); i < aFunctor.End(); ++i)
+    {
+      aFunctor(i);
+    }
+
+    aTimer.Stop();
+    std::cout << "  Processing time (sequential mode): 1x [reference]\n";
+    aTimeSeq = aTimer.ElapsedTime();
+    aTimer.Show (std::cout);
+  }
 
   // Parallel processing
-  OSD_Parallel::For(0, aLength, aFunctor);
+  for (Standard_Integer aMode = 0; aMode <= 2; ++aMode)
+  {
+    aMatRes.Init (0.0);
 
-  aTimer.Stop();
-  cout << "Processing time (parallel mode):\n";
-  aTimer.Show();
+    OSD_Timer aTimer;
+    aTimer.Start();
+    const char* aModeDesc = NULL;
+    ParallelTest_MatMult aFunctor1 (aMat1, aMat2, aMatRes, aSize);
+    switch (aMode)
+    {
+      case 0:
+      {
+        aModeDesc = "OSD_Parallel::For()";
+        OSD_Parallel::For (aFunctor1.Begin(), aFunctor1.End(), aFunctor1);
+        break;
+      }
+      case 1:
+      {
+        aModeDesc = "OSD_ThreadPool::Launcher";
+        OSD_ThreadPool::Launcher aLauncher (*OSD_ThreadPool::DefaultPool());
+        aLauncher.Perform (aFunctor1.Begin(), aFunctor1.End(), aFunctor1);
+        break;
+      }
+      case 2:
+      {
+    #ifdef HAVE_TBB
+        aModeDesc = "tbb::parallel_for";
+        tbb::parallel_for (aFunctor1.Begin(), aFunctor1.End(), aFunctor1);
+        break;
+    #else
+        continue;
+    #endif
+      }
+    }
+    aTimer.Stop();
+    std::cout << "  " << aModeDesc << ": "
+              << aTimeSeq / aTimer.ElapsedTime() << "x " << (aTimer.ElapsedTime() < aTimeSeq ? "[boost]" : "[slow-down]") << "\n";
+    aTimer.Show (std::cout);
 
+    for (int i = 0; i < aSize; ++i)
+    {
+      for (int j = 0; j < aSize; ++j)
+      {
+        if (aMatRes(i, j) != aMatResRef(i, j))
+        {
+          std::cerr << "Error: Parallel algorithm produced invalid result!\n";
+          i = aSize;
+          break;
+        }
+      }
+    }
+  }
   return 0;
 }
 
@@ -5160,7 +5409,8 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
                    "\nOCAF persistence without setting environment variables",
                    __FILE__, OCC24925, group);
   theCommands.Add ("OCC25043", "OCC25043 shape", __FILE__, OCC25043, group);
-  theCommands.Add ("OCC24826,", "This test performs simple saxpy test.\n Usage: OCC24826 length", __FILE__, OCC24826, group);
+  theCommands.Add ("OCC24826,", "This test performs simple saxpy test using multiple threads.\n Usage: OCC24826 length", __FILE__, OCC24826, group);
+  theCommands.Add ("OCC29935,", "This test performs product of two square matrices using multiple threads.\n Usage: OCC29935 size", __FILE__, OCC29935, group);
   theCommands.Add ("OCC24606", "OCC24606 : Tests ::FitAll for V3d view ('vfit' is for NIS view)", __FILE__, OCC24606, group);
   theCommands.Add ("OCC25202", "OCC25202 res shape numF1 face1 numF2 face2", __FILE__, OCC25202, group);
   theCommands.Add ("OCC7570", "OCC7570 shape", __FILE__, OCC7570, group);

@@ -104,7 +104,10 @@ public:
   //! user's code. Refer to Foundation Classes User's Guide for further details.
   //!
   Standard_EXPORT static void SetSignal (const Standard_Boolean theFloatingSignal = Standard_True);
-  
+
+  //! Return floating signal catching value previously set by SetSignal().
+  Standard_EXPORT static Standard_Boolean ToCatchFloatingSignals();
+
   //! Commands the process to sleep for a number of seconds.
   Standard_EXPORT static void SecSleep (const Standard_Integer aDelay);
   

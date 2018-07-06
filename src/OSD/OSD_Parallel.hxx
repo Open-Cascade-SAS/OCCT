@@ -254,9 +254,11 @@ private:
   //! @param theEnd     the last  index (exclusive)
   //! @param theFunctor functor providing an interface "void operator(InputIterator theIter){}" 
   //!                   performing task for the specified iterator position
+  //! @param theNbItems number of items passed by iterator, -1 if unknown
   Standard_EXPORT static void forEach (UniversalIterator& theBegin,
                                        UniversalIterator& theEnd,
-                                       const FunctorInterface& theFunctor);
+                                       const FunctorInterface& theFunctor,
+                                       Standard_Integer theNbItems);
 
 public: //! @name public methods
 
@@ -274,13 +276,15 @@ public: //! @name public methods
   //! @param theFunctor functor providing an interface "void operator(InputIterator theIter){}" 
   //!                   performing task for specified iterator position
   //! @param isForceSingleThreadExecution if true, then no threads will be created
+  //! @param theNbItems number of items passed by iterator, -1 if unknown
   template <typename InputIterator, typename Functor>
   static void ForEach(InputIterator          theBegin,
                       InputIterator          theEnd,
                       const Functor&         theFunctor,
-                      const Standard_Boolean isForceSingleThreadExecution = Standard_False)
+                      const Standard_Boolean isForceSingleThreadExecution = Standard_False,
+                      Standard_Integer theNbItems = -1)
   {
-    if (isForceSingleThreadExecution)
+    if (isForceSingleThreadExecution || theNbItems == 1)
     {
       for (InputIterator it(theBegin); it != theEnd; ++it)
         theFunctor(*it);
@@ -290,7 +294,7 @@ public: //! @name public methods
       UniversalIterator aBegin(new IteratorWrapper<InputIterator>(theBegin));
       UniversalIterator aEnd  (new IteratorWrapper<InputIterator>(theEnd));
       FunctorWrapperIter<InputIterator,Functor> aFunctor (theFunctor);
-      forEach(aBegin, aEnd, aFunctor);
+      forEach(aBegin, aEnd, aFunctor, theNbItems);
     }
   }
 
@@ -311,7 +315,7 @@ public: //! @name public methods
                   const Functor&         theFunctor,
                   const Standard_Boolean isForceSingleThreadExecution = Standard_False)
   {
-    if (isForceSingleThreadExecution)
+    if (isForceSingleThreadExecution || (theEnd - theBegin) == 1)
     {
       for (Standard_Integer it (theBegin); it != theEnd; ++it)
         theFunctor(it);
@@ -321,7 +325,7 @@ public: //! @name public methods
       UniversalIterator aBegin(new IteratorWrapper<Standard_Integer>(theBegin));
       UniversalIterator aEnd  (new IteratorWrapper<Standard_Integer>(theEnd));
       FunctorWrapperInt<Functor> aFunctor (theFunctor);
-      forEach(aBegin, aEnd, aFunctor);
+      forEach(aBegin, aEnd, aFunctor, theEnd - theBegin);
     }
   }
 

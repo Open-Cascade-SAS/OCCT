@@ -234,7 +234,7 @@ void BRepMesh_IncrementalMesh::update()
     update(aFaceIt.Value());
 
   // Mesh faces
-  OSD_Parallel::ForEach(myFaces.begin(), myFaces.end(), *myMesh, !myParameters.InParallel);
+  OSD_Parallel::ForEach(myFaces.begin(), myFaces.end(), *myMesh, !myParameters.InParallel, myFaces.Size());
 
   commit();
   clear();

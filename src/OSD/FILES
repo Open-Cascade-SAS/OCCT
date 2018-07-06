@@ -85,6 +85,8 @@ OSD_SingleProtection.hxx
 OSD_SysType.hxx
 OSD_Thread.cxx
 OSD_Thread.hxx
+OSD_ThreadPool.cxx
+OSD_ThreadPool.hxx
 OSD_ThreadFunction.hxx
 OSD_Timer.cxx
 OSD_Timer.hxx

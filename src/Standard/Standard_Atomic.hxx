@@ -35,6 +35,14 @@ inline int Standard_Atomic_Increment (volatile int* theValue);
 //! and returns resulting decremented value.
 inline int Standard_Atomic_Decrement (volatile int* theValue);
 
+//! Perform an atomic compare and swap.
+//! That is, if the current value of *theValue is theOldValue, then write theNewValue into *theValue.
+//! @param theValue    pointer to variable to modify
+//! @param theOldValue expected value to perform modification
+//! @param theNewValue new value to set in case if *theValue was equal to theOldValue
+//! @return TRUE if theNewValue has been set to *theValue
+inline bool Standard_Atomic_CompareAndSwap (volatile int* theValue, int theOldValue, int theNewValue);
+
 // Platform-dependent implementation
 #if defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_4)
 // gcc explicitly defines the macros __GCC_HAVE_SYNC_COMPARE_AND_SWAP_*
@@ -55,16 +63,23 @@ int Standard_Atomic_Decrement (volatile int* theValue)
   return __sync_sub_and_fetch (theValue, 1);
 }
 
+bool Standard_Atomic_CompareAndSwap (volatile int* theValue, int theOldValue, int theNewValue)
+{
+  return __sync_val_compare_and_swap (theValue, theOldValue, theNewValue) == theOldValue;
+}
+
 #elif defined(_WIN32)
 extern "C" {
   long _InterlockedIncrement (volatile long* lpAddend);
   long _InterlockedDecrement (volatile long* lpAddend);
+  long _InterlockedCompareExchange (long volatile* Destination, long Exchange, long Comparand);
 }
 
 #if defined(_MSC_VER) && ! defined(__INTEL_COMPILER)
   // force intrinsic instead of WinAPI calls
   #pragma intrinsic (_InterlockedIncrement)
   #pragma intrinsic (_InterlockedDecrement)
+  #pragma intrinsic (_InterlockedCompareExchange)
 #endif
 
 // WinAPI function or MSVC intrinsic
@@ -80,6 +95,11 @@ int Standard_Atomic_Decrement (volatile int* theValue)
   return _InterlockedDecrement (reinterpret_cast<volatile long*>(theValue));
 }
 
+bool Standard_Atomic_CompareAndSwap (volatile int* theValue, int theOldValue, int theNewValue)
+{
+  return _InterlockedCompareExchange (reinterpret_cast<volatile long*>(theValue), theNewValue, theOldValue) == theOldValue;
+}
+
 #elif defined(__APPLE__)
 // use atomic operations provided by MacOS
 
@@ -93,6 +113,11 @@ int Standard_Atomic_Increment (volatile int* theValue)
 int Standard_Atomic_Decrement (volatile int* theValue)
 {
   return OSAtomicDecrement32Barrier (theValue);
+}
+
+bool Standard_Atomic_CompareAndSwap (volatile int* theValue, int theOldValue, int theNewValue)
+{
+  return OSAtomicCompareAndSwapInt (theOldValue, theNewValue, theValue);
 }
 
 #elif defined(__ANDROID__)
@@ -114,34 +139,9 @@ int Standard_Atomic_Decrement (volatile int* theValue)
   return __atomic_dec (theValue) - 1; // analog of __sync_fetch_and_sub
 }
 
-#elif defined(__GNUC__) && (defined(__i386__) || defined(__x86_64))
-// use x86 / x86_64 inline assembly (compatibility with alien compilers / old GCC)
-
-inline int Standard_Atomic_Add (volatile int* theValue, int theVal)
+bool Standard_Atomic_CompareAndSwap (volatile int* theValue, int theOldValue, int theNewValue)
 {
-  // C equivalent:
-  // *theValue += theVal;
-  // return *theValue;
-
-  int previous;
-  __asm__ __volatile__
-  (
-    "lock xadd %0,%1"
-  : "=q"(previous), "=m"(*theValue) //output
-  : "0"(theVal), "m"(*theValue) //input
-  : "memory" //clobbers
-  );
-  return previous + theVal;
-}
-
-int Standard_Atomic_Increment (volatile int* theValue)
-{
-  return Standard_Atomic_Add (theValue, 1);
-}
-
-int Standard_Atomic_Decrement (volatile int* theValue)
-{
-  return Standard_Atomic_Add (theValue, -1);
+  return __atomic_cmpxchg (theOldValue, theNewValue, theValue) == 0;
 }
 
 #else
@@ -157,6 +157,16 @@ int Standard_Atomic_Increment (volatile int* theValue)
 int Standard_Atomic_Decrement (volatile int* theValue)
 {
   return --(*theValue);
+}
+
+bool Standard_Atomic_CompareAndSwap (volatile int* theValue, int theOldValue, int theNewValue)
+{
+  if (*theValue == theOldValue)
+  {
+    *theValue = theNewValue;
+    return true;
+  }
+  return false;
 }
 
 #endif

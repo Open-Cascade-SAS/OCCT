@@ -31,8 +31,10 @@
 
 void OSD_Parallel::forEach (UniversalIterator& theBegin,
                             UniversalIterator& theEnd,
-                            const FunctorInterface& theFunctor)
+                            const FunctorInterface& theFunctor,
+                            Standard_Integer theNbItems)
 {
+  (void )theNbItems;
   try
   {
     tbb::parallel_for_each(theBegin, theEnd, theFunctor);

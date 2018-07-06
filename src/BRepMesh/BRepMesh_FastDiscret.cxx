@@ -120,7 +120,7 @@ void BRepMesh_FastDiscret::Perform(const TopoDS_Shape& theShape)
     aFaces.push_back(aFace);
   }
 
-  OSD_Parallel::ForEach(aFaces.begin(), aFaces.end(), *this, !myParameters.InParallel);
+  OSD_Parallel::ForEach(aFaces.begin(), aFaces.end(), *this, !myParameters.InParallel, (Standard_Integer )aFaces.size());
 }
 
 

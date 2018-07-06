@@ -19,6 +19,8 @@
 
 #include <OSD_Parallel.hxx>
 
+#include <OSD_ThreadPool.hxx>
+
 #include <NCollection_Array1.hxx>
 #include <Standard_Mutex.hxx>
 #include <OSD_Thread.hxx>
@@ -29,7 +31,7 @@ namespace
   //! using threads (when TBB is not available);
   //! it is derived from OSD_Parallel to get access to 
   //! Iterator and FunctorInterface nested types.
-  class OSD_Parallel_Threads : public OSD_Parallel
+  class OSD_Parallel_Threads : public OSD_ThreadPool, public OSD_Parallel
   {
   public:
     //! Auxiliary class which ensures exclusive
@@ -84,7 +86,7 @@ namespace
     };
 
     //! Auxiliary wrapper class for thread function.
-    class Task
+    class Task : public JobInterface
     {
     public: //! @name public methods
 
@@ -97,15 +99,12 @@ namespace
 
       //! Method is executed in the context of thread,
       //! so this method defines the main calculations.
-      static Standard_Address Run(Standard_Address theTask)
+      virtual void Perform (int ) Standard_OVERRIDE
       {
-        Task& aTask = *(static_cast<Task*>(theTask));
-
-        const Range& aData(aTask.myRange);
-        for (OSD_Parallel::UniversalIterator i = aData.It(); i != aData.End(); i = aData.It())
-          aTask.myPerformer(i);
-
-        return NULL;
+        for (OSD_Parallel::UniversalIterator anIter = myRange.It(); anIter != myRange.End(); anIter = myRange.It())
+        {
+          myPerformer (anIter);
+        }
       }
 
     private: //! @name private methods
@@ -117,9 +116,27 @@ namespace
       Task& operator=(const Task& theCopy);
 
     private: //! @name private fields
+      const FunctorInterface& myPerformer; //!< Link on functor
+      const Range& myRange; //!< Link on processed data block
+    };
 
-      const OSD_Parallel::FunctorInterface& myPerformer; //!< Link on functor.
-      const Range&                       myRange;     //!< Link on processed data block.
+    //! Launcher specialization.
+    class UniversalLauncher : public Launcher
+    {
+    public:
+      //! Constructor.
+      UniversalLauncher (OSD_ThreadPool& thePool, int theMaxThreads = -1)
+      : Launcher (thePool, theMaxThreads) {}
+
+      //! Primitive for parallelization of "for" loops.
+      void Perform (OSD_Parallel::UniversalIterator& theBegin,
+                    OSD_Parallel::UniversalIterator& theEnd,
+                    const OSD_Parallel::FunctorInterface& theFunctor)
+      {
+        Range aData (theBegin, theEnd);
+        Task aJob (theFunctor, aData);
+        perform (aJob);
+      }
     };
   };
 }
@@ -130,22 +147,13 @@ namespace
 //=======================================================================
 void OSD_Parallel::forEach (UniversalIterator& theBegin,
                             UniversalIterator& theEnd,
-                            const FunctorInterface& theFunctor)
+                            const FunctorInterface& theFunctor,
+                            Standard_Integer theNbItems)
 {
-  OSD_Parallel_Threads::Range aData(theBegin, theEnd);
-  OSD_Parallel_Threads::Task aTask(theFunctor, aData);
-
-  const Standard_Integer aNbThreads = OSD_Parallel::NbLogicalProcessors();
-  NCollection_Array1<OSD_Thread> aThreads(0, aNbThreads - 1);
-  for (Standard_Integer i = 0; i < aNbThreads; ++i)
-  {
-    OSD_Thread& aThread = aThreads(i);
-    aThread.SetFunction(&OSD_Parallel_Threads::Task::Run);
-    aThread.Run(&aTask);
-  }
-
-  for (Standard_Integer i = 0; i < aNbThreads; ++i)
-    aThreads(i).Wait();
+  const Handle(OSD_ThreadPool)& aThreadPool = OSD_ThreadPool::DefaultPool();
+  const Standard_Integer aNbThreads = theNbItems != -1 ? Min (theNbItems, aThreadPool->NbDefaultThreadsToLaunch()) : -1;
+  OSD_Parallel_Threads::UniversalLauncher aLauncher (*aThreadPool, aNbThreads);
+  aLauncher.Perform (theBegin, theEnd, theFunctor);
 }
 
 #endif /* ! HAVE_TBB */
