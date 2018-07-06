@@ -665,23 +665,30 @@ void SelectMgr_RectangularFrustum::computeClippingRange (const Graphic3d_Sequenc
       const gp_XYZ& aPlaneDirXYZ = aGeomPlane.Axis().Direction().XYZ();
       Standard_Real aDotProduct = myViewRayDir.XYZ().Dot (aPlaneDirXYZ);
       Standard_Real aDistance   = -myNearPickedPnt.XYZ().Dot (aPlaneDirXYZ) - aPlaneD;
+      Standard_Real aDistToPln  = 0.0;
 
       // check whether the pick line is parallel to clip plane
       if (Abs (aDotProduct) < Precision::Angular())
       {
-        // line lies below the plane and is not clipped, skip
-        continue;
+        if (aDistance < 0.0)
+        {
+          continue;
+        }
+        aDistToPln  = RealLast();
+        aDotProduct = 1.0;
       }
-
-      // compute distance to point of pick line intersection with the plane
-      const Standard_Real aParam = aDistance / aDotProduct;
-
-      const gp_Pnt anIntersectionPnt = myNearPickedPnt.XYZ() + myViewRayDir.XYZ() * aParam;
-      Standard_Real aDistToPln = anIntersectionPnt.Distance (myNearPickedPnt);
-      if (aParam < 0.0)
+      else
       {
-        // the plane is "behind" the ray
-        aDistToPln = -aDistToPln;
+        // compute distance to point of pick line intersection with the plane
+        const Standard_Real aParam = aDistance / aDotProduct;
+
+        const gp_Pnt anIntersectionPnt = myNearPickedPnt.XYZ() + myViewRayDir.XYZ() * aParam;
+        aDistToPln = anIntersectionPnt.Distance (myNearPickedPnt);
+        if (aParam < 0.0)
+        {
+          // the plane is "behind" the ray
+          aDistToPln = -aDistToPln;
+        }
       }
 
       // change depth limits for case of opposite and directed planes
