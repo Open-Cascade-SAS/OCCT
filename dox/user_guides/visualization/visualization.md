@@ -1079,7 +1079,7 @@ aMesh->AddBuilder (aBuilder, true);
 
 The dynamic selection represents the topological shape, which you want to select, by decomposition of *sensitive primitives* -- the sub-parts of the shape that will be detected and highlighted. The sets of these primitives are handled by the powerful three-level BVH tree selection algorithm.
 
-For more details on the algorithm and examples of usage, please, refer to @ref occt_visu_2_2 "Selection" chapter.
+For more details on the algorithm and examples of usage, refer to @ref occt_visu_2_2 "Selection" chapter.
 
 @section occt_visu_4 3D Presentations
 

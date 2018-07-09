@@ -51,7 +51,7 @@ for (Standard_Integer aGr = 1; aGr <= aLen; ++aGr)
 
 * All occurrences of *Select3D_Projector* in the application code (if any) should be replaced with *Handle(Select3D_Projector)*.
 * The code of inheritors of *Select3D_SensitiveEntity* should be updated if they override <i>Matches()</i> (this is probable, if clipping planes are used).
-* Constructor for *V3d_Plane* has been changed, so the extra argument should be removed if used in the application. It is necessary to add a new plane using method *V3d_Viewer::AddPlane()* if *V3d_Viewer* has been used to manage clipping planes list (this does not affect clipping planes representation). Please, have a look at the source code for new DRAWEXE *vclipplane* command in *ViewerTest_ObjectsCommands.cxx, VClipPlane* to see how clipping planes can be managed in the application.
+* Constructor for *V3d_Plane* has been changed, so the extra argument should be removed if used in the application. It is necessary to add a new plane using method *V3d_Viewer::AddPlane()* if *V3d_Viewer* has been used to manage clipping planes list (this does not affect clipping planes representation). Have a look at the source code for new DRAWEXE *vclipplane* command in *ViewerTest_ObjectsCommands.cxx, VClipPlane* to see how clipping planes can be managed in the application.
 
 @section upgrade_652 Upgrade to OCCT 6.5.2
 
@@ -112,14 +112,14 @@ Porting of user applications from an earlier OCCT version to version 6.6.0 requi
 It is necessary to introduce the corresponding changes in the applications for which the order of sub-shapes resulting from a Boolean operation is important. It is strongly recommended to use identification methods not relying on the order of sub-shapes (e.g. OCAF naming).
 * If you need to use OCCT on Mac OS X with X11 (without Cocoa), build OCCT with defined pre-processor macro *CSF_MAC_USE_GLX11*. XLib front-end (previously the only way for unofficial OCCT builds on Mac OS X) is now disabled by default on this platform. If your application has no support for Cocoa framework you may build OCCT with XLib front-end adding *MACOSX_USE_GLX* macro to compiler options (you may check the appropriate option in WOK configuration GUI and in CMake configuration). Notice that XQuartz (XLib implementation for Mac OS X) now is an optional component and does not provide a sufficient level of integrity with native (Cocoa-based) applications in the system. It is not possible to build OCCT with both XLib and Cocoa at the same time due to symbols conflict in OpenGL functions. 
 * Animation mode and degeneration presentation mode (simplified presentation for animation) and associated methods have been removed from 3D viewer functionality.
-Correspondingly, the code using methods *SetAnimationModeOn(), SetAnimationModeOff(), AnimationModeIsOn(), AnimationMode(), Tumble(), SetDegenerateModeOn(), SetDegenerateModeOff()* and *DegenerateModeIsOn()* of classes *V3d_View* and *Visual3d_View* will need to be removed or redesigned. Please, notice that Hidden Line Removal presentation was not affected; however, the old code that used methods *V3d_View::SetDegenerateModeOn* or *V3d_View::SetDegenerateModeOff* to control HLR presentation should be updated to use *V3d_View::SetComputedMode* method instead.
+Correspondingly, the code using methods *SetAnimationModeOn(), SetAnimationModeOff(), AnimationModeIsOn(), AnimationMode(), Tumble(), SetDegenerateModeOn(), SetDegenerateModeOff()* and *DegenerateModeIsOn()* of classes *V3d_View* and *Visual3d_View* will need to be removed or redesigned. Hidden Line Removal presentation was not affected; however, the old code that used methods *V3d_View::SetDegenerateModeOn* or *V3d_View::SetDegenerateModeOff* to control HLR presentation should be updated to use *V3d_View::SetComputedMode* method instead.
 * Calls of *Graphic3d_Group::BeginPrimitives()* and *Graphic3d_Group::EndPrimitives()* should be removed from the application code.
 * Application functionality for drawing 2D graphics that was formerly based on *TKV2d* API should be migrated to *TKV3d* API. The following changes are recommended for this migration:
    * A 2D view can be implemented as a *V3d_View* instance belonging to *V3d_Viewer* managed by *AIS_InteractiveContext* instance. To turn *V3d_View* into a 2D view, the necessary view orientation should be set up at the view initialization stage using *V3d_View::SetProj()* method, and view rotation methods simply should not be called.
    * Any 2D graphic entity (formerly represented with *AIS2D_InteractiveObject*) should become a class derived from *AIS_InteractiveObject* base. These entities should be manipulated in a view using *AIS_InteractiveContext* class API.
    * All drawing code should be put into *Compute()* virtual method of a custom interactive object class and use API of *Graphic3d* package. In particular, all geometry should be drawn using class hierarchy derived from *Graphic3d_ArrayOfPrimitives*. Normally, the Z coordinate for 2D geometry should be constant, unless the application implements some advanced 2D drawing techniques like e.g. multiple "Z layers" of drawings.
    * Interactive selection of 2D presentations should be set up inside *ComputeSelection()* virtual method of a custom interactive object class, using standard sensitive entities from *Select3D* package and standard or custom entity owners derived from *SelectMgr_EntityOwner* base.
-Please refer to the Visualization User's Guide for further details concerning OCCT 3D visualization and selection classes. See also *Viewer2D* OCCT sample application, which shows how 2D drawing can be implemented using TKV3d API.
+Refer to the Visualization User's Guide for further details concerning OCCT 3D visualization and selection classes. See also *Viewer2D* OCCT sample application, which shows how 2D drawing can be implemented using TKV3d API.
 * Run-time graphic driver library loading mechanism based on *CSF_GraphicShr* environment variable usage has been replaced by explicit linking against *TKOpenGl* library. The code sample below shows how the graphic driver should be created and initialized in the application code: 
 ~~~~
 // initialize a new viewer with OpenGl graphic driver
@@ -161,10 +161,10 @@ Porting of user applications from an earlier OCCT version to version 6.7.0 requi
 
 @subsection upgrade_670_clipping Object-level clipping and capping algorithm. 
 
-* It might be necessary to revise and port code related to management of view-level clipping to use *Graphic3d_ClipPlane* instead of *V3d_Plane* instances. Please note that *V3d_Plane* class has been preserved -- as previously, it can be used as plane representation. Another approach to represent *Graphic3d_ClipPlane* in a view is to use custom presentable object.
-* The list of arguments of *Select3D_SensitiveEntity::Matches()* method for picking detection has changed. Since now, for correct selection clipping, the implementations should perform a depth clipping check and return (as output argument) minimum depth value found at the detected part of sensitive. Please refer to CDL / Doxygen documentation to find descriptive hints and snippets.
+* It might be necessary to revise and port code related to management of view-level clipping to use *Graphic3d_ClipPlane* instead of *V3d_Plane* instances. Note that *V3d_Plane* class has been preserved -- as previously, it can be used as plane representation. Another approach to represent *Graphic3d_ClipPlane* in a view is to use custom presentable object.
+* The list of arguments of *Select3D_SensitiveEntity::Matches()* method for picking detection has changed. Since now, for correct selection clipping, the implementations should perform a depth clipping check and return (as output argument) minimum depth value found at the detected part of sensitive. Refer to CDL / Doxygen documentation to find descriptive hints and snippets.
 * *Select3D_SensitiveEntity::ComputeDepth()* abstract method has been removed. Custom implementations should provide depth checks by method *Matches()* instead -- all data required for it is available within a scope of single method.
-* It might be necessary to revise the code of custom sensitive entities and port *Matches()* and *ComputeDepth()* methods to ensure proper selection clipping. Please note that obsolete signature of *Matches* is not used anymore by the selector. If your class inheriting *Select3D_SensitiveEntity* redefines the method with old signature the code should not compile as the return type has been changed. This is done to prevent override of removed methods.
+* It might be necessary to revise the code of custom sensitive entities and port *Matches()* and *ComputeDepth()* methods to ensure proper selection clipping. Note that obsolete signature of *Matches* is not used anymore by the selector. If your class inheriting *Select3D_SensitiveEntity* redefines the method with old signature the code should not compile as the return type has been changed. This is done to prevent override of removed methods.
 
 @subsection upgrade_670_markers Redesign of markers presentation
 
@@ -210,7 +210,7 @@ If *ViewMapping* and *ViewOrientation* were used directly, this functionality ha
 
 The current perspective model is not fully backward compatible, so the old perspective-related functionality needs to be reviewed.
 
-Please revise application-specific custom presentations to provide proper bounding box. Otherwise object might become erroneously clipped by automatic *ZFit* or frustum culling algorithms enabled by default.
+Revise application-specific custom presentations to provide a proper bounding box, otherwise the object might become erroneously clipped by automatic *ZFit* or frustum culling algorithms enabled by default.
 
 @subsection upgrade_680_connected_objects Redesign of Connected Interactive Objects
 
@@ -987,11 +987,11 @@ The applications that use *gp_Quaternion* to convert Yaw-Pitch-Roll angles (or o
 
 @subsection upgrade_zoom_persistent_selection Zoom Persistent Selection
 
-Zoom persistent selection introduces a new structure *Graphic3d_TransformPers* to transform persistence methods and parameters and a new class *Graphic3d_WorldViewProjState* to refer to the camera transformation state. You might need to update your code to deal with the new classes if you were using the related features. Please, keep in mind the following: 
+Zoom persistent selection introduces a new structure *Graphic3d_TransformPers* to transform persistence methods and parameters and a new class *Graphic3d_WorldViewProjState* to refer to the camera transformation state. You might need to update your code to deal with the new classes if you were using the related features. Keep in mind the following: 
 * *Graphic3d_Camera::ModelViewState* has been renamed to *Graphic3d_Camera::WorldViewState*.
 * Transformation matrix utilities from *OpenGl_Utils* namespace have been moved to *Graphic3d_TransformUtils* and *Graphic3d_TransformUtils.hxx* header respectively.
 * Matrix stack utilities from *OpenGl_Utils* namespace have been moved to *OpenGl_MatrixStack* class and *OpenGl_MatrixStack.hxx* header respectively.
-* *OpenGl_View* methods *Begin/EndTransformPersistence* have been removed. Please, use *Graphic3d_TransformPers::Apply()* instead to apply persistence to perspective and world-view projection matrices.
+* *OpenGl_View* methods *Begin/EndTransformPersistence* have been removed. Use *Graphic3d_TransformPers::Apply()* instead to apply persistence to perspective and world-view projection matrices.
 
 @subsection upgrade_occt700_correction_of_texture Texture mapping of objects
 

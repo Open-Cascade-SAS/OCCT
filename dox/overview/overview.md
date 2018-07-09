@@ -32,7 +32,7 @@ Open CASCADE Technology is free software; you can redistribute it and / or modif
 @ref license_lgpl_21 "GNU Lesser General Public License (LGPL) version 2.1", with additional @ref occt_lgpl_exception "exception".
 
 Note that LGPL imposes some obligations on the application linked with Open CASCADE Technology.
-If you wish to use OCCT in a proprietary application, please, pay special attention to address the requirements of LGPL section 6.
+If you wish to use OCCT in a proprietary application, please pay a special attention to address the requirements of LGPL section 6.
 At minimum the following should be considered:
 1. Add the notice visible to the users of your application clearly stating that Open CASCADE Technology is used in this application, and that they have rights in this regard according to LGPL. 
    Such notice can be added in About dialog box (this is mandatory if this box contains copyright statements) or a similar place and/or in the documentation. 
@@ -55,7 +55,7 @@ disclaimer.
 
 You are hereby informed that all software is a property of its respective authors and is protected by 
 international and domestic laws on intellectual property and trademarks. 
-Should you need further information, please directly contact the authors.
+Should you need further information, directly contact the authors.
 
 **CAS.CADE** and **Open CASCADE** are registered trademarks of 
 OPEN CASCADE S.A.S.
@@ -80,7 +80,7 @@ and, in case you need any further information, directly contact their authors.
 **Qt** is a cross-platform application framework that is widely used for developing application software 
 with graphical user interface (GUI). Qt is free and open source software distributed under 
 the terms of the GNU Lesser General Public License. In OCCT Qt is used for programming samples. 
-If you need further information on Qt, please, refer to Qt Homepage (https://www.qt.io/)
+If you need further information on Qt, refer to Qt Homepage (https://www.qt.io/)
 
 **Tcl** is a high-level programming language. Tk is a graphical user interface (GUI) toolkit, 
 with buttons, menus, listboxes, scrollbars, and so on. Taken together Tcl and Tk provide a solution 
@@ -88,7 +88,7 @@ to develop cross-platform graphical user interfaces with a native look and feel.
 Scriptics Corp., Sun Microsystems, and other companies. However, Tcl/Tk is an open source, and 
 the copyright allows you to use, modify, and redistribute Tcl/Tk for any purpose, without an 
 explicit license agreement and without paying any license fees or royalties. 
-To use Tcl/Tk, please refer to the Licensing Terms (https://www.tcl.tk/software/tcltk/license.html).
+To use Tcl/Tk, refer to the Licensing Terms (https://www.tcl.tk/software/tcltk/license.html).
 
 **FreeType 2** is developed by Antoine Leca, David Turner, Werner Lemberg and others. 
 It is a software font engine that is designed to be small, efficient, highly customizable and 
@@ -109,12 +109,12 @@ implementation of 3D viewer. OpenGL specification is developed by the
 Khronos group, https://www.khronos.org/opengl/. OCCT code includes header 
 file *glext.h* obtained from Khronos web site.
 
-**VTK** -- The **Visualization Toolkit (VTK)** is an open-source, freely available software system for 3D computer graphics, image processing and visualization. OCCT VIS component provides adaptation functionality for visualization of OCCT topological shapes by means of VTK library. If you need further information on VTK, please, refer to VTK Homepage http://www.vtk.org/.
+**VTK** -- The **Visualization Toolkit (VTK)** is an open-source, freely available software system for 3D computer graphics, image processing and visualization. OCCT VIS component provides adaptation functionality for visualization of OCCT topological shapes by means of VTK library. If you need further information on VTK, refer to VTK Homepage http://www.vtk.org/.
 
 **Doxygen** developed by Dimitri van Heesch is open source documentation system for 
 C++, C, Java, Objective-C, Python, IDL, PHP and C#. This product is used in Open CASCADE Technology 
 for automatic creation of Technical Documentation from C++ header files. 
-If you need further information on Doxygen, please refer to https://www.stack.nl/~dimitri/doxygen/index.html.
+If you need further information on Doxygen, refer to https://www.stack.nl/~dimitri/doxygen/index.html.
 
 **Graphviz** is open source graph visualization software developed by John Ellson, Emden Gansner, Yifan Hu and Arif Bilgin. 
 Graph visualization is representiation of structured information as diagrams of abstract graphs and networks. 
@@ -396,7 +396,7 @@ the specified resource file and activates the commands implemented in the plug-i
 The whole process of using the plug-in mechanism as well as the instructions for extending Test Harness is described in the @ref occt_user_guides__test_harness.
 
 Draw Test Harness provides an environment for OCCT automated testing system. 
-Please, consult its @ref occt_dev_guides__tests "Automated Testing System" for details.
+Check its @ref occt_dev_guides__tests "Automated Testing System" for details.
 
 Remarks:
 

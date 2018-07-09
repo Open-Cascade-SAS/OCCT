@@ -9,7 +9,7 @@ The IGES interface reads IGES files and translates them to Open CASCADE Technolo
 
 Other kinds of data such as colors and names can be read or written with the help of XDE tools <i> IGESCAFControl_Reader</i> and <i> IGESCAFControl_Writer</i>. 
 
-Please, note:
+**Note** :
 
   * an IGES model is an IGES file that has been loaded into memory.
   * an IGES entity is an entity in the IGES normal sense.
@@ -251,7 +251,7 @@ Default value is 0.01.
 <h4>read.iges.bspline.approxd1.mode</h4>
 This parameter is obsolete (it is rarely used in real  practice). If set to True, it affects the translation of bspline curves of  degree 1 from IGES: these curves (which geometrically are polylines) are split  by duplicated points, and the translator attempts to convert each of the  obtained parts to a bspline of a higher continuity.  
 
-Read this parameter  with:  
+Read this parameter with:  
 ~~~~~
 Standard_Real bam =   Interface_Static::CVal("read.iges.bspline.approxd1.mode"); 
 ~~~~~
@@ -266,9 +266,9 @@ Default value is Off.
 <h4>read.iges.resource.name and read.iges.sequence</h4>
 These two parameters define the name of the resource file  and the name of the sequence of operators   (defined in that file) for Shape Processing, which is automatically performed  by the IGES   translator. The Shape Processing is a user-configurable step, which is  performed after   the translation and consists in application of a set of operators to a  resulting shape. This is   a very powerful tool allowing to customize the shape and to adapt it to the  needs of   a receiving application. By default, the sequence consists of a single operator  *ShapeFix* that calls Shape Healing from the IGES translator.  
 
-Please find an example of the resource file for IGES (which  defines parameters   corresponding to the sequence applied by default, i.e. if the resource file is  not found) in   the Open CASCADE Technology installation, by the path   <i>%CASROOT%/src/XSTEPResource/IGES</i> . 
+Find an example of the resource file for IGES (which  defines parameters corresponding to the sequence applied by default, i.e. if the resource file is  not found) in the Open CASCADE Technology sources by the path <i>%CASROOT%/src/XSTEPResource/IGES</i>. 
 
-In order for the IGES translator to use that file, you have  to define the environment variable   *CSF_IGESDefaults*, which should point to the directory where the resource file  resides.   Note that if you change parameter *read.iges.resource.name*, you should change  the name   of the resource file and the name of the environment variable correspondingly.  The variable should contain a path to the resource file. 
+IGES translator will use that file if you define the environment variable *CSF_IGESDefaults*, which should point to the directory where the resource file  resides.   Note that if you change parameter *read.iges.resource.name*, you should change  the name of the resource file and the name of the environment variable correspondingly.  The variable should contain a path to the resource file. 
 
 Default values:  
 * read.iges.resource.name -- IGES,  
@@ -286,7 +286,7 @@ A list of entities can  be formed by invoking the method *IGESControl_Reader::Gi
 Handle(TColStd_HSequenceOfTransient)  list = reader.GiveList(); 
 ~~~~~
 Several predefined  operators can be used to select a list of entities of a specific type. 
-To make a selection, you  use the method *IGESControl_Reader::GiveList* with the selection type in  quotation marks as an argument. You can also make cumulative selections. For  example, you would use the following syntax: 
+To make a selection, use the method *IGESControl_Reader::GiveList* with the selection type in  quotation marks as an argument. You can also make cumulative selections. For  example, you would use the following syntax: 
 1. Requesting the faces in the  file: 
 ~~~~~
 faces =  Reader.GiveList("iges-faces"); 
@@ -577,7 +577,7 @@ All  methods are in charge of transferring curves  from IGES curve entities <i>(
   * *IGESToBRep_TopoCurve::TransferPoint* -- vertex is constructed from a Point entity with tolerance *EpsGeom*UnitFactor*. 
   * *IGESToBRep_TopoCurve::Transfer2dPoint* -- vertex is constructed from a Point entity with tolerance *EpsCoeff*. 
   * *IGESToBRep_TopoCurve::TransferCompositeCurveGeneral* -- obtains shapes (edges or wires) from other methods and adds  them into the resulting wire. Two adjacent edges of the wire can be connected  with tolerance up to *MaxTol*. 
-  * *IGESToBRep_TopoCurve::TransferCurveOnFace* and  *IGESToBRep_TopoCurve::TransferBoundaryOnFace* build a wire from 3D and 2D representations of  a curve on surface. Edges and vertices of the wire cannot have tolerance larger than *MaxTol*. The value *EpsGeom*UnitFactor* is passed into *ShapeFix_Wire::SetPrecision* and *MaxTol* is passed into *ShapeFix_Wire::MaxTolerance*. To find out how these parameters affect the resulting tolerance changes, please,  refer to class *ShapeFix_Wire*. 
+  * *IGESToBRep_TopoCurve::TransferCurveOnFace* and  *IGESToBRep_TopoCurve::TransferBoundaryOnFace* build a wire from 3D and 2D representations of  a curve on surface. Edges and vertices of the wire cannot have tolerance larger than *MaxTol*. The value *EpsGeom*UnitFactor* is passed into *ShapeFix_Wire::SetPrecision* and *MaxTol* is passed into *ShapeFix_Wire::MaxTolerance*. To find out how these parameters affect the resulting tolerance changes, refer to class *ShapeFix_Wire*. 
   * *IGESToBRep_TopoCurve::TransferTopoBasicCurve* and  *IGESToBRep_TopoCurve::Transfer2dTopoBasicCurve* -- the boundary vertices of an edge (or a wire if a curve was  of C0 continuity) translated from a basis IGES curve (*BSplineCurve,  CopiousData, Line,* etc.) are built with tolerance *EpsGeom*UnitFactor*, the edge tolerance is *Precision::Confusion*. If a curve was divided into several edges, the common  vertices of such adjacent edges have tolerance *Precision::Confusion*.
   
   
@@ -710,7 +710,7 @@ if  (!Interface_Static::SetRVal(;write.precision.val;,0.01))
 ~~~~~
 Default value is 0.0001. 
 
-<h4>write.iges.resource.name</h4> and <h4>write.iges.sequence</h4> are the same as the corresponding read.iges.\* parameters, please, see above. Note that the  default sequence for writing   contains *DirectFaces* operator, which converts elementary surfaces based on left-hand axes (valid in CASCADE) to right-hand axes (which are valid only in IGES). 
+<h4>write.iges.resource.name</h4> and <h4>write.iges.sequence</h4> are the same as the corresponding read.iges.\* parameters. Note that the  default sequence for writing contains *DirectFaces* operator, which converts elementary surfaces based on left-hand axes (valid in CASCADE) to right-hand axes (which are valid only in IGES). 
 
 Default values : 
 ~~~~~

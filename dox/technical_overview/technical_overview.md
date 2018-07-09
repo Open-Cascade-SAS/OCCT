@@ -56,7 +56,7 @@ This module also provides a variety of general-purpose services, such as:
   * Progress indication and user break interfaces, giving a possibility even for low-level algorithms to communicate with the user in a universal and convenient way;
   * and many others...
 
-Please, see the details in @ref occt_user_guides__foundation_classes "Foundation Classes User's Guide"
+See the details in @ref occt_user_guides__foundation_classes "Foundation Classes User's Guide"
 
 See also: our <a href="http://www.opencascade.com/content/tutorial-learning">E-learning & Training</a> offerings.
 
@@ -85,7 +85,7 @@ Topology defines relationships between simple geometric entities.  A shape, whic
 
 Complex shapes can be defined as assemblies of simpler entities.
 
-Please, see the details in @ref occt_user_guides__modeling_data "Modeling Data User's Guide"
+See the details in @ref occt_user_guides__modeling_data "Modeling Data User's Guide"
 
 3D geometric models can be stored in OCCT native BREP format.
 See @ref occt_user_guides__brep_wp "BREP Format Description White Paper" for details on the format.
@@ -147,7 +147,7 @@ See @ref occt_user_guides__boolean_operations "Boolean Operations" User's Guide 
 
 @figure{/technical_overview/images/0004.png}
  
-Please, see the details in @ref occt_user_guides__modeling_algos "Modeling Algorithms User's Guide".
+See the details in @ref occt_user_guides__modeling_algos "Modeling Algorithms User's Guide".
 
 See also: our <a href="http://www.opencascade.com/content/tutorial-learning">E-learning & Training</a> offerings.
 
@@ -204,7 +204,7 @@ Here are just a few examples:
 
 @figure{/technical_overview/images/0008.png, "Display of shape cross-section and dimensions"}
 
-For more details see @ref occt_user_guides__visualization "Visualization User's Guide".
+For more details, see @ref occt_user_guides__visualization "Visualization User's Guide".
 
 The visualization of OCCT topological shapes by means of VTK library provided by VIS component is described in a separate @ref occt_user_guides__vis "VTK Integration Services" User's Guide.
 
@@ -263,7 +263,7 @@ Each sub-domain of Shape Healing has its own scope of functionality:
 | Customization | Modifies the shape representation to fit specific needs. | The shape is not modified, only the mathematical form of its internal representation is changed. |
 | Processing | Mechanism of shape modification via a user-editable resource file. | |
 
-For more details refer to @ref occt_user_guides__shape_healing "Shape Healing User's guide".
+For more details, refer to @ref occt_user_guides__shape_healing "Shape Healing User's guide".
 
 See also: our <a href="http://www.opencascade.com/content/tutorial-learning">E-learning & Training</a> offerings.
 
@@ -285,7 +285,7 @@ OCAF differs from any other CAD framework in the organization of application dat
 
 OCAF organizes and embeds these attributes in a document. OCAF documents, in their turn, are managed by an OCAF application.
 
-For more details see @ref occt_user_guides__ocaf "OCAF User's Guide". 
+For more details, see @ref occt_user_guides__ocaf "OCAF User's Guide". 
 
 See also: our <a href="http://www.opencascade.com/content/tutorial-learning">E-learning & Training</a> offerings.
 
@@ -310,4 +310,4 @@ In addition, **Test Harness** provides commands to create and manipulate curves 
 
 You can add custom commands to test or demonstrate any new functionalities, which you develop.
 
-For more details see @ref occt_user_guides__test_harness "Draw Test Harness Manual".
+For more details, see @ref occt_user_guides__test_harness "Draw Test Harness Manual".

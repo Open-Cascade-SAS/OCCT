@@ -30,10 +30,10 @@ Each of the listed plugins is embedded in the common framework, thus it is possi
 There are two launch modes:
 1. Launch **TInspectorEXE** executable sample. For more details see @ref occt_inspector_4_1 "TInspectorEXE" section;
 2. Launch DRAW, load plugin INSPECTOR, and use *tinspector* command.
-   For more details see @ref occt_inspector_4_2 "Launch in DRAW Test Harness" section.
+   For more details, see @ref occt_inspector_4_2 "Launch in DRAW Test Harness" section.
 
 
-Note. If you have no Inspector library in your build directory, please, make sure that OCCT is compiled with *BUILD_Inspector* 
+**Note**. If you have no Inspector library in your build directory, make sure that OCCT is compiled with *BUILD_Inspector* 
 option ON. For more details see @ref occt_inspector_5 "Build procedure".
 
 
@@ -290,7 +290,7 @@ Selection controls switch on/off the possibility to set selection in the context
 | Select Presentations | *AIS_InteractiveObject* | Calls *AddOrRemoveSelected* of interactive object for the selected item. |
 | Select Owners | *SelectMgr_EntityOwner* or <br> *SelectMgr_SensitiveEntity* | Calls *AddOrRemoveSelected* of *SelectMgr_EntityOwner* for the selected item. |
 
-Please, note that the initial selection in the context will be cleared.
+Note that the initial selection in the context will be cleared.
 If the button is toggled, the button selection is active. Only one button may be toggled at the moment.
 
 

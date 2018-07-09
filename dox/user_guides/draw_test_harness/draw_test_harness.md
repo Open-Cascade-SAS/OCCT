@@ -6877,7 +6877,7 @@ tscale c1 0 0 0 0.5
 @subsubsection occt_draw_7_6_1  fuse, cut, common
 
 These commands are no longer supported, so the result may be unpredictable.
-Please use the commands bfuse, bcut, bcommon instead.
+Use the commands bfuse, bcut, bcommon instead.
 
 Syntax:
 ~~~~~
@@ -6916,7 +6916,7 @@ ttranslate s4 0 -40 0
 @subsubsection occt_draw_7_6_2  section, psection
 
 These commands are no longer supported, so the result may be unpredictable.
-Please use the command bsection instead.
+Use the command **bsection** instead.
 
 Syntax:      
 ~~~~~
@@ -6967,7 +6967,7 @@ The new algorithm of Boolean operations avoids a large number of weak points and
 It also provides wider range of options and diagnostics.
 The algorithms of Boolean component are fully described in the @ref occt_algorithms_1 "Boolean Operations" of boolean operation user guide.
 
-For the Draw commands to perform operations in Boolean component please read the dedicated section @ref occt_draw_bop "Boolean operations commands"
+For the Draw commands to perform operations in Boolean component, read the dedicated section @ref occt_draw_bop "Boolean operations commands"
 
 
 @subsection occt_draw_7_8  Drafting and blending
@@ -8372,7 +8372,7 @@ bsplit result
 
 @subsubsection occt_draw_bop_build_CB Cells Builder
 
-Please see the @ref occt_algorithms_10c_Cells_1 "Cells Builder Usage" for the Draw usage of Cells Builder algorithm.
+See the @ref occt_algorithms_10c_Cells_1 "Cells Builder Usage" for the Draw usage of Cells Builder algorithm.
 
 
 @subsubsection occt_draw_bop_build_API Building result through API

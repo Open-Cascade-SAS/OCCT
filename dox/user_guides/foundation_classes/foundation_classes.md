@@ -1682,7 +1682,7 @@ All these functions are provided by geometric processor package <i> gp</i>. Its 
 
 The *gp* package defines the basic geometric entities used for algebraic calculation and basic analytical geometry  in 2d & 3d space. It also provides basic transformations such as identity,  rotation, translation, mirroring, scale transformations, combinations of  transformations, etc. Entities are handled by value.  
 
-Please, note that <i> gp</i> curves and surfaces are analytic: there is no parameterization and no orientation on <i>gp</i> entities, i.e. these entities do not provide functions which work with these properties. 
+Note that <i> gp</i> curves and surfaces are analytic: there is no parameterization and no orientation on <i>gp</i> entities, i.e. these entities do not provide functions which work with these properties. 
 
 If you need, you may use more evolved data structures provided by <i> Geom</i> (in 3D space) and <i> Geom2d</i> (in the plane). However, the definition of <i> gp</i> entities is identical to the one of equivalent <i> Geom</i> and <i> Geom2d</i> entities, and they are located in the plane or in space with the same kind of positioning systems. They implicitly contain the orientation, which they express on the <i> Geom </i> and <i> Geom2d </i> entities, and they induce the definition of their parameterization.
 

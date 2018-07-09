@@ -11,14 +11,13 @@ Guide to installing and using Git for OCCT development {#occt_dev_guides__git_gu
   to OCCT developers who are not familiar with this tool 
   and to facilitate the use of the official OCCT Git repository for code contribution to OCCT.
 
-  Reading this document does not exempt from the need to learn Git concepts and tools. 
-  Please consult a book or manual describing Git to get acquainted with this tool. 
+  It can be useful to learn more about Git concepts and tools from a book a or manual. 
   Many good books on Git can be found at http://git-scm.com/documentation 
   
   For the experienced Git users it can be enough to read sections 1 and 3
    of this document to start working with the repository.
    
-  Please make sure to get familiar with the Contribution Workflow document 
+  Familiarize yourselves with the @ref occt_dev_guides__contribution_workflow "Contribution Workflow document"  
   that describes how Git is used for processing contributions to OCCT.
   
   This and related documents are available at the Resources page 
@@ -83,7 +82,7 @@ The official repository contains:
 @subsection occt_gitguide_1_5 Version of Git
 
   The repository is tested to work with Git 1.7.6 and above. 
-  Please do not use versions below 1.7.1 as they are known to cause troubles.
+  Avoid using versions below 1.7.1 as they are known to cause troubles.
 
 @section occt_gitguide_2 Installing Tools for Work with Git
 
@@ -250,7 +249,7 @@ Click **Save** to input the key to the system.
   It is typical to use your e-mail address or workstation name for this field; no restrictions are set by the portal.
 
 
-  Please note that some time (5-10 min) is needed for the system 
+  **Note** that some time (5-10 min) is needed for the system 
   to update the configuration after the new key is added. 
   After that time, you can try accessing Git.
 

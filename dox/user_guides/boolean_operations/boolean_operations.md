@@ -797,7 +797,7 @@ The General Fuse algorithm has a set of options, which allow speeding-up the ope
 * Usage of Oriented Bounding Boxes in the operation;
 * History support.
 
-For more detailed information on these options please see the @ref occt_algorithms_11a "Advanced options" section.
+For more detailed information on these options, see the @ref occt_algorithms_11a "Advanced options" section.
 
 @subsection occt_algorithms_7_3b Usage
 
@@ -900,7 +900,7 @@ bbuild result
 
 @subsection occt_algorithms_7_3 Examples
 
-Please, have a look at the examples, which can help to better understand the definitions.
+Have a look at the examples to better understand the definitions.
 
 @subsubsection occt_algorithms_7_3_1	Case 1: Three edges intersecting at a point 
 
@@ -2428,7 +2428,7 @@ A lot of failures of GFA algorithm can be caused by bugs in low-level algorithms
 * The Projection Algorithm is used at the Intersection step. The purpose of Projection Algorithm is to compute 2D curves on surfaces. Wrong results here lead to incorrect or missing faces in the final GFA result. 
 * The Classification Algorithm is used at the Building step. The bugs in the Classification Algorithm lead to errors in selecting shape parts (edges, faces, solids) and ultimately to a wrong final GFA result.
 
-The description below illustrates some known GFA limitations. It does not enumerate exhaustively all problems that can arise in practice. Please, address cases of Algorithm failure to the OCCT Maintenance Service.
+The description below illustrates some known GFA limitations. It does not enumerate exhaustively all problems that can arise in practice. Please address cases of Algorithm failure to the OCCT Maintenance Service.
 
 
 @subsection occt_algorithms_10_1	Arguments
@@ -2524,7 +2524,7 @@ Let us also consider a cylinder-based *Face 2* with radii *R=3000* and *H=6000* 
 
 @figure{/user_guides/boolean_operations/images/operations_image047.png,"P-Curves for Face 2",230}
 
-Please, pay attention to the Zoom value of the Figures.
+Pay attention to the Zoom value of the Figures.
 
 It is obvious that starting with some value of *ScF*, e.g. *ScF>1000000*, all sloped p-Curves on *Face 2*  will be almost vertical. At least, there will be no difference between the values of angles computed by standard C Run-Time Library functions, such as *double acos(double x)*. The loss of accuracy in computation of angles can cause failure of some BP sub-algorithms, such as building faces from a set of edges or building solids from a set of faces.
 
@@ -3087,7 +3087,7 @@ Some options of the main operation are passed into the Unifier:
 - Fuzzy tolerance of the operation is given to the Unifier as the linear tolerance.
 - Non destructive mode here controls the safe input mode in Unifier.
 
-For controlling this possibility in DRAW the command **bsimplify** has been implemented. Please see the @ref occt_draw_bop_options "Boolean Operations options" chapter in draw user guide.
+For controlling this possibility in DRAW the command **bsimplify** has been implemented. See the @ref occt_draw_bop_options "Boolean Operations options" chapter in draw user guide.
 
 
 @subsection occt_algorithms_simplification_examples Examples

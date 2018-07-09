@@ -1383,7 +1383,7 @@ DRAW History support for the algorithms is provided by three basic commands:
 * *modified*;
 * *generated*.
 
-For more information on the Draw History mechanism please refer to the corresponding chapter in the Draw users guide - @ref occt_draw_hist "History commands".
+For more information on the Draw History mechanism, refer to the corresponding chapter in the Draw users guide - @ref occt_draw_hist "History commands".
 
 
 @section occt_modalg_3 Standard  Topological Objects
@@ -3181,7 +3181,7 @@ On the low-level the history information is collected by the history tool *BRepT
 * *BOPAlgo_AlertUnableToRemoveTheFeature* - the warning alert is given to inform the user the removal of the feature is not possible. The algorithm will still try to remove the other features;
 * *BOPAlgo_AlertRemoveFeaturesFailed* - the error alert is given in case if the operation was aborted by the unknown reason.
 
-For more information on the error/warning reporting system please see the chapter @ref occt_algorithms_ers "Errors and warnings reporting system" of Boolean operations user guide.
+For more information on the error/warning reporting system, see the chapter @ref occt_algorithms_ers "Errors and warnings reporting system" of Boolean operations user guide.
 
 <b>Parallel processing mode</b> - allows running the algorithm in parallel mode obtaining the result faster.
 

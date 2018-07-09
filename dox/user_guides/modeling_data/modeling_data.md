@@ -1166,7 +1166,7 @@ Thus for a contour of four edges it should count 1 wire + 4 edges +4 vertices wi
   }
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Note** For more details about Maps please, refer to the TCollection documentation. (Foundation Classes Reference Manual) 
+**Note** For more details about Maps, refer to the *TCollection* documentation (Foundation Classes Reference Manual). 
 
 The following example is more ambitious and writes a program which copies a data structure using an *IndexedMap*. The copy is an identical structure but it shares nothing with the original. The principal algorithm is as follows: 
 - All Shapes in the structure are put into an *IndexedMap*. 
