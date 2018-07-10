@@ -1,0 +1,10 @@
+puts "========"
+puts "OCC27021: TopExp::Vertices performance optimization"
+puts "========"
+puts ""
+
+pload QAcommands
+
+restore [locate_data_file bug27021_shape.brep] f
+
+OCC27021 f

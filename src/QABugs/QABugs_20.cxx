@@ -1431,20 +1431,20 @@ static Standard_Integer OCC27021(Draw_Interpretor& theDI,
   std::pair<gp_Pnt, gp_Pnt> vertices;
   clock_t t = clock();
 
-  theDI << "\nRetrieving " << iterations << " vertices using approach A)...";
+  theDI << "\nRetrieving " << iterations << " vertices using approach A)...\n";
   for (int i = 0; i < iterations; ++i)
   {
     vertices = getVerticesA(edge);
   }
-  theDI << "done in " << (clock() - t) / (double)CLOCKS_PER_SEC << " seconds\n";
+  theDI << "COUNTER RetrievingVertA" << ": " << (clock() - t) / (double)CLOCKS_PER_SEC << "\n";
   t = clock();
 
-  theDI << "\nRetrieving " << iterations << " vertices using approach B)...";
+  theDI << "\nRetrieving " << iterations << " vertices using approach B)...\n";
   for (int i = 0; i < iterations; ++i)
   {
     vertices = getVerticesB(edge);
   }
-  theDI << "done in " << (clock() - t) / (double)CLOCKS_PER_SEC << " seconds\n";
+  theDI << "COUNTER RetrievingVertB" << ": " << (clock() - t) / (double)CLOCKS_PER_SEC << "\n";
 
   return 0;
 }
