@@ -68,7 +68,7 @@ void RWStepShape_RWAdvancedFace::ReadStep
 
 	// --- inherited field : sameSense ---
 
-	Standard_Boolean aSameSense;
+	Standard_Boolean aSameSense = Standard_True;
 	//szv#4:S4163:12Mar99 `Standard_Boolean stat4 =` not needed
 	data->ReadBoolean (num,4,"same_sense",ach,aSameSense);
 
