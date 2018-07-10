@@ -285,11 +285,12 @@ void TDataXtd_Presentation::SetMode(const Standard_Integer theMode)
 //function : SetSelectionMode
 //purpose  : 
 //=======================================================================
-void TDataXtd_Presentation::SetSelectionMode(const Standard_Integer theSelectionMode)
+void TDataXtd_Presentation::SetSelectionMode(const Standard_Integer theSelectionMode, const Standard_Boolean theTransaction)
 {
   if (! myHasOwnSelectionMode || mySelectionMode != theSelectionMode)
   {
-    Backup();
+    if (theTransaction)
+        Backup();
     mySelectionMode = theSelectionMode;
     myHasOwnSelectionMode = Standard_True;
   }

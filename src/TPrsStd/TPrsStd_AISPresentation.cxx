@@ -591,10 +591,11 @@ Standard_Boolean TPrsStd_AISPresentation::HasOwnSelectionMode() const
 //function : SetSelectionMode
 //purpose  : 
 //=======================================================================
-void TPrsStd_AISPresentation::SetSelectionMode(const Standard_Integer theSelectionMode)
+void TPrsStd_AISPresentation::SetSelectionMode(const Standard_Integer theSelectionMode, const Standard_Boolean theTransaction)
 {
-  Backup();
-  getData()->SetSelectionMode (theSelectionMode);
+  if (theTransaction)
+    Backup();
+  getData()->SetSelectionMode (theSelectionMode, theTransaction);
   
   if ( myAIS.IsNull() )
     AISUpdate();
