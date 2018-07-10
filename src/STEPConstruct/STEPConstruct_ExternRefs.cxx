@@ -66,6 +66,9 @@
 #include <StepShape_ShapeRepresentation.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <XSControl_WorkSession.hxx>
+#include <XSControl_TransferReader.hxx>
+#include <OSD_File.hxx>
+#include <OSD_Path.hxx>
 
 //=======================================================================
 //function : STEPConstruct_ExternRefs
@@ -395,8 +398,23 @@ Standard_CString STEPConstruct_ExternRefs::FileName (const Standard_Integer num)
       }
     }
   }
-  if ( ! aCStringFileName || ! aCStringFileName[0] ) {
-    // try to find name direct from DocFile
+  Standard_CString oldFileName = 0;
+  // compute true path to the extern file
+  OSD_Path mainfile(WS()->LoadedFile());
+  mainfile.SetName("");
+  mainfile.SetExtension("");
+  TCollection_AsciiString dpath;
+  mainfile.SystemName(dpath);
+  if (aCStringFileName && aCStringFileName[0]) {
+    TCollection_AsciiString fullname = OSD_Path::AbsolutePath(dpath, aCStringFileName);
+    if (fullname.Length() <= 0) fullname = aCStringFileName;
+    if (!OSD_File(fullname).Exists()) {
+      oldFileName = aCStringFileName;
+      aCStringFileName = 0;
+    }
+  }
+  if (!aCStringFileName || !aCStringFileName[0]) {
+    // try to find name of the directory from DocFile
     if ( !DocFile.IsNull() ) {
       Handle(TCollection_HAsciiString) aFilename = DocFile->Id();
       if (!aFilename.IsNull() && !aFilename->IsEmpty())
@@ -407,10 +425,34 @@ Standard_CString STEPConstruct_ExternRefs::FileName (const Standard_Integer num)
         aCStringFileName = aFilename->ToCString();
       }
       if ( ! aCStringFileName || ! aCStringFileName[0] ) {
-        return "";
+        if (oldFileName) {
+          aCStringFileName = oldFileName;
+        }
+        else {
+          return "";
+        }
       }
-      else 
-        return aCStringFileName;
+    }
+  }
+  TCollection_AsciiString fullname = OSD_Path::AbsolutePath(dpath, aCStringFileName);
+  if (fullname.Length() <= 0) fullname = aCStringFileName;
+  if (!OSD_File(fullname).Exists()) {
+    if (oldFileName) {
+      aCStringFileName = oldFileName;
+    }
+    Handle(Transfer_TransientProcess) aTP = WS()->TransferReader()->TransientProcess();
+    TCollection_AsciiString aMess("Can not read external file ");
+    aMess.AssignCat(aCStringFileName);
+    aTP->AddFail(DocFile, aMess.ToCString());
+  }
+  else {
+    if (oldFileName && strcmp(oldFileName, aCStringFileName) != 0) {
+      Handle(Transfer_TransientProcess) aTP = WS()->TransferReader()->TransientProcess();
+      TCollection_AsciiString aMess("External file with name from entity AEIA (");
+      aMess.AssignCat(oldFileName);
+      aMess.AssignCat(") not existed => use file name from DocumentFile entity - ");
+      aMess.AssignCat(aCStringFileName);
+      aTP->AddWarning(DocFile, aMess.ToCString());
     }
   }
   return aCStringFileName;
