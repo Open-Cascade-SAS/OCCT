@@ -466,7 +466,7 @@ void GeomEvaluator_OffsetSurface::CalculateD0(
       derivatives(MaxOrder, 1, theU, theV, myBaseAdaptor, 0, 0, AlongU, AlongV, L, DerNUV, DerSurf);
 
     gp_Dir Normal;
-    CSLib_NormalStatus NStatus;
+    CSLib_NormalStatus NStatus = CSLib_Singular;
     CSLib::Normal(MaxOrder, DerNUV, the_D1MagTol, theU, theV, Umin, Umax, Vmin, Vmax,
                   NStatus, Normal, OrderU, OrderV);
     if (NStatus == CSLib_InfinityOfSolutions)
