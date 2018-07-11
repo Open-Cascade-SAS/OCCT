@@ -1,0 +1,11 @@
+puts "=========="
+puts "OCC29945"
+puts "=========="
+puts ""
+#########################################################
+# Export body of revolution to STEP breaks the shape
+#########################################################
+
+testreadstep [locate_data_file bug29945.stp] res
+
+checkshape res

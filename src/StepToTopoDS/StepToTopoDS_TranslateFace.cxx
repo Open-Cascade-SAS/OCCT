@@ -37,6 +37,7 @@
 #include <Geom_Plane.hxx>
 #include <Geom_SphericalSurface.hxx>
 #include <Geom_Surface.hxx>
+#include <Geom_SurfaceOfRevolution.hxx>
 #include <Geom_ToroidalSurface.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <GeomAdaptor_HSurface.hxx>
@@ -246,7 +247,8 @@ void StepToTopoDS_TranslateFace::Init
 
       // abv 10.07.00 pr1sy.stp: vertex_loop can be wrong; so just make natural bounds
       if (GeomSurf->IsKind (STANDARD_TYPE(Geom_SphericalSurface)) ||
-          GeomSurf->IsKind (STANDARD_TYPE(Geom_BSplineSurface)) )
+          GeomSurf->IsKind (STANDARD_TYPE(Geom_BSplineSurface)) || 
+          GeomSurf->IsKind (STANDARD_TYPE(Geom_SurfaceOfRevolution)))
       {
         if (NbBnd ==1 || FaceBound->IsKind(STANDARD_TYPE(StepShape_FaceOuterBound))) {
           BRepBuilderAPI_MakeFace mf (GeomSurf, Precision());
