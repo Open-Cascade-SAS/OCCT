@@ -348,6 +348,7 @@ Handle(Prs3d_Presentation) SelectMgr_SelectableObject::GetHilightPresentation (c
   {
     myHilightPrs = new Prs3d_Presentation (theMgr->StructureManager());
     myHilightPrs->SetTransformPersistence (TransformPersistence());
+    myHilightPrs->SetClipPlanes (myClipPlanes);
   }
 
   return myHilightPrs;
@@ -364,6 +365,7 @@ Handle(Prs3d_Presentation) SelectMgr_SelectableObject::GetSelectPresentation (co
   {
     mySelectionPrs = new Prs3d_Presentation (theMgr->StructureManager());
     mySelectionPrs->SetTransformPersistence (TransformPersistence());
+    mySelectionPrs->SetClipPlanes (myClipPlanes);
   }
 
   return mySelectionPrs;
@@ -425,6 +427,23 @@ void SelectMgr_SelectableObject::SetZLayer (const Graphic3d_ZLayerId theLayerId)
         }
       }
     }
+  }
+}
+
+//=======================================================================
+//function : UpdateClipping
+//purpose  :
+//=======================================================================
+void SelectMgr_SelectableObject::UpdateClipping()
+{
+  PrsMgr_PresentableObject::UpdateClipping();
+  if (!mySelectionPrs.IsNull())
+  {
+    mySelectionPrs->SetClipPlanes (myClipPlanes);
+  }
+  if (!myHilightPrs.IsNull())
+  {
+    myHilightPrs->SetClipPlanes (myClipPlanes);
   }
 }
 

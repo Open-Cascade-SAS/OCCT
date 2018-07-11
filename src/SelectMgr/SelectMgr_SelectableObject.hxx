@@ -198,6 +198,9 @@ protected:
     myGlobalSelMode = theMode > 0 ? theMode : 0;
   }
 
+  //! Update clipping planes state.
+  Standard_EXPORT virtual void UpdateClipping() Standard_OVERRIDE;
+
   Standard_EXPORT virtual void updateSelection (const Standard_Integer theMode);
 
 protected:
