@@ -125,6 +125,8 @@
 #include <TColStd_ListOfInteger.hxx>
 #include <TColStd_ListIteratorOfListOfInteger.hxx>
 
+#include <Select3D_SensitiveSegment.hxx>
+#include <Select3D_SensitivePrimitiveArray.hxx>
 #include <Select3D_SensitiveTriangle.hxx>
 #include <Select3D_SensitiveCurve.hxx>
 #include <Select3D_SensitivePoint.hxx>
@@ -3179,14 +3181,14 @@ class MyPArrayObject : public AIS_InteractiveObject
 
 public:
 
+  MyPArrayObject (const Handle(Graphic3d_ArrayOfPrimitives)& thePArray) : myPArray (thePArray) {}
+
   MyPArrayObject (Handle(TColStd_HArray1OfAsciiString) theArrayDescription,
-                  Handle(Graphic3d_AspectMarker3d) theMarkerAspect = NULL)
-  {
-    myArrayDescription = theArrayDescription;
-    myMarkerAspect = theMarkerAspect;
-  }
+                  Handle(Graphic3d_AspectMarker3d) theMarkerAspect = NULL);
 
   DEFINE_STANDARD_RTTI_INLINE(MyPArrayObject,AIS_InteractiveObject);
+
+  virtual Standard_Boolean AcceptDisplayMode (const Standard_Integer theMode) const Standard_OVERRIDE { return theMode == 0; }
 
 private:
 
@@ -3207,14 +3209,34 @@ protected:
 
   Handle(TColStd_HArray1OfAsciiString) myArrayDescription;
   Handle(Graphic3d_AspectMarker3d) myMarkerAspect;
+  Handle(Graphic3d_ArrayOfPrimitives) myPArray;
 
 };
 
-
 void MyPArrayObject::Compute (const Handle(PrsMgr_PresentationManager3d)& /*aPresentationManager*/,
-                              const Handle(Prs3d_Presentation)& aPresentation,
-                              const Standard_Integer /*aMode*/)
+                              const Handle(Prs3d_Presentation)& thePrs,
+                              const Standard_Integer theMode)
 {
+  if (myPArray.IsNull() || theMode != 0)
+  {
+    return;
+  }
+
+  Handle(Graphic3d_Group) aGroup = thePrs->NewGroup();
+  if (!myMarkerAspect.IsNull())
+  {
+    aGroup->SetGroupPrimitivesAspect (myMarkerAspect);
+  }
+  aGroup->SetGroupPrimitivesAspect (myDrawer->LineAspect()->Aspect());
+  aGroup->SetGroupPrimitivesAspect (myDrawer->ShadingAspect()->Aspect());
+  aGroup->AddPrimitiveArray (myPArray);
+}
+
+MyPArrayObject::MyPArrayObject (Handle(TColStd_HArray1OfAsciiString) theArrayDescription,
+                                Handle(Graphic3d_AspectMarker3d) theMarkerAspect)
+{
+  myArrayDescription = theArrayDescription;
+  myMarkerAspect = theMarkerAspect;
 
   // Parsing array description
   Standard_Integer aVertexNum = 0, aBoundNum = 0, aEdgeNum = 0;
@@ -3359,37 +3381,52 @@ void MyPArrayObject::Compute (const Handle(PrsMgr_PresentationManager3d)& /*aPre
     else
       anArgIndex++;
   }
-
-  aPresentation->Clear();
-  if (!myMarkerAspect.IsNull())
-  {
-    Prs3d_Root::CurrentGroup (aPresentation)->SetGroupPrimitivesAspect (myMarkerAspect);
-  }
-  Prs3d_Root::CurrentGroup (aPresentation)->SetGroupPrimitivesAspect (myDrawer->LineAspect()->Aspect());
-  Prs3d_Root::CurrentGroup (aPresentation)->SetGroupPrimitivesAspect (myDrawer->ShadingAspect()->Aspect());
-  Prs3d_Root::CurrentGroup (aPresentation)->AddPrimitiveArray (anArray);
+  myPArray = anArray;
 }
 
 void MyPArrayObject::ComputeSelection (const Handle(SelectMgr_Selection)& theSelection,
-                                       const Standard_Integer /*theMode*/)
+                                       const Standard_Integer theMode)
 {
-  Handle(SelectMgr_EntityOwner) anEntityOwner = new SelectMgr_EntityOwner (this);
-
-  Standard_Integer anArgIndex = 1;
-  while (anArgIndex < myArrayDescription->Length())
+  if (theMode != 0
+   || myPArray.IsNull())
   {
-    if (CheckInputCommand ("v", myArrayDescription, anArgIndex, 3, myArrayDescription->Length()))
+    return;
+  }
+
+  Handle(SelectMgr_EntityOwner) anOwner = new SelectMgr_EntityOwner (this);
+  if (Handle(Graphic3d_ArrayOfTriangles) aTris = Handle(Graphic3d_ArrayOfTriangles)::DownCast (myPArray))
+  {
+    Handle(Select3D_SensitivePrimitiveArray) aSensitive = new Select3D_SensitivePrimitiveArray (anOwner);
+    aSensitive->InitTriangulation (myPArray->Attributes(), myPArray->Indices(), TopLoc_Location(), true);
+    theSelection->Add (aSensitive);
+  }
+  else if (Handle(Graphic3d_ArrayOfSegments) aSegs = Handle(Graphic3d_ArrayOfSegments)::DownCast (myPArray))
+  {
+    if (aSegs->EdgeNumber() > 0)
     {
-      gp_Pnt aPoint (myArrayDescription->Value (anArgIndex - 3).RealValue(),
-                     myArrayDescription->Value (anArgIndex - 2).RealValue(),
-                     myArrayDescription->Value (anArgIndex - 1).RealValue());
-      Handle(Select3D_SensitivePoint) aSensetivePoint = new Select3D_SensitivePoint (anEntityOwner, aPoint);
-      theSelection->Add (aSensetivePoint);
+      for (Standard_Integer aPntIter = 1; aPntIter <= aSegs->EdgeNumber(); aPntIter += 2)
+      {
+        Handle(Select3D_SensitiveSegment) aSeg = new Select3D_SensitiveSegment (anOwner, aSegs->Vertice (aSegs->Edge (aPntIter)), aSegs->Vertice (aSegs->Edge (aPntIter + 1)));
+        aSeg->SetSensitivityFactor (4);
+        theSelection->Add (aSeg);
+      }
     }
     else
     {
-      anArgIndex++;
+      for (Standard_Integer aPntIter = 1; aPntIter <= aSegs->VertexNumber(); aPntIter += 2)
+      {
+        Handle(Select3D_SensitiveSegment) aSeg = new Select3D_SensitiveSegment (anOwner, aSegs->Vertice (aPntIter), aSegs->Vertice (aPntIter + 1));
+        aSeg->SetSensitivityFactor (4);
+        theSelection->Add (aSeg);
+      }
     }
+  }
+  else
+  {
+    Handle(Select3D_SensitivePrimitiveArray) aSensitive = new Select3D_SensitivePrimitiveArray (anOwner);
+    aSensitive->SetSensitivityFactor (8);
+    aSensitive->InitPoints (myPArray->Attributes(), myPArray->Indices(), TopLoc_Location(), true);
+    theSelection->Add (aSensitive);
   }
 }
 
@@ -4474,313 +4511,65 @@ static Standard_Integer VSelectionPrevious(Draw_Interpretor& /*theDI*/,
   return 0;
 }
 
-
-//==========================================================================
-//class   : Triangle 
-//purpose : creates Triangle based on AIS_InteractiveObject. 
-//          This class was implemented for testing Select3D_SensitiveTriangle
-//===========================================================================
-
-class Triangle: public AIS_InteractiveObject 
-{
-public: 
-  // CASCADE RTTI
-  DEFINE_STANDARD_RTTI_INLINE(Triangle,AIS_InteractiveObject);
-  Triangle (const gp_Pnt& theP1, 
-            const gp_Pnt& theP2, 
-            const gp_Pnt& theP3);
-protected:
-  void Compute (  const Handle(PrsMgr_PresentationManager3d)& thePresentationManager,
-                  const Handle(Prs3d_Presentation)& thePresentation,
-                  const Standard_Integer theMode) Standard_OVERRIDE;
-
-  void ComputeSelection (  const Handle(SelectMgr_Selection)& theSelection, 
-                           const Standard_Integer theMode) Standard_OVERRIDE;
-private: 
-  gp_Pnt myPoint1;
-  gp_Pnt myPoint2;
-  gp_Pnt myPoint3;
-};
-
-
-Triangle::Triangle (const gp_Pnt& theP1,
-                    const gp_Pnt& theP2,
-                    const gp_Pnt& theP3)
-{
-  myPoint1 = theP1;
-  myPoint2 = theP2;
-  myPoint3 = theP3;
-}
-
-void Triangle::Compute(const Handle(PrsMgr_PresentationManager3d)& /*thePresentationManager*/,
-                       const Handle(Prs3d_Presentation)& thePresentation,
-                       const Standard_Integer /*theMode*/)
-{
-  thePresentation->Clear();
-
-  BRepBuilderAPI_MakeEdge anEdgeMaker1(myPoint1, myPoint2),
-                          anEdgeMaker2(myPoint2, myPoint3),
-                          anEdgeMaker3(myPoint3, myPoint1);
-
-  TopoDS_Edge anEdge1 = anEdgeMaker1.Edge(),
-              anEdge2 = anEdgeMaker2.Edge(),
-              anEdge3 = anEdgeMaker3.Edge();
-  if(anEdge1.IsNull() || anEdge2.IsNull() || anEdge3.IsNull())
-    return;
-
-  BRepBuilderAPI_MakeWire aWireMaker(anEdge1, anEdge2, anEdge3);
-  TopoDS_Wire aWire = aWireMaker.Wire();
-  if(aWire.IsNull()) return;
-
-  BRepBuilderAPI_MakeFace aFaceMaker(aWire);
-  TopoDS_Face aFace = aFaceMaker.Face();
-  if(aFace.IsNull()) return;
-
-  StdPrs_ShadedShape::Add(thePresentation, aFace, myDrawer);
-}
-
-void Triangle::ComputeSelection(const Handle(SelectMgr_Selection)& theSelection, 
-                                const Standard_Integer /*theMode*/)
-{
-  Handle(SelectMgr_EntityOwner) anEntityOwner = new SelectMgr_EntityOwner(this);
-  Handle(Select3D_SensitiveTriangle) aSensTriangle = 
-    new Select3D_SensitiveTriangle(anEntityOwner, myPoint1, myPoint2, myPoint3);
-  theSelection->Add(aSensTriangle);
-}
-
 //===========================================================================
 //function : VTriangle 
 //Draw arg : vtriangle Name PointName PointName PointName
 //purpose  : creates and displays Triangle
 //===========================================================================
-
-//function: IsPoint
-//purpose : checks if the object with theName is AIS_Point, 
-//          if yes initialize thePoint from MapOfAIS
-Standard_Boolean IsPoint (const TCollection_AsciiString& theName,
-                          Handle(AIS_Point)& thePoint)
-{
-  Handle(AIS_InteractiveObject) anObject = 
-    Handle(AIS_InteractiveObject)::DownCast(GetMapOfAIS().Find2(theName));
-  if(anObject.IsNull() || 
-     anObject->Type() != AIS_KOI_Datum || 
-     anObject->Signature() != 1)
-  {
-    return Standard_False;
-  }
-  thePoint = Handle(AIS_Point)::DownCast(anObject);
-  if(thePoint.IsNull())
-    return Standard_False;
-  return Standard_True;
-}
-
-//function: IsMatch
-//purpose: checks if thePoint1 is equal to thePoint2
-Standard_Boolean IsMatch (const Handle(Geom_CartesianPoint)& thePoint1,
-                          const Handle(Geom_CartesianPoint)& thePoint2)
-{
-  if(Abs(thePoint1->X()-thePoint2->X()) <= Precision::Confusion() &&
-     Abs(thePoint1->Y()-thePoint2->Y()) <= Precision::Confusion() &&
-     Abs(thePoint1->Z()-thePoint2->Z()) <= Precision::Confusion())
-  {
-    return Standard_True;
-  }
-  return Standard_False;
-}
-
 static Standard_Integer VTriangle (Draw_Interpretor& /*di*/,
                                    Standard_Integer argc,
                                    const char ** argv)
 {
-  // Check arguments
-  if (argc != 5)
+  const Standard_Boolean isTri = TCollection_AsciiString (argv[0]) == "vtriangle";
+  Handle(Graphic3d_ArrayOfPrimitives) aPrims;
+  if (isTri)
   {
-    std::cout<<"vtriangle error: expects 4 argumnets\n";
-    return 1; // TCL_ERROR
+    aPrims = new Graphic3d_ArrayOfTriangles (3);
+  }
+  else
+  {
+    aPrims = new Graphic3d_ArrayOfSegments (2);
   }
 
-  // Get and check values
-  TCollection_AsciiString aName(argv[1]);
-
-  Handle(AIS_Point) aPoint1, aPoint2, aPoint3;
-  if (!IsPoint(argv[2], aPoint1))
+  if (argc != (2 + aPrims->VertexNumberAllocated()))
   {
-    std::cout<<"vtriangle error: the 2nd argument must be a point\n";
-    return 1; // TCL_ERROR
-  }
-  if (!IsPoint(argv[3], aPoint2))
-  {
-    std::cout<<"vtriangle error: the 3d argument must be a point\n";
-    return 1; // TCL_ERROR
-  }
-  if (!IsPoint(argv[4], aPoint3))
-  {
-    std::cout<<"vtriangle error: the 4th argument must be a point\n";
-    return 1; // TCL_ERROR
+    std::cout << "Syntax error: wrong number of arguments\n";
+    return 1;
   }
 
-  // Check that points are different
-  Handle(Geom_CartesianPoint) aCartPoint1 = 
-    Handle(Geom_CartesianPoint)::DownCast(aPoint1->Component());
-  Handle(Geom_CartesianPoint) aCartPoint2 = 
-    Handle(Geom_CartesianPoint)::DownCast(aPoint2->Component());
-  // Test aPoint1 = aPoint2
-  if (IsMatch(aCartPoint1, aCartPoint2))
+  gp_Pnt aPnts[3];
+  for (Standard_Integer aPntIter = 0; aPntIter < aPrims->VertexNumberAllocated(); ++aPntIter)
   {
-    std::cout<<"vtriangle error: the 1st and the 2nd points are equal\n";
-    return 1; // TCL_ERROR
-  }
-  // Test aPoint2 = aPoint3
-  Handle(Geom_CartesianPoint) aCartPoint3 = 
-    Handle(Geom_CartesianPoint)::DownCast(aPoint3->Component());
-  if (IsMatch(aCartPoint2, aCartPoint3))
-  {
-    std::cout<<"vtriangle error: the 2nd and the 3d points are equal\n";
-    return 1; // TCL_ERROR
-  }
-  // Test aPoint3 = aPoint1
-  if (IsMatch(aCartPoint1, aCartPoint3))
-  {
-    std::cout<<"vtriangle error: the 1st and the 3d points are equal\n";
-    return 1; // TCL_ERROR
-  }
+    const TCollection_AsciiString aName (argv[2 + aPntIter]);
+    if (Handle(AIS_Point) aPntPrs = Handle(AIS_Point)::DownCast (GetMapOfAIS().IsBound2 (aName) ? GetMapOfAIS().Find2 (aName) : NULL))
+    {
+      aPnts[aPntIter] = aPntPrs->Component()->Pnt();
+    }
+    else
+    {
+      TopoDS_Shape aShape = DBRep::Get (argv[2 + aPntIter]);
+      if (aShape.IsNull()
+       || aShape.ShapeType() != TopAbs_VERTEX)
+      {
+        std::cout << "Syntax error: argument " << aName << " must be a point\n";
+        return 1;
+      }
+      aPnts[aPntIter] = BRep_Tool::Pnt (TopoDS::Vertex (aShape));
+    }
 
-  // Create triangle
-  Handle(Triangle) aTriangle = new Triangle(aCartPoint1->Pnt(),
-                                            aCartPoint2->Pnt(),
-                                            aCartPoint3->Pnt());
+    for (Standard_Integer aPnt2Iter = 0; aPnt2Iter < aPntIter; ++aPnt2Iter)
+    {
+      if (aPnts[aPnt2Iter].IsEqual (aPnts[aPntIter], Precision::Confusion()))
+      {
+        std::cout << "Syntax error: points should not be equal\n";
+        return 1;
+      }
+    }
 
-  // Check if there is an object with given name
-  // and remove it from context
-  if (GetMapOfAIS().IsBound2(aName))
-  {
-    Handle(Standard_Transient) anObj = GetMapOfAIS().Find2(aName);
-    Handle(AIS_InteractiveObject) anInterObj = 
-         Handle(AIS_InteractiveObject)::DownCast(anObj);
-    TheAISContext()->Remove(anInterObj, Standard_False);
-    GetMapOfAIS().UnBind2(aName);
+    aPrims->AddVertex (aPnts[aPntIter]);
   }
 
-  // Bind triangle to its name
-  GetMapOfAIS().Bind(aTriangle, aName);
-
-  // Display triangle
-  TheAISContext()->Display (aTriangle, Standard_True);
-  return 0;
-}
-
-//class  : SegmentObject
-//purpose: creates segment based on AIS_InteractiveObject.
-//         This class was implemented for testing Select3D_SensitiveCurve
-
-class SegmentObject: public AIS_InteractiveObject
-{
-public:
-  // CASCADE RTTI
-  DEFINE_STANDARD_RTTI_INLINE(SegmentObject,AIS_InteractiveObject); 
-  SegmentObject (const gp_Pnt& thePnt1, const gp_Pnt& thePnt2);
-protected:
-  void Compute (const Handle(PrsMgr_PresentationManager3d)& thePresentationManager,
-                const Handle(Prs3d_Presentation)& thePresentation,
-                const Standard_Integer theMode) Standard_OVERRIDE;
-
-  void ComputeSelection (const Handle(SelectMgr_Selection)& theSelection, 
-                         const Standard_Integer theMode) Standard_OVERRIDE;
-private:
-  gp_Pnt myPoint1;
-  gp_Pnt myPoint2;
-};
-
-
-SegmentObject::SegmentObject (const gp_Pnt& thePnt1, const gp_Pnt& thePnt2)
-{
-  myPoint1 = thePnt1;
-  myPoint2 = thePnt2;
-}
-
-void SegmentObject::Compute (const Handle(PrsMgr_PresentationManager3d) &/*thePresentationManager*/,
-                             const Handle(Prs3d_Presentation) &thePresentation,
-                             const Standard_Integer /*theMode*/)
-{
-  thePresentation->Clear();
-  BRepBuilderAPI_MakeEdge anEdgeMaker(myPoint1, myPoint2);
-  TopoDS_Edge anEdge = anEdgeMaker.Edge();
-  if (anEdge.IsNull())
-    return;
-  BRepAdaptor_Curve aCurveAdaptor(anEdge);
-  StdPrs_Curve::Add(thePresentation, aCurveAdaptor, myDrawer);
-}
-
-void SegmentObject::ComputeSelection (const Handle(SelectMgr_Selection) &theSelection,
-                                      const Standard_Integer /*theMode*/)
-{
-  Handle(SelectMgr_EntityOwner) anOwner = new SelectMgr_EntityOwner(this);
-  Handle(TColgp_HArray1OfPnt) anArray = new TColgp_HArray1OfPnt(1, 2);
-  anArray->SetValue(1, myPoint1);
-  anArray->SetValue(2, myPoint2);
-  Handle(Select3D_SensitiveCurve) aSensCurve = 
-    new Select3D_SensitiveCurve(anOwner, anArray);
-  theSelection->Add(aSensCurve);
-}
-
-//=======================================================================
-//function  : VSegment
-//Draw args : vsegment Name PointName PointName
-//purpose   : creates and displays Segment
-//=======================================================================
-static Standard_Integer VSegment (Draw_Interpretor& /*di*/,
-                                  Standard_Integer argc,
-                                  const char ** argv)
-{
-  // Check arguments
-  if(argc!=4)
-  {
-    std::cout<<"vsegment error: expects 3 arguments\n";
-    return 1; // TCL_ERROR
-  }
-
-  // Get and check arguments
-  TCollection_AsciiString aName(argv[1]);
-  Handle(AIS_Point) aPoint1, aPoint2;
-  if (!IsPoint(argv[2], aPoint1))
-  {
-    std::cout<<"vsegment error: the 2nd argument should be a point\n";
-    return 1; // TCL_ERROR
-  }
-  if (!IsPoint(argv[3], aPoint2))
-  {
-    std::cout<<"vsegment error: the 3d argument should be a point\n";
-    return 1; // TCL_ERROR
-  }
-  //Check that points are different
-  Handle(Geom_CartesianPoint) aCartPoint1 = 
-    Handle(Geom_CartesianPoint)::DownCast(aPoint1->Component());
-  Handle(Geom_CartesianPoint) aCartPoint2 = 
-    Handle(Geom_CartesianPoint)::DownCast(aPoint2->Component());
-  if(IsMatch(aCartPoint1, aCartPoint2))
-  {
-    std::cout<<"vsegment error: equal points\n";
-    return 1; // TCL_ERROR
-  }
-  
-  // Create segment
-  Handle(SegmentObject) aSegment = new SegmentObject(aCartPoint1->Pnt(), aCartPoint2->Pnt());
-  // Check if there is an object with given name
-  // and remove it from context
-  if (GetMapOfAIS().IsBound2(aName))
-  {
-    Handle(Standard_Transient) anObj = GetMapOfAIS().Find2(aName);
-    Handle(AIS_InteractiveObject) anInterObj = 
-         Handle(AIS_InteractiveObject)::DownCast(anObj);
-    TheAISContext()->Remove(anInterObj, Standard_False);
-    GetMapOfAIS().UnBind2(aName);
-  }
-
-  // Bind segment to its name
-  GetMapOfAIS().Bind(aSegment, aName);
-
-  // Display segment
-  TheAISContext()->Display (aSegment, Standard_True);
+  ViewerTest::Display (argv[1], new MyPArrayObject (aPrims));
   return 0;
 }
 
@@ -6667,7 +6456,7 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
   theCommands.Add("vsegment",
     "vsegment Name PointName PointName"
     "\n\t\t: Creates and displays a segment from named points.", 
-    __FILE__, VSegment,group);
+    __FILE__, VTriangle,group);
 
   theCommands.Add("vobjzlayer",
     "vobjzlayer : set/get object [layerid] - set or get z layer id for the interactive object",

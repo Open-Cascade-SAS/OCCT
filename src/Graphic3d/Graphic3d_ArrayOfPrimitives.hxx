@@ -88,6 +88,9 @@ public:
   //! Returns the number of defined vertex
   Standard_Integer VertexNumber() const { return !myAttribs.IsNull() ? myAttribs->NbElements : -1; }
 
+  //! Returns the number of allocated vertex
+  Standard_Integer VertexNumberAllocated() const { return myMaxVertexs; }
+
   //! Returns the number of total items according to the array type.
   Standard_EXPORT Standard_Integer ItemNumber() const;
 
@@ -609,6 +612,9 @@ public: //! @name optional array of Indices/Edges for using shared Vertex data
   //! Returns the number of defined edges
   Standard_Integer EdgeNumber() const { return !myIndices.IsNull() ? myIndices->NbElements : -1; }
 
+  //! Returns the number of allocated edges
+  Standard_Integer EdgeNumberAllocated() const { return myMaxEdges; }
+
   //! Returns the vertex index at rank theRank in the range [1,EdgeNumber()]
   Standard_Integer Edge (const Standard_Integer theRank) const
   {
@@ -635,6 +641,9 @@ public: //! @name optional array of Bounds/Subgroups within primitive array (e.g
 
   //! Returns the number of defined bounds
   Standard_Integer BoundNumber() const { return !myBounds.IsNull() ? myBounds->NbBounds : -1; }
+
+  //! Returns the number of allocated bounds
+  Standard_Integer BoundNumberAllocated() const { return myMaxBounds; }
 
   //! Returns the edge number at rank theRank.
   Standard_Integer Bound (const Standard_Integer theRank) const
