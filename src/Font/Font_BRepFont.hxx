@@ -27,10 +27,11 @@
 #include <NCollection_DataMap.hxx>
 #include <NCollection_String.hxx>
 #include <Standard_Mutex.hxx>
-#include <ShapeFix_Face.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Face.hxx>
+#include <TopTools_SequenceOfShape.hxx>
+
 
 //! This tool provides basic services for rendering of vectorized text glyphs as BRep shapes.
 //! Single instance initialize single font for sequential glyphs rendering with implicit caching of already rendered glyphs.
@@ -190,6 +191,11 @@ private:
              const GeomAbs_Shape        theContinuity,
              Handle(Geom_Curve)&        theCurve3d);
 
+  //! Auxiliary method for creation faces from sequence of wires.
+  //! Splits to few faces (if it is needed) and updates orientation of wires.
+  Standard_Boolean buildFaces (const NCollection_Sequence<TopoDS_Wire>& theWires,
+                               TopoDS_Shape& theRes);
+
 protected: //! @name Protected fields
 
   NCollection_DataMap<Standard_Utf32Char, TopoDS_Shape>
@@ -208,7 +214,6 @@ protected: //! @name Shared temporary variables for glyph construction
   TColgp_Array1OfPnt2d     my3Poles;
   TColgp_Array1OfPnt2d     my4Poles;
   BRep_Builder             myBuilder;
-  ShapeFix_Face            myFixer;
 
 public:
 
