@@ -66,6 +66,12 @@ public:
 #endif
 
 private:
+  //! This method should not be called (prohibited).
+  Standard_Condition (const Standard_Condition& theCopy);
+  //! This method should not be called (prohibited).
+  Standard_Condition& operator= (const Standard_Condition& theCopy);
+
+private:
 
 #ifdef _WIN32
   void*           myEvent;

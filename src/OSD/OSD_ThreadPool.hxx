@@ -112,6 +112,7 @@ protected:
   {
     friend class OSD_ThreadPool;
   public:
+    //! Main constructor.
     EnumeratedThread (bool theIsSelfThread = false)
     : myPool (NULL), myJob (NULL), myWakeEvent (false),
       myIdleEvent (false), myThreadIndex (0), myUsageCounter(0),
@@ -130,6 +131,34 @@ protected:
 
     //! Wait the thread going into Idle state (finished jobs).
     Standard_EXPORT void WaitIdle();
+
+  public:
+
+    //! Copy constructor.
+    EnumeratedThread (const EnumeratedThread& theCopy)
+    : OSD_Thread(),
+      myPool (NULL), myJob (NULL), myWakeEvent (false),
+      myIdleEvent (false), myThreadIndex (0), myUsageCounter(0),
+      myIsStarted (false), myToCatchFpe (false),
+      myIsSelfThread (false) { Assign (theCopy); }
+
+    //! Assignment operator.
+    EnumeratedThread& operator= (const EnumeratedThread& theCopy)
+    {
+      Assign (theCopy);
+      return *this;
+    }
+
+    //! Assignment operator.
+    void Assign (const EnumeratedThread& theCopy)
+    {
+      OSD_Thread::Assign (theCopy);
+      myPool         = theCopy.myPool;
+      myJob          = theCopy.myJob;
+      myThreadIndex  = theCopy.myThreadIndex;
+      myToCatchFpe   = theCopy.myToCatchFpe;
+      myIsSelfThread = theCopy.myIsSelfThread;
+    }
 
   private:
 
@@ -289,6 +318,12 @@ protected:
   static void performJob (Handle(Standard_Failure)& theFailure,
                           OSD_ThreadPool::JobInterface* theJob,
                           int theThreadIndex);
+
+private:
+  //! This method should not be called (prohibited).
+  OSD_ThreadPool (const OSD_ThreadPool& theCopy);
+  //! This method should not be called (prohibited).
+  OSD_ThreadPool& operator= (const OSD_ThreadPool& theCopy);
 
 private:
 
