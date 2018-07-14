@@ -268,9 +268,9 @@ namespace
         aV1.Cross (aV2);
         if (aV1.SquareMagnitude() > aPreci)
         {
-          anArray->AddEdge (anIndex[0] + aDecal);
-          anArray->AddEdge (anIndex[1] + aDecal);
-          anArray->AddEdge (anIndex[2] + aDecal);
+          anArray->AddEdges (anIndex[0] + aDecal,
+                             anIndex[1] + aDecal,
+                             anIndex[2] + aDecal);
         }
       }
     }

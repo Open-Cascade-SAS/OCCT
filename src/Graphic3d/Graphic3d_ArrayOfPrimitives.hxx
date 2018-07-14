@@ -631,6 +631,39 @@ public: //! @name optional array of Indices/Edges for using shared Vertex data
   //! @return the actual edges number
   Standard_EXPORT Standard_Integer AddEdge (const Standard_Integer theVertexIndex);
 
+  //! Convenience method, adds two vertex indices (a segment) in the range [1,VertexNumber()] in the array.
+  //! @return the actual edges number
+  Standard_Integer AddEdges (Standard_Integer theVertexIndex1,
+                             Standard_Integer theVertexIndex2)
+  {
+    AddEdge (theVertexIndex1);
+    return AddEdge (theVertexIndex2);
+  }
+
+  //! Convenience method, adds three vertex indices (a triangle) in the range [1,VertexNumber()] in the array.
+  //! @return the actual edges number
+  Standard_Integer AddEdges (Standard_Integer theVertexIndex1,
+                             Standard_Integer theVertexIndex2,
+                             Standard_Integer theVertexIndex3)
+  {
+    AddEdge (theVertexIndex1);
+    AddEdge (theVertexIndex2);
+    return AddEdge (theVertexIndex3);
+  }
+
+  //! Convenience method, adds four vertex indices (a quad) in the range [1,VertexNumber()] in the array.
+  //! @return the actual edges number
+  Standard_Integer AddEdges (Standard_Integer theVertexIndex1,
+                             Standard_Integer theVertexIndex2,
+                             Standard_Integer theVertexIndex3,
+                             Standard_Integer theVertexIndex4)
+  {
+    AddEdge (theVertexIndex1);
+    AddEdge (theVertexIndex2);
+    AddEdge (theVertexIndex3);
+    return AddEdge (theVertexIndex4);
+  }
+
 public: //! @name optional array of Bounds/Subgroups within primitive array (e.g. restarting primitives / assigning colors)
 
   //! Returns optional bounds buffer.

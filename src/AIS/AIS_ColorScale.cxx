@@ -55,12 +55,8 @@ namespace
     theTris->AddVertex (gp_Pnt (theXLeft + theSizeX, theYBottom,            0.0), theColorBottom);
     theTris->AddVertex (gp_Pnt (theXLeft,            theYBottom + theSizeY, 0.0), theColorTop);
     theTris->AddVertex (gp_Pnt (theXLeft + theSizeX, theYBottom + theSizeY, 0.0), theColorTop);
-    theTris->AddEdge (aVertIndex);
-    theTris->AddEdge (aVertIndex + 1);
-    theTris->AddEdge (aVertIndex + 2);
-    theTris->AddEdge (aVertIndex + 1);
-    theTris->AddEdge (aVertIndex + 2);
-    theTris->AddEdge (aVertIndex + 3);
+    theTris->AddEdges (aVertIndex,     aVertIndex + 1, aVertIndex + 2);
+    theTris->AddEdges (aVertIndex + 1, aVertIndex + 2, aVertIndex + 3);
   }
 
   //! Compute hue angle from specified value.
