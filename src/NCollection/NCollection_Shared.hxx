@@ -43,12 +43,22 @@ public:
   NCollection_Shared () {}
 
   //! Constructor with single argument
-  template <typename T1>
-  NCollection_Shared (T1 arg1) : T(arg1) {}
+  template<typename T1> NCollection_Shared (const T1& arg1) : T(arg1) {}
+
+  //! Constructor with single argument
+  template<typename T1> NCollection_Shared (T1& arg1) : T(arg1) {}
 
   //! Constructor with two arguments
-  template <typename T1, typename T2>
-  NCollection_Shared (T1 arg1, T2 arg2) : T(arg1, arg2) {}
+  template<typename T1, typename T2> NCollection_Shared (const T1& arg1, const T2& arg2) : T(arg1, arg2) {}
+
+  //! Constructor with two arguments
+  template<typename T1, typename T2> NCollection_Shared (T1& arg1, const T2& arg2) : T(arg1, arg2) {}
+
+  //! Constructor with two arguments
+  template<typename T1, typename T2> NCollection_Shared (const T1& arg1, T2& arg2) : T(arg1, arg2) {}
+
+  //! Constructor with two arguments
+  template<typename T1, typename T2> NCollection_Shared (T1& arg1, T2& arg2) : T(arg1, arg2) {}
 
 /* this could work...
   //! Forwarding constructor
