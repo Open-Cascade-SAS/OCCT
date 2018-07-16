@@ -16,11 +16,12 @@ don f
 fit
 
 # Before the fix: Exception in Debug-mode only
-set log [bopcurves f_1 f_2 -2d]
-checkview -screenshot -2d -path ${imagedir}/${test_image}.png
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} [bopcurves f_1 f_2 -2d] full Toler NbCurv
 
-regexp {Tolerance Reached=+([-0-9.+eE]+)} ${log} full Toler
+checkreal Tolerance $Toler 4.601149532364662e-008 1.0e-7 0.0
 
-if { ${Toler} > 1.e-7} {
-   puts "Error: bad tolerance of result"
+if {$NbCurv != 1} {
+  puts "Error: Please check NbCurves for intersector"
 }
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

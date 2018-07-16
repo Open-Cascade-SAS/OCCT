@@ -65,15 +65,17 @@ inline const gp_Dir& IntWalk_PWalking::TangentAtLine(Standard_Integer& theIndex)
 
 inline void IntWalk_PWalking::AddAPoint(const IntSurf_PntOn2S& POn2S) { 
 #if REGLAGE
-  Standard_Integer n=theLine->NbPoints();
+  Standard_Integer n=line->NbPoints()+1;
+  if (n == 1)
+  {
+    std::cout << "Dump of WL" << std::endl;
+  }
+
   if(n) { 
-    gp_Vec V(POn2S.Value(),theLine->Value(n).Value());
     Standard_Real u1,v1,u2,v2;
-    Standard_Real U1,V1,U2,V2;
     POn2S.Parameters(u1,v1,u2,v2);
-    theLine->Value(n).Parameters(U1,V1,U2,V2);
-    printf("\n%3d: (%10.5g)(%+12.5g %+12.5g %+12.5g) (%+12.5g %+12.5g) (%+12.5g %+12.5g)",n,
-	   V.Magnitude(),V.X(),V.Y(),V.Z(),U1-u1,V1-v1,U2-u2,V2-v2);
+    printf("point p%d  %+10.20f %+10.20f %+10.20f\n",
+           n, POn2S.Value().X(), POn2S.Value().Y(), POn2S.Value().Z());
     fflush(stdout);
   }
 #endif

@@ -950,56 +950,6 @@ static Standard_Integer OCC277bug (Draw_Interpretor& di, Standard_Integer nb, co
   return 0;
 }
 
-#include <ShapeAnalysis_Edge.hxx>
-
-static Standard_Integer OCC333bug (Draw_Interpretor& di, Standard_Integer n, const char ** a)
-{
-  if( n < 3) {
-    di<<"-1\n";
-    di << "Usage: " << a[0] << " edge1 edge2 [toler domaindist]\n";
-    return 1;
-  }
-  TopoDS_Shape Sh1 = DBRep::Get(a[1]);
-  TopoDS_Shape Sh2 = DBRep::Get(a[2]);
-  if(Sh1.IsNull() || Sh2.IsNull()) {
-    di<<"-2\n";
-    di<<"Invalid arguments\n";
-    return 1;
-  }
-  TopoDS_Edge e1 = TopoDS::Edge(Sh1);
-  TopoDS_Edge e2 = TopoDS::Edge(Sh2);
-  if(e1.IsNull() || e2.IsNull()) {
-    di<<"-3\n";
-    di<<"Invalid type of arguments\n";
-    return 1;
-  }
-  Standard_Real aTol = Precision::Confusion();
-  Standard_Real aDistDomain = 0.0;
-  Standard_Integer k = 3;
-  if(k < n)
-    aTol = Draw::Atof(a[k++]);
-  if(k < n)
-    aDistDomain = Draw::Atof(a[k++]);
-
-  ShapeAnalysis_Edge sae;
-  if(sae.CheckOverlapping(e1,e2,aTol,aDistDomain)) {
-    if(aDistDomain ==0.0) {
-      di<<"1\n";
-      di<<"Edges is overlaping comletly\n";
-    } else {
-      di<<"2\n";
-      di<<"Edges is overlaped\n";
-      di<<"with tolerance = "<<aTol<<"\n";
-      di<<"on segment length = "<<aDistDomain<<"\n";
-    }
-  } else {
-    di<<"3\n";
-    di<<"Edges is not overlaped\n";
-  }
-  return 0;
-}
-
-
 #include <DDocStd_DrawDocument.hxx>
 #include <TDataStd_Name.hxx>
 #include <Draw.hxx>
@@ -4829,8 +4779,6 @@ void QABugs::Commands_11(Draw_Interpretor& theCommands) {
 
   //theCommands.Add("OCC277","OCC277", __FILE__, OCC277bug, group);
   theCommands.Add("OCC277","OCC277", __FILE__, OCC277bug, group);
-
-  theCommands.Add("OCC333","OCC333 edge1 edge2 [toler domaindist]; Check overlapping edges", __FILE__, OCC333bug, group);
 
   theCommands.Add("OCC363", "OCC363 document filename ", __FILE__, OCC363, group);
   // Must use OCC299

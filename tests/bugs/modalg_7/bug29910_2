@@ -1,0 +1,37 @@
+puts "========"
+puts "OCC29910: Porting to Debian80-64 : Regressions in Modeling Algorithms"
+puts "========"
+puts ""
+
+# Different result between Debian 7 and Debian 8 and between MSVC 2010 and 2017.
+puts "TODO ?OCC29910 Windows: Error: Tolerance = 4.0169383828521568e-006 is not equal to expected"
+puts "TODO ?OCC29910 Linux: Error: Tolerance = 6.0392296447644325e-07 is not equal to expected"
+puts "TODO ?OCC29910 ALL: Error :  is WRONG because number of VERTEX entities in shape \"result\" is 7"
+puts "TODO ?OCC29910 ALL: Error :  is WRONG because number of EDGE entities in shape \"result\" is 5"
+
+restore [locate_data_file bug29910_f1.brep] f1
+restore [locate_data_file bug29910_f2.brep] f2
+
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} [bopcurves f1 f2 -2d] full Toler NbCurv
+
+checkreal Tolerance $Toler 1.0e-7 1.0e-7 0.0
+
+if {$NbCurv != 4} {
+  puts "Error: Please check NbCurves for intersector"
+}
+
+bsection result f1 f2
+checksection result -r 4
+checkshape result
+checknbshapes result -edge 4 -vertex 6
+checkprops result -l 97.2011
+
+if {[regexp "Faulties" [bopargcheck result]]} {
+  puts "Error: bopargcheck has found some faulties in result"
+}
+
+smallview 
+don result
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

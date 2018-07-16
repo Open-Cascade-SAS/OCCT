@@ -1,0 +1,46 @@
+puts "========"
+puts "OCC29910: Porting to Debian80-64 : Regressions in Modeling Algorithms"
+puts "========"
+puts ""
+
+# Different result between Debian 7 and Debian 8.
+puts "TODO ?OCC29910 Linux: Error :  is WRONG because number of EDGE entities in shape \"rs\" is 16"
+puts "TODO ?OCC29910 Linux: Error :  is WRONG because number of SHELL entities in shape \"result\" is 5"
+puts "TODO ?OCC29910 Linux: Error :  is WRONG because number of SOLID entities in shape \"result\" is 5"
+puts "TODO ?OCC29910 Linux: Error : The area of result shape is"
+puts "TODO ?OCC29910 Linux: Error : The volume of result shape is"
+
+ptorus t1 100 10
+ptorus t2 100 10
+ttranslate t2 100 0 0
+axo; fit
+bclearobjects
+bcleartools
+baddobjects t1
+baddtools t2
+bfillds
+bbop rs 4
+
+checksection rs -r 0
+
+checkshape rs
+
+if {[regexp "Faulties" [bopargcheck rs]]} {
+  puts "Error: bopargcheck has found some faulties in result"
+}
+
+checkmaxtol rs -ref 7.5e-6
+checknbshapes rs -edge 14
+checkprops rs -l 330.096
+
+bbuild result
+
+checknbshapes result -shell 6 -solid 6
+checkshape result
+checkprops result -v 382445 -s 82663
+
+smallview 
+don result
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png
