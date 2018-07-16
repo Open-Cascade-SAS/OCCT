@@ -917,7 +917,6 @@ static Standard_Integer GetValidationProps(Draw_Interpretor& di, Standard_Intege
     TopoDS_Shape aShape = DBRep::Get(argv[2]);
     if( aShape.IsNull())
     {
-      TDF_Label aLabel;
       TDF_Tool::Label(Doc->GetData(), argv[2], aLabel);
     }
     else
