@@ -1,0 +1,46 @@
+puts "=============================================================="
+puts "OCC27230: Boolean operations fails on attached shapes"
+puts "=============================================================="
+puts ""
+
+brestore [locate_data_file bug27230_s1.brep] s1
+brestore [locate_data_file bug27230_s2.brep] s2
+
+bclearobjects
+bcleartools
+baddobjects s1
+baddtools s2
+bfillds
+
+bbop r0 0
+bbop r1 1
+bbop r2 2
+bbop r3 3
+bbop r4 4
+
+foreach r {r0 r1 r2 r3 r4} {
+  checkshape $r
+  if {![regexp "OK" [bopcheck $r]]} {
+    puts "Error: the result of BOP is self-interfering shape"
+  }
+}
+
+checknbshapes r0 -wire 10 -face 8 -shell 1 -solid 1
+checkprops r0 -s 8224.83 -v 17106.7
+
+checknbshapes r1 -wire 22 -face 18 -shell 1 -solid 1
+checkprops r1 -s 75638.3 -v 661141
+
+checknbshapes r2 -wire 16 -face 14 -shell 2 -solid 2
+checkprops r2 -s 40609.3 -v 322017
+
+checknbshapes r3 -wire 16 -face 12 -shell 1 -solid 1
+checkprops r3 -s 43253.8 -v 322017
+
+checkprops r4 -l 345.256
+
+if {![regexp "nb alone Vertices : 0" [checksection r4]]} {
+  puts "Error: Section is not closed"
+}
+
+checkview -display r1 -2d -path ${imagedir}/${test_image}.png
