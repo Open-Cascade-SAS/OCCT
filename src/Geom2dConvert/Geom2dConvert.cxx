@@ -939,7 +939,7 @@ private:
 void  Geom2dConvert::ConcatG1(TColGeom2d_Array1OfBSplineCurve&           ArrayOfCurves, 
 			      const TColStd_Array1OfReal&                ArrayOfToler,
 			      Handle(TColGeom2d_HArray1OfBSplineCurve) & ArrayOfConcatenated,
-			      const Standard_Boolean                     ClosedFlag,
+			      Standard_Boolean&                          ClosedFlag,
 			      const Standard_Real                        ClosedTolerance) 
 
 {Standard_Integer             nb_curve=ArrayOfCurves.Length(),
@@ -1013,6 +1013,14 @@ void  Geom2dConvert::ConcatG1(TColGeom2d_Array1OfBSplineCurve&           ArrayOf
 
  Standard_Real aPolynomialCoefficient[3];
 
+ Standard_Boolean NeedDoubleDegRepara = Need2DegRepara(ArrayOfCurves);
+ if (nb_group==1 && ClosedFlag && NeedDoubleDegRepara)
+ {
+   Curve1 = ArrayOfCurves(nb_curve-1);
+   if (Curve1->Degree() > Geom2d_BSplineCurve::MaxDegree()/2)
+     ClosedFlag = Standard_False;
+ }
+
  if ((nb_group==1) && (ClosedFlag)){                       //traitement d'un cas particulier
    indexmin=Indexmin(ArrayOfCurves);
    if (indexmin!=(ArrayOfCurves.Length()-1))
@@ -1024,8 +1032,8 @@ void  Geom2dConvert::ConcatG1(TColGeom2d_Array1OfBSplineCurve&           ArrayOf
    Curve2=ArrayOfCurves(0);
    for (j=1;j<=nb_curve-1;j++){                //boucle secondaire a l'interieur de chaque groupe
      Curve1=ArrayOfCurves(j);
-     if ( (j==(nb_curve-1)) &&(Need2DegRepara(ArrayOfCurves))){ 
-       const Standard_Integer aNewCurveDegree = Min(2 * Curve1->Degree(), Geom2d_BSplineCurve::MaxDegree());
+     if ( (j==(nb_curve-1)) && (NeedDoubleDegRepara)){ 
+       const Standard_Integer aNewCurveDegree = 2 * Curve1->Degree();
        Curve2->D1(Curve2->LastParameter(),Pint,Vec1);
        Curve1->D1(Curve1->FirstParameter(),Pint,Vec2);
        lambda=Vec2.Magnitude()/Vec1.Magnitude();
@@ -1159,7 +1167,7 @@ void  Geom2dConvert::ConcatC1(TColGeom2d_Array1OfBSplineCurve&           ArrayOf
 			      const TColStd_Array1OfReal&                ArrayOfToler,
 			      Handle(TColStd_HArray1OfInteger)&          ArrayOfIndices,
 			      Handle(TColGeom2d_HArray1OfBSplineCurve) & ArrayOfConcatenated,
-			      const Standard_Boolean                     ClosedFlag,
+			      Standard_Boolean&                          ClosedFlag,
 			      const Standard_Real                        ClosedTolerance) 
 {
  ConcatC1(ArrayOfCurves,
@@ -1179,7 +1187,7 @@ void  Geom2dConvert::ConcatC1(TColGeom2d_Array1OfBSplineCurve&           ArrayOf
 			      const TColStd_Array1OfReal&                ArrayOfToler,
 			      Handle(TColStd_HArray1OfInteger)&          ArrayOfIndices,
 			      Handle(TColGeom2d_HArray1OfBSplineCurve) & ArrayOfConcatenated,
-			      const Standard_Boolean                     ClosedFlag,
+			      Standard_Boolean&                          ClosedFlag,
 			      const Standard_Real                        ClosedTolerance,
 			      const Standard_Real                        AngularTolerance) 
 
@@ -1260,6 +1268,14 @@ void  Geom2dConvert::ConcatC1(TColGeom2d_Array1OfBSplineCurve&           ArrayOf
  Pretreatment(ArrayOfCurves);
  Standard_Real aPolynomialCoefficient[3];
 
+ Standard_Boolean NeedDoubleDegRepara = Need2DegRepara(ArrayOfCurves);
+ if (nb_group==1 && ClosedFlag && NeedDoubleDegRepara)
+ {
+   Curve1 = ArrayOfCurves(nb_curve-1);
+   if (Curve1->Degree() > Geom2d_BSplineCurve::MaxDegree()/2)
+     ClosedFlag = Standard_False;
+ }
+
  if ((nb_group==1) && (ClosedFlag)){                       //traitement d'un cas particulier
    ArrayOfIndices->SetValue(0,0);
    ArrayOfIndices->SetValue(1,0);
@@ -1277,12 +1293,12 @@ void  Geom2dConvert::ConcatC1(TColGeom2d_Array1OfBSplineCurve&           ArrayOf
      else
        Curve1=ArrayOfCurves(j);
      
-     const Standard_Integer aNewCurveDegree = Min(2 * Curve1->Degree(), Geom2d_BSplineCurve::MaxDegree());
+     const Standard_Integer aNewCurveDegree = 2 * Curve1->Degree();
 
      if (j==0)                                      //initialisation en debut de groupe
        Curve2=Curve1;
      else{
-       if ( (j==(nb_curve-1)) &&(Need2DegRepara(ArrayOfCurves))){ 
+       if ( (j==(nb_curve-1)) && (NeedDoubleDegRepara)){ 
 	 Curve2->D1(Curve2->LastParameter(),Pint,Vec1);
 	 Curve1->D1(Curve1->FirstParameter(),Pint,Vec2);
 	 lambda=Vec2.Magnitude()/Vec1.Magnitude();
@@ -1463,8 +1479,8 @@ void Geom2dConvert::C0BSplineToC1BSplineCurve(Handle(Geom2d_BSplineCurve)& BS,
     
    BS->D1(BS->FirstParameter(),point1,V1);  //a verifier
    BS->D1(BS->LastParameter(),point2,V2);
-   
-   if ((point1.SquareDistance(point2) < gp::Resolution()) &&
+
+   if ((point1.SquareDistance(point2) < tolerance) &&
        (V1.IsParallel(V2, anAngularToler)))
    {
      closed_flag = Standard_True;
@@ -1555,7 +1571,7 @@ void Geom2dConvert::C0BSplineToArrayOfC1BSplineCurve(const Handle(Geom2d_BSpline
     BS->D1(BS->FirstParameter(),point1,V1);  
     BS->D1(BS->LastParameter(),point2,V2);
     
-    if (((point1.SquareDistance(point2) < gp::Resolution())) &&
+    if (((point1.SquareDistance(point2) < Tolerance)) &&
         (V1.IsParallel(V2, AngularTolerance)))
     {
       closed_flag = Standard_True;

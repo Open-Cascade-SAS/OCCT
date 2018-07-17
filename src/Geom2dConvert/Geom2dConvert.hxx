@@ -83,7 +83,10 @@ public:
   //! Raised if FromK1 or ToK2 are out of the bounds
   //! [FirstUKnotIndex, LastUKnotIndex]
   //! Raised if FromK1 = ToK2
-  Standard_EXPORT static Handle(Geom2d_BSplineCurve) SplitBSplineCurve (const Handle(Geom2d_BSplineCurve)& C, const Standard_Integer FromK1, const Standard_Integer ToK2, const Standard_Boolean SameOrientation = Standard_True);
+  Standard_EXPORT static Handle(Geom2d_BSplineCurve) SplitBSplineCurve (const Handle(Geom2d_BSplineCurve)& C,
+                                                                        const Standard_Integer FromK1,
+                                                                        const Standard_Integer ToK2,
+                                                                        const Standard_Boolean SameOrientation = Standard_True);
   
 
   //! This function computes the segment of B-spline curve between the
@@ -101,7 +104,11 @@ public:
   //! curve (The tolerance criterion is ParametricTolerance).
   //! Raised if Abs (FromU1 - ToU2) <= ParametricTolerance
   //! Raised if ParametricTolerance < Resolution from gp.
-  Standard_EXPORT static Handle(Geom2d_BSplineCurve) SplitBSplineCurve (const Handle(Geom2d_BSplineCurve)& C, const Standard_Real FromU1, const Standard_Real ToU2, const Standard_Real ParametricTolerance, const Standard_Boolean SameOrientation = Standard_True);
+  Standard_EXPORT static Handle(Geom2d_BSplineCurve) SplitBSplineCurve (const Handle(Geom2d_BSplineCurve)& C,
+                                                                        const Standard_Real FromU1,
+                                                                        const Standard_Real ToU2,
+                                                                        const Standard_Real ParametricTolerance,
+                                                                        const Standard_Boolean SameOrientation = Standard_True);
   
   //! This function converts a non infinite curve from
   //! Geom into a  B-spline curve.  C must  be  an ellipse or a
@@ -167,7 +174,8 @@ public:
   //! respectively the first and the last parameters of the
   //! trimmed curve (this method of parameterization
   //! cannot be used to convert a quasi-complete circle or ellipse).
-  Standard_EXPORT static Handle(Geom2d_BSplineCurve) CurveToBSplineCurve (const Handle(Geom2d_Curve)& C, const Convert_ParameterisationType Parameterisation = Convert_TgtThetaOver2);
+  Standard_EXPORT static Handle(Geom2d_BSplineCurve) CurveToBSplineCurve (const Handle(Geom2d_Curve)& C,
+                                                                          const Convert_ParameterisationType Parameterisation = Convert_TgtThetaOver2);
   
   //! This Method concatenates G1 the ArrayOfCurves as far
   //! as it is possible.
@@ -175,11 +183,17 @@ public:
   //! ArrayOfToler contains the  biggest tolerance of the two
   //! points shared by two consecutives curves.
   //! Its dimension: [0..N-2]
-  //! ClosedTolerance     indicates if the ArrayOfCurves is closed.
+  //! ClosedFlag     indicates if the ArrayOfCurves is closed.
   //! In this case ClosedTolerance contains the biggest tolerance
   //! of the two points which are at the closure.
   //! Otherwise its value is 0.0
-  Standard_EXPORT static void ConcatG1 (TColGeom2d_Array1OfBSplineCurve& ArrayOfCurves, const TColStd_Array1OfReal& ArrayOfToler, Handle(TColGeom2d_HArray1OfBSplineCurve)& ArrayOfConcatenated, const Standard_Boolean ClosedFlag, const Standard_Real ClosedTolerance);
+  //! ClosedFlag becomes False on the output
+  //! if it is impossible to build closed curve.
+  Standard_EXPORT static void ConcatG1 (TColGeom2d_Array1OfBSplineCurve& ArrayOfCurves,
+                                        const TColStd_Array1OfReal& ArrayOfToler,
+                                        Handle(TColGeom2d_HArray1OfBSplineCurve)& ArrayOfConcatenated,
+                                        Standard_Boolean& ClosedFlag,
+                                        const Standard_Real ClosedTolerance);
   
   //! This Method concatenates C1 the ArrayOfCurves as far
   //! as it is possible.
@@ -187,11 +201,18 @@ public:
   //! ArrayOfToler contains the  biggest tolerance of the two
   //! points shared by two consecutives curves.
   //! Its dimension: [0..N-2]
-  //! ClosedTolerance     indicates if the ArrayOfCurves is closed.
+  //! ClosedFlag     indicates if the ArrayOfCurves is closed.
   //! In this case ClosedTolerance contains the biggest tolerance
   //! of the two points which are at the closure.
   //! Otherwise its value is 0.0
-  Standard_EXPORT static void ConcatC1 (TColGeom2d_Array1OfBSplineCurve& ArrayOfCurves, const TColStd_Array1OfReal& ArrayOfToler, Handle(TColStd_HArray1OfInteger)& ArrayOfIndices, Handle(TColGeom2d_HArray1OfBSplineCurve)& ArrayOfConcatenated, const Standard_Boolean ClosedFlag, const Standard_Real ClosedTolerance);
+  //! ClosedFlag becomes False on the output
+  //! if it is impossible to build closed curve.
+  Standard_EXPORT static void ConcatC1 (TColGeom2d_Array1OfBSplineCurve& ArrayOfCurves,
+                                        const TColStd_Array1OfReal& ArrayOfToler,
+                                        Handle(TColStd_HArray1OfInteger)& ArrayOfIndices,
+                                        Handle(TColGeom2d_HArray1OfBSplineCurve)& ArrayOfConcatenated,
+                                        Standard_Boolean& ClosedFlag,
+                                        const Standard_Real ClosedTolerance);
   
   //! This Method concatenates C1 the ArrayOfCurves as far
   //! as it is possible.
@@ -199,29 +220,43 @@ public:
   //! ArrayOfToler contains the  biggest tolerance of the two
   //! points shared by two consecutives curves.
   //! Its dimension: [0..N-2]
-  //! ClosedTolerance     indicates if the ArrayOfCurves is closed.
+  //! ClosedFlag     indicates if the ArrayOfCurves is closed.
   //! In this case ClosedTolerance contains the biggest tolerance
   //! of the two points which are at the closure.
   //! Otherwise its value is 0.0
-  Standard_EXPORT static void ConcatC1 (TColGeom2d_Array1OfBSplineCurve& ArrayOfCurves, const TColStd_Array1OfReal& ArrayOfToler, Handle(TColStd_HArray1OfInteger)& ArrayOfIndices, Handle(TColGeom2d_HArray1OfBSplineCurve)& ArrayOfConcatenated, const Standard_Boolean ClosedFlag, const Standard_Real ClosedTolerance, const Standard_Real AngularTolerance);
+  //! ClosedFlag becomes False on the output
+  //! if it is impossible to build closed curve.
+  Standard_EXPORT static void ConcatC1 (TColGeom2d_Array1OfBSplineCurve& ArrayOfCurves,
+                                        const TColStd_Array1OfReal& ArrayOfToler,
+                                        Handle(TColStd_HArray1OfInteger)& ArrayOfIndices,
+                                        Handle(TColGeom2d_HArray1OfBSplineCurve)& ArrayOfConcatenated,
+                                        Standard_Boolean& ClosedFlag,
+                                        const Standard_Real ClosedTolerance,
+                                        const Standard_Real AngularTolerance);
   
   //! This Method reduces as   far as it  is possible the
   //! multiplicities of  the  knots of  the BSpline BS.(keeping  the geometry).
   //! It returns a new BSpline which could still be C0.
   //! tolerance is a geometrical tolerance
-  Standard_EXPORT static void C0BSplineToC1BSplineCurve (Handle(Geom2d_BSplineCurve)& BS, const Standard_Real Tolerance);
+  Standard_EXPORT static void C0BSplineToC1BSplineCurve (Handle(Geom2d_BSplineCurve)& BS,
+                                                         const Standard_Real Tolerance);
   
   //! This Method   reduces as far  as  it is possible  the
   //! multiplicities  of  the knots  of the BSpline  BS.(keeping the geometry).
   //! It returns an array of BSpline C1.
   //! Tolerance is a geometrical tolerance
-  Standard_EXPORT static void C0BSplineToArrayOfC1BSplineCurve (const Handle(Geom2d_BSplineCurve)& BS, Handle(TColGeom2d_HArray1OfBSplineCurve)& tabBS, const Standard_Real Tolerance);
+  Standard_EXPORT static void C0BSplineToArrayOfC1BSplineCurve (const Handle(Geom2d_BSplineCurve)& BS,
+                                                                Handle(TColGeom2d_HArray1OfBSplineCurve)& tabBS,
+                                                                const Standard_Real Tolerance);
   
   //! This Method   reduces as far  as  it is possible  the
   //! multiplicities  of  the knots  of the BSpline  BS.(keeping the geometry).
   //! It returns an array of BSpline C1.
   //! tolerance is a geometrical tolerance
-  Standard_EXPORT static void C0BSplineToArrayOfC1BSplineCurve (const Handle(Geom2d_BSplineCurve)& BS, Handle(TColGeom2d_HArray1OfBSplineCurve)& tabBS, const Standard_Real AngularTolerance, const Standard_Real Tolerance);
+  Standard_EXPORT static void C0BSplineToArrayOfC1BSplineCurve (const Handle(Geom2d_BSplineCurve)& BS,
+                                                                Handle(TColGeom2d_HArray1OfBSplineCurve)& tabBS,
+                                                                const Standard_Real AngularTolerance,
+                                                                const Standard_Real Tolerance);
 
 
 

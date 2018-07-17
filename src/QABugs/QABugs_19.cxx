@@ -3901,11 +3901,12 @@ Standard_Integer OCC26446 (Draw_Interpretor& di,
   aCurves.SetValue(1, aCurve2);
   aTolerances.SetValue(0, aTolConf);
 
+  Standard_Boolean closed_flag = Standard_False;
   GeomConvert::ConcatC1(aCurves,
                         aTolerances,
                         anIndices,
                         aConcatCurves,
-                        Standard_False,
+                        closed_flag,
                         aTolClosure);
 
   Handle(Geom_BSplineCurve) aResult =

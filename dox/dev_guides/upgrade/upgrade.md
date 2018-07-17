@@ -1608,3 +1608,6 @@ so that related methods have been removed from AIS_InteractiveContext interface:
 
 A set of deprecated methods previously related to Local Context and now redirecting to other methods has been preserved to simplify porting; they will be removed in next release.
 
+@subsection upgrade_740_extremaalgo Changes in behavior of Convert algorithms
+
+Now methods *GeomConvert::ConcatG1*, *GeomConvert::ConcatC1*, *Geom2dConvert::ConcatG1*, *Geom2dConvert::ConcatC1* modify the input argument representing the flag of closedness.

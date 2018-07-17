@@ -20,5 +20,7 @@ set log [bopcurves f_1 f_2 -2d]
 checkview -screenshot -2d -path ${imagedir}/${test_image}.png
 
 regexp {Tolerance Reached=+([-0-9.+eE]+)} ${log} full Toler
-checkreal TolReached $Toler 4.60347250530349e-008 0.0 0.1
 
+if { ${Toler} > 1.e-7} {
+   puts "Error: bad tolerance of result"
+}
