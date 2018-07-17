@@ -206,6 +206,7 @@ BRepPrimAPI_MakeHalfSpace::BRepPrimAPI_MakeHalfSpace(const TopoDS_Face& theFace,
       aShell.Reverse();
     }
     BRep_Builder().Add(mySolid, aShell);
+    myShape = mySolid;
     Done();
   }
 }
@@ -235,6 +236,7 @@ BRepPrimAPI_MakeHalfSpace::BRepPrimAPI_MakeHalfSpace(const TopoDS_Shell& theShel
       aShell.Reverse();
     }
     BRep_Builder().Add(mySolid, aShell);
+    myShape = mySolid;
     Done();
   }
 }
