@@ -14,6 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <algorithm>
 
 #include <Adaptor2d_HCurve2d.hxx>
 #include <Adaptor3d_TopolTool.hxx>
@@ -41,95 +42,82 @@
 #include <TColStd_IndexedMapOfInteger.hxx>
 #include <TopAbs_Orientation.hxx>
 
-static
-  void Parameters(const Handle(GeomAdaptor_HSurface)& myHS1,
-                  const gp_Pnt& Ptref,
-                  Standard_Real& U1,
-                  Standard_Real& V1);
-static
-  void Parameters(const Handle(GeomAdaptor_HSurface)& myHS1,
-                  const Handle(GeomAdaptor_HSurface)& myHS2,
-                  const gp_Pnt& Ptref,
-                  Standard_Real& U1,
-                  Standard_Real& V1,
-                  Standard_Real& U2,
-                  Standard_Real& V2);
+static const Standard_Real TwoPI = M_PI + M_PI;
 
-static 
-  void GLinePoint(const IntPatch_IType typl,
-                  const Handle(IntPatch_GLine)& GLine,
-                  const Standard_Real aT,
-                  gp_Pnt& aP);
-static
-  void Recadre(const Handle(GeomAdaptor_HSurface)& myHS1,
-               const Handle(GeomAdaptor_HSurface)& myHS2,
-               Standard_Real& u1,
-               Standard_Real& v1,
-               Standard_Real& u2,
-               Standard_Real& v2);
-
-//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-//
 //=======================================================================
-//class    : GeomInt_RealWithFlag
-//purpose  : 
+//class    : GeomInt_Vertex
+//purpose  : This class has been created in order to provide possibility
+//            to sort IntPatch_Points by their parameter on line.
 //=======================================================================
-class GeomInt_RealWithFlag {
- public:
-  GeomInt_RealWithFlag() : 
-    myValue(-99.), myFlag(1) 
+class GeomInt_Vertex
+{
+public:
+  GeomInt_Vertex()
   {
   };
-  //
-  ~GeomInt_RealWithFlag() {
-  };
-  //
-  void SetValue(const Standard_Real aT) {
-    myValue=aT;
-  };
-  //
-  Standard_Real Value() const {
-    return myValue;
+
+  //! Initializes this class by IntPatch_Point
+  void SetVertex(const IntPatch_Point& theOther)
+  {
+    myVertex = theOther;
+    const Standard_Real aNewParam = ElCLib::InPeriod(theOther.ParameterOnLine(), 0.0, TwoPI);
+    SetParameter(aNewParam);
   }
-  //
-  void SetFlag(const Standard_Integer aFlag) {
-    myFlag=aFlag;
-  };
-  //
-  Standard_Integer Flag() const {
-    return myFlag;
+
+  //! Sets Parameter on Line
+  void SetParameter(const Standard_Real theParam)
+  {
+    myVertex.SetParameter(theParam);
   }
-  //
-  Standard_Boolean operator < (const GeomInt_RealWithFlag& aOther) {
-    return myValue<aOther.myValue;
+
+  //! Returns IntPatch_Point
+  const IntPatch_Point& Getvertex() const
+  {
+    return myVertex;
   }
-  //
- protected:
-  Standard_Real myValue;
-  Standard_Integer myFlag;
+
+  //! To provide sort
+  Standard_Boolean operator < (const GeomInt_Vertex& theOther) const
+  {
+    return myVertex.ParameterOnLine() < theOther.myVertex.ParameterOnLine();
+  }
+
+private:
+  IntPatch_Point myVertex;
 };
+
 //------------
-static 
-  void SortShell(const Standard_Integer, 
-                 GeomInt_RealWithFlag *); 
-static
-  void RejectDuplicates(Standard_Integer& aNbVtx, 
-                        GeomInt_RealWithFlag *pVtx, 
-                        Standard_Real aTolPrm);
-static
-  void RejectNearBeacons(Standard_Integer& aNbVtx, 
-                         GeomInt_RealWithFlag *pVtx, 
-                         Standard_Real aTolPC1,
-                         const GeomAbs_SurfaceType aTS1,
-                         const GeomAbs_SurfaceType aTS2); 
-static
-  Standard_Real AdjustOnPeriod(const Standard_Real aTr,
-                               const Standard_Real aPeriod);
+static void Parameters(const Handle(GeomAdaptor_HSurface)& myHS1,
+                       const gp_Pnt& Ptref,
+                       Standard_Real& U1,
+                       Standard_Real& V1);
+
+static void Parameters(const Handle(GeomAdaptor_HSurface)& myHS1,
+                       const Handle(GeomAdaptor_HSurface)& myHS2,
+                       const gp_Pnt& Ptref,
+                       Standard_Real& U1,
+                       Standard_Real& V1,
+                       Standard_Real& U2,
+                       Standard_Real& V2);
+
+static void GLinePoint(const IntPatch_IType typl,
+                       const Handle(IntPatch_GLine)& GLine,
+                       const Standard_Real aT,
+                       gp_Pnt& aP);
+
+static void AdjustPeriodic(const Handle(GeomAdaptor_HSurface)& myHS1,
+                           const Handle(GeomAdaptor_HSurface)& myHS2,
+                           Standard_Real& u1,
+                           Standard_Real& v1,
+                           Standard_Real& u2,
+                           Standard_Real& v2);
 
 static
   Standard_Boolean RejectMicroCircle(const Handle(IntPatch_GLine)& aGLine,
                                      const IntPatch_IType aType,
                                      const Standard_Real aTol3D);
+
+static void RejectDuplicates(NCollection_Array1<GeomInt_Vertex>& theVtxArr);
 
 //=======================================================================
 //function : Perform
@@ -154,7 +142,7 @@ void GeomInt_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
         const Standard_Real pmid = (firstp+lastp)*0.5;
         const gp_Pnt Pmid = ALine->Value(pmid);
         Parameters(myHS1,myHS2,Pmid,u1,v1,u2,v2);
-        Recadre(myHS1,myHS2,u1,v1,u2,v2);
+        AdjustPeriodic(myHS1, myHS2, u1, v1, u2, v2);
         const TopAbs_State in1 = myDom1->Classify(gp_Pnt2d(u1,v1),Tol);
         if(in1 !=  TopAbs_OUT) {
           const TopAbs_State in2 = myDom2->Classify(gp_Pnt2d(u2,v2),Tol);
@@ -181,7 +169,7 @@ void GeomInt_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
           const Standard_Integer pmid = (Standard_Integer )( (firstp+lastp)/2);
           const IntSurf_PntOn2S& Pmid = WLine->Point(pmid);
           Pmid.Parameters(u1,v1,u2,v2);
-          Recadre(myHS1,myHS2,u1,v1,u2,v2);
+          AdjustPeriodic(myHS1, myHS2, u1, v1, u2, v2);
           const TopAbs_State in1 = myDom1->Classify(gp_Pnt2d(u1,v1),Tol);
           if(in1 !=  TopAbs_OUT) {   
             const TopAbs_State in2 = myDom2->Classify(gp_Pnt2d(u2,v2),Tol);
@@ -194,14 +182,14 @@ void GeomInt_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
         else {
           const IntSurf_PntOn2S& Pfirst = WLine->Point((Standard_Integer)(firstp));
           Pfirst.Parameters(u1,v1,u2,v2);
-          Recadre(myHS1,myHS2,u1,v1,u2,v2);
+          AdjustPeriodic(myHS1, myHS2, u1, v1, u2, v2);
           TopAbs_State in1 = myDom1->Classify(gp_Pnt2d(u1,v1),Tol);
           if(in1 !=  TopAbs_OUT) {  //-- !=ON donne Pb 
             TopAbs_State in2 = myDom2->Classify(gp_Pnt2d(u2,v2),Tol);
             if(in2 != TopAbs_OUT) { //-- !=ON  
               const IntSurf_PntOn2S& Plast = WLine->Point((Standard_Integer)(lastp));
               Plast.Parameters(u1,v1,u2,v2);
-              Recadre(myHS1,myHS2,u1,v1,u2,v2);
+              AdjustPeriodic(myHS1, myHS2, u1, v1, u2, v2);
               in1 = myDom1->Classify(gp_Pnt2d(u1,v1),Tol);
               if(in1 !=  TopAbs_OUT) {  //-- !=ON donne Pb 
                 in2 = myDom2->Classify(gp_Pnt2d(u2,v2),Tol);
@@ -309,7 +297,7 @@ void GeomInt_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
         GLinePoint(typl, GLine, pmid, Pmid);
         //
         Parameters(myHS1,myHS2,Pmid,u1,v1,u2,v2);
-        Recadre(myHS1,myHS2,u1,v1,u2,v2);
+        AdjustPeriodic(myHS1, myHS2, u1, v1, u2, v2);
         const TopAbs_State in1 = myDom1->Classify(gp_Pnt2d(u1,v1),Tol);
         if(in1 !=  TopAbs_OUT) { 
           const TopAbs_State in2 = myDom2->Classify(gp_Pnt2d(u2,v2),Tol);
@@ -549,26 +537,88 @@ void GeomInt_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
   done = Standard_True;
 }
 
-
 //=======================================================================
-//function : Recadre
+//function : TreatCircle
 //purpose  : 
 //=======================================================================
-void Recadre(const Handle(GeomAdaptor_HSurface)& myHS1,
-             const Handle(GeomAdaptor_HSurface)& myHS2,
-             Standard_Real& u1,
-             Standard_Real& v1,
-             Standard_Real& u2,
-             Standard_Real& v2)
-{ 
-  Standard_Boolean myHS1IsUPeriodic,myHS1IsVPeriodic;
+void GeomInt_LineConstructor::TreatCircle(const Handle(IntPatch_Line)& theLine,
+                                           const Standard_Real theTol)
+{  
+  const IntPatch_IType aType = theLine->ArcType();
+  const Handle(IntPatch_GLine) aGLine(Handle(IntPatch_GLine)::DownCast(theLine));
+  if (RejectMicroCircle(aGLine, aType, theTol))
+  {
+    return;
+  }
+  //----------------------------------------
+  const Standard_Integer aNbVtx = aGLine->NbVertex();
+  NCollection_Array1<GeomInt_Vertex> aVtxArr(1, aNbVtx + 1);
+  for (Standard_Integer i = 1; i <= aNbVtx; i++)
+  {
+    aVtxArr(i).SetVertex(aGLine->Vertex(i));
+  }
+
+  std::sort(aVtxArr.begin(), aVtxArr.begin() + aNbVtx);
+  
+  //Create last vertex
+  const Standard_Real aMinPrm = aVtxArr.First().Getvertex().ParameterOnLine() + TwoPI;
+  aVtxArr.ChangeLast().SetParameter(aMinPrm);
+
+  RejectDuplicates(aVtxArr);
+
+  std::sort(aVtxArr.begin(), aVtxArr.end());
+
+  Standard_Real aU1, aV1, aU2, aV2;
+  gp_Pnt aPmid;
+  gp_Pnt2d aP2D;
+  for (Standard_Integer i = aVtxArr.Lower(); i <= aVtxArr.Upper() - 1; i++)
+  {
+    const Standard_Real aT1 = aVtxArr(i).Getvertex().ParameterOnLine();
+    const Standard_Real aT2 = aVtxArr(i + 1).Getvertex().ParameterOnLine();
+
+    if (aT2 == RealLast())
+      break;
+
+    const Standard_Real aTmid = (aT1 + aT2)*0.5;
+    GLinePoint(aType, aGLine, aTmid, aPmid);
+    //
+    Parameters(myHS1, myHS2, aPmid, aU1, aV1, aU2, aV2);
+    AdjustPeriodic(myHS1, myHS2, aU1, aV1, aU2, aV2);
+    //
+    aP2D.SetCoord(aU1, aV1);
+    TopAbs_State aState = myDom1->Classify(aP2D, theTol);
+    if (aState != TopAbs_OUT)
+    {
+      aP2D.SetCoord(aU2, aV2);
+      aState = myDom2->Classify(aP2D, theTol);
+      if (aState != TopAbs_OUT)
+      {
+        seqp.Append(aT1);
+        seqp.Append(aT2);
+      }
+    }
+  }
+}
+
+//=======================================================================
+//function : AdjustPeriodic
+//purpose  : 
+//=======================================================================
+void AdjustPeriodic(const Handle(GeomAdaptor_HSurface)& myHS1,
+                    const Handle(GeomAdaptor_HSurface)& myHS2,
+                    Standard_Real& u1,
+                    Standard_Real& v1,
+                    Standard_Real& u2,
+                    Standard_Real& v2)
+{
+  Standard_Boolean myHS1IsUPeriodic, myHS1IsVPeriodic;
   const GeomAbs_SurfaceType typs1 = myHS1->GetType();
   switch (typs1)
-  { 
+  {
     case GeomAbs_Cylinder:
     case GeomAbs_Cone:
-    case GeomAbs_Sphere: 
-    { 
+    case GeomAbs_Sphere:
+    {
       myHS1IsUPeriodic = Standard_True;
       myHS1IsVPeriodic = Standard_False;
       break;
@@ -585,14 +635,14 @@ void Recadre(const Handle(GeomAdaptor_HSurface)& myHS1,
       break;
     }
   }
-  Standard_Boolean myHS2IsUPeriodic,myHS2IsVPeriodic;
+  Standard_Boolean myHS2IsUPeriodic, myHS2IsVPeriodic;
   const GeomAbs_SurfaceType typs2 = myHS2->GetType();
   switch (typs2)
-  { 
+  {
     case GeomAbs_Cylinder:
     case GeomAbs_Cone:
-    case GeomAbs_Sphere: 
-    { 
+    case GeomAbs_Sphere:
+    {
       myHS2IsUPeriodic = Standard_True;
       myHS2IsVPeriodic = Standard_False;
       break;
@@ -611,31 +661,36 @@ void Recadre(const Handle(GeomAdaptor_HSurface)& myHS1,
   }
   Standard_Real du, dv;
   //
-  if(myHS1IsUPeriodic) {
-    const Standard_Real lmf = M_PI+M_PI; //-- myHS1->UPeriod();
+  if (myHS1IsUPeriodic)
+  {
+    const Standard_Real lmf = M_PI + M_PI; //-- myHS1->UPeriod();
     const Standard_Real f = myHS1->FirstUParameter();
     const Standard_Real l = myHS1->LastUParameter();
     GeomInt::AdjustPeriodic(u1, f, l, lmf, u1, du);
   }
-  if(myHS1IsVPeriodic) {
-    const Standard_Real lmf = M_PI+M_PI; //-- myHS1->VPeriod(); 
+  if (myHS1IsVPeriodic)
+  {
+    const Standard_Real lmf = M_PI + M_PI; //-- myHS1->VPeriod(); 
     const Standard_Real f = myHS1->FirstVParameter();
     const Standard_Real l = myHS1->LastVParameter();
     GeomInt::AdjustPeriodic(v1, f, l, lmf, v1, dv);
   }
-  if(myHS2IsUPeriodic) { 
-    const Standard_Real lmf = M_PI+M_PI; //-- myHS2->UPeriod();
+  if (myHS2IsUPeriodic)
+  {
+    const Standard_Real lmf = M_PI + M_PI; //-- myHS2->UPeriod();
     const Standard_Real f = myHS2->FirstUParameter();
     const Standard_Real l = myHS2->LastUParameter();
     GeomInt::AdjustPeriodic(u2, f, l, lmf, u2, du);
   }
-  if(myHS2IsVPeriodic) { 
-    const Standard_Real lmf = M_PI+M_PI; //-- myHS2->VPeriod();
+  if (myHS2IsVPeriodic)
+  {
+    const Standard_Real lmf = M_PI + M_PI; //-- myHS2->VPeriod();
     const Standard_Real f = myHS2->FirstVParameter();
     const Standard_Real l = myHS2->LastVParameter();
     GeomInt::AdjustPeriodic(v2, f, l, lmf, v2, dv);
   }
 }
+
 //=======================================================================
 //function : Parameters
 //purpose  : 
@@ -651,6 +706,7 @@ void Parameters(const Handle(GeomAdaptor_HSurface)& myHS1,
   Parameters(myHS1, Ptref, U1, V1);
   Parameters(myHS2, Ptref, U2, V2);
 }
+
 //=======================================================================
 //function : Parameter
 //purpose  : 
@@ -662,26 +718,27 @@ void Parameters(const Handle(GeomAdaptor_HSurface)& myHS1,
 {
   IntSurf_Quadric quad1;
   //
-  switch (myHS1->Surface().GetType())  {
-    case GeomAbs_Plane:    
-      quad1.SetValue(myHS1->Surface().Plane()); 
+  switch (myHS1->Surface().GetType())
+  {
+    case GeomAbs_Plane:
+      quad1.SetValue(myHS1->Surface().Plane());
       break;
-    case GeomAbs_Cylinder: 
-      quad1.SetValue(myHS1->Surface().Cylinder()); 
+    case GeomAbs_Cylinder:
+      quad1.SetValue(myHS1->Surface().Cylinder());
       break;
-    case GeomAbs_Cone:     
-      quad1.SetValue(myHS1->Surface().Cone()); 
+    case GeomAbs_Cone:
+      quad1.SetValue(myHS1->Surface().Cone());
       break;
-    case GeomAbs_Sphere:   
-      quad1.SetValue(myHS1->Surface().Sphere()); 
+    case GeomAbs_Sphere:
+      quad1.SetValue(myHS1->Surface().Sphere());
       break;
     case GeomAbs_Torus:
-      quad1.SetValue(myHS1->Surface().Torus()); 
+      quad1.SetValue(myHS1->Surface().Torus());
       break;
-    default: 
+    default:
       throw Standard_ConstructionError("GeomInt_LineConstructor::Parameters");
   }
-  quad1.Parameters(Ptref,U1,V1);
+  quad1.Parameters(Ptref, U1, V1);
 }
 
 //=======================================================================
@@ -693,238 +750,28 @@ void GLinePoint(const IntPatch_IType typl,
                 const Standard_Real aT,
                 gp_Pnt& aP)
 {
-  switch (typl) {
-    case IntPatch_Lin:       
-    aP = ElCLib::Value(aT, GLine->Line()); 
-    break;
-  case IntPatch_Circle:    
-    aP = ElCLib::Value(aT, GLine->Circle()); 
-    break;
-  case IntPatch_Ellipse:   
-    aP = ElCLib::Value(aT, GLine->Ellipse()); 
-    break;
-  case IntPatch_Hyperbola: 
-    aP = ElCLib::Value(aT, GLine->Hyperbola()); 
-    break;
-  case IntPatch_Parabola:  
-    aP = ElCLib::Value(aT, GLine->Parabola()); 
-    break;
-  default:
-    throw Standard_ConstructionError("GeomInt_LineConstructor::Parameters");
+  switch (typl)
+  {
+    case IntPatch_Lin:
+      aP = ElCLib::Value(aT, GLine->Line());
+      break;
+    case IntPatch_Circle:
+      aP = ElCLib::Value(aT, GLine->Circle());
+      break;
+    case IntPatch_Ellipse:
+      aP = ElCLib::Value(aT, GLine->Ellipse());
+      break;
+    case IntPatch_Hyperbola:
+      aP = ElCLib::Value(aT, GLine->Hyperbola());
+      break;
+    case IntPatch_Parabola:
+      aP = ElCLib::Value(aT, GLine->Parabola());
+      break;
+    default:
+      throw Standard_ConstructionError("GeomInt_LineConstructor::Parameters");
   }
 }
 
-//=======================================================================
-//function : TreatCircle
-//purpose  : 
-//=======================================================================
-void GeomInt_LineConstructor::TreatCircle(const Handle(IntPatch_Line)& aLine,
-                                           const Standard_Real aTol)
-{  
-  Standard_Boolean bRejected;
-  IntPatch_IType aType;
-  //
-  aType=aLine->ArcType();
-  Handle(IntPatch_GLine) aGLine (Handle(IntPatch_GLine)::DownCast (aLine));
-  //
-  bRejected=RejectMicroCircle(aGLine, aType, aTol);
-  if (bRejected) {
-    return;
-  }
-  //----------------------------------------
-  Standard_Boolean bFound;
-  Standard_Integer aNbVtx, aNbVtxWas, i;
-  Standard_Real aTolPC, aT, aT1, aT2, aTmid, aTwoPI, aTolPC1;
-  Standard_Real aU1, aV1, aU2, aV2;
-  TopAbs_State aIn1, aIn2;
-  GeomAbs_SurfaceType aTS1, aTS2;
-  gp_Pnt aPmid;
-  gp_Pnt2d aP2D;
-  GeomInt_RealWithFlag *pVtx;
-  //-------------------------------------1
-  aTwoPI=M_PI+M_PI;
-  aTolPC=Precision::PConfusion();
-  aNbVtxWas=GeomInt_LineTool::NbVertex(aLine);
-  
-  aNbVtx=aNbVtxWas+2;
-  //-------------------------------------2
-  aTS1=myHS1->GetType();
-  aTS2=myHS2->GetType();
-  //
-  // About the value aTolPC1=1000.*aTolPC,
-  // see IntPatch_GLine.cxx, line:398
-  // for more details;
-  aTolPC1=1000.*aTolPC; 
-  //-------------------------------------
-  //
-  pVtx=new GeomInt_RealWithFlag [aNbVtx];
-  //
-  pVtx[0].SetValue(0.);
-  pVtx[1].SetValue(aTwoPI);
-  //
-  for(i=1; i<=aNbVtxWas; ++i) {
-    aT=GeomInt_LineTool::Vertex(aLine, i).ParameterOnLine();
-    aT=AdjustOnPeriod(aT, aTwoPI);
-    pVtx[i+1].SetValue(aT);
-  }
-  //
-  SortShell(aNbVtx, pVtx);
-  //
-  RejectNearBeacons(aNbVtx, pVtx, aTolPC1, aTS1, aTS2);
-  //
-  RejectDuplicates(aNbVtx, pVtx, aTolPC);
-  //
-  if ((aType==IntPatch_Circle || aType==IntPatch_Ellipse)&& aNbVtx>2) { // zz
-    bFound=Standard_False;
-    for(i=1; i<=aNbVtxWas; ++i) {
-      aT=GeomInt_LineTool::Vertex(aLine, i).ParameterOnLine();
-      if (fabs(aT) < aTolPC1 || fabs(aT-aTwoPI) < aTolPC1) {
-        bFound=!bFound;
-        break;
-      }
-    }
-    if (!bFound) {
-      aT=pVtx[1].Value()+aTwoPI;
-      pVtx[aNbVtx-1].SetValue(aT);
-      //
-      for(i=0; i<aNbVtx - 1; ++i) { 
-        aT=pVtx[i+1].Value();
-        pVtx[i].SetValue(aT);
-      }
-      --aNbVtx;
-    }
-  }
-  //
-  for(i=0; i<aNbVtx-1; ++i) { 
-    aT1=pVtx[i].Value();
-    aT2=pVtx[i+1].Value();
-    aTmid=(aT1+aT2)*0.5;
-    GLinePoint(aType, aGLine, aTmid, aPmid);
-    //
-    Parameters(myHS1, myHS2, aPmid, aU1, aV1, aU2, aV2);
-    Recadre(myHS1, myHS2, aU1, aV1, aU2, aV2);
-    //
-    aP2D.SetCoord(aU1, aV1);
-    aIn1=myDom1->Classify(aP2D, aTol);
-    if(aIn1 !=  TopAbs_OUT) { 
-      aP2D.SetCoord(aU2, aV2);
-      aIn2=myDom2->Classify(aP2D, aTol);
-      if(aIn2 != TopAbs_OUT) { 
-        seqp.Append(aT1);
-        seqp.Append(aT2);
-      }
-    }
-  }
-  //
-  delete [] pVtx;
-}
-//=======================================================================
-//function : RejectNearBeacons
-//purpose  : Reject the thickenings near the beacon points (if exist)
-//           The gifts, made by sweep algo.  
-//           chl/930/B5 B8 C2 C5 E2 E5 E8 F2 G8 H2 H5 H8
-//=======================================================================
-void RejectNearBeacons(Standard_Integer& aNbVtx, 
-                       GeomInt_RealWithFlag *pVtx, 
-                       Standard_Real aTolPC1,
-                       const GeomAbs_SurfaceType aTS1,
-                       const GeomAbs_SurfaceType aTS2) 
-{
-  Standard_Integer i, j, iBcn;
-  Standard_Real aT, aBcn[2];
-  //
-  if (aTS1==GeomAbs_Cylinder && aTS2==GeomAbs_Cylinder) {
-    aBcn[0]=0.5*M_PI;
-    aBcn[1]=1.5*M_PI;
-    //
-    for (j=0; j<2; ++j) {
-      iBcn=-1;
-      for(i=0; i<aNbVtx; ++i) {
-        aT=pVtx[i].Value();
-        if (aT==aBcn[j]) {
-          iBcn=i;
-          break;
-        }
-      }
-      //
-      if (iBcn<0) {
-        // The beacon is not found
-        continue;
-      }
-      //  
-      for(i=0; i<aNbVtx; ++i) {
-        if (i!=iBcn) {
-          aT=pVtx[i].Value();
-          if (fabs(aT-aBcn[j]) < aTolPC1) {
-            pVtx[i].SetFlag(0);
-          }
-        }
-      }
-    }// for (j=0; j<2; ++j) {
-    //------------------------------------------
-    j=0;
-    for(i=0; i<aNbVtx; ++i) {
-      if (pVtx[i].Flag()) {
-        pVtx[j]=pVtx[i];
-        ++j;
-      }
-    }
-    aNbVtx=j;
-  }// if (aTS1==GeomAbs_Cylinder && aTS2==GeomAbs_Cylinder) {
-}
-
-//=======================================================================
-//function : RejectDuplicates
-//purpose  : 
-//=======================================================================
-void RejectDuplicates(Standard_Integer& aNbVtx, 
-                      GeomInt_RealWithFlag *pVtx, 
-                      Standard_Real aTolPC) 
-{
-  Standard_Integer i, j;
-  Standard_Real dX, aT1, aT2; 
-  //
-  for(i=0; i<aNbVtx-1; ++i) {
-    aT2=pVtx[i+1].Value();
-    aT1=pVtx[i].Value();
-    dX=aT2-aT1;
-    if (dX<aTolPC) {
-      pVtx[i+1].SetFlag(0);
-    }
-  }
-  //
-  j=0;
-  for(i=0; i<aNbVtx; ++i) {
-    if (pVtx[i].Flag()) {
-      pVtx[j]=pVtx[i];
-      ++j;
-    }
-  }
-  aNbVtx=j;
-}
-//=======================================================================
-//function : AdjustOnPeriod
-//purpose  : 
-//=======================================================================
-Standard_Real AdjustOnPeriod(const Standard_Real aTr,
-                             const Standard_Real aPeriod)
-{
-  Standard_Integer k;
-  Standard_Real aT;
-  //
-  aT=aTr;
-  if (aT<0.) {
-    k=-(Standard_Integer)(aT/aPeriod)+1;
-    aT=aT+k*aPeriod;
-  }
-  //
-  if (!(aT>=0. && aT<=aPeriod)) {
-    k=(Standard_Integer)(aT/aPeriod);
-    aT=aT-k*aPeriod;
-  }
-  //
-  return aT;
-}
 //=======================================================================
 //function : RejectMicroCrcles
 //purpose  : 
@@ -948,35 +795,67 @@ Standard_Boolean RejectMicroCircle(const Handle(IntPatch_GLine)& aGLine,
   }
   return bRet;
 }
+
 //=======================================================================
-// function: SortShell
-// purpose : 
+//function : RejectDuplicates
+//purpose  : Finds two coincident IntPatch_Points (if they exist) and 
+//            sets Parameter-On-Line fore one such point to DBL_MAX
+//            (i.e. its use in the future is forbidden).
+//
+//ATTENTION!!!
+//           The source array must be sorted in ascending order.
 //=======================================================================
-void SortShell(const Standard_Integer n, 
-               GeomInt_RealWithFlag *a) 
+void RejectDuplicates(NCollection_Array1<GeomInt_Vertex>& theVtxArr)
 {
-  Standard_Integer nd, i, j, l, d=1;
-  GeomInt_RealWithFlag x;
-  //
-  while(d<=n) {
-    d*=2;
+  // About the value aTolPC=1000.*Precision::PConfusion(),
+  // see IntPatch_GLine::ComputeVertexParameters(...)
+  // for more details;
+  const Standard_Real aTolPC = 1000.*Precision::PConfusion();
+
+  //Find duplicates in a slice of the array [LowerBound, UpperBound-1].
+  //If a duplicate has been found, the element with greater index will be rejected.
+  for (Standard_Integer i = theVtxArr.Lower(); i <= theVtxArr.Upper() - 2; i++)
+  {
+    const IntPatch_Point &aVi = theVtxArr(i).Getvertex();
+    const Standard_Real aPrmi = aVi.ParameterOnLine();
+
+    if (aPrmi == RealLast())
+      continue;
+
+    for (Standard_Integer j = i + 1; j <= theVtxArr.Upper() - 1; j++)
+    {
+      const IntPatch_Point &aVj = theVtxArr(j).Getvertex();
+      const Standard_Real aPrmj = aVj.ParameterOnLine();
+
+      if (aPrmj - aPrmi < aTolPC)
+      {
+        theVtxArr(j).SetParameter(RealLast());
+      }
+      else
+      {
+        break;
+      }
+    }
   }
-  //
-  while (d) {
-    d=(d-1)/2;
-    //
-    nd=n-d;
-    for (i=0; i<nd; ++i) {
-      j=i;
-    m30:;
-      l=j+d;
-      if (a[l] < a[j]){
-        x=a[j];
-        a[j]=a[l];
-        a[l]=x;
-        j-=d;
-        if (j > -1) goto m30;
-      }//if (a[l] < a[j]){
-    }//for (i=0; i<nd; ++i) 
-  }//while (1)
+
+  //Find duplicates with the last element of the array.
+  //If a duplicate has been found, the found element will be rejected.
+  const Standard_Real aMaxPrm = theVtxArr.Last().Getvertex().ParameterOnLine();
+  for (Standard_Integer i = theVtxArr.Upper() - 1; i > theVtxArr.Lower(); i--)
+  {
+    const IntPatch_Point &aVi = theVtxArr(i).Getvertex();
+    const Standard_Real aPrmi = aVi.ParameterOnLine();
+
+    if (aPrmi == RealLast())
+      continue;
+
+    if ((aMaxPrm - aPrmi) < aTolPC)
+    {
+      theVtxArr(i).SetParameter(RealLast());
+    }
+    else
+    {
+      break;
+    }
+  }
 }
