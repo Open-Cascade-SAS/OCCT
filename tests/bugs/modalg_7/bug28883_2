@@ -14,7 +14,7 @@ bsection result b1 b2
 checkshape result
 checksection result
 
-checknbshapes result -edge 133 -vertex 134
+checknbshapes result -edge 132 -vertex 133
 checkprops result -l 2.20769
 
 checkview -display result -2d -path ${imagedir}/${test_image}.png
