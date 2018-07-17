@@ -865,6 +865,10 @@ TopoDS_Face BuildDraftFace(const TopoDS_Face& theFace,
   // possibility of split.
   TopTools_DataMapOfShapeListOfShape aVerticesCounter;
 
+  // Check that the edges of the initial face have not been unified during intersection.
+  // Otherwise, it will be necessary to check validity of the new wires.
+  TopTools_MapOfShape aMEdges;
+
   // Update wires of the original face and add them to draft face
   TopoDS_Iterator aItW(theFace.Oriented(TopAbs_FORWARD));
   for (; aItW.More(); aItW.Next())
@@ -895,6 +899,8 @@ TopoDS_Face BuildDraftFace(const TopoDS_Face& theFace,
 
       // Check if the original edge is degenerated
       Standard_Boolean bIsDegenerated = BRep_Tool::Degenerated(aE);
+      // Check if the original edge is closed on the face
+      Standard_Boolean bIsClosed = BRep_Tool::IsClosed(aE, theFace);
 
       // Check for the splits of the edge
       const TopTools_ListOfShape* pLEIm = theImages.Seek(aE);
@@ -904,12 +910,13 @@ TopoDS_Face BuildDraftFace(const TopoDS_Face& theFace,
         if (!bIsDegenerated && HasMultiConnected(aE, aVerticesCounter))
           return TopoDS_Face();
 
+        // Check edges unification
+        if (!bIsClosed && !aMEdges.Add(aE))
+          return TopoDS_Face();
+
         aBB.Add(aNewWire, aE);
         continue;
       }
-
-      // Check if the original edge is closed on the face
-      Standard_Boolean bIsClosed = BRep_Tool::IsClosed(aE, theFace);
 
       TopTools_ListIteratorOfListOfShape aItLEIm(*pLEIm);
       for (; aItLEIm.More(); aItLEIm.Next())
@@ -918,6 +925,10 @@ TopoDS_Face BuildDraftFace(const TopoDS_Face& theFace,
 
         // Check if the split has multi-connected vertices
         if (!bIsDegenerated && HasMultiConnected(aSp, aVerticesCounter))
+          return TopoDS_Face();
+
+        // Check edges unification
+        if (!bIsClosed && !aMEdges.Add(aSp))
           return TopoDS_Face();
 
         aSp.Orientation(anOriE);

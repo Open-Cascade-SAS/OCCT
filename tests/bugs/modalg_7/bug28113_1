@@ -1,0 +1,47 @@
+puts "======="
+puts "OCC28113: BOPAlgo_Builder produces invalid shape"
+puts "======="
+puts ""
+
+
+restore [locate_data_file bug28113_shapes.brep] s
+explode s
+
+# fix the first shape in compound
+# 1. exclude s_1_3 from compsolid
+eval compound [lrange [explode s_1 so] 0 1] [lrange [explode s_1 so] 3 end] comp
+# fix SI in compound
+eval mkvolume v [explode comp f]
+checkshape v
+checknbshapes v -solid 18 -shell 18
+if {![regexp "OK" [bopcheck v]]} {
+  puts "Error: unable to rebuild the shape"
+}
+
+# create Compsolid
+shape s1 CS
+foreach s [explode v so] { add $s s1}
+
+# perform the operation
+bclearobjects
+bcleartools
+baddobjects s1
+baddtools s_2 s_3 s_4 s_5
+bfillds
+bbuild gf
+bsplit result
+
+foreach r {gf result} {
+  checkshape $r
+  if {![regexp "OK" [bopcheck $r]]} {
+    puts "Error: result is a self-interfering shape"
+  }
+}
+
+checknbshapes gf -wire 417 -face 417 -shell 91 -solid 90
+checkprops gf -s 259559 -v 690192
+
+checknbshapes result -wire 417 -face 417 -shell 90 -solid 90
+checkprops result -s 226564 -v 669028
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
