@@ -230,25 +230,13 @@ Bnd_Box& IntTools_Context::BndBox(const TopoDS_Shape& aS)
 Standard_Boolean IntTools_Context::IsInfiniteFace
   (const TopoDS_Face& aFace)
 {
-  Standard_Boolean bRet;
-  Standard_Integer i;
-  Standard_Real aX[6];
-  //
-  bRet=Standard_False;
-  //
-  if (!BRep_Tool::NaturalRestriction(aFace)) {
-    return bRet; 
-  }
-  //
-  Bnd_Box& aBox=BndBox(aFace);
-  //
-  aBox.Get(aX[0], aX[1], aX[2], aX[3], aX[4], aX[5]);
-  //
-  for (i=0; (i<6) && (!bRet); ++i) {
-    bRet=Precision::IsInfinite(aX[i]);
-  }
-  //
-  return bRet; 
+  const Bnd_Box& aBox = BndBox(aFace);
+  return aBox.IsOpenXmax() ||
+         aBox.IsOpenXmin() ||
+         aBox.IsOpenYmax() ||
+         aBox.IsOpenYmin() ||
+         aBox.IsOpenZmax() ||
+         aBox.IsOpenZmin();
 }
 //=======================================================================
 //function : FClass2d
