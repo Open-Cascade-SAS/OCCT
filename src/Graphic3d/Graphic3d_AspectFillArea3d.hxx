@@ -214,6 +214,9 @@ public:
   //! Returns current polygon offsets settings.
   const Graphic3d_PolygonOffset& PolygonOffset() const { return myPolygonOffset; }
 
+  //! Sets polygon offsets settings.
+  void SetPolygonOffset (const Graphic3d_PolygonOffset& theOffset) { myPolygonOffset = theOffset; }
+
   //! Returns current polygon offsets settings.
   void PolygonOffsets (Standard_Integer&   theMode,
                        Standard_ShortReal& theFactor,

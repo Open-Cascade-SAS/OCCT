@@ -656,7 +656,6 @@ void OpenGl_Layer::Render (const Handle(OpenGl_Workspace)&   theWorkspace,
                            const OpenGl_GlobalLayerSettings& theDefaultSettings) const
 {
   const Handle(OpenGl_Context)& aCtx = theWorkspace->GetGlContext();
-  const Graphic3d_PolygonOffset anAppliedOffsetParams = aCtx->PolygonOffset();
   // myLayerSettings.ToClearDepth() is handled outside
 
   // handle depth test
@@ -678,7 +677,7 @@ void OpenGl_Layer::Render (const Handle(OpenGl_Workspace)&   theWorkspace,
   }
 
   // handle depth offset
-  aCtx->SetPolygonOffset (myLayerSettings.PolygonOffset());
+  const Graphic3d_PolygonOffset anAppliedOffsetParams = theWorkspace->SetDefaultPolygonOffset (myLayerSettings.PolygonOffset());
 
   // handle depth write
   theWorkspace->UseDepthWrite() = myLayerSettings.ToEnableDepthWrite() && theDefaultSettings.DepthMask == GL_TRUE;
@@ -759,7 +758,7 @@ void OpenGl_Layer::Render (const Handle(OpenGl_Workspace)&   theWorkspace,
   }
 
   // always restore polygon offset between layers rendering
-  aCtx->SetPolygonOffset (anAppliedOffsetParams);
+  theWorkspace->SetDefaultPolygonOffset (anAppliedOffsetParams);
 
   // restore environment texture
   if (!myLayerSettings.UseEnvironmentTexture())

@@ -43,11 +43,6 @@ namespace
   static const OpenGl_Vec4 THE_WHITE_COLOR (1.0f, 1.0f, 1.0f, 1.0f);
   static const OpenGl_Vec4 THE_BLACK_COLOR (0.0f, 0.0f, 0.0f, 1.0f);
 
-  static const OpenGl_AspectLine myDefaultAspectLine;
-  static const OpenGl_AspectFace myDefaultAspectFace;
-  static const OpenGl_AspectMarker myDefaultAspectMarker;
-  static const OpenGl_AspectText myDefaultAspectText;
-
   static const OpenGl_Matrix myDefaultMatrix =
   {
     {{ 1.0F, 0.0F, 0.0F, 0.0F },
@@ -226,6 +221,23 @@ void OpenGl_Workspace::ResetAppliedAspect()
 
   myGlContext->SetTypeOfLine (myDefaultAspectLine.Aspect()->Type());
   myGlContext->SetLineWidth  (myDefaultAspectLine.Aspect()->Width());
+}
+
+// =======================================================================
+// function : SetDefaultPolygonOffset
+// purpose  :
+// =======================================================================
+Graphic3d_PolygonOffset OpenGl_Workspace::SetDefaultPolygonOffset (const Graphic3d_PolygonOffset& theOffset)
+{
+  Graphic3d_PolygonOffset aPrev = myDefaultAspectFace.Aspect()->PolygonOffset();
+  myDefaultAspectFace.Aspect()->SetPolygonOffset (theOffset);
+  if (myAspectFaceApplied == myDefaultAspectFace.Aspect()
+   || myAspectFaceApplied.IsNull()
+   || (myAspectFaceApplied->PolygonOffset().Mode & Aspect_POM_None) == Aspect_POM_None)
+  {
+    myGlContext->SetPolygonOffset (theOffset);
+  }
+  return aPrev;
 }
 
 // =======================================================================

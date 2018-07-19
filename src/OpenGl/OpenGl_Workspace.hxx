@@ -86,6 +86,10 @@ public:
   //! @return true if frustum culling algorithm is enabled
   Standard_EXPORT Standard_Boolean IsCullingEnabled() const;
 
+  //! Configure default polygon offset parameters.
+  //! Return previous settings.
+  Standard_EXPORT Graphic3d_PolygonOffset SetDefaultPolygonOffset (const Graphic3d_PolygonOffset& theOffset);
+
   //// RELATED TO STATUS ////
 
   //! Return true if active group might activate face culling (e.g. primitives are closed).
@@ -258,6 +262,11 @@ protected: //! @name fields related to status
 
   Standard_Integer myNbSkippedTranspElems; //!< counter of skipped transparent elements for OpenGl_LayerList two rendering passes method
   Standard_Integer myRenderFilter;         //!< active filter for skipping rendering of elements by some criteria (multiple render passes)
+
+  OpenGl_AspectLine   myDefaultAspectLine;
+  OpenGl_AspectFace   myDefaultAspectFace;
+  OpenGl_AspectMarker myDefaultAspectMarker;
+  OpenGl_AspectText   myDefaultAspectText;
 
   const OpenGl_AspectLine*   myAspectLineSet;
   const OpenGl_AspectFace*   myAspectFaceSet;
