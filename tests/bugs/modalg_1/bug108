@@ -10,7 +10,7 @@ puts ""
 restore [locate_data_file bug61037.brep] sh1
 checkshape sh1
 
-bounding -s sh1 -dump -shape result
+bounding sh1 -dump -shape result
 checkprops result -v 5.78576e-005 -s 0.042162
 
 smallview

@@ -12,7 +12,7 @@ compound result
 
 # construct obb for each face of the shape
 foreach f [explode part f] {
-  if [catch {bounding -s $f -obb}] {
+  if [catch {bounding $f -obb}] {
     puts "Error with $f (exception)"
     add $f result
   } else {

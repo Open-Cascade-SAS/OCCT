@@ -12,7 +12,7 @@ compound result
 
 # construct obb for each edge of the shape
 foreach e [explode part e] {
-  if [catch {bounding -s $e -obb}] {
+  if [catch {bounding $e -obb}] {
     puts "Error with $e (exception)"
     add $e result
   } else {

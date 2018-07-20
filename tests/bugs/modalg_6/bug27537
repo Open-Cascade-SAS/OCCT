@@ -9,7 +9,7 @@ puts ""
 restore [locate_data_file bug27537.brep] result
 incmesh result 0.2
 
-bounding -s result -save xMin yMin zMin xMax yMax zMax -dump
+bounding result -save xMin yMin zMin xMax yMax zMax -dump
 
 mkcurve c result
 bounds c u1 u2

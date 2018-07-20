@@ -8,7 +8,7 @@ puts ""
 
 restore [locate_data_file bug26560_planarspline.brep] result
 
-bounding -s result -save Xmin Ymin Zmin Xmax Ymax Zmax -shape resbox
+bounding result -save Xmin Ymin Zmin Xmax Ymax Zmax -shape resbox
 
 set tol_abs 1.0e-4
 set tol_rel 0.0001

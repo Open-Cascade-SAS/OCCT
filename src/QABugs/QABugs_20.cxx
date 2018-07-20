@@ -64,6 +64,10 @@
 
 #include <Standard_Failure.hxx>
 
+#include <Bnd_OBB.hxx>
+#include <BRepBndLib.hxx>
+#include <OSD_Timer.hxx>
+
 #include <limits>
 
 //=======================================================================
@@ -2990,6 +2994,36 @@ static Standard_Integer OCC29925 (Draw_Interpretor& theDI, Standard_Integer, con
   return 0;
 }
 
+//=======================================================================
+//function : OCC29311
+//purpose  : check performance of OBB calculations
+//=======================================================================
+static Standard_Integer OCC29311 (Draw_Interpretor& theDI, Standard_Integer theArgc, const char** theArgv)
+{
+  if (theArgc < 4)
+  {
+    std::cerr << "Use: " << theArgv[0] << " shape counter_name nb_iterations" << std::endl;
+    return 1;
+  }
+
+  TopoDS_Shape aShape = DBRep::Get (theArgv[1]);
+  Standard_Integer aNbIter = Draw::Atoi (theArgv[3]);
+
+  Bnd_OBB anOBB;
+  OSD_Timer aTimer;
+  aTimer.Start ();
+  for (Standard_Integer aN = aNbIter; aN > 0; --aN)
+  {
+    anOBB.SetVoid ();
+    BRepBndLib::AddOBB (aShape, anOBB, Standard_False, Standard_False, Standard_False);
+  }
+  aTimer.Stop ();
+
+  theDI << "COUNTER " << theArgv[2] << ": " << aTimer.ElapsedTime() << "\n";
+
+  return 0;
+}
+
 void QABugs::Commands_20(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
@@ -3028,6 +3062,7 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC29064", "OCC29064: test memory usage by copying empty maps", __FILE__, OCC29064, group);
   theCommands.Add ("OCC29925", "OCC29925: check safety of character classification functions", __FILE__, OCC29925, group);
   theCommands.Add("OCC29807", "OCC29807 surface1 surface2 u1 v1 u2 v2", __FILE__, OCC29807, group);
+  theCommands.Add("OCC29311", "OCC29311 shape counter nbiter: check performance of OBB calculation", __FILE__, OCC29311, group);
 
   return;
 }

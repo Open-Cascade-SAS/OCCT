@@ -10,7 +10,7 @@ puts ""
 
 restore [locate_data_file OCC566.brep] a 
 
-bounding -s a -save v1_x v1_y v1_z v2_x v2_y v2_z -dump -shape result
+bounding a -save v1_x v1_y v1_z v2_x v2_y v2_z -dump -shape result
 set err2 [OCC566 a]
 
 regexp { *([-0-9.+eE]+) *([-0-9.+eE]+) *([-0-9.+eE]+) *([-0-9.+eE]+) *([-0-9.+eE]+) *([-0-9.+eE]+)} $err2 full v3_x v3_y v3_z v4_x v4_y v4_z

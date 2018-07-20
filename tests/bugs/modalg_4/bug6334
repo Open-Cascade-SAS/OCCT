@@ -16,7 +16,7 @@ offsetshape t b 10 b_1
 
 checkshape t
 
-bounding -s t -save xt1 yy zz xt2 yy zz -dump
+bounding t -save xt1 yy zz xt2 yy zz -dump
 set ori [lindex [dtyp t] 2]
 puts "Orientation of thick solid is $ori"
 
@@ -28,7 +28,7 @@ if { [regexp {Faulty} $che] } {
     puts "Faulty ${BugNumber} : checkshape is wrong for h"
 }
 
-bounding -s h -save xh1 yy zz xh2 yy zz -dump
+bounding h -save xh1 yy zz xh2 yy zz -dump
 
 renamevar h result
 

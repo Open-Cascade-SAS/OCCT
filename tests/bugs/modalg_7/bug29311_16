@@ -22,7 +22,7 @@ set MaxIteration 0
 set MinIteration 0
 
 for {set i 1} { $i <= $NbIters} { incr i } {
-  bounding -s a -obb -shape rr$i
+  bounding a -obb -shape rr$i
   
   regexp {Mass +: +([-0-9.+eE]+)} [vprops rr$i 1.0e-12 -full] full Vreal
   
@@ -46,6 +46,6 @@ checkreal {Transformed BndBoxes} $VMax $VMin 0.0 0.001
 puts "The box with maximal volume is achieved in $MaxIteration iteration. See \"amax\" shape."
 puts "The box with minimal volume is achieved in $MinIteration iteration. See \"amin\" shape."
 
-bounding -s amax -obb -dump
-bounding -s amin -obb -dump
+bounding amax -obb -dump
+bounding amin -obb -dump
 

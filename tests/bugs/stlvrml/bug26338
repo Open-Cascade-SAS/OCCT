@@ -19,7 +19,7 @@ writestl comp $imagedir/${casename}.stl 1
 readstl result $imagedir/${casename}.stl -brep
 
 # check that bounding box is 
-bounding -s result -save Xmin Ymin Zmin Xmax Ymax Zmax -nodraw
+bounding result -save Xmin Ymin Zmin Xmax Ymax Zmax -nodraw
 
 checkreal "Xmin" [dval Xmin] 0.0 1e-5 0.
 checkreal "Ymin" [dval Ymin] 0.0 1e-5 0.

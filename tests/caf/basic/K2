@@ -18,7 +18,7 @@ set aSetDY1 200
 set aSetDZ1 300
 
 box aBox1 ${aSetX1} ${aSetY1} ${aSetZ1} ${aSetDX1} ${aSetDY1} ${aSetDZ1}
-bounding -s aBox1 -save X1_Box1 Y1_Box1 Z1_Box1 X2_Box1 Y2_Box1 Z2_Box1
+bounding aBox1 -save X1_Box1 Y1_Box1 Z1_Box1 X2_Box1 Y2_Box1 Z2_Box1
 
 set aLabel 0:2
 SetShape D ${aLabel} aBox1
@@ -46,7 +46,7 @@ Undo D
 # Get a value of the attribute
 GetShape D ${aLabel} aBox4
 
-bounding -s aBox4 -save X1_Box4 Y1_Box4 Z1_Box4 X2_Box4 Y2_Box4 Z2_Box4
+bounding aBox4 -save X1_Box4 Y1_Box4 Z1_Box4 X2_Box4 Y2_Box4 Z2_Box4
 if { [dval X1_Box1] != [dval X1_Box4] || 
      [dval Y1_Box1] != [dval Y1_Box4] || 
      [dval Z1_Box1] != [dval Z1_Box4] || 

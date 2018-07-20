@@ -9,7 +9,7 @@ puts ""
 set BugNumber OCC12661
 
 restore [locate_data_file OCC12661.brep] result
-bounding -s result -save x1 y1 z1 x2 y2 z2
+bounding result -save x1 y1 z1 x2 y2 z2
 
 checkreal "x1" [dval x1] -6.3659273065258741 0 0.001
 checkreal "y1" [dval y1] 0.7051405053395956  0 0.001

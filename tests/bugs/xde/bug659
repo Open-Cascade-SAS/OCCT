@@ -23,8 +23,8 @@ if [catch { igesbrep . a 6425 } res] {
 
 renamevar a_1 a2
 
-set size1 [ bounding -s a1 -save x1_a1 yy zz x2_a1 yy zz ]
-set size2 [ bounding -s a2 -save x1_a2 yy zz x2_a2 yy zz ]
+set size1 [ bounding a1 -save x1_a1 yy zz x2_a1 yy zz ]
+set size2 [ bounding a2 -save x1_a2 yy zz x2_a2 yy zz ]
 
 set dim2 [ dval x2_a2-x1_a2 ]
 set dim1 [ dval x2_a1-x1_a1 ]

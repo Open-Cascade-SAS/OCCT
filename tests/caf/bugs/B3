@@ -31,7 +31,7 @@ set aSetDZ1 300
 
 box aBox1 ${aSetX1} ${aSetY1} ${aSetZ1} ${aSetDX1} ${aSetDY1} ${aSetDZ1}
 
-bounding -s aBox1 -save X1_Box1 Y1_Box1 Z1_Box1 X2_Box1 Y2_Box1 Z2_Box1
+bounding aBox1 -save X1_Box1 Y1_Box1 Z1_Box1 X2_Box1 Y2_Box1 Z2_Box1
 
 set aLabel 0:2
 SetShape Doc ${aLabel} aBox1
@@ -61,7 +61,7 @@ if { ${IsDone} != 0 } {
 	puts "OCC1228: ERROR (case 2)"
 }
 
-bounding -s aBox5 -save X1_Box5 Y1_Box5 Z1_Box5 X2_Box5 Y2_Box5 Z2_Box5
+bounding aBox5 -save X1_Box5 Y1_Box5 Z1_Box5 X2_Box5 Y2_Box5 Z2_Box5
 
 if { [dval X1_Box1] != [dval X1_Box5] || 
      [dval Y1_Box1] != [dval Y1_Box5] || 

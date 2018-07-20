@@ -8,7 +8,7 @@ puts ""
 
 bsplinecurve c 3 2 0 4 1 4 0 0 0 1 0 1 0 1 1 1 0 1 1 0 0 1
 mkedge e c
-bounding -s e -save Xmin Ymin Zmin Xmax Ymax Zmax
+bounding e -save Xmin Ymin Zmin Xmax Ymax Zmax
 
 checkreal "Xmin" [dval Xmin]  0. 0.1 0.
 checkreal "Ymin" [dval Ymin] 0. 0.1 0.

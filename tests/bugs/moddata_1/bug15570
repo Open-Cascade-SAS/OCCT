@@ -13,7 +13,7 @@ pload XDE
 igesbrep [locate_data_file OCC15570.igs] a *
 tpcompound result
 
-bounding -s result -save xmin ymin zmin xmax ymax zmax -nodraw
+bounding result -save xmin ymin zmin xmax ymax zmax -nodraw
 
 checkreal "xmin" [dval xmin] -22.500000100000001 0 0.001
 checkreal "ymin" [dval ymin] -88.366946209482094 0 0.001

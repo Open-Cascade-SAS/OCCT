@@ -37,7 +37,7 @@ proc get_element { type args } {
 	     global $element
 	     distmini dd ver $element
      	     if { [string match "*$type*" [whatis $element]] } {
-               set bbox [bounding -s $element -save xx1 yy1 zz1 xx2 yy2 zz2 ]
+               set bbox [bounding $element -save xx1 yy1 zz1 xx2 yy2 zz2 ]
 # Get distance
                set dv [lindex [dump dd_val] 5]
                if {[expr {[dval xx1-1e-2] <= $x  && $x  <= [dval xx2+1e-2]

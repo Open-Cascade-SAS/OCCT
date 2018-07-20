@@ -11,7 +11,7 @@ explode a_1 f
 
 checknbshapes a_1_3 -wire 1
 
-bounding -s a_1_3 -dump -save Xmin Ymin Zmin Xmax Ymax Zmax
+bounding a_1_3 -dump -save Xmin Ymin Zmin Xmax Ymax Zmax
 
 checkreal "Xmin" [dval Xmin] -7.1677412321949925 0.1 0.
 checkreal "Ymin" [dval Ymin] -8.0000000999999994 0.1 0.

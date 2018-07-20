@@ -25,7 +25,7 @@ set tol_rel 1.e-7
 checkreal "Distance 1 " ${dist1} ${good_dist} ${tol_abs} ${tol_rel}
 checkreal "Distance 2 " ${dist2} ${good_dist} ${tol_abs} ${tol_rel}
 
-bounding -s a -save x0 y0 z0 x1 y1 z1 -nodraw
+bounding a -save x0 y0 z0 x1 y1 z1 -nodraw
 ttranslate a -x0 -y0 -z0
 ttranslate b -x0 -y0 -z0
 

@@ -6,7 +6,7 @@ puts ""
 restore [locate_data_file BUC60849.brep] result
 checkshape result
 
-bounding -s result -save xmin ymin zmin xmax ymax zmax -dump
+bounding result -save xmin ymin zmin xmax ymax zmax -dump
 
 smallview
 fit

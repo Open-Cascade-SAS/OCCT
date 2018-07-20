@@ -73,6 +73,13 @@ public:
   //! Constructor to create OBB from AABB.
   Bnd_OBB(const Bnd_Box& theBox) : myIsAABox(Standard_True)
   {
+    if (theBox.IsVoid())
+    {
+      myHDims[0] = myHDims[1] = myHDims[2] = -1.0;
+      myIsAABox = Standard_False;
+      return;
+    }
+
     Standard_Real aX1, aY1, aZ1, aX2, aY2, aZ2;
     theBox.Get(aX1, aY1, aZ1, aX2, aY2, aZ2);
 

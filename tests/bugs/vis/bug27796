@@ -12,7 +12,7 @@ box b1 -100 -50  -2 200 100 1
 
 # text label
 text2brep t "texT | Text\ntexT | Text" -height 50
-bounding -s t -save xx yy zz aTX aTY zz
+bounding t -save xx yy zz aTX aTY zz
 ttranslate t -0.5*aTX -0.5*aTY 1
 
 # sphere

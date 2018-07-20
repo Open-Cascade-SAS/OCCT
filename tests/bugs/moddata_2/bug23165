@@ -18,14 +18,14 @@ set exception_status 0
 restore [locate_data_file OCC23165-edge1.brep] e1 
 
 donly e1
-catch { bounding -s e1 } msg
+catch { bounding e1 } msg
 fit
 
 set index [lsearch $msg exception]
 if {$index > -1} {
   set exception_status 1
 } else {
-  bounding -s e1 -save e1_x1 e1_y1 e1_z1 e1_x2 e1_y2 e1_z2
+  bounding e1 -save e1_x1 e1_y1 e1_z1 e1_x2 e1_y2 e1_z2
 
   set e1_good_x1 -17.610622244944413
   set e1_good_y1 -0.010622244944394899
@@ -47,7 +47,7 @@ restore [locate_data_file OCC23165-curve.rle] c
 mkedge result c 20 36
 
 donly result
-set res [bounding -s result -save x1 y1 z1 x2 y2 z2 ]
+set res [bounding result -save x1 y1 z1 x2 y2 z2 ]
 fit
 
 set good_x1 -17.6105835090592

@@ -12,7 +12,7 @@ set step [expr 360.0/($NbIters-1) ]
 restore [locate_data_file bug29237_no_overlap.lhs.brep] a
 
 # Create AABB for a and put it into "r1" variable
-#   Draw[]> bounding -s a -shape r1
+#   Draw[]> bounding a -shape r1
 # The volume of one AABB is
 #   Draw[]> vprops r1 1.0e-12 -full
 #   32736000.276308119
@@ -22,7 +22,7 @@ set VMax 0
 set MaxIteration 0
 
 for {set i 1} { $i <= $NbIters} { incr i } {
-  bounding -s a -obb -shape rr$i
+  bounding a -obb -shape rr$i
   
   regexp {Mass +: +([-0-9.+eE]+)} [vprops rr$i 1.0e-12 -full] full Vreal
   

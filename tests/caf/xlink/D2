@@ -30,7 +30,7 @@ set aSetDZ1 300
 
 box aBox1 ${aSetX1} ${aSetY1} ${aSetZ1} ${aSetDX1} ${aSetDY1} ${aSetDZ1}
 
-bounding -s aBox1 -save X1_Box1 Y1_Box1 Z1_Box1 X2_Box1 Y2_Box1 Z2_Box1
+bounding aBox1 -save X1_Box1 Y1_Box1 Z1_Box1 X2_Box1 Y2_Box1 Z2_Box1
 
 SetShape Doc1 ${aLabel1} aBox1
 
@@ -48,7 +48,7 @@ set aSetDZ12 2300
 
 box aBox12 ${aSetX12} ${aSetY12} ${aSetZ12} ${aSetDX12} ${aSetDY12} ${aSetDZ12}
 
-bounding -s aBox12 -save X1_Box12 Y1_Box12 Z1_Box12 X2_Box12 Y2_Box12 Z2_Box12
+bounding aBox12 -save X1_Box12 Y1_Box12 Z1_Box12 X2_Box12 Y2_Box12 Z2_Box12
 
 SetShape Doc1 ${aLabel12} aBox12
 
@@ -99,12 +99,12 @@ Redo Doc2
 # Get a shape from 'TLabel1'
 GetShape Doc2 ${aLabel2} aBox2
 
-bounding -s aBox2 -save X1_Box2 Y1_Box2 Z1_Box2 X2_Box2 Y2_Box2 Z2_Box2
+bounding aBox2 -save X1_Box2 Y1_Box2 Z1_Box2 X2_Box2 Y2_Box2 Z2_Box2
 
 # Get a shape from 'T2Label1'
 GetShape Doc2 ${aLabel22} aBox22
 
-bounding -s aBox22 -save X1_Box22 Y1_Box22 Z1_Box22 X2_Box22 Y2_Box22 Z2_Box22
+bounding aBox22 -save X1_Box22 Y1_Box22 Z1_Box22 X2_Box22 Y2_Box22 Z2_Box22
 
 if { [dval X1_Box1] == [dval X1_Box2] || 
      [dval Y1_Box1] == [dval Y1_Box2] || 

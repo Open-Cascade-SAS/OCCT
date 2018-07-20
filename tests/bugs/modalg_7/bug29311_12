@@ -10,5 +10,5 @@ line ll -5 3 8 -1 0 0
 trim ll ll -100 100
 mkedge result ll
 
-bounding -s result -obb
+bounding result -obb
 

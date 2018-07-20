@@ -8,7 +8,7 @@ puts ""
 
 restore [locate_data_file bug25631_fbx.brep] result
 
-bounding -s result -save Xmin Ymin Zmin Xmax Ymax Zmax
+bounding result -save Xmin Ymin Zmin Xmax Ymax Zmax
 
 set tol_abs 1.0e-4
 set tol_rel 1.0e-4

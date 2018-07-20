@@ -41,7 +41,7 @@ tcopy bxx b10
 
 # make some boxes hollow
 for {set i 1} {$i <= 1} {incr i} {
-  set dim [bounding -s b$i -save xmin ymin zmin xmax ymax zmax]
+  set dim [bounding b$i -save xmin ymin zmin xmax ymax zmax]
   set dx [dval xmax-xmin]
   set x1 [dval xmin+0.1*$dx]
   set x2 [dval ymin+0.1*$dx]

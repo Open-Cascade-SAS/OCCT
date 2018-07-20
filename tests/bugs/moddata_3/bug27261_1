@@ -7,7 +7,7 @@ puts ""
 ##############################################################
 
 restore [locate_data_file bug27261_f1.brep] result
-bounding -s result -dump
+bounding result -dump
 
 # Visual check.
 smallview

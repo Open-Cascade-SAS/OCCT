@@ -10,7 +10,7 @@ set BugNumber OCC6503
 
 plane pl 0 0 0 0 0 1
 mkface f pl
-set info_result [bounding -s f -save x1 y1 z1 x2 y2 z2]
+set info_result [bounding f -save x1 y1 z1 x2 y2 z2]
 
 set good_x1 -1e+100
 set good_y1 -1e+100

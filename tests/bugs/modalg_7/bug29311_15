@@ -11,7 +11,7 @@ set py 2
 set pz 3
 
 vertex vv $px $py $pz
-set log [bounding -s vv -obb -dump]
+set log [bounding vv -obb -dump]
 
 if {![regexp {Center: +([-0-9.+eE]+) +([-0-9.+eE]+) +([-0-9.+eE]+)} $log full xc yc zc]} {
   puts "Error in Dump."

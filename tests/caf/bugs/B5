@@ -30,7 +30,7 @@ set aSetDZ1 300
 
 box aBox1 ${aSetX1} ${aSetY1} ${aSetZ1} ${aSetDX1} ${aSetDY1} ${aSetDZ1}
 
-bounding -s aBox1 -save X1_Box1 Y1_Box1 Z1_Box1 X2_Box1 Y2_Box1 Z2_Box1
+bounding aBox1 -save X1_Box1 Y1_Box1 Z1_Box1 X2_Box1 Y2_Box1 Z2_Box1
 
 # Create a label
 set aLabel 0:2
@@ -67,7 +67,7 @@ if { ${IsDone} != 0 } {
 	puts "OCC1228: ERROR (case 2)"
 }
 
-bounding -s aBox3 -save X1_Box3 Y1_Box3 Z1_Box3 X2_Box3 Y2_Box3 Z2_Box3
+bounding aBox3 -save X1_Box3 Y1_Box3 Z1_Box3 X2_Box3 Y2_Box3 Z2_Box3
 
 if { [dval X1_Box1] != [dval X1_Box3] || 
      [dval Y1_Box1] != [dval Y1_Box3] || 
