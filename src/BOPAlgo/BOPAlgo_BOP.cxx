@@ -163,7 +163,7 @@ void BOPAlgo_BOP::CheckData()
   //            or equal to the MAXIMAL dimension of the TOOLS;
   // 4. COMMON: The arguments and tools could have any dimensions.
   //
-  Standard_Integer iDimMin[2], iDimMax[2];
+  Standard_Integer iDimMin[2] = { 0, 0 }, iDimMax[2] = { 0, 0 };
   Standard_Boolean bHasValid[2] = {Standard_False, Standard_False};
   //
   for (i=0; i<2; ++i) {
@@ -216,8 +216,14 @@ void BOPAlgo_BOP::CheckData()
       AddError (new BOPAlgo_AlertBOPNotAllowed);
       return;
     }
-    myDims[0] = iDimMin[0];
-    myDims[1] = iDimMin[1];
+  }
+
+  if (bHasValid[0] || bHasValid[1])
+  {
+    // In case of all empty shapes in one of the groups
+    // this group aquires the dimension of other group
+    myDims[0] = bHasValid[0] ? iDimMin[0] : iDimMin[1];
+    myDims[1] = bHasValid[1] ? iDimMin[1] : iDimMin[0];
   }
 }
 //=======================================================================
@@ -265,24 +271,46 @@ Standard_Boolean BOPAlgo_BOP::TreatEmptyShape()
   // One of the groups of arguments consists of empty shapes only,
   // so we can build the result of operation right away just by
   // choosing the list of shapes to add to result, depending on
-  // the type of the operation
+  // the type of the operation.
+  // Although, if the group with valid shapes consists from more
+  // than just one shape, depending on the operation type we may need
+  // to split the shapes in this group before adding them into result.
+
   TopTools_ListOfShape *pLResult = NULL;
   //
   switch (myOperation) {
     case BOPAlgo_FUSE:
+    {
+      if (aLValidObjs.Extent() + aLValidTools.Extent() > 1)
+        // The arguments must be split before adding into result
+        return Standard_False;
+
       // Add not empty shapes into result
       pLResult = bHasValidObj ? &aLValidObjs : &aLValidTools;
       break;
+    }
     case BOPAlgo_CUT:
+    {
+      if (aLValidObjs.Extent() > 1)
+        // The objects must be split before adding into result
+        return Standard_False;
+
       // Add objects into result
       pLResult = &aLValidObjs;
       break;
+    }
     case BOPAlgo_CUT21:
+    {
+      if (aLValidTools.Extent() > 1)
+        // The tools must be split before adding into result
+        return Standard_False;
+
       // Add tools into result
       pLResult = &aLValidTools;
       break;
+    }
     case BOPAlgo_COMMON:
-      // Common will be empty
+      // Common will always be empty
       break;
     default:
       break;
@@ -408,6 +436,7 @@ void BOPAlgo_BOP::PerformInternal1(const BOPAlgo_PaveFiller& theFiller)
   {
     Standard_Boolean bDone = TreatEmptyShape();
     if (bDone) {
+      PrepareHistory();
       return;
     }
   }

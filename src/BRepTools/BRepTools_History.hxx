@@ -105,7 +105,10 @@ public: //! @name Constructors for History creation
     TopTools_IndexedMapOfShape anArgsMap;
     TopTools_ListIteratorOfListOfShape aIt(theArguments);
     for (; aIt.More(); aIt.Next())
-      TopExp::MapShapes(aIt.Value(), anArgsMap);
+    {
+      if (!aIt.Value().IsNull())
+        TopExp::MapShapes(aIt.Value(), anArgsMap);
+    }
 
     // Copy the history for all supported shapes from the algorithm
     Standard_Integer i, aNb = anArgsMap.Extent();

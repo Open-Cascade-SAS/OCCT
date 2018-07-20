@@ -99,9 +99,23 @@ public: //! @name History methods
   }
 
   //! History Tool
-  Handle(BRepTools_History) History() const
+  Handle(BRepTools_History) History()
   {
-    return myFillHistory ? myHistory : NULL;
+    if (myFillHistory)
+    {
+      if (myHistory.IsNull())
+       // It seems the algorithm has exited with error before filling
+       // the history. Initialize the History tool to return the empty
+       // History instead of NULL.
+       myHistory = new BRepTools_History();
+
+      return myHistory;
+    }
+
+    // If the History has not been requested to be filled, return the NULL
+    // explicitly as the History may be partially filled for the algorithm's
+    // internal needs.
+    return NULL;
   }
 
 public: //! @name Enabling/Disabling the history collection.

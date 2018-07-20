@@ -209,7 +209,8 @@ Standard_Boolean BRepTools_History::IsRemoved(
 //==============================================================================
 void BRepTools_History::Merge(const Handle(BRepTools_History)& theHistory23)
 {
-  Merge(*theHistory23.get());
+  if (!theHistory23.IsNull())
+    Merge(*theHistory23.get());
 }
 //==============================================================================
 //function : Merge
@@ -217,6 +218,12 @@ void BRepTools_History::Merge(const Handle(BRepTools_History)& theHistory23)
 //==============================================================================
 void BRepTools_History::Merge(const BRepTools_History& theHistory23)
 {
+  if (!(theHistory23.HasModified() ||
+        theHistory23.HasGenerated() ||
+        theHistory23.HasRemoved()))
+    // nothing to merge
+    return;
+
   // Propagate R23 directly and M23 and G23 fully to M12 and G12.
   // Remember the propagated shapes.
   TopTools_DataMapOfShapeListOfShape* aS1ToGAndM[] =

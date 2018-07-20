@@ -1,0 +1,73 @@
+puts "========"
+puts "OCC29973: Modeling Algorithms - access violation within BRepAlgoAPI_Cut on empty input shape"
+puts "========"
+puts ""
+
+
+box b1 10 10 10
+box b2 5 5 5 10 10 10
+compound c
+
+bclearobjects
+bcleartools
+baddobjects b1 b2
+baddtools c
+bfillds
+bbop r_0 0
+bbop r_1 1
+bbop r_2 2
+bbop r_3 3
+bbop r_4 4
+
+checkshape r_0
+checknbshapes r_0 -shape 1
+checkprops r_0 -s empty -v empty
+
+checkshape r_1
+checknbshapes r_1 -wire 12 -face 12 -solid 1 -shell 1
+checkprops r_1 -s 1050 -v 1875
+
+checkshape r_2
+checknbshapes r_2 -wire 18 -face 18 -solid 3 -shell 3
+checkprops r_2 -s 1350 -v 1875
+
+checkshape r_3
+checknbshapes r_3 -shape 1
+checkprops r_3 -s empty -v empty
+
+checkshape r_4
+checknbshapes r_4 -vertex 6 -edge 6
+checkprops r_4 -l 30
+
+# reverse the arguments
+
+bclearobjects
+bcleartools
+baddobjects c
+baddtools b1 b2
+bfillds
+bbop r1_0 0
+bbop r1_1 1
+bbop r1_2 2
+bbop r1_3 3
+bbop r1_4 4
+
+checkshape r1_0
+checknbshapes r1_0 -ref [nbshapes r_0]
+checkprops r1_0 -equal r_0
+
+checkshape r1_1
+checknbshapes r1_1 -ref [nbshapes r_1]
+checkprops r1_1 -equal r_1
+
+checkshape r1_2
+checknbshapes r1_2 -ref [nbshapes r_3]
+checkprops r1_2 -equal r_3
+
+checkshape r1_3
+checknbshapes r1_3 -ref [nbshapes r_2]
+checkprops r1_3 -equal r_2
+
+checkshape r1_4
+checknbshapes r1_4 -ref [nbshapes r_4]
+checkprops r1_4 -equal r_4
