@@ -255,58 +255,40 @@ public:
   //! Check if the given point is outside / inside / on section.
   Graphic3d_ClipState ProbePoint (const Graphic3d_Vec4d& thePoint) const
   {
+    Graphic3d_ClipState aState = Graphic3d_ClipState_Out;
     for (const Graphic3d_ClipPlane* aPlaneIter = this; aPlaneIter != NULL; aPlaneIter = aPlaneIter->myNextInChain.get())
     {
       Graphic3d_ClipState aPlnState = aPlaneIter->ProbePointHalfspace (thePoint);
-      if (aPlnState == Graphic3d_ClipState_On)
+      if (aPlnState == Graphic3d_ClipState_In)
       {
-        return Graphic3d_ClipState_On;
+        return Graphic3d_ClipState_In;
       }
-      else if (aPlnState == Graphic3d_ClipState_Out
-            && aPlaneIter->myNextInChain.IsNull())
+      else if (aPlnState != Graphic3d_ClipState_Out)
       {
-        return Graphic3d_ClipState_Out;
+        aState = Graphic3d_ClipState_On;
       }
     }
-    return Graphic3d_ClipState_In;
+    return aState;
   }
 
   //! Check if the given bounding box is fully outside / fully inside.
   Graphic3d_ClipState ProbeBox (const Graphic3d_BndBox3d& theBox) const
   {
-    Graphic3d_ClipState aPrevState = Graphic3d_ClipState_On;
+    Graphic3d_ClipState aState = Graphic3d_ClipState_Out;
     for (const Graphic3d_ClipPlane* aPlaneIter = this; aPlaneIter != NULL; aPlaneIter = aPlaneIter->myNextInChain.get())
     {
-      if (aPlaneIter->IsBoxFullOutHalfspace (theBox))
+      if (aPlaneIter->IsBoxFullInHalfspace (theBox))
       {
-        if (aPlaneIter->myNextInChain.IsNull())
-        {
-          return Graphic3d_ClipState_Out;
-        }
-        else if (aPrevState == Graphic3d_ClipState_In)
-        {
-          return Graphic3d_ClipState_On;
-        }
-        aPrevState = Graphic3d_ClipState_Out;
+        // within union operation, if box is entirely inside at least one half-space, others can be ignored
+        return Graphic3d_ClipState_In;
       }
-      else if (aPlaneIter->IsBoxFullInHalfspace (theBox))
+      else if (!aPlaneIter->IsBoxFullOutHalfspace (theBox))
       {
-        if (aPlaneIter->myNextInChain.IsNull())
-        {
-          return Graphic3d_ClipState_In;
-        }
-        else if (aPrevState == Graphic3d_ClipState_Out)
-        {
-          return Graphic3d_ClipState_On;
-        }
-        aPrevState = Graphic3d_ClipState_In;
-      }
-      else
-      {
-        return Graphic3d_ClipState_On;
+        // if at least one full out test fail, clipping state is inconclusive (partially clipped)
+        aState = Graphic3d_ClipState_On;
       }
     }
-    return Graphic3d_ClipState_On;
+    return aState;
   }
 
 public:
