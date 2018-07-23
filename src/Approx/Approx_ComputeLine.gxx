@@ -303,14 +303,28 @@ static Standard_Boolean CheckMultiCurve(const AppParCurves_MultiCurve& theMultiC
     sprintf(name, "bc2d_%d_%d", indc, nbbc);
     DrawTrSurf::Set(name, theBezier2d);
 #endif
-    gp_Vec2d FirstVec, SecondVec;
-    FirstVec = gp_Vec2d(aPoles2d(1), aPoles2d(2));
-    FirstVec.Normalize();
+    const Standard_Real aSqNormToler = Epsilon(1.0)*Epsilon(1.0);
+    gp_Vec2d FirstVec(aPoles2d(1), aPoles2d(2)), SecondVec;
+    Standard_Real aVecSqNorm = FirstVec.SquareMagnitude();
+    if (aVecSqNorm < aSqNormToler)
+    {
+      theIndbad = theIndfirst + 1;
+      return Standard_False;
+    }
+
+    FirstVec /= Sqrt(aSqNormToler);
     gp_Pnt2d MidPnt = aPoles2d(2);
     for (Standard_Integer k = 3; k <= aPoles2d.Upper(); k++)
     {
-      SecondVec = gp_Vec2d(MidPnt, aPoles2d(k));
-      SecondVec.Normalize();
+      SecondVec.SetXY(aPoles2d(k).XY() - MidPnt.XY());
+      aVecSqNorm = SecondVec.SquareMagnitude();
+      if (aVecSqNorm < aSqNormToler)
+      {
+        theIndbad = theIndfirst + k - 1;
+        return Standard_False;
+      }
+
+      SecondVec /= Sqrt(aVecSqNorm);
       Standard_Real ScalProd = FirstVec * SecondVec;
       if (ScalProd < MinScalProd)
       {

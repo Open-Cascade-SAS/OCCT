@@ -21,9 +21,10 @@ foreach e [explode r e] {
 mkcurve c $e
 
 # in a loop, check that curve has increased Z value along its length
-set delta 0.001
+bounds c u1 u2
+set delta [dval (u2-u1)/1000.0]
 cvalue c 0 xp yp zp
-for {set p 0} {$p <= 1} {set p [expr $p + $delta]} {
+for {set p [dval u1] } {$p <= [dval u2] } {set p [expr $p + $delta]} {
   cvalue c $p x y z
   if {[dval z] < [dval zp]} {
     puts "Error on parameter $p"

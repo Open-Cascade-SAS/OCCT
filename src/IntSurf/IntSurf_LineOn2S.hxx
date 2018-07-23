@@ -45,7 +45,7 @@ public:
   Standard_EXPORT IntSurf_LineOn2S(const IntSurf_Allocator& theAllocator = 0);
   
   //! Adds a point in the line.
-    void Add (const IntSurf_PntOn2S& P);
+  Standard_EXPORT void Add(const IntSurf_PntOn2S& P);
   
   //! Returns the number of points in the line.
     Standard_Integer NbPoints() const;
@@ -65,7 +65,7 @@ public:
   
   //! Sets the parametric coordinates on one of the surfaces
   //! of the point of range Index in the line.
-    void SetUV (const Standard_Integer Index, const Standard_Boolean OnFirst, const Standard_Real U, const Standard_Real V);
+  Standard_EXPORT void SetUV(const Standard_Integer Index, const Standard_Boolean OnFirst, const Standard_Real U, const Standard_Real V);
   
     void Clear();
   

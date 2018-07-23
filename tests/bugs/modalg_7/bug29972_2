@@ -1,18 +1,20 @@
 puts "========"
-puts "OCC24429: Cylinder-torus intersection throws an ex-ception and produces no result"
+puts "OCC29972: Intersection curve has a weird gap in the middle of it"
 puts "========"
 puts ""
 
-puts "TODO OCC24429 ALL: Error: 0 vertices are expected but 2 are found."
+set GoodNbCurves 2
 
-set GoodNbCurves 8
+foreach a [directory res*] {unset $a}
 
-restore [locate_data_file bug24429_s1.draw] s1
-restore [locate_data_file bug24429_s2.draw] s2
+restore [locate_data_file bug29972_s1.draw] s1 
+cylinder s2 -120 54.2955104312028 -116 1 0 0 0 0 -1 28
 
-intersect res s1 s2
+intersect res s1 s2 1.e-4
 
-if { [info exists res] } {
+set che [whatis res]
+set ind [string first "3d curve" $che]
+if {${ind} >= 0} {
   #Only variable "res" exists
   renamevar res res_1
 }
@@ -23,17 +25,20 @@ bcleartools
 set ic 1
 set AllowRepeat 1
 while { $AllowRepeat != 0 } {
-  if { ![info exists res_$ic] } {
+  set che [whatis res_$ic]
+  set ind [string first "3d curve" $che]
+  if {${ind} < 0} {
     set AllowRepeat 0
   } else {
+   
     bounds res_$ic U1 U2
     
     if {[dval U2-U1] < 1.0e-9} {
       puts "Error: Wrong curve's range!"
     }
     
-    xdistcs res_$ic s1 U1 U2 100 2.0e-6
-    xdistcs res_$ic s2 U1 U2 100 2.0e-6
+    xdistcs res_$ic s1 U1 U2 100 2.0e-5
+    xdistcs res_$ic s2 U1 U2 100 2.0e-5
     
     mkedge ee res_$ic
     baddobjects ee
@@ -54,6 +59,7 @@ don res_*
 
 fit
 don s1 s2
+clpoles s1
 disp res_*
 
 checkview -screenshot -2d -path ${imagedir}/${test_image}.png

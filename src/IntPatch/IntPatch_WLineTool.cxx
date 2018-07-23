@@ -99,6 +99,7 @@ static Handle(IntPatch_WLine) MakeNewWLine(const Handle(IntPatch_WLine)         
 
   Handle(IntSurf_LineOn2S) aPurgedLineOn2S = new IntSurf_LineOn2S();
   Handle(IntPatch_WLine) aLocalWLine = new IntPatch_WLine(aPurgedLineOn2S, Standard_False);
+  aLocalWLine->SetCreatingWayInfo(theWLine->GetCreatingWay());
   Standard_Integer anOldLineIdx = 1, aVertexIdx = 1, anIndexPrev = -1, anIdxOld = -1;
   gp_Pnt aPPrev, aPOld;
   for(i = 1; i <= thePointsHash.Upper(); i++)
@@ -1347,6 +1348,7 @@ Handle(IntPatch_WLine) IntPatch_WLineTool::
   Handle(IntPatch_WLine) aTmpWLine = theWLine;
   Handle(IntSurf_LineOn2S) aLineOn2S = new IntSurf_LineOn2S();
   aLocalWLine = new IntPatch_WLine(aLineOn2S, Standard_False);
+  aLocalWLine->SetCreatingWayInfo(theWLine->GetCreatingWay());
   for(i = 1; i <= nb; i++)
     aLineOn2S->Add(theWLine->Point(i));
 
@@ -1390,6 +1392,7 @@ Handle(IntPatch_WLine) IntPatch_WLineTool::
         {
           aTmpWLine = aLocalWLine;
           aLocalWLine = new IntPatch_WLine(aLineOn2S, Standard_False);
+          aLocalWLine->SetCreatingWayInfo(theWLine->GetCreatingWay());
           
           for(v = 1; v <= aTmpWLine->NbVertex(); v++)
           {

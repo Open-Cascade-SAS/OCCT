@@ -164,38 +164,93 @@ void GeomInt_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
     for(i=1;i<nbvtx;i++)    { 
       firstp = GeomInt_LineTool::Vertex(L,i).ParameterOnLine();
       lastp =  GeomInt_LineTool::Vertex(L,i+1).ParameterOnLine();
-      if(firstp!=lastp) { 
-        if(lastp != firstp+1)  {
-          const Standard_Integer pmid = (Standard_Integer )( (firstp+lastp)/2);
+      if(firstp!=lastp)
+      { 
+        if (lastp != firstp + 1)
+        {
+          const Standard_Integer pmid = (Standard_Integer) ((firstp + lastp) / 2);
           const IntSurf_PntOn2S& Pmid = WLine->Point(pmid);
           Pmid.Parameters(u1,v1,u2,v2);
           AdjustPeriodic(myHS1, myHS2, u1, v1, u2, v2);
-          const TopAbs_State in1 = myDom1->Classify(gp_Pnt2d(u1,v1),Tol);
-          if(in1 !=  TopAbs_OUT) {   
-            const TopAbs_State in2 = myDom2->Classify(gp_Pnt2d(u2,v2),Tol);
-            if(in2 != TopAbs_OUT) {   
+          const TopAbs_State in1 = myDom1->Classify(gp_Pnt2d(u1, v1), Tol);
+          if (in1 != TopAbs_OUT)
+          {
+            const TopAbs_State in2 = myDom2->Classify(gp_Pnt2d(u2, v2), Tol);
+            if (in2 != TopAbs_OUT)
+            {
               seqp.Append(firstp);
               seqp.Append(lastp);
             }
           }
         }
-        else {
-          const IntSurf_PntOn2S& Pfirst = WLine->Point((Standard_Integer)(firstp));
-          Pfirst.Parameters(u1,v1,u2,v2);
-          AdjustPeriodic(myHS1, myHS2, u1, v1, u2, v2);
-          TopAbs_State in1 = myDom1->Classify(gp_Pnt2d(u1,v1),Tol);
-          if(in1 !=  TopAbs_OUT) {  //-- !=ON donne Pb 
-            TopAbs_State in2 = myDom2->Classify(gp_Pnt2d(u2,v2),Tol);
-            if(in2 != TopAbs_OUT) { //-- !=ON  
-              const IntSurf_PntOn2S& Plast = WLine->Point((Standard_Integer)(lastp));
-              Plast.Parameters(u1,v1,u2,v2);
-              AdjustPeriodic(myHS1, myHS2, u1, v1, u2, v2);
-              in1 = myDom1->Classify(gp_Pnt2d(u1,v1),Tol);
-              if(in1 !=  TopAbs_OUT) {  //-- !=ON donne Pb 
-                in2 = myDom2->Classify(gp_Pnt2d(u2,v2),Tol);
-                if(in2 != TopAbs_OUT) {
-                  seqp.Append(firstp);
-                  seqp.Append(lastp);
+        else
+        {
+          if (WLine->GetCreatingWay() == IntPatch_WLine::IntPatch_WLImpPrm)
+          {
+            //The fix #29972.
+            //Implicit-Parametric intersector does not respect domain of 
+            //the quadric surface (it takes into account the domain of the
+            //parametric surface only). It means that we cannot warrant that
+            //we have a point exactly in the quadric boundary.
+            //E.g. in the test cases "bugs modalg_5 bug25697_2", 
+            //"bugs modalg_5 bug23948", "boolean bopfuse_complex G9",
+            //"boolean bopcommon_complex H7", "boolean bopcut_complex I7" etc.
+            //the WLine contains 2 points and one is out of the quadric's domain.
+            //In order to process these cases correctly, we classify a middle
+            //(between these two) point (obtained by interpolation).
+
+            //Other types of intersector take into account the domains of both surfaces.
+            //So, they require to reject all "outboundaried" parts of WLine. As result,
+            //more strict check (all two points of WLine are checksed) is
+            //applied in this case.
+
+            Standard_Real aU21, aV21, aU22, aV22;
+            const IntSurf_PntOn2S& aPfirst = WLine->Point((Standard_Integer) (firstp));
+            const IntSurf_PntOn2S& aPlast = WLine->Point((Standard_Integer) (lastp));
+            aPfirst.Parameters(u1, v1, u2, v2);
+            AdjustPeriodic(myHS1, myHS2, u1, v1, u2, v2);
+            aPlast.Parameters(aU21, aV21, aU22, aV22);
+            AdjustPeriodic(myHS1, myHS2, aU21, aV21, aU22, aV22);
+
+            u1 = 0.5*(u1 + aU21);
+            v1 = 0.5*(v1 + aV21);
+            u2 = 0.5*(u2 + aU22);
+            v2 = 0.5*(v2 + aV22);
+
+            const TopAbs_State in1 = myDom1->Classify(gp_Pnt2d(u1, v1), Tol);
+            if (in1 != TopAbs_OUT)
+            {
+              const TopAbs_State in2 = myDom2->Classify(gp_Pnt2d(u2, v2), Tol);
+              if (in2 != TopAbs_OUT)
+              {
+                seqp.Append(firstp);
+                seqp.Append(lastp);
+              }
+            }
+          }
+          else
+          {
+            const IntSurf_PntOn2S& Pfirst = WLine->Point((Standard_Integer) (firstp));
+            Pfirst.Parameters(u1, v1, u2, v2);
+            AdjustPeriodic(myHS1, myHS2, u1, v1, u2, v2);
+            TopAbs_State in1 = myDom1->Classify(gp_Pnt2d(u1, v1), Tol);
+            if (in1 != TopAbs_OUT)
+            {
+              TopAbs_State in2 = myDom2->Classify(gp_Pnt2d(u2, v2), Tol);
+              if (in2 != TopAbs_OUT)
+              {
+                const IntSurf_PntOn2S& Plast = WLine->Point((Standard_Integer) (lastp));
+                Plast.Parameters(u1, v1, u2, v2);
+                AdjustPeriodic(myHS1, myHS2, u1, v1, u2, v2);
+                in1 = myDom1->Classify(gp_Pnt2d(u1, v1), Tol);
+                if (in1 != TopAbs_OUT)
+                {
+                  in2 = myDom2->Classify(gp_Pnt2d(u2, v2), Tol);
+                  if (in2 != TopAbs_OUT)
+                  {
+                    seqp.Append(firstp);
+                    seqp.Append(lastp);
+                  }
                 }
               }
             }

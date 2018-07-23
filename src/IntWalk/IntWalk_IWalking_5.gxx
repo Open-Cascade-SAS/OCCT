@@ -74,18 +74,19 @@ IntWalk_StatusDeflection IntWalk_IWalking::TestDeflection
 
   gp_Vec Corde(previousPoint.Value(), sp.Point());
 
-  const Standard_Real Norme = Corde.SquareMagnitude(), 
-                      aTol = epsilon*Precision::PConfusion();
+  const Standard_Real Norme = Corde.SquareMagnitude();
 
-  //if ((++NbPointsConfondusConsecutifs < 10) && (Norme <= epsilon)) { // the square is already taken in the constructor
-  if ((Norme <= epsilon) && ((Duv <= aTol) || (StatusPrecedent != IntWalk_OK)))
+  if ((Norme <= 4.0*Precision::SquareConfusion()) && 
+      ((Duv <= Precision::SquarePConfusion()) || (StatusPrecedent != IntWalk_OK)))
   { // the square is already taken in the constructor
     aStatus = IntWalk_PointConfondu;
-    if (StatusPrecedent == IntWalk_PasTropGrand) {
+    if (StatusPrecedent == IntWalk_PasTropGrand)
+    {
       return IntWalk_ArretSurPointPrecedent;
     }
   }
-  else {
+  else
+  {
     Standard_Real Cosi = Corde * previousd3d;
     Standard_Real Cosi2 = 0.0;
 

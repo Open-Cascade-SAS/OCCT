@@ -171,3 +171,46 @@ Standard_Boolean IntSurf_LineOn2S::IsOutSurf2Box(const gp_Pnt2d& P2uv)
   return(out);
 }
 
+//=======================================================================
+//function : Add
+//purpose  : 
+//=======================================================================
+void IntSurf_LineOn2S::Add(const IntSurf_PntOn2S& P)
+{
+  mySeq.Append(P);
+  if (!myBxyz.IsWhole())
+  {
+    myBxyz.Add(P.Value());
+  }
+
+  if (!myBuv1.IsWhole())
+  {
+    myBuv1.Add(P.ValueOnSurface(Standard_True));
+  }
+
+  if (!myBuv2.IsWhole())
+  {
+    myBuv2.Add(P.ValueOnSurface(Standard_False));
+  }
+}
+
+//=======================================================================
+//function : SetUV
+//purpose  : 
+//=======================================================================
+void IntSurf_LineOn2S::SetUV(const Standard_Integer Index,
+                             const Standard_Boolean OnFirst,
+                             const Standard_Real U,
+                             const Standard_Real V)
+{
+  mySeq(Index).SetValue(OnFirst, U, V);
+
+  if (OnFirst && !myBuv1.IsWhole())
+  {
+    myBuv1.Add(gp_Pnt2d(U, V));
+  }
+  else if (!OnFirst && !myBuv2.IsWhole())
+  {
+    myBuv2.Add(gp_Pnt2d(U, V));
+  }
+}

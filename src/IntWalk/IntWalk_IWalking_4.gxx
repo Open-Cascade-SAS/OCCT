@@ -446,9 +446,11 @@ void IntWalk_IWalking::ComputeCloseLine(const TColStd_SequenceOfReal& Umult,
               if (wd2[I].etat > 12) {  //line closed good case
                 CurrentLine->AddStatusFirstLast(Standard_True,
                   Standard_False,Standard_False);
-                CurrentLine->AddPoint(CurrentLine->Value(1));              
+                CurrentLine->AddPoint(CurrentLine->Value(1));
               }
-              else if (N >0) { //point of stop given at input 
+              else if ((N >0) && (Pnts1.Length() >= N))
+              {
+                //point of stop given at input 
                 PathPnt = Pnts1.Value(N);
                 CurrentLine->AddStatusLast(Standard_True,N,PathPnt);
                 AddPointInCurrentLine(N,PathPnt,CurrentLine);

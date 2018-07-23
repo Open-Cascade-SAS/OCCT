@@ -19,12 +19,9 @@ set log [bopcurves b1 b2 -2d1]
 
 regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} ${log} full Toler NbCurv
 
-set MaxTol 1.e-7
 set GoodNbCurv 3
 
-if { ${Toler} > ${MaxTol} } {
-  puts "Error: Tolerance is too big!"
-}
+checkreal TolReached ${Toler} 0.00027763280312203317 0.0 0.01
 
 if { ${NbCurv} != ${GoodNbCurv} } {
   puts "Error: Curve Number is bad!"

@@ -868,7 +868,8 @@ Standard_Boolean GeomInt_LineTool::
 	  if(bIsEndOfLine) {
 	    if(aLineOn2S->NbPoints() > 1) {
 	      Handle(IntPatch_WLine) aNewWLine = 
-		new IntPatch_WLine(aLineOn2S, Standard_False);
+                new IntPatch_WLine(aLineOn2S, Standard_False);
+              aNewWLine->SetCreatingWayInfo(theWLine->GetCreatingWay());
 	      theNewLines.Append(aNewWLine);
 	    }
 	    aLineOn2S = new IntSurf_LineOn2S();
@@ -922,7 +923,8 @@ Standard_Boolean GeomInt_LineTool::
 	  if(bIsEndOfLine) {
 	    if(aLineOn2S->NbPoints() > 1) {
 	      Handle(IntPatch_WLine) aNewWLine = 
-		new IntPatch_WLine(aLineOn2S, Standard_False);
+                new IntPatch_WLine(aLineOn2S, Standard_False);
+              aNewWLine->SetCreatingWayInfo(theWLine->GetCreatingWay());
 	      theNewLines.Append(aNewWLine);
 	    }
 	    aLineOn2S = new IntSurf_LineOn2S();
@@ -951,7 +953,8 @@ Standard_Boolean GeomInt_LineTool::
 
     if(aLineOn2S->NbPoints() > 1) {
       Handle(IntPatch_WLine) aNewWLine = 
-	new IntPatch_WLine(aLineOn2S, Standard_False);
+        new IntPatch_WLine(aLineOn2S, Standard_False);
+      aNewWLine->SetCreatingWayInfo(theWLine->GetCreatingWay());
       theNewLines.Append(aNewWLine);
     }
   }
@@ -986,7 +989,8 @@ Standard_Boolean GeomInt_LineTool::
 	    aLineOn2S->Add(aP1);
 	    aLineOn2S->Add(aP2);
 	    Handle(IntPatch_WLine) aNewWLine = 
-	      new IntPatch_WLine(aLineOn2S, Standard_False);
+              new IntPatch_WLine(aLineOn2S, Standard_False);
+            aNewWLine->SetCreatingWayInfo(theWLine->GetCreatingWay());
 	    theNewLines.Append(aNewWLine);
 	  }
 	}

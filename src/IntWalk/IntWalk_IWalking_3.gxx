@@ -74,7 +74,7 @@ void IntWalk_IWalking::ComputeOpenLine(const TColStd_SequenceOfReal& Umult,
   Handle(IntWalk_TheIWLine)  CurrentLine;    // line under construction
   Standard_Boolean Tgtend;
 
-  IntWalk_StatusDeflection aStatus, StatusPrecedent;
+  IntWalk_StatusDeflection aStatus = IntWalk_OK, StatusPrecedent = IntWalk_OK;
   
   Standard_Integer NbDivision; 
   // number of divisions of step for each section

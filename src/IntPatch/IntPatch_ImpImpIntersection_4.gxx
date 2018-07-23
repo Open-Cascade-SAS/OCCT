@@ -2810,6 +2810,7 @@ static IntPatch_ImpImpIntersection::IntStatus
       {
         aL2S[i] = new IntSurf_LineOn2S();
         aWLine[i] = new IntPatch_WLine(aL2S[i], Standard_False);
+        aWLine[i]->SetCreatingWayInfo(IntPatch_WLine::IntPatch_WLImpImp);
         aWLFindStatus[i] = WLFStatus_Absent;
         isAddingWLEnabled[i] = Standard_True;
         aU2[i] = aV1[i] = aV2[i] = 0.0;
@@ -3531,6 +3532,7 @@ static IntPatch_ImpImpIntersection::IntStatus
 
     Handle(IntSurf_LineOn2S) aL2S = new IntSurf_LineOn2S();
     Handle(IntPatch_WLine) aWLine = new IntPatch_WLine(aL2S, Standard_False);
+    aWLine->SetCreatingWayInfo(IntPatch_WLine::IntPatch_WLImpImp);
 
     //Define the index of WLine, which lies the point aPnt2S in.
     Standard_Integer anIndex = 0;

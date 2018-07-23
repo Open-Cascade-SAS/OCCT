@@ -47,6 +47,14 @@ class IntPatch_WLine : public IntPatch_PointLine
 
 public:
 
+  //! Enumeration of ways of WLine creation.
+  enum IntPatch_WLType
+  {
+    IntPatch_WLUnknown,
+    IntPatch_WLImpImp,
+    IntPatch_WLImpPrm,
+    IntPatch_WLPrmPrm
+  };
   
   //! Creates a WLine as an intersection when the
   //! transitions are In or Out.
@@ -183,16 +191,28 @@ public:
   //! Otherwise,             prints list of 2d-points on the 2nd surface
   Standard_EXPORT void Dump(const Standard_Integer theMode) const;
 
-  //! Allows or forbides purging of existing WLine
+  //! Allows or forbids purging of existing WLine
   void EnablePurging(const Standard_Boolean theIsEnabled)
   {
     myIsPurgerAllowed = theIsEnabled;
   }
 
-  //! Returns TRUE if purging is allowed or forbiden for existing WLine
+  //! Returns TRUE if purging is allowed or forbidden for existing WLine
   Standard_Boolean IsPurgingAllowed()
   {
     return myIsPurgerAllowed;
+  }
+
+  //! Returns the way of <*this> creation.
+  IntPatch_WLType GetCreatingWay() const
+  {
+    return myCreationWay;
+  }
+
+  //! Sets the info about the way of <*this> creation.
+  void SetCreatingWayInfo(IntPatch_WLType theAlgo)
+  {
+    myCreationWay = theAlgo;
   }
 
 
@@ -222,6 +242,8 @@ private:
   Handle(Adaptor2d_HCurve2d) theArcOnS2;
   Standard_Boolean myIsPurgerAllowed;
 
+  //! identifies the way of <*this> creation
+  IntPatch_WLType myCreationWay;
 
 };
 

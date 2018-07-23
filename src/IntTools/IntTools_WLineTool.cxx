@@ -1363,6 +1363,7 @@ Standard_Boolean IntTools_WLineTool::
             if(aLineOn2S->NbPoints() > 1) {
               Handle(IntPatch_WLine) aNewWLine = 
                 new IntPatch_WLine(aLineOn2S, Standard_False);
+              aNewWLine->SetCreatingWayInfo(theWLine->GetCreatingWay());
               theNewLines.Append(aNewWLine);
             }
             aLineOn2S = new IntSurf_LineOn2S();
@@ -1420,6 +1421,7 @@ Standard_Boolean IntTools_WLineTool::
             if(aLineOn2S->NbPoints() > 1) {
               Handle(IntPatch_WLine) aNewWLine = 
                 new IntPatch_WLine(aLineOn2S, Standard_False);
+              aNewWLine->SetCreatingWayInfo(theWLine->GetCreatingWay());
               theNewLines.Append(aNewWLine);
             }
             aLineOn2S = new IntSurf_LineOn2S();
@@ -1451,6 +1453,7 @@ Standard_Boolean IntTools_WLineTool::
     if(aLineOn2S->NbPoints() > 1) {
       Handle(IntPatch_WLine) aNewWLine = 
         new IntPatch_WLine(aLineOn2S, Standard_False);
+      aNewWLine->SetCreatingWayInfo(theWLine->GetCreatingWay());
       theNewLines.Append(aNewWLine);
     }
   }

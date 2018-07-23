@@ -699,58 +699,51 @@ void IntPatch_ALineToWLine::MakeWLine(const Handle(IntPatch_ALine)& theALine,
     }
 
     //-----------------------------------------------------------------
-    //--  Computation of transitions of the line on two surfaces    ---
-    //-----------------------------------------------------------------
-    IntSurf_TypeTrans trans1,trans2;
-    {
-      Standard_Integer indice1;
-      Standard_Real dotcross;
-      gp_Pnt aPP0, aPP1;
-      //
-      trans1=IntSurf_Undecided;
-      trans2=IntSurf_Undecided;
-      //
-      indice1 = aLinOn2S->NbPoints()/3;
-      if(indice1<=2) {
-        indice1 = 2;
-      }
-      //
-      aPP1=aLinOn2S->Value(indice1).Value();
-      aPP0=aLinOn2S->Value(indice1-1).Value();
-      //
-      gp_Vec tgvalid(aPP0, aPP1);
-      gp_Vec aNQ1 = myQuad1.Normale(aPP0);
-      gp_Vec aNQ2 = myQuad2.Normale(aPP0);
-      //
-      dotcross = tgvalid.DotCross(aNQ2, aNQ1);
-      if (dotcross > myTolTransition) {
-        trans1 = IntSurf_Out;
-        trans2 = IntSurf_In;
-      }
-      else if(dotcross < -myTolTransition) { 
-        trans1 = IntSurf_In;
-        trans2 = IntSurf_Out;
-      } 
-    }
-
-    //-----------------------------------------------------------------
     //--              W  L  i  n  e     c  r  e  a  t  i  o  n      ---
     //-----------------------------------------------------------------
     Handle(IntPatch_WLine) aWLine;
     //
-    if(theALine->TransitionOnS1() == IntSurf_Touch)  { 
-                                  aWLine = new IntPatch_WLine(aLinOn2S,
+    if(theALine->TransitionOnS1() == IntSurf_Touch)
+    {
+      aWLine = new IntPatch_WLine(aLinOn2S,
                                   theALine->IsTangent(),
                                   theALine->SituationS1(),
                                   theALine->SituationS2());
+      aWLine->SetCreatingWayInfo(IntPatch_WLine::IntPatch_WLImpImp);
     }
-    else if(theALine->TransitionOnS1() == IntSurf_Undecided)  { 
+    else if(theALine->TransitionOnS1() == IntSurf_Undecided)
+    {
       aWLine = new IntPatch_WLine(aLinOn2S, theALine->IsTangent());
+      aWLine->SetCreatingWayInfo(IntPatch_WLine::IntPatch_WLImpImp);
     }
-    else { 
+    else
+    {
+      //Computation of transitions of the line on two surfaces    ---
+      const Standard_Integer indice1 = Max(aLinOn2S->NbPoints() / 3, 2);
+      const gp_Pnt &aPP0 = aLinOn2S->Value(indice1 - 1).Value(), 
+                   &aPP1 = aLinOn2S->Value(indice1).Value();
+      const gp_Vec tgvalid(aPP0, aPP1);
+      const gp_Vec aNQ1(myQuad1.Normale(aPP0)), aNQ2(myQuad2.Normale(aPP0));
+
+      const Standard_Real dotcross = tgvalid.DotCross(aNQ2, aNQ1);
+      
+      IntSurf_TypeTrans trans1 = IntSurf_Undecided,
+                        trans2 = IntSurf_Undecided;
+      
+      if (dotcross > myTolTransition)
+      {
+        trans1 = IntSurf_Out;
+        trans2 = IntSurf_In;
+      }
+      else if (dotcross < -myTolTransition)
+      {
+        trans1 = IntSurf_In;
+        trans2 = IntSurf_Out;
+      }
+
       aWLine = new IntPatch_WLine(aLinOn2S, theALine->IsTangent(),
-                                  trans1, // aline->TransitionOnS1(),
-                                  trans2);  //aline->TransitionOnS2());
+                                  trans1, trans2);
+      aWLine->SetCreatingWayInfo(IntPatch_WLine::IntPatch_WLImpImp);
     }
 
     for(Standard_Integer i = aSeqVertex.Lower(); i <= aNewVertID; i++)

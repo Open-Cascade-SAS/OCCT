@@ -237,6 +237,7 @@ static void SeveralWlinesProcessing(const Handle(Adaptor3d_HSurface)& theSurf1,
       newVtx.SetParameter(VPold.Value(ciV));
 
       Handle(IntPatch_WLine) NWLine = new IntPatch_WLine(newL2s,Standard_False,theTrans1,theTrans2);
+      NWLine->SetCreatingWayInfo(IntPatch_WLine::IntPatch_WLPrmPrm);
 
       Standard_Integer iV;
       for( iV = 1; iV <= cnbV; iV++ )
@@ -591,6 +592,8 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)&    
 
                     Standard_Real TolTang = TolTangency;
                     Handle(IntPatch_WLine) wline = new IntPatch_WLine(PW.Line(),Standard_False,trans1,trans2);
+                    wline->SetCreatingWayInfo(IntPatch_WLine::IntPatch_WLPrmPrm);
+
                     //the method PutVertexOnLine can reduce the number of points in <wline>
                     IntPatch_RstInt::PutVertexOnLine(wline,Surf1,D1,Surf2,Standard_True,TolTang);
                     if (wline->NbPnts() < 2)
@@ -740,6 +743,8 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)&    
 
                 Standard_Real TolTang = TolTangency;
                 Handle(IntPatch_WLine) wline = new IntPatch_WLine(PW.Line(),Standard_False,trans1,trans2);
+                wline->SetCreatingWayInfo(IntPatch_WLine::IntPatch_WLPrmPrm);
+
                 //the method PutVertexOnLine can reduce the number of points in <wline>
                 IntPatch_RstInt::PutVertexOnLine(wline,Surf1,D1,Surf2,Standard_True,TolTang);
                 if (wline->NbPnts() < 2)
@@ -998,6 +1003,8 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)&    
 
                       Standard_Real TolTang = TolTangency;
                       Handle(IntPatch_WLine) wline = new IntPatch_WLine(PWLine,Standard_False,trans1,trans2);
+                      wline->SetCreatingWayInfo(IntPatch_WLine::IntPatch_WLPrmPrm);
+
                       const IntSurf_PntOn2S& POn2SDeb = wline->Point(1);
                       const IntSurf_PntOn2S& POn2SFin = wline->Point(wline->NbPnts());
                       if((POn2SDeb.Value()).Distance(POn2SFin.Value()) <= TolTangency) { 
@@ -1174,6 +1181,8 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)&    
 
                     Standard_Real TolTang = TolTangency;
                     Handle(IntPatch_WLine) wline = new IntPatch_WLine(PWLine,Standard_False,trans1,trans2);
+                    wline->SetCreatingWayInfo(IntPatch_WLine::IntPatch_WLPrmPrm);
+
                     const IntSurf_PntOn2S& POn2SDeb = wline->Point(1);
                     const IntSurf_PntOn2S& POn2SFin = wline->Point(wline->NbPnts());
                     if((POn2SDeb.Value()).Distance(POn2SFin.Value()) <= TolTangency) { 
@@ -1324,7 +1333,10 @@ Handle(IntPatch_Line) IntPatch_PrmPrmIntersection::NewLine (const Handle(Adaptor
 
   ResultPntOn2SLine->Add(TheLine->Point(High));
 
-  return(new IntPatch_WLine(ResultPntOn2SLine,Standard_False));
+  Handle(IntPatch_WLine) aRWL = new IntPatch_WLine(ResultPntOn2SLine, Standard_False);
+  aRWL->SetCreatingWayInfo(IntPatch_WLine::IntPatch_WLPrmPrm);
+
+  return(aRWL);
 }
 
 //==================================================================================
@@ -1787,6 +1799,8 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)&    
 
               Standard_Real TolTang = TolTangency;
               Handle(IntPatch_WLine) wline = new IntPatch_WLine(PW.Line(),Standard_False,trans1,trans2);
+              wline->SetCreatingWayInfo(IntPatch_WLine::IntPatch_WLPrmPrm);
+
               //the method PutVertexOnLine can reduce the number of points in <wline>
               IntPatch_RstInt::PutVertexOnLine(wline, Surf1, D1, Surf2, Standard_True, TolTang);
               if (wline->NbPnts() < 2)
@@ -1939,6 +1953,8 @@ void IntPatch_PrmPrmIntersection::Perform(const Handle(Adaptor3d_HSurface)&    S
 
         Standard_Real TolTang = TolTangency;
         Handle(IntPatch_WLine) wline = new IntPatch_WLine(PW.Line(),Standard_False,trans1,trans2);
+        wline->SetCreatingWayInfo(IntPatch_WLine::IntPatch_WLPrmPrm);
+
         //the method PutVertexOnLine can reduce the number of points in <wline>
         IntPatch_RstInt::PutVertexOnLine(wline,Surf1,D1,Surf2,Standard_True,TolTang);
         if (wline->NbPnts() < 2)
@@ -2474,6 +2490,7 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
 
                       Standard_Real TolTang = TolTangency;
                       Handle(IntPatch_WLine) wline = new IntPatch_WLine(PW.Line(),Standard_False,trans1,trans2);
+                      wline->SetCreatingWayInfo(IntPatch_WLine::IntPatch_WLPrmPrm);
                       wline->EnablePurging(!hasBeenAdded);
                       //the method PutVertexOnLine can reduce the number of points in <wline>
                       IntPatch_RstInt::PutVertexOnLine(wline,Surf1,D1,Surf2,Standard_True,TolTang);
@@ -2688,6 +2705,7 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
 
                 Standard_Real TolTang = TolTangency;
                 Handle(IntPatch_WLine) wline = new IntPatch_WLine(PW.Line(),Standard_False,trans1,trans2);
+                wline->SetCreatingWayInfo(IntPatch_WLine::IntPatch_WLPrmPrm);
                 wline->EnablePurging(!hasBeenAdded);
                 //the method PutVertexOnLine can reduce the number of points in <wline>
                 IntPatch_RstInt::PutVertexOnLine(wline,Surf1,D1,Surf2,Standard_True,TolTang);
@@ -2885,6 +2903,8 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
 
               Standard_Real TolTang = TolTangency;
               Handle(IntPatch_WLine) wline = new IntPatch_WLine(PW.Line(),Standard_False,trans1,trans2);
+              wline->SetCreatingWayInfo(IntPatch_WLine::IntPatch_WLPrmPrm);
+
               //the method PutVertexOnLine can reduce the number of points in <wline>
               IntPatch_RstInt::PutVertexOnLine(wline,Surf1,D1,Surf2,Standard_True,TolTang);
               if (wline->NbPnts() < 2)

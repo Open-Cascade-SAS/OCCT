@@ -1,0 +1,80 @@
+puts "========"
+puts "OCC29972: Intersection curve has a weird gap in the middle of it"
+puts "========"
+puts ""
+
+set GoodNbCurves 1
+
+foreach a [directory res*] {unset $a}
+
+restore [locate_data_file bug29972_s3.draw] s1
+plane s2 41.3489013503538 536.047793220744 -145.944893918698 0.999990480720734 0 0.00436330928474653 0.00436330928474653 0 -0.999990480720734
+
+intersect res s1 s2 1.0e-4
+
+if { [info exists res] } {
+  #Only variable "res" exists
+  renamevar res res_1
+}
+
+bclearobjects
+bcleartools
+
+set ic 1
+set AllowRepeat 1
+while { $AllowRepeat != 0 } {
+  if { ![info exists res_$ic] } {
+    set AllowRepeat 0
+  } else {
+    bounds res_$ic U1 U2
+    
+    if {[dval U2-U1] < 1.0e-9} {
+      puts "Error: Wrong curve's range!"
+    }
+    
+    xdistcs res_$ic s1 U1 U2 100 0.01
+    xdistcs res_$ic s2 U1 U2 100 0.01    
+    
+    #check whether the curve has a loop
+    set delta [dval (U2-U1)/1000.0]
+    cvalue res_$ic [dval U1] xp yp zp dx1 dy1 dz1
+    for {set p [dval U1]} {$p <= [dval U2]} {set p [expr $p + $delta]} {
+      cvalue res_$ic $p xp yp zp dx2 dy2 dz2
+      
+      #Check if the angle between the vectors {dx1 dy1 dz1} and {dx2 dy2 dz2} is less than 75deg.
+      set nv1 [ dval dx1*dx1+dy1*dy1+dz1*dz1 ] 
+      set nv2 [ dval dx2*dx2+dy2*dy2+dz2*dz2 ] 
+      
+      set nv1 [ expr sqrt($nv1) ]
+      set nv2 [ expr sqrt($nv2) ]
+      
+      set dp [ dval dx1*dx2+dy2*dy2+dz1*dz2 ] 
+      
+      if {$dp < [ expr 0.25881904510252076234889883762405 * $nv1 * $nv2 ] } {
+        puts "Error: The curve res_$ic is possible to have a bend at parameter $p. Please check carefully"
+      }      
+      
+      dset dx1 dx2
+      dset dy1 dy2
+      dset dz1 dz2
+    }
+    
+    incr ic
+  }
+}
+
+incr ic -1
+
+if { $ic != $GoodNbCurves } {
+  puts "Error: $GoodNbCurves are expected but $ic ones are found"
+}
+
+smallview
+don res_*
+
+fit
+clpoles s1
+don s1 s2
+disp res_*
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

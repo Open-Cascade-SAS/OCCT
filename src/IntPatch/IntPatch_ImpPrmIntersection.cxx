@@ -852,6 +852,7 @@ void IntPatch_ImpPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
         }
         // <-A
         wline = new IntPatch_WLine(thelin,Standard_False,trans1,trans2);
+        wline->SetCreatingWayInfo(IntPatch_WLine::IntPatch_WLImpPrm);
 
 #ifdef INTPATCH_IMPPRMINTERSECTION_DEBUG
         wline->Dump(0);
@@ -2379,6 +2380,7 @@ static Handle(IntPatch_WLine) MakeSplitWLine (Handle(IntPatch_WLine)&        WLi
     sline->Add(SLine->Value(ip));
 
   Handle(IntPatch_WLine) wline = new IntPatch_WLine(sline,Tang,Trans1,Trans2);
+  wline->SetCreatingWayInfo(IntPatch_WLine::IntPatch_WLImpPrm);
 
   gp_Pnt aSPnt;
   IntPatch_Point TPntF,TPntL;
@@ -2958,6 +2960,7 @@ static Standard_Boolean DecomposeResult(const Handle(IntPatch_PointLine)& theLin
       Handle(IntPatch_WLine) wline = 
                           new IntPatch_WLine(sline,Standard_False,
                           theLine->TransitionOnS1(),theLine->TransitionOnS2());
+      wline->SetCreatingWayInfo(IntPatch_WLine::IntPatch_WLImpPrm);
 
       Standard_Real aU1 = 0.0, aV1 = 0.0, aU2 = 0.0, aV2 = 0.0;
       gp_Pnt aSPnt(sline->Value(1).Value());
