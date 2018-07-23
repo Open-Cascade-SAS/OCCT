@@ -201,16 +201,16 @@ static Standard_Integer mkplane(Draw_Interpretor& theDI, Standard_Integer n, con
   case BRepBuilderAPI_FaceDone:
     DBRep::Set(a[1],aMF.Face());
     break;
-  case BRepLib_NoFace:
+  case BRepBuilderAPI_NoFace:
     theDI << "Error. mkplane has been finished with \"No Face\" status.\n";
     break;
-  case BRepLib_NotPlanar:
+  case BRepBuilderAPI_NotPlanar:
     theDI << "Error. mkplane has been finished with \"Not Planar\" status.\n";
     break;
-  case BRepLib_CurveProjectionFailed:
+  case BRepBuilderAPI_CurveProjectionFailed:
     theDI << "Error. mkplane has been finished with \"Fail in projection curve\" status.\n";
     break;
-  case BRepLib_ParametersOutOfRange:
+  case BRepBuilderAPI_ParametersOutOfRange:
     theDI << "Error. mkplane has been finished with \"Parameters are out of range\" status.\n";
     break;
   default:
