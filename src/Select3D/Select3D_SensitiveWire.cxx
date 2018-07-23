@@ -114,18 +114,11 @@ void Select3D_SensitiveWire::Swap (const Standard_Integer theIdx1,
 // =======================================================================
 Standard_Boolean Select3D_SensitiveWire::overlapsElement (SelectBasics_SelectingVolumeManager& theMgr,
                                                           Standard_Integer theElemIdx,
-                                                          Standard_Real& theMatchDepth)
+                                                          SelectBasics_PickResult& thePickResult)
 {
   const Standard_Integer aSensitiveIdx = myEntityIndexes.Value (theElemIdx);
   const Handle(SelectBasics_SensitiveEntity)& aSeg = myEntities.Value (aSensitiveIdx);
-  SelectBasics_PickResult aMatchResult;
-  if (aSeg->Matches (theMgr, aMatchResult))
-  {
-    theMatchDepth = aMatchResult.Depth();
-    return Standard_True;
-  }
-
-  return Standard_False;
+  return aSeg->Matches (theMgr, thePickResult);
 }
 
 // =======================================================================

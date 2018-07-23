@@ -66,8 +66,6 @@ Handle(Select3D_SensitiveEntity) MeshVS_SensitiveQuad::GetConnected()
 Standard_Boolean MeshVS_SensitiveQuad::Matches (SelectBasics_SelectingVolumeManager& theMgr,
                                                 SelectBasics_PickResult& thePickResult)
 {
-  thePickResult = SelectBasics_PickResult (RealLast(), RealLast());
-
   if (!theMgr.IsOverlapAllowed()) // check for inclusion
   {
     for (Standard_Integer aPntIdx = 0; aPntIdx < 4; ++aPntIdx)
@@ -80,16 +78,15 @@ Standard_Boolean MeshVS_SensitiveQuad::Matches (SelectBasics_SelectingVolumeMana
   }
 
   // check for overlap
-  Standard_Real aDepth1 = std::numeric_limits<Standard_Real>::max();
-  Standard_Real aDepth2 = std::numeric_limits<Standard_Real>::max();
-  if (!theMgr.Overlaps (myVertices[0], myVertices[1], myVertices[2], Select3D_TOS_INTERIOR, aDepth1)
-    && !theMgr.Overlaps (myVertices[0], myVertices[2], myVertices[3], Select3D_TOS_INTERIOR, aDepth2))
+  SelectBasics_PickResult aPickResult1, aPickResult2;
+  if (!theMgr.Overlaps (myVertices[0], myVertices[1], myVertices[2], Select3D_TOS_INTERIOR, aPickResult1)
+   && !theMgr.Overlaps (myVertices[0], myVertices[2], myVertices[3], Select3D_TOS_INTERIOR, aPickResult2))
   {
     return Standard_False;
   }
 
-  thePickResult = SelectBasics_PickResult (Min (aDepth1, aDepth2), theMgr.DistToGeometryCenter (CenterOfGeometry()));
-
+  thePickResult = SelectBasics_PickResult::Min (aPickResult1, aPickResult2);
+  thePickResult.SetDistToGeomCenter (theMgr.DistToGeometryCenter(CenterOfGeometry()));
   return Standard_True;
 }
 

@@ -198,9 +198,9 @@ Select3D_BndBox3d Select3D_SensitiveTriangulation::Box (const Standard_Integer t
     Standard_Integer aNode1, aNode2, aNode3;
     myTriangul->Triangles() (aPrimIdx + 1).Get (aNode1, aNode2, aNode3);
 
-    gp_Pnt aPnt1 = myTriangul->Nodes().Value (aNode1);
-    gp_Pnt aPnt2 = myTriangul->Nodes().Value (aNode2);
-    gp_Pnt aPnt3 = myTriangul->Nodes().Value (aNode3);
+    const gp_Pnt& aPnt1 = myTriangul->Nodes().Value (aNode1);
+    const gp_Pnt& aPnt2 = myTriangul->Nodes().Value (aNode2);
+    const gp_Pnt& aPnt3 = myTriangul->Nodes().Value (aNode3);
 
     aMinPnt = SelectMgr_Vec3 (Min (aPnt1.X(), Min (aPnt2.X(), aPnt3.X())),
                               Min (aPnt1.Y(), Min (aPnt2.Y(), aPnt3.Y())),
@@ -213,8 +213,8 @@ Select3D_BndBox3d Select3D_SensitiveTriangulation::Box (const Standard_Integer t
   {
     Standard_Integer aNodeIdx1 = myFreeEdges->Value (myFreeEdges->Lower() + aPrimIdx);
     Standard_Integer aNodeIdx2 = myFreeEdges->Value (myFreeEdges->Lower() + aPrimIdx + 1);
-    gp_Pnt aNode1 = myTriangul->Nodes().Value (aNodeIdx1);
-    gp_Pnt aNode2 = myTriangul->Nodes().Value (aNodeIdx2);
+    const gp_Pnt& aNode1 = myTriangul->Nodes().Value (aNodeIdx1);
+    const gp_Pnt& aNode2 = myTriangul->Nodes().Value (aNodeIdx2);
 
     aMinPnt = SelectMgr_Vec3 (Min (aNode1.X(), aNode2.X()),
                               Min (aNode1.Y(), aNode2.Y()),
@@ -236,9 +236,8 @@ Standard_Real Select3D_SensitiveTriangulation::Center (const Standard_Integer th
                                                        const Standard_Integer theAxis) const
 {
   const Select3D_BndBox3d& aBox = Box (theIdx);
-  SelectMgr_Vec3 aCenter = (aBox.CornerMin () + aBox.CornerMax ()) * 0.5;
-  
-  return theAxis == 0 ? aCenter.x() : (theAxis == 1 ? aCenter.y() : aCenter.z());
+  const SelectMgr_Vec3 aCenter = (aBox.CornerMin () + aBox.CornerMax ()) * 0.5;
+  return aCenter[theAxis];
 }
 
 //=======================================================================
@@ -262,7 +261,7 @@ void Select3D_SensitiveTriangulation::Swap (const Standard_Integer theIdx1,
 //=======================================================================
 Standard_Boolean Select3D_SensitiveTriangulation::overlapsElement (SelectBasics_SelectingVolumeManager& theMgr,
                                                                    Standard_Integer theElemIdx,
-                                                                   Standard_Real& theMatchDepth)
+                                                                   SelectBasics_PickResult& thePickResult)
 {
   const Standard_Integer& aPrimitiveIdx = myBVHPrimIndexes->Value (theElemIdx);
 
@@ -270,13 +269,14 @@ Standard_Boolean Select3D_SensitiveTriangulation::overlapsElement (SelectBasics_
   {
     Standard_Integer aSegmStartIdx = myFreeEdges->Value (aPrimitiveIdx * 2 + 1);
     Standard_Integer aSegmEndIdx = myFreeEdges->Value (aPrimitiveIdx * 2 + 2);
-    Handle(TColgp_HArray1OfPnt) anEdgePnts = new TColgp_HArray1OfPnt (1, 2);
-    gp_Pnt aSegmStart = myTriangul->Nodes().Value (aSegmStartIdx);
-    gp_Pnt aSegmEnd   = myTriangul->Nodes().Value (aSegmEndIdx);
-    anEdgePnts->SetValue (1, aSegmStart);
-    anEdgePnts->SetValue (2, aSegmEnd);
-    Standard_Boolean isMatched = theMgr.Overlaps (anEdgePnts, Select3D_TOS_BOUNDARY, theMatchDepth);
-    anEdgePnts.Nullify();
+
+    const gp_Pnt anEdgePnts[2] =
+    {
+      myTriangul->Nodes().Value (aSegmStartIdx),
+      myTriangul->Nodes().Value (aSegmEndIdx)
+    };
+    TColgp_Array1OfPnt anEdgePntsArr (anEdgePnts[0], 1, 2);
+    Standard_Boolean isMatched = theMgr.Overlaps (anEdgePntsArr, Select3D_TOS_BOUNDARY, thePickResult);
     return isMatched;
   }
   else
@@ -284,10 +284,10 @@ Standard_Boolean Select3D_SensitiveTriangulation::overlapsElement (SelectBasics_
     const Poly_Array1OfTriangle& aTriangles = myTriangul->Triangles();
     Standard_Integer aNode1, aNode2, aNode3;
     aTriangles (aPrimitiveIdx + 1).Get (aNode1, aNode2, aNode3);
-    gp_Pnt aPnt1 = myTriangul->Nodes().Value (aNode1);
-    gp_Pnt aPnt2 = myTriangul->Nodes().Value (aNode2);
-    gp_Pnt aPnt3 = myTriangul->Nodes().Value (aNode3);
-    return theMgr.Overlaps (aPnt1, aPnt2, aPnt3, Select3D_TOS_INTERIOR, theMatchDepth);
+    const gp_Pnt& aPnt1 = myTriangul->Nodes().Value (aNode1);
+    const gp_Pnt& aPnt2 = myTriangul->Nodes().Value (aNode2);
+    const gp_Pnt& aPnt3 = myTriangul->Nodes().Value (aNode3);
+    return theMgr.Overlaps (aPnt1, aPnt2, aPnt3, Select3D_TOS_INTERIOR, thePickResult);
   }
 }
 
@@ -302,23 +302,18 @@ Standard_Boolean Select3D_SensitiveTriangulation::elementIsInside (SelectBasics_
 
   if (mySensType == Select3D_TOS_BOUNDARY)
   {
-    gp_Pnt aSegmPnt1 = myTriangul->Nodes().Value (myFreeEdges->Value (aPrimitiveIdx * 2 + 1));
-    gp_Pnt aSegmPnt2 = myTriangul->Nodes().Value (myFreeEdges->Value (aPrimitiveIdx * 2 + 2));
-
+    const gp_Pnt& aSegmPnt1 = myTriangul->Nodes().Value (myFreeEdges->Value (aPrimitiveIdx * 2 + 1));
+    const gp_Pnt& aSegmPnt2 = myTriangul->Nodes().Value (myFreeEdges->Value (aPrimitiveIdx * 2 + 2));
     return theMgr.Overlaps (aSegmPnt1) && theMgr.Overlaps (aSegmPnt2);
   }
   else
   {
-    Standard_Integer aNode1;
-    Standard_Integer aNode2;
-    Standard_Integer aNode3;
-
+    Standard_Integer aNode1, aNode2, aNode3;
     myTriangul->Triangles() (aPrimitiveIdx + 1).Get (aNode1, aNode2, aNode3);
 
-    gp_Pnt aPnt1 = myTriangul->Nodes().Value (aNode1);
-    gp_Pnt aPnt2 = myTriangul->Nodes().Value (aNode2);
-    gp_Pnt aPnt3 = myTriangul->Nodes().Value (aNode3);
-
+    const gp_Pnt& aPnt1 = myTriangul->Nodes().Value (aNode1);
+    const gp_Pnt& aPnt2 = myTriangul->Nodes().Value (aNode2);
+    const gp_Pnt& aPnt3 = myTriangul->Nodes().Value (aNode3);
     return theMgr.Overlaps (aPnt1)
         && theMgr.Overlaps (aPnt2)
         && theMgr.Overlaps (aPnt3);

@@ -148,7 +148,7 @@ private:
   //! Checks whether the entity with index theIdx overlaps the current selecting volume
   virtual Standard_Boolean overlapsElement (SelectBasics_SelectingVolumeManager& theMgr,
                                             Standard_Integer theElemIdx,
-                                            Standard_Real& theMatchDepth) Standard_OVERRIDE;
+                                            SelectBasics_PickResult& thePickResult) Standard_OVERRIDE;
 
   //! Checks whether the entity with index theIdx is inside the current selecting volume
   virtual Standard_Boolean elementIsInside (SelectBasics_SelectingVolumeManager& theMgr,

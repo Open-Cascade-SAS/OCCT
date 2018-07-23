@@ -67,6 +67,7 @@ namespace {
 // purpose  :
 //=======================================================================
 void SelectMgr_ViewerSelector::updatePoint3d (SelectMgr_SortCriterion& theCriterion,
+                                              const SelectBasics_PickResult& thePickResult,
                                               const Handle(SelectBasics_SensitiveEntity)& theEntity,
                                               const gp_GTrsf& theInversedTrsf,
                                               const SelectMgr_SelectingVolumeManager& theMgr) const
@@ -76,7 +77,15 @@ void SelectMgr_ViewerSelector::updatePoint3d (SelectMgr_SortCriterion& theCriter
     return;
   }
 
-  theCriterion.Point = theMgr.DetectedPoint (theCriterion.Depth);
+  if (thePickResult.HasPickedPoint())
+  {
+    theCriterion.Point = thePickResult.PickedPoint();
+  }
+  else
+  {
+    theCriterion.Point = theMgr.DetectedPoint (theCriterion.Depth);
+  }
+
   gp_GTrsf anInvTrsf = theInversedTrsf;
   if (theCriterion.Entity->HasInitLocation())
   {
@@ -277,7 +286,7 @@ void SelectMgr_ViewerSelector::checkOverlap (const Handle(SelectBasics_Sensitive
     {
       if (aCriterion > *aPrevCriterion)
       {
-        updatePoint3d (aCriterion, theEntity, theInversedTrsf, theMgr);
+        updatePoint3d (aCriterion, aPickResult, theEntity, theInversedTrsf, theMgr);
         *aPrevCriterion = aCriterion;
       }
     }
@@ -285,7 +294,7 @@ void SelectMgr_ViewerSelector::checkOverlap (const Handle(SelectBasics_Sensitive
   else
   {
     aCriterion.NbOwnerMatches = 1;
-    updatePoint3d (aCriterion, theEntity, theInversedTrsf, theMgr);
+    updatePoint3d (aCriterion, aPickResult, theEntity, theInversedTrsf, theMgr);
     mystored.Add (anOwner, aCriterion);
   }
 }

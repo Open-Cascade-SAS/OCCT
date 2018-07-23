@@ -222,7 +222,7 @@ void Select3D_SensitivePoly::Swap (const Standard_Integer theIdx1,
 //==================================================
 Standard_Boolean Select3D_SensitivePoly::overlapsElement (SelectBasics_SelectingVolumeManager& theMgr,
                                                           Standard_Integer theElemIdx,
-                                                          Standard_Real& theMatchDepth)
+                                                          SelectBasics_PickResult& thePickResult)
 {
   if (mySegmentIndexes.IsNull())
     return Standard_False;
@@ -231,7 +231,7 @@ Standard_Boolean Select3D_SensitivePoly::overlapsElement (SelectBasics_Selecting
   gp_Pnt aPnt1 = myPolyg.Pnt3d (aSegmentIdx);
   gp_Pnt aPnt2 = myPolyg.Pnt3d (aSegmentIdx + 1);
 
-  return theMgr.Overlaps (aPnt1, aPnt2, theMatchDepth);
+  return theMgr.Overlaps (aPnt1, aPnt2, thePickResult);
 }
 
 //==================================================

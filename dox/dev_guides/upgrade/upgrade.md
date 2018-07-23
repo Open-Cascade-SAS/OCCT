@@ -1611,3 +1611,7 @@ A set of deprecated methods previously related to Local Context and now redirect
 @subsection upgrade_740_extremaalgo Changes in behavior of Convert algorithms
 
 Now methods *GeomConvert::ConcatG1*, *GeomConvert::ConcatC1*, *Geom2dConvert::ConcatG1*, *Geom2dConvert::ConcatC1* modify the input argument representing the flag of closedness.
+@subsection upgrade_740_selection Change in selection API and picked point calculation algorithm.
+
+*SelectBasics_PickResult* structure has been extended, so that it now defines 3D point on detected entity in addition to Depth value along picking ray.
+*SelectMgr_SelectingVolumeManager::Overlap()* methods have been corrected to fill in *SelectBasics_PickResult* structure (depth and 3D point) instead of only depth value, so that custom *Select3D_SensitiveEntity* implementation should be updated accordingly (including *Select3D_SensitiveSet* subclasses).

@@ -326,6 +326,7 @@ private: // implementation of deprecated methods
 
   //! Compute 3d position for detected entity.
   void updatePoint3d (SelectMgr_SortCriterion& theCriterion,
+                      const SelectBasics_PickResult& thePickResult,
                       const Handle(SelectBasics_SensitiveEntity)& theEntity,
                       const gp_GTrsf& theInversedTrsf,
                       const SelectMgr_SelectingVolumeManager& theMgr) const;

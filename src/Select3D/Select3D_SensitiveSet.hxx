@@ -100,7 +100,7 @@ protected:
   //! @param theMatchDepth set to the current minimum depth by Select3D_SensitiveSet; should be set to the new depth when overlapping is detected
   virtual Standard_Boolean overlapsElement (SelectBasics_SelectingVolumeManager& theMgr,
                                             Standard_Integer theElemIdx,
-                                            Standard_Real& theMatchDepth) = 0;
+                                            SelectBasics_PickResult& thePickResult) = 0;
 
   //! Checks whether the entity with index theIdx is inside the current selecting volume
   virtual Standard_Boolean elementIsInside (SelectBasics_SelectingVolumeManager& theMgr,

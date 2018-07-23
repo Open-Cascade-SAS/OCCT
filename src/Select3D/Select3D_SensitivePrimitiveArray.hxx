@@ -280,7 +280,7 @@ protected:
   //! Checks whether the element with index theIdx overlaps the current selecting volume
   Standard_EXPORT virtual Standard_Boolean overlapsElement (SelectBasics_SelectingVolumeManager& theMgr,
                                                             Standard_Integer theElemIdx,
-                                                            Standard_Real& theMatchDepth) Standard_OVERRIDE;
+                                                            SelectBasics_PickResult& thePickResult) Standard_OVERRIDE;
 
   //! Calculates distance from the 3d projection of used-picked screen point to center of the geometry
   Standard_EXPORT virtual Standard_Real distanceToCOG (SelectBasics_SelectingVolumeManager& theMgr) Standard_OVERRIDE;

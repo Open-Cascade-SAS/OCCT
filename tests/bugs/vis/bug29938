@@ -1,0 +1,50 @@
+puts "============"
+puts "0029938: Visualization - SelectMgr_ViewerSelector::PickedPoint() should return point lying on an object"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+box b 1 2 3
+vcaps -core
+vclear
+vinit View1
+vaxo
+vdisplay -dispMode 1 -mutable b
+vfit
+vrotate 0.2 0.0 0.0
+vselmode 0 off
+
+#Check Vertex selection mode case
+vselmode 1 on
+vmoveto 337 45
+set pnt "1 2 3"
+set exp {Point: ([-0-9.+eE]+) ([-0-9.+eE]+) ([-0-9.+eE]+)}
+set match [regexp -all -inline $exp [vstate -entities]]
+foreach {_ x y z} $match {
+  if {$pnt != "$x $y $z"} {
+    puts "Error: Calculate point ($x $y $z) is not equal to target ($pnt)" }
+}
+
+#Check Wire selection mode case
+vselmode 1 off
+vselmode 2 on
+vmoveto 295 317
+set pnt "1 2 0"
+set exp {Point: ([-0-9.+eE]+) ([-0-9.+eE]+) ([-0-9.+eE]+)}
+set match [regexp -all -inline $exp [vstate -entities]]
+foreach {_ x y z} $match {
+  if {$pnt != "$x $y $z"} {
+    puts "Error: Calculate point ($x $y $z) is not equal to target ($pnt)" }
+}
+
+#Check Face selection mode case
+vselmode 2 off
+vselmode 4 on
+vmoveto 284 324
+set pnt "1 1.8383 0"
+set exp {Point: ([-0-9.+eE]+) ([-0-9.+eE]+) ([-0-9.+eE]+)}
+set match [regexp -all -inline $exp [vstate -entities]]
+foreach {_ x y z} $match {
+  if {$pnt != "$x $y $z"} {
+    puts "Error: Calculate point ($x $y $z) is not equal to target ($pnt)" }
+}

@@ -37,16 +37,12 @@ Select3D_SensitivePoint::Select3D_SensitivePoint (const Handle(SelectBasics_Enti
 Standard_Boolean Select3D_SensitivePoint::Matches (SelectBasics_SelectingVolumeManager& theMgr,
                                                    SelectBasics_PickResult& thePickResult)
 {
-  Standard_Real aDepth      = RealLast();
-  Standard_Real aDistToCOG  = RealLast();
-  if (!theMgr.Overlaps (myPoint, aDepth))
+  if (!theMgr.Overlaps (myPoint, thePickResult))
   {
-    thePickResult = SelectBasics_PickResult (aDepth, aDistToCOG);
     return Standard_False;
   }
 
-  aDistToCOG = aDepth;
-  thePickResult = SelectBasics_PickResult (aDepth, aDistToCOG);
+  thePickResult.SetDistToGeomCenter (thePickResult.Depth());
   return Standard_True;
 }
 

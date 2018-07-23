@@ -48,8 +48,6 @@ Select3D_SensitiveTriangle::Select3D_SensitiveTriangle (const Handle(SelectBasic
 Standard_Boolean Select3D_SensitiveTriangle::Matches (SelectBasics_SelectingVolumeManager& theMgr,
                                                       SelectBasics_PickResult& thePickResult)
 {
-  Standard_Real aDepth     = RealLast();
-  Standard_Real aDistToCOG = RealLast();
   if (!theMgr.IsOverlapAllowed())
   {
     return theMgr.Overlaps (myPoints[0])
@@ -57,14 +55,12 @@ Standard_Boolean Select3D_SensitiveTriangle::Matches (SelectBasics_SelectingVolu
         && theMgr.Overlaps (myPoints[2]);
   }
 
-  if (!theMgr.Overlaps (myPoints[0], myPoints[1], myPoints[2], mySensType, aDepth))
+  if (!theMgr.Overlaps (myPoints[0], myPoints[1], myPoints[2], mySensType, thePickResult))
   {
-    thePickResult = SelectBasics_PickResult (aDepth, aDistToCOG);
     return Standard_False;
   }
 
-  aDistToCOG = theMgr.DistToGeometryCenter (myCentroid);
-  thePickResult = SelectBasics_PickResult (aDepth, aDistToCOG);
+  thePickResult.SetDistToGeomCenter (theMgr.DistToGeometryCenter(myCentroid));
   return Standard_True;
 }
 

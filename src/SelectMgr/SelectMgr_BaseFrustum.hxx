@@ -33,6 +33,8 @@
 #include <Select3D_TypeOfSensitivity.hxx>
 #include <SelectMgr_VectorTypes.hxx>
 
+#include <SelectBasics_PickResult.hxx>
+
 //! This class is an interface for different types of selecting frustums,
 //! defining different selection types, like point, box or polyline
 //! selection. It contains signatures of functions for detection of
@@ -118,7 +120,7 @@ public:
   //! SAT intersection test between defined volume and given axis-aligned box
   Standard_EXPORT virtual Standard_Boolean Overlaps (const SelectMgr_Vec3& theBoxMin,
                                                      const SelectMgr_Vec3& theBoxMax,
-                                                     Standard_Real& theDepth);
+                                                     SelectBasics_PickResult& thePickResult);
 
   //! Returns true if selecting volume is overlapped by axis-aligned bounding box
   //! with minimum corner at point theMinPt and maximum at point theMaxPt
@@ -128,7 +130,7 @@ public:
 
   //! Intersection test between defined volume and given point
   Standard_EXPORT virtual Standard_Boolean Overlaps (const gp_Pnt& thePnt,
-                                                     Standard_Real& theDepth);
+                                                     SelectBasics_PickResult& thePickResult);
 
   //! Intersection test between defined volume and given point
   //! Does not perform depth calculation, so this method is defined as
@@ -141,12 +143,12 @@ public:
   //! boundary line defined by segments depending on given sensitivity type
   Standard_EXPORT virtual Standard_Boolean Overlaps (const TColgp_Array1OfPnt& theArrayOfPnts,
                                                      Select3D_TypeOfSensitivity theSensType,
-                                                     Standard_Real& theDepth);
+                                                     SelectBasics_PickResult& thePickResult);
 
   //! Checks if line segment overlaps selecting frustum
   Standard_EXPORT virtual Standard_Boolean Overlaps (const gp_Pnt& thePnt1,
                                                      const gp_Pnt& thePnt2,
-                                                     Standard_Real& theDepth);
+                                                     SelectBasics_PickResult& thePickResult);
 
   //! SAT intersection test between defined volume and given triangle. The test may
   //! be considered of interior part or boundary line defined by triangle vertices
@@ -155,7 +157,7 @@ public:
                                                      const gp_Pnt& thePt2,
                                                      const gp_Pnt& thePt3,
                                                      Select3D_TypeOfSensitivity theSensType,
-                                                     Standard_Real& theDepth);
+                                                     SelectBasics_PickResult& thePickResult);
 
   //! Measures distance between 3d projection of user-picked
   //! screen point and given point theCOG

@@ -202,14 +202,12 @@ Standard_Boolean Select3D_SensitiveGroup::Matches (SelectBasics_SelectingVolumeM
     return Select3D_SensitiveSet::Matches (theMgr, thePickResult);
   }
 
-  Standard_Real aDepth     = RealLast();
-  Standard_Real aDistToCOG = RealLast();
+  SelectBasics_PickResult aPickResult;
   Standard_Boolean isFailed = Standard_False;
   for (Select3D_IndexedMapOfEntity::Iterator anEntityIter (myEntities); anEntityIter.More(); anEntityIter.Next())
   {
-    SelectBasics_PickResult aMatchResult;
     const Handle(Select3D_SensitiveEntity)& aChild = anEntityIter.Value();
-    if (!aChild->Matches (theMgr, aMatchResult))
+    if (!aChild->Matches (theMgr, aPickResult))
     {
       if (toMatchAll)
       {
@@ -222,17 +220,15 @@ Standard_Boolean Select3D_SensitiveGroup::Matches (SelectBasics_SelectingVolumeM
     }
     else
     {
-      aDepth = Min (aMatchResult.Depth(), aDepth);
+      thePickResult = SelectBasics_PickResult::Min (thePickResult, aPickResult);
     }
   }
   if (isFailed)
   {
-    thePickResult = SelectBasics_PickResult (RealLast(), RealLast());
     return Standard_False;
   }
 
-  aDistToCOG = theMgr.DistToGeometryCenter (CenterOfGeometry());
-  thePickResult = SelectBasics_PickResult (aDepth, aDistToCOG);
+  thePickResult.SetDistToGeomCenter(distanceToCOG(theMgr));
   return Standard_True;
 }
 
@@ -332,14 +328,11 @@ Standard_Integer Select3D_SensitiveGroup::Size() const
 // =======================================================================
 Standard_Boolean Select3D_SensitiveGroup::overlapsElement (SelectBasics_SelectingVolumeManager& theMgr,
                                                            Standard_Integer theElemIdx,
-                                                           Standard_Real& theMatchDepth)
+                                                           SelectBasics_PickResult& thePickResult)
 {
-  theMatchDepth = RealLast();
   const Standard_Integer aSensitiveIdx = myBVHPrimIndexes.Value (theElemIdx);
-  SelectBasics_PickResult aResult;
-  if (myEntities.FindKey (aSensitiveIdx)->Matches (theMgr, aResult))
+  if (myEntities.FindKey (aSensitiveIdx)->Matches (theMgr, thePickResult))
   {
-    theMatchDepth = aResult.Depth();
     return Standard_True;
   }
 
@@ -353,7 +346,7 @@ Standard_Boolean Select3D_SensitiveGroup::overlapsElement (SelectBasics_Selectin
 Standard_Boolean Select3D_SensitiveGroup::elementIsInside (SelectBasics_SelectingVolumeManager& theMgr,
                                                            const Standard_Integer               theElemIdx)
 {
-  Standard_Real aDummy;
+  SelectBasics_PickResult aDummy;
   return overlapsElement(theMgr, theElemIdx, aDummy);
 }
 

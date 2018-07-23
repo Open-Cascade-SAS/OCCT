@@ -169,7 +169,7 @@ Handle(SelectMgr_BaseFrustum) SelectMgr_TriangularFrustum::ScaleAndTransform (co
 //=======================================================================
 Standard_Boolean SelectMgr_TriangularFrustum::Overlaps (const SelectMgr_Vec3& theMinPt,
                                                         const SelectMgr_Vec3& theMaxPt,
-                                                        Standard_Real& /*theDepth*/)
+                                                        SelectBasics_PickResult& /*thePickResult*/)
 {
   return hasOverlap (theMinPt, theMaxPt);
 }
@@ -192,7 +192,7 @@ Standard_Boolean SelectMgr_TriangularFrustum::Overlaps (const SelectMgr_Vec3& th
 // purpose  : Intersection test between defined volume and given point
 // =======================================================================
 Standard_Boolean SelectMgr_TriangularFrustum::Overlaps (const gp_Pnt& thePnt,
-                                                        Standard_Real& /*theDepth*/)
+                                                        SelectBasics_PickResult& /*thePickResult*/)
 {
   return hasOverlap (thePnt);
 }
@@ -206,7 +206,7 @@ Standard_Boolean SelectMgr_TriangularFrustum::Overlaps (const gp_Pnt& thePnt,
 // =======================================================================
 Standard_Boolean SelectMgr_TriangularFrustum::Overlaps (const TColgp_Array1OfPnt& theArrayOfPnts,
                                                         Select3D_TypeOfSensitivity theSensType,
-                                                        Standard_Real& /*theDepth*/)
+                                                        SelectBasics_PickResult& /*thePickResult*/)
 {
   if (theSensType == Select3D_TOS_BOUNDARY)
   {
@@ -237,7 +237,7 @@ Standard_Boolean SelectMgr_TriangularFrustum::Overlaps (const TColgp_Array1OfPnt
 // =======================================================================
 Standard_Boolean SelectMgr_TriangularFrustum::Overlaps (const gp_Pnt& thePnt1,
                                                         const gp_Pnt& thePnt2,
-                                                        Standard_Real& /*theDepth*/)
+                                                        SelectBasics_PickResult& /*thePickResult*/)
 {
   return hasOverlap (thePnt1, thePnt2);
 }
@@ -253,13 +253,13 @@ Standard_Boolean SelectMgr_TriangularFrustum::Overlaps (const gp_Pnt& thePnt1,
                                                         const gp_Pnt& thePnt2,
                                                         const gp_Pnt& thePnt3,
                                                         Select3D_TypeOfSensitivity theSensType,
-                                                        Standard_Real& theDepth)
+                                                        SelectBasics_PickResult& thePickResult)
 {
   if (theSensType == Select3D_TOS_BOUNDARY)
   {
     const gp_Pnt aPntsArrayBuf[3] = { thePnt1, thePnt2, thePnt3 };
     const TColgp_Array1OfPnt aPntsArray (aPntsArrayBuf[0], 1, 3);
-    return Overlaps (aPntsArray, Select3D_TOS_BOUNDARY, theDepth);
+    return Overlaps (aPntsArray, Select3D_TOS_BOUNDARY, thePickResult);
   }
   else if (theSensType == Select3D_TOS_INTERIOR)
   {

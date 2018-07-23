@@ -224,7 +224,7 @@ void MeshVS_CommonSensitiveEntity::Swap (const Standard_Integer theIdx1,
 //=======================================================================
 Standard_Boolean MeshVS_CommonSensitiveEntity::overlapsElement (SelectBasics_SelectingVolumeManager& theMgr,
                                                                 Standard_Integer theElemIdx,
-                                                                Standard_Real& theMatchDepth)
+                                                                SelectBasics_PickResult& thePickResult)
 {
   const Standard_Integer anItemIdx = myItemIndexes.Value (theElemIdx);
   if (mySelMethod == MeshVS_MSM_PRECISE)
@@ -250,7 +250,7 @@ Standard_Boolean MeshVS_CommonSensitiveEntity::overlapsElement (SelectBasics_Sel
       return theMgr.Overlaps (gp_Pnt (aCoords (1), aCoords (2), aCoords (3)),
                               gp_Pnt (aCoords (4), aCoords (5), aCoords (6)),
                               gp_Pnt (aCoords (7), aCoords (8), aCoords (9)),
-                              Select3D_TOS_INTERIOR, theMatchDepth);
+                              Select3D_TOS_INTERIOR, thePickResult);
     }
 
     MeshVS_Buffer aFacePntsBuf (aNbNodes * 3 * sizeof (Standard_Real));
@@ -261,12 +261,12 @@ Standard_Boolean MeshVS_CommonSensitiveEntity::overlapsElement (SelectBasics_Sel
                                             aCoords (3 * aNodeIdx - 1),
                                             aCoords (3 * aNodeIdx)));
     }
-    return theMgr.Overlaps (aFacePnts, Select3D_TOS_INTERIOR, theMatchDepth);
+    return theMgr.Overlaps (aFacePnts, Select3D_TOS_INTERIOR, thePickResult);
   }
   else if (mySelMethod == MeshVS_MSM_NODES)
   {
     const gp_Pnt aVert = getVertexByIndex (anItemIdx);
-    return theMgr.Overlaps (aVert, theMatchDepth);
+    return theMgr.Overlaps (aVert, thePickResult);
   }
   return Standard_False;
 }

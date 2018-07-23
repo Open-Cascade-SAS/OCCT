@@ -84,22 +84,21 @@ Handle(Select3D_SensitiveEntity) MeshVS_SensitivePolyhedron::GetConnected()
 Standard_Boolean MeshVS_SensitivePolyhedron::Matches (SelectBasics_SelectingVolumeManager& theMgr,
                                                       SelectBasics_PickResult& thePickResult)
 {
-  Standard_Real aDepthMin = RealLast();
-  Standard_Real aDistToCOG = RealLast();
-
+  SelectBasics_PickResult aPickResult;
   for (MeshVS_PolyhedronVertsIter aIter (myTopology); aIter.More(); aIter.Next())
   {
-    Standard_Real aDepth = RealLast();
-    if (theMgr.Overlaps (aIter.Value(), Select3D_TOS_INTERIOR, aDepth))
+    if (theMgr.Overlaps (aIter.Value(), Select3D_TOS_INTERIOR, aPickResult))
     {
-      aDepthMin = Min (aDepth, aDepthMin);
+      thePickResult = SelectBasics_PickResult::Min (thePickResult, aPickResult);
     }
   }
+  if (!thePickResult.IsValid())
+  {
+    return Standard_False;
+  }
 
-  aDistToCOG = aDepthMin == RealLast() ? RealLast() : theMgr.DistToGeometryCenter (myCenter);
-  thePickResult = SelectBasics_PickResult (aDepthMin, aDistToCOG);
-
-  return aDepthMin != RealLast();
+  thePickResult.SetDistToGeomCenter (theMgr.DistToGeometryCenter (CenterOfGeometry()));
+  return Standard_True;
 }
 
 //=======================================================================

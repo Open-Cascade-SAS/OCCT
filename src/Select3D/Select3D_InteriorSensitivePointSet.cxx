@@ -264,13 +264,13 @@ void Select3D_InteriorSensitivePointSet::Swap (const Standard_Integer theIdx1,
 // =======================================================================
 Standard_Boolean Select3D_InteriorSensitivePointSet::overlapsElement (SelectBasics_SelectingVolumeManager& theMgr,
                                                                       Standard_Integer theElemIdx,
-                                                                      Standard_Real& theMatchDepth)
+                                                                      SelectBasics_PickResult& thePickResult)
 {
   Standard_Integer aPolygIdx = myPolygonsIdxs->Value (theElemIdx);
   const Handle(Select3D_SensitivePoly)& aPolygon = myPlanarPolygons.Value (aPolygIdx);
   Handle(TColgp_HArray1OfPnt) aPoints;
   aPolygon->Points3D (aPoints);
-  return theMgr.Overlaps (aPoints, Select3D_TOS_INTERIOR, theMatchDepth);
+  return theMgr.Overlaps (aPoints, Select3D_TOS_INTERIOR, thePickResult);
 }
 
 // =======================================================================
@@ -280,7 +280,7 @@ Standard_Boolean Select3D_InteriorSensitivePointSet::overlapsElement (SelectBasi
 Standard_Boolean Select3D_InteriorSensitivePointSet::elementIsInside (SelectBasics_SelectingVolumeManager& theMgr,
                                                                       const Standard_Integer               theElemIdx)
 {
-  Standard_Real aDummy;
+  SelectBasics_PickResult aDummy;
   return overlapsElement (theMgr, theElemIdx, aDummy);
 }
 

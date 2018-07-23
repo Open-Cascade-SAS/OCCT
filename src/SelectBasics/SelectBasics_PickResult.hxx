@@ -19,37 +19,71 @@
 #include <Standard.hxx>
 #include <NCollection_Vec4.hxx>
 
-//! This structure provides unified access to the results of
-//! Matches() method in all sensitive entities.
+//! This structure provides unified access to the results of Matches() method in all sensitive entities,
+//! so that it defines a Depth (distance to the entity along picking ray) and a closest Point on entity.
 struct SelectBasics_PickResult
 {
 public:
+  //! Return closest result between two Pick Results according to Depth value.
+  static const SelectBasics_PickResult& Min (const SelectBasics_PickResult& thePickResult1,
+                                             const SelectBasics_PickResult& thePickResult2)
+  {
+    return thePickResult1.Depth() <= thePickResult2.Depth() ? thePickResult1 : thePickResult2;
+  }
 
+public:
+  //! Empty constructor defining an invalid result.
   SelectBasics_PickResult()
-  : myDepth (DBL_MAX),
-    myDistToCenter (DBL_MAX) {}
+  : myObjPickedPnt (RealLast(), 0.0, 0.0),
+    myDepth (RealLast()),
+    myDistToCenter (RealLast()) {}
 
-  SelectBasics_PickResult (const Standard_Real theDepth,
-                           const Standard_Real theDistToCenter)
-  : myDepth (theDepth),
+  //! Constructor with initialization.
+  SelectBasics_PickResult (Standard_Real theDepth,
+                           Standard_Real theDistToCenter,
+                           const gp_Pnt& theObjPickedPnt)
+  : myObjPickedPnt (theObjPickedPnt),
+    myDepth (theDepth),
     myDistToCenter (theDistToCenter) {}
 
 public:
-  inline Standard_Real Depth() const
+
+  //! Return TRUE if result was been defined.
+  Standard_Boolean IsValid() const { return myDepth != RealLast(); }
+
+  //! Reset depth value.
+  void Invalidate()
   {
-    return myDepth;
+    myDepth = RealLast();
+    myObjPickedPnt = gp_Pnt (RealLast(), 0.0, 0.0);
   }
 
-  inline Standard_Real DistToGeomCenter() const
-  {
-    return myDistToCenter;
-  }
+  //! Return depth along picking ray.
+  Standard_Real Depth() const { return myDepth; }
+
+  //! Set depth along picking ray.
+  void SetDepth (Standard_Real theDepth) { myDepth = theDepth; }
+
+  //! Return TRUE if Picked Point lying on detected entity was set.
+  Standard_Boolean HasPickedPoint() const { return myObjPickedPnt.X() != RealLast(); }
+
+  //! Return picked point lying on detected entity.
+  //! WARNING! Point is defined in local coordinate system and should be translated into World System before usage!
+  const gp_Pnt& PickedPoint() const { return myObjPickedPnt; }
+
+  //! Set picked point.
+  void SetPickedPoint (const gp_Pnt& theObjPickedPnt) { myObjPickedPnt = theObjPickedPnt; }
+
+  //! Return distance to geometry center (auxiliary value for comparing results).
+  Standard_Real DistToGeomCenter() const { return myDistToCenter; }
+
+  //! Set distance to geometry center.
+  void SetDistToGeomCenter (Standard_Real theDistToCenter) { myDistToCenter = theDistToCenter; }
 
 private:
-  //!< Depth to detected point
-  Standard_Real                   myDepth;
-  //!< Distance from 3d projection user-picked selection point to entity's geometry center
-  Standard_Real                   myDistToCenter;
+  gp_Pnt        myObjPickedPnt; //!< User-picked selection point onto object
+  Standard_Real myDepth;        //!< Depth to detected point
+  Standard_Real myDistToCenter; //!< Distance from 3d projection user-picked selection point to entity's geometry center
 };
 
 #endif // _SelectBasics_PickResult_HeaderFile
