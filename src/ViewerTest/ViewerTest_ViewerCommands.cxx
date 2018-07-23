@@ -4850,7 +4850,7 @@ static int VZLayer (Draw_Interpretor& theDI,
       for (ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName anObjIter (GetMapOfAIS());
            anObjIter.More(); anObjIter.Next())
       {
-        Handle(PrsMgr_PresentableObject) aPrs = Handle(PrsMgr_PresentableObject)::DownCast (anObjIter.Key1());
+        const Handle(AIS_InteractiveObject)& aPrs = anObjIter.Key1();
         if (aPrs.IsNull()
          || aPrs->ZLayer() != aLayerId)
         {
@@ -7456,13 +7456,13 @@ static Standard_Integer VAnimation (Draw_Interpretor& theDI,
 
       TCollection_AsciiString anObjName (theArgVec[anArgIter]);
       const ViewerTest_DoubleMapOfInteractiveAndName& aMapOfAIS = GetMapOfAIS();
-      if (!aMapOfAIS.IsBound2 (anObjName))
+      Handle(AIS_InteractiveObject) anObject;
+      if (!aMapOfAIS.Find2 (anObjName, anObject))
       {
         std::cout << "Syntax error: wrong object name at " << anArg << "\n";
         return 1;
       }
 
-      Handle(AIS_InteractiveObject) anObject = Handle(AIS_InteractiveObject)::DownCast (aMapOfAIS.Find2 (anObjName));
       gp_Trsf       aTrsfs   [2] = { anObject->LocalTransformation(), anObject->LocalTransformation() };
       gp_Quaternion aRotQuats[2] = { aTrsfs[0].GetRotation(),         aTrsfs[1].GetRotation() };
       gp_XYZ        aLocPnts [2] = { aTrsfs[0].TranslationPart(),     aTrsfs[1].TranslationPart() };
@@ -7804,26 +7804,16 @@ static Standard_Integer VChangeSelected (Draw_Interpretor& di,
     return 1;
   }
   //get AIS_Shape:
-  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
-  ViewerTest_DoubleMapOfInteractiveAndName& aMap = GetMapOfAIS();
   TCollection_AsciiString aName(argv[1]);
   Handle(AIS_InteractiveObject) anAISObject;
-
-  if(!aMap.IsBound2(aName))
+  if (!GetMapOfAIS().Find2 (aName, anAISObject)
+    || anAISObject.IsNull())
   {
     di<<"Use 'vdisplay' before";
     return 1;
   }
-  else
-  {
-    anAISObject = Handle(AIS_InteractiveObject)::DownCast(aMap.Find2(aName));
-    if(anAISObject.IsNull()){
-      di<<"No interactive object \n";
-      return 1;
-    }
 
-    aContext->AddOrRemoveSelected(anAISObject, Standard_True);
-  }
+  ViewerTest::GetAISContext()->AddOrRemoveSelected(anAISObject, Standard_True);
   return 0;
 }
 
@@ -8160,7 +8150,7 @@ namespace
     for (ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName anIObjIt (GetMapOfAIS());
          anIObjIt.More(); anIObjIt.Next())
     {
-      Handle(PrsMgr_PresentableObject) aPrs = Handle(PrsMgr_PresentableObject)::DownCast (anIObjIt.Key1());
+      const Handle(AIS_InteractiveObject)& aPrs = anIObjIt.Key1();
       aPrs->RemoveClipPlane (aClipPlane);
     }
 
@@ -8728,7 +8718,7 @@ static int VClipPlane (Draw_Interpretor& theDi, Standard_Integer theArgsNb, cons
         }
         else if (GetMapOfAIS().IsBound2 (anEntityName))
         {
-          Handle(AIS_InteractiveObject) aIObj = Handle(AIS_InteractiveObject)::DownCast (GetMapOfAIS().Find2 (anEntityName));
+          Handle(AIS_InteractiveObject) aIObj = GetMapOfAIS().Find2 (anEntityName);
           if (toSet)
           {
             aIObj->AddClipPlane (aClipPlane);
@@ -11101,23 +11091,18 @@ static Standard_Integer VXRotate (Draw_Interpretor& di,
   // find object
   ViewerTest_DoubleMapOfInteractiveAndName& aMap = GetMapOfAIS();
   Handle(AIS_InteractiveObject) anIObj;
-  if (!aMap.IsBound2 (aName) )
+  if (!aMap.Find2 (aName, anIObj))
   {
     di << "Use 'vdisplay' before\n";
     return 1;
   }
-  else
-  {
-    anIObj = Handle(AIS_InteractiveObject)::DownCast (aMap.Find2 (aName));
 
-    gp_Trsf aTransform;
-    aTransform.SetRotation (gp_Ax1 (gp_Pnt (0.0, 0.0, 0.0), gp_Vec (1.0, 0.0, 0.0)), anAngle);
-    aTransform.SetTranslationPart (anIObj->LocalTransformation().TranslationPart());
+  gp_Trsf aTransform;
+  aTransform.SetRotation (gp_Ax1 (gp_Pnt (0.0, 0.0, 0.0), gp_Vec (1.0, 0.0, 0.0)), anAngle);
+  aTransform.SetTranslationPart (anIObj->LocalTransformation().TranslationPart());
 
-    aContext->SetLocation (anIObj, aTransform);
-    aContext->UpdateCurrentViewer();
-  }
-
+  aContext->SetLocation (anIObj, aTransform);
+  aContext->UpdateCurrentViewer();
   return 0;
 }
 
@@ -11332,15 +11317,14 @@ static int VManipulator (Draw_Interpretor& theDi,
     }
 
     TCollection_AsciiString anObjName (aCmd.Arg ("attach", 0).c_str());
-    if (!aMapAIS.IsBound2 (anObjName))
+    Handle(AIS_InteractiveObject) anObject;
+    if (!aMapAIS.Find2 (anObjName, anObject))
     {
       std::cerr << theArgVec[0] << " error: AIS object \"" << anObjName << "\" does not exist.\n";
       return 1;
     }
 
-    Handle(AIS_InteractiveObject) anObject = Handle(AIS_InteractiveObject)::DownCast (aMapAIS.Find2 (anObjName));
-    ViewerTest_MapOfAISManipulators::Iterator anIt (GetMapOfAISManipulators());
-    for (; anIt.More(); anIt.Next())
+    for (ViewerTest_MapOfAISManipulators::Iterator anIt (GetMapOfAISManipulators()); anIt.More(); anIt.Next())
     {
       if (anIt.Value()->IsAttached()
        && anIt.Value()->Object() == anObject)

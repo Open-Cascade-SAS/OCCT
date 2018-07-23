@@ -66,70 +66,6 @@ static Standard_Integer BUC60857 (Draw_Interpretor& di, Standard_Integer /*argc*
   return 0;
 }
 
-#include <ViewerTest_DoubleMapOfInteractiveAndName.hxx>
-#include <ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName.hxx>
-#include <SelectMgr_Selection.hxx>
-#include <StdSelect_BRepOwner.hxx>
-#include <SelectBasics_SensitiveEntity.hxx>
-#if ! defined(_WIN32)
-extern ViewerTest_DoubleMapOfInteractiveAndName& GetMapOfAIS();
-#else
-Standard_EXPORT ViewerTest_DoubleMapOfInteractiveAndName& GetMapOfAIS();
-#endif
-
-static Standard_Integer OCC137 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv) 
-{
-  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
-  if(aContext.IsNull()) {
-    di << argv[0] << "ERROR : use 'vinit' command before \n";
-    return 1;
-  }
-  if ( argc < 2 || argc > 3) {
-    di << "ERROR : Usage : " << argv[0] << " highlight_mode [shape]\n";
-    return 1;
-  }
-  
-  ViewerTest_DoubleMapOfInteractiveAndName aMap ;
-  if(argc != 3) {
-    aMap.Assign(GetMapOfAIS());
-  } else {
-    ViewerTest_DoubleMapOfInteractiveAndName& aMap1 = GetMapOfAIS();
-    TCollection_AsciiString aName(argv[2]);
-    Handle(AIS_InteractiveObject) AISObj;
-    if(!aMap1.IsBound2(aName)) {
-      di << "Use 'vdisplay' before\n";
-      return 1;
-    } else {
-      AISObj = Handle(AIS_InteractiveObject)::DownCast(aMap1.Find2(aName));
-      if(AISObj.IsNull()){
-        di << argv[2] << " : No interactive object\n";
-        return 1;
-      }
-      aMap.Bind(AISObj,aName);
-    }
-  }
-  ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName it(GetMapOfAIS());
-  while ( it.More() ) {
-    Handle(AIS_InteractiveObject) AISObj = Handle(AIS_InteractiveObject)::DownCast(it.Key1());
-    AISObj->SetHilightMode(Draw::Atoi(argv[1]));
-    if(AISObj->HasSelection(4)) {
-      //Handle(SelectMgr_Selection)& aSelection = AISObj->Selection(4);
-      const Handle(SelectMgr_Selection)& aSelection = AISObj->Selection(4);
-      if(!aSelection.IsNull())
-      {
-        for (NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>::Iterator aSelEntIter (aSelection->Entities()); aSelEntIter.More(); aSelEntIter.Next())
-        {
-          Handle(StdSelect_BRepOwner) aO = Handle(StdSelect_BRepOwner)::DownCast(aSelEntIter.Value()->BaseSensitive()->OwnerId());
-          aO->SetHilightMode(Draw::Atoi(argv[1]));
-        }
-      }
-    }
-    it.Next();
-  }
-  
-  return 0;
-}
-
 #include <GccEnt_Position.hxx>
 #include <Geom2dGcc_QualifiedCurve.hxx>
 #include <Geom2dGcc_Circ2d2TanRad.hxx>
@@ -207,7 +143,6 @@ void QABugs::Commands_9(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
   theCommands.Add ("BUC60857", "BUC60857", __FILE__, BUC60857, group);
-  theCommands.Add("OCC137","OCC137 mode [shape]",__FILE__,OCC137,group);
   theCommands.Add("OCC24303", "OCC24303 SolID ",	__FILE__,	OCC24303,group);
 
   return;

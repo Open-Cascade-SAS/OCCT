@@ -508,8 +508,7 @@ Standard_Boolean ViewerTest::Display (const TCollection_AsciiString&       theNa
       return Standard_False;
     }
 
-    Handle(AIS_InteractiveObject) anOldObj = Handle(AIS_InteractiveObject)::DownCast (aMap.Find2 (theName));
-    if (!anOldObj.IsNull())
+    if (Handle(AIS_InteractiveObject) anOldObj = aMap.Find2 (theName))
     {
       aCtx->Remove (anOldObj, theObject.IsNull() && theToUpdate);
     }
@@ -658,30 +657,25 @@ static TopoDS_Shape GetShapeFromName(const char* name)
 //==============================================================================
 Handle(AIS_Shape) GetAISShapeFromName(const char* name)
 {
-  Handle(AIS_Shape) retsh;
-
-  if(GetMapOfAIS().IsBound2(name)){
-    const Handle(AIS_InteractiveObject) IO =
-      Handle(AIS_InteractiveObject)::DownCast(GetMapOfAIS().Find2(name));
-    if (!IO.IsNull()) {
-      if(IO->Type()==AIS_KOI_Shape) {
-        if(IO->Signature()==0){
-          retsh = Handle(AIS_Shape)::DownCast (IO);
-        }
-        else
-          cout << "an Object which is not an AIS_Shape "
-            "already has this name!!!"<<endl;
-      }
+  Handle(AIS_InteractiveObject) aPrs;
+  if (GetMapOfAIS().Find2 (name, aPrs)
+  && !aPrs.IsNull())
+  {
+    if (Handle(AIS_Shape) aShapePrs = Handle(AIS_Shape)::DownCast (aPrs))
+    {
+      return aShapePrs;
     }
-    return retsh;
+
+    std::cout << "an Object which is not an AIS_Shape already has this name!!!\n";
+    return Handle(AIS_Shape)();
   }
 
-
-  TopoDS_Shape S = GetShapeFromName(name);
-  if ( !S.IsNull() ) {
-    retsh = new AIS_Shape(S);
+  TopoDS_Shape aShape = GetShapeFromName (name);
+  if (!aShape.IsNull())
+  {
+    return new AIS_Shape(aShape);
   }
-  return retsh;
+  return Handle(AIS_Shape)();
 }
 
 
@@ -699,7 +693,7 @@ void ViewerTest::Clear()
   NCollection_Sequence<Handle(AIS_InteractiveObject)> aListRemoved;
   for (ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName anObjIter (GetMapOfAIS()); anObjIter.More(); anObjIter.Next())
   {
-    const Handle(AIS_InteractiveObject) anObj = Handle(AIS_InteractiveObject)::DownCast (anObjIter.Key1());
+    const Handle(AIS_InteractiveObject) anObj = anObjIter.Key1();
     if (anObj->GetContext() != TheAISContext())
     {
       continue;
@@ -802,34 +796,31 @@ static int visos (Draw_Interpretor& di, Standard_Integer argc, const char** argv
 
   Standard_Integer i;
 
-  for (i = 1; i <= aLastInd; i++) {
+  for (i = 1; i <= aLastInd; i++)
+  {
     TCollection_AsciiString name(argv[i]);
-    Standard_Boolean IsBound = GetMapOfAIS().IsBound2(name);
+    Handle(AIS_InteractiveObject) aShape;
+    GetMapOfAIS().Find2(name, aShape);
+    if (aShape.IsNull())
+    {
+      std::cout << "Syntax error: object '" << name << "' is not found\n";
+      return 1;
+    }
 
-    if (IsBound) {
-      const Handle(Standard_Transient) anObj = GetMapOfAIS().Find2(name);
-      if (anObj->IsKind(STANDARD_TYPE(AIS_InteractiveObject))) {
-        const Handle(AIS_InteractiveObject) aShape =
-        Handle(AIS_InteractiveObject)::DownCast (anObj);
-        Handle(Prs3d_Drawer) CurDrawer = aShape->Attributes();
-        Handle(Prs3d_IsoAspect) aUIso = CurDrawer->UIsoAspect();
-        Handle(Prs3d_IsoAspect) aVIso = CurDrawer->VIsoAspect();
-
-        if (isChanged) {
-          CurDrawer->SetUIsoAspect(CopyIsoAspect(aUIso, aNbUIsos));
-          CurDrawer->SetVIsoAspect(CopyIsoAspect(aVIso, aNbVIsos));
-          TheAISContext()->SetLocalAttributes
-                  (aShape, CurDrawer, Standard_False);
-          TheAISContext()->Redisplay (aShape, Standard_False);
-        } else {
-          di << "Number of isos for " << argv[i] << " : "
-             << aUIso->Number() << " " << aVIso->Number() << "\n";
-        }
-      } else {
-        di << argv[i] << ": Not an AIS interactive object!\n";
-      }
-    } else {
-      di << argv[i] << ": Use 'vdisplay' before\n";
+    Handle(Prs3d_Drawer) CurDrawer = aShape->Attributes();
+    Handle(Prs3d_IsoAspect) aUIso = CurDrawer->UIsoAspect();
+    Handle(Prs3d_IsoAspect) aVIso = CurDrawer->VIsoAspect();
+    if (isChanged)
+    {
+      CurDrawer->SetUIsoAspect(CopyIsoAspect(aUIso, aNbUIsos));
+      CurDrawer->SetVIsoAspect(CopyIsoAspect(aVIso, aNbVIsos));
+      TheAISContext()->SetLocalAttributes (aShape, CurDrawer, Standard_False);
+      TheAISContext()->Redisplay (aShape, Standard_False);
+    }
+    else
+    {
+      di << "Number of isos for " << argv[i] << " : "
+          << aUIso->Number() << " " << aVIso->Number() << "\n";
     }
   }
 
@@ -1256,13 +1247,11 @@ static int VDispMode (Draw_Interpretor& , Standard_Integer argc, const char** ar
     else
     {
       TCollection_AsciiString aName = argv[1];
-      if (GetMapOfAIS().IsBound2 (aName))
+      Handle(AIS_InteractiveObject) aPrs;
+      if (GetMapOfAIS().Find2 (aName, aPrs)
+      && !aPrs.IsNull())
       {
-        Handle(AIS_InteractiveObject) aPrs = Handle(AIS_InteractiveObject)::DownCast(GetMapOfAIS().Find2 (aName));
-        if (!aPrs.IsNull())
-        {
-          VwrTst_DispErase (aPrs, -1, TypeOfDispOperation_UnsetDispMode, Standard_True);
-        }
+        VwrTst_DispErase (aPrs, -1, TypeOfDispOperation_UnsetDispMode, Standard_True);
       }
     }
   }
@@ -1284,11 +1273,8 @@ static int VDispMode (Draw_Interpretor& , Standard_Integer argc, const char** ar
   {
     Handle(AIS_InteractiveObject) aPrs;
     TCollection_AsciiString aName (argv[1]);
-    if (GetMapOfAIS().IsBound2 (aName))
-    {
-      aPrs = Handle(AIS_InteractiveObject)::DownCast(GetMapOfAIS().Find2 (aName));
-    }
-    if (!aPrs.IsNull())
+    if (GetMapOfAIS().Find2 (aName, aPrs)
+     && !aPrs.IsNull())
     {
       VwrTst_DispErase (aPrs, Draw::Atoi(argv[2]), aType, Standard_True);
     }
@@ -1328,14 +1314,13 @@ static int VSubInt(Draw_Interpretor& di, Standard_Integer argc, const char** arg
   else {
     Handle(AIS_InteractiveObject) IO;
     TCollection_AsciiString name = argv[2];
-    if(GetMapOfAIS().IsBound2(name)){
-      IO = Handle(AIS_InteractiveObject)::DownCast(GetMapOfAIS().Find2(name));
-      if (!IO.IsNull()) {
-        if(On==1)
-          Ctx->SubIntensityOn(IO, Standard_True);
-        else
-          Ctx->SubIntensityOff(IO, Standard_True);
-      }
+    if (GetMapOfAIS().Find2 (name, IO)
+    && !IO.IsNull())
+    {
+      if(On==1)
+        Ctx->SubIntensityOn(IO, Standard_True);
+      else
+        Ctx->SubIntensityOff(IO, Standard_True);
     }
     else return 1;
   }
@@ -2932,14 +2917,12 @@ static int VDonly2 (Draw_Interpretor& ,
     for (; anArgIter < theArgNb; ++anArgIter)
     {
       TCollection_AsciiString aName = theArgVec[anArgIter];
-      if (GetMapOfAIS().IsBound2 (aName))
+      Handle(AIS_InteractiveObject) aShape;
+      if (GetMapOfAIS().Find2 (aName, aShape)
+      && !aShape.IsNull())
       {
-        const Handle(AIS_InteractiveObject) aShape = Handle(AIS_InteractiveObject)::DownCast (GetMapOfAIS().Find2 (aName));
-        if (!aShape.IsNull())
-        {
-          aCtx->Display (aShape, Standard_False);
-          aDispSet.Add (aShape);
-        }
+        aCtx->Display (aShape, Standard_False);
+        aDispSet.Add (aShape);
       }
     }
   }
@@ -2952,8 +2935,7 @@ static int VDonly2 (Draw_Interpretor& ,
       continue;
     }
 
-    const Handle(AIS_InteractiveObject) aShape = Handle(AIS_InteractiveObject)::DownCast (anIter.Key1());
-    if (!aShape.IsNull())
+    if (Handle(AIS_InteractiveObject) aShape = anIter.Key1())
     {
       aCtx->Erase (aShape, Standard_False);
     }
@@ -3032,16 +3014,16 @@ int VRemove (Draw_Interpretor& theDI,
     for (; anArgIter < theArgNb; ++anArgIter)
     {
       TCollection_AsciiString aName = theArgVec[anArgIter];
-      if (!GetMapOfAIS().IsBound2 (aName))
+      Handle(AIS_InteractiveObject) anIO;
+      if (!GetMapOfAIS().Find2 (aName, anIO))
       {
-        theDI << aName.ToCString() << " was not bound to some object.\n";
+        theDI << aName << " was not bound to some object.\n";
         continue;
       }
 
-      const Handle(AIS_InteractiveObject) anIO = Handle(AIS_InteractiveObject)::DownCast (GetMapOfAIS().Find2 (aName));
       if (anIO->GetContext() != aCtx)
       {
-        theDI << aName.ToCString() << " was not displayed in current context.\n";
+        theDI << aName << " was not displayed in current context.\n";
         theDI << "Please activate view with this object displayed and try again.\n";
         continue;
       }
@@ -3055,8 +3037,7 @@ int VRemove (Draw_Interpretor& theDI,
     for (ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName anIter (GetMapOfAIS());
          anIter.More(); anIter.Next())
     {
-      const Handle(AIS_InteractiveObject) anIO = Handle(AIS_InteractiveObject)::DownCast (anIter.Key1());
-      if (!aCtx->IsSelected (anIO))
+      if (!aCtx->IsSelected (anIter.Key1()))
       {
         continue;
       }
@@ -3070,11 +3051,11 @@ int VRemove (Draw_Interpretor& theDI,
   for (NCollection_List<TCollection_AsciiString>::Iterator anIter (anIONameList);
        anIter.More(); anIter.Next())
   {
-    const Handle(AIS_InteractiveObject) anIO  = Handle(AIS_InteractiveObject)::DownCast (GetMapOfAIS().Find2 (anIter.Value()));
+    const Handle(AIS_InteractiveObject) anIO = GetMapOfAIS().Find2 (anIter.Value());
     aCtx->Remove (anIO, Standard_False);
     if (toPrintInfo)
     {
-      theDI << anIter.Value().ToCString() << " was removed\n";
+      theDI << anIter.Value() << " was removed\n";
     }
     if (!isContextOnly)
     {
@@ -3138,14 +3119,13 @@ int VErase (Draw_Interpretor& theDI,
     for (Standard_Integer anIter = 1; anIter <= aNamesOfEraseIO.Length(); ++anIter)
     {
       TCollection_AsciiString aName = aNamesOfEraseIO.Value (anIter);
-      if (!GetMapOfAIS().IsBound2 (aName))
+      Handle(AIS_InteractiveObject) anIO;
+      if (!GetMapOfAIS().Find2 (aName, anIO))
       {
         continue;
       }
 
-      const Handle(Standard_Transient)    anObj = GetMapOfAIS().Find2 (aName);
-      const Handle(AIS_InteractiveObject) anIO  = Handle(AIS_InteractiveObject)::DownCast (anObj);
-      theDI << aName.ToCString() << " ";
+      theDI << aName << " ";
       if (!anIO.IsNull())
       {
         if (toEraseInView)
@@ -3165,11 +3145,11 @@ int VErase (Draw_Interpretor& theDI,
     for (ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName anIter (GetMapOfAIS());
          anIter.More(); anIter.Next())
     {
-      const Handle(AIS_InteractiveObject) anIO = Handle(AIS_InteractiveObject)::DownCast (anIter.Key1());
+      const Handle(AIS_InteractiveObject) anIO = anIter.Key1();
       if (!anIO.IsNull()
        && aCtx->IsSelected (anIO))
       {
-        theDI << anIter.Key2().ToCString() << " ";
+        theDI << anIter.Key2() << " ";
         if (toEraseInView)
         {
           aCtx->SetViewAffinity (anIO, aView, Standard_False);
@@ -3188,7 +3168,7 @@ int VErase (Draw_Interpretor& theDI,
     for (ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName anIter (GetMapOfAIS());
          anIter.More(); anIter.Next())
     {
-      const Handle(AIS_InteractiveObject) anIO = Handle(AIS_InteractiveObject)::DownCast (anIter.Key1());
+      Handle(AIS_InteractiveObject) anIO = anIter.Key1();
       if (!anIO.IsNull())
       {
         if (toEraseInView)
@@ -3246,15 +3226,13 @@ static int VDisplayAll (Draw_Interpretor& ,
   for (ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName anIter (GetMapOfAIS());
        anIter.More(); anIter.Next())
   {
-    const Handle(AIS_InteractiveObject) aShape = Handle(AIS_InteractiveObject)::DownCast (anIter.Key1());
-    aCtx->Erase (aShape, Standard_False);
+    aCtx->Erase (anIter.Key1(), Standard_False);
   }
 
   for (ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName anIter (GetMapOfAIS());
        anIter.More(); anIter.Next())
   {
-    const Handle(AIS_InteractiveObject) aShape = Handle(AIS_InteractiveObject)::DownCast (anIter.Key1());
-    aCtx->Display (aShape, Standard_False);
+    aCtx->Display (anIter.Key1(), Standard_False);
   }
   return 0;
 }
@@ -3403,13 +3381,13 @@ int VBounding (Draw_Interpretor& theDI,
     for (; anArgIter < theArgNb; ++anArgIter)
     {
       TCollection_AsciiString aName = theArgVec[anArgIter];
-      if (!GetMapOfAIS().IsBound2 (aName))
+      Handle(AIS_InteractiveObject) anIO;
+      if (!GetMapOfAIS().Find2 (aName, anIO))
       {
         std::cout << "Error: presentation " << aName << " does not exist\n";
         return 1;
       }
 
-      Handle(AIS_InteractiveObject) anIO = Handle(AIS_InteractiveObject)::DownCast (GetMapOfAIS().Find2 (aName));
       aHighlightedMode = checkMode (aCtx, anIO, aMode);
       if (aHighlightedMode == -1)
       {
@@ -3439,7 +3417,7 @@ int VBounding (Draw_Interpretor& theDI,
     for (ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName anIter (GetMapOfAIS());
          anIter.More(); anIter.Next())
     {
-      Handle(AIS_InteractiveObject) anIO = Handle(AIS_InteractiveObject)::DownCast (anIter.Key1());
+      Handle(AIS_InteractiveObject) anIO = anIter.Key1();
       aHighlightedMode = checkMode (aCtx, anIO, aMode);
       if (aHighlightedMode != -1)
       {
@@ -4325,11 +4303,11 @@ static int VDisplay2 (Draw_Interpretor& theDI,
   for (Standard_Integer anIter = 1; anIter <= aNamesOfDisplayIO.Length(); ++anIter)
   {
     const TCollection_AsciiString& aName = aNamesOfDisplayIO.Value(anIter);
-
-    if (!GetMapOfAIS().IsBound2 (aName))
+    Handle(AIS_InteractiveObject) aShape;
+    if (!GetMapOfAIS().Find2 (aName, aShape))
     {
       // create the AIS_Shape from a name
-      const Handle(AIS_InteractiveObject) aShape = GetAISShapeFromName (aName.ToCString());
+      aShape = GetAISShapeFromName (aName.ToCString());
       if (!aShape.IsNull())
       {
         if (isMutable != -1)
@@ -4382,7 +4360,6 @@ static int VDisplay2 (Draw_Interpretor& theDI,
       continue;
     }
 
-    Handle(AIS_InteractiveObject) aShape = Handle(AIS_InteractiveObject)::DownCast (GetMapOfAIS().Find2 (aName));
     if (isMutable != -1)
     {
       aShape->SetMutable (isMutable == 1);
@@ -4507,20 +4484,13 @@ static int VUpdate (Draw_Interpretor& /*theDi*/, Standard_Integer theArgsNb, con
     return 1;
   }
 
-  const ViewerTest_DoubleMapOfInteractiveAndName& anAISMap = GetMapOfAIS();
-
   AIS_ListOfInteractive aListOfIO;
-
   for (int anArgIt = 1; anArgIt < theArgsNb; ++anArgIt)
   {
     TCollection_AsciiString aName = TCollection_AsciiString (theArgVec[anArgIt]);
 
     Handle(AIS_InteractiveObject) anAISObj;
-    if (anAISMap.IsBound2 (aName))
-    {
-      anAISObj = Handle(AIS_InteractiveObject)::DownCast (anAISMap.Find2 (aName));
-    }
-
+    GetMapOfAIS().Find2 (aName, anAISObj);
     if (anAISObj.IsNull())
     {
       std::cout << theArgVec[0] << ": no AIS interactive object named \"" << aName << "\".\n";
@@ -4560,10 +4530,9 @@ static int VShading(Draw_Interpretor& ,Standard_Integer argc, const char** argv)
   }
 
   TCollection_AsciiString name=argv[1];
-  if (GetMapOfAIS().IsBound2(name ))
-    TheAisIO = Handle(AIS_InteractiveObject)::DownCast(GetMapOfAIS().Find2(name));
+  GetMapOfAIS().Find2(name, TheAisIO);
   if (TheAisIO.IsNull())
-    TheAisIO=GetAISShapeFromName((const char *)name.ToCString());
+    TheAisIO=GetAISShapeFromName(name.ToCString());
 
   if (HaveToSet)
     TheAISContext()->SetDeviationCoefficient(TheAisIO,myDevCoef,Standard_True);
@@ -4576,41 +4545,40 @@ static int VShading(Draw_Interpretor& ,Standard_Integer argc, const char** argv)
 
 //! Auxiliary method to print Interactive Object information
 static void objInfo (const NCollection_Map<Handle(AIS_InteractiveObject)>& theDetected,
-                     const Handle(Standard_Transient)&                     theObject,
+                     const Handle(AIS_InteractiveObject)&                  theObj,
                      Draw_Interpretor&                                     theDI)
 {
-  const Handle(AIS_InteractiveObject) anObj = Handle(AIS_InteractiveObject)::DownCast (theObject);
-  if (anObj.IsNull())
+  if (theObj.IsNull())
   {
-    theDI << theObject->DynamicType()->Name() << " is not AIS presentation\n";
+    theDI << "NULL presentation\n";
     return;
   }
 
-  theDI << (TheAISContext()->IsDisplayed  (anObj) ? "Displayed"  : "Hidden   ")
-        << (TheAISContext()->IsSelected   (anObj) ? " Selected" : "         ")
-        << (theDetected.Contains (anObj)          ? " Detected" : "         ")
+  theDI << (TheAISContext()->IsDisplayed (theObj) ? "Displayed"  : "Hidden   ")
+        << (TheAISContext()->IsSelected  (theObj) ? " Selected" : "         ")
+        << (theDetected.Contains (theObj)         ? " Detected" : "         ")
         << " Type: ";
-  if (anObj->Type() == AIS_KOI_Datum)
+  if (theObj->Type() == AIS_KOI_Datum)
   {
     // AIS_Datum
-    if      (anObj->Signature() == 3) { theDI << " AIS_Trihedron"; }
-    else if (anObj->Signature() == 2) { theDI << " AIS_Axis"; }
-    else if (anObj->Signature() == 6) { theDI << " AIS_Circle"; }
-    else if (anObj->Signature() == 5) { theDI << " AIS_Line"; }
-    else if (anObj->Signature() == 7) { theDI << " AIS_Plane"; }
-    else if (anObj->Signature() == 1) { theDI << " AIS_Point"; }
-    else if (anObj->Signature() == 4) { theDI << " AIS_PlaneTrihedron"; }
+    if      (theObj->Signature() == 3) { theDI << " AIS_Trihedron"; }
+    else if (theObj->Signature() == 2) { theDI << " AIS_Axis"; }
+    else if (theObj->Signature() == 6) { theDI << " AIS_Circle"; }
+    else if (theObj->Signature() == 5) { theDI << " AIS_Line"; }
+    else if (theObj->Signature() == 7) { theDI << " AIS_Plane"; }
+    else if (theObj->Signature() == 1) { theDI << " AIS_Point"; }
+    else if (theObj->Signature() == 4) { theDI << " AIS_PlaneTrihedron"; }
   }
   // AIS_Shape
-  else if (anObj->Type()      == AIS_KOI_Shape
-        && anObj->Signature() == 0)
+  else if (theObj->Type()      == AIS_KOI_Shape
+        && theObj->Signature() == 0)
   {
     theDI << " AIS_Shape";
   }
-  else if (anObj->Type() == AIS_KOI_Relation)
+  else if (theObj->Type() == AIS_KOI_Relation)
   {
     // AIS_Dimention and AIS_Relation
-    Handle(AIS_Relation) aRelation = Handle(AIS_Relation)::DownCast (anObj);
+    Handle(AIS_Relation) aRelation = Handle(AIS_Relation)::DownCast (theObj);
     switch (aRelation->KindOfDimension())
     {
       case AIS_KOD_PLANEANGLE:     theDI << " AIS_AngleDimension"; break;
@@ -4627,7 +4595,7 @@ static void objInfo (const NCollection_Map<Handle(AIS_InteractiveObject)>& theDe
   {
     theDI << " UserPrs";
   }
-  theDI << " (" << theObject->DynamicType()->Name() << ")";
+  theDI << " (" << theObj->DynamicType()->Name() << ")";
 }
 
 //! Print information about locally selected sub-shapes
@@ -4807,17 +4775,17 @@ static Standard_Integer VState (Draw_Interpretor& theDI,
     for (Standard_Integer anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
     {
       const TCollection_AsciiString anObjName = theArgVec[anArgIter];
-      if (!GetMapOfAIS().IsBound2 (anObjName))
+      Handle(AIS_InteractiveObject) anObj;
+      if (!GetMapOfAIS().Find2 (anObjName, anObj))
       {
         theDI << anObjName << " doesn't exist!\n";
         continue;
       }
 
-      const Handle(Standard_Transient) anObjTrans = GetMapOfAIS().Find2 (anObjName);
       TCollection_AsciiString aName = anObjName;
       aName.LeftJustify (20, ' ');
       theDI << "  " << aName << " ";
-      objInfo (aDetected, anObjTrans, theDI);
+      objInfo (aDetected, anObj, theDI);
       theDI << "\n";
     }
     return 0;
@@ -4851,8 +4819,7 @@ static Standard_Integer VState (Draw_Interpretor& theDI,
   for (ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName anObjIter (GetMapOfAIS());
        anObjIter.More(); anObjIter.Next())
   {
-    Handle(AIS_InteractiveObject) anObj = Handle(AIS_InteractiveObject)::DownCast (anObjIter.Key1());
-    if (anObj.IsNull())
+    if (anObjIter.Key1().IsNull())
     {
       continue;
     }
@@ -4860,7 +4827,7 @@ static Standard_Integer VState (Draw_Interpretor& theDI,
     TCollection_AsciiString aName = anObjIter.Key2();
     aName.LeftJustify (20, ' ');
     theDI << "  " << aName << " ";
-    objInfo (aDetected, anObj, theDI);
+    objInfo (aDetected, anObjIter.Key1(), theDI);
     theDI << "\n";
   }
   printLocalSelectionInfo (aCtx, theDI);
@@ -5409,7 +5376,6 @@ static int VBsdf (Draw_Interpretor& theDI,
 
   // check viewer update mode
   ViewerTest_AutoUpdater anUpdateTool (ViewerTest::GetAISContext(), ViewerTest::CurrentView());
-
   for (Standard_Integer anArgIter = 1; anArgIter < theArgsNb; ++anArgIter)
   {
     if (anUpdateTool.parseRedrawMode (theArgVec[anArgIter]))
@@ -5418,17 +5384,15 @@ static int VBsdf (Draw_Interpretor& theDI,
     }
   }
 
-  TCollection_AsciiString aName (aCmd.Arg ("", 0).c_str());
-
   // find object
-  ViewerTest_DoubleMapOfInteractiveAndName& aMap = GetMapOfAIS();
-  if (!aMap.IsBound2 (aName) )
+  TCollection_AsciiString aName (aCmd.Arg ("", 0).c_str());
+  Handle(AIS_InteractiveObject) anIObj;
+  if (!GetMapOfAIS().Find2 (aName, anIObj))
   {
     std::cerr << "Use 'vdisplay' before\n";
     return 1;
   }
 
-  Handle(AIS_InteractiveObject) anIObj = Handle(AIS_InteractiveObject)::DownCast (aMap.Find2 (aName));
   Graphic3d_MaterialAspect aMaterial = anIObj->Attributes()->ShadingAspect()->Material();
   Graphic3d_BSDF aBSDF = aMaterial.BSDF();
 
@@ -5690,10 +5654,10 @@ static Standard_Integer VLoadSelection (Draw_Interpretor& /*theDi*/,
     const TCollection_AsciiString& aName = aNamesOfIO.Value (anIter);
 
     Handle(AIS_InteractiveObject) aShape;
-    if (GetMapOfAIS().IsBound2 (aName))
-      aShape = Handle(AIS_InteractiveObject)::DownCast (GetMapOfAIS().Find2 (aName));
-    else
+    if (!GetMapOfAIS().Find2 (aName, aShape))
+    {
       aShape = GetAISShapeFromName (aName.ToCString());
+    }
 
     if (!aShape.IsNull())
     {
@@ -6203,15 +6167,14 @@ static Standard_Integer TDraft(Draw_Interpretor& di, Standard_Integer argc, cons
     Ctx->Display(ais, Standard_False);
 
     const char *Name = "draft1";
-    Standard_Boolean IsBound = GetMapOfAIS().IsBound2(Name);
-    if (IsBound) {
-      Handle(AIS_InteractiveObject) an_object =
-	Handle(AIS_InteractiveObject)::DownCast(GetMapOfAIS().Find2(Name));
-      if (!an_object.IsNull()) {
-        Ctx->Remove(an_object,
-                    Standard_True) ;
-        GetMapOfAIS().UnBind2(Name) ;
+    Handle(AIS_InteractiveObject) an_object;
+    if (GetMapOfAIS().Find2(Name, an_object))
+    {
+      if (!an_object.IsNull())
+      {
+        Ctx->Remove (an_object, Standard_True);
       }
+      GetMapOfAIS().UnBind2 (Name);
     }
     GetMapOfAIS().Bind(ais, Name);
 //  DBRep::Set("draft", ais->Shape());

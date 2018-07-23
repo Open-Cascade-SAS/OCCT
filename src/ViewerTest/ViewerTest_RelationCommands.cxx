@@ -296,20 +296,11 @@ static int ParseDimensionParams (Standard_Integer  theArgNum,
         {
           anAISObject = new AIS_Shape (aShape);
         }
-        else
+        else if (!GetMapOfAIS().Find2 (anArgString, anAISObject)
+               || anAISObject.IsNull())
         {
-          if (!GetMapOfAIS().IsBound2 (anArgString))
-          {
-            std::cerr << "Error: shape with name '" << aStr << "' is not found.\n";
-            return 1;
-          }
-
-          anAISObject = Handle(AIS_InteractiveObject)::DownCast (GetMapOfAIS().Find2 (anArgString));
-          if (anAISObject.IsNull())
-          {
-            std::cerr << "Error: " << aStr <<" is not a shape.\n";
-            return 1;
-          }
+          std::cerr << "Error: shape with name '" << aStr << "' is not found.\n";
+          return 1;
         }
         theShapeList->Append (anAISObject);
       }
@@ -1578,20 +1569,19 @@ static int VDimParam (Draw_Interpretor& theDi, Standard_Integer theArgNum, const
   NCollection_DataMap<TCollection_AsciiString, Standard_Real> aRealParams;
   NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString> aStringParams;
 
-  if (!GetMapOfAIS().IsBound2 (aName))
+  Handle(AIS_InteractiveObject) anObject;
+  if (!GetMapOfAIS().Find2 (aName, anObject))
   {
     theDi << theArgVec[0] << "error: no object with this name.\n";
     return 1;
   }
-
-  Handle(AIS_InteractiveObject) anObject = Handle(AIS_InteractiveObject)::DownCast(GetMapOfAIS().Find2 (aName));
-  if (anObject->Type() != AIS_KOI_Dimension)
+  Handle(AIS_Dimension) aDim = Handle(AIS_Dimension)::DownCast (anObject);
+  if (aDim.IsNull())
   {
     theDi << theArgVec[0] << "error: no dimension with this name.\n";
     return 1;
   }
 
-  Handle(AIS_Dimension) aDim = Handle(AIS_Dimension)::DownCast (anObject);
   Handle(Prs3d_DimensionAspect) anAspect = aDim->DimensionAspect();
 
   if (ParseDimensionParams (theArgNum, theArgVec, 2, anAspect,
@@ -1636,19 +1626,13 @@ static int VLengthParam (Draw_Interpretor&, Standard_Integer theArgNum, const ch
   }
 
   TCollection_AsciiString aName (theArgVec[1]);
-  if (!GetMapOfAIS().IsBound2 (aName))
+  Handle(AIS_InteractiveObject) anObject;
+  if (!GetMapOfAIS().Find2 (aName, anObject))
   {
     std::cout << theArgVec[0] << "error: no object with this name.\n";
     return 1;
   }
 
-  Handle(AIS_InteractiveObject) anObject = Handle(AIS_InteractiveObject)::DownCast(GetMapOfAIS().Find2 (aName));
-  if (anObject->Type() != AIS_KOI_Dimension)
-  {
-    std::cout << theArgVec[0] << "error: no dimension with this name.\n";
-    return 1;
-  }
-  
   Handle(AIS_LengthDimension) aLengthDim = Handle(AIS_LengthDimension)::DownCast (anObject);
   if (aLengthDim.IsNull())
   {
@@ -1744,23 +1728,21 @@ static int VAngleParam (Draw_Interpretor& theDi, Standard_Integer theArgNum, con
   Standard_Boolean toUpdate = Standard_True;
 
   NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString> aStringParams;
-
-  if (!GetMapOfAIS().IsBound2 (aName))
+  Handle(AIS_InteractiveObject) anObject;
+  if (!GetMapOfAIS().Find2 (aName, anObject))
   {
     theDi << theArgVec[0] << "error: no object with this name.\n";
     return 1;
   }
 
-  Handle(AIS_InteractiveObject) anObject = Handle(AIS_InteractiveObject)::DownCast(GetMapOfAIS().Find2 (aName));
-  if (anObject->Type() != AIS_KOI_Dimension)
+  Handle(AIS_Dimension) aDim = Handle(AIS_Dimension)::DownCast (anObject);
+  if (aDim.IsNull())
   {
     theDi << theArgVec[0] << "error: no dimension with this name.\n";
     return 1;
   }
 
-  Handle(AIS_Dimension) aDim = Handle(AIS_Dimension)::DownCast (anObject);
   Handle(Prs3d_DimensionAspect) anAspect = aDim->DimensionAspect();
-
   if (ParseAngleDimensionParams (theArgNum, theArgVec, 2, aStringParams))
   {
     return 1;
@@ -1808,17 +1790,10 @@ static int VMoveDim (Draw_Interpretor& theDi, Standard_Integer theArgNum, const 
   if (isNameSet)
   {
      TCollection_AsciiString aName (theArgVec[1]);
-     if (!GetMapOfAIS().IsBound2 (aName))
+     if (!GetMapOfAIS().Find2 (aName, aPickedObj)
+       || aPickedObj.IsNull())
      {
        theDi << theArgVec[0] << " error: no object with this name.\n";
-       return 1;
-     }
-
-     aPickedObj = Handle(AIS_InteractiveObject)::DownCast (GetMapOfAIS().Find2 (aName));
-     
-     if (aPickedObj.IsNull())
-     {
-       theDi << theArgVec[0] << " error: the object with this name is not valid.\n";
        return 1;
      }
 

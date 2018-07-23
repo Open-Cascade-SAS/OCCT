@@ -204,8 +204,7 @@ static Standard_Integer OCC10bug (Draw_Interpretor& di, Standard_Integer argc, c
   Standard_Boolean IsBound = GetMapOfAIS().IsBound2(name);
   if (IsBound) {
     // on recupere la shape dans la map des objets displayes
-    Handle(AIS_InteractiveObject) aShape = 
-      Handle(AIS_InteractiveObject)::DownCast(GetMapOfAIS().Find2(name));
+    Handle(AIS_InteractiveObject) aShape = GetMapOfAIS().Find2(name);
       
     // On verifie que l'AIS InteraciveObject est bien 
     // un AIS_PlaneTrihedron
@@ -293,23 +292,19 @@ static Standard_Integer OCC74bug_set (Draw_Interpretor& di, Standard_Integer arg
   Handle(AIS_InteractiveObject) AISObj;
 
   Standard_Integer SelectMode = Draw::Atoi(argv[2]);
-  
-  if(!aMap.IsBound2(aName)) {
+  if (!aMap.Find2 (aName, AISObj)
+    || AISObj.IsNull())
+  {
     di << "Use 'vdisplay' before\n";
     return 1;
-  } else {
-    AISObj = Handle(AIS_InteractiveObject)::DownCast(aMap.Find2(aName));
-    if(AISObj.IsNull()){
-      di << argv[1] << " : No interactive object\n";
-      return 1;
-    }
-    aContext->Erase(AISObj, updateviewer);
-    aContext->UpdateCurrentViewer();
-    aContext->SetAutoActivateSelection (Standard_False);
-    aContext->Display(AISObj, updateviewer);
-    aContext->Activate (AISObj, SelectMode);
-    aContext->UpdateCurrentViewer();
   }
+
+  aContext->Erase(AISObj, updateviewer);
+  aContext->UpdateCurrentViewer();
+  aContext->SetAutoActivateSelection (Standard_False);
+  aContext->Display(AISObj, updateviewer);
+  aContext->Activate (AISObj, SelectMode);
+  aContext->UpdateCurrentViewer();
   return 0;
 }
 
@@ -330,22 +325,17 @@ static Standard_Integer OCC74bug_get (Draw_Interpretor& di, Standard_Integer arg
   
   TCollection_AsciiString aName(argv[1]);
   Handle(AIS_InteractiveObject) AISObj;
-
-  if(!aMap.IsBound2(aName)) {
+  if (!aMap.Find2(aName, AISObj)
+   || AISObj.IsNull())
+  {
     di << "Use 'vdisplay' before\n";
     return 1;
-  } else {
-    AISObj = Handle(AIS_InteractiveObject)::DownCast(aMap.Find2(aName));
-    if(AISObj.IsNull()){
-      di << argv[1] << " : No interactive object\n";
-      return 1;
-    } 
-    TColStd_ListOfInteger anActivatedModes;
-    aContext->ActivatedModes (AISObj, anActivatedModes);
-    Standard_Integer aMode = anActivatedModes.IsEmpty() ? -1 : anActivatedModes.Last();
-    di << aMode << "\n";
   }
 
+  TColStd_ListOfInteger anActivatedModes;
+  aContext->ActivatedModes (AISObj, anActivatedModes);
+  Standard_Integer aMode = anActivatedModes.IsEmpty() ? -1 : anActivatedModes.Last();
+  di << aMode << "\n";
   return 0;
 }
 

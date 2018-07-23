@@ -276,7 +276,7 @@ static Standard_Integer OCC218bug (Draw_Interpretor& di, Standard_Integer argc, 
   Standard_Boolean IsBound = GetMapOfAIS().IsBound2(name);
   if (IsBound) {
     // on recupere la shape dans la map des objets displayes
-    Handle(AIS_InteractiveObject) aShape = Handle(AIS_InteractiveObject)::DownCast(GetMapOfAIS().Find2(name));
+    Handle(AIS_InteractiveObject) aShape = GetMapOfAIS().Find2(name);
       
     // On verifie que l'AIS InteraciveObject est bien 
     // un AIS_PlaneTrihedron

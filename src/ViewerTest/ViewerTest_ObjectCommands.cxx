@@ -588,9 +588,9 @@ static int VTrihedron (Draw_Interpretor& ,
   NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString> aStringParams;
 
   Handle(AIS_Trihedron) aTrihedron;
-  if (GetMapOfAIS().IsBound2 (aName))
+  Handle(AIS_InteractiveObject) anObject;
+  if (GetMapOfAIS().Find2 (aName, anObject))
   {
-    Handle(AIS_InteractiveObject) anObject = Handle(AIS_InteractiveObject)::DownCast (GetMapOfAIS().Find2 (aName));
     aTrihedron = Handle(AIS_Trihedron)::DownCast (anObject);
     if (aTrihedron.IsNull())
     {
@@ -668,8 +668,7 @@ static int VSize (Draw_Interpretor& di, Standard_Integer argc, const char** argv
 
     while ( it.More() ) {
 
-      Handle(AIS_InteractiveObject) aShape=
-        Handle(AIS_InteractiveObject)::DownCast(it.Key1());
+      Handle(AIS_InteractiveObject) aShape = it.Key1();
 
       if (!aShape.IsNull() &&  TheAISContext()->IsSelected(aShape) )
       {
@@ -729,14 +728,9 @@ static int VSize (Draw_Interpretor& di, Standard_Integer argc, const char** argv
     TCollection_AsciiString name=argv[1];
 
     // on verifie que ce nom correspond bien a une shape
-    Standard_Boolean IsBound= GetMapOfAIS().IsBound2(name);
-
-    if (IsBound) {
-
-      // on recupere la shape dans la map des objets displayes
-      Handle(AIS_InteractiveObject) aShape =
-        Handle(AIS_InteractiveObject)::DownCast(GetMapOfAIS().Find2(name));
-
+    Handle(AIS_InteractiveObject) aShape;
+    if (GetMapOfAIS().Find2(name, aShape))
+    {
       // On verifie que l'AIS InteraciveObject est bien
       // un AIS_Trihedron
       if (!aShape.IsNull() &&
@@ -1124,14 +1118,12 @@ static Standard_Integer VPlaneBuilder (Draw_Interpretor& /*di*/,
   // There are some arguments
   if (hasArg)
   {
-    if (!GetMapOfAIS().IsBound2(argv[2] ))
+    Handle(AIS_InteractiveObject) aShapeA;
+    if (!GetMapOfAIS().Find2 (argv[2], aShapeA))
     {
       std::cout<<"vplane: error 1st name doesn't exist in the GetMapOfAIS()\n";
       return 1;
     }
-    // Get shape from map
-    Handle(AIS_InteractiveObject) aShapeA =
-      Handle(AIS_InteractiveObject)::DownCast (GetMapOfAIS().Find2(argv[2] ));
 
     // The first argument is an AIS_Point
     if (!aShapeA.IsNull() &&
@@ -1139,14 +1131,12 @@ static Standard_Integer VPlaneBuilder (Draw_Interpretor& /*di*/,
         aShapeA->Signature()==1)
     {
         // The second argument must also be an AIS_Point
-        if (argc<5 || !GetMapOfAIS().IsBound2(argv[3]))
+        Handle(AIS_InteractiveObject) aShapeB;
+        if (argc<5 || !GetMapOfAIS().Find2 (argv[3], aShapeB))
         {
           std::cout<<"vplane: error 2nd name doesn't exist in the GetMapOfAIS()\n";
           return 1;
         }
-        // Get shape from map
-        Handle(AIS_InteractiveObject) aShapeB =
-          Handle(AIS_InteractiveObject)::DownCast (GetMapOfAIS().Find2(argv[3]));
         // If B is not an AIS_Point
         if (aShapeB.IsNull() ||
           (!(aShapeB->Type()==AIS_KOI_Datum && aShapeB->Signature()==1)))
@@ -1155,14 +1145,12 @@ static Standard_Integer VPlaneBuilder (Draw_Interpretor& /*di*/,
           return 1;
         }
         // The third object is an AIS_Point
-        if (!GetMapOfAIS().IsBound2(argv[4]) ) 
+        Handle(AIS_InteractiveObject) aShapeC;
+        if (!GetMapOfAIS().Find2(argv[4], aShapeC)) 
         {
           std::cout<<"vplane: error 3d name doesn't exist in the GetMapOfAIS().\n";
           return 1; 
         }
-        // Get shape from map
-        Handle(AIS_InteractiveObject) aShapeC =
-          Handle(AIS_InteractiveObject)::DownCast (GetMapOfAIS().Find2(argv[4]));
         // If C is not an AIS_Point
         if (aShapeC.IsNull() ||
           (!(aShapeC->Type()==AIS_KOI_Datum && aShapeC->Signature()==1)))
@@ -1242,14 +1230,12 @@ static Standard_Integer VPlaneBuilder (Draw_Interpretor& /*di*/,
       // Creation of a plane orthogonal to the axis through a point
     else if (aShapeA->Type()==AIS_KOI_Datum && aShapeA->Signature()==2 ) {
       // The second argument should be an AIS_Point
-      if (argc!=4 || !GetMapOfAIS().IsBound2(argv[3] ) )
+      Handle(AIS_InteractiveObject) aShapeB;
+      if (argc!=4 || !GetMapOfAIS().Find2 (argv[3], aShapeB))
       {
         std::cout<<"vplane: error 2d name doesn't exist in the GetMapOfAIS()\n";
         return 1;
       }
-      // Get shape from map
-      Handle(AIS_InteractiveObject) aShapeB =
-        Handle(AIS_InteractiveObject)::DownCast (GetMapOfAIS().Find2(argv[3]));
       // If B is not an AIS_Point
       if (aShapeB.IsNull() ||
         (!(aShapeB->Type()==AIS_KOI_Datum && aShapeB->Signature()==1)))
@@ -1301,14 +1287,12 @@ static Standard_Integer VPlaneBuilder (Draw_Interpretor& /*di*/,
     else if (aShapeA->Type()==AIS_KOI_Datum && aShapeA->Signature()==7)
     {
       // The second argument should be an AIS_Point
-      if (argc!=4 || !GetMapOfAIS().IsBound2(argv[3]))
+      Handle(AIS_InteractiveObject) aShapeB;
+      if (argc!=4 || !GetMapOfAIS().Find2 (argv[3], aShapeB))
       {
         std::cout<<"vplane: error 2d name doesn't exist in the GetMapOfAIS()\n";
         return 1;
       }
-      // Get shape from map
-      Handle(AIS_InteractiveObject) aShapeB =
-        Handle(AIS_InteractiveObject)::DownCast (GetMapOfAIS().Find2(argv[3]));
       // B should be an AIS_Point
       if (aShapeB.IsNull() ||
          (!(aShapeB->Type()==AIS_KOI_Datum && aShapeB->Signature()==1)))
@@ -1761,15 +1745,13 @@ static int VLineBuilder(Draw_Interpretor& di, Standard_Integer argc, const char*
   // Parametres: AIS_Point AIS_Point
   // ===============================
   if (argc==4) {
-    theShapeA=
-      Handle(AIS_InteractiveObject)::DownCast (GetMapOfAIS().Find2(argv[2]));
+    GetMapOfAIS().Find2 (argv[2], theShapeA);
     // On verifie que c'est bien une AIS_Point
     if (!theShapeA.IsNull() &&
       theShapeA->Type()==AIS_KOI_Datum && theShapeA->Signature()==1) {
         // on recupere le deuxieme AIS_Point
-        theShapeB=
-          Handle(AIS_InteractiveObject)::DownCast (GetMapOfAIS().Find2(argv[3]));
-        if (theShapeA.IsNull() ||
+        GetMapOfAIS().Find2 (argv[3], theShapeB);
+        if (theShapeB.IsNull() ||
           (!(theShapeB->Type()==AIS_KOI_Datum && theShapeB->Signature()==1)))
         {
           di <<"vline error: wrong type of 2de argument.\n";
@@ -1988,9 +1970,7 @@ void DisplayCircle (Handle (Geom_Circle) theGeomCircle,
   // and remove it from context
   if (GetMapOfAIS().IsBound2(theName)) 
   {
-    Handle(Standard_Transient) anObj = GetMapOfAIS().Find2(theName);
-    Handle(AIS_InteractiveObject) anInterObj = 
-         Handle(AIS_InteractiveObject)::DownCast(anObj);
+    Handle(AIS_InteractiveObject) anInterObj = GetMapOfAIS().Find2(theName);
     TheAISContext()->Remove(anInterObj, Standard_False);
     GetMapOfAIS().UnBind2(theName);
    }
@@ -2019,14 +1999,9 @@ static int VCircleBuilder(Draw_Interpretor& /*di*/, Standard_Integer argc, const
     TCollection_AsciiString aName(argv[1]);
     Standard_Boolean isFilled = Draw::Atoi(argv[5]) != 0;
 
-    Handle(AIS_InteractiveObject) theShapeA;
-    Handle(AIS_InteractiveObject) theShapeB;
-
-    theShapeA =
-      Handle(AIS_InteractiveObject)::DownCast(GetMapOfAIS().Find2(argv[2]));
-    theShapeB =
-      Handle(AIS_InteractiveObject)::DownCast(GetMapOfAIS().Find2(argv[3]));
-
+    Handle(AIS_InteractiveObject) theShapeA, theShapeB;
+    GetMapOfAIS().Find2 (argv[2], theShapeA);
+    GetMapOfAIS().Find2 (argv[3], theShapeB);
 
     // Arguments: AIS_Point AIS_Point AIS_Point
     // ========================================
@@ -2039,8 +2014,8 @@ static int VCircleBuilder(Draw_Interpretor& /*di*/, Standard_Integer argc, const
         return 1; // TCL_ERROR 
       }
       // The third object must be a point
-      Handle(AIS_InteractiveObject) theShapeC =
-        Handle(AIS_InteractiveObject)::DownCast(GetMapOfAIS().Find2(argv[4]));
+      Handle(AIS_InteractiveObject) theShapeC;
+      GetMapOfAIS().Find2 (argv[4], theShapeC);
       if (theShapeC.IsNull() ||
         theShapeC->Type()!=AIS_KOI_Datum || theShapeC->Signature()!=1 ) 
       {
@@ -3619,11 +3594,7 @@ static Standard_Integer VSetLocation (Draw_Interpretor& theDI,
     else if (anObj.IsNull())
     {
       const TCollection_AsciiString aName (theArgVec[anArgIter]);
-      const ViewerTest_DoubleMapOfInteractiveAndName& aMap = GetMapOfAIS();
-      if (aMap.IsBound2 (aName))
-      {
-        anObj = Handle(AIS_InteractiveObject)::DownCast (aMap.Find2 (aName));
-      }
+      GetMapOfAIS().Find2 (aName, anObj);
       if (anObj.IsNull())
       {
         std::cout << "Error: object '" << aName << "' is not displayed!\n";
@@ -3645,12 +3616,8 @@ static Standard_Integer VSetLocation (Draw_Interpretor& theDI,
       }
 
       const TCollection_AsciiString aName2 (theArgVec[anArgIter + 1]);
-      const ViewerTest_DoubleMapOfInteractiveAndName& aMap = GetMapOfAIS();
       Handle(AIS_InteractiveObject) anObj2;
-      if (aMap.IsBound2 (aName2))
-      {
-        anObj2 = Handle(AIS_InteractiveObject)::DownCast (aMap.Find2 (aName2));
-      }
+      GetMapOfAIS().Find2 (aName2, anObj2);
       if (anObj2.IsNull())
       {
         std::cout << "Error: object '" << aName2 << "' is not displayed!\n";
@@ -3980,10 +3947,8 @@ static Standard_Integer VConnect (Draw_Interpretor& /*di*/,
       std::cout << "vconnect error: equal names for connected objects\n";
       continue;
     }
-    if (GetMapOfAIS().IsBound2 (anOriginObjectName))
+    if (GetMapOfAIS().Find2 (anOriginObjectName, anObject))
     {
-      Handle(Standard_Transient) anObj = GetMapOfAIS().Find2 (anOriginObjectName);
-      anObject = Handle(AIS_InteractiveObject)::DownCast(anObj);
       if (anObject.IsNull())
       {
         std::cout << "Object " << anOriginObjectName << " is used for non AIS viewer\n";
@@ -4033,10 +3998,9 @@ static Standard_Integer VConnect (Draw_Interpretor& /*di*/,
 
   // Check if there is another object with given name
   // and remove it from context
-  if(GetMapOfAIS().IsBound2(aName))
+  Handle(AIS_InteractiveObject) anObj;
+  if (GetMapOfAIS().Find2 (aName, anObj))
   {
-    Handle(AIS_InteractiveObject) anObj = 
-      Handle(AIS_InteractiveObject)::DownCast(GetMapOfAIS().Find2(aName));
     TheAISContext()->Remove(anObj, Standard_False);
     GetMapOfAIS().UnBind2(aName);
   }
@@ -4086,10 +4050,8 @@ static Standard_Integer VConnectTo (Draw_Interpretor& /*di*/,
     std::cout << "vconnect error: equal names for connected objects\n"; 
     return 1; // TCL_ERROR
   }
-  if (GetMapOfAIS().IsBound2 (anOriginObjectName))
+  if (GetMapOfAIS().Find2 (anOriginObjectName, anOriginObject))
   {
-    Handle(Standard_Transient) anObj = GetMapOfAIS().Find2 (anOriginObjectName);
-    anOriginObject = Handle(AIS_InteractiveObject)::DownCast(anObj);
     if (anOriginObject.IsNull())
     {
       std::cout << "Object " << anOriginObjectName << " is used for non AIS viewer\n";
@@ -4128,11 +4090,10 @@ static Standard_Integer VConnectTo (Draw_Interpretor& /*di*/,
 
   // Check if there is another object with given name
   // and remove it from context
-  if(GetMapOfAIS().IsBound2(aName))
+  Handle(AIS_InteractiveObject) anObj;
+  if (GetMapOfAIS().Find2 (aName, anObj))
   {
-    Handle(AIS_InteractiveObject) anObj = 
-      Handle(AIS_InteractiveObject)::DownCast(GetMapOfAIS().Find2(aName));
-    TheAISContext()->Remove(anObj, Standard_False);
+    TheAISContext()->Remove (anObj, Standard_False);
     GetMapOfAIS().UnBind2(aName);
   }
 
@@ -4200,7 +4161,7 @@ static Standard_Integer VDisconnect (Draw_Interpretor& di,
   }
 
   Handle(AIS_InteractiveObject) anIObj;
-  if (!aMap.IsBound2 (anObject))
+  if (!aMap.Find2 (anObject, anIObj))
   {
     // try to interpret second argument as child number
     if (anObjectNumber > 0 && anObjectNumber <= anAssembly->Children().Size())
@@ -4223,15 +4184,8 @@ static Standard_Integer VDisconnect (Draw_Interpretor& di,
     }    
   }
 
-  // if object was found by name
-  if (anIObj.IsNull())
-  {
-    anIObj = Handle(AIS_InteractiveObject)::DownCast (aMap.Find2 (anObject));
-  }
-
   aContext->Disconnect (anAssembly, anIObj);
   aContext->UpdateCurrentViewer();
-
   return 0;
 }
 
@@ -4279,13 +4233,11 @@ static Standard_Integer VAddConnected (Draw_Interpretor& di,
   }
 
   Handle(AIS_InteractiveObject) anIObj;
-  if (!aMap.IsBound2 (anObject))
+  if (!aMap.Find2 (anObject, anIObj))
   {
       std::cout << "Use 'vdisplay' before\n";
       return 1; 
   }
-
-  anIObj = Handle(AIS_InteractiveObject)::DownCast (aMap.Find2 (anObject));
 
   gp_Trsf aTrsf;
   aTrsf.SetTranslation (gp_Vec (aX, aY, aZ));
@@ -4342,9 +4294,10 @@ static Standard_Integer VListConnected (Draw_Interpretor& /*di*/,
   Standard_Integer aCounter = 1;
   for (PrsMgr_ListOfPresentableObjectsIter anIter (anAssembly->Children()); anIter.More(); anIter.Next())
   {
-    if (GetMapOfAIS().IsBound1 (anIter.Value()))
+    Handle(AIS_InteractiveObject) anObj = Handle(AIS_InteractiveObject)::DownCast (anIter.Value());
+    if (GetMapOfAIS().IsBound1 (anObj))
     {
-      TCollection_AsciiString aCuurrentName = GetMapOfAIS().Find1 (anIter.Value());
+      TCollection_AsciiString aCuurrentName = GetMapOfAIS().Find1 (anObj);
       std::cout << aCounter << ")  " << aCuurrentName << "    (" << anIter.Value()->DynamicType()->Name() << ")";
     }
 
@@ -4442,11 +4395,7 @@ static Standard_Integer VSetSelectionMode (Draw_Interpretor& /*di*/,
   {
     const TCollection_AsciiString& aNameIO = anObjIter.Value();
     Handle(AIS_InteractiveObject) anIO;
-    if (GetMapOfAIS().IsBound2 (aNameIO))
-    {
-      anIO = Handle(AIS_InteractiveObject)::DownCast (GetMapOfAIS().Find2 (aNameIO));
-    }
-
+    GetMapOfAIS().Find2 (aNameIO, anIO);
     if (anIO.IsNull())
     {
       std::cout << "Syntax error: undefined presentable object " << aNameIO << "\n";
@@ -4607,20 +4556,11 @@ static Standard_Integer VObjZLayer (Draw_Interpretor& di,
 
   // find object
   TCollection_AsciiString aName (argv[2]);
-  ViewerTest_DoubleMapOfInteractiveAndName& aMap = GetMapOfAIS();
-  if (!aMap.IsBound2 (aName))
-  {
-    di << "Use 'vdisplay' before\n";
-    return 1;
-  }
-
-  // find interactive object
-  Handle(Standard_Transient) anObj = GetMapOfAIS().Find2 (aName);
-  Handle(AIS_InteractiveObject) anInterObj =
-    Handle(AIS_InteractiveObject)::DownCast (anObj);
+  Handle(AIS_InteractiveObject) anInterObj;
+  GetMapOfAIS().Find2 (aName, anInterObj);
   if (anInterObj.IsNull())
   {
-    di << "Not an AIS interactive object!\n";
+    std::cout << "Syntax error: object '" << aName << "' is not displayed\n";
     return 1;
   }
 
@@ -4665,19 +4605,10 @@ static Standard_Integer VPolygonOffset(Draw_Interpretor& /*di*/,
   if (argc >= 2)
   {
     TCollection_AsciiString aName (argv[1]);
-    ViewerTest_DoubleMapOfInteractiveAndName& aMap = GetMapOfAIS();
-    if (!aMap.IsBound2 (aName))
+    if (!GetMapOfAIS().Find2 (aName, anInterObj)
+      || anInterObj.IsNull())
     {
-      std::cout << "Use 'vdisplay' before" << std::endl;
-      return 1;
-    }
-
-    // find interactive object
-    Handle(Standard_Transient) anObj = GetMapOfAIS().Find2 (aName);
-    anInterObj = Handle(AIS_InteractiveObject)::DownCast (anObj);
-    if (anInterObj.IsNull())
-    {
-      std::cout << "Not an AIS interactive object!" << std::endl;
+      std::cout << "Syntax error: object '" << aName << "' is not displayed\n";
       return 1;
     }
   }
@@ -4773,19 +4704,10 @@ static Standard_Integer VShowFaceBoundary (Draw_Interpretor& /*di*/,
   // if name is empty - apply attributes for default aspect
   if (!aName.IsEmpty ())
   {
-    ViewerTest_DoubleMapOfInteractiveAndName& aMap = GetMapOfAIS ();
-    if (!aMap.IsBound2 (aName))
+    if (!GetMapOfAIS().Find2 (aName, anInterObj)
+      || anInterObj.IsNull())
     {
       std::cout << "Use 'vdisplay' on " << aName << " before" << std::endl;
-      return 1;
-    }
-
-    // find interactive object
-    Handle(Standard_Transient) anObj = GetMapOfAIS ().Find2 (aName);
-    anInterObj = Handle(AIS_InteractiveObject)::DownCast (anObj);
-    if (anInterObj.IsNull ())
-    {
-      std::cout << "Not an AIS interactive object!" << std::endl;
       return 1;
     }
   }
@@ -5443,14 +5365,12 @@ static int VSetEdgeType (Draw_Interpretor& theDI,
 
   // Get shape name
   TCollection_AsciiString aName(theArgs[1]);
-  if (!GetMapOfAIS().IsBound2 (aName))
+  Handle(AIS_InteractiveObject) anObject;
+  if (!GetMapOfAIS().Find2 (aName, anObject))
   {
     theDI <<  theArgs[0] << " error: wrong object name.\n";
     return 1;
   }
-  
-  Handle(AIS_InteractiveObject) anObject = 
-    Handle(AIS_InteractiveObject)::DownCast(GetMapOfAIS().Find2(aName));
   
   // Enable triangle edge mode
   if (!anObject->Attributes()->HasOwnShadingAspect())
@@ -5553,14 +5473,12 @@ static int VUnsetEdgeType (Draw_Interpretor& theDI,
 
   // Get shape name
   TCollection_AsciiString aName (theArgs[1]);
-  if (!GetMapOfAIS().IsBound2 (aName))
+  Handle(AIS_InteractiveObject) anObject;
+  if (!GetMapOfAIS().Find2 (aName, anObject))
   {
     theDI <<  theArgs[0] << " error: wrong object name.\n";
     return 1;
   }
-
-  Handle(AIS_InteractiveObject) anObject = 
-    Handle(AIS_InteractiveObject)::DownCast (GetMapOfAIS().Find2(aName));
 
   // Enable trianle edge mode
   anObject->Attributes()->ShadingAspect()->Aspect()->SetEdgeOff();
@@ -5655,12 +5573,11 @@ static int VVertexMode (Draw_Interpretor& theDI,
     for (Standard_Integer aCount = 3; aCount < theArgNum; aCount++)
     {
       TCollection_AsciiString aName (theArgs[aCount]);
-      if (!GetMapOfAIS().IsBound2 (aName))
+      if (!GetMapOfAIS().Find2 (aName, anObject))
       {
         theDI << "Warning: wrong object name ignored - " << theArgs[0] << "\n";
         continue;
       }
-      anObject = Handle(AIS_InteractiveObject)::DownCast (GetMapOfAIS().Find2(aName));
       anObjs.Append (anObject);
     }
 
@@ -5678,16 +5595,15 @@ static int VVertexMode (Draw_Interpretor& theDI,
     return 0;
   }
 
-  if (theArgNum > 2)
+  Handle(AIS_InteractiveObject) anObject;
+  if (theArgNum > 2
+  || !GetMapOfAIS().Find2 (aParam, anObject))
   {
     std::cout << "Error: invalid number of arguments" << std::endl;
-    std::cout << "Type 'help vvertexmode' for usage hints" << std::endl;
     return 1;
   }
 
   // One argument (object name) --> print the current vertex draw mode for the object
-  Handle(AIS_InteractiveObject) anObject =
-    Handle(AIS_InteractiveObject)::DownCast (GetMapOfAIS().Find2 (aParam));
   Prs3d_VertexDrawMode aCurrMode = anObject->Attributes()->VertexDrawMode();
   theDI <<  "Object's vertex draw mode: " << (aCurrMode == Prs3d_VDM_Isolated ? "'isolated'" : "'all'") << "\n";
   return 0;
@@ -5967,11 +5883,7 @@ static int VPriority (Draw_Interpretor& theDI,
 
     TCollection_AsciiString aName (theArgs[anArgIter]);
     Handle(AIS_InteractiveObject) anIObj;
-    if (GetMapOfAIS().IsBound2 (aName))
-    {
-      anIObj = Handle(AIS_InteractiveObject)::DownCast (GetMapOfAIS().Find2 (aName));
-    }
-
+    GetMapOfAIS().Find2 (aName, anIObj);
     if (anIObj.IsNull())
     {
       std::cout << "Error: the object '" << theArgs[1] << "' is not displayed" << std::endl;

@@ -1591,22 +1591,19 @@ static Standard_Integer OCC708 (Draw_Interpretor& di, Standard_Integer argc, con
   TCollection_AsciiString aName(argv[1]);
   Handle(AIS_InteractiveObject) AISObj;
 
-  if(!aMap.IsBound2(aName)) {
+  if (!aMap.Find2 (aName, AISObj)
+    || AISObj.IsNull())
+  {
     di << "Use 'vdisplay' before\n";
     return 1;
-  } else {
-    AISObj = Handle(AIS_InteractiveObject)::DownCast(aMap.Find2(aName));
-    if(AISObj.IsNull()){
-      di << argv[1] << " : No interactive object\n";
-      return 1;
-    } 
-    AISObj->ResetTransformation();
-
-    aContext->Erase(AISObj, updateviewer);
-    aContext->UpdateCurrentViewer();
-    aContext->Display(AISObj, updateviewer);
-    aContext->UpdateCurrentViewer();
   }
+
+  AISObj->ResetTransformation();
+
+  aContext->Erase(AISObj, updateviewer);
+  aContext->UpdateCurrentViewer();
+  aContext->Display(AISObj, updateviewer);
+  aContext->UpdateCurrentViewer();
   return 0;
 }
 

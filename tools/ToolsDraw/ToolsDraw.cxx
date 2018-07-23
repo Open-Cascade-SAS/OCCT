@@ -231,11 +231,10 @@ static int tinspector (Draw_Interpretor& di, Standard_Integer theArgsNb, const c
         anItemNamesToSelect.Append (TInspectorAPI_PluginParameters::ParametersToString (aShape));
       }
       // search prsentations with given name
-      if (GetMapOfAIS().IsBound2 (theArgs[anIt]))
+      Handle(AIS_InteractiveObject) anIO;
+      GetMapOfAIS().Find2 (theArgs[anIt], anIO);
+      if (!anIO.IsNull())
       {
-        Handle(AIS_InteractiveObject) anIO = Handle(AIS_InteractiveObject)::DownCast
-          (GetMapOfAIS().Find2 (theArgs[anIt]));
-        if (!anIO.IsNull())
         anObjectsToSelect.Append (anIO);
       }
       // give parameters as a container of names

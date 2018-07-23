@@ -712,7 +712,7 @@ static Standard_Integer VShaderProg (Draw_Interpretor& /*theDI*/,
     else if (!anArg.StartsWith ("-")
           && GetMapOfAIS().IsBound2 (theArgVec[anArgIter]))
     {
-      Handle(AIS_InteractiveObject) anIO = Handle(AIS_InteractiveObject)::DownCast (GetMapOfAIS().Find2 (theArgVec[anArgIter]));
+      Handle(AIS_InteractiveObject) anIO = GetMapOfAIS().Find2 (theArgVec[anArgIter]);
       if (anIO.IsNull())
       {
         std::cerr << "Syntax error: " << theArgVec[anArgIter] << " is not an AIS object\n";
@@ -790,7 +790,7 @@ static Standard_Integer VShaderProg (Draw_Interpretor& /*theDI*/,
       {
         break;
       }
-      anIO = Handle(AIS_InteractiveObject)::DownCast (aGlobalPrsIter.Key1());
+      anIO = aGlobalPrsIter.Key1();
       aGlobalPrsIter.Next();
       if (anIO.IsNull())
       {
