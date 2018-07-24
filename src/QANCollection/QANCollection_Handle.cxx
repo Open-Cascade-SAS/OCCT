@@ -34,8 +34,14 @@
 #include <memory>
 #include <typeinfo>
 
-// auxiliary macro to check and report status
-#define CHECK(di,ok,what) di << "Checking " << what << (ok ? ": OK\n" : ": Error\n")
+// Auxiliary macro to check and report status.
+// Note that if() is used to ensure that condition is
+// evaluated before calls to stream output functions, to
+// prevent side effects from such calls in cases when condition
+// may contain references to freed objects in the stack.
+#define CHECK(di,ok,what) \
+  if (ok) di << "Checking " << what << ": OK\n";\
+  else    di << "Checking " << what << ": Error\n"
 
 //=======================================================================
 //function : QAHandleOps
@@ -117,12 +123,23 @@ static Standard_Integer QAHandleOps (Draw_Interpretor& theDI,
 #endif
 
   const Handle(Geom_Curve)& aCurve2 = aLine; // cast to base const ref
+  CHECK (theDI, !aCurve2.IsNull (), "cast to base class const reference");
 
   Handle(Geom_Line) qLine = cpLine; // constructor from const pointer -- could be made explicit...
+  
+  // check that compiler keeps temporary object referenced by local variable
+  const Handle(Geom_Line)& aTmpRef (Handle(Geom_Line)::DownCast (aCurve2));
+  // note that here and in similar checks below we use comparison of pointers instead 
+  // of checking handle for Null, since such check may fail if temporary object is
+  // destroyed prematurely and its location is used for other object. 
+  CHECK(theDI, aTmpRef.get() == aCurve2.get(),  "local reference of to temporary handle object");
 
-  // check whether compiler will destroy reference to temporary handle
-  const Handle(Geom_Curve)& aTmpRef (Handle(Geom_Line)::DownCast (aCurve2));
-  CHECK(theDI, ! aTmpRef.IsNull(),  "local reference of handle to base type to temporary handle object");
+  // check undesired but logical situation: 
+  // compiler does not keep temporary object referenced by local variable of base type;
+  // here compiler does not recognize that it should keep the temporary object because handle
+  // classes do not inherit each other and they use hard cast for references to simulate inheritance
+  const Handle(Geom_Curve)& aTmpRefBase (Handle(Geom_Line)::DownCast (aCurve2));
+  CHECK(theDI, aTmpRefBase.get() != aCurve2.get(),  "local reference to temporary handle object (base type)");
 
   // check operations with Handle_* classes
   Handle(Geom_Line) hLine = aLine;
@@ -159,9 +176,22 @@ static Standard_Integer QAHandleOps (Draw_Interpretor& theDI,
 
   Handle_Geom_Line qhLine = cpLine; // constructor from const pointer -- could be made explicit...
 
-  // check whether compiler will destroy reference to temporary handle
-  const Handle_Geom_Curve& hTmpRef (Handle(Geom_Line)::DownCast (aCurve2));
-  CHECK(theDI, ! hTmpRef.IsNull(),  "local reference of handle to base type to temporary handle object");
+  // check that compiler keeps temporary object referenced by local variable
+  const Handle_Geom_Line& hTmpRef (Handle(Geom_Line)::DownCast (aCurve2));
+  CHECK(theDI, hTmpRef.get() == aCurve2.get(),  "local reference to temporary object (Handle_)");
+
+  // check lifetime of temporary object referenced by local variable (base type)
+  const Handle_Geom_Curve& hTmpRefBase (Handle(Geom_Line)::DownCast (aCurve2));
+  // here we have different behavior for MSVC 2013+ where Handle_ is a class
+  // (compiler creates temporary object of approprtiate type and keeps it living
+  // until the reference is valid) and other compilers where Handle_ is
+  // typedef to handle<> (compiler does not know that the reference that is being
+  // assigned is pointing to temporary object, due to involved type cast operation)
+#if (defined(_MSC_VER) && _MSC_VER >= 1800) 
+  CHECK(theDI, hTmpRefBase.get() == aCurve2.get(),  "local reference to temporary handle object (Handle_ to base type)");
+#else
+  CHECK(theDI, hTmpRefBase.get() != aCurve2.get(),  "local reference to temporary handle object (Handle_ to base type)");
+#endif
 
   Handle(Geom_Surface) aSurf;
   (void)aSurf;
