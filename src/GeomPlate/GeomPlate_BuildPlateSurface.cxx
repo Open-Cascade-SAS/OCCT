@@ -14,12 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-// Modification de l'interface
-// Amelioration de l'aglo de remplissage
-// 29-09-97 ; jct; correction du calcul des points doublons (tol 2d et non 3d)
-// 16-10-97 ; jct; on remet un Raise au lieu du cout sous debug (sinon plantage dans k1fab)
-// 03-11-97 ; jct; plus de reference a BRepAdaptor et BRepTools
-
 #include <Adaptor2d_HCurve2d.hxx>
 #include <Adaptor3d_HCurve.hxx>
 #include <Adaptor3d_CurveOnSurface.hxx>
@@ -75,25 +69,22 @@
 #include <Message_ProgressIndicator.hxx>
 
 #include <stdio.h>
-// pour la verif G2
-// pour les intersection entre les courbes
-// projection
+
 #ifdef DRAW
 #include <DrawTrSurf.hxx>
 #include <Draw_Marker3D.hxx>
 #include <Draw_Marker2D.hxx>
 #include <Draw.hxx>
-// 0 : Pas de display
-// 1 : Display des Geometries et controle intermediaire
-// 2 : Display du nombre de contrainte par courbe + Intersection
-// 3 : Dump des contraintes dans Plate
+// 0 : No display
+// 1 : Display of Geometries and intermediary control 
+// 2 : Display of the number of constraints by curve + Intersection
+// 3 : Dump of constraints in Plate
 static Standard_Integer NbPlan = 0;
 //static Standard_Integer NbCurv2d = 0;
 static Standard_Integer NbMark = 0;
 static Standard_Integer NbProj = 0;
 #endif
 
-// pour mes tests
 #ifdef OCCT_DEBUG
 #include <OSD_Chronometer.hxx>
 #include <Geom_Surface.hxx>
@@ -102,12 +93,12 @@ static Standard_Integer Affich=0;
 
 //\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//
 //      =========================================================
-//                   C O N S T R U C T E U R S
+//                   C O N S T R U C T O R S
 //      =========================================================
 //\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//
 
 //---------------------------------------------------------
-//    Constructeur compatible avec l'ancienne version
+//    Constructor compatible with the old version
 //---------------------------------------------------------
 GeomPlate_BuildPlateSurface::GeomPlate_BuildPlateSurface ( 
 		    const Handle(TColStd_HArray1OfInteger)& NPoints,
@@ -129,9 +120,8 @@ myTol2d(Tol2d),
 myTol3d(Tol3d),
 myTolAng(TolAng),
 myNbBounds(0)
-{ Standard_Integer NTCurve=TabCurve->Length();// Nombre de contraintes lineaires
-  myNbPtsOnCur = 0; // Debrayage du calcul du nombre de points
-                    // en fonction de la longueur
+{ Standard_Integer NTCurve=TabCurve->Length();// Number of linear constraints
+  myNbPtsOnCur = 0; // Different calculation of the number of points depending on the length
   myLinCont = new GeomPlate_HSequenceOfCurveConstraint;
   myPntCont = new GeomPlate_HSequenceOfPointConstraint;
   if (myNbIter<1)
@@ -150,7 +140,7 @@ myNbBounds(0)
     throw Standard_ConstructionError("GeomPlate : the resolution is impossible if the number of constraints points is 0");
   if (myDegree<2) 
     throw Standard_ConstructionError("GeomPlate ; the degree resolution must be upper of 2");
-  // Remplissage des champs  passage de l'ancien constructeur au nouveau
+  // Filling fields passing from the old constructor to the new one
   for(i=1;i<=NTCurve;i++) 
     { Handle(GeomPlate_CurveConstraint) Cont = new GeomPlate_CurveConstraint 
                                                ( TabCurve->Value(i),
@@ -165,7 +155,7 @@ myNbBounds(0)
 }
 
 //------------------------------------------------------------------
-// Constructeur avec surface d'init et degre de resolution de plate
+// Constructor with initial surface and degree
 //------------------------------------------------------------------
 GeomPlate_BuildPlateSurface::GeomPlate_BuildPlateSurface ( 
                              const Handle(Geom_Surface)& Surf,
@@ -190,7 +180,7 @@ myNbBounds(0)
 {   if (myNbIter<1)
     throw Standard_ConstructionError("GeomPlate :  Number of iteration must be >= 1");
  if (myDegree<2) 
-     throw Standard_ConstructionError("GeomPlate : the degree resolution must be upper of 2");
+     throw Standard_ConstructionError("GeomPlate : the degree must be above 2");
    myLinCont = new GeomPlate_HSequenceOfCurveConstraint;
    myPntCont = new GeomPlate_HSequenceOfPointConstraint;
   mySurfInitIsGive=Standard_True;
@@ -201,7 +191,7 @@ myNbBounds(0)
 
 
 //---------------------------------------------------------
-// Constructeur avec degre de resolution de plate
+// Constructor with degree
 //---------------------------------------------------------
 GeomPlate_BuildPlateSurface::GeomPlate_BuildPlateSurface (
                              const Standard_Integer Degree,
@@ -235,27 +225,28 @@ myNbBounds(0)
 
 //\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//
 //      =========================================================
-//               M E T H O D E S  P U B L I Q U E S    
+//                     P U B L I C  M E T H O D S    
 //      =========================================================
 //\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//
  
 
 
 //-------------------------------------------------------------------------
-// Fonction : TrierTab, Fonction interne, ne fait partie de la classe
+// Function : TrierTab, internal Function, does not belong to class
 //-------------------------------------------------------------------------
-// Reordonne le tableau des permutations
-// Apres l'appel a CourbeJointive l'ordre des courbes est modifie
-// Ex : ordre init des courbe ==> A B C D E F
-//      Dans TabInit on note ==> 1 2 3 4 5 6 
-//      apres CourbeJointive ==> A E C B D F
+// Reorder the table of transformations
+// After the call of CourbeJointive the order of curves is modified
+// Ex : initial order of curves ==> A B C D E F
+//      In TabInit we note ==> 1 2 3 4 5 6 
+//      after CourbeJointive ==> A E C B D F
 //            TabInit ==> 1 5 3 2 4 6
-//      apres TrierTab le Tableau contient ==> 1 4 3 5 2 6
-// On peut ainsi acceder a la 2eme courbe en prenant TabInit[2] 
-// c'est a dire la 4eme du tableau des courbes classees
+//      after TrierTab the Table contains ==> 1 4 3 5 2 6
+// It is also possible to access the 2nd curve by taking TabInit[2] 
+// i.e. the 4th from the table of classified curves
 //-------------------------------------------------------------------------
-void TrierTab(Handle(TColStd_HArray1OfInteger)& Tab)
-{ // Trie le tableau des permutations pour retrouver l'ordre initial
+static void TrierTab(Handle(TColStd_HArray1OfInteger)& Tab)
+{
+  // Parse the table of transformations to find the initial order
   Standard_Integer Nb=Tab->Length();
   TColStd_Array1OfInteger TabTri(1,Nb); 
   for (Standard_Integer i=1;i<=Nb;i++)
@@ -264,10 +255,11 @@ void TrierTab(Handle(TColStd_HArray1OfInteger)& Tab)
 }
 
 //---------------------------------------------------------
-// Fonction : ProjectCurve
+// Function : ProjectCurve
 //---------------------------------------------------------
 Handle(Geom2d_Curve)  GeomPlate_BuildPlateSurface::ProjectCurve(const Handle(Adaptor3d_HCurve)& Curv) 
-{ // Projection d'une courbe sur un plan
+{
+ // Project a curve on a plane
  Handle(Geom2d_Curve) Curve2d ;
  Handle(GeomAdaptor_HSurface) hsur = new GeomAdaptor_HSurface(mySurfInit);
  gp_Pnt2d P2d;
@@ -285,16 +277,16 @@ Handle(Geom2d_Curve)  GeomPlate_BuildPlateSurface::ProjectCurve(const Handle(Ada
    {
      if (Projector.IsSinglePnt(1, P2d))
        {
-	 //solution ponctuelles
+	 // solution in a point
 	 TColgp_Array1OfPnt2d poles(1, 2);
 	 poles.Init(P2d);
 	 Curve2d = new (Geom2d_BezierCurve) (poles);
        }
      else
        {
-	 Curve2d.Nullify(); // Pas de solution continue
+	 Curve2d.Nullify(); // No continuous solution
 #ifdef OCCT_DEBUG
-	 cout << "BuildPlateSurace :: Pas de projection continue" << endl;
+	 cout << "BuildPlateSurace :: No continuous projection" << endl;
 #endif
        }
    }
@@ -324,10 +316,11 @@ Handle(Geom2d_Curve)  GeomPlate_BuildPlateSurface::ProjectCurve(const Handle(Ada
  return Curve2d;
 }
 //---------------------------------------------------------
-// Fonction : ProjectedCurve
+// Function : ProjectedCurve
 //---------------------------------------------------------
 Handle(Adaptor2d_HCurve2d)  GeomPlate_BuildPlateSurface::ProjectedCurve( Handle(Adaptor3d_HCurve)& Curv) 
-{ // Projection d'une courbe sur la surface d'init
+{
+ // Projection of a curve on the initial surface
 
  Handle(GeomAdaptor_HSurface) hsur = new GeomAdaptor_HSurface(mySurfInit);
 
@@ -337,9 +330,9 @@ Handle(Adaptor2d_HCurve2d)  GeomPlate_BuildPlateSurface::ProjectedCurve( Handle(
 
  if (Projector.NbCurves() != 1) {
      
-     HProjector.Nullify(); // Pas de solution continue
+     HProjector.Nullify(); // No continuous solution
 #ifdef OCCT_DEBUG
-     cout << "BuildPlateSurace :: Pas de projection continue" << endl;
+     cout << "BuildPlateSurace :: No continuous projection" << endl;
 #endif
    }
  else
@@ -359,9 +352,9 @@ Handle(Adaptor2d_HCurve2d)  GeomPlate_BuildPlateSurface::ProjectedCurve( Handle(
      }
      else
      {
-         HProjector.Nullify(); // Pas de solution continue
+         HProjector.Nullify(); // No continuous solution
 #ifdef OCCT_DEBUG
-         cout << "BuildPlateSurace :: Pas de projection complete" << endl;
+         cout << "BuildPlateSurace :: No complete projection" << endl;
 #endif
      }
    }
@@ -369,9 +362,9 @@ Handle(Adaptor2d_HCurve2d)  GeomPlate_BuildPlateSurface::ProjectedCurve( Handle(
 }
 
 //---------------------------------------------------------
-// Fonction : ProjectPoint
+// Function : ProjectPoint
 //---------------------------------------------------------
-// Projete une point sur la surface d'init
+// Projects a point on the initial surface
 //---------------------------------------------------------
 gp_Pnt2d GeomPlate_BuildPlateSurface::ProjectPoint(const gp_Pnt &p3d)
 { Extrema_POnSurf P;
@@ -399,13 +392,13 @@ gp_Pnt2d GeomPlate_BuildPlateSurface::ProjectPoint(const gp_Pnt &p3d)
 }
 //\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//
 //      =========================================================
-//               M E T H O D E S  P U B L I Q U E S    
+//               P U B L I C   M E T H O D S    
 //      =========================================================
 //\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//
 //---------------------------------------------------------
-// Fonction : Init
+// Function : Init
 //---------------------------------------------------------
-// Initialise les contraintes lineaires et ponctuelles
+// Initializes linear and point constraints
 //---------------------------------------------------------
 void GeomPlate_BuildPlateSurface::Init()
 { myLinCont->Clear();
@@ -415,9 +408,9 @@ void GeomPlate_BuildPlateSurface::Init()
 }
 
 //---------------------------------------------------------
-// Fonction : LoadInitSurface
+// Function : LoadInitSurface
 //---------------------------------------------------------
-// Charge la surface initiale
+// Loads the initial surface
 //---------------------------------------------------------
 void GeomPlate_BuildPlateSurface::LoadInitSurface(const Handle(Geom_Surface)& Surf)
 { mySurfInit = Surf;
@@ -425,10 +418,10 @@ void GeomPlate_BuildPlateSurface::LoadInitSurface(const Handle(Geom_Surface)& Su
 }
 
 //---------------------------------------------------------
-//fonction : Add
+// Function : Add
 //---------------------------------------------------------
 //---------------------------------------------------------
-// Ajout d'une contrainte lineaire
+// Adds a linear constraint
 //---------------------------------------------------------
 void GeomPlate_BuildPlateSurface::
                   Add(const Handle(GeomPlate_CurveConstraint)& Cont)
@@ -441,10 +434,10 @@ void GeomPlate_BuildPlateSurface::SetNbBounds( const Standard_Integer NbBounds )
 }
 
 //---------------------------------------------------------
-//fonction : Add
+// Function : Add
 //---------------------------------------------------------
 //---------------------------------------------------------
-// Ajout d'une contrainte ponctuelle
+// Adds a point constraint
 //---------------------------------------------------------
 void GeomPlate_BuildPlateSurface::
                   Add(const Handle(GeomPlate_PointConstraint)& Cont)
@@ -453,13 +446,13 @@ void GeomPlate_BuildPlateSurface::
 }
 
 //---------------------------------------------------------
-//fonction : Perform
-// Calcul la surface de remplissage avec les contraintes chargees
+// Function : Perform
+// Calculates the surface filled with loaded constraints
 //---------------------------------------------------------
 void GeomPlate_BuildPlateSurface::Perform(const Handle(Message_ProgressIndicator) & aProgress)
 { 
 #ifdef OCCT_DEBUG
-  // Chronmetrage
+  // Timing
   OSD_Chronometer Chrono;
   Chrono.Reset();
   Chrono.Start();
@@ -470,11 +463,10 @@ void GeomPlate_BuildPlateSurface::Perform(const Handle(Message_ProgressIndicator
 
   myPlate.Init();
   //=====================================================================
-  //Declaration des variables.
+  // Declaration of variables.
   //=====================================================================
   Standard_Integer NTLinCont = myLinCont->Length(), 
   NTPntCont = myPntCont->Length(), NbBoucle=0;
-  // La variable  NTPoint peut etre enlevee
   Standard_Boolean Fini=Standard_True;
   if ((NTLinCont + NTPntCont) == 0)
   {
@@ -486,14 +478,14 @@ void GeomPlate_BuildPlateSurface::Perform(const Handle(Message_ProgressIndicator
   }
 
   //======================================================================   
-  // Surface Initiale
+  // Initial Surface 
   //======================================================================
   if (!mySurfInitIsGive)
     ComputeSurfInit(aProgress);
 
   else {
    if (NTLinCont>=2)
-	{ // Tableau des permutations pour conserver l'ordre initial voir TrierTab
+	{ // Table of transformations to preserve the initial order, see TrierTab
 	  myInitOrder = new TColStd_HArray1OfInteger(1,NTLinCont);
 	  for (Standard_Integer l=1;l<=NTLinCont;l++)
 	    myInitOrder->SetValue(l,l);
@@ -503,7 +495,7 @@ void GeomPlate_BuildPlateSurface::Perform(const Handle(Message_ProgressIndicator
 	      cout<<"WARNING : Courbes non jointives a "<<myTol3d<<" pres"<<endl;
 #endif	  
 	    }
-	  TrierTab(myInitOrder); // Reordonne le tableau des permutations
+	  TrierTab(myInitOrder); // Reorder the table of transformations
 	}
    else if(NTLinCont > 0)//Patch
      {
@@ -526,7 +518,7 @@ void GeomPlate_BuildPlateSurface::Perform(const Handle(Message_ProgressIndicator
 		    myTolU,myTolV);
 
   //======================================================================
-  // Projection des courbes
+  // Projection of curves
   //======================================================================
   Standard_Boolean Ok = Standard_True;
   for (Standard_Integer i = 1; i <= NTLinCont; i++)
@@ -592,7 +584,7 @@ void GeomPlate_BuildPlateSurface::Perform(const Handle(Message_ProgressIndicator
     }
 
   //======================================================================
-  // Projection des points
+  // Projection of points
   //======================================================================
   for (Standard_Integer i=1;i<=NTPntCont;i++) {
     if (! myPntCont->Value(i)->HasPnt2dOnSurf()) {
@@ -603,13 +595,13 @@ void GeomPlate_BuildPlateSurface::Perform(const Handle(Message_ProgressIndicator
   }
 
   //======================================================================
-  // Nbre de point par courbe
+  // Number of points by curve
   //======================================================================
   if ((NTLinCont !=0)&&(myNbPtsOnCur!=0)) 
     CalculNbPtsInit();
 
   //======================================================================
-  // Gestion des incompatibilites entre courbes
+  // Management of incompatibilites between curves
   //======================================================================
   Handle(GeomPlate_HArray1OfSequenceOfReal) PntInter;
   Handle(GeomPlate_HArray1OfSequenceOfReal) PntG1G1;
@@ -620,7 +612,7 @@ void GeomPlate_BuildPlateSurface::Perform(const Handle(Message_ProgressIndicator
   }
 
   //======================================================================
-  // Boucle pour obtenir une meilleur surface
+  // Loop to obtain a better surface
   //======================================================================
 
   myFree = !myIsLinear;
@@ -640,24 +632,24 @@ void GeomPlate_BuildPlateSurface::Perform(const Handle(Message_ProgressIndicator
       NbBoucle++;
       if (NTLinCont!=0)
 	{ //====================================================================
-	  // Calcul le nombre de point total et le maximum de points par courbe
+	  // Calculate the total number of points and the maximum of points by curve
 	  //====================================================================
 	  Standard_Integer NPointMax=0;
 	  for (Standard_Integer i=1;i<=NTLinCont;i++) 
 	    if ((myLinCont->Value(i)->NbPoints())>NPointMax)
 	      NPointMax=(Standard_Integer )( myLinCont->Value(i)->NbPoints()); 
 	  //====================================================================
-	  // Discretisation des courbes
+	  // Discretization of curves
 	  //====================================================================
 	  Discretise(PntInter,  PntG1G1);  
 	  //====================================================================
-	  //Preparation des points de contrainte pour plate
+	  // Preparation of constraint points for plate
 	  //====================================================================
 	  LoadCurve( NbBoucle );
 	  if ( myPntCont->Length() != 0)
 	    LoadPoint( NbBoucle );
 	  //====================================================================
-	  //Resolution de la surface
+	  // Construction of the surface
 	  //====================================================================
 
 	  myPlate.SolveTI(myDegree, ComputeAnisotropie(), aProgress);
@@ -670,7 +662,7 @@ void GeomPlate_BuildPlateSurface::Perform(const Handle(Message_ProgressIndicator
           if (!myPlate.IsDone())
           {
 #ifdef OCCT_DEBUG
-            cout << "WARNING : GeomPlate : abort calcul of Plate." << endl;
+            cout << "WARNING : GeomPlate : calculation of Plate failed" << endl;
 #endif
             return;
           }
@@ -684,7 +676,7 @@ void GeomPlate_BuildPlateSurface::Perform(const Handle(Message_ProgressIndicator
 	  if ((NbBoucle >= myNbIter)&&(!Fini))
 	    { 
 #ifdef OCCT_DEBUG
-	      cout<<"Warning objectif non atteint"<<endl;
+	      cout<<"Warning: objective was not reached"<<endl;
 #endif
 	      Fini = Standard_True;
 	    }
@@ -697,7 +689,7 @@ void GeomPlate_BuildPlateSurface::Perform(const Handle(Message_ProgressIndicator
       else
 	{ LoadPoint( NbBoucle );
 	  //====================================================================
-	  //Resolution de la surface
+	  //Construction of the surface
 	  //====================================================================
 	  myPlate.SolveTI(myDegree, ComputeAnisotropie(), aProgress);
 
@@ -709,7 +701,7 @@ void GeomPlate_BuildPlateSurface::Perform(const Handle(Message_ProgressIndicator
           if (!myPlate.IsDone())
           {
 #ifdef OCCT_DEBUG
-            cout << "WARNING : GeomPlate : abort calcul of Plate." << endl;
+            cout << "WARNING : GeomPlate : calculation of Plate failed" << endl;
 #endif
             return;
           }
@@ -722,10 +714,10 @@ void GeomPlate_BuildPlateSurface::Perform(const Handle(Message_ProgressIndicator
           Standard_Real di,an,cu;
           VerifPoints(di,an,cu);
 	}
-    } while (!Fini); // Fin boucle pour meilleur surface
+    } while (!Fini); // End loop for better surface
 #ifdef OCCT_DEBUG
   if (NTLinCont != 0)
-    { cout<<"======== Resultats globaux ==========="<<endl;
+    { cout<<"======== Global results ==========="<<endl;
       cout<<"DistMax="<<myG0Error<<endl;
       if (myG1Error!=0)
 	cout<<"AngleMax="<<myG1Error<<endl; 
@@ -735,14 +727,14 @@ void GeomPlate_BuildPlateSurface::Perform(const Handle(Message_ProgressIndicator
   Chrono.Stop();
   Standard_Real Tps;
   Chrono.Show(Tps);
-  cout<<"*** FIN DE GEOMPLATE ***"<<endl;
-  cout<<"Temps de calcul  : "<<Tps<<endl;
-  cout<<"Nombre de boucle : "<<NbBoucle<<endl;
+  cout<<"*** END OF GEOMPLATE ***"<<endl;
+  cout<<"Time of calculation : "<<Tps<<endl;
+  cout<<"Number of loops : "<<NbBoucle<<endl;
 #endif
 }  
 
 //---------------------------------------------------------
-// fonction : EcartContraintesMIL
+// Function : EcartContraintesMIL
 //---------------------------------------------------------
 void GeomPlate_BuildPlateSurface::
 EcartContraintesMil  ( const Standard_Integer c,
@@ -834,7 +826,7 @@ EcartContraintesMil  ( const Standard_Integer c,
 
 
 //---------------------------------------------------------
-// fonction : Disc2dContour
+// Function : Disc2dContour
 //---------------------------------------------------------
 void GeomPlate_BuildPlateSurface::
                   Disc2dContour ( const Standard_Integer /*nbp*/,
@@ -842,12 +834,12 @@ void GeomPlate_BuildPlateSurface::
 {
 #ifdef OCCT_DEBUG
   if (Seq2d.Length()!=4)
-    cout<<"nbp doit etre egal a 4 pour Disc2dContour"<<endl;
+    cout<<"Number of points should be equal to 4 for Disc2dContour"<<endl;
 #endif
-  //  initialisation
+  //  initialization
   Seq2d.Clear();
   
-  //  echantillonnage en "cosinus" + 3 points sur chaque intervalle
+  //  sampling in "cosine" + 3 points on each interval
   Standard_Integer NTCurve = myLinCont->Length();
   Standard_Integer NTPntCont = myPntCont->Length();
   gp_Pnt2d P2d;
@@ -873,7 +865,7 @@ void GeomPlate_BuildPlateSurface::
    Handle(GeomPlate_CurveConstraint) LinCont = myLinCont->Value(i);
    if (LinCont->Order()!=-1) 
      { Standard_Integer NbPt=myParCont->Value(i).Length();
-       // premier point de contrainte (j=0)
+       // first point of constraint (j=0)
        if (!LinCont->ProjectedCurve().IsNull())
 	   P2d = LinCont->ProjectedCurve()->Value(myParCont->Value(i).Value(1));
 
@@ -910,7 +902,7 @@ void GeomPlate_BuildPlateSurface::
 	   UV.SetX(P2d.Coord(1));
 	   UV.SetY(P2d.Coord(2));
 	   Seq2d.Append(UV);
-	   // point milieu precedent
+	   // point 1/2 previous
            if (!LinCont->ProjectedCurve().IsNull())
 	       P2d = LinCont->ProjectedCurve()->Value((Ujp1+Uj)/2);           
 
@@ -928,7 +920,7 @@ void GeomPlate_BuildPlateSurface::
 	   UV.SetX(P2d.Coord(1));
 	   UV.SetY(P2d.Coord(2));
 	   Seq2d.Append(UV);
-	   // point 3/4 precedent
+	   //  point 3/4 previous 
            if (!LinCont->ProjectedCurve().IsNull())
 	       P2d = LinCont->ProjectedCurve()->Value((3*Ujp1+Uj)/4);
 
@@ -946,7 +938,7 @@ void GeomPlate_BuildPlateSurface::
 	   UV.SetX(P2d.Coord(1));
 	   UV.SetY(P2d.Coord(2));
 	   Seq2d.Append(UV);
-	   // point de contrainte courant
+	   // current constraint point
            if (!LinCont->ProjectedCurve().IsNull())
 	       P2d = LinCont->ProjectedCurve()->Value(Ujp1);
 
@@ -970,7 +962,7 @@ void GeomPlate_BuildPlateSurface::
 }
 
 //---------------------------------------------------------
-// fonction : Disc3dContour
+// Function : Disc3dContour
 //---------------------------------------------------------
 void GeomPlate_BuildPlateSurface::
 Disc3dContour (const Standard_Integer /*nbp*/,
@@ -979,13 +971,13 @@ Disc3dContour (const Standard_Integer /*nbp*/,
 {
 #ifdef OCCT_DEBUG
   if (Seq3d.Length()!=4)
-    cout<<"nbp doit etre egal a 4 pour Disc3dContour"<<endl;
+    cout<<"nbp should be equal to 4 for Disc3dContour"<<endl;
   if (iordre!=0&&iordre!=1)
-    cout<<"iordre incorrect pour Disc3dContour"<<endl;
+    cout<<"incorrect order for Disc3dContour"<<endl;
 #endif
-  //  initialisation
+  //  initialization
   Seq3d.Clear();
-  //  echantillonnage en "cosinus" + 3 points sur chaque intervalle
+  //  sampling in "cosine" + 3 points on each interval
   Standard_Real u1,v1,u2,v2;
   mySurfInit->Bounds(u1,v1,u2,v2);
   GeomAdaptor_Surface Surf(mySurfInit);
@@ -1023,8 +1015,8 @@ Disc3dContour (const Standard_Integer /*nbp*/,
     if (myLinCont->Value(i)->Order()!=-1) 
       
       { Standard_Integer NbPt=myParCont->Value(i).Length();;
-	// premier point de contrainte (j=0)
-	//  Standard_Integer NbPt=myParCont->Length();
+	// first constraint point (j=0)
+	// Standard_Integer NbPt=myParCont->Length();
 	if (iordre==0) {
 	  myLinCont->Value(i)->D0(myParCont->Value(i).Value(1),P3d);
 	  Pos.SetX(P3d.X());
@@ -1045,25 +1037,25 @@ Disc3dContour (const Standard_Integer /*nbp*/,
 	  {  Standard_Real Uj=myParCont->Value(i).Value(j), 
 	     Ujp1=myParCont->Value(i).Value(j+1);
 	     if (iordre==0) {
-	       // point 1/4 precedent
+	       // point 1/4 previous
 	       myLinCont->Value(i)->D0((Ujp1+3*Uj)/4,P3d);
 	       Pos.SetX(P3d.X());
 	       Pos.SetY(P3d.Y());
 	       Pos.SetZ(P3d.Z());
 	       Seq3d.Append(Pos);
-	       // point milieu precedent
+	       // point 1/2 previous
 	       myLinCont->Value(i)->D0((Ujp1+Uj)/2,P3d);
 	       Pos.SetX(P3d.X());
 	       Pos.SetY(P3d.Y());
 	       Pos.SetZ(P3d.Z());
 	       Seq3d.Append(Pos);
-	       // point 3/4 precedent
+	       // point 3/4 previous
 	       myLinCont->Value(i)->D0((3*Ujp1+Uj)/4,P3d);
 	       Pos.SetX(P3d.X());
 	       Pos.SetY(P3d.Y());
 	       Pos.SetZ(P3d.Z());
 	       Seq3d.Append(Pos);
-	       // point de contrainte courant
+	       // current constraint point
 	       myLinCont->Value(i)->D0(Ujp1,P3d);
 	       Pos.SetX(P3d.X());
 	       Pos.SetY(P3d.Y());
@@ -1071,28 +1063,28 @@ Disc3dContour (const Standard_Integer /*nbp*/,
 	       Seq3d.Append(Pos);
 	     }
 	     else {
-	       // point 1/4 precedent
+	       // point 1/4 previous
 	       myLinCont->Value(i)->D1((Ujp1+3*Uj)/4,P3d,v1h,v2h);
 	       v3h=v1h^v2h;
 	       Pos.SetX(v3h.X());
 	       Pos.SetY(v3h.Y());
 	       Pos.SetZ(v3h.Z());
 	       Seq3d.Append(Pos);
-	       // point milieu precedent
+	       // point 1/2 previous
 	       myLinCont->Value(i)->D1((Ujp1+Uj)/2,P3d,v1h,v2h);
 	       v3h=v1h^v2h;
 	       Pos.SetX(v3h.X());
 	       Pos.SetY(v3h.Y());
 	       Pos.SetZ(v3h.Z());
 	       Seq3d.Append(Pos);
-	       // point 3/4 precedent
+	       // point 3/4 previous
 	       myLinCont->Value(i)->D1((3*Ujp1+Uj)/4,P3d,v1h,v2h);
 	       v3h=v1h^v2h;
 	       Pos.SetX(v3h.X());
 	       Pos.SetY(v3h.Y());
 	       Pos.SetZ(v3h.Z());
 	       Seq3d.Append(Pos);
-	       // point de contrainte courant
+	       // current constraint point
 	       myLinCont->Value(i)->D1(Ujp1,P3d,v1h,v2h);
 	       v3h=v1h^v2h;
 	       Pos.SetX(v3h.X());
@@ -1107,7 +1099,7 @@ Disc3dContour (const Standard_Integer /*nbp*/,
 
 
 //---------------------------------------------------------
-// fonction : IsDone
+// Function : IsDone
 //---------------------------------------------------------
 Standard_Boolean GeomPlate_BuildPlateSurface::IsDone() const
 { return myPlate.IsDone();
@@ -1116,14 +1108,14 @@ Standard_Boolean GeomPlate_BuildPlateSurface::IsDone() const
 
 
 //---------------------------------------------------------
-// fonction : Surface
+// Function : Surface
 //---------------------------------------------------------
 Handle(GeomPlate_Surface) GeomPlate_BuildPlateSurface::Surface() const
 { return myGeomPlateSurface ;
 }
 
 //---------------------------------------------------------
-// fonction : SurfInit
+// Function : SurfInit
 //---------------------------------------------------------
 Handle(Geom_Surface) GeomPlate_BuildPlateSurface::SurfInit() const
 { return mySurfInit ;
@@ -1131,7 +1123,7 @@ Handle(Geom_Surface) GeomPlate_BuildPlateSurface::SurfInit() const
 
 
 //---------------------------------------------------------
-// fonction : Sense
+// Function : Sense
 //---------------------------------------------------------
 Handle(TColStd_HArray1OfInteger) GeomPlate_BuildPlateSurface::Sense() const
 { Standard_Integer NTCurve = myLinCont->Length();
@@ -1145,7 +1137,7 @@ Handle(TColStd_HArray1OfInteger) GeomPlate_BuildPlateSurface::Sense() const
 
 
 //---------------------------------------------------------
-// fonction : Curve2d
+// Function : Curve2d
 //---------------------------------------------------------
 Handle(TColGeom2d_HArray1OfCurve) GeomPlate_BuildPlateSurface::Curves2d() const
 { Standard_Integer NTCurve = myLinCont->Length();
@@ -1160,7 +1152,7 @@ Handle(TColGeom2d_HArray1OfCurve) GeomPlate_BuildPlateSurface::Curves2d() const
 
 
 //---------------------------------------------------------
-//fonction : Order
+// Function : Order
 //---------------------------------------------------------
 Handle(TColStd_HArray1OfInteger) GeomPlate_BuildPlateSurface::Order() const
 { Handle(TColStd_HArray1OfInteger) result=
@@ -1172,21 +1164,21 @@ Handle(TColStd_HArray1OfInteger) GeomPlate_BuildPlateSurface::Order() const
 
 
 //---------------------------------------------------------
-// fonction : G0Error
+// Function : G0Error
 //---------------------------------------------------------
 Standard_Real GeomPlate_BuildPlateSurface::G0Error() const
 { return myG0Error;
 }
 
 //---------------------------------------------------------
-// fonction : G1Error
+// Function : G1Error
 //---------------------------------------------------------
 Standard_Real GeomPlate_BuildPlateSurface::G1Error() const
 { return myG1Error;
 }
 
 //---------------------------------------------------------
-// fonction : G2Error
+// Function : G2Error
 //---------------------------------------------------------
 Standard_Real GeomPlate_BuildPlateSurface::G2Error() const
 { return myG2Error;
@@ -1256,15 +1248,15 @@ Handle(GeomPlate_PointConstraint) GeomPlate_BuildPlateSurface::PointConstraint( 
 }
 //\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//
 //      =========================================================
-//                  M E T H O D E S  P R I V E S    
+//                  P R I V A T E    M E T H O D S     
 //      =========================================================
 //\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//
 
 //=======================================================================
-// function : CourbeJointive
-// purpose  : Effectue un chainage des courbes pour pouvoir calculer 
-//            la surface d'init avec la methode du flux maxi.
-//            Retourne vrai si il s'agit d'un contour ferme.
+// Function : CourbeJointive
+// Purpose  : Create a chain of curves to calculate the  
+//            initial surface with the method of max flow.
+//            Return true if it is a closed contour.
 //=======================================================================
 
 Standard_Boolean GeomPlate_BuildPlateSurface::
@@ -1305,7 +1297,7 @@ Standard_Boolean GeomPlate_BuildPlateSurface::
 		myLinCont->SetValue(j+1,myLinCont->Value(i));
 		myLinCont->SetValue(i,tampon);
 		Standard_Integer Tmp=myInitOrder->Value(j+1);
-		//Voir fonction TrierTab pour le fonctionnement de myInitOrder 
+		// See function TrierTab for the functioning of myInitOrder 
 		myInitOrder->SetValue(j+1,myInitOrder->Value(i));  
 		myInitOrder->SetValue(i,Tmp);
 		
@@ -1325,7 +1317,7 @@ Standard_Boolean GeomPlate_BuildPlateSurface::
 		  myLinCont->SetValue(j+1,myLinCont->Value(i));
 		  myLinCont->SetValue(i,tampon);
 		  Standard_Integer Tmp=myInitOrder->Value(j+1);
-		  //Voir fonction TrierTab pour le fonctionnement de myInitOrder 
+		  // See function TrierTab for the functioning of myInitOrder 
 		  myInitOrder->SetValue(j+1,myInitOrder->Value(i));
 		  myInitOrder->SetValue(i,Tmp);
 		};
@@ -1360,11 +1352,11 @@ Standard_Boolean GeomPlate_BuildPlateSurface::
 
 
 //-------------------------------------------------------------------------
-// fonction : ComputeSurfInit
+// Function : ComputeSurfInit
 //-------------------------------------------------------------------------
-// Calcul la surface d'init soit par la methode du flux maxi soit par
-// la methode du plan d'inertie si le contour n'est pas ferme ou si
-// il y a des contraintes ponctuelles
+// Calculate the initial surface either by the method of max flow or by
+// the method of the plane of inertia if the contour is not closed or if
+// there are point constraints.
 //-------------------------------------------------------------------------
 
 void GeomPlate_BuildPlateSurface::ComputeSurfInit(const Handle(Message_ProgressIndicator) & aProgress)
@@ -1373,9 +1365,9 @@ void GeomPlate_BuildPlateSurface::ComputeSurfInit(const Handle(Message_ProgressI
   Standard_Boolean isHalfSpace = Standard_True;
   Standard_Real LinTol = 0.001, AngTol = 0.001; //AngTol = 0.0001; //LinTol = 0.0001
   
-  // Option pour le calcul du plan initial
+  // Option to calculate the initial plane
   Standard_Integer NTLinCont = myLinCont->Length(), NTPntCont = myPntCont->Length();
-  // Tableau des permutation pour conserver l'ordre initial voir TrierTab
+  // Table of transformation to preserve the initial order see TrierTab
   if (NTLinCont != 0) {
     myInitOrder = new TColStd_HArray1OfInteger(1,NTLinCont);
     for (Standard_Integer i = 1; i <= NTLinCont; i++)
@@ -1386,7 +1378,7 @@ void GeomPlate_BuildPlateSurface::ComputeSurfInit(const Handle(Message_ProgressI
   if (CourbeJoint && IsOrderG1())
     {
       nopt = 3;
-      // Tableau contenant le nuage de point pour le calcul du plan
+      // Table contains the cloud of points for calculation of the plane
       Standard_Integer  NbPoint = 20, Discr = NbPoint/4, pnum = 0;
       Handle( TColgp_HArray1OfPnt ) Pts = new TColgp_HArray1OfPnt( 1, (NbPoint+1)*NTLinCont+NTPntCont );
       TColgp_SequenceOfVec Vecs, NewVecs;
@@ -1421,8 +1413,8 @@ void GeomPlate_BuildPlateSurface::ComputeSurfInit(const Handle(Message_ProgressI
 	    }
 	  
 	  for (Standard_Integer j = 0; j <= NbPoint; j++)
-	    { // Nombre de point par courbe = 20
-	      // Repartition lineaire
+	    { // Number of points per curve = 20
+	      // Linear distribution
 	      Standard_Real Inter = j*Uif/(NbPoint);
 	      if (Order < GeomAbs_G1 || j % Discr != 0)
 		myLinCont->Value(i)->D0( Uinit+Inter, Pts->ChangeValue(++pnum) );
@@ -1515,7 +1507,7 @@ void GeomPlate_BuildPlateSurface::ComputeSurfInit(const Handle(Message_ProgressI
 	      GeomPlate_BuildAveragePlane BAP( Vecs, Pts );
 	      Standard_Real u1,u2,v1,v2;
 	      BAP.MinMaxBox(u1,u2,v1,v2);
-	      // On agrandit le bazar pour les projections
+	      // The space is greater for projections
 	      Standard_Real du = u2 - u1;
 	      Standard_Real dv = v2 - v1;
 	      u1 -= du; u2 += du; v1 -= dv; v2 += dv;
@@ -1533,16 +1525,16 @@ void GeomPlate_BuildPlateSurface::ComputeSurfInit(const Handle(Message_ProgressI
     } //if (NTLinCont != 0 && (CourbeJoint = CourbeJointive( myTol3d )) && IsOrderG1())
 
   if (NTLinCont != 0)
-    TrierTab( myInitOrder ); // Reordonne le tableau des permutations
+    TrierTab( myInitOrder ); // Reorder the table of transformations 
   
   if (nopt != 3)
     {
       if ( NTPntCont != 0)
-	nopt = 1;  //Calcul par la methode du plan d'inertie
+	nopt = 1;  //Calculate by the method of plane of inertia
       else if (!CourbeJoint || NTLinCont != myNbBounds)
 	{//    throw Standard_Failure("Curves are not joined");
 #ifdef OCCT_DEBUG	    
-	  cout<<"WARNING : Courbes non jointives a "<<myTol3d<<" pres"<<endl;
+	  cout << "WARNING : Curves are non-adjacent with tolerance " << myTol3d << endl;
 #endif	  
 	  nopt = 1;
 	}
@@ -1559,7 +1551,7 @@ void GeomPlate_BuildPlateSurface::ComputeSurfInit(const Handle(Message_ProgressI
 	    NbPoint=10;
 	  Npt+=NbPoint;
 	}
-      // Tableau contenant le nuage de point pour le calcul du plan
+      // Table containing a cloud of points for calculation of the plane
       Handle(TColgp_HArray1OfPnt) Pts = new TColgp_HArray1OfPnt(1,20*NTLinCont+NTPntCont);
       Standard_Integer  NbPoint=20;
       Standard_Real Uinit,Ufinal, Uif;
@@ -1572,8 +1564,8 @@ void GeomPlate_BuildPlateSurface::ComputeSurfInit(const Handle(Message_ProgressI
 	      Uif = -Uif;
 	    }
 	  for (Standard_Integer j=0; j<NbPoint; j++)
-	    { // Nombre de point par courbe = 20
-	      // Repartition lineaire
+	    { // Number of points per curve = 20
+	      // Linear distribution
 	      Standard_Real Inter=j*Uif/(NbPoint);
 	      gp_Pnt P;
 	      myLinCont->Value(i)->D0(Uinit+Inter,P); 
@@ -1598,7 +1590,7 @@ void GeomPlate_BuildPlateSurface::ComputeSurfInit(const Handle(Message_ProgressI
       }
       Standard_Real u1,u2,v1,v2;
       BAP.MinMaxBox(u1,u2,v1,v2);
-      // On agrandit le bazar pour les projections
+      // The space is greater for projections
       Standard_Real du = u2 - u1;
       Standard_Real dv = v2 - v1;
       u1 -= du; u2 += du; v1 -= dv; v2 += dv;
@@ -1684,7 +1676,7 @@ void GeomPlate_BuildPlateSurface::ComputeSurfInit(const Handle(Message_ProgressI
 			myTolU,myTolV);
 
       //======================================================================
-      // Projection des courbes
+      // Projection of curves
       //======================================================================
       Standard_Integer i;
       for (i = 1; i <= NTLinCont; i++)
@@ -1692,7 +1684,7 @@ void GeomPlate_BuildPlateSurface::ComputeSurfInit(const Handle(Message_ProgressI
 	  myLinCont->ChangeValue(i)->SetCurve2dOnSurf(ProjectCurve(myLinCont->Value(i)->Curve3d()));
 
       //======================================================================
-      // Projection des points
+      // Projection of points
       //======================================================================
       for (i = 1; i<=NTPntCont; i++)
 	{ gp_Pnt P;
@@ -1702,13 +1694,13 @@ void GeomPlate_BuildPlateSurface::ComputeSurfInit(const Handle(Message_ProgressI
 	}
 
       //======================================================================
-      // Nbre de point par courbe
+      // Number of points by curve
       //======================================================================
       if ((NTLinCont !=0)&&(myNbPtsOnCur!=0)) 
 	CalculNbPtsInit();
 
       //======================================================================
-      // Gestion des incompatibilites entre courbes
+      // Management of incompatibilities between curves
       //======================================================================
       Handle(GeomPlate_HArray1OfSequenceOfReal) PntInter;
       Handle(GeomPlate_HArray1OfSequenceOfReal) PntG1G1;
@@ -1720,17 +1712,17 @@ void GeomPlate_BuildPlateSurface::ComputeSurfInit(const Handle(Message_ProgressI
 	}
 
       //====================================================================
-      // Discretisation des courbes
+      // Discretization of curves
       //====================================================================
       Discretise(PntInter,  PntG1G1);  
       //====================================================================
-      //Preparation des points de contrainte pour plate
+      //Preparation of points of constraint for plate
       //====================================================================
       LoadCurve( 0, 0 );
       if (myPntCont->Length() != 0)
 	LoadPoint( 0, 0 );
       //====================================================================
-      //Resolution de la surface
+      // Construction of the surface
       //====================================================================
       myPlate.SolveTI(2, ComputeAnisotropie(), aProgress);
       if (!aProgress.IsNull() && aProgress->UserBreak())
@@ -1741,7 +1733,7 @@ void GeomPlate_BuildPlateSurface::ComputeSurfInit(const Handle(Message_ProgressI
       if (!myPlate.IsDone())
       {
 #ifdef OCCT_DEBUG
-        cout << "WARNING : GeomPlate : abort calcul of Plate." << endl;
+        cout << "WARNING : GeomPlate : calculation of Plate failed" << endl;
 #endif
         return;
       }
@@ -1775,11 +1767,11 @@ void GeomPlate_BuildPlateSurface::ComputeSurfInit(const Handle(Message_ProgressI
 }
 
 //---------------------------------------------------------
-// fonction : Intersect
+// Function : Intersect
 //---------------------------------------------------------
-// Recherche les intersections entre les courbe 2d 
-// Si intersection et compatible( dans le cas G1-G1)  
-// enleve le point sur une des deux courbes
+// Find intersections between 2d curves
+// If the intersection is compatible (in cases G1-G1)  
+// remove the point on one of two curves
 //---------------------------------------------------------
 void GeomPlate_BuildPlateSurface::
 Intersect(Handle(GeomPlate_HArray1OfSequenceOfReal)& PntInter,
@@ -1796,7 +1788,7 @@ Intersect(Handle(GeomPlate_HArray1OfSequenceOfReal)& PntInter,
   for (Standard_Integer i=1;i<=NTLinCont;i++)
     {
       //Standard_Real NbPnt_i=myLinCont->Value(i)->NbPoints();
-      // Cherche l'intersection avec chaque courbe y compris elle meme.
+      // Find the intersection with each curve including the curve itself
       Ci.Load(myLinCont->Value(i)->Curve2dOnSurf());
       for(Standard_Integer j=i; j<=NTLinCont; j++)
 	{
@@ -1807,9 +1799,9 @@ Intersect(Handle(GeomPlate_HArray1OfSequenceOfReal)& PntInter,
 	    Intersection.Perform(Ci, Cj, myTol2d*10, myTol2d*10);
 	    
 	  if (!Intersection.IsEmpty())
-	    { // il existe une intersection
+	    { // there is one intersection
 	      Standard_Integer nbpt = Intersection.NbPoints();
-	      // nombre de point d'intersection
+	      // number of points of intersection
 	      for (Standard_Integer k = 1; k <= nbpt; k++) 
 		{ int2d = Intersection.Point(k);
 		  myLinCont->Value(i)->D0(int2d.ParamOnFirst(),P1);
@@ -1823,13 +1815,13 @@ Intersect(Handle(GeomPlate_HArray1OfSequenceOfReal)& PntInter,
 		    }
 #endif
 		  if (P1.Distance( P2 ) < myTol3d)
-		    { // L'intersection 2d correspond a des points 3d proches
-		      // On note l'intervalle dans lequel il faudra enlever 
-		      // un point pour eviter les doublons ce qui fait une 
-		      // erreur dans plate. le point sur la courbe i est enleve 
-		      // on conserve celui de la courbe j
-		      // la longueur de l'intervalle est une longueur 2d 
-		      // correspondant en 3d a myTol3d
+		    { // 2D intersection corresponds to close 3D points. 
+		      // Note the interval, in which the point needs to be removed 
+		      // to avoid duplications, which cause 
+		      // error in plate. The point on curve i is removed;
+		      // the point on curve j is preserved;
+		      // the length of interval is a length 2d 
+		      // corresponding in 3d to myTol3d
 		      Standard_Real tolint = Ci.Resolution(myTol3d);
 		      Ci.D1(int2d.ParamOnFirst(),P2d, V2d);
 		      Standard_Real aux = V2d.Magnitude();
@@ -1843,7 +1835,7 @@ Intersect(Handle(GeomPlate_HArray1OfSequenceOfReal)& PntInter,
 		      
 		      PntInter->ChangeValue(i).Append( int2d.ParamOnFirst() - tolint);
 		      PntInter->ChangeValue(i).Append( int2d.ParamOnFirst() + tolint);
-		      // Si G1-G1
+		      // If G1-G1
 		      if ( (myLinCont->Value(i)->Order()==1)
 			  &&(myLinCont->Value(j)->Order()==1))
 			{ gp_Vec v11,v12,v13,v14,v15,v16,v21,v22,v23,v24,v25,v26;
@@ -1855,9 +1847,8 @@ Intersect(Handle(GeomPlate_HArray1OfSequenceOfReal)& PntInter,
 			    ant= M_PI -ant;
 			  if ((Abs(v16*v15-v16*v25)>(myTol3d/1000))
 			      ||(Abs(ant)>myTol3d/1000))  
-			    // Pas compatible ==> on enleve une zone en 
-			    // contrainte G1 correspondant
-			    // a une tolerance 3D de 0.01
+			    // Non-compatible ==> remove zone in constraint G1
+			    // corresponding to 3D tolerance of 0.01
 			    { Standard_Real coin;
 			      Standard_Real Tol= 100 * myTol3d;
 			      Standard_Real A1;
@@ -1870,25 +1861,25 @@ Intersect(Handle(GeomPlate_HArray1OfSequenceOfReal)& PntInter,
 				A1= M_PI - A1;
 			      if (Abs(Abs(A1)-M_PI)<myTolAng) Tol = 100000 * myTol3d;
 #ifdef OCCT_DEBUG
-			      if (Affich) cout <<"Angle entre Courbe "<<i<<","<<j
+			      if (Affich) cout <<"Angle between curves "<<i<<","<<j
 				<<" "<<Abs(Abs(A1)-M_PI)<<endl;
 #endif
 			      
 			      coin = Ci.Resolution(Tol);
 			      Standard_Real Par1=int2d.ParamOnFirst()-coin,
 			      Par2=int2d.ParamOnFirst()+coin;
-			      // Stockage de l'intervalle pour la courbe i
+			      // Storage of the interval for curve i
 			      PntG1G1->ChangeValue(i).Append(Par1);
 			      PntG1G1->ChangeValue(i).Append(Par2);
 			      coin = Cj.Resolution(Tol);
 			      Par1=int2d.ParamOnSecond()-coin;
 			      Par2=int2d.ParamOnSecond()+coin;
-			      // Stockage de l'intervalle pour la courbe j
+			      // Storage of the interval for curve j
 			      PntG1G1->ChangeValue(j).Append(Par1);
 			      PntG1G1->ChangeValue(j).Append(Par2);
 			    }	
 			}
-		      // Si G0-G1
+		      // If G0-G1
 		      if ((myLinCont->Value(i)->Order()==0 && myLinCont->Value(j)->Order()==1) ||
 			  (myLinCont->Value(i)->Order()==1 && myLinCont->Value(j)->Order()==0))
 			{
@@ -1909,9 +1900,9 @@ Intersect(Handle(GeomPlate_HArray1OfSequenceOfReal)& PntInter,
 			  Standard_Real Angle = vec.Angle( N );
 			  Angle = Abs( M_PI/2-Angle ); 
 			  if (Angle > myTolAng/10.) //????????? //if (Abs( scal ) > myTol3d/100)
-			    { // Pas compatible ==> on enleve une zone en 
-			      // contrainte G0 et G1 correspondant
-			      // a une tolerance 3D de 0.01
+			    {
+ 			      // Non-compatible ==> one removes zone in constraint G0 and G1
+			      // corresponding to 3D tolerance of 0.01
 			      Standard_Real coin;
 			      Standard_Real Tol= 100 * myTol3d;
 			      Standard_Real A1;
@@ -1936,7 +1927,7 @@ Intersect(Handle(GeomPlate_HArray1OfSequenceOfReal)& PntInter,
 #endif
 				  Standard_Real Par1 = int2d.ParamOnFirst() - coin;
 				  Standard_Real Par2 = int2d.ParamOnFirst() + coin;
-				  // Stockage de l'intervalle pour la courbe i
+				  // Storage of the interval for curve i
 				  PntG1G1->ChangeValue(i).Append( Par1 );
 				  PntG1G1->ChangeValue(i).Append( Par2 );
 				}
@@ -1949,7 +1940,7 @@ Intersect(Handle(GeomPlate_HArray1OfSequenceOfReal)& PntInter,
 #endif
 				  Standard_Real Par1 = int2d.ParamOnSecond() - coin;
 				  Standard_Real Par2 = int2d.ParamOnSecond() + coin;
-				  // Stockage de l'intervalle pour la courbe j
+				  // Storage of the interval for curve j
 				  PntG1G1->ChangeValue(j).Append( Par1 );
 				  PntG1G1->ChangeValue(j).Append( Par2 );
 				}
@@ -1957,13 +1948,13 @@ Intersect(Handle(GeomPlate_HArray1OfSequenceOfReal)& PntInter,
 			}
 		    } //if (P1.Distance( P2 ) < myTol3d)
 		  else { 
-		    //L'intersection 2d correspond a des points 3d eloigne
-		    // On note l'intervalle dans lequel il faudra enlever 
-		    // des points pour eviter les doublons ce qui fait une 
-		    // erreur dans plate. le point sur la courbe i est enleve 
-		    // on conserve celui de la courbe j.
-		    // la longueur de l'intervalle est une longueur 2d 
-		    // correspondant a la distance des points en 3d a myTol3d  
+		    // 2D intersection corresponds to extended 3D points.
+		    // Note the interval where it is necessary to remove 
+		    // the points to avoid duplications causing 
+		    // error in plate. The point on curve i is removed,  
+		    // the point on curve j is preserved.
+		    // The length of interval is 2D length
+		    // corresponding to the distance of points in 3D to myTol3d  
 		    Standard_Real tolint, Dist;
 		    Dist = P1.Distance(P2);
 		    tolint = Ci.Resolution(Dist);
@@ -1979,8 +1970,7 @@ Intersect(Handle(GeomPlate_HArray1OfSequenceOfReal)& PntInter,
 		      }		       
 		    
 #ifdef OCCT_DEBUG
-		    cout<<"Attention: Deux points 3d ont la meme projection dist="
-		      <<Dist<<endl;
+		    cout << "Attention: Two points 3d have the same projection dist = " << Dist << endl;
 #endif	
 #ifdef DRAW
 		    if (Affich > 1)
@@ -1999,15 +1989,15 @@ Intersect(Handle(GeomPlate_HArray1OfSequenceOfReal)& PntInter,
 }
 
 //---------------------------------------------------------
-// fonction : Discretise
+// Function : Discretize
 //---------------------------------------------------------
-// Discretise les courbes selon le parametre de celle-ci
-// le tableau des sequences Parcont contiendera tous les 
-// parametres des points sur les courbes 
-// Le champ myPlateCont contiendera les parametre des points envoye a plate
-// il excluera les points en double et les zones imcompatibles.
-// La premiere partie correspond a la verfication de la compatibilite
-// et a la supprssion des points en double.
+// Discretize curves according to parameters
+// the table of sequences Parcont contains all 
+// parameter of points on curves 
+// Field myPlateCont contains parameter of points on a plate;
+// it excludes duplicate points and imcompatible zones.
+// The first part corresponds to verification of compatibility
+// and to removal of duplicate points.
 //---------------------------------------------------------
 void GeomPlate_BuildPlateSurface::
 Discretise(const Handle(GeomPlate_HArray1OfSequenceOfReal)& PntInter,
@@ -2024,7 +2014,7 @@ Discretise(const Handle(GeomPlate_HArray1OfSequenceOfReal)& PntInter,
  
 
   //===========================================================================
-  // Construction du tableau contenant les parametres des  points de contrainte 
+  // Construction of the table containing parameters of constraint points 
   //=========================================================================== 
   Standard_Real  Uinit, Ufinal,  Length2d=0, Inter;
   Standard_Real   CurLength;
@@ -2041,7 +2031,7 @@ Discretise(const Handle(GeomPlate_HArray1OfSequenceOfReal)& PntInter,
     C2d= LinCont->Curve2dOnSurf();
     ACR =  (!C2d.IsNull());
     if (ACR) {
-      // On Construit une loi proche de l'abscisse curviligne
+      // Construct a law close to curvilinear abscissa
       if(!C2d.IsNull()) AC2d.Load(C2d);
 //      AC2d.Load(LinCont->Curve2dOnSurf());
       Standard_Integer ii, Nbint = 20;
@@ -2083,11 +2073,11 @@ Discretise(const Handle(GeomPlate_HArray1OfSequenceOfReal)& PntInter,
 #endif
     for (Standard_Integer j=1; j<=NbPnt_i; j++)  
     { 
-      // repartition des points en cosinus selon l'ACR 2d
-      // Afin d'eviter les points d'acumulation dans le 2d
+      // Distribution of points in cosine following ACR 2D
+      // To avoid points of accumulation in 2D
       //Inter=Uinit+(Uif)*((-cos(M_PI*((j-1)/(NbPnt_i-1)))+1)/2);
       if (j==NbPnt_i)
-        Inter=Ufinal;//pour parer au bug sur sun
+        Inter=Ufinal;// to avoid bug on Sun
       else if (ACR) {
         CurLength = Length2d*(1-Cos((j-1)*M_PI/(NbPnt_i-1)))/2;
         Inter =  acrlaw->Value(CurLength);
@@ -2095,35 +2085,35 @@ Discretise(const Handle(GeomPlate_HArray1OfSequenceOfReal)& PntInter,
       else {
         Inter=Uinit+(Ufinal-Uinit)*((1-Cos((j-1)*M_PI/(NbPnt_i-1)))/2);
       }
-      myParCont->ChangeValue(i).Append(Inter);// on ajoute le point
+      myParCont->ChangeValue(i).Append(Inter);// add a point
       if (NbPtInter!=0) 
       { 
         for(Standard_Integer l=1;l<=NbPtInter;l+=2) 
         {
-          //on cherche si le point Inter est dans l'intervalle 
-          //PntInter[i] PntInter[i+1]
-          //auquelle cas il ne faudrait pas le stocker (pb de doublons) 
+          // check if the point Inter is in the interval 
+          // PntInter[i] PntInter[i+1]
+          // in which case it is not necessary to store it (problem with duplicates)
           if ((Inter>PntInter->Value(i).Value(l))
             &&(Inter<PntInter->Value(i).Value(l+1)))
           { 
             l=NbPtInter+2; 
-            // pour sortir de la boucle sans stocker le point	 
+            // leave the loop without storing the point
           }
           else
           {
             if (l+1>=NbPtInter) {
-              // on a parcouru tout le tableau : Le point 
-              // n'appartient pas a un interval point commun 
+              // one has parsed the entire table : the point 
+              // does not belong to a common point interval 
               if (NbPtG1G1!=0) 
               {
-                // est qu'il existe un intervalle incompatible
+                // if there exists an incompatible interval
                 for(Standard_Integer k=1;k<=NbPtG1G1;k+=2)
                 { 
                   if ((Inter>PntG1G1->Value(i).Value(k))
                     &&(Inter<PntG1G1->Value(i).Value(k+1)))
                   { 
-                    k=NbPtG1G1+2; // pour sortir de la boucle
-                    // Ajouter les points de contrainte G0
+                    k=NbPtG1G1+2; // to leave the loop 
+                    // Add points of constraint G0
                     gp_Pnt P3d,PP,Pdif;
                     gp_Pnt2d P2d;
                         
@@ -2136,12 +2126,12 @@ Discretise(const Handle(GeomPlate_HArray1OfSequenceOfReal)& PntInter,
                     Plate_PinpointConstraint PC(P2d.XY(),Pdif.XYZ(),0,0);
                     myPlate.Load(PC);
                   }
-                  else // le point n'appartient pas a un interval G1
+                  else // the point does not belong to interval G1
                   {
                     if (k+1>=NbPtG1G1) 
                     {
                       myPlateCont->ChangeValue(i).Append(Inter);
-                      // on ajoute le point
+                      // add the point
                     }
                   }
                 }
@@ -2149,7 +2139,7 @@ Discretise(const Handle(GeomPlate_HArray1OfSequenceOfReal)& PntInter,
               else
               {
                 myPlateCont->ChangeValue(i).Append(Inter);
-                // on ajoute le point
+                // add the point
               }
             }
           }
@@ -2157,15 +2147,15 @@ Discretise(const Handle(GeomPlate_HArray1OfSequenceOfReal)& PntInter,
       }
       else
       {
-        if (NbPtG1G1!=0) // est qu'il existe un intervalle incompatible
+        if (NbPtG1G1!=0) // there exist an incompatible interval 
         {
           for(Standard_Integer k=1;k<=NbPtG1G1;k+=2)
           {
             if ((Inter>PntG1G1->Value(i).Value(k))
               &&(Inter<PntG1G1->Value(i).Value(k+1)))
             {
-              k=NbPtG1G1+2; // pour sortir de la boucle
-              // Ajouter les points de contrainte G0
+              k=NbPtG1G1+2; // to leave the loop
+              // Add points of constraint G0
               gp_Pnt P3d,PP,Pdif;
               gp_Pnt2d P2d;
               
@@ -2179,12 +2169,12 @@ Discretise(const Handle(GeomPlate_HArray1OfSequenceOfReal)& PntInter,
               myPlate.Load(PC);
 
             }
-            else // le point n'appartient pas a un intervalle G1
+            else // the point does not belong to interval G1
             {
               if (k+1>=NbPtG1G1) 
               {
                 myPlateCont->ChangeValue(i).Append(Inter);
-                // on ajoute le point
+                // add the point
               }
             }
           }
@@ -2193,18 +2183,18 @@ Discretise(const Handle(GeomPlate_HArray1OfSequenceOfReal)& PntInter,
         {
           if (  ( (!mySurfInitIsGive)
                   &&(Geom2dAdaptor_Curve(LinCont->Curve2dOnSurf()).GetType()!=GeomAbs_Circle))
-             || ( (j>1) &&(j<NbPnt_i))) //on enleve les extremites
-            myPlateCont->ChangeValue(i).Append(Inter);// on ajoute le point
+             || ( (j>1) &&(j<NbPnt_i))) // exclude extremeties
+            myPlateCont->ChangeValue(i).Append(Inter);// add the point
         }
       }
     }
   } 
 }
 //---------------------------------------------------------
-// fonction : CalculNbPtsInit
+// Function : CalculNbPtsInit
 //---------------------------------------------------------
-// Calcul du nombre de points par courbe en fonction de la longueur
-// pour la premiere iteration
+// Calculate the number of points by curve depending on the 
+// length for the first iteration
 //---------------------------------------------------------
 void GeomPlate_BuildPlateSurface::CalculNbPtsInit ()
 {
@@ -2218,15 +2208,15 @@ void GeomPlate_BuildPlateSurface::CalculNbPtsInit ()
   for ( i=1;i<=NTLinCont;i++) 
     { Standard_Integer Cont=myLinCont->Value(i)->Order();
       switch(Cont)
-	{ case 0 : // Cas G0 *1.2
+	{ case 0 : // Case G0 *1.2
 	    myLinCont->ChangeValue(i)->SetNbPoints( 
 						   Standard_Integer(1.2*NTPoint*(myLinCont->Value(i)->Length())/LenT)); 
 	    break;
-	  case 1 : // Cas G1 *1
+	  case 1 : // Case G1 *1
 	    myLinCont->ChangeValue(i)->SetNbPoints(
 				 Standard_Integer(NTPoint*(myLinCont->Value(i)->Length())/LenT)); 
 	    break;
-	  case 2 : // Cas G2 *0.7
+	  case 2 : // Case G2 *0.7
 	    myLinCont->ChangeValue(i)->SetNbPoints( 
 			      Standard_Integer(0.7*NTPoint*(myLinCont->Value(i)->Length())/LenT));
 	    break;
@@ -2236,9 +2226,9 @@ void GeomPlate_BuildPlateSurface::CalculNbPtsInit ()
     }
 }
 //---------------------------------------------------------
-// fonction : LoadCurve
+// Function : LoadCurve
 //---------------------------------------------------------
-// A partir du tableau myParCont on charge tous les points notes dans plate
+// Starting from table myParCont load all the points noted in plate
 //---------------------------------------------------------
 void GeomPlate_BuildPlateSurface::LoadCurve(const Standard_Integer NbBoucle,
 					    const Standard_Integer OrderMax )
@@ -2255,7 +2245,7 @@ void GeomPlate_BuildPlateSurface::LoadCurve(const Standard_Integer NbBoucle,
       Tang = Min(CC->Order(), OrderMax);
       Nt = myPlateCont->Value(i).Length();
       if (Tang!=-1)
-	for (j=1; j<=Nt; j++) {// Chargement des points G0 sur les frontieres
+	for (j=1; j<=Nt; j++) {// Loading of points G0 on boundaries
 	  CC ->D0(myPlateCont->Value(i).Value(j),P3d);
 	  if (!CC->ProjectedCurve().IsNull())
 	    P2d = CC->ProjectedCurve()->Value(myPlateCont->Value(i).Value(j));
@@ -2273,7 +2263,7 @@ void GeomPlate_BuildPlateSurface::LoadCurve(const Standard_Integer NbBoucle,
 	  Plate_PinpointConstraint PC(P2d.XY(),Pdif.XYZ(),0,0);
 	  myPlate.Load(PC);
 
-	      // Chargement des points G1 
+	  // Loading of points G1 
 	  if (Tang==1) { // ==1
 	    gp_Vec  V1,V2,V3,V4;
 	    CC->D1( myPlateCont->Value(i).Value(j), PP, V1, V2 );
@@ -2308,8 +2298,8 @@ void GeomPlate_BuildPlateSurface::LoadCurve(const Standard_Integer NbBoucle,
 	      myPlate.Load( PinU );
 	      myPlate.Load( PinV );
 	    }
-		}
-	      // Chargement des points G2
+	  }
+	      // Loading of points G2
 	      if (Tang==2) // ==2
 		{ gp_Vec  V1,V2,V3,V4,V5,V6,V7,V8,V9,V10;
 		  CC->D2(myPlateCont->Value(i).Value(j),
@@ -2340,7 +2330,7 @@ void GeomPlate_BuildPlateSurface::LoadCurve(const Standard_Integer NbBoucle,
   
 
 //---------------------------------------------------------
-//fonction : LoadPoint
+// Function : LoadPoint
 //---------------------------------------------------------
 //void GeomPlate_BuildPlateSurface::LoadPoint(const Standard_Integer NbBoucle, 
 void GeomPlate_BuildPlateSurface::LoadPoint(const Standard_Integer , 
@@ -2352,7 +2342,7 @@ void GeomPlate_BuildPlateSurface::LoadPoint(const Standard_Integer ,
   Standard_Integer Tang, i;
 //  gp_Vec  V1,V2,V3,V4,V5,V6,V7,V8,V9,V10;
  
-  // Chargement des points de contraintes ponctuel
+  // Loading of points of point constraints
   for (i=1;i<=NTPntCont;i++) { 
     myPntCont->Value(i)->D0(P3d);
     P2d = myPntCont->Value(i)->Pnt2dOnSurf();
@@ -2380,7 +2370,7 @@ void GeomPlate_BuildPlateSurface::LoadPoint(const Standard_Integer ,
 	  myPlate.Load( FreeGCC );
 	}
     }
-    // Chargement des points G2 GeomPlate_PlateG0Criterion 
+    // Loading of points G2 GeomPlate_PlateG0Criterion 
     if (Tang==2) // ==2
       { gp_Vec  V1,V2,V3,V4,V5,V6,V7,V8,V9,V10;
 	myPntCont->Value(i)->D2(PP,V1,V2,V5,V6,V7);
@@ -2405,18 +2395,18 @@ void GeomPlate_BuildPlateSurface::LoadPoint(const Standard_Integer ,
 
 }
 //---------------------------------------------------------
-//fonction : VerifSurface
+// Function : VerifSurface
 //---------------------------------------------------------
 Standard_Boolean GeomPlate_BuildPlateSurface::
 VerifSurface(const Standard_Integer NbBoucle)
 {
   //======================================================================
-  //    Calcul des erreurs 
+  //    Calculate errors 
   //======================================================================
   Standard_Integer NTLinCont=myLinCont->Length();
   Standard_Boolean Result=Standard_True;   
 
-  // variable pour les calculs d erreur
+  // variable for error calculation
   myG0Error=0,myG1Error =0, myG2Error=0;
 
   for (Standard_Integer i=1;i<=NTLinCont;i++) {
@@ -2457,7 +2447,7 @@ VerifSurface(const Standard_Integer NbBoucle)
 	  if (LinCont->Order()>0)
 	    diffAng=tang->Value(j)-LinCont->G1Criterion(U);
 	  else diffAng=0;
-	  // recherche de la variation de l'erreur maxi et calcul de la moyenne
+	  // find the maximum variation of error and calculate the average
 	  if (diffDist>0) {
             diffDist = diffDist/LinCont->G0Criterion(U);
 	    if (diffDist>diffDistMax)
@@ -2510,29 +2500,29 @@ VerifSurface(const Standard_Integer NbBoucle)
 	    }	  
         }
 
-	if (NdiffDist>0) {// au moins un point n'est pas acceptable en G0
+	if (NdiffDist>0) {// at least one point is not acceptable in G0
 	  Standard_Real Coef;
 	  if(LinCont->Order()== 0)
 	    Coef = 0.6*Log(diffDistMax+7.4);                     
-	  //7.4 correspond au calcul du coef mini = 1.2 donc e^1.2/0.6
+	  //7.4 corresponds to the calculation of min. coefficient = 1.2 is e^1.2/0.6
 	  else
 	    Coef = Log(diffDistMax+3.3);                         
-	  //3.3 correspond au calcul du coef mini = 1.2 donc e^1.2
+	  //3.3 corresponds to calculation of min. coefficient = 1.2 donc e^1.2
           if (Coef>3) 
 	    Coef=3;                                
-	  //experimentalement apres le coef devient mauvais pour les cas L
+	  //experimentally after the coefficient becomes bad for L cases
 	  if ((NbBoucle>1)&&(diffDistMax>2))
 	    { Coef=1.6;
 	    }
 
 	  if (LinCont->NbPoints()>=Floor(LinCont->NbPoints()*Coef))
-	    Coef=2;// pour assurer une augmentation du nombre de points
+	    Coef=2;// to provide increase of the number of points
 
 	  LinCont->SetNbPoints(Standard_Integer(LinCont->NbPoints() * Coef));
 	  Result=Standard_False;	    	
 	}
      else
-	if (NdiffAng>0) // au moins 1 points ne sont pas accepable en G1
+	if (NdiffAng>0) // at least 1 point is not acceptable in G1
 	  { Standard_Real Coef=1.5;
 	    if ((LinCont->NbPoints()+1)>=Floor(LinCont->NbPoints()*Coef))
 	      Coef=2;
@@ -2554,7 +2544,7 @@ VerifSurface(const Standard_Integer NbBoucle)
 
 
 //---------------------------------------------------------
-//fonction : VerifPoint
+// Function : VerifPoint
 //---------------------------------------------------------
 void GeomPlate_BuildPlateSurface::
                VerifPoints (Standard_Real& Dist, 

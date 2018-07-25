@@ -14,13 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-// 26-Mar-96 : xab : inclusion des inlines trop gros 
-// 15-Oct-96 : alr : extraction des inlines (pas tous ceux inclus par xab)
-// 19-Fev-97 : jct : ajout des methodes UVBox et UVConstraints (G1134)
-// 10-Dec-97 : jag : Gros debug sur delete, et sur la methode Copy...
-// 13-Jan-98 : alr : ajout des derivees pour contraintes G3 et approx. C2
-// 28-Avr-98 : alr : Prise en compte des Linear*Constraint, methodes SolveTI1,SolveTI2,SolveTI3
-
 #include <gp_XY.hxx>
 #include <gp_XYZ.hxx>
 #include <math_Gauss.hxx>
@@ -774,7 +767,7 @@ void Plate_Plate::SolveTI3(const Standard_Integer IterationNumber, const Handle(
       }
     
     algo_gauss.Solve(sec_member, sol);
-    //alr iteration pour affiner la solution
+    // iteration to refine the solution
     {
       math_Vector sol1(0,n_dimat-1);
       math_Vector sec_member1(0,n_dimat-1);
@@ -785,7 +778,6 @@ void Plate_Plate::SolveTI3(const Standard_Integer IterationNumber, const Handle(
 	  sol += sol1;
 	}
     }
-    //finalr
     
     for(icoor=1; icoor<=3;icoor++){
       for(i=0;i<nCC1;i++) Solution(i).SetCoord (icoor, sol((icoor-1)*n_dimsousmat+i));
@@ -1055,7 +1047,7 @@ gp_XYZ Plate_Plate::EvaluateDerivative(const gp_XY& point2d, const Standard_Inte
 }
 //=======================================================================
 //function : Plate_Plate::CoefPol
-//purpose  :give back the array of power basis coefficient of
+//purpose  : give back the array of power basis coefficient of
 // the polynomial part of the Plate function
 //=======================================================================
 
@@ -1068,15 +1060,14 @@ gp_XYZ Plate_Plate::EvaluateDerivative(const gp_XY& point2d, const Standard_Inte
   {
     Coefs->ChangeValue(iu,iv) = Solution(i)*ddu[iu]*ddv[iv];
     //Coefs->ChangeValue(idu,idv) = Solution(i);
-    // il faut remettre cette ligne si on enleve ls facteurs dans
-    // la methode Polm.
+    // it is necessary to reset this line if one remove factors in method Polm.
     i++;
   }
   
 }
 //=======================================================================
 //function : Plate_Plate::Continuity
-//purpose  :give back the continuity order of the Plate function
+//purpose  : give back the continuity order of the Plate function
 //=======================================================================
 
  Standard_Integer Plate_Plate::Continuity() const
@@ -1086,7 +1077,7 @@ gp_XYZ Plate_Plate::EvaluateDerivative(const gp_XY& point2d, const Standard_Inte
 
 //=======================================================================
 //function : Plate_Plate::SolEm
-//purpose  : compute the (iu,iv)th derivative of the fondamental solution
+//purpose  : compute the (iu,iv)th derivative of the fundamental solution
 // of Laplcian at the power order
 //=======================================================================
 
@@ -1099,7 +1090,7 @@ Standard_Real Plate_Plate::SolEm(const gp_XY& point2d, const Standard_Integer iu
 
   if(iv>iu)
   {
-    // SolEm is symetric in (u<->v) : we swap u and v if iv>iu
+    // SolEm is symmetric in (u<->v) : we swap u and v if iv>iu
     // to avoid some code 
     IU = iv;
     IV = iu;
@@ -1135,8 +1126,8 @@ Standard_Real Plate_Plate::SolEm(const gp_XY& point2d, const Standard_Integer iu
 
 
   //Standard_Real pr = pow(R, mm1 - IU - IV);
-  // cette expression prend beaucoup  de temps 
-  //(ne tient pas compte de la petite valeur entiere de l'exposant)
+  // this expression takes a lot of time 
+  //(does not take into account a small integer value of the exponent)
   //
 
   Standard_Integer expo =  mm1 - IU - IV;
@@ -1266,7 +1257,7 @@ Standard_Real Plate_Plate::SolEm(const gp_XY& point2d, const Standard_Integer iu
       Standard_Real u2v2 = v2*U2;
       Standard_Real r2 = r*r;
 
-      // copier-coller de mathematica 
+      // copy-paste the mathematics 
 	  DUV = 
      -100*ru2 + 48*L*ru2 + 140*m*ru2 - 100*L*m*ru2 - 60*m2*ru2 + 70*L*m2*ru2 + 8*m3*ru2 - 
      20*L*m3*ru2 + 2*L*m4*ru2 - 300*rv2 + 144*L*rv2 + 420*m*rv2 - 300*L*m*rv2 - 180*m2*rv2 + 210*L*m2*rv2 + 
@@ -1291,7 +1282,7 @@ Standard_Real Plate_Plate::SolEm(const gp_XY& point2d, const Standard_Integer iu
       Standard_Real u2v2 = v2*U2;
       Standard_Real r2 = r*r;
 
-     // copier-coller de mathematica 
+     // copy-paste the mathematics  
       DUV = 
 		1644*ru2 - 720*L*ru2 - 2700*m*ru2 + 1644*L*m*ru2 + 1530*m2*ru2 - 1350*L*m2*ru2 - 
      360*m3*ru2 + 510*L*m3*ru2 + 30*m4*ru2 - 90*L*m4*ru2 + 6*L*m5*ru2 + 1644*rv2 - 720*L*rv2 - 2700*m*rv2 + 
@@ -1335,7 +1326,7 @@ Standard_Real Plate_Plate::SolEm(const gp_XY& point2d, const Standard_Integer iu
       Standard_Real ru2 = R*U2;
       Standard_Real r2 = R*R;
  
-	  // copier-coller de mathematica 
+	  // copy-paste the mathematics  
 	  DUV = 
 		-600*ru2 + 288*L*ru2 + 840*m*ru2 - 600*L*m*ru2 - 360*m2*ru2 + 420*L*m2*ru2 + 48*m3*ru2 - 
      120*L*m3*ru2 + 12*L*m4*ru2 + 33*r2 - 18*L*r2 - 36*m*r2 + 33*L*m*r2 + 9*m2*r2 - 18*L*m2*r2 + 3*L*m3*r2 + 
@@ -1364,7 +1355,7 @@ Standard_Real Plate_Plate::SolEm(const gp_XY& point2d, const Standard_Integer iu
       Standard_Real ru4 = r*u4;
       Standard_Real r2v2 = r2*v2;
 
-	  // copier-coller de mathematica 
+	  // copy-paste the mathematics  
 	  DUV = 
 		  6576*ru2v2 - 2880*L*ru2v2 - 10800*m*ru2v2 + 6576*L*m*ru2v2 + 6120*m2*ru2v2 - 5400*L*m2*ru2v2 - 
      1440*m3*ru2v2 + 2040*L*m3*ru2v2 + 120*m4*ru2v2 - 360*L*m4*ru2v2 + 24*L*m5*ru2v2 + 1096*ru4 - 480*L*ru4 - 
@@ -1398,7 +1389,7 @@ Standard_Real Plate_Plate::SolEm(const gp_XY& point2d, const Standard_Integer iu
       Standard_Real r2v2 = r2*v2;
       Standard_Real ru4 = r*u4;
 
-	  // copier-coller de mathematica 
+	  // copy-paste the mathematics  
       DUV = 
 		  -42336*ru2v2 + 17280*L*ru2v2 + 77952*m*ru2v2 - 42336*L*m*ru2v2 - 52920*m2*ru2v2 + 
      38976*L*m2*ru2v2 + 16800*m3*ru2v2 - 17640*L*m3*ru2v2 - 2520*m4*ru2v2 + 4200*L*m4*ru2v2 + 144*m5*ru2v2 - 
@@ -1434,7 +1425,7 @@ Standard_Real Plate_Plate::SolEm(const gp_XY& point2d, const Standard_Integer iu
       Standard_Real r2 = R*R;
       Standard_Real ru2 = R*U2;
 
-	  // copier-coller de mathematica 
+	  // copy-paste the mathematics  
       DUV = 
      -1000*ru2 + 480*L*ru2 + 1400*m*ru2 - 1000*L*m*ru2 - 600*m2*ru2 + 700*L*m2*ru2 + 80*m3*ru2 - 
      200*L*m3*ru2 + 20*L*m4*ru2 + 165*r2 - 90*L*r2 - 180*m*r2 + 165*L*m*r2 + 45*m2*r2 - 90*L*m2*r2 + 15*L*m3*r2 + 
@@ -1457,7 +1448,7 @@ Standard_Real Plate_Plate::SolEm(const gp_XY& point2d, const Standard_Integer iu
       Standard_Real r2 = r*r;
 
 
-	  // copier-coller de mathematica 
+	  // copy-paste the mathematics 
      DUV = 
      5480*ru2 - 2400*L*ru2 - 9000*m*ru2 + 5480*L*m*ru2 + 5100*m2*ru2 - 4500*L*m2*ru2 - 1200*m3*ru2 + 
      1700*L*m3*ru2 + 100*m4*ru2 - 300*L*m4*ru2 + 20*L*m5*ru2 - 750*r2 + 360*L*r2 + 1050*m*r2 - 750*L*m*r2 - 
@@ -1488,7 +1479,7 @@ Standard_Real Plate_Plate::SolEm(const gp_XY& point2d, const Standard_Integer iu
       Standard_Real r2v2 = r2*v2;
       Standard_Real ru4 = r*u4;
 
-	  // copier-coller de mathematica 
+	  // copy-paste the mathematics  
 	  DUV = 
 		  
      -70560*ru2v2 + 28800*L*ru2v2 + 129920*m*ru2v2 - 70560*L*m*ru2v2 - 88200*m2*ru2v2 + 
@@ -1529,7 +1520,7 @@ Standard_Real Plate_Plate::SolEm(const gp_XY& point2d, const Standard_Integer iu
       Standard_Real r2u2 = r2*U2;
       Standard_Real ru4 = r*u4;
  
-	  // copier-coller de mathematica 
+	  // copy-paste the mathematics 
       DUV = 
 		16440*ru4 - 7200*L*ru4 - 27000*m*ru4 + 16440*L*m*ru4 + 15300*m2*ru4 - 13500*L*m2*ru4 - 
      3600*m3*ru4 + 5100*L*m3*ru4 + 300*m4*ru4 - 900*L*m4*ru4 + 60*L*m5*ru4 - 4500*r2u2 + 2160*L*r2u2 + 6300*m*r2u2 - 
