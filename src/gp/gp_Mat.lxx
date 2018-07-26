@@ -321,6 +321,14 @@ inline gp_Mat gp_Mat::Subtracted (const gp_Mat& Other) const
   return NewMat;
 }
 
+// On macOS 10.13.6 with XCode 9.4.1 the compiler has a bug leading to 
+// generation of invalid code when method gp_Mat::Transpose() is called 
+// for a matrix which is when applied to vector; it looks like vector
+// is transformed before the matrix is actually transposed; see #29978.
+// To avoid this, we disable compiler optimization here.
+#if defined(__APPLE__) && (__apple_build_version__ > 9020000)
+__attribute__((optnone))
+#endif
 inline void gp_Mat::Transpose ()
 {
   Standard_Real Temp;

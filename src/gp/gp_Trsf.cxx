@@ -157,11 +157,10 @@ void gp_Trsf::SetTransformation (const gp_Ax3& FromA1,
   shape = gp_CompoundTrsf;
   scale = 1.0;
   // matrix from XOY  ToA2 :
-  matrix.SetCol (1, ToA2.XDirection().XYZ());
-  matrix.SetCol (2, ToA2.YDirection().XYZ());
-  matrix.SetCol (3, ToA2.Direction().XYZ());
+  matrix.SetRows (ToA2.XDirection().XYZ(),
+                  ToA2.YDirection().XYZ(),
+                  ToA2. Direction().XYZ());
   loc = ToA2.Location().XYZ();
-  matrix.Transpose();
   loc.Multiply (matrix);
   loc.Reverse ();
 
@@ -183,11 +182,10 @@ void gp_Trsf::SetTransformation (const gp_Ax3& A3)
 {
   shape = gp_CompoundTrsf;
   scale = 1.0;
-  loc = A3.Location().XYZ();
-  matrix.SetCols (A3.XDirection().XYZ(),
+  matrix.SetRows (A3.XDirection().XYZ(),
                   A3.YDirection().XYZ(),
                   A3. Direction().XYZ());
-  matrix.Transpose();
+  loc = A3.Location().XYZ();
   loc.Multiply (matrix);
   loc.Reverse ();
 }
@@ -403,16 +401,12 @@ void gp_Trsf::Invert()
   if (shape == gp_Identity) { }
   else if (shape == gp_Translation || shape == gp_PntMirror) loc.Reverse();
   else if (shape == gp_Scale) {
-    Standard_Real As = scale;
-    if (As < 0) As = - As;
-    Standard_ConstructionError_Raise_if (As <= gp::Resolution(), "gp_Trsf::Invert() - transformation has zero scale");
+    Standard_ConstructionError_Raise_if (Abs(scale) <= gp::Resolution(), "gp_Trsf::Invert() - transformation has zero scale");
     scale = 1.0 / scale;
     loc.Multiply (-scale);
   }
   else {
-    Standard_Real As = scale;
-    if (As < 0) As = - As;
-    Standard_ConstructionError_Raise_if (As <= gp::Resolution(), "gp_Trsf::Invert() - transformation has zero scale");
+    Standard_ConstructionError_Raise_if (Abs(scale) <= gp::Resolution(), "gp_Trsf::Invert() - transformation has zero scale");
     scale = 1.0 / scale;
     matrix.Transpose ();
     loc.Multiply (matrix);
