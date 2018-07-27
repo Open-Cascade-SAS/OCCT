@@ -421,9 +421,9 @@ TopoDS_Edge  BRepAlgo::ConcatenateWireC0(const TopoDS_Wire& aWire)
     isReverse = !IsFwdSeq(1);
   }
 
-  TopoDS_Vertex FirstVtx_final = (isReverse)? LastVertex : FirstVertex;
+  TopoDS_Vertex FirstVtx_final = FirstVertex;
   FirstVtx_final.Orientation(TopAbs_FORWARD);
-  TopoDS_Vertex LastVtx_final = (isReverse)? FirstVertex : LastVertex;
+  TopoDS_Vertex LastVtx_final = LastVertex;
   LastVtx_final.Orientation(TopAbs_REVERSED);
 
   if (CurveSeq.IsEmpty())
