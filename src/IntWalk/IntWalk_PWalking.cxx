@@ -758,10 +758,10 @@ void IntWalk_PWalking::Perform(const TColStd_Array1OfReal& ParDep,
   Standard_Integer LevelOfIterWithoutAppend = -1;
   //
 
-  const Standard_Real aTol[4] = { Epsilon(u1max - u1min),
-                                  Epsilon(v1max - v1min),
-                                  Epsilon(u2max - u2min),
-                                  Epsilon(v2max - v2min)};
+  const Standard_Real aTol[4] = { Epsilon(UM1 - Um1),
+                                  Epsilon(VM1 - Vm1),
+                                  Epsilon(UM2 - Um2),
+                                  Epsilon(VM2 - Vm2)};
   Arrive = Standard_False;
   while(!Arrive) //010
   {
@@ -853,8 +853,8 @@ void IntWalk_PWalking::Perform(const TColStd_Array1OfReal& ParDep,
 
         Standard_Real aNewPnt[4], anAbsParamDist[4];
         myIntersectionOn2S.Point().Parameters(aNewPnt[0], aNewPnt[1], aNewPnt[2], aNewPnt[3]);
-        const Standard_Real aParMin[4] = {u1min, v1min, u2min, v2min};
-        const Standard_Real aParMax[4] = {u1max, v1max, u2max, v2max};
+        const Standard_Real aParMin[4] = {Um1, Vm1, Um2, Vm2};
+        const Standard_Real aParMax[4] = {UM1, VM1, UM2, VM2};
 
         for(Standard_Integer i = 0; i < 4; i++)
         {
@@ -864,12 +864,13 @@ void IntWalk_PWalking::Perform(const TColStd_Array1OfReal& ParDep,
             aNewPnt[i] = aParMax[i];
         }
 
-        if (aNewPnt[0] < u1min || aNewPnt[0] > u1max ||
-            aNewPnt[1] < v1min || aNewPnt[1] > v1max ||
-            aNewPnt[2] < u2min || aNewPnt[2] > u2max ||
-            aNewPnt[3] < v2min || aNewPnt[3] > v2max)
+        if (aNewPnt[0] < Um1 || aNewPnt[0] > UM1 ||
+            aNewPnt[1] < Vm1 || aNewPnt[1] > VM1 ||
+            aNewPnt[2] < Um2 || aNewPnt[2] > UM2 ||
+            aNewPnt[3] < Vm2 || aNewPnt[3] > VM2)
         {
-          break; // Out of borders, handle this later.
+          // Out of borders, process it later.
+          break; 
         }
 
         myIntersectionOn2S.ChangePoint().SetValue(aNewPnt[0],
