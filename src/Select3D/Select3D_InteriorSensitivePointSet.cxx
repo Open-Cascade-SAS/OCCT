@@ -238,11 +238,9 @@ Select3D_BndBox3d Select3D_InteriorSensitivePointSet::Box (const Standard_Intege
 Standard_Real Select3D_InteriorSensitivePointSet::Center (const Standard_Integer theIdx,
                                                           const Standard_Integer theAxis) const
 {
-  Standard_Integer aPolygIdx = myPolygonsIdxs->Value (theIdx);
-  const gp_XYZ& aCOG = myPlanarPolygons.Value (aPolygIdx)->CenterOfGeometry().XYZ();
-  Standard_Real aCenter = theAxis == 0 ? aCOG.X() : (theAxis == 1 ? aCOG.Y() : aCOG.Z());
-
-  return aCenter;
+  const Standard_Integer aPolygIdx = myPolygonsIdxs->Value (theIdx);
+  const gp_Pnt aCOG = myPlanarPolygons.Value (aPolygIdx)->CenterOfGeometry();
+  return aCOG.Coord (theAxis - 1);
 }
 
 //=======================================================================
