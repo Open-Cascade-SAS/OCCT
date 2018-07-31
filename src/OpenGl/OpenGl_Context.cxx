@@ -180,7 +180,7 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
 #endif
   myToCullBackFaces (false),
   myReadBuffer (0),
-  myDrawBuffers (1),
+  myDrawBuffers (0, 7),
   myDefaultVao (0),
   myColorMask (true),
   myAlphaToCoverage (false),
@@ -410,12 +410,8 @@ void OpenGl_Context::SetDrawBuffer (const Standard_Integer theDrawBuffer)
   }
   ::glDrawBuffer (aDrawBuffer);
 
-  myDrawBuffers.Clear();
-
-  if (aDrawBuffer != GL_NONE)
-  {
-    myDrawBuffers.SetValue (0, aDrawBuffer);
-  }
+  myDrawBuffers.Init (GL_NONE);
+  myDrawBuffers.SetValue (0, aDrawBuffer);
 #else
   (void )theDrawBuffer;
 #endif
@@ -429,7 +425,12 @@ void OpenGl_Context::SetDrawBuffers (const Standard_Integer theNb, const Standar
 {
   Standard_ASSERT_RETURN (hasDrawBuffers, "Multiple draw buffers feature is not supported by the context", Standard_ASSERT_DO_NOTHING());
 
-  myDrawBuffers.Clear();
+  if (myDrawBuffers.Length() < theNb)
+  {
+    // should actually never happen here
+    myDrawBuffers.Resize (0, theNb - 1, false);
+  }
+  myDrawBuffers.Init (GL_NONE);
 
   Standard_Boolean useDefaultFbo = Standard_False;
   for (Standard_Integer anI = 0; anI < theNb; ++anI)
@@ -438,7 +439,7 @@ void OpenGl_Context::SetDrawBuffers (const Standard_Integer theNb, const Standar
     {
       useDefaultFbo = Standard_True;
     }
-    else if (theDrawBuffers[anI] != GL_NONE)
+    else
     {
       myDrawBuffers.SetValue (anI, theDrawBuffers[anI]);
     }
@@ -491,31 +492,24 @@ void OpenGl_Context::FetchState()
   ::glGetIntegerv (GL_READ_BUFFER, &myReadBuffer);
 
   // cache draw buffers state
-  myDrawBuffers.Clear();
+  if (myDrawBuffers.Length() < myMaxDrawBuffers)
+  {
+    myDrawBuffers.Resize (0, myMaxDrawBuffers - 1, false);
+  }
+  myDrawBuffers.Init (GL_NONE);
 
+  Standard_Integer aDrawBuffer = GL_NONE;
   if (myMaxDrawBuffers == 1)
   {
-    Standard_Integer aDrawBuffer;
-
     ::glGetIntegerv (GL_DRAW_BUFFER, &aDrawBuffer);
-
-    if (aDrawBuffer != GL_NONE)
-    {
-      myDrawBuffers.SetValue (0, aDrawBuffer);
-    }
+    myDrawBuffers.SetValue (0, aDrawBuffer);
   }
   else
   {
-    Standard_Integer aDrawBuffer;
-
     for (Standard_Integer anI = 0; anI < myMaxDrawBuffers; ++anI)
     {
       ::glGetIntegerv (GL_DRAW_BUFFER0 + anI, &aDrawBuffer);
-
-      if (aDrawBuffer != GL_NONE)
-      {
-        myDrawBuffers.SetValue (anI, aDrawBuffer);
-      }
+      myDrawBuffers.SetValue (anI, aDrawBuffer);
     }
   }
 #endif
@@ -1452,6 +1446,10 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
   {
     glGetIntegerv (GL_MAX_DRAW_BUFFERS,      &myMaxDrawBuffers);
     glGetIntegerv (GL_MAX_COLOR_ATTACHMENTS, &myMaxColorAttachments);
+    if (myDrawBuffers.Length() < myMaxDrawBuffers)
+    {
+      myDrawBuffers.Resize (0, myMaxDrawBuffers - 1, false);
+    }
   }
 
   glGetIntegerv (GL_MAX_TEXTURE_SIZE, &myMaxTexDim);

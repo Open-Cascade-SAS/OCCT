@@ -622,9 +622,12 @@ public: //! @name methods to alter or retrieve current state
   Standard_EXPORT void SetReadBuffer (const Standard_Integer theReadBuffer);
 
   //! Return active draw buffer attached to a render target referred by index (layout location).
-  Standard_Integer DrawBuffer (const Standard_Integer theIndex = 0)
+  Standard_Integer DrawBuffer (Standard_Integer theIndex = 0) const
   {
-    return myDrawBuffers.IsBound (theIndex) ? myDrawBuffers.Value (theIndex) : GL_NONE;
+    return theIndex >= myDrawBuffers.Lower()
+        && theIndex <= myDrawBuffers.Upper()
+         ? myDrawBuffers.Value (theIndex)
+         : GL_NONE;
   }
 
   //! Switch draw buffer, wrapper for ::glDrawBuffer().
@@ -884,7 +887,6 @@ private: // context info
 
   typedef NCollection_Shared< NCollection_DataMap<TCollection_AsciiString, Standard_Integer> > OpenGl_DelayReleaseMap;
   typedef NCollection_Shared< NCollection_List<Handle(OpenGl_Resource)> > OpenGl_ResourcesStack;
-  typedef NCollection_SparseArray<Standard_Integer> OpenGl_DrawBuffers;
 
   Handle(OpenGl_ResourcesMap)    mySharedResources; //!< shared resources with unique identification key
   Handle(OpenGl_DelayReleaseMap) myDelayed;         //!< shared resources for delayed release
@@ -932,7 +934,8 @@ private: //! @name fields tracking current state
   Graphic3d_PolygonOffset       myPolygonOffset;   //!< currently applied polygon offset
   bool                          myToCullBackFaces; //!< back face culling mode enabled state (glIsEnabled (GL_CULL_FACE))
   Standard_Integer              myReadBuffer;      //!< current read buffer
-  OpenGl_DrawBuffers            myDrawBuffers;     //!< current draw buffers
+  NCollection_Array1<Standard_Integer>
+                                myDrawBuffers;     //!< current draw buffers
   unsigned int                  myDefaultVao;      //!< default Vertex Array Object
   Standard_Boolean              myColorMask;       //!< flag indicating writing into color buffer is enabled or disabled (glColorMask)
   Standard_Boolean              myAlphaToCoverage; //!< flag indicating GL_SAMPLE_ALPHA_TO_COVERAGE state
