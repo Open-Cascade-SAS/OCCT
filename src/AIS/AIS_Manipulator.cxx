@@ -55,6 +55,68 @@ namespace
     }
     throw Standard_ProgramError ("AIS_Manipulator - Invalid axis index");
   }
+
+  //! Auxiliary tool for filtering picking ray.
+  class ManipSensRotation
+  {
+  public:
+    //! Main constructor.
+    ManipSensRotation (const gp_Dir& thePlaneNormal) : myPlaneNormal (thePlaneNormal), myAngleTol (10.0 * M_PI / 180.0) {}
+
+    //! Checks if picking ray can be used for detection.
+    Standard_Boolean isValidRay (const SelectBasics_SelectingVolumeManager& theMgr) const
+    {
+      if (theMgr.GetActiveSelectionType() != SelectBasics_SelectingVolumeManager::Point)
+      {
+        return Standard_False;
+      }
+
+      const gp_Vec aRay (theMgr.GetNearPickedPnt(), theMgr.GetFarPickedPnt());
+      return !aRay.IsNormal (myPlaneNormal, myAngleTol);
+    }
+  private:
+    gp_Dir        myPlaneNormal;
+    Standard_Real myAngleTol;
+  };
+
+  //! Sensitive circle with filtering picking ray.
+  class ManipSensCircle : public Select3D_SensitiveCircle, public ManipSensRotation
+  {
+  public:
+    //! Main constructor.
+    ManipSensCircle (const Handle(SelectBasics_EntityOwner)& theOwnerId,
+                     const Handle(Geom_Circle)& theCircle,
+                     const Standard_Integer theNbPnts)
+    : Select3D_SensitiveCircle (theOwnerId, theCircle, Standard_False, theNbPnts),
+      ManipSensRotation (theCircle->Position().Direction()) {}
+
+    //! Checks whether the circle overlaps current selecting volume
+    virtual Standard_Boolean Matches (SelectBasics_SelectingVolumeManager& theMgr,
+                                      SelectBasics_PickResult& thePickResult) Standard_OVERRIDE
+    {
+      return isValidRay (theMgr)
+          && Select3D_SensitiveCircle::Matches (theMgr, thePickResult);
+    }
+  };
+
+  //! Sensitive triangulation with filtering picking ray.
+  class ManipSensTriangulation : public Select3D_SensitiveTriangulation, public ManipSensRotation
+  {
+  public:
+    ManipSensTriangulation (const Handle(SelectBasics_EntityOwner)& theOwnerId,
+                            const Handle(Poly_Triangulation)& theTrg,
+                            const gp_Dir& thePlaneNormal)
+    : Select3D_SensitiveTriangulation (theOwnerId, theTrg, TopLoc_Location(), Standard_True),
+      ManipSensRotation (thePlaneNormal) {}
+
+    //! Checks whether the circle overlaps current selecting volume
+    virtual Standard_Boolean Matches (SelectBasics_SelectingVolumeManager& theMgr,
+                                      SelectBasics_PickResult& thePickResult) Standard_OVERRIDE
+    {
+      return isValidRay (theMgr)
+          && Select3D_SensitiveTriangulation::Matches (theMgr, thePickResult);
+    }
+  };
 }
 
 //=======================================================================
@@ -961,11 +1023,11 @@ void AIS_Manipulator::ComputeSelection (const Handle(SelectMgr_Selection)& theSe
       }
       // define sensitivity by circle
       Handle(Geom_Circle) aGeomCircle = new Geom_Circle (gp_Ax2 (gp::Origin(), anAxis.ReferenceAxis().Direction()), anAxis.RotatorDiskRadius());
-      Handle(Select3D_SensitiveCircle) aCircle = new Select3D_SensitiveCircle (anOwner, aGeomCircle, Standard_False, anAxis.FacettesNumber());
+      Handle(Select3D_SensitiveCircle) aCircle = new ManipSensCircle (anOwner, aGeomCircle, anAxis.FacettesNumber());
       aCircle->SetSensitivityFactor (15);
       theSelection->Add (aCircle);
       // enlarge sensitivity by triangulation
-      Handle(Select3D_SensitiveTriangulation) aTri = new Select3D_SensitiveTriangulation (anOwner, myAxes[anIt].RotatorDisk().Triangulation(), TopLoc_Location(), Standard_True);
+      Handle(Select3D_SensitiveTriangulation) aTri = new ManipSensTriangulation (anOwner, myAxes[anIt].RotatorDisk().Triangulation(), anAxis.ReferenceAxis().Direction());
       theSelection->Add (aTri);
     }
   }
