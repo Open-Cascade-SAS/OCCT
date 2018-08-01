@@ -109,7 +109,11 @@ int OpenGl_LineAttributes::SetTypeOfHatch (const OpenGl_Context*               t
   }
 
 #if !defined(GL_ES_VERSION_2_0)
-  if (theStyle->HatchType() != 0)
+  if (theGlCtx->core11 == NULL)
+  {
+    return 0;
+  }
+  else if (theStyle->HatchType() != 0)
   {
     theGlCtx->core11->glCallList ((GLuint)aGpuListId);
 
@@ -146,7 +150,11 @@ bool OpenGl_LineAttributes::SetEnabled (const OpenGl_Context* theGlCtx,
   const bool anOldIsEnabled = myIsEnabled;
 
 #if !defined(GL_ES_VERSION_2_0)
-  if (theToEnable)
+  if (theGlCtx->core11 == NULL)
+  {
+    return 0;
+  }
+  else if (theToEnable)
   {
     if (myTypeOfHatch != 0)
     {

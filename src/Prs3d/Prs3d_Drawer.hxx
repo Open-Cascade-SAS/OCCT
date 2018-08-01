@@ -439,6 +439,10 @@ public:
   //! point aspect that overrides the one in the link.
   Standard_Boolean HasOwnPointAspect() const { return myHasOwnPointAspect; }
 
+  //! Sets own point aspect.
+  //! Returns FALSE if the drawer already has its own attribute for point aspect.
+  Standard_EXPORT Standard_Boolean SetupOwnPointAspect (const Handle(Prs3d_Drawer)& theDefaults = Handle(Prs3d_Drawer)());
+
   //! Returns settings for line aspects.
   //! These settings can be edited. The default values are:
   //!   Color: Quantity_NOC_YELLOW
@@ -456,6 +460,14 @@ public:
   //! Returns true if the drawer has its own attribute for
   //! line aspect that overrides the one in the link.
   Standard_Boolean HasOwnLineAspect() const { return myHasOwnLineAspect; }
+
+  //! Sets own line aspects.
+  //! Returns FALSE if own line aspect are already set.
+  Standard_EXPORT Standard_Boolean SetOwnLineAspects (const Handle(Prs3d_Drawer)& theDefaults = Handle(Prs3d_Drawer)());
+
+  //! Sets own line aspects for datums.
+  //! Returns FALSE if own line for datums are already set.
+  Standard_EXPORT Standard_Boolean SetOwnDatumAspects (const Handle(Prs3d_Drawer)& theDefaults = Handle(Prs3d_Drawer)());
 
   //! Returns settings for text aspect.
   //! These settings can be edited. The default value is:
@@ -486,6 +498,10 @@ public:
   //! Returns true if the drawer has its own attribute for
   //! shading aspect that overrides the one in the link.
   Standard_Boolean HasOwnShadingAspect() const { return myHasOwnShadingAspect; }
+
+  //! Sets own shading aspect.
+  //! Returns FALSE if the drawer already has its own attribute for shading aspect.
+  Standard_EXPORT Standard_Boolean SetupOwnShadingAspect (const Handle(Prs3d_Drawer)& theDefaults = Handle(Prs3d_Drawer)());
 
   //! Returns settings for seen line aspects.
   //! These settings can be edited. The default values are:

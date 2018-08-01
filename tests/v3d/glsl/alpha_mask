@@ -31,7 +31,7 @@ vdump $::imagedir/${::casename}_msaa2.png
 vrenderparams -msaa 2 -alphaToCoverage 1
 vdump $::imagedir/${::casename}_msaa2_cov.png
 
-vrenderparams -msaa 8 -alphaToCoverage 1
+vrenderparams -msaa 8 -alphaToCoverage 0
 vdump $::imagedir/${::casename}_msaa8.png
 
 vrenderparams -msaa 8 -alphaToCoverage 1

@@ -1,30 +1,22 @@
 puts "============"
-puts "CR6987"
+puts "0006897: Impossible to change edge line type in 3D View"
 puts "============"
 puts ""
-#######################################################################
-#  Impossible to change edge line type in 3D View
-#######################################################################
 
-pload VISUALIZATION
+pload MODELING VISUALIZATION
+vclear
+vinit View1
+vaxo
 
-set anImage1 $imagedir/${casename}_1.png
-set anImage2 $imagedir/${casename}_2.png
-set anImage3 $imagedir/${casename}_3.png
-
-vinit
 box b 1 1 1
-vdisplay b
+vdisplay -dispMode 1 b
 vfit
-vsetdispmode b 1
-vsetedgetype b -type DASH -color 10 255 10
-vdump $anImage1
 
-vsetinteriorstyle b EMPTY
-vdump $anImage2
+vaspects b -setInteriorStyle SOLID
+vdump $imagedir/${casename}_3.png
 
-vsetinteriorstyle b SOLID
-vunsetedgetype b
-vdump $anImage3
+vaspects b -setInteriorStyle SOLID -setDrawEdges 1 -setEdgeType DASH -setEdgeColor 0.392 1.0 0.392
+vdump $imagedir/${casename}_1.png
 
-
+vaspects b -setInteriorStyle HOLLOW -setDrawEdges 1
+vdump $imagedir/${casename}_2.png

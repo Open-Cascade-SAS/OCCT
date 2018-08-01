@@ -5923,6 +5923,7 @@ static int VCaps (Draw_Interpretor& theDI,
     theDI << "Sprites: " << (aCaps->pntSpritesDisable ? "0" : "1") << "\n";
     theDI << "SoftMode:" << (aCaps->contextNoAccel    ? "1" : "0") << "\n";
     theDI << "FFP:     " << (aCaps->ffpEnable         ? "1" : "0") << "\n";
+    theDI << "PolygonMode: " << (aCaps->usePolygonMode ? "1" : "0") << "\n";
     theDI << "VSync:   " <<  aCaps->swapInterval                   << "\n";
     theDI << "Compatible:" << (aCaps->contextCompatible ? "1" : "0") << "\n";
     theDI << "Stereo:  " << (aCaps->contextStereo ? "1" : "0") << "\n";
@@ -5960,6 +5961,16 @@ static int VCaps (Draw_Interpretor& theDI,
         --anArgIter;
       }
       aCaps->ffpEnable = toEnable;
+    }
+    else if (anArgCase == "-polygonmode")
+    {
+      Standard_Boolean toEnable = Standard_True;
+      if (++anArgIter < theArgNb
+      && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toEnable))
+      {
+        --anArgIter;
+      }
+      aCaps->usePolygonMode = toEnable;
     }
     else if (anArgCase == "-vbo")
     {
@@ -10566,6 +10577,30 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
         aParams.NbMsaaSamples = aNbSamples;
       }
     }
+    else if (aFlag == "-linefeather"
+          || aFlag == "-edgefeather"
+          || aFlag == "-feather")
+    {
+      if (toPrint)
+      {
+        theDI << " " << aParams.LineFeather << " ";
+        continue;
+      }
+      else if (++anArgIter >= theArgNb)
+      {
+        std::cerr << "Error: wrong syntax at argument '" << anArg << "'\n";
+        return 1;
+      }
+
+      TCollection_AsciiString aParam = theArgVec[anArgIter];
+      const Standard_ShortReal aFeather = (Standard_ShortReal) Draw::Atof (theArgVec[anArgIter]);
+      if (aFeather <= 0.0f)
+      {
+        std::cerr << "Error: invalid value of line width feather " << aFeather << ". Should be > 0\n";
+        return 1;
+      }
+      aParams.LineFeather = aFeather;
+    }
     else if (aFlag == "-oit")
     {
       if (toPrint)
@@ -12590,7 +12625,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "\n\t\t:  greenMagentaSimple",
     __FILE__, VStereo, group);
   theCommands.Add ("vcaps",
-            "vcaps [-vbo {0|1}] [-sprites {0|1}] [-ffp {0|1}]"
+            "vcaps [-vbo {0|1}] [-sprites {0|1}] [-ffp {0|1}] [-polygonMode {0|1}]"
     "\n\t\t:       [-compatibleProfile {0|1}]"
     "\n\t\t:       [-vsync {0|1}] [-useWinBuffer {0|1}]"
     "\n\t\t:       [-quadBuffer {0|1}] [-stereo {0|1}]"
@@ -12599,6 +12634,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "\n\t\t:  FFP      - use fixed-function pipeline instead of"
     "\n\t\t:             built-in GLSL programs"
     "\n\t\t:            (requires compatible profile)"
+    "\n\t\t:  polygonMode - use Polygon Mode instead of built-in GLSL programs"
     "\n\t\t:  VBO      - use Vertex Buffer Object (copy vertex"
     "\n\t\t:             arrays to GPU memory)"
     "\n\t\t:  sprite   - use textured sprites instead of bitmaps"
@@ -12893,6 +12929,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "\n    Manages rendering parameters: "
     "\n      '-raster'                   Disables GPU ray-tracing"
     "\n      '-msaa         0..4'        Specifies number of samples for MSAA"
+    "\n      '-lineFeather  > 0'         Sets line feather factor"
     "\n      '-oit          off|0.0-1.0' Enables/disables OIT and sets depth weight factor"
     "\n      '-depthPrePass on|off'      Enables/disables depth pre-pass"
     "\n      '-alphatocoverage on|off'   Enables/disables alpha to coverage (needs MSAA)"

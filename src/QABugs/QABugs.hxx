@@ -40,9 +40,7 @@ public:
   Standard_EXPORT static void Commands_2 (Draw_Interpretor& DI);
   
   Standard_EXPORT static void Commands_3 (Draw_Interpretor& DI);
-  
-  Standard_EXPORT static void Commands_4 (Draw_Interpretor& DI);
-  
+
   Standard_EXPORT static void Commands_5 (Draw_Interpretor& DI);
   
   Standard_EXPORT static void Commands_6 (Draw_Interpretor& DI);

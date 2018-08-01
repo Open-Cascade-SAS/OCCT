@@ -393,10 +393,22 @@ void OpenGl_Text::Render (const Handle(OpenGl_Context)& theCtx,
                           const OpenGl_AspectText&      theTextAspect,
                           const unsigned int            theResolution) const
 {
+  const bool anAlphaToCoverageOld = theCtx->SetSampleAlphaToCoverage (false);
+#if !defined(GL_ES_VERSION_2_0)
+  const Standard_Integer aPrevPolygonMode  = theCtx->SetPolygonMode (GL_FILL);
+  const bool             aPrevHatchingMode = theCtx->SetPolygonHatchEnabled (false);
+#endif
+
   render (theCtx, theTextAspect,
           theTextAspect.Aspect()->ColorRGBA(),
           theTextAspect.Aspect()->ColorSubTitleRGBA(),
           theResolution);
+
+#if !defined(GL_ES_VERSION_2_0)
+  theCtx->SetPolygonMode         (aPrevPolygonMode);
+  theCtx->SetPolygonHatchEnabled (aPrevHatchingMode);
+#endif
+  theCtx->SetSampleAlphaToCoverage (anAlphaToCoverageOld);
 }
 
 // =======================================================================
@@ -771,9 +783,6 @@ void OpenGl_Text::render (const Handle(OpenGl_Context)& theCtx,
   {
     glDisable (GL_LIGHTING);
   }
-
-  const Standard_Integer aPrevPolygonMode  = theCtx->SetPolygonMode (GL_FILL);
-  const bool             aPrevHatchingMode = theCtx->SetPolygonHatchEnabled (false);
 #endif
 
   // setup depth test
@@ -806,7 +815,6 @@ void OpenGl_Text::render (const Handle(OpenGl_Context)& theCtx,
   // setup blending
   glEnable (GL_BLEND);
   glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-  const bool anAlphaToCoverageOld = theCtx->SetSampleAlphaToCoverage (false);
 
   // extra drawings
   switch (theTextAspect.Aspect()->DisplayType())
@@ -904,11 +912,7 @@ void OpenGl_Text::render (const Handle(OpenGl_Context)& theCtx,
   glDisable (GL_STENCIL_TEST);
 #if !defined(GL_ES_VERSION_2_0)
   glDisable (GL_COLOR_LOGIC_OP);
-
-  theCtx->SetPolygonMode         (aPrevPolygonMode);
-  theCtx->SetPolygonHatchEnabled (aPrevHatchingMode);
 #endif
-  theCtx->SetSampleAlphaToCoverage (anAlphaToCoverageOld);
 
   // model view matrix was modified
   theCtx->WorldViewState.Pop();

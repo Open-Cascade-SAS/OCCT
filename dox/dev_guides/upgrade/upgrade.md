@@ -1678,3 +1678,10 @@ Standard_Boolean meshing_new()
 Some public methods of the class BRepFilletAPI_MakeChamfer are released from excess arguments:
 - method Add for symmetric chamfer now takes only 2 arguments: distance and edge;
 - method GetDistAngle now takes only 3 arguments: index of contour, distance and angle.
+
+@subsection upgrade_740_interiorstyles Interior styles
+
+* *Aspect_IS_HOLLOW* is now an alias to *Aspect_IS_EMPTY* and does not implicitly enables drawing mesh edges anymore.
+  Specify Graphic3d_AspectFillArea3d::SetDrawEdges(true) with Graphic3d_AspectFillArea3d::SetInteriorStyle(Aspect_IS_EMPTY) to get previous behavior of Aspect_IS_HOLLOW style.
+* *Aspect_IS_HIDDENLINE* does not implicitly enables drawing mesh edges anymore.
+  Specify Graphic3d_AspectFillArea3d::SetDrawEdges(true) with Graphic3d_AspectFillArea3d::SetInteriorStyle(Aspect_IS_HIDDENLINE) to get previous behavior of Aspect_IS_HIDDENLINE style.

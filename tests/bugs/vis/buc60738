@@ -2,23 +2,17 @@ puts "========================"
 puts "BUC60738"                
 puts "========================"
 puts ""                                  
-puts "=================================="
-puts "It takes visual check for this BUG"
-puts "=================================="
-                        
-vinit
-BUC60738
+
+vclear
+vinit View1
+vaxo
+
+psphere s 20
+ttranslate s -40 0 0
+vdisplay -dispMode 1 s
 vfit
-vsetdispmode 1
+vaspects s -setInteriorStyle HOLLOW -setDrawEdges 1 -setEdgeType DASH -setEdgeColor GREEN
 
-
-set x_coord 261
-set y_coord 314
-
-checkcolor $x_coord $y_coord 0 1 0
-
-if {$stat != 1} {
-   puts "Error : The style of edge is NOT dash"
-}
-
-checkview -screenshot -3d -path ${imagedir}/${test_image}.png
+checkcolor 261 314 0 1 0
+if {$stat != 1} { puts "Error : The style of edge is NOT dash" }
+vdump $imagedir/${casename}.png

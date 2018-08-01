@@ -28,11 +28,11 @@ OpenGl_Caps::OpenGl_Caps()
 : vboDisable        (Standard_False),
   pntSpritesDisable (Standard_False),
   keepArrayData     (Standard_False),
-#if !defined(GL_ES_VERSION_2_0)
   ffpEnable         (Standard_False),
+  usePolygonMode    (Standard_False),
+#if !defined(GL_ES_VERSION_2_0)
   useSystemBuffer   (Standard_False),
 #else
-  ffpEnable         (Standard_False),
   useSystemBuffer   (Standard_True),
 #endif
   swapInterval      (1),

@@ -155,7 +155,7 @@ OpenGl_Workspace::OpenGl_Workspace (OpenGl_View* theView, const Handle(OpenGl_Wi
   #endif
   }
 
-  myFontFaceAspect.Aspect()->SetAlphaMode (Graphic3d_AlphaMode_Mask, 0.285f);
+  myFontFaceAspect.Aspect()->SetAlphaMode (Graphic3d_AlphaMode_Blend, 0.285f);
   myFontFaceAspect.Aspect()->SetShadingModel (Graphic3d_TOSM_UNLIT);
 
   myNoneCulling .Aspect()->SetSuppressBackFaces (false);
@@ -193,6 +193,14 @@ Standard_Boolean OpenGl_Workspace::Activate()
   {
     myGlContext->ShaderManager()->PushState (Handle(OpenGl_ShaderProgram)());
   }
+
+#if !defined(GL_ES_VERSION_2_0)
+  // font GLSL program has embedded discard, while FFP needs alpha test
+  myFontFaceAspect.Aspect()->SetAlphaMode ((!myGlContext->caps->ffpEnable && myGlContext->core11 != NULL)
+                                          ? Graphic3d_AlphaMode_Blend
+                                          : Graphic3d_AlphaMode_Mask,
+                                           0.285f);
+#endif
   return Standard_True;
 }
 
@@ -316,60 +324,38 @@ const OpenGl_AspectFace* OpenGl_Workspace::ApplyAspectFace()
   }
   myAspectFaceAppliedWithHL = myHighlightStyle;
 
-#if !defined(GL_ES_VERSION_2_0)
-  const Aspect_InteriorStyle anIntstyle = myAspectFaceSet->Aspect()->InteriorStyle();
-  if (myAspectFaceApplied.IsNull()
-   || myAspectFaceApplied->InteriorStyle() != anIntstyle)
-  {
-    switch (anIntstyle)
-    {
-      case Aspect_IS_EMPTY:
-      case Aspect_IS_HOLLOW:
-      {
-        myGlContext->SetPolygonMode (GL_LINE);
-        break;
-      }
-      case Aspect_IS_HATCH:
-      {
-        myGlContext->SetPolygonMode (GL_FILL);
-        myGlContext->SetPolygonHatchEnabled (true);
-        break;
-      }
-      case Aspect_IS_SOLID:
-      case Aspect_IS_HIDDENLINE:
-      {
-        myGlContext->SetPolygonMode (GL_FILL);
-        myGlContext->SetPolygonHatchEnabled (false);
-        break;
-      }
-      case Aspect_IS_POINT:
-      {
-        myGlContext->SetPolygonMode (GL_POINT);
-        break;
-      }
-    }
-  }
-
-  if (anIntstyle == Aspect_IS_HATCH)
-  {
-    myGlContext->SetPolygonHatchStyle (myAspectFaceSet->Aspect()->HatchStyle());
-  }
-#endif
-
   // Aspect_POM_None means: do not change current settings
   if ((myAspectFaceSet->Aspect()->PolygonOffset().Mode & Aspect_POM_None) != Aspect_POM_None)
   {
     myGlContext->SetPolygonOffset (myAspectFaceSet->Aspect()->PolygonOffset());
   }
 
+  const Aspect_InteriorStyle anIntstyle = myAspectFaceSet->Aspect()->InteriorStyle();
+  if (myAspectFaceApplied.IsNull()
+   || myAspectFaceApplied->InteriorStyle() != anIntstyle)
+  {
+  #if !defined(GL_ES_VERSION_2_0)
+    myGlContext->SetPolygonMode (anIntstyle == Aspect_IS_POINT ? GL_POINT : GL_FILL);
+    myGlContext->SetPolygonHatchEnabled (anIntstyle == Aspect_IS_HATCH);
+  #endif
+  }
+
+#if !defined(GL_ES_VERSION_2_0)
+  if (anIntstyle == Aspect_IS_HATCH)
+  {
+    myGlContext->SetPolygonHatchStyle (myAspectFaceSet->Aspect()->HatchStyle());
+  }
+#endif
+
   // Case of hidden line
-  if (myAspectFaceSet->Aspect()->InteriorStyle() == Aspect_IS_HIDDENLINE)
+  if (anIntstyle == Aspect_IS_HIDDENLINE)
   {
     // copy all values including line edge aspect
     *myAspectFaceHl.Aspect() = *myAspectFaceSet->Aspect();
     myAspectFaceHl.SetAspectEdge (myAspectFaceSet->AspectEdge());
     myAspectFaceHl.Aspect()->SetShadingModel (Graphic3d_TOSM_UNLIT);
     myAspectFaceHl.Aspect()->SetInteriorColor (myView->BackgroundColor().GetRGB());
+    myAspectFaceHl.Aspect()->SetDistinguish (false);
     myAspectFaceHl.SetNoLighting();
     myAspectFaceSet = &myAspectFaceHl;
   }

@@ -167,6 +167,7 @@ void OpenGl_View::Redraw()
   Graphic3d_Camera::Projection aProjectType = myCamera->ProjectionType();
   Handle(OpenGl_Context)       aCtx         = myWorkspace->GetGlContext();
   aCtx->FrameStats()->FrameStart (myWorkspace->View(), false);
+  aCtx->SetLineFeather (myRenderParams.LineFeather);
 
   // release pending GL resources
   aCtx->ReleaseDelayed();
@@ -878,7 +879,9 @@ void OpenGl_View::render (Graphic3d_Camera::Projection theProjection,
   // ==================================
 
   const Handle(OpenGl_Context)& aContext = myWorkspace->GetGlContext();
-  aContext->SetSampleAlphaToCoverage (myRenderParams.ToEnableAlphaToCoverage);
+  aContext->SetAllowSampleAlphaToCoverage (myRenderParams.ToEnableAlphaToCoverage
+                                        && theOutputFBO != NULL
+                                        && theOutputFBO->NbSamples() != 0);
 
 #if !defined(GL_ES_VERSION_2_0)
   // Disable current clipping planes
@@ -1043,6 +1046,7 @@ void OpenGl_View::render (Graphic3d_Camera::Projection theProjection,
   }
 
   myWorkspace->ResetAppliedAspect();
+  aContext->SetAllowSampleAlphaToCoverage (false);
   aContext->SetSampleAlphaToCoverage (false);
 
   // reset FFP state for safety

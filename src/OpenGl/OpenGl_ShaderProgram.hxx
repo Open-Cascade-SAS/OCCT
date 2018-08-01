@@ -75,6 +75,13 @@ enum OpenGl_StateVariable
   OpenGl_OCCT_TEXTURE_TRSF2D,
   OpenGl_OCCT_POINT_SIZE,
 
+  // Wireframe state
+  OpenGl_OCCT_VIEWPORT,
+  OpenGl_OCCT_LINE_WIDTH,
+  OpenGl_OCCT_LINE_FEATHER,
+  OpenGl_OCCT_WIREFRAME_COLOR,
+  OpenGl_OCCT_QUAD_MODE_STATE,
+
   // DON'T MODIFY THIS ITEM (insert new items before it)
   OpenGl_OCCT_NUMBER_OF_STATE_VARIABLES
 };
@@ -131,6 +138,34 @@ enum OpenGl_UniformStateType
   OpenGl_SURF_DETAIL_STATE,
   OpenGL_OIT_STATE,
   OpenGl_UniformStateType_NB
+};
+
+//! Simple class represents GLSL program variable location.
+class OpenGl_ShaderUniformLocation
+{
+public:
+  //! Invalid location of uniform/attribute variable.
+  static const GLint INVALID_LOCATION = -1;
+public:
+
+  //! Construct an invalid location.
+  OpenGl_ShaderUniformLocation() : myLocation (INVALID_LOCATION) {}
+
+  //! Constructor with initialization.
+  explicit OpenGl_ShaderUniformLocation (GLint theLocation) : myLocation (theLocation) {}
+
+  //! Note you may safely put invalid location in functions like glUniform* - the data passed in will be silently ignored.
+  //! @return true if location is not equal to -1.
+  bool IsValid() const { return myLocation != INVALID_LOCATION; }
+
+  //! Return TRUE for non-invalid location.
+  operator bool() const { return myLocation != INVALID_LOCATION; }
+
+  //! Convert operators help silently put object to GL functions like glUniform*.
+  operator GLint() const { return myLocation; }
+
+private:
+  GLint myLocation;
 };
 
 //! Wrapper for OpenGL program object.
@@ -270,15 +305,15 @@ private:
 public:
 
   //! Returns location of the specific uniform variable.
-  Standard_EXPORT GLint GetUniformLocation (const Handle(OpenGl_Context)& theCtx,
-                                            const GLchar*                 theName) const;
+  Standard_EXPORT OpenGl_ShaderUniformLocation GetUniformLocation (const Handle(OpenGl_Context)& theCtx,
+                                                                   const GLchar*                 theName) const;
 
   //! Returns index of the generic vertex attribute by variable name.
   Standard_EXPORT GLint GetAttributeLocation (const Handle(OpenGl_Context)& theCtx,
                                               const GLchar*                 theName) const;
 
   //! Returns location of the OCCT state uniform variable.
-  Standard_EXPORT GLint GetStateLocation (const GLuint theVariable) const;
+  const OpenGl_ShaderUniformLocation& GetStateLocation (OpenGl_StateVariable theVariable) const { return myStateLocations[theVariable]; }
 
 public:
 
@@ -603,7 +638,7 @@ protected:
   Standard_Size myCurrentState[OpenGl_UniformStateType_NB]; //!< defines last modification for variables of each state type
 
   //! Stores locations of OCCT state uniform variables.
-  GLint myStateLocations[OpenGl_OCCT_NUMBER_OF_STATE_VARIABLES];
+  OpenGl_ShaderUniformLocation myStateLocations[OpenGl_OCCT_NUMBER_OF_STATE_VARIABLES];
 
 };
 

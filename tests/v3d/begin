@@ -1,8 +1,8 @@
 cpulimit 300
 set group "v3d"
 
-pload VISUALIZATION
-pload TOPTEST
+pload VISUALIZATION TOPTEST
+vgldebug -glslWarn 1
 
 if { [info exists imagedir] == 0 } {
   set imagedir .

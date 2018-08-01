@@ -350,77 +350,12 @@ bool AIS_Shape::setColor (const Handle(Prs3d_Drawer)& theDrawer,
                           const Quantity_Color&       theColor) const
 {
   bool toRecompute = false;
-  if (!theDrawer->HasOwnShadingAspect())
+  toRecompute = theDrawer->SetupOwnShadingAspect() || toRecompute;
+  toRecompute = theDrawer->SetOwnLineAspects() || toRecompute;
+
+  if (theDrawer->SetupOwnPointAspect())
   {
     toRecompute = true;
-    theDrawer->SetShadingAspect (new Prs3d_ShadingAspect());
-    if (theDrawer->HasLink())
-    {
-      *theDrawer->ShadingAspect()->Aspect() = *theDrawer->Link()->ShadingAspect()->Aspect();
-    }
-  }
-  if (!theDrawer->HasOwnLineAspect())
-  {
-    toRecompute = true;
-    theDrawer->SetLineAspect (new Prs3d_LineAspect (Quantity_NOC_BLACK, Aspect_TOL_SOLID, 1.0));
-    if (theDrawer->HasLink())
-    {
-      *theDrawer->LineAspect()->Aspect() = *theDrawer->Link()->LineAspect()->Aspect();
-    }
-  }
-  if (!theDrawer->HasOwnWireAspect())
-  {
-    toRecompute = true;
-    theDrawer->SetWireAspect (new Prs3d_LineAspect (Quantity_NOC_BLACK, Aspect_TOL_SOLID, 1.0));
-    if (theDrawer->HasLink())
-    {
-      *theDrawer->WireAspect()->Aspect() = *theDrawer->Link()->WireAspect()->Aspect();
-    }
-  }
-  if (!theDrawer->HasOwnPointAspect())
-  {
-    toRecompute = true;
-    theDrawer->SetPointAspect (new Prs3d_PointAspect (Aspect_TOM_PLUS, Quantity_NOC_BLACK, 1.0));
-    if (theDrawer->HasLink())
-    {
-      *theDrawer->PointAspect()->Aspect() = *theDrawer->Link()->PointAspect()->Aspect();
-    }
-  }
-  if (!theDrawer->HasOwnFreeBoundaryAspect())
-  {
-    toRecompute = true;
-    theDrawer->SetFreeBoundaryAspect (new Prs3d_LineAspect (Quantity_NOC_BLACK, Aspect_TOL_SOLID, 1.0));
-    if (theDrawer->HasLink())
-    {
-      *theDrawer->FreeBoundaryAspect()->Aspect() = *theDrawer->Link()->FreeBoundaryAspect()->Aspect();
-    }
-  }
-  if (!theDrawer->HasOwnUnFreeBoundaryAspect())
-  {
-    toRecompute = true;
-    theDrawer->SetUnFreeBoundaryAspect (new Prs3d_LineAspect (Quantity_NOC_BLACK, Aspect_TOL_SOLID, 1.0));
-    if (theDrawer->HasLink())
-    {
-      *theDrawer->UnFreeBoundaryAspect()->Aspect() = *theDrawer->Link()->UnFreeBoundaryAspect()->Aspect();
-    }
-  }
-  if (!theDrawer->HasOwnSeenLineAspect())
-  {
-    toRecompute = true;
-    theDrawer->SetSeenLineAspect (new Prs3d_LineAspect (Quantity_NOC_BLACK, Aspect_TOL_SOLID, 1.0));
-    if (theDrawer->HasLink())
-    {
-      *theDrawer->SeenLineAspect()->Aspect() = *theDrawer->Link()->SeenLineAspect()->Aspect();
-    }
-  }
-  if (!theDrawer->HasOwnFaceBoundaryAspect())
-  {
-    toRecompute = true;
-    theDrawer->SetFaceBoundaryAspect (new Prs3d_LineAspect (Quantity_NOC_BLACK, Aspect_TOL_SOLID, 1.0));
-    if (theDrawer->HasLink())
-    {
-      *theDrawer->FaceBoundaryAspect()->Aspect() = *theDrawer->Link()->FaceBoundaryAspect()->Aspect();
-    }
   }
 
   // override color
@@ -614,61 +549,7 @@ void AIS_Shape::UnsetColor()
 bool AIS_Shape::setWidth (const Handle(Prs3d_Drawer)& theDrawer,
                           const Standard_Real         theLineWidth) const
 {
-  bool toRecompute = false;
-  if (!theDrawer->HasOwnLineAspect())
-  {
-    toRecompute = true;
-    theDrawer->SetLineAspect (new Prs3d_LineAspect (Quantity_NOC_BLACK, Aspect_TOL_SOLID, 1.0));
-    if (theDrawer->HasLink())
-    {
-      *theDrawer->LineAspect()->Aspect() = *theDrawer->Link()->LineAspect()->Aspect();
-    }
-  }
-  if (!theDrawer->HasOwnWireAspect())
-  {
-    toRecompute = true;
-    theDrawer->SetWireAspect (new Prs3d_LineAspect (Quantity_NOC_BLACK, Aspect_TOL_SOLID, 1.0));
-    if (theDrawer->HasLink())
-    {
-      *theDrawer->WireAspect()->Aspect() = *theDrawer->Link()->WireAspect()->Aspect();
-    }
-  }
-  if (!theDrawer->HasOwnFreeBoundaryAspect())
-  {
-    toRecompute = true;
-    theDrawer->SetFreeBoundaryAspect (new Prs3d_LineAspect (Quantity_NOC_BLACK, Aspect_TOL_SOLID, 1.0));
-    if (theDrawer->HasLink())
-    {
-      *theDrawer->FreeBoundaryAspect()->Aspect() = *theDrawer->Link()->FreeBoundaryAspect()->Aspect();
-    }
-  }
-  if (!theDrawer->HasOwnUnFreeBoundaryAspect())
-  {
-    toRecompute = true;
-    theDrawer->SetUnFreeBoundaryAspect (new Prs3d_LineAspect (Quantity_NOC_BLACK, Aspect_TOL_SOLID, 1.0));
-    if (theDrawer->HasLink())
-    {
-      *theDrawer->UnFreeBoundaryAspect()->Aspect() = *theDrawer->Link()->UnFreeBoundaryAspect()->Aspect();
-    }
-  }
-  if (!theDrawer->HasOwnSeenLineAspect())
-  {
-    toRecompute = true;
-    theDrawer->SetSeenLineAspect (new Prs3d_LineAspect (Quantity_NOC_BLACK, Aspect_TOL_SOLID, 1.0));
-    if (theDrawer->HasLink())
-    {
-      *theDrawer->SeenLineAspect()->Aspect() = *theDrawer->Link()->SeenLineAspect()->Aspect();
-    }
-  }
-  if (!theDrawer->HasOwnFaceBoundaryAspect())
-  {
-    toRecompute = true;
-    theDrawer->SetFaceBoundaryAspect (new Prs3d_LineAspect (Quantity_NOC_BLACK, Aspect_TOL_SOLID, 1.0));
-    if (theDrawer->HasLink())
-    {
-      *theDrawer->FaceBoundaryAspect()->Aspect() = *theDrawer->Link()->FaceBoundaryAspect()->Aspect();
-    }
-  }
+  bool toRecompute = theDrawer->SetOwnLineAspects();
 
   // override width
   theDrawer->LineAspect()->SetWidth (theLineWidth);
@@ -758,14 +639,7 @@ void AIS_Shape::setMaterial (const Handle(Prs3d_Drawer)&     theDrawer,
 {
   const Quantity_Color aColor  = theDrawer->ShadingAspect()->Material     (myCurrentFacingModel).Color();
   const Standard_Real  aTransp = theDrawer->ShadingAspect()->Transparency (myCurrentFacingModel);
-  if (!theDrawer->HasOwnShadingAspect())
-  {
-    theDrawer->SetShadingAspect (new Prs3d_ShadingAspect());
-    if (theDrawer->HasLink())
-    {
-      *theDrawer->ShadingAspect()->Aspect() = *theDrawer->Link()->ShadingAspect()->Aspect();
-    }
-  }
+  theDrawer->SetupOwnShadingAspect();
   theDrawer->ShadingAspect()->SetMaterial (theMaterial, myCurrentFacingModel);
 
   if (theToKeepColor)
@@ -889,15 +763,7 @@ void AIS_Shape::UnsetMaterial()
 void AIS_Shape::setTransparency (const Handle(Prs3d_Drawer)& theDrawer,
                                  const Standard_Real         theValue) const
 {
-  if (!theDrawer->HasOwnShadingAspect())
-  {
-    theDrawer->SetShadingAspect (new Prs3d_ShadingAspect());
-    if (theDrawer->HasLink())
-    {
-      *theDrawer->ShadingAspect()->Aspect() = *theDrawer->Link()->ShadingAspect()->Aspect();
-    }
-  }
-
+  theDrawer->SetupOwnShadingAspect();
   // override transparency
   theDrawer->ShadingAspect()->SetTransparency (theValue, myCurrentFacingModel);
 }

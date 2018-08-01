@@ -1,27 +1,18 @@
 puts "============"
-puts "OCC23363"
+puts "0023363: Lost gradient background when switching to the hollow interior style"
 puts "============"
 puts ""
-####################################################################################
-# [Regression] Lost gradient background when switching to the hollow interior style
-####################################################################################
 
-set BugNumber OCC23363
-
-vinit
+vclear
+vinit View1
+vaxo
 vsetgradientbg 250 0 0 0 255 0 2
 pcylinder p 100 200
-vdisplay p
-vsetdispmode p 1
-vsetinteriorstyle p 1
+vdisplay -dispMode 1 p
+vaspects p -setInteriorStyle HOLLOW -setDrawEdges 1
 
-puts ""
 set color1 [vreadpixel 10 0 rgb]
 set rd1 [lindex $color1 0]
-if { $rd1 == 0 } {
-  puts "Faulty ${BugNumber}"
-} else {
-  puts "OK ${BugNumber}"
-}
+if { $rd1 == 0 } { puts "Faulty ${BugNumber}" }
 
 checkview -screenshot -3d -path ${imagedir}/${test_image}.png

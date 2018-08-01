@@ -58,6 +58,11 @@ Handle(Graphic3d_ShaderObject) OpenGl_ShaderObject::CreateFromSource (TCollectio
                                                                       const TCollection_AsciiString& theOutName,
                                                                       Standard_Integer theNbGeomInputVerts)
 {
+  if (theSource.IsEmpty())
+  {
+    return Handle(Graphic3d_ShaderObject)();
+  }
+
   TCollection_AsciiString aSrcUniforms, aSrcInOuts, aSrcInStructs, aSrcOutStructs;
   for (ShaderVariableList::Iterator anUniformIter (theUniforms); anUniformIter.More(); anUniformIter.Next())
   {
@@ -90,12 +95,15 @@ Handle(Graphic3d_ShaderObject) OpenGl_ShaderObject::CreateFromSource (TCollectio
     const Standard_Boolean hasGeomStage = theNbGeomInputVerts > 0
                                        && aStageLower <  Graphic3d_TOS_GEOMETRY
                                        && aStageUpper >= Graphic3d_TOS_GEOMETRY;
+    const Standard_Boolean isAllStagesVar = aStageLower == Graphic3d_TOS_VERTEX
+                                         && aStageUpper == Graphic3d_TOS_FRAGMENT;
     if (hasGeomStage
     || !theInName.IsEmpty()
     || !theOutName.IsEmpty())
     {
       if (aSrcInStructs.IsEmpty()
-       && aSrcOutStructs.IsEmpty())
+       && aSrcOutStructs.IsEmpty()
+       && isAllStagesVar)
       {
         if (theType == aStageLower)
         {
@@ -113,8 +121,9 @@ Handle(Graphic3d_ShaderObject) OpenGl_ShaderObject::CreateFromSource (TCollectio
       }
     }
 
-    if (!aSrcInStructs.IsEmpty()
-     || !aSrcOutStructs.IsEmpty())
+    if (isAllStagesVar
+     && (!aSrcInStructs.IsEmpty()
+      || !aSrcOutStructs.IsEmpty()))
     {
       if (!aSrcInStructs.IsEmpty())
       {
@@ -138,6 +147,12 @@ Handle(Graphic3d_ShaderObject) OpenGl_ShaderObject::CreateFromSource (TCollectio
     }
   }
 
+  if (theType == Graphic3d_TOS_GEOMETRY)
+  {
+    aSrcUniforms.Prepend (TCollection_AsciiString()
+                        + "\nlayout (triangles) in;"
+                          "\nlayout (triangle_strip, max_vertices = " + theNbGeomInputVerts + ") out;");
+  }
   if (!aSrcInStructs.IsEmpty()
    && theType == Graphic3d_TOS_GEOMETRY)
   {
@@ -153,10 +168,10 @@ Handle(Graphic3d_ShaderObject) OpenGl_ShaderObject::CreateFromSource (TCollectio
     }
     aSrcInStructs += ";";
   }
-  else if (!aSrcOutStructs.IsEmpty())
+  if (!aSrcOutStructs.IsEmpty())
   {
     aSrcOutStructs += "\n}";
-    if (!theInName.IsEmpty())
+    if (!theOutName.IsEmpty())
     {
       aSrcOutStructs += " ";
       aSrcOutStructs += theOutName;

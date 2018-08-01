@@ -465,6 +465,8 @@ Standard_Integer OpenGl_GraphicDriver::InquireLimit (const Graphic3d_TypeOfLimit
       return !aCtx.IsNull() && aCtx->hasFlatShading != OpenGl_FeatureNotAvailable ? 1 : 0;
     case Graphic3d_TypeOfLimit_IsWorkaroundFBO:
       return !aCtx.IsNull() && aCtx->MaxTextureSize() != aCtx->MaxDumpSizeX() ? 1 : 0;
+    case Graphic3d_TypeOfLimit_HasMeshEdges:
+      return !aCtx.IsNull() && aCtx->hasGeometryStage != OpenGl_FeatureNotAvailable ? 1 : 0;
     case Graphic3d_TypeOfLimit_NB:
       return 0;
   }

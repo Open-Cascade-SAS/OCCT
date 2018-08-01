@@ -662,6 +662,12 @@ public: //! @name methods to alter or retrieve current state
   //! Enable/disable writing into color buffer (wrapper for glColorMask).
   Standard_EXPORT bool SetColorMask (bool theToWriteColor);
 
+  //! Return TRUE if GL_SAMPLE_ALPHA_TO_COVERAGE usage is allowed.
+  bool AllowSampleAlphaToCoverage() const { return myAllowAlphaToCov; }
+
+  //! Allow GL_SAMPLE_ALPHA_TO_COVERAGE usage.
+  void SetAllowSampleAlphaToCoverage (bool theToEnable) { myAllowAlphaToCov = theToEnable; }
+
   //! Return GL_SAMPLE_ALPHA_TO_COVERAGE state.
   bool SampleAlphaToCoverage() const { return myAlphaToCoverage; }
 
@@ -777,6 +783,9 @@ public: //! @name methods to alter or retrieve current state
   //! Rendering scale factor (inverted value).
   Standard_ShortReal RenderScaleInv() const { return myRenderScaleInv; }
 
+  //! Return scale factor for line width.
+  Standard_ShortReal LineWidthScale() const { return myLineWidthScale; }
+
   //! Set resolution ratio.
   //! Note that this method rounds @theRatio to nearest integer.
   void SetResolution (unsigned int theResolution,
@@ -796,6 +805,12 @@ public: //! @name methods to alter or retrieve current state
     myResolutionRatio = theRatio;
     myLineWidthScale  = Max (1.0f, std::floor (theRatio + 0.5f));
   }
+
+  //! Return line feater width in pixels.
+  Standard_ShortReal LineFeather() const { return myLineFeather; }
+
+  //! Set line feater width.
+  void SetLineFeather(Standard_ShortReal theValue) { myLineFeather = theValue; }
 
   //! Return Graphics Driver's vendor.
   const TCollection_AsciiString& Vendor() const { return myVendor; }
@@ -848,6 +863,7 @@ public: //! @name extensions
   OpenGl_FeatureFlag     hasFloatBuffer;     //!< Complex flag indicating support of float color buffer format (desktop OpenGL 3.0, GL_ARB_color_buffer_float, GL_EXT_color_buffer_float)
   OpenGl_FeatureFlag     hasHalfFloatBuffer; //!< Complex flag indicating support of half-float color buffer format (desktop OpenGL 3.0, GL_ARB_color_buffer_float, GL_EXT_color_buffer_half_float)
   OpenGl_FeatureFlag     hasSampleVariables; //!< Complex flag indicating support of MSAA variables in GLSL shader (desktop OpenGL 4.0, GL_ARB_sample_shading)
+  OpenGl_FeatureFlag     hasGeometryStage;   //!< Complex flag indicating support of Geometry shader (desktop OpenGL 3.2, OpenGL ES 3.2, GL_EXT_geometry_shader)
   Standard_Boolean       arbDrawBuffers;     //!< GL_ARB_draw_buffers
   Standard_Boolean       arbNPTW;            //!< GL_ARB_texture_non_power_of_two
   Standard_Boolean       arbTexRG;           //!< GL_ARB_texture_rg
@@ -958,6 +974,7 @@ private: //! @name fields tracking current state
                                 myDrawBuffers;     //!< current draw buffers
   unsigned int                  myDefaultVao;      //!< default Vertex Array Object
   Standard_Boolean              myColorMask;       //!< flag indicating writing into color buffer is enabled or disabled (glColorMask)
+  Standard_Boolean              myAllowAlphaToCov; //!< flag allowing   GL_SAMPLE_ALPHA_TO_COVERAGE usage
   Standard_Boolean              myAlphaToCoverage; //!< flag indicating GL_SAMPLE_ALPHA_TO_COVERAGE state
   Standard_Boolean              myIsGlDebugCtx;    //!< debug context initialization state
   TCollection_AsciiString       myVendor;          //!< Graphics Driver's vendor
@@ -966,6 +983,7 @@ private: //! @name fields tracking current state
   Standard_ShortReal            myResolutionRatio; //!< scaling factor for parameters like text size
                                                    //!  to be properly displayed on device (screen / printer)
   Standard_ShortReal            myLineWidthScale;  //!< scaling factor for line width
+  Standard_ShortReal            myLineFeather;     //!< line feater width in pixels
   Standard_ShortReal            myRenderScale;     //!< scaling factor for rendering resolution
   Standard_ShortReal            myRenderScaleInv;  //!< scaling factor for rendering resolution (inverted value)
   OpenGl_Material               myMatFront;        //!< current front material state (cached to reduce GL context updates)

@@ -28,7 +28,7 @@
 #include <TColStd_HArray1OfTransient.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <TopTools_HArray1OfShape.hxx>
-#include <Quantity_Color.hxx>
+#include <Quantity_ColorRGBA.hxx>
 
 class AIS_InteractiveContext;
 class AIS_InteractiveObject;
@@ -152,14 +152,32 @@ public:
 
   Standard_EXPORT static Quantity_NameOfColor GetColorFromName (const Standard_CString name);
 
-  //! Parses color argument(s) specified within theArgVec[0], theArgVec[1] and theArgVec[2].
+  //! Parses RGB(A) color argument(s) specified within theArgVec[0], theArgVec[1], theArgVec[2] and theArgVec[3].
   //! Handles either color specified by name (single argument)
-  //! or by RGB components (3 arguments) in range 0..1.
+  //! or by RGB(A) components (3-4 arguments) in range 0..1.
   //! The result is stored in theColor on success.
+  //! Returns number of handled arguments (1, 3 or 4) or 0 on syntax error.
+  static Standard_Integer ParseColor (Standard_Integer  theArgNb,
+                                      const char**      theArgVec,
+                                      Quantity_ColorRGBA& theColor)
+  {
+    return parseColor (theArgNb, theArgVec, theColor, true);
+  }
+
+  //! Parses RGB color argument(s).
   //! Returns number of handled arguments (1 or 3) or 0 on syntax error.
-  Standard_EXPORT static Standard_Integer ParseColor (Standard_Integer theArgNb,
-                                                      const char**     theArgVec,
-                                                      Quantity_Color&  theColor);
+  static Standard_Integer ParseColor (Standard_Integer theArgNb,
+                                      const char**     theArgVec,
+                                      Quantity_Color&  theColor)
+  {
+    Quantity_ColorRGBA anRgba;
+    Standard_Integer aNbParsed = parseColor (theArgNb, theArgVec, anRgba, false);
+    if (aNbParsed != 0)
+    {
+      theColor = anRgba.GetRGB();
+    }
+    return aNbParsed;
+  }
 
   //! redraws all defined views.
   Standard_EXPORT static void RedrawAllViews();
@@ -196,6 +214,16 @@ public:
                                                              Graphic3d_TypeOfShadingModel& theModel);
 
 private:
+
+  //! Parses RGB(A) color argument(s) specified within theArgVec[0], theArgVec[1], theArgVec[2] and theArgVec[3].
+  //! Handles either color specified by name (single argument)
+  //! or by RGB(A) components (3-4 arguments) in range 0..1.
+  //! The result is stored in theColor on success.
+  //! Returns number of handled arguments (1, 3 or 4) or 0 on syntax error.
+  Standard_EXPORT static Standard_Integer parseColor (Standard_Integer  theArgNb,
+                                                      const char**      theArgVec,
+                                                      Quantity_ColorRGBA& theColor,
+                                                      bool theToParseAlpha);
 
   //! Returns a window class that implements standard behavior of
   //! all windows of the ViewerTest. This includes usual Open CASCADE

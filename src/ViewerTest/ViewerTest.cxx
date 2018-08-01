@@ -93,51 +93,65 @@ Quantity_NameOfColor ViewerTest::GetColorFromName (const Standard_CString theNam
   return aColor;
 }
 
+
 //=======================================================================
-//function : ParseColor
+//function : parseColor
 //purpose  :
 //=======================================================================
-
-Standard_Integer ViewerTest::ParseColor (Standard_Integer  theArgNb,
+Standard_Integer ViewerTest::parseColor (Standard_Integer  theArgNb,
                                          const char**      theArgVec,
-                                         Quantity_Color&   theColor)
+                                         Quantity_ColorRGBA& theColor,
+                                         bool theToParseAlpha)
 {
   Quantity_NameOfColor aColor = Quantity_NOC_BLACK;
   if (theArgNb >= 1
    && Quantity_Color::ColorFromName (theArgVec[0], aColor))
   {
-    theColor = aColor;
+    theColor = Quantity_ColorRGBA (aColor);
+    if (theArgNb >= 2
+     && theToParseAlpha)
+    {
+      const TCollection_AsciiString anAlphaStr (theArgVec[1]);
+      if (anAlphaStr.IsRealValue())
+      {
+        float anAlpha = (float )anAlphaStr.RealValue();
+        if (anAlpha < 0.0f || anAlpha > 1.0f)
+        {
+          std::cout << "Syntax error: alpha should be within range 0..1!\n";
+          return 0;
+        }
+        return 2;
+      }
+    }
     return 1;
   }
   else if (theArgNb >= 3)
   {
-    const TCollection_AsciiString anRgbStr[3] =
+    Graphic3d_Vec4 anRgba;
+    Standard_Integer aNbComps = Min (theArgNb, theToParseAlpha ? 4 : 3);
+    for (int aCompIter = 0; aCompIter < aNbComps; ++aCompIter)
     {
-      theArgVec[0],
-      theArgVec[1],
-      theArgVec[2]
-    };
-    if (!anRgbStr[0].IsRealValue()
-     || !anRgbStr[1].IsRealValue()
-     || !anRgbStr[2].IsRealValue())
-    {
-      return 0;
-    }
+      const TCollection_AsciiString anRgbaStr (theArgVec[aCompIter]);
+      if (!anRgbaStr.IsRealValue())
+      {
+        if (aCompIter == 3)
+        {
+          anRgba.a() = 1.0f;
+          aNbComps = 3;
+          break;
+        }
+        return 0;
+      }
 
-    Graphic3d_Vec4d anRgb;
-    anRgb.x() = anRgbStr[0].RealValue();
-    anRgb.y() = anRgbStr[1].RealValue();
-    anRgb.z() = anRgbStr[2].RealValue();
-    if (anRgb.x() < 0.0 || anRgb.x() > 1.0
-     || anRgb.y() < 0.0 || anRgb.y() > 1.0
-     || anRgb.z() < 0.0 || anRgb.z() > 1.0)
-    {
-      std::cout << "Error: RGB color values should be within range 0..1!\n";
-      return 0;
+      anRgba[aCompIter] = (float )anRgbaStr.RealValue();
+      if (anRgba[aCompIter] < 0.0 || anRgba[aCompIter] > 1.0)
+      {
+        std::cout << "Error: RGBA color values should be within range 0..1!\n";
+        return 0;
+      }
     }
-
-    theColor.SetValues (anRgb.x(), anRgb.y(), anRgb.z(), Quantity_TOC_RGB);
-    return 3;
+    theColor = Quantity_ColorRGBA (anRgba);
+    return aNbComps;
   }
 
   return 0;
@@ -212,14 +226,18 @@ Standard_Boolean ViewerTest::ParseLineType (Standard_CString   theArg,
   {
     theType = Aspect_TOL_DOTDASH;
   }
-  else
+  else if (aTypeStr.IsIntegerValue())
   {
-    const int aTypeInt = Draw::Atoi (theArg);
+    const int aTypeInt = aTypeStr.IntegerValue();
     if (aTypeInt < -1 || aTypeInt >= Aspect_TOL_USERDEFINED)
     {
       return Standard_False;
     }
     theType = (Aspect_TypeOfLine )aTypeInt;
+  }
+  else
+  {
+    return Standard_False;
   }
   return Standard_True;
 }
@@ -1492,106 +1510,52 @@ private:
 
 };
 
-//==============================================================================
-//function : VInteriorStyle
-//purpose  : sets interior style of the a selected or named or displayed shape
-//==============================================================================
-static int VSetInteriorStyle (Draw_Interpretor& theDI,
-                              Standard_Integer  theArgNb,
-                              const char**      theArgVec)
+//! Parse interior style name.
+static bool parseInteriorStyle (const TCollection_AsciiString& theArg,
+                                Aspect_InteriorStyle& theStyle)
 {
-  const Handle(AIS_InteractiveContext)& aCtx = ViewerTest::GetAISContext();
-  ViewerTest_AutoUpdater anUpdateTool (aCtx, ViewerTest::CurrentView());
-  if (aCtx.IsNull())
+  TCollection_AsciiString anArg (theArg);
+  anArg.LowerCase();
+  if (anArg == "empty")
   {
-    std::cerr << "Error: no active view!\n";
-    return 1;
+    theStyle = Aspect_IS_EMPTY;
   }
-
-  Standard_Integer anArgIter = 1;
-  for (; anArgIter < theArgNb; ++anArgIter)
+  else if (anArg == "hollow")
   {
-    if (!anUpdateTool.parseRedrawMode (theArgVec[anArgIter]))
+    theStyle = Aspect_IS_HOLLOW;
+  }
+  else if (anArg == "solid")
+  {
+    theStyle = Aspect_IS_SOLID;
+  }
+  else if (anArg == "hatch")
+  {
+    theStyle = Aspect_IS_HATCH;
+  }
+  else if (anArg == "hiddenline"
+        || anArg == "hidden-line"
+        || anArg == "hidden_line")
+  {
+    theStyle = Aspect_IS_HIDDENLINE;
+  }
+  else if (anArg == "point")
+  {
+    theStyle = Aspect_IS_POINT;
+  }
+  else if (theArg.IsIntegerValue())
+  {
+    const Standard_Integer anIntStyle = theArg.IntegerValue();
+    if (anIntStyle < Aspect_IS_EMPTY || anIntStyle > Aspect_IS_POINT)
     {
-      break;
+      return false;
     }
-  }
-  TCollection_AsciiString aName;
-  if (theArgNb - anArgIter == 2)
-  {
-    aName = theArgVec[anArgIter++];
-  }
-  else if (theArgNb - anArgIter != 1)
-  {
-    std::cout << "Error: wrong number of arguments! See usage:\n";
-    theDI.PrintHelp (theArgVec[0]);
-    return 1;
-  }
-  Aspect_InteriorStyle    anInterStyle = Aspect_IS_SOLID;
-  TCollection_AsciiString aStyleArg (theArgVec[anArgIter++]);
-  aStyleArg.LowerCase();
-  if (aStyleArg == "empty")
-  {
-    anInterStyle = Aspect_IS_EMPTY;
-  }
-  else if (aStyleArg == "hollow")
-  {
-    anInterStyle = Aspect_IS_HOLLOW;
-  }
-  else if (aStyleArg == "hatch")
-  {
-    anInterStyle = Aspect_IS_HATCH;
-  }
-  else if (aStyleArg == "solid")
-  {
-    anInterStyle = Aspect_IS_SOLID;
-  }
-  else if (aStyleArg == "hiddenline")
-  {
-    anInterStyle = Aspect_IS_HIDDENLINE;
-  }
-  else if (aStyleArg == "point")
-  {
-    anInterStyle = Aspect_IS_POINT;
+    theStyle = (Aspect_InteriorStyle)anIntStyle;
   }
   else
   {
-    const Standard_Integer anIntStyle = aStyleArg.IntegerValue();
-    if (anIntStyle < Aspect_IS_EMPTY
-     || anIntStyle > Aspect_IS_POINT)
-    {
-      std::cout << "Error: style must be within a range [0 (Aspect_IS_EMPTY), "
-                << Aspect_IS_POINT << " (Aspect_IS_POINT)]\n";
-      return 1;
-    }
-    anInterStyle = (Aspect_InteriorStyle )anIntStyle;
+    return false;
   }
-
-  if (!aName.IsEmpty()
-   && !GetMapOfAIS().IsBound2 (aName))
-  {
-    std::cout << "Error: object " << aName << " is not displayed!\n";
-    return 1;
-  }
-
-  for (ViewTest_PrsIter anIter (aName); anIter.More(); anIter.Next())
-  {
-    const Handle(AIS_InteractiveObject)& anIO = anIter.Current();
-    if (!anIO.IsNull())
-    {
-      const Handle(Prs3d_Drawer)& aDrawer        = anIO->Attributes();
-      Handle(Prs3d_ShadingAspect) aShadingAspect = aDrawer->ShadingAspect();
-      Handle(Graphic3d_AspectFillArea3d) aFillAspect = aShadingAspect->Aspect();
-      aFillAspect->SetInteriorStyle (anInterStyle);
-      if (anInterStyle == Aspect_IS_HATCH
-       && aFillAspect->HatchStyle().IsNull())
-      {
-        aFillAspect->SetHatchStyle (Aspect_HS_VERTICAL);
-      }
-      aCtx->RecomputePrsOnly (anIO, Standard_False, Standard_True);
-    }
-  }
-  return 0;
+  return true;
 }
 
 //! Auxiliary structure for VAspects
@@ -1652,6 +1616,21 @@ struct ViewerTest_AspectsChangeSet
   Graphic3d_TypeOfShadingModel ShadingModel;
   TCollection_AsciiString      ShadingModelName;
 
+  Standard_Integer             ToSetInterior;
+  Aspect_InteriorStyle         InteriorStyle;
+
+  Standard_Integer             ToSetDrawEdges;
+  Standard_Integer             ToSetQuadEdges;
+
+  Standard_Integer             ToSetEdgeColor;
+  Quantity_ColorRGBA           EdgeColor;
+
+  Standard_Integer             ToSetEdgeWidth;
+  Standard_Real                EdgeWidth;
+
+  Standard_Integer             ToSetTypeOfEdge;
+  Aspect_TypeOfLine            TypeOfEdge;
+
   //! Empty constructor
   ViewerTest_AspectsChangeSet()
   : ToSetVisibility   (0),
@@ -1687,7 +1666,16 @@ struct ViewerTest_AspectsChangeSet
     ToSetHatch                 (0),
     StdHatchStyle              (-1),
     ToSetShadingModel          (0),
-    ShadingModel               (Graphic3d_TOSM_DEFAULT)
+    ShadingModel               (Graphic3d_TOSM_DEFAULT),
+    ToSetInterior              (0),
+    InteriorStyle              (Aspect_IS_SOLID),
+    ToSetDrawEdges    (0),
+    ToSetQuadEdges    (0),
+    ToSetEdgeColor    (0),
+    ToSetEdgeWidth    (0),
+    EdgeWidth         (1.0),
+    ToSetTypeOfEdge   (0),
+    TypeOfEdge        (Aspect_TOL_SOLID)
     {}
 
   //! @return true if no changes have been requested
@@ -1705,7 +1693,13 @@ struct ViewerTest_AspectsChangeSet
         && ToSetMaxParamValue     == 0
         && ToSetSensitivity       == 0
         && ToSetHatch             == 0
-        && ToSetShadingModel      == 0;
+        && ToSetShadingModel      == 0
+        && ToSetInterior          == 0
+        && ToSetDrawEdges         == 0
+        && ToSetQuadEdges         == 0
+        && ToSetEdgeColor         == 0
+        && ToSetEdgeWidth         == 0
+        && ToSetTypeOfEdge        == 0;
   }
 
   //! @return true if properties are valid
@@ -1771,6 +1765,210 @@ struct ViewerTest_AspectsChangeSet
     return isOk;
   }
 
+  //! Apply aspects to specified drawer.
+  bool Apply (const Handle(Prs3d_Drawer)& theDrawer)
+  {
+    bool toRecompute = false;
+    const Handle(Prs3d_Drawer)& aDefDrawer = ViewerTest::GetAISContext()->DefaultDrawer();
+    if (ToSetShowFreeBoundary != 0)
+    {
+      theDrawer->SetFreeBoundaryDraw (ToSetShowFreeBoundary == 1);
+      toRecompute = true;
+    }
+    if (ToSetFreeBoundaryWidth != 0)
+    {
+      if (ToSetFreeBoundaryWidth != -1
+       || theDrawer->HasOwnFreeBoundaryAspect())
+      {
+        if (!theDrawer->HasOwnFreeBoundaryAspect())
+        {
+          Handle(Prs3d_LineAspect) aBoundaryAspect = new Prs3d_LineAspect (Quantity_NOC_RED, Aspect_TOL_SOLID, 1.0);
+          *aBoundaryAspect->Aspect() = *theDrawer->FreeBoundaryAspect()->Aspect();
+          theDrawer->SetFreeBoundaryAspect (aBoundaryAspect);
+          toRecompute = true;
+        }
+        theDrawer->FreeBoundaryAspect()->SetWidth (FreeBoundaryWidth);
+      }
+    }
+    if (ToSetFreeBoundaryColor != 0)
+    {
+      Handle(Prs3d_LineAspect) aBoundaryAspect = new Prs3d_LineAspect (Quantity_NOC_RED, Aspect_TOL_SOLID, 1.0);
+      *aBoundaryAspect->Aspect() = *theDrawer->FreeBoundaryAspect()->Aspect();
+      aBoundaryAspect->SetColor (FreeBoundaryColor);
+      theDrawer->SetFreeBoundaryAspect (aBoundaryAspect);
+      toRecompute = true;
+    }
+    if (ToSetTypeOfLine != 0)
+    {
+      if (ToSetTypeOfLine != -1
+       || theDrawer->HasOwnLineAspect()
+       || theDrawer->HasOwnWireAspect()
+       || theDrawer->HasOwnFreeBoundaryAspect()
+       || theDrawer->HasOwnUnFreeBoundaryAspect()
+       || theDrawer->HasOwnSeenLineAspect())
+      {
+        toRecompute = theDrawer->SetOwnLineAspects() || toRecompute;
+        theDrawer->LineAspect()->SetTypeOfLine           (TypeOfLine);
+        theDrawer->WireAspect()->SetTypeOfLine           (TypeOfLine);
+        theDrawer->FreeBoundaryAspect()->SetTypeOfLine   (TypeOfLine);
+        theDrawer->UnFreeBoundaryAspect()->SetTypeOfLine (TypeOfLine);
+        theDrawer->SeenLineAspect()->SetTypeOfLine       (TypeOfLine);
+      }
+    }
+    if (ToSetTypeOfMarker != 0)
+    {
+      if (ToSetTypeOfMarker != -1
+       || theDrawer->HasOwnPointAspect())
+      {
+        toRecompute = theDrawer->SetupOwnPointAspect (aDefDrawer) || toRecompute;
+        theDrawer->PointAspect()->SetTypeOfMarker (TypeOfMarker);
+        theDrawer->PointAspect()->Aspect()->SetMarkerImage (MarkerImage.IsNull() ? Handle(Graphic3d_MarkerImage)() : new Graphic3d_MarkerImage (MarkerImage));
+      }
+    }
+    if (ToSetMarkerSize != 0)
+    {
+      if (ToSetMarkerSize != -1
+       || theDrawer->HasOwnPointAspect())
+      {
+        toRecompute = theDrawer->SetupOwnPointAspect (aDefDrawer) || toRecompute;
+        theDrawer->PointAspect()->SetScale (MarkerSize);
+        toRecompute = true;
+      }
+    }
+    if (ToSetMaxParamValue != 0)
+    {
+      if (ToSetMaxParamValue != -1
+       || theDrawer->HasOwnMaximalParameterValue())
+      {
+        theDrawer->SetMaximalParameterValue (MaxParamValue);
+        toRecompute = true;
+      }
+    }
+    if (ToSetShadingModel != 0)
+    {
+      if (ToSetShadingModel != -1
+       || theDrawer->HasOwnShadingAspect())
+      {
+        toRecompute = theDrawer->SetupOwnShadingAspect (aDefDrawer) || toRecompute;
+        theDrawer->ShadingAspect()->Aspect()->SetShadingModel (ShadingModel);
+      }
+    }
+    if (ToSetAlphaMode != 0)
+    {
+      if (ToSetAlphaMode != -1
+       || theDrawer->HasOwnShadingAspect())
+      {
+        toRecompute = theDrawer->SetupOwnShadingAspect (aDefDrawer) || toRecompute;
+        theDrawer->ShadingAspect()->Aspect()->SetAlphaMode (AlphaMode, AlphaCutoff);
+      }
+    }
+    if (ToSetHatch != 0)
+    {
+      if (ToSetHatch != -1
+      ||  theDrawer->HasOwnShadingAspect())
+      {
+        theDrawer->SetupOwnShadingAspect (aDefDrawer);
+        Handle(Graphic3d_AspectFillArea3d) anAsp = theDrawer->ShadingAspect()->Aspect();
+        if (ToSetHatch == -1)
+        {
+          anAsp->SetInteriorStyle (Aspect_IS_SOLID);
+        }
+        else
+        {
+          anAsp->SetInteriorStyle (Aspect_IS_HATCH);
+          if (!PathToHatchPattern.IsEmpty())
+          {
+            Handle(Image_AlienPixMap) anImage = new Image_AlienPixMap();
+            if (anImage->Load (TCollection_AsciiString (PathToHatchPattern.ToCString())))
+            {
+              anAsp->SetHatchStyle (new Graphic3d_HatchStyle (anImage));
+            }
+            else
+            {
+              std::cout << "Error: cannot load the following image: " << PathToHatchPattern << "\n";
+            }
+          }
+          else if (StdHatchStyle != -1)
+          {
+            anAsp->SetHatchStyle (new Graphic3d_HatchStyle ((Aspect_HatchStyle)StdHatchStyle));
+          }
+        }
+        toRecompute = true;
+      }
+    }
+    if (ToSetInterior != 0)
+    {
+      if (ToSetInterior != -1
+       || theDrawer->HasOwnShadingAspect())
+      {
+        toRecompute = theDrawer->SetupOwnShadingAspect (aDefDrawer) || toRecompute;
+        theDrawer->ShadingAspect()->Aspect()->SetInteriorStyle (InteriorStyle);
+        if (InteriorStyle == Aspect_IS_HATCH
+         && theDrawer->ShadingAspect()->Aspect()->HatchStyle().IsNull())
+        {
+          theDrawer->ShadingAspect()->Aspect()->SetHatchStyle (Aspect_HS_VERTICAL);
+        }
+      }
+    }
+    if (ToSetDrawEdges != 0)
+    {
+      if (ToSetDrawEdges != -1
+       || theDrawer->HasOwnShadingAspect())
+      {
+        toRecompute = theDrawer->SetupOwnShadingAspect (aDefDrawer) || toRecompute;
+        theDrawer->ShadingAspect()->Aspect()->SetDrawEdges (ToSetDrawEdges == 1);
+      }
+    }
+    if (ToSetQuadEdges != 0)
+    {
+      if (ToSetQuadEdges != -1
+          || theDrawer->HasOwnShadingAspect())
+      {
+        toRecompute = theDrawer->SetupOwnShadingAspect (aDefDrawer) || toRecompute;
+        theDrawer->ShadingAspect()->Aspect()->SetSkipFirstEdge (ToSetQuadEdges == 1);
+      }
+    }
+    if (ToSetEdgeWidth != 0)
+    {
+      if (ToSetEdgeWidth != -1
+       || theDrawer->HasOwnShadingAspect())
+      {
+        toRecompute = theDrawer->SetupOwnShadingAspect (aDefDrawer) || toRecompute;
+        theDrawer->ShadingAspect()->Aspect()->SetEdgeWidth (EdgeWidth);
+      }
+    }
+    if (ToSetTypeOfEdge != 0)
+    {
+      if (ToSetTypeOfEdge != -1
+       || theDrawer->HasOwnShadingAspect())
+      {
+        toRecompute = theDrawer->SetupOwnShadingAspect (aDefDrawer) || toRecompute;
+        theDrawer->ShadingAspect()->Aspect()->SetEdgeLineType (TypeOfEdge);
+        if (ToSetInterior == 0)
+        {
+          theDrawer->ShadingAspect()->Aspect()->SetDrawEdges (ToSetTypeOfEdge == 1
+                                                           && TypeOfEdge != Aspect_TOL_EMPTY);
+        }
+      }
+    }
+    if (ToSetEdgeColor != 0)
+    {
+      if (ToSetEdgeColor != -1
+       || theDrawer->HasOwnShadingAspect())
+      {
+        toRecompute = theDrawer->SetupOwnShadingAspect (aDefDrawer) || toRecompute;
+        if (ToSetEdgeColor == -1)
+        {
+          theDrawer->ShadingAspect()->Aspect()->SetEdgeColor (theDrawer->ShadingAspect()->Aspect()->InteriorColor());
+        }
+        else
+        {
+          theDrawer->ShadingAspect()->Aspect()->SetEdgeColor (EdgeColor);
+        }
+      }
+    }
+    return toRecompute;
+  }
 };
 
 //==============================================================================
@@ -1827,6 +2025,7 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
   ViewerTest_AspectsChangeSet* aChangeSet = &aChanges.ChangeLast();
 
   // parse syntax of legacy commands
+  bool toParseAliasArgs = false;
   if (aCmdName == "vsetwidth")
   {
     if (aNames.IsEmpty()
@@ -1862,33 +2061,18 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
     }
     else if (aNames.Length() >= 3)
     {
-      const TCollection_AsciiString anRgbStr[3] =
+      const char* anArgVec[3] =
       {
-        aNames.Value (aNames.Upper() - 2),
-        aNames.Value (aNames.Upper() - 1),
-        aNames.Value (aNames.Upper() - 0)
+        aNames.Value (aNames.Upper() - 2).ToCString(),
+        aNames.Value (aNames.Upper() - 1).ToCString(),
+        aNames.Value (aNames.Upper() - 0).ToCString(),
       };
-      isOk = anRgbStr[0].IsRealValue()
-          && anRgbStr[1].IsRealValue()
-          && anRgbStr[2].IsRealValue();
-      if (isOk)
-      {
-        Graphic3d_Vec4d anRgb;
-        anRgb.x() = anRgbStr[0].RealValue();
-        anRgb.y() = anRgbStr[1].RealValue();
-        anRgb.z() = anRgbStr[2].RealValue();
-        if (anRgb.x() < 0.0 || anRgb.x() > 1.0
-         || anRgb.y() < 0.0 || anRgb.y() > 1.0
-         || anRgb.z() < 0.0 || anRgb.z() > 1.0)
-        {
-          std::cout << "Error: RGB color values should be within range 0..1!\n";
-          return 1;
-        }
-        aChangeSet->Color.SetValues (anRgb.x(), anRgb.y(), anRgb.z(), Quantity_TOC_RGB);
-        aNames.Remove (aNames.Length());
-        aNames.Remove (aNames.Length());
-        aNames.Remove (aNames.Length());
-      }
+
+      Standard_Integer aNbParsed = ViewerTest::ParseColor (3, anArgVec, aChangeSet->Color);
+      isOk = aNbParsed == 3;
+      aNames.Remove (aNames.Length());
+      aNames.Remove (aNames.Length());
+      aNames.Remove (aNames.Length());
     }
     if (!isOk)
     {
@@ -1932,13 +2116,42 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
   {
     aChangeSet->ToSetMaterial = -1;
   }
+  else if (aCmdName == "vsetinteriorstyle")
+  {
+    if (aNames.IsEmpty()
+    || !aNames.Last().IsRealValue())
+    {
+      std::cout << "Error: not enough arguments!\n";
+      return 1;
+    }
+    aChangeSet->ToSetInterior = 1;
+    if (!parseInteriorStyle (aNames.Last(), aChangeSet->InteriorStyle))
+    {
+      std::cout << "Error: wrong syntax at " << aNames.Last() << "\n";
+      return 1;
+    }
+    aNames.Remove (aNames.Length());
+  }
+  else if (aCmdName == "vsetedgetype")
+  {
+    aChangeSet->ToSetDrawEdges = 1;
+    toParseAliasArgs = true;
+  }
+  else if (aCmdName == "vunsetedgetype")
+  {
+    aChangeSet->ToSetDrawEdges  = -1;
+    aChangeSet->ToSetEdgeColor  = -1;
+    aChangeSet->ToSetTypeOfEdge = -1;
+    aChangeSet->TypeOfEdge = Aspect_TOL_SOLID;
+  }
   else if (anArgIter >= theArgNb)
   {
     std::cout << "Error: not enough arguments!\n";
     return 1;
   }
 
-  if (!aChangeSet->IsEmpty())
+  if (!aChangeSet->IsEmpty()
+   && !toParseAliasArgs)
   {
     anArgIter = theArgNb;
   }
@@ -1947,24 +2160,53 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
     TCollection_AsciiString anArg = theArgVec[anArgIter];
     anArg.LowerCase();
     if (anArg == "-setwidth"
-     || anArg == "-setlinewidth")
+     || anArg == "-width"
+     || anArg == "-setlinewidth"
+     || anArg == "-linewidth"
+     || anArg == "-setedgewidth"
+     || anArg == "-setedgeswidth"
+     || anArg == "-edgewidth"
+     || anArg == "-edgeswidth")
     {
       if (++anArgIter >= theArgNb)
       {
         std::cout << "Error: wrong syntax at " << anArg << "\n";
         return 1;
       }
-      aChangeSet->ToSetLineWidth = 1;
-      aChangeSet->LineWidth = Draw::Atof (theArgVec[anArgIter]);
+      if (anArg == "-setedgewidth"
+       || anArg == "-setedgeswidth"
+       || anArg == "-edgewidth"
+       || anArg == "-edgeswidth"
+       || aCmdName == "vsetedgetype")
+      {
+        aChangeSet->ToSetEdgeWidth = 1;
+        aChangeSet->EdgeWidth = Draw::Atof (theArgVec[anArgIter]);
+      }
+      else
+      {
+        aChangeSet->ToSetLineWidth = 1;
+        aChangeSet->LineWidth = Draw::Atof (theArgVec[anArgIter]);
+      }
     }
     else if (anArg == "-unsetwidth"
-          || anArg == "-unsetlinewidth")
+          || anArg == "-unsetlinewidth"
+          || anArg == "-unsetedgewidth")
     {
-      aChangeSet->ToSetLineWidth = -1;
-      aChangeSet->LineWidth = 1.0;
+      if (anArg == "-unsetedgewidth")
+      {
+        aChangeSet->ToSetEdgeWidth = -1;
+        aChangeSet->EdgeWidth = 1.0;
+      }
+      else
+      {
+        aChangeSet->ToSetLineWidth = -1;
+        aChangeSet->LineWidth = 1.0;
+      }
     }
     else if (anArg == "-settransp"
-          || anArg == "-settransparency")
+          || anArg == "-settransparency"
+          || anArg == "-transparency"
+          || anArg == "-transp")
     {
       if (++anArgIter >= theArgNb)
       {
@@ -1980,7 +2222,8 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
         aChangeSet->Transparency = 0.0;
       }
     }
-    else if (anArg == "-setalphamode")
+    else if (anArg == "-setalphamode"
+          || anArg == "-alphamode")
     {
       if (++anArgIter >= theArgNb)
       {
@@ -2028,7 +2271,8 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
       }
     }
     else if (anArg == "-setvis"
-          || anArg == "-setvisibility")
+          || anArg == "-setvisibility"
+          || anArg == "-visibility")
     {
       if (++anArgIter >= theArgNb)
       {
@@ -2039,7 +2283,8 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
       aChangeSet->ToSetVisibility = 1;
       aChangeSet->Visibility = Draw::Atoi (theArgVec[anArgIter]);
     }
-    else if (anArg == "-setalpha")
+    else if (anArg == "-setalpha"
+          || anArg == "-alpha")
     {
       if (++anArgIter >= theArgNb)
       {
@@ -2070,77 +2315,82 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
       aChangeSet->ToSetTransparency = -1;
       aChangeSet->Transparency = 0.0;
     }
-    else if (anArg == "-setcolor")
+    else if (anArg == "-setcolor"
+          || anArg == "-color")
     {
-      Standard_Integer aNbComps  = 0;
-      Standard_Integer aCompIter = anArgIter + 1;
-      for (; aCompIter < theArgNb; ++aCompIter, ++aNbComps)
+      Quantity_Color aColor;
+      Standard_Integer aNbParsed = ViewerTest::ParseColor (theArgNb  - anArgIter - 1,
+                                                           theArgVec + anArgIter + 1,
+                                                           aColor);
+      if (aNbParsed == 0)
       {
-        if (theArgVec[aCompIter][0] == '-')
-        {
-          break;
-        }
+        std::cout << "Syntax error at '" << anArg << "'\n";
+        return 1;
       }
-      switch (aNbComps)
+      anArgIter += aNbParsed;
+      if (aCmdName == "vsetedgetype")
       {
-        case 1:
-        {
-          Quantity_NameOfColor aColor = Quantity_NOC_BLACK;
-          Standard_CString     aName  = theArgVec[anArgIter + 1];
-          if (!Quantity_Color::ColorFromName (aName, aColor))
-          {
-            std::cout << "Error: unknown color name '" << aName << "'\n";
-            return 1;
-          }
-          aChangeSet->Color = aColor;
-          break;
-        }
-        case 3:
-        {
-          Graphic3d_Vec3d anRgb;
-          anRgb.x() = Draw::Atof (theArgVec[anArgIter + 1]);
-          anRgb.y() = Draw::Atof (theArgVec[anArgIter + 2]);
-          anRgb.z() = Draw::Atof (theArgVec[anArgIter + 3]);
-          if (anRgb.x() < 0.0 || anRgb.x() > 1.0
-           || anRgb.y() < 0.0 || anRgb.y() > 1.0
-           || anRgb.z() < 0.0 || anRgb.z() > 1.0)
-          {
-            std::cout << "Error: RGB color values should be within range 0..1!\n";
-            return 1;
-          }
-          aChangeSet->Color.SetValues (anRgb.x(), anRgb.y(), anRgb.z(), Quantity_TOC_RGB);
-          break;
-        }
-        default:
-        {
-          std::cout << "Error: wrong syntax at " << anArg << "\n";
-          return 1;
-        }
+        aChangeSet->ToSetEdgeColor = 1;
+        aChangeSet->EdgeColor = Quantity_ColorRGBA (aColor);
       }
-      aChangeSet->ToSetColor = 1;
-      anArgIter += aNbComps;
+      else
+      {
+        aChangeSet->ToSetColor = 1;
+        aChangeSet->Color = aColor;
+      }
     }
-    else if (anArg == "-setlinetype")
+    else if (anArg == "-setlinetype"
+          || anArg == "-linetype"
+          || anArg == "-setedgetype"
+          || anArg == "-setedgestype"
+          || anArg == "-edgetype"
+          || anArg == "-edgestype"
+          || anArg == "-type")
     {
       if (++anArgIter >= theArgNb)
       {
         std::cout << "Error: wrong syntax at " << anArg << "\n";
         return 1;
       }
-      if (!ViewerTest::ParseLineType (theArgVec[anArgIter], aChangeSet->TypeOfLine))
+      Aspect_TypeOfLine aLineType = Aspect_TOL_EMPTY;
+      if (!ViewerTest::ParseLineType (theArgVec[anArgIter], aLineType))
       {
         std::cout << "Error: wrong syntax at " << anArg << "\n";
         return 1;
       }
-
-      aChangeSet->ToSetTypeOfLine = 1;
+      if (anArg == "-setedgetype"
+       || anArg == "-setedgestype"
+       || anArg == "-edgetype"
+       || anArg == "-edgestype"
+       || aCmdName == "vsetedgetype")
+      {
+        aChangeSet->TypeOfEdge = aLineType;
+        aChangeSet->ToSetTypeOfEdge = 1;
+      }
+      else
+      {
+        aChangeSet->TypeOfLine = aLineType;
+        aChangeSet->ToSetTypeOfLine = 1;
+      }
     }
-    else if (anArg == "-unsetlinetype")
+    else if (anArg == "-unsetlinetype"
+          || anArg == "-unsetedgetype"
+          || anArg == "-unsetedgestype")
     {
-      aChangeSet->ToSetTypeOfLine = -1;
+      if (anArg == "-unsetedgetype"
+       || anArg == "-unsetedgestype")
+      {
+        aChangeSet->ToSetTypeOfEdge = -1;
+      }
+      else
+      {
+        aChangeSet->ToSetTypeOfLine = -1;
+      }
     }
     else if (anArg == "-setmarkertype"
-          || anArg == "-setpointtype")
+          || anArg == "-markertype"
+          || anArg == "-setpointtype"
+          || anArg == "-pointtype")
     {
       if (++anArgIter >= theArgNb)
       {
@@ -2161,7 +2411,9 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
       aChangeSet->ToSetTypeOfMarker = -1;
     }
     else if (anArg == "-setmarkersize"
-          || anArg == "-setpointsize")
+          || anArg == "-markersize"
+          || anArg == "-setpointsize"
+          || anArg == "-pointsize")
     {
       if (++anArgIter >= theArgNb)
       {
@@ -2183,7 +2435,9 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
       aChangeSet->Color = DEFAULT_COLOR;
     }
     else if (anArg == "-setmat"
-          || anArg == "-setmaterial")
+          || anArg == "-mat"
+          || anArg == "-setmaterial"
+          || anArg == "-material")
     {
       if (++anArgIter >= theArgNb)
       {
@@ -2242,7 +2496,9 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
         return 1;
       }
     }
-    else if (anArg == "-freeboundary"
+    else if (anArg == "-setfreeboundary"
+          || anArg == "-freeboundary"
+          || anArg == "-setfb"
           || anArg == "-fb")
     {
       if (++anArgIter >= theArgNb)
@@ -2269,7 +2525,9 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
       }
     }
     else if (anArg == "-setfreeboundarywidth"
-          || anArg == "-setfbwidth")
+          || anArg == "-freeboundarywidth"
+          || anArg == "-setfbwidth"
+          || anArg == "-fbwidth")
     {
       if (++anArgIter >= theArgNb)
       {
@@ -2286,61 +2544,210 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
       aChangeSet->FreeBoundaryWidth = 1.0;
     }
     else if (anArg == "-setfreeboundarycolor"
-          || anArg == "-setfbcolor")
+          || anArg == "-freeboundarycolor"
+          || anArg == "-setfbcolor"
+          || anArg == "-fbcolor")
     {
-      Standard_Integer aNbComps  = 0;
-      Standard_Integer aCompIter = anArgIter + 1;
-      for (; aCompIter < theArgNb; ++aCompIter, ++aNbComps)
+      Standard_Integer aNbParsed = ViewerTest::ParseColor (theArgNb  - anArgIter - 1,
+                                                           theArgVec + anArgIter + 1,
+                                                           aChangeSet->FreeBoundaryColor);
+      if (aNbParsed == 0)
       {
-        if (theArgVec[aCompIter][0] == '-')
-        {
-          break;
-        }
+        std::cout << "Syntax error at '" << anArg << "'\n";
+        return 1;
       }
-      switch (aNbComps)
-      {
-        case 1:
-        {
-          Quantity_NameOfColor aColor = Quantity_NOC_BLACK;
-          Standard_CString     aName  = theArgVec[anArgIter + 1];
-          if (!Quantity_Color::ColorFromName (aName, aColor))
-          {
-            std::cout << "Error: unknown free boundary color name '" << aName << "'\n";
-            return 1;
-          }
-          aChangeSet->FreeBoundaryColor = aColor;
-          break;
-        }
-        case 3:
-        {
-          Graphic3d_Vec3d anRgb;
-          anRgb.x() = Draw::Atof (theArgVec[anArgIter + 1]);
-          anRgb.y() = Draw::Atof (theArgVec[anArgIter + 2]);
-          anRgb.z() = Draw::Atof (theArgVec[anArgIter + 3]);
-          if (anRgb.x() < 0.0 || anRgb.x() > 1.0
-           || anRgb.y() < 0.0 || anRgb.y() > 1.0
-           || anRgb.z() < 0.0 || anRgb.z() > 1.0)
-          {
-            std::cout << "Error: free boundary RGB color values should be within range 0..1!\n";
-            return 1;
-          }
-          aChangeSet->FreeBoundaryColor.SetValues (anRgb.x(), anRgb.y(), anRgb.z(), Quantity_TOC_RGB);
-          break;
-        }
-        default:
-        {
-          std::cout << "Error: wrong syntax at " << anArg << "\n";
-          return 1;
-        }
-      }
+      anArgIter += aNbParsed;
       aChangeSet->ToSetFreeBoundaryColor = 1;
-      anArgIter += aNbComps;
     }
     else if (anArg == "-unsetfreeboundarycolor"
           || anArg == "-unsetfbcolor")
     {
       aChangeSet->ToSetFreeBoundaryColor = -1;
       aChangeSet->FreeBoundaryColor = DEFAULT_FREEBOUNDARY_COLOR;
+    }
+    else if (anArg == "-setisoontriangulation"
+          || anArg == "-isoontriangulation"
+          || anArg == "-setisoontriang"
+          || anArg == "-isoontriang")
+    {
+      if (++anArgIter >= theArgNb)
+      {
+        std::cout << "Error: wrong syntax at " << anArg << "\n";
+        return 1;
+      }
+      TCollection_AsciiString aValue (theArgVec[anArgIter]);
+      aValue.LowerCase();
+      if (aValue == "on"
+        || aValue == "1")
+      {
+        aChangeSet->ToEnableIsoOnTriangulation = 1;
+      }
+      else if (aValue == "off"
+        || aValue == "0")
+      {
+        aChangeSet->ToEnableIsoOnTriangulation = 0;
+      }
+      else
+      {
+        std::cout << "Error: wrong syntax at " << anArg << "\n";
+        return 1;
+      }
+    }
+    else if (anArg == "-setmaxparamvalue"
+          || anArg == "-maxparamvalue")
+    {
+      if (++anArgIter >= theArgNb)
+      {
+        std::cout << "Error: wrong syntax at " << anArg << "\n";
+        return 1;
+      }
+      aChangeSet->ToSetMaxParamValue = 1;
+      aChangeSet->MaxParamValue = Draw::Atof (theArgVec[anArgIter]);
+    }
+    else if (anArg == "-setsensitivity"
+          || anArg == "-sensitivity")
+    {
+      if (isDefaults)
+      {
+        std::cout << "Error: wrong syntax. -setSensitivity can not be used together with -defaults call!\n";
+        return 1;
+      }
+
+      if (aNames.IsEmpty())
+      {
+        std::cout << "Error: object and selection mode should specified explicitly when -setSensitivity is used!\n";
+        return 1;
+      }
+
+      if (anArgIter + 2 >= theArgNb)
+      {
+        std::cout << "Error: wrong syntax at " << anArg << "\n";
+        return 1;
+      }
+      aChangeSet->ToSetSensitivity = 1;
+      aChangeSet->SelectionMode = Draw::Atoi (theArgVec[++anArgIter]);
+      aChangeSet->Sensitivity = Draw::Atoi (theArgVec[++anArgIter]);
+    }
+    else if (anArg == "-sethatch"
+          || anArg == "-hatch")
+    {
+      if (isDefaults)
+      {
+        std::cout << "Error: wrong syntax. -setHatch can not be used together with -defaults call!\n";
+        return 1;
+      }
+
+      if (aNames.IsEmpty())
+      {
+        std::cout << "Error: object should be specified explicitly when -setHatch is used!\n";
+        return 1;
+      }
+
+      aChangeSet->ToSetHatch = 1;
+      TCollection_AsciiString anArgHatch (theArgVec[++anArgIter]);
+      if (anArgHatch.Length() <= 2)
+      {
+        const Standard_Integer anIntStyle = Draw::Atoi (anArgHatch.ToCString());
+        if (anIntStyle < 0
+         || anIntStyle >= Aspect_HS_NB)
+        {
+          std::cout << "Error: hatch style is out of range [0, " << (Aspect_HS_NB - 1) << "]!\n";
+          return 1;
+        }
+        aChangeSet->StdHatchStyle = anIntStyle;
+      }
+      else
+      {
+        aChangeSet->PathToHatchPattern = anArgHatch;
+      }
+    }
+    else if (anArg == "-setshadingmodel"
+          || anArg == "-setshading"
+          || anArg == "-shadingmodel"
+          || anArg == "-shading")
+    {
+      if (++anArgIter >= theArgNb)
+      {
+        std::cout << "Error: wrong syntax at " << anArg << "\n";
+        return 1;
+      }
+      aChangeSet->ToSetShadingModel = 1;
+      aChangeSet->ShadingModelName  = theArgVec[anArgIter];
+      if (!ViewerTest::ParseShadingModel (theArgVec[anArgIter], aChangeSet->ShadingModel))
+      {
+        std::cout << "Error: wrong syntax at " << anArg << "\n";
+        return 1;
+      }
+    }
+    else if (anArg == "-unsetshadingmodel")
+    {
+      aChangeSet->ToSetShadingModel = -1;
+      aChangeSet->ShadingModel = Graphic3d_TOSM_DEFAULT;
+    }
+    else if (anArg == "-setinterior"
+          || anArg == "-setinteriorstyle"
+          || anArg == "-interior"
+          || anArg == "-interiorstyle")
+    {
+      if (++anArgIter >= theArgNb)
+      {
+        std::cout << "Error: wrong syntax at " << anArg << "\n";
+        return 1;
+      }
+      aChangeSet->ToSetInterior = 1;
+      if (!parseInteriorStyle (theArgVec[anArgIter], aChangeSet->InteriorStyle))
+      {
+        std::cout << "Error: wrong syntax at " << anArg << "\n";
+        return 1;
+      }
+    }
+    else if (anArg == "-unsetinterior")
+    {
+      aChangeSet->ToSetInterior = -1;
+      aChangeSet->InteriorStyle = Aspect_IS_SOLID;
+    }
+    else if (anArg == "-setdrawedges"
+          || anArg == "-setdrawedge"
+          || anArg == "-drawedges"
+          || anArg == "-drawedge"
+          || anArg == "-edges")
+    {
+      bool toDrawEdges = true;
+      if (anArgIter + 1 < theArgNb
+       && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], toDrawEdges))
+      {
+        ++anArgIter;
+      }
+      aChangeSet->ToSetDrawEdges = toDrawEdges ? 1 : -1;
+    }
+    else if (anArg == "-setquadedges"
+          || anArg == "-setquads"
+          || anArg == "-quads"
+          || anArg == "-skipfirstedge")
+    {
+      bool isQuadMode = true;
+      if (anArgIter + 1 < theArgNb
+       && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], isQuadMode))
+      {
+        ++anArgIter;
+      }
+      aChangeSet->ToSetQuadEdges = isQuadMode ? 1 : -1;
+    }
+    else if (anArg == "-setedgecolor"
+          || anArg == "-setedgescolor"
+          || anArg == "-edgecolor"
+          || anArg == "-edgescolor")
+    {
+      Standard_Integer aNbParsed = ViewerTest::ParseColor (theArgNb  - anArgIter - 1,
+                                                           theArgVec + anArgIter + 1,
+                                                           aChangeSet->EdgeColor);
+      if (aNbParsed == 0)
+      {
+        std::cout << "Syntax error at '" << anArg << "'\n";
+        return 1;
+      }
+      anArgIter += aNbParsed;
+      aChangeSet->ToSetEdgeColor = 1;
     }
     else if (anArg == "-unset")
     {
@@ -2373,117 +2780,16 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
       aChangeSet->PathToHatchPattern.Clear();
       aChangeSet->ToSetShadingModel = -1;
       aChangeSet->ShadingModel = Graphic3d_TOSM_DEFAULT;
-    }
-    else if (anArg == "-isoontriangulation"
-          || anArg == "-isoontriang")
-    {
-      if (++anArgIter >= theArgNb)
-      {
-        std::cout << "Error: wrong syntax at " << anArg << "\n";
-        return 1;
-      }
-      TCollection_AsciiString aValue (theArgVec[anArgIter]);
-      aValue.LowerCase();
-      if (aValue == "on"
-        || aValue == "1")
-      {
-        aChangeSet->ToEnableIsoOnTriangulation = 1;
-      }
-      else if (aValue == "off"
-        || aValue == "0")
-      {
-        aChangeSet->ToEnableIsoOnTriangulation = 0;
-      }
-      else
-      {
-        std::cout << "Error: wrong syntax at " << anArg << "\n";
-        return 1;
-      }
-    }
-    else if (anArg == "-setmaxparamvalue")
-    {
-      if (++anArgIter >= theArgNb)
-      {
-        std::cout << "Error: wrong syntax at " << anArg << "\n";
-        return 1;
-      }
-      aChangeSet->ToSetMaxParamValue = 1;
-      aChangeSet->MaxParamValue = Draw::Atof (theArgVec[anArgIter]);
-    }
-    else if (anArg == "-setsensitivity")
-    {
-      if (isDefaults)
-      {
-        std::cout << "Error: wrong syntax. -setSensitivity can not be used together with -defaults call!\n";
-        return 1;
-      }
-
-      if (aNames.IsEmpty())
-      {
-        std::cout << "Error: object and selection mode should specified explicitly when -setSensitivity is used!\n";
-        return 1;
-      }
-
-      if (anArgIter + 2 >= theArgNb)
-      {
-        std::cout << "Error: wrong syntax at " << anArg << "\n";
-        return 1;
-      }
-      aChangeSet->ToSetSensitivity = 1;
-      aChangeSet->SelectionMode = Draw::Atoi (theArgVec[++anArgIter]);
-      aChangeSet->Sensitivity = Draw::Atoi (theArgVec[++anArgIter]);
-    }
-    else if (anArg == "-sethatch")
-    {
-      if (isDefaults)
-      {
-        std::cout << "Error: wrong syntax. -setHatch can not be used together with -defaults call!\n";
-        return 1;
-      }
-
-      if (aNames.IsEmpty())
-      {
-        std::cout << "Error: object should be specified explicitly when -setHatch is used!\n";
-        return 1;
-      }
-
-      aChangeSet->ToSetHatch = 1;
-      TCollection_AsciiString anArgHatch (theArgVec[++anArgIter]);
-      if (anArgHatch.Length() <= 2)
-      {
-        const Standard_Integer anIntStyle = Draw::Atoi (anArgHatch.ToCString());
-        if (anIntStyle < 0
-         || anIntStyle >= Aspect_HS_NB)
-        {
-          std::cout << "Error: hatch style is out of range [0, " << (Aspect_HS_NB - 1) << "]!\n";
-          return 1;
-        }
-        aChangeSet->StdHatchStyle = anIntStyle;
-      }
-      else
-      {
-        aChangeSet->PathToHatchPattern = anArgHatch;
-      }
-    }
-    else if (anArg == "-setshadingmodel")
-    {
-      if (++anArgIter >= theArgNb)
-      {
-        std::cout << "Error: wrong syntax at " << anArg << "\n";
-        return 1;
-      }
-      aChangeSet->ToSetShadingModel = 1;
-      aChangeSet->ShadingModelName  = theArgVec[anArgIter];
-      if (!ViewerTest::ParseShadingModel (theArgVec[anArgIter], aChangeSet->ShadingModel))
-      {
-        std::cout << "Error: wrong syntax at " << anArg << "\n";
-        return 1;
-      }
-    }
-    else if (anArg == "-unsetshadingmodel")
-    {
-      aChangeSet->ToSetShadingModel = -1;
-      aChangeSet->ShadingModel = Graphic3d_TOSM_DEFAULT;
+      aChangeSet->ToSetInterior = -1;
+      aChangeSet->InteriorStyle = Aspect_IS_SOLID;
+      aChangeSet->ToSetDrawEdges = -1;
+      aChangeSet->ToSetQuadEdges = -1;
+      aChangeSet->ToSetEdgeColor = -1;
+      aChangeSet->EdgeColor = Quantity_ColorRGBA (DEFAULT_COLOR);
+      aChangeSet->ToSetEdgeWidth = -1;
+      aChangeSet->EdgeWidth = 1.0;
+      aChangeSet->ToSetTypeOfEdge = -1;
+      aChangeSet->TypeOfEdge = Aspect_TOL_SOLID;
     }
     else
     {
@@ -2506,7 +2812,7 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
   if (isDefaults)
   {
     const Handle(Prs3d_Drawer)& aDrawer = aCtx->DefaultDrawer();
-
+    aChangeSet->Apply (aDrawer);
     if (aChangeSet->ToSetLineWidth != 0)
     {
       aDrawer->LineAspect()->SetWidth (aChangeSet->LineWidth);
@@ -2523,64 +2829,17 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
       aDrawer->WireAspect()->SetColor           (aChangeSet->Color);
       aDrawer->PointAspect()->SetColor          (aChangeSet->Color);
     }
-    if (aChangeSet->ToSetTypeOfLine != 0)
-    {
-      aDrawer->LineAspect()->SetTypeOfLine           (aChangeSet->TypeOfLine);
-      aDrawer->WireAspect()->SetTypeOfLine           (aChangeSet->TypeOfLine);
-      aDrawer->FreeBoundaryAspect()->SetTypeOfLine   (aChangeSet->TypeOfLine);
-      aDrawer->UnFreeBoundaryAspect()->SetTypeOfLine (aChangeSet->TypeOfLine);
-      aDrawer->SeenLineAspect()->SetTypeOfLine       (aChangeSet->TypeOfLine);
-    }
-    if (aChangeSet->ToSetTypeOfMarker != 0)
-    {
-      aDrawer->PointAspect()->SetTypeOfMarker (aChangeSet->TypeOfMarker);
-      aDrawer->PointAspect()->Aspect()->SetMarkerImage (aChangeSet->MarkerImage.IsNull()
-                                                      ? Handle(Graphic3d_MarkerImage)()
-                                                      : new Graphic3d_MarkerImage (aChangeSet->MarkerImage));
-    }
-    if (aChangeSet->ToSetMarkerSize != 0)
-    {
-      aDrawer->PointAspect()->SetScale (aChangeSet->MarkerSize);
-    }
     if (aChangeSet->ToSetTransparency != 0)
     {
       aDrawer->ShadingAspect()->SetTransparency (aChangeSet->Transparency);
-    }
-    if (aChangeSet->ToSetAlphaMode != 0)
-    {
-      aDrawer->ShadingAspect()->Aspect()->SetAlphaMode (aChangeSet->AlphaMode, aChangeSet->AlphaCutoff);
     }
     if (aChangeSet->ToSetMaterial != 0)
     {
       aDrawer->ShadingAspect()->SetMaterial (aChangeSet->Material);
     }
-    if (aChangeSet->ToSetShowFreeBoundary == 1)
-    {
-      aDrawer->SetFreeBoundaryDraw (Standard_True);
-    }
-    else if (aChangeSet->ToSetShowFreeBoundary == -1)
-    {
-      aDrawer->SetFreeBoundaryDraw (Standard_False);
-    }
-    if (aChangeSet->ToSetFreeBoundaryWidth != 0)
-    {
-      aDrawer->FreeBoundaryAspect()->SetWidth (aChangeSet->FreeBoundaryWidth);
-    }
-    if (aChangeSet->ToSetFreeBoundaryColor != 0)
-    {
-      aDrawer->FreeBoundaryAspect()->SetColor (aChangeSet->FreeBoundaryColor);
-    }
     if (aChangeSet->ToEnableIsoOnTriangulation != -1)
     {
       aDrawer->SetIsoOnTriangulation (aChangeSet->ToEnableIsoOnTriangulation == 1);
-    }
-    if (aChangeSet->ToSetMaxParamValue != 0)
-    {
-      aDrawer->SetMaximalParameterValue (aChangeSet->MaxParamValue);
-    }
-    if (aChangeSet->ToSetShadingModel == 1)
-    {
-      aDrawer->ShadingAspect()->Aspect()->SetShadingModel (aChangeSet->ShadingModel);
     }
 
     // redisplay all objects in context
@@ -2686,117 +2945,7 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
       }
       if (!aDrawer.IsNull())
       {
-        if (aChangeSet->ToSetShowFreeBoundary == 1)
-        {
-          aDrawer->SetFreeBoundaryDraw (Standard_True);
-          toRedisplay = Standard_True;
-        }
-        else if (aChangeSet->ToSetShowFreeBoundary == -1)
-        {
-          aDrawer->SetFreeBoundaryDraw (Standard_False);
-          toRedisplay = Standard_True;
-        }
-        if (aChangeSet->ToSetFreeBoundaryWidth != 0)
-        {
-          Handle(Prs3d_LineAspect) aBoundaryAspect =
-              new Prs3d_LineAspect (Quantity_NOC_RED, Aspect_TOL_SOLID, 1.0);
-          *aBoundaryAspect->Aspect() = *aDrawer->FreeBoundaryAspect()->Aspect();
-          aBoundaryAspect->SetWidth (aChangeSet->FreeBoundaryWidth);
-          aDrawer->SetFreeBoundaryAspect (aBoundaryAspect);
-          toRedisplay = Standard_True;
-        }
-        if (aChangeSet->ToSetFreeBoundaryColor != 0)
-        {
-          Handle(Prs3d_LineAspect) aBoundaryAspect =
-              new Prs3d_LineAspect (Quantity_NOC_RED, Aspect_TOL_SOLID, 1.0);
-          *aBoundaryAspect->Aspect() = *aDrawer->FreeBoundaryAspect()->Aspect();
-          aBoundaryAspect->SetColor (aChangeSet->FreeBoundaryColor);
-          aDrawer->SetFreeBoundaryAspect (aBoundaryAspect);
-          toRedisplay = Standard_True;
-        }
-        if (aChangeSet->ToSetTypeOfLine != 0)
-        {
-          aDrawer->LineAspect()->SetTypeOfLine           (aChangeSet->TypeOfLine);
-          aDrawer->WireAspect()->SetTypeOfLine           (aChangeSet->TypeOfLine);
-          aDrawer->FreeBoundaryAspect()->SetTypeOfLine   (aChangeSet->TypeOfLine);
-          aDrawer->UnFreeBoundaryAspect()->SetTypeOfLine (aChangeSet->TypeOfLine);
-          aDrawer->SeenLineAspect()->SetTypeOfLine       (aChangeSet->TypeOfLine);
-          toRedisplay = Standard_True;
-        }
-        if (aChangeSet->ToSetTypeOfMarker != 0)
-        {
-          Handle(Prs3d_PointAspect) aMarkerAspect = new Prs3d_PointAspect (Aspect_TOM_PLUS, Quantity_NOC_YELLOW, 1.0);
-          *aMarkerAspect->Aspect() = *aDrawer->PointAspect()->Aspect();
-          aMarkerAspect->SetTypeOfMarker (aChangeSet->TypeOfMarker);
-          aMarkerAspect->Aspect()->SetMarkerImage (aChangeSet->MarkerImage.IsNull()
-                                                 ? Handle(Graphic3d_MarkerImage)()
-                                                 : new Graphic3d_MarkerImage (aChangeSet->MarkerImage));
-          aDrawer->SetPointAspect (aMarkerAspect);
-          toRedisplay = Standard_True;
-        }
-        if (aChangeSet->ToSetMarkerSize != 0)
-        {
-          Handle(Prs3d_PointAspect) aMarkerAspect = new Prs3d_PointAspect (Aspect_TOM_PLUS, Quantity_NOC_YELLOW, 1.0);
-          *aMarkerAspect->Aspect() = *aDrawer->PointAspect()->Aspect();
-          aMarkerAspect->SetScale (aChangeSet->MarkerSize);
-          aDrawer->SetPointAspect (aMarkerAspect);
-          toRedisplay = Standard_True;
-        }
-        if (aChangeSet->ToSetMaxParamValue != 0)
-        {
-          aDrawer->SetMaximalParameterValue (aChangeSet->MaxParamValue);
-        }
-        if (aChangeSet->ToSetHatch != 0)
-        {
-          if (!aDrawer->HasOwnShadingAspect())
-          {
-            aDrawer->SetShadingAspect (new Prs3d_ShadingAspect());
-            *aDrawer->ShadingAspect()->Aspect() = *aCtx->DefaultDrawer()->ShadingAspect()->Aspect();
-          }
-
-          Handle(Graphic3d_AspectFillArea3d) anAsp = aDrawer->ShadingAspect()->Aspect();
-          if (aChangeSet->ToSetHatch == -1)
-          {
-            anAsp->SetInteriorStyle (Aspect_IS_SOLID);
-          }
-          else
-          {
-            anAsp->SetInteriorStyle (Aspect_IS_HATCH);
-            if (!aChangeSet->PathToHatchPattern.IsEmpty())
-            {
-              Handle(Image_AlienPixMap) anImage = new Image_AlienPixMap();
-              if (anImage->Load (TCollection_AsciiString (aChangeSet->PathToHatchPattern.ToCString())))
-              {
-                anAsp->SetHatchStyle (new Graphic3d_HatchStyle (anImage));
-              }
-              else
-              {
-                std::cout << "Error: cannot load the following image: " << aChangeSet->PathToHatchPattern << std::endl;
-                return 1;
-              }
-            }
-            else if (aChangeSet->StdHatchStyle != -1)
-            {
-              anAsp->SetHatchStyle (new Graphic3d_HatchStyle ((Aspect_HatchStyle)aChangeSet->StdHatchStyle));
-            }
-          }
-          toRedisplay = Standard_True;
-        }
-        if (aChangeSet->ToSetShadingModel != 0)
-        {
-          aDrawer->SetShadingModel ((aChangeSet->ToSetShadingModel == -1) ? Graphic3d_TOSM_DEFAULT : aChangeSet->ShadingModel, aChangeSet->ToSetShadingModel != -1);
-          toRedisplay = Standard_True;
-        }
-        if (aChangeSet->ToSetAlphaMode != 0)
-        {
-          if (!aDrawer->HasOwnShadingAspect())
-          {
-            aDrawer->SetShadingAspect (new Prs3d_ShadingAspect());
-            *aDrawer->ShadingAspect()->Aspect() = *aCtx->DefaultDrawer()->ShadingAspect()->Aspect();
-          }
-          aDrawer->ShadingAspect()->Aspect()->SetAlphaMode (aChangeSet->AlphaMode, aChangeSet->AlphaCutoff);
-          toRedisplay = Standard_True;
-        }
+        toRedisplay = aChangeSet->Apply (aDrawer) || toRedisplay;
       }
 
       for (aChangesIter.Next(); aChangesIter.More(); aChangesIter.Next())
@@ -2806,6 +2955,11 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
              aSubShapeIter.More(); aSubShapeIter.Next())
         {
           const TopoDS_Shape& aSubShape = aSubShapeIter.Value();
+          if (!aChangeSet->IsEmpty())
+          {
+            Handle(AIS_ColoredDrawer) aCurColDrawer = aColoredPrs->CustomAspects (aSubShape);
+            aChangeSet->Apply (aCurColDrawer);
+          }
           if (aChangeSet->ToSetVisibility == 1)
           {
             Handle(AIS_ColoredDrawer) aCurColDrawer = aColoredPrs->CustomAspects (aSubShape);
@@ -2828,19 +2982,9 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
           {
             aColoredPrs->UnsetCustomAspects (aSubShape, Standard_True);
           }
-          if (aChangeSet->ToSetMaxParamValue != 0)
-          {
-            Handle(AIS_ColoredDrawer) aCurColDrawer = aColoredPrs->CustomAspects (aSubShape);
-            aCurColDrawer->SetMaximalParameterValue (aChangeSet->MaxParamValue);
-          }
           if (aChangeSet->ToSetSensitivity != 0)
           {
             aCtx->SetSelectionSensitivity (aPrs, aChangeSet->SelectionMode, aChangeSet->Sensitivity);
-          }
-          if (aChangeSet->ToSetShadingModel != 0)
-          {
-            Handle(AIS_ColoredDrawer) aCurColDrawer = aColoredPrs->CustomAspects (aSubShape);
-            aCurColDrawer->SetShadingModel ((aChangeSet->ToSetShadingModel == -1) ? Graphic3d_TOSM_DEFAULT : aChangeSet->ShadingModel, aChangeSet->ToSetShadingModel != -1);
           }
         }
       }
@@ -2855,6 +2999,10 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
       else if (!aColoredPrs.IsNull())
       {
         aCtx->Redisplay (aColoredPrs, Standard_False);
+      }
+      else
+      {
+        aPrs->SynchronizeAspects();
       }
     }
   }
@@ -3827,14 +3975,10 @@ Standard_Integer VTexture (Draw_Interpretor& theDi, Standard_Integer theArgsNb, 
       aTextureSetNew = aTextureSetOld;
     }
 
-    if (!aTexturedIO->Attributes()->HasOwnShadingAspect())
+    if (aTexturedIO->Attributes()->SetupOwnShadingAspect (aCtx->DefaultDrawer())
+     && aTexturedShape.IsNull())
     {
-      if (aTexturedShape.IsNull())
-      {
-        aTexturedIO->SetToUpdate();
-      }
-      aTexturedIO->Attributes()->SetShadingAspect (new Prs3d_ShadingAspect());
-      *aTexturedIO->Attributes()->ShadingAspect()->Aspect() = *aCtx->DefaultDrawer()->ShadingAspect()->Aspect();
+      aTexturedIO->SetToUpdate();
     }
 
     toComputeUV = !aTextureSetNew.IsNull() && aTextureSetOld.IsNull();
@@ -5857,9 +6001,11 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
       "\n\t\t:          [-isoontriangulation 0|1]"
       "\n\t\t:          [-setMaxParamValue {value}]"
       "\n\t\t:          [-setSensitivity {selection_mode} {value}]"
-      "\n\t\t:          [-setHatch HatchStyle]"
       "\n\t\t:          [-setShadingModel {color|flat|gouraud|phong}]"
       "\n\t\t:          [-unsetShadingModel]"
+      "\n\t\t:          [-setInterior {solid|hatch|hidenline|point}]"
+      "\n\t\t:          [-unsetInterior] [-setHatch HatchStyle]"
+      "\n\t\t:          [-setDrawEdges {0|1}] [-setEdgeType LineType] [-setEdgeColor R G B] [-setQuadEdges {0|1}]"
       "\n\t\t:          [-setAlphaMode {opaque|mask|blend|blendauto} [alphaCutOff=0.5]]"
       "\n\t\t: Manage presentation properties of all, selected or named objects."
       "\n\t\t: When -subshapes is specified than following properties will be"
@@ -5912,13 +6058,23 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
 
   theCommands.Add("vunsetwidth",
 		  "vunsetwidth [-noupdate|-update] [name]"
-      "\n\t\t: Alias for vaspects -unsetwidth [name] width.",
+      "\n\t\t: Alias for vaspects -unsetwidth [name].",
 		  __FILE__,VAspects,group);
 
   theCommands.Add("vsetinteriorstyle",
-		  "vsetinteriorstyle [-noupdate|-update] [name] style"
-      "\n\t\t: Where style is: 0 = EMPTY, 1 = HOLLOW, 2 = HATCH, 3 = SOLID, 4 = HIDDENLINE.",
-		  __FILE__,VSetInteriorStyle,group);
+    "vsetinteriorstyle [-noupdate|-update] [name] Style"
+    "\n\t\t: Alias for vaspects -setInterior [name] Style.",
+		  __FILE__,VAspects,group);
+
+  theCommands.Add ("vsetedgetype",
+    "vsetedgetype [name] [-type {solid, dash, dot}] [-color R G B] [-width value]"
+    "\n\t\t: Alias for vaspects [name] -setEdgeType Type.",
+      __FILE__, VAspects, group);
+
+  theCommands.Add ("vunsetedgetype",
+    "vunsetedgetype [name]"
+    "\n\t\t: Alias for vaspects [name] -unsetEdgeType.",
+      __FILE__, VAspects, group);
 
   theCommands.Add("vsensdis",
       "vsensdis : Display active entities (sensitive entities of one of the standard types corresponding to active selection modes)."

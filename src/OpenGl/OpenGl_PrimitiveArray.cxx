@@ -504,9 +504,8 @@ void OpenGl_PrimitiveArray::drawEdges (const OpenGl_Vec4&              theEdgeCo
 
   const OpenGl_AspectLine* anAspectLineOld = theWorkspace->SetAspectLine (theWorkspace->AspectFace()->AspectEdge());
   const OpenGl_AspectLine* anAspect = theWorkspace->ApplyAspectLine();
-
 #if !defined(GL_ES_VERSION_2_0)
-  glPolygonMode (GL_FRONT_AND_BACK, GL_LINE);
+  const Standard_Integer aPolyModeOld = aGlContext->SetPolygonMode (GL_LINE);
 #endif
 
   if (aGlContext->core20fwd != NULL)
@@ -580,6 +579,9 @@ void OpenGl_PrimitiveArray::drawEdges (const OpenGl_Vec4&              theEdgeCo
 
   // restore line context
   theWorkspace->SetAspectLine (anAspectLineOld);
+#if !defined(GL_ES_VERSION_2_0)
+  aGlContext->SetPolygonMode (aPolyModeOld);
+#endif
 }
 
 // =======================================================================
@@ -801,9 +803,34 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
   // Temporarily disable environment mapping
   Handle(OpenGl_TextureSet) aTextureBack;
   bool toDrawArray = true;
+  int toDrawInteriorEdges = 0; // 0 - no edges, 1 - glsl edges, 2 - polygonMode
   if (myDrawMode > GL_LINE_STRIP)
   {
     toDrawArray = anAspectFace->Aspect()->InteriorStyle() != Aspect_IS_EMPTY;
+    if (anAspectFace->Aspect()->ToDrawEdges())
+    {
+      toDrawInteriorEdges = 1;
+      toDrawArray = true;
+    #if !defined(GL_ES_VERSION_2_0)
+      if (anAspectFace->Aspect()->EdgeLineType() != Aspect_TOL_SOLID
+       || aCtx->hasGeometryStage == OpenGl_FeatureNotAvailable
+       || aCtx->caps->usePolygonMode)
+      {
+        toDrawInteriorEdges = 2;
+        if (anAspectFace->Aspect()->InteriorStyle() == Aspect_IS_EMPTY)
+        {
+          if (anAspectFace->Aspect()->EdgeLineType() != Aspect_TOL_SOLID)
+          {
+            toDrawArray = false;
+          }
+          else
+          {
+            aCtx->SetPolygonMode (GL_LINE);
+          }
+        }
+      }
+    #endif
+    }
   }
   else if (myDrawMode <= GL_LINE_STRIP)
   {
@@ -867,10 +894,16 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
         const Standard_Boolean toEnableEnvMap = (!aTextures.IsNull() && (aTextures == theWorkspace->EnvironmentTexture()));
         aCtx->ShaderManager()->BindFaceProgram (aTextures,
                                                 aShadingModel,
-                                                anAspectFace->Aspect()->AlphaMode(),
+                                                aCtx->ShaderManager()->MaterialState().HasAlphaCutoff() ? Graphic3d_AlphaMode_Mask : Graphic3d_AlphaMode_Opaque,
+                                                toDrawInteriorEdges == 1 ? anAspectFace->Aspect()->InteriorStyle() : Aspect_IS_SOLID,
                                                 hasVertColor,
                                                 toEnableEnvMap,
+                                                toDrawInteriorEdges == 1,
                                                 anAspectFace->ShaderProgramRes (aCtx));
+        if (toDrawInteriorEdges == 1)
+        {
+          aCtx->ShaderManager()->PushInteriorState (aCtx->ActiveProgram(), anAspectFace->Aspect());
+        }
         break;
       }
     }
@@ -926,24 +959,21 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
   {
     aCtx->BindTextures (aTextureBack);
   }
-  else
+#if !defined(GL_ES_VERSION_2_0)
+  else if (toDrawInteriorEdges == 2)
   {
-    if (anAspectFace->Aspect()->ToDrawEdges()
-     || anAspectFace->Aspect()->InteriorStyle() == Aspect_IS_HIDDENLINE)
+    if (anAspectFace->Aspect()->InteriorStyle() == Aspect_IS_HOLLOW
+     && anAspectFace->Aspect()->EdgeLineType()  == Aspect_TOL_SOLID)
+    {
+      aCtx->SetPolygonMode (GL_FILL);
+    }
+    else
     {
       const OpenGl_Vec4& anEdgeColor = theWorkspace->EdgeColor();
       drawEdges (anEdgeColor, theWorkspace);
-
-      // restore OpenGL polygon mode if needed
-    #if !defined(GL_ES_VERSION_2_0)
-      if (anAspectFace->Aspect()->InteriorStyle() >= Aspect_IS_HATCH)
-      {
-        glPolygonMode (GL_FRONT_AND_BACK,
-          anAspectFace->Aspect()->InteriorStyle() == Aspect_IS_POINT ? GL_POINT : GL_FILL);
-      }
-    #endif
     }
   }
+#endif
 }
 
 // =======================================================================

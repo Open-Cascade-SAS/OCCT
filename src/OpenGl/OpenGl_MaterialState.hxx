@@ -50,6 +50,9 @@ public:
   //! Alpha cutoff value.
   float AlphaCutoff() const { return myAlphaCutoff; }
 
+  //! Return TRUE if alpha test should be enabled.
+  bool HasAlphaCutoff() const { return myAlphaCutoff <= 1.0f; }
+
   //! Distinguish front/back flag.
   bool ToDistinguish() const { return myToDistinguish; }
 

@@ -75,7 +75,13 @@ Standard_CString OpenGl_ShaderProgram::PredefinedKeywords[] =
   "occOitDepthFactor",     // OpenGl_OCCT_OIT_DEPTH_FACTOR
 
   "occTexTrsf2d",          // OpenGl_OCCT_TEXTURE_TRSF2D
-  "occPointSize"           // OpenGl_OCCT_POINT_SIZE
+  "occPointSize",          // OpenGl_OCCT_POINT_SIZE
+
+  "occViewport",           // OpenGl_OCCT_VIEWPORT
+  "occLineWidth",          // OpenGl_OCCT_LINE_WIDTH
+  "occLineFeather",        // OpenGl_OCCT_LINE_FEATHER
+  "occWireframeColor",     // OpenGl_OCCT_WIREFRAME_COLOR
+  "occIsQuadMode",         // OpenGl_OCCT_QUAD_MODE_STATE
 };
 
 namespace
@@ -159,10 +165,6 @@ OpenGl_ShaderProgram::OpenGl_ShaderProgram (const Handle(Graphic3d_ShaderProgram
   myHasTessShader (false)
 {
   memset (myCurrentState, 0, sizeof (myCurrentState));
-  for (GLint aVar = 0; aVar < OpenGl_OCCT_NUMBER_OF_STATE_VARIABLES; ++aVar)
-  {
-    myStateLocations[aVar] = INVALID_LOCATION;
-  }
 }
 
 // =======================================================================
@@ -191,18 +193,45 @@ Standard_Boolean OpenGl_ShaderProgram::Initialize (const Handle(OpenGl_Context)&
 
   // detect the minimum GLSL version required for defined Shader Objects
 #if defined(GL_ES_VERSION_2_0)
-  if (myHasTessShader
-  || (aShaderMask & Graphic3d_TOS_GEOMETRY) != 0)
+  if (myHasTessShader)
   {
     if (!theCtx->IsGlGreaterEqual (3, 2))
     {
       theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
-                           "Error! Geometry and Tessellation shaders require OpenGL ES 3.2+");
+                           "Error! Tessellation shader requires OpenGL ES 3.2+");
       return false;
     }
     else if (aHeaderVer.IsEmpty())
     {
       aHeaderVer = "#version 320 es";
+    }
+  }
+  else if ((aShaderMask & Graphic3d_TOS_GEOMETRY) != 0)
+  {
+    switch (theCtx->hasGeometryStage)
+    {
+      case OpenGl_FeatureNotAvailable:
+      {
+        theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
+                             "Error! Geometry shader requires OpenGL ES 3.2+ or GL_EXT_geometry_shader");
+        return false;
+      }
+      case OpenGl_FeatureInExtensions:
+      {
+        if (aHeaderVer.IsEmpty())
+        {
+          aHeaderVer = "#version 310 es";
+        }
+        break;
+      }
+      case OpenGl_FeatureInCore:
+      {
+        if (aHeaderVer.IsEmpty())
+        {
+          aHeaderVer = "#version 320 es";
+        }
+        break;
+      }
     }
   }
   else if ((aShaderMask & Graphic3d_TOS_COMPUTE) != 0)
@@ -331,6 +360,13 @@ Standard_Boolean OpenGl_ShaderProgram::Initialize (const Handle(OpenGl_Context)&
       }
 #endif
     }
+#if defined(GL_ES_VERSION_2_0)
+    if (theCtx->hasGeometryStage == OpenGl_FeatureInExtensions)
+    {
+      anExtensions += "#extension GL_EXT_geometry_shader : enable\n"
+                      "#extension GL_EXT_shader_io_blocks : enable\n";
+    }
+#endif
 
     TCollection_AsciiString aPrecisionHeader;
     if (anIter.Value()->Type() == Graphic3d_TOS_FRAGMENT)
@@ -434,19 +470,13 @@ Standard_Boolean OpenGl_ShaderProgram::Initialize (const Handle(OpenGl_Context)&
   // set uniform defaults
   const Handle(OpenGl_ShaderProgram)& anOldProgram = theCtx->ActiveProgram();
   theCtx->core20fwd->glUseProgram (myProgramID);
+  if (const OpenGl_ShaderUniformLocation aLocTexEnable = GetStateLocation (OpenGl_OCCT_TEXTURE_ENABLE))
   {
-    const GLint aLocTexEnable = GetStateLocation (OpenGl_OCCT_TEXTURE_ENABLE);
-    if (aLocTexEnable != INVALID_LOCATION)
-    {
-      SetUniform (theCtx, aLocTexEnable, 0); // Off
-    }
+    SetUniform (theCtx, aLocTexEnable, 0); // Off
   }
+  if (const OpenGl_ShaderUniformLocation aLocSampler = GetUniformLocation (theCtx, "occActiveSampler"))
   {
-    const GLint aLocSampler = GetUniformLocation (theCtx, "occActiveSampler");
-    if (aLocSampler != INVALID_LOCATION)
-    {
-      SetUniform (theCtx, aLocSampler, GLint(Graphic3d_TextureUnit_0));
-    }
+    SetUniform (theCtx, aLocSampler, GLint(Graphic3d_TextureUnit_0));
   }
 
   const TCollection_AsciiString aSamplerNamePrefix ("occSampler");
@@ -454,8 +484,7 @@ Standard_Boolean OpenGl_ShaderProgram::Initialize (const Handle(OpenGl_Context)&
   for (GLint aUnitIter = 0; aUnitIter < aNbUnitsMax; ++aUnitIter)
   {
     const TCollection_AsciiString aName = aSamplerNamePrefix + aUnitIter;
-    const GLint aLocSampler = GetUniformLocation (theCtx, aName.ToCString());
-    if (aLocSampler != INVALID_LOCATION)
+    if (const OpenGl_ShaderUniformLocation aLocSampler = GetUniformLocation (theCtx, aName.ToCString()))
     {
       SetUniform (theCtx, aLocSampler, aUnitIter);
     }
@@ -645,12 +674,12 @@ Standard_Boolean OpenGl_ShaderProgram::ApplyVariables(const Handle(OpenGl_Contex
 // function : GetUniformLocation
 // purpose  : Returns location (index) of the specific uniform variable
 // =======================================================================
-GLint OpenGl_ShaderProgram::GetUniformLocation (const Handle(OpenGl_Context)& theCtx,
-                                                const GLchar*                 theName) const
+OpenGl_ShaderUniformLocation OpenGl_ShaderProgram::GetUniformLocation (const Handle(OpenGl_Context)& theCtx,
+                                                                       const GLchar*                 theName) const
 {
-  return myProgramID != NO_PROGRAM
-       ? theCtx->core20fwd->glGetUniformLocation (myProgramID, theName)
-       : INVALID_LOCATION;
+  return OpenGl_ShaderUniformLocation (myProgramID != NO_PROGRAM
+                                     ? theCtx->core20fwd->glGetUniformLocation (myProgramID, theName)
+                                     : INVALID_LOCATION);
 }
 
 // =======================================================================
@@ -663,19 +692,6 @@ GLint OpenGl_ShaderProgram::GetAttributeLocation (const Handle(OpenGl_Context)& 
   return myProgramID != NO_PROGRAM
        ? theCtx->core20fwd->glGetAttribLocation (myProgramID, theName)
        : INVALID_LOCATION;
-}
-
-// =======================================================================
-// function : GetStateLocation
-// purpose  : Returns location of the OCCT state uniform variable
-// =======================================================================
-GLint OpenGl_ShaderProgram::GetStateLocation (const GLuint theVariable) const
-{
-  if (theVariable < OpenGl_OCCT_NUMBER_OF_STATE_VARIABLES)
-  {
-    return myStateLocations[theVariable];
-  }
-  return INVALID_LOCATION;
 }
 
 // =======================================================================

@@ -84,10 +84,23 @@ public:
 
   //! Bind program for filled primitives rendering
   Standard_Boolean BindFaceProgram (const Handle(OpenGl_TextureSet)& theTextures,
-                                    const Graphic3d_TypeOfShadingModel  theShadingModel,
-                                    const Graphic3d_AlphaMode           theAlphaMode,
-                                    const Standard_Boolean              theHasVertColor,
-                                    const Standard_Boolean              theEnableEnvMap,
+                                    Graphic3d_TypeOfShadingModel theShadingModel,
+                                    Graphic3d_AlphaMode theAlphaMode,
+                                    Standard_Boolean theHasVertColor,
+                                    Standard_Boolean theEnableEnvMap,
+                                    const Handle(OpenGl_ShaderProgram)& theCustomProgram)
+  {
+    return BindFaceProgram (theTextures, theShadingModel, theAlphaMode, Aspect_IS_SOLID, theHasVertColor, theEnableEnvMap, false, theCustomProgram);
+  }
+
+  //! Bind program for filled primitives rendering
+  Standard_Boolean BindFaceProgram (const Handle(OpenGl_TextureSet)& theTextures,
+                                    Graphic3d_TypeOfShadingModel theShadingModel,
+                                    Graphic3d_AlphaMode theAlphaMode,
+                                    Aspect_InteriorStyle theInteriorStyle,
+                                    Standard_Boolean theHasVertColor,
+                                    Standard_Boolean theEnableEnvMap,
+                                    Standard_Boolean theEnableMeshEdges,
                                     const Handle(OpenGl_ShaderProgram)& theCustomProgram)
   {
     if (!theCustomProgram.IsNull()
@@ -100,7 +113,7 @@ public:
                                                         && (theTextures.IsNull() || theTextures->IsModulate())
                                                         ? theShadingModel
                                                         : Graphic3d_TOSM_UNLIT;
-    const Standard_Integer        aBits    = getProgramBits (theTextures, theAlphaMode, theHasVertColor, theEnableEnvMap);
+    const Standard_Integer aBits = getProgramBits (theTextures, theAlphaMode, theInteriorStyle, theHasVertColor, theEnableEnvMap, theEnableMeshEdges);
     Handle(OpenGl_ShaderProgram)& aProgram = getStdProgram (aShadeModelOnFace, aBits);
     return bindProgramWithState (aProgram);
   }
@@ -119,7 +132,7 @@ public:
       return bindProgramWithState (theCustomProgram);
     }
 
-    Standard_Integer aBits = getProgramBits (theTextures, theAlphaMode, theHasVertColor, false);
+    Standard_Integer aBits = getProgramBits (theTextures, theAlphaMode, Aspect_IS_SOLID, theHasVertColor, false, false);
     if (theLineType != Aspect_TOL_SOLID)
     {
       aBits |= OpenGl_PO_StippleLine;
@@ -142,7 +155,7 @@ public:
       return bindProgramWithState (theCustomProgram);
     }
 
-    const Standard_Integer        aBits    = getProgramBits (theTextures, theAlphaMode, theHasVertColor, false) | OpenGl_PO_Point;
+    const Standard_Integer        aBits    = getProgramBits (theTextures, theAlphaMode, Aspect_IS_SOLID, theHasVertColor, false, false) | OpenGl_PO_Point;
     Handle(OpenGl_ShaderProgram)& aProgram = getStdProgram (theShadingModel, aBits);
     return bindProgramWithState (aProgram);
   }
@@ -303,6 +316,12 @@ public:
 
 public:
 
+  //! Setup interior style line edges variables.
+  Standard_EXPORT void PushInteriorState (const Handle(OpenGl_ShaderProgram)& theProgram,
+                                          const Handle(Graphic3d_AspectFillArea3d)& theAspect) const;
+
+public:
+
   //! Returns state of OIT uniforms.
   const OpenGl_OitState& OitState() const { return myOitState; }
 
@@ -411,12 +430,43 @@ public:
 
 protected:
 
+  //! Define clipping planes program bits.
+  Standard_Integer getClipPlaneBits() const
+  {
+    const Standard_Integer aNbPlanes = myContext->Clipping().NbClippingOrCappingOn();
+    if (aNbPlanes <= 0)
+    {
+      return 0;
+    }
+
+    Standard_Integer aBits = 0;
+    if (myContext->Clipping().HasClippingChains())
+    {
+      aBits |= OpenGl_PO_ClipChains;
+    }
+
+    if (aNbPlanes == 1)
+    {
+      aBits |= OpenGl_PO_ClipPlanes1;
+    }
+    else if (aNbPlanes == 2)
+    {
+      aBits |= OpenGl_PO_ClipPlanes2;
+    }
+    else
+    {
+      aBits |= OpenGl_PO_ClipPlanesN;
+    }
+    return aBits;
+  }
+
   //! Define program bits.
   Standard_Integer getProgramBits (const Handle(OpenGl_TextureSet)& theTextures,
                                    Graphic3d_AlphaMode theAlphaMode,
+                                   Aspect_InteriorStyle theInteriorStyle,
                                    Standard_Boolean theHasVertColor,
-                                   Standard_Boolean theEnableEnvMap)
-
+                                   Standard_Boolean theEnableEnvMap,
+                                   Standard_Boolean theEnableMeshEdges) const
   {
     Standard_Integer aBits = 0;
     if (theAlphaMode == Graphic3d_AlphaMode_Mask)
@@ -424,22 +474,14 @@ protected:
       aBits |= OpenGl_PO_AlphaTest;
     }
 
-    const Standard_Integer aNbPlanes = myContext->Clipping().NbClippingOrCappingOn();
-    if (aNbPlanes > 0)
+    aBits |= getClipPlaneBits();
+    if (theEnableMeshEdges
+     && myContext->hasGeometryStage != OpenGl_FeatureNotAvailable)
     {
-      aBits |= OpenGl_PO_ClipPlanesN;
-      if (myContext->Clipping().HasClippingChains())
+      aBits |= OpenGl_PO_MeshEdges;
+      if (theInteriorStyle == Aspect_IS_HOLLOW)
       {
-        aBits |= OpenGl_PO_ClipChains;
-      }
-
-      if (aNbPlanes == 1)
-      {
-        aBits |= OpenGl_PO_ClipPlanes1;
-      }
-      else if (aNbPlanes == 2)
-      {
-        aBits |= OpenGl_PO_ClipPlanes2;
+        aBits |= OpenGl_PO_AlphaTest;
       }
     }
 
@@ -454,7 +496,8 @@ protected:
     {
       aBits |= theTextures->First()->IsAlpha() ? OpenGl_PO_TextureA : OpenGl_PO_TextureRGB;
     }
-    if (theHasVertColor)
+    if (theHasVertColor
+     && theInteriorStyle != Aspect_IS_HIDDENLINE)
     {
       aBits |= OpenGl_PO_VertColor;
     }
@@ -554,6 +597,16 @@ protected:
 
   //! Prepare standard GLSL program for bounding box.
   Standard_EXPORT Standard_Boolean prepareStdProgramBoundBox();
+
+  //! Prepare GLSL version header.
+  Standard_EXPORT Standard_Integer defaultGlslVersion (const Handle(Graphic3d_ShaderProgram)& theProgram,
+                                                       Standard_Integer theBits,
+                                                       bool theUsesDerivates = false) const;
+
+  //! Prepare GLSL source for geometry shader according to parameters.
+  Standard_EXPORT TCollection_AsciiString prepareGeomMainSrc (OpenGl_ShaderObject::ShaderVariableList& theUnifoms,
+                                                              OpenGl_ShaderObject::ShaderVariableList& theStageInOuts,
+                                                              Standard_Integer theBits);
 
 protected:
 

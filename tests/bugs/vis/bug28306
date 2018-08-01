@@ -7,10 +7,8 @@ vclear
 vinit View1
 pload MODELING VISUALIZATION
 box b 10 10 10
-vclear
-vinit View1
 vdisplay -dispMode 1 b
 vfit
-vsetinteriorstyle b 2
+vaspects b -setInteriorStyle HATCH
 
 vdump $imagedir/${casename}.png

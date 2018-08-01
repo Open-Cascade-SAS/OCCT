@@ -10,11 +10,12 @@ bcut result sp b1
 trotate result 0 0 0 1 0 0 45
 incmesh result 0.1
 
-vinit
+vclear
+vinit View1
+vaxo
 vdefaults -autoTriang 0
-vdisplay result
-vsetinteriorstyle 1
-vsetdispmode 1
+vdisplay -dispMode 1 result
+vaspects result -setInteriorStyle HOLLOW -setDrawEdges 1
 vfit
 
 set log [tricheck result]

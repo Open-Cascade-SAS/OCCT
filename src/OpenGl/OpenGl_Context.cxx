@@ -125,6 +125,7 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
   hasFloatBuffer     (OpenGl_FeatureNotAvailable),
   hasHalfFloatBuffer (OpenGl_FeatureNotAvailable),
   hasSampleVariables (OpenGl_FeatureNotAvailable),
+  hasGeometryStage   (OpenGl_FeatureNotAvailable),
   arbDrawBuffers (Standard_False),
   arbNPTW  (Standard_False),
   arbTexRG (Standard_False),
@@ -193,6 +194,7 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
   myResolution (Graphic3d_RenderingParams::THE_DEFAULT_RESOLUTION),
   myResolutionRatio (1.0f),
   myLineWidthScale (1.0f),
+  myLineFeather (1.0f),
   myRenderScale (1.0f),
   myRenderScaleInv (1.0f)
 {
@@ -1422,6 +1424,12 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
     // dFdx/dFdy are completely broken on tested Adreno devices with versions below OpenGl ES 3.1
     hasFlatShading = OpenGl_FeatureNotAvailable;
   }
+
+  hasGeometryStage = IsGlGreaterEqual (3, 2)
+                   ? OpenGl_FeatureInCore
+                   : (CheckExtension ("GL_EXT_geometry_shader") && CheckExtension ("GL_EXT_shader_io_blocks")
+                     ? OpenGl_FeatureInExtensions
+                     : OpenGl_FeatureNotAvailable);
 #else
 
   myTexClamp = IsGlGreaterEqual (1, 2) ? GL_CLAMP_TO_EDGE : GL_CLAMP;
@@ -1445,6 +1453,10 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
   hasFloatBuffer = hasHalfFloatBuffer =  IsGlGreaterEqual (3, 0) ? OpenGl_FeatureInCore :
                                          CheckExtension ("GL_ARB_color_buffer_float") ? OpenGl_FeatureInExtensions
                                                                                       : OpenGl_FeatureNotAvailable;
+
+  hasGeometryStage = IsGlGreaterEqual (3, 2)
+                   ? OpenGl_FeatureInCore
+                   : OpenGl_FeatureNotAvailable;
 
   hasSampleVariables = IsGlGreaterEqual (4, 0) ? OpenGl_FeatureInCore :
                         arbSampleShading ? OpenGl_FeatureInExtensions
@@ -3213,9 +3225,18 @@ void OpenGl_Context::SetShadingMaterial (const OpenGl_AspectFace* theAspect,
   // do not update material properties in case of zero reflection mode,
   // because GL lighting will be disabled by OpenGl_PrimitiveArray::DrawArray() anyway.
   const OpenGl_MaterialState& aMatState = myShaderManager->MaterialState();
-  const float anAlphaCutoff = anAspect->AlphaMode() == Graphic3d_AlphaMode_Mask
-                            ? anAspect->AlphaCutoff()
-                            : ShortRealLast();
+  float anAlphaCutoff = anAspect->AlphaMode() == Graphic3d_AlphaMode_Mask
+                      ? anAspect->AlphaCutoff()
+                      : ShortRealLast();
+  if (anAspect->ToDrawEdges())
+  {
+    if (anAspect->InteriorStyle() == Aspect_IS_EMPTY
+     || (anAspect->InteriorStyle() == Aspect_IS_SOLID
+      && anAspect->EdgeColorRGBA().Alpha() < 1.0f))
+    {
+      anAlphaCutoff = 0.285f;
+    }
+  }
   if (theAspect->ShadingModel() == Graphic3d_TOSM_UNLIT)
   {
     if (anAlphaCutoff == aMatState.AlphaCutoff())
@@ -3772,14 +3793,15 @@ bool OpenGl_Context::SetColorMask (bool theToWriteColor)
 // =======================================================================
 bool OpenGl_Context::SetSampleAlphaToCoverage (bool theToEnable)
 {
-  if (myAlphaToCoverage == theToEnable)
+  bool toEnable = myAllowAlphaToCov && theToEnable;
+  if (myAlphaToCoverage == toEnable)
   {
     return myAlphaToCoverage;
   }
 
   if (core15fwd != NULL)
   {
-    if (theToEnable)
+    if (toEnable)
     {
       //core15fwd->core15fwd->glSampleCoverage (1.0f, GL_FALSE);
       core15fwd->glEnable (GL_SAMPLE_ALPHA_TO_COVERAGE);
@@ -3791,6 +3813,6 @@ bool OpenGl_Context::SetSampleAlphaToCoverage (bool theToEnable)
   }
 
   const bool anOldValue = myAlphaToCoverage;
-  myAlphaToCoverage = theToEnable;
+  myAlphaToCoverage = toEnable;
   return anOldValue;
 }

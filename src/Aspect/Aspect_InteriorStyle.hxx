@@ -16,23 +16,17 @@
 #ifndef _Aspect_InteriorStyle_HeaderFile
 #define _Aspect_InteriorStyle_HeaderFile
 
-//! Definition of interior types for primitive
-//! faces.
-//!
-//! IS_EMPTY    no interior.
-//! IS_HOLLOW   display the boundaries of the surface.
-//! IS_HATCH    display hatched with a hatch style.
-//! IS_SOLID    display the interior entirely filled.
-//! IS_HIDDENLINE       display in hidden lines removed.
-//! IS_POINT            display only vertices.
+//! Interior types for primitive faces.
 enum Aspect_InteriorStyle
 {
-Aspect_IS_EMPTY,
-Aspect_IS_HOLLOW,
-Aspect_IS_HATCH,
-Aspect_IS_SOLID,
-Aspect_IS_HIDDENLINE,
-Aspect_IS_POINT
+  Aspect_IS_EMPTY = -1, //!< no interior
+  Aspect_IS_SOLID =  0, //!< normally filled surface interior
+  Aspect_IS_HATCH,      //!< hatched surface interior
+  Aspect_IS_HIDDENLINE, //!< interior is filled with viewer background color
+  Aspect_IS_POINT,      //!< display only vertices of surface (obsolete)
+
+  // obsolete aliases
+  Aspect_IS_HOLLOW = Aspect_IS_EMPTY, //!< transparent surface interior
 };
 
 #endif // _Aspect_InteriorStyle_HeaderFile

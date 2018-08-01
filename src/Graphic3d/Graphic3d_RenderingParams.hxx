@@ -94,11 +94,12 @@ public:
   Graphic3d_RenderingParams()
   : Method                      (Graphic3d_RM_RASTERIZATION),
     TransparencyMethod          (Graphic3d_RTM_BLEND_UNORDERED),
+    LineFeather                 (1.0f),
     OitDepthFactor              (0.0f),
     NbMsaaSamples               (0),
     RenderResolutionScale       (1.0f),
     ToEnableDepthPrepass        (Standard_False),
-    ToEnableAlphaToCoverage     (Standard_False),
+    ToEnableAlphaToCoverage     (Standard_True),
     // ray tracing parameters
     IsGlobalIlluminationEnabled (Standard_False),
     RaytracingDepth             (THE_DEFAULT_DEPTH),
@@ -168,12 +169,14 @@ public:
 
   Graphic3d_RenderingMode           Method;                      //!< specifies rendering mode, Graphic3d_RM_RASTERIZATION by default
   Graphic3d_RenderTransparentMethod TransparencyMethod;          //!< specifies rendering method for transparent graphics
+  Standard_ShortReal                LineFeather;                 //!< line feater width in pixels (> 0.0), 1.0 by default;
+                                                                 //!  high values produce blurred results, small values produce sharp (aliased) edges
   Standard_ShortReal                OitDepthFactor;              //!< scalar factor [0-1] controlling influence of depth of a fragment to its final coverage
   Standard_Integer                  NbMsaaSamples;               //!< number of MSAA samples (should be within 0..GL_MAX_SAMPLES, power-of-two number), 0 by default
   Standard_ShortReal                RenderResolutionScale;       //!< rendering resolution scale factor, 1 by default;
                                                                  //!  incompatible with MSAA (e.g. NbMsaaSamples should be set to 0)
   Standard_Boolean                  ToEnableDepthPrepass;        //!< enables/disables depth pre-pass, False by default
-  Standard_Boolean                  ToEnableAlphaToCoverage;     //!< enables/disables alpha to coverage, False by default
+  Standard_Boolean                  ToEnableAlphaToCoverage;     //!< enables/disables alpha to coverage, True by default
 
   Standard_Boolean                  IsGlobalIlluminationEnabled; //!< enables/disables global illumination effects (path tracing)
   Standard_Integer                  SamplesPerPixel;             //!< number of samples per pixel (SPP)

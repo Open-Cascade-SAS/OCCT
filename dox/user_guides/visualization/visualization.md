@@ -1793,12 +1793,11 @@ Create facet attributes.
 Handle(Graphic3d_AspectFillArea3d) aFaceAspect =  new Graphic3d_AspectFillArea3d();
 Graphic3d_MaterialAspect aBrassMaterial (Graphic3d_NOM_BRASS);
 Graphic3d_MaterialAspect aGoldMaterial  (Graphic3d_NOM_GOLD);
-aFaceAspect->SetInteriorStyle (Aspect_IS_SOLID);
+aFaceAspect->SetInteriorStyle (Aspect_IS_SOLID_WIREFRAME);
 aFaceAspect->SetInteriorColor (aMyColor);
 aFaceAspect->SetDistinguishOn ();
 aFaceAspect->SetFrontMaterial (aGoldMaterial);
 aFaceAspect->SetBackMaterial  (aBrassMaterial);
-aFaceAspect->SetEdgeOn();
 ~~~~~
 
 Create text attributes.

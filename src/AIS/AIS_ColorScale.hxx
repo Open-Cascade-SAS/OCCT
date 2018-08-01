@@ -406,7 +406,7 @@ private:
   Standard_Integer computeMaxLabelWidth (const TColStd_SequenceOfExtendedString& theLabels) const;
 
   //! Draw labels.
-  void drawLabels (const Handle(Prs3d_Presentation)& thePrs,
+  void drawLabels (const Handle(Graphic3d_Group)& theGroup,
                    const TColStd_SequenceOfExtendedString& theLabels,
                    const Standard_Integer theBarBottom,
                    const Standard_Integer theBarHeight,

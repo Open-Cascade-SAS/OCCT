@@ -3031,14 +3031,7 @@ static int VDrawSphere (Draw_Interpretor& /*di*/, Standard_Integer argc, const c
                                       aMat,
                                       aMat);
   Handle(Prs3d_ShadingAspect) aShAsp = new Prs3d_ShadingAspect();
-  if (toShowEdges)
-  {
-    anAspect->SetEdgeOn();
-  }
-  else
-  {
-    anAspect->SetEdgeOff();
-  }
+  anAspect->SetDrawEdges (toShowEdges);
   aShAsp->SetAspect (anAspect);
   aShape->Attributes()->SetShadingAspect (aShAsp);
 
@@ -5563,177 +5556,6 @@ static int VFont (Draw_Interpretor& theDI,
 }
 
 //=======================================================================
-//function : VSetEdgeType
-//purpose  : Edges type management
-//=======================================================================
-
-static int VSetEdgeType (Draw_Interpretor& theDI,
-                         Standard_Integer  theArgNum,
-                         const char**      theArgs)
-{
-  if (theArgNum < 4 || theArgNum > 9)
-  {
-    theDI << theArgs[0] << " error: wrong number of parameters. Type 'help "
-          << theArgs[0] << "' for more information.\n";
-    return 1;
-  }
-
-  Standard_Boolean isForceRedisplay = Standard_False;
-
-  // Get shape name
-  TCollection_AsciiString aName(theArgs[1]);
-  Handle(AIS_InteractiveObject) anObject;
-  if (!GetMapOfAIS().Find2 (aName, anObject))
-  {
-    theDI <<  theArgs[0] << " error: wrong object name.\n";
-    return 1;
-  }
-  
-  // Enable triangle edge mode
-  if (!anObject->Attributes()->HasOwnShadingAspect())
-  {
-    anObject->Attributes()->SetShadingAspect (new Prs3d_ShadingAspect());
-    *anObject->Attributes()->ShadingAspect()->Aspect() = *anObject->Attributes()->Link()->ShadingAspect()->Aspect();
-  }
-  const Handle(Prs3d_ShadingAspect)& aFillAreaAspect = anObject->Attributes()->ShadingAspect();
-  aFillAreaAspect->Aspect()->SetEdgeOn();
-
-  // Parse parameters
-  for (Standard_Integer anIt = 2; anIt < theArgNum; ++anIt)
-  {
-    TCollection_AsciiString aParam ((theArgs[anIt]));
-    if (aParam.Value (1) == '-' && !aParam.IsRealValue())
-    {
-      if (aParam.IsEqual ("-type"))
-      {
-        if (theArgNum <= anIt + 1)
-        {
-          theDI <<  theArgs[0] << " error: wrong number of values for parameter '"
-                << aParam.ToCString() << "'.\n";
-          return 1;
-        }
-
-        ++anIt;
-        Aspect_TypeOfLine aTypeEnum = Aspect_TOL_SOLID;
-        if (!ViewerTest::ParseLineType (theArgs[anIt], aTypeEnum))
-        {
-          std::cout << "Syntax error: wrong line type: '" << theArgs[anIt] << "'.\n";
-          return 1;
-        }
-        anObject->Attributes()->ShadingAspect()->Aspect()->SetEdgeLineType (aTypeEnum);
-      }
-      else if (aParam.IsEqual ("-color"))
-      {
-        if (theArgNum <= anIt + 3)
-        {
-          theDI <<  theArgs[0] << " error: wrong number of values for parameter '"
-                << aParam.ToCString() << "'.\n";
-          return 1;
-        }
-
-        Standard_Real aR = Draw::Atof(theArgs[++anIt]);
-        Standard_Real aG = Draw::Atof(theArgs[++anIt]);
-        Standard_Real aB = Draw::Atof(theArgs[++anIt]);
-        Quantity_Color aColor = Quantity_Color (aR > 1 ? aR / 255.0 : aR,
-                                                aG > 1 ? aG / 255.0 : aG,
-                                                aB > 1 ? aB / 255.0 : aB,
-                                                Quantity_TOC_RGB);
-
-        aFillAreaAspect->Aspect()->SetEdgeColor (aColor);
-      }
-      else if (aParam.IsEqual ("-force"))
-      {
-        isForceRedisplay = Standard_True;
-      }
-      else
-      {
-        theDI <<  theArgs[0] << " error: unknown parameter '"
-              << aParam.ToCString() << "'.\n";
-        return 1;
-      }
-    }
-  }
-
-  // Update shape presentation as aspect parameters were changed
-  if (isForceRedisplay)
-  {
-    ViewerTest::GetAISContext()->Redisplay (anObject, Standard_False);
-  }
-  else
-  {
-    anObject->SetAspect (aFillAreaAspect);
-  }
-
-  //Update view
-  ViewerTest::CurrentView()->Redraw();
-
-  return 0;
-}
-
-//=======================================================================
-//function : VUnsetEdgeType
-//purpose  : Unsets edges visibility in shading mode
-//=======================================================================
-
-static int VUnsetEdgeType (Draw_Interpretor& theDI,
-                         Standard_Integer  theArgNum,
-                         const char**      theArgs)
-{
-  if (theArgNum != 2 && theArgNum != 3)
-  {
-    theDI << theArgs[0] << " error: wrong number of parameters. Type 'help "
-          << theArgs[0] << "' for more information.\n";
-    return 1;
-  }
-
-  Standard_Boolean isForceRedisplay = Standard_False;
-
-  // Get shape name
-  TCollection_AsciiString aName (theArgs[1]);
-  Handle(AIS_InteractiveObject) anObject;
-  if (!GetMapOfAIS().Find2 (aName, anObject))
-  {
-    theDI <<  theArgs[0] << " error: wrong object name.\n";
-    return 1;
-  }
-
-  // Enable trianle edge mode
-  anObject->Attributes()->ShadingAspect()->Aspect()->SetEdgeOff();
-
-  // Parse parameters
-  if (theArgNum == 3)
-  {
-    TCollection_AsciiString aParam ((theArgs[2]));
-    if (aParam.IsEqual ("-force"))
-    {
-      isForceRedisplay = Standard_True;
-    }
-    else
-    {
-       theDI <<  theArgs[0] << " error: unknown parameter '"
-              << aParam.ToCString() << "'.\n";
-       return 1;
-    }
-  }
-
-  // Update shape presentation as aspect parameters were changed
-  if (isForceRedisplay)
-  {
-    ViewerTest::GetAISContext()->Redisplay (anObject, Standard_False);
-  }
-  else
-  {
-    anObject->SetAspect (anObject->Attributes()->ShadingAspect());
-  }
-
-  //Update view
-  ViewerTest::CurrentView()->Redraw();
-
-  return 0;
-}
-
-
-//=======================================================================
 //function : VVertexMode
 //purpose  : Switches vertex display mode for AIS_Shape or displays the current value
 //=======================================================================
@@ -6639,18 +6461,6 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
                             "vfont [-add pathToFont [fontName] [regular,bold,italic,boldItalic=undefined] [singleStroke]]"
                    "\n\t\t:        [-find fontName [regular,bold,italic,boldItalic=undefined]] [-verbose {on|off}]",
                    __FILE__, VFont, group);
-  
-  theCommands.Add ("vsetedgetype",
-                   "vsetedgetype usage:\n"
-                   "vsetedgetype ShapeName [-force] [-type {solid, dash, dot}] [-color R G B] "
-                   "\n\t\t:        Sets edges type and color for input shape",
-                   __FILE__, VSetEdgeType, group);
-
-  theCommands.Add ("vunsetedgetype",
-                   "vunsetedgetype usage:\n"
-                   "vunsetedgetype ShapeName [-force]"
-                   "\n\t\t:        Unsets edges type and color for input shape",
-                   __FILE__, VUnsetEdgeType, group);
 
   theCommands.Add ("vvertexmode",
                    "vvertexmode [name | -set {isolated | all | inherited} [name1 name2 ...]]\n"

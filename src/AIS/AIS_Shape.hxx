@@ -51,7 +51,7 @@
 //! To generate texture coordinates, appropriate shading attribute should be set before computing presentation in AIS_Shaded display mode:
 //! @code
 //!   Handle(AIS_Shape) aPrs = new AIS_Shape();
-//!   aPrs->Attributes()->SetShadingAspect (new Prs3d_ShadingAspect());
+//!   aPrs->Attributes()->SetupOwnShadingAspect();
 //!   aPrs->Attributes()->ShadingAspect()->Aspect()->SetTextureMapOn();
 //!   aPrs->Attributes()->ShadingAspect()->Aspect()->SetTextureMap (new Graphic3d_Texture2Dmanual (Graphic3d_NOT_2D_ALUMINUM));
 //! @endcode

@@ -107,6 +107,10 @@ AIS_ColorScale::AIS_ColorScale()
   myTextHeight (20)
 {
   SetDisplayMode (0);
+  myDrawer->SetupOwnShadingAspect();
+  myDrawer->ShadingAspect()->Aspect()->SetShadingModel (Graphic3d_TOSM_UNLIT);
+  myDrawer->ShadingAspect()->Aspect()->SetAlphaMode (Graphic3d_AlphaMode_Opaque);
+  myDrawer->ShadingAspect()->Aspect()->SetInteriorColor (Quantity_NOC_WHITE);
 }
 
 //=======================================================================
@@ -458,15 +462,6 @@ void AIS_ColorScale::Compute (const Handle(PrsMgr_PresentationManager3d)& ,
   const Standard_Integer aBarTop     = myYPos + myHeight - aTitleOffset - aBarYOffset;
   const Standard_Integer aBarHeight  = aBarTop - aBarBottom;
 
-  // draw title
-  if (!myTitle.IsEmpty())
-  {
-    drawText (Prs3d_Root::CurrentGroup (thePrs), myTitle,
-              myXPos + mySpacing,
-              aBarTop + aBarYOffset,
-              Graphic3d_VTA_BOTTOM);
-  }
-
   TColStd_SequenceOfExtendedString aLabels;
   if (myLabelType == Aspect_TOCSD_USER)
   {
@@ -496,11 +491,27 @@ void AIS_ColorScale::Compute (const Handle(PrsMgr_PresentationManager3d)& ,
     aColorBreadth += aTextWidth;
   }
 
+  // draw title
+  Handle(Graphic3d_Group) aLabelsGroup;
+  if (!myTitle.IsEmpty()
+   || !aLabels.IsEmpty())
+  {
+    aLabelsGroup = thePrs->NewGroup();
+    aLabelsGroup->SetGroupPrimitivesAspect (myDrawer->TextAspect()->Aspect());
+  }
+  if (!myTitle.IsEmpty())
+  {
+    drawText (aLabelsGroup, myTitle,
+              myXPos + mySpacing,
+              aBarTop + aBarYOffset,
+              Graphic3d_VTA_BOTTOM);
+  }
+
   // draw colors
   drawColorBar (thePrs, aBarBottom, aBarHeight, aTextWidth, aColorBreadth);
 
   // draw Labels
-  drawLabels (thePrs, aLabels, aBarBottom, aBarHeight, aTextWidth, aColorBreadth);
+  drawLabels (aLabelsGroup, aLabels, aBarBottom, aBarHeight, aTextWidth, aColorBreadth);
 }
 
 //=======================================================================
@@ -627,7 +638,8 @@ void AIS_ColorScale::drawColorBar (const Handle(Prs3d_Presentation)& thePrs,
     }
   }
 
-  Handle(Graphic3d_Group) aGroup = Prs3d_Root::CurrentGroup (thePrs);
+  Handle(Graphic3d_Group) aGroup = thePrs->NewGroup();
+  aGroup->SetGroupPrimitivesAspect (myDrawer->ShadingAspect()->Aspect());
   aGroup->AddPrimitiveArray (aTriangles);
 
   const Quantity_Color aFgColor (hasOwnColor ? myDrawer->Color() : Quantity_NOC_WHITE);
@@ -642,7 +654,7 @@ void AIS_ColorScale::drawColorBar (const Handle(Prs3d_Presentation)& thePrs,
 //function : drawLabels
 //purpose  :
 //=======================================================================
-void AIS_ColorScale::drawLabels (const Handle(Prs3d_Presentation)& thePrs,
+void AIS_ColorScale::drawLabels (const Handle(Graphic3d_Group)& theGroup,
                                  const TColStd_SequenceOfExtendedString& theLabels,
                                  const Standard_Integer theBarBottom,
                                  const Standard_Integer theBarHeight,
@@ -716,14 +728,14 @@ void AIS_ColorScale::drawLabels (const Handle(Prs3d_Presentation)& thePrs,
     Standard_Integer aPos2 = aNbLabels - 1 - i2;
     if (aFilter && !(aPos1 % aFilter))
     {
-      drawText (Prs3d_Root::CurrentGroup (thePrs), theLabels.Value (i1 + 1),
+      drawText (theGroup, theLabels.Value (i1 + 1),
                 anXLeft, anYBottom + Standard_Integer(i1 * aStepY + anAscent),
                 Graphic3d_VTA_CENTER);
       aLast1 = i1;
     }
     if (aFilter && !(aPos2 % aFilter))
     {
-      drawText (Prs3d_Root::CurrentGroup (thePrs), theLabels.Value (i2 + 1),
+      drawText (theGroup, theLabels.Value (i2 + 1),
                 anXLeft, anYBottom + Standard_Integer(i2 * aStepY + anAscent),
                 Graphic3d_VTA_CENTER);
       aLast2 = i2;
@@ -746,7 +758,7 @@ void AIS_ColorScale::drawLabels (const Handle(Prs3d_Presentation)& thePrs,
 
   if (i0 != -1)
   {
-    drawText (Prs3d_Root::CurrentGroup (thePrs), theLabels.Value (i0 + 1),
+    drawText (theGroup, theLabels.Value (i0 + 1),
               anXLeft, anYBottom + Standard_Integer(i0 * aStepY + anAscent),
               Graphic3d_VTA_CENTER);
   }
@@ -769,8 +781,8 @@ void AIS_ColorScale::drawFrame (const Handle(Prs3d_Presentation)& thePrs,
   aPrim->AddVertex (theX,            theY, 0.0);
 
   Handle(Graphic3d_AspectLine3d) anAspect = new Graphic3d_AspectLine3d (theColor, Aspect_TOL_SOLID, 1.0);
-  Handle(Graphic3d_Group) aGroup = Prs3d_Root::CurrentGroup (thePrs);
-  aGroup->SetPrimitivesAspect (anAspect);
+  Handle(Graphic3d_Group) aGroup = thePrs->NewGroup();
+  aGroup->SetGroupPrimitivesAspect (anAspect);
   aGroup->AddPrimitiveArray (aPrim);
 }
 
@@ -784,7 +796,6 @@ void AIS_ColorScale::drawText (const Handle(Graphic3d_Group)& theGroup,
                                const Graphic3d_VerticalTextAlignment theVertAlignment)
 {
   const Handle(Prs3d_TextAspect)& anAspect = myDrawer->TextAspect();
-  theGroup->SetPrimitivesAspect (anAspect->Aspect());
   theGroup->Text (theText,
                   gp_Ax2 (gp_Pnt (theX, theY, 0.0), gp::DZ()),
                   anAspect->Height(),
