@@ -1,3 +1,7 @@
+puts "TODO OCC29996 Windows: Checking trend failed"
+puts "TODO OCC29996 Windows: Tcl Exception: Memory leak detected"
+puts "TODO OCC29996 Windows: TEST INCOMPLETE"
+
 puts "========"
 puts "OCC172"
 puts "========"
