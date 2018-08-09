@@ -61,8 +61,8 @@ endif()
 
 # check 3RDPARTY_FREETYPE_ paths for consistency with specified 3RDPARTY_FREETYPE_DIR
 if (3RDPARTY_FREETYPE_DIR AND EXISTS "${3RDPARTY_FREETYPE_DIR}")
-  CHECK_PATH_FOR_CONSISTENCY (3RDPARTY_FREETYPE_DIR 3RDPARTY_FREETYPE_INCLUDE_DIR_ft2build FILEPATH "the path to ft2build.h")
-  CHECK_PATH_FOR_CONSISTENCY (3RDPARTY_FREETYPE_DIR 3RDPARTY_FREETYPE_INCLUDE_DIR_freetype2 FILEPATH "the path to ftheader.h")
+  CHECK_PATH_FOR_CONSISTENCY (3RDPARTY_FREETYPE_DIR 3RDPARTY_FREETYPE_INCLUDE_DIR_ft2build FILEPATH "The directory containing ft2build.h header")
+  CHECK_PATH_FOR_CONSISTENCY (3RDPARTY_FREETYPE_DIR 3RDPARTY_FREETYPE_INCLUDE_DIR_freetype2 FILEPATH "The directory containing ftheader.h header")
   if (BUILD_SHARED_LIBS)
     CHECK_PATH_FOR_CONSISTENCY (3RDPARTY_FREETYPE_DIR 3RDPARTY_FREETYPE_LIBRARY FILEPATH "the path to freetype library")
 
@@ -119,8 +119,8 @@ if (IS_BUILTIN_SEARCH_REQUIRED)
 
   # check the found paths for consistency with specified 3RDPARTY_FREETYPE_DIR
   if (3RDPARTY_FREETYPE_DIR AND EXISTS "${3RDPARTY_FREETYPE_DIR}")
-    CHECK_PATH_FOR_CONSISTENCY (3RDPARTY_FREETYPE_DIR FREETYPE_INCLUDE_DIR_ft2build FILEPATH "the path to ft2build.h")
-    CHECK_PATH_FOR_CONSISTENCY (3RDPARTY_FREETYPE_DIR FREETYPE_INCLUDE_DIR_freetype2 FILEPATH "the path to ftheader.h")
+    CHECK_PATH_FOR_CONSISTENCY (3RDPARTY_FREETYPE_DIR FREETYPE_INCLUDE_DIR_ft2build FILEPATH "The directory containing ft2build.h header")
+    CHECK_PATH_FOR_CONSISTENCY (3RDPARTY_FREETYPE_DIR FREETYPE_INCLUDE_DIR_freetype2 FILEPATH "The directory containing ftheader.h header")
     if (BUILD_SHARED_LIBS)
       CHECK_PATH_FOR_CONSISTENCY (3RDPARTY_FREETYPE_DIR FREETYPE_LIBRARY FILEPATH "freetype library")
     endif()
@@ -129,13 +129,13 @@ if (IS_BUILTIN_SEARCH_REQUIRED)
   # assign the found paths to corresponding 3RDPARTY_FREETYPE_ variables
   if (NOT 3RDPARTY_FREETYPE_INCLUDE_DIR_ft2build OR NOT EXISTS "${3RDPARTY_FREETYPE_INCLUDE_DIR_ft2build}")
     if (FREETYPE_INCLUDE_DIR_ft2build AND EXISTS "${FREETYPE_INCLUDE_DIR_ft2build}")
-      set (3RDPARTY_FREETYPE_INCLUDE_DIR_ft2build  "${FREETYPE_INCLUDE_DIR_ft2build}" CACHE FILEPATH "the path to ft2build.h" FORCE)
+      set (3RDPARTY_FREETYPE_INCLUDE_DIR_ft2build  "${FREETYPE_INCLUDE_DIR_ft2build}" CACHE FILEPATH "The directory containing ft2build.h header" FORCE)
     endif()
   endif()
 
   if (NOT 3RDPARTY_FREETYPE_INCLUDE_DIR_freetype2 OR NOT EXISTS "${3RDPARTY_FREETYPE_INCLUDE_DIR_freetype2}")
     if (FREETYPE_INCLUDE_DIR_freetype2 AND EXISTS "${FREETYPE_INCLUDE_DIR_freetype2}")
-      set (3RDPARTY_FREETYPE_INCLUDE_DIR_freetype2  "${FREETYPE_INCLUDE_DIR_freetype2}" CACHE FILEPATH "the path to ftheader.h" FORCE)
+      set (3RDPARTY_FREETYPE_INCLUDE_DIR_freetype2  "${FREETYPE_INCLUDE_DIR_freetype2}" CACHE FILEPATH "The directory containing ftheader.h header" FORCE)
     endif()
   endif()
 
@@ -162,7 +162,7 @@ if (NOT 3RDPARTY_FREETYPE_INCLUDE_DIR_ft2build OR NOT EXISTS "${3RDPARTY_FREETYP
   set (FT2BUILD_NAMES ft2build.h config/ft2build.h freetype/config/ft2build.h)
 
   # set 3RDPARTY_FREETYPE_INCLUDE_DIR_ft2build as notfound, otherwise find_library can't assign a new value to 3RDPARTY_FREETYPE_INCLUDE_DIR_ft2build
-  set (3RDPARTY_FREETYPE_INCLUDE_DIR_ft2build "3RDPARTY_FREETYPE_INCLUDE_DIR_ft2build-NOTFOUND" CACHE FILEPATH "the path to ft2build.h" FORCE)
+  set (3RDPARTY_FREETYPE_INCLUDE_DIR_ft2build "3RDPARTY_FREETYPE_INCLUDE_DIR_ft2build-NOTFOUND" CACHE FILEPATH "The directory containing ft2build.h header" FORCE)
 
   # cmake (version < 3.0) doesn't find ft2build.h of freetype (version is >= 2.5.1)
   # do search taking into account freetype structure of 2.5.1 version
@@ -185,7 +185,7 @@ if (3RDPARTY_FREETYPE_INCLUDE_DIR_ft2build AND EXISTS "${3RDPARTY_FREETYPE_INCLU
 else()
   list (APPEND 3RDPARTY_NOT_INCLUDED 3RDPARTY_FREETYPE_INCLUDE_DIR_ft2build)
 
-  set (3RDPARTY_FREETYPE_INCLUDE_DIR_ft2build "" CACHE FILEPATH "the path to ft2build.h" FORCE)
+  set (3RDPARTY_FREETYPE_INCLUDE_DIR_ft2build "" CACHE FILEPATH "The directory containing ft2build.h header" FORCE)
 endif()
 
 # ftheader.h
@@ -193,7 +193,7 @@ if (NOT 3RDPARTY_FREETYPE_INCLUDE_DIR_freetype2 OR NOT EXISTS "${3RDPARTY_FREETY
   set (FTHEADER_NAMES ftheader.h config/ftheader.h freetype/config/ftheader.h)
 
   # set 3RDPARTY_FREETYPE_INCLUDE_DIR_freetype2 as notfound, otherwise find_library can't assign a new value to 3RDPARTY_FREETYPE_INCLUDE_DIR_freetype2
-  set (3RDPARTY_FREETYPE_INCLUDE_DIR_freetype2 "3RDPARTY_FREETYPE_INCLUDE_DIR_freetype2-NOTFOUND" CACHE FILEPATH "the path to ftheader.h" FORCE)
+  set (3RDPARTY_FREETYPE_INCLUDE_DIR_freetype2 "3RDPARTY_FREETYPE_INCLUDE_DIR_freetype2-NOTFOUND" CACHE FILEPATH "The directory containing ftheader.h header" FORCE)
 
   if (3RDPARTY_FREETYPE_DIR AND EXISTS "${3RDPARTY_FREETYPE_DIR}")
     find_path (3RDPARTY_FREETYPE_INCLUDE_DIR_freetype2 NAMES ${FTHEADER_NAMES}
@@ -214,7 +214,7 @@ if (3RDPARTY_FREETYPE_INCLUDE_DIR_freetype2 AND EXISTS "${3RDPARTY_FREETYPE_INCL
 else()
   list (APPEND 3RDPARTY_NOT_INCLUDED 3RDPARTY_FREETYPE_INCLUDE_DIR_freetype2)
 
-  set (3RDPARTY_FREETYPE_INCLUDE_DIR_freetype2 "" CACHE FILEPATH "the path to ftheader.h" FORCE)
+  set (3RDPARTY_FREETYPE_INCLUDE_DIR_freetype2 "" CACHE FILEPATH "The directory containing ftheader.h header" FORCE)
 endif()
 
 # freetype library
