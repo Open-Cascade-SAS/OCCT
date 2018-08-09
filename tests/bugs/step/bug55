@@ -1,3 +1,5 @@
+puts "TODO bug30075 ALL: Faulty shapes in variables faulty_1 to faulty_"
+
 puts "========================"
 puts " OCC55 "
 puts "========================"

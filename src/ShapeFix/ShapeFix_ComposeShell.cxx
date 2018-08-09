@@ -1918,7 +1918,7 @@ static Standard_Integer IsShortSegment (const ShapeFix_WireSegment &seg,
                                         const Standard_Real VResolution)
 {
   TopoDS_Vertex Vf = seg.FirstVertex();
-  if ( ! Vf.IsSame ( seg.LastVertex() ) ) return Standard_False;
+  if ( ! Vf.IsSame ( seg.LastVertex() ) ) return 0;
 
   gp_Pnt pnt = BRep_Tool::Pnt(Vf);
   Standard_Real tol = BRep_Tool::Tolerance(Vf);
@@ -1929,7 +1929,7 @@ static Standard_Integer IsShortSegment (const ShapeFix_WireSegment &seg,
   Handle(ShapeExtend_WireData) sbwd = seg.WireData();
   for ( Standard_Integer i=1; i <= sbwd->NbEdges(); i++ ) {
     TopoDS_Edge edge = sbwd->Edge ( i );
-    if ( ! Vf.IsSame ( sae.LastVertex ( edge ) ) ) return Standard_False;
+    if ( ! Vf.IsSame ( sae.LastVertex ( edge ) ) ) return 0;
     Handle(Geom2d_Curve) c2d;
     Standard_Real f, l;
     if ( ! sae.PCurve ( edge, myFace, c2d, f, l ) ) continue;
