@@ -805,17 +805,21 @@ public:
   //! grid in <me>
   Standard_EXPORT void SetGridActivity (const Standard_Boolean aFlag);
 
-  //! dump the full contents of the view at the same
-  //! scale in the file <theFile>. The file name
-  //! extension must be one of ".png",".bmp",".jpg",".gif".
-  //! Returns FALSE when the dump has failed
+  //! Dumps the full contents of the View into the image file. This is an alias for ToPixMap() with Image_AlienPixMap.
+  //! @param theFile destination image file (image format is determined by file extension like .png, .bmp, .jpg)
+  //! @param theBufferType buffer to dump
+  //! @return FALSE when the dump has failed
   Standard_EXPORT Standard_Boolean Dump (const Standard_CString theFile, const Graphic3d_BufferType& theBufferType = Graphic3d_BT_RGB);
 
   //! Dumps the full contents of the view to a pixmap with specified parameters.
+  //! Internally this method calls Redraw() with an offscreen render buffer of requested target size (theWidth x theHeight),
+  //! so that there is no need resizing a window control for making a dump of different size.
   Standard_EXPORT Standard_Boolean ToPixMap (Image_PixMap&               theImage,
                                              const V3d_ImageDumpOptions& theParams);
 
   //! Dumps the full contents of the view to a pixmap.
+  //! Internally this method calls Redraw() with an offscreen render buffer of requested target size (theWidth x theHeight),
+  //! so that there is no need resizing a window control for making a dump of different size.
   //! @param theImage          target image, will be re-allocated to match theWidth x theHeight
   //! @param theWidth          target image width
   //! @param theHeight         target image height
