@@ -1041,8 +1041,10 @@ proc locate_data_file {filename} {
             while {[llength $dir] != 0} { 
                 set name [lindex $dir 0]
                 set dir [lrange $dir 1 end]
+
                 # skip directories starting with dot
-                if { [regexp {^[.]} $name] } { continue }
+                set aTail [file tail $name]
+                if { [regexp {^[.]} $aTail] } { continue }
                 if { [file exists $name/$filename] } {
                     return [file normalize $name/$filename]
                 }
