@@ -908,7 +908,7 @@ Standard_Boolean Select3D_SensitivePrimitiveArray::Matches (SelectBasics_Selecti
    || theMgr.GetActiveSelectionType() == SelectBasics_SelectingVolumeManager::Point
    || !toDetectRange)
   {
-    if (!Select3D_SensitiveSet::Matches (theMgr, thePickResult))
+    if (!matches (theMgr, thePickResult, toDetectRange))
     {
       return Standard_False;
     }
@@ -929,35 +929,22 @@ Standard_Boolean Select3D_SensitivePrimitiveArray::Matches (SelectBasics_Selecti
   }
 
   SelectBasics_PickResult aPickResult;
-  bool isFailed = false;
-  const bool toMatchAll = !theMgr.IsOverlapAllowed();
+  bool hasResults = false;
   for (Standard_Integer aGroupIter = 0; aGroupIter < myBvhIndices.NbElements; ++aGroupIter)
   {
     const Standard_Integer anElemIdx = myBvhIndices.Index (aGroupIter);
     Handle(Select3D_SensitivePrimitiveArray)& aChild = myGroups->ChangeValue (anElemIdx);
-    const bool isMatched = aChild->Matches (theMgr, aPickResult);
-    if (!myDetectedElemMap.IsNull())
+    if (aChild->Matches (theMgr, aPickResult))
     {
-      myDetectedElemMap->ChangeMap().Unite (aChild->myDetectedElemMap->Map());
-    }
-    if (!myDetectedNodeMap.IsNull())
-    {
-      myDetectedNodeMap->ChangeMap().Unite (aChild->myDetectedNodeMap->Map());
-    }
-
-    if (!isMatched)
-    {
-      if (toMatchAll)
+      hasResults = true;
+      if (!myDetectedElemMap.IsNull())
       {
-        isFailed = true;
-        if (!toDetectRange)
-        {
-          break;
-        }
+        myDetectedElemMap->ChangeMap().Unite (aChild->myDetectedElemMap->Map());
       }
-    }
-    else
-    {
+      if (!myDetectedNodeMap.IsNull())
+      {
+        myDetectedNodeMap->ChangeMap().Unite (aChild->myDetectedNodeMap->Map());
+      }
       if (thePickResult.Depth() > aPickResult.Depth())
       {
         myDetectedIdx = aGroupIter;
@@ -965,7 +952,7 @@ Standard_Boolean Select3D_SensitivePrimitiveArray::Matches (SelectBasics_Selecti
       }
     }
   }
-  if (isFailed)
+  if (!hasResults)
   {
     return Standard_False;
   }
@@ -977,19 +964,15 @@ Standard_Boolean Select3D_SensitivePrimitiveArray::Matches (SelectBasics_Selecti
 // function : overlapsElement
 // purpose  :
 // =======================================================================
-Standard_Boolean Select3D_SensitivePrimitiveArray::overlapsElement (SelectBasics_SelectingVolumeManager& theMgr,
+Standard_Boolean Select3D_SensitivePrimitiveArray::overlapsElement (SelectBasics_PickResult& thePickResult,
+                                                                    SelectBasics_SelectingVolumeManager& theMgr,
                                                                     Standard_Integer theElemIdx,
-                                                                    SelectBasics_PickResult& thePickResult)
+                                                                    Standard_Boolean theIsFullInside)
 {
   const Standard_Integer anElemIdx = myBvhIndices.Index (theElemIdx);
   if (!myGroups.IsNull())
   {
-    if (myGroups->Value (anElemIdx)->Matches (theMgr, thePickResult))
-    {
-      return Standard_True;
-    }
-
-    return Standard_False;
+    return myGroups->Value (anElemIdx)->Matches (theMgr, thePickResult);
   }
 
   const Standard_Integer aPatchSize = myBvhIndices.PatchSize (theElemIdx);
@@ -1019,7 +1002,7 @@ Standard_Boolean Select3D_SensitivePrimitiveArray::overlapsElement (SelectBasics
         if (myToDetectNode
          || myToDetectElem)
         {
-          if (theMgr.Overlaps (aPoint, aPickResult))
+          if (theIsFullInside || theMgr.Overlaps (aPoint, aPickResult))
           {
             if (aPickResult.Depth() <= myMinDepthNode)
             {
@@ -1068,7 +1051,7 @@ Standard_Boolean Select3D_SensitivePrimitiveArray::overlapsElement (SelectBasics
 
         if (myToDetectElem)
         {
-          if (theMgr.Overlaps (aPnts[0], aPnts[1], aPnts[2], Select3D_TOS_INTERIOR, aPickResult))
+          if (theIsFullInside || theMgr.Overlaps (aPnts[0], aPnts[1], aPnts[2], Select3D_TOS_INTERIOR, aPickResult))
           {
             if (aPickResult.Depth() <= myMinDepthElem)
             {
@@ -1087,7 +1070,7 @@ Standard_Boolean Select3D_SensitivePrimitiveArray::overlapsElement (SelectBasics
         {
           for (int aNodeIter = 0; aNodeIter < 3; ++aNodeIter)
           {
-            if (theMgr.Overlaps (aPnts[aNodeIter], aPickResult))
+            if (theIsFullInside || theMgr.Overlaps (aPnts[aNodeIter], aPickResult))
             {
               if (aPickResult.Depth() <= myMinDepthNode)
               {
@@ -1109,7 +1092,7 @@ Standard_Boolean Select3D_SensitivePrimitiveArray::overlapsElement (SelectBasics
           {
             int aNode1 = aNodeIter == 0 ? 2 : (aNodeIter - 1);
             int aNode2 = aNodeIter;
-            if (theMgr.Overlaps (aPnts[aNode1], aPnts[aNode2], aPickResult))
+            if (theIsFullInside || theMgr.Overlaps (aPnts[aNode1], aPnts[aNode2], aPickResult))
             {
               if (aPickResult.Depth() <= myMinDepthEdge)
               {
@@ -1148,13 +1131,14 @@ Standard_Real Select3D_SensitivePrimitiveArray::distanceToCOG (SelectBasics_Sele
 // purpose  :
 // =======================================================================
 Standard_Boolean Select3D_SensitivePrimitiveArray::elementIsInside (SelectBasics_SelectingVolumeManager& theMgr,
-                                                                    const Standard_Integer               theElemIdx)
+                                                                    Standard_Integer theElemIdx,
+                                                                    Standard_Boolean theIsFullInside)
 {
   const Standard_Integer anElemIdx = myBvhIndices.Index (theElemIdx);
   if (!myGroups.IsNull())
   {
     SelectBasics_PickResult aDummy;
-    return overlapsElement (theMgr, theElemIdx, aDummy);
+    return myGroups->Value (anElemIdx)->Matches (theMgr, aDummy);
   }
 
   const Standard_Integer aPatchSize = myBvhIndices.PatchSize (theElemIdx);
@@ -1177,7 +1161,7 @@ Standard_Boolean Select3D_SensitivePrimitiveArray::elementIsInside (SelectBasics
         {
           aPoint = vecToPnt (getPosVec2 (aPointIndex));
         }
-        if (!theMgr.Overlaps (aPoint))
+        if (!theIsFullInside && !theMgr.Overlaps (aPoint))
         {
           return Standard_False;
         }
@@ -1218,9 +1202,9 @@ Standard_Boolean Select3D_SensitivePrimitiveArray::elementIsInside (SelectBasics
           aPnts[2] = vecToPnt (getPosVec2 (aTriNodes[2]));
         }
 
-        if (!theMgr.Overlaps (aPnts[0])
-         || !theMgr.Overlaps (aPnts[1])
-         || !theMgr.Overlaps (aPnts[2]))
+        if (!theIsFullInside && (   !theMgr.Overlaps (aPnts[0])
+                                 || !theMgr.Overlaps (aPnts[1])
+                                 || !theMgr.Overlaps (aPnts[2])))
         {
           return Standard_False;
         }

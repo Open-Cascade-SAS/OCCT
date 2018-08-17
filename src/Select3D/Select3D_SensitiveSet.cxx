@@ -65,14 +65,26 @@ void Select3D_SensitiveSet::BVH()
   myContent.GetBVH();
 }
 
+namespace
+{
+  //! This structure describes the node in BVH
+  struct NodeInStack
+  {
+    NodeInStack (Standard_Integer theId = 0,
+                 Standard_Boolean theIsFullInside = false) : Id (theId), IsFullInside (theIsFullInside) {}
+
+    Standard_Integer Id;           //!< node identifier
+    Standard_Boolean IsFullInside; //!< if the node is completely inside the current selection volume
+  };
+}
+
 //=======================================================================
 // function : Matches
-// purpose  : Checks whether one or more entities of the set overlap
-//            current selecting volume. Implements the traverse of BVH
-//            tree built for the set
+// purpose  :
 //=======================================================================
-Standard_Boolean Select3D_SensitiveSet::Matches (SelectBasics_SelectingVolumeManager& theMgr,
-                                                 SelectBasics_PickResult& thePickResult)
+Standard_Boolean Select3D_SensitiveSet::matches (SelectBasics_SelectingVolumeManager& theMgr,
+                                                 SelectBasics_PickResult& thePickResult,
+                                                 Standard_Boolean theToCheckAllInside)
 {
   myDetectedIdx = -1;
   const BVH_Tree<Standard_Real, 3, BVH_BinaryTree>* aBVH = myContent.GetBVH().get();
@@ -82,50 +94,58 @@ Standard_Boolean Select3D_SensitiveSet::Matches (SelectBasics_SelectingVolumeMan
     return Standard_False;
   }
 
-  Standard_Integer aStack[BVH_Constants_MaxTreeDepth];
-  Standard_Integer aNode =  0;
+  NodeInStack aStack[BVH_Constants_MaxTreeDepth];
+  NodeInStack aNode;
+
   Standard_Integer aHead = -1;
 
   Standard_Integer aMatchesNb = -1;
   SelectBasics_PickResult aPickResult;
+  const bool toCheckFullInside = (theMgr.GetActiveSelectionType() != SelectBasics_SelectingVolumeManager::Point);
   for (;;)
   {
-    const BVH_Vec4i& aData = aBVH->NodeInfoBuffer()[aNode];
+    const BVH_Vec4i& aData = aBVH->NodeInfoBuffer()[aNode.Id];
 
     if (aData.x() == 0) // is inner node
     {
-      const Standard_Integer aLftIdx = aData.y();
-      const Standard_Integer aRghIdx = aData.z();
+      NodeInStack aLeft (aData.y(), toCheckFullInside), aRight(aData.z(), toCheckFullInside);
+      Standard_Boolean toCheckLft = Standard_True, toCheckRgh = Standard_True;
+      if (!aNode.IsFullInside)
+      {
+        toCheckLft = theMgr.Overlaps (aBVH->MinPoint (aLeft.Id), aBVH->MaxPoint (aLeft.Id), toCheckFullInside ? &aLeft.IsFullInside : NULL);
+        if (!toCheckLft)
+        {
+          aLeft.IsFullInside = Standard_False;
+        }
 
-      Standard_Boolean isLftInside = Standard_True;
-      Standard_Boolean isRghInside = Standard_True;
-
-      Standard_Boolean toCheckLft = theMgr.Overlaps (aBVH->MinPoint (aLftIdx),
-                                                     aBVH->MaxPoint (aLftIdx),
-                                                     theMgr.IsOverlapAllowed() ? NULL : &isLftInside);
-
-      Standard_Boolean toCheckRgh = theMgr.Overlaps (aBVH->MinPoint (aRghIdx),
-                                                     aBVH->MaxPoint (aRghIdx),
-                                                     theMgr.IsOverlapAllowed() ? NULL : &isRghInside);
+        toCheckRgh = theMgr.Overlaps (aBVH->MinPoint (aRight.Id), aBVH->MaxPoint (aRight.Id), toCheckFullInside ? &aRight.IsFullInside : NULL);
+        if (!toCheckRgh)
+        {
+          aRight.IsFullInside = Standard_False;
+        }
+      }
 
       if (!theMgr.IsOverlapAllowed()) // inclusion test
       {
-        if (!toCheckLft || !toCheckRgh)
+        if (!theToCheckAllInside)
         {
-          return Standard_False; // no inclusion
-        }
+          if (!toCheckLft || !toCheckRgh)
+          {
+            return Standard_False; // no inclusion
+          }
 
-        toCheckLft &= !isLftInside;
-        toCheckRgh &= !isRghInside;
+          // skip extra checks
+          toCheckLft &= !aLeft.IsFullInside;
+          toCheckRgh &= !aRight.IsFullInside;
+        }
       }
 
       if (toCheckLft || toCheckRgh)
       {
-        aNode = toCheckLft ? aLftIdx : aRghIdx;
-
+        aNode = toCheckLft ? aLeft : aRight;
         if (toCheckLft && toCheckRgh)
         {
-          aStack[++aHead] = aRghIdx;
+          aStack[++aHead] = aRight;
         }
       }
       else
@@ -142,14 +162,18 @@ Standard_Boolean Select3D_SensitiveSet::Matches (SelectBasics_SelectingVolumeMan
       {
         if (!theMgr.IsOverlapAllowed()) // inclusion test
         {
-          if (!elementIsInside (theMgr, anElemIdx))
+          if (!elementIsInside (theMgr, anElemIdx, aNode.IsFullInside))
           {
+            if (theToCheckAllInside)
+            {
+              continue;
+            }
             return Standard_False;
           }
         }
         else // overlap test
         {
-          if (!overlapsElement (theMgr, anElemIdx, aPickResult))
+          if (!overlapsElement (aPickResult, theMgr, anElemIdx, aNode.IsFullInside))
           {
             continue;
           }
@@ -159,9 +183,8 @@ Standard_Boolean Select3D_SensitiveSet::Matches (SelectBasics_SelectingVolumeMan
             thePickResult = aPickResult;
             myDetectedIdx = anElemIdx;
           }
-
-          ++aMatchesNb;
         }
+        ++aMatchesNb;
       }
 
       if (aHead < 0)
@@ -176,7 +199,8 @@ Standard_Boolean Select3D_SensitiveSet::Matches (SelectBasics_SelectingVolumeMan
     thePickResult.SetDistToGeomCenter(distanceToCOG(theMgr));
   }
 
-  return !theMgr.IsOverlapAllowed() || aMatchesNb != -1;
+  return aMatchesNb != -1
+     || (!theToCheckAllInside && !theMgr.IsOverlapAllowed());
 }
 
 //=======================================================================

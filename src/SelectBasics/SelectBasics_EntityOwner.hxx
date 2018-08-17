@@ -62,7 +62,9 @@ public:
 
 protected:
 
-  Standard_EXPORT SelectBasics_EntityOwner (const Standard_Integer thePriority = 0);
+  Standard_EXPORT SelectBasics_EntityOwner (const Standard_Integer thePriority);
+
+  Standard_EXPORT SelectBasics_EntityOwner();
 
 protected:
 

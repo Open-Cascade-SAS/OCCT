@@ -32,8 +32,140 @@
 #include <SelectMgr_Selection.hxx>
 #include <StdPrs_BndBox.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(AIS_PointCloudOwner, SelectMgr_EntityOwner)
+IMPLEMENT_STANDARD_RTTIEXT(AIS_PointCloud, AIS_InteractiveObject)
 
-IMPLEMENT_STANDARD_RTTIEXT(AIS_PointCloud,AIS_InteractiveObject)
+//=======================================================================
+//function : AIS_PointCloudOwner
+//purpose  :
+//=======================================================================
+AIS_PointCloudOwner::AIS_PointCloudOwner (const Handle(AIS_PointCloud)& theOrigin)
+: SelectMgr_EntityOwner ((const Handle(SelectMgr_SelectableObject)& )theOrigin,  5),
+  myDetPoints (new TColStd_HPackedMapOfInteger()),
+  mySelPoints (new TColStd_HPackedMapOfInteger())
+{
+  //
+}
+
+//=======================================================================
+//function : ~AIS_PointCloudOwner
+//purpose  :
+//=======================================================================
+AIS_PointCloudOwner::~AIS_PointCloudOwner()
+{
+  //
+}
+
+//=======================================================================
+//function : HilightWithColor
+//purpose  :
+//=======================================================================
+Standard_Boolean AIS_PointCloudOwner::IsForcedHilight() const
+{
+  return true;
+}
+
+//=======================================================================
+//function : HilightWithColor
+//purpose  :
+//=======================================================================
+void AIS_PointCloudOwner::HilightWithColor (const Handle(PrsMgr_PresentationManager3d)& thePrsMgr,
+                                                      const Handle(Prs3d_Drawer)& theStyle,
+                                                      const Standard_Integer )
+{
+  Handle(AIS_PointCloud) anObj = Handle(AIS_PointCloud)::DownCast (Selectable());
+  if (anObj.IsNull())
+  {
+    throw Standard_ProgramError ("Internal Error within AIS_PointCloud::PointsOwner!");
+  }
+
+  const Handle(TColStd_HPackedMapOfInteger)& aMap = thePrsMgr->IsImmediateModeOn()
+                                                  ? myDetPoints
+                                                  : mySelPoints;
+  Handle(Prs3d_Presentation) aPrs = thePrsMgr->IsImmediateModeOn()
+                                  ? anObj->GetHilightPresentation(thePrsMgr)
+                                  : anObj->GetSelectPresentation (thePrsMgr);
+  const Graphic3d_ZLayerId aZLayer = theStyle->ZLayer() != -1
+                                   ? theStyle->ZLayer()
+                                   : (thePrsMgr->IsImmediateModeOn() ? Graphic3d_ZLayerId_Top : anObj->ZLayer());
+  aMap->ChangeMap().Clear();
+  for (SelectMgr_SequenceOfSelection::Iterator aSelIter (anObj->Selections()); aSelIter.More(); aSelIter.Next())
+  {
+    const Handle(SelectMgr_Selection)& aSel = aSelIter.Value();
+    for (NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>::Iterator aSelEntIter (aSel->Entities()); aSelEntIter.More(); aSelEntIter.Next())
+    {
+      const Handle(SelectMgr_SensitiveEntity)& aSelEnt = aSelEntIter.Value();
+      if (aSelEnt->BaseSensitive()->OwnerId() == this)
+      {
+        if (Handle(Select3D_SensitivePrimitiveArray) aSensitive = Handle(Select3D_SensitivePrimitiveArray)::DownCast (aSelEnt->BaseSensitive()))
+        {
+          aMap->ChangeMap() = aSensitive->LastDetectedElementMap()->Map();
+          if (aSensitive->LastDetectedElement() != -1)
+          {
+            aMap->ChangeMap().Add (aSensitive->LastDetectedElement());
+          }
+          break;
+        }
+      }
+    }
+  }
+
+  aPrs->Clear();
+  if (aPrs->GetZLayer() != aZLayer)
+  {
+    aPrs->SetZLayer (aZLayer);
+  }
+  if (aMap->Map().IsEmpty())
+  {
+    return;
+  }
+
+  const Handle(Graphic3d_ArrayOfPoints) anAllPoints = anObj->GetPoints();
+  if (anAllPoints.IsNull())
+  {
+    return;
+  }
+
+  Handle(Graphic3d_ArrayOfPoints) aPoints = new Graphic3d_ArrayOfPoints (aMap->Map().Extent());
+  for (TColStd_PackedMapOfInteger::Iterator aPntIter (aMap->Map()); aPntIter.More(); aPntIter.Next())
+  {
+    const gp_Pnt aPnt = anAllPoints->Vertice (aPntIter.Key() + 1);
+    aPoints->AddVertex (aPnt);
+  }
+
+  Handle(Graphic3d_Group) aGroup = aPrs->NewGroup();
+  aGroup->SetGroupPrimitivesAspect (theStyle->PointAspect()->Aspect());
+  aGroup->AddPrimitiveArray (aPoints);
+  if (thePrsMgr->IsImmediateModeOn())
+  {
+    thePrsMgr->AddToImmediateList (aPrs);
+  }
+  else
+  {
+    aPrs->Display();
+  }
+}
+
+//=======================================================================
+//function : Unhilight
+//purpose  :
+//=======================================================================
+void AIS_PointCloudOwner::Unhilight (const Handle(PrsMgr_PresentationManager)& , const Standard_Integer )
+{
+  if (Handle(Prs3d_Presentation) aPrs = Selectable()->GetSelectPresentation (Handle(PrsMgr_PresentationManager3d)()))
+  {
+    aPrs->Erase();
+  }
+}
+
+//=======================================================================
+//function : Clear
+//purpose  :
+//=======================================================================
+void AIS_PointCloudOwner::Clear (const Handle(PrsMgr_PresentationManager)& thePrsMgr, const Standard_Integer theMode)
+{
+  SelectMgr_EntityOwner::Clear (thePrsMgr, theMode);
+}
 
 //==================================================
 // Function: AIS_PointCloud
@@ -46,6 +178,8 @@ AIS_PointCloud::AIS_PointCloud()
 
   SetDisplayMode (AIS_PointCloud::DM_Points);
   SetHilightMode (AIS_PointCloud::DM_BndBox);
+
+  myDynHilightDrawer->SetPointAspect (new Prs3d_PointAspect (Aspect_TOM_PLUS, Quantity_NOC_CYAN1, 1.0));
 }
 
 //=======================================================================
@@ -432,14 +566,22 @@ void AIS_PointCloud::ComputeSelection (const Handle(SelectMgr_Selection)& theSel
   switch (theMode)
   {
     case SM_Points:
+    case SM_SubsetOfPoints:
     {
       const Handle(Graphic3d_ArrayOfPoints) aPoints = GetPoints();
       if (!aPoints.IsNull()
        && !aPoints->Attributes().IsNull())
       {
+        if (theMode == SM_SubsetOfPoints)
+        {
+          anOwner = new AIS_PointCloudOwner (this);
+        }
+
         // split large point clouds into several groups
         const Standard_Integer aNbGroups = aPoints->Attributes()->NbElements > 500000 ? 8 : 1;
         Handle(Select3D_SensitivePrimitiveArray) aSensitive = new Select3D_SensitivePrimitiveArray (anOwner);
+        aSensitive->SetDetectElements (true);
+        aSensitive->SetDetectElementMap (theMode == SM_SubsetOfPoints);
         aSensitive->SetSensitivityFactor (8);
         aSensitive->InitPoints (aPoints->Attributes(), aPoints->Indices(), TopLoc_Location(), true, aNbGroups);
         aSensitive->BVH();

@@ -59,32 +59,32 @@ public:
   //! SAT intersection test between defined volume and given axis-aligned box
   Standard_EXPORT virtual Standard_Boolean Overlaps (const SelectMgr_Vec3& theBoxMin,
                                                      const SelectMgr_Vec3& theBoxMax,
-                                                     SelectBasics_PickResult& thePickResult) Standard_OVERRIDE;
+                                                     SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
 
   //! Returns true if selecting volume is overlapped by axis-aligned bounding box
   //! with minimum corner at point theMinPt and maximum at point theMaxPt
   Standard_EXPORT virtual Standard_Boolean Overlaps (const SelectMgr_Vec3& theBoxMin,
                                                      const SelectMgr_Vec3& theBoxMax,
-                                                     Standard_Boolean*     theInside = NULL) Standard_OVERRIDE;
+                                                     Standard_Boolean*     theInside) const Standard_OVERRIDE;
 
   //! Intersection test between defined volume and given point
   Standard_EXPORT virtual Standard_Boolean Overlaps (const gp_Pnt& thePnt,
-                                                     SelectBasics_PickResult& thePickResult) Standard_OVERRIDE;
+                                                     SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
 
   //! Intersection test between defined volume and given point
-  Standard_EXPORT virtual Standard_Boolean Overlaps (const gp_Pnt& thePnt) Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean Overlaps (const gp_Pnt& thePnt) const Standard_OVERRIDE;
 
   //! SAT intersection test between defined volume and given ordered set of points,
   //! representing line segments. The test may be considered of interior part or
   //! boundary line defined by segments depending on given sensitivity type
   Standard_EXPORT virtual Standard_Boolean Overlaps (const TColgp_Array1OfPnt& theArrayOfPnts,
                                                      Select3D_TypeOfSensitivity theSensType,
-                                                     SelectBasics_PickResult& thePickResult) Standard_OVERRIDE;
+                                                     SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
 
   //! Checks if line segment overlaps selecting frustum
   Standard_EXPORT virtual Standard_Boolean Overlaps (const gp_Pnt& thePnt1,
                                                      const gp_Pnt& thePnt2,
-                                                     SelectBasics_PickResult& thePickResult) Standard_OVERRIDE;
+                                                     SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
 
   //! SAT intersection test between defined volume and given triangle. The test may
   //! be considered of interior part or boundary line defined by triangle vertices
@@ -93,11 +93,11 @@ public:
                                                      const gp_Pnt& thePnt2,
                                                      const gp_Pnt& thePnt3,
                                                      Select3D_TypeOfSensitivity theSensType,
-                                                     SelectBasics_PickResult& thePickResult) Standard_OVERRIDE;
+                                                     SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
 
   //! Measures distance between 3d projection of user-picked
   //! screen point and given point theCOG
-  Standard_EXPORT virtual Standard_Real DistToGeometryCenter (const gp_Pnt& theCOG) Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Real DistToGeometryCenter (const gp_Pnt& theCOG) const Standard_OVERRIDE;
 
   //! Calculates the point on a view ray that was detected during the run of selection algo by given depth
   Standard_EXPORT virtual gp_Pnt DetectedPoint (const Standard_Real theDepth) const Standard_OVERRIDE;
@@ -105,7 +105,7 @@ public:
   //! Checks if the point of sensitive in which selection was detected belongs
   //! to the region defined by clipping planes
   Standard_EXPORT virtual Standard_Boolean IsClipped (const Graphic3d_SequenceOfHClipPlane& thePlanes,
-                                                      const Standard_Real theDepth) Standard_OVERRIDE;
+                                                      const Standard_Real theDepth) const Standard_OVERRIDE;
 
   //! Valid for point selection only!
   //! Computes depth range for global (defined for the whole view) clipping planes.
@@ -141,15 +141,15 @@ protected:
 
   Standard_EXPORT void segmentSegmentDistance (const gp_Pnt& theSegPnt1,
                                                const gp_Pnt& theSegPnt2,
-                                               SelectBasics_PickResult& thePickResult);
+                                               SelectBasics_PickResult& thePickResult) const;
 
   Standard_EXPORT bool segmentPlaneIntersection (const gp_Vec& thePlane,
                                                  const gp_Pnt& thePntOnPlane,
-                                                 SelectBasics_PickResult& thePickResult);
+                                                 SelectBasics_PickResult& thePickResult) const;
 
   //! Computes valid depth range for the given clipping planes
   Standard_EXPORT void computeClippingRange (const Graphic3d_SequenceOfHClipPlane& thePlanes,
-                                             SelectMgr_ViewClipRange& theRange);
+                                             SelectMgr_ViewClipRange& theRange) const;
 
   //! Returns false if theDepth must be clipped by current view clip range
   Standard_EXPORT Standard_Boolean isViewClippingOk (const SelectBasics_PickResult& thePickResult) const;

@@ -64,8 +64,11 @@ public:
 
   //! Checks whether one or more entities of the set overlap current selecting volume.
   //! Implements the traverse of BVH tree built for the set
-  Standard_EXPORT virtual Standard_Boolean Matches (SelectBasics_SelectingVolumeManager& theMgr,
-                                                    SelectBasics_PickResult& thePickResult) Standard_OVERRIDE;
+  virtual Standard_Boolean Matches (SelectBasics_SelectingVolumeManager& theMgr,
+                                    SelectBasics_PickResult& thePickResult) Standard_OVERRIDE
+  {
+    return matches (theMgr, thePickResult, false);
+  }
 
   //! Builds BVH tree for sensitive set.
   //! Must be called manually to build BVH tree for any sensitive set
@@ -96,15 +99,36 @@ public:
 
 protected:
 
-  //! Checks whether the entity with index theIdx overlaps the current selecting volume.
-  //! @param theMatchDepth set to the current minimum depth by Select3D_SensitiveSet; should be set to the new depth when overlapping is detected
-  virtual Standard_Boolean overlapsElement (SelectBasics_SelectingVolumeManager& theMgr,
-                                            Standard_Integer theElemIdx,
-                                            SelectBasics_PickResult& thePickResult) = 0;
+  //! Checks whether one or more entities of the set overlap current selecting volume.
+  //! Implements the traverse of BVH tree built for the set
+  //! @param theMgr selection manager
+  //! @param thePickResult picking result (for picking by ray)
+  //! @param theToCheckAllInside flag indicating that even with SelectMgr_SelectingVolumeManager::IsOverlapAllowed() returning FALSE
+  //!        the method will return TRUE if at least one sub-element is fully inside selection volume ::elementIsInside();
+  //!        this is useful for entities allowing local selection of sub-elements using single Owner object.
+  Standard_EXPORT Standard_Boolean matches (SelectBasics_SelectingVolumeManager& theMgr,
+                                            SelectBasics_PickResult& thePickResult,
+                                            Standard_Boolean theToCheckAllInside);
 
-  //! Checks whether the entity with index theIdx is inside the current selecting volume
+  //! Checks whether the entity with index theIdx (partially) overlaps the current selecting volume.
+  //! @param thePickResult [OUT] picking result, should update minimum depth
+  //! @param theMgr [IN] selection manager
+  //! @param theElemIdx [IN] element index within BVH tree to check
+  //! @param theIsFullInside [IN] when TRUE indicates that entire BVH node is already inside selection volume (in case of rectangle selection);
+  //!                             in this case algorithm might skip checking the element and just register it as detected
+  virtual Standard_Boolean overlapsElement (SelectBasics_PickResult& thePickResult,
+                                            SelectBasics_SelectingVolumeManager& theMgr,
+                                            Standard_Integer theElemIdx,
+                                            Standard_Boolean theIsFullInside) = 0;
+
+  //! Checks whether the entity with index theIdx is (fully) inside the current selecting volume
+  //! @param theMgr [IN] selection manager
+  //! @param theElemIdx [IN] element index within BVH tree to check
+  //! @param theIsFullInside [IN] when TRUE indicates that entire BVH node is already inside selection volume (in case of rectangle selection);
+  //!                             in this case algorithm might skip checking the element and just register it as detected
   virtual Standard_Boolean elementIsInside (SelectBasics_SelectingVolumeManager& theMgr,
-                                            const Standard_Integer               theElemIdx) = 0;
+                                            Standard_Integer theElemIdx,
+                                            Standard_Boolean theIsFullInside) = 0;
 
   //! Calculates distance from the 3d projection of used-picked screen point to center of the geometry
   virtual Standard_Real distanceToCOG (SelectBasics_SelectingVolumeManager& theMgr) = 0;

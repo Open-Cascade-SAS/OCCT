@@ -27,3 +27,13 @@ SelectBasics_EntityOwner::SelectBasics_EntityOwner (const Standard_Integer thePr
 {
   //
 }
+
+//========================================
+// Function : SelectBasics_EntityOwner
+// Purpose  :
+//========================================
+SelectBasics_EntityOwner::SelectBasics_EntityOwner()
+: mypriority (0)
+{
+  //
+}

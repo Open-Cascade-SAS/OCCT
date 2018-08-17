@@ -326,9 +326,10 @@ Standard_Integer Select3D_SensitiveGroup::Size() const
 // purpose  : Checks whether the entity with index theIdx overlaps the
 //            current selecting volume
 // =======================================================================
-Standard_Boolean Select3D_SensitiveGroup::overlapsElement (SelectBasics_SelectingVolumeManager& theMgr,
+Standard_Boolean Select3D_SensitiveGroup::overlapsElement (SelectBasics_PickResult& thePickResult,
+                                                           SelectBasics_SelectingVolumeManager& theMgr,
                                                            Standard_Integer theElemIdx,
-                                                           SelectBasics_PickResult& thePickResult)
+                                                           Standard_Boolean )
 {
   const Standard_Integer aSensitiveIdx = myBVHPrimIndexes.Value (theElemIdx);
   if (myEntities.FindKey (aSensitiveIdx)->Matches (theMgr, thePickResult))
@@ -344,10 +345,11 @@ Standard_Boolean Select3D_SensitiveGroup::overlapsElement (SelectBasics_Selectin
 // purpose  :
 // =======================================================================
 Standard_Boolean Select3D_SensitiveGroup::elementIsInside (SelectBasics_SelectingVolumeManager& theMgr,
-                                                           const Standard_Integer               theElemIdx)
+                                                           Standard_Integer theElemIdx,
+                                                           Standard_Boolean theIsFullInside)
 {
   SelectBasics_PickResult aDummy;
-  return overlapsElement(theMgr, theElemIdx, aDummy);
+  return overlapsElement (aDummy, theMgr, theElemIdx, theIsFullInside);
 }
 
 // =======================================================================

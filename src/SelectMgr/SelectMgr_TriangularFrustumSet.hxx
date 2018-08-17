@@ -52,28 +52,28 @@ public:
 
   Standard_EXPORT virtual Standard_Boolean Overlaps (const SelectMgr_Vec3& theMinPnt,
                                                      const SelectMgr_Vec3& theMaxPnt,
-                                                     SelectBasics_PickResult& thePickResult) Standard_OVERRIDE;
+                                                     SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
 
   Standard_EXPORT virtual Standard_Boolean Overlaps (const SelectMgr_Vec3& theMinPnt,
                                                      const SelectMgr_Vec3& theMaxPnt,
-                                                     Standard_Boolean* theInside) Standard_OVERRIDE;
+                                                     Standard_Boolean* theInside) const Standard_OVERRIDE;
 
   Standard_EXPORT virtual Standard_Boolean Overlaps (const gp_Pnt& thePnt,
-                                                     SelectBasics_PickResult& thePickResult) Standard_OVERRIDE;
+                                                     SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
 
   Standard_EXPORT virtual Standard_Boolean Overlaps (const TColgp_Array1OfPnt& theArrayOfPnts,
                                                      Select3D_TypeOfSensitivity theSensType,
-                                                     SelectBasics_PickResult& thePickResult) Standard_OVERRIDE;
+                                                     SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
 
   Standard_EXPORT virtual Standard_Boolean Overlaps (const gp_Pnt& thePnt1,
                                                      const gp_Pnt& thePnt2,
-                                                     SelectBasics_PickResult& thePickResult) Standard_OVERRIDE;
+                                                     SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
 
   Standard_EXPORT virtual Standard_Boolean Overlaps (const gp_Pnt& thePnt1,
                                                      const gp_Pnt& thePnt2,
                                                      const gp_Pnt& thePnt3,
                                                      Select3D_TypeOfSensitivity theSensType,
-                                                     SelectBasics_PickResult& thePickResult) Standard_OVERRIDE;
+                                                     SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
 
   //! Stores plane equation coefficients (in the following form:
   //! Ax + By + Cz + D = 0) to the given vector

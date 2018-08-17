@@ -146,7 +146,7 @@ void SelectMgr_BaseFrustum::SetBuilder (const Handle(SelectMgr_FrustumBuilder)& 
 //=======================================================================
 Standard_Boolean SelectMgr_BaseFrustum::Overlaps (const SelectMgr_Vec3& /*theBoxMin*/,
                                                   const SelectMgr_Vec3& /*theBoxMax*/,
-                                                  SelectBasics_PickResult& /*thePickResult*/)
+                                                  SelectBasics_PickResult& /*thePickResult*/) const
 {
   return Standard_False;
 }
@@ -157,7 +157,7 @@ Standard_Boolean SelectMgr_BaseFrustum::Overlaps (const SelectMgr_Vec3& /*theBox
 //=======================================================================
 Standard_Boolean SelectMgr_BaseFrustum::Overlaps (const SelectMgr_Vec3& /*theBoxMin*/,
                                                   const SelectMgr_Vec3& /*theBoxMax*/,
-                                                  Standard_Boolean*     /*theInside*/)
+                                                  Standard_Boolean*     /*theInside*/) const
 {
   return Standard_False;
 }
@@ -167,7 +167,7 @@ Standard_Boolean SelectMgr_BaseFrustum::Overlaps (const SelectMgr_Vec3& /*theBox
 // purpose  : Intersection test between defined volume and given point
 //=======================================================================
 Standard_Boolean SelectMgr_BaseFrustum::Overlaps (const gp_Pnt& /*thePnt*/,
-                                                  SelectBasics_PickResult& )
+                                                  SelectBasics_PickResult& ) const
 {
   return Standard_False;
 }
@@ -176,7 +176,7 @@ Standard_Boolean SelectMgr_BaseFrustum::Overlaps (const gp_Pnt& /*thePnt*/,
 // function : Overlaps
 // purpose  : Intersection test between defined volume and given point
 //=======================================================================
-Standard_Boolean SelectMgr_BaseFrustum::Overlaps (const gp_Pnt& /*thePnt*/)
+Standard_Boolean SelectMgr_BaseFrustum::Overlaps (const gp_Pnt& /*thePnt*/) const
 {
   return Standard_False;
 }
@@ -190,7 +190,7 @@ Standard_Boolean SelectMgr_BaseFrustum::Overlaps (const gp_Pnt& /*thePnt*/)
 //=======================================================================
 Standard_Boolean SelectMgr_BaseFrustum::Overlaps (const TColgp_Array1OfPnt& /*theArrayOfPnts*/,
                                                   Select3D_TypeOfSensitivity /*theSensType*/,
-                                                  SelectBasics_PickResult& )
+                                                  SelectBasics_PickResult& ) const
 {
   return Standard_False;
 }
@@ -206,7 +206,7 @@ Standard_Boolean SelectMgr_BaseFrustum::Overlaps (const gp_Pnt& /*thePt1*/,
                                                   const gp_Pnt& /*thePt2*/,
                                                   const gp_Pnt& /*thePt3*/,
                                                   Select3D_TypeOfSensitivity /*theSensType*/,
-                                                  SelectBasics_PickResult& )
+                                                  SelectBasics_PickResult& ) const
 {
   return Standard_False;
 }
@@ -217,7 +217,7 @@ Standard_Boolean SelectMgr_BaseFrustum::Overlaps (const gp_Pnt& /*thePt1*/,
 //=======================================================================
 Standard_Boolean SelectMgr_BaseFrustum::Overlaps (const gp_Pnt& /*thePnt1*/,
                                                   const gp_Pnt& /*thePnt2*/,
-                                                  SelectBasics_PickResult& )
+                                                  SelectBasics_PickResult& ) const
 {
   return Standard_False;
 }
@@ -227,7 +227,7 @@ Standard_Boolean SelectMgr_BaseFrustum::Overlaps (const gp_Pnt& /*thePnt1*/,
 // purpose  : Measures distance between 3d projection of user-picked
 //            screen point and given point theCOG
 //=======================================================================
-Standard_Real SelectMgr_BaseFrustum::DistToGeometryCenter (const gp_Pnt& /*theCOG*/)
+Standard_Real SelectMgr_BaseFrustum::DistToGeometryCenter (const gp_Pnt& /*theCOG*/) const
 {
   return DBL_MAX;
 }
@@ -247,7 +247,7 @@ gp_Pnt SelectMgr_BaseFrustum::DetectedPoint (const Standard_Real /*theDepth*/) c
 //            detected belongs to the region defined by clipping planes
 //=======================================================================
 Standard_Boolean SelectMgr_BaseFrustum::IsClipped (const Graphic3d_SequenceOfHClipPlane& /*thePlanes*/,
-                                                   const Standard_Real /*theDepth*/)
+                                                   const Standard_Real /*theDepth*/) const
 {
   return Standard_True;
 }

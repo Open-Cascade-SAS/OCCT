@@ -259,12 +259,12 @@ void Select3D_InteriorSensitivePointSet::Swap (const Standard_Integer theIdx1,
 
 // =======================================================================
 // function : overlapsElement
-// purpose  : Checks whether the planar convex polygon with index theIdx
-//            in myPlanarPolygons overlaps the current selecting volume
+// purpose  :
 // =======================================================================
-Standard_Boolean Select3D_InteriorSensitivePointSet::overlapsElement (SelectBasics_SelectingVolumeManager& theMgr,
+Standard_Boolean Select3D_InteriorSensitivePointSet::overlapsElement (SelectBasics_PickResult& thePickResult,
+                                                                      SelectBasics_SelectingVolumeManager& theMgr,
                                                                       Standard_Integer theElemIdx,
-                                                                      SelectBasics_PickResult& thePickResult)
+                                                                      Standard_Boolean )
 {
   Standard_Integer aPolygIdx = myPolygonsIdxs->Value (theElemIdx);
   const Handle(Select3D_SensitivePoly)& aPolygon = myPlanarPolygons.Value (aPolygIdx);
@@ -278,10 +278,11 @@ Standard_Boolean Select3D_InteriorSensitivePointSet::overlapsElement (SelectBasi
 // purpose  :
 // =======================================================================
 Standard_Boolean Select3D_InteriorSensitivePointSet::elementIsInside (SelectBasics_SelectingVolumeManager& theMgr,
-                                                                      const Standard_Integer               theElemIdx)
+                                                                      Standard_Integer theElemIdx,
+                                                                      Standard_Boolean theIsFullInside)
 {
   SelectBasics_PickResult aDummy;
-  return overlapsElement (theMgr, theElemIdx, aDummy);
+  return overlapsElement (aDummy, theMgr, theElemIdx, theIsFullInside);
 }
 
 // =======================================================================

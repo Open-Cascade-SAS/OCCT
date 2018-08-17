@@ -66,24 +66,24 @@ protected:
   //! with minimum corner at point theMinPt and maximum at point theMaxPt
   Standard_Boolean hasOverlap (const SelectMgr_Vec3& theBoxMin,
                                const SelectMgr_Vec3& theBoxMax,
-                               Standard_Boolean*     theInside = NULL);
+                               Standard_Boolean*     theInside = NULL) const;
 
   //! SAT intersection test between defined volume and given point
-  Standard_Boolean hasOverlap (const gp_Pnt& thePnt);
+  Standard_Boolean hasOverlap (const gp_Pnt& thePnt) const;
 
   //! SAT intersection test between defined volume and given segment
   Standard_Boolean hasOverlap (const gp_Pnt& thePnt1,
-                               const gp_Pnt& thePnt2);
+                               const gp_Pnt& thePnt2) const;
 
   //! SAT intersection test between frustum given and planar convex polygon represented as ordered point set
   Standard_Boolean hasOverlap (const TColgp_Array1OfPnt& theArrayOfPnts,
-                               gp_Vec& theNormal);
+                               gp_Vec& theNormal) const;
 
   //! SAT intersection test between defined volume and given triangle
   Standard_Boolean hasOverlap (const gp_Pnt& thePnt1,
                                const gp_Pnt& thePnt2,
                                const gp_Pnt& thePnt3,
-                               gp_Vec& theNormal);
+                               gp_Vec& theNormal) const;
 
 private:
 

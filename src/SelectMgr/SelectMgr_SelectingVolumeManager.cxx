@@ -236,7 +236,7 @@ void SelectMgr_SelectingVolumeManager::BuildSelectingVolume (const TColgp_Array1
 //=======================================================================
 Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const SelectMgr_Vec3& theBoxMin,
                                                              const SelectMgr_Vec3& theBoxMax,
-                                                             SelectBasics_PickResult& thePickResult)
+                                                             SelectBasics_PickResult& thePickResult) const
 {
   if (myActiveSelectionType == Unknown)
     return Standard_False;
@@ -250,7 +250,7 @@ Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const SelectMgr_Vec
 //=======================================================================
 Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const SelectMgr_Vec3& theBoxMin,
                                                              const SelectMgr_Vec3& theBoxMax,
-                                                             Standard_Boolean*     theInside)
+                                                             Standard_Boolean*     theInside) const
 {
   if (myActiveSelectionType == Unknown)
     return Standard_False;
@@ -263,7 +263,7 @@ Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const SelectMgr_Vec
 // purpose  : Intersection test between defined volume and given point
 //=======================================================================
 Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const gp_Pnt& thePnt,
-                                                             SelectBasics_PickResult& thePickResult)
+                                                             SelectBasics_PickResult& thePickResult) const
 {
   if (myActiveSelectionType == Unknown)
     return Standard_False;
@@ -276,7 +276,7 @@ Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const gp_Pnt& thePn
 // function : Overlaps
 // purpose  : Intersection test between defined volume and given point
 //=======================================================================
-Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const gp_Pnt& thePnt)
+Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const gp_Pnt& thePnt) const
 {
   if (myActiveSelectionType == Unknown)
     return Standard_False;
@@ -293,7 +293,7 @@ Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const gp_Pnt& thePn
 //=======================================================================
 Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const Handle(TColgp_HArray1OfPnt)& theArrayOfPnts,
                                                              Standard_Integer theSensType,
-                                                             SelectBasics_PickResult& thePickResult)
+                                                             SelectBasics_PickResult& thePickResult) const
 {
   if (myActiveSelectionType == Unknown)
     return Standard_False;
@@ -312,7 +312,7 @@ Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const Handle(TColgp
 //=======================================================================
 Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const TColgp_Array1OfPnt& theArrayOfPnts,
                                                              Standard_Integer theSensType,
-                                                             SelectBasics_PickResult& thePickResult)
+                                                             SelectBasics_PickResult& thePickResult) const
 {
   if (myActiveSelectionType == Unknown)
     return Standard_False;
@@ -328,7 +328,7 @@ Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const TColgp_Array1
 //=======================================================================
 Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const gp_Pnt& thePt1,
                                                              const gp_Pnt& thePt2,
-                                                             SelectBasics_PickResult& thePickResult)
+                                                             SelectBasics_PickResult& thePickResult) const
 {
   if (myActiveSelectionType == Unknown)
     return Standard_False;
@@ -347,7 +347,7 @@ Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const gp_Pnt& thePt
                                                              const gp_Pnt& thePt2,
                                                              const gp_Pnt& thePt3,
                                                              Standard_Integer theSensType,
-                                                             SelectBasics_PickResult& thePickResult)
+                                                             SelectBasics_PickResult& thePickResult) const
 {
   if (myActiveSelectionType == Unknown)
     return Standard_False;
@@ -364,7 +364,7 @@ Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const gp_Pnt& thePt
 // purpose  : Measures distance between 3d projection of user-picked
 //            screen point and given point theCOG
 //=======================================================================
-Standard_Real SelectMgr_SelectingVolumeManager::DistToGeometryCenter (const gp_Pnt& theCOG)
+Standard_Real SelectMgr_SelectingVolumeManager::DistToGeometryCenter (const gp_Pnt& theCOG) const
 {
   if (myActiveSelectionType == Unknown)
     return Standard_False;
@@ -394,7 +394,7 @@ gp_Pnt SelectMgr_SelectingVolumeManager::DetectedPoint (const Standard_Real theD
 //            detected belongs to the region defined by clipping planes
 //=======================================================================
 Standard_Boolean SelectMgr_SelectingVolumeManager::IsClipped (const Graphic3d_SequenceOfHClipPlane& thePlanes,
-                                                              const Standard_Real& theDepth)
+                                                              const Standard_Real& theDepth) const
 {
   if (myActiveSelectionType != Point)
     return Standard_False;

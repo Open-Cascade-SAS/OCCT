@@ -21,14 +21,11 @@
 #include <Bnd_Box.hxx>
 #include <Graphic3d_ArrayOfPoints.hxx>
 #include <Quantity_HArray1OfColor.hxx>
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-#include <Standard_Macro.hxx>
+#include <SelectMgr_EntityOwner.hxx>
 #include <TColgp_HArray1OfDir.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
 
-class AIS_PointCloud;
-DEFINE_STANDARD_HANDLE(AIS_PointCloud, AIS_InteractiveObject)
+class TColStd_HPackedMapOfInteger;
 
 //! Interactive object for set of points.
 //! The presentation supports two display modes:
@@ -43,7 +40,7 @@ DEFINE_STANDARD_HANDLE(AIS_PointCloud, AIS_InteractiveObject)
 //! hilight mode, e.g. 100);
 class AIS_PointCloud : public AIS_InteractiveObject
 {
-
+  DEFINE_STANDARD_RTTIEXT(AIS_PointCloud, AIS_InteractiveObject)
 public:
 
   //! Display modes supported by this Point Cloud object
@@ -56,8 +53,9 @@ public:
   //! Selection modes supported by this Point Cloud object
   enum SelectionMode
   {
-    SM_Points = 0, //!< detected by points
-    SM_BndBox = 2  //!< detected by bounding box
+    SM_Points         = 0, //!< detected by points
+    SM_SubsetOfPoints = 1, //!< detect point(s) within Point Cloud rather than object as whole
+    SM_BndBox         = 2, //!< detected by bounding box
   };
 
 public:
@@ -121,10 +119,45 @@ private:
   Handle(Graphic3d_ArrayOfPoints) myPoints;    //!< points array for presentation
   Bnd_Box                         myBndBox;    //!< bounding box for presentation
 
+};
+
+DEFINE_STANDARD_HANDLE(AIS_PointCloud, AIS_InteractiveObject)
+
+//! Custom owner for highlighting selected points.
+class AIS_PointCloudOwner : public SelectMgr_EntityOwner
+{
+  DEFINE_STANDARD_RTTIEXT(AIS_PointCloudOwner, SelectMgr_EntityOwner)
 public:
+  //! Main constructor.
+  Standard_EXPORT AIS_PointCloudOwner (const Handle(AIS_PointCloud)& theOrigin);
 
-  DEFINE_STANDARD_RTTIEXT(AIS_PointCloud,AIS_InteractiveObject)
+  //! Destructor.
+  Standard_EXPORT virtual ~AIS_PointCloudOwner();
 
+  //! Return selected points.
+  //! WARNING! Indexation starts with 0 (shifted by -1 comparing to Graphic3d_ArrayOfPoints::Vertice()).
+  const Handle(TColStd_HPackedMapOfInteger)& SelectedPoints() const { return mySelPoints; }
+
+  //! Return last detected points.
+  //! WARNING! Indexation starts with 0 (shifted by -1 comparing to Graphic3d_ArrayOfPoints::Vertice()).
+  const Handle(TColStd_HPackedMapOfInteger)& DetectedPoints() const { return myDetPoints; }
+
+  //! Always update dynamic highlighting.
+  Standard_EXPORT virtual Standard_Boolean IsForcedHilight() const Standard_OVERRIDE;
+
+  //! Handle dynamic highlighting.
+  Standard_EXPORT virtual void HilightWithColor (const Handle(PrsMgr_PresentationManager3d)& thePrsMgr,
+                                                 const Handle(Prs3d_Drawer)& theStyle,
+                                                 const Standard_Integer theMode) Standard_OVERRIDE;
+
+  //! Removes highlighting.
+  Standard_EXPORT virtual void Unhilight (const Handle(PrsMgr_PresentationManager)& thePrsMgr, const Standard_Integer theMode) Standard_OVERRIDE;
+
+  //! Clears presentation.
+  Standard_EXPORT virtual void Clear (const Handle(PrsMgr_PresentationManager)& thePrsMgr, const Standard_Integer theMode) Standard_OVERRIDE;
+protected:
+  Handle(TColStd_HPackedMapOfInteger) myDetPoints; //!< last detected points
+  Handle(TColStd_HPackedMapOfInteger) mySelPoints; //!< selected points
 };
 
 #endif // _AIS_PointCloud_HeaderFile

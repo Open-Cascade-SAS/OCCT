@@ -76,13 +76,15 @@ protected:
 
   //! Checks whether the planar convex polygon with index theIdx
   //! in myPlanarPolygons overlaps the current selecting volume
-  Standard_EXPORT virtual Standard_Boolean overlapsElement (SelectBasics_SelectingVolumeManager& theMgr,
+  Standard_EXPORT virtual Standard_Boolean overlapsElement (SelectBasics_PickResult& thePickResult,
+                                                            SelectBasics_SelectingVolumeManager& theMgr,
                                                             Standard_Integer theElemIdx,
-                                                            SelectBasics_PickResult& thePickResult) Standard_OVERRIDE;
+                                                            Standard_Boolean theIsFullInside) Standard_OVERRIDE;
 
   //! Checks whether the entity with index theIdx is inside the current selecting volume
   Standard_EXPORT virtual Standard_Boolean elementIsInside (SelectBasics_SelectingVolumeManager& theMgr,
-                                                            const Standard_Integer               theElemIdx) Standard_OVERRIDE;
+                                                            Standard_Integer theElemIdx,
+                                                            Standard_Boolean theIsFullInside) Standard_OVERRIDE;
 
   //! Calculates distance from the 3d projection of used-picked
   //! screen point to center of the geometry

@@ -3445,20 +3445,12 @@ static int VDrawPArray (Draw_Interpretor& di, Standard_Integer argc, const char*
   Handle(AIS_InteractiveContext) aContextAIS = ViewerTest::GetAISContext();
   if (aContextAIS.IsNull())
   {
-    di << "Call vinit before!\n";
+    std::cout << "Error: no active Viewer\n";
     return 1;
   }
   else if (argc < 3)
   {
-    di << "Use: " << argv[0] << " Name TypeOfArray"
-       << " [vertex] ... [bounds] ... [edges]\n"
-       << "  TypeOfArray={ points | segments | polylines | triangles |\n"
-       << "                trianglefans | trianglestrips | quads |\n"
-       << "                quadstrips | polygons }\n"
-       << "  vertex={ 'v' x y z [normal={ 'n' nx ny nz }] [color={ 'c' r g b }]"
-       << " [texel={ 't' tx ty }] } \n"
-       << "  bounds={ 'b' verticies_count [color={ 'c' r g b }] }\n"
-       << "  edges={ 'e' vertex_id }\n";
+    std::cout << "Syntax error: wrong number of arguments\n";
     return 1;
   }
 
@@ -3466,6 +3458,26 @@ static int VDrawPArray (Draw_Interpretor& di, Standard_Integer argc, const char*
   Standard_Integer aArgIndex = 1;
   TCollection_AsciiString aName (argv[aArgIndex++]);
   TCollection_AsciiString anArrayType (argv[aArgIndex++]);
+  if (anArrayType == "-shape")
+  {
+    Standard_CString aShapeName = argv[aArgIndex++];
+    TopoDS_Shape aShape = DBRep::Get (aShapeName);
+    Handle(Graphic3d_ArrayOfPrimitives) aTris = StdPrs_ShadedShape::FillTriangles (aShape);
+    if (aShape.IsNull())
+    {
+      std::cout << "Syntax error: shape '" << aShapeName << "' is not found\n";
+      return 1;
+    }
+    else if (aTris.IsNull())
+    {
+      std::cout << "Syntax error: shape '" << aShapeName << "' is not triangulated\n";
+      return 1;
+    }
+
+    Handle(MyPArrayObject) aPObject = new MyPArrayObject (aTris);
+    ViewerTest::Display (aName, aPObject);
+    return 0;
+  }
 
   Standard_Boolean hasVertex = Standard_False;
 
@@ -6306,7 +6318,14 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
     __FILE__, VComputeHLR, group);
 
   theCommands.Add("vdrawparray",
-    "vdrawparray : vdrawparray Name TypeOfArray [vertex = { 'v' x y z [vertex_normal = { 'n' x y z }] [vertex_color = { 'c' r g b }] ] ... [bound = { 'b' vertex_count [bound_color = { 'c' r g b }] ] ... [edge = { 'e' vertex_id ]",
+                "vdrawparray name TypeOfArray={points|segments|polylines|triangles"
+      "\n\t\t:                                |trianglefans|trianglestrips|quads|quadstrips|polygons}"
+      "\n\t\t:              [vertex={'v' x y z [normal={'n' nx ny nz}] [color={'c' r g b}] [texel={'t' tx ty}]]"
+      "\n\t\t:              [bound= {'b' nbVertices [bound_color={'c' r g b}]]"
+      "\n\t\t:              [edge=  {'e' vertexId]"
+      "\n\t\t:              [-shape shapeName]"
+      "\n\t\t: Commands create an Interactive Object for specified Primitive Array definition (Graphic3d_ArrayOfPrimitives)"
+      "\n\t\t: with the main purpose is covering various combinations by tests",
     __FILE__,VDrawPArray,group);
 
   theCommands.Add("vconnect", 

@@ -127,7 +127,7 @@ Handle(SelectMgr_BaseFrustum) SelectMgr_TriangularFrustumSet::ScaleAndTransform 
 // =======================================================================
 Standard_Boolean SelectMgr_TriangularFrustumSet::Overlaps (const SelectMgr_Vec3& theMinPnt,
                                                            const SelectMgr_Vec3& theMaxPnt,
-                                                           SelectBasics_PickResult& thePickResult)
+                                                           SelectBasics_PickResult& thePickResult) const
 {
   for (SelectMgr_TriangFrustumsIter anIter (myFrustums); anIter.More(); anIter.Next())
   {
@@ -144,7 +144,7 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::Overlaps (const SelectMgr_Vec3&
 // =======================================================================
 Standard_Boolean SelectMgr_TriangularFrustumSet::Overlaps (const SelectMgr_Vec3& theMinPnt,
                                                            const SelectMgr_Vec3& theMaxPnt,
-                                                           Standard_Boolean* /*theInside*/)
+                                                           Standard_Boolean* /*theInside*/) const
 {
   for (SelectMgr_TriangFrustumsIter anIter (myFrustums); anIter.More(); anIter.Next())
   {
@@ -160,7 +160,7 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::Overlaps (const SelectMgr_Vec3&
 // purpose  :
 // =======================================================================
 Standard_Boolean SelectMgr_TriangularFrustumSet::Overlaps (const gp_Pnt& thePnt,
-                                                           SelectBasics_PickResult& thePickResult)
+                                                           SelectBasics_PickResult& thePickResult) const
 {
   for (SelectMgr_TriangFrustumsIter anIter (myFrustums); anIter.More(); anIter.Next())
   {
@@ -177,7 +177,7 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::Overlaps (const gp_Pnt& thePnt,
 // =======================================================================
 Standard_Boolean SelectMgr_TriangularFrustumSet::Overlaps (const TColgp_Array1OfPnt& theArrayOfPts,
                                                            Select3D_TypeOfSensitivity theSensType,
-                                                           SelectBasics_PickResult& thePickResult)
+                                                           SelectBasics_PickResult& thePickResult) const
 {
   for (SelectMgr_TriangFrustumsIter anIter (myFrustums); anIter.More(); anIter.Next())
   {
@@ -194,7 +194,7 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::Overlaps (const TColgp_Array1Of
 // =======================================================================
 Standard_Boolean SelectMgr_TriangularFrustumSet::Overlaps (const gp_Pnt& thePnt1,
                                                            const gp_Pnt& thePnt2,
-                                                           SelectBasics_PickResult& thePickResult)
+                                                           SelectBasics_PickResult& thePickResult) const
 {
   for (SelectMgr_TriangFrustumsIter anIter (myFrustums); anIter.More(); anIter.Next())
   {
@@ -213,7 +213,7 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::Overlaps (const gp_Pnt& thePnt1
                                                            const gp_Pnt& thePnt2,
                                                            const gp_Pnt& thePnt3,
                                                            Select3D_TypeOfSensitivity theSensType,
-                                                           SelectBasics_PickResult& thePickResult)
+                                                           SelectBasics_PickResult& thePickResult) const
 {
   for (SelectMgr_TriangFrustumsIter anIter (myFrustums); anIter.More(); anIter.Next())
   {

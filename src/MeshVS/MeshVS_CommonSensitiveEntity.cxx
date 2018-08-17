@@ -222,10 +222,16 @@ void MeshVS_CommonSensitiveEntity::Swap (const Standard_Integer theIdx1,
 //function : overlapsElement
 //purpose  :
 //=======================================================================
-Standard_Boolean MeshVS_CommonSensitiveEntity::overlapsElement (SelectBasics_SelectingVolumeManager& theMgr,
+Standard_Boolean MeshVS_CommonSensitiveEntity::overlapsElement (SelectBasics_PickResult& thePickResult,
+                                                                SelectBasics_SelectingVolumeManager& theMgr,
                                                                 Standard_Integer theElemIdx,
-                                                                SelectBasics_PickResult& thePickResult)
+                                                                Standard_Boolean theIsFullInside)
 {
+  if (theIsFullInside)
+  {
+    return Standard_True;
+  }
+
   const Standard_Integer anItemIdx = myItemIndexes.Value (theElemIdx);
   if (mySelMethod == MeshVS_MSM_PRECISE)
   {
@@ -276,8 +282,14 @@ Standard_Boolean MeshVS_CommonSensitiveEntity::overlapsElement (SelectBasics_Sel
 //purpose  :
 //=======================================================================
 Standard_Boolean MeshVS_CommonSensitiveEntity::elementIsInside (SelectBasics_SelectingVolumeManager& theMgr,
-                                                                const Standard_Integer theElemIdx)
+                                                                Standard_Integer theElemIdx,
+                                                                Standard_Boolean theIsFullInside)
 {
+  if (theIsFullInside)
+  {
+    return Standard_True;
+  }
+
   const Standard_Integer anItemIdx = myItemIndexes.Value (theElemIdx);
   if (mySelMethod == MeshVS_MSM_PRECISE)
   {

@@ -129,7 +129,7 @@ Standard_Boolean SelectMgr_Frustum<N>::isSeparated (const gp_Pnt& thePnt1,
 template <int N>
 Standard_Boolean SelectMgr_Frustum<N>::hasOverlap (const SelectMgr_Vec3& theMinPnt,
                                                    const SelectMgr_Vec3& theMaxPnt,
-                                                   Standard_Boolean*     theInside)
+                                                   Standard_Boolean*     theInside) const
 {
   for (Standard_Integer anAxis = 0; anAxis < 3; ++anAxis)
   {
@@ -203,7 +203,7 @@ Standard_Boolean SelectMgr_Frustum<N>::hasOverlap (const SelectMgr_Vec3& theMinP
 // purpose  : SAT intersection test between defined volume and given point
 // =======================================================================
 template <int N>
-Standard_Boolean SelectMgr_Frustum<N>::hasOverlap (const gp_Pnt& thePnt)
+Standard_Boolean SelectMgr_Frustum<N>::hasOverlap (const gp_Pnt& thePnt) const
 {
   const Standard_Integer anIncFactor = (myIsOrthographic && N == 4) ? 2 : 1;
 
@@ -227,7 +227,7 @@ Standard_Boolean SelectMgr_Frustum<N>::hasOverlap (const gp_Pnt& thePnt)
 // =======================================================================
 template <int N>
 Standard_Boolean SelectMgr_Frustum<N>::hasOverlap (const gp_Pnt& theStartPnt,
-                                                   const gp_Pnt& theEndPnt)
+                                                   const gp_Pnt& theEndPnt) const
 {
   const gp_XYZ& aDir = theEndPnt.XYZ() - theStartPnt.XYZ();
   if (aDir.Modulus() < Precision::Confusion())
@@ -309,7 +309,7 @@ Standard_Boolean SelectMgr_Frustum<N>::hasOverlap (const gp_Pnt& theStartPnt,
 // =======================================================================
 template <int N>
 Standard_Boolean SelectMgr_Frustum<N>::hasOverlap (const TColgp_Array1OfPnt& theArrayOfPnts,
-                                                   gp_Vec& theNormal)
+                                                   gp_Vec& theNormal) const
 {
   Standard_Integer aStartIdx = theArrayOfPnts.Lower();
   Standard_Integer anEndIdx = theArrayOfPnts.Upper();
@@ -406,7 +406,7 @@ template <int N>
 Standard_Boolean SelectMgr_Frustum<N>::hasOverlap (const gp_Pnt& thePnt1,
                                                    const gp_Pnt& thePnt2,
                                                    const gp_Pnt& thePnt3,
-                                                   gp_Vec& theNormal)
+                                                   gp_Vec& theNormal) const
 {
   const gp_XYZ aTrEdges[3] = { thePnt2.XYZ() - thePnt1.XYZ(),
                                thePnt3.XYZ() - thePnt2.XYZ(),

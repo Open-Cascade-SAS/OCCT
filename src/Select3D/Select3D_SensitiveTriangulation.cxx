@@ -259,12 +259,17 @@ void Select3D_SensitiveTriangulation::Swap (const Standard_Integer theIdx1,
 // purpose  : Checks whether the element with index theIdx overlaps the
 //            current selecting volume
 //=======================================================================
-Standard_Boolean Select3D_SensitiveTriangulation::overlapsElement (SelectBasics_SelectingVolumeManager& theMgr,
+Standard_Boolean Select3D_SensitiveTriangulation::overlapsElement (SelectBasics_PickResult& thePickResult,
+                                                                   SelectBasics_SelectingVolumeManager& theMgr,
                                                                    Standard_Integer theElemIdx,
-                                                                   SelectBasics_PickResult& thePickResult)
+                                                                   Standard_Boolean theIsFullInside)
 {
-  const Standard_Integer& aPrimitiveIdx = myBVHPrimIndexes->Value (theElemIdx);
+  if (theIsFullInside)
+  {
+    return Standard_True;
+  }
 
+  const Standard_Integer aPrimitiveIdx = myBVHPrimIndexes->Value (theElemIdx);
   if (mySensType == Select3D_TOS_BOUNDARY)
   {
     Standard_Integer aSegmStartIdx = myFreeEdges->Value (aPrimitiveIdx * 2 + 1);
@@ -296,10 +301,15 @@ Standard_Boolean Select3D_SensitiveTriangulation::overlapsElement (SelectBasics_
 // Purpose  :
 //==================================================
 Standard_Boolean Select3D_SensitiveTriangulation::elementIsInside (SelectBasics_SelectingVolumeManager& theMgr,
-                                                                   const Standard_Integer               theElemIdx)
+                                                                   Standard_Integer theElemIdx,
+                                                                   Standard_Boolean theIsFullInside)
 {
-  const Standard_Integer& aPrimitiveIdx = myBVHPrimIndexes->Value (theElemIdx);
+  if (theIsFullInside)
+  {
+    return Standard_True;
+  }
 
+  const Standard_Integer aPrimitiveIdx = myBVHPrimIndexes->Value (theElemIdx);
   if (mySensType == Select3D_TOS_BOUNDARY)
   {
     const gp_Pnt& aSegmPnt1 = myTriangul->Nodes().Value (myFreeEdges->Value (aPrimitiveIdx * 2 + 1));
