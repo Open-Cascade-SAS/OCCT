@@ -56,6 +56,7 @@
 #include <STEPConstruct_Tool.hxx>
 #include <STEPConstruct_UnitContext.hxx>
 #include <STEPConstruct_ValidationProps.hxx>
+#include <STEPControl_ActorRead.hxx>
 #include <STEPControl_Reader.hxx>
 #include <StepGeom_GeometricRepresentationItem.hxx>
 #include <StepGeom_Axis2Placement3d.hxx>
@@ -229,6 +230,7 @@
 #include <Transfer_Binder.hxx>
 #include <Transfer_TransientProcess.hxx>
 #include <TransferBRep.hxx>
+#include <UnitsMethods.hxx>
 #include <XCAFDoc.hxx>
 #include <XCAFDoc_Area.hxx>
 #include <XCAFDoc_Centroid.hxx>
@@ -253,6 +255,8 @@
 #include <XCAFDimTolObjects_GeomToleranceObject.hxx>
 #include <XCAFDimTolObjects_DatumObject.hxx>
 #include <XCAFView_Object.hxx>
+#include <XSAlgo.hxx>
+#include <XSAlgo_AlgoContainer.hxx>
 #include <XSControl_TransferReader.hxx>
 #include <XSControl_WorkSession.hxx>
 #include <StepAP242_DraughtingModelItemAssociation.hxx>
@@ -1621,104 +1625,6 @@ Standard_Boolean STEPCAFControl_Reader::ReadSHUOs (const Handle(XSControl_WorkSe
   return Standard_True;
 }
 
-
-//=======================================================================
-//function : GetLengthConversionFactor
-//purpose  : 
-//=======================================================================
-static Standard_Boolean GetLengthConversionFactor(const Handle(StepBasic_NamedUnit)& NU,
-                                                  Standard_Real& afact)
-{
-  afact=1.;
-  if( !NU->IsKind(STANDARD_TYPE(StepBasic_ConversionBasedUnitAndLengthUnit)) ) return Standard_False;
-  Handle(StepBasic_ConversionBasedUnitAndLengthUnit) CBULU =
-    Handle(StepBasic_ConversionBasedUnitAndLengthUnit)::DownCast(NU);
-  Handle(StepBasic_MeasureWithUnit) MWUCBU = CBULU->ConversionFactor();
-  afact = MWUCBU->ValueComponent();
-  StepBasic_Unit anUnit2 = MWUCBU->UnitComponent();
-  if(anUnit2.CaseNum(anUnit2.Value())==1) {
-    Handle(StepBasic_NamedUnit) NU2 = anUnit2.NamedUnit();
-    if(NU2->IsKind(STANDARD_TYPE(StepBasic_SiUnit))) {
-      Handle(StepBasic_SiUnit) SU = Handle(StepBasic_SiUnit)::DownCast(NU2);
-      if(SU->Name()==StepBasic_sunMetre) {
-        if(SU->HasPrefix()) 
-          afact *= STEPConstruct_UnitContext::ConvertSiPrefix (SU->Prefix());
-        // convert m to mm
-        afact *= 1000.;
-      }
-    }
-  }
-  return Standard_True;
-}
-
-//=======================================================================
-//function : GetLengthConversionFactorFromContext
-//purpose  : 
-//=======================================================================
-static Standard_Boolean GetLengthConversionFactorFromContext(const Handle(StepRepr_RepresentationContext)& theRC,
-                                                             Standard_Real& theFact)
-{
-  theFact = 1;
-  if (theRC.IsNull())
-    return Standard_False;
-  Handle(StepBasic_ConversionBasedUnitAndLengthUnit) aSiLU;
-  Handle(StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext) aCtx =
-    Handle(StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext)::DownCast(theRC);
-  if (!aCtx.IsNull()) {
-    for (Standard_Integer j = 1; j <= aCtx->NbUnits(); j++) {
-      if (aCtx->UnitsValue(j)->IsKind(STANDARD_TYPE(StepBasic_ConversionBasedUnitAndLengthUnit))) {
-        aSiLU = Handle(StepBasic_ConversionBasedUnitAndLengthUnit)::DownCast(aCtx->UnitsValue(j));
-        break;
-      }
-    }
-  }
-  if (aSiLU.IsNull()) {
-    Handle(StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx) aCtx1 =
-      Handle(StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx)::DownCast(theRC);
-    if (!aCtx1.IsNull()) {
-      for (Standard_Integer j = 1; j <= aCtx1->NbUnits(); j++) {
-        if (aCtx1->UnitsValue(j)->IsKind(STANDARD_TYPE(StepBasic_ConversionBasedUnitAndLengthUnit))) {
-          aSiLU = Handle(StepBasic_ConversionBasedUnitAndLengthUnit)::DownCast(aCtx1->UnitsValue(j));
-          break;
-        }
-      }
-    }
-  }
-  if (aSiLU.IsNull())
-    return Standard_False;
-  return GetLengthConversionFactor(aSiLU, theFact);
-  
-}
-
-//=======================================================================
-//function : GetAngleConversionFactor
-//purpose  : 
-//=======================================================================
-static Standard_Boolean GetAngleConversionFactor(Handle(StepBasic_NamedUnit)& NU,
-                                                  Standard_Real& afact)
-{
-  afact=1.;
-  if( !NU->IsKind(STANDARD_TYPE(StepBasic_ConversionBasedUnitAndPlaneAngleUnit)) ) return Standard_False;
-  Handle(StepBasic_ConversionBasedUnitAndPlaneAngleUnit) CBULU =
-    Handle(StepBasic_ConversionBasedUnitAndPlaneAngleUnit)::DownCast(NU);
-  Handle(StepBasic_MeasureWithUnit) MWUCBU = CBULU->ConversionFactor();
-  afact = MWUCBU->ValueComponent();
-  StepBasic_Unit anUnit2 = MWUCBU->UnitComponent();
-  if(anUnit2.CaseNum(anUnit2.Value())==1) {
-    Handle(StepBasic_NamedUnit) NU2 = anUnit2.NamedUnit();
-    if(NU2->IsKind(STANDARD_TYPE(StepBasic_SiUnit))) {
-      Handle(StepBasic_SiUnit) SU = Handle(StepBasic_SiUnit)::DownCast(NU2);
-      if(SU->Name()==StepBasic_sunRadian) {
-        if(SU->HasPrefix()) 
-          afact *= STEPConstruct_UnitContext::ConvertSiPrefix (SU->Prefix());
-        // convert radian to deg
-        afact *= 180/M_PI;
-      }
-    }
-  }
-  return Standard_True;
-}
-
 //=======================================================================
 //function : GetMassConversionFactor
 //purpose  : 
@@ -1893,7 +1799,6 @@ Standard_Boolean readPMIPresentation(const Handle(Standard_Transient)& thePresen
 //purpose  : read annotation plane
 //=======================================================================
 Standard_Boolean readAnnotationPlane(const Handle(StepVisual_AnnotationPlane) theAnnotationPlane,
-                                     const Standard_Real theFact,
                                      gp_Ax2& thePlane)
 {
   if (theAnnotationPlane.IsNull())
@@ -1914,13 +1819,8 @@ Standard_Boolean readAnnotationPlane(const Handle(StepVisual_AnnotationPlane) th
   if (aA2P3D.IsNull())
     return Standard_False;
 
-  gp_Ax2 aPlaneAxes;
   Handle(Geom_Axis2Placement) anAxis = StepToGeom::MakeAxis2Placement(aA2P3D);
-  aPlaneAxes = anAxis->Ax2();
-  gp_XYZ aLocPos = aPlaneAxes.Location().XYZ();
-  aLocPos *= theFact;
-  aPlaneAxes.SetLocation(aLocPos);
-  thePlane = aPlaneAxes;
+  thePlane = anAxis->Ax2();
   return Standard_True;
 }
 
@@ -1958,9 +1858,10 @@ void readAnnotation(const Handle(XSControl_TransferReader)& theTR,
   // calculate units
   Handle(StepVisual_DraughtingModel) aDModel = 
     Handle(StepVisual_DraughtingModel)::DownCast(aDMIA->UsedRepresentation());
-  Standard_Real aFact = 1;
-  if (!aDModel.IsNull())
-    GetLengthConversionFactorFromContext(aDModel->ContextOfItems(), aFact);
+  XSAlgo::AlgoContainer()->PrepareForTransfer();
+  STEPControl_ActorRead anActor;
+  anActor.PrepareUnits(aDModel, aTP);
+  Standard_Real aFact = UnitsMethods::LengthFactor();
 
   // retrieve AnnotationPlane
   Handle(StepRepr_RepresentationItem) aDMIAE = aDMIA->IdentifiedItemValue(1);
@@ -1972,7 +1873,7 @@ void readAnnotation(const Handle(XSControl_TransferReader)& theTR,
   for (subs.Start(); subs.More() && anAnPlane.IsNull(); subs.Next()) {
     anAnPlane = Handle(StepVisual_AnnotationPlane)::DownCast(subs.Value());
   }
-  Standard_Boolean isHasPlane = readAnnotationPlane(anAnPlane, aFact, aPlaneAxes);
+  Standard_Boolean isHasPlane = readAnnotationPlane(anAnPlane, aPlaneAxes);
 
   // set plane axes to XCAF
   if (isHasPlane) {
@@ -2052,14 +1953,15 @@ void readConnectionPoints(const Handle(XSControl_TransferReader)& theTR,
   const Interface_Graph& aGraph = aTP->Graph();
 
   //calculate units
-  Standard_Real aFact = 1;
   Handle(StepShape_ShapeDimensionRepresentation) aSDR = NULL;
   for (Interface_EntityIterator anIt = aGraph.Sharings(theGDT); aSDR.IsNull() && anIt.More(); anIt.Next()) {
     aSDR = Handle(StepShape_ShapeDimensionRepresentation)::DownCast(anIt.Value());
   }
-  if (!aSDR.IsNull())
-    GetLengthConversionFactorFromContext(aSDR->ContextOfItems(), aFact);
-  
+  XSAlgo::AlgoContainer()->PrepareForTransfer();
+  STEPControl_ActorRead anActor;
+  anActor.PrepareUnits(aSDR, aTP);
+  Standard_Real aFact = UnitsMethods::LengthFactor();
+
   if (theGDT->IsKind(STANDARD_TYPE(StepShape_DimensionalSize))) {
     // retrieve derived geometry
     Handle(StepShape_DimensionalSize) aDim = Handle(StepShape_DimensionalSize)::DownCast(theGDT);
@@ -2459,6 +2361,9 @@ Standard_Boolean STEPCAFControl_Reader::setDatumToXCAF(const Handle(StepDimTol_D
               {
                 Handle(StepGeom_Axis2Placement3d) anAx
                   = Handle(StepGeom_Axis2Placement3d)::DownCast(aSRWP->ItemsValue(j));
+                XSAlgo::AlgoContainer()->PrepareForTransfer();
+                STEPControl_ActorRead anActor;
+                anActor.PrepareUnits(aSRWP, aTP);
                 Handle(Geom_Axis2Placement) anAxis = StepToGeom::MakeAxis2Placement(anAx);
                 aDatTargetObj->SetDatumTargetAxis(anAxis->Ax2());
               }
@@ -2468,14 +2373,14 @@ Standard_Boolean STEPCAFControl_Reader::setDatumToXCAF(const Handle(StepDimTol_D
                   Handle(StepRepr_ReprItemAndLengthMeasureWithUnit)::DownCast(aSRWP->ItemsValue(j));
                 Standard_Real aVal = aM->GetMeasureWithUnit()->ValueComponent();
                 StepBasic_Unit anUnit = aM->GetMeasureWithUnit()->UnitComponent();
-                Standard_Real aFact = 1.;
                 if (anUnit.IsNull())
                   continue;
                 Handle(StepBasic_NamedUnit) aNU = anUnit.NamedUnit();
                 if (aNU.IsNull())
                   continue;
-                if (GetLengthConversionFactor(aNU, aFact))
-                  aVal = aVal * aFact;
+                STEPConstruct_UnitContext anUnitCtx;
+                anUnitCtx.ComputeFactors(aNU);
+                aVal = aVal * anUnitCtx.LengthFactor();
                 if (aM->Name()->String().IsEqual("target length") ||
                   aM->Name()->String().IsEqual("target diameter"))
                   aDatTargetObj->SetDatumTargetLength(aVal);
@@ -2626,12 +2531,12 @@ Standard_Boolean STEPCAFControl_Reader::readDatumsAP242(const Handle(Standard_Tr
                   aXCAFModifWithVal = (XCAFDimTolObjects_DatumModifWithValue)(aModif->Value(m).DatumReferenceModifierWithValue()->ModifierType() + 1);
                   Standard_Real aVal = aModif->Value(m).DatumReferenceModifierWithValue()->ModifierValue()->ValueComponent();
                   StepBasic_Unit anUnit = aModif->Value(m).DatumReferenceModifierWithValue()->ModifierValue()->UnitComponent();
-                  Standard_Real aFact=1.;
                   if(anUnit.IsNull()) continue;
                   if( !(anUnit.CaseNum(anUnit.Value())==1) ) continue;
                   Handle(StepBasic_NamedUnit) NU = anUnit.NamedUnit();
-                  if(GetLengthConversionFactor(NU,aFact)) aVal=aVal*aFact;
-                  aModifValue = aVal;
+                  STEPConstruct_UnitContext anUnitCtx;
+                  anUnitCtx.ComputeFactors(NU);
+                  aModifValue = aVal * anUnitCtx.LengthFactor();
                 }
               }
             }
@@ -2663,12 +2568,12 @@ Standard_Boolean STEPCAFControl_Reader::readDatumsAP242(const Handle(Standard_Tr
                       aXCAFModifWithVal = (XCAFDimTolObjects_DatumModifWithValue)(aModifE->Value(k).DatumReferenceModifierWithValue()->ModifierType() + 1);
                       Standard_Real aVal = aModifE->Value(k).DatumReferenceModifierWithValue()->ModifierValue()->ValueComponent();
                       StepBasic_Unit anUnit = aModifE->Value(k).DatumReferenceModifierWithValue()->ModifierValue()->UnitComponent();
-                      Standard_Real aFact=1.;
                       if(anUnit.IsNull()) continue;
                       if( !(anUnit.CaseNum(anUnit.Value())==1) ) continue;
                       Handle(StepBasic_NamedUnit) NU = anUnit.NamedUnit();
-                      if(GetLengthConversionFactor(NU,aFact)) aVal=aVal*aFact;
-                      aModifValue = aVal;
+                      STEPConstruct_UnitContext anUnitCtx;
+                      anUnitCtx.ComputeFactors(NU);
+                      aModifValue = aVal * anUnitCtx.LengthFactor();
                     }
                   }
                 }
@@ -2863,11 +2768,12 @@ TDF_Label STEPCAFControl_Reader::createGDTObjectInXCAF(const Handle(Standard_Tra
                           Handle(StepRepr_ReprItemAndLengthMeasureWithUnit)::DownCast(RI1);
                         dim1 = RILMWU->GetMeasureWithUnit()->ValueComponent();
                         StepBasic_Unit anUnit = RILMWU->GetMeasureWithUnit()->UnitComponent();
-                        Standard_Real afact=1.;
                         if(anUnit.IsNull()) continue;
                         if( !(anUnit.CaseNum(anUnit.Value())==1) ) continue;
                         Handle(StepBasic_NamedUnit) NU = anUnit.NamedUnit();
-                        if(GetLengthConversionFactor(NU,afact)) dim1=dim1*afact;
+                        STEPConstruct_UnitContext anUnitCtx;
+                        anUnitCtx.ComputeFactors(NU);
+                        dim1 = dim1 * anUnitCtx.LengthFactor();
                       }
                     }
                     if(HARI->Length()>1) {
@@ -2878,11 +2784,12 @@ TDF_Label STEPCAFControl_Reader::createGDTObjectInXCAF(const Handle(Standard_Tra
                           Handle(StepRepr_ReprItemAndLengthMeasureWithUnit)::DownCast(RI2);
                         dim2 = RILMWU->GetMeasureWithUnit()->ValueComponent();
                         StepBasic_Unit anUnit = RILMWU->GetMeasureWithUnit()->UnitComponent();
-                        Standard_Real afact=1.;
                         if(anUnit.IsNull()) continue;
                         if( !(anUnit.CaseNum(anUnit.Value())==1) ) continue;
                         Handle(StepBasic_NamedUnit) NU = anUnit.NamedUnit();
-                        if(GetLengthConversionFactor(NU,afact)) dim2 = dim2*afact;
+                        STEPConstruct_UnitContext anUnitCtx;
+                        anUnitCtx.ComputeFactors(NU);
+                        dim2 = dim2 * anUnitCtx.LengthFactor();
                       }
                     }
                   }
@@ -2918,11 +2825,12 @@ TDF_Label STEPCAFControl_Reader::createGDTObjectInXCAF(const Handle(Standard_Tra
             if(dim3.IsNull()) continue;
             Standard_Real dim = dim3->ValueComponent();
             StepBasic_Unit anUnit = GT->Magnitude()->UnitComponent();
-            Standard_Real afact=1.;
             if(anUnit.IsNull()) continue;
             if( !(anUnit.CaseNum(anUnit.Value())==1) ) continue;
             Handle(StepBasic_NamedUnit) NU = anUnit.NamedUnit();
-            if(GetLengthConversionFactor(NU,afact)) dim = dim*afact;
+            STEPConstruct_UnitContext anUnitCtx;
+            anUnitCtx.ComputeFactors(NU);
+            dim = dim * anUnitCtx.LengthFactor();
             //cout<<"GeometricTolerance: Magnitude = "<<dim<<endl;
             Handle(TColStd_HArray1OfReal) arr = new TColStd_HArray1OfReal(1,1);
             arr->SetValue(1,dim);
@@ -3147,6 +3055,25 @@ TDF_Label STEPCAFControl_Reader::createGDTObjectInXCAF(const Handle(Standard_Tra
 }
 
 //=======================================================================
+//function : convertAngleValue
+//purpose  : auxilary
+//=======================================================================
+void convertAngleValue(
+  const STEPConstruct_UnitContext& anUnitCtx,
+  Standard_Real& aVal)
+{
+  // convert radian to deg
+  Standard_Real aFact = anUnitCtx.PlaneAngleFactor() * 180 / M_PI;
+  // in order to avoid inaccuracy of calculation perform conversion
+  // only if aFact not eqaul 1 with some precision
+  if (fabs(1. - aFact) > Precision::Confusion())
+  {
+    aVal = aVal * aFact;
+  }
+}
+
+
+//=======================================================================
 //function : setDimObjectToXCAF
 //purpose  : 
 //=======================================================================
@@ -3212,20 +3139,19 @@ static void setDimObjectToXCAF(const Handle(Standard_Transient)& theEnt,
                 Handle(StepRepr_ReprItemAndMeasureWithUnit)::DownCast(aDRI);
               Standard_Real aVal = aMWU->GetMeasureWithUnit()->ValueComponent();
               StepBasic_Unit anUnit = aMWU->GetMeasureWithUnit()->UnitComponent();
-              Standard_Real aFact = 1.;
               if (anUnit.IsNull()) 
                 continue;
               if (!(anUnit.CaseNum(anUnit.Value()) == 1)) 
                 continue;
               Handle(StepBasic_NamedUnit) NU = anUnit.NamedUnit();
+              STEPConstruct_UnitContext anUnitCtx;
+              anUnitCtx.ComputeFactors(NU);
               if (aMWU->IsKind(STANDARD_TYPE(StepRepr_ReprItemAndLengthMeasureWithUnit))) {
-                if (GetLengthConversionFactor(NU, aFact))
-                  aVal = aVal * aFact;
+                aVal = aVal * anUnitCtx.LengthFactor();
               }
               else
                 if (aMWU->IsKind(STANDARD_TYPE(StepRepr_ReprItemAndPlaneAngleMeasureWithUnit))) {
-                  if (GetAngleConversionFactor(NU, aFact))
-                    aVal = aVal * aFact;
+                  convertAngleValue(anUnitCtx, aVal);
                 }
               Handle(TCollection_HAsciiString) aName = aMWU->Name();
               if (aName->Search("upper") > 0) // upper limit
@@ -3239,20 +3165,19 @@ static void setDimObjectToXCAF(const Handle(Standard_Transient)& theEnt,
                 Handle(StepRepr_ReprItemAndMeasureWithUnitAndQRI)::DownCast(aDRI);
               Standard_Real aVal = aMWU->GetMeasureWithUnit()->ValueComponent();
               StepBasic_Unit anUnit = aMWU->GetMeasureWithUnit()->UnitComponent();
-              Standard_Real aFact = 1.;
               if(anUnit.IsNull())
                 continue;
               if( !(anUnit.CaseNum(anUnit.Value()) == 1) )
                 continue;
               Handle(StepBasic_NamedUnit) NU = anUnit.NamedUnit();
+              STEPConstruct_UnitContext anUnitCtx;
+              anUnitCtx.ComputeFactors(NU);
               if (aMWU->IsKind(STANDARD_TYPE(StepRepr_ReprItemAndLengthMeasureWithUnitAndQRI))) {
-                if (GetLengthConversionFactor(NU, aFact))
-                  aVal = aVal * aFact;
+                aVal = aVal * anUnitCtx.LengthFactor();
               }
               else
                 if (aMWU->IsKind(STANDARD_TYPE(StepRepr_ReprItemAndPlaneAngleMeasureWithUnitAndQRI))) {
-                  if (GetAngleConversionFactor(NU, aFact))
-                    aVal = aVal * aFact;
+                  convertAngleValue(anUnitCtx, aVal);
                 }
               Handle(StepShape_QualifiedRepresentationItem) aQRI = aMWU->GetQualifiedRepresentationItem();
               if (aQRI->Qualifiers()->Length() == 0) {
@@ -3305,22 +3230,43 @@ static void setDimObjectToXCAF(const Handle(Standard_Transient)& theEnt,
         aTV = aTMD.ToleranceValue();
         if (aTV.IsNull()) continue;
 
+        Handle(StepBasic_MeasureWithUnit) aMWU = aTV->UpperBound();
         Standard_Real aVal = aTV->UpperBound()->ValueComponent();
         StepBasic_Unit anUnit = aTV->UpperBound()->UnitComponent();
-        Standard_Real aFact=1.;
         if(anUnit.IsNull()) continue;
         if( !(anUnit.CaseNum(anUnit.Value())==1) ) continue;
         Handle(StepBasic_NamedUnit) NU = anUnit.NamedUnit();
-        if(GetLengthConversionFactor(NU,aFact)) aVal=aVal*aFact;
+        STEPConstruct_UnitContext anUnitCtx;
+        anUnitCtx.ComputeFactors(NU);
+        if (aMWU->IsKind(STANDARD_TYPE(StepBasic_LengthMeasureWithUnit)) ||
+          aMWU->IsKind(STANDARD_TYPE(StepRepr_ReprItemAndLengthMeasureWithUnitAndQRI)))
+        {
+          aVal = aVal * anUnitCtx.LengthFactor();
+        }
+        else if (aMWU->IsKind(STANDARD_TYPE(StepBasic_PlaneAngleMeasureWithUnit)) ||
+          aMWU->IsKind(STANDARD_TYPE(StepRepr_ReprItemAndPlaneAngleMeasureWithUnitAndQRI)))
+        {
+          convertAngleValue(anUnitCtx, aVal);
+        }
         aDim3 = aVal;
 
+        aMWU = aTV->LowerBound();
         aVal = aTV->LowerBound()->ValueComponent();
         anUnit = aTV->LowerBound()->UnitComponent();
-        aFact=1.;
         if(anUnit.IsNull()) continue;
         if( !(anUnit.CaseNum(anUnit.Value())==1) ) continue;
         NU = anUnit.NamedUnit();
-        if(GetLengthConversionFactor(NU,aFact)) aVal=aVal*aFact;
+        anUnitCtx.ComputeFactors(NU);
+        if (aMWU->IsKind(STANDARD_TYPE(StepBasic_LengthMeasureWithUnit)) ||
+          aMWU->IsKind(STANDARD_TYPE(StepRepr_ReprItemAndLengthMeasureWithUnitAndQRI)))
+        {
+          aVal = aVal * anUnitCtx.LengthFactor();
+        }
+        else if (aMWU->IsKind(STANDARD_TYPE(StepBasic_PlaneAngleMeasureWithUnit)) ||
+          aMWU->IsKind(STANDARD_TYPE(StepRepr_ReprItemAndPlaneAngleMeasureWithUnitAndQRI)))
+        {
+          convertAngleValue(anUnitCtx, aVal);
+        }
         aDim2 = Abs(aVal);
       }
       else
@@ -3664,12 +3610,12 @@ static void setGeomTolObjectToXCAF(const Handle(Standard_Transient)& theEnt,
     //get value
     Standard_Real aVal = aTolEnt->Magnitude()->ValueComponent();
     StepBasic_Unit anUnit = aTolEnt->Magnitude()->UnitComponent();
-    Standard_Real aFact=1.;
     if(anUnit.IsNull()) return;
     if( !(anUnit.CaseNum(anUnit.Value())==1) ) return;
     Handle(StepBasic_NamedUnit) NU = anUnit.NamedUnit();
-    if(GetLengthConversionFactor(NU,aFact))
-      aVal=aVal*aFact;
+    STEPConstruct_UnitContext anUnitCtx;
+    anUnitCtx.ComputeFactors(NU);
+    aVal = aVal * anUnitCtx.LengthFactor();
     aTolObj->SetValue(aVal);
   }
   //get modifiers
@@ -3689,12 +3635,12 @@ static void setGeomTolObjectToXCAF(const Handle(Standard_Transient)& theEnt,
           {
             Standard_Real aVal = aPZone->ProjectionLength()->ValueComponent();
             StepBasic_Unit anUnit = aPZone->ProjectionLength()->UnitComponent();
-            Standard_Real aFact=1.;
             if(anUnit.IsNull()) return;
             if( !(anUnit.CaseNum(anUnit.Value())==1) ) return;
             Handle(StepBasic_NamedUnit) NU = anUnit.NamedUnit();
-            if(GetLengthConversionFactor(NU,aFact))
-              aVal=aVal*aFact;
+            STEPConstruct_UnitContext anUnitCtx;
+            anUnitCtx.ComputeFactors(NU);
+            aVal = aVal * anUnitCtx.LengthFactor();
             aTolObj->SetValueOfZoneModifier(aVal);
             aTolObj->SetZoneModifier(XCAFDimTolObjects_GeomToleranceZoneModif_Projected);
           }
@@ -3707,11 +3653,12 @@ static void setGeomTolObjectToXCAF(const Handle(Standard_Transient)& theEnt,
           {
             Standard_Real aVal = aRZone->Orientation()->Angle()->ValueComponent();
             StepBasic_Unit anUnit = aRZone->Orientation()->Angle()->UnitComponent();
-            Standard_Real aFact=1.;
             if(anUnit.IsNull()) continue;
             if( !(anUnit.CaseNum(anUnit.Value())==1) ) continue;
             Handle(StepBasic_NamedUnit) NU = anUnit.NamedUnit();
-            if(GetAngleConversionFactor(NU,aFact)) aVal=aVal*aFact;
+            STEPConstruct_UnitContext anUnitCtx;
+            anUnitCtx.ComputeFactors(NU);
+            convertAngleValue(anUnitCtx, aVal);
             aTolObj->SetValueOfZoneModifier(aVal);
             aTolObj->SetZoneModifier(XCAFDimTolObjects_GeomToleranceZoneModif_Runout);
           }
@@ -3781,9 +3728,10 @@ static void setGeomTolObjectToXCAF(const Handle(Standard_Transient)& theEnt,
   }
   if (!anUnit.IsNull() && (anUnit.CaseNum(anUnit.Value()) == 1))
   {
-    Standard_Real aFact=1.;
     Handle(StepBasic_NamedUnit) NU = anUnit.NamedUnit();
-    if(GetAngleConversionFactor(NU,aFact)) aVal=aVal*aFact;
+    STEPConstruct_UnitContext anUnitCtx;
+    anUnitCtx.ComputeFactors(NU);
+    convertAngleValue(anUnitCtx, aVal);
     aTolObj->SetMaxValueModifier(aVal);
   }
   
@@ -3910,8 +3858,14 @@ Standard_Boolean STEPCAFControl_Reader::ReadGDTs(const Handle(XSControl_WorkSess
 
       // Calculate unit
       Standard_Real aFact = 1.0;
-      if (!aDMIA.IsNull() && !aDMIA->UsedRepresentation().IsNull())
-        GetLengthConversionFactorFromContext(aDMIA->UsedRepresentation()->ContextOfItems(), aFact);
+      if (!aDMIA.IsNull())
+      {
+        XSAlgo::AlgoContainer()->PrepareForTransfer();
+        STEPControl_ActorRead anActor;
+        Handle(Transfer_TransientProcess) aTP = aTR->TransientProcess();
+        anActor.PrepareUnits(aDMIA->UsedRepresentation(), aTP);
+        aFact = UnitsMethods::LengthFactor();
+      }
 
       // Presentation
       TopoDS_Shape aPresentation;
@@ -3944,7 +3898,7 @@ Standard_Boolean STEPCAFControl_Reader::ReadGDTs(const Handle(XSControl_WorkSess
       aDGTTool->SetDimension(aShapesL, anEmptySeq2, aGDTL);
       gp_Ax2 aPlaneAxes;
       if (!anAnPlane.IsNull()) {
-        if (readAnnotationPlane(anAnPlane, aFact, aPlaneAxes))
+        if (readAnnotationPlane(anAnPlane, aPlaneAxes))
           aDimObj->SetPlane(aPlaneAxes);
       }
       aDimObj->SetPresentation(aPresentation, aPresentName);
@@ -4064,15 +4018,23 @@ Standard_Boolean STEPCAFControl_Reader::ReadMaterials(const Handle(XSControl_Wor
               for(Standard_Integer idu=1; idu<=DU->NbElements(); idu++) {
                 Handle(StepBasic_DerivedUnitElement) DUE = DU->ElementsValue(idu);
                 Handle(StepBasic_NamedUnit) NU = DUE->Unit();
-                Standard_Real afact=1.;
-                if(NU->IsKind(STANDARD_TYPE(StepBasic_ConversionBasedUnitAndLengthUnit))) {
-                  if(GetLengthConversionFactor(NU,afact)) aDensity = aDensity/(afact*afact*afact);
+                if(NU->IsKind(STANDARD_TYPE(StepBasic_ConversionBasedUnitAndLengthUnit)) ||
+                   NU->IsKind(STANDARD_TYPE(StepBasic_SiUnitAndLengthUnit)))
+                {
+                  STEPConstruct_UnitContext anUnitCtx;
+                  anUnitCtx.ComputeFactors(NU);
+                  aDensity = aDensity / (anUnitCtx.LengthFactor()*anUnitCtx.LengthFactor()*anUnitCtx.LengthFactor());
                   // transfer length value for Density from millimeter to santimeter
                   // in order to result density has dimension gram/(sm*sm*sm)
-                  aDensity = aDensity*1000.;
+                  aDensity = aDensity*1000. / (UnitsMethods::GetCasCadeLengthUnit()
+                    * UnitsMethods::GetCasCadeLengthUnit() * UnitsMethods::GetCasCadeLengthUnit());
                 }
                 if(NU->IsKind(STANDARD_TYPE(StepBasic_ConversionBasedUnitAndMassUnit))) {
-                  if(GetMassConversionFactor(NU,afact)) aDensity=aDensity*afact;
+                  Standard_Real afact = 1.;
+                  if (GetMassConversionFactor(NU, afact))
+                  {
+                    aDensity = aDensity*afact;
+                  }
                 }
               }
             }
@@ -4226,6 +4188,28 @@ Standard_Boolean STEPCAFControl_Reader::ReadViews(const Handle(XSControl_WorkSes
     Handle(XCAFView_Object) anObj = new XCAFView_Object();
     // Import attributes of view
     Handle(StepVisual_CameraModelD3) aCameraModel = Handle(StepVisual_CameraModelD3)::DownCast(anEnt);
+
+    const Handle(XSControl_TransferReader)& aTR = theWS->TransferReader();
+    Handle(Transfer_TransientProcess) aTP = aTR->TransientProcess();
+    const Interface_Graph& aGraph = aTP->Graph();
+    // find the proper DraughtingModel
+    Interface_EntityIterator subs = aGraph.Sharings(aCameraModel);
+    Handle(StepVisual_DraughtingModel) aDModel;
+    for (subs.Start(); subs.More() && aDModel.IsNull(); subs.Next())
+    {
+      if (!subs.Value()->IsKind(STANDARD_TYPE(StepVisual_DraughtingModel)))
+      {
+        continue;
+      }
+      aDModel = Handle(StepVisual_DraughtingModel)::DownCast(subs.Value());
+    }
+    if (!aDModel.IsNull())
+    {
+      XSAlgo::AlgoContainer()->PrepareForTransfer();
+      STEPControl_ActorRead anActor;
+      anActor.PrepareUnits(aDModel, aTP);
+    }
+
     anObj->SetName(aCameraModel->Name());
     Handle(Geom_Axis2Placement) anAxis = StepToGeom::MakeAxis2Placement(aCameraModel->ViewReferenceSystem());
     anObj->SetViewDirection(anAxis->Direction());
@@ -4257,20 +4241,12 @@ Standard_Boolean STEPCAFControl_Reader::ReadViews(const Handle(XSControl_WorkSes
       aClippingExpression = buildClippingPlanes(aClippingCameraModel, aClippingPlanes, aClippingPlaneTool);
       anObj->SetClippingExpression(aClippingExpression);
     }
+
     // Collect shapes and GDTs
-    TDF_LabelSequence aShapes, aGDTs;
-    Handle(XSControl_TransferReader) aTR = theWS->TransferReader();
-    Handle(Transfer_TransientProcess) aTP = aTR->TransientProcess();
-    const Interface_Graph& aGraph = aTP->Graph();
-    Handle(StepVisual_DraughtingModel) aDModel;
-    Interface_EntityIterator anIter = aGraph.Sharings(aCameraModel);
-    for (; anIter.More() && aDModel.IsNull(); anIter.Next()) {
-      aDModel = Handle(StepVisual_DraughtingModel)::DownCast(anIter.Value());
-    }
     if (aDModel.IsNull())
       return Standard_False;
-
-    anIter = aGraph.Shareds(aDModel);
+    TDF_LabelSequence aShapes, aGDTs;
+    Interface_EntityIterator anIter = aGraph.Shareds(aDModel);
     for (; anIter.More(); anIter.Next()) {
       if (anIter.Value()->IsKind(STANDARD_TYPE(StepRepr_MappedItem))) {
         Handle(StepRepr_MappedItem) anItem = Handle(StepRepr_MappedItem)::DownCast(anIter.Value());
