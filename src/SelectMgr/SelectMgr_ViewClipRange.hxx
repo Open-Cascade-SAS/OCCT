@@ -35,9 +35,13 @@ public:
   //! e.g. TRUE means depth is clipped.
   Standard_Boolean IsClipped (const Standard_Real theDepth) const
   {
-    for (size_t aRangeIter = 0; aRangeIter < myRanges.size(); ++aRangeIter)
+    if (myUnclipRange.IsOut (theDepth))
     {
-      if (!myRanges[aRangeIter].IsOut (theDepth))
+      return Standard_True;
+    }
+    for (size_t aRangeIter = 0; aRangeIter < myClipRanges.size(); ++aRangeIter)
+    {
+      if (!myClipRanges[aRangeIter].IsOut (theDepth))
       {
         return Standard_True;
       }
@@ -48,19 +52,20 @@ public:
   //! Clears clipping range.
   void SetVoid()
   {
-    myRanges.resize (1);
-    myRanges[0].SetVoid();
+    myClipRanges.resize (0);
+    myUnclipRange = Bnd_Range (RealFirst(), RealLast());
   }
 
-  //! Returns the main range.
-  Bnd_Range& ChangeMain() { return myRanges[0]; }
+  //! Returns the main unclipped range; [-inf, inf] by default.
+  Bnd_Range& ChangeUnclipRange() { return myUnclipRange; }
 
-  //! Adds a sub-range.
-  void AddSubRange (const Bnd_Range& theRange) { myRanges.push_back (theRange); }
+  //! Adds a clipping sub-range (for clipping chains).
+  void AddClipSubRange (const Bnd_Range& theRange) { myClipRanges.push_back (theRange); }
 
 private:
 
-  std::vector<Bnd_Range> myRanges;
+  std::vector<Bnd_Range> myClipRanges;
+  Bnd_Range myUnclipRange;
 
 };
 

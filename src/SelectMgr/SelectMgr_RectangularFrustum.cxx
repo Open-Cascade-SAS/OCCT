@@ -710,11 +710,11 @@ void SelectMgr_RectangularFrustum::computeClippingRange (const Graphic3d_Sequenc
       {
         if (aDotProduct < 0.0)
         {
-          theRange.ChangeMain().Add (Bnd_Range (aDistToPln, RealLast()));
+          theRange.ChangeUnclipRange().TrimTo (aDistToPln);
         }
         else
         {
-          theRange.ChangeMain().Add (Bnd_Range (RealFirst(), aDistToPln));
+          theRange.ChangeUnclipRange().TrimFrom (aDistToPln);
         }
       }
       else
@@ -733,7 +733,7 @@ void SelectMgr_RectangularFrustum::computeClippingRange (const Graphic3d_Sequenc
     if (!aSubRange.IsVoid()
       && aClipPlane->IsChain())
     {
-      theRange.AddSubRange (aSubRange);
+      theRange.AddClipSubRange (aSubRange);
     }
   }
 }
