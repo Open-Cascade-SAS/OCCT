@@ -1,0 +1,27 @@
+puts "========"
+puts "0030082: Intersection algorithm returns curve with big tolerance value"
+puts "========"
+puts ""
+
+foreach a [directory c_*] { unset $a }
+
+brestore [locate_data_file bug27928_b1.brep] b1
+brestore [locate_data_file bug27928_b2.brep] b2
+explode b1 f
+explode b2 f
+
+if { [regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} [bopcurves b1_1 b2_2 -2d] full Toler NbCurv ] } {
+  # Before the fix, the tolerance was 0.0010828835451753697
+  checkreal Tolerance $Toler 6.5e-7 0.0 0.1
+
+  if {$NbCurv != 1} {
+    puts "Error: 1 curve is expected but $NbCurv curves are found."
+  }
+} else {
+  puts "Error: Intersection result is empty"
+}
+
+smallview
+don c_*
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

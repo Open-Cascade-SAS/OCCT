@@ -3376,6 +3376,90 @@ static IntPatch_ImpImpIntersection::IntStatus
             if (aPf.IsSame(aPl, Precision::Confusion()))
               isGood = Standard_False;
           }
+          else if (aWLine[i]->NbPnts() > 2)
+          {
+            // Sometimes points of the WLine are distributed
+            // linearly and uniformly. However, such position
+            // of the points does not always describe the real intersection
+            // curve. I.e. real tangents at the ends of the intersection
+            // curve can significantly deviate from this "line" direction.
+            // Here we are processing this case by inserting additional points
+            // to the beginning/end of the WLine to make it more precise.
+            // See description to the issue #30082.
+
+            const Standard_Real aSqTol3D = aTol3D*aTol3D;
+            for (Standard_Integer j = 0; j < 2; j++)
+            {
+              // If j == 0 ==> add point at begin of WLine.
+              // If j == 1 ==> add point at end of WLine.
+
+              for (;;)
+              {
+                if (aWLine[i]->NbPnts() >= aNbMaxPoints)
+                {
+                  break;
+                }
+
+                // Take 1st and 2nd point to compute the "line" direction.
+                // For our convenience, we make 2nd point be the ends of the WLine
+                // because it will be used for computation of the normals 
+                // to the surfaces.
+                const Standard_Integer anIdx1 = j ? aWLine[i]->NbPnts() - 1 : 2;
+                const Standard_Integer anIdx2 = j ? aWLine[i]->NbPnts() : 1;
+
+                const gp_Pnt &aP1 = aWLine[i]->Point(anIdx1).Value();
+                const gp_Pnt &aP2 = aWLine[i]->Point(anIdx2).Value();
+
+                const gp_Vec aDir(aP1, aP2);
+
+                if (aDir.SquareMagnitude() < aSqTol3D)
+                {
+                  break;
+                }
+
+                // Compute tangent in first/last point of the WLine.
+                // We do not take into account the flag "isReversed"
+                // because strict direction of the tangent is not
+                // important here (we are interested in the tangent
+                // line itself and nothing to fear if its direction
+                // is reversed).
+                const gp_Vec aN1 = aQuad1.Normale(aP2);
+                const gp_Vec aN2 = aQuad2.Normale(aP2);
+                const gp_Vec aTg(aN1.Crossed(aN2));
+
+                if (aTg.SquareMagnitude() < Precision::SquareConfusion())
+                {
+                  // Tangent zone
+                  break;
+                }
+
+                // Check of the bending
+                Standard_Real anAngle = aDir.Angle(aTg);
+
+                if (anAngle > M_PI_2)
+                  anAngle -= M_PI;
+
+                if (Abs(anAngle) > 0.25) // ~ 14deg.
+                {
+                  const Standard_Integer aNbPntsPrev = aWLine[i]->NbPnts();
+                  SeekAdditionalPoints(aQuad1, aQuad2, aWLine[i]->Curve(),
+                                       anEquationCoeffs, i, 3, anIdx1, anIdx2,
+                                       aTol2D, aPeriod, isReversed);
+
+                  if (aWLine[i]->NbPnts() == aNbPntsPrev)
+                  {
+                    // No points have been added. ==> Exit from a loop.
+                    break;
+                  }
+                }
+                else
+                {
+                  // Good result has been achieved. ==> Exit from a loop.
+                  break;
+                }
+              } // for (;;)
+            }
+          }
 
           if (isGood)
           {
@@ -3383,8 +3467,8 @@ static IntPatch_ImpImpIntersection::IntStatus
             isAddedIntoWL[i] = Standard_True;
             SeekAdditionalPoints(aQuad1, aQuad2, aWLine[i]->Curve(),
                                  anEquationCoeffs, i, aNbPoints, 1,
-              aWLine[i]->NbPnts(), aTol2D, aPeriod,
-              isReversed);
+                                 aWLine[i]->NbPnts(), aTol2D, aPeriod,
+                                 isReversed);
 
             aWLine[i]->ComputeVertexParameters(aTol3D);
             theSlin.Append(aWLine[i]);
