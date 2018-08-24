@@ -1612,22 +1612,32 @@ Standard_Boolean STEPControl_ActorRead::ComputeTransformation (const Handle(Step
   // corresponding reps and fix case of inversion error
   Handle(StepGeom_Axis2Placement3d) org = Origin;
   Handle(StepGeom_Axis2Placement3d) trg = Target;
-  Standard_Integer code1=0, code2=0, i;
-  for ( i=1; code1 != 1 && i <= OrigContext->NbItems(); i++ ) {
-    if ( OrigContext->ItemsValue(i) == org ) code1 = 1;
-    else if ( OrigContext->ItemsValue(i) == trg ) code1 = -1;
+  Standard_Boolean isOKOrigin = Standard_False, isSwapOrigin = Standard_False;
+  Standard_Boolean isOKTarget = Standard_False, isSwapTarget = Standard_False;
+  for (Standard_Integer i=1; i <= OrigContext->NbItems(); i++)
+  {
+    if (OrigContext->ItemsValue(i) == org) 
+      isOKOrigin = Standard_True;
+    else if (OrigContext->ItemsValue(i) == trg) 
+      isSwapTarget = Standard_True;
   }
-  for ( i=1; code2 != 1 && i <= TargContext->NbItems(); i++ ) {
-    if ( TargContext->ItemsValue(i) == org ) code2 = -1;
-    else if ( TargContext->ItemsValue(i) == trg ) code2 = 1;
+  for (Standard_Integer i=1; i <= TargContext->NbItems(); i++)
+  {
+    if (TargContext->ItemsValue(i) == trg)
+      isOKTarget = Standard_True;
+    else if (TargContext->ItemsValue(i) == org)
+      isSwapOrigin = Standard_True;
   }
-  if ( code1 != 1 && code2 != 1 ) {
-    if ( code1 == -1 && code2 == -1 ) {
-      Handle(StepGeom_Axis2Placement3d) swp = org; org = trg; trg = swp;
+  if (! isOKOrigin || ! isOKTarget)
+  {
+    if (isSwapOrigin && isSwapTarget)
+    {
+      std::swap (org, trg);
       TP->AddWarning ( org, "Axis placements are swapped in SRRWT; corrected" );
     }
-    else {
-      TP->AddWarning ( ( code1 == 1 ? trg : org ), 
+    else
+    {
+      TP->AddWarning ( (isOKOrigin ? trg : org),
                        "Axis placement used by SRRWT does not belong to corresponding representation" );
     }
   }

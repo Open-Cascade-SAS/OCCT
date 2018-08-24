@@ -1,0 +1,19 @@
+puts "# ====================================================================="
+puts "# 30087: Data Exchange, STEP - invalid result of translation of assembly when relating and related products are mixed in the SRR entity"
+puts "# ====================================================================="
+puts ""
+
+set filepath [locate_data_file bug30087.stp]
+stepread $filepath a *
+tpcompound result
+
+puts "Check dimensions of the result -- will be different if some parts are misplaced"
+set values [bounding result]
+set expected { -0.66 -0.33 -11. 70.66 140.66 10. }
+set components {XMin YMin ZMin XMax YMax ZMax }
+for {set i 0} {$i < 6} {incr i} {
+  checkreal [lindex $components $i] [lindex $values $i] [lindex $expected $i] 0.1 0
+}
+
+puts "Make snapshot to have visual check as well"
+checkview -display result -2d -path ${imagedir}/${test_image}.png

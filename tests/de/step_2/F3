@@ -1,5 +1,4 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
-puts "TODO CR23096 ALL: TPSTAT : Faulty" 
 puts "TODO CR23096 ALL: NBSHAPES : Faulty" 
 puts "TODO CR23096 ALL: LABELS : Faulty" 
 puts "TODO CR23096 ALL: LAYERS : Faulty" 
@@ -9,7 +8,7 @@ set filename bm4_db_conn_d.stp
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 16  ( 8 )  Summary  = 16  ( 8 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 16  ( 40 )  Summary  = 16  ( 40 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 60  ( 3 )  Shell    = 60  ( 3 )  Face     = 2526  ( 504 ) 
 STATSHAPE   : Solid    = 114  ( 114 )  Shell    = 114  ( 114 )  Face     = 4044  ( 4044 )   FreeWire = 0  ( 0 ) 
