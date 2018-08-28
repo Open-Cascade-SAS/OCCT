@@ -101,7 +101,8 @@ static Standard_Boolean findNearestValidPoint(
         // cycle to go out of local singularity
         gp_Vec aD1;
         theCurve.D1(anUOut, aP, aD1);
-        if (aD1.SquareMagnitude() < aD1Mag)
+        isOut = (aP.SquareDistance(theVertPnt) > aSqTol);
+        if (!isOut && aD1.SquareMagnitude() < aD1Mag)
         {
           aStepLocal *= 2.;
           anUOut += aStepLocal;
