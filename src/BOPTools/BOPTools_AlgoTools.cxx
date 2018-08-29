@@ -617,46 +617,50 @@ TopAbs_State BOPTools_AlgoTools::ComputeState
   (const TopoDS_Face& theF,
    const TopoDS_Solid& theRef,
    const Standard_Real theTol,
-   TopTools_IndexedMapOfShape& theBounds,
+   const TopTools_IndexedMapOfShape& theBounds,
    const Handle(IntTools_Context)& theContext)
 {
-  TopAbs_State aState;
-  TopExp_Explorer aExp; 
-  TopoDS_Edge aE1;
-  gp_Pnt2d aP2D;
-  gp_Pnt aP3D; 
-  //
-  aState=TopAbs_UNKNOWN;
-  //
-  aExp.Init(theF, TopAbs_EDGE);
-  for (; aExp.More(); aExp.Next()) {
-    const TopoDS_Edge& aSE=(*(TopoDS_Edge*)(&aExp.Current()));
-    if (BRep_Tool::Degenerated(aSE)) {
+  TopAbs_State aState = TopAbs_UNKNOWN;
+
+  // Try to find the edge on the face which does not
+  // belong to the solid and classify the middle point of that
+  // edge relatively solid.
+  TopExp_Explorer aExp(theF, TopAbs_EDGE);
+  for (; aExp.More(); aExp.Next())
+  {
+    const TopoDS_Edge& aSE = (*(TopoDS_Edge*)(&aExp.Current()));
+    if (BRep_Tool::Degenerated(aSE))
       continue;
-    }
-    //
-    if (!theBounds.Contains(aSE)) {
-      const TopoDS_Edge& aE=(*(TopoDS_Edge*)(&aSE));
-      aState=BOPTools_AlgoTools::ComputeState(aE, theRef, theTol, 
-                                              theContext);
+
+    if (!theBounds.Contains(aSE))
+    {
+      aState = BOPTools_AlgoTools::ComputeState(aSE, theRef, theTol, theContext);
       return aState;
     }
-    if (aE1.IsNull()) {
-      aE1=(*(TopoDS_Edge*)(&aSE));
-    }
   }
-  // !!<- process edges that are all on theRef
-  if (!aE1.IsNull()) {
-    const Standard_Integer anErrID = BOPTools_AlgoTools3D::PointNearEdge(aE1, theF,
-                                                                         aP2D, aP3D,
-                                                                         theContext);
-    if(anErrID == 0)
+
+  // All edges of the face are on the solid.
+  // Get point inside the face and classify it relatively solid.
+  gp_Pnt aP3D;
+  gp_Pnt2d aP2D;
+  Standard_Integer iErr = BOPTools_AlgoTools3D::PointInFace(theF, aP3D, aP2D, theContext);
+  if (iErr != 0)
+  {
+    // Hatcher fails to find the point -> get point near some edge
+    aExp.Init(theF, TopAbs_EDGE);
+    for (; aExp.More() && iErr != 0; aExp.Next())
     {
-      aState = BOPTools_AlgoTools::ComputeState(aP3D, theRef, theTol,
-                                                theContext);
+      const TopoDS_Edge& aSE = TopoDS::Edge(aExp.Current());
+      if (BRep_Tool::Degenerated(aSE))
+        continue;
+
+      iErr = BOPTools_AlgoTools3D::PointNearEdge(aSE, theF, aP2D, aP3D, theContext);
     }
   }
-  //
+
+  if (iErr == 0)
+    aState = BOPTools_AlgoTools::ComputeState(aP3D, theRef, theTol, theContext);
+
   return aState;
 }
 //=======================================================================

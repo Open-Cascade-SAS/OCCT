@@ -202,13 +202,13 @@ public: //! @name Point/Edge/Face classification relatively solid
   //! Computes the 3-D state of the face theFace
   //! toward solid theSolid.
   //! theTol - value of precision of computation
-  //! theBounds - set of edges of theFace to avoid
+  //! theBounds - set of edges of <theSolid> to avoid
   //! theContext- cahed geometrical tools
   //! Returns 3-D state.
   Standard_EXPORT static TopAbs_State ComputeState(const TopoDS_Face& theFace,
                                                    const TopoDS_Solid& theSolid,
                                                    const Standard_Real theTol,
-                                                   TopTools_IndexedMapOfShape& theBounds,
+                                                   const TopTools_IndexedMapOfShape& theBounds,
                                                    const Handle(IntTools_Context)& theContext);
   
   //! Computes the 3-D state of the shape theShape
