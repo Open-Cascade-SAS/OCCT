@@ -63,7 +63,7 @@ set (BUILD_RESOURCES OFF CACHE BOOL "${BUILD_RESOURCES_DESCR}")
 
 # single-configuration generator
 set (SINGLE_GENERATOR OFF)
-if (CMAKE_BUILD_TYPE)
+if (DEFINED CMAKE_BUILD_TYPE)
   set (SINGLE_GENERATOR ON)
 endif()
 
@@ -899,11 +899,19 @@ if (BUILD_SAMPLES_MFC OR BUILD_SAMPLES_QT)
   OCCT_COPY_FILE_OR_DIR    ("adm/templates/sample.${SCRIPT_EXT}" "${CMAKE_BINARY_DIR}")
 endif()
 
-# env script for draw in building environment
-OCCT_CONFIGURE ("adm/templates/env.${SCRIPT_EXT}.in" "env.${SCRIPT_EXT}")
-
-# install env script
-install (FILES "${CMAKE_BINARY_DIR}/env.${SCRIPT_EXT}" DESTINATION "${INSTALL_DIR_SCRIPT}")
+if (WIN32)
+  # env script for draw in building environment
+  OCCT_CONFIGURE ("adm/templates/env.${SCRIPT_EXT}.in" "env.${SCRIPT_EXT}")
+  # install env script
+  install (FILES "${CMAKE_BINARY_DIR}/env.${SCRIPT_EXT}" DESTINATION "${INSTALL_DIR_SCRIPT}")
+else()
+  set (SUB_ENV_NAME "env.${SCRIPT_EXT}")
+  set (SUB_ENV_BUILD_NAME "env.install.${SCRIPT_EXT}")
+  # install env script
+  OCCT_CONFIGURE_AND_INSTALL ("adm/templates/env.install.${SCRIPT_EXT}.in" "${SUB_ENV_BUILD_NAME}" "${SUB_ENV_NAME}" "${INSTALL_DIR_SCRIPT}")
+  # env script for draw in building environment
+  OCCT_CONFIGURE ("adm/templates/env.build.${SCRIPT_EXT}.in" "env.${SCRIPT_EXT}")
+endif()
 
 # copy DrawAppliInit from OCCT source to build directory
 if (NOT EXISTS "${CMAKE_BINARY_DIR}/DrawAppliInit")
