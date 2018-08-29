@@ -629,9 +629,13 @@ void BOPAlgo_PaveFiller::FillShrunkData(Handle(BOPDS_PaveBlock)& thePB)
   const TopoDS_Vertex& aV1=(*(TopoDS_Vertex *)(&myDS->Shape(nV1))); 
   const TopoDS_Vertex& aV2=(*(TopoDS_Vertex *)(&myDS->Shape(nV2))); 
   // Get the edge
-  Standard_Integer nE = thePB->OriginalEdge();
-  if (nE < 0 && !thePB->HasEdge(nE))
-    return;
+  Standard_Integer nE = -1;
+  if (!thePB->HasEdge(nE))
+  {
+    nE = thePB->OriginalEdge();
+    if (nE < 0)
+      return;
+  }
 
   const TopoDS_Edge& aE=(*(TopoDS_Edge *)(&myDS->Shape(nE))); 
   // Range

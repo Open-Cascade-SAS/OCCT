@@ -368,6 +368,9 @@ void BOPAlgo_PaveFiller::SplitPaveBlocks(const TColStd_MapOfInteger& theMEdges,
                              BOPDS_ListOfPaveBlock,
                              TColStd_MapTransientHasher> aMCBNewPB;
   //
+  // Map of vertices to init the pave blocks for them
+  TColStd_MapOfInteger aMVerticesToInitPB;
+
   TColStd_MapIteratorOfMapOfInteger aItM(theMEdges);
   for (; aItM.More(); aItM.Next()) {
     Standard_Integer nE = aItM.Value();
@@ -429,6 +432,10 @@ void BOPAlgo_PaveFiller::SplitPaveBlocks(const TColStd_MapOfInteger& theMEdges,
               aLV.Append(nV1);
               aLV.Append(nV2);
               MakeSDVertices(aLV, theAddInterfs);
+
+              // Save vertices to init pave blocks
+              aMVerticesToInitPB.Add(nV1);
+              aMVerticesToInitPB.Add(nV2);
             }
             continue;
           }
@@ -531,6 +538,11 @@ void BOPAlgo_PaveFiller::SplitPaveBlocks(const TColStd_MapOfInteger& theMEdges,
       }
     }
   }
+
+  // Init pave blocks for vertices which have acquired SD vertex
+  aItM.Initialize(aMVerticesToInitPB);
+  for (; aItM.More(); aItM.Next())
+    myDS->InitPaveBlocksForVertex(aItM.Value());
 }
 
 //=======================================================================

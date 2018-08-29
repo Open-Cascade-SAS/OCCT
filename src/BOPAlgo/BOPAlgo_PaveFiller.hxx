@@ -548,6 +548,8 @@ protected:
   Standard_EXPORT void RemoveMicroSectionEdges(BOPDS_IndexedDataMapOfShapeCoupleOfPaveBlocks& theMSCPB,
                                                BOPDS_IndexedMapOfPaveBlock& theMicroPB);
 
+  //! Check all edges on the micro status and remove the positive ones
+  Standard_EXPORT void RemoveMicroEdges();
 
   TopTools_ListOfShape myArguments;
   BOPDS_PDS myDS;

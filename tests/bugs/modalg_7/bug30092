@@ -1,0 +1,32 @@
+puts "========"
+puts "OCC30092: Modeling Algorithms - Invalid result of Section operation"
+puts "========"
+puts ""
+
+
+restore [locate_data_file bug26795_c.brep] c
+explode c f
+
+# modify c_2 face
+line l 20004.7983876926 2164.22470816234 210.858020395251 -0.716336050762455 0.65536108806844 0.239508886314894
+mkedge e l -0.2 0.2
+settolerance e 0.04
+
+bclearobjects
+bcleartools
+baddobjects c_2
+baddtools e
+bfillds
+bsplit c_2
+
+# perform section operation
+bclearobjects
+bcleartools
+baddobjects e c_1
+baddtools c_2
+bfillds
+bbop result 4
+
+checkshape result
+checknbshapes result -vertex 5 -edge 4
+checkprops result -l 1250.44

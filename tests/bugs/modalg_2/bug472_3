@@ -1,6 +1,3 @@
-puts "TODO OCC25917 ALL: Faulty shapes in variables faulty_1 to faulty_"
-puts "TODO OCC25917 ALL: Error :  is WRONG because number of "
-puts "TODO OCC25917 ALL: Error : The area of result shape is "
 puts "========================"
 puts " OCC472 "
 puts "(case 3)"
@@ -17,9 +14,9 @@ checkshape b2
 
 bfuse result b1 b2
 
-checknbshapes result -vertex 66 -edge 107
+checknbshapes result -shell 1 -solid 1
 
-checkprops result -s 229.516 
+checkprops result -v -111.22 -s 229.516 
 checkshape result
 checkview -display result -2d -path ${imagedir}/${test_image}.png
 

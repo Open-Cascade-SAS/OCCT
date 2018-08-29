@@ -328,6 +328,8 @@ void BOPAlgo_PaveFiller::PerformInternal()
   myDS->ReleasePaveBlocks();
   myDS->RefineFaceInfoOn();
   //
+  RemoveMicroEdges();
+  //
   MakePCurves();
   if (HasErrors()) {
     return; 
