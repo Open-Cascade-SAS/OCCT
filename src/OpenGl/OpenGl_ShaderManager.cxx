@@ -2192,6 +2192,7 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramPhong (Handle(OpenGl_Sha
     + aSrcFragExtraMain
     + (isFlatNormal
     ? EOL"  Normal = normalize (cross (dFdx (Position.xyz / Position.w), dFdy (Position.xyz / Position.w)));"
+      EOL"  if (!gl_FrontFacing) { Normal = -Normal; }"
     : "")
     + EOL"  occSetFragColor (getColor());"
     + aSrcFragWriteOit
