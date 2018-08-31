@@ -1072,7 +1072,9 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_HSurface)&  theS1,
       bToCheck = aTor1.MajorRadius() > aTor1.MinorRadius();
       if (typs1 == typs2) {
         const gp_Torus aTor2 = aGeomSurf->Torus();
-        bToCheck = aTor2.MajorRadius() > aTor2.MinorRadius();
+        bToCheck = (bToCheck && (aTor2.MajorRadius() > aTor2.MinorRadius())) ||
+                   (Abs(aTor1.MajorRadius() - aTor2.MajorRadius()) < TolTang &&
+                    Abs(aTor1.MinorRadius() - aTor2.MinorRadius()) < TolTang);
       }
       //
       if (aCTType == GeomAbs_Torus) {

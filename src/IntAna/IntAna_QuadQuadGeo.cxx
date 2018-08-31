@@ -2473,30 +2473,29 @@ void IntAna_QuadQuadGeo::Perform(const gp_Torus& Tor1,
   aRMaj1 = Tor1.MajorRadius();
   aRMin2 = Tor2.MinorRadius();
   aRMaj2 = Tor2.MajorRadius();
-  if (aRMin1 >= aRMaj1 || aRMin2 >= aRMaj2) {
-    typeres = IntAna_NoGeometricSolution;
-    return;
-  }
   //
-  const gp_Ax1 anAx1 = Tor1.Axis();
-  const gp_Ax1 anAx2 = Tor2.Axis();
+  const gp_Ax1& anAx1 = Tor1.Axis();
+  const gp_Ax1& anAx2 = Tor2.Axis();
+  //
+  const gp_Pnt& aLoc1 = anAx1.Location();
+  const gp_Pnt& aLoc2 = anAx2.Location();
   //
   gp_Lin aL1(anAx1);
   if (!anAx1.IsParallel(anAx2, myEPSILON_AXES_PARA) ||
-      (aL1.Distance(anAx2.Location()) > myEPSILON_DISTANCE)) {
+      (aL1.Distance(aLoc2) > myEPSILON_DISTANCE)) {
     typeres = IntAna_NoGeometricSolution;
     return;
   }
   //
-  gp_Pnt aLoc1, aLoc2;
-  //
-  aLoc1 = anAx1.Location();
-  aLoc2 = anAx2.Location();
-  //
   if (aLoc1.IsEqual(aLoc2, Tol) &&
-      (Abs(aRMin1 - aRMin2) <= Tol) && 
+      (Abs(aRMin1 - aRMin2) <= Tol) &&
       (Abs(aRMaj1 - aRMaj2) <= Tol)) {
     typeres = IntAna_Same;
+    return;
+  }
+  //
+  if (aRMin1 >= aRMaj1 || aRMin2 >= aRMaj2) {
+    typeres = IntAna_NoGeometricSolution;
     return;
   }
   //

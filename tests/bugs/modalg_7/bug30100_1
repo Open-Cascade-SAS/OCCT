@@ -1,0 +1,12 @@
+puts "========"
+puts "0030100: Modeling Algorithms - ShapeUpgrade_UnifySameDomain is unable to unify faces based on the same toroidal surface"
+puts "========"
+puts ""
+
+restore [locate_data_file bug30100_usd.brep] s
+unifysamedom result s
+checkshape result
+checknbshapes result -wire 1 -face 1
+checkprops result -s 142506
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
