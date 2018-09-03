@@ -1634,7 +1634,7 @@ proc _log_html_summary {logdir log totals regressions improvements skipped total
         puts $fd "<table>"
         set groupgrid ""
         foreach test [lrange $featured 1 end] {
-            if { ! [regexp {^(.*)\s+([\w.]+)$} $test res gg name] } {
+            if { ! [regexp {^(.*)\s+([\w\-.]+)$} $test res gg name] } {
                 set gg UNKNOWN
                 set name "Error building short list; check details"
             }
