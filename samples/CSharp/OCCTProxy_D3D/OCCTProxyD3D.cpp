@@ -54,6 +54,7 @@
 #pragma comment(lib, "TKSTEP.lib")
 #pragma comment(lib, "TKStl.lib")
 #pragma comment(lib, "TKVrml.lib")
+#pragma comment(lib, "TKLCAF.lib")
 
 #pragma comment(lib, "D3D9.lib")
 

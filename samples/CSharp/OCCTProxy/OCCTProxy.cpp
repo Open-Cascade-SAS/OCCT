@@ -46,6 +46,7 @@
 #pragma comment(lib, "TKSTEP.lib")
 #pragma comment(lib, "TKStl.lib")
 #pragma comment(lib, "TKVrml.lib")
+#pragma comment(lib, "TKLCAF.lib")
 
 //! Auxiliary tool for converting C# string into UTF-8 string.
 static TCollection_AsciiString toAsciiString (String^ theString)

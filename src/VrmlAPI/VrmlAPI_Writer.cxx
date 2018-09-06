@@ -371,8 +371,32 @@ void VrmlAPI_Writer::write_v2(const TopoDS_Shape& aShape,const Standard_CString 
   aConv.AddShape(aShape);
   aConv.Convert(anExtFace, anExtEdge);
 
-  filebuf aFoc;
-  ostream outStream (&aFoc);
-  if (aFoc.open (aFile, ios::out))
-    outStream << aScene;
+  std::ofstream anOutStream;
+  OSD_OpenStream(anOutStream, aFile, std::ios::out);
+  if (!anOutStream.fail())
+  {
+      anOutStream << aScene;
+  }
 }
+
+//=======================================================================
+//function : WriteDoc
+//purpose  : 
+//=======================================================================
+void VrmlAPI_Writer::WriteDoc(
+  const Handle(TDocStd_Document) &theDoc,
+  const Standard_CString theFile,
+  const Standard_Real theScale) const
+{
+  VrmlData_Scene aScene;
+  VrmlData_ShapeConvert aConv(aScene, theScale);
+  aConv.ConvertDocument(theDoc);
+
+  std::ofstream anOutStream;
+  OSD_OpenStream(anOutStream, theFile, std::ios::out);
+  if (!anOutStream.fail())
+  {
+      anOutStream << aScene;
+  }
+}
+

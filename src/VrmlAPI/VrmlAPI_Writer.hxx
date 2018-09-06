@@ -25,6 +25,8 @@
 #include <Quantity_HArray1OfColor.hxx>
 #include <Standard_CString.hxx>
 #include <Standard_Integer.hxx>
+#include <TDocStd_Document.hxx>
+
 class VrmlConverter_Drawer;
 class VrmlConverter_Projector;
 class Vrml_Material;
@@ -103,7 +105,15 @@ public:
   
   //! Converts the shape aShape to
   //! VRML format of the passed version and writes it to the file identified by aFile.
-  Standard_EXPORT void Write (const TopoDS_Shape& aShape, const Standard_CString aFile, const Standard_Integer aVersion = 2) const;
+  Standard_EXPORT void Write (const TopoDS_Shape& aShape, const Standard_CString aFile,
+      const Standard_Integer aVersion = 2) const;
+
+  //! Converts the document to VRML format of the passed version
+  //! and writes it to the file identified by aFile.
+  Standard_EXPORT void WriteDoc(
+    const Handle(TDocStd_Document) &theDoc,
+    const Standard_CString theFile,
+    const Standard_Real theScale) const;
 
 protected:
 

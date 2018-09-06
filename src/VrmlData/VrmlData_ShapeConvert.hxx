@@ -18,7 +18,9 @@
 
 #include <VrmlData_Geometry.hxx>
 #include <VrmlData_Appearance.hxx>
+#include <VrmlData_Group.hxx>
 #include <NCollection_List.hxx>
+#include <NCollection_DataMap.hxx>
 #include <TopoDS_Shape.hxx>
 
 class VrmlData_Scene;
@@ -26,6 +28,10 @@ class VrmlData_Coordinate;
 class TopoDS_Face;
 class Poly_Polygon3D;
 class Poly_Triangulation;
+class XCAFDoc_ColorTool;
+class TDocStd_Document;
+class TDF_Label;
+
 
 /**
  * Algorithm converting one shape or a set of shapes to VrmlData_Scene.
@@ -85,6 +91,12 @@ class VrmlData_ShapeConvert
 				const Standard_Real    theDeflAngle = 20.*M_PI/180.);
                                 //this value of theDeflAngle is used by default 
                                 //for tesselation while shading (Drawer->HLRAngle())
+
+  /**
+   * Add all shapes start from given document with colors and names to the internal structure
+   */
+  Standard_EXPORT void ConvertDocument(const Handle(TDocStd_Document)& theDoc);
+
  protected:
   // ---------- PROTECTED METHODS ----------
 
@@ -100,12 +112,38 @@ class VrmlData_ShapeConvert
 
   Handle(VrmlData_Appearance) defaultMaterialEdge () const;
 
+  Handle(VrmlData_Geometry) makeTShapeNode(const TopoDS_Shape& theShape,
+                                           const TopAbs_ShapeEnum theShapeType,
+                                           TopLoc_Location& theLoc);
+
+  void addAssembly (const Handle(VrmlData_Group)& theParent,
+                    const TDF_Label& theLabel,
+                    const Handle(TDocStd_Document)& theDoc,
+                    const Standard_Boolean theNeedCreateGroup);
+
+  void addInstance (const Handle(VrmlData_Group)& theParent,
+                    const TDF_Label& theLabel,
+                    const Handle(TDocStd_Document)& theDoc);
+
+  void addShape (const Handle(VrmlData_Group)& theParent,
+                 const TDF_Label& theLabel,
+                 const Handle(TDocStd_Document)& theDoc);
+
+  Handle(VrmlData_Appearance) makeMaterialFromColor(const TDF_Label& theColorL,
+                                                    const Handle(XCAFDoc_ColorTool)& theColorTool) const;
+
+
  private:
   // ---------- PRIVATE FIELDS ----------
 
   VrmlData_Scene&                       myScene;
   Standard_Real                         myScale;
   NCollection_List <ShapeData>          myShapes;
+
+  Standard_Real myDeflection;
+  Standard_Real myDeflAngle;
+  NCollection_DataMap <TopoDS_Shape, Handle(VrmlData_Geometry)> myRelMap;
+
   // ---------- PRIVATE METHODS ----------
   void operator= (const VrmlData_ShapeConvert&);
 };
