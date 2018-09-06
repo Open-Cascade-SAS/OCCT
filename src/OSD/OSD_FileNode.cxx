@@ -379,7 +379,7 @@ Standard_Integer OSD_FileNode::Error()const{
 # include <tchar.h>
 #endif  // _INC_TCHAR
 
-#include <Strsafe.h>
+#include <strsafe.h>
 
 #define TEST_RAISE( arg ) _test_raise (  fName, ( arg )  )
 #define RAISE( arg ) throw Standard_ProgramError (  ( arg )  )

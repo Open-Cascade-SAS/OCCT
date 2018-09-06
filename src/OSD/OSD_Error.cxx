@@ -448,7 +448,7 @@ void OSD_Error::Perror() {
 #include <TCollection_ExtendedString.hxx>
 
 #include <windows.h>
-#include <Strsafe.h>
+#include <strsafe.h>
 
 typedef struct _error_table {
 

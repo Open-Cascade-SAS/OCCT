@@ -18,7 +18,7 @@
   #include <winbase.h>
   #include <process.h>
   #include <malloc.h>
-  #include <Psapi.h>
+  #include <psapi.h>
   #ifdef _MSC_VER
     #pragma comment(lib, "Psapi.lib")
   #endif

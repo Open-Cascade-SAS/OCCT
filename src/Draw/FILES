@@ -1,5 +1,5 @@
 CommandWindow.cxx
-COMMANDWINDOW.h
+CommandWindow.h
 Draw.cxx
 Draw.hxx
 Draw_Appli.hxx
@@ -75,4 +75,4 @@ DrawRessource.h
 init.cxx
 init.h
 MainWindow.cxx
-MAINWINDOW.h
+MainWindow.h

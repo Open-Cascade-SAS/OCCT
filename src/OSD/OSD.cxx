@@ -61,7 +61,7 @@ Standard_Boolean OSD::CStringToReal(const Standard_CString aString,
 //=======================================================================
 
 #ifdef _WIN32
-# include <Windows.h>
+# include <windows.h>
 # define SLEEP(NSEC)                 Sleep(1000*(NSEC))
 #else
 #include <unistd.h>

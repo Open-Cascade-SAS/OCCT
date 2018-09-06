@@ -34,7 +34,7 @@
   #include <stdio.h>
   #include <io.h>
 
-  #include <Strsafe.h>
+  #include <strsafe.h>
 
   #define ACE_HEADER_SIZE (sizeof(ACCESS_ALLOWED_ACE) - sizeof (DWORD))
 

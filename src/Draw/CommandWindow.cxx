@@ -17,9 +17,9 @@
 #ifdef _WIN32
 #include <windows.h>
 
-#include <CommandWindow.h>
+#include <COMMANDWINDOW.h>
 #include <Draw_Window.hxx>
-#include <MainWindow.h>
+#include <MAINWINDOW.h>
 #include <Draw_Appli.hxx>
 #include <TCollection_AsciiString.hxx>
 

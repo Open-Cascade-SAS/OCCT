@@ -26,7 +26,7 @@
 /*
 ** PROCEDURES DE MAIN WINDOW
 */
-#include <Windows.h>
+#include <windows.h>
 
 LRESULT APIENTRY WndProc(HWND, UINT, WPARAM, LPARAM);
 BOOL CreateProc(HWND);

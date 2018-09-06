@@ -35,7 +35,7 @@ extern "C" int getpagesize() ;
 #endif
 
 #ifdef _WIN32
-#include <Strsafe.h>
+#include <strsafe.h>
 #endif
 //======================================================================
 // Assumptions
