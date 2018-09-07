@@ -593,18 +593,31 @@ TopAbs_State BOPTools_AlgoTools::ComputeStateByOnePoint
    const Standard_Real theTol,
    const Handle(IntTools_Context)& theContext)
 {
-  TopAbs_State aState;
-  TopAbs_ShapeEnum aType;
-  //
-  aState=TopAbs_UNKNOWN;
-  aType=theS.ShapeType();
-  if (aType==TopAbs_VERTEX) {
-    const TopoDS_Vertex& aV=(*(TopoDS_Vertex*)(&theS));
-    aState=BOPTools_AlgoTools::ComputeState(aV, theRef, theTol, theContext);
-  }
-  else if (aType==TopAbs_EDGE) {
-    const TopoDS_Edge& aE=(*(TopoDS_Edge*)(&theS));
-    aState=BOPTools_AlgoTools::ComputeState(aE, theRef, theTol, theContext);
+  TopAbs_State aState = TopAbs_UNKNOWN;
+  TopAbs_ShapeEnum aType = theS.ShapeType();
+
+  switch (aType)
+  {
+    case TopAbs_VERTEX:
+      aState = ComputeState(TopoDS::Vertex(theS), theRef, theTol, theContext);
+      break;
+    case TopAbs_EDGE:
+      aState = ComputeState(TopoDS::Edge(theS), theRef, theTol, theContext);
+      break;
+    case TopAbs_FACE:
+    {
+      TopTools_IndexedMapOfShape aBounds;
+      TopExp::MapShapes(theRef, TopAbs_EDGE, aBounds);
+      aState = ComputeState(TopoDS::Face(theS), theRef, theTol, aBounds, theContext);
+      break;
+    }
+    default:
+    {
+      TopoDS_Iterator it(theS);
+      if (it.More())
+        ComputeStateByOnePoint(it.Value(), theRef, theTol, theContext);
+      break;
+    }
   }
   return aState;
 }

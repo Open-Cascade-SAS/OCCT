@@ -117,7 +117,14 @@ protected:
   Standard_EXPORT virtual void Prepare() Standard_OVERRIDE;
   
   //! Function is redefined to avoid the usage of removed faces.
-  Standard_EXPORT virtual void FillIn3DParts (TopTools_DataMapOfShapeListOfShape& theInParts, TopTools_DataMapOfShapeShape& theDraftSolids, const Handle(NCollection_BaseAllocator)& theAllocator) Standard_OVERRIDE;
+  Standard_EXPORT virtual void FillIn3DParts (TopTools_DataMapOfShapeShape& theDraftSolids) Standard_OVERRIDE;
+
+  //! Avoid the check for open solids and always use the splits
+  //! of solids for building the result shape.
+  virtual Standard_Boolean CheckArgsForOpenSolid() Standard_OVERRIDE
+  {
+    return Standard_False;
+  }
 
 
   TopTools_MapOfShape myShapes;

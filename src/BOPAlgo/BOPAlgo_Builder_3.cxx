@@ -23,6 +23,7 @@
 #include <TopAbs_State.hxx>
 //
 #include <TopoDS.hxx>
+#include <TopoDS_AlertWithShape.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Solid.hxx>
 #include <TopoDS_Shape.hxx>
@@ -90,29 +91,21 @@ void BOPAlgo_Builder::FillImagesSolids()
   if (!bHasSolids) {
     return;
   }
-  // 
-  Handle(NCollection_BaseAllocator) aAlr;
-  //
-  aAlr=NCollection_BaseAllocator::CommonBaseAllocator();
-  //
-  TopTools_DataMapOfShapeListOfShape theInParts(100, aAlr);
-  TopTools_DataMapOfShapeShape theDraftSolids(100, aAlr);
-  //
-  FillIn3DParts(theInParts, theDraftSolids, aAlr); 
-  BuildSplitSolids(theInParts, theDraftSolids, aAlr);
+
+  // Draft solids
+  TopTools_DataMapOfShapeShape aDraftSolids;
+  // Find all IN faces for all IN faces
+  FillIn3DParts(aDraftSolids);
+  // Build split of the solids
+  BuildSplitSolids(aDraftSolids);
+  // Fill solids with internal parts
   FillInternalShapes();
-  //
-  theInParts.Clear();
-  theDraftSolids.Clear();
 }
 //=======================================================================
 //function : FillIn3DParts
 //purpose  : 
 //=======================================================================
-void BOPAlgo_Builder::FillIn3DParts
-  (TopTools_DataMapOfShapeListOfShape& theInParts,
-   TopTools_DataMapOfShapeShape& theDraftSolids,
-   const Handle(NCollection_BaseAllocator)& )
+void BOPAlgo_Builder::FillIn3DParts(TopTools_DataMapOfShapeShape& theDraftSolids)
 {
   Handle(NCollection_BaseAllocator) anAlloc = new NCollection_IncAllocator;
 
@@ -224,7 +217,7 @@ void BOPAlgo_Builder::FillIn3DParts
     if (aNbInt || aNbIN)
     {
       // Combine the lists
-      TopTools_ListOfShape *pLIN  = theInParts.Bound(aSolid, TopTools_ListOfShape());
+      TopTools_ListOfShape *pLIN  = myInParts.Bound(aSolid, TopTools_ListOfShape());
 
       TopTools_ListIteratorOfListOfShape aItLS(aLInFaces);
       for (; aItLS.More(); aItLS.Next())
@@ -360,10 +353,7 @@ typedef BOPTools_Cnt<BOPAlgo_BuilderSolidFunctor,
 //function : BuildSplitSolids
 //purpose  : 
 //=======================================================================
-void BOPAlgo_Builder::BuildSplitSolids
-  (TopTools_DataMapOfShapeListOfShape& theInParts,
-   TopTools_DataMapOfShapeShape& theDraftSolids,
-   const Handle(NCollection_BaseAllocator)&  )
+void BOPAlgo_Builder::BuildSplitSolids(TopTools_DataMapOfShapeShape& theDraftSolids)
 {
   Standard_Boolean bFlagSD;
   Standard_Integer i, aNbS;
@@ -417,7 +407,7 @@ void BOPAlgo_Builder::BuildSplitSolids
       continue;
 
     const TopoDS_Shape& aSD = theDraftSolids.Find(aS);
-    const TopTools_ListOfShape* pLFIN = theInParts.Seek(aS);
+    const TopTools_ListOfShape* pLFIN = myInParts.Seek(aS);
     if (!pLFIN || pLFIN->IsEmpty())
     {
       aSolidsIm(aSolidsIm.Add(aS, TopTools_ListOfShape())).Append(aSD);
@@ -464,7 +454,35 @@ void BOPAlgo_Builder::BuildSplitSolids
   {
     BOPAlgo_SplitSolid& aBS = aVBS(k);
     aSolidsIm.Add(aBS.Solid(), aBS.Areas());
-    myReport->Merge(aBS.GetReport());
+
+    // Merge BuilderSolid's report into main report,
+    // assigning the solid with the warnings/errors which
+    // have been generated for it.
+    // Convert all errors of BuilderSolid into warnings for main report.
+    const Handle(Message_Report)& aBSReport = aBS.GetReport();
+    Message_Gravity anAlertTypes[2] = { Message_Warning, Message_Fail };
+    for (Standard_Integer iGravity = 0; iGravity < 2; iGravity++)
+    {
+      const Message_ListOfAlert& anLAlerts = aBSReport->GetAlerts(anAlertTypes[iGravity]);
+      for (Message_ListOfAlert::Iterator itA(anLAlerts); itA.More(); itA.Next())
+      {
+        Handle(Message_Alert) anAlert = itA.Value();
+
+        Handle(TopoDS_AlertWithShape) anAlertWithShape = Handle(TopoDS_AlertWithShape)::DownCast(itA.Value());
+        if (!anAlertWithShape.IsNull())
+        {
+          TopoDS_Shape aWarnShape;
+          BRep_Builder().MakeCompound(TopoDS::Compound(aWarnShape));
+          BRep_Builder().Add(aWarnShape, aBS.Solid());
+          BRep_Builder().Add(aWarnShape, anAlertWithShape->GetShape());
+
+          anAlertWithShape->SetShape(aWarnShape);
+          AddWarning(anAlertWithShape);
+        }
+        else
+          AddWarning(anAlert);
+      }
+    }
   }
   //
   // Add new solids to images map

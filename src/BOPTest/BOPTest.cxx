@@ -90,6 +90,7 @@ void BOPTest::ReportAlerts(const Handle(Message_Report)& theReport)
 {
   // first report warnings, then errors
   Message_Gravity anAlertTypes[2] = { Message_Warning, Message_Fail };
+  TCollection_ExtendedString aMsgType[2] = { "Warning: ", "Error: " };
   for (int iGravity = 0; iGravity < 2; iGravity++)
   {
     // report shapes for the same type of alert together
@@ -104,7 +105,7 @@ void BOPTest::ReportAlerts(const Handle(Message_Report)& theReport)
 
       // get alert message
       Message_Msg aMsg (aIt.Value()->GetMessageKey());
-      TCollection_ExtendedString aText = aMsg.Get();
+      TCollection_ExtendedString aText = aMsgType[iGravity] + aMsg.Get();
 
       // collect all shapes if any attached to this alert
       if (BOPTest_Objects::DrawWarnShapes())

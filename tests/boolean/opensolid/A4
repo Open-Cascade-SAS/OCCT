@@ -1,0 +1,60 @@
+box b1 40 10 10
+box b2 0 0 30 40 10 10
+box b3 10 10 40
+box b4 30 0 0 10 10 40
+
+bclearobjects
+bcleartools
+baddobjects b1 b2 b3 b4
+bfillds
+bbuild r
+
+# fuse of all
+buildbop r1 -o b1 b2 b3 b4 -op fuse
+buildbop r2 -o b1 b2 b3 -t b4 -op fuse
+buildbop r3 -o b1 b2 -t b3 b4 -op fuse
+buildbop r4 -o b1 -t b2 b3 b4 -op fuse
+buildbop r5 -t b1 b2 b3 b4 -op fuse
+
+foreach r {r1 r2 r3 r4 r5} {
+  checkshape $r
+  checknbshapes $r -vertex 32 -edge 64 -wire 32 -face 32 -shell 1 -solid 1
+  checkprops $r -s 4800 -v 12000
+}
+
+# Cut
+buildbop r1 -o b1 b2 -t b3 b4 -op cut
+buildbop r2 -o b1 b2 -t b3 b4 -op tuc
+
+foreach r {r1 r2} {
+  checkshape $r
+  checknbshapes $r -vertex 16 -edge 24 -wire 12 -face 12 -shell 2 -solid 2
+  checkprops $r -s 2000 -v 4000
+}
+
+buildbop r1 -o b1 -t b3 b4 -op cut
+buildbop r2 -o b2 -t b3 b4 -op cut
+
+foreach r {r1 r2} {
+  checkshape $r
+  checknbshapes $r -vertex 8 -edge 12 -wire 6 -face 6 -shell 1 -solid 1
+  checkprops $r -s 1000 -v 2000
+}
+
+# Common
+buildbop r1 -o b1 b2 -t b3 b4 -op common
+checkshape r1
+checknbshapes r1 -vertex 32 -edge 48 -wire 24 -face 24 -shell 4 -solid 4
+checkprops r1 -s 2400 -v 4000
+
+buildbop r1 -o b1 -t b3 b4 -op common
+buildbop r2 -o b2 -t b3 b4 -op common
+
+checkshape r1
+checkshape r2
+
+foreach r {r1 r2} {
+  checkshape $r
+  checknbshapes $r -vertex 16 -edge 24 -wire 12 -face 12 -shell 2 -solid 2
+  checkprops $r -s 1200 -v 2000
+}

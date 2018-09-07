@@ -8370,6 +8370,62 @@ bfillds
 bsplit result
 ~~~~
 
+@subsubsection occt_draw_bop_build_BOP_opensolids Alternative command for BOP
+
+There is an alternative way to build the result of Boolean operation using the **buildbop** command, which should be run after any other building command, such as **bbuild** or **bbop** or **bsplit**.
+The command has the following features:
+* It is designed to work on open solids and thus uses the alternative approach for building the results (see @ref occt_algorithms_bop_on_opensolids "BOP on open solids" chapter of Boolean operations user guide).
+* It allows changing the groups of Objects and Tools of the operation (even excluding some of the arguments is possible).
+* History information for solids will be lost.
+
+Syntax:
+~~~~
+buildbop result -o s1 [s2 ...] -t s3 [s4 ...] -op operation (common/fuse/cut/tuc)
+Where:
+result      - result shape of the operation
+s1 s2 s3 s4 - arguments (solids) of the GF operation
+operation   - type of boolean operation
+~~~~
+
+**Example**
+~~~~
+box b1 10 10 10
+box b2 5 5 5 10 10 10
+box b3 -5 -5 -5 10 10 10
+
+bclearobjects
+bcleartools
+baddobjects b1 b2 b3
+bfillds
+bbuild r
+
+# bbop command will not be available as the tools are not set
+# but buildbop is available
+
+# fuse of two
+buildbop r1 -o b1 -t b2 -op fuse
+buildbop r2 -o b2 -t b3 -op fuse
+
+# fuse of all - it does not matter how the groups are formed
+buildbop r3 -o b1 b2 -t b3 -op fuse
+buildbop r4 -o b2 -t b1 b3 -op fuse
+buildbop r5 -o b1 b2 b3 -op fuse
+buildbop r6 -t b1 b2 b3 -op fuse
+
+# common of two
+buildbop r7 -o b2 -t b1 -op common
+buildbop r8 -o b1 -t b3 -op common
+
+# common
+buildbop r9 -o b1 -t b2 b3 -op common
+
+# cut
+buildbop r10 -o b1 -t b2 b3 -op cut
+
+# opposite cut
+buildbop r11 -o b1 -t b2 b3 -op tuc
+~~~~
+
 @subsubsection occt_draw_bop_build_CB Cells Builder
 
 See the @ref occt_algorithms_10c_Cells_1 "Cells Builder Usage" for the Draw usage of Cells Builder algorithm.

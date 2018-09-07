@@ -1643,3 +1643,148 @@ void BOPAlgo_Tools::ClassifyFaces(const TopTools_ListOfShape& theFaces,
     theInParts.Add(aS, aLFIn);
   }
 }
+
+//=======================================================================
+//function : FillInternals
+//purpose  :
+//=======================================================================
+void BOPAlgo_Tools::FillInternals(const TopTools_ListOfShape& theSolids,
+                                  const TopTools_ListOfShape& theParts,
+                                  const TopTools_DataMapOfShapeListOfShape& theImages,
+                                  const Handle(IntTools_Context)& theContext)
+{
+  if (theSolids.IsEmpty() || theParts.IsEmpty())
+    return;
+
+  // Map the solids to avoid classification of the own shapes of the solids
+  TopTools_IndexedMapOfShape aMSSolids;
+  TopTools_ListOfShape::Iterator itLS(theSolids);
+  for (; itLS.More(); itLS.Next())
+  {
+    const TopoDS_Shape& aSolid = itLS.Value();
+    if (aSolid.ShapeType() == TopAbs_SOLID)
+    {
+      TopExp::MapShapes(aSolid, TopAbs_VERTEX, aMSSolids);
+      TopExp::MapShapes(aSolid, TopAbs_EDGE,   aMSSolids);
+      TopExp::MapShapes(aSolid, TopAbs_FACE,   aMSSolids);
+    }
+  }
+
+  // Extract BRep elements from the given parts and
+  // check them for possible splits
+  TopTools_ListOfShape aLPartsInput = theParts, aLParts;
+  TopTools_ListOfShape::Iterator itLP(aLPartsInput);
+  for (; itLP.More(); itLP.Next())
+  {
+    const TopoDS_Shape& aPart = itLP.Value();
+    switch (aPart.ShapeType())
+    {
+      case TopAbs_VERTEX:
+      case TopAbs_EDGE:
+      case TopAbs_FACE:
+      {
+        const TopTools_ListOfShape* pIm = theImages.Seek(aPart);
+        if (pIm)
+        {
+          TopTools_ListOfShape::Iterator itIm(*pIm);
+          for (; itIm.More(); itIm.Next())
+          {
+            const TopoDS_Shape& aPartIm = itIm.Value();
+            if (!aMSSolids.Contains(aPartIm))
+              aLParts.Append(aPartIm);
+          }
+        }
+        else if (!aMSSolids.Contains(aPart))
+          aLParts.Append(aPart);
+
+        break;
+      }
+      default:
+      {
+        for (TopoDS_Iterator it(aPart); it.More(); it.Next())
+          aLPartsInput.Append(it.Value());
+        break;
+      }
+    }
+  }
+
+  // Classify the given parts relatively solids.
+  // Add edges and vertices classified as IN into solids instantly,
+  // and collect faces classified as IN into a list for further shell creation
+
+  TopTools_DataMapOfShapeListOfShape anINFaces;
+  itLS.Initialize(theSolids);
+  for (; itLS.More(); itLS.Next())
+  {
+    const TopoDS_Shape& aSolid = itLS.Value();
+    if (aSolid.ShapeType() != TopAbs_SOLID)
+      continue;
+
+    TopoDS_Solid aSd = *(TopoDS_Solid*)&aSolid;
+
+    itLP.Initialize(aLParts);
+    for (; itLP.More();)
+    {
+      TopoDS_Shape aPart = itLP.Value();
+      TopAbs_State aState =
+        BOPTools_AlgoTools::ComputeStateByOnePoint(aPart, aSd, Precision::Confusion(), theContext);
+      if (aState == TopAbs_IN)
+      {
+        if (aPart.ShapeType() == TopAbs_FACE)
+        {
+          TopTools_ListOfShape *pFaces = anINFaces.ChangeSeek(aSd);
+          if (!pFaces)
+            pFaces = anINFaces.Bound(aSd, TopTools_ListOfShape());
+          pFaces->Append(aPart);
+        }
+        else
+        {
+          aPart.Orientation(TopAbs_INTERNAL);
+          BRep_Builder().Add(aSd, aPart);
+        }
+        aLParts.Remove(itLP);
+      }
+      else
+        itLP.Next();
+    }
+  }
+
+  // Make shells from faces and put them into solids
+  TopTools_DataMapOfShapeListOfShape::Iterator itM(anINFaces);
+  for (; itM.More(); itM.Next())
+  {
+    TopoDS_Solid aSd = *(TopoDS_Solid*)&itM.Key();
+    const TopTools_ListOfShape& aFaces = itM.Value();
+
+    TopoDS_Compound aCF;
+    BRep_Builder().MakeCompound(aCF);
+
+    TopTools_ListOfShape::Iterator itLF(aFaces);
+    for (; itLF.More(); itLF.Next())
+      BRep_Builder().Add(aCF, itLF.Value());
+
+    // Build blocks from the faces
+    TopTools_ListOfShape aLCB;
+    BOPTools_AlgoTools::MakeConnexityBlocks(aCF, TopAbs_EDGE, TopAbs_FACE, aLCB);
+
+    // Build shell from each block
+    TopTools_ListOfShape::Iterator itCB(aLCB);
+    for (; itCB.More(); itCB.Next())
+    {
+      const TopoDS_Shape& aCB = itCB.Value();
+
+      TopoDS_Shell aShell;
+      BRep_Builder().MakeShell(aShell);
+      // Add faces of the block to the shell
+      TopExp_Explorer expF(aCB, TopAbs_FACE);
+      for (; expF.More(); expF.Next())
+      {
+        TopoDS_Face aFInt = TopoDS::Face(expF.Current());
+        aFInt.Orientation(TopAbs_INTERNAL);
+        BRep_Builder().Add(aShell, aFInt);
+      }
+
+      BRep_Builder().Add(aSd, aShell);
+    }
+  }
+}

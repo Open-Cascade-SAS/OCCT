@@ -28,7 +28,10 @@ public:
 
   //! Returns contained shape
   const TopoDS_Shape& GetShape() const { return myShape; }
-  
+
+  //! Sets the shape
+  void SetShape(const TopoDS_Shape& theShape) { myShape = theShape; }
+
   //! Returns false.
   virtual Standard_EXPORT Standard_Boolean SupportsMerge () const Standard_OVERRIDE;
 

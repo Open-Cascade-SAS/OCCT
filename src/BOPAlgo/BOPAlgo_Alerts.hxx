@@ -111,4 +111,7 @@ DEFINE_ALERT_WITH_SHAPE(BOPAlgo_AlertFaceBuilderUnusedEdges)
 //! Unable to orient the shape correctly
 DEFINE_ALERT_WITH_SHAPE(BOPAlgo_AlertUnableToOrientTheShape)
 
+//! Shape is unknown for operation
+DEFINE_ALERT_WITH_SHAPE(BOPAlgo_AlertUnknownShape)
+
 #endif // _BOPAlgo_Alerts_HeaderFile

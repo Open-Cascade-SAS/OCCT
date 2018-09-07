@@ -17,22 +17,24 @@
 
 
 #include <BOPAlgo_Builder.hxx>
-#include <BOPAlgo_PaveFiller.hxx>
 #include <BOPAlgo_Alerts.hxx>
+#include <BOPAlgo_BuilderSolid.hxx>
+#include <BOPAlgo_PaveFiller.hxx>
+#include <BOPAlgo_Tools.hxx>
+#include <BOPDS_DS.hxx>
+#include <BOPDS_ShapeInfo.hxx>
 #include <BOPTools_AlgoTools.hxx>
 #include <BRep_Builder.hxx>
 #include <IntTools_Context.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>
-#include <BRep_Builder.hxx>
-
-#include <BOPDS_ShapeInfo.hxx>
-#include <BOPDS_DS.hxx>
-
-#include <BOPTools_AlgoTools.hxx>
+#include <TopoDS_Solid.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopTools_MapOfOrientedShape.hxx>
 
 
 //=======================================================================
@@ -50,6 +52,7 @@ BOPAlgo_Builder::BOPAlgo_Builder()
   myImages(100, myAllocator),
   myShapesSD(100, myAllocator),
   myOrigins(100, myAllocator),
+  myInParts(100, myAllocator),
   myNonDestructive(Standard_False),
   myGlue(BOPAlgo_GlueOff),
   myCheckInverted(Standard_True)
@@ -71,6 +74,7 @@ BOPAlgo_Builder::BOPAlgo_Builder
   myImages(100, myAllocator), 
   myShapesSD(100, myAllocator),
   myOrigins(100, myAllocator),
+  myInParts(100, myAllocator),
   myNonDestructive(Standard_False),
   myGlue(BOPAlgo_GlueOff),
   myCheckInverted(Standard_True)
@@ -101,6 +105,7 @@ void BOPAlgo_Builder::Clear()
   myImages.Clear();
   myShapesSD.Clear();
   myOrigins.Clear();
+  myInParts.Clear();
 }
 //=======================================================================
 //function : AddArgument
@@ -375,4 +380,367 @@ void BOPAlgo_Builder::PostTreat()
   //
   BOPTools_AlgoTools::CorrectTolerances(myShape, aMA, 0.05, myRunParallel);
   BOPTools_AlgoTools::CorrectShapeTolerances(myShape, aMA, myRunParallel);
+}
+
+//=======================================================================
+//function : BuildBOP
+//purpose  : 
+//=======================================================================
+void BOPAlgo_Builder::BuildBOP(const TopTools_ListOfShape& theObjects,
+                               const TopAbs_State          theObjState,
+                               const TopTools_ListOfShape& theTools,
+                               const TopAbs_State          theToolsState,
+                               Handle(Message_Report)      theReport)
+{
+  if (HasErrors())
+    return;
+
+  // Report for the method
+  Handle(Message_Report) aReport = theReport.IsNull() ? myReport : theReport;
+
+  if (myArguments.IsEmpty() || myShape.IsNull())
+  {
+    aReport->AddAlert(Message_Fail, new BOPAlgo_AlertBuilderFailed());
+    return;
+  }
+
+  // Check the input data
+  if ((theObjState   != TopAbs_IN && theObjState   != TopAbs_OUT) ||
+      (theToolsState != TopAbs_IN && theToolsState != TopAbs_OUT))
+  {
+    aReport->AddAlert(Message_Fail, new BOPAlgo_AlertBOPNotSet());
+    return;
+  }
+
+  // Check input shapes
+  Standard_Boolean hasObjects = !theObjects.IsEmpty();
+  Standard_Boolean hasTools   = !theTools  .IsEmpty();
+  if (!hasObjects && !hasTools)
+  {
+    aReport->AddAlert(Message_Fail, new BOPAlgo_AlertTooFewArguments());
+    return;
+  }
+
+  // Check that all input solids are from the arguments
+  for (Standard_Integer i = 0; i < 2; ++i)
+  {
+    const TopTools_ListOfShape& aList = !i ? theObjects : theTools;
+    TopTools_ListOfShape::Iterator itLS(aList);
+    for (; itLS.More(); itLS.Next())
+    {
+      const TopoDS_Shape& aS = itLS.Value();
+      // Check if the shape belongs to the arguments of operation
+      if (myDS->Index(aS) < 0)
+      {
+        aReport->AddAlert(Message_Fail, new BOPAlgo_AlertUnknownShape(aS));
+        return;
+      }
+
+      // Check if the shape is a solid or collection of them
+      if (aS.ShapeType() != TopAbs_SOLID)
+      {
+        TopTools_ListOfShape aLS;
+        TopTools_MapOfShape aMFence;
+        BOPAlgo_Tools::TreatCompound(aS, aMFence, aLS);
+
+        TopTools_ListOfShape::Iterator it(aLS);
+        for (; it.More(); it.Next())
+        {
+          const TopoDS_Shape& aSx = it.Value();
+          if (aSx.ShapeType() != TopAbs_SOLID &&
+              aSx.ShapeType() != TopAbs_COMPSOLID)
+          {
+            aReport->AddAlert(Message_Fail, new BOPAlgo_AlertUnsupportedType(aS));
+            return;
+          }
+        }
+      }
+    }
+  }
+
+  // Classification of the faces relatively solids has been made
+  // on the stage of Solids splitting. All results are saved into
+  // myInParts map, which connects the solids with its IN faces from
+  // other arguments. All faces not contained in the list of IN faces
+  // will be considered as OUT.
+
+  // Prepare the maps of splits of solids faces with orientations
+  TopTools_IndexedMapOfOrientedShape aMObjFacesOri, aMToolFacesOri;
+  // Prepare the maps of splits of solids faces
+  TopTools_IndexedMapOfShape aMObjFaces, aMToolFaces;
+  // Copy the list of IN faces of the solids into map
+  TopTools_MapOfShape anINObjects, anINTools;
+
+  for (Standard_Integer i = 0; i < 2; ++i)
+  {
+    const TopTools_ListOfShape& aList = !i ? theObjects : theTools;
+    TopTools_IndexedMapOfOrientedShape& aMapOri  = !i ? aMObjFacesOri : aMToolFacesOri;
+    TopTools_IndexedMapOfShape& aMap = !i ? aMObjFaces : aMToolFaces;
+    TopTools_ListOfShape::Iterator itLS(aList);
+    for (; itLS.More(); itLS.Next())
+    {
+      const TopoDS_Shape& aShape = itLS.Value();
+      TopExp_Explorer expS(aShape, TopAbs_SOLID);
+      for (; expS.More(); expS.Next())
+      {
+        const TopoDS_Shape& aS = expS.Current();
+        TopExp_Explorer expF(aS, TopAbs_FACE);
+        for (; expF.More(); expF.Next())
+        {
+          const TopoDS_Shape& aF = expF.Current();
+          if (aF.Orientation() != TopAbs_FORWARD &&
+              aF.Orientation() != TopAbs_REVERSED)
+            continue;
+          const TopTools_ListOfShape* pLFIm = myImages.Seek(aF);
+          if (pLFIm)
+          {
+            TopTools_ListOfShape::Iterator itLFIm(*pLFIm);
+            for (; itLFIm.More(); itLFIm.Next())
+            {
+              TopoDS_Face aFIm = TopoDS::Face(itLFIm.Value());
+              if (BOPTools_AlgoTools::IsSplitToReverse(aFIm, aF, myContext))
+                aFIm.Reverse();
+              aMapOri.Add(aFIm);
+              aMap.Add(aFIm);
+            }
+          }
+          else
+          {
+            aMapOri.Add(aF);
+            aMap.Add(aF);
+          }
+        }
+
+        // Copy the list of IN faces into a map
+        const TopTools_ListOfShape* pLFIN = myInParts.Seek(aS);
+        if (pLFIN)
+        {
+          TopTools_MapOfShape& anINMap = !i ? anINObjects : anINTools;
+          TopTools_ListOfShape::Iterator itLFIn(*pLFIN);
+          for (; itLFIn.More(); itLFIn.Next())
+            anINMap.Add(itLFIn.Value());
+        }
+      }
+    }
+  }
+
+  // Now we need to select all faces which will participate in
+  // building of the resulting solids. The final set of faces
+  // depends on the given states for the groups.
+  Standard_Boolean isObjectsIN = (theObjState   == TopAbs_IN),
+                   isToolsIN   = (theToolsState == TopAbs_IN);
+
+  // Shortcuts
+  Standard_Boolean bAvoidIN = (!isObjectsIN && !isToolsIN), // avoid all in faces
+                   bAvoidINforBoth = (isObjectsIN != isToolsIN); // avoid faces IN for both groups
+
+  // Choose which SD faces are needed to be taken - equally or differently oriented faces
+  Standard_Boolean isSameOriNeeded = (theObjState == theToolsState);
+  // Resulting faces
+  TopTools_IndexedMapOfOrientedShape aMResFacesOri;
+  TopTools_MapOfShape aMResFacesFence;
+  // Fence map
+  TopTools_MapOfShape aMFence, aMFToAvoid;
+  // Oriented fence map
+  TopTools_MapOfOrientedShape aMFenceOri;
+
+  for (Standard_Integer i = 0; i < 2; ++i)
+  {
+    const TopTools_IndexedMapOfOrientedShape& aMap  = !i ? aMObjFacesOri : aMToolFacesOri;
+    const TopTools_IndexedMapOfShape& anOppositeMap  = !i ? aMToolFaces : aMObjFaces;
+    const TopTools_MapOfShape& anINMap = !i ? anINObjects : anINTools;
+    const TopTools_MapOfShape& anOppositeINMap = !i ? anINTools : anINObjects;
+    const Standard_Boolean bTakeIN = !i ? isObjectsIN : isToolsIN;
+
+    const Standard_Integer aNbF = aMap.Extent();
+    for (Standard_Integer j = 1; j <= aNbF; ++j)
+    {
+      TopoDS_Shape aFIm = aMap(j);
+
+      Standard_Boolean isIN = anINMap.Contains(aFIm);
+      Standard_Boolean isINOpposite = anOppositeINMap.Contains(aFIm);
+
+      // Filtering for FUSE - avoid any IN faces
+      if (bAvoidIN && (isIN || isINOpposite))
+        continue;
+
+      // Filtering for CUT - avoid faces IN for both groups
+      if (bAvoidINforBoth && isIN && isINOpposite)
+        continue;
+
+      // Treatment of SD faces
+      if (!aMFence.Add(aFIm))
+      {
+        if (!anOppositeMap.Contains(aFIm))
+        {
+          // The face belongs to only one group
+          if (bTakeIN != isSameOriNeeded)
+            aMFToAvoid.Add(aFIm);
+        }
+        else
+        {
+          // The face belongs to both groups.
+          // Using its orientation decide if it is needed in the result or not.
+          Standard_Boolean isSameOri = !aMFenceOri.Add(aFIm);
+          if (isSameOriNeeded == isSameOri)
+          {
+            // Take the shape without classification
+            if (aMResFacesFence.Add(aFIm))
+              aMResFacesOri.Add(aFIm);
+          }
+          else
+            // Remove the face
+            aMFToAvoid.Add(aFIm);
+
+          continue;
+        }
+      }
+      if (!aMFenceOri.Add(aFIm))
+        continue;
+
+      if (bTakeIN == isINOpposite)
+      {
+        if (isIN)
+        {
+          aMResFacesOri.Add(aFIm);
+          aMResFacesOri.Add(aFIm.Reversed());
+        }
+        else if (bTakeIN && !isSameOriNeeded)
+          aMResFacesOri.Add(aFIm.Reversed());
+        else
+          aMResFacesOri.Add(aFIm);
+        aMResFacesFence.Add(aFIm);
+      }
+    }
+  }
+
+  // Remove the faces which has to be avoided
+  TopTools_ListOfShape aResFaces;
+  const Standard_Integer aNbRF = aMResFacesOri.Extent();
+  for (Standard_Integer i = 1; i <= aNbRF; ++i)
+  {
+    const TopoDS_Shape& aRF = aMResFacesOri(i);
+    if (!aMFToAvoid.Contains(aRF))
+      aResFaces.Append(aRF);
+  }
+
+  BRep_Builder aBB;
+
+  // Try to build closed solids from the faces
+  BOPAlgo_BuilderSolid aBS;
+  aBS.SetShapes(aResFaces);
+  aBS.SetRunParallel(myRunParallel);
+  aBS.SetContext(myContext);
+  aBS.SetFuzzyValue(myFuzzyValue);
+  aBS.SetProgressIndicator(myProgressIndicator);
+  aBS.Perform();
+
+  // Resulting solids
+  TopTools_ListOfShape aResSolids;
+
+  aMFence.Clear();
+  if (!aBS.HasErrors())
+  {
+    // If any, add solids into resulting compound
+    TopTools_ListIteratorOfListOfShape itA(aBS.Areas());
+    for (; itA.More(); itA.Next())
+    {
+      const TopoDS_Shape& aSolid = itA.Value();
+      // The solid must contain at least one face
+      // from either of objects or tools
+      TopExp_Explorer expF(aSolid, TopAbs_FACE);
+      for (; expF.More(); expF.Next())
+      {
+        const TopoDS_Shape& aF = expF.Current();
+        if (aMObjFacesOri.Contains(aF) || aMToolFacesOri.Contains(aF))
+          break;
+      }
+      if (expF.More())
+      {
+        aResSolids.Append(aSolid);
+        TopExp::MapShapes(aSolid, aMFence);
+      }
+    }
+  }
+
+  // Collect unused faces
+  TopoDS_Compound anUnUsedFaces;
+  aBB.MakeCompound(anUnUsedFaces);
+
+  TopTools_ListOfShape::Iterator itLF(aResFaces);
+  for (; itLF.More(); itLF.Next())
+  {
+    if (aMFence.Add(itLF.Value()))
+      aBB.Add(anUnUsedFaces, itLF.Value());
+  }
+
+  // Build blocks from the unused faces
+  TopTools_ListOfShape aLCB;
+  BOPTools_AlgoTools::MakeConnexityBlocks(anUnUsedFaces, TopAbs_EDGE, TopAbs_FACE, aLCB);
+
+  // Build solid from each block
+  TopTools_ListIteratorOfListOfShape itCB(aLCB);
+  for (; itCB.More(); itCB.Next())
+  {
+    const TopoDS_Shape& aCB = itCB.Value();
+    TopoDS_Shell aShell;
+    aBB.MakeShell(aShell);
+    // Add faces of the block to the shell
+    TopExp_Explorer anExpF(aCB, TopAbs_FACE);
+    for (; anExpF.More(); anExpF.Next())
+      aBB.Add(aShell, TopoDS::Face(anExpF.Current()));
+
+    BOPTools_AlgoTools::OrientFacesOnShell(aShell);
+    // Make solid out of the shell
+    TopoDS_Solid aSolid;
+    aBB.MakeSolid(aSolid);
+    aBB.Add(aSolid, aShell);
+    // Add new solid to result
+    aResSolids.Append(aSolid);
+  }
+
+  if (!bAvoidIN)
+  {
+    // Fill solids with internal parts coming with the solids
+    TopTools_ListOfShape anInParts;
+    for (Standard_Integer i = 0; i < 2; ++i)
+    {
+      const TopTools_ListOfShape& aList = !i ? theObjects : theTools;
+      TopTools_ListOfShape::Iterator itLS(aList);
+      for (; itLS.More(); itLS.Next())
+      {
+        TopExp_Explorer expS(itLS.Value(), TopAbs_SOLID);
+        for (; expS.More(); expS.Next())
+        {
+          const TopoDS_Shape& aS = expS.Current(); // Solid
+          for (TopoDS_Iterator it(aS); it.More(); it.Next())
+          {
+            const TopoDS_Shape& aSInt = it.Value();
+            if (aSInt.Orientation() == TopAbs_INTERNAL)
+              anInParts.Append(aSInt); // vertex or edge
+            else
+            {
+              // shell treatment
+              TopoDS_Iterator itInt(aSInt);
+              if (itInt.More() && itInt.Value().Orientation() == TopAbs_INTERNAL)
+                anInParts.Append(aSInt);
+            }
+          }
+        }
+      }
+    }
+
+    BOPAlgo_Tools::FillInternals(aResSolids, anInParts, myImages, myContext);
+  }
+
+  // Combine solids into compound
+  TopoDS_Shape aResult;
+  aBB.MakeCompound(TopoDS::Compound(aResult));
+
+  TopTools_ListOfShape::Iterator itLS(aResSolids);
+  for (; itLS.More(); itLS.Next())
+    aBB.Add(aResult, itLS.Value());
+
+  myShape = aResult;
+  PrepareHistory();
 }

@@ -1,0 +1,32 @@
+box b1 10 2 2
+box b2 2 0.5 -3 1 1 8
+box b3 7 0.5 -3 1 1 8
+invert b3
+
+bclearobjects
+bcleartools
+baddobjects b1
+baddtools b2 b3
+bfillds
+bbuild r
+
+buildbop r0 -o b1 -t b2 b3 -op common
+buildbop r1 -o b1 -t b2 b3 -op fuse
+buildbop r2 -o b1 -t b2 b3 -op cut
+buildbop r3 -o b1 -t b2 b3 -op tuc
+
+checkshape r0
+checkprops r0 -s 110 -v 38
+checknbshapes r0 -vertex 24 -edge 36 -wire 20 -face 16 -shell 2 -solid 2
+
+checkshape r1
+checkprops r1 -s 28 -v -6
+checknbshapes r1 -vertex 16 -edge 24 -wire 12 -face 12 -shell 2 -solid 2
+
+checkshape r2
+checkprops r2 -s 10 -v 2
+checknbshapes r2 -vertex 8 -edge 12 -wire 6 -face 6 -shell 1 -solid 1
+
+checkshape r3
+checkprops r3 -s 164 -v -46
+checknbshapes r3 -vertex 40 -edge 60 -wire 32 -face 28 -shell 3 -solid 3

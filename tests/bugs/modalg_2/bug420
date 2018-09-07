@@ -1,5 +1,4 @@
-puts "TODO OCC12345 ALL: Error : The area of result shape is"
-puts "TODO OCC12345 ALL: Faulty shapes in variables faulty_1 to faulty_"
+puts "REQUIRED All: Faulty shapes in variables faulty_1 to faulty_2"
 
 puts "========================"
 puts " OCC420 "
@@ -21,6 +20,6 @@ renamevar a_1 a
 
 bcut result a b
 
-checkprops result -s 0 
+checkprops result -s 135.092
 checkshape result
 checkview -display result -2d -path ${imagedir}/${test_image}.png

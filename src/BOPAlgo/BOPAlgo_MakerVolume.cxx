@@ -332,97 +332,40 @@ void BOPAlgo_MakerVolume::FillInternalShapes(const TopTools_ListOfShape& theLSR)
   if (myAvoidInternalShapes) {
     return;
   }
-  //
+
   UserBreak();
-  //
-  Standard_Integer aNbSI;
-  TopAbs_ShapeEnum aType;
-  TopAbs_State aState; 
-  TopoDS_Iterator aItS;
-  BRep_Builder aBB;
+
+  // Get all non-compound shapes
+  TopTools_ListOfShape aLSC;
+  // Fence map
   TopTools_MapOfShape aMFence;
-  TopTools_IndexedMapOfShape aMSS;
-  TopTools_ListOfShape aLVE, aLSC, aLSIn;
-  TopTools_ListIteratorOfListOfShape aIt, aIt1;
-  //
-  // 1. Collect shapes to process: vertices, edges, wires
-  const TopTools_ListOfShape& anArguments = myDS->Arguments();
-  aIt.Initialize(anArguments);
-  for (; aIt.More(); aIt.Next()) {
-    const TopoDS_Shape& aS = aIt.Value();
-    BOPAlgo_Tools::TreatCompound(aS, aMFence, aLSC);
-  }
-  //
-  aIt.Initialize(aLSC);
-  for (; aIt.More(); aIt.Next()) {
-    const TopoDS_Shape& aS = aIt.Value();
-    aType = aS.ShapeType();
-    if (aType == TopAbs_WIRE) {
-      aItS.Initialize(aS);
-      for(; aItS.More(); aItS.Next()) {
-        const TopoDS_Shape& aE = aItS.Value();
-        if (aMFence.Add(aE)) {
-          aLVE.Append(aE);
-        }
+
+  TopTools_ListOfShape::Iterator itLA(myDS->Arguments());
+  for (; itLA.More(); itLA.Next())
+    BOPAlgo_Tools::TreatCompound(itLA.Value(), aMFence, aLSC);
+
+  // Get only edges and vertices from arguments
+  TopTools_ListOfShape aLVE;
+
+  itLA.Initialize(aLSC);
+  for (; itLA.More(); itLA.Next())
+  {
+    const TopoDS_Shape& aS = itLA.Value();
+    TopAbs_ShapeEnum aType = aS.ShapeType();
+    if (aType == TopAbs_WIRE)
+    {
+      for (TopoDS_Iterator it(aS); it.More(); it.Next())
+      {
+        const TopoDS_Shape& aSS = it.Value();
+        if (aMFence.Add(aSS))
+          aLVE.Append(aSS);
       }
     }
-    else if (aType == TopAbs_VERTEX || aType == TopAbs_EDGE) {
+    else if (aType == TopAbs_VERTEX || aType == TopAbs_EDGE)
       aLVE.Append(aS);
-    } 
   }
-  //
-  aIt.Initialize(theLSR);
-  for (; aIt.More(); aIt.Next()) {
-    const TopoDS_Shape& aS = aIt.Value();
-    TopExp::MapShapes(aS, TopAbs_EDGE, aMSS);
-    TopExp::MapShapes(aS, TopAbs_VERTEX, aMSS);
-  }
-  //
-  aIt.Initialize(aLVE);
-  for (; aIt.More(); aIt.Next()) {
-    const TopoDS_Shape& aS = aIt.Value();
-    if (myImages.IsBound(aS)) {
-      const TopTools_ListOfShape &aLSp = myImages.Find(aS);
-      aIt1.Initialize(aLSp);
-      for (; aIt1.More(); aIt1.Next()) {
-        const TopoDS_Shape& aSp = aIt1.Value();
-        if (aMSS.Add(aSp)) {
-          aLSIn.Append(aSp);
-        }
-      }
-    }
-    else {
-      if (aMSS.Add(aS)) {
-        aLSIn.Append(aS);
-      }
-    }
-  }
-  //
-  aNbSI = aLSIn.Extent();
-  if (!aNbSI) {
-    return;
-  }
-  //
-  // 2. Settle internal vertices and edges into solids
-  aIt.Initialize(theLSR);
-  for (; aIt.More(); aIt.Next()) {
-    TopoDS_Solid aSd = *(TopoDS_Solid*)&aIt.Value();
-    //
-    aIt1.Initialize(aLSIn);
-    for (; aIt1.More(); ) {
-      TopoDS_Shape aSI = aIt1.Value();
-      aSI.Orientation(TopAbs_INTERNAL);
-      //
-      aState = BOPTools_AlgoTools::ComputeStateByOnePoint(aSI, aSd, 1.e-11, myContext);
-      if (aState == TopAbs_IN) {
-        aBB.Add(aSd, aSI);
-        aLSIn.Remove(aIt1);
-      }
-      else {
-        aIt1.Next();
-      }
-    }
-  }
+
+  BOPAlgo_Tools::FillInternals(theLSR, aLVE, myImages, myContext);
 }
 
 //=======================================================================

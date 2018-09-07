@@ -30,6 +30,7 @@
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Iterator.hxx>
@@ -772,6 +773,32 @@ void BOPAlgo_BOP::BuildRC()
 //=======================================================================
 void BOPAlgo_BOP::BuildShape()
 {
+  if (myDims[0] == 3 && myDims[1] == 3)
+  {
+    // For the Boolean operation on solids we need to check first
+    // if we are dealing with closed solids, because for open solids
+    // we cannot expect the BuilderSolid algorithm to produce good
+    // splits for them and have to try the alternative approach for
+    // building the result shape.
+    // This approach is not used by default as it will loose the
+    // modification history for solids, because the result solid
+    // will be built from scratch using the splits of faces.
+    Standard_Boolean hasNotClosedSolids = CheckArgsForOpenSolid();
+    if (hasNotClosedSolids)
+    {
+      Handle(Message_Report) aReport = new Message_Report();
+      BuildBOP(myArguments, myTools, myOperation, aReport);
+      if (aReport->GetAlerts(Message_Fail).IsEmpty())
+      {
+        // Success. Merge the report into the main report.
+        myReport->Merge(aReport);
+        return;
+      }
+    }
+  }
+
+  // Build the result using splits of arguments.
+
   BuildRC();
   //
   if ((myOperation == BOPAlgo_FUSE) && (myDims[0] == 3)) {
@@ -1169,6 +1196,157 @@ void BOPAlgo_BOP::BuildSolid()
   //
   myShape = aResult;
 }
+
+//=======================================================================
+//function : CheckArgsForOpenSolid
+//purpose  : 
+//=======================================================================
+Standard_Boolean BOPAlgo_BOP::CheckArgsForOpenSolid()
+{
+  // Analyze the report to find if BuilderSolid has generated warnings
+  // for any of the solids and collect these solids to check if they are open.
+  TopTools_MapOfShape aFailedSolids;
+  {
+    const Message_ListOfAlert& aList = myReport->GetAlerts(Message_Warning);
+    for (Message_ListOfAlert::Iterator aIt(aList); aIt.More(); aIt.Next())
+    {
+      const Handle(Standard_Type)& aType = aIt.Value()->DynamicType();
+      if (aType != STANDARD_TYPE(BOPAlgo_AlertSolidBuilderUnusedFaces))
+        continue;
+
+      Handle(TopoDS_AlertWithShape) aShapeAlert = Handle(TopoDS_AlertWithShape)::DownCast(aIt.Value());
+      if (!aShapeAlert.IsNull())
+      {
+        const TopoDS_Shape& aWarnShape = aShapeAlert->GetShape();
+        if (!aWarnShape.IsNull())
+        {
+          TopExp_Explorer expS(aWarnShape, TopAbs_SOLID);
+          for (; expS.More(); expS.Next())
+            aFailedSolids.Add(expS.Current());
+        }
+      }
+    }
+  }
+
+  // Iterate on all solids from the arguments and check if any
+  // of them are not closed.
+  // At the same time, collect all internal faces of the input solids
+  // to check if the splits of open solids did not acquire any new
+  // internal faces.
+
+  const Standard_Integer aNbS = myDS->NbSourceShapes();
+  for (Standard_Integer i = 0; i < aNbS; ++i)
+  {
+    const BOPDS_ShapeInfo& aSI = myDS->ShapeInfo(i);
+    if (aSI.ShapeType() != TopAbs_SOLID)
+      continue;
+
+    const TopoDS_Shape& aSolid = aSI.Shape();
+
+    // Check that not INTERNAL faces create closed loops
+    TopTools_IndexedDataMapOfShapeListOfShape aMEF;
+    // Collect all splits of internal faces
+    TopTools_MapOfShape aMFInternal;
+
+    for (TopoDS_Iterator itSh(aSolid); itSh.More(); itSh.Next())
+    {
+      const TopoDS_Shape& aSh = itSh.Value();
+      if (aSh.ShapeType() != TopAbs_SHELL)
+        continue;
+
+      for (TopoDS_Iterator itF(aSh); itF.More(); itF.Next())
+      {
+        const TopoDS_Shape& aF = itF.Value();
+        if (aF.Orientation() == TopAbs_INTERNAL)
+        {
+          const TopTools_ListOfShape* pLFIm = myImages.Seek(aF);
+          if (pLFIm)
+          {
+            TopTools_ListOfShape::Iterator itLFIm(*pLFIm);
+            for (; itLFIm.More(); itLFIm.Next())
+              aMFInternal.Add(itLFIm.Value());
+          }
+          else
+            aMFInternal.Add(aF);
+        }
+        else
+          TopExp::MapShapesAndAncestors(aF, TopAbs_EDGE, TopAbs_FACE, aMEF);
+      }
+    }
+
+    // Analyze the Edge-Face connection map on free edges
+    Standard_Boolean isClosed = Standard_True;
+    const Standard_Integer aNbE = aMEF.Extent();
+    for (Standard_Integer j = 1; j <= aNbE && isClosed; ++j)
+    {
+      const TopoDS_Edge& aE = TopoDS::Edge(aMEF.FindKey(j));
+      if (BRep_Tool::Degenerated(aE))
+        // Skip degenerated edges
+        continue;
+
+      isClosed = (aMEF(j).Extent() > 1);
+      if (!isClosed)
+      {
+        const TopoDS_Face& aF = TopoDS::Face(aMEF(j).First());
+        isClosed = BRep_Tool::IsClosed(aE, aF); // Check for seam edges
+        if (!isClosed)
+        {
+          // Check if the edge is not internal in the face
+          TopExp_Explorer expE(aF, TopAbs_EDGE);
+          for (; expE.More(); expE.Next())
+          {
+            if (expE.Current().IsSame(aE))
+            {
+              isClosed = (expE.Current().Orientation() == TopAbs_INTERNAL);
+              break;
+            }
+          }
+        }
+      }
+    }
+
+    if (isClosed)
+      continue;
+
+    // Not closed solid is found
+
+    if (aFailedSolids.Contains(aSolid))
+      // Warning has been generated for this solid, return positive result right away.
+      return Standard_True;
+
+    
+    // Check the splits not to acquire new INTERNAL faces
+    const TopTools_ListOfShape *pLSIm = myImages.Seek(aSolid);
+    if (!pLSIm)
+      continue;
+
+    TopTools_ListOfShape::Iterator itLSIm(*pLSIm);
+    for (; itLSIm.More(); itLSIm.Next())
+    {
+      const TopoDS_Shape& aSIm = itLSIm.Value();
+      for (TopoDS_Iterator itSh(aSIm); itSh.More(); itSh.Next())
+      {
+        const TopoDS_Shape& aSh = itSh.Value();
+        if (aSh.ShapeType() != TopAbs_SHELL)
+          continue;
+
+        for (TopoDS_Iterator itF(aSh); itF.More(); itF.Next())
+        {
+          const TopoDS_Shape& aF = itF.Value();
+          if (aF.Orientation() == TopAbs_INTERNAL)
+          {
+            if (!aMFInternal.Contains(aF))
+              // New internal face is found
+              return Standard_True;
+          }
+        }
+      }
+    }
+  }
+
+  return Standard_False;
+}
+
 //=======================================================================
 //function : TypeToExplore
 //purpose  : 

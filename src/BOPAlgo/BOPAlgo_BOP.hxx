@@ -107,6 +107,12 @@ protected:
   //! all shapes in one of the groups are empty shapes.
   Standard_EXPORT Standard_Boolean TreatEmptyShape();
 
+  //! Checks if the arguments of Boolean Operation on solids
+  //! contain any open solids, for which the building of the splits
+  //! has failed. In case of positive check, run different procedure
+  //! for building the result shape.
+  Standard_EXPORT virtual Standard_Boolean CheckArgsForOpenSolid();
+
 protected:
 
   BOPAlgo_Operation myOperation;

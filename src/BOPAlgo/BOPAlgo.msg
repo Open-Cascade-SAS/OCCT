@@ -6,94 +6,97 @@
 N/A
 
 .BOPAlgo_AlertBOPIsNotSet
-Error: The type of Boolean Operation is not set
+The type of Boolean Operation is not set
 
 .BOPAlgo_AlertBOPNotAllowed
-Error: Boolean operation of the given type is not allowed on the given inputs
+Boolean operation of the given type is not allowed on the given inputs
 
 .BOPAlgo_AlertSolidBuilderFailed
-Error: Building Fused solid has failed
+Building Fused solid has failed
 
 .BOPAlgo_AlertTooFewArguments
-Error: There are no enough arguments to perform the operation
+There are no enough arguments to perform the operation
 
 .BOPAlgo_AlertMultipleArguments
-Error: More than one argument is provided
+More than one argument is provided
 
 .BOPAlgo_AlertNoFiller
-Error: The Pave Filler (the intersection tool) has not been created
+The Pave Filler (the intersection tool) has not been created
 
 .BOPAlgo_AlertIntersectionFailed
-Error: The intersection of the arguments has failed
+The intersection of the arguments has failed
 
 .BOPAlgo_AlertBuilderFailed
-Error: Building of the result shape has failed
+Building of the result shape has failed
 
 .BOPAlgo_AlertNullFace
-Error: The face given to be split is a null shape
+The face given to be split is a null shape
 
 .BOPAlgo_AlertNullInputShapes
-Error: No or null input shapes
+No or null input shapes
 
 .BOPAlgo_AlertPostTreatFF
-Error: Cannot connect face intersection curves
+Cannot connect face intersection curves
 
 .BOPAlgo_AlertEmptyShape
-Warning: Some of the arguments are empty shapes
+Some of the arguments are empty shapes
 
 .BOPAlgo_AlertSelfInterferingShape
-Warning: Some of the arguments are self-interfering shapes
+Some of the arguments are self-interfering shapes
 
 .BOPAlgo_AlertTooSmallEdge
-Warning: Some edges are too small and have no valid range
+Some edges are too small and have no valid range
 
 .BOPAlgo_AlertNotSplittableEdge
-Warning: Some edges are very small and have such a small valid range, that they cannot be split
+Some edges are very small and have such a small valid range, that they cannot be split
 
 .BOPAlgo_AlertBadPositioning
-Warning: The positioning of the shapes leads to creation of the small edges without valid range
+The positioning of the shapes leads to creation of the small edges without valid range
 
 .BOPAlgo_AlertShellSplitterFailed
-Warning: Unable to build loops from the given faces
+Unable to build loops from the given faces
 
 .BOPAlgo_AlertRemovalOfIBForMDimShapes
-Warning: Removal of internal boundaries among the multi-dimensional shapes is not supported yet
+Removal of internal boundaries among the multi-dimensional shapes is not supported yet
 
 .BOPAlgo_AlertRemovalOfIBForSolidsFailed
-Warning: Removal of internal boundaries among Solids has failed
+Removal of internal boundaries among Solids has failed
 
 .BOPAlgo_AlertRemovalOfIBForFacesFailed
-Warning: Removal of internal boundaries among Faces has failed
+Removal of internal boundaries among Faces has failed
 
 .BOPAlgo_AlertRemovalOfIBForEdgesFailed
-Warning: Removal of internal boundaries among Edges has failed
+Removal of internal boundaries among Edges has failed
 
 .BOPAlgo_AlertIntersectionOfPairOfShapesFailed
-Warning: Intersection of pair of shapes has failed
+Intersection of pair of shapes has failed
 
 .BOPAlgo_AlertBuildingPCurveFailed
-Warning: Building 2D curve of edge on face has failed
+Building 2D curve of edge on face has failed
 
 .BOPAlgo_AlertAcquiredSelfIntersection
-Warning: Some sub-shapes of some of the argument become connected through other shapes and the argument became self-interfered
+Some sub-shapes of some of the argument become connected through other shapes and the argument became self-interfered
 
 .BOPAlgo_AlertUnsupportedType
-Warning: Unsupported type of input shape
+Unsupported type of input shape
 
 .BOPAlgo_AlertUnableToRemoveTheFeature
-Warning: Unable to remove the feature
+Unable to remove the feature
 
 .BOPAlgo_AlertNoFacesToRemove
-Error: No faces have been found for removal
+No faces have been found for removal
 
 .BOPAlgo_AlertRemoveFeaturesFailed
-Error: The Feature Removal algorithm has failed
+The Feature Removal algorithm has failed
 
 .BOPAlgo_AlertSolidBuilderUnusedFaces
-Warning: Some of the faces passed to the Solid Builder algorithm have not been classified and not used for solids creation
+Some of the faces passed to the Solid Builder algorithm have not been classified and not used for solids creation
 
 .BOPAlgo_AlertFaceBuilderUnusedEdges
-Warning: Some of the edges passed to the Face Builder algorithm have not been classified and not used for faces creation
+Some of the edges passed to the Face Builder algorithm have not been classified and not used for faces creation
 
 .BOPAlgo_AlertUnableToOrientTheShape
-Warning: Unable to orient the shape correctly
+Unable to orient the shape correctly
+
+.BOPAlgo_AlertUnknownShape
+Shape is unknown for operation
