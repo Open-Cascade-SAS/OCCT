@@ -46,11 +46,6 @@ namespace
 
 #define EOL "\n"
 
-//! Definition of TexCoord varying.
-const char THE_VARY_TexCoord_OUT[] =
-  EOL"THE_SHADER_OUT vec4 TexCoord;";
-const char THE_VARY_TexCoord_IN[] =
-  EOL"THE_SHADER_IN  vec4 TexCoord;";
 //! Compute TexCoord value in Vertex Shader
 const char THE_VARY_TexCoord_Trsf[] =
   EOL"  float aRotSin = occTextureTrsf_RotationSin();"
@@ -1239,14 +1234,15 @@ void OpenGl_ShaderManager::PushState (const Handle(OpenGl_ShaderProgram)& thePro
 // =======================================================================
 Standard_Boolean OpenGl_ShaderManager::prepareStdProgramFont()
 {
-  Handle(Graphic3d_ShaderProgram) aProgramSrc = new Graphic3d_ShaderProgram();
-  TCollection_AsciiString aSrcVert = TCollection_AsciiString()
-     + EOL"THE_SHADER_OUT vec2 TexCoord;"
-       EOL"void main()"
-       EOL"{"
-       EOL"  TexCoord = occTexCoord.st;"
-       EOL"  gl_Position = occProjectionMatrix * occWorldViewMatrix * occModelWorldMatrix * occVertex;"
-       EOL"}";
+  OpenGl_ShaderObject::ShaderVariableList aUniforms, aStageInOuts;
+  aStageInOuts.Append (OpenGl_ShaderObject::ShaderVariable ("vec2 TexCoord", Graphic3d_TOS_VERTEX | Graphic3d_TOS_FRAGMENT));
+
+  TCollection_AsciiString aSrcVert =
+      EOL"void main()"
+      EOL"{"
+      EOL"  TexCoord = occTexCoord.st;"
+      EOL"  gl_Position = occProjectionMatrix * occWorldViewMatrix * occModelWorldMatrix * occVertex;"
+      EOL"}";
 
   TCollection_AsciiString
     aSrcGetAlpha = EOL"float getAlpha(void) { return occTexture2D(occSamplerBaseColor, TexCoord.st).a; }";
@@ -1257,9 +1253,8 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramFont()
   }
 #endif
 
-  TCollection_AsciiString aSrcFrag = TCollection_AsciiString() +
-     + EOL"THE_SHADER_IN vec2 TexCoord;"
-     + aSrcGetAlpha
+  TCollection_AsciiString aSrcFrag =
+       aSrcGetAlpha
      + EOL"void main()"
        EOL"{"
        EOL"  vec4 aColor = occColor;"
@@ -1268,6 +1263,7 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramFont()
        EOL"  occSetFragColor (aColor);"
        EOL"}";
 
+  Handle(Graphic3d_ShaderProgram) aProgramSrc = new Graphic3d_ShaderProgram();
 #if !defined(GL_ES_VERSION_2_0)
   if (myContext->core32 != NULL)
   {
@@ -1283,8 +1279,8 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramFont()
 #endif
   aProgramSrc->SetNbLightsMax (0);
   aProgramSrc->SetNbClipPlanesMax (0);
-  aProgramSrc->AttachShader (Graphic3d_ShaderObject::CreateFromSource (Graphic3d_TOS_VERTEX,   aSrcVert));
-  aProgramSrc->AttachShader (Graphic3d_ShaderObject::CreateFromSource (Graphic3d_TOS_FRAGMENT, aSrcFrag));
+  aProgramSrc->AttachShader (OpenGl_ShaderObject::CreateFromSource (aSrcVert, Graphic3d_TOS_VERTEX,   aUniforms, aStageInOuts));
+  aProgramSrc->AttachShader (OpenGl_ShaderObject::CreateFromSource (aSrcFrag, Graphic3d_TOS_FRAGMENT, aUniforms, aStageInOuts));
   TCollection_AsciiString aKey;
   if (!Create (aProgramSrc, aKey, myFontProgram))
   {
@@ -1300,27 +1296,26 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramFont()
 // =======================================================================
 Standard_Boolean OpenGl_ShaderManager::prepareStdProgramFboBlit()
 {
-  Handle(Graphic3d_ShaderProgram) aProgramSrc = new Graphic3d_ShaderProgram();
+  OpenGl_ShaderObject::ShaderVariableList aUniforms, aStageInOuts;
+  aStageInOuts.Append (OpenGl_ShaderObject::ShaderVariable ("vec2 TexCoord", Graphic3d_TOS_VERTEX | Graphic3d_TOS_FRAGMENT));
+
   TCollection_AsciiString aSrcVert =
-      EOL"THE_SHADER_OUT vec2 TexCoord;"
       EOL"void main()"
       EOL"{"
       EOL"  TexCoord    = occVertex.zw;"
       EOL"  gl_Position = vec4(occVertex.x, occVertex.y, 0.0, 1.0);"
       EOL"}";
 
+  aUniforms.Append (OpenGl_ShaderObject::ShaderVariable ("sampler2D uColorSampler", Graphic3d_TOS_FRAGMENT));
+  aUniforms.Append (OpenGl_ShaderObject::ShaderVariable ("sampler2D uDepthSampler", Graphic3d_TOS_FRAGMENT));
   TCollection_AsciiString aSrcFrag =
-      EOL"uniform sampler2D uColorSampler;"
-      EOL"uniform sampler2D uDepthSampler;"
-      EOL
-      EOL"THE_SHADER_IN vec2 TexCoord;"
-      EOL
       EOL"void main()"
       EOL"{"
       EOL"  gl_FragDepth = occTexture2D (uDepthSampler, TexCoord).r;"
       EOL"  occSetFragColor (occTexture2D (uColorSampler, TexCoord));"
       EOL"}";
 
+  Handle(Graphic3d_ShaderProgram) aProgramSrc = new Graphic3d_ShaderProgram();
 #if defined(GL_ES_VERSION_2_0)
   if (myContext->IsGlGreaterEqual (3, 0))
   {
@@ -1335,10 +1330,6 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramFboBlit()
   {
     // there is no way to draw into depth buffer
     aSrcFrag =
-      EOL"uniform sampler2D uColorSampler;"
-      EOL
-      EOL"THE_SHADER_IN vec2 TexCoord;"
-      EOL
       EOL"void main()"
       EOL"{"
       EOL"  occSetFragColor (occTexture2D (uColorSampler, TexCoord));"
@@ -1352,8 +1343,8 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramFboBlit()
 #endif
   aProgramSrc->SetNbLightsMax (0);
   aProgramSrc->SetNbClipPlanesMax (0);
-  aProgramSrc->AttachShader (Graphic3d_ShaderObject::CreateFromSource (Graphic3d_TOS_VERTEX,   aSrcVert));
-  aProgramSrc->AttachShader (Graphic3d_ShaderObject::CreateFromSource (Graphic3d_TOS_FRAGMENT, aSrcFrag));
+  aProgramSrc->AttachShader (OpenGl_ShaderObject::CreateFromSource (aSrcVert, Graphic3d_TOS_VERTEX,   aUniforms, aStageInOuts));
+  aProgramSrc->AttachShader (OpenGl_ShaderObject::CreateFromSource (aSrcFrag, Graphic3d_TOS_FRAGMENT, aUniforms, aStageInOuts));
   TCollection_AsciiString aKey;
   if (!Create (aProgramSrc, aKey, myBlitProgram))
   {
@@ -1378,8 +1369,10 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramOitCompositing (const St
   Handle(Graphic3d_ShaderProgram) aProgramSrc = new Graphic3d_ShaderProgram();
   TCollection_AsciiString aSrcVert, aSrcFrag;
 
+  OpenGl_ShaderObject::ShaderVariableList aUniforms, aStageInOuts;
+  aStageInOuts.Append (OpenGl_ShaderObject::ShaderVariable ("vec2 TexCoord", Graphic3d_TOS_VERTEX | Graphic3d_TOS_FRAGMENT));
+
   aSrcVert =
-    EOL"THE_SHADER_OUT vec2 TexCoord;"
     EOL"void main()"
     EOL"{"
     EOL"  TexCoord    = occVertex.zw;"
@@ -1388,12 +1381,9 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramOitCompositing (const St
 
   if (!theMsaa)
   {
+    aUniforms.Append (OpenGl_ShaderObject::ShaderVariable ("sampler2D uAccumTexture",  Graphic3d_TOS_FRAGMENT));
+    aUniforms.Append (OpenGl_ShaderObject::ShaderVariable ("sampler2D uWeightTexture", Graphic3d_TOS_FRAGMENT));
     aSrcFrag =
-      EOL"uniform sampler2D uAccumTexture;"
-      EOL"uniform sampler2D uWeightTexture;"
-      EOL
-      EOL"THE_SHADER_IN vec2 TexCoord;"
-      EOL
       EOL"void main()"
       EOL"{"
       EOL"  vec4 aAccum   = occTexture2D (uAccumTexture,  TexCoord);"
@@ -1414,12 +1404,9 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramOitCompositing (const St
   }
   else
   {
+    aUniforms.Append (OpenGl_ShaderObject::ShaderVariable ("sampler2DMS uAccumTexture",  Graphic3d_TOS_FRAGMENT));
+    aUniforms.Append (OpenGl_ShaderObject::ShaderVariable ("sampler2DMS uWeightTexture", Graphic3d_TOS_FRAGMENT));
     aSrcFrag =
-      EOL"uniform sampler2DMS uAccumTexture;"
-      EOL"uniform sampler2DMS uWeightTexture;"
-      EOL
-      EOL"THE_SHADER_IN vec2 TexCoord;"
-      EOL
       EOL"void main()"
       EOL"{"
       EOL"  ivec2 aTexel  = ivec2 (vec2 (textureSize (uAccumTexture)) * TexCoord);"
@@ -1446,8 +1433,8 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramOitCompositing (const St
 
   aProgramSrc->SetNbLightsMax (0);
   aProgramSrc->SetNbClipPlanesMax (0);
-  aProgramSrc->AttachShader (Graphic3d_ShaderObject::CreateFromSource (Graphic3d_TOS_VERTEX,   aSrcVert));
-  aProgramSrc->AttachShader (Graphic3d_ShaderObject::CreateFromSource (Graphic3d_TOS_FRAGMENT, aSrcFrag));
+  aProgramSrc->AttachShader (OpenGl_ShaderObject::CreateFromSource (aSrcVert, Graphic3d_TOS_VERTEX,   aUniforms, aStageInOuts));
+  aProgramSrc->AttachShader (OpenGl_ShaderObject::CreateFromSource (aSrcFrag, Graphic3d_TOS_FRAGMENT, aUniforms, aStageInOuts));
   TCollection_AsciiString aKey;
   if (!Create (aProgramSrc, aKey, aProgram))
   {
@@ -1503,10 +1490,11 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramUnlit (Handle(OpenGl_Sha
                                                                const Standard_Integer        theBits)
 {
   Handle(Graphic3d_ShaderProgram) aProgramSrc = new Graphic3d_ShaderProgram();
-  TCollection_AsciiString aSrcVert, aSrcVertExtraOut, aSrcVertExtraMain, aSrcVertExtraFunc, aSrcGetAlpha;
-  TCollection_AsciiString aSrcFrag, aSrcFragExtraOut, aSrcFragExtraMain, aSrcFragWriteOit;
+  TCollection_AsciiString aSrcVert, aSrcVertExtraMain, aSrcVertExtraFunc, aSrcGetAlpha;
+  TCollection_AsciiString aSrcFrag, aSrcFragExtraMain, aSrcFragWriteOit;
   TCollection_AsciiString aSrcFragGetColor     = EOL"vec4 getColor(void) { return occColor; }";
   TCollection_AsciiString aSrcFragMainGetColor = EOL"  occSetFragColor (getColor());";
+  OpenGl_ShaderObject::ShaderVariableList aUniforms, aStageInOuts;
   if ((theBits & OpenGl_PO_Point) != 0)
   {
   #if defined(GL_ES_VERSION_2_0)
@@ -1547,10 +1535,13 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramUnlit (Handle(OpenGl_Sha
   }
   else
   {
+    if ((theBits & OpenGl_PO_TextureRGB) != 0 || (theBits & OpenGl_PO_TextureEnv) != 0)
+    {
+      aStageInOuts.Append (OpenGl_ShaderObject::ShaderVariable ("vec4 TexCoord", Graphic3d_TOS_VERTEX | Graphic3d_TOS_FRAGMENT));
+    }
+
     if ((theBits & OpenGl_PO_TextureRGB) != 0)
     {
-      aSrcVertExtraOut  += THE_VARY_TexCoord_OUT;
-      aSrcFragExtraOut  += THE_VARY_TexCoord_IN;
       aSrcVertExtraMain += THE_VARY_TexCoord_Trsf;
 
       aSrcFragGetColor =
@@ -1558,9 +1549,6 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramUnlit (Handle(OpenGl_Sha
     }
     else if ((theBits & OpenGl_PO_TextureEnv) != 0)
     {
-      aSrcVertExtraOut += THE_VARY_TexCoord_OUT;
-      aSrcFragExtraOut += THE_VARY_TexCoord_IN;
-
       aSrcVertExtraFunc = THE_FUNC_transformNormal;
 
       aSrcVertExtraMain +=
@@ -1576,21 +1564,16 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramUnlit (Handle(OpenGl_Sha
   }
   if ((theBits & OpenGl_PO_VertColor) != 0)
   {
-    aSrcVertExtraOut  += EOL"THE_SHADER_OUT vec4 VertColor;";
+    aStageInOuts.Append (OpenGl_ShaderObject::ShaderVariable ("vec4 VertColor", Graphic3d_TOS_VERTEX | Graphic3d_TOS_FRAGMENT));
     aSrcVertExtraMain += EOL"  VertColor = occVertColor;";
-    aSrcFragExtraOut  += EOL"THE_SHADER_IN  vec4 VertColor;";
     aSrcFragGetColor  =  EOL"vec4 getColor(void) { return VertColor; }";
   }
 
   int aNbClipPlanes = 0;
   if ((theBits & OpenGl_PO_ClipPlanesN) != 0)
   {
-    aSrcVertExtraOut +=
-      EOL"THE_SHADER_OUT vec4 PositionWorld;"
-      EOL"THE_SHADER_OUT vec4 Position;";
-    aSrcFragExtraOut +=
-      EOL"THE_SHADER_IN  vec4 PositionWorld;"
-      EOL"THE_SHADER_IN  vec4 Position;";
+    aStageInOuts.Append (OpenGl_ShaderObject::ShaderVariable ("vec4 PositionWorld", Graphic3d_TOS_VERTEX | Graphic3d_TOS_FRAGMENT));
+    aStageInOuts.Append (OpenGl_ShaderObject::ShaderVariable ("vec4 Position",      Graphic3d_TOS_VERTEX | Graphic3d_TOS_FRAGMENT));
     aSrcVertExtraMain +=
       EOL"  PositionWorld = occModelWorldMatrix * occVertex;"
       EOL"  Position      = occWorldViewMatrix * PositionWorld;";
@@ -1652,12 +1635,9 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramUnlit (Handle(OpenGl_Sha
 
     if (hasGlslBitOps)
     {
-      aSrcVertExtraOut +=
-        EOL"THE_SHADER_OUT vec2 ScreenSpaceCoord;";
-      aSrcFragExtraOut +=
-        EOL"THE_SHADER_IN  vec2 ScreenSpaceCoord;"
-        EOL"uniform int   uPattern;"
-        EOL"uniform float uFactor;";
+      aUniforms.Append (OpenGl_ShaderObject::ShaderVariable ("int   uPattern;", Graphic3d_TOS_FRAGMENT));
+      aUniforms.Append (OpenGl_ShaderObject::ShaderVariable ("float uFactor;",  Graphic3d_TOS_FRAGMENT));
+      aStageInOuts.Append (OpenGl_ShaderObject::ShaderVariable ("vec2 ScreenSpaceCoord", Graphic3d_TOS_VERTEX | Graphic3d_TOS_FRAGMENT));
       aSrcVertEndMain =
         EOL"  ScreenSpaceCoord = gl_Position.xy / gl_Position.w;";
       aSrcFragMainGetColor =
@@ -1671,16 +1651,12 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramUnlit (Handle(OpenGl_Sha
     }
     else
     {
-      const TCollection_ExtendedString aWarnMessage =
-        "Warning: stipple lines in GLSL will be ignored.";
-      myContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION,
-        GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_HIGH, aWarnMessage);
+      myContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_HIGH, "Warning: stipple lines in GLSL will be ignored.");
     }
   }
 
   aSrcVert =
       aSrcVertExtraFunc
-    + aSrcVertExtraOut
     + EOL"void main()"
       EOL"{"
     + aSrcVertExtraMain
@@ -1689,8 +1665,7 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramUnlit (Handle(OpenGl_Sha
     + EOL"}";
 
   aSrcFrag =
-      aSrcFragExtraOut
-    + aSrcFragGetColor
+      aSrcFragGetColor
     + aSrcGetAlpha
     + EOL"void main()"
       EOL"{"
@@ -1715,8 +1690,8 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramUnlit (Handle(OpenGl_Sha
   aProgramSrc->SetNbLightsMax (0);
   aProgramSrc->SetNbClipPlanesMax (aNbClipPlanes);
   aProgramSrc->SetAlphaTest ((theBits & OpenGl_PO_AlphaTest) != 0);
-  aProgramSrc->AttachShader (Graphic3d_ShaderObject::CreateFromSource (Graphic3d_TOS_VERTEX,   aSrcVert));
-  aProgramSrc->AttachShader (Graphic3d_ShaderObject::CreateFromSource (Graphic3d_TOS_FRAGMENT, aSrcFrag));
+  aProgramSrc->AttachShader (OpenGl_ShaderObject::CreateFromSource (aSrcVert, Graphic3d_TOS_VERTEX,   aUniforms, aStageInOuts));
+  aProgramSrc->AttachShader (OpenGl_ShaderObject::CreateFromSource (aSrcFrag, Graphic3d_TOS_FRAGMENT, aUniforms, aStageInOuts));
 
   TCollection_AsciiString aKey;
   if (!Create (aProgramSrc, aKey, theProgram))
@@ -1905,9 +1880,11 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramGouraud (Handle(OpenGl_S
                                                                  const Standard_Integer        theBits)
 {
   Handle(Graphic3d_ShaderProgram) aProgramSrc = new Graphic3d_ShaderProgram();
-  TCollection_AsciiString aSrcVert, aSrcVertColor, aSrcVertExtraOut, aSrcVertExtraMain;
-  TCollection_AsciiString aSrcFrag, aSrcFragExtraOut, aSrcFragExtraMain, aSrcFragWriteOit;
+  TCollection_AsciiString aSrcVert, aSrcVertColor, aSrcVertExtraMain;
+  TCollection_AsciiString aSrcFrag, aSrcFragExtraMain, aSrcFragWriteOit;
   TCollection_AsciiString aSrcFragGetColor = EOL"vec4 getColor(void) { return gl_FrontFacing ? FrontColor : BackColor; }";
+  OpenGl_ShaderObject::ShaderVariableList aUniforms, aStageInOuts;
+
   if ((theBits & OpenGl_PO_Point) != 0)
   {
   #if defined(GL_ES_VERSION_2_0)
@@ -1931,8 +1908,7 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramGouraud (Handle(OpenGl_S
   {
     if ((theBits & OpenGl_PO_TextureRGB) != 0)
     {
-      aSrcVertExtraOut  += THE_VARY_TexCoord_OUT;
-      aSrcFragExtraOut  += THE_VARY_TexCoord_IN;
+      aStageInOuts.Append (OpenGl_ShaderObject::ShaderVariable ("vec4 TexCoord", Graphic3d_TOS_VERTEX | Graphic3d_TOS_FRAGMENT));
       aSrcVertExtraMain += THE_VARY_TexCoord_Trsf;
 
       aSrcFragGetColor =
@@ -1952,12 +1928,8 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramGouraud (Handle(OpenGl_S
   int aNbClipPlanes = 0;
   if ((theBits & OpenGl_PO_ClipPlanesN) != 0)
   {
-    aSrcVertExtraOut +=
-      EOL"THE_SHADER_OUT vec4 PositionWorld;"
-      EOL"THE_SHADER_OUT vec4 Position;";
-    aSrcFragExtraOut +=
-      EOL"THE_SHADER_IN  vec4 PositionWorld;"
-      EOL"THE_SHADER_IN  vec4 Position;";
+    aStageInOuts.Append (OpenGl_ShaderObject::ShaderVariable ("vec4 PositionWorld", Graphic3d_TOS_VERTEX | Graphic3d_TOS_FRAGMENT));
+    aStageInOuts.Append (OpenGl_ShaderObject::ShaderVariable ("vec4 Position",      Graphic3d_TOS_VERTEX | Graphic3d_TOS_FRAGMENT));
     aSrcVertExtraMain +=
       EOL"  PositionWorld = aPositionWorld;"
       EOL"  Position      = aPosition;";
@@ -1994,6 +1966,9 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramGouraud (Handle(OpenGl_S
   #endif
   }
 
+  aStageInOuts.Append (OpenGl_ShaderObject::ShaderVariable ("vec4 FrontColor", Graphic3d_TOS_VERTEX | Graphic3d_TOS_FRAGMENT));
+  aStageInOuts.Append (OpenGl_ShaderObject::ShaderVariable ("vec4 BackColor",  Graphic3d_TOS_VERTEX | Graphic3d_TOS_FRAGMENT));
+
   Standard_Integer aNbLights = 0;
   const TCollection_AsciiString aLights = stdComputeLighting (aNbLights, (theBits & OpenGl_PO_VertColor) != 0);
   aSrcVert = TCollection_AsciiString()
@@ -2001,11 +1976,6 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramGouraud (Handle(OpenGl_S
     + EOL
     + aSrcVertColor
     + aLights
-    + EOL
-      EOL"THE_SHADER_OUT vec4 FrontColor;"
-      EOL"THE_SHADER_OUT vec4 BackColor;"
-      EOL
-    + aSrcVertExtraOut
     + EOL"void main()"
       EOL"{"
       EOL"  vec4 aPositionWorld = occModelWorldMatrix * occVertex;"
@@ -2019,9 +1989,6 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramGouraud (Handle(OpenGl_S
       EOL"}";
 
   aSrcFrag = TCollection_AsciiString()
-    + EOL"THE_SHADER_IN vec4 FrontColor;"
-      EOL"THE_SHADER_IN vec4 BackColor;"
-    + aSrcFragExtraOut
     + aSrcFragGetColor
     + EOL"void main()"
       EOL"{"
@@ -2046,8 +2013,8 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramGouraud (Handle(OpenGl_S
   aProgramSrc->SetNbLightsMax (aNbLights);
   aProgramSrc->SetNbClipPlanesMax (aNbClipPlanes);
   aProgramSrc->SetAlphaTest ((theBits & OpenGl_PO_AlphaTest) != 0);
-  aProgramSrc->AttachShader (Graphic3d_ShaderObject::CreateFromSource (Graphic3d_TOS_VERTEX,   aSrcVert));
-  aProgramSrc->AttachShader (Graphic3d_ShaderObject::CreateFromSource (Graphic3d_TOS_FRAGMENT, aSrcFrag));
+  aProgramSrc->AttachShader (OpenGl_ShaderObject::CreateFromSource (aSrcVert, Graphic3d_TOS_VERTEX,   aUniforms, aStageInOuts));
+  aProgramSrc->AttachShader (OpenGl_ShaderObject::CreateFromSource (aSrcFrag, Graphic3d_TOS_FRAGMENT, aUniforms, aStageInOuts));
   TCollection_AsciiString aKey;
   if (!Create (aProgramSrc, aKey, theProgram))
   {
@@ -2087,9 +2054,10 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramPhong (Handle(OpenGl_Sha
 #endif
 
   Handle(Graphic3d_ShaderProgram) aProgramSrc = new Graphic3d_ShaderProgram();
-  TCollection_AsciiString aSrcVert, aSrcVertExtraOut, aSrcVertExtraMain;
+  TCollection_AsciiString aSrcVert, aSrcVertExtraFunc, aSrcVertExtraMain;
   TCollection_AsciiString aSrcFrag, aSrcFragExtraOut, aSrcFragGetVertColor, aSrcFragExtraMain, aSrcFragWriteOit;
   TCollection_AsciiString aSrcFragGetColor = EOL"vec4 getColor(void) { return " thePhongCompLight "; }";
+  OpenGl_ShaderObject::ShaderVariableList aUniforms, aStageInOuts;
   if ((theBits & OpenGl_PO_Point) != 0)
   {
   #if defined(GL_ES_VERSION_2_0)
@@ -2113,8 +2081,7 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramPhong (Handle(OpenGl_Sha
   {
     if ((theBits & OpenGl_PO_TextureRGB) != 0)
     {
-      aSrcVertExtraOut  += THE_VARY_TexCoord_OUT;
-      aSrcFragExtraOut  += THE_VARY_TexCoord_IN;
+      aStageInOuts.Append (OpenGl_ShaderObject::ShaderVariable ("vec4 TexCoord", Graphic3d_TOS_VERTEX | Graphic3d_TOS_FRAGMENT));
       aSrcVertExtraMain += THE_VARY_TexCoord_Trsf;
 
       aSrcFragGetColor =
@@ -2128,10 +2095,9 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramPhong (Handle(OpenGl_Sha
 
   if ((theBits & OpenGl_PO_VertColor) != 0)
   {
-    aSrcVertExtraOut    += EOL"THE_SHADER_OUT vec4 VertColor;";
+    aStageInOuts.Append (OpenGl_ShaderObject::ShaderVariable ("vec4 VertColor", Graphic3d_TOS_VERTEX | Graphic3d_TOS_FRAGMENT));
     aSrcVertExtraMain   += EOL"  VertColor = occVertColor;";
-    aSrcFragGetVertColor = EOL"THE_SHADER_IN  vec4 VertColor;"
-                           EOL"vec4 getVertColor(void) { return VertColor; }";
+    aSrcFragGetVertColor = EOL"vec4 getVertColor(void) { return VertColor; }";
   }
 
   int aNbClipPlanes = 0;
@@ -2163,22 +2129,30 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramPhong (Handle(OpenGl_Sha
     aProgramSrc->SetWeightOitOutput (true);
   }
 
+  if (isFlatNormal)
+  {
+    aSrcFragExtraOut  += EOL"vec3 Normal;";
+    aSrcFragExtraMain += TCollection_AsciiString()
+      + EOL"  Normal = " + aDFdxSignReversion + "normalize (cross (dFdx (Position.xyz / Position.w), dFdy (Position.xyz / Position.w)));"
+        EOL"  if (!gl_FrontFacing) { Normal = -Normal; }";
+  }
+  else
+  {
+    aStageInOuts.Append (OpenGl_ShaderObject::ShaderVariable ("vec3 Normal", Graphic3d_TOS_VERTEX | Graphic3d_TOS_FRAGMENT));
+    aSrcVertExtraFunc += THE_FUNC_transformNormal;
+    aSrcVertExtraMain += EOL"  Normal = transformNormal (occNormal);";
+  }
+
+  aStageInOuts.Append (OpenGl_ShaderObject::ShaderVariable ("vec4 PositionWorld", Graphic3d_TOS_VERTEX | Graphic3d_TOS_FRAGMENT));
+  aStageInOuts.Append (OpenGl_ShaderObject::ShaderVariable ("vec4 Position",      Graphic3d_TOS_VERTEX | Graphic3d_TOS_FRAGMENT));
+  aStageInOuts.Append (OpenGl_ShaderObject::ShaderVariable ("vec3 View",          Graphic3d_TOS_VERTEX | Graphic3d_TOS_FRAGMENT));
+
   aSrcVert = TCollection_AsciiString()
-    + (isFlatNormal ? "" : THE_FUNC_transformNormal)
-    + EOL
-      EOL"THE_SHADER_OUT vec4 PositionWorld;"
-      EOL"THE_SHADER_OUT vec4 Position;"
-      EOL"THE_SHADER_OUT vec3 View;"
-    + (isFlatNormal ? ""
-    : EOL"THE_SHADER_OUT vec3 Normal;")
-    + EOL
-    + aSrcVertExtraOut
+    + aSrcVertExtraFunc
     + EOL"void main()"
       EOL"{"
       EOL"  PositionWorld = occModelWorldMatrix * occVertex;"
       EOL"  Position      = occWorldViewMatrix * PositionWorld;"
-    + (isFlatNormal ? ""
-    : EOL"  Normal        = transformNormal (occNormal);")
     + EOL"  View          = vec3 (0.0, 0.0, 1.0);"
     + aSrcVertExtraMain
     + EOL"  gl_Position = occProjectionMatrix * occWorldViewMatrix * occModelWorldMatrix * occVertex;"
@@ -2187,12 +2161,6 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramPhong (Handle(OpenGl_Sha
   Standard_Integer aNbLights = 0;
   const TCollection_AsciiString aLights = stdComputeLighting (aNbLights, (theBits & OpenGl_PO_VertColor) != 0);
   aSrcFrag = TCollection_AsciiString()
-    + EOL"THE_SHADER_IN vec4 PositionWorld;"
-      EOL"THE_SHADER_IN vec4 Position;"
-      EOL"THE_SHADER_IN vec3 View;"
-    + (isFlatNormal
-    ? EOL"vec3 Normal;"
-    : EOL"THE_SHADER_IN vec3 Normal;")
     + EOL
     + aSrcFragExtraOut
     + aSrcFragGetVertColor
@@ -2202,11 +2170,6 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramPhong (Handle(OpenGl_Sha
       EOL"void main()"
       EOL"{"
     + aSrcFragExtraMain
-    + (isFlatNormal
-    ? TCollection_AsciiString()
-      + EOL"  Normal = " + aDFdxSignReversion + "normalize (cross (dFdx (Position.xyz / Position.w), dFdy (Position.xyz / Position.w)));"
-        EOL"  if (!gl_FrontFacing) { Normal = -Normal; }"
-    : "")
     + EOL"  occSetFragColor (getColor());"
     + aSrcFragWriteOit
     + EOL"}";
@@ -2238,8 +2201,8 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramPhong (Handle(OpenGl_Sha
   aProgramSrc->SetNbLightsMax (aNbLights);
   aProgramSrc->SetNbClipPlanesMax (aNbClipPlanes);
   aProgramSrc->SetAlphaTest ((theBits & OpenGl_PO_AlphaTest) != 0);
-  aProgramSrc->AttachShader (Graphic3d_ShaderObject::CreateFromSource (Graphic3d_TOS_VERTEX,   aSrcVert));
-  aProgramSrc->AttachShader (Graphic3d_ShaderObject::CreateFromSource (Graphic3d_TOS_FRAGMENT, aSrcFrag));
+  aProgramSrc->AttachShader (OpenGl_ShaderObject::CreateFromSource (aSrcVert, Graphic3d_TOS_VERTEX,   aUniforms, aStageInOuts));
+  aProgramSrc->AttachShader (OpenGl_ShaderObject::CreateFromSource (aSrcFrag, Graphic3d_TOS_FRAGMENT, aUniforms, aStageInOuts));
   TCollection_AsciiString aKey;
   if (!Create (aProgramSrc, aKey, theProgram))
   {
@@ -2257,8 +2220,10 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramStereo (Handle(OpenGl_Sh
                                                                 const Graphic3d_StereoMode    theStereoMode)
 {
   Handle(Graphic3d_ShaderProgram) aProgramSrc = new Graphic3d_ShaderProgram();
+  OpenGl_ShaderObject::ShaderVariableList aUniforms, aStageInOuts;
+
+  aStageInOuts.Append (OpenGl_ShaderObject::ShaderVariable ("vec2 TexCoord", Graphic3d_TOS_VERTEX | Graphic3d_TOS_FRAGMENT));
   TCollection_AsciiString aSrcVert =
-      EOL"THE_SHADER_OUT vec2 TexCoord;"
       EOL"void main()"
       EOL"{"
       EOL"  TexCoord    = occVertex.zw;"
@@ -2266,21 +2231,17 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramStereo (Handle(OpenGl_Sh
       EOL"}";
 
   TCollection_AsciiString aSrcFrag;
+  aUniforms.Append (OpenGl_ShaderObject::ShaderVariable ("sampler2D uLeftSampler",  Graphic3d_TOS_FRAGMENT));
+  aUniforms.Append (OpenGl_ShaderObject::ShaderVariable ("sampler2D uRightSampler", Graphic3d_TOS_FRAGMENT));
   switch (theStereoMode)
   {
     case Graphic3d_StereoMode_Anaglyph:
     {
+      aUniforms.Append (OpenGl_ShaderObject::ShaderVariable ("mat4 uMultL", Graphic3d_TOS_FRAGMENT));
+      aUniforms.Append (OpenGl_ShaderObject::ShaderVariable ("mat4 uMultR", Graphic3d_TOS_FRAGMENT));
       aSrcFrag =
-          EOL"uniform sampler2D uLeftSampler;"
-          EOL"uniform sampler2D uRightSampler;"
-          EOL
-          EOL"uniform mat4 uMultL;"
-          EOL"uniform mat4 uMultR;"
-          EOL
           EOL"const vec4 THE_POW_UP   =       vec4 (2.2, 2.2, 2.2, 1.0);"
           EOL"const vec4 THE_POW_DOWN = 1.0 / vec4 (2.2, 2.2, 2.2, 1.0);"
-          EOL
-          EOL"THE_SHADER_IN vec2 TexCoord;"
           EOL
           EOL"void main()"
           EOL"{"
@@ -2296,11 +2257,6 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramStereo (Handle(OpenGl_Sh
     case Graphic3d_StereoMode_RowInterlaced:
     {
       aSrcFrag =
-          EOL"uniform sampler2D uLeftSampler;"
-          EOL"uniform sampler2D uRightSampler;"
-          EOL
-          EOL"THE_SHADER_IN vec2 TexCoord;"
-          EOL
           EOL"void main()"
           EOL"{"
           EOL"  vec4 aColorL = occTexture2D (uLeftSampler,  TexCoord);"
@@ -2319,11 +2275,6 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramStereo (Handle(OpenGl_Sh
     case Graphic3d_StereoMode_ColumnInterlaced:
     {
       aSrcFrag =
-          EOL"uniform sampler2D uLeftSampler;"
-          EOL"uniform sampler2D uRightSampler;"
-          EOL
-          EOL"THE_SHADER_IN vec2 TexCoord;"
-          EOL
           EOL"void main()"
           EOL"{"
           EOL"  vec4 aColorL = occTexture2D (uLeftSampler,  TexCoord);"
@@ -2342,11 +2293,6 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramStereo (Handle(OpenGl_Sh
     case Graphic3d_StereoMode_ChessBoard:
     {
       aSrcFrag =
-          EOL"uniform sampler2D uLeftSampler;"
-          EOL"uniform sampler2D uRightSampler;"
-          EOL
-          EOL"THE_SHADER_IN vec2 TexCoord;"
-          EOL
           EOL"void main()"
           EOL"{"
           EOL"  vec4 aColorL = occTexture2D (uLeftSampler,  TexCoord);"
@@ -2367,11 +2313,6 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramStereo (Handle(OpenGl_Sh
     case Graphic3d_StereoMode_SideBySide:
     {
       aSrcFrag =
-          EOL"uniform sampler2D uLeftSampler;"
-          EOL"uniform sampler2D uRightSampler;"
-          EOL
-          EOL"THE_SHADER_IN vec2 TexCoord;"
-          EOL
           EOL"void main()"
           EOL"{"
           EOL"  vec2 aTexCoord = vec2 (TexCoord.x * 2.0, TexCoord.y);"
@@ -2395,11 +2336,6 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramStereo (Handle(OpenGl_Sh
     case Graphic3d_StereoMode_OverUnder:
     {
       aSrcFrag =
-          EOL"uniform sampler2D uLeftSampler;"
-          EOL"uniform sampler2D uRightSampler;"
-          EOL
-          EOL"THE_SHADER_IN vec2 TexCoord;"
-          EOL
           EOL"void main()"
           EOL"{"
           EOL"  vec2 aTexCoord = vec2 (TexCoord.x, TexCoord.y * 2.0);"
@@ -2430,11 +2366,6 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramStereo (Handle(OpenGl_Sh
         return aProgram->IsValid();
       }*/
       aSrcFrag =
-          EOL"uniform sampler2D uLeftSampler;"
-          EOL"uniform sampler2D uRightSampler;"
-          EOL
-          EOL"THE_SHADER_IN vec2 TexCoord;"
-          EOL
           EOL"void main()"
           EOL"{"
           EOL"  vec4 aColorL = occTexture2D (uLeftSampler,  TexCoord);"
@@ -2464,8 +2395,8 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramStereo (Handle(OpenGl_Sh
 
   aProgramSrc->SetNbLightsMax (0);
   aProgramSrc->SetNbClipPlanesMax (0);
-  aProgramSrc->AttachShader (Graphic3d_ShaderObject::CreateFromSource (Graphic3d_TOS_VERTEX,   aSrcVert));
-  aProgramSrc->AttachShader (Graphic3d_ShaderObject::CreateFromSource (Graphic3d_TOS_FRAGMENT, aSrcFrag));
+  aProgramSrc->AttachShader (OpenGl_ShaderObject::CreateFromSource (aSrcVert, Graphic3d_TOS_VERTEX,   aUniforms, aStageInOuts));
+  aProgramSrc->AttachShader (OpenGl_ShaderObject::CreateFromSource (aSrcFrag, Graphic3d_TOS_FRAGMENT, aUniforms, aStageInOuts));
   TCollection_AsciiString aKey;
   if (!Create (aProgramSrc, aKey, theProgram))
   {
@@ -2487,10 +2418,12 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramStereo (Handle(OpenGl_Sh
 Standard_Boolean OpenGl_ShaderManager::prepareStdProgramBoundBox()
 {
   Handle(Graphic3d_ShaderProgram) aProgramSrc = new Graphic3d_ShaderProgram();
+
+  OpenGl_ShaderObject::ShaderVariableList aUniforms, aStageInOuts;
+  aUniforms.Append (OpenGl_ShaderObject::ShaderVariable ("vec3 occBBoxCenter", Graphic3d_TOS_VERTEX));
+  aUniforms.Append (OpenGl_ShaderObject::ShaderVariable ("vec3 occBBoxSize",   Graphic3d_TOS_VERTEX));
+
   TCollection_AsciiString aSrcVert =
-    EOL"uniform vec3 occBBoxCenter;"
-    EOL"uniform vec3 occBBoxSize;"
-    EOL
     EOL"void main()"
     EOL"{"
     EOL"  vec4 aCenter = vec4(occVertex.xyz * occBBoxSize + occBBoxCenter, 1.0);"
@@ -2520,8 +2453,8 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramBoundBox()
 
   aProgramSrc->SetNbLightsMax (0);
   aProgramSrc->SetNbClipPlanesMax (0);
-  aProgramSrc->AttachShader (Graphic3d_ShaderObject::CreateFromSource (Graphic3d_TOS_VERTEX,   aSrcVert));
-  aProgramSrc->AttachShader (Graphic3d_ShaderObject::CreateFromSource (Graphic3d_TOS_FRAGMENT, aSrcFrag));
+  aProgramSrc->AttachShader (OpenGl_ShaderObject::CreateFromSource (aSrcVert, Graphic3d_TOS_VERTEX,   aUniforms, aStageInOuts));
+  aProgramSrc->AttachShader (OpenGl_ShaderObject::CreateFromSource (aSrcFrag, Graphic3d_TOS_FRAGMENT, aUniforms, aStageInOuts));
   TCollection_AsciiString aKey;
   if (!Create (aProgramSrc, aKey, myBoundBoxProgram))
   {

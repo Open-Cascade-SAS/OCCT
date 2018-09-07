@@ -5784,16 +5784,20 @@ static int VGlDebug (Draw_Interpretor& theDI,
       aDefCaps->contextDebug     = toEnableDebug;
       aDefCaps->contextSyncDebug = toEnableDebug;
       aDefCaps->glslWarnings     = toEnableDebug;
-      aDefCaps->glslDumpLevel    = toEnableDebug ? OpenGl_ShaderProgramDumpLevel_Full
-                                                 : OpenGl_ShaderProgramDumpLevel_Off;
+      if (!toEnableDebug)
+      {
+        aDefCaps->glslDumpLevel = OpenGl_ShaderProgramDumpLevel_Off;
+      }
       aDefCaps->suppressExtraMsg = !toEnableDebug;
       if (aCaps != NULL)
       {
         aCaps->contextDebug     = toEnableDebug;
         aCaps->contextSyncDebug = toEnableDebug;
         aCaps->glslWarnings     = toEnableDebug;
-        aCaps->glslDumpLevel    = toEnableDebug ? OpenGl_ShaderProgramDumpLevel_Full
-                                                : OpenGl_ShaderProgramDumpLevel_Off;
+        if (!toEnableDebug)
+        {
+          aCaps->glslDumpLevel = OpenGl_ShaderProgramDumpLevel_Off;
+        }
         aCaps->suppressExtraMsg = !toEnableDebug;
       }
     }
