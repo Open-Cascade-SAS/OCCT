@@ -31,43 +31,34 @@
 static Handle(Prs3d_LineAspect) GetLineAspect(const Handle(Prs3d_Drawer)& Dr,
 					      const AIS_TypeOfAttribute Att)
 {
-  switch(Att){
+  switch(Att)
+  {
   case AIS_TOA_Line:
     return Dr->LineAspect();
-    break;
   case AIS_TOA_Dimension:
     return Dr->DimensionAspect()->LineAspect();
-    break;
   case AIS_TOA_Wire:
     return Dr->WireAspect();
-    break;
   case AIS_TOA_Plane:
     return Dr->PlaneAspect()->EdgesAspect();
-    break;
   case AIS_TOA_Vector:
     return Dr->VectorAspect();
-    break;
   case AIS_TOA_UIso:
     return Handle(Prs3d_LineAspect) (Dr->UIsoAspect());
-    break;
   case AIS_TOA_VIso:
     return Handle(Prs3d_LineAspect) (Dr->VIsoAspect());
-    break;
   case AIS_TOA_Free:
     return Dr->FreeBoundaryAspect();
-    break;
   case AIS_TOA_UnFree:
     return Dr->UnFreeBoundaryAspect();
-    break;
   case AIS_TOA_Section:
     return Dr->SectionAspect();
-    break;
   case AIS_TOA_Hidden:
     return Dr->HiddenLineAspect();
-    break;
   case AIS_TOA_Seen:
     return Dr->SeenLineAspect();
-    break;
+  case AIS_TOA_FaceBoundary:
+    return Dr->FaceBoundaryAspect();
   case AIS_TOA_FirstAxis:
     return Dr->DatumAspect()->LineAspect(Prs3d_DP_XAxis);
   case AIS_TOA_SecondAxis:

@@ -32,6 +32,7 @@ AIS_TOA_UnFree,
 AIS_TOA_Section,
 AIS_TOA_Hidden,
 AIS_TOA_Seen,
+AIS_TOA_FaceBoundary,
 AIS_TOA_FirstAxis,
 AIS_TOA_SecondAxis,
 AIS_TOA_ThirdAxis

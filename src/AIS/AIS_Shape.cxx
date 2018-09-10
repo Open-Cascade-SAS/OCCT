@@ -346,11 +346,13 @@ Standard_Real AIS_Shape::Transparency() const {
 //purpose  :
 //=======================================================================
 
-void AIS_Shape::setColor (const Handle(Prs3d_Drawer)& theDrawer,
+bool AIS_Shape::setColor (const Handle(Prs3d_Drawer)& theDrawer,
                           const Quantity_Color&       theColor) const
 {
+  bool toRecompute = false;
   if (!theDrawer->HasOwnShadingAspect())
   {
+    toRecompute = true;
     theDrawer->SetShadingAspect (new Prs3d_ShadingAspect());
     if (theDrawer->HasLink())
     {
@@ -359,6 +361,7 @@ void AIS_Shape::setColor (const Handle(Prs3d_Drawer)& theDrawer,
   }
   if (!theDrawer->HasOwnLineAspect())
   {
+    toRecompute = true;
     theDrawer->SetLineAspect (new Prs3d_LineAspect (Quantity_NOC_BLACK, Aspect_TOL_SOLID, 1.0));
     if (theDrawer->HasLink())
     {
@@ -367,6 +370,7 @@ void AIS_Shape::setColor (const Handle(Prs3d_Drawer)& theDrawer,
   }
   if (!theDrawer->HasOwnWireAspect())
   {
+    toRecompute = true;
     theDrawer->SetWireAspect (new Prs3d_LineAspect (Quantity_NOC_BLACK, Aspect_TOL_SOLID, 1.0));
     if (theDrawer->HasLink())
     {
@@ -375,6 +379,7 @@ void AIS_Shape::setColor (const Handle(Prs3d_Drawer)& theDrawer,
   }
   if (!theDrawer->HasOwnPointAspect())
   {
+    toRecompute = true;
     theDrawer->SetPointAspect (new Prs3d_PointAspect (Aspect_TOM_PLUS, Quantity_NOC_BLACK, 1.0));
     if (theDrawer->HasLink())
     {
@@ -383,6 +388,7 @@ void AIS_Shape::setColor (const Handle(Prs3d_Drawer)& theDrawer,
   }
   if (!theDrawer->HasOwnFreeBoundaryAspect())
   {
+    toRecompute = true;
     theDrawer->SetFreeBoundaryAspect (new Prs3d_LineAspect (Quantity_NOC_BLACK, Aspect_TOL_SOLID, 1.0));
     if (theDrawer->HasLink())
     {
@@ -391,6 +397,7 @@ void AIS_Shape::setColor (const Handle(Prs3d_Drawer)& theDrawer,
   }
   if (!theDrawer->HasOwnUnFreeBoundaryAspect())
   {
+    toRecompute = true;
     theDrawer->SetUnFreeBoundaryAspect (new Prs3d_LineAspect (Quantity_NOC_BLACK, Aspect_TOL_SOLID, 1.0));
     if (theDrawer->HasLink())
     {
@@ -399,10 +406,20 @@ void AIS_Shape::setColor (const Handle(Prs3d_Drawer)& theDrawer,
   }
   if (!theDrawer->HasOwnSeenLineAspect())
   {
+    toRecompute = true;
     theDrawer->SetSeenLineAspect (new Prs3d_LineAspect (Quantity_NOC_BLACK, Aspect_TOL_SOLID, 1.0));
     if (theDrawer->HasLink())
     {
       *theDrawer->SeenLineAspect()->Aspect() = *theDrawer->Link()->SeenLineAspect()->Aspect();
+    }
+  }
+  if (!theDrawer->HasOwnFaceBoundaryAspect())
+  {
+    toRecompute = true;
+    theDrawer->SetFaceBoundaryAspect (new Prs3d_LineAspect (Quantity_NOC_BLACK, Aspect_TOL_SOLID, 1.0));
+    if (theDrawer->HasLink())
+    {
+      *theDrawer->FaceBoundaryAspect()->Aspect() = *theDrawer->Link()->FaceBoundaryAspect()->Aspect();
     }
   }
 
@@ -414,6 +431,8 @@ void AIS_Shape::setColor (const Handle(Prs3d_Drawer)& theDrawer,
   theDrawer->FreeBoundaryAspect()->SetColor (theColor);
   theDrawer->UnFreeBoundaryAspect()->SetColor (theColor);
   theDrawer->SeenLineAspect()->SetColor (theColor);
+  theDrawer->FaceBoundaryAspect()->SetColor (theColor);
+  return toRecompute;
 }
 
 //=======================================================================
@@ -423,9 +442,16 @@ void AIS_Shape::setColor (const Handle(Prs3d_Drawer)& theDrawer,
 
 void AIS_Shape::SetColor (const Quantity_Color& theColor)
 {
-  setColor (myDrawer, theColor);
+  const bool toRecompute = setColor (myDrawer, theColor);
   myDrawer->SetColor (theColor);
   hasOwnColor = Standard_True;
+  if (!toRecompute)
+  {
+    myToRecomputeModes.Clear();
+    myRecomputeEveryPrs = false;
+    SynchronizeAspects();
+    return;
+  }
 
   // modify shading presentation without re-computation
   const PrsMgr_Presentations&        aPrsList     = Presentations();
@@ -477,8 +503,10 @@ void AIS_Shape::UnsetColor()
   if (!HasColor())
   {
     myToRecomputeModes.Clear();
+    myRecomputeEveryPrs = false;
     return;
   }
+
   hasOwnColor = Standard_False;
   myDrawer->SetColor (myDrawer->HasLink() ? myDrawer->Link()->Color() : Quantity_Color (Quantity_NOC_WHITE));
 
@@ -490,6 +518,7 @@ void AIS_Shape::UnsetColor()
     myDrawer->SetFreeBoundaryAspect  (anEmptyAsp);
     myDrawer->SetUnFreeBoundaryAspect(anEmptyAsp);
     myDrawer->SetSeenLineAspect      (anEmptyAsp);
+    myDrawer->SetFaceBoundaryAspect  (anEmptyAsp);
   }
   else
   {
@@ -522,6 +551,12 @@ void AIS_Shape::UnsetColor()
       AIS_GraphicTool::GetLineColor (myDrawer->Link(), AIS_TOA_Seen,   aColor);
     }
     myDrawer->SeenLineAspect()->SetColor (aColor);
+    aColor = Quantity_NOC_BLACK;
+    if (myDrawer->HasLink())
+    {
+      AIS_GraphicTool::GetLineColor (myDrawer->Link(), AIS_TOA_FaceBoundary, aColor);
+    }
+    myDrawer->FaceBoundaryAspect()->SetColor (aColor);
   }
 
   if (!myDrawer->HasOwnShadingAspect())
@@ -568,40 +603,7 @@ void AIS_Shape::UnsetColor()
     myDrawer->SetShadingAspect (Handle(Prs3d_ShadingAspect)());
   }
   myDrawer->SetPointAspect (Handle(Prs3d_PointAspect)());
-
-  // modify shading presentation without re-computation
-  const PrsMgr_Presentations&        aPrsList  = Presentations();
-  Handle(Graphic3d_AspectFillArea3d) anAreaAsp = myDrawer->ShadingAspect()->Aspect();
-  Handle(Graphic3d_AspectLine3d)     aLineAsp  = myDrawer->LineAspect()->Aspect();
-  for (Standard_Integer aPrsIt = 1; aPrsIt <= aPrsList.Length(); ++aPrsIt)
-  {
-    const PrsMgr_ModedPresentation& aPrsModed = aPrsList.Value (aPrsIt);
-    if (aPrsModed.Mode() != AIS_Shaded)
-    {
-      continue;
-    }
-
-    const Handle(Prs3d_Presentation)& aPrs = aPrsModed.Presentation()->Presentation();
-    for (Graphic3d_SequenceOfGroup::Iterator aGroupIt (aPrs->Groups()); aGroupIt.More(); aGroupIt.Next())
-    {
-      const Handle(Graphic3d_Group)& aGroup = aGroupIt.Value();
-
-      // Check if aspect of given type is set for the group,
-      // because setting aspect for group with no already set aspect
-      // can lead to loss of presentation data
-      if (aGroup->IsGroupPrimitivesAspectSet (Graphic3d_ASPECT_FILL_AREA))
-      {
-        aGroup->SetGroupPrimitivesAspect (anAreaAsp);
-      }
-      if (aGroup->IsGroupPrimitivesAspectSet (Graphic3d_ASPECT_LINE))
-      {
-        aGroup->SetGroupPrimitivesAspect (aLineAsp);
-      }
-    }
-  }
-
-  LoadRecomputable (AIS_WireFrame);
-  LoadRecomputable (2);
+  myRecomputeEveryPrs = true;
 }
 
 //=======================================================================
@@ -609,11 +611,13 @@ void AIS_Shape::UnsetColor()
 //purpose  :
 //=======================================================================
 
-void AIS_Shape::setWidth (const Handle(Prs3d_Drawer)& theDrawer,
+bool AIS_Shape::setWidth (const Handle(Prs3d_Drawer)& theDrawer,
                           const Standard_Real         theLineWidth) const
 {
+  bool toRecompute = false;
   if (!theDrawer->HasOwnLineAspect())
   {
+    toRecompute = true;
     theDrawer->SetLineAspect (new Prs3d_LineAspect (Quantity_NOC_BLACK, Aspect_TOL_SOLID, 1.0));
     if (theDrawer->HasLink())
     {
@@ -622,6 +626,7 @@ void AIS_Shape::setWidth (const Handle(Prs3d_Drawer)& theDrawer,
   }
   if (!theDrawer->HasOwnWireAspect())
   {
+    toRecompute = true;
     theDrawer->SetWireAspect (new Prs3d_LineAspect (Quantity_NOC_BLACK, Aspect_TOL_SOLID, 1.0));
     if (theDrawer->HasLink())
     {
@@ -630,6 +635,7 @@ void AIS_Shape::setWidth (const Handle(Prs3d_Drawer)& theDrawer,
   }
   if (!theDrawer->HasOwnFreeBoundaryAspect())
   {
+    toRecompute = true;
     theDrawer->SetFreeBoundaryAspect (new Prs3d_LineAspect (Quantity_NOC_BLACK, Aspect_TOL_SOLID, 1.0));
     if (theDrawer->HasLink())
     {
@@ -638,6 +644,7 @@ void AIS_Shape::setWidth (const Handle(Prs3d_Drawer)& theDrawer,
   }
   if (!theDrawer->HasOwnUnFreeBoundaryAspect())
   {
+    toRecompute = true;
     theDrawer->SetUnFreeBoundaryAspect (new Prs3d_LineAspect (Quantity_NOC_BLACK, Aspect_TOL_SOLID, 1.0));
     if (theDrawer->HasLink())
     {
@@ -646,10 +653,20 @@ void AIS_Shape::setWidth (const Handle(Prs3d_Drawer)& theDrawer,
   }
   if (!theDrawer->HasOwnSeenLineAspect())
   {
+    toRecompute = true;
     theDrawer->SetSeenLineAspect (new Prs3d_LineAspect (Quantity_NOC_BLACK, Aspect_TOL_SOLID, 1.0));
     if (theDrawer->HasLink())
     {
       *theDrawer->SeenLineAspect()->Aspect() = *theDrawer->Link()->SeenLineAspect()->Aspect();
+    }
+  }
+  if (!theDrawer->HasOwnFaceBoundaryAspect())
+  {
+    toRecompute = true;
+    theDrawer->SetFaceBoundaryAspect (new Prs3d_LineAspect (Quantity_NOC_BLACK, Aspect_TOL_SOLID, 1.0));
+    if (theDrawer->HasLink())
+    {
+      *theDrawer->FaceBoundaryAspect()->Aspect() = *theDrawer->Link()->FaceBoundaryAspect()->Aspect();
     }
   }
 
@@ -659,6 +676,8 @@ void AIS_Shape::setWidth (const Handle(Prs3d_Drawer)& theDrawer,
   theDrawer->FreeBoundaryAspect()->SetWidth (theLineWidth);
   theDrawer->UnFreeBoundaryAspect()->SetWidth (theLineWidth);
   theDrawer->SeenLineAspect()->SetWidth (theLineWidth);
+  theDrawer->FaceBoundaryAspect()->SetWidth (theLineWidth);
+  return toRecompute;
 }
 
 //=======================================================================
@@ -668,10 +687,17 @@ void AIS_Shape::setWidth (const Handle(Prs3d_Drawer)& theDrawer,
 
 void AIS_Shape::SetWidth (const Standard_Real theLineWidth)
 {
-  setWidth (myDrawer, theLineWidth);
   myOwnWidth = theLineWidth;
-  LoadRecomputable (AIS_WireFrame); // means that it is necessary to recompute only the wireframe....
-  LoadRecomputable (2);             // and the bounding box...
+  if (setWidth (myDrawer, theLineWidth))
+  {
+    myRecomputeEveryPrs = true;
+  }
+  else
+  {
+    myRecomputeEveryPrs = false;
+    myToRecomputeModes.Clear();
+    SynchronizeAspects();
+  }
 }
 
 //=======================================================================
@@ -684,20 +710,21 @@ void AIS_Shape::UnsetWidth()
   if (myOwnWidth == 0.0)
   {
     myToRecomputeModes.Clear();
+    myRecomputeEveryPrs = false;
     return;
   }
 
   myOwnWidth = 0.0;
-
-  Handle(Prs3d_LineAspect) anEmptyAsp;
-
   if (!HasColor())
   {
+    const Handle(Prs3d_LineAspect) anEmptyAsp;
     myDrawer->SetLineAspect          (anEmptyAsp);
     myDrawer->SetWireAspect          (anEmptyAsp);
     myDrawer->SetFreeBoundaryAspect  (anEmptyAsp);
     myDrawer->SetUnFreeBoundaryAspect(anEmptyAsp);
     myDrawer->SetSeenLineAspect      (anEmptyAsp);
+    myDrawer->SetFaceBoundaryAspect  (anEmptyAsp);
+    myRecomputeEveryPrs = true;
   }
   else
   {
@@ -711,8 +738,12 @@ void AIS_Shape::UnsetWidth()
       AIS_GraphicTool::GetLineWidth (myDrawer->Link(), AIS_TOA_UnFree) : 1.);
     myDrawer->SeenLineAspect()      ->SetWidth (myDrawer->HasLink() ?
       AIS_GraphicTool::GetLineWidth (myDrawer->Link(), AIS_TOA_Seen) : 1.);
+    myDrawer->FaceBoundaryAspect()      ->SetWidth (myDrawer->HasLink() ?
+      AIS_GraphicTool::GetLineWidth (myDrawer->Link(), AIS_TOA_FaceBoundary) : 1.);
+    SynchronizeAspects();
+    myToRecomputeModes.Clear();
+    myRecomputeEveryPrs = false;
   }
-  LoadRecomputable (AIS_WireFrame);
 }
 
 //=======================================================================

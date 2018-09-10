@@ -1,18 +1,16 @@
 puts "============"
-puts "CR23407"
+puts "CR23407: Draw face outlines for XDE objects"
 puts "============"
 puts ""
-#######################################################################
-# Draw face outlines for XDE objects
-#######################################################################
 
 box b 10 10 10
-vinit
+vclear
+vinit View1
 vdisplay b
 vsetdispmode 1
-vshowfaceboundary b 1 255 0 0 10 1
+vshowfaceboundary b 1 255 0 0 5 1
 vfit
-vaspects -setwidth 5
+vaspects -setwidth 10
 
 if { "[vreadpixel 314 344 rgb name]" != "RED" ||
      "[vreadpixel  26 267 rgb name]" != "RED" } {

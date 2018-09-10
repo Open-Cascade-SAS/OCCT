@@ -77,6 +77,7 @@ AIS_ColoredShape::AIS_ColoredShape (const TopoDS_Shape& theShape)
   myDrawer->SetFreeBoundaryAspect  (myDrawer->LineAspect());
   myDrawer->SetUnFreeBoundaryAspect(myDrawer->LineAspect());
   myDrawer->SetSeenLineAspect      (myDrawer->LineAspect());
+  myDrawer->SetFaceBoundaryAspect  (myDrawer->LineAspect());
 }
 
 //=======================================================================
@@ -90,6 +91,7 @@ AIS_ColoredShape::AIS_ColoredShape (const Handle(AIS_Shape)& theShape)
   myDrawer->SetFreeBoundaryAspect  (myDrawer->LineAspect());
   myDrawer->SetUnFreeBoundaryAspect(myDrawer->LineAspect());
   myDrawer->SetSeenLineAspect      (myDrawer->LineAspect());
+  myDrawer->SetFaceBoundaryAspect  (myDrawer->LineAspect());
   if (theShape->HasMaterial())
   {
     SetMaterial (theShape->Material());
@@ -236,6 +238,10 @@ void AIS_ColoredShape::SetColor (const Quantity_Color&  theColor)
     {
       aDrawer->WireAspect()->SetColor (theColor);
     }
+    if (aDrawer->HasOwnFaceBoundaryAspect())
+    {
+      aDrawer->FaceBoundaryAspect()->SetColor (theColor);
+    }
   }
 }
 
@@ -265,6 +271,10 @@ void AIS_ColoredShape::SetWidth (const Standard_Real    theLineWidth)
     if (aDrawer->HasOwnWireAspect())
     {
       aDrawer->WireAspect()->SetWidth (theLineWidth);
+    }
+    if (aDrawer->HasOwnFaceBoundaryAspect())
+    {
+      aDrawer->FaceBoundaryAspect()->SetWidth (theLineWidth);
     }
   }
 }

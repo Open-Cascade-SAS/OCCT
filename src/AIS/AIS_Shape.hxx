@@ -174,8 +174,7 @@ public:
   Standard_EXPORT virtual void UnsetColor() Standard_OVERRIDE;
   
   //! Sets the value aValue for line width in the reconstructed compound shape.
-  //! Changes line aspects for lines-only presentation modes like Wireframe and Bounding Box.
-  //! Doesn't change face boundary line aspect.
+  //! Changes line aspects for lines presentation.
   Standard_EXPORT virtual void SetWidth (const Standard_Real aValue) Standard_OVERRIDE;
   
   //! Removes the setting for line width in the reconstructed compound shape.
@@ -305,9 +304,13 @@ protected:
   
   Standard_EXPORT void LoadRecomputable (const Standard_Integer TheMode);
   
-  Standard_EXPORT void setColor (const Handle(Prs3d_Drawer)& theDrawer, const Quantity_Color& theColor) const;
+  //! Create own aspects (if they do not exist) and set color to them.
+  //! @return TRUE if new aspects have been created
+  Standard_EXPORT bool setColor (const Handle(Prs3d_Drawer)& theDrawer, const Quantity_Color& theColor) const;
   
-  Standard_EXPORT void setWidth (const Handle(Prs3d_Drawer)& theDrawer, const Standard_Real theWidth) const;
+  //! Create own aspects (if they do not exist) and set width to them.
+  //! @return TRUE if new aspects have been created
+  Standard_EXPORT bool setWidth (const Handle(Prs3d_Drawer)& theDrawer, const Standard_Real theWidth) const;
   
   Standard_EXPORT void setTransparency (const Handle(Prs3d_Drawer)& theDrawer, const Standard_Real theValue) const;
   
