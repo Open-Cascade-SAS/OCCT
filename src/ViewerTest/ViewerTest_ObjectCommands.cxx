@@ -68,6 +68,7 @@
 #include <Draw_Window.hxx>
 #include <AIS_ListIteratorOfListOfInteractive.hxx>
 #include <AIS_ListOfInteractive.hxx>
+#include <AIS_ColoredShape.hxx>
 #include <AIS_DisplayMode.hxx>
 #include <AIS_Shape.hxx>
 
@@ -88,8 +89,10 @@
 #include <TopLoc_Location.hxx>
 
 #include <HLRAlgo_Projector.hxx>
+#include <HLRBRep_Algo.hxx>
 #include <HLRBRep_PolyAlgo.hxx>
 #include <HLRBRep_PolyHLRToShape.hxx>
+#include <HLRBRep_HLRToShape.hxx>
 #include <Aspect_Window.hxx>
 
 #include <Graphic3d_ArrayOfPoints.hxx>
@@ -3023,75 +3026,23 @@ static int VDrawSphere (Draw_Interpretor& /*di*/, Standard_Integer argc, const c
 //purpose  :
 //=============================================================================
 
-static int VComputeHLR (Draw_Interpretor& di,
-                        Standard_Integer argc,
-                        const char** argv)
+static int VComputeHLR (Draw_Interpretor& ,
+                        Standard_Integer theArgNb,
+                        const char** theArgVec)
 {
-  Handle(AIS_InteractiveContext) aContextAIS = ViewerTest::GetAISContext ();
-
-  if (aContextAIS.IsNull ())
-  {
-    di << "Please call vinit before\n";
-    return 1;
-  }
-
-  if ( argc != 3 &&  argc != 12 )
-  {
-    di << "Usage: " << argv[0] << " ShapeName HlrName "
-       << "[ eye_x eye_y eye_z dir_x dir_y dir_z upx upy upz ]\n"
-       << "                    ShapeName - name of the initial shape\n"
-       << "                    HlrName - result hlr object from initial shape\n"
-       << "                    eye, dir are eye position and look direction\n"
-       << "                    up is the look up direction vector\n"
-       << "                    Use vtop to see projected hlr shape\n";
-    return 1;
-  }
-
-  // shape and new object name
-  TCollection_AsciiString aShapeName (argv[1]);
-  TCollection_AsciiString aHlrName (argv[2]);
-
-  TopoDS_Shape aSh = DBRep::Get (argv[1]);
-  if (aSh.IsNull()) 
-  {
-    BRep_Builder aBrepBuilder;
-    BRepTools::Read (aSh, argv[1], aBrepBuilder);
-    if (aSh.IsNull ())
-    {
-      di << "No shape with name " << argv[1] << " found\n";
-      return 1;
-    }
-  }
-
-  if (GetMapOfAIS ().IsBound2 (aHlrName))
-  {
-    di << "Presentable object with name " << argv[2] << " already exists\n";
-    return 1;
-  }
-
-  Handle(HLRBRep_PolyAlgo) aPolyAlgo = new HLRBRep_PolyAlgo();
-  HLRBRep_PolyHLRToShape aHLRToShape;
-
+  TCollection_AsciiString aShapeName, aHlrName;
+  TopoDS_Shape aSh;
   gp_Pnt anEye;
   gp_Dir aDir;
   gp_Ax2 aProjAx;
-  if (argc == 9)
-  {
-    gp_Dir anUp;
-
-    anEye.SetCoord (Draw::Atof (argv[3]), Draw::Atof (argv[4]), Draw::Atof (argv[5]));
-    aDir.SetCoord (Draw::Atof (argv[6]), Draw::Atof (argv[7]), Draw::Atof (argv[8]));
-    anUp.SetCoord (Draw::Atof (argv[9]), Draw::Atof (argv[10]), Draw::Atof (argv[11]));
-    aProjAx.SetLocation (anEye);
-    aProjAx.SetDirection (aDir);
-    aProjAx.SetYDirection (anUp);
-  }
-  else
+  bool hasViewDirArg = false;
+  Prs3d_TypeOfHLR anAlgoType = Prs3d_TOH_PolyAlgo;
+  bool toShowTangentEdges = false, toShowHiddenEdges = false;
+  int aNbIsolines = 0;
+  if (Handle(V3d_Viewer) aViewer = ViewerTest::GetViewerFromContext())
   {
     gp_Dir aRight;
-
-    Handle(V3d_Viewer) aViewer = ViewerTest::GetViewerFromContext();
-    Handle(V3d_View)   aView   = ViewerTest::CurrentView();
+    Handle(V3d_View) aView = ViewerTest::CurrentView();
     Standard_Integer aWidth, aHeight;
     Standard_Real aCentX, aCentY, aCentZ, aDirX, aDirY, aDirZ;
     Standard_Real aRightX, aRightY, aRightZ;
@@ -3100,7 +3051,6 @@ static int VComputeHLR (Draw_Interpretor& di,
     aView->ConvertWithProj (aWidth, aHeight/2, 
                             aRightX, aRightY, aRightZ,
                             aDirX, aDirY, aDirZ);
-
     aView->ConvertWithProj (aWidth/2, aHeight/2, 
                             aCentX, aCentY, aCentZ,
                             aDirX, aDirY, aDirZ);
@@ -3112,39 +3062,212 @@ static int VComputeHLR (Draw_Interpretor& di,
     aProjAx.SetDirection (aDir);
     aProjAx.SetXDirection (aRight);
   }
+  for (Standard_Integer anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
+  {
+    TCollection_AsciiString anArgCase (theArgVec[anArgIter]);
+    anArgCase.LowerCase();
+    if (anArgIter + 1 < theArgNb
+     && (anArgCase == "-algotype"
+      || anArgCase == "-algo"
+      || anArgCase == "-type"))
+    {
+      TCollection_AsciiString anArgNext (theArgVec[++anArgIter]);
+      anArgNext.LowerCase();
+      if (anArgNext == "polyalgo")
+      {
+        anAlgoType = Prs3d_TOH_PolyAlgo;
+      }
+      else if (anArgNext == "algo")
+      {
+        anAlgoType = Prs3d_TOH_Algo;
+      }
+      else
+      {
+        std::cout << "Syntax error: unknown algo type '" << anArgNext << "'\n";
+        return 1;
+      }
+    }
+    else if (anArgCase == "-showhiddenedges"
+          || anArgCase == "-hiddenedges"
+          || anArgCase == "-hidden")
+    {
+      toShowHiddenEdges = true;
+      if (anArgIter + 1 < theArgNb
+       && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], toShowHiddenEdges))
+      {
+        ++anArgIter;
+      }
+    }
+    else if (anArgCase == "-showtangentedges"
+          || anArgCase == "-tangentedges"
+          || anArgCase == "-tangent")
+    {
+      toShowTangentEdges = true;
+      if (anArgIter + 1 < theArgNb
+       && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], toShowTangentEdges))
+      {
+        ++anArgIter;
+      }
+    }
+    else if (anArgIter + 1 < theArgNb
+          && (anArgCase == "-nbiso"
+           || anArgCase == "-nbisolines"))
+    {
+      aNbIsolines = Draw::Atoi (theArgVec[++anArgIter]);
+    }
+    else if (aSh.IsNull())
+    {
+      aSh = DBRep::Get (theArgVec[anArgIter]);
+      aShapeName = theArgVec[anArgIter];
+      if (aSh.IsNull())
+      {
+        BRep_Builder aBrepBuilder;
+        BRepTools::Read (aSh, theArgVec[anArgIter], aBrepBuilder);
+        if (aSh.IsNull())
+        {
+          std::cout << "Syntax error: no shape with name " << theArgVec[anArgIter] << " found\n";
+          return 1;
+        }
+      }
+    }
+    else if (aHlrName.IsEmpty())
+    {
+      aHlrName = theArgVec[anArgIter];
+    }
+    else if (!hasViewDirArg
+          && anArgIter + 8 < theArgNb)
+    {
+      hasViewDirArg = true;
+      gp_Dir anUp;
+      anEye.SetCoord (Draw::Atof (theArgVec[anArgIter + 0]), Draw::Atof (theArgVec[anArgIter + 1]), Draw::Atof (theArgVec[anArgIter + 2]));
+      aDir .SetCoord (Draw::Atof (theArgVec[anArgIter + 3]), Draw::Atof (theArgVec[anArgIter + 4]), Draw::Atof (theArgVec[anArgIter + 5]));
+      anUp .SetCoord (Draw::Atof (theArgVec[anArgIter + 6]), Draw::Atof (theArgVec[anArgIter + 7]), Draw::Atof (theArgVec[anArgIter + 8]));
+      aProjAx.SetLocation (anEye);
+      aProjAx.SetDirection (aDir);
+      aProjAx.SetYDirection (anUp);
+      anArgIter += 8;
+    }
+    else
+    {
+      std::cout << "Syntax error: unknown argument '" << theArgVec[anArgIter] << "'\n";
+      return 1;
+    }
+  }
+
+  if (aHlrName.IsEmpty() || aSh.IsNull()
+   || (ViewerTest::GetAISContext().IsNull() && hasViewDirArg))
+  {
+    std::cout << "Syntax error: wrong number of arguments\n";
+    return 1;
+  }
 
   HLRAlgo_Projector aProjector (aProjAx);
-  aPolyAlgo->Projector (aProjector);
-  aPolyAlgo->Load (aSh);
-  aPolyAlgo->Update ();
+  TopoDS_Shape aVisible[6];
+  TopoDS_Shape aHidden[6];
+  if (anAlgoType == Prs3d_TOH_PolyAlgo)
+  {
+    Handle(HLRBRep_PolyAlgo) aPolyAlgo = new HLRBRep_PolyAlgo();
+    aPolyAlgo->Projector (aProjector);
+    aPolyAlgo->Load (aSh);
+    aPolyAlgo->Update();
 
-  aHLRToShape.Update (aPolyAlgo);
+    HLRBRep_PolyHLRToShape aHLRToShape;
+    aHLRToShape.Update (aPolyAlgo);
 
-  // make hlr shape from input shape
-  TopoDS_Compound aHlrShape;
+    aVisible[HLRBRep_Sharp]   = aHLRToShape.VCompound();
+    aVisible[HLRBRep_OutLine] = aHLRToShape.OutLineVCompound(); // extract visible outlines
+    aVisible[HLRBRep_RgNLine] = aHLRToShape.RgNLineVCompound();
+    if (toShowTangentEdges)
+    {
+      aVisible[HLRBRep_Rg1Line] = aHLRToShape.Rg1LineVCompound();
+    }
+    if (toShowHiddenEdges)
+    {
+      aHidden[HLRBRep_Sharp]   = aHLRToShape.HCompound();
+      aHidden[HLRBRep_OutLine] = aHLRToShape.OutLineHCompound();
+      aHidden[HLRBRep_RgNLine] = aHLRToShape.RgNLineHCompound();
+      if (toShowTangentEdges)
+      {
+        aHidden[HLRBRep_Rg1Line] = aHLRToShape.Rg1LineHCompound();
+      }
+    }
+  }
+  else
+  {
+    Handle(HLRBRep_Algo) aHlrAlgo = new HLRBRep_Algo();
+    aHlrAlgo->Add (aSh, aNbIsolines);
+    aHlrAlgo->Projector (aProjector);
+    aHlrAlgo->Update();
+    aHlrAlgo->Hide();
+
+    HLRBRep_HLRToShape aHLRToShape (aHlrAlgo);
+    aVisible[HLRBRep_Sharp]   = aHLRToShape.VCompound();
+    aVisible[HLRBRep_OutLine] = aHLRToShape.OutLineVCompound();
+    aVisible[HLRBRep_RgNLine] = aHLRToShape.RgNLineVCompound();
+    if (toShowTangentEdges)
+    {
+      aVisible[HLRBRep_Rg1Line] = aHLRToShape.Rg1LineVCompound();
+    }
+    aVisible[HLRBRep_IsoLine] = aHLRToShape.IsoLineVCompound();
+
+    if (toShowHiddenEdges)
+    {
+      aHidden[HLRBRep_Sharp]   = aHLRToShape.HCompound();
+      aHidden[HLRBRep_OutLine] = aHLRToShape.OutLineHCompound();
+      aHidden[HLRBRep_RgNLine] = aHLRToShape.RgNLineHCompound();
+      if (toShowTangentEdges)
+      {
+        aHidden[HLRBRep_Rg1Line] = aHLRToShape.Rg1LineHCompound();
+      }
+      aHidden[HLRBRep_IsoLine] = aHLRToShape.IsoLineHCompound();
+    }
+    // extract 3d
+    //aVisible[HLRBRep_Sharp]   = aHLRToShape.CompoundOfEdges (HLRBRep_Sharp, Standard_True, Standard_True);
+    //aVisible[HLRBRep_OutLine] = aHLRToShape.OutLineVCompound3d();
+  }
+
+  TopoDS_Compound aCompRes, aCompVis, aCompHid;
   BRep_Builder aBuilder;
-  aBuilder.MakeCompound (aHlrShape);
-
-  TopoDS_Shape aCompound = aHLRToShape.VCompound();
-  if (!aCompound.IsNull ())
+  aBuilder.MakeCompound (aCompVis);
+  aBuilder.MakeCompound (aCompHid);
+  aBuilder.MakeCompound (aCompRes);
+  for (int aTypeIter = 0; aTypeIter < 6; ++aTypeIter)
   {
-    aBuilder.Add (aHlrShape, aCompound);
+    if (!aVisible[aTypeIter].IsNull())
+    {
+      aBuilder.Add (aCompVis, aVisible[aTypeIter]);
+    }
+    if (!aHidden[aTypeIter].IsNull())
+    {
+      aBuilder.Add (aCompHid, aHidden[aTypeIter]);
+    }
   }
-  
-  // extract visible outlines
-  aCompound = aHLRToShape.OutLineVCompound();
-  if (!aCompound.IsNull ())
-  {
-    aBuilder.Add (aHlrShape, aCompound);
-  }
+  aBuilder.Add (aCompRes, aCompVis);
+  aBuilder.Add (aCompRes, aCompHid);
 
   // create an AIS shape and display it
-  Handle(AIS_Shape) anObject = new AIS_Shape (aHlrShape);
-  GetMapOfAIS().Bind (anObject, aHlrName);
-  aContextAIS->Display (anObject, Standard_False);
+  if (!ViewerTest::GetAISContext().IsNull())
+  {
+    Handle(AIS_ColoredShape) anObject = new AIS_ColoredShape (aCompRes);
+    if (toShowHiddenEdges)
+    {
+      Handle(Prs3d_LineAspect) aLineAspect = new Prs3d_LineAspect (Quantity_Color (Quantity_NOC_RED), Aspect_TOL_DASH, 1.0f);
+      for (int aTypeIter = 0; aTypeIter < 6; ++aTypeIter)
+      {
+        if (!aHidden[aTypeIter].IsNull())
+        {
+          Handle(AIS_ColoredDrawer) aDrawer = anObject->CustomAspects (aHidden[aTypeIter]);
+          aDrawer->SetLineAspect (aLineAspect);
+          aDrawer->SetWireAspect (aLineAspect);
+          aDrawer->SetFreeBoundaryAspect (aLineAspect);
+          aDrawer->SetUnFreeBoundaryAspect (aLineAspect);
+        }
+      }
+    }
+    ViewerTest::Display (aHlrName, anObject, true);
+  }
 
-  aContextAIS->UpdateCurrentViewer ();
-
+  DBRep::Set (aHlrName.ToCString(), aCompRes);
   return 0;
 }
 
@@ -6312,9 +6435,20 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
                    "alias for vlocation",
         __FILE__, VSetLocation, group);
 
-  theCommands.Add (
-    "vcomputehlr",
-    "vcomputehlr: shape hlrname [ eyex eyey eyez lookx looky lookz ]",
+  theCommands.Add ("vcomputehlr",
+                "vcomputehlr shapeInput hlrResult [-algoType {algo|polyAlgo}=polyAlgo]"
+      "\n\t\t:   [eyeX eyeY eyeZ dirX dirY dirZ upX upY upZ]"
+      "\n\t\t:   [-showTangentEdges {on|off}=off] [-nbIsolines N=0] [-showHiddenEdges {on|off}=off]"
+      "\n\t\t: Arguments:"
+      "\n\t\t:  shapeInput - name of the initial shape"
+      "\n\t\t:  hlrResult - result HLR object from initial shape"
+      "\n\t\t:  eye, dir are eye position and look direction"
+      "\n\t\t:  up is the look up direction vector"
+      "\n\t\t:  -algoType HLR algorithm to use"
+      "\n\t\t:  -showTangentEdges include tangent edges"
+      "\n\t\t:  -nbIsolines include isolines"
+      "\n\t\t:  -showHiddenEdges include hidden edges"
+      "\n\t\t: Use vtop to see projected HLR shape.",
     __FILE__, VComputeHLR, group);
 
   theCommands.Add("vdrawparray",
