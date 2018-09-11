@@ -217,6 +217,14 @@ public:
     return *this;
   }
 
+  //! Compute per-component division.
+  NCollection_Vec2& operator/= (const NCollection_Vec2& theRight)
+  {
+    v[0] /= theRight.v[0];
+    v[1] /= theRight.v[1];
+    return *this;
+  }
+
   //! Compute per-component multiplication by scale factor.
   NCollection_Vec2 operator* (const Element_t theFactor) const
   {
@@ -228,6 +236,14 @@ public:
   {
     return NCollection_Vec2(v[0] / theInvFactor,
             v[1] / theInvFactor);
+  }
+
+  //! Compute per-component division.
+  friend NCollection_Vec2 operator/ (const NCollection_Vec2& theLeft,
+                                     const NCollection_Vec2& theRight)
+  {
+    return NCollection_Vec2 (theLeft.v[0] / theRight.v[0],
+                             theLeft.v[1] / theRight.v[1]);
   }
 
   //! Computes the dot product.

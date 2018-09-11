@@ -308,7 +308,7 @@ void BVH_LinearBuilder<T, N>::Build (BVH_Set<T, N>*       theSet,
                                      BVH_Tree<T, N>*      theBVH,
                                      const BVH_Box<T, N>& theBox) const
 {
-  Standard_STATIC_ASSERT (N == 3 || N == 4);
+  Standard_STATIC_ASSERT (N == 2 || N == 3 || N == 4);
   const Standard_Integer aSetSize = theSet->Size();
   if (theBVH == NULL || aSetSize == 0)
   {

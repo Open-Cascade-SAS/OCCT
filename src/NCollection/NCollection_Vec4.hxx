@@ -336,11 +336,29 @@ public:
     return *this;
   }
 
+  //! Compute per-component division.
+  NCollection_Vec4& operator/= (const NCollection_Vec4& theRight)
+  {
+    v[0] /= theRight.v[0];
+    v[1] /= theRight.v[1];
+    v[2] /= theRight.v[2];
+    v[3] /= theRight.v[3];
+    return *this;
+  }
+
   //! Compute per-component division by scale factor.
   NCollection_Vec4 operator/ (const Element_t theInvFactor)
   {
     NCollection_Vec4 aResult(*this);
     return aResult /= theInvFactor;
+  }
+
+  //! Compute per-component division.
+  friend NCollection_Vec4 operator/ (const NCollection_Vec4& theLeft,
+                                     const NCollection_Vec4& theRight)
+  {
+    NCollection_Vec4 aResult = NCollection_Vec4 (theLeft);
+    return aResult /= theRight;
   }
 
 private:

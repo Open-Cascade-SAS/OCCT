@@ -173,18 +173,18 @@ namespace BVH
 template<class T, int N>
 void BVH_RadixSorter<T, N>::Perform (BVH_Set<T, N>* theSet, const Standard_Integer theStart, const Standard_Integer theFinal)
 {
-  Standard_STATIC_ASSERT (N == 3 || N == 4);
+  Standard_STATIC_ASSERT (N == 2 || N == 3 || N == 4);
 
-  const Standard_Integer aDimensionX = 1024;
-  const Standard_Integer aDimensionY = 1024;
-  const Standard_Integer aDimensionZ = 1024;
+  const Standard_Integer aDimension = 1024;
+  const Standard_Integer aNbEffComp = N == 2 ? 2 : 3; // 4th component is ignored
 
   const BVH_VecNt aSceneMin = myBox.CornerMin();
   const BVH_VecNt aSceneMax = myBox.CornerMax();
 
-  const T aReverseSizeX = static_cast<T> (aDimensionX) / Max (static_cast<T> (BVH::THE_NODE_MIN_SIZE), aSceneMax.x() - aSceneMin.x());
-  const T aReverseSizeY = static_cast<T> (aDimensionY) / Max (static_cast<T> (BVH::THE_NODE_MIN_SIZE), aSceneMax.y() - aSceneMin.y());
-  const T aReverseSizeZ = static_cast<T> (aDimensionZ) / Max (static_cast<T> (BVH::THE_NODE_MIN_SIZE), aSceneMax.z() - aSceneMin.z());
+  BVH_VecNt aNodeMinSizeVecT (static_cast<T>(BVH::THE_NODE_MIN_SIZE));
+  BVH::BoxMinMax<T, N>::CwiseMax (aNodeMinSizeVecT, aSceneMax - aSceneMin);
+
+  const BVH_VecNt aReverseSize = BVH_VecNt (static_cast<T>(aDimension)) / aNodeMinSizeVecT;
 
   myEncodedLinks = new NCollection_Shared<NCollection_Array1<BVH_EncodedLink> >(theStart, theFinal);
 
@@ -192,32 +192,24 @@ void BVH_RadixSorter<T, N>::Perform (BVH_Set<T, N>* theSet, const Standard_Integ
   for (Standard_Integer aPrimIdx = theStart; aPrimIdx <= theFinal; ++aPrimIdx)
   {
     const BVH_VecNt aCenter = theSet->Box (aPrimIdx).Center();
+    const BVH_VecNt aVoxelF = (aCenter - aSceneMin) * aReverseSize;
 
-    Standard_Integer aVoxelX = BVH::IntFloor ((aCenter.x() - aSceneMin.x()) * aReverseSizeX);
-    Standard_Integer aVoxelY = BVH::IntFloor ((aCenter.y() - aSceneMin.y()) * aReverseSizeY);
-    Standard_Integer aVoxelZ = BVH::IntFloor ((aCenter.z() - aSceneMin.z()) * aReverseSizeZ);
+    Standard_Integer aMortonCode = 0;
+    for (Standard_Integer aCompIter = 0; aCompIter < aNbEffComp; ++aCompIter)
+    {
+      Standard_Integer aVoxel = BVH::IntFloor (BVH::VecComp<T, N>::Get (aVoxelF, aCompIter));
 
-    aVoxelX = Max (0, Min (aVoxelX, aDimensionX - 1));
-    aVoxelY = Max (0, Min (aVoxelY, aDimensionY - 1));
-    aVoxelZ = Max (0, Min (aVoxelZ, aDimensionZ - 1));
+      aVoxel = Max (0, Min (aVoxel, aDimension - 1));
 
-    aVoxelX = (aVoxelX | (aVoxelX << 16)) & 0x030000FF;
-    aVoxelX = (aVoxelX | (aVoxelX <<  8)) & 0x0300F00F;
-    aVoxelX = (aVoxelX | (aVoxelX <<  4)) & 0x030C30C3;
-    aVoxelX = (aVoxelX | (aVoxelX <<  2)) & 0x09249249;
+      aVoxel = (aVoxel | (aVoxel << 16)) & 0x030000FF;
+      aVoxel = (aVoxel | (aVoxel <<  8)) & 0x0300F00F;
+      aVoxel = (aVoxel | (aVoxel <<  4)) & 0x030C30C3;
+      aVoxel = (aVoxel | (aVoxel <<  2)) & 0x09249249;
 
-    aVoxelY = (aVoxelY | (aVoxelY << 16)) & 0x030000FF;
-    aVoxelY = (aVoxelY | (aVoxelY <<  8)) & 0x0300F00F;
-    aVoxelY = (aVoxelY | (aVoxelY <<  4)) & 0x030C30C3;
-    aVoxelY = (aVoxelY | (aVoxelY <<  2)) & 0x09249249;
+      aMortonCode |= (aVoxel << aCompIter);
+    }
 
-    aVoxelZ = (aVoxelZ | (aVoxelZ << 16)) & 0x030000FF;
-    aVoxelZ = (aVoxelZ | (aVoxelZ <<  8)) & 0x0300F00F;
-    aVoxelZ = (aVoxelZ | (aVoxelZ <<  4)) & 0x030C30C3;
-    aVoxelZ = (aVoxelZ | (aVoxelZ <<  2)) & 0x09249249;
-
-    myEncodedLinks->ChangeValue (aPrimIdx) = BVH_EncodedLink (
-      aVoxelX | (aVoxelY << 1) | (aVoxelZ << 2), aPrimIdx);
+    myEncodedLinks->ChangeValue (aPrimIdx) = BVH_EncodedLink (aMortonCode, aPrimIdx);
   }
 
   // Step 2 -- Sort primitives by their Morton codes using radix sort

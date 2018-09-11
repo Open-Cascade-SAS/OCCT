@@ -290,11 +290,28 @@ public:
     return *this;
   }
 
+  //! Compute per-component division.
+  NCollection_Vec3& operator/= (const NCollection_Vec3& theRight)
+  {
+    v[0] /= theRight.v[0];
+    v[1] /= theRight.v[1];
+    v[2] /= theRight.v[2];
+    return *this;
+  }
+
   //! Compute per-component division by scale factor.
   NCollection_Vec3 operator/ (const Element_t theInvFactor) const
   {
     NCollection_Vec3 aResult (*this);
     return aResult /= theInvFactor;
+  }
+
+  //! Compute per-component division.
+  friend NCollection_Vec3 operator/ (const NCollection_Vec3& theLeft,
+                                     const NCollection_Vec3& theRight)
+  {
+    NCollection_Vec3 aResult = NCollection_Vec3 (theLeft);
+    return aResult /= theRight;
   }
 
   //! Computes the dot product.

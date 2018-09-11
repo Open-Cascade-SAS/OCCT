@@ -105,15 +105,19 @@ template class BVH_QuickSorter<Standard_Real, 4>;
 template class BVH_QuickSorter<Standard_ShortReal, 3>;
 template class BVH_QuickSorter<Standard_ShortReal, 4>;
 
+template class BVH_RadixSorter<Standard_Real, 2>;
 template class BVH_RadixSorter<Standard_Real, 3>;
 template class BVH_RadixSorter<Standard_Real, 4>;
 
+template class BVH_RadixSorter<Standard_ShortReal, 2>;
 template class BVH_RadixSorter<Standard_ShortReal, 3>;
 template class BVH_RadixSorter<Standard_ShortReal, 4>;
 
+template class BVH_LinearBuilder<Standard_Real, 2>;
 template class BVH_LinearBuilder<Standard_Real, 3>;
 template class BVH_LinearBuilder<Standard_Real, 4>;
 
+template class BVH_LinearBuilder<Standard_ShortReal, 2>;
 template class BVH_LinearBuilder<Standard_ShortReal, 3>;
 template class BVH_LinearBuilder<Standard_ShortReal, 4>;
 
