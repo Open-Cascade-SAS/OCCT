@@ -1409,6 +1409,73 @@ void BRepFill_PipeShell::BuildHistory(const BRepFill_Sweep& theSweep)
       inde++;
     }
   }
+
+  //For subshapes of spine
+  const Handle(TopTools_HArray2OfShape)& aFaces  = theSweep.SubShape();
+  const Handle(TopTools_HArray2OfShape)& aVEdges = theSweep.Sections();
+  
+  BRepTools_WireExplorer wexp(mySpine);
+  inde = 0;
+  Standard_Boolean ToExit = Standard_False;
+  for (;;)
+  {
+    if (!wexp.More())
+      ToExit = Standard_True;
+    
+    inde++;
+
+    if (!ToExit)
+    {
+      const TopoDS_Edge& anEdgeOfSpine = wexp.Current();
+      TopoDS_Shell aShell;
+      BB.MakeShell(aShell);
+      for (Standard_Integer i = 1; i <= aFaces->UpperRow(); i++)
+      {
+        const TopoDS_Shape& aFace = aFaces->Value(i, inde);
+        if (aFace.ShapeType() == TopAbs_FACE)
+          BB.Add(aShell, aFace);
+      }
+      
+      TopTools_ListOfShape ListShell;
+      ListShell.Append(aShell);
+      myGenMap.Bind(anEdgeOfSpine, ListShell);
+    }
+    
+    const TopoDS_Vertex& aVertexOfSpine = wexp.CurrentVertex();
+    TopTools_ListOfShape ListVshapes;
+    for (Standard_Integer i = 1; i <= aVEdges->UpperRow(); i++)
+    {
+      const TopoDS_Shape& aVshape = aVEdges->Value(i, inde);
+      if (aVshape.ShapeType() == TopAbs_EDGE ||
+          aVshape.ShapeType() == TopAbs_FACE)
+        ListVshapes.Append(aVshape);
+      else
+      {
+        TopoDS_Iterator itvshape(aVshape);
+        for (; itvshape.More(); itvshape.Next())
+        {
+          const TopoDS_Shape& aSubshape = itvshape.Value();
+          if (aSubshape.ShapeType() == TopAbs_EDGE ||
+              aSubshape.ShapeType() == TopAbs_FACE)
+            ListVshapes.Append(aSubshape);
+          else
+          {
+            //it is wire
+            for (itw.Initialize(aSubshape); itw.More(); itw.Next())
+              ListVshapes.Append(itw.Value());
+          }
+        }
+      }
+    }
+
+    myGenMap.Bind(aVertexOfSpine, ListVshapes);
+
+    if (ToExit)
+      break;
+
+    if (wexp.More())
+      wexp.Next();
+  }
 }
 
 

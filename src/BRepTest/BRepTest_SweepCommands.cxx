@@ -779,9 +779,11 @@ static Standard_Integer buildsweep(Draw_Interpretor& di,
     // Save history of sweep
     if (BRepTest_Objects::IsHistoryNeeded())
     {
-      TopTools_ListOfShape aProfiles;
-      Sweep->Profiles(aProfiles);
-      BRepTest_Objects::SetHistory(aProfiles, *Sweep);
+      TopTools_ListOfShape aList;
+      Sweep->Profiles(aList);
+      TopoDS_Shape aSpine = Sweep->Spine();
+      aList.Append(aSpine);
+      BRepTest_Objects::SetHistory(aList, *Sweep);
     }
   }
 

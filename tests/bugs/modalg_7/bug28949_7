@@ -1,0 +1,52 @@
+puts "============"
+puts "OCC28949"
+puts "============"
+puts ""
+##############################################################################
+# BRepOffsetAPI_MakePipe Generated() method produces no result for spine edges
+##############################################################################
+
+restore [locate_data_file bug29204_sweep_spine.brep] sp
+restore [locate_data_file bug29204_sweep_profile.brep] pr
+
+mksweep sp
+addsweep pr
+buildsweep q -C -S
+
+explode sp
+
+savehistory sweep_hist
+
+generated r1 sweep_hist sp_1
+generated r2 sweep_hist sp_2
+generated r3 sweep_hist sp_3
+generated r4 sweep_hist sp_4
+generated r5 sweep_hist sp_5
+generated r6 sweep_hist sp_6
+generated r7 sweep_hist sp_7
+
+checknbshapes r1 -face 4
+checknbshapes r2 -face 4
+checknbshapes r3 -face 4
+checknbshapes r4 -face 4
+checknbshapes r5 -face 4
+checknbshapes r6 -face 4
+checknbshapes r7 -face 4
+
+explode sp v
+
+generated r1 sweep_hist sp_1
+generated r2 sweep_hist sp_2
+generated r3 sweep_hist sp_3
+generated r4 sweep_hist sp_4
+generated r5 sweep_hist sp_5
+generated r6 sweep_hist sp_6
+generated r7 sweep_hist sp_7
+
+checkprops r1 -l 147.629
+checkprops r2 -l 160.296
+checkprops r3 -l 160.296
+checkprops r4 -l 147.629
+checkprops r5 -l 147.629
+checkprops r6 -l 180.945
+checkprops r7 -l 180.945

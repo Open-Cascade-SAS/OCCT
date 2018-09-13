@@ -26,6 +26,7 @@
 #include <TopoDS_Wire.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopTools_HArray2OfShape.hxx>
+#include <TopTools_HArray1OfShape.hxx>
 #include <Standard_Boolean.hxx>
 #include <TopTools_DataMapOfShapeListOfShape.hxx>
 #include <TopTools_ListOfShape.hxx>
@@ -54,6 +55,9 @@ public:
   Standard_EXPORT void AddBounds (const Handle(TopTools_HArray2OfShape)& Bounds);
   
   Standard_EXPORT void AddUEdges (const Handle(TopTools_HArray2OfShape)& theUEdges);
+  
+  Standard_EXPORT void AddVEdges (const Handle(TopTools_HArray2OfShape)& theVEdges,
+                                  const Standard_Integer theIndex);
   
   Standard_EXPORT void Perform();
   
@@ -99,6 +103,7 @@ private:
   TopoDS_Shape myShape2;
   Handle(TopTools_HArray2OfShape) myBounds;
   Handle(TopTools_HArray2OfShape) myUEdges;
+  Handle(TopTools_HArray1OfShape) myVEdges;
   Handle(TopTools_HArray2OfShape) myFaces;
   Standard_Boolean myDone;
   Standard_Boolean myHasSection;
