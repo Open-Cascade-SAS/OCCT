@@ -1,0 +1,40 @@
+puts "============"
+puts "OCC28949"
+puts "============"
+puts ""
+##############################################################################
+# BRepOffsetAPI_MakePipe Generated() method produces no result for spine edges
+##############################################################################
+
+
+restore [locate_data_file OCC1477-1.brep] sp
+restore [locate_data_file OCC1477-2.brep] pr
+
+mksweep sp
+addsweep pr
+buildsweep q -R
+
+explode sp
+
+savehistory sweep_hist
+
+generated r1 sweep_hist sp_1
+generated r2 sweep_hist sp_2
+generated r3 sweep_hist sp_3
+
+checkprops r1 -s 80000
+checkprops r2 -s 463014
+checkprops r3 -s 449490
+
+explode sp v
+
+generated r1 sweep_hist sp_1
+generated r2 sweep_hist sp_2
+generated r3 sweep_hist sp_3
+generated r4 sweep_hist sp_4
+
+checkprops r1 -l 800
+checkprops r2 -l 800
+checknbshapes r3 -edge 11 -face 3
+checkprops r3 -s 30911.3
+checkprops r4 -l 800

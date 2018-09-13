@@ -267,7 +267,11 @@ public:
     myPipe->Profiles(theProfiles);
   }
 
-
+  //! Returns the spine
+  const TopoDS_Wire& Spine()
+  {
+    return myPipe->Spine();
+  }
 
 protected:
 

@@ -192,6 +192,12 @@ public:
       theProfiles.Append(mySeq(i).OriginalShape());
   }
 
+  //! Returns the spine
+  const TopoDS_Wire& Spine()
+  {
+    return mySpine;
+  }
+
   //! Returns the  list   of shapes generated   from the
   //! shape <S>.
   Standard_EXPORT void Generated (const TopoDS_Shape& S, TopTools_ListOfShape& L);

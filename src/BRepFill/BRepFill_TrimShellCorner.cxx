@@ -91,6 +91,11 @@ static Standard_Boolean SplitUEdges(const Handle(TopTools_HArray2OfShape)&     t
                                     const BOPDS_PDS&                           theDS,
                                     TopTools_DataMapOfShapeListOfShape&        theHistMap);
 
+static void StoreVedgeInHistMap(const Handle(TopTools_HArray1OfShape)&     theVEdges,
+                                const Standard_Integer                     theIndex,
+                                const TopoDS_Shape&                        theNewVedge,
+                                TopTools_DataMapOfShapeListOfShape&        theHistMap);
+
 static void FindFreeVertices(const TopoDS_Shape&         theShape,
                              const TopTools_MapOfShape&  theVerticesToAvoid,
                              TopTools_ListOfShape&       theListOfVertex);
@@ -227,6 +232,19 @@ void BRepFill_TrimShellCorner::AddUEdges(const Handle(TopTools_HArray2OfShape)& 
   myUEdges = new TopTools_HArray2OfShape(theUEdges->LowerRow(), theUEdges->UpperRow(), 
                                          theUEdges->LowerCol(), theUEdges->UpperCol());
   myUEdges->ChangeArray2() = theUEdges->Array2();
+}
+
+// ===========================================================================================
+// function: AddVEdges
+// purpose:
+// ===========================================================================================
+void BRepFill_TrimShellCorner::AddVEdges(const Handle(TopTools_HArray2OfShape)& theVEdges,
+                                         const Standard_Integer theIndex)
+{
+  myVEdges = new TopTools_HArray1OfShape(theVEdges->LowerRow(), theVEdges->UpperRow());
+
+  for (Standard_Integer i = theVEdges->LowerRow(); i <= theVEdges->UpperRow(); i++)
+    myVEdges->SetValue(i, theVEdges->Value(i, theIndex));
 }
 
 // ===========================================================================================
@@ -479,9 +497,12 @@ BRepFill_TrimShellCorner::MakeFacesNonSec(const Standard_Integer                
       aMapV.Add(aV);
       aBB.Add(aComp, aUE);
     }
+    
     if(bHasNewEdge) {
       aBB.Add(aComp, aNewEdge);
+      StoreVedgeInHistMap(myVEdges, theIndex, aNewEdge, myHistMap);
     }
+    
     TopTools_ListOfShape alonevertices;
     FindFreeVertices(aComp, aMapV, alonevertices);
 
@@ -686,6 +707,8 @@ BRepFill_TrimShellCorner::MakeFacesSec(const Standard_Integer                   
     for (; explo.More(); explo.Next())
       BB.Add( aComp, explo.Current() );
     aSecEdges = aComp;
+
+    StoreVedgeInHistMap(myVEdges, theIndex, SecWire, myHistMap);
   }
 
   TopTools_ListOfShape aCommonVertices;
@@ -1121,6 +1144,22 @@ Standard_Boolean SplitUEdges(const Handle(TopTools_HArray2OfShape)&     theUEdge
     }
   }
   return Standard_True;
+}
+
+// ------------------------------------------------------------------------------------------
+// static function: StoreVedgeInHistMap
+// purpose:
+// ------------------------------------------------------------------------------------------
+void StoreVedgeInHistMap(const Handle(TopTools_HArray1OfShape)&     theVEdges,
+                         const Standard_Integer                     theIndex,
+                         const TopoDS_Shape&                        theNewVshape,
+                         TopTools_DataMapOfShapeListOfShape&        theHistMap)
+{
+  //Replace default value in the map (v-iso edge of face)
+  //by intersection of two consecutive faces
+  const TopoDS_Shape& aVEdge = theVEdges->Value(theIndex);
+
+  theHistMap.Bound(aVEdge, TopTools_ListOfShape())->Append(theNewVshape);
 }
 
 // ------------------------------------------------------------------------------------------

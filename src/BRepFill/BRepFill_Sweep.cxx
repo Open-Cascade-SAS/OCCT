@@ -2938,9 +2938,10 @@ void BRepFill_Sweep::Build(TopTools_MapOfShape& ReversedEdges,
     // Management of looping ends
     if ( (NbTrous>0) && (myLoc->IsClosed()) &&
 	 (Trous->Value(NbTrous) == NbPath+1) ) {
-      Translate(myVEdges,  NbPath+1, Bounds, 1);
-      Translate(myVEdges,  1, Bounds, 2);
+      Translate(myVEdges, NbPath+1, Bounds, 1);
+      Translate(myVEdges, 1, Bounds, 2);
       PerformCorner(1, Transition, Bounds); 
+      Translate(myVEdges, 1, myVEdges, NbPath+1);
     }
 
     // Construction of the shell
@@ -3038,7 +3039,8 @@ void BRepFill_Sweep::Build(TopTools_MapOfShape& ReversedEdges,
       for (jj = myUEdges->LowerCol(); jj <= myUEdges->UpperCol(); jj++)
       {
 	TopoDS_Edge anEdge = TopoDS::Edge(myUEdges->Value(ii, jj));
-        if (anEdge.IsNull())
+        if (anEdge.IsNull() ||
+            BRep_Tool::Degenerated(anEdge))
           continue;
         TopoDS_Face Face1, Face2;
         Standard_Integer i1 = ii-1, i2 = ii;
@@ -3263,10 +3265,27 @@ TopoDS_Shape BRepFill_Sweep::Tape(const Standard_Integer Index) const
   BRepFill_TrimShellCorner aTrim(aFaces, Transition, AxeOfBisPlane);
   aTrim.AddBounds(Bounds);
   aTrim.AddUEdges(aUEdges);
+  aTrim.AddVEdges(myVEdges, Index);
   aTrim.Perform();
 
   if (aTrim.IsDone()) {
+
     TopTools_ListOfShape listmodif;
+    for (ii = 1; ii <= mySec->NbLaw(); ii++)
+    {
+      listmodif.Clear();
+      aTrim.Modified(myVEdges->Value(ii, Index), listmodif);
+      
+      if (listmodif.IsEmpty())
+      {
+        TopoDS_Edge NullEdge;
+        myVEdges->SetValue(ii, Index, NullEdge);
+      }
+      else
+        myVEdges->SetValue(ii, Index, listmodif.First());
+    }
+    
+    listmodif.Clear();
     Standard_Integer iit = 0;
 
     for(iit = 0; iit < 2; iit++) {
@@ -3353,8 +3372,15 @@ TopoDS_Shape BRepFill_Sweep::Tape(const Standard_Integer Index) const
 	  
 	  if (B) {
 	    myAuxShape.Append(FF);
-	    myVEdges->ChangeValue(ii, I2) = FF;
             BRep_Builder BB;
+            TopoDS_Shape aVshape = myVEdges->Value(ii, I2);
+            TopoDS_Compound aCompound;
+            BB.MakeCompound(aCompound);
+            if (!aVshape.IsNull())
+              BB.Add(aCompound, aVshape);
+            BB.Add(aCompound, FF);
+            myVEdges->ChangeValue(ii, I2) = aCompound;
+            
             BB.Add(myTapes->ChangeValue(ii), FF);
 	    HasFilling = Standard_True;
 	  }
