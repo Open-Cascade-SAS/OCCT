@@ -1071,6 +1071,7 @@ void OpenGl_View::renderStructs (Graphic3d_Camera::Projection theProjection,
                                  OpenGl_FrameBuffer*          theOitAccumFbo,
                                  const Standard_Boolean       theToDrawImmediate)
 {
+  myZLayers.UpdateCulling (myWorkspace, theToDrawImmediate);
   if ( myZLayers.NbStructures() <= 0 )
     return;
 
@@ -1079,8 +1080,6 @@ void OpenGl_View::renderStructs (Graphic3d_Camera::Projection theProjection,
     myRenderParams.Method != Graphic3d_RM_RAYTRACING ||
     myRaytraceInitStatus == OpenGl_RT_FAIL ||
     aCtx->IsFeedback();
-
-  myZLayers.UpdateCulling (myWorkspace, theToDrawImmediate);
 
   if (!toRenderGL)
   {

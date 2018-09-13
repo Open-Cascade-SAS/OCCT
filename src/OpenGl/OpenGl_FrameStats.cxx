@@ -399,127 +399,131 @@ void OpenGl_FrameStats::updateStructures (Standard_Integer theViewId,
   for (OpenGl_IndexedMapOfStructure::Iterator aStructIter (theStructures); aStructIter.More(); aStructIter.Next())
   {
     const OpenGl_Structure* aStruct = aStructIter.Value();
-    if (aStruct->IsCulled()
-    || !aStruct->IsVisible (theViewId))
+    const bool isStructHidden = aStruct->IsCulled()
+                            || !aStruct->IsVisible (theViewId);
+    for (; aStruct != NULL; aStruct = aStruct->InstancedStructure())
     {
-      if (theToCountMem)
+      if (isStructHidden)
       {
-        for (OpenGl_Structure::GroupIterator aGroupIter (aStruct->Groups()); aGroupIter.More(); aGroupIter.Next())
+        if (theToCountMem)
         {
-          const OpenGl_Group* aGroup = aGroupIter.Value();
-          for (const OpenGl_ElementNode* aNodeIter = aGroup->FirstNode(); aNodeIter != NULL; aNodeIter = aNodeIter->next)
+          for (OpenGl_Structure::GroupIterator aGroupIter (aStruct->Groups()); aGroupIter.More(); aGroupIter.Next())
           {
-            if (const OpenGl_PrimitiveArray* aPrim = dynamic_cast<const OpenGl_PrimitiveArray*> (aNodeIter->elem))
+            const OpenGl_Group* aGroup = aGroupIter.Value();
+            for (const OpenGl_ElementNode* aNodeIter = aGroup->FirstNode(); aNodeIter != NULL; aNodeIter = aNodeIter->next)
+            {
+              if (const OpenGl_PrimitiveArray* aPrim = dynamic_cast<const OpenGl_PrimitiveArray*> (aNodeIter->elem))
+              {
+                myCountersTmp[Counter_EstimatedBytesGeom] += estimatedDataSize (aPrim->AttributesVbo());
+                myCountersTmp[Counter_EstimatedBytesGeom] += estimatedDataSize (aPrim->IndexVbo());
+              }
+            }
+          }
+        }
+        continue;
+      }
+
+      myCountersTmp[Counter_NbGroupsNotCulled] += aStruct->Groups().Size();
+      if (!theToCountElems)
+      {
+        continue;
+      }
+
+      for (OpenGl_Structure::GroupIterator aGroupIter (aStruct->Groups()); aGroupIter.More(); aGroupIter.Next())
+      {
+        const OpenGl_Group* aGroup = aGroupIter.Value();
+        for (const OpenGl_ElementNode* aNodeIter = aGroup->FirstNode(); aNodeIter != NULL; aNodeIter = aNodeIter->next)
+        {
+          if (const OpenGl_PrimitiveArray* aPrim = dynamic_cast<const OpenGl_PrimitiveArray*> (aNodeIter->elem))
+          {
+            ++myCountersTmp[Counter_NbElemsNotCulled];
+            if (theToCountMem)
             {
               myCountersTmp[Counter_EstimatedBytesGeom] += estimatedDataSize (aPrim->AttributesVbo());
               myCountersTmp[Counter_EstimatedBytesGeom] += estimatedDataSize (aPrim->IndexVbo());
             }
-          }
-        }
-      }
-      continue;
-    }
 
-    myCountersTmp[Counter_NbGroupsNotCulled] += aStruct->Groups().Size();
-    if (!theToCountElems)
-    {
-      continue;
-    }
-
-    for (OpenGl_Structure::GroupIterator aGroupIter (aStruct->Groups()); aGroupIter.More(); aGroupIter.Next())
-    {
-      const OpenGl_Group* aGroup = aGroupIter.Value();
-      for (const OpenGl_ElementNode* aNodeIter = aGroup->FirstNode(); aNodeIter != NULL; aNodeIter = aNodeIter->next)
-      {
-        if (const OpenGl_PrimitiveArray* aPrim = dynamic_cast<const OpenGl_PrimitiveArray*> (aNodeIter->elem))
-        {
-          ++myCountersTmp[Counter_NbElemsNotCulled];
-          if (theToCountMem)
-          {
-            myCountersTmp[Counter_EstimatedBytesGeom] += estimatedDataSize (aPrim->AttributesVbo());
-            myCountersTmp[Counter_EstimatedBytesGeom] += estimatedDataSize (aPrim->IndexVbo());
-          }
-
-          if (aPrim->IsFillDrawMode())
-          {
-            ++myCountersTmp[Counter_NbElemsFillNotCulled];
-            if (!theToCountTris)
+            if (aPrim->IsFillDrawMode())
             {
-              continue;
-            }
+              ++myCountersTmp[Counter_NbElemsFillNotCulled];
+              if (!theToCountTris)
+              {
+                continue;
+              }
 
-            const Handle(OpenGl_VertexBuffer)& anAttribs = aPrim->AttributesVbo();
-            if (anAttribs.IsNull()
-            || !anAttribs->IsValid())
-            {
-              continue;
-            }
-
-            const Handle(OpenGl_VertexBuffer)& anIndices = aPrim->IndexVbo();
-            const Standard_Integer aNbIndices = !anIndices.IsNull() ? anIndices->GetElemsNb() : anAttribs->GetElemsNb();
-            const Standard_Integer aNbBounds  = !aPrim->Bounds().IsNull() ? aPrim->Bounds()->NbBounds : 1;
-            switch (aPrim->DrawMode())
-            {
-              case GL_TRIANGLES:
-              {
-                myCountersTmp[Counter_NbTrianglesNotCulled] += aNbIndices / 3;
-                break;
-              }
-              case GL_TRIANGLE_STRIP:
-              case GL_TRIANGLE_FAN:
-              {
-                myCountersTmp[Counter_NbTrianglesNotCulled] += aNbIndices - 2 * aNbBounds;
-                break;
-              }
-              case GL_TRIANGLES_ADJACENCY:
-              {
-                myCountersTmp[Counter_NbTrianglesNotCulled] += aNbIndices / 6;
-                break;
-              }
-              case GL_TRIANGLE_STRIP_ADJACENCY:
-              {
-                myCountersTmp[Counter_NbTrianglesNotCulled] += aNbIndices - 4 * aNbBounds;
-                break;
-              }
-            #if !defined(GL_ES_VERSION_2_0)
-              case GL_QUADS:
-              {
-                myCountersTmp[Counter_NbTrianglesNotCulled] += aNbIndices / 2;
-                break;
-              }
-              case GL_QUAD_STRIP:
-              {
-                myCountersTmp[Counter_NbTrianglesNotCulled] += (aNbIndices / 2 - aNbBounds) * 2;
-                break;
-              }
-            #endif
-            }
-          }
-          else if (aPrim->DrawMode() == GL_POINTS)
-          {
-            ++myCountersTmp[Counter_NbElemsPointNotCulled];
-            if (theToCountTris)
-            {
               const Handle(OpenGl_VertexBuffer)& anAttribs = aPrim->AttributesVbo();
-              if (!anAttribs.IsNull()
-                && anAttribs->IsValid())
+              if (anAttribs.IsNull()
+              || !anAttribs->IsValid())
               {
-                const Handle(OpenGl_VertexBuffer)& anIndices = aPrim->IndexVbo();
-                const Standard_Integer aNbIndices = !anIndices.IsNull() ? anIndices->GetElemsNb() : anAttribs->GetElemsNb();
-                myCountersTmp[Counter_NbPointsNotCulled] += aNbIndices;
+                continue;
+              }
+
+              const Handle(OpenGl_VertexBuffer)& anIndices = aPrim->IndexVbo();
+              const Standard_Integer aNbIndices = !anIndices.IsNull() ? anIndices->GetElemsNb() : anAttribs->GetElemsNb();
+              const Standard_Integer aNbBounds  = !aPrim->Bounds().IsNull() ? aPrim->Bounds()->NbBounds : 1;
+              switch (aPrim->DrawMode())
+              {
+                case GL_TRIANGLES:
+                {
+                  myCountersTmp[Counter_NbTrianglesNotCulled] += aNbIndices / 3;
+                  break;
+                }
+                case GL_TRIANGLE_STRIP:
+                case GL_TRIANGLE_FAN:
+                {
+                  myCountersTmp[Counter_NbTrianglesNotCulled] += aNbIndices - 2 * aNbBounds;
+                  break;
+                }
+                case GL_TRIANGLES_ADJACENCY:
+                {
+                  myCountersTmp[Counter_NbTrianglesNotCulled] += aNbIndices / 6;
+                  break;
+                }
+                case GL_TRIANGLE_STRIP_ADJACENCY:
+                {
+                  myCountersTmp[Counter_NbTrianglesNotCulled] += aNbIndices - 4 * aNbBounds;
+                  break;
+                }
+              #if !defined(GL_ES_VERSION_2_0)
+                case GL_QUADS:
+                {
+                  myCountersTmp[Counter_NbTrianglesNotCulled] += aNbIndices / 2;
+                  break;
+                }
+                case GL_QUAD_STRIP:
+                {
+                  myCountersTmp[Counter_NbTrianglesNotCulled] += (aNbIndices / 2 - aNbBounds) * 2;
+                  break;
+                }
+              #endif
               }
             }
+            else if (aPrim->DrawMode() == GL_POINTS)
+            {
+              ++myCountersTmp[Counter_NbElemsPointNotCulled];
+              if (theToCountTris)
+              {
+                const Handle(OpenGl_VertexBuffer)& anAttribs = aPrim->AttributesVbo();
+                if (!anAttribs.IsNull()
+                  && anAttribs->IsValid())
+                {
+                  const Handle(OpenGl_VertexBuffer)& anIndices = aPrim->IndexVbo();
+                  const Standard_Integer aNbIndices = !anIndices.IsNull() ? anIndices->GetElemsNb() : anAttribs->GetElemsNb();
+                  myCountersTmp[Counter_NbPointsNotCulled] += aNbIndices;
+                }
+              }
+            }
+            else
+            {
+              ++myCountersTmp[Counter_NbElemsLineNotCulled];
+            }
           }
-          else
+          else if (const OpenGl_Text* aText = dynamic_cast<const OpenGl_Text*> (aNodeIter->elem))
           {
-            ++myCountersTmp[Counter_NbElemsLineNotCulled];
+            (void )aText;
+            ++myCountersTmp[Counter_NbElemsNotCulled];
+            ++myCountersTmp[Counter_NbElemsTextNotCulled];
           }
-        }
-        else if (const OpenGl_Text* aText = dynamic_cast<const OpenGl_Text*> (aNodeIter->elem))
-        {
-          (void )aText;
-          ++myCountersTmp[Counter_NbElemsNotCulled];
-          ++myCountersTmp[Counter_NbElemsTextNotCulled];
         }
       }
     }
