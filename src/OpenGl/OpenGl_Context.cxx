@@ -114,10 +114,12 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
   hasHighp   (Standard_False),
   hasUintIndex(Standard_False),
   hasTexRGBA8(Standard_False),
+  hasFlatShading (OpenGl_FeatureNotAvailable),
 #else
   hasHighp   (Standard_True),
   hasUintIndex(Standard_True),
   hasTexRGBA8(Standard_True),
+  hasFlatShading (OpenGl_FeatureInCore),
 #endif
   hasDrawBuffers     (OpenGl_FeatureNotAvailable),
   hasFloatBuffer     (OpenGl_FeatureNotAvailable),
@@ -1406,6 +1408,18 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
   hasSampleVariables = IsGlGreaterEqual (3, 2) ? OpenGl_FeatureInCore :
                        oesSampleVariables ? OpenGl_FeatureInExtensions
                                           : OpenGl_FeatureNotAvailable;
+  // without hasHighp, dFdx/dFdy precision is considered too low for flat shading (visual artifacts)
+  hasFlatShading = IsGlGreaterEqual (3, 0)
+                 ? OpenGl_FeatureInCore
+                  : (oesStdDerivatives && hasHighp
+                   ? OpenGl_FeatureInExtensions
+                   : OpenGl_FeatureNotAvailable);
+  if (!IsGlGreaterEqual (3, 1)
+    && myVendor.Search("Qualcomm") != -1)
+  {
+    // dFdx/dFdy are completely broken on tested Adreno devices with versions below OpenGl ES 3.1
+    hasFlatShading = OpenGl_FeatureNotAvailable;
+  }
 #else
 
   myTexClamp = IsGlGreaterEqual (1, 2) ? GL_CLAMP_TO_EDGE : GL_CLAMP;

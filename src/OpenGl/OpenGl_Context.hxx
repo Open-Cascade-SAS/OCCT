@@ -784,6 +784,9 @@ public: //! @name methods to alter or retrieve current state
     myLineWidthScale  = Max (1.0f, std::floor (theRatio + 0.5f));
   }
 
+  //! Return Graphics Driver's vendor.
+  const TCollection_AsciiString& Vendor() const { return myVendor; }
+
 private:
 
   //! Wrapper to system function to retrieve GL function pointer by name.
@@ -827,6 +830,7 @@ public: //! @name extensions
   Standard_Boolean       hasHighp;           //!< highp in GLSL ES fragment shader is supported
   Standard_Boolean       hasUintIndex;       //!< GLuint for index buffer is supported (always available on desktop; on OpenGL ES - since 3.0 or as extension GL_OES_element_index_uint)
   Standard_Boolean       hasTexRGBA8;        //!< always available on desktop; on OpenGL ES - since 3.0 or as extension GL_OES_rgb8_rgba8
+  OpenGl_FeatureFlag     hasFlatShading;     //!< Complex flag indicating support of Flat shading (Graphic3d_TOSM_FACET) (always available on desktop; on OpenGL ES - since 3.0 or as extension GL_OES_standard_derivatives)
   OpenGl_FeatureFlag     hasDrawBuffers;     //!< Complex flag indicating support of multiple draw buffers (desktop OpenGL 2.0, OpenGL ES 3.0, GL_ARB_draw_buffers, GL_EXT_draw_buffers)
   OpenGl_FeatureFlag     hasFloatBuffer;     //!< Complex flag indicating support of float color buffer format (desktop OpenGL 3.0, GL_ARB_color_buffer_float, GL_EXT_color_buffer_float)
   OpenGl_FeatureFlag     hasHalfFloatBuffer; //!< Complex flag indicating support of half-float color buffer format (desktop OpenGL 3.0, GL_ARB_color_buffer_float, GL_EXT_color_buffer_half_float)

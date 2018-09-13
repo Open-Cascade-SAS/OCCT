@@ -2066,12 +2066,24 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramPhong (Handle(OpenGl_Sha
                                                                const Standard_Boolean        theIsFlatNormal)
 {
   #define thePhongCompLight "computeLighting (normalize (Normal), normalize (View), Position, gl_FrontFacing)"
-#if defined(GL_ES_VERSION_2_0)
   const bool isFlatNormal = theIsFlatNormal
-                         && (myContext->IsGlGreaterEqual (3, 0)
-                          || myContext->oesStdDerivatives);
-#else
-  const bool isFlatNormal = theIsFlatNormal;
+                         && myContext->hasFlatShading != OpenGl_FeatureNotAvailable;
+  const char* aDFdxSignReversion = "";
+#if defined(GL_ES_VERSION_2_0)
+  if (isFlatNormal != theIsFlatNormal)
+  {
+    myContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION,
+                            GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_MEDIUM,
+                            "Warning: flat shading requires OpenGL ES 3.0+ or GL_OES_standard_derivatives extension.");
+  }
+  else if (isFlatNormal
+        && myContext->Vendor().Search("Qualcomm") != -1)
+  {
+    // workaround Adreno driver bug computing reversed normal using dFdx/dFdy
+    aDFdxSignReversion = "-";
+    myContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_MEDIUM,
+                            "Warning: applied workaround for flat shading normal computation using dFdx/dFdy on Adreno");
+  }
 #endif
 
   Handle(Graphic3d_ShaderProgram) aProgramSrc = new Graphic3d_ShaderProgram();
@@ -2191,8 +2203,9 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramPhong (Handle(OpenGl_Sha
       EOL"{"
     + aSrcFragExtraMain
     + (isFlatNormal
-    ? EOL"  Normal = normalize (cross (dFdx (Position.xyz / Position.w), dFdy (Position.xyz / Position.w)));"
-      EOL"  if (!gl_FrontFacing) { Normal = -Normal; }"
+    ? TCollection_AsciiString()
+      + EOL"  Normal = " + aDFdxSignReversion + "normalize (cross (dFdx (Position.xyz / Position.w), dFdy (Position.xyz / Position.w)));"
+        EOL"  if (!gl_FrontFacing) { Normal = -Normal; }"
     : "")
     + EOL"  occSetFragColor (getColor());"
     + aSrcFragWriteOit
@@ -2219,12 +2232,6 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramPhong (Handle(OpenGl_Sha
     else if (myContext->oesStdDerivatives)
     {
       aProgramSrc->SetHeader ("#extension GL_OES_standard_derivatives : enable");
-    }
-    else
-    {
-      myContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION,
-                              GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_MEDIUM,
-                              "Warning: flat shading requires OpenGL ES 3.0+ or GL_OES_standard_derivatives extension.");
     }
   }
 #endif

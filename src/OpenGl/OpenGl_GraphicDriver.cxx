@@ -431,6 +431,8 @@ Standard_Integer OpenGl_GraphicDriver::InquireLimit (const Graphic3d_TypeOfLimit
       return (!aCtx.IsNull()
             && aCtx->hasSampleVariables != OpenGl_FeatureNotAvailable
             && (InquireLimit (Graphic3d_TypeOfLimit_HasBlendedOit) == 1)) ? 1 : 0;
+    case Graphic3d_TypeOfLimit_HasFlatShading:
+      return !aCtx.IsNull() && aCtx->hasFlatShading != OpenGl_FeatureNotAvailable ? 1 : 0;
     case Graphic3d_TypeOfLimit_NB:
       return 0;
   }
