@@ -46,11 +46,12 @@ public:
   };
 
   //! Statistics display flags.
+  //! If not specified otherwise, the counter value is computed for a single rendered frame.
   enum PerfCounters
   {
     PerfCounters_NONE        = 0x000, //!< no stats
-    PerfCounters_FrameRate   = 0x001, //!< Frame Rate
-    PerfCounters_CPU         = 0x002, //!< CPU utilization
+    PerfCounters_FrameRate   = 0x001, //!< Frame Rate,        frames per second (number of frames within elapsed time)
+    PerfCounters_CPU         = 0x002, //!< CPU utilization as frames per second (number of frames within CPU utilization time (rendering thread))
     PerfCounters_Layers      = 0x004, //!< count layers (groups of structures)
     PerfCounters_Structures  = 0x008, //!< count low-level Structures (normal unhighlighted Presentable Object is usually represented by 1 Structure)
     //
@@ -61,6 +62,11 @@ public:
     PerfCounters_Points      = 0x080, //!< count Points
     //
     PerfCounters_EstimMem    = 0x100, //!< estimated GPU memory usage
+    //
+    PerfCounters_FrameTime   = 0x200, //!< frame CPU utilization time (rendering thread); @sa Graphic3d_FrameStatsTimer
+    PerfCounters_FrameTimeMax= 0x400, //!< maximum frame times
+    //
+    PerfCounters_SkipImmediate = 0x800, //!< do not include immediate viewer updates (e.g. lazy updates without redrawing entire view content)
     //! show basic statistics
     PerfCounters_Basic = PerfCounters_FrameRate | PerfCounters_CPU | PerfCounters_Layers | PerfCounters_Structures,
     //! extended (verbose) statistics
@@ -68,6 +74,10 @@ public:
                           | PerfCounters_Groups | PerfCounters_GroupArrays
                           | PerfCounters_Triangles | PerfCounters_Points
                           | PerfCounters_EstimMem,
+    //! all counters
+    PerfCounters_All = PerfCounters_Extended
+                     | PerfCounters_FrameTime
+                     | PerfCounters_FrameTimeMax,
   };
 
 public:
@@ -106,10 +116,14 @@ public:
     AnaglyphFilter (Anaglyph_RedCyan_Optimized),
     ToReverseStereo (Standard_False),
     //
-    StatsPosition (new Graphic3d_TransformPers (Graphic3d_TMF_2d, Aspect_TOTP_LEFT_UPPER, Graphic3d_Vec2i (20, 20))),
+    StatsPosition (new Graphic3d_TransformPers (Graphic3d_TMF_2d, Aspect_TOTP_LEFT_UPPER,  Graphic3d_Vec2i (20, 20))),
+    ChartPosition (new Graphic3d_TransformPers (Graphic3d_TMF_2d, Aspect_TOTP_RIGHT_UPPER, Graphic3d_Vec2i (20, 20))),
+    ChartSize (-1, -1),
     StatsTextAspect (new Graphic3d_AspectText3d()),
     StatsUpdateInterval (1.0),
     StatsTextHeight (16),
+    StatsNbFrames (1),
+    StatsMaxChartTime (0.1f),
     CollectedStats (PerfCounters_Basic),
     ToShowStats (Standard_False),
     //
@@ -179,12 +193,16 @@ public:
   Standard_Boolean                  ToReverseStereo;             //!< flag to reverse stereo pair, FALSE by default
 
   Handle(Graphic3d_TransformPers)   StatsPosition;               //!< location of stats, upper-left position by default
+  Handle(Graphic3d_TransformPers)   ChartPosition;               //!< location of stats chart, upper-right position by default
+  Graphic3d_Vec2i                   ChartSize;                   //!< chart size in pixels, (-1, -1) by default which means that chart will occupy a portion of viewport
   Handle(Graphic3d_AspectText3d)    StatsTextAspect;             //!< stats text aspect
   Standard_ShortReal                StatsUpdateInterval;         //!< time interval between stats updates in seconds, 1.0 second by default;
                                                                  //!  too often updates might impact performance and will smear text within widgets
                                                                  //!  (especially framerate, which is better averaging);
                                                                  //!  0.0 interval will force updating on each frame
   Standard_Integer                  StatsTextHeight;             //!< stats text size; 16 by default
+  Standard_Integer                  StatsNbFrames;               //!< number of data frames to collect history; 1 by default
+  Standard_ShortReal                StatsMaxChartTime;           //!< upper time limit within frame chart in seconds; 0.1 seconds by default (100 ms or 10 FPS)
   PerfCounters                      CollectedStats;              //!< performance counters to collect, PerfCounters_Basic by default;
                                                                  //!  too verbose options might impact rendering performance,
                                                                  //!  because some counters might lack caching optimization (and will require expensive iteration through all data structures)

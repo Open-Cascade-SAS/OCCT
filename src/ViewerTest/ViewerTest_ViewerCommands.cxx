@@ -10174,10 +10174,17 @@ static Standard_Boolean parsePerfStatsFlag (const TCollection_AsciiString& theVa
   else if (aVal == "mem"
         || aVal == "gpumem"
         || aVal == "estimmem")   aFlag = Graphic3d_RenderingParams::PerfCounters_EstimMem;
+  else if (aVal == "skipimmediate"
+        || aVal == "noimmediate") aFlag = Graphic3d_RenderingParams::PerfCounters_SkipImmediate;
+  else if (aVal == "frametime"
+        || aVal == "frametimers"
+        || aVal == "time")       aFlag = Graphic3d_RenderingParams::PerfCounters_FrameTime;
   else if (aVal == "basic")      aFlag = Graphic3d_RenderingParams::PerfCounters_Basic;
   else if (aVal == "extended"
         || aVal == "verbose"
         || aVal == "extra")      aFlag = Graphic3d_RenderingParams::PerfCounters_Extended;
+  else if (aVal == "full"
+        || aVal == "all")        aFlag = Graphic3d_RenderingParams::PerfCounters_All;
   else
   {
     return Standard_False;
@@ -10362,6 +10369,14 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
       if ((aParams.CollectedStats & Graphic3d_RenderingParams::PerfCounters_EstimMem) != 0)
       {
         theDI << " gpumem";
+      }
+      if ((aParams.CollectedStats & Graphic3d_RenderingParams::PerfCounters_FrameTime) != 0)
+      {
+        theDI << " frameTime";
+      }
+      if ((aParams.CollectedStats & Graphic3d_RenderingParams::PerfCounters_SkipImmediate) != 0)
+      {
+        theDI << " skipimmediate";
       }
       if (aParams.CollectedStats == Graphic3d_RenderingParams::PerfCounters_NONE)
       {
@@ -11023,6 +11038,26 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
         return 1;
       }
       aView->ChangeRenderingParams().StatsUpdateInterval = (Standard_ShortReal )Draw::Atof (theArgVec[anArgIter]);
+    }
+    else if (aFlag == "-perfchart"
+          || aFlag == "-statschart")
+    {
+      if (++anArgIter >= theArgNb)
+      {
+        std::cout << "Error: wrong syntax at argument '" << anArg << "'\n";
+        return 1;
+      }
+      aView->ChangeRenderingParams().StatsNbFrames = Draw::Atoi (theArgVec[anArgIter]);
+    }
+    else if (aFlag == "-perfchartmax"
+          || aFlag == "-statschartmax")
+    {
+      if (++anArgIter >= theArgNb)
+      {
+        std::cout << "Error: wrong syntax at argument '" << anArg << "'\n";
+        return 1;
+      }
+      aView->ChangeRenderingParams().StatsMaxChartTime = (Standard_ShortReal )Draw::Atof (theArgVec[anArgIter]);
     }
     else
     {
@@ -12542,9 +12577,12 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "\n      '-exposure     value'       Exposure value for tone mapping (0.0 value disables the effect)"
     "\n      '-whitepoint   value'       White point value for filmic tone mapping"
     "\n      '-tonemapping  mode'        Tone mapping mode (disabled, filmic)"
-    "\n      '-perfCounters none|fps|cpu|layers|structures|groups|arrays|triagles|points|gpuMem|basic|extended|nofps'"
+    "\n      '-perfCounters none|fps|cpu|layers|structures|groups|arrays|triagles|points"
+    "\n      '              |gpuMem|frameTime|basic|extended|full|nofps|skipImmediate'"
     "\n                                  Show/hide performance counters (flags can be combined)"
     "\n      '-perfUpdateInterval nbSeconds' Performance counters update interval"
+    "\n      '-perfChart    nbFrames'    Show frame timers chart limited by specified number of frames"
+    "\n      '-perfChartMax seconds'     Maximum time in seconds with the chart"
     "\n    Unlike vcaps, these parameters dramatically change visual properties."
     "\n    Command is intended to control presentation quality depending on"
     "\n    hardware capabilities and performance.",

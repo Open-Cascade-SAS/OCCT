@@ -611,6 +611,10 @@ public: //! @name methods to alter or retrieve current state
   //! Return structure holding frame statistics.
   const Handle(OpenGl_FrameStats)& FrameStats() const { return myFrameStats; }
 
+  //! Set structure holding frame statistics.
+  //! This call makes sense only if application defines OpenGl_FrameStats sub-class.
+  void SetFrameStats (const Handle(OpenGl_FrameStats)& theStats) { myFrameStats = theStats; }
+
   //! Return cached viewport definition (x, y, width, height).
   const Standard_Integer* Viewport() const { return myViewport; }
 

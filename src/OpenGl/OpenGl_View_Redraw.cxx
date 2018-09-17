@@ -166,7 +166,7 @@ void OpenGl_View::Redraw()
   const Graphic3d_StereoMode   aStereoMode  = myRenderParams.StereoMode;
   Graphic3d_Camera::Projection aProjectType = myCamera->ProjectionType();
   Handle(OpenGl_Context)       aCtx         = myWorkspace->GetGlContext();
-  aCtx->FrameStats()->FrameStart (myWorkspace);
+  aCtx->FrameStats()->FrameStart (myWorkspace->View(), false);
 
   // release pending GL resources
   aCtx->ReleaseDelayed();
@@ -566,7 +566,7 @@ void OpenGl_View::Redraw()
 
   // reset render mode state
   aCtx->FetchState();
-  aCtx->FrameStats()->FrameEnd (myWorkspace);
+  aCtx->FrameStats()->FrameEnd (myWorkspace->View(), false);
 
   myWasRedrawnGL = Standard_True;
 }
@@ -592,7 +592,7 @@ void OpenGl_View::RedrawImmediate()
   const Graphic3d_StereoMode   aStereoMode  = myRenderParams.StereoMode;
   Graphic3d_Camera::Projection aProjectType = myCamera->ProjectionType();
   OpenGl_FrameBuffer*          aFrameBuffer = myFBO.operator->();
-  aCtx->FrameStats()->FrameStart (myWorkspace);
+  aCtx->FrameStats()->FrameStart (myWorkspace->View(), true);
 
   if ( aFrameBuffer == NULL
    && !aCtx->DefaultFrameBuffer().IsNull()
@@ -733,7 +733,7 @@ void OpenGl_View::RedrawImmediate()
   {
     aCtx->core11fwd->glFlush();
   }
-  aCtx->FrameStats()->FrameEnd (myWorkspace);
+  aCtx->FrameStats()->FrameEnd (myWorkspace->View(), true);
 
   myWasRedrawnGL = Standard_True;
 }

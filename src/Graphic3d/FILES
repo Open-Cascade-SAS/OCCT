@@ -43,6 +43,12 @@ Graphic3d_CView.hxx
 Graphic3d_DataStructureManager.cxx
 Graphic3d_DataStructureManager.hxx
 Graphic3d_DiagnosticInfo.hxx
+Graphic3d_FrameStats.cxx
+Graphic3d_FrameStats.hxx
+Graphic3d_FrameStatsCounter.hxx
+Graphic3d_FrameStatsData.cxx
+Graphic3d_FrameStatsData.hxx
+Graphic3d_FrameStatsTimer.hxx
 Graphic3d_GraduatedTrihedron.hxx
 Graphic3d_GraphicDriver.cxx
 Graphic3d_GraphicDriver.hxx

@@ -312,7 +312,7 @@ public:
   const OpenGl_LayerList& LayerList() const { return myZLayers; }
 
   //! Returns OpenGL window implementation.
-  const Handle(OpenGl_Window) GlWindow() const { return myWindow; }
+  const Handle(OpenGl_Window)& GlWindow() const { return myWindow; }
 
   //! Returns OpenGL environment map.
   const Handle(OpenGl_TextureSet)& GlTextureEnv() const { return myTextureEnv; }
