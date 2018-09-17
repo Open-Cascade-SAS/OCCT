@@ -25,6 +25,7 @@
 #include <gp_Circ2d.hxx>
 #include <Precision.hxx>
 
+
 static void QuasiFleche(const TheCurve&,
 			const Standard_Real,
 			const Standard_Real,
@@ -36,7 +37,8 @@ static void QuasiFleche(const TheCurve&,
 			const Standard_Integer,
 			const Standard_Real,
 			TColStd_SequenceOfReal&,
-			TColgp_SequenceOfPnt&);
+			TColgp_SequenceOfPnt&,
+                        Standard_Integer&);
 
 static void QuasiFleche(const TheCurve&,
 			const Standard_Real,
@@ -46,7 +48,8 @@ static void QuasiFleche(const TheCurve&,
 			const gp_Pnt&,
 			const Standard_Integer,
 			TColStd_SequenceOfReal&,
-			TColgp_SequenceOfPnt&);
+			TColgp_SequenceOfPnt&,
+                        Standard_Integer&);
 
 
 //=======================================================================
@@ -145,6 +148,7 @@ static Standard_Boolean PerformCurve (TColStd_SequenceOfReal& Parameters,
                                       const GeomAbs_Shape Continuity)
 {
   Standard_Integer Nbmin = 2;
+  Standard_Integer aNbCallQF = 0;
 
   gp_Pnt Pdeb;
   if (Continuity <= GeomAbs_G1)
@@ -159,7 +163,7 @@ static Standard_Boolean PerformCurve (TColStd_SequenceOfReal& Parameters,
 		U1, Pdeb,
 		U2, Pfin,
 		Nbmin,
-		Parameters, Points);
+                Parameters, Points, aNbCallQF);
   }
   else
   {
@@ -178,7 +182,7 @@ static Standard_Boolean PerformCurve (TColStd_SequenceOfReal& Parameters,
                  Dfin,
                  Nbmin,
                  EPSILON * EPSILON,
-                 Parameters, Points);
+                 Parameters, Points, aNbCallQF);
   }
 //  cout << "Nb de pts: " << Points.Length()<< endl;
   return Standard_True;
@@ -338,9 +342,19 @@ void QuasiFleche (const TheCurve& C,
                   const Standard_Integer Nbmin,
                   const Standard_Real Eps,
                   TColStd_SequenceOfReal& Parameters,
-                  TColgp_SequenceOfPnt& Points)
+                  TColgp_SequenceOfPnt& Points,
+                  Standard_Integer& theNbCalls)
 {
+  theNbCalls++;
+  if (theNbCalls >= MyMaxQuasiFleshe)
+  {
+    return;
+  }
   Standard_Integer Ptslength = Points.Length();
+  if (theNbCalls > 100 && Ptslength < 2)
+  {
+    return;
+  }
   Standard_Real Udelta = Ufin - Udeb;
   gp_Pnt Pdelta;
   gp_Vec Vdelta;
@@ -393,7 +407,7 @@ void QuasiFleche (const TheCurve& C,
                  Vdelta,
                  3,
                  Eps,
-                 Parameters, Points);
+                 Parameters, Points, theNbCalls);
   }
 
   if (Nbmin > 2)
@@ -404,8 +418,9 @@ void QuasiFleche (const TheCurve& C,
                  Vfin,
                  Nbmin - (Points.Length() - Ptslength),
                  Eps,
-                 Parameters, Points);
+                 Parameters, Points, theNbCalls);
   }
+  theNbCalls--;
 }
 
 
@@ -421,9 +436,19 @@ void QuasiFleche (const TheCurve& C,
                   const gp_Pnt& Pfin,
                   const Standard_Integer Nbmin,
                   TColStd_SequenceOfReal& Parameters,
-                  TColgp_SequenceOfPnt& Points)
+                  TColgp_SequenceOfPnt& Points,
+                  Standard_Integer& theNbCalls)
 {
+  theNbCalls++;
+  if (theNbCalls >= MyMaxQuasiFleshe)
+  {
+    return;
+  }
   Standard_Integer Ptslength = Points.Length();
+  if (theNbCalls > 100 && Ptslength < 2)
+  {
+    return;
+  }
   Standard_Real Udelta = Ufin - Udeb;
   gp_Pnt Pdelta;
   if (Nbmin > 2)
@@ -450,12 +475,12 @@ void QuasiFleche (const TheCurve& C,
     QuasiFleche (C, Deflection2, Udeb, Pdeb,
                  Udeb + Udelta * 0.5, Pverif,
                  2,
-                 Parameters, Points);
+                 Parameters, Points, theNbCalls);
 
     QuasiFleche (C, Deflection2, Udeb + Udelta * 0.5, Pverif,
                  Udeb + Udelta, Pdelta,
                  2,
-                 Parameters, Points);
+                 Parameters, Points, theNbCalls);
   }
 
   if (Nbmin > 2)
@@ -463,6 +488,7 @@ void QuasiFleche (const TheCurve& C,
     QuasiFleche (C, Deflection2, Udeb + Udelta, Pdelta,
                  Ufin, Pfin,
                  Nbmin - (Points.Length() - Ptslength),
-                 Parameters, Points);
+                 Parameters, Points, theNbCalls);
   }
+  theNbCalls--;
 }

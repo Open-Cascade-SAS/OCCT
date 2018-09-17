@@ -26,6 +26,8 @@
 #include <Standard_OutOfRange.hxx>
 #include <StdFail_NotDone.hxx>
 
+static const Standard_Integer MyMaxQuasiFleshe = 2000;
+
 // mask the return of a Adaptor2d_Curve2d as a gp_Pnt 
 static gp_Pnt Value(const Adaptor3d_Curve & C,
 		    const Standard_Real Parameter) 
