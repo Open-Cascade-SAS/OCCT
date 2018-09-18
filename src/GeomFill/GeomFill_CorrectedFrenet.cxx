@@ -270,6 +270,7 @@ static Standard_Boolean FindPlane ( const Handle(Adaptor3d_HCurve)& theC,
       f = theC->FirstParameter();
       l = theC->LastParameter();
       inv = 1./(nbp-1);
+      TabP = new (TColgp_HArray1OfPnt) (1, nbp);
       for (ii=1; ii<=nbp; ii++) {
 	t = ( f*(nbp-ii) + l*(ii-1));
 	t *= inv;
