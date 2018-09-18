@@ -713,9 +713,11 @@ void TPrsStd_AISPresentation::BeforeForget()
 //=======================================================================
 void TPrsStd_AISPresentation::AfterResume()
 {
-  AISUpdate();
   if ( IsDisplayed() )
+  {
+  	AISUpdate();
     AISDisplay();
+  }
   else
     AISErase();
 }
