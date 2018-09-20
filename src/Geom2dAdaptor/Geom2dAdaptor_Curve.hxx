@@ -68,7 +68,10 @@ public:
   
   //! ConstructionError is raised if Ufirst>Ulast
   Standard_EXPORT Geom2dAdaptor_Curve(const Handle(Geom2d_Curve)& C, const Standard_Real UFirst, const Standard_Real ULast);
-  
+
+  //! Reset currently loaded curve (undone Load()).
+  Standard_EXPORT void Reset();
+
     void Load (const Handle(Geom2d_Curve)& C);
   
   //! ConstructionError is raised if Ufirst>Ulast

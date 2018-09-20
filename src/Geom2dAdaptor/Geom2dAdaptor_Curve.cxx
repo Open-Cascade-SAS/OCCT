@@ -168,6 +168,19 @@ Geom2dAdaptor_Curve::Geom2dAdaptor_Curve(const Handle(Geom2d_Curve)& theCrv,
   Load(theCrv, theUFirst, theULast);
 }
 
+//=======================================================================
+//function : Reset
+//purpose  :
+//=======================================================================
+void Geom2dAdaptor_Curve::Reset()
+{
+  myTypeCurve = GeomAbs_OtherCurve;
+  myCurve.Nullify();
+  myCurveCache.Nullify();
+  myNestedEvaluator.Nullify();
+  myBSplineCurve.Nullify();
+  myFirst = myLast = 0.0;
+}
 
 //=======================================================================
 //function : Load

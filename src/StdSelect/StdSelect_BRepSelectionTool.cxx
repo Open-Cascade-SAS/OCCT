@@ -621,7 +621,16 @@ Standard_Boolean StdSelect_BRepSelectionTool::GetSensitiveForFace (const TopoDS_
   BRepAdaptor_Curve cu3d;
   for (BRepTools_WireExplorer aWireExplorer (aWire); aWireExplorer.More(); aWireExplorer.Next())
   {
-    cu3d.Initialize (aWireExplorer.Current());
+    try
+    {
+      OCC_CATCH_SIGNALS
+      cu3d.Initialize (aWireExplorer.Current());
+    }
+    catch (Standard_NullObject)
+    {
+      continue;
+    }
+
     Standard_Real wf = 0.0, wl = 0.0;
     BRep_Tool::Range (aWireExplorer.Current(), wf, wl);
     if (Abs (wf - wl) <= Precision::Confusion())

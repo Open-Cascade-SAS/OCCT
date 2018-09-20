@@ -86,7 +86,10 @@ public:
   //! is  raised if  the edge does  not have a pcurve on
   //! the face.
   Standard_EXPORT BRepAdaptor_Curve(const TopoDS_Edge& E, const TopoDS_Face& F);
-  
+
+  //! Reset currently loaded curve (undone Load()).
+  Standard_EXPORT void Reset();
+
   //! Sets  the Curve <me>  to acces to the  geometry of
   //! edge <E>.
   Standard_EXPORT void Initialize (const TopoDS_Edge& E);

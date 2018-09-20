@@ -52,8 +52,8 @@ void VrmlConverter_WFRestrictedFace::Add
   Bnd_Box2d B;
   
   for (ToolRst.Init(); ToolRst.More(); ToolRst.Next()) {
-    Adaptor2d_Curve2dPtr TheRCurve = ToolRst.Value();
-    BndLib_Add2dCurve::Add(*TheRCurve, Precision::PConfusion(), B);
+    const Adaptor2d_Curve2d& TheRCurve = ToolRst.Value();
+    BndLib_Add2dCurve::Add(TheRCurve, Precision::PConfusion(), B);
   }
 
   B.Get(UMin, VMin, UMax, VMax);
@@ -97,8 +97,7 @@ void VrmlConverter_WFRestrictedFace::Add
 
   for (ToolRst.Init(); ToolRst.More(); ToolRst.Next()) {
     TopAbs_Orientation Orient = ToolRst.Orientation();
-    if ( Orient == TopAbs_FORWARD || Orient == TopAbs_REVERSED ) {
-      Adaptor2d_Curve2dPtr TheRCurve = ToolRst.Value();
+      const Adaptor2d_Curve2d* TheRCurve = &ToolRst.Value();
       U1 = TheRCurve->FirstParameter();
       U2 = TheRCurve->LastParameter();
       if (TheRCurve->GetType() != GeomAbs_Line) {
@@ -121,8 +120,7 @@ void VrmlConverter_WFRestrictedFace::Add
 	  isobuild.Trim(P1,P2);
 	else
 	  isobuild.Trim(P2,P1);
-      }	  
-    }
+      }
   }
 
 

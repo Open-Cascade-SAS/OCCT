@@ -387,12 +387,7 @@ void StdPrs_Isolines::addOnSurface (const Handle(BRepAdaptor_HSurface)& theSurfa
     for (anEdgeTool.Init(); anEdgeTool.More(); anEdgeTool.Next())
     {
       TopAbs_Orientation anOrientation = anEdgeTool.Orientation();
-      if (anOrientation != TopAbs_FORWARD && anOrientation != TopAbs_REVERSED)
-      {
-        continue;
-      }
-
-      Adaptor2d_Curve2dPtr anEdgeCurve = anEdgeTool.Value();
+      const Adaptor2d_Curve2d* anEdgeCurve = &anEdgeTool.Value();
       if (anEdgeCurve->GetType() != GeomAbs_Line)
       {
         GCPnts_QuasiUniformDeflection aSampler (*anEdgeCurve, aSamplerDeflection);

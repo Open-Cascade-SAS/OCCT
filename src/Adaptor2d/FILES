@@ -1,6 +1,5 @@
 Adaptor2d_Curve2d.cxx
 Adaptor2d_Curve2d.hxx
-Adaptor2d_Curve2dPtr.hxx
 Adaptor2d_GenHCurve2d.gxx
 Adaptor2d_GenHCurve2d.lxx
 Adaptor2d_HCurve2d.cxx

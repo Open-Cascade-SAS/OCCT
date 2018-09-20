@@ -124,6 +124,19 @@ GeomAbs_Shape GeomAdaptor_Curve::LocalContinuity(const Standard_Real U1,
   }
 }
 
+//=======================================================================
+//function : Reset
+//purpose  :
+//=======================================================================
+void GeomAdaptor_Curve::Reset()
+{
+  myTypeCurve = GeomAbs_OtherCurve;
+  myCurve.Nullify();
+  myNestedEvaluator.Nullify();
+  myBSplineCurve.Nullify();
+  myCurveCache.Nullify();
+  myFirst = myLast = 0.0;
+}
 
 //=======================================================================
 //function : Load

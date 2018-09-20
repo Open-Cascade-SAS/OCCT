@@ -75,6 +75,18 @@ BRepAdaptor_Curve::BRepAdaptor_Curve(const TopoDS_Edge& E,
 }
 
 //=======================================================================
+//function : Reset
+//purpose  :
+//=======================================================================
+void BRepAdaptor_Curve::Reset()
+{
+  myCurve.Reset();
+  myConSurf.Nullify();
+  myEdge.Nullify();
+  myTrsf = gp_Trsf();
+}
+
+//=======================================================================
 //function : Initialize
 //purpose  : 
 //=======================================================================

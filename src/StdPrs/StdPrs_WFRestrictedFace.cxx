@@ -55,8 +55,8 @@ void StdPrs_WFRestrictedFace::Add
 
   for (aToolRst.Init(); aToolRst.More(); aToolRst.Next())
   {
-    Adaptor2d_Curve2dPtr aRCurve = aToolRst.Value();
-    BndLib_Add2dCurve::Add(*aRCurve, Precision::PConfusion(), aBndBox);
+    const Adaptor2d_Curve2d& aRCurve = aToolRst.Value();
+    BndLib_Add2dCurve::Add(aRCurve, Precision::PConfusion(), aBndBox);
   }
   if (!aBndBox.IsVoid())
     aBndBox.Get(aUMin, aVMin, aUMax, aVMax);
@@ -116,34 +116,31 @@ void StdPrs_WFRestrictedFace::Add
   for (aToolRst.Init(); aToolRst.More(); aToolRst.Next())
   {
     TopAbs_Orientation anOrientation = aToolRst.Orientation();
-    if (anOrientation == TopAbs_FORWARD || anOrientation == TopAbs_REVERSED)
+    const Adaptor2d_Curve2d* aRCurve = &aToolRst.Value();
+    anU1 = aRCurve->FirstParameter();
+    anU2 = aRCurve->LastParameter();
+    if (aRCurve->GetType() != GeomAbs_Line)
     {
-      Adaptor2d_Curve2dPtr aRCurve = aToolRst.Value();
-      anU1 = aRCurve->FirstParameter();
-      anU2 = aRCurve->LastParameter();
-      if (aRCurve->GetType() != GeomAbs_Line)
+      aDU = (anU2-anU1)/(aNbPoints-1);
+      aPoint2 = aRCurve->Value(anU1);
+      for (anI = 2; anI <= aNbPoints; ++anI)
       {
-        aDU = (anU2-anU1)/(aNbPoints-1);
-        aPoint2 = aRCurve->Value(anU1);
-        for (anI = 2; anI <= aNbPoints; ++anI)
-        {
-          anU = anU1 + (anI-1)*aDU;
-          aPoint1 = aPoint2;
-          aPoint2 = aRCurve->Value(anU);
-          if(anOrientation == TopAbs_FORWARD )
-            anIsoBuild.Trim(aPoint1,aPoint2);
-          else
-            anIsoBuild.Trim(aPoint2,aPoint1);
-        }
-      }
-      else {
-        aPoint1 = aRCurve->Value(anU1);
-        aPoint2 = aRCurve->Value(anU2);
+        anU = anU1 + (anI-1)*aDU;
+        aPoint1 = aPoint2;
+        aPoint2 = aRCurve->Value(anU);
         if(anOrientation == TopAbs_FORWARD )
           anIsoBuild.Trim(aPoint1,aPoint2);
         else
           anIsoBuild.Trim(aPoint2,aPoint1);
       }
+    }
+    else {
+      aPoint1 = aRCurve->Value(anU1);
+      aPoint2 = aRCurve->Value(anU2);
+      if(anOrientation == TopAbs_FORWARD )
+        anIsoBuild.Trim(aPoint1,aPoint2);
+      else
+        anIsoBuild.Trim(aPoint2,aPoint1);
     }
   }
 
@@ -243,7 +240,7 @@ Standard_Boolean StdPrs_WFRestrictedFace::Match
 
   for (aToolRst.Init(); aToolRst.More(); aToolRst.Next())
   {
-    Adaptor2d_Curve2dPtr aRCurve = aToolRst.Value();
+    const Adaptor2d_Curve2d* aRCurve = &aToolRst.Value();
     anU = aRCurve->FirstParameter();
     aV = aRCurve->LastParameter();
     if (aRCurve->GetType() != GeomAbs_Line)
@@ -319,32 +316,29 @@ Standard_Boolean StdPrs_WFRestrictedFace::Match
   for (aToolRst.Init(); aToolRst.More(); aToolRst.Next())
   {
     TopAbs_Orientation Orient = aToolRst.Orientation();
-    if (Orient == TopAbs_FORWARD || Orient == TopAbs_REVERSED)
-    {
-      Adaptor2d_Curve2dPtr aRCurve = aToolRst.Value();
-      anU1 = aRCurve->FirstParameter();
-      anU2 = aRCurve->LastParameter();
-      if (aRCurve->GetType() != GeomAbs_Line) {
-        aDU = (anU2-anU1)/(aNbPoints-1);
-        aPoint2 = aRCurve->Value(anU1);
-        for (anI = 2; anI <= aNbPoints; anI++) {
-          anU = anU1 + (anI-1)*aDU;
-          aPoint1 = aPoint2;
-          aPoint2 = aRCurve->Value(anU);
-          if(Orient == TopAbs_FORWARD )
-            anIsoBuild.Trim(aPoint1,aPoint2);
-          else
-            anIsoBuild.Trim(aPoint2,aPoint1);
-        }
-      }
-      else {
-        aPoint1 = aRCurve->Value(anU1);
-        aPoint2 = aRCurve->Value(anU2);
+    const Adaptor2d_Curve2d* aRCurve = &aToolRst.Value();
+    anU1 = aRCurve->FirstParameter();
+    anU2 = aRCurve->LastParameter();
+    if (aRCurve->GetType() != GeomAbs_Line) {
+      aDU = (anU2-anU1)/(aNbPoints-1);
+      aPoint2 = aRCurve->Value(anU1);
+      for (anI = 2; anI <= aNbPoints; anI++) {
+        anU = anU1 + (anI-1)*aDU;
+        aPoint1 = aPoint2;
+        aPoint2 = aRCurve->Value(anU);
         if(Orient == TopAbs_FORWARD )
           anIsoBuild.Trim(aPoint1,aPoint2);
         else
           anIsoBuild.Trim(aPoint2,aPoint1);
-      }	  
+      }
+    }
+    else {
+      aPoint1 = aRCurve->Value(anU1);
+      aPoint2 = aRCurve->Value(anU2);
+      if(Orient == TopAbs_FORWARD )
+        anIsoBuild.Trim(aPoint1,aPoint2);
+      else
+        anIsoBuild.Trim(aPoint2,aPoint1);
     }
   }
 

@@ -144,8 +144,7 @@ void VrmlConverter_WFDeflectionRestrictedFace::Add
   gp_Pnt dummypnt;
   for (ToolRst.Init(); ToolRst.More(); ToolRst.Next()) {
     TopAbs_Orientation Orient = ToolRst.Orientation();
-    if ( Orient == TopAbs_FORWARD || Orient == TopAbs_REVERSED ) {
-      Adaptor2d_Curve2dPtr TheRCurve = ToolRst.Value();
+      const Adaptor2d_Curve2d* TheRCurve = &ToolRst.Value();
       if (TheRCurve->GetType() != GeomAbs_Line) {
         GCPnts_QuasiUniformDeflection UDP(*TheRCurve, Deflection);
 	if (UDP.IsDone()) {
@@ -178,7 +177,6 @@ void VrmlConverter_WFDeflectionRestrictedFace::Add
 	else
 	  isobuild.Trim(P2,P1);
       }
-    }
   }
 
   // draw the isos

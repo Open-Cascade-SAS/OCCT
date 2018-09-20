@@ -12,114 +12,59 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <StdPrs_ToolRFace.hxx>
 
 #include <Adaptor2d_Curve2d.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_HSurface.hxx>
-#include <Geom2d_TrimmedCurve.hxx>
-#include <StdPrs_ToolRFace.hxx>
 #include <TopoDS.hxx>
 
 //=======================================================================
 //function : StdPrs_ToolRFace
-//purpose  : 
+//purpose  :
 //=======================================================================
 StdPrs_ToolRFace::StdPrs_ToolRFace()
+: myHasNullCurves (Standard_False)
 {
 }
 
 //=======================================================================
 //function : StdPrs_ToolRFace
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-StdPrs_ToolRFace::StdPrs_ToolRFace(const Handle(BRepAdaptor_HSurface)& aSurface) :
-       myFace(((BRepAdaptor_Surface*)&(aSurface->Surface()))->Face())
+StdPrs_ToolRFace::StdPrs_ToolRFace (const Handle(BRepAdaptor_HSurface)& theSurface)
+: myFace (theSurface->ChangeSurface().Face()),
+  myHasNullCurves (Standard_False)
 {
   myFace.Orientation(TopAbs_FORWARD);
 }
 
 //=======================================================================
-//function : IsOriented
-//purpose  : 
+//function : next
+//purpose  :
 //=======================================================================
-
-Standard_Boolean StdPrs_ToolRFace::IsOriented () const {
-  
-  return Standard_True;
-
-}
-
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
-
-void StdPrs_ToolRFace::Init() 
+void StdPrs_ToolRFace::next()
 {
-  myExplorer.Init(myFace,TopAbs_EDGE);
-  if (myExplorer.More()) {
-    Standard_Real U1,U2;
-    const Handle(Geom2d_Curve)& C = 
-      BRep_Tool::CurveOnSurface(TopoDS::Edge(myExplorer.Current()),
-				myFace,
-				U1,U2);
-    DummyCurve.Load(C,U1,U2);
-  }
-}
-
-//=======================================================================
-//function : More
-//purpose  : 
-//=======================================================================
-
-Standard_Boolean StdPrs_ToolRFace::More() const
-{
-  return myExplorer.More();
-}
-
-//=======================================================================
-//function : Next
-//purpose  : 
-//=======================================================================
-
-void StdPrs_ToolRFace::Next()
-{
-  myExplorer.Next();
-
-  if (myExplorer.More()) {
+  Standard_Real aParamU1, aParamU2;
+  for (; myExplorer.More(); myExplorer.Next())
+  {
     // skip INTERNAL and EXTERNAL edges
-    while (myExplorer.More() && (myExplorer.Current().Orientation() == TopAbs_INTERNAL 
-                              || myExplorer.Current().Orientation() == TopAbs_EXTERNAL)) 
-	myExplorer.Next();
-    if (myExplorer.More()) {
-      Standard_Real U1,U2;
-      const Handle(Geom2d_Curve)& C = 
-	BRep_Tool::CurveOnSurface(TopoDS::Edge(myExplorer.Current()),
-				  myFace,
-				  U1,U2);
-      if ( !C.IsNull() )
-	DummyCurve.Load(C,U1,U2);
+    if (myExplorer.Current().Orientation() != TopAbs_FORWARD
+     && myExplorer.Current().Orientation() != TopAbs_REVERSED)
+    {
+      continue;
+    }
+
+    if (Handle(Geom2d_Curve) aCurve = BRep_Tool::CurveOnSurface (TopoDS::Edge (myExplorer.Current()), myFace, aParamU1, aParamU2))
+    {
+      myCurve.Load (aCurve, aParamU1, aParamU2);
+      return;
+    }
+    else
+    {
+      myHasNullCurves = Standard_True;
     }
   }
+
+  myCurve.Reset();
 }
-
-//=======================================================================
-//function : Value
-//purpose  : 
-//=======================================================================
-
-Adaptor2d_Curve2dPtr StdPrs_ToolRFace::Value() const
-{
-  return (Adaptor2d_Curve2dPtr)&DummyCurve;
-}
-
-//=======================================================================
-//function : Orientation
-//purpose  : 
-//=======================================================================
-
-TopAbs_Orientation StdPrs_ToolRFace::Orientation () const {
-  return myExplorer.Current().Orientation();
-}
-
