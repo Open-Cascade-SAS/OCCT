@@ -1,0 +1,15 @@
+puts "========"
+puts "0030154: Modeling Algorithms - Boolean Operation on planar geometry hangs inside BRepLib::FindValidRange()"
+puts "========"
+puts ""
+
+plane p 165424660 597500 42834196 -1 0 0
+mkface f p
+box b -94190864 -46229000 -17178478.4 519231048 93653000 120025348.8
+invert b
+
+bcut result f b
+
+checkshape result
+checkprops result -s 1.12407e+16
+checknbshapes result -wire 1 -face 1

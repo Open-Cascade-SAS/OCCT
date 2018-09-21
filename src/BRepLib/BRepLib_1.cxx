@@ -158,8 +158,10 @@ Standard_Boolean BRepLib::FindValidRange
 {
   if (theParV2 - theParV1 < Precision::PConfusion())
     return Standard_False;
-  
-  Standard_Real anEps = Max(theCurve.Resolution(theTolE) * 0.1, Precision::PConfusion());
+
+  Standard_Real anEps = Max(Max(theCurve.Resolution(theTolE) * 0.1,
+                                Epsilon(Max(Abs(theParV1), Abs(theParV2)))),
+                            Precision::PConfusion());
 
   if (Precision::IsInfinite(theParV1))
     theFirst = theParV1;
