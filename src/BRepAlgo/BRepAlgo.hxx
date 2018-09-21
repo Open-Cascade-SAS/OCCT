@@ -17,10 +17,6 @@
 #ifndef _BRepAlgo_HeaderFile
 #define _BRepAlgo_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
 #include <GeomAbs_Shape.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Boolean.hxx>
@@ -28,38 +24,22 @@
 class TopoDS_Wire;
 class TopoDS_Edge;
 class TopoDS_Shape;
-class BRepAlgo_BooleanOperation;
-class BRepAlgo_Fuse;
-class BRepAlgo_Cut;
-class BRepAlgo_Common;
-class BRepAlgo_Section;
-class BRepAlgo_Loop;
-class BRepAlgo_Tool;
-class BRepAlgo_Image;
-class BRepAlgo_AsDes;
-class BRepAlgo_FaceRestrictor;
-class BRepAlgo_NormalProjection;
 
 
-
-//! The BRepAlgo package provides a full range of
-//! services to perform Old Boolean Operations in Open CASCADE.
-//! Attention:
-//! The New Boolean Operation has replaced the Old
-//! Boolean Operations algorithm in the BrepAlgoAPI
-//! package in Open CASCADE.
+//! The BRepAlgo class provides the following tools for:
+//! - Checking validity of the shape;
+//! - Concatenation of the edges of the wire.
 class BRepAlgo 
 {
 public:
 
-  DEFINE_STANDARD_ALLOC
-
-  
   //! this method makes a wire whose edges are C1 from
   //! a Wire whose edges could be G1. It removes a vertex
   //! between G1 edges.
   //! Option can be G1 or C1.
-  Standard_EXPORT static TopoDS_Wire ConcatenateWire (const TopoDS_Wire& Wire, const GeomAbs_Shape Option, const Standard_Real AngularTolerance = 1.0e-4);
+  Standard_EXPORT static TopoDS_Wire ConcatenateWire (const TopoDS_Wire& Wire,
+                                                      const GeomAbs_Shape Option,
+                                                      const Standard_Real AngularTolerance = 1.0e-4);
   
   //! this method makes an edge from a wire.
   //! Junction points between edges of wire may be sharp,
@@ -78,7 +58,10 @@ public:
   //! If <GeomCtrl>  is    False the geometry  of   new
   //! vertices and edges   are   not verified and  the
   //! auto-intersection of new wires are not searched.
-  Standard_EXPORT static Standard_Boolean IsValid (const TopTools_ListOfShape& theArgs, const TopoDS_Shape& theResult, const Standard_Boolean closedSolid = Standard_False, const Standard_Boolean GeomCtrl = Standard_True);
+  Standard_EXPORT static Standard_Boolean IsValid (const TopTools_ListOfShape& theArgs,
+                                                   const TopoDS_Shape& theResult,
+                                                   const Standard_Boolean closedSolid = Standard_False,
+                                                   const Standard_Boolean GeomCtrl = Standard_True);
   
   //! Checks if the shape is "correct".
   //! If not, returns FALSE, else returns TRUE.
@@ -86,38 +69,6 @@ public:
   //! (intersection of wires, pcurve validity) are performed.
   Standard_EXPORT static Standard_Boolean IsTopologicallyValid (const TopoDS_Shape& S);
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class BRepAlgo_BooleanOperation;
-friend class BRepAlgo_Fuse;
-friend class BRepAlgo_Cut;
-friend class BRepAlgo_Common;
-friend class BRepAlgo_Section;
-friend class BRepAlgo_Loop;
-friend class BRepAlgo_Tool;
-friend class BRepAlgo_Image;
-friend class BRepAlgo_AsDes;
-friend class BRepAlgo_FaceRestrictor;
-friend class BRepAlgo_NormalProjection;
-
 };
-
-
-
-
-
-
 
 #endif // _BRepAlgo_HeaderFile

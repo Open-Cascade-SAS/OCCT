@@ -1,4 +1,4 @@
-﻿Draw Test Harness  {#occt_user_guides__test_harness}
+Draw Test Harness  {#occt_user_guides__test_harness}
 ===============================
 
 @tableofcontents
@@ -6866,83 +6866,9 @@ tscale c1 0 0 0 0.5
 ~~~~
 
 
-@subsection occt_draw_7_6  Old Topological operations
+@subsection occt_draw_7_6 Sewing
 
-  *  **fuse**, **cut**, **common** are boolean operations. 
-  *  **section**, **psection** compute sections. 
-  *  **sewing** joins two or more shapes. 
-
-
-@subsubsection occt_draw_7_6_1  fuse, cut, common
-
-These commands are no longer supported, so the result may be unpredictable.
-Use the commands bfuse, bcut, bcommon instead.
-
-Syntax:
-~~~~{.php}
-fuse name shape1 shape2 
-cut name shape1 shape2 
-common name shape1 shape2 
-~~~~
-
-**fuse** creates a new shape by a boolean operation on two existing shapes. The new shape contains both originals intact. 
-
-**cut** creates a new shape which contains all parts of the second shape but only the first shape without the intersection of the two shapes. 
-
-**common** creates a new shape which contains only what is in common between the two original shapes in their intersection. 
-
-**Example:** 
-~~~~{.php}
-# all four boolean operations on a box and a cylinder 
-
-box b 0 -10 5 20 20 10 
-pcylinder c 5 20 
-
-fuse s1 b c 
-ttranslate s1 40 0 0 
-
-cut s2 b c 
-ttranslate s2 -40 0 0 
-
-cut s3 c b 
-ttranslate s3 0 40 0 
-
-common s4 b c 
-ttranslate s4 0 -40 0 
-~~~~
-
-
-@subsubsection occt_draw_7_6_2  section, psection
-
-These commands are no longer supported, so the result may be unpredictable.
-Use the command **bsection** instead.
-
-Syntax:
-~~~~{.php}
-section result shape1 shape2 
-psection name shape plane 
-~~~~
-
-**section** creates a compound object consisting of the edges for the intersection curves on the faces of two shapes. 
-
-**psection** creates a planar section consisting of the edges for the intersection curves on the faces of a shape and a plane. 
-
-**Example:** 
-~~~~{.php}
-# section line between a cylinder and a box 
-pcylinder c 10 20 
-box b 0 0 5 15 15 15 
-trotate b 0 0 0 1 1 1 20 
-section s b c 
-
-# planar section of a cone 
-pcone c 10 30 30 
-plane p 0 0 15 1 1 2 
-psection s c p 
-~~~~
-
-@subsubsection occt_draw_7_6_3  sewing
-
+**sewing** joins two or more shapes.
 Syntax:
 ~~~~{.php}
 sewing result [tolerance] shape1 shape2 ... 
@@ -6960,7 +6886,8 @@ whatis sr
 sr is a shape COMPOUND FORWARD Free Modified 
 ~~~~
 
-@subsection occt_draw_7_7 New Topological operations
+
+@subsection occt_draw_7_7 Topological operations
 
 The new algorithm of Boolean operations avoids a large number of weak points and limitations presented in the old Boolean operation algorithm.
 It also provides wider range of options and diagnostics.

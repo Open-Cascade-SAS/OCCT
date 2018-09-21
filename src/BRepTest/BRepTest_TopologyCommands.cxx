@@ -22,11 +22,6 @@
 #include <Draw_Appli.hxx>
 #include <BRep_Builder.hxx>
 
-#include <BRepAlgo_Fuse.hxx>
-#include <BRepAlgo_Common.hxx>
-#include <BRepAlgo_Cut.hxx>
-#include <BRepAlgo_Section.hxx>
-
 #include <BRepFilletAPI_MakeFillet.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include <BRepPrimAPI_MakeHalfSpace.hxx>
@@ -42,122 +37,8 @@
 #include <TopOpeBRepDS_HDataStructure.hxx>
 #include <gp.hxx>
 #include <gp_Pln.hxx>
-#include <Message.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
 #include <TopExp.hxx>
-
-Standard_DISABLE_DEPRECATION_WARNINGS
-
-//=======================================================================
-// topop
-//=======================================================================
-
-static Standard_Integer topop(Draw_Interpretor& , Standard_Integer n, const char** a)
-{
-  if (n < 4) return 1;
-
-  TopoDS_Shape s1 = DBRep::Get(a[2]);
-  TopoDS_Shape s2 = DBRep::Get(a[3]);
-
-  if (s1.IsNull() || s2.IsNull()) return 1;
-
-  TopoDS_Shape res;
-
-  if (*a[0] == 'f')
-    res = BRepAlgo_Fuse(s1,s2);
-  else if (*(a[0]+1) == 'o')
-    res = BRepAlgo_Common(s1,s2);
-  else 
-    res = BRepAlgo_Cut(s1,s2);
-
-  DBRep::Set(a[1],res);
-
-  return 0;
-}
-
-
-//=======================================================================
-// section
-//=======================================================================
-
-static Standard_Integer section(Draw_Interpretor& , Standard_Integer n, const char** a)
-{
-
-  if (n < 4) return 1;
-
-  TopoDS_Shape s1 = DBRep::Get(a[2]);
-  TopoDS_Shape s2 = DBRep::Get(a[3]);
-  
-  if (s1.IsNull() || s2.IsNull())
-    return 1;
-
-  BRepAlgo_Section Sec(s1, s2, Standard_False);
-  TopoDS_Shape res;
-
-  for (int i=4; i < n; i++) {
-    if (!strcasecmp(a[i], "-2d"))
-    {
-      Sec.ComputePCurveOn1(Standard_True);
-      Sec.ComputePCurveOn2(Standard_True);
-    } 
-    else if (!strcasecmp(a[i], "-2d1")) 
-    {
-      Sec.ComputePCurveOn1(Standard_True);
-      Sec.ComputePCurveOn2(Standard_False);
-    } 
-    else if (!strcasecmp(a[i], "-2d2")) 
-    {
-      Sec.ComputePCurveOn1(Standard_False);
-      Sec.ComputePCurveOn2(Standard_True);
-    } 
-    else if (!strcasecmp(a[i], "-no2d"))
-    {
-      Sec.ComputePCurveOn1(Standard_False);
-      Sec.ComputePCurveOn2(Standard_False);
-    } 
-    else if (!strcasecmp(a[i], "-a")) 
-      Sec.Approximation(Standard_True);
-    else if (strcasecmp(a[i], "-p"))
-    {
-      Message::SendFail() << "Unknown option: " << a[i];
-      return 1;
-    }
-  }
-
-  res = Sec.Shape();
-  
-  DBRep::Set(a[1],res);
-  
-  return 0;
-}
-
-//=======================================================================
-// psection
-//=======================================================================
-
-static Standard_Integer psection(Draw_Interpretor& , Standard_Integer n, const char** a)
-{
-  if (n < 4) return 1;
-
-  TopoDS_Shape s = DBRep::Get(a[2]);
-  if (s.IsNull()) return 1;
-
-  Handle(Geom_Surface) ps = DrawTrSurf::GetSurface(a[3]);
-  if (ps.IsNull()) return 1;
-
-  Handle(Geom_Plane) pg = Handle(Geom_Plane)::DownCast(ps);
-  if (pg.IsNull()) return 1;
-
-  const gp_Pln& p = pg->Pln();
-
-  TopoDS_Shape res = BRepAlgo_Section(s,p);
-
-  DBRep::Set(a[1],res);
-
-  return 0;
-}
-
-Standard_ENABLE_DEPRECATION_WARNINGS
 
 static Standard_Integer halfspace(Draw_Interpretor& di,
 				  Standard_Integer n, const char** a)
@@ -247,11 +128,6 @@ void  BRepTest::TopologyCommands(Draw_Interpretor& theCommands)
 
   const char* g = "TOPOLOGY Topological operation commands";
   
-  theCommands.Add("fuse","fuse result s1 s2",__FILE__,topop,g);
-  theCommands.Add("common","common result s1 s2",__FILE__,topop,g);
-  theCommands.Add("cut","cut result part tool",__FILE__,topop,g);
-  theCommands.Add("section","section result s1 s2 [-no2d/-2d/-2d1/-2d2] [-p/-a]",__FILE__,section,g);
-  theCommands.Add("psection","psection result s plane",__FILE__,psection,g);
   theCommands.Add("halfspace","halfspace result face/shell x y z",__FILE__,halfspace,g);
   theCommands.Add("buildfaces","buildfaces result faceReference wire1 wire2 ...",__FILE__,buildfaces,g);
 }

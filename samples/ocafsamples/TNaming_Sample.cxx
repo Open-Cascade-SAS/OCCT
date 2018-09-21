@@ -26,12 +26,10 @@
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopExp_Explorer.hxx>
 
-#include <TopOpeBRepBuild_HBuilder.hxx>
-
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepFilletAPI_MakeFillet.hxx>
 
-#include <BRepAlgo_Cut.hxx>
+#include <BRepAlgoAPI_Cut.hxx>
 #include <BRepAlgo.hxx>
 
 #include <TDF_Data.hxx>
@@ -305,7 +303,7 @@ void Sample()
   ToolSelector.Select(Tool, Tool);
   const TopoDS_Shape& TOOL = ToolSelector.NamedShape()->Get();
 
-  BRepAlgo_Cut mkCUT (OBJECT, TOOL);
+  BRepAlgoAPI_Cut mkCUT (OBJECT, TOOL);
 
   if (!mkCUT.IsDone()) {
     std::cout << "CUT: Algorithm failed" << std::endl;
@@ -365,8 +363,7 @@ void Sample()
 
 	  // push in the DF section edges
 	  TNaming_Builder IntersBuilder(Intersections);
-	  Handle(TopOpeBRepBuild_HBuilder) build = mkCUT.Builder();  
-	  TopTools_ListIteratorOfListOfShape its = build->Section();
+	  TopTools_ListIteratorOfListOfShape its(mkCUT.SectionEdges());
 	  for (; its.More(); its.Next()) {
 	    // TNaming_Evolution == SELECTED
 	    IntersBuilder.Select(its.Value(),its.Value());

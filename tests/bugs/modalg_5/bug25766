@@ -8,4 +8,6 @@ puts ""
 
 restore [locate_data_file OCC25766_surface1.brep] b1
 restore [locate_data_file OCC25766_surface2.brep] b2
-section r b1 b2
+bsection r b1 b2
+checkprops r -l 950.001
+checksection r -r 2

@@ -13,17 +13,20 @@ restore [locate_data_file OCC592.brep] a
 
 set Z 67.599311020481764
 plane p 0 0 $Z
-psection r1 a p 
+mkface f p
+bsection r1 a f
 if ![regexp VERTEX [statshape r1]] {puts [format "OCC526 FAULTY Z=%f" $Z ] }
 
 set Z 66.599311020481764
 plane p 0 0 $Z 
-psection r2 a p 
+mkface f p
+bsection r2 a f
 if ![regexp VERTEX [statshape r2]] {puts [format "OCC526 FAULTY Z=%f" $Z ] }
 
 set Z 65.599311020481764
 plane p 0 0 $Z 
-psection result a p 
+mkface f p
+bsection result a f
 if ![regexp VERTEX [statshape result]] {puts [format "OCC526 FAULTY Z=%f" $Z ] }
 
 checkprops result -l 27.8021 

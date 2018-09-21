@@ -6,7 +6,7 @@ puts ""
 pload MODELING VISUALIZATION
 box b -5 -5 -5 10 10 10
 psphere s 6
-fuse res2 s b
+bfuse res2 s b
 nurbsconvert result res2
 
 vinit View1

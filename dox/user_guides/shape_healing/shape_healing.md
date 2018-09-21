@@ -802,7 +802,7 @@ if (MaxOnVertex > MaxAllowed) {
 
 Class ShapeAnalysis_FreeBounds is intended to analyze and output the free bounds of a shape. Free bounds are wires consisting of edges referenced only once by only one face in the shape. 
 This class works on two distinct types of shapes when analyzing their free bounds: 
-* Analysis of possible free bounds taking the specified tolerance into account. This analysis can be applied to a compound of faces. The analyzer of the sewing algorithm (*BRepAlgo_Sewing*) is used to forecast what free bounds would be obtained after the sewing of these faces is performed. The following method should be used for this analysis:
+* Analysis of possible free bounds taking the specified tolerance into account. This analysis can be applied to a compound of faces. The analyzer of the sewing algorithm is used to forecast what free bounds would be obtained after the sewing of these faces is performed. The following method should be used for this analysis:
 ~~~~{.cpp}
 ShapeAnalysis_FreeBounds safb(shape,toler); 
 ~~~~

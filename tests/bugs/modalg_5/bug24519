@@ -9,19 +9,12 @@ puts ""
 restore [locate_data_file bug24519_cylinder.brep] cy
 restore [locate_data_file bug24519_plane.brep] pl
 
-bsection r1 cy pl
-section r2 cy pl
-set exp1 [explode r1]
-set exp2 [explode r2]
+bsection r cy pl
+set exp [explode r]
 
-if { $exp1 != "r1_1" } {
+if { $exp != "r_1" } {
   puts "Error: First intersection is not returned"
 }
-if { $exp2 != "r2_1" } {
-  puts "Error: Second intersection is not returned"
-}
 
-checksection r1
-checksection r2
-checkprops r1 -l 3.83537
-checkprops r2 -l 3.83537
+checksection r -r 2
+checkprops r -l 3.83537

@@ -60,7 +60,7 @@ for {set a 1} {$a <= 6} {incr a} {
   BuildNamedShape D [set TestLab]:3:$a PRIMITIVE b_$a
 }
 
-cut c p b
+bcut c p b
 BuildNamedShape D [set TestLab]:4 MODIFY p c
 explode c F
 set needgenerate ""
@@ -92,7 +92,7 @@ BuildNamedShape D [set TestLab]:4:1 MODIFY [lindex $needgenerate 0] [lindex $nee
 BuildNamedShape D [set TestLab]:4:2 GENERATED [lindex $needmodify 0] [lindex $needmodify 1] [lindex $needmodify 2] [lindex $needmodify 3] b_1 b_1
 
 #################### test TNamig_Tool::NamedShape command ####################
-set names "e1 e2 e3 p p_1 p_2 p_3 p_5 b b_1 b_2 b_3 b_4 b_5 b_6 c c_1 c_2 c_3 c_5 c_6 c_7 c_8 c_9 c_10"
+set names "e1 e2 e3 p p_1 p_2 p_3 p_5 b b_1 b_2 b_3 b_4 b_5 b_6 c c_1 c_5 c_4 c_3 c_6 c_10 c_7 c_9 c_8"
 set entities "1:1 1:2 1:3 2 2:1 2:1 2:1 2:3 3 3:1 3:2 3:3 3:4 3:5 3:6 4 4:1 4:1 4:2 4:1 4:1 4:1 4:2 2:3 4:1"
 
 for {set i 0} {[string compare [lindex $names $i] ""] != 0} {incr i} {
@@ -106,8 +106,8 @@ for {set i 0} {[string compare [lindex $names $i] ""] != 0} {incr i} {
 }
 #################### test TNaming_Tool::CurrentShape command ####################
 set entities "1 1:1 1:2 1:3 2 2:1 2:2 2:3 3 3:1 3:2 3:3 3:4 3:5 3:6 4 4:1 4:2"
-# rem: f p_4 c_4 are same, p_5 c_9 are same
-set names "c_4 e1 e2 e3 c # p_4 c_9 b b_1 b_2 b_3 b_4 b_5 b_6 c # #"
+# rem: f p_4 c_2 are same, p_5 c_9 are same
+set names "c_2 e1 e2 e3 c # p_4 c_9 b b_1 b_2 b_3 b_4 b_5 b_6 c # #"
 
 for {set i 0} {[string compare [lindex $entities $i] ""] != 0} {incr i} {
   CurrentShape D "[set TestLab]:[lindex $entities $i]" r
@@ -127,8 +127,8 @@ for {set i 0} {[string compare [lindex $entities $i] ""] != 0} {incr i} {
 
 #################### test TNaming_Tool::GetShape command ####################
 set entities "1 1:1 1:2 1:3 2 2:1 2:2 2:3 3 3:1 3:2 3:3 3:4 3:5 3:6 4 4:1 4:2"
-# rem: f p_4 c_4 are same, p_5 c_9 are same
-set names "c_4 e1 e2 e3 p # p_4 c_9 b b_1 b_2 b_3 b_4 b_5 b_6 c # #"
+# rem: f p_4 c_2 are same, p_5 c_9 are same
+set names "c_2 e1 e2 e3 p # p_4 c_9 b b_1 b_2 b_3 b_4 b_5 b_6 c # #"
 
 for {set i 0} {[string compare [lindex $entities $i] ""] != 0} {incr i} {
   GetShape D "[set TestLab]:[lindex $entities $i]" r

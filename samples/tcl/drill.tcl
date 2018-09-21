@@ -37,8 +37,8 @@ mkface circle1 p0 circle1
 mkface circle2 p0 circle2
 
 bcommon sec rectangle1 circle1
-# note use of 'fuse' instead of 'bfuse' -- we need to get single face
-fuse sec sec circle2
+bfuse sec sec circle2
+unifysamedom sec sec
 
 # Construct flute profile so as to have cutting lip straight after sharpening.
 # Here we need to take into account spiral shift of the flute edge

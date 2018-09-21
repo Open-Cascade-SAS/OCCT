@@ -15,7 +15,7 @@ wire ell_w ell_e
 mkplane ell_f ell_w 1
 
 box ell_t -10 -110 140 20 110 460
-cut ell_d ell_f ell_t
+bcut ell_d ell_f ell_t
 
 revol ell_z ell_d 0 0 0 0 0 1 360
 explode ell_z F

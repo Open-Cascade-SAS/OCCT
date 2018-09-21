@@ -35,9 +35,10 @@ bcommon teeth teeth outer
 tcopy inner profile
 set nbteeths 25
 for {set i 0} {$i < $nbteeths} {incr i} {
-  fuse profile profile teeth
+  bfuse profile profile teeth
   trotate teeth 0 0 0 0 0 1 360./$nbteeths
 }
+unifysamedom profile profile
 
 # sweep profile along curved shape
 polyline sp 0 0 0  0 0 H

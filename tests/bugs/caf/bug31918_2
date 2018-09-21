@@ -11,7 +11,7 @@ proc store_part {nx ny dx dy dz entry} {
   global D0
   box b1 0 0 0 [expr $nx + .5] [expr $ny + .5] 1
   box b2 0.5 0.5 0 [expr $nx - .5] [expr $nx - .5] 0.4
-  cut base b1 b2
+  bcut base b1 b2
 
   set command "compound"
   for {set x 0} {$x < $nx} {incr x} {

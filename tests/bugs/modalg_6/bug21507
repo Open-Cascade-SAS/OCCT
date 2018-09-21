@@ -42,16 +42,4 @@ if { [llength $rfaces] != 1 } {
   puts "Result is as expected"
 }
 
-# Do the same using cut
-puts "Now running old cut"
-cut rcut face tool
-
-# Evaluate result by number of faces (cut)
-set rcfaces [explode rcut f]
-if { [llength $rcfaces] != 1 } {
-  puts "Error: [llength $rcfaces] faces instead of 1"
-} else {
-  puts "Result is as expected"
-}
-
 checkview -display result -2d -path ${imagedir}/${test_image}.png
