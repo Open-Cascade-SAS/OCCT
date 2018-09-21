@@ -481,11 +481,6 @@ void TopOpeBRepBuild_HBuilder::MakeCurveAncestorMap()
     itloe.Initialize(LOS);
     for(;itloe.More();itloe.Next()) {
       TopoDS_Shape& E = *((TopoDS_Shape*)(&itloe.Value()));
-      if(mySectEdgeDSCurve.IsBound(E)) {
-#ifdef OCCT_DEBUG
-	cout<<"BRepAlgo_DSAccess::MakeEdgeAncestorFromCurve : program error"<<endl;
-#endif
-      }
       mySectEdgeDSCurve.Bind(E, ic);
     }
   }

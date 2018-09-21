@@ -23,7 +23,6 @@
 #include <BRepAdaptor_HSurface.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepAlgo_NormalProjection.hxx>
-#include <BRepAlgo_SequenceOfSequenceOfInteger.hxx>
 #include <BRepAlgoAPI_Section.hxx>
 #include <BRepLib_MakeEdge.hxx>
 #include <BRepLib_MakeVertex.hxx>

@@ -38,9 +38,6 @@ class BRepAlgo_Tool;
 class BRepAlgo_Image;
 class BRepAlgo_AsDes;
 class BRepAlgo_FaceRestrictor;
-class BRepAlgo_BooleanOperations;
-class BRepAlgo_DSAccess;
-class BRepAlgo_EdgeConnector;
 class BRepAlgo_NormalProjection;
 
 
@@ -114,9 +111,6 @@ friend class BRepAlgo_Tool;
 friend class BRepAlgo_Image;
 friend class BRepAlgo_AsDes;
 friend class BRepAlgo_FaceRestrictor;
-friend class BRepAlgo_BooleanOperations;
-friend class BRepAlgo_DSAccess;
-friend class BRepAlgo_EdgeConnector;
 friend class BRepAlgo_NormalProjection;
 
 };

@@ -20,11 +20,13 @@
 #include <Bnd_Box.hxx>
 #include <BndLib_Add3dCurve.hxx>
 #include <BndLib_AddSurface.hxx>
+#include <BOPAlgo_Builder.hxx>
+#include <BOPAlgo_PaveFiller.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepAdaptor_Surface.hxx>
-#include <BRepAlgo_DSAccess.hxx>
+#include <BRepAlgoAPI_Section.hxx>
 #include <BRepBuilderAPI_Sewing.hxx>
 #include <BRepClass3d_SolidClassifier.hxx>
 #include <BRepExtrema_DistShapeShape.hxx>
@@ -618,99 +620,84 @@ static Standard_Boolean GoodOrientation(const Bnd_Box& B,
       return Standard_False; // Impossible to do
     }
   }
-      
-  BRepAlgo_DSAccess DSA;
-  DSA.Load(Sol1, Sol2);
-  DSA.Intersect(Sol1, Sol2); // intersection of 2 solids
- 
-// removal of edges corresponding to "unused" intersections
-  Standard_Integer NbPaquet;
-// gp_Pnt P1,P2;
-  TopoDS_Vertex V,V1;
-  TopTools_ListOfShape List;
-  List  = DSA.GetSectionEdgeSet();// list of edges
-  
-  NbPaquet = List.Extent();
 
-  if (NbPaquet == 0) {
-#if DRAW
-    cout << "No fusion" << endl;
-    DBRep::Set("DepPart", Sol1);
-    DBRep::Set("StopPart", Sol2);
-#endif
+  // Perform intersection of solids
+  BOPAlgo_PaveFiller aPF;
+  TopTools_ListOfShape anArgs;
+  anArgs.Append(Sol1);
+  anArgs.Append(Sol2);
+  aPF.SetArguments(anArgs);
+  aPF.Perform();
+  if (aPF.HasErrors())
     return Standard_False;
-  }
 
-  if (NbPaquet > 1) {
-    // It is required to select packs.
-    TColStd_Array1OfReal Dist(1, NbPaquet);
-    TopTools_ListIteratorOfListOfShape it(List);
-    Standard_Real D, Dmin = 1.e10;
-    Standard_Integer ii;
- 
-    //Classify the packs by distance.
-    BRepExtrema_DistShapeShape Dist2;
-    Dist2.LoadS1( myWire );
-    for (ii=1; it.More();it.Next(),ii++){
-      Dist2.LoadS2( it.Value() );
-      Dist2.Perform();
-      if (Dist2.IsDone()) {
-	D = Dist2.Value();
-	Dist(ii) = D;
-	if (D < Dmin) Dmin = D;
-      }
-      else
-	Dist(ii) = 1.e10;
-    }
+  BRepAlgoAPI_Section aSec(Sol1, Sol2, aPF);
+  const TopoDS_Shape& aSection = aSec.Shape();
 
-    // remove edges "farther" than Dmin
-    for (ii=1, it.Initialize(List); it.More();it.Next(), ii++){
-      if (Dist(ii) > Dmin) {
-	DSA.SuppressEdgeSet(it.Value());
-      }
-#if DRAW
-     else if (Affich) {
-	DBRep::Set("KeepEdges", it.Value());
-      }
-#endif
-    }
-  }
+  TopExp_Explorer exp(aSection, TopAbs_EDGE);
+  if (!exp.More())
+    // No section edges produced
+    return Standard_False;
 
-  if (StopShape.ShapeType() != TopAbs_SOLID) {
+  if (StopShape.ShapeType() != TopAbs_SOLID)
+  {
     // It is required to choose the state by the geometry
 
-    //(1) Return an edge of section
-    List  = DSA.GetSectionEdgeSet();// list of edges
-    TopTools_ListIteratorOfListOfShape it(List);
-    TopoDS_Iterator iter(it.Value());
-    TopoDS_Edge E = TopoDS::Edge(iter.Value());
+    // We need to find the section edge, closest to myWire
+    TopoDS_Edge aSEMin;
+    Standard_Real Dmin = Precision::Infinite();
+    BRepExtrema_DistShapeShape DistTool;
+    DistTool.LoadS1(myWire);
 
-    //(2) Return geometry on StopShape
-// Class BRep_Tool without fields and without Constructor :
-//    BRep_Tool BT;
-    Handle(Geom_Surface) S;
-    Handle(Geom2d_Curve) C2d;
-    gp_Pnt2d P2d;
-    Standard_Real f,l;  
-    TopLoc_Location L;
-//    BT.CurveOnSurface(E, C2d, S, L, f, l, 2);
-    BRep_Tool::CurveOnSurface(E, C2d, S, L, f, l, 2);
-
-    // Find a normal.
-    C2d->D0((f+l)/2,P2d); 
-    GeomLProp_SLProps SP(S, P2d.X(), P2d.Y(), 1, 1.e-12);
-    if (! SP.IsNormalDefined()) {
-      C2d->D0((3*f+l)/4,P2d);
-      SP.SetParameters(P2d.X(), P2d.Y());
-      if ( !SP.IsNormalDefined()) {
-	C2d->D0((f+3*l)/4,P2d);
-	SP.SetParameters(P2d.X(), P2d.Y());
+    for (; exp.More(); exp.Next())
+    {
+      const TopoDS_Shape& aSE = exp.Current();
+      DistTool.LoadS2(aSE);
+      DistTool.Perform();
+      if (DistTool.IsDone())
+      {
+        Standard_Real D = DistTool.Value();
+        if (D < Dmin)
+        {
+          Dmin = D;
+          aSEMin = TopoDS::Edge(aSE);
+          if (Dmin < Precision::Confusion())
+            break;
+        }
       }
     }
 
-    // Subtract State1
-    if (myDir.Angle(SP.Normal()) < M_PI/2)  State1 = TopAbs_IN;
-    else  State1 = TopAbs_OUT;
+    if (!aSEMin.IsNull())
+    {
+      // Get geometry of StopShape
+      Handle(Geom_Surface) S;
+      Handle(Geom2d_Curve) C2d;
+      gp_Pnt2d P2d;
+      Standard_Real f, l;
+      TopLoc_Location L;
+      BRep_Tool::CurveOnSurface(aSEMin, C2d, S, L, f, l, 2);
+
+      // Find a normal.
+      C2d->D0((f + l) / 2, P2d);
+      GeomLProp_SLProps SP(S, P2d.X(), P2d.Y(), 1, 1.e-12);
+      if (!SP.IsNormalDefined())
+      {
+        C2d->D0((3 * f + l) / 4, P2d);
+        SP.SetParameters(P2d.X(), P2d.Y());
+        if (!SP.IsNormalDefined())
+        {
+          C2d->D0((f + 3 * l) / 4, P2d);
+          SP.SetParameters(P2d.X(), P2d.Y());
+        }
+      }
+
+      if (SP.IsNormalDefined())
+      {
+        // Subtract State1
+        if (myDir.Angle(SP.Normal()) < M_PI / 2)  State1 = TopAbs_IN;
+        else  State1 = TopAbs_OUT;
+      }
+    }
   }
 
   if (! KeepOutSide) { // Invert State2;
@@ -718,8 +705,100 @@ static Standard_Boolean GoodOrientation(const Bnd_Box& B,
     else State2 = TopAbs_IN;
   }
  
-//recalculate the final shape
-  TopoDS_Shape result = DSA.Merge(State1, State2); 
+  // Perform Boolean operation
+  BOPAlgo_Builder aBuilder;
+  aBuilder.AddArgument(Sol1);
+  aBuilder.AddArgument(Sol2);
+  aBuilder.PerformWithFiller(aPF);
+  if (aBuilder.HasErrors())
+    return Standard_False;
+
+  TopoDS_Shape result;
+  Handle(BRepTools_History) aHistory = new BRepTools_History;
+
+  Standard_Boolean isSingleOpNeeded = Standard_True;
+  // To get rid of the unnecessary parts of first solid make the cutting first
+  if (State1 == TopAbs_OUT)
+  {
+    TopTools_ListOfShape aLO, aLT;
+    aLO.Append(Sol1);
+    aLT.Append(Sol2);
+    aBuilder.BuildBOP(aLO, aLT, BOPAlgo_CUT);
+    if (!aBuilder.HasErrors())
+    {
+      TopoDS_Solid aCutMin;
+      TopExp_Explorer anExpS(aBuilder.Shape(), TopAbs_SOLID);
+      if (anExpS.More())
+      {
+        aCutMin = TopoDS::Solid(anExpS.Current());
+        anExpS.Next();
+        if (anExpS.More())
+        {
+          Standard_Real aDMin = Precision::Infinite();
+          BRepExtrema_DistShapeShape DistTool;
+          DistTool.LoadS1(myWire);
+
+          for (anExpS.ReInit(); anExpS.More(); anExpS.Next())
+          {
+            const TopoDS_Shape& aCut = anExpS.Current();
+            DistTool.LoadS2(aCut);
+            DistTool.Perform();
+            if (DistTool.IsDone())
+            {
+              Standard_Real D = DistTool.Value();
+              if (D < aDMin)
+              {
+                aDMin = D;
+                aCutMin = TopoDS::Solid(aCut);
+              }
+            }
+          }
+        }
+      }
+
+      if (!aCutMin.IsNull())
+      {
+        // Save history for first argument only
+        aHistory->Merge(aLO, aBuilder);
+
+        // Perform needed operation with result of Cut
+        BOPAlgo_Builder aGluer;
+        aGluer.AddArgument(aCutMin);
+        aGluer.AddArgument(Sol2);
+        aGluer.SetGlue(BOPAlgo_GlueShift);
+        aGluer.Perform();
+
+        aLO.Clear();
+        aLO.Append(aCutMin);
+        aGluer.BuildBOP(aLO, State1, aLT, State2);
+
+        if (!aGluer.HasErrors())
+        {
+          aHistory->Merge(aGluer.History());
+
+          result = aGluer.Shape();
+          anExpS.Init(result, TopAbs_SOLID);
+          isSingleOpNeeded = !anExpS.More();
+        }
+      }
+    }
+  }
+
+  if (isSingleOpNeeded)
+  {
+    aHistory->Clear();
+
+    TopTools_ListOfShape aLO, aLT;
+    aLO.Append(Sol1);
+    aLT.Append(Sol2);
+
+    aBuilder.BuildBOP(aLO, State1, aLT, State2);
+    if (aBuilder.HasErrors())
+      return Standard_False;
+
+    aHistory->Merge(aBuilder.History());
+    result = aBuilder.Shape();
+  }
 
   if (issolid) myShape =  result;
   else {
@@ -728,15 +807,15 @@ static Standard_Boolean GoodOrientation(const Bnd_Box& B,
     if (Exp.More()) myShape = Exp.Current();
   }
 
-// Update the History 
+  // Update the History 
   Standard_Integer ii;
   for (ii=1; ii<=myLoc->NbLaw(); ii++) {
-    const TopTools_ListOfShape& L = DSA.Modified(myFaces->Value(1,ii));
+    const TopTools_ListOfShape& L = aHistory->Modified(myFaces->Value(1,ii));
     if (L.Extent()>0) 
       myFaces->SetValue(1, ii, L.First());
   }
   for (ii=1; ii<=myLoc->NbLaw()+1; ii++) {
-    const TopTools_ListOfShape& L = DSA.Modified(mySections->Value(1,ii));
+    const TopTools_ListOfShape& L = aHistory->Modified(mySections->Value(1,ii));
     if (L.Extent()>0) 
       mySections->SetValue(1, ii, L.First());
   } 

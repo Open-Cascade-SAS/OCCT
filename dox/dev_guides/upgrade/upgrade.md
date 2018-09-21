@@ -1596,6 +1596,11 @@ Since OCCT 7.4.0 exception is thrown on the attempt of taking points in case of 
 * The method *ImagesResult* of the class *BOPAlgo_BuilderShape* has been removed as unused. The functionality of this method can be completely replaced by the history methods *Modified* and *IsDeleted*.
 * The method *TrackHistory* of the classes *BOPAlgo_RemoveFeatures* and *BRepAlgoAPI_Defeaturing* has been renamed to *SetToFillHistory*.
 * The method *GetHistory* of the class *BRepAlgoAPI_Defeaturing* has been renamed to *History*.
+* The classes *BRepAlgo_BooleanOperations* and *BRepAlgo_DSAccess* have been removed as obsolete. Please use the BRepAlgoAPI_* classes to perform Boolean operations.
+* *BRepAlgo_DataMapOfShapeBoolean* has been removed as unused.
+* *BRepAlgo_DataMapOfShapeInterference* has been removed as unused.
+* *BRepAlgo_EdgeConnector* has been removed as unused.
+* *BRepAlgo_SequenceOfSequenceOfInteger* has been removed as unused.
 
 @subsection upgrade_740_localcontext Local Context removal
 

@@ -1,0 +1,35 @@
+puts "========"
+puts "0030150: Modeling Algorithms - Removal of BRepAlgo_BooleanOperations and BRepAlgo_DSAccess classes"
+puts "========"
+puts ""
+
+box b1 10 10 10
+explode b1 f
+shape sx Sh
+foreach f [lrange [explode b1 f] 0 4] { add $f sx }
+
+box b2 -50 -50 30 100 100 10
+explode b2 f
+
+
+draft r1 sx 0 0 1 0.2 b2
+draft r2 sx 0 0 1 0.2 b2_6
+draft r3 sx 0 0 1 0.2 b2 -OUT
+
+foreach r {r1 r2 r3} {
+  checkshape $r
+  if {![regexp "OK" [bopcheck $r]]} {
+    puts "Error: $r is self-interfered shape"
+  }
+}
+
+checkprops r1 -s 25319.3 -v 105060
+checknbshapes r1 -vertex 20 -edge 32 -wire 16 -face 15 -shell 1 -solid 1
+
+checkprops r2 -s 11977.8
+checknbshapes r2 -vertex 16 -edge 24 -wire 11 -face 10 -shell 1 -solid 0
+
+checkprops r3 -s 1975.12 -v 5059.99
+checknbshapes r3 -vertex 12 -edge 20 -wire 10 -face 10 -shell 1 -solid 1
+
+checkview -display r3 -2d -path ${imagedir}/${test_image}.png
