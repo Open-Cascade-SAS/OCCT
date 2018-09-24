@@ -1634,10 +1634,12 @@ void DrawWindow::ReleaseMemDC(HDC theMemDC)
 \*--------------------------------------------------------*/
 void DrawWindow::SetPosition(Standard_Integer posX, Standard_Integer posY)
 {
-  SetWindowPos(win, 0,
-               posX, posY,
-               0, 0,
-               SWP_NOACTIVATE | SWP_NOSIZE | SWP_NOZORDER);
+  UINT aFlags = SWP_NOACTIVATE | SWP_NOSIZE | SWP_NOZORDER;
+  if (Draw_VirtualWindows)
+  {
+    aFlags |= SWP_NOSENDCHANGING;
+  }
+  SetWindowPos (win, 0, posX, posY, 0, 0, aFlags);
 }
 
 
@@ -1646,10 +1648,12 @@ void DrawWindow::SetPosition(Standard_Integer posX, Standard_Integer posY)
 \*--------------------------------------------------------*/
 void DrawWindow::SetDimension(Standard_Integer dimX, Standard_Integer dimY)
 {
-  SetWindowPos(win, 0,
-               0, 0,
-               dimX, dimY,
-               SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOZORDER);
+  UINT aFlags = SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOZORDER;
+  if (Draw_VirtualWindows)
+  {
+    aFlags |= SWP_NOSENDCHANGING;
+  }
+  SetWindowPos (win, 0, 0, 0, dimX, dimY, aFlags);
 }
 
 
