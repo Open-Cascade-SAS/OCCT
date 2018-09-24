@@ -1059,11 +1059,11 @@ Standard_Boolean Select3D_SensitivePrimitiveArray::overlapsElement (SelectBasics
               myMinDepthElem = aPickResult.Depth();
             }
             aResult = Standard_True;
-          }
-          if (!myDetectedElemMap.IsNull()
-            && theMgr.GetActiveSelectionType() != SelectBasics_SelectingVolumeManager::Point)
-          {
-            myDetectedElemMap->ChangeMap().Add (aTriIndex);
+            if (!myDetectedElemMap.IsNull()
+              && theMgr.GetActiveSelectionType() != SelectBasics_SelectingVolumeManager::Point)
+            {
+              myDetectedElemMap->ChangeMap().Add(aTriIndex);
+            }
           }
         }
         if (myToDetectNode)
