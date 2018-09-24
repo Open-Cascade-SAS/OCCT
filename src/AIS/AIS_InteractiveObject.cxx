@@ -615,31 +615,9 @@ void AIS_InteractiveObject::SynchronizeAspects()
 
     for (Graphic3d_SequenceOfGroup::Iterator aGroupIter (aPrs3d->Presentation()->Groups()); aGroupIter.More(); aGroupIter.Next())
     {
-      Handle(Graphic3d_Group)& aGrp = aGroupIter.ChangeValue();
-      if (aGrp.IsNull())
+      if (!aGroupIter.Value().IsNull())
       {
-        continue;
-      }
-
-      Handle(Graphic3d_AspectLine3d)     aLineAspect   = aGrp->LineAspect();
-      Handle(Graphic3d_AspectFillArea3d) aFaceAspect   = aGrp->FillAreaAspect();
-      Handle(Graphic3d_AspectMarker3d)   aMarkerAspect = aGrp->MarkerAspect();
-      Handle(Graphic3d_AspectText3d)     aTextAspect   = aGrp->TextAspect();
-      if (!aLineAspect.IsNull())
-      {
-        aGrp->SetGroupPrimitivesAspect (aLineAspect);
-      }
-      if (!aFaceAspect.IsNull())
-      {
-        aGrp->SetGroupPrimitivesAspect (aFaceAspect);
-      }
-      if (!aMarkerAspect.IsNull())
-      {
-        aGrp->SetGroupPrimitivesAspect (aMarkerAspect);
-      }
-      if (!aTextAspect.IsNull())
-      {
-        aGrp->SetGroupPrimitivesAspect (aTextAspect);
+        aGroupIter.ChangeValue()->SynchronizeAspects();
       }
     }
   }

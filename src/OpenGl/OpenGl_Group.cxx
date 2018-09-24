@@ -265,6 +265,34 @@ void OpenGl_Group::SetPrimitivesAspect (const Handle(Graphic3d_AspectText3d)& th
 }
 
 // =======================================================================
+// function : SynchronizeAspects
+// purpose  :
+// =======================================================================
+void OpenGl_Group::SynchronizeAspects()
+{
+  if (myAspectFace != NULL)
+  {
+    myAspectFace->SynchronizeAspects();
+  }
+  if (myAspectLine != NULL)
+  {
+    myAspectLine->SynchronizeAspects();
+  }
+  if (myAspectMarker != NULL)
+  {
+    myAspectMarker->SynchronizeAspects();
+  }
+  if (myAspectText != NULL)
+  {
+    myAspectText->SynchronizeAspects();
+  }
+  for (OpenGl_ElementNode* aNode = myFirst; aNode != NULL; aNode = aNode->next)
+  {
+    aNode->elem->SynchronizeAspects();
+  }
+}
+
+// =======================================================================
 // function : AddPrimitiveArray
 // purpose  :
 // =======================================================================

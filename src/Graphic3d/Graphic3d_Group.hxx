@@ -146,6 +146,9 @@ public:
   //! after this call in the group.
   virtual void SetPrimitivesAspect (const Handle(Graphic3d_AspectMarker3d)& theAspect) = 0;
 
+  //! Update presentation aspects after their modification.
+  virtual void SynchronizeAspects() = 0;
+
   //! Returns TRUE if aspect is set for the group.
   Standard_EXPORT Standard_Boolean IsGroupPrimitivesAspectSet (const Graphic3d_GroupAspect theAspect) const;
 

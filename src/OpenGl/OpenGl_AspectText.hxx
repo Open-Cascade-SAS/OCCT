@@ -59,8 +59,11 @@ public:
     return myResources.ShaderProgram;
   }
 
-  Standard_EXPORT virtual void Render  (const Handle(OpenGl_Workspace)& theWorkspace) const;
-  Standard_EXPORT virtual void Release (OpenGl_Context* theContext);
+  Standard_EXPORT virtual void Render  (const Handle(OpenGl_Workspace)& theWorkspace) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Release (OpenGl_Context* theContext) Standard_OVERRIDE;
+
+  //! Update presentation aspects parameters after their modification.
+  virtual void SynchronizeAspects() Standard_OVERRIDE { SetAspect (myAspect); }
 
 protected:
 

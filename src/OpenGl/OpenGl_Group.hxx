@@ -103,6 +103,9 @@ public:
   //! Append text aspect as an element.
   Standard_EXPORT virtual void SetPrimitivesAspect (const Handle(Graphic3d_AspectText3d)& theAspect) Standard_OVERRIDE;
 
+  //! Update presentation aspects after their modification.
+  Standard_EXPORT virtual void SynchronizeAspects() Standard_OVERRIDE;
+
   //! Add primitive array element
   Standard_EXPORT virtual void AddPrimitiveArray (const Graphic3d_TypeOfPrimitiveArray theType,
                                                   const Handle(Graphic3d_IndexBuffer)& theIndices,
