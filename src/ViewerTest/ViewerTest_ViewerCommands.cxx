@@ -5604,6 +5604,33 @@ static int VFps (Draw_Interpretor& theDI,
   return 0;
 }
 
+//! Auxiliary function for parsing glsl dump level argument.
+static Standard_Boolean parseGlslSourceFlag (Standard_CString               theArg,
+                                             OpenGl_ShaderProgramDumpLevel& theGlslDumpLevel)
+{
+  TCollection_AsciiString aTypeStr (theArg);
+  aTypeStr.LowerCase();
+  if (aTypeStr == "off"
+   || aTypeStr == "0")
+  {
+    theGlslDumpLevel = OpenGl_ShaderProgramDumpLevel_Off;
+  }
+  else if (aTypeStr == "short")
+  {
+    theGlslDumpLevel = OpenGl_ShaderProgramDumpLevel_Short;
+  }
+  else if (aTypeStr == "full"
+        || aTypeStr == "1")
+  {
+    theGlslDumpLevel = OpenGl_ShaderProgramDumpLevel_Full;
+  }
+  else
+  {
+    return Standard_False;
+  }
+  return Standard_True;
+}
+
 //==============================================================================
 //function : VGlDebug
 //purpose  :
@@ -5641,10 +5668,19 @@ static int VGlDebug (Draw_Interpretor& theDI,
       }
     }
 
-    theDI << "debug:   " << (aCaps->contextDebug      ? "1" : "0") << aDebActive  << "\n"
-          << "sync:    " << (aCaps->contextSyncDebug  ? "1" : "0") << aSyncActive << "\n"
-          << "glslWarn:" << (aCaps->glslWarnings      ? "1" : "0") << "\n"
-          << "extraMsg:" << (aCaps->suppressExtraMsg  ? "0" : "1") << "\n";
+    TCollection_AsciiString aGlslCodeDebugStatus = TCollection_AsciiString()
+      + "glslSourceCode: "
+      + (aCaps->glslDumpLevel == OpenGl_ShaderProgramDumpLevel_Off
+         ? "Off"
+         : aCaps->glslDumpLevel == OpenGl_ShaderProgramDumpLevel_Short
+          ? "Short"
+          : "Full")
+      + "\n";
+    theDI << "debug:          " << (aCaps->contextDebug      ? "1" : "0") << aDebActive  << "\n"
+          << "sync:           " << (aCaps->contextSyncDebug  ? "1" : "0") << aSyncActive << "\n"
+          << "glslWarn:       " << (aCaps->glslWarnings      ? "1" : "0") << "\n"
+          << aGlslCodeDebugStatus
+          << "extraMsg:       " << (aCaps->suppressExtraMsg  ? "0" : "1") << "\n";
     return 0;
   }
 
@@ -5717,6 +5753,21 @@ static int VGlDebug (Draw_Interpretor& theDI,
         aDefCaps->contextDebug = Standard_True;
       }
     }
+    else if (anArgCase == "-glslsourcecode"
+          || anArgCase == "-glslcode")
+    {
+      OpenGl_ShaderProgramDumpLevel aGslsDumpLevel = OpenGl_ShaderProgramDumpLevel_Full;
+      if (++anArgIter < theArgNb
+      && !parseGlslSourceFlag (theArgVec[anArgIter], aGslsDumpLevel))
+      {
+        --anArgIter;
+      }
+      aDefCaps->glslDumpLevel = aGslsDumpLevel;
+      if (aCaps != NULL)
+      {
+        aCaps->glslDumpLevel = aGslsDumpLevel;
+      }
+    }
     else if (anArgCase == "-debug")
     {
       if (++anArgIter < theArgNb
@@ -5733,6 +5784,18 @@ static int VGlDebug (Draw_Interpretor& theDI,
       aDefCaps->contextDebug     = toEnableDebug;
       aDefCaps->contextSyncDebug = toEnableDebug;
       aDefCaps->glslWarnings     = toEnableDebug;
+      aDefCaps->glslDumpLevel    = toEnableDebug ? OpenGl_ShaderProgramDumpLevel_Full
+                                                 : OpenGl_ShaderProgramDumpLevel_Off;
+      aDefCaps->suppressExtraMsg = !toEnableDebug;
+      if (aCaps != NULL)
+      {
+        aCaps->contextDebug     = toEnableDebug;
+        aCaps->contextSyncDebug = toEnableDebug;
+        aCaps->glslWarnings     = toEnableDebug;
+        aCaps->glslDumpLevel    = toEnableDebug ? OpenGl_ShaderProgramDumpLevel_Full
+                                                : OpenGl_ShaderProgramDumpLevel_Off;
+        aCaps->suppressExtraMsg = !toEnableDebug;
+      }
     }
     else
     {
@@ -12117,12 +12180,14 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     __FILE__, VFps, group);
   theCommands.Add ("vgldebug",
             "vgldebug [-sync {0|1}] [-debug {0|1}] [-glslWarn {0|1}]"
-    "\n\t\t:          [-extraMsg {0|1}] [{0|1}]"
+    "\n\t\t:          [-glslCode {off|short|full}] [-extraMsg {0|1}] [{0|1}]"
     "\n\t\t: Request debug GL context. Should be called BEFORE vinit."
     "\n\t\t: Debug context can be requested only on Windows"
     "\n\t\t: with GL_ARB_debug_output extension implemented by GL driver!"
     "\n\t\t:  -sync     - request synchronized debug GL context"
     "\n\t\t:  -glslWarn - log GLSL compiler/linker warnings,"
+    "\n\t\t:              which are suppressed by default,"
+    "\n\t\t:  -glslCode - log GLSL program source code,"
     "\n\t\t:              which are suppressed by default,"
     "\n\t\t:  -extraMsg - log extra diagnostic messages from GL context,"
     "\n\t\t:              which are suppressed by default",

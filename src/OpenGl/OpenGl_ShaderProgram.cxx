@@ -165,6 +165,24 @@ OpenGl_ShaderProgram::OpenGl_ShaderProgram (const Handle(Graphic3d_ShaderProgram
   }
 }
 
+//! Puts line numbers to the output of GLSL program source code.
+static TCollection_AsciiString putLineNumbers (const TCollection_AsciiString& theSource)
+{
+  std::stringstream aStream;
+  theSource.Print (aStream);
+  std::string aLine;
+  Standard_Integer aLineNumber = 1;
+  TCollection_AsciiString aResultSource;
+  while (std::getline (aStream, aLine))
+  {
+    TCollection_AsciiString anAsciiString = TCollection_AsciiString (aLine.c_str());
+    anAsciiString.Prepend (TCollection_AsciiString ("\n") + TCollection_AsciiString (aLineNumber) + ": ");
+    aResultSource += anAsciiString;
+    aLineNumber++;
+  }
+  return aResultSource;
+}
+
 // =======================================================================
 // function : Initialize
 // purpose  : Initializes program object with the list of shader objects
@@ -381,7 +399,7 @@ Standard_Boolean OpenGl_ShaderProgram::Initialize (const Handle(OpenGl_Context)&
 
     if (!aShader->Compile (theCtx))
     {
-      theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH, aSource);
+      theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH, putLineNumbers (aSource));
       TCollection_AsciiString aLog;
       aShader->FetchInfoLog (theCtx, aLog);
       if (aLog.IsEmpty())
@@ -403,6 +421,33 @@ Standard_Boolean OpenGl_ShaderProgram::Initialize (const Handle(OpenGl_Context)&
         theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_LOW,
                              TCollection_ExtendedString ("Shader compilation log:\n") + aLog);
       }
+    }
+
+    if (theCtx->caps->glslDumpLevel)
+    {
+      TCollection_AsciiString aShaderTypeMsg;
+      switch (anIter.Value()->Type())
+      {
+        case Graphic3d_TOS_COMPUTE:         { aShaderTypeMsg = "Compute shader source code:\n";                break; }
+        case Graphic3d_TOS_VERTEX:          { aShaderTypeMsg = "Vertex shader source code:\n";                 break; }
+        case Graphic3d_TOS_TESS_CONTROL:    { aShaderTypeMsg = "Tesselation control shader source code:\n";    break; }
+        case Graphic3d_TOS_TESS_EVALUATION: { aShaderTypeMsg = "Tesselation evaluation shader source code:\n"; break; }
+        case Graphic3d_TOS_GEOMETRY:        { aShaderTypeMsg = "Geometry shader source code:\n";               break; }
+        case Graphic3d_TOS_FRAGMENT:        { aShaderTypeMsg = "Fragment shader source code:\n";               break; }
+      }
+      TCollection_AsciiString anOutputSource = aSource;
+      if (theCtx->caps->glslDumpLevel == OpenGl_ShaderProgramDumpLevel_Short)
+      {
+        anOutputSource = aHeaderVer
+                       + (!aHeaderVer.IsEmpty() ? "\n" : "")
+                       + anExtensions
+                       + aPrecisionHeader
+                       + aHeaderType
+                       + aHeaderConstants
+                       + anIter.Value()->Source();
+      }
+      theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_OTHER, 0, GL_DEBUG_SEVERITY_MEDIUM,
+                           TCollection_ExtendedString (aShaderTypeMsg + anOutputSource));
     }
 
     if (!AttachShader (theCtx, aShader))

@@ -52,7 +52,8 @@ OpenGl_Caps::OpenGl_Caps()
   contextCompatible (Standard_False),
 #endif
   glslWarnings      (Standard_False),
-  suppressExtraMsg  (Standard_True)
+  suppressExtraMsg  (Standard_True),
+  glslDumpLevel     (OpenGl_ShaderProgramDumpLevel_Off)
 {
   //
 }
@@ -77,6 +78,7 @@ OpenGl_Caps& OpenGl_Caps::operator= (const OpenGl_Caps& theCopy)
   contextCompatible = theCopy.contextCompatible;
   glslWarnings      = theCopy.glslWarnings;
   suppressExtraMsg  = theCopy.suppressExtraMsg;
+  glslDumpLevel     = theCopy.glslDumpLevel;
   return *this;
 }
 

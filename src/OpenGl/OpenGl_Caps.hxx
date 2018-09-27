@@ -18,6 +18,7 @@
 
 #include <Standard_Type.hxx>
 #include <Standard_Transient.hxx>
+#include <OpenGl_ShaderProgramDumpLevel.hxx>
 
 //! Class to define graphic driver capabilities.
 //! Notice that these options will be ignored if particular functionality does not provided by GL driver
@@ -112,6 +113,9 @@ public: //! @name flags to activate verbose output
 
   //! Suppress redundant messages from debug GL context. ON by default.
   Standard_Boolean suppressExtraMsg;
+
+  //! Print GLSL program source code. OFF by default.
+  OpenGl_ShaderProgramDumpLevel glslDumpLevel;
 
 public: //! @name class methods
 
