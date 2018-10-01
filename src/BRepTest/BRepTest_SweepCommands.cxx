@@ -171,13 +171,23 @@ static Standard_Integer pipe(Draw_Interpretor& di,
   if (n >= 6)
     ForceApproxC1 = Standard_True;
   
-  TopoDS_Shape S = BRepOffsetAPI_MakePipe(TopoDS::Wire(Spine),
-                                          Profile,
-                                          Mode,
-                                          ForceApproxC1);
+  BRepOffsetAPI_MakePipe PipeBuilder(TopoDS::Wire(Spine),
+                                     Profile,
+                                     Mode,
+                                     ForceApproxC1);
+  TopoDS_Shape S = PipeBuilder.Shape();
 
   DBRep::Set(a[1],S);
   
+  // Save history of pipe
+  if (BRepTest_Objects::IsHistoryNeeded())
+  {
+    TopTools_ListOfShape aList;
+    aList.Append(Profile);
+    aList.Append(Spine);
+    BRepTest_Objects::SetHistory(aList, PipeBuilder);
+  }
+    
   return 0;
 }
 

@@ -2,27 +2,36 @@ puts "============"
 puts "OCC27065"
 puts "============"
 puts ""
-###############################
+#########################################################################
 ## BRepOffsetAPI_MakePipe misses definition of virtual method Generated()
-###############################
-
-pload QAcommands
+#########################################################################
 
 restore [locate_data_file bug23903_base.brep] base
-restore [locate_data_file bug23903_path.brep] sp
+restore [locate_data_file bug23903_path.brep] path
+
+pipe q path base
+savehistory pipe_hist
+
 explode base
-shape pr Sh
-add base_1 pr
-add base_2 pr
-OCC27065 sp pr
-fit
 
-checknbshapes res_shell -vertex 2 -edge 5 -wire 3 -face 3 -shell 2 -solid 2 -compsolid 1 -compound 1 -shape 19
+generated r1 pipe_hist base_1
+generated r2 pipe_hist base_2
 
-checknbshapes res_face -vertex 2 -edge 4 -wire 2 -face 2 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 13
+checknbshapes r1 -vertex 2 -edge 4 -wire 2 -face 2 -shell 1 -solid 1
+checknbshapes r2 -vertex 2 -edge 4 -wire 2 -face 2 -shell 1 -solid 1
+checkprops r1 -v 888.833
+checkprops r2 -v 888.833
 
-checknbshapes res_wire -vertex 2 -edge 4 -wire 2 -face 2 -shell 1 -solid 0 -compsolid 0 -compound 1 -shape 12
+explode base e
 
-checknbshapes res_edge -vertex 2 -edge 3 -wire 1 -face 1 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 8
+generated r1 pipe_hist base_1
+generated r2 pipe_hist base_2
+checkprops r1 -s 353.655
+checkprops r2 -s 555.521
 
-checknbshapes res_vertex -vertex 1 -edge 1 -wire 0 -face 0 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 3
+explode base v
+
+generated r1 pipe_hist base_1
+generated r2 pipe_hist base_2
+checkprops r1 -l 35.1526
+checkprops r2 -l 75.3649

@@ -42,6 +42,7 @@ class TopoDS_Face;
 class TopoDS_Edge;
 class TopoDS_Vertex;
 class gp_Pnt;
+class BRepFill_Sweep;
 
 
 //! Create a  shape by sweeping a shape  (the profile)
@@ -59,9 +60,15 @@ public:
   
   Standard_EXPORT BRepFill_Pipe();
   
-  Standard_EXPORT BRepFill_Pipe(const TopoDS_Wire& Spine, const TopoDS_Shape& Profile, const GeomFill_Trihedron aMode = GeomFill_IsCorrectedFrenet, const Standard_Boolean ForceApproxC1 = Standard_False, const Standard_Boolean GeneratePartCase = Standard_False);
+  Standard_EXPORT BRepFill_Pipe(const TopoDS_Wire& Spine,
+                                const TopoDS_Shape& Profile,
+                                const GeomFill_Trihedron aMode = GeomFill_IsCorrectedFrenet,
+                                const Standard_Boolean ForceApproxC1 = Standard_False,
+                                const Standard_Boolean GeneratePartCase = Standard_False);
   
-  Standard_EXPORT void Perform (const TopoDS_Wire& Spine, const TopoDS_Shape& Profile, const Standard_Boolean GeneratePartCase = Standard_False);
+  Standard_EXPORT void Perform (const TopoDS_Wire& Spine,
+                                const TopoDS_Shape& Profile,
+                                const Standard_Boolean GeneratePartCase = Standard_False);
   
   Standard_EXPORT const TopoDS_Shape& Spine() const;
   
@@ -113,22 +120,27 @@ private:
   
   //! Auxiliary  recursive  method  used  to  build  the
   //! result.
-  Standard_EXPORT TopoDS_Shape MakeShape (const TopoDS_Shape& S, const TopoDS_Shape& FirstShape, const TopoDS_Shape& LastShape);
+  Standard_EXPORT TopoDS_Shape MakeShape (const TopoDS_Shape& S,
+                                          const TopoDS_Shape& theOriginalS,
+                                          const TopoDS_Shape& FirstShape,
+                                          const TopoDS_Shape& LastShape);
   
   //! Auxiliary recursive method used to find the edge's index
-  Standard_EXPORT Standard_Integer FindEdge (const TopoDS_Shape& S, const TopoDS_Edge& E, Standard_Integer& Init) const;
+  Standard_EXPORT Standard_Integer FindEdge (const TopoDS_Shape& S,
+                                             const TopoDS_Edge& E,
+                                             Standard_Integer& Init) const;
   
-  Standard_EXPORT Standard_Integer FindVertex (const TopoDS_Shape& S, const TopoDS_Vertex& V, Standard_Integer& Init) const;
+  Standard_EXPORT Standard_Integer FindVertex (const TopoDS_Shape& S, const
+                                               TopoDS_Vertex& V,
+                                               Standard_Integer& Init) const;
   
   Standard_EXPORT void DefineRealSegmax();
   
-  Standard_EXPORT void RebuildTopOrBottomFace (const TopoDS_Shape& aFace, const Standard_Boolean IsTop) const;
+  Standard_EXPORT void RebuildTopOrBottomFace (const TopoDS_Shape& aFace,
+                                               const Standard_Boolean IsTop) const;
   
-  //! Performs sharing coincident faces in theShape. Also modifies
-  //! myFaces, mySections and myEdges to contain shared shapes.
-  //! Returns the shared shape. If theShape is not modified this
-  //! method returns it.
-  Standard_EXPORT TopoDS_Shape ShareFaces (const TopoDS_Shape& theShape, const Standard_Integer theInitialFacesLen, const Standard_Integer theInitialEdgesLen, const Standard_Integer theInitialSectionsLen);
+  Standard_EXPORT void BuildHistory (const BRepFill_Sweep& theSweep,
+                                     const TopoDS_Shape&   theSection);
 
 
   TopoDS_Wire mySpine;

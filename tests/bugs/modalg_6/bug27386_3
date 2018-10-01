@@ -18,7 +18,6 @@ mkedge pr3 cc
 wire pr3 pr3
 donly sp pr1 pr2 pr3
 
-
 mksweep sp
 addsweep pr3
 addsweep pr1
@@ -35,10 +34,25 @@ generated r1_1 sweep_hist pr1_1
 generated r1_2 sweep_hist pr1_2
 generated r1_3 sweep_hist pr1_3
 
+checknbshapes r1_1 -face 1
+checkprops r1_1 -s 798.081
+checknbshapes r1_2 -face 2
+checkprops r1_2 -s 1653.11
+checknbshapes r1_3 -face 1
+checkprops r1_3 -s 798.081
+
 generated r2_1 sweep_hist pr2_1
 generated r2_2 sweep_hist pr2_2
 
+checknbshapes r2_1 -face 2
+checkprops r2_1 -s 1624.64
+checknbshapes r2_2 -face 2
+checkprops r2_2 -s 1624.64
+
 generated r3_1 sweep_hist pr3_1
+
+checknbshapes r3_1 -face 4
+checkprops r3_1 -s 3249.27
 
 explode pr1 v
 explode pr2 v
@@ -49,9 +63,21 @@ generated r1_2 sweep_hist pr1_2
 generated r1_3 sweep_hist pr1_3
 generated r1_4 sweep_hist pr1_4
 
+checkprops r1_1 -l 147.049
+checkprops r1_2 -l 161.905
+checkprops r1_3 -l 161.905
+checkprops r1_4 -l 147.049
+
 generated r2_1 sweep_hist pr2_1
 generated r2_2 sweep_hist pr2_2
 generated r2_3 sweep_hist pr2_3
 
+checkprops r2_1 -l 147.049
+checkprops r2_2 -l 172.788
+checkprops r2_3 -l 147.049
+
 generated r3_1 sweep_hist pr3_1
 generated r3_2 sweep_hist pr3_2
+
+checkprops r3_1 -l 147.049
+checkprops r3_2 -l 147.049
