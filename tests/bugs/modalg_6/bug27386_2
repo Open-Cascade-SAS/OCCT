@@ -66,3 +66,14 @@ generated r2_2 sweep_hist pr2_2
 generated r2_3 sweep_hist pr2_3
 
 generated r3_1 sweep_hist pr3_1
+
+checkprops r1_1 -l 142.176
+checkprops r1_2 -l 142.176
+checkprops r1_3 -l 163.176
+checkprops r1_4 -l 163.176
+
+checkprops r2_1 -l 142.176
+checkprops r2_2 -l 172.788
+checkprops r2_3 -l 142.176
+
+checkprops r3_1 -l 153.936

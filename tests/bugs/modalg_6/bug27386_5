@@ -28,17 +28,32 @@ savehistory sweep_hist
 
 generated r1_1 sweep_hist pr1_1
 
+checknbshapes r1_1 -face 4
+checkprops r1_1 -s 37077
+
 generated r2_1 sweep_hist pr2_1
 generated r2_2 sweep_hist pr2_2
 generated r2_3 sweep_hist pr2_3
 generated r2_4 sweep_hist pr2_4
+
+checkprops r2_1 -s 8740.38
+checkprops r2_2 -s 9798.12
+checkprops r2_3 -s 9798.12
+checkprops r2_4 -s 8740.38
 
 explode pr1 v
 explode pr2 v
 
 generated r1_1 sweep_hist pr1_1
 
+checkprops r1_1 -l 628.319
+
 generated r2_1 sweep_hist pr2_1
 generated r2_2 sweep_hist pr2_2
 generated r2_3 sweep_hist pr2_3
 generated r2_4 sweep_hist pr2_4
+
+checkprops r2_1 -l 565.487
+checkprops r2_2 -l 628.319
+checkprops r2_3 -l 691.15
+checkprops r2_4 -l 628.319

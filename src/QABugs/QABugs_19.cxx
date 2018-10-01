@@ -4941,95 +4941,6 @@ static Standard_Integer OCC27048(Draw_Interpretor& theDI, Standard_Integer theAr
 }
 
 //========================================================================
-//function : OCC27065
-//purpose  : Tests overloaded method "Generated" of BRepOffsetAPI_MakePipe
-//========================================================================
-static Standard_Integer OCC27065(Draw_Interpretor& di,
-                                 Standard_Integer n, const char** a)
-{
-  if (n < 3) return 1;
-  BRep_Builder BB;
-
-  TopoDS_Shape SpineShape = DBRep::Get(a[1],TopAbs_WIRE);
-  if ( SpineShape.IsNull()) return 1;
-  TopoDS_Wire Spine = TopoDS::Wire(SpineShape);
-
-  TopoDS_Shape Profile = DBRep::Get(a[2]);
-  if ( Profile.IsNull()) return 1;
-
-  BRepOffsetAPI_MakePipe aPipeBuilder(Spine, Profile);
-  if (!aPipeBuilder.IsDone())
-  {
-    di << "Error: failed to create pipe\n";
-    return 1;
-  }
-
-  TopExp_Explorer Explo(Profile, TopAbs_SHELL);
-  TopoDS_Shape aShape;
-  TopTools_ListIteratorOfListOfShape itl;
-  if (Explo.More())
-  {
-    aShape = Explo.Current();
-    TopoDS_Compound res1;
-    BB.MakeCompound(res1);
-    itl.Initialize(aPipeBuilder.Generated(aShape));
-    for (; itl.More(); itl.Next())
-      BB.Add(res1, itl.Value());
-    DBRep::Set("res_shell", res1);
-  }
-
-  Explo.Init(Profile, TopAbs_FACE);
-  if (Explo.More())
-  {
-    aShape = Explo.Current();
-    TopoDS_Compound res2;
-    BB.MakeCompound(res2);
-    itl.Initialize(aPipeBuilder.Generated(aShape));
-    for (; itl.More(); itl.Next())
-      BB.Add(res2, itl.Value());
-    DBRep::Set("res_face", res2);
-  }
-  
-  Explo.Init(Profile, TopAbs_WIRE);
-  if (Explo.More())
-  {
-    aShape = Explo.Current();
-    TopoDS_Compound res3;
-    BB.MakeCompound(res3);
-    itl.Initialize(aPipeBuilder.Generated(aShape));
-    for (; itl.More(); itl.Next())
-      BB.Add(res3, itl.Value());
-    DBRep::Set("res_wire", res3);
-  }
-  
-  Explo.Init(Profile, TopAbs_EDGE);
-  if (Explo.More())
-  {
-    aShape = Explo.Current();
-    TopoDS_Compound res4;
-    BB.MakeCompound(res4);
-    itl.Initialize(aPipeBuilder.Generated(aShape));
-    for (; itl.More(); itl.Next())
-      BB.Add(res4, itl.Value());
-    DBRep::Set("res_edge", res4);
-  }
-  
-  Explo.Init(Profile, TopAbs_VERTEX);
-  if (Explo.More())
-  {
-    aShape = Explo.Current();
-    TopoDS_Compound res5;
-    BB.MakeCompound(res5);
-    itl.Initialize(aPipeBuilder.Generated(aShape));
-    for (; itl.More(); itl.Next())
-      BB.Add(res5, itl.Value());
-    DBRep::Set("res_vertex", res5);
-  }
-  
-  return 0;
-}
-
-//========================================================================
 //function : OCC27318
 //purpose  : Creates a box that is not listed in map of AIS objects of ViewerTest
 //========================================================================
@@ -5475,10 +5386,6 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
                    "OCC27048 surf U V N\nCalculate value of surface N times in the point (U, V)",
                    __FILE__, OCC27048, group);
   
-  theCommands.Add ("OCC27065",
-                   "OCC27065 spine profile",
-                   __FILE__, OCC27065, group);
-
   theCommands.Add ("OCC27318",
                    "OCC27318: Creates a box that is not listed in map of AIS objects of ViewerTest",
                    __FILE__, OCC27318, group);
