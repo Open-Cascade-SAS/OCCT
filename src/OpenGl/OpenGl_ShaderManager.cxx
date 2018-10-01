@@ -2077,7 +2077,7 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramPhong (Handle(OpenGl_Sha
                             "Warning: flat shading requires OpenGL ES 3.0+ or GL_OES_standard_derivatives extension.");
   }
   else if (isFlatNormal
-        && myContext->Vendor().Search("Qualcomm") != -1)
+        && myContext->Vendor().Search("qualcomm") != -1)
   {
     // workaround Adreno driver bug computing reversed normal using dFdx/dFdy
     aDFdxSignReversion = "-";

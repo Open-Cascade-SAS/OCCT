@@ -476,6 +476,12 @@ public:
   //! @return value for GL_MAX_SAMPLES
   Standard_Integer MaxMsaaSamples() const { return myMaxMsaaSamples; }
 
+  //! @return maximum FBO width for image dump
+  Standard_Integer MaxDumpSizeX() const { return myMaxDumpSizeX; }
+
+  //! @return maximum FBO height for image dump
+  Standard_Integer MaxDumpSizeY() const { return myMaxDumpSizeY; }
+
   //! @return value for GL_MAX_DRAW_BUFFERS
   Standard_Integer MaxDrawBuffers() const { return myMaxDrawBuffers; }
 
@@ -905,6 +911,8 @@ private: // context info
   Standard_Integer myTexClamp;             //!< either GL_CLAMP_TO_EDGE (1.2+) or GL_CLAMP (1.1)
   Standard_Integer myMaxTexDim;            //!< value for GL_MAX_TEXTURE_SIZE
   Standard_Integer myMaxTexCombined;       //!< value for GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS
+  Standard_Integer myMaxDumpSizeX;         //!< maximum FBO width  for image dump
+  Standard_Integer myMaxDumpSizeY;         //!< maximum FBO height for image dump
   Standard_Integer myMaxClipPlanes;        //!< value for GL_MAX_CLIP_PLANES
   Standard_Integer myMaxMsaaSamples;       //!< value for GL_MAX_SAMPLES
   Standard_Integer myMaxDrawBuffers;       //!< value for GL_MAX_DRAW_BUFFERS

@@ -1,0 +1,20 @@
+puts "========"
+puts "0029020: Visualization, V3d_View - workaround image dump issue on Intel OpenGL driver"
+puts "========"
+puts ""
+
+pload MODELING VISUALIZATION
+box b 1 1 1
+vclear
+vinit View1
+vdisplay -dispMode 1 b
+vtop
+vfit
+
+#Get max size of dumped image
+set anExpression {Max texture size: (\d+)}
+regexp $anExpression [vglinfo] _ match
+
+vdump $imagedir/${casename}_max_width.png -width $match -height 100
+
+vdump $imagedir/${casename}_max_height.png -width 100 -height $match

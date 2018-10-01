@@ -417,6 +417,10 @@ Standard_Integer OpenGl_GraphicDriver::InquireLimit (const Graphic3d_TypeOfLimit
       return !aCtx.IsNull() ? aCtx->MaxCombinedTextureUnits() : 1;
     case Graphic3d_TypeOfLimit_MaxMsaa:
       return !aCtx.IsNull() ? aCtx->MaxMsaaSamples() : 0;
+    case Graphic3d_TypeOfLimit_MaxViewDumpSizeX:
+      return !aCtx.IsNull() ? aCtx->MaxDumpSizeX() : 1024;
+    case Graphic3d_TypeOfLimit_MaxViewDumpSizeY:
+      return !aCtx.IsNull() ? aCtx->MaxDumpSizeY() : 1024;
     case Graphic3d_TypeOfLimit_HasRayTracing:
       return (!aCtx.IsNull() && aCtx->HasRayTracing()) ? 1 : 0;
     case Graphic3d_TypeOfLimit_HasRayTracingTextures:
@@ -433,6 +437,8 @@ Standard_Integer OpenGl_GraphicDriver::InquireLimit (const Graphic3d_TypeOfLimit
             && (InquireLimit (Graphic3d_TypeOfLimit_HasBlendedOit) == 1)) ? 1 : 0;
     case Graphic3d_TypeOfLimit_HasFlatShading:
       return !aCtx.IsNull() && aCtx->hasFlatShading != OpenGl_FeatureNotAvailable ? 1 : 0;
+    case Graphic3d_TypeOfLimit_IsWorkaroundFBO:
+      return !aCtx.IsNull() && aCtx->MaxTextureSize() != aCtx->MaxDumpSizeX() ? 1 : 0;
     case Graphic3d_TypeOfLimit_NB:
       return 0;
   }

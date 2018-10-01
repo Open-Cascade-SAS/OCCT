@@ -158,6 +158,8 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
   myTexClamp   (GL_CLAMP_TO_EDGE),
   myMaxTexDim  (1024),
   myMaxTexCombined (1),
+  myMaxDumpSizeX (1024),
+  myMaxDumpSizeY (1024),
   myMaxClipPlanes (6),
   myMaxMsaaSamples(0),
   myMaxDrawBuffers (1),
@@ -1192,6 +1194,7 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
   myMaxColorAttachments = 1;
   ReadGlVersion (myGlVerMajor, myGlVerMinor);
   myVendor = (const char* )::glGetString (GL_VENDOR);
+  myVendor.LowerCase();
   if (!caps->ffpEnable
    && !IsGlGreaterEqual (2, 0))
   {
@@ -1212,7 +1215,7 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
   const bool isCoreProfile = false;
 #else
 
-  if (myVendor.Search ("NVIDIA") != -1)
+  if (myVendor.Search ("nvidia") != -1)
   {
     // Buffer detailed info: Buffer object 1 (bound to GL_ARRAY_BUFFER_ARB, usage hint is GL_STATIC_DRAW)
     // will use VIDEO memory as the source for buffer object operations.
@@ -1415,7 +1418,7 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
                    ? OpenGl_FeatureInExtensions
                    : OpenGl_FeatureNotAvailable);
   if (!IsGlGreaterEqual (3, 1)
-    && myVendor.Search("Qualcomm") != -1)
+    && myVendor.Search("qualcomm") != -1)
   {
     // dFdx/dFdy are completely broken on tested Adreno devices with versions below OpenGl ES 3.1
     hasFlatShading = OpenGl_FeatureNotAvailable;
@@ -1470,6 +1473,16 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
   if (IsGlGreaterEqual (1, 5))
   {
     glGetIntegerv (GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &myMaxTexCombined);
+  }
+
+  GLint aMaxVPortSize[2] = {0, 0};
+  glGetIntegerv (GL_MAX_VIEWPORT_DIMS, aMaxVPortSize);
+  myMaxDumpSizeX = Min (aMaxVPortSize[0], myMaxTexDim);
+  myMaxDumpSizeY = Min (aMaxVPortSize[1], myMaxTexDim);
+  if (myVendor == "intel")
+  {
+    // Intel drivers have known bug with empty dump for images with width>=5462
+    myMaxDumpSizeX = Min (myMaxDumpSizeX, 4096);
   }
 
   if (extAnis)
@@ -2838,6 +2851,7 @@ void OpenGl_Context::DiagnosticInformation (TColStd_IndexedDataMapOfStringString
   if ((theFlags & Graphic3d_DiagnosticInfo_Limits) != 0)
   {
     addInfo (theDict, "Max texture size", TCollection_AsciiString(myMaxTexDim));
+    addInfo (theDict, "Max FBO dump size", TCollection_AsciiString() + myMaxDumpSizeX + "x" + myMaxDumpSizeY);
     addInfo (theDict, "Max combined texture units", TCollection_AsciiString(myMaxTexCombined));
     addInfo (theDict, "Max MSAA samples", TCollection_AsciiString(myMaxMsaaSamples));
   }
