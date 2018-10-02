@@ -512,26 +512,26 @@ Standard_Boolean STEPCAFControl_Writer::Transfer (STEPControl_Writer &writer,
   TDF_LabelSequence sublabels;
   for ( Standard_Integer i=1; i <= labels.Length(); i++ ) {
     TDF_Label L = labels.Value(i);
-    TopoDS_Shape dummy;
     if ( myLabels.IsBound ( L ) ) continue; // already processed
 
     TopoDS_Shape shape = XCAFDoc_ShapeTool::GetShape ( L );
     if ( shape.IsNull() ) continue;
-    
+
     // write shape either as a whole, or as multifile (with extern refs)
     if ( ! multi  ) {
       Actor->SetStdMode ( Standard_False );
 
       TDF_LabelSequence comp;
 
-      //for case when only part of assemby structure should be written in the document
+      //For case when only part of assemby structure should be written in the document
       //if specified label is component of the assembly then
       //in order to save location of this component in the high-level assembly
       //and save name of high-level assembly it is necessary to represent structure of high-level assembly 
       //as assembly with one component specified by current label. 
       //For that compound containing only specified component is binded to the label of the high-level assembly.
       //The such way full structure of high-level assembly was replaced on the assembly contaning one component.
-      if ( XCAFDoc_ShapeTool::IsComponent ( L ) )
+      //For case when free shape reference is (located root) also create an auxiliary assembly.
+      if ( XCAFDoc_ShapeTool::IsReference ( L ) )
       {
         TopoDS_Compound aComp;
         BRep_Builder aB;
@@ -545,7 +545,8 @@ Standard_Boolean STEPCAFControl_Writer::Transfer (STEPControl_Writer &writer,
           if(XCAFDoc_ShapeTool::IsAssembly ( ref))
             XCAFDoc_ShapeTool::GetComponents ( ref, comp, Standard_True );
         }
-        L = L.Father();
+        if ( !XCAFDoc_ShapeTool::IsFree ( L ) )
+          L = L.Father();
       }
       else
       {
@@ -568,7 +569,8 @@ Standard_Boolean STEPCAFControl_Writer::Transfer (STEPControl_Writer &writer,
       }
       myLabels.Bind ( L, shape );
       sublabels.Append ( L );
-      if ( XCAFDoc_ShapeTool::IsAssembly ( L ) )
+
+      if ( XCAFDoc_ShapeTool::IsAssembly ( L ) || XCAFDoc_ShapeTool::IsReference ( L ) )
         Actor->RegisterAssembly ( shape );
 
       writer.Transfer(shape,mode,Standard_False);

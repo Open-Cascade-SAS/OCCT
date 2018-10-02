@@ -1,0 +1,38 @@
+########################################
+# Wrong export to STEP of located root.
+########################################
+
+pload OCAF
+
+XNewDoc D
+box b 1 1 1
+box bb 2 0 0 1 1 1
+box bbb 4 0 0 1 1 1
+compound b bb c
+copy c cc
+ttranslate cc 0 2 0
+compound bbb c s
+XAddShape D s
+XAddShape D cc
+WriteStep D $imagedir/${casename}.stp
+ReadStep DD $imagedir/${casename}.stp
+
+# Check structure
+set top_level [XGetTopLevelShapes DD]
+if {$top_level != "0:1:1:1 0:1:1:2 0:1:1:3 0:1:1:4 0:1:1:5 0:1:1:6 "} {
+  puts "Error: wrong structure of document."
+}
+
+# Check sharing
+set nb [XNbComponents DD 0:1:1:6]
+if {$nb != "1"} {
+  puts "Error: wrong structure of document."
+}
+set nb [XGetUsers DD 0:1:1:3]
+if {$nb != "2"} {
+  puts "Error: wrong structure of document."
+}  
+
+Close D
+Close DD
+file delete $imagedir/${casename}.stp

@@ -1,0 +1,56 @@
+########################################
+# Wrong export to STEP of located root.
+########################################
+
+pload OCAF
+
+box b 1 1 1
+copy b bb
+copy b bbb
+ttranslate b 2 0 0
+ttranslate bb 0 2 0
+ttranslate bbb 0 0 2
+XNewDoc D
+XAddShape D b
+XAddShape D bb
+XAddShape D bbb
+SetName D 0:1:1:2 box
+SetName D 0:1:1:1 ref1_box
+SetName D 0:1:1:3 ref2_box
+SetName D 0:1:1:4 ref3_box
+WriteStep D $imagedir/${casename}.stp
+ReadStep DD $imagedir/${casename}.stp
+
+# Check structure
+set top_level [XGetTopLevelShapes DD]
+if {$top_level != "0:1:1:1 0:1:1:2 0:1:1:3 0:1:1:4 "} {
+  puts "Error: wrong structure of document."
+}
+
+# Check sharing
+set nb [XGetUsers DD 0:1:1:2]
+if {$nb != "3"} {
+  puts "Error: wrong structure of document."
+}  
+
+# Check names
+set name [GetName DD 0:1:1:1]
+if {$name != "ref1_box"} {
+  puts "Error: wrong name."
+}
+set name [GetName DD 0:1:1:2]
+if {$name != "box"} {
+  puts "Error: wrong name."
+}
+set name [GetName DD 0:1:1:3]
+if {$name != "ref2_box"} {
+  puts "Error: wrong name."
+}
+set name [GetName DD 0:1:1:4]
+if {$name != "ref3_box"} {
+  puts "Error: wrong name."
+}
+
+Close D
+Close DD
+file delete $imagedir/${casename}.stp
