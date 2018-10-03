@@ -1,0 +1,24 @@
+puts "========"
+puts "0030176: Modeling Algorithms - Infinite loop in IntWalk_PWalking::Perform()"
+puts "========"
+puts ""
+
+restore [locate_data_file bug30176_shape.brep] sshh
+explode sshh e
+
+dchrono h1 restart
+blend result sshh 0.1 sshh_36 0.1 sshh_36 0.1 sshh_38 0.1 sshh_71 0.1 sshh_72 0.1 sshh_73
+dchrono h1 stop counter BlOp
+
+checkshape result
+
+if {[regexp "Faulties" [bopargcheck result]]} {
+  puts "Error: bopargcheck has found some faulties in result"
+}
+
+checkmaxtol result -ref 0.0001
+checknbshapes result -wire 43 -face 43 -shell 1 -solid 1
+
+checkprops result -s 26.9203 -v 9.40217
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

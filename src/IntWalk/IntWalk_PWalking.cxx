@@ -762,6 +762,9 @@ void IntWalk_PWalking::Perform(const TColStd_Array1OfReal& ParDep,
                                   Epsilon(VM1 - Vm1),
                                   Epsilon(UM2 - Um2),
                                   Epsilon(VM2 - Vm2)};
+
+  Standard_Integer aPrevNbPoints = line->NbPoints();
+
   Arrive = Standard_False;
   while(!Arrive) //010
   {
@@ -1099,7 +1102,13 @@ void IntWalk_PWalking::Perform(const TColStd_Array1OfReal& ParDep,
                 if(aDelta > Epsilon(pasInit[i]))
                 {
                   pasInit[i] -= aDelta;
-                  LevelOfIterWithoutAppend=0;
+                  if ((aPrevStatus != IntWalk_StepTooSmall) &&
+                      (line->NbPoints() != aPrevNbPoints))
+                  {
+                    LevelOfIterWithoutAppend = 0;
+                  }
+
+                  aPrevNbPoints = line->NbPoints();
                 }
               }
             }
@@ -1174,8 +1183,13 @@ void IntWalk_PWalking::Perform(const TColStd_Array1OfReal& ParDep,
               // StepTooSmall --> Increase step --> PasTropGrand...)
               // nullify LevelOfIterWithoutAppend only if the condition
               // is satisfied:
-              if (aPrevStatus != IntWalk_PasTropGrand)
+              if ((aPrevStatus != IntWalk_PasTropGrand) &&
+                  (line->NbPoints() != aPrevNbPoints))
+              {
                 LevelOfIterWithoutAppend = 0;
+              }
+
+              aPrevNbPoints = line->NbPoints();
 
               break;
             }
