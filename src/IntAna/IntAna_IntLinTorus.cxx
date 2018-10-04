@@ -79,6 +79,7 @@ void IntAna_IntLinTorus::Perform (const gp_Lin& L, const gp_Torus& T) {
   if(mdpr.IsDone()) {
      Standard_Integer nbsolvalid = 0; 
      Standard_Integer n = mdpr.NbSolutions();
+     Standard_Integer aNbBadSol = 0;
      for(Standard_Integer i = 1; i<=n ; i++) { 
 	Standard_Real t = mdpr.Value(i);
 	t += ParamOfNewPL;
@@ -88,6 +89,7 @@ void IntAna_IntLinTorus::Perform (const gp_Lin& L, const gp_Torus& T) {
         a0 = PSolT.SquareDistance(PSolL); 
 
 	if(a0>0.0000000001) { 
+          aNbBadSol++;
 #if 0 
 	   cout<<" ------- Erreur : P Ligne < > P Tore "<<endl;
            cout<<"Ligne :  X:"<<PSolL.X()<<"  Y:"<<PSolL.Y()<<"  Z:"<<PSolL.Z()<<" l:"<<t<<endl;
@@ -102,8 +104,16 @@ void IntAna_IntLinTorus::Perform (const gp_Lin& L, const gp_Torus& T) {
           nbsolvalid++;
         }
       }
-      nbpt = nbsolvalid;
-      done = Standard_True;
+     if (n > 0 && nbsolvalid == 0 && aNbBadSol == n)
+     {
+       nbpt = 0;
+       done = Standard_False;
+     }
+     else
+     {
+       nbpt = nbsolvalid;
+       done = Standard_True;
+     }
    }
    else { 
       nbpt = 0;
