@@ -574,10 +574,14 @@ void IntPolyh_Triangle::MultipleMiddleRefinement(const Standard_Real theRefineCr
 {
   // Number of triangles before refinement of current triangle
   const Standard_Integer FinTTInit = TTriangles.NbItems();
+  // Criteria to stop splitting - double of the initial number of triangles,
+  // i.e. allow each triangle to be split at least once. Add a constant
+  // to allow the splits of triangles to be checked.
+  const Standard_Integer MaxNbTT = 2*FinTTInit + 1000;
   // Split the current triangle
   MiddleRefinement(theTriangleNumber, theSurface, TPoints, TTriangles, TEdges);
   // Refine the new triangles
-  for (Standard_Integer i = FinTTInit; i < TTriangles.NbItems(); ++i) {
+  for (Standard_Integer i = FinTTInit; i < TTriangles.NbItems() && i < MaxNbTT; ++i) {
     IntPolyh_Triangle& aTriangle = TTriangles[i];
     if(theBox.IsOut(aTriangle.BoundingBox(TPoints))) {
       aTriangle.SetIntersectionPossible(Standard_False);
