@@ -3363,7 +3363,13 @@ static IntPatch_ImpImpIntersection::IntStatus
           aP.SetTolerance(aTol3D);
           aP.SetValue(aWLine[i]->Point(1).Value());
 
-          theSPnt.Append(aP);
+          //Check whether the added point exists.
+          //It is enough to check the last point.
+          if (theSPnt.IsEmpty() ||
+              !theSPnt.Last().PntOn2S().IsSame(aP.PntOn2S(), Precision::Confusion()))
+          {
+            theSPnt.Append(aP);
+          }
         }
         else if (aWLine[i]->NbPnts() > 1)
         {
@@ -3582,7 +3588,7 @@ static IntPatch_ImpImpIntersection::IntStatus
     // another point in the interval [anUC, anUsup] if anUC is intersection point and
     // in the interval [anUmid, anUC], otherwise.
 
-    Standard_Real anAddedPar[2] = { anUmid, anUmid };
+    Standard_Real anAddedPar[2] = {isReversed ? u2 : u1, isReversed ? u2 : u1};
 
     for (Standard_Integer aParID = 0; aParID < 2; aParID++)
     {

@@ -1,0 +1,64 @@
+puts "========"
+puts "0030202: IntPatch_WLineTool::JoinWLines array out of bounds"
+puts "========"
+puts ""
+
+restore [locate_data_file bug30202_src.brep] b1
+restore [locate_data_file bug30202_tool.brep] b2
+
+bclearobjects
+bcleartools
+baddobjects b1
+baddtools b2
+
+bfillds
+
+bbop r_0 0
+bbop r_1 1
+bbop r_2 2
+bbop r_3 3
+bbop r_4 4
+
+
+checkshape r_0
+checknbshapes r_0 -solid 1 -shell 1 -face 10 -wire 10
+checkprops r_0 -s 3.07923 -v 0.15225
+if {[regexp "Faulties" [bopargcheck r_0]]} {
+  puts "Error: bopargcheck has found some faulties in r_0"
+}
+
+checkshape r_1
+checknbshapes r_1 -solid 1 -shell 1 -face 31 -wire 33
+checkprops r_1 -s 128.978 -v 46.7138
+if {[regexp "Faulties" [bopargcheck r_1]]} {
+  puts "Error: bopargcheck has found some faulties in r_1"
+}
+
+checkshape r_2
+checknbshapes r_2 -solid 1 -shell 1 -face 29 -wire 31
+checkprops r_2 -s 117.75 -v 45.3505
+if {[regexp "Faulties" [bopargcheck r_2]]} {
+  puts "Error: bopargcheck has found some faulties in r_2"
+}
+
+checkshape r_3
+checknbshapes r_3 -solid 1 -shell 1 -face 12 -wire 12
+checkprops r_3 -s 14.3071 -v 1.2111
+if {[regexp "Faulties" [bopargcheck r_3]]} {
+  puts "Error: bopargcheck has found some faulties in r_3"
+}
+
+checkshape r_4
+checknbshapes r_4 -vertex 8 -edge 8
+checkprops r_4 -l 8.28981
+if {[regexp "Faulties" [bopargcheck r_4]]} {
+  puts "Error: bopargcheck has found some faulties in r_4"
+}
+
+checksection r_4 -r 0
+
+# FUSE
+copy r_1 result
+checkmaxtol result -min_tol 1.0e-4
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
