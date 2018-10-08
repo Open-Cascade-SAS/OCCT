@@ -538,8 +538,8 @@ Standard_Boolean ChFi3d_KParticular (const Handle(ChFiDS_Spine)& Spine,
     }
   }
   else if (aST2==GeomAbs_Cylinder) {
-    const gp_Dir& aD1=aS1.Plane().Axis().Direction();
-    const gp_Dir& aD2=aS2.Cylinder().Axis().Direction();
+    const gp_Dir aD1=aS1.Plane().Axis().Direction();
+    const gp_Dir aD2=aS2.Cylinder().Axis().Direction();
     //
     if (aCT==GeomAbs_Line && aD1.IsNormal(aD2, aPA)) {
       return bRet;
@@ -549,8 +549,8 @@ Standard_Boolean ChFi3d_KParticular (const Handle(ChFiDS_Spine)& Spine,
     }
   }
   else if(aST2==GeomAbs_Cone) {
-    const gp_Dir& aD1=aS1.Plane().Axis().Direction();
-    const gp_Dir& aD2=aS2.Cone().Axis().Direction();
+    const gp_Dir aD1=aS1.Plane().Axis().Direction();
+    const gp_Dir aD2=aS2.Cone().Axis().Direction();
     if (aCT == GeomAbs_Circle && aD1.IsParallel(aD2, aPA)) {
       return bRet;
     }
