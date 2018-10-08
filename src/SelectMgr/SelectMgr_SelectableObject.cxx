@@ -256,6 +256,14 @@ void SelectMgr_SelectableObject::UpdateTransformation()
   }
 
   PrsMgr_PresentableObject::UpdateTransformation();
+  if (!mySelectionPrs.IsNull())
+  {
+    mySelectionPrs->SetTransformation (TransformationGeom());
+  }
+  if (!myHilightPrs.IsNull())
+  {
+    myHilightPrs->SetTransformation (TransformationGeom());
+  }
 }
 
 //=======================================================================
@@ -349,6 +357,7 @@ Handle(Prs3d_Presentation) SelectMgr_SelectableObject::GetHilightPresentation (c
     myHilightPrs = new Prs3d_Presentation (theMgr->StructureManager());
     myHilightPrs->SetTransformPersistence (TransformPersistence());
     myHilightPrs->SetClipPlanes (myClipPlanes);
+    myHilightPrs->SetTransformation (TransformationGeom());
   }
 
   return myHilightPrs;
@@ -366,6 +375,7 @@ Handle(Prs3d_Presentation) SelectMgr_SelectableObject::GetSelectPresentation (co
     mySelectionPrs = new Prs3d_Presentation (theMgr->StructureManager());
     mySelectionPrs->SetTransformPersistence (TransformPersistence());
     mySelectionPrs->SetClipPlanes (myClipPlanes);
+    mySelectionPrs->SetTransformation (TransformationGeom());
   }
 
   return mySelectionPrs;

@@ -1,0 +1,22 @@
+puts "============="
+puts "0030218: Visualization - custom selection presentation is not updated within SelectMgr_SelectableObject::UpdateTransformation()"
+puts "============="
+
+pload XDE VISUALIZATION
+
+vclear
+vinit View1
+meshfromstl m [locate_data_file OCC6652.stl]
+vfit
+vzoom 0.75
+
+vsetdispmode m 3
+vselmode m 8 1
+
+vselect 5 5 200 200
+vlocation m -setLocation 500 0 0
+vmoveto 370 370
+if { [vreadpixel 145 145 rgb name] != "BLACK"  } { puts "Error: MeshVS highlighting has wrong location" }
+if { [vreadpixel 300 215 rgb name] != "GRAY80" } { puts "Error: MeshVS highlighting has wrong location" }
+
+vdump ${imagedir}/${casename}.png

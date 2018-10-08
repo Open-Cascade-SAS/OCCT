@@ -77,7 +77,7 @@ void PrsMgr_PresentableObject::Fill (const Handle(PrsMgr_PresentationManager)& t
 {
   Handle(Prs3d_Presentation) aStruct3d = thePrs->Presentation();
   Compute (thePrsMgr, aStruct3d, theMode);
-  UpdateTransformation (aStruct3d);
+  aStruct3d->SetTransformation (myTransformation);
   aStruct3d->SetClipPlanes (myClipPlanes);
   aStruct3d->SetTransformPersistence (TransformPersistence());
 }
@@ -294,15 +294,6 @@ void PrsMgr_PresentableObject::UpdateTransformation()
   {
     aChildIter.Value()->SetCombinedParentTransform (myTransformation);
   }
-}
-
-//=======================================================================
-//function : UpdateTransformation
-//purpose  : 
-//=======================================================================
-void PrsMgr_PresentableObject::UpdateTransformation(const Handle(Prs3d_Presentation)& P)
-{
-  P->SetTransformation (myTransformation);
 }
 
 //=======================================================================

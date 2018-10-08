@@ -157,14 +157,13 @@ public:
                                                 : getIdentityTrsf(); }
 
   const gp_GTrsf& InversedTransformation() const { return myInvTransformation; }
-  
+
   //! resets local transformation to identity.
   Standard_EXPORT virtual void ResetTransformation();
-  
+
+  //! Updates final transformation (parent + local) of presentable object and its presentations.
   Standard_EXPORT virtual void UpdateTransformation();
-  
-  Standard_EXPORT virtual void UpdateTransformation (const Handle(Prs3d_Presentation)& P);
-  
+
   //! Set Z layer ID and update all presentations of the presentable object.
   //! The layers mechanism allows drawing objects in higher layers in overlay of objects in lower layers.
   Standard_EXPORT virtual void SetZLayer (const Graphic3d_ZLayerId theLayerId);
