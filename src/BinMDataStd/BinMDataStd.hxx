@@ -25,32 +25,6 @@
 
 class BinMDF_ADriverTable;
 class Message_Messenger;
-class BinMDataStd_NameDriver;
-class BinMDataStd_IntegerDriver;
-class BinMDataStd_RealDriver;
-class BinMDataStd_IntegerArrayDriver;
-class BinMDataStd_RealArrayDriver;
-class BinMDataStd_UAttributeDriver;
-class BinMDataStd_DirectoryDriver;
-class BinMDataStd_CommentDriver;
-class BinMDataStd_VariableDriver;
-class BinMDataStd_ExpressionDriver;
-class BinMDataStd_RelationDriver;
-class BinMDataStd_NoteBookDriver;
-class BinMDataStd_TreeNodeDriver;
-class BinMDataStd_ExtStringArrayDriver;
-class BinMDataStd_TickDriver;
-class BinMDataStd_AsciiStringDriver;
-class BinMDataStd_IntPackedMapDriver;
-class BinMDataStd_IntegerListDriver;
-class BinMDataStd_RealListDriver;
-class BinMDataStd_ExtStringListDriver;
-class BinMDataStd_BooleanListDriver;
-class BinMDataStd_ReferenceListDriver;
-class BinMDataStd_BooleanArrayDriver;
-class BinMDataStd_ReferenceArrayDriver;
-class BinMDataStd_ByteArrayDriver;
-class BinMDataStd_NamedDataDriver;
 
 //! Storage and Retrieval drivers for modelling attributes.
 class BinMDataStd 
@@ -62,16 +36,12 @@ public:
   
   //! Adds the attribute drivers to <theDriverTable>.
   Standard_EXPORT static void AddDrivers (const Handle(BinMDF_ADriverTable)& theDriverTable, const Handle(Message_Messenger)& aMsgDrv);
-  
-  Standard_EXPORT static void SetDocumentVersion (const Standard_Integer DocVersion);
-  
-  Standard_EXPORT static Standard_Integer DocumentVersion();
 
 template<class T>
-static void SetAttributeID(const BinObjMgt_Persistent& theSource, const Handle(T)& anAtt)
+static void SetAttributeID(const BinObjMgt_Persistent& theSource, const Handle(T)& anAtt, const Standard_Integer aDocFormatVersion)
 {
   Standard_Boolean ok = Standard_True;
-  if(BinMDataStd::DocumentVersion() > 9) { // process user defined guid
+  if(aDocFormatVersion > 9) { // process user defined guid
     const Standard_Integer& aPos = theSource.Position();
     Standard_GUID aGuid;
     ok = theSource >> aGuid;

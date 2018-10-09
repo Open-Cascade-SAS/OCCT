@@ -92,7 +92,7 @@ Standard_Boolean BinMXCAFDoc_LocationDriver::Translate(const BinObjMgt_Persisten
     return Standard_True;
   }
   
-  Standard_Integer aFileVer = BinMDataStd::DocumentVersion();
+  Standard_Integer aFileVer = theMap.GetHeaderData()->StorageVersion().IntegerValue();
   if( aFileVer > 5 && myLocations == 0 )
   {
     return Standard_False;

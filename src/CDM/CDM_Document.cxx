@@ -60,7 +60,8 @@ CDM_Document::CDM_Document():
   myRequestedNameIsDefined      (Standard_False),
   myRequestedPreviousVersionIsDefined(Standard_False),
   myFileExtensionWasFound       (Standard_False),
-  myDescriptionWasFound         (Standard_False)
+  myDescriptionWasFound         (Standard_False),
+  myStorageFormatVersion        (0)
 {}
 
 
@@ -1263,4 +1264,23 @@ Standard_Integer CDM_Document::ReferenceCounter() const
 void CDM_Document::SetReferenceCounter (const Standard_Integer aReferenceCounter)
 {
   myActualReferenceIdentifier=aReferenceCounter;
+}
+
+//=======================================================================
+//function : StorageFormatVersion
+//purpose  : 
+//=======================================================================
+Standard_Integer CDM_Document::StorageFormatVersion() const
+{
+  return myStorageFormatVersion;
+}
+
+//! 
+//=======================================================================
+//function : ChangeStorageFormatVersion
+//purpose  : Sets <theVersion> of the format to be used to store the document
+//=======================================================================
+void CDM_Document::ChangeStorageFormatVersion(const Standard_Integer theVersion)
+{
+  myStorageFormatVersion = theVersion;
 }

@@ -51,7 +51,7 @@ Handle(TDF_Attribute) BinMDataStd_ReferenceArrayDriver::NewEmpty() const
 //=======================================================================
 Standard_Boolean BinMDataStd_ReferenceArrayDriver::Paste(const BinObjMgt_Persistent&  theSource,
                                                          const Handle(TDF_Attribute)& theTarget,
-                                                         BinObjMgt_RRelocationTable&  ) const
+                                                         BinObjMgt_RRelocationTable&  theRelocTable) const
 {
   Standard_Integer aFirstInd, aLastInd;
   if (! (theSource >> aFirstInd >> aLastInd))
@@ -73,7 +73,7 @@ Standard_Boolean BinMDataStd_ReferenceArrayDriver::Paste(const BinObjMgt_Persist
       anAtt->SetValue(i, L);
   }
 
-  BinMDataStd::SetAttributeID(theSource, anAtt);
+  BinMDataStd::SetAttributeID(theSource, anAtt, theRelocTable.GetHeaderData()->StorageVersion().IntegerValue());
   return Standard_True;
 }
 

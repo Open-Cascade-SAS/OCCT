@@ -185,7 +185,8 @@ void BinLDrivers_DocumentSection::Write (Standard_OStream&   theStream,
 
 void BinLDrivers_DocumentSection::ReadTOC
                                 (BinLDrivers_DocumentSection& theSection,
-                                 Standard_IStream&            theStream)
+                                 Standard_IStream&            theStream,
+                                 const Standard_Integer theDocFormatVersion)
 {
   char aBuf[512];
   Standard_Integer aNameBufferSize;
@@ -198,7 +199,7 @@ void BinLDrivers_DocumentSection::ReadTOC
     theSection.myName = (Standard_CString)&aBuf[0];
 
     uint64_t aValue[3];
-    if (BinMDataStd::DocumentVersion() <= 9)
+    if (theDocFormatVersion <= 9)
     {
       // Old documents stored file position as 4-bytes values.
       Standard_Integer aValInt[3];

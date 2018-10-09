@@ -19,10 +19,8 @@
 #include <TNaming_NamedShape.hxx>
 #include <XmlDrivers.hxx>
 #include <XmlDrivers_DocumentRetrievalDriver.hxx>
-#include <XmlMDataStd.hxx>
 #include <XmlMDF_ADriver.hxx>
 #include <XmlMDF_ADriverTable.hxx>
-#include <XmlMNaming.hxx>
 #include <XmlMNaming_NamedShapeDriver.hxx>
 #include <XmlObjMgt_Element.hxx>
 
@@ -44,17 +42,6 @@ Handle(XmlMDF_ADriverTable) XmlDrivers_DocumentRetrievalDriver::AttributeDrivers
        (const Handle(Message_Messenger)& theMessageDriver) 
 {
   return XmlDrivers::AttributeDrivers (theMessageDriver);
-}
-
-//=======================================================================
-//function : PropagateDocumentVersion
-//purpose  : 
-//=======================================================================
-void XmlDrivers_DocumentRetrievalDriver::PropagateDocumentVersion(
-                                   const Standard_Integer theDocVersion )
-{
-  XmlMDataStd::SetDocumentVersion(theDocVersion);
-  XmlMNaming::SetDocumentVersion(theDocVersion);
 }
 
 //=======================================================================

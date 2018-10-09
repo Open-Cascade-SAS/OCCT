@@ -37,13 +37,6 @@ public:
   
   //! Adds the attribute drivers to <theDriverTable>.
   Standard_EXPORT static void AddDrivers (const Handle(BinMDF_ADriverTable)& theDriverTable, const Handle(Message_Messenger)& aMsgDrv);
-  
-  Standard_EXPORT static void SetDocumentVersion (const Standard_Integer DocVersion);
-  
-  Standard_EXPORT static Standard_Integer DocumentVersion();
-
-
-
 
 protected:
 

@@ -59,7 +59,7 @@ Handle(TDF_Attribute) XmlMDataStd_IntPackedMapDriver::NewEmpty () const
 Standard_Boolean XmlMDataStd_IntPackedMapDriver::Paste
                                (const XmlObjMgt_Persistent&  theSource,
                                 const Handle(TDF_Attribute)& theTarget,
-                                XmlObjMgt_RRelocationTable&  ) const
+                                XmlObjMgt_RRelocationTable&  theRelocTable) const
 {
   Handle(TDataStd_IntPackedMap) aPackedMap =
     Handle(TDataStd_IntPackedMap)::DownCast(theTarget);
@@ -106,7 +106,7 @@ Standard_Boolean XmlMDataStd_IntPackedMapDriver::Paste
     if(Ok) {
       Standard_Boolean aDelta(Standard_False);
 
-      if(XmlMDataStd::DocumentVersion() > 2) {
+      if(theRelocTable.GetHeaderData()->StorageVersion().IntegerValue() > 2) {
         Standard_Integer aDeltaValue;
         if (!anElement.getAttribute(::IsDeltaOn()).GetInteger(aDeltaValue)) 
         {
@@ -120,10 +120,6 @@ Standard_Boolean XmlMDataStd_IntPackedMapDriver::Paste
         else
           aDelta = aDeltaValue != 0;
       }
-#ifdef OCCT_DEBUG
-      else if(XmlMDataStd::DocumentVersion() == -1)
-        cout << "Current DocVersion field is not initialized. "  <<endl;
-#endif
       aPackedMap->SetDelta(aDelta);
       return Standard_True;
     }  

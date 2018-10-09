@@ -55,7 +55,7 @@ Handle(TDF_Attribute) XmlMDataStd_ByteArrayDriver::NewEmpty() const
 //=======================================================================
 Standard_Boolean XmlMDataStd_ByteArrayDriver::Paste(const XmlObjMgt_Persistent&  theSource,
                                                     const Handle(TDF_Attribute)& theTarget,
-                                                    XmlObjMgt_RRelocationTable&  ) const
+                                                    XmlObjMgt_RRelocationTable&  theRelocTable) const
 {
   Standard_Integer aFirstInd, aLastInd, aValue;
   const XmlObjMgt_Element& anElement = theSource;
@@ -129,7 +129,7 @@ Standard_Boolean XmlMDataStd_ByteArrayDriver::Paste(const XmlObjMgt_Persistent& 
   
   Standard_Boolean aDelta(Standard_False);
   
-  if(XmlMDataStd::DocumentVersion() > 2) {
+  if(theRelocTable.GetHeaderData()->StorageVersion().IntegerValue() > 2) {
     Standard_Integer aDeltaValue;
     if (!anElement.getAttribute(::IsDeltaOn()).GetInteger(aDeltaValue)) 
     {
@@ -144,8 +144,7 @@ Standard_Boolean XmlMDataStd_ByteArrayDriver::Paste(const XmlObjMgt_Persistent& 
       aDelta = aDeltaValue != 0;
   }
 #ifdef OCCT_DEBUG
-  else if(XmlMDataStd::DocumentVersion() == -1)
-    cout << "Current DocVersion field is not initialized. "  <<endl;
+    cout << "Current Document Format Version = " << theRelocTable.GetHeaderData()->StorageVersion().IntegerValue() <<endl;
 #endif
   aByteArray->SetDelta(aDelta);
 

@@ -45,7 +45,6 @@
 #include <XmlMDataStd_VariableDriver.hxx>
 #include <XmlMDF_ADriverTable.hxx>
 
-static Standard_Integer myDocumentVersion = -1;
 //=======================================================================
 //function : AddDrivers
 //purpose  : 
@@ -80,21 +79,4 @@ void XmlMDataStd::AddDrivers (const Handle(XmlMDF_ADriverTable)& aDriverTable,
   aDriverTable-> AddDriver (new XmlMDataStd_NamedDataDriver     (anMsgDrv));
   aDriverTable-> AddDriver (new XmlMDataStd_AsciiStringDriver   (anMsgDrv));
   aDriverTable-> AddDriver (new XmlMDataStd_IntPackedMapDriver  (anMsgDrv));
-}
-
-//=======================================================================
-//function : SetDocumentVersion
-//purpose  : Sets current document version
-//=======================================================================
-void XmlMDataStd::SetDocumentVersion(const Standard_Integer theVersion)
-{
-  myDocumentVersion = theVersion;
-}
-//=======================================================================
-//function : DocumentVersion
-//purpose  : Retrieved document version
-//=======================================================================
-Standard_Integer XmlMDataStd::DocumentVersion()
-{
-  return myDocumentVersion;
 }

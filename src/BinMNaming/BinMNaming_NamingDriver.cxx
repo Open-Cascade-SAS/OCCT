@@ -237,7 +237,7 @@ Standard_Boolean BinMNaming_NamingDriver::Paste
 	myMessageDriver->Send (aMsg, Message_Warning);
 	  }
 
-    if(BinMNaming::DocumentVersion() > 3) {
+    if(theRelocTable.GetHeaderData()->StorageVersion().IntegerValue() > 3) {
 	TCollection_AsciiString entry;
 	ok = theSource >> entry;
 	if(ok) {
@@ -254,7 +254,8 @@ Standard_Boolean BinMNaming_NamingDriver::Paste
 		aName.ContextLabel(tLab);
 	    }
 	}
-    if(BinMNaming::DocumentVersion() > 4 && BinMNaming::DocumentVersion() < 7) {
+    if(theRelocTable.GetHeaderData()->StorageVersion().IntegerValue() > 4 && 
+       theRelocTable.GetHeaderData()->StorageVersion().IntegerValue() < 7) {
           // Orientation processing - converting from old format
       Handle(TNaming_NamedShape) aNShape;
       if(anAtt->Label().FindAttribute(TNaming_NamedShape::GetID(), aNShape)) {
@@ -273,7 +274,7 @@ Standard_Boolean BinMNaming_NamingDriver::Paste
 		}
 	  }
 	}
-    if(BinMNaming::DocumentVersion() > 6) {
+    if(theRelocTable.GetHeaderData()->StorageVersion().IntegerValue() > 6) {
       ok = theSource >> anIndx;
       TopAbs_Orientation OrientationToApply(TopAbs_FORWARD);
       if(ok) {
@@ -290,10 +291,7 @@ Standard_Boolean BinMNaming_NamingDriver::Paste
 	}
 	}
 #ifdef OCCT_DEBUG
-      else if(BinMNaming::DocumentVersion() == -1)
-	cout << "Current DocVersion field is not initialized. "  <<endl;
-      else 
-	cout << "Current DocVersion = " << BinMNaming::DocumentVersion() <<endl;
+	      cout << "Current Document Format Version = " << theRelocTable.GetHeaderData()->StorageVersion().IntegerValue() <<endl;      
 #endif
 	}
   }

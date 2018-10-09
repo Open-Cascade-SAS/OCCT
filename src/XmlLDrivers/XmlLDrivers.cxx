@@ -132,10 +132,6 @@ int XmlLDrivers::StorageVersion()
 {
   return CURRENT_DOCUMENT_VERSION;
 }
-void XmlLDrivers::SetStorageVersion(const int version)
-{
-  CURRENT_DOCUMENT_VERSION = version;
-}
 
 // Declare entry point PLUGINFACTORY
 PLUGIN(XmlLDrivers)

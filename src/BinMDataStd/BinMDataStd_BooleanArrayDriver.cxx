@@ -51,7 +51,7 @@ Handle(TDF_Attribute) BinMDataStd_BooleanArrayDriver::NewEmpty() const
 //=======================================================================
 Standard_Boolean BinMDataStd_BooleanArrayDriver::Paste(const BinObjMgt_Persistent&  theSource,
                                                        const Handle(TDF_Attribute)& theTarget,
-                                                       BinObjMgt_RRelocationTable&  ) const
+                                                       BinObjMgt_RRelocationTable&  theRelocTable) const
 {
   Standard_Integer aFirstInd, aLastInd;
   if (! (theSource >> aFirstInd >> aLastInd))
@@ -71,7 +71,7 @@ Standard_Boolean BinMDataStd_BooleanArrayDriver::Paste(const BinObjMgt_Persisten
     bytes->SetValue(i, aTargetArray.Value(i));
   }
   anAtt->SetInternalArray(bytes);
-  BinMDataStd::SetAttributeID(theSource, anAtt);
+  BinMDataStd::SetAttributeID(theSource, anAtt, theRelocTable.GetHeaderData()->StorageVersion().IntegerValue());
   return Standard_True;
 }
 

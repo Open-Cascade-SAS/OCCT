@@ -23,7 +23,6 @@
 #include <TNaming_Name.hxx>
 #include <TNaming_NamedShape.hxx>
 #include <TNaming_Naming.hxx>
-#include <XmlMNaming.hxx>
 #include <XmlMNaming_NamingDriver.hxx>
 #include <XmlObjMgt.hxx>
 #include <XmlObjMgt_Persistent.hxx>
@@ -175,7 +174,7 @@ Standard_Boolean XmlMNaming_NamingDriver::Paste
   }
   aNgName.Index(aNb);
 //
-  if(XmlMNaming::DocumentVersion() > 3) {
+  if(theRelocTable.GetHeaderData()->StorageVersion().IntegerValue() > 3) {
     XmlObjMgt_DOMString aDomEntry = anElem.getAttribute(::ContextLabelString());
     if (aDomEntry != NULL)
     {	
@@ -204,7 +203,8 @@ Standard_Boolean XmlMNaming_NamingDriver::Paste
       cout << "Retrieving Context Label is NULL" <<endl;
 #endif
 
-    if(XmlMNaming::DocumentVersion() > 4 && XmlMNaming::DocumentVersion() < 7) {
+    if(theRelocTable.GetHeaderData()->StorageVersion().IntegerValue() > 4 && 
+      theRelocTable.GetHeaderData()->StorageVersion().IntegerValue() < 7) {
           // Orientation processing - converting from old format
           Handle(TNaming_NamedShape) aNS;
           if (aNg->Label().FindAttribute(TNaming_NamedShape::GetID(), aNS)) {
@@ -223,7 +223,7 @@ Standard_Boolean XmlMNaming_NamingDriver::Paste
             }
           }         
         }
-    if(XmlMNaming::DocumentVersion() > 6) {
+    if(theRelocTable.GetHeaderData()->StorageVersion().IntegerValue() > 6) {
        aDOMStr = anElem.getAttribute(::OrientString());
        if (!aDOMStr.GetInteger(aNb))
        {
@@ -238,10 +238,8 @@ Standard_Boolean XmlMNaming_NamingDriver::Paste
     // or. end
   }
 #ifdef OCCT_DEBUG
-  else if(XmlMNaming::DocumentVersion() == -1)
-    cout << "Current DocVersion field is not initialized. "  <<endl;
   else 
-    cout << "Current DocVersion = "  << XmlMNaming::DocumentVersion() <<endl;
+    cout << "Current Document Format Version = "  << theRelocTable.GetHeaderData()->StorageVersion().IntegerValue() <<endl;
 #endif
   return Standard_True;
 }

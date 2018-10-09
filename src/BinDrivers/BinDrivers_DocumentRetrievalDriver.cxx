@@ -106,14 +106,4 @@ void BinDrivers_DocumentRetrievalDriver::Clear()
   BinLDrivers_DocumentRetrievalDriver::Clear();
 }
 
-//=======================================================================
-//function : PropagateDocumentVersion
-//purpose  : 
-//=======================================================================
-void BinDrivers_DocumentRetrievalDriver::PropagateDocumentVersion(
-                                    const Standard_Integer theDocVersion )
-{
-  BinMDataStd::SetDocumentVersion(theDocVersion);
-  BinMNaming::SetDocumentVersion(theDocVersion);
-}
 

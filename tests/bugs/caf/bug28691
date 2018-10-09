@@ -15,13 +15,13 @@ AISSet D 0:1 NS
 
 SaveAs D ${FileV9}
 
-SetStorageVersion 7
+SetStorageVersion D 7
 SaveAs D ${FileV7}
 
 Close D
 
 puts "Testing for XML file format in new version document"
-SetStorageVersion 9
+
 Open ${FileV9} D9
 
 set info [Attributes D9 0:1]

@@ -43,10 +43,7 @@ public:
   
   Standard_EXPORT virtual Handle(XmlMDF_ADriver) ReadShapeSection (const XmlObjMgt_Element& thePDoc, const Handle(Message_Messenger)& theMsgDriver) Standard_OVERRIDE;
   
-  Standard_EXPORT virtual void ShapeSetCleaning (const Handle(XmlMDF_ADriver)& theDriver) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void PropagateDocumentVersion (const Standard_Integer theDocVersion) Standard_OVERRIDE;
-
+  Standard_EXPORT virtual void ShapeSetCleaning (const Handle(XmlMDF_ADriver)& theDriver) Standard_OVERRIDE;  
 
 
 

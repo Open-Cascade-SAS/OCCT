@@ -73,12 +73,10 @@ protected:
   Standard_EXPORT virtual Handle(XmlMDF_ADriver) ReadShapeSection (const XmlObjMgt_Element& thePDoc, const Handle(Message_Messenger)& theMsgDriver);
   
   Standard_EXPORT virtual void ShapeSetCleaning (const Handle(XmlMDF_ADriver)& theDriver);
-  
-  Standard_EXPORT virtual void PropagateDocumentVersion (const Standard_Integer theDocVersion);
 
   Handle(XmlMDF_ADriverTable) myDrivers;
-  XmlObjMgt_RRelocationTable myRelocTable;
-  TCollection_ExtendedString myFileName;
+  XmlObjMgt_RRelocationTable  myRelocTable;
+  TCollection_ExtendedString  myFileName;
 
 
 private:

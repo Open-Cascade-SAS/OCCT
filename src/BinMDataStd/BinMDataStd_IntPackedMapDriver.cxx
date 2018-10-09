@@ -59,7 +59,7 @@ Handle(TDF_Attribute) BinMDataStd_IntPackedMapDriver::NewEmpty() const
 Standard_Boolean BinMDataStd_IntPackedMapDriver::Paste
                          (const BinObjMgt_Persistent&  Source,
                           const Handle(TDF_Attribute)& Target,
-                          BinObjMgt_RRelocationTable&  /*RelocTable*/) const
+                          BinObjMgt_RRelocationTable&  RelocTable) const
 {
   Handle(TDataStd_IntPackedMap) aTagAtt = Handle(TDataStd_IntPackedMap)::DownCast(Target);
   if(aTagAtt.IsNull()) {
@@ -87,7 +87,7 @@ Standard_Boolean BinMDataStd_IntPackedMapDriver::Paste
   }
 
   Standard_Boolean aDelta(Standard_False);
-  if(BinMDataStd::DocumentVersion() > 2) {
+  if(RelocTable.GetHeaderData()->StorageVersion().IntegerValue() > 2) {
     Standard_Byte aDeltaValue;
     if (! (Source >> aDeltaValue))
       return Standard_False;

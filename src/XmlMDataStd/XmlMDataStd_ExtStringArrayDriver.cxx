@@ -76,7 +76,7 @@ Handle(TDF_Attribute) XmlMDataStd_ExtStringArrayDriver::NewEmpty() const
 Standard_Boolean XmlMDataStd_ExtStringArrayDriver::Paste
                                         (const XmlObjMgt_Persistent&  theSource,
                                          const Handle(TDF_Attribute)& theTarget,
-                                         XmlObjMgt_RRelocationTable& ) const
+                                         XmlObjMgt_RRelocationTable& theRelocTable) const
 {
   Standard_Integer aFirstInd, aLastInd, ind;
   TCollection_ExtendedString aValue;
@@ -195,7 +195,7 @@ Standard_Boolean XmlMDataStd_ExtStringArrayDriver::Paste
   // Read delta-flag.
   Standard_Boolean aDelta(Standard_False);
   
-  if(XmlMDataStd::DocumentVersion() > 2) {
+  if(theRelocTable.GetHeaderData()->StorageVersion().IntegerValue() > 2) {
     Standard_Integer aDeltaValue;
     if (!anElement.getAttribute(::IsDeltaOn()).GetInteger(aDeltaValue)) 
       {
@@ -209,10 +209,7 @@ Standard_Boolean XmlMDataStd_ExtStringArrayDriver::Paste
     else
       aDelta = aDeltaValue != 0;
   }
-#ifdef OCCT_DEBUG
-  else if(XmlMDataStd::DocumentVersion() == -1)
-    cout << "Current DocVersion field is not initialized. "  <<endl;
-#endif
+
   aExtStringArray->SetDelta(aDelta);
 
   return Standard_True;
@@ -224,7 +221,7 @@ Standard_Boolean XmlMDataStd_ExtStringArrayDriver::Paste
 //=======================================================================
 void XmlMDataStd_ExtStringArrayDriver::Paste (const Handle(TDF_Attribute)& theSource,
                                          XmlObjMgt_Persistent&        theTarget,
-                                         XmlObjMgt_SRelocationTable&  ) const
+                                         XmlObjMgt_SRelocationTable&  theRelocTable) const
 {
   Handle(TDataStd_ExtStringArray) aExtStringArray =
     Handle(TDataStd_ExtStringArray)::DownCast(theSource);
@@ -243,7 +240,7 @@ void XmlMDataStd_ExtStringArrayDriver::Paste (const Handle(TDF_Attribute)& theSo
   // So, if the user wants to save the document under the 7th or earlier versions,
   // don't apply this improvement.
   Standard_Character c = '-';
-  if (XmlLDrivers::StorageVersion() > 7)
+  if (theRelocTable.GetHeaderData()->StorageVersion().IntegerValue()  > 7)
   {
     // Preferrable symbols for the separator: - _ . : ^ ~
     // Don't use a space as a separator: XML low-level parser sometimes "eats" it.

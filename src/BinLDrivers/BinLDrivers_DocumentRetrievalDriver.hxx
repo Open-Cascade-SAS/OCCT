@@ -91,9 +91,6 @@ protected:
 
   //! clears the reading-cash data in drivers if any.
   Standard_EXPORT virtual void Clear();
-
-  //! provides the version of document to all drivers
-  Standard_EXPORT virtual void PropagateDocumentVersion (const Standard_Integer theVersion);
   
   //! Check a file version(in which file was written) with a current version.
   //! Redefining this method is a chance for application to read files

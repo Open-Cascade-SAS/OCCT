@@ -264,7 +264,18 @@ Standard_Boolean XmlLDrivers_DocumentStorageDriver::WriteToDomDocument (const Ha
 //  anInfoElem.setAttribute("appv", anAppVersion.ToCString());
 
   // Document version
-  anInfoElem.setAttribute("DocVersion", XmlLDrivers::StorageVersion());
+  Standard_Integer aFormatVersion(XmlLDrivers::StorageVersion());// the last version of the format
+  if (theDocument->StorageFormatVersion() > 0) 
+  {
+    if (XmlLDrivers::StorageVersion() < theDocument->StorageFormatVersion())
+    {
+      TCollection_ExtendedString anErrorString("Unacceptable storage format version, the last verson is used");
+      aMessageDriver->Send(anErrorString.ToExtString(), Message_Warning);     
+    }
+    else            
+      aFormatVersion = theDocument->StorageFormatVersion();
+  }
+  anInfoElem.setAttribute("DocVersion", aFormatVersion);
  
   // User info with Copyright
   TColStd_SequenceOfAsciiString aUserInfo;
@@ -281,6 +292,12 @@ Standard_Boolean XmlLDrivers_DocumentStorageDriver::WriteToDomDocument (const Ha
   const TColStd_SequenceOfAsciiString& aRefs = theData->UserInfo();
   for(i = 1; i <= aRefs.Length(); i++)
     aUserInfo.Append(aRefs.Value(i));
+
+  // Keep fomat version in Reloc. table
+  Handle(Storage_HeaderData) aHeaderData = theData->HeaderData();
+  aHeaderData->SetStorageVersion(aFormatVersion);
+  myRelocTable.Clear();
+  myRelocTable.SetHeaderData(aHeaderData);
 
   for (i = 1; i <= aUserInfo.Length(); i++)
   {
@@ -351,7 +368,6 @@ Standard_Integer XmlLDrivers_DocumentStorageDriver::MakeDocument
 {  
   TCollection_ExtendedString aMessage;
   Handle(TDocStd_Document) TDOC = Handle(TDocStd_Document)::DownCast(theTDoc);  
-  myRelocTable.Clear();
   if (!TDOC.IsNull()) 
   {
 //    myRelocTable.SetDocument (theElement.getOwnerDocument());

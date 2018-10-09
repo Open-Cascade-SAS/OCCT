@@ -34,7 +34,6 @@
 #include <UTL.hxx>
 #include <XmlLDrivers.hxx>
 #include <XmlLDrivers_DocumentRetrievalDriver.hxx>
-#include <XmlMDataStd.hxx>
 #include <XmlMDF.hxx>
 #include <XmlMDF_ADriver.hxx>
 #include <XmlMDF_ADriverTable.hxx>
@@ -280,9 +279,6 @@ void XmlLDrivers_DocumentRetrievalDriver::ReadFromDomDocument
     }
 
     if( aCurDocVersion < 2) aCurDocVersion = 2;
-
-    PropagateDocumentVersion(aCurDocVersion);
-
     Standard_Boolean isRef = Standard_False;
     for (LDOM_Node aNode = anInfoElem.getFirstChild();
          aNode != NULL; aNode = aNode.getNextSibling()) {
@@ -438,6 +434,12 @@ void XmlLDrivers_DocumentRetrievalDriver::ReadFromDomDocument
   if(!aNSDriver.IsNull())
     ::take_time (0, " +++++ Fin reading Shapes :    ", aMsgDriver);
 
+  // 2.1. Keep document format version in RT
+  Handle(Storage_HeaderData) aHeaderData = new Storage_HeaderData();
+  aHeaderData->SetStorageVersion(aCurDocVersion);
+  myRelocTable.Clear();
+  myRelocTable.SetHeaderData(aHeaderData);
+
   // 5. Read document contents
   try
   {
@@ -477,7 +479,6 @@ Standard_Boolean XmlLDrivers_DocumentRetrievalDriver::MakeDocument
 {
   Standard_Boolean aResult = Standard_False;
   Handle(TDocStd_Document) TDOC = Handle(TDocStd_Document)::DownCast(theTDoc);
-  myRelocTable.Clear();
   if (!TDOC.IsNull()) 
   {
     Handle(TDF_Data) aTDF = new TDF_Data();
@@ -532,16 +533,6 @@ static void take_time (const Standard_Integer isReset, const char * aHeader,
   aMessageDriver -> Write (aMessage.ToExtString());
 }
 #endif
-
-//=======================================================================
-//function : PropagateDocumentVersion
-//purpose  : 
-//=======================================================================
-void XmlLDrivers_DocumentRetrievalDriver::PropagateDocumentVersion(
-                                   const Standard_Integer theDocVersion )
-{
-  XmlMDataStd::SetDocumentVersion(theDocVersion);
-}
 
 //=======================================================================
 //function : ReadShapeSection

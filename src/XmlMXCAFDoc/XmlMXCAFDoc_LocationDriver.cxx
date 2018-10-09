@@ -148,7 +148,7 @@ Standard_Boolean XmlMXCAFDoc_LocationDriver::Translate
   if (aLocElem == NULL)
     return Standard_False;
   
-  Standard_Integer aFileVer = XmlMNaming::DocumentVersion();
+  Standard_Integer aFileVer = theMap.GetHeaderData()->StorageVersion().IntegerValue();
   if( aFileVer > 5 && myLocations == 0 )
   {
     return Standard_False;

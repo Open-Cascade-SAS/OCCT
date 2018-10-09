@@ -43,7 +43,6 @@ public:
   Standard_EXPORT static Handle(XmlMDF_ADriverTable) AttributeDrivers (const Handle(Message_Messenger)& theMsgDriver);
   
   Standard_EXPORT static int StorageVersion();
-  Standard_EXPORT static void SetStorageVersion (const int version);
 };
 
 #endif // _XmlLDrivers_HeaderFile

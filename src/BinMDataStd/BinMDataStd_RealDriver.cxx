@@ -52,14 +52,14 @@ Handle(TDF_Attribute) BinMDataStd_RealDriver::NewEmpty() const
 Standard_Boolean BinMDataStd_RealDriver::Paste
                                 (const BinObjMgt_Persistent&  theSource,
                                  const Handle(TDF_Attribute)& theTarget,
-                                 BinObjMgt_RRelocationTable&  ) const
+                                 BinObjMgt_RRelocationTable&  theRelocTable) const
 {
   Handle(TDataStd_Real) anAtt= Handle(TDataStd_Real)::DownCast(theTarget);
   Standard_Real aValue;
   Standard_Boolean ok = theSource >> aValue;
   if (ok)
     anAtt->Set(aValue);
-  if(BinMDataStd::DocumentVersion() > 8) { // process user defined guid
+  if(theRelocTable.GetHeaderData()->StorageVersion().IntegerValue() > 8) { // process user defined guid
 	const Standard_Integer& aPos = theSource.Position();
 	Standard_GUID aGuid;
 	ok = theSource >> aGuid;	

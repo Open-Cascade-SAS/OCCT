@@ -38,12 +38,6 @@ public:
   
   //! Adds the attribute drivers to <aDriverTable>.
   Standard_EXPORT static void AddDrivers (const Handle(XmlMDF_ADriverTable)& aDriverTable, const Handle(Message_Messenger)& aMessageDriver);
-  
-  Standard_EXPORT static void SetDocumentVersion (const Standard_Integer DocVersion);
-  
-  Standard_EXPORT static Standard_Integer DocumentVersion();
-
-
 
 
 protected:

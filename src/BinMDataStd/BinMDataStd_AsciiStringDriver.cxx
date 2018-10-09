@@ -55,14 +55,14 @@ Handle(TDF_Attribute) BinMDataStd_AsciiStringDriver::NewEmpty() const
 Standard_Boolean BinMDataStd_AsciiStringDriver::Paste
                          (const BinObjMgt_Persistent&  Source,
                           const Handle(TDF_Attribute)& Target,
-                          BinObjMgt_RRelocationTable&  /*RelocTable*/) const
+                          BinObjMgt_RRelocationTable&  RelocTable) const
 {
   Handle(TDataStd_AsciiString) aStrAtt = Handle(TDataStd_AsciiString)::DownCast(Target);
   TCollection_AsciiString aString;
   Standard_Boolean ok = Source >> aString;
   if (ok)
     aStrAtt->Set( aString );
-  if(BinMDataStd::DocumentVersion() > 8) { // process user defined guid
+  if(RelocTable.GetHeaderData()->StorageVersion().IntegerValue() > 8) { // process user defined guid
 	const Standard_Integer& aPos = Source.Position();
 	Standard_GUID aGuid;
 	ok = Source >> aGuid;	

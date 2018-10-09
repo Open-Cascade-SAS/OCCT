@@ -343,6 +343,12 @@ Standard_OStream& operator << (Standard_OStream& anOStream);
 
   Standard_EXPORT void SetReferenceCounter (const Standard_Integer aReferenceCounter);
 
+  //! Returns version of the format to be used to store the document
+  Standard_EXPORT Standard_Integer StorageFormatVersion() const;
+
+  //! Sets <theVersion> of the format to be used to store the document
+  Standard_EXPORT void ChangeStorageFormatVersion(const Standard_Integer theVersion);
+
 friend class CDM_Reference;
 friend class CDM_ReferenceIterator;
 friend class CDM_Application;
@@ -358,7 +364,6 @@ protected:
   Standard_EXPORT ~CDM_Document();
 
   Standard_Boolean myResourcesAreLoaded;
-
 
 private:
 
@@ -398,7 +403,7 @@ private:
   Standard_Boolean myFileExtensionWasFound;
   Standard_Boolean myDescriptionWasFound;
   Handle(CDM_Application) myApplication;
-
+  Standard_Integer myStorageFormatVersion;
 
 };
 

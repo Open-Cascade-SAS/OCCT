@@ -72,7 +72,8 @@ public:
   
   //! Fill a DocumentSection instance from the data that are read
   //! from TOC.
-  Standard_EXPORT static void ReadTOC (BinLDrivers_DocumentSection& theSection, Standard_IStream& theIS);
+  Standard_EXPORT static void ReadTOC (BinLDrivers_DocumentSection& theSection, Standard_IStream& theIS,
+                                       const Standard_Integer theDocFormatVersion);
 
 
 

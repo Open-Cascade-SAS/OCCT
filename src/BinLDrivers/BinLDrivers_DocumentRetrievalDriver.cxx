@@ -215,11 +215,7 @@ void BinLDrivers_DocumentRetrievalDriver::Read (Standard_IStream&               
         myMsgDriver->Send (aTypeNames(i), Message_Warning);
   }
 
-  // propagate the opened document version to data drivers
-  PropagateDocumentVersion(aFileVer);
-
   // 2. Read document contents
-
   // 2a. Retrieve data from the stream:
   myRelocTable.Clear();
   myRelocTable.SetHeaderData(aHeaderData);
@@ -232,7 +228,7 @@ void BinLDrivers_DocumentRetrievalDriver::Read (Standard_IStream&               
   if (aFileVer >= 3) {
     BinLDrivers_DocumentSection aSection;
     do {
-      BinLDrivers_DocumentSection::ReadTOC (aSection, theIStream);
+      BinLDrivers_DocumentSection::ReadTOC (aSection, theIStream, aFileVer);
       mySections.Append(aSection);
     } while(!aSection.Name().IsEqual((Standard_CString)SHAPESECTION_POS) && !theIStream.eof());
 
@@ -338,7 +334,7 @@ Standard_Integer BinLDrivers_DocumentRetrievalDriver::ReadSubTree
                           const TDF_Label&  theLabel)
 {
   Standard_Integer nbRead = 0;
-  static TCollection_ExtendedString aMethStr
+  TCollection_ExtendedString aMethStr
     ("BinLDrivers_DocumentRetrievalDriver: ");
 
   // Read attributes:
@@ -509,15 +505,6 @@ void BinLDrivers_DocumentRetrievalDriver::Clear()
   myPAtt.Destroy();    // free buffer
   myRelocTable.Clear();
   myMapUnsupported.Clear();
-}
-
-//=======================================================================
-//function : PropagateDocumentVersion
-//purpose  : 
-//=======================================================================
-void BinLDrivers_DocumentRetrievalDriver::PropagateDocumentVersion(const Standard_Integer theDocVersion )
-{
-  BinMDataStd::SetDocumentVersion(theDocVersion);
 }
 
 //=======================================================================

@@ -1621,3 +1621,9 @@ Now methods *GeomConvert::ConcatG1*, *GeomConvert::ConcatC1*, *Geom2dConvert::Co
 
 *SelectBasics_PickResult* structure has been extended, so that it now defines 3D point on detected entity in addition to Depth value along picking ray.
 *SelectMgr_SelectingVolumeManager::Overlap()* methods have been corrected to fill in *SelectBasics_PickResult* structure (depth and 3D point) instead of only depth value, so that custom *Select3D_SensitiveEntity* implementation should be updated accordingly (including *Select3D_SensitiveSet* subclasses).
+
+@subsection upgrade_740_ocafpersistence Document format version management improvement.
+
+Previously Document format version after restoring by DocumentRetrievalDriver was propagated using static methods of corresponding units (like MDataStd or MNaming) to static variables of these units and after that became accessible to Drivers of these units.
+Now Document format version is available to drivers via RelocationTable. The Relocation table now keeps HeaderData of the document and a format version can be extracted in next way: theRelocTable.GetHeaderData()->StorageVersion().
+Obsolete methods: *static void SetDocumentVersion (const Standard_Integer DocVersion)* and *static Standard_Integer DocumentVersion()* of *BinMDataStd*, *BinMNaming*, *XmlMDataStd* and *XmlMNaming* are removed.

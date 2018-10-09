@@ -484,10 +484,12 @@ static Standard_Integer DDocStd_SetStorageVersion (Draw_Interpretor& ,
                                                    Standard_Integer nb,
                                                    const char** a)
 {  
-  if (nb == 2)
+  if (nb == 3)
   {
-    const int version = atoi(a[1]);
-    XmlLDrivers::SetStorageVersion(version);
+    Handle(TDocStd_Document) D;
+    if (!DDocStd::GetDocument(a[1], D)) return 1;
+    const int version = atoi(a[2]);
+    D->ChangeStorageFormatVersion(version);
     return 0;
   }
   return 1;
@@ -498,11 +500,16 @@ static Standard_Integer DDocStd_SetStorageVersion (Draw_Interpretor& ,
 //purpose  : 
 //=======================================================================
 static Standard_Integer DDocStd_GetStorageVersion (Draw_Interpretor& di,
-                                                   Standard_Integer ,
-                                                   const char** )
-{  
-  di << XmlLDrivers::StorageVersion() << "\n" ;
-  return 0;
+                                                   Standard_Integer nb,
+                                                   const char** a)
+{ 
+  if (nb == 2) {
+    Handle(TDocStd_Document) D;
+    if (!DDocStd::GetDocument(a[1], D)) return 1;
+    di << D->StorageFormatVersion() << "\n";
+    return 0;
+  }
+  return 1;
 }
 
 //=======================================================================
@@ -565,9 +572,9 @@ void DDocStd::ApplicationCommands(Draw_Interpretor& theCommands)
 		  __FILE__, DDocStd_PrintComments, g);
 
   theCommands.Add("GetStorageVersion",
-		  "GetStorageVersion",
+		  "GetStorageVersion Doc",
 		  __FILE__, DDocStd_GetStorageVersion, g);
   theCommands.Add("SetStorageVersion",
-		  "SetStorageVersion Version",
+		  "SetStorageVersion Doc Version",
 		  __FILE__, DDocStd_SetStorageVersion, g);
 }

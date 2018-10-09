@@ -118,7 +118,7 @@ void XmlMDataStd_TreeNodeDriver::Paste
   // tree id
   // A not default ID is skipped for storage version 8 and newer.
   if (aS->ID() != TDataStd_TreeNode::GetDefaultTreeID() ||
-      XmlLDrivers::StorageVersion() < 8)
+      theRelocTable.GetHeaderData()->StorageVersion().IntegerValue() < 8)
   {
     Standard_Character aGuidStr [40];
     Standard_PCharacter pGuidStr=aGuidStr;

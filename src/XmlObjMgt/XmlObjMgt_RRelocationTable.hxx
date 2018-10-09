@@ -18,7 +18,36 @@
 
 #include <TColStd_DataMapOfIntegerTransient.hxx>
 
-typedef TColStd_DataMapOfIntegerTransient XmlObjMgt_RRelocationTable;
+#include <Storage_HeaderData.hxx>
 
+//! Retrieval relocation table is modeled as a child class of
+//! TColStd_DataMapOfIntegerTransient that stores a handle to the file
+//! header section. With that attribute drivers have access to the file header
+//! section.
+class XmlObjMgt_RRelocationTable : public TColStd_DataMapOfIntegerTransient
+{
+public:
+
+  //! Returns a handle to the header data of the file that is begin read
+  Standard_EXPORT const Handle(Storage_HeaderData)& GetHeaderData() const;
+
+  //! Sets the storage header data.
+  //!
+  //! @param theHeaderData header data of the file that is begin read
+  Standard_EXPORT void SetHeaderData(
+      const Handle(Storage_HeaderData)& theHeaderData);
+
+  Standard_EXPORT void Clear(const Standard_Boolean doReleaseMemory = Standard_True);
+
+
+
+protected:
+
+
+
+private:
+
+  Handle(Storage_HeaderData) myHeaderData;
+};
 
 #endif // _XmlObjMgt_RRelocationTable_HeaderFile

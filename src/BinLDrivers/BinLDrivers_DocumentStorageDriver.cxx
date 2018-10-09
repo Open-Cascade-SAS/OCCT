@@ -187,7 +187,7 @@ void BinLDrivers_DocumentStorageDriver::UnsupportedAttrMsg
                         (const Handle(Standard_Type)& theType)
 {
 #ifdef OCCT_DEBUG
-  static TCollection_ExtendedString aMsg
+  TCollection_ExtendedString aMsg
     ("BinDrivers_DocumentStorageDriver: warning: attribute driver for type ");
 #endif
   if (!myMapUnsupported.Contains(theType)) {

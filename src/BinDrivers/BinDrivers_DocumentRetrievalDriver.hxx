@@ -50,10 +50,6 @@ public:
 
   //! Clears the NamedShape driver
   Standard_EXPORT virtual void Clear() Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void PropagateDocumentVersion (const Standard_Integer theVersion) Standard_OVERRIDE;
-
-
 
 
   DEFINE_STANDARD_RTTIEXT(BinDrivers_DocumentRetrievalDriver,BinLDrivers_DocumentRetrievalDriver)
