@@ -396,11 +396,14 @@ Handle(VrmlData_Geometry) VrmlData_ShapeConvert::triToIndexedFaceSet
       (anAlloc->Allocate (nNodes * sizeof(gp_XYZ)));
     const TShort_Array1OfShortReal& Norm = theTri->Normals();
     Standard_Integer j;
-    for  (i = 0, j = 1; i < nNodes; i++, j += 3) {
-      
+    for  (i = 0, j = 1; i < nNodes; i++, j += 3)
+    {
       gp_XYZ aNormal(Norm(j), Norm(j+1), Norm(j+2));
+      if (isReverse)
+      {
+        aNormal.Reverse();
+      }
       arrVec[i] = aNormal;
-
     }
     const Handle(VrmlData_Normal) aNormalNode =
       new VrmlData_Normal (myScene, 0L, nNodes, arrVec);
