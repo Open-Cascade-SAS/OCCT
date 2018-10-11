@@ -1,0 +1,14 @@
+puts "========"
+puts "0030230: An optimal bounding box of a face is too large"
+puts "========"
+puts ""
+
+restore [locate_data_file bug30230.brep] f
+bounding f -optimal -save xmin ymin zmin xmax ymax zmax
+
+checkreal xmin [dval xmin] -12659.707180220001 1.e-7 0
+checkreal ymin [dval ymin]  3389.8415241848311 1.e-7 0
+checkreal zmin [dval zmin] -100.01220790140377 1.e-7 0
+checkreal xmax [dval xmax] -12027.91640874722  1.e-7 0
+checkreal ymax [dval ymax]  3901.8916275309998 1.e-7 0
+checkreal zmax [dval zmax]  1.0003384222321339e-007 1.e-7 0

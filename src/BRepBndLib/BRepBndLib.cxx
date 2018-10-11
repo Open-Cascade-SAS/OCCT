@@ -671,7 +671,7 @@ Standard_Boolean IsModifySize(const BRepAdaptor_Surface& theBS,
       //
       gp_Pnt2d aP2d(uextr, vextr);
       TopAbs_State aSt = theFClass.Perform(aP2d);
-      if(aSt == TopAbs_OUT)
+      if(aSt != TopAbs_IN)
       {
         return Standard_True;
       }
