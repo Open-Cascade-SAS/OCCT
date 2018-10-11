@@ -22,6 +22,7 @@
 #include <Standard_Boolean.hxx>
 
 #include <Bnd_Box.hxx>
+#include <gp_Ax3.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_XYZ.hxx>
@@ -136,7 +137,15 @@ public:
     myAxes[2] = theZDirection.XYZ();
     myHDims[2] = theHZSize;
   }
-  
+
+  //! Returns the local coordinates system of this oriented box.
+  //! So that applying it to axis-aligned box ((-XHSize, -YHSize, -ZHSize), (XHSize, YHSize, ZHSize)) will produce this oriented box.
+  //! @code
+  //!   gp_Trsf aLoc;
+  //!   aLoc.SetTransformation (theOBB.Position(), gp::XOY());
+  //! @endcode
+  gp_Ax3 Position() const { return gp_Ax3 (myCenter, ZDirection(), XDirection()); }
+
   //! Returns the center of OBB
   const gp_XYZ& Center() const
   {
@@ -267,7 +276,8 @@ public:
   //! (which it was created from) and theP.
   Standard_EXPORT void Add(const gp_Pnt& theP);
 
-  protected:
+protected:
+
     void ProcessOnePoint(const gp_Pnt& theP)
     {
       myIsAABox = Standard_True;
