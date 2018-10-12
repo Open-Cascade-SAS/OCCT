@@ -1,0 +1,17 @@
+puts "============"
+puts "OCC30204"
+puts "============"
+puts ""
+###################################
+# BRepOffsetAPI_MakePipeShell crash
+###################################
+
+#test only for no crash
+
+restore [locate_data_file bug30204_path.brep] path
+restore [locate_data_file bug30204_base.brep] base
+
+mksweep path
+setsweep -CN 0 1 0
+addsweep base
+buildsweep result

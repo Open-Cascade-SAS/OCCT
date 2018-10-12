@@ -3052,10 +3052,19 @@ void BRepFill_Sweep::Build(TopTools_MapOfShape& ReversedEdges,
         if (i2 > myFaces->UpperRow())
           i2 = 0;
         if (i1 != 0)
-          Face1 = TopoDS::Face(myFaces->Value(i1, jj));
+        {
+          const TopoDS_Shape& aShape1 = myFaces->Value(i1, jj);
+          if (aShape1.ShapeType() == TopAbs_FACE)
+            Face1 = TopoDS::Face(aShape1);
+        }
         if (i2 != 0)
-          Face2 = TopoDS::Face(myFaces->Value(i2, jj));
-        CorrectSameParameter(anEdge, Face1, Face2);
+        {
+          const TopoDS_Shape& aShape2 = myFaces->Value(i2, jj);
+          if (aShape2.ShapeType() == TopAbs_FACE)
+            Face2 = TopoDS::Face(aShape2);
+        }
+        if (!Face1.IsNull() && !Face2.IsNull())
+          CorrectSameParameter(anEdge, Face1, Face2);
       }
     }
 
