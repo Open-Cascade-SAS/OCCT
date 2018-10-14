@@ -25,7 +25,7 @@ class Graphic3d_ArrayOfPolygons : public Graphic3d_ArrayOfPrimitives
   DEFINE_STANDARD_RTTIEXT(Graphic3d_ArrayOfPolygons, Graphic3d_ArrayOfPrimitives)
 public:
 
-  //! Creates an array of polygons, a polygon can be filled as:
+  //! Creates an array of polygons (Graphic3d_TOPA_POLYGONS), a polygon can be filled as:
   //! 1) Creating a single polygon defined with his vertexes, i.e:
   //! @code
   //!   myArray = Graphic3d_ArrayOfPolygons (7);
@@ -89,6 +89,17 @@ public:
   //! @param theMaxVertexs defines the maximum allowed vertex number in the array
   //! @param theMaxBounds  defines the maximum allowed bound  number in the array
   //! @param theMaxEdges   defines the maximum allowed edge   number in the array
+  //! @param theArrayFlags array flags
+  Graphic3d_ArrayOfPolygons (Standard_Integer theMaxVertexs,
+                             Standard_Integer theMaxBounds,
+                             Standard_Integer theMaxEdges,
+                             Graphic3d_ArrayFlags theArrayFlags)
+  : Graphic3d_ArrayOfPrimitives (Graphic3d_TOPA_POLYGONS, theMaxVertexs, theMaxBounds, theMaxEdges, theArrayFlags) {}
+
+  //! Creates an array of polygons (Graphic3d_TOPA_POLYGONS):
+  //! @param theMaxVertexs defines the maximum allowed vertex number in the array
+  //! @param theMaxBounds  defines the maximum allowed bound  number in the array
+  //! @param theMaxEdges   defines the maximum allowed edge   number in the array
   Graphic3d_ArrayOfPolygons (const Standard_Integer theMaxVertexs,
                              const Standard_Integer theMaxBounds   = 0,
                              const Standard_Integer theMaxEdges    = 0,
@@ -96,7 +107,11 @@ public:
                              const Standard_Boolean theHasVColors  = Standard_False,
                              const Standard_Boolean theHasBColors  = Standard_False,
                              const Standard_Boolean theHasVTexels  = Standard_False)
-  : Graphic3d_ArrayOfPrimitives (Graphic3d_TOPA_POLYGONS, theMaxVertexs, theMaxBounds, theMaxEdges, theHasVNormals, theHasVColors, theHasBColors, theHasVTexels) {}
+  : Graphic3d_ArrayOfPrimitives (Graphic3d_TOPA_POLYGONS, theMaxVertexs, theMaxBounds, theMaxEdges,
+                                 (theHasVNormals ? Graphic3d_ArrayFlags_VertexNormal : Graphic3d_ArrayFlags_None)
+                               | (theHasVColors  ? Graphic3d_ArrayFlags_VertexColor  : Graphic3d_ArrayFlags_None)
+                               | (theHasBColors  ? Graphic3d_ArrayFlags_BoundColor   : Graphic3d_ArrayFlags_None)
+                               | (theHasVTexels  ? Graphic3d_ArrayFlags_VertexTexel  : Graphic3d_ArrayFlags_None)) {}
 
 };
 

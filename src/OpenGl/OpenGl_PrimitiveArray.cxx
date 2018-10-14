@@ -126,11 +126,8 @@ public:
     {
       const Graphic3d_Attribute& anAttrib = Attribs[anAttribIter];
       const GLenum   aDataType = toGlDataType (anAttrib.DataType, aNbComp);
-      if (aDataType == GL_NONE)
-      {
-        continue;
-      }
-      else if (anAttrib.Id == Graphic3d_TOA_POS)
+      if (anAttrib.Id == Graphic3d_TOA_POS
+       && aDataType != GL_NONE)
       {
         TheBaseClass::bindAttribute (theGlCtx, Graphic3d_TOA_POS, aNbComp, aDataType, Stride, anOffset);
         break;
@@ -154,12 +151,10 @@ public:
     {
       const Graphic3d_Attribute& anAttrib = Attribs[anAttribIter];
       const GLenum   aDataType = toGlDataType (anAttrib.DataType, aNbComp);
-      if (aDataType == GL_NONE)
+      if (aDataType != GL_NONE)
       {
-        continue;
+        TheBaseClass::bindAttribute (theGlCtx, anAttrib.Id, aNbComp, aDataType, Stride, anOffset);
       }
-
-      TheBaseClass::bindAttribute (theGlCtx, anAttrib.Id, aNbComp, aDataType, Stride, anOffset);
       anOffset += Graphic3d_Attribute::Stride (anAttrib.DataType);
     }
   }
@@ -179,7 +174,7 @@ public:
     }
   }
 
-public:
+private:
 
   Graphic3d_Attribute Attribs[NbAttributes];
   Standard_Integer    Stride;

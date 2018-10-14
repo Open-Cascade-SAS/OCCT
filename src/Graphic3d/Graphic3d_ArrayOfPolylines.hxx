@@ -23,7 +23,7 @@ class Graphic3d_ArrayOfPolylines : public Graphic3d_ArrayOfPrimitives
   DEFINE_STANDARD_RTTIEXT(Graphic3d_ArrayOfPolylines, Graphic3d_ArrayOfPrimitives)
 public:
 
-  //! Creates an array of polylines, a polyline can be filled as:
+  //! Creates an array of polylines (Graphic3d_TOPA_POLYLINES), a polyline can be filled as:
   //! 1) Creating a single polyline defined with his vertexes, i.e:
   //! @code
   //!   myArray = Graphic3d_ArrayOfPolylines (7);
@@ -87,14 +87,27 @@ public:
   //! @param theMaxVertexs defines the maximum allowed vertex number in the array
   //! @param theMaxBounds  defines the maximum allowed bound  number in the array
   //! @param theMaxEdges   defines the maximum allowed edge   number in the array
+  //! @param theArrayFlags array flags
+  Graphic3d_ArrayOfPolylines (Standard_Integer theMaxVertexs,
+                              Standard_Integer theMaxBounds,
+                              Standard_Integer theMaxEdges,
+                              Graphic3d_ArrayFlags theArrayFlags)
+  : Graphic3d_ArrayOfPrimitives (Graphic3d_TOPA_POLYLINES, theMaxVertexs, theMaxBounds, theMaxEdges, theArrayFlags) {}
+
+  //! Creates an array of polylines (Graphic3d_TOPA_POLYLINES).
+  //! @param theMaxVertexs defines the maximum allowed vertex number in the array
+  //! @param theMaxBounds  defines the maximum allowed bound  number in the array
+  //! @param theMaxEdges   defines the maximum allowed edge   number in the array
   //! @param theHasVColors when TRUE AddVertex(Point,Color) or AddVertex(Point,Normal,Color) should be used to specify per-vertex color values
   //! @param theHasBColors when TRUE AddBound(number,Color) should be used to specify sub-group color
-  Graphic3d_ArrayOfPolylines (const Standard_Integer theMaxVertexs,
-                              const Standard_Integer theMaxBounds  = 0,
-                              const Standard_Integer theMaxEdges   = 0,
-                              const Standard_Boolean theHasVColors = Standard_False,
-                              const Standard_Boolean theHasBColors = Standard_False)
-  : Graphic3d_ArrayOfPrimitives (Graphic3d_TOPA_POLYLINES, theMaxVertexs, theMaxBounds, theMaxEdges, Standard_False, theHasVColors, theHasBColors, Standard_False) {}
+  Graphic3d_ArrayOfPolylines (Standard_Integer theMaxVertexs,
+                              Standard_Integer theMaxBounds  = 0,
+                              Standard_Integer theMaxEdges   = 0,
+                              Standard_Boolean theHasVColors = Standard_False,
+                              Standard_Boolean theHasBColors = Standard_False)
+  : Graphic3d_ArrayOfPrimitives (Graphic3d_TOPA_POLYLINES, theMaxVertexs, theMaxBounds, theMaxEdges,
+                                 (theHasVColors  ? Graphic3d_ArrayFlags_VertexColor  : Graphic3d_ArrayFlags_None)
+                               | (theHasBColors  ? Graphic3d_ArrayFlags_BoundColor   : Graphic3d_ArrayFlags_None)) {}
 
 };
 

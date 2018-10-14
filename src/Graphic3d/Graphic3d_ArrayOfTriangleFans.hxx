@@ -23,7 +23,7 @@ class Graphic3d_ArrayOfTriangleFans : public Graphic3d_ArrayOfPrimitives
   DEFINE_STANDARD_RTTIEXT(Graphic3d_ArrayOfTriangleFans, Graphic3d_ArrayOfPrimitives)
 public:
 
-  //! Creates an array of triangle fans, a polygon can be filled as:
+  //! Creates an array of triangle fans (Graphic3d_TOPA_TRIANGLEFANS), a polygon can be filled as:
   //! 1) Creating a single fan defined with his vertexes, i.e:
   //! @code
   //!   myArray = Graphic3d_ArrayOfTriangleFans (7);
@@ -43,16 +43,29 @@ public:
   //!   ....
   //!   myArray->AddVertex (x8, y8, z8);
   //! @endcode
+  //! The number of triangle really drawn is: VertexNumber() - 2 * Min(1, BoundNumber())
   //! @param theMaxVertexs defines the maximum allowed vertex number in the array
   //! @param theMaxFans    defines the maximum allowed fan    number in the array
-  //! The number of triangle really drawn is: VertexNumber() - 2 * Min(1, BoundNumber())
-  Graphic3d_ArrayOfTriangleFans (const Standard_Integer theMaxVertexs,
-                                 const Standard_Integer theMaxFans     = 0,
-                                 const Standard_Boolean theHasVNormals = Standard_False,
-                                 const Standard_Boolean theHasVColors  = Standard_False,
-                                 const Standard_Boolean theHasBColors  = Standard_False,
-                                 const Standard_Boolean theHasVTexels  = Standard_False)
-  : Graphic3d_ArrayOfPrimitives (Graphic3d_TOPA_TRIANGLEFANS, theMaxVertexs, theMaxFans, 0, theHasVNormals, theHasVColors, theHasBColors, theHasVTexels) {}
+  //! @param theArrayFlags array flags
+  Graphic3d_ArrayOfTriangleFans (Standard_Integer theMaxVertexs,
+                                 Standard_Integer theMaxFans,
+                                 Graphic3d_ArrayFlags theArrayFlags)
+  : Graphic3d_ArrayOfPrimitives (Graphic3d_TOPA_TRIANGLEFANS, theMaxVertexs, theMaxFans, 0, theArrayFlags) {}
+
+  //! Creates an array of triangle fans (Graphic3d_TOPA_TRIANGLEFANS).
+  //! @param theMaxVertexs defines the maximum allowed vertex number in the array
+  //! @param theMaxFans    defines the maximum allowed fan    number in the array
+  Graphic3d_ArrayOfTriangleFans (Standard_Integer theMaxVertexs,
+                                 Standard_Integer theMaxFans     = 0,
+                                 Standard_Boolean theHasVNormals = Standard_False,
+                                 Standard_Boolean theHasVColors  = Standard_False,
+                                 Standard_Boolean theHasBColors  = Standard_False,
+                                 Standard_Boolean theHasVTexels  = Standard_False)
+  : Graphic3d_ArrayOfPrimitives (Graphic3d_TOPA_TRIANGLEFANS, theMaxVertexs, theMaxFans, 0,
+                                 (theHasVNormals ? Graphic3d_ArrayFlags_VertexNormal : Graphic3d_ArrayFlags_None)
+                               | (theHasVColors  ? Graphic3d_ArrayFlags_VertexColor  : Graphic3d_ArrayFlags_None)
+                               | (theHasVTexels  ? Graphic3d_ArrayFlags_VertexTexel  : Graphic3d_ArrayFlags_None)
+                               | (theHasBColors  ? Graphic3d_ArrayFlags_BoundColor   : Graphic3d_ArrayFlags_None)) {}
 
 };
 

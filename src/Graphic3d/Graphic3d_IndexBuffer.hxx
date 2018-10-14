@@ -19,6 +19,7 @@
 //! Index buffer.
 class Graphic3d_IndexBuffer : public Graphic3d_Buffer
 {
+  DEFINE_STANDARD_RTTIEXT(Graphic3d_IndexBuffer, Graphic3d_Buffer)
 public:
 
   //! Empty constructor.
@@ -76,9 +77,6 @@ public:
     }
   }
 
-public:
-
-  DEFINE_STANDARD_RTTI_INLINE(Graphic3d_IndexBuffer,Graphic3d_Buffer) // Type definition
 
 };
 

@@ -3338,8 +3338,7 @@ MyPArrayObject::MyPArrayObject (Handle(TColStd_HArray1OfAsciiString) theArrayDes
 
   // Parsing array description
   Standard_Integer aVertexNum = 0, aBoundNum = 0, aEdgeNum = 0;
-  Standard_Boolean hasVColors, hasBColors, hasNormals, hasTexels;
-  hasVColors = hasNormals = hasBColors = hasTexels = Standard_False;
+  Graphic3d_ArrayFlags anArrayFlags = Graphic3d_ArrayFlags_None;
 
   Standard_Integer anArgIndex = 0;
   Standard_Integer anArgsCount = myArrayDescription->Length();
@@ -3356,15 +3355,21 @@ MyPArrayObject::MyPArrayObject (Handle(TColStd_HArray1OfAsciiString) theArrayDes
     {
       // vertex has a normal or normal with color or texel
       if (CheckInputCommand ("n", myArrayDescription, anArgIndex, 3, anArgsCount))
-        hasNormals = Standard_True;
+      {
+        anArrayFlags = anArrayFlags | Graphic3d_ArrayFlags_VertexNormal;
+      }
 
       // vertex has a color
       if (CheckInputCommand ("c", myArrayDescription, anArgIndex, 3, anArgsCount))
-        hasVColors = Standard_True;
+      {
+        anArrayFlags = anArrayFlags | Graphic3d_ArrayFlags_VertexColor;
+      }
 
       // vertex has a texel
       if (CheckInputCommand ("t", myArrayDescription, anArgIndex, 2, anArgsCount))
-        hasTexels = Standard_True;
+      {
+        anArrayFlags = anArrayFlags | Graphic3d_ArrayFlags_VertexTexel;
+      }
 
       aVertexNum++;
     }
@@ -3373,7 +3378,9 @@ MyPArrayObject::MyPArrayObject (Handle(TColStd_HArray1OfAsciiString) theArrayDes
     {
       // bound has color
       if (CheckInputCommand ("c", myArrayDescription, anArgIndex, 3, anArgsCount))
-        hasBColors = Standard_True;
+      {
+        anArrayFlags = anArrayFlags | Graphic3d_ArrayFlags_BoundColor;
+      }
 
       aBoundNum++;
     }
@@ -3393,33 +3400,21 @@ MyPArrayObject::MyPArrayObject (Handle(TColStd_HArray1OfAsciiString) theArrayDes
     anArray = new Graphic3d_ArrayOfPoints (aVertexNum);
   }
   else if (anArrayType == "segments")
-    anArray = new Graphic3d_ArrayOfSegments (aVertexNum, aEdgeNum, hasVColors);
+    anArray = new Graphic3d_ArrayOfSegments (aVertexNum, aEdgeNum, anArrayFlags);
   else if (anArrayType == "polylines")
-    anArray = new Graphic3d_ArrayOfPolylines (aVertexNum, aBoundNum, aEdgeNum,
-                                              hasVColors, hasBColors);
+    anArray = new Graphic3d_ArrayOfPolylines (aVertexNum, aBoundNum, aEdgeNum, anArrayFlags);
   else if (anArrayType == "triangles")
-    anArray = new Graphic3d_ArrayOfTriangles (aVertexNum, aEdgeNum, hasNormals,
-                                              hasVColors, hasTexels);
+    anArray = new Graphic3d_ArrayOfTriangles (aVertexNum, aEdgeNum, anArrayFlags);
   else if (anArrayType == "trianglefans")
-    anArray = new Graphic3d_ArrayOfTriangleFans (aVertexNum, aBoundNum,
-                                                 hasNormals, hasVColors,
-                                                 hasBColors, hasTexels);
+    anArray = new Graphic3d_ArrayOfTriangleFans (aVertexNum, aBoundNum, anArrayFlags);
   else if (anArrayType == "trianglestrips")
-    anArray = new Graphic3d_ArrayOfTriangleStrips (aVertexNum, aBoundNum,
-                                                   hasNormals, hasVColors,
-                                                   hasBColors, hasTexels);
+    anArray = new Graphic3d_ArrayOfTriangleStrips (aVertexNum, aBoundNum, anArrayFlags);
   else if (anArrayType == "quads")
-    anArray = new Graphic3d_ArrayOfQuadrangles (aVertexNum, aEdgeNum,
-                                                hasNormals, hasVColors,
-                                                hasTexels);
+    anArray = new Graphic3d_ArrayOfQuadrangles (aVertexNum, aEdgeNum, anArrayFlags);
   else if (anArrayType == "quadstrips")
-    anArray = new Graphic3d_ArrayOfQuadrangleStrips (aVertexNum, aBoundNum,
-                                                     hasNormals, hasVColors,
-                                                     hasBColors, hasTexels);
+    anArray = new Graphic3d_ArrayOfQuadrangleStrips (aVertexNum, aBoundNum, anArrayFlags);
   else if (anArrayType == "polygons")
-    anArray = new Graphic3d_ArrayOfPolygons (aVertexNum, aBoundNum, aEdgeNum,
-                                             hasNormals, hasVColors, hasBColors,
-                                             hasTexels);
+    anArray = new Graphic3d_ArrayOfPolygons (aVertexNum, aBoundNum, aEdgeNum, anArrayFlags);
 
   anArgIndex = 1;
   while (anArgIndex < anArgsCount)

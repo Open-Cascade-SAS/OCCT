@@ -71,6 +71,7 @@ typedef NCollection_Array1<Graphic3d_Attribute> Graphic3d_Array1OfAttribute;
 //! Buffer of vertex attributes.
 class Graphic3d_Buffer : public NCollection_Buffer
 {
+  DEFINE_STANDARD_RTTIEXT(Graphic3d_Buffer, NCollection_Buffer)
 public:
 
   //! Empty constructor.
@@ -82,6 +83,10 @@ public:
   {
     //
   }
+
+  //! Return number of initially allocated elements which can fit into this buffer,
+  //! while NbElements can be overwritten to smaller value.
+  Standard_Integer NbMaxElements() const { return Standard_Integer(mySize / size_t(Stride)); }
 
   //! @return array of attributes definitions
   const Graphic3d_Attribute* AttributesArray() const
@@ -209,13 +214,9 @@ public:
 
 public:
 
-  Standard_Integer Stride;       //!< the distance to the attributes of the next vertex
-  Standard_Integer NbElements;   //!< number of the elements
+  Standard_Integer Stride;       //!< the distance to the attributes of the next vertex within interleaved array
+  Standard_Integer NbElements;   //!< number of the elements (@sa NbMaxElements() specifying the number of initially allocated number of elements)
   Standard_Integer NbAttributes; //!< number of vertex attributes
-
-public:
-
-  DEFINE_STANDARD_RTTI_INLINE(Graphic3d_Buffer,NCollection_Buffer) // Type definition
 
 };
 

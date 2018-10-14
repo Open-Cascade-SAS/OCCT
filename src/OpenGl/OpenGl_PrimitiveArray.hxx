@@ -107,6 +107,7 @@ protected:
   Standard_EXPORT Standard_Boolean buildVBO (const Handle(OpenGl_Context)& theCtx,
                                              const Standard_Boolean        theToKeepData) const;
 
+  //! Release GL memory.
   Standard_EXPORT void clearMemoryGL (const Handle(OpenGl_Context)& theGlCtx) const;
 
 private:

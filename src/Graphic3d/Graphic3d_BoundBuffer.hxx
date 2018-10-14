@@ -19,6 +19,7 @@
 //! Bounds buffer.
 class Graphic3d_BoundBuffer : public NCollection_Buffer
 {
+  DEFINE_STANDARD_RTTIEXT(Graphic3d_BoundBuffer, NCollection_Buffer)
 public:
 
   //! Empty constructor.
@@ -26,7 +27,8 @@ public:
   : NCollection_Buffer (theAlloc),
     Colors   (NULL),
     Bounds   (NULL),
-    NbBounds (0) {}
+    NbBounds (0),
+    NbMaxBounds (0) {}
 
   //! Allocates new empty array
   bool Init (const Standard_Integer theNbBounds,
@@ -35,6 +37,7 @@ public:
     Colors   = NULL;
     Bounds   = NULL;
     NbBounds = 0;
+    NbMaxBounds = 0;
     Free();
     if (theNbBounds < 1)
     {
@@ -52,6 +55,7 @@ public:
     }
 
     NbBounds = theNbBounds;
+    NbMaxBounds = theNbBounds;
     Colors   = theHasColors ? reinterpret_cast<Graphic3d_Vec4* >(myData) : NULL;
     Bounds   = reinterpret_cast<Standard_Integer* >(theHasColors ? (myData + aColorsSize) : myData);
     return true;
@@ -59,13 +63,10 @@ public:
 
 public:
 
-  Graphic3d_Vec4*   Colors;   //!< pointer to facet color values
-  Standard_Integer* Bounds;   //!< pointer to bounds array
-  Standard_Integer  NbBounds; //!< number of bounds
-
-public:
-
-  DEFINE_STANDARD_RTTI_INLINE(Graphic3d_BoundBuffer,NCollection_Buffer) // Type definition
+  Graphic3d_Vec4*   Colors;      //!< pointer to facet color values
+  Standard_Integer* Bounds;      //!< pointer to bounds array
+  Standard_Integer  NbBounds;    //!< number of bounds
+  Standard_Integer  NbMaxBounds; //!< number of allocated bounds
 
 };
 

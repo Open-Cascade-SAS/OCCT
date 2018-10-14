@@ -43,25 +43,23 @@ IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_ArrayOfQuadrangleStrips, Graphic3d_ArrayOfP
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_ArrayOfPolygons,         Graphic3d_ArrayOfPrimitives)
 
 // =======================================================================
-// function : Graphic3d_ArrayOfPrimitives
+// function : init
 // purpose  :
 // =======================================================================
-Graphic3d_ArrayOfPrimitives::Graphic3d_ArrayOfPrimitives (const Graphic3d_TypeOfPrimitiveArray theType,
-                                                          const Standard_Integer               theMaxVertexs,
-                                                          const Standard_Integer               theMaxBounds,
-                                                          const Standard_Integer               theMaxEdges,
-                                                          const Standard_Boolean               theHasVNormals,
-                                                          const Standard_Boolean               theHasVColors,
-                                                          const Standard_Boolean               theHasFColors,
-                                                          const Standard_Boolean               theHasVTexels)
-: myType       (theType),
-  myMaxBounds  (0),
-  myMaxVertexs (0),
-  myMaxEdges   (0),
-  myVNor       (0),
-  myVTex       (0),
-  myVCol       (0)
+void Graphic3d_ArrayOfPrimitives::init (Graphic3d_TypeOfPrimitiveArray theType,
+                                        Standard_Integer theMaxVertexs,
+                                        Standard_Integer theMaxBounds,
+                                        Standard_Integer theMaxEdges,
+                                        Graphic3d_ArrayFlags theArrayOptions)
 {
+  myType = theType;
+  myVNor = 0;
+  myVTex = 0;
+  myVCol = 0;
+  myAttribs.Nullify();
+  myIndices.Nullify();
+  myBounds.Nullify();
+
   Handle(NCollection_AlignedAllocator) anAlloc = new NCollection_AlignedAllocator (16);
   myAttribs = new Graphic3d_Buffer (anAlloc);
   if (theMaxVertexs < 1)
@@ -96,19 +94,19 @@ Graphic3d_ArrayOfPrimitives::Graphic3d_ArrayOfPrimitives (const Graphic3d_TypeOf
   anAttribs[aNbAttribs].Id       = Graphic3d_TOA_POS;
   anAttribs[aNbAttribs].DataType = Graphic3d_TOD_VEC3;
   ++aNbAttribs;
-  if (theHasVNormals)
+  if ((theArrayOptions & Graphic3d_ArrayFlags_VertexNormal) != 0)
   {
     anAttribs[aNbAttribs].Id       = Graphic3d_TOA_NORM;
     anAttribs[aNbAttribs].DataType = Graphic3d_TOD_VEC3;
     ++aNbAttribs;
   }
-  if (theHasVTexels)
+  if ((theArrayOptions & Graphic3d_ArrayFlags_VertexTexel) != 0)
   {
     anAttribs[aNbAttribs].Id       = Graphic3d_TOA_UV;
     anAttribs[aNbAttribs].DataType = Graphic3d_TOD_VEC2;
     ++aNbAttribs;
   }
-  if (theHasVColors)
+  if ((theArrayOptions & Graphic3d_ArrayFlags_VertexColor) != 0)
   {
     anAttribs[aNbAttribs].Id       = Graphic3d_TOA_COLOR;
     anAttribs[aNbAttribs].DataType = Graphic3d_TOD_VEC4UB;
@@ -121,12 +119,13 @@ Graphic3d_ArrayOfPrimitives::Graphic3d_ArrayOfPrimitives (const Graphic3d_TypeOf
     myIndices.Nullify();
     return;
   }
-  memset (myAttribs->ChangeData (0), 0, size_t(myAttribs->Stride) * size_t(myAttribs->NbElements));
+  myAttribs->NbElements = 0;
+  memset (myAttribs->ChangeData (0), 0, size_t(myAttribs->Stride) * size_t(myAttribs->NbMaxElements()));
 
   if (theMaxBounds > 0)
   {
     myBounds = new Graphic3d_BoundBuffer (anAlloc);
-    if (!myBounds->Init (theMaxBounds, theHasFColors))
+    if (!myBounds->Init (theMaxBounds, (theArrayOptions & Graphic3d_ArrayFlags_BoundColor) != 0))
     {
       myAttribs.Nullify();
       myIndices.Nullify();
@@ -161,11 +160,6 @@ Graphic3d_ArrayOfPrimitives::Graphic3d_ArrayOfPrimitives (const Graphic3d_TypeOf
       }
     }
   }
-
-  myAttribs->NbElements = 0;
-  myMaxVertexs = theMaxVertexs;
-  myMaxBounds  = theMaxBounds;
-  myMaxEdges   = theMaxEdges;
 }
 
 // =======================================================================
@@ -188,19 +182,9 @@ Graphic3d_ArrayOfPrimitives::~Graphic3d_ArrayOfPrimitives()
 // =======================================================================
 Standard_Integer Graphic3d_ArrayOfPrimitives::AddBound (const Standard_Integer theEdgeNumber)
 {
-  if (myBounds.IsNull())
-  {
-    return 0;
-  }
-  Standard_Integer anIndex = myBounds->NbBounds;
-  if (anIndex >= myMaxBounds)
-  {
-    throw Standard_OutOfRange("TOO many BOUNDS");
-  }
-
-  myBounds->Bounds[anIndex] = theEdgeNumber;
-  myBounds->NbBounds        = ++anIndex;
-  return anIndex;
+  Standard_OutOfRange_Raise_if (myBounds.IsNull() || myBounds->NbBounds >= myBounds->NbMaxBounds, "TOO many BOUND");
+  myBounds->Bounds[myBounds->NbBounds] = theEdgeNumber;
+  return ++myBounds->NbBounds;
 }
 
 // =======================================================================
@@ -212,20 +196,11 @@ Standard_Integer Graphic3d_ArrayOfPrimitives::AddBound (const Standard_Integer t
                                                         const Standard_Real    theG,
                                                         const Standard_Real    theB)
 {
-  if (myBounds.IsNull())
-  {
-    return 0;
-  }
-  Standard_Integer anIndex = myBounds->NbBounds;
-  if (anIndex >= myMaxBounds)
-  {
-    throw Standard_OutOfRange("TOO many BOUND");
-  }
-
-  myBounds->Bounds[anIndex] = theEdgeNumber;
-  myBounds->NbBounds        = ++anIndex;
-  SetBoundColor (anIndex, theR, theG, theB);
-  return anIndex;
+  Standard_OutOfRange_Raise_if (myBounds.IsNull() || myBounds->NbBounds >= myBounds->NbMaxBounds, "TOO many BOUND");
+  myBounds->Bounds[myBounds->NbBounds] = theEdgeNumber;
+  ++myBounds->NbBounds;
+  SetBoundColor (myBounds->NbBounds, theR, theG, theB);
+  return myBounds->NbBounds;
 }
 
 // =======================================================================
@@ -234,27 +209,11 @@ Standard_Integer Graphic3d_ArrayOfPrimitives::AddBound (const Standard_Integer t
 // =======================================================================
 Standard_Integer Graphic3d_ArrayOfPrimitives::AddEdge (const Standard_Integer theVertexIndex)
 {
-  if (myIndices.IsNull())
-  {
-    return 0;
-  }
-
-  Standard_Integer anIndex = myIndices->NbElements;
-  if (anIndex >= myMaxEdges)
-  {
-    throw Standard_OutOfRange("TOO many EDGE");
-  }
-
-  Standard_Integer aVertIndex = theVertexIndex - 1;
-  if (theVertexIndex <= 0
-   || aVertIndex >= myMaxVertexs)
-  {
-    throw Standard_OutOfRange("BAD EDGE vertex index");
-  }
-
-  myIndices->SetIndex (anIndex, aVertIndex);
-  myIndices->NbElements = ++anIndex;
-  return anIndex;
+  Standard_OutOfRange_Raise_if (myIndices.IsNull() || myIndices->NbElements >= myIndices->NbMaxElements(), "TOO many EDGE");
+  Standard_OutOfRange_Raise_if (theVertexIndex < 1 || theVertexIndex > myAttribs->NbElements, "BAD VERTEX index");
+  const Standard_Integer aVertIndex = theVertexIndex - 1;
+  myIndices->SetIndex (myIndices->NbElements, aVertIndex);
+  return ++myIndices->NbElements;
 }
 
 // =======================================================================

@@ -1,4 +1,5 @@
 Graphic3d_AlphaMode.hxx
+Graphic3d_ArrayFlags.hxx
 Graphic3d_ArrayOfPoints.hxx
 Graphic3d_ArrayOfPolygons.hxx
 Graphic3d_ArrayOfPolylines.hxx
@@ -25,6 +26,7 @@ Graphic3d_BndBox4f.hxx
 Graphic3d_BoundBuffer.hxx
 Graphic3d_BSDF.cxx
 Graphic3d_BSDF.hxx
+Graphic3d_Buffer.cxx
 Graphic3d_Buffer.hxx
 Graphic3d_BufferType.hxx
 Graphic3d_Camera.cxx

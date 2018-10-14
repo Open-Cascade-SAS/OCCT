@@ -23,7 +23,7 @@ class Graphic3d_ArrayOfSegments : public Graphic3d_ArrayOfPrimitives
   DEFINE_STANDARD_RTTIEXT(Graphic3d_ArrayOfSegments, Graphic3d_ArrayOfPrimitives)
 public:
 
-  //! Creates an array of segments, a segment can be filled as:
+  //! Creates an array of segments (Graphic3d_TOPA_SEGMENTS), a segment can be filled as:
   //! 1) Creating a set of segments defined with his vertexes, i.e:
   //! @code
   //!   myArray = Graphic3d_ArrayOfSegments (4);
@@ -33,26 +33,32 @@ public:
   //! @endcode
   //! 2) Creating a set of indexed segments defined with his vertex and edges, i.e:
   //! @code
-  //!   myArray = Graphic3d_ArrayOfSegments (4, 0, 8);
+  //!   myArray = Graphic3d_ArrayOfSegments (4, 8);
   //!   myArray->AddVertex (x1, y1, z1);
   //!   ....
   //!   myArray->AddVertex (x4, y4, z4);
-  //!   myArray->AddEdge (1);
-  //!   myArray->AddEdge (2);
-  //!   myArray->AddEdge (3);
-  //!   myArray->AddEdge (4);
-  //!   myArray->AddEdge (2);
-  //!   myArray->AddEdge (4);
-  //!   myArray->AddEdge (1);
-  //!   myArray->AddEdge (3);
+  //!   myArray->AddEdges (1, 2);
+  //!   myArray->AddEdges (3, 4);
+  //!   myArray->AddEdges (2, 4);
+  //!   myArray->AddEdges (1, 3);
   //! @endcode
   //! @param theMaxVertexs defines the maximum allowed vertex number in the array
   //! @param theMaxEdges   defines the maximum allowed edge   number in the array
+  //! @param theArrayFlags array flags
+  Graphic3d_ArrayOfSegments (Standard_Integer theMaxVertexs,
+                             Standard_Integer theMaxEdges,
+                             Graphic3d_ArrayFlags theArrayFlags)
+  : Graphic3d_ArrayOfPrimitives (Graphic3d_TOPA_SEGMENTS, theMaxVertexs, 0, theMaxEdges, theArrayFlags) {}
+
+  //! Creates an array of segments (Graphic3d_TOPA_SEGMENTS).
+  //! @param theMaxVertexs defines the maximum allowed vertex number in the array
+  //! @param theMaxEdges   defines the maximum allowed edge   number in the array
   //! @param theHasVColors when TRUE, AddVertex(Point,Color) should be used for specifying vertex color
-  Graphic3d_ArrayOfSegments (const Standard_Integer theMaxVertexs,
-                             const Standard_Integer theMaxEdges   = 0,
-                             const Standard_Boolean theHasVColors = Standard_False)
-  : Graphic3d_ArrayOfPrimitives (Graphic3d_TOPA_SEGMENTS, theMaxVertexs, 0, theMaxEdges, Standard_False, theHasVColors, Standard_False, Standard_False) {}
+  Graphic3d_ArrayOfSegments (Standard_Integer theMaxVertexs,
+                             Standard_Integer theMaxEdges   = 0,
+                             Standard_Boolean theHasVColors = Standard_False)
+  : Graphic3d_ArrayOfPrimitives (Graphic3d_TOPA_SEGMENTS, theMaxVertexs, 0, theMaxEdges, theHasVColors ? Graphic3d_ArrayFlags_VertexColor : Graphic3d_ArrayFlags_None) {}
+
 
 };
 
