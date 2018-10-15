@@ -154,108 +154,189 @@ void Extrema_GExtPC::Perform(const ThePoint& P)
 
       mysample = (TheCurveTool::BSpline(aCurve))->Degree() + 1;
 
-      // Fill sample points.
-      Standard_Integer aValIdx = 1;
-      NCollection_Array1<Standard_Real> aVal(1, (mysample) * (aLastUsedKnot - aFirstUsedKnot) + 1);
-      NCollection_Array1<Standard_Real> aParam(1, (mysample) * (aLastUsedKnot - aFirstUsedKnot) + 1);
-      for(anIdx = aFirstUsedKnot; anIdx < aLastUsedKnot; anIdx++)
+      if (mysample == 2)
       {
-        Standard_Real aF = aKnots(anIdx) + aPeriodJump,
-                      aL = aKnots(anIdx + 1) + aPeriodJump;
-
-        if (anIdx == aFirstUsedKnot)
-          aF = myuinf;
-        if (anIdx == aLastUsedKnot - 1)
-          aL = myusup;
-
-        Standard_Real aStep = (aL - aF) / mysample;
-        for(Standard_Integer aPntIdx = 0; aPntIdx < mysample; aPntIdx++)
+        //BSpline of first degree, direct seaching extrema for each knot interval
+        ThePoint aPmin;
+        Standard_Real tmin = 0., distmin = RealLast();
+        Standard_Real aMin1 = 0., aMin2 = 0.;
+        myExtPC.Initialize(aCurve);
+        for (anIdx = aFirstUsedKnot; anIdx < aLastUsedKnot; anIdx++)
         {
-          Standard_Real aCurrentParam = aF + aStep * aPntIdx;
-          aVal(aValIdx) = TheCurveTool::Value(aCurve, aCurrentParam).SquareDistance(P);
-          aParam(aValIdx) = aCurrentParam;
-          aValIdx++;
+          Standard_Real aF = aKnots(anIdx) + aPeriodJump,
+            aL = aKnots(anIdx + 1) + aPeriodJump;
+
+          if (anIdx == aFirstUsedKnot)
+          {
+            aF = myuinf;
+          }
+          else
+          if (anIdx == aLastUsedKnot - 1)
+          {
+            aL = myusup;
+          }
+
+
+          ThePoint aP1, aP2;
+          TheCurveTool::D0(aCurve, aF, aP1);
+          TheCurveTool::D0(aCurve, aL, aP2);
+          TheVector aBase1(P, aP1), aBase2(P, aP2);
+          TheVector aV(aP2, aP1);
+          Standard_Real aVal1 = aV.Dot(aBase1); // Derivative of (C(u) - P)^2
+          Standard_Real aVal2 = aV.Dot(aBase2); // Derivative of (C(u) - P)^2
+          if (anIdx == aFirstUsedKnot)
+          {
+            aMin1 = P.SquareDistance(aP1);
+          }
+          else
+          {
+            aMin1 = aMin2;          
+            if (distmin > aMin1)
+            {
+              distmin = aMin1;
+              tmin = aF;
+              aPmin = aP1;
+            }
+          }
+          aMin2 = P.SquareDistance(aP2);
+          Standard_Real aMinSqDist = Min(aMin1, aMin2);
+          Standard_Real aMinDer = Min(Abs(aVal1), Abs(aVal2));
+          if (!(Precision::IsInfinite(aVal1) || Precision::IsInfinite(aVal2)))
+          {
+            // Derivatives have opposite signs - min or max inside of interval (sufficient condition).
+            if (aVal1 * aVal2 <= 0.0 ||
+                aMinSqDist < 100. * Precision::SquareConfusion() ||
+                2.*aMinDer < Precision::Confusion())
+            {
+              myintuinf = aF;
+              myintusup = aL;
+              IntervalPerform(P);
+            }
+          }
+        }
+        if (!Precision::IsInfinite(distmin))
+        {
+          Standard_Boolean isToAdd = Standard_True;
+          NbExt = mypoint.Length();
+          for (i = 1; i <= NbExt && isToAdd; i++)
+          {
+            Standard_Real t = mypoint.Value(i).Parameter();
+            isToAdd = (distmin < mySqDist(i)) && (Abs(t - tmin) > mytolu);
+          }
+          if (isToAdd)
+          {
+            ThePOnC PC(tmin, aPmin);
+            mySqDist.Append(distmin);
+            myismin.Append(Standard_True);
+            mypoint.Append(PC);
+          }
         }
       }
-      // Fill last point.
-      aVal(aValIdx) = TheCurveTool::Value(aCurve, myusup).SquareDistance(P);
-      aParam(aValIdx) = myusup;
-
-       myExtPC.Initialize(aCurve);
-
-      // Find extremas.
-      for(anIdx = aVal.Lower() + 1; anIdx < aVal.Upper(); anIdx++)
+      else
       {
-        if (aVal(anIdx) <= Precision::SquareConfusion())
+
+        // Fill sample points.
+        Standard_Integer aValIdx = 1;
+        NCollection_Array1<Standard_Real> aVal(1, (mysample)* (aLastUsedKnot - aFirstUsedKnot) + 1);
+        NCollection_Array1<Standard_Real> aParam(1, (mysample)* (aLastUsedKnot - aFirstUsedKnot) + 1);
+        for (anIdx = aFirstUsedKnot; anIdx < aLastUsedKnot; anIdx++)
         {
-          mySqDist.Append(aVal(anIdx));
-          myismin.Append(Standard_True);
-          mypoint.Append(ThePOnC(aParam(anIdx), TheCurveTool::Value(aCurve, aParam(anIdx))));
+          Standard_Real aF = aKnots(anIdx) + aPeriodJump,
+            aL = aKnots(anIdx + 1) + aPeriodJump;
+
+          if (anIdx == aFirstUsedKnot)
+            aF = myuinf;
+          if (anIdx == aLastUsedKnot - 1)
+            aL = myusup;
+
+          Standard_Real aStep = (aL - aF) / mysample;
+          for (Standard_Integer aPntIdx = 0; aPntIdx < mysample; aPntIdx++)
+          {
+            Standard_Real aCurrentParam = aF + aStep * aPntIdx;
+            aVal(aValIdx) = TheCurveTool::Value(aCurve, aCurrentParam).SquareDistance(P);
+            aParam(aValIdx) = aCurrentParam;
+            aValIdx++;
+          }
         }
-        if ((aVal(anIdx) >= aVal(anIdx + 1) &&
-             aVal(anIdx) >= aVal(anIdx - 1)) ||
+        // Fill last point.
+        aVal(aValIdx) = TheCurveTool::Value(aCurve, myusup).SquareDistance(P);
+        aParam(aValIdx) = myusup;
+
+        myExtPC.Initialize(aCurve);
+
+        // Find extremas.
+        for (anIdx = aVal.Lower() + 1; anIdx < aVal.Upper(); anIdx++)
+        {
+          if (aVal(anIdx) <= Precision::SquareConfusion())
+          {
+            mySqDist.Append(aVal(anIdx));
+            myismin.Append(Standard_True);
+            mypoint.Append(ThePOnC(aParam(anIdx), TheCurveTool::Value(aCurve, aParam(anIdx))));
+          }
+          if ((aVal(anIdx) >= aVal(anIdx + 1) &&
+            aVal(anIdx) >= aVal(anIdx - 1)) ||
             (aVal(anIdx) <= aVal(anIdx + 1) &&
-             aVal(anIdx) <= aVal(anIdx - 1)) )
-        {
-          myintuinf = aParam(anIdx - 1);
-          myintusup = aParam(anIdx + 1);
-
-          IntervalPerform(P);
-        }
-      }
-
-      // Solve on the first and last intervals.
-      if (mydist1 > Precision::SquareConfusion() && !Precision::IsPositiveInfinite(mydist1))
-      {
-        ThePoint aP1, aP2;
-        TheVector aV1, aV2;
-        TheCurveTool::D1(aCurve, aParam.Value(aParam.Lower()),     aP1, aV1);
-        TheCurveTool::D1(aCurve, aParam.Value(aParam.Lower() + 1), aP2, aV2);
-        TheVector aBase1(P, aP1), aBase2(P, aP2);
-        Standard_Real aVal1 = aV1.Dot(aBase1); // Derivative of (C(u) - P)^2
-        Standard_Real aVal2 = aV2.Dot(aBase2); // Derivative of (C(u) - P)^2
-        if(!(Precision::IsInfinite(aVal1) || Precision::IsInfinite(aVal2)))
-        {
-          // Derivatives have opposite signs - min or max inside of interval (sufficient condition).
-          // Necessary condition - when point lies on curve.
-          // Necessary condition - when derivative of point is too small.
-          if(aVal1 * aVal2 <= 0.0 ||
-            aBase1.Dot(aBase2) <= 0.0 ||
-            2.0 * Abs(aVal1) < Precision::Confusion() )
+            aVal(anIdx) <= aVal(anIdx - 1)))
           {
-            myintuinf = aParam(aVal.Lower());
-            myintusup = aParam(aVal.Lower() + 1);
+            myintuinf = aParam(anIdx - 1);
+            myintusup = aParam(anIdx + 1);
+
             IntervalPerform(P);
           }
         }
-      }
 
-      if (mydist2 > Precision::SquareConfusion() && !Precision::IsPositiveInfinite(mydist2))
-      {
-        ThePoint aP1, aP2;
-        TheVector aV1, aV2;
-        TheCurveTool::D1(aCurve, aParam.Value(aParam.Upper() - 1), aP1, aV1);
-        TheCurveTool::D1(aCurve, aParam.Value(aParam.Upper()),     aP2, aV2);
-        TheVector aBase1(P, aP1), aBase2(P, aP2);
-        Standard_Real aVal1 = aV1.Dot(aBase1); // Derivative of (C(u) - P)^2
-        Standard_Real aVal2 = aV2.Dot(aBase2); // Derivative of (C(u) - P)^2
-
-        if(!(Precision::IsInfinite(aVal1) || Precision::IsInfinite(aVal2)))
+        // Solve on the first and last intervals.
+        if (mydist1 > Precision::SquareConfusion() && !Precision::IsPositiveInfinite(mydist1))
         {
-          // Derivatives have opposite signs - min or max inside of interval (sufficient condition).
-          // Necessary condition - when point lies on curve.
-          // Necessary condition - when derivative of point is too small.
-          if(aVal1 * aVal2 <= 0.0 ||
-            aBase1.Dot(aBase2) <= 0.0 ||
-            2.0 * Abs(aVal2) < Precision::Confusion() )
+          ThePoint aP1, aP2;
+          TheVector aV1, aV2;
+          TheCurveTool::D1(aCurve, aParam.Value(aParam.Lower()), aP1, aV1);
+          TheCurveTool::D1(aCurve, aParam.Value(aParam.Lower() + 1), aP2, aV2);
+          TheVector aBase1(P, aP1), aBase2(P, aP2);
+          Standard_Real aVal1 = aV1.Dot(aBase1); // Derivative of (C(u) - P)^2
+          Standard_Real aVal2 = aV2.Dot(aBase2); // Derivative of (C(u) - P)^2
+          if (!(Precision::IsInfinite(aVal1) || Precision::IsInfinite(aVal2)))
           {
-            myintuinf = aParam(aVal.Upper() - 1);
-            myintusup = aParam(aVal.Upper());
-            IntervalPerform(P);
+            // Derivatives have opposite signs - min or max inside of interval (sufficient condition).
+            // Necessary condition - when point lies on curve.
+            // Necessary condition - when derivative of point is too small.
+            if (aVal1 * aVal2 <= 0.0 ||
+              aBase1.Dot(aBase2) <= 0.0 ||
+              2.0 * Abs(aVal1) < Precision::Confusion())
+            {
+              myintuinf = aParam(aVal.Lower());
+              myintusup = aParam(aVal.Lower() + 1);
+              IntervalPerform(P);
+            }
+          }
+        }
+
+        if (mydist2 > Precision::SquareConfusion() && !Precision::IsPositiveInfinite(mydist2))
+        {
+          ThePoint aP1, aP2;
+          TheVector aV1, aV2;
+          TheCurveTool::D1(aCurve, aParam.Value(aParam.Upper() - 1), aP1, aV1);
+          TheCurveTool::D1(aCurve, aParam.Value(aParam.Upper()), aP2, aV2);
+          TheVector aBase1(P, aP1), aBase2(P, aP2);
+          Standard_Real aVal1 = aV1.Dot(aBase1); // Derivative of (C(u) - P)^2
+          Standard_Real aVal2 = aV2.Dot(aBase2); // Derivative of (C(u) - P)^2
+
+          if (!(Precision::IsInfinite(aVal1) || Precision::IsInfinite(aVal2)))
+          {
+            // Derivatives have opposite signs - min or max inside of interval (sufficient condition).
+            // Necessary condition - when point lies on curve.
+            // Necessary condition - when derivative of point is too small.
+            if (aVal1 * aVal2 <= 0.0 ||
+              aBase1.Dot(aBase2) <= 0.0 ||
+              2.0 * Abs(aVal2) < Precision::Confusion())
+            {
+              myintuinf = aParam(aVal.Upper() - 1);
+              myintusup = aParam(aVal.Upper());
+              IntervalPerform(P);
+            }
           }
         }
       }
-
       mydone = Standard_True;
       break;
     }
