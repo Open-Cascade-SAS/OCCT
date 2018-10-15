@@ -143,6 +143,9 @@ void OpenGl_FrameStatsPrs::updateChart (const Handle(OpenGl_Workspace)& theWorks
   const Standard_Integer aNbBins = aStats->DataFrames().Size();
   if (aNbBins <= 1)
   {
+    myChartIndices ->Release (aCtx.get());
+    myChartVertices->Release (aCtx.get());
+    myChartLines   ->Release (aCtx.get());
     return;
   }
 
