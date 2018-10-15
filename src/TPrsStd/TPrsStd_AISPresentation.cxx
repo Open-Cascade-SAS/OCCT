@@ -943,7 +943,7 @@ void TPrsStd_AISPresentation::AISErase(const Standard_Boolean theIsRemove)
         if ( !anOwnContext.IsNull() && anOwnContext != aContext )
           anOwnContext->Remove(myAIS, Standard_False);
 
-        myAIS->SetToUpdate();
+        myAIS.Nullify();
       }
       else
       {
@@ -960,7 +960,7 @@ void TPrsStd_AISPresentation::AISErase(const Standard_Boolean theIsRemove)
         if ( !anOwnContext.IsNull() )
         {
           anOwnContext->Remove(myAIS, Standard_False);
-          myAIS->SetToUpdate();
+          myAIS.Nullify();
         }
       }
       else

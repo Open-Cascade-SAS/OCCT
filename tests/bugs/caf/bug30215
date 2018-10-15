@@ -1,0 +1,20 @@
+puts "========="
+puts "OCC30215"
+puts "========="
+puts ""
+######################################################################################
+# Application Framework, TPrsStd_AISPresentation - Enable Lazy Presentation Updates
+######################################################################################
+
+NewDocument D
+AISInitViewer D
+box b1 100 100 100
+SetShape D 0:1 b1
+AISSet D 0:1 NS
+AISDisplay D 0:1 0
+box b2 100 200 300
+SetShape D 0:1 b2
+AISRemove D 0:1
+AISDisplay D 0:1 0
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
