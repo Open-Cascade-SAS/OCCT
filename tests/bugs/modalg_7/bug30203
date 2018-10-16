@@ -1,0 +1,14 @@
+puts "========"
+puts "0030203: ProjLib_ComputeApproxOnPolarSurface::BuildInitialCurve2d array out of bound"
+puts "========"
+puts ""
+
+restore [locate_data_file bug30203_curv.draw] c
+restore [locate_data_file bug30203_surf.draw] s
+
+catch {project cc c s}
+if { [isdraw cc]} {
+  checklength cc -l 1. 
+} else {
+  puts "Error: projection fails"
+}

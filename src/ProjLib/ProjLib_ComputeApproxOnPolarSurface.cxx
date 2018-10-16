@@ -1180,32 +1180,30 @@ Handle(Adaptor2d_HCurve2d)
 	      }
 	    }
 
-	    if( tPp != 0 ) {
+            if (tPp != 0 && tPp != NbOfPnts) {
 	      gp_Pnt2d aPp = gp_Pnt2d(u,v);
 	      gp_Pnt2d aPn;
-	      j = 1;
 	      Standard_Boolean isFound = Standard_False;
-	      while( !isFound ) { 
-		Curve->D0( Param.Value(tPp+j), pntproj );
+              for (j = tPp + 1; j <= NbOfPnts; ++j)
+              {
+		Curve->D0( Param.Value(j), pntproj );
 		Extrema_ExtPS aTPS( pntproj, Surf->Surface(), TolU, TolV );
-		Dist2Min = 1.e+200;
-		Standard_Integer indExt = 0;
+		Dist2Min = RealLast();
 		if( aTPS.IsDone() && aTPS.NbExt() >= 1 ) {
-		  for( i = 1 ; i <= aTPS.NbExt() ; i++ ) {
-		    if( aTPS.SquareDistance(i) < DistTol3d2 && aTPS.SquareDistance(i) < Dist2Min ) {
-		      Dist2Min = aTPS.SquareDistance(i);
-		      indExt = i;
-		      isFound = Standard_True;
-		    }
-		  }
+		  Standard_Integer indExt = 0;
+                  for (i = 1; i <= aTPS.NbExt(); i++) {
+                    if (aTPS.SquareDistance(i) < DistTol3d2 && aTPS.SquareDistance(i) < Dist2Min) {
+                      Dist2Min = aTPS.SquareDistance(i);
+                      indExt = i;
+                    }
+                  }
+                  if (indExt > 0) {
+		    aTPS.Point(indExt).Parameter(u,v);
+		    aPn = gp_Pnt2d(u,v);
+                    isFound = Standard_True;
+		    break;
+		  }	
 		}
-		if( isFound ) {
-		  aTPS.Point(indExt).Parameter(u,v);
-		  aPn = gp_Pnt2d(u,v);
-		  break;
-		}
-		j++;
-		if( (tPp+j) > NbOfPnts ) break;
 	      }
 
 	      if( isFound ) {
