@@ -64,6 +64,23 @@ class Graphic3d_ArrayOfPrimitives : public Standard_Transient
   DEFINE_STANDARD_RTTIEXT(Graphic3d_ArrayOfPrimitives, Standard_Transient)
 public:
 
+  //! Create an array of specified type.
+  static Handle(Graphic3d_ArrayOfPrimitives) CreateArray (Graphic3d_TypeOfPrimitiveArray theType,
+                                                          Standard_Integer theMaxVertexs,
+                                                          Standard_Integer theMaxEdges,
+                                                          Graphic3d_ArrayFlags theArrayFlags)
+  {
+    return CreateArray (theType, theMaxVertexs, 0, theMaxEdges, theArrayFlags);
+  }
+
+  //! Create an array of specified type.
+  static Standard_EXPORT Handle(Graphic3d_ArrayOfPrimitives) CreateArray (Graphic3d_TypeOfPrimitiveArray theType,
+                                                                          Standard_Integer theMaxVertexs,
+                                                                          Standard_Integer theMaxBounds,
+                                                                          Standard_Integer theMaxEdges,
+                                                                          Graphic3d_ArrayFlags theArrayFlags);
+public:
+
   //! Destructor.
   Standard_EXPORT virtual ~Graphic3d_ArrayOfPrimitives();
 
@@ -77,13 +94,13 @@ public:
   Standard_EXPORT Standard_CString StringType() const;
 
   //! Returns TRUE when vertex normals array is defined.
-  Standard_Boolean HasVertexNormals() const { return myVNor != 0; }
+  Standard_Boolean HasVertexNormals() const { return myNormData != NULL; }
 
   //! Returns TRUE when vertex colors array is defined.
-  Standard_Boolean HasVertexColors() const { return myVCol != 0; }
+  Standard_Boolean HasVertexColors() const { return myColData != NULL; }
 
   //! Returns TRUE when vertex texels array is defined.
-  Standard_Boolean HasVertexTexels() const { return myVTex != 0; }
+  Standard_Boolean HasVertexTexels() const { return myTexData != NULL; }
 
   //! Returns the number of defined vertex
   Standard_Integer VertexNumber() const { return myAttribs->NbElements; }
@@ -291,7 +308,7 @@ public:
   void SetVertice (const Standard_Integer theIndex, const Standard_ShortReal theX, const Standard_ShortReal theY, const Standard_ShortReal theZ)
   {
     Standard_OutOfRange_Raise_if (theIndex < 1 || theIndex > myAttribs->NbMaxElements(), "BAD VERTEX index");
-    Graphic3d_Vec3& aVec = myAttribs->ChangeValue<Graphic3d_Vec3> (theIndex - 1);
+    Graphic3d_Vec3& aVec = *reinterpret_cast<Graphic3d_Vec3*> (myAttribs->ChangeData() + myPosStride * (theIndex - 1));
     aVec.x() = theX;
     aVec.y() = theY;
     aVec.z() = theZ;
@@ -311,10 +328,9 @@ public:
   void SetVertexColor (const Standard_Integer theIndex, const Standard_Real theR, const Standard_Real theG, const Standard_Real theB)
   {
     Standard_OutOfRange_Raise_if (theIndex < 1 || theIndex > myAttribs->NbMaxElements(), "BAD VERTEX index");
-    if (myVCol != 0)
+    if (myColData != NULL)
     {
-      Graphic3d_Vec4ub *aColorPtr = 
-        reinterpret_cast<Graphic3d_Vec4ub* >(myAttribs->changeValue (theIndex - 1) + size_t(myVCol));
+      Graphic3d_Vec4ub* aColorPtr = reinterpret_cast<Graphic3d_Vec4ub* >(myColData + myColStride * (theIndex - 1));
       aColorPtr->SetValues (Standard_Byte(theR * 255.0),
                             Standard_Byte(theG * 255.0),
                             Standard_Byte(theB * 255.0), 255);
@@ -327,10 +343,9 @@ public:
                        const Graphic3d_Vec4ub& theColor)
   {
     Standard_OutOfRange_Raise_if (theIndex < 1 || theIndex > myAttribs->NbMaxElements(), "BAD VERTEX index");
-    if (myVCol != 0)
+    if (myColData != NULL)
     {
-      Graphic3d_Vec4ub *aColorPtr = 
-        reinterpret_cast<Graphic3d_Vec4ub* >(myAttribs->changeValue (theIndex - 1) + size_t(myVCol));
+      Graphic3d_Vec4ub* aColorPtr =  reinterpret_cast<Graphic3d_Vec4ub* >(myColData + myColStride * (theIndex - 1));
       (*aColorPtr) = theColor;
     }
     myAttribs->NbElements = Max (theIndex, myAttribs->NbElements);
@@ -343,9 +358,9 @@ public:
   void SetVertexColor (const Standard_Integer theIndex, const Standard_Integer theColor32)
   {
     Standard_OutOfRange_Raise_if (theIndex < 1 || theIndex > myAttribs->NbMaxElements(), "BAD VERTEX index");
-    if (myVCol != 0)
+    if (myColData != NULL)
     {
-      *reinterpret_cast<Standard_Integer* >(myAttribs->changeValue (theIndex - 1) + size_t(myVCol)) = theColor32;
+      *reinterpret_cast<Standard_Integer* >(myColData + myColStride * (theIndex - 1)) = theColor32;
     }
   }
 
@@ -359,9 +374,9 @@ public:
   void SetVertexNormal (const Standard_Integer theIndex, const Standard_Real theNX, const Standard_Real theNY, const Standard_Real theNZ)
   {
     Standard_OutOfRange_Raise_if (theIndex < 1 || theIndex > myAttribs->NbMaxElements(), "BAD VERTEX index");
-    if (myVNor != 0)
+    if (myNormData != NULL)
     {
-      Graphic3d_Vec3& aVec = *reinterpret_cast<Graphic3d_Vec3* >(myAttribs->changeValue (theIndex - 1) + size_t(myVNor));
+      Graphic3d_Vec3& aVec = *reinterpret_cast<Graphic3d_Vec3* >(myNormData + myNormStride * (theIndex - 1));
       aVec.x() = Standard_ShortReal (theNX);
       aVec.y() = Standard_ShortReal (theNY);
       aVec.z() = Standard_ShortReal (theNZ);
@@ -379,9 +394,9 @@ public:
   void SetVertexTexel (const Standard_Integer theIndex, const Standard_Real theTX, const Standard_Real theTY)
   {
     Standard_OutOfRange_Raise_if (theIndex < 1 || theIndex > myAttribs->NbMaxElements(), "BAD VERTEX index");
-    if (myVTex != 0)
+    if (myTexData != NULL)
     {
-      Graphic3d_Vec2& aVec = *reinterpret_cast<Graphic3d_Vec2* >(myAttribs->changeValue (theIndex - 1) + size_t(myVTex));
+      Graphic3d_Vec2& aVec = *reinterpret_cast<Graphic3d_Vec2* >(myTexData + myTexStride * (theIndex - 1));
       aVec.x() = Standard_ShortReal (theTX);
       aVec.y() = Standard_ShortReal (theTY);
     }
@@ -401,7 +416,7 @@ public:
   {
     theX = theY = theZ = 0.0;
     Standard_OutOfRange_Raise_if (theRank < 1 || theRank > myAttribs->NbElements, "BAD VERTEX index");
-    const Graphic3d_Vec3& aVec = myAttribs->Value<Graphic3d_Vec3> (theRank - 1);
+    const Graphic3d_Vec3& aVec = *reinterpret_cast<const Graphic3d_Vec3*> (myAttribs->Data() + myPosStride * (theRank - 1));
     theX = Standard_Real(aVec.x());
     theY = Standard_Real(aVec.y());
     theZ = Standard_Real(aVec.z());
@@ -419,8 +434,8 @@ public:
   void VertexColor (const Standard_Integer theIndex,
                     Graphic3d_Vec4ub&      theColor) const
   {
-    Standard_OutOfRange_Raise_if (myVCol == 0 || theIndex < 1 || theIndex > myAttribs->NbElements, "BAD VERTEX index");
-    theColor = *reinterpret_cast<const Graphic3d_Vec4ub* >(myAttribs->value (theIndex - 1) + size_t(myVCol));
+    Standard_OutOfRange_Raise_if (myColData == NULL || theIndex < 1 || theIndex > myAttribs->NbElements, "BAD VERTEX index");
+    theColor = *reinterpret_cast<const Graphic3d_Vec4ub* >(myColData + myColStride * (theIndex - 1));
   }
 
   //! Returns the vertex color values at rank theRank from the vertex table if defined.
@@ -428,11 +443,11 @@ public:
   {
     theR = theG = theB = 0.0;
     Standard_OutOfRange_Raise_if (theRank < 1 || theRank > myAttribs->NbElements, "BAD VERTEX index");
-    if (myVCol == 0)
+    if (myColData == NULL)
     {
       return;
     }
-    const Graphic3d_Vec4ub& aColor = *reinterpret_cast<const Graphic3d_Vec4ub* >(myAttribs->value (theRank - 1) + size_t(myVCol));
+    const Graphic3d_Vec4ub& aColor = *reinterpret_cast<const Graphic3d_Vec4ub* >(myColData + myColStride * (theRank - 1));
     theR = Standard_Real(aColor.r()) / 255.0;
     theG = Standard_Real(aColor.g()) / 255.0;
     theB = Standard_Real(aColor.b()) / 255.0;
@@ -442,9 +457,9 @@ public:
   void VertexColor (const Standard_Integer theRank, Standard_Integer& theColor) const
   {
     Standard_OutOfRange_Raise_if (theRank < 1 || theRank > myAttribs->NbElements, "BAD VERTEX index");
-    if (myVCol != 0)
+    if (myColData != NULL)
     {
-      theColor = *reinterpret_cast<const Standard_Integer* >(myAttribs->value (theRank - 1) + size_t(myVCol));
+      theColor = *reinterpret_cast<const Standard_Integer* >(myColData + myColStride * (theRank - 1));
     }
   }
 
@@ -461,9 +476,9 @@ public:
   {
     theNX = theNY = theNZ = 0.0;
     Standard_OutOfRange_Raise_if (theRank < 1 || theRank > myAttribs->NbElements, "BAD VERTEX index");
-    if (myVNor != 0)
+    if (myNormData != NULL)
     {
-      const Graphic3d_Vec3& aVec = *reinterpret_cast<const Graphic3d_Vec3* >(myAttribs->value (theRank - 1) + size_t(myVNor));
+      const Graphic3d_Vec3& aVec = *reinterpret_cast<const Graphic3d_Vec3* >(myNormData + myNormStride * (theRank - 1));
       theNX = Standard_Real(aVec.x());
       theNY = Standard_Real(aVec.y());
       theNZ = Standard_Real(aVec.z());
@@ -483,9 +498,9 @@ public:
   {
     theTX = theTY = 0.0;
     Standard_OutOfRange_Raise_if (theRank < 1 || theRank > myAttribs->NbElements, "BAD VERTEX index");
-    if (myVTex != 0)
+    if (myTexData != NULL)
     {
-      const Graphic3d_Vec2& aVec = *reinterpret_cast<const Graphic3d_Vec2* >(myAttribs->value (theRank - 1) + size_t(myVTex));
+      const Graphic3d_Vec2& aVec = *reinterpret_cast<const Graphic3d_Vec2* >(myTexData + myTexStride * (theRank - 1));
       theTX = Standard_Real(aVec.x());
       theTY = Standard_Real(aVec.y());
     }
@@ -637,7 +652,8 @@ protected: //! @name protected constructors
                                Standard_Integer theMaxBounds,
                                Standard_Integer theMaxEdges,
                                Graphic3d_ArrayFlags theArrayFlags)
-  : myType (Graphic3d_TOPA_UNDEFINED), myVNor (0), myVTex (0), myVCol (0)
+  : myNormData (NULL), myTexData (NULL), myColData (NULL), myPosStride (0), myNormStride (0), myTexStride (0), myColStride (0),
+    myType (Graphic3d_TOPA_UNDEFINED)
   {
     init (theType, theMaxVertexs, theMaxBounds, theMaxEdges, theArrayFlags);
   }
@@ -654,10 +670,14 @@ private: //! @name private fields
   Handle(Graphic3d_IndexBuffer)  myIndices;
   Handle(Graphic3d_Buffer)       myAttribs;
   Handle(Graphic3d_BoundBuffer)  myBounds;
+  Standard_Byte* myNormData;
+  Standard_Byte* myTexData;
+  Standard_Byte* myColData;
+  Standard_Size  myPosStride;
+  Standard_Size  myNormStride;
+  Standard_Size  myTexStride;
+  Standard_Size  myColStride;
   Graphic3d_TypeOfPrimitiveArray myType;
-  Standard_Byte myVNor;
-  Standard_Byte myVTex;
-  Standard_Byte myVCol;
 
 };
 

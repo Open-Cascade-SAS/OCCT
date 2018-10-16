@@ -314,45 +314,45 @@ void Graphic3d_Group::AddPrimitiveArray (const Graphic3d_TypeOfPrimitiveArray th
     myContainsFacet = true;
   }
 
-  if (theToEvalMinMax)
+  if (!theToEvalMinMax)
   {
-    const Standard_Integer aNbVerts = theAttribs->NbElements;
-    for (Standard_Integer anAttribIter = 0; anAttribIter < theAttribs->NbAttributes; ++anAttribIter)
-    {
-      const Graphic3d_Attribute& anAttrib = theAttribs->Attribute (anAttribIter);
-      if (anAttrib.Id != Graphic3d_TOA_POS)
-      {
-        continue;
-      }
+    Update();
+    return;
+  }
 
-      const size_t anOffset = theAttribs->AttributeOffset (anAttribIter);
-      switch (anAttrib.DataType)
+  const Standard_Integer aNbVerts = theAttribs->NbElements;
+  Standard_Integer anAttribIndex = 0;
+  Standard_Size anAttribStride = 0;
+  const Standard_Byte* aDataPtr = theAttribs->AttributeData (Graphic3d_TOA_POS, anAttribIndex, anAttribStride);
+  if (aDataPtr == NULL)
+  {
+    Update();
+    return;
+  }
+
+  switch (theAttribs->Attribute (anAttribIndex).DataType)
+  {
+    case Graphic3d_TOD_VEC2:
+    {
+      for (Standard_Integer aVertIter = 0; aVertIter < aNbVerts; ++aVertIter)
       {
-        case Graphic3d_TOD_VEC2:
-        {
-          for (Standard_Integer aVertIter = 0; aVertIter < aNbVerts; ++aVertIter)
-          {
-            const Graphic3d_Vec2& aVert = *reinterpret_cast<const Graphic3d_Vec2* >(theAttribs->value (aVertIter) + anOffset);
-            myBounds.Add (Graphic3d_Vec4 (aVert.x(), aVert.y(), 0.0f, 1.0f));
-          }
-          break;
-        }
-        case Graphic3d_TOD_VEC3:
-        case Graphic3d_TOD_VEC4:
-        {
-          for (Standard_Integer aVertIter = 0; aVertIter < aNbVerts; ++aVertIter)
-          {
-            const Graphic3d_Vec3& aVert = *reinterpret_cast<const Graphic3d_Vec3* >(theAttribs->value (aVertIter) + anOffset);
-            myBounds.Add (Graphic3d_Vec4 (aVert.x(), aVert.y(), aVert.z(), 1.0f));
-          }
-          break;
-        }
-        default: break;
+        const Graphic3d_Vec2& aVert = *reinterpret_cast<const Graphic3d_Vec2* >(aDataPtr + anAttribStride * aVertIter);
+        myBounds.Add (Graphic3d_Vec4 (aVert.x(), aVert.y(), 0.0f, 1.0f));
       }
       break;
     }
+    case Graphic3d_TOD_VEC3:
+    case Graphic3d_TOD_VEC4:
+    {
+      for (Standard_Integer aVertIter = 0; aVertIter < aNbVerts; ++aVertIter)
+      {
+        const Graphic3d_Vec3& aVert = *reinterpret_cast<const Graphic3d_Vec3* >(aDataPtr + anAttribStride * aVertIter);
+        myBounds.Add (Graphic3d_Vec4 (aVert.x(), aVert.y(), aVert.z(), 1.0f));
+      }
+      break;
+    }
+    default: break;
   }
-
   Update();
 }
 

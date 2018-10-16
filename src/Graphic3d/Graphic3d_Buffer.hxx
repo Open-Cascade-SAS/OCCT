@@ -14,9 +14,11 @@
 #ifndef _Graphic3d_Buffer_HeaderFile
 #define _Graphic3d_Buffer_HeaderFile
 
+#include <Graphic3d_BufferRange.hxx>
 #include <Graphic3d_Vec.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_Buffer.hxx>
+#include <Standard_NotImplemented.hxx>
 
 //! Type of attribute in Vertex Buffer
 enum Graphic3d_TypeOfAttribute
@@ -86,7 +88,7 @@ public:
 
   //! Return number of initially allocated elements which can fit into this buffer,
   //! while NbElements can be overwritten to smaller value.
-  Standard_Integer NbMaxElements() const { return Standard_Integer(mySize / size_t(Stride)); }
+  Standard_Integer NbMaxElements() const { return Stride != 0 ? Standard_Integer(mySize / size_t(Stride)) : 0; }
 
   //! @return array of attributes definitions
   const Graphic3d_Attribute* AttributesArray() const
@@ -106,6 +108,25 @@ public:
     return *((Graphic3d_Attribute* )(myData + mySize) + theAttribIndex);
   }
 
+  //! Find attribute index.
+  //! @param theAttrib attribute to find
+  //! @return attribute index or -1 if not found
+  Standard_Integer FindAttribute (Graphic3d_TypeOfAttribute theAttrib) const
+  {
+    for (Standard_Integer anAttribIter = 0; anAttribIter < NbAttributes; ++anAttribIter)
+    {
+      const Graphic3d_Attribute& anAttrib = Attribute (anAttribIter);
+      if (anAttrib.Id == theAttrib)
+      {
+        return anAttribIter;
+      }
+    }
+    return -1;
+  }
+
+//! @name data accessors for interleaved array
+public:
+
   //! @return data offset to specified attribute
   Standard_Integer AttributeOffset (const Standard_Integer theAttribIndex) const
   {
@@ -116,9 +137,6 @@ public:
     }
     return anOffset;
   }
-
-  using NCollection_Buffer::Data;
-  using NCollection_Buffer::ChangeData;
 
   //! @return data for specified attribute
   const Standard_Byte* Data (const Standard_Integer theAttribIndex) const
@@ -157,6 +175,70 @@ public:
   {
     return *reinterpret_cast<Type_t* >(changeValue (theElem));
   }
+
+//! @name general accessors
+public:
+
+  using NCollection_Buffer::Data;
+  using NCollection_Buffer::ChangeData;
+
+  //! Return the attribute data with stride size specific to this attribute.
+  //! @param theAttrib       attribute to find
+  //! @param theAttribIndex  index of found attribute
+  //! @param theAttribStride stride in bytes between values of this attribute within returned data pointer
+  Standard_Byte* ChangeAttributeData (Graphic3d_TypeOfAttribute theAttrib,
+                                      Standard_Integer& theAttribIndex,
+                                      Standard_Size& theAttribStride)
+  {
+    return (Standard_Byte* )AttributeData (theAttrib, theAttribIndex, theAttribStride);
+  }
+
+  //! Return the attribute data with stride size specific to this attribute.
+  //! @param theAttrib       attribute to find
+  //! @param theAttribIndex  index of found attribute
+  //! @param theAttribStride stride in bytes between values of this attribute within returned data pointer
+  const Standard_Byte* AttributeData (Graphic3d_TypeOfAttribute theAttrib,
+                                      Standard_Integer& theAttribIndex,
+                                      Standard_Size& theAttribStride) const
+  {
+    const Standard_Byte* aDataPtr = Data();
+    if (IsInterleaved())
+    {
+      for (Standard_Integer anAttribIter = 0; anAttribIter < NbAttributes; ++anAttribIter)
+      {
+        const Graphic3d_Attribute& anAttrib = Attribute (anAttribIter);
+        const Standard_Size anAttribStride = Graphic3d_Attribute::Stride (anAttrib.DataType);
+        if (anAttrib.Id == theAttrib)
+        {
+          theAttribIndex  = anAttribIter;
+          theAttribStride = Stride;
+          return aDataPtr;
+        }
+
+        aDataPtr += anAttribStride;
+      }
+    }
+    else
+    {
+      const Standard_Integer aNbMaxVerts = NbMaxElements();
+      for (Standard_Integer anAttribIter = 0; anAttribIter < NbAttributes; ++anAttribIter)
+      {
+        const Graphic3d_Attribute& anAttrib = Attribute (anAttribIter);
+        const Standard_Size anAttribStride = Graphic3d_Attribute::Stride (anAttrib.DataType);
+        if (anAttrib.Id == theAttrib)
+        {
+          theAttribIndex  = anAttribIter;
+          theAttribStride = anAttribStride;
+          return aDataPtr;
+        }
+
+        aDataPtr += anAttribStride * aNbMaxVerts;
+      }
+    }
+    return NULL;
+  }
+
+public:
 
   //! Release buffer.
   void release()
@@ -211,6 +293,27 @@ public:
   {
     return Init (theNbElems, &theAttribs.First(), theAttribs.Size());
   }
+
+public:
+
+  //! Flag indicating that attributes in the buffer are interleaved; TRUE by default.
+  //! Requires sub-classing for creating a non-interleaved buffer (advanced usage).
+  virtual Standard_Boolean IsInterleaved() const { return Standard_True; }
+
+  //! Return TRUE if data can be invalidated; FALSE by default.
+  //! Requires sub-classing for creating a mutable buffer (advanced usage).
+  virtual Standard_Boolean IsMutable() const { return Standard_False; }
+
+  //! Return invalidated range; EMPTY by default.
+  //! Requires sub-classing for creating a mutable buffer (advanced usage).
+  virtual Graphic3d_BufferRange InvalidatedRange() const { return Graphic3d_BufferRange(); }
+
+  //! Reset invalidated range.
+  //! Requires sub-classing for creating a mutable buffer (advanced usage).
+  virtual void Validate() {}
+
+  //! Invalidate entire buffer.
+  virtual void Invalidate() {}
 
 public:
 

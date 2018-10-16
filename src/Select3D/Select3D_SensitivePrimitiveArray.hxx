@@ -268,13 +268,13 @@ protected:
   //! Auxiliary getter.
   const Graphic3d_Vec3& getPosVec3 (const Standard_Integer theIndex) const
   {
-    return *reinterpret_cast<const Graphic3d_Vec3* >(myVerts->value (theIndex) + myPosOffset);
+    return *reinterpret_cast<const Graphic3d_Vec3* >(myPosData + myPosStride * theIndex);
   }
 
   //! Auxiliary getter.
   const Graphic3d_Vec2& getPosVec2 (const Standard_Integer theIndex) const
   {
-    return *reinterpret_cast<const Graphic3d_Vec2* >(myVerts->value (theIndex) + myPosOffset);
+    return *reinterpret_cast<const Graphic3d_Vec2* >(myPosData + myPosStride * theIndex);
   }
 
   //! Checks whether the element with index theIdx overlaps the current selecting volume
@@ -303,10 +303,11 @@ private:
 
   Handle(Graphic3d_Buffer)            myVerts;              //!< source data - nodes position
   Handle(Graphic3d_IndexBuffer)       myIndices;            //!< source data - primitive indexes
+  const Standard_Byte*                myPosData;            //!< position vertex attribute data
+  Standard_Size                       myPosStride;          //!< position vertex attribute stride in bytes
   Graphic3d_TypeOfPrimitiveArray      myPrimType;           //!< primitives type
   Standard_Integer                    myIndexLower;         //!< index range - first index in myIndices (inclusive)
   Standard_Integer                    myIndexUpper;         //!< index range - last  index in myIndices (inclusive)
-  Standard_Size                       myPosOffset;          //!< offset to the position vertex attribute
   Standard_Integer                    myPatchSizeMax;       //!< patch size limit (1 by default)
   float                               myPatchDistance;      //!< distance between elements in patch
   bool                                myIs3d;               //!< flag indicating that position attribute has 3 components

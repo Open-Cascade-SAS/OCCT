@@ -104,6 +104,7 @@
 #include <Graphic3d_ArrayOfQuadrangles.hxx>
 #include <Graphic3d_ArrayOfQuadrangleStrips.hxx>
 #include <Graphic3d_ArrayOfPolygons.hxx>
+#include <Graphic3d_AttribBuffer.hxx>
 #include <Graphic3d_AspectMarker3d.hxx>
 #include <Graphic3d_Group.hxx>
 #include <Standard_Real.hxx>
@@ -3281,8 +3282,18 @@ public:
 
   MyPArrayObject (const Handle(Graphic3d_ArrayOfPrimitives)& thePArray) : myPArray (thePArray) {}
 
-  MyPArrayObject (Handle(TColStd_HArray1OfAsciiString) theArrayDescription,
-                  Handle(Graphic3d_AspectMarker3d) theMarkerAspect = NULL);
+  MyPArrayObject (Graphic3d_TypeOfPrimitiveArray thePrimType,
+                  const Handle(TColStd_HArray1OfAsciiString)& theDesc,
+                  const Handle(Graphic3d_AspectMarker3d)& theMarkerAspect)
+  {
+    Init (thePrimType, theDesc, theMarkerAspect, Standard_False);
+  }
+
+  //! Initialize the array from specified description.
+  Standard_Boolean Init (Graphic3d_TypeOfPrimitiveArray thePrimType,
+                         const Handle(TColStd_HArray1OfAsciiString)& theDesc,
+                         const Handle(Graphic3d_AspectMarker3d)& theMarkerAspect,
+                         Standard_Boolean theToPatch);
 
   DEFINE_STANDARD_RTTI_INLINE(MyPArrayObject,AIS_InteractiveObject);
 
@@ -3298,14 +3309,13 @@ private:
                          const Standard_Integer /*theMode*/) Standard_OVERRIDE;
 
   bool CheckInputCommand (const TCollection_AsciiString theCommand,
-                          const Handle(TColStd_HArray1OfAsciiString) theArgsArray,
+                          const Handle(TColStd_HArray1OfAsciiString)& theArgsArray,
                           Standard_Integer &theArgIndex,
                           Standard_Integer theArgCount,
                           Standard_Integer theMaxArgs);
 
 protected:
 
-  Handle(TColStd_HArray1OfAsciiString) myArrayDescription;
   Handle(Graphic3d_AspectMarker3d) myMarkerAspect;
   Handle(Graphic3d_ArrayOfPrimitives) myPArray;
 
@@ -3330,43 +3340,54 @@ void MyPArrayObject::Compute (const Handle(PrsMgr_PresentationManager3d)& /*aPre
   aGroup->AddPrimitiveArray (myPArray);
 }
 
-MyPArrayObject::MyPArrayObject (Handle(TColStd_HArray1OfAsciiString) theArrayDescription,
-                                Handle(Graphic3d_AspectMarker3d) theMarkerAspect)
+Standard_Boolean MyPArrayObject::Init (Graphic3d_TypeOfPrimitiveArray thePrimType,
+                                       const Handle(TColStd_HArray1OfAsciiString)& theDesc,
+                                       const Handle(Graphic3d_AspectMarker3d)& theMarkerAspect,
+                                       Standard_Boolean theToPatch)
 {
-  myArrayDescription = theArrayDescription;
   myMarkerAspect = theMarkerAspect;
+  if (!theToPatch)
+  {
+    myPArray.Nullify();
+  }
 
   // Parsing array description
   Standard_Integer aVertexNum = 0, aBoundNum = 0, aEdgeNum = 0;
   Graphic3d_ArrayFlags anArrayFlags = Graphic3d_ArrayFlags_None;
 
-  Standard_Integer anArgIndex = 0;
-  Standard_Integer anArgsCount = myArrayDescription->Length();
-  TCollection_AsciiString anArrayType = myArrayDescription->Value (anArgIndex++);
-
+  const Standard_Integer anArgsCount = theDesc->Length();
   TCollection_AsciiString aCommand;
-  while (anArgIndex < anArgsCount)
+  for (Standard_Integer anArgIndex = theDesc->Lower(); anArgIndex <= theDesc->Upper(); )
   {
-    aCommand = myArrayDescription->Value (anArgIndex);
+    aCommand = theDesc->Value (anArgIndex);
     aCommand.LowerCase();
 
+    if (CheckInputCommand ("-deinterleaved", theDesc, anArgIndex, 0, anArgsCount))
+    {
+      anArrayFlags |= Graphic3d_ArrayFlags_AttribsDeinterleaved;
+    }
+    else if (CheckInputCommand ("-mutable", theDesc, anArgIndex, 0, anArgsCount))
+    {
+      anArrayFlags |= Graphic3d_ArrayFlags_AttribsMutable;
+      anArrayFlags |= Graphic3d_ArrayFlags_IndexesMutable;
+    }
     // vertex command
-    if (CheckInputCommand ("v", myArrayDescription, anArgIndex, 3, anArgsCount))
+    else if (CheckInputCommand ("v", theDesc, anArgIndex, 3, anArgsCount))
     {
       // vertex has a normal or normal with color or texel
-      if (CheckInputCommand ("n", myArrayDescription, anArgIndex, 3, anArgsCount))
+      if (CheckInputCommand ("n", theDesc, anArgIndex, 3, anArgsCount))
       {
         anArrayFlags = anArrayFlags | Graphic3d_ArrayFlags_VertexNormal;
       }
 
       // vertex has a color
-      if (CheckInputCommand ("c", myArrayDescription, anArgIndex, 3, anArgsCount))
+      if (CheckInputCommand ("c", theDesc, anArgIndex, 3, anArgsCount))
       {
         anArrayFlags = anArrayFlags | Graphic3d_ArrayFlags_VertexColor;
       }
 
       // vertex has a texel
-      if (CheckInputCommand ("t", myArrayDescription, anArgIndex, 2, anArgsCount))
+      if (CheckInputCommand ("t", theDesc, anArgIndex, 2, anArgsCount))
       {
         anArrayFlags = anArrayFlags | Graphic3d_ArrayFlags_VertexTexel;
       }
@@ -3374,10 +3395,10 @@ MyPArrayObject::MyPArrayObject (Handle(TColStd_HArray1OfAsciiString) theArrayDes
       aVertexNum++;
     }
     // bound command
-    else if (CheckInputCommand ("b", myArrayDescription, anArgIndex, 1, anArgsCount))
+    else if (CheckInputCommand ("b", theDesc, anArgIndex, 1, anArgsCount))
     {
       // bound has color
-      if (CheckInputCommand ("c", myArrayDescription, anArgIndex, 3, anArgsCount))
+      if (CheckInputCommand ("c", theDesc, anArgIndex, 3, anArgsCount))
       {
         anArrayFlags = anArrayFlags | Graphic3d_ArrayFlags_BoundColor;
       }
@@ -3385,7 +3406,7 @@ MyPArrayObject::MyPArrayObject (Handle(TColStd_HArray1OfAsciiString) theArrayDes
       aBoundNum++;
     }
     // edge command
-    else if (CheckInputCommand ("e", myArrayDescription, anArgIndex, 1, anArgsCount))
+    else if (CheckInputCommand ("e", theDesc, anArgIndex, 1, anArgsCount))
     {
       aEdgeNum++;
     }
@@ -3394,87 +3415,126 @@ MyPArrayObject::MyPArrayObject (Handle(TColStd_HArray1OfAsciiString) theArrayDes
       anArgIndex++;
   }
 
-  Handle(Graphic3d_ArrayOfPrimitives) anArray;
-  if (anArrayType == "points")
+  if (myPArray.IsNull())
   {
-    anArray = new Graphic3d_ArrayOfPoints (aVertexNum);
+    myPArray = Graphic3d_ArrayOfPrimitives::CreateArray (thePrimType, aVertexNum, aBoundNum, aEdgeNum, anArrayFlags);
   }
-  else if (anArrayType == "segments")
-    anArray = new Graphic3d_ArrayOfSegments (aVertexNum, aEdgeNum, anArrayFlags);
-  else if (anArrayType == "polylines")
-    anArray = new Graphic3d_ArrayOfPolylines (aVertexNum, aBoundNum, aEdgeNum, anArrayFlags);
-  else if (anArrayType == "triangles")
-    anArray = new Graphic3d_ArrayOfTriangles (aVertexNum, aEdgeNum, anArrayFlags);
-  else if (anArrayType == "trianglefans")
-    anArray = new Graphic3d_ArrayOfTriangleFans (aVertexNum, aBoundNum, anArrayFlags);
-  else if (anArrayType == "trianglestrips")
-    anArray = new Graphic3d_ArrayOfTriangleStrips (aVertexNum, aBoundNum, anArrayFlags);
-  else if (anArrayType == "quads")
-    anArray = new Graphic3d_ArrayOfQuadrangles (aVertexNum, aEdgeNum, anArrayFlags);
-  else if (anArrayType == "quadstrips")
-    anArray = new Graphic3d_ArrayOfQuadrangleStrips (aVertexNum, aBoundNum, anArrayFlags);
-  else if (anArrayType == "polygons")
-    anArray = new Graphic3d_ArrayOfPolygons (aVertexNum, aBoundNum, aEdgeNum, anArrayFlags);
-
-  anArgIndex = 1;
-  while (anArgIndex < anArgsCount)
+  else
   {
-    aCommand = myArrayDescription->Value (anArgIndex);
-    aCommand.LowerCase();
-    if (!aCommand.IsAscii())
-      break;
-
-    // vertex command
-    if (CheckInputCommand ("v", myArrayDescription, anArgIndex, 3, anArgsCount))
+    if (myPArray->Type() != thePrimType
+    ||  aVertexNum > myPArray->VertexNumberAllocated()
+    ||  aEdgeNum   > myPArray->EdgeNumberAllocated()
+    ||  aBoundNum  > myPArray->BoundNumberAllocated()
+    || !myPArray->Attributes()->IsMutable()
+    || (!myPArray->Indices().IsNull() && !myPArray->Indices()->IsMutable()))
     {
-      anArray->AddVertex (myArrayDescription->Value (anArgIndex - 3).RealValue(),
-                          myArrayDescription->Value (anArgIndex - 2).RealValue(),
-                          myArrayDescription->Value (anArgIndex - 1).RealValue());
-      const Standard_Integer aVertIndex = anArray->VertexNumber();
+      std::cout << "Syntax error: array cannot be patched\n";
+      return Standard_False;
+    }
+
+    myPArray->Attributes()->NbElements = aVertexNum;
+    if (Handle(Graphic3d_AttribBuffer) anAttribs = Handle(Graphic3d_AttribBuffer)::DownCast (myPArray->Attributes()))
+    {
+      anAttribs->Invalidate (0, aVertexNum - 1);
+    }
+    if (!myPArray->Indices().IsNull())
+    {
+      myPArray->Indices()->NbElements = aEdgeNum;
+    }
+    if (!myPArray->Bounds().IsNull())
+    {
+      myPArray->Bounds()->NbBounds = aBoundNum;
+    }
+  }
+
+  Standard_Integer aVertIndex = 0;
+  for (Standard_Integer anArgIndex = theDesc->Lower(); anArgIndex <= theDesc->Upper(); )
+  {
+    aCommand = theDesc->Value (anArgIndex);
+    aCommand.LowerCase();
+    if (!aCommand.IsAscii()
+      || aCommand.IsEmpty())
+    {
+      break;
+    }
+
+    // skip beautifiers (syntax is not actually validated)
+    if (aCommand == "-deinterleaved"
+     || aCommand == "-mutable"
+     || aCommand.Value (1) == '('
+     || aCommand.Value (1) == ')'
+     || aCommand.Value (1) == ',')
+    {
+      ++anArgIndex;
+    }
+    // vertex command
+    else if (CheckInputCommand ("v", theDesc, anArgIndex, 3, anArgsCount))
+    {
+      const Graphic3d_Vec3 aVert ((float )theDesc->Value (anArgIndex - 3).RealValue(),
+                                  (float )theDesc->Value (anArgIndex - 2).RealValue(),
+                                  (float )theDesc->Value (anArgIndex - 1).RealValue());
+      if ((anArrayFlags & Graphic3d_ArrayFlags_AttribsDeinterleaved) != 0
+       || (anArrayFlags & Graphic3d_ArrayFlags_AttribsMutable) != 0)
+      {
+        ++aVertIndex;
+        myPArray->SetVertice (aVertIndex, aVert.x(), aVert.y(), aVert.z());
+      }
+      else
+      {
+        aVertIndex = myPArray->AddVertex (aVert);
+      }
 
       // vertex has a normal or normal with color or texel
-      if (CheckInputCommand ("n", myArrayDescription, anArgIndex, 3, anArgsCount))
-        anArray->SetVertexNormal (aVertIndex,
-                                  myArrayDescription->Value (anArgIndex - 3).RealValue(),
-                                  myArrayDescription->Value (anArgIndex - 2).RealValue(),
-                                  myArrayDescription->Value (anArgIndex - 1).RealValue());
+      if (CheckInputCommand ("n", theDesc, anArgIndex, 3, anArgsCount))
+      {
+        const Graphic3d_Vec3 aNorm ((float )theDesc->Value (anArgIndex - 3).RealValue(),
+                                    (float )theDesc->Value (anArgIndex - 2).RealValue(),
+                                    (float )theDesc->Value (anArgIndex - 1).RealValue());
+        myPArray->SetVertexNormal (aVertIndex, aNorm.x(), aNorm.y(), aNorm.z());
+      }
       
-      if (CheckInputCommand ("c", myArrayDescription, anArgIndex, 3, anArgsCount))
-        anArray->SetVertexColor (aVertIndex,
-                                 myArrayDescription->Value (anArgIndex - 3).RealValue(),
-                                 myArrayDescription->Value (anArgIndex - 2).RealValue(),
-                                 myArrayDescription->Value (anArgIndex - 1).RealValue());
-      
-      if (CheckInputCommand ("t", myArrayDescription, anArgIndex, 2, anArgsCount))
-        anArray->SetVertexTexel (aVertIndex,
-                                 myArrayDescription->Value (anArgIndex - 2).RealValue(),
-                                 myArrayDescription->Value (anArgIndex - 1).RealValue());
+      if (CheckInputCommand ("c", theDesc, anArgIndex, 3, anArgsCount))
+      {
+        const Graphic3d_Vec3d aCol (theDesc->Value (anArgIndex - 3).RealValue(),
+                                    theDesc->Value (anArgIndex - 2).RealValue(),
+                                    theDesc->Value (anArgIndex - 1).RealValue());
+        myPArray->SetVertexColor (aVertIndex, aCol.r(), aCol.g(), aCol.b());
+      }
+      if (CheckInputCommand ("t", theDesc, anArgIndex, 2, anArgsCount))
+      {
+        const Graphic3d_Vec2 aTex ((float )theDesc->Value (anArgIndex - 2).RealValue(),
+                                   (float )theDesc->Value (anArgIndex - 1).RealValue());
+        myPArray->SetVertexTexel (aVertIndex, aTex.x(), aTex.y());
+      }
     }
     // bounds command
-    else if (CheckInputCommand ("b", myArrayDescription, anArgIndex, 1, anArgsCount))
+    else if (CheckInputCommand ("b", theDesc, anArgIndex, 1, anArgsCount))
     {
-      Standard_Integer aVertCount = myArrayDescription->Value (anArgIndex - 1).IntegerValue();
+      Standard_Integer aVertCount = theDesc->Value (anArgIndex - 1).IntegerValue();
 
-      if (CheckInputCommand ("c", myArrayDescription, anArgIndex, 3, anArgsCount))
-        anArray->AddBound (aVertCount,
-                           myArrayDescription->Value (anArgIndex - 3).RealValue(),
-                           myArrayDescription->Value (anArgIndex - 2).RealValue(),
-                           myArrayDescription->Value (anArgIndex - 1).RealValue());
+      if (CheckInputCommand ("c", theDesc, anArgIndex, 3, anArgsCount))
+        myPArray->AddBound (aVertCount,
+                            theDesc->Value (anArgIndex - 3).RealValue(),
+                            theDesc->Value (anArgIndex - 2).RealValue(),
+                            theDesc->Value (anArgIndex - 1).RealValue());
 
       else
-        anArray->AddBound (aVertCount);
+        myPArray->AddBound (aVertCount);
     }
     // edge command
-    else if (CheckInputCommand ("e", myArrayDescription, anArgIndex, 1, anArgsCount))
+    else if (CheckInputCommand ("e", theDesc, anArgIndex, 1, anArgsCount))
     {
-      const Standard_Integer aVertIndex = myArrayDescription->Value (anArgIndex - 1).IntegerValue();
-      anArray->AddEdge (aVertIndex);
+      const Standard_Integer anEdge = theDesc->Value (anArgIndex - 1).IntegerValue();
+      myPArray->AddEdge (anEdge);
     }
     // unknown command
     else
-      anArgIndex++;
+    {
+      std::cout << "Syntax error: unknown argument '" << theDesc->Value(anArgIndex) << "'\n";
+      return Standard_False;
+    }
   }
-  myPArray = anArray;
+  return Standard_True;
 }
 
 void MyPArrayObject::ComputeSelection (const Handle(SelectMgr_Selection)& theSelection,
@@ -3524,7 +3584,7 @@ void MyPArrayObject::ComputeSelection (const Handle(SelectMgr_Selection)& theSel
 }
 
 bool MyPArrayObject::CheckInputCommand (const TCollection_AsciiString theCommand,
-                                       const Handle(TColStd_HArray1OfAsciiString) theArgsArray,
+                                       const Handle(TColStd_HArray1OfAsciiString)& theArgsArray,
                                        Standard_Integer &theArgIndex,
                                        Standard_Integer theArgCount,
                                        Standard_Integer theMaxArgs)
@@ -3573,12 +3633,14 @@ static int VDrawPArray (Draw_Interpretor& di, Standard_Integer argc, const char*
   }
 
   // read the arguments
-  Standard_Integer aArgIndex = 1;
-  TCollection_AsciiString aName (argv[aArgIndex++]);
-  TCollection_AsciiString anArrayType (argv[aArgIndex++]);
+  Standard_Integer anArgIndex = 1;
+  TCollection_AsciiString aName (argv[anArgIndex++]);
+  TCollection_AsciiString anArrayType (argv[anArgIndex++]);
+  anArrayType.LowerCase();
+  Handle(MyPArrayObject) aPObject;
   if (anArrayType == "-shape")
   {
-    Standard_CString aShapeName = argv[aArgIndex++];
+    Standard_CString aShapeName = argv[anArgIndex++];
     TopoDS_Shape aShape = DBRep::Get (aShapeName);
     Handle(Graphic3d_ArrayOfPrimitives) aTris = StdPrs_ShadedShape::FillTriangles (aShape);
     if (aShape.IsNull())
@@ -3592,38 +3654,85 @@ static int VDrawPArray (Draw_Interpretor& di, Standard_Integer argc, const char*
       return 1;
     }
 
-    Handle(MyPArrayObject) aPObject = new MyPArrayObject (aTris);
+    aPObject = new MyPArrayObject (aTris);
     ViewerTest::Display (aName, aPObject);
     return 0;
+  }
+  else if (anArrayType == "-patch"
+        || anArrayType == "-modify"
+        || anArrayType == "-edit")
+  {
+    if (argc >= 3)
+    {
+      anArrayType = argv[anArgIndex++];
+      anArrayType.LowerCase();
+    }
+
+    if (GetMapOfAIS().IsBound2 (aName))
+    {
+      aPObject = Handle(MyPArrayObject)::DownCast (GetMapOfAIS().Find2 (aName));
+    }
+    if (aPObject.IsNull())
+    {
+      std::cout << "Syntax error: object '" << aName << "' cannot be found\n";
+      return 1;
+    }
   }
 
   Standard_Boolean hasVertex = Standard_False;
 
-  Handle(TColStd_HArray1OfAsciiString) anArgsArray = new TColStd_HArray1OfAsciiString (0, argc - 2);
-  anArgsArray->SetValue (0, anArrayType);
-
-  if (anArrayType != "points"         &&
-      anArrayType != "segments"       &&
-      anArrayType != "polylines"      &&
-      anArrayType != "triangles"      &&
-      anArrayType != "trianglefans"   &&
-      anArrayType != "trianglestrips" &&
-      anArrayType != "quads"          &&
-      anArrayType != "quadstrips"     &&
-      anArrayType != "polygons")
+  Graphic3d_TypeOfPrimitiveArray aPrimType = Graphic3d_TOPA_UNDEFINED;
+  if (anArrayType == "points")
   {
-    di << "Unexpected type of primitives array\n";
+    aPrimType = Graphic3d_TOPA_POINTS;
+  }
+  else if (anArrayType == "segments")
+  {
+    aPrimType = Graphic3d_TOPA_SEGMENTS;
+  }
+  else if (anArrayType == "polylines")
+  {
+    aPrimType = Graphic3d_TOPA_POLYLINES;
+  }
+  else if (anArrayType == "triangles")
+  {
+    aPrimType = Graphic3d_TOPA_TRIANGLES;
+  }
+  else if (anArrayType == "trianglefans")
+  {
+    aPrimType = Graphic3d_TOPA_TRIANGLEFANS;
+  }
+  else if (anArrayType == "trianglestrips")
+  {
+    aPrimType = Graphic3d_TOPA_TRIANGLESTRIPS;
+  }
+  else if (anArrayType == "quads")
+  {
+    aPrimType = Graphic3d_TOPA_QUADRANGLES;
+  }
+  else if (anArrayType == "quadstrips")
+  {
+    aPrimType = Graphic3d_TOPA_QUADRANGLESTRIPS;
+  }
+  else if (anArrayType == "polygons")
+  {
+    aPrimType = Graphic3d_TOPA_POLYGONS;
+  }
+  if (aPrimType == Graphic3d_TOPA_UNDEFINED)
+  {
+    std::cout << "Syntax error: unexpected type of primitives array\n";
     return 1;
   }
 
-  TCollection_AsciiString aCommand;
-  for (Standard_Integer anArgIndex = 3; anArgIndex < argc; anArgIndex++)
+  Standard_Integer aLowerArg = anArgIndex;
+  Handle(TColStd_HArray1OfAsciiString) anArgsArray = new TColStd_HArray1OfAsciiString (0, argc - 3);
+  for (; anArgIndex < argc; ++anArgIndex)
   {
-    aCommand = argv[anArgIndex];
+    TCollection_AsciiString aCommand (argv[anArgIndex]);
     aCommand.LowerCase();
     if (!aCommand.IsAscii())
     {
-      di << "Unexpected argument: #" << aArgIndex - 1 << " , "
+      di << "Unexpected argument: #" << anArgIndex - 1 << " , "
          << "should be an array element: 'v', 'b', 'e' \n";
       break;
     }
@@ -3633,7 +3742,7 @@ static int VDrawPArray (Draw_Interpretor& di, Standard_Integer argc, const char*
       hasVertex = Standard_True;
     }
 
-    anArgsArray->SetValue (anArgIndex - 2, aCommand);
+    anArgsArray->SetValue (anArgIndex - aLowerArg, aCommand);
   }
 
   if (!hasVertex)
@@ -3643,17 +3752,23 @@ static int VDrawPArray (Draw_Interpretor& di, Standard_Integer argc, const char*
   }
 
   Handle(Graphic3d_AspectMarker3d)    anAspPoints;
-  if (anArrayType == "points")
+  if (aPrimType == Graphic3d_TOPA_POINTS)
   {
     anAspPoints = new Graphic3d_AspectMarker3d (Aspect_TOM_POINT, Quantity_NOC_YELLOW, 1.0f);
   }
 
   // create primitives array object
-  Handle(MyPArrayObject) aPObject = new MyPArrayObject (anArgsArray, anAspPoints);
-
-  // register the object in map
-  VDisplayAISObject (aName, aPObject);
-
+  if (aPObject.IsNull())
+  {
+    // register the object in map
+    aPObject = new MyPArrayObject (aPrimType, anArgsArray, anAspPoints);
+    VDisplayAISObject (aName, aPObject);
+  }
+  else
+  {
+    aPObject->Init (aPrimType, anArgsArray, anAspPoints, Standard_True);
+    ViewerTest::CurrentView()->Redraw();
+  }
   return 0;
 }
 
@@ -6449,10 +6564,11 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
   theCommands.Add("vdrawparray",
                 "vdrawparray name TypeOfArray={points|segments|polylines|triangles"
       "\n\t\t:                                |trianglefans|trianglestrips|quads|quadstrips|polygons}"
+      "\n\t\t:              [-deinterleaved|-mutable]"
       "\n\t\t:              [vertex={'v' x y z [normal={'n' nx ny nz}] [color={'c' r g b}] [texel={'t' tx ty}]]"
       "\n\t\t:              [bound= {'b' nbVertices [bound_color={'c' r g b}]]"
       "\n\t\t:              [edge=  {'e' vertexId]"
-      "\n\t\t:              [-shape shapeName]"
+      "\n\t\t:              [-shape shapeName] [-patch]"
       "\n\t\t: Commands create an Interactive Object for specified Primitive Array definition (Graphic3d_ArrayOfPrimitives)"
       "\n\t\t: with the main purpose is covering various combinations by tests",
     __FILE__,VDrawPArray,group);

@@ -42,6 +42,9 @@ public:
   //! Destroy object.
   Standard_EXPORT virtual ~OpenGl_VertexBufferCompat();
 
+  //! Return TRUE.
+  virtual bool IsVirtual() const Standard_OVERRIDE { return true; }
+
   //! Creates VBO name (id) if not yet generated.
   //! Data should be initialized by another method.
   Standard_EXPORT bool Create (const Handle(OpenGl_Context)& theGlCtx) Standard_OVERRIDE;

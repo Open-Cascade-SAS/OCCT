@@ -9,7 +9,7 @@ puts ""
 set BugNumber OCC23186
 
 vinit
-vdrawparray a points 0 v 0 0 0 v 0 0 10 v 0 10 10 v 0 10 0
+vdrawparray a points v 0 0 0 v 0 0 10 v 0 10 10 v 0 10 0
 vfit
 
 checkcolor 321 2 1 1 0

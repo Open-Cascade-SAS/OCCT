@@ -12,9 +12,10 @@
 // commercial license or contractual agreement.
 
 #include <Graphic3d_Buffer.hxx>
-#include <Graphic3d_IndexBuffer.hxx>
 #include <Graphic3d_BoundBuffer.hxx>
+#include <Graphic3d_MutableIndexBuffer.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_Buffer,      NCollection_Buffer)
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_IndexBuffer, Graphic3d_Buffer)
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_BoundBuffer, NCollection_Buffer)
+IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_MutableIndexBuffer, Graphic3d_IndexBuffer)

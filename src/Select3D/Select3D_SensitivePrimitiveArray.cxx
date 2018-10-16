@@ -157,10 +157,11 @@ private:
 // =======================================================================
 Select3D_SensitivePrimitiveArray::Select3D_SensitivePrimitiveArray (const Handle(SelectBasics_EntityOwner)& theOwnerId)
 : Select3D_SensitiveSet (theOwnerId),
+  myPosData (NULL),
+  myPosStride (Standard_Size(-1)),
   myPrimType (Graphic3d_TOPA_UNDEFINED),
   myIndexLower (0),
   myIndexUpper (0),
-  myPosOffset (Standard_Size(-1)),
   myPatchSizeMax (1),
   myPatchDistance (ShortRealLast()),
   myIs3d (false),
@@ -243,7 +244,8 @@ bool Select3D_SensitivePrimitiveArray::InitTriangulation (const Handle(Graphic3d
   myIndices.Nullify();
   myIndexLower = 0;
   myIndexUpper = 0;
-  myPosOffset = Standard_Size(-1);
+  myPosData = NULL;
+  myPosStride = Standard_Size(-1);
   myBvhIndices.release();
   myIs3d = false;
   myInitLocation = theInitLoc;
@@ -254,27 +256,19 @@ bool Select3D_SensitivePrimitiveArray::InitTriangulation (const Handle(Graphic3d
     return false;
   }
 
-  for (Standard_Integer anAttribIter = 0; anAttribIter < theVerts->NbAttributes; ++anAttribIter)
+  Standard_Integer aPosAttribIndex = 0;
+  myPosData = theVerts->AttributeData (Graphic3d_TOA_POS, aPosAttribIndex, myPosStride);
+  if (myPosData == NULL)
   {
-    const Graphic3d_Attribute& anAttrib = theVerts->Attribute (anAttribIter);
-    if (anAttrib.Id == Graphic3d_TOA_POS)
-    {
-      if (anAttrib.DataType == Graphic3d_TOD_VEC3
-       || anAttrib.DataType == Graphic3d_TOD_VEC4)
-      {
-        myIs3d = true;
-      }
-      else if (anAttrib.DataType != Graphic3d_TOD_VEC2)
-      {
-        return false;
-      }
-
-      myPosOffset = theVerts->AttributeOffset (anAttribIter);
-      break;
-    }
+    return false;
   }
-  if (myPosOffset == Standard_Size(-1))
+
+  const Graphic3d_Attribute& anAttrib = theVerts->Attribute (aPosAttribIndex);
+  myIs3d = anAttrib.DataType == Graphic3d_TOD_VEC3
+        || anAttrib.DataType == Graphic3d_TOD_VEC4;
+  if (!myIs3d && anAttrib.DataType != Graphic3d_TOD_VEC2)
   {
+    myPosData = NULL;
     return false;
   }
 
@@ -422,7 +416,8 @@ bool Select3D_SensitivePrimitiveArray::InitPoints (const Handle(Graphic3d_Buffer
   myIndices.Nullify();
   myIndexLower = 0;
   myIndexUpper = 0;
-  myPosOffset = Standard_Size(-1);
+  myPosData = NULL;
+  myPosStride = Standard_Size(-1);
   myBvhIndices.release();
   myIs3d = false;
   myInitLocation = theInitLoc;
@@ -432,27 +427,19 @@ bool Select3D_SensitivePrimitiveArray::InitPoints (const Handle(Graphic3d_Buffer
     return false;
   }
 
-  for (Standard_Integer anAttribIter = 0; anAttribIter < theVerts->NbAttributes; ++anAttribIter)
+  Standard_Integer aPosAttribIndex = 0;
+  myPosData = theVerts->AttributeData (Graphic3d_TOA_POS, aPosAttribIndex, myPosStride);
+  if (myPosData == NULL)
   {
-    const Graphic3d_Attribute& anAttrib = theVerts->Attribute (anAttribIter);
-    if (anAttrib.Id == Graphic3d_TOA_POS)
-    {
-      if (anAttrib.DataType == Graphic3d_TOD_VEC3
-       || anAttrib.DataType == Graphic3d_TOD_VEC4)
-      {
-        myIs3d = true;
-      }
-      else if (anAttrib.DataType != Graphic3d_TOD_VEC2)
-      {
-        return false;
-      }
-
-      myPosOffset = theVerts->AttributeOffset (anAttribIter);
-      break;
-    }
+    return false;
   }
-  if (myPosOffset == Standard_Size(-1))
+
+  const Graphic3d_Attribute& anAttrib = theVerts->Attribute (aPosAttribIndex);
+  myIs3d = anAttrib.DataType == Graphic3d_TOD_VEC3
+        || anAttrib.DataType == Graphic3d_TOD_VEC4;
+  if (!myIs3d && anAttrib.DataType != Graphic3d_TOD_VEC2)
   {
+    myPosData = NULL;
     return false;
   }
 

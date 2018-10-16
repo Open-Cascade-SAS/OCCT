@@ -68,20 +68,11 @@ namespace
 template<class TheBaseClass, int NbAttributes>
 class OpenGl_VertexBufferT : public TheBaseClass
 {
-
 public:
 
   //! Create uninitialized VBO.
-  OpenGl_VertexBufferT (const Graphic3d_Attribute* theAttribs,
-                        const Standard_Integer     theStride)
-  : Stride (theStride)
-  {
-    memcpy (Attribs, theAttribs, sizeof(Graphic3d_Attribute) * NbAttributes);
-  }
-
-  //! Create uninitialized VBO.
   OpenGl_VertexBufferT (const Graphic3d_Buffer& theAttribs)
-  : Stride (theAttribs.Stride)
+  : Stride (theAttribs.IsInterleaved() ? theAttribs.Stride : 0)
   {
     memcpy (Attribs, theAttribs.AttributesArray(), sizeof(Graphic3d_Attribute) * NbAttributes);
   }
@@ -122,6 +113,7 @@ public:
     TheBaseClass::Bind (theGlCtx);
     GLint aNbComp;
     const GLubyte* anOffset = TheBaseClass::myOffset;
+    const Standard_Size aMuliplier = Stride != 0 ? 1 : TheBaseClass::myElemsNb;
     for (Standard_Integer anAttribIter = 0; anAttribIter < NbAttributes; ++anAttribIter)
     {
       const Graphic3d_Attribute& anAttrib = Attribs[anAttribIter];
@@ -133,7 +125,7 @@ public:
         break;
       }
 
-      anOffset += Graphic3d_Attribute::Stride (anAttrib.DataType);
+      anOffset += aMuliplier * Graphic3d_Attribute::Stride (anAttrib.DataType);
     }
   }
 
@@ -147,6 +139,7 @@ public:
     TheBaseClass::Bind (theGlCtx);
     GLint aNbComp;
     const GLubyte* anOffset = TheBaseClass::myOffset;
+    const Standard_Size aMuliplier = Stride != 0 ? 1 : TheBaseClass::myElemsNb;
     for (Standard_Integer anAttribIter = 0; anAttribIter < NbAttributes; ++anAttribIter)
     {
       const Graphic3d_Attribute& anAttrib = Attribs[anAttribIter];
@@ -155,7 +148,7 @@ public:
       {
         TheBaseClass::bindAttribute (theGlCtx, anAttrib.Id, aNbComp, aDataType, Stride, anOffset);
       }
-      anOffset += Graphic3d_Attribute::Stride (anAttrib.DataType);
+      anOffset += aMuliplier * Graphic3d_Attribute::Stride (anAttrib.DataType);
     }
   }
 
@@ -219,13 +212,20 @@ Standard_Boolean OpenGl_PrimitiveArray::initNormalVbo (const Handle(OpenGl_Conte
     case 10: myVboAttribs = new OpenGl_VertexBufferT<OpenGl_VertexBuffer, 10>(*myAttribs); break;
   }
 
-  // specify data type as Byte and NbComponents as Stride, so that OpenGl_VertexBuffer::EstimatedDataSize() will return correct value
-  if (!myVboAttribs->init (theCtx, myAttribs->Stride, myAttribs->NbElements, myAttribs->Data(), GL_UNSIGNED_BYTE, myAttribs->Stride))
+  const Standard_Boolean isAttribMutable     = myAttribs->IsMutable();
+  const Standard_Boolean isAttribInterleaved = myAttribs->IsInterleaved();
+  if (myAttribs->NbElements != myAttribs->NbMaxElements()
+   && myIndices.IsNull()
+   && (!isAttribInterleaved || isAttribMutable))
   {
-    TCollection_ExtendedString aMsg;
-    aMsg += "VBO creation for Primitive Array has failed for ";
-    aMsg += myAttribs->NbElements;
-    aMsg += " vertices. Out of memory?";
+    throw Standard_ProgramError ("OpenGl_PrimitiveArray::buildVBO() - vertex attribute data with reserved size is not supported");
+  }
+
+  // specify data type as Byte and NbComponents as Stride, so that OpenGl_VertexBuffer::EstimatedDataSize() will return correct value
+  const Standard_Integer aNbVertexes = (isAttribMutable || !isAttribInterleaved) ? myAttribs->NbMaxElements() : myAttribs->NbElements;
+  if (!myVboAttribs->init (theCtx, myAttribs->Stride, aNbVertexes, myAttribs->Data(), GL_UNSIGNED_BYTE, myAttribs->Stride))
+  {
+    TCollection_ExtendedString aMsg = TCollection_ExtendedString("VBO creation for Primitive Array has failed for ") + aNbVertexes + " vertices. Out of memory?";
     theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_PERFORMANCE, 0, GL_DEBUG_SEVERITY_LOW, aMsg);
 
     clearMemoryGL (theCtx);
@@ -233,21 +233,32 @@ Standard_Boolean OpenGl_PrimitiveArray::initNormalVbo (const Handle(OpenGl_Conte
   }
   else if (myIndices.IsNull())
   {
+    if (isAttribMutable && isAttribInterleaved)
+    {
+      // for mutable interlaced array we can change dynamically number of vertexes (they will be just skipped at the end of buffer);
+      // this doesn't matter in case if we have indexed array
+      myVboAttribs->SetElemsNb (myAttribs->NbElements);
+    }
     return Standard_True;
   }
 
+  const Standard_Integer aNbIndexes = !myIndices->IsMutable() ? myIndices->NbElements : myIndices->NbMaxElements();
   myVboIndices = new OpenGl_IndexBuffer();
   bool isOk = false;
   switch (myIndices->Stride)
   {
     case 2:
     {
-      isOk = myVboIndices->Init (theCtx, 1, myIndices->NbElements, reinterpret_cast<const GLushort*> (myIndices->Data()));
+      isOk = myVboIndices->Init (theCtx, 1, aNbIndexes, reinterpret_cast<const GLushort*> (myIndices->Data()));
+      myVboIndices->SetElemsNb (myIndices->NbElements);
+      myIndices->Validate();
       break;
     }
     case 4:
     {
-      isOk = myVboIndices->Init (theCtx, 1, myIndices->NbElements, reinterpret_cast<const GLuint*> (myIndices->Data()));
+      isOk = myVboIndices->Init (theCtx, 1, aNbIndexes, reinterpret_cast<const GLuint*> (myIndices->Data()));
+      myVboIndices->SetElemsNb (myIndices->NbElements);
+      myIndices->Validate();
       break;
     }
     default:
@@ -258,10 +269,7 @@ Standard_Boolean OpenGl_PrimitiveArray::initNormalVbo (const Handle(OpenGl_Conte
   }
   if (!isOk)
   {
-    TCollection_ExtendedString aMsg;
-    aMsg += "VBO creation for Primitive Array has failed for ";
-    aMsg += myIndices->NbElements;
-    aMsg += " indices. Out of memory?";
+    TCollection_ExtendedString aMsg = TCollection_ExtendedString("VBO creation for Primitive Array has failed for ") + aNbIndexes + " indices. Out of memory?";
     theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_PERFORMANCE, 0, GL_DEBUG_SEVERITY_LOW, aMsg);
     clearMemoryGL (theCtx);
     return Standard_False;
@@ -292,10 +300,15 @@ Standard_Boolean OpenGl_PrimitiveArray::buildVBO (const Handle(OpenGl_Context)& 
    && initNormalVbo (theCtx))
   {
     if (!theCtx->caps->keepArrayData
-     && !theToKeepData)
+     && !theToKeepData
+     && !myAttribs->IsMutable())
     {
       myIndices.Nullify();
       myAttribs.Nullify();
+    }
+    else
+    {
+      myAttribs->Validate();
     }
     return Standard_True;
   }
@@ -347,6 +360,51 @@ Standard_Boolean OpenGl_PrimitiveArray::buildVBO (const Handle(OpenGl_Context)& 
   }
 
   return Standard_True;
+}
+
+// =======================================================================
+// function : updateVBO
+// purpose  :
+// =======================================================================
+void OpenGl_PrimitiveArray::updateVBO (const Handle(OpenGl_Context)& theCtx) const
+{
+  if (!myAttribs.IsNull())
+  {
+    Graphic3d_BufferRange aRange = myAttribs->InvalidatedRange();
+    if (!aRange.IsEmpty()
+     &&  myVboAttribs->IsValid()
+     && !myVboAttribs->IsVirtual())
+    {
+      myVboAttribs->Bind (theCtx);
+      theCtx->core15fwd->glBufferSubData (myVboAttribs->GetTarget(),
+                                          aRange.Start,
+                                          aRange.Length,
+                                          myAttribs->Data() + aRange.Start);
+      myVboAttribs->Unbind (theCtx);
+      if (myAttribs->IsInterleaved())
+      {
+        myVboAttribs->SetElemsNb (myAttribs->NbElements);
+      }
+    }
+    myAttribs->Validate();
+  }
+  if (!myIndices.IsNull())
+  {
+    Graphic3d_BufferRange aRange = myIndices->InvalidatedRange();
+    if (!aRange.IsEmpty()
+     &&  myVboIndices->IsValid()
+     && !myVboIndices->IsVirtual())
+    {
+      myVboIndices->Bind (theCtx);
+      theCtx->core15fwd->glBufferSubData (myVboIndices->GetTarget(),
+                                          aRange.Start,
+                                          aRange.Length,
+                                          myIndices->Data() + aRange.Start);
+      myVboIndices->Unbind (theCtx);
+      myVboIndices->SetElemsNb (myIndices->NbElements);
+    }
+    myIndices->Validate();
+  }
 }
 
 // =======================================================================
@@ -731,6 +789,13 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
   #endif
     buildVBO (aCtx, toKeepData);
     myIsVboInit = Standard_True;
+  }
+  else if ((!myAttribs.IsNull()
+         &&  myAttribs->IsMutable())
+        || (!myIndices.IsNull()
+         &&  myIndices->IsMutable()))
+  {
+    updateVBO (aCtx);
   }
 
   // Temporarily disable environment mapping

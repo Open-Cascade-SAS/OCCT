@@ -23,6 +23,8 @@
 #include <Graphic3d_ArrayOfQuadrangles.hxx>
 #include <Graphic3d_ArrayOfQuadrangleStrips.hxx>
 #include <Graphic3d_ArrayOfPolygons.hxx>
+#include <Graphic3d_AttribBuffer.hxx>
+#include <Graphic3d_MutableIndexBuffer.hxx>
 
 #include <NCollection_AlignedAllocator.hxx>
 #include <TCollection_AsciiString.hxx>
@@ -43,6 +45,47 @@ IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_ArrayOfQuadrangleStrips, Graphic3d_ArrayOfP
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_ArrayOfPolygons,         Graphic3d_ArrayOfPrimitives)
 
 // =======================================================================
+// function : CreateArray
+// purpose  :
+// =======================================================================
+Handle(Graphic3d_ArrayOfPrimitives) Graphic3d_ArrayOfPrimitives::CreateArray (Graphic3d_TypeOfPrimitiveArray theType,
+                                                                              Standard_Integer theMaxVertexs,
+                                                                              Standard_Integer theMaxBounds,
+                                                                              Standard_Integer theMaxEdges,
+                                                                              Graphic3d_ArrayFlags theArrayFlags)
+{
+  switch (theType)
+  {
+    case Graphic3d_TOPA_UNDEFINED:
+      return Handle(Graphic3d_ArrayOfPrimitives)();
+    case Graphic3d_TOPA_POINTS:
+      return new Graphic3d_ArrayOfPoints (theMaxVertexs, theArrayFlags);
+    case Graphic3d_TOPA_SEGMENTS:
+      return new Graphic3d_ArrayOfSegments (theMaxVertexs, theMaxEdges, theArrayFlags);
+    case Graphic3d_TOPA_POLYLINES:
+      return new Graphic3d_ArrayOfPolylines (theMaxVertexs, theMaxBounds, theMaxEdges, theArrayFlags);
+    case Graphic3d_TOPA_TRIANGLES:
+      return new Graphic3d_ArrayOfTriangles (theMaxVertexs, theMaxEdges, theArrayFlags);
+    case Graphic3d_TOPA_TRIANGLESTRIPS:
+      return new Graphic3d_ArrayOfTriangleStrips (theMaxVertexs, theMaxBounds, theArrayFlags);
+    case Graphic3d_TOPA_TRIANGLEFANS:
+      return new Graphic3d_ArrayOfTriangleFans (theMaxVertexs, theMaxBounds, theArrayFlags);
+    case Graphic3d_TOPA_LINES_ADJACENCY:
+    case Graphic3d_TOPA_LINE_STRIP_ADJACENCY:
+    case Graphic3d_TOPA_TRIANGLES_ADJACENCY:
+    case Graphic3d_TOPA_TRIANGLE_STRIP_ADJACENCY:
+      return new Graphic3d_ArrayOfPrimitives (theType, theMaxVertexs, theMaxBounds, theMaxEdges, theArrayFlags);
+    case Graphic3d_TOPA_QUADRANGLES:
+      return new Graphic3d_ArrayOfQuadrangles (theMaxVertexs, theMaxEdges, theArrayFlags);
+    case Graphic3d_TOPA_QUADRANGLESTRIPS:
+      return new Graphic3d_ArrayOfQuadrangleStrips (theMaxVertexs, theMaxBounds, theArrayFlags);
+    case Graphic3d_TOPA_POLYGONS:
+      return new Graphic3d_ArrayOfPolygons (theMaxVertexs, theMaxBounds, theMaxEdges, theArrayFlags);
+  }
+  return Handle(Graphic3d_ArrayOfPrimitives)();
+}
+
+// =======================================================================
 // function : init
 // purpose  :
 // =======================================================================
@@ -53,15 +96,26 @@ void Graphic3d_ArrayOfPrimitives::init (Graphic3d_TypeOfPrimitiveArray theType,
                                         Graphic3d_ArrayFlags theArrayOptions)
 {
   myType = theType;
-  myVNor = 0;
-  myVTex = 0;
-  myVCol = 0;
+  myNormData = NULL;
+  myTexData  = NULL;
+  myColData  = NULL;
   myAttribs.Nullify();
   myIndices.Nullify();
   myBounds.Nullify();
 
   Handle(NCollection_AlignedAllocator) anAlloc = new NCollection_AlignedAllocator (16);
-  myAttribs = new Graphic3d_Buffer (anAlloc);
+  if ((theArrayOptions & Graphic3d_ArrayFlags_AttribsMutable) != 0
+   || (theArrayOptions & Graphic3d_ArrayFlags_AttribsDeinterleaved) != 0)
+  {
+    Graphic3d_AttribBuffer* anAttribs = new Graphic3d_AttribBuffer (anAlloc);
+    anAttribs->SetMutable     ((theArrayOptions & Graphic3d_ArrayFlags_AttribsMutable) != 0);
+    anAttribs->SetInterleaved ((theArrayOptions & Graphic3d_ArrayFlags_AttribsDeinterleaved) == 0);
+    myAttribs = anAttribs;
+  }
+  else
+  {
+    myAttribs = new Graphic3d_Buffer (anAlloc);
+  }
   if (theMaxVertexs < 1)
   {
     return;
@@ -69,7 +123,14 @@ void Graphic3d_ArrayOfPrimitives::init (Graphic3d_TypeOfPrimitiveArray theType,
 
   if (theMaxEdges > 0)
   {
-    myIndices = new Graphic3d_IndexBuffer (anAlloc);
+    if ((theArrayOptions & Graphic3d_ArrayFlags_IndexesMutable) != 0)
+    {
+      myIndices = new Graphic3d_MutableIndexBuffer (anAlloc);
+    }
+    else
+    {
+      myIndices = new Graphic3d_IndexBuffer (anAlloc);
+    }
     if (theMaxVertexs < Standard_Integer(USHRT_MAX))
     {
       if (!myIndices->Init<unsigned short> (theMaxEdges))
@@ -119,8 +180,19 @@ void Graphic3d_ArrayOfPrimitives::init (Graphic3d_TypeOfPrimitiveArray theType,
     myIndices.Nullify();
     return;
   }
-  myAttribs->NbElements = 0;
-  memset (myAttribs->ChangeData (0), 0, size_t(myAttribs->Stride) * size_t(myAttribs->NbMaxElements()));
+
+  Standard_Integer anAttribDummy = 0;
+  myAttribs->ChangeAttributeData (Graphic3d_TOA_POS, anAttribDummy, myPosStride);
+  myNormData = myAttribs->ChangeAttributeData (Graphic3d_TOA_NORM,  anAttribDummy, myNormStride);
+  myTexData  = myAttribs->ChangeAttributeData (Graphic3d_TOA_UV,    anAttribDummy, myTexStride);
+  myColData  = myAttribs->ChangeAttributeData (Graphic3d_TOA_COLOR, anAttribDummy, myColStride);
+
+  memset (myAttribs->ChangeData(), 0, size_t(myAttribs->Stride) * size_t(myAttribs->NbMaxElements()));
+  if ((theArrayOptions & Graphic3d_ArrayFlags_AttribsMutable) == 0
+   && (theArrayOptions & Graphic3d_ArrayFlags_AttribsDeinterleaved) == 0)
+  {
+    myAttribs->NbElements = 0;
+  }
 
   if (theMaxBounds > 0)
   {
@@ -134,32 +206,6 @@ void Graphic3d_ArrayOfPrimitives::init (Graphic3d_TypeOfPrimitiveArray theType,
     }
     myBounds->NbBounds = 0;
   }
-
-  for (Standard_Integer anAttribIter = 0; anAttribIter < aNbAttribs; ++anAttribIter)
-  {
-    const Graphic3d_Attribute& anAttrib = anAttribs[anAttribIter];
-    switch (anAttrib.Id)
-    {
-      case Graphic3d_TOA_POS:
-      case Graphic3d_TOA_CUSTOM:
-        break;
-      case Graphic3d_TOA_NORM:
-      {
-        myVNor = static_cast<Standard_Byte>(myAttribs->AttributeOffset (anAttribIter));
-        break;
-      }
-      case Graphic3d_TOA_UV:
-      {
-        myVTex = static_cast<Standard_Byte>(myAttribs->AttributeOffset (anAttribIter));
-        break;
-      }
-      case Graphic3d_TOA_COLOR:
-      {
-        myVCol = static_cast<Standard_Byte>(myAttribs->AttributeOffset (anAttribIter));
-        break;
-      }
-    }
-  }
 }
 
 // =======================================================================
@@ -168,9 +214,6 @@ void Graphic3d_ArrayOfPrimitives::init (Graphic3d_TypeOfPrimitiveArray theType,
 // =======================================================================
 Graphic3d_ArrayOfPrimitives::~Graphic3d_ArrayOfPrimitives()
 {
-  myVNor = 0;
-  myVTex = 0;
-  myVCol = 0;
   myIndices.Nullify();
   myAttribs.Nullify();
   myBounds .Nullify();

@@ -620,53 +620,43 @@ Handle(OpenGl_TriangleSet) OpenGl_View::addRaytracePrimitiveArray (const OpenGl_
     aSet->TexCrds.reserve  (anAttribs->NbElements);
 
     const size_t aVertFrom = aSet->Vertices.size();
-    for (Standard_Integer anAttribIter = 0; anAttribIter < anAttribs->NbAttributes; ++anAttribIter)
-    {
-      const Graphic3d_Attribute& anAttrib = anAttribs->Attribute       (anAttribIter);
-      const size_t               anOffset = anAttribs->AttributeOffset (anAttribIter);
-      if (anAttrib.Id == Graphic3d_TOA_POS)
-      {
-        if (anAttrib.DataType == Graphic3d_TOD_VEC3
-         || anAttrib.DataType == Graphic3d_TOD_VEC4)
-        {
-          for (Standard_Integer aVertIter = 0; aVertIter < anAttribs->NbElements; ++aVertIter)
-          {
-            aSet->Vertices.push_back (
-              *reinterpret_cast<const Graphic3d_Vec3*> (anAttribs->value (aVertIter) + anOffset));
-          }
-        }
-        else if (anAttrib.DataType == Graphic3d_TOD_VEC2)
-        {
-          for (Standard_Integer aVertIter = 0; aVertIter < anAttribs->NbElements; ++aVertIter)
-          {
-            const Standard_ShortReal* aCoords =
-              reinterpret_cast<const Standard_ShortReal*> (anAttribs->value (aVertIter) + anOffset);
 
-            aSet->Vertices.push_back (BVH_Vec3f (aCoords[0], aCoords[1], 0.0f));
-          }
+    Standard_Integer anAttribIndex = 0;
+    Standard_Size anAttribStride = 0;
+    if (const Standard_Byte* aPosData = anAttribs->AttributeData (Graphic3d_TOA_POS, anAttribIndex, anAttribStride))
+    {
+      const Graphic3d_Attribute& anAttrib = anAttribs->Attribute (anAttribIndex);
+      if (anAttrib.DataType == Graphic3d_TOD_VEC2
+       || anAttrib.DataType == Graphic3d_TOD_VEC3
+       || anAttrib.DataType == Graphic3d_TOD_VEC4)
+      {
+        for (Standard_Integer aVertIter = 0; aVertIter < anAttribs->NbElements; ++aVertIter)
+        {
+          const float* aCoords = reinterpret_cast<const float*> (aPosData + anAttribStride * aVertIter);
+          aSet->Vertices.push_back (BVH_Vec3f (aCoords[0], aCoords[1], anAttrib.DataType != Graphic3d_TOD_VEC2 ? aCoords[2] : 0.0f));
         }
       }
-      else if (anAttrib.Id == Graphic3d_TOA_NORM)
+    }
+    if (const Standard_Byte* aNormData = anAttribs->AttributeData (Graphic3d_TOA_NORM, anAttribIndex, anAttribStride))
+    {
+      const Graphic3d_Attribute& anAttrib = anAttribs->Attribute (anAttribIndex);
+      if (anAttrib.DataType == Graphic3d_TOD_VEC3
+       || anAttrib.DataType == Graphic3d_TOD_VEC4)
       {
-        if (anAttrib.DataType == Graphic3d_TOD_VEC3
-         || anAttrib.DataType == Graphic3d_TOD_VEC4)
+        for (Standard_Integer aVertIter = 0; aVertIter < anAttribs->NbElements; ++aVertIter)
         {
-          for (Standard_Integer aVertIter = 0; aVertIter < anAttribs->NbElements; ++aVertIter)
-          {
-            aSet->Normals.push_back (
-              *reinterpret_cast<const Graphic3d_Vec3*> (anAttribs->value (aVertIter) + anOffset));
-          }
+          aSet->Normals.push_back (*reinterpret_cast<const Graphic3d_Vec3*> (aNormData + anAttribStride * aVertIter));
         }
       }
-      else if (anAttrib.Id == Graphic3d_TOA_UV)
+    }
+    if (const Standard_Byte* aTexData = anAttribs->AttributeData (Graphic3d_TOA_UV, anAttribIndex, anAttribStride))
+    {
+      const Graphic3d_Attribute& anAttrib = anAttribs->Attribute (anAttribIndex);
+      if (anAttrib.DataType == Graphic3d_TOD_VEC2)
       {
-        if (anAttrib.DataType == Graphic3d_TOD_VEC2)
+        for (Standard_Integer aVertIter = 0; aVertIter < anAttribs->NbElements; ++aVertIter)
         {
-          for (Standard_Integer aVertIter = 0; aVertIter < anAttribs->NbElements; ++aVertIter)
-          {
-            aSet->TexCrds.push_back (
-              *reinterpret_cast<const Graphic3d_Vec2*> (anAttribs->value (aVertIter) + anOffset));
-          }
+          aSet->TexCrds.push_back (*reinterpret_cast<const Graphic3d_Vec2*> (aTexData + anAttribStride * aVertIter));
         }
       }
     }

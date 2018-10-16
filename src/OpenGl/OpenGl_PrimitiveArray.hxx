@@ -107,6 +107,9 @@ protected:
   Standard_EXPORT Standard_Boolean buildVBO (const Handle(OpenGl_Context)& theCtx,
                                              const Standard_Boolean        theToKeepData) const;
 
+  //! Patch VBO sub-date within invalidated range.
+  Standard_EXPORT void updateVBO (const Handle(OpenGl_Context)& theCtx) const;
+
   //! Release GL memory.
   Standard_EXPORT void clearMemoryGL (const Handle(OpenGl_Context)& theGlCtx) const;
 
