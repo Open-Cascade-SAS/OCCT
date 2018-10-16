@@ -134,6 +134,9 @@ help testgrid {
   Run all tests, or specified group, or one grid
   Use: testgrid [groupmask [gridmask [casemask]]] [options...]
   Allowed options are:
+  -exclude N: exclude group, subgroup or single test case from executing, where
+              N is name of group, subgroup or case. Excluded items should be separated by comma.
+              Option should be used as the first argument after list of executed groups, grids, and test cases.
   -parallel N: run N parallel processes (default is number of CPUs, 0 to disable)
   -refresh N: save summary logs every N seconds (default 600, minimal 1, 0 to disable)
   -outdir dirname: set log directory (should be empty or non-existing)
@@ -165,6 +168,9 @@ proc testgrid {args} {
     set overwrite 0
     set xmlfile ""
     set signal 0
+    set exc_group 0
+    set exc_grid 0
+    set exc_case 0
     set regress 0
     set prev_logdir ""
     for {set narg 0} {$narg < [llength $args]} {incr narg} {
@@ -235,6 +241,45 @@ proc testgrid {args} {
                 set regress 1
             } else {
                 error "Option -regress requires argument"
+            }
+            continue
+        }
+
+        # exclude group, subgroup or single test case from executing
+        if { $arg == "-exclude" } {
+            incr narg
+            if { $narg < [llength $args] && ! [regexp {^-} [lindex $args $narg]] } {
+                set argts $args
+                set idx_begin [string first " -ex" $argts]
+                if { ${idx_begin} != "-1" } {
+                    set argts [string replace $argts 0 $idx_begin]
+                }
+                set idx_exclude [string first "exclude" $argts]
+                if { ${idx_exclude} != "-1" } {
+                    set argts [string replace $argts 0 $idx_exclude+7]
+                }
+                set idx [string first " -" $argts]
+                if { ${idx} != "-1" } {
+                    set argts [string replace $argts $idx end]
+                }
+                set argts [split $argts ,]
+                foreach argt $argts {
+                    if { [llength $argt] == 1 } {
+                        lappend exclude_group $argt
+                        set exc_group 1
+                    } elseif { [llength $argt] == 2 } {
+                        lappend exclude_grid $argt
+                        set exc_grid 1
+                        incr narg
+                    } elseif { [llength $argt] == 3 } {
+                        lappend exclude_case $argt
+                        set exc_case 1
+                        incr narg
+                        incr narg
+                    }
+                }
+            } else {
+                error "Option -exclude requires argument"
             }
             continue
         }
@@ -344,6 +389,18 @@ proc testgrid {args} {
             # search all directories in the current dir with specified mask
             if [catch {glob -directory $dir -tail -types d {*}$groupmask} groups] { continue }
 
+            # exclude selected groups from all groups
+            if { ${exc_group} > 0 } {
+                foreach exclude_group_element ${exclude_group} {
+                    set idx [lsearch $groups "${exclude_group_element}"]
+                    if { ${idx} != "-1" } {
+                        set groups [lreplace $groups $idx $idx]
+                    } else {
+                        continue
+                    }
+                }
+            }
+
             # iterate by groups
             if { $_tests_verbose > 0 } { _log_and_puts log "Groups to be executed: $groups" }
             foreach group [lsort -dictionary $groups] {
@@ -381,6 +438,19 @@ proc testgrid {args} {
                 }
                 close $fd
 
+                # exclude selected grids from all grids
+                if { ${exc_grid} > 0 } {
+                    foreach exclude_grid_element ${exclude_grid} {
+                        set exclude_elem [lindex $exclude_grid_element end]
+                        set idx [lsearch $gridlist "${exclude_elem}"]
+                        if { ${idx} != "-1" } {
+                            set gridlist [lreplace $gridlist $idx $idx]
+                        } else {
+                            continue
+                        }
+                    }
+                }
+
                 # iterate by all grids
                 foreach grid $gridlist {
 
@@ -405,6 +475,24 @@ proc testgrid {args} {
 
                     # iterate by all tests in the grid directory
                     if { [catch {glob -directory $griddir -type f {*}$casemask} testfiles] } { continue }
+
+                    # exclude selected test cases from all testfiles
+                    if { ${exc_case} > 0 } {
+                        foreach exclude_case_element ${exclude_case} {
+                            set exclude_casegroup_elem [lindex $exclude_case_element end-2]
+                            set exclude_casegrid_elem [lindex $exclude_case_element end-1]
+                            set exclude_elem [lindex $exclude_case_element end]
+                            if { ${exclude_casegrid_elem} == "${grid}" } {
+                                set idx [lsearch $testfiles "${dir}/${exclude_casegroup_elem}/${exclude_casegrid_elem}/${exclude_elem}"]
+                                if { ${idx} != "-1" } {
+                                    set testfiles [lreplace $testfiles $idx $idx]
+                                } else {
+                                    continue
+                                }
+                            }
+                        }
+                    }
+
                     foreach casefile [lsort -dictionary $testfiles] {
                         # filter out files with reserved names
                         set casename [file tail $casefile]
