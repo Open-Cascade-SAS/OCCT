@@ -30,13 +30,15 @@ struct OpenGl_UnpackAlignmentSentry
 {
 
   //! Reset unpack alignment settings to safe values
-  void Reset()
+  static void Reset()
   {
     glPixelStorei (GL_UNPACK_ALIGNMENT,  1);
   #if !defined(GL_ES_VERSION_2_0)
     glPixelStorei (GL_UNPACK_ROW_LENGTH, 0);
   #endif
   }
+
+  OpenGl_UnpackAlignmentSentry() {}
 
   ~OpenGl_UnpackAlignmentSentry()
   {
@@ -840,6 +842,9 @@ bool OpenGl_Texture::InitRectangle (const Handle(OpenGl_Context)& theCtx,
   myTextFormat  = theFormat.Format();
   mySizedFormat = theFormat.Internal();
 
+  // setup the alignment
+  OpenGl_UnpackAlignmentSentry::Reset();
+
   glTexImage2D (GL_PROXY_TEXTURE_RECTANGLE, 0, mySizedFormat,
                 aSizeX, aSizeY, 0,
                 myTextFormat, GL_FLOAT, NULL);
@@ -937,6 +942,9 @@ bool OpenGl_Texture::Init3D (const Handle(OpenGl_Context)& theCtx,
   }
 
   mySizedFormat = theTextFormat;
+
+  // setup the alignment
+  OpenGl_UnpackAlignmentSentry::Reset();
 
 #if !defined (GL_ES_VERSION_2_0)
   theCtx->core15fwd->glTexImage3D (GL_PROXY_TEXTURE_3D, 0, mySizedFormat,
