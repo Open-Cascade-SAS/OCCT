@@ -1,32 +1,15 @@
-puts "TODO OCC641 ALL: An exception was caught"
-puts "TODO OCC641 ALL: \\*\\* Exception \\*\\*.*"
-puts "TODO OCC641 ALL: Error : result shape is displayed wrongly"
-
 puts "================"
-puts "OCC641"
-puts "SAM1559"
+puts "OCC641 E x c e p t i o n during attemption to display shape ==>SAM1559 (#2901)"
 puts "================"
 puts ""
-#################################################
-## Exception during attemption to display shape ==>SAM1559 (#2901)
-#################################################
 
+pload MODELING VISUALIZATION
 restore [locate_data_file OCC641.brep] a
-
-vinit
-vdisplay a
+copy a m
+tmirror m 0 0 0 0 1 0
+vinit View1
+vdisplay -dispMode 0 a m
 vfit
-
-copy a result
-
-if [catch {tmirror result 0 0 0 0 1 0 } res] {
-   puts "Error : function tmirror works wrongly"
-} else {
-   if [catch { vdisplay result } res] {
-      puts "Error : result shape is displayed wrongly"
-   }
-   vfit
-}
-
-checkview -screenshot -3d -path ${imagedir}/${test_image}.png
-
+vdump ${imagedir}/${casename}_wf.png
+vdisplay -dispMode 1 a m
+vdump ${imagedir}/${casename}_sh.png

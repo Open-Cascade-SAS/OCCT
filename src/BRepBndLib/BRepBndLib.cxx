@@ -116,8 +116,11 @@ void BRepBndLib::Add(const TopoDS_Shape& S, Bnd_Box& B, Standard_Boolean useTria
           else {
             for (;ex2.More();ex2.Next()) {
               const TopoDS_Edge& anEdge = TopoDS::Edge(ex2.Current());
-              BC.Initialize(anEdge);
-              BndLib_Add3dCurve::Add(BC, BRep_Tool::Tolerance(anEdge), B);
+              if (BRep_Tool::IsGeometric (anEdge))
+              {
+                BC.Initialize (anEdge);
+                BndLib_Add3dCurve::Add (BC, BRep_Tool::Tolerance (anEdge), B);
+              }
             }
             B.Enlarge(BRep_Tool::Tolerance(F));
           }
@@ -198,8 +201,12 @@ void BRepBndLib::AddClose(const TopoDS_Shape& S, Bnd_Box& B)
   BRepAdaptor_Curve BC;
 
   for (ex.Init(S,TopAbs_EDGE); ex.More(); ex.Next()) {
-    BC.Initialize(TopoDS::Edge(ex.Current()));
-    BndLib_Add3dCurve::Add(BC,0.,B);
+    const TopoDS_Edge& anEdge = TopoDS::Edge (ex.Current());
+    if (BRep_Tool::IsGeometric (anEdge))
+    {
+      BC.Initialize (anEdge);
+      BndLib_Add3dCurve::Add(BC,0.,B);
+    }
   }
 
   // Add the vertices not in edges
@@ -262,7 +269,7 @@ void BRepBndLib::AddOptimal(const TopoDS_Shape& S, Bnd_Box& B,
             for (;ex2.More();ex2.Next()) {
               Bnd_Box anEBox;
               const TopoDS_Edge& anE = TopoDS::Edge(ex2.Current());
-              if(BRep_Tool::Degenerated(anE))
+              if (BRep_Tool::Degenerated (anE) || !BRep_Tool::IsGeometric (anE))
               {
                 continue;
               }
@@ -289,7 +296,7 @@ void BRepBndLib::AddOptimal(const TopoDS_Shape& S, Bnd_Box& B,
             for (;ex2.More();ex2.Next()) {
               Bnd_Box anEBox;
               const TopoDS_Edge& anE = TopoDS::Edge(ex2.Current());
-              if(BRep_Tool::Degenerated(anE))
+              if (BRep_Tool::Degenerated (anE) || !BRep_Tool::IsGeometric (anE))
               {
                 continue;
               }
