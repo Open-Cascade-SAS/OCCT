@@ -300,7 +300,14 @@ Standard_Integer GeomAdaptor_Curve::NbIntervals(const GeomAbs_Shape S) const
           BSplCLib::LocateParameter(myBSplineCurve->Degree(),TK,TM,myLast,
                                     myBSplineCurve->IsPeriodic(),
                                     1,Nb,Index2,newLast);
-
+          // Protection against myFirst = UFirst - eps, which located as ULast - eps
+          if (myBSplineCurve->IsPeriodic() && (newLast - newFirst) < Precision::PConfusion())
+          {
+            if (Abs(newLast - myBSplineCurve->FirstParameter()) < Precision::PConfusion())
+              newLast += myBSplineCurve->Period();
+            else
+              newFirst -= myBSplineCurve->Period();
+          }
           // On decale eventuellement les indices  
           // On utilise une "petite" tolerance, la resolution ne doit 
           // servir que pour les tres longue courbes....(PRO9248)
@@ -425,26 +432,36 @@ void GeomAdaptor_Curve::Intervals(TColStd_Array1OfReal& T,
 				      1,Nb,Index2,newLast);
             FirstParam = newFirst;
             LastParam = newLast;
+            // Protection against myFirst = UFirst - eps, which located as ULast - eps
+            if (myBSplineCurve->IsPeriodic() && (LastParam - FirstParam) < Precision::PConfusion())
+            {
+              if (Abs(LastParam - myBSplineCurve->FirstParameter()) < Precision::PConfusion())
+                LastParam += myBSplineCurve->Period();
+              else
+                FirstParam -= myBSplineCurve->Period();
+            }
 	    // On decale eventuellement les indices  
 	    // On utilise une "petite" tolerance, la resolution ne doit 
 	    // servir que pour les tres longue courbes....(PRO9248)
 	    Standard_Real Eps = Min(Resolution(Precision::Confusion()),
 				    Precision::PConfusion()); 
-	    if ( Abs(newFirst-TK(Index1+1))< Eps) Index1++;
-	    if ( newLast-TK(Index2)> Eps) Index2++;
+	    if ( Abs(FirstParam-TK(Index1+1))< Eps) Index1++;
+	    if ( LastParam-TK(Index2)> Eps) Index2++;
 	    
-	    Inter( 1) = Index1;
 	    myNbIntervals = 1;
+
+            TColStd_Array1OfInteger aFinalIntervals(1, Inter.Upper());
+            aFinalIntervals(1) = Index1;
 	    for ( Standard_Integer i=1; i<=NbInt; i++) {
 	      if (Inter(i) > Index1 && Inter(i)<Index2 ) {
 		myNbIntervals++;
-		Inter(myNbIntervals) = Inter(i);
+                aFinalIntervals(myNbIntervals) = Inter(i);
 	      }
 	    }
-	    Inter(myNbIntervals+1) = Index2;
+            aFinalIntervals(myNbIntervals + 1) = Index2;
 	    
 	    for (Standard_Integer I=1;I<=myNbIntervals+1;I++) {
-	      T(I) = TK(Inter(I));
+              T(I) = TK(aFinalIntervals(I));
 	    }
 	  }
 	  break;
