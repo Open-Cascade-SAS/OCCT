@@ -26,6 +26,8 @@ struct IMeshTools_Parameters {
     :
     Angle(0.5),
     Deflection(0.001),
+    AngleInterior(-1.0),
+    DeflectionInterior(-1.0),
     MinSize (-1.0),
     InParallel (Standard_False),
     Relative (Standard_False),
@@ -42,12 +44,18 @@ struct IMeshTools_Parameters {
     return 0.1;
   }
 
-  //! Angular deflection
+  //! Angular deflection used to tessellate the boundary edges
   Standard_Real                                    Angle;
 
-  //! Deflection
+  //!Linear deflection used to tessellate the boundary edges
   Standard_Real                                    Deflection;
+  
+  //! Angular deflection used to tessellate the face interior
+  Standard_Real                                    AngleInterior;
 
+  //! Linear deflection used to tessellate the face interior
+  Standard_Real                                    DeflectionInterior;
+  
   //! Minimal allowed size of mesh element
   Standard_Real                                    MinSize;
 

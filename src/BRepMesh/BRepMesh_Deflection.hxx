@@ -31,16 +31,17 @@ class BRepMesh_Deflection : public Standard_Transient
 {
 public:
 
-  //! Returns relative deflection for edge with respect to shape size.
-  //! @param theEdge edge for which relative deflection should be computed.
-  //! @param theDeflection absolute deflection.
-  //! @param theMaxShapeSize maximum size of a shape.
+  //! Returns absolute deflection for theShape with respect to the 
+  //! relative deflection and theMaxShapeSize.
+  //! @param theShape shape for that the deflection should be computed.
+  //! @param theRelativeDeflection relative deflection.
+  //! @param theMaxShapeSize maximum size of the whole shape.
   //! @param theAdjustmentCoefficient coefficient of adjustment between maximum 
   //! size of shape and calculated relative deflection.
-  //! @return relative deflection for the edge.
-  Standard_EXPORT static Standard_Real RelativeEdgeDeflection (
-    const TopoDS_Edge&  theEdge,
-    const Standard_Real theDeflection,
+  //! @return absolute deflection for the shape.
+  Standard_EXPORT static Standard_Real ComputeAbsoluteDeflection (
+    const TopoDS_Shape& theShape,
+    const Standard_Real theRelativeDeflection,
     const Standard_Real theMaxShapeSize,
     Standard_Real&      theAdjustmentCoefficient);
 

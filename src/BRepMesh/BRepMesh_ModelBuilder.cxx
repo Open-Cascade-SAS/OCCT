@@ -70,7 +70,8 @@ Handle (IMeshData_Model) BRepMesh_ModelBuilder::Perform (
       }
       else
       {
-        aModel->SetMaxSize(theParameters.Deflection);
+        aModel->SetMaxSize(Max(theParameters.Deflection,
+                               theParameters.DeflectionInterior));
       }
 
       Handle (IMeshTools_ShapeVisitor) aVisitor =

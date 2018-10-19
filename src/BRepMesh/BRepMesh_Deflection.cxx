@@ -14,41 +14,46 @@
 // commercial license or contractual agreement.
 
 #include <BRepMesh_Deflection.hxx>
-#include <BRepMesh_ShapeTool.hxx>
-#include <IMeshTools_Parameters.hxx>
-#include <IMeshData_Edge.hxx>
-#include <IMeshData_Wire.hxx>
-#include <IMeshData_Face.hxx>
-#include <BRep_Tool.hxx>
+
 #include <Bnd_Box.hxx>
 #include <BRepBndLib.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TopoDS_Vertex.hxx>
+#include <BRepMesh_ShapeTool.hxx>
+#include <IMeshData_Edge.hxx>
+#include <IMeshData_Wire.hxx>
+#include <IMeshTools_Parameters.hxx>
 #include <TopExp.hxx>
+#include <TopoDS_Vertex.hxx>
 
 //=======================================================================
 //function : RelativeEdgeDeflection
 //purpose  : 
 //=======================================================================
-Standard_Real BRepMesh_Deflection::RelativeEdgeDeflection(
-  const TopoDS_Edge&  theEdge,
-  const Standard_Real theDeflection,
+Standard_Real BRepMesh_Deflection::ComputeAbsoluteDeflection(
+  const TopoDS_Shape& theShape,
+  const Standard_Real theRelativeDeflection,
   const Standard_Real theMaxShapeSize,
   Standard_Real&      theAdjustmentCoefficient)
 {
   theAdjustmentCoefficient = 1.;
-  Standard_Real aEdgeDeflection = theDeflection;
-  if (theEdge.IsNull())
+  if (theShape.IsNull())
   {
-    return aEdgeDeflection;
+    return theRelativeDeflection;
   }
 
   Bnd_Box aBox;
-  BRepBndLib::Add (theEdge, aBox, Standard_False);
-  BRepMesh_ShapeTool::BoxMaxDimension (aBox, aEdgeDeflection);
+  BRepBndLib::Add (theShape, aBox, Standard_False);
+
+  Standard_Real aShapeSize = theRelativeDeflection;
+  BRepMesh_ShapeTool::BoxMaxDimension (aBox, aShapeSize);
 
   // Adjust resulting value in relation to the total size
-  theAdjustmentCoefficient = theMaxShapeSize / (2 * aEdgeDeflection);
+
+  Standard_Real aX1, aY1, aZ1, aX2, aY2, aZ2;
+  aBox.Get(aX1, aY1, aZ1, aX2, aY2, aZ2);
+  const Standard_Real aMaxShapeSize = (theMaxShapeSize > 0.0) ? theMaxShapeSize :
+                                       Max(aX2 - aX1, Max(aY2 - aY1, aZ2 - aZ1));
+
+  theAdjustmentCoefficient = aMaxShapeSize / (2 * aShapeSize);
   if (theAdjustmentCoefficient < 0.5)
   {
     theAdjustmentCoefficient = 0.5;
@@ -58,7 +63,7 @@ Standard_Real BRepMesh_Deflection::RelativeEdgeDeflection(
     theAdjustmentCoefficient = 2.;
   }
 
-  return (theAdjustmentCoefficient * aEdgeDeflection * theDeflection);
+  return (theAdjustmentCoefficient * aShapeSize * theRelativeDeflection);
 }
 
 //=======================================================================
@@ -75,8 +80,9 @@ void BRepMesh_Deflection::ComputeDeflection (
   if (theParameters.Relative)
   {
     Standard_Real aScale;
-    aLinDeflection = RelativeEdgeDeflection (theDEdge->GetEdge (),
-      theParameters.Deflection, theMaxShapeSize, aScale);
+    aLinDeflection = ComputeAbsoluteDeflection(theDEdge->GetEdge(),
+                                               theParameters.Deflection,
+                                               theMaxShapeSize, aScale);
 
     // Is it OK?
     aAngDeflection = theParameters.Angle * aScale;
@@ -144,7 +150,15 @@ void BRepMesh_Deflection::ComputeDeflection (
   const IMeshData::IFaceHandle& theDFace,
   const IMeshTools_Parameters&  theParameters)
 {
-  Standard_Real aFaceDeflection = 0.;
+  Standard_Real aDeflection = theParameters.DeflectionInterior;
+  if (theParameters.Relative)
+  {
+    Standard_Real aScale;
+    aDeflection = ComputeAbsoluteDeflection(theDFace->GetFace(),
+                                            aDeflection, -1.0, aScale);
+  }
+
+  Standard_Real aFaceDeflection = 0.0;
   if (theDFace->WiresNb () > 0)
   {
     for (Standard_Integer aWireIt = 0; aWireIt < theDFace->WiresNb(); ++aWireIt)
@@ -154,10 +168,8 @@ void BRepMesh_Deflection::ComputeDeflection (
 
     aFaceDeflection /= theDFace->WiresNb ();
   }
-  else
-  {
-    aFaceDeflection = theParameters.Deflection;
-  }
+
+  aFaceDeflection = Max(aDeflection, aFaceDeflection);
 
   theDFace->SetDeflection (Max(2.* BRepMesh_ShapeTool::MaxFaceTolerance(
     theDFace->GetFace()), aFaceDeflection));

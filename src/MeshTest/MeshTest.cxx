@@ -118,8 +118,11 @@ static Standard_Integer incrementalmesh(Draw_Interpretor& di, Standard_Integer n
 Builds triangular mesh for the shape\n\
 usage: incmesh Shape LinearDeflection [options]\n\
 options:\n\
-        -a val          angular deflection in deg\n\
+        -a val          angular deflection for edges in deg\n\
                         (default ~28.64 deg = 0.5 rad)\n\n\
+        -ai val         angular deflection inside of faces in deg\n\
+                        (default ~57.29 deg = 1 rad)\n\n\
+        -di val         Linear deflection used to tessellate the face interior.\n\
         -min            minimum size parameter limiting size of triangle's\n\
                         edges to prevent sinking into amplification in case\n\
                         of distorted curves and surfaces\n\n\
@@ -142,6 +145,8 @@ options:\n\
   }
 
   IMeshTools_Parameters aMeshParams;
+  aMeshParams.Deflection = aMeshParams.DeflectionInterior = 
+    Max(Draw::Atof(argv[2]), Precision::Confusion());
 
   if (nbarg > 3)
   {
@@ -168,8 +173,16 @@ options:\n\
         {
           aMeshParams.Angle = aVal * M_PI / 180.;
         }
+        else if (aOpt == "-ai")
+        {
+          aMeshParams.AngleInterior = aVal * M_PI / 180.;
+        }
         else if (aOpt == "-min")
           aMeshParams.MinSize = aVal;
+        else if (aOpt == "-di")
+        {
+          aMeshParams.DeflectionInterior = aVal;
+        }
         else
           --i;
       }

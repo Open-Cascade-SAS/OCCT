@@ -51,7 +51,7 @@ public: //! @name mesher API
   Standard_EXPORT BRepMesh_IncrementalMesh(const TopoDS_Shape&          theShape,
                                            const IMeshTools_Parameters& theParameters);
 
-  //! Performs meshing ot the shape.
+//! Performs meshing ot the shape.
   Standard_EXPORT virtual void Perform() Standard_OVERRIDE;
   
 public: //! @name accessing to parameters.
@@ -85,11 +85,22 @@ private:
   //! Initializes specific parameters
   inline void initParameters()
   {
+    if (myParameters.DeflectionInterior < Precision::Confusion())
+    {
+      myParameters.DeflectionInterior = myParameters.Deflection;
+    }
+
     if (myParameters.MinSize < Precision::Confusion())
     {
       myParameters.MinSize =
-        Max(IMeshTools_Parameters::RelMinSize() * myParameters.Deflection,
+        Max(IMeshTools_Parameters::RelMinSize() * Min(myParameters.Deflection,
+                                                      myParameters.DeflectionInterior),
             Precision::Confusion());
+    }
+
+    if (myParameters.AngleInterior < Precision::Angular())
+    {
+      myParameters.AngleInterior = 2.0 * myParameters.Angle;
     }
   }
 

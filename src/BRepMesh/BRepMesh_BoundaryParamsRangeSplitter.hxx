@@ -44,6 +44,11 @@ public:
 
 protected:
 
+  //! Initializes U and V parameters lists using CN continuity intervals.
+  virtual Standard_Boolean initParameters() const Standard_OVERRIDE
+  {
+    return Standard_True;
+  }
 };
 
 #endif

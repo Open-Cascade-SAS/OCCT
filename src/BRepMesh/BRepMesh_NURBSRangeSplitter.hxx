@@ -46,7 +46,7 @@ public:
 protected:
 
   //! Initializes U and V parameters lists using CN continuity intervals.
-  Standard_EXPORT virtual void initParameters() const;
+  Standard_EXPORT virtual Standard_Boolean initParameters() const;
 
 private:
 
@@ -65,6 +65,23 @@ private:
     const Standard_Real                     theMinDist,
     const Standard_Real                     theFilterDist,
     const Handle(NCollection_IncAllocator)& theAllocator) const;
+
+  enum EdgeType
+  {
+    Edge_Internal,
+    Edge_Frontier
+  };
+
+  enum ParamDimension
+  {
+    Param_U = 0x1,
+    Param_V = 0x2
+  };
+
+  //! Finds edges of discrete face and uses its points 
+  //! as auxiliary control parameters for generation of nodes.
+  Standard_Boolean grabParamsOfEdges (const EdgeType         theEdgeType,
+                                      const Standard_Integer theParamDimensionFlag) const;
 
 private:
 

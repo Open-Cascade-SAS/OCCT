@@ -14,15 +14,14 @@
 // commercial license or contractual agreement.
 
 #include <BRepMesh_NURBSRangeSplitter.hxx>
-#include <GeomAdaptor_Curve.hxx>
-#include <IMeshTools_Parameters.hxx>
-#include <IMeshData_Wire.hxx>
-#include <IMeshData_Edge.hxx>
-#include <IMeshData_PCurve.hxx>
-#include <GeomAbs_IsoType.hxx>
-#include <BRepMesh_GeomTool.hxx>
-#include <NCollection_Handle.hxx>
+
 #include <algorithm>
+#include <BRepMesh_GeomTool.hxx>
+#include <GeomAdaptor_Curve.hxx>
+#include <GeomLib.hxx>
+#include <IMeshData_Edge.hxx>
+#include <IMeshData_Wire.hxx>
+#include <NCollection_Handle.hxx>
 
 namespace
 {
@@ -54,13 +53,6 @@ namespace
       const IMeshTools_Parameters& theParameters)
     {
       myParameters = theParameters;
-
-      if (myParameters.MinSize <= Precision::Confusion())
-      {
-        myParameters.MinSize = 
-          Max(IMeshTools_Parameters::RelMinSize() * myParameters.Deflection,
-              Precision::Confusion());
-      }
 
       Standard_Integer aStartIndex, aEndIndex;
       if (myIsoU)
@@ -106,8 +98,18 @@ namespace
       const Standard_Real aSqDist = BRepMesh_GeomTool::SquareDeflectionOfSegment(
         myPrevControlPnt, myCurrControlPnt, aMidPnt);
 
-      const Standard_Real aSqMaxDeflection = myDFace->GetDeflection() * myDFace->GetDeflection();
-      if ((aSqDist > aSqMaxDeflection) &&
+      Standard_Real anAngle = 0.0;
+      
+      if ((myPrevControlVec.SquareMagnitude() > Precision::SquareConfusion()) &&
+          (myCurrControlVec.SquareMagnitude() > Precision::SquareConfusion()))
+      {
+        anAngle = myPrevControlVec.Angle(myCurrControlVec);
+      }
+
+      const Standard_Real aSqMaxDeflection = myDFace->GetDeflection() *
+        myDFace->GetDeflection();
+
+      if (((aSqDist > aSqMaxDeflection) || (anAngle > myParameters.AngleInterior)) &&
           aSqDist > myParameters.MinSize * myParameters.MinSize)
       {
         // insertion 
@@ -120,9 +122,8 @@ namespace
         // internals in order to prevent movement of triangle body
         // outside the surface in case of highly curved ones, e.g.
         // BSpline springs.
-        if (aSqDist < aSqMaxDeflection &&
-            myControlParams->Length() > 3 &&
-            theIndex < myControlParams->Length())
+        if (((aSqDist < aSqMaxDeflection) || (anAngle < myParameters.AngleInterior)) &&
+            myControlParams->Length() > 3 && theIndex < myControlParams->Length())
         {
           // Remove too dense points
           const Standard_Real aTmpParam = myControlParams->Value(theIndex + 1);
@@ -162,7 +163,7 @@ namespace
         // Lets check parameters for angular deflection.
         if (myPrevControlVec.SquareMagnitude() < gp::Resolution() ||
             aTmpVec.SquareMagnitude()          < gp::Resolution() ||
-            myPrevControlVec.Angle(aTmpVec)    < myParameters.Angle)
+            myPrevControlVec.Angle(aTmpVec)    < myParameters.AngleInterior)
         {
           // For current Iso line we can remove this parameter.
           myControlParamsToRemove->Add(myCurrControlParam);
@@ -257,6 +258,32 @@ namespace
 
     return isAdded;
   }
+
+  //! Checks whether intervals should be split.
+  //! Returns true in case if it is impossible to compute normal 
+  //! directly on intervals, false is returned elsewhere.
+  Standard_Boolean toSplitIntervals (const Handle (Geom_Surface)&  theSurf,
+                                     const TColStd_Array1OfReal  (&theIntervals)[2])
+  {
+    Standard_Integer aIntervalU = theIntervals[0].Lower ();
+    for (; aIntervalU <= theIntervals[0].Upper (); ++aIntervalU)
+    {
+      const Standard_Real aParamU = theIntervals[0].Value(aIntervalU);
+      Standard_Integer aIntervalV = theIntervals[1].Lower ();
+      for (; aIntervalV <= theIntervals[1].Upper (); ++aIntervalV)
+      {
+        gp_Dir aNorm;
+        const Standard_Real aParamV = theIntervals[1].Value(aIntervalV);
+        if (GeomLib::NormEstim (theSurf, gp_Pnt2d (aParamU, aParamV), Precision::Confusion (), aNorm) != 0)
+        {
+          return Standard_True;
+        }
+        // TODO: do not split intervals if there is no normal in the middle of interval.
+      }
+    }
+
+    return Standard_False;
+  }
 }
 
 //=======================================================================
@@ -287,7 +314,10 @@ void BRepMesh_NURBSRangeSplitter::AdjustRange()
 Handle(IMeshData::ListOfPnt2d) BRepMesh_NURBSRangeSplitter::GenerateSurfaceNodes(
   const IMeshTools_Parameters& theParameters) const
 {
-  initParameters();
+  if (!initParameters())
+  {
+    return Handle(IMeshData::ListOfPnt2d)();
+  }
 
   const std::pair<Standard_Real, Standard_Real>& aRangeU = GetRangeU();
   const std::pair<Standard_Real, Standard_Real>& aRangeV = GetRangeV();
@@ -357,7 +387,7 @@ Handle(IMeshData::ListOfPnt2d) BRepMesh_NURBSRangeSplitter::GenerateSurfaceNodes
 // Function: initParameters
 // Purpose : 
 //=======================================================================
-void BRepMesh_NURBSRangeSplitter::initParameters() const
+Standard_Boolean BRepMesh_NURBSRangeSplitter::initParameters() const
 {
   const Handle(BRepAdaptor_HSurface)& aSurface = GetSurface();
 
@@ -375,21 +405,79 @@ void BRepMesh_NURBSRangeSplitter::initParameters() const
   aSurface->UIntervals(aIntervals[0], aContinuity);
   aSurface->VIntervals(aIntervals[1], aContinuity);
 
-  Standard_Boolean isSplitIntervals =
-    (aIntervalsNb.first > 1 || aIntervalsNb.second > 1);
+  const Standard_Boolean isSplitIntervals = toSplitIntervals (
+    aSurface->ChangeSurface().Surface().Surface(), aIntervals);
 
-  if (!isSplitIntervals &&
-      (aSurface->GetType() == GeomAbs_BezierSurface ||
-       aSurface->GetType() == GeomAbs_BSplineSurface))
+  if (!initParamsFromIntervals(aIntervals[0], GetRangeU(), isSplitIntervals,
+                               const_cast<IMeshData::IMapOfReal&>(GetParametersU())))
   {
-    isSplitIntervals = (aSurface->NbUPoles() > 2 && aSurface->NbVPoles() > 2);
+    //if (!grabParamsOfEdges (Edge_Frontier, Param_U))
+    {
+      return Standard_False;
+    }
   }
 
-  initParamsFromIntervals(aIntervals[0], GetRangeU(), isSplitIntervals,
-                          const_cast<IMeshData::IMapOfReal&>(GetParametersU()));
+  if (!initParamsFromIntervals(aIntervals[1], GetRangeV(), isSplitIntervals,
+                               const_cast<IMeshData::IMapOfReal&>(GetParametersV())))
+  {
+    //if (!grabParamsOfEdges (Edge_Frontier, Param_V))
+    {
+      return Standard_False;
+    }
+  }
 
-  initParamsFromIntervals(aIntervals[1], GetRangeV(), isSplitIntervals,
-                          const_cast<IMeshData::IMapOfReal&>(GetParametersV()));
+  return grabParamsOfEdges(Edge_Internal, Param_U | Param_V);
+}
+
+//=======================================================================
+//function : grabParamsOfInternalEdges
+//purpose  : 
+//=======================================================================
+Standard_Boolean BRepMesh_NURBSRangeSplitter::grabParamsOfEdges (
+  const EdgeType         theEdgeType,
+  const Standard_Integer theParamDimensionFlag) const
+{
+  if ((theParamDimensionFlag & (Param_U | Param_V)) == 0)
+  {
+    return Standard_False;
+  }
+
+  const IMeshData::IFaceHandle& aDFace = GetDFace ();
+  for (Standard_Integer aWireIt = 0; aWireIt < aDFace->WiresNb (); ++aWireIt)
+  {
+    const IMeshData::IWireHandle& aDWire = aDFace->GetWire (aWireIt);
+    for (Standard_Integer aEdgeIt = 0; aEdgeIt < aDWire->EdgesNb (); ++aEdgeIt)
+    {
+      const IMeshData::IEdgePtr& aDEdge = aDWire->GetEdge (aEdgeIt);
+      for (Standard_Integer aPCurveIt = 0; aPCurveIt < aDEdge->PCurvesNb (); ++aPCurveIt)
+      {
+        const IMeshData::IPCurveHandle& aDPCurve = aDEdge->GetPCurve (aPCurveIt);
+        if (aDPCurve->GetFace () == aDFace)
+        {
+          if (theEdgeType == Edge_Internal && !aDPCurve->IsInternal ())
+          {
+            continue;
+          }
+
+          for (Standard_Integer aPointIt = 0; aPointIt < aDPCurve->ParametersNb (); ++aPointIt)
+          {
+            const gp_Pnt2d& aPnt2d = aDPCurve->GetPoint (aPointIt);
+            if (theParamDimensionFlag & Param_U)
+            {
+              const_cast<IMeshData::IMapOfReal&>(GetParametersU ()).Add (aPnt2d.X ());
+            }
+
+            if (theParamDimensionFlag & Param_V)
+            {
+              const_cast<IMeshData::IMapOfReal&>(GetParametersV ()).Add (aPnt2d.Y ());
+            }
+          }
+        }
+      }
+    }
+  }
+
+  return Standard_True;
 }
 
 //=======================================================================
@@ -411,16 +499,13 @@ Handle(IMeshData::SequenceOfReal) BRepMesh_NURBSRangeSplitter::computeGrainAndFi
     aMinDiff /= theDelta;
   }
 
-  const Standard_Real aMinSize =
-    theParameters.MinSize > Precision::Confusion() ? theParameters.MinSize :
-    Max(IMeshTools_Parameters::RelMinSize() * theParameters.Deflection,
-        Precision::Confusion());
-
-  aMinDiff = Max(aMinSize, aMinDiff);
+  aMinDiff = Max(theParameters.MinSize, aMinDiff);
 
   const Standard_Real aDiffMaxLim = 0.1 * theRangeDiff;
-  const Standard_Real aDiffMinLim = Max(0.005 * theRangeDiff, 2. * theTol2d);
-  const Standard_Real aDiff = Max(aMinSize, Min(aDiffMaxLim, aDiffMinLim));
+  const Standard_Real aDiffMinLim = Max(0.005 * theRangeDiff,
+                                        2. * theTol2d);
+  const Standard_Real aDiff = Max(theParameters.MinSize,
+                                  Min(aDiffMaxLim, aDiffMinLim));
   return filterParameters(theSourceParams, aMinDiff, aDiff, theAllocator);
 }
 

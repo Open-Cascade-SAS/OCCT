@@ -46,7 +46,8 @@ protected:
   virtual std::pair<Standard_Integer, Standard_Integer> getCellsCount (const Standard_Integer theVerticesNb) Standard_OVERRIDE
   {
     return BRepMesh_GeomTool::CellsCount (this->getDFace()->GetSurface(), theVerticesNb,
-                                          this->getParameters().Deflection, &this->getRangeSplitter());
+                                          this->getDFace()->GetDeflection(),
+                                          &this->getRangeSplitter());
   }
 
   //! Perfroms processing of generated mesh. Generates surface nodes and inserts them into structure.
