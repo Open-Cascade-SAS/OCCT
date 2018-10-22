@@ -44,7 +44,7 @@ public:
   //! STL-compliant typedef for key type
   typedef TheKeyType key_type;
 
-private:
+protected:
   //! Adaptation of the TListNode to the INDEXEDmap
   class IndexedMapNode : public NCollection_TListNode<TheKeyType>
   {
