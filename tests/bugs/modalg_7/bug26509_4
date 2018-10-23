@@ -1,0 +1,44 @@
+puts "========"
+puts "0026509: Wrong intersection curve(s) obtained for pair of faces."
+puts "========"
+puts ""
+
+circle c1 0 0 0 0 -1 0 75
+circle c2 0 0 0 0 -1 0 65
+mkedge c1 c1
+mkedge c2 c2
+wire c1 c1
+wire c2 c2
+orientation c2 R
+mkplane f1 c1 1
+add c2 f1
+prism p1 f1 0 1000 0
+trotate p1 0 0 0 0 0 1 180
+circle c3 50 500 -2000 0 0 1 50
+mkedge c3 c3
+wire c3 c3
+mkplane f2 c3 1
+prism p2 f2 0 0 4000
+explode p1 f
+explode p2 f
+trotate p2_1 0 500 0 1 0 0 -77
+trotate p2_1 0 0 0 0 0 1 180
+trotate p1_2 0 0 0 1.22464679914735e-16 1 0 1.57079632679489655800*180/pi
+tmirror p1_2 0 -500 0 0 1 0
+
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} [bopcurves p1_2 p2_1 -2d] full Toler NbCurv
+
+checkreal Tolerance $Toler 3.6430300265667996e-07 0.0 0.1
+
+if {$NbCurv != 2} {
+  puts "Error: Please check NbCurves for intersector"
+}
+
+puts "Check whether the intersection result is closed in 3D"
+bsection result p1_2 p2_1
+
+checksection result -r 0
+checkmaxtol result -ref 4.0e-7
+checkprops result -l 1881.92
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
