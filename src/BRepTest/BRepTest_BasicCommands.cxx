@@ -503,6 +503,7 @@ static Standard_Integer BoundBox(Draw_Interpretor& theDI,
   Standard_Boolean isTriangulationReq = Standard_True;
   Standard_Boolean isOptimal = Standard_False;
   Standard_Boolean isTolerUsed = Standard_False;
+  Standard_Boolean isFinitePart = Standard_False;
   Standard_Boolean hasToDraw = Standard_True;
   
   TCollection_AsciiString anOutVars[6];
@@ -556,6 +557,11 @@ static Standard_Integer BoundBox(Draw_Interpretor& theDI,
     else if (anArgCase == "-nodraw")
     {
       hasToDraw = Standard_False;
+    }
+    else if (anArgCase == "-finite"
+          || anArgCase == "-finitepart")
+    {
+      isFinitePart = Standard_True;
     }
     else if (aShape.IsNull()
          && !DBRep::Get (theArgVal[anArgIter]).IsNull())
@@ -662,6 +668,10 @@ static Standard_Integer BoundBox(Draw_Interpretor& theDI,
     }
     else
     {
+      if (isFinitePart && anAABB.IsOpen())
+      {
+        anAABB = anAABB.FinitePart();
+      }
       const gp_Pnt aMin = anAABB.CornerMin();
       const gp_Pnt aMax = anAABB.CornerMax();
 
@@ -670,15 +680,26 @@ static Standard_Integer BoundBox(Draw_Interpretor& theDI,
       {
         if (useOldSyntax)
         {
-          theDI << aMin.X () << " " << aMin.Y () << " " << aMin.Z () << " "
-                << aMax.X () << " " << aMax.Y () << " " << aMax.Z () << "\n";
+          theDI << aMin.X() << " " << aMin.Y() << " " << aMin.Z() << " "
+                << aMax.X() << " " << aMax.Y() << " " << aMax.Z() << "\n";
         }
         else
         {
           theDI << "Axes-aligned bounding box\n";
-          theDI << "X-range: " << aMin.X () << " " << aMax.X () << "\n" <<
-                   "Y-range: " << aMin.Y() << " " << aMax.Y() << "\n" <<
-                   "Z-range: " << aMin.Z () << " " << aMax.Z () << "\n";
+          theDI << "X-range: " << aMin.X() << " " << aMax.X() << "\n"
+                << "Y-range: " << aMin.Y() << " " << aMax.Y() << "\n"
+                << "Z-range: " << aMin.Z() << " " << aMax.Z() << "\n";
+          if (anAABB.IsOpen()
+           && anAABB.HasFinitePart())
+          {
+            Bnd_Box aFinitAabb = anAABB.FinitePart();
+            const gp_Pnt aFinMin = aFinitAabb.CornerMin();
+            const gp_Pnt aFinMax = aFinitAabb.CornerMax();
+            theDI << "Finite part\n";
+            theDI << "X-range: " << aFinMin.X() << " " << aFinMax.X() << "\n"
+                  << "Y-range: " << aFinMin.Y() << " " << aFinMax.Y() << "\n"
+                  << "Z-range: " << aFinMin.Z() << " " << aFinMax.Z() << "\n";
+          }
         }
       }
 
@@ -1454,7 +1475,7 @@ void  BRepTest::BasicCommands(Draw_Interpretor& theCommands)
   theCommands.Add ("bounding",
                    "bounding {shape | xmin ymin zmin xmax ymax zmax}"
          "\n\t\t:            [-obb] [-noTriangulation] [-optimal] [-extToler]"
-         "\n\t\t:            [-dump] [-shape name] [-nodraw]"
+         "\n\t\t:            [-dump] [-shape name] [-nodraw] [-finitePart]"
          "\n\t\t:            [-save xmin ymin zmin xmax ymax zmax]"
          "\n\t\t:"
          "\n\t\t: Computes a bounding box. Two types of the source data are supported:"
@@ -1474,7 +1495,8 @@ void  BRepTest::BasicCommands(Draw_Interpretor& theCommands)
          "\n\t\t:           if neither -shape nor -save is specified."
          "\n\t\t:  -shape   Stores computed box as solid in DRAW variable with specified name."
          "\n\t\t:  -save    Stores min and max coordinates of AABB in specified variables."
-         "\n\t\t:  -noDraw  Avoid drawing resulting Bounding Box in DRAW viewer.",
+         "\n\t\t:  -noDraw  Avoid drawing resulting Bounding Box in DRAW viewer."
+         "\n\t\t:  -finite  Return finite part of infinite box.",
                   __FILE__, BoundBox, g);
 
  //

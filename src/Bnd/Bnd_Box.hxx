@@ -76,6 +76,12 @@ public:
   //! Sets this bounding box so that it is empty. All points are outside a void box.
   void SetVoid()
   {
+    Xmin =  RealLast();
+    Xmax = -RealLast();
+    Ymin =  RealLast();
+    Ymax = -RealLast();
+    Zmin =  RealLast();
+    Zmax = -RealLast();
     Flags = VoidMask;
     Gap   = 0.0;
   }
@@ -160,6 +166,9 @@ public:
   //! The   Box will be   infinitely   long  in the Zmax
   //! direction.
   void OpenZmax() { Flags |= ZmaxMask; }
+
+  //! Returns true if this bounding box has at least one open direction.
+  Standard_Boolean IsOpen() const { return (Flags & WholeMask) != 0; }
 
   //! Returns true if this bounding box is open in the  Xmin direction.
   Standard_Boolean IsOpenXmin() const { return (Flags & XminMask) != 0; }
@@ -262,6 +271,29 @@ public:
     const Standard_Real aDy = Ymax - Ymin + Gap + Gap;
     const Standard_Real aDz = Zmax - Zmin + Gap + Gap;
     return aDx * aDx + aDy * aDy + aDz * aDz;
+  }
+
+  //! Returns a finite part of an infinite bounding box (returns self if this is already finite box).
+  //! This can be a Void box in case if its sides has been defined as infinite (Open) without adding any finite points.
+  //! WARNING! This method relies on Open flags, the infinite points added using Add() method will be returned as is.
+  Bnd_Box FinitePart() const
+  {
+    if (!HasFinitePart())
+    {
+      return Bnd_Box();
+    }
+
+    Bnd_Box aBox;
+    aBox.Update (Xmin, Ymin, Zmin, Xmax, Ymax, Zmax);
+    aBox.SetGap (Gap);
+    return aBox;
+  }
+
+  //! Returns TRUE if this box has finite part.
+  Standard_Boolean HasFinitePart() const
+  {
+    return !IsVoid()
+         && Xmax >= Xmin;
   }
 
 protected:

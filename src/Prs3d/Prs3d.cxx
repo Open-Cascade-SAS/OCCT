@@ -62,24 +62,34 @@ Standard_Boolean Prs3d::MatchSegment
 Standard_Real Prs3d::GetDeflection (const TopoDS_Shape&         theShape,
                                     const Handle(Prs3d_Drawer)& theDrawer)
 {
-#define MAX2(X, Y)    (Abs(X) > Abs(Y) ? Abs(X) : Abs(Y))
-#define MAX3(X, Y, Z) (MAX2 (MAX2 (X, Y), Z))
-
-  Standard_Real aDeflection = theDrawer->MaximalChordialDeviation();
-  if (theDrawer->TypeOfDeflection() == Aspect_TOD_RELATIVE)
+  if (theDrawer->TypeOfDeflection() != Aspect_TOD_RELATIVE)
   {
-    Bnd_Box aBndBox;
-    BRepBndLib::Add (theShape, aBndBox, Standard_False);
-    if (!aBndBox.IsVoid())
-    {
-      Standard_Real aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
-      aBndBox.Get (aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
-      aDeflection = MAX3 (aXmax-aXmin, aYmax-aYmin, aZmax-aZmin) * theDrawer->DeviationCoefficient() * 4.0;
-      // we store computed relative deflection of shape as absolute deviation coefficient
-      // in case relative type to use it later on for sub-shapes.
-      theDrawer->SetMaximalChordialDeviation (aDeflection);
-    }
+    return theDrawer->MaximalChordialDeviation();
   }
+
+  Bnd_Box aBndBox;
+  BRepBndLib::Add (theShape, aBndBox, Standard_False);
+  if (aBndBox.IsVoid())
+  {
+    return theDrawer->MaximalChordialDeviation();
+  }
+  else if (aBndBox.IsOpen())
+  {
+    if (!aBndBox.HasFinitePart())
+    {
+      return theDrawer->MaximalChordialDeviation();
+    }
+    aBndBox = aBndBox.FinitePart();
+  }
+
+  Graphic3d_Vec3d aVecMin, aVecMax;
+  aBndBox.Get (aVecMin.x(), aVecMin.y(), aVecMin.z(), aVecMax.x(), aVecMax.y(), aVecMax.z());
+  const Graphic3d_Vec3d aDiag = aVecMax - aVecMin;
+  const Standard_Real aDeflection = aDiag.maxComp() * theDrawer->DeviationCoefficient() * 4.0;
+
+  // we store computed relative deflection of shape as absolute deviation coefficient
+  // in case relative type to use it later on for sub-shapes.
+  theDrawer->SetMaximalChordialDeviation (aDeflection);
   return aDeflection;
 }
 

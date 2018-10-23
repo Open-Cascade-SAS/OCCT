@@ -518,7 +518,7 @@ void BndLib::Add(const gp_Circ& C,
     P = ElCLib::CircleValue(utrim2, pos, R);
     B.Add(P);
     Standard_Real Xmin, Ymin, Zmin, Xmax, Ymax, Zmax;
-    B.Get(Xmin, Ymin, Zmin, Xmax, Ymax, Zmax);
+    B.FinitePart().Get(Xmin, Ymin, Zmin, Xmax, Ymax, Zmax);
     Standard_Real gap = B.GetGap();
     Xmin += gap;
     Ymin += gap;
@@ -703,7 +703,7 @@ void BndLib::Add(const gp_Elips& C,
     P = ElCLib::EllipseValue(utrim2, pos, MajR, MinR);
     B.Add(P);
     Standard_Real Xmin, Ymin, Zmin, Xmax, Ymax, Zmax;
-    B.Get(Xmin, Ymin, Zmin, Xmax, Ymax, Zmax);
+    B.FinitePart().Get(Xmin, Ymin, Zmin, Xmax, Ymax, Zmax);
     Standard_Real gap = B.GetGap();
     Xmin += gap;
     Ymin += gap;
