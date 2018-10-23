@@ -2740,42 +2740,63 @@ void BOPAlgo_PaveFiller::PutClosingPaveOnCurve(BOPDS_Curve& aNC)
   aIC.Bounds(aT[0], aT[1], aP[0], aP[1]);
 
   // Find the pave which has been put at one of the ends
+  BOPDS_Pave aPave;
+  // Index of the vertex put at one of the ends
   Standard_Integer nV = -1;
   // Keep the opposite parameter
   Standard_Real aTOp = 0.;
-
-  Standard_Boolean bFound = Standard_False;
+  // Keep the opposite bounding point
+  gp_Pnt aPOp;
 
   Handle(BOPDS_PaveBlock)& aPB = aNC.ChangePaveBlock1();
   BOPDS_ListOfPave& aLP = aPB->ChangeExtPaves();
   BOPDS_ListIteratorOfListOfPave aItLP(aLP);
-  for (; aItLP.More() && !bFound; aItLP.Next())
+  for (; aItLP.More() && (nV < 0); aItLP.Next())
   {
-    const BOPDS_Pave& aPC = aItLP.Value();
-    Standard_Real aTC = aPC.Parameter();
+    aPave = aItLP.Value();
+    Standard_Real aTC = aPave.Parameter();
     for (Standard_Integer j = 0; j < 2; ++j)
     {
       if (Abs(aTC - aT[j]) < Precision::PConfusion())
       {
-        nV = aPC.Index();
+        nV = aPave.Index();
         aTOp = (!j) ? aT[1] : aT[0];
-        bFound = Standard_True;
+        aPOp = (!j) ? aP[1] : aP[0];
         break;
       }
     }
   }
 
-  if (!bFound)
+  if (nV < 0)
+    // No paves on the bounds of the curve
     return;
 
   // Check if the curve is closed using the tolerance
   // of found vertex
   const TopoDS_Vertex& aV = TopoDS::Vertex(myDS->Shape(nV));
-  const Standard_Real aTolV = BRep_Tool::Tolerance(aV);
+  Standard_Real aTolV = BRep_Tool::Tolerance(aV);
+  gp_Pnt aPV = BRep_Tool::Pnt(aV);
+  // Tolerance for the point on the curve
+  Standard_Real aTolP = Max(aNC.Tolerance(), aNC.TangentialTolerance());
+  aTolP += Precision::Confusion();
 
-  Standard_Real aDist = aP[0].Distance(aP[1]);
-  if (aDist > aTolV)
+  const Standard_Real aDistVP = aPV.Distance(aPOp);
+  if (aDistVP > aTolV + aTolP)
+  {
+    // Curve is not closed
     return;
+  }
+
+  if (aDistVP > aTolV)
+  {
+    Standard_Integer nVn = UpdateVertex(nV, aDistVP);
+    if (nVn != nV)
+    {
+      aPave.SetIndex(nVn);
+      nV = nVn;
+    }
+    aTolV = BRep_Tool::Tolerance(TopoDS::Vertex(myDS->Shape(nV)));
+  }
 
   // Check if there will be valid range on the curve
   Standard_Real aFirst, aLast;
@@ -2784,15 +2805,17 @@ void BOPAlgo_PaveFiller::PutClosingPaveOnCurve(BOPDS_Curve& aNC)
                                aT[1], aP[1], aTolV,
                                aFirst, aLast))
   {
+    // No valid range
     return;
   }
 
   // Add closing pave to the curve
-  BOPDS_Pave aPave;
-  aPave.SetIndex(nV);
-  aPave.SetParameter(aTOp);
-  aLP.Append(aPave);
+  BOPDS_Pave aNewPave;
+  aNewPave.SetIndex(nV);
+  aNewPave.SetParameter(aTOp);
+  aLP.Append(aNewPave);
 }
+
 //=======================================================================
 //function : PreparePostTreatFF
 //purpose  : 
