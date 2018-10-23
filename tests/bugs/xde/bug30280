@@ -1,0 +1,16 @@
+puts "========="
+puts "OCC30280"
+puts "========="
+puts ""
+######################################################################################
+# Data Exchange - broken VRML output due to unescaped symbols starting comment block
+######################################################################################
+
+set filename bug30280_vmt02
+XOpen [locate_data_file $filename.xbf] D
+
+file delete -force ${imagedir}/$filename.wrl
+WriteVrml D ${imagedir}/$filename.wrl
+loadvrml a ${imagedir}/$filename.wrl
+
+checkview -display a -3d -path ${imagedir}/${test_image}.png

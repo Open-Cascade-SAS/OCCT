@@ -262,11 +262,14 @@ void VrmlData_ShapeConvert::Convert (const Standard_Boolean theExtractFaces,
   myRelMap = NCollection_DataMap <TopoDS_Shape, Handle(VrmlData_Geometry)>(100, anAlloc);
 
   NCollection_List<ShapeData>::Iterator anIter (myShapes);
-  for (; anIter.More(); anIter.Next()) {
-
+  for (; anIter.More(); anIter.Next())
+  {
     ShapeData& aData = anIter.ChangeValue();
+    TCollection_AsciiString aGrName = aData.Name;
+    aGrName.ChangeAll(' ', '_');
+    aGrName.ChangeAll('#', '_');
     Handle(VrmlData_Group) aGroup =
-      new VrmlData_Group (myScene, aData.Name.ToCString());
+      new VrmlData_Group (myScene, aGrName.ToCString());
     myScene.AddNode (aGroup);
 
     for(i = 0; i < 2; ++i) {
@@ -622,6 +625,8 @@ void VrmlData_ShapeConvert::addShape (const Handle(VrmlData_Group)& theParent,
     if (!aNameAttribute.IsNull())
     {
       TCollection_AsciiString aName = aNameAttribute->Get();
+      aName.ChangeAll(' ', '_');
+      aName.ChangeAll('#', '_');
       aGroup = new VrmlData_Group(myScene, aName.ToCString());
     }
     else
@@ -647,6 +652,7 @@ void VrmlData_ShapeConvert::addShape (const Handle(VrmlData_Group)& theParent,
       {
         TCollection_AsciiString aName = aNameAttribute->Get();
         aName.ChangeAll(' ', '_');
+        aName.ChangeAll('#', '_');
         aShapeNode = new VrmlData_ShapeNode(myScene, aName.ToCString());
       }
       else
@@ -785,6 +791,8 @@ void VrmlData_ShapeConvert::addAssembly (const Handle(VrmlData_Group)& theParent
     if (!aNameAttribute.IsNull())
     {
       TCollection_AsciiString aName = aNameAttribute->Get();
+      aName.ChangeAll(' ', '_');
+      aName.ChangeAll('#', '_');
       anAssembly = new VrmlData_Group(myScene, aName.ToCString());
     }
     else
