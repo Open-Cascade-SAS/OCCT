@@ -292,31 +292,52 @@ void BOPAlgo_Builder::BuildSplitFaces()
 
     if (!aNbPBIn && !aNbPBSc)
     {
+      // If there are any alone vertices to be put in the face,
+      // the new face has to be created even if the wires of the
+      // face have not been modified.
+
+      // It is also necessary to check if the face contains any internal edges,
+      // as such edges may split the face on parts and it is better
+      // to send the face be treated by the BuilderFace algorithm.
+      // In case of alone vertices the check for internals will be performed
+      // in the BuildDraftFace method.
+      Standard_Boolean hasInternals = Standard_False;
       if (!aNbAV)
       {
         // Check if any wires of the face have been modified.
-        // If not, there is no need to create the new face.
+        // If no modified and internal wires present in the face
+        // there is no need to create the new face.
+        Standard_Boolean hasModified = Standard_False;
+
         TopoDS_Iterator aItW(aF);
         for (; aItW.More(); aItW.Next())
         {
-          if (myImages.IsBound(aItW.Value()))
+          TopoDS_Iterator itE(aItW.Value());
+          hasInternals = (itE.More() && (itE.Value().Orientation() == TopAbs_INTERNAL));
+          if (hasInternals)
             break;
+
+          hasModified |= myImages.IsBound(aItW.Value());
         }
-        if (!aItW.More())
+
+        if (!hasInternals && !hasModified)
           continue;
       }
 
-      // No internal parts for the face, so just build the draft face
-      // and keep it to pass directly into result.
-      // If the original face has any internal edges or multi-connected vertices,
-      // the draft face will be null, as such sub-shapes may split the face on parts
-      // (as in the case "bugs modalg_5 bug25245_1").
-      // The BuilderFace algorithm will be called in this case.
-      TopoDS_Face aFD = BuildDraftFace(aF, myImages, myContext, myReport);
-      if (!aFD.IsNull())
+      if (!hasInternals)
       {
-        aFacesIm(aFacesIm.Add(i, TopTools_ListOfShape())).Append(aFD);
-        continue;
+        // No internal parts for the face, so just build the draft face
+        // and keep it to pass directly into result.
+        // If the original face has any internal edges or multi-connected vertices,
+        // the draft face will be null, as such sub-shapes may split the face on parts
+        // (as in the case "bugs modalg_5 bug25245_1").
+        // The BuilderFace algorithm will be called in this case.
+        TopoDS_Face aFD = BuildDraftFace(aF, myImages, myContext, myReport);
+        if (!aFD.IsNull())
+        {
+          aFacesIm(aFacesIm.Add(i, TopTools_ListOfShape())).Append(aFD);
+          continue;
+        }
       }
     }
 
