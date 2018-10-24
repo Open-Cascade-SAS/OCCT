@@ -134,7 +134,7 @@ void TPrsStd_AISPresentation::Display(const Standard_Boolean theIsUpdate)
 //=======================================================================
 void TPrsStd_AISPresentation::Erase(const Standard_Boolean theIsRemove)
 {
-  if ( IsDisplayed() )
+  if ( IsDisplayed() || theIsRemove)
   {
     AISErase(theIsRemove);
   }
