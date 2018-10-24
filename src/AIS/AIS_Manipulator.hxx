@@ -112,6 +112,12 @@ public:
   //! @warning Raises program error if axis index is < 0 or > 2.
   Standard_EXPORT void SetPart (const Standard_Integer theAxisIndex, const AIS_ManipulatorMode theMode, const Standard_Boolean theIsEnabled);
 
+  //! Disable or enable visual parts for translation, rotation or scaling for ALL axes.
+  //! By default all parts are enabled (will be displayed).
+  //! @warning Enabling or disabling of visual parts of manipulator does not manage the manipulation (selection) mode.
+  //! @warning Raises program error if axis index is < 0 or > 2.
+  Standard_EXPORT void SetPart (const AIS_ManipulatorMode theMode, const Standard_Boolean theIsEnabled);
+
   //! Behavior settings to be applied when performing transformation:
   //! - FollowTranslation - whether the manipulator will be moved together with an object.
   //! - FollowRotation - whether the manipulator will be rotated together with an object.
