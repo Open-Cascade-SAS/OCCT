@@ -10,7 +10,7 @@ compound s_11 s_13 s_12 spike
 removefeatures res s spike
 checkshape res
 checkprops res -s 2323.49 -v 1037.57 -deps 1.e-7
-checknbshapes res -vertex 64 -edge 96 -wire 34 -face 34 -shell 1 -solid 1
+checknbshapes res -vertex 61 -edge 91 -wire 32 -face 32 -shell 1 -solid 1
 CheckIsFeatureRemoved spike {v e f}
 
 # get history of the operation
@@ -19,7 +19,7 @@ savehistory rf_hist
 # check modification of the top face
 modified m5 rf_hist s_5
 checkprops m5 -s 1089.87
-checknbshapes m5 -vertex 31 -edge 31 -wire 1 -face 1
+checknbshapes m5 -vertex 29 -edge 29 -wire 1 -face 1
 
 # check modification of the side faces where the spike was located
 modified m10 rf_hist s_10

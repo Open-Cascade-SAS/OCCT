@@ -14,7 +14,7 @@ compound feature1 feature2 feature3 feature4 gap
 removefeatures res1 s feature1
 checkshape res1
 checkprops res1 -s 2387.42 -v 1060.96 -deps 1.e-7
-checknbshapes res1 -vertex 68 -edge 102 -wire 36 -face 36 -shell 1 -solid 1 -t
+checknbshapes res1 -vertex 66 -edge 99 -wire 35 -face 35 -shell 1 -solid 1 -t
 CheckIsFeatureRemoved feature1 {v e f}
 
 removefeatures res3 s feature1 feature2
@@ -27,19 +27,19 @@ CheckIsFeatureRemoved feature2 {e f}
 removefeatures res4 s feature3
 checkshape res4
 checkprops res4 -s 2387.67 -v 1060.68 -deps 1.e-7
-checknbshapes res4 -vertex 70 -edge 105 -wire 37 -face 37 -shell 1 -solid 1 -t
+checknbshapes res4 -vertex 67 -edge 100 -wire 35 -face 35 -shell 1 -solid 1 -t
 CheckIsFeatureRemoved feature3 {v e f}
 
 removefeatures res5 s feature4
 checkshape res5
-checkprops res5 -s 2387.67 -v 1060.68 -deps 1.e-7
-checknbshapes res5 -vertex 70 -edge 105 -wire 37 -face 37 -shell 1 -solid 1 -t
+checkprops res5 -s 2387.67 -v 1060.67 -deps 1.e-7
+checknbshapes res5 -vertex 67 -edge 100 -wire 35 -face 35 -shell 1 -solid 1 -t
 CheckIsFeatureRemoved feature4 {v e f}
 
 removefeatures res6 s feature3 feature4
 checkshape res6
 checkprops res6 -s 2387.89 -v 1060.71 -deps 1.e-7
-checknbshapes res6 -vertex 68 -edge 102 -wire 36 -face 36 -shell 1 -solid 1 -t
+checknbshapes res6 -vertex 65 -edge 97 -wire 34 -face 34 -shell 1 -solid 1 -t
 CheckIsFeatureRemoved feature3 {v e f}
 CheckIsFeatureRemoved feature4 {v e f}
 

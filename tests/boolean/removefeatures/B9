@@ -6,7 +6,7 @@ explode s f
 removefeatures result s s_15 s_21 s_22
 checkshape result
 checkprops result -s 449.707 -v 186.844 -deps 1.e-7
-checknbshapes result -vertex 31 -edge 51 -wire 21 -face 19 -shell 1 -solid 1
+checknbshapes result -vertex 30 -edge 48 -wire 20 -face 18 -shell 1 -solid 1
 CheckIsFeatureRemoved s_15 {v e f}
 CheckIsFeatureRemoved s_21 {v e f}
 CheckIsFeatureRemoved s_22 {v e f}
@@ -17,7 +17,7 @@ savehistory rf_hist
 # check modification of the top face
 modified m1 rf_hist s_1
 checkprops m1 -s 175.593
-checknbshapes m1 -vertex 13 -edge 13 -wire 2 -face 1
+checknbshapes m1 -vertex 12 -edge 12 -wire 2 -face 1
 
 # check that no new intersections have been created
 if {![regexp "No shapes were generated" [generated g1 rf_hist s_1]]} {
