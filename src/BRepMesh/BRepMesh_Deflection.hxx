@@ -36,14 +36,11 @@ public:
   //! @param theShape shape for that the deflection should be computed.
   //! @param theRelativeDeflection relative deflection.
   //! @param theMaxShapeSize maximum size of the whole shape.
-  //! @param theAdjustmentCoefficient coefficient of adjustment between maximum 
-  //! size of shape and calculated relative deflection.
   //! @return absolute deflection for the shape.
   Standard_EXPORT static Standard_Real ComputeAbsoluteDeflection (
     const TopoDS_Shape& theShape,
     const Standard_Real theRelativeDeflection,
-    const Standard_Real theMaxShapeSize,
-    Standard_Real&      theAdjustmentCoefficient);
+    const Standard_Real theMaxShapeSize);
 
   //! Computes and updates deflection of the given discrete edge.
   Standard_EXPORT static void ComputeDeflection (

@@ -31,10 +31,8 @@
 Standard_Real BRepMesh_Deflection::ComputeAbsoluteDeflection(
   const TopoDS_Shape& theShape,
   const Standard_Real theRelativeDeflection,
-  const Standard_Real theMaxShapeSize,
-  Standard_Real&      theAdjustmentCoefficient)
+  const Standard_Real theMaxShapeSize)
 {
-  theAdjustmentCoefficient = 1.;
   if (theShape.IsNull())
   {
     return theRelativeDeflection;
@@ -53,17 +51,17 @@ Standard_Real BRepMesh_Deflection::ComputeAbsoluteDeflection(
   const Standard_Real aMaxShapeSize = (theMaxShapeSize > 0.0) ? theMaxShapeSize :
                                        Max(aX2 - aX1, Max(aY2 - aY1, aZ2 - aZ1));
 
-  theAdjustmentCoefficient = aMaxShapeSize / (2 * aShapeSize);
-  if (theAdjustmentCoefficient < 0.5)
+  Standard_Real anAdjustmentCoefficient = aMaxShapeSize / (2 * aShapeSize);
+  if (anAdjustmentCoefficient < 0.5)
   {
-    theAdjustmentCoefficient = 0.5;
+    anAdjustmentCoefficient = 0.5;
   }
-  else if (theAdjustmentCoefficient > 2.)
+  else if (anAdjustmentCoefficient > 2.)
   {
-    theAdjustmentCoefficient = 2.;
+    anAdjustmentCoefficient = 2.;
   }
 
-  return (theAdjustmentCoefficient * aShapeSize * theRelativeDeflection);
+  return (anAdjustmentCoefficient * aShapeSize * theRelativeDeflection);
 }
 
 //=======================================================================
@@ -75,23 +73,12 @@ void BRepMesh_Deflection::ComputeDeflection (
   const Standard_Real           theMaxShapeSize,
   const IMeshTools_Parameters&  theParameters)
 {
-  Standard_Real aLinDeflection;
-  Standard_Real aAngDeflection;
-  if (theParameters.Relative)
-  {
-    Standard_Real aScale;
-    aLinDeflection = ComputeAbsoluteDeflection(theDEdge->GetEdge(),
-                                               theParameters.Deflection,
-                                               theMaxShapeSize, aScale);
-
-    // Is it OK?
-    aAngDeflection = theParameters.Angle * aScale;
-  }
-  else
-  {
-    aLinDeflection = theParameters.Deflection;
-    aAngDeflection = theParameters.Angle;
-  }
+  const Standard_Real aAngDeflection = theParameters.Angle;
+  Standard_Real aLinDeflection =
+    !theParameters.Relative ? theParameters.Deflection :
+    ComputeAbsoluteDeflection(theDEdge->GetEdge(),
+                              theParameters.Deflection,
+                              theMaxShapeSize);
 
   const TopoDS_Edge& anEdge = theDEdge->GetEdge();
 
@@ -153,9 +140,8 @@ void BRepMesh_Deflection::ComputeDeflection (
   Standard_Real aDeflection = theParameters.DeflectionInterior;
   if (theParameters.Relative)
   {
-    Standard_Real aScale;
     aDeflection = ComputeAbsoluteDeflection(theDFace->GetFace(),
-                                            aDeflection, -1.0, aScale);
+                                            aDeflection, -1.0);
   }
 
   Standard_Real aFaceDeflection = 0.0;
