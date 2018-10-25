@@ -15,7 +15,7 @@ CheckIsFeatureRemoved a_6 {f}
 
 foreach r {r1 r2} {
   checkshape $r
-  checknbshapes $r -wire 19 -face 17 -shell 1 -solid 1
+  checknbshapes $r -wire 17 -face 15 -shell 1 -solid 1
   checkprops $r -s 421523 -v 2.04083e+006 -deps 1.e-7
 }
 
@@ -24,7 +24,7 @@ removefeatures result a a_1 a_8
 CheckIsFeatureRemoved a_1 {f}
 CheckIsFeatureRemoved a_8 {f}
 checkshape result
-checknbshapes result -wire 22 -face 20 -shell 1 -solid 1
+checknbshapes result -wire 15 -face 13 -shell 1 -solid 1
 checkprops result -s 421862 -v 2.04152e+006 -deps 1.e-7
 
 checkview -display result -2d -path ${imagedir}/${test_image}.png

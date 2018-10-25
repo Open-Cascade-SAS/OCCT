@@ -1,3 +1,5 @@
+puts "TODO OCC30320 ALL: Faulty shapes in variables faulty_"
+
 puts "============"
 puts "OCC27894"
 puts "============"
@@ -10,6 +12,8 @@ stepread [locate_data_file bug27894_usd_raises_Standard_NullObject.stp] a *
 renamevar a_1 a
 unifysamedom result a
 
-checknbshapes result -m UnifySameDomain -face 18 -edge 45
+checknbshapes result -m UnifySameDomain -face 9 -edge 21
+
+checkshape result
 
 checkview -display result -2d -path ${imagedir}/${test_image}.png

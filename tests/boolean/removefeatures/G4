@@ -1,4 +1,3 @@
-puts "TODO OCC30099 ALL: Faulty shapes in variables faulty_1 to faulty_"
 puts "TODO OCC30099 ALL: Error : The area of result shape is"
 puts "TODO OCC30099 ALL: Error : The volume of result shape is"
 
@@ -15,7 +14,7 @@ explode a f
 removefeatures r1 a a_8
 CheckIsFeatureRemoved a_8 {f}
 checkshape r1
-checknbshapes r1 -wire 19 -face 17 -shell 1 -solid 1
+checknbshapes r1 -wire 17 -face 15 -shell 1 -solid 1
 checkprops r1 -s 421523 -v 2.04083e+006 -deps 1.e-7
 
 removefeatures result a a_1 a_6 a_8
@@ -24,7 +23,7 @@ CheckIsFeatureRemoved a_6 {f}
 CheckIsFeatureRemoved a_8 {f}
 
 checkshape result
-checknbshapes result -wire 25 -face 23 -shell 1 -solid 1
+checknbshapes result -wire 14 -face 12 -shell 1 -solid 1
 checkprops result -s 422201 -v 2.042204e+006 -deps 1.e-7
 
 checkview -display result -2d -path ${imagedir}/${test_image}.png

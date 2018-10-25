@@ -5,7 +5,7 @@ explode s f
 removefeatures result s s_13
 checkshape result
 checkprops result -s 463.068 -v 194.214 -deps 1.e-7
-checknbshapes result -vertex 32 -edge 53 -wire 24 -face 21 -shell 1 -solid 1
+checknbshapes result -vertex 31 -edge 50 -wire 23 -face 20 -shell 1 -solid 1
 CheckIsFeatureRemoved s_13 {v e f}
 
 # get history of the operation

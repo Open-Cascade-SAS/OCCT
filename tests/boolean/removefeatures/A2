@@ -12,17 +12,17 @@ compound feature1 feature2 gap
 removefeatures res1 s feature1
 checkshape res1
 checkprops res1 -s 2387.38 -v 1060.67 -deps 1.e-7
-checknbshapes res1 -vertex 62 -edge 93 -wire 33 -face 33 -shell 1 -solid 1
+checknbshapes res1 -vertex 60 -edge 89 -wire 31 -face 31 -shell 1 -solid 1
 CheckIsFeatureRemoved feature1 {v e f}
 
 removefeatures res2 s feature2
 checkshape res2
 checkprops res2 -s 2387.17 -v 1060.75 -deps 1.e-7
-checknbshapes res2 -vertex 62 -edge 93 -wire 35 -face 34 -shell 1 -solid 1
+checknbshapes res2 -vertex 60 -edge 89 -wire 33 -face 32 -shell 1 -solid 1
 CheckIsFeatureRemoved feature2 {v e f}
 
 removefeatures res3 s gap
 checkshape res3
 checkprops res3 -s 2386.99 -v 1060.79 -deps 1.e-7
-checknbshapes res3 -vertex 54 -edge 81 -wire 29 -face 29 -shell 1 -solid 1
+checknbshapes res3 -vertex 52 -edge 77 -wire 27 -face 27 -shell 1 -solid 1
 CheckIsFeatureRemoved gap {v e f}

@@ -6,7 +6,7 @@ explode s f
 removefeatures result s s_14 s_20
 checkshape result
 checkprops result -s 462.33 -v 197.735 -deps 1.e-7
-checknbshapes result -vertex 32 -edge 51 -wire 21 -face 20 -shell 1 -solid 1
+checknbshapes result -vertex 31 -edge 48 -wire 20 -face 19 -shell 1 -solid 1
 CheckIsFeatureRemoved s_14 {v e f}
 CheckIsFeatureRemoved s_20 {v e f}
 
@@ -16,7 +16,7 @@ savehistory rf_hist
 # check modification of the top and bottom faces
 modified m1 rf_hist s_1
 checkprops m1 -s 174.62
-checknbshapes m1 -vertex 13 -edge 13 -wire 2 -face 1
+checknbshapes m1 -vertex 12 -edge 12 -wire 2 -face 1
 
 modified m16 rf_hist s_16
 checkprops m16 -s 194.429

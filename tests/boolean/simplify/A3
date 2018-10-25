@@ -37,7 +37,7 @@ for {set i 0} {$i < $nbp} {incr i} {
 boptions -default
 
 checkshape plate
-checknbshapes plate -vertex 212 -edge 318 -wire 110 -face 109 -shell 1 -solid 1
+checknbshapes plate -vertex 202 -edge 303 -wire 105 -face 104 -shell 1 -solid 1
 checkprops plate -s 18541.7 -v 64444.2
 
 checkview -display plate -2d -path ${imagedir}/${test_image}_2.png
