@@ -1,0 +1,13 @@
+puts "========"
+puts "0024676: Wrong result done by intersection algorithm"
+puts "========"
+puts ""
+
+restore [locate_data_file bug24676_b2.brep] b2
+
+for {set i 1} { $i <= 6} {incr i} {
+  restore [locate_data_file bug24676_b1_${i}.brep] b1_$i
+  if {![regexp "no 3d curves\n has no 3d points" [ bopcurves b1_$i b2 ]]} {
+    puts "Error: Non-empty intersection result between b1_$i and b2, while empty is expected"
+  }
+}
