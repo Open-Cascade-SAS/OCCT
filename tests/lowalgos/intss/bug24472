@@ -32,6 +32,9 @@ foreach c [directory ii12*] {
     puts "Error: Wrong curve's range!"
   }
   
+  # cos(~75.5deg)
+  CheckLoops $c 0.25
+  
   xdistcs $c s1 U1 U2 10 $MaxToler
   xdistcs $c s2 U1 U2 10 $MaxToler
 }
@@ -58,6 +61,9 @@ foreach c [directory ii13*] {
     puts "Error: Wrong curve's range!"
   }
   
+  # cos(~75.5deg)
+  CheckLoops $c 0.25
+
   xdistcs $c s1 U1 U2 10 $MaxToler
   xdistcs $c s2 U1 U2 10 $MaxToler
 }

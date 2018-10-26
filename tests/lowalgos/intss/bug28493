@@ -1,0 +1,36 @@
+puts "========"
+puts "0028493: Intersection algorithm produces curve with loop"
+puts "========"
+puts ""
+
+foreach a [directory c*] {unset $a}
+
+restore [locate_data_file bug28491_H0.brep] h0
+restore [locate_data_file bug28491_Prism.brep] s1
+explode h0 f
+
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} [bopcurves h0_57 s1 -2d] full Toler NbCurv
+
+checkreal Tolerance $Toler 1.2073645369286468e-08 0.0 0.01
+
+if {$NbCurv != 2} {
+  puts "Error: Please check NbCurves for intersector"
+}
+
+#check whether the curves have a loop
+for { set ic 1 } { $ic <= $NbCurv } {incr ic} {
+  bounds c_$ic U1 U2
+  if {[dval U2-U1] < 1.0e-9} {
+    puts "Error: Wrong curve's range!"
+    continue
+  }
+  
+  CheckLoops c_$ic 0.86602540378443864676372317075294    
+}
+
+smallview
+don c_*
+fit
+disp h0_57 s1
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png
