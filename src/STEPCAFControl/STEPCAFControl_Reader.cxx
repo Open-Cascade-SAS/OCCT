@@ -4117,6 +4117,10 @@ Handle(TCollection_HAsciiString) buildClippingPlanes(const Handle(StepGeom_Geome
   if (theClippingCameraModel->IsKind(STANDARD_TYPE(StepVisual_CameraModelD3MultiClipping))) {
     Handle(StepVisual_CameraModelD3MultiClipping) aCameraModel =
       Handle(StepVisual_CameraModelD3MultiClipping)::DownCast(theClippingCameraModel);
+
+    if (aCameraModel->ShapeClipping().IsNull())
+      return anExpression;
+
     // Root of clipping planes tree
     if (aCameraModel->ShapeClipping()->Length() == 1) {
       Handle(StepVisual_CameraModelD3MultiClippingUnion) aCameraModelUnion =
