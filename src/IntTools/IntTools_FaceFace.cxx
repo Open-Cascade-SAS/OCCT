@@ -819,11 +819,14 @@ void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
           aCurve.SetTolerance(aTolC);
         }
         //
-        aCurve.SetCurve(new Geom_TrimmedCurve(newc, fprm, lprm));
         if(myApprox1) { 
           Handle (Geom2d_Curve) C2d;
           GeomInt_IntSS::BuildPCurves(fprm, lprm, Tolpc,
                 myHS1->ChangeSurface().Surface(), newc, C2d);
+
+          if (C2d.IsNull())
+            continue;
+
           aCurve.SetFirstCurve2d(new Geom2d_TrimmedCurve(C2d, fprm, lprm));
         }
         //
@@ -831,6 +834,10 @@ void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
           Handle (Geom2d_Curve) C2d;
           GeomInt_IntSS::BuildPCurves(fprm, lprm, Tolpc,
                     myHS2->ChangeSurface().Surface(), newc, C2d);
+
+          if (C2d.IsNull())
+            continue;
+
           aCurve.SetSecondCurve2d(new Geom2d_TrimmedCurve(C2d, fprm, lprm));
         }
         //
