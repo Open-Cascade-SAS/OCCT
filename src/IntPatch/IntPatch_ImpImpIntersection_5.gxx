@@ -601,26 +601,47 @@ Standard_Boolean IntCoSp(const IntSurf_Quadric& Quad1,
 
       gp_Circ cirsol = inter.Circle(1);
       param = ElCLib::LineParameter(Co.Axis(),
-				    cirsol.Location());
-      if (param >= paramapex) {
-	
-	ElCLib::D1(0.,cirsol,ptref,Tgt);
-	Standard_Real qwe = Tgt.DotCross(Quad2.Normale(ptref),
-					 Quad1.Normale(ptref));
-	if(qwe> 0.000000001) {
-	  trans1 = IntSurf_Out;
-	  trans2 = IntSurf_In;
-	}
-	else if(qwe< -0.000000001){
-	  trans1 = IntSurf_In;
-	  trans2 = IntSurf_Out;
-	}
-	else { 
-	  trans1=trans2=IntSurf_Undecided;
-	}
-	Handle(IntPatch_GLine) glig = new IntPatch_GLine(cirsol,Standard_False,trans1,trans2);
-	slin.Append(glig);
+                                    cirsol.Location());
+      ElCLib::D1(0., cirsol, ptref, Tgt);
+      Standard_Real qwe = Tgt.DotCross(Quad2.Normale(ptref),
+                                       Quad1.Normale(ptref));
+
+      if (param >= paramapex)
+      {
+        if (qwe > Precision::PConfusion())
+        {
+          trans1 = IntSurf_Out;
+          trans2 = IntSurf_In;
+        }
+        else if (qwe < -Precision::PConfusion())
+        {
+          trans1 = IntSurf_In;
+          trans2 = IntSurf_Out;
+        }
+        else
+        {
+          trans1 = trans2 = IntSurf_Undecided;
+        }
       }
+      else
+      {
+        if (qwe < -Precision::PConfusion())
+        {
+          trans1 = IntSurf_Out;
+          trans2 = IntSurf_In;
+        }
+        else if (qwe > Precision::PConfusion())
+        {
+          trans1 = IntSurf_In;
+          trans2 = IntSurf_Out;
+        }
+        else
+        {
+          trans1 = trans2 = IntSurf_Undecided;
+        }
+      }
+      Handle(IntPatch_GLine) glig = new IntPatch_GLine(cirsol, Standard_False, trans1, trans2);
+      slin.Append(glig);
     }
     break;
 

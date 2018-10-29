@@ -28,3 +28,23 @@ proc CheckLoops {theCurve theCosMaxAngle {theNbPoints 1000.0}} {
     dset dz1 dz2
   }
 }
+
+# General check of the result of geometrical intersection
+help CheckIntersectionResult { surf1 surf2 ListOfCurves NbPoints TolerS1 TolerS2 }
+proc CheckIntersectionResult {theSurf1 theSurf2 theListOfCurves theNbPoints theTolerS1 theTolerS2} {
+  upvar #0 $theSurf1 s1
+  upvar #0 $theSurf2 s2
+
+  foreach a $theListOfCurves {
+    puts "** Check of $a **"
+    upvar #0 $a aCurve
+    bounds aCurve U1 U2
+    
+    if {[dval U2-U1] < 1.0e-9} {
+      puts "Error: Wrong range of $a"
+    }
+    
+    xdistcs aCurve s1 U1 U2 $theNbPoints $theTolerS1
+    xdistcs aCurve s2 U1 U2 $theNbPoints $theTolerS2
+  }
+}

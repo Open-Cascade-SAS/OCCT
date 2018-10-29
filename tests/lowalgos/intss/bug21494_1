@@ -1,0 +1,32 @@
+puts "========"
+puts "OCC21494: Intersection between cone and sphere fails"
+puts "========"
+puts ""
+
+pcone bc 15 0 10
+psphere bs 10
+explode bc f
+explode bs f
+
+set log [bopcurves bc_1 bs_1 -2d]
+
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} $log full Toler NbCurv
+
+if { ![regexp {1 point\(s\) found} $log full] } {
+  puts "Error: Cone apex and Pole of sphere are excluded from the intersection result"
+}
+
+if {$NbCurv != 1} {
+  puts "Error: Please check NbCurves for intersector"
+}
+
+if { $Toler > 2.0e-7} {
+  puts "Error: Big tolerance value"  
+}
+
+smallview
+don c_* p_*
+fit
+disp bc bs
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}_3d.png
