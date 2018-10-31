@@ -39,10 +39,6 @@ if { [string compare $command "incmesh"] == 0 } {
     }
 }
 
-if { [string compare $command "mesh"] == 0 } {
-    set ResultList [mesh res_mesh res ${Deflection}]
-}
-
 # Collect TODO for area
 if { [string compare $bug_area ""] != 0 } {
 # The difference between the area of a geometry surface and the area of mesh triangles should be less than rel_tol value.
@@ -112,15 +108,9 @@ set nod 0
 set def 0
 
 # Collect number of triangles, number of nodes and deflection.
-if { [string compare $command "mesh"] != 0 } {
-    set full [trinfo res]
-    regexp "(\[0-9\]+) +triangles.*\[^0-9]\(\[0-9\]+) +nodes.*deflection +(\[0-9\]|\.+)" $full reg_out tri nod def
-} else {
-    set full [split $ResultList "()"]
-    set tri [lindex [lindex $full 2] 0]
-    set lin [lindex [lindex $full 4] 0]
-    set nod [lindex [lindex $full 6] 0]
-}
+
+set full [trinfo res]
+regexp "(\[0-9\]+) +triangles.*\[^0-9]\(\[0-9\]+) +nodes.*deflection +(\[0-9\]|\.+)" $full reg_out tri nod def
 
 if { $tri == 0 || $nod == 0 } {                                                                     
     puts " "
