@@ -1,0 +1,14 @@
+puts "========"
+puts "0029956: HLR polygonal algorithm: regression in 7.1 relative to 7.0"
+puts "========"
+puts ""
+
+pload XSDRAW
+testreadstep [locate_data_file example_auto_tooling_01.stp] s
+vinit
+vdisplay s
+vfit
+vhlrtype polyAlgo s
+vhlr on
+
+vdump ${imagedir}/${casename}.png

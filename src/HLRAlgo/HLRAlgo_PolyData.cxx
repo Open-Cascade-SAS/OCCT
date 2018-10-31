@@ -470,7 +470,7 @@ void HLRAlgo_PolyData::hideByOneTriangle (const HLRAlgo_BiPoint::PointsT& thePoi
     if (d2 < 0) ad2 = -d2;
     pp = ad1 / ( ad1 + ad2 );
     if (TrFlags & HLRAlgo_PolyMask_EMskGrALin2)
-      pdp = (thePoints.PntP1.X() + (thePoints.Pnt2.X() - thePoints.PntP1.X()) * pp - theTriangle.V2.X()) / aD.X();
+      pdp = (thePoints.PntP1.X() + (thePoints.PntP2.X() - thePoints.PntP1.X()) * pp - theTriangle.V2.X()) / aD.X();
     else
       pdp = (thePoints.PntP1.Y() + (thePoints.PntP2.Y() - thePoints.PntP1.Y()) * pp - theTriangle.V2.Y()) / aD.Y();
     Standard_Boolean OutSideP = Standard_False;

@@ -11,7 +11,7 @@ pload QAcommands
 restore [locate_data_file bug28784_MHX_SKG_MS_Pos1_simplified.brep] a
 OCC28784 result a
 
-checknbshapes result -edge 236
+checknbshapes result -edge 235
 
 smallview
 top
