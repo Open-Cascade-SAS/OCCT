@@ -284,7 +284,7 @@ static Standard_Integer drawpoles(Draw_Interpretor&,
     }
   }
 
-  if ( n<2) return 1;
+  if ( n<2) return 0;
 
   Handle(DrawTrSurf_BezierSurface) BZS;
   BZS = GetBezierSurface(a[1]);

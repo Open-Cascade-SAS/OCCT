@@ -1,10 +1,7 @@
 puts "========"
-puts "OCC21494"
+puts "OCC21494: Intersection between cone and sphere fails"
 puts "========"
 puts ""
-############################################
-# Intersection between cone and sphere fails
-############################################
 
 foreach a [directory res*] {unset $a}
 

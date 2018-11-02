@@ -1,0 +1,88 @@
+puts "========="
+puts "0025950: Bad performance of intersection algorithm."
+puts "========="
+puts ""
+
+cpulimit 200
+
+puts "TODO 0025950 ALL: Error: 0 vertices are expected but 2 are found."
+puts "TODO 0025950 ALL: Error : The length of result shape is 18.8605"
+
+set aGoodNbCurves 3
+
+foreach a [directory res*] {unset $a}
+
+restore [locate_data_file bug25950_b1.brep] b1
+restore [locate_data_file bug25950_b2.brep] b2
+
+mksurface s1 b1
+mksurface s2 b2
+
+don s1 s2
+clpoles s1
+clpoles s2
+clknots
+
+dchrono z reset
+dchrono z start
+
+intersect res s1 s2 
+
+dchrono z stop counter Bug25950IntSS
+dchrono z show 
+
+smallview +Y+Z
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}_2d.png
+
+set che [whatis res]
+set ind [string first "3d curve" $che]
+if {${ind} >= 0} {
+  #Only variable "res" exists
+  renamevar res res_1
+}
+
+bclearobjects
+bcleartools
+compound IntEdges
+
+set CurvesList {}
+
+set ic 1
+set AllowRepeat 1
+while { $AllowRepeat != 0 } {
+  set che [whatis res_$ic]
+  set ind [string first "3d curve" $che]
+  if {${ind} < 0} {
+    set AllowRepeat 0
+  } else {
+    lappend CurvesList res_$ic
+    mkedge ee res_$ic
+    baddobjects ee
+    incr ic
+  }
+}
+
+set ic [expr $ic - 1]
+
+if { $ic != $aGoodNbCurves } {
+  puts "Error: $aGoodNbCurves curves is expected but $ic ones are found"
+} else {
+  CheckIntersectionResult s1 s2 $CurvesList 100 7.0e-5 2.0e-4
+  CheckOverlapIntCurves $CurvesList
+  if {$ic > 1} {
+    bfillds
+    bbuild result    
+  } elseif {$ic > 0} {
+    mkedge result res_1
+  }
+  
+  # Check gaps between intersection curves
+  checksection result -r 0
+  checkmaxtol result -min_tol 2.0e-7
+
+  checknbshapes result -edge 3 -vertex 4
+  checkprops result -l 37.721
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}_3d.png
