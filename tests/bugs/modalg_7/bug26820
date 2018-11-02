@@ -1,0 +1,23 @@
+puts "========"
+puts "0026820: bsection returns single vertex instead of curve"
+puts "========"
+puts ""
+
+restore [locate_data_file bug26820_body_shell.brep] b
+restore [locate_data_file bug26820_section_plane.brep] s
+
+bsection result b s
+checksection result -r 0
+checkshape result
+checknbshapes result -edge 1 -vertex 1
+checkprops result -l 2333.68
+
+if {[regexp "Faulties" [bopargcheck result]]} {
+  puts "Error: bopargcheck has found some faulties in result"
+}
+
+smallview 
+don result
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png
