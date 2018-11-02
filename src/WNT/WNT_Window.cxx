@@ -12,8 +12,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-// include windows.h first to have all definitions available
-#include <windows.h>
+#if defined(_WIN32)
+  // include windows.h first to have all definitions available
+  #include <windows.h>
+#endif
 
 #include <WNT_Window.hxx>
 

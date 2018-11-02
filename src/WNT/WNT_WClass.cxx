@@ -12,7 +12,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <windows.h>
+#if defined(_WIN32)
+  #include <windows.h>
+#endif
 
 #include <WNT_WClass.hxx>
 
