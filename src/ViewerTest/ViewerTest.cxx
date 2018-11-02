@@ -3453,7 +3453,8 @@ Standard_Integer VTexture (Draw_Interpretor& theDi, Standard_Integer theArgsNb, 
   Graphic3d_TypeOfTextureFilter      aFilter       = Graphic3d_TOTF_NEAREST;
   Graphic3d_LevelOfTextureAnisotropy anAnisoFilter = Graphic3d_LOTA_OFF;
 
-  Handle(AIS_Shape) aTexturedIO;
+  Handle(AIS_InteractiveObject) aTexturedIO;
+  Handle(AIS_Shape) aTexturedShape;
   Handle(Graphic3d_TextureSet) aTextureSetOld;
   NCollection_Vector<Handle(Graphic3d_Texture2Dmanual)> aTextureVecNew;
   bool toSetGenRepeat = false;
@@ -3480,7 +3481,8 @@ Standard_Integer VTexture (Draw_Interpretor& theDi, Standard_Integer theArgsNb, 
       const ViewerTest_DoubleMapOfInteractiveAndName& aMapOfIO = GetMapOfAIS();
       if (aMapOfIO.IsBound2 (aName))
       {
-        aTexturedIO = Handle(AIS_Shape)::DownCast (aMapOfIO.Find2 (aName));
+        aTexturedIO = aMapOfIO.Find2 (aName);
+        aTexturedShape = Handle(AIS_Shape)::DownCast (aTexturedIO);
       }
       if (aTexturedIO.IsNull())
       {
@@ -3493,9 +3495,10 @@ Standard_Integer VTexture (Draw_Interpretor& theDi, Standard_Integer theArgsNb, 
         aTextureSetOld = aTexturedIO->Attributes()->ShadingAspect()->Aspect()->TextureSet();
       }
     }
-    else if (aNameCase == "-scale"
-          || aNameCase == "-setscale"
-          || aCommandName == "vtexscale")
+    else if (!aTexturedShape.IsNull()
+          && (aNameCase == "-scale"
+           || aNameCase == "-setscale"
+           || aCommandName == "vtexscale"))
     {
       if (aCommandName != "vtexscale")
       {
@@ -3509,7 +3512,7 @@ Standard_Integer VTexture (Draw_Interpretor& theDi, Standard_Integer theArgsNb, 
         toSetGenScale = true;
         if (aValUCase == "off")
         {
-          aTexturedIO->SetTextureScaleUV (gp_Pnt2d (1.0, 1.0));
+          aTexturedShape->SetTextureScaleUV (gp_Pnt2d (1.0, 1.0));
           continue;
         }
         else if (anArgIter + 1 < theArgsNb)
@@ -3518,7 +3521,7 @@ Standard_Integer VTexture (Draw_Interpretor& theDi, Standard_Integer theArgsNb, 
           if (aValU.IsRealValue()
            && aValV.IsRealValue())
           {
-            aTexturedIO->SetTextureScaleUV (gp_Pnt2d (aValU.RealValue(), aValV.RealValue()));
+            aTexturedShape->SetTextureScaleUV (gp_Pnt2d (aValU.RealValue(), aValV.RealValue()));
             ++anArgIter;
             continue;
           }
@@ -3527,9 +3530,10 @@ Standard_Integer VTexture (Draw_Interpretor& theDi, Standard_Integer theArgsNb, 
       std::cout << "Syntax error: unexpected argument '" << aName << "'\n";
       return 1;
     }
-    else if (aNameCase == "-origin"
-          || aNameCase == "-setorigin"
-          || aCommandName == "vtexorigin")
+    else if (!aTexturedShape.IsNull()
+          && (aNameCase == "-origin"
+           || aNameCase == "-setorigin"
+           || aCommandName == "vtexorigin"))
     {
       if (aCommandName != "vtexorigin")
       {
@@ -3543,7 +3547,7 @@ Standard_Integer VTexture (Draw_Interpretor& theDi, Standard_Integer theArgsNb, 
         toSetGenOrigin = true;
         if (aValUCase == "off")
         {
-          aTexturedIO->SetTextureOriginUV (gp_Pnt2d (0.0, 0.0));
+          aTexturedShape->SetTextureOriginUV (gp_Pnt2d (0.0, 0.0));
           continue;
         }
         else if (anArgIter + 1 < theArgsNb)
@@ -3552,7 +3556,7 @@ Standard_Integer VTexture (Draw_Interpretor& theDi, Standard_Integer theArgsNb, 
           if (aValU.IsRealValue()
            && aValV.IsRealValue())
           {
-            aTexturedIO->SetTextureOriginUV (gp_Pnt2d (aValU.RealValue(), aValV.RealValue()));
+            aTexturedShape->SetTextureOriginUV (gp_Pnt2d (aValU.RealValue(), aValV.RealValue()));
             ++anArgIter;
             continue;
           }
@@ -3561,9 +3565,10 @@ Standard_Integer VTexture (Draw_Interpretor& theDi, Standard_Integer theArgsNb, 
       std::cout << "Syntax error: unexpected argument '" << aName << "'\n";
       return 1;
     }
-    else if (aNameCase == "-repeat"
-          || aNameCase == "-setrepeat"
-          || aCommandName == "vtexrepeat")
+    else if (!aTexturedShape.IsNull()
+          && (aNameCase == "-repeat"
+           || aNameCase == "-setrepeat"
+           || aCommandName == "vtexrepeat"))
     {
       if (aCommandName != "vtexrepeat")
       {
@@ -3577,7 +3582,7 @@ Standard_Integer VTexture (Draw_Interpretor& theDi, Standard_Integer theArgsNb, 
         toSetGenRepeat = true;
         if (aValUCase == "off")
         {
-          aTexturedIO->SetTextureRepeatUV (gp_Pnt2d (1.0, 1.0));
+          aTexturedShape->SetTextureRepeatUV (gp_Pnt2d (1.0, 1.0));
           continue;
         }
         else if (anArgIter + 1 < theArgsNb)
@@ -3586,7 +3591,7 @@ Standard_Integer VTexture (Draw_Interpretor& theDi, Standard_Integer theArgsNb, 
           if (aValU.IsRealValue()
            && aValV.IsRealValue())
           {
-            aTexturedIO->SetTextureRepeatUV (gp_Pnt2d (aValU.RealValue(), aValV.RealValue()));
+            aTexturedShape->SetTextureRepeatUV (gp_Pnt2d (aValU.RealValue(), aValV.RealValue()));
             ++anArgIter;
             continue;
           }
@@ -3833,6 +3838,10 @@ Standard_Integer VTexture (Draw_Interpretor& theDi, Standard_Integer theArgsNb, 
 
     if (!aTexturedIO->Attributes()->HasOwnShadingAspect())
     {
+      if (aTexturedShape.IsNull())
+      {
+        aTexturedIO->SetToUpdate();
+      }
       aTexturedIO->Attributes()->SetShadingAspect (new Prs3d_ShadingAspect());
       *aTexturedIO->Attributes()->ShadingAspect()->Aspect() = *aCtx->DefaultDrawer()->ShadingAspect()->Aspect();
     }
@@ -3922,33 +3931,45 @@ Standard_Integer VTexture (Draw_Interpretor& theDi, Standard_Integer theArgsNb, 
    && (aCommandName == "vtexrepeat"
     || toSetDefaults))
   {
-    aTexturedIO->SetTextureRepeatUV (gp_Pnt2d (1.0, 1.0));
+    if (!aTexturedShape.IsNull())
+    {
+      aTexturedShape->SetTextureRepeatUV (gp_Pnt2d (1.0, 1.0));
+    }
     toSetGenRepeat = true;
   }
   if (!toSetGenOrigin
    && (aCommandName == "vtexorigin"
     || toSetDefaults))
   {
-    aTexturedIO->SetTextureOriginUV (gp_Pnt2d (0.0, 0.0));
+    if (!aTexturedShape.IsNull())
+    {
+      aTexturedShape->SetTextureOriginUV (gp_Pnt2d (0.0, 0.0));
+    }
     toSetGenOrigin = true;
   }
   if (!toSetGenScale
    && (aCommandName == "vtexscale"
     || toSetDefaults))
   {
-    aTexturedIO->SetTextureScaleUV  (gp_Pnt2d (1.0, 1.0));
+    if (!aTexturedShape.IsNull())
+    {
+      aTexturedShape->SetTextureScaleUV  (gp_Pnt2d (1.0, 1.0));
+    }
     toSetGenScale = true;
   }
 
   if (toSetGenRepeat || toSetGenOrigin || toSetGenScale || toComputeUV)
   {
-    aTexturedIO->SetToUpdate (AIS_Shaded);
-    if (toSetImage)
+    if (!aTexturedShape.IsNull())
     {
-      if ((aTexturedIO->HasDisplayMode() && aTexturedIO->DisplayMode() != AIS_Shaded)
-       || aCtx->DisplayMode() != AIS_Shaded)
+      aTexturedShape->SetToUpdate (AIS_Shaded);
+      if (toSetImage)
       {
-        aCtx->SetDisplayMode (aTexturedIO, AIS_Shaded, false);
+        if ((aTexturedIO->HasDisplayMode() && aTexturedIO->DisplayMode() != AIS_Shaded)
+         || aCtx->DisplayMode() != AIS_Shaded)
+        {
+          aCtx->SetDisplayMode (aTexturedIO, AIS_Shaded, false);
+        }
       }
     }
   }
