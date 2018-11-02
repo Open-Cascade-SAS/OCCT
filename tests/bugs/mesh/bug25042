@@ -1,6 +1,3 @@
-puts "TODO 0025042 All: Error: Number of triangles = 931 is not equal to expected 957"
-puts "TODO 0025042 All: Error: Number of nodes = 532 is not equal to expected 558"
-
 puts "=========="
 puts "0025042: Cone Meshing: Missing two connecting edges."
 puts "=========="
