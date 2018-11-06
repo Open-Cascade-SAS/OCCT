@@ -1,0 +1,24 @@
+puts "=========="
+puts "0029205: BRepMesh skips some edges and generates invalid triangulation for the face"
+puts "=========="
+puts ""
+
+restore [locate_data_file bug29205_face.brep] result
+incmesh result 0.4
+
+vinit
+vsetdispmode 1
+vdefaults -autoTriang 0
+vdisplay result
+vviewparams -scale 67.9853 -proj 0.680425 -0.732509 -0.0212714 -up -0.0316277 -0.0583539 0.997795 -at 10.7708 -10.3962 6.25 -eye 18.2017 -18.3959 6.01769
+ 
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
+
+checktrinfo result -tri 8 -nod 10 -defl 6.8481042509220045e-05
+
+set log [tricheck result]
+if { [llength $log] != 0 } {
+  puts "Error : Invalid mesh"
+} else {
+  puts "Mesh is OK"
+}
