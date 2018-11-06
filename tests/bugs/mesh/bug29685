@@ -1,0 +1,21 @@
+puts "======="
+puts "0029685: Meshing - BRepMesh does not respect requested deflection"
+puts "======="
+puts ""
+
+restore [locate_data_file bug29685_shape_to_render.brep] result
+vinit
+vsetdispmode 1
+vdisplay result
+vviewparams -scale 17.5502 -proj 0.57735 -0.57735 0.57735 -up -0.408248 0.408248 0.816497 -at 5.1597 115.661 188.336 -eye 43.2805 77.5402 226.457
+
+set log [tricheck result]
+if { [llength $log] != 0 } {
+  puts "Error : Invalid mesh"
+} else {
+  puts "Mesh is OK"
+}
+
+checktrinfo result -tri 148 -nod 103 -defl 0.27179801813852145
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
