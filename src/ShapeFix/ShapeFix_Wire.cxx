@@ -757,7 +757,14 @@ Standard_Boolean ShapeFix_Wire::FixEdgeCurves()
           sbwd->Remove ( i-- );
           nb--;
           myStatusEdgeCurves |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE5 );
-          FixConnected (i + 1, Precision());
+          if (i == nb)
+          {
+            FixClosed (Precision());
+          }
+          else
+          {
+            FixConnected (i + 1, Precision());
+          }
         }
 	myStatusEdgeCurves |= ShapeExtend::EncodeStatus ( ShapeExtend_FAIL5 );
       }
