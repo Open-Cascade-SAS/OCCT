@@ -1,0 +1,21 @@
+puts "======="
+puts "0027693: BRepMesh: fine edge tessellation leads to excess number of triangles along the whole U or V stripes"
+puts "======="
+puts ""
+
+pload XDE
+
+stepread [locate_data_file bug27693_cornetta-step.stp] a *
+renamevar a_1 a
+
+explode a f
+copy a_4 f
+don f
+incmesh f 0.01 -a 90
+isos f 0
+triangles f
+
+checktrinfo f -tri 2220 -nod 1232 -defl 0.0093553610383019445
+smallview +X+Y
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png
