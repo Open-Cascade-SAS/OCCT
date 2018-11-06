@@ -26,8 +26,17 @@ class Standard_OutOfRange;
 DEFINE_STANDARD_HANDLE(Standard_OutOfRange, Standard_RangeError)
 
 #if !defined No_Exception && !defined No_Standard_OutOfRange
+#if defined(__GNUC__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 2))
+  // suppress false-positive warnings produced by GCC optimizer
+  #define Standard_OutOfRange_Raise_if(CONDITION, MESSAGE) \
+  _Pragma("GCC diagnostic push") \
+  _Pragma("GCC diagnostic ignored \"-Wstrict-overflow\"") \
+  if (CONDITION) throw Standard_OutOfRange(MESSAGE); \
+  _Pragma("GCC diagnostic pop")
+#else
   #define Standard_OutOfRange_Raise_if(CONDITION, MESSAGE) \
   if (CONDITION) throw Standard_OutOfRange(MESSAGE);
+#endif
 #else
   #define Standard_OutOfRange_Raise_if(CONDITION, MESSAGE)
 #endif
