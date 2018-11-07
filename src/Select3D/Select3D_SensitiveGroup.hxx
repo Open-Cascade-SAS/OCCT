@@ -143,21 +143,21 @@ public:
   //! Returns the length of vector of sensitive entities
   Standard_EXPORT virtual Standard_Integer Size() const Standard_OVERRIDE;
 
-private:
+protected:
 
   //! Checks whether the entity with index theIdx overlaps the current selecting volume
-  virtual Standard_Boolean overlapsElement (SelectBasics_PickResult& thePickResult,
-                                            SelectBasics_SelectingVolumeManager& theMgr,
-                                            Standard_Integer theElemIdx,
-                                            Standard_Boolean theIsFullInside) Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean overlapsElement (SelectBasics_PickResult& thePickResult,
+                                                            SelectBasics_SelectingVolumeManager& theMgr,
+                                                            Standard_Integer theElemIdx,
+                                                            Standard_Boolean theIsFullInside) Standard_OVERRIDE;
 
   //! Checks whether the entity with index theIdx is inside the current selecting volume
-  virtual Standard_Boolean elementIsInside (SelectBasics_SelectingVolumeManager& theMgr,
-                                            Standard_Integer theElemIdx,
-                                            Standard_Boolean theIsFullInside) Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean elementIsInside (SelectBasics_SelectingVolumeManager& theMgr,
+                                                            Standard_Integer theElemIdx,
+                                                            Standard_Boolean theIsFullInside) Standard_OVERRIDE;
 
   //! Calculates distance from the 3d projection of used-picked screen point to center of the geometry
-  virtual Standard_Real distanceToCOG (SelectBasics_SelectingVolumeManager& theMgr) Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Real distanceToCOG (SelectBasics_SelectingVolumeManager& theMgr) Standard_OVERRIDE;
 
 private:
 

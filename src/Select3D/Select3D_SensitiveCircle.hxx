@@ -93,7 +93,7 @@ protected:
 
   //! Calculates distance from the 3d projection of used-picked screen point
   //! to center of the geometry
-  virtual Standard_Real distanceToCOG (SelectBasics_SelectingVolumeManager& theMgr) Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Real distanceToCOG (SelectBasics_SelectingVolumeManager& theMgr) Standard_OVERRIDE;
 
 private:
 
