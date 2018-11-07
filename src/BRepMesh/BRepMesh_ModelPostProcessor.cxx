@@ -36,6 +36,9 @@ namespace
     void operator()(const Standard_Integer theEdgeIndex) const
     {
       const IMeshData::IEdgeHandle& aDEdge = myModel->GetEdge(theEdgeIndex);
+      if (aDEdge->GetCurve()->ParametersNb() == 0)
+        return;
+
       if (aDEdge->IsFree())
       {
         if (!aDEdge->IsSet(IMeshData_Reused))
