@@ -1,0 +1,19 @@
+puts "========="
+puts "0023795: Performance regression of meshing"
+puts "========="
+puts ""
+
+restore [locate_data_file bug23795_s.brep] result
+
+dchrono t restart
+incmesh result 0.1
+dchrono t stop counter MeshBug23795
+
+checktrinfo result -tri 10992 -nod 11016 -defl 0.1
+
+vinit
+vdefaults -autoTriang 0
+vsetdispmode 1
+vdisplay result
+vfit
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
