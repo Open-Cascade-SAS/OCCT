@@ -1,25 +1,28 @@
 puts "========="
-puts "CR26889"
+puts "0026889: Very poor mesh result from shape"
 puts "========="
 puts ""
-###############################################
-# Very poor mesh result from shape
-###############################################
 
 pload XDE
 
 stepread [locate_data_file bug26889_export.step] a *
 
-dlog reset
-dlog on
-
 dchrono t restart
 incmesh a_1 0.1 1
 dchrono t stop counter incmesh
 
-checktrinfo a_1 -tri -nod
+checktrinfo a_1 -tri 182273 -nod 91484 -defl 0.11671770612283024
+
+set log [tricheck a_1]
+if { [llength $log] != 0 } {
+  puts "Error : Invalid mesh"
+} else {
+  puts "Mesh is OK"
+}
+
 
 vinit
+vdefaults -autoTriang 0
 vsetdispmode 1
 vdisplay a_1
 vfit
