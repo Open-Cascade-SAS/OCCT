@@ -1,0 +1,21 @@
+puts "=========="
+puts "OCC30362"
+puts "=========="
+puts ""
+#########################################################
+# Writing dimensions with inches produced invalid file
+#########################################################
+
+pload DCAF
+
+ReadStep D [locate_data_file bug26689_nist_ctc_01_asme1_ap242.stp]
+param write.step.unit 1
+param write.step.schema 5
+WriteStep D $imagedir/${casename}.stp
+
+Close D
+file delete $imagedir/${casename}.stp
+
+# return default values
+param write.step.unit 2
+param write.step.schema 4

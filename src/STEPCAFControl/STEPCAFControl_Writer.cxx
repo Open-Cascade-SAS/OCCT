@@ -34,6 +34,8 @@
 #include <StepAP214_Protocol.hxx>
 #include <StepAP242_DraughtingModelItemAssociation.hxx>
 #include <StepAP242_GeometricItemSpecificUsage.hxx>
+#include <StepBasic_ConversionBasedUnitAndLengthUnit.hxx>
+#include <StepBasic_ConversionBasedUnitAndPlaneAngleUnit.hxx>
 #include <StepBasic_DerivedUnit.hxx>
 #include <StepBasic_DerivedUnitElement.hxx>
 #include <StepBasic_HArray1OfDerivedUnitElement.hxx>
@@ -2179,62 +2181,65 @@ static StepBasic_Unit GetUnit(const Handle(StepRepr_RepresentationContext)& theR
                               const Standard_Boolean isAngle = Standard_False)
 {
   StepBasic_Unit aUnit;
+  Handle(StepBasic_NamedUnit) aCurrentUnit;
   if (isAngle) {
-    Handle(StepBasic_SiUnitAndPlaneAngleUnit) aSiPAU;
     Handle(StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext) aCtx =
       Handle(StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext)::DownCast(theRC);
     if(!aCtx.IsNull()) {
       for(Standard_Integer j = 1; j <= aCtx->NbUnits(); j++) {
-        if(aCtx->UnitsValue(j)->IsKind(STANDARD_TYPE(StepBasic_SiUnitAndPlaneAngleUnit))) {
-          aSiPAU = Handle(StepBasic_SiUnitAndPlaneAngleUnit)::DownCast(aCtx->UnitsValue(j));
+        if (aCtx->UnitsValue(j)->IsKind(STANDARD_TYPE(StepBasic_SiUnitAndPlaneAngleUnit)) ||
+            aCtx->UnitsValue(j)->IsKind(STANDARD_TYPE(StepBasic_ConversionBasedUnitAndPlaneAngleUnit))) {
+          aCurrentUnit = aCtx->UnitsValue(j);
           break;
         }
       }
     }
-    if(aSiPAU.IsNull()) {
+    if (aCurrentUnit.IsNull()) {
       Handle(StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx) aCtx1 =
         Handle(StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx)::DownCast(theRC);
       if(!aCtx1.IsNull()) {
         for(Standard_Integer j = 1; j <= aCtx1->NbUnits(); j++) {
-          if(aCtx1->UnitsValue(j)->IsKind(STANDARD_TYPE(StepBasic_SiUnitAndPlaneAngleUnit))) {
-            aSiPAU = Handle(StepBasic_SiUnitAndPlaneAngleUnit)::DownCast(aCtx1->UnitsValue(j));
+          if (aCtx1->UnitsValue(j)->IsKind(STANDARD_TYPE(StepBasic_SiUnitAndPlaneAngleUnit)) ||
+              aCtx1->UnitsValue(j)->IsKind(STANDARD_TYPE(StepBasic_ConversionBasedUnitAndPlaneAngleUnit))) {
+            aCurrentUnit = aCtx1->UnitsValue(j);
             break;
           }
         }
       }
     }
-    if(aSiPAU.IsNull())
-      aSiPAU = new StepBasic_SiUnitAndPlaneAngleUnit;
-    aUnit.SetValue(aSiPAU);
+    if (aCurrentUnit.IsNull())
+      aCurrentUnit = new StepBasic_SiUnitAndPlaneAngleUnit;
   }
   else {
-    Handle(StepBasic_SiUnitAndLengthUnit) aSiLU;
     Handle(StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext) aCtx =
       Handle(StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext)::DownCast(theRC);
     if(!aCtx.IsNull()) {
       for(Standard_Integer j = 1; j <= aCtx->NbUnits(); j++) {
-        if(aCtx->UnitsValue(j)->IsKind(STANDARD_TYPE(StepBasic_SiUnitAndLengthUnit))) {
-          aSiLU = Handle(StepBasic_SiUnitAndLengthUnit)::DownCast(aCtx->UnitsValue(j));
+        if (aCtx->UnitsValue(j)->IsKind(STANDARD_TYPE(StepBasic_SiUnitAndLengthUnit)) ||
+            aCtx->UnitsValue(j)->IsKind(STANDARD_TYPE(StepBasic_ConversionBasedUnitAndLengthUnit))) {
+          aCurrentUnit = aCtx->UnitsValue(j);
           break;
         }
       }
     }
-    if(aSiLU.IsNull()) {
+    if (aCurrentUnit.IsNull()) {
       Handle(StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx) aCtx1 =
         Handle(StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx)::DownCast(theRC);
       if(!aCtx1.IsNull()) {
         for(Standard_Integer j = 1; j <= aCtx1->NbUnits(); j++) {
-          if(aCtx1->UnitsValue(j)->IsKind(STANDARD_TYPE(StepBasic_SiUnitAndLengthUnit))) {
-            aSiLU = Handle(StepBasic_SiUnitAndLengthUnit)::DownCast(aCtx1->UnitsValue(j));
+          if (aCtx1->UnitsValue(j)->IsKind(STANDARD_TYPE(StepBasic_SiUnitAndLengthUnit)) ||
+              aCtx1->UnitsValue(j)->IsKind(STANDARD_TYPE(StepBasic_ConversionBasedUnitAndLengthUnit))) {
+            aCurrentUnit = aCtx1->UnitsValue(j);
             break;
           }
         }
       }
     }
-    if(aSiLU.IsNull())
-      aSiLU = new StepBasic_SiUnitAndLengthUnit;
-    aUnit.SetValue(aSiLU);
+    if (aCurrentUnit.IsNull())
+      aCurrentUnit = new StepBasic_SiUnitAndLengthUnit;
   }
+
+  aUnit.SetValue(aCurrentUnit);
   return aUnit;
 }
 
@@ -3524,33 +3529,7 @@ Standard_Boolean STEPCAFControl_Writer::WriteDGTs (const Handle(XSControl_WorkSe
     Model->AddWithRefs(SDR);
     // define aUnit for creation LengthMeasureWithUnit (common for all)
     StepBasic_Unit aUnit;
-    Handle(StepBasic_SiUnitAndLengthUnit) SLU;
-    Handle(StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext) Ctx =
-      Handle(StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext)::DownCast(RC);
-    if(!Ctx.IsNull()) {
-      for(Standard_Integer j=1; j<=Ctx->NbUnits(); j++) {
-        if(Ctx->UnitsValue(j)->IsKind(STANDARD_TYPE(StepBasic_SiUnitAndLengthUnit))) {
-          SLU = Handle(StepBasic_SiUnitAndLengthUnit)::DownCast(Ctx->UnitsValue(j));
-          break;
-        }
-      }
-    }
-    if(SLU.IsNull()) {
-      Handle(StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx) Ctx1 =
-        Handle(StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx)::DownCast(RC);
-      if(!Ctx1.IsNull()) {
-        for(Standard_Integer j=1; j<=Ctx1->NbUnits(); j++) {
-          if(Ctx1->UnitsValue(j)->IsKind(STANDARD_TYPE(StepBasic_SiUnitAndLengthUnit))) {
-            SLU = Handle(StepBasic_SiUnitAndLengthUnit)::DownCast(Ctx1->UnitsValue(j));
-            break;
-          }
-        }
-      }
-    }
-    if(SLU.IsNull()) {
-      SLU = new StepBasic_SiUnitAndLengthUnit;
-    }
-    aUnit.SetValue(SLU);
+    aUnit = GetUnit(RC);
 
     // specific part of writing D&GT entities
     if(kind<20) { //dimension
