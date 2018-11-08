@@ -1,0 +1,24 @@
+puts "=========="
+puts "0027845: BRepMesh produces invalid result on spline cavity"
+puts "=========="
+puts ""
+
+restore [locate_data_file bug27845_shape.brep] result
+tclean result
+incmesh result 10 -a 180
+
+vinit
+vsetdispmode 1
+vdefaults -autoTriang 0
+vdisplay result
+vfit 
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
+
+checktrinfo result -tri 3006 -nod 4360 -defl 10
+
+set log [tricheck result]
+if { [llength $log] != 0 } {
+  puts "Error : Invalid mesh"
+} else {
+  puts "Mesh is OK"
+}
