@@ -79,6 +79,9 @@ void BRepMesh_CurveTessellator::init()
     aPreciseLinDef *= 0.5;
   }
 
+  aPreciseLinDef = Max(aPreciseLinDef, Precision::Confusion());
+  aPreciseAngDef = Max(aPreciseAngDef, Precision::Angular());
+
   mySquareEdgeDef = aPreciseLinDef * aPreciseLinDef;
   mySquareMinSize = Max(mySquareEdgeDef, myParameters.MinSize * myParameters.MinSize);
 

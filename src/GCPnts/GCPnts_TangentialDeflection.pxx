@@ -135,7 +135,9 @@ void GCPnts_TangentialDeflection::Initialize (
 
 {
   
-  Standard_ConstructionError_Raise_if (CurvatureDeflection <= Precision::Confusion () || AngularDeflection   <= Precision::Angular (), "GCPnts_TangentialDeflection::Initialize - Zero Deflection")
+  Standard_ConstructionError_Raise_if (CurvatureDeflection < Precision::Confusion () ||
+                                       AngularDeflection < Precision::Angular (),
+                                       "GCPnts_TangentialDeflection::Initialize - Zero Deflection")
 
  parameters.Clear ();
  points    .Clear ();
