@@ -1,0 +1,21 @@
+polygon2d result 3 0 0 1 0 0 1
+polygonprops result -area anArea1 -perimeter aPerimeter1
+
+checkreal Area1 [dval anArea1] 0.5 1.0e-14 0.0
+checkreal Perimeter1 [dval aPerimeter1] [expr 2 + sqrt(2)] 1.0e-7 0.0
+
+smallview -2D-
+don result
+2dfit
+checkview -screenshot -2d -path ${imagedir}/${test_image}_nc.png
+
+addpolygonnode result 0 0
+polygonprops result -area anArea2 -perimeter aPerimeter2
+
+checkreal Area2 [dval anArea2] 0.5 1.0e-14 0.0
+checkreal Perimeter2 [dval aPerimeter2] [expr 2 + sqrt(2)] 1.0e-7 0.0
+
+smallview -2D-
+don result
+2dfit
+checkview -screenshot -2d -path ${imagedir}/${test_image}_c.png

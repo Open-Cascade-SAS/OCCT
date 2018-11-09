@@ -26,82 +26,97 @@ static inline
 			    const Standard_Real umaxmumin);
 
 //=======================================================================
-//function : CSLib_Class2d
-//purpose  : 
+//function : Init
+//purpose  :
 //=======================================================================
-CSLib_Class2d::CSLib_Class2d(const TColgp_Array1OfPnt2d& TP2d,
-			     const Standard_Real aTolu,
-			     const Standard_Real aTolv,
-			     const Standard_Real umin,
-			     const Standard_Real vmin,
-			     const Standard_Real umax,
-			     const Standard_Real vmax) 
+template <class TCol_Containers2d>
+void CSLib_Class2d::Init(const TCol_Containers2d& TP2d,
+                 const Standard_Real aTolu,
+                 const Standard_Real aTolv,
+                 const Standard_Real umin,
+                 const Standard_Real vmin,
+                 const Standard_Real umax,
+                 const Standard_Real vmax)
 {
-  Umin=umin;
-  Vmin=vmin;
-  Umax=umax;
-  Vmax=vmax;
+  Umin = umin;
+  Vmin = vmin;
+  Umax = umax;
+  Vmax = vmax;
   //
-  if(umax<=umin || vmax<=vmin) { 
-    MyPnts2dX=NULL;
-    MyPnts2dY=NULL;
-    N=0;
+  if ((umax <= umin) || (vmax <= vmin) || (TP2d.Length() < 3))
+  {
+    MyPnts2dX.Nullify();
+    MyPnts2dY.Nullify();
+    N = 0;
   }
   //
-  else {
+  else
+  {
     Standard_Integer i, iLower;
-    Standard_Real du,dv,*Pnts2dX,*Pnts2dY, aPrc;   
+    Standard_Real du, dv, aPrc;
     //
-    aPrc=1.e-10;
+    aPrc = 1.e-10;
     N = TP2d.Length();
     Tolu = aTolu;
     Tolv = aTolv;
-    MyPnts2dX = new Standard_Real [N+1];
-    MyPnts2dY = new Standard_Real [N+1];
-    du=umax-umin;
-    dv=vmax-vmin;
-    Pnts2dX = (Standard_Real *)MyPnts2dX;
-    Pnts2dY = (Standard_Real *)MyPnts2dY;
+    MyPnts2dX = new TColStd_Array1OfReal(0, N);
+    MyPnts2dY = new TColStd_Array1OfReal(0, N);
+    du = umax - umin;
+    dv = vmax - vmin;
     //
-    iLower=TP2d.Lower();
-    for(i = 0; i<N; ++i) { 
-      const gp_Pnt2d& aP2D=TP2d(i+iLower);
-      Pnts2dX[i] = Transform2d(aP2D.X(), umin, du);
-      Pnts2dY[i] = Transform2d(aP2D.Y(), vmin, dv);
+    iLower = TP2d.Lower();
+    for (i = 0; i<N; ++i)
+    {
+      const gp_Pnt2d& aP2D = TP2d(i + iLower);
+      MyPnts2dX->ChangeValue(i) = Transform2d(aP2D.X(), umin, du);
+      MyPnts2dY->ChangeValue(i) = Transform2d(aP2D.Y(), vmin, dv);
     }
-    Pnts2dX[N]=Pnts2dX[0];
-    Pnts2dY[N]=Pnts2dY[0];
+    MyPnts2dX->ChangeLast() = MyPnts2dX->First();
+    MyPnts2dY->ChangeLast() = MyPnts2dY->First();
     //
-    if(du>aPrc) {
-      Tolu/=du;
+    if (du>aPrc)
+    {
+      Tolu /= du;
     }
-    if(dv>aPrc) {
-      Tolv/=dv;
+    if (dv>aPrc)
+    {
+      Tolv /= dv;
     }
-  }
-}
-//=======================================================================
-//function : Destroy
-//purpose  : 
-//=======================================================================
-void CSLib_Class2d::Destroy() { 
-  if(MyPnts2dX) { 
-    delete [] (Standard_Real *)MyPnts2dX;
-    MyPnts2dX=NULL;
-  }
-  if(MyPnts2dY) { 
-    delete [] (Standard_Real *)MyPnts2dY;
-    MyPnts2dY=NULL;
   }
 }
 
-//-- Attention   Table of 0 ------> N + 1 
-//--                      P1 ..... Pn P1
-//--
-//--     1  2  3
-//--     4  0  5
-//--     6  7  8
-//-- 
+//=======================================================================
+//function : CSLib_Class2d
+//purpose  : 
+//=======================================================================
+CSLib_Class2d::CSLib_Class2d(const TColgp_Array1OfPnt2d& thePnts2d,
+                             const Standard_Real theTolU,
+                             const Standard_Real theTolV,
+                             const Standard_Real theUMin,
+                             const Standard_Real theVMin,
+                             const Standard_Real theUMax,
+                             const Standard_Real theVMax)
+{
+  Init(thePnts2d, theTolU, theTolV, theUMin,
+       theVMin, theUMax, theVMax);
+}
+
+//=======================================================================
+//function : CSLib_Class2d
+//purpose  : 
+//=======================================================================
+CSLib_Class2d::CSLib_Class2d(const TColgp_SequenceOfPnt2d& thePnts2d,
+                             const Standard_Real theTolU,
+                             const Standard_Real theTolV,
+                             const Standard_Real theUMin,
+                             const Standard_Real theVMin,
+                             const Standard_Real theUMax,
+                             const Standard_Real theVMax)
+{
+  Init(thePnts2d, theTolU, theTolV, theUMin,
+       theVMin, theUMax, theVMax);
+}
+
 //=======================================================================
 //function : SiDans
 //purpose  : 
@@ -187,21 +202,18 @@ Standard_Integer CSLib_Class2d::InternalSiDans(const Standard_Real Px,
 					       const Standard_Real Py) const
 { 
   Standard_Integer nbc, i, ip1, SH, NH;
-  Standard_Real *Pnts2dX, *Pnts2dY;
   Standard_Real  x, y, nx, ny;
   //
   nbc = 0;
   i   = 0;
   ip1 = 1;
-  Pnts2dX = (Standard_Real *)MyPnts2dX;
-  Pnts2dY = (Standard_Real *)MyPnts2dY;
-  x   = (Pnts2dX[i]-Px);
-  y   = (Pnts2dY[i]-Py);
+  x   = (MyPnts2dX->Value(i)-Px);
+  y   = (MyPnts2dY->Value(i)-Py);
   SH  = (y<0.)? -1 : 1;
   //
   for(i=0; i<N ; i++,ip1++) { 
-    nx = Pnts2dX[ip1] - Px;
-    ny = Pnts2dY[ip1] - Py;
+    nx = MyPnts2dX->Value(ip1) - Px;
+    ny = MyPnts2dY->Value(ip1) - Py;
     
     NH = (ny<0.)? -1 : 1;
     if(NH!=SH) { 
@@ -230,23 +242,20 @@ Standard_Integer CSLib_Class2d::InternalSiDansOuOn(const Standard_Real Px,
 						   const Standard_Real Py) const 
 { 
   Standard_Integer nbc, i, ip1, SH, NH, iRet;
-  Standard_Real *Pnts2dX, *Pnts2dY;
   Standard_Real x, y, nx, ny, aX;
   Standard_Real aYmin;
   //
   nbc = 0;
   i   = 0;
   ip1 = 1;
-  Pnts2dX = (Standard_Real *)MyPnts2dX;
-  Pnts2dY = (Standard_Real *)MyPnts2dY;
-  x   = (Pnts2dX[i]-Px);
-  y   = (Pnts2dY[i]-Py);
+  x   = (MyPnts2dX->Value(i)-Px);
+  y   = (MyPnts2dY->Value(i)-Py);
   aYmin=y;
   SH  = (y<0.)? -1 : 1;
   for(i=0; i<N ; i++, ip1++) { 
    
-    nx = Pnts2dX[ip1] - Px;
-    ny = Pnts2dY[ip1] - Py;
+    nx = MyPnts2dX->Value(ip1) - Px;
+    ny = MyPnts2dY->Value(ip1) - Py;
     //-- le 14 oct 97 
     if(nx<Tolu && nx>-Tolu && ny<Tolv && ny>-Tolv) { 
       iRet=-1;
@@ -254,11 +263,11 @@ Standard_Integer CSLib_Class2d::InternalSiDansOuOn(const Standard_Real Px,
     }
     //find Y coordinate of polyline for current X gka
     //in order to detect possible status ON
-    Standard_Real aDx = (Pnts2dX[ip1] - Pnts2dX[ip1-1]);
-    if( (Pnts2dX[ip1-1] - Px) * nx < 0.)
+    Standard_Real aDx = (MyPnts2dX->Value(ip1) - MyPnts2dX->Value(ip1-1));
+    if( (MyPnts2dX->Value(ip1-1) - Px) * nx < 0.)
     {
      
-      Standard_Real aCurPY =  Pnts2dY[ip1] - (Pnts2dY[ip1] - Pnts2dY[ip1-1])/aDx *nx;
+      Standard_Real aCurPY = MyPnts2dY->Value(ip1) - (MyPnts2dY->Value(ip1) - MyPnts2dY->Value(ip1-1))/aDx *nx;
       Standard_Real aDeltaY = aCurPY - Py;
       if(aDeltaY >= -Tolv && aDeltaY <= Tolv)
       {
@@ -295,17 +304,6 @@ Standard_Integer CSLib_Class2d::InternalSiDansOuOn(const Standard_Real Px,
   return iRet;
 }
 //modified by NIZNHY-PKV Fri Jan 15 09:03:55 2010t
-//=======================================================================
-//function : Copy
-//purpose  : 
-//=======================================================================
-const CSLib_Class2d& CSLib_Class2d::Copy(const CSLib_Class2d& ) const 
-{ 
-#ifdef OCCT_DEBUG
-  cerr<<"Copy not allowed in CSLib_Class2d"<<endl;
-#endif
-  throw Standard_ConstructionError();
-}
 //=======================================================================
 //function : Transform2d
 //purpose  : 

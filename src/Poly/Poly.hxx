@@ -20,12 +20,13 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
-
 #include <Poly_ListOfTriangulation.hxx>
 #include <Standard_OStream.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_IStream.hxx>
 #include <Standard_Real.hxx>
+#include <TColgp_SequenceOfPnt2d.hxx>
+
 class Poly_Triangulation;
 class Poly_Polygon3D;
 class Poly_Polygon2D;
@@ -125,6 +126,48 @@ public:
   Standard_EXPORT static Standard_Real PointOnTriangle (const gp_XY& P1, const gp_XY& P2, const gp_XY& P3, const gp_XY& P, gp_XY& UV);
 
 
+  //! Returns area and perimeter of 2D-polygon given by its vertices.
+  //! theArea will be negative if the polygon is bypassed clockwise
+  //! and will be positive, otherwise. thePerimeter will always be positive.
+  //!
+  //! ATTENTION!!!
+  //! The container theSeqPnts of 2D-points gp_Pnt2d must have definition
+  //! for following methods: Length(), Lower(), Upper() and Value(Standard_Integer)
+  //! (e.g. it can be either NCollection_Sequence<gp_Pnt2d> or
+  //! NCollection_Array1<gp_Pnt2d>).
+  template <class TypeSequencePnts>
+  Standard_EXPORT static
+    Standard_Boolean PolygonProperties(const TypeSequencePnts& theSeqPnts,
+                                       Standard_Real& theArea,
+                                       Standard_Real& thePerimeter)
+  {
+    if (theSeqPnts.Length() < 2)
+    {
+      theArea = thePerimeter = 0.0;
+      return Standard_True;
+    }
+
+    Standard_Integer aStartIndex = theSeqPnts.Lower();
+    const gp_XY &aRefPnt = theSeqPnts.Value(aStartIndex++).XY();
+    gp_XY aPrevPt = theSeqPnts.Value(aStartIndex++).XY() - aRefPnt, aCurrPt;
+
+    theArea = 0.0;
+    thePerimeter = aPrevPt.Modulus();
+
+    for (Standard_Integer i = aStartIndex; i <= theSeqPnts.Upper(); i++)
+    {
+      aCurrPt = theSeqPnts.Value(i).XY() - aRefPnt;
+      const Standard_Real aDelta = aPrevPt.Crossed(aCurrPt);
+
+      theArea += aDelta;
+      thePerimeter += (aPrevPt - aCurrPt).Modulus();
+      aPrevPt = aCurrPt;
+    }
+
+    thePerimeter += aPrevPt.Modulus();
+    theArea *= 0.5;
+    return Standard_True;
+  }
 
 
 protected:

@@ -1,0 +1,24 @@
+puts "============"
+puts "0030354: BOP Cut doesn't modify the attached face"
+puts "============"
+puts ""
+
+restore [locate_data_file bug30354_Face_14.brep] b1
+point pp 0.0026084998890765357 0.045000000000000012
+
+if { [ regexp "IN" [b2dclassifx b1 pp] ] != 1 } {
+  puts "Error: Wrong result of classification"
+} else {
+  puts "OK: good result of classification"
+}
+
+if { [ regexp "IN" [b2dclassify b1 pp] ] != 1 } {
+  puts "Error: Wrong result of classification"
+} else {
+  puts "OK: good result of classification"
+}
+
+smallview -2D-
+pcurve b1
+2dfit
+disp pp

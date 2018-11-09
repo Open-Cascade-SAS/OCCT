@@ -524,9 +524,6 @@ void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
 #ifdef INTTOOLS_FACEFACE_DEBUG
     if(!myListOfPnts.IsEmpty()) {
       char aBuff[10000];
-      const IntSurf_PntOn2S& aPt = myListOfPnts.First();
-      Standard_Real u1, v1, u2, v2;
-      aPt.Parameters(u1, v1, u2, v2);
 
       Sprintf(aBuff,"bopcurves <face1 face2> -2d");
       IntSurf_ListIteratorOfListOfPntOn2S IterLOP1(myListOfPnts);
