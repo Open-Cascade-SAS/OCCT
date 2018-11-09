@@ -1,0 +1,28 @@
+puts "========"
+puts "0025952: Wrong intersection curve"
+puts "========"
+puts ""
+
+puts "TODO OCC25952 ALL: Error: The curve c_1 is possible to have a bend at"
+
+restore [locate_data_file bug25952_shape.brep] q
+explode q 
+copy q_1 b1
+copy q_2 b2
+
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} [bopcurves b1 b2 -2d] full Toler NbCurv
+
+checkreal Tolerance $Toler 1.0e-7 1.0e-7 0.0
+if {$NbCurv != 1} {
+  puts "Error: Please check NbCurves for intersector"
+} else {
+  checklength c_1 -l 0.00068663591416249451
+  CheckLoops c_1
+}
+
+smallview 
+don c_*
+fit
+disp b1 b2
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

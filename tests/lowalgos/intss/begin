@@ -4,7 +4,7 @@
 # theCosMaxAngle sets the maximal rotation angle between two adjacent segments. This value must be equal to the cosine of this angle.
 
 help CheckLoops {curve CosMaxAngle theNbPoints }
-proc CheckLoops {theCurve theCosMaxAngle {theNbPoints 1000.0}} {
+proc CheckLoops {theCurve {theCosMaxAngle 0.8} {theNbPoints 1000.0}} {
   upvar #0 $theCurve aCurve
   bounds aCurve U1 U2
     
@@ -20,7 +20,7 @@ proc CheckLoops {theCurve theCosMaxAngle {theNbPoints 1000.0}} {
     set dp [ dval dx1*dx2+dy2*dy2+dz1*dz2 ] 
     
     if {$dp < [ expr $theCosMaxAngle * sqrt($nv1 * $nv2) ] } {
-      puts "Error: The curve aCurve is possible to have a bend at parameter $p. Please check carefully"
+      puts "Error: The curve $theCurve is possible to have a bend at parameter $p. Please check carefully"
     }      
     
     dset dx1 dx2

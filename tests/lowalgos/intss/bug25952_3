@@ -1,0 +1,53 @@
+puts "========"
+puts "0025952: Wrong intersection curve"
+puts "========"
+puts ""
+
+puts "TODO OCC26510 ALL: Error: 1 curve is expected but 0 ones are found"
+
+set aGoodNbCurves 1
+
+restore [locate_data_file bug25952_shape.brep] q
+explode q 
+copy q_1 b1
+copy q_2 b2
+
+mksurface s1 b1
+mksurface s2 b2
+
+intersect res s1 s2
+
+set che [whatis res]
+set ind [string first "3d curve" $che]
+if {${ind} >= 0} {
+  #Only variable "res" exists
+  renamevar res res_1
+}
+
+set ic 1
+set AllowRepeat 1
+while { $AllowRepeat != 0 } {
+  set che [whatis res_$ic]
+  set ind [string first "3d curve" $che]
+  if {${ind} < 0} {
+    set AllowRepeat 0
+  } else {
+    lappend CurvesList res_$ic
+    CheckLoops res_$ic
+    incr ic
+  }
+}
+
+set ic [expr $ic - 1]
+
+if { $ic != $aGoodNbCurves } {
+  puts "Error: $aGoodNbCurves curve is expected but $ic ones are found"
+} else {
+  CheckIntersectionResult s1 s2 $CurvesList 100 2.0e-7 2.0e-7
+}
+
+smallview 
+don res_*
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png
