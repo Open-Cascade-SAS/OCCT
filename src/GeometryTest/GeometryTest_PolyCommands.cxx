@@ -21,6 +21,7 @@
 #include <DrawTrSurf_Polygon3D.hxx>
 #include <DrawTrSurf_Triangulation.hxx>
 #include <GeometryTest.hxx>
+#include <Poly.hxx>
 #include <Poly_Array1OfTriangle.hxx>
 #include <Poly_Polygon2D.hxx>
 #include <Poly_Polygon3D.hxx>
@@ -184,6 +185,108 @@ static Standard_Integer shtriangles(Draw_Interpretor& , Standard_Integer n, cons
 }
 
 //=======================================================================
+//function : AddNode
+//purpose  : 
+//=======================================================================
+template <typename Poly, typename Point, typename PointArr>
+static inline void AddNode(const Handle(Poly)& thePolygon,
+                    const Point& thePnt,
+                    PointArr& theNodes)
+{
+  for (Standard_Integer i = thePolygon->Nodes().Lower();
+       i <= thePolygon->Nodes().Upper(); i++)
+  {
+    theNodes[i] = thePolygon->Nodes()[i];
+  }
+
+  theNodes.ChangeLast() = thePnt;
+}
+
+//=======================================================================
+//function : AddNode
+//purpose  : 
+//=======================================================================
+static Standard_Integer AddNode(Draw_Interpretor& theDI,
+                                Standard_Integer theNArg,
+                                const char** theArgVal)
+{
+  if (theNArg < 4)
+  {
+    theDI << "Not enough arguments\n";
+    return 1;
+  }
+
+  if (theNArg == 4)
+  {
+    Handle(Poly_Polygon2D) aPoly2d = DrawTrSurf::GetPolygon2D(theArgVal[1]);
+    TColgp_Array1OfPnt2d aNodes(aPoly2d->Nodes().Lower(),
+                                aPoly2d->Nodes().Upper() + 1);
+    AddNode(aPoly2d, gp_Pnt2d(Draw::Atof(theArgVal[2]),
+                              Draw::Atof(theArgVal[3])), aNodes);
+    aPoly2d.Nullify();
+    aPoly2d = new Poly_Polygon2D(aNodes);
+    DrawTrSurf::Set(theArgVal[1], aPoly2d);
+  }
+  else
+  {
+    Handle(Poly_Polygon3D) aPoly3d = DrawTrSurf::GetPolygon3D(theArgVal[1]);
+    TColgp_Array1OfPnt aNodes(aPoly3d->Nodes().Lower(),
+                                aPoly3d->Nodes().Upper() + 1);
+    AddNode(aPoly3d, gp_Pnt(Draw::Atof(theArgVal[2]),
+                            Draw::Atof(theArgVal[3]),
+                            Draw::Atof(theArgVal[4])), aNodes);
+    aPoly3d.Nullify();
+    aPoly3d = new Poly_Polygon3D(aNodes);
+    DrawTrSurf::Set(theArgVal[1], aPoly3d);
+  }
+
+  return 0;
+}
+
+//=======================================================================
+//function : PolygonProps
+//purpose  : 
+//=======================================================================
+static Standard_Integer PolygonProps(Draw_Interpretor& theDI,
+                                     Standard_Integer theNArg,
+                                     const char** theArgVal)
+{
+  if (theNArg < 2)
+  {
+    theDI << "Use: polygonprops polygon2d [-area val] [-perimeter val]\n";
+    return 1;
+  }
+
+  Handle(Poly_Polygon2D) aPoly2d = DrawTrSurf::GetPolygon2D(theArgVal[1]);
+
+  Standard_Real anArea = 0.0, aPerimeter = 0.0;
+  Poly::PolygonProperties(aPoly2d->Nodes(), anArea, aPerimeter);
+
+  theDI << "Area      = " << anArea << "\n";
+  theDI << "Perimeter = " << aPerimeter << "\n";
+
+  for (Standard_Integer i = 2; i < theNArg; i++)
+  {
+    if (!strcmp(theArgVal[i], "-area"))
+    {
+      Draw::Set(theArgVal[++i], anArea);
+      continue;
+    }
+
+    if (!strcmp(theArgVal[i], "-perimeter"))
+    {
+      Draw::Set(theArgVal[++i], aPerimeter);
+      continue;
+    }
+
+    theDI << "Error: Wrong option: \"" << theArgVal[i] << "\"\n";
+    break;
+  }
+
+  return 0;
+}
+
+//=======================================================================
 //function : PolyCommands
 //purpose  : 
 //=======================================================================
@@ -196,6 +299,10 @@ void GeometryTest::PolyCommands(Draw_Interpretor& theCommands)
   theCommands.Add("polytr","polytr name nbnodes nbtri x1 y1 z1 ... n1 n2 n3 ...",__FILE__,polytr,g);
   theCommands.Add("polygon3d","polygon3d name nbnodes x1 y1 z1  ...",__FILE__,polygon3d,g);
   theCommands.Add("polygon2d","polygon2d name nbnodes x1 y1  ...",__FILE__,polygon2d,g);
+  theCommands.Add("addpolygonnode","addpolygonnode polygon3d(2d) x y [z]",__FILE__, AddNode,g);
+  theCommands.Add("polygonprops","Computes area and perimeter of 2D-polygon. "
+                  "Run \"polygonprops\" w/o any arguments to read help.\n",
+                  __FILE__, PolygonProps,g);
   theCommands.Add("shnodes","shnodes name", __FILE__,shnodes, g);
   theCommands.Add("shtriangles","shtriangles name", __FILE__,shtriangles, g);
 }

@@ -1,0 +1,40 @@
+puts "========"
+puts "0030354: BOP Cut doesn't modify the attached face"
+puts "========"
+puts ""
+
+set GoodTolerance 1.0e-7
+set GoodNbCurves  1
+
+foreach a [directory c_*] {unset $a}
+
+restore [locate_data_file bug30354_Face_14.brep] b1
+restore [locate_data_file bug30354_vol_neg.brep] b2
+
+explode b2 f
+
+set log1 [bopcurves b1 b2_5 -2d]
+checklength c_1 -l 0.0067028841369758101
+
+set log2 [bopcurves b1 b2_5 -2d -p +0.00464653890386874241 +0.04500000000000001915 +1.44140398677482628464 +0.05759380964683875198 -p +0.00000000000000000000 +0.04500000000000000527 +1.44165603752761084522 +0.05089567231303324113]
+checklength c_1 -l 0.0067028841369758101
+
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} $log1 full Toler1 NbCurv1
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} $log2 full Toler2 NbCurv2
+
+checkreal ToleranceNoStartPoint $Toler1 $GoodTolerance 0.0 0.1
+if {$NbCurv1 != $GoodNbCurves} {
+  puts "Error: Please check NbCurves for intersector w/o start points"
+}
+
+checkreal ToleranceWithStartPoint $Toler2 $GoodTolerance 0.0 0.1
+if {$NbCurv2 != $GoodNbCurves} {
+  puts "Error: Please check NbCurves for intersector with start points"
+}
+
+smallview 
+don c_*
+fit
+disp b1 b2
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png
