@@ -1,0 +1,24 @@
+set ExpectDeviation 0.019156616993488952
+
+restore [locate_data_file bug28211_cface7.brep] r
+smallview -2D-
+pcurve r
+
+trim cc r_4 0 0.970848497621606
+don cc
+2dfit
+
+set log_result1 [2ddeviation res cc -d 8]
+regexp {Computed value is: +([-0-9.+eE]+)} $log_result1 full aDev1
+checkreal FoundDeviation $aDev1 $ExpectDeviation 1.0e-9 0.0
+checkview -screenshot -2d -path ${imagedir}/${test_image}_1.png
+
+reverse cc 
+don cc
+2dfit
+
+set log_result2 [2ddeviation res cc -d 8]
+regexp {Computed value is: +([-0-9.+eE]+)} $log_result2 full aDev2
+checkview -screenshot -2d -path ${imagedir}/${test_image}_2.png
+checkreal FoundDeviation $aDev2 $ExpectDeviation 1.0e-9 0.0
+

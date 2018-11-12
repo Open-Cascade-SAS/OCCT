@@ -1,0 +1,22 @@
+set ExpectDeviation 199.9999995
+
+circle cc 0 0 100
+trim cc cc 0.0001 2*pi-0.0001
+
+smallview -2D-
+don cc
+2dfit
+
+set log_result1 [2ddeviation res cc]
+regexp {Computed value is: +([-0-9.+eE]+)} $log_result1 full aDev1
+checkreal FoundDeviation $aDev1 $ExpectDeviation 1.0e-9 0.0
+checkview -screenshot -2d -path ${imagedir}/${test_image}_1.png
+
+reverse cc 
+don cc
+2dfit
+
+set log_result2 [2ddeviation res cc]
+regexp {Computed value is: +([-0-9.+eE]+)} $log_result2 full aDev2
+checkreal FoundDeviation $aDev2 $ExpectDeviation 1.0e-9 0.0
+checkview -screenshot -2d -path ${imagedir}/${test_image}_2.png
