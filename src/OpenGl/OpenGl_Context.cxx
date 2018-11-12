@@ -544,7 +544,6 @@ Standard_Boolean OpenGl_Context::IsCurrent() const
 {
 #if defined(HAVE_EGL)
   if ((EGLDisplay )myDisplay  == EGL_NO_DISPLAY
-   || (EGLSurface )myWindow   == EGL_NO_SURFACE
    || (EGLContext )myGContext == EGL_NO_CONTEXT)
   {
     return Standard_False;
@@ -580,7 +579,6 @@ Standard_Boolean OpenGl_Context::MakeCurrent()
 {
 #if defined(HAVE_EGL)
   if ((EGLDisplay )myDisplay  == EGL_NO_DISPLAY
-   || (EGLSurface )myWindow   == EGL_NO_SURFACE
    || (EGLContext )myGContext == EGL_NO_CONTEXT)
   {
     Standard_ProgramError_Raise_if (myIsInitialized, "OpenGl_Context::Init() should be called before!");

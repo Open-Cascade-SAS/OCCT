@@ -152,7 +152,11 @@ void V3d_Viewer::SetViewOn (const Handle(V3d_View)& theView)
 
   theView->SetGrid (myPrivilegedPlane, Grid ());
   theView->SetGridActivity (Grid ()->IsActive ());
-  theView->Redraw();
+  if (theView->SetImmediateUpdate (Standard_False))
+  {
+    theView->Redraw();
+    theView->SetImmediateUpdate (Standard_True);
+  }
 }
 
 // ========================================================================

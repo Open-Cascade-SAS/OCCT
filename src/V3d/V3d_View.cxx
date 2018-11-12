@@ -189,7 +189,10 @@ void V3d_View::SetWindow (const Handle(Aspect_Window)&  theWindow,
   myView->SetWindow (theWindow, theContext);
   MyViewer->SetViewOn (this);
   SetRatio();
-  Redraw();
+  if (myImmediateUpdate)
+  {
+    Redraw();
+  }
 }
 
 //=============================================================================
@@ -412,8 +415,10 @@ void V3d_View::MustBeResized()
   myView->Resized();
 
   SetRatio();
-
-  Redraw();
+  if (myImmediateUpdate)
+  {
+    Redraw();
+  }
 }
 
 //=============================================================================
