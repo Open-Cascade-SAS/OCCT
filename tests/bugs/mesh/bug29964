@@ -1,0 +1,30 @@
+puts "================"
+puts "OCC29964: Bad arc discretization"
+puts "================"
+puts ""
+
+set BugNumber OCC29964
+
+restore [locate_data_file bug29964_partition.brep] a
+
+explode a f
+compound a_5 a_6 a_9 a_10 result
+donly result
+
+isos result 0
+triangles result
+top
+fit
+
+set tolerances    {0.1 0.01 0.001}
+set ref_triangles {15 33 318}
+set ref_nodes     {23 41 326}
+
+for {set i 0} {$i < 3} {incr i} {
+  tclean a
+  incmesh result [lindex ${tolerances} ${i}] -a 1
+  fit
+
+  checkview -screenshot -2d -path ${imagedir}/${test_image}_${i}.png
+  checktrinfo result -tri [lindex ${ref_triangles} ${i}] -nod [lindex ${ref_nodes} ${i}]
+}
