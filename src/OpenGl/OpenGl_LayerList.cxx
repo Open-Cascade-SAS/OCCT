@@ -792,8 +792,8 @@ void OpenGl_LayerList::renderTransparent (const Handle(OpenGl_Workspace)&   theW
 
       // Unbind OpenGL texture objects and shader program.
       aVerts->UnbindVertexAttrib (aCtx, Graphic3d_TOA_POS);
-      theOitAccumFbo->ColorTexture (0)->Unbind (aCtx, Graphic3d_TextureUnit_0);
       theOitAccumFbo->ColorTexture (1)->Unbind (aCtx, Graphic3d_TextureUnit_1);
+      theOitAccumFbo->ColorTexture (0)->Unbind (aCtx, Graphic3d_TextureUnit_0);
       aCtx->BindProgram (NULL);
 
       if (!aTextureBack.IsNull())
