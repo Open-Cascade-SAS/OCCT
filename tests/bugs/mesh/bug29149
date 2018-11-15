@@ -1,0 +1,36 @@
+puts "======="
+puts "0029149: BRepMesh produces invalid mesh on the bound of adjacent faces"
+puts "======="
+puts ""
+
+restore [locate_data_file bug29149.brep] result
+tclean result
+incmesh result 0.1
+
+checktrinfo result -tri 7998 -nod 4931 -defl 1.2277233425620309
+
+# Reduce shape tolerance in order to hard check of mesh quality
+settolerance result 1.0e-7
+
+if { [llength [tricheck result] ] != 0 } {
+  puts "Error : Invalid mesh"
+} else {
+  puts "Mesh is OK"
+}
+
+smallview
+isos result 0
+triangles result
+
+point p1 288.65908971200806 148.1268376105981 -99.370459908186973
+point p2 288.66203942568802 148.1262245331892 -99.373827710063281
+point p3 288.66358529587593 148.129348718649 -99.365721723137995
+don p1 p2 p3
+fit
+
+don result
+checkview -screenshot -2d -path ${imagedir}/${test_image}_zoom.png
+
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}_nozoom.png
+

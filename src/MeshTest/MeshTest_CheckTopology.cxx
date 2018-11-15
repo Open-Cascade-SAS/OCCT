@@ -110,7 +110,7 @@ void MeshTest_CheckTopology::Perform (Draw_Interpretor& di)
       }
 
       // check distances between corresponding points
-      Standard_Real aSqDefle = Max(aT1->Deflection(), aT2->Deflection());
+      Standard_Real aSqDefle = BRep_Tool::Tolerance(aEdge);
       aSqDefle *= aSqDefle;
       const TColgp_Array1OfPnt& aPoints1 = aT1->Nodes();
       const TColgp_Array1OfPnt& aPoints2 = aT2->Nodes();
