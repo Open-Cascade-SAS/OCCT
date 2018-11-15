@@ -77,10 +77,6 @@ static
 static
   Standard_Real Prec(const Adaptor3d_Curve& aAC3D,
   const Adaptor3d_CurveOnSurface& aACS);
-static
-  Standard_Real PrecCurve(const Adaptor3d_Curve& aAC3D);
-static
-  Standard_Real PrecSurface(const Adaptor3d_CurveOnSurface& aACS);
 
 //static Standard_Boolean Validate(const Adaptor3d_Curve&,
 //				 const Adaptor3d_Curve&,
@@ -898,87 +894,23 @@ Standard_Boolean Validate(const Adaptor3d_Curve& CRef,
   return Status ;
 
 }
+
 //=======================================================================
 //function : Prec
 //purpose  : 
 //=======================================================================
 Standard_Real Prec(const Adaptor3d_Curve& aAC3D,
-  const Adaptor3d_CurveOnSurface& aACS)
+                   const Adaptor3d_CurveOnSurface& aACS)
 {
   Standard_Real aXEmax, aXC, aXS;
+  const Handle(Adaptor3d_HSurface)& aAHS = aACS.GetSurface();
   //
-  aXC=PrecCurve(aAC3D);
-  aXS=PrecSurface(aACS);
-  aXEmax=(aXC>aXS) ? aXC: aXS;
+  aXC = BRepCheck::PrecCurve(aAC3D);
+  aXS = BRepCheck::PrecSurface(aAHS);
+  aXEmax = (aXC>aXS) ? aXC: aXS;
   return aXEmax;
 }
-//=======================================================================
-//function : PrecCurve
-//purpose  : 
-//=======================================================================
-Standard_Real PrecCurve(const Adaptor3d_Curve& aAC3D)
-{
-  Standard_Real aXEmax;
-  GeomAbs_CurveType aCT;
-  //
-  aXEmax=RealEpsilon(); 
-  //
-  aCT=aAC3D.GetType();
-  if (aCT==GeomAbs_Ellipse) {
-    Standard_Integer i;
-    Standard_Real aX[5], aXE;
-    //
-    gp_Elips aEL3D=aAC3D.Ellipse();
-    aEL3D.Location().Coord(aX[0], aX[1], aX[2]);
-    aX[3]=aEL3D.MajorRadius();
-    aX[4]=aEL3D.MinorRadius();
-    aXEmax=-1.;
-    for (i=0; i<5; ++i) {
-      if (aX[i]<0.) {
-        aX[i]=-aX[i];
-      }
-      aXE=Epsilon(aX[i]);
-      if (aXE>aXEmax) {
-        aXEmax=aXE;
-      }
-    }
-  }//if (aCT=GeomAbs_Ellipse) {
-  //
-  return aXEmax;
-}
-//=======================================================================
-//function : PrecSurface
-//purpose  : 
-//=======================================================================
-Standard_Real PrecSurface(const Adaptor3d_CurveOnSurface& aACS)
-{
-  Standard_Real aXEmax;
-  GeomAbs_SurfaceType aST;
-  //
-  aXEmax=RealEpsilon(); 
-  //
-  const Handle(Adaptor3d_HSurface)& aAHS=aACS.GetSurface();
-  aST=aAHS->GetType();
-  if (aST==GeomAbs_Cone) {
-    gp_Cone aCone=aAHS->Cone();
-    Standard_Integer i;
-    Standard_Real aX[4], aXE;
-    //
-    aCone.Location().Coord(aX[0], aX[1], aX[2]);
-    aX[3]=aCone.RefRadius();
-    aXEmax=-1.;
-    for (i=0; i<4; ++i) {
-      if (aX[i]<0.) {
-        aX[i]=-aX[i];
-      }
-      aXE=Epsilon(aX[i]);
-      if (aXE>aXEmax) {
-        aXEmax=aXE;
-      }
-    }
-  }//if (aST==GeomAbs_Cone) {
-  return aXEmax;
-}
+
 //=======================================================================
 //function : PrintProblematicPoint
 //purpose  : 

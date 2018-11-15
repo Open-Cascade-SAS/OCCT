@@ -29,6 +29,7 @@
 #include <BRep_GCurve.hxx>
 #include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
 #include <BRep_ListOfCurveRepresentation.hxx>
+#include <BRepCheck.hxx>
 #include <BRep_TEdge.hxx>
 #include <BRep_TFace.hxx>
 #include <BRep_Tool.hxx>
@@ -1311,6 +1312,8 @@ TopoDS_Edge BRepLib::SameParameter(const TopoDS_Edge& theEdge,
   }
   GAC.Load(C3d,f3d,l3d);
 
+  Standard_Real Prec_C3d = BRepCheck::PrecCurve(GAC);
+
   Standard_Boolean IsSameP = 1;
   Standard_Real maxdist = 0.;
 
@@ -1597,7 +1600,9 @@ TopoDS_Edge BRepLib::SameParameter(const TopoDS_Edge& theEdge,
 
         //  Modified by skv - Thu Jun  3 12:39:19 2004 OCC5898 Begin
         if (!IsSameP) {
-          if (anEdgeTol >= error) {
+          Standard_Real Prec_Surf = BRepCheck::PrecSurface(HS);
+          Standard_Real CurTol = anEdgeTol + Max(Prec_C3d, Prec_Surf);
+          if (CurTol >= error) {
             maxdist = Max(maxdist, anEdgeTol);
             IsSameP = Standard_True;
           }
