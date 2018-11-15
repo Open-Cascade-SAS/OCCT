@@ -28,6 +28,8 @@
 class TopoDS_Wire;
 class TopoDS_Face;
 class TopoDS_Edge;
+class Adaptor3d_Curve;
+class Adaptor3d_HSurface;
 class BRepCheck_Result;
 class BRepCheck_Vertex;
 class BRepCheck_Edge;
@@ -53,6 +55,11 @@ public:
   
   Standard_EXPORT static Standard_Boolean SelfIntersection (const TopoDS_Wire& W, const TopoDS_Face& F, TopoDS_Edge& E1, TopoDS_Edge& E2);
 
+  //! Returns the resolution on the 3d curve
+  Standard_EXPORT static Standard_Real PrecCurve(const Adaptor3d_Curve& aAC3D);
+
+  //! Returns the resolution on the surface
+  Standard_EXPORT static Standard_Real PrecSurface(const Handle(Adaptor3d_HSurface)& aAHSurf);
 
 
 

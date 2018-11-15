@@ -24,6 +24,11 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Wire.hxx>
+#include <Adaptor3d_Curve.hxx>
+#include <Adaptor3d_HSurface.hxx>
+#include <GeomAbs_CurveType.hxx>
+#include <GeomAbs_SurfaceType.hxx>
+#include <gp_Elips.hxx>
 
 //=======================================================================
 //function : Add
@@ -45,6 +50,7 @@ void BRepCheck::Add(BRepCheck_ListOfStatus& lst, const BRepCheck_Status stat)
   }
   lst.Append(stat);
 }
+
 //=======================================================================
 //function : SelfIntersection
 //purpose  : 
@@ -58,6 +64,67 @@ Standard_Boolean BRepCheck::SelfIntersection(const TopoDS_Wire& W,
   BRepCheck_Status stat = chkw->SelfIntersect(myFace,RetE1,RetE2);
   return (stat == BRepCheck_SelfIntersectingWire);
 }
+
+//=======================================================================
+//function : PrecCurve
+//purpose  : 
+//=======================================================================
+Standard_Real BRepCheck::PrecCurve(const Adaptor3d_Curve& aAC3D)
+{
+  Standard_Real aXEmax = RealEpsilon(); 
+  //
+  GeomAbs_CurveType aCT = aAC3D.GetType();
+  if (aCT==GeomAbs_Ellipse) {
+    Standard_Real aX[5];
+    //
+    gp_Elips aEL3D=aAC3D.Ellipse();
+    aEL3D.Location().Coord(aX[0], aX[1], aX[2]);
+    aX[3]=aEL3D.MajorRadius();
+    aX[4]=aEL3D.MinorRadius();
+    aXEmax=-1.;
+    for (Standard_Integer i = 0; i < 5; ++i) {
+      if (aX[i]<0.) {
+        aX[i]=-aX[i];
+      }
+      Standard_Real aXE = Epsilon(aX[i]);
+      if (aXE > aXEmax) {
+        aXEmax = aXE;
+      }
+    }
+  }//if (aCT=GeomAbs_Ellipse) {
+  //
+  return aXEmax;
+}
+
+//=======================================================================
+//function : PrecSurface
+//purpose  : 
+//=======================================================================
+Standard_Real BRepCheck::PrecSurface(const Handle(Adaptor3d_HSurface)& aAHSurf)
+{
+  Standard_Real aXEmax = RealEpsilon(); 
+  //
+  GeomAbs_SurfaceType aST = aAHSurf->GetType();
+  if (aST == GeomAbs_Cone) {
+    gp_Cone aCone=aAHSurf->Cone();
+    Standard_Real aX[4];
+    //
+    aCone.Location().Coord(aX[0], aX[1], aX[2]);
+    aX[3]=aCone.RefRadius();
+    aXEmax=-1.;
+    for (Standard_Integer i = 0; i < 4; ++i) {
+      if (aX[i] < 0.) {
+        aX[i] = -aX[i];
+      }
+      Standard_Real aXE = Epsilon(aX[i]);
+      if (aXE > aXEmax) {
+        aXEmax = aXE;
+      }
+    }
+  }//if (aST==GeomAbs_Cone) {
+  return aXEmax;
+}
+
 //=======================================================================
 //function : Print
 //purpose  : 
