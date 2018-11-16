@@ -1,7 +1,3 @@
-puts "TODO CR25628 ALL: Error: Number of triangles is equal to 0"
-puts "TODO CR25628 ALL: Error: Number of nodes is equal to 0"
-puts "TODO CR25628 ALL: Error: BRepMesh fails to mesh face with open wire, considered as correct by checkshape"
-
 puts "========="
 puts "CR25628: BRepMesh fails to mesh face with open wire, considered as correct by checkshape"
 puts "========="
@@ -15,15 +11,21 @@ explode a f
 
 checkshape a_36
 
-set Log [incmesh a_36 0.1]
-if {[regexp "UnorientedWire" ${Log}] == 1} {
-    puts "Error: BRepMesh fails to mesh face with open wire, considered as correct by checkshape"
+incmesh a_36 0.1
+
+set log [tricheck a_36]
+if { [llength $log] != 0 } {
+  puts "ERROR: OCC25628 is reproduced. Nontriangulated face have been detected."
+} else {
+  puts "Mesh is OK"
 }
 
-checktrinfo a_1 -tri -nod
+checktrinfo a_36 -tri 37 -nod 39
 
-smallview
-donly a_36
-left
-fit
-checkview -screenshot -2d -path ${imagedir}/${test_image}-2d.png
+vinit
+vdisplay a_36
+vsetdispmode a_36 1
+vleft
+vfit
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
