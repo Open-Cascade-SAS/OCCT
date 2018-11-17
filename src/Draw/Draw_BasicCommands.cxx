@@ -273,15 +273,20 @@ static Standard_Integer dlog(Draw_Interpretor& di, Standard_Integer n, const cha
   }
   else if (! strcmp (a[1], "reset") && n == 2)
   {
-    di.Log().str("");
+    di.ResetLog();
   }
   else if (! strcmp (a[1], "get") && n == 2)
   {
-    di << di.Log().str().c_str();
+    di << di.GetLog();
   }
   else if (! strcmp (a[1], "add") && n == 3)
   {
-    di.Log() << a[2] << "\n";
+    di.AddLog (a[2]);
+    di.AddLog ("\n");
+  }
+  else if (! strcmp (a[1], "status") && n == 2)
+  {
+    di << (di.GetDoLog() ? "on" : "off");
   }
   else {
     cout << "Unrecognized option(s): " << a[1] << endl;

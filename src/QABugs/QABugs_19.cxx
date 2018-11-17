@@ -1264,43 +1264,6 @@ static Standard_Integer OCC24005 (Draw_Interpretor& theDI, Standard_Integer theN
   return 0;
 }
 
-#include <BRepAlgo_NormalProjection.hxx>
-static Standard_Integer OCC24012 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv) 
-{
-	if (argc != 3) {
-		di << "Usage : " << argv[0] << " should be 2 arguments (face and edge)";
-		return 1;
-	}
-	
-	Handle(AIS_InteractiveContext) myAISContext = ViewerTest::GetAISContext();
-	if(myAISContext.IsNull()) {
-		di << "use 'vinit' command before " << argv[0] << "\n";
-		return 1;
-	}
-
-	TopoDS_Face m_Face1 = TopoDS::Face(DBRep::Get(argv[1]));
-	TopoDS_Edge m_Edge = TopoDS::Edge(DBRep::Get(argv[2]));
-	
-	BRepAlgo_NormalProjection anormpro(m_Face1);
-    anormpro.Add(m_Edge);
-    anormpro.SetDefaultParams();
-
-    //anormpro.Compute3d();
-    //anormpro.SetLimit();
-
-    anormpro.Build();
-
-    if (anormpro.IsDone())
-    {
-        TopoDS_Shape rshape = anormpro.Projection();
-		Handle(AIS_InteractiveObject) myShape = new AIS_Shape (rshape);
-		myAISContext->SetColor (myShape, Quantity_Color(Quantity_NOC_YELLOW), Standard_False);
-		myAISContext->Display (myShape, Standard_True);
-    }
-
-	return 0;
-}
-
 #include <BRepFeat_SplitShape.hxx>
 #include <ShapeAnalysis_ShapeContents.hxx>
 #include <BRepAlgo.hxx>
@@ -5305,7 +5268,6 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC23972", "OCC23972", __FILE__, OCC23972, group);
   theCommands.Add ("OCC24370", "OCC24370 edge pcurve surface prec", __FILE__, OCC24370, group);
   theCommands.Add ("OCC24533", "OCC24533", __FILE__, OCC24533, group);
-  theCommands.Add ("OCC24012", "OCC24012 face edge", __FILE__, OCC24012, group);
   theCommands.Add ("OCC24086", "OCC24086 face wire", __FILE__, OCC24086, group);
   theCommands.Add ("OCC24667", "OCC24667 result Wire_spine Profile [Mode [Approx]], no args to get help", __FILE__, OCC24667, group);
   theCommands.Add ("OCC24755", "OCC24755", __FILE__, OCC24755, group);

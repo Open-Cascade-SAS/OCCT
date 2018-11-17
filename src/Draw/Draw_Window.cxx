@@ -2166,16 +2166,120 @@ void exitProc(ClientData /*dc*/)
   TerminateProcess(proc, 0);
 }
 
+// This is fixed version of TclpGetDefaultStdChannel() defined in tclWinChan.c
+// See https://core.tcl.tk/tcl/tktview/91c9bc1c457fda269ae18595944fc3c2b54d961d
+static Tcl_Channel
+TclpGetDefaultStdChannel(
+    int type)			/* One of TCL_STDIN, TCL_STDOUT, or
+				 * TCL_STDERR. */
+{
+    Tcl_Channel channel;
+    HANDLE handle;
+    int mode = -1;
+    const char *bufMode = NULL;
+    DWORD handleId = (DWORD) -1;
+				/* Standard handle to retrieve. */
+
+    switch (type) {
+    case TCL_STDIN:
+	handleId = STD_INPUT_HANDLE;
+	mode = TCL_READABLE;
+	bufMode = "line";
+	break;
+    case TCL_STDOUT:
+	handleId = STD_OUTPUT_HANDLE;
+	mode = TCL_WRITABLE;
+	bufMode = "line";
+	break;
+    case TCL_STDERR:
+	handleId = STD_ERROR_HANDLE;
+	mode = TCL_WRITABLE;
+	bufMode = "none";
+	break;
+    default:
+	Tcl_Panic("TclGetDefaultStdChannel: Unexpected channel type");
+	break;
+    }
+
+    handle = GetStdHandle(handleId);
+
+    /*
+     * Note that we need to check for 0 because Windows may return 0 if this
+     * is not a console mode application, even though this is not a valid
+     * handle.
+     */
+
+    if ((handle == INVALID_HANDLE_VALUE) || (handle == 0)) {
+	return (Tcl_Channel) NULL;
+    }
+
+    /*
+     * Make duplicate of the standard handle as it may be altered
+     * (closed, reopened with another type of the object etc.) by
+     * the system or a user code at any time, e.g. by call to _dup2()
+     */
+    if (! DuplicateHandle (GetCurrentProcess(), handle, 
+                           GetCurrentProcess(), &handle,
+                           0, FALSE, DUPLICATE_SAME_ACCESS)) {
+	return (Tcl_Channel) NULL;
+    }
+
+    channel = Tcl_MakeFileChannel(handle, mode);
+
+    if (channel == NULL) {
+	return (Tcl_Channel) NULL;
+    }
+
+    /*
+     * Set up the normal channel options for stdio handles.
+     */
+
+    if (Tcl_SetChannelOption(NULL,channel,"-translation","auto")!=TCL_OK ||
+	    Tcl_SetChannelOption(NULL,channel,"-eofchar","\032 {}")!=TCL_OK ||
+	    Tcl_SetChannelOption(NULL,channel,"-buffering",bufMode)!=TCL_OK) {
+	Tcl_Close(NULL, channel);
+	return (Tcl_Channel) NULL;
+    }
+    return channel;
+}
+
+// helper functuion
+static void ResetStdChannel (int type)
+{
+  Tcl_Channel aChannel = TclpGetDefaultStdChannel (type);
+  Tcl_SetStdChannel (aChannel, type);
+  if (aChannel)
+  {
+    Tcl_RegisterChannel (NULL, aChannel);
+  }
+}
+
 /*--------------------------------------------------------*\
 |  tkLoop: implements Tk_Main()-like behaviour in a separate thread
 \*--------------------------------------------------------*/
 static DWORD WINAPI tkLoop(VOID)
 {
-  Draw_Interpretor& aCommands = Draw::GetInterpretor();
-
   Tcl_CreateExitHandler(exitProc, 0);
+  
+  // Work-around against issue with Tcl standard channels on Windows.
+  // These channels by default use OS handles owned by the system which
+  // may get invalidated e.g. by dup2() (see dlog command).
+  // If this happens, output to stdout from Tcl (e.g. puts) gets broken
+  // (sympthom is error message: "error writing "stdout": bad file number").
+  // To prevent this, we set standard channels using duplicate of system handles.
+  // The effect is that Tcl channel becomes independent on C file descriptor
+  // and even if stdout/stderr are redirected using dup2(), Tcl keeps using
+  // original device.
+  ResetStdChannel (TCL_STDOUT);
+  ResetStdChannel (TCL_STDERR);
+
 #if (TCL_MAJOR_VERSION > 8) || ((TCL_MAJOR_VERSION == 8) && (TCL_MINOR_VERSION >= 5))
+  // Plain Tcl (8.6.4+) initializes interpretor channels automatically, but 
+  // ActiveState Tcl (at least 8.6.4) does not seem to do that, so channels 
+  // need to be set into interpretor explicitly
   {
+    Draw_Interpretor& aCommands = Draw::GetInterpretor();
+
     Tcl_Channel aChannelIn  = Tcl_GetStdChannel (TCL_STDIN);
     Tcl_Channel aChannelOut = Tcl_GetStdChannel (TCL_STDOUT);
     Tcl_Channel aChannelErr = Tcl_GetStdChannel (TCL_STDERR);

@@ -1,0 +1,39 @@
+# Check functionality of dlog command (capturing of stdout)
+
+pload MODELING
+
+# activate logging
+set status [dlog status]
+dlog on
+
+# check that log does not fail at many executions
+# note that this makes sense only if we do not run by test command with 
+# dlog already active, in which case puts is redefined
+if { $status == off } { 
+  for {set i 0} {$i < 10000} {incr i} { box b 1 1 1 }
+  dlog off
+  puts "Try puts to check that channel is not broken"
+  dlog on
+}
+
+# check that logging works as expected
+dlog reset
+box b 1 1 1
+explode b f
+if { $status == off } { 
+  # this will get to log if executed using "test" command instead of testgrid, as it redefines puts
+  puts "output of puts -- should not be in the log"
+}
+dlog add "output of dlog add"
+set log [dlog get]
+set expected "box b 1 1 1 \nexplode b f \nb_1 b_2 b_3 b_4 b_5 b_6\noutput of dlog add\n"
+if { $log != $expected } {
+  puts "Error: Logged text does not match expected"
+  puts "Value: \"$log\""
+  puts "Expected: \"$expected\""
+}
+
+# return original state of logging
+dlog $status
+
+puts "TEST COMPLETED"

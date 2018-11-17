@@ -83,14 +83,12 @@ void ResultChron( OSD_Chronometer & ch, Standard_Real & time)
 //=======================================================================
 
  BRepAlgo_NormalProjection::BRepAlgo_NormalProjection() 
-   : myWith3d(Standard_True)
-
+   : myIsDone(Standard_False), myMaxDist(-1.),
+     myWith3d(Standard_True), myFaceBounds(Standard_True)
 {
   BRep_Builder BB;
   BB.MakeCompound(TopoDS::Compound(myToProj));
-  myFaceBounds=Standard_True;
   SetDefaultParams();
-  myMaxDist = -1;
 }
 
 //=======================================================================
@@ -99,12 +97,12 @@ void ResultChron( OSD_Chronometer & ch, Standard_Real & time)
 //=======================================================================
 
  BRepAlgo_NormalProjection::BRepAlgo_NormalProjection(const TopoDS_Shape& S) 
-    : myWith3d(Standard_True)
+   : myIsDone(Standard_False), myMaxDist(-1.),
+     myWith3d(Standard_True), myFaceBounds(Standard_True)
 {
   BRep_Builder BB;
   BB.MakeCompound(TopoDS::Compound(myToProj));
   SetDefaultParams();
-  myMaxDist = -1;
   Init(S);
 }
 

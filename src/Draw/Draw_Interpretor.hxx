@@ -238,8 +238,18 @@ public:
   //! Returns true if echoing of commands is enabled
   Standard_EXPORT Standard_Boolean GetDoEcho() const;
 
-  //! Returns log stream
-  Standard_EXPORT Standard_SStream& Log();
+  //! Resets log (if opened) to zero size
+  Standard_EXPORT void ResetLog();
+
+  //! Writes a text string to the log (if opened);
+  //! end of line is not appended
+  Standard_EXPORT void AddLog (const Standard_CString theStr);
+
+  //! Returns current content of the log file as a text string
+  Standard_EXPORT TCollection_AsciiString GetLog();
+
+  //! Returns current value of the log file descriptor
+  Standard_Integer GetLogFileDescriptor() { return myFDLog; }
 
 protected:
 
@@ -255,7 +265,7 @@ private:
   Draw_PInterp     myInterp;
   Standard_Boolean myDoLog;
   Standard_Boolean myDoEcho;
-  Standard_SStream myLog;
+  Standard_Integer myFDLog;          //!< file descriptor of log file 
 
 public:
 

@@ -30,6 +30,7 @@
 
 #include <string.h>
 #include <tcl.h>
+#include <fcntl.h>
 #ifndef _WIN32
 #include <unistd.h>
 #endif
@@ -37,6 +38,7 @@
 // for capturing of cout and cerr (dup(), dup2())
 #ifdef _WIN32
 #include <io.h>
+#include <sys/stat.h>  
 #endif
 
 #if ! defined(STDOUT_FILENO)
@@ -67,50 +69,45 @@ namespace {
     cout << flush;
   }
 
-  int capture_start (OSD_File& theTmpFile, int std_fd)
+  int capture_start (int theFDStd, int theFDLog)
   {
-    theTmpFile.BuildTemporary();
-    if (theTmpFile.Failed())
+    Standard_ASSERT_RETURN (theFDLog >= 0, "Invalid descriptor of log file", -1);
+
+    // Duplicate a file descriptor of the standard stream to be able to restore output to it later
+    int aFDSave = dup (theFDStd);
+    if (aFDSave < 0)
     {
-      cerr << "Error: cannot create temporary file for capturing console output" << endl;
+      perror ("Error capturing standard stream to log: dup() returned");
       return -1;
     }
 
-    // remember current file descriptors of standard stream, and replace it by temporary
-    return theTmpFile.Capture(std_fd);
+    // Redirect the stream to the log file
+    if (dup2 (theFDLog, theFDStd) < 0)
+    {
+      close (aFDSave);
+      perror ("Error capturing standard stream to log: dup2() returned");
+      return -1;
+    }
+
+    // remember saved file descriptor of standard stream
+    return aFDSave;
   }
 
-  void capture_end (OSD_File* tmp_file, int std_fd, int save_fd, Standard_OStream &log, Standard_Boolean doEcho)
+  void capture_end (int theFDStd, int& theFDSave)
   {
-    if (!tmp_file)
+    if (theFDSave < 0)
       return;
 
     // restore normal descriptors of console stream
-  #ifdef _WIN32
-    _dup2(save_fd, std_fd);
-    _close(save_fd);
-  #else
-    dup2(save_fd, std_fd);
-    close(save_fd);
-  #endif
-
-    // extract all output and copy it to log and optionally to cout
-    const int BUFSIZE = 2048;
-    TCollection_AsciiString buf;
-    tmp_file->Rewind();
-    while (tmp_file->ReadLine (buf, BUFSIZE) > 0)
+    if (dup2(theFDSave, theFDStd) < 0)
     {
-      log << buf;
-      if (doEcho) 
-        cout << buf;
+      perror ("Error returning capturing standard stream to log: dup2() returned");
+      return;
     }
 
-    // close temporary file
-    tmp_file->Close();
-
-    // remove temporary file if this is not done by the system
-    if (tmp_file->Exists())
-      tmp_file->Remove();
+    // close saved file descriptor
+    close(theFDSave);
+    theFDSave = -1;
   }
 
 } // anonymous namespace
@@ -136,23 +133,23 @@ static Standard_Integer CommandCmd
                                         strcmp (argv[0], "decho") == 0);
   Standard_Boolean doLog  = (di.GetDoLog() && ! isLogManipulation);
   Standard_Boolean doEcho = (di.GetDoEcho() && ! isLogManipulation);
-  if (doLog)
-    dumpArgs (di.Log(), argc, argv);
-  if (doEcho)
-    dumpArgs (cout, argc, argv);
 
   // flush cerr and cout
   flush_standard_streams();
 
   // capture cout and cerr to log
-  OSD_File aFile_out, aFile_err;
-  int fd_err_save = -1;
-  int fd_out_save = -1;
+  int aFDstdout = STDOUT_FILENO;
+  int aFDstderr = STDERR_FILENO;
+  int aFDerr_save = -1;
+  int aFDout_save = -1;
   if (doLog)
   {
-    fd_out_save = capture_start (aFile_out, STDOUT_FILENO);
-    fd_err_save = capture_start (aFile_err, STDERR_FILENO);
+    aFDout_save = capture_start (aFDstdout, di.GetLogFileDescriptor());
+    aFDerr_save = capture_start (aFDstderr, di.GetLogFileDescriptor());
   }
+
+  if (doEcho || doLog)
+    dumpArgs (cout, argc, argv);
 
   // run command
   try {
@@ -195,30 +192,24 @@ static Standard_Integer CommandCmd
     code = TCL_ERROR;
   }
 
+  // log command result
+  if (doLog || doEcho)
+  {
+    const char* aResultStr = Tcl_GetStringResult (interp);
+    if (aResultStr != 0 && aResultStr[0] != '\0' )
+    {
+      std::cout << aResultStr << std::endl;
+    }
+  }
+
   // flush streams
   flush_standard_streams();
 
   // end capturing cout and cerr 
   if (doLog) 
   {
-    capture_end (&aFile_err, STDERR_FILENO, fd_err_save, di.Log(), doEcho);
-    capture_end (&aFile_out, STDOUT_FILENO, fd_out_save, di.Log(), doEcho);
-  }
-
-  // log command result
-  const char* aResultStr = NULL;
-  if (doLog)
-  {
-    aResultStr = Tcl_GetStringResult (interp);
-    if (aResultStr != 0 && aResultStr[0] != '\0' )
-      di.Log() << Tcl_GetStringResult (interp) << endl;
-  }
-  if (doEcho)
-  {
-    if (aResultStr == NULL)
-      aResultStr = Tcl_GetStringResult (interp);
-    if (aResultStr != 0 && aResultStr[0] != '\0' )
-      cout << Tcl_GetStringResult (interp) << endl;
+    capture_end (aFDstderr, aFDerr_save);
+    capture_end (aFDstdout, aFDout_save);
   }
 
   return code;
@@ -236,7 +227,7 @@ static void CommandDelete (ClientData theClientData)
 //=======================================================================
 
 Draw_Interpretor::Draw_Interpretor() :
-  isAllocated(Standard_False), myDoLog(Standard_False), myDoEcho(Standard_False)
+  isAllocated(Standard_False), myDoLog(Standard_False), myDoEcho(Standard_False), myFDLog(-1)
 {
 // The tcl interpreter is not created immediately as it is kept 
 // by a global variable and created and deleted before the main().
@@ -529,6 +520,13 @@ Standard_Boolean Draw_Interpretor::Complete(const Standard_CString line)
 
 Draw_Interpretor::~Draw_Interpretor()
 {
+  SetDoLog (Standard_False);
+  if (myFDLog >=0)
+  {
+    close (myFDLog);
+    myFDLog = 0;
+  }
+
   // MKV 01.02.05
 #if ((TCL_MAJOR_VERSION > 8) || ((TCL_MAJOR_VERSION == 8) && (TCL_MINOR_VERSION >= 4)))
   try {
@@ -573,6 +571,35 @@ void Draw_Interpretor::Set(const Draw_PInterp& PIntrp)
 
 void Draw_Interpretor::SetDoLog (Standard_Boolean doLog)
 {
+  if (myDoLog == doLog)
+    return;
+
+  // create log file if not opened yet
+  if (doLog && myFDLog < 0)
+  {
+#ifdef _WIN32
+    char tmpfile[L_tmpnam + 1];
+    tmpnam(tmpfile);
+    myFDLog = open (tmpfile, O_RDWR | O_CREAT | O_EXCL | O_TEMPORARY, S_IREAD | S_IWRITE);
+#else
+    // according to Linux Filesystem Hierarchy Standard, 3.17,
+    // /tmp/ is the right directory for temporary files
+    char tmpfile[256] = "/tmp/occt_draw_XXXXXX";
+    myFDLog = mkstemp (tmpfile);
+    if (myFDLog >= 0)
+    {
+//      printf ("Tmp file: %s\n", tmpfile);
+      unlink (tmpfile); // make sure the file will be deleted on close
+    }
+#endif
+    if (myFDLog < 0)
+    {
+      perror ("Error creating temporary file for capturing console output");
+      printf ("path: %s\n", tmpfile);
+      return;
+    }
+  }
+
   myDoLog = doLog;
 }
 
@@ -591,7 +618,67 @@ Standard_Boolean Draw_Interpretor::GetDoEcho () const
   return myDoEcho;
 }
 
-Standard_SStream& Draw_Interpretor::Log ()
+void Draw_Interpretor::ResetLog ()
 {
-  return myLog;
+  if (myFDLog < 0)
+    return;
+
+  // flush cerr and cout, for the case if they are bound to the log
+  flush_standard_streams();
+
+  lseek (myFDLog, 0, SEEK_SET);
+
+#ifdef _WIN32
+  if (_chsize_s (myFDLog, 0) != 0)
+#else
+  if (ftruncate (myFDLog, 0) != 0)
+#endif
+  {
+    perror ("Error truncating the console log");
+  }
+}
+
+void Draw_Interpretor::AddLog (const Standard_CString theStr)
+{
+  if (myFDLog < 0 || ! theStr || ! theStr[0])
+    return;
+
+  // flush cerr and cout, for the case if they are bound to the log
+  flush_standard_streams();
+
+  // write as plain bytes
+  if (write (myFDLog, theStr, (unsigned int)strlen(theStr)) <0)
+  {
+    perror ("Error writing to console log");
+  }
+}
+
+TCollection_AsciiString Draw_Interpretor::GetLog ()
+{
+  TCollection_AsciiString aLog;
+  if (myFDLog < 0)
+    return aLog;
+
+  // flush cerr and cout
+  flush_standard_streams();
+
+  // rewind the file to its start
+  lseek (myFDLog, 0, SEEK_SET);
+
+  // read the whole log to string; this implementation
+  // is not optimized but should be sufficient
+  const int BUFSIZE = 4096;
+  char buffer[BUFSIZE + 1];
+  for (;;)
+  {
+    int nbRead = read (myFDLog, buffer, BUFSIZE);
+    if (nbRead <= 0)
+    {
+      break;
+    }
+    buffer[nbRead] = '\0';
+    aLog.AssignCat (buffer);
+  }
+
+  return aLog;
 }

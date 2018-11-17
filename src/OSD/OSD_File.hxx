@@ -182,31 +182,14 @@ public:
   //! Set file pointer position to the beginning of the file
   Standard_EXPORT void Rewind();
 
-  //! Redirect a standard handle (fileno(stdout), fileno(stdin) or 
-  //! fileno(stderr) to this OSD_File and return the copy of the original
-  //! standard handle.
-  //! Example:
-  //!    OSD_File aTmp;
-  //!    aTmp.BuildTemporary();
-  //!    int stdfd = _fileno(stdout);
-  //!
-  //!    int oldout = aTmp.Capture(stdfd);
-  //!    cout << "Some output to the file" << endl;
-  //!    cout << flush;
-  //!    fflush(stdout);
-  //!
-  //!    _dup2(oldout, stdfd); // Restore standard output
-  //!    aTmp.Close();
-  Standard_EXPORT int Capture(int theDescr);
-
 protected:
 
 #ifdef _WIN32
   Standard_Address myFileHandle;
 #else
   Standard_Integer myFileChannel;
-#endif
   Standard_Address myFILE;
+#endif
   Standard_Integer myIO;
 
 private:

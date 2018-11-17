@@ -372,8 +372,8 @@ OSD_File::OSD_File() :
   myFileHandle (INVALID_HANDLE_VALUE),
 #else
   myFileChannel (-1),
-#endif
   myFILE (NULL),
+#endif
   myIO (0),
   myLock (OSD_NoLock),
   myMode (OSD_ReadWrite),
@@ -392,8 +392,8 @@ OSD_File::OSD_File (const OSD_Path& theName)
   myFileHandle (INVALID_HANDLE_VALUE),
 #else
   myFileChannel (-1),
-#endif
   myFILE (NULL),
+#endif
   myIO (0),
   myLock (OSD_NoLock),
   myMode (OSD_ReadWrite),
@@ -1613,39 +1613,6 @@ Standard_Boolean OSD_File::IsExecutable()
   TCollection_AsciiString aFileName;
   myPath.SystemName (aFileName);
   return access (aFileName.ToCString(), F_OK | X_OK) == 0;
-#endif
-}
-
-// =======================================================================
-// function : Capture
-// purpose  :
-// =======================================================================
-int OSD_File::Capture (int theDescr)
-{
-#ifdef _WIN32
-  // Get POSIX file descriptor from this file handle
-  int dFile = _open_osfhandle (reinterpret_cast<intptr_t>(myFileHandle), myMode);
-  if (0 > dFile)
-  {
-    _osd_wnt_set_error (myError, OSD_WFile, myFileHandle);
-    return -1;
-  }
-
-  // Duplicate an old file descriptor of the given one to be able to restore output to it later.
-  int oldDescr = _dup (theDescr);
-  // Redirect the output to this file
-  _dup2 (dFile, theDescr);
-
-  // Return the old descriptor
-  return oldDescr;
-#else
-  // Duplicate an old file descriptor of the given one to be able to restore output to it later.
-  int oldDescr = dup (theDescr);
-  // Redirect the output to this file
-  dup2 (myFileChannel, theDescr);
-
-  // Return the old descriptor
-  return oldDescr;
 #endif
 }
 
