@@ -156,9 +156,6 @@ int GetCommand (HWND hWnd, wchar_t* theBuffer)
   return aNbChar;
 }
 
-extern console_semaphore_value volatile console_semaphore;
-extern wchar_t console_command[1000];
-
 /*--------------------------------------------------------*\
 |  EDIT WINDOW PROCEDURE
 \*--------------------------------------------------------*/
@@ -191,7 +188,7 @@ LRESULT APIENTRY EditProc(HWND hWnd, UINT wMsg, WPARAM wParam, LPARAM lParam )
           //TCollection_AsciiString aCmdUtf8 (aCmdBuffer + sizeof(THE_PROMPT) / sizeof(wchar_t) - 1);
           //Draw_Interprete (aCmdUtf8.ToCString());
           //if (toExit) { DestroyProc (hWnd); }
-          wcscpy (console_command, aCmdBuffer + sizeof(THE_PROMPT) / sizeof(wchar_t) - 1);
+          wcscpy_s (console_command, aCmdBuffer + sizeof(THE_PROMPT) / sizeof(wchar_t) - 1);
           console_semaphore = HAS_CONSOLE_COMMAND;
           // Purge the buffer
           nbline = SendMessageW (hWnd, EM_GETLINECOUNT, 0l, 0l);

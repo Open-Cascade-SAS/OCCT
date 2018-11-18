@@ -516,6 +516,13 @@ typedef enum {
   WAIT_CONSOLE_COMMAND,
   HAS_CONSOLE_COMMAND} console_semaphore_value;
 
+// global variable describing console state
+extern console_semaphore_value volatile console_semaphore;
+
+// Console command buffer
+#define DRAW_COMMAND_SIZE 1000
+extern wchar_t console_command[DRAW_COMMAND_SIZE + 1];
+
 // PROCEDURE DE DRAW WINDOW
 
 Standard_EXPORT Standard_Boolean Init_Appli(HINSTANCE,HINSTANCE,int,HWND&);

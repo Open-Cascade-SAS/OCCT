@@ -30,6 +30,7 @@
 #include <Image_AlienPixMap.hxx>
 #include <NCollection_List.hxx>
 
+extern Standard_Boolean Draw_Batch;
 extern Standard_Boolean Draw_VirtualWindows;
 static Tcl_Interp *interp;        /* Interpreter for this application. */
 static NCollection_List<Draw_Window::FCallbackBeforeTerminate> MyCallbacks;
@@ -2021,8 +2022,7 @@ static Tk_Window mainWindow;
 //* threads sinchronization *//
 DWORD  dwMainThreadId;
 console_semaphore_value volatile console_semaphore = WAIT_CONSOLE_COMMAND;
-#define THE_COMMAND_SIZE 1000     /* Console Command size */
-wchar_t console_command[THE_COMMAND_SIZE];
+wchar_t console_command[DRAW_COMMAND_SIZE + 1];
 bool volatile isTkLoopStarted = false;
 
 /*--------------------------------------------------------*\
@@ -2051,6 +2051,7 @@ Standard_Boolean Init_Appli(HINSTANCE hInst,
                            &IDThread);
   if (!hThread) {
     cout << "Tcl/Tk main loop thread not created. Switching to batch mode..." << endl;
+    Draw_Batch = Standard_True;
 #ifdef _TK
     try {
       OCC_CATCH_SIGNALS
@@ -2125,7 +2126,7 @@ static DWORD WINAPI readStdinThreadFunc()
      && isConsoleInput)
     {
       DWORD aNbRead = 0;
-      if (ReadConsoleW (anStdIn, console_command, THE_COMMAND_SIZE, &aNbRead, NULL))
+      if (ReadConsoleW (anStdIn, console_command, DRAW_COMMAND_SIZE, &aNbRead, NULL))
       {
         console_command[aNbRead] = L'\0';
         console_semaphore = HAS_CONSOLE_COMMAND;
@@ -2145,7 +2146,7 @@ static DWORD WINAPI readStdinThreadFunc()
     }
 
     // fgetws() works only for characters within active locale (see setlocale())
-    if (fgetws (console_command, THE_COMMAND_SIZE, stdin))
+    if (fgetws (console_command, DRAW_COMMAND_SIZE, stdin))
     {
       console_semaphore = HAS_CONSOLE_COMMAND;
     }
@@ -2373,7 +2374,7 @@ static DWORD WINAPI tkLoop(VOID)
     }
   #ifdef _TK
     // We should not exit until the Main Tk window is closed
-    toLoop = (Tk_GetNumMainWindows() > 0) || Draw_VirtualWindows;
+    toLoop = (Draw_VirtualWindows || Tk_GetNumMainWindows() > 0);
   #endif
   }
   Tcl_Exit(0);

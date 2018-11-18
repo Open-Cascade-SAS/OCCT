@@ -66,8 +66,6 @@ filebuf Draw_Spyfile;
 
 static ostream spystream(&Draw_Spyfile);
 
-static   Standard_Boolean XLoop;
-
 static Handle(Draw_ProgressIndicator) PInd = NULL;
 
 Standard_EXPORT Standard_Boolean Draw_Interprete(const char* command);
@@ -76,23 +74,20 @@ Standard_EXPORT Standard_Boolean Draw_Interprete(const char* command);
 // *******************************************************************
 // read an init file
 // *******************************************************************
-#ifdef _WIN32
-extern console_semaphore_value volatile console_semaphore;
-extern wchar_t console_command[1000];
-#endif
 
 static void ReadInitFile (const TCollection_AsciiString& theFileName)
 {
   TCollection_AsciiString aPath = theFileName;
 #ifdef _WIN32
+  aPath.ChangeAll('\\', '/');
   if (!Draw_Batch)
   {
     try
     {
-      aPath.ChangeAll ('\\', '/');
       {
-        const TCollection_ExtendedString aCmdWide = TCollection_ExtendedString ("source -encoding utf-8 \"") + TCollection_ExtendedString (aPath) + "\"";
-        memcpy (console_command, aCmdWide.ToWideString(), Min (aCmdWide.Length() + 1, 980) * sizeof(wchar_t));
+        TCollection_ExtendedString aCmdWide ("source -encoding utf-8 \"");
+        aCmdWide += TCollection_ExtendedString (aPath) + "\"";
+        wcscpy_s (console_command, aCmdWide.ToWideString());
       }
       console_semaphore = HAS_CONSOLE_COMMAND;
       while (console_semaphore == HAS_CONSOLE_COMMAND)
@@ -286,10 +281,13 @@ void Draw_Appli(int argc, char** argv, const FDraw_InitAppli Draw_InitAppli)
     Draw_Batch=!Init_Appli();
 #endif
   else
+  {
     cout << "DRAW is running in batch mode" << endl;
+    theCommands.Init();
+    Tcl_Init(theCommands.Interp());
+  }
 
-  XLoop = !Draw_Batch;
-  if (XLoop)
+  if (! Draw_Batch)
   {
     // Default colors
     for (int i = 0; i < MAXCOLOR; ++i)
@@ -364,8 +362,21 @@ void Draw_Appli(int argc, char** argv, const FDraw_InitAppli Draw_InitAppli)
   }
 
   // execute command from command line
-  if (!aCommand.IsEmpty()) {
-    Draw_Interprete (aCommand.ToCString());
+  if (!aCommand.IsEmpty())
+  {
+#ifdef _WIN32
+    if (!Draw_Batch)
+    {
+      // on Windows except batch mode, commands are executed in separate thread
+      while (console_semaphore == HAS_CONSOLE_COMMAND) Sleep(10);
+      TCollection_ExtendedString aCmdWide(aCommand);
+      wcscpy_s(console_command, aCmdWide.ToWideString());
+      console_semaphore = HAS_CONSOLE_COMMAND;
+      while (console_semaphore == HAS_CONSOLE_COMMAND) Sleep(10);
+    }
+    else
+#endif
+    Draw_Interprete (aCommand.ToCString()); // Linux and Windows batch mode
     // provide a clean exit, this is useful for some analysis tools
     if ( ! isInteractiveForced )
 #ifndef _WIN32
@@ -378,7 +389,7 @@ void Draw_Appli(int argc, char** argv, const FDraw_InitAppli Draw_InitAppli)
   // *****************************************************************
   // X loop
   // *****************************************************************
-  if (XLoop) {
+  if (! Draw_Batch) {
 #ifdef _WIN32
     Run_Appli(hWnd);
 #else
@@ -387,15 +398,15 @@ void Draw_Appli(int argc, char** argv, const FDraw_InitAppli Draw_InitAppli)
   }
   else
   {
-    char cmd[255];
-    for (;;)
+    const int MAXCMD = 2048;
+    char cmd[MAXCMD];
+    for (int ncmd = 1;; ++ncmd)
     {
-      cout << "Viewer>";
-      int i = -1;
-      do {
-        cin.get(cmd[++i]);
-      } while ((cmd[i] != '\n') && (!cin.fail()));
-      cmd[i] = '\0';
+      cout << "Draw[" << ncmd << "]> ";
+      if (cin.getline (cmd, MAXCMD).fail())
+      {
+        break;
+      }
       Draw_Interprete(cmd);
     }
   }
