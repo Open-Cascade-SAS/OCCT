@@ -456,7 +456,10 @@ Standard_Boolean StepData_StepReaderData::ReadSubList(const Standard_Integer num
   const Standard_Integer /* lenmax */) const
 {
   numsub = SubListNumber(num, nump, Standard_False);
-  if (numsub > 0) return Standard_True;
+  if (numsub > 0)
+  {
+    return (NbParams(numsub) > 0);
+  }
   //  Si optionel indefini, on passe l eponge
   numsub = 0;
   Standard_Boolean isvoid = (Param(num, nump).ParamType() == Interface_ParamVoid);

@@ -94,7 +94,7 @@ void RWStepFEA_RWNodeWithSolutionCoordinateSystem::WriteStep (StepData_StepWrite
   SW.Send (ent->StepRepr_Representation::Name());
 
   SW.OpenSub();
-  for (Standard_Integer i1=1; i1 <= ent->StepRepr_Representation::Items()->Length(); i1++ ) {
+  for (Standard_Integer i1=1; i1 <= ent->StepRepr_Representation::NbItems(); i1++ ) {
     Handle(StepRepr_RepresentationItem) Var0 = ent->StepRepr_Representation::Items()->Value(i1);
     SW.Send (Var0);
   }
@@ -118,7 +118,7 @@ void RWStepFEA_RWNodeWithSolutionCoordinateSystem::Share (const Handle(StepFEA_N
 
   // Inherited fields of Representation
 
-  for (Standard_Integer i1=1; i1 <= ent->StepRepr_Representation::Items()->Length(); i1++ ) {
+  for (Standard_Integer i1=1; i1 <= ent->StepRepr_Representation::NbItems(); i1++ ) {
     Handle(StepRepr_RepresentationItem) Var0 = ent->StepRepr_Representation::Items()->Value(i1);
     iter.AddItem (Var0);
   }

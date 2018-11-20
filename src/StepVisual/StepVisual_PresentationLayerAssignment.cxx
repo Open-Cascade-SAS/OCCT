@@ -70,5 +70,5 @@ StepVisual_LayeredItem StepVisual_PresentationLayerAssignment::AssignedItemsValu
 
 Standard_Integer StepVisual_PresentationLayerAssignment::NbAssignedItems () const
 {
-	return assignedItems->Length();
+	return assignedItems.IsNull()? 0 : assignedItems->Length();
 }

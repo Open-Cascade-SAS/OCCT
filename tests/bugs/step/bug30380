@@ -1,0 +1,13 @@
+puts "=========="
+puts "0030380: Ex-ception while reading Step-file"
+puts "=========="
+puts ""
+
+ReadStep D_First [locate_data_file bug29633_nist_ctc_05_asme1_ap242-1.stp]
+XGetOneShape result D_First 
+
+checkshape result
+
+checknbshapes result -solid 1 -shell 1 -face 156 -wire 201
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

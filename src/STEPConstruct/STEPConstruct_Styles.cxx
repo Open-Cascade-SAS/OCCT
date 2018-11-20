@@ -558,7 +558,7 @@ Standard_Boolean STEPConstruct_Styles::GetColors (const Handle(StepVisual_Styled
   // parse on styles
   for(Standard_Integer j=1; j<=style->NbStyles(); j++ ) {
     Handle(StepVisual_PresentationStyleAssignment) PSA = style->StylesValue ( j );
-    if(PSA.IsNull()) continue;
+    if(PSA.IsNull() || PSA->Styles().IsNull()) continue;
     IsComponent = Standard_True;
     
     for(Standard_Integer k=1; k<=PSA->NbStyles(); k++ ) {

@@ -107,7 +107,7 @@ void RWStepShape_RWShapeDimensionRepresentation::WriteStep (StepData_StepWriter&
 
   SW.OpenSub();
   if (ent->ItemsAP242().IsNull()) {
-    for (Standard_Integer i1=1; i1 <= ent->StepRepr_Representation::Items()->Length(); i1++ ) {
+    for (Standard_Integer i1=1; i1 <= ent->StepRepr_Representation::NbItems(); i1++ ) {
       Handle(StepRepr_RepresentationItem) Var0 = ent->StepRepr_Representation::Items()->Value(i1);
       SW.Send (Var0);
     }
@@ -135,7 +135,7 @@ void RWStepShape_RWShapeDimensionRepresentation::Share (const Handle(StepShape_S
   // Inherited fields of Representation
 
   if (ent->ItemsAP242().IsNull()) {
-    for (Standard_Integer i1=1; i1 <= ent->StepRepr_Representation::Items()->Length(); i1++ ) {
+    for (Standard_Integer i1=1; i1 <= ent->StepRepr_Representation::NbItems(); i1++ ) {
       Handle(StepRepr_RepresentationItem) Var0 = ent->StepRepr_Representation::Items()->Value(i1);
       iter.AddItem (Var0);
     }
