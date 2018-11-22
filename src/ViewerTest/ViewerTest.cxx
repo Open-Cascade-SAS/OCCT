@@ -881,15 +881,10 @@ static int VDir (Draw_Interpretor& theDI,
                  Standard_Integer ,
                  const char** )
 {
-  if (!a3DView().IsNull())
-  {
-    return 0;
-  }
-
   for (ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName anIter (GetMapOfAIS());
        anIter.More(); anIter.Next())
   {
-    theDI << "\t" << anIter.Key2().ToCString() << "\n";
+    theDI << "\t" << anIter.Key2() << "\n";
   }
   return 0;
 }
