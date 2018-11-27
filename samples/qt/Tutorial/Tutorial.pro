@@ -61,14 +61,14 @@ unix {
 win32 {
     CONFIG(debug, debug|release) {
         DEFINES += _DEBUG
-        DESTDIR = ./win$(ARCH)/$(VCVER)/bind
-        OBJECTS_DIR = ./win$(ARCH)/$(VCVER)/objd
-        MOC_DIR = ./win$(ARCH)/$(VCVER)/mocd
+        DESTDIR = ./win$$(ARCH)/$$(VCVER)/bind
+        OBJECTS_DIR = ./win$$(ARCH)/$$(VCVER)/objd
+        MOC_DIR = ./win$$(ARCH)/$$(VCVER)/mocd
     } else {
         DEFINES += NDEBUG
-        DESTDIR = ./win$(ARCH)/$(VCVER)/bin
-        OBJECTS_DIR = ./win$(ARCH)/$(VCVER)/obj
-        MOC_DIR = ./win$(ARCH)/$(VCVER)/moc
+        DESTDIR = ./win$$(ARCH)/$$(VCVER)/bin
+        OBJECTS_DIR = ./win$$(ARCH)/$$(VCVER)/obj
+        MOC_DIR = ./win$$(ARCH)/$$(VCVER)/moc
     }
     LIBS = -L$$(QTDIR)/lib;$$(CSF_OCCTLibPath)
     DEFINES += NO_COMMONSAMPLE_EXPORTS NO_IESAMPLE_EXPORTS
