@@ -15,6 +15,8 @@
 
 #include <Bnd_Box.hxx>
 #include <BRepBndLib.hxx>
+#include <Message.hxx>
+#include <Message_Messenger.hxx>
 #include <OSD_Path.hxx>
 #include <OSD_OpenFile.hxx>
 #include <RWStl.hxx>
@@ -56,16 +58,29 @@ Standard_Boolean StlAPI_Writer::Write (const TopoDS_Shape&    theShape,
     }
   }
 
+  if (aNbTriangles == 0)
+  {
+    // No triangulation on the shape
+    return Standard_False;
+  }
+
   // create temporary triangulation
   Handle(Poly_Triangulation) aMesh = new Poly_Triangulation (aNbNodes, aNbTriangles, Standard_False);
-
+  // count faces missing triangulation
+  Standard_Integer aNbFacesNoTri = 0;
   // fill temporary triangulation
   Standard_Integer aNodeOffset = 0;
   Standard_Integer aTriangleOffet = 0;
   for (TopExp_Explorer anExpSF (theShape, TopAbs_FACE); anExpSF.More(); anExpSF.Next())
   {
+    const TopoDS_Shape& aFace = anExpSF.Current();
     TopLoc_Location aLoc;
-    Handle(Poly_Triangulation) aTriangulation = BRep_Tool::Triangulation (TopoDS::Face (anExpSF.Current()), aLoc);
+    Handle(Poly_Triangulation) aTriangulation = BRep_Tool::Triangulation (TopoDS::Face (aFace), aLoc);
+    if (aTriangulation.IsNull())
+    {
+      ++aNbFacesNoTri;
+      continue;
+    }
 
     const TColgp_Array1OfPnt& aNodes = aTriangulation->Nodes();
     const Poly_Array1OfTriangle& aTriangles = aTriangulation->Triangles();
@@ -109,7 +124,20 @@ Standard_Boolean StlAPI_Writer::Write (const TopoDS_Shape&    theShape,
   }
 
   OSD_Path aPath (theFileName);
-  return myASCIIMode
+  Standard_Boolean isDone = (myASCIIMode
        ? RWStl::WriteAscii  (aMesh, aPath)
-       : RWStl::WriteBinary (aMesh, aPath);
+       : RWStl::WriteBinary (aMesh, aPath));
+
+  if (isDone && (aNbFacesNoTri > 0))
+  {
+    // Print warning with number of faces missing triangulation
+    TCollection_AsciiString aWarningMsg =
+      TCollection_AsciiString ("Warning: ") +
+      TCollection_AsciiString (aNbFacesNoTri) +
+      TCollection_AsciiString ((aNbFacesNoTri == 1) ? " face has" : " faces have") +
+      TCollection_AsciiString (" been skipped due to null triangulation");
+    Message::DefaultMessenger()->Send (aWarningMsg, Message_Warning);
+  }
+
+  return isDone;
 }
