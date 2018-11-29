@@ -8,6 +8,7 @@ puts ""
 # Bad pcurve is built on a face while converting the shape from STEP format.
 ############################################################################
 
+pload XDE
 stepread [locate_data_file bug24100_REFLECT_CURVE_PART_5_SOL_ohne_Metadaten.stp] a *
 
 explode a_1 f
