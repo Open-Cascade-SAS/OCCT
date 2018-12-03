@@ -111,18 +111,33 @@ namespace BVH
     };
 
     //! Functor class to run sorting in parallel.
-    struct Functor
+    class Functor
     {
-      //! Runs sorting function for the given range.
-      void operator()(const SortRange& theRange) const
+    public:
+      Functor(const SortRange (&aSplits)[2], const Standard_Boolean isParallel)
+      : mySplits     (aSplits),
+        myIsParallel (isParallel)
       {
-        RadixSorter::Sort (theRange.myStart, theRange.myFinal, theRange.myDigit);
       }
+      
+      //! Runs sorting function for the given range.
+      void operator()(const Standard_Integer theIndex) const
+      {
+        RadixSorter::Sort (mySplits[theIndex].myStart, mySplits[theIndex].myFinal,
+                           mySplits[theIndex].myDigit, myIsParallel);
+      }
+
+    private:
+      void operator=(const Functor&);
+      
+    private:
+      const SortRange (&mySplits)[2];
+      Standard_Boolean myIsParallel;
     };
 
   public:
 
-    static void Sort (LinkIterator theStart, LinkIterator theFinal, Standard_Integer theDigit)
+    static void Sort (LinkIterator theStart, LinkIterator theFinal, Standard_Integer theDigit, const Standard_Boolean isParallel)
     {
       if (theDigit < 24)
       {
@@ -136,7 +151,7 @@ namespace BVH
           {anOffset, theFinal, theDigit - 1}
         };
 
-        OSD_Parallel::ForEach (std::begin (aSplits), std::end (aSplits), Functor ());
+        OSD_Parallel::For (0, 2, Functor (aSplits, isParallel), !isParallel);
       }
     }
 
@@ -202,7 +217,7 @@ void BVH_RadixSorter<T, N>::Perform (BVH_Set<T, N>* theSet, const Standard_Integ
   }
 
   // Step 2 -- Sort primitives by their Morton codes using radix sort
-  BVH::RadixSorter::Sort (myEncodedLinks->begin(), myEncodedLinks->end(), 29);
+  BVH::RadixSorter::Sort (myEncodedLinks->begin(), myEncodedLinks->end(), 29, this->IsParallel());
 
   NCollection_Array1<Standard_Integer> aLinkMap (theStart, theFinal);
   for (Standard_Integer aLinkIdx = theStart; aLinkIdx <= theFinal; ++aLinkIdx)

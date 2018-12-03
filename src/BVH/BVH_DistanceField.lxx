@@ -24,7 +24,8 @@ template<class T, int N>
 BVH_DistanceField<T, N>::BVH_DistanceField (const Standard_Integer theMaximumSize,
                                             const Standard_Boolean theComputeSign)
 : myMaximumSize (theMaximumSize),
-  myComputeSign (theComputeSign)
+  myComputeSign (theComputeSign),
+  myIsParallel  (Standard_False)
 {
   Standard_STATIC_ASSERT (N == 3 || N == 4);
 
@@ -495,7 +496,7 @@ Standard_Boolean BVH_DistanceField<T, N>::Build (BVH_Geometry<T, N>& theGeometry
   myVoxelSize.y() = (myCornerMax.y() - myCornerMin.y()) / myDimensionY;
   myVoxelSize.z() = (myCornerMax.z() - myCornerMin.z()) / myDimensionZ;
 
-  OSD_Parallel::For (0, myDimensionZ, BVH_ParallelDistanceFieldBuilder<T, N> (this, &theGeometry));
+  OSD_Parallel::For (0, myDimensionZ, BVH_ParallelDistanceFieldBuilder<T, N> (this, &theGeometry), !IsParallel());
 
   return Standard_True;
 }

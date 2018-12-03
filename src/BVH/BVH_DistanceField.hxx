@@ -46,6 +46,18 @@ public:
   //! Builds 3D distance field from BVH geometry.
   Standard_Boolean Build (BVH_Geometry<T, N>& theGeometry);
 
+  //! Returns parallel flag.
+  inline Standard_Boolean IsParallel() const
+  {
+    return myIsParallel;
+  }
+
+  //! Set parallel flag contolling possibility of parallel execution.
+  inline void SetParallel(const Standard_Boolean isParallel)
+  {
+    myIsParallel = isParallel;
+  }
+
 public:
 
   //! Returns packed voxel data.
@@ -141,6 +153,7 @@ protected:
   //! Enables/disables signing of distance field.
   Standard_Boolean myComputeSign;
 
+  Standard_Boolean myIsParallel;
 };
 
 #include <BVH_DistanceField.lxx>

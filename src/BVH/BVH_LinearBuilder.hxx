@@ -227,6 +227,11 @@ namespace BVH
   {
   public:
 
+    UpdateBoundTask (const Standard_Boolean isParallel)
+    : myIsParallel (isParallel)
+    {
+    }
+    
     //! Executes the task.
     void operator()(const BoundData<T, N>& theData) const
     {
@@ -266,7 +271,7 @@ namespace BVH
 
         if (!aList.empty())
         {
-          OSD_Parallel::ForEach (aList.begin (), aList.end (), UpdateBoundTask<T, N> ());
+          OSD_Parallel::ForEach (aList.begin (), aList.end (), UpdateBoundTask<T, N> (myIsParallel), !myIsParallel);
         }
 
         typename BVH_Box<T, N>::BVH_VecNt aLftMinPoint = theData.myBVH->MinPointBuffer()[aLftChild];
@@ -283,6 +288,10 @@ namespace BVH
         *theData.myHeight = Max (aLftHeight, aRghHeight) + 1;
       }
     }
+    
+  private:
+    
+    Standard_Boolean myIsParallel;
   };
 }
 
@@ -306,6 +315,7 @@ void BVH_LinearBuilder<T, N>::Build (BVH_Set<T, N>*       theSet,
 
   // Step 0 -- Initialize parameter of virtual grid
   BVH_RadixSorter<T, N> aRadixSorter (theBox);
+  aRadixSorter.SetParallel (this->IsParallel());
 
   // Step 1 - Perform radix sorting of primitive set
   aRadixSorter.Perform (theSet);
@@ -319,7 +329,7 @@ void BVH_LinearBuilder<T, N>::Build (BVH_Set<T, N>*       theSet,
 
   Standard_Integer aHeight = 0;
   BVH::BoundData<T, N> aBoundData = { theSet, theBVH, 0, 0, &aHeight };
-  BVH::UpdateBoundTask<T, N> aBoundTask;
+  BVH::UpdateBoundTask<T, N> aBoundTask (this->IsParallel());
   aBoundTask (aBoundData);
 
   BVH_Builder<T, N>::updateDepth (theBVH, aHeight);

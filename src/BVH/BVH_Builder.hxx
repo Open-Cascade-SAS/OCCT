@@ -32,19 +32,32 @@ public:
   //! Returns the maximum number of sub-elements in the leaf.
   Standard_Integer LeafNodeSize() const { return myLeafNodeSize; }
 
+  //! Returns parallel flag.
+  inline Standard_Boolean IsParallel() const
+  {
+    return myIsParallel;
+  }
+
+  //! Set parallel flag contolling possibility of parallel execution.
+  inline void SetParallel(const Standard_Boolean isParallel)
+  {
+    myIsParallel = isParallel;
+  }
+
 protected:
 
   //! Creates new abstract BVH builder.
   BVH_BuilderTransient (const Standard_Integer theLeafNodeSize,
                         const Standard_Integer theMaxTreeDepth)
   : myMaxTreeDepth (theMaxTreeDepth),
-    myLeafNodeSize (theLeafNodeSize) {}
+    myLeafNodeSize (theLeafNodeSize),
+    myIsParallel   (Standard_False) {}
 
 protected:
 
   Standard_Integer myMaxTreeDepth; //!< Maximum depth of constructed BVH
   Standard_Integer myLeafNodeSize; //!< Maximum number of objects per leaf
-
+  Standard_Boolean myIsParallel;   //!< Parallel execution flag.
 };
 
 //! Performs construction of BVH tree using bounding
