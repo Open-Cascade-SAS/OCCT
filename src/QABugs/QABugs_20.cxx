@@ -3024,6 +3024,42 @@ static Standard_Integer OCC29311 (Draw_Interpretor& theDI, Standard_Integer theA
   return 0;
 }
 
+//=======================================================================
+//function : OCC30391
+//purpose  : 
+//=======================================================================
+#include <BRepOffset_Tool.hxx>
+static Standard_Integer OCC30391(Draw_Interpretor& theDI,
+                                 Standard_Integer theNArg,
+                                 const char** theArgV)
+{
+  if (theNArg < 7)
+  {
+    theDI << "Use: " << theArgV[0] << "result face LenBeforeUfirst LenAfterUlast LenBeforeVfirst LenAfterVlast\n";
+    return 1;
+  }
+
+  TopoDS_Shape aShape = DBRep::Get(theArgV[2], TopAbs_FACE);
+  if (aShape.IsNull())
+    return 1;
+
+  const TopoDS_Face& aFace = TopoDS::Face(aShape);
+
+  Standard_Real aLenBeforeUfirst = atof(theArgV[3]);
+  Standard_Real aLenAfterUlast   = atof(theArgV[4]);
+  Standard_Real aLenBeforeVfirst = atof(theArgV[5]);
+  Standard_Real aLenAfterVlast   = atof(theArgV[6]);
+
+  TopoDS_Face Result;
+  BRepOffset_Tool::EnLargeFace(aFace, Result,
+                               Standard_True,Standard_True,Standard_True,Standard_True,Standard_True,1,
+                               aLenBeforeUfirst, aLenAfterUlast,
+                               aLenBeforeVfirst, aLenAfterVlast);
+
+  DBRep::Set(theArgV[1], Result);
+  return 0;
+}
+
 void QABugs::Commands_20(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
@@ -3063,6 +3099,7 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC29925", "OCC29925: check safety of character classification functions", __FILE__, OCC29925, group);
   theCommands.Add("OCC29807", "OCC29807 surface1 surface2 u1 v1 u2 v2", __FILE__, OCC29807, group);
   theCommands.Add("OCC29311", "OCC29311 shape counter nbiter: check performance of OBB calculation", __FILE__, OCC29311, group);
+  theCommands.Add("OCC30391", "OCC30391 result face LenBeforeUfirst LenAfterUlast LenBeforeVfirst LenAfterVlast", __FILE__, OCC30391, group);
 
   return;
 }
