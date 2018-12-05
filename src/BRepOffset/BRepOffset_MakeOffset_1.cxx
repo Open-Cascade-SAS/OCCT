@@ -55,6 +55,7 @@
 #include <TopTools_ListOfShape.hxx>
 #include <TopTools_DataMapOfShapeShape.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
+#include <TopTools_MapOfOrientedShape.hxx>
 
 #include <BOPTools_AlgoTools3D.hxx>
 #include <BOPTools_AlgoTools.hxx>
@@ -186,6 +187,7 @@ static
                                 const TopTools_ListOfShape& theLFImages,
                                 const TopTools_MapOfShape& theInvertedEdges,
                                 const TopTools_DataMapOfShapeListOfShape& theDMEOrLEIm,
+                                const TopTools_IndexedDataMapOfShapeListOfShape& theEFMap,
                                 TopTools_MapOfShape& theMFHoles,
                                 TopTools_DataMapOfShapeListOfShape& theDMFNewHoles,
                                 Handle(IntTools_Context)& theContext);
@@ -549,6 +551,9 @@ static
                                   Handle(BRepAlgo_AsDes)& theAsDes);
 
 static
+  void FillGaps(TopTools_IndexedDataMapOfShapeListOfShape& theFImages);
+
+static
   void FillHistory(const TopTools_IndexedDataMapOfShapeListOfShape& theFImages,
                    const TopTools_DataMapOfShapeListOfShape& theEImages,
                    BRepAlgo_Image& theImage);
@@ -700,6 +705,11 @@ void BRepOffset_MakeOffset::BuildSplitsOfExtendedFaces(const TopTools_ListOfShap
                    anInvFaces, anArtInvFaces, aVAEmpty, theETrimEInf, theAsDes);
     }
   }
+
+  // Fill possible gaps in the splits of offset faces to increase possibility of
+  // creating closed volume from these splits
+  FillGaps(aFImages);
+
   // Fill history for faces and edges
   FillHistory(aFImages, anOEImages, theImage);
 }
@@ -977,7 +987,19 @@ void BuildSplitsOfFaces(const TopTools_ListOfShape& theLF,
     BRep_Builder().Add(aCEInverted, aItM.Value());
   }
 #endif
-  //
+
+  // Build Edge-Face connectivity map to find faces which removal
+  // may potentially lead to creation of the holes in the faces
+  // preventing from obtaining closed volume in the result
+  TopTools_IndexedDataMapOfShapeListOfShape anEFMap;
+  const Standard_Integer aNbF = theFImages.Extent();
+  for (i = 1; i <= aNbF; ++i)
+  {
+    TopTools_ListIteratorOfListOfShape itLFIm(theFImages(i));
+    for (; itLFIm.More(); itLFIm.Next())
+      TopExp::MapShapesAndAncestors(itLFIm.Value(), TopAbs_EDGE, TopAbs_FACE, anEFMap);
+  }
+
   TopTools_ListOfShape anEmptyList;
   // invalid faces inside the holes
   TopTools_IndexedMapOfShape aMFInvInHole;
@@ -1012,7 +1034,7 @@ void BuildSplitsOfFaces(const TopTools_ListOfShape& theLF,
       TopTools_MapOfShape aMFHoles;
       const TopoDS_Face& aFOr = TopoDS::Face(theFacesOrigins.Find(aF));
       FindFacesInsideHoleWires(aFOr, aF, aLFImages, theInvertedEdges,
-                               aDMEOrLEIm, aMFHoles, theDMFNewHoles, aCtx);
+                               aDMEOrLEIm, anEFMap, aMFHoles, theDMFNewHoles, aCtx);
       //
       TopTools_MapIteratorOfMapOfShape aItMH(aMFHoles);
       for (; aItMH.More(); aItMH.Next()) {
@@ -2008,6 +2030,7 @@ void FindFacesInsideHoleWires(const TopoDS_Face& theFOrigin,
                               const TopTools_ListOfShape& theLFImages,
                               const TopTools_MapOfShape& theInvertedEdges,
                               const TopTools_DataMapOfShapeListOfShape& theDMEOrLEIm,
+                              const TopTools_IndexedDataMapOfShapeListOfShape& theEFMap,
                               TopTools_MapOfShape& theMFHoles,
                               TopTools_DataMapOfShapeListOfShape& theDMFNewHoles,
                               Handle(IntTools_Context)& theContext)
@@ -2122,14 +2145,18 @@ void FindFacesInsideHoleWires(const TopoDS_Face& theFOrigin,
       }
     }
   }
-  //
+
+  // Build Edge-Face map for splits of current offset face
+  TopTools_IndexedDataMapOfShapeListOfShape anEFSplitsMap;
+  // Build Edge-Face map for holes
+  TopTools_IndexedDataMapOfShapeListOfShape anEFHolesMap;
+
   // among the splits of the offset face find those that are
   // located inside the hole faces
-  //
   TopTools_ListIteratorOfListOfShape aItLF(theLFImages);
   for (; aItLF.More(); aItLF.Next()) {
     const TopoDS_Face& aFIm = TopoDS::Face(aItLF.Value());
-    //
+    TopExp::MapShapesAndAncestors(aFIm, TopAbs_EDGE, TopAbs_FACE, anEFSplitsMap);
     // get the point inside the face and classify it relatively hole faces
     gp_Pnt aP3D;
     gp_Pnt2d aP2D;
@@ -2146,9 +2173,39 @@ void FindFacesInsideHoleWires(const TopoDS_Face& theFOrigin,
       if (theContext->IsValidPointForFace(aP3D, aFNew, aTol)) {
         // the face is classified as IN
         theMFHoles.Add(aFIm);
+        TopExp::MapShapesAndAncestors(aFIm, TopAbs_EDGE, TopAbs_FACE, anEFHolesMap);
         break;
       }
     }
+  }
+
+  // Out of all found holes find those which cannot be removed
+  // by checking their connectivity to splits of other offset faces.
+  // These are the faces, which will create uncovered holes if removed.
+  const Standard_Integer aNbE = anEFHolesMap.Extent();
+  for (Standard_Integer i = 1; i <= aNbE; ++i)
+  {
+    const TopoDS_Shape& anEdge = anEFHolesMap.FindKey(i);
+    const TopTools_ListOfShape& aLFHoles = anEFHolesMap(i);
+    // Check if the edge is outer for holes
+    if (aLFHoles.Extent() != 1)
+      continue;
+
+    const TopoDS_Shape& aFHole = aLFHoles.First();
+    if (!theMFHoles.Contains(aFHole))
+      // Already removed
+      continue;
+
+    // Check if the edge is not outer for splits
+    const TopTools_ListOfShape& aLSplits = anEFSplitsMap.FindFromKey(anEdge);
+    if (aLSplits.Extent() == 1)
+      continue;
+
+    // Check if edge is only connected to splits of the current offset face
+    const TopTools_ListOfShape& aLFAll = theEFMap.FindFromKey(anEdge);
+    if (aLFAll.Extent() == 2)
+      // Avoid removal of the hole from the splits
+      theMFHoles.Remove(aFHole);
   }
 }
 
@@ -6621,6 +6678,98 @@ void UpdateNewIntersectionEdges(const TopTools_ListOfShape& theLE,
 }
 
 //=======================================================================
+//function : FillGaps
+//purpose  : Fill possible gaps (holes) in the splits of the offset faces
+//=======================================================================
+void FillGaps(TopTools_IndexedDataMapOfShapeListOfShape& theFImages)
+{
+  Standard_Integer aNbF = theFImages.Extent();
+  if (!aNbF)
+    return;
+
+  // Check the splits of offset faces on the free edges and fill the gaps (holes)
+  // in created splits, otherwise the closed volume will not be possible to create.
+
+  // Map the splits of faces to find free edges
+  TopTools_IndexedDataMapOfShapeListOfShape anEFMap;
+  for (Standard_Integer i = 1; i <= aNbF; ++i)
+  {
+    TopTools_ListIteratorOfListOfShape itLF(theFImages(i));
+    for (; itLF.More(); itLF.Next())
+      TopExp::MapShapesAndAncestors(itLF.Value(), TopAbs_EDGE, TopAbs_FACE, anEFMap);
+  }
+
+  // Analyze images of each offset face on the presence of free edges
+  // and try to fill the holes
+  for (Standard_Integer i = 1; i <= aNbF; ++i)
+  {
+    TopTools_ListOfShape& aLFImages = theFImages(i);
+    if (aLFImages.IsEmpty())
+      continue;
+
+    // Collect all edges from the splits
+    TopoDS_Compound anEdges;
+    BRep_Builder().MakeCompound(anEdges);
+
+    // Collect all free edges into a map with reverted orientation
+    TopTools_MapOfOrientedShape aFreeEdgesMap;
+    TopTools_ListIteratorOfListOfShape itLF(aLFImages);
+    for (; itLF.More(); itLF.Next())
+    {
+      const TopoDS_Shape& aFIm = itLF.Value();
+      TopExp_Explorer anExpE(aFIm, TopAbs_EDGE);
+      for (; anExpE.More(); anExpE.Next())
+      {
+        const TopoDS_Shape& aE = anExpE.Current();
+        if (aE.Orientation() != TopAbs_FORWARD &&
+            aE.Orientation() != TopAbs_REVERSED)
+          // Skip internals
+          continue;
+
+        const TopTools_ListOfShape& aLF = anEFMap.FindFromKey(aE);
+        if (aLF.Extent() == 1)
+          aFreeEdgesMap.Add(aE.Reversed());
+
+        BRep_Builder().Add(anEdges, aE);
+      }
+    }
+
+    if (aFreeEdgesMap.IsEmpty())
+      // No free edges
+      continue;
+
+    // Free edges are found - fill the gaps by creating new splits
+    // of the face using these free edges
+    const TopoDS_Shape& aF = theFImages.FindKey(i);
+
+    // Build new splits using all kept edges and among new splits
+    // find those containing free edges
+    TopTools_ListOfShape aLFNew;
+    TopTools_DataMapOfShapeShape aDummy;
+
+    BuildSplitsOfFace(TopoDS::Face(aF), anEdges, aDummy, aLFNew);
+
+    // Find faces filling holes
+    itLF.Initialize(aLFNew);
+    for (; itLF.More(); itLF.Next())
+    {
+      const TopoDS_Shape& aFNew = itLF.Value();
+      TopExp_Explorer anExpE(aFNew, TopAbs_EDGE);
+      for (; anExpE.More(); anExpE.Next())
+      {
+        const TopoDS_Shape& aE = anExpE.Current();
+        if (aFreeEdgesMap.Contains(aE))
+        {
+          // Add face to splits
+          aLFImages.Append(aFNew);
+          break;
+        }
+      }
+    }
+  }
+}
+
+//=======================================================================
 //function : FillHistory
 //purpose  : Saving obtained results in history tools
 //=======================================================================
@@ -6628,54 +6777,67 @@ void FillHistory(const TopTools_IndexedDataMapOfShapeListOfShape& theFImages,
                  const TopTools_DataMapOfShapeListOfShape& theEImages,
                  BRepAlgo_Image& theImage)
 {
-  Standard_Integer i, aNb = theFImages.Extent();
-  if (!aNb) {
+  Standard_Integer aNbF = theFImages.Extent();
+  if (!aNbF)
     return;
-  }
-  //
-  BRep_Builder aBB;
-  TopoDS_Compound aFaces;
-  aBB.MakeCompound(aFaces);
-  //
+
+#ifdef OFFSET_DEBUG
+  // Build compound of faces to see preliminary result
+  TopoDS_Compound aDFaces;
+  BRep_Builder().MakeCompound(aDFaces);
+#endif
+
+  // Map of kept edges
+  TopTools_IndexedMapOfShape anEdgesMap;
+
   // Fill history for faces
-  for (i = 1; i <= aNb; ++i) {
-    const TopoDS_Shape& aF = theFImages.FindKey(i);
+  for (Standard_Integer i = 1; i <= aNbF; ++i)
+  {
     const TopTools_ListOfShape& aLFImages = theFImages(i);
-    //
-    if (aLFImages.Extent()) {
-      if (theImage.HasImage(aF)) {
-        theImage.Add(aF, aLFImages);
-      }
-      else {
-        theImage.Bind(aF, aLFImages);
-      }
-    }
-    //
-    TopTools_ListIteratorOfListOfShape aItLF(aLFImages);
-    for (; aItLF.More(); aItLF.Next()) {
-      const TopoDS_Shape& aFIm = aItLF.Value();
-      aBB.Add(aFaces, aFIm);
+    if (aLFImages.IsEmpty())
+      continue;
+
+    // Add the splits to history map
+    const TopoDS_Shape& aF = theFImages.FindKey(i);
+    if (theImage.HasImage(aF))
+      theImage.Add(aF, aLFImages);
+    else
+      theImage.Bind(aF, aLFImages);
+
+    // Collect edges from splits
+    TopTools_ListIteratorOfListOfShape itLF(aLFImages);
+    for (; itLF.More(); itLF.Next())
+    {
+      const TopoDS_Shape& aFIm = itLF.Value();
+      TopExp::MapShapes(aFIm, TopAbs_EDGE, anEdgesMap);
+
+#ifdef OFFSET_DEBUG
+      BRep_Builder().Add(aDFaces, aFIm);
+#endif
     }
   }
-  //
-  // fill history for edges
-  TopTools_IndexedMapOfShape aMFE;
-  TopExp::MapShapes(aFaces, TopAbs_EDGE, aMFE);
-  //
+
+  // Fill history for edges (iteration by the map is safe because the
+  // order is not important here)
   TopTools_DataMapIteratorOfDataMapOfShapeListOfShape aItEIm(theEImages);
-  for (; aItEIm.More(); aItEIm.Next()) {
+  for (; aItEIm.More(); aItEIm.Next())
+  {
     const TopoDS_Shape& aE = aItEIm.Key();
     const TopTools_ListOfShape& aLEIm = aItEIm.Value();
-    //
+
     Standard_Boolean bHasImage = theImage.HasImage(aE);
     TopTools_ListIteratorOfListOfShape aItLE(aLEIm);
-    for (; aItLE.More(); aItLE.Next()) {
+    for (; aItLE.More(); aItLE.Next())
+    {
       const TopoDS_Shape& aEIm = aItLE.Value();
-      if (aMFE.Contains(aEIm)) {
-        if (bHasImage) {
+      if (anEdgesMap.Contains(aEIm))
+      {
+        if (bHasImage)
+        {
           theImage.Add(aE, aEIm);
         }
-        else {
+        else
+        {
           theImage.Bind(aE, aEIm);
           bHasImage = Standard_True;
         }

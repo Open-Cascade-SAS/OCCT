@@ -1474,6 +1474,9 @@ void BRepOffset_Inter2d::ConnexIntByInt
     if (YaBuild) {
       for (itL.Initialize(L); itL.More(); itL.Next()) {
         const TopoDS_Edge& EI = TopoDS::Edge(itL.Value());
+        if (EI.Orientation() != TopAbs_FORWARD &&
+            EI.Orientation() != TopAbs_REVERSED)
+          continue;
         TopoDS_Shape aLocalShape = OFI.Generated(EI);
         const TopoDS_Edge& OE = TopoDS::Edge(aLocalShape);
         if (!MES.IsBound(OE) && !Build.IsBound(EI)) {
