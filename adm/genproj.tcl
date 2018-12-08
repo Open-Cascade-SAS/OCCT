@@ -1345,6 +1345,7 @@ proc osutils:csfList { theOS theCsfLibsMap theCsfFrmsMap } {
     set aLibsMap(CSF_advapi32)     "advapi32"
     set aLibsMap(CSF_gdi32)        "gdi32"
     set aLibsMap(CSF_user32)       "user32 comdlg32"
+    set aLibsMap(CSF_shell32)      "shell32"
     set aLibsMap(CSF_opengl32)     "opengl32"
     set aLibsMap(CSF_wsock32)      "wsock32"
     set aLibsMap(CSF_netapi32)     "netapi32"
