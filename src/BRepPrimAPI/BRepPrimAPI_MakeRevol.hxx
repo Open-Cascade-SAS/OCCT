@@ -95,6 +95,10 @@ public:
   //! Warning: shape S must be shape of type VERTEX, EDGE, FACE, SOLID.
   //! For shapes of other types method always returns empty list
   Standard_EXPORT virtual const TopTools_ListOfShape& Generated (const TopoDS_Shape& S) Standard_OVERRIDE;
+
+  //! Returns true if the shape S has been deleted.
+  Standard_EXPORT virtual Standard_Boolean IsDeleted(const TopoDS_Shape& S) Standard_OVERRIDE;
+
   
   //! Returns the TopoDS Shape of the beginning of the revolution,
   //! generated with theShape  (subShape of the generating shape).

@@ -77,6 +77,10 @@ public:
   //! returns the angle.
   Standard_EXPORT Standard_Real Angle() const;
 
+  //! Returns true if the aGenS is used in resulting Shape 
+  Standard_EXPORT Standard_Boolean IsUsed(const TopoDS_Shape& aGenS) const;
+
+
 private:
 
   //! builds the NumShape.

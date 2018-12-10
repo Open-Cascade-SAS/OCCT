@@ -80,7 +80,13 @@ public:
   Standard_EXPORT gp_Vec Vec() const;
 
 
+  //! Returns true if the  
+  //! aGenS is used in resulting shape
+  Standard_EXPORT Standard_Boolean IsUsed(const TopoDS_Shape& aGenS) const;
 
+  //! Returns true if the shape, generated from theS 
+  //! is used in result shape
+  Standard_EXPORT Standard_Boolean GenIsUsed(const TopoDS_Shape& theS) const;
 
 protected:
 

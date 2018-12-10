@@ -114,7 +114,10 @@ TopoDS_Shape BRepPrimAPI_MakePrism::LastShape()
 const TopTools_ListOfShape& BRepPrimAPI_MakePrism::Generated (const TopoDS_Shape& S)
 {
   myGenerated.Clear();
-  myGenerated.Append(myPrism.Shape (S));
+  if (myPrism.IsUsed(S) && myPrism.GenIsUsed(S))
+  {
+    myGenerated.Append(myPrism.Shape(S));
+  }
   return myGenerated;
 
 }
@@ -146,3 +149,13 @@ TopoDS_Shape BRepPrimAPI_MakePrism::LastShape(const TopoDS_Shape &theShape)
 }
 
 // Modified by skv - Fri Mar  4 15:50:09 2005 End
+
+//=======================================================================
+//function : IsDeleted
+//purpose  : 
+//=======================================================================
+Standard_Boolean BRepPrimAPI_MakePrism::IsDeleted(const TopoDS_Shape& S)
+{
+  return !myPrism.IsUsed(S);
+}
+

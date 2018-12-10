@@ -215,3 +215,11 @@ gp_Ax1  BRepSweep_Revol::Axe()const
 }
 
 
+//=======================================================================
+//function : IsUsed
+//purpose  : 
+//=======================================================================
+Standard_Boolean BRepSweep_Revol::IsUsed(const TopoDS_Shape& aGenS) const
+{
+  return myRotation.IsUsed(aGenS);
+}

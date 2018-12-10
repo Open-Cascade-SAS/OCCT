@@ -160,7 +160,7 @@ TopoDS_Shape  BRepSweep_Rotation::MakeEmptyVertex
 {
   //call only in construction mode with copy.
   Standard_ConstructionError_Raise_if
-    (!myCopy,"BRepSweep_Translation::MakeEmptyVertex");
+    (!myCopy,"BRepSweep_Rotation::MakeEmptyVertex");
   gp_Pnt P = BRep_Tool::Pnt(TopoDS::Vertex(aGenV));
   TopoDS_Vertex V;
   if (aDirV.Index()==2) P.Transform(myLocation.Transformation());

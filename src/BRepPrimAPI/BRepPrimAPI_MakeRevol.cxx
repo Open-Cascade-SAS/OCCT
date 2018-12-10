@@ -240,16 +240,49 @@ TopoDS_Shape BRepPrimAPI_MakeRevol::LastShape()
 const TopTools_ListOfShape& BRepPrimAPI_MakeRevol::Generated (const TopoDS_Shape& S)
 {
   myGenerated.Clear();
+
+  if (!myRevol.IsUsed(S))
+  {
+    return myGenerated;
+  }
+
   TopoDS_Shape aGS = myRevol.Shape(S);
   if (!aGS.IsNull())
   { 
     if (BRepTools_History::IsSupportedType(aGS))
     {
+      if (aGS.ShapeType() == TopAbs_EDGE)
+      {
+        Standard_Boolean isDeg = BRep_Tool::Degenerated(TopoDS::Edge(aGS));
+        if (isDeg)
+        {
+          TopTools_ListIteratorOfListOfShape anIt(myDegenerated);
+          for (; anIt.More(); anIt.Next())
+          {
+            if (aGS.IsSame(anIt.Value()))
+            {
+              myGenerated.Append(aGS);
+              if (!myHist.IsNull())
+              {
+                TopTools_ListIteratorOfListOfShape anIt1(myHist->Modified(aGS));
+                for (; anIt1.More(); anIt1.Next())
+                {
+                  myGenerated.Append(anIt1.Value());
+                }
+                return myGenerated;
+              }
+            }
+          }
+          return myGenerated;
+        }
+      }
+      //
       if (myHist.IsNull())
       {
         myGenerated.Append(aGS);
         return myGenerated;
       }
+      //
       if (myHist->Modified(aGS).IsEmpty())
       {
         myGenerated.Append(aGS);
@@ -261,18 +294,19 @@ const TopTools_ListOfShape& BRepPrimAPI_MakeRevol::Generated (const TopoDS_Shape
       {
         myGenerated.Append(anIt.Value());
       }
-      if (aGS.ShapeType() == TopAbs_EDGE)
-      {
-        if (BRep_Tool::Degenerated(TopoDS::Edge(aGS)))
-        {
-          //Append initial common deg. edge
-          myGenerated.Append(aGS);
-        }
-      }
     }
   }
   return myGenerated;
 }
+//=======================================================================
+//function : IsDeleted
+//purpose  : 
+//=======================================================================
+Standard_Boolean BRepPrimAPI_MakeRevol::IsDeleted(const TopoDS_Shape& S)
+{
+  return !myRevol.IsUsed(S);
+}
+
 
 //=======================================================================
 //function : FirstShape

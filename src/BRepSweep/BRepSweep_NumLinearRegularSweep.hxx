@@ -171,7 +171,10 @@ public:
   //! can  be    geometrically   inexsistant,  then this
   //! function returns false.
   Standard_EXPORT virtual Standard_Boolean HasShape (const TopoDS_Shape& aGenS, const Sweep_NumShape& aDirS) const = 0;
-  
+
+  //! Returns true if aGenS cannot be transformed.
+  Standard_EXPORT virtual Standard_Boolean IsInvariant(const TopoDS_Shape& aGenS) const = 0;
+
   //! Returns the resulting  Shape indexed by aDirS  and
   //! aGenS.
   Standard_EXPORT TopoDS_Shape Shape (const TopoDS_Shape& aGenS, const Sweep_NumShape& aDirS);
@@ -179,7 +182,15 @@ public:
   //! Returns  the resulting Shape  indexed by myDirWire
   //! and aGenS.
   Standard_EXPORT TopoDS_Shape Shape (const TopoDS_Shape& aGenS);
-  
+
+  //! Returns true if the initial shape aGenS  
+  //! is used in result shape
+  Standard_EXPORT Standard_Boolean IsUsed(const TopoDS_Shape& aGenS) const;
+
+  //! Returns true if the shape, generated from theS 
+  //! is used in result shape
+  Standard_EXPORT Standard_Boolean GenIsUsed(const TopoDS_Shape& theS) const;
+
   //! Returns the resulting  Shape indexed by  myDirWire
   //! and myGenShape.
   Standard_EXPORT TopoDS_Shape Shape();
@@ -220,6 +231,7 @@ protected:
   Sweep_NumShapeTool myDirShapeTool;
   TopTools_Array2OfShape myShapes;
   TColStd_Array2OfBoolean myBuiltShapes;
+  TColStd_Array2OfBoolean myUsedShapes;
 
 
 private:

@@ -185,3 +185,21 @@ TopLoc_Location  BRepSweep_Prism::Location(const gp_Vec& V)const
   TopLoc_Location L(gpt);
   return L;
 }
+
+//=======================================================================
+//function : IsUsed
+//purpose  : 
+//=======================================================================
+Standard_Boolean BRepSweep_Prism::IsUsed(const TopoDS_Shape& aGenS) const
+{
+  return myTranslation.IsUsed(aGenS);
+}
+
+//=======================================================================
+//function : GenIsUsed
+//purpose  : 
+//=======================================================================
+Standard_Boolean BRepSweep_Prism::GenIsUsed(const TopoDS_Shape& aGenS) const
+{
+  return myTranslation.GenIsUsed(aGenS);
+}

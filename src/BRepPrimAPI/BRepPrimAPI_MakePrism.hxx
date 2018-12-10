@@ -87,7 +87,10 @@ public:
   
   //! Returns ListOfShape from TopTools.
   Standard_EXPORT virtual const TopTools_ListOfShape& Generated (const TopoDS_Shape& S) Standard_OVERRIDE;
-  
+
+  //! Returns true if the shape S has been deleted.
+  Standard_EXPORT virtual Standard_Boolean IsDeleted(const TopoDS_Shape& S) Standard_OVERRIDE;
+
   //! Returns the TopoDS Shape of the bottom  of the  prism.
   //! generated  with  theShape (subShape of the  generating shape).
   Standard_EXPORT TopoDS_Shape FirstShape (const TopoDS_Shape& theShape);
@@ -95,9 +98,6 @@ public:
   //! Returns the  TopoDS  Shape of the top  of  the  prism.
   //! generated  with  theShape (subShape of the  generating shape).
   Standard_EXPORT TopoDS_Shape LastShape (const TopoDS_Shape& theShape);
-
-
-
 
 protected:
 
