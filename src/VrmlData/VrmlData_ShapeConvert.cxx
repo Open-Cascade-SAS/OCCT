@@ -296,7 +296,8 @@ void VrmlData_ShapeConvert::Convert (const Standard_Boolean theExtractFaces,
             Handle(VrmlData_Group) aTrans = new VrmlData_Group (myScene, 0L,
                                                                 Standard_True);
             gp_Trsf aTrsf (aLoc);
-            if (fabs(myScale - 1.) > Precision::Confusion()) {
+            if (fabs(myScale - 1.) > Precision::Confusion())
+            {
               const gp_XYZ aTransl = aTrsf.TranslationPart() * myScale;
               aTrsf.SetTranslationPart (aTransl);
             }
@@ -704,7 +705,8 @@ void VrmlData_ShapeConvert::addShape (const Handle(VrmlData_Group)& theParent,
         gp_Trsf aTrsf(aLoc);
         if (fabs(myScale - 1.) > Precision::Confusion())
         {
-          aTrsf.SetScaleFactor(myScale);
+            const gp_XYZ aTransl = aTrsf.TranslationPart() * myScale;
+            aTrsf.SetTranslationPart(aTransl);
         }
         aTrans->SetTransform(aTrsf);
         myScene.AddNode(aTrans, Standard_False);
@@ -741,8 +743,10 @@ void VrmlData_ShapeConvert::addInstance (const Handle(VrmlData_Group)& theParent
     // Create a Transform grouping node
     aTrans = new VrmlData_Group(myScene, 0L, Standard_True);
     gp_Trsf aTrsf(aLoc);
-    if (fabs(myScale - 1.) > Precision::Confusion()) {
-      aTrsf.SetScaleFactor(myScale);
+    if (fabs(myScale - 1.) > Precision::Confusion())
+    {
+        const gp_XYZ aTransl = aTrsf.TranslationPart() * myScale;
+        aTrsf.SetTranslationPart(aTransl);
     }
     aTrans->SetTransform(aTrsf);
     myScene.AddNode(aTrans, theParent.IsNull());
@@ -802,7 +806,8 @@ void VrmlData_ShapeConvert::addAssembly (const Handle(VrmlData_Group)& theParent
     if (!aLoc.IsIdentity())
     {
       gp_Trsf aTrsf(aLoc);
-      if (fabs(myScale - 1.) > Precision::Confusion()) {
+      if (fabs(myScale - 1.) > Precision::Confusion())
+      {
         const gp_XYZ aTransl = aTrsf.TranslationPart() * myScale;
         aTrsf.SetTranslationPart(aTransl);
       }

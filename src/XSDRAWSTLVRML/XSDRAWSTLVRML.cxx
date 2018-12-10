@@ -53,6 +53,7 @@
 #include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
+#include <UnitsMethods.hxx>
 #include <V3d_View.hxx>
 #include <ViewerTest.hxx>
 #include <VrmlAPI.hxx>
@@ -239,6 +240,8 @@ static Standard_Integer loadvrml
       }
 
       VrmlData_Scene aScene;
+      Standard_Real anOCCUnit = UnitsMethods::GetCasCadeLengthUnit();
+      aScene.SetLinearScale(1000. / anOCCUnit);
 
       aScene.SetVrmlDir (aVrmlDir);
       aScene << aStream;
