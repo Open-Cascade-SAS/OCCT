@@ -93,7 +93,7 @@ void OpenGl_BVHTreeSelector::SetViewVolume (const Handle(Graphic3d_Camera)& theC
   OpenGl_Vec4d aRightBottomNear (nRight, nBottom, -aNear, 1.0), aLeftTopFar     (fLeft,  fTop,    -aFar, 1.0);
   OpenGl_Vec4d aRightTopNear    (nRight, nTop,    -aNear, 1.0), aLeftBottomFar  (fLeft,  fBottom, -aFar, 1.0);
 
-  const OpenGl_Mat4d aViewProj = myWorldViewMat * myProjectionMat;
+  const OpenGl_Mat4d aViewProj = myProjectionMat * myWorldViewMat;
   OpenGl_Mat4d anInvWorldView;
   myWorldViewMat.Inverted (anInvWorldView);
 
