@@ -1,0 +1,43 @@
+puts "========"
+puts "0030395: DRAW bop: Some sub-shapes of some of the argument become connected through other shapes and the argument became self-interfered."
+puts "========"
+puts ""
+
+restore [locate_data_file bug30395_s1.brep] s1
+restore [locate_data_file bug30395_fds.brep] fds
+
+bclearobjects
+bcleartools
+baddobjects s1
+baddtools fds
+bfillds
+
+bbop rcommon 0
+bbop rfuse 1
+bbop rcut 2
+bbop rcut21 3
+bbop rsection 4
+
+foreach r {rcommon rfuse rcut rcut21 rsection} {
+  checkshape $r
+  if {![regexp "OK" [bopcheck $r]]} {
+    puts "Error: $r is self-interfered shape"
+  }
+}
+
+checknbshapes rcommon -wire 8 -face 8 -shell 1 -solid 1
+checkprops rcommon -s 11331.9 -v 30686.2
+
+checknbshapes rfuse -wire 14 -face 12 -shell 1 -solid 1
+checkprops rfuse -s 105935 -v 362551
+
+checknbshapes rcut -wire 14 -face 12 -shell 1 -solid 1
+checkprops rcut -s 21665.6 -v 25031.2
+
+checknbshapes rcut21 -wire 8 -face 8 -shell 1 -solid 1
+checkprops rcut21 -s 95601 -v 306833
+
+checksection rsection -r 0
+checkprops rsection -l 554.848
+
+checkview -display rcommon -2d -path ${imagedir}/${test_image}.png
