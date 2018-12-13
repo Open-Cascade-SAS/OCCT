@@ -862,13 +862,17 @@ void VrmlData_ShapeConvert::ConvertDocument(const Handle(TDocStd_Document) &theD
   for (TDF_LabelSequence::Iterator aRootIter(aFreeShapeLabels); aRootIter.More(); aRootIter.Next())
   {
     const TDF_Label& aFreeShapeLabel = aRootIter.Value();
-    if (aShapeTool->IsSimpleShape(aFreeShapeLabel))
+    if (aShapeTool->IsAssembly (aFreeShapeLabel))
     {
-      addShape(aGroup, aFreeShapeLabel, theDoc);
+      addAssembly (aGroup, aFreeShapeLabel, theDoc, Standard_True);
     }
-    else if (aShapeTool->IsAssembly(aFreeShapeLabel))
+    else if (aShapeTool->IsReference (aFreeShapeLabel))
     {
-      addAssembly(aGroup, aFreeShapeLabel, theDoc, Standard_True);
+      addInstance (aGroup, aFreeShapeLabel, theDoc);
+    }
+    else if (aShapeTool->IsSimpleShape (aFreeShapeLabel))
+    {
+      addShape (aGroup, aFreeShapeLabel, theDoc);
     }
   }
 }

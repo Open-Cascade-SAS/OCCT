@@ -1,0 +1,13 @@
+puts "================"
+puts "0030411: Data Exchange - attached model is exported as empty JT and VRML file"
+puts "================"
+puts ""
+
+pload XDE VISUALIZATION
+restore [locate_data_file bug27821_nullsurf.brep] s
+explode s F
+XNewDoc D
+XAddShape D s_6 0
+WriteVrml D $imagedir/${casename}.wrl
+loadvrml  w $imagedir/${casename}.wrl
+checktrinfo w -tri 18 -nod 20
