@@ -1,0 +1,14 @@
+puts "================"
+puts "0030409: Data Exchange - e x c e p t i o n during VRML file export"
+puts "================"
+puts ""
+
+pload XDE MODELING VISUALIZATION
+box b 1 2 3
+incmesh b 1
+explode b F
+XNewDoc D
+XAddShape D b_1 0
+WriteVrml D $imagedir/${casename}.wrl
+loadvrml  w $imagedir/${casename}.wrl
+checktrinfo w -tri 2 -nod 4

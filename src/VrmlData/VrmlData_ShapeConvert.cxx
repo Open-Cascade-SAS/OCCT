@@ -683,7 +683,7 @@ void VrmlData_ShapeConvert::addShape (const Handle(VrmlData_Group)& theParent,
         aShapeNode->SetAppearance(makeMaterialFromColor(aColorL, aColorTool));
       }
 
-      myScene.AddNode(aShapeNode, Standard_False);
+      myScene.AddNode(aShapeNode, theParent.IsNull() && aGroup.IsNull());
       aShapeNode->SetGeometry(aTShapeNode);
       if (aLoc.IsIdentity())
       {
@@ -692,7 +692,7 @@ void VrmlData_ShapeConvert::addShape (const Handle(VrmlData_Group)& theParent,
         {
           aGroup->AddNode(aShapeNode);
         }
-        else
+        else if (!theParent.IsNull())
         {
           theParent->AddNode(aShapeNode);
         }
@@ -709,12 +709,12 @@ void VrmlData_ShapeConvert::addShape (const Handle(VrmlData_Group)& theParent,
             aTrsf.SetTranslationPart(aTransl);
         }
         aTrans->SetTransform(aTrsf);
-        myScene.AddNode(aTrans, Standard_False);
+        myScene.AddNode(aTrans, theParent.IsNull() && aGroup.IsNull());
         if (!aGroup.IsNull())
         {
           aGroup->AddNode(aTrans);
         }
-        else
+        else if (!theParent.IsNull())
         {
           theParent->AddNode(aTrans);
         }
