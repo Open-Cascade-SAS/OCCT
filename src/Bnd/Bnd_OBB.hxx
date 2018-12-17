@@ -254,9 +254,9 @@ public:
   //! Returns square diagonal of this box
   Standard_Real SquareExtent() const
   {
-    return (4.0*myHDims[0] * myHDims[0] + 
-            myHDims[1] * myHDims[1] +
-            myHDims[1] * myHDims[1]);
+    return 4.0 * (myHDims[0] * myHDims[0] + 
+                  myHDims[1] * myHDims[1] +
+                  myHDims[2] * myHDims[2]);
   }
 
   //! Check if the box do not interfere the other box.
