@@ -19,6 +19,8 @@ AIS_BadEdgeFilter.cxx
 AIS_BadEdgeFilter.hxx
 AIS_C0RegularityFilter.cxx
 AIS_C0RegularityFilter.hxx
+AIS_CameraFrustum.cxx
+AIS_CameraFrustum.hxx
 AIS_Chamf2dDimension.cxx
 AIS_Chamf2dDimension.hxx
 AIS_Chamf2dDimension.lxx

@@ -22,6 +22,7 @@
 #include <Graphic3d_Vec3.hxx>
 #include <Graphic3d_WorldViewProjState.hxx>
 #include <NCollection_Lerp.hxx>
+#include <NCollection_Array1.hxx>
 
 #include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
@@ -629,6 +630,27 @@ private:
                      const NCollection_Vec3<Elem_t>& theUpDir,
                      const NCollection_Vec3<Elem_t>& theAxialScale,
                      NCollection_Mat4<Elem_t>&       theOutMx);
+
+public:
+
+  //! Enumerates vertices of view volume.
+  enum
+  {
+    FrustumVert_LeftBottomNear,
+    FrustumVert_LeftBottomFar,
+    FrustumVert_LeftTopNear,
+    FrustumVert_LeftTopFar,
+    FrustumVert_RightBottomNear,
+    FrustumVert_RightBottomFar,
+    FrustumVert_RightTopNear,
+    FrustumVert_RightTopFar,
+    FrustumVerticesNB
+  };
+
+  //! Fill array of current view frustum corners.
+  //! The size of this array is equal to FrustumVerticesNB.
+  //! The order of vertices is as defined in FrustumVert_* enumeration.
+  Standard_EXPORT void FrustumPoints (NCollection_Array1<Graphic3d_Vec3d>& thePoints) const;
 
 private:
 

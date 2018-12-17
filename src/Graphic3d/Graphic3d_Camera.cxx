@@ -1388,3 +1388,79 @@ Standard_EXPORT void NCollection_Lerp<Handle(Graphic3d_Camera)>::Interpolate (co
     theCamera->SetScale (aScale);
   }
 }
+
+//=======================================================================
+//function : FrustumPoints
+//purpose  :
+//=======================================================================
+void Graphic3d_Camera::FrustumPoints (NCollection_Array1<Graphic3d_Vec3d>& thePoints) const
+{
+  if (thePoints.Length() != FrustumVerticesNB)
+  {
+    thePoints.Resize (0, FrustumVerticesNB, Standard_False);
+  }
+
+  const Graphic3d_Mat4d& aProjectionMat = ProjectionMatrix();
+  const Graphic3d_Mat4d& aWorldViewMat  = OrientationMatrix();
+
+  Standard_Real nLeft = 0.0, nRight = 0.0, nTop = 0.0, nBottom = 0.0;
+  Standard_Real fLeft = 0.0, fRight = 0.0, fTop = 0.0, fBottom = 0.0;
+  Standard_Real aNear = 0.0, aFar = 0.0;
+  if (!IsOrthographic())
+  {
+    // handle perspective projection
+    aNear = aProjectionMat.GetValue (2, 3) / (-1.0 + aProjectionMat.GetValue (2, 2));
+    aFar  = aProjectionMat.GetValue (2, 3) / ( 1.0 + aProjectionMat.GetValue (2, 2));
+    // Near plane
+    nLeft   = aNear * (aProjectionMat.GetValue (0, 2) - 1.0) / aProjectionMat.GetValue (0, 0);
+    nRight  = aNear * (aProjectionMat.GetValue (0, 2) + 1.0) / aProjectionMat.GetValue (0, 0);
+    nTop    = aNear * (aProjectionMat.GetValue (1, 2) + 1.0) / aProjectionMat.GetValue (1, 1);
+    nBottom = aNear * (aProjectionMat.GetValue (1, 2) - 1.0) / aProjectionMat.GetValue (1, 1);
+    // Far plane
+    fLeft   = aFar  * (aProjectionMat.GetValue (0, 2) - 1.0) / aProjectionMat.GetValue (0, 0);
+    fRight  = aFar  * (aProjectionMat.GetValue (0, 2) + 1.0) / aProjectionMat.GetValue (0, 0);
+    fTop    = aFar  * (aProjectionMat.GetValue (1, 2) + 1.0) / aProjectionMat.GetValue (1, 1);
+    fBottom = aFar  * (aProjectionMat.GetValue (1, 2) - 1.0) / aProjectionMat.GetValue (1, 1);
+  }
+  else
+  {
+    // handle orthographic projection
+    aNear = (1.0 / aProjectionMat.GetValue (2, 2)) * (aProjectionMat.GetValue (2, 3) + 1.0);
+    aFar  = (1.0 / aProjectionMat.GetValue (2, 2)) * (aProjectionMat.GetValue (2, 3) - 1.0);
+    // Near plane
+    nLeft   = ( 1.0 + aProjectionMat.GetValue (0, 3)) / (-aProjectionMat.GetValue (0, 0));
+    fLeft   = nLeft;
+    nRight  = ( 1.0 - aProjectionMat.GetValue (0, 3)) /   aProjectionMat.GetValue (0, 0);
+    fRight  = nRight;
+    nTop    = ( 1.0 - aProjectionMat.GetValue (1, 3)) /   aProjectionMat.GetValue (1, 1);
+    fTop    = nTop;
+    nBottom = (-1.0 - aProjectionMat.GetValue (1, 3)) /   aProjectionMat.GetValue (1, 1);
+    fBottom = nBottom;
+  }
+
+  Graphic3d_Vec4d aLeftTopNear     (nLeft,  nTop,    -aNear, 1.0), aRightBottomFar (fRight, fBottom, -aFar, 1.0);
+  Graphic3d_Vec4d aLeftBottomNear  (nLeft,  nBottom, -aNear, 1.0), aRightTopFar    (fRight, fTop,    -aFar, 1.0);
+  Graphic3d_Vec4d aRightBottomNear (nRight, nBottom, -aNear, 1.0), aLeftTopFar     (fLeft,  fTop,    -aFar, 1.0);
+  Graphic3d_Vec4d aRightTopNear    (nRight, nTop,    -aNear, 1.0), aLeftBottomFar  (fLeft,  fBottom, -aFar, 1.0);
+
+  Graphic3d_Mat4d anInvWorldView;
+  aWorldViewMat.Inverted (anInvWorldView);
+
+  Graphic3d_Vec4d aTmpPnt;
+  aTmpPnt = anInvWorldView * aLeftTopNear;
+  thePoints.SetValue (FrustumVert_LeftTopNear,     aTmpPnt.xyz() / aTmpPnt.w());
+  aTmpPnt = anInvWorldView * aRightBottomFar;
+  thePoints.SetValue (FrustumVert_RightBottomFar,  aTmpPnt.xyz() / aTmpPnt.w());
+  aTmpPnt = anInvWorldView * aLeftBottomNear;
+  thePoints.SetValue (FrustumVert_LeftBottomNear,  aTmpPnt.xyz() / aTmpPnt.w());
+  aTmpPnt = anInvWorldView * aRightTopFar;
+  thePoints.SetValue (FrustumVert_RightTopFar,     aTmpPnt.xyz() / aTmpPnt.w());
+  aTmpPnt = anInvWorldView * aRightBottomNear;
+  thePoints.SetValue (FrustumVert_RightBottomNear, aTmpPnt.xyz() / aTmpPnt.w());
+  aTmpPnt = anInvWorldView * aLeftTopFar;
+  thePoints.SetValue (FrustumVert_LeftTopFar,      aTmpPnt.xyz() / aTmpPnt.w());
+  aTmpPnt = anInvWorldView * aRightTopNear;
+  thePoints.SetValue (FrustumVert_RightTopNear,    aTmpPnt.xyz() / aTmpPnt.w());
+  aTmpPnt = anInvWorldView * aLeftBottomFar;
+  thePoints.SetValue (FrustumVert_LeftBottomFar,   aTmpPnt.xyz() / aTmpPnt.w());
+}

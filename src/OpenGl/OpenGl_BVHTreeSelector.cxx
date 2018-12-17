@@ -24,7 +24,8 @@
 // purpose  :
 // =======================================================================
 OpenGl_BVHTreeSelector::OpenGl_BVHTreeSelector()
-: myIsProjectionParallel (Standard_True),
+: myClipVerts (0, Graphic3d_Camera::FrustumVerticesNB),
+  myIsProjectionParallel (Standard_True),
   myCamScale (1.0),
   myPixelSize (1.0)
 {
@@ -53,78 +54,37 @@ void OpenGl_BVHTreeSelector::SetViewVolume (const Handle(Graphic3d_Camera)& theC
              ? theCamera->Scale()
              : 2.0 * Tan (theCamera->FOVy() * M_PI / 360.0); // same as theCamera->Scale()/theCamera->Distance()
 
-  Standard_Real nLeft = 0.0, nRight = 0.0, nTop = 0.0, nBottom = 0.0;
-  Standard_Real fLeft = 0.0, fRight = 0.0, fTop = 0.0, fBottom = 0.0;
-  Standard_Real aNear = 0.0, aFar   = 0.0;
-  if (!myIsProjectionParallel)
+  // Compute frustum points
+  theCamera->FrustumPoints (myClipVerts);
+
+  // Compute frustum planes
+  // Vertices go in order:
+  // 0, 2, 1
+  const Standard_Integer aLookup1[] = { 0, 1, 0 };
+  const Standard_Integer aLookup2[] = { 0, 0, 1 };
+  Standard_Integer aShifts[]        = { 0, 0, 0 };
+
+  // Planes go in order:
+  // LEFT, RIGHT, BOTTOM, TOP, NEAR, FAR
+  for (Standard_Integer aFaceIdx = 0; aFaceIdx < 3; ++aFaceIdx)
   {
-    // handle perspective projection
-    aNear   = myProjectionMat.GetValue (2, 3) / (- 1.0 + myProjectionMat.GetValue (2, 2));
-    aFar    = myProjectionMat.GetValue (2, 3) / (  1.0 + myProjectionMat.GetValue (2, 2));
-    // Near plane
-    nLeft   = aNear * (myProjectionMat.GetValue (0, 2) - 1.0) / myProjectionMat.GetValue (0, 0);
-    nRight  = aNear * (myProjectionMat.GetValue (0, 2) + 1.0) / myProjectionMat.GetValue (0, 0);
-    nTop    = aNear * (myProjectionMat.GetValue (1, 2) + 1.0) / myProjectionMat.GetValue (1, 1);
-    nBottom = aNear * (myProjectionMat.GetValue (1, 2) - 1.0) / myProjectionMat.GetValue (1, 1);
-    // Far plane
-    fLeft   = aFar  * (myProjectionMat.GetValue (0, 2) - 1.0) / myProjectionMat.GetValue (0, 0);
-    fRight  = aFar  * (myProjectionMat.GetValue (0, 2) + 1.0) / myProjectionMat.GetValue (0, 0);
-    fTop    = aFar  * (myProjectionMat.GetValue (1, 2) + 1.0) / myProjectionMat.GetValue (1, 1);
-    fBottom = aFar  * (myProjectionMat.GetValue (1, 2) - 1.0) / myProjectionMat.GetValue (1, 1);
-  }
-  else
-  {
-    // handle orthographic projection
-    aNear   = (1.0 / myProjectionMat.GetValue (2, 2)) * (myProjectionMat.GetValue (2, 3) + 1.0);
-    aFar    = (1.0 / myProjectionMat.GetValue (2, 2)) * (myProjectionMat.GetValue (2, 3) - 1.0);
-    // Near plane
-    nLeft   = ( 1.0 + myProjectionMat.GetValue (0, 3)) / (-myProjectionMat.GetValue (0, 0));
-    fLeft   = nLeft;
-    nRight  = ( 1.0 - myProjectionMat.GetValue (0, 3)) /   myProjectionMat.GetValue (0, 0);
-    fRight  = nRight;
-    nTop    = ( 1.0 - myProjectionMat.GetValue (1, 3)) /   myProjectionMat.GetValue (1, 1);
-    fTop    = nTop;
-    nBottom = (-1.0 - myProjectionMat.GetValue (1, 3)) /   myProjectionMat.GetValue (1, 1);
-    fBottom = nBottom;
-  }
-
-  OpenGl_Vec4d aLeftTopNear     (nLeft,  nTop,    -aNear, 1.0), aRightBottomFar (fRight, fBottom, -aFar, 1.0);
-  OpenGl_Vec4d aLeftBottomNear  (nLeft,  nBottom, -aNear, 1.0), aRightTopFar    (fRight, fTop,    -aFar, 1.0);
-  OpenGl_Vec4d aRightBottomNear (nRight, nBottom, -aNear, 1.0), aLeftTopFar     (fLeft,  fTop,    -aFar, 1.0);
-  OpenGl_Vec4d aRightTopNear    (nRight, nTop,    -aNear, 1.0), aLeftBottomFar  (fLeft,  fBottom, -aFar, 1.0);
-
-  const OpenGl_Mat4d aViewProj = myProjectionMat * myWorldViewMat;
-  OpenGl_Mat4d anInvWorldView;
-  myWorldViewMat.Inverted (anInvWorldView);
-
-  myClipVerts[ClipVert_LeftTopNear]     = anInvWorldView * aLeftTopNear;
-  myClipVerts[ClipVert_RightBottomFar]  = anInvWorldView * aRightBottomFar;
-  myClipVerts[ClipVert_LeftBottomNear]  = anInvWorldView * aLeftBottomNear;
-  myClipVerts[ClipVert_RightTopFar]     = anInvWorldView * aRightTopFar;
-  myClipVerts[ClipVert_RightBottomNear] = anInvWorldView * aRightBottomNear;
-  myClipVerts[ClipVert_LeftTopFar]      = anInvWorldView * aLeftTopFar;
-  myClipVerts[ClipVert_RightTopNear]    = anInvWorldView * aRightTopNear;
-  myClipVerts[ClipVert_LeftBottomFar]   = anInvWorldView * aLeftBottomFar;
-
-  // UNNORMALIZED!
-  myClipPlanes[Plane_Left]   = aViewProj.GetRow (3) + aViewProj.GetRow (0);
-  myClipPlanes[Plane_Right]  = aViewProj.GetRow (3) - aViewProj.GetRow (0);
-  myClipPlanes[Plane_Top]    = aViewProj.GetRow (3) - aViewProj.GetRow (1);
-  myClipPlanes[Plane_Bottom] = aViewProj.GetRow (3) + aViewProj.GetRow (1);
-  myClipPlanes[Plane_Near]   = aViewProj.GetRow (3) + aViewProj.GetRow (2);
-  myClipPlanes[Plane_Far]    = aViewProj.GetRow (3) - aViewProj.GetRow (2);
-
-  gp_Pnt aPtCenter = theCamera->Center();
-  OpenGl_Vec4d aCenter (aPtCenter.X(), aPtCenter.Y(), aPtCenter.Z(), 1.0);
-
-  for (Standard_Integer aPlaneIter = 0; aPlaneIter < PlanesNB; ++aPlaneIter)
-  {
-    OpenGl_Vec4d anEq = myClipPlanes[aPlaneIter];
-    if (SignedPlanePointDistance (anEq, aCenter) > 0)
+    for (Standard_Integer i = 0; i < 2; ++i)
     {
-      anEq *= -1.0;
-      myClipPlanes[aPlaneIter] = anEq;
-    }
+      OpenGl_Vec3d aPlanePnts[3];
+      for (Standard_Integer aPntIter = 0; aPntIter < 3; ++aPntIter)
+      {
+        aShifts[aFaceIdx] = i;
+        aShifts[(aFaceIdx + 1) % 3] = aLookup1[aPntIter];
+        aShifts[(aFaceIdx + 2) % 3] = aLookup2[aPntIter];
+        
+        aPlanePnts[aPntIter] = myClipVerts[aShifts[0] * 2 * 2 + aShifts[1] * 2 + aShifts[2]];
+      }
+      
+      myClipPlanes[aFaceIdx * 2 + i].Origin = aPlanePnts[0];
+      myClipPlanes[aFaceIdx * 2 + i].Normal =
+          OpenGl_Vec3d::Cross (aPlanePnts[1] - aPlanePnts[0],
+                               aPlanePnts[2] - aPlanePnts[0]).Normalized() * (i == 0 ? -1.f : 1.f);
+      }
   }
 }
 
@@ -202,17 +162,15 @@ void OpenGl_BVHTreeSelector::SetCullingSize (CullingContext& theCtx,
 // =======================================================================
 void OpenGl_BVHTreeSelector::CacheClipPtsProjections()
 {
+  // project frustum onto its own normals
   const Standard_Integer anIncFactor = myIsProjectionParallel ? 2 : 1;
-  for (Standard_Integer aPlaneIter = 0; aPlaneIter < 5; aPlaneIter += anIncFactor)
+  for (Standard_Integer aPlaneIter = 0; aPlaneIter < PlanesNB - 1; aPlaneIter += anIncFactor)
   {
-    const OpenGl_Vec4d aPlane = myClipPlanes[aPlaneIter];
     Standard_Real aMaxProj = -std::numeric_limits<Standard_Real>::max();
     Standard_Real aMinProj =  std::numeric_limits<Standard_Real>::max();
-    for (Standard_Integer aCornerIter = 0; aCornerIter < ClipVerticesNB; ++aCornerIter)
+    for (Standard_Integer aCornerIter = 0; aCornerIter < Graphic3d_Camera::FrustumVerticesNB; ++aCornerIter)
     {
-      Standard_Real aProjection = aPlane.x() * myClipVerts[aCornerIter].x()
-                                + aPlane.y() * myClipVerts[aCornerIter].y()
-                                + aPlane.z() * myClipVerts[aCornerIter].z();
+      Standard_Real aProjection = myClipVerts[aCornerIter].Dot (myClipPlanes[aPlaneIter].Normal);
       aMaxProj = Max (aProjection, aMaxProj);
       aMinProj = Min (aProjection, aMinProj);
     }
@@ -220,17 +178,17 @@ void OpenGl_BVHTreeSelector::CacheClipPtsProjections()
     myMinClipProjectionPts[aPlaneIter] = aMinProj;
   }
 
+  // project frustum onto main axes
+  OpenGl_Vec3d anAxes[] = { OpenGl_Vec3d (1.0, 0.0, 0.0),
+                            OpenGl_Vec3d (0.0, 1.0, 0.0),
+                            OpenGl_Vec3d (0.0, 0.0, 1.0) };
   for (Standard_Integer aDim = 0; aDim < 3; ++aDim)
   {
     Standard_Real aMaxProj = -std::numeric_limits<Standard_Real>::max();
     Standard_Real aMinProj =  std::numeric_limits<Standard_Real>::max();
-    for (Standard_Integer aCornerIter = 0; aCornerIter < ClipVerticesNB; ++aCornerIter)
+    for (Standard_Integer aCornerIter = 0; aCornerIter < Graphic3d_Camera::FrustumVerticesNB; ++aCornerIter)
     {
-      Standard_Real aProjection = aDim == 0
-                                ? myClipVerts[aCornerIter].x()
-                                : (aDim == 1
-                                 ? myClipVerts[aCornerIter].y()
-                                 : myClipVerts[aCornerIter].z());
+      Standard_Real aProjection = myClipVerts[aCornerIter].Dot (anAxes[aDim]);
       aMaxProj = Max (aProjection, aMaxProj);
       aMinProj = Min (aProjection, aMinProj);
     }

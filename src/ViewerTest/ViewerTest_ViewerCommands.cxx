@@ -19,6 +19,7 @@
 #include <AIS_Animation.hxx>
 #include <AIS_AnimationCamera.hxx>
 #include <AIS_AnimationObject.hxx>
+#include <AIS_CameraFrustum.hxx>
 #include <AIS_ColorScale.hxx>
 #include <AIS_Manipulator.hxx>
 #include <AIS_RubberBand.hxx>
@@ -8974,6 +8975,7 @@ static int VCamera (Draw_Interpretor& theDI,
     return 0;
   }
 
+  TCollection_AsciiString aPrsName;
   for (Standard_Integer anArgIter = 1; anArgIter < theArgsNb; ++anArgIter)
   {
     Standard_CString        anArg = theArgVec[anArgIter];
@@ -9133,6 +9135,11 @@ static int VCamera (Draw_Interpretor& theDI,
       }
       theDI << aCamera->FOVy() << " ";
     }
+    else if (aPrsName.IsEmpty()
+         && !anArgCase.StartsWith ("-"))
+    {
+      aPrsName = anArg;
+    }
     else
     {
       std::cout << "Error: unknown argument '" << anArg << "'\n";
@@ -9140,8 +9147,41 @@ static int VCamera (Draw_Interpretor& theDI,
     }
   }
 
-  aView->AutoZFit();
-  aView->Redraw();
+  if (aPrsName.IsEmpty()
+   || theArgsNb > 2)
+  {
+    aView->AutoZFit();
+    aView->Redraw();
+  }
+
+  if (!aPrsName.IsEmpty())
+  {
+    Handle(AIS_CameraFrustum) aCameraFrustum;
+    if (GetMapOfAIS().IsBound2 (aPrsName))
+    {
+      // find existing object
+      aCameraFrustum = Handle(AIS_CameraFrustum)::DownCast (GetMapOfAIS().Find2 (theArgVec[1]));
+      if (aCameraFrustum.IsNull())
+      {
+        std::cout << "Error: object '" << aPrsName << "'is already defined and is not a camera frustum!\n";
+        return 1;
+      }
+    }
+
+    if (aCameraFrustum.IsNull())
+    {
+      aCameraFrustum = new AIS_CameraFrustum();
+    }
+    else
+    {
+      // not include displayed object of old camera frustum in the new one.
+      ViewerTest::GetAISContext()->Erase (aCameraFrustum, false);
+      aView->ZFitAll();
+    }
+    aCameraFrustum->SetCameraFrustum (aView->Camera());
+
+    ViewerTest::Display (aPrsName, aCameraFrustum);
+  }
 
   return 0;
 }
@@ -12404,13 +12444,14 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "vnbselected"
     "\n\t\t: Returns number of selected objects", __FILE__, VNbSelected, group);
   theCommands.Add ("vcamera",
-              "vcamera [-ortho] [-projtype]"
+              "vcamera [PrsName] [-ortho] [-projtype]"
       "\n\t\t:         [-persp]"
       "\n\t\t:         [-fovy   [Angle]] [-distance [Distance]]"
       "\n\t\t:         [-stereo] [-leftEye] [-rightEye]"
       "\n\t\t:         [-iod [Distance]] [-iodType    [absolute|relative]]"
       "\n\t\t:         [-zfocus [Value]] [-zfocusType [absolute|relative]]"
-      "\n\t\t: Manage camera parameters."
+      "\n\t\t: Manages camera parameters."
+      "\n\t\t: Displays frustum when presntation name PrsName is specified."
       "\n\t\t: Prints current value when option called without argument."
       "\n\t\t: Orthographic camera:"
       "\n\t\t:   -ortho      activate orthographic projection"

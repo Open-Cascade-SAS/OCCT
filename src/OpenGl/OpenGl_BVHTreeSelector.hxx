@@ -35,6 +35,25 @@ public:
     //! Empty constructor.
     CullingContext() : DistCull (-1.0), SizeCull2 (-1.0) {}
   };
+
+  //! Auxiliary structure representing 3D plane.
+  struct Plane
+  {
+    //! Creates default plane.
+    Plane()
+    : Origin (0.0, 0.0, 0.0),
+      Normal (0.0, 0.0, 1.0) {}
+
+    //! Creates plane with specific parameters.
+    Plane (const OpenGl_Vec3d& theOrigin,
+           const OpenGl_Vec3d& theNormal)
+    : Origin (theOrigin),
+      Normal (theNormal) {}
+
+    OpenGl_Vec3d Origin;
+    OpenGl_Vec3d Normal;
+  };
+
 public:
 
   //! Creates an empty selector object with parallel projection type by default.
@@ -124,46 +143,54 @@ protected:
     //   /
     //    E2
 
-    // E0 test
+    // E0 test (x axis)
     if (theMinPt.x() > myMaxOrthoProjectionPts[0]
      || theMaxPt.x() < myMinOrthoProjectionPts[0])
     {
       return true;
     }
 
-    // E1 test
+    // E1 test (y axis)
     if (theMinPt.y() > myMaxOrthoProjectionPts[1]
      || theMaxPt.y() < myMinOrthoProjectionPts[1])
     {
       return true;
     }
 
-    // E2 test
+    // E2 test (z axis)
     if (theMinPt.z() > myMaxOrthoProjectionPts[2]
      || theMaxPt.z() < myMinOrthoProjectionPts[2])
     {
       return true;
     }
 
-    Standard_Real aBoxProjMax = 0.0, aBoxProjMin = 0.0;
     const Standard_Integer anIncFactor = myIsProjectionParallel ? 2 : 1;
-    for (Standard_Integer aPlaneIter = 0; aPlaneIter < 5; aPlaneIter += anIncFactor)
+    for (Standard_Integer aPlaneIter = 0; aPlaneIter < PlanesNB - 1; aPlaneIter += anIncFactor)
     {
-      OpenGl_Vec4d aPlane = myClipPlanes[aPlaneIter];
-      aBoxProjMax = (aPlane.x() > 0.0 ? (aPlane.x() * theMaxPt.x()) : aPlane.x() * theMinPt.x())
-                  + (aPlane.y() > 0.0 ? (aPlane.y() * theMaxPt.y()) : aPlane.y() * theMinPt.y())
-                  + (aPlane.z() > 0.0 ? (aPlane.z() * theMaxPt.z()) : aPlane.z() * theMinPt.z());
-      if (aBoxProjMax > myMinClipProjectionPts[aPlaneIter]
-       && aBoxProjMax < myMaxClipProjectionPts[aPlaneIter])
+      // frustum normals
+      const OpenGl_Vec3d anAxis = myClipPlanes[aPlaneIter].Normal;
+
+      const OpenGl_Vec3d aPVertex (anAxis.x() > 0.0 ? theMaxPt.x() : theMinPt.x(),
+                                   anAxis.y() > 0.0 ? theMaxPt.y() : theMinPt.y(),
+                                   anAxis.z() > 0.0 ? theMaxPt.z() : theMinPt.z());
+      Standard_Real aPnt0 = aPVertex.Dot (anAxis);
+
+      if (aPnt0 >= myMinClipProjectionPts[aPlaneIter]
+       && aPnt0 <= myMaxClipProjectionPts[aPlaneIter])
       {
         continue;
       }
+      
+      const OpenGl_Vec3d aNVertex (anAxis.x() > 0.0 ? theMinPt.x() : theMaxPt.x(),
+                                   anAxis.y() > 0.0 ? theMinPt.y() : theMaxPt.y(),
+                                   anAxis.z() > 0.0 ? theMinPt.z() : theMaxPt.z());
+      Standard_Real aPnt1 = aNVertex.Dot (anAxis);
 
-      aBoxProjMin = (aPlane.x() < 0.0 ? aPlane.x() * theMaxPt.x() : aPlane.x() * theMinPt.x())
-                  + (aPlane.y() < 0.0 ? aPlane.y() * theMaxPt.y() : aPlane.y() * theMinPt.y())
-                  + (aPlane.z() < 0.0 ? aPlane.z() * theMaxPt.z() : aPlane.z() * theMinPt.z());
-      if (aBoxProjMin > myMaxClipProjectionPts[aPlaneIter]
-       || aBoxProjMax < myMinClipProjectionPts[aPlaneIter])
+      const Standard_Real aMin = aPnt0 < aPnt1 ? aPnt0 : aPnt1;
+      const Standard_Real aMax = aPnt0 > aPnt1 ? aPnt0 : aPnt1;
+      
+      if (aMin > myMaxClipProjectionPts[aPlaneIter]
+       || aMax < myMinClipProjectionPts[aPlaneIter])
       {
         return true;
       }
@@ -215,38 +242,24 @@ protected:
   //! Enumerates planes of view volume.
   enum
   {
-    Plane_Top,
-    Plane_Bottom,
     Plane_Left,
     Plane_Right,
+    Plane_Bottom,
+    Plane_Top,
     Plane_Near,
     Plane_Far,
     PlanesNB
   };
 
-  //! Enumerates vertices of view volume.
-  enum
-  {
-    ClipVert_LeftTopNear,
-    ClipVert_LeftBottomNear,
-    ClipVert_RightTopNear,
-    ClipVert_RightBottomNear,
-    ClipVert_LeftTopFar,
-    ClipVert_LeftBottomFar,
-    ClipVert_RightTopFar,
-    ClipVert_RightBottomFar,
-    ClipVerticesNB
-  };
-
 protected:
 
-  OpenGl_Vec4d myClipPlanes[PlanesNB];      //!< Plane equations
-  OpenGl_Vec4d myClipVerts[ClipVerticesNB]; //!< Vertices
+  Plane                            myClipPlanes[PlanesNB]; //!< Planes
+  NCollection_Array1<OpenGl_Vec3d> myClipVerts;            //!< Vertices
 
   Handle(Graphic3d_Camera) myCamera; //!< camera definition
 
   // for caching clip points projections onto viewing area normals once per traverse
-  // ORDER: TOP, BOTTOM, LEFT, RIGHT, NEAR, FAR
+  // ORDER: LEFT, RIGHT, BOTTOM, TOP, NEAR, FAR
   Standard_Real myMaxClipProjectionPts[PlanesNB]; //!< Max view volume's vertices projections onto its normals
   Standard_Real myMinClipProjectionPts[PlanesNB]; //!< Min view volume's vertices projections onto its normals
 
