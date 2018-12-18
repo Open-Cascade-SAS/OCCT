@@ -1,0 +1,12 @@
+puts "TODO OCC30286 ALL: Error : The length of result shape is 8.06872, expected 8.05281"
+
+puts "====================================="
+puts "OCC27341: Incorrect exact HLR results"
+puts "====================================="
+puts ""
+
+set viewname "vtop"
+set length 8.05281
+
+restore [locate_data_file bug27341_hlrsave.brep] a
+COMPUTE_HLR $viewname $algotype

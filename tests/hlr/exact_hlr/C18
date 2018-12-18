@@ -1,0 +1,7 @@
+puts "TODO OCC30286 Windows: Error : The length of result shape is 2409.86, expected 2418.08"
+
+set viewname "vright"
+set length 2418.08
+
+testreadstep [locate_data_file bug27341_CDI_Grundhalter_CAD.stp] a
+COMPUTE_HLR $viewname $algotype

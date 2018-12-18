@@ -1590,90 +1590,6 @@ static Standard_Integer OCC26930(Draw_Interpretor& theDI,
 }
 
 //=======================================================================
-//function : OCC27341
-//purpose : check exact HLR algorighm's work
-//=======================================================================
-static Standard_Integer OCC27341 (Draw_Interpretor& , Standard_Integer n, const char** a)
-{
-  if (n != 4)
-  {
-    cout << "Use: OCC27341 res shape axo/top/bottom/front/back/left/right" << endl;
-    return 1;
-  }
-
-  TopoDS_Shape aShape =  DBRep::Get(a[2]);
-  if (aShape.IsNull())
-    return 1;
-
-  gp_Pnt anOrigin(0.,0.,0.);
-  gp_Dir aNormal(0.57735026918962573, -0.57735026918962573, 0.57735026918962573);
-  gp_Ax2 anAxes(anOrigin, aNormal);
-  gp_Dir aDX = anAxes.XDirection();
-  
-  HLRAppli_ReflectLines Reflector(aShape);
-
-  if (strcmp(a[3],"axo") == 0)
-  {
-    aNormal.SetCoord(0.57735026918962573, -0.57735026918962573, 0.57735026918962573);
-    aDX.SetCoord(-0.40824829046386307, 0.40824829046386307, 0.81649658092772615);
-  }
-  else if (strcmp(a[3],"top") == 0)
-  {
-    aNormal.SetCoord(0,0,1);
-    aDX.SetCoord(0,1,0);
-  }
-  else if (strcmp(a[3],"bottom") == 0)
-  {
-    aNormal.SetCoord(0,0,-1);
-    aDX.SetCoord(0,-1,0);
-  }
-  else if (strcmp(a[3],"front") == 0)
-  {
-    aNormal.SetCoord(0,-1,0);
-    aDX.SetCoord(0,0,1);
-  }
-  else if (strcmp(a[3],"back") == 0)
-  {
-    aNormal.SetCoord(0,1,0);
-    aDX.SetCoord(0,0,1);
-  }
-  else if (strcmp(a[3],"left") == 0)
-  {
-    aNormal.SetCoord(-1,0,0);
-    aDX.SetCoord(0,0,1);
-  }
-  else if (strcmp(a[3],"right") == 0)
-  {
-    aNormal.SetCoord(1,0,0);
-    aDX.SetCoord(0,0,1);
-  }
-    
-  Reflector.SetAxes(aNormal.X(), aNormal.Y(), aNormal.Z(),
-                    anOrigin.X(), anOrigin.Y(), anOrigin.Z(),
-                    aDX.X(), aDX.Y(), aDX.Z());
-
-  Reflector.Perform();
-
-  TopoDS_Compound Result;
-  BRep_Builder BB;
-  BB.MakeCompound(Result);
-  
-  TopoDS_Shape SharpEdges = Reflector.GetCompoundOf3dEdges(HLRBRep_Sharp, Standard_True, Standard_False);
-  if (!SharpEdges.IsNull())
-    BB.Add(Result, SharpEdges);
-  TopoDS_Shape OutLines = Reflector.GetCompoundOf3dEdges(HLRBRep_OutLine, Standard_True, Standard_False);
-  if (!OutLines.IsNull())
-    BB.Add(Result, OutLines);
-  TopoDS_Shape SmoothEdges = Reflector.GetCompoundOf3dEdges(HLRBRep_Rg1Line, Standard_True, Standard_False);
-  if (!SmoothEdges.IsNull())
-    BB.Add(Result, SmoothEdges);
-  
-  DBRep::Set(a[1], Result);
-
-  return 0;
-}
-
-//=======================================================================
 //function : OCC27466
 //purpose :
 //=======================================================================
@@ -3332,9 +3248,6 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands) {
   theCommands.Add("OCC27235", "OCC27235", __FILE__, OCC27235, group);
   theCommands.Add("OCC26930", "OCC26930", __FILE__, OCC26930, group);
   theCommands.Add("OCC27466", "OCC27466", __FILE__, OCC27466, group);
-  theCommands.Add("OCC27341",
-                  "OCC27341 res shape axo/top/bottom/front/back/left/right",
-                  __FILE__, OCC27341, group);
   theCommands.Add ("OCC26747_1", "OCC26747_1 result", __FILE__, OCC26747_1, group);
   theCommands.Add ("OCC26747_2", "OCC26747_2 result", __FILE__, OCC26747_2, group);
   theCommands.Add ("OCC26747_3", "OCC26747_3 result", __FILE__, OCC26747_3, group);

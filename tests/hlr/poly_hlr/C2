@@ -1,0 +1,5 @@
+set viewname "vright"
+set length 443.438
+
+testreadstep [locate_data_file bug27341_211808_PCLNL12K8-15x32.stp] a
+COMPUTE_HLR $viewname $algotype

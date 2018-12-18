@@ -1,0 +1,12 @@
+puts "==========================="
+puts "OCC7691: Wrong hidden lines"
+puts "==========================="
+puts ""
+
+set viewname "vtop"
+set length 611.18
+
+# load shape
+restore [locate_data_file OCC7691-bottle.brep] a
+trotate a 0 0 0 1 0 0 -90
+COMPUTE_HLR $viewname $algotype

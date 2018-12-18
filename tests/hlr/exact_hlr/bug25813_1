@@ -1,0 +1,14 @@
+puts "==========================================="
+puts "OCC25813: regression in Hidden Line Removal"
+puts "==========================================="
+puts ""
+
+set viewname ""
+set length 204.19
+
+pcylinder cc 10 30
+pcylinder cc2 8 50
+ttranslate cc2 0 0 2
+bfuse a cc cc2
+
+COMPUTE_HLR $viewname $algotype

@@ -1,0 +1,7 @@
+puts "TODO OCC30286 Linux: Error : The length of result shape is 3249.9, expected 3234.6"
+
+set viewname "vright"
+set length 3234.6
+
+testreadstep [locate_data_file bug27341_570-DWLNL-40-08-L_131LANG_16VERSATZ_DIN.stp] a
+COMPUTE_HLR $viewname $algotype

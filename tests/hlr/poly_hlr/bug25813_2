@@ -1,0 +1,12 @@
+puts "TODO OCC30286 Linux: Error : The length of result shape is 3025.48, expected 3025.49"
+
+puts "==========================================="
+puts "OCC25813: regression in Hidden Line Removal"
+puts "==========================================="
+puts ""
+
+set viewname ""
+set length 3025.49
+
+restore [locate_data_file bug25813_hlr-bus1-draw-Fusion001.brep] a
+COMPUTE_HLR $viewname $algotype

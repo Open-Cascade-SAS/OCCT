@@ -1,0 +1,5 @@
+set viewname "vright"
+set length 1794.57
+
+testreadstep [locate_data_file bug27341_CCS_Adapter_CAD.stp] a
+COMPUTE_HLR $viewname $algotype

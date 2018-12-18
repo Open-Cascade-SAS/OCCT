@@ -1,0 +1,5 @@
+set viewname "vright"
+set length 39.6744
+
+testreadstep [locate_data_file bug27341_rhombisch_Form_V_IC_476_L_CAD.stp] a
+COMPUTE_HLR $viewname $algotype

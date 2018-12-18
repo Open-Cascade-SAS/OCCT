@@ -1,0 +1,10 @@
+puts "====================================="
+puts "OCC27341: Incorrect exact HLR results"
+puts "====================================="
+puts ""
+
+set viewname "vright"
+set length 337.54
+
+restore [locate_data_file bug27341_save.brep] a
+COMPUTE_HLR $viewname $algotype

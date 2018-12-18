@@ -1,0 +1,10 @@
+puts "============"
+puts "OCC25908"
+puts "============"
+puts ""
+
+set viewname "vback"
+set length 544.616
+
+restore [locate_data_file bug25908_hlr-bspline-clone2-tcl-h1.brep] a
+COMPUTE_HLR $viewname $algotype

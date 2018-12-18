@@ -1,0 +1,20 @@
+polyline f1 0 0 0  0 -10 0  100 -10 0  100 0 0  0 0 0
+polyline f2 100 0 0  110 0 0  110 100 0  100 100 0  100 0 0
+polyline f3 100 100 0  100 110 0  0 110 0  0 100 0  100 100 0
+polyline f4 0 100 0  -10 100 0  -10 0 0  0 0 0  0 100 0
+mkplane f1 f1
+mkplane f2 f2
+mkplane f3 f3
+mkplane f4 f4
+explode f1 e
+explode f2 e
+explode f3 e
+explode f4 e
+point pp 50 50 100
+filling a 4 0 1  f1_4 f1 1  f2_4 f2 1  f3_4 f3 1  f4_4 f4 1  pp 0
+
+set viewname ""
+set length 404.283
+set depsilon 1.e-2
+
+COMPUTE_HLR $viewname $algotype

@@ -1,0 +1,13 @@
+puts "TODO OCC30286 Linux: Error : The length of result shape is 302.441, expected 301.998"
+
+puts "==========================================="
+puts "OCC25813: regression in Hidden Line Removal"
+puts "==========================================="
+puts ""
+
+set viewname ""
+set length 301.998
+
+ptorus a 30 10
+
+COMPUTE_HLR $viewname $algotype

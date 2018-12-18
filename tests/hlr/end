@@ -1,0 +1,6 @@
+checkprops result -l ${length} -deps ${depsilon}
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png
+
+# to end a test script
+puts "TEST COMPLETED"

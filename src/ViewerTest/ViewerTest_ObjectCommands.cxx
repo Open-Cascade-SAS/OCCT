@@ -3083,7 +3083,7 @@ static int VComputeHLR (Draw_Interpretor& ,
   gp_Ax2 aProjAx;
   bool hasViewDirArg = false;
   Prs3d_TypeOfHLR anAlgoType = Prs3d_TOH_PolyAlgo;
-  bool toShowTangentEdges = false, toShowHiddenEdges = false;
+  bool toShowCNEdges = false, toShowHiddenEdges = false;
   int aNbIsolines = 0;
   if (Handle(V3d_Viewer) aViewer = ViewerTest::GetViewerFromContext())
   {
@@ -3148,9 +3148,9 @@ static int VComputeHLR (Draw_Interpretor& ,
           || anArgCase == "-tangentedges"
           || anArgCase == "-tangent")
     {
-      toShowTangentEdges = true;
+      toShowCNEdges = true;
       if (anArgIter + 1 < theArgNb
-       && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], toShowTangentEdges))
+       && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], toShowCNEdges))
       {
         ++anArgIter;
       }
@@ -3222,19 +3222,19 @@ static int VComputeHLR (Draw_Interpretor& ,
 
     aVisible[HLRBRep_Sharp]   = aHLRToShape.VCompound();
     aVisible[HLRBRep_OutLine] = aHLRToShape.OutLineVCompound(); // extract visible outlines
-    aVisible[HLRBRep_RgNLine] = aHLRToShape.RgNLineVCompound();
-    if (toShowTangentEdges)
+    aVisible[HLRBRep_Rg1Line] = aHLRToShape.Rg1LineVCompound();
+    if (toShowCNEdges)
     {
-      aVisible[HLRBRep_Rg1Line] = aHLRToShape.Rg1LineVCompound();
+      aVisible[HLRBRep_RgNLine] = aHLRToShape.RgNLineVCompound();
     }
     if (toShowHiddenEdges)
     {
       aHidden[HLRBRep_Sharp]   = aHLRToShape.HCompound();
       aHidden[HLRBRep_OutLine] = aHLRToShape.OutLineHCompound();
-      aHidden[HLRBRep_RgNLine] = aHLRToShape.RgNLineHCompound();
-      if (toShowTangentEdges)
+      aHidden[HLRBRep_Rg1Line] = aHLRToShape.Rg1LineHCompound();
+      if (toShowCNEdges)
       {
-        aHidden[HLRBRep_Rg1Line] = aHLRToShape.Rg1LineHCompound();
+        aHidden[HLRBRep_RgNLine] = aHLRToShape.RgNLineHCompound();
       }
     }
   }
@@ -3249,10 +3249,10 @@ static int VComputeHLR (Draw_Interpretor& ,
     HLRBRep_HLRToShape aHLRToShape (aHlrAlgo);
     aVisible[HLRBRep_Sharp]   = aHLRToShape.VCompound();
     aVisible[HLRBRep_OutLine] = aHLRToShape.OutLineVCompound();
-    aVisible[HLRBRep_RgNLine] = aHLRToShape.RgNLineVCompound();
-    if (toShowTangentEdges)
+    aVisible[HLRBRep_Rg1Line] = aHLRToShape.Rg1LineVCompound();
+    if (toShowCNEdges)
     {
-      aVisible[HLRBRep_Rg1Line] = aHLRToShape.Rg1LineVCompound();
+      aVisible[HLRBRep_RgNLine] = aHLRToShape.RgNLineVCompound();
     }
     aVisible[HLRBRep_IsoLine] = aHLRToShape.IsoLineVCompound();
 
@@ -3260,10 +3260,10 @@ static int VComputeHLR (Draw_Interpretor& ,
     {
       aHidden[HLRBRep_Sharp]   = aHLRToShape.HCompound();
       aHidden[HLRBRep_OutLine] = aHLRToShape.OutLineHCompound();
-      aHidden[HLRBRep_RgNLine] = aHLRToShape.RgNLineHCompound();
-      if (toShowTangentEdges)
+      aHidden[HLRBRep_Rg1Line] = aHLRToShape.Rg1LineHCompound();
+      if (toShowCNEdges)
       {
-        aHidden[HLRBRep_Rg1Line] = aHLRToShape.Rg1LineHCompound();
+        aHidden[HLRBRep_RgNLine] = aHLRToShape.RgNLineHCompound();
       }
       aHidden[HLRBRep_IsoLine] = aHLRToShape.IsoLineHCompound();
     }

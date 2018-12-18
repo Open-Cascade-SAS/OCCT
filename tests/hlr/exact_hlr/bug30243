@@ -1,0 +1,10 @@
+puts "========"
+puts "0030243: Regression in HLR PolyAlgo in OCCT 7.1.0"
+puts "========"
+puts ""
+
+set viewname ""
+set length 2695.41
+
+testreadstep [locate_data_file BFC_10000.stp] a
+COMPUTE_HLR $viewname $algotype
