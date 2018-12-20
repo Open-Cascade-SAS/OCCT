@@ -1,0 +1,11 @@
+puts "========"
+puts "0030396: Infinite recursion during ShapeFix after BRepAlgoAPI_Cut"
+puts "========"
+puts ""
+
+puts "TODO 30396 ALL:TEST INCOMPLETE"
+
+# The shape bug30396_bad_result.brep has been saved in OCCT 7.3, before BO has been fixed.
+restore [locate_data_file bug30396_bad_result.brep] a
+# The Draw crashed here
+fixshape r a

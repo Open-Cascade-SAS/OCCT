@@ -1,0 +1,47 @@
+puts "========"
+puts "0030396: Infinite recursion during ShapeFix after BRepAlgoAPI_Cut"
+puts "========"
+puts ""
+
+# With this order of tools the operation produced bad result
+set list(1) {a_2 a_3 a_4 a_5 a_6 a_7}
+# With this order of tools the operation produced good result
+set list(2) {a_6 a_2 a_7 a_3 a_4 a_5}
+
+set nbw {33 23 29 0}
+set nbf {33 17 23 0}
+set nbsh {6 1 1 0}
+set nbso {6 1 1 0}
+set vol {3.24433 11.1953 7.95093 empty}
+set area {25.9962 58.8635 53.1541 empty}
+set nameop {common fuse cut cut21}
+
+bfuzzyvalue 1e-2
+bnondestructive 1
+
+for {set i 1} { $i <= 2} {incr i} {
+
+  restore [locate_data_file bug30396.brep] a
+  explode a
+
+  bclearobjects
+  bcleartools
+  baddobjects a_1
+  eval baddtools $list($i)
+  bfillds
+
+  for {set iop 0} {$iop < 4} {incr iop} {
+    set oper [lindex $nameop $iop]
+    bbop r_${i}_$oper $iop
+    checknbshapes r_${i}_$oper -wire [lindex $nbw $iop] -face [lindex $nbf $iop]\
+      -solid [lindex $nbso $iop] -shell [lindex $nbsh $iop]
+    checkprops r_${i}_$oper -v [lindex $vol $iop] -s [lindex $area $iop]
+    checkshape r_${i}_$oper
+    if {![regexp "OK" [bopcheck r_${i}_$oper]]} {
+      puts "Error: result $i of $oper is self-interfered shape"
+    }
+  }
+}
+
+boptions -default
+checkview -display r_1_cut -2d -path ${imagedir}/${test_image}.png
