@@ -125,7 +125,12 @@ public:
   //! Exceptions
   //! Standard_NoMoreObject if there are no more shapes to explore.
   Standard_EXPORT void Next();
-  
+
+  //! Returns the current shape in the exploration.
+  //! Exceptions
+  //! Standard_NoSuchObject if this explorer has no more shapes to explore.
+  const TopoDS_Shape& Value() const { return Current(); }
+
   //! Returns the current shape in the exploration.
   //! Exceptions
   //! Standard_NoSuchObject if this explorer has no more shapes to explore.
