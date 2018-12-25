@@ -32,18 +32,18 @@ public:
   Standard_EXPORT AIS_Selection();
   
   //! removes all the object of the selection.
-  Standard_EXPORT void Clear();
+  Standard_EXPORT virtual void Clear();
   
   //! if the object is not yet in the selection, it will be added.
   //! if the object is already in the selection, it will be removed.
-  Standard_EXPORT AIS_SelectStatus Select (const Handle(SelectMgr_EntityOwner)& theObject);
+  Standard_EXPORT virtual AIS_SelectStatus Select (const Handle(SelectMgr_EntityOwner)& theObject);
   
   //! the object is always add int the selection.
   //! faster when the number of objects selected is great.
-  Standard_EXPORT AIS_SelectStatus AddSelect (const Handle(SelectMgr_EntityOwner)& theObject);
+  Standard_EXPORT virtual AIS_SelectStatus AddSelect (const Handle(SelectMgr_EntityOwner)& theObject);
 
   //! clears the selection and adds the object in the selection.
-  void ClearAndSelect (const Handle(SelectMgr_EntityOwner)& theObject)
+  virtual void ClearAndSelect (const Handle(SelectMgr_EntityOwner)& theObject)
   {
     Clear();
     Select (theObject);
