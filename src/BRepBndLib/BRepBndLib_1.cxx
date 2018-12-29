@@ -414,6 +414,10 @@ static void ComputePCA(const TopoDS_Shape& theS,
   {
     BRepBndLib::Add(aST, aShapeBox);
   }
+  if (aShapeBox.IsVoid())
+  {
+    return;
+  }
 
   gp_Pnt aPMin = aShapeBox.CornerMin();
   gp_Pnt aPMax = aShapeBox.CornerMax();
