@@ -381,12 +381,6 @@ public:
   //! Sets environment texture for the view.
   virtual void SetTextureEnv (const Handle(Graphic3d_TextureEnv)& theTextureEnv) = 0;
 
-  //! Returns the state of frustum culling optimization.
-  virtual Standard_Boolean IsCullingEnabled() const = 0;
-
-  //! Enables or disables frustum culling optimization.
-  virtual void SetCullingEnabled (const Standard_Boolean theIsEnabled) = 0;
-
   //! Return backfacing model used for the view.
   virtual Graphic3d_TypeOfBackfacingModel BackfacingModel() const = 0;
 

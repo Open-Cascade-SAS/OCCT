@@ -528,7 +528,7 @@ void OpenGl_LayerList::UpdateCulling (const Handle(OpenGl_Workspace)& theWorkspa
       continue;
     }
 
-    aLayer.UpdateCulling (aViewId, aSelector, theWorkspace->IsCullingEnabled());
+    aLayer.UpdateCulling (aViewId, aSelector, theWorkspace->View()->RenderingParams().FrustumCullingState);
   }
 
   aTimer.Stop();

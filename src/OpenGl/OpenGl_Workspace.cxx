@@ -430,15 +430,6 @@ Standard_Integer OpenGl_Workspace::Height() const
 }
 
 // =======================================================================
-// function : IsCullingEnabled
-// purpose  :
-// =======================================================================
-Standard_Boolean OpenGl_Workspace::IsCullingEnabled() const
-{
-  return myView->IsCullingEnabled();
-}
-
-// =======================================================================
 // function : FBOCreate
 // purpose  :
 // =======================================================================

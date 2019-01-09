@@ -485,23 +485,28 @@ void OpenGl_Layer::updateBVH() const
 // =======================================================================
 void OpenGl_Layer::UpdateCulling (const Standard_Integer theViewId,
                                   const OpenGl_BVHTreeSelector& theSelector,
-                                  const Standard_Boolean theToTraverse)
+                                  const Graphic3d_RenderingParams::FrustumCulling theFrustumCullingState)
 {
   updateBVH();
 
   myNbStructuresNotCulled = myNbStructures;
-  for (OpenGl_IndexedMapOfStructure::Iterator aStructIter (myBVHPrimitives.Structures()); aStructIter.More(); aStructIter.Next())
+  if (theFrustumCullingState != Graphic3d_RenderingParams::FrustumCulling_NoUpdate)
   {
-    const OpenGl_Structure* aStruct = aStructIter.Value();
-    aStruct->SetCulled (theToTraverse);
-  }
-  for (OpenGl_IndexedMapOfStructure::Iterator aStructIter (myBVHPrimitivesTrsfPers.Structures()); aStructIter.More(); aStructIter.Next())
-  {
-    const OpenGl_Structure* aStruct = aStructIter.Value();
-    aStruct->SetCulled (theToTraverse);
+    Standard_Boolean toTraverse =
+      (theFrustumCullingState == Graphic3d_RenderingParams::FrustumCulling_On);
+    for (OpenGl_IndexedMapOfStructure::Iterator aStructIter (myBVHPrimitives.Structures()); aStructIter.More(); aStructIter.Next())
+    {
+      const OpenGl_Structure* aStruct = aStructIter.Value();
+      aStruct->SetCulled (toTraverse);
+    }
+    for (OpenGl_IndexedMapOfStructure::Iterator aStructIter (myBVHPrimitivesTrsfPers.Structures()); aStructIter.More(); aStructIter.Next())
+    {
+      const OpenGl_Structure* aStruct = aStructIter.Value();
+      aStruct->SetCulled (toTraverse);
+    }
   }
 
-  if (!theToTraverse)
+  if (theFrustumCullingState != Graphic3d_RenderingParams::FrustumCulling_On)
   {
     return;
   }

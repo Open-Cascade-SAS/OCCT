@@ -19,7 +19,7 @@ vclear
 vinit name=small_wnd l=32 t=32 w=$SMALL_WIN_WIDTH h=$SMALL_WIN_HEIGHT
 vactivate small_wnd
 vrenderparams -perfUpdateInterval 0
-vfrustumculling 0
+vrenderparams -frustumculling off
 vautozfit 0
 vviewparams -scale 1.953125 -eye 0.57735026918962573 -0.57735026918962573 0.57735026918962573
 vzrange 1 512
@@ -69,7 +69,7 @@ puts ""
 
 verase
 
-vfrustumculling 1
+vrenderparams -frustumculling on
 puts "Start displaying boxes with clipping..."
 for {set i 0} {$i < $BOXES_NUM} {incr i} {
   vdisplay -noupdate $aBoxNames($i)

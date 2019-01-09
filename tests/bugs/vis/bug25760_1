@@ -62,7 +62,7 @@ set tcl_precision 16
 # Test orthographic camera without frustum culling.                #
 ####################################################################
 vcamera -ortho
-vfrustumculling 0
+vrenderparams -frustumculling off
 
 if { [test2d] != 1 } {
   puts "Error: 2D projection test failed: view frustum culling is OFF"
@@ -72,7 +72,7 @@ if { [test2d] != 1 } {
 # Test orthographic camera with frustum culling.                   #
 ####################################################################
 vcamera -ortho
-vfrustumculling 1
+vrenderparams -frustumculling on
 
 if { [test2d] != 1 } {
   puts "Error: 2D projection test failed: view frustum culling is ON"

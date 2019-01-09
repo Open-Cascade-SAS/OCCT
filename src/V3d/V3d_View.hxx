@@ -911,10 +911,10 @@ public:
   Standard_EXPORT Graphic3d_RenderingParams& ChangeRenderingParams();
 
   //! @return flag value of objects culling mechanism
-  Standard_EXPORT Standard_Boolean IsCullingEnabled() const;
+  Standard_Boolean IsCullingEnabled() const { return RenderingParams().FrustumCullingState == Graphic3d_RenderingParams::FrustumCulling_On; }
 
-  //! Turn on/off automatic culling of objects outside frustrum (ON by default)
-  Standard_EXPORT void SetFrustumCulling (const Standard_Boolean theMode);
+  //! Turn on/off automatic culling of objects outside frustum (ON by default)
+  void SetFrustumCulling (Standard_Boolean theMode) { ChangeRenderingParams().FrustumCullingState = theMode ? Graphic3d_RenderingParams::FrustumCulling_On : Graphic3d_RenderingParams::FrustumCulling_Off; }
 
   //! Fill in the dictionary with diagnostic info.
   //! Should be called within rendering thread.

@@ -126,7 +126,7 @@ public:
   //! Traverses through BVH tree to determine which structures are in view volume.
   void UpdateCulling (const Standard_Integer theViewId,
                       const OpenGl_BVHTreeSelector& theSelector,
-                      const Standard_Boolean theToTraverse);
+                      const Graphic3d_RenderingParams::FrustumCulling theFrustumCullingState);
 
   //! Returns TRUE if layer is empty or has been discarded entirely by culling test.
   bool IsCulled() const { return myNbStructuresNotCulled == 0; }

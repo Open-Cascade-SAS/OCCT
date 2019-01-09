@@ -80,6 +80,14 @@ public:
                      | PerfCounters_FrameTimeMax,
   };
 
+  //! State of frustum culling optimization.
+  enum FrustumCulling
+  {
+    FrustumCulling_Off,     //!< culling is disabled
+    FrustumCulling_On,      //!< culling is active, and the list of culled entities is automatically updated before redraw
+    FrustumCulling_NoUpdate //!< culling is active, but the list of culled entities is not updated
+  };
+
 public:
 
   //! Creates default rendering parameters.
@@ -108,6 +116,7 @@ public:
     NbRayTracingTiles           (16 * 16),
     CameraApertureRadius        (0.0f),
     CameraFocalPlaneDist        (1.0f),
+    FrustumCullingState         (FrustumCulling_On),
     ToneMappingMethod           (Graphic3d_ToneMappingMethod_Disabled),
     Exposure                    (0.f),
     WhitePoint                  (1.f),
@@ -181,6 +190,7 @@ public:
   Standard_Integer                  NbRayTracingTiles;           //!< total number of screen tiles used in adaptive sampling mode (PT only)
   Standard_ShortReal                CameraApertureRadius;        //!< aperture radius of perspective camera used for depth-of-field, 0.0 by default (no DOF) (path tracing only)
   Standard_ShortReal                CameraFocalPlaneDist;        //!< focal  distance of perspective camera used for depth-of field, 1.0 by default (path tracing only)
+  FrustumCulling                    FrustumCullingState;         //!< state of frustum culling optimization; FrustumCulling_On by default
 
   Graphic3d_ToneMappingMethod       ToneMappingMethod;           //!< specifies tone mapping method for path tracing, Graphic3d_ToneMappingMethod_Disabled by default
   Standard_ShortReal                Exposure;                    //!< exposure value used for tone mapping (path tracing), 0.0 by default

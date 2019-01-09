@@ -20,7 +20,7 @@ vclear
 vinit name=small_wnd l=32 t=32 w=$SMALL_WIN_WIDTH h=$SMALL_WIN_HEIGHT
 vactivate small_wnd
 vrenderparams -perfUpdateInterval 0
-vfrustumculling 0
+vrenderparams -frustumculling off
 vautozfit 0
 vviewparams -scale 1.953125 -eye 0.57735026918962573 -0.57735026918962573 0.57735026918962573
 vzrange 1 512
@@ -67,7 +67,7 @@ puts ""
 verase
 
 puts "Start displaying spheres with clipping..."
-vfrustumculling 1
+vrenderparams -frustumculling on
 vdisplayall
 puts [vfps]
 vrenderparams -perfCounters none

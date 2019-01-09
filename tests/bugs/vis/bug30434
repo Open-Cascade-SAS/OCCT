@@ -1,0 +1,43 @@
+puts "============="
+puts "0030434: Visualization, TKV3d - add 'NoUpdate' state of frustum culling optimization"
+puts "============="
+
+pload VISUALIZATION
+vclear
+vinit View1
+
+set THE_NB_POINTS 10
+puts "Creating [expr $THE_NB_POINTS * $THE_NB_POINTS * $THE_NB_POINTS] points..."
+for {set i 0} {$i < $THE_NB_POINTS} {incr i} {
+  for {set j 0} {$j < $THE_NB_POINTS} {incr j} {
+    for {set k 0} {$k < $THE_NB_POINTS} {incr k} {
+      vpoint p$i$j$k 3.*$i 3.*$j 3.*$k
+    }
+  }
+}
+
+vcamera -ortho
+vfront
+vfit
+vzoom 2
+vrenderparams -frustumculling on
+vrenderparams -frustumculling noupdate
+vfit
+if { [vreadpixel 92 92 rgb name] == "YELLOW" } { puts "Error: point should be clipped earlier" }
+vdump $::imagedir/${::casename}_ortho_culled.png
+vrenderparams -frustumculling off
+if { [vreadpixel 92 92 rgb name] != "YELLOW" } { puts "Error: point should NOT be clipped" }
+vdump $::imagedir/${::casename}_ortho_all.png
+
+vcamera -persp
+vaxo
+vfit
+vzoom 3
+vrenderparams -frustumculling on
+vrenderparams -frustumculling noupdate
+vfit
+if { [vreadpixel 114 92 rgb name] == "YELLOW" } { puts "Error: point should be clipped earlier" }
+vdump $::imagedir/${::casename}_persp_culled.png
+vrenderparams -frustumculling off
+if { [vreadpixel 114 92 rgb name] != "YELLOW" } { puts "Error: point should NOT be clipped" }
+vdump $::imagedir/${::casename}_persp_all.png

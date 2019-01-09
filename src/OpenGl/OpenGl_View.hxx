@@ -241,12 +241,6 @@ public:
   //! Sets environment texture for the view.
   Standard_EXPORT virtual void SetTextureEnv (const Handle(Graphic3d_TextureEnv)& theTextureEnv) Standard_OVERRIDE;
 
-  //! Returns the state of frustum culling optimization.
-  virtual Standard_Boolean IsCullingEnabled() const Standard_OVERRIDE { return myCulling; }
-
-  //! Enables or disables frustum culling optimization.
-  virtual void SetCullingEnabled (const Standard_Boolean theIsEnabled) Standard_OVERRIDE { myCulling = theIsEnabled; }
-
   //! Return backfacing model used for the view.
   virtual Graphic3d_TypeOfBackfacingModel BackfacingModel() const Standard_OVERRIDE { return myBackfacing; }
 
@@ -457,7 +451,6 @@ protected:
   Handle(OpenGl_Caps)      myCaps;
   Standard_Boolean         myWasRedrawnGL;
 
-  Standard_Boolean                myCulling;
   Graphic3d_TypeOfBackfacingModel myBackfacing;
   Quantity_ColorRGBA              myBgColor;
   Handle(Graphic3d_SequenceOfHClipPlane) myClipPlanes;

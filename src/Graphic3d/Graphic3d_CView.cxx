@@ -1082,7 +1082,6 @@ void Graphic3d_CView::CopySettings (const Handle(Graphic3d_CView)& theOther)
   SetBackgroundImage       (theOther->BackgroundImage());
   SetBackgroundImageStyle  (theOther->BackgroundImageStyle());
   SetTextureEnv            (theOther->TextureEnv());
-  SetCullingEnabled        (theOther->IsCullingEnabled());
   SetShadingModel          (theOther->ShadingModel());
   SetBackfacingModel       (theOther->BackfacingModel());
   SetCamera                (new Graphic3d_Camera (theOther->Camera()));

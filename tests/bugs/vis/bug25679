@@ -27,9 +27,9 @@ for {set i 0} {$i < $LINES_IN_ROW} {incr i} {
 
 vfit
 
-vfrustumculling 1
+vrenderparams -frustumculling on
 vdump $aWithCulling
-vfrustumculling 0
+vrenderparams -frustumculling off
 vdump $aNoCulling
 
 set aDiffRes [diffimage $aWithCulling $aNoCulling 0.1 0 0 $aDiff]

@@ -9,7 +9,7 @@ puts ""
 box b 1 2 3
 vinit
 vdisplay b
-vfrustumculling 1
+vrenderparams -frustumculling on
 vfit
 
 vdump $imagedir/${casename}_default_layer.png

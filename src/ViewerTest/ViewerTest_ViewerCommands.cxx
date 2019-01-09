@@ -10430,6 +10430,9 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
     }
     theDI << "depth pre-pass: " << (aParams.ToEnableDepthPrepass        ? "on" : "off") << "\n";
     theDI << "alpha to coverage: " << (aParams.ToEnableAlphaToCoverage  ? "on" : "off") << "\n";
+    theDI << "frustum culling: " << (aParams.FrustumCullingState == Graphic3d_RenderingParams::FrustumCulling_On  ? "on" :
+                                     aParams.FrustumCullingState == Graphic3d_RenderingParams::FrustumCulling_Off ? "off" :
+                                                                                                                    "noUpdate") << "\n";
     theDI << "\n";
     return 0;
   }
@@ -11103,6 +11106,39 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
       }
       aView->ChangeRenderingParams().StatsMaxChartTime = (Standard_ShortReal )Draw::Atof (theArgVec[anArgIter]);
     }
+    else if (aFlag == "-frustumculling"
+          || aFlag == "-culling")
+    {
+      if (toPrint)
+      {
+        theDI << ((aParams.FrustumCullingState == Graphic3d_RenderingParams::FrustumCulling_On)  ? "on" :
+                  (aParams.FrustumCullingState == Graphic3d_RenderingParams::FrustumCulling_Off) ? "off" :
+                                                                                                   "noUpdate") << " ";
+        continue;
+      }
+
+      Graphic3d_RenderingParams::FrustumCulling aState = Graphic3d_RenderingParams::FrustumCulling_On;
+      if (++anArgIter < theArgNb)
+      {
+        TCollection_AsciiString aStateStr(theArgVec[anArgIter]);
+        aStateStr.LowerCase();
+        bool toEnable = true;
+        if (ViewerTest::ParseOnOff (aStateStr.ToCString(), toEnable))
+        {
+          aState = toEnable ? Graphic3d_RenderingParams::FrustumCulling_On : Graphic3d_RenderingParams::FrustumCulling_Off;
+        }
+        else if (aStateStr == "noupdate"
+              || aStateStr == "freeze")
+        {
+          aState = Graphic3d_RenderingParams::FrustumCulling_NoUpdate;
+        }
+        else
+        {
+          --anArgIter;
+        }
+      }
+      aParams.FrustumCullingState = aState;
+    }
     else
     {
       std::cout << "Error: wrong syntax, unknown flag '" << anArg << "'\n";
@@ -11158,53 +11194,6 @@ static Standard_Integer VProgressiveMode (Draw_Interpretor& /*theDI*/,
   return 0;
 }
 #endif
-
-//=======================================================================
-//function : VFrustumCulling
-//purpose  : enables/disables view volume's culling.
-//=======================================================================
-static int VFrustumCulling (Draw_Interpretor& theDI,
-                            Standard_Integer  theArgNb,
-                            const char**      theArgVec)
-{
-  Handle(V3d_View) aView = ViewerTest::CurrentView();
-  if (aView.IsNull())
-  {
-    std::cout << theArgVec[0] << " Error: Use 'vinit' command before\n";
-    return 1;
-  }
-
-  if (theArgNb < 2)
-  {
-    theDI << (aView->IsCullingEnabled() ? "on" : "off");
-    return 0;
-  }
-  else if (theArgNb != 2)
-  {
-    std::cout << theArgVec[0] << " Syntax error: Specify the mode\n";
-    return 1;
-  }
-
-  TCollection_AsciiString aModeStr (theArgVec[1]);
-  aModeStr.LowerCase();
-  Standard_Boolean toEnable = 0;
-  if (aModeStr == "on")
-  {
-    toEnable = 1;
-  }
-  else if (aModeStr == "off")
-  {
-    toEnable = 0;
-  }
-  else
-  {
-    toEnable = Draw::Atoi (theArgVec[1]) != 0;
-  }
-
-  aView->SetFrustumCulling (toEnable);
-  aView->Redraw();
-  return 0;
-}
 
 //=======================================================================
 //function : VXRotate
@@ -12628,13 +12617,12 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "\n      '-perfUpdateInterval nbSeconds' Performance counters update interval"
     "\n      '-perfChart    nbFrames'    Show frame timers chart limited by specified number of frames"
     "\n      '-perfChartMax seconds'     Maximum time in seconds with the chart"
+    "\n      '-frustumCulling on|off|noupdate' Enable/disable objects frustum clipping or"
+    "\n                                        set state to check structures culled previously."
     "\n    Unlike vcaps, these parameters dramatically change visual properties."
     "\n    Command is intended to control presentation quality depending on"
     "\n    hardware capabilities and performance.",
     __FILE__, VRenderParams, group);
-  theCommands.Add("vfrustumculling",
-    "vfrustumculling [toEnable]: enables/disables objects clipping",
-    __FILE__,VFrustumCulling,group);
   theCommands.Add ("vplace",
             "vplace dx dy"
     "\n\t\t: Places the point (in pixels) at the center of the window",
