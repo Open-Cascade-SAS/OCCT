@@ -1,0 +1,46 @@
+# testgrid demo draw -overwrite
+
+catch {cpulimit 10}
+
+package require Thread
+
+set NBTHREADS 1
+set NBWORKERS 1
+
+puts "Creating worker"
+set worker [tpool::create -minworkers $NBWORKERS -maxworkers $NBWORKERS]
+
+puts "Suspending worker"
+tpool::suspend $worker
+
+puts "Arranging jobs"
+for {set i 1} {$i <= $NBTHREADS} {incr i} {
+    set job [tpool::post $worker "puts Executing_job_$i"]
+    puts "Job $i: $job"
+#    set job [tpool::post -nowait $worker "puts $i"]
+    set jobs($job) $job
+}
+
+puts "Resuming worker"
+tpool::resume $worker
+
+puts "Waiting while all threads complete"
+after 1000
+
+puts "Obtaining results"
+while { [llength [array names jobs]] > 0 } {
+    puts "Queue: [array names jobs]"
+
+    foreach job [tpool::wait $worker [array names jobs]] {
+        puts -nonewline "Completed $job: "
+        puts "[tpool::get $worker $job]"
+        unset jobs($job)
+    }
+}
+
+puts "Releasing worker"
+tpool::release $worker
+
+catch {cpulimit 0}
+
+puts "TEST COMPLETED"

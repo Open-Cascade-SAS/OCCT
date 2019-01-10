@@ -32,7 +32,6 @@
 
 extern Standard_Boolean Draw_Batch;
 extern Standard_Boolean Draw_VirtualWindows;
-static Tcl_Interp *interp;        /* Interpreter for this application. */
 static NCollection_List<Draw_Window::FCallbackBeforeTerminate> MyCallbacks;
 
 void Draw_Window::AddCallbackBeforeTerminate(FCallbackBeforeTerminate theCB)
@@ -1110,9 +1109,9 @@ Standard_Boolean Init_Appli()
 {
   Draw_Interpretor& aCommands = Draw::GetInterpretor();
   aCommands.Init();
-  interp = aCommands.Interp();
+  Tcl_Interp *interp = aCommands.Interp();
+  Tcl_Init (interp);
 
-  Tcl_Init(interp) ;
   try {
     OCC_CATCH_SIGNALS
     Tk_Init(interp) ;
@@ -1302,7 +1301,7 @@ static void StdinProc(ClientData clientData, int )
    */
 
 prompt:
-  if (tty) Prompt(interp, gotPartial);
+  if (tty) Prompt(Draw::GetInterpretor().Interp(), gotPartial);
 
  } catch (Standard_Failure) {}
 
@@ -2031,14 +2030,9 @@ bool volatile isTkLoopStarted = false;
 Standard_Boolean Init_Appli(HINSTANCE hInst,
                             HINSTANCE hPrevInst, int nShow, HWND& hWndFrame )
 {
-  Draw_Interpretor& aCommands = Draw::GetInterpretor();
-
   DWORD IDThread;
   HANDLE hThread;
   console_semaphore = STOP_CONSOLE;
-  aCommands.Init();
-  interp = aCommands.Interp();
-  Tcl_Init(interp) ;
 
   dwMainThreadId = GetCurrentThreadId();
 
@@ -2050,14 +2044,18 @@ Standard_Boolean Init_Appli(HINSTANCE hInst,
                            0,                       // use default creation flags
                            &IDThread);
   if (!hThread) {
-    cout << "Tcl/Tk main loop thread not created. Switching to batch mode..." << endl;
+    cout << "Failed to create Tcl/Tk main loop thread. Switching to batch mode..." << endl;
     Draw_Batch = Standard_True;
+    Draw_Interpretor& aCommands = Draw::GetInterpretor();
+    aCommands.Init();
+    Tcl_Interp *interp = aCommands.Interp();
+    Tcl_Init(interp);
 #ifdef _TK
     try {
       OCC_CATCH_SIGNALS
-      Tk_Init(interp) ;
-    } catch  (Standard_Failure) {
-      cout <<" Pb au lancement de TK_Init "<<endl;
+      Tk_Init(interp);
+    } catch  (Standard_Failure& anExcept) {
+      cout << "Failed to initialize Tk: " << anExcept.GetMessageString() << endl;
     }
 
     Tcl_StaticPackage(interp, "Tk", Tk_Init, (Tcl_PackageInitProc *) NULL);
@@ -2262,6 +2260,11 @@ static DWORD WINAPI tkLoop(VOID)
 {
   Tcl_CreateExitHandler(exitProc, 0);
   
+  Draw_Interpretor& aCommands = Draw::GetInterpretor();
+  aCommands.Init();
+  Tcl_Interp *interp = aCommands.Interp();
+  Tcl_Init(interp);
+
   // Work-around against issue with Tcl standard channels on Windows.
   // These channels by default use OS handles owned by the system which
   // may get invalidated e.g. by dup2() (see dlog command).
@@ -2279,8 +2282,6 @@ static DWORD WINAPI tkLoop(VOID)
   // ActiveState Tcl (at least 8.6.4) does not seem to do that, so channels 
   // need to be set into interpretor explicitly
   {
-    Draw_Interpretor& aCommands = Draw::GetInterpretor();
-
     Tcl_Channel aChannelIn  = Tcl_GetStdChannel (TCL_STDIN);
     Tcl_Channel aChannelOut = Tcl_GetStdChannel (TCL_STDOUT);
     Tcl_Channel aChannelErr = Tcl_GetStdChannel (TCL_STDERR);

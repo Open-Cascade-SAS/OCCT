@@ -270,10 +270,7 @@ void Draw_Interpretor::add (const Standard_CString          theCommandName,
                             Draw_Interpretor::CallBackData* theCallback,
                             const Standard_CString          theGroup)
 {
-  if (myInterp == NULL)
-  {
-    Init();
-  }
+  Standard_ASSERT_RAISE (myInterp != NULL, "Attempt to add command to Null interpretor");
 
   Standard_PCharacter aName  = (Standard_PCharacter )theCommandName;
   Standard_PCharacter aHelp  = (Standard_PCharacter )theHelp;
