@@ -482,7 +482,8 @@ ProjLib_ComputeApproxOnPolarSurface::ProjLib_ComputeApproxOnPolarSurface()
   myDegMin(-1), myDegMax(-1),
   myMaxSegments(-1),
   myMaxDist(-1.),
-  myBndPnt(AppParCurves_TangencyPoint)
+  myBndPnt(AppParCurves_TangencyPoint),
+  myDist(0.)
 {
 }
 
@@ -502,7 +503,8 @@ ProjLib_ComputeApproxOnPolarSurface::ProjLib_ComputeApproxOnPolarSurface
   myDegMin(-1), myDegMax(-1),
   myMaxSegments(-1),
   myMaxDist(-1.),
-  myBndPnt(AppParCurves_TangencyPoint)
+  myBndPnt(AppParCurves_TangencyPoint),
+  myDist(0.)
 {
   myBSpline = Perform(theInitialCurve2d, theCurve, theSurface);
 }
@@ -522,7 +524,8 @@ ProjLib_ComputeApproxOnPolarSurface::ProjLib_ComputeApproxOnPolarSurface
   myDegMin(-1), myDegMax(-1),
   myMaxSegments(-1),
   myMaxDist(-1.),
-  myBndPnt(AppParCurves_TangencyPoint)
+  myBndPnt(AppParCurves_TangencyPoint),
+  myDist(0.)
 {
   const Handle(Adaptor2d_HCurve2d) anInitCurve2d;
   myBSpline = Perform(anInitCurve2d, theCurve, theSurface);  
@@ -545,7 +548,8 @@ ProjLib_ComputeApproxOnPolarSurface::ProjLib_ComputeApproxOnPolarSurface
   myDegMin(-1), myDegMax(-1),
   myMaxSegments(-1),
   myMaxDist(-1.),
-  myBndPnt(AppParCurves_TangencyPoint)
+  myBndPnt(AppParCurves_TangencyPoint),
+  myDist(0.)
 {
   // InitialCurve2d and InitialCurve2dBis are two pcurves of the sewing 
   Handle(Geom2d_BSplineCurve) bsc =
@@ -1079,6 +1083,7 @@ Handle(Adaptor2d_HCurve2d)
   else {
     myProjIsDone = Standard_False;
     Standard_Real Dist2Min = 1.e+200, u = 0., v = 0.;
+    myDist = 0.;
     gp_Pnt pntproj;
 
     TColgp_SequenceOfPnt2d Sols;
@@ -1253,7 +1258,7 @@ Handle(Adaptor2d_HCurve2d)
       // U0 and V0 are the points in the initialized period 
       // (period with u and v),
       // U1 and V1 are the points for construction of poles
-
+      myDist = Dist2Min;
       for ( i = 2 ; i <= NbOfPnts ; i++) 
 	if(myProjIsDone) {
 	  myProjIsDone = Standard_False;
@@ -1267,6 +1272,10 @@ Handle(Adaptor2d_HCurve2d)
 	    if (aLocateExtPS.SquareDistance() < DistTol3d2)
             {  //OCC217
               //if (aLocateExtPS.SquareDistance() < Tol3d * Tol3d) {
+              if (aLocateExtPS.SquareDistance() > myDist)
+              {
+                myDist = aLocateExtPS.SquareDistance();
+              }
 	      (aLocateExtPS.Point()).Parameter(U0,V0);
 	      U1 = U0 + usens*uperiod;
 	      V1 = V0 + vsens*vperiod;
@@ -1291,6 +1300,10 @@ Handle(Adaptor2d_HCurve2d)
                 }
                 if (LocalMinSqDist < DistTol3d2)
                 {
+                  if (LocalMinSqDist > myDist)
+                  {
+                    myDist = LocalMinSqDist;
+                  }
                   Standard_Real LocalU, LocalV;
                   aGlobalExtr.Point(imin).Parameter(LocalU, LocalV);
                   if (uperiod > 0. && Abs(U0 - LocalU) >= uperiod/2.)
@@ -1363,6 +1376,10 @@ Handle(Adaptor2d_HCurve2d)
 	    if (locext.IsDone())
 	      if (locext.SquareDistance() < DistTol3d2) {  //OCC217
 	      //if (locext.SquareDistance() < Tol3d * Tol3d) {
+                if (locext.SquareDistance() > myDist)
+                {
+                  myDist = locext.SquareDistance();
+                }
 		(locext.Point()).Parameter(u,v);
 		if((aUsup - U0) > (U0 - aUinf)) 
 		  usens--;
@@ -1390,7 +1407,11 @@ Handle(Adaptor2d_HCurve2d)
 	    if (locext.IsDone())
 	      if (locext.SquareDistance() < DistTol3d2) {  //OCC217
 	      //if (locext.SquareDistance() < Tol3d * Tol3d) {
-		(locext.Point()).Parameter(u,v);
+                if (locext.SquareDistance() > myDist)
+                {
+                  myDist = locext.SquareDistance();
+                }
+                (locext.Point()).Parameter(u, v);
 		if((aVsup - V0) > (V0 - aVinf)) 
 		  vsens--;
 		else 
@@ -1419,7 +1440,11 @@ Handle(Adaptor2d_HCurve2d)
 	    if (locext.IsDone())
 	      if (locext.SquareDistance() < DistTol3d2) {
 	      //if (locext.SquareDistance() < Tol3d * Tol3d) {
-		(locext.Point()).Parameter(u,v);
+                if (locext.SquareDistance() > myDist)
+                {
+                  myDist = locext.SquareDistance();
+                }
+                (locext.Point()).Parameter(u, v);
 		if((Usup - U0) > (U0 - Uinf)) 
 		  usens--;
 		else 
@@ -1447,7 +1472,11 @@ Handle(Adaptor2d_HCurve2d)
 		}
 	      if (Dist2Min < DistTol3d2) {
 	      //if (Dist2Min < Tol3d * Tol3d) {
-		(ext.Point(aGoodValue)).Parameter(u,v);
+                if (Dist2Min > myDist)
+                {
+                  myDist = Dist2Min;
+                }
+                (ext.Point(aGoodValue)).Parameter(u, v);
 		if(uperiod) {
 		  if((U0 - u) > (2*uperiod/3)) {
 		    usens++;
@@ -1862,8 +1891,18 @@ Handle(Geom2d_BSplineCurve)
     aLastC = myBndPnt;
   }
 
+  if (myDist > 10.*Tol3d)
+  {
+    aFistC = AppParCurves_PassPoint; 
+    aLastC = AppParCurves_PassPoint;
+  }
+
   Approx_FitAndDivide2d Fit(Deg1, Deg2, Tol3d, Tol2d, Standard_True, aFistC, aLastC);
   Fit.SetMaxSegments(aMaxSegments);
+  if (InitCurve2d->GetType() == GeomAbs_Line)
+  {
+    Fit.SetInvOrder(Standard_False);
+  }
   Fit.Perform(F);
 
   Standard_Real anOldTol2d = Tol2d;
@@ -1936,6 +1975,10 @@ Handle(Geom2d_BSplineCurve)
 
     Standard_Boolean OK = Standard_True;
     Standard_Real aSmoothTol = Max(Precision::Confusion(), aNewTol2d);
+    if (myBndPnt == AppParCurves_PassPoint)
+    {
+      aSmoothTol *= 10.;
+    }
     for (Standard_Integer ij = 2; ij < NbKnots; ij++) {
       OK = OK && Dummy->RemoveKnot(ij,MaxDeg-1, aSmoothTol);  
     }

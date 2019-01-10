@@ -685,7 +685,9 @@ static Standard_Boolean Intersect(const TopoDS_Wire& wir1,
 			      for (Standard_Integer j = 1; j <= PntSeq.Length(); j++)
 				{
 				  Standard_Real tolv = BRep_Tool::Tolerance( TopoDS::Vertex(CommonVertices(j)) );
-				  if (P.IsEqual( PntSeq(j), tolv ))
+                                  tolv += 1.e-8; //possible tolerance of intersection point
+                                  Standard_Real dd = P.SquareDistance(PntSeq(j));
+				  if (dd <= tolv * tolv)
 				    {
 				      NbCoinc++;
 				      break;

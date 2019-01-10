@@ -25,6 +25,8 @@
 #include <Approx_Status.hxx>
 #include <Precision.hxx>
 
+const static Standard_Integer MAXSEGM = 1000;
+
 //=======================================================================
 //function : Approx_ComputeCLine
 //purpose  : The MultiLine <Line> will be approximated until tolerances
@@ -50,7 +52,8 @@ const AppParCurves_Constraint LastC)
   mycut = cutting;
   myfirstC = FirstC;
   mylastC = LastC;
-  myMaxSegments = IntegerLast();
+  myMaxSegments = MAXSEGM;
+  myInvOrder = Standard_True;
   alldone = Standard_False;
   Perform(Line);
 }
@@ -77,7 +80,8 @@ const AppParCurves_Constraint LastC)
   mycut = cutting;
   myfirstC = FirstC;
   mylastC = LastC;
-  myMaxSegments = IntegerLast();
+  myMaxSegments = MAXSEGM;
+  myInvOrder = Standard_True;
 }
 
 //=======================================================================
@@ -244,33 +248,117 @@ Standard_Boolean Approx_ComputeCLine::Compute(const MultiLine& Line,
 {
 
 
-  Standard_Integer deg, NbPoints = 24;
+  const Standard_Integer NbPointsMax = 24;
+  const Standard_Real aMinRatio = 0.05;
+  const Standard_Integer aMaxDeg = 8;
+  //
+  Standard_Integer deg, NbPoints;
   Standard_Boolean mydone;
   Standard_Real Fv;
 
-  for (deg = mydegremin; deg <= mydegremax; deg++) {
-
-    AppCont_LeastSquare LSquare(Line, Ufirst, Ulast, myfirstC, mylastC, deg, NbPoints);
-    mydone = LSquare.IsDone();
-    if (mydone) {
-      LSquare.Error(Fv, TheTol3d, TheTol2d);
-      if (TheTol3d <= mytol3d && TheTol2d <= mytol2d) {
+  AppParCurves_MultiCurve aPrevCurve;
+  Standard_Real aPrevTol3d = RealLast(), aPrevTol2d = RealLast();
+  Standard_Boolean aPrevIsOk = Standard_False;
+  Standard_Boolean anInvOrder = myInvOrder;
+  if (anInvOrder && mydegremax > aMaxDeg)
+  {
+    if ((Ulast - Ufirst) / (Line.LastParameter() - Line.FirstParameter()) < aMinRatio)
+    {
+      anInvOrder = Standard_False;
+    }
+  }
+  if (anInvOrder)
+  {
+    for (deg = mydegremax; deg >= mydegremin; deg--) {
+      NbPoints = Min(2 * deg + 1, NbPointsMax);
+      AppCont_LeastSquare LSquare(Line, Ufirst, Ulast, myfirstC, mylastC, deg, NbPoints);
+      mydone = LSquare.IsDone();
+      if (mydone)
+      {
+        LSquare.Error(Fv, TheTol3d, TheTol2d);
+        if (TheTol3d <= mytol3d && TheTol2d <= mytol2d)
+        {
+          if (deg == mydegremin)
+          {
+            // Stockage de la multicurve approximee.
+            tolreached = Standard_True;
+            myMultiCurves.Append(LSquare.Value());
+            myfirstparam.Append(Ufirst);
+            mylastparam.Append(Ulast);
+            Tolers3d.Append(TheTol3d);
+            Tolers2d.Append(TheTol2d);
+            return Standard_True;
+          }
+          aPrevTol3d = TheTol3d;
+          aPrevTol2d = TheTol2d;
+          aPrevCurve = LSquare.Value();
+          aPrevIsOk = Standard_True;
+          continue;
+        }
+        else if (aPrevIsOk)
+        {
+          // Stockage de la multicurve approximee.
+          tolreached = Standard_True;
+          TheTol3d = aPrevTol3d;
+          TheTol2d = aPrevTol2d;
+          myMultiCurves.Append(aPrevCurve);
+          myfirstparam.Append(Ufirst);
+          mylastparam.Append(Ulast);
+          Tolers3d.Append(aPrevTol3d);
+          Tolers2d.Append(aPrevTol2d);
+          return Standard_True;
+        }
+      }
+      else if (aPrevIsOk)
+      {
         // Stockage de la multicurve approximee.
         tolreached = Standard_True;
-        myMultiCurves.Append(LSquare.Value());
+        TheTol3d = aPrevTol3d;
+        TheTol2d = aPrevTol2d;
+        myMultiCurves.Append(aPrevCurve);
         myfirstparam.Append(Ufirst);
         mylastparam.Append(Ulast);
-        Tolers3d.Append(TheTol3d);
-        Tolers2d.Append(TheTol2d);
+        Tolers3d.Append(aPrevTol3d);
+        Tolers2d.Append(aPrevTol2d);
         return Standard_True;
       }
+      if (!aPrevIsOk && deg == mydegremax)
+      {
+        TheMultiCurve = LSquare.Value();
+        currenttol3d = TheTol3d;
+        currenttol2d = TheTol2d;
+        aPrevTol3d = TheTol3d;
+        aPrevTol2d = TheTol2d;
+        aPrevCurve = TheMultiCurve;
+        break;
+      }
     }
-    if (deg == mydegremax) {
-      TheMultiCurve = LSquare.Value();
-      currenttol3d = TheTol3d;
-      currenttol2d = TheTol2d;
+  }
+  else
+  {
+    for (deg = mydegremin; deg <= mydegremax; deg++) {
+      NbPoints = Min(2 * deg + 1, NbPointsMax);
+      AppCont_LeastSquare LSquare(Line, Ufirst, Ulast, myfirstC, mylastC, deg, NbPoints);
+      mydone = LSquare.IsDone();
+      if (mydone) {
+        LSquare.Error(Fv, TheTol3d, TheTol2d);
+        if (TheTol3d <= mytol3d && TheTol2d <= mytol2d) {
+          // Stockage de la multicurve approximee.
+          tolreached = Standard_True;
+          myMultiCurves.Append(LSquare.Value());
+          myfirstparam.Append(Ufirst);
+          mylastparam.Append(Ulast);
+          Tolers3d.Append(TheTol3d);
+          Tolers2d.Append(TheTol2d);
+          return Standard_True;
+        }
+      }
+      if (deg == mydegremax) {
+        TheMultiCurve = LSquare.Value();
+        currenttol3d = TheTol3d;
+        currenttol2d = TheTol2d;
+      }
     }
-
   }
   return Standard_False;
 }
@@ -333,6 +421,15 @@ void Approx_ComputeCLine::SetConstraints(const AppParCurves_Constraint FirstC,
 void Approx_ComputeCLine::SetMaxSegments(const Standard_Integer theMaxSegments)
 {
   myMaxSegments = theMaxSegments;
+}
+
+//=======================================================================
+//function : SetInvOrder
+//purpose  : 
+//=======================================================================
+void Approx_ComputeCLine::SetInvOrder(const Standard_Boolean theInvOrder)
+{
+  myInvOrder = theInvOrder;
 }
 
 //=======================================================================

@@ -7,7 +7,7 @@ puts ""
 #######################################################################
 
 set MaxTol 1.e-7
-set GoodNbCurv 1
+set GoodNbCurv 2
 
 restore [locate_data_file  bug27262_cmpd.brep] b
 explode b
@@ -30,5 +30,6 @@ if {${NbCurv} != ${GoodNbCurv}} {
 }
 
 checklength c_1 -l 2.9620641619623407
+checklength c_2 -l 3.1050603628884668
 
 checkview -screenshot -2d -path ${imagedir}/${test_image}.png

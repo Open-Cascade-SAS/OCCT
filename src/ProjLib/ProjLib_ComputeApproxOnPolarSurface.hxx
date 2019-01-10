@@ -142,7 +142,7 @@ private:
   Standard_Integer myMaxSegments;
   Standard_Real myMaxDist;
   AppParCurves_Constraint myBndPnt;
-
+  Standard_Real myDist;
 
 };
 

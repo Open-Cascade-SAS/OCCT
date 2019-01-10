@@ -19,7 +19,7 @@ nurbsconvert result result
 incmesh result 0.15 -a 20
 
 tricheck result
-checktrinfo result -tri 193 -nod 147 -defl 0.042090809832482222 -tol_abs_defl 1.0e-7
+checktrinfo result -tri 193 -nod 147 -defl 0.04209 -tol_abs_defl 1.0e-6
 
 vinit
 

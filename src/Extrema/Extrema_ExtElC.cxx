@@ -674,6 +674,15 @@ Method:
   //
   ExtremaExtElC_TrigonometricRoots Sol(A1,A2,A3,A4,A5,0.,M_PI+M_PI);
   if (!Sol.IsDone()) { return; }
+  //
+  if (Sol.InfiniteRoots()) {
+    myIsPar = Standard_True;
+    gp_Pnt aP = ElCLib::EllipseValue(0., C2.Position(), C2.MajorRadius(), C2.MinorRadius());
+    mySqDist[0] = C1.SquareDistance(aP);
+    myNbExt = 1;
+    myDone = Standard_True;
+    return;
+  }
 
 // Storage of solutions ...
   gp_Pnt P1,P2;

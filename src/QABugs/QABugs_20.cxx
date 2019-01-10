@@ -3098,6 +3098,132 @@ static Standard_Integer QAEndsWith(Draw_Interpretor& di, Standard_Integer n, con
   return 1;
 }
 
+//Class is used in OCC30435
+#include <AppCont_Function.hxx>
+#include <Adaptor3d_HCurve.hxx>
+class CurveEvaluator : public AppCont_Function
+
+{
+
+public:
+  Handle(Adaptor3d_HCurve) myCurve;
+
+  CurveEvaluator(const Handle(Adaptor3d_HCurve)& C)
+    : myCurve(C)
+  {
+    myNbPnt = 1;
+    myNbPnt2d = 0;
+  }
+
+  Standard_Real FirstParameter() const
+  {
+    return myCurve->FirstParameter();
+  }
+
+  Standard_Real LastParameter() const
+  {
+    return myCurve->LastParameter();
+  }
+
+  Standard_Boolean Value(const Standard_Real   theT,
+    NCollection_Array1<gp_Pnt2d>& /*thePnt2d*/,
+    NCollection_Array1<gp_Pnt>&   thePnt) const
+  {
+    thePnt(1) = myCurve->Value(theT);
+    return Standard_True;
+  }
+
+  Standard_Boolean D1(const Standard_Real   theT,
+    NCollection_Array1<gp_Vec2d>& /*theVec2d*/,
+    NCollection_Array1<gp_Vec>&   theVec) const
+  {
+    gp_Pnt aDummyPnt;
+    myCurve->D1(theT, aDummyPnt, theVec(1));
+    return Standard_True;
+  }
+};
+
+#include <GeomAdaptor_HCurve.hxx>
+#include <Approx_FitAndDivide.hxx>
+#include <Convert_CompBezierCurvesToBSplineCurve.hxx>
+static Standard_Integer OCC30435(Draw_Interpretor& di, Standard_Integer, const char** a)
+{
+
+  Handle(Geom_Curve) GC;
+  GC = DrawTrSurf::GetCurve(a[2]);
+  if (GC.IsNull())
+    return 1;
+
+  Standard_Integer Dmin = 3;
+  Standard_Integer Dmax = 12;
+  Standard_Real Tol3d = 1.e-7;
+  Standard_Boolean inverse = Standard_True;
+
+
+  Standard_Integer inv = atoi(a[3]);
+  if (inv > 0)
+  {
+    inverse = Standard_True;
+  }
+  else
+  {
+    inverse = Standard_False;
+  }
+
+  Standard_Integer maxit = atoi(a[4]);
+
+  Handle(GeomAdaptor_HCurve) aGAC = new GeomAdaptor_HCurve(GC);
+
+  CurveEvaluator aCE(aGAC);
+
+  Approx_FitAndDivide anAppro(Dmin, Dmax, Tol3d, 0., Standard_True);
+  anAppro.SetInvOrder(inverse);
+  Standard_Integer i;
+  for (i = 1; i <= maxit; ++i)
+    anAppro.Perform(aCE);
+
+  if (!anAppro.IsAllApproximated())
+  {
+    di << "Approximation failed \n";
+    return 1;
+  }
+  Standard_Integer NbCurves = anAppro.NbMultiCurves();
+
+  Convert_CompBezierCurvesToBSplineCurve Conv;
+
+  Standard_Real tol3d, tol2d, tolreached = 0.;
+  for (i = 1; i <= NbCurves; i++) {
+    anAppro.Error(i, tol3d, tol2d);
+    tolreached = Max(tolreached, tol3d);
+    AppParCurves_MultiCurve MC = anAppro.Value(i);
+    TColgp_Array1OfPnt Poles(1, MC.Degree() + 1);
+    MC.Curve(1, Poles);
+    Conv.AddCurve(Poles);
+  }
+  Conv.Perform();
+  Standard_Integer NbPoles = Conv.NbPoles();
+  Standard_Integer NbKnots = Conv.NbKnots();
+
+  TColgp_Array1OfPnt      NewPoles(1, NbPoles);
+  TColStd_Array1OfReal    NewKnots(1, NbKnots);
+  TColStd_Array1OfInteger NewMults(1, NbKnots);
+
+  Conv.KnotsAndMults(NewKnots, NewMults);
+  Conv.Poles(NewPoles);
+
+  BSplCLib::Reparametrize(GC->FirstParameter(),
+    GC->LastParameter(),
+    NewKnots);
+  Handle(Geom_BSplineCurve) TheCurve = new Geom_BSplineCurve(NewPoles, NewKnots, NewMults, Conv.Degree());
+
+  DrawTrSurf::Set(a[1], TheCurve);
+  di << a[1] << ": tolreached = " << tolreached << "\n";
+
+  return 0;
+
+}
+
+
 void QABugs::Commands_20(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
@@ -3138,6 +3264,7 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands) {
   theCommands.Add("OCC29807", "OCC29807 surface1 surface2 u1 v1 u2 v2", __FILE__, OCC29807, group);
   theCommands.Add("OCC29311", "OCC29311 shape counter nbiter: check performance of OBB calculation", __FILE__, OCC29311, group);
   theCommands.Add("OCC30391", "OCC30391 result face LenBeforeUfirst LenAfterUlast LenBeforeVfirst LenAfterVlast", __FILE__, OCC30391, group);
+  theCommands.Add("OCC30435", "OCC30435 result curve inverse nbit", __FILE__, OCC30435, group);
 
   theCommands.Add("QAStartsWith",
                   "QAStartsWith string startstring",

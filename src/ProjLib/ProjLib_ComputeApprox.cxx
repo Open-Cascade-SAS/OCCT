@@ -1011,6 +1011,15 @@ void ProjLib_ComputeApprox::Perform
                                 (CType != GeomAbs_OtherCurve)     ;
 
   Standard_Boolean simplecase = SurfIsAnal && CurvIsAnal;
+  if (CType == GeomAbs_BSplineCurve || CType == GeomAbs_BezierCurve)
+  {
+    Standard_Integer aNbKnots = 1;
+    if (CType == GeomAbs_BSplineCurve)
+    {
+      aNbKnots = C->NbKnots();
+    }
+    simplecase = simplecase && C->Degree() <= 2 && aNbKnots <= 2;
+  }
 
   if (CType == GeomAbs_BSplineCurve &&
       SType == GeomAbs_Plane ) {
@@ -1111,12 +1120,12 @@ void ProjLib_ComputeApprox::Perform
 #endif    
 
 //-----------
-    Standard_Integer Deg1 = 8, Deg2;
-    if(simplecase) {
-      Deg2 = 10; 
+    Standard_Integer Deg1 = 5, Deg2;
+    if (simplecase) {
+      Deg2 = 8;
     }
     else {
-      Deg2 = 12; 
+      Deg2 = 10;
     }
     if(myDegMin > 0)
     {
@@ -1187,6 +1196,10 @@ void ProjLib_ComputeApprox::Perform
       BSplCLib::Reparametrize(C->FirstParameter(),
                               C->LastParameter(),
                               NewKnots);
+
+      // Set NewKnots(NbKnots) exactly C->LastParameter()
+      // to avoid problems if trim is used.
+      NewKnots(NbKnots) = C->LastParameter();
 
       // il faut recadrer les poles de debut et de fin:
       // ( Car pour les problemes de couture, on a du ouvrir l`intervalle

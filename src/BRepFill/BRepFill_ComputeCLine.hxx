@@ -64,6 +64,12 @@ public:
   //! Changes the max number of segments, which is allowed for cutting.
   Standard_EXPORT void SetMaxSegments (const Standard_Integer theMaxSegments);
 
+  //! Set inverse order of degree selection:
+  //! if theInvOrdr = true, current degree is chosen by inverse order -
+  //! from maxdegree to mindegree.
+  //! By default inverse order is used.
+  Standard_EXPORT void SetInvOrder(const Standard_Boolean theInvOrder);
+
   //! returns False if at a moment of the approximation,
   //! the status NoApproximation has been sent by the user
   //! when more points were needed.
@@ -118,6 +124,7 @@ private:
   AppParCurves_Constraint myfirstC;
   AppParCurves_Constraint mylastC;
   Standard_Integer myMaxSegments;
+  Standard_Boolean myInvOrder;
 
 };
 

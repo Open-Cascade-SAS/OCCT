@@ -108,9 +108,60 @@
 #include <Approx_CurvilinearParameter.hxx>
 #include <Approx_CurveOnSurface.hxx>
 #include <Geom_BSplineSurface.hxx>
+
+#include <AppCont_Function.hxx>
+#include <Adaptor3d_HCurve.hxx>
+#include <GeomAdaptor_HCurve.hxx>
+#include <Approx_FitAndDivide.hxx>
+#include <Convert_CompBezierCurvesToBSplineCurve.hxx>
+
 #ifdef _WIN32
 Standard_IMPORT Draw_Viewer dout;
 #endif
+
+//Class is used in fitcurve
+class CurveEvaluator : public AppCont_Function
+
+{
+
+public:
+  Handle(Adaptor3d_HCurve) myCurve;
+
+  CurveEvaluator(const Handle(Adaptor3d_HCurve)& C)
+    : myCurve(C)
+  {
+    myNbPnt = 1;
+    myNbPnt2d = 0;
+  }
+
+  Standard_Real FirstParameter() const
+  {
+    return myCurve->FirstParameter();
+  }
+
+  Standard_Real LastParameter() const
+  {
+    return myCurve->LastParameter();
+  }
+
+  Standard_Boolean Value(const Standard_Real   theT,
+    NCollection_Array1<gp_Pnt2d>& /*thePnt2d*/,
+    NCollection_Array1<gp_Pnt>&   thePnt) const
+  {
+    thePnt(1) = myCurve->Value(theT);
+    return Standard_True;
+  }
+
+  Standard_Boolean D1(const Standard_Real   theT,
+    NCollection_Array1<gp_Vec2d>& /*theVec2d*/,
+    NCollection_Array1<gp_Vec>&   theVec) const
+  {
+    gp_Pnt aDummyPnt;
+    myCurve->D1(theT, aDummyPnt, theVec(1));
+    return Standard_True;
+  }
+};
+
 
 //=======================================================================
 //function : anacurve
@@ -1672,6 +1723,99 @@ static Standard_Integer approxcurve(Draw_Interpretor& di, Standard_Integer n, co
   return 0;
 }
 
+
+//=======================================================================
+//function : fitcurve
+//purpose  : 
+//=======================================================================
+
+static Standard_Integer fitcurve(Draw_Interpretor& di, Standard_Integer n, const char** a)
+{
+  if (n<3) return 1;
+
+  Handle(Geom_Curve) GC;
+  GC = DrawTrSurf::GetCurve(a[2]);
+  if (GC.IsNull())
+    return 1;
+
+  Standard_Integer Dmin = 3;
+  Standard_Integer Dmax = 14;
+  Standard_Real Tol3d = 1.e-5;
+  Standard_Boolean inverse = Standard_True;
+
+  if (n > 3)
+  {
+    Tol3d = Atof(a[3]);
+  }
+
+  if (n > 4)
+  {
+    Dmax = atoi(a[4]);
+  }
+
+  if (n > 5)
+  {
+    Standard_Integer inv = atoi(a[5]);
+    if (inv > 0)
+    {
+      inverse = Standard_True;
+    }
+    else
+    {
+      inverse = Standard_False;
+    }
+  }
+
+  Handle(GeomAdaptor_HCurve) aGAC = new GeomAdaptor_HCurve(GC);
+
+  CurveEvaluator aCE(aGAC);
+
+  Approx_FitAndDivide anAppro(Dmin, Dmax, Tol3d, 0., Standard_True);
+  anAppro.SetInvOrder(inverse);
+  anAppro.Perform(aCE);
+
+  if (!anAppro.IsAllApproximated())
+  {
+    di << "Approximation failed \n";
+    return 1;
+  }
+  Standard_Integer i;
+  Standard_Integer NbCurves = anAppro.NbMultiCurves();
+
+  Convert_CompBezierCurvesToBSplineCurve Conv;
+
+  Standard_Real tol3d, tol2d, tolreached = 0.;
+  for (i = 1; i <= NbCurves; i++) {
+    anAppro.Error(i, tol3d, tol2d);
+    tolreached = Max(tolreached, tol3d);
+    AppParCurves_MultiCurve MC = anAppro.Value(i);
+    TColgp_Array1OfPnt Poles(1, MC.Degree() + 1);
+    MC.Curve(1, Poles);
+    Conv.AddCurve(Poles);
+  }
+  Conv.Perform();
+  Standard_Integer NbPoles = Conv.NbPoles();
+  Standard_Integer NbKnots = Conv.NbKnots();
+
+  TColgp_Array1OfPnt      NewPoles(1, NbPoles);
+  TColStd_Array1OfReal    NewKnots(1, NbKnots);
+  TColStd_Array1OfInteger NewMults(1, NbKnots);
+
+  Conv.KnotsAndMults(NewKnots, NewMults);
+  Conv.Poles(NewPoles);
+
+  BSplCLib::Reparametrize(GC->FirstParameter(),
+    GC->LastParameter(),
+    NewKnots);
+  Handle(Geom_BSplineCurve) TheCurve = new Geom_BSplineCurve(NewPoles, NewKnots, NewMults, Conv.Degree());
+
+  DrawTrSurf::Set(a[1], TheCurve);
+  di << a[1] << ": tolreached = " << tolreached << "\n";
+
+  return 0;
+
+}
+
 //=======================================================================
 //function : newbspline
 //purpose  : reduce the multiplicity of the knots to their minimum 
@@ -2059,6 +2203,8 @@ void  GeomliteTest::CurveCommands(Draw_Interpretor& theCommands)
                   "approxcurveonsurf name curve2d surface [Tol [cont [maxdeg [maxseg]]]] ",
 		  __FILE__,
 		  approxcurveonsurf,g);
+
+ theCommands.Add("fitcurve", "fitcurve result  curve [tol [maxdeg [inverse]]]", __FILE__, fitcurve, g);
 
  theCommands.Add("length", "length curve [Tol]", 
 		  __FILE__,

@@ -1,6 +1,3 @@
-puts "TODO CR27711 Linux: Tcl Exception: tolerance ang : 0.01"
-puts "TODO CR27711 Linux: TEST INCOMPLETE"
-
 puts "========"
 puts "OCC27711"
 puts "========"

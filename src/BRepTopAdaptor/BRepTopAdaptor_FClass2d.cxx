@@ -105,6 +105,8 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face& aFace,const 
   Umin = Vmin = 0.0; //RealLast();
   Umax = Vmax = -Umin;
 
+  Standard_Integer aNbE = 0;
+  Standard_Real eps = 1.e-10;
   Standard_Integer BadWire=0;
   for( FaceExplorer.Init(Face,TopAbs_WIRE); (FaceExplorer.More() && BadWire==0); FaceExplorer.Next() )
     {
@@ -118,6 +120,7 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face& aFace,const 
 
       TopExp_Explorer Explorer;
       for( Explorer.Init(FaceExplorer.Current(),TopAbs_EDGE); Explorer.More(); Explorer.Next() ) NbEdges++;
+      aNbE = NbEdges;
         
       gp_Pnt Ancienpnt3d(0,0,0);
       Standard_Boolean Ancienpnt3dinitialise = Standard_False;
@@ -394,6 +397,15 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face& aFace,const 
       
 	      //-- FlecheU*=10.0;
 	      //-- FlecheV*=10.0;
+              if (aNbE == 1 && FlecheU < eps && FlecheV < eps && Abs(square) < eps)
+              {
+                TabOrien.Append(1);
+              }
+              else
+              { 
+                TabOrien.Append(((square < 0.0)? 1 : 0));
+              }
+	      
 	      if(FlecheU<Toluv) FlecheU = Toluv;
 	      if(FlecheV<Toluv) FlecheV = Toluv;
 	      //-- cout<<" U:"<<FlecheU<<" V:"<<FlecheV<<endl;
@@ -411,7 +423,6 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face& aFace,const 
 //#endif
 //		} 
 //	      else TabOrien.Append(((angle>0.0)? 1 : 0));
-	      TabOrien.Append(((square < 0.0)? 1 : 0));
 	    }//if(nbpoints>3
 	  else
 	    { 

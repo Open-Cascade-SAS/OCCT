@@ -317,8 +317,14 @@ static void  PerformApprox (const Handle(Adaptor3d_HCurve)& C,
   Standard_Integer Deg1, Deg2;
   Deg1 = 8; Deg2 = 8;
   
-  Approx_FitAndDivide Fit(F,Deg1,Deg2,Precision::Approximation(),
+  Approx_FitAndDivide Fit(Deg1,Deg2,Precision::Approximation(),
 			  Precision::PApproximation(),Standard_True);
+  Fit.SetMaxSegments(100);
+  Fit.Perform(F);
+  if (!Fit.IsAllApproximated())
+  {
+    return;
+  }
   Standard_Integer i;
   Standard_Integer NbCurves = Fit.NbMultiCurves();
   Standard_Integer MaxDeg = 0;
@@ -347,9 +353,8 @@ static void  PerformApprox (const Handle(Adaptor3d_HCurve)& C,
     MC.Curve(1, LocalPoles);
     
     //Augmentation eventuelle du degre
-    Standard_Integer Inc = MaxDeg - MC.Degree();
-    if ( Inc > 0) {
-      BSplCLib::IncreaseDegree(Inc, Poles, BSplCLib::NoWeights(),
+    if (MaxDeg > MC.Degree() ) {
+      BSplCLib::IncreaseDegree(MaxDeg, LocalPoles, BSplCLib::NoWeights(),
 			       TempPoles, BSplCLib::NoWeights());
       //mise a jour des poles de la PCurve
       for (Standard_Integer j = 1 ; j <= MaxDeg + 1; j++) {

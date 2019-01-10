@@ -35,6 +35,7 @@
 #include <IntTools_Tools.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Iterator.hxx>
+#include <BRepExtrema_DistShapeShape.hxx>
 
 static 
   void BndBuildBox(const BRepAdaptor_Curve& theBAC,
@@ -224,6 +225,24 @@ void IntTools_EdgeEdge::Perform()
     }
   }
   //
+  if ((myCurve1.GetType() <= GeomAbs_Parabola && myCurve2.GetType() <= GeomAbs_Parabola) &&
+      (myCurve1.GetType() == GeomAbs_Line || myCurve2.GetType() == GeomAbs_Line))
+  {
+    //Improvement of performance for cases of searching common parts between line  
+    //and analytical curve. This code allows to define that edges have no
+    //common parts more fast, then regular algorithm (FindSolution(...))
+    //Check minimal distance between edges
+    BRepExtrema_DistShapeShape  aMinDist(myEdge1, myEdge2, Extrema_ExtFlag_MIN);
+    if (aMinDist.IsDone())
+    {
+      Standard_Real d = aMinDist.Value();
+      if (d > 1.1 * myTol)
+      {
+        return;
+      }
+    }
+  }
+
   IntTools_SequenceOfRanges aRanges1, aRanges2;
   //
   //3.2. Find ranges containig solutions

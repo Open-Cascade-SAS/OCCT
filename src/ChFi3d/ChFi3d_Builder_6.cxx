@@ -689,14 +689,36 @@ Standard_Boolean ChFi3d_Builder::StoreData(Handle(ChFiDS_SurfData)& Data,
   length2=Data->LastExtensionValue();
 
   Handle(Geom_BoundedSurface) aBndSurf = Surf;
-  if (length1 > Precision::Confusion())
-    GeomLib::ExtendSurfByLength(aBndSurf,length1,1,Standard_False,Standard_False);
-  if (length2 >  Precision::Confusion())
-    GeomLib::ExtendSurfByLength(aBndSurf,length2,1,Standard_False,Standard_True);
-  Surf = Handle(Geom_BSplineSurface)::DownCast (aBndSurf);
+  Standard_Boolean ext1 = Standard_False, ext2 = Standard_False;
+  Standard_Real eps = Max(tolget3d, 2. * Precision::Confusion());
+  if (length1 > eps)
+  {
+    gp_Pnt P11, P21;
+    P11 = Surf->Pole(1, 1);
+    P21 = Surf->Pole(Surf->NbUPoles(), 1);
+    if (P11.Distance(P21) > eps)
+    {
+      //to avoid extending surface with singular boundary
+      GeomLib::ExtendSurfByLength(aBndSurf, length1, 1, Standard_False, Standard_False);
+      ext1 = Standard_True;
+    }
+  }
+  if (length2 > eps)
+  {
+    gp_Pnt P12, P22;
+    P12 = Surf->Pole(1, Surf->NbVPoles());
+    P22 = Surf->Pole(Surf->NbUPoles(), Surf->NbVPoles());
+    if (P12.Distance(P22) > eps)
+    {
+      //to avoid extending surface with singular boundary
+      GeomLib::ExtendSurfByLength(aBndSurf, length2, 1, Standard_False, Standard_True);
+      ext2 = Standard_True;
+    }
+  }
+  Surf = Handle(Geom_BSplineSurface)::DownCast(aBndSurf);
 
   //Correction of surface on extremities
-  if (length1 <= Precision::Confusion())
+  if (!ext1)
   {
     gp_Pnt P11, P21;
     P11 = lin->StartPointOnFirst().Value();
@@ -704,7 +726,7 @@ Standard_Boolean ChFi3d_Builder::StoreData(Handle(ChFiDS_SurfData)& Data,
     Surf->SetPole(1, 1, P11);
     Surf->SetPole(Surf->NbUPoles(), 1, P21);
   }
-  if (length2 <= Precision::Confusion())
+  if (!ext2)
   {
     gp_Pnt P12, P22;
     P12 = lin->EndPointOnFirst().Value();
