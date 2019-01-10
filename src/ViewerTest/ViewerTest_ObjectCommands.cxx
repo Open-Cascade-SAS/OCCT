@@ -339,8 +339,7 @@ namespace
         return Standard_False;
       }
 
-      aComponent->SetXDirection(aXDir);
-      aComponent->SetDirection (aZDir);
+      aComponent->SetAx2 (gp_Ax2 (aComponent->Location(), aZDir, aXDir));
     }
 
     if (aMapOfArgs.Find ("dispmode", aValues))
@@ -477,10 +476,11 @@ namespace
       theTrihedron->SetSelectionPriority (aDatumPart, aValues->Value (2).IntegerValue());
     }
 
-    if (aMapOfArgs.Find ("labels", aValues))
+    if (aMapOfArgs.Find ("labels", aValues)
+     || aMapOfArgs.Find ("label", aValues))
     {
       Prs3d_DatumParts aDatumPart = Prs3d_DP_None;
-      if (aValues->Size() > 2
+      if (aValues->Size() >= 2
        && convertToDatumPart(aValues->Value(1), aDatumPart)
        && aDatumPart >= Prs3d_DP_XAxis
        && aDatumPart <= Prs3d_DP_ZAxis) // labels are set to axes only
@@ -6402,7 +6402,7 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
                    "\n\t\t:           trihedron, default state is XYZ"
                    "\n\t\t: -hideLabels allows to show/hide trihedron labels"
                    "\n\t\t: -hideArrows allows to show/hide trihedron arrows"
-                   "\n\t\t: -labels allows to change default X/Y/Z titles of axes"
+                   "\n\t\t: -label allows to change default X/Y/Z titles of axes"
                    "\n\t\t: -attribute sets parameters of trihedron"
                    "\n\t\t: -color sets color properties of parts of trihedron"
                    "\n\t\t: -textColor sets color properties of trihedron labels"
