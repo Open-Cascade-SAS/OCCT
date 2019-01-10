@@ -792,12 +792,13 @@ Standard_Boolean IntTools_Tools::ComputeTolerance
    const Standard_Real theLast,
    Standard_Real& theMaxDist,
    Standard_Real& theMaxPar,
-   const Standard_Real theTolRange)
+   const Standard_Real theTolRange,
+   const Standard_Boolean theToRunParallel)
 {
   GeomLib_CheckCurveOnSurface aCS;
   //
   aCS.Init(theCurve3D, theSurf, theFirst, theLast, theTolRange);
-  aCS.Perform(theCurve2D);
+  aCS.Perform (theCurve2D, !theToRunParallel);
   if (!aCS.IsDone()) {
     return Standard_False;
   }

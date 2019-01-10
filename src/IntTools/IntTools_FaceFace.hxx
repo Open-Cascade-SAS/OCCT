@@ -48,7 +48,9 @@ public:
   //! Intersects underliing surfaces of F1 and F2
   //! Use sum of tolerance of F1 and F2 as intersection
   //! criteria
-  Standard_EXPORT void Perform (const TopoDS_Face& F1, const TopoDS_Face& F2);
+  Standard_EXPORT void Perform (const TopoDS_Face& F1,
+                                const TopoDS_Face& F2,
+                                const Standard_Boolean theToRunParallel = Standard_False);
   
 
   //! Returns True if the intersection was successful
@@ -106,7 +108,7 @@ protected:
   //! as a maximal deviation between 3D curve and 2D curves on faces.<br>
   //! If there are no 2D curves the maximal deviation between 3D curves
   //! and surfaces is computed.
-  Standard_EXPORT void ComputeTolReached3d();
+  Standard_EXPORT void ComputeTolReached3d (const Standard_Boolean theToRunParallel);
 
 protected:
 

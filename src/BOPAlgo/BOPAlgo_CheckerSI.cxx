@@ -90,7 +90,7 @@ class BOPAlgo_FaceSelfIntersect :
   //
   virtual void Perform() {
     BOPAlgo_Algo::UserBreak();
-    IntTools_FaceFace::Perform(myF, myF);
+    IntTools_FaceFace::Perform (myF, myF, myRunParallel);
   }
   //
  protected:
@@ -428,6 +428,7 @@ void BOPAlgo_CheckerSI::CheckFaceSelfIntersection()
     
     BOPAlgo_FaceSelfIntersect& aFaceSelfIntersect = aVFace.Appended();
     //
+    aFaceSelfIntersect.SetRunParallel (myRunParallel);
     aFaceSelfIntersect.SetIndex(i);
     aFaceSelfIntersect.SetFace(aF);
     aFaceSelfIntersect.SetTolF(aTolF);

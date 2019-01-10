@@ -649,7 +649,7 @@ Standard_Integer bopcurves (Draw_Interpretor& di,
   aFF.SetList(aListOfPnts);
   aFF.SetFuzzyValue (BOPTest_Objects::FuzzyValue());
   //
-  aFF.Perform (aF1, aF2);
+  aFF.Perform (aF1, aF2, BOPTest_Objects::RunParallel());
   //
   anIsDone=aFF.IsDone();
   if (!anIsDone) {

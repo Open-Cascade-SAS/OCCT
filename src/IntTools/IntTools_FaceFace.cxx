@@ -356,8 +356,9 @@ static Standard_Boolean isTreatAnalityc(const BRepAdaptor_Surface& theBAS1,
 //function : Perform
 //purpose  : intersect surfaces of the faces
 //=======================================================================
-void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
-                                const TopoDS_Face& aF2)
+void IntTools_FaceFace::Perform (const TopoDS_Face& aF1,
+                                 const TopoDS_Face& aF2,
+                                 const Standard_Boolean theToRunParallel)
 {
   if (myContext.IsNull()) {
     myContext=new IntTools_Context;
@@ -560,7 +561,7 @@ void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
       MakeCurve(i, dom1, dom2, TolArc);
     }
     //
-    ComputeTolReached3d();
+    ComputeTolReached3d (theToRunParallel);
     //
     if (bReverse) {
       Handle(Geom2d_Curve) aC2D1, aC2D2;
@@ -624,7 +625,7 @@ void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
 //function :ComputeTolReached3d 
 //purpose  : 
 //=======================================================================
-void IntTools_FaceFace::ComputeTolReached3d()
+void IntTools_FaceFace::ComputeTolReached3d (const Standard_Boolean theToRunParallel)
 {
   Standard_Integer i, j, aNbLin = mySeqOfCurve.Length();
   if (!aNbLin) {
@@ -662,8 +663,7 @@ void IntTools_FaceFace::ComputeTolReached3d()
         // Look for the maximal deviation between 3D and 2D curves
         Standard_Real aD, aT;
         const Handle(Geom_Surface)& aS = !j ? aS1 : aS2;
-        if (IntTools_Tools::ComputeTolerance
-            (aC3D, aC2D, aS, aFirst, aLast, aD, aT))
+        if (IntTools_Tools::ComputeTolerance (aC3D, aC2D, aS, aFirst, aLast, aD, aT, Precision::PConfusion(), theToRunParallel))
         {
           if (aD > aTolC)
           {

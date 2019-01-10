@@ -390,19 +390,9 @@ void GeomLib_CheckCurveOnSurface::Init( const Handle(Geom_Curve)& theCurve,
 //function : Perform
 //purpose  : 
 //=======================================================================
-#ifndef HAVE_TBB
-//After fixing bug # 26365, this fragment should be deleted
-//(together the text "#ifdef HAVE_TBB")
-
-void GeomLib_CheckCurveOnSurface::Perform(const Handle(Geom2d_Curve)& thePCurve,
-                                          const Standard_Boolean)
-{
-  const Standard_Boolean isTheMTDisabled = Standard_True;
-#else
 void GeomLib_CheckCurveOnSurface::Perform(const Handle(Geom2d_Curve)& thePCurve,
                                           const Standard_Boolean isTheMTDisabled)
 {
-#endif
   if( myCurve.IsNull() ||
       mySurface.IsNull() ||
       thePCurve.IsNull())

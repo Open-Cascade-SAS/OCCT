@@ -172,8 +172,8 @@ public:
                                       const Standard_Real theLast,
                                       Standard_Real& theMaxDist,
                                       Standard_Real& theMaxPar,
-                                      const Standard_Real theTolRange =
-                                                                  Precision::PConfusion());
+                                      const Standard_Real theTolRange = Precision::PConfusion(),
+                                      const Standard_Boolean theToRunParallel = Standard_False);
 
 
   //! Computes the correct Intersection range for 

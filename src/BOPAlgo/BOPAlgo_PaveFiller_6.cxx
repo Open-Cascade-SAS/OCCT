@@ -180,7 +180,7 @@ class BOPAlgo_FaceFace :
         myTrsf = aTrsf.Inverted();
       }
 
-      IntTools_FaceFace::Perform (aF1, aF2);
+      IntTools_FaceFace::Perform (aF1, aF2, myRunParallel);
     }
     catch (Standard_Failure const&)
     {
@@ -292,6 +292,7 @@ void BOPAlgo_PaveFiller::PerformFF()
       //
       BOPAlgo_FaceFace& aFaceFace=aVFaceFace.Appended();
       //
+      aFaceFace.SetRunParallel (myRunParallel);
       aFaceFace.SetIndices(nF1, nF2);
       aFaceFace.SetFaces(aF1, aF2);
       aFaceFace.SetBoxes (myDS->ShapeInfo (nF1).Box(), myDS->ShapeInfo (nF2).Box());
