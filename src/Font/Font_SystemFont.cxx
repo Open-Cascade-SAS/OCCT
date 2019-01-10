@@ -15,9 +15,8 @@
 
 #include <Font_SystemFont.hxx>
 
+#include <Font_FontMgr.hxx>
 #include <OSD_Path.hxx>
-#include <Standard_Type.hxx>
-#include <TCollection_HAsciiString.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Font_SystemFont, Standard_Transient)
 
@@ -25,92 +24,24 @@ IMPLEMENT_STANDARD_RTTIEXT(Font_SystemFont, Standard_Transient)
 // function : Font_SystemFont
 // purpose  :
 // =======================================================================
-Font_SystemFont::Font_SystemFont()
-: myFontAspect (Font_FA_Undefined),
-  myFaceSize (-1),
-  myIsSingleLine (Standard_False),
-  myIsDefined (Standard_False)
+Font_SystemFont::Font_SystemFont (const TCollection_AsciiString& theFontName)
+: myFontKey (theFontName),
+  myFontName (theFontName),
+  myIsSingleLine (Standard_False)
 {
-  //
+  if (theFontName.IsEmpty()) { throw Standard_ProgramError ("Font_SystemFont constructor called with empty font name"); }
+  myFontKey.LowerCase();
 }
 
 // =======================================================================
-// function : Font_SystemFont
+// function : SetFontPath
 // purpose  :
 // =======================================================================
-Font_SystemFont::Font_SystemFont (const Handle(TCollection_HAsciiString)& theFontName,
-                                  const Font_FontAspect theFontAspect,
-                                  const Handle(TCollection_HAsciiString)& theFilePath)
-: myFontName (theFontName),
-  myFontAspect (theFontAspect),
-  myFaceSize (-1),
-  myFilePath (theFilePath),
-  myIsSingleLine (Standard_False),
-  myIsDefined (Standard_True)
+void Font_SystemFont::SetFontPath (Font_FontAspect theAspect,
+                                   const TCollection_AsciiString& thePath)
 {
-  //
-}
-
-// =======================================================================
-// function : Font_SystemFont
-// purpose  :
-// =======================================================================
-Font_SystemFont::Font_SystemFont (const Handle(TCollection_HAsciiString)& theXLFD,
-                                  const Handle(TCollection_HAsciiString)& theFilePath)
-: myFontAspect (Font_FA_Regular),
-  myFaceSize (-1),
-  myFilePath (theFilePath),
-  myIsSingleLine (Standard_False),
-  myIsDefined (Standard_True)
-{
-  if (theXLFD.IsNull()
-   || theXLFD->IsEmpty())
-  {
-    myIsDefined = Standard_False;
-    return;
-  }
-
-  myFontName = theXLFD->Token ("-", 2);
-  const TCollection_AsciiString& aXLFD = theXLFD->String();
-
-  // Getting font size for fixed size fonts
-  if (aXLFD.Search ("-0-0-0-0-") >= 0)
-  {
-    myFaceSize = -1; // Scalable font
-  }
-  else
-  {
-    myFaceSize = aXLFD.Token ("-", 7).IntegerValue();
-  }
-
-  // Detect font aspect
-  if (aXLFD.Token ("-", 3).IsEqual ("bold")
-   && (aXLFD.Token ("-", 4).IsEqual ("i")
-    || aXLFD.Token ("-", 4).IsEqual ("o")))
-  {
-    myFontAspect = Font_FA_BoldItalic;
-  }
-  else if (aXLFD.Token ("-", 3).IsEqual ("bold"))
-  {
-    myFontAspect = Font_FA_Bold;
-  }
-  else if (aXLFD.Token ("-", 4).IsEqual ("i")
-        || aXLFD.Token ("-", 4).IsEqual ("o"))
-  {
-    myFontAspect = Font_FA_Italic;
-  }
-}
-
-// =======================================================================
-// function : IsValid
-// purpose  :
-// =======================================================================
-Standard_Boolean Font_SystemFont::IsValid() const
-{
-  return myIsDefined
-     &&  myFontAspect != Font_FA_Undefined
-     && !myFontName->IsEmpty()
-     &&  OSD_Path::IsValid (myFilePath->String());
+  if (theAspect == Font_FontAspect_UNDEFINED) { throw Standard_ProgramError ("Font_SystemFont::SetFontPath() called with UNDEFINED aspect"); }
+  myFilePaths[theAspect] = thePath;
 }
 
 // =======================================================================
@@ -119,7 +50,59 @@ Standard_Boolean Font_SystemFont::IsValid() const
 // =======================================================================
 Standard_Boolean Font_SystemFont::IsEqual (const Handle(Font_SystemFont)& theOtherFont) const
 {
-  return myFontName->IsSameString (myFontName, Standard_False)
-      && myFontAspect == theOtherFont->myFontAspect
-      && myFaceSize   == theOtherFont->myFaceSize;
+  return theOtherFont.get() == this
+      || myFontKey.IsEqual (theOtherFont->myFontKey);
+}
+
+// =======================================================================
+// function : ToString
+// purpose  :
+// =======================================================================
+TCollection_AsciiString Font_SystemFont::ToString() const
+{
+  TCollection_AsciiString aDesc;
+  aDesc += TCollection_AsciiString() + "'" + myFontName + "'";
+
+  bool isFirstAspect = true;
+  aDesc += " [aspects: ";
+  for (int anAspectIter = 0; anAspectIter < Font_FontAspect_NB; ++anAspectIter)
+  {
+    if (!HasFontAspect ((Font_FontAspect )anAspectIter))
+    {
+      continue;
+    }
+
+    if (!isFirstAspect)
+    {
+      aDesc += ",";
+    }
+    else
+    {
+      isFirstAspect = false;
+    }
+    aDesc += Font_FontMgr::FontAspectToString ((Font_FontAspect )anAspectIter);
+  }
+  aDesc += "]";
+
+  isFirstAspect = true;
+  aDesc += " [paths: ";
+  for (int anAspectIter = 0; anAspectIter < Font_FontAspect_NB; ++anAspectIter)
+  {
+    if (!HasFontAspect ((Font_FontAspect )anAspectIter))
+    {
+      continue;
+    }
+
+    if (!isFirstAspect)
+    {
+      aDesc += ";";
+    }
+    else
+    {
+      isFirstAspect = false;
+    }
+    aDesc += FontPath ((Font_FontAspect )anAspectIter);
+  }
+  aDesc += "]";
+  return aDesc;
 }

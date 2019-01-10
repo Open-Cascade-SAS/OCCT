@@ -1,18 +1,17 @@
 puts "============"
-puts "OCC23745"
+puts "0023745: Draw Harness, ViewerText - vdrawtext command should not modify global text aspect"
 puts "============"
 puts ""
-######################################################
-# Draw Harness, ViewerText - vdrawtext command should not modify global text aspect
-######################################################
 
 pload QAcommands
 pload VISUALIZATION
 
 vfont add [locate_data_file DejaVuSans.ttf] SansFont
 
-vinit
-vdrawtext text0 "ANOTHERBUG" -pos 100 100 100 -color 1.0 0.0 0.0 -halign left -valign bottom -angle 0 -zoom 1 -height 50 -aspect SansFont
+vclear
+vinit View1
+vaxo
+vdrawtext text0 "ANOTHERBUG" -pos 100 100 100 -color 1.0 0.0 0.0 -halign left -valign bottom -angle 0 -zoom 1 -height 50 -font SansFont
 vtrihedron trihedron
 
 set x 239

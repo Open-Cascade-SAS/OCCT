@@ -16,14 +16,11 @@
 #ifndef _Font_SystemFont_HeaderFile
 #define _Font_SystemFont_HeaderFile
 
+#include <Font_FontAspect.hxx>
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
-
-#include <Font_FontAspect.hxx>
-#include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Transient.hxx>
-class TCollection_HAsciiString;
+#include <TCollection_AsciiString.hxx>
 
 //! This class stores information about the font, which is merely a file path and cached metadata about the font.
 class Font_SystemFont : public Standard_Transient
@@ -31,33 +28,53 @@ class Font_SystemFont : public Standard_Transient
   DEFINE_STANDARD_RTTIEXT(Font_SystemFont, Standard_Transient)
 public:
 
-  //! Creates an empty font object.
-  Standard_EXPORT Font_SystemFont();
-
   //! Creates a new font object.
-  Standard_EXPORT Font_SystemFont (const Handle(TCollection_HAsciiString)& theFontName,
-                                   const Font_FontAspect theFontAspect,
-                                   const Handle(TCollection_HAsciiString)& theFilePath);
+  Standard_EXPORT Font_SystemFont (const TCollection_AsciiString& theFontName);
 
-  //! Creates a font object and initialize class fields with values taken from XLFD (X Logical Font Description)
-  Standard_EXPORT Font_SystemFont (const Handle(TCollection_HAsciiString)& theXLFD,
-                                   const Handle(TCollection_HAsciiString)& theFilePath);
+  //! Returns font family name (lower-cased).
+  const TCollection_AsciiString& FontKey() const { return myFontKey; }
 
   //! Returns font family name.
-  const Handle(TCollection_HAsciiString)& FontName() const { return myFontName; }
+  const TCollection_AsciiString& FontName() const { return myFontName; }
   
   //! Returns font file path.
-  const Handle(TCollection_HAsciiString)& FontPath() const { return myFilePath; }
-  
-  //! Returns font aspect.
-  Font_FontAspect FontAspect() const { return myFontAspect; }
-  
-  //! Returns font height.
-  //! If returned value is equal -1 it means that font is resizable.
-  Standard_Integer FontHeight() const { return myFaceSize; }
+  const TCollection_AsciiString& FontPath (Font_FontAspect theAspect) const
+  {
+    return myFilePaths[theAspect != Font_FontAspect_UNDEFINED ? theAspect : Font_FontAspect_Regular];
+  }
 
-  Standard_EXPORT Standard_Boolean IsValid() const;
-  
+  //! Sets font file path for specific aspect.
+  Standard_EXPORT void SetFontPath (Font_FontAspect theAspect,
+                                    const TCollection_AsciiString& thePath);
+
+  //! Returns TRUE if dedicated file for specified font aspect has been defined.
+  bool HasFontAspect (Font_FontAspect theAspect) const
+  {
+    return !myFilePaths[theAspect != Font_FontAspect_UNDEFINED ? theAspect : Font_FontAspect_Regular].IsEmpty();
+  }
+
+  //! Returns any defined font file path.
+  const TCollection_AsciiString& FontPathAny (Font_FontAspect theAspect) const
+  {
+    const TCollection_AsciiString& aPath = myFilePaths[theAspect != Font_FontAspect_UNDEFINED ? theAspect : Font_FontAspect_Regular];
+    if (!aPath.IsEmpty())
+    {
+      return aPath;
+    }
+    else if (!myFilePaths[Font_FontAspect_Regular].IsEmpty())
+    {
+      return myFilePaths[Font_FontAspect_Regular];
+    }
+    for (int anAspectIter = 0; anAspectIter < Font_FontAspect_NB; ++anAspectIter)
+    {
+      if (!myFilePaths[anAspectIter].IsEmpty())
+      {
+        return myFilePaths[anAspectIter];
+      }
+    }
+    return myFilePaths[Font_FontAspect_Regular];
+  }
+
   //! Return true if the FontName, FontAspect and FontSize are the same.
   Standard_EXPORT Standard_Boolean IsEqual (const Handle(Font_SystemFont)& theOtherFont) const;
 
@@ -68,14 +85,32 @@ public:
   //! Set if this font should be rendered as single-stroke (one-line).
   void SetSingleStrokeFont (Standard_Boolean theIsSingleLine) { myIsSingleLine = theIsSingleLine; }
 
+  //! Format font description.
+  Standard_EXPORT TCollection_AsciiString ToString() const;
+
+public:
+
+  //! Hash value, for Map interface.
+  //! Based on Font Family, so that the whole family with different aspects can be found within the same bucket.
+  static Standard_Integer HashCode (const Handle(Font_SystemFont)& theFont,
+                                    const Standard_Integer theUpper)
+  {
+    return ::HashCode (theFont->FontKey(), theUpper);
+  }
+
+  //! Matching two instances, for Map interface.
+  static bool IsEqual (const Handle(Font_SystemFont)& theFont1,
+                       const Handle(Font_SystemFont)& theFont2)
+  {
+    return theFont1->IsEqual (theFont2);
+  }
+
 private:
 
-  Handle(TCollection_HAsciiString) myFontName;
-  Font_FontAspect                  myFontAspect;
-  Standard_Integer                 myFaceSize;
-  Handle(TCollection_HAsciiString) myFilePath;
-  Standard_Boolean                 myIsSingleLine; //!< single stroke font flag, FALSE by default
-  Standard_Boolean                 myIsDefined;
+  TCollection_AsciiString myFilePaths[Font_FontAspect_NB]; //!< paths to the font file
+  TCollection_AsciiString myFontKey;      //!< font family name, lower cased
+  TCollection_AsciiString myFontName;     //!< font family name
+  Standard_Boolean        myIsSingleLine; //!< single stroke font flag, FALSE by default
 
 };
 

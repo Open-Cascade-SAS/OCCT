@@ -3,42 +3,13 @@ puts "OCC21091"
 puts "OCC21450"
 puts "============"
 puts ""
-#vdrawtext: vdrawtext name text [-pos X Y Z] [-color R G B] [-align hor_align ver_align] [-angle angle] [-zoom zoomable]
-#           [-height height] [-aspect aspect] [-font font] [-mb isMultiByte]
-#------------------------------------------------------
-# X\Y\Z - Position Of Text
-#------------------------------------------------------
-# R\G\B - Color Of Text
-#------------------------------------------------------
-# hor_align 0 to 3
-# HorizontalTextAlignment is 	HTA_LEFT	0
-#				HTA_CENTER	1
-#				HTA_RIGHT	2
-#
-# ver_align 0 to 4
-# VerticalTextAlignment is	VTA_BOTTOM      0
-#				VTA_CENTER      1
-#		      		VTA_TOP         2   
-#------------------------------------------------------
-# angle - angle turn of text. this variable in degrees
-#------------------------------------------------------
-# zoomable - if this variable "0" text not zoomable
-#	     if this variable "1" text zoomable	as object in DrawCommands  
-#------------------------------------------------------
-# height - Font Height
-#------------------------------------------------------
-# Aspect - Aspect Font 0 to 4
-# If in list of textfont, not find font with necessary aspect, will be used default font "Courier" with  OSD_FA_Regular aspect
-# FontAspect is FA_Undefined, FA_Regular, FA_Bold, FA_Italic, FA_BoldItalic
-#                   - 0 -	- 1 -	   - 2 -     - 3 -         - 4 -      
-#------------------------------------------------------
-# FONT - font name of font
-# If in list of textfont, not find font with necessary Name, will be used default font "Courier"
-#
 
 vfont add [locate_data_file DejaVuSansMono.ttf] MonoFont
 vfont add [locate_data_file DejaVuSans.ttf] SansFont
 vfont add [locate_data_file DejaVuSerif.ttf] SerifFont
+
+dtracelevel trace
+vfont -verbose 1
 
 vtrihedron trihedr
 
@@ -88,11 +59,11 @@ vdrawtext OC14 OpenCascade -pos -100 -300 -300 -color 0.0 1.0 0.0 -halign left -
 vdrawtext OC15 OpenCascade -pos -300 -100 -100 -color 0.0 1.0 0.0 -halign left -valign bottom -angle 000 -zoom 0 -height 15 -aspect regular -font SerifFont
 vdrawtext OC16 OpenCascade -pos -100 -300 -100 -color 0.0 1.0 0.0 -halign left -valign bottom -angle 000 -zoom 0 -height 15 -aspect regular -font SerifFont
 
-vdrawtext OC17 OpenCascade -pos -200 -200 100 -color 1.0 0.0 1.0 -halign left -valign bottom -angle 010 -zoom 0 -height 15 -aspect regular -font SansFont
-vdrawtext OC18 OpenCascade -pos -200 -200 150 -color 0.0 1.0 1.0 -halign left -valign bottom -angle 010 -zoom 0 -height 15 -aspect regular -font SerifFont
-vdrawtext OC19 OpenCascade -pos -200 -200 200 -color 1.0 1.0 0.0 -halign left -valign bottom -angle 010 -zoom 0 -height 15 -aspect italic -font SerifFont
-vdrawtext OC20 OpenCascade -pos -200 -200 250 -color 0.0 1.0 0.02 -halign left -valign bottom -angle 010 -zoom 0 -height 15 -aspect bolditalic -font MonoFont
-vdrawtext OC21 OpenCascade -pos -200 -200 300 -color 1.0 0.0 0.02 -halign left -valign bottom -angle 010 -zoom 0 -height 15 -aspect regular -font MonoFont
+vdrawtext OC17 OpenCascade -pos -200 -200 100 -color 1.0 0.0 1.0 -halign left -valign bottom -angle 010 -zoom 0 -height 15 -aspect regular -font sans-serif
+vdrawtext OC18 OpenCascade -pos -200 -200 150 -color 0.0 1.0 1.0 -halign left -valign bottom -angle 010 -zoom 0 -height 15 -aspect regular -font serif
+vdrawtext OC19 OpenCascade -pos -200 -200 200 -color 1.0 1.0 0.0 -halign left -valign bottom -angle 010 -zoom 0 -height 15 -aspect italic -font serif
+vdrawtext OC20 OpenCascade -pos -200 -200 250 -color 0.0 1.0 0.02 -halign left -valign bottom -angle 010 -zoom 0 -height 15 -aspect bolditalic -font monospace
+vdrawtext OC21 OpenCascade -pos -200 -200 300 -color 1.0 0.0 0.02 -halign left -valign bottom -angle 010 -zoom 0 -height 15 -aspect regular -font monospace
 
 vglinfo
 checkview -screenshot -3d -path ${imagedir}/${test_image}.png

@@ -117,11 +117,12 @@ bool Font_FTFont::Init (const NCollection_String& theFontName,
                         const unsigned int        theResolution)
 {
   Handle(Font_FontMgr) aFontMgr = Font_FontMgr::GetInstance();
-  const Handle(TCollection_HAsciiString) aFontName = new TCollection_HAsciiString (theFontName.ToCString());
-  if (Handle(Font_SystemFont) aRequestedFont = aFontMgr->FindFont (aFontName, theFontAspect, thePointSize))
+  const TCollection_AsciiString aFontName (theFontName.ToCString());
+  Font_FontAspect aFontAspect = theFontAspect;
+  if (Handle(Font_SystemFont) aRequestedFont = aFontMgr->FindFont (aFontName, aFontAspect))
   {
     myIsSingleLine = aRequestedFont->IsSingleStrokeFont();
-    return Font_FTFont::Init (aRequestedFont->FontPath()->ToCString(), thePointSize, theResolution);
+    return Font_FTFont::Init (aRequestedFont->FontPathAny (aFontAspect).ToCString(), thePointSize, theResolution);
   }
   return false;
 }

@@ -567,17 +567,16 @@ Handle(OpenGl_Font) OpenGl_Text::FindFont (const Handle(OpenGl_Context)& theCtx,
   if (!theCtx->GetResource (theKey, aFont))
   {
     Handle(Font_FontMgr) aFontMgr = Font_FontMgr::GetInstance();
-    const Handle(TCollection_HAsciiString) aFontName = new TCollection_HAsciiString (theAspect.Aspect()->Font());
-    const Font_FontAspect anAspect = theAspect.Aspect()->GetTextFontAspect() != Font_FA_Undefined
-                                   ? theAspect.Aspect()->GetTextFontAspect()
-                                   : Font_FA_Regular;
-    Handle(Font_SystemFont) aRequestedFont = aFontMgr->FindFont (aFontName, anAspect, theHeight);
+    const TCollection_AsciiString& aFontName = theAspect.Aspect()->Font();
+    Font_FontAspect anAspect = theAspect.Aspect()->GetTextFontAspect() != Font_FA_Undefined
+                             ? theAspect.Aspect()->GetTextFontAspect()
+                             : Font_FA_Regular;
     Handle(Font_FTFont) aFontFt;
-    if (!aRequestedFont.IsNull())
+    if (Handle(Font_SystemFont) aRequestedFont = aFontMgr->FindFont (aFontName, anAspect))
     {
       aFontFt = new Font_FTFont (Handle(Font_FTLibrary)());
 
-      if (aFontFt->Init (aRequestedFont->FontPath()->ToCString(), theHeight, theResolution))
+      if (aFontFt->Init (aRequestedFont->FontPathAny (anAspect).ToCString(), theHeight, theResolution))
       {
         aFont = new OpenGl_Font (aFontFt, theKey);
         if (!aFont->Init (theCtx))
@@ -598,7 +597,7 @@ Handle(OpenGl_Font) OpenGl_Text::FindFont (const Handle(OpenGl_Context)& theCtx,
         aMsg += "Font '";
         aMsg += theAspect.Aspect()->Font();
         aMsg += "' is broken or has incompatible format! File path: ";
-        aMsg += aRequestedFont->FontPath()->ToCString();
+        aMsg += aRequestedFont->FontPathAny (anAspect);
         theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH, aMsg);
         aFontFt.Nullify();
         aFont = new OpenGl_Font (aFontFt, theKey);

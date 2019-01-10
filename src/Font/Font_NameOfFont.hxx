@@ -13,7 +13,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#define  Font_NOF_ASCII_MONO            "Courier" 
+#define  Font_NOF_MONOSPACE             "monospace"
+#define  Font_NOF_SERIF                 "serif"
+#define  Font_NOF_SANS_SERIF            "sans-serif"
+#define  Font_NOF_CJK                   "cjk"
+#define  Font_NOF_KOREAN                "korean"
+
+#define  Font_NOF_ASCII_MONO            "Courier"
 #define  Font_NOF_ASCII_SIMPLEX         "Times-Roman"
 #define  Font_NOF_ASCII_COMPLEX         "Times-Roman"
 #define  Font_NOF_ASCII_DUPLEX          "Times-Bold"

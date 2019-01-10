@@ -509,6 +509,39 @@ namespace
     }
     return Standard_True;
   }
+
+  //! Auxiliary function to parse font aspect style argument
+  static Standard_Boolean parseFontStyle (const TCollection_AsciiString& theArg,
+                                          Font_FontAspect&               theAspect)
+  {
+    if (theArg == "regular"
+     || *theArg.ToCString() == 'r')
+    {
+      theAspect = Font_FA_Regular;
+      return Standard_True;
+    }
+    else if (theArg == "bolditalic"
+          || theArg == "bold-italic"
+          || theArg == "italic-bold"
+          || theArg == "italicbold")
+    {
+      theAspect = Font_FA_BoldItalic;
+      return Standard_True;
+    }
+    else if (theArg == "bold"
+          || *theArg.ToCString() == 'b')
+    {
+      theAspect = Font_FA_Bold;
+      return Standard_True;
+    }
+    else if (theArg == "italic"
+          || *theArg.ToCString() == 'i')
+    {
+      theAspect = Font_FA_Italic;
+      return Standard_True;
+    }
+    return Standard_False;
+  }
 }
 
 //==============================================================================
@@ -2464,22 +2497,13 @@ static int VDrawText (Draw_Interpretor& theDI,
 
       TCollection_AsciiString anOption (theArgVec[anArgIt]);
       anOption.LowerCase();
-      if (anOption.IsEqual ("regular"))
+      Font_FontAspect aFontAspect = Font_FA_Undefined;
+      if (!parseFontStyle (anOption, aFontAspect))
       {
-        aTextPrs->SetFontAspect (Font_FA_Regular);
+        std::cout << "Error: unknown font aspect '" << anOption << "'.\n";
+        return 1;
       }
-      else if (anOption.IsEqual ("bold"))
-      {
-        aTextPrs->SetFontAspect (Font_FA_Bold);
-      }
-      else if (anOption.IsEqual ("italic"))
-      {
-        aTextPrs->SetFontAspect (Font_FA_Italic);
-      }
-      else if (anOption.IsEqual ("bolditalic"))
-      {
-        aTextPrs->SetFontAspect (Font_FA_BoldItalic);
-      }
+      aTextPrs->SetFontAspect (aFontAspect);
     }
     else if (aParam == "-font")
     {
@@ -5191,49 +5215,6 @@ static Standard_Integer VMarkersTest (Draw_Interpretor&,
   return 0;
 }
 
-//! Auxiliary function to parse font aspect style argument
-static Standard_Boolean parseFontStyle (const TCollection_AsciiString& theArg,
-                                        Font_FontAspect&               theAspect)
-{
-  if (theArg == "regular"
-   || *theArg.ToCString() == 'r')
-  {
-    theAspect = Font_FA_Regular;
-    return Standard_True;
-  }
-  else if (theArg == "bolditalic")
-  {
-    theAspect = Font_FA_BoldItalic;
-    return Standard_True;
-  }
-  else if (theArg == "bold"
-        || *theArg.ToCString() == 'b')
-  {
-    theAspect = Font_FA_Bold;
-    return Standard_True;
-  }
-  else if (theArg == "italic"
-        || *theArg.ToCString() == 'i')
-  {
-    theAspect = Font_FA_Italic;
-    return Standard_True;
-  }
-  return Standard_False;
-}
-
-//! Auxiliary function
-static TCollection_AsciiString fontStyleString (const Font_FontAspect theAspect)
-{
-  switch (theAspect)
-  {
-    case Font_FA_Regular:    return "regular";
-    case Font_FA_BoldItalic: return "bolditalic";
-    case Font_FA_Bold:       return "bold";
-    case Font_FA_Italic:     return "italic";
-    default:                 return "undefined";
-  }
-}
-
 //=======================================================================
 //function : TextToBrep
 //purpose  : Tool for conversion text to occt-shapes
@@ -5364,26 +5345,9 @@ static int TextToBRep (Draw_Interpretor& /*theDI*/,
 
       TCollection_AsciiString anOption (theArgVec[anArgIt]);
       anOption.LowerCase();
-
-      if (anOption.IsEqual ("regular"))
+      if (!parseFontStyle (anOption, aFontAspect))
       {
-        aFontAspect = Font_FA_Regular;
-      }
-      else if (anOption.IsEqual ("bold"))
-      {
-        aFontAspect = Font_FA_Bold;
-      }
-      else if (anOption.IsEqual ("italic"))
-      {
-        aFontAspect = Font_FA_Italic;
-      }
-      else if (anOption.IsEqual ("bolditalic"))
-      {
-        aFontAspect = Font_FA_BoldItalic;
-      }
-      else
-      {
-        std::cout << "Error: wrong syntax at '" << aParam.ToCString() << "'.\n";
+        std::cout << "Error: unknown font aspect '" << anOption << "'.\n";
         return 1;
       }
     }
@@ -5459,8 +5423,8 @@ static int VFont (Draw_Interpretor& theDI,
   {
     // just print the list of available fonts
     Standard_Boolean isFirst = Standard_True;
-    for (Font_NListOfSystemFont::Iterator anIter (aMgr->GetAvailableFonts());
-         anIter.More(); anIter.Next())
+    const Font_NListOfSystemFont aFonts = aMgr->GetAvailableFonts();
+    for (Font_NListOfSystemFont::Iterator anIter (aFonts); anIter.More(); anIter.Next())
     {
       const Handle(Font_SystemFont)& aFont = anIter.Value();
       if (!isFirst)
@@ -5468,9 +5432,7 @@ static int VFont (Draw_Interpretor& theDI,
         theDI << "\n";
       }
 
-      theDI << aFont->FontName()->String()
-            << " " << fontStyleString (aFont->FontAspect())
-            << " " << aFont->FontPath()->String();
+      theDI << aFont->ToString();
       isFirst = Standard_False;
     }
     return 0;
@@ -5481,15 +5443,11 @@ static int VFont (Draw_Interpretor& theDI,
     const TCollection_AsciiString anArg (theArgVec[anArgIter]);
     TCollection_AsciiString anArgCase (anArg);
     anArgCase.LowerCase();
-    if (anArgCase == "find")
+    if (anArgIter + 1 < theArgNb
+     && (anArgCase == "-find"
+      || anArgCase == "find"))
     {
-      if (++anArgIter >= theArgNb)
-      {
-        std::cerr << "Wrong syntax at argument '" << anArg.ToCString() << "'!\n";
-        return 1;
-      }
-
-      Standard_CString aFontName   = theArgVec[anArgIter];
+      Standard_CString aFontName   = theArgVec[++anArgIter];
       Font_FontAspect  aFontAspect = Font_FA_Undefined;
       if (++anArgIter < theArgNb)
       {
@@ -5500,26 +5458,23 @@ static int VFont (Draw_Interpretor& theDI,
           --anArgIter;
         }
       }
-      Handle(Font_SystemFont) aFont = aMgr->FindFont (new TCollection_HAsciiString (aFontName), aFontAspect, -1);
-      if (aFont.IsNull())
+
+      if (Handle(Font_SystemFont) aFont = aMgr->FindFont (aFontName, aFontAspect))
+      {
+        theDI << aFont->ToString();
+      }
+      else
       {
         std::cerr << "Error: font '" << aFontName << "' is not found!\n";
-        continue;
       }
-
-      theDI << aFont->FontName()->String()
-            << " " << fontStyleString (aFont->FontAspect())
-            << " " << aFont->FontPath()->String();
     }
-    else if (anArgCase == "add"
-          || anArgCase == "register")
+    else if (anArgIter + 1 < theArgNb
+          && (anArgCase == "-add"
+           || anArgCase == "add"
+           || anArgCase == "-register"
+           || anArgCase == "register"))
     {
-      if (++anArgIter >= theArgNb)
-      {
-        std::cerr << "Error: wrong syntax at argument '" << anArg << "'!\n";
-        return 1;
-      }
-
+      ++anArgIter;
       Standard_CString aFontPath = theArgVec[anArgIter++];
       TCollection_AsciiString aFontName;
       Font_FontAspect  aFontAspect = Font_FA_Undefined;
@@ -5528,7 +5483,7 @@ static int VFont (Draw_Interpretor& theDI,
       {
         anArgCase = theArgVec[anArgIter];
         anArgCase.LowerCase();
-        if (aFontAspect == Font_FA_Undefined
+        if (aFontAspect == Font_FontAspect_UNDEFINED
          && parseFontStyle (anArgCase, aFontAspect))
         {
           continue;
@@ -5557,19 +5512,27 @@ static int VFont (Draw_Interpretor& theDI,
         continue;
       }
 
-      if (aFontAspect != Font_FA_Undefined
+      if (aFontAspect != Font_FontAspect_UNDEFINED
       || !aFontName.IsEmpty())
       {
-        if (aFontAspect == Font_FA_Undefined)
-        {
-          aFontAspect = aFont->FontAspect();
-        }
-        Handle(TCollection_HAsciiString) aName = aFont->FontName();
+        TCollection_AsciiString aName = aFont->FontName();
         if (!aFontName.IsEmpty())
         {
-          aName = new TCollection_HAsciiString (aFontName);
+          aName = aFontName;
         }
-        aFont = new Font_SystemFont (aName, aFontAspect, new TCollection_HAsciiString (aFontPath));
+        Handle(Font_SystemFont) aFont2 = new Font_SystemFont (aName);
+        if (aFontAspect != Font_FontAspect_UNDEFINED)
+        {
+          aFont2->SetFontPath (aFontAspect, aFontPath);
+        }
+        else
+        {
+          for (int anAspectIter = 0; anAspectIter < Font_FontAspect_NB; ++anAspectIter)
+          {
+            aFont2->SetFontPath ((Font_FontAspect )anAspectIter, aFont->FontPath ((Font_FontAspect )anAspectIter));
+          }
+        }
+        aFont = aFont2;
       }
       if (isSingelStroke != -1)
       {
@@ -5577,9 +5540,18 @@ static int VFont (Draw_Interpretor& theDI,
       }
 
       aMgr->RegisterFont (aFont, Standard_True);
-      theDI << aFont->FontName()->String()
-            << " " << fontStyleString (aFont->FontAspect())
-            << " " << aFont->FontPath()->String();
+      theDI << aFont->ToString();
+    }
+    else if (anArgCase == "-verbose"
+          || anArgCase == "-trace")
+    {
+      bool toEnable = true;
+      if (anArgIter + 1 < theArgNb
+       && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], toEnable))
+      {
+        ++anArgIter;
+      }
+      aMgr->SetTraceAliases (toEnable);
     }
     else
     {
@@ -6501,7 +6473,7 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
                    "\n\t\t: [-angle angle=0]"
                    "\n\t\t: [-zoom {0|1}=0]"
                    "\n\t\t: [-height height=16]"
-                   "\n\t\t: [-aspect {regular|bold|italic|bolditalic}=regular]"
+                   "\n\t\t: [-aspect {regular|bold|italic|boldItalic}=regular]"
                    "\n\t\t: [-font font=Times]"
                    "\n\t\t: [-2d]"
                    "\n\t\t: [-perspos {X Y Z}=0 0 0], where"
@@ -6658,14 +6630,14 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
                    "\n\t\t: [-halign {left|center|right}=left]"
                    "\n\t\t: [-valign {top|center|bottom|topfirstline}=bottom}]"
                    "\n\t\t: [-height height=16]"
-                   "\n\t\t: [-aspect {regular|bold|italic|bolditalic}=regular]"
+                   "\n\t\t: [-aspect {regular|bold|italic|boldItalic}=regular]"
                    "\n\t\t: [-font font=Courier]"
                    "\n\t\t: [-composite {on|off}=off]"
                    "\n\t\t: [-plane NormX NormY NormZ DirX DirY DirZ]",
                    __FILE__, TextToBRep, group);
   theCommands.Add ("vfont",
-                            "vfont [add pathToFont [fontName] [regular,bold,italic,bolditalic=undefined] [singleStroke]]"
-                   "\n\t\t:        [find fontName [regular,bold,italic,bolditalic=undefined]]",
+                            "vfont [-add pathToFont [fontName] [regular,bold,italic,boldItalic=undefined] [singleStroke]]"
+                   "\n\t\t:        [-find fontName [regular,bold,italic,boldItalic=undefined]] [-verbose {on|off}]",
                    __FILE__, VFont, group);
   
   theCommands.Add ("vsetedgetype",
