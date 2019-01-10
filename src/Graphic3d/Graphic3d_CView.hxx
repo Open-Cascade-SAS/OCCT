@@ -415,6 +415,12 @@ public:
   virtual void DiagnosticInformation (TColStd_IndexedDataMapOfStringString& theDict,
                                       Graphic3d_DiagnosticInfo theFlags) const = 0;
 
+  //! Returns string with statistic performance info.
+  virtual TCollection_AsciiString StatisticInformation() const = 0;
+
+  //! Fills in the dictionary with statistic performance info.
+  virtual void StatisticInformation (TColStd_IndexedDataMapOfStringString& theDict) const = 0;
+
 private:
 
   //! Adds the structure to display lists of the view.

@@ -805,3 +805,32 @@ void OpenGl_View::DiagnosticInformation (TColStd_IndexedDataMapOfStringString& t
     theDict.ChangeFromIndex (theDict.Add ("ResolutionRatio", aResRatio)) = aResRatio;
   }
 }
+
+//=======================================================================
+//function : StatisticInformation
+//purpose  :
+//=======================================================================
+void OpenGl_View::StatisticInformation (TColStd_IndexedDataMapOfStringString& theDict) const
+{
+  if (const Handle(OpenGl_Context)& aCtx = myWorkspace->GetGlContext())
+  {
+    const Handle(OpenGl_FrameStats)& aStats = aCtx->FrameStats();
+    const Graphic3d_RenderingParams& aRendParams = myWorkspace->View()->RenderingParams();
+    aStats->FormatStats (theDict, aRendParams.CollectedStats);
+  }
+}
+
+//=======================================================================
+//function : StatisticInformation
+//purpose  :
+//=======================================================================
+TCollection_AsciiString OpenGl_View::StatisticInformation() const
+{
+  if (const Handle(OpenGl_Context)& aCtx = myWorkspace->GetGlContext())
+  {
+    const Handle(OpenGl_FrameStats)& aStats = aCtx->FrameStats();
+    const Graphic3d_RenderingParams& aRendParams = myWorkspace->View()->RenderingParams();
+    return aStats->FormatStats (aRendParams.CollectedStats);
+  }
+  return TCollection_AsciiString();
+}

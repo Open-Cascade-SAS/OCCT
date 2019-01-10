@@ -1,0 +1,31 @@
+puts "============="
+puts "0030437: Visualization, TKV3d - add Draw command to print rendering statistics"
+puts "============="
+
+pload MODELING VISUALIZATION
+vclear
+vinit View1
+
+set THE_NB_POINTS 10
+puts "Creating [expr $THE_NB_POINTS * $THE_NB_POINTS * $THE_NB_POINTS] points..."
+for {set i 0} {$i < $THE_NB_POINTS} {incr i} {
+  for {set j 0} {$j < $THE_NB_POINTS} {incr j} {
+    for {set k 0} {$k < $THE_NB_POINTS} {incr k} {
+      vpoint p$i$j$k 3.*$i 3.*$j 3.*$k
+    }
+  }
+}
+
+vcamera -ortho
+vfront
+vfit
+vzoom 2
+set aPointsNb_1 [vstatprofiler points]
+if [expr $aPointsNb_1 != 160] { puts "Error: unexpected number of not culled points 1" }
+
+vcamera -persp
+vaxo
+vfit
+vzoom 3
+set aPointsNb_2 [vstatprofiler points]
+if [expr $aPointsNb_2 != 307] { puts "Error: unexpected number of not culled points 2" }

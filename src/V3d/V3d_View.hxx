@@ -928,6 +928,12 @@ public:
   Standard_EXPORT void DiagnosticInformation (TColStd_IndexedDataMapOfStringString& theDict,
                                               Graphic3d_DiagnosticInfo theFlags) const;
 
+  //! Returns string with statistic performance info.
+  Standard_EXPORT TCollection_AsciiString StatisticInformation() const;
+
+  //! Fills in the dictionary with statistic performance info.
+  Standard_EXPORT void StatisticInformation (TColStd_IndexedDataMapOfStringString& theDict) const;
+
   DEFINE_STANDARD_RTTIEXT(V3d_View,Standard_Transient)
 
 protected:

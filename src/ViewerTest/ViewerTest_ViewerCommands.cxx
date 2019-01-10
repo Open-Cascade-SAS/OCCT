@@ -11150,6 +11150,231 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
 }
 
 //=======================================================================
+//function : searchInfo
+//purpose  :
+//=======================================================================
+inline TCollection_AsciiString searchInfo (const TColStd_IndexedDataMapOfStringString& theDict,
+                                           const TCollection_AsciiString&              theKey)
+{
+  for (TColStd_IndexedDataMapOfStringString::Iterator anIter (theDict); anIter.More(); anIter.Next())
+  {
+    if (TCollection_AsciiString::IsSameString (anIter.Key(), theKey, Standard_False))
+    {
+      return anIter.Value();
+    }
+  }
+  return TCollection_AsciiString();
+}
+
+//=======================================================================
+//function : VStatProfiler
+//purpose  :
+//=======================================================================
+static Standard_Integer VStatProfiler (Draw_Interpretor& theDI,
+                                       Standard_Integer  theArgNb,
+                                       const char**      theArgVec)
+{
+  Handle(V3d_View) aView = ViewerTest::CurrentView();
+  if (aView.IsNull())
+  {
+    std::cerr << "Error: no active viewer!\n";
+    return 1;
+  }
+
+  Standard_Boolean toRedraw = Standard_True;
+  Graphic3d_RenderingParams::PerfCounters aPrevCounters = aView->ChangeRenderingParams().CollectedStats;
+  Standard_ShortReal aPrevUpdInterval = aView->ChangeRenderingParams().StatsUpdateInterval;
+  Graphic3d_RenderingParams::PerfCounters aRenderParams = Graphic3d_RenderingParams::PerfCounters_NONE;
+  for (Standard_Integer anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
+  {
+    Standard_CString        anArg (theArgVec[anArgIter]);
+    TCollection_AsciiString aFlag (anArg);
+    aFlag.LowerCase();
+    if (aFlag == "-noredraw")
+    {
+      toRedraw = Standard_False;
+    }
+    else
+    {
+      Graphic3d_RenderingParams::PerfCounters aParam = Graphic3d_RenderingParams::PerfCounters_NONE;
+      if      (aFlag == "fps")        aParam = Graphic3d_RenderingParams::PerfCounters_FrameRate;
+      else if (aFlag == "cpu")        aParam = Graphic3d_RenderingParams::PerfCounters_CPU;
+      else if (aFlag == "alllayers"
+            || aFlag == "layers")     aParam = Graphic3d_RenderingParams::PerfCounters_Layers;
+      else if (aFlag == "allstructs"
+            || aFlag == "structs")    aParam = Graphic3d_RenderingParams::PerfCounters_Structures;
+      else if (aFlag == "groups")     aParam = Graphic3d_RenderingParams::PerfCounters_Groups;
+      else if (aFlag == "allarrays"
+            || aFlag == "fillarrays"
+            || aFlag == "linearrays"
+            || aFlag == "pointarrays"
+            || aFlag == "textarrays") aParam = Graphic3d_RenderingParams::PerfCounters_GroupArrays;
+      else if (aFlag == "triangles")  aParam = Graphic3d_RenderingParams::PerfCounters_Triangles;
+      else if (aFlag == "points")     aParam = Graphic3d_RenderingParams::PerfCounters_Points;
+      else if (aFlag == "geommem"
+            || aFlag == "texturemem"
+            || aFlag == "framemem")   aParam = Graphic3d_RenderingParams::PerfCounters_EstimMem;
+      else if (aFlag == "elapsedframe"
+            || aFlag == "cpuframeaverage"
+            || aFlag == "cpupickingaverage"
+            || aFlag == "cpucullingaverage"
+            || aFlag == "cpudynaverage"
+            || aFlag == "cpuframemax"
+            || aFlag == "cpupickingmax"
+            || aFlag == "cpucullingmax"
+            || aFlag == "cpudynmax")  aParam = Graphic3d_RenderingParams::PerfCounters_FrameTime;
+      else
+      {
+        std::cerr << "Unknown argument '" << theArgVec[anArgIter] << "'!\n";
+        continue;
+      }
+
+      aRenderParams = Graphic3d_RenderingParams::PerfCounters (aRenderParams | aParam);
+    }
+  }
+
+  if (aRenderParams != Graphic3d_RenderingParams::PerfCounters_NONE)
+  {
+    aView->ChangeRenderingParams().CollectedStats =
+      Graphic3d_RenderingParams::PerfCounters (aView->RenderingParams().CollectedStats | aRenderParams);
+
+    if (toRedraw)
+    {
+      aView->ChangeRenderingParams().StatsUpdateInterval = -1;
+      aView->Redraw();
+      aView->ChangeRenderingParams().StatsUpdateInterval = aPrevUpdInterval;
+    }
+
+    TColStd_IndexedDataMapOfStringString aDict;
+    aView->StatisticInformation (aDict);
+
+    aView->ChangeRenderingParams().CollectedStats = aPrevCounters;
+
+    for (Standard_Integer anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
+    {
+      Standard_CString        anArg(theArgVec[anArgIter]);
+      TCollection_AsciiString aFlag(anArg);
+      aFlag.LowerCase();
+      if (aFlag == "fps")
+      {
+        theDI << searchInfo (aDict, "FPS") << " ";
+      }
+      else if (aFlag == "cpu")
+      {
+        theDI << searchInfo (aDict, "CPU FPS") << " ";
+      }
+      else if (aFlag == "alllayers")
+      {
+        theDI << searchInfo (aDict, "Layers") << " ";
+      }
+      else if (aFlag == "layers")
+      {
+        theDI << searchInfo (aDict, "Rendered layers") << " ";
+      }
+      else if (aFlag == "allstructs")
+      {
+        theDI << searchInfo (aDict, "Structs") << " ";
+      }
+      else if (aFlag == "structs")
+      {
+        theDI << searchInfo (aDict, "Rendered structs") << " ";
+      }
+      else if (aFlag == "groups")
+      {
+        theDI << searchInfo (aDict, "Rendered groups") << " ";
+      }
+      else if (aFlag == "allarrays")
+      {
+        theDI << searchInfo (aDict, "Rendered arrays") << " ";
+      }
+      else if (aFlag == "fillarrays")
+      {
+        theDI << searchInfo (aDict, "Rendered [fill] arrays") << " ";
+      }
+      else if (aFlag == "linearrays")
+      {
+        theDI << searchInfo (aDict, "Rendered [line] arrays") << " ";
+      }
+      else if (aFlag == "pointarrays")
+      {
+        theDI << searchInfo (aDict, "Rendered [point] arrays") << " ";
+      }
+      else if (aFlag == "textarrays")
+      {
+        theDI << searchInfo (aDict, "Rendered [text] arrays") << " ";
+      }
+      else if (aFlag == "triangles")
+      {
+        theDI << searchInfo (aDict, "Rendered triangles") << " ";
+      }
+      else if (aFlag == "points")
+      {
+        theDI << searchInfo (aDict, "Rendered points") << " ";
+      }
+      else if (aFlag == "geommem")
+      {
+        theDI << searchInfo (aDict, "GPU Memory [geometry]") << " ";
+      }
+      else if (aFlag == "texturemem")
+      {
+        theDI << searchInfo (aDict, "GPU Memory [textures]") << " ";
+      }
+      else if (aFlag == "framemem")
+      {
+        theDI << searchInfo (aDict, "GPU Memory [frames]") << " ";
+      }
+      else if (aFlag == "elapsedframe")
+      {
+        theDI << searchInfo (aDict, "Elapsed Frame (average)") << " ";
+      }
+      else if (aFlag == "cpuframe_average")
+      {
+        theDI << searchInfo (aDict, "CPU Frame (average)") << " ";
+      }
+      else if (aFlag == "cpupicking_average")
+      {
+        theDI << searchInfo (aDict, "CPU Picking (average)") << " ";
+      }
+      else if (aFlag == "cpuculling_average")
+      {
+        theDI << searchInfo (aDict, "CPU Culling (average)") << " ";
+      }
+      else if (aFlag == "cpudyn_average")
+      {
+        theDI << searchInfo (aDict, "CPU Dynamics (average)") << " ";
+      }
+      else if (aFlag == "cpuframe_max")
+      {
+        theDI << searchInfo (aDict, "CPU Frame (max)") << " ";
+      }
+      else if (aFlag == "cpupicking_max")
+      {
+        theDI << searchInfo (aDict, "CPU Picking (max)") << " ";
+      }
+      else if (aFlag == "cpuculling_max")
+      {
+        theDI << searchInfo (aDict, "CPU Culling (max)") << " ";
+      }
+      else if (aFlag == "cpudyn_max")
+      {
+        theDI << searchInfo (aDict, "CPU Dynamics (max)") << " ";
+      }
+    }
+  }
+  else
+  {
+    if (toRedraw)
+    {
+      aView->ChangeRenderingParams().StatsUpdateInterval = -1;
+      aView->Redraw();
+      aView->ChangeRenderingParams().StatsUpdateInterval = aPrevUpdInterval;
+    }
+    theDI << "Statistic info:\n" << aView->StatisticInformation();
+  }
+  return 0;
+}
+
+//=======================================================================
 //function : VProgressiveMode
 //purpose  :
 //=======================================================================
@@ -12623,6 +12848,18 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "\n    Command is intended to control presentation quality depending on"
     "\n    hardware capabilities and performance.",
     __FILE__, VRenderParams, group);
+  theCommands.Add("vstatprofiler",
+    "\n vstatprofiler [fps|cpu|allLayers|layers|allstructures|structures|groups"
+    "\n                |allArrays|fillArrays|lineArrays|pointArrays|textArrays"
+    "\n                |triagles|points|geomMem|textureMem|frameMem"
+    "\n                |elapsedFrame|cpuFrameAverage|cpuPickingAverage|cpuCullingAverage|cpuDynAverage"
+    "\n                |cpuFrameMax|cpuPickingMax|cpuCullingMax|cpuDynMax]"
+    "\n                [-noredraw]"
+    "\n\t\t: Prints rendering statistics."
+    "\n\t\t:   If there are some parameters - print corresponding statistic counters values,"
+    "\n\t\t:   else - print all performance counters set previously."
+    "\n\t\t:   '-noredraw' Flag to avoid additional redraw call and use already collected values.\n",
+    __FILE__, VStatProfiler, group);
   theCommands.Add ("vplace",
             "vplace dx dy"
     "\n\t\t: Places the point (in pixels) at the center of the window",

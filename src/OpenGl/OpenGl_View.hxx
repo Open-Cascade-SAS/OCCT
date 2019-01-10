@@ -285,6 +285,12 @@ public:
   Standard_EXPORT virtual void DiagnosticInformation (TColStd_IndexedDataMapOfStringString& theDict,
                                                       Graphic3d_DiagnosticInfo theFlags) const Standard_OVERRIDE;
 
+  //! Returns string with statistic performance info.
+  Standard_EXPORT virtual TCollection_AsciiString StatisticInformation() const Standard_OVERRIDE;
+
+  //! Fills in the dictionary with statistic performance info.
+  Standard_EXPORT virtual void StatisticInformation (TColStd_IndexedDataMapOfStringString& theDict) const Standard_OVERRIDE;
+
 public:
 
   //! Returns background color.

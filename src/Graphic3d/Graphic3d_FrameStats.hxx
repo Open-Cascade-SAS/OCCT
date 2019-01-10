@@ -18,6 +18,7 @@
 #include <Graphic3d_RenderingParams.hxx>
 #include <Standard_Type.hxx>
 #include <Standard_Transient.hxx>
+#include <TColStd_IndexedDataMapOfStringString.hxx>
 
 class Graphic3d_CView;
 
@@ -57,6 +58,10 @@ public:
 
   //! Returns formatted string.
   Standard_EXPORT virtual TCollection_AsciiString FormatStats (Graphic3d_RenderingParams::PerfCounters theFlags) const;
+
+  //! Fill in the dictionary with formatted statistic info.
+  Standard_EXPORT virtual void FormatStats (TColStd_IndexedDataMapOfStringString&   theDict,
+                                            Graphic3d_RenderingParams::PerfCounters theFlags) const;
 
   //! Returns duration of the last frame in seconds.
   Standard_Real FrameDuration() const { return myFrameDuration; }

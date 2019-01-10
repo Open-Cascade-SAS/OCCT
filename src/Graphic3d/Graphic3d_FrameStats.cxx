@@ -149,6 +149,71 @@ namespace
     }
     return theStream;
   }
+
+  //! Add key-value pair to the dictionary.
+  static void addInfo (TColStd_IndexedDataMapOfStringString& theDict,
+                       const TCollection_AsciiString&        theKey,
+                       const char*                           theValue)
+  {
+    TCollection_AsciiString aValue (theValue != NULL ? theValue : "");
+    theDict.ChangeFromIndex (theDict.Add (theKey, aValue)) = aValue;
+  }
+
+  //! Add key-value pair to the dictionary.
+  static void addInfo (TColStd_IndexedDataMapOfStringString& theDict,
+                       const TCollection_AsciiString&        theKey,
+                       const Standard_Real                   theValue)
+  {
+    char aTmp[50];
+    Sprintf (aTmp, "%.1g", theValue);
+    addInfo (theDict, theKey, aTmp);
+  }
+
+  //! Add key-value pair to the dictionary.
+  static void addInfo (TColStd_IndexedDataMapOfStringString& theDict,
+                       const TCollection_AsciiString&        theKey,
+                       const Standard_Size                   theValue)
+  {
+    char aTmp[50];
+    Sprintf (aTmp, "%zu", theValue);
+    addInfo (theDict, theKey, aTmp);
+  }
+
+  //! Format time.
+  static void addTimeInfo (TColStd_IndexedDataMapOfStringString& theDict,
+                           const TCollection_AsciiString&        theKey,
+                           Standard_Real                         theSeconds)
+  {
+    Standard_Real aSecIn = theSeconds;
+    unsigned int aHours   = (unsigned int )(aSecIn * THE_SECOND_IN_HOUR);
+    aSecIn -= Standard_Real(aHours) * THE_SECONDS_IN_HOUR;
+    unsigned int aMinutes = (unsigned int )(aSecIn * THE_SECOND_IN_MINUTE);
+    aSecIn -= Standard_Real(aMinutes) * THE_SECONDS_IN_MINUTE;
+    unsigned int aSeconds = (unsigned int )aSecIn;
+    aSecIn -= Standard_Real(aSeconds);
+    Standard_Real aMilliSeconds = 1000.0 * aSecIn;
+
+    char aBuffer[64];
+    if (aHours > 0)
+    {
+      Sprintf (aBuffer, "%02u:%02u:%02u", aHours, aMinutes, aSeconds);
+    }
+    else if (aMinutes > 0)
+    {
+      Sprintf (aBuffer, "%02u:%02u", aMinutes, aSeconds);
+    }
+    else if (aSeconds > 0)
+    {
+      Sprintf (aBuffer, "%2u", aSeconds);
+    }
+    else
+    {
+      addInfo (theDict, theKey, aMilliSeconds);
+      return;
+    }
+    
+    addInfo (theDict, theKey, aBuffer);
+  }
 }
 
 // =======================================================================
@@ -322,6 +387,100 @@ TCollection_AsciiString Graphic3d_FrameStats::FormatStats (Graphic3d_RenderingPa
   }
 
   return TCollection_AsciiString (aBuf.str().c_str());
+}
+
+// =======================================================================
+// function : FormatStats
+// purpose  :
+// =======================================================================
+void Graphic3d_FrameStats::FormatStats (TColStd_IndexedDataMapOfStringString&   theDict,
+                                        Graphic3d_RenderingParams::PerfCounters theFlags) const
+{
+  const Graphic3d_FrameStatsData& aStats = LastDataFrame();
+  if ((theFlags & Graphic3d_RenderingParams::PerfCounters_FrameRate) != 0)
+  {
+    addInfo (theDict, "FPS", aStats.FrameRate());
+  }
+  if ((theFlags & Graphic3d_RenderingParams::PerfCounters_CPU) != 0)
+  {
+    addInfo (theDict, "CPU FPS", aStats.FrameRateCpu());
+  }
+  if ((theFlags & Graphic3d_RenderingParams::PerfCounters_Layers) != 0)
+  {
+    addInfo (theDict, "Layers", aStats[Graphic3d_FrameStatsCounter_NbLayers]);
+    if (HasCulledLayers())
+    {
+      addInfo (theDict, "Rendered layers", aStats[Graphic3d_FrameStatsCounter_NbLayersNotCulled]);
+    }
+  }
+  if ((theFlags & Graphic3d_RenderingParams::PerfCounters_Structures) != 0)
+  {
+    addInfo (theDict, "Structs", aStats[Graphic3d_FrameStatsCounter_NbStructs]);
+    if (HasCulledStructs())
+    {
+      addInfo (theDict, "Rendered structs", aStats[Graphic3d_FrameStatsCounter_NbStructsNotCulled]);
+    }
+  }
+  if ((theFlags & Graphic3d_RenderingParams::PerfCounters_Groups) != 0)
+  {
+    addInfo (theDict, "Rendered groups", aStats[Graphic3d_FrameStatsCounter_NbGroupsNotCulled]);
+  }
+  if ((theFlags & Graphic3d_RenderingParams::PerfCounters_GroupArrays) != 0)
+  {
+    addInfo (theDict, "Rendered arrays",         aStats[Graphic3d_FrameStatsCounter_NbElemsNotCulled]);
+    addInfo (theDict, "Rendered [fill] arrays",  aStats[Graphic3d_FrameStatsCounter_NbElemsFillNotCulled]);
+    addInfo (theDict, "Rendered [line] arrays",  aStats[Graphic3d_FrameStatsCounter_NbElemsLineNotCulled]);
+    addInfo (theDict, "Rendered [point] arrays", aStats[Graphic3d_FrameStatsCounter_NbElemsPointNotCulled]);
+    addInfo (theDict, "Rendered [text] arrays",  aStats[Graphic3d_FrameStatsCounter_NbElemsTextNotCulled]);
+  }
+  if ((theFlags & Graphic3d_RenderingParams::PerfCounters_Triangles) != 0)
+  {
+    addInfo (theDict, "Rendered triangles", aStats[Graphic3d_FrameStatsCounter_NbTrianglesNotCulled]);
+  }
+  if ((theFlags & Graphic3d_RenderingParams::PerfCounters_Points) != 0)
+  {
+    addInfo (theDict, "Rendered points", aStats[Graphic3d_FrameStatsCounter_NbPointsNotCulled]);
+  }
+  if ((theFlags & Graphic3d_RenderingParams::PerfCounters_EstimMem) != 0)
+  {
+    addInfo (theDict, "GPU Memory [geometry]", aStats[Graphic3d_FrameStatsCounter_EstimatedBytesGeom]);
+    addInfo (theDict, "GPU Memory [textures]", aStats[Graphic3d_FrameStatsCounter_EstimatedBytesTextures]);
+    addInfo (theDict, "GPU Memory [frames]",   aStats[Graphic3d_FrameStatsCounter_EstimatedBytesFbos]);
+  }
+
+  if ((theFlags & Graphic3d_RenderingParams::PerfCounters_FrameTime) != 0)
+  {
+    addTimeInfo (theDict, "Elapsed Frame (average)", aStats[Graphic3d_FrameStatsTimer_ElapsedFrame]);
+    addTimeInfo (theDict, "CPU Frame (average)",     aStats[Graphic3d_FrameStatsTimer_CpuFrame]);
+    if (myCountersMax[Graphic3d_FrameStatsTimer_CpuPicking] > 0.0)
+    {
+      addTimeInfo (theDict, "CPU Picking (average)", aStats[Graphic3d_FrameStatsTimer_CpuPicking]);
+    }
+    if (myCountersMax[Graphic3d_FrameStatsTimer_CpuCulling] > 0.0)
+    {
+      addTimeInfo (theDict, "CPU Culling (average)", aStats[Graphic3d_FrameStatsTimer_CpuCulling]);
+    }
+    if (myCountersMax[Graphic3d_FrameStatsTimer_CpuDynamics])
+    {
+      addTimeInfo (theDict, "CPU Dynamics (average)", aStats[Graphic3d_FrameStatsTimer_CpuDynamics]);
+    }
+    if ((theFlags & Graphic3d_RenderingParams::PerfCounters_FrameTimeMax) != 0)
+    {
+      addTimeInfo (theDict, "CPU Frame (max)", myCountersMax[Graphic3d_FrameStatsTimer_CpuFrame]);
+      if (myCountersMax[Graphic3d_FrameStatsTimer_CpuPicking] > 0.0)
+      {
+        addTimeInfo (theDict, "CPU Picking (max)", myCountersMax[Graphic3d_FrameStatsTimer_CpuPicking]);
+      }
+      if (myCountersMax[Graphic3d_FrameStatsTimer_CpuCulling] > 0.0)
+      {
+        addTimeInfo (theDict, "CPU Culling (max)", myCountersMax[Graphic3d_FrameStatsTimer_CpuCulling]);
+      }
+      if (myCountersMax[Graphic3d_FrameStatsTimer_CpuDynamics])
+      {
+        addTimeInfo (theDict, "CPU Dynamics (max)", myCountersMax[Graphic3d_FrameStatsTimer_CpuDynamics]);
+      }
+    }
+  }
 }
 
 // =======================================================================

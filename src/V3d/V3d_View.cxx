@@ -3183,6 +3183,24 @@ void V3d_View::DiagnosticInformation (TColStd_IndexedDataMapOfStringString& theD
   myView->DiagnosticInformation (theDict, theFlags);
 }
 
+//=======================================================================
+//function : StatisticInformation
+//purpose  :
+//=======================================================================
+void V3d_View::StatisticInformation (TColStd_IndexedDataMapOfStringString& theDict) const
+{
+  myView->StatisticInformation (theDict);
+}
+
+// =======================================================================
+// function : StatisticInformation
+// purpose  :
+// =======================================================================
+TCollection_AsciiString V3d_View::StatisticInformation() const
+{
+  return myView->StatisticInformation();
+}
+
 //=============================================================================
 //function : RenderingParams
 //purpose  :

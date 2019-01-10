@@ -1,0 +1,26 @@
+puts "============="
+puts "0030437: Visualization, TKV3d - add Draw command to print rendering statistics"
+puts "============="
+
+pload MODELING VISUALIZATION
+vclear
+vinit View1 -width 800 -height 400
+vdrawparray g trianglestrips v -97.9819 -175.225 -7.6706 v -97.9819  194.163 -7.6706 v 271.406  -175.225 -7.6706 v 271.406   194.163 -7.6706
+
+vpoint pl1  -4 -17  0
+vpoint pl2  -4 -10 14
+vpoint pl3   0  -6 17
+vpoint pr1 179  17 39
+vpoint pr2 174  -2 12
+vpoint pr3 177   0 15
+vfit
+
+vcamera -persp
+vviewparams -scale 5 -proj -0 -1 -0 -up 0 0 1 -at -157 9.5 19
+vviewparams -scale 5 -proj -0 -1 -0 -up 0 0 1 -at -157 9.5 19
+
+set aPointsNb    [vstatprofiler points]
+set aTrianglesNb [vstatprofiler triangles]
+
+# check number of not culled points and triangles
+if [expr $aPointsNb != 3 || $aTrianglesNb != 2] { puts "Error: unexpected number of culled elements" }
