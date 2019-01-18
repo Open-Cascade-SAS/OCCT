@@ -26,9 +26,11 @@ IMPLEMENT_STANDARD_RTTIEXT(Aspect_DisplayConnection,Standard_Transient)
 Aspect_DisplayConnection::Aspect_DisplayConnection()
 {
 #if !defined(_WIN32) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX)) && !defined(__ANDROID__) && !defined(__QNX__)
+  myDisplay = NULL;
+  myIsOwnDisplay = false;
   OSD_Environment anEnv ("DISPLAY");
   myDisplayName = anEnv.Value();
-  Init();
+  Init (NULL);
 #endif
 }
 
@@ -39,7 +41,8 @@ Aspect_DisplayConnection::Aspect_DisplayConnection()
 Aspect_DisplayConnection::~Aspect_DisplayConnection()
 {
 #if !defined(_WIN32) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX)) && !defined(__ANDROID__) && !defined(__QNX__)
-  if (myDisplay != NULL)
+  if (myDisplay != NULL
+   && myIsOwnDisplay)
   {
     XCloseDisplay (myDisplay);
   }
@@ -52,44 +55,50 @@ Aspect_DisplayConnection::~Aspect_DisplayConnection()
 // purpose  :
 // =======================================================================
 Aspect_DisplayConnection::Aspect_DisplayConnection (const TCollection_AsciiString& theDisplayName)
+: myDisplay (NULL),
+  myIsOwnDisplay (false)
 {
   myDisplayName = theDisplayName;
-  Init();
+  Init (NULL);
 }
 
 // =======================================================================
-// function : GetDisplay
+// function : Aspect_DisplayConnection
 // purpose  :
 // =======================================================================
-Display* Aspect_DisplayConnection::GetDisplay()
+Aspect_DisplayConnection::Aspect_DisplayConnection (Display* theDisplay)
+: myDisplay (NULL),
+  myIsOwnDisplay (false)
 {
-  return myDisplay;
-}
-
-// =======================================================================
-// function : GetDisplayName
-// purpose  :
-// =======================================================================
-TCollection_AsciiString Aspect_DisplayConnection::GetDisplayName()
-{
-  return myDisplayName;
+  Init (theDisplay);
 }
 
 // =======================================================================
 // function : Init
 // purpose  :
 // =======================================================================
-void Aspect_DisplayConnection::Init()
+void Aspect_DisplayConnection::Init (Display* theDisplay)
 {
-  myDisplay = XOpenDisplay (myDisplayName.ToCString());
-  myAtoms.Bind (Aspect_XA_DELETE_WINDOW, XInternAtom(myDisplay, "WM_DELETE_WINDOW", False));
-  
+  if (myDisplay != NULL
+   && myIsOwnDisplay)
+  {
+    XCloseDisplay (myDisplay);
+  }
+  myIsOwnDisplay = false;
+  myAtoms.Clear();
+
+  myDisplay = theDisplay != NULL ? theDisplay : XOpenDisplay (myDisplayName.ToCString());
   if (myDisplay == NULL)
   {
     TCollection_AsciiString aMessage;
     aMessage += "Can not connect to the server \"";
     aMessage += myDisplayName + "\"";
     throw Aspect_DisplayConnectionDefinitionError(aMessage.ToCString());
+  }
+  else
+  {
+    myIsOwnDisplay = theDisplay == NULL;
+    myAtoms.Bind (Aspect_XA_DELETE_WINDOW, XInternAtom(myDisplay, "WM_DELETE_WINDOW", False));
   }
 }
 

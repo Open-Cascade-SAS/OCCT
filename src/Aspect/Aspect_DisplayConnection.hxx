@@ -47,25 +47,37 @@ public:
   //! screen_number - Specifies the screen to be used on that server. Optional variable.
   Aspect_DisplayConnection (const TCollection_AsciiString& theDisplayName);
 
+  //! Constructor wrapping existing Display instance.
+  //! WARNING! it is a responsibility of application to keep this pointer
+  //! valid while Aspect_DisplayConnection is alive and to close Display when it is no more needed.
+  Aspect_DisplayConnection (Display* theDisplay);
+
   //! @return pointer to Display structure that serves as the connection to the X server.
-  Display* GetDisplay();
-  
+  Display* GetDisplay() { return myDisplay; }
+
+  //! @return TRUE if X Display has been allocated by this class
+  Standard_Boolean IsOwnDisplay() const { return myIsOwnDisplay; }
+
   //! @return identifier(atom) for custom named property associated with windows that use current connection to X server.
   Atom GetAtom (const Aspect_XAtom theAtom) const;
 
   //! @return display name for this connection.
-  TCollection_AsciiString GetDisplayName();
+  const TCollection_AsciiString& GetDisplayName() { return myDisplayName; }
 
-private:
-
-  //! Open connection with display specified in myDisplayName class field.
-  void Init();
+  //! Open connection with display specified in myDisplayName class field
+  //! or takes theDisplay parameter when it is not NULL.
+  //! WARNING! When external Display is specified, it is a responsibility of application
+  //! to keep this pointer valid while Aspect_DisplayConnection is alive
+  //! and to close Display when it is no more needed.
+  //! @param theDisplay external pointer to allocated Display, or NULL if new connection should be created
+  void Init (Display* theDisplay);
 
 private:
 
   Display*                 myDisplay;
   NCollection_DataMap<Aspect_XAtom, Atom> myAtoms;
   TCollection_AsciiString  myDisplayName;
+  Standard_Boolean         myIsOwnDisplay;
 #endif
 
 private:
