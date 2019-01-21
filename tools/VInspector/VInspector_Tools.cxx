@@ -402,11 +402,10 @@ TCollection_AsciiString VInspector_Tools::ToName (const VInspector_SelectionType
     {
       switch (theValue)
       {
-        case SelectMgr_SOS_Activated:   return "Activated";
-        case SelectMgr_SOS_Deactivated: return "Deactivated";
-        case SelectMgr_SOS_Sleeping:    return "Sleeping";
         case SelectMgr_SOS_Any:         return "Any";
         case SelectMgr_SOS_Unknown:     return "Unknown";
+        case SelectMgr_SOS_Activated:   return "Activated";
+        case SelectMgr_SOS_Deactivated: return "Deactivated";
         default: break;
       }
     }

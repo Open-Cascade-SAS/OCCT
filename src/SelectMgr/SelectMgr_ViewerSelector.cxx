@@ -137,10 +137,13 @@ void SelectMgr_ViewerSelector::Activate (const Handle(SelectMgr_Selection)& theS
     aSelEntIter.Value()->SetActiveForSelection();
   }
 
-  theSelection->SetSelectionState (SelectMgr_SOS_Activated);
+  if (theSelection->GetSelectionState() != SelectMgr_SOS_Activated)
+  {
+    theSelection->SetSelectionState (SelectMgr_SOS_Activated);
 
-  myTolerances.Add (theSelection->Sensitivity());
-  myToUpdateTolerance = Standard_True;
+    myTolerances.Add (theSelection->Sensitivity());
+    myToUpdateTolerance = Standard_True;
+  }
 }
 
 //==================================================
@@ -154,10 +157,13 @@ void SelectMgr_ViewerSelector::Deactivate (const Handle(SelectMgr_Selection)& th
     aSelEntIter.Value()->ResetSelectionActiveStatus();
   }
 
-  theSelection->SetSelectionState (SelectMgr_SOS_Deactivated);
+  if (theSelection->GetSelectionState() == SelectMgr_SOS_Activated)
+  {
+    theSelection->SetSelectionState (SelectMgr_SOS_Deactivated);
 
-  myTolerances.Decrement (theSelection->Sensitivity());
-  myToUpdateTolerance = Standard_True;
+    myTolerances.Decrement (theSelection->Sensitivity());
+    myToUpdateTolerance = Standard_True;
+  }
 }
 
 //==================================================
@@ -721,14 +727,14 @@ Standard_Boolean SelectMgr_ViewerSelector::Modes (const Handle(SelectMgr_Selecta
   Standard_Boolean hasActivatedStates = Contains (theSelectableObject);
   for (SelectMgr_SequenceOfSelection::Iterator aSelIter (theSelectableObject->Selections()); aSelIter.More(); aSelIter.Next())
   {
-      if (theWantedState == SelectMgr_SOS_Any)
-      {
-        theModeList.Append (aSelIter.Value()->Mode());
-      }
-      else if (theWantedState == aSelIter.Value()->GetSelectionState())
-      {
-        theModeList.Append (aSelIter.Value()->Mode());
-      }
+    if (theWantedState == SelectMgr_SOS_Any)
+    {
+      theModeList.Append (aSelIter.Value()->Mode());
+    }
+    else if (theWantedState == aSelIter.Value()->GetSelectionState())
+    {
+      theModeList.Append (aSelIter.Value()->Mode());
+    }
   }
 
   return hasActivatedStates;
