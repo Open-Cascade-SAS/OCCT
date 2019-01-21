@@ -416,7 +416,14 @@ AIS_StatusOfDetection AIS_InteractiveContext::MoveTo (const Standard_Integer  th
   if (toUpdateViewer
    && theToRedrawOnUpdate)
   {
-    theView->Viewer()->Update();
+    if (theView->ComputedMode())
+    {
+      theView->Viewer()->Update();
+    }
+    else
+    {
+      theView->Viewer()->RedrawImmediate();
+    }
   }
 
   return aStatus;

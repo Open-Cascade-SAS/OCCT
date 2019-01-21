@@ -335,6 +335,10 @@ void AIS_Trihedron::HilightOwnerWithColor (const Handle(PrsMgr_PresentationManag
   }
   aGroup->AddPrimitiveArray (arrayOfPrimitives(aPart));
 
+  if (aPresentation->GetZLayer() != theStyle->ZLayer())
+  {
+    aPresentation->SetZLayer (theStyle->ZLayer());
+  }
   aPresentation->Highlight (theStyle);
   thePM->AddToImmediateList (aPresentation);
 }
