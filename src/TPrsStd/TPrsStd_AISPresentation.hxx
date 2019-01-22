@@ -155,19 +155,23 @@ public:
   Standard_EXPORT Standard_Boolean HasOwnMode() const;
   
   Standard_EXPORT void UnsetMode();
-  
-  Standard_EXPORT Standard_Integer SelectionMode() const;
+
+  //! Returns selection mode(s) of the attribute.
+  //! It starts with 1 .. GetNbSelectionModes().
+  Standard_EXPORT Standard_Integer GetNbSelectionModes() const;
+  Standard_EXPORT Standard_Integer SelectionMode(const int index = 1) const;
 
   //! Sets selection mode.
   //! If "theTransaction" flag is OFF, modification of the attribute doesn't influence the transaction mechanism
-  //! (the attribute doesn't participate in undo/redo).
+  //! (the attribute doesn't participate in undo/redo because of this modification).
   //! Certainly, if any other data of the attribute is modified (display mode, color, ...),
-  //! the attribute will be included into transaction.
-  //! Obsolete method (may be removed later).
-  Standard_EXPORT void SetSelectionMode (const Standard_Integer theSelectionMode, const Standard_Boolean theTransaction = Standard_True);
-  
+  //! the attribute will be included into undo/redo.
+  Standard_EXPORT void SetSelectionMode(const Standard_Integer theSelectionMode, const Standard_Boolean theTransaction = Standard_True);
+  Standard_EXPORT void AddSelectionMode(const Standard_Integer theSelectionMode, const Standard_Boolean theTransaction = Standard_True);
+
   Standard_EXPORT Standard_Boolean HasOwnSelectionMode() const;
   
+  //! Clears all selection modes of the attribute.
   Standard_EXPORT void UnsetSelectionMode();
   
   Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;

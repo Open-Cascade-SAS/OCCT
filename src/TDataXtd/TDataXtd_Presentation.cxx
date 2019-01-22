@@ -33,7 +33,6 @@ TDataXtd_Presentation::TDataXtd_Presentation()
   myColor                (Quantity_NOC_WHITE),
   myMaterialIndex        (0),
   myMode                 (0),
-  mySelectionMode        (0),
   myTransparency         (0.0),
   myWidth                (0.0),
   myIsDisplayed          (Standard_False),
@@ -280,6 +279,15 @@ void TDataXtd_Presentation::SetMode(const Standard_Integer theMode)
   }
 }
 
+//=======================================================================
+//function : GetNbSelectionModes
+//purpose  : Returns the number of selection modes of the attribute.
+//         : It starts with 1 .. GetNbSelectionModes().
+//=======================================================================
+Standard_EXPORT Standard_Integer TDataXtd_Presentation::GetNbSelectionModes() const
+{
+  return mySelectionModes.Extent();
+}
 
 //=======================================================================
 //function : SetSelectionMode
@@ -287,15 +295,31 @@ void TDataXtd_Presentation::SetMode(const Standard_Integer theMode)
 //=======================================================================
 void TDataXtd_Presentation::SetSelectionMode(const Standard_Integer theSelectionMode, const Standard_Boolean theTransaction)
 {
-  if (! myHasOwnSelectionMode || mySelectionMode != theSelectionMode)
+  if (!myHasOwnSelectionMode || GetNbSelectionModes() > 1 ||
+      (GetNbSelectionModes() > 0 && mySelectionModes.First() != theSelectionMode))
   {
     if (theTransaction)
-        Backup();
-    mySelectionMode = theSelectionMode;
+      Backup();
+    mySelectionModes.Clear();
+    mySelectionModes.Append(theSelectionMode);
     myHasOwnSelectionMode = Standard_True;
   }
 }
 
+//=======================================================================
+//function : AddSelectionMode
+//purpose  : 
+//=======================================================================
+void TDataXtd_Presentation::AddSelectionMode(const Standard_Integer theSelectionMode, const Standard_Boolean theTransaction)
+{
+  if (!myHasOwnSelectionMode || !HasSelectionMode(theSelectionMode))
+  {
+    if (theTransaction)
+      Backup();
+    mySelectionModes.Append(theSelectionMode);
+    myHasOwnSelectionMode = Standard_True;
+  }
+}
 
 //=======================================================================
 //function : MaterialIndex
@@ -351,9 +375,16 @@ Standard_Integer TDataXtd_Presentation::Mode() const
 //function : SelectionMode
 //purpose  : 
 //=======================================================================
-Standard_Integer TDataXtd_Presentation::SelectionMode() const
+Standard_Integer TDataXtd_Presentation::SelectionMode(const Standard_Integer index) const
 {
-  return mySelectionMode;
+  Standard_Integer aSelectionMode(0);
+  TColStd_ListOfInteger::Iterator itr(mySelectionModes);
+  for (Standard_Integer i = 1; itr.More() && i <= index; itr.Next(), i++)
+  {
+    if (i == index)
+      aSelectionMode = itr.Value();
+  }
+  return aSelectionMode;
 }
 
 
@@ -437,6 +468,7 @@ void TDataXtd_Presentation::UnsetSelectionMode()
   {
     Backup();
     myHasOwnSelectionMode = Standard_False;
+    mySelectionModes.Clear();
   }
 }
 
@@ -451,7 +483,7 @@ Handle(TDF_Attribute) TDataXtd_Presentation::BackupCopy() const
 
   aCopy->myIsDisplayed   = myIsDisplayed;
   aCopy->myDriverGUID    = myDriverGUID;
-  aCopy->mySelectionMode = mySelectionMode;
+  aCopy->mySelectionModes= mySelectionModes;
   aCopy->myTransparency  = myTransparency;
   aCopy->myColor         = myColor;
   aCopy->myMode          = myMode;
@@ -501,7 +533,7 @@ void TDataXtd_Presentation::Restore(const Handle(TDF_Attribute)& theAttribute)
   myMode = aPresentation->Mode();
 
   myHasOwnSelectionMode = aPresentation->HasOwnSelectionMode();
-  mySelectionMode = aPresentation->SelectionMode();
+  mySelectionModes = aPresentation->mySelectionModes;
 
   myHasOwnTransparency = aPresentation->HasOwnTransparency();
   myTransparency = aPresentation->Transparency();
@@ -565,7 +597,7 @@ void TDataXtd_Presentation::Paste(const Handle(TDF_Attribute)& theInto,
 
   if (myHasOwnSelectionMode)
   {
-    anInto->mySelectionMode = mySelectionMode;
+    anInto->mySelectionModes = mySelectionModes;
     anInto->myHasOwnSelectionMode = Standard_True;
   }
   else
@@ -585,4 +617,20 @@ void TDataXtd_Presentation::Paste(const Handle(TDF_Attribute)& theInto,
 
   anInto->myIsDisplayed = myIsDisplayed;
   anInto->myDriverGUID  = myDriverGUID;
+}
+
+//=======================================================================
+//function : HasSelectionMode
+//purpose  : Checks a list of selection modes.
+//=======================================================================
+Standard_Boolean TDataXtd_Presentation::HasSelectionMode(const Standard_Integer theSelectionMode) const
+{
+  Standard_Boolean ret(Standard_False);
+  TColStd_ListOfInteger::Iterator itr(mySelectionModes);
+  for (; itr.More(); itr.Next())
+  {
+    if (theSelectionMode == itr.Value())
+      ret = Standard_True;
+  }
+  return ret;
 }

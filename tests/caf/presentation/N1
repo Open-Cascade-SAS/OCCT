@@ -1,0 +1,78 @@
+#INTERFACE CAF
+# Presentation attributes
+#
+# Testing attribute: TPrsStd_AISPresentation
+#
+# Testing command:   AISSelMode
+#
+
+puts "caf003-N1"
+
+# Close/Open transaction
+NewCommand D
+
+# Set a shape
+box aBox1 100 200 300
+set aLabel 0:2
+SetShape D ${aLabel} aBox1
+
+# Initialize 3D viewer
+AISInitViewer D
+
+# Add AISPresentation attribute with parameter NS
+AISSet D ${aLabel} NS
+
+# Display presentation of NamedShape in the viewer
+AISDisplay D ${aLabel}
+
+# Close/Open transaction
+NewCommand D
+
+# Get default selection mode
+set aSelMode1 [AISSelMode D ${aLabel}]
+if { ${aSelMode1} != 0 } {
+	puts "Default selection mode is not 0"
+        return
+}
+
+# Set selection mode = 2
+AISSelMode D ${aLabel} 2
+set aSelMode2 [AISSelMode D ${aLabel}]
+if { ${aSelMode2} != 2 } {
+	puts "Selection mode is not 2"
+        return
+}
+
+# Close/Open transaction
+NewCommand D
+
+# Set selection mode = 2 4
+AISSelMode D ${aLabel} 2 4
+set aSelMode3 [AISSelMode D ${aLabel}]
+if { ${aSelMode3} != "2 4" } {
+	puts "Selection mode is not 2 4"
+        return
+}
+
+# Close/Open transaction
+NewCommand D
+
+# Undo
+Undo D
+
+set aSelMode4 [AISSelMode D ${aLabel}]
+if { ${aSelMode4} != 2 } {
+	puts "Selection mode after undo is not 2"
+        return
+}
+
+# Redo
+Redo D
+
+set aSelMode5 [AISSelMode D ${aLabel}]
+if { ${aSelMode5} != "2 4" } {
+	puts "Selection mode after redo is not 2 4"
+        return
+}
+
+puts "AISSelMode command: OK"

@@ -23,6 +23,7 @@
 #include <gp_Pnt.hxx>
 #include <TDF_Attribute.hxx>
 #include <Quantity_NameOfColor.hxx>
+#include <TColStd_ListOfInteger.hxx>
 
 class TDF_Label;
 class gp_Pnt;
@@ -114,13 +115,17 @@ public:
 
   Standard_EXPORT void SetMode(const Standard_Integer theMode);
 
+  //! Returns the number of selection modes of the attribute.
+  //! It starts with 1 .. GetNbSelectionModes().
+  Standard_EXPORT Standard_Integer GetNbSelectionModes() const;
+
   //! Sets selection mode.
   //! If "theTransaction" flag is OFF, modification of the attribute doesn't influence the transaction mechanism
-  //! (the attribute doesn't participate in undo/redo).
+  //! (the attribute doesn't participate in undo/redo because of this modification).
   //! Certainly, if any other data of the attribute is modified (display mode, color, ...),
-  //! the attribute will be included into transaction.
-  //! Obsolete method (may be removed later).
+  //! the attribute will be included into undo/redo.
   Standard_EXPORT void SetSelectionMode(const Standard_Integer theSelectionMode, const Standard_Boolean theTransaction = Standard_True);
+  Standard_EXPORT void AddSelectionMode(const Standard_Integer theSelectionMode, const Standard_Boolean theTransaction = Standard_True);
 
   Standard_EXPORT Standard_Integer MaterialIndex() const;
 
@@ -132,7 +137,7 @@ public:
 
   Standard_EXPORT Standard_Integer Mode() const;
 
-  Standard_EXPORT Standard_Integer SelectionMode() const;
+  Standard_EXPORT Standard_Integer SelectionMode(const int index = 1) const;
 
   Standard_EXPORT void UnsetMaterial();
 
@@ -151,7 +156,7 @@ private:
   Quantity_NameOfColor myColor;
   Standard_Integer myMaterialIndex;
   Standard_Integer myMode;
-  Standard_Integer mySelectionMode;
+  TColStd_ListOfInteger mySelectionModes;
   Standard_Real myTransparency;
   Standard_Real myWidth;
   Standard_Boolean myIsDisplayed;
@@ -161,6 +166,9 @@ private:
   Standard_Boolean myHasOwnWidth;
   Standard_Boolean myHasOwnMode;
   Standard_Boolean myHasOwnSelectionMode;
+
+  //! Checks a list of selection modes.
+  Standard_Boolean HasSelectionMode(const Standard_Integer theSelectionMode) const;
 };
 
 #endif // _TDataXtd_Presentation_HeaderFile
