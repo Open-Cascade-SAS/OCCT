@@ -188,6 +188,25 @@ void AIS_ColoredShape::SetCustomColor (const TopoDS_Shape&   theShape,
 }
 
 //=======================================================================
+//function : SetCustomTransparency
+//purpose  :
+//=======================================================================
+void AIS_ColoredShape::SetCustomTransparency (const TopoDS_Shape& theShape,
+                                              Standard_Real theTransparency)
+{
+  if (theShape.IsNull())
+  {
+    return;
+  }
+
+  const Handle(AIS_ColoredDrawer)& aDrawer = CustomAspects (theShape);
+  setTransparency (aDrawer, theTransparency);
+  aDrawer->SetOwnTransparency (theTransparency);
+  LoadRecomputable (AIS_WireFrame);
+  LoadRecomputable (AIS_Shaded);
+}
+
+//=======================================================================
 //function : SetCustomWidth
 //purpose  :
 //=======================================================================
@@ -200,7 +219,7 @@ void AIS_ColoredShape::SetCustomWidth (const TopoDS_Shape& theShape,
   }
 
   const Handle(AIS_ColoredDrawer)& aDrawer = CustomAspects (theShape);
-  setWidth (CustomAspects (theShape), theLineWidth);
+  setWidth (aDrawer, theLineWidth);
   aDrawer->SetOwnWidth (theLineWidth);
   LoadRecomputable (AIS_WireFrame);
   LoadRecomputable (AIS_Shaded);
@@ -292,7 +311,12 @@ void AIS_ColoredShape::SetTransparency (const Standard_Real theValue)
   LoadRecomputable (AIS_Shaded);
   for (AIS_DataMapOfShapeDrawer::Iterator anIter (myShapeColors); anIter.More(); anIter.Next())
   {
-    const Handle(Prs3d_Drawer)& aDrawer = anIter.Value();
+    const Handle(AIS_ColoredDrawer)& aDrawer = anIter.Value();
+    if (aDrawer->HasOwnTransparency())
+    {
+      continue;
+    }
+
     if (aDrawer->HasOwnShadingAspect())
     {
       aDrawer->ShadingAspect()->SetTransparency (theValue, myCurrentFacingModel);
@@ -346,7 +370,7 @@ void AIS_ColoredShape::SetMaterial (const Graphic3d_MaterialAspect& theMaterial)
     //if (aDrawer->HasOwnMaterial()) continue;
     if (aDrawer->HasOwnShadingAspect())
     {
-      setMaterial (aDrawer, theMaterial, aDrawer->HasOwnColor(), Standard_False); // aDrawer->IsTransparent()
+      setMaterial (aDrawer, theMaterial, aDrawer->HasOwnColor(), aDrawer->HasOwnTransparency());
     }
   }
 }
@@ -715,12 +739,28 @@ Standard_Boolean AIS_ColoredShape::dispatchColors (const Handle(AIS_ColoredDrawe
       {
         const TopoDS_Shape& aFace = aFaceIter.Value();
         Handle(AIS_ColoredDrawer) aFaceDrawer;
-        if (aFace.ShapeType() == TopAbs_FACE
-         && theShapeDrawerMap.Find (aFace, aFaceDrawer)
-         && aFaceDrawer->IsHidden())
+        if (aFace.ShapeType() != TopAbs_FACE
+        || !theShapeDrawerMap.Find (aFace, aFaceDrawer))
+        {
+          continue;
+        }
+
+        if (aFaceDrawer->IsHidden())
         {
           isClosedShell = Standard_False;
           break;
+        }
+        else if (aFaceDrawer->HasOwnShadingAspect()
+              && aFaceDrawer->ShadingAspect()->Aspect()->AlphaMode() != Graphic3d_AlphaMode_Opaque)
+        {
+          if (aFaceDrawer->ShadingAspect()->Aspect()->AlphaMode() != Graphic3d_AlphaMode_BlendAuto
+           || aFaceDrawer->ShadingAspect()->Aspect()->FrontMaterial().Alpha() < 1.0f
+           || (aFaceDrawer->ShadingAspect()->Aspect()->Distinguish()
+            && aFaceDrawer->ShadingAspect()->Aspect()->BackMaterial().Alpha()  < 1.0f))
+          {
+            isClosedShell = Standard_False;
+            break;
+          }
         }
       }
     }

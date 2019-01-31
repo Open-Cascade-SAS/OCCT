@@ -24,7 +24,7 @@ XShow D_First
 vfit
 vsetdispmode 1
 vdump $::imagedir/${::casename}_first.png
-if { [vreadpixel 300 200 rgb name] != "GRAY14" } { puts "Error: wrong color in 3D Viewer" }
+if { [vreadpixel 300 200 rgb name] != "DARKKHAKI" } { puts "Error: wrong color in 3D Viewer" }
 
 # Write file
 SaveAs D_First ${imagedir}/bug28521.xbf
@@ -83,6 +83,6 @@ XShow D_Second
 vfit
 vsetdispmode 1
 vdump $::imagedir/${::casename}.png
-if { [vreadpixel 300 200 rgb name] != "GRAY14" } { puts "Error: wrong color in 3D Viewer" }
+if { [vreadpixel 300 200 rgb name] != "DARKKHAKI" } { puts "Error: wrong color in 3D Viewer" }
 
 Close D_Second

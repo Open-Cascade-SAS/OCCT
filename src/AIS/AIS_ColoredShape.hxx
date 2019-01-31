@@ -56,6 +56,10 @@ public: //! @name sub-shape aspects
   Standard_EXPORT void SetCustomColor (const TopoDS_Shape&   theShape,
                                        const Quantity_Color& theColor);
 
+  //! Customize transparency of specified sub-shape
+  Standard_EXPORT void SetCustomTransparency (const TopoDS_Shape& theShape,
+                                              Standard_Real theTransparency);
+
   //! Customize line width of specified sub-shape
   Standard_EXPORT void SetCustomWidth (const TopoDS_Shape& theShape,
                                        const Standard_Real theLineWidth);

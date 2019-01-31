@@ -27,6 +27,7 @@ public:
   AIS_ColoredDrawer (const Handle(Prs3d_Drawer)& theLink)
   : myIsHidden    (false),
     myHasOwnColor (false),
+    myHasOwnTransp(false),
     myHasOwnWidth (false)
   {
     Link (theLink);
@@ -34,9 +35,15 @@ public:
 
   bool IsHidden() const                                 { return myIsHidden;     }
   void SetHidden (const bool theToHide)                 { myIsHidden = theToHide;}
+
   bool HasOwnColor() const                              { return myHasOwnColor;  }
   void UnsetOwnColor()                                  { myHasOwnColor = false; }
   void SetOwnColor (const Quantity_Color& /*theColor*/) { myHasOwnColor = true;  }
+
+  bool HasOwnTransparency() const                       { return myHasOwnTransp;  }
+  void UnsetOwnTransparency()                           { myHasOwnTransp = false; }
+  void SetOwnTransparency (Standard_Real /*theTransp*/) { myHasOwnTransp = true;  }
+
   bool HasOwnWidth() const                              { return myHasOwnWidth;  }
   void UnsetOwnWidth()                                  { myHasOwnWidth = false; }
   void SetOwnWidth (const Standard_Real /*theWidth*/)   { myHasOwnWidth = true;  }
@@ -45,6 +52,7 @@ public:  //! @name list of overridden properties
 
   bool myIsHidden;
   bool myHasOwnColor;
+  bool myHasOwnTransp;
   bool myHasOwnWidth;
 
 };

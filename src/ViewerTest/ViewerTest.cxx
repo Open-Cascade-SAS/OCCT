@@ -1709,7 +1709,7 @@ struct ViewerTest_AspectsChangeSet
   }
 
   //! @return true if properties are valid
-  Standard_Boolean Validate (const Standard_Boolean theIsSubPart) const
+  Standard_Boolean Validate() const
   {
     Standard_Boolean isOk = Standard_True;
     if (Visibility != 0 && Visibility != 1)
@@ -1727,12 +1727,6 @@ struct ViewerTest_AspectsChangeSet
      || Transparency > 1.0)
     {
       std::cout << "Error: the transparency should be within [0; 1] range (specified " << Transparency << ")\n";
-      isOk = Standard_False;
-    }
-    if (theIsSubPart
-     && ToSetTransparency != 0)
-    {
-      std::cout << "Error: the transparency can not be defined for sub-part of object!\n";
       isOk = Standard_False;
     }
     if (ToSetAlphaMode == 1
@@ -2498,15 +2492,13 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
     }
   }
 
-  Standard_Boolean isFirst = Standard_True;
   for (NCollection_Sequence<ViewerTest_AspectsChangeSet>::Iterator aChangesIter (aChanges);
        aChangesIter.More(); aChangesIter.Next())
   {
-    if (!aChangesIter.Value().Validate (!isFirst))
+    if (!aChangesIter.Value().Validate())
     {
       return 1;
     }
-    isFirst = Standard_False;
   }
 
   // special case for -defaults parameter.
@@ -2822,6 +2814,10 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
           if (aChangeSet->ToSetColor == 1)
           {
             aColoredPrs->SetCustomColor (aSubShape, aChangeSet->Color);
+          }
+          if (aChangeSet->ToSetTransparency == 1)
+          {
+            aColoredPrs->SetCustomTransparency (aSubShape, aChangeSet->Transparency);
           }
           if (aChangeSet->ToSetLineWidth == 1)
           {
