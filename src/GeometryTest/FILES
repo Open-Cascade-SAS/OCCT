@@ -1,6 +1,5 @@
 GeometryTest.cxx
 GeometryTest.hxx
-GeometryTest_API2dCommands.cxx
 GeometryTest_APICommands.cxx
 GeometryTest_ConstraintCommands.cxx
 GeometryTest_ContinuityCommands.cxx

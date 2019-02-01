@@ -50,15 +50,8 @@ public:
   
   //! defines cosntrained curves commands.
   Standard_EXPORT static void ConstraintCommands (Draw_Interpretor& I);
-  
-  //! defines commands to test the Geom2dAPI
-  //! - Intersection
-  //! - Extrema
-  //! - Projection
-  //! - Approximation, interpolation
-  Standard_EXPORT static void API2dCommands (Draw_Interpretor& I);
-  
-  //! defines commands to test the Geom2dAPI
+
+  //! defines commands to test the GeomAPI
   //! - Intersection
   //! - Extrema
   //! - Projection
@@ -76,27 +69,6 @@ public:
   //! defines commands to test projection of geometric objects
   Standard_EXPORT static void TestProjCommands (Draw_Interpretor& I);
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _GeometryTest_HeaderFile

@@ -14,9 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-// modified by mps (dec 96) ajout de ContinuityCommands
-//             jpi 09/06/97 utilisation des commandes de GeomliteTest
-
 #include <GeometryTest.hxx>
 #include <GeomliteTest.hxx>
 #include <Standard_Boolean.hxx>
@@ -34,10 +31,6 @@ void GeometryTest::AllCommands(Draw_Interpretor& theCommands)
   GeometryTest::FairCurveCommands(theCommands);
   GeometryTest::SurfaceCommands(theCommands);
   GeometryTest::ConstraintCommands(theCommands);
-
-// See bug #0030366
-//  GeometryTest::API2dCommands(theCommands);
-
   GeometryTest::APICommands(theCommands);
   GeometryTest::ContinuityCommands(theCommands);
   GeometryTest::TestProjCommands(theCommands);
