@@ -179,10 +179,19 @@ void OpenGl_View::Redraw()
             && !aCtx->caps->buffersNoSwap
             &&  aFrameBuffer == NULL;
 
-  Standard_Integer aSizeX = aFrameBuffer != NULL ? aFrameBuffer->GetVPSizeX() : myWindow->Width();
-  Standard_Integer aSizeY = aFrameBuffer != NULL ? aFrameBuffer->GetVPSizeY() : myWindow->Height();
-  Standard_Integer aRendSizeX = Standard_Integer(myRenderParams.RenderResolutionScale * aSizeX + 0.5f);
-  Standard_Integer aRendSizeY = Standard_Integer(myRenderParams.RenderResolutionScale * aSizeY + 0.5f);
+  const Standard_Integer aSizeX = aFrameBuffer != NULL ? aFrameBuffer->GetVPSizeX() : myWindow->Width();
+  const Standard_Integer aSizeY = aFrameBuffer != NULL ? aFrameBuffer->GetVPSizeY() : myWindow->Height();
+  const Standard_Integer aRendSizeX = Standard_Integer(myRenderParams.RenderResolutionScale * aSizeX + 0.5f);
+  const Standard_Integer aRendSizeY = Standard_Integer(myRenderParams.RenderResolutionScale * aSizeY + 0.5f);
+  if (aSizeX < 1
+   || aSizeY < 1
+   || aRendSizeX < 1
+   || aRendSizeY < 1)
+  {
+    myBackBufferRestored = Standard_False;
+    myIsImmediateDrawn   = Standard_False;
+    return;
+  }
 
   // determine multisampling parameters
   Standard_Integer aNbSamples = !myToDisableMSAA && aSizeX == aRendSizeX

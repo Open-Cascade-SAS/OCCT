@@ -96,10 +96,10 @@ void OpenGl_BVHTreeSelector::SetViewportSize (Standard_Integer theViewportWidth,
                                               Standard_Integer theViewportHeight,
                                               Standard_Real theResolutionRatio)
 {
-  myViewportHeight = theViewportHeight;
-  myViewportWidth  = theViewportWidth;
-  myPixelSize = Max (theResolutionRatio / theViewportHeight,
-                     theResolutionRatio / theViewportWidth);
+  myViewportHeight = theViewportHeight > 0 ? theViewportHeight : 1;
+  myViewportWidth  = theViewportWidth  > 0 ? theViewportWidth  : 1;
+  myPixelSize = Max (theResolutionRatio / myViewportHeight,
+                     theResolutionRatio / myViewportWidth);
 }
 
 // =======================================================================
