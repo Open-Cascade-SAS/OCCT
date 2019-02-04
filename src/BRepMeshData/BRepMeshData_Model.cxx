@@ -14,11 +14,12 @@
 // commercial license or contractual agreement.
 
 #include <BRepMeshData_Model.hxx>
+
 #include <BRepMeshData_Face.hxx>
 #include <BRepMeshData_Edge.hxx>
-#include <BRepMesh_IncAllocator.hxx>
 #include <BRepMesh_OrientedEdge.hxx>
 #include <BRepMesh_Vertex.hxx>
+#include <NCollection_IncAllocator.hxx>
 
 //=======================================================================
 // Function: Constructor
@@ -27,10 +28,11 @@
 BRepMeshData_Model::BRepMeshData_Model (const TopoDS_Shape& theShape)
   : IMeshData_Model (theShape),
     myMaxSize (0.),
-    myAllocator (new BRepMesh_IncAllocator(IMeshData::MEMORY_BLOCK_SIZE_HUGE)),
+    myAllocator (new NCollection_IncAllocator (IMeshData::MEMORY_BLOCK_SIZE_HUGE)),
     myDFaces (256, myAllocator),
     myDEdges (256, myAllocator)
 {
+  myAllocator->SetThreadSafe();
 }
 
 //=======================================================================

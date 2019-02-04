@@ -18,20 +18,26 @@
 
 #include <NCollection_BaseAllocator.hxx>
 
+class Standard_Mutex;
+
 /**
  *  Class NCollection_IncAllocator - incremental memory  allocator. This class
  *  allocates  memory  on  request  returning  the  pointer  to  an  allocated
  *  block. This memory is never returned  to the system until the allocator is
  *  destroyed.
- *  
+ *
  *  By comparison with  the standard new() and malloc()  calls, this method is
  *  faster and consumes very small additional memory to maintain the heap.
- *  
+ *
  *  All pointers  returned by Allocate() are  aligned to the size  of the data
  *  type "aligned_t". To  modify the size of memory  blocks requested from the
  *  OS,  use the parameter  of the  constructor (measured  in bytes);  if this
  *  parameter is  smaller than  25 bytes on  32bit or  49 bytes on  64bit, the
  *  block size will be the default 24 kbytes
+ *
+ *  Note that this allocator is most suitable for single-threaded algorithms
+ *  (consider creating dedicated allocators per working thread),
+ *  and thread-safety of allocations is DISABLED by default (see SetThreadSafe()).
  */
 class NCollection_IncAllocator : public NCollection_BaseAllocator
 {
@@ -41,8 +47,13 @@ class NCollection_IncAllocator : public NCollection_BaseAllocator
 
   // ---------- PUBLIC METHODS ----------
 
-  //! Constructor
-  Standard_EXPORT NCollection_IncAllocator (const size_t theBlockSize = DefaultBlockSize);
+  //! Constructor.
+  //! Note that this constructor does NOT setup mutex for using allocator concurrently from different threads,
+  //! see SetThreadSafe() method.
+  Standard_EXPORT NCollection_IncAllocator (size_t theBlockSize = DefaultBlockSize);
+
+  //! Setup mutex for thread-safe allocations.
+  Standard_EXPORT void SetThreadSafe (bool theIsThreadSafe = true);
 
   //! Allocate memory with given size. Returns NULL on failure
   Standard_EXPORT virtual void* Allocate        (const size_t size) Standard_OVERRIDE;
@@ -105,6 +116,7 @@ class NCollection_IncAllocator : public NCollection_BaseAllocator
   };
  protected:
   // --------- PROTECTED FIELDS ---------
+  Standard_Mutex* myMutex;
   IBlock        * myFirstBlock;
   size_t        mySize;
   size_t        myMemSize;

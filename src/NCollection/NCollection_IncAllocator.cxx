@@ -177,7 +177,8 @@ Standard_EXPORT void IncAllocator_PrintAlive()
 //purpose  : Constructor
 //=======================================================================
 
-NCollection_IncAllocator::NCollection_IncAllocator (const size_t theBlockSize)
+NCollection_IncAllocator::NCollection_IncAllocator (size_t theBlockSize)
+: myMutex (NULL)
 {
 #ifdef ALLOC_TRACK_USAGE
   printf ("\n..NCollection_IncAllocator: Created (%x)\n",this);
@@ -207,12 +208,31 @@ NCollection_IncAllocator::NCollection_IncAllocator (const size_t theBlockSize)
 
 NCollection_IncAllocator::~NCollection_IncAllocator ()
 {
+  delete myMutex;
 #ifdef OCCT_DEBUG
   if (IS_DEBUG)
     Debug_Destroy(this);
 #endif
   Clean();
   free (myFirstBlock);
+}
+
+//=======================================================================
+//function : SetThreadSafe
+//purpose  :
+//=======================================================================
+void NCollection_IncAllocator::SetThreadSafe (bool theIsThreadSafe)
+{
+  if (myMutex == NULL
+   && theIsThreadSafe)
+  {
+    myMutex = new Standard_Mutex();
+  }
+  else if (!theIsThreadSafe)
+  {
+    delete myMutex;
+    myMutex = NULL;
+  }
 }
 
 //=======================================================================
@@ -226,6 +246,7 @@ void * NCollection_IncAllocator::Allocate (const size_t aSize)
   aligned_t * aResult = NULL;
   const size_t cSize = aSize ? IMEM_SIZE(aSize) : 0;
 
+  Standard_Mutex::Sentry aLock (myMutex);
   if (cSize > mySize) {
     /* If the requested size exceeds normal allocation size, allocate
        a separate block and place it as the head of the list              */
@@ -286,10 +307,12 @@ void * NCollection_IncAllocator::Reallocate (void         * theAddress,
 // Check that the dummy parameters are OK
   if (theAddress == NULL || oldSize == 0)
     return Allocate (newSize);
+
   const size_t cOldSize = IMEM_SIZE(oldSize);
   const size_t cNewSize = newSize ? IMEM_SIZE(newSize) : 0;
   aligned_t * anAddress = (aligned_t *) theAddress;
 
+  Standard_Mutex::Sentry aLock (myMutex);
 // We check only the LAST allocation to do the real extension/contraction
   if (anAddress + cOldSize == myFirstBlock -> p_free_space) {
     myFirstBlock -> p_free_space = anAddress;
@@ -372,6 +395,7 @@ void NCollection_IncAllocator::Clean ()
 
 void NCollection_IncAllocator::Reset (const Standard_Boolean doReleaseMem)
 {
+  Standard_Mutex::Sentry aLock (myMutex);
   if (doReleaseMem)
     Clean();
   else {

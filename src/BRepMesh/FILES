@@ -46,7 +46,6 @@ BRepMesh_FactoryError.hxx
 BRepMesh_FastDiscret.hxx
 BRepMesh_GeomTool.cxx
 BRepMesh_GeomTool.hxx
-BRepMesh_IncAllocator.hxx
 BRepMesh_IncrementalMesh.cxx
 BRepMesh_IncrementalMesh.hxx
 BRepMesh_MeshAlgoFactory.cxx

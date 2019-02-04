@@ -18,7 +18,6 @@
 #include <IMeshData_Edge.hxx>
 #include <OSD_Parallel.hxx>
 #include <BRepMesh_GeomTool.hxx>
-#include <BRepMesh_IncAllocator.hxx>
 
 namespace
 {
