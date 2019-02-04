@@ -702,20 +702,25 @@ Handle(Font_SystemFont) Font_FontMgr::FindFont (const TCollection_AsciiString& t
   }
 
   // Trying to use font names mapping
-  Handle(Font_FontAliasSequence) anAliases;
-  const Standard_Boolean hasAliases  = myFontAliases.Find (aFontName, anAliases)
-                                   && !anAliases.IsNull()
-                                   && !anAliases->IsEmpty();
-  if (!hasAliases
-    && aFont.IsNull())
+  for (int aPass = 0; aPass < 2; ++aPass)
   {
-    anAliases = myFallbackAlias;
-  }
+    Handle(Font_FontAliasSequence) anAliases;
+    if (aPass == 0)
+    {
+      myFontAliases.Find (aFontName, anAliases);
+    }
+    else
+    {
+      anAliases = myFallbackAlias;
+    }
 
-  bool isAliasUsed = false, isBestAlias = false;
-  if (!anAliases.IsNull()
-   && !anAliases->IsEmpty())
-  {
+    if (anAliases.IsNull()
+     || anAliases->IsEmpty())
+    {
+      continue;
+    }
+
+    bool isAliasUsed = false, isBestAlias = false;
     for (Font_FontAliasSequence::Iterator anAliasIter (*anAliases); anAliasIter.More(); anAliasIter.Next())
     {
       const Font_FontAlias& anAlias = anAliasIter.Value();
@@ -737,23 +742,28 @@ Handle(Font_SystemFont) Font_FontMgr::FindFont (const TCollection_AsciiString& t
         }
         else if (anAlias.FontAspect == Font_FontAspect_UNDEFINED
               && (theFontAspect == Font_FontAspect_UNDEFINED
-               || aFont2->HasFontAspect (theFontAspect)))
+                || aFont2->HasFontAspect (theFontAspect)))
         {
           isBestAlias = true;
           break;
         }
       }
     }
-    if (hasAliases)
+
+    if (aPass == 0)
     {
       if (isAliasUsed && myToTraceAliases)
       {
         Message::DefaultMessenger()->Send (TCollection_AsciiString("Font_FontMgr, using font alias '") + aFont->FontName() + "'"
-                                           " instead of requested '" + theFontName +"'", Message_Trace);
+                                            " instead of requested '" + theFontName +"'", Message_Trace);
       }
       if (isBestAlias)
       {
         return aFont;
+      }
+      else if (!aFont.IsNull())
+      {
+        break;
       }
     }
   }
