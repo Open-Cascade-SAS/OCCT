@@ -1,0 +1,20 @@
+puts "TODO CR27414 ALL: Error : The area of result shape is"
+puts "TODO CR27414 ALL: Error : The volume of result shape is"
+puts "TODO CR27414 ALL: Error :  is WRONG because number of"
+
+polyline p 0 0 0 0 0 10 2 0 10 2 0 2 3 0 6 5 0 6 5 0 0 0 0 0
+mkplane f p
+prism s f 0 5 0
+
+offsetparameter 1e-7 c i r
+offsetload s 1
+explode s f
+offsetonface s_4 6
+offsetperform result
+
+checkprops result -s 410 -v 504
+
+unifysamedom result_unif result
+checknbshapes result_unif -vertex 12 -edge 18 -wire 8 -face 8 -shell 1 -solid 1
+
+checkview -display result_unif -2d -path ${imagedir}/${test_image}.png
