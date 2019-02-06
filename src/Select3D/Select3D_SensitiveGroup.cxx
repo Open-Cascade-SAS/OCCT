@@ -157,7 +157,7 @@ void Select3D_SensitiveGroup::Clear()
   myEntities.Clear();
   myBndBox.Clear();
   myCenter = gp_Pnt (0.0, 0.0, 0.0);
-  myEntities.Clear();
+  myBVHPrimIndexes.Clear();
 }
 
 //=======================================================================
