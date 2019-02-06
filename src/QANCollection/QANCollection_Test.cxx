@@ -716,6 +716,42 @@ static Standard_Integer QANColTestArray2(Draw_Interpretor& di, Standard_Integer 
   }
   QANCollection_Array2Func anArr2(LowerRow, UpperRow, LowerCol, UpperCol);
   TestArray2(anArr2);
+
+  // check resize
+  for (int aPass = 0; aPass <= 5; ++aPass)
+  {
+    Standard_Integer aNewLowerRow = LowerRow, aNewUpperRow = UpperRow, aNewLowerCol = LowerCol, aNewUpperCol = UpperCol;
+    switch (aPass)
+    {
+      case 0: aNewLowerRow -= 1; break;
+      case 1: aNewLowerCol -= 1; break;
+      case 2: aNewLowerRow -= 1; aNewLowerCol -= 1; break;
+      case 3: aNewUpperRow += 1; break;
+      case 4: aNewUpperCol += 1; break;
+      case 5: aNewUpperRow += 1; aNewUpperCol += 1; break;
+    }
+    QANCollection_Array2Func anArr2Copy = anArr2;
+    anArr2Copy.Resize (aNewLowerRow, aNewUpperRow, aNewLowerCol, aNewUpperCol, true);
+    const Standard_Integer aNbRowsMin = Min (anArr2.NbRows(),    anArr2Copy.NbRows());
+    const Standard_Integer aNbColsMin = Min (anArr2.NbColumns(), anArr2Copy.NbColumns());
+    for (Standard_Integer aRowIter = 0; aRowIter < aNbRowsMin; ++aRowIter)
+    {
+      for (Standard_Integer aColIter = 0; aColIter < aNbColsMin; ++aColIter)
+      {
+        const gp_Pnt& aPnt1 = anArr2    .Value (aRowIter +     anArr2.LowerRow(), aColIter +     anArr2.LowerCol());
+        const gp_Pnt& aPnt2 = anArr2Copy.Value (aRowIter + anArr2Copy.LowerRow(), aColIter + anArr2Copy.LowerCol());
+        if (!aPnt1.IsEqual (aPnt2, gp::Resolution()))
+        {
+          std::cerr << "Error: 2D array is not properly resized\n";
+          return 1;
+        }
+      }
+    }
+  }
+
+  QANCollection_Array2Func anArr2Copy2 = anArr2;
+  anArr2Copy2.Resize (LowerRow - 1, UpperRow - 1, LowerCol + 1, UpperCol + 1, false);
+
   return 0;
 }
 
