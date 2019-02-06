@@ -1,0 +1,23 @@
+puts "============"
+puts "OCC28936"
+puts "============"
+puts ""
+#######################################################################
+# Visualization - Draw freezes while making a 3d representation
+####################################################################### 
+
+pload VISUALIZATION
+
+restore [locate_data_file bug28936_Holsterbro_sofabed.brep] sh
+
+checkshape sh
+checkprops sh -s 18308978.50927943
+
+vinit View1
+vclear
+vsetdispmode 1
+vdisplay sh
+vfit
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
+  
