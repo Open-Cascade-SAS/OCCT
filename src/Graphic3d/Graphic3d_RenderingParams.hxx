@@ -113,6 +113,7 @@ public:
     TwoSidedBsdfModels          (Standard_False),
     RadianceClampingValue       (30.0),
     RebuildRayTracingShaders    (Standard_False),
+    RayTracingTileSize          (32),
     NbRayTracingTiles           (16 * 16),
     CameraApertureRadius        (0.0f),
     CameraFocalPlaneDist        (1.0f),
@@ -187,7 +188,10 @@ public:
   Standard_Boolean                  TwoSidedBsdfModels;          //!< forces path tracing to use two-sided versions of original one-sided scattering models
   Standard_ShortReal                RadianceClampingValue;       //!< maximum radiance value used for clamping radiance estimation.
   Standard_Boolean                  RebuildRayTracingShaders;    //!< forces rebuilding ray tracing shaders at the next frame
-  Standard_Integer                  NbRayTracingTiles;           //!< total number of screen tiles used in adaptive sampling mode (PT only)
+  Standard_Integer                  RayTracingTileSize;          //!< screen tile size, 32 by default (adaptive sampling mode of path tracing);
+  Standard_Integer                  NbRayTracingTiles;           //!< maximum number of screen tiles per frame, 256 by default (adaptive sampling mode of path tracing);
+                                                                 //!  this parameter limits the number of tiles to be rendered per redraw, increasing Viewer interactivity,
+                                                                 //!  but also increasing the time for achieving a good quality; -1 means no limit
   Standard_ShortReal                CameraApertureRadius;        //!< aperture radius of perspective camera used for depth-of-field, 0.0 by default (no DOF) (path tracing only)
   Standard_ShortReal                CameraFocalPlaneDist;        //!< focal  distance of perspective camera used for depth-of field, 1.0 by default (path tracing only)
   FrustumCulling                    FrustumCullingState;         //!< state of frustum culling optimization; FrustumCulling_On by default

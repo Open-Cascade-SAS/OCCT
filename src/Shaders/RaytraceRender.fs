@@ -38,11 +38,11 @@ void main (void)
 
 #ifdef ADAPTIVE_SAMPLING
 
-  ivec2 aTileXY = imageLoad (uOffsetImage, ivec2 (aFragCoord.x / BLOCK_SIZE,
-                                                  aFragCoord.y / BLOCK_SIZE)).xy;
+  ivec2 aTileXY = imageLoad (uOffsetImage, aFragCoord / uTileSize).xy * uTileSize;
+  if (aTileXY.x < 0) { discard; }
 
-  ivec2 aRealBlockSize = ivec2 (min (uWinSizeX - aTileXY.x, BLOCK_SIZE),
-                                min (uWinSizeY - aTileXY.y, BLOCK_SIZE));
+  ivec2 aRealBlockSize = ivec2 (min (uWinSizeX - aTileXY.x, uTileSize.x),
+                                min (uWinSizeY - aTileXY.y, uTileSize.y));
 
   aFragCoord.x = aTileXY.x + (aFragCoord.x % aRealBlockSize.x);
   aFragCoord.y = aTileXY.y + (aFragCoord.y % aRealBlockSize.y);

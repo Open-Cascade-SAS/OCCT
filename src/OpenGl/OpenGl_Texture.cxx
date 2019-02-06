@@ -405,6 +405,15 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
                            const Graphic3d_TypeOfTexture theType,
                            const Image_PixMap*           theImage)
 {
+  if (theSizeX < 1
+   || theSizeY < 1)
+  {
+    theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
+                         "Error: texture of 0 size cannot be created.");
+    Release (theCtx.operator->());
+    return false;
+  }
+
 #if !defined(GL_ES_VERSION_2_0)
   const GLenum aTarget = theType == Graphic3d_TOT_1D
                        ? GL_TEXTURE_1D

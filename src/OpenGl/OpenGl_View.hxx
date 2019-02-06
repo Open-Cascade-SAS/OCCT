@@ -593,6 +593,8 @@ protected: //! @name data types related to ray-tracing
     // images used by ISS mode
     OpenGl_RT_uRenderImage,
     OpenGl_RT_uOffsetImage,
+    OpenGl_RT_uTileSize,
+    OpenGl_RT_uVarianceScaleFactor,
 
     // maximum radiance value
     OpenGl_RT_uMaxRadiance,
@@ -603,12 +605,9 @@ protected: //! @name data types related to ray-tracing
   //! Defines OpenGL image samplers.
   enum ShaderImageNames
   {
-    OpenGl_RT_OutputImageLft = 0,
-    OpenGl_RT_OutputImageRgh = 1,
-    OpenGl_RT_VisualErrorImageLft = 2,
-    OpenGl_RT_VisualErrorImageRgh = 3,
-    OpenGl_RT_TileOffsetsImageLft = 4,
-    OpenGl_RT_TileOffsetsImageRgh = 5
+    OpenGl_RT_OutputImage = 0,
+    OpenGl_RT_VisualErrorImage = 1,
+    OpenGl_RT_TileOffsetsImage = 2,
   };
 
   //! Tool class for management of shader sources.
@@ -697,12 +696,6 @@ protected: //! @name data types related to ray-tracing
 
     //! Maximum radiance value used for clamping radiance estimation.
     Standard_ShortReal RadianceClampingValue;
-
-    //! Number of tiles in X dimension (in adaptive sampling mode).
-    Standard_Integer NbTilesX;
-    
-    //! Number of tiles in Y dimension (in adaptive sampling mode).
-    Standard_Integer NbTilesY;
     
     //! Enables/disables depth-of-field effect (path tracing, perspective camera).
     Standard_Boolean DepthOfField;
@@ -721,8 +714,6 @@ protected: //! @name data types related to ray-tracing
       AdaptiveScreenSampling (Standard_False),
       UseEnvMapForBackground (Standard_False),
       RadianceClampingValue  (30.0),
-      NbTilesX               (16),
-      NbTilesY               (16),
       DepthOfField           (Standard_False),
       ToneMappingMethod      (Graphic3d_ToneMappingMethod_Disabled) { }
   };
@@ -854,7 +845,9 @@ protected: //! @name methods related to ray-tracing
                                             const Handle(OpenGl_ShaderObject)& theFragShader);
 
   //! Initializes OpenGL/GLSL shader programs.
-  Standard_Boolean initRaytraceResources (const Handle(OpenGl_Context)& theGlContext);
+  Standard_Boolean initRaytraceResources (const Standard_Integer theSizeX,
+                                          const Standard_Integer theSizeY,
+                                          const Handle(OpenGl_Context)& theGlContext);
 
   //! Releases OpenGL/GLSL shader programs.
   void releaseRaytraceResources (const Handle(OpenGl_Context)& theGlContext,
@@ -884,7 +877,8 @@ protected: //! @name methods related to ray-tracing
                            const int                    theWinSizeY);
 
   //! Binds ray-trace textures to corresponding texture units.
-  void bindRaytraceTextures (const Handle(OpenGl_Context)& theGlContext);
+  void bindRaytraceTextures (const Handle(OpenGl_Context)& theGlContext,
+                             int theStereoView);
 
   //! Unbinds ray-trace textures from corresponding texture unit.
   void unbindRaytraceTextures (const Handle(OpenGl_Context)& theGlContext);
@@ -914,8 +908,12 @@ protected: //! @name methods related to ray-tracing
   Standard_Boolean runPathtrace (const Standard_Integer        theSizeX,
                                  const Standard_Integer        theSizeY,
                                  Graphic3d_Camera::Projection  theProjection,
-                                 OpenGl_FrameBuffer*           theReadDrawFbo,
                                  const Handle(OpenGl_Context)& theGlContext);
+
+  //! Runs path tracing (global illumination) kernel.
+  Standard_Boolean runPathtraceOut (Graphic3d_Camera::Projection  theProjection,
+                                    OpenGl_FrameBuffer*           theReadDrawFbo,
+                                    const Handle(OpenGl_Context)& theGlContext);
 
   //! Redraws the window using OpenGL/GLSL ray-tracing or path tracing.
   Standard_Boolean raytrace (const Standard_Integer        theSizeX,

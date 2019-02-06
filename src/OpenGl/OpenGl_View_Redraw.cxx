@@ -1092,15 +1092,16 @@ void OpenGl_View::renderStructs (Graphic3d_Camera::Projection theProjection,
 
   if (!toRenderGL)
   {
-    toRenderGL = !initRaytraceResources (aCtx) ||
-      !updateRaytraceGeometry (OpenGl_GUM_CHECK, myId, aCtx);
+    const Standard_Integer aSizeX = theReadDrawFbo != NULL ? theReadDrawFbo->GetVPSizeX() : myWindow->Width();
+    const Standard_Integer aSizeY = theReadDrawFbo != NULL ? theReadDrawFbo->GetVPSizeY() : myWindow->Height();
+
+    toRenderGL = !initRaytraceResources (aSizeX, aSizeY, aCtx)
+              || !updateRaytraceGeometry (OpenGl_GUM_CHECK, myId, aCtx);
 
     toRenderGL |= !myIsRaytraceDataValid; // if no ray-trace data use OpenGL
 
     if (!toRenderGL)
     {
-      const Standard_Integer aSizeX = theReadDrawFbo != NULL ? theReadDrawFbo->GetVPSizeX() : myWindow->Width();
-      const Standard_Integer aSizeY = theReadDrawFbo != NULL ? theReadDrawFbo->GetVPSizeY() : myWindow->Height();
       myOpenGlFBO ->InitLazy (aCtx, aSizeX, aSizeY, myFboColorFormat, myFboDepthFormat, 0);
 
       if (theReadDrawFbo != NULL)

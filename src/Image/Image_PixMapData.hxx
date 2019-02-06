@@ -38,7 +38,7 @@ public:
   }
 
   //! Initializer.
-  void Init (const Handle(NCollection_BaseAllocator)& theAlloc,
+  bool Init (const Handle(NCollection_BaseAllocator)& theAlloc,
              const Standard_Size                      theSizeBPP,
              const Standard_Size                      theSizeX,
              const Standard_Size                      theSizeY,
@@ -59,6 +59,16 @@ public:
       Allocate (mySize);
     }
     SetTopDown (TopToDown == 1);
+    return !IsEmpty();
+  }
+
+  //! Reset all values to zeros.
+  void ZeroData()
+  {
+    if (myData != NULL)
+    {
+      memset (myData, 0, mySize);
+    }
   }
 
   //! @return data pointer to requested row (first column).

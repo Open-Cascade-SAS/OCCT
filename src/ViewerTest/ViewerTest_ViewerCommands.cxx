@@ -10371,6 +10371,7 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
     theDI << "two-sided BSDF: " << (aParams.TwoSidedBsdfModels          ? "on" : "off") << "\n";
     theDI << "max radiance:   " <<  aParams.RadianceClampingValue                       << "\n";
     theDI << "nb tiles (iss): " <<  aParams.NbRayTracingTiles                           << "\n";
+    theDI << "tile size (iss):" <<  aParams.RayTracingTileSize << "x" << aParams.RayTracingTileSize << "\n";
     theDI << "shadingModel: ";
     switch (aView->ShadingModel())
     {
@@ -10812,6 +10813,27 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
       }
       aParams.ShowSamplingTiles = toEnable;
     }
+    else if (aFlag == "-tilesize")
+    {
+      if (toPrint)
+      {
+        theDI << aParams.RayTracingTileSize << " ";
+        continue;
+      }
+      else if (++anArgIter >= theArgNb)
+      {
+        std::cerr << "Error: wrong syntax at argument '" << anArg << "'\n";
+        return 1;
+      }
+
+      const Standard_Integer aTileSize = Draw::Atoi (theArgVec[anArgIter]);
+      if (aTileSize < 1)
+      {
+        std::cerr << "Error: invalid size of ISS tile " << aTileSize << ".\n";
+        return 1;
+      }
+      aParams.RayTracingTileSize = aTileSize;
+    }
     else if (aFlag == "-nbtiles")
     {
       if (toPrint)
@@ -10826,17 +10848,18 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
       }
 
       const Standard_Integer aNbTiles = Draw::Atoi (theArgVec[anArgIter]);
-
-      if (aNbTiles < 64)
+      if (aNbTiles < -1)
       {
         std::cerr << "Error: invalid number of ISS tiles " << aNbTiles << ".\n";
-        std::cerr << "Specify value in range [64, 1024].\n";
         return 1;
       }
-      else
+      else if (aNbTiles > 0
+            && (aNbTiles < 64
+             || aNbTiles > 1024))
       {
-        aParams.NbRayTracingTiles = aNbTiles;
+        std::cerr << "Warning: suboptimal number of ISS tiles " << aNbTiles << ". Recommended range: [64, 1024].\n";
       }
+      aParams.NbRayTracingTiles = aNbTiles;
     }
     else if (aFlag == "-env")
     {
@@ -12826,7 +12849,8 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "\n      '-iss          on|off'      Enables/disables adaptive screen sampling (PT mode)"
     "\n      '-issd         on|off'      Shows screen sampling distribution in ISS mode"
     "\n      '-maxrad       > 0.0'       Value used for clamping radiance estimation (PT mode)"
-    "\n      '-nbtiles      64..1024'    Specifies number of screen tiles in ISS mode"
+    "\n      '-tileSize     1..4096'     Specifies   size of screen tiles in ISS mode (32 by default)"
+    "\n      '-nbtiles      64..1024'    Specifies number of screen tiles per Redraw in ISS mode (256 by default)"
     "\n      '-rebuildGlsl  on|off'      Rebuild Ray-Tracing GLSL programs (for debugging)"
     "\n      '-shadingModel model'       Controls shading model from enumeration"
     "\n                                  color, flat, gouraud, phong"

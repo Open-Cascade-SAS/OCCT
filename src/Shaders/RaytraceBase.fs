@@ -101,6 +101,9 @@ uniform float uSceneEpsilon;
 
   //! OpenGL image storing offsets of sampled pixels blocks.
   coherent restrict layout(size2x32) uniform iimage2D uOffsetImage;
+
+  //! Screen space tile size.
+  uniform ivec2 uTileSize;
 #endif
 
 //! Top color of gradient background.
@@ -275,10 +278,9 @@ vec4 BackgroundColor()
 
   ivec2 aFragCoord = ivec2 (gl_FragCoord.xy);
 
-  ivec2 aTileXY = imageLoad (uOffsetImage, ivec2 (aFragCoord.x / BLOCK_SIZE,
-                                                  aFragCoord.y / BLOCK_SIZE)).xy;
+  ivec2 aTileXY = imageLoad (uOffsetImage, aFragCoord / uTileSize).xy * uTileSize;
 
-  aTileXY.y += aFragCoord.y % min (uWinSizeY - aTileXY.y, BLOCK_SIZE);
+  aTileXY.y += aFragCoord.y % min (uWinSizeY - aTileXY.y, uTileSize.y);
 
   return mix (uBackColorBot, uBackColorTop, float (aTileXY.y) / uWinSizeY);
 

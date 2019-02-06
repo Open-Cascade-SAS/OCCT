@@ -7,5 +7,6 @@ Image_Format.hxx
 Image_PixMap.cxx
 Image_PixMap.hxx
 Image_PixMapData.hxx
+Image_PixMapTypedData.hxx
 Image_VideoRecorder.cxx
 Image_VideoRecorder.hxx

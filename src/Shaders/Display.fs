@@ -10,6 +10,12 @@
   //! OpenGL image storing variance of sampled pixels blocks.
   volatile restrict layout(size1x32) uniform iimage2D uVarianceImage;
 
+  //! Scale factor used to quantize visual error (float) into signed integer.
+  uniform float uVarianceScaleFactor;
+
+  //! Screen space tile size.
+  uniform ivec2 uTileSize;
+
 #else // ADAPTIVE_SAMPLING
 
   //! Input image.
@@ -41,9 +47,6 @@ out vec4 OutColor;
 
 //! RGB weight factors to calculate luminance.
 #define LUMA vec3 (0.2126f, 0.7152f, 0.0722f)
-
-//! Scale factor used to quantize visual error.
-#define SCALE_FACTOR 1.0e6f
 
 // =======================================================================
 // function : ToneMappingFilmic
@@ -113,7 +116,8 @@ void main (void)
 
   // accumulate visual error to current block; estimated error is written only
   // after the first 40 samples and path length has reached 10 bounces or more
-  imageAtomicAdd (uVarianceImage, ivec2 (aPixel / vec2 (BLOCK_SIZE)), int (mix (SCALE_FACTOR, anError * SCALE_FACTOR, aColor.w > 40.f)));
+  imageAtomicAdd (uVarianceImage, aPixel / uTileSize,
+                  int (mix (uVarianceScaleFactor, anError * uVarianceScaleFactor, aColor.w > 40.f)));
 
   if (uDebugAdaptive == 0) // normal rendering
   {
