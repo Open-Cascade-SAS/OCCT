@@ -85,6 +85,16 @@ public:
   //! Compiles the shader object.
   Standard_EXPORT Standard_Boolean Compile (const Handle(OpenGl_Context)& theCtx);
 
+  //! Wrapper for compiling shader object with verbose printing on error.
+  //! @param theCtx bound OpenGL context
+  //! @param theSource source code to load
+  //! @param theIsVerbose flag to print log on error
+  //! @param theToPrintSource flag to print source code on error
+  Standard_EXPORT Standard_Boolean LoadAndCompile (const Handle(OpenGl_Context)& theCtx,
+                                                   const TCollection_AsciiString& theSource,
+                                                   bool theIsVerbose = true,
+                                                   bool theToPrintSource = true);
+
   //! Fetches information log of the last compile operation.
   Standard_EXPORT Standard_Boolean FetchInfoLog (const Handle(OpenGl_Context)& theCtx,
                                                  TCollection_AsciiString&      theLog);

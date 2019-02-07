@@ -165,24 +165,6 @@ OpenGl_ShaderProgram::OpenGl_ShaderProgram (const Handle(Graphic3d_ShaderProgram
   }
 }
 
-//! Puts line numbers to the output of GLSL program source code.
-static TCollection_AsciiString putLineNumbers (const TCollection_AsciiString& theSource)
-{
-  std::stringstream aStream;
-  theSource.Print (aStream);
-  std::string aLine;
-  Standard_Integer aLineNumber = 1;
-  TCollection_AsciiString aResultSource;
-  while (std::getline (aStream, aLine))
-  {
-    TCollection_AsciiString anAsciiString = TCollection_AsciiString (aLine.c_str());
-    anAsciiString.Prepend (TCollection_AsciiString ("\n") + TCollection_AsciiString (aLineNumber) + ": ");
-    aResultSource += anAsciiString;
-    aLineNumber++;
-  }
-  return aResultSource;
-}
-
 // =======================================================================
 // function : Initialize
 // purpose  : Initializes program object with the list of shader objects
@@ -389,38 +371,9 @@ Standard_Boolean OpenGl_ShaderProgram::Initialize (const Handle(OpenGl_Context)&
                                           + Shaders_Declarations_glsl      // common declarations (global constants and Vertex Shader inputs)
                                           + Shaders_DeclarationsImpl_glsl
                                           + anIter.Value()->Source();      // the source code itself (defining main() function)
-    if (!aShader->LoadSource (theCtx, aSource))
+    if (!aShader->LoadAndCompile (theCtx, aSource))
     {
-      theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH, aSource);
-      theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH, "Error! Failed to set shader source");
-      aShader->Release (theCtx.operator->());
       return Standard_False;
-    }
-
-    if (!aShader->Compile (theCtx))
-    {
-      theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH, putLineNumbers (aSource));
-      TCollection_AsciiString aLog;
-      aShader->FetchInfoLog (theCtx, aLog);
-      if (aLog.IsEmpty())
-      {
-        aLog = "Compilation log is empty.";
-      }
-      theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
-                           TCollection_ExtendedString ("Failed to compile shader object. Compilation log:\n") + aLog);
-      aShader->Release (theCtx.operator->());
-      return Standard_False;
-    }
-    else if (theCtx->caps->glslWarnings)
-    {
-      TCollection_AsciiString aLog;
-      aShader->FetchInfoLog (theCtx, aLog);
-      if (!aLog.IsEmpty()
-       && !aLog.IsEqual ("No errors.\n"))
-      {
-        theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_LOW,
-                             TCollection_ExtendedString ("Shader compilation log:\n") + aLog);
-      }
     }
 
     if (theCtx->caps->glslDumpLevel)
@@ -475,26 +428,7 @@ Standard_Boolean OpenGl_ShaderProgram::Initialize (const Handle(OpenGl_Context)&
 
   if (!Link (theCtx))
   {
-    TCollection_AsciiString aLog;
-    FetchInfoLog (theCtx, aLog);
-    if (aLog.IsEmpty())
-    {
-      aLog = "Linker log is empty.";
-    }
-    theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
-                         TCollection_ExtendedString ("Failed to link program object! Linker log:\n") + aLog);
     return Standard_False;
-  }
-  else if (theCtx->caps->glslWarnings)
-  {
-    TCollection_AsciiString aLog;
-    FetchInfoLog (theCtx, aLog);
-    if (!aLog.IsEmpty()
-     && !aLog.IsEqual ("No errors.\n"))
-    {
-      theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_LOW,
-                           TCollection_ExtendedString ("GLSL linker log:\n") + aLog);
-    }
   }
 
   // set uniform defaults
@@ -603,7 +537,7 @@ Standard_Boolean OpenGl_ShaderProgram::DetachShader (const Handle(OpenGl_Context
 // function : Link
 // purpose  : Links the program object
 // =======================================================================
-Standard_Boolean OpenGl_ShaderProgram::Link (const Handle(OpenGl_Context)& theCtx)
+Standard_Boolean OpenGl_ShaderProgram::link (const Handle(OpenGl_Context)& theCtx)
 {
   if (myProgramID == NO_PROGRAM)
   {
@@ -623,6 +557,44 @@ Standard_Boolean OpenGl_ShaderProgram::Link (const Handle(OpenGl_Context)& theCt
     myStateLocations[aVar] = GetUniformLocation (theCtx, PredefinedKeywords[aVar]);
   }
   return Standard_True;
+}
+
+// =======================================================================
+// function : Link
+// purpose  :
+// =======================================================================
+Standard_Boolean OpenGl_ShaderProgram::Link (const Handle(OpenGl_Context)& theCtx,
+                                             bool theIsVerbose)
+{
+  if (!theIsVerbose)
+  {
+    return link (theCtx);
+  }
+
+  if (!link (theCtx))
+  {
+    TCollection_AsciiString aLog;
+    FetchInfoLog (theCtx, aLog);
+    if (aLog.IsEmpty())
+    {
+      aLog = "Linker log is empty.";
+    }
+    theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
+                         TCollection_AsciiString ("Failed to link program object! Linker log:\n") + aLog);
+    return false;
+  }
+  else if (theCtx->caps->glslWarnings)
+  {
+    TCollection_AsciiString aLog;
+    FetchInfoLog (theCtx, aLog);
+    if (!aLog.IsEmpty()
+     && !aLog.IsEqual ("No errors.\n"))
+    {
+      theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_LOW,
+                           TCollection_AsciiString ("GLSL linker log:\n") + aLog);
+    }
+  }
+  return true;
 }
 
 // =======================================================================

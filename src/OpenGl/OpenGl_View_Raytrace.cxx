@@ -1457,27 +1457,10 @@ Standard_Boolean OpenGl_View::initRaytraceResources (const Handle(OpenGl_Context
       myPostFSAAShaderSource.SetPrefix (aPrefixString);
       myOutImageShaderSource.SetPrefix (aPrefixString);
 
-      if (!myRaytraceShader->LoadSource (theGlContext, myRaytraceShaderSource.Source())
-       || !myPostFSAAShader->LoadSource (theGlContext, myPostFSAAShaderSource.Source())
-       || !myOutImageShader->LoadSource (theGlContext, myOutImageShaderSource.Source()))
+      if (!myRaytraceShader->LoadAndCompile (theGlContext, myRaytraceShaderSource.Source())
+       || !myPostFSAAShader->LoadAndCompile (theGlContext, myPostFSAAShaderSource.Source())
+       || !myOutImageShader->LoadAndCompile (theGlContext, myOutImageShaderSource.Source()))
       {
-        return safeFailBack ("Failed to load source into ray-tracing fragment shaders", theGlContext);
-      }
-
-      TCollection_AsciiString aLog;
-
-      if (!myRaytraceShader->Compile (theGlContext)
-       || !myPostFSAAShader->Compile (theGlContext)
-       || !myOutImageShader->Compile (theGlContext))
-      {
-#ifdef RAY_TRACE_PRINT_INFO
-        myRaytraceShader->FetchInfoLog (theGlContext, aLog);
-
-        if (!aLog.IsEmpty())
-        {
-          std::cout << "Failed to compile ray-tracing shader: " << aLog << "\n";
-        }
-#endif
         return safeFailBack ("Failed to compile ray-tracing fragment shaders", theGlContext);
       }
 
@@ -1489,14 +1472,6 @@ Standard_Boolean OpenGl_View::initRaytraceResources (const Handle(OpenGl_Context
        || !myPostFSAAProgram->Link (theGlContext)
        || !myOutImageProgram->Link (theGlContext))
       {
-#ifdef RAY_TRACE_PRINT_INFO
-        myRaytraceProgram->FetchInfoLog (theGlContext, aLog);
-
-        if (!aLog.IsEmpty())
-        {
-          std::cout << "Failed to compile ray-tracing shader: " << aLog << "\n";
-        }
-#endif
         return safeFailBack ("Failed to initialize vertex attributes for ray-tracing program", theGlContext);
       }
     }

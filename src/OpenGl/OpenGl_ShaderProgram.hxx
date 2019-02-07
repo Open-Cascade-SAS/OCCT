@@ -150,6 +150,12 @@ public:
   //! List of pre-defined OCCT state uniform variables.
   static Standard_CString PredefinedKeywords[OpenGl_OCCT_NUMBER_OF_STATE_VARIABLES];
 
+  //! Wrapper for compiling shader object with verbose printing on error.
+  Standard_EXPORT static bool compileShaderVerbose (const Handle(OpenGl_Context)& theCtx,
+                                                    const Handle(OpenGl_ShaderObject)& theShader,
+                                                    const TCollection_AsciiString& theSource,
+                                                    bool theToPrintSource = true);
+
   //! Creates uninitialized shader program.
   //!
   //! WARNING! This constructor is not intended to be called anywhere but from OpenGl_ShaderManager::Create().
@@ -194,7 +200,10 @@ public:
                                                const Graphic3d_ShaderObjectList& theShaders);
 
   //! Links the program object.
-  Standard_EXPORT Standard_Boolean Link (const Handle(OpenGl_Context)& theCtx);
+  //! @param theCtx bound OpenGL context
+  //! @param theIsVerbose flag to print log on error
+  Standard_EXPORT Standard_Boolean Link (const Handle(OpenGl_Context)& theCtx,
+                                         bool theIsVerbose = true);
 
   //! Fetches information log of the last link operation.
   Standard_EXPORT Standard_Boolean FetchInfoLog (const Handle(OpenGl_Context)& theCtx,
@@ -572,6 +581,9 @@ protected:
   {
     return --myShareCount == 0;
   }
+
+  //! Links the program object.
+  Standard_EXPORT Standard_Boolean link (const Handle(OpenGl_Context)& theCtx);
 
 protected:
 

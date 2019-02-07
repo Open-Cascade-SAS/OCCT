@@ -14,17 +14,37 @@
 // commercial license or contractual agreement.
 
 #include <Graphic3d_ShaderObject.hxx>
+
 #include <OpenGl_Context.hxx>
 #include <OpenGl_ShaderObject.hxx>
 #include <OSD_Path.hxx>
 #include <Standard_Assert.hxx>
 #include <TCollection_AsciiString.hxx>
+#include <TCollection_ExtendedString.hxx>
 
 #ifdef _WIN32
   #include <malloc.h> // for alloca()
 #endif
 
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_ShaderObject,OpenGl_Resource)
+
+//! Puts line numbers to the output of GLSL program source code.
+static TCollection_AsciiString putLineNumbers (const TCollection_AsciiString& theSource)
+{
+  std::stringstream aStream;
+  theSource.Print (aStream);
+  std::string aLine;
+  Standard_Integer aLineNumber = 1;
+  TCollection_AsciiString aResultSource;
+  while (std::getline (aStream, aLine))
+  {
+    TCollection_AsciiString anAsciiString = TCollection_AsciiString (aLine.c_str());
+    anAsciiString.Prepend (TCollection_AsciiString ("\n") + TCollection_AsciiString (aLineNumber) + ": ");
+    aResultSource += anAsciiString;
+    aLineNumber++;
+  }
+  return aResultSource;
+}
 
 // =======================================================================
 // function : CreateFromSource
@@ -166,6 +186,63 @@ OpenGl_ShaderObject::OpenGl_ShaderObject (GLenum theType)
 OpenGl_ShaderObject::~OpenGl_ShaderObject()
 {
   Release (NULL);
+}
+
+// =======================================================================
+// function : LoadAndCompile
+// purpose  :
+// =======================================================================
+Standard_Boolean OpenGl_ShaderObject::LoadAndCompile (const Handle(OpenGl_Context)& theCtx,
+                                                      const TCollection_AsciiString& theSource,
+                                                      bool theIsVerbose,
+                                                      bool theToPrintSource)
+{
+  if (!theIsVerbose)
+  {
+    return LoadSource (theCtx, theSource)
+        && Compile (theCtx);
+  }
+
+  if (!LoadSource (theCtx, theSource))
+  {
+    if (theToPrintSource)
+    {
+      theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH, theSource);
+    }
+    theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH, "Error! Failed to set shader source");
+    Release (theCtx.operator->());
+    return false;
+  }
+
+  if (!Compile (theCtx))
+  {
+    if (theToPrintSource)
+    {
+      theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH, putLineNumbers (theSource));
+    }
+    TCollection_AsciiString aLog;
+    FetchInfoLog (theCtx, aLog);
+    if (aLog.IsEmpty())
+    {
+      aLog = "Compilation log is empty.";
+    }
+    theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
+                         TCollection_AsciiString ("Failed to compile shader object. Compilation log:\n") + aLog);
+    Release (theCtx.operator->());
+    return false;
+  }
+  else if (theCtx->caps->glslWarnings)
+  {
+    TCollection_AsciiString aLog;
+    FetchInfoLog (theCtx, aLog);
+    if (!aLog.IsEmpty()
+     && !aLog.IsEqual ("No errors.\n"))
+    {
+      theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_LOW,
+                           TCollection_AsciiString ("Shader compilation log:\n") + aLog);
+    }
+  }
+  return true;
 }
 
 // =======================================================================
