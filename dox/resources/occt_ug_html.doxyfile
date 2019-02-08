@@ -16,7 +16,6 @@ WARNINGS               = YES
 WARN_IF_UNDOCUMENTED   = YES
 WARN_IF_DOC_ERROR      = YES
 WARN_NO_PARAMDOC       = NO
-WARN_FORMAT            = \\$file:\$line: \$text\
 INPUT_ENCODING         = UTF-8
 FILE_PATTERNS          = *.md *.dox 
 RECURSIVE              = YES
@@ -56,6 +55,6 @@ USE_MATHJAX            = YES
 MATHJAX_FORMAT         = HTML-CSS
 
 # Define alias for inserting images in uniform way (both HTML and PDF)
-ALIASES += figure{1}="\image html \1 \n"
-ALIASES += figure{2}="\image html \1 \2 \n"
-ALIASES += figure{3}="\image html \1 \2 \n"
+ALIASES += figure{1}="\image html \1"
+ALIASES += figure{2}="\image html \1 \2"
+ALIASES += figure{3}="\image html \1 \2"

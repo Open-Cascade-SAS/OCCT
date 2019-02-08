@@ -89,6 +89,14 @@ file (APPEND ${OCCT_CONFIG_FOR_DOXYGEN} "\nEXTERNAL_SEARCH        = NO")
 # Formula options
 file (APPEND ${OCCT_CONFIG_FOR_DOXYGEN} "\nMATHJAX_RELPATH        = ${3RDPARTY_MATHJAX_RELATIVE_PATH}")
 
+# If MSVC is used as build system, change warning format to the one recognized by MSVC
+if (MSVC)
+  file (APPEND ${OCCT_CONFIG_FOR_DOXYGEN} "\nWARN_FORMAT            = \"$file($line): $text\"")
+endif()
+
+# Avoid Doxygen parsing messages in the build log
+file (APPEND ${OCCT_CONFIG_FOR_DOXYGEN} "\nQUIET                  = YES")
+
 # Copy index file to provide fast access to HTML documentation
 file(COPY "${OCCT_OVERVIEW_RESOURCE_DIR}/index.html" DESTINATION "${OCCT_GENERATED_OVERVIEW_DIR}")
 

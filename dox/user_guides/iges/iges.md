@@ -178,10 +178,10 @@ if  (!Interface_Static::SetRVal ("read.maxprecision.val",0.1))
 Default value is 1.  
 
 <h4>read.stdsameparameter.mode</h4>
-defines the using of  *BRepLib::SameParameter*. Its possible values are:  
-* 0 (Off) -- *BRepLib::SameParameter* is not called,  
-* 1 (On) -- *BRepLib::SameParameter* is called.  
-*BRepLib::SameParameter* is used through  *ShapeFix_Edge::SameParameter*. It ensures that the resulting edge will have the  lowest tolerance taking pcurves either unmodified from the IGES file or  modified by *BRepLib::SameParameter*.  
+defines the using of  *BRepLib\::SameParameter*. Its possible values are:  
+* 0 (Off) -- *BRepLib\::SameParameter* is not called,  
+* 1 (On) -- *BRepLib\::SameParameter* is called.  
+*BRepLib\::SameParameter* is used through  *ShapeFix_Edge\::SameParameter*. It ensures that the resulting edge will have the  lowest tolerance taking pcurves either unmodified from the IGES file or  modified by *BRepLib\::SameParameter*.  
 Read this parameter  with:  
 ~~~~~
 Standard_Integer mv =  Interface_Static::IVal("read.stdsameparameter.mode"); 
@@ -202,7 +202,7 @@ The processor also  decides to re-compute either the 3D or the 2D curve even if 
   * the number of sub-curves in  the 2D curve is different from the number of sub-curves in the 3D curve. This  can be either due to different numbers of sub-curves given in the IGES file or  because of splitting of curves during translation. 
   * 3D or 2D curve is a Circular  Arc (entity type 100) starting and ending in the same point (note that this  case is incorrect according to the IGES standard).
   
-The parameter  *read.surfacecurve.mode* defines which curve (3D or 2D) is used for re-computing  the other one:  
+The parameter  *read.surfacecurve.mode* defines which curve (3D or 2D) is used for re-computing  the other one:
 * *Default(0)* use  the preference flag value in the entity's Parameter Data section. The flag  values are:  
   * 0: no preference given, 
   * 1: use 2D for 142 entities  and 3D for 141 entities, 
@@ -400,12 +400,12 @@ reader.PrintTransferInfo  (failsonly, mode);
 ~~~~~
 displays the messages  that appeared during the last invocation of *Transfer* or *TransferRoots*.  
 
-If *failsonly* is  *IFSelect_FailOnly*, only fail messages will be output, if it is  *IFSelect_FailAndWarn*, all messages will be output. Parameter “mode” can have  *IFSelect_xxx* values where *xxx* can be:  
-* *GeneralCount* -- gives general statistics  on the transfer (number of translated IGES entities, number of fails and  warnings, etc)  
-* *CountByItem* -- gives the number of IGES  entities with their types per message. 
-* *ListByItem* -- gives the number of IGES  entities with their type and DE numbers per message.  
-* *ResultCount*  -- gives the number of  resulting OCCT shapes per type.  
-* *Mapping* -- gives mapping between  roots of the IGES file and the resulting OCCT shape per IGES and OCCT type.
+If *failsonly* is  *IFSelect_FailOnly*, only fail messages will be output, if it is  *IFSelect_FailAndWarn*, all messages will be output. Parameter “mode” can have  *IFSelect_xxx* values where *xxx* can be:
+  * *GeneralCount* -- gives general statistics  on the transfer (number of translated IGES entities, number of fails and  warnings, etc)  
+  * *CountByItem* -- gives the number of IGES  entities with their types per message. 
+  * *ListByItem* -- gives the number of IGES  entities with their type and DE numbers per message.  
+  * *ResultCount*  -- gives the number of  resulting OCCT shapes per type.  
+  * *Mapping* -- gives mapping between  roots of the IGES file and the resulting OCCT shape per IGES and OCCT type.
  
 @subsection occt_iges_2_4 Mapping of IGES  entities to Open CASCADE Technology shapes
 
