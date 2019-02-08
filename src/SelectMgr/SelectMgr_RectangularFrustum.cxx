@@ -537,10 +537,17 @@ Standard_Boolean SelectMgr_RectangularFrustum::Overlaps (const TColgp_Array1OfPn
   else if (theSensType == Select3D_TOS_INTERIOR)
   {
     gp_Vec aPolyNorm (gp_XYZ (RealLast(), RealLast(), RealLast()));
-    if (!hasOverlap (theArrayOfPnts, aPolyNorm)
-     || !segmentPlaneIntersection (aPolyNorm,
-                                   theArrayOfPnts.First(),
-                                   thePickResult))
+    if (!hasOverlap (theArrayOfPnts, aPolyNorm))
+    {
+      return Standard_False;
+    }
+
+    if (aPolyNorm.Magnitude() <= Precision::Confusion())
+    {
+      // treat degenerated polygon as point
+      return Overlaps (theArrayOfPnts.First(), thePickResult);
+    }
+    else if (!segmentPlaneIntersection (aPolyNorm, theArrayOfPnts.First(), thePickResult))
     {
       return Standard_False;
     }
