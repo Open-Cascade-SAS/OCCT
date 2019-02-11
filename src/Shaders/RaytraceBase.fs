@@ -1,5 +1,7 @@
 #ifdef ADAPTIVE_SAMPLING
   #extension GL_ARB_shader_image_load_store : require
+#endif
+#ifdef ADAPTIVE_SAMPLING_ATOMIC
   #extension GL_NV_shader_atomic_float : require
 #endif
 
@@ -97,10 +99,15 @@ uniform float uSceneEpsilon;
 
 #ifdef ADAPTIVE_SAMPLING
   //! OpenGL image used for accumulating rendering result.
-  volatile restrict layout(size1x32) uniform image2D  uRenderImage;
+  volatile restrict layout(r32f) uniform image2D  uRenderImage;
 
+#ifdef ADAPTIVE_SAMPLING_ATOMIC
   //! OpenGL image storing offsets of sampled pixels blocks.
-  coherent restrict layout(size2x32) uniform iimage2D uOffsetImage;
+  coherent restrict layout(rg32i) uniform iimage2D uOffsetImage;
+#else
+  //! OpenGL image defining per-tile amount of samples.
+  volatile restrict layout(r32i) uniform iimage2D uTilesImage;
+#endif
 
   //! Screen space tile size.
   uniform ivec2 uTileSize;
@@ -274,7 +281,7 @@ vec3 InverseDirection (in vec3 theInput)
 //=======================================================================
 vec4 BackgroundColor()
 {
-#ifdef ADAPTIVE_SAMPLING
+#ifdef ADAPTIVE_SAMPLING_ATOMIC
 
   ivec2 aFragCoord = ivec2 (gl_FragCoord.xy);
 

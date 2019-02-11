@@ -18,6 +18,9 @@
 #include <Graphic3d_RenderingParams.hxx>
 #include <TCollection_ExtendedString.hxx>
 
+// define to debug algorithm values
+//#define RAY_TRACE_PRINT_DEBUG_INFO
+
 //=======================================================================
 //function : OpenGl_TileSampler
 //purpose  :
@@ -68,6 +71,8 @@ void OpenGl_TileSampler::GrabVarianceMap (const Handle(OpenGl_Context)& theConte
     for (Standard_Size aRowIter = 0; aRowIter < myVarianceMap.SizeY; ++aRowIter)
     {
       const int aRawValue = myVarianceRaw.Value (aRowIter, aColIter);
+      Standard_RangeError_Raise_if (aRawValue < 0, "Internal Error: signed integer overflow within OpenGl_TileSampler");
+
       float& aTile = myVarianceMap.ChangeValue (aRowIter, aColIter);
       aTile = aFactor * float(aRawValue);
       aTile *= 1.0f / tileArea ((int )aColIter, (int )aRowIter); // average error over the tile
@@ -86,6 +91,29 @@ void OpenGl_TileSampler::GrabVarianceMap (const Handle(OpenGl_Context)& theConte
     {
       myMarginalMap[aX] += myMarginalMap[aX - 1];
     }
+  }
+
+#ifdef RAY_TRACE_PRINT_DEBUG_INFO
+  dumpMap (std::cerr, myVarianceRaw, "OpenGl_TileSampler, Variance map");
+#endif
+}
+
+//=======================================================================
+//function : dumpMap
+//purpose  :
+//=======================================================================
+void OpenGl_TileSampler::dumpMap (std::ostream& theStream,
+                                  const Image_PixMapTypedData<int>& theMap,
+                                  const char* theTitle) const
+{
+  theStream << theTitle << " " << theMap.SizeX << "x" << theMap.SizeY << " (tile " << myTileSize << "x" << myTileSize << ")" << ":\n";
+  for (Standard_Size aRowIter = 0; aRowIter < theMap.SizeY; ++aRowIter)
+  {
+    for (Standard_Size aColIter = 0; aColIter < theMap.SizeX; ++aColIter)
+    {
+      theStream << " [" << theMap.Value (aRowIter, aColIter) << "]";
+    }
+    theStream << "\n";
   }
 }
 
@@ -148,6 +176,10 @@ void OpenGl_TileSampler::SetSize (const Graphic3d_RenderingParams& theParams,
     myTiles.Init (anAlloc, aNbTilesX, aNbTilesY);
     myTiles.Init (1);
 
+    myTileSamples.SetTopDown (true);
+    myTileSamples.Init (myTiles.Allocator(), aNbTilesX, aNbTilesY);
+    myTileSamples.Init (1);
+
     myVarianceMap.SetTopDown (true);
     myVarianceMap.Init (myTiles.Allocator(), myTiles.SizeX, myTiles.SizeY);
     myVarianceMap.Init (0.0f);
@@ -185,18 +217,28 @@ void OpenGl_TileSampler::SetSize (const Graphic3d_RenderingParams& theParams,
 }
 
 //=======================================================================
-//function : UploadOffsets
+//function : upload
 //purpose  :
 //=======================================================================
-bool OpenGl_TileSampler::UploadOffsets (const Handle(OpenGl_Context)& theContext,
-                                        const Handle(OpenGl_Texture)& theOffsetsTexture,
-                                        const bool theAdaptive)
+bool OpenGl_TileSampler::upload (const Handle(OpenGl_Context)& theContext,
+                                 const Handle(OpenGl_Texture)& theSamplesTexture,
+                                 const Handle(OpenGl_Texture)& theOffsetsTexture,
+                                 const bool theAdaptive)
 {
   if (myTiles.IsEmpty())
   {
     return false;
   }
 
+  // Fill in myTiles map with a number of passes (samples) per tile.
+  // By default, all tiles receive 1 sample, but basing on visual error level (myVarianceMap),
+  // this amount is re-distributed from tiles having smallest error take 0 samples to tiles having larger error.
+  // This redistribution is smoothed by Halton sampler.
+  //
+  // myOffsets map is filled as redirection of currently rendered tile to another one
+  // so that tiles having smallest error level have 0 tiles redirected from,
+  // while tiles with great error level might be rendered more than 1.
+  // This map is used within single-pass rendering method requiring atomic float operation support from hardware.
   myTiles.Init (0);
   Image_PixMapTypedData<Graphic3d_Vec2i>& anOffsets = theAdaptive ? myOffsetsShrunk : myOffsets;
   anOffsets.Init (Graphic3d_Vec2i (-1, -1));
@@ -210,7 +252,49 @@ bool OpenGl_TileSampler::UploadOffsets (const Handle(OpenGl_Context)& theContext
     }
   }
 
+#ifdef RAY_TRACE_PRINT_DEBUG_INFO
+  dumpMap (std::cerr, myTiles, "OpenGl_TileSampler, Samples");
+#endif
+
+  // Fill in myTileSamples map from myTiles with an actual number of Samples per Tile as multiple of Tile Area
+  // (e.g. tile that should be rendered ones will have amount of samples equal to its are 4x4=16).
+  // This map is used for discarding tile fragments having <=0 of samples left within multi-pass rendering.
+  myTileSamples.Init (0);
+  for (Standard_Size aRowIter = 0; aRowIter < myTiles.SizeY; ++aRowIter)
+  {
+    for (Standard_Size aColIter = 0; aColIter < myTiles.SizeX; ++aColIter)
+    {
+      myTileSamples.ChangeValue (aRowIter, aColIter) = tileArea ((int )aColIter, (int )aRowIter) * myTiles.Value (aRowIter, aColIter);
+    }
+  }
+
   bool hasErrors = false;
+
+  if (!theSamplesTexture.IsNull())
+  {
+    theSamplesTexture->Bind (theContext);
+    theContext->core11fwd->glPixelStorei (GL_UNPACK_ALIGNMENT,  1);
+  #if !defined(GL_ES_VERSION_2_0)
+    theContext->core11fwd->glPixelStorei (GL_UNPACK_ROW_LENGTH, 0);
+  #endif
+    if (theSamplesTexture->SizeX() == (int )myTileSamples.SizeX
+     && theSamplesTexture->SizeY() == (int )myTileSamples.SizeY)
+    {
+      theContext->core11fwd->glTexSubImage2D (GL_TEXTURE_2D, 0, 0, 0, (int )myTileSamples.SizeX, (int )myTileSamples.SizeY, GL_RED_INTEGER, GL_INT, myTileSamples.Data());
+      if (theContext->core11fwd->glGetError() != GL_NO_ERROR)
+      {
+        hasErrors = true;
+        theContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_MEDIUM,
+                                 "Error! Failed to upload tile samples map on the GPU");
+      }
+    }
+    else
+    {
+      hasErrors = true;
+    }
+    theSamplesTexture->Unbind (theContext);
+  }
+
   if (!theOffsetsTexture.IsNull())
   {
     if (theOffsetsTexture->SizeX() != (int )anOffsets.SizeX

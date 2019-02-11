@@ -20,6 +20,26 @@ uniform int uAccumSamples;
 //! Decreases noise level, but introduces some bias.
 uniform float uMaxRadiance = 50.f;
 
+#ifdef ADAPTIVE_SAMPLING
+//! Wrapper over imageLoad()+imageStore() having similar syntax as imageAtomicAdd().
+//! Modifies one component of 3Wx2H uRenderImage:
+//! |RGL| Red, Green, Luminance
+//! |SBH| Samples, Blue, Hit time transformed into OpenGL NDC space
+//! Returns previous value of the component.
+float addRenderImageComp (in ivec2 theFrag, in ivec2 theComp, in float theVal)
+{
+  ivec2 aCoord = ivec2 (3 * theFrag.x + theComp.x,
+                        2 * theFrag.y + theComp.y);
+#ifdef ADAPTIVE_SAMPLING_ATOMIC
+  return imageAtomicAdd (uRenderImage, aCoord, theVal);
+#else
+  float aVal = imageLoad (uRenderImage, aCoord).x;
+  imageStore (uRenderImage, aCoord, vec4 (aVal + theVal));
+  return aVal;
+#endif
+}
+#endif
+
 // =======================================================================
 // function : main
 // purpose  :
@@ -38,6 +58,7 @@ void main (void)
 
 #ifdef ADAPTIVE_SAMPLING
 
+#ifdef ADAPTIVE_SAMPLING_ATOMIC
   ivec2 aTileXY = imageLoad (uOffsetImage, aFragCoord / uTileSize).xy * uTileSize;
   if (aTileXY.x < 0) { discard; }
 
@@ -46,6 +67,13 @@ void main (void)
 
   aFragCoord.x = aTileXY.x + (aFragCoord.x % aRealBlockSize.x);
   aFragCoord.y = aTileXY.y + (aFragCoord.y % aRealBlockSize.y);
+#else
+  int aNbTileSamples = imageAtomicAdd (uTilesImage, aFragCoord / uTileSize, int(-1));
+  if (aNbTileSamples <= 0)
+  {
+    discard;
+  }
+#endif
 
 #endif // ADAPTIVE_SAMPLING
 
@@ -66,9 +94,7 @@ void main (void)
 
 #else
 
-  float aNbSamples = imageAtomicAdd (uRenderImage, ivec2 (3 * aFragCoord.x + 0,
-                                                          2 * aFragCoord.y + 1), 1.0);
-
+  float aNbSamples = addRenderImageComp (aFragCoord, ivec2 (0, 1), 1.0);
   vec4 aColor = PathTrace (aRay, aInvDirect, int (aNbSamples));
 
 #endif
@@ -83,19 +109,14 @@ void main (void)
 #ifdef ADAPTIVE_SAMPLING
 
   // accumulate RGB color and depth
-  imageAtomicAdd (uRenderImage, ivec2 (3 * aFragCoord.x + 0,
-                                       2 * aFragCoord.y + 0), aColor.r);
-  imageAtomicAdd (uRenderImage, ivec2 (3 * aFragCoord.x + 1,
-                                       2 * aFragCoord.y + 0), aColor.g);
-  imageAtomicAdd (uRenderImage, ivec2 (3 * aFragCoord.x + 1,
-                                       2 * aFragCoord.y + 1), aColor.b);
-  imageAtomicAdd (uRenderImage, ivec2 (3 * aFragCoord.x + 2,
-                                       2 * aFragCoord.y + 1), aColor.w);
+  addRenderImageComp (aFragCoord, ivec2 (0, 0), aColor.r);
+  addRenderImageComp (aFragCoord, ivec2 (1, 0), aColor.g);
+  addRenderImageComp (aFragCoord, ivec2 (1, 1), aColor.b);
+  addRenderImageComp (aFragCoord, ivec2 (2, 1), aColor.w);
 
   if (int (aNbSamples) % 2 == 0) // accumulate luminance for even samples only
   {
-    imageAtomicAdd (uRenderImage, ivec2 (3 * aFragCoord.x + 2,
-                                         2 * aFragCoord.y + 0), dot (LUMA, aColor.rgb));
+    addRenderImageComp (aFragCoord, ivec2 (2, 0), dot (LUMA, aColor.rgb));
   }
 
 #else

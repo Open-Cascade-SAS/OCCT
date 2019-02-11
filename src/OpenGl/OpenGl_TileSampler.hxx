@@ -74,6 +74,20 @@ public:
   //! Maximum viewport for rendering using offsets texture.
   Graphic3d_Vec2i OffsetTilesViewportMax() const { return NbOffsetTilesMax() * myTileSize; }
 
+  //! Return maximum number of samples per tile.
+  int MaxTileSamples() const
+  {
+    int aNbSamples = 0;
+    for (Standard_Size aRowIter = 0; aRowIter < myTiles.SizeY; ++aRowIter)
+    {
+      for (Standard_Size aColIter = 0; aColIter < myTiles.SizeX; ++aColIter)
+      {
+        aNbSamples = Max (aNbSamples, myTiles.Value (aRowIter, aColIter));
+      }
+    }
+    return aNbSamples;
+  }
+
   //! Specifies size of ray-tracing viewport and recomputes tile size.
   Standard_EXPORT void SetSize (const Graphic3d_RenderingParams& theParams,
                                 const Graphic3d_Vec2i& theSize);
@@ -86,10 +100,21 @@ public:
   //! Resets (restart) tile sampler to initial state.
   void Reset() { myLastSample = 0; }
 
+  //! Uploads tile samples to the given OpenGL texture.
+  bool UploadSamples (const Handle(OpenGl_Context)& theContext,
+                      const Handle(OpenGl_Texture)& theSamplesTexture,
+                      const bool theAdaptive)
+  {
+    return upload (theContext, theSamplesTexture, Handle(OpenGl_Texture)(), theAdaptive);
+  }
+
   //! Uploads offsets of sampled tiles to the given OpenGL texture.
-  Standard_EXPORT bool UploadOffsets (const Handle(OpenGl_Context)& theContext,
-                                      const Handle(OpenGl_Texture)& theOffsetsTexture,
-                                      const bool theAdaptive);
+  bool UploadOffsets (const Handle(OpenGl_Context)& theContext,
+                      const Handle(OpenGl_Texture)& theOffsetsTexture,
+                      const bool theAdaptive)
+  {
+    return upload (theContext, Handle(OpenGl_Texture)(), theOffsetsTexture, theAdaptive);
+  }
 
 protected:
 
@@ -104,9 +129,21 @@ protected:
   //! Samples tile location according to estimated error.
   Standard_EXPORT Graphic3d_Vec2i nextTileToSample();
 
+  //! Uploads offsets of sampled tiles to the given OpenGL texture.
+  Standard_EXPORT bool upload (const Handle(OpenGl_Context)& theContext,
+                               const Handle(OpenGl_Texture)& theSamplesTexture,
+                               const Handle(OpenGl_Texture)& theOffsetsTexture,
+                               const bool theAdaptive);
+
+  //! Auxiliary method for dumping 2D image map into stream (e.g. for debugging).
+  Standard_EXPORT void dumpMap (std::ostream& theStream,
+                                const Image_PixMapTypedData<int>& theMap,
+                                const char* theTitle) const;
+
 protected:
 
   Image_PixMapTypedData<unsigned int>    myTiles;         //!< number of samples per tile (initially all 1)
+  Image_PixMapTypedData<unsigned int>    myTileSamples;   //!< number of samples for all pixels within the tile (initially equals to Tile area)
   Image_PixMapTypedData<float>           myVarianceMap;   //!< Estimation of visual error per tile
   Image_PixMapTypedData<int>             myVarianceRaw;   //!< Estimation of visual error per tile (raw data)
   Image_PixMapTypedData<Graphic3d_Vec2i> myOffsets;       //!< 2D array of tiles redirecting to another tile

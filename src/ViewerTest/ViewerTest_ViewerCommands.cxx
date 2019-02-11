@@ -1264,38 +1264,40 @@ TCollection_AsciiString FindViewIdByWindowHandle(const Aspect_Handle theWindowHa
 }
 #endif
 
-//==============================================================================
-//function : ActivateView
-//purpose  : Make the view active
-//==============================================================================
-
-void ActivateView (const TCollection_AsciiString& theViewName)
+//! Make the view active
+void ActivateView (const TCollection_AsciiString& theViewName,
+                   Standard_Boolean theToUpdate = Standard_True)
 {
   const Handle(V3d_View) aView = ViewerTest_myViews.Find1(theViewName);
-  if (!aView.IsNull())
+  if (aView.IsNull())
   {
-    Handle(AIS_InteractiveContext) anAISContext = FindContextByView(aView);
-    if (!anAISContext.IsNull())
-    {
-      if (!ViewerTest::CurrentView().IsNull())
-      {
-        TCollection_AsciiString aTitle("3D View - ");
-        aTitle = aTitle + ViewerTest_myViews.Find2 (ViewerTest::CurrentView());
-        SetWindowTitle (ViewerTest::CurrentView()->Window(), aTitle.ToCString());
-      }
+    return;
+  }
 
-      ViewerTest::CurrentView (aView);
-      ViewerTest::SetAISContext (anAISContext);
-      TCollection_AsciiString aTitle = TCollection_AsciiString("3D View - ") + theViewName + "(*)";
+  Handle(AIS_InteractiveContext) anAISContext = FindContextByView(aView);
+  if (!anAISContext.IsNull())
+  {
+    if (!ViewerTest::CurrentView().IsNull())
+    {
+      TCollection_AsciiString aTitle("3D View - ");
+      aTitle = aTitle + ViewerTest_myViews.Find2 (ViewerTest::CurrentView());
       SetWindowTitle (ViewerTest::CurrentView()->Window(), aTitle.ToCString());
+    }
+
+    ViewerTest::CurrentView (aView);
+    ViewerTest::SetAISContext (anAISContext);
+    TCollection_AsciiString aTitle = TCollection_AsciiString("3D View - ") + theViewName + "(*)";
+    SetWindowTitle (ViewerTest::CurrentView()->Window(), aTitle.ToCString());
 #if defined(_WIN32)
-      VT_GetWindow() = Handle(WNT_Window)::DownCast(ViewerTest::CurrentView()->Window());
+    VT_GetWindow() = Handle(WNT_Window)::DownCast(ViewerTest::CurrentView()->Window());
 #elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
-      VT_GetWindow() = Handle(Cocoa_Window)::DownCast(ViewerTest::CurrentView()->Window());
+    VT_GetWindow() = Handle(Cocoa_Window)::DownCast(ViewerTest::CurrentView()->Window());
 #else
-      VT_GetWindow() = Handle(Xw_Window)::DownCast(ViewerTest::CurrentView()->Window());
+    VT_GetWindow() = Handle(Xw_Window)::DownCast(ViewerTest::CurrentView()->Window());
 #endif
-      SetDisplayConnection(ViewerTest::CurrentView()->Viewer()->Driver()->GetDisplayConnection());
+    SetDisplayConnection(ViewerTest::CurrentView()->Viewer()->Driver()->GetDisplayConnection());
+    if (theToUpdate)
+    {
       ViewerTest::CurrentView()->Redraw();
     }
   }
@@ -1348,16 +1350,8 @@ void ViewerTest::RemoveView (const TCollection_AsciiString& theViewName, const S
     }
     else
     {
-      Handle(V3d_View) anEmptyView;
-#if defined(_WIN32) || defined(__WIN32__)
-      Handle(WNT_Window) anEmptyWindow;
-#elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
-      Handle(Cocoa_Window) anEmptyWindow;
-#else
-      Handle(Xw_Window) anEmptyWindow;
-#endif
-      VT_GetWindow() = anEmptyWindow;
-      ViewerTest::CurrentView (anEmptyView);
+      VT_GetWindow().Nullify();
+      ViewerTest::CurrentView (Handle(V3d_View)());
       if (isContextRemoved)
       {
         Handle(AIS_InteractiveContext) anEmptyContext;
@@ -1490,45 +1484,64 @@ static int VClose (Draw_Interpretor& /*theDi*/,
 
 static int VActivate (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const char** theArgVec)
 {
-  if (theArgsNb > 2)
-  {
-    theDi << theArgVec[0] << ": wrong number of command arguments.\n"
-    << "Usage: " << theArgVec[0] << " ViewID\n";
-    return 1;
-  }
-  if(theArgsNb == 1)
+  if (theArgsNb == 1)
   {
     theDi.Eval("vviewlist");
     return 0;
   }
 
-  TCollection_AsciiString aNameString(theArgVec[1]);
-  if ( strcasecmp( aNameString.ToCString(), "NONE" ) == 0 )
+  TCollection_AsciiString aNameString;
+  Standard_Boolean toUpdate = Standard_True;
+  Standard_Boolean toActivate = Standard_True;
+  for (Standard_Integer anArgIter = 1; anArgIter < theArgsNb; ++anArgIter)
   {
-    TCollection_AsciiString aTitle("3D View - ");
-    aTitle = aTitle + ViewerTest_myViews.Find2(ViewerTest::CurrentView());
-    SetWindowTitle (ViewerTest::CurrentView()->Window(), aTitle.ToCString());
-    Handle(V3d_View) anEmptyView;
-#if defined(_WIN32) || defined(__WIN32__)
-    Handle(WNT_Window) anEmptyWindow;
-#elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
-    Handle(Cocoa_Window) anEmptyWindow;
-#else
-    Handle(Xw_Window) anEmptyWindow;
-#endif
-    VT_GetWindow() = anEmptyWindow;
-    ViewerTest::CurrentView (anEmptyView);
-    ViewerTest::ResetEventManager();
-    theDi << theArgVec[0] << ": all views are inactive\n";
-    return 0;
+    TCollection_AsciiString anArg (theArgVec[anArgIter]);
+    anArg.LowerCase();
+    if (toUpdate
+     && anArg == "-noupdate")
+    {
+      toUpdate = Standard_False;
+    }
+    else if (toActivate
+          && aNameString.IsEmpty()
+          && anArg == "none")
+    {
+      TCollection_AsciiString aTitle("3D View - ");
+      aTitle = aTitle + ViewerTest_myViews.Find2(ViewerTest::CurrentView());
+      SetWindowTitle (ViewerTest::CurrentView()->Window(), aTitle.ToCString());
+      VT_GetWindow().Nullify();
+      ViewerTest::CurrentView (Handle(V3d_View)());
+      ViewerTest::ResetEventManager();
+      theDi << theArgVec[0] << ": all views are inactive\n";
+      toActivate = Standard_False;
+    }
+    else if (toActivate
+          && aNameString.IsEmpty())
+    {
+      aNameString = theArgVec[anArgIter];
+    }
+    else
+    {
+      std::cout << "Syntax error at '" << theArgVec[anArgIter] << "'\n";
+      return 1;
+    }
   }
 
-  ViewerTest_Names aViewNames(aNameString);
+  if (!toActivate)
+  {
+    return 0;
+  }
+  else if (aNameString.IsEmpty())
+  {
+    std::cout << "Syntax error: wrong number of arguments\n";
+    return 1;
+  }
 
   // Check if this view exists in the viewer with the driver
+  ViewerTest_Names aViewNames (aNameString);
   if (!ViewerTest_myViews.IsBound1(aViewNames.GetViewName()))
   {
-    theDi << "Wrong view name\n";
+    theDi << "Syntax error: wrong view name '" << aNameString << "'\n";
     return 1;
   }
 
@@ -1539,7 +1552,7 @@ static int VActivate (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const
     return 0;
   }
 
-  ActivateView (aViewNames.GetViewName());
+  ActivateView (aViewNames.GetViewName(), toUpdate);
   return 0;
 }
 
@@ -5556,11 +5569,39 @@ static int VFps (Draw_Interpretor& theDI,
     return 1;
   }
 
-  Standard_Integer aFramesNb = (theArgNb > 1) ? Draw::Atoi(theArgVec[1]) : 100;
-  if (aFramesNb <= 0)
+  Standard_Integer aFramesNb = -1;
+  Standard_Real aDuration = -1.0;
+  for (Standard_Integer anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
   {
-    std::cerr << "Incorrect arguments!\n";
-    return 1;
+    TCollection_AsciiString anArg (theArgVec[anArgIter]);
+    anArg.LowerCase();
+    if (aDuration < 0.0
+     && anArgIter + 1 < theArgNb
+     && (anArg == "-duration"
+      || anArg == "-dur"
+      || anArg == "-time"))
+    {
+      aDuration = Draw::Atof (theArgVec[++anArgIter]);
+    }
+    else if (aFramesNb < 0
+          && anArg.IsIntegerValue())
+    {
+      aFramesNb = anArg.IntegerValue();
+      if (aFramesNb <= 0)
+      {
+        std::cerr << "Syntax error at '" << anArg << "'\n";
+        return 1;
+      }
+    }
+    else
+    {
+      std::cerr << "Syntax error at '" << anArg << "'\n";
+      return 1;
+    }
+  }
+  if (aFramesNb < 0 && aDuration < 0.0)
+  {
+    aFramesNb = 100;
   }
 
   // the time is meaningless for first call
@@ -5570,35 +5611,39 @@ static int VFps (Draw_Interpretor& theDI,
   // redraw view in loop to estimate average values
   OSD_Timer aTimer;
   aTimer.Start();
-  for (Standard_Integer anInter = 0; anInter < aFramesNb; ++anInter)
+  Standard_Integer aFrameIter = 1;
+  for (;; ++aFrameIter)
   {
     aView->Redraw();
+    if ((aFramesNb > 0
+      && aFrameIter >= aFramesNb)
+     || (aDuration > 0.0
+      && aTimer.ElapsedTime() >= aDuration))
+    {
+      break;
+    }
   }
   aTimer.Stop();
   Standard_Real aCpu;
   const Standard_Real aTime = aTimer.ElapsedTime();
   aTimer.OSD_Chronometer::Show (aCpu);
 
-  const Standard_Real aFpsAver = Standard_Real(aFramesNb) / aTime;
-  const Standard_Real aCpuAver = aCpu / Standard_Real(aFramesNb);
+  const Standard_Real aFpsAver = Standard_Real(aFrameIter) / aTime;
+  const Standard_Real aCpuAver = aCpu / Standard_Real(aFrameIter);
 
   // return statistics
   theDI << "FPS: " << aFpsAver << "\n"
         << "CPU: " << (1000.0 * aCpuAver) << " msec\n";
 
   // compute additional statistics in ray-tracing mode
-  Graphic3d_RenderingParams& aParams = aView->ChangeRenderingParams();
-
+  const Graphic3d_RenderingParams& aParams = aView->RenderingParams();
   if (aParams.Method == Graphic3d_RM_RAYTRACING)
   {
-    Standard_Integer aSizeX;
-    Standard_Integer aSizeY;
-
-    aView->Window()->Size (aSizeX, aSizeY);
+    Graphic3d_Vec2i aWinSize (0, 0);
+    aView->Window()->Size (aWinSize.x(), aWinSize.y());
 
     // 1 shadow ray and 1 secondary ray pew each bounce
-    const Standard_Real aMRays = aSizeX * aSizeY * aFpsAver * aParams.RaytracingDepth * 2 / 1.0e6f;
-
+    const Standard_Real aMRays = aWinSize.x() * aWinSize.y() * aFpsAver * aParams.RaytracingDepth * 2 / 1.0e6f;
     theDI << "MRays/sec (upper bound): " << aMRays << "\n";
   }
 
@@ -10797,6 +10842,22 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
       }
       aParams.AdaptiveScreenSampling = toEnable;
     }
+    else if (aFlag == "-issatomic")
+    {
+      if (toPrint)
+      {
+        theDI << (aParams.AdaptiveScreenSamplingAtomic ? "on" : "off") << " ";
+        continue;
+      }
+
+      Standard_Boolean toEnable = Standard_True;
+      if (++anArgIter < theArgNb
+      && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toEnable))
+      {
+        --anArgIter;
+      }
+      aParams.AdaptiveScreenSamplingAtomic = toEnable;
+    }
     else if (aFlag == "-issd")
     {
       if (toPrint)
@@ -12279,7 +12340,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     " the current context is not removed.",
     __FILE__,VClose,group);
   theCommands.Add("vactivate" ,
-    "view_id"
+    "vactivate view_id [-noUpdate]"
     " - activates view(viewer window) defined by its view_id",
     __FILE__,VActivate,group);
   theCommands.Add("vviewlist",
@@ -12492,7 +12553,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "\n\t\t: Converts the given coordinates to window/view/model space.",
     __FILE__, VConvert, group);
   theCommands.Add ("vfps",
-    "vfps [framesNb=100] : estimate average frame rate for active view",
+    "vfps [framesNb=100] [-duration seconds] : estimate average frame rate for active view",
     __FILE__, VFps, group);
   theCommands.Add ("vgldebug",
             "vgldebug [-sync {0|1}] [-debug {0|1}] [-glslWarn {0|1}]"

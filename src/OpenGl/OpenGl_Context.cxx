@@ -172,6 +172,7 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
   myHasRayTracing (Standard_False),
   myHasRayTracingTextures (Standard_False),
   myHasRayTracingAdaptiveSampling (Standard_False),
+  myHasRayTracingAdaptiveSamplingAtomic (Standard_False),
   myFrameStats (new OpenGl_FrameStats()),
 #if !defined(GL_ES_VERSION_2_0)
   myPointSpriteOrig (GL_UPPER_LEFT),
@@ -2516,8 +2517,9 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
 
   // check whether adaptive screen sampling in ray tracing mode is supported
   myHasRayTracingAdaptiveSampling = myHasRayTracing
-                                 && has44
-                                 && CheckExtension ("GL_NV_shader_atomic_float");
+                                 && has44;
+  myHasRayTracingAdaptiveSamplingAtomic = myHasRayTracingAdaptiveSampling
+                                       && CheckExtension ("GL_NV_shader_atomic_float");
 
   if (!has32)
   {

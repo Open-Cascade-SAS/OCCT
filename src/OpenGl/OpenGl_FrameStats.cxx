@@ -161,6 +161,8 @@ void OpenGl_FrameStats::updateStatistics (const Handle(Graphic3d_CView)& theView
       aMemFbos += estimatedDataSize (aView->myRaytraceVisualErrorTexture[1]);
       aMemFbos += estimatedDataSize (aView->myRaytraceTileOffsetsTexture[0]);
       aMemFbos += estimatedDataSize (aView->myRaytraceTileOffsetsTexture[1]);
+      aMemFbos += estimatedDataSize (aView->myRaytraceTileSamplesTexture[0]);
+      aMemFbos += estimatedDataSize (aView->myRaytraceTileSamplesTexture[1]);
     }
     {
       // Ray Tracing geometry

@@ -5,10 +5,10 @@
   #extension GL_ARB_shader_image_size : enable
 
   //! OpenGL image used for accumulating rendering result.
-  volatile restrict layout(size1x32) uniform image2D uRenderImage;
+  volatile restrict layout(r32f) uniform image2D uRenderImage;
 
   //! OpenGL image storing variance of sampled pixels blocks.
-  volatile restrict layout(size1x32) uniform iimage2D uVarianceImage;
+  volatile restrict layout(r32i) uniform iimage2D uVarianceImage;
 
   //! Scale factor used to quantize visual error (float) into signed integer.
   uniform float uVarianceScaleFactor;

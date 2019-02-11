@@ -1136,10 +1136,14 @@ TCollection_AsciiString OpenGl_View::generateShaderPrefix (const Handle(OpenGl_C
 
     if (myRaytraceParameters.AdaptiveScreenSampling) // adaptive screen sampling requested
     {
-      // to activate the feature we need OpenGL 4.4 and GL_NV_shader_atomic_float extension
-      if (theGlContext->IsGlGreaterEqual (4, 4) && theGlContext->CheckExtension ("GL_NV_shader_atomic_float"))
+      if (theGlContext->IsGlGreaterEqual (4, 4))
       {
         aPrefixString += TCollection_AsciiString ("\n#define ADAPTIVE_SAMPLING");
+        if (myRaytraceParameters.AdaptiveScreenSamplingAtomic
+         && theGlContext->CheckExtension ("GL_NV_shader_atomic_float"))
+        {
+          aPrefixString += TCollection_AsciiString ("\n#define ADAPTIVE_SAMPLING_ATOMIC");
+        }
       }
     }
 
@@ -1387,9 +1391,11 @@ Standard_Boolean OpenGl_View::initRaytraceResources (const Standard_Integer theS
       aToRebuildShaders = Standard_True;
     }
 
-    if (myRenderParams.AdaptiveScreenSampling != myRaytraceParameters.AdaptiveScreenSampling)
+    if (myRenderParams.AdaptiveScreenSampling       != myRaytraceParameters.AdaptiveScreenSampling
+     || myRenderParams.AdaptiveScreenSamplingAtomic != myRaytraceParameters.AdaptiveScreenSamplingAtomic)
     {
-      myRaytraceParameters.AdaptiveScreenSampling = myRenderParams.AdaptiveScreenSampling;
+      myRaytraceParameters.AdaptiveScreenSampling       = myRenderParams.AdaptiveScreenSampling;
+      myRaytraceParameters.AdaptiveScreenSamplingAtomic = myRenderParams.AdaptiveScreenSamplingAtomic;
       if (myRenderParams.AdaptiveScreenSampling) // adaptive sampling was requested
       {
         if (!theGlContext->HasRayTracingAdaptiveSampling())
@@ -1397,7 +1403,15 @@ Standard_Boolean OpenGl_View::initRaytraceResources (const Standard_Integer theS
           // disable the feature if it is not supported
           myRaytraceParameters.AdaptiveScreenSampling = myRenderParams.AdaptiveScreenSampling = Standard_False;
           theGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_LOW,
-                                     "Adaptive sampling not supported (OpenGL 4.4 or GL_NV_shader_atomic_float is missing)");
+                                     "Adaptive sampling is not supported (OpenGL 4.4 is missing)");
+        }
+        else if (myRaytraceParameters.AdaptiveScreenSamplingAtomic
+             && !theGlContext->HasRayTracingAdaptiveSamplingAtomic())
+        {
+          // disable the feature if it is not supported
+          myRaytraceParameters.AdaptiveScreenSamplingAtomic = myRenderParams.AdaptiveScreenSamplingAtomic = Standard_False;
+          theGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_LOW,
+                                     "Atomic adaptive sampling is not supported (GL_NV_shader_atomic_float is missing)");
         }
       }
 
@@ -1726,6 +1740,8 @@ Standard_Boolean OpenGl_View::initRaytraceResources (const Standard_Integer theS
 
       myUniformLocations[anIndex][OpenGl_RT_uRenderImage] =
         aShaderProgram->GetUniformLocation (theGlContext, "uRenderImage");
+      myUniformLocations[anIndex][OpenGl_RT_uTilesImage] =
+        aShaderProgram->GetUniformLocation (theGlContext, "uTilesImage");
       myUniformLocations[anIndex][OpenGl_RT_uOffsetImage] =
         aShaderProgram->GetUniformLocation (theGlContext, "uOffsetImage");
       myUniformLocations[anIndex][OpenGl_RT_uTileSize] =
@@ -1814,6 +1830,8 @@ void OpenGl_View::releaseRaytraceResources (const Handle(OpenGl_Context)& theGlC
     nullifyResource (theGlContext, myRaytraceTileOffsetsTexture[1]);
     nullifyResource (theGlContext, myRaytraceVisualErrorTexture[0]);
     nullifyResource (theGlContext, myRaytraceVisualErrorTexture[1]);
+    nullifyResource (theGlContext, myRaytraceTileSamplesTexture[0]);
+    nullifyResource (theGlContext, myRaytraceTileSamplesTexture[1]);
 
     nullifyResource (theGlContext, mySceneNodeInfoTexture);
     nullifyResource (theGlContext, mySceneMinPointTexture);
@@ -1874,6 +1892,7 @@ Standard_Boolean OpenGl_View::updateRaytraceBuffers (const Standard_Integer     
     {
       myRaytraceOutputTexture[aViewIter] = new OpenGl_Texture();
       myRaytraceVisualErrorTexture[aViewIter] = new OpenGl_Texture();
+      myRaytraceTileSamplesTexture[aViewIter] = new OpenGl_Texture();
       myRaytraceTileOffsetsTexture[aViewIter] = new OpenGl_Texture();
     }
 
@@ -1895,7 +1914,15 @@ Standard_Boolean OpenGl_View::updateRaytraceBuffers (const Standard_Integer     
        && myRaytraceVisualErrorTexture[aViewIter]->SizeX() == myTileSampler.NbTilesX()
        && myRaytraceVisualErrorTexture[aViewIter]->SizeY() == myTileSampler.NbTilesY())
       {
-        continue;
+        if (myRaytraceParameters.AdaptiveScreenSamplingAtomic)
+        {
+          continue; // offsets texture is dynamically resized
+        }
+        else if (myRaytraceTileSamplesTexture[aViewIter]->SizeX() == myTileSampler.NbTilesX()
+              && myRaytraceTileSamplesTexture[aViewIter]->SizeY() == myTileSampler.NbTilesY())
+        {
+          continue;
+        }
       }
 
       myAccumFrames = 0;
@@ -1913,8 +1940,14 @@ Standard_Boolean OpenGl_View::updateRaytraceBuffers (const Standard_Integer     
 
       // workaround for some NVIDIA drivers
       myRaytraceVisualErrorTexture[aViewIter]->Release (theGlContext.operator->());
+      myRaytraceTileSamplesTexture[aViewIter]->Release (theGlContext.operator->());
       myRaytraceVisualErrorTexture[aViewIter]->Init (theGlContext, GL_R32I, GL_RED_INTEGER, GL_INT,
                                                      myTileSampler.NbTilesX(), myTileSampler.NbTilesY(), Graphic3d_TOT_2D);
+      if (!myRaytraceParameters.AdaptiveScreenSamplingAtomic)
+      {
+        myRaytraceTileSamplesTexture[aViewIter]->Init (theGlContext, GL_R32I, GL_RED_INTEGER, GL_INT,
+                                                       myTileSampler.NbTilesX(), myTileSampler.NbTilesY(), Graphic3d_TOT_2D);
+      }
     }
     else // non-adaptive mode
     {
@@ -2684,8 +2717,16 @@ void OpenGl_View::bindRaytraceTextures (const Handle(OpenGl_Context)& theGlConte
                                               myRaytraceOutputTexture[theStereoView]->TextureId(), 0, GL_TRUE, 0, GL_READ_WRITE, GL_R32F);
     theGlContext->core42->glBindImageTexture (OpenGl_RT_VisualErrorImage,
                                               myRaytraceVisualErrorTexture[theStereoView]->TextureId(), 0, GL_TRUE, 0, GL_READ_WRITE, GL_R32I);
-    theGlContext->core42->glBindImageTexture (OpenGl_RT_TileOffsetsImage,
-                                              myRaytraceTileOffsetsTexture[theStereoView]->TextureId(), 0, GL_TRUE, 0, GL_READ_ONLY, GL_RG32I);
+    if (myRaytraceParameters.AdaptiveScreenSamplingAtomic)
+    {
+      theGlContext->core42->glBindImageTexture (OpenGl_RT_TileOffsetsImage,
+                                                myRaytraceTileOffsetsTexture[theStereoView]->TextureId(), 0, GL_TRUE, 0, GL_READ_ONLY, GL_RG32I);
+    }
+    else
+    {
+      theGlContext->core42->glBindImageTexture (OpenGl_RT_TileSamplesImage,
+                                                myRaytraceTileSamplesTexture[theStereoView]->TextureId(), 0, GL_TRUE, 0, GL_READ_WRITE, GL_R32I);
+    }
   #else
     (void )theStereoView;
   #endif
@@ -2911,7 +2952,14 @@ Standard_Boolean OpenGl_View::runPathtrace (const Standard_Integer              
       myTileSampler.Reset(); // reset tile sampler to its initial state
 
       // Adaptive sampling is starting at the second frame
-      myTileSampler.UploadOffsets (theGlContext, myRaytraceTileOffsetsTexture[aFBOIdx], false);
+      if (myRaytraceParameters.AdaptiveScreenSamplingAtomic)
+      {
+        myTileSampler.UploadOffsets (theGlContext, myRaytraceTileOffsetsTexture[aFBOIdx], false);
+      }
+      else
+      {
+        myTileSampler.UploadSamples (theGlContext, myRaytraceTileSamplesTexture[aFBOIdx], false);
+      }
 
     #if !defined(GL_ES_VERSION_2_0)
       theGlContext->core44->glClearTexImage (myRaytraceOutputTexture[aFBOIdx]->TextureId(), 0, GL_RED, GL_FLOAT, NULL);
@@ -2932,24 +2980,19 @@ Standard_Boolean OpenGl_View::runPathtrace (const Standard_Integer              
   // Set frame accumulation weight
   myRaytraceProgram->SetUniform (theGlContext, myUniformLocations[0][OpenGl_RT_uAccumSamples], myAccumFrames);
 
-  // Set random number generator seed
-  if (myAccumFrames == 0)
-  {
-    myRNG.SetSeed(); // start RNG from beginning
-  }
-  myRaytraceProgram->SetUniform (theGlContext, myUniformLocations[0][OpenGl_RT_uFrameRndSeed], static_cast<Standard_Integer> (myRNG.NextInt() >> 2));
-
   // Set image uniforms for render program
   if (myRaytraceParameters.AdaptiveScreenSampling)
   {
     myRaytraceProgram->SetUniform (theGlContext, myUniformLocations[0][OpenGl_RT_uRenderImage], OpenGl_RT_OutputImage);
+    myRaytraceProgram->SetUniform (theGlContext, myUniformLocations[0][OpenGl_RT_uTilesImage],  OpenGl_RT_TileSamplesImage);
     myRaytraceProgram->SetUniform (theGlContext, myUniformLocations[0][OpenGl_RT_uOffsetImage], OpenGl_RT_TileOffsetsImage);
     myRaytraceProgram->SetUniform (theGlContext, myUniformLocations[0][OpenGl_RT_uTileSize], myTileSampler.TileSize());
   }
 
   const Handle(OpenGl_FrameBuffer)& aRenderImageFramebuffer = myAccumFrames % 2 ? myRaytraceFBO1[aFBOIdx] : myRaytraceFBO2[aFBOIdx];
   aRenderImageFramebuffer->BindBuffer (theGlContext);
-  if (myRaytraceParameters.AdaptiveScreenSampling)
+  if (myRaytraceParameters.AdaptiveScreenSampling
+   && myRaytraceParameters.AdaptiveScreenSamplingAtomic)
   {
     // extend viewport here, so that tiles at boundaries (cut tile size by target rendering viewport)
     // redirected to inner tiles (full tile size) are drawn entirely
@@ -2959,11 +3002,41 @@ Standard_Boolean OpenGl_View::runPathtrace (const Standard_Integer              
 
   // Generate for the given RNG seed
   glDisable (GL_DEPTH_TEST);
-  theGlContext->core20fwd->glDrawArrays (GL_TRIANGLES, 0, 6);
 
+  // Adaptive Screen Sampling computes the same overall amount of samples per frame redraw as normal Path Tracing,
+  // but distributes them unequally across pixels (grouped in tiles), so that some pixels do not receive new samples at all.
+  //
+  // Offsets map (redirecting currently rendered tile to another tile) allows performing Adaptive Screen Sampling in single pass,
+  // but current implementation relies on atomic float operations (AdaptiveScreenSamplingAtomic) for this.
+  // So that when atomic floats are not supported by GPU, multi-pass rendering is used instead.
+  //
+  // Single-pass rendering is more optimal due to smaller amount of draw calls,
+  // memory synchronization barriers, discarding most of the fragments and bad parallelization in case of very small amount of tiles requiring more samples.
+  // However, atomic operations on float values still produces different result (close, but not bit exact) making non-regression testing not robust.
+  // It should be possible following single-pass rendering approach but using extra accumulation buffer and resolving pass as possible improvement.
+  const int aNbPasses = myRaytraceParameters.AdaptiveScreenSampling
+                    && !myRaytraceParameters.AdaptiveScreenSamplingAtomic
+                      ? myTileSampler.MaxTileSamples()
+                      : 1;
+  if (myAccumFrames == 0)
+  {
+    myRNG.SetSeed(); // start RNG from beginning
+  }
+  for (int aPassIter = 0; aPassIter < aNbPasses; ++aPassIter)
+  {
+    myRaytraceProgram->SetUniform (theGlContext, myUniformLocations[0][OpenGl_RT_uFrameRndSeed], static_cast<Standard_Integer> (myRNG.NextInt() >> 2));
+    theGlContext->core20fwd->glDrawArrays (GL_TRIANGLES, 0, 6);
+    if (myRaytraceParameters.AdaptiveScreenSampling)
+    {
+    #if !defined(GL_ES_VERSION_2_0)
+      theGlContext->core44->glMemoryBarrier (GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+    #endif
+    }
+  }
   aRenderImageFramebuffer->UnbindBuffer (theGlContext);
 
-  if (myRaytraceParameters.AdaptiveScreenSampling)
+  if (myRaytraceParameters.AdaptiveScreenSampling
+   && myRaytraceParameters.AdaptiveScreenSamplingAtomic)
   {
     glViewport (0, 0, theSizeX, theSizeY);
   }
@@ -3026,7 +3099,14 @@ Standard_Boolean OpenGl_View::runPathtraceOut (const Graphic3d_Camera::Projectio
   {
     // Download visual error map from the GPU and build adjusted tile offsets for optimal image sampling
     myTileSampler.GrabVarianceMap (theGlContext, myRaytraceVisualErrorTexture[aFBOIdx]);
-    myTileSampler.UploadOffsets (theGlContext, myRaytraceTileOffsetsTexture[aFBOIdx], myAccumFrames != 0);
+    if (myRaytraceParameters.AdaptiveScreenSamplingAtomic)
+    {
+      myTileSampler.UploadOffsets (theGlContext, myRaytraceTileOffsetsTexture[aFBOIdx], myAccumFrames != 0);
+    }
+    else
+    {
+      myTileSampler.UploadSamples (theGlContext, myRaytraceTileSamplesTexture[aFBOIdx], myAccumFrames != 0);
+    }
   }
 
   unbindRaytraceTextures (theGlContext);

@@ -109,6 +109,7 @@ public:
     UseEnvironmentMapBackground (Standard_False),
     CoherentPathTracingMode     (Standard_False),
     AdaptiveScreenSampling      (Standard_False),
+    AdaptiveScreenSamplingAtomic(Standard_False),
     ShowSamplingTiles           (Standard_False),
     TwoSidedBsdfModels          (Standard_False),
     RadianceClampingValue       (30.0),
@@ -184,6 +185,7 @@ public:
   Standard_Boolean                  UseEnvironmentMapBackground; //!< enables/disables environment map background
   Standard_Boolean                  CoherentPathTracingMode;     //!< enables/disables 'coherent' tracing mode (single RNG seed within 16x16 image blocks)
   Standard_Boolean                  AdaptiveScreenSampling;      //!< enables/disables adaptive screen sampling mode for path tracing, FALSE by default
+  Standard_Boolean                  AdaptiveScreenSamplingAtomic;//!< enables/disables usage of atomic float operations within adaptive screen sampling, FALSE by default
   Standard_Boolean                  ShowSamplingTiles;           //!< enables/disables debug mode for adaptive screen sampling, FALSE by default
   Standard_Boolean                  TwoSidedBsdfModels;          //!< forces path tracing to use two-sided versions of original one-sided scattering models
   Standard_ShortReal                RadianceClampingValue;       //!< maximum radiance value used for clamping radiance estimation.

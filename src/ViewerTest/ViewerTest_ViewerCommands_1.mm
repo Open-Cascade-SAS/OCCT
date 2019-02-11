@@ -37,7 +37,8 @@
 @interface Cocoa_WindowController : NSObject <NSWindowDelegate>
 @end
 
-extern void ActivateView (const TCollection_AsciiString& theViewName);
+extern void ActivateView (const TCollection_AsciiString& theViewName,
+                          Standard_Boolean theToUpdate = Standard_True);
 extern void VT_ProcessExpose();
 extern void VT_ProcessConfigure();
 extern void VT_ProcessKeyPress (const char* theBuffer);

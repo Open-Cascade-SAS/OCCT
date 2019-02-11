@@ -503,6 +503,9 @@ public:
   //! @return TRUE if adaptive screen sampling in ray tracing mode is supported
   Standard_Boolean HasRayTracingAdaptiveSampling() const { return myHasRayTracingAdaptiveSampling; }
 
+  //! @return TRUE if atomic adaptive screen sampling in ray tracing mode is supported
+  Standard_Boolean HasRayTracingAdaptiveSamplingAtomic() const { return myHasRayTracingAdaptiveSamplingAtomic; }
+
   //! Returns true if VBO is supported and permitted.
   inline bool ToUseVbo() const
   {
@@ -928,9 +931,10 @@ private: // context info
   Standard_Boolean myIsGlNormalizeEnabled; //!< GL_NORMALIZE flag
                                            //!< Used to tell OpenGl that normals should be normalized
 
-  Standard_Boolean myHasRayTracing;                 //! indicates whether ray tracing mode is supported 
-  Standard_Boolean myHasRayTracingTextures;         //! indicates whether textures in ray tracing mode are supported 
-  Standard_Boolean myHasRayTracingAdaptiveSampling; //! indicates whether adaptive screen sampling in ray tracing mode is supported 
+  Standard_Boolean myHasRayTracing;                 //! indicates whether ray tracing mode is supported
+  Standard_Boolean myHasRayTracingTextures;         //! indicates whether textures in ray tracing mode are supported
+  Standard_Boolean myHasRayTracingAdaptiveSampling; //! indicates whether adaptive screen sampling in ray tracing mode is supported
+  Standard_Boolean myHasRayTracingAdaptiveSamplingAtomic; //! indicates whether atomic adaptive screen sampling in ray tracing mode is supported
 
   Handle(OpenGl_ShaderManager) myShaderManager; //! support object for managing shader programs
 

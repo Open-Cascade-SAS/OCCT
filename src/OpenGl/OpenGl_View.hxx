@@ -592,6 +592,7 @@ protected: //! @name data types related to ray-tracing
 
     // images used by ISS mode
     OpenGl_RT_uRenderImage,
+    OpenGl_RT_uTilesImage,
     OpenGl_RT_uOffsetImage,
     OpenGl_RT_uTileSize,
     OpenGl_RT_uVarianceScaleFactor,
@@ -608,6 +609,7 @@ protected: //! @name data types related to ray-tracing
     OpenGl_RT_OutputImage = 0,
     OpenGl_RT_VisualErrorImage = 1,
     OpenGl_RT_TileOffsetsImage = 2,
+    OpenGl_RT_TileSamplesImage = 3
   };
 
   //! Tool class for management of shader sources.
@@ -691,6 +693,9 @@ protected: //! @name data types related to ray-tracing
     //! Enables/disables adaptive screen sampling for path tracing.
     Standard_Boolean AdaptiveScreenSampling;
 
+    //! Enables/disables 1-pass atomic mode for AdaptiveScreenSampling.
+    Standard_Boolean AdaptiveScreenSamplingAtomic;
+
     //! Enables/disables environment map for background.
     Standard_Boolean UseEnvMapForBackground;
 
@@ -712,6 +717,7 @@ protected: //! @name data types related to ray-tracing
       UseBindlessTextures    (Standard_False),
       TwoSidedBsdfModels     (Standard_False),
       AdaptiveScreenSampling (Standard_False),
+      AdaptiveScreenSamplingAtomic (Standard_False),
       UseEnvMapForBackground (Standard_False),
       RadianceClampingValue  (30.0),
       DepthOfField           (Standard_False),
@@ -1008,6 +1014,9 @@ protected: //! @name fields related to ray-tracing
   //! Texture containing offsets of sampled screen tiles (2 textures are used in stereo mode).
   //! Used if adaptive screen sampling is activated.
   Handle(OpenGl_Texture) myRaytraceTileOffsetsTexture[2];
+  //! Texture containing amount of extra per-tile samples (2 textures are used in stereo mode).
+  //! Used if adaptive screen sampling is activated.
+  Handle(OpenGl_Texture) myRaytraceTileSamplesTexture[2];
 
   //! Vertex buffer (VBO) for drawing dummy quad.
   OpenGl_VertexBuffer myRaytraceScreenQuad;
