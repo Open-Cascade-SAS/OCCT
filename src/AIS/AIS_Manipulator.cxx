@@ -493,6 +493,7 @@ Standard_Boolean AIS_Manipulator::ObjectTransformation (const Standard_Integer t
       const gp_Lin aLine (myStartPosition.Location(), myAxes[myCurrentIndex].Position().Direction());
       Extrema_ExtElC anExtrema (anInputLine, aLine, Precision::Angular());
       if (!anExtrema.IsDone()
+        || anExtrema.IsParallel()
         || anExtrema.NbExt() != 1)
       {
         // translation cannot be done co-directed with camera
@@ -538,7 +539,9 @@ Standard_Boolean AIS_Manipulator::ObjectTransformation (const Standard_Integer t
       const gp_Pnt aPosLoc   = myStartPosition.Location();
       const gp_Ax1 aCurrAxis = getAx1FromAx2Dir (myStartPosition, myCurrentIndex);
       IntAna_IntConicQuad aIntersector (anInputLine, gp_Pln (aPosLoc, aCurrAxis.Direction()), Precision::Angular(), Precision::Intersection());
-      if (!aIntersector.IsDone() || aIntersector.NbPoints() < 1)
+      if (!aIntersector.IsDone()
+        || aIntersector.IsParallel()
+        || aIntersector.NbPoints() < 1)
       {
         return Standard_False;
       }
