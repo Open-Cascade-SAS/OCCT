@@ -92,8 +92,10 @@ static Standard_Integer OCC159bug (Draw_Interpretor& di, Standard_Integer argc, 
   Handle(TDocStd_Application) A = DDocStd::GetApplication();
   A->Close(D); 
 
-  Handle(Draw_Drawable3D) DD = Draw::Get(argv[1],Standard_False);
-  dout.RemoveDrawable (DD);
+  if (Handle(Draw_Drawable3D) DD = Draw::GetExisting (argv[1]))
+  {
+    dout.RemoveDrawable (DD);
+  }
 
   Handle(TDocStd_Document) OwnerD2 = Owner->GetDocument();    
   if (OwnerD2.IsNull()) {

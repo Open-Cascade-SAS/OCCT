@@ -75,7 +75,7 @@ Standard_Boolean DDF::GetDF (Standard_CString&       Name,
 			     Handle(TDF_Data)&       DF,
                              const Standard_Boolean  Complain)
 { 
-  Handle(Standard_Transient) t = Draw::Get(Name, Complain);
+  Handle(Standard_Transient) t = Draw::Get (Name);
   Handle(DDF_Data) DDF = Handle(DDF_Data)::DownCast (t);
   //Handle(DDF_Data) DDF = Handle(DDF_Data)::DownCast (Draw::Get(Name, Complain)); 
   if (!DDF.IsNull()) {

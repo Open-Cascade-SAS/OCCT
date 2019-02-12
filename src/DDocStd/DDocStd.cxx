@@ -71,10 +71,7 @@ Standard_Boolean DDocStd::GetDocument (Standard_CString&         Name,
 				       Handle(TDocStd_Document)& DOC,
 				       const Standard_Boolean    Complain)
 {
-
-  Handle(Draw_Drawable3D) D = Draw::Get(Name,Standard_False);
-
-  Handle(DDocStd_DrawDocument) DD = Handle(DDocStd_DrawDocument)::DownCast (D);
+  Handle(DDocStd_DrawDocument) DD = Handle(DDocStd_DrawDocument)::DownCast (Draw::GetExisting (Name));
   if (DD.IsNull()) {
     if (Complain) cout << Name << " is not a Document" << endl; 
     return Standard_False;

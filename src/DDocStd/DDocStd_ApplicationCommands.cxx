@@ -348,8 +348,10 @@ static Standard_Integer DDocStd_Close (Draw_Interpretor& /*theDI*/,
 
   aDocApp->Close (aDoc);
 
-  Handle(Draw_Drawable3D) aDrawable = Draw::Get (aDocName, Standard_False);
-  dout.RemoveDrawable (aDrawable);
+  if (Handle(Draw_Drawable3D) aDrawable = Draw::GetExisting (aDocName))
+  {
+    dout.RemoveDrawable (aDrawable);
+  }
   Draw::Set (theArgVec[1], Handle(Draw_Drawable3D)());
   return 0;
 }

@@ -621,20 +621,19 @@ static Standard_Integer xwd (Draw_Interpretor& di, Standard_Integer argc, const 
 //=======================================================================
 static Standard_Integer XAttributeValue (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
-  if ( argc <4 ) { di << "ERROR: Too few args\n"; return 0; }
-  Handle(DDF_Browser) browser =
-    Handle(DDF_Browser)::DownCast (Draw::Get(argv[1], Standard_True));
-  if ( browser.IsNull() ) { di << "ERROR: Not a browser: " << argv[1] << "\n"; return 0; }
+  if ( argc < 4 ) { std::cout << "Syntax error: Too few args\n"; return 1; }
+  Handle(DDF_Browser) browser = Handle(DDF_Browser)::DownCast (Draw::GetExisting (argv[1]));
+  if ( browser.IsNull() ) { std::cout << "Syntax error: Not a browser: " << argv[1] << "\n"; return 1; }
 
   TDF_Label lab;
   TDF_Tool::Label(browser->Data(),argv[2],lab);
-  if ( lab.IsNull() ) { di << "ERROR: label is Null: " << argv[2] << "\n"; return 0; }
+  if ( lab.IsNull() ) { std::cout << "Syntax error: label is Null: " << argv[2] << "\n"; return 1; }
 
   Standard_Integer num = Draw::Atoi ( argv[3] );
   TDF_AttributeIterator itr(lab,Standard_False);
   for (Standard_Integer i=1; itr.More() && i < num; i++) itr.Next();
 
-  if ( ! itr.More() ) { di << "ERROR: Attribute #" << num << " not found\n"; return 0; }
+  if ( ! itr.More() ) { std::cout << "Syntax error: Attribute #" << num << " not found\n"; return 1; }
 
   const Handle(TDF_Attribute)& att = itr.Value();
   if ( att->IsKind(STANDARD_TYPE(TDataStd_TreeNode)) ) {

@@ -596,7 +596,6 @@ static Standard_Integer BUC60876_ (Draw_Interpretor& di,
   }
   TopoDS_Shape aShape = DBRep::Get(argv[1]);
   Handle(AIS_InteractiveObject) anIO = new AIS_Shape(aShape);
-//  Handle(AIS_InteractiveObject) anIOa = ViewerTest::GetAISShapeFromName(argv[1]);
   anIO->SetHilightMode((argc == 3) ? Draw::Atoi(argv[2]) : 1);
   aContext->Display (anIO, Standard_True);
   return 0;

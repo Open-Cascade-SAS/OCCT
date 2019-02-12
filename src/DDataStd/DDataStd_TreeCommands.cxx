@@ -347,8 +347,12 @@ static Standard_Integer DDataStd_OpenNode (Draw_Interpretor& di,
 {
   if (n < 2) return 1;
   
-  Handle(DDataStd_TreeBrowser) browser =
-    Handle(DDataStd_TreeBrowser)::DownCast (Draw::Get(a[1], Standard_True));
+  Handle(DDataStd_TreeBrowser) browser = Handle(DDataStd_TreeBrowser)::DownCast (Draw::GetExisting (a[1]));
+  if (browser.IsNull())
+  {
+    std::cout << "Syntax error: browser '" << a[1] << "' not found\n";
+    return 1;
+  }
 
   TDF_Label lab;
   if (n == 3) TDF_Tool::Label(browser->Label().Data(),a[2],lab);

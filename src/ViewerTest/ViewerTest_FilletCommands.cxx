@@ -51,9 +51,6 @@
 # include <stdio.h>
 #endif
 
-extern  Handle(AIS_Shape) GetAISShapeFromName(const char* name);
-
-
 static Standard_Real t3d = 1.e-4;
 static Standard_Real t2d = 1.e-5;
 static Standard_Real ta  = 1.e-2;
@@ -124,16 +121,9 @@ static Standard_Integer VBLEND(Draw_Interpretor& di, Standard_Integer narg, cons
   TopoDS_Shape res = Rakk->Shape();
   DBRep::Set(a[1],res);
 
-
   // visu resultat...
-  Handle(AIS_Shape) AS = GetAISShapeFromName(a[1]);
-  Handle(AIS_Shape) Start = GetAISShapeFromName(a[2]);
-  Handle(AIS_InteractiveContext) Ctx = ViewerTest::GetAISContext();
-  Ctx->Erase(Start,Standard_False);
-  if(Ctx->IsDisplayed(AS))
-    Ctx->Redisplay (AS, Standard_True);
-  else
-    Ctx->Display (AS, Standard_True);
+  ViewerTest::Display (a[2], Handle(AIS_InteractiveObject)(), false);
+  ViewerTest::Display (a[1], new AIS_Shape (res), true);
   return 0;
 }
 

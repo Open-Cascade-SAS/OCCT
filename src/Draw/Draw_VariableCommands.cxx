@@ -627,7 +627,7 @@ static Standard_Integer dgetenv(Draw_Interpretor& di, Standard_Integer argc, con
 static Standard_Integer isdraw(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
   if (n != 2) return 1;
-  Handle(Draw_Drawable3D) D = Draw::Get(a[1],Standard_False);
+  Handle(Draw_Drawable3D) D = Draw::Get (a[1]);
   if (D.IsNull())
     di << "0";
   else
@@ -643,7 +643,7 @@ static Standard_Integer isdraw(Draw_Interpretor& di, Standard_Integer n, const c
 Standard_Integer isprot(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
   if (n != 2) return 1;
-  Handle(Draw_Drawable3D) D = Draw::Get(a[1],Standard_False);
+  Handle(Draw_Drawable3D) D = Draw::Get(a[1]);
   if (D.IsNull())
     di << "0";
   else {
@@ -814,75 +814,63 @@ void Draw::Set(const Standard_CString name,
 //function : Set
 //purpose  : 
 //=======================================================================
-void Draw::Set(const Standard_CString Name, const Standard_Real val)
+void Draw::Set(const Standard_CString theName, const Standard_Real theValue)
 {
-  if ((Name[0] == '.') && (Name[1] == '\0')) return;
-  Standard_CString aName = Name;
-  Handle(Draw_Drawable3D) D = Draw::Get(aName,Standard_False);
-  Handle(Draw_Number) N;
-  if (!D.IsNull()) {
-    N = Handle(Draw_Number)::DownCast(D);
-  }
-  if (N.IsNull()) {
-    N = new Draw_Number(val);
-    Draw::Set(aName,N,Standard_False);
+  if (Handle(Draw_Number) aNumber = Handle(Draw_Number)::DownCast (Draw::GetExisting (theName)))
+  {
+    aNumber->Value (theValue);
   }
   else
-    N->Value(val);
+  {
+    aNumber = new Draw_Number (theValue);
+    Draw::Set (theName, aNumber, Standard_False);
+  }
 }
+
 //=======================================================================
-//function : Get
-//purpose  : 
+//function : getDrawable
+//purpose  :
 //=======================================================================
-Handle(Draw_Drawable3D) Draw::Get(Standard_CString& name, 
-			          const Standard_Boolean )
+Handle(Draw_Drawable3D) Draw::getDrawable (Standard_CString& theName,
+                                           Standard_Boolean theToAllowPick)
 {
-  Standard_Boolean pick = ((name[0] == '.') && (name[1] == '\0'));
-  Handle(Draw_Drawable3D) D;
-  if (pick) {
-    cout << "Pick an object" << endl;
-    dout.Select(p_id,p_X,p_Y,p_b);
-    dout.Pick(p_id,p_X,p_Y,5,D,0);
-    if (!D.IsNull()) {
-      if (D->Name()) {
-	name = p_Name = D->Name();
-	//p_Name = (char *)D->Name();
-      }
-    }
+  const Standard_Boolean toPick = ((theName[0] == '.') && (theName[1] == '\0'));
+  if (!toPick)
+  {
+    ClientData aCD = Tcl_VarTraceInfo (Draw::GetInterpretor().Interp(), theName, TCL_TRACE_UNSETS | TCL_TRACE_WRITES, tracevar, NULL);
+    Handle(Draw_Drawable3D) aDrawable = reinterpret_cast<Draw_Drawable3D*>(aCD);
+    return theVariables.Contains (aDrawable)
+         ? aDrawable
+         : Handle(Draw_Drawable3D)();
   }
-  else {
-    ClientData aCD =
-      Tcl_VarTraceInfo(Draw::GetInterpretor().Interp(),name,TCL_TRACE_UNSETS | TCL_TRACE_WRITES,
-                       tracevar, NULL);
-    D = reinterpret_cast<Draw_Drawable3D*>(aCD);
-    if (!theVariables.Contains(D))
-      D.Nullify();
-#if 0
-    if (D.IsNull() && complain)
-      cout <<name<<" does not exist"<<endl;
-#endif
+  else if (!theToAllowPick)
+  {
+    return Handle(Draw_Drawable3D)();
   }
-  return D;
+
+  std::cout << "Pick an object" << std::endl;
+  Handle(Draw_Drawable3D) aDrawable;
+  dout.Select (p_id, p_X, p_Y, p_b);
+  dout.Pick (p_id, p_X, p_Y, 5, aDrawable, 0);
+  if (!aDrawable.IsNull()
+    && aDrawable->Name() != NULL)
+  {
+    theName = p_Name = aDrawable->Name();
+  }
+  return aDrawable;
 }
 
 //=======================================================================
 //function : Get
 //purpose  : 
 //=======================================================================
-Standard_Boolean Draw::Get(const Standard_CString name, 
-			   Standard_Real& val)
+Standard_Boolean Draw::Get (const Standard_CString theName,
+                            Standard_Real& theValue)
 {
-  if ((name[0] == '.') && (name[1] == '\0')) {
-    return Standard_False;
-  }
-  Standard_CString aName = name;
-  Handle(Draw_Drawable3D) D = Draw::Get(aName,Standard_False);
-  if (!D.IsNull()) {
-    Handle(Draw_Number) N = Handle(Draw_Number)::DownCast(D);
-    if (!N.IsNull()) {
-      val = N->Value();
-      return Standard_True;
-    }
+  if (Handle(Draw_Number) aNumber = Handle(Draw_Number)::DownCast (Draw::GetExisting (theName)))
+  {
+    theValue = aNumber->Value();
+    return Standard_True;
   }
   return Standard_False;
 }

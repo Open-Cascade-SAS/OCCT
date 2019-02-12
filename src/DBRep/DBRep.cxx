@@ -1291,42 +1291,43 @@ void  DBRep::Set(const Standard_CString Name, const TopoDS_Shape& S)
   Draw::Set(Name,D);
 }
 //=======================================================================
-//function : Get
-//purpose  : 
+//function : getShape
+//purpose  :
 //=======================================================================
-TopoDS_Shape  DBRep::Get(Standard_CString& name,
-			 const TopAbs_ShapeEnum typ,
-			 const Standard_Boolean complain)
+TopoDS_Shape DBRep::getShape (Standard_CString& theName,
+                              TopAbs_ShapeEnum theType,
+                              Standard_Boolean theToComplain)
 {
-  Standard_Boolean pick = name[0] == '.';
-  TopoDS_Shape S;
-  Handle(DBRep_DrawableShape) D;
-  Handle(Draw_Drawable3D) DD = Draw::Get(name,complain);
-  if (!DD.IsNull()) 
-    D = Handle(DBRep_DrawableShape)::DownCast(DD);
-  if (!D.IsNull()) {
-    S = D->Shape();
-    if (typ != TopAbs_SHAPE) {
-      if (typ != S.ShapeType()) {
-	// try to find prom pick
-	if (pick) {
-	  Standard_Real u,v;
-	  DBRep_DrawableShape::LastPick(S,u,v);
-	}
-      } 
-      if (typ != S.ShapeType()) {
-	if (complain) {
-	  cout << name << " is not a ";
-	  TopAbs::Print(typ,cout);
-	  cout << " but a ";
-	  TopAbs::Print(S.ShapeType(),cout);
-	  cout << endl;
-	}
-	S = TopoDS_Shape();
-      }
-    }
+  const Standard_Boolean toPick = theName[0] == '.';
+  Handle(DBRep_DrawableShape) aDrawable = Handle(DBRep_DrawableShape)::DownCast (Draw::Get (theName));
+  if (aDrawable.IsNull())
+  {
+    return TopoDS_Shape();
   }
-  return S;
+
+  TopoDS_Shape aShape = aDrawable->Shape();
+  if (theType != TopAbs_SHAPE
+   && theType != aShape.ShapeType()
+   && toPick)
+  {
+    // try to find prom pick
+    Standard_Real u, v;
+    DBRep_DrawableShape::LastPick (aShape, u, v);
+  }
+  if (theType != TopAbs_SHAPE
+   && theType != aShape.ShapeType())
+  {
+    if (theToComplain)
+    {
+      std::cout << theName << " is not a ";
+      TopAbs::Print (theType, std::cout);
+      std::cout << " but a ";
+      TopAbs::Print (aShape.ShapeType(), std::cout);
+      std::cout << std::endl;
+    }
+    return TopoDS_Shape();
+  }
+  return aShape;
 }
 
 static Standard_Integer XProgress (Draw_Interpretor& di, Standard_Integer argc, const char **argv)

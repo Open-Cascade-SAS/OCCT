@@ -17,23 +17,10 @@
 #ifndef _DBRep_HeaderFile
 #define _DBRep_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
-#include <Standard_CString.hxx>
-#include <TopAbs_ShapeEnum.hxx>
-#include <Standard_Boolean.hxx>
 #include <Draw_Interpretor.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Integer.hxx>
-class TopoDS_Shape;
-class DBRep_Edge;
-class DBRep_Face;
-class DBRep_HideData;
-class DBRep_DrawableShape;
-class DBRep_IsoBuilder;
-
+#include <TCollection_AsciiString.hxx>
+#include <TopAbs_ShapeEnum.hxx>
+#include <TopoDS_Shape.hxx>
 
 //! Used to display BRep objects  using the DrawTrSurf
 //! package.
@@ -54,12 +41,46 @@ public:
   //! variable if already set.
   Standard_EXPORT static void Set (const Standard_CString Name, const TopoDS_Shape& S);
   
-  //! Returns the shape in the variable  <Name>. Returns
-  //! a null shape if the variable is not set or  not of
-  //! the given <Typ>.  If <Complain> is  True a message
-  //! is printed on cout if the variable is not set.
-  Standard_EXPORT static TopoDS_Shape Get (Standard_CString& Name, const TopAbs_ShapeEnum Typ = TopAbs_SHAPE, const Standard_Boolean Complain = Standard_False);
-  
+  //! Returns the shape in the variable.
+  //! @param theName [in] [out] variable name, or "." to pick up shape interactively (the picked name will be returned then)
+  //! @param theType [in]       shape type filter; function will return NULL if shape has different type
+  //! @param theToComplain [in] when TRUE, prints a message on cout if the variable is not set
+  static TopoDS_Shape Get (Standard_CString& theName, TopAbs_ShapeEnum theType = TopAbs_SHAPE, Standard_Boolean theToComplain = Standard_False)
+  {
+    return getShape (theName, theType, theToComplain);
+  }
+
+  //! Returns the shape in the variable.
+  //! @param theName [in] [out] variable name, or "." to pick up shape interactively (the picked name will be returned then)
+  //! @param theType [in]       shape type filter; function will return NULL if shape has different type
+  //! @param theToComplain [in] when TRUE, prints a message on cout if the variable is not set
+  static TopoDS_Shape Get (TCollection_AsciiString& theName, TopAbs_ShapeEnum theType = TopAbs_SHAPE, Standard_Boolean theToComplain = Standard_False)
+  {
+    Standard_CString aNamePtr = theName.ToCString();
+    TopoDS_Shape aShape = getShape (aNamePtr, theType, theToComplain);
+    if (aNamePtr != theName.ToCString())
+    {
+      theName = aNamePtr;
+    }
+    return aShape;
+  }
+
+  //! Returns the shape in the variable.
+  //! @param theName [in] variable name
+  //! @param theType [in] shape type filter; function will return NULL if shape has different type
+  //! @param theToComplain [in] when TRUE, prints a message on cout if the variable is not set
+  static TopoDS_Shape GetExisting (const TCollection_AsciiString& theName, TopAbs_ShapeEnum theType = TopAbs_SHAPE, Standard_Boolean theToComplain = Standard_False)
+  {
+    if (theName.Length() == 1
+     && theName.Value (1) == '.')
+    {
+      return TopoDS_Shape();
+    }
+
+    Standard_CString aNamePtr = theName.ToCString();
+    return getShape (aNamePtr, theType, theToComplain);
+  }
+
   //! Defines the basic commands.
   Standard_EXPORT static void BasicCommands (Draw_Interpretor& theCommands);
   
@@ -86,32 +107,16 @@ public:
   //! get progress indicator
   Standard_EXPORT static Standard_Integer Discretisation();
 
-
-
-
 protected:
 
-
-
-
-
-private:
-
-
-
-
-friend class DBRep_Edge;
-friend class DBRep_Face;
-friend class DBRep_HideData;
-friend class DBRep_DrawableShape;
-friend class DBRep_IsoBuilder;
+  //! Returns the shape in the variable.
+  //! @param theName [in] [out] variable name, or "." to pick up shape interactively (the picked name will be returned then)
+  //! @param theType [in]       shape type filter; function will return NULL if shape has different type
+  //! @param theToComplain [in] when TRUE, prints a message on cout if the variable is not set
+  Standard_EXPORT static TopoDS_Shape getShape (Standard_CString& theName,
+                                                TopAbs_ShapeEnum theType,
+                                                Standard_Boolean theToComplain);
 
 };
-
-
-
-
-
-
 
 #endif // _DBRep_HeaderFile

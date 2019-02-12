@@ -653,51 +653,6 @@ static Standard_Boolean getCtxAndView (Handle(AIS_InteractiveContext)& theCtx,
 }
 
 //==============================================================================
-//function : GetShapeFromName
-//purpose  : Compute an Shape from a draw variable or a file name
-//==============================================================================
-
-static TopoDS_Shape GetShapeFromName(const char* name)
-{
-  TopoDS_Shape S = DBRep::Get(name);
-
-  if ( S.IsNull() ) {
-   	BRep_Builder aBuilder;
-  	BRepTools::Read( S, name, aBuilder);
-  }
-
-  return S;
-}
-
-//==============================================================================
-//function : GetAISShapeFromName
-//purpose  : Compute an AIS_Shape from a draw variable or a file name
-//==============================================================================
-Handle(AIS_Shape) GetAISShapeFromName(const char* name)
-{
-  Handle(AIS_InteractiveObject) aPrs;
-  if (GetMapOfAIS().Find2 (name, aPrs)
-  && !aPrs.IsNull())
-  {
-    if (Handle(AIS_Shape) aShapePrs = Handle(AIS_Shape)::DownCast (aPrs))
-    {
-      return aShapePrs;
-    }
-
-    std::cout << "an Object which is not an AIS_Shape already has this name!!!\n";
-    return Handle(AIS_Shape)();
-  }
-
-  TopoDS_Shape aShape = GetShapeFromName (name);
-  if (!aShape.IsNull())
-  {
-    return new AIS_Shape(aShape);
-  }
-  return Handle(AIS_Shape)();
-}
-
-
-//==============================================================================
 //function : Clear
 //purpose  : Remove all the object from the viewer
 //==============================================================================
@@ -4458,14 +4413,15 @@ static int VDisplay2 (Draw_Interpretor& theDI,
   // Display interactive objects
   for (Standard_Integer anIter = 1; anIter <= aNamesOfDisplayIO.Length(); ++anIter)
   {
-    const TCollection_AsciiString& aName = aNamesOfDisplayIO.Value(anIter);
+    const TCollection_AsciiString& aName = aNamesOfDisplayIO.Value (anIter);
     Handle(AIS_InteractiveObject) aShape;
     if (!GetMapOfAIS().Find2 (aName, aShape))
     {
       // create the AIS_Shape from a name
-      aShape = GetAISShapeFromName (aName.ToCString());
-      if (!aShape.IsNull())
+      TopoDS_Shape aDrawShape = DBRep::GetExisting (aName);
+      if (!aDrawShape.IsNull())
       {
+        aShape = new AIS_Shape (aDrawShape);
         if (isMutable != -1)
         {
           aShape->SetMutable (isMutable == 1);
@@ -4553,10 +4509,10 @@ static int VDisplay2 (Draw_Interpretor& theDI,
     }
     else
     {
-      theDI << "Display " << aName.ToCString() << "\n";
+      theDI << "Display " << aName << "\n";
 
       // update the Shape in the AIS_Shape
-      TopoDS_Shape      aNewShape = GetShapeFromName (aName.ToCString());
+      TopoDS_Shape      aNewShape = DBRep::GetExisting (aName);
       Handle(AIS_Shape) aShapePrs = Handle(AIS_Shape)::DownCast(aShape);
       if (!aShapePrs.IsNull())
       {
@@ -4688,7 +4644,13 @@ static int VShading(Draw_Interpretor& ,Standard_Integer argc, const char** argv)
   TCollection_AsciiString name=argv[1];
   GetMapOfAIS().Find2(name, TheAisIO);
   if (TheAisIO.IsNull())
-    TheAisIO=GetAISShapeFromName(name.ToCString());
+  {
+    TopoDS_Shape aDrawShape = DBRep::GetExisting (name);
+    if (!aDrawShape.IsNull())
+    {
+      TheAisIO = new AIS_Shape (aDrawShape);
+    }
+  }
 
   if (HaveToSet)
     TheAISContext()->SetDeviationCoefficient(TheAisIO,myDevCoef,Standard_True);
@@ -5791,42 +5753,28 @@ static Standard_Integer VLoadSelection (Draw_Interpretor& /*theDi*/,
   }
 
   // Parse input arguments
-  TColStd_SequenceOfAsciiString aNamesOfIO;
   for (Standard_Integer anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
   {
     const TCollection_AsciiString aName = theArgVec[anArgIter];
-    aNamesOfIO.Append (aName);
-  }
-
-  if (aNamesOfIO.IsEmpty())
-  {
-    std::cerr << theArgVec[0] << "Error: wrong number of arguments.\n";
-    return 1;
-  }
-
-  // Load selection of interactive objects
-  for (Standard_Integer anIter = 1; anIter <= aNamesOfIO.Length(); ++anIter)
-  {
-    const TCollection_AsciiString& aName = aNamesOfIO.Value (anIter);
-
     Handle(AIS_InteractiveObject) aShape;
     if (!GetMapOfAIS().Find2 (aName, aShape))
     {
-      aShape = GetAISShapeFromName (aName.ToCString());
-    }
-
-    if (!aShape.IsNull())
-    {
-      if (!GetMapOfAIS().IsBound2 (aName))
+      TopoDS_Shape aDrawShape = DBRep::GetExisting (aName);
+      if (!aDrawShape.IsNull())
       {
+        aShape = new AIS_Shape (aDrawShape);
         GetMapOfAIS().Bind (aShape, aName);
       }
-
-      aCtx->Load (aShape, -1);
-      aCtx->Activate (aShape, aShape->GlobalSelectionMode(), Standard_True);
     }
-  }
+    if (aShape.IsNull())
+    {
+      std::cout << "Syntax error: presentation '" << aName << "' not found\n";
+      return 1;
+    }
 
+    aCtx->Load (aShape, -1);
+    aCtx->Activate (aShape, aShape->GlobalSelectionMode(), Standard_True);
+  }
   return 0;
 }
 
@@ -6271,10 +6219,10 @@ static Standard_Integer TDraft(Draw_Interpretor& di, Standard_Integer argc, cons
   Standard_Real anAngle = 0;
   Standard_Boolean Rev = Standard_False;
   Standard_Integer rev = 0;
-  TopoDS_Shape Solid  = GetShapeFromName(argv[1]);
-  TopoDS_Shape face   = GetShapeFromName(argv[2]);
+  TopoDS_Shape Solid  = DBRep::Get (argv[1]);
+  TopoDS_Shape face   = DBRep::Get (argv[2]);
   TopoDS_Face Face    = TopoDS::Face(face);
-  TopoDS_Shape Plane  = GetShapeFromName(argv[3]);
+  TopoDS_Shape Plane  = DBRep::Get (argv[3]);
   if (Plane.IsNull ()) {
     di << "TEST : Plane is NULL\n";
     return 1;

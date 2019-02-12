@@ -73,16 +73,18 @@ public:
 
   //! Returns main DRAW interpretor.
   Standard_EXPORT static Draw_Interpretor& GetInterpretor();
-  
-  //! Returns a variable  value.  Null if  the  variable
-  //! does not exist, a warning  is printed if  Complain
-  //! is True.
-  //!
-  //! The name "."   does a graphic  selection.   If the
-  //! selection is a variable <Name> is overwritten with
-  //! the name of the variable.
-  Standard_EXPORT static Handle(Draw_Drawable3D) Get (Standard_CString& Name, const Standard_Boolean Complain = Standard_True);
-  
+
+  //! Returns a variable value.
+  //! The name "." does a graphic selection; in this case theName will be is overwritten with the name of the variable.
+  static Handle(Draw_Drawable3D) Get (Standard_CString& theName) { return getDrawable (theName, Standard_True); }
+
+  //! Returns a variable value.
+  static Handle(Draw_Drawable3D) GetExisting (const Standard_CString& theName)
+  {
+    Standard_CString aName = theName;
+    return getDrawable (aName, Standard_False);
+  }
+
   //! Gets a   numeric  variable. Returns  True   if the
   //! variable exist.
   Standard_EXPORT static Standard_Boolean Get (const Standard_CString Name, Standard_Real& val);
@@ -129,19 +131,15 @@ public:
   //! Defines Draw unit commands
   Standard_EXPORT static void UnitCommands (Draw_Interpretor& I);
 
-
-
-
 protected:
 
-
-
-
+  //! Returns a variable value.
+  //! @param theName [in] [out] variable name, or "." to activate picking
+  //! @param theToAllowPick [in] when TRUE, "." name will activate picking
+  Standard_EXPORT static Handle(Draw_Drawable3D) getDrawable (Standard_CString& theName,
+                                                              Standard_Boolean theToAllowPick);
 
 private:
-
-
-
 
 friend class Draw_Drawable3D;
 friend class Draw_Drawable2D;
