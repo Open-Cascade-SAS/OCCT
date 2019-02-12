@@ -83,9 +83,6 @@ public:
   //! @return true if depth writing is enabled.
   Standard_Boolean& UseDepthWrite() { return myUseDepthWrite; }
 
-  //! @return true if frustum culling algorithm is enabled
-  Standard_EXPORT Standard_Boolean IsCullingEnabled() const;
-
   //! Configure default polygon offset parameters.
   //! Return previous settings.
   Standard_EXPORT Graphic3d_PolygonOffset SetDefaultPolygonOffset (const Graphic3d_PolygonOffset& theOffset);
