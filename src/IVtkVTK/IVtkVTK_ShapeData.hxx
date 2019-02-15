@@ -24,6 +24,7 @@
 #endif
 #include <vtkPolyData.h>
 #include <vtkSmartPointer.h>
+#include <vtkIdTypeArray.h>
 #ifdef _MSC_VER
 #pragma warning(pop)
 #endif
@@ -104,6 +105,23 @@ public: //! @name Specific methods
   //! @return VTK PolyData
   vtkPolyData* getVtkPolyData() const
   { return myPolyData; }
+
+private:
+
+  //! Wrapper over vtkGenericDataArray::InsertNextTypedTuple().
+  void insertNextSubShapeId (IVtk_IdType theShapeID,
+                             IVtk_MeshType theMeshType)
+  {
+    const vtkIdType aShapeIDVTK = theShapeID;
+    const vtkIdType aType = theMeshType;
+  #if (VTK_MAJOR_VERSION > 7) || (VTK_MAJOR_VERSION == 7 && VTK_MINOR_VERSION >= 1)
+    mySubShapeIDs->InsertNextTypedTuple (&aShapeIDVTK);
+    myMeshTypes->InsertNextTypedTuple (&aType);
+  #else
+    mySubShapeIDs->InsertNextTupleValue (&aShapeIDVTK);
+    myMeshTypes->InsertNextTupleValue (&aType);
+  #endif
+  }
 
 private:
   vtkSmartPointer< vtkPolyData >    myPolyData;    //!< Shape geometry as vtkPolyData

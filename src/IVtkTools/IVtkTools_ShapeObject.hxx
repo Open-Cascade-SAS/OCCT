@@ -50,7 +50,7 @@ class IVtkTools_ShapeDataSource;
 class Standard_EXPORT IVtkTools_ShapeObject :  public vtkDataObject
 {
 public:
-  vtkTypeMacro (IVtkTools_ShapeObject, vtkObject)
+  vtkTypeMacro (IVtkTools_ShapeObject, vtkDataObject)
 
   static IVtkTools_ShapeObject* New(); 
 

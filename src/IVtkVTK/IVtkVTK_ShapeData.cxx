@@ -22,7 +22,6 @@
 #include <vtkCellData.h>
 #include <vtkDoubleArray.h>
 #include <vtkIdList.h>
-#include <vtkIdTypeArray.h>
 #include <vtkPoints.h>
 #include <vtkPolyData.h>
 #ifdef _MSC_VER
@@ -80,10 +79,7 @@ void IVtkVTK_ShapeData::InsertVertex (const IVtk_IdType theShapeID,
 {
   vtkIdType aPointIdVTK = thePointId;
   myPolyData->InsertNextCell (VTK_VERTEX, 1, &aPointIdVTK);
-  const vtkIdType aShapeIDVTK = theShapeID;
-  mySubShapeIDs->InsertNextTupleValue (&aShapeIDVTK);
-  const vtkIdType aType = theMeshType;
-  myMeshTypes->InsertNextTupleValue (&aType);
+  insertNextSubShapeId (theShapeID, theMeshType);
 }
 
 //================================================================
@@ -97,10 +93,7 @@ void IVtkVTK_ShapeData::InsertLine (const IVtk_IdType   theShapeID,
 {
   vtkIdType aPoints[2] = { thePointId1, thePointId2 };
   myPolyData->InsertNextCell (VTK_LINE, 2, aPoints);
-  const vtkIdType aShapeIDVTK = theShapeID;
-  mySubShapeIDs->InsertNextTupleValue (&aShapeIDVTK);
-  const vtkIdType aType = theMeshType;
-  myMeshTypes->InsertNextTupleValue (&aType);
+  insertNextSubShapeId (theShapeID, theMeshType);
 }
 
 //================================================================
@@ -124,10 +117,7 @@ void IVtkVTK_ShapeData::InsertLine (const IVtk_IdType       theShapeID,
     }
 
     myPolyData->InsertNextCell (VTK_POLY_LINE, anIdList);
-    const vtkIdType aShapeIDVTK = theShapeID;
-    mySubShapeIDs->InsertNextTupleValue (&aShapeIDVTK);
-    const vtkIdType aType = theMeshType;
-    myMeshTypes->InsertNextTupleValue (&aType);
+    insertNextSubShapeId (theShapeID, theMeshType);
   }
 }
 
@@ -143,8 +133,5 @@ void IVtkVTK_ShapeData::InsertTriangle (const IVtk_IdType   theShapeID,
 {
   vtkIdType aPoints[3] = { thePointId1, thePointId2, thePointId3 };
   myPolyData->InsertNextCell (VTK_TRIANGLE, 3, aPoints);
-  const vtkIdType aShapeIDVTK = theShapeID;
-  mySubShapeIDs->InsertNextTupleValue (&aShapeIDVTK);
-  const vtkIdType aType = theMeshType;
-  myMeshTypes->InsertNextTupleValue (&aType);
+  insertNextSubShapeId (theShapeID, theMeshType);
 }
