@@ -14,9 +14,9 @@ Requirements for building sample:
 * Android NDK r9d or newer
 * Apache Ant 1.9.4 or higher
 * OCCT compiled under Android platform and placed in directories:
-  * occt/libs/armeabi-v7a/*.so and occt/inc/*.hxx (libraries and include files of OCCT install)
-  * android/assets/opencascade/shared/Shaders/* (Shaders folder of OCCT install: /share/opencascade/resources/Shaders)
-  * 3rdparty/include/freetype2/*, 3rdparty/include/FreeImage.h and 3rdparty/libs/armeabi-v7a/libFreeImage.so and 3rdparty/libs/armeabi-v7a/libfreetype.so
+  * occt/libs/armeabi-v7a/\*.so and occt/inc/\*.hxx (libraries and include files of OCCT install)
+  * android/assets/opencascade/shared/Shaders/\* (Shaders folder of OCCT install: /share/opencascade/resources/Shaders)
+  * 3rdparty/include/freetype2/\*, 3rdparty/include/FreeImage.h and 3rdparty/libs/armeabi-v7a/libFreeImage.so and 3rdparty/libs/armeabi-v7a/libfreetype.so
 
 It is also possible to to correct OCCT.pri file an get resources from another tree of directories.
 

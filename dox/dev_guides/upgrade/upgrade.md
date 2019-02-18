@@ -1091,7 +1091,7 @@ The following environment variables have become redundant:
 
 * *CSF_UnitsLexicon* and *CSF_UnitsDefinition* are no more used.  Units definition (*UnitsAPI/Lexi_Expr.dat* and *UnitsAPI/Units.dat*) is now embedded into source code.
 * *CSF_XSMessage* and *CSF_XHMessage* are now optional.
-  English messages (XSMessage/*XSTEP.us* and SHMessage/*SHAPE.us*) are now embedded into source code
+  English messages (XSMessage/\*XSTEP.us* and SHMessage/\*SHAPE.us*) are now embedded into source code
   and automatically loaded when environment variables are not set.
 * *CSF_ShadersDirectory* is not required any more, though it still can be used to load custom shaders.
   Mandatory GLSL resources are now embedded into source code.
