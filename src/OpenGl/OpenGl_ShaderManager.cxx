@@ -1635,8 +1635,8 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramUnlit (Handle(OpenGl_Sha
 
     if (hasGlslBitOps)
     {
-      aUniforms.Append (OpenGl_ShaderObject::ShaderVariable ("int   uPattern;", Graphic3d_TOS_FRAGMENT));
-      aUniforms.Append (OpenGl_ShaderObject::ShaderVariable ("float uFactor;",  Graphic3d_TOS_FRAGMENT));
+      aUniforms.Append (OpenGl_ShaderObject::ShaderVariable ("int   uPattern", Graphic3d_TOS_FRAGMENT));
+      aUniforms.Append (OpenGl_ShaderObject::ShaderVariable ("float uFactor",  Graphic3d_TOS_FRAGMENT));
       aStageInOuts.Append (OpenGl_ShaderObject::ShaderVariable ("vec2 ScreenSpaceCoord", Graphic3d_TOS_VERTEX | Graphic3d_TOS_FRAGMENT));
       aSrcVertEndMain =
         EOL"  ScreenSpaceCoord = gl_Position.xy / gl_Position.w;";
