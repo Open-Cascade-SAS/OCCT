@@ -1,0 +1,11 @@
+puts "============"
+puts "0030510: Application Framework - add missing NULL check within TDataStd_RealArray::ChangeArray()"
+puts "============"
+
+Open [locate_data_file bug30510_Study_Color_Field_GEOM.sgd] CC
+
+if { ![regexp {0:1} [Children CC 0]] } {
+  puts "Error: An empty document was created"
+} else {
+  puts "OK: Document was created"
+}

@@ -191,18 +191,20 @@ void TDataStd_RealArray::ChangeArray(const Handle(TColStd_HArray1OfReal)& newArr
   Standard_Boolean aDimEqual = Standard_False;
   Standard_Integer i;
 
-  if (Lower() == aLower && Upper() == anUpper ) {
-    aDimEqual = Standard_True;
-    Standard_Boolean isEqual = Standard_True;
-    if(isCheckItems) {
-      for(i = aLower; i <= anUpper; i++) {
-        if(myValue->Value(i) != newArray->Value(i)) {
-          isEqual = Standard_False;
-          break;
+  if (!myValue.IsNull()) {
+    if (Lower() == aLower && Upper() == anUpper ) {
+      aDimEqual = Standard_True;
+      Standard_Boolean isEqual = Standard_True;
+      if(isCheckItems) {
+        for(i = aLower; i <= anUpper; i++) {
+          if(myValue->Value(i) != newArray->Value(i)) {
+            isEqual = Standard_False;
+            break;
+          }
         }
+        if(isEqual)
+          return;
       }
-      if(isEqual)
-        return;
     }
   }
 
