@@ -172,15 +172,6 @@ static Standard_Integer pipe(Draw_Interpretor& di,
 
   DBRep::Set(a[1],S);
   
-  // Save history of pipe
-  if (BRepTest_Objects::IsHistoryNeeded())
-  {
-    TopTools_ListOfShape aList;
-    aList.Append(Profile);
-    aList.Append(Spine);
-    BRepTest_Objects::SetHistory(aList, PipeBuilder);
-  }
-    
   return 0;
 }
 
