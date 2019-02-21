@@ -11662,6 +11662,7 @@ static int VManipulator (Draw_Interpretor& theDi,
   aCmd.AddOption ("autoActivate",      "... {0|1} - set activation on detection");
   aCmd.AddOption ("followTranslation", "... {0|1} - set following translation transform");
   aCmd.AddOption ("followRotation",    "... {0|1} - set following rotation transform");
+  aCmd.AddOption ("followDragging",    "... {0|1} - set following dragging transform");
   aCmd.AddOption ("gap",               "... value - set gap between sub-parts");
   aCmd.AddOption ("part",              "... axis mode {0|1} - set visual part");
   aCmd.AddOption ("pos",               "... x y z [nx ny nz [xx xy xz]] - set position of manipulator");
@@ -11750,6 +11751,10 @@ static int VManipulator (Draw_Interpretor& theDi,
   {
     aManipulator->ChangeTransformBehavior().SetFollowRotation (aCmd.ArgBool ("followRotation"));
   }
+  if (aCmd.HasOption("followDragging", 1, Standard_True))
+  {
+    aManipulator->ChangeTransformBehavior().SetFollowDragging(aCmd.ArgBool("followDragging"));
+  }
   if (aCmd.HasOption ("gap", 1, Standard_True))
   {
     aManipulator->SetGap (aCmd.ArgFloat ("gap"));
@@ -11759,9 +11764,9 @@ static int VManipulator (Draw_Interpretor& theDi,
     Standard_Integer anAxis = aCmd.ArgInt  ("part", 0);
     Standard_Integer aMode  = aCmd.ArgInt  ("part", 1);
     Standard_Boolean aOnOff = aCmd.ArgBool ("part", 2);
-    if (aMode < 1 || aMode > 3)
+    if (aMode < 1 || aMode > 4)
     {
-      std::cerr << theArgVec[0] << " error: mode value should be in range [1, 3].\n";
+      std::cerr << theArgVec[0] << " error: mode value should be in range [1, 4].\n";
       return 1;
     }
 
@@ -13019,6 +13024,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
       "\n      '-autoActivate      {0|1}'        - set activation on detection"
       "\n      '-followTranslation {0|1}'        - set following translation transform"
       "\n      '-followRotation    {0|1}'        - set following rotation transform"
+      "\n      '-followDragging    {0|1}'        - set following dragging transform"
       "\n      '-gap value'                      - set gap between sub-parts"
       "\n      '-part axis mode    {0|1}'        - set visual part"
       "\n      '-pos x y z [nx ny nz [xx xy xz]' - set position of manipulator"

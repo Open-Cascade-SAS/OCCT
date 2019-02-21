@@ -53,6 +53,8 @@ Prs3d_ToolCylinder.hxx
 Prs3d_ToolCylinder.cxx
 Prs3d_ToolQuadric.hxx
 Prs3d_ToolQuadric.cxx
+Prs3d_ToolSector.hxx
+Prs3d_ToolSector.cxx
 Prs3d_ToolSphere.hxx
 Prs3d_ToolSphere.cxx
 Prs3d_TypeOfHighlight.hxx

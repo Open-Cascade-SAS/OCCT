@@ -280,12 +280,14 @@ public:
   //! - FollowRotation - whether the manipulator will be rotated together with an object.
   struct BehaviorOnTransform {
 
-    BehaviorOnTransform() : FollowTranslation (Standard_True), FollowRotation (Standard_True) {}
+    BehaviorOnTransform() : FollowTranslation (Standard_True), FollowRotation (Standard_True), FollowDragging (Standard_True) {}
     BehaviorOnTransform& SetFollowTranslation (const Standard_Boolean theApply) { FollowTranslation = theApply; return *this; }
     BehaviorOnTransform& SetFollowRotation    (const Standard_Boolean theApply) { FollowRotation    = theApply; return *this; }
+    BehaviorOnTransform& SetFollowDragging    (const Standard_Boolean theApply) { FollowDragging    = theApply; return *this; }
 
     Standard_Boolean FollowTranslation;
     Standard_Boolean FollowRotation;
+    Standard_Boolean FollowDragging;
   };
 
   //! Sets behavior settings for transformation action carried on the manipulator,
@@ -446,6 +448,29 @@ protected: //! @name Auxiliary classes to fill presentation with proper primitiv
     Handle(Graphic3d_ArrayOfTriangles) myArray;
   };
 
+  class Sector : public Quadric
+  {
+  public:
+
+    Sector()
+      : Quadric(),
+      myRadius(0.0f)
+    { }
+
+    ~Sector() { }
+
+    void Init(const Standard_ShortReal theRadius,
+              const gp_Ax1&            thePosition,
+              const gp_Dir&            theXDirection,
+              const Standard_Integer   theSlicesNb = 5,
+              const Standard_Integer   theStacksNb = 5);
+
+  protected:
+
+    gp_Ax1             myPosition;
+    Standard_ShortReal myRadius;
+  };
+
   //! The class describes on axis sub-object.
   //! It includes sub-objects itself:
   //! -rotator
@@ -485,6 +510,11 @@ protected: //! @name Auxiliary classes to fill presentation with proper primitiv
       {
         myHighlightRotator->SetTransformPersistence (theTrsfPers);
       }
+
+      if (!myHighlightDragger.IsNull())
+      {
+        myHighlightDragger->SetTransformPersistence(theTrsfPers);
+      }
     }
 
     void Transform (const Handle(Geom_Transformation)& theTransformation)
@@ -503,6 +533,11 @@ protected: //! @name Auxiliary classes to fill presentation with proper primitiv
       {
         myHighlightRotator->SetTransformation (theTransformation);
       }
+
+      if (!myHighlightDragger.IsNull())
+      {
+        myHighlightDragger->SetTransformation(theTransformation);
+      }
     }
 
     Standard_Boolean HasTranslation() const { return myHasTranslation; }
@@ -511,11 +546,15 @@ protected: //! @name Auxiliary classes to fill presentation with proper primitiv
 
     Standard_Boolean HasScaling() const { return myHasScaling; }
 
+    Standard_Boolean HasDragging() const { return myHasDragging; }
+
     void SetTranslation (const Standard_Boolean theIsEnabled) { myHasTranslation = theIsEnabled; }
 
     void SetRotation (const Standard_Boolean theIsEnabled) { myHasRotation = theIsEnabled; }
 
     void SetScaling (const Standard_Boolean theIsEnabled) { myHasScaling = theIsEnabled; }
+
+    void SetDragging(const Standard_Boolean theIsEnabled) { myHasDragging = theIsEnabled; }
 
     Quantity_Color Color() const { return myColor; }
 
@@ -531,11 +570,15 @@ protected: //! @name Auxiliary classes to fill presentation with proper primitiv
 
     const Handle(Prs3d_Presentation)& ScalerHighlightPrs() const { return myHighlightScaler; }
 
+    const Handle(Prs3d_Presentation)& DraggerHighlightPrs() const { return myHighlightDragger; }
+
     const Handle(Graphic3d_Group)& TranslatorGroup() const { return myTranslatorGroup; }
 
     const Handle(Graphic3d_Group)& RotatorGroup() const { return myRotatorGroup; }
 
     const Handle(Graphic3d_Group)& ScalerGroup() const { return myScalerGroup; }
+
+    const Handle(Graphic3d_Group)& DraggerGroup() const { return myDraggerGroup; }
 
     const Handle(Graphic3d_ArrayOfTriangles)& TriangleArray() const { return myTriangleArray; }
 
@@ -570,6 +613,7 @@ protected: //! @name Auxiliary classes to fill presentation with proper primitiv
   public:
 
     const gp_Pnt& TranslatorTipPosition() const { return myArrowTipPos; }
+    const Sector& DraggerSector() const { return mySector; }
     const Disk& RotatorDisk() const { return myCircle; }
     float RotatorDiskRadius() const { return myCircleRadius; }
     const Cube& ScalerCube() const { return myCube; }
@@ -593,11 +637,14 @@ protected: //! @name Auxiliary classes to fill presentation with proper primitiv
     Standard_ShortReal myDiskThickness;
     Standard_ShortReal myIndent; //!< Gap between visual part of the manipulator.
 
+    Standard_Boolean myHasDragging;
+
   protected:
 
     Standard_Integer myFacettesNumber;
 
     gp_Pnt   myArrowTipPos;
+    Sector   mySector;
     Disk     myCircle;
     float    myCircleRadius;
     Cube     myCube;
@@ -606,10 +653,12 @@ protected: //! @name Auxiliary classes to fill presentation with proper primitiv
     Handle(Graphic3d_Group) myTranslatorGroup;
     Handle(Graphic3d_Group) myScalerGroup;
     Handle(Graphic3d_Group) myRotatorGroup;
+    Handle(Graphic3d_Group) myDraggerGroup;
 
     Handle(Prs3d_Presentation) myHighlightTranslator;
     Handle(Prs3d_Presentation) myHighlightScaler;
     Handle(Prs3d_Presentation) myHighlightRotator;
+    Handle(Prs3d_Presentation) myHighlightDragger;
 
     Handle(Graphic3d_ArrayOfTriangles) myTriangleArray;
 
@@ -638,6 +687,9 @@ protected: //! @name Fields for interactive transformation. Fields only for inte
 
   //! Aspect used to color current detected part and current selected part.
   Handle(Prs3d_ShadingAspect) myHighlightAspect;
+
+  //! Aspect used to color sector part when it's selected.
+  Handle(Prs3d_ShadingAspect) myDraggerHighlight;
 public:
 
   DEFINE_STANDARD_RTTIEXT(AIS_Manipulator, AIS_InteractiveObject)
