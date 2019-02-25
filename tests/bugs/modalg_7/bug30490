@@ -1,0 +1,21 @@
+puts "========"
+puts "0030490: Modeling Algorithms - Incomplete result of Cut operation"
+puts "========"
+puts ""
+
+restore [locate_data_file bug30490_ar_shape_to_cuts.brep] s1
+restore [locate_data_file bug30490_ar_cutting_shapes.brep] s2
+
+bclearobjects
+bcleartools
+baddobjects s1
+baddtools s2
+bfillds
+
+bbop result 2
+
+checkshape result
+checknbshapes result -face 2 -wire 2
+checkprops result -s 432.691
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
