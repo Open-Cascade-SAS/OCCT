@@ -116,7 +116,6 @@ void Determine_Transition(const IntRes2d_Position    Pos1,
       }
       else {
 	gp_Vec2d Norm;
-	Tan1.Normalized();
 	Norm.SetCoord(-Tan1.Y(),Tan1.X());
 	Standard_Real Val1,Val2;
 	if (!courbure1) {

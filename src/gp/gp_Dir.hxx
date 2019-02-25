@@ -176,8 +176,8 @@ public:
   //! Raises the exception ConstructionError if V1 and V2 are parallel
   //! or <me> and (V1^V2) are parallel because the computed vector
   //! can't be normalized to create a direction.
-    gp_Dir Crossed (const gp_Dir& Right) const;
-  gp_Dir operator ^ (const gp_Dir& Right) const
+  Standard_NODISCARD gp_Dir Crossed (const gp_Dir& Right) const;
+  Standard_NODISCARD gp_Dir operator ^ (const gp_Dir& Right) const
 {
   return Crossed(Right);
 }
@@ -192,7 +192,7 @@ public:
   //! -   this unit vector and (V1 ^ V2) are parallel.
   //! This is because, in these conditions, the computed vector
   //! is null and cannot be normalized.
-    gp_Dir CrossCrossed (const gp_Dir& V1, const gp_Dir& V2) const;
+    Standard_NODISCARD gp_Dir CrossCrossed (const gp_Dir& V1, const gp_Dir& V2) const;
   
   //! Computes the scalar product
     Standard_Real Dot (const gp_Dir& Other) const;
@@ -216,8 +216,8 @@ public:
   //! Performs the symmetrical transformation of a direction
   //! with respect to the direction V which is the center of
   //! the  symmetry.]
-    gp_Dir Reversed() const;
-  gp_Dir operator -() const
+    Standard_NODISCARD gp_Dir Reversed() const;
+  Standard_NODISCARD gp_Dir operator -() const
 {
   return Reversed();
 }
@@ -228,7 +228,7 @@ public:
   //! Performs the symmetrical transformation of a direction
   //! with respect to the direction V which is the center of
   //! the  symmetry.
-  Standard_EXPORT gp_Dir Mirrored (const gp_Dir& V) const;
+  Standard_EXPORT Standard_NODISCARD gp_Dir Mirrored (const gp_Dir& V) const;
   
   Standard_EXPORT void Mirror (const gp_Ax1& A1);
   
@@ -236,7 +236,7 @@ public:
   //! Performs the symmetrical transformation of a direction
   //! with respect to an axis placement which is the axis
   //! of the symmetry.
-  Standard_EXPORT gp_Dir Mirrored (const gp_Ax1& A1) const;
+  Standard_EXPORT Standard_NODISCARD gp_Dir Mirrored (const gp_Ax1& A1) const;
   
   Standard_EXPORT void Mirror (const gp_Ax2& A2);
   
@@ -244,14 +244,14 @@ public:
   //! Performs the symmetrical transformation of a direction
   //! with respect to a plane. The axis placement A2 locates
   //! the plane of the symmetry : (Location, XDirection, YDirection).
-  Standard_EXPORT gp_Dir Mirrored (const gp_Ax2& A2) const;
+  Standard_EXPORT Standard_NODISCARD gp_Dir Mirrored (const gp_Ax2& A2) const;
   
     void Rotate (const gp_Ax1& A1, const Standard_Real Ang);
   
 
   //! Rotates a direction. A1 is the axis of the rotation.
   //! Ang is the angular value of the rotation in radians.
-    gp_Dir Rotated (const gp_Ax1& A1, const Standard_Real Ang) const;
+    Standard_NODISCARD gp_Dir Rotated (const gp_Ax1& A1, const Standard_Real Ang) const;
   
   Standard_EXPORT void Transform (const gp_Trsf& T);
   
@@ -260,7 +260,7 @@ public:
   //! Warnings :
   //! If the scale factor of the "Trsf" T is negative then the
   //! direction <me> is reversed.
-    gp_Dir Transformed (const gp_Trsf& T) const;
+  Standard_NODISCARD gp_Dir Transformed (const gp_Trsf& T) const;
 
 
 

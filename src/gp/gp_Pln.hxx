@@ -178,7 +178,7 @@ public:
   //! Warnings :
   //! The normal direction to the plane is not changed.
   //! The "XAxis" and the "YAxis" are reversed.
-  Standard_EXPORT gp_Pln Mirrored (const gp_Pnt& P) const;
+  Standard_EXPORT Standard_NODISCARD gp_Pln Mirrored (const gp_Pnt& P) const;
   
   Standard_EXPORT void Mirror (const gp_Ax1& A1);
   
@@ -190,7 +190,7 @@ public:
   //! the "XDirection" and the "YDirection" after transformation
   //! if  the  initial plane was right  handed,  else  it is the
   //! opposite.
-  Standard_EXPORT gp_Pln Mirrored (const gp_Ax1& A1) const;
+  Standard_EXPORT Standard_NODISCARD gp_Pln Mirrored (const gp_Ax1& A1) const;
   
   Standard_EXPORT void Mirror (const gp_Ax2& A2);
   
@@ -202,20 +202,20 @@ public:
   //! direction is the cross  product between   the "XDirection"
   //! and the "YDirection"  after  transformation if the initial
   //! plane was right handed, else it is the opposite.
-  Standard_EXPORT gp_Pln Mirrored (const gp_Ax2& A2) const;
+  Standard_EXPORT Standard_NODISCARD gp_Pln Mirrored (const gp_Ax2& A2) const;
   
     void Rotate (const gp_Ax1& A1, const Standard_Real Ang);
   
 
   //! rotates a plane. A1 is the axis of the rotation.
   //! Ang is the angular value of the rotation in radians.
-    gp_Pln Rotated (const gp_Ax1& A1, const Standard_Real Ang) const;
+    Standard_NODISCARD gp_Pln Rotated (const gp_Ax1& A1, const Standard_Real Ang) const;
   
     void Scale (const gp_Pnt& P, const Standard_Real S);
   
 
   //! Scales a plane. S is the scaling value.
-    gp_Pln Scaled (const gp_Pnt& P, const Standard_Real S) const;
+    Standard_NODISCARD gp_Pln Scaled (const gp_Pnt& P, const Standard_Real S) const;
   
     void Transform (const gp_Trsf& T);
   
@@ -225,20 +225,20 @@ public:
   //! point, on the "XAxis" and the "YAxis".
   //! The resulting normal direction is the cross product between
   //! the "XDirection" and the "YDirection" after transformation.
-    gp_Pln Transformed (const gp_Trsf& T) const;
+    Standard_NODISCARD gp_Pln Transformed (const gp_Trsf& T) const;
   
     void Translate (const gp_Vec& V);
   
 
   //! Translates a plane in the direction of the vector V.
   //! The magnitude of the translation is the vector's magnitude.
-    gp_Pln Translated (const gp_Vec& V) const;
+    Standard_NODISCARD gp_Pln Translated (const gp_Vec& V) const;
   
     void Translate (const gp_Pnt& P1, const gp_Pnt& P2);
   
 
   //! Translates a plane from the point P1 to the point P2.
-    gp_Pln Translated (const gp_Pnt& P1, const gp_Pnt& P2) const;
+    Standard_NODISCARD gp_Pln Translated (const gp_Pnt& P1, const gp_Pnt& P2) const;
 
 
 

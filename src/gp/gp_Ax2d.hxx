@@ -115,7 +115,7 @@ public:
 
   //! Computes a new axis placement with a direction opposite to
   //! the direction of <me>.
-    gp_Ax2d Reversed() const;
+  Standard_NODISCARD gp_Ax2d Reversed() const;
   
   Standard_EXPORT void Mirror (const gp_Pnt2d& P);
   
@@ -123,7 +123,7 @@ public:
   //! Performs the symmetrical transformation of an axis
   //! placement with respect to the point P which is the
   //! center of the symmetry.
-  Standard_EXPORT gp_Ax2d Mirrored (const gp_Pnt2d& P) const;
+  Standard_EXPORT Standard_NODISCARD gp_Ax2d Mirrored (const gp_Pnt2d& P) const;
   
   Standard_EXPORT void Mirror (const gp_Ax2d& A);
   
@@ -131,7 +131,7 @@ public:
   //! Performs the symmetrical transformation of an axis
   //! placement with respect to an axis placement which
   //! is the axis of the symmetry.
-  Standard_EXPORT gp_Ax2d Mirrored (const gp_Ax2d& A) const;
+  Standard_EXPORT Standard_NODISCARD gp_Ax2d Mirrored (const gp_Ax2d& A) const;
   
     void Rotate (const gp_Pnt2d& P, const Standard_Real Ang);
   
@@ -139,7 +139,7 @@ public:
   //! Rotates an axis placement. <P> is the center of the
   //! rotation . Ang is the angular value of the rotation
   //! in radians.
-    gp_Ax2d Rotated (const gp_Pnt2d& P, const Standard_Real Ang) const;
+    Standard_NODISCARD gp_Ax2d Rotated (const gp_Pnt2d& P, const Standard_Real Ang) const;
   
   Standard_EXPORT void Scale (const gp_Pnt2d& P, const Standard_Real S);
   
@@ -147,26 +147,26 @@ public:
   //! Applies a scaling transformation on the axis placement.
   //! The "Location" point of the axisplacement is modified.
   //! The "Direction" is reversed if the scale is negative.
-    gp_Ax2d Scaled (const gp_Pnt2d& P, const Standard_Real S) const;
+  Standard_NODISCARD gp_Ax2d Scaled (const gp_Pnt2d& P, const Standard_Real S) const;
   
     void Transform (const gp_Trsf2d& T);
   
   //! Transforms an axis placement with a Trsf.
-    gp_Ax2d Transformed (const gp_Trsf2d& T) const;
+    Standard_NODISCARD gp_Ax2d Transformed (const gp_Trsf2d& T) const;
   
     void Translate (const gp_Vec2d& V);
   
 
   //! Translates an axis placement in the direction of the vector
   //! <V>. The magnitude of the translation is the vector's magnitude.
-    gp_Ax2d Translated (const gp_Vec2d& V) const;
+    Standard_NODISCARD gp_Ax2d Translated (const gp_Vec2d& V) const;
   
     void Translate (const gp_Pnt2d& P1, const gp_Pnt2d& P2);
   
 
   //! Translates an axis placement from the point <P1> to the
   //! point <P2>.
-    gp_Ax2d Translated (const gp_Pnt2d& P1, const gp_Pnt2d& P2) const;
+    Standard_NODISCARD gp_Ax2d Translated (const gp_Pnt2d& P1, const gp_Pnt2d& P2) const;
 
 
 

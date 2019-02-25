@@ -139,8 +139,8 @@ public:
   //! Note:
   //! -   operator += assigns the result to this matrix, while
   //! -   operator + creates a new one.
-    gp_Mat2d Added (const gp_Mat2d& Other) const;
-  gp_Mat2d operator + (const gp_Mat2d& Other) const
+  Standard_NODISCARD gp_Mat2d Added (const gp_Mat2d& Other) const;
+  Standard_NODISCARD gp_Mat2d operator + (const gp_Mat2d& Other) const
 {
   return Added(Other);
 }
@@ -153,8 +153,8 @@ public:
   
 
   //! Divides all the coefficients of the matrix by a scalar.
-    gp_Mat2d Divided (const Standard_Real Scalar) const;
-  gp_Mat2d operator / (const Standard_Real Scalar) const
+  Standard_NODISCARD gp_Mat2d Divided (const Standard_Real Scalar) const;
+  Standard_NODISCARD gp_Mat2d operator / (const Standard_Real Scalar) const
 {
   return Divided(Scalar);
 }
@@ -164,10 +164,10 @@ public:
 
   //! Inverses the matrix and raises exception if the matrix
   //! is singular.
-    gp_Mat2d Inverted() const;
+  Standard_NODISCARD gp_Mat2d Inverted() const;
   
-    gp_Mat2d Multiplied (const gp_Mat2d& Other) const;
-  gp_Mat2d operator * (const gp_Mat2d& Other) const
+  Standard_NODISCARD gp_Mat2d Multiplied (const gp_Mat2d& Other) const;
+  Standard_NODISCARD gp_Mat2d operator * (const gp_Mat2d& Other) const
 {
   return Multiplied(Other);
 }
@@ -180,8 +180,8 @@ public:
   //! <me> = Other * <me>.
     void PreMultiply (const gp_Mat2d& Other);
   
-    gp_Mat2d Multiplied (const Standard_Real Scalar) const;
-  gp_Mat2d operator * (const Standard_Real Scalar) const
+    Standard_NODISCARD gp_Mat2d Multiplied (const Standard_Real Scalar) const;
+  Standard_NODISCARD gp_Mat2d operator * (const Standard_Real Scalar) const
 {
   return Multiplied(Scalar);
 }
@@ -202,7 +202,7 @@ public:
   //! if N < 0 <me> = <me>.Invert() *...........* <me>.Invert().
   //! If N < 0 an exception can be raised if the matrix is not
   //! inversible
-    gp_Mat2d Powered (const Standard_Integer N) const;
+  Standard_NODISCARD gp_Mat2d Powered (const Standard_Integer N) const;
   
     void Subtract (const gp_Mat2d& Other);
   void operator -= (const gp_Mat2d& Other)
@@ -213,8 +213,8 @@ public:
 
   //! Computes for each coefficient of the matrix :
   //! <me>.Coef(i,j) - <Other>.Coef(i,j)
-    gp_Mat2d Subtracted (const gp_Mat2d& Other) const;
-  gp_Mat2d operator - (const gp_Mat2d& Other) const
+  Standard_NODISCARD gp_Mat2d Subtracted (const gp_Mat2d& Other) const;
+  Standard_NODISCARD gp_Mat2d operator - (const gp_Mat2d& Other) const
 {
   return Subtracted(Other);
 }
@@ -223,7 +223,7 @@ public:
   
 
   //! Transposes the matrix. A(j, i) -> A (i, j)
-    gp_Mat2d Transposed() const;
+    Standard_NODISCARD gp_Mat2d Transposed() const;
 
 
 friend class gp_Trsf2d;

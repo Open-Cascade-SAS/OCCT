@@ -132,15 +132,15 @@ public:
   }
 
   //! returns the product of an IntegerVector by an integer value.
-  Standard_EXPORT math_IntegerVector Multiplied(const Standard_Integer theRight) const;
+  Standard_EXPORT Standard_NODISCARD math_IntegerVector Multiplied(const Standard_Integer theRight) const;
 
-  math_IntegerVector operator*(const Standard_Integer theRight) const
+  Standard_NODISCARD math_IntegerVector operator*(const Standard_Integer theRight) const
   {
     return Multiplied(theRight);
   }
 
   //! returns the product of a vector and a real value.
-  Standard_EXPORT math_IntegerVector TMultiplied(const Standard_Integer theRight) const;
+  Standard_EXPORT Standard_NODISCARD math_IntegerVector TMultiplied(const Standard_Integer theRight) const;
 
   friend inline math_IntegerVector operator* (const Standard_Integer theLeft, const math_IntegerVector& theRight)
   {
@@ -160,9 +160,9 @@ public:
   //! adds the IntegerVector "theRight" to an IntegerVector.
   //! An exception is raised if the IntegerVectors have not the same length.
   //! An exception is raised if the lengths are not equal.
-  Standard_EXPORT math_IntegerVector Added(const math_IntegerVector& theRight) const;
+  Standard_EXPORT Standard_NODISCARD math_IntegerVector Added(const math_IntegerVector& theRight) const;
 
-  math_IntegerVector operator+(const math_IntegerVector& theRight) const
+  Standard_NODISCARD math_IntegerVector operator+(const math_IntegerVector& theRight) const
   {
     return Added(theRight);
   }
@@ -199,9 +199,9 @@ public:
 
   //! returns the inner product of 2 IntegerVectors.
   //! An exception is raised if the lengths are not equal.
-  Standard_EXPORT Standard_Integer Multiplied(const math_IntegerVector& theRight) const;
+  Standard_EXPORT Standard_NODISCARD Standard_Integer Multiplied(const math_IntegerVector& theRight) const;
 
-  Standard_Integer operator*(const math_IntegerVector& theRight) const
+  Standard_NODISCARD Standard_Integer operator*(const math_IntegerVector& theRight) const
   {
     return Multiplied(theRight);
   }
@@ -225,9 +225,9 @@ public:
 
   //! returns the subtraction of "theRight" from "me".
   //! An exception is raised if the IntegerVectors have not the same length.
-  Standard_EXPORT math_IntegerVector Subtracted(const math_IntegerVector& theRight) const;
+  Standard_EXPORT Standard_NODISCARD math_IntegerVector Subtracted(const math_IntegerVector& theRight) const;
 
-  math_IntegerVector operator-(const math_IntegerVector& theRight) const
+  Standard_NODISCARD math_IntegerVector operator-(const math_IntegerVector& theRight) const
   {
     return Subtracted(theRight);
   }

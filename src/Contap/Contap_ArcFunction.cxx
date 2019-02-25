@@ -128,7 +128,7 @@ Standard_Boolean Contap_ArcFunction::Derivative (const Standard_Real U,
       dnorm = d2uv.Crossed(d1v) + d1u.Crossed(d2v);
       dfv = (dnorm.Dot(myDir)-myCosAng*dnorm.Dot(norm))/myMean;
       */
-      norm.Normalized();
+      norm.Normalize();
       dfu = (dnu.Dot(myDir)-myCosAng*dnu.Dot(norm))/myMean;
       dfv = (dnv.Dot(myDir)-myCosAng*dnv.Dot(norm))/myMean;
     }

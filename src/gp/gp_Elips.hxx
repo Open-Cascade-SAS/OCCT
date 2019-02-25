@@ -198,14 +198,14 @@ public:
 
   //! Performs the symmetrical transformation of an ellipse with
   //! respect to the point P which is the center of the symmetry.
-  Standard_EXPORT gp_Elips Mirrored (const gp_Pnt& P) const;
+  Standard_EXPORT Standard_NODISCARD gp_Elips Mirrored (const gp_Pnt& P) const;
   
   Standard_EXPORT void Mirror (const gp_Ax1& A1);
   
 
   //! Performs the symmetrical transformation of an ellipse with
   //! respect to an axis placement which is the axis of the symmetry.
-  Standard_EXPORT gp_Elips Mirrored (const gp_Ax1& A1) const;
+  Standard_EXPORT Standard_NODISCARD gp_Elips Mirrored (const gp_Ax1& A1) const;
   
   Standard_EXPORT void Mirror (const gp_Ax2& A2);
   
@@ -213,39 +213,39 @@ public:
   //! Performs the symmetrical transformation of an ellipse with
   //! respect to a plane. The axis placement A2 locates the plane
   //! of the symmetry (Location, XDirection, YDirection).
-  Standard_EXPORT gp_Elips Mirrored (const gp_Ax2& A2) const;
+  Standard_EXPORT Standard_NODISCARD gp_Elips Mirrored (const gp_Ax2& A2) const;
   
     void Rotate (const gp_Ax1& A1, const Standard_Real Ang);
   
 
   //! Rotates an ellipse. A1 is the axis of the rotation.
   //! Ang is the angular value of the rotation in radians.
-    gp_Elips Rotated (const gp_Ax1& A1, const Standard_Real Ang) const;
+    Standard_NODISCARD gp_Elips Rotated (const gp_Ax1& A1, const Standard_Real Ang) const;
   
     void Scale (const gp_Pnt& P, const Standard_Real S);
   
 
   //! Scales an ellipse. S is the scaling value.
-    gp_Elips Scaled (const gp_Pnt& P, const Standard_Real S) const;
+    Standard_NODISCARD gp_Elips Scaled (const gp_Pnt& P, const Standard_Real S) const;
   
     void Transform (const gp_Trsf& T);
   
 
   //! Transforms an ellipse with the transformation T from class Trsf.
-    gp_Elips Transformed (const gp_Trsf& T) const;
+    Standard_NODISCARD gp_Elips Transformed (const gp_Trsf& T) const;
   
     void Translate (const gp_Vec& V);
   
 
   //! Translates an ellipse in the direction of the vector V.
   //! The magnitude of the translation is the vector's magnitude.
-    gp_Elips Translated (const gp_Vec& V) const;
+    Standard_NODISCARD gp_Elips Translated (const gp_Vec& V) const;
   
     void Translate (const gp_Pnt& P1, const gp_Pnt& P2);
   
 
   //! Translates an ellipse from the point P1 to the point P2.
-    gp_Elips Translated (const gp_Pnt& P1, const gp_Pnt& P2) const;
+    Standard_NODISCARD gp_Elips Translated (const gp_Pnt& P1, const gp_Pnt& P2) const;
 
 
 

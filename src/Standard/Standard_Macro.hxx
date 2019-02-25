@@ -57,6 +57,28 @@
   #define Standard_FALLTHROUGH
 #endif
 
+//! @def Standard_NODISCARD
+//! This attribute may appear in a function declaration,
+//! enumeration declaration or class declaration. It tells the compiler to
+//! issue a warning, if a return value marked by that attribute is discarded.
+//!
+//! Expands to C++17 attribute statement "[[nodiscard]]" on compilers that
+//! declare support of this attribute, or equivalent attribute on GCC.
+#if defined(__has_cpp_attribute)
+  #if __has_cpp_attribute(nodiscard)
+    #define Standard_NODISCARD [[nodiscard]]
+  #else
+    #define Standard_NODISCARD
+  #endif
+#elif defined(__GNUC__) && ! defined(INTEL_COMPILER)
+  // According to available documentation, GCC-style __attribute__ ((warn_unused_result))
+  // should be available in GCC since version 3.4, and in CLang since 3.9;
+  // Intel compiler does not seem to support this
+  #define Standard_NODISCARD __attribute__ ((warn_unused_result))
+#else
+  #define Standard_NODISCARD
+#endif
+
 //! @def Standard_UNUSED
 //! Macro for marking variables / functions as possibly unused
 //! so that compiler will not emit redundant "unused" warnings.

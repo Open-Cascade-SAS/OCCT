@@ -251,14 +251,14 @@ public:
 
   //! Performs the symmetrical transformation of an hyperbola with
   //! respect  to the point P which is the center of the symmetry.
-  Standard_EXPORT gp_Hypr Mirrored (const gp_Pnt& P) const;
+  Standard_EXPORT Standard_NODISCARD gp_Hypr Mirrored (const gp_Pnt& P) const;
   
   Standard_EXPORT void Mirror (const gp_Ax1& A1);
   
 
   //! Performs the symmetrical transformation of an hyperbola with
   //! respect to an axis placement which is the axis of the symmetry.
-  Standard_EXPORT gp_Hypr Mirrored (const gp_Ax1& A1) const;
+  Standard_EXPORT Standard_NODISCARD gp_Hypr Mirrored (const gp_Ax1& A1) const;
   
   Standard_EXPORT void Mirror (const gp_Ax2& A2);
   
@@ -266,40 +266,40 @@ public:
   //! Performs the symmetrical transformation of an hyperbola with
   //! respect to a plane. The axis placement A2 locates the plane
   //! of the symmetry (Location, XDirection, YDirection).
-  Standard_EXPORT gp_Hypr Mirrored (const gp_Ax2& A2) const;
+  Standard_EXPORT Standard_NODISCARD gp_Hypr Mirrored (const gp_Ax2& A2) const;
   
     void Rotate (const gp_Ax1& A1, const Standard_Real Ang);
   
 
   //! Rotates an hyperbola. A1 is the axis of the rotation.
   //! Ang is the angular value of the rotation in radians.
-    gp_Hypr Rotated (const gp_Ax1& A1, const Standard_Real Ang) const;
+    Standard_NODISCARD gp_Hypr Rotated (const gp_Ax1& A1, const Standard_Real Ang) const;
   
     void Scale (const gp_Pnt& P, const Standard_Real S);
   
 
   //! Scales an hyperbola. S is the scaling value.
-    gp_Hypr Scaled (const gp_Pnt& P, const Standard_Real S) const;
+    Standard_NODISCARD gp_Hypr Scaled (const gp_Pnt& P, const Standard_Real S) const;
   
     void Transform (const gp_Trsf& T);
   
 
   //! Transforms an hyperbola with the transformation T from
   //! class Trsf.
-    gp_Hypr Transformed (const gp_Trsf& T) const;
+    Standard_NODISCARD gp_Hypr Transformed (const gp_Trsf& T) const;
   
     void Translate (const gp_Vec& V);
   
 
   //! Translates an hyperbola in the direction of the vector V.
   //! The magnitude of the translation is the vector's magnitude.
-    gp_Hypr Translated (const gp_Vec& V) const;
+    Standard_NODISCARD gp_Hypr Translated (const gp_Vec& V) const;
   
     void Translate (const gp_Pnt& P1, const gp_Pnt& P2);
   
 
   //! Translates an hyperbola from the point P1 to the point P2.
-    gp_Hypr Translated (const gp_Pnt& P1, const gp_Pnt& P2) const;
+    Standard_NODISCARD gp_Hypr Translated (const gp_Pnt& P1, const gp_Pnt& P2) const;
 
 
 

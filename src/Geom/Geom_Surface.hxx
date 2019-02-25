@@ -79,7 +79,7 @@ public:
   //! Reverses the U direction of parametrization of <me>.
   //! The bounds of the surface are not modified.
   //! A copy of <me> is returned.
-  Standard_EXPORT Handle(Geom_Surface) UReversed() const;
+  Standard_EXPORT Standard_NODISCARD Handle(Geom_Surface) UReversed() const;
   
   //! Returns the  parameter on the  Ureversed surface for
   //! the point of parameter U on <me>.
@@ -100,7 +100,7 @@ public:
   //! Reverses the V direction of parametrization of <me>.
   //! The bounds of the surface are not modified.
   //! A copy of <me> is returned.
-  Standard_EXPORT Handle(Geom_Surface) VReversed() const;
+  Standard_EXPORT Standard_NODISCARD Handle(Geom_Surface) VReversed() const;
   
   //! Returns the  parameter on the  Vreversed surface for
   //! the point of parameter V on <me>.

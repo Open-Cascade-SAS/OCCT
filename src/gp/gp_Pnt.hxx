@@ -129,7 +129,7 @@ public:
   //! Performs the symmetrical transformation of a point
   //! with respect to an axis placement which is the axis
   //! of the symmetry.
-  Standard_EXPORT gp_Pnt Mirrored (const gp_Pnt& P) const;
+  Standard_EXPORT Standard_NODISCARD gp_Pnt Mirrored (const gp_Pnt& P) const;
   
   Standard_EXPORT void Mirror (const gp_Ax1& A1);
   
@@ -137,41 +137,41 @@ public:
   //! Performs the symmetrical transformation of a point
   //! with respect to a plane. The axis placement A2 locates
   //! the plane of the symmetry : (Location, XDirection, YDirection).
-  Standard_EXPORT gp_Pnt Mirrored (const gp_Ax1& A1) const;
+  Standard_EXPORT Standard_NODISCARD gp_Pnt Mirrored (const gp_Ax1& A1) const;
   
   Standard_EXPORT void Mirror (const gp_Ax2& A2);
   
 
   //! Rotates a point. A1 is the axis of the rotation.
   //! Ang is the angular value of the rotation in radians.
-  Standard_EXPORT gp_Pnt Mirrored (const gp_Ax2& A2) const;
+  Standard_EXPORT Standard_NODISCARD gp_Pnt Mirrored (const gp_Ax2& A2) const;
   
     void Rotate (const gp_Ax1& A1, const Standard_Real Ang);
   
   //! Scales a point. S is the scaling value.
-    gp_Pnt Rotated (const gp_Ax1& A1, const Standard_Real Ang) const;
+    Standard_NODISCARD gp_Pnt Rotated (const gp_Ax1& A1, const Standard_Real Ang) const;
   
     void Scale (const gp_Pnt& P, const Standard_Real S);
   
   //! Transforms a point with the transformation T.
-    gp_Pnt Scaled (const gp_Pnt& P, const Standard_Real S) const;
+    Standard_NODISCARD gp_Pnt Scaled (const gp_Pnt& P, const Standard_Real S) const;
   
   Standard_EXPORT void Transform (const gp_Trsf& T);
   
 
   //! Translates a point in the direction of the vector V.
   //! The magnitude of the translation is the vector's magnitude.
-    gp_Pnt Transformed (const gp_Trsf& T) const;
+  Standard_NODISCARD gp_Pnt Transformed (const gp_Trsf& T) const;
   
     void Translate (const gp_Vec& V);
   
 
   //! Translates a point from the point P1 to the point P2.
-    gp_Pnt Translated (const gp_Vec& V) const;
+    Standard_NODISCARD gp_Pnt Translated (const gp_Vec& V) const;
   
     void Translate (const gp_Pnt& P1, const gp_Pnt& P2);
   
-    gp_Pnt Translated (const gp_Pnt& P1, const gp_Pnt& P2) const;
+    Standard_NODISCARD gp_Pnt Translated (const gp_Pnt& P1, const gp_Pnt& P2) const;
 
 
 

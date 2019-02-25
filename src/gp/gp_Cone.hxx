@@ -163,7 +163,7 @@ public:
   //! Performs the symmetrical transformation of a cone
   //! with respect to the point P which is the center of the
   //! symmetry.
-  Standard_EXPORT gp_Cone Mirrored (const gp_Pnt& P) const;
+  Standard_EXPORT Standard_NODISCARD gp_Cone Mirrored (const gp_Pnt& P) const;
   
   Standard_EXPORT void Mirror (const gp_Ax1& A1);
   
@@ -171,7 +171,7 @@ public:
   //! Performs the symmetrical transformation of a cone with
   //! respect to an axis placement which is the axis of the
   //! symmetry.
-  Standard_EXPORT gp_Cone Mirrored (const gp_Ax1& A1) const;
+  Standard_EXPORT Standard_NODISCARD gp_Cone Mirrored (const gp_Ax1& A1) const;
   
   Standard_EXPORT void Mirror (const gp_Ax2& A2);
   
@@ -179,40 +179,40 @@ public:
   //! Performs the symmetrical transformation of a cone with respect
   //! to a plane. The axis placement A2 locates the plane of the
   //! of the symmetry : (Location, XDirection, YDirection).
-  Standard_EXPORT gp_Cone Mirrored (const gp_Ax2& A2) const;
+  Standard_EXPORT Standard_NODISCARD gp_Cone Mirrored (const gp_Ax2& A2) const;
   
     void Rotate (const gp_Ax1& A1, const Standard_Real Ang);
   
 
   //! Rotates a cone. A1 is the axis of the rotation.
   //! Ang is the angular value of the rotation in radians.
-    gp_Cone Rotated (const gp_Ax1& A1, const Standard_Real Ang) const;
+    Standard_NODISCARD gp_Cone Rotated (const gp_Ax1& A1, const Standard_Real Ang) const;
   
     void Scale (const gp_Pnt& P, const Standard_Real S);
   
 
   //! Scales a cone. S is the scaling value.
   //! The absolute value of S is used to scale the cone
-    gp_Cone Scaled (const gp_Pnt& P, const Standard_Real S) const;
+    Standard_NODISCARD gp_Cone Scaled (const gp_Pnt& P, const Standard_Real S) const;
   
     void Transform (const gp_Trsf& T);
   
 
   //! Transforms a cone with the transformation T from class Trsf.
-    gp_Cone Transformed (const gp_Trsf& T) const;
+    Standard_NODISCARD gp_Cone Transformed (const gp_Trsf& T) const;
   
     void Translate (const gp_Vec& V);
   
 
   //! Translates a cone in the direction of the vector V.
   //! The magnitude of the translation is the vector's magnitude.
-    gp_Cone Translated (const gp_Vec& V) const;
+    Standard_NODISCARD gp_Cone Translated (const gp_Vec& V) const;
   
     void Translate (const gp_Pnt& P1, const gp_Pnt& P2);
   
 
   //! Translates a cone from the point P1 to the point P2.
-    gp_Cone Translated (const gp_Pnt& P1, const gp_Pnt& P2) const;
+    Standard_NODISCARD gp_Cone Translated (const gp_Pnt& P1, const gp_Pnt& P2) const;
 
 
 

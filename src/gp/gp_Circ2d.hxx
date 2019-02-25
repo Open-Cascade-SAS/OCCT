@@ -156,7 +156,7 @@ public:
   //! of this circle (the "Y Direction" is reversed) and therefore
   //! changes the implicit orientation of this circle.
   //! Reversed creates a new circle.
-    gp_Circ2d Reversed() const;
+    Standard_NODISCARD gp_Circ2d Reversed() const;
   
   //! Returns true if the local coordinate system is direct
   //! and false in the other case.
@@ -167,21 +167,21 @@ public:
 
   //! Performs the symmetrical transformation of a circle with respect
   //! to the point P which is the center of the symmetry
-  Standard_EXPORT gp_Circ2d Mirrored (const gp_Pnt2d& P) const;
+  Standard_EXPORT Standard_NODISCARD gp_Circ2d Mirrored (const gp_Pnt2d& P) const;
   
   Standard_EXPORT void Mirror (const gp_Ax2d& A);
   
 
   //! Performs the symmetrical transformation of a circle with respect
   //! to an axis placement which is the axis of the symmetry.
-  Standard_EXPORT gp_Circ2d Mirrored (const gp_Ax2d& A) const;
+  Standard_EXPORT Standard_NODISCARD gp_Circ2d Mirrored (const gp_Ax2d& A) const;
   
     void Rotate (const gp_Pnt2d& P, const Standard_Real Ang);
   
 
   //! Rotates a circle. P is the center of the rotation.
   //! Ang is the angular value of the rotation in radians.
-    gp_Circ2d Rotated (const gp_Pnt2d& P, const Standard_Real Ang) const;
+    Standard_NODISCARD gp_Circ2d Rotated (const gp_Pnt2d& P, const Standard_Real Ang) const;
   
     void Scale (const gp_Pnt2d& P, const Standard_Real S);
   
@@ -191,26 +191,26 @@ public:
   //! If S is negative the radius stay positive but
   //! the "XAxis" and the "YAxis" are  reversed as for
   //! an ellipse.
-    gp_Circ2d Scaled (const gp_Pnt2d& P, const Standard_Real S) const;
+    Standard_NODISCARD gp_Circ2d Scaled (const gp_Pnt2d& P, const Standard_Real S) const;
   
     void Transform (const gp_Trsf2d& T);
   
 
   //! Transforms a circle with the transformation T from class Trsf2d.
-    gp_Circ2d Transformed (const gp_Trsf2d& T) const;
+    Standard_NODISCARD gp_Circ2d Transformed (const gp_Trsf2d& T) const;
   
     void Translate (const gp_Vec2d& V);
   
 
   //! Translates a circle in the direction of the vector V.
   //! The magnitude of the translation is the vector's magnitude.
-    gp_Circ2d Translated (const gp_Vec2d& V) const;
+    Standard_NODISCARD gp_Circ2d Translated (const gp_Vec2d& V) const;
   
     void Translate (const gp_Pnt2d& P1, const gp_Pnt2d& P2);
   
 
   //! Translates a circle from the point P1 to the point P2.
-    gp_Circ2d Translated (const gp_Pnt2d& P1, const gp_Pnt2d& P2) const;
+    Standard_NODISCARD gp_Circ2d Translated (const gp_Pnt2d& P1, const gp_Pnt2d& P2) const;
 
 
 

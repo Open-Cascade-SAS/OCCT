@@ -197,7 +197,7 @@ public:
   
     void Reverse();
   
-    gp_Elips2d Reversed() const;
+    Standard_NODISCARD gp_Elips2d Reversed() const;
   
   //! Returns true if the local coordinate system is direct
   //! and false in the other case.
@@ -208,43 +208,43 @@ public:
 
   //! Performs the symmetrical transformation of a ellipse with respect
   //! to the point P which is the center of the symmetry
-  Standard_EXPORT gp_Elips2d Mirrored (const gp_Pnt2d& P) const;
+  Standard_EXPORT Standard_NODISCARD gp_Elips2d Mirrored (const gp_Pnt2d& P) const;
   
   Standard_EXPORT void Mirror (const gp_Ax2d& A);
   
 
   //! Performs the symmetrical transformation of a ellipse with respect
   //! to an axis placement which is the axis of the symmetry.
-  Standard_EXPORT gp_Elips2d Mirrored (const gp_Ax2d& A) const;
+  Standard_EXPORT Standard_NODISCARD gp_Elips2d Mirrored (const gp_Ax2d& A) const;
   
   void Rotate (const gp_Pnt2d& P, const Standard_Real Ang);
   
-  gp_Elips2d Rotated (const gp_Pnt2d& P, const Standard_Real Ang) const;
+  Standard_NODISCARD gp_Elips2d Rotated (const gp_Pnt2d& P, const Standard_Real Ang) const;
   
   void Scale (const gp_Pnt2d& P, const Standard_Real S);
   
 
   //! Scales a ellipse. S is the scaling value.
-  gp_Elips2d Scaled (const gp_Pnt2d& P, const Standard_Real S) const;
+  Standard_NODISCARD gp_Elips2d Scaled (const gp_Pnt2d& P, const Standard_Real S) const;
   
   void Transform (const gp_Trsf2d& T);
   
 
   //! Transforms an ellipse with the transformation T from class Trsf2d.
-  gp_Elips2d Transformed (const gp_Trsf2d& T) const;
+  Standard_NODISCARD gp_Elips2d Transformed (const gp_Trsf2d& T) const;
   
   void Translate (const gp_Vec2d& V);
   
 
   //! Translates a ellipse in the direction of the vector V.
   //! The magnitude of the translation is the vector's magnitude.
-  gp_Elips2d Translated (const gp_Vec2d& V) const;
+  Standard_NODISCARD gp_Elips2d Translated (const gp_Vec2d& V) const;
   
   void Translate (const gp_Pnt2d& P1, const gp_Pnt2d& P2);
   
 
   //! Translates a ellipse from the point P1 to the point P2.
-  gp_Elips2d Translated (const gp_Pnt2d& P1, const gp_Pnt2d& P2) const;
+  Standard_NODISCARD gp_Elips2d Translated (const gp_Pnt2d& P1, const gp_Pnt2d& P2) const;
 
 
 

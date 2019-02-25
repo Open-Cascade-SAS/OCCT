@@ -80,8 +80,9 @@ void operator += (const Handle(Geom2d_Vector)& Other)
   
 
   //! Adds the vector Other to <me>.
-  Standard_EXPORT Handle(Geom2d_VectorWithMagnitude) Added (const Handle(Geom2d_Vector)& Other) const;
-Handle(Geom2d_VectorWithMagnitude) operator + (const Handle(Geom2d_Vector)& Other) const
+  Standard_EXPORT Standard_NODISCARD
+  Handle(Geom2d_VectorWithMagnitude) Added (const Handle(Geom2d_Vector)& Other) const;
+Standard_NODISCARD Handle(Geom2d_VectorWithMagnitude) operator + (const Handle(Geom2d_Vector)& Other) const
 {
   return Added(Other);
 }
@@ -104,8 +105,8 @@ void operator /= (const Standard_Real Scalar)
   
 
   //! Divides <me> by a scalar. A new vector is returned.
-  Standard_EXPORT Handle(Geom2d_VectorWithMagnitude) Divided (const Standard_Real Scalar) const;
-Handle(Geom2d_VectorWithMagnitude) operator / (const Standard_Real Scalar) const
+  Standard_EXPORT Standard_NODISCARD Handle(Geom2d_VectorWithMagnitude) Divided (const Standard_Real Scalar) const;
+Standard_NODISCARD Handle(Geom2d_VectorWithMagnitude) operator / (const Standard_Real Scalar) const
 {
   return Divided(Scalar);
 }
@@ -116,7 +117,7 @@ Handle(Geom2d_VectorWithMagnitude) operator / (const Standard_Real Scalar) const
   //!
   //! -C++: alias operator *
   //! Collision with same operator defined for the class Vector!
-  Standard_EXPORT Handle(Geom2d_VectorWithMagnitude) Multiplied (const Standard_Real Scalar) const;
+  Standard_EXPORT Standard_NODISCARD Handle(Geom2d_VectorWithMagnitude) Multiplied (const Standard_Real Scalar) const;
   
 
   //! Computes the product of the vector <me> by a scalar.
@@ -136,7 +137,7 @@ void operator *= (const Standard_Real Scalar)
   //!
   //! Raised if the magnitude of the vector is lower or equal to
   //! Resolution from package gp.
-  Standard_EXPORT Handle(Geom2d_VectorWithMagnitude) Normalized() const;
+  Standard_EXPORT Standard_NODISCARD Handle(Geom2d_VectorWithMagnitude) Normalized() const;
   
   //! Subtracts the Vector Other to <me>.
   Standard_EXPORT void Subtract (const Handle(Geom2d_Vector)& Other);
@@ -147,8 +148,9 @@ void operator -= (const Handle(Geom2d_Vector)& Other)
   
 
   //! Subtracts the vector Other to <me>. A new vector is returned.
-  Standard_EXPORT Handle(Geom2d_VectorWithMagnitude) Subtracted (const Handle(Geom2d_Vector)& Other) const;
-Handle(Geom2d_VectorWithMagnitude) operator - (const Handle(Geom2d_Vector)& Other) const
+  Standard_EXPORT Standard_NODISCARD
+  Handle(Geom2d_VectorWithMagnitude) Subtracted (const Handle(Geom2d_Vector)& Other) const;
+Standard_NODISCARD Handle(Geom2d_VectorWithMagnitude) operator - (const Handle(Geom2d_Vector)& Other) const
 {
   return Subtracted(Other);
 }

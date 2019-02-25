@@ -202,7 +202,7 @@ public:
   //! product "X Direction" ^ "Y   Direction".
   //! This maintains the right-handed property of the
   //! coordinate system.
-  Standard_EXPORT gp_Ax2 Mirrored (const gp_Pnt& P) const;
+  Standard_EXPORT Standard_NODISCARD gp_Ax2 Mirrored (const gp_Pnt& P) const;
   
 
   //! Performs a symmetrical transformation of this coordinate
@@ -238,7 +238,7 @@ public:
   //! product "X Direction" ^ "Y   Direction".
   //! This maintains the right-handed property of the
   //! coordinate system.
-  Standard_EXPORT gp_Ax2 Mirrored (const gp_Ax1& A1) const;
+  Standard_EXPORT Standard_NODISCARD gp_Ax2 Mirrored (const gp_Ax1& A1) const;
   
 
   //! Performs a symmetrical transformation of this coordinate
@@ -276,7 +276,7 @@ public:
   //! product "X Direction" ^ "Y   Direction".
   //! This maintains the right-handed property of the
   //! coordinate system.
-  Standard_EXPORT gp_Ax2 Mirrored (const gp_Ax2& A2) const;
+  Standard_EXPORT Standard_NODISCARD gp_Ax2 Mirrored (const gp_Ax2& A2) const;
   
     void Rotate (const gp_Ax1& A1, const Standard_Real Ang);
   
@@ -284,7 +284,7 @@ public:
   //! Rotates an axis placement. <A1> is the axis of the
   //! rotation . Ang is the angular value of the rotation
   //! in radians.
-    gp_Ax2 Rotated (const gp_Ax1& A1, const Standard_Real Ang) const;
+    Standard_NODISCARD gp_Ax2 Rotated (const gp_Ax1& A1, const Standard_Real Ang) const;
   
     void Scale (const gp_Pnt& P, const Standard_Real S);
   
@@ -296,7 +296,7 @@ public:
   //! . the main direction of the axis placement is not changed.
   //! . The "XDirection" and the "YDirection" are reversed.
   //! So the axis placement stay right handed.
-    gp_Ax2 Scaled (const gp_Pnt& P, const Standard_Real S) const;
+    Standard_NODISCARD gp_Ax2 Scaled (const gp_Pnt& P, const Standard_Real S) const;
   
     void Transform (const gp_Trsf& T);
   
@@ -306,21 +306,21 @@ public:
   //! "YDirection" are transformed with T.  The resulting
   //! main "Direction" of <me> is the cross product between
   //! the "XDirection" and the "YDirection" after transformation.
-    gp_Ax2 Transformed (const gp_Trsf& T) const;
+    Standard_NODISCARD gp_Ax2 Transformed (const gp_Trsf& T) const;
   
     void Translate (const gp_Vec& V);
   
 
   //! Translates an axis plaxement in the direction of the vector
   //! <V>. The magnitude of the translation is the vector's magnitude.
-    gp_Ax2 Translated (const gp_Vec& V) const;
+    Standard_NODISCARD gp_Ax2 Translated (const gp_Vec& V) const;
   
     void Translate (const gp_Pnt& P1, const gp_Pnt& P2);
   
 
   //! Translates an axis placement from the point <P1> to the
   //! point <P2>.
-    gp_Ax2 Translated (const gp_Pnt& P1, const gp_Pnt& P2) const;
+    Standard_NODISCARD gp_Ax2 Translated (const gp_Pnt& P1, const gp_Pnt& P2) const;
 
 
 

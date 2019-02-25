@@ -112,7 +112,7 @@ public:
     void Reverse();
   
   //! Reverses the unit vector of this axis and creates a new one.
-    gp_Ax1 Reversed() const;
+    Standard_NODISCARD gp_Ax1 Reversed() const;
   
 
   //! Performs the symmetrical transformation of an axis
@@ -123,7 +123,7 @@ public:
   //! Performs the symmetrical transformation of an axis
   //! placement with respect to the point P which is the
   //! center of the symmetry and creates a new axis.
-  Standard_EXPORT gp_Ax1 Mirrored (const gp_Pnt& P) const;
+  Standard_EXPORT Standard_NODISCARD gp_Ax1 Mirrored (const gp_Pnt& P) const;
   
 
   //! Performs the symmetrical transformation of an axis
@@ -135,7 +135,7 @@ public:
   //! Performs the symmetrical transformation of an axis
   //! placement with respect to an axis placement which
   //! is the axis of the symmetry and creates a new axis.
-  Standard_EXPORT gp_Ax1 Mirrored (const gp_Ax1& A1) const;
+  Standard_EXPORT Standard_NODISCARD gp_Ax1 Mirrored (const gp_Ax1& A1) const;
   
 
   //! Performs the symmetrical transformation of an axis
@@ -149,7 +149,7 @@ public:
   //! placement with respect to a plane. The axis placement
   //! <A2> locates the plane of the symmetry :
   //! (Location, XDirection, YDirection) and creates a new axis.
-  Standard_EXPORT gp_Ax1 Mirrored (const gp_Ax2& A2) const;
+  Standard_EXPORT Standard_NODISCARD gp_Ax1 Mirrored (const gp_Ax2& A2) const;
   
   //! Rotates this axis at an angle Ang (in radians) about the axis A1
   //! and assigns the result to this axis.
@@ -157,7 +157,7 @@ public:
   
   //! Rotates this axis at an angle Ang (in radians) about the axis A1
   //! and creates a new one.
-    gp_Ax1 Rotated (const gp_Ax1& A1, const Standard_Real Ang) const;
+    Standard_NODISCARD gp_Ax1 Rotated (const gp_Ax1& A1, const Standard_Real Ang) const;
   
 
   //! Applies a scaling transformation to this axis with:
@@ -169,7 +169,7 @@ public:
   //! Applies a scaling transformation to this axis with:
   //! -   scale factor S, and
   //! -   center P and creates a new axis.
-    gp_Ax1 Scaled (const gp_Pnt& P, const Standard_Real S) const;
+    Standard_NODISCARD gp_Ax1 Scaled (const gp_Pnt& P, const Standard_Real S) const;
   
   //! Applies the transformation T to this axis.
   //! and assigns the result to this axis.
@@ -180,7 +180,7 @@ public:
   //!
   //! Translates an axis plaxement in the direction of the vector
   //! <V>. The magnitude of the translation is the vector's magnitude.
-    gp_Ax1 Transformed (const gp_Trsf& T) const;
+    Standard_NODISCARD gp_Ax1 Transformed (const gp_Trsf& T) const;
   
 
   //! Translates this axis by the vector V,
@@ -190,7 +190,7 @@ public:
 
   //! Translates this axis by the vector V,
   //! and creates a new one.
-    gp_Ax1 Translated (const gp_Vec& V) const;
+    Standard_NODISCARD gp_Ax1 Translated (const gp_Vec& V) const;
   
 
   //! Translates this axis by:
@@ -202,7 +202,7 @@ public:
   //! Translates this axis by:
   //! the vector (P1, P2) defined from point P1 to point P2.
   //! and creates a new one.
-    gp_Ax1 Translated (const gp_Pnt& P1, const gp_Pnt& P2) const;
+    Standard_NODISCARD gp_Ax1 Translated (const gp_Pnt& P1, const gp_Pnt& P2) const;
 
 
 

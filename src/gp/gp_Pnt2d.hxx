@@ -114,41 +114,41 @@ public:
 
   //! Performs the symmetrical transformation of a point
   //! with respect to an axis placement which is the axis
-  Standard_EXPORT gp_Pnt2d Mirrored (const gp_Pnt2d& P) const;
+  Standard_EXPORT Standard_NODISCARD gp_Pnt2d Mirrored (const gp_Pnt2d& P) const;
   
   Standard_EXPORT void Mirror (const gp_Ax2d& A);
   
 
   //! Rotates a point. A1 is the axis of the rotation.
   //! Ang is the angular value of the rotation in radians.
-  Standard_EXPORT gp_Pnt2d Mirrored (const gp_Ax2d& A) const;
+  Standard_EXPORT Standard_NODISCARD gp_Pnt2d Mirrored (const gp_Ax2d& A) const;
   
     void Rotate (const gp_Pnt2d& P, const Standard_Real Ang);
   
   //! Scales a point. S is the scaling value.
-    gp_Pnt2d Rotated (const gp_Pnt2d& P, const Standard_Real Ang) const;
+    Standard_NODISCARD gp_Pnt2d Rotated (const gp_Pnt2d& P, const Standard_Real Ang) const;
   
     void Scale (const gp_Pnt2d& P, const Standard_Real S);
   
   //! Transforms a point with the transformation T.
-    gp_Pnt2d Scaled (const gp_Pnt2d& P, const Standard_Real S) const;
+    Standard_NODISCARD gp_Pnt2d Scaled (const gp_Pnt2d& P, const Standard_Real S) const;
   
   Standard_EXPORT void Transform (const gp_Trsf2d& T);
   
 
   //! Translates a point in the direction of the vector V.
   //! The magnitude of the translation is the vector's magnitude.
-    gp_Pnt2d Transformed (const gp_Trsf2d& T) const;
+  Standard_NODISCARD gp_Pnt2d Transformed (const gp_Trsf2d& T) const;
   
     void Translate (const gp_Vec2d& V);
   
 
   //! Translates a point from the point P1 to the point P2.
-    gp_Pnt2d Translated (const gp_Vec2d& V) const;
+    Standard_NODISCARD gp_Pnt2d Translated (const gp_Vec2d& V) const;
   
     void Translate (const gp_Pnt2d& P1, const gp_Pnt2d& P2);
   
-    gp_Pnt2d Translated (const gp_Pnt2d& P1, const gp_Pnt2d& P2) const;
+    Standard_NODISCARD gp_Pnt2d Translated (const gp_Pnt2d& P1, const gp_Pnt2d& P2) const;
 
 
 

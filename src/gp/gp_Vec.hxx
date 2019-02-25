@@ -173,8 +173,8 @@ public:
 }
   
   //! Adds two vectors
-    gp_Vec Added (const gp_Vec& Other) const;
-  gp_Vec operator + (const gp_Vec& Other) const
+  Standard_NODISCARD gp_Vec Added (const gp_Vec& Other) const;
+  Standard_NODISCARD gp_Vec operator + (const gp_Vec& Other) const
 {
   return Added(Other);
 }
@@ -187,8 +187,8 @@ public:
 }
   
   //! Subtracts two vectors
-    gp_Vec Subtracted (const gp_Vec& Right) const;
-  gp_Vec operator - (const gp_Vec& Right) const
+  Standard_NODISCARD gp_Vec Subtracted (const gp_Vec& Right) const;
+  Standard_NODISCARD gp_Vec operator - (const gp_Vec& Right) const
 {
   return Subtracted(Right);
 }
@@ -201,8 +201,8 @@ public:
 }
   
   //! Multiplies a vector by a scalar
-    gp_Vec Multiplied (const Standard_Real Scalar) const;
-  gp_Vec operator * (const Standard_Real Scalar) const
+  Standard_NODISCARD gp_Vec Multiplied (const Standard_Real Scalar) const;
+  Standard_NODISCARD gp_Vec operator * (const Standard_Real Scalar) const
 {
   return Multiplied(Scalar);
 }
@@ -215,8 +215,8 @@ public:
 }
   
   //! Divides a vector by a scalar
-    gp_Vec Divided (const Standard_Real Scalar) const;
-  gp_Vec operator / (const Standard_Real Scalar) const
+  Standard_NODISCARD gp_Vec Divided (const Standard_Real Scalar) const;
+  Standard_NODISCARD gp_Vec operator / (const Standard_Real Scalar) const
 {
   return Divided(Scalar);
 }
@@ -229,8 +229,8 @@ public:
 }
   
   //! computes the cross product between two vectors
-    gp_Vec Crossed (const gp_Vec& Right) const;
-  gp_Vec operator ^ (const gp_Vec& Right) const
+  Standard_NODISCARD gp_Vec Crossed (const gp_Vec& Right) const;
+  Standard_NODISCARD gp_Vec operator ^ (const gp_Vec& Right) const
 {
   return Crossed(Right);
 }
@@ -253,7 +253,7 @@ public:
   
   //! Computes the triple vector product.
   //! <me> ^ (V1 ^ V2)
-    gp_Vec CrossCrossed (const gp_Vec& V1, const gp_Vec& V2) const;
+    Standard_NODISCARD gp_Vec CrossCrossed (const gp_Vec& V1, const gp_Vec& V2) const;
   
   //! computes the scalar product
     Standard_Real Dot (const gp_Vec& Other) const;
@@ -273,14 +273,14 @@ public:
   //! normalizes a vector
   //! Raises an exception if the magnitude of the vector is
   //! lower or equal to Resolution from gp.
-    gp_Vec Normalized() const;
+    Standard_NODISCARD gp_Vec Normalized() const;
   
   //! Reverses the direction of a vector
     void Reverse();
   
   //! Reverses the direction of a vector
-    gp_Vec Reversed() const;
-  gp_Vec operator -() const
+    Standard_NODISCARD gp_Vec Reversed() const;
+  Standard_NODISCARD gp_Vec operator -() const
 {
   return Reversed();
 }
@@ -319,7 +319,7 @@ public:
   //! Performs the symmetrical transformation of a vector
   //! with respect to the vector V which is the center of
   //! the  symmetry.
-  Standard_EXPORT gp_Vec Mirrored (const gp_Vec& V) const;
+  Standard_EXPORT Standard_NODISCARD gp_Vec Mirrored (const gp_Vec& V) const;
   
   Standard_EXPORT void Mirror (const gp_Ax1& A1);
   
@@ -327,7 +327,7 @@ public:
   //! Performs the symmetrical transformation of a vector
   //! with respect to an axis placement which is the axis
   //! of the symmetry.
-  Standard_EXPORT gp_Vec Mirrored (const gp_Ax1& A1) const;
+  Standard_EXPORT Standard_NODISCARD gp_Vec Mirrored (const gp_Ax1& A1) const;
   
   Standard_EXPORT void Mirror (const gp_Ax2& A2);
   
@@ -335,25 +335,25 @@ public:
   //! Performs the symmetrical transformation of a vector
   //! with respect to a plane. The axis placement A2 locates
   //! the plane of the symmetry : (Location, XDirection, YDirection).
-  Standard_EXPORT gp_Vec Mirrored (const gp_Ax2& A2) const;
+  Standard_EXPORT Standard_NODISCARD gp_Vec Mirrored (const gp_Ax2& A2) const;
   
     void Rotate (const gp_Ax1& A1, const Standard_Real Ang);
   
 
   //! Rotates a vector. A1 is the axis of the rotation.
   //! Ang is the angular value of the rotation in radians.
-    gp_Vec Rotated (const gp_Ax1& A1, const Standard_Real Ang) const;
+    Standard_NODISCARD gp_Vec Rotated (const gp_Ax1& A1, const Standard_Real Ang) const;
   
     void Scale (const Standard_Real S);
   
   //! Scales a vector. S is the scaling value.
-    gp_Vec Scaled (const Standard_Real S) const;
+    Standard_NODISCARD gp_Vec Scaled (const Standard_Real S) const;
   
   //! Transforms a vector with the transformation T.
   Standard_EXPORT void Transform (const gp_Trsf& T);
   
   //! Transforms a vector with the transformation T.
-    gp_Vec Transformed (const gp_Trsf& T) const;
+  Standard_NODISCARD gp_Vec Transformed (const gp_Trsf& T) const;
 
 
 

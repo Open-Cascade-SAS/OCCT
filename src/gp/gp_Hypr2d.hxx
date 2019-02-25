@@ -268,7 +268,7 @@ public:
   //! Note:
   //! -   Reverse assigns the result to this hyperbola, while
   //! -   Reversed creates a new one.
-    gp_Hypr2d Reversed() const;
+    Standard_NODISCARD gp_Hypr2d Reversed() const;
   
   //! Returns true if the local coordinate system is direct
   //! and false in the other case.
@@ -279,21 +279,21 @@ public:
 
   //! Performs the symmetrical transformation of an hyperbola with
   //! respect  to the point P which is the center of the symmetry.
-  Standard_EXPORT gp_Hypr2d Mirrored (const gp_Pnt2d& P) const;
+  Standard_EXPORT Standard_NODISCARD gp_Hypr2d Mirrored (const gp_Pnt2d& P) const;
   
   Standard_EXPORT void Mirror (const gp_Ax2d& A);
   
 
   //! Performs the symmetrical transformation of an hyperbola with
   //! respect to an axis placement which is the axis of the symmetry.
-  Standard_EXPORT gp_Hypr2d Mirrored (const gp_Ax2d& A) const;
+  Standard_EXPORT Standard_NODISCARD gp_Hypr2d Mirrored (const gp_Ax2d& A) const;
   
     void Rotate (const gp_Pnt2d& P, const Standard_Real Ang);
   
 
   //! Rotates an hyperbola. P is the center of the rotation.
   //! Ang is the angular value of the rotation in radians.
-    gp_Hypr2d Rotated (const gp_Pnt2d& P, const Standard_Real Ang) const;
+    Standard_NODISCARD gp_Hypr2d Rotated (const gp_Pnt2d& P, const Standard_Real Ang) const;
   
     void Scale (const gp_Pnt2d& P, const Standard_Real S);
   
@@ -302,27 +302,27 @@ public:
   //! If <S> is positive only the location point is
   //! modified. But if <S> is negative the "XAxis" is
   //! reversed and the "YAxis" too.
-    gp_Hypr2d Scaled (const gp_Pnt2d& P, const Standard_Real S) const;
+    Standard_NODISCARD gp_Hypr2d Scaled (const gp_Pnt2d& P, const Standard_Real S) const;
   
     void Transform (const gp_Trsf2d& T);
   
 
   //! Transforms an hyperbola with the transformation T from
   //! class Trsf2d.
-    gp_Hypr2d Transformed (const gp_Trsf2d& T) const;
+    Standard_NODISCARD gp_Hypr2d Transformed (const gp_Trsf2d& T) const;
   
     void Translate (const gp_Vec2d& V);
   
 
   //! Translates an hyperbola in the direction of the vector V.
   //! The magnitude of the translation is the vector's magnitude.
-    gp_Hypr2d Translated (const gp_Vec2d& V) const;
+    Standard_NODISCARD gp_Hypr2d Translated (const gp_Vec2d& V) const;
   
     void Translate (const gp_Pnt2d& P1, const gp_Pnt2d& P2);
   
 
   //! Translates an hyperbola from the point P1 to the point P2.
-    gp_Hypr2d Translated (const gp_Pnt2d& P1, const gp_Pnt2d& P2) const;
+    Standard_NODISCARD gp_Hypr2d Translated (const gp_Pnt2d& P1, const gp_Pnt2d& P2) const;
 
 
 

@@ -252,7 +252,7 @@ void GeomFill_GuideTrihedronPlan::SetCurve(const Handle(Adaptor3d_HCurve)& C)
             
       Normal = n.Normalized();
       BiNormal = Tangent.Crossed(Normal);
-      BiNormal.Normalized();   
+      BiNormal.Normalize();
     }
   else { // Erreur...
 #ifdef OCCT_DEBUG

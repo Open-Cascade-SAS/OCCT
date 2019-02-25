@@ -71,7 +71,7 @@ public:
   //! Note:
   //! -   Reverse assigns the result to this line, while
   //! -   Reversed creates a new one.
-    gp_Lin Reversed() const;
+    Standard_NODISCARD gp_Lin Reversed() const;
   
   //! Changes the direction of the line.
     void SetDirection (const gp_Dir& V);
@@ -132,7 +132,7 @@ public:
   //! Performs the symmetrical transformation of a line
   //! with respect to the point P which is the center of
   //! the symmetry.
-  Standard_EXPORT gp_Lin Mirrored (const gp_Pnt& P) const;
+  Standard_EXPORT Standard_NODISCARD gp_Lin Mirrored (const gp_Pnt& P) const;
   
   Standard_EXPORT void Mirror (const gp_Ax1& A1);
   
@@ -140,7 +140,7 @@ public:
   //! Performs the symmetrical transformation of a line
   //! with respect to an axis placement which is the axis
   //! of the symmetry.
-  Standard_EXPORT gp_Lin Mirrored (const gp_Ax1& A1) const;
+  Standard_EXPORT Standard_NODISCARD gp_Lin Mirrored (const gp_Ax1& A1) const;
   
   Standard_EXPORT void Mirror (const gp_Ax2& A2);
   
@@ -149,14 +149,14 @@ public:
   //! with respect to a plane. The axis placement  <A2>
   //! locates the plane of the symmetry :
   //! (Location, XDirection, YDirection).
-  Standard_EXPORT gp_Lin Mirrored (const gp_Ax2& A2) const;
+  Standard_EXPORT Standard_NODISCARD gp_Lin Mirrored (const gp_Ax2& A2) const;
   
     void Rotate (const gp_Ax1& A1, const Standard_Real Ang);
   
 
   //! Rotates a line. A1 is the axis of the rotation.
   //! Ang is the angular value of the rotation in radians.
-    gp_Lin Rotated (const gp_Ax1& A1, const Standard_Real Ang) const;
+    Standard_NODISCARD gp_Lin Rotated (const gp_Ax1& A1, const Standard_Real Ang) const;
   
     void Scale (const gp_Pnt& P, const Standard_Real S);
   
@@ -164,26 +164,26 @@ public:
   //! Scales a line. S is the scaling value.
   //! The "Location" point (origin) of the line is modified.
   //! The "Direction" is reversed if the scale is negative.
-    gp_Lin Scaled (const gp_Pnt& P, const Standard_Real S) const;
+    Standard_NODISCARD gp_Lin Scaled (const gp_Pnt& P, const Standard_Real S) const;
   
     void Transform (const gp_Trsf& T);
   
 
   //! Transforms a line with the transformation T from class Trsf.
-    gp_Lin Transformed (const gp_Trsf& T) const;
+    Standard_NODISCARD gp_Lin Transformed (const gp_Trsf& T) const;
   
     void Translate (const gp_Vec& V);
   
 
   //! Translates a line in the direction of the vector V.
   //! The magnitude of the translation is the vector's magnitude.
-    gp_Lin Translated (const gp_Vec& V) const;
+    Standard_NODISCARD gp_Lin Translated (const gp_Vec& V) const;
   
     void Translate (const gp_Pnt& P1, const gp_Pnt& P2);
   
 
   //! Translates a line from the point P1 to the point P2.
-    gp_Lin Translated (const gp_Pnt& P1, const gp_Pnt& P2) const;
+    Standard_NODISCARD gp_Lin Translated (const gp_Pnt& P1, const gp_Pnt& P2) const;
 
 
 

@@ -177,7 +177,7 @@ public:
   //! Note:
   //! -   Reverse assigns the result to this parabola, while
   //! -   Reversed creates a new one.
-    gp_Parab2d Reversed() const;
+    Standard_NODISCARD gp_Parab2d Reversed() const;
   
   //! Returns true if the local coordinate system is direct
   //! and false in the other case.
@@ -188,21 +188,21 @@ public:
 
   //! Performs the symmetrical transformation of a parabola with respect
   //! to the point P which is the center of the symmetry
-  Standard_EXPORT gp_Parab2d Mirrored (const gp_Pnt2d& P) const;
+  Standard_EXPORT Standard_NODISCARD gp_Parab2d Mirrored (const gp_Pnt2d& P) const;
   
   Standard_EXPORT void Mirror (const gp_Ax2d& A);
   
 
   //! Performs the symmetrical transformation of a parabola with respect
   //! to an axis placement which is the axis of the symmetry.
-  Standard_EXPORT gp_Parab2d Mirrored (const gp_Ax2d& A) const;
+  Standard_EXPORT Standard_NODISCARD gp_Parab2d Mirrored (const gp_Ax2d& A) const;
   
     void Rotate (const gp_Pnt2d& P, const Standard_Real Ang);
   
 
   //! Rotates a parabola. P is the center of the rotation.
   //! Ang is the angular value of the rotation in radians.
-    gp_Parab2d Rotated (const gp_Pnt2d& P, const Standard_Real Ang) const;
+    Standard_NODISCARD gp_Parab2d Rotated (const gp_Pnt2d& P, const Standard_Real Ang) const;
   
     void Scale (const gp_Pnt2d& P, const Standard_Real S);
   
@@ -210,26 +210,26 @@ public:
   //! Scales a parabola. S is the scaling value.
   //! If S is negative the direction of the symmetry axis
   //! "XAxis" is reversed and the direction of the "YAxis" too.
-    gp_Parab2d Scaled (const gp_Pnt2d& P, const Standard_Real S) const;
+    Standard_NODISCARD gp_Parab2d Scaled (const gp_Pnt2d& P, const Standard_Real S) const;
   
     void Transform (const gp_Trsf2d& T);
   
 
   //! Transforms an parabola with the transformation T from class Trsf2d.
-    gp_Parab2d Transformed (const gp_Trsf2d& T) const;
+    Standard_NODISCARD gp_Parab2d Transformed (const gp_Trsf2d& T) const;
   
     void Translate (const gp_Vec2d& V);
   
 
   //! Translates a parabola in the direction of the vector V.
   //! The magnitude of the translation is the vector's magnitude.
-    gp_Parab2d Translated (const gp_Vec2d& V) const;
+    Standard_NODISCARD gp_Parab2d Translated (const gp_Vec2d& V) const;
   
     void Translate (const gp_Pnt2d& P1, const gp_Pnt2d& P2);
   
 
   //! Translates a parabola from the point P1 to the point P2.
-    gp_Parab2d Translated (const gp_Pnt2d& P1, const gp_Pnt2d& P2) const;
+    Standard_NODISCARD gp_Parab2d Translated (const gp_Pnt2d& P1, const gp_Pnt2d& P2) const;
 
 
 

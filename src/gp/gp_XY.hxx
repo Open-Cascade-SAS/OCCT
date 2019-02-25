@@ -109,16 +109,16 @@ public:
   //! Computes the sum of this number pair and number pair Other
   //! new.X() = <me>.X() + Other.X()
   //! new.Y() = <me>.Y() + Other.Y()
-    gp_XY Added (const gp_XY& Other) const;
-  gp_XY operator + (const gp_XY& Other) const
+  Standard_NODISCARD gp_XY Added (const gp_XY& Other) const;
+  Standard_NODISCARD gp_XY operator + (const gp_XY& Other) const
 {
   return Added(Other);
 }
   
 
   //! Real D = <me>.X() * Other.Y() - <me>.Y() * Other.X()
-    Standard_Real Crossed (const gp_XY& Right) const;
-  Standard_Real operator ^ (const gp_XY& Right) const
+  Standard_NODISCARD Standard_Real Crossed (const gp_XY& Right) const;
+  Standard_NODISCARD Standard_Real operator ^ (const gp_XY& Right) const
 {
   return Crossed(Right);
 }
@@ -141,8 +141,8 @@ public:
 }
   
   //! Divides <me> by a real.
-    gp_XY Divided (const Standard_Real Scalar) const;
-  gp_XY operator / (const Standard_Real Scalar) const
+  Standard_NODISCARD gp_XY Divided (const Standard_Real Scalar) const;
+  Standard_NODISCARD gp_XY operator / (const Standard_Real Scalar) const
 {
   return Divided(Scalar);
 }
@@ -182,8 +182,8 @@ public:
 
   //! New.X() = <me>.X() * Scalar;
   //! New.Y() = <me>.Y() * Scalar;
-    gp_XY Multiplied (const Standard_Real Scalar) const;
-  gp_XY operator * (const Standard_Real Scalar) const
+  Standard_NODISCARD gp_XY Multiplied (const Standard_Real Scalar) const;
+  Standard_NODISCARD gp_XY operator * (const Standard_Real Scalar) const
 {
   return Multiplied(Scalar);
 }
@@ -191,11 +191,11 @@ public:
 
   //! new.X() = <me>.X() * Other.X();
   //! new.Y() = <me>.Y() * Other.Y();
-    gp_XY Multiplied (const gp_XY& Other) const;
+  Standard_NODISCARD gp_XY Multiplied (const gp_XY& Other) const;
   
   //! New = Matrix * <me>
-    gp_XY Multiplied (const gp_Mat2d& Matrix) const;
-  gp_XY operator * (const gp_Mat2d& Matrix) const
+  Standard_NODISCARD gp_XY Multiplied (const gp_Mat2d& Matrix) const;
+  Standard_NODISCARD gp_XY operator * (const gp_Mat2d& Matrix) const
 {
   return Multiplied(Matrix);
 }
@@ -210,7 +210,7 @@ public:
   //! New.X() = <me>.X()/ <me>.Modulus()
   //! New.Y() = <me>.Y()/ <me>.Modulus()
   //! Raises ConstructionError if <me>.Modulus() <= Resolution from gp
-    gp_XY Normalized() const;
+    Standard_NODISCARD gp_XY Normalized() const;
   
 
   //! <me>.X() = -<me>.X()
@@ -220,8 +220,8 @@ public:
 
   //! New.X() = -<me>.X()
   //! New.Y() = -<me>.Y()
-    gp_XY Reversed() const;
-  gp_XY operator -() const
+    Standard_NODISCARD gp_XY Reversed() const;
+  Standard_NODISCARD gp_XY operator -() const
 {
   return Reversed();
 }
@@ -262,8 +262,8 @@ public:
 
   //! new.X() = <me>.X() - Other.X()
   //! new.Y() = <me>.Y() - Other.Y()
-    gp_XY Subtracted (const gp_XY& Right) const;
-  gp_XY operator - (const gp_XY& Right) const
+  Standard_NODISCARD gp_XY Subtracted (const gp_XY& Right) const;
+  Standard_NODISCARD gp_XY operator - (const gp_XY& Right) const
 {
   return Subtracted(Right);
 }

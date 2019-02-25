@@ -164,10 +164,10 @@ public:
   //! Raises an exception if the matrix of the transformation
   //! is not inversible, it means that the scale factor is lower
   //! or equal to Resolution from package gp.
-    gp_Trsf2d Inverted() const;
+  Standard_NODISCARD gp_Trsf2d Inverted() const;
   
-    gp_Trsf2d Multiplied (const gp_Trsf2d& T) const;
-  gp_Trsf2d operator * (const gp_Trsf2d& T) const
+  Standard_NODISCARD gp_Trsf2d Multiplied (const gp_Trsf2d& T) const;
+  Standard_NODISCARD gp_Trsf2d operator * (const gp_Trsf2d& T) const
 {
   return Multiplied(T);
 }

@@ -182,7 +182,7 @@ public:
   //! Computes the reverse transformation.
   //! Raises an exception if the matrix of the transformation
   //! is not inversible.
-    gp_GTrsf Inverted() const;
+  Standard_NODISCARD gp_GTrsf Inverted() const;
   
 
   //! Computes the transformation composed from T and <me>.
@@ -198,8 +198,8 @@ public:
   //! XYZ P2(P);
   //! T1.Transforms(P2);                  //using T1 then T2
   //! T2.Transforms(P2);                  // P1 = P2 !!!
-    gp_GTrsf Multiplied (const gp_GTrsf& T) const;
-  gp_GTrsf operator * (const gp_GTrsf& T)  const
+  Standard_NODISCARD gp_GTrsf Multiplied (const gp_GTrsf& T) const;
+  Standard_NODISCARD gp_GTrsf operator * (const gp_GTrsf& T)  const
   {
     return Multiplied(T);
   }
@@ -235,7 +235,7 @@ public:
   //!
   //! Raises an exception if N < 0 and if the matrix of the
   //! transformation not inversible.
-    gp_GTrsf Powered (const Standard_Integer N) const;
+  Standard_NODISCARD gp_GTrsf Powered (const Standard_Integer N) const;
   
     void Transforms (gp_XYZ& Coord) const;
   

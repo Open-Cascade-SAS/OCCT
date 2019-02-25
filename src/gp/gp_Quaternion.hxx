@@ -128,13 +128,13 @@ public:
   void Reverse();
   
   //! Return rotation with reversed direction (conjugated quaternion)
-  gp_Quaternion Reversed() const;
+  Standard_NODISCARD gp_Quaternion Reversed() const;
   
   //! Inverts quaternion (both rotation direction and norm)
   void Invert();
   
   //! Return inversed quaternion q^-1
-  gp_Quaternion Inverted() const;
+  Standard_NODISCARD gp_Quaternion Inverted() const;
   
   //! Returns square norm of quaternion
   Standard_Real SquareNorm() const;
@@ -151,8 +151,8 @@ void operator *= (const Standard_Real theScale)
 }
   
   //! Returns scaled quaternion
-  gp_Quaternion Scaled (const Standard_Real theScale) const;
-gp_Quaternion operator * (const Standard_Real theScale) const
+Standard_NODISCARD gp_Quaternion Scaled (const Standard_Real theScale) const;
+Standard_NODISCARD gp_Quaternion operator * (const Standard_Real theScale) const
 {
   return Scaled(theScale);
 }
@@ -168,27 +168,27 @@ gp_Quaternion operator * (const Standard_Real theScale) const
   Standard_EXPORT void Normalize();
   
   //! Returns quaternion scaled so that its norm goes to 1.
-  gp_Quaternion Normalized() const;
+  Standard_NODISCARD gp_Quaternion Normalized() const;
   
   //! Returns quaternion with all components negated.
   //! Note that this operation does not affect neither
   //! rotation operator defined by quaternion nor its norm.
-  gp_Quaternion Negated() const;
-gp_Quaternion operator -() const
+  Standard_NODISCARD gp_Quaternion Negated() const;
+Standard_NODISCARD gp_Quaternion operator -() const
 {
   return Negated();
 }
   
   //! Makes sum of quaternion components; result is "rotations mix"
-  gp_Quaternion Added (const gp_Quaternion& theOther) const;
-gp_Quaternion operator + (const gp_Quaternion& theOther) const
+Standard_NODISCARD gp_Quaternion Added (const gp_Quaternion& theOther) const;
+Standard_NODISCARD gp_Quaternion operator + (const gp_Quaternion& theOther) const
 {
   return Added(theOther);
 }
   
   //! Makes difference of quaternion components; result is "rotations mix"
-  gp_Quaternion Subtracted (const gp_Quaternion& theOther) const;
-gp_Quaternion operator - (const gp_Quaternion& theOther) const
+Standard_NODISCARD gp_Quaternion Subtracted (const gp_Quaternion& theOther) const;
+Standard_NODISCARD gp_Quaternion operator - (const gp_Quaternion& theOther) const
 {
   return Subtracted(theOther);
 }
@@ -199,8 +199,8 @@ gp_Quaternion operator - (const gp_Quaternion& theOther) const
   //! Notices than:
   //! qq' != q'q;
   //! qq^-1 = q;
-  gp_Quaternion Multiplied (const gp_Quaternion& theOther) const;
-gp_Quaternion operator * (const gp_Quaternion& theOther) const
+Standard_NODISCARD gp_Quaternion Multiplied (const gp_Quaternion& theOther) const;
+Standard_NODISCARD gp_Quaternion operator * (const gp_Quaternion& theOther) const
 {
   return Multiplied(theOther);
 }

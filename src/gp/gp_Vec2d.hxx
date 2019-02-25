@@ -147,15 +147,15 @@ public:
     }
   
   //! Adds two vectors
-    gp_Vec2d Added (const gp_Vec2d& Other) const;
-    gp_Vec2d operator + (const gp_Vec2d& Other) const
+    Standard_NODISCARD gp_Vec2d Added (const gp_Vec2d& Other) const;
+    Standard_NODISCARD gp_Vec2d operator + (const gp_Vec2d& Other) const
     {
       return Added(Other);
     }
   
   //! Computes the crossing product between two vectors
-    Standard_Real Crossed (const gp_Vec2d& Right) const;
-    Standard_Real operator ^ (const gp_Vec2d& Right) const
+    Standard_NODISCARD Standard_Real Crossed (const gp_Vec2d& Right) const;
+    Standard_NODISCARD Standard_Real operator ^ (const gp_Vec2d& Right) const
     {
       return Crossed(Right);
     }
@@ -177,8 +177,8 @@ public:
     }
   
   //! divides a vector by a scalar
-    gp_Vec2d Divided (const Standard_Real Scalar) const;
-    gp_Vec2d operator / (const Standard_Real Scalar) const
+    Standard_NODISCARD gp_Vec2d Divided (const Standard_Real Scalar) const;
+    Standard_NODISCARD gp_Vec2d operator / (const Standard_Real Scalar) const
     {
       return Divided(Scalar);
     }
@@ -201,8 +201,8 @@ public:
   //! Normalizes a vector
   //! Raises an exception if the magnitude of the vector is
   //! lower or equal to Resolution from package gp.
-    gp_Vec2d Multiplied (const Standard_Real Scalar) const;
-    gp_Vec2d operator * (const Standard_Real Scalar) const
+    Standard_NODISCARD gp_Vec2d Multiplied (const Standard_Real Scalar) const;
+    Standard_NODISCARD gp_Vec2d operator * (const Standard_Real Scalar) const
     {
       return Multiplied(Scalar);
     }
@@ -213,13 +213,13 @@ public:
   //! Raises an exception if the magnitude of the vector is
   //! lower or equal to Resolution from package gp.
   //! Reverses the direction of a vector
-    gp_Vec2d Normalized() const;
+    Standard_NODISCARD gp_Vec2d Normalized() const;
   
     void Reverse();
   
   //! Reverses the direction of a vector
-    gp_Vec2d Reversed() const;
-    gp_Vec2d operator -() const
+    Standard_NODISCARD gp_Vec2d Reversed() const;
+    Standard_NODISCARD gp_Vec2d operator -() const
     {
       return Reversed();
     }
@@ -232,8 +232,8 @@ public:
     }
   
   //! Subtracts two vectors
-    gp_Vec2d Subtracted (const gp_Vec2d& Right) const;
-    gp_Vec2d operator - (const gp_Vec2d& Right) const
+    Standard_NODISCARD gp_Vec2d Subtracted (const gp_Vec2d& Right) const;
+    Standard_NODISCARD gp_Vec2d operator - (const gp_Vec2d& Right) const
     {
       return Subtracted(Right);
     }
@@ -265,7 +265,7 @@ public:
   //! Performs the symmetrical transformation of a vector
   //! with respect to the vector V which is the center of
   //! the  symmetry.
-  Standard_EXPORT gp_Vec2d Mirrored (const gp_Vec2d& V) const;
+  Standard_EXPORT Standard_NODISCARD gp_Vec2d Mirrored (const gp_Vec2d& V) const;
   
 
   //! Performs the symmetrical transformation of a vector
@@ -277,24 +277,24 @@ public:
   //! Performs the symmetrical transformation of a vector
   //! with respect to an axis placement which is the axis
   //! of the symmetry.
-  Standard_EXPORT gp_Vec2d Mirrored (const gp_Ax2d& A1) const;
+  Standard_EXPORT Standard_NODISCARD gp_Vec2d Mirrored (const gp_Ax2d& A1) const;
   
     void Rotate (const Standard_Real Ang);
   
 
   //! Rotates a vector. Ang is the angular value of the
   //! rotation in radians.
-    gp_Vec2d Rotated (const Standard_Real Ang) const;
+    Standard_NODISCARD gp_Vec2d Rotated (const Standard_Real Ang) const;
   
     void Scale (const Standard_Real S);
   
   //! Scales a vector. S is the scaling value.
-    gp_Vec2d Scaled (const Standard_Real S) const;
+    Standard_NODISCARD gp_Vec2d Scaled (const Standard_Real S) const;
   
   Standard_EXPORT void Transform (const gp_Trsf2d& T);
   
   //! Transforms a vector with a Trsf from gp.
-    gp_Vec2d Transformed (const gp_Trsf2d& T) const;
+  Standard_NODISCARD gp_Vec2d Transformed (const gp_Trsf2d& T) const;
 
 
 

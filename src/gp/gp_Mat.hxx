@@ -159,8 +159,8 @@ public:
   //! Computes the sum of this matrix and
   //! the matrix Other for each coefficient of the matrix :
   //! <me>.Coef(i,j) + <Other>.Coef(i,j)
-    gp_Mat Added (const gp_Mat& Other) const;
-  gp_Mat operator + (const gp_Mat& Other) const
+  Standard_NODISCARD gp_Mat Added (const gp_Mat& Other) const;
+  Standard_NODISCARD gp_Mat operator + (const gp_Mat& Other) const
 {
   return Added(Other);
 }
@@ -172,8 +172,8 @@ public:
 }
   
   //! Divides all the coefficients of the matrix by Scalar
-    gp_Mat Divided (const Standard_Real Scalar) const;
-  gp_Mat operator / (const Standard_Real Scalar) const
+  Standard_NODISCARD gp_Mat Divided (const Standard_Real Scalar) const;
+  Standard_NODISCARD gp_Mat operator / (const Standard_Real Scalar) const
 {
   return Divided(Scalar);
 }
@@ -191,12 +191,12 @@ public:
   //! Exceptions
   //! Standard_ConstructionError if this matrix is singular,
   //! and therefore cannot be inverted.
-  Standard_EXPORT gp_Mat Inverted() const;
+  Standard_NODISCARD Standard_EXPORT gp_Mat Inverted() const;
   
 
   //! Computes  the product of two matrices <me> * <Other>
-    gp_Mat Multiplied (const gp_Mat& Other) const;
-  gp_Mat operator * (const gp_Mat& Other) const
+  Standard_NODISCARD gp_Mat Multiplied (const gp_Mat& Other) const;
+  Standard_NODISCARD gp_Mat operator * (const gp_Mat& Other) const
 {
   return Multiplied(Other);
 }
@@ -210,8 +210,8 @@ public:
   
     void PreMultiply (const gp_Mat& Other);
   
-    gp_Mat Multiplied (const Standard_Real Scalar) const;
-  gp_Mat operator * (const Standard_Real Scalar) const
+    Standard_NODISCARD gp_Mat Multiplied (const Standard_Real Scalar) const;
+  Standard_NODISCARD gp_Mat operator * (const Standard_Real Scalar) const
 {
   return Multiplied(Scalar);
 }
@@ -232,7 +232,7 @@ public:
   //! if N < 0 <me> = <me>.Invert() *...........* <me>.Invert().
   //! If N < 0 an exception will be raised if the matrix is not
   //! inversible
-    gp_Mat Powered (const Standard_Integer N) const;
+  Standard_NODISCARD gp_Mat Powered (const Standard_Integer N) const;
   
     void Subtract (const gp_Mat& Other);
   void operator -= (const gp_Mat& Other)
@@ -243,8 +243,8 @@ public:
 
   //! cOmputes for each coefficient of the matrix :
   //! <me>.Coef(i,j) - <Other>.Coef(i,j)
-    gp_Mat Subtracted (const gp_Mat& Other) const;
-  gp_Mat operator - (const gp_Mat& Other) const
+  Standard_NODISCARD gp_Mat Subtracted (const gp_Mat& Other) const;
+  Standard_NODISCARD gp_Mat operator - (const gp_Mat& Other) const
 {
   return Subtracted(Other);
 }
@@ -253,7 +253,7 @@ public:
   
 
   //! Transposes the matrix. A(j, i) -> A (i, j)
-    gp_Mat Transposed() const;
+    Standard_NODISCARD gp_Mat Transposed() const;
 
 
 friend class gp_XYZ;

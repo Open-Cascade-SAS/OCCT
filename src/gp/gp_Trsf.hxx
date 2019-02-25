@@ -282,10 +282,10 @@ public:
   //! Pnt P2 = P1.Transformed(Tcomp);    //using Tcomp
   //! Pnt P3 = P1.Transformed(T1);       //using T1 then T2
   //! P3.Transform(T2);                  // P3 = P2 !!!
-    gp_Trsf Inverted() const;
+  Standard_NODISCARD gp_Trsf Inverted() const;
   
-    gp_Trsf Multiplied (const gp_Trsf& T) const;
-  gp_Trsf operator * (const gp_Trsf& T) const
+  Standard_NODISCARD gp_Trsf Multiplied (const gp_Trsf& T) const;
+  Standard_NODISCARD gp_Trsf operator * (const gp_Trsf& T) const
 {
   return Multiplied(T);
 }
@@ -314,7 +314,7 @@ void operator *= (const gp_Trsf& T)
   //!
   //! Raises if N < 0 and if the matrix of the transformation not
   //! inversible.
-    gp_Trsf Powered (const Standard_Integer N) const;
+  Standard_NODISCARD gp_Trsf Powered (const Standard_Integer N) const;
   
     void Transforms (Standard_Real& X, Standard_Real& Y, Standard_Real& Z) const;
   

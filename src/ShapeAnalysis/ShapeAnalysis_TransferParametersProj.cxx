@@ -550,12 +550,11 @@ TopoDS_Vertex ShapeAnalysis_TransferParametersProj::CopyNMVertex (const TopoDS_V
 	Handle(BRep_GCurve) fromGC = Handle(BRep_GCurve)::DownCast(fromitcr.Value());
 	if ( fromGC.IsNull() || !fromGC->IsCurveOnSurface()) continue;
 	
-	TopLoc_Location aL = fromGC->Location();
-	aL.Predivided(theV.Location());
+	TopLoc_Location aL = fromGC->Location().Predivided(theV.Location());
 	Handle(Geom_Surface) surface1 = fromGC->Surface();
 	Handle(Geom2d_Curve) ac2d1 = fromGC->PCurve();
 	if (pr->IsPointOnCurveOnSurface(ac2d1,surface1,aL)) {
-      found = Standard_True;
+          found = Standard_True;
 	  if(!hasRepr) {
 	    aOldPar = pr->Parameter();
 	  }

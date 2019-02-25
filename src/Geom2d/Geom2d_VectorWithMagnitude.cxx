@@ -135,8 +135,7 @@ void Geom2d_VectorWithMagnitude::Normalize () { gpVec2d.Normalize (); }
 
 Handle(Geom2d_VectorWithMagnitude) Geom2d_VectorWithMagnitude::Normalized () const { 
 
-   gp_Vec2d V = gpVec2d;
-   V.Normalized ();
+   gp_Vec2d V = gpVec2d.Normalized();
    return new VectorWithMagnitude (V);
 }
 

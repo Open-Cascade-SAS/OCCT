@@ -79,7 +79,7 @@ public:
   //! Note:
   //! -   Reverse assigns the result to this line, while
   //! -   Reversed creates a new one.
-    gp_Lin2d Reversed() const;
+    Standard_NODISCARD gp_Lin2d Reversed() const;
   
   //! Changes the direction of the line.
     void SetDirection (const gp_Dir2d& V);
@@ -143,7 +143,7 @@ public:
   //! Performs the symmetrical transformation of a line
   //! with respect to the point <P> which is the center
   //! of the symmetry
-  Standard_EXPORT gp_Lin2d Mirrored (const gp_Pnt2d& P) const;
+  Standard_EXPORT Standard_NODISCARD gp_Lin2d Mirrored (const gp_Pnt2d& P) const;
   
   Standard_EXPORT void Mirror (const gp_Ax2d& A);
   
@@ -151,40 +151,40 @@ public:
   //! Performs the symmetrical transformation of a line
   //! with respect to an axis placement which is the axis
   //! of the symmetry.
-  Standard_EXPORT gp_Lin2d Mirrored (const gp_Ax2d& A) const;
+  Standard_EXPORT Standard_NODISCARD gp_Lin2d Mirrored (const gp_Ax2d& A) const;
   
     void Rotate (const gp_Pnt2d& P, const Standard_Real Ang);
   
 
   //! Rotates a line. P is the center of the rotation.
   //! Ang is the angular value of the rotation in radians.
-    gp_Lin2d Rotated (const gp_Pnt2d& P, const Standard_Real Ang) const;
+    Standard_NODISCARD gp_Lin2d Rotated (const gp_Pnt2d& P, const Standard_Real Ang) const;
   
   void Scale (const gp_Pnt2d& P, const Standard_Real S);
   
 
   //! Scales a line. S is the scaling value. Only the
   //! origin of the line is modified.
-    gp_Lin2d Scaled (const gp_Pnt2d& P, const Standard_Real S) const;
+  Standard_NODISCARD gp_Lin2d Scaled (const gp_Pnt2d& P, const Standard_Real S) const;
   
     void Transform (const gp_Trsf2d& T);
   
 
   //! Transforms a line with the transformation T from class Trsf2d.
-    gp_Lin2d Transformed (const gp_Trsf2d& T) const;
+    Standard_NODISCARD gp_Lin2d Transformed (const gp_Trsf2d& T) const;
   
     void Translate (const gp_Vec2d& V);
   
 
   //! Translates a line in the direction of the vector V.
   //! The magnitude of the translation is the vector's magnitude.
-    gp_Lin2d Translated (const gp_Vec2d& V) const;
+    Standard_NODISCARD gp_Lin2d Translated (const gp_Vec2d& V) const;
   
     void Translate (const gp_Pnt2d& P1, const gp_Pnt2d& P2);
   
 
   //! Translates a line from the point P1 to the point P2.
-    gp_Lin2d Translated (const gp_Pnt2d& P1, const gp_Pnt2d& P2) const;
+    Standard_NODISCARD gp_Lin2d Translated (const gp_Pnt2d& P1, const gp_Pnt2d& P2) const;
 
 
 
