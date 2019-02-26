@@ -2,11 +2,12 @@ puts "========"
 puts "OCC79"
 puts "========"
 
+# disable VBO to avoid false memory leaks reported
+# on NVidia graphics, see issue #29996
+vcaps -vbo 0
+
 vinit
 restore [locate_data_file OCC162.brep] s
-vdisplay s
-
-verase s
 vdisplay s
 
 set listmem {}

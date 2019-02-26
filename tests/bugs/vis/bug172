@@ -1,12 +1,12 @@
-puts "TODO OCC29996 Windows: Checking trend failed"
-puts "TODO OCC29996 Windows: Tcl Exception: Memory leak detected"
-puts "TODO OCC29996 Windows: TEST INCOMPLETE"
-
 puts "========"
 puts "OCC172"
 puts "========"
 
 pload XDE
+
+# disable VBO to avoid false memory leaks reported
+# on NVidia graphics, see issue #29996
+vcaps -vbo 0
 
 vinit
 restore [locate_data_file OCC162.brep] s 
@@ -23,5 +23,3 @@ for {set i 1} {${i} <= ${i_max}} {incr i} {
     lappend listmem [meminfo h]
     checktrend $listmem 0 1 "Memory leak detected"
 }
-
-
