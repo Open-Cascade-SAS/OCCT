@@ -1,0 +1,30 @@
+puts "REQUIRED All: Wire not done with an error"
+
+puts "========"
+puts "0030522: Modeling Algorithms - BRepBuilderAPI_MakeWire produces different wires depending on the order of parameters"
+puts "========"
+puts ""
+
+restore [locate_data_file bug30522_w_line12.brep] w1
+restore [locate_data_file bug30522_w_line21.brep] w2
+
+if {![regexp "Wire not done with an error" [wire r12 w1 w2]]} {
+  if {[lindex [nbshapes r12] 10] != 8} {
+    puts "Error: The wires have been unified incorrectly"
+  }
+}
+
+wire r21 w2 w1
+
+wire r12u -unsorted w1 w2
+
+wire r21u -unsorted w2 w1
+
+foreach r {r21 r12u r21u} {
+  checkshape $r
+  checknbshapes $r -edge 8 -vertex 8
+}
+
+smallview +Y+Z
+donly r21; fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

@@ -58,7 +58,7 @@ void  BRepLib_MakeWire::Add(const TopTools_ListOfShape& L)
 
     CollectCoincidentVertices(L, aGrVL);
 
-    NCollection_DataMap<TopoDS_Vertex, TopoDS_Vertex> anO2NV; 
+    TopTools_DataMapOfShapeShape anO2NV; 
 
     CreateNewVertices(aGrVL, anO2NV);
 
@@ -188,17 +188,13 @@ void BRepLib_MakeWire::CollectCoincidentVertices(const TopTools_ListOfShape& the
   NCollection_List<NCollection_List<TopoDS_Vertex>>& theGrVL)
 {
   TopTools_IndexedMapOfShape anAllV;
-  TopTools_ListIteratorOfListOfShape anItL;
   TopTools_IndexedDataMapOfShapeListOfShape aMV2EL;
 
-  TopExp::MapShapesAndAncestors(myShape, TopAbs_VERTEX, TopAbs_EDGE, aMV2EL);
-  TopExp_Explorer exp;
-  for (anItL.Initialize(theL); anItL.More(); anItL.Next()) 
-    TopExp::MapShapesAndAncestors(anItL.Value(), TopAbs_VERTEX, TopAbs_EDGE, aMV2EL);
+  TopExp::MapShapes(myShape, TopAbs_VERTEX, anAllV);
 
-  for (int i = 1; i <= aMV2EL.Extent(); i++)
-    if (aMV2EL(i).Extent() == 1)
-      anAllV.Add(aMV2EL.FindKey(i));
+  TopTools_ListIteratorOfListOfShape anItL(theL);
+  for (; anItL.More(); anItL.Next()) 
+    TopExp::MapShapes(anItL.Value(), TopAbs_VERTEX, anAllV);
 
   //aV2CV : vertex <-> its coincident vertices
   NCollection_DataMap<TopoDS_Vertex, NCollection_Map<TopoDS_Vertex>> aV2CV; 
@@ -303,8 +299,8 @@ void BRepLib_MakeWire::CollectCoincidentVertices(const TopTools_ListOfShape& the
 //function : CreateNewVertices
 //purpose  : 
 //=======================================================================
-void BRepLib_MakeWire::CreateNewVertices(const NCollection_List<NCollection_List<TopoDS_Vertex>>& theGrVL, 
-                                         NCollection_DataMap<TopoDS_Vertex, TopoDS_Vertex>& theO2NV)
+void BRepLib_MakeWire::CreateNewVertices(const NCollection_List<NCollection_List<TopoDS_Vertex>>& theGrVL,
+                                         TopTools_DataMapOfShapeShape& theO2NV)
 {
   //map [old vertex => new vertex]
   //note that already existing shape (i.e. the original ones)
@@ -356,7 +352,7 @@ void BRepLib_MakeWire::CreateNewVertices(const NCollection_List<NCollection_List
 //purpose  : 
 //=======================================================================
 void BRepLib_MakeWire::CreateNewListOfEdges(const TopTools_ListOfShape& theL,
-  const NCollection_DataMap<TopoDS_Vertex, TopoDS_Vertex>& theO2NV,
+  const TopTools_DataMapOfShapeShape& theO2NV,
   TopTools_ListOfShape& theNewEList)
 {
   ///create the new list (theNewEList) from the input list L

@@ -131,10 +131,10 @@ BRepLib_MakeWire::BRepLib_MakeWire(const TopoDS_Wire& W,
 
 void  BRepLib_MakeWire::Add(const TopoDS_Wire& W)
 {
-  TopExp_Explorer ex(W,TopAbs_EDGE);
-  while (ex.More()) {
-    Add(TopoDS::Edge(ex.Current()));
-    ex.Next();
+  for (TopoDS_Iterator it(W); it.More(); it.Next()) {
+    Add(TopoDS::Edge(it.Value()));
+    if (myError != BRepLib_WireDone)
+      break;
   }
 }
 
