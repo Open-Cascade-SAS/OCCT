@@ -600,6 +600,7 @@ protected:
 
   //! Prepare GLSL version header.
   Standard_EXPORT Standard_Integer defaultGlslVersion (const Handle(Graphic3d_ShaderProgram)& theProgram,
+                                                       const TCollection_AsciiString& theName,
                                                        Standard_Integer theBits,
                                                        bool theUsesDerivates = false) const;
 

@@ -377,6 +377,17 @@ EOL"}";
   }
 #endif
 
+  //! Generate map key for light sources configuration.
+  static TCollection_AsciiString genLightKey (const Handle(Graphic3d_LightSet)& theLights)
+  {
+    if (theLights->NbEnabled() <= THE_NB_UNROLLED_LIGHTS_MAX)
+    {
+      return TCollection_AsciiString ("l_") + theLights->KeyEnabledLong();
+    }
+
+    const Standard_Integer aMaxLimit = roundUpMaxLightSources (theLights->NbEnabled());
+    return TCollection_AsciiString ("l_") + theLights->KeyEnabledShort() + aMaxLimit;
+  }
 }
 
 // =======================================================================
@@ -529,18 +540,7 @@ void OpenGl_ShaderManager::switchLightPrograms()
     return;
   }
 
-  TCollection_AsciiString aKey ("l_");
-  if (aLights->NbEnabled() <= THE_NB_UNROLLED_LIGHTS_MAX)
-  {
-    aKey += aLights->KeyEnabledLong();
-  }
-  else
-  {
-    const Standard_Integer aMaxLimit = roundUpMaxLightSources (aLights->NbEnabled());
-    aKey += aLights->KeyEnabledShort();
-    aKey += aMaxLimit;
-  }
-
+  const TCollection_AsciiString aKey = genLightKey (aLights);
   if (!myMapOfLightPrograms.Find (aKey, myLightPrograms))
   {
     myLightPrograms = new OpenGl_SetOfShaderPrograms();
@@ -1315,7 +1315,7 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramFont()
        EOL"}";
 
   Handle(Graphic3d_ShaderProgram) aProgramSrc = new Graphic3d_ShaderProgram();
-  defaultGlslVersion (aProgramSrc, 0);
+  defaultGlslVersion (aProgramSrc, "font", 0);
   aProgramSrc->SetNbLightsMax (0);
   aProgramSrc->SetNbClipPlanesMax (0);
   aProgramSrc->AttachShader (OpenGl_ShaderObject::CreateFromSource (aSrcVert, Graphic3d_TOS_VERTEX,   aUniforms, aStageInOuts));
@@ -1380,6 +1380,7 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramFboBlit()
     aProgramSrc->SetHeader ("#version 150");
   }
 #endif
+  aProgramSrc->SetId ("occt_blit");
   aProgramSrc->SetNbLightsMax (0);
   aProgramSrc->SetNbClipPlanesMax (0);
   aProgramSrc->AttachShader (OpenGl_ShaderObject::CreateFromSource (aSrcVert, Graphic3d_TOS_VERTEX,   aUniforms, aStageInOuts));
@@ -1470,6 +1471,7 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramOitCompositing (const St
   #endif
   }
 
+  aProgramSrc->SetId (theMsaa ? "occt_weight-oit-msaa" : "occt_weight-oit");
   aProgramSrc->SetNbLightsMax (0);
   aProgramSrc->SetNbClipPlanesMax (0);
   aProgramSrc->AttachShader (OpenGl_ShaderObject::CreateFromSource (aSrcVert, Graphic3d_TOS_VERTEX,   aUniforms, aStageInOuts));
@@ -1526,6 +1528,7 @@ namespace
 // purpose  :
 // =======================================================================
 int OpenGl_ShaderManager::defaultGlslVersion (const Handle(Graphic3d_ShaderProgram)& theProgram,
+                                              const TCollection_AsciiString& theName,
                                               int theBits,
                                               bool theUsesDerivates) const
 {
@@ -1596,6 +1599,11 @@ int OpenGl_ShaderManager::defaultGlslVersion (const Handle(Graphic3d_ShaderProgr
     }
   }
 #endif
+
+  // should fit OpenGl_PO_NB
+  char aBitsStr[64];
+  Sprintf (aBitsStr, "%04x", aBits);
+  theProgram->SetId (TCollection_AsciiString ("occt_") + theName + aBitsStr);
   return aBits;
 }
 
@@ -1804,7 +1812,7 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramUnlit (Handle(OpenGl_Sha
 
   if ((theBits & OpenGl_PO_StippleLine) != 0)
   {
-    const Standard_Integer aBits = defaultGlslVersion (aProgramSrc, theBits);
+    const Standard_Integer aBits = defaultGlslVersion (aProgramSrc, "unlit", theBits);
     if ((aBits & OpenGl_PO_StippleLine) != 0)
     {
       aUniforms.Append (OpenGl_ShaderObject::ShaderVariable ("int   uPattern", Graphic3d_TOS_FRAGMENT));
@@ -1850,7 +1858,7 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramUnlit (Handle(OpenGl_Sha
     + aSrcFragMainGetColor
     + EOL"}";
 
-  defaultGlslVersion (aProgramSrc, theBits);
+  defaultGlslVersion (aProgramSrc, "unlit", theBits);
   aProgramSrc->SetNbLightsMax (0);
   aProgramSrc->SetNbClipPlanesMax (aNbClipPlanes);
   aProgramSrc->SetAlphaTest ((theBits & OpenGl_PO_AlphaTest) != 0);
@@ -2160,7 +2168,8 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramGouraud (Handle(OpenGl_S
     + EOL"  occSetFragColor (getFinalColor());"
     + EOL"}";
 
-  defaultGlslVersion (aProgramSrc, theBits);
+  const TCollection_AsciiString aProgId = TCollection_AsciiString ("gouraud-") + genLightKey (myLightSourceState.LightSources()) + "-";
+  defaultGlslVersion (aProgramSrc, aProgId, theBits);
   aProgramSrc->SetNbLightsMax (aNbLights);
   aProgramSrc->SetNbClipPlanesMax (aNbClipPlanes);
   aProgramSrc->SetAlphaTest ((theBits & OpenGl_PO_AlphaTest) != 0);
@@ -2330,7 +2339,8 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramPhong (Handle(OpenGl_Sha
     + EOL"  occSetFragColor (getFinalColor());"
     + EOL"}";
 
-  defaultGlslVersion (aProgramSrc, theBits, isFlatNormal);
+  const TCollection_AsciiString aProgId = TCollection_AsciiString (theIsFlatNormal ? "flat-" : "phong-") + genLightKey (myLightSourceState.LightSources()) + "-";
+  defaultGlslVersion (aProgramSrc, aProgId, theBits, isFlatNormal);
   aProgramSrc->SetNbLightsMax (aNbLights);
   aProgramSrc->SetNbClipPlanesMax (aNbClipPlanes);
   aProgramSrc->SetAlphaTest ((theBits & OpenGl_PO_AlphaTest) != 0);
@@ -2368,10 +2378,12 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramStereo (Handle(OpenGl_Sh
   TCollection_AsciiString aSrcFrag;
   aUniforms.Append (OpenGl_ShaderObject::ShaderVariable ("sampler2D uLeftSampler",  Graphic3d_TOS_FRAGMENT));
   aUniforms.Append (OpenGl_ShaderObject::ShaderVariable ("sampler2D uRightSampler", Graphic3d_TOS_FRAGMENT));
+  const char* aName = "stereo";
   switch (theStereoMode)
   {
     case Graphic3d_StereoMode_Anaglyph:
     {
+      aName = "anaglyph";
       aUniforms.Append (OpenGl_ShaderObject::ShaderVariable ("mat4 uMultL", Graphic3d_TOS_FRAGMENT));
       aUniforms.Append (OpenGl_ShaderObject::ShaderVariable ("mat4 uMultR", Graphic3d_TOS_FRAGMENT));
       aSrcFrag =
@@ -2391,6 +2403,7 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramStereo (Handle(OpenGl_Sh
     }
     case Graphic3d_StereoMode_RowInterlaced:
     {
+      aName = "row-interlaced";
       aSrcFrag =
           EOL"void main()"
           EOL"{"
@@ -2409,6 +2422,7 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramStereo (Handle(OpenGl_Sh
     }
     case Graphic3d_StereoMode_ColumnInterlaced:
     {
+      aName = "column-interlaced";
       aSrcFrag =
           EOL"void main()"
           EOL"{"
@@ -2427,6 +2441,7 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramStereo (Handle(OpenGl_Sh
     }
     case Graphic3d_StereoMode_ChessBoard:
     {
+      aName = "chessboard";
       aSrcFrag =
           EOL"void main()"
           EOL"{"
@@ -2447,6 +2462,7 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramStereo (Handle(OpenGl_Sh
     }
     case Graphic3d_StereoMode_SideBySide:
     {
+      aName = "sidebyside";
       aSrcFrag =
           EOL"void main()"
           EOL"{"
@@ -2470,6 +2486,7 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramStereo (Handle(OpenGl_Sh
     }
     case Graphic3d_StereoMode_OverUnder:
     {
+      aName = "overunder";
       aSrcFrag =
           EOL"void main()"
           EOL"{"
@@ -2514,7 +2531,7 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramStereo (Handle(OpenGl_Sh
     }
   }
 
-  defaultGlslVersion (aProgramSrc, 0);
+  defaultGlslVersion (aProgramSrc, aName, 0);
   aProgramSrc->SetNbLightsMax (0);
   aProgramSrc->SetNbClipPlanesMax (0);
   aProgramSrc->AttachShader (OpenGl_ShaderObject::CreateFromSource (aSrcVert, Graphic3d_TOS_VERTEX,   aUniforms, aStageInOuts));
@@ -2559,7 +2576,7 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramBoundBox()
     EOL"  occSetFragColor (occColor);"
     EOL"}";
 
-  defaultGlslVersion (aProgramSrc, 0);
+  defaultGlslVersion (aProgramSrc, "bndbox", 0);
   aProgramSrc->SetNbLightsMax (0);
   aProgramSrc->SetNbClipPlanesMax (0);
   aProgramSrc->AttachShader (OpenGl_ShaderObject::CreateFromSource (aSrcVert, Graphic3d_TOS_VERTEX,   aUniforms, aStageInOuts));

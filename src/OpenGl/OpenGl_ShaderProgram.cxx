@@ -14,6 +14,7 @@
 // commercial license or contractual agreement.
 
 #include <OSD_File.hxx>
+#include <OSD_Environment.hxx>
 #include <OSD_Protection.hxx>
 
 #include <Graphic3d_Buffer.hxx>
@@ -152,8 +153,9 @@ void OpenGl_VariableSetterSelector::Set (const Handle(OpenGl_Context)&          
 // function : OpenGl_ShaderProgram
 // purpose  : Creates uninitialized shader program
 // =======================================================================
-OpenGl_ShaderProgram::OpenGl_ShaderProgram (const Handle(Graphic3d_ShaderProgram)& theProxy)
-: OpenGl_NamedResource (!theProxy.IsNull() ? theProxy->GetId() : ""),
+OpenGl_ShaderProgram::OpenGl_ShaderProgram (const Handle(Graphic3d_ShaderProgram)& theProxy,
+                                            const TCollection_AsciiString& theId)
+: OpenGl_NamedResource (!theProxy.IsNull() ? theProxy->GetId() : theId),
   myProgramID (NO_PROGRAM),
   myProxy     (theProxy),
   myShareCount(1),
@@ -409,6 +411,7 @@ Standard_Boolean OpenGl_ShaderProgram::Initialize (const Handle(OpenGl_Context)&
                                           + anIter.Value()->Source();      // the source code itself (defining main() function)
     if (!aShader->LoadAndCompile (theCtx, aSource))
     {
+      aShader->Release (theCtx.operator->());
       return Standard_False;
     }
 
@@ -581,6 +584,7 @@ Standard_Boolean OpenGl_ShaderProgram::link (const Handle(OpenGl_Context)& theCt
     return Standard_False;
   }
 
+  memset (myCurrentState, 0, sizeof (myCurrentState));
   for (GLint aVar = 0; aVar < OpenGl_OCCT_NUMBER_OF_STATE_VARIABLES; ++aVar)
   {
     myStateLocations[aVar] = GetUniformLocation (theCtx, PredefinedKeywords[aVar]);
@@ -1494,4 +1498,46 @@ void OpenGl_ShaderProgram::Release (OpenGl_Context* theCtx)
   }
 
   myProgramID = NO_PROGRAM;
+}
+
+// =======================================================================
+// function : UpdateDebugDump
+// purpose  :
+// =======================================================================
+Standard_Boolean OpenGl_ShaderProgram::UpdateDebugDump (const Handle(OpenGl_Context)& theCtx,
+                                                        const TCollection_AsciiString& theFolder,
+                                                        Standard_Boolean theToBeautify,
+                                                        Standard_Boolean theToReset)
+{
+  if (myProgramID == NO_PROGRAM)
+  {
+    return Standard_False;
+  }
+
+  TCollection_AsciiString aFolder = theFolder;
+  if (aFolder.IsEmpty())
+  {
+    OSD_Environment aShaderVar ("CSF_ShadersDirectoryDump");
+    aFolder = aShaderVar.Value();
+    if (aFolder.IsEmpty())
+    {
+      aFolder = ".";
+    }
+  }
+
+  bool hasUpdates = false;
+  for (OpenGl_ShaderList::Iterator anIter (myShaderObjects); anIter.More(); anIter.Next())
+  {
+    if (!anIter.Value().IsNull())
+    {
+      // desktop OpenGL (but not OpenGL ES) allows multiple shaders of the same stage to be attached,
+      // but here we expect only single source per stage
+      hasUpdates = anIter.ChangeValue()->updateDebugDump (theCtx, myResourceId, aFolder, theToBeautify, theToReset) || hasUpdates;
+    }
+  }
+  if (hasUpdates)
+  {
+    return Link (theCtx);
+  }
+  return Standard_False;
 }

@@ -19,6 +19,7 @@
 #include <Graphic3d_ShaderObject.hxx>
 #include <OpenGl_GlCore20.hxx>
 #include <OpenGl_Resource.hxx>
+#include <Quantity_Date.hxx>
 
 //! Wrapper for OpenGL shader object.
 class OpenGl_ShaderObject : public OpenGl_Resource
@@ -110,11 +111,29 @@ public:
 
   //! Returns type of shader object.
   GLenum Type() const { return myType; }
-  
+
+public:
+
+  //! Update the shader object from external file in the following way:
+  //! 1) If external file does not exist, then it will be created (current source code will be dumped, no recompilation) and FALSE will be returned.
+  //! 2) If external file exists and it has the same timestamp as   myDumpDate, nothing will be done      and FALSE will be returned.
+  //! 3) If external file exists and it has    newer timestamp than myDumpDate, shader  will be recompiled and TRUE will be returned.
+  //! @param theCtx OpenGL context bound to this working thread
+  //! @param theId  GLSL program id to define file name
+  //! @param theFolder folder to store files
+  //! @param theToBeautify flag improving formatting (add extra newlines)
+  //! @param theToReset when TRUE, existing dumps will be overridden
+  Standard_EXPORT Standard_Boolean updateDebugDump (const Handle(OpenGl_Context)& theCtx,
+                                                    const TCollection_AsciiString& theId,
+                                                    const TCollection_AsciiString& theFolder,
+                                                    Standard_Boolean theToBeautify,
+                                                    Standard_Boolean theToReset);
+
 protected:
 
-  GLenum myType;     //!< Type of OpenGL shader object
-  GLuint myShaderID; //!< Handle of OpenGL shader object
+  Quantity_Date myDumpDate; //!< The recent date of the shader dump
+  GLenum        myType;     //!< Type of OpenGL shader object
+  GLuint        myShaderID; //!< Handle of OpenGL shader object
 
 };
 

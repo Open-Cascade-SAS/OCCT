@@ -60,6 +60,11 @@ public:
   //! Returns unique ID used to manage resource in graphic driver.
   const TCollection_AsciiString& GetId() const { return myID; }
 
+  //! Sets unique ID used to manage resource in graphic driver.
+  //! WARNING! Graphic3d_ShaderProgram constructor generates a unique id for proper resource management;
+  //! however if application overrides it, it is responsibility of application to avoid name collisions.
+  void SetId (const TCollection_AsciiString& theId) { myID = theId; }
+
   //! Returns GLSL header (version code and extensions).
   const TCollection_AsciiString& Header() const { return myHeader; }
 

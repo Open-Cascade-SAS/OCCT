@@ -585,7 +585,7 @@ static bool parseShaderTypeArg (Graphic3d_TypeOfShaderObject& theType,
 //function : VShaderProg
 //purpose  : Sets the pair of vertex and fragment shaders for the object
 //==============================================================================
-static Standard_Integer VShaderProg (Draw_Interpretor& /*theDI*/,
+static Standard_Integer VShaderProg (Draw_Interpretor& theDI,
                                      Standard_Integer  theArgNb,
                                      const char**      theArgVec)
 {
@@ -611,10 +611,60 @@ static Standard_Integer VShaderProg (Draw_Interpretor& /*theDI*/,
     TCollection_AsciiString anArg (theArgVec[anArgIter]);
     anArg.LowerCase();
     Graphic3d_TypeOfShaderObject aShaderTypeArg = Graphic3d_TypeOfShaderObject(-1);
-    if (!aProgram.IsNull()
-     &&  aProgram->ShaderObjects().IsEmpty()
-     && (anArg == "-off"
-      || anArg ==  "off"))
+    if (anArg == "-list"
+     || ((anArg == "-update"
+       || anArg == "-dump"
+       || anArg == "-debug"
+       || anArg == "-reload"
+       || anArg == "-load")
+      && anArgIter + 1 < theArgNb))
+    {
+      Handle(OpenGl_Context) aGlCtx;
+      if (Handle(OpenGl_GraphicDriver) aDriver = Handle(OpenGl_GraphicDriver)::DownCast (aCtx->CurrentViewer()->Driver()))
+      {
+        aGlCtx = aDriver->GetSharedContext();
+      }
+      if (aGlCtx.IsNull())
+      {
+        std::cout << "Error: no OpenGl_Context\n";
+        return 1;
+      }
+
+      if (anArg == "-list")
+      {
+        for (OpenGl_Context::OpenGl_ResourcesMap::Iterator aResIter (aGlCtx->SharedResources()); aResIter.More(); aResIter.Next())
+        {
+          if (Handle(OpenGl_ShaderProgram) aResProg = Handle(OpenGl_ShaderProgram)::DownCast (aResIter.Value()))
+          {
+            theDI << aResProg->ResourceId() << " ";
+          }
+        }
+      }
+      else
+      {
+        TCollection_AsciiString aShaderName = theArgVec[++anArgIter];
+        Handle(OpenGl_ShaderProgram) aResProg;
+        if (!aGlCtx->GetResource (aShaderName, aResProg))
+        {
+          std::cout << "Syntax error: shader resource '" << aShaderName << "' is not found\n";
+          return 1;
+        }
+        if (aResProg->UpdateDebugDump (aGlCtx, "", false, anArg == "-dump"))
+        {
+          aCtx->UpdateCurrentViewer();
+        }
+      }
+      if (anArgIter + 1 < theArgNb)
+      {
+        std::cout << "Syntax error: wrong number of arguments\n";
+        return 1;
+      }
+      return 0;
+    }
+    else if (!aProgram.IsNull()
+          &&  aProgram->ShaderObjects().IsEmpty()
+          && (anArg == "-off"
+           || anArg ==  "off"))
     {
       aProgram.Nullify();
     }
@@ -850,7 +900,11 @@ void ViewerTest::OpenGlCommands(Draw_Interpretor& theCommands)
                   "\n\t\t:   [-off] [-phong] [-aspect {shading|line|point|text}=shading]"
                   "\n\t\t:   [-header VersionHeader]"
                   "\n\t\t:   [-tessControl TessControlShader -tesseval TessEvaluationShader]"
-                  "\n\t\t: Assign custom GLSL program to presentation aspects.",
+                  "\n\t\t: Assign custom GLSL program to presentation aspects."
+                  "\nvshader [-list] [-dump] [-reload] ShaderId"
+                  "\n\t\t:  -list   prints the list of registered GLSL programs"
+                  "\n\t\t:  -dump   dumps specified GLSL program (for debugging)"
+                  "\n\t\t:  -reload restores dump of specified GLSL program",
     __FILE__, VShaderProg, aGroup);
   theCommands.Add("vshaderprog", "Alias for vshader", __FILE__, VShaderProg, aGroup);
 }

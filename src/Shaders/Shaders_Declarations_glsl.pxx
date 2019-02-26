@@ -1,24 +1,8 @@
 // This file has been automatically generated from resource file src/Shaders/Declarations.glsl
 
 static const char Shaders_Declarations_glsl[] =
-  "// Created on: 2013-10-10\n"
-  "// Created by: Denis BOGOLEPOV\n"
-  "// Copyright (c) 2013-2014 OPEN CASCADE SAS\n"
-  "//\n"
-  "// This file is part of Open CASCADE Technology software library.\n"
-  "//\n"
-  "// This library is free software; you can redistribute it and/or modify it under\n"
-  "// the terms of the GNU Lesser General Public License version 2.1 as published\n"
-  "// by the Free Software Foundation, with special exception defined in the file\n"
-  "// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT\n"
-  "// distribution for complete text of the license and disclaimer of any warranty.\n"
-  "//\n"
-  "// Alternatively, this file may be used under the terms of Open CASCADE\n"
-  "// commercial license or contractual agreement.\n"
   "\n"
-  "//! @file Declarations.glsl\n"
-  "//! This files includes definition of common uniform variables in OCCT GLSL programs\n"
-  "\n"
+  "//! @file Declarations.glsl includes definition of common uniform variables in OCCT GLSL programs\n"
   "//! @def THE_MAX_LIGHTS\n"
   "//! Specifies the length of array of lights, which is 8 by default. Defined by Shader Manager.\n"
   "// #define THE_MAX_LIGHTS 8\n"
@@ -178,4 +162,5 @@ static const char Shaders_Declarations_glsl[] =
   "uniform               vec4 occClipPlaneEquations[THE_MAX_CLIP_PLANES];\n"
   "uniform THE_PREC_ENUM int  occClipPlaneChains[THE_MAX_CLIP_PLANES]; //! Indicating the number of planes in the Chain\n"
   "uniform THE_PREC_ENUM int  occClipPlaneCount;   //!< Total number of clip planes\n"
-  "#endif\n";
+  "#endif\n"
+  "//! @endfile Declarations.glsl\n";

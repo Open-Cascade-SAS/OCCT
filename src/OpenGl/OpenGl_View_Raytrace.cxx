@@ -1270,9 +1270,11 @@ Handle(OpenGl_ShaderObject) OpenGl_View::initShader (const GLenum               
 // =======================================================================
 Handle(OpenGl_ShaderProgram) OpenGl_View::initProgram (const Handle(OpenGl_Context)&      theGlContext,
                                                        const Handle(OpenGl_ShaderObject)& theVertShader,
-                                                       const Handle(OpenGl_ShaderObject)& theFragShader)
+                                                       const Handle(OpenGl_ShaderObject)& theFragShader,
+                                                       const TCollection_AsciiString& theName)
 {
-  Handle(OpenGl_ShaderProgram) aProgram = new OpenGl_ShaderProgram;
+  const TCollection_AsciiString anId = TCollection_AsciiString("occt_rt_") + theName;
+  Handle(OpenGl_ShaderProgram) aProgram = new OpenGl_ShaderProgram(Handle(Graphic3d_ShaderProgram)(), anId);
 
   if (!aProgram->Create (theGlContext))
   {
@@ -1553,7 +1555,7 @@ Standard_Boolean OpenGl_View::initRaytraceResources (const Standard_Integer theS
         return safeFailBack ("Failed to initialize ray-trace fragment shader", theGlContext);
       }
 
-      myRaytraceProgram = initProgram (theGlContext, aBasicVertShader, myRaytraceShader);
+      myRaytraceProgram = initProgram (theGlContext, aBasicVertShader, myRaytraceShader, "main");
       if (myRaytraceProgram.IsNull())
       {
         return safeFailBack ("Failed to initialize ray-trace shader program", theGlContext);
@@ -1588,7 +1590,7 @@ Standard_Boolean OpenGl_View::initRaytraceResources (const Standard_Integer theS
         return safeFailBack ("Failed to initialize FSAA fragment shader", theGlContext);
       }
 
-      myPostFSAAProgram = initProgram (theGlContext, aBasicVertShader, myPostFSAAShader);
+      myPostFSAAProgram = initProgram (theGlContext, aBasicVertShader, myPostFSAAShader, "fsaa");
       if (myPostFSAAProgram.IsNull())
       {
         return safeFailBack ("Failed to initialize FSAA shader program", theGlContext);
@@ -1623,7 +1625,7 @@ Standard_Boolean OpenGl_View::initRaytraceResources (const Standard_Integer theS
         return safeFailBack ("Failed to set display fragment shader source", theGlContext);
       }
 
-      myOutImageProgram = initProgram (theGlContext, aBasicVertShader, myOutImageShader);
+      myOutImageProgram = initProgram (theGlContext, aBasicVertShader, myOutImageShader, "out");
       if (myOutImageProgram.IsNull())
       {
         return safeFailBack ("Failed to initialize display shader program", theGlContext);

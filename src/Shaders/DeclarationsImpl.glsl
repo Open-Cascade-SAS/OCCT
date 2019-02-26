@@ -1,20 +1,5 @@
-// Created on: 2013-10-10
-// Created by: Denis BOGOLEPOV
-// Copyright (c) 2013-2014 OPEN CASCADE SAS
-//
-// This file is part of Open CASCADE Technology software library.
-//
-// This library is free software; you can redistribute it and/or modify it under
-// the terms of the GNU Lesser General Public License version 2.1 as published
-// by the Free Software Foundation, with special exception defined in the file
-// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
-// distribution for complete text of the license and disclaimer of any warranty.
-//
-// Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement.
 
-// This file includes implementation of common functions and properties accessors
-
+//! @file DeclarationsImpl.glsl includes implementation of common functions and properties accessors
 #if defined(FRAGMENT_SHADER)
 //! Output color (and coverage for accumulation by OIT algorithm).
 void occSetFragColor (in vec4 theColor)
@@ -75,3 +60,4 @@ vec2  occTextureTrsf_Translation(void) { return occTexTrsf2d[0].xy; }
 vec2  occTextureTrsf_Scale(void)       { return occTexTrsf2d[0].zw; }
 float occTextureTrsf_RotationSin(void) { return occTexTrsf2d[1].x; }
 float occTextureTrsf_RotationCos(void) { return occTexTrsf2d[1].y; }
+//! @endfile DeclarationsImpl.glsl

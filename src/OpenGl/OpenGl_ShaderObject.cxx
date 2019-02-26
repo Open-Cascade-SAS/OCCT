@@ -14,10 +14,13 @@
 // commercial license or contractual agreement.
 
 #include <Graphic3d_ShaderObject.hxx>
-
+#include <Message_Messenger.hxx>
 #include <OpenGl_Context.hxx>
 #include <OpenGl_ShaderObject.hxx>
+#include <OSD_File.hxx>
 #include <OSD_Path.hxx>
+#include <OSD_Process.hxx>
+#include <OSD_Protection.hxx>
 #include <Standard_Assert.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
@@ -225,7 +228,6 @@ Standard_Boolean OpenGl_ShaderObject::LoadAndCompile (const Handle(OpenGl_Contex
       theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH, theSource);
     }
     theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH, "Error! Failed to set shader source");
-    Release (theCtx.operator->());
     return false;
   }
 
@@ -243,7 +245,6 @@ Standard_Boolean OpenGl_ShaderObject::LoadAndCompile (const Handle(OpenGl_Contex
     }
     theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
                          TCollection_AsciiString ("Failed to compile shader object. Compilation log:\n") + aLog);
-    Release (theCtx.operator->());
     return false;
   }
   else if (theCtx->caps->glslWarnings)
@@ -358,4 +359,139 @@ void OpenGl_ShaderObject::Release (OpenGl_Context* theCtx)
     theCtx->core20fwd->glDeleteShader (myShaderID);
   }
   myShaderID = NO_SHADER;
+}
+
+//! Return GLSL shader stage file extension.
+static const char* getShaderExtension (GLenum theType)
+{
+  switch (theType)
+  {
+    case GL_VERTEX_SHADER:          return ".vs";
+    case GL_FRAGMENT_SHADER:        return ".fs";
+    case GL_GEOMETRY_SHADER:        return ".gs";
+    case GL_TESS_CONTROL_SHADER:    return ".tcs";
+    case GL_TESS_EVALUATION_SHADER: return ".tes";
+    case GL_COMPUTE_SHADER:         return ".cs";
+  }
+  return ".glsl";
+}
+
+//! Expand substring with additional tail.
+static void insertSubString (TCollection_AsciiString& theString,
+                             const char& thePattern,
+                             const TCollection_AsciiString& theSubstitution)
+{
+  const int aSubLen = theSubstitution.Length();
+  for (int aCharIter = 1, aNbChars = theString.Length(); aCharIter <= aNbChars; ++aCharIter)
+  {
+    if (theString.Value (aCharIter) == thePattern)
+    {
+      theString.Insert (aCharIter + 1, theSubstitution);
+      aCharIter += aSubLen;
+      aNbChars  += aSubLen;
+    }
+  }
+}
+
+//! Dump GLSL shader source code into file.
+static bool dumpShaderSource (const TCollection_AsciiString& theFileName,
+                              const TCollection_AsciiString& theSource,
+                              bool theToBeautify)
+{
+  OSD_File aFile (theFileName);
+  aFile.Build (OSD_WriteOnly, OSD_Protection());
+  TCollection_AsciiString aSource = theSource;
+  if (theToBeautify)
+  {
+    insertSubString (aSource, ';', "\n");
+    insertSubString (aSource, '{', "\n");
+    insertSubString (aSource, '}', "\n");
+  }
+  if (!aFile.IsOpen())
+  {
+    Message::DefaultMessenger()->Send (TCollection_AsciiString("Error: File '") + theFileName + "' cannot be opened to save shader", Message_Fail);
+    return false;
+  }
+
+  if (aSource.Length() > 0)
+  {
+    aFile.Write (aSource.ToCString(), aSource.Length());
+  }
+  aFile.Close();
+  Message::DefaultMessenger()->Send (TCollection_AsciiString ("Shader source dumped into '") + theFileName + "'", Message_Warning);
+  return true;
+}
+
+//! Read GLSL shader source code from file dump.
+static bool restoreShaderSource (TCollection_AsciiString& theSource,
+                                 const TCollection_AsciiString& theFileName)
+{
+  OSD_File aFile (theFileName);
+  aFile.Open (OSD_ReadOnly, OSD_Protection());
+  if (!aFile.IsOpen())
+  {
+    Message::DefaultMessenger()->Send (TCollection_AsciiString ("File '") + theFileName + "' cannot be opened to load shader", Message_Fail);
+    return false;
+  }
+
+  const Standard_Integer aSize = (Standard_Integer )aFile.Size();
+  if (aSize > 0)
+  {
+    theSource = TCollection_AsciiString (aSize, '\0');
+    aFile.Read (theSource, aSize);
+  }
+  aFile.Close();
+  Message::DefaultMessenger()->Send (TCollection_AsciiString ("Restored shader dump from '") + theFileName + "'", Message_Warning);
+  return true;
+}
+
+// =======================================================================
+// function : updateDebugDump
+// purpose  :
+// =======================================================================
+Standard_Boolean OpenGl_ShaderObject::updateDebugDump (const Handle(OpenGl_Context)& theCtx,
+                                                       const TCollection_AsciiString& theProgramId,
+                                                       const TCollection_AsciiString& theFolder,
+                                                       Standard_Boolean theToBeautify,
+                                                       Standard_Boolean theToReset)
+{
+  const TCollection_AsciiString aFileName = theFolder + "/" + theProgramId + getShaderExtension (myType);
+  if (!theToReset)
+  {
+    OSD_File aFile (aFileName);
+    if (aFile.Exists())
+    {
+      const Quantity_Date aDate = aFile.AccessMoment();
+      if (aDate > myDumpDate)
+      {
+        TCollection_AsciiString aNewSource;
+        if (restoreShaderSource (aNewSource, aFileName))
+        {
+          LoadAndCompile (theCtx, aNewSource);
+          return Standard_True;
+        }
+      }
+      return Standard_False;
+    }
+  }
+
+  bool isDumped = false;
+  if (myShaderID != NO_SHADER)
+  {
+    GLint aLength = 0;
+    theCtx->core20fwd->glGetShaderiv (myShaderID, GL_SHADER_SOURCE_LENGTH, &aLength);
+    if (aLength > 0)
+    {
+      TCollection_AsciiString aSource (aLength - 1, '\0');
+      theCtx->core20fwd->glGetShaderSource (myShaderID, aLength, NULL, (GLchar* )aSource.ToCString());
+      dumpShaderSource (aFileName, aSource, theToBeautify);
+      isDumped = true;
+    }
+  }
+  if (!isDumped)
+  {
+    dumpShaderSource (aFileName, "", false);
+  }
+  myDumpDate = OSD_Process().SystemDate();
+  return Standard_False;
 }

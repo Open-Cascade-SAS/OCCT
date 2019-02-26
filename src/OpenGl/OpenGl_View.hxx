@@ -848,7 +848,8 @@ protected: //! @name methods related to ray-tracing
   //! Creates shader program from the given vertex and fragment shaders.
   Handle(OpenGl_ShaderProgram) initProgram (const Handle(OpenGl_Context)&      theGlContext,
                                             const Handle(OpenGl_ShaderObject)& theVertShader,
-                                            const Handle(OpenGl_ShaderObject)& theFragShader);
+                                            const Handle(OpenGl_ShaderObject)& theFragShader,
+                                            const TCollection_AsciiString& theName);
 
   //! Initializes OpenGL/GLSL shader programs.
   Standard_Boolean initRaytraceResources (const Standard_Integer theSizeX,

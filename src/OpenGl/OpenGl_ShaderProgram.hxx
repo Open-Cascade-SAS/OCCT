@@ -202,7 +202,8 @@ public:
   //!
   //! This constructor has been made public to provide more flexibility to re-use OCCT OpenGL classes without OCCT Viewer itself.
   //! If this is not the case - create the program using shared OpenGl_ShaderManager instance instead.
-  Standard_EXPORT OpenGl_ShaderProgram (const Handle(Graphic3d_ShaderProgram)& theProxy = NULL);
+  Standard_EXPORT OpenGl_ShaderProgram (const Handle(Graphic3d_ShaderProgram)& theProxy = NULL,
+                                        const TCollection_AsciiString& theId = "");
 
 protected:
 
@@ -598,6 +599,21 @@ public:
   Standard_EXPORT Standard_Boolean SetSampler (const Handle(OpenGl_Context)& theCtx,
                                                GLint                         theLocation,
                                                const Graphic3d_TextureUnit   theTextureUnit);
+
+public:
+
+  //! Update the shader program from external files (per shader stage) in the following way:
+  //! 1) If external file does not exist, then it will be created (current source code will be dumped, no recompilation) and FALSE will be returned.
+  //! 2) If external file exists and it has the same timestamp as   myDumpDate, nothing will be done and FALSE will be returned.
+  //! 3) If external file exists and it has    newer timestamp than myDumpDate, shader  will be recompiled and relinked and TRUE will be returned.
+  //! @param theCtx OpenGL context bound to this working thread
+  //! @param theFolder folder to store files; when unspecified, $CSF_ShadersDirectoryDump or current folder will be used instead
+  //! @param theToBeautify flag improving formatting (add extra newlines)
+  //! @param theToReset when TRUE, existing dumps will be overridden
+  Standard_EXPORT Standard_Boolean UpdateDebugDump (const Handle(OpenGl_Context)& theCtx,
+                                                    const TCollection_AsciiString& theFolder = "",
+                                                    Standard_Boolean theToBeautify = Standard_False,
+                                                    Standard_Boolean theToReset = Standard_False);
 
 protected:
 
