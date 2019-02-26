@@ -58,6 +58,7 @@ public:
   virtual void Enable();
   virtual void Start() { }
 
+  const PSelector& Selector() const { return mySelector; }
   void SetShapePicker (const PSelector& theSelector);
   void SetPipelines (const Handle(ShapePipelineMap)& thePipelines);
   void SetOCCWindow (const Handle(Aspect_Window)& theWindow);

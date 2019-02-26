@@ -100,6 +100,9 @@ public: //! @name Obtain picking results
   //! @param [in] theShape the selectable shape
   Standard_EXPORT virtual void RemoveSelectableObject(const IVtk_IShape::Handle& theShape);
 
+  //! Return topmost picked 3D point or (Inf, Inf, Inf) if undefined.
+  const gp_Pnt& TopPickedPoint() const { return myTopPickedPoint; }
+
 public:
 
   DEFINE_STANDARD_RTTIEXT(IVtkOCC_ShapePickerAlgo,IVtk_IShapePickerAlgo)
@@ -121,6 +124,7 @@ private:
   IVtk_IView::Handle             myView;
   IVtk_ShapeIdList               myShapesPicked;
   IVtk_SubShapeMap               mySubShapesPicked;
+  gp_Pnt                         myTopPickedPoint;
   Handle(IVtkOCC_ViewerSelector) myViewerSelector;
 };
 

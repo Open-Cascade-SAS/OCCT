@@ -6704,7 +6704,7 @@ static Standard_Integer VSelect (Draw_Interpretor& di,
 //function : VMoveTo
 //purpose  : Emulates cursor movement to defined pixel position
 //=======================================================================
-static Standard_Integer VMoveTo (Draw_Interpretor& ,
+static Standard_Integer VMoveTo (Draw_Interpretor& theDI,
                                 Standard_Integer theNbArgs,
                                 const char**     theArgVec)
 {
@@ -6767,6 +6767,17 @@ static Standard_Integer VMoveTo (Draw_Interpretor& ,
   }
 
   ViewerTest::CurrentEventManager()->MoveTo (aMousePos.x(), aMousePos.y());
+  gp_Pnt aTopPnt (RealLast(), RealLast(), RealLast());
+  const Handle(SelectMgr_EntityOwner)& aDetOwner = aContext->DetectedOwner();
+  for (Standard_Integer aDetIter = 1; aDetIter <= aContext->MainSelector()->NbPicked(); ++aDetIter)
+  {
+    if (aContext->MainSelector()->Picked (aDetIter) == aDetOwner)
+    {
+      aTopPnt = aContext->MainSelector()->PickedPoint (aDetIter);
+      break;
+    }
+  }
+  theDI << aTopPnt.X() << " " << aTopPnt.Y() << " " << aTopPnt.Z();
   return 0;
 }
 

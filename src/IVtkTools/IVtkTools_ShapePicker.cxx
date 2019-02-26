@@ -193,6 +193,10 @@ void IVtkTools_ShapePicker::doPickImpl (double* thePos,
   {
     myOccPickerAlgo->Pick (thePos[0], thePos[1]);
   }
+
+  PickPosition[0] = myOccPickerAlgo->TopPickedPoint().X();
+  PickPosition[1] = myOccPickerAlgo->TopPickedPoint().Y();
+  PickPosition[2] = myOccPickerAlgo->TopPickedPoint().Z();
 }
 
 //============================================================================

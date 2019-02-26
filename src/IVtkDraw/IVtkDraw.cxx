@@ -899,6 +899,10 @@ static Standard_Integer VtkMoveTo(Draw_Interpretor& theDI,
 
   Standard_Integer anY = GetInteractor()->GetRenderWindow()->GetSize()[1] - atoi (theArgs[2]) - 1;
   GetInteractor()->MoveTo (atoi (theArgs[1]), anY);
+
+  gp_XYZ aPickPnt;
+  GetInteractor()->Selector()->GetPickPosition (aPickPnt.ChangeData());
+  theDI << aPickPnt.X() << " " << aPickPnt.Y() << " " << aPickPnt.Z();
   return 0;
 }
 

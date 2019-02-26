@@ -269,6 +269,7 @@ void IVtkOCC_ShapePickerAlgo::SubShapesPicked (const IVtk_IdType theId, IVtk_Sha
 //================================================================
 void IVtkOCC_ShapePickerAlgo::clearPicked()
 {
+  myTopPickedPoint.SetCoord (RealLast(), RealLast(), RealLast());
   myShapesPicked.Clear();
   mySubShapesPicked.Clear();
 }
@@ -289,9 +290,11 @@ int IVtkOCC_ShapePickerAlgo::NbPicked()
 bool IVtkOCC_ShapePickerAlgo::processPicked()
 {
   Standard_Integer aNbPicked =  myViewerSelector->NbPicked();
+
   Handle(StdSelect_BRepOwner) anEntityOwner;
   Handle(Message_Messenger) anOutput = Message::DefaultMessenger();
 
+  bool isTop = true;
   for (Standard_Integer aDetectIt = 1; aDetectIt <= aNbPicked; aDetectIt++)
   {
     // ViewerSelector detects sensitive entities under the mouse
@@ -320,6 +323,11 @@ bool IVtkOCC_ShapePickerAlgo::processPicked()
 
       IVtk_IdType aTopLevelId = aSelShape->GetId();
       myShapesPicked.Append (aTopLevelId);
+      if (isTop)
+      {
+        isTop = false;
+        myTopPickedPoint = myViewerSelector->PickedPoint (aDetectIt);
+      }
 
       // Now try to guess if it's the top-level shape itself or just a sub-shape picked
       TopoDS_Shape aTopLevelShape = aSelShape->GetShape();
