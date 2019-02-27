@@ -127,12 +127,14 @@ static void AddCompositeShape (const Handle(XCAFDoc_ShapeTool)& theSTool,
   if( nbSimple && aHasCompositeSubShape)
   {
     theSTool->AddShape( aSimpleShape,  Standard_False, Standard_False  );
+
     TopoDS_Compound aNewShape;
     aB.MakeCompound(aNewShape);
     aB.Add(aNewShape, aSimpleShape);
     aB.Add(aNewShape,aCompShape);
-    //if (!aLoc.IsIdentity())
-    //  aNewShape.Location(aLoc );
+
+    if (!aLoc.IsIdentity())
+      aNewShape.Location(aLoc );
     aNewShape.Orientation(theShape.Orientation());
     theSTool->AddShape( aNewShape,  aHasCompositeSubShape, Standard_False  );
   }
