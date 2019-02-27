@@ -90,7 +90,8 @@ public:
                                     Standard_Boolean theEnableEnvMap,
                                     const Handle(OpenGl_ShaderProgram)& theCustomProgram)
   {
-    return BindFaceProgram (theTextures, theShadingModel, theAlphaMode, Aspect_IS_SOLID, theHasVertColor, theEnableEnvMap, false, theCustomProgram);
+    return BindFaceProgram (theTextures, theShadingModel, theAlphaMode, Aspect_IS_SOLID,
+                            theHasVertColor, theEnableEnvMap, false, theCustomProgram);
   }
 
   //! Bind program for filled primitives rendering
@@ -175,6 +176,27 @@ public:
     }
 
     return bindProgramWithState (myFontProgram);
+  }
+
+  //! Bind program for outline rendering
+  Standard_Boolean BindOutlineProgram()
+  {
+    if (myContext->caps->ffpEnable)
+    {
+      return false;
+    }
+
+    const Standard_Integer aBits = getProgramBits (Handle(OpenGl_TextureSet)(), Graphic3d_AlphaMode_Opaque, Aspect_IS_SOLID, false, false, false);
+    if (myOutlinePrograms.IsNull())
+    {
+      myOutlinePrograms = new OpenGl_SetOfPrograms();
+    }
+    Handle(OpenGl_ShaderProgram)& aProgram = myOutlinePrograms->ChangeValue (aBits);
+    if (aProgram.IsNull())
+    {
+      prepareStdProgramUnlit (aProgram, aBits, true);
+    }
+    return bindProgramWithState (aProgram);
   }
 
   //! Bind program for FBO blit operation.
@@ -518,10 +540,10 @@ protected:
     {
       // If environment map is enabled lighting calculations are
       // not needed (in accordance with default OCCT behavior)
-      Handle(OpenGl_ShaderProgram)& aProgram = myUnlitPrograms->ChangeValue (Graphic3d_TOSM_UNLIT, theBits);
+      Handle(OpenGl_ShaderProgram)& aProgram = myUnlitPrograms->ChangeValue (theBits);
       if (aProgram.IsNull())
       {
-        prepareStdProgramUnlit (aProgram, theBits);
+        prepareStdProgramUnlit (aProgram, theBits, false);
       }
       return aProgram;
     }
@@ -551,7 +573,8 @@ protected:
 
   //! Prepare standard GLSL program without lighting.
   Standard_EXPORT Standard_Boolean prepareStdProgramUnlit (Handle(OpenGl_ShaderProgram)& theProgram,
-                                                           const Standard_Integer        theBits);
+                                                           Standard_Integer theBits,
+                                                           Standard_Boolean theIsOutline = false);
 
   //! Prepare standard GLSL program with lighting.
   Standard_Boolean prepareStdProgramLight (Handle(OpenGl_ShaderProgram)& theProgram,
@@ -560,7 +583,7 @@ protected:
   {
     switch (theShadingModel)
     {
-      case Graphic3d_TOSM_UNLIT:    return prepareStdProgramUnlit  (theProgram, theBits);
+      case Graphic3d_TOSM_UNLIT:    return prepareStdProgramUnlit  (theProgram, theBits, false);
       case Graphic3d_TOSM_FACET:    return prepareStdProgramPhong  (theProgram, theBits, true);
       case Graphic3d_TOSM_VERTEX:   return prepareStdProgramGouraud(theProgram, theBits);
       case Graphic3d_TOSM_DEFAULT:
@@ -674,7 +697,8 @@ protected:
   Graphic3d_TypeOfShadingModel       myShadingModel;       //!< lighting shading model
   OpenGl_ShaderProgramList           myProgramList;        //!< The list of shader programs
   Handle(OpenGl_SetOfShaderPrograms) myLightPrograms;      //!< pointer to active lighting programs matrix
-  Handle(OpenGl_SetOfShaderPrograms) myUnlitPrograms;      //!< programs matrix without  lighting
+  Handle(OpenGl_SetOfPrograms)       myUnlitPrograms;      //!< programs matrix without lighting
+  Handle(OpenGl_SetOfPrograms)       myOutlinePrograms;    //!< programs matrix without lighting for outline presentation
   Handle(OpenGl_ShaderProgram)       myFontProgram;        //!< standard program for textured text
   Handle(OpenGl_ShaderProgram)       myBlitProgram;        //!< standard program for FBO blit emulation
   Handle(OpenGl_ShaderProgram)       myBoundBoxProgram;    //!< standard program for bounding box

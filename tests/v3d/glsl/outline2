@@ -1,0 +1,31 @@
+puts "========"
+puts "0024437: Visualization - silhouette edges based on OpenGL"
+puts "Draw bottle sample"
+puts "========"
+puts ""
+
+pload MODELING VISUALIZATION
+
+# test for creation of bottle as in tutorial (script is in samples)
+source $env(CSF_OCCTSamplesPath)/tcl/bottle.tcl
+
+vsetcolorbg 255 255 255
+vzbufftrihedron -type wireframe -colorLabels BLACK
+vaspects bottle -setDrawSilhouette 1 -setEdgeColor BLACK -setFaceBoundaryDraw 1 -setMostContinuity c0 -setFaceBoundaryColor BLACK -setInteriorStyle HIDDENLINE 
+vrenderparams -rendScale 2
+
+vcamera -ortho
+vfit
+vaspects bottle -setDrawSilhouette 0
+vdump $::imagedir/${::casename}_ortho0.png
+
+vaspects bottle -setDrawSilhouette 1
+vdump $::imagedir/${::casename}_ortho1.png
+
+vcamera -persp
+vfit
+vaspects bottle -setDrawSilhouette 0
+vdump $::imagedir/${::casename}_persp0.png
+
+vaspects bottle -setDrawSilhouette 1
+vdump $::imagedir/${::casename}_persp1.png

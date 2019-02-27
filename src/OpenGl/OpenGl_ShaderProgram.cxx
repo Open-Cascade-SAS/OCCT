@@ -83,6 +83,9 @@ Standard_CString OpenGl_ShaderProgram::PredefinedKeywords[] =
   "occLineFeather",        // OpenGl_OCCT_LINE_FEATHER
   "occWireframeColor",     // OpenGl_OCCT_WIREFRAME_COLOR
   "occIsQuadMode",         // OpenGl_OCCT_QUAD_MODE_STATE
+
+  "occOrthoScale",         // OpenGl_OCCT_ORTHO_SCALE
+  "occSilhouetteThickness" // OpenGl_OCCT_SILHOUETTE_THICKNESS
 };
 
 namespace

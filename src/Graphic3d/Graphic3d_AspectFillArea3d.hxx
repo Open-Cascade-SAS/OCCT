@@ -320,6 +320,12 @@ public:
   //! Set skip first triangle edge flag for drawing wireframe presentation of quads array split into triangles.
   void SetSkipFirstEdge (bool theToSkipFirstEdge) { myToSkipFirstEdge = theToSkipFirstEdge; }
 
+  //! Returns TRUE if silhouette (outline) should be drawn (with edge color and width); FALSE by default.
+  bool ToDrawSilhouette() const { return myToDrawSilhouette; }
+
+  //! Enables/disables drawing silhouette (outline).
+  void SetDrawSilhouette (bool theToDraw) { myToDrawSilhouette = theToDraw; }
+
 public:
 
   //! Returns the hatch type used when InteriorStyle is IS_HATCH
@@ -395,6 +401,7 @@ protected:
   bool                    myToSkipFirstEdge;
   bool                    myToDistinguishMaterials;
   bool                    myToDrawEdges;
+  bool                    myToDrawSilhouette;
   bool                    myToSuppressBackFaces;
   bool                    myToMapTexture;
 

@@ -1587,6 +1587,8 @@ struct ViewerTest_AspectsChangeSet
   Standard_Integer             ToSetInterior;
   Aspect_InteriorStyle         InteriorStyle;
 
+  Standard_Integer             ToSetDrawSilhouette;
+
   Standard_Integer             ToSetDrawEdges;
   Standard_Integer             ToSetQuadEdges;
 
@@ -1648,6 +1650,7 @@ struct ViewerTest_AspectsChangeSet
     ShadingModel               (Graphic3d_TOSM_DEFAULT),
     ToSetInterior              (0),
     InteriorStyle              (Aspect_IS_SOLID),
+    ToSetDrawSilhouette (0),
     ToSetDrawEdges    (0),
     ToSetQuadEdges    (0),
     ToSetEdgeColor    (0),
@@ -1680,6 +1683,7 @@ struct ViewerTest_AspectsChangeSet
         && ToSetHatch             == 0
         && ToSetShadingModel      == 0
         && ToSetInterior          == 0
+        && ToSetDrawSilhouette    == 0
         && ToSetDrawEdges         == 0
         && ToSetQuadEdges         == 0
         && ToSetEdgeColor         == 0
@@ -1953,6 +1957,15 @@ struct ViewerTest_AspectsChangeSet
         {
           theDrawer->ShadingAspect()->Aspect()->SetHatchStyle (Aspect_HS_VERTICAL);
         }
+      }
+    }
+    if (ToSetDrawSilhouette != 0)
+    {
+      if (ToSetDrawSilhouette != -1
+       || theDrawer->HasOwnShadingAspect())
+      {
+        toRecompute = theDrawer->SetupOwnShadingAspect (aDefDrawer) || toRecompute;
+        theDrawer->ShadingAspect()->Aspect()->SetDrawSilhouette (ToSetDrawSilhouette == 1);
       }
     }
     if (ToSetDrawEdges != 0)
@@ -2886,6 +2899,22 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
       aChangeSet->ToSetInterior = -1;
       aChangeSet->InteriorStyle = Aspect_IS_SOLID;
     }
+    else if (anArg == "-setdrawoutline"
+          || anArg == "-setdrawsilhouette"
+          || anArg == "-setoutline"
+          || anArg == "-setsilhouette"
+          || anArg == "-outline"
+          || anArg == "-outlined"
+          || anArg == "-silhouette")
+    {
+      bool toDrawOutline = true;
+      if (anArgIter + 1 < theArgNb
+       && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], toDrawOutline))
+      {
+        ++anArgIter;
+      }
+      aChangeSet->ToSetDrawSilhouette = toDrawOutline ? 1 : -1;
+    }
     else if (anArg == "-setdrawedges"
           || anArg == "-setdrawedge"
           || anArg == "-drawedges"
@@ -2974,6 +3003,7 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
       aChangeSet->ShadingModel = Graphic3d_TOSM_DEFAULT;
       aChangeSet->ToSetInterior = -1;
       aChangeSet->InteriorStyle = Aspect_IS_SOLID;
+      aChangeSet->ToSetDrawSilhouette = -1;
       aChangeSet->ToSetDrawEdges = -1;
       aChangeSet->ToSetQuadEdges = -1;
       aChangeSet->ToSetEdgeColor = -1;
@@ -6193,6 +6223,7 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
       "\n\t\t:          [-setFaceBoundaryDraw {0|1}] [-setMostContinuity {c0|c1|c2|c3|cn}"
       "\n\t\t:          [-setFaceBoundaryWidth LineWidth] [-setFaceBoundaryColor R G B] [-setFaceBoundaryType LineType]"
       "\n\t\t:          [-setDrawEdges {0|1}] [-setEdgeType LineType] [-setEdgeColor R G B] [-setQuadEdges {0|1}]"
+      "\n\t\t:          [-setDrawSilhouette {0|1}]"
       "\n\t\t:          [-setAlphaMode {opaque|mask|blend|blendauto} [alphaCutOff=0.5]]"
       "\n\t\t: Manage presentation properties of all, selected or named objects."
       "\n\t\t: When -subshapes is specified than following properties will be"

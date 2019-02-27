@@ -35,6 +35,7 @@ Graphic3d_AspectFillArea3d::Graphic3d_AspectFillArea3d()
   myToSkipFirstEdge     (false),
   myToDistinguishMaterials (false),
   myToDrawEdges         (false),
+  myToDrawSilhouette    (false),
   myToSuppressBackFaces (true),
   myToMapTexture        (false)
 {
@@ -67,6 +68,7 @@ Graphic3d_AspectFillArea3d::Graphic3d_AspectFillArea3d (const Aspect_InteriorSty
   myToSkipFirstEdge     (false),
   myToDistinguishMaterials (false),
   myToDrawEdges         (false),
+  myToDrawSilhouette    (false),
   myToSuppressBackFaces (true),
   myToMapTexture        (false)
 {

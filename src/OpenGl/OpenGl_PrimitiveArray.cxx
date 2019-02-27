@@ -24,6 +24,7 @@
 #include <OpenGl_ShaderProgram.hxx>
 #include <OpenGl_Structure.hxx>
 #include <OpenGl_VertexBufferCompat.hxx>
+#include <OpenGl_View.hxx>
 #include <OpenGl_Workspace.hxx>
 #include <Graphic3d_TextureParams.hxx>
 #include <NCollection_AlignedAllocator.hxx>
@@ -773,38 +774,12 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
                                             ? theWorkspace->ApplyAspectMarker()
                                             : theWorkspace->AspectMarker();
 
-  // create VBOs on first render call
   const Handle(OpenGl_Context)& aCtx = theWorkspace->GetGlContext();
-  if (!myIsVboInit)
-  {
-    // compatibility - keep data to draw markers using display lists
-    Standard_Boolean toKeepData = Standard_False;
-    if (myDrawMode == GL_POINTS)
-    {
-      const Handle(OpenGl_TextureSet)& aSpriteNormRes = anAspectMarker->SpriteRes (aCtx);
-      const OpenGl_PointSprite* aSpriteNorm = !aSpriteNormRes.IsNull() ? dynamic_cast<const OpenGl_PointSprite*> (aSpriteNormRes->First().get()) : NULL;
-      toKeepData = aSpriteNorm != NULL
-               &&  aSpriteNorm->IsDisplayList();
-    }
-  #if defined (GL_ES_VERSION_2_0)
-    processIndices (aCtx);
-  #endif
-    buildVBO (aCtx, toKeepData);
-    myIsVboInit = Standard_True;
-  }
-  else if ((!myAttribs.IsNull()
-         &&  myAttribs->IsMutable())
-        || (!myIndices.IsNull()
-         &&  myIndices->IsMutable()))
-  {
-    updateVBO (aCtx);
-  }
 
-  // Temporarily disable environment mapping
   Handle(OpenGl_TextureSet) aTextureBack;
   bool toDrawArray = true;
   int toDrawInteriorEdges = 0; // 0 - no edges, 1 - glsl edges, 2 - polygonMode
-  if (myDrawMode > GL_LINE_STRIP)
+  if (myIsFillType)
   {
     toDrawArray = anAspectFace->Aspect()->InteriorStyle() != Aspect_IS_EMPTY;
     if (anAspectFace->Aspect()->ToDrawEdges())
@@ -832,17 +807,51 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
     #endif
     }
   }
-  else if (myDrawMode <= GL_LINE_STRIP)
+  else
   {
-    aTextureBack = aCtx->BindTextures (Handle(OpenGl_TextureSet)());
     if (myDrawMode == GL_POINTS)
     {
-      toDrawArray = anAspectMarker->Aspect()->Type() != Aspect_TOM_EMPTY;
+      if (anAspectMarker->Aspect()->Type() == Aspect_TOM_EMPTY)
+      {
+        return;
+      }
     }
     else
     {
-      toDrawArray = anAspectLine->Aspect()->Type() != Aspect_TOL_EMPTY;
+      if (anAspectLine->Aspect()->Type() == Aspect_TOL_EMPTY)
+      {
+        return;
+      }
     }
+
+    // Temporarily disable environment mapping
+    aTextureBack = aCtx->BindTextures (Handle(OpenGl_TextureSet)());
+  }
+
+  // create VBOs on first render call
+  if (!myIsVboInit)
+  {
+    // compatibility - keep data to draw markers using display lists
+    Standard_Boolean toKeepData = Standard_False;
+    if (myDrawMode == GL_POINTS)
+    {
+      const Handle(OpenGl_TextureSet)& aSpriteNormRes = anAspectMarker->SpriteRes (aCtx);
+      const OpenGl_PointSprite* aSpriteNorm = !aSpriteNormRes.IsNull() ? dynamic_cast<const OpenGl_PointSprite*> (aSpriteNormRes->First().get()) : NULL;
+      toKeepData = aSpriteNorm != NULL
+               &&  aSpriteNorm->IsDisplayList();
+    }
+  #if defined (GL_ES_VERSION_2_0)
+    processIndices (aCtx);
+  #endif
+    buildVBO (aCtx, toKeepData);
+    myIsVboInit = Standard_True;
+  }
+  else if ((!myAttribs.IsNull()
+         &&  myAttribs->IsMutable())
+        || (!myIndices.IsNull()
+         &&  myIndices->IsMutable()))
+  {
+    updateVBO (aCtx);
   }
 
   Graphic3d_TypeOfShadingModel aShadingModel = Graphic3d_TOSM_UNLIT;
@@ -932,35 +941,54 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
       aCtx->SetTextureMatrix (aCtx->ActiveTextures()->First()->Sampler()->Parameters());
     }
 
-    if (myDrawMode <= GL_LINE_STRIP)
-    {
-      const OpenGl_Vec4& aLineColor = myDrawMode == GL_POINTS ? theWorkspace->MarkerColor() : theWorkspace->LineColor();
-      aCtx->SetColor4fv (aLineColor);
-    }
-    else
-    {
-      const OpenGl_Vec4& anInteriorColor = theWorkspace->InteriorColor();
-      aCtx->SetColor4fv (anInteriorColor);
-    }
-    if (myDrawMode == GL_LINES
-     || myDrawMode == GL_LINE_STRIP)
-    {
-      aCtx->SetTypeOfLine (anAspectLine->Aspect()->Type());
-      aCtx->SetLineWidth  (anAspectLine->Aspect()->Width());
-    }
-
     const Graphic3d_Vec4* aFaceColors = !myBounds.IsNull() && !toHilight && anAspectFace->Aspect()->InteriorStyle() != Aspect_IS_HIDDENLINE
                                       ?  myBounds->Colors
                                       :  NULL;
+    if (!myIsFillType)
+    {
+      const OpenGl_Vec4& aLineColor = myDrawMode == GL_POINTS ? theWorkspace->MarkerColor() : theWorkspace->LineColor();
+      aCtx->SetColor4fv (aLineColor);
+      if (myDrawMode == GL_LINES
+       || myDrawMode == GL_LINE_STRIP)
+      {
+        aCtx->SetTypeOfLine (anAspectLine->Aspect()->Type());
+        aCtx->SetLineWidth  (anAspectLine->Aspect()->Width());
+      }
+
+      drawArray (theWorkspace, aFaceColors, hasColorAttrib);
+      aCtx->BindTextures (aTextureBack);
+      return;
+    }
+
+    const OpenGl_Vec4& anInteriorColor = theWorkspace->InteriorColor();
+    aCtx->SetColor4fv (anInteriorColor);
     drawArray (theWorkspace, aFaceColors, hasColorAttrib);
+
+    // draw outline - only closed triangulation with defined vertex normals can be drawn in this way
+    if (anAspectFace->Aspect()->ToDrawSilhouette()
+     && aCtx->ToCullBackFaces()
+     && aCtx->ShaderManager()->BindOutlineProgram())
+    {
+      const Graphic3d_Vec2i aViewSize (aCtx->Viewport()[2], aCtx->Viewport()[3]);
+      const Standard_Integer aMin = aViewSize.minComp();
+      const GLfloat anEdgeWidth  = (GLfloat )anAspectFace->Aspect()->EdgeWidth() * aCtx->LineWidthScale() / (GLfloat )aMin;
+      const GLfloat anOrthoScale = theWorkspace->View()->Camera()->IsOrthographic() ? (GLfloat )theWorkspace->View()->Camera()->Scale() : -1.0f;
+
+      const Handle(OpenGl_ShaderProgram)& anOutlineProgram = aCtx->ActiveProgram();
+      anOutlineProgram->SetUniform (aCtx, anOutlineProgram->GetStateLocation (OpenGl_OCCT_SILHOUETTE_THICKNESS), anEdgeWidth);
+      anOutlineProgram->SetUniform (aCtx, anOutlineProgram->GetStateLocation (OpenGl_OCCT_ORTHO_SCALE),          anOrthoScale);
+      aCtx->SetColor4fv (anAspectFace->Aspect()->EdgeColorRGBA());
+
+      aCtx->core11fwd->glCullFace (GL_FRONT);
+      drawArray (theWorkspace, NULL, false);
+
+      aCtx->core11fwd->glCullFace (GL_BACK);
+    }
   }
 
-  if (myDrawMode <= GL_LINE_STRIP)
-  {
-    aCtx->BindTextures (aTextureBack);
-  }
 #if !defined(GL_ES_VERSION_2_0)
-  else if (toDrawInteriorEdges == 2)
+  // draw triangulation edges using Polygon Mode
+  if (toDrawInteriorEdges == 2)
   {
     if (anAspectFace->Aspect()->InteriorStyle() == Aspect_IS_HOLLOW
      && anAspectFace->Aspect()->EdgeLineType()  == Aspect_TOL_SOLID)

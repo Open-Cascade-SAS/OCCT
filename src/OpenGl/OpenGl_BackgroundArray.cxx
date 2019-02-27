@@ -38,6 +38,7 @@ OpenGl_BackgroundArray::OpenGl_BackgroundArray (const Graphic3d_TypeOfBackground
   myAttribs = new Graphic3d_Buffer (anAlloc);
 
   myDrawMode = GL_TRIANGLE_STRIP;
+  myIsFillType = true;
 
   myGradientParams.color1 = OpenGl_Vec4 (0.0f, 0.0f, 0.0f, 1.0f);
   myGradientParams.color2 = OpenGl_Vec4 (0.0f, 0.0f, 0.0f, 1.0f);

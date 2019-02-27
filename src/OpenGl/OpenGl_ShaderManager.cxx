@@ -108,8 +108,8 @@ const char THE_FUNC_pointLight[] =
   EOL"    aSpecl = pow (aNdotH, theIsFront ? occFrontMaterial_Shininess() : occBackMaterial_Shininess());"
   EOL"  }"
   EOL
-  EOL"Diffuse  += occLight_Diffuse  (theId).rgb * aNdotL * anAtten;"
-  EOL"Specular += occLight_Specular (theId).rgb * aSpecl * anAtten;"
+  EOL"  Diffuse  += occLight_Diffuse  (theId).rgb * aNdotL * anAtten;"
+  EOL"  Specular += occLight_Specular (theId).rgb * aSpecl * anAtten;"
   EOL"}";
 
 //! Function computes contribution of spotlight source
@@ -294,6 +294,17 @@ EOL"                 : mix (occWireframeColor, getColor(), aMixVal);" // interio
 EOL"  return aMixColor;"
 EOL"}";
 
+//! Compute gl_Position vertex shader output.
+const char THE_VERT_gl_Position[] =
+EOL"  gl_Position = occProjectionMatrix * occWorldViewMatrix * occModelWorldMatrix * occVertex;";
+
+//! Displace gl_Position alongside vertex normal for outline rendering.
+//! This code adds silhouette only for smooth surfaces of closed primitive, and produces visual artifacts on sharp edges.
+const char THE_VERT_gl_Position_OUTLINE[] =
+EOL"  float anOutlineDisp = occOrthoScale > 0.0 ? occOrthoScale : gl_Position.w;"
+EOL"  vec4  anOutlinePos  = occVertex + vec4 (occNormal * (occSilhouetteThickness * anOutlineDisp), 0.0);"
+EOL"  gl_Position = occProjectionMatrix * occWorldViewMatrix * occModelWorldMatrix * anOutlinePos;";
+
 #if !defined(GL_ES_VERSION_2_0)
 
   static const GLfloat THE_DEFAULT_AMBIENT[4]    = { 0.0f, 0.0f, 0.0f, 1.0f };
@@ -397,7 +408,7 @@ EOL"}";
 OpenGl_ShaderManager::OpenGl_ShaderManager (OpenGl_Context* theContext)
 : myFfpProgram (new OpenGl_ShaderProgramFFP()),
   myShadingModel (Graphic3d_TOSM_VERTEX),
-  myUnlitPrograms (new OpenGl_SetOfShaderPrograms()),
+  myUnlitPrograms (new OpenGl_SetOfPrograms()),
   myContext  (theContext),
   myHasLocalOrigin (Standard_False),
   myLastView (NULL)
@@ -422,7 +433,8 @@ void OpenGl_ShaderManager::clear()
 {
   myProgramList.Clear();
   myLightPrograms.Nullify();
-  myUnlitPrograms = new OpenGl_SetOfShaderPrograms();
+  myUnlitPrograms = new OpenGl_SetOfPrograms();
+  myOutlinePrograms.Nullify();
   myMapOfLightPrograms.Clear();
   myFontProgram.Nullify();
   myBlitProgram.Nullify();
@@ -536,7 +548,11 @@ void OpenGl_ShaderManager::switchLightPrograms()
   const Handle(Graphic3d_LightSet)& aLights = myLightSourceState.LightSources();
   if (aLights.IsNull())
   {
-    myLightPrograms = myUnlitPrograms;
+    if (!myMapOfLightPrograms.Find ("unlit", myLightPrograms))
+    {
+      myLightPrograms = new OpenGl_SetOfShaderPrograms (myUnlitPrograms);
+      myMapOfLightPrograms.Bind ("unlit", myLightPrograms);
+    }
     return;
   }
 
@@ -1288,12 +1304,12 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramFont()
   OpenGl_ShaderObject::ShaderVariableList aUniforms, aStageInOuts;
   aStageInOuts.Append (OpenGl_ShaderObject::ShaderVariable ("vec2 TexCoord", Graphic3d_TOS_VERTEX | Graphic3d_TOS_FRAGMENT));
 
-  TCollection_AsciiString aSrcVert =
-      EOL"void main()"
+  TCollection_AsciiString aSrcVert = TCollection_AsciiString()
+    + EOL"void main()"
       EOL"{"
       EOL"  TexCoord = occTexCoord.st;"
-      EOL"  gl_Position = occProjectionMatrix * occWorldViewMatrix * occModelWorldMatrix * occVertex;"
-      EOL"}";
+    + THE_VERT_gl_Position
+    + EOL"}";
 
   TCollection_AsciiString
     aSrcGetAlpha = EOL"float getAlpha(void) { return occTexture2D(occSamplerBaseColor, TexCoord.st).a; }";
@@ -1499,7 +1515,7 @@ TCollection_AsciiString OpenGl_ShaderManager::pointSpriteAlphaSrc (const Standar
   TCollection_AsciiString aSrcGetAlpha = EOL"float getAlpha(void) { return occTexture2D(occSamplerBaseColor, " THE_VEC2_glPointCoord ").a; }";
 #if !defined(GL_ES_VERSION_2_0)
   if (myContext->core11 == NULL
-   && (theBits & OpenGl_PO_TextureA) != 0)
+   && (theBits & OpenGl_PO_HasTextures) == OpenGl_PO_TextureA)
   {
     aSrcGetAlpha = EOL"float getAlpha(void) { return occTexture2D(occSamplerBaseColor, " THE_VEC2_glPointCoord ").r; }";
   }
@@ -1507,20 +1523,6 @@ TCollection_AsciiString OpenGl_ShaderManager::pointSpriteAlphaSrc (const Standar
   (void )theBits;
 #endif
   return aSrcGetAlpha;
-}
-
-namespace
-{
-
-  // =======================================================================
-  // function : textureUsed
-  // purpose  :
-  // =======================================================================
-  static bool textureUsed (const Standard_Integer theBits)
-  {
-    return (theBits & OpenGl_PO_TextureA) != 0 || (theBits & OpenGl_PO_TextureRGB) != 0;
-  }
-
 }
 
 // =======================================================================
@@ -1692,7 +1694,8 @@ TCollection_AsciiString OpenGl_ShaderManager::prepareGeomMainSrc (OpenGl_ShaderO
 // purpose  :
 // =======================================================================
 Standard_Boolean OpenGl_ShaderManager::prepareStdProgramUnlit (Handle(OpenGl_ShaderProgram)& theProgram,
-                                                               const Standard_Integer        theBits)
+                                                               Standard_Integer theBits,
+                                                               Standard_Boolean theIsOutline)
 {
   Handle(Graphic3d_ShaderProgram) aProgramSrc = new Graphic3d_ShaderProgram();
   TCollection_AsciiString aSrcVert, aSrcVertExtraMain, aSrcVertExtraFunc, aSrcGetAlpha, aSrcVertEndMain;
@@ -1707,14 +1710,14 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramUnlit (Handle(OpenGl_Sha
     aSrcVertExtraMain += EOL"  gl_PointSize = occPointSize;";
   #endif
 
-    if ((theBits & OpenGl_PO_TextureRGB) != 0)
+    if ((theBits & OpenGl_PO_HasTextures) != 0)
     {
-      aSrcFragGetColor =
-        EOL"vec4 getColor(void) { return occTexture2D(occSamplerBaseColor, " THE_VEC2_glPointCoord "); }";
-    }
+      if ((theBits & OpenGl_PO_HasTextures) == OpenGl_PO_TextureRGB)
+      {
+        aSrcFragGetColor =
+          EOL"vec4 getColor(void) { return occTexture2D(occSamplerBaseColor, " THE_VEC2_glPointCoord "); }";
+      }
 
-    if (textureUsed (theBits))
-    {
       aSrcGetAlpha = pointSpriteAlphaSrc (theBits);
 
     #if !defined(GL_ES_VERSION_2_0)
@@ -1746,7 +1749,7 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramUnlit (Handle(OpenGl_Sha
       aStageInOuts.Append (OpenGl_ShaderObject::ShaderVariable ("vec4 TexCoord", Graphic3d_TOS_VERTEX | Graphic3d_TOS_FRAGMENT));
     }
 
-    if ((theBits & OpenGl_PO_TextureRGB) != 0)
+    if ((theBits & OpenGl_PO_HasTextures) == OpenGl_PO_TextureRGB)
     {
       aSrcVertExtraMain += THE_VARY_TexCoord_Trsf;
 
@@ -1810,7 +1813,13 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramUnlit (Handle(OpenGl_Sha
     aProgramSrc->SetWeightOitOutput (true);
   }
 
-  if ((theBits & OpenGl_PO_StippleLine) != 0)
+  if (theIsOutline)
+  {
+    aUniforms.Append (OpenGl_ShaderObject::ShaderVariable ("float occOrthoScale",          Graphic3d_TOS_VERTEX));
+    aUniforms.Append (OpenGl_ShaderObject::ShaderVariable ("float occSilhouetteThickness", Graphic3d_TOS_VERTEX));
+    aSrcVertEndMain = THE_VERT_gl_Position_OUTLINE;
+  }
+  else if ((theBits & OpenGl_PO_StippleLine) != 0)
   {
     const Standard_Integer aBits = defaultGlslVersion (aProgramSrc, "unlit", theBits);
     if ((aBits & OpenGl_PO_StippleLine) != 0)
@@ -1840,7 +1849,7 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramUnlit (Handle(OpenGl_Sha
     + EOL"void main()"
       EOL"{"
     + aSrcVertExtraMain
-    + EOL"  gl_Position = occProjectionMatrix * occWorldViewMatrix * occModelWorldMatrix * occVertex;"
+    + THE_VERT_gl_Position
     + aSrcVertEndMain
     + EOL"}";
 
@@ -1858,7 +1867,7 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramUnlit (Handle(OpenGl_Sha
     + aSrcFragMainGetColor
     + EOL"}";
 
-  defaultGlslVersion (aProgramSrc, "unlit", theBits);
+  defaultGlslVersion (aProgramSrc, theIsOutline ? "outline" : "unlit", theBits);
   aProgramSrc->SetNbLightsMax (0);
   aProgramSrc->SetNbClipPlanesMax (aNbClipPlanes);
   aProgramSrc->SetAlphaTest ((theBits & OpenGl_PO_AlphaTest) != 0);
@@ -1883,7 +1892,7 @@ TCollection_AsciiString OpenGl_ShaderManager::pointSpriteShadingSrc (const TColl
                                                                      const Standard_Integer theBits)
 {
   TCollection_AsciiString aSrcFragGetColor;
-  if ((theBits & OpenGl_PO_TextureA) != 0)
+  if ((theBits & OpenGl_PO_HasTextures) == OpenGl_PO_TextureA)
   {
     aSrcFragGetColor = pointSpriteAlphaSrc (theBits) +
       EOL"vec4 getColor(void)"
@@ -1894,7 +1903,7 @@ TCollection_AsciiString OpenGl_ShaderManager::pointSpriteShadingSrc (const TColl
       EOL"  return aColor;"
       EOL"}";
   }
-  else if ((theBits & OpenGl_PO_TextureRGB) != 0)
+  else if ((theBits & OpenGl_PO_HasTextures) == OpenGl_PO_TextureRGB)
   {
     aSrcFragGetColor = TCollection_AsciiString() +
       EOL"vec4 getColor(void)"
@@ -2064,7 +2073,7 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramGouraud (Handle(OpenGl_S
     aSrcVertExtraMain += EOL"  gl_PointSize = occPointSize;";
   #endif
 
-    if (textureUsed (theBits))
+    if ((theBits & OpenGl_PO_HasTextures) != 0)
     {
       #if !defined(GL_ES_VERSION_2_0)
         if (myContext->core11 != NULL
@@ -2079,7 +2088,7 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramGouraud (Handle(OpenGl_S
   }
   else
   {
-    if ((theBits & OpenGl_PO_TextureRGB) != 0)
+    if ((theBits & OpenGl_PO_HasTextures) == OpenGl_PO_TextureRGB)
     {
       aStageInOuts.Append (OpenGl_ShaderObject::ShaderVariable ("vec4 TexCoord", Graphic3d_TOS_VERTEX | Graphic3d_TOS_FRAGMENT));
       aSrcVertExtraMain += THE_VARY_TexCoord_Trsf;
@@ -2152,8 +2161,8 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramGouraud (Handle(OpenGl_S
       EOL"  FrontColor  = computeLighting (normalize (aNormal), normalize (aView), aPosition, true);"
       EOL"  BackColor   = computeLighting (normalize (aNormal), normalize (aView), aPosition, false);"
     + aSrcVertExtraMain
-    + EOL"  gl_Position = occProjectionMatrix * occWorldViewMatrix * occModelWorldMatrix * occVertex;"
-      EOL"}";
+    + THE_VERT_gl_Position
+    + EOL"}";
 
   TCollection_AsciiString aSrcGeom = prepareGeomMainSrc (aUniforms, aStageInOuts, theBits);
   aSrcFragGetColor += (theBits & OpenGl_PO_MeshEdges) != 0
@@ -2225,7 +2234,7 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramPhong (Handle(OpenGl_Sha
     aSrcVertExtraMain += EOL"  gl_PointSize = occPointSize;";
   #endif
 
-    if (textureUsed (theBits))
+    if ((theBits & OpenGl_PO_HasTextures) != 0)
     {
       #if !defined(GL_ES_VERSION_2_0)
         if (myContext->core11 != NULL
@@ -2240,7 +2249,7 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramPhong (Handle(OpenGl_Sha
   }
   else
   {
-    if ((theBits & OpenGl_PO_TextureRGB) != 0)
+    if ((theBits & OpenGl_PO_HasTextures) == OpenGl_PO_TextureRGB)
     {
       aStageInOuts.Append (OpenGl_ShaderObject::ShaderVariable ("vec4 TexCoord", Graphic3d_TOS_VERTEX | Graphic3d_TOS_FRAGMENT));
       aSrcVertExtraMain += THE_VARY_TexCoord_Trsf;
@@ -2316,8 +2325,8 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramPhong (Handle(OpenGl_Sha
       EOL"  Position      = occWorldViewMatrix * PositionWorld;"
     + EOL"  View          = vec3 (0.0, 0.0, 1.0);"
     + aSrcVertExtraMain
-    + EOL"  gl_Position = occProjectionMatrix * occWorldViewMatrix * occModelWorldMatrix * occVertex;"
-      EOL"}";
+    + THE_VERT_gl_Position
+    + EOL"}";
 
   TCollection_AsciiString aSrcGeom = prepareGeomMainSrc (aUniforms, aStageInOuts, theBits);
   aSrcFragGetColor += (theBits & OpenGl_PO_MeshEdges) != 0
