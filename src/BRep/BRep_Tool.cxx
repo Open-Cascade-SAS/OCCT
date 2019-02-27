@@ -1183,6 +1183,29 @@ Standard_Boolean BRep_Tool::HasContinuity(const TopoDS_Edge& E)
 }
 
 //=======================================================================
+//function : MaxContinuity
+//purpose  :
+//=======================================================================
+GeomAbs_Shape BRep_Tool::MaxContinuity (const TopoDS_Edge& theEdge)
+{
+  GeomAbs_Shape aMaxCont = GeomAbs_C0;
+  for (BRep_ListIteratorOfListOfCurveRepresentation aReprIter ((*((Handle(BRep_TEdge)*)&theEdge.TShape()))->ChangeCurves());
+       aReprIter.More(); aReprIter.Next())
+  {
+    const Handle(BRep_CurveRepresentation)& aRepr = aReprIter.Value();
+    if (aRepr->IsRegularity())
+    {
+      const GeomAbs_Shape aCont = aRepr->Continuity();
+      if ((Standard_Integer )aCont > (Standard_Integer )aMaxCont)
+      {
+        aMaxCont = aCont;
+      }
+    }
+  }
+  return aMaxCont;
+}
+
+//=======================================================================
 //function : Pnt
 //purpose  : Returns the 3d point.
 //=======================================================================

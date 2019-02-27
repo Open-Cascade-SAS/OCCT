@@ -4913,113 +4913,7 @@ static Standard_Integer VPolygonOffset(Draw_Interpretor& /*di*/,
   return 0;
 }
 
-//=======================================================================
-//function : VShowFaceBoundaries
-//purpose  : Set face boundaries drawing on/off for ais object
-//=======================================================================
-static Standard_Integer VShowFaceBoundary (Draw_Interpretor& /*di*/,
-                                           Standard_Integer argc,
-                                           const char ** argv)
-{
-  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext ();
-  if (aContext.IsNull ())
-  {
-    std::cout << argv[0] << " Call 'vinit' before!\n";
-    return 1;
-  }
-
-  if ((argc != 3 && argc < 6) || argc > 8)
-  {
-    std::cout << "Usage :\n " << argv[0]
-              << " ObjectName isOn [R G B [LineWidth [LineStyle]]]\n"
-              << "   ObjectName - name of AIS interactive object. \n"
-              << "                if ObjectName = \"\", then set as default\n"
-              << "                settings for all newly displayed objects\n"
-              << "   isOn       - flag indicating whether the boundaries\n"
-              << "                should be turned on or off (can be set\n"
-              << "                to 0 (off) or 1 (on)).\n"
-              << "   R, G, B    - red, green and blue components of boundary\n"
-              << "                color in range (0 - 255).\n"
-              << "                (default is (0, 0, 0)\n"
-              << "   LineWidth  - line width\n"
-              << "                (default is 1)\n"
-              << "   LineStyle  - line fill style :\n"
-              << "                 0 - solid  \n"
-              << "                 1 - dashed \n"
-              << "                 2 - dot    \n"
-              << "                 3 - dashdot\n"
-              << "                 (default is solid)";
-    return 1;
-  }
-
-  TCollection_AsciiString aName (argv[1]);
-
-  Standard_Real aRed   = 0.0;
-  Standard_Real aGreen = 0.0;
-  Standard_Real aBlue  = 0.0;
-  Standard_Real aWidth = 1.0;
-  Aspect_TypeOfLine aLineType = Aspect_TOL_SOLID;
-  
-  // find object
-  Handle(AIS_InteractiveObject) anInterObj;
-
-  // if name is empty - apply attributes for default aspect
-  if (!aName.IsEmpty ())
-  {
-    if (!GetMapOfAIS().Find2 (aName, anInterObj)
-      || anInterObj.IsNull())
-    {
-      std::cout << "Use 'vdisplay' on " << aName << " before" << std::endl;
-      return 1;
-    }
-  }
-  
-  const Handle(Prs3d_Drawer)& aDrawer = (aName.IsEmpty ()) ?
-    TheAISContext ()->DefaultDrawer () : anInterObj->Attributes ();
-
-  // turn boundaries on/off
-  Standard_Boolean isBoundaryDraw = (Draw::Atoi (argv[2]) == 1);
-  aDrawer->SetFaceBoundaryDraw (isBoundaryDraw);
-  
-  // set boundary line color
-  if (argc >= 6)
-  {
-    // Text color
-    aRed   = Draw::Atof (argv[3])/255.;
-    aGreen = Draw::Atof (argv[4])/255.;
-    aBlue  = Draw::Atof (argv[5])/255.;
-  }
-
-  // set line width
-  if (argc >= 7)
-  {
-    aWidth = (Standard_Real)Draw::Atof (argv[6]);
-  }
-
-  // select appropriate line type
-  if (argc == 8)
-  {
-    if (!ViewerTest::ParseLineType (argv[7], aLineType))
-    {
-      std::cout << "Syntax error: unknown line type '" << argv[7] << "'\n";
-      return 1;
-    }
-  }
-
-  Quantity_Color aColor (aRed, aGreen, aBlue, Quantity_TOC_RGB);
-
-  Handle(Prs3d_LineAspect) aBoundaryAspect = 
-    new Prs3d_LineAspect (aColor, aLineType, aWidth);
-
-  aDrawer->SetFaceBoundaryAspect (aBoundaryAspect);
-
-  TheAISContext()->Redisplay (anInterObj, Standard_True);
-  
-  return 0;
-}
-
 // This class is used for testing markers.
-
 class ViewerTest_MarkersArrayObject : public AIS_InteractiveObject
 {
 
@@ -6435,12 +6329,6 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
   theCommands.Add("vpolygonoffset",
     "vpolygonoffset : [object [mode factor units]] - sets/gets polygon offset parameters for an object, without arguments prints the default values",
     __FILE__, VPolygonOffset, group);
-
-  theCommands.Add ("vshowfaceboundary",
-    "vshowfaceboundary : ObjectName isOn (1/0) [R G B [LineWidth [LineStyle]]]"
-    "- turns on/off drawing of face boundaries for ais object "
-    "and defines boundary line style.",
-    __FILE__, VShowFaceBoundary, group);
 
   theCommands.Add ("vmarkerstest",
                    "vmarkerstest: name X Y Z [PointsOnSide=10] [MarkerType=0] [Scale=1.0] [FileName=ImageFile]\n",

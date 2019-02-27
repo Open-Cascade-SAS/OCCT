@@ -242,6 +242,9 @@ public:
   //! Returns True if the edge has regularity on some
   //! two surfaces
   Standard_EXPORT static Standard_Boolean HasContinuity (const TopoDS_Edge& E);
+
+  //! Returns the max continuity of edge between some surfaces or GeomAbs_C0 if there no such surfaces.
+  Standard_EXPORT static GeomAbs_Shape MaxContinuity (const TopoDS_Edge& theEdge);
   
   //! Returns the 3d point.
   Standard_EXPORT static gp_Pnt Pnt (const TopoDS_Vertex& V);

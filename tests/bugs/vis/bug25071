@@ -13,7 +13,7 @@ vinit View1
 pcone c 0 5 10
 vdisplay c; vfit
 vsetdispmode c 1
-vshowfaceboundary c 1 64 64 0
+vaspects c -setFaceBoundaryDraw 1 -setFaceBoundaryColor 0.25 0.25 0
 vselect 200 200
 
 vdump $imagedir/${casename}_wf_no_triang.png
@@ -25,7 +25,7 @@ vinit View1
 # Computing wireframe after triangulation, then checking face boundaries and selection
 vsetdispmode 1
 vdisplay c; vfit
-vshowfaceboundary c 1 64 64 0
+vaspects c -setFaceBoundaryDraw 1 -setFaceBoundaryColor 0.25 0.25 0
 vselect 200 200
 
 vdump $imagedir/${casename}_wf_with_triang.png

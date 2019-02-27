@@ -99,6 +99,7 @@ Prs3d_Drawer::Prs3d_Drawer()
   myHasOwnUnFreeBoundaryAspect (Standard_False),
   myUnFreeBoundaryDraw         (Standard_True),
   myHasOwnUnFreeBoundaryDraw   (Standard_False),
+  myFaceBoundaryUpperContinuity(-1),
   myHasOwnFaceBoundaryAspect   (Standard_False),
   myFaceBoundaryDraw           (Standard_False),
   myHasOwnFaceBoundaryDraw     (Standard_False),
@@ -1121,6 +1122,28 @@ void Prs3d_Drawer::ClearLocalAttributes()
 }
 
 // =======================================================================
+// function : SetupOwnFaceBoundaryAspect
+// purpose  :
+// =======================================================================
+Standard_Boolean Prs3d_Drawer::SetupOwnFaceBoundaryAspect (const Handle(Prs3d_Drawer)& theDefaults)
+{
+  if (myHasOwnFaceBoundaryAspect)
+  {
+    return false;
+  }
+
+  myFaceBoundaryAspect = new Prs3d_LineAspect (THE_DEF_COLOR_FaceBoundary, Aspect_TOL_SOLID, 1.0);
+  myHasOwnFaceBoundaryAspect = true;
+
+  const Handle(Prs3d_Drawer)& aLink = (!theDefaults.IsNull() && theDefaults != this) ? theDefaults : myLink;
+  if (!aLink.IsNull())
+  {
+    *myFaceBoundaryAspect->Aspect() = *aLink->FaceBoundaryAspect()->Aspect();
+  }
+  return true;
+}
+
+// =======================================================================
 // function : SetOwnLineAspects
 // purpose  :
 // =======================================================================
@@ -1210,16 +1233,7 @@ Standard_Boolean Prs3d_Drawer::SetOwnLineAspects (const Handle(Prs3d_Drawer)& th
       *myUnFreeBoundaryAspect->Aspect() = *aLink->UnFreeBoundaryAspect()->Aspect();
     }
   }
-  if (!myHasOwnFaceBoundaryAspect)
-  {
-    isUpdateNeeded = true;
-    myFaceBoundaryAspect = new Prs3d_LineAspect (THE_DEF_COLOR_FaceBoundary, Aspect_TOL_SOLID, 1.0);
-    myHasOwnFaceBoundaryAspect = true;
-    if (!aLink.IsNull())
-    {
-      *myFaceBoundaryAspect->Aspect() = *aLink->FaceBoundaryAspect()->Aspect();
-    }
-  }
+  isUpdateNeeded = SetupOwnFaceBoundaryAspect (theDefaults) || isUpdateNeeded;
   return isUpdateNeeded;
 }
 

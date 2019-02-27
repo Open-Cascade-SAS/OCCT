@@ -1556,6 +1556,19 @@ struct ViewerTest_AspectsChangeSet
 
   Standard_Integer             ToEnableIsoOnTriangulation;
 
+  Standard_Integer             ToSetFaceBoundaryDraw;
+  Standard_Integer             ToSetFaceBoundaryUpperContinuity;
+  GeomAbs_Shape                FaceBoundaryUpperContinuity;
+
+  Standard_Integer             ToSetFaceBoundaryColor;
+  Quantity_Color               FaceBoundaryColor;
+
+  Standard_Integer             ToSetFaceBoundaryWidth;
+  Standard_Real                FaceBoundaryWidth;
+
+  Standard_Integer             ToSetTypeOfFaceBoundaryLine;
+  Aspect_TypeOfLine            TypeOfFaceBoundaryLine;
+
   Standard_Integer             ToSetMaxParamValue;
   Standard_Real                MaxParamValue;
 
@@ -1612,7 +1625,18 @@ struct ViewerTest_AspectsChangeSet
     FreeBoundaryWidth          (1.0),
     ToSetFreeBoundaryColor     (0),
     FreeBoundaryColor          (DEFAULT_FREEBOUNDARY_COLOR),
-    ToEnableIsoOnTriangulation (-1),
+    ToEnableIsoOnTriangulation (0),
+    //
+    ToSetFaceBoundaryDraw      (0),
+    ToSetFaceBoundaryUpperContinuity (0),
+    FaceBoundaryUpperContinuity(GeomAbs_CN),
+    ToSetFaceBoundaryColor     (0),
+    FaceBoundaryColor          (Quantity_NOC_BLACK),
+    ToSetFaceBoundaryWidth     (0),
+    FaceBoundaryWidth          (1.0f),
+    ToSetTypeOfFaceBoundaryLine(0),
+    TypeOfFaceBoundaryLine     (Aspect_TOL_SOLID),
+    //
     ToSetMaxParamValue         (0),
     MaxParamValue              (500000),
     ToSetSensitivity           (0),
@@ -1645,6 +1669,12 @@ struct ViewerTest_AspectsChangeSet
         && ToSetShowFreeBoundary  == 0
         && ToSetFreeBoundaryColor == 0
         && ToSetFreeBoundaryWidth == 0
+        && ToEnableIsoOnTriangulation == 0
+        && ToSetFaceBoundaryDraw == 0
+        && ToSetFaceBoundaryUpperContinuity == 0
+        && ToSetFaceBoundaryColor == 0
+        && ToSetFaceBoundaryWidth == 0
+        && ToSetTypeOfFaceBoundaryLine == 0
         && ToSetMaxParamValue     == 0
         && ToSetSensitivity       == 0
         && ToSetHatch             == 0
@@ -1797,6 +1827,66 @@ struct ViewerTest_AspectsChangeSet
       {
         theDrawer->SetMaximalParameterValue (MaxParamValue);
         toRecompute = true;
+      }
+    }
+    if (ToSetFaceBoundaryDraw != 0)
+    {
+      if (ToSetFaceBoundaryDraw != -1
+       || theDrawer->HasOwnFaceBoundaryDraw())
+      {
+        toRecompute = true;
+        theDrawer->SetFaceBoundaryDraw (ToSetFaceBoundaryDraw == 1);
+      }
+    }
+    if (ToSetFaceBoundaryUpperContinuity != 0)
+    {
+      if (ToSetFaceBoundaryUpperContinuity != -1
+       || theDrawer->HasOwnFaceBoundaryUpperContinuity())
+      {
+        toRecompute = true;
+        if (ToSetFaceBoundaryUpperContinuity == -1)
+        {
+          theDrawer->UnsetFaceBoundaryUpperContinuity();
+        }
+        else
+        {
+          theDrawer->SetFaceBoundaryUpperContinuity (FaceBoundaryUpperContinuity);
+        }
+      }
+    }
+    if (ToSetFaceBoundaryColor != 0)
+    {
+      if (ToSetFaceBoundaryColor != -1
+       || theDrawer->HasOwnFaceBoundaryAspect())
+      {
+        if (ToSetFaceBoundaryColor == -1)
+        {
+          toRecompute = true;
+          theDrawer->SetFaceBoundaryAspect (Handle(Prs3d_LineAspect)());
+        }
+        else
+        {
+          toRecompute = theDrawer->SetupOwnFaceBoundaryAspect (aDefDrawer) || toRecompute;
+          theDrawer->FaceBoundaryAspect()->SetColor (FaceBoundaryColor);
+        }
+      }
+    }
+    if (ToSetFaceBoundaryWidth != 0)
+    {
+      if (ToSetFaceBoundaryWidth != -1
+       || theDrawer->HasOwnFaceBoundaryAspect())
+      {
+        toRecompute = theDrawer->SetupOwnFaceBoundaryAspect (aDefDrawer) || toRecompute;
+        theDrawer->FaceBoundaryAspect()->SetWidth (FaceBoundaryWidth);
+      }
+    }
+    if (ToSetTypeOfFaceBoundaryLine != 0)
+    {
+      if (ToSetTypeOfFaceBoundaryLine != -1
+       || theDrawer->HasOwnFaceBoundaryAspect())
+      {
+        toRecompute = theDrawer->SetupOwnFaceBoundaryAspect (aDefDrawer) || toRecompute;
+        theDrawer->FaceBoundaryAspect()->SetTypeOfLine (TypeOfFaceBoundaryLine);
       }
     }
     if (ToSetShadingModel != 0)
@@ -2099,6 +2189,50 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
     aChangeSet->ToSetTypeOfEdge = -1;
     aChangeSet->TypeOfEdge = Aspect_TOL_SOLID;
   }
+  else if (aCmdName == "vshowfaceboundary")
+  {
+    aChangeSet->ToSetFaceBoundaryDraw = 1;
+    toParseAliasArgs = true;
+    if (aNames.Size() >= 2
+     && aNames.Value (2).IsIntegerValue())
+    {
+      if (aNames.Size() == 7)
+      {
+        if (ViewerTest::ParseLineType (aNames.Value (7).ToCString(), aChangeSet->TypeOfFaceBoundaryLine))
+        {
+          aChangeSet->ToSetTypeOfFaceBoundaryLine = 1;
+          aNames.Remove (7);
+        }
+      }
+      if (aNames.Size() == 6
+       && aNames.Value (6).IsRealValue())
+      {
+        aChangeSet->ToSetFaceBoundaryWidth = 1;
+        aChangeSet->FaceBoundaryWidth = aNames.Value (6).RealValue();
+        aNames.Remove (6);
+      }
+      if (aNames.Size() == 5
+       && aNames.Value (3).IsIntegerValue()
+       && aNames.Value (4).IsIntegerValue()
+       && aNames.Value (5).IsIntegerValue())
+      {
+        aChangeSet->ToSetFaceBoundaryColor = 1;
+        aChangeSet->FaceBoundaryColor = Quantity_Color (aNames.Value (3).IntegerValue() / 255.0,
+                                                        aNames.Value (4).IntegerValue() / 255.0,
+                                                        aNames.Value (5).IntegerValue() / 255.0,
+                                                        Quantity_TOC_RGB);
+        aNames.Remove (5);
+        aNames.Remove (4);
+        aNames.Remove (3);
+      }
+      if (aNames.Size() == 2)
+      {
+        toParseAliasArgs = false;
+        aChangeSet->ToSetFaceBoundaryDraw = aNames.Value (2).IntegerValue() == 1 ? 1 : -1;
+        aNames.Remove (2);
+      }
+    }
+  }
   else if (anArgIter >= theArgNb)
   {
     std::cout << "Error: not enough arguments!\n";
@@ -2121,13 +2255,19 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
      || anArg == "-setedgewidth"
      || anArg == "-setedgeswidth"
      || anArg == "-edgewidth"
-     || anArg == "-edgeswidth")
+     || anArg == "-edgeswidth"
+     || anArg == "-setfaceboundarywidth"
+     || anArg == "-setboundarywidth"
+     || anArg == "-faceboundarywidth"
+     || anArg == "-boundarywidth")
     {
       if (++anArgIter >= theArgNb)
       {
         std::cout << "Error: wrong syntax at " << anArg << "\n";
         return 1;
       }
+
+      const Standard_Real aWidth = Draw::Atof (theArgVec[anArgIter]);
       if (anArg == "-setedgewidth"
        || anArg == "-setedgeswidth"
        || anArg == "-edgewidth"
@@ -2135,12 +2275,21 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
        || aCmdName == "vsetedgetype")
       {
         aChangeSet->ToSetEdgeWidth = 1;
-        aChangeSet->EdgeWidth = Draw::Atof (theArgVec[anArgIter]);
+        aChangeSet->EdgeWidth = aWidth;
+      }
+      else if (anArg == "-setfaceboundarywidth"
+            || anArg == "-setboundarywidth"
+            || anArg == "-faceboundarywidth"
+            || anArg == "-boundarywidth"
+            || aCmdName == "vshowfaceboundary")
+      {
+        aChangeSet->ToSetFaceBoundaryWidth = 1;
+        aChangeSet->FaceBoundaryWidth = aWidth;
       }
       else
       {
         aChangeSet->ToSetLineWidth = 1;
-        aChangeSet->LineWidth = Draw::Atof (theArgVec[anArgIter]);
+        aChangeSet->LineWidth = aWidth;
       }
     }
     else if (anArg == "-unsetwidth"
@@ -2271,7 +2420,11 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
       aChangeSet->Transparency = 0.0;
     }
     else if (anArg == "-setcolor"
-          || anArg == "-color")
+          || anArg == "-color"
+          || anArg == "-setfaceboundarycolor"
+          || anArg == "-setboundarycolor"
+          || anArg == "-faceboundarycolor"
+          || anArg == "-boundarycolor")
     {
       Quantity_Color aColor;
       Standard_Integer aNbParsed = ViewerTest::ParseColor (theArgNb  - anArgIter - 1,
@@ -2288,6 +2441,15 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
         aChangeSet->ToSetEdgeColor = 1;
         aChangeSet->EdgeColor = Quantity_ColorRGBA (aColor);
       }
+      else if (aCmdName == "vshowfaceboundary"
+            || anArg == "-setfaceboundarycolor"
+            || anArg == "-setboundarycolor"
+            || anArg == "-faceboundarycolor"
+            || anArg == "-boundarycolor")
+      {
+        aChangeSet->ToSetFaceBoundaryColor = 1;
+        aChangeSet->FaceBoundaryColor = aColor;
+      }
       else
       {
         aChangeSet->ToSetColor = 1;
@@ -2300,6 +2462,13 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
           || anArg == "-setedgestype"
           || anArg == "-edgetype"
           || anArg == "-edgestype"
+          || anArg == "-setfaceboundarystyle"
+          || anArg == "-faceboundarystyle"
+          || anArg == "-boundarystyle"
+          || anArg == "-setfaceboundarytype"
+          || anArg == "-faceboundarytype"
+          || anArg == "-setboundarytype"
+          || anArg == "-boundarytype"
           || anArg == "-type")
     {
       if (++anArgIter >= theArgNb)
@@ -2321,6 +2490,18 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
       {
         aChangeSet->TypeOfEdge = aLineType;
         aChangeSet->ToSetTypeOfEdge = 1;
+      }
+      else if (anArg == "-setfaceboundarystyle"
+            || anArg == "-faceboundarystyle"
+            || anArg == "-boundarystyle"
+            || anArg == "-setfaceboundarytype"
+            || anArg == "-faceboundarytype"
+            || anArg == "-setboundarytype"
+            || anArg == "-boundarytype"
+            || aCmdName == "vshowfaceboundary")
+      {
+        aChangeSet->TypeOfFaceBoundaryLine = aLineType;
+        aChangeSet->ToSetTypeOfFaceBoundaryLine = 1;
       }
       else
       {
@@ -2456,28 +2637,14 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
           || anArg == "-setfb"
           || anArg == "-fb")
     {
-      if (++anArgIter >= theArgNb)
+      bool toEnable = true;
+      if (!ViewerTest::ParseOnOff (anArgIter + 1 < theArgNb ? theArgVec[anArgIter + 1] : "", toEnable))
       {
         std::cout << "Error: wrong syntax at " << anArg << "\n";
         return 1;
       }
-      TCollection_AsciiString aValue (theArgVec[anArgIter]);
-      aValue.LowerCase();
-      if (aValue == "on"
-       || aValue == "1")
-      {
-        aChangeSet->ToSetShowFreeBoundary = 1;
-      }
-      else if (aValue == "off"
-            || aValue == "0")
-      {
-        aChangeSet->ToSetShowFreeBoundary = -1;
-      }
-      else
-      {
-        std::cout << "Error: wrong syntax at " << anArg << "\n";
-        return 1;
-      }
+      ++anArgIter;
+      aChangeSet->ToSetShowFreeBoundary = toEnable ? 1 : -1;
     }
     else if (anArg == "-setfreeboundarywidth"
           || anArg == "-freeboundarywidth"
@@ -2525,28 +2692,86 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
           || anArg == "-setisoontriang"
           || anArg == "-isoontriang")
     {
-      if (++anArgIter >= theArgNb)
+      bool toEnable = true;
+      if (!ViewerTest::ParseOnOff (anArgIter + 1 < theArgNb ? theArgVec[anArgIter + 1] : "", toEnable))
       {
         std::cout << "Error: wrong syntax at " << anArg << "\n";
         return 1;
       }
-      TCollection_AsciiString aValue (theArgVec[anArgIter]);
-      aValue.LowerCase();
-      if (aValue == "on"
-        || aValue == "1")
+      ++anArgIter;
+      aChangeSet->ToEnableIsoOnTriangulation = toEnable ? 1 : -1;
+    }
+    else if (anArg == "-setfaceboundarydraw"
+          || anArg == "-setdrawfaceboundary"
+          || anArg == "-setdrawfaceboundaries"
+          || anArg == "-setshowfaceboundary"
+          || anArg == "-setshowfaceboundaries"
+          || anArg == "-setdrawfaceedges"
+          || anArg == "-faceboundarydraw"
+          || anArg == "-drawfaceboundary"
+          || anArg == "-drawfaceboundaries"
+          || anArg == "-showfaceboundary"
+          || anArg == "-showfaceboundaries"
+          || anArg == "-drawfaceedges"
+          || anArg == "-faceboundary"
+          || anArg == "-faceboundaries"
+          || anArg == "-faceedges")
+    {
+      bool toEnable = true;
+      if (!ViewerTest::ParseOnOff (anArgIter + 1 < theArgNb ? theArgVec[anArgIter + 1] : "", toEnable))
       {
-        aChangeSet->ToEnableIsoOnTriangulation = 1;
+        std::cout << "Error: wrong syntax at " << anArg << "\n";
+        return 1;
       }
-      else if (aValue == "off"
-        || aValue == "0")
+      ++anArgIter;
+      aChangeSet->ToSetFaceBoundaryDraw = toEnable ? 1 : -1;
+    }
+    else if (anArg == "-unsetfaceboundary"
+          || anArg == "-unsetboundary")
+    {
+      aChangeSet->ToSetFaceBoundaryDraw  = -1;
+      aChangeSet->ToSetFaceBoundaryColor = -1;
+    }
+    else if (anArg == "-setmostcontinuity"
+          || anArg == "-mostcontinuity")
+    {
+      TCollection_AsciiString aClassArg (anArgIter + 1 < theArgNb ? theArgVec[anArgIter + 1] : "");
+      aClassArg.LowerCase();
+      GeomAbs_Shape aClass = GeomAbs_CN;
+      if (aClassArg == "c0"
+       || aClassArg == "0")
       {
-        aChangeSet->ToEnableIsoOnTriangulation = 0;
+        aClass = GeomAbs_C0;
+      }
+      else if (aClassArg == "c1"
+            || aClassArg == "1")
+      {
+        aClass = GeomAbs_C1;
+      }
+      else if (aClassArg == "c2"
+            || aClassArg == "2")
+      {
+        aClass = GeomAbs_C2;
+      }
+      else if (aClassArg == "c3"
+            || aClassArg == "3")
+      {
+        aClass = GeomAbs_C3;
+      }
+      else if (aClassArg == "cn"
+            || aClassArg == "n")
+      {
+        aClass = GeomAbs_CN;
       }
       else
       {
-        std::cout << "Error: wrong syntax at " << anArg << "\n";
+        std::cout << "Syntax error at '" << anArg << "'\n";
         return 1;
       }
+
+      ++anArgIter;
+      aChangeSet->ToSetFaceBoundaryUpperContinuity = 1;
+      aChangeSet->FaceBoundaryUpperContinuity = aClass;
     }
     else if (anArg == "-setmaxparamvalue"
           || anArg == "-maxparamvalue")
@@ -2730,6 +2955,18 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
       aChangeSet->FreeBoundaryColor = DEFAULT_FREEBOUNDARY_COLOR;
       aChangeSet->ToSetFreeBoundaryWidth = -1;
       aChangeSet->FreeBoundaryWidth = 1.0;
+      aChangeSet->ToEnableIsoOnTriangulation = -1;
+      //
+      aChangeSet->ToSetFaceBoundaryDraw = -1;
+      aChangeSet->ToSetFaceBoundaryUpperContinuity = -1;
+      aChangeSet->FaceBoundaryUpperContinuity = GeomAbs_CN;
+      aChangeSet->ToSetFaceBoundaryColor = -1;
+      aChangeSet->FaceBoundaryColor = Quantity_NOC_BLACK;
+      aChangeSet->ToSetFaceBoundaryWidth = -1;
+      aChangeSet->FaceBoundaryWidth = 1.0f;
+      aChangeSet->ToSetTypeOfFaceBoundaryLine = -1;
+      aChangeSet->TypeOfFaceBoundaryLine = Aspect_TOL_SOLID;
+      //
       aChangeSet->ToSetHatch = -1;
       aChangeSet->StdHatchStyle = -1;
       aChangeSet->PathToHatchPattern.Clear();
@@ -2792,7 +3029,7 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
     {
       aDrawer->ShadingAspect()->SetMaterial (aChangeSet->Material);
     }
-    if (aChangeSet->ToEnableIsoOnTriangulation != -1)
+    if (aChangeSet->ToEnableIsoOnTriangulation != 0)
     {
       aDrawer->SetIsoOnTriangulation (aChangeSet->ToEnableIsoOnTriangulation == 1);
     }
@@ -2889,7 +3126,7 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
       {
         aCtx->UnsetWidth (aPrs, Standard_False);
       }
-      else if (aChangeSet->ToEnableIsoOnTriangulation != -1)
+      else if (aChangeSet->ToEnableIsoOnTriangulation != 0)
       {
         aCtx->IsoOnTriangulation (aChangeSet->ToEnableIsoOnTriangulation == 1, aPrs);
         toRedisplay = Standard_True;
@@ -5953,6 +6190,8 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
       "\n\t\t:          [-unsetShadingModel]"
       "\n\t\t:          [-setInterior {solid|hatch|hidenline|point}]"
       "\n\t\t:          [-unsetInterior] [-setHatch HatchStyle]"
+      "\n\t\t:          [-setFaceBoundaryDraw {0|1}] [-setMostContinuity {c0|c1|c2|c3|cn}"
+      "\n\t\t:          [-setFaceBoundaryWidth LineWidth] [-setFaceBoundaryColor R G B] [-setFaceBoundaryType LineType]"
       "\n\t\t:          [-setDrawEdges {0|1}] [-setEdgeType LineType] [-setEdgeColor R G B] [-setQuadEdges {0|1}]"
       "\n\t\t:          [-setAlphaMode {opaque|mask|blend|blendauto} [alphaCutOff=0.5]]"
       "\n\t\t: Manage presentation properties of all, selected or named objects."
@@ -6022,6 +6261,11 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
   theCommands.Add ("vunsetedgetype",
     "vunsetedgetype [name]"
     "\n\t\t: Alias for vaspects [name] -unsetEdgeType.",
+      __FILE__, VAspects, group);
+
+  theCommands.Add ("vshowfaceboundary",
+    "vshowfaceboundary [name]"
+    "\n\t\t: Alias for vaspects [name] -setFaceBoundaryDraw on",
       __FILE__, VAspects, group);
 
   theCommands.Add("vsensdis",

@@ -17,10 +17,7 @@
 #ifndef _StdPrs_ShadedShape_HeaderFile
 #define _StdPrs_ShadedShape_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
+#include <GeomAbs_Shape.hxx>
 #include <Prs3d_Root.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <StdPrs_Volume.hxx>
@@ -90,7 +87,9 @@ public:
 
   //! Define primitive array of boundary segments for specified shape.
   //! @param theShape segments array or NULL if specified face does not have computed triangulation
-  Standard_EXPORT static Handle(Graphic3d_ArrayOfSegments) FillFaceBoundaries (const TopoDS_Shape& theShape);
+  //! @param theUpperContinuity the most edge continuity class to be included to result (edges with more continuity will be ignored)
+  Standard_EXPORT static Handle(Graphic3d_ArrayOfSegments) FillFaceBoundaries (const TopoDS_Shape& theShape,
+                                                                               GeomAbs_Shape theUpperContinuity = GeomAbs_CN);
 
 };
 

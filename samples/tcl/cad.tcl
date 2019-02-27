@@ -57,9 +57,7 @@ bcommon res b9 c2
 # show result
 donly res
 trotate res 0 0 0 0 0 1 90
-vinit
-vdisplay res
-vsetdispmode 1
-vshowfaceboundary res 1 255 255 255
-vaspects -isoontriangulation 1
+vinit View1
+vdisplay -dispMode 1 res
+vaspects res -setFaceBoundaryDraw 1 -setFaceBoundaryColor WHITE -isoontriangulation 1
 vfit

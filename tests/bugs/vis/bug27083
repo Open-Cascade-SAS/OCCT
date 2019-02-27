@@ -13,7 +13,7 @@ vinit View1
 
 vdisplay -noupdate -dispMode 1 b
 vfit
-vshowfaceboundary b 1 255 0 0 3
+vaspects b -setFaceBoundaryDraw 1 -setFaceBoundaryColor RED -setFaceBoundaryWidth 3
 vraytrace 1
 
 if {[vreadpixel 295 255 name] != "GOLDENROD4 0"} {

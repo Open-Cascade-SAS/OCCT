@@ -263,7 +263,6 @@ unifysamedom result  p_1
 pload VISUALIZATION
 vinit Driver1/Viewer1/View1
 vsetcolorbg 200 200 255
-vdisplay result
+vdisplay -dispMode 1 result
 vfit
-vsetdispmode 1
-vshowfaceboundary result 1
+vaspects result -setFaceBoundaryDraw 1

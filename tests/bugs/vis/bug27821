@@ -18,7 +18,8 @@ vaxo
 vdisplay -noupdate -dispMode 0 s
 vaspects s -subshapes s_1 -setcolor RED
 vdisplay -noupdate -dispMode 1 s
-vshowfaceboundary s 1 255 0 0 2
+vaspects s -unsetFaceBoundary
+vaspects s -setFaceBoundaryDraw 1 -setFaceBoundaryColor RED -setFaceBoundaryWidth 2
 vfit
 vselect 250 250
 
