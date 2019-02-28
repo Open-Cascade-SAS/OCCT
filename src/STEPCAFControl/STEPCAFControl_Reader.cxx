@@ -4547,6 +4547,8 @@ void STEPCAFControl_Reader::ExpandShell(const Handle(StepShape_ConnectedFaceSet)
 
     // Access face bounds
     Handle(StepShape_HArray1OfFaceBound) aWires = aFace->Bounds();
+    if (aWires.IsNull())
+      continue;
     for (Standard_Integer w = aWires->Lower(); w <= aWires->Upper(); ++w)
     {
       const Handle(StepShape_Loop)& aWire = aWires->Value(w)->Bound();
@@ -4564,7 +4566,12 @@ void STEPCAFControl_Reader::ExpandShell(const Handle(StepShape_ConnectedFaceSet)
       Handle(StepShape_HArray1OfOrientedEdge) anEdges = anEdgeLoop->EdgeList();
       for (Standard_Integer e = anEdges->Lower(); e <= anEdges->Upper(); ++e)
       {
-        Handle(StepShape_Edge) anEdge = anEdges->Value(e)->EdgeElement();
+        Handle(StepShape_OrientedEdge) anOrientedEdge = anEdges->Value(e);
+        if (anOrientedEdge.IsNull())
+          continue;
+        Handle(StepShape_Edge) anEdge = anOrientedEdge->EdgeElement();
+        if (anEdge.IsNull())
+          continue;
 
         // Record CAF data
         SettleShapeData(anEdge, RootLab, ShapeTool, TP);

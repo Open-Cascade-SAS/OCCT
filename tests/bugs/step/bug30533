@@ -1,0 +1,25 @@
+puts "==================================================="
+puts " 0030533: Data Exchange - Crash during STEP import."
+puts "==================================================="
+puts ""
+
+pload DCAF
+
+param read.stepcaf.subshapes.name On
+
+ReadStep D [locate_data_file bug30533.stp]
+
+# Check imported names
+set name [GetName D 0:1:1:5:1]
+if {$name != "NONE"} {
+  puts "Error: wrong name of subshape"
+}
+set name [GetName D 0:1:1:5:2]
+if {$name != "NONE"} {
+  puts "Error: wrong name of subshape"
+}
+
+Close D
+
+# return param to default value
+param read.stepcaf.subshapes.name Off
