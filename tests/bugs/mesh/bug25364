@@ -68,7 +68,7 @@ set mem_delta_private 200
 set mem_delta_swap 120
 set mem_delta_swappeak 250
 set mem_delta_wset 200
-set mem_delta_wsetpeak 220
+set mem_delta_wsetpeak 300
 set mem_delta_virt 220
 set mem_delta_heap 80
 

@@ -25,6 +25,32 @@
 #include <TopTools_MapOfShape.hxx>
 #include <Geom_Surface.hxx>
 
+namespace
+{
+  //=======================================================================
+  // Function: visitEdges
+  // Purpose : Explodes the given shape on edges according to the specified
+  //           criteria and visits each one in order to add it to data model.
+  //=======================================================================
+  void visitEdges (const Handle (IMeshTools_ShapeVisitor)& theVisitor,
+                   const TopoDS_Shape&                     theShape,
+                   const TopAbs_ShapeEnum                  theToFind,
+                   const TopAbs_ShapeEnum                  theToAvoid = TopAbs_SHAPE)
+  {
+    TopExp_Explorer aEdgesIt (theShape, theToFind, theToAvoid);
+    for (; aEdgesIt.More (); aEdgesIt.Next ())
+    {
+      const TopoDS_Edge& aEdge = TopoDS::Edge (aEdgesIt.Current ());
+      if (!BRep_Tool::IsGeometric (aEdge))
+      {
+        continue;
+      }
+
+      theVisitor->Visit (aEdge);
+    }
+  }
+}
+
 //=======================================================================
 // Function: Constructor
 // Purpose : 
@@ -50,28 +76,15 @@ IMeshTools_ShapeExplorer::~IMeshTools_ShapeExplorer ()
 void IMeshTools_ShapeExplorer::Accept (
   const Handle (IMeshTools_ShapeVisitor)& theVisitor)
 {
-  // Explore all edges in shape - either free or related to some face.
-  TopTools_IndexedMapOfShape aEdges;
-  TopExp::MapShapes (GetShape (), TopAbs_EDGE, aEdges);
+  // Explore all free edges in shape.
+  visitEdges (theVisitor, GetShape (), TopAbs_EDGE, TopAbs_FACE);
 
-  TopTools_IndexedMapOfShape::Iterator aEdgeIt (aEdges);
-  for (; aEdgeIt.More (); aEdgeIt.Next ())
-  {
-    const TopoDS_Edge& aEdge = TopoDS::Edge (aEdgeIt.Value ());
-    if (!BRep_Tool::IsGeometric(aEdge))
-    {
-      continue;
-    }
-
-    theVisitor->Visit (aEdge);
-  }
-
-  // Explore faces
+  // Explore all related to some face edges in shape.
+  // make array of faces suitable for processing (excluding faces without surface)
   TopTools_ListOfShape aFaceList;
   BRepLib::ReverseSortFaces (GetShape (), aFaceList);
   TopTools_MapOfShape aFaceMap;
 
-  // make array of faces suitable for processing (excluding faces without surface)
   TopLoc_Location aDummyLoc;
   const TopLoc_Location aEmptyLoc;
   TopTools_ListIteratorOfListOfShape aFaceIter (aFaceList);
@@ -84,12 +97,15 @@ void IMeshTools_ShapeExplorer::Accept (
       continue; // already processed
     }
 
-    TopoDS_Face aFace = TopoDS::Face (aFaceIter.Value ());
+    const TopoDS_Face& aFace = TopoDS::Face (aFaceIter.Value ());
     const Handle (Geom_Surface)& aSurf = BRep_Tool::Surface (aFace, aDummyLoc);
     if (aSurf.IsNull())
     {
       continue;
     }
+
+    // Explore all edges in face.
+    visitEdges (theVisitor, aFace, TopAbs_EDGE);
 
     // Store only forward faces in order to prevent inverse issue.
     theVisitor->Visit (TopoDS::Face (aFace.Oriented (TopAbs_FORWARD)));

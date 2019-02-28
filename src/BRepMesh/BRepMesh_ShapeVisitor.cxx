@@ -57,8 +57,11 @@ BRepMesh_ShapeVisitor::~BRepMesh_ShapeVisitor ()
 //=======================================================================
 void BRepMesh_ShapeVisitor::Visit(const TopoDS_Edge& theEdge)
 {
-  myModel->AddEdge(theEdge);
-  myDEdgeMap.Bind(theEdge, myModel->EdgesNb() - 1);
+  if (!myDEdgeMap.IsBound (theEdge))
+  {
+    myModel->AddEdge (theEdge);
+    myDEdgeMap.Bind  (theEdge, myModel->EdgesNb () - 1);
+  }
 }
 
 //=======================================================================
