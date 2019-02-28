@@ -36,6 +36,10 @@ class Image_AlienPixMap : public Image_PixMap
   DEFINE_STANDARD_RTTIEXT(Image_AlienPixMap, Image_PixMap)
 public:
 
+  //! Return default rows order used by underlying image library.
+  Standard_EXPORT static bool IsTopDownDefault();
+public:
+
   //! Empty constructor.
   Standard_EXPORT Image_AlienPixMap();
 
@@ -43,7 +47,23 @@ public:
   Standard_EXPORT virtual ~Image_AlienPixMap();
 
   //! Read image data from file.
-  Standard_EXPORT bool Load (const TCollection_AsciiString& theFileName);
+  bool Load (const TCollection_AsciiString& theFileName)
+  {
+    return Load (NULL, 0, theFileName);
+  }
+
+  //! Read image data from stream.
+  Standard_EXPORT bool Load (std::istream& theStream,
+                             const TCollection_AsciiString& theFileName);
+
+  //! Read image data from memory buffer.
+  //! @param theData     memory pointer to read from;
+  //!                    when NULL, function will attempt to open theFileName file
+  //! @param theLength   memory buffer length
+  //! @param theFileName optional file name
+  Standard_EXPORT bool Load (const Standard_Byte* theData,
+                             Standard_Size theLength,
+                             const TCollection_AsciiString& theFileName);
 
   //! Write image data to file using file extension to determine compression format.
   Standard_EXPORT bool Save (const TCollection_AsciiString& theFileName);

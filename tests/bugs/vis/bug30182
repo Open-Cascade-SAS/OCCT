@@ -1,0 +1,64 @@
+puts "============"
+puts "0030182: Visualization, Image_AlienPixMap - support reading encoded image from memory buffer"
+puts "============"
+puts ""
+
+set anImg1 [locate_data_file hatch_1.png]
+set anImg2 [locate_data_file OCC1188.gif]
+set anImgTmp "$imagedir/${casename}_img.bin"
+
+set aTmpOut [open "$anImgTmp" w]
+fconfigure $aTmpOut -translation binary
+foreach aFileIter {anImg1 anImg2} {
+  set aFileName [set $aFileIter]
+  set aFileIn [open $aFileName]
+  fconfigure $aFileIn -translation binary
+  fcopy $aFileIn $aTmpOut
+  close $aFileIn
+}
+close $aTmpOut
+
+pload VISUALIZATION QAcommands
+vclear
+vinit View1
+vtop
+
+OCC30182 t $anImg1 -fileName; vfit
+vdump $imagedir/${casename}_1.png
+
+OCC30182 t $anImg1 -stream; vfit
+vdump $imagedir/${casename}_1s1.png
+
+OCC30182 t $anImg1 -memory; vfit
+vdump $imagedir/${casename}_1m1.png
+
+OCC30182 t $anImg2 -fileName; vfit
+vdump $imagedir/${casename}_2.png
+
+OCC30182 t $anImg2 -stream; vfit
+vdump $imagedir/${casename}_2s1.png
+
+OCC30182 t $anImg2 -memory; vfit
+vdump $imagedir/${casename}_2m1.png
+
+OCC30182 t $anImgTmp -stream -offset 0; vfit
+vdump $imagedir/${casename}_1s2.png
+
+OCC30182 t $anImgTmp -memory -offset 0; vfit
+vdump $imagedir/${casename}_1m2.png
+
+OCC30182 t $anImgTmp -stream -offset [file size $anImg1]; vfit
+vdump $imagedir/${casename}_2s2.png
+
+OCC30182 t $anImgTmp -memory -offset [file size $anImg1]; vfit
+vdump $imagedir/${casename}_2m2.png
+
+if { [diffimage $imagedir/${casename}_1s1.png $imagedir/${casename}_1.png] != 0 } { puts "Error 1s1" }
+if { [diffimage $imagedir/${casename}_1m1.png $imagedir/${casename}_1.png] != 0 } { puts "Error 1m1" }
+if { [diffimage $imagedir/${casename}_1s2.png $imagedir/${casename}_1.png] != 0 } { puts "Error 1s2" }
+if { [diffimage $imagedir/${casename}_1m2.png $imagedir/${casename}_1.png] != 0 } { puts "Error 1m2" }
+
+if { [diffimage $imagedir/${casename}_2s1.png $imagedir/${casename}_2.png] != 0 } { puts "Error 2s1" }
+if { [diffimage $imagedir/${casename}_2m1.png $imagedir/${casename}_2.png] != 0 } { puts "Error 2m1" }
+if { [diffimage $imagedir/${casename}_2s2.png $imagedir/${casename}_2.png] != 0 } { puts "Error 2s2" }
+if { [diffimage $imagedir/${casename}_2m2.png $imagedir/${casename}_2.png] != 0 } { puts "Error 2m2" }

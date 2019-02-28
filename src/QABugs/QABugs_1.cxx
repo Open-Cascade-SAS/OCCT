@@ -386,6 +386,139 @@ static Standard_Integer OCC361bug (Draw_Interpretor& di, Standard_Integer nb, co
   return 0;
 }
 
+#include <Graphic3d_Texture2Dmanual.hxx>
+#include <Image_AlienPixMap.hxx>
+#include <OSD_OpenFile.hxx>
+#include <Prs3d_ShadingAspect.hxx>
+#include <Standard_ArrayStreamBuffer.hxx>
+//=======================================================================
+//function : OCC30182
+//purpose  : Testing different interfaces of Image_AlienPixMap::Load()
+//=======================================================================
+static Standard_Integer OCC30182 (Draw_Interpretor& , Standard_Integer theNbArgs, const char** theArgVec)
+{
+  if (ViewerTest::CurrentView().IsNull())
+  {
+    std::cout << "Error: no active view\n";
+    return 1;
+  }
+
+  TCollection_AsciiString aPrsName, anImgPath;
+  Standard_Integer anOffset = 0;
+  Standard_Integer aSrc = 0; // 0 - file name, 1 - file stream, 2 - memory buffer
+  for (Standard_Integer anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
+  {
+    TCollection_AsciiString anArg (theArgVec[anArgIter]);
+    anArg.LowerCase();
+    if (anArg == "-offset"
+     && anArgIter + 1 < theNbArgs)
+    {
+      anOffset = Draw::Atoi (theArgVec[++anArgIter]);
+    }
+    else if (anArg == "-filename")
+    {
+      aSrc = 0;
+    }
+    else if (anArg == "-stream")
+    {
+      aSrc = 1;
+    }
+    else if (anArg == "-mem"
+          || anArg == "-memory")
+    {
+      aSrc = 2;
+    }
+    else if (aPrsName.IsEmpty())
+    {
+      aPrsName = theArgVec[anArgIter];
+    }
+    else if (anImgPath.IsEmpty())
+    {
+      anImgPath = theArgVec[anArgIter];
+    }
+    else
+    {
+      std::cout << "Syntax error at '" << anArg << "'\n";
+      return 1;
+    }
+  }
+  if (anImgPath.IsEmpty())
+  {
+    std::cout << "Syntax error: wrong number of arguments\n";
+    return 1;
+  }
+
+  Handle(Image_AlienPixMap) anImage = new Image_AlienPixMap();
+  if (aSrc == 0)
+  {
+    if (!anImage->Load (anImgPath))
+    {
+      return 0;
+    }
+  }
+  else
+  {
+    std::ifstream aFile;
+    OSD_OpenStream (aFile, anImgPath.ToCString(), std::ios::in | std::ios::binary);
+    if (!aFile.is_open())
+    {
+      std::cout << "Syntax error: image file '" << anImgPath << "' cannot be found\n";
+      return 1;
+    }
+    if (anOffset != 0)
+    {
+      aFile.seekg (anOffset);
+    }
+
+    if (aSrc == 2)
+    {
+      aFile.seekg (0, std::ios::end);
+      Standard_Integer aLen = (Standard_Integer )aFile.tellg() - anOffset;
+      aFile.seekg (anOffset);
+      if (aLen <= 0)
+      {
+        std::cout << "Syntax error: wrong offset\n";
+        return 1;
+      }
+      NCollection_Array1<Standard_Byte> aBuff (1, aLen);
+      if (!aFile.read ((char* )&aBuff.ChangeFirst(), aBuff.Size()))
+      {
+        std::cout << "Error: unable to read file\n";
+        return 1;
+      }
+      aFile.close();
+      if (!anImage->Load (&aBuff.ChangeFirst(), aBuff.Size(), anImgPath))
+      {
+        return 0;
+      }
+    }
+    else
+    {
+      if (!anImage->Load (aFile, anImgPath))
+      {
+        return 0;
+      }
+    }
+  }
+
+  TopoDS_Shape aShape = BRepPrimAPI_MakeBox (100.0 * anImage->Ratio(), 100.0, 1.0).Shape();
+  Handle(AIS_Shape) aPrs = new AIS_Shape (aShape);
+  aPrs->SetDisplayMode (AIS_Shaded);
+  aPrs->Attributes()->SetupOwnShadingAspect();
+  const Handle(Graphic3d_AspectFillArea3d)& anAspect = aPrs->Attributes()->ShadingAspect()->Aspect();
+  anAspect->SetShadingModel (Graphic3d_TOSM_UNLIT);
+  anAspect->SetTextureMapOn (true);
+  anAspect->SetTextureMap (new Graphic3d_Texture2Dmanual (anImage));
+  if (anImage->IsTopDown())
+  {
+    anAspect->TextureMap()->GetParams()->SetTranslation(Graphic3d_Vec2 (0.0f, -1.0f));
+    anAspect->TextureMap()->GetParams()->SetScale      (Graphic3d_Vec2 (1.0f, -1.0f));
+  }
+
+  ViewerTest::Display (aPrsName, aPrs, true, true);
+  return 0;
+}
+
 void QABugs::Commands_1(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
@@ -399,7 +532,9 @@ void QABugs::Commands_1(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC74_set", "OCC74_set shape mode;   set selection mode", __FILE__, OCC74bug_set, group);
   theCommands.Add ("OCC74_get", "OCC74_get shape;   get selection mode", __FILE__, OCC74bug_get, group);
 
-  theCommands.Add("OCC361", "OCC361 Doc ", __FILE__, OCC361bug, group);
-
+  theCommands.Add ("OCC361", "OCC361 Doc ", __FILE__, OCC361bug, group);
+  theCommands.Add ("OCC30182",
+                   "OCC30182 name image [-offset Start] [-fileName] [-stream] [-memory]\n"
+                   "Decodes image either by passing file name, file stream or memory stream", __FILE__, OCC30182, group);
   return;
 }

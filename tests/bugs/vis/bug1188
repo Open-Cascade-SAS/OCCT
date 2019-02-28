@@ -1,19 +1,11 @@
 puts "================"
-puts "OCC1188"
-puts "Impossible to set background image for V3d_View"
+puts "0001188: Impossible to set background image for V3d_View"
 puts "================"
 puts ""
 
-set x 200
-set y 200
+vinit View1
 
-vinit
+vsetbg [locate_data_file OCC1188.gif]
+if { [vreadpixel 200 200 rgb name] != "WHITE" } { puts "Error: image background is not set" }
 
-OCC1188 [locate_data_file OCC1188.gif]
-
-checkcolor $x $y 0.99 0.99 0.99
-if { ${stat} != 1} {
-    puts "OCC1188: Error"
-}
-
-checkview -screenshot -3d -path ${imagedir}/${test_image}.png
+vdump $imagedir/${casename}.png

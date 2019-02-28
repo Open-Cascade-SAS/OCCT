@@ -1078,48 +1078,6 @@ static Standard_Integer OCC884 (Draw_Interpretor& di, Standard_Integer argc, con
   return 0;
 }
 
-#include <Aspect_FillMethod.hxx>
-//=======================================================================
-//function : OCC1188
-//purpose  : 
-//=======================================================================
-static Standard_Integer OCC1188 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
-{
-  if (argc < 2 || argc > 3)
-  {
-    di << "Usage : " << argv[0] << " imagefile [filltype] : Load image as background\n";
-    return 1;
-  }
-
-  Handle(AIS_InteractiveContext) AISContext = ViewerTest::GetAISContext();
-  if(AISContext.IsNull()) 
-  {
-    di << "use 'vinit' command before " << argv[0] << "\n";
-    return 1;
-  }
-
-  Aspect_FillMethod aFillType = Aspect_FM_CENTERED;
-  if (argc == 3)
-  {
-    const char* szType = argv[2];
-    if      (strcmp(szType, "NONE"    ) == 0) aFillType = Aspect_FM_NONE;
-    else if (strcmp(szType, "CENTERED") == 0) aFillType = Aspect_FM_CENTERED;
-    else if (strcmp(szType, "TILED"   ) == 0) aFillType = Aspect_FM_TILED;
-    else if (strcmp(szType, "STRETCH" ) == 0) aFillType = Aspect_FM_STRETCH;
-    else
-    {
-      di << "Wrong fill type : " << szType << "\n";
-      di << "Must be one of CENTERED, TILED, STRETCH, NONE\n";
-      return 1;
-    }
-  }
-
-  Handle(V3d_View) V3dView = ViewerTest::CurrentView();
-  V3dView->SetBackgroundImage(argv[1], aFillType, Standard_True);
-
-  return 0;
-}
-
 #include <Graphic3d_MaterialAspect.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_ShadingAspect.hxx>
@@ -1590,7 +1548,6 @@ void QABugs::Commands_17(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC813", "OCC813 U V", __FILE__, OCC813, group);
   theCommands.Add ("OCC814", "OCC814", __FILE__, OCC814, group);
   theCommands.Add ("OCC884", "OCC884 result shape [toler [maxtoler]]", __FILE__, OCC884, group);
-  theCommands.Add ("OCC1188", "OCC1188 imagefile [filltype] : Load image as background", __FILE__, OCC1188, group);
 
   theCommands.Add ("OCC1174_1", "OCC1174_1 shape", __FILE__, OCC1174_1, group);
   theCommands.Add ("OCC1174_2", "OCC1174_2 shape", __FILE__, OCC1174_2, group);

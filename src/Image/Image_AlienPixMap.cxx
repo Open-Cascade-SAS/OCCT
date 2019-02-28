@@ -34,6 +34,8 @@
 #include <gp.hxx>
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
+#include <NCollection_Array1.hxx>
+#include <Standard_ArrayStreamBuffer.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <OSD_OpenFile.hxx>
@@ -110,6 +112,109 @@ namespace
         return FIT_UNKNOWN;
     }
   }
+
+  //! Wrapper for accessing C++ stream from FreeImage.
+  class Image_FreeImageStream
+  {
+  public:
+    //! Construct wrapper over input stream.
+    Image_FreeImageStream (std::istream& theStream)
+    : myIStream (&theStream), myOStream (NULL), myInitPos (theStream.tellg()) {}
+
+    //! Get io object.
+    FreeImageIO GetFiIO() const
+    {
+      FreeImageIO anIo;
+      memset (&anIo, 0, sizeof(anIo));
+      if (myIStream != NULL)
+      {
+        anIo.read_proc = readProc;
+        anIo.seek_proc = seekProc;
+        anIo.tell_proc = tellProc;
+      }
+      if (myOStream != NULL)
+      {
+        anIo.write_proc = writeProc;
+      }
+      return anIo;
+    }
+  public:
+    //! Simulate fread().
+    static unsigned int DLL_CALLCONV readProc (void* theBuffer, unsigned int theSize, unsigned int theCount, fi_handle theHandle)
+    {
+      Image_FreeImageStream* aThis = (Image_FreeImageStream* )theHandle;
+      if (aThis->myIStream == NULL)
+      {
+        return 0;
+      }
+
+      if (!aThis->myIStream->read ((char* )theBuffer, std::streamsize(theSize) * std::streamsize(theCount)))
+      {
+        //aThis->myIStream->clear();
+      }
+      const std::streamsize aNbRead = aThis->myIStream->gcount();
+      return (unsigned int )(aNbRead / theSize);
+    }
+
+    //! Simulate fwrite().
+    static unsigned int DLL_CALLCONV writeProc (void* theBuffer, unsigned int theSize, unsigned int theCount, fi_handle theHandle)
+    {
+      Image_FreeImageStream* aThis = (Image_FreeImageStream* )theHandle;
+      if (aThis->myOStream != NULL
+       && aThis->myOStream->write ((const char* )theBuffer, std::streamsize(theSize) * std::streamsize(theCount)))
+      {
+        return theCount;
+      }
+      return 0;
+    }
+
+    //! Simulate fseek().
+    static int DLL_CALLCONV seekProc (fi_handle theHandle, long theOffset, int theOrigin)
+    {
+      Image_FreeImageStream* aThis = (Image_FreeImageStream* )theHandle;
+      if (aThis->myIStream == NULL)
+      {
+        return -1;
+      }
+
+      bool isSeekDone = false;
+      switch (theOrigin)
+      {
+        case SEEK_SET:
+          if (aThis->myIStream->seekg ((std::streamoff )aThis->myInitPos + theOffset, std::ios::beg))
+          {
+            isSeekDone = true;
+          }
+          break;
+        case SEEK_CUR:
+          if (aThis->myIStream->seekg (theOffset, std::ios::cur))
+          {
+            isSeekDone = true;
+          }
+          break;
+        case SEEK_END:
+          if (aThis->myIStream->seekg (theOffset, std::ios::end))
+          {
+            isSeekDone = true;
+          }
+          break;
+      }
+      return isSeekDone ? 0 : -1;
+    }
+
+    //! Simulate ftell().
+    static long DLL_CALLCONV tellProc (fi_handle theHandle)
+    {
+      Image_FreeImageStream* aThis = (Image_FreeImageStream* )theHandle;
+      const long aPos = aThis->myIStream != NULL ? (long )(aThis->myIStream->tellg() - aThis->myInitPos) : 0;
+      return aPos;
+    }
+  private:
+    std::istream*  myIStream;
+    std::ostream*  myOStream;
+    std::streampos myInitPos;
+  };
+
 #elif defined(HAVE_WINCODEC)
 
   //! Return a zero GUID
@@ -385,20 +490,49 @@ void Image_AlienPixMap::Clear()
 }
 
 // =======================================================================
+// function : IsTopDownDefault
+// purpose  :
+// =======================================================================
+bool Image_AlienPixMap::IsTopDownDefault()
+{
+#ifdef HAVE_FREEIMAGE
+  return false;
+#elif defined(HAVE_WINCODEC)
+  return true;
+#else
+  return false;
+#endif
+}
+
+// =======================================================================
 // function : Load
 // purpose  :
 // =======================================================================
 #ifdef HAVE_FREEIMAGE
-bool Image_AlienPixMap::Load (const TCollection_AsciiString& theImagePath)
+bool Image_AlienPixMap::Load (const Standard_Byte* theData,
+                              Standard_Size theLength,
+                              const TCollection_AsciiString& theImagePath)
 {
   Clear();
 
 #ifdef _WIN32
   const TCollection_ExtendedString aFileNameW (theImagePath);
-  FREE_IMAGE_FORMAT aFIF = FreeImage_GetFileTypeU (aFileNameW.ToWideString(), 0);
-#else
-  FREE_IMAGE_FORMAT aFIF = FreeImage_GetFileType (theImagePath.ToCString(), 0);
 #endif
+  FREE_IMAGE_FORMAT aFIF = FIF_UNKNOWN;
+  FIMEMORY* aFiMem = NULL;
+  if (theData != NULL)
+  {
+    aFiMem = FreeImage_OpenMemory ((BYTE* )theData, (DWORD )theLength);
+    aFIF = FreeImage_GetFileTypeFromMemory (aFiMem, 0);
+  }
+  else
+  {
+  #ifdef _WIN32
+    aFIF = FreeImage_GetFileTypeU (aFileNameW.ToWideString(), 0);
+  #else
+    aFIF = FreeImage_GetFileType (theImagePath.ToCString(), 0);
+  #endif
+  }
   if (aFIF == FIF_UNKNOWN)
   {
     // no signature? try to guess the file format from the file extension
@@ -406,10 +540,12 @@ bool Image_AlienPixMap::Load (const TCollection_AsciiString& theImagePath)
   }
   if ((aFIF == FIF_UNKNOWN) || !FreeImage_FIFSupportsReading (aFIF))
   {
-    TCollection_AsciiString aMessage = "Error: image file '";
-    aMessage.AssignCat (theImagePath);
-    aMessage.AssignCat ("' has unsupported file format.");
-    ::Message::DefaultMessenger()->Send (aMessage, Message_Fail);
+    ::Message::DefaultMessenger()->Send (TCollection_AsciiString ("Error: image '") + theImagePath + "' has unsupported file format.",
+                                         Message_Fail);
+    if (aFiMem != NULL)
+    {
+      FreeImage_CloseMemory (aFiMem);
+    }
     return false;
   }
 
@@ -425,11 +561,21 @@ bool Image_AlienPixMap::Load (const TCollection_AsciiString& theImagePath)
     aLoadFlags = ICO_MAKEALPHA;
   }
 
-#ifdef _WIN32
-  FIBITMAP* anImage = FreeImage_LoadU (aFIF, aFileNameW.ToWideString(), aLoadFlags);
-#else
-  FIBITMAP* anImage = FreeImage_Load  (aFIF, theImagePath.ToCString(), aLoadFlags);
-#endif
+  FIBITMAP* anImage = NULL;
+  if (theData != NULL)
+  {
+    anImage = FreeImage_LoadFromMemory (aFIF, aFiMem, aLoadFlags);
+    FreeImage_CloseMemory (aFiMem);
+    aFiMem = NULL;
+  }
+  else
+  {
+  #ifdef _WIN32
+    anImage = FreeImage_LoadU (aFIF, aFileNameW.ToWideString(), aLoadFlags);
+  #else
+    anImage = FreeImage_Load  (aFIF, theImagePath.ToCString(), aLoadFlags);
+  #endif
+  }
   if (anImage == NULL)
   {
     TCollection_AsciiString aMessage = "Error: image file '";
@@ -445,10 +591,8 @@ bool Image_AlienPixMap::Load (const TCollection_AsciiString& theImagePath)
   if (aFormat == Image_Format_UNKNOWN)
   {
     //anImage = FreeImage_ConvertTo24Bits (anImage);
-    TCollection_AsciiString aMessage = "Error: image file '";
-    aMessage.AssignCat (theImagePath);
-    aMessage.AssignCat ("' has unsupported pixel format.");
-    ::Message::DefaultMessenger()->Send (aMessage, Message_Fail);
+    ::Message::DefaultMessenger()->Send (    TCollection_AsciiString ("Error: image '") + theImagePath + "' has unsupported pixel format.",
+                                         Message_Fail);
     return false;
   }
 
@@ -460,25 +604,106 @@ bool Image_AlienPixMap::Load (const TCollection_AsciiString& theImagePath)
   myLibImage = anImage;
   return true;
 }
-#elif defined(HAVE_WINCODEC)
-bool Image_AlienPixMap::Load (const TCollection_AsciiString& theImagePath)
+
+bool Image_AlienPixMap::Load (std::istream& theStream,
+                              const TCollection_AsciiString& theFileName)
 {
   Clear();
 
-  IWICImagingFactory* aWicImgFactory = NULL;
+  Image_FreeImageStream aStream (theStream);
+  FreeImageIO aFiIO = aStream.GetFiIO();
+
+  FREE_IMAGE_FORMAT aFIF = FreeImage_GetFileTypeFromHandle (&aFiIO, &aStream, 0);
+  if (aFIF == FIF_UNKNOWN)
+  {
+    // no signature? try to guess the file format from the file extension
+    aFIF = FreeImage_GetFIFFromFilename (theFileName.ToCString());
+  }
+  if ((aFIF == FIF_UNKNOWN) || !FreeImage_FIFSupportsReading (aFIF))
+  {
+    ::Message::DefaultMessenger()->Send (TCollection_AsciiString ("Error: image stream '") + theFileName + "' has unsupported file format.",
+                                         Message_Fail);
+    return false;
+  }
+
+  int aLoadFlags = 0;
+  if (aFIF == FIF_GIF)
+  {
+    // 'Play' the GIF to generate each frame (as 32bpp) instead of returning raw frame data when loading
+    aLoadFlags = GIF_PLAYBACK;
+  }
+  else if (aFIF == FIF_ICO)
+  {
+    // convert to 32bpp and create an alpha channel from the AND-mask when loading
+    aLoadFlags = ICO_MAKEALPHA;
+  }
+
+  FIBITMAP* anImage = FreeImage_LoadFromHandle (aFIF, &aFiIO, &aStream, aLoadFlags);
+  if (anImage == NULL)
+  {
+    ::Message::DefaultMessenger()->Send (TCollection_AsciiString ("Error: image stream '") + theFileName + "' is missing or invalid.",
+                                         Message_Fail);
+    return false;
+  }
+
+  Image_Format aFormat = convertFromFreeFormat (FreeImage_GetImageType(anImage),
+                                                FreeImage_GetColorType(anImage),
+                                                FreeImage_GetBPP      (anImage));
+  if (aFormat == Image_Format_UNKNOWN)
+  {
+    ::Message::DefaultMessenger()->Send (TCollection_AsciiString ("Error: image stream '") + theFileName + "' has unsupported pixel format.",
+                                         Message_Fail);
+    return false;
+  }
+
+  Image_PixMap::InitWrapper (aFormat, FreeImage_GetBits (anImage),
+                             FreeImage_GetWidth (anImage), FreeImage_GetHeight (anImage), FreeImage_GetPitch (anImage));
+  SetTopDown (false);
+
+  // assign image after wrapper initialization (virtual Clear() called inside)
+  myLibImage = anImage;
+  return true;
+}
+
+#elif defined(HAVE_WINCODEC)
+bool Image_AlienPixMap::Load (const Standard_Byte* theData,
+                              Standard_Size theLength,
+                              const TCollection_AsciiString& theFileName)
+{
+  Clear();
+
+  Image_ComPtr<IWICImagingFactory> aWicImgFactory;
   CoInitializeEx (NULL, COINIT_MULTITHREADED);
-  if (CoCreateInstance (CLSID_WICImagingFactory, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&aWicImgFactory)) != S_OK)
+  if (CoCreateInstance (CLSID_WICImagingFactory, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&aWicImgFactory.ChangePtr())) != S_OK)
   {
     Message::DefaultMessenger()->Send ("Error: cannot initialize WIC Imaging Factory", Message_Fail);
     return false;
   }
 
   Image_ComPtr<IWICBitmapDecoder> aWicDecoder;
-  const TCollection_ExtendedString aFileNameW (theImagePath);
-  if (aWicImgFactory->CreateDecoderFromFilename (aFileNameW.ToWideString(), NULL, GENERIC_READ, WICDecodeMetadataCacheOnDemand, &aWicDecoder.ChangePtr()) != S_OK)
+  Image_ComPtr<IWICStream> aWicStream;
+  if (theData != NULL)
   {
-    Message::DefaultMessenger()->Send ("Error: cannot create WIC Image Decoder", Message_Fail);
-    return false;
+    if (aWicImgFactory->CreateStream (&aWicStream.ChangePtr()) != S_OK
+     || aWicStream->InitializeFromMemory ((BYTE* )theData, (DWORD )theLength) != S_OK)
+    {
+      Message::DefaultMessenger()->Send ("Error: cannot initialize WIC Stream", Message_Fail);
+      return false;
+    }
+    if (aWicImgFactory->CreateDecoderFromStream (aWicStream.get(), NULL, WICDecodeMetadataCacheOnDemand, &aWicDecoder.ChangePtr()) != S_OK)
+    {
+      Message::DefaultMessenger()->Send ("Error: cannot create WIC Image Decoder", Message_Fail);
+      return false;
+    }
+  }
+  else
+  {
+    const TCollection_ExtendedString aFileNameW (theFileName);
+    if (aWicImgFactory->CreateDecoderFromFilename (aFileNameW.ToWideString(), NULL, GENERIC_READ, WICDecodeMetadataCacheOnDemand, &aWicDecoder.ChangePtr()) != S_OK)
+    {
+      Message::DefaultMessenger()->Send ("Error: cannot create WIC Image Decoder", Message_Fail);
+      return false;
+    }
   }
 
   UINT aFrameCount = 0, aFrameSizeX = 0, aFrameSizeY = 0;
@@ -527,10 +752,45 @@ bool Image_AlienPixMap::Load (const TCollection_AsciiString& theImagePath)
   SetTopDown (true);
   return true;
 }
-#else
-bool Image_AlienPixMap::Load (const TCollection_AsciiString&)
+bool Image_AlienPixMap::Load (std::istream& theStream,
+                              const TCollection_AsciiString& theFilePath)
 {
   Clear();
+
+  // fallback copying stream data into transient buffer
+  const std::streamoff aStart = theStream.tellg();
+  theStream.seekg (0, std::ios::end);
+  const Standard_Integer aLen = Standard_Integer(theStream.tellg() - aStart);
+  theStream.seekg (aStart);
+  if (aLen <= 0)
+  {
+    Message::DefaultMessenger()->Send ("Error: empty stream", Message_Fail);
+    return false;
+  }
+
+  NCollection_Array1<Standard_Byte> aBuff (1, aLen);
+  if (!theStream.read ((char* )&aBuff.ChangeFirst(), aBuff.Size()))
+  {
+    Message::DefaultMessenger()->Send ("Error: unable to read stream", Message_Fail);
+    return false;
+  }
+
+  return Load (&aBuff.ChangeFirst(), aBuff.Size(), theFilePath);
+}
+#else
+bool Image_AlienPixMap::Load (std::istream& ,
+                              const TCollection_AsciiString& )
+{
+  Clear();
+  Message::DefaultMessenger()->Send ("Error: no image library available", Message_Fail);
+  return false;
+}
+bool Image_AlienPixMap::Load (const Standard_Byte* ,
+                              Standard_Size ,
+                              const TCollection_AsciiString& )
+{
+  Clear();
+  Message::DefaultMessenger()->Send ("Error: no image library available", Message_Fail);
   return false;
 }
 #endif
@@ -774,9 +1034,9 @@ bool Image_AlienPixMap::Save (const TCollection_AsciiString& theFileName)
     return false;
   }
 
-  IWICImagingFactory* aWicImgFactory = NULL;
+  Image_ComPtr<IWICImagingFactory> aWicImgFactory;
   CoInitializeEx (NULL, COINIT_MULTITHREADED);
-  if (CoCreateInstance (CLSID_WICImagingFactory, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&aWicImgFactory)) != S_OK)
+  if (CoCreateInstance (CLSID_WICImagingFactory, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&aWicImgFactory.ChangePtr())) != S_OK)
   {
     Message::DefaultMessenger()->Send ("Error: cannot initialize WIC Imaging Factory", Message_Fail);
     return false;
