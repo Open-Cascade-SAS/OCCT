@@ -16,10 +16,7 @@
 #include <OpenGl_Workspace.hxx>
 
 #include <OpenGl_ArbFBO.hxx>
-#include <OpenGl_AspectLine.hxx>
-#include <OpenGl_AspectFace.hxx>
-#include <OpenGl_AspectMarker.hxx>
-#include <OpenGl_AspectText.hxx>
+#include <OpenGl_Aspects.hxx>
 #include <OpenGl_Context.hxx>
 #include <OpenGl_Element.hxx>
 #include <OpenGl_FrameBuffer.hxx>
@@ -123,10 +120,7 @@ OpenGl_Workspace::OpenGl_Workspace (OpenGl_View* theView, const Handle(OpenGl_Wi
   myNbSkippedTranspElems (0),
   myRenderFilter (OpenGl_RenderFilter_Empty),
   //
-  myAspectLineSet (&myDefaultAspectLine),
-  myAspectFaceSet (&myDefaultAspectFace),
-  myAspectMarkerSet (&myDefaultAspectMarker),
-  myAspectTextSet (&myDefaultAspectText),
+  myAspectsSet (&myDefaultAspects),
   //
   ViewMatrix_applied (&myDefaultMatrix),
   StructureMatrix_applied (&myDefaultMatrix),
@@ -154,9 +148,6 @@ OpenGl_Workspace::OpenGl_Workspace (OpenGl_View* theView, const Handle(OpenGl_Wi
     glHint (GL_POLYGON_SMOOTH_HINT, GL_FASTEST);
   #endif
   }
-
-  myFontFaceAspect.Aspect()->SetAlphaMode (Graphic3d_AlphaMode_Blend, 0.285f);
-  myFontFaceAspect.Aspect()->SetShadingModel (Graphic3d_TOSM_UNLIT);
 
   myNoneCulling .Aspect()->SetSuppressBackFaces (false);
   myNoneCulling .Aspect()->SetDrawEdges (false);
@@ -193,14 +184,6 @@ Standard_Boolean OpenGl_Workspace::Activate()
   {
     myGlContext->ShaderManager()->PushState (Handle(OpenGl_ShaderProgram)());
   }
-
-#if !defined(GL_ES_VERSION_2_0)
-  // font GLSL program has embedded discard, while FFP needs alpha test
-  myFontFaceAspect.Aspect()->SetAlphaMode ((!myGlContext->caps->ffpEnable && myGlContext->core11 != NULL)
-                                          ? Graphic3d_AlphaMode_Blend
-                                          : Graphic3d_AlphaMode_Mask,
-                                           0.285f);
-#endif
   return Standard_True;
 }
 
@@ -214,21 +197,13 @@ void OpenGl_Workspace::ResetAppliedAspect()
 
   myHighlightStyle.Nullify();
   myToAllowFaceCulling  = false;
-  myAspectLineSet       = &myDefaultAspectLine;
-  myAspectFaceSet       = &myDefaultAspectFace;
-  myAspectFaceApplied.Nullify();
-  myAspectMarkerSet     = &myDefaultAspectMarker;
-  myAspectMarkerApplied.Nullify();
-  myAspectTextSet       = &myDefaultAspectText;
+  myAspectsSet = &myDefaultAspects;
+  myAspectsApplied.Nullify();
   myGlContext->SetPolygonOffset (Graphic3d_PolygonOffset());
 
-  ApplyAspectLine();
-  ApplyAspectFace();
-  ApplyAspectMarker();
-  ApplyAspectText();
-
-  myGlContext->SetTypeOfLine (myDefaultAspectLine.Aspect()->Type());
-  myGlContext->SetLineWidth  (myDefaultAspectLine.Aspect()->Width());
+  ApplyAspects();
+  myGlContext->SetTypeOfLine (myDefaultAspects.Aspect()->LineType());
+  myGlContext->SetLineWidth  (myDefaultAspects.Aspect()->LineWidth());
 }
 
 // =======================================================================
@@ -237,11 +212,11 @@ void OpenGl_Workspace::ResetAppliedAspect()
 // =======================================================================
 Graphic3d_PolygonOffset OpenGl_Workspace::SetDefaultPolygonOffset (const Graphic3d_PolygonOffset& theOffset)
 {
-  Graphic3d_PolygonOffset aPrev = myDefaultAspectFace.Aspect()->PolygonOffset();
-  myDefaultAspectFace.Aspect()->SetPolygonOffset (theOffset);
-  if (myAspectFaceApplied == myDefaultAspectFace.Aspect()
-   || myAspectFaceApplied.IsNull()
-   || (myAspectFaceApplied->PolygonOffset().Mode & Aspect_POM_None) == Aspect_POM_None)
+  Graphic3d_PolygonOffset aPrev = myDefaultAspects.Aspect()->PolygonOffset();
+  myDefaultAspects.Aspect()->SetPolygonOffset (theOffset);
+  if (myAspectsApplied == myDefaultAspects.Aspect()
+   || myAspectsApplied.IsNull()
+   || (myAspectsApplied->PolygonOffset().Mode & Aspect_POM_None) == Aspect_POM_None)
   {
     myGlContext->SetPolygonOffset (theOffset);
   }
@@ -249,66 +224,33 @@ Graphic3d_PolygonOffset OpenGl_Workspace::SetDefaultPolygonOffset (const Graphic
 }
 
 // =======================================================================
-// function : SetAspectLine
+// function : SetAspects
 // purpose  :
 // =======================================================================
-const OpenGl_AspectLine* OpenGl_Workspace::SetAspectLine (const OpenGl_AspectLine* theAspect)
+const OpenGl_Aspects* OpenGl_Workspace::SetAspects (const OpenGl_Aspects* theAspect)
 {
-  const OpenGl_AspectLine* aPrevAspectLine = myAspectLineSet;
-  myAspectLineSet = theAspect;
-  return aPrevAspectLine;
+  const OpenGl_Aspects* aPrevAspects = myAspectsSet;
+  myAspectsSet = theAspect;
+  return aPrevAspects;
 }
 
 // =======================================================================
-// function : SetAspectFace
+// function : ApplyAspects
 // purpose  :
 // =======================================================================
-const OpenGl_AspectFace * OpenGl_Workspace::SetAspectFace (const OpenGl_AspectFace* theAspect)
-{
-  const OpenGl_AspectFace* aPrevAspectFace = myAspectFaceSet;
-  myAspectFaceSet = theAspect;
-  return aPrevAspectFace;
-}
-
-// =======================================================================
-// function : SetAspectMarker
-// purpose  :
-// =======================================================================
-const OpenGl_AspectMarker* OpenGl_Workspace::SetAspectMarker (const OpenGl_AspectMarker* theAspect)
-{
-  const OpenGl_AspectMarker* aPrevAspectMarker = myAspectMarkerSet;
-  myAspectMarkerSet = theAspect;
-  return aPrevAspectMarker;
-}
-
-// =======================================================================
-// function : SetAspectText
-// purpose  :
-// =======================================================================
-const OpenGl_AspectText * OpenGl_Workspace::SetAspectText (const OpenGl_AspectText* theAspect)
-{
-  const OpenGl_AspectText* aPrevAspectText = myAspectTextSet;
-  myAspectTextSet = theAspect;
-  return aPrevAspectText;
-}
-
-// =======================================================================
-// function : ApplyAspectFace
-// purpose  :
-// =======================================================================
-const OpenGl_AspectFace* OpenGl_Workspace::ApplyAspectFace()
+const OpenGl_Aspects* OpenGl_Workspace::ApplyAspects()
 {
   if (myView->BackfacingModel() == Graphic3d_TOBM_AUTOMATIC)
   {
     bool toSuppressBackFaces = myToAllowFaceCulling
-                            && myAspectFaceSet->Aspect()->ToSuppressBackFaces();
+                            && myAspectsSet->Aspect()->ToSuppressBackFaces();
     if (toSuppressBackFaces)
     {
-      if (myAspectFaceSet->Aspect()->InteriorStyle() == Aspect_IS_HATCH
-       || myAspectFaceSet->Aspect()->AlphaMode() == Graphic3d_AlphaMode_Blend
-       || myAspectFaceSet->Aspect()->AlphaMode() == Graphic3d_AlphaMode_Mask
-       || (myAspectFaceSet->Aspect()->AlphaMode() == Graphic3d_AlphaMode_BlendAuto
-        && myAspectFaceSet->Aspect()->FrontMaterial().Transparency() != 0.0f))
+      if (myAspectsSet->Aspect()->InteriorStyle() == Aspect_IS_HATCH
+       || myAspectsSet->Aspect()->AlphaMode() == Graphic3d_AlphaMode_Blend
+       || myAspectsSet->Aspect()->AlphaMode() == Graphic3d_AlphaMode_Mask
+       || (myAspectsSet->Aspect()->AlphaMode() == Graphic3d_AlphaMode_BlendAuto
+        && myAspectsSet->Aspect()->FrontMaterial().Transparency() != 0.0f))
       {
         // disable culling in case of translucent shading aspect
         toSuppressBackFaces = false;
@@ -317,22 +259,22 @@ const OpenGl_AspectFace* OpenGl_Workspace::ApplyAspectFace()
     myGlContext->SetCullBackFaces (toSuppressBackFaces);
   }
 
-  if (myAspectFaceSet->Aspect() == myAspectFaceApplied
+  if (myAspectsSet->Aspect() == myAspectsApplied
    && myHighlightStyle == myAspectFaceAppliedWithHL)
   {
-    return myAspectFaceSet;
+    return myAspectsSet;
   }
   myAspectFaceAppliedWithHL = myHighlightStyle;
 
   // Aspect_POM_None means: do not change current settings
-  if ((myAspectFaceSet->Aspect()->PolygonOffset().Mode & Aspect_POM_None) != Aspect_POM_None)
+  if ((myAspectsSet->Aspect()->PolygonOffset().Mode & Aspect_POM_None) != Aspect_POM_None)
   {
-    myGlContext->SetPolygonOffset (myAspectFaceSet->Aspect()->PolygonOffset());
+    myGlContext->SetPolygonOffset (myAspectsSet->Aspect()->PolygonOffset());
   }
 
-  const Aspect_InteriorStyle anIntstyle = myAspectFaceSet->Aspect()->InteriorStyle();
-  if (myAspectFaceApplied.IsNull()
-   || myAspectFaceApplied->InteriorStyle() != anIntstyle)
+  const Aspect_InteriorStyle anIntstyle = myAspectsSet->Aspect()->InteriorStyle();
+  if (myAspectsApplied.IsNull()
+   || myAspectsApplied->InteriorStyle() != anIntstyle)
   {
   #if !defined(GL_ES_VERSION_2_0)
     myGlContext->SetPolygonMode (anIntstyle == Aspect_IS_POINT ? GL_POINT : GL_FILL);
@@ -343,7 +285,7 @@ const OpenGl_AspectFace* OpenGl_Workspace::ApplyAspectFace()
 #if !defined(GL_ES_VERSION_2_0)
   if (anIntstyle == Aspect_IS_HATCH)
   {
-    myGlContext->SetPolygonHatchStyle (myAspectFaceSet->Aspect()->HatchStyle());
+    myGlContext->SetPolygonHatchStyle (myAspectsSet->Aspect()->HatchStyle());
   }
 #endif
 
@@ -351,50 +293,29 @@ const OpenGl_AspectFace* OpenGl_Workspace::ApplyAspectFace()
   if (anIntstyle == Aspect_IS_HIDDENLINE)
   {
     // copy all values including line edge aspect
-    *myAspectFaceHl.Aspect() = *myAspectFaceSet->Aspect();
-    myAspectFaceHl.SetAspectEdge (myAspectFaceSet->AspectEdge());
+    *myAspectFaceHl.Aspect() = *myAspectsSet->Aspect();
     myAspectFaceHl.Aspect()->SetShadingModel (Graphic3d_TOSM_UNLIT);
     myAspectFaceHl.Aspect()->SetInteriorColor (myView->BackgroundColor().GetRGB());
     myAspectFaceHl.Aspect()->SetDistinguish (false);
     myAspectFaceHl.SetNoLighting();
-    myAspectFaceSet = &myAspectFaceHl;
+    myAspectsSet = &myAspectFaceHl;
   }
   else
   {
-    myGlContext->SetShadingMaterial (myAspectFaceSet, myHighlightStyle);
+    myGlContext->SetShadingMaterial (myAspectsSet, myHighlightStyle);
   }
 
-  if (myAspectFaceSet->Aspect()->ToMapTexture())
+  if (myAspectsSet->Aspect()->ToMapTexture())
   {
-    myGlContext->BindTextures (myAspectFaceSet->TextureSet (myGlContext));
+    myGlContext->BindTextures (myAspectsSet->TextureSet (myGlContext));
   }
   else
   {
     myGlContext->BindTextures (myEnvironmentTexture);
   }
 
-  myAspectFaceApplied = myAspectFaceSet->Aspect();
-  return myAspectFaceSet;
-}
-
-// =======================================================================
-// function : ApplyAspectMarker
-// purpose  :
-// =======================================================================
-const OpenGl_AspectMarker* OpenGl_Workspace::ApplyAspectMarker()
-{
-  if (myAspectMarkerSet->Aspect() != myAspectMarkerApplied)
-  {
-    if (myAspectMarkerApplied.IsNull()
-    || (myAspectMarkerSet->Aspect()->Scale() != myAspectMarkerApplied->Scale()))
-    {
-    #if !defined(GL_ES_VERSION_2_0)
-      glPointSize (myAspectMarkerSet->Aspect()->Scale());
-    #endif
-    }
-    myAspectMarkerApplied = myAspectMarkerSet->Aspect();
-  }
-  return myAspectMarkerSet;
+  myAspectsApplied = myAspectsSet->Aspect();
+  return myAspectsSet;
 }
 
 // =======================================================================
@@ -498,7 +419,7 @@ bool OpenGl_Workspace::ShouldRender (const OpenGl_Element* theElement)
       return true;
     }
 
-    if (OpenGl_Context::CheckIsTransparent (myAspectFaceSet, myHighlightStyle))
+    if (OpenGl_Context::CheckIsTransparent (myAspectsSet, myHighlightStyle))
     {
       ++myNbSkippedTranspElems;
       return false;
@@ -508,12 +429,12 @@ bool OpenGl_Workspace::ShouldRender (const OpenGl_Element* theElement)
   {
     if (!theElement->IsFillDrawMode())
     {
-      if (dynamic_cast<const OpenGl_AspectFace*> (theElement) == NULL)
+      if (dynamic_cast<const OpenGl_Aspects*> (theElement) == NULL)
       {
         return false;
       }
     }
-    else if (!OpenGl_Context::CheckIsTransparent (myAspectFaceSet, myHighlightStyle))
+    else if (!OpenGl_Context::CheckIsTransparent (myAspectsSet, myHighlightStyle))
     {
       return false;
     }

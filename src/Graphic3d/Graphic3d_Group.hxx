@@ -17,17 +17,12 @@
 #ifndef _Graphic3d_Group_HeaderFile
 #define _Graphic3d_Group_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
 #include <Graphic3d_BndBox4f.hxx>
-#include <Standard_Boolean.hxx>
 #include <Graphic3d_AspectLine3d.hxx>
 #include <Graphic3d_AspectFillArea3d.hxx>
 #include <Graphic3d_AspectText3d.hxx>
 #include <Graphic3d_AspectMarker3d.hxx>
-#include <Standard_Transient.hxx>
-#include <Standard_Real.hxx>
+#include <Graphic3d_MapOfAspectsToAspects.hxx>
 #include <Standard_CString.hxx>
 #include <Graphic3d_Vertex.hxx>
 #include <Graphic3d_TextPath.hxx>
@@ -37,8 +32,6 @@
 #include <Graphic3d_IndexBuffer.hxx>
 #include <Graphic3d_Buffer.hxx>
 #include <Graphic3d_BoundBuffer.hxx>
-#include <Standard_Address.hxx>
-#include <Graphic3d_GroupAspect.hxx>
 #include <gp_Ax2.hxx>
 #include <TCollection_ExtendedString.hxx>
 
@@ -102,70 +95,20 @@ public:
 
 public:
 
-  //! Return line aspect.
-  virtual Handle(Graphic3d_AspectLine3d) LineAspect() const = 0;
-
-  //! Assign line aspect to the group.
-  virtual void SetGroupPrimitivesAspect (const Handle(Graphic3d_AspectLine3d)& theAspect) = 0;
-
   //! Return fill area aspect.
-  virtual Handle(Graphic3d_AspectFillArea3d) FillAreaAspect() const = 0;
+  virtual Handle(Graphic3d_Aspects) Aspects() const = 0;
 
   //! Modifies the context for all the face primitives of the group.
-  virtual void SetGroupPrimitivesAspect (const Handle(Graphic3d_AspectFillArea3d)& theAspect) = 0;
+  virtual void SetGroupPrimitivesAspect (const Handle(Graphic3d_Aspects)& theAspect) = 0;
 
-  //! Return text aspect.
-  virtual Handle(Graphic3d_AspectText3d) TextAspect() const = 0;
-
-  //! Modifies the context for all the text primitives of the group.
-  virtual void SetGroupPrimitivesAspect (const Handle(Graphic3d_AspectText3d)& theAspect) = 0;
-
-  //! Return marker aspect.
-  virtual Handle(Graphic3d_AspectMarker3d) MarkerAspect() const = 0;
-
-  //! Modifies the context for all the marker primitives of the group.
-  virtual void SetGroupPrimitivesAspect (const Handle(Graphic3d_AspectMarker3d)& theAspect) = 0;
-
-  //! Modifies the current context of the group to give
-  //! another aspect for all the line primitives created
-  //! after this call in the group.
-  virtual void SetPrimitivesAspect (const Handle(Graphic3d_AspectLine3d)& theAspect) = 0;
-
-  //! Modifies the current context of the group to give
-  //! another aspect for all the face primitives created
-  //! after this call in the group.
-  virtual void SetPrimitivesAspect (const Handle(Graphic3d_AspectFillArea3d)& theAspect) = 0;
-
-  //! Modifies the current context of the group to give
-  //! another aspect for all the text primitives created
-  //! after this call in the group.
-  virtual void SetPrimitivesAspect (const Handle(Graphic3d_AspectText3d)& theAspect) = 0;
-
-  //! Modifies the current context of the group to give
-  //! another aspect for all the marker primitives created
-  //! after this call in the group.
-  virtual void SetPrimitivesAspect (const Handle(Graphic3d_AspectMarker3d)& theAspect) = 0;
+  //! Modifies the current context of the group to give another aspect for all the primitives created after this call in the group.
+  virtual void SetPrimitivesAspect (const Handle(Graphic3d_Aspects)& theAspect) = 0;
 
   //! Update presentation aspects after their modification.
   virtual void SynchronizeAspects() = 0;
 
-  //! Returns TRUE if aspect is set for the group.
-  Standard_EXPORT Standard_Boolean IsGroupPrimitivesAspectSet (const Graphic3d_GroupAspect theAspect) const;
-
-  //! Returns the context of all the primitives of the group.
-  Standard_EXPORT void GroupPrimitivesAspect (const Handle(Graphic3d_AspectLine3d)&     theAspLine,
-                                              const Handle(Graphic3d_AspectText3d)&     theAspText,
-                                              const Handle(Graphic3d_AspectMarker3d)&   theAspMarker,
-                                              const Handle(Graphic3d_AspectFillArea3d)& theAspFill) const;
-
-  //! Returns the last inserted context in the group for each kind of primitives.
-  void PrimitivesAspect (const Handle(Graphic3d_AspectLine3d)&     theAspLine,
-                         const Handle(Graphic3d_AspectText3d)&     theAspText,
-                         const Handle(Graphic3d_AspectMarker3d)&   theAspMarker,
-                         const Handle(Graphic3d_AspectFillArea3d)& theAspFill) const
-  {
-    GroupPrimitivesAspect (theAspLine, theAspText, theAspMarker, theAspFill);
-  }
+  //! Replace aspects specified in the replacement map.
+  virtual void ReplaceAspects (const Graphic3d_MapOfAspectsToAspects& theMap) = 0;
 
 public:
 

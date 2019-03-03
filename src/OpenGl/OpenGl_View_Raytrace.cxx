@@ -344,7 +344,7 @@ void buildTextureTransform (const Handle(Graphic3d_TextureParams)& theParams, BV
 // function : convertMaterial
 // purpose  : Creates ray-tracing material properties
 // =======================================================================
-OpenGl_RaytraceMaterial OpenGl_View::convertMaterial (const OpenGl_AspectFace*      theAspect,
+OpenGl_RaytraceMaterial OpenGl_View::convertMaterial (const OpenGl_Aspects* theAspect,
                                                       const Handle(OpenGl_Context)& theGlContext)
 {
   OpenGl_RaytraceMaterial theMaterial;
@@ -509,22 +509,20 @@ Standard_Boolean OpenGl_View::addRaytraceGroups (const OpenGl_Structure*        
   {
     // Get group material
     OpenGl_RaytraceMaterial aGroupMaterial;
-    if (aGroupIter.Value()->AspectFace() != NULL)
+    if (aGroupIter.Value()->GlAspects() != NULL)
     {
-      aGroupMaterial = convertMaterial (
-        aGroupIter.Value()->AspectFace(), theGlContext);
+      aGroupMaterial = convertMaterial (aGroupIter.Value()->GlAspects(), theGlContext);
     }
 
     Standard_Integer aMatID = static_cast<Standard_Integer> (myRaytraceGeometry.Materials.size());
 
     // Use group material if available, otherwise use structure material
-    myRaytraceGeometry.Materials.push_back (
-      aGroupIter.Value()->AspectFace() != NULL ? aGroupMaterial : theStructMat);
+    myRaytraceGeometry.Materials.push_back (aGroupIter.Value()->GlAspects() != NULL ? aGroupMaterial : theStructMat);
 
     // Add OpenGL elements from group (extract primitives arrays and aspects)
     for (const OpenGl_ElementNode* aNode = aGroupIter.Value()->FirstNode(); aNode != NULL; aNode = aNode->next)
     {
-      OpenGl_AspectFace* anAspect = dynamic_cast<OpenGl_AspectFace*> (aNode->elem);
+      OpenGl_Aspects* anAspect = dynamic_cast<OpenGl_Aspects*> (aNode->elem);
 
       if (anAspect != NULL)
       {

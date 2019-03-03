@@ -35,7 +35,7 @@
 #include <Graphic3d_WorldViewProjState.hxx>
 #include <Graphic3d_ZLayerSettings.hxx>
 
-#include <OpenGl_AspectFace.hxx>
+#include <OpenGl_Aspects.hxx>
 #include <OpenGl_BackgroundArray.hxx>
 #include <OpenGl_BVHTreeSelector.hxx>
 #include <OpenGl_Context.hxx>
@@ -520,7 +520,7 @@ protected: //! @name Rendering properties
 
 protected: //! @name Background parameters
 
-  OpenGl_AspectFace*      myTextureParams;   //!< Stores texture and its parameters for textured background
+  OpenGl_Aspects*         myTextureParams;   //!< Stores texture and its parameters for textured background
   OpenGl_BackgroundArray* myBgGradientArray; //!< Primitive array for gradient background
   OpenGl_BackgroundArray* myBgTextureArray;  //!< Primitive array for texture  background
 
@@ -773,7 +773,7 @@ protected: //! @name methods related to ray-tracing
                                       const Handle(OpenGl_Context)&  theGlContext);
 
   //! Creates ray-tracing material properties.
-  OpenGl_RaytraceMaterial convertMaterial (const OpenGl_AspectFace*      theAspect,
+  OpenGl_RaytraceMaterial convertMaterial (const OpenGl_Aspects* theAspect,
                                            const Handle(OpenGl_Context)& theGlContext);
 
   //! Adds OpenGL primitive array to ray-traced scene geometry.

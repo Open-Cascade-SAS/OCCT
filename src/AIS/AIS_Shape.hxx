@@ -316,6 +316,9 @@ protected:
   
   Standard_EXPORT void setMaterial (const Handle(Prs3d_Drawer)& theDrawer, const Graphic3d_MaterialAspect& theMaterial, const Standard_Boolean theToKeepColor, const Standard_Boolean theToKeepTransp) const;
 
+  //! Replace aspects of already computed groups from drawer link by the new own value.
+  Standard_EXPORT void replaceWithNewOwnAspects();
+
 public:
 
   //! Compute HLR presentation for specified shape.

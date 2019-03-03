@@ -319,6 +319,9 @@ Standard_EXPORT virtual ~PrsMgr_PresentableObject();
   //! Sets local transformation to theTransformation.
   Standard_EXPORT virtual void setLocalTransformation (const Handle(Geom_Transformation)& theTransformation);
 
+  //! Recompute computed (HLR) presentations (when view is in computed mode).
+  Standard_EXPORT void recomputeComputed() const;
+
 private:
 
   //! Return the identity transformation.

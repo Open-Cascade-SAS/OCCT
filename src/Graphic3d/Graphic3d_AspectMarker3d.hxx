@@ -16,23 +16,13 @@
 #ifndef _Graphic3d_AspectMarker3d_HeaderFile
 #define _Graphic3d_AspectMarker3d_HeaderFile
 
-#include <Aspect_AspectMarkerDefinitionError.hxx>
-#include <Aspect_TypeOfMarker.hxx>
-#include <Graphic3d_MarkerImage.hxx>
-#include <Graphic3d_ShaderProgram.hxx>
-#include <Image_PixMap.hxx>
-#include <Standard.hxx>
-#include <Standard_Integer.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Type.hxx>
-#include <TColStd_HArray1OfByte.hxx>
-#include <Quantity_ColorRGBA.hxx>
+#include <Graphic3d_Aspects.hxx>
 
 //! Creates and updates an attribute group for marker type primitives.
 //! This group contains the type of marker, its color, and its scale factor.
-class Graphic3d_AspectMarker3d : public Standard_Transient
+class Graphic3d_AspectMarker3d : public Graphic3d_Aspects
 {
-  DEFINE_STANDARD_RTTIEXT(Graphic3d_AspectMarker3d, Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(Graphic3d_AspectMarker3d, Graphic3d_Aspects)
 public:
 
   //! Creates a context table for marker primitives
@@ -53,39 +43,26 @@ public:
   //! defined with the specified values.
   Standard_EXPORT Graphic3d_AspectMarker3d(const Handle(Image_PixMap)& theTextureImage);
 
-  //! Return color.
-  const Quantity_ColorRGBA& ColorRGBA() const { return myColor; }
-
-  //! Return the color.
-  const Quantity_Color& Color() const { return myColor.GetRGB(); }
-
-  //! Modifies the color.
-  void SetColor (const Quantity_Color& theColor) { myColor.SetRGB (theColor); }
-
   //! Return scale factor.
-  Standard_ShortReal Scale() const { return myScale; }
+  Standard_ShortReal Scale() const { return myMarkerScale; }
 
   //! Modifies the scale factor.
   //! Marker type Aspect_TOM_POINT is not affected by the marker size scale factor.
   //! It is always the smallest displayable dot.
-  //! Warning: Raises AspectMarkerDefinitionError if the scale is a negative value.
+  //! Warning: Raises Standard_OutOfRange if the scale is a negative value.
   void SetScale (const Standard_ShortReal theScale)
   {
-    if (theScale <= 0.0f)
-    {
-      throw Aspect_AspectMarkerDefinitionError("Bad value for MarkerScale");
-    }
-    myScale = theScale;
+    SetMarkerScale (theScale);
   }
 
   //! Assign scale factor.
   void SetScale (const Standard_Real theScale) { SetScale ((float )theScale); }
 
   //! Return marker type.
-  Aspect_TypeOfMarker Type() const { return myType; }
+  Aspect_TypeOfMarker Type() const { return myMarkerType; }
 
   //! Modifies the type of marker.
-  void SetType (const Aspect_TypeOfMarker theType) { myType = theType; }
+  void SetType (const Aspect_TypeOfMarker theType) { myMarkerType = theType; }
 
   //! Returns marker's texture size.
   Standard_EXPORT void GetTextureSize (Standard_Integer& theWidth, Standard_Integer& theHeight) const;
@@ -94,40 +71,10 @@ public:
   //! Could be null handle if marker aspect has been initialized as default type of marker.
   const Handle(Graphic3d_MarkerImage)& GetMarkerImage() const { return myMarkerImage; }
   
-  //! Set marker's image texture.
-  void SetMarkerImage (const Handle(Graphic3d_MarkerImage)& theImage) { myMarkerImage = theImage; }
-
   Standard_EXPORT void SetBitMap (const Standard_Integer theWidth, const Standard_Integer theHeight, const Handle(TColStd_HArray1OfByte)& theTexture);
-
-  //! Return the program.
-  const Handle(Graphic3d_ShaderProgram)& ShaderProgram() const { return myProgram; }
-
-  //! Sets up OpenGL/GLSL shader program.
-  void SetShaderProgram (const Handle(Graphic3d_ShaderProgram)& theProgram) { myProgram = theProgram; }
-
-public:
-
-  //! Returns the current values of the group.
-  Standard_DEPRECATED("Deprecated method Values() should be replaced by individual property getters")
-  void Values (Quantity_Color&      theColor,
-               Aspect_TypeOfMarker& theType,
-               Standard_Real&       theScale) const
-  {
-    theColor = myColor.GetRGB();
-    theType  = myType;
-    theScale = myScale;
-  }
-
-protected:
-
-  Handle(Graphic3d_ShaderProgram) myProgram;
-  Handle(Graphic3d_MarkerImage)   myMarkerImage;
-  Quantity_ColorRGBA  myColor;
-  Aspect_TypeOfMarker myType;
-  Standard_ShortReal  myScale;
 
 };
 
-DEFINE_STANDARD_HANDLE(Graphic3d_AspectMarker3d, Standard_Transient)
+DEFINE_STANDARD_HANDLE(Graphic3d_AspectMarker3d, Graphic3d_Aspects)
 
 #endif // _Graphic3d_AspectMarker3d_HeaderFile

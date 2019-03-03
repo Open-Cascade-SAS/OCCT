@@ -218,36 +218,6 @@ void AIS_TexturedShape::SetColor (const Quantity_Color& theColor)
 void AIS_TexturedShape::UnsetColor()
 {
   AIS_Shape::UnsetColor();
-
-  for (Standard_Integer aPrsIt = 1; aPrsIt <= Presentations().Length(); ++aPrsIt)
-  {
-    const PrsMgr_ModedPresentation& aPrsModed = Presentations().Value (aPrsIt);
-
-    if (aPrsModed.Mode() != 3)
-      continue;
-    
-    Handle(Prs3d_Presentation) aPrs = aPrsModed.Presentation()->Presentation();
-    Handle(Graphic3d_Group)    aGroup = Prs3d_Root::CurrentGroup (aPrs);
-
-    Handle(Graphic3d_AspectFillArea3d) anAreaAsp = myDrawer->Link()->ShadingAspect()->Aspect();
-    Handle(Graphic3d_AspectLine3d)     aLineAsp  = myDrawer->Link()->LineAspect()->Aspect();
-    Quantity_Color aColor;
-    AIS_GraphicTool::GetInteriorColor (myDrawer->Link(), aColor);
-    anAreaAsp->SetInteriorColor (aColor);
-    // Check if aspect of given type is set for the group, 
-    // because setting aspect for group with no already set aspect
-    // can lead to loss of presentation data
-    if (aGroup->IsGroupPrimitivesAspectSet (Graphic3d_ASPECT_FILL_AREA))
-    {
-      aGroup->SetGroupPrimitivesAspect (anAreaAsp);
-    }
-    if (aGroup->IsGroupPrimitivesAspectSet (Graphic3d_ASPECT_LINE))
-    {
-      aGroup->SetGroupPrimitivesAspect (aLineAsp);
-    }
-
-    updateAttributes (aPrs);
-  }
 }
 
 //=======================================================================
@@ -377,10 +347,6 @@ void AIS_TexturedShape::updateAttributes (const Handle(Prs3d_Presentation)& theP
   for (Graphic3d_SequenceOfGroup::Iterator aGroupIt (thePrs->Groups()); aGroupIt.More(); aGroupIt.Next())
   {
     const Handle(Graphic3d_Group)& aGroup = aGroupIt.Value();
-    if (!aGroup->IsGroupPrimitivesAspectSet (Graphic3d_ASPECT_FILL_AREA))
-    {
-      continue;
-    }
     aGroup->SetGroupPrimitivesAspect (myAspect);
   }
 }

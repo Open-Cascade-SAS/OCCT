@@ -212,68 +212,6 @@ void Graphic3d_Group::Update() const
 }
 
 // =======================================================================
-// function : IsGroupPrimitivesAspectSet
-// purpose  :
-// =======================================================================
-Standard_Boolean Graphic3d_Group::IsGroupPrimitivesAspectSet (const Graphic3d_GroupAspect theAspect) const
-{
-  switch (theAspect)
-  {
-    case Graphic3d_ASPECT_LINE:      return !LineAspect().IsNull();
-    case Graphic3d_ASPECT_TEXT:      return !TextAspect().IsNull();
-    case Graphic3d_ASPECT_MARKER:    return !MarkerAspect().IsNull();
-    case Graphic3d_ASPECT_FILL_AREA: return !FillAreaAspect().IsNull();
-    default:                         return Standard_False;
-  }
-}
-
-// =======================================================================
-// function : GroupPrimitivesAspect
-// purpose  :
-// =======================================================================
-void Graphic3d_Group::GroupPrimitivesAspect (const Handle(Graphic3d_AspectLine3d)&     theAspLine,
-                                             const Handle(Graphic3d_AspectText3d)&     theAspText,
-                                             const Handle(Graphic3d_AspectMarker3d)&   theAspMarker,
-                                             const Handle(Graphic3d_AspectFillArea3d)& theAspFill) const
-{
-  if (!theAspLine.IsNull())
-  {
-    Handle(Graphic3d_AspectLine3d) aLineAspect = LineAspect();
-    if (!aLineAspect.IsNull())
-    {
-      *theAspLine.operator->() = *aLineAspect;
-    }
-  }
-
-  if (!theAspText.IsNull())
-  {
-    Handle(Graphic3d_AspectText3d) aTextAspect = TextAspect();
-    if (!aTextAspect.IsNull())
-    {
-      *theAspText.operator->() = *aTextAspect;
-    }
-  }
-
-  if (!theAspMarker.IsNull())
-  {
-    Handle(Graphic3d_AspectMarker3d) aMarkerAspect = MarkerAspect();
-    if (!aMarkerAspect.IsNull())
-    {
-      *theAspMarker.operator->() = *aMarkerAspect;
-    }
-  }
-
-  if (!theAspFill.IsNull())
-  {
-    Handle(Graphic3d_AspectFillArea3d) aFillAspect = FillAreaAspect();
-    if (!aFillAspect.IsNull())
-    {
-      *theAspFill.operator->() = *aFillAspect;
-    }
-  }
-}
-
-// =======================================================================
 // function : AddPrimitiveArray
 // purpose  :
 // =======================================================================

@@ -55,7 +55,7 @@ protected:
   Handle(OpenGl_FrameStats)          myStatsPrev;         //!< currently displayed stats
   Handle(Graphic3d_TransformPers)    myCountersTrsfPers;  //!< transformation persistence for counters presentation
   OpenGl_Text                        myCountersText;      //!< counters presentation
-  OpenGl_AspectText                  myTextAspect;        //!< text aspect
+  OpenGl_Aspects                     myTextAspect;        //!< text aspect
   Handle(Graphic3d_TransformPers)    myChartTrsfPers;     //!< transformation persistence for chart presentation
   Handle(Graphic3d_ArrayOfTriangles) myChartArray;        //!< array of chart triangles
   Handle(OpenGl_VertexBuffer)        myChartVertices;     //!< VBO with chart triangles

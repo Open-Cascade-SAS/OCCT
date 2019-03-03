@@ -11,6 +11,8 @@ Graphic3d_ArrayOfSegments.hxx
 Graphic3d_ArrayOfTriangleFans.hxx
 Graphic3d_ArrayOfTriangles.hxx
 Graphic3d_ArrayOfTriangleStrips.hxx
+Graphic3d_Aspects.cxx
+Graphic3d_Aspects.hxx
 Graphic3d_AspectFillArea3d.cxx
 Graphic3d_AspectFillArea3d.hxx
 Graphic3d_AspectLine3d.cxx
@@ -19,7 +21,6 @@ Graphic3d_AspectMarker3d.cxx
 Graphic3d_AspectMarker3d.hxx
 Graphic3d_AspectText3d.cxx
 Graphic3d_AspectText3d.hxx
-Graphic3d_AspectTextDefinitionError.hxx
 Graphic3d_AttribBuffer.cxx
 Graphic3d_AttribBuffer.hxx
 Graphic3d_BndBox3d.hxx
@@ -73,6 +74,7 @@ Graphic3d_IndexedMapOfAddress.hxx
 Graphic3d_LevelOfTextureAnisotropy.hxx
 Graphic3d_LightSet.cxx
 Graphic3d_LightSet.hxx
+Graphic3d_MapOfAspectsToAspects.hxx
 Graphic3d_MapIteratorOfMapOfStructure.hxx
 Graphic3d_MapOfObject.hxx
 Graphic3d_MapOfStructure.hxx

@@ -1035,8 +1035,7 @@ void AIS_Manipulator::HilightOwnerWithColor (const Handle(PrsMgr_PresentationMan
        aGroupIter.More(); aGroupIter.Next())
   {
     Handle(Graphic3d_Group)& aGrp = aGroupIter.ChangeValue();
-    if (!aGrp.IsNull()
-     && aGrp->IsGroupPrimitivesAspectSet (Graphic3d_ASPECT_FILL_AREA))
+    if (!aGrp.IsNull())
     {
       aGrp->SetGroupPrimitivesAspect (myHighlightAspect->Aspect());
     }

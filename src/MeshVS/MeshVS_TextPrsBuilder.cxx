@@ -159,15 +159,10 @@ void MeshVS_TextPrsBuilder::Build ( const Handle(Prs3d_Presentation)& Prs,
     !aDrawer->GetDouble  ( MeshVS_DA_TextHeight, aHeight )    )
     return;
 
-  Prs3d_Root::NewGroup ( Prs );
-  Handle (Graphic3d_Group) aTextGroup = Prs3d_Root::CurrentGroup ( Prs );
+  Handle(Graphic3d_Group) aTextGroup = Prs->NewGroup();
 
   Quantity_Color           AColor           = Quantity_NOC_YELLOW;
-#ifdef _WIN32  
-  Standard_CString         AFont            = "Courier New";
-#else
-  Standard_CString         AFont            = "Courier";
-#endif
+  Standard_CString         AFont            = Font_NOF_ASCII_MONO;
   Standard_Real            AExpansionFactor = 1.0;
   Standard_Real            ASpace           = 0.0;
   Aspect_TypeOfStyleText   ATextStyle       = Aspect_TOST_ANNOTATION;
@@ -196,10 +191,7 @@ void MeshVS_TextPrsBuilder::Build ( const Handle(Prs3d_Presentation)& Prs,
   Handle (Graphic3d_AspectText3d) aTextAspect = new Graphic3d_AspectText3d ( AColor, AFont, AExpansionFactor, ASpace,
     ATextStyle, ADisplayType );
   aTextAspect->SetTextFontAspect( AFontAspectType );
-  Handle (Graphic3d_AspectMarker3d) anAspectMarker3d =
-    new Graphic3d_AspectMarker3d( Aspect_TOM_POINT, Quantity_NOC_GRAY, 1. );
-  aTextGroup->SetPrimitivesAspect( aTextAspect );
-  aTextGroup->SetPrimitivesAspect( anAspectMarker3d );
+  aTextGroup->SetGroupPrimitivesAspect( aTextAspect );
 
   MeshVS_Buffer aCoordsBuf (3*aMaxFaceNodes*sizeof(Standard_Real));
   TColStd_Array1OfReal aCoords (aCoordsBuf, 1, 3*aMaxFaceNodes);
@@ -221,8 +213,8 @@ void MeshVS_TextPrsBuilder::Build ( const Handle(Prs3d_Presentation)& Prs,
   }
   anIDs.Subtract( IDsToExclude );
 
-  TColStd_MapIteratorOfPackedMapOfInteger it (anIDs);
-  for( ; it.More(); it.Next() )
+  NCollection_Sequence<Graphic3d_Vec3> aPnts;
+  for (TColStd_MapIteratorOfPackedMapOfInteger it (anIDs); it.More(); it.Next())
   {
     Standard_Integer aKey = it.Key();
     if( GetText ( IsElement, aKey, aStr ) )
@@ -258,13 +250,25 @@ void MeshVS_TextPrsBuilder::Build ( const Handle(Prs3d_Presentation)& Prs,
           continue;
         }
 
+        aPnts.Append (Graphic3d_Vec3 ((float )X, (float )Y, (float )Z));
         Graphic3d_Vertex aPoint (X, Y, Z);
-        Handle(Graphic3d_ArrayOfPoints) anArrayOfPoints = new Graphic3d_ArrayOfPoints (1);
-        anArrayOfPoints->AddVertex (X, Y, Z);
-        aTextGroup->AddPrimitiveArray (anArrayOfPoints);
         aTextGroup->Text (aStr.ToCString(), aPoint, aHeight);
       }
     }
+  }
+
+  if (!aPnts.IsEmpty())
+  {
+    Handle(Graphic3d_Group) aMarkerGroup = Prs->NewGroup();
+    Handle(Graphic3d_ArrayOfPoints) anArrayOfPoints = new Graphic3d_ArrayOfPoints (aPnts.Size());
+    for (NCollection_Sequence<Graphic3d_Vec3>::Iterator aPntIter (aPnts); aPntIter.More(); aPntIter.Next())
+    {
+      const Graphic3d_Vec3& aPnt = aPntIter.Value();
+      anArrayOfPoints->AddVertex (aPnt.x(), aPnt.y(), aPnt.z());
+    }
+    Handle (Graphic3d_AspectMarker3d) anAspectMarker3d = new Graphic3d_AspectMarker3d (Aspect_TOM_POINT, Quantity_NOC_GRAY, 1.0);
+    aMarkerGroup->SetGroupPrimitivesAspect (anAspectMarker3d);
+    aMarkerGroup->AddPrimitiveArray (anArrayOfPoints);
   }
 
   if (!aCustomElements.IsEmpty())

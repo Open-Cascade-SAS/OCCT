@@ -108,10 +108,7 @@ void AIS_Triangulation::updatePresentation()
       for (Graphic3d_SequenceOfGroup::Iterator aGroupIt (aPrs->Groups()); aGroupIt.More(); aGroupIt.Next())
       {
         const Handle(Graphic3d_Group)& aGroup = aGroupIt.Value();
-        if (aGroup->IsGroupPrimitivesAspectSet (Graphic3d_ASPECT_FILL_AREA))
-        {
-          aGroup->SetGroupPrimitivesAspect (anAreaAsp);
-        }
+        aGroup->SetGroupPrimitivesAspect (anAreaAsp);
       }
     }
 

@@ -431,6 +431,7 @@ void AIS_Dimension::drawText (const Handle(Prs3d_Presentation)& thePresentation,
                               const TCollection_ExtendedString& theText,
                               const Standard_Integer theLabelPosition)
 {
+  Handle(Graphic3d_Group) aGroup = thePresentation->NewGroup();
   if (myDrawer->DimensionAspect()->IsText3d())
   {
     // getting font parameters
@@ -517,7 +518,7 @@ void AIS_Dimension::drawText (const Handle(Prs3d_Presentation)& thePresentation,
     aCenterOfLabel.Transform (aTextPlaneTrsf);
 
     gp_Ax2 aFlippingAxes (aCenterOfLabel, GetPlane().Axis().Direction(), aTextDir);
-    Prs3d_Root::CurrentGroup (thePresentation)->SetFlippingOptions (Standard_True, aFlippingAxes);
+    aGroup->SetFlippingOptions (Standard_True, aFlippingAxes);
 
     // draw text
     if (myDrawer->DimensionAspect()->IsTextShaded())
@@ -546,11 +547,14 @@ void AIS_Dimension::drawText (const Handle(Prs3d_Presentation)& thePresentation,
       {
         myDrawer->SetFreeBoundaryAspect (new Prs3d_LineAspect (aColor, Aspect_TOL_SOLID, 1.0));
       }
-
       myDrawer->FreeBoundaryAspect()->Aspect()->SetColor (aColor);
 
       // drawing text
-      StdPrs_WFShape::Add (thePresentation, aTextShape, myDrawer);
+      if (Handle(Graphic3d_ArrayOfPrimitives) anEdges = StdPrs_WFShape::AddAllEdges (aTextShape, myDrawer))
+      {
+        aGroup->SetGroupPrimitivesAspect (myDrawer->FreeBoundaryAspect()->Aspect());
+        aGroup->AddPrimitiveArray (anEdges);
+      }
     }
     Prs3d_Root::CurrentGroup (thePresentation)->SetFlippingOptions (Standard_False, gp_Ax2());
 
@@ -565,7 +569,7 @@ void AIS_Dimension::drawText (const Handle(Prs3d_Presentation)& thePresentation,
   // generate primitives for 2D text
   myDrawer->DimensionAspect()->TextAspect()->Aspect()->SetDisplayType (Aspect_TODT_DIMENSION);
 
-  Prs3d_Text::Draw (Prs3d_Root::CurrentGroup (thePresentation),
+  Prs3d_Text::Draw (aGroup,
                     myDrawer->DimensionAspect()->TextAspect(),
                     theText,
                     theTextPos);
@@ -599,6 +603,7 @@ void AIS_Dimension::DrawExtension (const Handle(Prs3d_Presentation)& thePresenta
     gp_Pnt aTextPos = ElCLib::Value (theExtensionSize, anExtensionLine);
     gp_Dir aTextDir = theExtensionDir;
 
+    Handle(Graphic3d_Group) aGroup = thePresentation->NewGroup();
     drawText (thePresentation,
               aTextPos,
               aTextDir,
@@ -630,16 +635,17 @@ void AIS_Dimension::DrawExtension (const Handle(Prs3d_Presentation)& thePresenta
   aSensitiveCurve.Append (anExtStart);
   aSensitiveCurve.Append (anExtEnd);
 
+  Handle(Graphic3d_Group) aGroup = thePresentation->NewGroup();
   if (!myDrawer->DimensionAspect()->IsText3d() && theMode == ComputeMode_All)
   {
-    Prs3d_Root::CurrentGroup (thePresentation)->SetStencilTestOptions (Standard_True);
+    aGroup->SetStencilTestOptions (Standard_True);
   }
   Handle(Graphic3d_AspectLine3d) aDimensionLineStyle = myDrawer->DimensionAspect()->LineAspect()->Aspect();
-  Prs3d_Root::CurrentGroup (thePresentation)->SetPrimitivesAspect (aDimensionLineStyle);
-  Prs3d_Root::CurrentGroup (thePresentation)->AddPrimitiveArray (anExtPrimitive);
+  aGroup->SetPrimitivesAspect (aDimensionLineStyle);
+  aGroup->AddPrimitiveArray (anExtPrimitive);
   if (!myDrawer->DimensionAspect()->IsText3d() && theMode == ComputeMode_All)
   {
-    Prs3d_Root::CurrentGroup (thePresentation)->SetStencilTestOptions (Standard_False);
+    aGroup->SetStencilTestOptions (Standard_False);
   }
 }
 
@@ -733,8 +739,6 @@ void AIS_Dimension::DrawLinearDimension (const Handle(Prs3d_Presentation)& thePr
     case LabelPosition_HCenter:
     {
       // add label on dimension or extension line to presentation
-      Prs3d_Root::NewGroup (thePresentation);
-
       gp_Pnt aTextPos = IsTextPositionCustom() ? myFixedTextPosition
                                               : (aCenterLineBegin.XYZ() + aCenterLineEnd.XYZ()) * 0.5;
       gp_Dir aTextDir = aDimensionLine.Direction();
@@ -742,6 +746,7 @@ void AIS_Dimension::DrawLinearDimension (const Handle(Prs3d_Presentation)& thePr
       // add text primitives
       if (theMode == ComputeMode_All || theMode == ComputeMode_Text)
       {
+        thePresentation->NewGroup();
         drawText (thePresentation,
                   aTextPos,
                   aTextDir,
@@ -799,24 +804,28 @@ void AIS_Dimension::DrawLinearDimension (const Handle(Prs3d_Presentation)& thePr
         aDimensionAspect->TextAspect()->SetVerticalJustification (aTextJustificaton);
 
         // main dimension line, short extension
-        if (!aDimensionAspect->IsText3d() && theMode == ComputeMode_All)
         {
-          Prs3d_Root::CurrentGroup (thePresentation)->SetStencilTestOptions (Standard_True);
-        }
-        Prs3d_Root::CurrentGroup (thePresentation)->SetPrimitivesAspect (aDimensionAspect->LineAspect()->Aspect());
-        Prs3d_Root::CurrentGroup (thePresentation)->AddPrimitiveArray (aPrimSegments);
-        if (!aDimensionAspect->IsText3d() && theMode == ComputeMode_All)
-        {
-          Prs3d_Root::CurrentGroup (thePresentation)->SetStencilTestOptions (Standard_False);
+          Handle(Graphic3d_Group) aGroup = thePresentation->NewGroup();
+          if (!aDimensionAspect->IsText3d() && theMode == ComputeMode_All)
+          {
+            aGroup->SetStencilTestOptions (Standard_True);
+          }
+          aGroup->SetPrimitivesAspect (aDimensionAspect->LineAspect()->Aspect());
+          aGroup->AddPrimitiveArray (aPrimSegments);
+          if (!aDimensionAspect->IsText3d() && theMode == ComputeMode_All)
+          {
+            aGroup->SetStencilTestOptions (Standard_False);
+          }
         }
 
         // add arrows to presentation
-        Prs3d_Root::NewGroup (thePresentation);
-
-        DrawArrow (thePresentation, aFirstArrowBegin, aFirstArrowDir);
-        if (!theIsOneSide)
         {
-          DrawArrow (thePresentation, aSecondArrowBegin, aSecondArrowDir);
+          Handle(Graphic3d_Group) aGroup = thePresentation->NewGroup();
+          DrawArrow (thePresentation, aFirstArrowBegin, aFirstArrowDir);
+          if (!theIsOneSide)
+          {
+            DrawArrow (thePresentation, aSecondArrowBegin, aSecondArrowDir);
+          }
         }
 
         if (!isArrowsExternal)
@@ -825,19 +834,18 @@ void AIS_Dimension::DrawLinearDimension (const Handle(Prs3d_Presentation)& thePr
         }
 
         // add arrow extension lines to presentation
-        Prs3d_Root::NewGroup (thePresentation);
-
-        DrawExtension (thePresentation, aDimensionAspect->ArrowTailSize(),
-                       aFirstArrowEnd, aFirstExtensionDir,
-                       THE_EMPTY_LABEL, 0.0, theMode, LabelPosition_None);
-        if (!theIsOneSide)
         {
           DrawExtension (thePresentation, aDimensionAspect->ArrowTailSize(),
-                         aSecondArrowEnd, aSecondExtensionDir,
+                         aFirstArrowEnd, aFirstExtensionDir,
                          THE_EMPTY_LABEL, 0.0, theMode, LabelPosition_None);
+          if (!theIsOneSide)
+          {
+            DrawExtension (thePresentation, aDimensionAspect->ArrowTailSize(),
+                           aSecondArrowEnd, aSecondExtensionDir,
+                           THE_EMPTY_LABEL, 0.0, theMode, LabelPosition_None);
+          }
         }
       }
-
       break;
     }
     // ------------------------------------------------------------------------ //
@@ -847,45 +855,48 @@ void AIS_Dimension::DrawLinearDimension (const Handle(Prs3d_Presentation)& thePr
     case LabelPosition_Left:
     {
       // add label on dimension or extension line to presentation
-      Prs3d_Root::NewGroup (thePresentation);
-
-      // Left extension with the text
-      DrawExtension (thePresentation, anExtensionSize,
-                     isArrowsExternal
-                       ? aFirstArrowEnd
-                       : aFirstArrowBegin,
-                     aFirstExtensionDir,
-                     aLabelString,
-                     aLabelWidth,
-                     theMode,
-                     aLabelPosition);
+      {
+        // Left extension with the text
+        DrawExtension (thePresentation, anExtensionSize,
+                       isArrowsExternal
+                         ? aFirstArrowEnd
+                         : aFirstArrowBegin,
+                       aFirstExtensionDir,
+                       aLabelString,
+                       aLabelWidth,
+                       theMode,
+                       aLabelPosition);
+      }
 
       // add dimension line primitives
       if (theMode == ComputeMode_All || theMode == ComputeMode_Line)
       {
         // add central dimension line
-        Prs3d_Root::NewGroup (thePresentation);
+        {
+          Handle(Graphic3d_Group) aGroup = thePresentation->NewGroup();
 
-        // add graphical primitives
-        Handle(Graphic3d_ArrayOfSegments) aPrimSegments = new Graphic3d_ArrayOfSegments (2);
-        aPrimSegments->AddVertex (aCenterLineBegin);
-        aPrimSegments->AddVertex (aCenterLineEnd);
+          // add graphical primitives
+          Handle(Graphic3d_ArrayOfSegments) aPrimSegments = new Graphic3d_ArrayOfSegments (2);
+          aPrimSegments->AddVertex (aCenterLineBegin);
+          aPrimSegments->AddVertex (aCenterLineEnd);
 
-        Prs3d_Root::CurrentGroup (thePresentation)->SetPrimitivesAspect (aDimensionAspect->LineAspect()->Aspect());
-        Prs3d_Root::CurrentGroup (thePresentation)->AddPrimitiveArray (aPrimSegments);
+          aGroup->SetPrimitivesAspect (aDimensionAspect->LineAspect()->Aspect());
+          aGroup->AddPrimitiveArray (aPrimSegments);
 
-        // add selection primitives
-        SelectionGeometry::Curve& aSensitiveCurve = mySelectionGeom.NewCurve();
-        aSensitiveCurve.Append (aCenterLineBegin);
-        aSensitiveCurve.Append (aCenterLineEnd);
+          // add selection primitives
+          SelectionGeometry::Curve& aSensitiveCurve = mySelectionGeom.NewCurve();
+          aSensitiveCurve.Append (aCenterLineBegin);
+          aSensitiveCurve.Append (aCenterLineEnd);
+        }
 
         // add arrows to presentation
-        Prs3d_Root::NewGroup (thePresentation);
-
-        DrawArrow (thePresentation, aFirstArrowBegin, aFirstArrowDir);
-        if (!theIsOneSide)
         {
-          DrawArrow (thePresentation, aSecondArrowBegin, aSecondArrowDir);
+          Handle(Graphic3d_Group) aGroup = thePresentation->NewGroup();
+          DrawArrow (thePresentation, aFirstArrowBegin, aFirstArrowDir);
+          if (!theIsOneSide)
+          {
+            DrawArrow (thePresentation, aSecondArrowBegin, aSecondArrowDir);
+          }
         }
 
         if (!isArrowsExternal || theIsOneSide)
@@ -894,11 +905,11 @@ void AIS_Dimension::DrawLinearDimension (const Handle(Prs3d_Presentation)& thePr
         }
 
         // add extension lines for external arrows
-        Prs3d_Root::NewGroup (thePresentation);
-
-        DrawExtension (thePresentation, aDimensionAspect->ArrowTailSize(),
-                       aSecondArrowEnd, aSecondExtensionDir,
-                       THE_EMPTY_LABEL, 0.0, theMode, LabelPosition_None);
+        {
+          DrawExtension (thePresentation, aDimensionAspect->ArrowTailSize(),
+                         aSecondArrowEnd, aSecondExtensionDir,
+                         THE_EMPTY_LABEL, 0.0, theMode, LabelPosition_None);
+        }
       }
 
       break;
@@ -910,7 +921,6 @@ void AIS_Dimension::DrawLinearDimension (const Handle(Prs3d_Presentation)& thePr
     case LabelPosition_Right:
     {
       // add label on dimension or extension line to presentation
-      Prs3d_Root::NewGroup (thePresentation);
 
       // Right extension with text
       DrawExtension (thePresentation, anExtensionSize,
@@ -925,27 +935,30 @@ void AIS_Dimension::DrawLinearDimension (const Handle(Prs3d_Presentation)& thePr
       if (theMode == ComputeMode_All || theMode == ComputeMode_Line)
       {
         // add central dimension line
-        Prs3d_Root::NewGroup (thePresentation);
+        {
+          Handle(Graphic3d_Group) aGroup = thePresentation->NewGroup();
 
-        // add graphical primitives
-        Handle(Graphic3d_ArrayOfSegments) aPrimSegments = new Graphic3d_ArrayOfSegments (2);
-        aPrimSegments->AddVertex (aCenterLineBegin);
-        aPrimSegments->AddVertex (aCenterLineEnd);
-        Prs3d_Root::CurrentGroup (thePresentation)->SetPrimitivesAspect (aDimensionAspect->LineAspect()->Aspect());
-        Prs3d_Root::CurrentGroup (thePresentation)->AddPrimitiveArray (aPrimSegments);
+          // add graphical primitives
+          Handle(Graphic3d_ArrayOfSegments) aPrimSegments = new Graphic3d_ArrayOfSegments (2);
+          aPrimSegments->AddVertex (aCenterLineBegin);
+          aPrimSegments->AddVertex (aCenterLineEnd);
+          aGroup->SetGroupPrimitivesAspect (aDimensionAspect->LineAspect()->Aspect());
+          aGroup->AddPrimitiveArray (aPrimSegments);
 
-        // add selection primitives
-        SelectionGeometry::Curve& aSensitiveCurve = mySelectionGeom.NewCurve();
-        aSensitiveCurve.Append (aCenterLineBegin);
-        aSensitiveCurve.Append (aCenterLineEnd);
+          // add selection primitives
+          SelectionGeometry::Curve& aSensitiveCurve = mySelectionGeom.NewCurve();
+          aSensitiveCurve.Append (aCenterLineBegin);
+          aSensitiveCurve.Append (aCenterLineEnd);
+        }
 
         // add arrows to presentation
-        Prs3d_Root::NewGroup (thePresentation);
-
-        DrawArrow (thePresentation, aSecondArrowBegin, aSecondArrowDir);
-        if (!theIsOneSide)
         {
-          DrawArrow (thePresentation, aFirstArrowBegin, aFirstArrowDir);
+          thePresentation->NewGroup();
+          DrawArrow (thePresentation, aSecondArrowBegin, aSecondArrowDir);
+          if (!theIsOneSide)
+          {
+            DrawArrow (thePresentation, aFirstArrowBegin, aFirstArrowDir);
+          }
         }
 
         if (!isArrowsExternal || theIsOneSide)
@@ -954,11 +967,11 @@ void AIS_Dimension::DrawLinearDimension (const Handle(Prs3d_Presentation)& thePr
         }
 
         // add extension lines for external arrows
-        Prs3d_Root::NewGroup (thePresentation);
-
-        DrawExtension (thePresentation, aDimensionAspect->ArrowTailSize(),
-                       aFirstArrowEnd, aFirstExtensionDir,
-                       THE_EMPTY_LABEL, 0.0, theMode, LabelPosition_None);
+        {
+          DrawExtension (thePresentation, aDimensionAspect->ArrowTailSize(),
+                         aFirstArrowEnd, aFirstExtensionDir,
+                         THE_EMPTY_LABEL, 0.0, theMode, LabelPosition_None);
+        }
       }
 
       break;
@@ -968,7 +981,7 @@ void AIS_Dimension::DrawLinearDimension (const Handle(Prs3d_Presentation)& thePr
   // add flyout lines to presentation
   if (theMode == ComputeMode_All)
   {
-    Prs3d_Root::NewGroup (thePresentation);
+    Handle(Graphic3d_Group) aGroup = thePresentation->NewGroup();
 
     Handle(Graphic3d_ArrayOfSegments) aPrimSegments = new Graphic3d_ArrayOfSegments(4);
     aPrimSegments->AddVertex (theFirstPoint);
@@ -977,8 +990,8 @@ void AIS_Dimension::DrawLinearDimension (const Handle(Prs3d_Presentation)& thePr
     aPrimSegments->AddVertex (theSecondPoint);
     aPrimSegments->AddVertex (aLineEndPoint);
 
-    Prs3d_Root::CurrentGroup (thePresentation)->SetPrimitivesAspect (aDimensionAspect->LineAspect()->Aspect());
-    Prs3d_Root::CurrentGroup (thePresentation)->AddPrimitiveArray (aPrimSegments);
+    aGroup->SetGroupPrimitivesAspect (aDimensionAspect->LineAspect()->Aspect());
+    aGroup->AddPrimitiveArray (aPrimSegments);
   }
 
   mySelectionGeom.IsComputed = Standard_True;

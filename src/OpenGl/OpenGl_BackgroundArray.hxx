@@ -19,7 +19,7 @@
 #include <Aspect_GradientFillMethod.hxx>
 #include <Aspect_FillMethod.hxx>
 #include <Graphic3d_TypeOfBackground.hxx>
-#include <OpenGl_AspectFace.hxx>
+#include <OpenGl_Aspects.hxx>
 #include <OpenGl_PrimitiveArray.hxx>
 #include <OpenGl_Vec.hxx>
 #include <OpenGl_Workspace.hxx>

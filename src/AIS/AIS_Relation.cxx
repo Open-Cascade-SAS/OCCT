@@ -28,6 +28,7 @@
 #include <Geom_Line.hxx>
 #include <Geom_Plane.hxx>
 #include <Geom_Surface.hxx>
+#include <Graphic3d_ArrayOfSegments.hxx>
 #include <gp_Circ.hxx>
 #include <gp_Lin.hxx>
 #include <gp_Pnt.hxx>
@@ -184,8 +185,13 @@ void AIS_Relation::ComputeProjVertexPresentation(const Handle(Prs3d_Presentation
     pa->SetTypeOfMarker(aProjTOM);
   }
   
-  // calcul du projete
-  StdPrs_Point::Add(aPrs, new Geom_CartesianPoint(ProjPoint), myDrawer);
+  {
+    Handle(Graphic3d_Group) aGroup = aPrs->NewGroup();
+    Handle(Graphic3d_ArrayOfPoints) anArrayOfPoints = new Graphic3d_ArrayOfPoints (1);
+    anArrayOfPoints->AddVertex (ProjPoint);
+    aGroup->SetGroupPrimitivesAspect (myDrawer->PointAspect()->Aspect());
+    aGroup->AddPrimitiveArray (anArrayOfPoints);
+  }
 
   if (!myDrawer->HasOwnWireAspect()){
     myDrawer->SetWireAspect(new Prs3d_LineAspect(aColor,aCallTOL,2.));}
@@ -197,10 +203,14 @@ void AIS_Relation::ComputeProjVertexPresentation(const Handle(Prs3d_Presentation
   }
   
   // Si les points ne sont pas confondus...
-  if (!ProjPoint.IsEqual (BRep_Tool::Pnt(aVertex),Precision::Confusion())) {
-    // calcul des lignes de rappel
-    BRepBuilderAPI_MakeEdge MakEd (ProjPoint,BRep_Tool::Pnt(aVertex));
-    StdPrs_WFShape::Add (aPrs, MakEd.Edge(), myDrawer);
+  if (!ProjPoint.IsEqual (BRep_Tool::Pnt(aVertex),Precision::Confusion()))
+  {
+    Handle(Graphic3d_Group) aGroup = aPrs->NewGroup();
+    Handle(Graphic3d_ArrayOfSegments) anArrayOfLines = new Graphic3d_ArrayOfSegments (2);
+    anArrayOfLines->AddVertex (ProjPoint);
+    anArrayOfLines->AddVertex (BRep_Tool::Pnt(aVertex));
+    aGroup->SetGroupPrimitivesAspect (myDrawer->WireAspect()->Aspect());
+    aGroup->AddPrimitiveArray (anArrayOfLines);
   }
 }
 

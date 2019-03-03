@@ -127,7 +127,7 @@ Standard_Integer ViewerTest::parseColor (Standard_Integer  theArgNb,
   }
   else if (theArgNb >= 3)
   {
-    Graphic3d_Vec4 anRgba;
+    Graphic3d_Vec4 anRgba (0.0f, 0.0f, 0.0f, 1.0f);
     Standard_Integer aNbComps = Min (theArgNb, theToParseAlpha ? 4 : 3);
     for (int aCompIter = 0; aCompIter < aNbComps; ++aCompIter)
     {

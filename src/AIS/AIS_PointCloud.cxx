@@ -173,8 +173,8 @@ void AIS_PointCloudOwner::Clear (const Handle(PrsMgr_PresentationManager)& thePr
 //==================================================
 AIS_PointCloud::AIS_PointCloud()
 {
-  // override default point style to Aspect_TOM_POINT
-  myDrawer->SetPointAspect (new Prs3d_PointAspect (Aspect_TOM_POINT, Quantity_NOC_YELLOW, 1.0));
+  myDrawer->SetupOwnShadingAspect();
+  myDrawer->ShadingAspect()->Aspect()->SetMarkerType (Aspect_TOM_POINT);
 
   SetDisplayMode (AIS_PointCloud::DM_Points);
   SetHilightMode (AIS_PointCloud::DM_BndBox);
@@ -282,52 +282,8 @@ void AIS_PointCloud::SetColor (const Quantity_Color& theColor)
 {
   AIS_InteractiveObject::SetColor(theColor);
 
-  if (!myDrawer->HasOwnPointAspect())
-  {
-    myDrawer->SetPointAspect (new Prs3d_PointAspect (Aspect_TOM_POINT, theColor, 1.0));
-    if (myDrawer->HasLink())
-    {
-      *myDrawer->PointAspect()->Aspect() = *myDrawer->Link()->PointAspect()->Aspect();
-    }
-  }
-  if (!myDrawer->HasOwnShadingAspect())
-  {
-    myDrawer->SetShadingAspect (new Prs3d_ShadingAspect());
-    if (myDrawer->HasLink())
-    {
-      *myDrawer->ShadingAspect()->Aspect() = *myDrawer->Link()->ShadingAspect()->Aspect();
-    }
-  }
-
-  // Override color
   myDrawer->ShadingAspect()->SetColor (theColor);
-  myDrawer->PointAspect()  ->SetColor (theColor);
-
-  const PrsMgr_Presentations&        aPrsList     = Presentations();
-  Handle(Graphic3d_AspectMarker3d)   aPointAspect = myDrawer->PointAspect()->Aspect();
-  Handle(Graphic3d_AspectFillArea3d) anAreaAspect = myDrawer->ShadingAspect()->Aspect();
-  for (Standard_Integer aPrsIt = 1; aPrsIt <= aPrsList.Length(); ++aPrsIt)
-  {
-    const PrsMgr_ModedPresentation& aPrsModed = aPrsList.Value (aPrsIt);
-    if (aPrsModed.Mode() != AIS_PointCloud::DM_Points)
-    {
-      continue;
-    }
-
-    const Handle(Prs3d_Presentation)& aPrs = aPrsModed.Presentation()->Presentation();
-    for (Graphic3d_SequenceOfGroup::Iterator aGroupIt (aPrs->Groups()); aGroupIt.More(); aGroupIt.Next())
-    {
-      const Handle(Graphic3d_Group)& aGroup = aGroupIt.Value();
-      if (aGroup->IsGroupPrimitivesAspectSet (Graphic3d_ASPECT_MARKER))
-      {
-        aGroup->SetGroupPrimitivesAspect (aPointAspect);
-      }
-      if (aGroup->IsGroupPrimitivesAspectSet (Graphic3d_ASPECT_FILL_AREA))
-      {
-        aGroup->SetGroupPrimitivesAspect (anAreaAspect);
-      }
-    }
-  }
+  SynchronizeAspects();
 }
 
 //=======================================================================
@@ -342,34 +298,20 @@ void AIS_PointCloud::UnsetColor()
   }
 
   AIS_InteractiveObject::UnsetColor();
-
-  if (!HasWidth())
-  {
-    myDrawer->SetPointAspect (Handle(Prs3d_PointAspect)());
-  }
-  else
-  {
-    myDrawer->PointAspect()->SetColor (myDrawer->HasLink()
-                                     ? myDrawer->Link()->PointAspect()->Aspect()->Color()
-                                     : Quantity_Color (Quantity_NOC_YELLOW));
-  }
-
-  if (HasMaterial()
-   || IsTransparent())
   {
     Graphic3d_MaterialAspect aDefaultMat (Graphic3d_NOM_BRASS);
     Graphic3d_MaterialAspect aMat = aDefaultMat;
+    Quantity_Color aColor = aDefaultMat.Color();
+    if (myDrawer->HasLink())
+    {
+      aColor = myDrawer->Link()->ShadingAspect()->Color (myCurrentFacingModel);
+    }
     if (HasMaterial() || myDrawer->HasLink())
     {
       aMat = AIS_GraphicTool::GetMaterial (HasMaterial() ? myDrawer : myDrawer->Link());
     }
     if (HasMaterial())
     {
-      Quantity_Color aColor = aDefaultMat.AmbientColor();
-      if (myDrawer->HasLink())
-      {
-        aColor = myDrawer->Link()->ShadingAspect()->Color (myCurrentFacingModel);
-      }
       aMat.SetColor (aColor);
     }
     if (IsTransparent())
@@ -378,43 +320,10 @@ void AIS_PointCloud::UnsetColor()
       aMat.SetTransparency (Standard_ShortReal(aTransp));
     }
     myDrawer->ShadingAspect()->SetMaterial (aMat, myCurrentFacingModel);
+    myDrawer->ShadingAspect()->Aspect()->SetInteriorColor (aColor);
   }
-  else
-  {
-    myDrawer->SetShadingAspect (Handle(Prs3d_ShadingAspect)());
-  }
-  myDrawer->SetPointAspect (Handle(Prs3d_PointAspect)());
 
-  // modify shading presentation without re-computation
-  const PrsMgr_Presentations&        aPrsList   = Presentations();
-  Handle(Graphic3d_AspectFillArea3d) anAreaAsp  = myDrawer->Link()->ShadingAspect()->Aspect();
-  Handle(Graphic3d_AspectMarker3d)   aMarkerAsp = myDrawer->Link()->PointAspect()->Aspect();
-  for (Standard_Integer aPrsIt = 1; aPrsIt <= aPrsList.Length(); ++aPrsIt)
-  {
-    const PrsMgr_ModedPresentation& aPrsModed = aPrsList.Value (aPrsIt);
-    if (aPrsModed.Mode() != AIS_PointCloud::DM_Points)
-    {
-      continue;
-    }
-
-    const Handle(Prs3d_Presentation)& aPrs = aPrsModed.Presentation()->Presentation();
-    for (Graphic3d_SequenceOfGroup::Iterator aGroupIt (aPrs->Groups()); aGroupIt.More(); aGroupIt.Next())
-    {
-      const Handle(Graphic3d_Group)& aGroup = aGroupIt.Value();
-
-      // Check if aspect of given type is set for the group,
-      // because setting aspect for group with no already set aspect
-      // can lead to loss of presentation data
-      if (aGroup->IsGroupPrimitivesAspectSet (Graphic3d_ASPECT_FILL_AREA))
-      {
-        aGroup->SetGroupPrimitivesAspect (anAreaAsp);
-      }
-      if (aGroup->IsGroupPrimitivesAspectSet (Graphic3d_ASPECT_MARKER))
-      {
-        aGroup->SetGroupPrimitivesAspect (aMarkerAsp);
-      }
-    }
-  }
+  SynchronizeAspects();
 }
 
 //=======================================================================
@@ -423,14 +332,6 @@ void AIS_PointCloud::UnsetColor()
 //=======================================================================
 void AIS_PointCloud::SetMaterial (const Graphic3d_MaterialAspect& theMat)
 {
-  if (!myDrawer->HasOwnShadingAspect())
-  {
-    myDrawer->SetShadingAspect (new Prs3d_ShadingAspect());
-    if (myDrawer->HasLink())
-    {
-      *myDrawer->ShadingAspect()->Aspect() = *myDrawer->Link()->ShadingAspect()->Aspect();
-    }
-  }
   hasOwnMaterial = Standard_True;
 
   myDrawer->ShadingAspect()->SetMaterial (theMat, myCurrentFacingModel);
@@ -439,28 +340,7 @@ void AIS_PointCloud::SetMaterial (const Graphic3d_MaterialAspect& theMat)
     myDrawer->ShadingAspect()->SetColor (myDrawer->Color(), myCurrentFacingModel);
   }
   myDrawer->ShadingAspect()->SetTransparency (myDrawer->Transparency(), myCurrentFacingModel);
-
-  // modify shading presentation without re-computation
-  const PrsMgr_Presentations&        aPrsList  = Presentations();
-  Handle(Graphic3d_AspectFillArea3d) anAreaAsp = myDrawer->ShadingAspect()->Aspect();
-  for (Standard_Integer aPrsIt = 1; aPrsIt <= aPrsList.Length(); ++aPrsIt)
-  {
-    const PrsMgr_ModedPresentation& aPrsModed = aPrsList.Value (aPrsIt);
-    if (aPrsModed.Mode() != AIS_PointCloud::DM_Points)
-    {
-      continue;
-    }
-
-    const Handle(Prs3d_Presentation)& aPrs = aPrsModed.Presentation()->Presentation();
-    for (Graphic3d_SequenceOfGroup::Iterator aGroupIt (aPrs->Groups()); aGroupIt.More(); aGroupIt.Next())
-    {
-      const Handle(Graphic3d_Group)& aGroup = aGroupIt.Value();
-      if (aGroup->IsGroupPrimitivesAspectSet (Graphic3d_ASPECT_FILL_AREA))
-      {
-        aGroup->SetGroupPrimitivesAspect (anAreaAsp);
-      }
-    }
-  }
+  SynchronizeAspects();
 }
 
 //=======================================================================
@@ -474,8 +354,6 @@ void AIS_PointCloud::UnsetMaterial()
     return;
   }
 
-  if (HasColor()
-   || IsTransparent())
   {
     Graphic3d_MaterialAspect aDefaultMat (Graphic3d_NOM_BRASS);
     myDrawer->ShadingAspect()->SetMaterial (myDrawer->HasLink() ?
@@ -488,33 +366,8 @@ void AIS_PointCloud::UnsetMaterial()
       myDrawer->ShadingAspect()->SetTransparency (myDrawer->Transparency(), myCurrentFacingModel);
     }
   }
-  else
-  {
-    myDrawer->SetShadingAspect (Handle(Prs3d_ShadingAspect)());
-  }
   hasOwnMaterial = Standard_False;
-
-  // modify shading presentation without re-computation
-  const PrsMgr_Presentations&        aPrsList  = Presentations();
-  Handle(Graphic3d_AspectFillArea3d) anAreaAsp = myDrawer->ShadingAspect()->Aspect();
-  for (Standard_Integer aPrsIt = 1; aPrsIt <= aPrsList.Length(); ++aPrsIt)
-  {
-    const PrsMgr_ModedPresentation& aPrsModed = aPrsList.Value (aPrsIt);
-    if (aPrsModed.Mode() != AIS_PointCloud::DM_Points)
-    {
-      continue;
-    }
-
-    const Handle(Prs3d_Presentation)& aPrs = aPrsModed.Presentation()->Presentation();
-    for (Graphic3d_SequenceOfGroup::Iterator aGroupIt (aPrs->Groups()); aGroupIt.More(); aGroupIt.Next())
-    {
-      const Handle(Graphic3d_Group)& aGroup = aGroupIt.Value();
-      if (aGroup->IsGroupPrimitivesAspectSet (Graphic3d_ASPECT_FILL_AREA))
-      {
-        aGroup->SetGroupPrimitivesAspect (anAreaAsp);
-      }
-    }
-  }
+  SynchronizeAspects();
 }
 
 //=======================================================================
@@ -535,8 +388,7 @@ void AIS_PointCloud::Compute (const Handle(PrsMgr_PresentationManager3d)& /*theP
         return;
       }
 
-      Handle(Graphic3d_Group) aGroup = Prs3d_Root::CurrentGroup (thePrs);
-      aGroup->SetGroupPrimitivesAspect (myDrawer->PointAspect()->Aspect());
+      Handle(Graphic3d_Group) aGroup = thePrs->NewGroup();
       aGroup->SetGroupPrimitivesAspect (myDrawer->ShadingAspect()->Aspect());
       aGroup->AddPrimitiveArray (aPoints);
       break;

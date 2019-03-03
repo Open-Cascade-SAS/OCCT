@@ -236,17 +236,18 @@ void AIS_CameraFrustum::Compute (const Handle(PrsMgr_PresentationManager3d)& ,
     return;
   }
 
-  Handle(Graphic3d_Group) aGroup = thePrs->NewGroup();
   switch (theMode)
   {
     case AIS_Shaded:
     {
+      Handle(Graphic3d_Group) aGroup = thePrs->NewGroup();
       aGroup->SetGroupPrimitivesAspect (myDrawer->ShadingAspect()->Aspect());
       aGroup->AddPrimitiveArray (myTriangles);
     }
     Standard_FALLTHROUGH
     case AIS_WireFrame:
     {
+      Handle(Graphic3d_Group) aGroup = thePrs->NewGroup();
       aGroup->SetGroupPrimitivesAspect (myDrawer->LineAspect()->Aspect());
       aGroup->AddPrimitiveArray (myBorders);
       break;

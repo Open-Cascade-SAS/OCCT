@@ -15,31 +15,15 @@
 
 #include <Graphic3d_AspectFillArea3d.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_AspectFillArea3d, Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_AspectFillArea3d, Graphic3d_Aspects)
 
 // =======================================================================
 // function : Graphic3d_AspectFillArea3d
 // purpose  :
 // =======================================================================
 Graphic3d_AspectFillArea3d::Graphic3d_AspectFillArea3d()
-: myInteriorColor       (Quantity_NOC_CYAN1),
-  myBackInteriorColor   (Quantity_NOC_CYAN1),
-  myEdgeColor           (Quantity_NOC_WHITE),
-  myInteriorStyle       (Aspect_IS_EMPTY),
-  myShadingModel        (Graphic3d_TOSM_DEFAULT),
-  myAlphaMode           (Graphic3d_AlphaMode_BlendAuto),
-  myAlphaCutoff         (0.5f),
-  myEdgeType            (Aspect_TOL_SOLID),
-  myEdgeWidth           (1.0f),
-  myHatchStyle          (Handle(Graphic3d_HatchStyle)()),
-  myToSkipFirstEdge     (false),
-  myToDistinguishMaterials (false),
-  myToDrawEdges         (false),
-  myToDrawSilhouette    (false),
-  myToSuppressBackFaces (true),
-  myToMapTexture        (false)
 {
-  //
+  myInteriorStyle = Aspect_IS_EMPTY;
 }
 
 // =======================================================================
@@ -53,42 +37,13 @@ Graphic3d_AspectFillArea3d::Graphic3d_AspectFillArea3d (const Aspect_InteriorSty
                                                         const Standard_Real        theEdgeLineWidth,
                                                         const Graphic3d_MaterialAspect& theFrontMaterial,
                                                         const Graphic3d_MaterialAspect& theBackMaterial)
-: myFrontMaterial       (theFrontMaterial),
-  myBackMaterial        (theBackMaterial),
-  myInteriorColor       (theInteriorColor),
-  myBackInteriorColor   (theInteriorColor),
-  myEdgeColor           (theEdgeColor),
-  myInteriorStyle       (theInteriorStyle),
-  myShadingModel        (Graphic3d_TOSM_DEFAULT),
-  myAlphaMode           (Graphic3d_AlphaMode_BlendAuto),
-  myAlphaCutoff         (0.5f),
-  myEdgeType            (theEdgeLineType),
-  myEdgeWidth           ((float )theEdgeLineWidth),
-  myHatchStyle          (Handle(Graphic3d_HatchStyle)()),
-  myToSkipFirstEdge     (false),
-  myToDistinguishMaterials (false),
-  myToDrawEdges         (false),
-  myToDrawSilhouette    (false),
-  myToSuppressBackFaces (true),
-  myToMapTexture        (false)
 {
-  if (theEdgeLineWidth <= 0.0)
-  {
-    throw Aspect_AspectFillAreaDefinitionError("Bad value for EdgeLineWidth");
-  }
-}
-
-// =======================================================================
-// function : Graphic3d_AspectFillArea3d
-// purpose  :
-// =======================================================================
-void Graphic3d_AspectFillArea3d::SetTextureMap (const Handle(Graphic3d_TextureMap)& theTexture)
-{
-  if (theTexture.IsNull())
-  {
-    myTextureSet.Nullify();
-    return;
-  }
-
-  myTextureSet = new Graphic3d_TextureSet (theTexture);
+  myFrontMaterial     = theFrontMaterial;
+  myBackMaterial      = theBackMaterial;
+  myInteriorColor.SetRGB (theInteriorColor);
+  myBackInteriorColor.SetRGB (theInteriorColor);
+  myEdgeColor.SetRGB (theEdgeColor);
+  myInteriorStyle     = theInteriorStyle;
+  myLineType          = theEdgeLineType;
+  SetEdgeWidth ((float )theEdgeLineWidth);
 }

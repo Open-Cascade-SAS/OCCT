@@ -15,33 +15,30 @@
 
 #include <Graphic3d_AspectLine3d.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_AspectLine3d, Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_AspectLine3d, Graphic3d_Aspects)
 
 // =======================================================================
 // function : Graphic3d_AspectLine3d
 // purpose  :
 // =======================================================================
 Graphic3d_AspectLine3d::Graphic3d_AspectLine3d()
-: myColor (Quantity_NOC_YELLOW),
-  myType  (Aspect_TOL_SOLID),
-  myWidth (1.0f)
 {
-  //
+  myShadingModel = Graphic3d_TOSM_UNLIT;
+  myInteriorColor.SetRGB (Quantity_NOC_YELLOW);
+  myLineType  = Aspect_TOL_SOLID;
+  myLineWidth = 1.0f;
 }
 
 // =======================================================================
 // function : Graphic3d_AspectLine3d
 // purpose  :
 // =======================================================================
-Graphic3d_AspectLine3d::Graphic3d_AspectLine3d (const Quantity_Color&   theColor,
-                                                const Aspect_TypeOfLine theType,
-                                                const Standard_Real     theWidth)
-: myColor (theColor),
-  myType  (theType),
-  myWidth ((float )theWidth)
+Graphic3d_AspectLine3d::Graphic3d_AspectLine3d (const Quantity_Color& theColor,
+                                                Aspect_TypeOfLine theType,
+                                                Standard_Real theWidth)
 {
-  if (myWidth <= 0.0f)
-  {
-    throw Aspect_AspectLineDefinitionError("Graphic3d_AspectLine3d, Bad value for LineWidth");
-  }
+  myShadingModel = Graphic3d_TOSM_UNLIT;
+  myInteriorColor.SetRGB (theColor);
+  myLineType = theType;
+  SetLineWidth ((float)theWidth);
 }

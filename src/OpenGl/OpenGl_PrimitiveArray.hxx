@@ -124,8 +124,7 @@ private:
                   const Standard_Boolean          theHasVertColor) const;
 
   //! Auxiliary procedures
-  void drawEdges (const OpenGl_Vec4&              theEdgeColour,
-                  const Handle(OpenGl_Workspace)& theWorkspace) const;
+  void drawEdges (const Handle(OpenGl_Workspace)& theWorkspace) const;
 
   void drawMarkers (const Handle(OpenGl_Workspace)& theWorkspace) const;
 

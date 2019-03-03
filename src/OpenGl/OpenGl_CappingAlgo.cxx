@@ -104,9 +104,9 @@ namespace
       theStencilSentry.Init();
 
       // check if capping plane should be rendered within current pass (only opaque / only transparent)
-      const OpenGl_AspectFace* anObjAspectFace = aRenderPlane->ToUseObjectProperties() ? aGroupIter.Value()->AspectFace() : NULL;
-      thePlane->Update (aContext, anObjAspectFace != NULL ? anObjAspectFace->Aspect() : Handle(Graphic3d_AspectFillArea3d)());
-      theWorkspace->SetAspectFace (thePlane->AspectFace());
+      const OpenGl_Aspects* anObjAspectFace = aRenderPlane->ToUseObjectProperties() ? aGroupIter.Value()->GlAspects() : NULL;
+      thePlane->Update (aContext, anObjAspectFace != NULL ? anObjAspectFace->Aspect() : Handle(Graphic3d_Aspects)());
+      theWorkspace->SetAspects (thePlane->AspectFace());
       theWorkspace->SetRenderFilter (aPrevFilter);
       if (!theWorkspace->ShouldRender (&thePlane->Primitives()))
       {
@@ -124,8 +124,8 @@ namespace
       const bool aColorMaskBack = aContext->SetColorMask (false);
 
       // override aspects, disable culling
-      theWorkspace->SetAspectFace (&theWorkspace->NoneCulling());
-      theWorkspace->ApplyAspectFace();
+      theWorkspace->SetAspects (&theWorkspace->NoneCulling());
+      theWorkspace->ApplyAspects();
 
       // evaluate number of pair faces
       if (theWorkspace->UseZBuffer())
@@ -156,8 +156,8 @@ namespace
       }
 
       // override material, cull back faces
-      theWorkspace->SetAspectFace (&theWorkspace->FrontCulling());
-      theWorkspace->ApplyAspectFace();
+      theWorkspace->SetAspects (&theWorkspace->FrontCulling());
+      theWorkspace->ApplyAspects();
 
       // enable all clip plane except the rendered one
       aContext->ChangeClipping().EnableAllExcept (theClipChain, theSubPlaneIndex);
@@ -176,7 +176,7 @@ namespace
         glEnable (GL_DEPTH_TEST);
       }
 
-      theWorkspace->SetAspectFace (thePlane->AspectFace());
+      theWorkspace->SetAspects (thePlane->AspectFace());
       renderPlane (theWorkspace, thePlane);
 
       // turn on the current plane to restore initial state
@@ -207,7 +207,7 @@ void OpenGl_CappingAlgo::RenderCapping (const Handle(OpenGl_Workspace)& theWorks
   }
 
   // remember current aspect face defined in workspace
-  const OpenGl_AspectFace* aFaceAsp = theWorkspace->AspectFace();
+  const OpenGl_Aspects* aFaceAsp = theWorkspace->Aspects();
 
   // only filled primitives should be rendered
   const Standard_Integer aPrevFilter = theWorkspace->RenderFilter();
@@ -247,6 +247,6 @@ void OpenGl_CappingAlgo::RenderCapping (const Handle(OpenGl_Workspace)& theWorks
   }
 
   // restore rendering aspects
-  theWorkspace->SetAspectFace (aFaceAsp);
+  theWorkspace->SetAspects (aFaceAsp);
   theWorkspace->SetRenderFilter (aPrevFilter);
 }

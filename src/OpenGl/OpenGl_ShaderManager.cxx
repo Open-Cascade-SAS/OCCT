@@ -16,10 +16,7 @@
 #include <typeinfo>
 
 #include <Graphic3d_TextureParams.hxx>
-#include <OpenGl_AspectFace.hxx>
-#include <OpenGl_AspectLine.hxx>
-#include <OpenGl_AspectMarker.hxx>
-#include <OpenGl_AspectText.hxx>
+#include <OpenGl_Aspects.hxx>
 #include <OpenGl_ClippingIterator.hxx>
 #include <OpenGl_Context.hxx>
 #include <OpenGl_ShaderManager.hxx>
@@ -1159,7 +1156,6 @@ void OpenGl_ShaderManager::PushMaterialState (const Handle(OpenGl_ShaderProgram)
       return;
     }
 
-    myContext->SetSampleAlphaToCoverage (false);
     if (myMaterialState.AlphaCutoff() < ShortRealLast())
     {
       glAlphaFunc (GL_GEQUAL, myMaterialState.AlphaCutoff());
@@ -1188,7 +1184,6 @@ void OpenGl_ShaderManager::PushMaterialState (const Handle(OpenGl_ShaderProgram)
     return;
   }
 
-  myContext->SetSampleAlphaToCoverage (myMaterialState.HasAlphaCutoff());
   theProgram->SetUniform (myContext,
                           theProgram->GetStateLocation (OpenGl_OCCT_ALPHA_CUTOFF),
                           myMaterialState.AlphaCutoff());
@@ -1245,7 +1240,7 @@ void OpenGl_ShaderManager::PushOitState (const Handle(OpenGl_ShaderProgram)& the
 // purpose  :
 // =======================================================================
 void OpenGl_ShaderManager::PushInteriorState (const Handle(OpenGl_ShaderProgram)& theProgram,
-                                              const Handle(Graphic3d_AspectFillArea3d)& theAspect) const
+                                              const Handle(Graphic3d_Aspects)& theAspect) const
 {
   if (theProgram.IsNull()
   || !theProgram->IsValid())

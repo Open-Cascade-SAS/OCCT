@@ -21,7 +21,7 @@
 #include <gp_Pnt.hxx>
 #include <gp_Dir.hxx>
 #include <NCollection_Array1.hxx>
-#include <OpenGl_AspectLine.hxx>
+#include <OpenGl_Aspects.hxx>
 #include <OpenGl_Element.hxx>
 #include <OpenGl_PrimitiveArray.hxx>
 #include <OpenGl_Text.hxx>
@@ -70,7 +70,7 @@ private:
 
     OpenGl_Vec3         Direction;
     Quantity_Color      NameColor;
-    OpenGl_AspectLine   LineAspect;
+    OpenGl_Aspects      LineAspect;
     mutable OpenGl_Text Label;
     mutable OpenGl_PrimitiveArray Tickmark;
     mutable OpenGl_PrimitiveArray Line;
@@ -215,13 +215,13 @@ protected:
 
   mutable Axis myAxes[3]; //!< Axes for trihedron
   mutable Graphic3d_GraduatedTrihedron myData;
-  mutable OpenGl_AspectLine myGridLineAspect; //!< Color grid properties
+  mutable OpenGl_Aspects   myGridLineAspect; //!< Color grid properties
 
 protected: //! @name Labels properties
 
-  mutable OpenGl_Text       myLabelValues;
-  mutable OpenGl_AspectText myAspectLabels;
-  mutable OpenGl_AspectText myAspectValues;
+  mutable OpenGl_Text    myLabelValues;
+  mutable OpenGl_Aspects myAspectLabels;
+  mutable OpenGl_Aspects myAspectValues;
 
 private:
 

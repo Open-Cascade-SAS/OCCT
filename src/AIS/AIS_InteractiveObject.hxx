@@ -386,6 +386,15 @@ public:
   //! so that modifications will take effect on already computed presentation groups (thus avoiding re-displaying the object).
   Standard_EXPORT void SynchronizeAspects();
 
+protected:
+
+  //! Replace aspects of existing (computed) presentation groups,
+  //! so that the new aspects can be applied without recomputing presentation.
+  //! It is NOT recommended approach, because user has to fill such map and then search for each occurrence in computed groups.
+  //! The recommended approach is computing presentation with necessary customized aspects,
+  //! and then modify them directly followed by SynchronizeAspects() call.
+  Standard_EXPORT void replaceAspects (const Graphic3d_MapOfAspectsToAspects& theMap);
+
 private:
 
   Standard_EXPORT virtual Standard_Boolean RecomputeEveryPrs() const;

@@ -18,7 +18,7 @@
 
 #include <OpenGl_Element.hxx>
 
-#include <OpenGl_AspectText.hxx>
+#include <OpenGl_Aspects.hxx>
 #include <OpenGl_TextParam.hxx>
 #include <OpenGl_TextBuilder.hxx>
 
@@ -83,21 +83,21 @@ public: //! @name methods for compatibility with layers
   Standard_EXPORT OpenGl_Text();
 
   //! Create key for shared resource
-  Standard_EXPORT static TCollection_AsciiString FontKey (const OpenGl_AspectText& theAspect,
-                                                          const Standard_Integer   theHeight,
-                                                          const unsigned int       theResolution);
+  Standard_EXPORT static TCollection_AsciiString FontKey (const OpenGl_Aspects& theAspect,
+                                                          Standard_Integer theHeight,
+                                                          unsigned int theResolution);
 
   //! Find shared resource for specified font or initialize new one
   Standard_EXPORT static Handle(OpenGl_Font) FindFont (const Handle(OpenGl_Context)& theCtx,
-                                                       const OpenGl_AspectText&      theAspect,
-                                                       const Standard_Integer        theHeight,
-                                                       const unsigned int            theResolution,
-                                                       const TCollection_AsciiString theKey);
+                                                       const OpenGl_Aspects& theAspect,
+                                                       Standard_Integer theHeight,
+                                                       unsigned int theResolution,
+                                                       const TCollection_AsciiString& theKey);
 
   //! Compute text width
   Standard_EXPORT static void StringSize (const Handle(OpenGl_Context)& theCtx,
                                           const NCollection_String&     theText,
-                                          const OpenGl_AspectText&      theTextAspect,
+                                          const OpenGl_Aspects&         theTextAspect,
                                           const OpenGl_TextParam&       theParams,
                                           const unsigned int            theResolution,
                                           Standard_ShortReal&           theWidth,
@@ -112,8 +112,8 @@ public: //! @name methods for compatibility with layers
 
   //! Perform rendering
   Standard_EXPORT void Render (const Handle(OpenGl_Context)& theCtx,
-                               const OpenGl_AspectText&      theTextAspect,
-                               const unsigned int            theResolution = Graphic3d_RenderingParams::THE_DEFAULT_RESOLUTION) const;
+                               const OpenGl_Aspects& theTextAspect,
+                               unsigned int theResolution = Graphic3d_RenderingParams::THE_DEFAULT_RESOLUTION) const;
 
 protected:
 
@@ -127,24 +127,24 @@ private:
 
   //! Setup matrix.
   void setupMatrix (const Handle(OpenGl_Context)& theCtx,
-                    const OpenGl_AspectText&      theTextAspect,
-                    const OpenGl_Vec3             theDVec) const;
+                    const OpenGl_Aspects& theTextAspect,
+                    const OpenGl_Vec3& theDVec) const;
 
   //! Draw arrays of vertices.
   void drawText (const Handle(OpenGl_Context)& theCtx,
-                 const OpenGl_AspectText&      theTextAspect) const;
+                 const OpenGl_Aspects& theTextAspect) const;
 
   //! Draw rectangle from bounding text box.
   void drawRect (const Handle(OpenGl_Context)& theCtx,
-                 const OpenGl_AspectText&      theTextAspect,
-                 const OpenGl_Vec4&            theColorSubs) const;
+                 const OpenGl_Aspects& theTextAspect,
+                 const OpenGl_Vec4& theColorSubs) const;
 
   //! Main rendering code
   void render (const Handle(OpenGl_Context)& theCtx,
-               const OpenGl_AspectText&      theTextAspect,
-               const OpenGl_Vec4&            theColorText,
-               const OpenGl_Vec4&            theColorSubs,
-               const unsigned int            theResolution) const;
+               const OpenGl_Aspects& theTextAspect,
+               const OpenGl_Vec4& theColorText,
+               const OpenGl_Vec4& theColorSubs,
+               unsigned int theResolution) const;
 
 protected:
 

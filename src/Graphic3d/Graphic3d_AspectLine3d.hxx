@@ -16,19 +16,13 @@
 #ifndef _Graphic3d_AspectLine3d_HeaderFile
 #define _Graphic3d_AspectLine3d_HeaderFile
 
-#include <Aspect_AspectLineDefinitionError.hxx>
-#include <Aspect_TypeOfLine.hxx>
-#include <Graphic3d_ShaderProgram.hxx>
-#include <Standard.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Type.hxx>
-#include <Quantity_ColorRGBA.hxx>
+#include <Graphic3d_Aspects.hxx>
 
 //! Creates and updates a group of attributes for 3d line primitives.
 //! This group contains the color, the type of line, and its thickness.
-class Graphic3d_AspectLine3d : public Standard_Transient
+class Graphic3d_AspectLine3d : public Graphic3d_Aspects
 {
-  DEFINE_STANDARD_RTTIEXT(Graphic3d_AspectLine3d, Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(Graphic3d_AspectLine3d, Graphic3d_Aspects)
 public:
 
   //! Creates a context table for line primitives
@@ -44,85 +38,32 @@ public:
   //! The nominal line width is 1 pixel.
   //! The width of the line is determined by applying the line width scale factor to this nominal line width.
   //! The supported line widths vary by 1-pixel units.
-  Standard_EXPORT Graphic3d_AspectLine3d (const Quantity_Color&   theColor,
-                                          const Aspect_TypeOfLine theType,
-                                          const Standard_Real     theWidth);
-
-  //! Return color.
-  const Quantity_ColorRGBA& ColorRGBA() const { return myColor; }
-
-  //! Return color.
-  const Quantity_Color& Color() const { return myColor.GetRGB(); }
-
-  //! Modifies the color.
-  void SetColor (const Quantity_Color& theColor) { myColor.SetRGB (theColor); }
+  Standard_EXPORT Graphic3d_AspectLine3d (const Quantity_Color& theColor,
+                                          Aspect_TypeOfLine theType,
+                                          Standard_Real theWidth);
 
   //! Return line type.
-  Aspect_TypeOfLine Type() const { return myType; }
+  Aspect_TypeOfLine Type() const { return myLineType; }
 
   //! Modifies the type of line.
-  void SetType (const Aspect_TypeOfLine theType) { myType = theType; }
+  void SetType (const Aspect_TypeOfLine theType) { myLineType = theType; }
 
   //! Return line width.
-  Standard_ShortReal Width() const { return myWidth; }
+  Standard_ShortReal Width() const { return myLineWidth; }
 
   //! Modifies the line thickness.
-  //! Warning: Raises AspectLineDefinitionError if the width is a negative value.
+  //! Warning: Raises Standard_OutOfRange if the width is a negative value.
   void SetWidth (const Standard_Real theWidth) { SetWidth ((float )theWidth); }
 
   //! Modifies the line thickness.
-  //! Warning: Raises AspectLineDefinitionError if the width is a negative value.
-  void SetWidth (const Standard_ShortReal theWidth)
+  //! Warning: Raises Standard_OutOfRange if the width is a negative value.
+  void SetWidth (Standard_ShortReal theWidth)
   {
-    if (theWidth <= 0.0f)
-    {
-      throw Aspect_AspectLineDefinitionError("Graphic3d_AspectLine3d, Bad value for LineWidth");
-    }
-    myWidth = theWidth;
+    SetLineWidth (theWidth);
   }
-
-  //! Return shader program.
-  const Handle(Graphic3d_ShaderProgram)& ShaderProgram() const { return myProgram; }
-
-  //! Sets up OpenGL/GLSL shader program.
-  void SetShaderProgram (const Handle(Graphic3d_ShaderProgram)& theProgram) { myProgram = theProgram; }
-
-  //! Check for equality with another line aspect.
-  bool IsEqual (const Graphic3d_AspectLine3d& theOther)
-  {
-    if (this == &theOther)
-    {
-      return true;
-    }
-
-    return myProgram == theOther.myProgram
-        && myType    == theOther.myType
-        && myColor   == theOther.myColor
-        && myWidth   == theOther.myWidth;
-  }
-
-public:
-
-  //! Returns the current values of the group.
-  Standard_DEPRECATED("Deprecated method Values() should be replaced by individual property getters")
-  void Values (Quantity_Color&    theColor,
-               Aspect_TypeOfLine& theType,
-               Standard_Real&     theWidth) const
-  {
-    theColor = myColor.GetRGB();
-    theType  = myType;
-    theWidth = myWidth;
-  }
-
-protected:
-
-  Handle(Graphic3d_ShaderProgram) myProgram;
-  Quantity_ColorRGBA myColor;
-  Aspect_TypeOfLine  myType;
-  Standard_ShortReal myWidth;
 
 };
 
-DEFINE_STANDARD_HANDLE(Graphic3d_AspectLine3d, Standard_Transient)
+DEFINE_STANDARD_HANDLE(Graphic3d_AspectLine3d, Graphic3d_Aspects)
 
 #endif // _Graphic3d_AspectLine3d_HeaderFile

@@ -1679,6 +1679,43 @@ Some public methods of the class BRepFilletAPI_MakeChamfer are released from exc
 - method Add for symmetric chamfer now takes only 2 arguments: distance and edge;
 - method GetDistAngle now takes only 3 arguments: index of contour, distance and angle.
 
+@subsection upgrade_740_aspects Aspects unification
+
+Fill Area, Line and Marker aspects (classes *Graphic3d_AspectFillArea3d*, *Graphic3d_AspectLine3d*, *Graphic3d_AspectMarker3d* and *Graphic3d_AspectText3d*)
+have been merged into new class *Graphic3d_Aspects* providing a single state for rendering primitives of any type.
+The old per-primitive type aspect classes have been preserved as sub-classes of *Graphic3d_Aspects* with default values close to the previous behavior.
+All aspects except Graphic3d_AspectFillArea3d define Graphic3d_TOSM_UNLIT shading model.
+
+The previous approach with dedicated aspects per primitive type was handy in simplified case, but lead to confusion otherwise.
+In fact, drawing points or lines with lighting applied is a valid use case, but only *Graphic3d_AspectFillArea3d* previously defined necessary material properties.
+
+As aspects for different primitive types have been merged, Graphic3d_Group does no more provide per-type aspect properties.
+Existing code relying on old behavior and putting interleaved per-type aspects into single Graphic3d_Group should be updated.
+For example, the following pseudo-code will not work anymore, because all *SetGroupPrimitivesAspect* calls will setup the same property:
+~~~~
+Handle(Graphic3d_Group) aGroup = thePrs->NewGroup();
+aGroup->SetGroupPrimitivesAspect (myDrawer->ShadingAspect()->Aspect());
+aGroup->SetGroupPrimitivesAspect (myDrawer->LineAspect()->Aspect());    //!< overrides previous aspect
+
+Handle(Graphic3d_ArrayOfSegments) aLines = new Graphic3d_ArrayOfSegments (2);
+Handle(Graphic3d_ArrayOfTriangles) aTris = new Graphic3d_ArrayOfTriangles (3);
+aGroup->AddPrimitiveArray (aLines); //!< both arrays will use the same aspect
+aGroup->AddPrimitiveArray (aTris);
+~~~~
+
+To solve the problem, the code should be modified to either put primitives into dedicated groups (preferred approach), or using *SetPrimitivesAspect* in proper order:
+~~~~
+Handle(Graphic3d_Group) aGroup = thePrs->NewGroup();
+
+aGroup->SetGroupPrimitivesAspect (myDrawer->ShadingAspect()->Aspect());
+Handle(Graphic3d_ArrayOfTriangles) aTris = new Graphic3d_ArrayOfTriangles (3);
+aGroup->AddPrimitiveArray (aTris);
+
+Handle(Graphic3d_ArrayOfSegments) aLines = new Graphic3d_ArrayOfSegments (2);
+aGroup->SetPrimitivesAspect (myDrawer->LineAspect()->Aspect()); //!< next array will use the new aspect
+aGroup->AddPrimitiveArray (aLines);
+~~~~
+
 @subsection upgrade_740_interiorstyles Interior styles
 
 * *Aspect_IS_HOLLOW* is now an alias to *Aspect_IS_EMPTY* and does not implicitly enables drawing mesh edges anymore.

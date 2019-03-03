@@ -297,6 +297,23 @@ void PrsMgr_PresentableObject::UpdateTransformation()
 }
 
 //=======================================================================
+//function : recomputeComputed
+//purpose  :
+//=======================================================================
+void PrsMgr_PresentableObject::recomputeComputed() const
+{
+  for (Standard_Integer aPrsIter = 1; aPrsIter <= myPresentations.Length(); ++aPrsIter)
+  {
+    const Handle(PrsMgr_Presentation)& aPrs3d = myPresentations (aPrsIter).Presentation();
+    if (!aPrs3d.IsNull()
+     && !aPrs3d->Presentation().IsNull())
+    {
+      aPrs3d->Presentation()->ReCompute();
+    }
+  }
+}
+
+//=======================================================================
 //function : SetTransformPersistence
 //purpose  :
 //=======================================================================

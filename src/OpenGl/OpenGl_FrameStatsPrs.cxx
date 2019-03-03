@@ -361,7 +361,7 @@ void OpenGl_FrameStatsPrs::Render (const Handle(OpenGl_Workspace)& theWorkspace)
     glDepthMask (GL_FALSE);
   }
 
-  const OpenGl_AspectText* aTextAspectBack = theWorkspace->SetAspectText (&myTextAspect);
+  const OpenGl_Aspects* aTextAspectBack = theWorkspace->SetAspects (&myTextAspect);
 
   aCtx->ModelWorldState.Push();
   aCtx->ModelWorldState.ChangeCurrent().InitIdentity();
@@ -429,7 +429,7 @@ void OpenGl_FrameStatsPrs::Render (const Handle(OpenGl_Workspace)& theWorkspace)
   aCtx->ModelWorldState.Pop();
   aCtx->ApplyWorldViewMatrix();
 
-  theWorkspace->SetAspectText (aTextAspectBack);
+  theWorkspace->SetAspects (aTextAspectBack);
   if (theWorkspace->UseDepthWrite() != wasEnabledDepth)
   {
     theWorkspace->UseDepthWrite() = wasEnabledDepth;

@@ -52,7 +52,7 @@ void OpenGl_Structure::renderBoundingBox (const Handle(OpenGl_Workspace)& theWor
     const Graphic3d_Vec3d aSize   = myBndBox.Size();
     aCtx->ActiveProgram()->SetUniform (aCtx, "occBBoxCenter", Graphic3d_Vec3 ((float )aCenter.x(), (float )aCenter.y(), (float )aCenter.z()));
     aCtx->ActiveProgram()->SetUniform (aCtx, "occBBoxSize",   Graphic3d_Vec3 ((float )aSize.x(),   (float )aSize.y(),   (float )aSize.z()));
-    aCtx->SetColor4fv (theWorkspace->LineColor());
+    aCtx->SetColor4fv (theWorkspace->InteriorColor());
 
     const Handle(OpenGl_VertexBuffer)& aBoundBoxVertBuffer = aCtx->ShaderManager()->BoundBoxVertBuffer();
     aBoundBoxVertBuffer->BindAttribute  (aCtx, Graphic3d_TOA_POS);
@@ -87,7 +87,7 @@ void OpenGl_Structure::renderBoundingBox (const Handle(OpenGl_Workspace)& theWor
     };
 
     aCtx->ShaderManager()->BindLineProgram (Handle(OpenGl_TextureSet)(), Aspect_TOL_SOLID, Graphic3d_TOSM_UNLIT, Graphic3d_AlphaMode_Opaque, false, Handle(OpenGl_ShaderProgram)());
-    aCtx->SetColor4fv (theWorkspace->LineColor());
+    aCtx->SetColor4fv (theWorkspace->InteriorColor());
     aCtx->core11fwd->glDisable (GL_LIGHTING);
     aCtx->core11->glEnableClientState (GL_VERTEX_ARRAY);
     aCtx->core11->glVertexPointer (3, GL_FLOAT, 0, aVerts[0].GetData());
@@ -460,10 +460,7 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
   aCtx->ApplyModelViewMatrix();
 
   // remember aspects
-  const OpenGl_AspectLine*   aPrevAspectLine   = theWorkspace->AspectLine();
-  const OpenGl_AspectFace*   aPrevAspectFace   = theWorkspace->AspectFace();
-  const OpenGl_AspectMarker* aPrevAspectMarker = theWorkspace->AspectMarker();
-  const OpenGl_AspectText*   aPrevAspectText   = theWorkspace->AspectText();
+  const OpenGl_Aspects* aPrevAspectFace = theWorkspace->Aspects();
 
   // Apply correction for mirror transform
   if (myIsMirrored)
@@ -591,10 +588,7 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
   aCtx->SetGlNormalizeEnabled (anOldGlNormalize);
 
   // Restore aspects
-  theWorkspace->SetAspectLine   (aPrevAspectLine);
-  theWorkspace->SetAspectFace   (aPrevAspectFace);
-  theWorkspace->SetAspectMarker (aPrevAspectMarker);
-  theWorkspace->SetAspectText   (aPrevAspectText);
+  theWorkspace->SetAspects (aPrevAspectFace);
 
   // Apply highlight box
   if (!isClipped

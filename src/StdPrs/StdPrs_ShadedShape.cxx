@@ -592,7 +592,7 @@ void StdPrs_ShadedShape::Add (const Handle (Prs3d_Presentation)& thePrs,
   {
     if (Handle(Graphic3d_ArrayOfSegments) aBndSegments = fillFaceBoundaries (theShape, theDrawer->FaceBoundaryUpperContinuity()))
     {
-      Handle(Graphic3d_Group) aPrsGrp = Prs3d_Root::CurrentGroup (thePrs);
+      Handle(Graphic3d_Group) aPrsGrp = thePrs->NewGroup();
       aPrsGrp->SetGroupPrimitivesAspect (theDrawer->FaceBoundaryAspect()->Aspect());
       aPrsGrp->AddPrimitiveArray (aBndSegments);
     }

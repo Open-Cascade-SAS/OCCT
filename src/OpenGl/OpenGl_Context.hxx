@@ -133,7 +133,7 @@ typedef OpenGl_TmplCore44<OpenGl_GlCore43Back> OpenGl_GlCore44Back;
 typedef OpenGl_TmplCore44<OpenGl_GlCore43>     OpenGl_GlCore44;
 
 class Graphic3d_PresentationAttributes;
-class OpenGl_AspectFace;
+class OpenGl_Aspects;
 class OpenGl_FrameBuffer;
 class OpenGl_Sampler;
 class OpenGl_ShaderProgram;
@@ -705,17 +705,17 @@ public: //! @name methods to alter or retrieve current state
   Standard_EXPORT Standard_Boolean BindProgram (const Handle(OpenGl_ShaderProgram)& theProgram);
 
   //! Setup current shading material.
-  Standard_EXPORT void SetShadingMaterial (const OpenGl_AspectFace* theAspect,
+  Standard_EXPORT void SetShadingMaterial (const OpenGl_Aspects* theAspect,
                                            const Handle(Graphic3d_PresentationAttributes)& theHighlight);
 
   //! Checks if transparency is required for the given aspect and highlight style.
-  Standard_EXPORT static Standard_Boolean CheckIsTransparent (const OpenGl_AspectFace* theAspect,
+  Standard_EXPORT static Standard_Boolean CheckIsTransparent (const OpenGl_Aspects* theAspect,
                                                               const Handle(Graphic3d_PresentationAttributes)& theHighlight,
                                                               Standard_ShortReal& theAlphaFront,
                                                               Standard_ShortReal& theAlphaBack);
 
   //! Checks if transparency is required for the given aspect and highlight style.
-  static Standard_Boolean CheckIsTransparent (const OpenGl_AspectFace* theAspect,
+  static Standard_Boolean CheckIsTransparent (const OpenGl_Aspects* theAspect,
                                               const Handle(Graphic3d_PresentationAttributes)& theHighlight)
   {
     Standard_ShortReal anAlphaFront = 1.0f, anAlphaBack = 1.0f;

@@ -100,7 +100,7 @@ OpenGl_CappingPlaneResource::~OpenGl_CappingPlaneResource()
 // purpose  :
 // =======================================================================
 void OpenGl_CappingPlaneResource::Update (const Handle(OpenGl_Context)& ,
-                                          const Handle(Graphic3d_AspectFillArea3d)& theObjAspect)
+                                          const Handle(Graphic3d_Aspects)& theObjAspect)
 {
   updateTransform();
   updateAspect (theObjAspect);
@@ -122,11 +122,11 @@ void OpenGl_CappingPlaneResource::Release (OpenGl_Context* theContext)
 // function : updateAspect
 // purpose  :
 // =======================================================================
-void OpenGl_CappingPlaneResource::updateAspect (const Handle(Graphic3d_AspectFillArea3d)& theObjAspect)
+void OpenGl_CappingPlaneResource::updateAspect (const Handle(Graphic3d_Aspects)& theObjAspect)
 {
   if (myAspect == NULL)
   {
-    myAspect = new OpenGl_AspectFace();
+    myAspect = new OpenGl_Aspects();
     myAspectMod = myPlaneRoot->MCountAspect() - 1; // mark out of sync
   }
 

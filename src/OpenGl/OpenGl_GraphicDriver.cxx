@@ -564,8 +564,7 @@ void OpenGl_GraphicDriver::TextSize (const Handle(Graphic3d_CView)& theView,
   const Standard_ShortReal aHeight = (theHeight < 2.0f) ? DefaultTextHeight() : theHeight;
   OpenGl_TextParam aTextParam;
   aTextParam.Height = (int )aHeight;
-  OpenGl_AspectText aTextAspect;
-  aTextAspect.Aspect()->SetSpace (0.3);
+  OpenGl_Aspects aTextAspect;
   TCollection_ExtendedString anExtText = theText;
   NCollection_String aText (anExtText.ToExtString());
   OpenGl_Text::StringSize(aCtx, aText, aTextAspect, aTextParam, theView->RenderingParams().Resolution, theWidth, theAscent, theDescent);

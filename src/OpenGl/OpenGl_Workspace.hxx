@@ -18,7 +18,7 @@
 
 #include <Graphic3d_BufferType.hxx>
 
-#include <OpenGl_AspectFace.hxx>
+#include <OpenGl_Aspects.hxx>
 #include <OpenGl_CappingAlgo.hxx>
 #include <OpenGl_FrameBuffer.hxx>
 #include <OpenGl_Material.hxx>
@@ -111,28 +111,12 @@ public:
   //! Set highlight style.
   void SetHighlightStyle (const Handle(Graphic3d_PresentationAttributes)& theStyle) {  myHighlightStyle = theStyle; }
 
-  //! Return line color taking into account highlight flag.
-  const OpenGl_Vec4& LineColor() const
-  {
-    return !myHighlightStyle.IsNull()
-         ?  myHighlightStyle->ColorRGBA()
-         :  myAspectLineSet->Aspect()->ColorRGBA();
-  }
-
   //! Return edge color taking into account highlight flag.
   const OpenGl_Vec4& EdgeColor() const
   {
     return !myHighlightStyle.IsNull()
          ?  myHighlightStyle->ColorRGBA()
-         :  myAspectFaceSet->AspectEdge()->Aspect()->ColorRGBA();
-  }
-
-  //! Return marker color taking into account highlight flag.
-  const OpenGl_Vec4& MarkerColor() const
-  {
-    return !myHighlightStyle.IsNull()
-         ?  myHighlightStyle->ColorRGBA()
-         :  myAspectMarkerSet->Aspect()->ColorRGBA();
+         :  myAspectsSet->Aspect()->EdgeColorRGBA();
   }
 
   //! Return Interior color taking into account highlight flag.
@@ -140,7 +124,7 @@ public:
   {
     return !myHighlightStyle.IsNull()
          ?  myHighlightStyle->ColorRGBA()
-         :  myAspectFaceSet->Aspect()->InteriorColorRGBA();
+         :  myAspectsSet->Aspect()->InteriorColorRGBA();
   }
 
   //! Return text color taking into account highlight flag.
@@ -148,7 +132,7 @@ public:
   {
     return !myHighlightStyle.IsNull()
          ?  myHighlightStyle->ColorRGBA()
-         :  myAspectTextSet->Aspect()->ColorRGBA();
+         :  myAspectsSet->Aspect()->ColorRGBA();
   }
 
   //! Return text Subtitle color taking into account highlight flag.
@@ -156,48 +140,18 @@ public:
   {
     return !myHighlightStyle.IsNull()
          ?  myHighlightStyle->ColorRGBA()
-         :  myAspectTextSet->Aspect()->ColorSubTitleRGBA();
+         :  myAspectsSet->Aspect()->ColorSubTitleRGBA();
   }
 
-  //! Currently set line aspect (can differ from applied).
-  const OpenGl_AspectLine*   AspectLine()   const { return myAspectLineSet; }
+  //! Currently set aspects (can differ from applied).
+  const OpenGl_Aspects* Aspects() const { return myAspectsSet; }
 
-  //! Currently set face aspect (can differ from applied).
-  const OpenGl_AspectFace*   AspectFace()   const { return myAspectFaceSet; }
+  //! Assign new aspects (will be applied within ApplyAspects()).
+  Standard_EXPORT const OpenGl_Aspects* SetAspects (const OpenGl_Aspects* theAspect);
 
-  //! Currently set marker aspect (can differ from applied).
-  const OpenGl_AspectMarker* AspectMarker() const { return myAspectMarkerSet; }
-
-  //! Currently set text aspect (can differ from applied).
-  const OpenGl_AspectText*   AspectText()   const { return myAspectTextSet; }
-
-  //! Assign new line aspect (will be applied within ApplyAspectLine()).
-  Standard_EXPORT const OpenGl_AspectLine*   SetAspectLine   (const OpenGl_AspectLine*   theAspect);
-
-  //! Assign new face aspect (will be applied within ApplyAspectFace()).
-  Standard_EXPORT const OpenGl_AspectFace*   SetAspectFace   (const OpenGl_AspectFace*   theAspect);
-
-  //! Assign new marker aspect (will be applied within ApplyAspectMarker()).
-  Standard_EXPORT const OpenGl_AspectMarker* SetAspectMarker (const OpenGl_AspectMarker* theAspect);
-
-  //! Assign new text aspect (will be applied within ApplyAspectText()).
-  Standard_EXPORT const OpenGl_AspectText*   SetAspectText   (const OpenGl_AspectText*   theAspect);
-
-  //! Apply line aspect.
-  //! @return aspect set by SetAspectLine()
-  const OpenGl_AspectLine* ApplyAspectLine() { return myAspectLineSet; }
-
-  //! Apply face aspect.
-  //! @return aspect set by SetAspectFace()
-  Standard_EXPORT const OpenGl_AspectFace*   ApplyAspectFace();
-
-  //! Apply marker aspect.
-  //! @return aspect set by SetAspectMarker()
-  Standard_EXPORT const OpenGl_AspectMarker* ApplyAspectMarker();
-
-  //! Apply text aspect.
-  //! @return aspect set by SetAspectText()
-  const OpenGl_AspectText* ApplyAspectText() { return myAspectTextSet; }
+  //! Apply aspects.
+  //! @return aspect set by SetAspects()
+  Standard_EXPORT const OpenGl_Aspects* ApplyAspects();
 
   //! Clear the applied aspect state to default values.
   void ResetAppliedAspect();
@@ -229,14 +183,11 @@ public:
   //! @return applied model structure matrix.
   inline const OpenGl_Matrix* ModelMatrix() const { return StructureMatrix_applied; }
 
-  //! Returns face aspect for textured font rendering.
-  const OpenGl_AspectFace& FontFaceAspect() const { return myFontFaceAspect; }
-
   //! Returns face aspect for none culling mode.
-  const OpenGl_AspectFace& NoneCulling() const { return myNoneCulling; }
+  const OpenGl_Aspects& NoneCulling() const { return myNoneCulling; }
 
   //! Returns face aspect for front face culling mode.
-  const OpenGl_AspectFace& FrontCulling() const { return myFrontCulling; }
+  const OpenGl_Aspects& FrontCulling() const { return myFrontCulling; }
 
   //! Sets a new environment texture.
   void SetEnvironmentTexture (const Handle(OpenGl_TextureSet)& theTexture) { myEnvironmentTexture = theTexture; }
@@ -246,31 +197,23 @@ public:
 
 protected: //! @name protected fields
 
-  OpenGl_View*                     myView;
-  Handle(OpenGl_Window)            myWindow;
-  Handle(OpenGl_Context)           myGlContext;
-  Standard_Boolean                 myUseZBuffer;
-  Standard_Boolean                 myUseDepthWrite;
-  OpenGl_AspectFace                myNoneCulling;
-  OpenGl_AspectFace                myFrontCulling;
-  OpenGl_AspectFace                myFontFaceAspect;
+  OpenGl_View*           myView;
+  Handle(OpenGl_Window)  myWindow;
+  Handle(OpenGl_Context) myGlContext;
+  Standard_Boolean       myUseZBuffer;
+  Standard_Boolean       myUseDepthWrite;
+  OpenGl_Aspects         myNoneCulling;
+  OpenGl_Aspects         myFrontCulling;
 
 protected: //! @name fields related to status
 
   Standard_Integer myNbSkippedTranspElems; //!< counter of skipped transparent elements for OpenGl_LayerList two rendering passes method
   Standard_Integer myRenderFilter;         //!< active filter for skipping rendering of elements by some criteria (multiple render passes)
 
-  OpenGl_AspectLine   myDefaultAspectLine;
-  OpenGl_AspectFace   myDefaultAspectFace;
-  OpenGl_AspectMarker myDefaultAspectMarker;
-  OpenGl_AspectText   myDefaultAspectText;
+  OpenGl_Aspects   myDefaultAspects;
+  const OpenGl_Aspects*      myAspectsSet;
+  Handle(Graphic3d_Aspects)  myAspectsApplied;
 
-  const OpenGl_AspectLine*   myAspectLineSet;
-  const OpenGl_AspectFace*   myAspectFaceSet;
-  Handle(Graphic3d_AspectFillArea3d) myAspectFaceApplied;
-  const OpenGl_AspectMarker* myAspectMarkerSet;
-  Handle(Graphic3d_AspectMarker3d) myAspectMarkerApplied;
-  const OpenGl_AspectText*   myAspectTextSet;
   Handle(Graphic3d_PresentationAttributes) myAspectFaceAppliedWithHL;
 
   const OpenGl_Matrix* ViewMatrix_applied;
@@ -281,7 +224,7 @@ protected: //! @name fields related to status
 
   OpenGl_Matrix myModelViewMatrix; //!< Model matrix with applied structure transformations
 
-  OpenGl_AspectFace myAspectFaceHl; //!< Hiddenline aspect
+  OpenGl_Aspects myAspectFaceHl; //!< Hiddenline aspect
 
   Handle(OpenGl_TextureSet) myEnvironmentTexture;
 

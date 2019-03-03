@@ -19,10 +19,7 @@
 #include <Graphic3d_CStructure.hxx>
 #include <Graphic3d_SequenceOfHClipPlane.hxx>
 
-#include <OpenGl_AspectLine.hxx>
-#include <OpenGl_AspectFace.hxx>
-#include <OpenGl_AspectMarker.hxx>
-#include <OpenGl_AspectText.hxx>
+#include <OpenGl_Aspects.hxx>
 
 #include <OpenGl_GraphicDriver.hxx>
 #include <OpenGl_Group.hxx>

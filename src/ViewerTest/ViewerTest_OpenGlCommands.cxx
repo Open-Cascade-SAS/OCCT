@@ -22,10 +22,7 @@
 #include <Graphic3d_Group.hxx>
 #include <Graphic3d_ShaderObject.hxx>
 #include <Graphic3d_ShaderProgram.hxx>
-#include <OpenGl_AspectFace.hxx>
-#include <OpenGl_AspectLine.hxx>
-#include <OpenGl_AspectMarker.hxx>
-#include <OpenGl_AspectText.hxx>
+#include <OpenGl_Aspects.hxx>
 #include <OpenGl_Context.hxx>
 #include <OpenGl_Element.hxx>
 #include <OpenGl_GlCore20.hxx>
@@ -158,11 +155,9 @@ void VUserDrawObj::Render(const Handle(OpenGl_Workspace)& theWorkspace) const
   const Handle(OpenGl_Context)& aCtx = theWorkspace->GetGlContext();
 
   // To test linking against OpenGl_Workspace and all aspect classes
-  const OpenGl_AspectMarker* aMA = theWorkspace->AspectMarker();
-  aMA->Aspect()->Type();
-  const OpenGl_AspectText* aTA = theWorkspace->AspectText();
-  aTA->Aspect()->Font();
-  OpenGl_Vec4 aColor = theWorkspace->LineColor();
+  const OpenGl_Aspects* aMA = theWorkspace->Aspects();
+  aMA->Aspect()->MarkerType();
+  OpenGl_Vec4 aColor = theWorkspace->InteriorColor();
 
   aCtx->ShaderManager()->BindLineProgram (Handle(OpenGl_TextureSet)(), Aspect_TOL_SOLID,
                                           Graphic3d_TOSM_UNLIT, Graphic3d_AlphaMode_Opaque, false,

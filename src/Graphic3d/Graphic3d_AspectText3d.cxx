@@ -15,55 +15,43 @@
 
 #include <Graphic3d_AspectText3d.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_AspectText3d, Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_AspectText3d, Graphic3d_Aspects)
 
 // =======================================================================
 // function : Graphic3d_AspectText3d
 // purpose  :
 // =======================================================================
 Graphic3d_AspectText3d::Graphic3d_AspectText3d()
-: myFont   (Font_NOF_ASCII_MONO),
-  myColor  (Quantity_NOC_YELLOW),
-  myFactor (1.0),
-  mySpace  (0.0),
-  myStyle  (Aspect_TOST_NORMAL),
-  myDisplayType   (Aspect_TODT_NORMAL),
-  myColorSubTitle (Quantity_NOC_WHITE),
-  myTextZoomable  (false),
-  myTextAngle     (0.0),
-  myTextFontAspect(Font_FA_Regular)
 {
-  //
+  // actually this should be a special state Graphic3d_AlphaMode_MaskBlend
+  // since text is drawn in usual order with normal opaque objects (thanks to alpha test),
+  // but blending is also enabled to smoothen boundaries
+  SetAlphaMode (Graphic3d_AlphaMode_Mask, 0.285f);
+  myShadingModel = Graphic3d_TOSM_UNLIT;
+  myInteriorColor.SetRGB (Quantity_NOC_YELLOW);
+  myEdgeColor.SetRGB (Quantity_NOC_WHITE);
 }
 
 // =======================================================================
 // function : Graphic3d_AspectText3d
 // purpose  :
 // =======================================================================
-Graphic3d_AspectText3d::Graphic3d_AspectText3d (const Quantity_Color&  theColor,
-                                                const Standard_CString theFont,
-                                                const Standard_Real    theExpansionFactor,
-                                                const Standard_Real    theSpace,
-                                                const Aspect_TypeOfStyleText   theStyle,
-                                                const Aspect_TypeOfDisplayText theDisplayType)
-: myFont   (theFont),
-  myColor  (theColor),
-  myFactor (theExpansionFactor),
-  mySpace  (theSpace),
-  myStyle  (theStyle),
-  myDisplayType   (theDisplayType),
-  myColorSubTitle (Quantity_NOC_WHITE),
-  myTextZoomable  (false),
-  myTextAngle     (0.0),
-  myTextFontAspect(Font_FA_Regular)
+Graphic3d_AspectText3d::Graphic3d_AspectText3d (const Quantity_Color& theColor,
+                                                Standard_CString theFont,
+                                                Standard_Real ,
+                                                Standard_Real ,
+                                                Aspect_TypeOfStyleText   theStyle,
+                                                Aspect_TypeOfDisplayText theDisplayType)
 {
-  if (myFont.IsEmpty())
+  SetAlphaMode (Graphic3d_AlphaMode_Mask, 0.285f);
+  myShadingModel = Graphic3d_TOSM_UNLIT;
+  myTextStyle = theStyle;
+  myTextDisplayType = theDisplayType;
+  myInteriorColor.SetRGB (theColor);
+  myEdgeColor.SetRGB (Quantity_NOC_WHITE);
+  if (theFont != NULL
+  && *theFont != '\0')
   {
-    myFont = Font_NOF_ASCII_MONO;
-  }
-
-  if (theExpansionFactor <= 0.0)
-  {
-    throw Graphic3d_AspectTextDefinitionError("Bad value for TextScaleFactor");
+    myTextFont = new TCollection_HAsciiString (theFont);
   }
 }

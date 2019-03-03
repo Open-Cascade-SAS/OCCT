@@ -3352,8 +3352,10 @@ void MyPArrayObject::Compute (const Handle(PrsMgr_PresentationManager3d)& /*aPre
   {
     aGroup->SetGroupPrimitivesAspect (myMarkerAspect);
   }
-  aGroup->SetGroupPrimitivesAspect (myDrawer->LineAspect()->Aspect());
-  aGroup->SetGroupPrimitivesAspect (myDrawer->ShadingAspect()->Aspect());
+  else
+  {
+    aGroup->SetGroupPrimitivesAspect (myDrawer->ShadingAspect()->Aspect());
+  }
   aGroup->AddPrimitiveArray (myPArray);
 }
 
@@ -4780,7 +4782,13 @@ static Standard_Integer VTriangle (Draw_Interpretor& /*di*/,
     aPrims->AddVertex (aPnts[aPntIter]);
   }
 
-  ViewerTest::Display (argv[1], new MyPArrayObject (aPrims));
+  Handle(AIS_InteractiveObject) aPrs = new MyPArrayObject (aPrims);
+  if (!isTri)
+  {
+    aPrs->Attributes()->SetupOwnShadingAspect();
+    aPrs->Attributes()->ShadingAspect()->Aspect()->SetColor (aPrs->Attributes()->LineAspect()->Aspect()->Color());
+  }
+  ViewerTest::Display (argv[1], aPrs);
   return 0;
 }
 

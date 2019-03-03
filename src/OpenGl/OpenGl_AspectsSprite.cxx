@@ -1,6 +1,4 @@
-// Created on: 2011-07-14
-// Created by: Sergey ZERCHANINOV
-// Copyright (c) 2011-2014 OPEN CASCADE SAS
+// Copyright (c) 2019 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -13,18 +11,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <OpenGl_AspectMarker.hxx>
+#include <OpenGl_AspectsSprite.hxx>
+
 #include <OpenGl_Context.hxx>
-#include <OpenGl_GraphicDriver.hxx>
 #include <OpenGl_PointSprite.hxx>
-#include <OpenGl_ShaderManager.hxx>
-#include <OpenGl_ShaderProgram.hxx>
-#include <OpenGl_Workspace.hxx>
+#include <OpenGl_TextureSet.hxx>
 
 #include <Image_PixMap.hxx>
 #include <Graphic3d_MarkerImage.hxx>
-#include <Graphic3d_ShaderProgram.hxx>
-#include <NCollection_Vec4.hxx>
 #include <TColStd_HArray1OfByte.hxx>
 
 namespace
@@ -1332,17 +1326,13 @@ static const Standard_Byte OpenGl_AspectMarker_myMarkerRaster[] =
     0x00,0x00, 0x00,0x00  // CROSS 32x32 = 7.0
 };
 
-// =======================================================================
-// function : GetMarkerBitMapArray
-// purpose  : Returns a parameters for the marker of the specified
-//            type and scale.
-// =======================================================================
-void GetMarkerBitMapParam (const Aspect_TypeOfMarker theMarkerType,
-                           const Standard_ShortReal& theScale,
-                           Standard_Integer& theWidth,
-                           Standard_Integer& theHeight,
-                           Standard_Integer& theOffset,
-                           Standard_Integer& theNumOfBytes)
+//! Returns a parameters for the marker of the specified type and scale.
+static void GetMarkerBitMapParam (const Aspect_TypeOfMarker theMarkerType,
+                                  const Standard_ShortReal& theScale,
+                                  Standard_Integer& theWidth,
+                                  Standard_Integer& theHeight,
+                                  Standard_Integer& theOffset,
+                                  Standard_Integer& theNumOfBytes)
 {
   const Standard_Integer aType = (Standard_Integer )((theMarkerType > Aspect_TOM_O) ? Aspect_TOM_O : theMarkerType);
   const Standard_Real anIndex = (Standard_Real )(TEL_NO_OF_SIZES - 1) * (theScale - (Standard_Real )TEL_PM_START_SIZE)
@@ -1364,13 +1354,9 @@ void GetMarkerBitMapParam (const Aspect_TypeOfMarker theMarkerType,
   theNumOfBytes = theHeight * aNumOfBytesInRow;
 }
 
-// =======================================================================
-// function : GetTextureImage
-// purpose  : Returns a marker image for the marker of the specified
-//            type and scale.
-// =======================================================================
-Handle(Graphic3d_MarkerImage) GetTextureImage (const Aspect_TypeOfMarker theMarkerType,
-                                               const Standard_ShortReal& theScale)
+//! Returns a marker image for the marker of the specified type and scale.
+static Handle(Graphic3d_MarkerImage) GetTextureImage (const Aspect_TypeOfMarker theMarkerType,
+                                                      const Standard_ShortReal& theScale)
 {
   Standard_Integer aWidth, aHeight, anOffset, aNumOfBytes;
   GetMarkerBitMapParam (theMarkerType, theScale, aWidth, aHeight, anOffset, aNumOfBytes);
@@ -1385,15 +1371,10 @@ Handle(Graphic3d_MarkerImage) GetTextureImage (const Aspect_TypeOfMarker theMark
   return aTexture;
 }
 
-// =======================================================================
-// function : MergeImages
-// purpose  : Merge two image pixmap into one. Used for creating image for
-//            following markers: Aspect_TOM_O_POINT, Aspect_TOM_O_PLUS,
-//            Aspect_TOM_O_STAR, Aspect_TOM_O_X, Aspect_TOM_RING1,
-//            Aspect_TOM_RING2, Aspect_TOM_RING3
-// =======================================================================
-Handle(Image_PixMap) MergeImages (const Handle(Image_PixMap)& theImage1,
-                                  const Handle(Image_PixMap)& theImage2)
+//! Merge two image pixmap into one. Used for creating image for following markers:
+//! Aspect_TOM_O_POINT, Aspect_TOM_O_PLUS, Aspect_TOM_O_STAR, Aspect_TOM_O_X, Aspect_TOM_RING1, Aspect_TOM_RING2, Aspect_TOM_RING3
+static Handle(Image_PixMap) MergeImages (const Handle(Image_PixMap)& theImage1,
+                                         const Handle(Image_PixMap)& theImage2)
 {
   if (theImage1.IsNull() && theImage2.IsNull())
   {
@@ -1456,63 +1437,10 @@ Handle(Image_PixMap) MergeImages (const Handle(Image_PixMap)& theImage1,
 }
 
 // =======================================================================
-// function : OpenGl_AspectMarker
-// purpose  :
-// =======================================================================
-OpenGl_AspectMarker::OpenGl_AspectMarker()
-: myAspect (new Graphic3d_AspectMarker3d (Aspect_TOM_PLUS, Quantity_Color (Quantity_NOC_WHITE), 1.0f)),
-  myMarkerSize (1.0f)
-{
-  //
-}
-
-// =======================================================================
-// function : OpenGl_AspectMarker
-// purpose  :
-// =======================================================================
-OpenGl_AspectMarker::OpenGl_AspectMarker (const Handle(Graphic3d_AspectMarker3d)& theAspect)
-: myMarkerSize (1.0f)
-{
-  SetAspect (theAspect);
-}
-
-// =======================================================================
-// function : SetAspect
-// purpose  :
-// =======================================================================
-void OpenGl_AspectMarker::SetAspect (const Handle(Graphic3d_AspectMarker3d)& theAspect)
-{
-  myAspect = theAspect;
-
-  // update resource bindings
-  myResources.UpdateTexturesRediness (theAspect, myMarkerSize);
-  myResources.UpdateShaderRediness (theAspect);
-}
-
-// =======================================================================
-// function : Render
-// purpose  :
-// =======================================================================
-void OpenGl_AspectMarker::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
-{
-  theWorkspace->SetAspectMarker (this);
-}
-
-// =======================================================================
 // function : Release
 // purpose  :
 // =======================================================================
-void OpenGl_AspectMarker::Release (OpenGl_Context* theCtx)
-{
-  myResources.ReleaseTextures(theCtx);
-  myResources.ReleaseShaders (theCtx);
-}
-
-// =======================================================================
-// function : ReleaseTextures
-// purpose  :
-// =======================================================================
-void OpenGl_AspectMarker::Resources::ReleaseTextures (OpenGl_Context* theCtx)
+void OpenGl_AspectsSprite::Release (OpenGl_Context* theCtx)
 {
   myIsSpriteReady = Standard_False;
   if (mySprite.IsNull())
@@ -1547,64 +1475,34 @@ void OpenGl_AspectMarker::Resources::ReleaseTextures (OpenGl_Context* theCtx)
 }
 
 // =======================================================================
-// function : ReleaseShaders
+// function : UpdateRediness
 // purpose  :
 // =======================================================================
-void OpenGl_AspectMarker::Resources::ReleaseShaders (OpenGl_Context* theCtx)
-{
-  if (!myShaderProgram.IsNull() && theCtx != NULL)
-  {
-    theCtx->ShaderManager()->Unregister (myShaderProgramId,
-                                         myShaderProgram);
-  }
-  myShaderProgramId.Clear();
-  myIsShaderReady = Standard_False;
-}
-
-// =======================================================================
-// function : UpdateTexturesRediness
-// purpose  :
-// =======================================================================
-void OpenGl_AspectMarker::Resources::UpdateTexturesRediness (const Handle(Graphic3d_AspectMarker3d)& theAspect,
-                                                             Standard_ShortReal& theMarkerSize)
+void OpenGl_AspectsSprite::UpdateRediness (const Handle(Graphic3d_Aspects)& theAspect)
 {
   // update sprite resource bindings
   TCollection_AsciiString aSpriteKeyNew, aSpriteAKeyNew;
-  spriteKeys (theAspect->GetMarkerImage(), theAspect->Type(), theAspect->Scale(), theAspect->ColorRGBA(), aSpriteKeyNew, aSpriteAKeyNew);
+  spriteKeys (theAspect->MarkerImage(), theAspect->MarkerType(), theAspect->MarkerScale(), theAspect->ColorRGBA(), aSpriteKeyNew, aSpriteAKeyNew);
   const TCollection_AsciiString& aSpriteKeyOld  = !mySprite.IsNull()  ? mySprite ->First()->ResourceId() : THE_EMPTY_KEY;
   const TCollection_AsciiString& aSpriteAKeyOld = !mySpriteA.IsNull() ? mySpriteA->First()->ResourceId() : THE_EMPTY_KEY;
   if (aSpriteKeyNew.IsEmpty()  || aSpriteKeyOld  != aSpriteKeyNew
    || aSpriteAKeyNew.IsEmpty() || aSpriteAKeyOld != aSpriteAKeyNew)
   {
     myIsSpriteReady = Standard_False;
-    theMarkerSize = theAspect->Scale();
+    myMarkerSize = theAspect->MarkerScale();
   }
 }
 
 // =======================================================================
-// function : UpdateShaderRediness
+// function : build
 // purpose  :
 // =======================================================================
-void OpenGl_AspectMarker::Resources::UpdateShaderRediness (const Handle(Graphic3d_AspectMarker3d)& theAspect)
-{
-  // update shader program resource bindings
-  const TCollection_AsciiString& aShaderKey = theAspect->ShaderProgram().IsNull() ? THE_EMPTY_KEY : theAspect->ShaderProgram()->GetId();
-  if (aShaderKey.IsEmpty() || myShaderProgramId != aShaderKey)
-  {
-    myIsShaderReady = Standard_False;
-  }
-}
-
-// =======================================================================
-// function : BuildSprites
-// purpose  :
-// =======================================================================
-void OpenGl_AspectMarker::Resources::BuildSprites (const Handle(OpenGl_Context)&        theCtx,
-                                                   const Handle(Graphic3d_MarkerImage)& theMarkerImage,
-                                                   const Aspect_TypeOfMarker theType,
-                                                   const Standard_ShortReal theScale,
-                                                   const Graphic3d_Vec4& theColor,
-                                                   Standard_ShortReal& theMarkerSize)
+void OpenGl_AspectsSprite::build (const Handle(OpenGl_Context)& theCtx,
+                                  const Handle(Graphic3d_MarkerImage)& theMarkerImage,
+                                  Aspect_TypeOfMarker theType,
+                                  Standard_ShortReal theScale,
+                                  const Graphic3d_Vec4& theColor,
+                                  Standard_ShortReal& theMarkerSize)
 {
   // generate key for shared resource
   TCollection_AsciiString aNewKey, aNewKeyA;
@@ -1974,42 +1872,15 @@ void OpenGl_AspectMarker::Resources::BuildSprites (const Handle(OpenGl_Context)&
 }
 
 // =======================================================================
-// function : BuildShader
-// purpose  :
-// =======================================================================
-void OpenGl_AspectMarker::Resources::BuildShader (const Handle(OpenGl_Context)&          theCtx,
-                                                  const Handle(Graphic3d_ShaderProgram)& theShader)
-{
-  if (theCtx->core20fwd == NULL)
-  {
-    return;
-  }
-
-  // release old shader program resources
-  if (!myShaderProgram.IsNull())
-  {
-    theCtx->ShaderManager()->Unregister (myShaderProgramId, myShaderProgram);
-    myShaderProgramId.Clear();
-    myShaderProgram.Nullify();
-  }
-  if (theShader.IsNull())
-  {
-    return;
-  }
-
-  theCtx->ShaderManager()->Create (theShader, myShaderProgramId, myShaderProgram);
-}
-
-// =======================================================================
 // function : spriteKeys
 // purpose  :
 // =======================================================================
-void OpenGl_AspectMarker::Resources::spriteKeys (const Handle(Graphic3d_MarkerImage)& theMarkerImage,
-                                                 const Aspect_TypeOfMarker theType,
-                                                 const Standard_ShortReal theScale,
-                                                 const Graphic3d_Vec4& theColor,
-                                                 TCollection_AsciiString& theKey,
-                                                 TCollection_AsciiString& theKeyA)
+void OpenGl_AspectsSprite::spriteKeys (const Handle(Graphic3d_MarkerImage)& theMarkerImage,
+                                       Aspect_TypeOfMarker theType,
+                                       Standard_ShortReal theScale,
+                                       const Graphic3d_Vec4& theColor,
+                                       TCollection_AsciiString& theKey,
+                                       TCollection_AsciiString& theKeyA)
 {
   // generate key for shared resource
   if (theType == Aspect_TOM_USERDEFINED)

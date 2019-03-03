@@ -81,11 +81,16 @@ public: //! @name global aspects
   //! Sets transparency value.
   Standard_EXPORT virtual void SetTransparency (const Standard_Real theValue) Standard_OVERRIDE;
 
+  //! Sets the material aspect.
+  Standard_EXPORT virtual void SetMaterial (const Graphic3d_MaterialAspect& theAspect) Standard_OVERRIDE;
+
+public:
+
   //! Removes the setting for transparency in the reconstructed compound shape.
   Standard_EXPORT virtual void UnsetTransparency() Standard_OVERRIDE;
 
-  //! Sets the material aspect.
-  Standard_EXPORT virtual void SetMaterial (const Graphic3d_MaterialAspect& theAspect) Standard_OVERRIDE;
+  //! Setup line width of entire shape.
+  Standard_EXPORT virtual void UnsetWidth() Standard_OVERRIDE;
 
 protected: //! @name override presentation computation
 

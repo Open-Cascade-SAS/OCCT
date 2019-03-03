@@ -23,7 +23,6 @@
 #include <Graphic3d_TransformPers.hxx>
 #include <Graphic3d_TransformUtils.hxx>
 #include <gp_Ax3.hxx>
-#include <OpenGl_AspectLine.hxx>
 #include <OpenGl_Workspace.hxx>
 #include <OpenGl_View.hxx>
 #include <Precision.hxx>
@@ -111,10 +110,14 @@ void OpenGl_GraduatedTrihedron::initGlResources (const Handle(OpenGl_Context)& t
   myLabelValues.SetFontSize (theCtx, myData.ValuesSize());
 
   myAspectLabels.Aspect()->SetTextFontAspect (myData.NamesFontAspect());
-  myAspectLabels.Aspect()->SetFont (myData.NamesFont());
+  myAspectLabels.Aspect()->SetTextFont (!myData.NamesFont().IsEmpty()
+                                       ? new TCollection_HAsciiString (myData.NamesFont())
+                                       : Handle(TCollection_HAsciiString )());
 
   myAspectValues.Aspect()->SetTextFontAspect (myData.ValuesFontAspect());
-  myAspectValues.Aspect()->SetFont (myData.ValuesFont());
+  myAspectValues.Aspect()->SetTextFont (!myData.ValuesFont().IsEmpty()
+                                       ? new TCollection_HAsciiString (myData.ValuesFont())
+                                       : Handle(TCollection_HAsciiString )());
 
   // Grid aspect
   myGridLineAspect.Aspect()->SetColor (myData.GridColor());
@@ -400,7 +403,7 @@ void OpenGl_GraduatedTrihedron::renderAxis (const Handle(OpenGl_Workspace)& theW
 {
   const Axis& anAxis = myAxes[theIndex];
 
-  theWorkspace->SetAspectLine (&anAxis.LineAspect);
+  theWorkspace->SetAspects (&anAxis.LineAspect);
   const Handle(OpenGl_Context)& aContext = theWorkspace->GetGlContext();
 
   // Reset transformations
@@ -487,7 +490,7 @@ void OpenGl_GraduatedTrihedron::renderTickmarkLabels (const Handle(OpenGl_Worksp
 
   if (aCurAspect.ToDrawTickmarks() && aCurAspect.TickmarksNumber() > 0)
   {
-    theWorkspace->SetAspectLine (&myGridLineAspect);
+    theWorkspace->SetAspects (&myGridLineAspect);
 
     OpenGl_Mat4 aModelMat (theMat);
 
@@ -518,7 +521,7 @@ void OpenGl_GraduatedTrihedron::renderTickmarkLabels (const Handle(OpenGl_Worksp
     OpenGl_Vec3 aMiddle (theGridAxes.Ticks[theIndex] + aSizeVec * theGridAxes.Axes[theIndex] * 0.5f + aDir * (Standard_ShortReal)(theDpix * anOffset));
 
     myAspectLabels.Aspect()->SetColor (anAxis.NameColor);
-    theWorkspace->SetAspectText (&myAspectLabels);
+    theWorkspace->SetAspects (&myAspectLabels);
     anAxis.Label.SetPosition (aMiddle);
     anAxis.Label.Render (theWorkspace);
   }
@@ -526,7 +529,7 @@ void OpenGl_GraduatedTrihedron::renderTickmarkLabels (const Handle(OpenGl_Worksp
   if (aCurAspect.ToDrawValues() && aCurAspect.TickmarksNumber() > 0)
   {
     myAspectValues.Aspect()->SetColor (anAxis.LineAspect.Aspect()->Color());
-    theWorkspace->SetAspectText (&myAspectValues);
+    theWorkspace->SetAspects (&myAspectValues);
     Standard_Real anOffset = aCurAspect.ValuesOffset() + aCurAspect.TickmarksLength();
 
     for (Standard_Integer anIt = 0; anIt <= aCurAspect.TickmarksNumber(); ++anIt)
@@ -605,8 +608,7 @@ void OpenGl_GraduatedTrihedron::Render (const Handle(OpenGl_Workspace)& theWorks
   Standard_ExtCharacter anAxesState = getGridAxes (aCorners, aGridAxes);
 
   // Remember current aspects
-  const OpenGl_AspectLine* anOldAspectLine = theWorkspace->AspectLine();
-  const OpenGl_AspectText* anOldAspectText = theWorkspace->AspectText();
+  const OpenGl_Aspects* anOldAspectLine = theWorkspace->Aspects();
 
   OpenGl_Mat4 aModelMatrix;
   aModelMatrix.Convert (aContext->WorldViewState.Current());
@@ -618,7 +620,7 @@ void OpenGl_GraduatedTrihedron::Render (const Handle(OpenGl_Workspace)& theWorks
 
   if (myData.ToDrawGrid())
   {
-    theWorkspace->SetAspectLine (&myGridLineAspect);
+    theWorkspace->SetAspects (&myGridLineAspect);
 
     // render grid edges
     if (anAxesState & XOO_XYO)
@@ -690,8 +692,7 @@ void OpenGl_GraduatedTrihedron::Render (const Handle(OpenGl_Workspace)& theWorks
     renderTickmarkLabels (theWorkspace, aModelMatrix, anIter, aGridAxes, aDpix);
   }
 
-  theWorkspace->SetAspectLine (anOldAspectLine);
-  theWorkspace->SetAspectText (anOldAspectText);
+  theWorkspace->SetAspects (anOldAspectLine);
 
   aContext->WorldViewState.Pop();
   aContext->ApplyWorldViewMatrix();

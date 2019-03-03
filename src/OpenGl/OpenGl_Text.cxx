@@ -13,7 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <OpenGl_AspectText.hxx>
+#include <OpenGl_Aspects.hxx>
 #include <OpenGl_GlCore11.hxx>
 #include <OpenGl_GraphicDriver.hxx>
 #include <OpenGl_ShaderManager.hxx>
@@ -38,6 +38,8 @@ namespace
     0.0, 0.0, 1.0, 0.0,
     0.0, 0.0, 0.0, 1.0
   };
+
+  static const TCollection_AsciiString THE_DEFAULT_FONT (Font_NOF_ASCII_MONO);
 
   //! Auxiliary tool for setting polygon offset temporarily.
   struct BackPolygonOffsetSentry
@@ -287,7 +289,7 @@ void OpenGl_Text::Release (OpenGl_Context* theCtx)
 // =======================================================================
 void OpenGl_Text::StringSize (const Handle(OpenGl_Context)& theCtx,
                               const NCollection_String&     theText,
-                              const OpenGl_AspectText&      theTextAspect,
+                              const OpenGl_Aspects&         theTextAspect,
                               const OpenGl_TextParam&       theParams,
                               const unsigned int            theResolution,
                               Standard_ShortReal&           theWidth,
@@ -353,10 +355,8 @@ void OpenGl_Text::StringSize (const Handle(OpenGl_Context)& theCtx,
 // =======================================================================
 void OpenGl_Text::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
 {
-  theWorkspace->SetAspectFace (&theWorkspace->FontFaceAspect());
-  theWorkspace->ApplyAspectFace();
-  const OpenGl_AspectText*      aTextAspect  = theWorkspace->ApplyAspectText();
-  const Handle(OpenGl_Context)& aCtx         = theWorkspace->GetGlContext();
+  const OpenGl_Aspects* aTextAspect = theWorkspace->ApplyAspects();
+  const Handle(OpenGl_Context)& aCtx = theWorkspace->GetGlContext();
   const Handle(OpenGl_TextureSet) aPrevTexture = aCtx->BindTextures (Handle(OpenGl_TextureSet)());
 
   // Bind custom shader program or generate default version
@@ -390,10 +390,9 @@ void OpenGl_Text::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
 // purpose  :
 // =======================================================================
 void OpenGl_Text::Render (const Handle(OpenGl_Context)& theCtx,
-                          const OpenGl_AspectText&      theTextAspect,
-                          const unsigned int            theResolution) const
+                          const OpenGl_Aspects& theTextAspect,
+                          unsigned int theResolution) const
 {
-  const bool anAlphaToCoverageOld = theCtx->SetSampleAlphaToCoverage (false);
 #if !defined(GL_ES_VERSION_2_0)
   const Standard_Integer aPrevPolygonMode  = theCtx->SetPolygonMode (GL_FILL);
   const bool             aPrevHatchingMode = theCtx->SetPolygonHatchEnabled (false);
@@ -408,7 +407,6 @@ void OpenGl_Text::Render (const Handle(OpenGl_Context)& theCtx,
   theCtx->SetPolygonMode         (aPrevPolygonMode);
   theCtx->SetPolygonHatchEnabled (aPrevHatchingMode);
 #endif
-  theCtx->SetSampleAlphaToCoverage (anAlphaToCoverageOld);
 }
 
 // =======================================================================
@@ -416,8 +414,8 @@ void OpenGl_Text::Render (const Handle(OpenGl_Context)& theCtx,
 // purpose  :
 // =======================================================================
 void OpenGl_Text::setupMatrix (const Handle(OpenGl_Context)& theCtx,
-                               const OpenGl_AspectText&      theTextAspect,
-                               const OpenGl_Vec3             theDVec) const
+                               const OpenGl_Aspects& theTextAspect,
+                               const OpenGl_Vec3& theDVec) const
 {
   OpenGl_Mat4d aModViewMat;
   OpenGl_Mat4d aProjectMat;
@@ -434,7 +432,7 @@ void OpenGl_Text::setupMatrix (const Handle(OpenGl_Context)& theCtx,
   {
     Graphic3d_TransformUtils::Translate<GLdouble> (aModViewMat, myPoint.x() + theDVec.x(), myPoint.y() + theDVec.y(), 0.f);
     Graphic3d_TransformUtils::Scale<GLdouble> (aModViewMat, 1.f, -1.f, 1.f);
-    Graphic3d_TransformUtils::Rotate<GLdouble> (aModViewMat, theTextAspect.Aspect()->GetTextAngle(), 0.f, 0.f, 1.f);
+    Graphic3d_TransformUtils::Rotate<GLdouble> (aModViewMat, theTextAspect.Aspect()->TextAngle(), 0.f, 0.f, 1.f);
   }
   else
   {
@@ -476,10 +474,10 @@ void OpenGl_Text::setupMatrix (const Handle(OpenGl_Context)& theCtx,
     else
     {
       Graphic3d_TransformUtils::Translate<GLdouble> (aModViewMat, anObjX, anObjY, anObjZ);
-      Graphic3d_TransformUtils::Rotate<GLdouble> (aModViewMat, theTextAspect.Aspect()->GetTextAngle(), 0.0, 0.0, 1.0);
+      Graphic3d_TransformUtils::Rotate<GLdouble> (aModViewMat, theTextAspect.Aspect()->TextAngle(), 0.0, 0.0, 1.0);
     }
 
-    if (!theTextAspect.Aspect()->GetTextZoomable())
+    if (!theTextAspect.Aspect()->IsTextZoomable())
     {
       Graphic3d_TransformUtils::Scale<GLdouble> (aModViewMat, myScaleHeight, myScaleHeight, myScaleHeight);
     }
@@ -516,7 +514,7 @@ void OpenGl_Text::setupMatrix (const Handle(OpenGl_Context)& theCtx,
 // purpose  :
 // =======================================================================
 void OpenGl_Text::drawText (const Handle(OpenGl_Context)& theCtx,
-                            const OpenGl_AspectText&      theTextAspect) const
+                            const OpenGl_Aspects& theTextAspect) const
 {
   (void )theTextAspect;
   if (myVertsVbo.Length() != myTextures.Length()
@@ -547,14 +545,15 @@ void OpenGl_Text::drawText (const Handle(OpenGl_Context)& theCtx,
 // function : FontKey
 // purpose  :
 // =======================================================================
-TCollection_AsciiString OpenGl_Text::FontKey (const OpenGl_AspectText& theAspect,
-                                              const Standard_Integer   theHeight,
-                                              const unsigned int       theResolution)
+TCollection_AsciiString OpenGl_Text::FontKey (const OpenGl_Aspects& theAspect,
+                                              Standard_Integer theHeight,
+                                              unsigned int theResolution)
 {
-  const Font_FontAspect anAspect = theAspect.Aspect()->GetTextFontAspect() != Font_FA_Undefined
-                                 ? theAspect.Aspect()->GetTextFontAspect()
+  const Font_FontAspect anAspect = theAspect.Aspect()->TextFontAspect() != Font_FA_Undefined
+                                 ? theAspect.Aspect()->TextFontAspect()
                                  : Font_FA_Regular;
-  return theAspect.Aspect()->Font()
+  const TCollection_AsciiString& aFont = !theAspect.Aspect()->TextFont().IsNull() ? theAspect.Aspect()->TextFont()->String() : THE_DEFAULT_FONT;
+  return aFont
        + TCollection_AsciiString(":") + Standard_Integer(anAspect)
        + TCollection_AsciiString(":") + Standard_Integer(theResolution)
        + TCollection_AsciiString(":") + theHeight;
@@ -565,10 +564,10 @@ TCollection_AsciiString OpenGl_Text::FontKey (const OpenGl_AspectText& theAspect
 // purpose  :
 // =======================================================================
 Handle(OpenGl_Font) OpenGl_Text::FindFont (const Handle(OpenGl_Context)& theCtx,
-                                           const OpenGl_AspectText&      theAspect,
-                                           const Standard_Integer        theHeight,
-                                           const unsigned int            theResolution,
-                                           const TCollection_AsciiString theKey)
+                                           const OpenGl_Aspects& theAspect,
+                                           Standard_Integer theHeight,
+                                           unsigned int theResolution,
+                                           const TCollection_AsciiString& theKey)
 {
   Handle(OpenGl_Font) aFont;
   if (theHeight < 2)
@@ -579,9 +578,11 @@ Handle(OpenGl_Font) OpenGl_Text::FindFont (const Handle(OpenGl_Context)& theCtx,
   if (!theCtx->GetResource (theKey, aFont))
   {
     Handle(Font_FontMgr) aFontMgr = Font_FontMgr::GetInstance();
-    const TCollection_AsciiString& aFontName = theAspect.Aspect()->Font();
-    Font_FontAspect anAspect = theAspect.Aspect()->GetTextFontAspect() != Font_FA_Undefined
-                             ? theAspect.Aspect()->GetTextFontAspect()
+    const TCollection_AsciiString& aFontName = !theAspect.Aspect()->TextFont().IsNull()
+                                             ?  theAspect.Aspect()->TextFont()->String()
+                                             :  THE_DEFAULT_FONT;
+    Font_FontAspect anAspect = theAspect.Aspect()->TextFontAspect() != Font_FA_Undefined
+                             ? theAspect.Aspect()->TextFontAspect()
                              : Font_FA_Regular;
     Handle(Font_FTFont) aFontFt;
     if (Handle(Font_SystemFont) aRequestedFont = aFontMgr->FindFont (aFontName, anAspect))
@@ -595,7 +596,7 @@ Handle(OpenGl_Font) OpenGl_Text::FindFont (const Handle(OpenGl_Context)& theCtx,
         {
           TCollection_ExtendedString aMsg;
           aMsg += "Font '";
-          aMsg += theAspect.Aspect()->Font();
+          aMsg += aFontName;
           aMsg += "' - initialization of GL resources has failed!";
           theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH, aMsg);
           aFontFt.Nullify();
@@ -607,7 +608,7 @@ Handle(OpenGl_Font) OpenGl_Text::FindFont (const Handle(OpenGl_Context)& theCtx,
       {
         TCollection_ExtendedString aMsg;
         aMsg += "Font '";
-        aMsg += theAspect.Aspect()->Font();
+        aMsg += aFontName;
         aMsg += "' is broken or has incompatible format! File path: ";
         aMsg += aRequestedFont->FontPathAny (anAspect);
         theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH, aMsg);
@@ -619,7 +620,7 @@ Handle(OpenGl_Font) OpenGl_Text::FindFont (const Handle(OpenGl_Context)& theCtx,
     {
       TCollection_ExtendedString aMsg;
       aMsg += "Font '";
-      aMsg += theAspect.Aspect()->Font();
+      aMsg += aFontName;
       aMsg += "' is not found in the system!";
       theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH, aMsg);
       aFont = new OpenGl_Font (aFontFt, theKey);
@@ -635,8 +636,8 @@ Handle(OpenGl_Font) OpenGl_Text::FindFont (const Handle(OpenGl_Context)& theCtx,
 // purpose  :
 // =======================================================================
 void OpenGl_Text::drawRect (const Handle(OpenGl_Context)& theCtx,
-                            const OpenGl_AspectText&      theTextAspect,
-                            const OpenGl_Vec4&            theColorSubs) const
+                            const OpenGl_Aspects& theTextAspect,
+                            const OpenGl_Vec4& theColorSubs) const
 {
   Handle(OpenGl_ShaderProgram) aPrevProgram = theCtx->ActiveProgram();
   if (myBndVertsVbo.IsNull())
@@ -686,10 +687,10 @@ void OpenGl_Text::drawRect (const Handle(OpenGl_Context)& theCtx,
 // purpose  :
 // =======================================================================
 void OpenGl_Text::render (const Handle(OpenGl_Context)& theCtx,
-                          const OpenGl_AspectText&      theTextAspect,
-                          const OpenGl_Vec4&            theColorText,
-                          const OpenGl_Vec4&            theColorSubs,
-                          const unsigned int            theResolution) const
+                          const OpenGl_Aspects& theTextAspect,
+                          const OpenGl_Vec4& theColorText,
+                          const OpenGl_Vec4& theColorSubs,
+                          unsigned int theResolution) const
 {
   if (myString.IsEmpty())
   {
@@ -759,7 +760,7 @@ void OpenGl_Text::render (const Handle(OpenGl_Context)& theCtx,
                                                       myWinX, myWinY, myWinZ);
 
     // compute scale factor for constant text height
-    if (theTextAspect.Aspect()->GetTextZoomable())
+    if (theTextAspect.Aspect()->IsTextZoomable())
     {
       myExportHeight = aPointSize;
     }
@@ -787,7 +788,7 @@ void OpenGl_Text::render (const Handle(OpenGl_Context)& theCtx,
 
   // setup depth test
   const bool hasDepthTest = !myIs2d
-                         && theTextAspect.Aspect()->Style() != Aspect_TOST_ANNOTATION;
+                         && theTextAspect.Aspect()->TextStyle() != Aspect_TOST_ANNOTATION;
   if (!hasDepthTest)
   {
     glDisable (GL_DEPTH_TEST);
@@ -816,8 +817,11 @@ void OpenGl_Text::render (const Handle(OpenGl_Context)& theCtx,
   glEnable (GL_BLEND);
   glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+  // alpha to coverage makes text too thin
+  theCtx->SetSampleAlphaToCoverage (false);
+
   // extra drawings
-  switch (theTextAspect.Aspect()->DisplayType())
+  switch (theTextAspect.Aspect()->TextDisplayType())
   {
     case Aspect_TODT_BLEND:
     {
@@ -880,7 +884,7 @@ void OpenGl_Text::render (const Handle(OpenGl_Context)& theCtx,
   }
 #endif
 
-  if (theTextAspect.Aspect()->DisplayType() == Aspect_TODT_DIMENSION)
+  if (theTextAspect.Aspect()->TextDisplayType() == Aspect_TODT_DIMENSION)
   {
     glDisable (GL_BLEND);
     if (!myIs2d)

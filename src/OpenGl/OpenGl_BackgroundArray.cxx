@@ -338,7 +338,7 @@ Standard_Boolean OpenGl_BackgroundArray::createTextureArray (const Handle(OpenGl
 
   // Get texture parameters
   const Handle(OpenGl_Context)& aCtx = theWorkspace->GetGlContext();
-  const OpenGl_AspectFace* anAspectFace = theWorkspace->AspectFace();
+  const OpenGl_Aspects* anAspectFace = theWorkspace->Aspects();
   GLfloat aTextureWidth  = (GLfloat )anAspectFace->TextureSet (aCtx)->First()->SizeX();
   GLfloat aTextureHeight = (GLfloat )anAspectFace->TextureSet (aCtx)->First()->SizeY();
 

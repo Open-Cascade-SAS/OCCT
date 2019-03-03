@@ -70,7 +70,7 @@ OpenGl_View::OpenGl_View (const Handle(Graphic3d_StructureManager)& theMgr,
   myTransientDrawToFront (Standard_True),
   myBackBufferRestored   (Standard_False),
   myIsImmediateDrawn     (Standard_False),
-  myTextureParams   (new OpenGl_AspectFace()),
+  myTextureParams   (new OpenGl_Aspects()),
   myBgGradientArray (new OpenGl_BackgroundArray (Graphic3d_TOB_GRADIENT)),
   myBgTextureArray  (new OpenGl_BackgroundArray (Graphic3d_TOB_TEXTURE)),
   // ray-tracing fields initialization

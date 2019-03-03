@@ -24,10 +24,7 @@
 
 #include <OpenGl_SetOfShaderPrograms.hxx>
 #include <OpenGl_ShaderStates.hxx>
-#include <OpenGl_AspectFace.hxx>
-#include <OpenGl_AspectLine.hxx>
-#include <OpenGl_AspectText.hxx>
-#include <OpenGl_AspectMarker.hxx>
+#include <OpenGl_Aspects.hxx>
 #include <OpenGl_MaterialState.hxx>
 #include <OpenGl_Texture.hxx>
 
@@ -340,7 +337,7 @@ public:
 
   //! Setup interior style line edges variables.
   Standard_EXPORT void PushInteriorState (const Handle(OpenGl_ShaderProgram)& theProgram,
-                                          const Handle(Graphic3d_AspectFillArea3d)& theAspect) const;
+                                          const Handle(Graphic3d_Aspects)& theAspect) const;
 
 public:
 

@@ -472,33 +472,7 @@ void AIS_InteractiveObject::SetPolygonOffsets(const Standard_Integer    aMode,
     myDrawer->SetShadingAspect(new Prs3d_ShadingAspect());
 
   myDrawer->ShadingAspect()->Aspect()->SetPolygonOffsets( aMode, aFactor, aUnits );
-
-  // Modify existing presentations 
-  for (Standard_Integer aPrsIter = 1, n = myPresentations.Length(); aPrsIter <= n; ++aPrsIter)
-  {
-    const Handle(PrsMgr_Presentation)& aPrs3d = myPresentations (aPrsIter).Presentation();
-    if ( !aPrs3d.IsNull() ) {
-      const Handle(Graphic3d_Structure)& aStruct = aPrs3d->Presentation();
-      if( !aStruct.IsNull() ) {
-        // Workaround for issue 23115: Need to update also groups, because their
-        // face aspect ALWAYS overrides the structure's.
-        const Graphic3d_SequenceOfGroup& aGroups = aStruct->Groups();
-        for (Graphic3d_SequenceOfGroup::Iterator aGroupIter (aGroups); aGroupIter.More(); aGroupIter.Next())
-        {
-          Handle(Graphic3d_Group)& aGrp = aGroupIter.ChangeValue();
-          if (aGrp.IsNull()
-          || !aGrp->IsGroupPrimitivesAspectSet (Graphic3d_ASPECT_FILL_AREA))
-          {
-            continue;
-          }
-
-          Handle(Graphic3d_AspectFillArea3d) aFaceAsp = aGrp->FillAreaAspect();
-          aFaceAsp->SetPolygonOffsets(aMode, aFactor, aUnits);
-          aGrp->SetGroupPrimitivesAspect(aFaceAsp);
-        }
-      }
-    }
-  }
+  SynchronizeAspects();
 }
 
 //=======================================================================
@@ -618,6 +592,36 @@ void AIS_InteractiveObject::SynchronizeAspects()
       if (!aGroupIter.Value().IsNull())
       {
         aGroupIter.ChangeValue()->SynchronizeAspects();
+      }
+    }
+  }
+}
+
+//=======================================================================
+//function : replaceAspects
+//purpose  :
+//=======================================================================
+void AIS_InteractiveObject::replaceAspects (const Graphic3d_MapOfAspectsToAspects& theMap)
+{
+  if (theMap.IsEmpty())
+  {
+    return;
+  }
+
+  for (PrsMgr_Presentations::Iterator aPrsIter (myPresentations); aPrsIter.More(); aPrsIter.Next())
+  {
+    const Handle(PrsMgr_Presentation)& aPrs3d = aPrsIter.ChangeValue().Presentation();
+    if (aPrs3d.IsNull()
+     || aPrs3d->Presentation().IsNull())
+    {
+      continue;
+    }
+
+    for (Graphic3d_SequenceOfGroup::Iterator aGroupIter (aPrs3d->Presentation()->Groups()); aGroupIter.More(); aGroupIter.Next())
+    {
+      if (!aGroupIter.Value().IsNull())
+      {
+        aGroupIter.ChangeValue()->ReplaceAspects (theMap);
       }
     }
   }

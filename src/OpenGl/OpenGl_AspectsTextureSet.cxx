@@ -1,6 +1,4 @@
-// Created on: 2011-07-13
-// Created by: Sergey ZERCHANINOV
-// Copyright (c) 2011-2014 OPEN CASCADE SAS
+// Copyright (c) 2019 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -13,136 +11,27 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Aspect_PolygonOffsetMode.hxx>
-#include <NCollection_Vec3.hxx>
+#include <OpenGl_AspectsTextureSet.hxx>
 
-#include <OpenGl_AspectFace.hxx>
 #include <OpenGl_Context.hxx>
 #include <OpenGl_Sampler.hxx>
-#include <OpenGl_ShaderManager.hxx>
-#include <OpenGl_ShaderProgram.hxx>
 #include <OpenGl_Texture.hxx>
-#include <OpenGl_Workspace.hxx>
+#include <OpenGl_TextureSet.hxx>
 
-#include <Graphic3d_ShaderProgram.hxx>
-#include <Graphic3d_TextureMap.hxx>
 #include <Graphic3d_TextureParams.hxx>
-#include <Graphic3d_TypeOfReflection.hxx>
-#include <Graphic3d_MaterialAspect.hxx>
 
 #include <Image_PixMap.hxx>
 
 namespace
 {
-  //! Initialize default material in this way for backward compatibility.
-  inline Graphic3d_MaterialAspect initDefaultMaterial()
-  {
-    Graphic3d_MaterialAspect aMat;
-    aMat.SetMaterialType (Graphic3d_MATERIAL_ASPECT);
-    aMat.SetAmbient  (0.2f);
-    aMat.SetDiffuse  (0.8f);
-    aMat.SetSpecular (0.1f);
-    aMat.SetEmissive (0.0f);
-    aMat.SetAmbientColor (Quantity_NOC_WHITE);
-    aMat.SetDiffuseColor (Quantity_NOC_WHITE);
-    aMat.SetEmissiveColor(Quantity_NOC_WHITE);
-    aMat.SetSpecularColor(Quantity_NOC_WHITE);
-    aMat.SetShininess (10.0f / 128.0f);
-    aMat.SetRefractionIndex (1.0f);
-    return aMat;
-  }
-
-  static const TCollection_AsciiString  THE_EMPTY_KEY;
-  static const Graphic3d_MaterialAspect THE_DEFAULT_MATERIAL = initDefaultMaterial();
-}
-
-// =======================================================================
-// function : OpenGl_AspectFace
-// purpose  :
-// =======================================================================
-OpenGl_AspectFace::OpenGl_AspectFace()
-: myAspect (new Graphic3d_AspectFillArea3d (Aspect_IS_SOLID, Quantity_NOC_WHITE,
-                                            Quantity_NOC_WHITE, Aspect_TOL_SOLID, 1.0,
-                                            THE_DEFAULT_MATERIAL, THE_DEFAULT_MATERIAL)),
-  myShadingModel (Graphic3d_TOSM_UNLIT)
-{
-  myAspect->SetShadingModel (myShadingModel);
-  myAspect->SetHatchStyle (Handle(Graphic3d_HatchStyle)());
-}
-
-// =======================================================================
-// function : OpenGl_AspectFace
-// purpose  :
-// =======================================================================
-OpenGl_AspectFace::OpenGl_AspectFace (const Handle(Graphic3d_AspectFillArea3d)& theAspect)
-: myShadingModel (Graphic3d_TOSM_DEFAULT)
-{
-  SetAspect (theAspect);
-}
-
-// =======================================================================
-// function : SetAspect
-// purpose  :
-// =======================================================================
-void OpenGl_AspectFace::SetAspect (const Handle(Graphic3d_AspectFillArea3d)& theAspect)
-{
-  myAspect = theAspect;
-
-  const Graphic3d_MaterialAspect& aMat = theAspect->FrontMaterial();
-  myShadingModel = theAspect->ShadingModel() != Graphic3d_TOSM_UNLIT
-                && (aMat.ReflectionMode (Graphic3d_TOR_AMBIENT)
-                 || aMat.ReflectionMode (Graphic3d_TOR_DIFFUSE)
-                 || aMat.ReflectionMode (Graphic3d_TOR_SPECULAR)
-                 || aMat.ReflectionMode (Graphic3d_TOR_EMISSION))
-                 ? theAspect->ShadingModel()
-                 : Graphic3d_TOSM_UNLIT;
-
-  myAspectEdge.Aspect()->SetColor (theAspect->EdgeColor());
-  myAspectEdge.Aspect()->SetType  (theAspect->EdgeLineType());
-  myAspectEdge.Aspect()->SetWidth (theAspect->EdgeWidth());
-
-  // update texture binding
-  myResources.UpdateTexturesRediness (myAspect->TextureSet());
-
-  // update shader program binding
-  const TCollection_AsciiString& aShaderKey = myAspect->ShaderProgram().IsNull() ? THE_EMPTY_KEY : myAspect->ShaderProgram()->GetId();
-  if (aShaderKey.IsEmpty() || myResources.ShaderProgramId != aShaderKey)
-  {
-    myResources.ResetShaderReadiness();
-  }
-}
-
-// =======================================================================
-// function : Render
-// purpose  :
-// =======================================================================
-void OpenGl_AspectFace::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
-{
-  theWorkspace->SetAspectFace (this);
+  static const TCollection_AsciiString THE_EMPTY_KEY;
 }
 
 // =======================================================================
 // function : Release
 // purpose  :
 // =======================================================================
-void OpenGl_AspectFace::Release (OpenGl_Context* theContext)
-{
-  myResources.ReleaseTextures (theContext);
-  if (!myResources.ShaderProgram.IsNull()
-   && theContext)
-  {
-    theContext->ShaderManager()->Unregister (myResources.ShaderProgramId,
-                                             myResources.ShaderProgram);
-  }
-  myResources.ShaderProgramId.Clear();
-  myResources.ResetShaderReadiness();
-}
-
-// =======================================================================
-// function : ReleaseTextures
-// purpose  :
-// =======================================================================
-void OpenGl_AspectFace::Resources::ReleaseTextures (OpenGl_Context* theCtx)
+void OpenGl_AspectsTextureSet::Release (OpenGl_Context* theCtx)
 {
   if (myTextures.IsNull())
   {
@@ -176,10 +65,10 @@ void OpenGl_AspectFace::Resources::ReleaseTextures (OpenGl_Context* theCtx)
 }
 
 // =======================================================================
-// function : UpdateTexturesRediness
+// function : UpdateRediness
 // purpose  :
 // =======================================================================
-void OpenGl_AspectFace::Resources::UpdateTexturesRediness (const Handle(Graphic3d_TextureSet)& theTextures)
+void OpenGl_AspectsTextureSet::UpdateRediness (const Handle(Graphic3d_TextureSet)& theTextures)
 {
   const Standard_Integer aNbTexturesOld = !myTextures.IsNull()  ? myTextures->Size()  : 0;
   const Standard_Integer aNbTexturesNew = !theTextures.IsNull() ? theTextures->Size() : 0;
@@ -229,18 +118,18 @@ void OpenGl_AspectFace::Resources::UpdateTexturesRediness (const Handle(Graphic3
 }
 
 // =======================================================================
-// function : BuildTextures
+// function : build
 // purpose  :
 // =======================================================================
-void OpenGl_AspectFace::Resources::BuildTextures (const Handle(OpenGl_Context)& theCtx,
-                                                  const Handle(Graphic3d_TextureSet)& theTextures)
+void OpenGl_AspectsTextureSet::build (const Handle(OpenGl_Context)& theCtx,
+                                      const Handle(Graphic3d_TextureSet)& theTextures)
 {
   // release old texture resources
   const Standard_Integer aNbTexturesOld = !myTextures.IsNull()  ? myTextures->Size()  : 0;
   const Standard_Integer aNbTexturesNew = !theTextures.IsNull() ? theTextures->Size() : 0;
   if (aNbTexturesOld != aNbTexturesNew)
   {
-    ReleaseTextures (theCtx.get());
+    Release (theCtx.get());
     if (aNbTexturesNew > 0)
     {
       myTextures = new OpenGl_TextureSet (theTextures->Size());
@@ -312,31 +201,4 @@ void OpenGl_AspectFace::Resources::BuildTextures (const Handle(OpenGl_Context)& 
       }
     }
   }
-}
-
-// =======================================================================
-// function : BuildShader
-// purpose  :
-// =======================================================================
-void OpenGl_AspectFace::Resources::BuildShader (const Handle(OpenGl_Context)&          theCtx,
-                                                const Handle(Graphic3d_ShaderProgram)& theShader)
-{
-  if (theCtx->core20fwd == NULL)
-  {
-    return;
-  }
-
-  // release old shader program resources
-  if (!ShaderProgram.IsNull())
-  {
-    theCtx->ShaderManager()->Unregister (ShaderProgramId, ShaderProgram);
-    ShaderProgramId.Clear();
-    ShaderProgram.Nullify();
-  }
-  if (theShader.IsNull())
-  {
-    return;
-  }
-
-  theCtx->ShaderManager()->Create (theShader, ShaderProgramId, ShaderProgram);
 }

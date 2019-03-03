@@ -232,11 +232,6 @@ void AIS_ColoredShape::SetCustomWidth (const TopoDS_Shape& theShape,
 
 void AIS_ColoredShape::SetColor (const Quantity_Color&  theColor)
 {
-  setColor (myDrawer, theColor);
-  myDrawer->SetColor (theColor);
-  hasOwnColor = Standard_True;
-  LoadRecomputable (AIS_WireFrame);
-  LoadRecomputable (AIS_Shaded);
   for (AIS_DataMapOfShapeDrawer::Iterator anIter (myShapeColors); anIter.More(); anIter.Next())
   {
     const Handle(AIS_ColoredDrawer)& aDrawer = anIter.Value();
@@ -262,6 +257,7 @@ void AIS_ColoredShape::SetColor (const Quantity_Color&  theColor)
       aDrawer->FaceBoundaryAspect()->SetColor (theColor);
     }
   }
+  AIS_Shape::SetColor (theColor);
 }
 
 //=======================================================================
@@ -271,10 +267,6 @@ void AIS_ColoredShape::SetColor (const Quantity_Color&  theColor)
 
 void AIS_ColoredShape::SetWidth (const Standard_Real    theLineWidth)
 {
-  setWidth (myDrawer, theLineWidth);
-  myOwnWidth = theLineWidth;
-  LoadRecomputable (AIS_WireFrame);
-  LoadRecomputable (AIS_Shaded);
   for (AIS_DataMapOfShapeDrawer::Iterator anIter (myShapeColors); anIter.More(); anIter.Next())
   {
     const Handle(AIS_ColoredDrawer)& aDrawer = anIter.Value();
@@ -296,6 +288,16 @@ void AIS_ColoredShape::SetWidth (const Standard_Real    theLineWidth)
       aDrawer->FaceBoundaryAspect()->SetWidth (theLineWidth);
     }
   }
+  AIS_Shape::SetWidth (theLineWidth);
+}
+
+//=======================================================================
+//function : UnsetWidth
+//purpose  :
+//=======================================================================
+void AIS_ColoredShape::UnsetWidth()
+{
+  SetWidth (1.0f);
 }
 
 //=======================================================================
@@ -305,10 +307,6 @@ void AIS_ColoredShape::SetWidth (const Standard_Real    theLineWidth)
 
 void AIS_ColoredShape::SetTransparency (const Standard_Real theValue)
 {
-  setTransparency (myDrawer, theValue);
-  myDrawer->SetTransparency ((Standard_ShortReal )theValue);
-  LoadRecomputable (AIS_WireFrame);
-  LoadRecomputable (AIS_Shaded);
   for (AIS_DataMapOfShapeDrawer::Iterator anIter (myShapeColors); anIter.More(); anIter.Next())
   {
     const Handle(AIS_ColoredDrawer)& aDrawer = anIter.Value();
@@ -322,6 +320,7 @@ void AIS_ColoredShape::SetTransparency (const Standard_Real theValue)
       aDrawer->ShadingAspect()->SetTransparency (theValue, myCurrentFacingModel);
     }
   }
+  AIS_Shape::SetTransparency (theValue);
 }
 
 //=======================================================================
@@ -330,27 +329,7 @@ void AIS_ColoredShape::SetTransparency (const Standard_Real theValue)
 //=======================================================================
 void AIS_ColoredShape::UnsetTransparency()
 {
-  myDrawer->SetTransparency (0.0f);
-  if (myDrawer->HasOwnShadingAspect())
-  {
-    myDrawer->ShadingAspect()->SetTransparency (0.0, myCurrentFacingModel);
-    if (!HasColor()
-     && !HasMaterial()
-     && !myDrawer->ShadingAspect()->Aspect()->ToMapTexture())
-    {
-      myDrawer->SetShadingAspect (Handle(Prs3d_ShadingAspect)());
-    }
-  }
-
-  for (AIS_DataMapOfShapeDrawer::Iterator anIter (myShapeColors); anIter.More(); anIter.Next())
-  {
-    const Handle(Prs3d_Drawer)& aDrawer = anIter.Value();
-    if (aDrawer->HasOwnShadingAspect())
-    {
-      aDrawer->ShadingAspect()->SetTransparency (0.0, myCurrentFacingModel);
-    }
-  }
-  SynchronizeAspects();
+  SetTransparency (0.0f);
 }
 
 //=======================================================================
@@ -360,10 +339,6 @@ void AIS_ColoredShape::UnsetTransparency()
 
 void AIS_ColoredShape::SetMaterial (const Graphic3d_MaterialAspect& theMaterial)
 {
-  setMaterial (myDrawer, theMaterial, HasColor(), IsTransparent());
-  //myOwnMaterial = theMaterial;
-  hasOwnMaterial = Standard_True;
-  LoadRecomputable (AIS_Shaded);
   for (AIS_DataMapOfShapeDrawer::Iterator anIter (myShapeColors); anIter.More(); anIter.Next())
   {
     const Handle(AIS_ColoredDrawer)& aDrawer = anIter.Value();
@@ -373,6 +348,7 @@ void AIS_ColoredShape::SetMaterial (const Graphic3d_MaterialAspect& theMaterial)
       setMaterial (aDrawer, theMaterial, aDrawer->HasOwnColor(), aDrawer->HasOwnTransparency());
     }
   }
+  AIS_Shape::SetMaterial (theMaterial);
 }
 
 //=======================================================================

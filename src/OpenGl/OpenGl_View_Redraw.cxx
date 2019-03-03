@@ -27,7 +27,6 @@
 
 #include <NCollection_Mat4.hxx>
 
-#include <OpenGl_AspectLine.hxx>
 #include <OpenGl_Context.hxx>
 #include <OpenGl_FrameStats.hxx>
 #include <OpenGl_Matrix.hxx>
@@ -125,9 +124,9 @@ void OpenGl_View::drawBackground (const Handle(OpenGl_Workspace)& theWorkspace)
   {
     aCtx->core11fwd->glDisable (GL_BLEND);
 
-    const OpenGl_AspectFace* anOldAspectFace = theWorkspace->SetAspectFace (myTextureParams);
+    const OpenGl_Aspects* anOldAspectFace = theWorkspace->SetAspects (myTextureParams);
     myBgTextureArray->Render (theWorkspace);
-    theWorkspace->SetAspectFace (anOldAspectFace);
+    theWorkspace->SetAspects (anOldAspectFace);
   }
 
   if (wasUsedZBuffer)
@@ -1446,6 +1445,7 @@ bool OpenGl_View::blitBuffers (OpenGl_FrameBuffer*    theReadFbo,
     if (aVerts->IsValid()
      && aManager->BindFboBlitProgram())
     {
+      aCtx->SetSampleAlphaToCoverage (false);
       theReadFbo->ColorTexture()->Bind (aCtx, Graphic3d_TextureUnit_0);
       if (theReadFbo->ColorTexture()->Sampler()->Parameters()->Filter() != aFilter)
       {

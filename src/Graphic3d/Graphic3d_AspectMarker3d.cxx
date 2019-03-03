@@ -15,18 +15,18 @@
 
 #include <Graphic3d_AspectMarker3d.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_AspectMarker3d, Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_AspectMarker3d, Graphic3d_Aspects)
 
 // =======================================================================
 // function : Graphic3d_AspectMarker3d
 // purpose  :
 // =======================================================================
 Graphic3d_AspectMarker3d::Graphic3d_AspectMarker3d()
-: myColor (Quantity_NOC_YELLOW),
-  myType  (Aspect_TOM_X),
-  myScale (1.0f)
 {
-  //
+  myShadingModel = Graphic3d_TOSM_UNLIT;
+  myInteriorColor.SetRGB (Quantity_NOC_YELLOW);
+  myMarkerType = Aspect_TOM_X;
+  myMarkerScale = 1.0f;
 }
 
 // =======================================================================
@@ -36,14 +36,11 @@ Graphic3d_AspectMarker3d::Graphic3d_AspectMarker3d()
 Graphic3d_AspectMarker3d::Graphic3d_AspectMarker3d (const Aspect_TypeOfMarker theType,
                                                     const Quantity_Color&     theColor,
                                                     const Standard_Real       theScale)
-: myColor (theColor),
-  myType  (theType),
-  myScale ((float )theScale)
 {
-  if (theScale <= 0.0)
-  {
-    throw Aspect_AspectMarkerDefinitionError("Bad value for MarkerScale");
-  }
+  myShadingModel = Graphic3d_TOSM_UNLIT;
+  myInteriorColor.SetRGB (theColor);
+  myMarkerType = theType;
+  SetMarkerScale ((float )theScale);
 }
 
 // =======================================================================
@@ -54,12 +51,12 @@ Graphic3d_AspectMarker3d::Graphic3d_AspectMarker3d (const Quantity_Color&  theCo
                                                     const Standard_Integer theWidth,
                                                     const Standard_Integer theHeight,
                                                     const Handle(TColStd_HArray1OfByte)& theTextureBitMap)
-: myMarkerImage (new Graphic3d_MarkerImage (theTextureBitMap, theWidth, theHeight)),
-  myColor (theColor),
-  myType  (Aspect_TOM_USERDEFINED),
-  myScale (1.0f)
 {
-  //
+  myShadingModel = Graphic3d_TOSM_UNLIT;
+  myMarkerImage = new Graphic3d_MarkerImage(theTextureBitMap, theWidth, theHeight);
+  myInteriorColor.SetRGB (theColor),
+  myMarkerType = Aspect_TOM_USERDEFINED;
+  myMarkerScale = 1.0f;
 }
 
 // =======================================================================
@@ -67,12 +64,12 @@ Graphic3d_AspectMarker3d::Graphic3d_AspectMarker3d (const Quantity_Color&  theCo
 // purpose  :
 // =======================================================================
 Graphic3d_AspectMarker3d::Graphic3d_AspectMarker3d (const Handle(Image_PixMap)& theTextureImage)
-: myMarkerImage (new Graphic3d_MarkerImage (theTextureImage)),
-  myColor (Quantity_NOC_YELLOW),
-  myType  (Aspect_TOM_USERDEFINED),
-  myScale (1.0f)
 {
-  //
+  myShadingModel = Graphic3d_TOSM_UNLIT;
+  myMarkerImage = new Graphic3d_MarkerImage (theTextureImage);
+  myInteriorColor.SetRGB (Quantity_NOC_YELLOW);
+  myMarkerType = Aspect_TOM_USERDEFINED;
+  myMarkerScale = 1.0f;
 }
 
 // =======================================================================

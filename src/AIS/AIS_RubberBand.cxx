@@ -392,13 +392,12 @@ void AIS_RubberBand::Compute (const Handle(PrsMgr_PresentationManager3d)& /*theP
                               const Handle(Prs3d_Presentation)& thePresentation,
                               const Standard_Integer /*theMode*/)
 {
-  Handle (Graphic3d_Group) aGroup = Prs3d_Root::CurrentGroup (thePresentation);
-
   // Draw filling
   if (IsFilling() && fillTriangles())
   {
-    aGroup->SetGroupPrimitivesAspect (myDrawer->ShadingAspect()->Aspect());
-    aGroup->AddPrimitiveArray (myTriangles);
+    Handle(Graphic3d_Group) aGroup1 = thePresentation->NewGroup();
+    aGroup1->SetGroupPrimitivesAspect (myDrawer->ShadingAspect()->Aspect());
+    aGroup1->AddPrimitiveArray (myTriangles);
   }
 
   // Draw frame
@@ -433,6 +432,7 @@ void AIS_RubberBand::Compute (const Handle(PrsMgr_PresentationManager3d)& /*theP
     }
   }
 
+  Handle(Graphic3d_Group) aGroup = thePresentation->NewGroup();
   aGroup->SetGroupPrimitivesAspect (myDrawer->LineAspect()->Aspect());
   aGroup->AddPrimitiveArray (myBorders);
 }

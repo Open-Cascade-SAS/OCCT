@@ -32,7 +32,7 @@
 #include <OpenGl_Sampler.hxx>
 #include <OpenGl_ShaderManager.hxx>
 #include <OpenGl_Workspace.hxx>
-#include <OpenGl_AspectFace.hxx>
+#include <OpenGl_Aspects.hxx>
 #include <Graphic3d_TransformUtils.hxx>
 #include <Graphic3d_RenderingParams.hxx>
 
@@ -3179,12 +3179,12 @@ Handle(OpenGl_FrameBuffer) OpenGl_Context::SetDefaultFrameBuffer (const Handle(O
 // function : SetShadingMaterial
 // purpose  :
 // =======================================================================
-void OpenGl_Context::SetShadingMaterial (const OpenGl_AspectFace* theAspect,
+void OpenGl_Context::SetShadingMaterial (const OpenGl_Aspects* theAspect,
                                          const Handle(Graphic3d_PresentationAttributes)& theHighlight)
 {
-  const Handle(Graphic3d_AspectFillArea3d)& anAspect = (!theHighlight.IsNull() && !theHighlight->BasicFillAreaAspect().IsNull())
-                                                      ?  theHighlight->BasicFillAreaAspect()
-                                                      :  theAspect->Aspect();
+  const Handle(Graphic3d_Aspects)& anAspect = (!theHighlight.IsNull() && !theHighlight->BasicFillAreaAspect().IsNull())
+                                            ?  (const Handle(Graphic3d_Aspects)& )theHighlight->BasicFillAreaAspect()
+                                            :  theAspect->Aspect();
 
   const bool toDistinguish = anAspect->Distinguish();
   const bool toMapTexture  = anAspect->ToMapTexture();
@@ -3260,14 +3260,14 @@ void OpenGl_Context::SetShadingMaterial (const OpenGl_AspectFace* theAspect,
 // function : CheckIsTransparent
 // purpose  :
 // =======================================================================
-Standard_Boolean OpenGl_Context::CheckIsTransparent (const OpenGl_AspectFace* theAspect,
+Standard_Boolean OpenGl_Context::CheckIsTransparent (const OpenGl_Aspects* theAspect,
                                                      const Handle(Graphic3d_PresentationAttributes)& theHighlight,
                                                      Standard_ShortReal& theAlphaFront,
                                                      Standard_ShortReal& theAlphaBack)
 {
-  const Handle(Graphic3d_AspectFillArea3d)& anAspect = (!theHighlight.IsNull() && !theHighlight->BasicFillAreaAspect().IsNull())
-                                                      ?  theHighlight->BasicFillAreaAspect()
-                                                      :  theAspect->Aspect();
+  const Handle(Graphic3d_Aspects)& anAspect = (!theHighlight.IsNull() && !theHighlight->BasicFillAreaAspect().IsNull())
+                                            ?  (const Handle(Graphic3d_Aspects)& )theHighlight->BasicFillAreaAspect()
+                                            :  theAspect->Aspect();
 
   const bool toDistinguish = anAspect->Distinguish();
   const Graphic3d_MaterialAspect& aMatFrontSrc = anAspect->FrontMaterial();
