@@ -1,0 +1,13 @@
+puts "======="
+puts "0030511: Mesh - too long meshing of assembly containing single solid (shared)"
+puts "======="
+puts ""
+
+restore [locate_data_file bug30511_hugeassembly0.brep] result
+nbshapes result
+tclean result
+dchrono cpu restart
+incmesh result 0.1
+dchrono cpu stop counter incmesh
+
+checktrinfo result -tri 1119744 -nod 2239488
