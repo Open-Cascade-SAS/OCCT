@@ -294,6 +294,22 @@ void AIS_InteractiveContext::highlightWithSubintensity (const Handle(SelectMgr_E
 }
 
 //=======================================================================
+//function : isSlowHiStyle
+//purpose  :
+//=======================================================================
+Standard_Boolean AIS_InteractiveContext::isSlowHiStyle (const Handle(SelectMgr_EntityOwner)& theOwner,
+                                                        const Handle(V3d_Viewer)& theViewer) const
+{
+  if (const Handle(AIS_InteractiveObject) anObj = Handle(AIS_InteractiveObject)::DownCast (theOwner->Selectable()))
+  {
+    const Handle(Prs3d_Drawer)& aHiStyle = getHiStyle (anObj, myLastPicked);
+    return aHiStyle->ZLayer() == Graphic3d_ZLayerId_UNKNOWN
+       || !theViewer->ZLayerSettings (aHiStyle->ZLayer()).IsImmediate();
+  }
+  return Standard_False;
+}
+
+//=======================================================================
 //function : MoveTo
 //purpose  :
 //=======================================================================
@@ -372,6 +388,11 @@ AIS_StatusOfDetection AIS_InteractiveContext::MoveTo (const Standard_Integer  th
     // method call. As result it is necessary to rehighligt it with mySelectionColor.
     if (!myLastPicked.IsNull() && myLastPicked->HasSelectable())
     {
+      if (isSlowHiStyle (myLastPicked, theView->Viewer()))
+      {
+        theView->Viewer()->Invalidate();
+      }
+
       clearDynamicHighlight();
       toUpdateViewer = Standard_True;
     }
@@ -387,6 +408,11 @@ AIS_StatusOfDetection AIS_InteractiveContext::MoveTo (const Standard_Integer  th
        && (!myLastPicked->IsSelected()
          || myToHilightSelected))
       {
+        if (isSlowHiStyle (myLastPicked, theView->Viewer()))
+        {
+          theView->Viewer()->Invalidate();
+        }
+
         highlightWithColor (myLastPicked, theView->Viewer());
         toUpdateViewer = Standard_True;
       }
@@ -405,6 +431,11 @@ AIS_StatusOfDetection AIS_InteractiveContext::MoveTo (const Standard_Integer  th
     && !myLastPicked.IsNull()
      && myLastPicked->HasSelectable())
     {
+      if (isSlowHiStyle (myLastPicked, theView->Viewer()))
+      {
+        theView->Viewer()->Invalidate();
+      }
+
       clearDynamicHighlight();
       toUpdateViewer = Standard_True;
     }
@@ -422,7 +453,14 @@ AIS_StatusOfDetection AIS_InteractiveContext::MoveTo (const Standard_Integer  th
     }
     else
     {
-      theView->Viewer()->RedrawImmediate();
+      if (theView->IsInvalidated())
+      {
+        theView->Viewer()->Redraw();
+      }
+      else
+      {
+        theView->Viewer()->RedrawImmediate();
+      }
     }
   }
 

@@ -4759,56 +4759,18 @@ static int VZLayer (Draw_Interpretor& theDI,
     ++anArgIter;
   }
 
-  TCollection_AsciiString aFirstArg (theArgVec[anArgIter]);
-  if (aFirstArg.IsIntegerValue())
   {
-    ++anArgIter;
-    aLayerId = aFirstArg.IntegerValue();
-  }
-  else
-  {
-    aFirstArg.LowerCase();
-    if (aFirstArg == "default"
-     || aFirstArg == "def")
+    TCollection_AsciiString aFirstArg (theArgVec[anArgIter]);
+    if (aFirstArg.IsIntegerValue())
     {
-      aLayerId = Graphic3d_ZLayerId_Default;
       ++anArgIter;
-    }
-    else if (aFirstArg == "top")
-    {
-      aLayerId = Graphic3d_ZLayerId_Top;
-      ++anArgIter;
-    }
-    else if (aFirstArg == "topmost")
-    {
-      aLayerId = Graphic3d_ZLayerId_Topmost;
-      ++anArgIter;
-    }
-    else if (aFirstArg == "overlay"
-          || aFirstArg == "toposd")
-    {
-      aLayerId = Graphic3d_ZLayerId_TopOSD;
-      ++anArgIter;
-    }
-    else if (aFirstArg == "underlay"
-          || aFirstArg == "botosd")
-    {
-      aLayerId = Graphic3d_ZLayerId_BotOSD;
-      ++anArgIter;
+      aLayerId = aFirstArg.IntegerValue();
     }
     else
     {
-      TColStd_SequenceOfInteger aLayers;
-      aViewer->GetAllZLayers (aLayers);
-      for (TColStd_SequenceOfInteger::Iterator aLayeriter (aLayers); aLayeriter.More(); aLayeriter.Next())
+      if (ViewerTest::ParseZLayerName (aFirstArg.ToCString(), aLayerId))
       {
-        Graphic3d_ZLayerSettings aSettings = aViewer->ZLayerSettings (aLayeriter.Value());
-        if (TCollection_AsciiString::IsSameString (aSettings.Name(), aFirstArg, Standard_False))
-        {
-          aLayerId = aLayeriter.Value();
-          ++anArgIter;
-          break;
-        }
+        ++anArgIter;
       }
     }
   }
@@ -6323,40 +6285,51 @@ static int VReadPixel (Draw_Interpretor& theDI,
   {
     TCollection_AsciiString aParam (theArgVec[anIter]);
     aParam.LowerCase();
-    if (aParam == "rgb")
+    if (aParam == "-rgb"
+     || aParam == "rgb")
     {
       aFormat     = Image_Format_RGB;
       aBufferType = Graphic3d_BT_RGB;
     }
-    else if (aParam == "hls")
+    else if (aParam == "-hls"
+          || aParam == "hls")
     {
       aFormat     = Image_Format_RGB;
       aBufferType = Graphic3d_BT_RGB;
       toShowHls   = Standard_True;
     }
-    else if (aParam == "rgbf")
+    else if (aParam == "-rgbf"
+          || aParam == "rgbf")
     {
       aFormat     = Image_Format_RGBF;
       aBufferType = Graphic3d_BT_RGB;
     }
-    else if (aParam == "rgba")
+    else if (aParam == "-rgba"
+          || aParam == "rgba")
     {
       aFormat     = Image_Format_RGBA;
       aBufferType = Graphic3d_BT_RGBA;
     }
-    else if (aParam == "rgbaf")
+    else if (aParam == "-rgbaf"
+          || aParam == "rgbaf")
     {
       aFormat     = Image_Format_RGBAF;
       aBufferType = Graphic3d_BT_RGBA;
     }
-    else if (aParam == "depth")
+    else if (aParam == "-depth"
+          || aParam == "depth")
     {
       aFormat     = Image_Format_GrayF;
       aBufferType = Graphic3d_BT_Depth;
     }
-    else if (aParam == "name")
+    else if (aParam == "-name"
+          || aParam == "name")
     {
       toShowName = Standard_True;
+    }
+    else
+    {
+      std::cout << "Syntax error at '" << aParam << "'\n";
     }
   }
 
@@ -12232,16 +12205,12 @@ static int VSelectionProperties (Draw_Interpretor& theDi,
         return 1;
       }
 
-      const Standard_Integer aNewLayer = Draw::Atoi (theArgVec[++anArgIter]);
-      if (aNewLayer != Graphic3d_ZLayerId_UNKNOWN)
+      ++anArgIter;
+      Graphic3d_ZLayerId aNewLayer = Graphic3d_ZLayerId_UNKNOWN;
+      if (!ViewerTest::ParseZLayer (theArgVec[anArgIter], aNewLayer))
       {
-        TColStd_SequenceOfInteger aLayers;
-        aCtx->CurrentViewer()->GetAllZLayers (aLayers);
-        if (std::find (aLayers.begin(), aLayers.end(), aNewLayer) == aLayers.end())
-        {
-          std::cout << "Syntax error: Layer " << aNewLayer << " is undefined\n";
-          return 1;
-        }
+        std::cerr << "Error: wrong syntax at " << theArgVec[anArgIter] << ".\n";
+        return 1;
       }
 
       const Handle(Prs3d_Drawer)& aStyle = aCtx->HighlightStyle (aType);
@@ -12825,7 +12794,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     " with f option returns free memory in bytes",
     __FILE__, VMemGpu, group);
   theCommands.Add ("vreadpixel",
-    "vreadpixel xPixel yPixel [{rgb|rgba|depth|hls|rgbf|rgbaf}=rgba] [name]"
+    "vreadpixel xPixel yPixel [{rgb|rgba|depth|hls|rgbf|rgbaf}=rgba] [-name]"
     " : Read pixel value for active view",
     __FILE__, VReadPixel, group);
   theCommands.Add("diffimage",

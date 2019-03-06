@@ -198,6 +198,21 @@ public: //! @name highlighting management
   const Handle(Prs3d_Drawer)& HighlightStyle (const Prs3d_TypeOfHighlight theStyleType) const { return myStyles[theStyleType]; }
 
   //! Setup highlight style settings.
+  //! It is preferred modifying existing style returned by method HighlightStyle()
+  //! instead of creating a new drawer.
+  //!
+  //! If a new highlight style is created, its presentation Zlayer should be checked,
+  //! otherwise highlighting might not work as expected.
+  //! Default values are:
+  //!  - Prs3d_TypeOfHighlight_Dynamic:      Graphic3d_ZLayerId_Top,
+  //!    object highlighting is drawn on top of main scene within Immediate Layers,
+  //!    so that V3d_View::RedrawImmediate() will be enough to see update;
+  //!  - Prs3d_TypeOfHighlight_LocalDynamic: Graphic3d_ZLayerId_Topmost,
+  //!    object parts highlighting is drawn on top of main scene within Immediate Layers
+  //!    with depth cleared (even overlapped geometry will be revealed);
+  //!  - Prs3d_TypeOfHighlight_Selected:     Graphic3d_ZLayerId_UNKNOWN,
+  //!    object highlighting is drawn on top of main scene within the same layer
+  //!    as object itself (e.g. Graphic3d_ZLayerId_Default by default) and increased priority.
   void SetHighlightStyle (const Prs3d_TypeOfHighlight theStyleType,
                           const Handle(Prs3d_Drawer)& theStyle) { myStyles[theStyleType] = theStyle; }
 
@@ -212,6 +227,14 @@ public: //! @name highlighting management
   }
 
   //! Setup the style of dynamic highlighting.
+  //! It is preferred modifying existing style returned by method HighlightStyle()
+  //! instead of creating a new drawer.
+  //!
+  //! If a new highlight style is created, its presentation Zlayer should be checked,
+  //! otherwise highlighting might not work as expected.
+  //! Default value is Graphic3d_ZLayerId_Top,
+  //! object highlighting is drawn on top of main scene within Immediate Layers,
+  //! so that V3d_View::RedrawImmediate() will be enough to see update;
   void SetHighlightStyle (const Handle(Prs3d_Drawer)& theStyle) { myStyles[Prs3d_TypeOfHighlight_Dynamic] = theStyle; }
 
   //! Returns current selection style settings.
@@ -1261,6 +1284,10 @@ protected: //! @name internal methods
 
     return myStyles[!theOwner.IsNull() && theOwner->ComesFromDecomposition() ? Prs3d_TypeOfHighlight_LocalDynamic : Prs3d_TypeOfHighlight_Dynamic];
   }
+
+  //! Return TRUE if highlight style of owner requires full viewer redraw.
+  Standard_EXPORT Standard_Boolean isSlowHiStyle (const Handle(SelectMgr_EntityOwner)& theOwner,
+                                                  const Handle(V3d_Viewer)& theViewer) const;
 
   //! Helper function that returns correct selection style for the object:
   //! if custom style is defined via object's highlight drawer, it will be used. Otherwise,

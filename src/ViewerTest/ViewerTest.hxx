@@ -20,10 +20,7 @@
 #include <Aspect_TypeOfMarker.hxx>
 #include <Draw_Interpretor.hxx>
 #include <Graphic3d_TypeOfShadingModel.hxx>
-#include <Standard_Integer.hxx>
-#include <Standard_CString.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Macro.hxx>
+#include <Graphic3d_ZLayerId.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TColStd_HArray1OfTransient.hxx>
 #include <TopTools_ListOfShape.hxx>
@@ -213,6 +210,26 @@ public:
   Standard_EXPORT static Standard_Boolean ParseShadingModel (Standard_CString              theArg,
                                                              Graphic3d_TypeOfShadingModel& theModel);
 
+  //! Parses ZLayer name.
+  //! @param theArg [in] layer name or enumeration alias
+  //! @param theLayer [out] layer index
+  //! @return TRUE if layer has been identified, note that Graphic3d_ZLayerId_UNKNOWN is also valid value
+  static Standard_Boolean ParseZLayerName (Standard_CString theArg,
+                                           Graphic3d_ZLayerId& theLayer)
+  {
+    return parseZLayer (theArg, false, theLayer);
+  }
+
+  //! Parses ZLayer name.
+  //! @param theArg [in] layer name, enumeration alias or index (of existing Layer)
+  //! @param theLayer [out] layer index
+  //! @return TRUE if layer has been identified, note that Graphic3d_ZLayerId_UNKNOWN is also valid value
+  static Standard_Boolean ParseZLayer (Standard_CString theArg,
+                                       Graphic3d_ZLayerId& theLayer)
+  {
+    return parseZLayer (theArg, true, theLayer);
+  }
+
 private:
 
   //! Parses RGB(A) color argument(s) specified within theArgVec[0], theArgVec[1], theArgVec[2] and theArgVec[3].
@@ -224,6 +241,15 @@ private:
                                                       const char**      theArgVec,
                                                       Quantity_ColorRGBA& theColor,
                                                       bool theToParseAlpha);
+
+  //! Parses ZLayer name.
+  //! @param theArg [in] layer name, enumeration alias or index (of existing Layer)
+  //! @param theToAllowInteger [in] when TRUE, the argument will be checked for existing layer index
+  //! @param theLayer [out] layer index
+  //! @return TRUE if layer has been identified, note that Graphic3d_ZLayerId_UNKNOWN is also valid value
+  Standard_EXPORT static Standard_Boolean parseZLayer (Standard_CString theArg,
+                                                       Standard_Boolean theToAllowInteger,
+                                                       Graphic3d_ZLayerId& theLayer);
 
   //! Returns a window class that implements standard behavior of
   //! all windows of the ViewerTest. This includes usual Open CASCADE

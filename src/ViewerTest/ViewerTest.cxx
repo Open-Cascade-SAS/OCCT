@@ -402,6 +402,75 @@ Standard_Boolean ViewerTest::ParseShadingModel (Standard_CString              th
 }
 
 //=======================================================================
+//function : parseZLayer
+//purpose  :
+//=======================================================================
+Standard_Boolean ViewerTest::parseZLayer (Standard_CString theArg,
+                                          Standard_Boolean theToAllowInteger,
+                                          Graphic3d_ZLayerId& theLayer)
+{
+  TCollection_AsciiString aName (theArg);
+  aName.LowerCase();
+  if (aName == "default"
+   || aName == "def")
+  {
+    theLayer = Graphic3d_ZLayerId_Default;
+  }
+  else if (aName == "top")
+  {
+    theLayer = Graphic3d_ZLayerId_Top;
+  }
+  else if (aName == "topmost")
+  {
+    theLayer = Graphic3d_ZLayerId_Topmost;
+  }
+  else if (aName == "overlay"
+        || aName == "toposd")
+  {
+    theLayer = Graphic3d_ZLayerId_TopOSD;
+  }
+  else if (aName == "underlay"
+        || aName == "botosd")
+  {
+    theLayer = Graphic3d_ZLayerId_BotOSD;
+  }
+  else if (aName == "undefined")
+  {
+    theLayer = Graphic3d_ZLayerId_UNKNOWN;
+  }
+  else if (!GetAISContext().IsNull())
+  {
+    const Handle(V3d_Viewer)& aViewer = ViewerTest::GetAISContext()->CurrentViewer();
+    TColStd_SequenceOfInteger aLayers;
+    aViewer->GetAllZLayers (aLayers);
+    for (TColStd_SequenceOfInteger::Iterator aLayeriter (aLayers); aLayeriter.More(); aLayeriter.Next())
+    {
+      Graphic3d_ZLayerSettings aSettings = aViewer->ZLayerSettings (aLayeriter.Value());
+      if (TCollection_AsciiString::IsSameString (aSettings.Name(), aName, Standard_False))
+      {
+        theLayer = aLayeriter.Value();
+        return true;
+      }
+    }
+
+    if (!theToAllowInteger
+     || !aName.IsIntegerValue())
+    {
+      return false;
+    }
+    Graphic3d_ZLayerId aLayer = aName.IntegerValue();
+    if (aLayer == Graphic3d_ZLayerId_UNKNOWN
+     || std::find (aLayers.begin(), aLayers.end(), aLayer) != aLayers.end())
+    {
+      theLayer = aLayer;
+      return true;
+    }
+    return false;
+  }
+  return true;
+}
+
+//=======================================================================
 //function : GetTypeNames
 //purpose  :
 //=======================================================================
@@ -4634,22 +4703,17 @@ static int VDisplay2 (Draw_Interpretor& theDI,
         aTrsfPers = Graphic3d_TransformPers::FromDeprecatedParams (aTrsfPers->Mode(), aPnt);
       }
     }
-    else if (aNameCase == "-layer")
+    else if (aNameCase == "-layer"
+          || aNameCase == "-zlayer")
     {
-      if (++anArgIter >= theArgNb)
+      ++anArgIter;
+      if (anArgIter >= theArgNb
+      || !ViewerTest::ParseZLayer (theArgVec[anArgIter], aZLayer)
+      ||  aZLayer == Graphic3d_ZLayerId_UNKNOWN)
       {
         std::cerr << "Error: wrong syntax at " << aName << ".\n";
         return 1;
       }
-
-      TCollection_AsciiString aValue (theArgVec[anArgIter]);
-      if (!aValue.IsIntegerValue())
-      {
-        std::cerr << "Error: wrong syntax at " << aName << ".\n";
-        return 1;
-      }
-
-      aZLayer = aValue.IntegerValue();
     }
     else if (aNameCase == "-view"
           || aNameCase == "-inview")
