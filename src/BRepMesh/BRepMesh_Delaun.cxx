@@ -682,7 +682,7 @@ void BRepMesh_Delaun::cleanupMesh()
         if ( anEdges[aCurEdgeIdx] != aFreeEdgeId )
           continue;
 
-        for ( Standard_Integer anOtherEdgeIt = 1; anOtherEdgeIt <= 2; ++anOtherEdgeIt )
+        for ( Standard_Integer anOtherEdgeIt = 1; anOtherEdgeIt <= 2 && isCanNotBeRemoved; ++anOtherEdgeIt )
         {
           Standard_Integer anOtherEdgeId = ( aCurEdgeIdx + anOtherEdgeIt ) % 3;
           const BRepMesh_PairOfIndex& anOtherEdgePair = 
@@ -691,7 +691,27 @@ void BRepMesh_Delaun::cleanupMesh()
           if ( anOtherEdgePair.Extent() < 2 )
           {
             isCanNotBeRemoved = Standard_False;
-            break;
+          }
+          else
+          {
+            for (int aTriIdx = 1; aTriIdx <= anOtherEdgePair.Extent () && isCanNotBeRemoved; ++aTriIdx)
+            {
+              if (anOtherEdgePair.Index (aTriIdx) == aTriId)
+                continue;
+
+              Standard_Integer v[3];
+              const BRepMesh_Triangle& aCurTriangle = GetTriangle (anOtherEdgePair.Index (aTriIdx));
+              myMeshData->ElementNodes (aCurTriangle, v);
+              for (int aNodeIdx = 0; aNodeIdx < 3 && isCanNotBeRemoved; ++aNodeIdx)
+              {
+                if (v[aNodeIdx] == mySupVert[0] ||
+                    v[aNodeIdx] == mySupVert[1] ||
+                    v[aNodeIdx] == mySupVert[2])
+                {
+                  isCanNotBeRemoved = Standard_False;
+                }
+              }
+            }
           }
         }
 

@@ -1,0 +1,26 @@
+puts "======="
+puts "0030149: BRepMesh_Delaun: free triangle is left in the mesh after cleanup of auxiliary items"
+puts "======="
+puts ""
+
+pload XDE 
+
+stepread [locate_data_file bug30149_comb_bug.step] a *
+renamevar a_1 result
+
+tclean result
+incmesh result 1
+
+set info_bad [tricheck result]
+if { [regexp "Not connected mesh inside face" $info_bad] } {
+    puts "Error : Mesh contains free triangle"
+}
+
+checktrinfo result -tri 32 -nod 54
+
+vinit
+vtop
+vsetdispmode 1
+vdisplay result
+vfit
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
