@@ -5238,102 +5238,257 @@ static int VGrid (Draw_Interpretor& /*theDI*/,
                   Standard_Integer  theArgNb,
                   const char**      theArgVec)
 {
-  // get the active view
   Handle(V3d_View)   aView   = ViewerTest::CurrentView();
   Handle(V3d_Viewer) aViewer = ViewerTest::GetViewerFromContext();
   if (aView.IsNull() || aViewer.IsNull())
   {
-    std::cerr << "No active view. Please call vinit.\n";
+    std::cerr << "Error: no active view\n";
     return 1;
   }
 
   Aspect_GridType     aType = aViewer->GridType();
   Aspect_GridDrawMode aMode = aViewer->GridDrawMode();
+  Graphic3d_Vec2d aNewOriginXY, aNewStepXY, aNewSizeXY;
+  Standard_Real aNewRotAngle = 0.0, aNewZOffset = 0.0;
+  bool hasOrigin = false, hasStep = false, hasRotAngle = false, hasSize = false, hasZOffset = false;
   ViewerTest_AutoUpdater anUpdateTool (ViewerTest::GetAISContext(), aView);
-  Standard_Integer anIter = 1;
-  for (; anIter < theArgNb; ++anIter)
+  for (Standard_Integer anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
   {
-    const char* aValue = theArgVec[anIter];
-    if (anUpdateTool.parseRedrawMode (aValue))
+    TCollection_AsciiString anArg (theArgVec[anArgIter]);
+    anArg.LowerCase();
+    if (anUpdateTool.parseRedrawMode (theArgVec[anArgIter]))
     {
       continue;
     }
-    else if (*aValue == 'r')
+    else if (anArgIter + 1 < theArgNb
+          && anArg == "-type")
+    {
+      TCollection_AsciiString anArgNext (theArgVec[++anArgIter]);
+      anArgNext.LowerCase();
+      if (anArgNext == "r"
+       || anArgNext == "rect"
+       || anArgNext == "rectangular")
+      {
+        aType = Aspect_GT_Rectangular;
+      }
+      else if (anArgNext == "c"
+            || anArgNext == "circ"
+            || anArgNext == "circular")
+      {
+        aType = Aspect_GT_Circular;
+      }
+      else
+      {
+        std::cout << "Syntax error at '" << anArgNext << "'\n";
+        return 1;
+      }
+    }
+    else if (anArgIter + 1 < theArgNb
+          && anArg == "-mode")
+    {
+      TCollection_AsciiString anArgNext (theArgVec[++anArgIter]);
+      anArgNext.LowerCase();
+      if (anArgNext == "l"
+       || anArgNext == "line"
+       || anArgNext == "lines")
+      {
+        aMode = Aspect_GDM_Lines;
+      }
+      else if (anArgNext == "p"
+            || anArgNext == "point"
+            || anArgNext == "points")
+      {
+        aMode = Aspect_GDM_Points;
+      }
+      else
+      {
+        std::cout << "Syntax error at '" << anArgNext << "'\n";
+        return 1;
+      }
+    }
+    else if (anArgIter + 2 < theArgNb
+          && (anArg == "-origin"
+           || anArg == "-orig"))
+    {
+      hasOrigin = true;
+      aNewOriginXY.SetValues (Draw::Atof (theArgVec[anArgIter + 1]),
+                              Draw::Atof (theArgVec[anArgIter + 2]));
+      anArgIter += 2;
+    }
+    else if (anArgIter + 2 < theArgNb
+          && anArg == "-step")
+    {
+      hasStep = true;
+      aNewStepXY.SetValues (Draw::Atof (theArgVec[anArgIter + 1]),
+                            Draw::Atof (theArgVec[anArgIter + 2]));
+      if (aNewStepXY.x() <= 0.0
+       || aNewStepXY.y() <= 0.0)
+      {
+        std::cout << "Syntax error: wrong step '" << theArgVec[anArgIter + 1] << " " << theArgVec[anArgIter + 2] << "'\n";
+        return 1;
+      }
+      anArgIter += 2;
+    }
+    else if (anArgIter + 1 < theArgNb
+          && (anArg == "-angle"
+           || anArg == "-rotangle"
+           || anArg == "-rotationangle"))
+    {
+      hasRotAngle = true;
+      aNewRotAngle = Draw::Atof (theArgVec[++anArgIter]);
+    }
+    else if (anArgIter + 1 < theArgNb
+          && (anArg == "-zoffset"
+           || anArg == "-dz"))
+    {
+      hasZOffset = true;
+      aNewZOffset = Draw::Atof (theArgVec[++anArgIter]);
+    }
+    else if (anArgIter + 1 < theArgNb
+          && anArg == "-radius")
+    {
+      hasSize = true;
+      ++anArgIter;
+      aNewSizeXY.SetValues (Draw::Atof (theArgVec[anArgIter]), 0.0);
+      if (aNewStepXY.x() <= 0.0)
+      {
+        std::cout << "Syntax error: wrong size '" << theArgVec[anArgIter] << "'\n";
+        return 1;
+      }
+    }
+    else if (anArgIter + 2 < theArgNb
+          && anArg == "-size")
+    {
+      hasSize = true;
+      aNewSizeXY.SetValues (Draw::Atof (theArgVec[anArgIter + 1]),
+                            Draw::Atof (theArgVec[anArgIter + 2]));
+      if (aNewStepXY.x() <= 0.0
+       || aNewStepXY.y() <= 0.0)
+      {
+        std::cout << "Syntax error: wrong size '" << theArgVec[anArgIter + 1] << " " << theArgVec[anArgIter + 2] << "'\n";
+        return 1;
+      }
+      anArgIter += 2;
+    }
+    else if (anArg == "r"
+          || anArg == "rect"
+          || anArg == "rectangular")
     {
       aType = Aspect_GT_Rectangular;
     }
-    else if (*aValue == 'c')
+    else if (anArg == "c"
+          || anArg == "circ"
+          || anArg == "circular")
     {
       aType = Aspect_GT_Circular;
     }
-    else if (*aValue == 'l')
+    else if (anArg == "l"
+          || anArg == "line"
+          || anArg == "lines")
     {
       aMode = Aspect_GDM_Lines;
     }
-    else if (*aValue == 'p')
+    else if (anArg == "p"
+          || anArg == "point"
+          || anArg == "points")
     {
       aMode = Aspect_GDM_Points;
     }
-    else if (strcmp (aValue, "off" ) == 0)
+    else if (anArgIter + 1 >= theArgNb
+          && anArg == "off")
     {
       aViewer->DeactivateGrid();
       return 0;
     }
     else
     {
-      break;
+      std::cout << "Syntax error at '" << anArg << "'\n";
+      return 1;
     }
   }
 
-  Standard_Integer aTail = (theArgNb - anIter);
-  if (aTail == 0)
-  {
-    aViewer->ActivateGrid (aType, aMode);
-    return 0;
-  }
-  else if (aTail != 2 && aTail != 5)
-  {
-    std::cerr << "Incorrect arguments number! Usage:\n"
-              << "vgrid [off] [Mode={r|c}] [Type={l|p}] [OriginX OriginY [StepX/StepRadius StepY/DivNb RotAngle]]\n";
-    return 1;
-  }
-
-  Standard_Real anOriginX, anOriginY, aRotAngle;
   if (aType == Aspect_GT_Rectangular)
   {
-    Standard_Real aRStepX, aRStepY;
-    aViewer->RectangularGridValues (anOriginX, anOriginY, aRStepX, aRStepY, aRotAngle);
-
-    anOriginX = Draw::Atof (theArgVec[anIter++]);
-    anOriginY = Draw::Atof (theArgVec[anIter++]);
-    if (aTail == 5)
+    Graphic3d_Vec2d anOrigXY, aStepXY;
+    Standard_Real aRotAngle = 0.0;
+    aViewer->RectangularGridValues (anOrigXY.x(), anOrigXY.y(), aStepXY.x(), aStepXY.y(), aRotAngle);
+    if (hasOrigin)
     {
-      aRStepX   = Draw::Atof (theArgVec[anIter++]);
-      aRStepY   = Draw::Atof (theArgVec[anIter++]);
-      aRotAngle = Draw::Atof (theArgVec[anIter++]);
+      anOrigXY = aNewOriginXY;
     }
-    aViewer->SetRectangularGridValues (anOriginX, anOriginY, aRStepX, aRStepY, aRotAngle);
-    aViewer->ActivateGrid (aType, aMode);
+    if (hasStep)
+    {
+      aStepXY = aNewStepXY;
+    }
+    if (hasRotAngle)
+    {
+      aRotAngle = aNewRotAngle;
+    }
+    aViewer->SetRectangularGridValues (anOrigXY.x(), anOrigXY.y(), aStepXY.x(), aStepXY.y(), aRotAngle);
+    if (hasSize || hasZOffset)
+    {
+      Graphic3d_Vec3d aSize;
+      aViewer->RectangularGridGraphicValues (aSize.x(), aSize.y(), aSize.z());
+      if (hasSize)
+      {
+        aSize.x() = aNewSizeXY.x();
+        aSize.y() = aNewSizeXY.y();
+      }
+      if (hasZOffset)
+      {
+        aSize.z() = aNewZOffset;
+      }
+      aViewer->SetRectangularGridGraphicValues (aSize.x(), aSize.y(), aSize.z());
+    }
   }
   else if (aType == Aspect_GT_Circular)
   {
+    Graphic3d_Vec2d anOrigXY;
     Standard_Real aRadiusStep;
     Standard_Integer aDivisionNumber;
-    aViewer->CircularGridValues (anOriginX, anOriginY, aRadiusStep, aDivisionNumber, aRotAngle);
-
-    anOriginX = Draw::Atof (theArgVec[anIter++]);
-    anOriginY = Draw::Atof (theArgVec[anIter++]);
-    if (aTail == 5)
+    Standard_Real aRotAngle = 0.0;
+    aViewer->CircularGridValues (anOrigXY.x(), anOrigXY.y(), aRadiusStep, aDivisionNumber, aRotAngle);
+    if (hasOrigin)
     {
-      aRadiusStep     = Draw::Atof (theArgVec[anIter++]);
-      aDivisionNumber = Draw::Atoi (theArgVec[anIter++]);
-      aRotAngle       = Draw::Atof (theArgVec[anIter++]);
+      anOrigXY = aNewOriginXY;
+    }
+    if (hasStep)
+    {
+      aRadiusStep     = aNewStepXY[0];
+      aDivisionNumber = (int )aNewStepXY[1];
+      if (aDivisionNumber < 1)
+      {
+        std::cout << "Syntax error: invalid division number '" << aNewStepXY[1] << "'\n";
+        return 1;
+      }
+    }
+    if (hasRotAngle)
+    {
+      aRotAngle = aNewRotAngle;
     }
 
-    aViewer->SetCircularGridValues (anOriginX, anOriginY, aRadiusStep, aDivisionNumber, aRotAngle);
-    aViewer->ActivateGrid (aType, aMode);
+    aViewer->SetCircularGridValues (anOrigXY.x(), anOrigXY.y(), aRadiusStep, aDivisionNumber, aRotAngle);
+    if (hasSize || hasZOffset)
+    {
+      Standard_Real aRadius = 0.0, aZOffset = 0.0;
+      aViewer->CircularGridGraphicValues (aRadius, aZOffset);
+      if (hasSize)
+      {
+        aRadius = aNewSizeXY.x();
+        if (aNewSizeXY.y() != 0.0)
+        {
+          std::cout << "Syntax error: circular size should be specified as radius\n";
+          return 1;
+        }
+      }
+      if (hasZOffset)
+      {
+        aZOffset = aNewZOffset;
+      }
+      aViewer->SetCircularGridGraphicValues (aRadius, aZOffset);
+    }
   }
-
+  aViewer->ActivateGrid (aType, aMode);
   return 0;
 }
 
@@ -12572,10 +12727,10 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
   theCommands.Add("vlayerline",
     "vlayerline : vlayerline x1 y1 x2 y2 [linewidth=0.5] [linetype=0] [transparency=1.0]",
     __FILE__,VLayerLine,group);
-  theCommands.Add ("vgrid",
-    "vgrid [off] [Mode={r|c}] [Type={l|p}] [OriginX OriginY [StepX/StepRadius StepY/DivNb RotAngle]]"
-    " : Mode - rectangular or circular"
-    " : Type - lines or points",
+  theCommands.Add("vgrid",
+              "vgrid [off] [-type {rect|circ}] [-mode {line|point}] [-origin X Y] [-rotAngle Angle] [-zoffset DZ]"
+      "\n\t\t:       [-step X Y] [-size DX DY]"
+      "\n\t\t:       [-step StepRadius NbDivisions] [-radius Radius]",
     __FILE__, VGrid, group);
   theCommands.Add ("vpriviledgedplane",
     "vpriviledgedplane [Ox Oy Oz Nx Ny Nz [Xx Xy Xz]]"

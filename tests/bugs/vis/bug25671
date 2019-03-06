@@ -16,7 +16,7 @@ set cylinder_r 5
 set cylinder_h 10
 set cylinder_xyz {100 0 0}
 
-vgrid c p -10 0 5 5 45
+vgrid -type circular -mode points -origin -10 0 -step 5 5 -rotAngle 45
 pcylinder c $cylinder_r $cylinder_h
 ttranslate c {*}$cylinder_xyz
 vdisplay c
@@ -67,7 +67,7 @@ checkreal "vconvert 0.5 100 0.5 window, view 1, Xp" [lindex $vconvert_05_100_05_
 checkreal "vconvert 0.5 100 0.5 window, view 1, Yp" [lindex $vconvert_05_100_05_win 3] 199.0 1.0  0.0
 
 # 2.2 Quick test of coordinate conversion commands
-vgrid r 10 10 1 1 45
+vgrid -type rectangular -origin 10 10 -step 1 1 -rotAngle 45
 
 set view_scale 49.504950495049506
 set view_proj {0 0 1}

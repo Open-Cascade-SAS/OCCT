@@ -13,7 +13,7 @@ vinit
 box b 1 1 1
 vdisplay b
 vfit
-vgrid r l 0 0 1 1 0
+vgrid -type rectangular -mode lines -origin 0 0 -step 1 1
 vtop
 
 set bug_info [string trim [vreadpixel 86 355 name]]

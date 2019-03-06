@@ -7,7 +7,7 @@ puts ""
 #######################################################################
 
 vinit View1 w=400 h=400
-vgrid r l 0 0 5 5 0
+vgrid -type rectangular -mode lines -origin 0 0 -step 5 5
 
 # 1. Check convert to grid for axonometric projection. Grid is at origin.
 vaxo
