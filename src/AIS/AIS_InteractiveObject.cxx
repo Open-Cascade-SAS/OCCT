@@ -52,12 +52,11 @@ IMPLEMENT_STANDARD_RTTIEXT(AIS_InteractiveObject,SelectMgr_SelectableObject)
 AIS_InteractiveObject::AIS_InteractiveObject (const PrsMgr_TypeOfPresentation3d aTypeOfPresentation3d)
 : SelectMgr_SelectableObject (aTypeOfPresentation3d),
   myCTXPtr (NULL),
-  myOwnWidth (0.0),
+  myOwnWidth (0.0f),
   myCurrentFacingModel (Aspect_TOFM_BOTH_SIDE),
   myInfiniteState (Standard_False),
   hasOwnColor (Standard_False),
-  hasOwnMaterial (Standard_False),
-  myRecomputeEveryPrs (Standard_True)
+  hasOwnMaterial (Standard_False)
 {
   SetCurrentFacingModel();
 }
@@ -89,14 +88,6 @@ AIS_KindOfInteractive AIS_InteractiveObject::Type() const
 
 Standard_Integer AIS_InteractiveObject::Signature() const 
 {return -1;}
-
-//=======================================================================
-//function : RecomputeEveryPrs
-//purpose  : 
-//=======================================================================
-
-Standard_Boolean  AIS_InteractiveObject::RecomputeEveryPrs() const 
-{return myRecomputeEveryPrs;}
 
 //=======================================================================
 //function : 
@@ -200,7 +191,7 @@ void AIS_InteractiveObject::UnsetColor()
 //=======================================================================
 void AIS_InteractiveObject::SetWidth(const Standard_Real aValue)
 {
-  myOwnWidth = aValue;
+  myOwnWidth = (Standard_ShortReal )aValue;
 }
 
 //=======================================================================
@@ -209,7 +200,7 @@ void AIS_InteractiveObject::SetWidth(const Standard_Real aValue)
 //=======================================================================
 void AIS_InteractiveObject::UnsetWidth()
 {
-  myOwnWidth = 0.;
+  myOwnWidth = 0.0f;
 }
 
 //=======================================================================
@@ -333,31 +324,9 @@ void AIS_InteractiveObject::UnsetAttributes()
 
   hasOwnColor    = Standard_False;
   hasOwnMaterial = Standard_False;
-  myOwnWidth     = 0.0;
+  myOwnWidth     = 0.0f;
   myDrawer->SetTransparency (0.0f);
 }
-
-//=======================================================================
-//function : 
-//purpose  : 
-//=======================================================================
-void AIS_InteractiveObject::MustRecomputePrs(const Standard_Integer ) const 
-{}
-
-//=======================================================================
-//function : 
-//purpose  : 
-//=======================================================================
-const TColStd_ListOfInteger& AIS_InteractiveObject::ListOfRecomputeModes() const 
-{return myToRecomputeModes;}
-
-//=======================================================================
-//function : 
-//purpose  : 
-//=======================================================================
-void AIS_InteractiveObject::SetRecomputeOk()
-{myToRecomputeModes.Clear();}
-
 
 //=======================================================================
 //function : AcceptDisplayMode

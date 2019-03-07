@@ -387,7 +387,8 @@ void AIS_Plane::SetSize(const Standard_Real aXLength,
   
   
   myHasOwnSize = Standard_True;
-  Update();
+  SetToUpdate();
+  UpdatePresentations();
   UpdateSelection();
 }
 
@@ -418,7 +419,8 @@ void AIS_Plane::UnsetSize()
   }
   
   myHasOwnSize = Standard_False;
-  Update();
+  SetToUpdate();
+  UpdatePresentations();
   UpdateSelection();
 
 }

@@ -90,6 +90,7 @@ void AIS_CameraFrustum::SetColor (const Quantity_Color& theColor)
   AIS_InteractiveObject::SetColor (theColor);
   myDrawer->ShadingAspect()->SetColor (theColor);
   myDrawer->LineAspect()->SetColor (theColor);
+  SynchronizeAspects();
 }
 
 //=======================================================================
@@ -107,6 +108,7 @@ void AIS_CameraFrustum::UnsetColor()
 
   myDrawer->ShadingAspect()->SetColor (THE_DEFAULT_COLOR);
   myDrawer->LineAspect()->SetColor (THE_DEFAULT_COLOR);
+  SynchronizeAspects();
 }
 
 //=======================================================================
@@ -117,6 +119,7 @@ void AIS_CameraFrustum::UnsetTransparency()
 {
   myDrawer->ShadingAspect()->SetTransparency (0.0f);
   myDrawer->SetTransparency (0.0f);
+  SynchronizeAspects();
 }
 
 //=======================================================================

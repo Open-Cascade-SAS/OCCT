@@ -89,7 +89,7 @@ public:
   virtual AIS_KindOfInteractive Type() const Standard_OVERRIDE { return AIS_KOI_Datum; }
 
   //! Allows you to provide settings for the color aColor.
-  Standard_EXPORT void SetColor (const Quantity_Color& theColor) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetColor (const Quantity_Color& theColor) Standard_OVERRIDE;
 
   void SetXLabel (const TCollection_AsciiString& theLabel) { myXLabel = theLabel; }
 

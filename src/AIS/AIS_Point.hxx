@@ -59,10 +59,10 @@ public:
   Standard_EXPORT virtual void Compute (const Handle(Prs3d_Projector)& aProjector, const Handle(Geom_Transformation)& aTrsf, const Handle(Prs3d_Presentation)& aPresentation) Standard_OVERRIDE;
 
   //! Allows you to provide settings for the Color.
-  Standard_EXPORT void SetColor (const Quantity_Color& theColor) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetColor (const Quantity_Color& theColor) Standard_OVERRIDE;
 
   //! Allows you to remove color settings.
-  Standard_EXPORT void UnsetColor() Standard_OVERRIDE;
+  Standard_EXPORT virtual void UnsetColor() Standard_OVERRIDE;
   
   //! Allows you to provide settings for a marker. These include
   //! -   type of marker,
@@ -90,6 +90,9 @@ private:
   Standard_EXPORT void ComputeSelection (const Handle(SelectMgr_Selection)& aSelection, const Standard_Integer aMode) Standard_OVERRIDE;
 
   Standard_EXPORT void UpdatePointValues();
+
+  //! Replace aspects of already computed groups with the new value.
+  void replaceWithNewPointAspect (const Handle(Prs3d_PointAspect)& theAspect);
 
 private:
 

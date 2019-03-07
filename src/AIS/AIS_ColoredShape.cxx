@@ -124,8 +124,7 @@ Handle(AIS_ColoredDrawer) AIS_ColoredShape::CustomAspects (const TopoDS_Shape& t
   {
     aDrawer = new AIS_ColoredDrawer (myDrawer);
     myShapeColors.Bind (theShape, aDrawer);
-    LoadRecomputable (AIS_WireFrame);
-    LoadRecomputable (AIS_Shaded);
+    SetToUpdate();
   }
   return aDrawer;
 }
@@ -141,8 +140,7 @@ void AIS_ColoredShape::ClearCustomAspects()
     return;
   }
   myShapeColors.Clear();
-  LoadRecomputable (AIS_WireFrame);
-  LoadRecomputable (AIS_Shaded);
+  SetToUpdate();
 }
 
 //=======================================================================
@@ -157,8 +155,7 @@ void AIS_ColoredShape::UnsetCustomAspects (const TopoDS_Shape&    theShape,
     return;
   }
 
-  LoadRecomputable (AIS_WireFrame);
-  LoadRecomputable (AIS_Shaded);
+  SetToUpdate();
   if (theToUnregister)
   {
     myShapeColors.UnBind (theShape);
@@ -183,8 +180,6 @@ void AIS_ColoredShape::SetCustomColor (const TopoDS_Shape&   theShape,
   const Handle(AIS_ColoredDrawer)& aDrawer = CustomAspects (theShape);
   setColor (aDrawer, theColor);
   aDrawer->SetOwnColor (theColor);
-  LoadRecomputable (AIS_WireFrame);
-  LoadRecomputable (AIS_Shaded);
 }
 
 //=======================================================================
@@ -202,8 +197,6 @@ void AIS_ColoredShape::SetCustomTransparency (const TopoDS_Shape& theShape,
   const Handle(AIS_ColoredDrawer)& aDrawer = CustomAspects (theShape);
   setTransparency (aDrawer, theTransparency);
   aDrawer->SetOwnTransparency (theTransparency);
-  LoadRecomputable (AIS_WireFrame);
-  LoadRecomputable (AIS_Shaded);
 }
 
 //=======================================================================
@@ -221,8 +214,6 @@ void AIS_ColoredShape::SetCustomWidth (const TopoDS_Shape& theShape,
   const Handle(AIS_ColoredDrawer)& aDrawer = CustomAspects (theShape);
   setWidth (aDrawer, theLineWidth);
   aDrawer->SetOwnWidth (theLineWidth);
-  LoadRecomputable (AIS_WireFrame);
-  LoadRecomputable (AIS_Shaded);
 }
 
 //=======================================================================

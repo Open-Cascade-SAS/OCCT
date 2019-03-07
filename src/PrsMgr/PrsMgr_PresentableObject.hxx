@@ -109,14 +109,19 @@ public:
 
   Standard_EXPORT void SetTypeOfPresentation (const PrsMgr_TypeOfPresentation3d aType);
   
-  //! flags the Prs of mode <AMode> to be Updated.
-  //! the Update will be done when needed.
-  Standard_EXPORT void SetToUpdate (const Standard_Integer aMode);
-  
+  //! Returns TRUE if any active presentation has invalidation flag.
+  //! @param theToIncludeHidden when TRUE, also checks hidden presentations
+  Standard_EXPORT Standard_Boolean ToBeUpdated (Standard_Boolean theToIncludeHidden = Standard_False) const;
+
+  //! Flags presentation to be updated; UpdatePresentations() will recompute these presentations.
+  //! @param theMode presentation (display mode) to invalidate, or -1 to invalidate them all
+  Standard_EXPORT void SetToUpdate (Standard_Integer theMode);
+
   //! flags all the Presentations to be Updated.
-  Standard_EXPORT void SetToUpdate();
-  
+  void SetToUpdate() { SetToUpdate (-1); }
+
   //! gives the list of modes which are flagged "to be updated".
+  Standard_DEPRECATED("This method is deprecated - UpdatePresentations() should be called instead")
   Standard_EXPORT void ToBeUpdated (TColStd_ListOfInteger& ListOfMode) const;
   
   //! Return the local transformation.
@@ -297,12 +302,24 @@ Standard_EXPORT virtual ~PrsMgr_PresentableObject();
   //! object before computation.
   Standard_EXPORT virtual void Compute (const Handle(Prs3d_Projector)& aProjector, const Handle(Geom_Transformation)& aTrsf, const Handle(Prs3d_Presentation)& aPresentation);
   
-  //! recomputes all presentations of the object.
-  Standard_EXPORT void Update (const Standard_Boolean AllModes = Standard_False);
-  
+  //! Recomputes invalidated presentations of the object.
+  //! @param theToIncludeHidden if TRUE, then even hidden invalidated presentations will be updated
+  //! @return TRUE if some presentations were recomputed
+  Standard_EXPORT Standard_Boolean UpdatePresentations (Standard_Boolean theToIncludeHidden = Standard_False);
+
+  //! Recomputes all presentations of the object.
+  Standard_DEPRECATED("This method is deprecated - SetToUpdate() + UpdatePresentations() should be called instead")
+  void Update (Standard_Boolean theToIncludeHidden = Standard_False)
+  {
+    SetToUpdate();
+    UpdatePresentations (theToIncludeHidden);
+  }
+
   //! Recomputes the presentation in the given mode.
-  //! If ClearOther is true, other presentation will be cleared.
-  Standard_EXPORT void Update (const Standard_Integer aMode, const Standard_Boolean ClearOther);
+  //! @param theMode presentation (display mode) to recompute
+  //! @param theToClearOther when TRUE, other presentations (display modes) will be removed
+  Standard_DEPRECATED("This method is deprecated - SetToUpdate() + UpdatePresentations() should be called instead")
+  Standard_EXPORT void Update (Standard_Integer theMode, Standard_Boolean theToClearOther);
   
   //! High-level interface for controlling polygon offsets
   Standard_EXPORT virtual void Fill (const Handle(PrsMgr_PresentationManager)& aPresentationManager, const Handle(PrsMgr_Presentation)& aPresentation, const Standard_Integer aMode);

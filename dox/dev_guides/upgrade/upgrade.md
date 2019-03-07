@@ -1716,6 +1716,21 @@ aGroup->SetPrimitivesAspect (myDrawer->LineAspect()->Aspect()); //!< next array 
 aGroup->AddPrimitiveArray (aLines);
 ~~~~
 
+@subsection upgrade_740_prsupdate Presentation invalidation
+
+Historically AIS_InteractiveObject provided two independent mechanisms invalidating presentation (asking presentation manager to recompute specific display mode or all modes):
+
+1. *AIS_InteractiveObject::SetToUpdate()*, marking existing presentation for update.
+   This is main invalidation API, which is expected to be followed by *AIS_InteractiveContext::Update()* call.
+2. *AIS_InteractiveObject::myToRecomputeModes* + *myRecomputeEveryPrs*.
+   This is auxiliary invalidation API, used internally by AIS_InteractiveContext::SetColor()/UnsetColor() and similar modification methods.
+
+The latter one has been removed to avoid confusion and unexpected behavior.
+In addition, two methods *AIS_InteractiveObject::Update()* have been deprecated in favor of new *AIS_InteractiveObject::UpdatePresentations()* recomputing only invalidated presentations.
+
+Custom presentations implementing interface methods *AIS_InteractiveObject::SetColor()* and others should be revised to use *AIS_InteractiveObject::SetToUpdate()*
+or updating presentation without recomputation (see *AIS_InteractiveObject::SynchronizeAspects()* and *AIS_InteractiveObject::replaceAspects()*).
+
 @subsection upgrade_740_interiorstyles Interior styles
 
 * *Aspect_IS_HOLLOW* is now an alias to *Aspect_IS_EMPTY* and does not implicitly enables drawing mesh edges anymore.

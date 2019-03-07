@@ -248,6 +248,7 @@ void AIS_PlaneTrihedron::SetColor(const Quantity_Color &aCol)
   myDrawer->SetColor (aCol);
   myDrawer->DatumAspect()->LineAspect(Prs3d_DP_XAxis)->SetColor(aCol);
   myDrawer->DatumAspect()->LineAspect(Prs3d_DP_YAxis)->SetColor(aCol);
+  SynchronizeAspects();
 }
 
 

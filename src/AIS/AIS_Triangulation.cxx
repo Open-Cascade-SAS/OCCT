@@ -111,9 +111,6 @@ void AIS_Triangulation::updatePresentation()
         aGroup->SetGroupPrimitivesAspect (anAreaAsp);
       }
     }
-
-    myRecomputeEveryPrs = Standard_False; // no mode to recalculate - only viewer update
-    myToRecomputeModes.Clear();
   }
 }
 

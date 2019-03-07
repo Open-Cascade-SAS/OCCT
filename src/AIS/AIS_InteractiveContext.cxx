@@ -952,7 +952,8 @@ void AIS_InteractiveContext::RecomputePrsOnly (const Handle(AIS_InteractiveObjec
     return;
   }
 
-  theIObj->Update (theAllModes);
+  theIObj->SetToUpdate();
+  theIObj->UpdatePresentations (theAllModes);
   if (!theToUpdateViewer)
   {
     return;
@@ -1006,13 +1007,7 @@ void AIS_InteractiveContext::Update (const Handle(AIS_InteractiveObject)& theIOb
     return;
   }
 
-  TColStd_ListOfInteger aPrsModes;
-  theIObj->ToBeUpdated (aPrsModes);
-  for (TColStd_ListIteratorOfListOfInteger aPrsModesIt (aPrsModes); aPrsModesIt.More(); aPrsModesIt.Next())
-  {
-    theIObj->Update (aPrsModesIt.Value(), Standard_False);
-  }
-
+  theIObj->UpdatePresentations();
   mgrSelector->Update(theIObj);
 
   if (theUpdateViewer)
@@ -1370,63 +1365,6 @@ void AIS_InteractiveContext::SetCurrentFacingModel (const Handle(AIS_Interactive
 }
 
 //=======================================================================
-//function : redisplayPrsRecModes
-//purpose  :
-//=======================================================================
-void AIS_InteractiveContext::redisplayPrsRecModes (const Handle(AIS_InteractiveObject)& theIObj,
-                                                   const Standard_Boolean               theToUpdateViewer)
-{
-  if (theIObj->RecomputeEveryPrs())
-  {
-    theIObj->Update (Standard_True);
-    theIObj->UpdateSelection();
-  }
-  else
-  {
-    for (TColStd_ListIteratorOfListOfInteger aModes (theIObj->ListOfRecomputeModes()); aModes.More(); aModes.Next())
-    {
-      theIObj->Update (aModes.Value(), Standard_False);
-    }
-    theIObj->UpdateSelection();
-    theIObj->SetRecomputeOk();
-  }
-
-  if (theToUpdateViewer)
-  {
-    UpdateCurrentViewer();
-  }
-}
-
-//=======================================================================
-//function : redisplayPrsModes
-//purpose  :
-//=======================================================================
-void AIS_InteractiveContext::redisplayPrsModes (const Handle(AIS_InteractiveObject)& theIObj,
-                                                const Standard_Boolean               theToUpdateViewer)
-{
-  if (theIObj->RecomputeEveryPrs())
-  {
-    theIObj->Update (Standard_True);
-    theIObj->UpdateSelection();
-  }
-  else
-  {
-    TColStd_ListOfInteger aModes;
-    theIObj->ToBeUpdated (aModes);
-    for (TColStd_ListIteratorOfListOfInteger aModeIter (aModes); aModeIter.More(); aModeIter.Next())
-    {
-      theIObj->Update (aModeIter.Value(), Standard_False);
-    }
-    theIObj->SetRecomputeOk();
-  }
-
-  if (theToUpdateViewer)
-  {
-    UpdateCurrentViewer();
-  }
-}
-
-//=======================================================================
 //function : SetColor
 //purpose  :
 //=======================================================================
@@ -1441,7 +1379,11 @@ void AIS_InteractiveContext::SetColor (const Handle(AIS_InteractiveObject)& theI
 
   setContextToObject (theIObj);
   theIObj->SetColor (theColor);
-  redisplayPrsRecModes (theIObj, theToUpdateViewer);
+  theIObj->UpdatePresentations();
+  if (theToUpdateViewer)
+  {
+    UpdateCurrentViewer();
+  }
 }
 
 //=======================================================================
@@ -1486,7 +1428,11 @@ void AIS_InteractiveContext::SetDeviationCoefficient (const Handle(AIS_Interacti
 
   Handle(AIS_Shape) aShape = Handle(AIS_Shape)::DownCast (theIObj);
   aShape->SetOwnDeviationCoefficient (theCoefficient);
-  redisplayPrsModes (theIObj, theToUpdateViewer);
+  aShape->UpdatePresentations();
+  if (theToUpdateViewer)
+  {
+    UpdateCurrentViewer();
+  }
 }
 
 //=======================================================================
@@ -1516,7 +1462,11 @@ void AIS_InteractiveContext::SetHLRDeviationCoefficient (const Handle(AIS_Intera
 
   Handle(AIS_Shape) aShape = Handle(AIS_Shape)::DownCast (theIObj);
   aShape->SetOwnHLRDeviationCoefficient (theCoefficient);
-  redisplayPrsModes (theIObj, theToUpdateViewer);
+  aShape->UpdatePresentations();
+  if (theToUpdateViewer)
+  {
+    UpdateCurrentViewer();
+  }
 }
 
 //=======================================================================
@@ -1545,7 +1495,11 @@ void AIS_InteractiveContext::SetDeviationAngle (const Handle(AIS_InteractiveObje
 
   Handle(AIS_Shape) aShape = Handle(AIS_Shape)::DownCast (theIObj);
   aShape->SetOwnDeviationAngle (theAngle);
-  redisplayPrsModes (theIObj, theToUpdateViewer);
+  aShape->UpdatePresentations();
+  if (theToUpdateViewer)
+  {
+    UpdateCurrentViewer();
+  }
 }
 
 //=======================================================================
@@ -1574,15 +1528,10 @@ void AIS_InteractiveContext::SetAngleAndDeviation (const Handle(AIS_InteractiveO
 
   Handle(AIS_Shape) aShape = Handle(AIS_Shape)::DownCast (theIObj);
   aShape->SetAngleAndDeviation (theAngle);
-
-  if (theIObj->RecomputeEveryPrs())
+  aShape->UpdatePresentations();
+  if (theToUpdateViewer)
   {
-    theIObj->Update (Standard_True);
-    theIObj->UpdateSelection();
-  }
-  else
-  {
-    Update (theIObj, theToUpdateViewer);
+    UpdateCurrentViewer();
   }
 }
 
@@ -1611,7 +1560,11 @@ void AIS_InteractiveContext::SetHLRAngleAndDeviation (const Handle(AIS_Interacti
   }
   Handle(AIS_Shape) aShape = Handle(AIS_Shape)::DownCast (theIObj);
   aShape->SetHLRAngleAndDeviation (theAngle);
-  redisplayPrsModes (theIObj, theToUpdateViewer);
+  aShape->UpdatePresentations();
+  if (theToUpdateViewer)
+  {
+    UpdateCurrentViewer();
+  }
 }
 
 //=======================================================================
@@ -1639,7 +1592,11 @@ void AIS_InteractiveContext::SetHLRDeviationAngle (const Handle(AIS_InteractiveO
   }
   Handle(AIS_Shape) aShape = Handle(AIS_Shape)::DownCast (theIObj);
   aShape->SetOwnHLRDeviationAngle (theAngle);
-  redisplayPrsModes (theIObj, theToUpdateViewer);
+  aShape->UpdatePresentations();
+  if (theToUpdateViewer)
+  {
+    UpdateCurrentViewer();
+  }
 }
 
 //=======================================================================
@@ -1655,7 +1612,11 @@ void AIS_InteractiveContext::UnsetColor (const Handle(AIS_InteractiveObject)& th
   }
 
   theIObj->UnsetColor();
-  redisplayPrsRecModes (theIObj, theToUpdateViewer);
+  theIObj->UpdatePresentations();
+  if (theToUpdateViewer)
+  {
+    UpdateCurrentViewer();
+  }
 }
 
 //=======================================================================
@@ -1701,7 +1662,7 @@ void AIS_InteractiveContext::SetWidth (const Handle(AIS_InteractiveObject)& theI
 
   setContextToObject (theIObj);
   theIObj->SetWidth (theWidth);
-  redisplayPrsRecModes (theIObj, theToUpdateViewer);
+  theIObj->UpdatePresentations();
   if (!myLastinMain.IsNull() && myLastinMain->IsSameSelectable (theIObj))
   {
     if (myLastinMain->IsAutoHilight())
@@ -1718,6 +1679,10 @@ void AIS_InteractiveContext::SetWidth (const Handle(AIS_InteractiveObject)& theI
                                       myLastinMain);
     }
   }
+  if (theToUpdateViewer)
+  {
+    UpdateCurrentViewer();
+  }
 }
 
 //=======================================================================
@@ -1733,7 +1698,11 @@ void AIS_InteractiveContext::UnsetWidth (const Handle(AIS_InteractiveObject)& th
   }
 
   theIObj->UnsetWidth();
-  redisplayPrsRecModes (theIObj, theToUpdateViewer);
+  theIObj->UpdatePresentations();
+  if (theToUpdateViewer)
+  {
+    UpdateCurrentViewer();
+  }
 }
 
 //=======================================================================
@@ -1751,7 +1720,11 @@ void AIS_InteractiveContext::SetMaterial (const Handle(AIS_InteractiveObject)& t
 
   setContextToObject (theIObj);
   theIObj->SetMaterial (theMaterial);
-  redisplayPrsRecModes (theIObj, theToUpdateViewer);
+  theIObj->UpdatePresentations();
+  if (theToUpdateViewer)
+  {
+    UpdateCurrentViewer();
+  }
 }
 
 //=======================================================================
@@ -1766,7 +1739,11 @@ void AIS_InteractiveContext::UnsetMaterial (const Handle(AIS_InteractiveObject)&
     return;
   }
   theIObj->UnsetMaterial();
-  redisplayPrsRecModes (theIObj, theToUpdateViewer);
+  theIObj->UpdatePresentations();
+  if (theToUpdateViewer)
+  {
+    UpdateCurrentViewer();
+  }
 }
 
 //=======================================================================
@@ -1796,7 +1773,11 @@ void AIS_InteractiveContext::SetTransparency (const Handle(AIS_InteractiveObject
   }
 
   theIObj->SetTransparency (theValue);
-  redisplayPrsRecModes (theIObj, theToUpdateViewer);
+  theIObj->UpdatePresentations();
+  if (theToUpdateViewer)
+  {
+    UpdateCurrentViewer();
+  }
 }
 
 //=======================================================================
@@ -1812,7 +1793,11 @@ void AIS_InteractiveContext::UnsetTransparency (const Handle(AIS_InteractiveObje
   }
 
   theIObj->UnsetTransparency();
-  redisplayPrsRecModes (theIObj, theToUpdateViewer);
+  theIObj->UpdatePresentations();
+  if (theToUpdateViewer)
+  {
+    UpdateCurrentViewer();
+  }
 }
 
 //=======================================================================

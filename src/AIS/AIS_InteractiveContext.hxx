@@ -1208,14 +1208,6 @@ protected: //! @name internal methods
   Standard_EXPORT void InitAttributes();
   
   Standard_EXPORT Standard_Integer PurgeViewer (const Handle(V3d_Viewer)& Vwr);
-  
-  //! UNKNOWN
-  Standard_EXPORT void redisplayPrsModes (const Handle(AIS_InteractiveObject)& theIObj,
-                                          const Standard_Boolean               theToUpdateViewer);
-  
-  //! UNKNOWN
-  Standard_EXPORT void redisplayPrsRecModes (const Handle(AIS_InteractiveObject)& theIObj,
-                                             const Standard_Boolean               theToUpdateViewer);
 
   //! Helper function to unhighlight all entity owners currently highlighted with seleciton color.
   Standard_EXPORT void unhighlightOwners (const Handle(AIS_InteractiveObject)& theObject);

@@ -113,6 +113,29 @@ void AIS_Circle::ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
 }
 
 //=======================================================================
+//function : replaceWithNewLineAspect
+//purpose  :
+//=======================================================================
+void AIS_Circle::replaceWithNewLineAspect (const Handle(Prs3d_LineAspect)& theAspect)
+{
+  if (!myDrawer->HasLink())
+  {
+    myDrawer->SetLineAspect (theAspect);
+    return;
+  }
+
+  const Handle(Graphic3d_AspectLine3d) anAspectOld = myDrawer->LineAspect()->Aspect();
+  const Handle(Graphic3d_AspectLine3d) anAspectNew = !theAspect.IsNull() ? theAspect->Aspect() : myDrawer->Link()->LineAspect()->Aspect();
+  if (anAspectNew != anAspectOld)
+  {
+    myDrawer->SetLineAspect (theAspect);
+    Graphic3d_MapOfAspectsToAspects aReplaceMap;
+    aReplaceMap.Bind (anAspectOld, anAspectNew);
+    replaceAspects (aReplaceMap);
+  }
+}
+
+//=======================================================================
 //function : SetColor
 //purpose  : 
 //=======================================================================
@@ -122,18 +145,20 @@ void AIS_Circle::SetColor(const Quantity_Color &aCol)
   hasOwnColor=Standard_True;
   myDrawer->SetColor (aCol);
 
-  Standard_Real WW = HasWidth() ? myOwnWidth :
-                                  myDrawer->HasLink() ?
-                                  AIS_GraphicTool::GetLineWidth (myDrawer->Link(), AIS_TOA_Line) :
-                                  1.;
-
-  if (!myDrawer->HasOwnLineAspect ())
-    myDrawer->SetLineAspect (new Prs3d_LineAspect(aCol,Aspect_TOL_SOLID,WW));
+  if (!myDrawer->HasOwnLineAspect())
+  {
+    Standard_Real WW = HasWidth() ? myOwnWidth :
+                                    myDrawer->HasLink() ?
+                                    AIS_GraphicTool::GetLineWidth (myDrawer->Link(), AIS_TOA_Line) :
+                                    1.;
+    replaceWithNewLineAspect (new Prs3d_LineAspect (aCol, Aspect_TOL_SOLID, WW));
+  }
   else
+  {
     myDrawer->LineAspect()->SetColor(aCol);
+    SynchronizeAspects();
+  }
 }
-
-
 
 //=======================================================================
 //function : SetWidth 
@@ -141,15 +166,20 @@ void AIS_Circle::SetColor(const Quantity_Color &aCol)
 //=======================================================================
 void AIS_Circle::SetWidth(const Standard_Real aValue)
 {
-  myOwnWidth=aValue;
+  myOwnWidth = (Standard_ShortReal )aValue;
 
-  if (!myDrawer->HasOwnLineAspect ()) {
+  if (!myDrawer->HasOwnLineAspect())
+  {
     Quantity_Color CC = Quantity_NOC_YELLOW;
     if( HasColor() ) CC = myDrawer->Color();
     else if(myDrawer->HasLink()) AIS_GraphicTool::GetLineColor (myDrawer->Link(), AIS_TOA_Line, CC);
-    myDrawer->SetLineAspect (new Prs3d_LineAspect(CC,Aspect_TOL_SOLID,aValue));
-  } else
+    replaceWithNewLineAspect (new Prs3d_LineAspect (CC, Aspect_TOL_SOLID, aValue));
+  }
+  else
+  {
     myDrawer->LineAspect()->SetWidth(aValue);
+    SynchronizeAspects();
+  }
 }
 
 
@@ -161,15 +191,18 @@ void AIS_Circle::UnsetColor()
 {
   hasOwnColor = Standard_False;
 
-  Handle(Prs3d_LineAspect) NullAsp;
-
-  if (!HasWidth()) myDrawer->SetLineAspect(NullAsp);
-  else{
+  if (!HasWidth())
+  {
+    replaceWithNewLineAspect (Handle(Prs3d_LineAspect)());
+  }
+  else
+  {
     Quantity_Color CC = Quantity_NOC_YELLOW;;
     if( HasColor() ) CC = myDrawer->Color();
     else if (myDrawer->HasLink()) AIS_GraphicTool::GetLineColor(myDrawer->Link(),AIS_TOA_Line,CC);
     myDrawer->LineAspect()->SetColor(CC);
     myDrawer->SetColor (CC);
+    SynchronizeAspects();
   }
 }
 
@@ -179,11 +212,13 @@ void AIS_Circle::UnsetColor()
 //=======================================================================
 void AIS_Circle::UnsetWidth()
 {
-  Handle(Prs3d_LineAspect) NullAsp;
-
-  if (!HasColor()) myDrawer->SetLineAspect(NullAsp);
-  else{
-   Standard_Real WW = myDrawer->HasLink() ? AIS_GraphicTool::GetLineWidth(myDrawer->Link(),AIS_TOA_Line) : 1.;
+  if (!HasColor())
+  {
+    replaceWithNewLineAspect (Handle(Prs3d_LineAspect)());
+  }
+  else
+  {
+   Standard_ShortReal WW = myDrawer->HasLink() ? (Standard_ShortReal )AIS_GraphicTool::GetLineWidth(myDrawer->Link(),AIS_TOA_Line) : 1.0f;
    myDrawer->LineAspect()->SetWidth(WW);
    myOwnWidth = WW;
   }

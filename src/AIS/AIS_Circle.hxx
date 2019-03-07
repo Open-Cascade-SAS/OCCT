@@ -115,6 +115,9 @@ private:
   
   Standard_EXPORT void ComputeArcSelection (const Handle(SelectMgr_Selection)& aSelection);
 
+  //! Replace aspects of already computed groups with the new value.
+  void replaceWithNewLineAspect (const Handle(Prs3d_LineAspect)& theAspect);
+
 private:
 
   Handle(Geom_Circle) myComponent;

@@ -302,8 +302,6 @@ protected:
   Standard_EXPORT virtual void ComputeSelection (const Handle(SelectMgr_Selection)& theSelection,
                                                  const Standard_Integer theMode) Standard_OVERRIDE;
   
-  Standard_EXPORT void LoadRecomputable (const Standard_Integer TheMode);
-  
   //! Create own aspects (if they do not exist) and set color to them.
   //! @return TRUE if new aspects have been created
   Standard_EXPORT bool setColor (const Handle(Prs3d_Drawer)& theDrawer, const Quantity_Color& theColor) const;

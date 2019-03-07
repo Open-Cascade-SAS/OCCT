@@ -224,8 +224,6 @@ protected:
 
 protected:
 
-  Standard_EXPORT void LoadRecomputable (const Standard_Integer theMode);
-
   //! Creates a sensitive entity for the datum part that will be used in selection owner creation.
   Standard_EXPORT Handle(SelectBasics_SensitiveEntity) createSensitiveEntity (const Prs3d_DatumParts thePart,
                                                      const Handle(SelectBasics_EntityOwner)& theOwner) const;

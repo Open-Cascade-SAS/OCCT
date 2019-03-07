@@ -68,15 +68,6 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(AIS_Shape,AIS_InteractiveObject)
 
-static Standard_Boolean IsInList(const TColStd_ListOfInteger& LL, const Standard_Integer aMode)
-{
-  TColStd_ListIteratorOfListOfInteger It(LL);
-  for(;It.More();It.Next()){
-    if(It.Value()==aMode) 
-      return Standard_True;}
-  return Standard_False;
-}
-
 // Auxiliary macros
 #define replaceAspectWithDef(theMap, theAspect) \
   if (myDrawer->Link()->theAspect()->Aspect() != myDrawer->theAspect()->Aspect()) \
@@ -411,8 +402,6 @@ void AIS_Shape::SetColor (const Quantity_Color& theColor)
   myDrawer->SetColor (theColor);
   hasOwnColor = Standard_True;
 
-  myRecomputeEveryPrs = false; // no mode to recalculate, only viewer update
-  myToRecomputeModes.Clear();
   if (!toRecompute
    || !myDrawer->HasLink())
   {
@@ -432,8 +421,6 @@ void AIS_Shape::SetColor (const Quantity_Color& theColor)
 
 void AIS_Shape::UnsetColor()
 {
-  myRecomputeEveryPrs = false; // no mode to recalculate, only viewer update
-  myToRecomputeModes.Clear();
   if (!HasColor())
   {
     return;
@@ -578,10 +565,8 @@ bool AIS_Shape::setWidth (const Handle(Prs3d_Drawer)& theDrawer,
 
 void AIS_Shape::SetWidth (const Standard_Real theLineWidth)
 {
-  myOwnWidth = theLineWidth;
+  myOwnWidth = (Standard_ShortReal )theLineWidth;
 
-  myRecomputeEveryPrs = false; // no mode to recalculate, only viewer update
-  myToRecomputeModes.Clear();
   if (!setWidth (myDrawer, theLineWidth)
    || !myDrawer->HasLink())
   {
@@ -601,14 +586,12 @@ void AIS_Shape::SetWidth (const Standard_Real theLineWidth)
 
 void AIS_Shape::UnsetWidth()
 {
-  myRecomputeEveryPrs = false; // no mode to recalculate, only viewer update
-  myToRecomputeModes.Clear();
-  if (myOwnWidth == 0.0)
+  if (myOwnWidth == 0.0f)
   {
     return;
   }
 
-  myOwnWidth = 0.0;
+  myOwnWidth = 0.0f;
   if (!HasColor())
   {
     Graphic3d_MapOfAspectsToAspects aReplaceMap;
@@ -681,8 +664,6 @@ void AIS_Shape::SetMaterial (const Graphic3d_MaterialAspect& theMat)
   setMaterial (myDrawer, theMat, HasColor(), IsTransparent());
   hasOwnMaterial = Standard_True;
 
-  myRecomputeEveryPrs = false; // no mode to recalculate, only viewer update
-  myToRecomputeModes.Clear();
   if (!toRecompute
    || !myDrawer->HasLink())
   {
@@ -701,8 +682,6 @@ void AIS_Shape::SetMaterial (const Graphic3d_MaterialAspect& theMat)
 
 void AIS_Shape::UnsetMaterial()
 {
-  myRecomputeEveryPrs = false; // no mode to recalculate, only viewer update
-  myToRecomputeModes.Clear();
   if (!HasMaterial())
   {
     return;
@@ -761,8 +740,6 @@ void AIS_Shape::SetTransparency (const Standard_Real theValue)
   setTransparency (myDrawer, theValue);
   myDrawer->SetTransparency ((Standard_ShortReal )theValue);
 
-  myRecomputeEveryPrs = false; // no mode to recalculate, only viewer update
-  myToRecomputeModes.Clear();
   if (!toRecompute
    || !myDrawer->HasLink())
   {
@@ -781,9 +758,6 @@ void AIS_Shape::SetTransparency (const Standard_Real theValue)
 
 void AIS_Shape::UnsetTransparency()
 {
-  myRecomputeEveryPrs = false; // no mode to recalculate, only viewer update
-  myToRecomputeModes.Clear();
-
   myDrawer->SetTransparency (0.0f);
   if (!myDrawer->HasOwnShadingAspect())
   {
@@ -803,18 +777,6 @@ void AIS_Shape::UnsetTransparency()
     myDrawer->SetShadingAspect (Handle(Prs3d_ShadingAspect)());
     replaceAspects (aReplaceMap);
   }
-}
-
-//=======================================================================
-//function : LoadRecomputable
-//purpose  : 
-//=======================================================================
-
-void AIS_Shape::LoadRecomputable(const Standard_Integer TheMode)
-{
-  myRecomputeEveryPrs = Standard_False;
-  if(!IsInList(myToRecomputeModes,TheMode))
-    myToRecomputeModes.Append(TheMode);
 }
 
 //=======================================================================
@@ -903,8 +865,7 @@ Standard_Boolean AIS_Shape::SetOwnHLRDeviationAngle ()
 void AIS_Shape::SetOwnDeviationCoefficient ( const Standard_Real  aCoefficient )
 {
   myDrawer->SetDeviationCoefficient( aCoefficient );
-  SetToUpdate(0) ; // WireFrame
-  SetToUpdate(1) ; // Shadding
+  SetToUpdate();
 }
 
 //=======================================================================
@@ -923,11 +884,10 @@ void AIS_Shape::SetOwnHLRDeviationCoefficient ( const Standard_Real  aCoefficien
 //purpose  : 
 //=======================================================================
 
-void AIS_Shape::SetOwnDeviationAngle ( const Standard_Real  anAngle )
+void AIS_Shape::SetOwnDeviationAngle (const Standard_Real theAngle)
 {
-
-  myDrawer->SetDeviationAngle(anAngle );
-  SetToUpdate(0) ;   // WireFrame
+  myDrawer->SetDeviationAngle (theAngle);
+  SetToUpdate (AIS_WireFrame);
 }
 //=======================================================================
 //function : SetOwnDeviationAngle
@@ -941,8 +901,7 @@ void AIS_Shape::SetAngleAndDeviation ( const Standard_Real  anAngle )
   SetOwnDeviationAngle(anAngle) ;
   SetOwnDeviationCoefficient(OutDefl) ;
   myInitAng = anAngle;
-  SetToUpdate(0);
-  SetToUpdate(1);
+  SetToUpdate();
 }
 
 //=======================================================================

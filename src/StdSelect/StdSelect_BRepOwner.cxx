@@ -105,12 +105,10 @@ void StdSelect_BRepOwner::HilightWithColor (const Handle(PrsMgr_PresentationMana
   }
 
   // do the update flag check
-  if (!myPrsSh.IsNull())
+  if (!myPrsSh.IsNull()
+   && myPrsSh->ToBeUpdated (true))
   {
-    TColStd_ListOfInteger aModesList;
-    myPrsSh->ToBeUpdated (aModesList);
-    if (!aModesList.IsEmpty())
-      myPrsSh.Nullify();
+    myPrsSh.Nullify();
   }
 
   // generate new presentable shape

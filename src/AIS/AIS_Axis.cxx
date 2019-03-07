@@ -221,7 +221,7 @@ void AIS_Axis::SetColor(const Quantity_Color &aCol)
   DA->LineAspect(Prs3d_DP_XAxis)->SetColor(aCol);
   DA->LineAspect(Prs3d_DP_YAxis)->SetColor(aCol);
   DA->LineAspect(Prs3d_DP_ZAxis)->SetColor(aCol);
-  
+  SynchronizeAspects();
 }
 
 //=======================================================================
@@ -230,7 +230,6 @@ void AIS_Axis::SetColor(const Quantity_Color &aCol)
 //=======================================================================
 void AIS_Axis::SetWidth(const Standard_Real aValue)
 {
-  
   if(aValue<0.0) return;
   if(aValue==0) UnsetWidth();
   
@@ -240,6 +239,7 @@ void AIS_Axis::SetWidth(const Standard_Real aValue)
   DA->LineAspect(Prs3d_DP_XAxis)->SetWidth(aValue);
   DA->LineAspect(Prs3d_DP_YAxis)->SetWidth(aValue);
   DA->LineAspect(Prs3d_DP_ZAxis)->SetWidth(aValue);
+  SynchronizeAspects();
 }
 
 
@@ -324,14 +324,13 @@ AcceptDisplayMode(const Standard_Integer aMode) const
 //=======================================================================
 void AIS_Axis::UnsetColor()
 {
-  
   myDrawer->LineAspect()->SetColor(Quantity_NOC_RED);
-
-  hasOwnColor=Standard_False;
+  hasOwnColor = Standard_False;
 
   myDrawer->DatumAspect()->LineAspect(Prs3d_DP_XAxis)->SetColor(Quantity_NOC_TURQUOISE);
   myDrawer->DatumAspect()->LineAspect(Prs3d_DP_YAxis)->SetColor(Quantity_NOC_TURQUOISE);
   myDrawer->DatumAspect()->LineAspect(Prs3d_DP_ZAxis)->SetColor(Quantity_NOC_TURQUOISE);
+  SynchronizeAspects();
 }
 //=======================================================================
 //function : UnsetWidth
@@ -340,10 +339,10 @@ void AIS_Axis::UnsetColor()
 
 void AIS_Axis::UnsetWidth()
 {
-  myOwnWidth = 0.0;
+  myOwnWidth = 0.0f;
   myDrawer->LineAspect()->SetWidth(1.);
   myDrawer->DatumAspect()->LineAspect(Prs3d_DP_XAxis)->SetWidth(1.);
   myDrawer->DatumAspect()->LineAspect(Prs3d_DP_YAxis)->SetWidth(1.);
   myDrawer->DatumAspect()->LineAspect(Prs3d_DP_ZAxis)->SetWidth(1.);
+  SynchronizeAspects();
 }
-

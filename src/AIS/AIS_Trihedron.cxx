@@ -85,7 +85,7 @@ AIS_Trihedron::AIS_Trihedron (const Handle(Geom_Axis2Placement)& theComponent)
 void AIS_Trihedron::SetComponent (const Handle(Geom_Axis2Placement)& theComponent)
 {
   myComponent = theComponent;
-  LoadRecomputable (AIS_WireFrame);
+  SetToUpdate();
 }
 
 //=======================================================================
@@ -135,7 +135,8 @@ void AIS_Trihedron::SetSize(const Standard_Real aValue)
   setOwnDatumAspect();
   myDrawer->DatumAspect()->SetAxisLength(aValue, aValue, aValue);
 
-  Update();
+  SetToUpdate();
+  UpdatePresentations();
   UpdateSelection();
 }
 
@@ -162,7 +163,8 @@ void AIS_Trihedron::UnsetSize()
   }
   else
   {
-    Update();
+    SetToUpdate();
+    UpdatePresentations();
   }
   UpdateSelection();
 }
@@ -557,19 +559,6 @@ void AIS_Trihedron::computePresentation (const Handle(PrsMgr_PresentationManager
 
     aGroup->AddPrimitiveArray (arrayOfPrimitives (aPart));
     aGroup->SetGroupPrimitivesAspect (aLineAspect);
-  }
-}
-
-//=======================================================================
-//function : LoadRecomputable
-//purpose  :
-//=======================================================================
-void AIS_Trihedron::LoadRecomputable (const Standard_Integer theMode)
-{
-  myRecomputeEveryPrs = Standard_False;
-  if (!myToRecomputeModes.Contains (theMode))
-  {
-    myToRecomputeModes.Append (theMode);
   }
 }
 

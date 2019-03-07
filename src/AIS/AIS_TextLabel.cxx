@@ -57,6 +57,7 @@ void AIS_TextLabel::SetColor (const Quantity_Color& theColor)
   hasOwnColor = Standard_True;
   myDrawer->SetColor (theColor);
   myDrawer->TextAspect()->SetColor (theColor);
+  SynchronizeAspects();
 }
 
 //=======================================================================
@@ -74,6 +75,7 @@ void AIS_TextLabel::SetTransparency (const Standard_Real theValue)
   myDrawer->TextAspect()->Aspect()->SetColor (aTextColor);
   myDrawer->TextAspect()->Aspect()->SetColorSubTitle (aSubColor);
   myDrawer->SetTransparency (Standard_ShortReal(theValue));
+  SynchronizeAspects();
 }
 
 //=======================================================================

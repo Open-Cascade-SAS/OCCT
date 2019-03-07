@@ -283,7 +283,7 @@ public:
   virtual void Color (Quantity_Color& theColor) const { theColor = myDrawer->Color(); }
 
   //! Returns true if the Interactive Object has width.
-  Standard_Boolean HasWidth() const { return myOwnWidth != 0.0; }
+  Standard_Boolean HasWidth() const { return myOwnWidth != 0.0f; }
 
   //! Returns the width setting of the Interactive Object.
   Standard_Real Width() const { return myOwnWidth; }
@@ -395,36 +395,19 @@ protected:
   //! and then modify them directly followed by SynchronizeAspects() call.
   Standard_EXPORT void replaceAspects (const Graphic3d_MapOfAspectsToAspects& theMap);
 
-private:
-
-  Standard_EXPORT virtual Standard_Boolean RecomputeEveryPrs() const;
-
-  Standard_EXPORT void MustRecomputePrs (const Standard_Integer aMode) const;
-
-  Standard_EXPORT const TColStd_ListOfInteger& ListOfRecomputeModes() const;
-
-  Standard_EXPORT void SetRecomputeOk();
-
-protected:
-
   //! The TypeOfPresention3d means that the interactive object
   //! may have a presentation dependant of the view of Display.
   Standard_EXPORT AIS_InteractiveObject(const PrsMgr_TypeOfPresentation3d aTypeOfPresentation3d = PrsMgr_TOP_AllView);
 
-private:
+protected:
 
   AIS_InteractiveContext* myCTXPtr;
   Handle(Standard_Transient) myOwner;
-
-protected:
-
-  TColStd_ListOfInteger myToRecomputeModes;
-  Standard_Real myOwnWidth;
+  Standard_ShortReal myOwnWidth;
   Aspect_TypeOfFacingModel myCurrentFacingModel;
   Standard_Boolean myInfiniteState;
   Standard_Boolean hasOwnColor;
   Standard_Boolean hasOwnMaterial;
-  Standard_Boolean myRecomputeEveryPrs;
 
 };
 

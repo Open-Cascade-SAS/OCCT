@@ -41,52 +41,6 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(AIS_Line,AIS_InteractiveObject)
 
-//==================================================================
-// function: FindLimits
-// purpose:
-//==================================================================
-//unused
-/*#ifdef OCCT_DEBUG
-static void FindLimits(const Adaptor3d_Curve& aCurve,
-		       const Standard_Real  aLimit,
-		       gp_Pnt& P1,
-		       gp_Pnt& P2)
-{
-  Standard_Real First = aCurve.FirstParameter();
-  Standard_Real Last  = aCurve.LastParameter();
-  Standard_Boolean firstInf = Precision::IsNegativeInfinite(First);
-  Standard_Boolean lastInf  = Precision::IsPositiveInfinite(Last);
-  if (firstInf || lastInf) {
-    Standard_Real delta = 1;
-    if (firstInf && lastInf) {
-      do {
-	delta *= 2;
-	First = - delta;
-	Last  =   delta;
-	aCurve.D0(First,P1);
-	aCurve.D0(Last,P2);
-      } while (P1.Distance(P2) < aLimit);
-    }
-    else if (firstInf) {
-      aCurve.D0(Last,P2);
-      do {
-	delta *= 2;
-	First = Last - delta;
-	aCurve.D0(First,P1);
-      } while (P1.Distance(P2) < aLimit);
-    }
-    else if (lastInf) {
-      aCurve.D0(First,P1);
-      do {
-	delta *= 2;
-	Last = First + delta;
-	aCurve.D0(Last,P2);
-      } while (P1.Distance(P2) < aLimit);
-    }
-  }    
-}
-#endif
-*/
 //=======================================================================
 //function : AIS_Line
 //purpose  : 
@@ -126,8 +80,7 @@ void AIS_Line::Compute(const Handle(PrsMgr_PresentationManager3d)&,
 
 void AIS_Line::Compute(const Handle(Prs3d_Projector)& aProjector, const Handle(Geom_Transformation)& aTransformation, const Handle(Prs3d_Presentation)& aPresentation)
 {
-// throw Standard_NotImplemented("AIS_Line::Compute(const Handle(Prs3d_Projector)&, const Handle(Geom_Transformation)&, const Handle(Prs3d_Presentation)&)");
- PrsMgr_PresentableObject::Compute( aProjector , aTransformation , aPresentation) ;
+  PrsMgr_PresentableObject::Compute( aProjector , aTransformation , aPresentation) ;
 }
 
 //=======================================================================
@@ -153,6 +106,29 @@ void AIS_Line::ComputeSelection(const Handle(SelectMgr_Selection)& theSelection,
 }
 
 //=======================================================================
+//function : replaceWithNewLineAspect
+//purpose  :
+//=======================================================================
+void AIS_Line::replaceWithNewLineAspect (const Handle(Prs3d_LineAspect)& theAspect)
+{
+  if (!myDrawer->HasLink())
+  {
+    myDrawer->SetLineAspect (theAspect);
+    return;
+  }
+
+  const Handle(Graphic3d_Aspects)& anAspectOld = myDrawer->LineAspect()->Aspect();
+  const Handle(Graphic3d_Aspects)& anAspectNew = !theAspect.IsNull() ? theAspect->Aspect() : myDrawer->Link()->LineAspect()->Aspect();
+  if (anAspectNew != anAspectOld)
+  {
+    myDrawer->SetLineAspect (theAspect);
+    Graphic3d_MapOfAspectsToAspects aReplaceMap;
+    aReplaceMap.Bind (anAspectOld, anAspectNew);
+    replaceAspects (aReplaceMap);
+  }
+}
+
+//=======================================================================
 //function : SetColor
 //purpose  :
 //=======================================================================
@@ -165,10 +141,15 @@ void AIS_Line::SetColor(const Quantity_Color &aCol)
                                  myDrawer->HasLink() ?
                                  AIS_GraphicTool::GetLineWidth (myDrawer->Link(), AIS_TOA_Line) : 1.;
 
-  if (!myDrawer->HasOwnLineAspect ())
-    myDrawer->SetLineAspect (new Prs3d_LineAspect(aCol,Aspect_TOL_SOLID,WW));
+  if (!myDrawer->HasOwnLineAspect())
+  {
+    replaceWithNewLineAspect (new Prs3d_LineAspect (aCol, Aspect_TOL_SOLID, WW));
+  }
   else
-    myDrawer->LineAspect()->SetColor(aCol);
+  {
+    myDrawer->LineAspect()->SetColor (aCol);
+    SynchronizeAspects();
+  }
 }
 
 
@@ -180,16 +161,19 @@ void AIS_Line::UnsetColor()
 {
   hasOwnColor = Standard_False;
 
-  Handle(Prs3d_LineAspect) NullAsp;
-
-  if (!HasWidth()) myDrawer->SetLineAspect(NullAsp);
-  else{
+  if (!HasWidth())
+  {
+    replaceWithNewLineAspect (Handle(Prs3d_LineAspect)());
+  }
+  else
+  {
     Quantity_Color CC = Quantity_NOC_YELLOW;
     if( HasColor() ) CC = myDrawer->Color();
     else if (myDrawer->HasLink()) AIS_GraphicTool::GetLineColor (myDrawer->Link(), AIS_TOA_Line, CC);
     myDrawer->LineAspect()->SetColor(CC);
     myDrawer->SetColor (CC);
- }
+    SynchronizeAspects();
+  }
 }
 
 //=======================================================================
@@ -198,15 +182,20 @@ void AIS_Line::UnsetColor()
 //=======================================================================
 void AIS_Line::SetWidth(const Standard_Real aValue)
 {
-  myOwnWidth=aValue;
+  myOwnWidth = (Standard_ShortReal )aValue;
 
-  if (!myDrawer->HasOwnLineAspect ()) {
+  if (!myDrawer->HasOwnLineAspect())
+  {
     Quantity_Color CC = Quantity_NOC_YELLOW;
     if( HasColor() ) CC = myDrawer->Color();
     else if(myDrawer->HasLink()) AIS_GraphicTool::GetLineColor (myDrawer->Link(), AIS_TOA_Line, CC);
-    myDrawer->SetLineAspect (new Prs3d_LineAspect (CC, Aspect_TOL_SOLID, aValue));
-  } else
-    myDrawer->LineAspect()->SetWidth(aValue);
+    replaceWithNewLineAspect (new Prs3d_LineAspect (CC, Aspect_TOL_SOLID, aValue));
+  }
+  else
+  {
+    myDrawer->LineAspect()->SetWidth (aValue);
+    SynchronizeAspects();
+  }
 }
 
 
@@ -216,14 +205,16 @@ void AIS_Line::SetWidth(const Standard_Real aValue)
 //=======================================================================
 void AIS_Line::UnsetWidth()
 {
-  Handle(Prs3d_LineAspect) NullAsp;
-
-  if (!HasColor()) myDrawer->SetLineAspect(NullAsp);
-  else{
-   Standard_Real WW = myDrawer->HasLink() ?
-     AIS_GraphicTool::GetLineWidth (myDrawer->Link(), AIS_TOA_Line) : 1.;
-   myDrawer->LineAspect()->SetWidth(WW);
+  if (!HasColor())
+  {
+    replaceWithNewLineAspect (Handle(Prs3d_LineAspect)());
+  }
+  else
+  {
+   Standard_ShortReal WW = myDrawer->HasLink() ? (Standard_ShortReal )AIS_GraphicTool::GetLineWidth (myDrawer->Link(), AIS_TOA_Line) : 1.0f;
+   myDrawer->LineAspect()->SetWidth (WW);
    myOwnWidth = WW;
+   SynchronizeAspects();
   }
 }
 

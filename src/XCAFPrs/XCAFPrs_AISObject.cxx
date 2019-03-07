@@ -180,7 +180,8 @@ void XCAFPrs_AISObject::DispatchStyles (const Standard_Boolean theToSyncStyles)
       aShapeCur = aComp;
     }
 
-    Handle(AIS_ColoredDrawer) aDrawer = CustomAspects (aShapeCur);
+    Handle(AIS_ColoredDrawer) aDrawer = new AIS_ColoredDrawer (myDrawer);
+    myShapeColors.Bind (aShapeCur, aDrawer);
     const XCAFPrs_Style& aStyle = aStyleGroupIter.Key();
     aDrawer->SetHidden (!aStyle.IsVisible());
 

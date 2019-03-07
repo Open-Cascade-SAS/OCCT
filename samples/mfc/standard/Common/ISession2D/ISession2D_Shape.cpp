@@ -17,7 +17,8 @@ void ISession2D_Shape::Add(const TopoDS_Shape& aShape)
   myListOfShape.Append(aShape);
   myAlgo.Nullify();
   myPolyAlgo.Nullify();
-  Update(); // protected method used to specify that the presentation are not up to date 
+  SetToUpdate();
+  UpdatePresentations();
 }
 
 void ISession2D_Shape::Remove (const TopoDS_Shape& theShape)
@@ -42,23 +43,17 @@ void ISession2D_Shape::SetProjector (HLRAlgo_Projector& aProjector)
   myProjector= aProjector;
   myAlgo.Nullify();
   myPolyAlgo.Nullify();
-  Update(); // protected method used to specify that the presentation are not up to date 
+  SetToUpdate();
+  UpdatePresentations();
 };
 
 
 void ISession2D_Shape::SetNbIsos(Standard_Integer& aNbIsos)
-{ 
-	myNbIsos= aNbIsos; 
-	myAlgo.Nullify(); 
-    
-	// declare the mode 100 to 110 as non valid
-	for (int i=100;i<=110;i++)
-       Update(i,Standard_False); // protected method used to specify that the presentation are not up to date 
-
-	// declare the mode 1100 to 1110 as non valid
-	for (int i=1100;i<=1110;i++)
-       Update(i,Standard_False); // protected method used to specify that the presentation are not up to date 
-
+{
+  myNbIsos= aNbIsos;
+  myAlgo.Nullify();
+  SetToUpdate();
+  UpdatePresentations();
 };
 
 void ISession2D_Shape::BuildAlgo() 
