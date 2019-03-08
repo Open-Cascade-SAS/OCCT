@@ -1082,6 +1082,7 @@ public: //! @name iso-line display attributes
   //! Returns true if drawing isolines on triangulation algorithm is enabled.
   Standard_EXPORT Standard_Boolean IsoOnTriangulation() const;
 
+//! @name obsolete methods
 public:
 
   //! Updates the view of the current object in open context.

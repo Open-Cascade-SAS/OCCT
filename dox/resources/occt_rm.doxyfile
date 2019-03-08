@@ -23,7 +23,7 @@ WARNINGS               = NO
 ENABLE_PREPROCESSING   = YES
 MACRO_EXPANSION        = YES
 EXPAND_ONLY_PREDEF     = YES
-PREDEFINED             = Standard_EXPORT Standard_NODISCARD Standard_OVERRIDE:=override __Standard_API __Draw_API Handle(a):=Handle<a> DEFINE_STANDARD_ALLOC DEFINE_NCOLLECTION_ALLOC
+PREDEFINED             = Standard_EXPORT Standard_NODISCARD Standard_OVERRIDE:=override __Standard_API __Draw_API Handle(a):=Handle<a> DEFINE_STANDARD_ALLOC DEFINE_NCOLLECTION_ALLOC "Standard_DEPRECATED=//! @deprecated "
 GENERATE_HTML          = YES
 GENERATE_LATEX         = NO
 SEARCH_INCLUDES        = YES
