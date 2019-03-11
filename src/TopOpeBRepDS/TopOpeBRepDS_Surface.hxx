@@ -25,7 +25,6 @@
 #include <Standard_Boolean.hxx>
 class Geom_Surface;
 
-
 //! A Geom surface and a tolerance.
 class TopOpeBRepDS_Surface 
 {
@@ -33,7 +32,6 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT TopOpeBRepDS_Surface();
   
   Standard_EXPORT TopOpeBRepDS_Surface(const Handle(Geom_Surface)& P, const Standard_Real T);
@@ -45,42 +43,24 @@ void operator= (const TopOpeBRepDS_Surface& Other)
 {
   Assign(Other);
 }
-  
-  Standard_EXPORT const Handle(Geom_Surface)& Surface() const;
-  
-  Standard_EXPORT Standard_Real Tolerance() const;
-  
+
+  const Handle(Geom_Surface)& Surface() const { return mySurface; }
+
+  Standard_Real Tolerance() const { return myTolerance; }
+
   //! Update the tolerance
-  Standard_EXPORT void Tolerance (const Standard_Real tol);
-  
-  Standard_EXPORT Standard_Boolean Keep() const;
-  
-  Standard_EXPORT void ChangeKeep (const Standard_Boolean B);
+  void Tolerance (Standard_Real theTol) { myTolerance = theTol; }
 
+  Standard_Boolean Keep() const { return myKeep; }
 
-
-
-protected:
-
-
-
-
+  void ChangeKeep (Standard_Boolean theToKeep) { myKeep = theToKeep; }
 
 private:
-
-
 
   Handle(Geom_Surface) mySurface;
   Standard_Real myTolerance;
   Standard_Boolean myKeep;
 
-
 };
-
-
-
-
-
-
 
 #endif // _TopOpeBRepDS_Surface_HeaderFile
