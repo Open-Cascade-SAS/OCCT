@@ -874,7 +874,7 @@ Exception during loading entity %s
  Parameter data : parameter 3 or 4 (degree of basis function) is less than one or greater than maximum degree.
 !
 .IGES_1325
- Resulting geometry not C0-continuous : TopoDS_Edge %d cannot be constructed.
+ Item %d of EdgeList cannot be represented by single edge (non-continuous or composite curve).
 !
 .IGES_1345
  Parameter data : parameter %d (parameter space curve) is incorrect.

@@ -125,7 +125,7 @@ IGESToBRep_IGESBoundary::IGESToBRep_IGESBoundary(const IGESToBRep_CurveAndSurfac
 
  void IGESToBRep_IGESBoundary::Check(const Standard_Boolean,const Standard_Boolean,const Standard_Boolean,const Standard_Boolean) 
 {
-  // Implemented in Advanced Data Exchange
+  // Implemented in IGESControl_IGESBoundary, subject to refactoring
 }
 
 //=======================================================================

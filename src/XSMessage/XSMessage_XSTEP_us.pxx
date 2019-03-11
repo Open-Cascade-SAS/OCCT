@@ -877,7 +877,7 @@ static const char XSMessage_XSTEP_us[] =
   " Parameter data : parameter 3 or 4 (degree of basis function) is less than one or greater than maximum degree.\n"
   "!\n"
   ".IGES_1325\n"
-  " Resulting geometry not C0-continuous : TopoDS_Edge %d cannot be constructed.\n"
+  " Item %d of EdgeList cannot be represented by single edge (non-continuous or composite curve).\n"
   "!\n"
   ".IGES_1345\n"
   " Parameter data : parameter %d (parameter space curve) is incorrect.\n"

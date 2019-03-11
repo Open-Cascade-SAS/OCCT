@@ -873,7 +873,7 @@ L'equation polynomiale est incorrecte.
  Parameter data : le parametre 3 or 4 (degree of basis function) est inferieur a 1 ou superieur a max degree.
 !
 .IGES_1325
- La geometrie resultante n'est pas continue en C0 : la construction du TopoDS_Edge %d est impossible.
+ Item %d of EdgeList cannot be represented by single edge (non-continuous or composite curve).
 !
 .IGES_1345
  Parameter data : le parametre %d (parameter space curve) est incorrect.
