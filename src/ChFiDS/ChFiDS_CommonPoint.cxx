@@ -27,11 +27,14 @@
 //function : ChFiDS_CommonPoint
 //purpose  : 
 //=======================================================================
-ChFiDS_CommonPoint::ChFiDS_CommonPoint() : 
-tol(0.),
-isonarc(Standard_False),
-isvtx(Standard_False),
-hasvector(Standard_False)
+ChFiDS_CommonPoint::ChFiDS_CommonPoint()
+: tol (0.0),
+  prmarc (0.0),
+  prmtg  (0.0),
+  traarc (TopAbs_FORWARD),
+  isonarc(Standard_False),
+  isvtx (Standard_False),
+  hasvector (Standard_False)
 {
 }
 

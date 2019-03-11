@@ -6,7 +6,6 @@ ChFiDS_CircSection.cxx
 ChFiDS_CircSection.hxx
 ChFiDS_CommonPoint.cxx
 ChFiDS_CommonPoint.hxx
-ChFiDS_CommonPoint.lxx
 ChFiDS_ElSpine.cxx
 ChFiDS_ElSpine.hxx
 ChFiDS_ErrorStatus.hxx
