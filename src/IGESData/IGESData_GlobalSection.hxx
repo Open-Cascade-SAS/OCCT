@@ -44,7 +44,6 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
   //! Creates an empty GlobalSection, ready to be filled,
   //! Warning : No default value is provided
   Standard_EXPORT IGESData_GlobalSection();
@@ -237,18 +236,7 @@ public:
   
   Standard_EXPORT void SetApplicationProtocol (const Handle(TCollection_HAsciiString)& val);
 
-
-
-
-protected:
-
-
-
-
-
 private:
-
-
 
   Standard_Character theSeparator;
   Standard_Character theEndMark;
@@ -278,13 +266,6 @@ private:
   Handle(TCollection_HAsciiString) theLastChangeDate;
   Handle(TCollection_HAsciiString) theAppliProtocol;
 
-
 };
-
-
-
-
-
-
 
 #endif // _IGESData_GlobalSection_HeaderFile

@@ -11,15 +11,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//#52 rln 06.01.99 writing value 1.e-07
-//gka 19.01.99 changing size of ParamSet
-//#65 rln 12.02.99 S4151 (explicitly force YYMMDD.HHMMSS before Y2000 and YYYYMMDD.HHMMSS after Y2000)
-//#66 rln Setting IGES 5.3 by default
-//#73 rln 10.03.99 S4135: "read.scale.unit" is applied after translation
+#include <IGESData_GlobalSection.hxx>
 
 #include <gp_XYZ.hxx>
 #include <IGESData_BasicEditor.hxx>
-#include <IGESData_GlobalSection.hxx>
 #include <Interface_Check.hxx>
 #include <Interface_FileParameter.hxx>
 #include <Interface_FileReaderData.hxx>
@@ -34,25 +29,19 @@
 #include <UnitsMethods.hxx>
 
 #include <stdio.h>
-// MGE 21/07/98
-//  valeurs en MILLIMETRE pardefaut, reajustable
-//static Standard_Real convunit = 1000.;
+
 //  Routines locales copiant une string [l`ideal serait : astr = astr->Copy()]
 //    et transformant un CString (Hollerith ou non) en HAsciiString non Holl.
 //    et l inverse
-static void CopyString (Handle(TCollection_HAsciiString)& astr);
-
-static void MakeHollerith(const Handle(TCollection_HAsciiString)& astr,
-                          char* text, Standard_Integer& lt);
-
-void CopyString (Handle(TCollection_HAsciiString)& astr)
+static void CopyString (Handle(TCollection_HAsciiString)& astr)
 {
   if (astr.IsNull()) return;   // ne rien faire si String pas definie !
   Handle(TCollection_HAsciiString) S = new TCollection_HAsciiString("");
-  S->AssignCat(astr);  astr = S;
+  S->AssignCat (astr);
+  astr = S;
 }
 
-void MakeHollerith(const Handle(TCollection_HAsciiString)& astr,
+static void MakeHollerith(const Handle(TCollection_HAsciiString)& astr,
    char* text, Standard_Integer& lt)
 {
   lt = 0;  text[0] = '\0';
@@ -63,21 +52,32 @@ void MakeHollerith(const Handle(TCollection_HAsciiString)& astr,
   lt = ln+2;  if (ln >= 10) lt ++;  if (ln >= 100) lt ++;    // strlen text
 }
 
-
 //=======================================================================
 //function : IGESData_GlobalSection
 //purpose  : 
 //=======================================================================
 
-IGESData_GlobalSection::IGESData_GlobalSection ()
+IGESData_GlobalSection::IGESData_GlobalSection()
+: theSeparator        (','),
+  theEndMark          (';'),
+  theIntegerBits      (32), // simple = entier = 32b, double = 64
+  theMaxPower10Single (38),
+  theMaxDigitsSingle  (6),
+  theMaxPower10Double (308),
+  theMaxDigitsDouble  (15),
+  theScale            (1.0),
+  theUnitFlag         (0),
+  theLineWeightGrad   (1),
+  theMaxLineWeight    (0.0),
+  theResolution       (0.0),
+  theMaxCoord         (0.0),
+  hasMaxCoord (Standard_False),
+  theIGESVersion      (11), // IGES 5.3 by default
+  theDraftingStandard (0)
 {
-//  convunit = 1000.;
-  //#73 rln 10.03.99 S4135: "read.scale.unit" is applied after translation
-  //if (Interface_Static::IVal("read.scale.unit") == 1) convunit = 1;
+  //
 }
 
-
-// pourrait etre une methode generale au package en fait
 //=======================================================================
 //function : TranslatedFromHollerith
 //purpose  : 
