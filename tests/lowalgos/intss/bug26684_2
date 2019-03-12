@@ -26,6 +26,6 @@ checkreal "Reached tolerance" ${Tolerance} 1.2530391548405894e-008 1.e-7 0
 set bop_info_2d [bopcurves f1 f2 -2d]
 regexp {Tolerance Reached=([-0-9.+eE]+)} $bop_info_2d full Tolerance_2d
 
-checkreal "Reached tolerance" ${Tolerance_2d} 1.4134494834137484e-005 0 1.e-2
+checkreal "Reached tolerance" ${Tolerance_2d} 0.00040497924613267194 0 1.e-2
 
 checkview -screenshot -2d -path ${imagedir}/${test_image}.png

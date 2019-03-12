@@ -6,8 +6,8 @@ puts ""
 # Wrong result obtained by projection algorithm
 #################################################
 
-set ok_len_c3x "3.28347"
-set ok_len_c5x "3.28346"
+set ok_len_c3x "1.57079"
+set ok_len_c5x "1.57079"
 
 smallview -2D-
 

@@ -42,6 +42,7 @@
 #include <TColgp_HArray1OfPnt2d.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 #include <Geom2dConvert_CompCurveToBSplineCurve.hxx>
+#include <Geom2dConvert.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
@@ -55,6 +56,8 @@
 #include <GeomLib.hxx>
 #include <Extrema_ExtPC.hxx>
 #include <NCollection_DataMap.hxx>
+#include <ElSLib.hxx>
+#include <ElCLib.hxx>
 //=======================================================================
 //function : ComputeTolU
 //purpose  : 
@@ -146,18 +149,19 @@ static Standard_Boolean IsoIsDeg  (const Adaptor3d_Surface& S,
 //=======================================================================
 
 static void TrimC3d(Handle(Adaptor3d_HCurve)& myCurve,
-		    Standard_Boolean* IsTrimmed,
-		    const Standard_Real dt,
-		    const gp_Pnt& Pole,
+                    Standard_Boolean* IsTrimmed,
+                    const Standard_Real dt,
+                    const gp_Pnt& Pole,
                     Standard_Integer* SingularCase,
-                    const Standard_Integer NumberOfSingularCase)
+                    const Standard_Integer NumberOfSingularCase,
+                    const Standard_Real TolConf)
 {
   Standard_Real f = myCurve->FirstParameter();
   Standard_Real l = myCurve->LastParameter();
 
   gp_Pnt P = myCurve->Value(f);
 
-  if(P.Distance(Pole) < Precision::Confusion()) {
+  if(P.Distance(Pole) <= TolConf) {
     IsTrimmed[0] = Standard_True;
     f = f+dt;
     myCurve = myCurve->Trim(f, l, Precision::Confusion());
@@ -165,7 +169,7 @@ static void TrimC3d(Handle(Adaptor3d_HCurve)& myCurve,
   }
   
   P = myCurve->Value(l);
-  if(P.Distance(Pole) < Precision::Confusion()) {
+  if(P.Distance(Pole) <= TolConf) {
     IsTrimmed[1] = Standard_True;
     l = l-dt;
     myCurve = myCurve->Trim(f, l, Precision::Confusion());
@@ -232,17 +236,24 @@ static void ExtendC2d (Handle(Geom2d_BSplineCurve)& aRes,
     }
   }
   gp_Lin2d BoundLin(thePole, theBoundDir); //one of the bounds of rectangle
+  Standard_Real ParOnLin = 0.;
+  if (theBoundDir.IsParallel(aDBnd, 100.*Precision::Angular()))
+  {
+    ParOnLin = ElCLib::Parameter(aLin, thePole);
+  }
+  else
+  {
+    Standard_Real U1x = BoundLin.Direction().X();
+    Standard_Real U1y = BoundLin.Direction().Y();
+    Standard_Real U2x = aLin.Direction().X();
+    Standard_Real U2y = aLin.Direction().Y();
+    Standard_Real Uo21x = aLin.Location().X() - BoundLin.Location().X();
+    Standard_Real Uo21y = aLin.Location().Y() - BoundLin.Location().Y();
 
-  Standard_Real U1x = BoundLin.Direction().X();
-  Standard_Real U1y = BoundLin.Direction().Y();
-  Standard_Real U2x = aLin.Direction().X();
-  Standard_Real U2y = aLin.Direction().Y();
-  Standard_Real Uo21x = aLin.Location().X() - BoundLin.Location().X();
-  Standard_Real Uo21y = aLin.Location().Y() - BoundLin.Location().Y();
-  
-  Standard_Real D = U1y*U2x-U1x*U2y;
-  
-  Standard_Real ParOnLin = (Uo21y * U1x - Uo21x * U1y)/D; //parameter of intersection point
+    Standard_Real D = U1y*U2x - U1x*U2y;
+
+    ParOnLin = (Uo21y * U1x - Uo21x * U1y) / D; //parameter of intersection point
+  }
   
   Handle(Geom2d_Line) aSegLine = new Geom2d_Line(aLin);
   aSegment = (FirstOrLast == 0)?
@@ -392,6 +403,16 @@ void ProjLib_ProjectedCurve::Perform(const Handle(Adaptor3d_HCurve)& C)
   GeomAbs_SurfaceType SType = mySurface->GetType();
   GeomAbs_CurveType   CType = myCurve->GetType();
   Standard_Boolean isAnalyticalSurf = Standard_True;
+  Standard_Boolean IsTrimmed[2] = { Standard_False, Standard_False };
+  Standard_Integer SingularCase[2];
+  const Standard_Real eps = 0.01;
+  Standard_Real TolConf = Precision::Confusion();
+  Standard_Real dt = (LastPar - FirstPar) * eps;
+  Standard_Real U1 = 0.0, U2 = 0.0, V1 = 0.0, V2 = 0.0;
+  U1 = mySurface->FirstUParameter();
+  U2 = mySurface->LastUParameter();
+  V1 = mySurface->FirstVParameter();
+  V2 = mySurface->LastVParameter();
 
   switch (SType)
   {
@@ -429,6 +450,28 @@ void ProjLib_ProjectedCurve::Perform(const Handle(Adaptor3d_HCurve)& C)
           // periodique en V !)
           P.SetInBounds(myCurve->FirstParameter());
         }
+        else
+        {
+          const Standard_Real Vmax = M_PI / 2.;
+          const Standard_Real Vmin = -Vmax;
+          const Standard_Real minang = 1.e-5 * M_PI;
+          gp_Sphere aSph = mySurface->Sphere();
+          Standard_Real anR = aSph.Radius();
+          Standard_Real f = myCurve->FirstParameter();
+          Standard_Real l = myCurve->LastParameter();
+
+          gp_Pnt Pf = myCurve->Value(f);
+          gp_Pnt Pl = myCurve->Value(l);
+          gp_Pnt aLoc = aSph.Position().Location();
+          Standard_Real maxdist = Max(Pf.Distance(aLoc), Pl.Distance(aLoc));
+          TolConf = Max(anR * minang, Abs(anR - maxdist));
+
+          //Surface has pole at V = Vmin and Vmax
+          gp_Pnt Pole = mySurface->Value(U1, Vmin);
+          TrimC3d(myCurve, IsTrimmed, dt, Pole, SingularCase, 3, TolConf);
+          Pole = mySurface->Value(U1, Vmax);
+          TrimC3d(myCurve, IsTrimmed, dt, Pole, SingularCase, 4, TolConf);
+        }
         myResult = P;
       }
       break;
@@ -445,15 +488,11 @@ void ProjLib_ProjectedCurve::Perform(const Handle(Adaptor3d_HCurve)& C)
     case GeomAbs_BSplineSurface:
       {
         isAnalyticalSurf = Standard_False;
-        Standard_Boolean IsTrimmed[2] = {Standard_False, Standard_False};
-        Standard_Integer SingularCase[2];
-        Standard_Real f, l, dt;
-        const Standard_Real eps = 0.01;
+        Standard_Real f, l;
         f = myCurve->FirstParameter();
         l = myCurve->LastParameter();
         dt = (l - f) * eps;
 
-        Standard_Real U1 = 0.0, U2=0.0, V1=0.0, V2=0.0;
         const Adaptor3d_Surface& S = mySurface->Surface();
         U1 = S.FirstUParameter();
         U2 = S.LastUParameter();
@@ -464,28 +503,28 @@ void ProjLib_ProjectedCurve::Perform(const Handle(Adaptor3d_HCurve)& C)
         {
           //Surface has pole at U = Umin
           gp_Pnt Pole = mySurface->Value(U1, V1);
-          TrimC3d(myCurve, IsTrimmed, dt, Pole, SingularCase, 1);
+          TrimC3d(myCurve, IsTrimmed, dt, Pole, SingularCase, 1, TolConf);
         }
 
         if(IsoIsDeg(S, U2, GeomAbs_IsoU, 0., myTolerance))
         {
           //Surface has pole at U = Umax
           gp_Pnt Pole = mySurface->Value(U2, V1);
-          TrimC3d(myCurve, IsTrimmed, dt, Pole, SingularCase, 2);
+          TrimC3d(myCurve, IsTrimmed, dt, Pole, SingularCase, 2, TolConf);
         }
 
         if(IsoIsDeg(S, V1, GeomAbs_IsoV, 0., myTolerance))
         {
           //Surface has pole at V = Vmin
           gp_Pnt Pole = mySurface->Value(U1, V1);
-          TrimC3d(myCurve, IsTrimmed, dt, Pole, SingularCase, 3);
+          TrimC3d(myCurve, IsTrimmed, dt, Pole, SingularCase, 3, TolConf);
         }
 
         if(IsoIsDeg(S, V2, GeomAbs_IsoV, 0., myTolerance))
         {
           //Surface has pole at V = Vmax
           gp_Pnt Pole = mySurface->Value(U1, V2);
-          TrimC3d(myCurve, IsTrimmed, dt, Pole, SingularCase, 4);
+          TrimC3d(myCurve, IsTrimmed, dt, Pole, SingularCase, 4, TolConf);
         }
 
         ProjLib_ComputeApproxOnPolarSurface polar;
@@ -531,10 +570,9 @@ void ProjLib_ProjectedCurve::Perform(const Handle(Adaptor3d_HCurve)& C)
     default:
       {
         isAnalyticalSurf = Standard_False;
-        Standard_Boolean IsTrimmed[2] = {Standard_False, Standard_False};
         Standard_Real Vsingular[2] = {0.0 , 0.0}; //for surfaces of revolution
-        Standard_Real f = 0.0, l = 0.0, dt = 0.0;
-        const Standard_Real eps = 0.01;
+        Standard_Real f = 0.0, l = 0.0;
+        dt = 0.0;
 
         if(mySurface->GetType() == GeomAbs_SurfaceOfRevolution)
         {
@@ -710,26 +748,59 @@ void ProjLib_ProjectedCurve::Perform(const Handle(Adaptor3d_HCurve)& C)
     Comp.SetDegree(myDegMin, myDegMax);
     Comp.SetMaxSegments(myMaxSegments);
     Comp.SetBndPnt(myBndPnt);
-    Comp.Perform( myCurve, mySurface); 
+    Comp.Perform(myCurve, mySurface);
     if (Comp.Bezier().IsNull() && Comp.BSpline().IsNull())
       return; // advanced projector has been failed too
     myResult.Done();
-
-    // set the type
-    if ( SType == GeomAbs_Plane && CType == GeomAbs_BezierCurve)
+    Handle(Geom2d_BSplineCurve) aRes;
+    if (Comp.BSpline().IsNull())
     {
-      myResult.SetType(GeomAbs_BezierCurve);
-      myResult.SetBezier(Comp.Bezier()) ;
+      aRes = Geom2dConvert::CurveToBSplineCurve(Comp.Bezier());
     }
     else
     {
+      aRes = Comp.BSpline();
+    }
+    if ((IsTrimmed[0] || IsTrimmed[1]))
+    {
+      if (IsTrimmed[0])
+      {
+        //Add segment before start of curve
+        Standard_Real f = myCurve->FirstParameter();
+        ExtendC2d(aRes, f, -dt, U1, U2, V1, V2, 0, SingularCase[0]);
+      }
+      if (IsTrimmed[1])
+      {
+        //Add segment after end of curve
+        Standard_Real l = myCurve->LastParameter();
+        ExtendC2d(aRes, l, dt, U1, U2, V1, V2, 1, SingularCase[1]);
+      }
+      Handle(Geom2d_Curve) NewCurve2d;
+      GeomLib::SameRange(Precision::PConfusion(), aRes,
+        aRes->FirstParameter(), aRes->LastParameter(),
+        FirstPar, LastPar, NewCurve2d);
+      aRes = Handle(Geom2d_BSplineCurve)::DownCast(NewCurve2d);
+      myResult.SetBSpline(aRes);
       myResult.SetType(GeomAbs_BSplineCurve);
-      myResult.SetBSpline(Comp.BSpline()) ;
+    }
+    else
+    {
+      // set the type
+      if (SType == GeomAbs_Plane && CType == GeomAbs_BezierCurve)
+      {
+        myResult.SetType(GeomAbs_BezierCurve);
+        myResult.SetBezier(Comp.Bezier());
+      }
+      else
+      {
+        myResult.SetType(GeomAbs_BSplineCurve);
+        myResult.SetBSpline(Comp.BSpline());
+      }
     }
     // set the periodicity flag
     if (SType == GeomAbs_Plane        &&
-        CType == GeomAbs_BSplineCurve &&
-        myCurve->IsPeriodic()   )
+      CType == GeomAbs_BSplineCurve &&
+      myCurve->IsPeriodic())
     {
       myResult.SetPeriodic();
     }

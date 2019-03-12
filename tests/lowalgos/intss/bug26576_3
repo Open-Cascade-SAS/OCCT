@@ -31,7 +31,7 @@ regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} ${log} full Tolerance_
 
 set GoodNbCurv 2
 
-set expected_Tolerance_Reached 1.2482990218170969e-007
+set expected_Tolerance_Reached 1.0420959841458885e-05
 set tol_abs_Tolerance_Reached 1.0e-7
 set tol_rel_Tolerance_Reached 0.0
 checkreal "Tolerance Reached" ${Tolerance_Reached} ${expected_Tolerance_Reached} ${tol_abs_Tolerance_Reached} ${tol_rel_Tolerance_Reached}
