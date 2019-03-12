@@ -194,29 +194,43 @@ void TopOpeBRepBuild_Builder::AddIntersectionEdges
 //=======================================================================
 void TopOpeBRepBuild_Builder::Clear()
 {
+  if (myDataStructure.IsNull())
+  {
+    myMergedOUT.Clear();
+    myMergedIN.Clear();
+    myMergedON.Clear();
+    return;
+  }
+
   const TopOpeBRepDS_DataStructure& BDS = myDataStructure->DS();
-  TopOpeBRepDS_DataMapIteratorOfDataMapOfShapeListOfShapeOn1State it;
-  for (it.Initialize(mySplitOUT); it.More(); it.Next()) {
+  for (TopOpeBRepDS_DataMapIteratorOfDataMapOfShapeListOfShapeOn1State it (mySplitOUT); it.More(); it.Next())
+  {
     const TopoDS_Shape& e = it.Key();
-    if ( e.ShapeType() == TopAbs_EDGE ) {
+    if (e.ShapeType() == TopAbs_EDGE)
+    {
       Standard_Boolean isse =  BDS.IsSectionEdge(TopoDS::Edge(e));
       if (!isse) mySplitOUT.ChangeFind(e).Clear();
     }
   }
-  for (it.Initialize(mySplitIN); it.More(); it.Next()) {
+  for (TopOpeBRepDS_DataMapIteratorOfDataMapOfShapeListOfShapeOn1State it (mySplitIN); it.More(); it.Next())
+  {
     const TopoDS_Shape& e = it.Key();
-    if ( e.ShapeType() == TopAbs_EDGE ) {
+    if (e.ShapeType() == TopAbs_EDGE)
+    {
       Standard_Boolean isse =  BDS.IsSectionEdge(TopoDS::Edge(e));
       if (!isse) mySplitIN.ChangeFind(e).Clear();
     }
   }
-  for (it.Initialize(mySplitON); it.More(); it.Next()) {
+  for (TopOpeBRepDS_DataMapIteratorOfDataMapOfShapeListOfShapeOn1State it (mySplitON); it.More(); it.Next())
+  {
     const TopoDS_Shape& e = it.Key();
-    if ( e.ShapeType() == TopAbs_EDGE ) {
+    if (e.ShapeType() == TopAbs_EDGE)
+    {
       Standard_Boolean isse =  BDS.IsSectionEdge(TopoDS::Edge(e));
       if (!isse) mySplitON.ChangeFind(e).Clear();
     }
   }
+
   myMergedOUT.Clear();
   myMergedIN.Clear();
   myMergedON.Clear();
