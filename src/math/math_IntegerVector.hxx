@@ -15,7 +15,8 @@
 #ifndef _math_IntegerVector_HeaderFile
 #define _math_IntegerVector_HeaderFile
 
-#include <math_SingleTab.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_LocalArray.hxx>
 
 // resolve name collisions with X11 headers
 #ifdef Opposite
@@ -70,7 +71,7 @@ public:
 
   //! constructs an IntegerVector in the range [Lower..Upper]
   //! which share the "c array" theTab.
-  Standard_EXPORT math_IntegerVector(const Standard_Address theTab, const Standard_Integer theFirst, const Standard_Integer theLast);
+  Standard_EXPORT math_IntegerVector(const Standard_Integer* theTab, const Standard_Integer theFirst, const Standard_Integer theLast);
 
   //! constructs a copy for initialization.
   //! An exception is raised if the lengths of the IntegerVectors
@@ -80,19 +81,19 @@ public:
   //! returns the length of an IntegerVector
   inline Standard_Integer Length() const
   {
-    return LastIndex - FirstIndex +1;
+    return Array.Length();
   }
 
   //! returns the value of the Lower index of an IntegerVector.
   inline Standard_Integer Lower() const
   {
-    return FirstIndex;
+    return Array.Lower();
   }
 
   //! returns the value of the Upper index of an IntegerVector.
   inline Standard_Integer Upper() const
   {
-    return LastIndex;
+    return Array.Upper();
   }
 
   //! returns the value of the norm of an IntegerVector.
@@ -176,14 +177,24 @@ public:
   //! An exception is raised if the IntegerVectors have not the same length.
   Standard_EXPORT void Subtract(const math_IntegerVector& theLeft, const math_IntegerVector& theRight);
 
-  //! accesses (in read or write mode) the value of index theNum of an IntegerVector.
-  inline Standard_Integer& Value(const Standard_Integer theNum) const
+  //! accesses the value of index theNum of an IntegerVector.
+  const Standard_Integer& Value (const Standard_Integer theNum) const
   {
-    Standard_RangeError_Raise_if(theNum < FirstIndex || theNum > LastIndex, " ");
     return Array(theNum);
   }
 
-  Standard_Integer& operator()(const Standard_Integer theNum) const
+  //! accesses (in read or write mode) the value of index theNum of an IntegerVector.
+  inline Standard_Integer& Value (const Standard_Integer theNum)
+  {
+    return Array(theNum);
+  }
+
+  const Standard_Integer& operator()(const Standard_Integer theNum) const
+  {
+    return Value(theNum);
+  }
+
+  Standard_Integer& operator()(const Standard_Integer theNum)
   {
     return Value(theNum);
   }
@@ -252,9 +263,9 @@ protected:
 
 private:
 
-  Standard_Integer FirstIndex;
-  Standard_Integer LastIndex;
-  math_SingleTab<Standard_Integer> Array;
+  NCollection_LocalArray<Standard_Integer, 512> myLocArray;
+  NCollection_Array1<Standard_Integer> Array;
+
 };
 
 #endif

@@ -186,7 +186,7 @@ private:
   
   Standard_EXPORT void SetRotation (const Standard_Real PrecAngle, Standard_Real& LastAngle);
   
-  Standard_EXPORT void InitX (const Standard_Real Param) const;
+  Standard_EXPORT void InitX (const Standard_Real Param);
 
   Handle(GeomFill_TrihedronWithGuide) myLaw;
   Handle(GeomFill_SectionLaw) mySec;

@@ -15,7 +15,8 @@
 #ifndef _math_Vector_HeaderFile
 #define _math_Vector_HeaderFile
 
-#include <math_SingleTab.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_LocalArray.hxx>
 #include <gp_XY.hxx>
 #include <gp_XYZ.hxx>
 
@@ -70,7 +71,7 @@ public:
 
   //! Constructs a vector in the range [theLower..theUpper]
   //! with the "c array" theTab.
-  Standard_EXPORT math_Vector(const Standard_Address theTab, const Standard_Integer theLower, const Standard_Integer theUpper);
+  Standard_EXPORT math_Vector(const Standard_Real* theTab, const Standard_Integer theLower, const Standard_Integer theUpper);
 
   //! Constructor for converting gp_XY to math_Vector
   Standard_EXPORT math_Vector(const gp_XY& Other);
@@ -88,19 +89,19 @@ public:
   //! Returns the length of a vector
   inline Standard_Integer Length() const
   {
-    return UpperIndex - LowerIndex +1;
+    return Array.Length();
   }
 
   //! Returns the value of the theLower index of a vector.
   inline Standard_Integer Lower() const
   {
-    return LowerIndex;
+    return Array.Lower();
   }
 
   //! Returns the value of the theUpper index of a vector.
   inline Standard_Integer Upper() const
   {
-    return UpperIndex;
+    return Array.Upper();
   }
 
   //! Returns the value or the square  of the norm of this vector.
@@ -241,14 +242,24 @@ public:
   //! Subtract whenever possible.
   Standard_EXPORT void Subtract(const math_Vector& theLeft,const math_Vector& theRight);
 
-  //! accesses (in read or write mode) the value of index "theNum" of a vector.
-  inline Standard_Real& Value(const Standard_Integer theNum) const
+  //! accesses the value of index "theNum" of a vector.
+  const Standard_Real& Value (const Standard_Integer theNum) const
   {
-    Standard_RangeError_Raise_if(theNum < LowerIndex || theNum > UpperIndex, " ");
     return Array(theNum);
   }
 
-  Standard_Real& operator()(const Standard_Integer theNum) const
+  //! accesses (in read or write mode) the value of index "theNum" of a vector.
+  inline Standard_Real& Value (const Standard_Integer theNum)
+  {
+    return Array(theNum);
+  }
+
+  const Standard_Real& operator()(const Standard_Integer theNum) const
+  {
+    return Value(theNum);
+  }
+
+  Standard_Real& operator()(const Standard_Integer theNum)
   {
     return Value(theNum);
   }
@@ -327,9 +338,9 @@ protected:
 
 private:
 
-  Standard_Integer LowerIndex;
-  Standard_Integer UpperIndex;
-  math_SingleTab<Standard_Real> Array;
+  NCollection_LocalArray<Standard_Real, 512> myLocArray;
+  NCollection_Array1<Standard_Real> Array;
+
 };
 
 #endif

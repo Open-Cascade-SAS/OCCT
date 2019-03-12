@@ -12,40 +12,31 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#define No_Standard_RangeError
-#define No_Standard_OutOfRange
-#define No_Standard_DimensionError
-
 #include <math_IntegerVector.hxx>
 
 #include <Standard_DimensionError.hxx>
 #include <Standard_RangeError.hxx>
 
-math_IntegerVector::math_IntegerVector(const Standard_Integer theFirst, const Standard_Integer theLast) :
-  FirstIndex(theFirst),
-  LastIndex(theLast),
-  Array(theFirst, theLast)
+math_IntegerVector::math_IntegerVector(const Standard_Integer theFirst, const Standard_Integer theLast)
+: myLocArray (theLast - theFirst + 1),
+  Array (myLocArray[0], theFirst, theLast)
 {
-  Standard_RangeError_Raise_if(theFirst > theLast, " ");
+  //
 }
 
 math_IntegerVector::math_IntegerVector(const Standard_Integer theFirst,
                                        const Standard_Integer theLast,
-                                       const Standard_Integer theInitialValue) :
-  FirstIndex(theFirst),
-  LastIndex(theLast),
-  Array(theFirst, theLast)
+                                       const Standard_Integer theInitialValue)
+: myLocArray (theLast - theFirst + 1),
+  Array (myLocArray[0], theFirst, theLast)
 {
-  Standard_RangeError_Raise_if(theFirst > theLast, " ");
   Array.Init(theInitialValue);
 }
 
-math_IntegerVector::math_IntegerVector(const Standard_Address theTab,
+math_IntegerVector::math_IntegerVector(const Standard_Integer* theTab,
                                        const Standard_Integer theFirst,
-                                       const Standard_Integer theLast) :
-  FirstIndex(theFirst),
-  LastIndex(theLast),
-  Array(theTab, theFirst, theLast)
+                                       const Standard_Integer theLast)
+: Array (*theTab, theFirst, theLast)
 {
   Standard_RangeError_Raise_if(theFirst > theLast, " ");
 }
@@ -55,24 +46,22 @@ void math_IntegerVector::Init(const Standard_Integer theInitialValue)
   Array.Init(theInitialValue);
 }
 
-math_IntegerVector::math_IntegerVector(const math_IntegerVector& theOther) :
-  FirstIndex(theOther.FirstIndex),
-  LastIndex(theOther.LastIndex),
-  Array(theOther.Array)
+math_IntegerVector::math_IntegerVector (const math_IntegerVector& theOther)
+: myLocArray (theOther.Length()),
+  Array (myLocArray[0], theOther.Lower(), theOther.Upper())
 {
+  memcpy (&myLocArray[0], &theOther.Array.First(), sizeof(Standard_Integer) * theOther.Length());
 }
 
 void math_IntegerVector::SetFirst(const Standard_Integer theFirst)
 {
-  Array.SetLower(theFirst);
-  LastIndex = LastIndex - FirstIndex + theFirst;
-  FirstIndex = theFirst;
+  Array.Resize (theFirst, Array.Upper() - Array.Lower() + theFirst, Standard_False);
 }
 
 Standard_Real math_IntegerVector::Norm() const
 {
   Standard_Real Result = 0;
-  for(Standard_Integer Index = FirstIndex; Index <= LastIndex; Index++)
+  for(Standard_Integer Index = Lower(); Index <= Upper(); Index++)
   {
     Result = Result + Array(Index) * Array(Index);
   }
@@ -82,7 +71,7 @@ Standard_Real math_IntegerVector::Norm() const
 Standard_Real math_IntegerVector::Norm2() const
 {
   Standard_Real Result = 0;
-  for(Standard_Integer Index = FirstIndex; Index <= LastIndex; Index++)
+  for(Standard_Integer Index = Lower(); Index <= Upper(); Index++)
   {
     Result = Result + Array(Index) * Array(Index);
   }
@@ -93,7 +82,7 @@ Standard_Integer math_IntegerVector::Max() const
 {
   Standard_Integer I=0;
   Standard_Real X = RealFirst();
-  for(Standard_Integer Index = FirstIndex; Index <= LastIndex; Index++)
+  for(Standard_Integer Index = Lower(); Index <= Upper(); Index++)
   {
     if(Array(Index) > X)
     {
@@ -108,7 +97,7 @@ Standard_Integer math_IntegerVector::Min() const
 {
   Standard_Integer I=0;
   Standard_Real X = RealLast();
-  for(Standard_Integer Index = FirstIndex; Index <= LastIndex; Index++)
+  for(Standard_Integer Index = Lower(); Index <= Upper(); Index++)
   {
     if(Array(Index) < X)
     {
@@ -124,9 +113,9 @@ void math_IntegerVector::Invert()
   Standard_Integer J;
   Standard_Integer Temp;
 
-  for(Standard_Integer Index = FirstIndex; Index <= FirstIndex + Length() / 2 ; Index++)
+  for(Standard_Integer Index = Lower(); Index <= Lower() + Length() / 2 ; Index++)
   {
-      J = LastIndex + FirstIndex - Index;
+      J = Upper() + Lower() - Index;
       Temp = Array(Index);
       Array(Index) = Array(J);
       Array(J) = Temp;
@@ -144,7 +133,7 @@ void math_IntegerVector::Set(const Standard_Integer theI1,
                              const Standard_Integer theI2,
                              const math_IntegerVector &theV)
 {
-  Standard_DimensionError_Raise_if((theI1 < FirstIndex) || (theI2 > LastIndex) ||
+  Standard_DimensionError_Raise_if((theI1 < Lower()) || (theI2 > Upper()) ||
     (theI1 > theI2) || (theI2 - theI1 + 1 != theV.Length()), " ");
 
   Standard_Integer I = theV.Lower();
@@ -157,7 +146,7 @@ void math_IntegerVector::Set(const Standard_Integer theI1,
 
 void math_IntegerVector::Multiply(const Standard_Integer theRight)
 {
-  for(Standard_Integer Index = FirstIndex; Index <= LastIndex; Index++)
+  for(Standard_Integer Index = Lower(); Index <= Upper(); Index++)
   {
     Array(Index) = Array(Index) * theRight;
   }
@@ -167,8 +156,8 @@ void math_IntegerVector::Add(const math_IntegerVector& theRight)
 {
   Standard_DimensionError_Raise_if(Length() != theRight.Length(), " ");
 
-  Standard_Integer I = theRight.FirstIndex;
-  for(Standard_Integer Index = FirstIndex; Index <= LastIndex; Index++)
+  Standard_Integer I = theRight.Lower();
+  for(Standard_Integer Index = Lower(); Index <= Upper(); Index++)
   {
     Array(Index) = Array(Index) + theRight.Array(I);
     I++;
@@ -178,8 +167,8 @@ void math_IntegerVector::Add(const math_IntegerVector& theRight)
 void math_IntegerVector::Subtract(const math_IntegerVector& theRight)
 {
   Standard_DimensionError_Raise_if(Length() != theRight.Length(), " ");
-  Standard_Integer I = theRight.FirstIndex;
-  for(Standard_Integer Index = FirstIndex; Index <= LastIndex; Index++)
+  Standard_Integer I = theRight.Lower();
+  for(Standard_Integer Index = Lower(); Index <= Upper(); Index++)
   {
     Array(Index) = Array(Index) - theRight.Array(I);
     I++;
@@ -189,8 +178,8 @@ void math_IntegerVector::Subtract(const math_IntegerVector& theRight)
 math_IntegerVector math_IntegerVector::Slice(const Standard_Integer theI1,
                                              const Standard_Integer theI2) const
 {
-  Standard_DimensionError_Raise_if((theI1 < FirstIndex) || (theI1 > LastIndex) ||
-    (theI2 < FirstIndex) || (theI2 > LastIndex), " ");
+  Standard_DimensionError_Raise_if((theI1 < Lower()) || (theI1 > Upper()) ||
+    (theI2 < Lower()) || (theI2 > Upper()), " ");
 
   if(theI2 >= theI1)
   {
@@ -218,7 +207,7 @@ Standard_Integer math_IntegerVector::Multiplied (const math_IntegerVector& theRi
 
   Standard_DimensionError_Raise_if(Length() != theRight.Length(), " ");
 
-  Standard_Integer I = theRight.FirstIndex;
+  Standard_Integer I = theRight.Lower();
   for(Standard_Integer Index = 0; Index < Length(); Index++)
   {
     Result = Result + Array(Index) * theRight.Array(I);
@@ -229,9 +218,9 @@ Standard_Integer math_IntegerVector::Multiplied (const math_IntegerVector& theRi
 
 math_IntegerVector math_IntegerVector::Multiplied (const Standard_Integer theRight)const
 {
-  math_IntegerVector Result(FirstIndex, LastIndex);
+  math_IntegerVector Result(Lower(), Upper());
 
-  for(Standard_Integer Index = FirstIndex; Index <= LastIndex; Index++)
+  for(Standard_Integer Index = Lower(); Index <= Upper(); Index++)
   {
     Result.Array(Index) = Array(Index) * theRight;
   }
@@ -240,9 +229,9 @@ math_IntegerVector math_IntegerVector::Multiplied (const Standard_Integer theRig
 
 math_IntegerVector math_IntegerVector::TMultiplied (const Standard_Integer theRight) const
 {
-  math_IntegerVector Result(FirstIndex, LastIndex);
+  math_IntegerVector Result(Lower(), Upper());
 
-  for(Standard_Integer Index = FirstIndex; Index <= LastIndex; Index++)
+  for(Standard_Integer Index = Lower(); Index <= Upper(); Index++)
   {
     Result.Array(Index) = Array(Index) * theRight;
   }
@@ -253,10 +242,10 @@ math_IntegerVector math_IntegerVector::Added (const math_IntegerVector& theRight
 {
   Standard_DimensionError_Raise_if(Length() != theRight.Length(), " ");
 
-  math_IntegerVector Result(FirstIndex, LastIndex);
+  math_IntegerVector Result(Lower(), Upper());
 
-  Standard_Integer I = theRight.FirstIndex;
-  for(Standard_Integer Index = FirstIndex; Index <= LastIndex; Index++)
+  Standard_Integer I = theRight.Lower();
+  for(Standard_Integer Index = Lower(); Index <= Upper(); Index++)
   {
     Result.Array(Index) = Array(Index) + theRight.Array(I);
     I++;
@@ -266,9 +255,9 @@ math_IntegerVector math_IntegerVector::Added (const math_IntegerVector& theRight
 
 math_IntegerVector math_IntegerVector::Opposite()
 {
-  math_IntegerVector Result(FirstIndex, LastIndex);
+  math_IntegerVector Result(Lower(), Upper());
 
-  for(Standard_Integer Index = FirstIndex; Index <= LastIndex; Index++)
+  for(Standard_Integer Index = Lower(); Index <= Upper(); Index++)
   {
     Result.Array(Index) = - Array(Index);
   }
@@ -279,10 +268,10 @@ math_IntegerVector math_IntegerVector::Subtracted (const math_IntegerVector& the
 {
   Standard_DimensionError_Raise_if(Length() != theRight.Length(), " ");
 
-  math_IntegerVector Result(FirstIndex, LastIndex);
+  math_IntegerVector Result(Lower(), Upper());
 
-  Standard_Integer I = theRight.FirstIndex;
-  for(Standard_Integer Index = FirstIndex; Index <= LastIndex; Index++)
+  Standard_Integer I = theRight.Lower();
+  for(Standard_Integer Index = Lower(); Index <= Upper(); Index++)
   {
     Result.Array(Index) = Array(Index) - theRight.Array(I);
     I++;
@@ -295,9 +284,9 @@ void math_IntegerVector::Add (const math_IntegerVector& theLeft, const math_Inte
   Standard_DimensionError_Raise_if((Length() != theRight.Length()) ||
     (theRight.Length() != theLeft.Length()), " ");
 
-  Standard_Integer I = theLeft.FirstIndex;
-  Standard_Integer J = theRight.FirstIndex;
-  for(Standard_Integer Index = FirstIndex; Index <= LastIndex; Index++)
+  Standard_Integer I = theLeft.Lower();
+  Standard_Integer J = theRight.Lower();
+  for(Standard_Integer Index = Lower(); Index <= Upper(); Index++)
   {
     Array(Index) = theLeft.Array(I) + theRight.Array(J);
     I++;
@@ -311,9 +300,9 @@ void math_IntegerVector::Subtract (const math_IntegerVector& theLeft,
   Standard_DimensionError_Raise_if((Length() != theRight.Length()) ||
     (theRight.Length() != theLeft.Length()), " ");
 
-  Standard_Integer I = theLeft.FirstIndex;
-  Standard_Integer J = theRight.FirstIndex;
-  for(Standard_Integer Index = FirstIndex; Index <= LastIndex; Index++)
+  Standard_Integer I = theLeft.Lower();
+  Standard_Integer J = theRight.Lower();
+  for(Standard_Integer Index = Lower(); Index <= Upper(); Index++)
   {
     Array(Index) = theLeft.Array(I) - theRight.Array(J);
     I++;
@@ -324,7 +313,7 @@ void math_IntegerVector::Subtract (const math_IntegerVector& theLeft,
 void math_IntegerVector::Multiply(const Standard_Integer theLeft, const math_IntegerVector& theRight)
 {
   Standard_DimensionError_Raise_if((Length() != theRight.Length()), " ");
-  for(Standard_Integer I = FirstIndex; I <= LastIndex; I++)
+  for(Standard_Integer I = Lower(); I <= Upper(); I++)
   {
     Array(I) = theLeft * theRight.Array(I);
   }
@@ -333,17 +322,15 @@ void math_IntegerVector::Multiply(const Standard_Integer theLeft, const math_Int
 math_IntegerVector& math_IntegerVector::Initialized(const math_IntegerVector& theOther)
 {
   Standard_DimensionError_Raise_if(Length() != theOther.Length(), " ");
-
-  (theOther.Array).Copy(Array);
+  memmove (&Array.ChangeFirst(), &theOther.Array.First(), sizeof(Standard_Integer) * Array.Length());
   return *this;
 }
 
 void math_IntegerVector::Dump(Standard_OStream& theO) const
 {
   theO << "math_IntegerVector of Range = " << Length() << "\n";
-  for(Standard_Integer Index = FirstIndex; Index <= LastIndex; Index++)
+  for(Standard_Integer Index = Lower(); Index <= Upper(); Index++)
   {
     theO << "math_IntegerVector(" << Index << ") = " << Array(Index) << "\n";
   }
 }
-

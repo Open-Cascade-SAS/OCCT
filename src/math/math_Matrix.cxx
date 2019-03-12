@@ -297,7 +297,7 @@ void math_Matrix::SetRow (const Standard_Integer Row,
   Standard_DimensionError_Raise_if (ColNumber() != V.Length(),
                                     "math_Matrix::SetRow() - input vector has wrong dimensions");
   
-  Standard_Integer I = V.LowerIndex;
+  Standard_Integer I = V.Lower();
   for(Standard_Integer Index = LowerColIndex; Index <= UpperColIndex; Index++) {
     Array(Row, Index) = V.Array(I);
     I++;
@@ -314,7 +314,7 @@ void math_Matrix::SetCol (const Standard_Integer Col,
   Standard_DimensionError_Raise_if (RowNumber() != V.Length(),
                                     "math_Matrix::SetCol() - input vector has wrong dimensions");
   
-  Standard_Integer I = V.LowerIndex;
+  Standard_Integer I = V.Lower();
   for(Standard_Integer Index = LowerRowIndex; Index <= UpperRowIndex; Index++) {
     Array(Index, Col) = V.Array(I);
     I++;
@@ -635,7 +635,7 @@ math_Vector math_Matrix::Multiplied(const math_Vector& Right)const
   
   for(Standard_Integer I = LowerRowIndex; I <= UpperRowIndex; I++) {
     Result.Array(I) = 0.0;
-    Standard_Integer II = Right.LowerIndex;
+    Standard_Integer II = Right.Lower();
     for(Standard_Integer J = LowerColIndex; J <= UpperColIndex; J++) {
       Result.Array(I) = Result.Array(I) + Array(I, J) * Right.Array(II);
       II++;

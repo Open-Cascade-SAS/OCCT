@@ -111,7 +111,6 @@ math_PSOParticlesPool.cxx
 math_PSOParticlesPool.hxx
 math_Recipes.cxx
 math_Recipes.hxx
-math_SingleTab.hxx
 math_SingularMatrix.hxx
 math_Status.hxx
 math_SVD.cxx

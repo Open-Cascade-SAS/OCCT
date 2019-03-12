@@ -155,7 +155,7 @@ FEmTool_ProfileMatrix::FEmTool_ProfileMatrix(const TColStd_Array1OfInteger& Firs
 
   Standard_Real * x = &X(X.Lower());
   x--;
-  Standard_Real * b = &B(B.Lower());
+  const Standard_Real * b = &B(B.Lower());
   b--;
   const Standard_Real * SMA = &SMatrix->Value(1);
   SMA --;
@@ -207,7 +207,7 @@ FEmTool_ProfileMatrix::FEmTool_ProfileMatrix(const TColStd_Array1OfInteger& Firs
   Standard_Integer i, j, jj, DiagAddr, CurrAddr;
   Standard_Real * m = &MX(MX.Lower());
   m--;
-  Standard_Real * x = &X(X.Lower());
+  const Standard_Real * x = &X(X.Lower());
   x--;
   const Standard_Real * PM = &ProfileMatrix->Value(1);
   PM--;

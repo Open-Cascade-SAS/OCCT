@@ -1381,7 +1381,7 @@ void GeomFill_LocationGuide::Resolution (const Standard_Integer ,
 //Function : InitX
 //Purpose : recherche par interpolation d'une valeur initiale
 //==================================================================
-void GeomFill_LocationGuide::InitX(const Standard_Real Param) const
+void GeomFill_LocationGuide::InitX(const Standard_Real Param)
 {
 
   Standard_Integer Ideb = 1, Ifin =  myPoles2d->RowLength(), Idemi;

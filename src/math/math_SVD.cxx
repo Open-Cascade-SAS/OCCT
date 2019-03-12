@@ -40,7 +40,7 @@ math_SVD::math_SVD (const math_Matrix& A) :
 
 void math_SVD::Solve (const math_Vector& B,
 		      math_Vector& X,
-		      const Standard_Real Eps) const
+		      const Standard_Real Eps)
 {
    StdFail_NotDone_Raise_if(!Done, " ");
    Standard_DimensionError_Raise_if((RowA != B.Length()) ||
@@ -58,7 +58,7 @@ void math_SVD::Solve (const math_Vector& B,
 }
 
 void  math_SVD::PseudoInverse (math_Matrix& Result,
-			       const Standard_Real Eps) const
+			       const Standard_Real Eps)
 {
    Standard_Integer i, j ;
 
