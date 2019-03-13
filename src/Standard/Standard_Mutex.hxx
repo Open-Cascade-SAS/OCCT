@@ -155,7 +155,7 @@ public:
 private:
 
   //! Callback method to unlock the mutex if OCC exception or signal is raised
-  virtual void DestroyCallback ();
+  Standard_EXPORT virtual void DestroyCallback() Standard_OVERRIDE;
   
   //! This method should not be called (prohibited).
   Standard_Mutex (const Standard_Mutex &);

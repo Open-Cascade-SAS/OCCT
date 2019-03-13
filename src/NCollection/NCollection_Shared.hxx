@@ -16,8 +16,8 @@
 #ifndef NCollection_Shared_HeaderFile
 #define NCollection_Shared_HeaderFile
 
-#include <Standard_Type.hxx>
-  
+#include <NCollection_DefineAlloc.hxx>
+
 //! Template defining a class derived from the specified base class and 
 //! Standard_Transient, and supporting OCCT RTTI.
 //!
