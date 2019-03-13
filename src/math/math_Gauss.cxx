@@ -12,14 +12,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//#ifndef OCCT_DEBUG
-#define No_Standard_RangeError
-#define No_Standard_OutOfRange
-#define No_Standard_DimensionError
-
-//#endif
-
 #include <math_Gauss.hxx>
+
 #include <math_Matrix.hxx>
 #include <math_NotSquare.hxx>
 #include <math_Recipes.hxx>
@@ -30,9 +24,11 @@
 math_Gauss::math_Gauss(const math_Matrix& A, 
                        const Standard_Real MinPivot, 
                        const Handle(Message_ProgressIndicator) & aProgress) 
-                           : LU   (1, A.RowNumber(), 1, A.ColNumber()),
-                             Index(1, A.RowNumber()) {
-
+: LU   (1, A.RowNumber(), 1, A.ColNumber()),
+  Index(1, A.RowNumber()),
+  D (0.0),
+  Done (Standard_False)
+{
       math_NotSquare_Raise_if(A.RowNumber() != A.ColNumber(), " ");     
       LU = A;
       Standard_Integer Error = LU_Decompose(LU, 
@@ -118,7 +114,3 @@ void math_Gauss::Dump(Standard_OStream& o) const {
          o << " Status = not Done \n";
        }
     }
-
-
-
-

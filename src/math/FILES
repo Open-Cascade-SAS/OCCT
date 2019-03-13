@@ -58,7 +58,6 @@ math_FunctionWithDerivative.cxx
 math_FunctionWithDerivative.hxx
 math_Gauss.cxx
 math_Gauss.hxx
-math_Gauss.lxx
 math_GaussLeastSquare.cxx
 math_GaussLeastSquare.hxx
 math_GaussLeastSquare.lxx
