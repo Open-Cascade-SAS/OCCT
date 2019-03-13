@@ -197,6 +197,14 @@ void OpenGl_AspectsTextureSet::build (const Handle(OpenGl_Context)& theCtx,
       }
       else
       {
+        if (aTexture->Revision() != aResource->Revision())
+        {
+          if (Handle(Image_PixMap) anImage = aTexture->GetImage())
+          {
+            aResource->Init (theCtx, *anImage.operator->(), aTexture->Type());
+            aResource->SetRevision (aTexture->Revision());
+          }
+        }
         aResource->Sampler()->SetParameters (aTexture->GetParams());
       }
     }
