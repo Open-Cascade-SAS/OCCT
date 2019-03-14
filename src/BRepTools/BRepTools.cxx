@@ -68,25 +68,6 @@
 
 
 //=======================================================================
-//function : IsPCurveUiso
-//purpose  : 
-//=======================================================================
-
-static Standard_Boolean IsPCurveUiso(const Handle(Geom2d_Curve)& thePCurve,
-                                     Standard_Real theFirstPar,
-                                     Standard_Real theLastPar)
-{
-  gp_Pnt2d FirstP2d = thePCurve->Value(theFirstPar);
-  gp_Pnt2d LastP2d  = thePCurve->Value(theLastPar);
-
-  Standard_Real DeltaU = Abs(FirstP2d.X() - LastP2d.X());
-  Standard_Real DeltaV = Abs(FirstP2d.Y() - LastP2d.Y());
-
-  return (DeltaU < DeltaV);
-}
-
-
-//=======================================================================
 //function : UVBounds
 //purpose  : 
 //=======================================================================
@@ -977,28 +958,24 @@ void BRepTools::DetectClosedness(const TopoDS_Face& theFace,
 {
   theUclosed = theVclosed = Standard_False;
   
-  BRepAdaptor_Surface BAsurf(theFace, Standard_False);
-  Standard_Boolean IsSurfUclosed = BAsurf.IsUClosed();
-  Standard_Boolean IsSurfVclosed = BAsurf.IsVClosed();
-  if (!IsSurfUclosed && !IsSurfVclosed)
-    return;
-  
   TopExp_Explorer Explo(theFace, TopAbs_EDGE);
   for (; Explo.More(); Explo.Next())
   {
     const TopoDS_Edge& anEdge = TopoDS::Edge(Explo.Current());
-    if (BRepTools::IsReallyClosed(anEdge, theFace))
+    if (BRep_Tool::IsClosed(anEdge, theFace) &&
+        BRepTools::IsReallyClosed(anEdge, theFace))
     {
       Standard_Real fpar, lpar;
-      Handle(Geom2d_Curve) aPCurve = BRep_Tool::CurveOnSurface(anEdge, theFace, fpar, lpar);
-      Standard_Boolean IsUiso = IsPCurveUiso(aPCurve, fpar, lpar);
-      if (IsSurfUclosed && IsUiso)
+      Handle(Geom2d_Curve) PCurve1 = BRep_Tool::CurveOnSurface(anEdge, theFace, fpar, lpar);
+      Handle(Geom2d_Curve) PCurve2 = BRep_Tool::CurveOnSurface(TopoDS::Edge(anEdge.Reversed()),
+                                                               theFace, fpar, lpar);
+      gp_Pnt2d Point1 = PCurve1->Value(fpar);
+      gp_Pnt2d Point2 = PCurve2->Value(fpar);
+      Standard_Boolean IsUiso = (Abs(Point1.X() - Point2.X()) > Abs(Point1.Y() - Point2.Y()));
+      if (IsUiso)
         theUclosed = Standard_True;
-      if (IsSurfVclosed && !IsUiso)
+      else
         theVclosed = Standard_True;
-      
-      if (theUclosed && theVclosed)
-        break;
     }
   }
 }

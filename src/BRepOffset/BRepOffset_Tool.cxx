@@ -3103,6 +3103,7 @@ Standard_Boolean BRepOffset_Tool::EnLargeFace
   TopLoc_Location       L;
   Handle (Geom_Surface) S = BRep_Tool::Surface(F,L);
   Standard_Real         UU1,VV1,UU2,VV2;
+  Standard_Boolean      uperiodic = Standard_False, vperiodic = Standard_False;
   Standard_Boolean      isVV1degen = Standard_False, isVV2degen = Standard_False;
   Standard_Real         US1,VS1,US2,VS2;
   Standard_Real         UF1,VF1,UF2,VF2;
@@ -3146,6 +3147,7 @@ Standard_Boolean BRepOffset_Tool::EnLargeFace
   }
 
   if (S->IsUPeriodic()) {
+    uperiodic = Standard_True;
     Standard_Real    Period = S->UPeriod(); 
     Standard_Real    Delta  = Period - (UF2 - UF1);
     Standard_Real    alpha  = 0.1;
@@ -3155,6 +3157,7 @@ Standard_Boolean BRepOffset_Tool::EnLargeFace
     }
   }
   if (S->IsVPeriodic()) {
+    vperiodic = Standard_True;
     Standard_Real    Period = S->VPeriod(); 
     Standard_Real    Delta  = Period - (VF2 - VF1);
     Standard_Real    alpha  = 0.1;
@@ -3199,6 +3202,12 @@ Standard_Boolean BRepOffset_Tool::EnLargeFace
   //Detect closedness in U and V directions
   Standard_Boolean uclosed = Standard_False, vclosed = Standard_False;
   BRepTools::DetectClosedness(F, uclosed, vclosed);
+  if (uclosed && !uperiodic &&
+      (theLenBeforeUfirst != 0. || theLenAfterUlast != 0.))
+    uclosed = Standard_False;
+  if (vclosed && !vperiodic &&
+      (theLenBeforeVfirst != 0. && theLenAfterVlast != 0.))
+    vclosed = Standard_False;
   
   MakeFace(S,UU1,UU2,VV1,VV2,uclosed,vclosed,isVV1degen,isVV2degen,BF);
   BF.Location(L);
