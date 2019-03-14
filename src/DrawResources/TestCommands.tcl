@@ -718,6 +718,7 @@ help testdiff {
   Compare results of two executions of tests (CPU times, ...)
   Use: testdiff dir1 dir2 [groupname [gridname]] [options...]
   Where dir1 and dir2 are directories containing logs of two test runs.
+  dir1 (A) should point to NEW tests results to be verified and dir2 (B) to REFERENCE results.
   Allowed options are:
   -image [filename]: compare only images and save its in specified file (default 
                    name is <dir1>/diffimage-<dir2>.log)
@@ -2215,6 +2216,8 @@ proc _test_diff {dir1 dir2 basename image cpu memory status verbose _logvar _log
 
             # check images
             if {$image != false || ($image == false && $cpu == false && $memory == false)} {
+                set aCaseDiffColorTol 0
+                if { [regexp {IMAGE_COLOR_TOLERANCE:\s*([\d.]+)} $log1 res1 imgtol1] } { set aCaseDiffColorTol $imgtol1 }
                 set imglist1 [glob -directory $path1 -types f -tails -nocomplain ${casename}.{png,gif} ${casename}-*.{png,gif} ${casename}_*.{png,gif}]
                 set imglist2 [glob -directory $path2 -types f -tails -nocomplain ${casename}.{png,gif} ${casename}-*.{png,gif} ${casename}_*.{png,gif}]
                 _list_diff $imglist1 $imglist2 imgin1 imgin2 imgcommon
@@ -2239,7 +2242,7 @@ proc _test_diff {dir1 dir2 basename image cpu memory status verbose _logvar _log
                     set diffile [_diff_img_name $dir1 $dir2 $basename $imgfile]
                     if { [catch {diffimage [file join $dir1 $basename $imgfile] \
                                            [file join $dir2 $basename $imgfile] \
-                                           0 0 0 $diffile} diff] } {
+                                           -toleranceOfColor 0.0 -blackWhite off -borderFilter off $diffile} diff] } {
                         if {$image != false} {
                             _log_and_puts log_image "IMAGE [split $basename /] $casename: $imgfile cannot be compared"
                         } else {
@@ -2247,10 +2250,35 @@ proc _test_diff {dir1 dir2 basename image cpu memory status verbose _logvar _log
                         }
                         file delete -force $diffile ;# clean possible previous result of diffimage
                     } elseif { $diff != 0 } {
+                        set diff [string trimright $diff \n]
+                        if {$aCaseDiffColorTol != 0} {
+                            # retry with color tolerance
+                            if { [catch {diffimage [file join $dir1 $basename $imgfile] \
+                                                   [file join $dir2 $basename $imgfile] \
+                                                   -toleranceOfColor $aCaseDiffColorTol -blackWhite off -borderFilter off $diffile} diff2] } {
+                                if {$image != false} {
+                                    _log_and_puts log_image "IMAGE [split $basename /] $casename: $imgfile cannot be compared"
+                                } else {
+                                    _log_and_puts log "IMAGE [split $basename /] $casename: $imgfile cannot be compared"
+                                }
+                                continue
+                            } elseif { $diff2 == 0 } {
+                                # exclude image diff within tolerance but still keep info in the log
+                                set toLogImageCase false
+                                file delete -force $diffile
+                                if {$image != false} {
+                                    _log_and_puts log_image "IMAGE [split $basename /] $casename: $imgfile is similar \[$diff different pixels\]"
+                                } else {
+                                    _log_and_puts log "IMAGE [split $basename /] $casename: $imgfile is similar \[$diff different pixels\]"
+                                }
+                                continue
+                            }
+                        }
+
                         if {$image != false} {
-                            _log_and_puts log_image "IMAGE [split $basename /] $casename: $imgfile differs"
+                            _log_and_puts log_image "IMAGE [split $basename /] $casename: $imgfile differs \[$diff different pixels\]"
                         } else {
-                            _log_and_puts log "IMAGE [split $basename /] $casename: $imgfile differs"
+                            _log_and_puts log "IMAGE [split $basename /] $casename: $imgfile differs \[$diff different pixels\]"
                         }
                     } else {
                         file delete -force $diffile ;# clean useless artifact of diffimage
@@ -2311,8 +2339,8 @@ proc _log_html_diff {file log dir1 dir2 highlight_percent} {
     # print header
     puts $fd "<html><head><title>Diff $dir1 vs. $dir2</title></head><body>"
     puts $fd "<h1>Comparison of test results:</h1>"
-    puts $fd "<h2>Version A - $dir1</h2>"
-    puts $fd "<h2>Version B - $dir2</h2>"
+    puts $fd "<h2>Version A \[NEW\] - $dir1</h2>"
+    puts $fd "<h2>Version B \[REF\] - $dir2</h2>"
 
     # add script for switching between images on click
     puts $fd ""
@@ -2334,12 +2362,16 @@ proc _log_html_diff {file log dir1 dir2 highlight_percent} {
         if { [regexp "\[\\\[](\[0-9.e+-]+)%\[\]]" $line res value] && 
              [expr abs($value)] > ${highlight_percent} } {
             puts $fd "<table><tr><td bgcolor=\"[expr $value > 0 ? \"ff8080\" : \"lightgreen\"]\">$line</td></tr></table>"
-        } else {
+        } elseif { [regexp {IMAGE[ \t]+([^:]+):[ \t]+([A-Za-z0-9_.-]+) is similar} $line res case img] } {
+            if { [catch {eval file join "" [lrange $case 0 end-1]} gridpath] } {
+                # note: special handler for the case if test grid directoried are compared directly
+                set gridpath ""
+            }
+            set aCaseName [lindex $case end]
+            puts $fd "<table><tr><td bgcolor=\"orange\"><a href=\"[_make_url $file [file join $dir1 $gridpath $aCaseName.html]]\">$line</a></td></tr></table>"
+        } elseif { [regexp {IMAGE[ \t]+([^:]+):[ \t]+([A-Za-z0-9_.-]+)} $line res case img] } {
+            # add images
             puts $fd $line
-        }
-
-        # add images
-        if { [regexp {IMAGE[ \t]+([^:]+):[ \t]+([A-Za-z0-9_.-]+)} $line res case img] } {
             if { [catch {eval file join "" [lrange $case 0 end-1]} gridpath] } {
                 # note: special handler for the case if test grid directoried are compared directly
                 set gridpath ""
@@ -2360,6 +2392,8 @@ proc _log_html_diff {file log dir1 dir2 highlight_percent} {
 
             puts $fd "<table><tr><th><abbr title=\"$dir1\">Version A</abbr></th><th><abbr title=\"$dir2\">Version B</abbr></th><th>Diff (click to toggle)</th></tr>"
             puts $fd "<tr><td>$img1</td><td>$img2</td><td>$imgd</td></tr></table>"
+        } else {
+            puts $fd $line
         }
     }
     puts $fd "</pre></body></html>"

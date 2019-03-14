@@ -1,0 +1,8 @@
+puts "========="
+puts "0024872: Support of emission color in Phong shader and ray-tracing"
+puts "Test emission material within Ray-Tracing"
+puts "========="
+puts ""
+
+source $env(CSF_OCCTSamplesPath)/tcl/materials.tcl
+vrenderparams -raytrace -msaa 0

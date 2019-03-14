@@ -1,4 +1,8 @@
-# test for visual properties of materials in 3d viewer
+puts "Test visual properties of materials in 3d viewer"
+
+puts "Workaround instability on GeForce cards with MSAA at semitransparent sphere"
+puts "IMAGE_COLOR_TOLERANCE: 0.008"
+
 source $env(CSF_OCCTSamplesPath)/tcl/materials.tcl
 
 # make a snapshot

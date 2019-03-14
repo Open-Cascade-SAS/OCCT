@@ -1,5 +1,5 @@
 puts "========"
-puts "OCC24855: Revision of parameters of standard materials"
+puts "0024855: Revision of parameters of standard materials"
 puts "========"
 
 # custom shapes
@@ -14,8 +14,7 @@ vsetgradientbg 180 200 255 180 180 180 2
 # display shape
 vlight -change 0 -dir 0.577 -0.577 -0.577
 restore $aShape s
-vsetdispmode 1
-vdisplay s
+vdisplay -dispMode 1 s
 vfit
 
 proc testmat {dirname filename} {
@@ -25,18 +24,15 @@ proc testmat {dirname filename} {
   }
 }
 
-# make material screenshots
+# material screenshots, Gouraud shading model (rasterization)
+vrenderparams -shadingModel GOURAUD
 testmat $imagedir $casename
 
-vshaderprog s phong
+# material screenshots, Phong shading model (rasterization)
+vrenderparams -shadingModel PHONG
 testmat $imagedir ${casename}_phong
 
+# material screenshots, Ray-Tracing
 vrenderparams -raytrace -reflections -fsaa
 vtextureenv on 5
-
 testmat $imagedir ${casename}_rt
-
-vclear
-vrenderparams -rasterization
-vtextureenv off
-source $env(CSF_OCCTSamplesPath)/tcl/materials.tcl
