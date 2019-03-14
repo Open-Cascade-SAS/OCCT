@@ -1737,3 +1737,9 @@ or updating presentation without recomputation (see *AIS_InteractiveObject::Sync
   Specify Graphic3d_AspectFillArea3d::SetDrawEdges(true) with Graphic3d_AspectFillArea3d::SetInteriorStyle(Aspect_IS_EMPTY) to get previous behavior of Aspect_IS_HOLLOW style.
 * *Aspect_IS_HIDDENLINE* does not implicitly enables drawing mesh edges anymore.
   Specify Graphic3d_AspectFillArea3d::SetDrawEdges(true) with Graphic3d_AspectFillArea3d::SetInteriorStyle(Aspect_IS_HIDDENLINE) to get previous behavior of Aspect_IS_HIDDENLINE style.
+
+@subsection upgrade_740_geproj Custom defines within env.bat
+
+*env.bat* produced by Visual Studio project generator *genproj.bat* has been modified so that *%CSF_DEFINES%* variable is reset to initial state.
+Custom building environment relying on old behavior and setting extra macros within *%CSF_DEFINES%* before env.bat should be updated
+to either modify custom.bat or setup new variable *%CSF_DEFINES_EXTRA%* instead.

@@ -29,6 +29,7 @@ set "CSF_OPT_LIB32="
 set "CSF_OPT_LIB64="
 set "CSF_OPT_BIN32="
 set "CSF_OPT_BIN64="
+set "CSF_DEFINES=%CSF_DEFINES_EXTRA%"
 
 if not ["%CASROOT%"] == [""] if exist "%SCRIPTROOT%\%CASROOT%" set "CASROOT=%SCRIPTROOT%\%CASROOT%"
 if     ["%CASROOT%"] == [""] set "CASROOT=%SCRIPTROOT%"
