@@ -1,0 +1,20 @@
+puts "===================================================================================================="
+puts "OCC29504: ShapeUpgrade_UnifySameDomain produces invalid shape and ShapeFix_Shape is unable to fix it"
+puts "===================================================================================================="
+puts ""
+
+restore [locate_data_file bug29504_sph.brep] s
+unifysamedom result s
+
+checkshape result
+checkshape s
+
+checknbshapes result -face 1 -wire 1 -edge 4 -vertex 4
+
+set tolres [checkmaxtol result]
+
+if { ${tolres} > 1.000008e-07} {
+   puts "Error: bad tolerance of result"
+}
+
+checkprops result -s 55.1286
