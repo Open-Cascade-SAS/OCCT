@@ -1987,20 +1987,19 @@ void Law_BSpline::
     &poles->Array1()(1) ;
   new_poles_array = (Standard_Real *) 
     &new_poles(1) ;
-  BSplCLib::MovePointAndTangent(U,
-				dimension,
-				delta,
-				delta_derivative,
-				Tolerance,
-				deg,
-				rational,
-				StartingCondition,
-				EndingCondition,
-				poles_array[0],
-				weights->Array1(), 
-				flatknots->Array1(), 
-				new_poles_array[0],
-				ErrorStatus) ;
+  BSplCLib::MovePointAndTangent (U,
+                                 dimension,
+                                 delta,
+                                 delta_derivative,
+                                 Tolerance,
+                                 deg,
+                                 StartingCondition,
+                                 EndingCondition,
+                                 poles_array[0],
+                                 rational ? &weights->Array1() : BSplCLib::NoWeights(),
+                                 flatknots->Array1(),
+                                 new_poles_array[0],
+                                 ErrorStatus);
   if (!ErrorStatus) {
     poles->ChangeArray1() = new_poles;
   }

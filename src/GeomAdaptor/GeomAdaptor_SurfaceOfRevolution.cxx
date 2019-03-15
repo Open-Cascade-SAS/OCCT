@@ -268,21 +268,10 @@ void GeomAdaptor_SurfaceOfRevolution::VIntervals(TColStd_Array1OfReal& T,
 //purpose  : 
 //=======================================================================
 
-Handle(Adaptor3d_HSurface) GeomAdaptor_SurfaceOfRevolution::UTrim
-(const Standard_Real 
-#ifndef No_Exception
-                     First
-#endif
- ,const Standard_Real 
-#ifndef No_Exception
-                     Last
-#endif
- ,const Standard_Real 
-                         ) const 
+Handle(Adaptor3d_HSurface) GeomAdaptor_SurfaceOfRevolution::UTrim (const Standard_Real First, const Standard_Real Last, const Standard_Real Tol) const
 {
-#ifndef No_Exception
-  Standard_Real Eps = Precision::PConfusion();
-#endif
+  const Standard_Real Eps = Precision::PConfusion();
+  (void )Eps; (void )First; (void )Last; (void )Tol;
   Standard_OutOfRange_Raise_if
     (  Abs(First) > Eps || Abs(Last - 2.*M_PI) > Eps,
      "GeomAdaptor_SurfaceOfRevolution : UTrim : Parameters out of range");

@@ -1337,7 +1337,7 @@ public:
   //! (3, NbPoles-2) -> the ends and the tangency are enforced
   //! if Problem in BSplineBasis calculation, no change for the curve
   //! and FirstIndex, LastIndex = 0
-  Standard_EXPORT static void MovePoint (const Standard_Real U, const gp_Vec2d& Displ, const Standard_Integer Index1, const Standard_Integer Index2, const Standard_Integer Degree, const Standard_Boolean Rational, const TColgp_Array1OfPnt2d& Poles, const TColStd_Array1OfReal& Weights, const TColStd_Array1OfReal& FlatKnots, Standard_Integer& FirstIndex, Standard_Integer& LastIndex, TColgp_Array1OfPnt2d& NewPoles);
+  Standard_EXPORT static void MovePoint (const Standard_Real U, const gp_Vec2d& Displ, const Standard_Integer Index1, const Standard_Integer Index2, const Standard_Integer Degree, const TColgp_Array1OfPnt2d& Poles, const TColStd_Array1OfReal* Weights, const TColStd_Array1OfReal& FlatKnots, Standard_Integer& FirstIndex, Standard_Integer& LastIndex, TColgp_Array1OfPnt2d& NewPoles);
   
   //! Find the new poles which allows  an old point (with a
   //! given  u as parameter) to reach a new position
@@ -1348,7 +1348,7 @@ public:
   //! (3, NbPoles-2) -> the ends and the tangency are enforced
   //! if Problem in BSplineBasis calculation, no change for the curve
   //! and FirstIndex, LastIndex = 0
-  Standard_EXPORT static void MovePoint (const Standard_Real U, const gp_Vec& Displ, const Standard_Integer Index1, const Standard_Integer Index2, const Standard_Integer Degree, const Standard_Boolean Rational, const TColgp_Array1OfPnt& Poles, const TColStd_Array1OfReal& Weights, const TColStd_Array1OfReal& FlatKnots, Standard_Integer& FirstIndex, Standard_Integer& LastIndex, TColgp_Array1OfPnt& NewPoles);
+  Standard_EXPORT static void MovePoint (const Standard_Real U, const gp_Vec& Displ, const Standard_Integer Index1, const Standard_Integer Index2, const Standard_Integer Degree, const TColgp_Array1OfPnt& Poles, const TColStd_Array1OfReal* Weights, const TColStd_Array1OfReal& FlatKnots, Standard_Integer& FirstIndex, Standard_Integer& LastIndex, TColgp_Array1OfPnt& NewPoles);
   
   //! This is the dimension free version of the utility
   //! U is the parameter  must be within the  first FlatKnots and the
@@ -1366,7 +1366,7 @@ public:
   //! = ...
   //! Same holds for EndingCondition
   //! Poles are the poles of the curve
-  //! Weights are the weights of the curve if Rational = Standard_True
+  //! Weights are the weights of the curve if not NULL
   //! NewPoles are the poles of the deformed curve
   //! ErrorStatus will be 0 if no error happened
   //! 1 if there are not enough knots/poles
@@ -1375,7 +1375,7 @@ public:
   //! If StartCondition = 1 and EndCondition = 1 then you need at least
   //! 4 + 2 = 6 poles so for example to have a C1 cubic you will need
   //! have at least 2 internal knots.
-  Standard_EXPORT static void MovePointAndTangent (const Standard_Real U, const Standard_Integer ArrayDimension, Standard_Real& Delta, Standard_Real& DeltaDerivative, const Standard_Real Tolerance, const Standard_Integer Degree, const Standard_Boolean Rational, const Standard_Integer StartingCondition, const Standard_Integer EndingCondition, Standard_Real& Poles, const TColStd_Array1OfReal& Weights, const TColStd_Array1OfReal& FlatKnots, Standard_Real& NewPoles, Standard_Integer& ErrorStatus);
+  Standard_EXPORT static void MovePointAndTangent (const Standard_Real U, const Standard_Integer ArrayDimension, Standard_Real& Delta, Standard_Real& DeltaDerivative, const Standard_Real Tolerance, const Standard_Integer Degree, const Standard_Integer StartingCondition, const Standard_Integer EndingCondition, Standard_Real& Poles, const TColStd_Array1OfReal* Weights, const TColStd_Array1OfReal& FlatKnots, Standard_Real& NewPoles, Standard_Integer& ErrorStatus);
   
   //! This is the dimension free version of the utility
   //! U is the parameter  must be within the  first FlatKnots and the
@@ -1393,7 +1393,7 @@ public:
   //! = ...
   //! Same holds for EndingCondition
   //! Poles are the poles of the curve
-  //! Weights are the weights of the curve if Rational = Standard_True
+  //! Weights are the weights of the curve if not NULL
   //! NewPoles are the poles of the deformed curve
   //! ErrorStatus will be 0 if no error happened
   //! 1 if there are not enough knots/poles
@@ -1402,7 +1402,7 @@ public:
   //! If StartCondition = 1 and EndCondition = 1 then you need at least
   //! 4 + 2 = 6 poles so for example to have a C1 cubic you will need
   //! have at least 2 internal knots.
-  Standard_EXPORT static void MovePointAndTangent (const Standard_Real U, const gp_Vec& Delta, const gp_Vec& DeltaDerivative, const Standard_Real Tolerance, const Standard_Integer Degree, const Standard_Boolean Rational, const Standard_Integer StartingCondition, const Standard_Integer EndingCondition, const TColgp_Array1OfPnt& Poles, const TColStd_Array1OfReal& Weights, const TColStd_Array1OfReal& FlatKnots, TColgp_Array1OfPnt& NewPoles, Standard_Integer& ErrorStatus);
+  Standard_EXPORT static void MovePointAndTangent (const Standard_Real U, const gp_Vec& Delta, const gp_Vec& DeltaDerivative, const Standard_Real Tolerance, const Standard_Integer Degree, const Standard_Integer StartingCondition, const Standard_Integer EndingCondition, const TColgp_Array1OfPnt& Poles, const TColStd_Array1OfReal* Weights, const TColStd_Array1OfReal& FlatKnots, TColgp_Array1OfPnt& NewPoles, Standard_Integer& ErrorStatus);
   
   //! This is the dimension free version of the utility
   //! U is the parameter  must be within the  first FlatKnots and the
@@ -1420,7 +1420,7 @@ public:
   //! = ...
   //! Same holds for EndingCondition
   //! Poles are the poles of the curve
-  //! Weights are the weights of the curve if Rational = Standard_True
+  //! Weights are the weights of the curve if not NULL
   //! NewPoles are the poles of the deformed curve
   //! ErrorStatus will be 0 if no error happened
   //! 1 if there are not enough knots/poles
@@ -1429,7 +1429,7 @@ public:
   //! If StartCondition = 1 and EndCondition = 1 then you need at least
   //! 4 + 2 = 6 poles so for example to have a C1 cubic you will need
   //! have at least 2 internal knots.
-  Standard_EXPORT static void MovePointAndTangent (const Standard_Real U, const gp_Vec2d& Delta, const gp_Vec2d& DeltaDerivative, const Standard_Real Tolerance, const Standard_Integer Degree, const Standard_Boolean Rational, const Standard_Integer StartingCondition, const Standard_Integer EndingCondition, const TColgp_Array1OfPnt2d& Poles, const TColStd_Array1OfReal& Weights, const TColStd_Array1OfReal& FlatKnots, TColgp_Array1OfPnt2d& NewPoles, Standard_Integer& ErrorStatus);
+  Standard_EXPORT static void MovePointAndTangent (const Standard_Real U, const gp_Vec2d& Delta, const gp_Vec2d& DeltaDerivative, const Standard_Real Tolerance, const Standard_Integer Degree, const Standard_Integer StartingCondition, const Standard_Integer EndingCondition, const TColgp_Array1OfPnt2d& Poles, const TColStd_Array1OfReal* Weights, const TColStd_Array1OfReal& FlatKnots, TColgp_Array1OfPnt2d& NewPoles, Standard_Integer& ErrorStatus);
   
 
   //! given a tolerance in 3D space returns a

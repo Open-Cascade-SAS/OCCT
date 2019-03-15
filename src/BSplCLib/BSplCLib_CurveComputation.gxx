@@ -1218,9 +1218,8 @@ void BSplCLib::MovePoint (const Standard_Real            U,
 			  const Standard_Integer         Index1,
 			  const Standard_Integer         Index2,
 			  const Standard_Integer         Degree,
-			  const Standard_Boolean         Rational,
 			  const Array1OfPoints&          Poles,  
-			  const TColStd_Array1OfReal&    Weights,
+			  const TColStd_Array1OfReal*    Weights,
 			  const TColStd_Array1OfReal&    FlatKnots,
 			  Standard_Integer&              FirstIndex,
 			  Standard_Integer&              LastIndex,
@@ -1280,8 +1279,8 @@ void BSplCLib::MovePoint (const Standard_Real            U,
   
   for (i = 1; i <= Degree+1; i++) {
     ii = i + FirstNonZeroBsplineIndex - 1;
-    if (Rational) {
-      hN = Weights(ii)*BSplineBasis(1, i);
+    if (Weights != NULL) {
+      hN = Weights->Value(ii)*BSplineBasis(1, i);
       D2 += hN;
     }
     else {
@@ -1301,7 +1300,7 @@ void BSplCLib::MovePoint (const Standard_Real            U,
     }
   }
   
-  if (Rational) {
+  if (Weights != NULL) {
     Coef = D2/D1;
   }
   else {
@@ -1345,11 +1344,10 @@ void BSplCLib::MovePointAndTangent (const Standard_Real      U,
 				    const Vector&            DeltaDerivatives,
 				    const Standard_Real      Tolerance,
 				    const Standard_Integer   Degree,
-				    const Standard_Boolean   Rational,
 				    const Standard_Integer   StartingCondition,
 				    const Standard_Integer   EndingCondition,
 				    const Array1OfPoints&    Poles, 
-				    const TColStd_Array1OfReal&    Weights,
+				    const TColStd_Array1OfReal*    Weights,
 				    const TColStd_Array1OfReal&    FlatKnots,
 				    Array1OfPoints&                NewPoles,
 				    Standard_Integer &             ErrorStatus)
@@ -1376,7 +1374,6 @@ void BSplCLib::MovePointAndTangent (const Standard_Real      U,
 		      delta_derivative_array[0],
 		      Tolerance,
 		      Degree,
-		      Rational,
 		      StartingCondition,
 		      EndingCondition,
 		      poles_array[0],

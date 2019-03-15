@@ -567,11 +567,10 @@ void BSplCLib::MovePointAndTangent(const Standard_Real    U,
 				   Standard_Real    &DeltaDerivatives,
 				   const Standard_Real    Tolerance,
 				   const Standard_Integer Degree,
-				   const Standard_Boolean Rational,
 				   const Standard_Integer StartingCondition,
 				   const Standard_Integer EndingCondition,
 				   Standard_Real&         Poles,
-				   const TColStd_Array1OfReal&   Weights,
+				   const TColStd_Array1OfReal*   Weights,
 				   const TColStd_Array1OfReal&   FlatKnots,
 				   Standard_Real&        NewPoles,
 				   Standard_Integer&     ErrorStatus) 
@@ -603,8 +602,8 @@ void BSplCLib::MovePointAndTangent(const Standard_Real    U,
   
   ErrorStatus = 0 ;
   weights_array = NULL ;
-  if (Rational) {
-    weights_array = (Standard_Real *) &Weights(Weights.Lower()) ;
+  if (Weights != NULL) {
+    weights_array = const_cast<Standard_Real*>(&Weights->First());
   }
   
   poles_array = &Poles ;
@@ -765,7 +764,7 @@ void BSplCLib::MovePointAndTangent(const Standard_Real    U,
       
       extrap_mode[0] = Degree ;
       extrap_mode[1] = Degree ;
-      if (Rational) {
+      if (Weights != NULL) {
 	//
 	// evaluate in homogenised form
 	//

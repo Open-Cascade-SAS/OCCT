@@ -188,7 +188,9 @@ namespace
 
       // Extracts vertices & normals from nodes
       const TColgp_Array1OfPnt&   aNodes   = aT->Nodes();
-      const TColgp_Array1OfPnt2d& aUVNodes = aT->UVNodes();
+      const TColgp_Array1OfPnt2d* aUVNodes = theHasTexels && aT->HasUVNodes() && aT->UVNodes().Upper() == aNodes.Upper()
+                                           ? &aT->UVNodes()
+                                           : NULL;
       StdPrs_ToolTriangulatedShape::ComputeNormals (aFace, aT);
       const TShort_Array1OfShortReal& aNormals = aT->Normals();
       const Standard_ShortReal*       aNormArr = &aNormals.First();
@@ -216,12 +218,12 @@ namespace
           aNorm.Transform (aTrsf);
         }
 
-        if (theHasTexels && aUVNodes.Upper() == aNodes.Upper())
+        if (aUVNodes != NULL)
         {
           const gp_Pnt2d aTexel = (dUmax == 0.0 || dVmax == 0.0)
-                                ? aUVNodes (aNodeIter)
-                                : gp_Pnt2d ((-theUVOrigin.X() + (theUVRepeat.X() * (aUVNodes(aNodeIter).X() - aUmin)) / dUmax) / theUVScale.X(),
-                                            (-theUVOrigin.Y() + (theUVRepeat.Y() * (aUVNodes(aNodeIter).Y() - aVmin)) / dVmax) / theUVScale.Y());
+                                ? aUVNodes->Value (aNodeIter)
+                                : gp_Pnt2d ((-theUVOrigin.X() + (theUVRepeat.X() * (aUVNodes->Value (aNodeIter).X() - aUmin)) / dUmax) / theUVScale.X(),
+                                            (-theUVOrigin.Y() + (theUVRepeat.Y() * (aUVNodes->Value (aNodeIter).Y() - aVmin)) / dVmax) / theUVScale.Y());
           anArray->AddVertex (aPoint, aNorm, aTexel);
         }
         else

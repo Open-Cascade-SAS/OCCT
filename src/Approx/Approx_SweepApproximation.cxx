@@ -163,12 +163,21 @@ void Approx_SweepApproximation::Perform(const Standard_Real First,
  myDWeigths = new (TColStd_HArray1OfReal)(1, Num3DSS);
  myD2Weigths = new (TColStd_HArray1OfReal)(1, Num3DSS);
  
- if (Num2DSS>0) {
+ if (Num2DSS>0)
+ {
    myPoles2d   = new (TColgp_HArray1OfPnt2d)(1, Num2DSS);
    myDPoles2d  = new (TColgp_HArray1OfVec2d)(1, Num2DSS);
    myD2Poles2d = new (TColgp_HArray1OfVec2d)(1, Num2DSS);  
    COnSurfErr  = new (TColStd_HArray1OfReal)(1, Num2DSS);
  }
+ else
+ {
+   myPoles2d   = new TColgp_HArray1OfPnt2d();
+   myDPoles2d  = new TColgp_HArray1OfVec2d();
+   myD2Poles2d = new TColgp_HArray1OfVec2d();
+   COnSurfErr  = new TColStd_HArray1OfReal();
+ }
+
 // Checks if myFunc->D2 is implemented
  if (continuity >= GeomAbs_C2) {
    Standard_Boolean B;

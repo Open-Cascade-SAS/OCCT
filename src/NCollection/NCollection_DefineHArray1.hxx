@@ -29,6 +29,7 @@ class HClassName : public _Array1Type_, public Standard_Transient {             
  public:                                                                       \
    DEFINE_STANDARD_ALLOC                                                       \
    DEFINE_NCOLLECTION_ALLOC                                                    \
+   HClassName () : _Array1Type_ () {}                                          \
    HClassName (const Standard_Integer theLower,                                \
                const Standard_Integer theUpper) :                              \
      _Array1Type_ (theLower,theUpper)  {}                                      \
