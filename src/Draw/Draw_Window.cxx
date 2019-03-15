@@ -72,26 +72,16 @@ void Draw_Window::RemoveCallbackBeforeTerminate(FCallbackBeforeTerminate theCB)
 
 static void Prompt(Tcl_Interp *Interp, int partial)
 {
-
-  // MKV 29.03.05
-#if ((TCL_MAJOR_VERSION > 8) || ((TCL_MAJOR_VERSION == 8) && (TCL_MINOR_VERSION >= 4))) && !defined(USE_NON_CONST)
-    const char *promptCmd;
-#else
-    char *promptCmd;
-#endif
-    int code;
-    Tcl_Channel  outChannel, errChannel;
-    outChannel = Tcl_GetStdChannel(TCL_STDOUT);
-    promptCmd = Tcl_GetVar(Interp,(char*)
-        (partial ? "tcl_prompt2" : "tcl_prompt1"), TCL_GLOBAL_ONLY);
-
+    Tcl_Channel errChannel;
+    Tcl_Channel outChannel = Tcl_GetStdChannel(TCL_STDOUT);
+    const char* promptCmd = Tcl_GetVar (Interp, partial ? "tcl_prompt2" : "tcl_prompt1", TCL_GLOBAL_ONLY);
     if (promptCmd == NULL) {
 defaultPrompt:
       if (!partial && outChannel) {
         Tcl_Write(outChannel, "% ", 2);
       }
     } else {
-      code = Tcl_Eval(Interp, promptCmd);
+      int code = Tcl_Eval(Interp, promptCmd);
       outChannel = Tcl_GetStdChannel(TCL_STDOUT);
       errChannel = Tcl_GetStdChannel(TCL_STDERR);
       if (code != TCL_OK) {

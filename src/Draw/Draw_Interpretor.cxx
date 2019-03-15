@@ -112,16 +112,7 @@ namespace {
 
 } // anonymous namespace
 
-// MKV 29.03.05
-#if ((TCL_MAJOR_VERSION > 8) || ((TCL_MAJOR_VERSION == 8) && (TCL_MINOR_VERSION >= 4))) && !defined(USE_NON_CONST)
-static Standard_Integer CommandCmd 
-(ClientData theClientData, Tcl_Interp *interp,
- Standard_Integer argc, const char* argv[])
-#else
-static Standard_Integer CommandCmd 
-(ClientData theClientData, Tcl_Interp *interp,
- Standard_Integer argc, char* argv[])
-#endif
+static Standard_Integer CommandCmd (ClientData theClientData, Tcl_Interp* interp, Standard_Integer argc, const char* argv[])
 {
   static Standard_Integer code;
   code = TCL_OK;
@@ -166,18 +157,10 @@ static Standard_Integer CommandCmd
   }
   catch (Standard_Failure const& anException) {
     // fail if Draw_ExitOnCatch is set
-    // MKV 29.03.05
-#if ((TCL_MAJOR_VERSION > 8) || ((TCL_MAJOR_VERSION == 8) && (TCL_MINOR_VERSION >= 4))) && !defined(USE_NON_CONST)
-    const char*  cc = Tcl_GetVar(interp,
-			  "Draw_ExitOnCatch",TCL_GLOBAL_ONLY);
-#else
-    char* const cc = Tcl_GetVar(interp,
-			  "Draw_ExitOnCatch",TCL_GLOBAL_ONLY);
-#endif
-
-    cout << "An exception was caught " << anException << endl;
-
-    if (cc && Draw::Atoi(cc)) {
+    std::cout << "An exception was caught " << anException << std::endl;
+    const char* toExitOnCatch = Tcl_GetVar (interp, "Draw_ExitOnCatch", TCL_GLOBAL_ONLY);
+    if (toExitOnCatch != NULL && Draw::Atoi (toExitOnCatch))
+    {
 #ifdef _WIN32
       Tcl_Exit(0);
 #else      
@@ -189,6 +172,44 @@ static Standard_Integer CommandCmd
     Standard_SStream ss;
     ss << "** Exception ** " << anException << ends;
     Tcl_SetResult(interp,(char*)(ss.str().c_str()),TCL_VOLATILE);
+    code = TCL_ERROR;
+  }
+  catch (std::exception const& theStdException)
+  {
+    std::cout << "An exception was caught " << theStdException.what() << " [" << typeid(theStdException).name() << "]" << std::endl;
+    const char* toExitOnCatch = Tcl_GetVar (interp, "Draw_ExitOnCatch", TCL_GLOBAL_ONLY);
+    if (toExitOnCatch != NULL && Draw::Atoi (toExitOnCatch))
+    {
+    #ifdef _WIN32
+      Tcl_Exit (0);
+    #else
+      Tcl_Eval (interp, "exit");
+    #endif
+    }
+
+    // get the error message
+    Standard_SStream ss;
+    ss << "** Exception ** " << theStdException.what() << " [" << typeid(theStdException).name() << "]" << ends;
+    Tcl_SetResult (interp, (char*)(ss.str().c_str()), TCL_VOLATILE);
+    code = TCL_ERROR;
+  }
+  catch (...)
+  {
+    std::cout << "UNKNOWN exception was caught " << std::endl;
+    const char* toExitOnCatch = Tcl_GetVar (interp, "Draw_ExitOnCatch", TCL_GLOBAL_ONLY);
+    if (toExitOnCatch != NULL && Draw::Atoi (toExitOnCatch))
+    {
+    #ifdef _WIN32
+      Tcl_Exit (0);
+    #else
+      Tcl_Eval (interp,"exit");
+    #endif
+    }
+
+    // get the error message
+    Standard_SStream ss;
+    ss << "** Exception ** UNKNOWN" << ends;
+    Tcl_SetResult (interp, (char* )(ss.str().c_str()), TCL_VOLATILE);
     code = TCL_ERROR;
   }
 
