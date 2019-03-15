@@ -68,7 +68,6 @@ class BRepPrimAPI_MakeRevol  : public BRepPrimAPI_MakeSweep
 public:
 
   DEFINE_STANDARD_ALLOC
-
   
   //! Builds the Revol of base S, axis  A and angle  D. If C
   //! is true, S is copied.
@@ -110,15 +109,15 @@ public:
   
   //! Check if there are degenerated edges in the result.
   Standard_EXPORT Standard_Boolean HasDegenerated() const;
-  
-  Standard_EXPORT const TopTools_ListOfShape& Degenerated() const;
 
+  //! Returns the list of degenerated edges
+  Standard_EXPORT const TopTools_ListOfShape& Degenerated() const;
 
 protected:
 
-
-
-
+  //! Checks possibilities of producing self-intersection surface
+  //! returns true if all surfaces are valid
+  Standard_EXPORT Standard_Boolean CheckValidity(const TopoDS_Shape& theShape, const gp_Ax1& theA);
 
 private:
 
@@ -127,6 +126,7 @@ private:
   BRepSweep_Revol myRevol;
   TopTools_ListOfShape myDegenerated;
   Handle(BRepTools_History) myHist;
+  Standard_Boolean myIsBuild;
 
 
 };

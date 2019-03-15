@@ -26,6 +26,13 @@
 #include <TopoDS_Shape.hxx>
 #include <TopTools_DataMapOfShapeListOfShape.hxx>
 #include <BRepTools_ReShape.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <GeomAdaptor_SurfaceOfRevolution.hxx>
+#include <GeomAdaptor_HCurve.hxx>
+#include <Extrema_ExtCC.hxx>
+#include <Extrema_POnCurv.hxx>
+#include <Geom_Line.hxx>
+
 // perform checks on the argument
 static const TopoDS_Shape& check(const TopoDS_Shape& S)
 {
@@ -41,10 +48,20 @@ static const TopoDS_Shape& check(const TopoDS_Shape& S)
 BRepPrimAPI_MakeRevol::BRepPrimAPI_MakeRevol(const TopoDS_Shape& S, 
 				     const gp_Ax1& A, 
 				     const Standard_Real D, 
-				     const Standard_Boolean Copy) :
-       myRevol(check(S),A,D,Copy)
+             const Standard_Boolean Copy) : 
+             myRevol(check(S), A, D, Copy),
+             myIsBuild(Standard_False)
+
 {
-  Build();
+  if (!CheckValidity(check(S), A))
+  {
+    myShape.Nullify();
+    myIsBuild = Standard_True;
+  }
+  else
+  {
+    Build();
+  }
 }
 
 
@@ -55,10 +72,21 @@ BRepPrimAPI_MakeRevol::BRepPrimAPI_MakeRevol(const TopoDS_Shape& S,
 
 BRepPrimAPI_MakeRevol::BRepPrimAPI_MakeRevol(const TopoDS_Shape& S, 
 				     const gp_Ax1& A, 
-				     const Standard_Boolean Copy) :
-       myRevol(check(S),A,Copy)
+             const Standard_Boolean Copy) :
+             
+             myRevol(check(S), A, 2. * M_PI, Copy),
+              myIsBuild(Standard_False)
 {
-  Build();
+
+  if (!CheckValidity(check(S), A))
+  {
+    myShape.Nullify();
+    myIsBuild = Standard_True;
+  }
+  else
+  {
+    Build();
+  }
 }
 
 
@@ -80,10 +108,16 @@ const BRepSweep_Revol&  BRepPrimAPI_MakeRevol::Revol() const
 
 void  BRepPrimAPI_MakeRevol::Build()
 {
+  if (myIsBuild)
+  {
+    return;
+  }
   myShape = myRevol.Shape();
   BRepLib::UpdateInnerTolerances(myShape);
   
   Done();
+  myIsBuild = Standard_True;
+
   myHist.Nullify();
   myDegenerated.Clear();
   TopTools_DataMapOfShapeListOfShape aDegE;
@@ -209,6 +243,98 @@ void  BRepPrimAPI_MakeRevol::Build()
       }
     }
   }
+}
+//=======================================================================
+//function : IsIntersect
+//purpose  : used in CheckValidity to find out is there
+//           intersection between curve and axe of revolution
+//=======================================================================
+static Standard_Boolean IsIntersect(const Handle(Adaptor3d_HCurve)& theC, 
+                                    const gp_Ax1& theAxe)
+{
+  const Handle(Geom_Line) aL = new Geom_Line(theAxe);
+  const GeomAdaptor_Curve aLin(aL);
+  const Standard_Real aParTol = theC->Resolution(Precision::Confusion());
+  const Standard_Real aParF = theC->FirstParameter() + aParTol,
+                      aParL = theC->LastParameter() - aParTol;
+
+  Extrema_ExtCC anExtr(theC->Curve(), aLin);
+  anExtr.Perform();
+  if (anExtr.IsDone() && anExtr.NbExt() > 0)
+  {
+    Extrema_POnCurv aP1, aP2;
+    for (Standard_Integer i = 1; i <= anExtr.NbExt(); i++)
+    {
+      if (anExtr.SquareDistance(i) > Precision::SquareConfusion())
+      {
+        continue;
+      }
+      anExtr.Points(i, aP1, aP2);
+      if ((aParF < aP1.Parameter()) && (aP1.Parameter() < aParL))
+      {
+        return Standard_True;
+      }
+    }
+  }
+  return Standard_False;
+}
+
+//=======================================================================
+//function : CheckValidity
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean BRepPrimAPI_MakeRevol::CheckValidity(const TopoDS_Shape& theShape,
+                                                      const gp_Ax1& theA)
+{
+  TopExp_Explorer anExp(theShape, TopAbs_EDGE);
+  Standard_Boolean IsValid = Standard_True;
+  for (; anExp.More(); anExp.Next())
+  {
+    const TopoDS_Edge& anE = TopoDS::Edge(anExp.Current());
+
+    if (BRep_Tool::Degenerated(anE))
+    {
+      continue;
+    }
+
+    TopLoc_Location L;
+    Standard_Real First, Last;
+    Handle(Geom_Curve) C = BRep_Tool::Curve(anE, L, First, Last);
+    gp_Trsf Tr = L.Transformation();
+    C = Handle(Geom_Curve)::DownCast(C->Copy());
+    C = new Geom_TrimmedCurve(C, First, Last);
+    C->Transform(Tr);
+
+    Handle(GeomAdaptor_HCurve) HC = new GeomAdaptor_HCurve();
+    HC->ChangeCurve().Load(C, First, Last);
+    //Checking coinsidence axe of revolution and basis curve
+    //This code is taken directly from GeomAdaptor_SurfaceOfRevolution
+    Standard_Integer Ratio = 1;
+    Standard_Real Dist;
+    gp_Pnt PP;
+    do {
+      PP = HC->Value(First + (Last - First) / Ratio);
+      Dist = gp_Lin(theA).Distance(PP);
+      Ratio++;
+    } while (Dist < Precision::Confusion() && Ratio < 100);
+    //
+    if (Ratio >= 100) // edge coinsides with axes
+    {
+      IsValid = Standard_True; //Such edges are allowed by revol algo and treated
+                               //by special way, so they must be concidered as valid
+    }
+    else
+    {
+      IsValid = !IsIntersect(HC, theA);
+    }
+    if (!IsValid)
+    {
+      break;
+    }
+  }
+  //
+  return IsValid;
 }
 
 
@@ -351,4 +477,3 @@ const TopTools_ListOfShape& BRepPrimAPI_MakeRevol::Degenerated () const
 {
   return myDegenerated;
 }
-
