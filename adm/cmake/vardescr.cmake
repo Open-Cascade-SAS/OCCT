@@ -28,6 +28,11 @@ Applies only for Debug configuration.")
 set (BUILD_SHARED_LIBRARY_NAME_POSTFIX_DESCR
 "Append the postfix to names of output libraries")
 
+set (BUILD_RELEASE_DISABLE_EXCEPTIONS_DESCR
+"Disables exceptions like Standard_OutOfRange in Release builds.
+Defines No_Exception macros for Release builds when enabled (default).
+These exceptions are always enabled in Debug builds, but disable in Release for better performance")
+
 set (BUILD_ENABLE_FPE_SIGNAL_HANDLER_DESCR
 "Enable/Disable the floating point exceptions (FPE) during DRAW execution only.
 Corresponding environment variable (CSF_FPE) can be changed manually

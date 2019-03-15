@@ -86,6 +86,11 @@ if (BUILD_WITH_DEBUG)
   set_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS $<$<CONFIG:DEBUG>:OCCT_DEBUG>)
 endif()
 
+# option disabling OCCT exceptions in Release builds (No_Exception)
+if (NOT DEFINED BUILD_RELEASE_DISABLE_EXCEPTIONS)
+  set (BUILD_RELEASE_DISABLE_EXCEPTIONS ON CACHE BOOL "${BUILD_RELEASE_DISABLE_EXCEPTIONS_DESCR}")
+endif()
+
 # option to enable or disable use of precompiled headers
 if (NOT DEFINED BUILD_USE_PCH)
   set (BUILD_USE_PCH OFF CACHE BOOL "${BUILD_USE_PCH_DESCR}")
