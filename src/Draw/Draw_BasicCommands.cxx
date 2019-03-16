@@ -480,15 +480,31 @@ static unsigned int __stdcall CpuFunc (void * /*param*/)
     
     if (CPU_LIMIT > 0 && (aCurrent - CPU_CURRENT) >= CPU_LIMIT)
     {
-      cout << "Process killed by CPU limit (" << CPU_LIMIT << " sec)" << endl;
       aTimer.Stop();
-      ExitProcess (2);
+      if (IsDebuggerPresent())
+      {
+        std::cout << "ERROR: CPU limit (" << CPU_LIMIT << " sec) has been reached but ignored because of attached Debugger" << std::endl;
+        return 0;
+      }
+      else
+      {
+        std::cout << "ERROR: Process killed by CPU limit (" << CPU_LIMIT << " sec)" << std::endl;
+        ExitProcess (2);
+      }
     }
     if (CPU_LIMIT > 0 && anElapCurrent >= CPU_LIMIT)
     {
-      cout << "Process killed by elapsed limit (" << CPU_LIMIT << " sec)" << endl;
       aTimer.Stop();
-      ExitProcess (2);
+      if (IsDebuggerPresent())
+      {
+        std::cout << "ERROR: Elapsed limit (" << CPU_LIMIT << " sec) has been reached but ignored because of attached Debugger" << std::endl;
+        return 0;
+      }
+      else
+      {
+        std::cout << "ERROR: Process killed by elapsed limit (" << CPU_LIMIT << " sec)" << std::endl;
+        ExitProcess (2);
+      }
     }
   }
 }
