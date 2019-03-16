@@ -305,9 +305,11 @@ const OpenGl_Aspects* OpenGl_Workspace::ApplyAspects()
     myGlContext->SetShadingMaterial (myAspectsSet, myHighlightStyle);
   }
 
-  if (myAspectsSet->Aspect()->ToMapTexture())
+  const Handle(OpenGl_TextureSet)& aTextureSet = myAspectsSet->TextureSet (myGlContext, ToHighlight());
+  if (!aTextureSet.IsNull()
+   || myAspectsSet->Aspect()->ToMapTexture())
   {
-    myGlContext->BindTextures (myAspectsSet->TextureSet (myGlContext));
+    myGlContext->BindTextures (aTextureSet);
   }
   else
   {

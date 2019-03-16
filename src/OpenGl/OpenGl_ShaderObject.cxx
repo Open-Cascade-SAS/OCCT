@@ -49,6 +49,21 @@ static TCollection_AsciiString putLineNumbers (const TCollection_AsciiString& th
   return aResultSource;
 }
 
+//! Return GLSL shader stage title.
+static TCollection_AsciiString getShaderTypeString (GLenum theType)
+{
+  switch (theType)
+  {
+    case GL_VERTEX_SHADER:          return "Vertex Shader";
+    case GL_FRAGMENT_SHADER:        return "Fragment Shader";
+    case GL_GEOMETRY_SHADER:        return "Geometry Shader";
+    case GL_TESS_CONTROL_SHADER:    return "Tessellation Control Shader";
+    case GL_TESS_EVALUATION_SHADER: return "Tessellation Evaluation Shader";
+    case GL_COMPUTE_SHADER:         return "Compute Shader";
+  }
+  return "Shader";
+}
+
 // =======================================================================
 // function : CreateFromSource
 // purpose  :
@@ -211,6 +226,7 @@ OpenGl_ShaderObject::~OpenGl_ShaderObject()
 // purpose  :
 // =======================================================================
 Standard_Boolean OpenGl_ShaderObject::LoadAndCompile (const Handle(OpenGl_Context)& theCtx,
+                                                      const TCollection_AsciiString& theId,
                                                       const TCollection_AsciiString& theSource,
                                                       bool theIsVerbose,
                                                       bool theToPrintSource)
@@ -227,7 +243,8 @@ Standard_Boolean OpenGl_ShaderObject::LoadAndCompile (const Handle(OpenGl_Contex
     {
       theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH, theSource);
     }
-    theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH, "Error! Failed to set shader source");
+    theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
+                         TCollection_AsciiString ("Error! Failed to set ") + getShaderTypeString (myType) + " [" + theId + "] source");
     return false;
   }
 
@@ -244,7 +261,7 @@ Standard_Boolean OpenGl_ShaderObject::LoadAndCompile (const Handle(OpenGl_Contex
       aLog = "Compilation log is empty.";
     }
     theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
-                         TCollection_AsciiString ("Failed to compile shader object. Compilation log:\n") + aLog);
+                         TCollection_AsciiString ("Failed to compile ") + getShaderTypeString (myType) + " [" + theId + "]. Compilation log:\n" + aLog);
     return false;
   }
   else if (theCtx->caps->glslWarnings)
@@ -255,10 +272,22 @@ Standard_Boolean OpenGl_ShaderObject::LoadAndCompile (const Handle(OpenGl_Contex
      && !aLog.IsEqual ("No errors.\n"))
     {
       theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_LOW,
-                           TCollection_AsciiString ("Shader compilation log:\n") + aLog);
+                           getShaderTypeString (myType) + " [" + theId + "] compilation log:\n" + aLog);
     }
   }
   return true;
+}
+
+// =======================================================================
+// function : DumpSourceCode
+// purpose  :
+// =======================================================================
+void OpenGl_ShaderObject::DumpSourceCode (const Handle(OpenGl_Context)& theCtx,
+                                          const TCollection_AsciiString& theId,
+                                          const TCollection_AsciiString& theSource) const
+{
+  theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_OTHER, 0, GL_DEBUG_SEVERITY_MEDIUM,
+                       getShaderTypeString (myType) + " [" + theId + "] source code:\n"  + theSource);
 }
 
 // =======================================================================
@@ -467,7 +496,7 @@ Standard_Boolean OpenGl_ShaderObject::updateDebugDump (const Handle(OpenGl_Conte
         TCollection_AsciiString aNewSource;
         if (restoreShaderSource (aNewSource, aFileName))
         {
-          LoadAndCompile (theCtx, aNewSource);
+          LoadAndCompile (theCtx, theProgramId, aNewSource);
           return Standard_True;
         }
       }

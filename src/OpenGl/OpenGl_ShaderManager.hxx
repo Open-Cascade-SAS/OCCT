@@ -141,22 +141,11 @@ public:
   }
 
   //! Bind program for point rendering
-  Standard_Boolean BindMarkerProgram (const Handle(OpenGl_TextureSet)&    theTextures,
-                                      const Graphic3d_TypeOfShadingModel  theShadingModel,
-                                      const Graphic3d_AlphaMode           theAlphaMode,
-                                      const Standard_Boolean              theHasVertColor,
-                                      const Handle(OpenGl_ShaderProgram)& theCustomProgram)
-  {
-    if (!theCustomProgram.IsNull()
-     || myContext->caps->ffpEnable)
-    {
-      return bindProgramWithState (theCustomProgram);
-    }
-
-    const Standard_Integer        aBits    = getProgramBits (theTextures, theAlphaMode, Aspect_IS_SOLID, theHasVertColor, false, false) | OpenGl_PO_Point;
-    Handle(OpenGl_ShaderProgram)& aProgram = getStdProgram (theShadingModel, aBits);
-    return bindProgramWithState (aProgram);
-  }
+  Standard_EXPORT Standard_Boolean BindMarkerProgram (const Handle(OpenGl_TextureSet)& theTextures,
+                                                      Graphic3d_TypeOfShadingModel theShadingModel,
+                                                      Graphic3d_AlphaMode theAlphaMode,
+                                                      Standard_Boolean theHasVertColor,
+                                                      const Handle(OpenGl_ShaderProgram)& theCustomProgram);
 
   //! Bind program for rendering alpha-textured font.
   Standard_Boolean BindFontProgram (const Handle(OpenGl_ShaderProgram)& theCustomProgram)
@@ -510,10 +499,9 @@ protected:
       aBits |= OpenGl_PO_TextureEnv;
     }
     else if (!theTextures.IsNull()
-          && !theTextures->IsEmpty()
-          && !theTextures->First().IsNull())
+           && theTextures->HasNonPointSprite())
     {
-      aBits |= theTextures->First()->IsAlpha() ? OpenGl_PO_TextureA : OpenGl_PO_TextureRGB;
+      aBits |= OpenGl_PO_TextureRGB;
     }
     if (theHasVertColor
      && theInteriorStyle != Aspect_IS_HIDDENLINE)
@@ -554,10 +542,11 @@ protected:
   }
 
   //! Prepare standard GLSL program for accessing point sprite alpha.
-  Standard_EXPORT TCollection_AsciiString pointSpriteAlphaSrc (const Standard_Integer theBits);
+  Standard_EXPORT TCollection_AsciiString pointSpriteAlphaSrc (Standard_Integer theBits);
 
   //! Prepare standard GLSL program for computing point sprite shading.
-  Standard_EXPORT TCollection_AsciiString pointSpriteShadingSrc (const TCollection_AsciiString theBaseColorSrc, const Standard_Integer theBits);
+  Standard_EXPORT TCollection_AsciiString pointSpriteShadingSrc (const TCollection_AsciiString& theBaseColorSrc,
+                                                                 Standard_Integer theBits);
 
   //! Prepare standard GLSL program for textured font.
   Standard_EXPORT Standard_Boolean prepareStdProgramFont();

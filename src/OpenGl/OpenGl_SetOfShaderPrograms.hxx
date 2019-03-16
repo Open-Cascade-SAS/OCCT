@@ -23,10 +23,11 @@
 //! Standard GLSL program combination bits.
 enum OpenGl_ProgramOptions
 {
-  OpenGl_PO_Point           = 0x0001, //!< point marker
-  OpenGl_PO_VertColor       = 0x0002, //!< per-vertex color
-  OpenGl_PO_TextureRGB      = 0x0004, //!< handle RGB   texturing
-  OpenGl_PO_TextureA        = 0x0008, //!< handle Alpha texturing (point sprites only)
+  OpenGl_PO_VertColor       = 0x0001, //!< per-vertex color
+  OpenGl_PO_TextureRGB      = 0x0002, //!< handle RGB   texturing
+  OpenGl_PO_PointSimple     = 0x0004, //!< point marker without sprite
+  OpenGl_PO_PointSprite     = 0x0008, //!< point sprite with RGB image
+  OpenGl_PO_PointSpriteA    = OpenGl_PO_PointSimple|OpenGl_PO_PointSprite, //!< point sprite with Alpha image
   OpenGl_PO_TextureEnv      = 0x0010, //!< handle environment map
   OpenGl_PO_StippleLine     = 0x0020, //!< stipple line
   OpenGl_PO_ClipPlanes1     = 0x0040, //!< handle 1 clipping plane
@@ -38,7 +39,8 @@ enum OpenGl_ProgramOptions
   OpenGl_PO_WriteOit        = 0x0800, //!< write coverage buffer for Blended Order-Independent Transparency
   //
   OpenGl_PO_NB              = 0x1000, //!< overall number of combinations
-  OpenGl_PO_HasTextures     = OpenGl_PO_TextureRGB|OpenGl_PO_TextureA,
+  OpenGl_PO_IsPoint         = OpenGl_PO_PointSimple|OpenGl_PO_PointSprite|OpenGl_PO_PointSpriteA,
+  OpenGl_PO_HasTextures     = OpenGl_PO_TextureRGB,
   OpenGl_PO_NeedsGeomShader = OpenGl_PO_MeshEdges,
 };
 

@@ -45,9 +45,12 @@ public:
   void SetNoLighting() { myShadingModel = Graphic3d_TOSM_UNLIT; }
 
   //! Returns textures map.
-  const Handle(OpenGl_TextureSet)& TextureSet (const Handle(OpenGl_Context)& theCtx) const
+  const Handle(OpenGl_TextureSet)& TextureSet (const Handle(OpenGl_Context)& theCtx,
+                                               bool theToHighlight = false) const
   {
-    return myResTextureSet.TextureSet (theCtx, myAspect->TextureSet());
+    const Handle(OpenGl_PointSprite)& aSprite  = myResSprite.Sprite (theCtx, myAspect, false);
+    const Handle(OpenGl_PointSprite)& aSpriteA = myResSprite.Sprite (theCtx, myAspect, true);
+    return myResTextureSet.TextureSet (theCtx, myAspect, aSprite, aSpriteA, theToHighlight);
   }
 
   //! Init and return OpenGl shader program resource.
@@ -60,18 +63,24 @@ public:
   //! @return marker size
   Standard_ShortReal MarkerSize() const { return myResSprite.MarkerSize(); }
 
-  //! Init and return OpenGl point sprite resource.
-  //! @return point sprite texture.
-  const Handle(OpenGl_TextureSet)& SpriteRes (const Handle(OpenGl_Context)& theCtx) const
+  //! Return TRUE if OpenGl point sprite resource defines texture.
+  bool HasPointSprite (const Handle(OpenGl_Context)& theCtx) const
   {
-    return myResSprite.Sprite (theCtx, myAspect);
+    return myResSprite.HasPointSprite (theCtx, myAspect);
   }
 
-  //! Init and return OpenGl highlight point sprite resource.
-  //! @return point sprite texture for highlight.
-  const Handle(OpenGl_TextureSet)& SpriteHighlightRes (const Handle(OpenGl_Context)& theCtx) const
+  //! Return TRUE if OpenGl point sprite resource defined by obsolete Display List (bitmap).
+  bool IsDisplayListSprite (const Handle(OpenGl_Context)& theCtx) const
   {
-    return myResSprite.SpriteA (theCtx, myAspect);
+    return myResSprite.IsDisplayListSprite (theCtx, myAspect);
+  }
+
+  //! Init and return OpenGl point sprite resource.
+  //! @return point sprite texture.
+  const Handle(OpenGl_PointSprite)& SpriteRes (const Handle(OpenGl_Context)& theCtx,
+                                               bool theIsAlphaSprite) const
+  {
+    return myResSprite.Sprite (theCtx, myAspect, theIsAlphaSprite);
   }
 
   Standard_EXPORT virtual void Render  (const Handle(OpenGl_Workspace)& theWorkspace) const Standard_OVERRIDE;

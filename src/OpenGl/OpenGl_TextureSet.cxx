@@ -28,3 +28,32 @@ bool OpenGl_TextureSet::IsModulate() const
       || myTextures.First().IsNull()
       || myTextures.First()->Sampler()->Parameters()->IsModulate();
 }
+
+// =======================================================================
+// function : HasNonPointSprite
+// purpose  :
+// =======================================================================
+bool OpenGl_TextureSet::HasNonPointSprite() const
+{
+  if (myTextures.IsEmpty())
+  {
+    return false;
+  }
+  else if (myTextures.Size() == 1)
+  {
+    return !myTextures.First().IsNull()
+        && !myTextures.First()->IsPointSprite();
+  }
+  return !myTextures.First().IsNull();
+}
+
+// =======================================================================
+// function : HasPointSprite
+// purpose  :
+// =======================================================================
+bool OpenGl_TextureSet::HasPointSprite() const
+{
+  return !myTextures.IsEmpty()
+      && !myTextures.Last().IsNull()
+      &&  myTextures.Last()->IsPointSprite();
+}

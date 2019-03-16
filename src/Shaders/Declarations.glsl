@@ -139,9 +139,11 @@ vec4  occBackMaterial_Specular(void);      //!< Specular reflection
 float occBackMaterial_Shininess(void);     //!< Specular exponent
 float occBackMaterial_Transparency(void);  //!< Transparency coefficient
 
+#ifdef THE_HAS_DEFAULT_SAMPLER
 #define occActiveSampler    occSampler0                //!< alias for backward compatibility
 #define occSamplerBaseColor occSampler0                //!< alias to a base color texture
 uniform               sampler2D occSampler0;           //!< current active sampler;
+#endif
                                                        //!  occSampler1, occSampler2,... should be defined in GLSL program body for multitexturing
 uniform               vec4      occColor;              //!< color value (in case of disabled lighting)
 uniform THE_PREC_ENUM int       occDistinguishingMode; //!< Are front and back faces distinguished?

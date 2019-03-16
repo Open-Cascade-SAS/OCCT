@@ -86,9 +86,13 @@ void OpenGl_Aspects::SetAspect (const Handle(Graphic3d_Aspects)& theAspect)
                  : Graphic3d_TOSM_UNLIT;
 
   // invalidate resources
-  myResTextureSet.UpdateRediness (myAspect->TextureSet());
+  myResTextureSet.UpdateRediness (myAspect);
   myResSprite.UpdateRediness (myAspect);
   myResProgram.UpdateRediness (myAspect);
+  if (!myResSprite.IsReady())
+  {
+    myResTextureSet.Invalidate();
+  }
 }
 
 // =======================================================================

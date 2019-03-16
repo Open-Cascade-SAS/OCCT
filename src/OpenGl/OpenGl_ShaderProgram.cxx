@@ -402,6 +402,11 @@ Standard_Boolean OpenGl_ShaderProgram::Initialize (const Handle(OpenGl_Context)&
     aHeaderConstants += TCollection_AsciiString("#define THE_MAX_LIGHTS ") + myNbLightsMax + "\n";
     aHeaderConstants += TCollection_AsciiString("#define THE_MAX_CLIP_PLANES ") + myNbClipPlanesMax + "\n";
     aHeaderConstants += TCollection_AsciiString("#define THE_NB_FRAG_OUTPUTS ") + myNbFragOutputs + "\n";
+    if (!myProxy.IsNull()
+      && myProxy->HasDefaultSampler())
+    {
+      aHeaderConstants += "#define THE_HAS_DEFAULT_SAMPLER\n";
+    }
 
     const TCollection_AsciiString aSource = aHeaderVer                     // #version   - header defining GLSL version, should be first
                                           + (!aHeaderVer.IsEmpty() ? "\n" : "")
@@ -412,7 +417,7 @@ Standard_Boolean OpenGl_ShaderProgram::Initialize (const Handle(OpenGl_Context)&
                                           + Shaders_Declarations_glsl      // common declarations (global constants and Vertex Shader inputs)
                                           + Shaders_DeclarationsImpl_glsl
                                           + anIter.Value()->Source();      // the source code itself (defining main() function)
-    if (!aShader->LoadAndCompile (theCtx, aSource))
+    if (!aShader->LoadAndCompile (theCtx, myResourceId, aSource))
     {
       aShader->Release (theCtx.operator->());
       return Standard_False;
@@ -420,16 +425,6 @@ Standard_Boolean OpenGl_ShaderProgram::Initialize (const Handle(OpenGl_Context)&
 
     if (theCtx->caps->glslDumpLevel)
     {
-      TCollection_AsciiString aShaderTypeMsg;
-      switch (anIter.Value()->Type())
-      {
-        case Graphic3d_TOS_COMPUTE:         { aShaderTypeMsg = "Compute shader source code:\n";                break; }
-        case Graphic3d_TOS_VERTEX:          { aShaderTypeMsg = "Vertex shader source code:\n";                 break; }
-        case Graphic3d_TOS_TESS_CONTROL:    { aShaderTypeMsg = "Tesselation control shader source code:\n";    break; }
-        case Graphic3d_TOS_TESS_EVALUATION: { aShaderTypeMsg = "Tesselation evaluation shader source code:\n"; break; }
-        case Graphic3d_TOS_GEOMETRY:        { aShaderTypeMsg = "Geometry shader source code:\n";               break; }
-        case Graphic3d_TOS_FRAGMENT:        { aShaderTypeMsg = "Fragment shader source code:\n";               break; }
-      }
       TCollection_AsciiString anOutputSource = aSource;
       if (theCtx->caps->glslDumpLevel == OpenGl_ShaderProgramDumpLevel_Short)
       {
@@ -441,8 +436,7 @@ Standard_Boolean OpenGl_ShaderProgram::Initialize (const Handle(OpenGl_Context)&
                        + aHeaderConstants
                        + anIter.Value()->Source();
       }
-      theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_OTHER, 0, GL_DEBUG_SEVERITY_MEDIUM,
-                           TCollection_ExtendedString (aShaderTypeMsg + anOutputSource));
+      aShader->DumpSourceCode (theCtx, myResourceId, anOutputSource);
     }
 
     if (!AttachShader (theCtx, aShader))
@@ -483,6 +477,14 @@ Standard_Boolean OpenGl_ShaderProgram::Initialize (const Handle(OpenGl_Context)&
   if (const OpenGl_ShaderUniformLocation aLocSampler = GetUniformLocation (theCtx, "occActiveSampler"))
   {
     SetUniform (theCtx, aLocSampler, GLint(Graphic3d_TextureUnit_0));
+  }
+  if (const OpenGl_ShaderUniformLocation aLocSampler = GetUniformLocation (theCtx, "occSamplerBaseColor"))
+  {
+    SetUniform (theCtx, aLocSampler, GLint(Graphic3d_TextureUnit_BaseColor));
+  }
+  if (const OpenGl_ShaderUniformLocation aLocSampler = GetUniformLocation (theCtx, "occSamplerPointSprite"))
+  {
+    SetUniform (theCtx, aLocSampler, GLint(theCtx->SpriteTextureUnit()));
   }
 
   const TCollection_AsciiString aSamplerNamePrefix ("occSampler");
@@ -616,7 +618,7 @@ Standard_Boolean OpenGl_ShaderProgram::Link (const Handle(OpenGl_Context)& theCt
       aLog = "Linker log is empty.";
     }
     theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
-                         TCollection_AsciiString ("Failed to link program object! Linker log:\n") + aLog);
+                         TCollection_AsciiString ("Failed to link program object [") + myResourceId + "]! Linker log:\n" + aLog);
     return false;
   }
   else if (theCtx->caps->glslWarnings)
@@ -627,7 +629,7 @@ Standard_Boolean OpenGl_ShaderProgram::Link (const Handle(OpenGl_Context)& theCt
      && !aLog.IsEqual ("No errors.\n"))
     {
       theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_LOW,
-                           TCollection_AsciiString ("GLSL linker log:\n") + aLog);
+                           TCollection_AsciiString ("GLSL linker log [") + myResourceId +"]:\n" + aLog);
     }
   }
   return true;

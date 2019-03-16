@@ -88,13 +88,20 @@ public:
 
   //! Wrapper for compiling shader object with verbose printing on error.
   //! @param theCtx bound OpenGL context
+  //! @param theId  GLSL program id to define file name
   //! @param theSource source code to load
   //! @param theIsVerbose flag to print log on error
   //! @param theToPrintSource flag to print source code on error
   Standard_EXPORT Standard_Boolean LoadAndCompile (const Handle(OpenGl_Context)& theCtx,
+                                                   const TCollection_AsciiString& theId,
                                                    const TCollection_AsciiString& theSource,
                                                    bool theIsVerbose = true,
                                                    bool theToPrintSource = true);
+
+  //! Print source code of this shader object to messenger.
+  Standard_EXPORT void DumpSourceCode (const Handle(OpenGl_Context)& theCtx,
+                                       const TCollection_AsciiString& theId,
+                                       const TCollection_AsciiString& theSource) const;
 
   //! Fetches information log of the last compile operation.
   Standard_EXPORT Standard_Boolean FetchInfoLog (const Handle(OpenGl_Context)& theCtx,

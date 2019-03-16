@@ -453,6 +453,9 @@ public:
   //! Returns estimated GPU memory usage for holding data without considering overheads and allocation alignment rules.
   Standard_EXPORT virtual Standard_Size EstimatedDataSize() const Standard_OVERRIDE;
 
+  //! Returns TRUE for point sprite texture.
+  virtual bool IsPointSprite() const { return false; }
+
 protected:
 
   //! Apply default sampler parameters after texture creation.

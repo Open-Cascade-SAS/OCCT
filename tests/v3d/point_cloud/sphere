@@ -22,6 +22,16 @@ vdump $::imagedir/${::casename}_green.png
 vpointcloud p s -randcolors
 vdump $::imagedir/${::casename}_rand.png
 
+# texture mapping
+vpointcloud p s -normals -uv
+vtexture p 0
+vaspects p -shadingModel GOURAUD
+vdump $::imagedir/${::casename}_tex3.png
+vaspects p -shadingModel PHONG
+vdump $::imagedir/${::casename}_tex2.png
+vaspects p -shadingModel UNLIT
+vdump $::imagedir/${::casename}_tex1.png
+
 # mode with normals
 vpointcloud p s -normals
 vsetmaterial p COPPER

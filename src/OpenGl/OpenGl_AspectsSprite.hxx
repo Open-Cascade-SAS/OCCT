@@ -18,7 +18,7 @@
 #include <Graphic3d_TextureMap.hxx>
 
 class OpenGl_Context;
-class OpenGl_TextureSet;
+class OpenGl_PointSprite;
 
 //! OpenGl resources for custom point sprites.
 class OpenGl_AspectsSprite
@@ -31,30 +31,25 @@ public:
 
   Standard_ShortReal MarkerSize() const { return myMarkerSize; }
 
-  //! Return RGB sprite.
-  const Handle(OpenGl_TextureSet)& Sprite (const Handle(OpenGl_Context)& theCtx,
-                                           const Handle(Graphic3d_Aspects)& theAspecta)
-  {
-    if (!myIsSpriteReady)
-    {
-      build (theCtx, theAspecta->MarkerImage(), theAspecta->MarkerType(), theAspecta->MarkerScale(), theAspecta->ColorRGBA(), myMarkerSize);
-      myIsSpriteReady = true;
-    }
-    return mySprite;
-  }
-  
-  //! Return Alpha sprite.
-  const Handle(OpenGl_TextureSet)& SpriteA (const Handle(OpenGl_Context)& theCtx,
-                                            const Handle(Graphic3d_Aspects)& theAspecta)
-  {
-    if (!myIsSpriteReady)
-    {
-      build (theCtx, theAspecta->MarkerImage(), theAspecta->MarkerType(), theAspecta->MarkerScale(), theAspecta->ColorRGBA(), myMarkerSize);
-      myIsSpriteReady = true;
-    }
-    return mySpriteA;
-  }
-  
+  //! Return TRUE if resource is up-to-date.
+  bool IsReady() const { return myIsSpriteReady; }
+
+  //! Invalidate resource state.
+  void Invalidate() { myIsSpriteReady = false; }
+
+  //! Return TRUE if OpenGl point sprite resource defines texture.
+  Standard_EXPORT bool HasPointSprite (const Handle(OpenGl_Context)& theCtx,
+                                       const Handle(Graphic3d_Aspects)& theAspects);
+
+  //! Return TRUE if OpenGl point sprite resource defined by obsolete Display List (bitmap).
+  Standard_EXPORT bool IsDisplayListSprite (const Handle(OpenGl_Context)& theCtx,
+                                            const Handle(Graphic3d_Aspects)& theAspects);
+
+  //! Return sprite.
+  Standard_EXPORT const Handle(OpenGl_PointSprite)& Sprite (const Handle(OpenGl_Context)& theCtx,
+                                                            const Handle(Graphic3d_Aspects)& theAspects,
+                                                            bool theIsAlphaSprite);
+
   //! Update texture resource up-to-date state.
   Standard_EXPORT void UpdateRediness (const Handle(Graphic3d_Aspects)& theAspect);
 
@@ -81,8 +76,8 @@ private:
 
 private:
 
-  Handle(OpenGl_TextureSet) mySprite;
-  Handle(OpenGl_TextureSet) mySpriteA;
+  Handle(OpenGl_PointSprite) mySprite;
+  Handle(OpenGl_PointSprite) mySpriteA;
   Standard_ShortReal myMarkerSize;
   Standard_Boolean myIsSpriteReady;
 

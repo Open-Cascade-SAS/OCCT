@@ -473,6 +473,9 @@ public:
   //! @return value for GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS
   Standard_Integer MaxCombinedTextureUnits() const { return myMaxTexCombined; }
 
+  //! @return texture unit to be used for sprites
+  Graphic3d_TextureUnit SpriteTextureUnit() const { return mySpriteTexUnit; }
+
   //! @return value for GL_MAX_SAMPLES
   Standard_Integer MaxMsaaSamples() const { return myMaxMsaaSamples; }
 
@@ -946,6 +949,7 @@ private: // context info
   Standard_Boolean myIsStereoBuffers;      //!< context supports stereo buffering
   Standard_Boolean myIsGlNormalizeEnabled; //!< GL_NORMALIZE flag
                                            //!< Used to tell OpenGl that normals should be normalized
+  Graphic3d_TextureUnit mySpriteTexUnit;   //!< texture unit for point sprite texture
 
   Standard_Boolean myHasRayTracing;                 //! indicates whether ray tracing mode is supported
   Standard_Boolean myHasRayTracingTextures;         //! indicates whether textures in ray tracing mode are supported

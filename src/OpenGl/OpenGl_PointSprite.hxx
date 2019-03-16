@@ -24,7 +24,7 @@ DEFINE_STANDARD_HANDLE(OpenGl_PointSprite, OpenGl_Texture)
 //! On ancient hardware sprites will be drawn using bitmaps.
 class OpenGl_PointSprite : public OpenGl_Texture
 {
-
+  DEFINE_STANDARD_RTTIEXT(OpenGl_PointSprite, OpenGl_Texture)
 public:
 
   //! Create uninitialized resource.
@@ -35,6 +35,9 @@ public:
 
   //! Destroy object - will release GPU memory if any.
   Standard_EXPORT virtual void Release (OpenGl_Context* theCtx) Standard_OVERRIDE;
+
+  //! Returns TRUE for point sprite texture.
+  virtual bool IsPointSprite() const Standard_OVERRIDE { return true; }
 
   //! @return true if this is display list bitmap
   inline Standard_Boolean IsDisplayList() const
@@ -53,10 +56,6 @@ public:
 protected:
 
   GLuint myBitmapList; //!< if of display list to draw sprite using glBitmap (for backward compatibility)
-
-public:
-
-  DEFINE_STANDARD_RTTIEXT(OpenGl_PointSprite,OpenGl_Texture) // Type definition
 
 };
 

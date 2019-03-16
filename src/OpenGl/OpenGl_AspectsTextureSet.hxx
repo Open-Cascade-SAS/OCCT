@@ -14,11 +14,13 @@
 #ifndef _OpenGl_AspectsTextureSet_Header
 #define _OpenGl_AspectsTextureSet_Header
 
+#include <Graphic3d_Aspects.hxx>
 #include <Graphic3d_TextureMap.hxx>
 #include <Graphic3d_TextureSet.hxx>
 
 class OpenGl_Context;
 class OpenGl_TextureSet;
+class OpenGl_PointSprite;
 
 //! OpenGl resources for custom textures.
 class OpenGl_AspectsTextureSet
@@ -29,20 +31,31 @@ public:
   //! Empty constructor.
   OpenGl_AspectsTextureSet() : myIsTextureReady (Standard_False) {}
 
+  //! Return TRUE if resource is up-to-date.
+  bool IsReady() const { return myIsTextureReady; }
+
+  //! Invalidate resource state.
+  void Invalidate() { myIsTextureReady = false; }
+
   //! Return textures array.
   const Handle(OpenGl_TextureSet)& TextureSet (const Handle(OpenGl_Context)& theCtx,
-                                               const Handle(Graphic3d_TextureSet)& theTextures)
+                                               const Handle(Graphic3d_Aspects)& theAspect,
+                                               const Handle(OpenGl_PointSprite)& theSprite,
+                                               const Handle(OpenGl_PointSprite)& theSpriteA,
+                                               bool theToHighlight)
   {
     if (!myIsTextureReady)
     {
-      build (theCtx, theTextures);
+      build (theCtx, theAspect, theSprite, theSpriteA);
       myIsTextureReady = true;
     }
-    return myTextures;
+    return theToHighlight && !myTextures[1].IsNull()
+         ? myTextures[1]
+         : myTextures[0];
   }
 
   //! Update texture resource up-to-date state.
-  Standard_EXPORT void UpdateRediness (const Handle(Graphic3d_TextureSet)& theTextures);
+  Standard_EXPORT void UpdateRediness (const Handle(Graphic3d_Aspects)& theAspect);
 
   //! Release texture resource.
   Standard_EXPORT void Release (OpenGl_Context* theCtx);
@@ -51,11 +64,13 @@ private:
 
   //! Build texture resource.
   Standard_EXPORT void build (const Handle(OpenGl_Context)& theCtx,
-                              const Handle(Graphic3d_TextureSet)& theTextures);
+                              const Handle(Graphic3d_Aspects)& theAspect,
+                              const Handle(OpenGl_PointSprite)& theSprite,
+                              const Handle(OpenGl_PointSprite)& theSpriteA);
 
 private:
 
-  Handle(OpenGl_TextureSet) myTextures;
+  Handle(OpenGl_TextureSet) myTextures[2];
   Standard_Boolean          myIsTextureReady;
 
 };

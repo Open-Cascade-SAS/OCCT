@@ -592,16 +592,12 @@ void OpenGl_PrimitiveArray::drawEdges (const Handle(OpenGl_Workspace)& theWorksp
 void OpenGl_PrimitiveArray::drawMarkers (const Handle(OpenGl_Workspace)& theWorkspace) const
 {
   const OpenGl_Aspects* anAspectMarker = theWorkspace->Aspects();
-  const Handle(OpenGl_Context)&     aCtx    = theWorkspace->GetGlContext();
+  const Handle(OpenGl_Context)&   aCtx = theWorkspace->GetGlContext();
   const GLenum aDrawMode = !aCtx->ActiveProgram().IsNull()
                          && aCtx->ActiveProgram()->HasTessellationStage()
                          ? GL_PATCHES
                          : myDrawMode;
-
-  const Handle(OpenGl_TextureSet)& aSpriteNormRes = anAspectMarker->SpriteRes (aCtx);
-  const OpenGl_PointSprite* aSpriteNorm = !aSpriteNormRes.IsNull() ? dynamic_cast<const OpenGl_PointSprite*> (aSpriteNormRes->First().get()) : NULL;
-  if (aSpriteNorm != NULL
-  && !aSpriteNorm->IsDisplayList())
+  if (anAspectMarker->HasPointSprite (aCtx))
   {
     // Textured markers will be drawn with the point sprites
     aCtx->SetPointSize (anAspectMarker->MarkerSize());
@@ -644,9 +640,14 @@ void OpenGl_PrimitiveArray::drawMarkers (const Handle(OpenGl_Workspace)& theWork
   }
 #if !defined(GL_ES_VERSION_2_0)
   // Textured markers will be drawn with the glBitmap
-  else if (anAspectMarker->Aspect()->MarkerType() != Aspect_TOM_POINT
-        && aSpriteNorm != NULL)
+  else if (anAspectMarker->Aspect()->MarkerType() != Aspect_TOM_POINT)
   {
+    const Handle(OpenGl_PointSprite)& aSpriteNorm = anAspectMarker->SpriteRes (aCtx, false);
+    if (aSpriteNorm.IsNull())
+    {
+      return;
+    }
+
     /**if (!isHilight && (myPArray->vcolours != NULL))
     {
       for (Standard_Integer anIter = 0; anIter < myAttribs->NbElements; anIter++)
@@ -771,7 +772,8 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
   const OpenGl_Aspects* anAspectFace = theWorkspace->ApplyAspects();
   const Handle(OpenGl_Context)& aCtx = theWorkspace->GetGlContext();
 
-  Handle(OpenGl_TextureSet) aTextureBack;
+  const bool toEnableEnvMap = !aCtx->ActiveTextures().IsNull()
+                            && aCtx->ActiveTextures() == theWorkspace->EnvironmentTexture();
   bool toDrawArray = true;
   int toDrawInteriorEdges = 0; // 0 - no edges, 1 - glsl edges, 2 - polygonMode
   if (myIsFillType)
@@ -818,23 +820,14 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
         return;
       }
     }
-
-    // Temporarily disable environment mapping
-    aTextureBack = aCtx->BindTextures (Handle(OpenGl_TextureSet)());
   }
 
   // create VBOs on first render call
   if (!myIsVboInit)
   {
     // compatibility - keep data to draw markers using display lists
-    Standard_Boolean toKeepData = Standard_False;
-    if (myDrawMode == GL_POINTS)
-    {
-      const Handle(OpenGl_TextureSet)& aSpriteNormRes = anAspectFace->SpriteRes (aCtx);
-      const OpenGl_PointSprite* aSpriteNorm = !aSpriteNormRes.IsNull() ? dynamic_cast<const OpenGl_PointSprite*> (aSpriteNormRes->First().get()) : NULL;
-      toKeepData = aSpriteNorm != NULL
-               &&  aSpriteNorm->IsDisplayList();
-    }
+    Standard_Boolean toKeepData = myDrawMode == GL_POINTS
+                               && anAspectFace->IsDisplayListSprite (aCtx);
   #if defined (GL_ES_VERSION_2_0)
     processIndices (aCtx);
   #endif
@@ -862,28 +855,16 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
       case GL_POINTS:
       {
         aShadingModel = aCtx->ShaderManager()->ChooseMarkerShadingModel (anAspectFace->ShadingModel(), hasVertNorm);
-        const Handle(OpenGl_TextureSet)& aSpriteNormRes = anAspectFace->SpriteRes (aCtx);
-        const OpenGl_PointSprite* aSpriteNorm = !aSpriteNormRes.IsNull() ? dynamic_cast<const OpenGl_PointSprite*> (aSpriteNormRes->First().get()) : NULL;
-        if (aSpriteNorm != NULL
-        && !aSpriteNorm->IsDisplayList())
-        {
-          const Handle(OpenGl_TextureSet)& aSprite = toHilight && anAspectFace->SpriteHighlightRes (aCtx)->First()->IsValid()
-                                                   ? anAspectFace->SpriteHighlightRes (aCtx)
-                                                   : aSpriteNormRes;
-          aCtx->BindTextures (aSprite);
-          aCtx->ShaderManager()->BindMarkerProgram (aSprite, aShadingModel, Graphic3d_AlphaMode_Opaque, hasVertColor, anAspectFace->ShaderProgramRes (aCtx));
-        }
-        else
-        {
-          aCtx->ShaderManager()->BindMarkerProgram (Handle(OpenGl_TextureSet)(), aShadingModel, Graphic3d_AlphaMode_Opaque, hasVertColor, anAspectFace->ShaderProgramRes (aCtx));
-        }
+        aCtx->ShaderManager()->BindMarkerProgram (aCtx->ActiveTextures(),
+                                                  aShadingModel, Graphic3d_AlphaMode_Opaque,
+                                                  hasVertColor, anAspectFace->ShaderProgramRes (aCtx));
         break;
       }
       case GL_LINES:
       case GL_LINE_STRIP:
       {
         aShadingModel = aCtx->ShaderManager()->ChooseLineShadingModel (anAspectFace->ShadingModel(), hasVertNorm);
-        aCtx->ShaderManager()->BindLineProgram (NULL,
+        aCtx->ShaderManager()->BindLineProgram (Handle(OpenGl_TextureSet)(),
                                                 anAspectFace->Aspect()->LineType(),
                                                 aShadingModel,
                                                 Graphic3d_AlphaMode_Opaque,
@@ -894,9 +875,7 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
       default:
       {
         aShadingModel = aCtx->ShaderManager()->ChooseFaceShadingModel (anAspectFace->ShadingModel(), hasVertNorm);
-        const Handle(OpenGl_TextureSet)& aTextures = aCtx->ActiveTextures();
-        const Standard_Boolean toEnableEnvMap = (!aTextures.IsNull() && (aTextures == theWorkspace->EnvironmentTexture()));
-        aCtx->ShaderManager()->BindFaceProgram (aTextures,
+        aCtx->ShaderManager()->BindFaceProgram (aCtx->ActiveTextures(),
                                                 aShadingModel,
                                                 aCtx->ShaderManager()->MaterialState().HasAlphaCutoff() ? Graphic3d_AlphaMode_Mask : Graphic3d_AlphaMode_Opaque,
                                                 toDrawInteriorEdges == 1 ? anAspectFace->Aspect()->InteriorStyle() : Aspect_IS_SOLID,
@@ -952,7 +931,6 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
       }
 
       drawArray (theWorkspace, aFaceColors, hasColorAttrib);
-      aCtx->BindTextures (aTextureBack);
       return;
     }
 

@@ -1450,21 +1450,21 @@ void OpenGl_AspectsSprite::Release (OpenGl_Context* theCtx)
 
   if (theCtx != NULL)
   {
-    if (mySprite->First()->ResourceId().IsEmpty())
+    if (mySprite->ResourceId().IsEmpty())
     {
-      theCtx->DelayedRelease (mySprite->ChangeFirst());
-      theCtx->DelayedRelease (mySpriteA->ChangeFirst());
+      theCtx->DelayedRelease (mySprite);
+      theCtx->DelayedRelease (mySpriteA);
     }
     else
     {
       {
-        const TCollection_AsciiString aSpriteKey = mySprite->First()->ResourceId();
+        const TCollection_AsciiString aSpriteKey = mySprite->ResourceId();
         mySprite.Nullify(); // we need nullify all handles before ReleaseResource() call
         theCtx->ReleaseResource (aSpriteKey,  Standard_True);
       }
       if (!mySpriteA.IsNull())
       {
-        const TCollection_AsciiString aSpriteKeyA = mySpriteA->First()->ResourceId();
+        const TCollection_AsciiString aSpriteKeyA = mySpriteA->ResourceId();
         mySpriteA.Nullify();
         theCtx->ReleaseResource (aSpriteKeyA, Standard_True);
       }
@@ -1472,6 +1472,36 @@ void OpenGl_AspectsSprite::Release (OpenGl_Context* theCtx)
   }
   mySprite.Nullify();
   mySpriteA.Nullify();
+}
+
+// =======================================================================
+// function : HasPointSprite
+// purpose  :
+// =======================================================================
+bool OpenGl_AspectsSprite::HasPointSprite (const Handle(OpenGl_Context)& theCtx,
+                                           const Handle(Graphic3d_Aspects)& theAspects)
+{
+  const Handle(OpenGl_PointSprite)& aSprite = Sprite (theCtx, theAspects, false);
+  return !aSprite.IsNull()
+      && !aSprite->IsDisplayList();
+}
+
+// =======================================================================
+// function : IsDisplayListSprite
+// purpose  :
+// =======================================================================
+bool OpenGl_AspectsSprite::IsDisplayListSprite (const Handle(OpenGl_Context)& theCtx,
+                                                const Handle(Graphic3d_Aspects)& theAspects)
+{
+#if !defined(GL_ES_VERSION_2_0)
+  const Handle(OpenGl_PointSprite)& aSprite = Sprite (theCtx, theAspects, false);
+  return !aSprite.IsNull()
+       && aSprite->IsDisplayList();
+#else
+  (void )theCtx;
+  (void )theAspects;
+  return false;
+#endif
 }
 
 // =======================================================================
@@ -1483,14 +1513,32 @@ void OpenGl_AspectsSprite::UpdateRediness (const Handle(Graphic3d_Aspects)& theA
   // update sprite resource bindings
   TCollection_AsciiString aSpriteKeyNew, aSpriteAKeyNew;
   spriteKeys (theAspect->MarkerImage(), theAspect->MarkerType(), theAspect->MarkerScale(), theAspect->ColorRGBA(), aSpriteKeyNew, aSpriteAKeyNew);
-  const TCollection_AsciiString& aSpriteKeyOld  = !mySprite.IsNull()  ? mySprite ->First()->ResourceId() : THE_EMPTY_KEY;
-  const TCollection_AsciiString& aSpriteAKeyOld = !mySpriteA.IsNull() ? mySpriteA->First()->ResourceId() : THE_EMPTY_KEY;
+  const TCollection_AsciiString& aSpriteKeyOld  = !mySprite.IsNull()  ? mySprite ->ResourceId() : THE_EMPTY_KEY;
+  const TCollection_AsciiString& aSpriteAKeyOld = !mySpriteA.IsNull() ? mySpriteA->ResourceId() : THE_EMPTY_KEY;
   if (aSpriteKeyNew.IsEmpty()  || aSpriteKeyOld  != aSpriteKeyNew
    || aSpriteAKeyNew.IsEmpty() || aSpriteAKeyOld != aSpriteAKeyNew)
   {
     myIsSpriteReady = Standard_False;
     myMarkerSize = theAspect->MarkerScale();
   }
+}
+
+// =======================================================================
+// function : Sprite
+// purpose  :
+// =======================================================================
+const Handle(OpenGl_PointSprite)& OpenGl_AspectsSprite::Sprite (const Handle(OpenGl_Context)& theCtx,
+                                                                const Handle(Graphic3d_Aspects)& theAspects,
+                                                                bool theIsAlphaSprite)
+{
+  if (!myIsSpriteReady)
+  {
+    build (theCtx, theAspects->MarkerImage(), theAspects->MarkerType(), theAspects->MarkerScale(), theAspects->ColorRGBA(), myMarkerSize);
+    myIsSpriteReady = true;
+  }
+  return theIsAlphaSprite && !mySpriteA.IsNull() && mySpriteA->IsValid()
+       ? mySpriteA
+       : mySprite;
 }
 
 // =======================================================================
@@ -1508,8 +1556,8 @@ void OpenGl_AspectsSprite::build (const Handle(OpenGl_Context)& theCtx,
   TCollection_AsciiString aNewKey, aNewKeyA;
   spriteKeys (theMarkerImage, theType, theScale, theColor, aNewKey, aNewKeyA);
 
-  const TCollection_AsciiString& aSpriteKeyOld  = !mySprite.IsNull()  ? mySprite ->First()->ResourceId() : THE_EMPTY_KEY;
-  const TCollection_AsciiString& aSpriteAKeyOld = !mySpriteA.IsNull() ? mySpriteA->First()->ResourceId() : THE_EMPTY_KEY;
+  const TCollection_AsciiString& aSpriteKeyOld  = !mySprite.IsNull()  ? mySprite ->ResourceId() : THE_EMPTY_KEY;
+  const TCollection_AsciiString& aSpriteAKeyOld = !mySpriteA.IsNull() ? mySpriteA->ResourceId() : THE_EMPTY_KEY;
 
   // release old shared resources
   const Standard_Boolean aNewResource = aNewKey.IsEmpty()
@@ -1518,14 +1566,14 @@ void OpenGl_AspectsSprite::build (const Handle(OpenGl_Context)& theCtx,
   {
     if (!mySprite.IsNull())
     {
-      if (mySprite->First()->ResourceId().IsEmpty())
+      if (mySprite->ResourceId().IsEmpty())
       {
-        theCtx->DelayedRelease (mySprite->ChangeFirst());
+        theCtx->DelayedRelease (mySprite);
         mySprite.Nullify();
       }
       else
       {
-        const TCollection_AsciiString anOldKey = mySprite->First()->ResourceId();
+        const TCollection_AsciiString anOldKey = mySprite->ResourceId();
         mySprite.Nullify(); // we need nullify all handles before ReleaseResource() call
         theCtx->ReleaseResource (anOldKey, Standard_True);
       }
@@ -1535,14 +1583,14 @@ void OpenGl_AspectsSprite::build (const Handle(OpenGl_Context)& theCtx,
   {
     if (!mySpriteA.IsNull())
     {
-      if (mySpriteA->First()->ResourceId().IsEmpty())
+      if (mySpriteA->ResourceId().IsEmpty())
       {
-        theCtx->DelayedRelease (mySpriteA->ChangeFirst());
+        theCtx->DelayedRelease (mySpriteA);
         mySpriteA.Nullify();
       }
       else
       {
-        const TCollection_AsciiString anOldKey = mySpriteA->First()->ResourceId();
+        const TCollection_AsciiString anOldKey = mySpriteA->ResourceId();
         mySpriteA.Nullify(); // we need nullify all handles before ReleaseResource() call
         theCtx->ReleaseResource (anOldKey, Standard_True);
       }
@@ -1551,7 +1599,7 @@ void OpenGl_AspectsSprite::build (const Handle(OpenGl_Context)& theCtx,
 
   if (!aNewResource)
   {
-    const OpenGl_PointSprite* aSprite = dynamic_cast<OpenGl_PointSprite*> (mySprite->First().get());
+    const OpenGl_PointSprite* aSprite = dynamic_cast<OpenGl_PointSprite*> (mySprite.get());
     if (!aSprite->IsDisplayList())
     {
       theMarkerSize = Standard_ShortReal (Max (aSprite->SizeX(), aSprite->SizeY()));
@@ -1566,13 +1614,8 @@ void OpenGl_AspectsSprite::build (const Handle(OpenGl_Context)& theCtx,
     return;
   }
 
-  if (mySprite.IsNull())
-  {
-    mySprite  = new OpenGl_TextureSet (1);
-    mySpriteA = new OpenGl_TextureSet (1);
-  }
-
-  Handle(OpenGl_PointSprite) aSprite, aSpriteA;
+  Handle(OpenGl_PointSprite)& aSprite  = mySprite;
+  Handle(OpenGl_PointSprite)& aSpriteA = mySpriteA;
   if (!aNewKey.IsEmpty()
    && theCtx->GetResource<Handle(OpenGl_PointSprite)> (aNewKeyA, aSpriteA) // alpha sprite could be shared
    && theCtx->GetResource<Handle(OpenGl_PointSprite)> (aNewKey,  aSprite))
@@ -1582,8 +1625,6 @@ void OpenGl_AspectsSprite::build (const Handle(OpenGl_Context)& theCtx,
     {
       theMarkerSize = Standard_ShortReal (Max (aSprite->SizeX(), aSprite->SizeY()));
     }
-    mySprite ->ChangeFirst() = aSprite;
-    mySpriteA->ChangeFirst() = aSpriteA;
     return;
   }
 
@@ -1593,8 +1634,6 @@ void OpenGl_AspectsSprite::build (const Handle(OpenGl_Context)& theCtx,
     aSpriteA = new OpenGl_PointSprite (aNewKeyA);
   }
   aSprite = new OpenGl_PointSprite (aNewKey);
-  mySprite ->ChangeFirst() = aSprite;
-  mySpriteA->ChangeFirst() = aSpriteA;
   if (!aNewKey.IsEmpty())
   {
     theCtx->ShareResource (aNewKey, aSprite);

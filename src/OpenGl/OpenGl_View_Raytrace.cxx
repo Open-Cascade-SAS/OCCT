@@ -1450,9 +1450,9 @@ Standard_Boolean OpenGl_View::initRaytraceResources (const Standard_Integer theS
       myPostFSAAShaderSource.SetPrefix (aPrefixString);
       myOutImageShaderSource.SetPrefix (aPrefixString);
 
-      if (!myRaytraceShader->LoadAndCompile (theGlContext, myRaytraceShaderSource.Source())
-       || !myPostFSAAShader->LoadAndCompile (theGlContext, myPostFSAAShaderSource.Source())
-       || !myOutImageShader->LoadAndCompile (theGlContext, myOutImageShaderSource.Source()))
+      if (!myRaytraceShader->LoadAndCompile (theGlContext, myRaytraceProgram->ResourceId(), myRaytraceShaderSource.Source())
+       || !myPostFSAAShader->LoadAndCompile (theGlContext, myPostFSAAProgram->ResourceId(), myPostFSAAShaderSource.Source())
+       || !myOutImageShader->LoadAndCompile (theGlContext, myOutImageProgram->ResourceId(), myOutImageShaderSource.Source()))
       {
         return safeFailBack ("Failed to compile ray-tracing fragment shaders", theGlContext);
       }

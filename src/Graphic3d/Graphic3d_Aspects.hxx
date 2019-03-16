@@ -286,6 +286,19 @@ public:
   //! Set marker's image texture.
   void SetMarkerImage (const Handle(Graphic3d_MarkerImage)& theImage) { myMarkerImage = theImage; }
 
+  //! Returns TRUE if marker should be drawn using marker sprite (either user-provided or generated).
+  bool IsMarkerSprite() const
+  {
+    if (myMarkerType == Aspect_TOM_POINT
+     || myMarkerType == Aspect_TOM_EMPTY)
+    {
+      return false;
+    }
+
+    return myMarkerType != Aspect_TOM_USERDEFINED
+       || !myMarkerImage.IsNull();
+  }
+
 //! @name parameters specific to text rendering
 public:
 

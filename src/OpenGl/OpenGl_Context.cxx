@@ -170,6 +170,7 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
   myIsInitialized (Standard_False),
   myIsStereoBuffers (Standard_False),
   myIsGlNormalizeEnabled (Standard_False),
+  mySpriteTexUnit (Graphic3d_TextureUnit_0),
   myHasRayTracing (Standard_False),
   myHasRayTracingTextures (Standard_False),
   myHasRayTracingAdaptiveSampling (Standard_False),
@@ -1481,10 +1482,21 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
   }
 
   glGetIntegerv (GL_MAX_TEXTURE_SIZE, &myMaxTexDim);
-  if (IsGlGreaterEqual (1, 5))
+  if (IsGlGreaterEqual (2, 0))
   {
     glGetIntegerv (GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &myMaxTexCombined);
   }
+#if !defined(GL_ES_VERSION_2_0)
+  else if (IsGlGreaterEqual (1, 3))
+  {
+    // this is a maximum of texture units for FFP functionality,
+    // dramatically smaller than combined texture units available for GLSL
+    glGetIntegerv (GL_MAX_TEXTURE_UNITS, &myMaxTexCombined);
+  }
+#endif
+  mySpriteTexUnit = myMaxTexCombined >= 2
+                  ? Graphic3d_TextureUnit_1
+                  : Graphic3d_TextureUnit_0;
 
   GLint aMaxVPortSize[2] = {0, 0};
   glGetIntegerv (GL_MAX_VIEWPORT_DIMS, aMaxVPortSize);

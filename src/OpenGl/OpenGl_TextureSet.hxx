@@ -75,6 +75,12 @@ public:
   //! Return the first texture.
   Handle(OpenGl_Texture)& ChangeFirst() { return myTextures.ChangeFirst(); }
 
+  //! Return the last texture.
+  const Handle(OpenGl_Texture)& Last() const { return myTextures.Last(); }
+
+  //! Return the last texture.
+  Handle(OpenGl_Texture)& ChangeLast() { return myTextures.ChangeLast(); }
+
   //! Return the texture at specified position within [0, Size()) range.
   const Handle(OpenGl_Texture)& Value (Standard_Integer theIndex) const { return myTextures.Value (theIndex); }
 
@@ -84,6 +90,18 @@ public:
   //! Return TRUE if texture color modulation has been enabled for the first texture
   //! or if texture is not set at all.
   Standard_EXPORT bool IsModulate() const;
+
+  //! Return TRUE if other than point sprite textures are defined within point set.
+  Standard_EXPORT bool HasNonPointSprite() const;
+
+  //! Return TRUE if last texture is a point sprite.
+  Standard_EXPORT bool HasPointSprite() const;
+
+  //! Nullify all handles.
+  void InitZero()
+  {
+    myTextures.Init (Handle(OpenGl_Texture)());
+  }
 
 protected:
 

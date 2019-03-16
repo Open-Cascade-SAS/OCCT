@@ -5600,6 +5600,7 @@ static Standard_Integer VPointCloud (Draw_Interpretor& theDI,
   Standard_Boolean toRandColors = Standard_False;
   Standard_Boolean hasNormals   = Standard_True;
   Standard_Boolean isSetArgNorm = Standard_False;
+  Standard_Boolean hasUV        = Standard_False;
   for (Standard_Integer anArgIter = 1; anArgIter < theArgNum; ++anArgIter)
   {
     Standard_CString anArg = theArgs[anArgIter];
@@ -5633,9 +5634,27 @@ static Standard_Integer VPointCloud (Draw_Interpretor& theDI,
       isSetArgNorm = Standard_True;
       hasNormals   = Standard_False;
     }
+    else if (aFlag == "-uv"
+          || aFlag == "-texels")
+    {
+      hasUV = Standard_True;
+    }
   }
 
   Standard_CString aName = theArgs[1];
+  Graphic3d_ArrayFlags aFlags = Graphic3d_ArrayFlags_None;
+  if (hasNormals)
+  {
+    aFlags |= Graphic3d_ArrayFlags_VertexNormal;
+  }
+  if (toRandColors)
+  {
+    aFlags |= Graphic3d_ArrayFlags_VertexColor;
+  }
+  if (hasUV)
+  {
+    aFlags |= Graphic3d_ArrayFlags_VertexTexel;
+  }
 
   // generate arbitrary set of points
   Handle(Graphic3d_ArrayOfPoints) anArrayPoints;
@@ -5668,7 +5687,7 @@ static Standard_Integer VPointCloud (Draw_Interpretor& theDI,
       return 1;
     }
 
-    anArrayPoints = new Graphic3d_ArrayOfPoints (aNbPoints, toRandColors, hasNormals);
+    anArrayPoints = new Graphic3d_ArrayOfPoints (aNbPoints, aFlags);
     for (TopExp_Explorer aFaceIt (aShape, TopAbs_FACE); aFaceIt.More(); aFaceIt.Next())
     {
       const TopoDS_Face& aFace = TopoDS::Face (aFaceIt.Current());
@@ -5714,6 +5733,11 @@ static Standard_Integer VPointCloud (Draw_Interpretor& theDI,
         {
           anArrayPoints->SetVertexNormal (anIndexOfPoint, aNormals (aNodeIter));
         }
+        if (hasUV
+         && aTriangulation->HasUVNodes())
+        {
+          anArrayPoints->SetVertexTexel (anIndexOfPoint, aTriangulation->UVNode (aNodeIter));
+        }
       }
     }
   }
@@ -5737,7 +5761,7 @@ static Standard_Integer VPointCloud (Draw_Interpretor& theDI,
 
     gp_Pnt aCenter(aCenterX, aCenterY, aCenterZ);
 
-    anArrayPoints = new Graphic3d_ArrayOfPoints (aNbPoints, toRandColors, hasNormals);
+    anArrayPoints = new Graphic3d_ArrayOfPoints (aNbPoints, aFlags);
     for (Standard_Integer aPntIt = 0; aPntIt < aNbPoints; ++aPntIt)
     {
       Standard_Real anAlpha   = (Standard_Real (rand() % 2000) / 1000.0) * M_PI;
@@ -5761,6 +5785,11 @@ static Standard_Integer VPointCloud (Draw_Interpretor& theDI,
       if (hasNormals)
       {
         anArrayPoints->SetVertexNormal (anIndexOfPoint, aDir);
+      }
+      if (hasUV)
+      {
+        anArrayPoints->SetVertexTexel (anIndexOfPoint, gp_Pnt2d (anAlpha / 2.0 * M_PI,
+                                                                 aBeta   / 2.0 * M_PI));
       }
     }
   }
@@ -6367,12 +6396,12 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
                    __FILE__, VVertexMode, group);
 
   theCommands.Add ("vpointcloud",
-                   "vpointcloud name shape [-randColor] [-normals] [-noNormals]"
+                   "vpointcloud name shape [-randColor] [-normals] [-noNormals] [-uv]"
                    "\n\t\t: Create an interactive object for arbitary set of points"
                    "\n\t\t: from triangulated shape."
                    "\n"
                    "vpointcloud name x y z r npts {surface|volume}\n"
-                   "            ... [-randColor] [-normals] [-noNormals]"
+                   "            ... [-randColor] [-normals] [-noNormals] [-uv]"
                    "\n\t\t: Create arbitrary set of points (npts) randomly distributed"
                    "\n\t\t: on spheric surface or within spheric volume (x y z r)."
                    "\n\t\t:"
