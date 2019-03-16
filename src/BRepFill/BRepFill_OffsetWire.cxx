@@ -238,19 +238,27 @@ static Standard_Boolean KPartCircle
   BRepFill_IndexedDataMapOfOrientedShapeListOfShape& myMap,
   Standard_Boolean&    myIsDone)
 {
-  TopExp_Explorer exp(mySpine,TopAbs_EDGE);
-  Standard_Integer NbEdges = 0;
-  TopoDS_Edge      E;
-
-  for (; exp.More(); exp.Next()) {
-    NbEdges++;
-    E = TopoDS::Edge(exp.Current());
-    if (NbEdges > 1) return Standard_False;
+  TopoDS_Edge E;
+  for (TopExp_Explorer anEdgeIter (mySpine, TopAbs_EDGE); anEdgeIter.More(); anEdgeIter.Next())
+  {
+    if (!E.IsNull())
+    {
+      return Standard_False;
+    }
+    E = TopoDS::Edge (anEdgeIter.Current());
+  }
+  if (E.IsNull())
+  {
+    return Standard_False;
   }
 
   Standard_Real      f,l;
   TopLoc_Location    L;
   Handle(Geom_Curve) C =  BRep_Tool::Curve(E,L,f,l);
+  if (C.IsNull())
+  {
+    return Standard_False;
+  }
 
   if (C->IsKind(STANDARD_TYPE(Geom_TrimmedCurve))) {
     Handle(Geom_TrimmedCurve) Ct = Handle(Geom_TrimmedCurve)::DownCast(C);
@@ -741,7 +749,6 @@ void BRepFill_OffsetWire::PerformWithBiLo
     return;
 
   BRep_Builder myBuilder;
-  myBuilder.MakeCompound(TopoDS::Compound(myShape));
 
   //---------------------------------------------------------------------
   // MapNodeVertex : associate to each node of the map (key1) and to
@@ -783,6 +790,11 @@ void BRepFill_OffsetWire::PerformWithBiLo
     TopoDS_Iterator iter(mySpine);
     theWire = TopoDS::Wire(iter.Value());
     TopExp::Vertices(theWire, Ends[0], Ends[1]);
+  }
+
+  if (Locus.NumberOfContours() == 0)
+  {
+    return;
   }
 
   for (Standard_Integer ic = 1; ic <= Locus.NumberOfContours(); ic++) {

@@ -123,12 +123,6 @@ void BRepMAT2d_Explorer::Add(const TopoDS_Wire& Spine,
   const TopoDS_Face& aFace,
   TopoDS_Face& aNewFace)
 {  
-  //  Modified by Sergey KHROMOV - Tue Nov 26 14:25:46 2002 Begin
-  // This method is totally rewroted to include check
-  // of connection and creation of a new spine.
-  NewContour();
-  myIsClosed(currentContour) = (Spine.Closed()) ? Standard_True : Standard_False;
-
   //  Modified by skv - Wed Jun 23 12:23:01 2004 Integration Begin
   //  Taking into account side of bisecting loci construction.
   //   TopoDS_Wire                         aWFwd = TopoDS::Wire(Spine.Oriented(TopAbs_FORWARD));
@@ -136,9 +130,14 @@ void BRepMAT2d_Explorer::Add(const TopoDS_Wire& Spine,
   BRepTools_WireExplorer              anExp(Spine, aFace);
   //  Modified by skv - Wed Jun 23 12:23:02 2004 Integration End
   TopTools_IndexedDataMapOfShapeShape anOldNewE;
-
   if (!anExp.More())
     return;
+
+  //  Modified by Sergey KHROMOV - Tue Nov 26 14:25:46 2002 Begin
+  // This method is totally rewroted to include check
+  // of connection and creation of a new spine.
+  NewContour();
+  myIsClosed(currentContour) = (Spine.Closed()) ? Standard_True : Standard_False;
 
   TopoDS_Edge                 aFirstEdge = anExp.Current();
   TopoDS_Edge                 aPrevEdge = aFirstEdge;

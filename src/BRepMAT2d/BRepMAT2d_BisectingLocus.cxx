@@ -70,7 +70,12 @@ void BRepMAT2d_BisectingLocus::Compute(BRepMAT2d_Explorer&        anExplo,
   Standard_Integer                   i;
 
   nbSect.Clear();
+  theGraph = new MAT_Graph();
   nbContours = anExplo.NumberOfContours();
+  if (nbContours == 0)
+  {
+    return;
+  }
 
   //---------------------------------
   // Lecture des donnees de anExplo.
@@ -121,7 +126,6 @@ void BRepMAT2d_BisectingLocus::Compute(BRepMAT2d_Explorer&        anExplo,
     TheRoots->BackAdd(TheMAT.Bisector());
   }
 
-  theGraph = new MAT_Graph();
   theGraph->Perform(TheMAT.SemiInfinite(),
 		    TheRoots, 
 		    theTool.NumberOfItems(), 
