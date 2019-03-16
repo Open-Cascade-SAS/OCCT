@@ -191,13 +191,21 @@ static void derivatives(Standard_Integer theMaxOrder,
   else
   {
     for (i = 0; i <= theMaxOrder + theNU+ 1; i++)
+    {
       for (j = i; j <= theMaxOrder + theNV + 1; j++)
+      {
         if (i + j > theMinOrder)
         {
           theDerSurf.SetValue(i, j, theBasisSurf->DN(theU, theV, i, j));
-          if (i != j)
+          if (i != j
+           && j <= theDerSurf.UpperRow()
+           && i <= theDerSurf.UpperCol())
+          {
             theDerSurf.SetValue(j, i, theBasisSurf->DN(theU, theV, j, i));
+          }
         }
+      }
+    }
     for (i = 0; i <= theMaxOrder + theNU; i++)
       for (j = 0; j <= theMaxOrder + theNV; j++)
         theDerNUV.SetValue(i, j, CSLib::DNNUV(i, j, theDerSurf));
@@ -776,7 +784,7 @@ gp_Vec GeomEvaluator_OffsetSurface::CalculateDN(
   CSLib::Normal(theD1U, theD1V, the_D1MagTol, NStatus, Normal);
   const Standard_Integer MaxOrder = (NStatus == CSLib_Defined) ? 0 : 3;
   Standard_Integer OrderU, OrderV;
-  TColgp_Array2OfVec DerNUV(0, MaxOrder + theNu, 0, MaxOrder + theNu);
+  TColgp_Array2OfVec DerNUV(0, MaxOrder + theNu, 0, MaxOrder + theNv);
   TColgp_Array2OfVec DerSurf(0, MaxOrder + theNu + 1, 0, MaxOrder + theNv + 1);
 
   Standard_Real Umin = 0, Umax = 0, Vmin = 0, Vmax = 0;
