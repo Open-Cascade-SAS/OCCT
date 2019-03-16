@@ -1797,7 +1797,7 @@ inline void nullifyResource (const Handle(OpenGl_Context)& theGlContext, Handle(
 {
   if (!theResource.IsNull())
   {
-    theResource->Release (theGlContext.operator->());
+    theResource->Release (theGlContext.get());
     theResource.Nullify();
   }
 }
@@ -1818,10 +1818,10 @@ void OpenGl_View::releaseRaytraceResources (const Handle(OpenGl_Context)& theGlC
 
   if (!theToRebuild) // complete release
   {
-    myRaytraceFBO1[0]->Release (theGlContext.operator->());
-    myRaytraceFBO1[1]->Release (theGlContext.operator->());
-    myRaytraceFBO2[0]->Release (theGlContext.operator->());
-    myRaytraceFBO2[1]->Release (theGlContext.operator->());
+    myRaytraceFBO1[0]->Release (theGlContext.get());
+    myRaytraceFBO1[1]->Release (theGlContext.get());
+    myRaytraceFBO2[0]->Release (theGlContext.get());
+    myRaytraceFBO2[1]->Release (theGlContext.get());
 
     nullifyResource (theGlContext, myRaytraceOutputTexture[0]);
     nullifyResource (theGlContext, myRaytraceOutputTexture[1]);
@@ -1850,7 +1850,7 @@ void OpenGl_View::releaseRaytraceResources (const Handle(OpenGl_Context)& theGlC
 
     if (myRaytraceScreenQuad.IsValid ())
     {
-      myRaytraceScreenQuad.Release (theGlContext.operator->());
+      myRaytraceScreenQuad.Release (theGlContext.get());
     }
   }
 }

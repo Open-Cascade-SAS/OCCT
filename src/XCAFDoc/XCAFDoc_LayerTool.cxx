@@ -432,7 +432,7 @@ void XCAFDoc_LayerTool::SetVisibility (const TDF_Label& layerL,
   Handle(TDataStd_UAttribute) aUAttr;
   if (! isvisible ) {
     if (!layerL.FindAttribute(XCAFDoc::InvisibleGUID(), aUAttr)) {
-      aUAttr->Set( layerL, XCAFDoc::InvisibleGUID() );
+      TDataStd_UAttribute::Set( layerL, XCAFDoc::InvisibleGUID() );
     }
   }
   else layerL.ForgetAttribute( XCAFDoc::InvisibleGUID() );

@@ -130,44 +130,47 @@ OpenGl_View::~OpenGl_View()
 // =======================================================================
 void OpenGl_View::ReleaseGlResources (const Handle(OpenGl_Context)& theCtx)
 {
-  myGraduatedTrihedron.Release (theCtx.operator->());
-  myFrameStatsPrs.Release (theCtx.operator->());
+  myGraduatedTrihedron.Release (theCtx.get());
+  myFrameStatsPrs.Release (theCtx.get());
 
   if (!myTextureEnv.IsNull())
   {
-    for (OpenGl_TextureSet::Iterator aTextureIter (myTextureEnv); aTextureIter.More(); aTextureIter.Next())
+    if (!theCtx.IsNull())
     {
-      theCtx->DelayedRelease (aTextureIter.ChangeValue());
-      aTextureIter.ChangeValue().Nullify();
+      for (OpenGl_TextureSet::Iterator aTextureIter (myTextureEnv); aTextureIter.More(); aTextureIter.Next())
+      {
+        theCtx->DelayedRelease (aTextureIter.ChangeValue());
+        aTextureIter.ChangeValue().Nullify();
+      }
     }
     myTextureEnv.Nullify();
   }
 
   if (myTextureParams != NULL)
   {
-    myTextureParams->Release (theCtx.operator->());
+    myTextureParams->Release (theCtx.get());
   }
   if (myBgGradientArray != NULL)
   {
-    myBgGradientArray->Release (theCtx.operator->());
+    myBgGradientArray->Release (theCtx.get());
   }
   if (myBgTextureArray != NULL)
   {
-    myBgTextureArray->Release (theCtx.operator->());
+    myBgTextureArray->Release (theCtx.get());
   }
 
-  myMainSceneFbos[0]        ->Release (theCtx.operator->());
-  myMainSceneFbos[1]        ->Release (theCtx.operator->());
-  myMainSceneFbosOit[0]     ->Release (theCtx.operator->());
-  myMainSceneFbosOit[1]     ->Release (theCtx.operator->());
-  myImmediateSceneFbos[0]   ->Release (theCtx.operator->());
-  myImmediateSceneFbos[1]   ->Release (theCtx.operator->());
-  myImmediateSceneFbosOit[0]->Release (theCtx.operator->());
-  myImmediateSceneFbosOit[1]->Release (theCtx.operator->());
-  myOpenGlFBO               ->Release (theCtx.operator->());
-  myOpenGlFBO2              ->Release (theCtx.operator->());
-  myFullScreenQuad           .Release (theCtx.operator->());
-  myFullScreenQuadFlip       .Release (theCtx.operator->());
+  myMainSceneFbos[0]        ->Release (theCtx.get());
+  myMainSceneFbos[1]        ->Release (theCtx.get());
+  myMainSceneFbosOit[0]     ->Release (theCtx.get());
+  myMainSceneFbosOit[1]     ->Release (theCtx.get());
+  myImmediateSceneFbos[0]   ->Release (theCtx.get());
+  myImmediateSceneFbos[1]   ->Release (theCtx.get());
+  myImmediateSceneFbosOit[0]->Release (theCtx.get());
+  myImmediateSceneFbosOit[1]->Release (theCtx.get());
+  myOpenGlFBO               ->Release (theCtx.get());
+  myOpenGlFBO2              ->Release (theCtx.get());
+  myFullScreenQuad           .Release (theCtx.get());
+  myFullScreenQuadFlip       .Release (theCtx.get());
 
   releaseRaytraceResources (theCtx);
 }

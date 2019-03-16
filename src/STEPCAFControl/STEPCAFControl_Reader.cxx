@@ -1406,8 +1406,7 @@ Standard_Boolean STEPCAFControl_Reader::ReadLayers(const Handle(XSControl_WorkSe
 #endif
       //TDF_Label InvLayerLab = LTool->FindLayer(aLayerName);
       TDF_Label InvLayerLab = LTool->AddLayer(aLayerName); //skl for OCC3926
-      Handle(TDataStd_UAttribute) aUAttr;
-      aUAttr->Set(InvLayerLab, XCAFDoc::InvisibleGUID());
+      TDataStd_UAttribute::Set (InvLayerLab, XCAFDoc::InvisibleGUID());
     }
   }
   return Standard_True;

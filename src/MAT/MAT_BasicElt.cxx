@@ -77,7 +77,7 @@ Standard_Integer  MAT_BasicElt::GeomIndex() const
 //========================================================================
 void  MAT_BasicElt::SetStartArc(const Handle(MAT_Arc)& anArc)
 {
-  startLeftArc = anArc.operator->();
+  startLeftArc = anArc.get();
 }
 
 
@@ -87,7 +87,7 @@ void  MAT_BasicElt::SetStartArc(const Handle(MAT_Arc)& anArc)
 //========================================================================
 void  MAT_BasicElt::SetEndArc(const Handle(MAT_Arc)& anArc)
 {
-  endLeftArc = anArc.operator->();
+  endLeftArc = anArc.get();
 }
 
 //========================================================================

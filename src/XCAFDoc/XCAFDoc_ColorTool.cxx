@@ -553,7 +553,7 @@ void XCAFDoc_ColorTool::SetVisibility (const TDF_Label& L,
     Handle(XCAFDoc_GraphNode) aSHUO;
     if (ShapeTool()->IsShape(L) || ShapeTool()->GetSHUO( L, aSHUO ) )
       if (!L.FindAttribute(XCAFDoc::InvisibleGUID(), aUAttr))
-        aUAttr->Set( L, XCAFDoc::InvisibleGUID() );
+        TDataStd_UAttribute::Set( L, XCAFDoc::InvisibleGUID() );
   }
   else L.ForgetAttribute( XCAFDoc::InvisibleGUID() );
 }
@@ -582,7 +582,7 @@ void XCAFDoc_ColorTool::SetColorByLayer (const TDF_Label& L,
     Handle(XCAFDoc_GraphNode) aSHUO;
     if (ShapeTool()->IsShape(L) || ShapeTool()->GetSHUO( L, aSHUO ) )
       if (!L.FindAttribute(XCAFDoc::ColorByLayerGUID(), aUAttr))
-        aUAttr->Set( L, XCAFDoc::ColorByLayerGUID() );
+        TDataStd_UAttribute::Set( L, XCAFDoc::ColorByLayerGUID() );
   }
   else L.ForgetAttribute( XCAFDoc::ColorByLayerGUID() );
 }

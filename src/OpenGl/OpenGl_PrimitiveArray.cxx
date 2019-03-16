@@ -1104,7 +1104,7 @@ void OpenGl_PrimitiveArray::InitBuffers (const Handle(OpenGl_Context)&        th
                                          const Handle(Graphic3d_BoundBuffer)& theBounds)
 {
   // Release old graphic resources
-  Release (theContext.operator->());
+  Release (theContext.get());
 
   myIndices = theIndices;
   myAttribs = theAttribs;

@@ -33,7 +33,7 @@ MAT_Node::MAT_Node(const Standard_Integer     GeomIndex,
      : geomIndex(GeomIndex),
        distance(Distance)
 {
-  aLinkedArc = LinkedArc.operator->();
+  aLinkedArc = LinkedArc.get();
 }
 
 //=============================================================================
@@ -156,7 +156,7 @@ Standard_Boolean  MAT_Node::Infinite() const
 //=============================================================================
 void MAT_Node::SetLinkedArc (const Handle(MAT_Arc)& LinkedArc)
 {
-  aLinkedArc = LinkedArc.operator->();
+  aLinkedArc = LinkedArc.get();
 }
 
 //=============================================================================

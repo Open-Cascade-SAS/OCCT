@@ -378,11 +378,11 @@ void OpenGl_Group::Release (const Handle(OpenGl_Context)& theGlCtx)
   while (myFirst != NULL)
   {
     OpenGl_ElementNode* aNext = myFirst->next;
-    OpenGl_Element::Destroy (theGlCtx.operator->(), myFirst->elem);
+    OpenGl_Element::Destroy (theGlCtx.get(), myFirst->elem);
     delete myFirst;
     myFirst = aNext;
   }
   myLast = NULL;
 
-  OpenGl_Element::Destroy (theGlCtx.operator->(), myAspects);
+  OpenGl_Element::Destroy (theGlCtx.get(), myAspects);
 }

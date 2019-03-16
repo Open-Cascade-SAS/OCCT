@@ -174,7 +174,7 @@ void OpenGl_View::Redraw()
   // fetch OpenGl context state
   aCtx->FetchState();
 
-  OpenGl_FrameBuffer* aFrameBuffer = myFBO.operator->();
+  OpenGl_FrameBuffer* aFrameBuffer = myFBO.get();
   bool toSwap = aCtx->IsRender()
             && !aCtx->caps->buffersNoSwap
             &&  aFrameBuffer == NULL;
@@ -600,7 +600,7 @@ void OpenGl_View::RedrawImmediate()
 
   const Graphic3d_StereoMode   aStereoMode  = myRenderParams.StereoMode;
   Graphic3d_Camera::Projection aProjectType = myCamera->ProjectionType();
-  OpenGl_FrameBuffer*          aFrameBuffer = myFBO.operator->();
+  OpenGl_FrameBuffer*          aFrameBuffer = myFBO.get();
   aCtx->FrameStats()->FrameStart (myWorkspace->View(), true);
 
   if ( aFrameBuffer == NULL

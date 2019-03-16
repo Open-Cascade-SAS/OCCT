@@ -67,7 +67,7 @@ Standard_Boolean Expr_NamedExpression::IsIdentical
 
 //AGV 22.03.12: Comparison should be based on names rather than Handles
     const Expr_NamedExpression* pOther =
-      static_cast<const Expr_NamedExpression*>(theOther.operator->());
+      static_cast<const Expr_NamedExpression*>(theOther.get());
     if (pOther == this || pOther->GetName().IsEqual(myName))
       aResult = Standard_True;
   }

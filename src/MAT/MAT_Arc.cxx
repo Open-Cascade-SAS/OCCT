@@ -215,9 +215,9 @@ void  MAT_Arc::SetFirstArc(const MAT_Side aSide ,
 			   const Handle(MAT_Arc)& anArc)
 {
   if (aSide == MAT_Left) 
-    firstArcLeft  = anArc.operator->();
+    firstArcLeft  = anArc.get();
   else
-    firstArcRight = anArc.operator->();
+    firstArcRight = anArc.get();
 }
 
 //========================================================================
@@ -228,9 +228,9 @@ void  MAT_Arc::SetSecondArc(const MAT_Side aSide ,
 			    const Handle(MAT_Arc)& anArc)
 { 
   if (aSide == MAT_Left) 
-    secondArcLeft = anArc.operator->();
+    secondArcLeft = anArc.get();
   else
-    secondArcRight = anArc.operator->();
+    secondArcRight = anArc.get();
 }
 
 //========================================================================
@@ -243,17 +243,17 @@ void  MAT_Arc::SetNeighbour(const MAT_Side aSide,
 {
   if (aSide == MAT_Left) {
     if (aNode == FirstNode())  
-      firstArcLeft  = anArc.operator->();
+      firstArcLeft  = anArc.get();
     else if (aNode == SecondNode())
-      secondArcLeft = anArc.operator->();
+      secondArcLeft = anArc.get();
     else
      throw Standard_DomainError("MAT_Arc::SetNeighbour");
   }
   else {
     if (aNode == FirstNode())  
-      firstArcRight  = anArc.operator->();
+      firstArcRight  = anArc.get();
     else if (aNode == SecondNode())
-      secondArcRight = anArc.operator->();
+      secondArcRight = anArc.get();
     else
       throw Standard_DomainError("MAT_Arc::SetNeighbour");
   }

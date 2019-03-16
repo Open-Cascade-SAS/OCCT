@@ -177,7 +177,7 @@ void Storage_BucketOfPersistent::Append(const Handle(Standard_Persistent)& sp)
 
   if (myCurrentBucket->myCurrentSpace != myBucketSize) {
     myLength++;
-    myCurrentBucket->mySpace[myCurrentBucket->myCurrentSpace] = sp.operator->();
+    myCurrentBucket->mySpace[myCurrentBucket->myCurrentSpace] = sp.get();
     return;
   }
 
@@ -195,7 +195,7 @@ void Storage_BucketOfPersistent::Append(const Handle(Standard_Persistent)& sp)
   myCurrentBucket = myBuckets[myCurrentBucketNumber];
   myCurrentBucket->myCurrentSpace++;
   myLength++;
-  myCurrentBucket->mySpace[myCurrentBucket->myCurrentSpace] = sp.operator->();
+  myCurrentBucket->mySpace[myCurrentBucket->myCurrentSpace] = sp.get();
 }
 
 //=======================================================================
