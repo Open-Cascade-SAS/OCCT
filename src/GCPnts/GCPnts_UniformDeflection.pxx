@@ -174,7 +174,9 @@ static Standard_Boolean PerformComposite (TColStd_SequenceOfReal& Parameters,
   Standard_Real Ua = U1;
   for (Standard_Integer Index = PIndex;;)
   {
-    Standard_Real Ub = Min (U2, TI (Index + 1));
+    Standard_Real Ub = Index + 1 <= TI.Upper()
+                     ? Min (U2, TI (Index + 1))
+                     : U2;
     if (!PerformCurve (Parameters, Points, C, Deflection,
 		    Ua, Ub, EPSILON, WithControl))
     {

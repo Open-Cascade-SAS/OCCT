@@ -1943,7 +1943,12 @@ void Law_BSpline::LocateU
   else {
     I1 = 1;
     BSplCLib::Hunt (CKnots, NewU, I1);
-    while ( Abs( CKnots(I1+1) - NewU) <= Abs(ParametricTolerance)) I1++;
+    I1 = Max (Min (I1, CKnots.Upper()), CKnots.Lower());
+    while (I1 + 1 <= CKnots.Upper()
+        && Abs (CKnots (I1 + 1) - NewU) <= Abs(ParametricTolerance))
+    {
+      I1++;
+    }
     if ( Abs( CKnots(I1) - NewU) <= Abs(ParametricTolerance)) {
       I2 = I1;
     }

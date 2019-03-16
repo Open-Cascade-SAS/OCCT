@@ -23,10 +23,6 @@
 //                 + bon appel a LocateParameter (PRO6973).
 // RBD : 15/10/98 ; Le cache est desormais defini sur [-1,1] (pro15537).
 
-#define No_Standard_OutOfRange
-#define No_Standard_DimensionError
-
-
 #include <BSplCLib.hxx>
 #include <BSplSLib.hxx>
 #include <Geom_BSplineCurve.hxx>
@@ -1360,7 +1356,12 @@ void Geom_BSplineSurface::LocateU
   else {
     I1 = 1;
     BSplCLib::Hunt (Knots, NewU, I1);
-    while ( Abs( Knots(I1+1) - NewU) <= PParametricTolerance) I1++;
+    I1 = Max (Min (I1, Knots.Upper()), Knots.Lower());
+    while (I1 + 1 <= Knots.Upper()
+        && Abs (Knots (I1 + 1) - NewU) <= PParametricTolerance)
+    {
+      I1++;
+    }
     if ( Abs( Knots(I1) - NewU) <= PParametricTolerance) {
       I2 = I1;
     }
@@ -1408,7 +1409,12 @@ void Geom_BSplineSurface::LocateV
   else {
     I1 = 1;
     BSplCLib::Hunt (Knots, NewV, I1);
-    while ( Abs( Knots(I1+1) - NewV) <= PParametricTolerance) I1++;
+    I1 = Max (Min (I1, Knots.Upper()), Knots.Lower());
+    while (I1 + 1 <= Knots.Upper()
+        && Abs (Knots (I1 + 1) - NewV) <= PParametricTolerance)
+    {
+      I1++;
+    }
     if ( Abs( Knots(I1) - NewV) <= PParametricTolerance) {
       I2 = I1;
     }

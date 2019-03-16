@@ -14,14 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-// 03-02-97 : pmn ->LocateU sur Periodic (PRO6963), 
-//            bon appel a LocateParameter (PRO6973) et mise en conformite avec
-//            le cdl de LocateU, lorsque U est un noeud (PRO6988)
-
-#define No_Standard_OutOfRange
-#define No_Standard_DimensionError
-
-
 #include <BSplCLib.hxx>
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom2d_Geometry.hxx>
@@ -820,7 +812,12 @@ void Geom2d_BSplineCurve::LocateU
   else {
     I1 = 1;
     BSplCLib::Hunt (CKnots, NewU, I1);
-    while ( Abs( CKnots(I1+1) - NewU) <= PParametricTolerance) I1++;
+    I1 = Max (Min (I1, CKnots.Upper()), CKnots.Lower());
+    while (I1 + 1 <= CKnots.Upper()
+        && Abs (CKnots (I1 + 1) - NewU) <= PParametricTolerance)
+    {
+      I1++;
+    }
     if ( Abs( CKnots(I1) - NewU) <= PParametricTolerance) {
       I2 = I1;
     }

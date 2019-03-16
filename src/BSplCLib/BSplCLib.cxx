@@ -73,31 +73,40 @@ public:
 //purpose  : 
 //=======================================================================
 
-void BSplCLib::Hunt (const Array1OfReal& XX, 
-		     const Standard_Real X,
-		     Standard_Integer&   Ilc)
+void BSplCLib::Hunt (const TColStd_Array1OfReal& theArray,
+                     const Standard_Real theX,
+                     Standard_Integer&   theXPos)
 {
   // replaced by simple dichotomy (RLE)
-  Ilc = XX.Lower();
-  if (XX.Length() <= 1) return;
-  const Standard_Real *px = &XX(Ilc);
-  px -= Ilc;
-
-  if (X < px[Ilc]) {
-    Ilc--;
+  if (theArray.First() > theX)
+  {
+    theXPos = theArray.Lower() - 1;
     return;
   }
-  Standard_Integer Ihi = XX.Upper();
-  if (X > px[Ihi]) {
-    Ilc = Ihi + 1;
+  else if (theArray.Last() < theX)
+  {
+    theXPos = theArray.Upper() + 1;
     return;
   }
-  Standard_Integer Im;
 
-  while (Ihi - Ilc != 1) {
-    Im = (Ihi + Ilc) >> 1;
-    if (X > px[Im]) Ilc = Im;
-    else            Ihi = Im;
+  theXPos = theArray.Lower();
+  if (theArray.Length() <= 1)
+  {
+    return;
+  }
+
+  Standard_Integer aHi = theArray.Upper();
+  while (aHi - theXPos != 1)
+  {
+    const Standard_Integer aMid = (aHi + theXPos) / 2;
+    if (theArray.Value (aMid) < theX)
+    {
+      theXPos = aMid;
+    }
+    else
+    {
+      aHi = aMid;
+    }
   }
 }
 
