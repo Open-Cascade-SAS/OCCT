@@ -1,0 +1,25 @@
+puts "============"
+puts "0030536: Foundation Classes - TCollection_ExtendedString::StartsWith() and EndsWith() have a mistake"
+puts "============"
+
+pload QAcommands
+
+set ret1 [QAStartsWith hello help]
+if { ${ret1} == "Yes" } {
+    puts "Error"
+}
+
+set ret2 [QAStartsWith hello he]
+if { ${ret2} == "No" } {
+    puts "Error"
+}
+
+set ret3 [QAEndsWith hello ll]
+if { ${ret3} == "Yes" } {
+    puts "Error"
+}
+
+set ret4 [QAEndsWith hello lo]
+if { ${ret4} == "No" } {
+    puts "Error"
+}

@@ -3060,6 +3060,44 @@ static Standard_Integer OCC30391(Draw_Interpretor& theDI,
   return 0;
 }
 
+//=======================================================================
+//function : QAStartsWith string startstring
+//=======================================================================
+static Standard_Integer QAStartsWith(Draw_Interpretor& di, Standard_Integer n, const char** a)
+{
+  if (n == 3)
+  {
+    TCollection_ExtendedString str = a[1];
+    TCollection_ExtendedString startstr = a[2];
+    if (str.StartsWith(startstr))
+      di << "Yes";
+    else
+      di << "No";
+    return 0;
+  }
+  std::cerr << "Syntax error\n";
+  return 1;
+}
+
+//=======================================================================
+//function : QAEndsWith string endstring
+//=======================================================================
+static Standard_Integer QAEndsWith(Draw_Interpretor& di, Standard_Integer n, const char** a)
+{
+  if (n == 3)
+  {
+    TCollection_ExtendedString str = a[1];
+    TCollection_ExtendedString endstr = a[2];
+    if (str.EndsWith(endstr))
+      di << "Yes";
+    else
+      di << "No";
+    return 0;
+  }
+  std::cerr << "Syntax error\n";
+  return 1;
+}
+
 void QABugs::Commands_20(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
@@ -3100,6 +3138,14 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands) {
   theCommands.Add("OCC29807", "OCC29807 surface1 surface2 u1 v1 u2 v2", __FILE__, OCC29807, group);
   theCommands.Add("OCC29311", "OCC29311 shape counter nbiter: check performance of OBB calculation", __FILE__, OCC29311, group);
   theCommands.Add("OCC30391", "OCC30391 result face LenBeforeUfirst LenAfterUlast LenBeforeVfirst LenAfterVlast", __FILE__, OCC30391, group);
+
+  theCommands.Add("QAStartsWith",
+                  "QAStartsWith string startstring",
+                  __FILE__, QAStartsWith, group);
+
+  theCommands.Add("QAEndsWith",
+                  "QAEndsWith string endstring",
+                  __FILE__, QAEndsWith, group);
 
   return;
 }
