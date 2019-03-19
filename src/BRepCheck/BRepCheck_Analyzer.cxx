@@ -147,7 +147,6 @@ void BRepCheck_Analyzer::Perform(const TopoDS_Shape& S)
 
         if ( ! aRes.IsNull() )
         {
-          aRes->SetFailStatus(exp.Current());
           aRes->SetFailStatus(S);
         }
       }

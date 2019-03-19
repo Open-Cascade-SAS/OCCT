@@ -193,41 +193,55 @@ Standard_Boolean ShapeUpgrade_ShapeDivide::Perform(const Standard_Boolean newCon
     }
     Message_Msg doneMsg = GetFaceMsg();
 
-    for(TopExp_Explorer exp(myShape,TopAbs_FACE); exp.More(); exp.Next()) {
-//smh#8
+    for (TopExp_Explorer exp (myShape,TopAbs_FACE); exp.More(); exp.Next())
+    {
       TopoDS_Shape tmpF = exp.Current().Oriented ( TopAbs_FORWARD );
       TopoDS_Face F = TopoDS::Face (tmpF); // protection against INTERNAL shapes: cts20105a.rle
       TopoDS_Shape sh = myContext->Apply ( F, TopAbs_SHAPE );
-      for (TopExp_Explorer exp2(sh,TopAbs_FACE); exp2.More(); exp2.Next()) {
-//szv: try-catch added
-	try {
-	  OCC_CATCH_SIGNALS
-	  for (; exp2.More(); exp2.Next()) {
-	    TopoDS_Face face = TopoDS::Face ( exp2.Current() );
-	    SplitFace->Init(face);
-	    SplitFace->SetContext(myContext);
-	    SplitFace->Perform();
-	    if(SplitFace->Status(ShapeExtend_FAIL)) {
-	      myStatus |= ShapeExtend::EncodeStatus ( ShapeExtend_FAIL2 );
-	    }
-	    if(SplitFace->Status(ShapeExtend_DONE)) {
-	      myContext->Replace(face,SplitFace->Result());
-              SendMsg( face, doneMsg, Message_Info );
-	      if(SplitFace->Status(ShapeExtend_DONE1))
-		myStatus |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE1 );
-	      if(SplitFace->Status(ShapeExtend_DONE2))
-		myStatus |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE2 );
-	    }
-	  }
-	}
-	catch (Standard_Failure const& anException) {
-#ifdef OCCT_DEBUG
-	  cout << "\nError: Exception in ShapeUpgrade_FaceDivide::Perform(): ";
-	  anException.Print(cout); cout << endl;
-#endif
-	  (void)anException;
-	  myStatus |= ShapeExtend::EncodeStatus ( ShapeExtend_FAIL2 );
-	}
+      for (TopExp_Explorer exp2 (sh,TopAbs_FACE); exp2.More(); exp2.Next())
+      {
+        try
+        {
+          OCC_CATCH_SIGNALS
+          for (; exp2.More(); exp2.Next())
+          {
+            TopoDS_Face face = TopoDS::Face (exp2.Current());
+            SplitFace->Init(face);
+            SplitFace->SetContext(myContext);
+            SplitFace->Perform();
+            if (SplitFace->Status (ShapeExtend_FAIL))
+            {
+              myStatus |= ShapeExtend::EncodeStatus (ShapeExtend_FAIL2);
+            }
+            if (SplitFace->Status (ShapeExtend_DONE))
+            {
+              myContext->Replace (face, SplitFace->Result());
+              SendMsg (face, doneMsg, Message_Info);
+              if (SplitFace->Status (ShapeExtend_DONE1))
+              {
+                myStatus |= ShapeExtend::EncodeStatus (ShapeExtend_DONE1);
+              }
+              if (SplitFace->Status (ShapeExtend_DONE2))
+              {
+                myStatus |= ShapeExtend::EncodeStatus (ShapeExtend_DONE2);
+              }
+            }
+          }
+        }
+        catch (Standard_Failure const& anException)
+        {
+        #ifdef OCCT_DEBUG
+          std::cout << "\nError: Exception in ShapeUpgrade_FaceDivide::Perform(): ";
+          anException.Print (std::cout); std::cout << std::endl;
+        #endif
+          (void )anException;
+          myStatus |= ShapeExtend::EncodeStatus (ShapeExtend_FAIL2);
+        }
+
+        if (!exp2.More())
+        {
+          break;
+        }
       }
     }
   }
