@@ -6,7 +6,7 @@ puts "TODO CR23096 ALL: COLORS : Faulty"
 set filename igsBF5.igs
 
 set ref_data {
-DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 1 )  Summary  = 0  ( 1 )
+DATA        : Faulties = 0  ( 2152 )  Warnings = 0  ( 1 )  Summary  = 0  ( 2153 )
 TPSTAT      : Faulties = 0  ( 0 )  Warnings = 17  ( 249 )  Summary  = 17  ( 249 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 47  ( 47 ) 

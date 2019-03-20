@@ -40,13 +40,23 @@ IGESGeom_BSplineCurve::IGESGeom_BSplineCurve ()    {  }
    const Standard_Real aUmin, const Standard_Real aUmax,
    const gp_XYZ& aNorm)
 {
-  if (!allPoles.IsNull()) {
-    if (allPoles->Length() != allWeights->Length())
-      throw Standard_DimensionMismatch("IGESGeom_BSplineCurve : Init");
-    if (allKnots->Lower()   != -aDegree || allKnots->Upper()   != anIndex+1 ||
-	allWeights->Upper() !=  anIndex ||
-	allWeights->Lower() != 0        || allPoles->Lower() != 0)
-      throw Standard_DimensionMismatch("IGESGeom_BSplineCurve : Init");
+  if (!allPoles.IsNull())
+  {
+    if (allKnots->Lower() != -aDegree
+     || allKnots->Upper() != anIndex + 1
+     || allPoles->Lower() != 0)
+    {
+      throw Standard_DimensionMismatch ("IGESGeom_BSplineCurve : Init");
+    }
+    if (!allWeights.IsNull())
+    {
+      if (allPoles->Length() != allWeights->Length()
+       || allWeights->Upper() !=  anIndex
+       || allWeights->Lower() != 0)
+      {
+        throw Standard_DimensionMismatch ("IGESGeom_BSplineCurve : Init");
+      }
+    }
   }
 
   theIndex     = anIndex;
