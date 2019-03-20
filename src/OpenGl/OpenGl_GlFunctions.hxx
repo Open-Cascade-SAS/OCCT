@@ -132,6 +132,7 @@
   #define GL_RG16UI   0x823A
   #define GL_RG32I    0x823B
   #define GL_RG32UI   0x823C
+  #define GL_RG8_SNORM 0x8F95
   #define GL_RGBA32UI 0x8D70
   #define GL_RGB32UI  0x8D71
   #define GL_RGBA16UI 0x8D76

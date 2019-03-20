@@ -338,6 +338,12 @@ public:
   {
     return myTextFormat;
   }
+  
+  //! @return texture format (sized)
+  GLint SizedFormat() const
+  {
+    return mySizedFormat;
+  }
 
   //! Return true for GL_RED and GL_ALPHA formats.
   bool IsAlpha() const
