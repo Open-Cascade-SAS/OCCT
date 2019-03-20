@@ -48,8 +48,13 @@ static Standard_Integer addShape (Draw_Interpretor& di, Standard_Integer argc, c
   DDocStd::GetDocument(argv[1], Doc);
   if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
 
-  TopoDS_Shape aShape;
-  aShape = DBRep::Get(argv[2]);
+  TopoDS_Shape aShape = DBRep::Get(argv[2]);
+  if (aShape.IsNull())
+  {
+    std::cout << "Syntax error: shape '" << argv[2] << "' is undefined\n";
+    return 1;
+  }
+
   Handle(XCAFDoc_ShapeTool) myAssembly = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
   Standard_Boolean makeAssembly = Standard_True;
   if ( argc==4 && Draw::Atoi(argv[3]) == 0 ) makeAssembly = Standard_False;
