@@ -283,7 +283,7 @@ Standard_Boolean Image_VideoRecorder::addVideoStream (const Image_VideoParams& t
   // some formats want stream headers to be separate
   if (myAVContext->oformat->flags & AVFMT_GLOBALHEADER)
   {
-    aCodecCtx->flags |= CODEC_FLAG_GLOBAL_HEADER;
+    aCodecCtx->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
   }
   return Standard_True;
 #else
@@ -456,18 +456,6 @@ Standard_Boolean Image_VideoRecorder::writeVideoFrame (const Standard_Boolean th
   AVPacket aPacket;
   memset (&aPacket, 0, sizeof(aPacket));
   av_init_packet (&aPacket);
-  if ((myAVContext->oformat->flags & AVFMT_RAWPICTURE) != 0
-   && !theToFlush)
-  {
-    // raw video case - directly store the picture in the packet
-    aPacket.flags        |= AV_PKT_FLAG_KEY;
-    aPacket.stream_index  = myVideoStream->index;
-    aPacket.data          = myFrame->data[0];
-    aPacket.size          = sizeof(AVPicture);
-
-    aResAv = av_interleaved_write_frame (myAVContext, &aPacket);
-  }
-  else
   {
     // encode the image
     myFrame->pts = myFrameCount;

@@ -2,7 +2,6 @@ AIS.cxx
 AIS.hxx
 AIS_Animation.cxx
 AIS_Animation.hxx
-AIS_AnimationTimer.cxx
 AIS_AnimationTimer.hxx
 AIS_AnimationCamera.cxx
 AIS_AnimationCamera.hxx
@@ -105,6 +104,8 @@ AIS_MapIteratorOfMapOfInteractive.hxx
 AIS_MapOfInteractive.hxx
 AIS_MaxRadiusDimension.cxx
 AIS_MaxRadiusDimension.hxx
+AIS_MediaPlayer.cxx
+AIS_MediaPlayer.hxx
 AIS_MidPointRelation.cxx
 AIS_MidPointRelation.hxx
 AIS_MidPointRelation.lxx

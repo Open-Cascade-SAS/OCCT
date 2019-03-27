@@ -92,6 +92,10 @@ Graphic3d_Mat4d.hxx
 Graphic3d_MaterialAspect.cxx
 Graphic3d_MaterialAspect.hxx
 Graphic3d_MaterialDefinitionError.hxx
+Graphic3d_MediaTexture.cxx
+Graphic3d_MediaTexture.hxx
+Graphic3d_MediaTextureSet.cxx
+Graphic3d_MediaTextureSet.hxx
 Graphic3d_NameOfMaterial.hxx
 Graphic3d_NameOfTexture1D.hxx
 Graphic3d_NameOfTexture2D.hxx

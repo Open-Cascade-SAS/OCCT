@@ -50,6 +50,7 @@
 #include <Graphic3d_CStructure.hxx>
 #include <Graphic3d_Texture2Dmanual.hxx>
 #include <Graphic3d_GraphicDriver.hxx>
+#include <Graphic3d_MediaTextureSet.hxx>
 #include <Image_AlienPixMap.hxx>
 #include <OSD_File.hxx>
 #include <Prs3d_Drawer.hxx>
@@ -4133,6 +4134,38 @@ Standard_Integer VTexture (Draw_Interpretor& theDi, Standard_Integer theArgsNb, 
           || aNameCase == "-defaults")
     {
       toSetDefaults = true;
+    }
+    else if ((aNameCase == "-video")
+           && anArgIter + 1 < theArgsNb)
+    {
+      const TCollection_AsciiString anInput (theArgVec[++anArgIter]);
+      Handle(Graphic3d_MediaTextureSet) aMedia = Handle(Graphic3d_MediaTextureSet)::DownCast (aTextureSetOld);
+      if (aMedia.IsNull())
+      {
+        aMedia = new Graphic3d_MediaTextureSet();
+      }
+      if (aMedia->Input() != anInput)
+      {
+        aMedia->OpenInput (anInput, false);
+      }
+      else
+      {
+        if (aMedia->SwapFrames()
+        && !aCtx->CurrentViewer()->ZLayerSettings (aTexturedIO->ZLayer()).IsImmediate())
+        {
+          ViewerTest::CurrentView()->Invalidate();
+        }
+      }
+      if (aTexturedIO->Attributes()->SetupOwnShadingAspect (aCtx->DefaultDrawer())
+       && aTexturedShape.IsNull())
+      {
+        aTexturedIO->SetToUpdate();
+      }
+
+      toComputeUV = aTextureSetOld.IsNull();
+      aTexturedIO->Attributes()->ShadingAspect()->Aspect()->SetTextureMapOn (true);
+      aTexturedIO->Attributes()->ShadingAspect()->Aspect()->SetTextureSet (aMedia);
+      aTextureSetOld.Nullify();
     }
     else if (aCommandName == "vtexture"
           && (aTextureVecNew.IsEmpty()

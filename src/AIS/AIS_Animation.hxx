@@ -191,7 +191,7 @@ protected:
 
 protected:
 
-  Handle(AIS_AnimationTimer) myTimer;
+  Handle(Media_Timer) myTimer;
 
   TCollection_AsciiString myName;           //!< animation name
   NCollection_Sequence<Handle(AIS_Animation)>

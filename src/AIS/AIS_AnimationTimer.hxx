@@ -15,60 +15,7 @@
 #ifndef _AIS_AnimationTimer_HeaderFile
 #define _AIS_AnimationTimer_HeaderFile
 
-#include <OSD_Timer.hxx>
-#include <Standard_Transient.hxx>
-#include <Standard_Type.hxx>
-
-//! Auxiliary class defining the animation timer.
-class AIS_AnimationTimer : public Standard_Transient
-{
-  DEFINE_STANDARD_RTTIEXT(AIS_AnimationTimer, Standard_Transient)
-public:
-
-  //! Empty constructor.
-  AIS_AnimationTimer() : myTimerFrom (0.0), myTimerSpeed (1.0) {}
-
-  //! Return elapsed time in seconds.
-  Standard_Real ElapsedTime() const
-  {
-    return myTimerFrom + myTimer.ElapsedTime() * myTimerSpeed;
-  }
-
-  //! Return playback speed coefficient (1.0 means normal speed).
-  Standard_Real PlaybackSpeed() const { return myTimerSpeed; }
-
-  //! Setup playback speed coefficient.
-  Standard_EXPORT void SetPlaybackSpeed (const Standard_Real theSpeed);
-
-  //! Return true if timer has been started.
-  Standard_Boolean IsStarted() const
-  {
-    return myTimer.IsStarted();
-  }
-
-  //! Start the timer.
-  void Start()
-  {
-    myTimer.Start();
-  }
-
-  //! Pause the timer.
-  Standard_EXPORT void Pause();
-
-  //! Stop the timer.
-  Standard_EXPORT void Stop();
-
-  //! Seek the timer to specified position.
-  Standard_EXPORT void Seek (const Standard_Real theTime);
-
-protected:
-
-  OSD_Timer     myTimer;
-  Standard_Real myTimerFrom;
-  Standard_Real myTimerSpeed;
-
-};
-
-DEFINE_STANDARD_HANDLE(AIS_AnimationTimer, Standard_Transient)
+#include <Media_Timer.hxx>
+typedef Media_Timer AIS_AnimationTimer;
 
 #endif // _AIS_AnimationTimer_HeaderFile

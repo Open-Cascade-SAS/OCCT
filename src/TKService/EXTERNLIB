@@ -20,3 +20,4 @@ CSF_IOKit
 CSF_FreeImagePlus
 CSF_FREETYPE
 CSF_FFmpeg
+CSF_winmm

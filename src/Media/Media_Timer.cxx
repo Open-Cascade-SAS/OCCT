@@ -12,15 +12,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <AIS_AnimationTimer.hxx>
+#include <Media_Timer.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(AIS_AnimationTimer, Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(Media_Timer, Standard_Transient)
 
 //=============================================================================
 //function : Pause
 //purpose  :
 //=============================================================================
-void AIS_AnimationTimer::Pause()
+void Media_Timer::Pause()
 {
   myTimer.Stop();
   myTimerFrom += myTimer.ElapsedTime() * myTimerSpeed;
@@ -31,7 +31,7 @@ void AIS_AnimationTimer::Pause()
 //function : Stop
 //purpose  :
 //=============================================================================
-void AIS_AnimationTimer::Stop()
+void Media_Timer::Stop()
 {
   myTimer.Stop();
   myTimer.Reset();
@@ -42,7 +42,7 @@ void AIS_AnimationTimer::Stop()
 //function : SetPlaybackSpeed
 //purpose  :
 //=============================================================================
-void AIS_AnimationTimer::SetPlaybackSpeed (const Standard_Real theSpeed)
+void Media_Timer::SetPlaybackSpeed (const Standard_Real theSpeed)
 {
   if (!myTimer.IsStarted())
   {
@@ -61,7 +61,7 @@ void AIS_AnimationTimer::SetPlaybackSpeed (const Standard_Real theSpeed)
 //function : SetPlaybackSpeed
 //purpose  :
 //=============================================================================
-void AIS_AnimationTimer::Seek (const Standard_Real theTime)
+void Media_Timer::Seek (const Standard_Real theTime)
 {
   const Standard_Boolean isStarted = myTimer.IsStarted();
   myTimer.Stop();

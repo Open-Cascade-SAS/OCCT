@@ -168,7 +168,7 @@ void AIS_Animation::StartTimer (const Standard_Real    theStartPts,
 {
   if (myTimer.IsNull())
   {
-    myTimer = new AIS_AnimationTimer();
+    myTimer = new Media_Timer();
   }
   myTimer->Stop();
   myTimer->Seek (theStartPts);

@@ -1359,6 +1359,7 @@ proc osutils:csfList { theOS theCsfLibsMap theCsfFrmsMap } {
     set aLibsMap(CSF_opengl32)     "opengl32"
     set aLibsMap(CSF_wsock32)      "wsock32"
     set aLibsMap(CSF_netapi32)     "netapi32"
+    set aLibsMap(CSF_winmm)        "winmm"
     set aLibsMap(CSF_OpenGlLibs)   "opengl32"
     if { "$::HAVE_GLES2" == "true" } {
       set aLibsMap(CSF_OpenGlLibs) "libEGL libGLESv2"
