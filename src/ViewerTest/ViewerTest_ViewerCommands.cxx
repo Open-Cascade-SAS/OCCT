@@ -59,6 +59,7 @@
 #include <Image_AlienPixMap.hxx>
 #include <Image_VideoRecorder.hxx>
 #include <OpenGl_GraphicDriver.hxx>
+#include <OSD.hxx>
 #include <OSD_Timer.hxx>
 #include <TColStd_HSequenceOfAsciiString.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
@@ -574,6 +575,121 @@ TCollection_AsciiString ViewerTest::GetCurrentViewName ()
 {
   return ViewerTest_myViews.Find2( ViewerTest::CurrentView());
 }
+
+//! Auxiliary tool performing continuous redraws of specified window.
+class ViewerTest_ContinuousRedrawer
+{
+public:
+  //! Return global instance.
+  static ViewerTest_ContinuousRedrawer& Instance()
+  {
+    static ViewerTest_ContinuousRedrawer aRedrawer;
+    return aRedrawer;
+  }
+public:
+
+  //! Destructor.
+  ~ViewerTest_ContinuousRedrawer()
+  {
+    Stop();
+  }
+
+  //! Start thread.
+  void Start (const Handle(Aspect_Window)& theWindow,
+              Standard_Real theTargetFps)
+  {
+    if (myWindow != theWindow
+     || myTargetFps != theTargetFps)
+    {
+      Stop();
+      myWindow = theWindow;
+      myTargetFps = theTargetFps;
+    }
+    if (myThread.GetId() == 0)
+    {
+      myToStop = false;
+      myThread.Run (this);
+    }
+  }
+
+  //! Stop thread.
+  void Stop (const Handle(Aspect_Window)& theWindow = NULL)
+  {
+    if (!theWindow.IsNull()
+      && myWindow != theWindow)
+    {
+      return;
+    }
+
+    {
+      Standard_Mutex::Sentry aLock (myMutex);
+      myToStop = true;
+    }
+    myThread.Wait();
+    myToStop = false;
+    myWindow.Nullify();
+  }
+
+private:
+
+  //! Thread loop.
+  void doThreadLoop()
+  {
+    Handle(Aspect_DisplayConnection) aDisp = new Aspect_DisplayConnection();
+    OSD_Timer aTimer;
+    aTimer.Start();
+    Standard_Real aTimeOld = 0.0;
+    const Standard_Real aTargetDur = myTargetFps > 0.0 ? 1.0 / myTargetFps : -1.0;
+    for (;;)
+    {
+      {
+        Standard_Mutex::Sentry aLock (myMutex);
+        if (myToStop)
+        {
+          return;
+        }
+      }
+      if (myTargetFps > 0.0)
+      {
+        const Standard_Real aTimeNew  = aTimer.ElapsedTime();
+        const Standard_Real aDuration = aTimeNew - aTimeOld;
+        if (aDuration >= aTargetDur)
+        {
+          myWindow->InvalidateContent (aDisp);
+          aTimeOld = aTimeNew;
+        }
+      }
+      else
+      {
+        myWindow->InvalidateContent (aDisp);
+      }
+
+      OSD::MilliSecSleep (1);
+    }
+  }
+
+  //! Thread creation callback.
+  static Standard_Address doThreadWrapper (Standard_Address theData)
+  {
+    ViewerTest_ContinuousRedrawer* aThis = (ViewerTest_ContinuousRedrawer* )theData;
+    aThis->doThreadLoop();
+    return 0;
+  }
+
+  //! Empty constructor.
+  ViewerTest_ContinuousRedrawer()
+  : myThread (doThreadWrapper),
+    myTargetFps (0.0),
+    myToStop (false) {}
+
+private:
+  Handle(Aspect_Window) myWindow;
+  OSD_Thread      myThread;
+  Standard_Mutex  myMutex;
+  Standard_Real   myTargetFps;
+  volatile bool   myToStop;
+};
+
 //==============================================================================
 //function : ViewerInit
 //purpose  : Create the window viewer and initialize all the global variable
@@ -617,15 +733,26 @@ TCollection_AsciiString ViewerTest::ViewerInit (const Standard_Integer thePxLeft
     aPxHeight = thePxHeight;
 
   // Get graphic driver (create it or get from another view)
-  if (!ViewerTest_myDrivers.IsBound1 (aViewNames.GetDriverName()))
+  const bool isNewDriver = !ViewerTest_myDrivers.IsBound1 (aViewNames.GetDriverName());
+  if (isNewDriver)
   {
     // Get connection string
   #if !defined(_WIN32) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
-    TCollection_AsciiString aDisplayName(theDisplayName);
-    if (!aDisplayName.IsEmpty())
-      SetDisplayConnection (new Aspect_DisplayConnection ());
+    if (!theDisplayName.IsEmpty())
+    {
+      SetDisplayConnection (new Aspect_DisplayConnection (theDisplayName));
+    }
     else
-      SetDisplayConnection (new Aspect_DisplayConnection (aDisplayName));
+    {
+      ::Display* aDispX = NULL;
+      // create dedicated display connection instead of reusing Tk connection
+      // so that to procede events independently through VProcessEvents()/ViewerMainLoop() callbacks
+      /*Draw_Interpretor& aCommands = Draw::GetInterpretor();
+      Tcl_Interp* aTclInterp = aCommands.Interp();
+      Tk_Window aMainWindow = Tk_MainWindow (aTclInterp);
+      aDispX = aMainWindow != NULL ? Tk_Display (aMainWindow) : NULL;*/
+      SetDisplayConnection (new Aspect_DisplayConnection (aDispX));
+    }
   #else
     (void)theDisplayName; // avoid warning on unused argument
     SetDisplayConnection (new Aspect_DisplayConnection ());
@@ -800,15 +927,13 @@ TCollection_AsciiString ViewerTest::ViewerInit (const Standard_Integer thePxLeft
     a3DViewer->SetLightOn();
   }
 
-  #if !defined(_WIN32) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
-  #if TCL_MAJOR_VERSION  < 8
-  Tk_CreateFileHandler((void*)XConnectionNumber(GetDisplayConnection()->GetDisplay()),
-      TK_READABLE, VProcessEvents, (ClientData) VT_GetWindow()->XWindow() );
-  #else
-  Tk_CreateFileHandler(XConnectionNumber(GetDisplayConnection()->GetDisplay()),
-      TK_READABLE, VProcessEvents, (ClientData) VT_GetWindow()->XWindow() );
-  #endif
-  #endif
+#if !defined(_WIN32) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
+  if (isNewDriver)
+  {
+    ::Display* aDispX = GetDisplayConnection()->GetDisplay();
+    Tcl_CreateFileHandler (XConnectionNumber (aDispX), TCL_READABLE, VProcessEvents, (ClientData )aDispX);
+  }
+#endif
 
   VT_GetWindow()->Map();
 
@@ -1363,6 +1488,8 @@ void ViewerTest::RemoveView (const TCollection_AsciiString& theViewName, const S
   // Delete view
   Handle(V3d_View) aView = ViewerTest_myViews.Find1(theViewName);
   Handle(AIS_InteractiveContext) aCurrentContext = FindContextByView(aView);
+  ViewerTest_ContinuousRedrawer& aRedrawer = ViewerTest_ContinuousRedrawer::Instance();
+  aRedrawer.Stop (aView->Window());
 
   // Remove view resources
   ViewerTest_myViews.UnBind1(theViewName);
@@ -1399,11 +1526,7 @@ void ViewerTest::RemoveView (const TCollection_AsciiString& theViewName, const S
       {
         ViewerTest_myDrivers.UnBind2 (aCurrentContext->CurrentViewer()->Driver());
       #if !defined(_WIN32) && !defined(__WIN32__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
-        #if TCL_MAJOR_VERSION  < 8
-        Tk_DeleteFileHandler((void*)XConnectionNumber(aCurrentContext->CurrentViewer()->Driver()->GetDisplayConnection()->GetDisplay()));
-        #else
-        Tk_DeleteFileHandler(XConnectionNumber(aCurrentContext->CurrentViewer()->Driver()->GetDisplayConnection()->GetDisplay()));
-        #endif
+        Tcl_DeleteFileHandler (XConnectionNumber (aCurrentContext->CurrentViewer()->Driver()->GetDisplayConnection()->GetDisplay()));
       #endif
       }
 
@@ -2553,235 +2676,297 @@ int max( int a, int b )
     return b;
 }
 
-int ViewerMainLoop(Standard_Integer argc, const char** argv)
-
+int ViewerMainLoop (Standard_Integer argc, const char** argv)
 {
   static XEvent aReport;
-  Standard_Boolean pick = argc > 0;
-  Display *aDisplay = GetDisplayConnection()->GetDisplay();
+  const Standard_Boolean toPick = argc > 0;
+  Standard_Boolean toPickMore = toPick;
+  Display* aDisplay = GetDisplayConnection()->GetDisplay();
   XNextEvent (aDisplay, &aReport);
 
   // Handle event for the chosen display connection
-  switch (aReport.type) {
-      case ClientMessage:
-        {
-          if((Atom)aReport.xclient.data.l[0] == GetDisplayConnection()->GetAtom(Aspect_XA_DELETE_WINDOW))
-          {
-            // Close the window
-            ViewerTest::RemoveView(FindViewIdByWindowHandle (aReport.xclient.window));
-          }
-        }
-        return 0;
-     case FocusIn:
+  switch (aReport.type)
+  {
+    case ClientMessage:
+    {
+      if ((Atom)aReport.xclient.data.l[0] == GetDisplayConnection()->GetAtom(Aspect_XA_DELETE_WINDOW))
       {
-         // Activate inactive view
-         Window aWindow = GetWindowHandle(VT_GetWindow());
-         if(aWindow != aReport.xfocus.window)
-         {
-           ActivateView (FindViewIdByWindowHandle (aReport.xfocus.window));
-         }
+        // Close the window
+        ViewerTest::RemoveView(FindViewIdByWindowHandle (aReport.xclient.window));
+        return toPick ? 0 : 1;
       }
       break;
-      case Expose:
+    }
+    case FocusIn:
+    {
+      // Activate inactive view
+      Window aWindow = GetWindowHandle(VT_GetWindow());
+      if (aWindow != aReport.xfocus.window)
+      {
+        ActivateView (FindViewIdByWindowHandle (aReport.xfocus.window));
+      }
+      break;
+    }
+    case Expose:
+    {
+      Window anXWindow = GetWindowHandle (VT_GetWindow());
+      if (anXWindow == aReport.xexpose.window)
+      {
+        VT_ProcessExpose();
+      }
+
+      // remove all the ExposureMask and process them at once
+      for (int aNbMaxEvents = XPending (aDisplay); aNbMaxEvents > 0; --aNbMaxEvents)
+      {
+        if (!XCheckWindowEvent (aDisplay, anXWindow, ExposureMask, &aReport))
         {
-          VT_ProcessExpose();
+          break;
         }
-        break;
-      case ConfigureNotify:
+      }
+
+      break;
+    }
+    case ConfigureNotify:
+    {
+      // remove all the StructureNotifyMask and process them at once
+      Window anXWindow = GetWindowHandle (VT_GetWindow());
+      for (int aNbMaxEvents = XPending (aDisplay); aNbMaxEvents > 0; --aNbMaxEvents)
+      {
+        if (!XCheckWindowEvent (aDisplay, anXWindow, StructureNotifyMask, &aReport))
         {
-          VT_ProcessConfigure();
+          break;
         }
-        break;
-      case KeyPress:
+      }
+
+      if (anXWindow == aReport.xconfigure.window)
+      {
+        VT_ProcessConfigure();
+      }
+      break;
+    }
+    case KeyPress:
+    {
+      KeySym aKeySym;
+      char aKeyBuf[11];
+      XComposeStatus status_in_out;
+      int aKeyLen = XLookupString ((XKeyEvent* )&aReport, (char* )aKeyBuf, 10, &aKeySym, &status_in_out);
+      aKeyBuf[aKeyLen] = '\0';
+      if (aKeyLen != 0)
+      {
+        VT_ProcessKeyPress (aKeyBuf);
+      }
+      break;
+    }
+    case ButtonPress:
+    {
+      X_ButtonPress = aReport.xbutton.x;
+      Y_ButtonPress = aReport.xbutton.y;
+      if (aReport.xbutton.button == Button1)
+      {
+        if (aReport.xbutton.state & ControlMask)
         {
-
-          KeySym ks_ret ;
-          char buf_ret[11] ;
-          int ret_len ;
-          XComposeStatus status_in_out;
-
-          ret_len = XLookupString( ( XKeyEvent *)&aReport ,
-            (char *) buf_ret , 10 ,
-            &ks_ret , &status_in_out ) ;
-
-
-          buf_ret[ret_len] = '\0' ;
-
-          if (ret_len)
-          {
-            VT_ProcessKeyPress (buf_ret);
-          }
+          toPickMore = VT_ProcessButton1Press (argc, argv, toPick, (aReport.xbutton.state & ShiftMask) != 0);
         }
-        break;
-      case ButtonPress:
+        else
         {
-          X_ButtonPress = aReport.xbutton.x;
-          Y_ButtonPress = aReport.xbutton.y;
-
-          if (aReport.xbutton.button == Button1)
-          {
-            if (aReport.xbutton.state & ControlMask)
-            {
-              pick = VT_ProcessButton1Press (argc, argv, pick, (aReport.xbutton.state & ShiftMask));
-            }
-            else
-            {
-              IsDragged = Standard_True;
-              DragFirst = Standard_True;
-            }
-          }
-          else if (aReport.xbutton.button == Button3)
-          {
-            // Start rotation
-            VT_ProcessButton3Press();
-          }
+          IsDragged = Standard_True;
+          DragFirst = Standard_True;
         }
+      }
+      else if (aReport.xbutton.button == Button3)
+      {
+        // Start rotation
+        VT_ProcessButton3Press();
+      }
+      break;
+    }
+    case ButtonRelease:
+    {
+      if (!IsDragged)
+      {
+        VT_ProcessButton3Release();
         break;
-      case ButtonRelease:
+      }
+
+      Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
+      if (aContext.IsNull())
+      {
+        std::cout << "Error: No active view.\n";
+        return 0;
+      }
+
+      if (!DragFirst
+        && aContext->IsDisplayed (GetRubberBand()))
+      {
+        aContext->Remove (GetRubberBand(), Standard_False);
+        aContext->CurrentViewer()->RedrawImmediate();
+      }
+
+      if (aReport.xbutton.button != Button1)
+      {
+        break;
+      }
+
+      const Standard_Boolean isShiftPressed = (aReport.xbutton.state & ShiftMask) != 0;
+      if (DragFirst)
+      {
+        if (isShiftPressed)
         {
-          if( IsDragged )
-          {
-            if( !DragFirst )
-            {
-              if (ViewerTest::GetAISContext()->IsDisplayed (GetRubberBand()))
-              {
-                ViewerTest::GetAISContext()->Remove (GetRubberBand(), Standard_False);
-                ViewerTest::GetAISContext()->CurrentViewer()->RedrawImmediate();
-              }
-            }
-
-            Handle( AIS_InteractiveContext ) aContext = ViewerTest::GetAISContext();
-            if( aContext.IsNull() )
-            {
-              cout << "The context is null. Please use vinit before createmesh" << endl;
-              return 0;
-            }
-
-            Standard_Boolean ShiftPressed = ( aReport.xbutton.state & ShiftMask );
-            if( aReport.xbutton.button==1 )
-              if( DragFirst )
-                if( ShiftPressed )
-                {
-                  aContext->ShiftSelect (Standard_True);
-                }
-                else
-                {
-                  aContext->Select (Standard_True);
-                }
-              else
-                if( ShiftPressed )
-                {
-                  aContext->ShiftSelect(Min(X_ButtonPress, X_Motion), Min(Y_ButtonPress, Y_Motion),
-                                        Max(X_ButtonPress, X_Motion), Max(Y_ButtonPress, Y_Motion),
-                                        ViewerTest::CurrentView(), Standard_True);
-                }
-                else
-                {
-                  aContext->Select(Min(X_ButtonPress, X_Motion), Min(Y_ButtonPress, Y_Motion),
-                                   Max(X_ButtonPress, X_Motion), Max(Y_ButtonPress, Y_Motion),
-                                   ViewerTest::CurrentView(), Standard_True);
-                }
-            else
-              VT_ProcessButton3Release();
-
-            IsDragged = Standard_False;
-          }
-          else
-            VT_ProcessButton3Release();
+          aContext->ShiftSelect (Standard_True);
         }
-        break;
-      case MotionNotify:
+        else
         {
-          if (GetWindowHandle (VT_GetWindow()) != aReport.xmotion.window)
+          aContext->Select (Standard_True);
+        }
+      }
+      else
+      {
+        if (isShiftPressed)
+        {
+          aContext->ShiftSelect (Min (X_ButtonPress, X_Motion), Min (Y_ButtonPress, Y_Motion),
+                                 Max (X_ButtonPress, X_Motion), Max (Y_ButtonPress, Y_Motion),
+                                 ViewerTest::CurrentView(), Standard_True);
+        }
+        else
+        {
+          aContext->Select (Min (X_ButtonPress, X_Motion), Min(Y_ButtonPress, Y_Motion),
+                            Max (X_ButtonPress, X_Motion), Max(Y_ButtonPress, Y_Motion),
+                            ViewerTest::CurrentView(), Standard_True);
+        }
+      }
+      IsDragged = Standard_False;
+      break;
+    }
+    case MotionNotify:
+    {
+      Window anXWindow = GetWindowHandle (VT_GetWindow());
+      if (anXWindow != aReport.xmotion.window)
+      {
+        break;
+      }
+
+      // remove all the ButtonMotionMask and process them at once
+      for (int aNbMaxEvents = XPending (aDisplay); aNbMaxEvents > 0; --aNbMaxEvents)
+      {
+        if (!XCheckWindowEvent (aDisplay, anXWindow, ButtonMotionMask | PointerMotionMask, &aReport))
+        {
+          break;
+        }
+      }
+
+      if (IsDragged)
+      {
+        if (!DragFirst
+          && ViewerTest::GetAISContext()->IsDisplayed (GetRubberBand()))
+        {
+          ViewerTest::GetAISContext()->Remove (GetRubberBand(), Standard_False);
+        }
+
+        X_Motion = aReport.xmotion.x;
+        Y_Motion = aReport.xmotion.y;
+        DragFirst = Standard_False;
+
+        Window aWindow = GetWindowHandle(VT_GetWindow());
+        Window aRoot;
+        int anX, anY;
+        unsigned int aWidth, aHeight, aBorderWidth, aDepth;
+        XGetGeometry (aDisplay, aWindow, &aRoot, &anX, &anY, &aWidth, &aHeight, &aBorderWidth, &aDepth);
+        GetRubberBand()->SetRectangle (X_ButtonPress, aHeight - Y_ButtonPress, X_Motion, aHeight - Y_Motion);
+        ViewerTest::GetAISContext()->Display (GetRubberBand(), 0, -1, Standard_False, AIS_DS_Displayed);
+        ViewerTest::GetAISContext()->CurrentViewer()->RedrawImmediate();
+      }
+      else
+      {
+        X_Motion = aReport.xmotion.x;
+        Y_Motion = aReport.xmotion.y;
+        if ((aReport.xmotion.state & ControlMask) != 0)
+        {
+          if ((aReport.xmotion.state & Button1Mask) != 0)
           {
-            break;
+            ProcessControlButton1Motion();
           }
-          if( IsDragged )
+          else if ((aReport.xmotion.state & Button2Mask) != 0)
           {
-            if( !DragFirst )
-            {
-              if (ViewerTest::GetAISContext()->IsDisplayed (GetRubberBand()))
-              {
-                ViewerTest::GetAISContext()->Remove (GetRubberBand(), Standard_False);
-              }
-            }
-
-            X_Motion = aReport.xmotion.x;
-            Y_Motion = aReport.xmotion.y;
-            DragFirst = Standard_False;
-
-            Window aWindow = GetWindowHandle(VT_GetWindow());
-            Window aRoot;
-            int anX, anY;
-            unsigned int aWidth, aHeight, aBorderWidth, aDepth;
-            XGetGeometry (aDisplay, aWindow, &aRoot, &anX, &anY, &aWidth, &aHeight, &aBorderWidth, &aDepth);
-            GetRubberBand()->SetRectangle (X_ButtonPress, aHeight - Y_ButtonPress, X_Motion, aHeight - Y_Motion);
-            ViewerTest::GetAISContext()->Display (GetRubberBand(), 0, -1, Standard_False, AIS_DS_Displayed);
-            ViewerTest::GetAISContext()->CurrentViewer()->RedrawImmediate();
+            VT_ProcessControlButton2Motion();
           }
-          else
+          else if ((aReport.xmotion.state & Button3Mask) != 0)
           {
-            X_Motion = aReport.xmotion.x;
-            Y_Motion = aReport.xmotion.y;
-
-            // remove all the ButtonMotionMaskr
-            while( XCheckMaskEvent( aDisplay, ButtonMotionMask, &aReport) ) ;
-
-            if ( aReport.xmotion.state & ControlMask ) {
-              if ( aReport.xmotion.state & Button1Mask ) {
-                ProcessControlButton1Motion();
-              }
-              else if ( aReport.xmotion.state & Button2Mask ) {
-                VT_ProcessControlButton2Motion();
-              }
-              else if ( aReport.xmotion.state & Button3Mask ) {
-                VT_ProcessControlButton3Motion();
-              }
-            }
-            else
-            {
-              VT_ProcessMotion();
-            }
+            VT_ProcessControlButton3Motion();
           }
         }
-        break;
-}
-return pick;
+        else
+        {
+          VT_ProcessMotion();
+        }
+      }
+      break;
+    }
+  }
+  return (!toPick || toPickMore) ? 1 : 0;
 }
 
 //==============================================================================
 //function : VProcessEvents
-//purpose  : call by Tk_CreateFileHandler() to be able to manage the
-//       event in the Viewer window
+//purpose  : manage the event in the Viewer window (see Tcl_CreateFileHandler())
 //==============================================================================
-
-static void VProcessEvents(ClientData,int)
+static void VProcessEvents (ClientData theDispX, int)
 {
-  NCollection_Vector<int> anEventNumbers;
-  // Get number of messages from every display
-  for (NCollection_DoubleMap <TCollection_AsciiString, Handle(Graphic3d_GraphicDriver)>::Iterator
-       anIter (ViewerTest_myDrivers); anIter.More(); anIter.Next())
+  Display* aDispX = (Display* )theDispX;
+  Handle(Aspect_DisplayConnection) aDispConn;
+  for (NCollection_DoubleMap<TCollection_AsciiString, Handle(Graphic3d_GraphicDriver)>::Iterator
+       aDriverIter (ViewerTest_myDrivers); aDriverIter.More(); aDriverIter.Next())
   {
-    anEventNumbers.Append(XPending (anIter.Key2()->GetDisplayConnection()->GetDisplay()));
-  }
-    // Handle events for every display
-  int anEventIter = 0;
-  for (NCollection_DoubleMap <TCollection_AsciiString, Handle(Graphic3d_GraphicDriver)>::Iterator
-       anIter (ViewerTest_myDrivers); anIter.More(); anIter.Next(), anEventIter++)
-  {
-    for (int i = 0; i < anEventNumbers.Value(anEventIter) &&
-         XPending (anIter.Key2()->GetDisplayConnection()->GetDisplay()) > 0; ++i)
+    const Handle(Aspect_DisplayConnection)& aDispConnTmp = aDriverIter.Key2()->GetDisplayConnection();
+    if (aDispConnTmp->GetDisplay() == aDispX)
     {
-      SetDisplayConnection (anIter.Key2()->GetDisplayConnection());
-      int anEventResult = ViewerMainLoop( 0, NULL);
-      // If window is closed or context was not found finish current event processing loop
-      if (!anEventResult)
-	return;
+      aDispConn = aDispConnTmp;
+      break;
+    }
+  }
+  if (aDispConn.IsNull())
+  {
+    std::cerr << "Error: ViewerTest is unable processing messages for unknown X Display\n";
+    return;
+  }
+
+  // process new events in queue
+  SetDisplayConnection (aDispConn);
+  int aNbRemain = 0;
+  for (int aNbEventsMax = XPending (aDispX), anEventIter (0);;)
+  {
+    const int anEventResult = ViewerMainLoop (0, NULL);
+    if (anEventResult == 0)
+    {
+      return;
+    }
+
+    aNbRemain = XPending (aDispX);
+    if (++anEventIter >= aNbEventsMax
+     || aNbRemain <= 0)
+    {
+      break;
     }
   }
 
-  SetDisplayConnection (ViewerTest::GetAISContext()->CurrentViewer()->Driver()->GetDisplayConnection());
+  // Listening X events through Tcl_CreateFileHandler() callback is fragile,
+  // it is possible that new events will arrive to queue before the end of this callback
+  // so that either this callback should go into an infinite loop (blocking processing of other events)
+  // or to keep unprocessed events till the next queue update (which can arrive not soon).
+  // Sending a dummy event in this case is a simple workaround (still, it is possible that new event will be queued in-between).
+  if (aNbRemain != 0)
+  {
+    XEvent aDummyEvent;
+    memset (&aDummyEvent, 0, sizeof(aDummyEvent));
+    aDummyEvent.type = ClientMessage;
+    aDummyEvent.xclient.format = 32;
+    XSendEvent (aDispX, InputFocus, False, 0, &aDummyEvent);
+    XFlush (aDispX);
+  }
 
+  if (const Handle(AIS_InteractiveContext)& anActiveCtx = ViewerTest::GetAISContext())
+  {
+    SetDisplayConnection (anActiveCtx->CurrentViewer()->Driver()->GetDisplayConnection());
+  }
 }
 #endif
 
@@ -2983,7 +3168,8 @@ static int VRepaint (Draw_Interpretor& , Standard_Integer theArgNb, const char**
   {
     TCollection_AsciiString anArg (theArgVec[anArgIter]);
     anArg.LowerCase();
-    if (anArg == "-immediate")
+    if (anArg == "-immediate"
+     || anArg == "-imm")
     {
       isImmediateUpdate = Standard_True;
       if (anArgIter + 1 < theArgNb
@@ -2992,9 +3178,32 @@ static int VRepaint (Draw_Interpretor& , Standard_Integer theArgNb, const char**
         ++anArgIter;
       }
     }
+    else if (anArg == "-continuous"
+          || anArg == "-cont"
+          || anArg == "-fps"
+          || anArg == "-framerate")
+    {
+      Standard_Real aFps = -1.0;
+      if (anArgIter + 1 < theArgNb
+       && TCollection_AsciiString (theArgVec[anArgIter + 1]).IsRealValue())
+      {
+        aFps = Draw::Atof (theArgVec[++anArgIter]);
+      }
+
+      ViewerTest_ContinuousRedrawer& aRedrawer = ViewerTest_ContinuousRedrawer::Instance();
+      if (Abs (aFps) >= 1.0)
+      {
+        aRedrawer.Start (aView->Window(), aFps);
+      }
+      else
+      {
+        aRedrawer.Stop();
+      }
+    }
     else
     {
       std::cout << "Syntax error at '" << anArg << "'\n";
+      return 1;
     }
   }
 
@@ -11692,7 +11901,7 @@ static Standard_Integer VXRotate (Draw_Interpretor& di,
     di << argv[0] << "ERROR : use 'vinit' command before \n";
     return 1;
   }
-  
+
   if (argc != 3)
   {
     di << "ERROR : Usage : " << argv[0] << " name angle\n";
@@ -12566,8 +12775,13 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "   \"scale\" - specifies factor to scale computed z range.\n",
     __FILE__, VZFit, group);
   theCommands.Add("vrepaint",
-            "vrepaint [-immediate]"
-    "\n\t\t: force redraw",
+            "vrepaint [-immediate] [-continuous FPS]"
+    "\n\t\t: force redraw of active View"
+    "\n\t\t:   -immediate  flag performs redraw of immediate layers only;"
+    "\n\t\t:   -continuous activates/deactivates continuous redraw of active View,"
+    "\n\t\t:                0 means no continuous rendering,"
+    "\n\t\t:               -1 means non-stop redraws,"
+    "\n\t\t:               >0 specifies target framerate,",
     __FILE__,VRepaint,group);
   theCommands.Add("vclear",
     "vclear          : vclear"

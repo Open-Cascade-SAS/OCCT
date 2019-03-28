@@ -111,6 +111,13 @@ public:
     return myFBConfig;
   }
 
+  //! Invalidate entire window content through generation of Expose event.
+  //! This method does not aggregate multiple calls into single event - dedicated event will be sent on each call.
+  //! When NULL display connection is specified, the connection specified on window creation will be used.
+  //! Sending exposure messages from non-window thread would require dedicated display connection opened specifically
+  //! for this working thread to avoid race conditions, since Xlib display connection is not thread-safe by default.
+  Standard_EXPORT virtual void InvalidateContent (const Handle(Aspect_DisplayConnection)& theDisp) Standard_OVERRIDE;
+
 protected:
 
   Handle(Aspect_DisplayConnection) myDisplay; //!< X Display connection

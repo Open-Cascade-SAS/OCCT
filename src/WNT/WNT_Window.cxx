@@ -355,4 +355,16 @@ void WNT_Window::SetPos (const Standard_Integer theX,  const Standard_Integer th
   aYBottom = theY1;
 }
 
+// =======================================================================
+// function : InvalidateContent
+// purpose  :
+// =======================================================================
+void WNT_Window::InvalidateContent (const Handle(Aspect_DisplayConnection)& )
+{
+  if (myHWindow != NULL)
+  {
+    ::InvalidateRect ((HWND )myHWindow, NULL, TRUE);
+  }
+}
+
 #endif // _WIN32

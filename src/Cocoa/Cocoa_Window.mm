@@ -66,6 +66,31 @@ static Standard_Integer getScreenBottom()
 }
 #endif
 
+//! Extension for Cocoa_Window::InvalidateContent().
+#if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
+  @interface UIView (UIViewOcctAdditions)
+  - (void )invalidateContentOcct: (id )theSender;
+  @end
+  @implementation UIView (UIViewOcctAdditions)
+  - (void )invalidateContentOcct: (id )theSender
+  {
+    (void )theSender;
+    [self setNeedsDisplay];
+  }
+  @end
+#else
+  @interface NSView (NSViewOcctAdditions)
+  - (void )invalidateContentOcct: (id )theSender;
+  @end
+  @implementation NSView (NSViewOcctAdditions)
+  - (void )invalidateContentOcct: (id )theSender
+  {
+    (void )theSender;
+    [self setNeedsDisplay: YES];
+  }
+  @end
+#endif
+
 // =======================================================================
 // function : Cocoa_Window
 // purpose  :
@@ -376,4 +401,31 @@ void Cocoa_Window::Size (Standard_Integer& theWidth,
 #endif
   theWidth  = (Standard_Integer )aBounds.size.width;
   theHeight = (Standard_Integer )aBounds.size.height;
+}
+
+// =======================================================================
+// function : InvalidateContent
+// purpose  :
+// =======================================================================
+void Cocoa_Window::InvalidateContent (const Handle(Aspect_DisplayConnection)& )
+{
+  if (myHView == NULL)
+  {
+    return;
+  }
+
+  if ([NSThread isMainThread])
+  {
+  #if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
+    [myHView setNeedsDisplay];
+  #else
+    [myHView setNeedsDisplay: YES];
+  #endif
+  }
+  else
+  {
+    [myHView performSelectorOnMainThread: @selector(invalidateContentOcct:)
+                              withObject: NULL
+                           waitUntilDone: NO];
+  }
 }

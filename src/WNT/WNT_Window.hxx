@@ -115,6 +115,10 @@ public:
   //! Returns nothing on Windows
   virtual Aspect_FBConfig NativeFBConfig() const Standard_OVERRIDE { return NULL; }
 
+  //! Invalidate entire window content by calling InvalidateRect() WinAPI function, resulting in WM_PAINT event put into window message loop.
+  //! Method can be called from non-window thread, and system will also automatically aggregate multiple events into single one.
+  Standard_EXPORT virtual void InvalidateContent (const Handle(Aspect_DisplayConnection)& theDisp = NULL) Standard_OVERRIDE;
+
   DEFINE_STANDARD_RTTIEXT(WNT_Window,Aspect_Window)
 
 protected:

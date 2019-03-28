@@ -482,4 +482,26 @@ void Xw_Window::Size (Standard_Integer& theWidth,
   theHeight = aWinAttr.height;
 }
 
+// =======================================================================
+// function : InvalidateContent
+// purpose  :
+// =======================================================================
+void Xw_Window::InvalidateContent (const Handle(Aspect_DisplayConnection)& theDisp)
+{
+  if (myXWindow == 0)
+  {
+    return;
+  }
+
+  const Handle(Aspect_DisplayConnection)& aDisp = !theDisp.IsNull() ? theDisp : myDisplay;
+  Display* aDispX = aDisp->GetDisplay();
+
+  XEvent anEvent;
+  memset (&anEvent, 0, sizeof(anEvent));
+  anEvent.type = Expose;
+  anEvent.xexpose.window = myXWindow;
+  XSendEvent (aDispX, myXWindow, False, ExposureMask, &anEvent);
+  XFlush (aDispX);
+}
+
 #endif //  Win32 or Mac OS X

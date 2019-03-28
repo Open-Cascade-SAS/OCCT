@@ -2345,23 +2345,24 @@ static DWORD WINAPI tkLoop(VOID)
   Standard_Boolean toLoop = Standard_True;
   while (toLoop)
   {
-    while(Tcl_DoOneEvent(TCL_ALL_EVENTS | TCL_DONT_WAIT));
+    // The natural way is first flushing events, already put into queue, and then processing custom code in-between.
+    // Unfortunately, Tcl has no API returning the number of queued events like XPending(), and only empty state can be checked.
+    // Since events can be continuously fed from parallel threads, Tcl_DoOneEvent might never return empty state at all.
+    const bool isTclEventQueueEmpty = Tcl_DoOneEvent(TCL_ALL_EVENTS | TCL_DONT_WAIT) == 0;
     if (console_semaphore == HAS_CONSOLE_COMMAND)
     {
-      TCollection_AsciiString aCmdUtf8 (console_command);
-      if (Draw_Interprete (aCmdUtf8.ToCString()))
+      const TCollection_AsciiString aCmdUtf8 (console_command);
+      const bool wasInterpreted = Draw_Interprete (aCmdUtf8.ToCString());
+      if (Draw_IsConsoleSubsystem)
       {
-        if (Draw_IsConsoleSubsystem) Prompt (interp, 0);
-      }
-      else
-      {
-        if (Draw_IsConsoleSubsystem) Prompt (interp, 1);
+        Prompt (interp, wasInterpreted ? 0 : 1);
       }
       console_semaphore = WAIT_CONSOLE_COMMAND;
     }
-    else
+    else if (isTclEventQueueEmpty)
     {
-      Sleep(100);
+      // release CPU while polling
+      Sleep (1);
     }
   #ifdef _TK
     // We should not exit until the Main Tk window is closed
