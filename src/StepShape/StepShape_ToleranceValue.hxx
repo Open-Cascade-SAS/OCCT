@@ -35,15 +35,15 @@ public:
   
   Standard_EXPORT StepShape_ToleranceValue();
   
-  Standard_EXPORT void Init (const Handle(StepBasic_MeasureWithUnit)& lower_bound, const Handle(StepBasic_MeasureWithUnit)& upper_bound);
+  Standard_EXPORT void Init (const Handle(Standard_Transient)& lower_bound, const Handle(Standard_Transient)& upper_bound);
   
-  Standard_EXPORT Handle(StepBasic_MeasureWithUnit) LowerBound() const;
+  Standard_EXPORT Handle(Standard_Transient) LowerBound() const;
   
-  Standard_EXPORT void SetLowerBound (const Handle(StepBasic_MeasureWithUnit)& lower_bound);
+  Standard_EXPORT void SetLowerBound (const Handle(Standard_Transient)& lower_bound);
   
-  Standard_EXPORT Handle(StepBasic_MeasureWithUnit) UpperBound() const;
+  Standard_EXPORT Handle(Standard_Transient) UpperBound() const;
   
-  Standard_EXPORT void SetUpperBound (const Handle(StepBasic_MeasureWithUnit)& upper_bound);
+  Standard_EXPORT void SetUpperBound (const Handle(Standard_Transient)& upper_bound);
 
 
 
@@ -58,8 +58,8 @@ protected:
 private:
 
 
-  Handle(StepBasic_MeasureWithUnit) theLowerBound;
-  Handle(StepBasic_MeasureWithUnit) theUpperBound;
+  Handle(Standard_Transient) theLowerBound;
+  Handle(Standard_Transient) theUpperBound;
 
 
 };

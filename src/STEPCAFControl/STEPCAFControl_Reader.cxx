@@ -3239,9 +3239,23 @@ static void setDimObjectToXCAF(const Handle(Standard_Transient)& theEnt,
         aTV = aTMD.ToleranceValue();
         if (aTV.IsNull()) continue;
 
-        Handle(StepBasic_MeasureWithUnit) aMWU = aTV->UpperBound();
-        Standard_Real aVal = aTV->UpperBound()->ValueComponent();
-        StepBasic_Unit anUnit = aTV->UpperBound()->UnitComponent();
+        Handle(Standard_Transient) aUpperBound = aTV->UpperBound();
+        if(aUpperBound.IsNull())
+          continue;
+        Handle(StepBasic_MeasureWithUnit) aMWU;
+        if(aUpperBound->IsKind(STANDARD_TYPE(StepBasic_MeasureWithUnit)) )
+          aMWU = Handle(StepBasic_MeasureWithUnit)::DownCast(aUpperBound);
+        else if(aUpperBound->IsKind(STANDARD_TYPE(StepRepr_ReprItemAndMeasureWithUnit)) )
+        {
+          Handle(StepRepr_ReprItemAndMeasureWithUnit) aReprMeasureItem = 
+            Handle(StepRepr_ReprItemAndMeasureWithUnit)::DownCast(aUpperBound);
+          aMWU = aReprMeasureItem->GetMeasureWithUnit();
+
+        }
+        if(aMWU.IsNull())
+          continue;
+        Standard_Real aVal = aMWU->ValueComponent();
+        StepBasic_Unit anUnit = aMWU->UnitComponent();
         if (anUnit.IsNull()) continue;
         if (!(anUnit.CaseNum(anUnit.Value()) == 1)) continue;
         Handle(StepBasic_NamedUnit) NU = anUnit.NamedUnit();
@@ -3259,9 +3273,25 @@ static void setDimObjectToXCAF(const Handle(Standard_Transient)& theEnt,
         }
         aDim3 = aVal;
 
-        aMWU = aTV->LowerBound();
-        aVal = aTV->LowerBound()->ValueComponent();
-        anUnit = aTV->LowerBound()->UnitComponent();
+        
+        Handle(Standard_Transient) aLowerBound = aTV->LowerBound();
+        if(aLowerBound.IsNull())
+          continue;
+       
+        if(aLowerBound->IsKind(STANDARD_TYPE(StepBasic_MeasureWithUnit)) )
+          aMWU = Handle(StepBasic_MeasureWithUnit)::DownCast(aLowerBound);
+        else if(aLowerBound->IsKind(STANDARD_TYPE(StepRepr_ReprItemAndMeasureWithUnit)) )
+        {
+          Handle(StepRepr_ReprItemAndMeasureWithUnit) aReprMeasureItem = 
+            Handle(StepRepr_ReprItemAndMeasureWithUnit)::DownCast(aLowerBound);
+          aMWU = aReprMeasureItem->GetMeasureWithUnit();
+
+        }
+        if(aMWU.IsNull())
+          continue;
+      
+        aVal = aMWU->ValueComponent();
+        anUnit = aMWU->UnitComponent();
         if (anUnit.IsNull()) continue;
         if (!(anUnit.CaseNum(anUnit.Value()) == 1)) continue;
         NU = anUnit.NamedUnit();
@@ -4105,7 +4135,7 @@ void collectViewShapes(const Handle(XSControl_WorkSession)& theWS,
     if (!anIter.Value()->IsKind(STANDARD_TYPE(StepRepr_RepresentationRelationship)))
       continue;
     Handle(StepRepr_RepresentationRelationship) aReprRelationship = Handle(StepRepr_RepresentationRelationship)::DownCast(anIter.Value());
-    if (aReprRelationship->Rep1() != theRepr)
+    if (!aReprRelationship->Rep1().IsNull() && aReprRelationship->Rep1() != theRepr)
       collectViewShapes(theWS, theDoc, aReprRelationship->Rep1(), theShapes);
   }
 }

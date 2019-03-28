@@ -19,6 +19,8 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepShape_ToleranceValue.hxx>
+#include <StepRepr_MeasureRepresentationItem.hxx>
+#include <StepRepr_ReprItemAndMeasureWithUnit.hxx>
 
 RWStepShape_RWToleranceValue::RWStepShape_RWToleranceValue () {}
 
@@ -34,18 +36,45 @@ void RWStepShape_RWToleranceValue::ReadStep
 
 	// --- own field : lower_bound ---
 
-	Handle(StepBasic_MeasureWithUnit) LB;
-	data->ReadEntity (num,1,"lower_bound",ach,
-			  STANDARD_TYPE(StepBasic_MeasureWithUnit),LB);
+	Handle(Standard_Transient) LB;
+	if(!data->ReadEntity (num,1,"lower_bound",ach,
+			  STANDARD_TYPE(StepBasic_MeasureWithUnit),LB))
+  {
+    Handle(StepRepr_MeasureRepresentationItem) aMSR;
+    Handle(StepRepr_ReprItemAndMeasureWithUnit) aRIMU;
+     
+    if(data->ReadEntity (num,1,"lower_bound",ach,
+			  STANDARD_TYPE(StepRepr_MeasureRepresentationItem),aMSR) || 
+      data->ReadEntity (num,1,"lower_bound",ach,STANDARD_TYPE(StepRepr_ReprItemAndMeasureWithUnit), aRIMU))
+    {
+      if(!aMSR.IsNull())
+        LB = aMSR;
+       else if(!aRIMU.IsNull())
+        LB = aRIMU;
+    }
+  }
 
 	// --- own field : upper_bound ---
 
-	Handle(StepBasic_MeasureWithUnit) UB;
-	data->ReadEntity (num,2,"upper_bound",ach,
-			  STANDARD_TYPE(StepBasic_MeasureWithUnit),UB);
+	Handle(Standard_Transient) UB;
+	if(!data->ReadEntity (num,2,"upper_bound",ach,
+			  STANDARD_TYPE(StepBasic_MeasureWithUnit),UB))
+  {
+     Handle(StepRepr_MeasureRepresentationItem) aMSR1;
+     Handle(StepRepr_ReprItemAndMeasureWithUnit) aRIMU1;
+    if(data->ReadEntity (num,2,"upper_bound",ach,STANDARD_TYPE(StepRepr_MeasureRepresentationItem),aMSR1) || 
+      data->ReadEntity (num,2,"upper_bound",ach,STANDARD_TYPE(StepRepr_ReprItemAndMeasureWithUnit), aRIMU1))
+    {
+      if(!aMSR1.IsNull())
+        UB = aMSR1;
+      else if(!aRIMU1.IsNull())
+        UB = aRIMU1;
+    }
+  }
 
 	//--- Initialisation of the read entity ---
-
+  if( !LB.IsNull() && !UB.IsNull())
+    ach->ClearFails();
 	ent->Init(LB,UB);
 }
 
