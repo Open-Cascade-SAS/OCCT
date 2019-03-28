@@ -38,12 +38,14 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
-  //! Returns a HashCode in the range <0,Upper> for a Element :
-  //! asks the Element its HashCode then transforms it to be in the
-  //! required range
-  Standard_EXPORT static Standard_Integer HashCode (const Handle(MoniTool_Element)& K, const Standard_Integer Upper);
-  
+  //! Returns hash code for the given element, in the range [1, theUpperBound].
+  //! Asks theElement its HashCode, then transforms it to be in the required range.
+  //! @param theElement the element which hash code is to be computed
+  //! @param theUpperBound the upper bound of the range a computing hash code must be within
+  //! @return a computed hash code, in the range [1, theUpperBound]
+  Standard_EXPORT static Standard_Integer HashCode (const Handle (MoniTool_Element) & theElement,
+                                                    Standard_Integer                  theUpperBound);
+
   //! Returns True if two keys are the same.
   //! The test does not work on the Elements themselves but by
   //! calling their methods Equates

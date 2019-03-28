@@ -16,25 +16,9 @@
 #ifndef Standard_ThreadId_HeaderFile
 #define Standard_ThreadId_HeaderFile
 
-// Platform-dependent definition of the thread identifier type
+#include <Standard_Size.hxx>
 
-#ifdef _WIN32
-
-#include <windows.h>
-typedef DWORD Standard_ThreadId;
-
-inline Standard_Integer HashCode(const Standard_ThreadId Value,
-  const Standard_Integer Upper)
-{
-  // Size of int == size of unsigned long == 4 for WIN32 and WIN64
-  return HashCode((Standard_Integer)Value, Upper);
-}
-
-#else
-
-#include <pthread.h>
-typedef pthread_t Standard_ThreadId;
-
-#endif
+// Platform-independent definition of the thread identifier type
+typedef Standard_Size Standard_ThreadId;
 
 #endif

@@ -141,9 +141,13 @@ namespace IMeshData
       return (theFirst == theSecond);
     }
 
-    static Standard_Integer HashCode(const Type* thePtr, Standard_Integer theUpper)
+    //! Computes a hash code for the given pointer, in the range [1, theUpperBound]
+    //! @param thePointer the pointer which hash code is to be computed
+    //! @param theUpperBound the upper bound of the range a computing hash code must be within
+    //! @return a computed hash code, in the range [1, theUpperBound]
+    static Standard_Integer HashCode (const Type* const thePointer, Standard_Integer theUpperBound)
     {
-      return ::HashCode(thePtr, theUpper);
+      return ::HashCode (thePointer, theUpperBound);
     }
   };
 

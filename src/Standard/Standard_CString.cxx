@@ -28,31 +28,33 @@
 #include <stdarg.h>
 
 //============================================================================
-//==== HashCode of a CString
+// function : HashCode
+// purpose  :
 //============================================================================
-Standard_Integer HashCode (const Standard_CString Value,
-                           const Standard_Integer Upper )
+Standard_Integer HashCode (const Standard_CString theString, const Standard_Integer theUpperBound)
 {
-  Standard_Integer aLen = (Standard_Integer)strlen(Value);
-  return HashCode (HashCodes (Value, aLen), Upper);
+  const Standard_Integer aLength = static_cast<Standard_Integer> (strlen (theString));
+
+  return HashCode (theString, aLength, theUpperBound);
 }
 
 //============================================================================
-//==== HashCode of a CString
+// function : HashCodes
+// purpose  :
 //============================================================================
-Standard_Integer HashCodes (const Standard_CString Value,
-                            const Standard_Integer Len)
+Standard_Integer HashCodes (const Standard_CString theString, const Standard_Integer theLength)
 {
   // compute DJB2 hash of a string
-  Standard_Integer hash = 0;
-  const Standard_Character *c = Value;
-  for (Standard_Integer i = 0; i < Len; i++, c++)
+  unsigned int              hash = 0;
+  const Standard_Character* c    = theString;
+
+  for (Standard_Integer i = 0; i < theLength; ++i, ++c)
   {
     /* hash = hash * 33 ^ c */
     hash = ((hash << 5) + hash) ^ (*c);
   }
 
-  return hash;
+  return static_cast<Standard_Integer>(hash);
 }
 
 //======================================================================

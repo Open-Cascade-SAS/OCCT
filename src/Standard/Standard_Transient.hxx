@@ -105,10 +105,15 @@ private:
   mutable volatile Standard_Integer count;
 };
 
-//! Global method HashCode(), for use in hash maps
-inline Standard_Integer HashCode (const Standard_Transient* theObject, const Standard_Integer theUpper)
+
+//! Computes a hash code for the given transient object, in the range [1, theUpperBound]
+//! @param theTransientObject the transient object which hash code is to be computed
+//! @param theUpperBound the upper bound of the range a computing hash code must be within
+//! @return a computed hash code, in the range [1, theUpperBound]
+inline Standard_Integer HashCode (const Standard_Transient* const theTransientObject,
+                                  const Standard_Integer          theUpperBound)
 {
-  return ::HashCode ((Standard_Address*)theObject, theUpper);
+  return ::HashCode (static_cast<const void*> (theTransientObject), theUpperBound);
 }
 
 //! Definition of Handle_Standard_Transient as typedef for compatibility

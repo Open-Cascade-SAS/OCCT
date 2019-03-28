@@ -51,15 +51,12 @@ Standard_Boolean IsEqual (const Handle(VrmlData_Node)& theOne,
 }
 
 //=======================================================================
-//function : HashCode
-//purpose  : Global method
+// function : HashCode
+// purpose  : Global method
 //=======================================================================
-
-Standard_Integer HashCode(const Handle(VrmlData_Node)& theNode,
-                          const Standard_Integer       theUpper)
+Standard_Integer HashCode (const Handle (VrmlData_Node) & theNode, const Standard_Integer theUpperBound)
 {
-  return (theNode->Name() == 0L ? 0
-          : HashCode((Standard_CString)theNode->Name(), theUpper));
+  return (theNode->Name () == NULL ? 1 : HashCode (theNode->Name (), theUpperBound));
 }
 
 //=======================================================================

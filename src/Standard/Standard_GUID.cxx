@@ -388,9 +388,13 @@ void Standard_GUID::ShallowDump(Standard_OStream& aStream) const
   aStream << sguid;
 }
 
-Standard_Integer Standard_GUID::HashCode(const Standard_GUID& aGuid,const Standard_Integer Upper)
+//============================================================================
+// function : HashCode
+// purpose  :
+//============================================================================
+Standard_Integer Standard_GUID::HashCode (const Standard_GUID& theGuid, const Standard_Integer theUpperBound)
 {
-  return aGuid.Hash(Upper);
+  return theGuid.Hash (theUpperBound);
 }
 
 Standard_Integer Standard_GUID::Hash(const Standard_Integer Upper) const

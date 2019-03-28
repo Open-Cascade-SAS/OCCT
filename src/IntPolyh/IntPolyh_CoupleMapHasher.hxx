@@ -24,13 +24,16 @@ class IntPolyh_Couple;
 class IntPolyh_CoupleMapHasher 
 {
 public:
-
-  static Standard_Integer HashCode(const IntPolyh_Couple& theCouple,
-                                   const Standard_Integer Upper)
+  
+  //! Computes a hash code for the given couple, in the range [1, theUpperBound]
+  //! @param theCouple the couple which hash code is to be computed
+  //! @param theUpperBound the upper bound of the range a computing hash code must be within
+  //! @return a computed hash code, in the range [1, theUpperBound]
+  static Standard_Integer HashCode (const IntPolyh_Couple& theCouple, const Standard_Integer theUpperBound)
   {
-    return theCouple.HashCode(Upper);
+    return theCouple.HashCode (theUpperBound);
   }
- 
+
   static Standard_Boolean IsEqual(const IntPolyh_Couple& theCouple1,
                                   const IntPolyh_Couple& theCouple2)
   {

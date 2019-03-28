@@ -92,12 +92,15 @@ public:
     return (myIndex1 == theOther.myIndex1 && myIndex2 == theOther.myIndex2) ||
            (myIndex1 == theOther.myIndex2 && myIndex2 == theOther.myIndex1);
   }
-  //
-  //! Returns hash code
-  Standard_Integer HashCode (const Standard_Integer theUpper) const
+
+  //! Computes a hash code for this couple, in the range [1, theUpperBound]
+  //! @param theUpperBound the upper bound of the range a computing hash code must be within
+  //! @return a computed hash code, in the range [1, theUpperBound]
+  Standard_Integer HashCode (const Standard_Integer theUpperBound) const
   {
-    return ::HashCode(myIndex1 + myIndex2, theUpper);
+    return ::HashCode (myIndex1 + myIndex2, theUpperBound);
   }
+
   // Dump
   Standard_EXPORT void Dump (const Standard_Integer v) const;
 

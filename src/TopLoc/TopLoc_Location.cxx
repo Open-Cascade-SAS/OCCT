@@ -169,11 +169,10 @@ TopLoc_Location TopLoc_Location::Powered (const Standard_Integer pwr) const
 }
 
 //=======================================================================
-//function : HashCode
-//purpose  : 
+// function : HashCode
+// purpose  :
 //=======================================================================
-
-Standard_Integer TopLoc_Location::HashCode(const Standard_Integer upper) const
+Standard_Integer TopLoc_Location::HashCode (const Standard_Integer theUpperBound) const
 {
   // the HashCode computed for a Location is the bitwise exclusive or
   // of values computed for each element of the list
@@ -186,18 +185,19 @@ Standard_Integer TopLoc_Location::HashCode(const Standard_Integer upper) const
   // this value is biwise rotated by depth
   // the use of depth avoids getting the same result for two permutated lists.
 
-  Standard_Integer depth = 0;
-  unsigned int h = 0;
+  Standard_Integer           depth = 0;
+  unsigned int               h     = 0;
   TopLoc_SListOfItemLocation items = myItems;
-  while (items.More()) {
+  while (items.More())
+  {
     depth += 3;
-    unsigned int i = ::HashCode (items.Value().myDatum, upper);
-    unsigned int j = ( (i + items.Value().myPower) <<depth);
-    j = j>>(32-depth) | j<<depth;
+    unsigned int i = ::HashCode (items.Value().myDatum, theUpperBound);
+    unsigned int j = ((i + items.Value().myPower) << depth);
+    j              = j >> (32 - depth) | j << depth;
     h ^= j;
-    items.Next();
+    items.Next ();
   }
-  return h % upper;
+  return ::HashCode (h, theUpperBound);
 }
 
 //=======================================================================

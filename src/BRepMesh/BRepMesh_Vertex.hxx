@@ -103,13 +103,13 @@ public:
   {
     myMovability = theMovability;
   }
-  
-  //! Returns hash code for this vertex.
-  //! @param theUpper upper index in the container.
-  //! @return hash code.
-  inline Standard_Integer HashCode(const Standard_Integer Upper) const
+
+  //! Computes a hash code for this vertex, in the range [1, theUpperBound]
+  //! @param theUpperBound the upper bound of the range a computing hash code must be within
+  //! @return a computed hash code, in the range [1, theUpperBound]
+  inline Standard_Integer HashCode(const Standard_Integer theUpperBound) const
   {
-    return ::HashCode(Floor(1e5 * myUV.X()) * Floor(1e5 * myUV.Y()), Upper);
+    return ::HashCode(Floor(1e5 * myUV.X()) * Floor(1e5 * myUV.Y()), theUpperBound);
   }
   
   //! Checks for equality with another vertex.
@@ -139,9 +139,13 @@ private:
   BRepMesh_DegreeOfFreedom  myMovability;
 };
 
-inline Standard_Integer HashCode(const BRepMesh_Vertex& me, const Standard_Integer Upper)
+//! Computes a hash code for the given vertex, in the range [1, theUpperBound]
+//! @param theVertex the vertex which hash code is to be computed
+//! @param theUpperBound the upper bound of the range a computing hash code must be within
+//! @return a computed hash code, in the range [1, theUpperBound]
+inline Standard_Integer HashCode (const BRepMesh_Vertex& theVertex, const Standard_Integer theUpperBound)
 {
- return me.HashCode(Upper);
+  return theVertex.HashCode (theUpperBound);
 }
 
 #endif

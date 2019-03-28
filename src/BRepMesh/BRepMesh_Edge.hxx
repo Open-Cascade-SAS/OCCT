@@ -86,10 +86,13 @@ private:
   BRepMesh_DegreeOfFreedom  myMovability;
 };
 
-inline Standard_Integer HashCode(const BRepMesh_Edge&   theEdge,
-                                 const Standard_Integer theUpper)
+//! Computes a hash code for the given edge, in the range [1, theUpperBound]
+//! @param theEdge the edge which hash code is to be computed
+//! @param theUpperBound the upper bound of the range a computing hash code must be within
+//! @return a computed hash code, in the range [1, theUpperBound]
+inline Standard_Integer HashCode (const BRepMesh_Edge& theEdge, const Standard_Integer theUpperBound)
 {
-  return theEdge.HashCode(theUpper);
+  return theEdge.HashCode (theUpperBound);
 }
 
 #endif

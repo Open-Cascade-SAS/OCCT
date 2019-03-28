@@ -91,15 +91,15 @@ public:
   {
     myMovability = theMovability;
   }
-  
-  //! Returns hash code for this triangle.
-  //! @param theUpper upper index in the container.
-  //! @return hash code.
-  inline Standard_Integer HashCode(const Standard_Integer theUpper) const
+
+  //! Computes a hash code for this triangle, in the range [1, theUpperBound]
+  //! @param theUpperBound the upper bound of the range a computing hash code must be within
+  //! @return a computed hash code, in the range [1, theUpperBound]
+  inline Standard_Integer HashCode (const Standard_Integer theUpperBound) const
   {
-    return ::HashCode(myEdges[0] + myEdges[1] + myEdges[2], theUpper);
+    return ::HashCode (myEdges[0] + myEdges[1] + myEdges[2], theUpperBound);
   }
-  
+
   //! Checks for equality with another triangle.
   //! @param theOther triangle to be checked against this one.
   //! @return TRUE if equal, FALSE if not.
@@ -143,10 +143,13 @@ public:
   BRepMesh_DegreeOfFreedom  myMovability;
 };
 
-inline Standard_Integer HashCode(const BRepMesh_Triangle& theTriangle,
-                                 const Standard_Integer   theUpper)
+//! Computes a hash code for the given triangle, in the range [1, theUpperBound]
+//! @param theTriangle the triangle which hash code is to be computed
+//! @param theUpperBound the upper bound of the range a computing hash code must be within
+//! @return a computed hash code, in the range [1, theUpperBound]
+inline Standard_Integer HashCode (const BRepMesh_Triangle& theTriangle, const Standard_Integer theUpperBound)
 {
- return theTriangle.HashCode(theUpper);
+  return theTriangle.HashCode (theUpperBound);
 }
 
 #endif

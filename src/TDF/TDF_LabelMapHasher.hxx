@@ -22,11 +22,13 @@
 class TDF_LabelMapHasher 
 {
 public:
-
-  //! Returns a HasCode value  for  the  Key <K>  in the range 0..Upper.
-  static Standard_Integer HashCode(const TDF_Label& aLab, const Standard_Integer Upper)
+  //! Computes a hash code for the given label, in the range [1, theUpperBound]
+  //! @param theLabel the label which hash code is to be computed
+  //! @param theUpperBound the upper bound of the range a computing hash code must be within
+  //! @return a computed hash code, in the range [1, theUpperBound]
+  static Standard_Integer HashCode(const TDF_Label& theLabel, const Standard_Integer theUpperBound)
   {
-    return ::HashCode((Standard_Address)aLab.myLabelNode, Upper);
+    return ::HashCode(theLabel.myLabelNode, theUpperBound);
   }
 
   //! Returns True  when the two  keys are the same. Two

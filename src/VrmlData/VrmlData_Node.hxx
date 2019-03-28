@@ -201,8 +201,12 @@ class VrmlData_Node : public Standard_Transient
 // Definition of HANDLE object using Standard_DefineHandle.hxx
 DEFINE_STANDARD_HANDLE (VrmlData_Node, Standard_Transient)
 
-Standard_EXPORT Standard_Integer HashCode(const Handle(VrmlData_Node)& theNode,
-                                          const Standard_Integer      theUpper);
+//! Computes a hash code for the given VRML node, in the range [1, theUpperBound]
+//! @param theNode the VRML node which hash code is to be computed
+//! @param theUpperBound the upper bound of the range a computing hash code must be within
+//! @return a computed hash code, in the range [1, theUpperBound]
+Standard_EXPORT Standard_Integer HashCode (const Handle (VrmlData_Node) & theNode, Standard_Integer theUpperBound);
+
 Standard_EXPORT Standard_Boolean IsEqual (const Handle(VrmlData_Node)& theOne,
                                           const Handle(VrmlData_Node)& theTwo);
 

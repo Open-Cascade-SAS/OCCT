@@ -32,11 +32,12 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
-  //! Returns a HasCode value  for  the  Key <K>  in the
-  //! range 0..Upper.
-    static Standard_Integer HashCode (const gp_Pnt& Point, const Standard_Integer Upper);
-  
+  //! Computes a hash code for the point, in the range [1, theUpperBound]
+  //! @param thePoint the point which hash code is to be computed
+  //! @param theUpperBound the upper bound of the range a computing hash code must be within
+  //! @return a computed hash code, in the range [1, theUpperBound]
+  static Standard_Integer HashCode (const gp_Pnt& thePoint, const Standard_Integer theUpperBound);
+
   //! Returns True  when the two  keys are the same. Two
   //! same  keys  must   have  the  same  hashcode,  the
   //! contrary is not necessary.

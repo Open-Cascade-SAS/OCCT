@@ -31,20 +31,30 @@
 
 #include <Standard_Integer.hxx>
 
-//! Returns bounded hash code for a null-terminated string, in range [1, theUpper]
-Standard_EXPORT Standard_Integer HashCode (const Standard_CString theStr, const Standard_Integer theUpper);
+//! Returns bounded hash code for the null-terminated string, in the range [1, theUpperBound]
+//! @param theString the null-terminated string which hash code is to be computed
+//! @param theUpperBound the upper bound of the range a computing hash code must be within
+//! @return a computed hash code, in the range [1, theUpperBound]
+Standard_EXPORT Standard_Integer HashCode (Standard_CString theString, Standard_Integer theUpperBound);
 
-//! Returns 32-bit hash code for the first theLen characters in the string theStr 
-Standard_EXPORT Standard_Integer HashCodes (const Standard_CString theStr, const Standard_Integer theLen);
+//! Returns 32-bit hash code for the first theLen characters in the string theStr.
+//! The result is unbound (may be not only positive, but also negative)
+//! @param theString the string which hash code is to be computed
+//! @param theLength the length of the given string
+//! @return a computed hash code of the given string
+Standard_EXPORT Standard_Integer HashCodes (Standard_CString theString, Standard_Integer theLength);
 
-//! Returns bounded hash code for the first theLen characters in 
-//! the string theStr, in range [1, theUpper]
-inline Standard_Integer HashCode (const Standard_CString theStr,
-                                  const Standard_Integer theLen,
-                                  const Standard_Integer theUpper)
+//! Returns bounded hash code for the first theLength characters in the string theString, in the range [1, theUpperBound]
+//! @param theString the string which hash code is to be computed
+//! @param theLength the length of the initial substring of the given string which hash code is to be computed
+//! @param theUpperBound the upper bound of the range a computing hash code must be within
+//! @return a computed hash code of the given string
+inline Standard_Integer HashCode (const Standard_CString theString,
+                                  const Standard_Integer theLength,
+                                  const Standard_Integer theUpperBound)
 {
 //  return (Abs( HashCodes( Value , Len ) ) % Upper ) + 1 ;
-  return HashCode (HashCodes (theStr, theLen), theUpper);
+  return HashCode (HashCodes (theString, theLength), theUpperBound);
 }
 
 //! Returns Standard_True if two strings are equal

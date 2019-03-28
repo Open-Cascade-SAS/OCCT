@@ -317,26 +317,38 @@ protected:
       return Standard_True;
     }
 
-    //! Compute hash code
-    Standard_Integer HashCode (const Standard_Integer theUpper) const
+    //! Returns hash code for this cell, in the range [1, theUpperBound]
+    //! @param theUpperBound the upper bound of the range a computing hash code must be within
+    //! @return a computed hash code, in the range [1, theUpperBound]
+    Standard_Integer HashCode (const Standard_Integer theUpperBound) const
     {
       // number of bits per each dimension in the hash code
-      Standard_Integer aDim = Standard_Integer(index.Size());
-      const Standard_Size aShiftBits = (BITS(long)-1) / aDim;
-      long aCode=0;
-      for (int i=0; i < aDim; i++)
-        aCode = ( aCode << aShiftBits ) ^ index[i];
-      return (unsigned)aCode % theUpper;
+      const std::size_t aDim       = index.Size();
+      const std::size_t aShiftBits = (BITS (long) - 1) / aDim;
+      unsigned int      aCode      = 0;
+
+      for (std::size_t i = 0; i < aDim; ++i)
+      {
+        aCode = (aCode << aShiftBits) ^ index[i];
+      }
+
+      return ::HashCode(aCode, theUpperBound);
     }
 
   public:
     NCollection_LocalArray<long, 10> index;
     ListNode *Objects;
   };
+  
+  //! Returns hash code for the given cell, in the range [1, theUpperBound]
+  //! @param theCell the cell object which hash code is to be computed
+  //! @param theUpperBound the upper bound of the range a computing hash code must be within
+  //! @return a computed hash code, in the range [1, theUpperBound]
+  friend Standard_Integer HashCode (const Cell& theCell, const Standard_Integer theUpperBound)
+  {
+    return theCell.HashCode (theUpperBound);
+  }
 
-  // definition of global functions is needed for map
-  friend Standard_Integer HashCode (const Cell &aCell, const Standard_Integer theUpper)
-  { return aCell.HashCode(theUpper); }
   friend Standard_Boolean IsEqual (const Cell &aCell1, const Cell &aCell2)
   { return aCell1.IsEqual(aCell2); }
 

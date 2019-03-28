@@ -89,13 +89,14 @@ public:
   Standard_EXPORT TCollection_AsciiString ToString() const;
 
 public:
-
-  //! Hash value, for Map interface.
-  //! Based on Font Family, so that the whole family with different aspects can be found within the same bucket.
-  static Standard_Integer HashCode (const Handle(Font_SystemFont)& theFont,
-                                    const Standard_Integer theUpper)
+  //! Computes a hash code for the system font, in the range [1, theUpperBound]. Based on Font Family, so that the whole
+  //! family with different aspects can be found within the same bucket of some map
+  //! @param theSystemFont the system font which hash code is to be computed
+  //! @param theUpperBound the upper bound of the range a computing hash code must be within
+  //! @return a computed hash code, in the range [1, theUpperBound]
+  static Standard_Integer HashCode (const Handle (Font_SystemFont) & theSystemFont, const Standard_Integer theUpperBound)
   {
-    return ::HashCode (theFont->FontKey(), theUpper);
+    return ::HashCode (theSystemFont->FontKey(), theUpperBound);
   }
 
   //! Matching two instances, for Map interface.

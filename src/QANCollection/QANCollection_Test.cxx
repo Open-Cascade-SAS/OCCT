@@ -73,9 +73,14 @@ DEFINE_SEQUENCE(QANCollection_SequenceFunc,QANCollection_BaseColFunc,ItemType)
 DEFINE_HSEQUENCE(QANCollection_HSequenceFunc,QANCollection_SequenceFunc)
 
 // HashCode and IsEquel must be defined for key types of maps
-Standard_Integer HashCode(const gp_Pnt thePnt, int theUpper)
+
+//! Computes a hash code for the point, in the range [1, theUpperBound]
+//! @param thePoint the point which hash code is to be computed
+//! @param theUpperBound the upper bound of the range a computing hash code must be within
+//! @return a computed hash code, in the range [1, theUpperBound]
+Standard_Integer HashCode (const gp_Pnt& thePoint, int theUpperBound)
 {
-  return HashCode(thePnt.X(),theUpper);
+  return HashCode (thePoint.X(), theUpperBound);
 }
 
 Standard_Boolean IsEqual(const gp_Pnt& theP1, const gp_Pnt& theP2)

@@ -15,14 +15,15 @@
 #include <Standard_OutOfRange.hxx>
 #include <Standard_CString.hxx>
 
-//definition global methods for using in NCollection
-//------------------------------------------------------------------------
-//  HashCode
-//------------------------------------------------------------------------
-inline Standard_Integer HashCode(const TCollection_AsciiString& astring,
-						   const Standard_Integer Upper)
+// definition global methods for using in NCollection
+
+//! Computes a hash code for the given ASCII string, in the range [1, theUpperBound]
+//! @param theAsciiString the ASCII string which hash code is to be computed
+//! @param theUpperBound the upper bound of the range a computing hash code must be within
+//! @return a computed hash code, in the range [1, theUpperBound]
+inline Standard_Integer HashCode (const TCollection_AsciiString& theAsciiString, const Standard_Integer theUpperBound)
 {
-  return TCollection_AsciiString::HashCode(astring,Upper);
+  return TCollection_AsciiString::HashCode (theAsciiString, theUpperBound);
 }
 
 
@@ -78,13 +79,14 @@ inline TCollection_AsciiString TCollection_AsciiString::Cat(const Standard_Real 
  return TCollection_AsciiString( *this , TCollection_AsciiString(other) ) ;
 }
 
-//------------------------------------------------------------------------
-//  HashCode
-//------------------------------------------------------------------------
-inline Standard_Integer TCollection_AsciiString::HashCode(const TCollection_AsciiString& astring,
-						   const Standard_Integer Upper)
+//============================================================================
+// function : HashCode
+// purpose  :
+//============================================================================
+inline Standard_Integer TCollection_AsciiString::HashCode (const TCollection_AsciiString& theAsciiString,
+                                                           const Standard_Integer         theUpperBound)
 {
-  return ::HashCode(astring.ToCString(),Upper);
+  return ::HashCode (theAsciiString.ToCString(), theAsciiString.Length(), theUpperBound);
 }
 
 

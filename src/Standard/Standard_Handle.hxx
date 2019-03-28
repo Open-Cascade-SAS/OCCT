@@ -15,66 +15,14 @@
 #define _Standard_Handle_HeaderFile
 
 #include <Standard_Address.hxx>
+#include <Standard_Std.hxx>
 #include <Standard_Stream.hxx>
 #include <Standard_Transient.hxx>
-
-#include <type_traits>
 
 class Standard_Transient;
 
 //! Namespace opencascade is intended for low-level template classes and functions
 namespace opencascade {
-
-  //! Namespace opencascade::std includes templates from C++11 std namespace used by
-  //! OCCT classes. These definitions are imported from std namespace, plus (on older 
-  //! compilers) from std::tr1, or implemented by custom code where neither std 
-  //! not std::tr1 provide necessary definitions.
-  namespace std
-  {
-  // import all available standard stuff from std namespace
-  using namespace ::std;
-
-// for old MSVC compiler, some standard templates are defined in std::tr1 namespace,
-// and some missing ones are implemented here
-#if(defined(_MSC_VER) && (_MSC_VER < 1600))
-  using namespace ::std::tr1;
-  
-  // C++11 template class enable_if
-  template<bool Test, class Type = void>
-  struct enable_if
-  {// type is undefined for assumed !_Test
-  };
-
-  template<class _Type>
-  struct enable_if<true, _Type>
-  {// type is _Type for _Test
-    typedef _Type type;
-  };
-
-  template<bool Condition, typename TypeTrue, typename TypeFalse>
-  struct conditional
-  {
-    typedef TypeTrue type;
-  };
-
-  template<typename TypeTrue, typename TypeFalse>
-  struct conditional<false, TypeTrue, TypeFalse>
-  {
-    typedef TypeFalse type;
-  };
-
-#endif
-
-  } // namespace opencascade::std
-
-  //! Trait yielding true if class T1 is base of T2 but not the same
-  template <class T1, class T2, class Dummy = void>
-  struct is_base_but_not_same : opencascade::std::is_base_of <T1, T2> {};
-
-  //! Explicit specialization of is_base_of trait to workaround the
-  //! requirement of type to be complete when T1 and T2 are the same.
-  template <class T1, class T2>
-  struct is_base_but_not_same <T1, T2, typename opencascade::std::enable_if <opencascade::std::is_same <T1, T2>::value>::type> : opencascade::std::false_type {};
 
   //! Intrusive smart pointer for use with Standard_Transient class and its descendants.
   //!
@@ -462,11 +410,15 @@ namespace opencascade {
 //! Define Handle() macro
 #define Handle(Class) opencascade::handle<Class>
 
-//! Global method HashCode(), for use in hash maps
-template <class T>
-inline Standard_Integer HashCode (const Handle(T)& theHandle, const Standard_Integer theUpper)
+//! Computes a hash code for the standard handle, in the range [1, theUpperBound]
+//! @param TheTransientType the type of the object the handle is referred to
+//! @param theHandle the standard handle which hash code is to be computed
+//! @param theUpperBound the upper bound of the range a computing hash code must be within
+//! @return a computed hash code, in the range [1, theUpperBound]
+template <class TheTransientType>
+Standard_Integer HashCode (const Handle (TheTransientType) & theHandle, const Standard_Integer theUpperBound)
 {
-  return ::HashCode (const_cast<Standard_Address>(static_cast<const void*>(theHandle.get())), theUpper);
+  return ::HashCode (theHandle.get(), theUpperBound);
 }
 
 //! For compatibility with previous versions of OCCT, define Handle_Class alias for opencascade::handle<Class>.

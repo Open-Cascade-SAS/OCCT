@@ -30,13 +30,16 @@ class BOPDS_PairMapHasher
 public:
 
   DEFINE_STANDARD_ALLOC
- 
-  static Standard_Integer HashCode(const BOPDS_Pair& thePair,
-                                   const Standard_Integer Upper)
+
+  //! Computes a hash code for the given pair, in the range [1, theUpperBound]
+  //! @param thePair the pair which hash code is to be computed
+  //! @param theUpperBound the upper bound of the range a computing hash code must be within
+  //! @return a computed hash code, in the range [1, theUpperBound]
+  static Standard_Integer HashCode (const BOPDS_Pair& thePair, const Standard_Integer theUpperBound)
   {
-    return thePair.HashCode(Upper);
+    return thePair.HashCode (theUpperBound);
   }
- 
+
   static Standard_Boolean IsEqual(const BOPDS_Pair& thePair1,
                                   const BOPDS_Pair& thePair2)
   {

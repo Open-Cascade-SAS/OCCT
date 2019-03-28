@@ -19,13 +19,14 @@
 #include <StepToTopoDS_CartesianPointHasher.hxx>
 
 //=======================================================================
-//function : HashCode
-//purpose  : 
+// function : HashCode
+// purpose  :
 //=======================================================================
-Standard_Integer StepToTopoDS_CartesianPointHasher::HashCode
-  (const Handle(StepGeom_CartesianPoint)& K, const Standard_Integer Upper)
+Standard_Integer StepToTopoDS_CartesianPointHasher::HashCode (const Handle (StepGeom_CartesianPoint)
+                                                                & theCartesianPoint,
+                                                              const Standard_Integer theUpperBound)
 {
-  return ::HashCode(K,Upper);
+  return ::HashCode (theCartesianPoint, theUpperBound);
 }
 
 //=======================================================================

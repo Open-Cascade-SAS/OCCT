@@ -107,15 +107,16 @@ const TopoDS_Shape& BOPTools_Set::Shape()const
 {
   return myShape;
 }
+
 //=======================================================================
-//function : HashCode
-//purpose  : 
+// function : HashCode
+// purpose  :
 //=======================================================================
-Standard_Integer BOPTools_Set::HashCode
-  (const Standard_Integer theUpper)const
+Standard_Integer BOPTools_Set::HashCode (const Standard_Integer theUpperBound) const
 {
-  return ::HashCode(mySum, theUpper);
+  return ::HashCode (mySum, theUpperBound);
 }
+
 //=======================================================================
 //function : IsEqual
 //purpose  : 

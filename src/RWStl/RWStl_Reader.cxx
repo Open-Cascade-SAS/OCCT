@@ -75,9 +75,13 @@ namespace
       return (thePnt1 - thePnt2).SquareModulus() < Precision::SquareConfusion();
     }
 
-    static Standard_Integer HashCode (const gp_XYZ& thePnt, Standard_Integer theUpper)
+    //! Computes a hash code for the point, in the range [1, theUpperBound]
+    //! @param thePoint the point which hash code is to be computed
+    //! @param theUpperBound the upper bound of the range a computing hash code must be within
+    //! @return a computed hash code, in the range [1, theUpperBound]
+    static Standard_Integer HashCode (const gp_XYZ& thePoint, const Standard_Integer theUpperBound)
     {
-      return ::HashCode (thePnt.X() * M_LN10 + thePnt.Y() * M_PI + thePnt.Z() * M_E, theUpper);
+      return ::HashCode (thePoint.X() * M_LN10 + thePoint.Y() * M_PI + thePoint.Z() * M_E, theUpperBound);
     }
 
   private:

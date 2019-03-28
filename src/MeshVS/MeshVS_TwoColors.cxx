@@ -17,18 +17,17 @@
 
 
 //================================================================
-// Function : HashCode
-// Purpose  :
+// function : HashCode
+// purpose  :
 //================================================================
-Standard_Integer HashCode ( const MeshVS_TwoColors&       theKey,
-                            const Standard_Integer theUpper)
+Standard_Integer HashCode (const MeshVS_TwoColors& theKey, const Standard_Integer theUpperBound)
 {
 #define MESHPRS_HASH_BYTE(val) { \
     aHash += (val);              \
     aHash += (aHash << 10);      \
     aHash ^= (aHash >> 6);       \
   }
-  Standard_Integer aHash = 0;
+  unsigned int aHash = 0;
   MESHPRS_HASH_BYTE (theKey.r1)
   MESHPRS_HASH_BYTE (theKey.g1)
   MESHPRS_HASH_BYTE (theKey.b1)
@@ -38,7 +37,7 @@ Standard_Integer HashCode ( const MeshVS_TwoColors&       theKey,
   aHash += (aHash << 3);
   aHash ^= (aHash >> 11);
   aHash += (aHash << 15);
-  return (( aHash & 0x7fffffff ) % theUpper) + 1;
+  return HashCode(aHash, theUpperBound);
 #undef MESHPRS_HASH_BYTE
 }
 

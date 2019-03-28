@@ -28,8 +28,11 @@ typedef struct {
 } MeshVS_TwoColors;
 
 
-Standard_EXPORT Standard_Integer HashCode ( const MeshVS_TwoColors& theKey,
-                                            const Standard_Integer  theUpper  );
+//! Computes a hash code for the key, in the range [1, theUpperBound]
+//! @param theKey the key which hash code is to be computed
+//! @param theUpperBound the upper bound of the range a computing hash code must be within
+//! @return a computed hash code, in the range [1, theUpperBound]
+Standard_EXPORT Standard_Integer HashCode (const MeshVS_TwoColors& theKey, Standard_Integer theUpperBound);
 
 Standard_EXPORT Standard_Boolean IsEqual (const MeshVS_TwoColors& K1,
                                           const MeshVS_TwoColors& K2  );

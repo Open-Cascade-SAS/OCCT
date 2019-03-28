@@ -23,11 +23,15 @@
 //purpose  : Function is required to call the global function HashCode.
 //=======================================================================
 
-template <class TheKeyType> 
-inline Standard_Integer HashCode_Proxy (const TheKeyType& theKey, 
-                                        const Standard_Integer Upper)
+//! Returns hash code for the given key, in the range [1, theUpperBound]
+//! @tparam TheKeyType the type of the given key
+//! @param theKey the key which hash code is to be computed
+//! @param theUpperBound the upper bound of the range a computing hash code must be within
+//! @return a computed hash code, in the range [1, theUpperBound]
+template <class TheKeyType>
+inline Standard_Integer HashCode_Proxy (const TheKeyType& theKey, const Standard_Integer theUpperBound)
 {
-  return HashCode (theKey, Upper);
+  return HashCode (theKey, theUpperBound);
 }
 
 //=======================================================================
@@ -65,11 +69,15 @@ inline Standard_Boolean IsEqual_Proxy (const TheKeyType& theKey1,
 */
 template <class TheKeyType> class NCollection_DefaultHasher {
 public:
-  //
-  static Standard_Integer HashCode(const TheKeyType& theKey, 
-                                   const Standard_Integer Upper) {
-    return HashCode_Proxy(theKey, Upper);
+  //! Returns hash code for the given key, in the range [1, theUpperBound]
+  //! @param theKey the key which hash code is to be computed
+  //! @param theUpperBound the upper bound of the range a computing hash code must be within
+  //! @return a computed hash code, in the range [1, theUpperBound]
+  static Standard_Integer HashCode (const TheKeyType& theKey, const Standard_Integer theUpperBound)
+  {
+    return HashCode_Proxy (theKey, theUpperBound);
   }
+
   //
   static Standard_Boolean IsEqual(const TheKeyType& theKey1, 
                                   const TheKeyType& theKey2) {

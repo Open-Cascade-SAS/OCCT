@@ -33,9 +33,11 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
-  //! Returns a HasCode value  for  the  PointPair
-  Standard_EXPORT static Standard_Integer HashCode (const StepToTopoDS_PointPair& K, const Standard_Integer Upper);
+  //! Computes a hash code for the point pair, in the range [1, theUpperBound]
+  //! @param thePointPair the point pair which hash code is to be computed
+  //! @param theUpperBound the upper bound of the range a computing hash code must be within
+  //! @return a computed hash code, in the range [1, theUpperBound]
+  Standard_EXPORT static Standard_Integer HashCode (const StepToTopoDS_PointPair& thePointPair, Standard_Integer theUpperBound);
   
   //! Returns True  when the two  PointPair are the same
   Standard_EXPORT static Standard_Boolean IsEqual (const StepToTopoDS_PointPair& K1, const StepToTopoDS_PointPair& K2);

@@ -20,22 +20,27 @@
 //! Hasher of Quantity_Color.
 struct Quantity_ColorHasher
 {
-  //! Returns hash code for the given color.
+  //! Returns hash code for the given RGB color, in the range [1, theUpperBound]
+  //! @param theColor the RGB color object which hash code is to be computed
+  //! @param theUpperBound the upper bound of the range a computing range must be within
+  //! @return a computed hash code, in the range [1, theUpperBound]
   static Standard_Integer HashCode (const Quantity_Color&  theColor,
-                                    const Standard_Integer theUpper)
+                                    const Standard_Integer theUpperBound)
   {
     Standard_Integer aRed   = Standard_Integer (255 * theColor.Red());
     Standard_Integer aGreen = Standard_Integer (255 * theColor.Green());
     Standard_Integer aBlue  = Standard_Integer (255 * theColor.Blue());
 
-    Standard_Integer aHash = 0;
+    unsigned int aHash = 0;
+
     updateHash (aHash, aRed);
     updateHash (aHash, aGreen);
     updateHash (aHash, aBlue);
     aHash += (aHash << 3);
     aHash ^= (aHash >> 11);
     aHash += (aHash << 15);
-    return ((aHash & 0x7fff) % theUpper) + 1;
+
+    return IntegerHashCode(aHash, 0x7fff, theUpperBound);
   }
 
   //! Returns true if two colors are equal.
@@ -46,8 +51,7 @@ struct Quantity_ColorHasher
   }
 
 protected:
-  static void updateHash (Standard_Integer&      theHash,
-                          const Standard_Integer theValue)
+  static void updateHash (unsigned int& theHash, const Standard_Integer theValue)
   {
     theHash += theValue;
     theHash += (theHash << 10);

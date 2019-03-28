@@ -22,23 +22,27 @@
 
 static const Standard_Real ACosLimit = 1. + Epsilon(1.);
 
-// ------------------------------------------------------------------
-// Hascode : Computes a hascoding value for a given real
-// ------------------------------------------------------------------
-Standard_Integer HashCode(const Standard_Real me, const Standard_Integer Upper)
+//============================================================================
+// function : HashCode
+// purpose  :
+//============================================================================
+Standard_Integer HashCode (const Standard_Real theReal, const Standard_Integer theUpperBound)
 {
-  if (Upper < 1){
-     throw Standard_RangeError("Try to apply HashCode method with negative or null argument.");
+  if (theUpperBound < 1)
+  {
+    throw Standard_RangeError ("Try to apply HashCode method with negative or null argument.");
   }
-  union 
-    {
-    Standard_Real R;
+  union
+  {
+    Standard_Real    R;
     Standard_Integer I[2];
-    } U;
-//  U.R = Abs(me); // Treat me = -0.0 ADN 27/11/97
-  U.R = me ;
-  return HashCode( ( U.I[0] ^ U.I[1] ) , Upper ) ;
-  }
+  } U;
+
+  //  U.R = Abs(me); // Treat me = -0.0 ADN 27/11/97
+  U.R = theReal;
+
+  return HashCode (U.I[0] ^ U.I[1], theUpperBound);
+}
 
 //-------------------------------------------------------------------
 // ACos : Returns the value of the arc cosine of a real

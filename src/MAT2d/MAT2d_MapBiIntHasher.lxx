@@ -18,13 +18,12 @@
 #include <TColStd_MapIntegerHasher.hxx>
 
 //=======================================================================
-//function : HashCode
-//purpose  : 
+// function : HashCode
+// purpose  :
 //=======================================================================
-inline Standard_Integer  MAT2d_MapBiIntHasher::HashCode
-(const MAT2d_BiInt& Key1, const Standard_Integer upper)
+inline Standard_Integer MAT2d_MapBiIntHasher::HashCode (const MAT2d_BiInt& theKey, const Standard_Integer theUpperBound)
 {
-  return TColStd_MapIntegerHasher::HashCode(Key1.FirstIndex(),upper);
+  return TColStd_MapIntegerHasher::HashCode (theKey.FirstIndex(), theUpperBound);
 }
 
 //=======================================================================

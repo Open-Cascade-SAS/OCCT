@@ -13,11 +13,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-inline Standard_Integer IntTools_CurveRangeSampleMapHasher::HashCode(const IntTools_CurveRangeSample& K,
-								     const Standard_Integer Upper) {
-  return (K.GetDepth() % Upper);
+//=======================================================================
+// function : HashCode
+// purpose  :
+//=======================================================================
+inline Standard_Integer IntTools_CurveRangeSampleMapHasher::HashCode (const IntTools_CurveRangeSample& theKey,
+                                                                      const Standard_Integer           theUpperBound)
+{
+  return ::HashCode(theKey.GetDepth(), theUpperBound);
 }
-	
+
 inline Standard_Boolean IntTools_CurveRangeSampleMapHasher::IsEqual(const IntTools_CurveRangeSample& S1,
 								    const IntTools_CurveRangeSample& S2) {
   return S1.IsEqual(S2);

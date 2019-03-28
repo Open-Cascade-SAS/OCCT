@@ -24,9 +24,10 @@
 
 #include <Standard_TypeDef.hxx>
 
-//============================================================================
-//==== HashCode : Returns a HashCode ExtString
-//============================================================================
-Standard_EXPORT Standard_Integer HashCode (const Standard_ExtString, const Standard_Integer);
+//! Computes a hash code for the given wide character string, in the range [1, theUpperBound]
+//! @param theExtString the wide character string which hash code is to be computed
+//! @param theUpperBound the upper bound of the range a computing hash code must be within
+//! @return a computed hash code, in the range [1, theUpperBound]
+Standard_EXPORT Standard_Integer HashCode (Standard_ExtString theExtString, Standard_Integer theUpperBound);
 
 #endif

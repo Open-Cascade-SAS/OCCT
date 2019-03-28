@@ -112,9 +112,12 @@ void operator = (const Standard_UUID& uid)
   
   //! Hash function for GUID.
   Standard_EXPORT Standard_Integer Hash (const Standard_Integer Upper) const;
-  
-  //! H method used by collections.
-  Standard_EXPORT static Standard_Integer HashCode (const Standard_GUID& aguid, const Standard_Integer Upper);
+
+  //! Computes a hash code for the given GUID of the Standard_Integer type, in the range [1, theUpperBound]
+  //! @param theGUID the GUID which hash code is to be computed
+  //! @param theUpperBound the upper bound of the range a computing hash code must be within
+  //! @return a computed hash code, in the range [1, theUpperBound]
+  Standard_EXPORT static Standard_Integer HashCode (const Standard_GUID& theGUID, Standard_Integer theUpperBound);
   
   //! Returns True  when the two GUID are the same.
   Standard_EXPORT static Standard_Boolean IsEqual (const Standard_GUID& string1, const Standard_GUID& string2);

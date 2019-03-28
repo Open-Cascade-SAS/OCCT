@@ -13,12 +13,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-inline Standard_Integer IntTools_SurfaceRangeSampleMapHasher::HashCode(const IntTools_SurfaceRangeSample& K,
-								       const Standard_Integer Upper) { 
-//   return (((K.GetDepthU() % Upper) ^ (K.GetDepthV() % Upper)) % Upper);
-  return ((K.GetIndexU() * K.GetIndexV()) % Upper);
+//=======================================================================
+// function : HashCode
+// purpose  :
+//=======================================================================
+inline Standard_Integer IntTools_SurfaceRangeSampleMapHasher::HashCode (const IntTools_SurfaceRangeSample& theKey,
+                                                                        const Standard_Integer theUpperBound)
+{
+  //   return (((K.GetDepthU() % Upper) ^ (K.GetDepthV() % Upper)) % Upper);
+  return ::HashCode (theKey.GetIndexU() * theKey.GetIndexV(), theUpperBound);
 }
-	
+
 inline Standard_Boolean IntTools_SurfaceRangeSampleMapHasher::IsEqual(const IntTools_SurfaceRangeSample& S1,
 								      const IntTools_SurfaceRangeSample& S2) {
   return S1.IsEqual(S2);

@@ -55,10 +55,13 @@ class BOPTools_Parallel
     //! Auxiliary thread ID  hasher.
     struct Hasher
     {
-      static Standard_Integer HashCode(const Standard_ThreadId theKey,
-                                       const Standard_Integer  Upper)
+      //! Computes a hash code for the given thread identifier, in the range [1, theUpperBound]
+      //! @param theThreadId the thread identifier which hash code is to be computed
+      //! @param theUpperBound the upper bound of the range a computing hash code must be within
+      //! @return a computed hash code, in the range [1, theUpperBound]
+      static Standard_Integer HashCode (const Standard_ThreadId theThreadId, const Standard_Integer theUpperBound)
       {
-        return ::HashCode((Standard_Size)theKey, Upper);
+        return ::HashCode (theThreadId, theUpperBound);
       }
 
       static Standard_Boolean IsEqual(const Standard_ThreadId theKey1,

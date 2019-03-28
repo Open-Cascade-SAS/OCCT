@@ -17,18 +17,23 @@
 
 #include <Standard_Integer.hxx>
 
-//============================================================================
-//==== HashCode : Returns a HashCode CString
-//============================================================================
-inline Standard_Integer HashCode (const Standard_Address Value, 
-				  const Standard_Integer Upper)
+//! Returns a hash code of the given memory pointer
+//! @param thePointer the memory pointer which hash code it to be computed
+//! @param theUpperBound the upper bound of the range a resulting hash code must be within
+//! @return a value of a computed hash code, in range [1, UpperBound]
+inline Standard_Integer HashCode (const void* const thePointer, const Standard_Integer theUpperBound)
 {
-  union {Standard_Address L ;
-         Standard_Integer I[2] ;} U ;
-  U.I[0] = 0 ;
-  U.I[1] = 0 ;
-  U.L = Value;
-  return HashCode( ( ( U.I[0] ^ U.I[1] ) & 0x7fffffff )  , Upper ) ;
+  union
+  {
+    const void*      L;
+    Standard_Integer I[2];
+  } U;
+
+  U.I[0] = 0;
+  U.I[1] = 0;
+  U.L    = thePointer;
+
+  return HashCode (U.I[0] ^ U.I[1], theUpperBound);
 }
 
 //============================================================================

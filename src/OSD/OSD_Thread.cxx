@@ -144,9 +144,10 @@ Standard_Boolean OSD_Thread::Run (const Standard_Address data,
   adata->func = myFunc;
 
   // then try to create a new thread
-
+  DWORD aThreadId = DWORD();
   myThread = CreateThread ( NULL, WNTStackSize, WNTthread_func,
-                            adata, 0, &myThreadId );
+                            adata, 0, &aThreadId );
+  myThreadId = aThreadId;
   if ( myThread )
     SetThreadPriority (myThread, myPriority);
   else {
@@ -162,7 +163,7 @@ Standard_Boolean OSD_Thread::Run (const Standard_Address data,
   }
   else
   {
-    myThreadId = myThread;
+    myThreadId = (Standard_ThreadId)myThread;
   }
 #endif
   return myThread != 0;
@@ -328,6 +329,6 @@ Standard_ThreadId OSD_Thread::Current ()
 #ifdef _WIN32
   return GetCurrentThreadId();
 #else
-  return pthread_self();
+  return (Standard_ThreadId)pthread_self();
 #endif
 }

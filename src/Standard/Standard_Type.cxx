@@ -74,9 +74,13 @@ namespace {
   // Value-based hasher for plain C string (char*)
   struct CStringHasher 
   {
-    static Standard_Integer HashCode (const Standard_CString& theKey, const Standard_Integer Upper)
+    //! Computes a hash code of the given Standard_CString, in the range [1, theUpperBound]
+    //! @param theKey the key which hash code is to be computed
+    //! @param theUpperBound the upper bound of the range a computing hash code must be within
+    //! @return a computed hash code, in the range [1, theUpperBound]
+    static Standard_Integer HashCode (const Standard_CString& theKey, const Standard_Integer theUpperBound)
     {
-      return ::HashCode (theKey, Upper);
+      return ::HashCode (theKey, theUpperBound);
     }
     static bool IsEqual (const Standard_CString& theKey1, const Standard_CString& theKey2)
     {

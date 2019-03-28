@@ -79,12 +79,12 @@ public:
    */
   Standard_Integer              FindNext (unsigned int& theMask) const;
 
-  /**
-   * Support of Map interface.
-   */
-  inline Standard_Integer       HashCode (const Standard_Integer theUpper) const
+  //! Computes a hash code for this map in the range [1, theUpperBound]
+  //! @param theUpperBound the upper bound of the range a computing hash code must be within
+  //! @return a computed hash code, in the range [1, theUpperBound]
+  inline Standard_Integer       HashCode (const Standard_Integer theUpperBound) const
   {
-    return ::HashCode (Standard_Integer(myMask >> 5), theUpper);
+    return ::HashCode (myMask >> 5, theUpperBound);
   }
 
   /**

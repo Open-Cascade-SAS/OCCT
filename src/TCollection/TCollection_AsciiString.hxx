@@ -679,10 +679,13 @@ friend Standard_EXPORT Standard_IStream& operator >> (Standard_IStream& astream,
   //! aString.Value(2) returns 'e'
   Standard_EXPORT Standard_Character Value (const Standard_Integer where) const;
   
-  //! Hash function for AsciiString
-  //! (returns the same Integer value that the hash function for ExtendedString)
-    static Standard_Integer HashCode (const TCollection_AsciiString& astring, const Standard_Integer Upper);
-  
+  //! Computes a hash code for the given ASCII string, in the range [1, theUpperBound].
+  //! Returns the same integer value as the hash function for TCollection_ExtendedString
+  //! @param theAsciiString the ASCII string which hash code is to be computed
+  //! @param theUpperBound the upper bound of the range a computing hash code must be within
+  //! @return a computed hash code, in the range [1, theUpperBound]
+  static Standard_Integer HashCode (const TCollection_AsciiString& theAsciiString, Standard_Integer theUpperBound);
+
   //! Returns True  when the two  strings are the same.
   //! (Just for HashCode for AsciiString)
     static Standard_Boolean IsEqual (const TCollection_AsciiString& string1, const TCollection_AsciiString& string2);

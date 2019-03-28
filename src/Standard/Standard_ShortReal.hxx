@@ -138,7 +138,12 @@ inline Standard_ShortReal     Min (const Standard_ShortReal Val1,
 // ==================================
 // Methods implemeted in Standard_ShortReal.cxx
 // ==================================
-Standard_EXPORT Standard_Integer HashCode (const Standard_ShortReal, const Standard_Integer);  
+
+//! Computes a hash code for the given short real, in the range [1, theUpperBound]
+//! @param theShortReal the short real value which hash code is to be computed
+//! @param theUpperBound the upper bound of the range a computing hash code must be within
+//! @return a computed hash code, in the range [1, theUpperBound]
+Standard_EXPORT Standard_Integer HashCode (Standard_ShortReal theShortReal, Standard_Integer theUpperBound);
 
 //-------------------------------------------------------------------
 // IsEqual : Returns Standard_True if two ShortReals are equal

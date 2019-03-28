@@ -13,19 +13,22 @@
 // commercial license or contractual agreement.
 
 #include <Standard_ExtString.hxx>
-#include <Standard_Type.hxx> 
-#include <Standard_OStream.hxx>
+#include <Standard_Type.hxx>
 
-Standard_Integer HashCode (const Standard_ExtString Value, 
-			   const Standard_Integer Upper)
+//============================================================================
+// function : HashCode
+// purpose  :
+//============================================================================
+Standard_Integer HashCode (const Standard_ExtString theExtString, const Standard_Integer theUpperBound)
 {
   // compute SDBM hash of an ext string
-  Standard_Integer hash = 0;
-  for (const Standard_ExtCharacter *c = Value; *c; c++)
+  unsigned int hash = 0;
+
+  for (const Standard_ExtCharacter* c = theExtString; *c; ++c)
   {
     /* hash = hash * 33 ^ c */
     hash = (*c) + (hash << 6) + (hash << 16) - hash;
   }
 
-  return HashCode (hash, Upper);
+  return HashCode (hash, theUpperBound);
 }

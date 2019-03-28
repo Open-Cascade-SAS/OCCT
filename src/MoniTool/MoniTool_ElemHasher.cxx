@@ -15,10 +15,14 @@
 #include <MoniTool_Element.hxx>
 #include <MoniTool_ElemHasher.hxx>
 
-Standard_Integer  MoniTool_ElemHasher::HashCode
-  (const Handle(MoniTool_Element)& K, const Standard_Integer Upper)
+//============================================================================
+// function : HashCode
+// purpose  :
+//============================================================================
+Standard_Integer MoniTool_ElemHasher::HashCode (const Handle (MoniTool_Element) & theElement,
+                                                const Standard_Integer            theUpperBound)
 {
-  return ((K->GetHashCode() - 1) % Upper) + 1;
+  return ::HashCode(theElement->GetHashCode() - 1, theUpperBound);
 }
 
     Standard_Boolean  MoniTool_ElemHasher::IsEqual

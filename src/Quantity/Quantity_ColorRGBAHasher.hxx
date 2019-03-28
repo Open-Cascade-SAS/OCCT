@@ -21,16 +21,19 @@
 struct Quantity_ColorRGBAHasher
 {
 
-  //! Returns hash code for the given color.
+  //! Returns hash code for the given RGBA color, in the range [1, theUpperBound]
+  //! @param theColor the RGBA color object which hash code is to be computed
+  //! @param theUpperBound the upper bound of the range a computing hash code must be within
+  //! @return a computed hash code, in the range [1, theUpperBound]
   static Standard_Integer HashCode (const Quantity_ColorRGBA& theColor,
-                                    const Standard_Integer    theUpper)
+                                    const Standard_Integer    theUpperBound)
   {
     const NCollection_Vec4<float>& aColor = theColor;
     uint32_t aColor32 = (uint32_t(aColor.a() * 255.0f) << 24)
                       + (uint32_t(aColor.b() * 255.0f) << 16)
                       + (uint32_t(aColor.g() * 255.0f) << 8)
                       +  uint32_t(aColor.r() * 255.0f);
-    return ((aColor32 & 0x7fffffff) % theUpper) + 1;
+    return ::HashCode(aColor32, theUpperBound);
   }
 
   //! Returns true if two colors are equal.

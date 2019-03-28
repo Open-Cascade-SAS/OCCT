@@ -21,9 +21,13 @@ typedef std::pair<Standard_Integer, Standard_Integer> MeshVS_NodePair;
 //! Provides symmetric hash methods pair of integers.
 struct MeshVS_SymmetricPairHasher
 {
-  static Standard_Integer HashCode (const MeshVS_NodePair& thePair, const Standard_Integer theMaxCode)
+  //! Computes a hash code for the node pair, in the range [1, theUpperBound]
+  //! @param theNodePair the node pair which hash code is to be computed
+  //! @param theUpperBound the upper bound of the range a computing hash code must be within
+  //! @return a computed hash code, in the range [1, theUpperBound]
+  static Standard_Integer HashCode (const MeshVS_NodePair& theNodePair, const Standard_Integer theUpperBound)
   {
-    return ((thePair.first + thePair.second) & 0x7FFFFFFF) % theMaxCode + 1;
+    return ::HashCode(theNodePair.first + theNodePair.second, theUpperBound);
   }
 
   static Standard_Boolean IsEqual (const MeshVS_NodePair& thePair1, const MeshVS_NodePair& thePair2)

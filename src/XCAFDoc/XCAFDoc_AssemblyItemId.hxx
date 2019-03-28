@@ -79,10 +79,15 @@ public:
 
   struct Hasher
   {
-    static int HashCode(const XCAFDoc_AssemblyItemId& theItem, 
-                        const int                     upper)
+
+    //! Computes a hash code for the given value of the XCAFDoc_AssemblyItemId, in range [1, theUpperBound]
+    //! @param theAssemblyItemId the value of the XCAFDoc_AssemblyItemId type which hash code is to be computed
+    //! @param theUpperBound the upper bound of the range a computing hash code must be within
+    //! @return a computed hash code, in range [1, theUpperBound]
+    static Standard_Integer HashCode (const XCAFDoc_AssemblyItemId& theAssemblyItemId,
+                                      const Standard_Integer        theUpperBound)
     {
-      return ::HashCode(theItem.ToString(), upper);
+      return ::HashCode (theAssemblyItemId.ToString(), theUpperBound);
     }
 
     static int IsEqual(const XCAFDoc_AssemblyItemId& theItem1,

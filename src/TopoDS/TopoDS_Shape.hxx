@@ -232,11 +232,11 @@ public:
   Standard_Boolean IsNotEqual  (const TopoDS_Shape& theOther) const { return !IsEqual (theOther); }
   Standard_Boolean operator != (const TopoDS_Shape& theOther) const { return IsNotEqual (theOther); }
 
-  //! Returns a hashed value  denoting <me>.  This value
-  //! is in the range  1..<Upper>.  It is  computed from
-  //! the  TShape  and the  Location. The Orientation is
-  //! not used.
-  Standard_EXPORT Standard_Integer HashCode (const Standard_Integer Upper) const;
+  //! Returns a hashed value denoting <me>. This value is in the range [1, theUpperBound]. It is computed from the
+  //! TShape and the Location. The Orientation is not used.
+  //! @param theUpperBound the upper bound of the range a computing hash code must be within
+  //! @return a computed hash code, in the range [1, theUpperBound]
+  Standard_EXPORT Standard_Integer HashCode (Standard_Integer theUpperBound) const;
 
   //! Replace   <me> by  a  new   Shape with the    same
   //! Orientation and Location and a new TShape with the
@@ -263,8 +263,13 @@ private:
 
 };
 
-inline Standard_Integer HashCode(const TopoDS_Shape& me,const Standard_Integer Upper) {
- return me.HashCode(Upper);
+//! Computes a hash code for the given shape, in the range [1, theUpperBound]
+//! @param theShape the shape which hash code is to be computed
+//! @param theUpperBound the upper bound of the range a computing hash code must be within
+//! @return a computed hash code, in the range [1, theUpperBound]
+inline Standard_Integer HashCode (const TopoDS_Shape& theShape, const Standard_Integer theUpperBound)
+{
+  return theShape.HashCode (theUpperBound);
 }
 
 #endif // _TopoDS_Shape_HeaderFile

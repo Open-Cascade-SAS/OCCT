@@ -54,10 +54,11 @@ BOPTools_Set& operator = (const BOPTools_Set& Other)
   Standard_EXPORT Standard_Integer NbShapes() const;
   
   Standard_EXPORT Standard_Boolean IsEqual (const BOPTools_Set& aOther) const;
-  
-  Standard_EXPORT Standard_Integer HashCode (const Standard_Integer Upper) const;
 
-
+  //! Computes a hash code for this set, in the range [1, theUpperBound]
+  //! @param theUpperBound the upper bound of the range a computing hash code must be within
+  //! @return a computed hash code, in the range [1, theUpperBound]
+  Standard_EXPORT Standard_Integer HashCode (Standard_Integer theUpperBound) const;
 
 
 protected:

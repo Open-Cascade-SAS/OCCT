@@ -30,11 +30,14 @@ class BOPTools_SetMapHasher
 public:
 
   DEFINE_STANDARD_ALLOC
+    
+  //! Computes a hash code for the given set, in the range [1, theUpperBound]
+  //! @param theSet the set which hash code is to be computed
+  //! @param theUpperBound the upper bound of the range a computing hash code must be within
+  //! @return a computed hash code, in the range [1, theUpperBound]
+  static Standard_Integer HashCode (const BOPTools_Set& theSet, Standard_Integer theUpperBound);
 
-  
-    static Standard_Integer HashCode (const BOPTools_Set& aSet, const Standard_Integer Upper);
-  
-    static Standard_Boolean IsEqual (const BOPTools_Set& aSet1, const BOPTools_Set& aSet2);
+  static Standard_Boolean IsEqual (const BOPTools_Set& aSet1, const BOPTools_Set& aSet2);
 
 
 

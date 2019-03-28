@@ -47,7 +47,7 @@ static Standard_Mutex theMutex;
 static inline Standard_ThreadId GetThreadID()
 {
 #ifndef _WIN32
-  return pthread_self();
+  return (Standard_ThreadId)pthread_self();
 #else
   return GetCurrentThreadId();
 #endif

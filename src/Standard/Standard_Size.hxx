@@ -16,21 +16,23 @@
 #ifndef _Standard_Size_HeaderFile
 #define _Standard_Size_HeaderFile
 
+#include <Standard_Integer.hxx>
+
 // msv 26.05.2009: add HashCode and IsEqual functions
 
-// ------------------------------------------------------------------
-// Hascode : Computes a hashcoding value for a given value
-// ------------------------------------------------------------------
-inline Standard_Integer HashCode(const Standard_Size Val,
-                                 const Standard_Integer Upper)
+//! Computes a hash code for the given value of the Standard_Size type, in the range [1, theUpperBound]
+//! @param theValue the value of the Standard_Size type which hash code is to be computed
+//! @param theUpperBound the upper bound of the range a computing hash code must be within
+//! @return a computed hash code, in the range [1, theUpperBound]
+inline Standard_Integer HashCode (const Standard_Size theValue, const Standard_Integer theUpperBound)
 {
-  Standard_Size aKey = ~Val + (Val << 18);
+  Standard_Size aKey = ~theValue + (theValue << 18);
   aKey ^= (aKey >> 31);
   aKey *= 21;
   aKey ^= (aKey >> 11);
   aKey += (aKey << 6);
   aKey ^= (aKey >> 22);
-  return (Standard_Integer(aKey & 0x7fffffff) % Upper) + 1;
+  return IntegerHashCode(aKey, IntegerLast(), theUpperBound);
 }
 
 // ------------------------------------------------------------------

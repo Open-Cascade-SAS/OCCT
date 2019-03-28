@@ -15,15 +15,14 @@
 #include <BOPDS_Pave.hxx>
 
 //=======================================================================
-//function : HashCode
-//purpose  : 
+// function : HashCode
+// purpose  :
 //=======================================================================
-inline 
-  Standard_Integer BOPDS_PaveMapHasher::HashCode(const BOPDS_Pave& aPave,
-                                                 const Standard_Integer Upper)
+inline Standard_Integer BOPDS_PaveMapHasher::HashCode (const BOPDS_Pave& thePave, const Standard_Integer theUpperBound)
 {
-  return ::HashCode(aPave.Index(), Upper);
+  return ::HashCode (thePave.Index(), theUpperBound);
 }
+
 //=======================================================================
 //function :IsEqual
 //purpose  : 

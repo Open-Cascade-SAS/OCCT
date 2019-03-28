@@ -30,7 +30,12 @@
 // ==================================
 // Methods implemeted in Standard_Real.cxx
 // ==================================
-Standard_EXPORT Standard_Integer HashCode    (const Standard_Real, const Standard_Integer);  
+
+//! Computes a hash code for the given real, in the range [1, theUpperBound]
+//! @param theReal the real value which hash code is to be computed
+//! @param theUpperBound the upper bound of the range a computing hash code must be within
+//! @return a computed hash code, in the range [1, theUpperBound]
+Standard_EXPORT Standard_Integer HashCode    (Standard_Real theReal, Standard_Integer theUpperBound);
 
 Standard_EXPORT Standard_Real    ACos        (const Standard_Real );
 Standard_EXPORT Standard_Real    ACosApprox  (const Standard_Real );

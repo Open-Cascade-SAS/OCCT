@@ -31,10 +31,13 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
-    static Standard_Integer HashCode (const BOPDS_Pave& aPave, const Standard_Integer Upper);
-  
-    static Standard_Boolean IsEqual (const BOPDS_Pave& aPave1, const BOPDS_Pave& aPave2);
+  //! Computes a hash code for the given pave, in the range [1, theUpperBound]
+  //! @param thePave the pave which hash code is to be computed
+  //! @param theUpperBound the upper bound of the range a computing hash code must be within
+  //! @return a computed hash code, in the range [1, theUpperBound]
+  static Standard_Integer HashCode (const BOPDS_Pave& thePave, Standard_Integer theUpperBound);
+
+  static Standard_Boolean IsEqual (const BOPDS_Pave& aPave1, const BOPDS_Pave& aPave2);
 
 
 

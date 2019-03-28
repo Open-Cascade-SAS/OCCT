@@ -250,13 +250,13 @@ private:
   TColStd_PackedMapOfInteger              myHangIndices;
 };
 
-/**
- * HashCode method is needed for maps
- */
-inline Standard_Integer HashCode(const Poly_MakeLoops::Link& theKey,
-                    int theLimit)
+//! Computes a hash code for the given link, in the range [1, theUpperBound]
+//! @param theLink the link which hash code is to be computed
+//! @param theUpperBound the upper bound of the range a computing hash code must be within
+//! @return a computed hash code, in the range [1, theUpperBound]
+inline Standard_Integer HashCode (const Poly_MakeLoops::Link& theLink, const Standard_Integer theUpperBound)
 {
-  return HashCode(theKey.node1 + theKey.node2, theLimit);
+  return HashCode (theLink.node1 + theLink.node2, theUpperBound);
 }
 
 /**

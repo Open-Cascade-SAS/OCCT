@@ -13,15 +13,17 @@
 // commercial license or contractual agreement.
 
 //#include <BOPTools_SetMapHasher.ixx>
+
 //=======================================================================
-//function : HashCode
-//purpose  : 
+// function : HashCode
+// purpose  :
 //=======================================================================
-inline Standard_Integer BOPTools_SetMapHasher::HashCode(const BOPTools_Set& theSS,
-							const Standard_Integer Upper)
+inline Standard_Integer BOPTools_SetMapHasher::HashCode (const BOPTools_Set&    theSet,
+                                                         const Standard_Integer theUpperBound)
 {
-  return theSS.HashCode(Upper);
+  return theSet.HashCode (theUpperBound);
 }
+
 //=======================================================================
 //function :IsEqual
 //purpose  : 

@@ -15,10 +15,15 @@
 #include <Transfer_Finder.hxx>
 #include <Transfer_FindHasher.hxx>
 
-Standard_Integer  Transfer_FindHasher::HashCode
-  (const Handle(Transfer_Finder)& K, const Standard_Integer Upper)
+
+//============================================================================
+// function : HashCode
+// purpose  :
+//============================================================================
+Standard_Integer Transfer_FindHasher::HashCode (const Handle (Transfer_Finder) & theFinder,
+                                                const Standard_Integer           theUpperBound)
 {
-  return ((K->GetHashCode() - 1) % Upper) + 1;
+  return ::HashCode (theFinder->GetHashCode() - 1, theUpperBound);
 }
 
     Standard_Boolean  Transfer_FindHasher::IsEqual

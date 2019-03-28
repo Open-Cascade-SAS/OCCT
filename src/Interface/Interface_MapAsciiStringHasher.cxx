@@ -16,13 +16,13 @@
 #include <TCollection_AsciiString.hxx>
 
 //=======================================================================
-//function : HashCode
-//purpose  : 
+// function : HashCode
+// purpose  :
 //=======================================================================
-Standard_Integer Interface_MapAsciiStringHasher::HashCode(const TCollection_AsciiString& K,
-						 const Standard_Integer Upper)
+Standard_Integer Interface_MapAsciiStringHasher::HashCode (const TCollection_AsciiString& theAsciiString,
+                                                           const Standard_Integer         theUpperBound)
 {
-  return ::HashCode(K.ToCString(),Upper);
+  return ::HashCode (theAsciiString.ToCString(), theAsciiString.Length(), theUpperBound);
 }
 
 //=======================================================================

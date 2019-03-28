@@ -18,19 +18,22 @@
 #include <Standard_Stream.hxx>
 #include <Standard_OStream.hxx>
 
-// ------------------------------------------------------------------
-// Hascode : Computes a hascoding value for a given ShortReal
-// ------------------------------------------------------------------
-Standard_Integer HashCode(const Standard_ShortReal me, const Standard_Integer Upper)
+//============================================================================
+// function : HashCode
+// purpose  :
+//============================================================================
+Standard_Integer HashCode (const Standard_ShortReal theShortReal, const Standard_Integer theUpperBound)
 {
-  if (Upper < 1){
-     throw Standard_RangeError("Try to apply HashCode method with negative or null argument.");
+  if (theUpperBound < 1)
+  {
+    throw Standard_RangeError ("Try to apply HashCode method with negative or null argument.");
   }
-  union 
-    {
+  union
+  {
     Standard_ShortReal R;
-    Standard_Integer I;
-    } U;
-  U.R = me;
-  return HashCode( U.I , Upper) ;
+    Standard_Integer   I;
+  } U;
+  U.R = theShortReal;
+
+  return HashCode (U.I, theUpperBound);
 }

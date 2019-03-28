@@ -32,17 +32,15 @@ struct MeshVS_TwoNodes
   : First(aFirst), Second(aSecond) {}
 };
 
-//================================================================
-// Function : HashCode
-// Purpose  :
-//================================================================
-
-inline Standard_Integer HashCode( const MeshVS_TwoNodes& obj,
-                                  const Standard_Integer Upper )
+//! Computes a hash code for two nodes, in the range [1, theUpperBound]
+//! @param theTwoNodes the object of structure containing two IDs which hash code is to be computed
+//! @param theUpperBound the upper bound of the range a computing hash code must be within
+//! @return a computed hash code, in the range [1, theUpperBound]
+inline Standard_Integer HashCode (const MeshVS_TwoNodes& theTwoNodes, const Standard_Integer theUpperBound)
 {
-  // symmetrical with respect to obj.First and obj.Second
-  const Standard_Integer aKey = obj.First + obj.Second;
-  return HashCode (aKey, Upper);
+  // symmetrical with respect to theTwoNodes.First and theTwoNodes.Second
+  const Standard_Integer aKey = theTwoNodes.First + theTwoNodes.Second;
+  return HashCode (aKey, theUpperBound);
 }
 
 //================================================================

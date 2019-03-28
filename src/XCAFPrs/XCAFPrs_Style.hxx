@@ -92,25 +92,27 @@ public:
     return IsEqual (theOther);
   }
 
-  //! Returns a HasCode value.
-  static Standard_Integer HashCode (const XCAFPrs_Style& theStyle,
-                                    const Standard_Integer theUpper)
+  //! Computes a hash code for the given set of styling settings, in the range [1, theUpperBound]
+  //! @param theStyle the set of styling settings which hash code is to be computed
+  //! @param theUpperBound the upper bound of the range a computing hash code must be within
+  //! @return a computed hash code, in the range [1, theUpperBound]
+  static Standard_Integer HashCode (const XCAFPrs_Style& theStyle, const Standard_Integer theUpperBound)
   {
     if (!theStyle.myIsVisible)
     {
       return 1;
     }
 
-    int aHashCode = 0;
+    Standard_Integer aHashCode = 0;
     if (theStyle.myHasColorSurf)
     {
-      aHashCode = aHashCode ^ Quantity_ColorRGBAHasher::HashCode (theStyle.myColorSurf, theUpper);
+      aHashCode = aHashCode ^ Quantity_ColorRGBAHasher::HashCode (theStyle.myColorSurf, theUpperBound);
     }
     if (theStyle.myHasColorCurv)
     {
-      aHashCode = aHashCode ^ Quantity_ColorHasher::HashCode (theStyle.myColorCurv, theUpper);
+      aHashCode = aHashCode ^ Quantity_ColorHasher::HashCode (theStyle.myColorCurv, theUpperBound);
     }
-    return ((aHashCode & 0x7fffffff) % theUpper) + 1;
+    return ::HashCode (aHashCode, theUpperBound);
   }
 
   //! Returns True when the two keys are the same.

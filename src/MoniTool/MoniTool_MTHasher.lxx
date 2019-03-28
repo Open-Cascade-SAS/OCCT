@@ -14,14 +14,13 @@
 #include <string.h>
 
 //=======================================================================
-//function : HashCode
-//purpose  : 
+// function : HashCode
+// purpose  :
 //=======================================================================
-
-inline Standard_Integer MoniTool_MTHasher::HashCode(const Standard_CString Str,
-                                                    const Standard_Integer Upper) 
+inline Standard_Integer MoniTool_MTHasher::HashCode (const Standard_CString theString,
+                                                     const Standard_Integer theUpperBound)
 {
-  return ::HashCode(Str,Upper);
+  return ::HashCode (theString, theUpperBound);
 }
 
 //=======================================================================

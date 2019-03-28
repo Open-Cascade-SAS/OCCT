@@ -31,10 +31,14 @@
 
 //! Methods inline implimentation for HExtendedString
 
-inline Standard_Integer HashCode (const Handle(TCollection_HExtendedString)& theStr,
-                                  const Standard_Integer theBnd)
+//! Computes a hash code for the given handle referred to extended string, in the range [1, theUpperBound]
+//! @param theHExtendedString the handle referred to extended string which hash code is to be computed
+//! @param theUpperBound the upper bound of the range a computing hash code must be within
+//! @return a computed hash code, in the range [1, theUpperBound]
+inline Standard_Integer HashCode (const Handle (TCollection_HExtendedString) & theHExtendedString,
+                                  const Standard_Integer                       theUpperBound)
 {
-  return TCollection_ExtendedString::HashCode(theStr->String(), theBnd);
+  return TCollection_ExtendedString::HashCode (theHExtendedString->String(), theUpperBound);
 }
 
 inline Standard_Boolean IsEqual (const Handle(TCollection_HExtendedString)& theStr1,
