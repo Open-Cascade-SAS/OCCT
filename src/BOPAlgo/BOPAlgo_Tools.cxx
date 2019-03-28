@@ -958,16 +958,8 @@ Standard_Boolean FindPlane(const TopoDS_Shape& theWire,
 //purpose  : 
 //=======================================================================
 class BOPAlgo_TNV;
-typedef NCollection_Vector
-  <BOPAlgo_TNV> BOPAlgo_VectorOfTNV;
-//
-typedef BOPTools_Functor
-  <BOPAlgo_TNV,
-  BOPAlgo_VectorOfTNV> BOPAlgo_TNVFunctor;
-//
-typedef BOPTools_Cnt
-  <BOPAlgo_TNVFunctor,
-  BOPAlgo_VectorOfTNV> BOPAlgo_TNVCnt;
+typedef NCollection_Vector<BOPAlgo_TNV> BOPAlgo_VectorOfTNV;
+
 //=======================================================================
 class BOPAlgo_TNV : public BOPTools_BoxBndTreeSelector{
  public:
@@ -1090,7 +1082,7 @@ void BOPAlgo_Tools::IntersectVertices(const TopTools_IndexedDataMapOfShapeReal& 
   aTreeFiller.Fill();
   //
   // Perform intersection
-  BOPAlgo_TNVCnt::Perform(theRunParallel, aVTNV);
+  BOPTools_Parallel::Perform (theRunParallel, aVTNV);
   //
   // Fence map
   TColStd_MapOfInteger aMFence;
@@ -1529,16 +1521,6 @@ void BOPAlgo_FillIn3DParts::MakeConnexityBlock(const TopoDS_Face& theFStart,
 // Vector of solid classifiers
 typedef NCollection_Vector<BOPAlgo_FillIn3DParts> BOPAlgo_VectorOfFillIn3DParts;
 
-// Functors to perform classification
-typedef BOPTools_ContextFunctor<BOPAlgo_FillIn3DParts,
-                                BOPAlgo_VectorOfFillIn3DParts,
-                                Handle(IntTools_Context),
-                                IntTools_Context> BOPAlgo_FillIn3DPartsFunctor;
-
-typedef BOPTools_ContextCnt<BOPAlgo_FillIn3DPartsFunctor,
-                            BOPAlgo_VectorOfFillIn3DParts,
-                            Handle(IntTools_Context)> BOPAlgo_FillIn3DPartsCnt;
-
 //=======================================================================
 //function : ClassifyFaces
 //purpose  :
@@ -1629,7 +1611,7 @@ void BOPAlgo_Tools::ClassifyFaces(const TopTools_ListOfShape& theFaces,
 
   // Perform classification
   //================================================================
-  BOPAlgo_FillIn3DPartsCnt::Perform(theRunParallel, aVFIP, theContext);
+  BOPTools_Parallel::Perform (theRunParallel, aVFIP, theContext);
   //================================================================
 
   // Analyze the results and fill the resulting map

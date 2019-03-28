@@ -136,20 +136,8 @@ class BOPAlgo_VertexEdge : public BOPAlgo_Algo {
   Handle(BOPDS_PaveBlock) myPB;
 };
 //=======================================================================
-typedef NCollection_Vector
-  <BOPAlgo_VertexEdge> BOPAlgo_VectorOfVertexEdge; 
-//
-typedef BOPTools_ContextFunctor 
-  <BOPAlgo_VertexEdge,
-  BOPAlgo_VectorOfVertexEdge,
-  Handle(IntTools_Context), 
-  IntTools_Context> BOPAlgo_VertexEdgeFunctor;
-//
-typedef BOPTools_ContextCnt 
-  <BOPAlgo_VertexEdgeFunctor,
-  BOPAlgo_VectorOfVertexEdge,
-  Handle(IntTools_Context)> BOPAlgo_VertexEdgeCnt;
-//
+typedef NCollection_Vector<BOPAlgo_VertexEdge> BOPAlgo_VectorOfVertexEdge;
+
 //=======================================================================
 // function: PerformVE
 // purpose: 
@@ -271,7 +259,7 @@ void BOPAlgo_PaveFiller::IntersectVE
   //
   // Perform intersection
   //=============================================================
-  BOPAlgo_VertexEdgeCnt::Perform(myRunParallel, aVVE, myContext);
+  BOPTools_Parallel::Perform (myRunParallel, aVVE, myContext);
   //=============================================================
   //
   // Keep the modified edges for further update

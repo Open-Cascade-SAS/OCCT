@@ -102,17 +102,7 @@ class BOPAlgo_FaceSelfIntersect :
 
 //=======================================================================
 
-typedef NCollection_Vector
-  <BOPAlgo_FaceSelfIntersect> BOPAlgo_VectorOfFaceSelfIntersect; 
-//
-typedef BOPTools_Functor 
-  <BOPAlgo_FaceSelfIntersect,
-  BOPAlgo_VectorOfFaceSelfIntersect> BOPAlgo_FaceSelfIntersectFunctor;
-//
-typedef BOPTools_Cnt 
-  <BOPAlgo_FaceSelfIntersectFunctor,
-  BOPAlgo_VectorOfFaceSelfIntersect> BOPAlgo_FaceSelfIntersectCnt;
-
+typedef NCollection_Vector<BOPAlgo_FaceSelfIntersect> BOPAlgo_VectorOfFaceSelfIntersect;
 
 //=======================================================================
 //function : 
@@ -447,7 +437,7 @@ void BOPAlgo_CheckerSI::CheckFaceSelfIntersection()
   
   Standard_Integer aNbFace = aVFace.Length();
   //======================================================
-  BOPAlgo_FaceSelfIntersectCnt::Perform(myRunParallel, aVFace);
+  BOPTools_Parallel::Perform (myRunParallel, aVFace);
   //======================================================
   //
   for (Standard_Integer k = 0; k < aNbFace; k++)

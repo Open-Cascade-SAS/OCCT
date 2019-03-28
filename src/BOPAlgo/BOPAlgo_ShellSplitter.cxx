@@ -71,17 +71,8 @@ class BOPAlgo_CBK {
   BOPTools_ConnexityBlock *myPCB;
 };
 //=======================================================================
-typedef NCollection_Vector
-  <BOPAlgo_CBK> BOPAlgo_VectorOfCBK; 
-//
-typedef BOPTools_Functor 
-  <BOPAlgo_CBK,
-  BOPAlgo_VectorOfCBK> BOPAlgo_CBKFunctor;
-//
-typedef BOPTools_Cnt 
-  <BOPAlgo_CBKFunctor,
-  BOPAlgo_VectorOfCBK> BOPAlgo_CBKCnt;
-//
+typedef NCollection_Vector<BOPAlgo_CBK> BOPAlgo_VectorOfCBK;
+
 //=======================================================================
 //function : 
 //purpose  : 
@@ -560,7 +551,7 @@ void BOPAlgo_ShellSplitter::MakeShells()
   //
   aNbVCBK=aVCBK.Length();
   //===================================================
-  BOPAlgo_CBKCnt::Perform(myRunParallel, aVCBK);
+  BOPTools_Parallel::Perform (myRunParallel, aVCBK);
   //===================================================
   for (k=0; k<aNbVCBK; ++k) {
     BOPAlgo_CBK& aCBK=aVCBK(k);

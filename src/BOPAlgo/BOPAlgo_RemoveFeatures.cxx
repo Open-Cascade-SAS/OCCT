@@ -716,12 +716,6 @@ private: //! @name Fields
 
 typedef NCollection_Vector<FillGap> VectorOfFillGap;
 
-typedef BOPTools_Functor <FillGap, VectorOfFillGap> FillGapFunctor;
-
-typedef BOPTools_Cnt <FillGapFunctor, VectorOfFillGap> FillGapCnt;
-
-//=======================================================================
-
 //=======================================================================
 // function: RemoveFeatures
 // purpose: Remove features by filling the gaps by extension of the
@@ -762,7 +756,7 @@ void BOPAlgo_RemoveFeatures::RemoveFeatures()
   }
 
   // Perform the reconstruction of the adjacent faces
-  FillGapCnt::Perform(myRunParallel, aVFG);
+  BOPTools_Parallel::Perform (myRunParallel, aVFG);
 
   // Even if the history is not requested, it is necessary to track:
   // - The solids modification after each feature removal to find

@@ -63,20 +63,8 @@ class BOPAlgo_ShrunkRange : public IntTools_ShrunkRange {
 };
 //
 //=======================================================================
-typedef NCollection_Vector
-  <BOPAlgo_ShrunkRange> BOPAlgo_VectorOfShrunkRange; 
-//
-typedef BOPTools_ContextFunctor 
-  <BOPAlgo_ShrunkRange,
-  BOPAlgo_VectorOfShrunkRange,
-  Handle(IntTools_Context), 
-  IntTools_Context> BOPAlgo_ShrunkRangeFunctor;
-//
-typedef BOPTools_ContextCnt 
-  <BOPAlgo_ShrunkRangeFunctor,
-  BOPAlgo_VectorOfShrunkRange,
-  Handle(IntTools_Context)> BOPAlgo_ShrunkRangeCnt;
-//
+typedef NCollection_Vector<BOPAlgo_ShrunkRange> BOPAlgo_VectorOfShrunkRange;
+
 //=======================================================================
 // function: FillShrunkData
 // purpose: 
@@ -141,7 +129,7 @@ void BOPAlgo_PaveFiller::FillShrunkData(const TopAbs_ShapeEnum aType1,
   //
   aNbVSD=aVSD.Length();
   //=============================================================
-  BOPAlgo_ShrunkRangeCnt::Perform(myRunParallel, aVSD, myContext);
+  BOPTools_Parallel::Perform (myRunParallel, aVSD, myContext);
   //=============================================================
   //
   for (k=0; k < aNbVSD; ++k) {

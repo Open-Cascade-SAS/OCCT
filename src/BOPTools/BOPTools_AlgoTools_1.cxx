@@ -159,15 +159,7 @@ class BOPTools_CPC {
 //
 //=======================================================================
 typedef NCollection_Vector<BOPTools_CPC> BOPTools_VectorOfCPC; 
-//
-typedef BOPTools_Functor 
-  <BOPTools_CPC,
-  BOPTools_VectorOfCPC> BOPTools_CPCFunctor;
-//
-typedef BOPTools_Cnt 
-  <BOPTools_CPCFunctor,
-  BOPTools_VectorOfCPC> BOPTools_CPCCnt;
-//
+
 //=======================================================================
 //class    : BOPTools_CWT
 //purpose  : 
@@ -199,15 +191,7 @@ class BOPTools_CWT {
 };
 //=======================================================================
 typedef NCollection_Vector<BOPTools_CWT> BOPTools_VectorOfCWT; 
-//
-typedef BOPTools_Functor 
-  <BOPTools_CWT,
-  BOPTools_VectorOfCWT> BOPTools_CWTFunctor;
-//
-typedef BOPTools_Cnt 
-  <BOPTools_CWTFunctor,
-  BOPTools_VectorOfCWT> BOPTools_CWTCnt;
-//
+
 //=======================================================================
 //class    : BOPTools_CDT
 //purpose  : 
@@ -250,15 +234,7 @@ class BOPTools_CDT {
 };
 //=======================================================================
 typedef NCollection_Vector<BOPTools_CDT> BOPTools_VectorOfCDT; 
-//
-typedef BOPTools_Functor 
-  <BOPTools_CDT,
-  BOPTools_VectorOfCDT> BOPTools_CDTFunctor;
-//
-typedef BOPTools_Cnt 
-  <BOPTools_CDTFunctor,
-  BOPTools_VectorOfCDT> BOPTools_CDTCnt;
-//
+
 //=======================================================================
 //class    : BOPTools_CVT
 //purpose  : 
@@ -291,15 +267,7 @@ class BOPTools_CVT {
 //
 //=======================================================================
 typedef NCollection_Vector<BOPTools_CVT> BOPTools_VectorOfCVT; 
-//
-typedef BOPTools_Functor 
-  <BOPTools_CVT,
-  BOPTools_VectorOfCVT> BOPTools_CVTFunctor;
-//
-typedef BOPTools_Cnt 
-  <BOPTools_CVTFunctor,
-  BOPTools_VectorOfCVT> BOPTools_CVTCnt;
-//
+
 //=======================================================================
 //class    : BOPTools_CET
 //purpose  : 
@@ -331,18 +299,7 @@ class BOPTools_CET {
 };
 //=======================================================================
 typedef NCollection_Vector<BOPTools_CET> BOPTools_VectorOfCET; 
-//
-typedef BOPTools_Functor 
-  <BOPTools_CET,
-  BOPTools_VectorOfCET> BOPTools_CETFunctor;
-//
-typedef BOPTools_Cnt 
-  <BOPTools_CETFunctor,
-  BOPTools_VectorOfCET> BOPTools_CETCnt;
-//
-//
-//=======================================================================
-  //
+
 //=======================================================================
 // Function : CorrectTolerances
 // purpose : 
@@ -380,7 +337,7 @@ void BOPTools_AlgoTools::CorrectPointOnCurve
   }
   //
   //======================================================
-  BOPTools_CPCCnt::Perform(bRunParallel, aVCPC);
+  BOPTools_Parallel::Perform (bRunParallel, aVCPC);
   //======================================================
 }
 //=======================================================================
@@ -418,9 +375,9 @@ void BOPTools_AlgoTools::CorrectCurveOnSurface
   }
   //
   //======================================================
-  BOPTools_CWTCnt::Perform(bRunParallel, aVCWT);
+  BOPTools_Parallel::Perform (bRunParallel, aVCWT);
   //======================================================
-  BOPTools_CDTCnt::Perform(bRunParallel, aVCDT);
+  BOPTools_Parallel::Perform (bRunParallel, aVCDT);
   //======================================================
 }
 //=======================================================================
@@ -445,7 +402,7 @@ void BOPTools_AlgoTools::CorrectShapeTolerances
   }
   //
   //======================================================
-  BOPTools_CVTCnt::Perform(bRunParallel, aVCVT);
+  BOPTools_Parallel::Perform (bRunParallel, aVCVT);
   //======================================================
   //
   aExp.Init(aShape, TopAbs_FACE);
@@ -457,7 +414,7 @@ void BOPTools_AlgoTools::CorrectShapeTolerances
   }
   //
   //======================================================
-  BOPTools_CETCnt::Perform(bRunParallel, aVCET);
+  BOPTools_Parallel::Perform (bRunParallel, aVCET);
   //======================================================
 }
 //

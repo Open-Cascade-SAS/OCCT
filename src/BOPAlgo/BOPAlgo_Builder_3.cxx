@@ -341,13 +341,6 @@ private:
 
 // Vector of Solid Builders
 typedef NCollection_Vector<BOPAlgo_SplitSolid> BOPAlgo_VectorOfBuilderSolid;
-// Functors to split solids
-typedef BOPTools_Functor<BOPAlgo_SplitSolid,
-                       BOPAlgo_VectorOfBuilderSolid> BOPAlgo_BuilderSolidFunctor;
-//
-typedef BOPTools_Cnt<BOPAlgo_BuilderSolidFunctor,
-                   BOPAlgo_VectorOfBuilderSolid> BOPAlgo_BuilderSolidCnt;
-//=======================================================================
 
 //=======================================================================
 //function : BuildSplitSolids
@@ -447,7 +440,7 @@ void BOPAlgo_Builder::BuildSplitSolids(TopTools_DataMapOfShapeShape& theDraftSol
   aNbBS=aVBS.Length();
   //
   //===================================================
-  BOPAlgo_BuilderSolidCnt::Perform(myRunParallel, aVBS);
+  BOPTools_Parallel::Perform (myRunParallel, aVBS);
   //===================================================
   //
   for (k = 0; k < aNbBS; ++k)

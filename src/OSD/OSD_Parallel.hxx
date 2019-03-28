@@ -14,6 +14,7 @@
 #ifndef OSD_Parallel_HeaderFile
 #define OSD_Parallel_HeaderFile
 
+#include <OSD_ThreadPool.hxx>
 #include <Standard_Type.hxx>
 #include <memory>
 #include <type_traits>
@@ -242,6 +243,24 @@ private:
     const Functor& myFunctor;
   };
 
+  //! Wrapper redirecting functor taking element index to functor taking also thread index.
+  template<class Functor>
+  class FunctorWrapperForThreadPool
+  {
+  public:
+    FunctorWrapperForThreadPool (const Functor& theFunctor) : myFunctor(theFunctor) {}
+
+    void operator() (int theThreadIndex, int theElemIndex) const
+    {
+      (void )theThreadIndex;
+      myFunctor (theElemIndex);
+    }
+  private:
+    FunctorWrapperForThreadPool (const FunctorWrapperForThreadPool&);
+    void operator= (const FunctorWrapperForThreadPool&);
+    const Functor& myFunctor;
+  };
+
 private:
 
   //! Simple primitive for parallelization of "foreach" loops, e.g.:
@@ -250,19 +269,33 @@ private:
   //! @endcode
   //! Implementation of framework-dependent functionality should be provided by
   //! forEach_impl function defined in opencascade::parallel namespace.
-  //! @param theBegin   the first index (incusive)
+  //! @param theBegin   the first index (inclusive)
   //! @param theEnd     the last  index (exclusive)
   //! @param theFunctor functor providing an interface "void operator(InputIterator theIter){}" 
   //!                   performing task for the specified iterator position
   //! @param theNbItems number of items passed by iterator, -1 if unknown
-  Standard_EXPORT static void forEach (UniversalIterator& theBegin,
-                                       UniversalIterator& theEnd,
-                                       const FunctorInterface& theFunctor,
-                                       Standard_Integer theNbItems);
+  Standard_EXPORT static void forEachOcct (UniversalIterator& theBegin,
+                                           UniversalIterator& theEnd,
+                                           const FunctorInterface& theFunctor,
+                                           Standard_Integer theNbItems);
+
+  //! Same as forEachOcct() but can be implemented using external threads library.
+  Standard_EXPORT static void forEachExternal (UniversalIterator& theBegin,
+                                               UniversalIterator& theEnd,
+                                               const FunctorInterface& theFunctor,
+                                               Standard_Integer theNbItems);
 
 public: //! @name public methods
 
-        //! Returns number of logical proccesrs.
+  //! Returns TRUE if OCCT threads should be used instead of auxiliary threads library;
+  //! default value is FALSE if alternative library has been enabled while OCCT building and TRUE otherwise.
+  Standard_EXPORT static Standard_Boolean ToUseOcctThreads();
+
+  //! Sets if OCCT threads should be used instead of auxiliary threads library.
+  //! Has no effect if OCCT has been built with no auxiliary threads library.
+  Standard_EXPORT static void SetUseOcctThreads (Standard_Boolean theToUseOcct);
+
+  //! Returns number of logical processors.
   Standard_EXPORT static Standard_Integer NbLogicalProcessors();
 
   //! Simple primitive for parallelization of "foreach" loops, equivalent to:
@@ -271,7 +304,7 @@ public: //! @name public methods
   //!     theFunctor(*anIter);
   //!   }
   //! @endcode
-  //! @param theBegin   the first index (incusive)
+  //! @param theBegin   the first index (inclusive)
   //! @param theEnd     the last  index (exclusive)
   //! @param theFunctor functor providing an interface "void operator(InputIterator theIter){}" 
   //!                   performing task for specified iterator position
@@ -294,7 +327,14 @@ public: //! @name public methods
       UniversalIterator aBegin(new IteratorWrapper<InputIterator>(theBegin));
       UniversalIterator aEnd  (new IteratorWrapper<InputIterator>(theEnd));
       FunctorWrapperIter<InputIterator,Functor> aFunctor (theFunctor);
-      forEach(aBegin, aEnd, aFunctor, theNbItems);
+      if (ToUseOcctThreads())
+      {
+        forEachOcct (aBegin, aEnd, aFunctor, theNbItems);
+      }
+      else
+      {
+        forEachExternal (aBegin, aEnd, aFunctor, theNbItems);
+      }
     }
   }
 
@@ -304,7 +344,7 @@ public: //! @name public methods
   //!     theFunctor(anIter);
   //!   }
   //! @endcode
-  //! @param theBegin   the first index (incusive)
+  //! @param theBegin   the first index (inclusive)
   //! @param theEnd     the last  index (exclusive)
   //! @param theFunctor functor providing an interface "void operator(int theIndex){}" 
   //!                   performing task for specified index
@@ -315,17 +355,25 @@ public: //! @name public methods
                   const Functor&         theFunctor,
                   const Standard_Boolean isForceSingleThreadExecution = Standard_False)
   {
-    if (isForceSingleThreadExecution || (theEnd - theBegin) == 1)
+    const Standard_Integer aRange = theEnd - theBegin;
+    if (isForceSingleThreadExecution || aRange == 1)
     {
       for (Standard_Integer it (theBegin); it != theEnd; ++it)
         theFunctor(it);
+    }
+    else if (ToUseOcctThreads())
+    {
+      const Handle(OSD_ThreadPool)& aThreadPool = OSD_ThreadPool::DefaultPool();
+      OSD_ThreadPool::Launcher aPoolLauncher (*aThreadPool, aRange);
+      FunctorWrapperForThreadPool<Functor> aFunctor (theFunctor);
+      aPoolLauncher.Perform (theBegin, theEnd, aFunctor);
     }
     else
     {
       UniversalIterator aBegin(new IteratorWrapper<Standard_Integer>(theBegin));
       UniversalIterator aEnd  (new IteratorWrapper<Standard_Integer>(theEnd));
       FunctorWrapperInt<Functor> aFunctor (theFunctor);
-      forEach(aBegin, aEnd, aFunctor, theEnd - theBegin);
+      forEachExternal (aBegin, aEnd, aFunctor, aRange);
     }
   }
 

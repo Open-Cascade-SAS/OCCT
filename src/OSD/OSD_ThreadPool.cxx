@@ -16,6 +16,7 @@
 #include <OSD_ThreadPool.hxx>
 
 #include <OSD.hxx>
+#include <OSD_Parallel.hxx>
 #include <Standard_Atomic.hxx>
 #include <TCollection_AsciiString.hxx>
 

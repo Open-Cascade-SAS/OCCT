@@ -116,33 +116,13 @@ class BOPAlgo_PairOfShapeBoolean : public BOPAlgo_Algo {
   Handle(IntTools_Context) myContext;
 };
 //
-typedef NCollection_Vector<BOPAlgo_PairOfShapeBoolean> \
-  BOPAlgo_VectorOfPairOfShapeBoolean;
-//
-typedef BOPTools_ContextFunctor 
-  <BOPAlgo_PairOfShapeBoolean,
-  BOPAlgo_VectorOfPairOfShapeBoolean,
-  Handle(IntTools_Context), 
-  IntTools_Context> BOPAlgo_BuilderSDFaceFunctor;
-//
-typedef BOPTools_ContextCnt 
-  <BOPAlgo_BuilderSDFaceFunctor,
-  BOPAlgo_VectorOfPairOfShapeBoolean,
-  Handle(IntTools_Context)> BOPAlgo_BuilderSDFaceCnt;
-//
+typedef NCollection_Vector<BOPAlgo_PairOfShapeBoolean> BOPAlgo_VectorOfPairOfShapeBoolean;
+
 //=======================================================================
 // BuilderFace
 //
 typedef NCollection_Vector<BOPAlgo_BuilderFace> BOPAlgo_VectorOfBuilderFace;
-//
-typedef BOPTools_Functor 
-  <BOPAlgo_BuilderFace,
-  BOPAlgo_VectorOfBuilderFace> BOPAlgo_BuilderFaceFunctor;
-//
-typedef BOPTools_Cnt 
-  <BOPAlgo_BuilderFaceFunctor,
-  BOPAlgo_VectorOfBuilderFace> BOPAlgo_BuilderFaceCnt;
-//
+
 //=======================================================================
 //class    : BOPAlgo_VFI
 //purpose  : 
@@ -205,18 +185,7 @@ class BOPAlgo_VFI : public BOPAlgo_Algo {
 };
 //
 typedef NCollection_Vector<BOPAlgo_VFI> BOPAlgo_VectorOfVFI; 
-//
-typedef BOPTools_ContextFunctor 
-  <BOPAlgo_VFI,
-  BOPAlgo_VectorOfVFI,
-  Handle(IntTools_Context), 
-  IntTools_Context> BOPAlgo_VFIFunctor;
-//
-typedef BOPTools_ContextCnt 
-  <BOPAlgo_VFIFunctor,
-  BOPAlgo_VectorOfVFI,
-  Handle(IntTools_Context)> BOPAlgo_VFICnt;
-//
+
 //=======================================================================
 //function : FillImagesFaces
 //purpose  : 
@@ -474,7 +443,7 @@ void BOPAlgo_Builder::BuildSplitFaces()
   }// for (i=0; i<aNbS; ++i) {
   //
   //===================================================
-  BOPAlgo_BuilderFaceCnt::Perform(myRunParallel, aVBF);
+  BOPTools_Parallel::Perform (myRunParallel, aVBF);
   //===================================================
   //
   Standard_Integer aNbBF = aVBF.Length();
@@ -663,7 +632,7 @@ void BOPAlgo_Builder::FillSameDomainFaces()
 
   //================================================================
   // Perform analysis
-  BOPAlgo_BuilderSDFaceCnt::Perform(myRunParallel, aVPSB, myContext);
+  BOPTools_Parallel::Perform (myRunParallel, aVPSB, myContext);
   //================================================================
 
   NCollection_List<TopTools_ListOfShape> aMBlocks(aAllocator);
@@ -816,7 +785,7 @@ void BOPAlgo_Builder::FillInternalVertices()
 
   // Perform classification
   //================================================================
-  BOPAlgo_VFICnt::Perform(myRunParallel, aVVFI, myContext);
+  BOPTools_Parallel::Perform (myRunParallel, aVVFI, myContext);
   //================================================================
 
   Standard_Integer aNbVFI = aVVFI.Length();

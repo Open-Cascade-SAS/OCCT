@@ -14,9 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-// Version of parallel executor used when TBB is not available
-#ifndef HAVE_TBB
-
 #include <OSD_Parallel.hxx>
 
 #include <OSD_ThreadPool.hxx>
@@ -142,18 +139,32 @@ namespace
 }
 
 //=======================================================================
-//function : forEach
-//purpose  : 
+//function : forEachOcct
+//purpose  :
 //=======================================================================
-void OSD_Parallel::forEach (UniversalIterator& theBegin,
-                            UniversalIterator& theEnd,
-                            const FunctorInterface& theFunctor,
-                            Standard_Integer theNbItems)
+void OSD_Parallel::forEachOcct (UniversalIterator& theBegin,
+                                UniversalIterator& theEnd,
+                                const FunctorInterface& theFunctor,
+                                Standard_Integer theNbItems)
 {
   const Handle(OSD_ThreadPool)& aThreadPool = OSD_ThreadPool::DefaultPool();
   const Standard_Integer aNbThreads = theNbItems != -1 ? Min (theNbItems, aThreadPool->NbDefaultThreadsToLaunch()) : -1;
   OSD_Parallel_Threads::UniversalLauncher aLauncher (*aThreadPool, aNbThreads);
   aLauncher.Perform (theBegin, theEnd, theFunctor);
+}
+
+// Version of parallel executor used when TBB is not available
+#ifndef HAVE_TBB
+//=======================================================================
+//function : forEachExternal
+//purpose  :
+//=======================================================================
+void OSD_Parallel::forEachExternal (UniversalIterator& theBegin,
+                                    UniversalIterator& theEnd,
+                                    const FunctorInterface& theFunctor,
+                                    Standard_Integer theNbItems)
+{
+  forEachOcct (theBegin, theEnd, theFunctor, theNbItems);
 }
 
 #endif /* ! HAVE_TBB */

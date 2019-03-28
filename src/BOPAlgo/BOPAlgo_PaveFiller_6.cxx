@@ -165,16 +165,8 @@ class BOPAlgo_FaceFace :
 };
 //
 //=======================================================================
-typedef NCollection_Vector
-  <BOPAlgo_FaceFace> BOPAlgo_VectorOfFaceFace; 
-//
-typedef BOPTools_Functor 
-  <BOPAlgo_FaceFace,
-  BOPAlgo_VectorOfFaceFace> BOPAlgo_FaceFaceFunctor;
-//
-typedef BOPTools_Cnt 
-  <BOPAlgo_FaceFaceFunctor,
-  BOPAlgo_VectorOfFaceFace> BOPAlgo_FaceFaceCnt;
+typedef NCollection_Vector<BOPAlgo_FaceFace> BOPAlgo_VectorOfFaceFace;
+
 /////////////////////////////////////////////////////////////////////////
 //=======================================================================
 //function : PerformFF
@@ -287,7 +279,7 @@ void BOPAlgo_PaveFiller::PerformFF()
   //
   //======================================================
   // Perform intersection
-  BOPAlgo_FaceFaceCnt::Perform(myRunParallel, aVFaceFace);
+  BOPTools_Parallel::Perform (myRunParallel, aVFaceFace);
   //======================================================
   // Treatment of the results
   Standard_Integer k, aNbFaceFace = aVFaceFace.Length();

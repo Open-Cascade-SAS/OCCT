@@ -169,19 +169,7 @@ protected:
   Handle(IntTools_Context) myContext;
 };
 
-typedef NCollection_Vector<BOPAlgo_WS_ConnexityBlock> \
-  BOPAlgo_VectorOfConnexityBlock;
-//
-typedef BOPTools_ContextFunctor
-  <BOPAlgo_WS_ConnexityBlock,
-  BOPAlgo_VectorOfConnexityBlock,
-  Handle(IntTools_Context),
-  IntTools_Context> BOPAlgo_SplitBlockFunctor;
-//
-typedef BOPTools_ContextCnt
-  <BOPAlgo_SplitBlockFunctor,
-  BOPAlgo_VectorOfConnexityBlock,
-  Handle(IntTools_Context)> BOPAlgo_SplitBlockCnt;
+typedef NCollection_Vector<BOPAlgo_WS_ConnexityBlock> BOPAlgo_VectorOfConnexityBlock;
 
 //=======================================================================
 //function : MakeWires
@@ -214,7 +202,7 @@ void BOPAlgo_WireSplitter::MakeWires()
     }
   }
   //===================================================
-  BOPAlgo_SplitBlockCnt::Perform(myRunParallel, aVCB, myContext);
+  BOPTools_Parallel::Perform (myRunParallel, aVCB, myContext);
   //===================================================
   aNbVCB=aVCB.Length();
   for (k=0; k<aNbVCB; ++k) {

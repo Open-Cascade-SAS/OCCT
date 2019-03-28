@@ -115,19 +115,8 @@ class BOPAlgo_VertexSolid  {
   Handle(IntTools_Context) myContext;
 };
 //=======================================================================
-typedef NCollection_Vector
-  <BOPAlgo_VertexSolid> BOPAlgo_VectorOfVertexSolid; 
-//
-typedef BOPTools_ContextFunctor 
-  <BOPAlgo_VertexSolid,
-  BOPAlgo_VectorOfVertexSolid,
-  Handle(IntTools_Context), 
-  IntTools_Context> BOPAlgo_VertexSolidFunctor;
-//
-typedef BOPTools_ContextCnt 
-  <BOPAlgo_VertexSolidFunctor,
-  BOPAlgo_VectorOfVertexSolid,
-  Handle(IntTools_Context)> BOPAlgo_VertexSolidCnt;
+typedef NCollection_Vector<BOPAlgo_VertexSolid> BOPAlgo_VectorOfVertexSolid;
+
 /////////////////////////////////////////////////////////////////////////
 //=======================================================================
 //class    : BOPAlgo_ShapeSolid
@@ -185,17 +174,8 @@ class BOPAlgo_ShapeSolid  {
   BOPDS_DS* myDS;
 };
 //=======================================================================
-typedef NCollection_Vector
-  <BOPAlgo_ShapeSolid> BOPAlgo_VectorOfShapeSolid; 
-//
-typedef BOPTools_Functor 
-  <BOPAlgo_ShapeSolid,
-  BOPAlgo_VectorOfShapeSolid> BOPAlgo_ShapeSolidFunctor;
-//
-typedef BOPTools_Cnt 
-  <BOPAlgo_ShapeSolidFunctor,
-  BOPAlgo_VectorOfShapeSolid> BOPAlgo_ShapeSolidCnt;
-//
+typedef NCollection_Vector<BOPAlgo_ShapeSolid> BOPAlgo_VectorOfShapeSolid;
+
 /////////////////////////////////////////////////////////////////////////
 //=======================================================================
 //class    : BOPAlgo_SolidSolid
@@ -225,18 +205,7 @@ class BOPAlgo_SolidSolid : public  BOPAlgo_ShapeSolid {
   };
 };
 //=======================================================================
-typedef NCollection_Vector
-  <BOPAlgo_SolidSolid> BOPAlgo_VectorOfSolidSolid; 
-//
-typedef BOPTools_Functor 
-  <BOPAlgo_SolidSolid,
-  BOPAlgo_VectorOfSolidSolid> BOPAlgo_SolidSolidFunctor;
-//
-typedef BOPTools_Cnt 
-  <BOPAlgo_SolidSolidFunctor,
-  BOPAlgo_VectorOfSolidSolid> BOPAlgo_SolidSolidCnt;
-//
-/////////////////////////////////////////////////////////////////////////
+typedef NCollection_Vector<BOPAlgo_SolidSolid> BOPAlgo_VectorOfSolidSolid;
 
 //=======================================================================
 //function : PerformVZ
@@ -286,7 +255,7 @@ void BOPAlgo_CheckerSI::PerformVZ()
   //
   aNbVVS=aVVS.Length();
   //=============================================================
-  BOPAlgo_VertexSolidCnt::Perform(myRunParallel, aVVS, myContext);
+  BOPTools_Parallel::Perform (myRunParallel, aVVS, myContext);
   //=============================================================
   for (k=0; k < aNbVVS; ++k) {
     const BOPAlgo_VertexSolid& aVertexSolid=aVVS(k);
@@ -344,7 +313,7 @@ void BOPAlgo_CheckerSI::PerformZZ()
   //
   aNbSolidSolid=aVSolidSolid.Length();
   //======================================================
-  BOPAlgo_SolidSolidCnt::Perform(myRunParallel, aVSolidSolid);
+  BOPTools_Parallel::Perform (myRunParallel, aVSolidSolid);
   //======================================================
   //
   BOPDS_VectorOfInterfZZ& aZZs=myDS->InterfZZ();
@@ -391,7 +360,7 @@ void BOPAlgo_CheckerSI::PerformSZ(const TopAbs_ShapeEnum aTS)
   //
   aNbShapeSolid=aVShapeSolid.Length();
   //======================================================
-  BOPAlgo_ShapeSolidCnt::Perform(myRunParallel, aVShapeSolid);
+  BOPTools_Parallel::Perform (myRunParallel, aVShapeSolid);
   //======================================================
   //
   BOPDS_VectorOfInterfEZ& aEZs=myDS->InterfEZ();

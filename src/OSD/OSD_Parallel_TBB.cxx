@@ -27,14 +27,14 @@
 #include <tbb/task_scheduler_init.h>
 
 //=======================================================================
-//function : forEach
+//function : forEachExternal
 //purpose  : 
 //=======================================================================
 
-void OSD_Parallel::forEach (UniversalIterator& theBegin,
-                            UniversalIterator& theEnd,
-                            const FunctorInterface& theFunctor,
-                            Standard_Integer theNbItems)
+void OSD_Parallel::forEachExternal (UniversalIterator& theBegin,
+                                    UniversalIterator& theEnd,
+                                    const FunctorInterface& theFunctor,
+                                    Standard_Integer theNbItems)
 {
   try
   {

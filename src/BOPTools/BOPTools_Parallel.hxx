@@ -18,158 +18,178 @@
 #include <Standard_Macro.hxx>
 #include <Standard_NotImplemented.hxx>
 #include <OSD_Parallel.hxx>
+#include <OSD_ThreadPool.hxx>
 #include <NCollection_DataMap.hxx>
 #include <Standard_Mutex.hxx>
 #include <OSD_Thread.hxx>
 
-//
-// 1. Implementation of Functors/Starters
-//
-// 1.1. Pure version
-//
-
-//=======================================================================
-//class    : BOPTools_Functor
-//purpose  : 
-//=======================================================================
-template <class TypeSolver, class TypeSolverVector>
-class BOPTools_Functor
+//! Implementation of Functors/Starters
+class BOPTools_Parallel
 {
-public:
-  //! Constructor.
-  explicit BOPTools_Functor(TypeSolverVector& theSolverVec) 
-  : mySolvers(theSolverVec) {}
-
-  //! Defines functor interface.
-  void operator() (const Standard_Integer theIndex) const
+  template<class TypeSolverVector>
+  class Functor
   {
-    TypeSolver& aSolver = mySolvers(theIndex);
-    aSolver.Perform();
-  }
+  public:
+    //! Constructor.
+    explicit Functor(TypeSolverVector& theSolverVec) : mySolvers (theSolverVec) {}
 
-private:
-  BOPTools_Functor(const BOPTools_Functor&);
-  BOPTools_Functor& operator= (const BOPTools_Functor&);
-
-private:
-  TypeSolverVector& mySolvers;
-};
-
-//=======================================================================
-//class    : BOPTools_Cnt
-//purpose  : 
-//=======================================================================
-template <class TypeFunctor, class TypeSolverVector>
-class BOPTools_Cnt
-{
-public:
-  static void Perform( const Standard_Boolean isRunParallel,
-                       TypeSolverVector&      theSolverVector )
-  {
-    TypeFunctor aFunctor(theSolverVector);
-    OSD_Parallel::For(0, theSolverVector.Length(), aFunctor, !isRunParallel);
-  }
-};
-
-//
-// 1.2. Context dependent version
-//
-
-//=======================================================================
-//class    : BOPTools_ContextFunctor
-//purpose  : 
-//=======================================================================
-template <class TypeSolver,  class TypeSolverVector,
-          class TypeContext, typename TN>
-class BOPTools_ContextFunctor
-{
-  //! Auxiliary thread ID  hasher.
-  struct Hasher
-  {
-    static Standard_Integer HashCode(const Standard_ThreadId theKey,
-                                     const Standard_Integer  Upper)
+    //! Defines functor interface.
+    void operator() (const Standard_Integer theIndex) const
     {
-      return ::HashCode((Standard_Size)theKey, Upper);
+      typename TypeSolverVector::value_type& aSolver = mySolvers[theIndex];
+      aSolver.Perform();
     }
 
-    static Standard_Boolean IsEqual(const Standard_ThreadId theKey1,
-                                    const Standard_ThreadId theKey2)
-    {
-      return theKey1 == theKey2;
-    }
+  private:
+    Functor(const Functor&);
+    Functor& operator= (const Functor&);
+
+  private:
+    TypeSolverVector& mySolvers;
   };
 
-  typedef NCollection_DataMap<Standard_ThreadId, TypeContext, Hasher> ContextMap;
-
-public:
-
-  //! Constructor
-  explicit BOPTools_ContextFunctor( TypeSolverVector& theVector )
-  : mySolverVector(theVector) {}
-
-  //! Binds main thread context
-  void SetContext( TypeContext& theContext )
+  //! Functor storing map of thread id -> algorithm context
+  template<class TypeSolverVector, class TypeContext>
+  class ContextFunctor
   {
-    myContexts.Bind(OSD_Thread::Current(), theContext);
-  }
-
-  //! Returns current thread context
-  TypeContext& GetThreadContext() const
-  {
-    const Standard_ThreadId aThreadID = OSD_Thread::Current();
-    if ( myContexts.IsBound(aThreadID) )
+    //! Auxiliary thread ID  hasher.
+    struct Hasher
     {
-      TypeContext& aContext = myContexts(aThreadID);
-      if ( aContext.IsNull() == Standard_False )
-        return aContext;
+      static Standard_Integer HashCode(const Standard_ThreadId theKey,
+                                       const Standard_Integer  Upper)
+      {
+        return ::HashCode((Standard_Size)theKey, Upper);
+      }
+
+      static Standard_Boolean IsEqual(const Standard_ThreadId theKey1,
+                                      const Standard_ThreadId theKey2)
+      {
+        return theKey1 == theKey2;
+      }
+    };
+
+  public:
+
+    //! Constructor
+    explicit ContextFunctor (TypeSolverVector& theVector) : mySolverVector(theVector) {}
+
+    //! Binds main thread context
+    void SetContext (const opencascade::handle<TypeContext>& theContext)
+    {
+      myContextMap.Bind (OSD_Thread::Current(), theContext);
     }
 
-    // Create new context
-    TypeContext aContext = new TN
-      ( NCollection_BaseAllocator::CommonBaseAllocator() );
+    //! Returns current thread context
+    const opencascade::handle<TypeContext>& GetThreadContext() const
+    {
+      const Standard_ThreadId aThreadID = OSD_Thread::Current();
+      if (const opencascade::handle<TypeContext>* aContextPtr = myContextMap.Seek (aThreadID))
+      {
+        if (!aContextPtr->IsNull())
+        {
+          return *aContextPtr;
+        }
+      }
 
-    Standard_Mutex::Sentry aLocker(myMutex);
-    myContexts.Bind(aThreadID, aContext);
+      // Create new context
+      opencascade::handle<TypeContext> aContext = new TypeContext (NCollection_BaseAllocator::CommonBaseAllocator());
 
-    return myContexts(aThreadID);
-  }
+      Standard_Mutex::Sentry aLocker (myMutex);
+      myContextMap.Bind (aThreadID, aContext);
+      return myContextMap (aThreadID);
+    }
 
-  //! Defines functor interface
-  void operator()( const Standard_Integer theIndex ) const
+    //! Defines functor interface
+    void operator()( const Standard_Integer theIndex ) const
+    {
+      const opencascade::handle<TypeContext>& aContext = GetThreadContext();
+      typename TypeSolverVector::value_type& aSolver = mySolverVector[theIndex];
+
+      aSolver.SetContext(aContext);
+      aSolver.Perform();
+    }
+
+  private:
+    ContextFunctor(const ContextFunctor&);
+    ContextFunctor& operator= (const ContextFunctor&);
+
+  private:
+    TypeSolverVector& mySolverVector;
+    mutable NCollection_DataMap<Standard_ThreadId, opencascade::handle<TypeContext>, Hasher> myContextMap;
+    mutable Standard_Mutex myMutex;
+  };
+
+  //! Functor storing array of algorithm contexts per thread in pool
+  template<class TypeSolverVector, class TypeContext>
+  class ContextFunctor2
   {
-    TypeContext& aContext = GetThreadContext();
-    TypeSolver&  aSolver  = mySolverVector(theIndex);
+  public:
 
-    aSolver.SetContext(aContext);
-    aSolver.Perform();
-  }
+    //! Constructor
+    explicit ContextFunctor2 (TypeSolverVector& theVector, const OSD_ThreadPool::Launcher& thePoolLauncher)
+    : mySolverVector(theVector),
+      myContextArray (thePoolLauncher.LowerThreadIndex(), thePoolLauncher.UpperThreadIndex()) {}
 
-private:
-  BOPTools_ContextFunctor(const BOPTools_ContextFunctor&);
-  BOPTools_ContextFunctor& operator= (const BOPTools_ContextFunctor&);
+    //! Binds main thread context
+    void SetContext (const opencascade::handle<TypeContext>& theContext)
+    {
+      myContextArray.ChangeLast() = theContext; // OSD_ThreadPool::Launcher::UpperThreadIndex() is reserved for a main thread
+    }
 
-private:
-  TypeSolverVector&      mySolverVector;
-  mutable ContextMap     myContexts;
-  mutable Standard_Mutex myMutex;
-};
+    //! Defines functor interface with serialized thread index.
+    void operator() (int theThreadIndex,
+                     int theIndex) const
+    {
+      opencascade::handle<TypeContext>& aContext = myContextArray.ChangeValue (theThreadIndex);
+      if (aContext.IsNull())
+      {
+        aContext = new TypeContext (NCollection_BaseAllocator::CommonBaseAllocator());
+      }
+      typename TypeSolverVector::value_type& aSolver = mySolverVector[theIndex];
+      aSolver.SetContext (aContext);
+      aSolver.Perform();
+    }
 
-//=======================================================================
-//class    : BOPTools_ContextCnt
-//purpose  : 
-//=======================================================================
-template <class TypeFunctor, class TypeSolverVector, class TypeContext>
-class BOPTools_ContextCnt
-{
+  private:
+    ContextFunctor2(const ContextFunctor2&);
+    ContextFunctor2& operator= (const ContextFunctor2&);
+
+  private:
+    TypeSolverVector& mySolverVector;
+    mutable NCollection_Array1< opencascade::handle<TypeContext> > myContextArray;
+  };
+
 public:
-  static void Perform( const Standard_Boolean isRunParallel,
-                       TypeSolverVector&      theSolverVector,
-                       TypeContext&           theContext )
-  {
-    TypeFunctor aFunctor(theSolverVector);
-    aFunctor.SetContext(theContext);
 
-    OSD_Parallel::For(0, theSolverVector.Length(), aFunctor, !isRunParallel);
+  //! Pure version
+  template<class TypeSolverVector>
+  static void Perform (Standard_Boolean theIsRunParallel,
+                       TypeSolverVector& theSolverVector)
+  {
+    Functor<TypeSolverVector> aFunctor (theSolverVector);
+    OSD_Parallel::For (0, theSolverVector.Length(), aFunctor, !theIsRunParallel);
+  }
+
+  //! Context dependent version
+  template<class TypeSolverVector, class TypeContext>
+  static void Perform (Standard_Boolean  theIsRunParallel,
+                       TypeSolverVector& theSolverVector,
+                       opencascade::handle<TypeContext>& theContext)
+  {
+    if (OSD_Parallel::ToUseOcctThreads())
+    {
+      const Handle(OSD_ThreadPool)& aThreadPool = OSD_ThreadPool::DefaultPool();
+      OSD_ThreadPool::Launcher aPoolLauncher (*aThreadPool, theIsRunParallel ? theSolverVector.Length() : 0);
+      ContextFunctor2<TypeSolverVector, TypeContext> aFunctor (theSolverVector, aPoolLauncher);
+      aFunctor.SetContext (theContext);
+      aPoolLauncher.Perform (0, theSolverVector.Length(), aFunctor);
+    }
+    else
+    {
+      ContextFunctor<TypeSolverVector, TypeContext> aFunctor (theSolverVector);
+      aFunctor.SetContext (theContext);
+      OSD_Parallel::For (0, theSolverVector.Length(), aFunctor, !theIsRunParallel);
+    }
   }
 };
 

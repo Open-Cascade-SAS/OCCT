@@ -169,20 +169,8 @@ class BOPAlgo_SplitEdge : public BOPAlgo_Algo  {
 };
 //
 //=======================================================================
-typedef NCollection_Vector
-  <BOPAlgo_SplitEdge> BOPAlgo_VectorOfSplitEdge; 
-//
-typedef BOPTools_ContextFunctor
-  <BOPAlgo_SplitEdge,
-  BOPAlgo_VectorOfSplitEdge,
-  Handle(IntTools_Context),
-  IntTools_Context> BOPAlgo_SplitEdgeFunctor;
-//
-typedef BOPTools_ContextCnt
-  <BOPAlgo_SplitEdgeFunctor,
-  BOPAlgo_VectorOfSplitEdge,
-  Handle(IntTools_Context)> BOPAlgo_SplitEdgeCnt;
-//
+typedef NCollection_Vector<BOPAlgo_SplitEdge> BOPAlgo_VectorOfSplitEdge;
+
 //=======================================================================
 //class    : BOPAlgo_MPC
 //purpose  : 
@@ -333,20 +321,8 @@ class BOPAlgo_MPC : public BOPAlgo_Algo  {
 };
 //
 //=======================================================================
-typedef NCollection_Vector
-  <BOPAlgo_MPC> BOPAlgo_VectorOfMPC; 
-//
-typedef BOPTools_ContextFunctor 
-  <BOPAlgo_MPC,
-  BOPAlgo_VectorOfMPC,
-  Handle(IntTools_Context), 
-  IntTools_Context> BOPAlgo_MPCFunctor;
-//
-typedef BOPTools_ContextCnt 
-  <BOPAlgo_MPCFunctor,
-  BOPAlgo_VectorOfMPC,
-  Handle(IntTools_Context)> BOPAlgo_MPCCnt;
-//
+typedef NCollection_Vector<BOPAlgo_MPC> BOPAlgo_VectorOfMPC;
+
 //=======================================================================
 //class    : BOPAlgo_BPC
 //purpose  : 
@@ -391,18 +367,8 @@ class BOPAlgo_BPC {
   Standard_Boolean myToUpdate;
 };
 //=======================================================================
-typedef NCollection_Vector
-  <BOPAlgo_BPC> BOPAlgo_VectorOfBPC; 
-//
-typedef BOPTools_Functor 
-  <BOPAlgo_BPC,
-  BOPAlgo_VectorOfBPC> BOPAlgo_BPCFunctor;
-//
-typedef BOPTools_Cnt 
-  <BOPAlgo_BPCFunctor,
-  BOPAlgo_VectorOfBPC> BOPAlgo_BPCCnt;
-//
-//
+typedef NCollection_Vector<BOPAlgo_BPC> BOPAlgo_VectorOfBPC;
+
 //=======================================================================
 // function: MakeSplitEdges
 // purpose: 
@@ -524,7 +490,7 @@ void BOPAlgo_PaveFiller::MakeSplitEdges()
   //
   aNbVBSE=aVBSE.Length();
   //======================================================
-  BOPAlgo_SplitEdgeCnt::Perform(myRunParallel, aVBSE, myContext);
+  BOPTools_Parallel::Perform (myRunParallel, aVBSE, myContext);
   //======================================================
   //
   for (k=0; k < aNbVBSE; ++k) {
@@ -753,7 +719,7 @@ void BOPAlgo_PaveFiller::MakePCurves()
   }//if (bPCurveOnS1 || bPCurveOnS2 ) {
   //
   //======================================================
-  BOPAlgo_MPCCnt::Perform(myRunParallel, aVMPC, myContext);
+  BOPTools_Parallel::Perform (myRunParallel, aVMPC, myContext);
   //======================================================
 
   // Add warnings of the failed projections and update edges with new pcurves
@@ -876,7 +842,7 @@ void BOPAlgo_PaveFiller::Prepare()
   }
   //
   //======================================================
-  BOPAlgo_BPCCnt::Perform(myRunParallel, aVBPC);
+  BOPTools_Parallel::Perform (myRunParallel, aVBPC);
   //======================================================
 
   // pcurves are built, and now update edges

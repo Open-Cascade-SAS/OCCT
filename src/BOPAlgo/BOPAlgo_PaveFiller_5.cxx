@@ -128,18 +128,7 @@ class BOPAlgo_EdgeFace :
 //
 //=======================================================================
 typedef NCollection_Vector<BOPAlgo_EdgeFace> BOPAlgo_VectorOfEdgeFace; 
-//
-typedef BOPTools_ContextFunctor 
-  <BOPAlgo_EdgeFace,
-  BOPAlgo_VectorOfEdgeFace,
-  Handle(IntTools_Context), 
-  IntTools_Context> BOPAlgo_EdgeFaceFunctor;
-//
-typedef BOPTools_ContextCnt 
-  <BOPAlgo_EdgeFaceFunctor,
-  BOPAlgo_VectorOfEdgeFace,
-  Handle(IntTools_Context)> BOPAlgo_EdgeFaceCnt;
-//
+
 //=======================================================================
 //function : PerformEF
 //purpose  : 
@@ -265,7 +254,7 @@ void BOPAlgo_PaveFiller::PerformEF()
   //
   aNbEdgeFace=aVEdgeFace.Length();
   //=================================================================
-  BOPAlgo_EdgeFaceCnt::Perform(myRunParallel, aVEdgeFace, myContext);
+  BOPTools_Parallel::Perform (myRunParallel, aVEdgeFace, myContext);
   //=================================================================
   //
   for (k=0; k < aNbEdgeFace; ++k) {
@@ -972,7 +961,7 @@ void BOPAlgo_PaveFiller::ForceInterfEF(const BOPDS_IndexedMapOfPaveBlock& theMPB
   anAlloc->Reset();
 
   // Perform intersection of the found pairs
-  BOPAlgo_EdgeFaceCnt::Perform(myRunParallel, aVEdgeFace, myContext);
+  BOPTools_Parallel::Perform (myRunParallel, aVEdgeFace, myContext);
 
   BOPDS_VectorOfInterfEF& aEFs = myDS->InterfEF();
   if (theAddInterf && aEFs.IsEmpty())

@@ -29,6 +29,8 @@
 #include <OSD_Exception_CTRL_BREAK.hxx>
 #include <OSD_MAllocHook.hxx>
 #include <OSD_MemInfo.hxx>
+#include <OSD_Parallel.hxx>
+#include <OSD_ThreadPool.hxx>
 #include <Standard_Macro.hxx>
 #include <Standard_SStream.hxx>
 #include <Standard_Stream.hxx>
@@ -809,6 +811,82 @@ static int dmeminfo (Draw_Interpretor& theDI,
 }
 
 //==============================================================================
+//function : dparallel
+//purpose  :
+//==============================================================================
+static int dparallel (Draw_Interpretor& theDI,
+                      Standard_Integer  theArgNb,
+                      const char**      theArgVec)
+{
+  const Handle(OSD_ThreadPool)& aDefPool = OSD_ThreadPool::DefaultPool();
+  if (theArgNb <= 1)
+  {
+    theDI << "NbLogicalProcessors: " << OSD_Parallel::NbLogicalProcessors() << "\n"
+          << "NbThreads:           " << aDefPool->NbThreads() << "\n"
+          << "NbDefThreads:        " << aDefPool->NbDefaultThreadsToLaunch() << "\n"
+          << "UseOcct:             " << (OSD_Parallel::ToUseOcctThreads() ? 1 : 0);
+    return 0;
+  }
+
+  for (Standard_Integer anIter = 1; anIter < theArgNb; ++anIter)
+  {
+    TCollection_AsciiString anArg (theArgVec[anIter]);
+    anArg.LowerCase();
+    if (anIter + 1 < theArgNb
+     && (anArg == "-nbthreads"
+      || anArg == "-threads"))
+    {
+      const Standard_Integer aVal = Draw::Atoi (theArgVec[++anIter]);
+      aDefPool->Init (aVal);
+    }
+    else if (anIter + 1 < theArgNb
+          && (anArg == "-nbdefthreads"
+           || anArg == "-defthreads"
+           || anArg == "-nbmaxdefthreads"
+           || anArg == "-maxdefthreads"))
+    {
+      const Standard_Integer aVal = Draw::Atoi (theArgVec[++anIter]);
+      if (aVal <= 0 || aVal > aDefPool->NbThreads())
+      {
+        std::cout << "Syntax error: maximum number of threads to use should be <= of threads in the pool\n";
+        return 1;
+      }
+      aDefPool->SetNbDefaultThreadsToLaunch (aVal);
+    }
+    else if (anIter + 1 < theArgNb
+          && (anArg == "-useocct"
+           || anArg == "-touseocct"
+           || anArg == "-occt"))
+    {
+      const Standard_Integer aVal = Draw::Atoi (theArgVec[++anIter]);
+      OSD_Parallel::SetUseOcctThreads (aVal == 1);
+      if (OSD_Parallel::ToUseOcctThreads() != (aVal == 1))
+      {
+        std::cout << "Warning: unable to switch threads library - no options available\n";
+      }
+    }
+    else if (anIter + 1 < theArgNb
+          && (anArg == "-usetbb"
+           || anArg == "-tousetbb"
+           || anArg == "-tbb"))
+    {
+      const Standard_Integer aVal = Draw::Atoi (theArgVec[++anIter]);
+      OSD_Parallel::SetUseOcctThreads (aVal == 0);
+      if (OSD_Parallel::ToUseOcctThreads() != (aVal == 0))
+      {
+        std::cout << "Warning: unable to switch threads library - no options available\n";
+      }
+    }
+    else
+    {
+      std::cout << "Syntax error: unknown argument '" << anArg << "'\n";
+      return 1;
+    }
+  }
+  return 0;
+}
+
+//==============================================================================
 //function : dperf
 //purpose  :
 //==============================================================================
@@ -976,6 +1054,16 @@ void Draw::BasicCommands(Draw_Interpretor& theCommands)
 		  __FILE__,dperf,g);
   theCommands.Add("dsetsignal","dsetsignal [fpe=0] -- set OSD signal handler, with FPE option if argument is given",
 		  __FILE__,dsetsignal,g);
+
+  theCommands.Add("dparallel",
+    "dparallel [-occt {0|1}] [-nbThreads Count] [-nbDefThreads Count]"
+    "\n\t\t: Manages global parallelization parameters:"
+    "\n\t\t:   -occt         use OCCT implementation or external library (if available)"
+    "\n\t\t:   -nbThreads    specify the number of threads in default thread pool"
+    "\n\t\t:   -nbDefThreads specify the upper limit of threads to be used for default thread pool"
+    "\n\t\t:                 within single parallelization call (should be <= of overall number of threads),"
+    "\n\t\t:                 so that nested algorithm can also use this pool",
+      __FILE__,dparallel,g);
 
   // Logging commands; note that their names are hard-coded in the code
   // of Draw_Interpretor, thus should not be changed without update of that code!

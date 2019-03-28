@@ -73,9 +73,7 @@ class BOPDS_TSR : public BOPTools_BoxBndTreeSelector{
 };
 //
 //=======================================================================
-typedef NCollection_Vector <BOPDS_TSR> BOPDS_VectorOfTSR; 
-typedef BOPTools_Functor <BOPDS_TSR,BOPDS_VectorOfTSR> BOPDS_TSRFunctor;
-typedef BOPTools_Cnt <BOPDS_TSRFunctor, BOPDS_VectorOfTSR> BOPDS_TSRCnt;
+typedef NCollection_Vector<BOPDS_TSR> BOPDS_VectorOfTSR;
 /////////////////////////////////////////////////////////////////////////
 
 
@@ -323,7 +321,7 @@ void BOPDS_Iterator::Intersect(const Handle(IntTools_Context)& theCtx,
   aTreeFiller.Fill();
   //
   //===========================================
-  BOPDS_TSRCnt::Perform(myRunParallel, aVTSR);
+  BOPTools_Parallel::Perform (myRunParallel, aVTSR);
   //===========================================
   //
   BOPDS_MapOfPair aMPFence;
@@ -454,7 +452,7 @@ void BOPDS_Iterator::IntersectExt(const TColStd_MapOfInteger& theIndices)
   }
 
   // Perform selection
-  BOPDS_TSRCnt::Perform(myRunParallel, aVTSR);
+  BOPTools_Parallel::Perform (myRunParallel, aVTSR);
 
   // Treat selections
 

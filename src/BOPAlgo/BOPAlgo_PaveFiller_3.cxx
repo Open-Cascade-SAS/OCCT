@@ -114,18 +114,8 @@ class BOPAlgo_EdgeEdge :
 };
 //
 //=======================================================================
-typedef NCollection_Vector
-  <BOPAlgo_EdgeEdge> BOPAlgo_VectorOfEdgeEdge; 
-//
-typedef BOPTools_Functor 
-  <BOPAlgo_EdgeEdge,
-  BOPAlgo_VectorOfEdgeEdge> BOPAlgo_EdgeEdgeFunctor;
-//
-typedef BOPTools_Cnt 
-  <BOPAlgo_EdgeEdgeFunctor,
-  BOPAlgo_VectorOfEdgeEdge> BOPAlgo_EdgeEdgeCnt;
-//
-/////////////////////////////////////////////////////////////////////////
+typedef NCollection_Vector<BOPAlgo_EdgeEdge> BOPAlgo_VectorOfEdgeEdge;
+
 //=======================================================================
 // function: PerformEE
 // purpose: 
@@ -234,7 +224,7 @@ void BOPAlgo_PaveFiller::PerformEE()
   //
   aNbEdgeEdge=aVEdgeEdge.Length();
   //======================================================
-  BOPAlgo_EdgeEdgeCnt::Perform(myRunParallel, aVEdgeEdge);
+  BOPTools_Parallel::Perform (myRunParallel, aVEdgeEdge);
   //======================================================
   //
   for (k = 0; k < aNbEdgeEdge; ++k) {
@@ -1050,7 +1040,7 @@ void BOPAlgo_PaveFiller::ForceInterfEE()
   anAlloc->Reset();
 
   // Perform intersection of the found pairs
-  BOPAlgo_EdgeEdgeCnt::Perform(myRunParallel, aVEdgeEdge);
+  BOPTools_Parallel::Perform (myRunParallel, aVEdgeEdge);
 
   BOPDS_VectorOfInterfEE& aEEs = myDS->InterfEE();
   if (aEEs.IsEmpty())

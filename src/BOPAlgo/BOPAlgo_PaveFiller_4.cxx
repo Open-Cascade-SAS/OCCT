@@ -132,20 +132,8 @@ class BOPAlgo_VertexFace : public BOPAlgo_Algo {
   Handle(IntTools_Context) myContext;
 };
 //=======================================================================
-typedef NCollection_Vector<BOPAlgo_VertexFace>
-  BOPAlgo_VectorOfVertexFace; 
-//
-typedef BOPTools_ContextFunctor 
-  <BOPAlgo_VertexFace,
-  BOPAlgo_VectorOfVertexFace,
-  Handle(IntTools_Context), 
-  IntTools_Context> BOPAlgo_VertexFaceFunctor;
-//
-typedef BOPTools_ContextCnt 
-  <BOPAlgo_VertexFaceFunctor,
-  BOPAlgo_VectorOfVertexFace,
-  Handle(IntTools_Context)> BOPAlgo_VertexFaceCnt;
-//
+typedef NCollection_Vector<BOPAlgo_VertexFace> BOPAlgo_VectorOfVertexFace;
+
 //=======================================================================
 // function: PerformVF
 // purpose: 
@@ -234,7 +222,7 @@ void BOPAlgo_PaveFiller::PerformVF()
   //
   aNbVF=aVVF.Length();
   //================================================================
-  BOPAlgo_VertexFaceCnt::Perform(myRunParallel, aVVF, myContext);
+  BOPTools_Parallel::Perform (myRunParallel, aVVF, myContext);
   //================================================================
   //
   for (k=0; k < aNbVF; ++k) {
