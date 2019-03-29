@@ -1,0 +1,30 @@
+puts "========"
+puts "OCC30621"
+puts "========"
+puts "Implementation of building periodical surfaces by GeomAPI_PointsToBSplineSurface"
+puts "========"
+
+cylinder cc 1
+trimv cc cc 0 1
+surfint ri cc 11 3 1
+surfapp ra 11 3 cc 1
+
+if { [regexp "Continuity Status : C1" [surfaceCcontinuity 1 ri 0 .5 ri 1 .5]] == 1 } {
+ 
+   puts "OK : Good result of interpolation"
+
+} else {
+ 
+   puts "Error : periodic interpolation fails"
+
+}  
+if { [regexp "Continuity Status : C1" [surfaceCcontinuity 1 ra 0 .5 ra 1 .5]] == 1 } {
+ 
+   puts "OK : Good result of approximation"
+
+} else {
+ 
+   puts "Error : periodic approximation fails"
+
+}  
+checkview -display ri -with ra -2d -path ${imagedir}/${test_image}.png 

@@ -34,6 +34,145 @@
 #include <Precision.hxx>
 #include <StdFail_NotDone.hxx>
 #include <TColgp_Array1OfPnt.hxx>
+#include <AppDef_BSpParLeastSquareOfMyBSplGradientOfBSplineCompute.hxx>
+
+static void BuildParameters(const AppDef_MultiLine& theLine,
+  const Approx_ParametrizationType theParT,
+  TColStd_Array1OfReal&  thePars)
+{
+  Standard_Integer i, j, nbP3d = theLine.NbPoints();
+  Standard_Real dist;
+  Standard_Integer firstP = 1, lastP = theLine.NbMultiPoints();
+  const Standard_Integer aNbp = lastP - firstP + 1;
+
+
+  if (aNbp == 2) {
+    thePars(firstP) = 0.0;
+    thePars(lastP) = 1.0;
+  }
+  else if (theParT == Approx_ChordLength || theParT == Approx_Centripetal)
+  {
+
+    thePars(firstP) = 0.0;
+    dist = 0.0;
+
+    for (i = firstP + 1; i <= lastP; i++)
+    {
+      AppDef_MultiPointConstraint aMPC = theLine.Value(i - 1);
+      AppDef_MultiPointConstraint aMPC1 = theLine.Value(i);
+
+      dist = 0.0;
+      for (j = 1; j <= nbP3d; j++)
+      {
+        const gp_Pnt &aP1 = aMPC.Point(j),
+                     &aP2 = aMPC1.Point(j);
+        dist += aP2.SquareDistance(aP1);
+      }
+
+      dist = Sqrt(dist);
+      if (theParT == Approx_ChordLength)
+      {
+        thePars(i) = thePars(i - 1) + dist;
+      }
+      else
+      {// Par == Approx_Centripetal
+        thePars(i) = thePars(i - 1) + Sqrt(dist);
+      }
+    }
+    for (i = firstP; i <= lastP; i++) thePars(i) /= thePars(lastP);
+  }
+  else {
+    for (i = firstP; i <= lastP; i++) {
+      thePars(i) = (Standard_Real(i) - firstP) /
+        (Standard_Real(lastP - Standard_Real(firstP)));
+    }
+  }
+
+}
+
+static void BuildPeriodicTangent(const AppDef_MultiLine& theLine,
+  const TColStd_Array1OfReal&  thePars,
+  math_Vector& theTang)
+{
+  Standard_Integer firstpt = 1, lastpt = theLine.NbMultiPoints();
+  Standard_Integer nbpoints = lastpt - firstpt + 1;
+  //
+  if (nbpoints <= 2)
+  {
+    return;
+  }
+  //
+  Standard_Integer i, nnpol, nnp = Min(nbpoints, 9);
+  nnpol = nnp;
+  Standard_Integer lastp = Min(lastpt, firstpt + nnp - 1);
+  Standard_Real U;
+  AppParCurves_Constraint Cons = AppParCurves_TangencyPoint;
+  if (nnp <= 4)
+  {
+    Cons = AppParCurves_PassPoint;
+  }
+  Standard_Integer nbP = 3 * theLine.NbPoints();
+  math_Vector V1(1, nbP), V2(1, nbP);
+  math_Vector P1(firstpt, lastp);
+  //
+  for (i = firstpt; i <= lastp; i++)
+  {
+    P1(i) = thePars(i);
+  }
+ 
+  AppDef_BSpParLeastSquareOfMyBSplGradientOfBSplineCompute SQ1(theLine, firstpt, lastp, Cons, Cons, nnpol);
+  SQ1.Perform(P1);
+  const AppParCurves_MultiCurve& C1 = SQ1.BezierValue();
+  U = 0.0;
+  Standard_Integer  j, nbP3d = theLine.NbPoints();
+
+  gp_Pnt aP;
+  gp_Vec aV;
+  j = 1;
+  for (i = 1; i <= nbP3d; i++) {
+    C1.D1(i, U, aP, aV);
+    V1(j) = aV.X();
+    V1(j + 1) = aV.Y();
+    V1(j + 2) = aV.Z();
+    j += 3;
+  }
+
+  Standard_Integer firstp = Max(firstpt, lastpt - nnp + 1);
+
+  if (firstp == firstpt && lastp == lastpt) {
+    U = 1.0;
+    j = 1;
+    for (i = 1; i <= nbP3d; i++) {
+      C1.D1(i, U, aP, aV);
+      V2(j) = aV.X();
+      V2(j + 1) = aV.Y();
+      V2(j + 2) = aV.Z();
+      j += 3;
+    }
+  }
+  else {
+    AppDef_BSpParLeastSquareOfMyBSplGradientOfBSplineCompute
+      SQ2(theLine, firstp, lastpt, Cons, Cons, nnpol);
+
+    math_Vector P2(firstp, lastpt);
+    for (i = firstp; i <= lastpt; i++) P2(i) = thePars(i);
+    SQ2.Perform(P2);
+
+    const AppParCurves_MultiCurve& C2 = SQ2.BezierValue();
+    U = 1.0;
+    j = 1;
+    for (i = 1; i <= nbP3d; i++) {
+      C2.D1(i, U, aP, aV);
+      V2(j) = aV.X();
+      V2(j + 1) = aV.Y();
+      V2(j + 2) = aV.Z();
+      j += 3;
+    }
+  }
+
+  theTang = 0.5*(V1 + V2);
+
+}
 
 //=======================================================================
 //function : GeomAPI_PointsToBSplineSurface
@@ -125,9 +264,10 @@ GeomAPI_PointsToBSplineSurface::GeomAPI_PointsToBSplineSurface
 //purpose  : 
 //=======================================================================
 
-void GeomAPI_PointsToBSplineSurface::Interpolate(const TColgp_Array2OfPnt& Points)
+void GeomAPI_PointsToBSplineSurface::Interpolate(const TColgp_Array2OfPnt& Points,
+                                                 const Standard_Boolean thePeriodic)
 {
-  Interpolate(Points, Approx_ChordLength);
+  Interpolate(Points, Approx_ChordLength, thePeriodic);
 }
 
 //=======================================================================
@@ -136,13 +276,14 @@ void GeomAPI_PointsToBSplineSurface::Interpolate(const TColgp_Array2OfPnt& Point
 //=======================================================================
 
 void GeomAPI_PointsToBSplineSurface::Interpolate(const TColgp_Array2OfPnt& Points,
-						 const Approx_ParametrizationType ParType)
+                                          const Approx_ParametrizationType ParType,
+                                          const Standard_Boolean thePeriodic)
 {
   Standard_Integer DegMin, DegMax;
   DegMin = DegMax = 3;
   GeomAbs_Shape CC  = GeomAbs_C2;
   Standard_Real Tol3d = -1.0;
-  Init(Points, ParType, DegMin, DegMax, CC, Tol3d);
+  Init(Points, ParType, DegMin, DegMax, CC, Tol3d, thePeriodic);
 }
 
 
@@ -165,11 +306,12 @@ void GeomAPI_PointsToBSplineSurface::Init(const TColgp_Array2OfPnt& Points,
 //=======================================================================
 
 void GeomAPI_PointsToBSplineSurface::Init(const TColgp_Array2OfPnt& Points,
-					  const Approx_ParametrizationType ParType,
-					  const Standard_Integer DegMin, 
-					  const Standard_Integer DegMax, 
-					  const GeomAbs_Shape Continuity,
-					  const Standard_Real Tol3D)
+            const Approx_ParametrizationType ParType,
+            const Standard_Integer DegMin, 
+            const Standard_Integer DegMax, 
+            const GeomAbs_Shape Continuity,
+            const Standard_Real Tol3D,
+            const Standard_Boolean thePeriodic)
 {
   Standard_Integer Imin = Points.LowerRow();
   Standard_Integer Imax = Points.UpperRow();
@@ -178,18 +320,29 @@ void GeomAPI_PointsToBSplineSurface::Init(const TColgp_Array2OfPnt& Points,
 
   Standard_Real Tol2D = Tol3D;
 
-  // first approximate the V isos:
+  // first approximate the U isos:
+  Standard_Integer add = 1;
+  if (thePeriodic)
+  {
+    add = 2;
+  }
   AppDef_MultiLine Line(Jmax-Jmin+1);
   Standard_Integer i, j;
-//  Standard_Real X, Y;
 
   for (j = Jmin; j <= Jmax; j++) {
-    AppDef_MultiPointConstraint MP(Imax-Imin+1, 0);
+    AppDef_MultiPointConstraint MP(Imax-Imin+add, 0);
     for (i = Imin; i <= Imax; i++) {
       MP.SetPoint(i, Points(i,j));
     }
+    if (thePeriodic)
+    {
+      MP.SetPoint(Imax+1, Points(1, j));
+    }
     Line.SetValue(j, MP);
   }
+
+
+
 
   Standard_Integer nbit = 2;
   Standard_Boolean UseSquares = Standard_False;
@@ -229,7 +382,7 @@ void GeomAPI_PointsToBSplineSurface::Init(const TColgp_Array2OfPnt& Points,
   const TColStd_Array1OfInteger& VMults = TheCurve.Multiplicities();
   
 
-  Standard_Integer nbisosu = Imax-Imin+1;
+  Standard_Integer nbisosu = Imax-Imin+add;
   AppDef_MultiLine Line2(nbisosu);
 
   for (i = 1; i <= nbisosu; i++) {
@@ -247,9 +400,43 @@ void GeomAPI_PointsToBSplineSurface::Init(const TColgp_Array2OfPnt& Points,
   AppDef_BSplineCompute TheComputer2
     (DegMin,DegMax,Tol3D,Tol2D,nbit,Standard_True,ParType,UseSquares);
   if (Tol3D <= 0.0) {
+    if (thePeriodic)
+    {
+      TheComputer2.SetPeriodic(thePeriodic);
+    }
     TheComputer2.Interpol(Line2);
   }
   else {
+    if (thePeriodic && Line2.NbMultiPoints() > 2)
+    {
+      TheComputer2.SetPeriodic(thePeriodic);
+      //
+      TColStd_Array1OfReal aPars(1, Line2.NbMultiPoints());
+      BuildParameters(Line2, ParType, aPars);
+      math_Vector aTang(1, 3 * Poles.Upper());
+      BuildPeriodicTangent(Line2, aPars, aTang);
+      Standard_Integer ind = 1;
+      TheCurve.Curve(ind, Poles);
+      AppDef_MultiPointConstraint MP1(Poles.Upper(), 0);
+      for (j = 1; j <= Poles.Upper(); j++) {
+        MP1.SetPoint(j, Poles(j));
+        Standard_Integer k = 3 * (j - 1);
+        gp_Vec aT(aTang(k + 1), aTang(k + 2), aTang(k + 3));
+        MP1.SetTang(j, aT);
+      }
+      Line2.SetValue(ind, MP1);
+      //
+      ind = Line2.NbMultiPoints();
+      TheCurve.Curve(ind, Poles);
+      AppDef_MultiPointConstraint MP2(Poles.Upper(), 0);
+      for (j = 1; j <= Poles.Upper(); j++) {
+        MP2.SetPoint(j, Poles(j));
+        Standard_Integer k = 3 * (j - 1);
+        gp_Vec aT(aTang(k + 1), aTang(k + 2), aTang(k + 3));
+        MP2.SetTang(j, aT);
+      }
+      Line2.SetValue(ind, MP2);
+    }
     TheComputer2.Perform(Line2);
   }
   
@@ -273,6 +460,10 @@ void GeomAPI_PointsToBSplineSurface::Init(const TColgp_Array2OfPnt& Points,
 
   mySurface = new Geom_BSplineSurface(ThePoles, UKnots, VKnots, UMults, VMults,
 				      UDegree, VDegree);
+  if (thePeriodic && Line2.NbMultiPoints() > 2)
+  {
+    mySurface->SetUPeriodic();
+  }
 
   myIsDone = Standard_True;
 }
@@ -299,7 +490,7 @@ void GeomAPI_PointsToBSplineSurface::Init(const TColgp_Array2OfPnt& Points,
   Standard_Integer nbit = 2;
   if(Tol3D <= 1.e-3) nbit = 0;
 
-  // first approximate the V isos:
+  // first approximate the U isos:
   Standard_Integer NbPointJ = Jmax-Jmin+1;
   Standard_Integer NbPointI = Imax-Imin+1;
   Standard_Integer i, j;
@@ -485,7 +676,7 @@ void GeomAPI_PointsToBSplineSurface::Init(const TColStd_Array2OfReal& ZPoints,
 
   Standard_Real Tol2D = Tol3D;
 
-  // first approximate the V isos:
+  // first approximate the U isos:
   AppDef_MultiLine Line(Jmax-Jmin+1);
   math_Vector Param(Jmin, Jmax);
   Standard_Integer i, j;

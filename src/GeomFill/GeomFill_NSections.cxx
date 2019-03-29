@@ -590,6 +590,7 @@ GeomFill_NSections::GeomFill_NSections(const TColGeom_SequenceOfCurve& NC,
     Standard_Integer nbIt = 0, degmin = 2, degmax = 6;
     Standard_Boolean knownP = Nbpar > 0;
     GeomFill_AppSurf anApprox(degmin, degmax, myPres3d, myPres3d, nbIt, knownP);
+    anApprox.SetContinuity(GeomAbs_C1);
     Standard_Boolean SpApprox = Standard_True;
     anApprox.Perform(line, section, SpApprox);
 

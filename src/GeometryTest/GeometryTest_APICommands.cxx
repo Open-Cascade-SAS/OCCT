@@ -286,50 +286,176 @@ static Standard_Integer grilapp(Draw_Interpretor& di, Standard_Integer n, const 
 
 static Standard_Integer surfapp(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
-  if ( n < 5 ) return 1;
+  if (n < 5) return 1;
 
-  Standard_Integer i,j;
+  Standard_Integer i, j;
   Standard_Integer Nu = Draw::Atoi(a[2]);
   Standard_Integer Nv = Draw::Atoi(a[3]);
-  TColgp_Array2OfPnt Points (1, Nu, 1, Nv);
+  TColgp_Array2OfPnt Points(1, Nu, 1, Nv);
+  Standard_Boolean IsPeriodic = Standard_False;
+  Standard_Boolean RemoveLast = Standard_False;
 
-  if ( n == 5) {
+  if (n >= 5 && n <= 6) {
     Handle(Geom_Surface) Surf = DrawTrSurf::GetSurface(a[4]);
-    if ( Surf.IsNull()) return 1;
+    if (Surf.IsNull()) return 1;
 
     Standard_Real U, V, U1, V1, U2, V2;
-    Surf->Bounds( U1, U2, V1, V2);
-    for ( j = 1; j <= Nv; j++) {
-      V = V1 + (j-1) * (V2-V1) / (Nv-1);
-      for ( i = 1; i <= Nu; i++) {
-	U = U1 + (i-1) * (U2-U1) / (Nu-1);
-	Points(i,j) = Surf->Value(U,V);
+    Surf->Bounds(U1, U2, V1, V2);
+    for (j = 1; j <= Nv; j++) {
+      V = V1 + (j - 1) * (V2 - V1) / (Nv - 1);
+      for (i = 1; i <= Nu; i++) {
+        U = U1 + (i - 1) * (U2 - U1) / (Nu - 1);
+        Points(i, j) = Surf->Value(U, V);
       }
-    } 
+    }
+    if (n == 6)
+    {
+      Standard_Integer ip = Draw::Atoi(a[5]);
+      if (ip > 0) IsPeriodic = Standard_True;
+    }
+    if (IsPeriodic)
+    {
+      for (j = 1; j <= Nv; j++)
+      {
+        Standard_Real d = Points(1, j).Distance(Points(Nu, j));
+        if (d <= Precision::Confusion())
+        {
+          RemoveLast = Standard_True;
+          break;
+        }
+      }
+    }
   }
-  else if ( n >= 16) {
+  else if (n >= 16) {
     Standard_Integer Count = 4;
-    for ( j = 1; j <= Nv; j++) {
-      for ( i = 1; i <= Nu; i++) {
-	if ( Count > n) return 1;
-	Points(i,j) = gp_Pnt(Draw::Atof(a[Count]),Draw::Atof(a[Count+1]),Draw::Atof(a[Count+2]));
-	Count += 3;
+    for (j = 1; j <= Nv; j++) {
+      for (i = 1; i <= Nu; i++) {
+        if (Count > n) return 1;
+        Points(i, j) = gp_Pnt(Draw::Atof(a[Count]), Draw::Atof(a[Count + 1]), Draw::Atof(a[Count + 2]));
+        Count += 3;
       }
     }
   }
   char name[100];
   Standard_Integer Count = 1;
-  for ( j = 1; j <= Nv; j++) {
-    for ( i = 1; i <= Nu; i++) {
-      Sprintf(name,"point_%d",Count++);
+  for (j = 1; j <= Nv; j++) {
+    for (i = 1; i <= Nu; i++) {
+      Sprintf(name, "point_%d", Count++);
       char* temp = name; // portage WNT
-      DrawTrSurf::Set(temp,Points(i,j));
+      DrawTrSurf::Set(temp, Points(i, j));
     }
-  } 
+  }
 
-  Handle(Geom_BSplineSurface) S = GeomAPI_PointsToBSplineSurface(Points);
-  DrawTrSurf::Set(a[1],S);
-  di << a[1];
+  GeomAPI_PointsToBSplineSurface anApprox;
+  if (RemoveLast)
+  {
+    TColgp_Array2OfPnt Points1(1, Nu - 1, 1, Nv);
+    for (j = 1; j <= Nv; j++)
+    {
+      for (i = 1; i <= Nu - 1; i++) {
+        Points1(i, j) = Points(i, j);
+      }
+    }
+    anApprox.Init(Points1, Approx_ChordLength, 3, 8, GeomAbs_C2, 1.e-3, IsPeriodic);
+  }
+  else
+  {
+    anApprox.Init(Points, Approx_ChordLength, 3, 8, GeomAbs_C2, 1.e-3, IsPeriodic);
+  }
+
+  if (anApprox.IsDone())
+  {
+    Handle(Geom_BSplineSurface) S = anApprox.Surface();
+    DrawTrSurf::Set(a[1], S);
+    di << a[1];
+  }
+
+  return 0;
+}
+
+//=======================================================================
+//function : surfint
+//purpose  : 
+//=======================================================================
+
+static Standard_Integer surfint(Draw_Interpretor& di, Standard_Integer n, const char** a)
+{
+  if (n < 5) return 1;
+
+  Handle(Geom_Surface) Surf = DrawTrSurf::GetSurface(a[2]);
+  if (Surf.IsNull()) return 1;
+  Standard_Integer i, j;
+  Standard_Integer Nu = Draw::Atoi(a[3]);
+  Standard_Integer Nv = Draw::Atoi(a[4]);
+  TColgp_Array2OfPnt Points(1, Nu, 1, Nv);
+
+  Standard_Real U, V, U1, V1, U2, V2;
+  Surf->Bounds(U1, U2, V1, V2);
+  for (j = 1; j <= Nv; j++) {
+    V = V1 + (j - 1) * (V2 - V1) / (Nv - 1);
+    for (i = 1; i <= Nu; i++) {
+      U = U1 + (i - 1) * (U2 - U1) / (Nu - 1);
+      Points(i, j) = Surf->Value(U, V);
+    }
+  }
+
+  char name[100];
+  Standard_Integer Count = 1;
+  for (j = 1; j <= Nv; j++) {
+    for (i = 1; i <= Nu; i++) {
+      Sprintf(name, "point_%d", Count++);
+      char* temp = name; // portage WNT
+      DrawTrSurf::Set(temp, Points(i, j));
+    }
+  }
+
+  Standard_Boolean IsPeriodic = Standard_False;
+  if (n > 5)
+  {
+    Standard_Integer ip = Draw::Atoi(a[5]);
+    if (ip > 0) IsPeriodic = Standard_True;
+  }
+  Standard_Boolean RemoveLast = Standard_False;
+  if (IsPeriodic)
+  {
+    for (j = 1; j <= Nv; j++)
+    {
+      Standard_Real d = Points(1, j).Distance(Points(Nu, j));
+      if (d <= Precision::Confusion())
+      {
+        RemoveLast = Standard_True;
+        break;
+      }
+    }
+  }
+  const Approx_ParametrizationType ParType = Approx_ChordLength;
+  GeomAPI_PointsToBSplineSurface anApprox;
+  if (RemoveLast)
+  {
+    TColgp_Array2OfPnt Points1(1, Nu-1, 1, Nv);
+    for (j = 1; j <= Nv; j++)
+    {
+      for (i = 1; i <= Nu-1; i++) {
+        Points1(i, j) = Points(i, j);
+      }
+    }
+    anApprox.Interpolate(Points1, ParType, IsPeriodic);
+  }
+  else
+  {
+    anApprox.Interpolate(Points, ParType, IsPeriodic);
+  }
+  if (anApprox.IsDone())
+  {
+    Handle(Geom_BSplineSurface) S = anApprox.Surface();
+    DrawTrSurf::Set(a[1], S);
+    di << a[1];
+  }
+  else
+  {
+    di << "Interpolation not done \n";
+  }
+
 
   return 0;
 }
@@ -634,6 +760,11 @@ void GeometryTest::APICommands(Draw_Interpretor& theCommands)
   theCommands.Add("surfapp","surfapp result nbupoint nbvpoint x y z ....",
 		  __FILE__,
 		  surfapp);
+
+  theCommands.Add("surfint", "surfint result surf nbupoint nbvpoint [uperiodic]",
+    __FILE__,
+    surfint);
+
   theCommands.Add("grilapp",
        "grilapp result nbupoint nbvpoint X0 dX Y0 dY z11 z12 .. z1nu ....  ",
         __FILE__,grilapp);

@@ -117,6 +117,12 @@ public:
   //! changes the first and the last constraint points.
   Standard_EXPORT void SetConstraints (const AppParCurves_Constraint firstC, const AppParCurves_Constraint lastC);
   
+  //! Sets periodic flag.
+  //! If thePeriodic = Standard_True, algorith tries to build periodic
+  //! multicurve using corresponding C1 boundary condition for first and last multipoints.
+  //! Multiline must be closed.
+  Standard_EXPORT void SetPeriodic(const Standard_Boolean thePeriodic);
+
   //! returns False if at a moment of the approximation,
   //! the status NoApproximation has been sent by the user
   //! when more points were needed.
@@ -199,6 +205,7 @@ private:
   Standard_Integer mycont;
   Standard_Real mylambda1;
   Standard_Real mylambda2;
+  Standard_Boolean myPeriodic;
 
 
 };

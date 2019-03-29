@@ -1,4 +1,4 @@
-Draw Test Harness  {#occt_user_guides__test_harness}
+﻿Draw Test Harness  {#occt_user_guides__test_harness}
 ===============================
 
 @tableofcontents
@@ -5593,7 +5593,8 @@ Draw provides command to create curves and surfaces by approximation.
 
 * **2dapprox** fits a curve through 2d points; 
 * **appro** fits a curve through 3d points;
-* **surfapp** and **grilapp** fit a surface through 3d points;
+* **surfapp** and **grilapp** fit a surface through 3d points by approximation;
+* **surfint** fit a surface through 3d points by interpolation;
 * **2dinterpolate** interpolates a curve. 
 
 @subsubsection occt_draw_6_8_1   appro, dapprox
@@ -5614,17 +5615,28 @@ Let us pick points and they will be fitted
 2dapprox c 10 
 ~~~~~
 
-@subsubsection occt_draw_6_8_2  surfapp, grilapp
+@subsubsection occt_draw_6_8_2  surfapp, grilapp, surfint
 
 
 Syntax: 
 ~~~~~
 surfapp name nbupoints nbvpoints x y z .... 
+or
+surfapp name nbupoints nbvpoints surf [periodic_flag = 0]
 grilapp name nbupoints nbvpoints xo dx yo dy z11 z12 ... 
+surfint name surf nbupoints nbvpoints [periodic_flag = 0]
 ~~~~~
 
 * **surfapp** fits a surface through an array of u and v points, nbupoints*nbvpoints. 
 * **grilapp** has the same function, but the x,y coordinates of the points are on a grid starting at x0,y0 with steps dx,dy. 
+* **surfapp** can take array of points from other input surface, if alternative syntax
+**surfapp** name nbupoints nbvpoints surf [periodic_flag = 0]
+is used.
+Both command use for fitting approximation algorithm.
+**surfint** uses interpolation algorithm and can take array of point only from other input surface.
+Optional parameter **periodic_flag** allows to get correct periodical surfaces in U direction.
+U direction of result surface corresponds colums of initial array of points.
+If **periodic_flag** = 1, algorithm uses first row of array as last row and builds periodical surface.
 
 **Example:** 
 ~~~~~

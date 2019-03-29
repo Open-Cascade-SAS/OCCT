@@ -779,7 +779,6 @@ static Standard_Integer OCC606 ( Draw_Interpretor& di, Standard_Integer n, const
     {
       OCC_CATCH_SIGNALS
         GeomFill_NSections b_surface1(n_curves1, np);
-      b_surface1.ComputeSurface();
       Handle(Geom_BSplineSurface) result_surf1 = b_surface1.BSplineSurface();
       if (!result_surf1.IsNull())
       {

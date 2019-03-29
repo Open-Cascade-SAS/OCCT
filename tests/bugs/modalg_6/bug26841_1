@@ -34,7 +34,7 @@ checknbshapes result -ref ${nbshapes_expected} -t -m "SECTION"
 regexp {Tolerance +MAX=([-0-9.+eE]+)} [tolerance result] full MaxTolerance
 puts "MaxTolerance=$MaxTolerance"
 
-set expected_MaxTolerance 4.8861510463442802e-005
+set expected_MaxTolerance 5.0e-006
 set tol_abs_MaxTolerance 0.0
 set tol_rel_MaxTolerance 0.01
 checkreal "MaxTolerance" ${MaxTolerance} ${expected_MaxTolerance} ${tol_abs_MaxTolerance} ${tol_rel_MaxTolerance}
