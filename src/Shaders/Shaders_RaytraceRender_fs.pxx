@@ -130,7 +130,7 @@ static const char Shaders_RaytraceRender_fs[] =
   "  }\n"
   "  else\n"
   "  {\n"
-  "    OutColor = mix (texture2D (uAccumTexture, vPixel), aColor, 1.f / (uAccumSamples + 1));\n"
+  "    OutColor = mix (texture (uAccumTexture, vPixel), aColor, 1.f / (uAccumSamples + 1));\n"
   "  }\n"
   "\n"
   "#endif // ADAPTIVE_SAMPLING\n"

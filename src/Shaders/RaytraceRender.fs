@@ -127,7 +127,7 @@ void main (void)
   }
   else
   {
-    OutColor = mix (texture2D (uAccumTexture, vPixel), aColor, 1.f / (uAccumSamples + 1));
+    OutColor = mix (texture (uAccumTexture, vPixel), aColor, 1.f / (uAccumSamples + 1));
   }
 
 #endif // ADAPTIVE_SAMPLING
