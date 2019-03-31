@@ -58,7 +58,7 @@ Standard_Boolean StdStorage_RootData::Read(Storage_BaseDriver& theDriver)
       OCC_CATCH_SIGNALS
       theDriver.ReadRoot(aRootName, aRef, aTypeName);
     }
-    catch (Storage_StreamTypeMismatchError)
+    catch (Storage_StreamTypeMismatchError const&)
     {
       myErrorStatus = Storage_VSTypeMismatch;
       myErrorStatusExt = "ReadRoot";
@@ -107,7 +107,7 @@ Standard_Boolean StdStorage_RootData::Write(Storage_BaseDriver& theDriver)
       OCC_CATCH_SIGNALS
       theDriver.WriteRoot(aRoot->Name(), aRoot->Reference(), aRoot->Type());
     }
-    catch (Storage_StreamTypeMismatchError)
+    catch (Storage_StreamTypeMismatchError const&)
     {
       myErrorStatus = Storage_VSTypeMismatch;
       myErrorStatusExt = "ReadRoot";

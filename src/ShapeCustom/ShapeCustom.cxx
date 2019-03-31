@@ -108,7 +108,7 @@ TopoDS_Shape ShapeCustom::ApplyModifier (const TopoDS_Shape &S,
         OCC_CATCH_SIGNALS
         result = MD.ModifiedShape( current );
       }
-      catch (Standard_NoSuchObject)
+      catch (Standard_NoSuchObject const&)
       {
         // the sub shape isn't in the map
         result.Nullify();

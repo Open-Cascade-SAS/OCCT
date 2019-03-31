@@ -1062,7 +1062,7 @@ Handle(Transfer_Binder) Transfer_TransferProcess::Transferring(const TheStart& s
     }
 
     //    ...  Exceptions a Rattraper : elles ne se ressemblent pas toutes ... !
-    catch (Transfer_TransferDeadLoop) {
+    catch (Transfer_TransferDeadLoop const&) {
       if (binder.IsNull()) {
 	themessenger << "                  *** Dead Loop with no Result" << endl;
 	if (thetrace) StartTrace (binder, start, thelevel-1,0);

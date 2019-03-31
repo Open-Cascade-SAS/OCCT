@@ -136,7 +136,7 @@ Standard_Integer BOPTools_AlgoTools2D::AttachExistingPCurve
     BRepLib::SameParameter(aE1T);
     BRepLib::SameRange(aE1T);
   }
-  catch (Standard_Failure)
+  catch (Standard_Failure const&)
   {
     iRet = 6;
     return iRet;

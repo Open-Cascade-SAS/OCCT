@@ -232,7 +232,7 @@ void BOPAlgo_ArgumentAnalyzer::Perform()
         TestCurveOnSurface();
     }
   }
-  catch(Standard_Failure) {
+  catch(Standard_Failure const&) {
     BOPAlgo_CheckResult aResult;
     aResult.SetCheckStatus(BOPAlgo_CheckUnknown);
     myResult.Append(aResult);

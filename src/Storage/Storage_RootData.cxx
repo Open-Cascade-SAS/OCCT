@@ -59,7 +59,7 @@ Standard_Boolean Storage_RootData::Read (Storage_BaseDriver& theDriver)
       OCC_CATCH_SIGNALS
       theDriver.ReadRoot (aRootName, aRef, aTypeName);
     }
-    catch (Storage_StreamTypeMismatchError)
+    catch (Storage_StreamTypeMismatchError const&)
     {
       myErrorStatus = Storage_VSTypeMismatch;
       myErrorStatusExt = "ReadRoot";

@@ -162,7 +162,7 @@ math_ComputeKronrodPointsAndWeights::math_ComputeKronrodPointsAndWeights(const S
       }      
       myIsDone = Standard_True;
     }
-  } catch (Standard_Failure) {
+  } catch (Standard_Failure const&) {
   }
 }
 

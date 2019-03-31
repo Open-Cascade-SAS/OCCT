@@ -301,7 +301,7 @@ class BOPAlgo_MPC : public BOPAlgo_Algo  {
         UpdateVertices(aCopyE, myF);
       }
     }
-    catch (Standard_Failure)
+    catch (Standard_Failure const&)
     {
       AddError(new BOPAlgo_AlertBuildingPCurveFailed(TopoDS_Shape()));
     }

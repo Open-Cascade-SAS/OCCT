@@ -560,7 +560,7 @@ void StdPrs_Isolines::addOnSurface (const Handle(BRepAdaptor_HSurface)& theSurfa
       }
     }
   }
-  catch (Standard_Failure)
+  catch (Standard_Failure const&)
   {
     // ...
   }

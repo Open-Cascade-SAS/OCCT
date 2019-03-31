@@ -162,7 +162,7 @@ void ShapeUpgrade_SplitCurve3dContinuity::Compute()
 	    OCC_CATCH_SIGNALS
 	    corrected = MyBSpline->RemoveKnot(iknot, newMultiplicity, myTolerance);
 	  }
-	  catch (Standard_Failure) {
+      catch (Standard_Failure const&) {
 	    corrected = Standard_False;
 	  }
 	}

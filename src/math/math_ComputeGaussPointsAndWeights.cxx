@@ -69,7 +69,7 @@ math_ComputeGaussPointsAndWeights::math_ComputeGaussPointsAndWeights(const Stand
       }      
       myIsDone = Standard_True;
     }
-  } catch (Standard_Failure) {
+  } catch (Standard_Failure const&) {
   }
 }
 

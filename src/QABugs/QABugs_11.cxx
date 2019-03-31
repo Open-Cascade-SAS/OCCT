@@ -993,7 +993,7 @@ static Standard_Integer OCC363 (Draw_Interpretor& di, Standard_Integer argc, con
       if ( ! seq.Value(i).FindAttribute ( TPrsStd_AISPresentation::GetID(), prs ) )
         prs = TPrsStd_AISPresentation::Set(seq.Value(i),XCAFPrs_Driver::GetID());
   }
-  catch(Standard_Failure) { di << "FAULTY OCC363 : Exception during reading document.\n";return 0;}
+  catch(Standard_Failure const&) { di << "FAULTY OCC363 : Exception during reading document.\n";return 0;}
 
   di << "OCC363 OK\n";
   return 0;
@@ -1127,7 +1127,7 @@ static Standard_Integer OCC377 (Draw_Interpretor& di, Standard_Integer argc, con
       else {di << "OCC377 FAULTY\n"; return 0;}
     }
   }
-  catch(Standard_Failure)
+  catch(Standard_Failure const&)
   {
     di << "OCC377 Exception";
   }
@@ -1183,7 +1183,7 @@ static Standard_Integer OCC22 (Draw_Interpretor& di, Standard_Integer argc, cons
     // 4.3. Create result Draw shape
     DBRep::Set(argv[1], aResultShape);
   }
-  catch (Standard_Failure) {di << "OCC22 Exception \n" ;return 0;}
+  catch (Standard_Failure const&) {di << "OCC22 Exception \n" ;return 0;}
 
   return 0;
 }
@@ -1238,7 +1238,7 @@ static Standard_Integer OCC24 (Draw_Interpretor& di, Standard_Integer argc, cons
     DBRep::Set(argv[1], aResultShape);
 
   }
-  catch (Standard_Failure) {di << "OCC24 Exception \n" ;return 0;}
+  catch (Standard_Failure const&) {di << "OCC24 Exception \n" ;return 0;}
 
   return 0;
 }
@@ -1267,7 +1267,7 @@ static Standard_Integer OCC369(Draw_Interpretor& di, Standard_Integer argc, cons
     BRepMesh_IncrementalMesh aMesh(aShape, aMeshParams);
 
   }
-  catch (Standard_Failure) {di << "OCC369 Exception \n" ;return 0;}
+  catch (Standard_Failure const&) {di << "OCC369 Exception \n" ;return 0;}
 
   di << "OCC369 OK \n";
   return 0;
@@ -2234,9 +2234,9 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
       Succes = Standard_False;
     }
 #if defined(SOLARIS) || defined(_WIN32)
-    catch(Standard_DivideByZero)
+    catch(Standard_DivideByZero const&)
 #else
-    catch(Standard_NumericError)
+    catch(Standard_NumericError const&)
 #endif
     {
       di << "Caught, OK\n";
@@ -2266,11 +2266,11 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
       di << "Error: 4.0 / 0.0 = " << res << " - no exception is raised!\n";
       Succes = Standard_False;
     }
-    catch(Standard_DivideByZero) // Solaris, Windows w/o SSE2
+    catch(Standard_DivideByZero const&) // Solaris, Windows w/o SSE2
     {
       di << "Caught, OK\n";
     }
-    catch(Standard_NumericError) // Linux, Windows with SSE2
+    catch(Standard_NumericError const&) // Linux, Windows with SSE2
     {
       di << "Caught, OK\n";
     }
@@ -2296,7 +2296,7 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
       //++++ Succes = Standard_False;
       di << "Not caught: " << i << " + 1 = " << res << ", still OK\n";
     }
-    catch(Standard_Overflow) {
+    catch(Standard_Overflow const&) {
       di << "Caught, OK\n";
     }
     catch(Standard_Failure const& anException) {
@@ -2323,11 +2323,11 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
       di << "Error: " << r << "*" << r << " = " << res << " - no exception is raised!\n";
       Succes = Standard_False;
     }
-    catch(Standard_Overflow) // Solaris, Windows w/o SSE2
+    catch(Standard_Overflow const&) // Solaris, Windows w/o SSE2
     {
       di << "Caught, OK\n";
     }
-    catch(Standard_NumericError) // Linux, Windows with SSE2
+    catch(Standard_NumericError const&) // Linux, Windows with SSE2
     {
       di << "Caught, OK\n";
     }
@@ -2354,12 +2354,12 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
       //++++ Succes = Standard_False;
       di << "Not caught: " << r << "*" << r << " = " << res << ", still OK\n";
     }
-    catch(Standard_Underflow) // could be on Solaris, Windows w/o SSE2
+    catch(Standard_Underflow const&) // could be on Solaris, Windows w/o SSE2
     {
       di << "Exception caught, KO\n";
       Succes = Standard_False;
     }
-    catch(Standard_NumericError) // could be on Linux, Windows with SSE2
+    catch(Standard_NumericError const&) // could be on Linux, Windows with SSE2
     {
       di << "Exception caught, KO\n";
       Succes = Standard_False;
@@ -2385,7 +2385,7 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
       di << "Error: swrt(-1) = " << res << " - no exception is raised!\n";
       Succes = Standard_False;
     }
-    catch(Standard_NumericError) {
+    catch(Standard_NumericError const&) {
       di << "Caught, OK\n";
     }
     catch(Standard_Failure const& anException) {
@@ -2410,9 +2410,9 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
       Succes = Standard_False;
     }
 #ifdef _WIN32
-    catch(OSD_Exception_ACCESS_VIOLATION)
+    catch(OSD_Exception_ACCESS_VIOLATION const&)
 #else
-    catch(OSD_SIGSEGV)
+    catch(OSD_SIGSEGV const&)
 #endif
     {
       di << "Caught, OK\n";
@@ -2437,7 +2437,7 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
       di << "Error - no exception is raised!\n";
       Succes = Standard_False;
     }
-    catch(OSD_Exception_STACK_OVERFLOW) {
+    catch(OSD_Exception_STACK_OVERFLOW const&) {
       di << "Caught, OK\n";
     }
     catch(Standard_Failure const& anException) {
@@ -2508,7 +2508,7 @@ static Standard_Integer OCC7141 (Draw_Interpretor& di, Standard_Integer argc, co
     	writer.Write(aFilePath.ToCString());
     }
   }
-  catch(OSD_Exception_STACK_OVERFLOW) {
+  catch(OSD_Exception_STACK_OVERFLOW const&) {
     di << "Failed : STACK OVERFLOW\n\n";
   }
   catch (Standard_Failure const& anException) {
@@ -3055,7 +3055,7 @@ static Standard_Integer OCC15489 (Draw_Interpretor& di, Standard_Integer argc, c
       gp_Pnt2d anOrigin = aLin2d.Location();
       di << "X_0 = " << anOrigin.X() << "   Y_0 = " << anOrigin.Y() << "\n" ;
     }
-  catch(Standard_ConstructionError)
+  catch(Standard_ConstructionError const&)
     {
       di << argv[0] << " Exception: Sqrt(A*A + B*B) <= Resolution from gp\n";
     }

@@ -3325,7 +3325,7 @@ void IFSelect_WorkSession::DumpModel
 	if (level == 3) C = CT.CheckList();
 	else    C = CT.CompleteCheckList();
       }
-      catch (Standard_Failure) {
+      catch (Standard_Failure const&) {
 	Handle(Message_Messenger) sout = Message::DefaultMessenger();
 	sout<<"    ****    Interruption DumpModel (Check) par Exception    ****\n";
 	S<<"  ** **  Exception Raised during Check !  ** **\n";

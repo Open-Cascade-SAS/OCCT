@@ -598,7 +598,7 @@ static Standard_Real AdjustOnPeriodic3d (const Handle(Geom_Curve)& c,
 	      done1 = done2 = Standard_True;
 	    }
 	  }
-	  catch ( Standard_Failure ) 
+      catch ( Standard_Failure const& )
           {
           }
 	}

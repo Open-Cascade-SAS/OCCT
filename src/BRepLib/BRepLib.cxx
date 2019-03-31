@@ -2297,7 +2297,7 @@ void BRepLib::EncodeRegularity(TopoDS_Edge& E,
       B.Continuity(E,F1,F2,aCont);
       
     }
-    catch(Standard_Failure)
+    catch(Standard_Failure const&)
     {
 #ifdef OCCT_DEBUG
       cout << "Failure: Exception in BRepLib::EncodeRegularity" << endl;

@@ -184,7 +184,7 @@ void XmlMDataStd_RealArrayDriver::Paste (const Handle(TDF_Attribute)& theSource,
       OCC_CATCH_SIGNALS
       str.Allocate(25 * realArray.Length() + 1);
     }
-    catch (Standard_OutOfMemory)
+    catch (Standard_OutOfMemory const&)
     {
       // If allocation of big space for the string of double array values failed,
       // try to calculate the necessary space more accurate and allocate it.

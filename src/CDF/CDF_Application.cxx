@@ -162,7 +162,7 @@ PCDM_ReaderStatus CDF_Application::CanRetrieve(const TCollection_ExtendedString&
         if (aReader.IsNull())
           return PCDM_RS_NoDriver;
       }
-      catch (Standard_Failure)
+      catch (Standard_Failure const&)
       {
         // no need to report error, this was just check for availability
       }

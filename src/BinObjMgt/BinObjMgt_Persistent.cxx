@@ -336,7 +336,7 @@ BinObjMgt_Persistent& BinObjMgt_Persistent::PutCString
   alignOffset (1);
   Standard_Integer aSize = (Standard_Integer)(strlen (theValue) + 1);
   prepareForPut (aSize);
-  putArray ((void* const)theValue, aSize);
+  putArray ((void* )theValue, aSize);
   return *this;
 }
 
@@ -351,7 +351,7 @@ BinObjMgt_Persistent& BinObjMgt_Persistent::PutAsciiString
   alignOffset (BP_INTSIZE, Standard_True);
   Standard_Integer aSize = theValue.Length() + 1;
   prepareForPut (aSize);
-  putArray ((void* const)theValue.ToCString(), aSize);
+  putArray ((void*)theValue.ToCString(), aSize);
   return *this;
 }
 
@@ -370,7 +370,7 @@ BinObjMgt_Persistent& BinObjMgt_Persistent::PutExtendedString
   Standard_Integer aStartIndex = myIndex;
   Standard_Integer aStartOffset = myOffset;
 #endif
-  putArray ((void* const)theValue.ToExtString(), aSize);
+  putArray ((void* )theValue.ToExtString(), aSize);
 #if DO_INVERSE
   inverseExtCharData (aStartIndex, aStartOffset, aSize - BP_EXTCHARSIZE);
 #endif

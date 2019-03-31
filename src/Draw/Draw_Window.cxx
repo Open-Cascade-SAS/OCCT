@@ -1105,7 +1105,7 @@ Standard_Boolean Init_Appli()
   try {
     OCC_CATCH_SIGNALS
     Tk_Init(interp) ;
-  } catch  (Standard_Failure) {
+  } catch  (Standard_Failure const&) {
     cout <<" Pb au lancement de TK_Init "<<endl;
   }
 
@@ -1135,7 +1135,7 @@ Standard_Boolean Init_Appli()
     {
       Draw_DisplayConnection = new Aspect_DisplayConnection();
     }
-    catch (Standard_Failure)
+    catch (Standard_Failure const&)
     {
       std::cout << "Cannot open display. Interpret commands in batch mode." << std::endl;
       return Standard_False;
@@ -1293,7 +1293,7 @@ static void StdinProc(ClientData clientData, int )
 prompt:
   if (tty) Prompt(Draw::GetInterpretor().Interp(), gotPartial);
 
- } catch (Standard_Failure) {}
+ } catch (Standard_Failure const&) {}
 
 }
 

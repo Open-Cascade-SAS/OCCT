@@ -79,7 +79,7 @@ static double TetraVol(gp_Pnt RefPoint, gp_Pnt Som1, gp_Pnt Som2, gp_Pnt Som3)
 	N=v1^v2;
 	Plane123=gp_Pln( Som1, gp_Dir( N ) );
       }
-    catch(Standard_Failure) {return(0.);}
+    catch(Standard_Failure const&) {return(0.);}
   }
   double L1, L2, L3;
   L1 = Som1.Distance(Som2);
@@ -575,7 +575,7 @@ static Standard_Integer CheckProps (Draw_Interpretor& di, Standard_Integer argc,
 		 ( wholeDoc ? "" : "\n" ));
 	di << string2;
       }
-      catch (Standard_Failure) {
+      catch (Standard_Failure const&) {
 	//printf ( "%-16.16s", "exception" );
 	char string3[260];
 	Sprintf (string3, "%-16.16s", "exception" );

@@ -149,8 +149,7 @@ char * LDOM_CharReference::Encode (const char* theSrc, Standard_Integer& theLen,
   Standard_Integer aCount = 0;
   //    Analyse if there is a non-standard character in the string
   for(;;) {
-    const unsigned int iSrc =
-      (const unsigned int) * (const unsigned char *) ptrSrc;
+    const unsigned int iSrc = (unsigned int ) *(const unsigned char* )ptrSrc;
     if (iSrc == 0) {
       endSrc = ptrSrc;
       break;
@@ -167,8 +166,7 @@ char * LDOM_CharReference::Encode (const char* theSrc, Standard_Integer& theLen,
     char * ptrDest = new char [(endSrc - theSrc) + aCount * 5 + 1];
     aDest = ptrDest;
     for (ptrSrc = theSrc; ptrSrc < endSrc; ptrSrc++) {
-      const unsigned int iSrc =
-        (const unsigned int) * (const unsigned char *) ptrSrc;
+      const unsigned int iSrc = (unsigned int ) *(const unsigned char* )ptrSrc;
       const int aCode = myTab[iSrc];
       if (aCode == NORMAL_C)                    // normal (regular) character
         * ptrDest++ = * ptrSrc;

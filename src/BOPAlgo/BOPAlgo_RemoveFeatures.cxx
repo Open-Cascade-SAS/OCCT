@@ -155,7 +155,7 @@ void BOPAlgo_RemoveFeatures::Perform()
     // Post treatment
     PostTreat();
   }
-  catch (Standard_Failure)
+  catch (Standard_Failure const&)
   {
     AddError(new BOPAlgo_AlertRemoveFeaturesFailed());
   }
@@ -354,7 +354,7 @@ public: //! @name Perform the operation
       // Trim the extended faces
       TrimExtendedFaces(aFaceExtFaceMap);
     }
-    catch (Standard_Failure)
+    catch (Standard_Failure const&)
     {
       // Make sure the warning will be given on the higher level
       myHasAdjacentFaces = Standard_True;

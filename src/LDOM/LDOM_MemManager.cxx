@@ -164,7 +164,7 @@ Standard_Integer LDOM_MemManager::HashTable::Hash (const char * aString,
   unsigned int aCRC = 0;
   const unsigned char * aPtr = (const unsigned char *) aString;
   for (Standard_Integer i = aLen; i > 0; i--) {
-    const unsigned int  bTmp = aCRC ^ (const unsigned int) (* aPtr++);
+    const unsigned int  bTmp = aCRC ^ (unsigned int) (* aPtr++);
     aCRC = ((aCRC >> 8) ^ wCRC16a[bTmp & 0x0F]) ^ wCRC16b[(bTmp >> 4) & 0x0F];
   }
   return Standard_Integer (aCRC & HASH_MASK /* myMask */);

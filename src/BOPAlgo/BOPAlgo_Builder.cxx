@@ -233,7 +233,7 @@ void BOPAlgo_Builder::PerformInternal(const BOPAlgo_PaveFiller& theFiller)
     PerformInternal1(theFiller);
   }
   //
-  catch (Standard_Failure) {
+  catch (Standard_Failure const&) {
     AddError (new BOPAlgo_AlertBuilderFailed);
   }
 }

@@ -114,7 +114,7 @@ class BOPAlgo_VertexFace : public BOPAlgo_Algo {
 
       myFlag=myContext->ComputeVF(myV, myF, myT1, myT2, myTolVNew, myFuzzyValue);
     }
-    catch (Standard_Failure)
+    catch (Standard_Failure const&)
     {
       AddError(new BOPAlgo_AlertIntersectionFailed);
     }

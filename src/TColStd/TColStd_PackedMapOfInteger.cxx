@@ -457,7 +457,7 @@ Standard_Integer TColStd_PackedMapOfInteger::GetMinimalMapped () const
     }
     if (pFoundNode) {
       unsigned int aFullMask (0xffffffff);
-      aResult = TColStd_intMapNode_findNext ((const Standard_Address )pFoundNode, aFullMask);
+      aResult = TColStd_intMapNode_findNext ((Standard_Address )pFoundNode, aFullMask);
     }
   }
   return aResult;
@@ -486,7 +486,7 @@ Standard_Integer TColStd_PackedMapOfInteger::GetMaximalMapped () const
     }
     if (pFoundNode) {
       unsigned int aFullMask (0xffffffff);
-      aResult = TColStd_intMapNode_findPrev ((const Standard_Address )pFoundNode, aFullMask);
+      aResult = TColStd_intMapNode_findPrev ((Standard_Address )pFoundNode, aFullMask);
     }
   }
   return aResult;

@@ -425,7 +425,7 @@ void AIS_TexturedShape::Compute (const Handle(PrsMgr_PresentationManager3d)& /*t
           updateAttributes (thePrs);
         }
       }
-      catch (Standard_Failure)
+      catch (Standard_Failure const&)
       {
 #ifdef OCCT_DEBUG
         std::cout << "AIS_TexturedShape::Compute() in ShadingMode failed \n";

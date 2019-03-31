@@ -59,7 +59,7 @@ IMPLEMENT_DOMSTRING (Value,     "value")
 #ifdef _WIN32
 #define EXCEPTION ...
 #else
-#define EXCEPTION Standard_Failure
+#define EXCEPTION Standard_Failure const&
 #endif
 //=======================================================================
 //function : XmlMDataStd_NamedDataDriver

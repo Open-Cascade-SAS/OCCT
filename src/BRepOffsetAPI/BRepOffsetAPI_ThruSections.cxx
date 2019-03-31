@@ -489,7 +489,7 @@ void BRepOffsetAPI_ThruSections::Build()
       CreateSmoothed();
     }
   }
-  catch (Standard_Failure)
+  catch (Standard_Failure const&)
   {
     NotDone();
     return;

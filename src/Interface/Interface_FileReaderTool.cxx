@@ -332,7 +332,7 @@ void Interface_FileReaderTool::LoadModel
       OCC_CATCH_SIGNALS
       BeginRead(amodel);  // selon la norme
     }
-    catch (Standard_Failure) {
+    catch (Standard_Failure const&) {
       // Sendinf of message : Internal error during the header reading
       Message_Msg Msg11("XSTEP_11");
       TF->Send (Msg11, Message_Info); 
@@ -481,7 +481,7 @@ void Interface_FileReaderTool::LoadModel
       OCC_CATCH_SIGNALS
       EndRead(amodel);  // selon la norme
     }
-    catch (Standard_Failure) {
+    catch (Standard_Failure const&) {
       // Sendinf of message : Internal error during the header reading
       Message_Msg Msg11("XSTEP_11");
       TF->Send (Msg11, Message_Info); 

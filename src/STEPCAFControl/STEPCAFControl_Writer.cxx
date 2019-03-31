@@ -835,7 +835,7 @@ Standard_Boolean STEPCAFControl_Writer::WriteExternRefs (const Handle(XSControl_
     }
 
     // add extern ref
-    const Standard_CString format = (const Standard_CString) ( schema == 3 ? "STEP AP203" : "STEP AP214" );
+    const char* format = (schema == 3 ? "STEP AP203" : "STEP AP214");
     // try to get PD from SDR
     StepRepr_RepresentedDefinition RD = SDR->Definition();
     Handle(StepRepr_PropertyDefinition) aPropDef = RD.PropertyDefinition();

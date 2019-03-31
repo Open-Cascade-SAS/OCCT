@@ -296,7 +296,7 @@ static Standard_Boolean  EncodeRegul (const TopoDS_Shape& sh)
     OCC_CATCH_SIGNALS
     BRepLib::EncodeRegularity (sh,tolang);
   }
-  catch(Standard_Failure) {
+  catch(Standard_Failure const&) {
     return Standard_False;
   }
   return Standard_True;
@@ -431,7 +431,7 @@ void  IGESToBRep_Reader::TransferRoots (const Standard_Boolean onlyvisible)
         TP.Transfer(ent);
         shape = TransferBRep::ShapeResult (theProc,ent);
       } 
-      catch(Standard_Failure) {
+      catch(Standard_Failure const&) {
         Message_Msg msg1005("IGES_1005");
         TF->Send (msg1005, Message_Info);
         continue;
@@ -540,7 +540,7 @@ Standard_Boolean  IGESToBRep_Reader::Transfer(const Standard_Integer num)
       OCC_CATCH_SIGNALS
       shape = CAS.TransferGeometry (ent);
     } 
-    catch(Standard_Failure) {
+    catch(Standard_Failure const&) {
       Message_Msg msg1015("IGES_1015");
       TF->Send (msg1015, Message_Info);
       exceptionRaised = Standard_True;

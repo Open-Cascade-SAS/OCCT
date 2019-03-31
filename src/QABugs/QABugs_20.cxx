@@ -1321,7 +1321,7 @@ namespace AllocTest
         for (;;)
           aList.Append(Standard::Allocate(aBlockSizes[i]));
       }
-      catch (Standard_Failure)
+      catch (Standard_Failure const&)
       {
         aStatus |= OUMCatchOK;
       }
@@ -2031,7 +2031,7 @@ static Standard_Integer OCC27357(Draw_Interpretor& theDI,
         Geom2dAdaptor_Curve(normalLine),1e-9,g1,g1,g3);
       aDuumyList.Append(aCircleBuilder.NbSolutions());
     }
-    catch(Standard_Failure)
+    catch(Standard_Failure const&)
     {
       theDI << "Exception was caught\n";
     }
@@ -2084,7 +2084,7 @@ static Standard_Integer OCC26270(Draw_Interpretor& theDI,
         DBRep::Set(theArgVal[2], bsp_face1);
       }
     }
-    catch (Standard_Failure)
+    catch (Standard_Failure const&)
     {
       theDI << "ERROR: Exception in GeomFill_NSections\n";
     }

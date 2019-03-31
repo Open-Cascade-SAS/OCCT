@@ -118,7 +118,7 @@ class BOPAlgo_VertexEdge : public BOPAlgo_Algo {
 
       myFlag=myContext->ComputeVE (myV, myE, myT, myTolVNew, myFuzzyValue);
     }
-    catch (Standard_Failure)
+    catch (Standard_Failure const&)
     {
       AddError(new BOPAlgo_AlertIntersectionFailed);
     }

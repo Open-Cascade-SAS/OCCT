@@ -81,7 +81,7 @@ myIsXYZAxis(Standard_True)
   Standard_Real aLength;
   try {
     aLength = UnitsAPI::AnyToLS(100. ,"mm");
-  } catch (Standard_Failure) {
+  } catch (Standard_Failure const&) {
     aLength = 0.1;
   }
   DA->SetAxisLength(aLength,aLength,aLength);

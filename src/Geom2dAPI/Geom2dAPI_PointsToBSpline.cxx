@@ -437,7 +437,7 @@ void Geom2dAPI_PointsToBSpline::Init
   try {
     Variation.Approximate();
   }
-  catch (Standard_Failure) {
+  catch (Standard_Failure const&) {
     return;
   }
 

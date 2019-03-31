@@ -251,7 +251,7 @@ Standard_Integer PCDM_ReadWriter_1::ReadReferenceCounter(const TCollection_Exten
     for ( i =1; i<=  refUserInfo.Length() ; i++) {
       if(refUserInfo(i).Search(REFERENCE_COUNTER) != -1) {
 	try { OCC_CATCH_SIGNALS theReferencesCounter=refUserInfo(i).Token(" ",2).IntegerValue();}
-	catch (Standard_Failure) { 
+    catch (Standard_Failure const&) {
 //	  cout << "warning: could not read the reference counter in " << aFileName << endl;
 	  TCollection_ExtendedString aMsg("Warning: ");
 	  aMsg = aMsg.Cat("could not read the reference counter in ").Cat(aFileName).Cat("\0");
@@ -262,7 +262,7 @@ Standard_Integer PCDM_ReadWriter_1::ReadReferenceCounter(const TCollection_Exten
     }
     
   }
-  catch (Standard_Failure) {}
+  catch (Standard_Failure const&) {}
 
   if(theFileIsOpen)  theFileDriver->Close();
 
@@ -400,7 +400,7 @@ Standard_Integer PCDM_ReadWriter_1::ReadDocumentVersion(const TCollection_Extend
     for ( i =1; i<=  refUserInfo.Length() ; i++) {
       if(refUserInfo(i).Search(MODIFICATION_COUNTER) != -1) {
 	try { OCC_CATCH_SIGNALS theVersion=refUserInfo(i).Token(" ",2).IntegerValue();}
-	catch (Standard_Failure) { 
+    catch (Standard_Failure const&) {
 //	  cout << "warning: could not read the version in " << aFileName << endl;
 	  TCollection_ExtendedString aMsg("Warning: ");
 	  aMsg = aMsg.Cat("could not read the version in ").Cat(aFileName).Cat("\0");
@@ -412,7 +412,7 @@ Standard_Integer PCDM_ReadWriter_1::ReadDocumentVersion(const TCollection_Extend
     }
   }
 
-  catch (Standard_Failure) {}
+  catch (Standard_Failure const&) {}
 
   if(theFileIsOpen) theFileDriver->Close();
   delete theFileDriver;

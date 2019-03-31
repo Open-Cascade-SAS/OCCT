@@ -1121,7 +1121,7 @@ Handle(Geom_Curve) IGESToBRep_BasicCurve::TransferBSplineCurve
         BSplineRes->Segment(Udeb, Ufin);
       res = BSplineRes;
     }
-    catch (Standard_Failure) {
+    catch (Standard_Failure const&) {
       Handle(Geom_TrimmedCurve) gtc = new Geom_TrimmedCurve(BSplineRes2,Udeb,Ufin);
       res = gtc;
     }

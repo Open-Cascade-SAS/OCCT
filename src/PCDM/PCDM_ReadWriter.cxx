@@ -146,7 +146,7 @@ TCollection_ExtendedString PCDM_ReadWriter::FileFormat
       theFormat = td.Types()->Value(1);
     }
   }
-  catch (Standard_Failure) {}
+  catch (Standard_Failure const&) {}
 
   
   if(theFileIsOpen)theFileDriver->Close();

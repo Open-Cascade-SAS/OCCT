@@ -587,7 +587,7 @@ Standard_Boolean LocOpe_SplitShape::Add(const TopoDS_Wire& W,
       if(!AddClosedWire(W,F))
         return Standard_False;
     }
-  } catch (Standard_Failure ) {
+  } catch (Standard_Failure const&) {
 #ifdef OCCT_DEBUG
     cout << "Warning: SpliShape internal problem detected, some faces may be lost. Check input edges/wires" <<endl;
 #endif

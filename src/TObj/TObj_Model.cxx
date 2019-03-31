@@ -158,7 +158,7 @@ Standard_Boolean TObj_Model::Load (const TCollection_ExtendedString& theFile)
         {
           isValid = isValid && aLabel.Data() == aDoc->GetData();
         }
-        catch (Standard_Failure)
+        catch (Standard_Failure const&)
         {
           isValid = Standard_False;
         }

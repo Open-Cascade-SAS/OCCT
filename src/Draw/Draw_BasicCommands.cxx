@@ -323,7 +323,7 @@ static Standard_Integer dbreak(Draw_Interpretor& di, Standard_Integer, const cha
   try {
     OSD::ControlBreak();
   }
-  catch (OSD_Exception_CTRL_BREAK) {
+  catch (OSD_Exception_CTRL_BREAK const&) {
     di << "User pressed Control-Break";
     return 1; // Tcl exception
   }

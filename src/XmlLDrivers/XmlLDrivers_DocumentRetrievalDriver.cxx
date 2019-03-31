@@ -293,7 +293,7 @@ void XmlLDrivers_DocumentRetrievalDriver::ReadFromDomDocument
         Standard_Integer aRefCounter = anInf.Token(" ",2).IntegerValue();
         theNewDocument->SetReferenceCounter(aRefCounter);
       }
-      catch (Standard_Failure) { 
+      catch (Standard_Failure const&) {
         //    cout << "warning: could not read the reference counter in " << aFileName << endl;
         TCollection_ExtendedString aMsg("Warning: ");
         aMsg = aMsg.Cat("could not read the reference counter").Cat("\0");
@@ -309,7 +309,7 @@ void XmlLDrivers_DocumentRetrievalDriver::ReadFromDomDocument
         Standard_Integer aModCounter = anInf.Token(" ",2).IntegerValue();
         theNewDocument->SetModifications (aModCounter);
       }
-      catch (Standard_Failure) { 
+      catch (Standard_Failure const&) {
         TCollection_ExtendedString aMsg("Warning: could not read the modification counter\0");
         if(!aMsgDriver.IsNull()) 
           aMsgDriver->Send(aMsg.ToExtString(), Message_Warning);

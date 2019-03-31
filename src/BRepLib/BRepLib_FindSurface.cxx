@@ -152,7 +152,7 @@ static Standard_Boolean Is2DClosed(const TopoDS_Shape&         theShape,
     TopoDS_Vertex aV2 = TopExp::LastVertex( aLastEdge, Standard_True );
     return ( aV1.IsSame( aV2 ) && Is2DConnected( aLastEdge, aFisrtEdge, theSurface, theLocation));
   }
-  catch ( Standard_Failure )  {
+  catch (Standard_Failure const&)  {
     return Standard_False;
   }
 }

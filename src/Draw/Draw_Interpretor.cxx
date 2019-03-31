@@ -551,7 +551,7 @@ Draw_Interpretor::~Draw_Interpretor()
     OCC_CATCH_SIGNALS
     Tcl_Exit(0);
   }
-  catch (Standard_Failure) {
+  catch (Standard_Failure const&) {
 #ifdef OCCT_DEBUG
     cout <<"Tcl_Exit have an exeption" << endl;
 #endif

@@ -424,7 +424,7 @@ static Standard_Integer OCC132 (Draw_Interpretor& di, Standard_Integer argc, con
       OCC_CATCH_SIGNALS
       OSD_Path Path (argv[1], SysType1);
     }
-    catch (Standard_ProgramError) {
+    catch (Standard_ProgramError const&) {
       di << "1\n";
       return 0;
     }
@@ -435,7 +435,7 @@ static Standard_Integer OCC132 (Draw_Interpretor& di, Standard_Integer argc, con
       OCC_CATCH_SIGNALS
       OSD_Path Path (argv[1], SysType2);
     }
-    catch (Standard_ProgramError) {
+    catch (Standard_ProgramError const&) {
       di << "2\n";
       return 0;
     }

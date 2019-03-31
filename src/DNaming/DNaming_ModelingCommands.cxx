@@ -74,7 +74,7 @@
 #ifdef _WIN32
 #define EXCEPTION ...
 #else
-#define EXCEPTION Standard_Failure
+#define EXCEPTION Standard_Failure const&
 #endif          
 #include <ModelDefinitions.hxx>
 //#define DEBUG
@@ -697,7 +697,7 @@ static Standard_Integer DNaming_AttachShape (Draw_Interpretor& di,
 	    if(!aSelector.Select(aShape, aCONTEXT, aGeometry, aKeepOrientation))
 	      return 1;
 	  }
-          catch (Standard_Failure) {
+          catch (Standard_Failure const&) {
 	    cout << "EXCEPTION: SELECTION_IMPOSSIBLE" <<endl;
 	  }
     
@@ -774,7 +774,7 @@ static Standard_Integer DNaming_XAttachShape (Draw_Interpretor& di,
 	      if(!aSelector.Select(aShape, aCONTEXT, aGeometry, aKeepOrientation))
 		return 1;
 	    }
-            catch (Standard_Failure) {
+            catch (Standard_Failure const&) {
 	      cout << "EXCEPTION: SELECTION_IMPOSSIBLE" <<endl;
 	    }
     

@@ -353,7 +353,7 @@ void GeomAPI_PointsToBSplineSurface::Init(const TColgp_Array2OfPnt& Points,
   try {
     Variation.Approximate();
   }
-  catch (Standard_Failure) {
+  catch (Standard_Failure const&) {
     return;
   }
 
@@ -413,7 +413,7 @@ void GeomAPI_PointsToBSplineSurface::Init(const TColgp_Array2OfPnt& Points,
   try {
     Variation2.Approximate();
   }
-  catch (Standard_Failure) {
+  catch (Standard_Failure const&) {
     return;
   }
 

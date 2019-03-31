@@ -66,7 +66,7 @@ Storage_Error StdStorage::Read(const TCollection_AsciiString& theFileName,
     OCC_CATCH_SIGNALS
     PCDM_ReadWriter::Open(*aDriver, theFileName, Storage_VSRead);
   }
-  catch (Standard_Failure)
+  catch (Standard_Failure const&)
   {
     return Storage_VSOpenError;
   }
@@ -134,7 +134,7 @@ Storage_Error StdStorage::Read(Storage_BaseDriver&      theDriver,
       theDriver.ReadReferenceType(aRef, aType);
       anError = Storage_VSOk;
     }
-    catch (Storage_StreamTypeMismatchError)
+    catch (Storage_StreamTypeMismatchError const&)
     {
       anError = Storage_VSTypeMismatch;
     }
@@ -162,9 +162,9 @@ Storage_Error StdStorage::Read(Storage_BaseDriver&      theDriver,
       aReadData.ReadPersistentObject(i);
       anError = Storage_VSOk;
     }
-    catch (Storage_StreamTypeMismatchError) { anError = Storage_VSTypeMismatch; }
-    catch (Storage_StreamFormatError) { anError = Storage_VSFormatError; }
-    catch (Storage_StreamReadError) { anError = Storage_VSFormatError; }
+    catch (Storage_StreamTypeMismatchError const&) { anError = Storage_VSTypeMismatch; }
+    catch (Storage_StreamFormatError const&) { anError = Storage_VSFormatError; }
+    catch (Storage_StreamReadError const&) { anError = Storage_VSFormatError; }
 
     if (anError != Storage_VSOk)
       return anError;
@@ -311,7 +311,7 @@ Storage_Error StdStorage::Write(Storage_BaseDriver&            theDriver,
     if (anError != Storage_VSOk)
       return anError;
   }
-  catch (Storage_StreamWriteError) {
+  catch (Storage_StreamWriteError const&) {
     return Storage_VSWriteError;
   }
 

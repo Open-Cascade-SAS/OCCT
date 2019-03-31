@@ -54,7 +54,7 @@ TDocStd_Application::TDocStd_Application()
     OCC_CATCH_SIGNALS
     S->LoadDriver();
   }
-  catch (Plugin_Failure)
+  catch (Plugin_Failure const&)
   {
     myIsDriverLoaded = Standard_False;
   }

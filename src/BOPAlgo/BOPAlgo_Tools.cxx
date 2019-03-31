@@ -714,7 +714,7 @@ Standard_Boolean BOPAlgo_Tools::WiresToFaces(const TopoDS_Shape& theWires,
         aBB.Add(aRFaces, aFSp);
       }
     }
-    catch (Standard_Failure) {
+    catch (Standard_Failure const&) {
       continue;
     }
   }

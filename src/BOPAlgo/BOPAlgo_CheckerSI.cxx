@@ -206,7 +206,7 @@ void BOPAlgo_CheckerSI::Perform()
     PostTreat();
   }
   //
-  catch (Standard_Failure) {
+  catch (Standard_Failure const&) {
     AddError (new BOPAlgo_AlertIntersectionFailed);
   }
 }

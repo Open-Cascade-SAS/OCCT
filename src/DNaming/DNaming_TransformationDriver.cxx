@@ -58,7 +58,7 @@ IMPLEMENT_STANDARD_RTTIEXT(DNaming_TransformationDriver,TFunction_Driver)
 #ifdef _WIN32
 #define EXCEPTION ...
 #else
-#define EXCEPTION Standard_Failure
+#define EXCEPTION Standard_Failure const&
 #endif 
 
 #define FACES_TAG  1

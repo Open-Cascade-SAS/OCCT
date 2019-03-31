@@ -365,7 +365,7 @@ static Standard_Integer OCC332bug (Draw_Interpretor& di, Standard_Integer argc, 
     OCC_CATCH_SIGNALS
     di << " yes\n";
   }
-  catch (Standard_TypeMismatch) {
+  catch (Standard_TypeMismatch const&) {
     di << " no\n";
   }
 
@@ -657,7 +657,7 @@ static Standard_Integer OCC544 (Draw_Interpretor& di, Standard_Integer argc, con
     B.Add(wallSolid,TubeShell);
     di << " yes\n";
   }
-  catch (Standard_TypeMismatch) {
+  catch (Standard_TypeMismatch const&) {
     di << "Can't convert to shell...\n";
     TopExp_Explorer getSol;
     getSol.Init(SewIt.SewedShape(), TopAbs_SOLID);

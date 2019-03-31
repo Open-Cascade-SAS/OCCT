@@ -150,7 +150,7 @@ class BOPAlgo_FaceFace :
 
       IntTools_FaceFace::Perform(myF1, myF2);
     }
-    catch (Standard_Failure)
+    catch (Standard_Failure const&)
     {
       AddError(new BOPAlgo_AlertIntersectionFailed);
     }

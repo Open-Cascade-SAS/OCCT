@@ -58,7 +58,7 @@ Standard_Boolean StdStorage_TypeData::Read(Storage_BaseDriver& theDriver)
       OCC_CATCH_SIGNALS
       theDriver.ReadTypeInformations (aTypeNum, aTypeName);
     }
-    catch (Storage_StreamTypeMismatchError)
+    catch (Storage_StreamTypeMismatchError const&)
     {
       myErrorStatus = Storage_VSTypeMismatch;
       myErrorStatusExt = "ReadTypeInformations";
@@ -106,7 +106,7 @@ Standard_Boolean StdStorage_TypeData::Write(Storage_BaseDriver& theDriver)
       OCC_CATCH_SIGNALS
       theDriver.WriteTypeInformations(i, Type(i));
     }
-    catch (Storage_StreamTypeMismatchError)
+    catch (Storage_StreamTypeMismatchError const&)
     {
       myErrorStatus = Storage_VSTypeMismatch;
       myErrorStatusExt = "WriteTypeInformations";

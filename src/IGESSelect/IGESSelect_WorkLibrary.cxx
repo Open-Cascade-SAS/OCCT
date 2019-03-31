@@ -191,7 +191,7 @@ static  Handle(IGESData_FileProtocol) IGESProto;
     OCC_CATCH_SIGNALS
     dump.Dump(igesent,S,level,(level-1)/3);
   }
-  catch (Standard_Failure) {
+  catch (Standard_Failure const&) {
     S << " **  Dump Interrupt **" << endl;
   }
 }

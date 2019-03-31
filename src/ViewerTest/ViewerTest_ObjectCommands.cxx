@@ -2109,7 +2109,7 @@ static int VCircleBuilder(Draw_Interpretor& /*di*/, Standard_Integer argc, const
         {
           theGeomCircle = Cir.Value();
         }
-        catch (StdFail_NotDone)
+        catch (StdFail_NotDone const&)
         {
           std::cout << "vcircle error: can't create circle\n";
           return -1; // TCL_ERROR
@@ -2156,7 +2156,7 @@ static int VCircleBuilder(Draw_Interpretor& /*di*/, Standard_Integer argc, const
       {
         theGeomCircle = Cir.Value();
       }
-      catch (StdFail_NotDone)
+      catch (StdFail_NotDone const&)
       {
         std::cout << "vcircle error: can't create circle\n";
         return -1; // TCL_ERROR
@@ -2222,7 +2222,7 @@ static int VCircleBuilder(Draw_Interpretor& /*di*/, Standard_Integer argc, const
       {
         theGeomCircle = Cir.Value();
       }
-      catch (StdFail_NotDone)
+      catch (StdFail_NotDone const&)
       {
         std::cout << "vcircle error: can't create circle\n";
         return -1; // TCL_ERROR
@@ -2267,7 +2267,7 @@ static int VCircleBuilder(Draw_Interpretor& /*di*/, Standard_Integer argc, const
       {
         theGeomCircle = Cir.Value();
       }
-      catch (StdFail_NotDone)
+      catch (StdFail_NotDone const&)
       {
         std::cout << "vcircle error: can't create circle\n";
         return -1; // TCL_ERROR

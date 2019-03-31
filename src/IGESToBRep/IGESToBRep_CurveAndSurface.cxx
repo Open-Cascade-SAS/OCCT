@@ -293,7 +293,7 @@ TopoDS_Shape IGESToBRep_CurveAndSurface::TransferGeometry
       OCC_CATCH_SIGNALS
         res = TransferCurveAndSurface(start);
     }
-    catch(Standard_Failure) {
+    catch(Standard_Failure const&) {
       Message_Msg msg1015("IGES_1015");
       SendFail(start, msg1015);
     }
@@ -325,7 +325,7 @@ TopoDS_Shape IGESToBRep_CurveAndSurface::TransferGeometry
 	  OCC_CATCH_SIGNALS
 	  res = TransferGeometry(stsub);
 	}
-	catch(Standard_Failure) {
+    catch(Standard_Failure const&) {
 	  res.Nullify();
           Message_Msg msg1015("IGES_1015");
 	  SendFail( st408, msg1015);
@@ -368,7 +368,7 @@ TopoDS_Shape IGESToBRep_CurveAndSurface::TransferGeometry
 	  OCC_CATCH_SIGNALS
 	  item = TransferGeometry(st308->AssociatedEntity(i));
 	}
-	catch(Standard_Failure) {
+    catch(Standard_Failure const&) {
 	  item.Nullify();
 	  Message_Msg msg1015("IGES_1015");
 	  SendFail( st308->AssociatedEntity(i), msg1015);
@@ -422,7 +422,7 @@ TopoDS_Shape IGESToBRep_CurveAndSurface::TransferGeometry
 	  OCC_CATCH_SIGNALS
 	  item = TransferGeometry(st402f1->Entity(i));
 	}
-	catch(Standard_Failure) {
+    catch(Standard_Failure const&) {
 	  item.Nullify();
 	  Message_Msg msg1015("IGES_1015");
 	  SendFail(st402f1->Entity(i),msg1015);
@@ -485,7 +485,7 @@ TopoDS_Shape IGESToBRep_CurveAndSurface::TransferGeometry
 	  OCC_CATCH_SIGNALS
 	  item = TransferGeometry(st402f7->Entity(i));
 	}
-	catch(Standard_Failure) {
+    catch(Standard_Failure const&) {
 	  item.Nullify();
 	  Message_Msg msg1015("IGES_1015");
 	  SendFail(st402f7->Entity(i),msg1015);

@@ -102,7 +102,7 @@ class BOPAlgo_EdgeEdge :
 
       IntTools_EdgeEdge::Perform();
     }
-    catch (Standard_Failure)
+    catch (Standard_Failure const&)
     {
       AddError(new BOPAlgo_AlertIntersectionFailed);
     }

@@ -182,7 +182,7 @@ Standard_Integer DNaming_Line3DDriver::Execute(Handle(TFunction_Logbook)& theLog
   try {  
     LoadNamingDS(aResultLabel, aWire, anArV, isClosed);
 
-  } catch (Standard_Failure) {
+  } catch (Standard_Failure const&) {
     aFunction->SetFailure(NAMING_FAILED);
     return -1;
   }

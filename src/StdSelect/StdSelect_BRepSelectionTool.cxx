@@ -447,7 +447,7 @@ void StdSelect_BRepSelectionTool::GetEdgeSensitive (const TopoDS_Shape& theShape
   try {
     OCC_CATCH_SIGNALS
     cu3d.Initialize (anEdge);
-  } catch (Standard_NullObject) {
+  } catch (Standard_NullObject const&) {
     return;
   }
 
@@ -626,7 +626,7 @@ Standard_Boolean StdSelect_BRepSelectionTool::GetSensitiveForFace (const TopoDS_
       OCC_CATCH_SIGNALS
       cu3d.Initialize (aWireExplorer.Current());
     }
-    catch (Standard_NullObject)
+    catch (Standard_NullObject const&)
     {
       continue;
     }

@@ -114,7 +114,7 @@ static Standard_Boolean  EncodeRegul (const TopoDS_Shape& sh)
     OCC_CATCH_SIGNALS
     BRepLib::EncodeRegularity (sh,tolang);
   }
-  catch(Standard_Failure) {
+  catch(Standard_Failure const&) {
     return Standard_False;
   }
   return Standard_True;
@@ -191,7 +191,7 @@ Handle(Transfer_Binder) IGESToBRep_Actor::Transfer
         OCC_CATCH_SIGNALS
 	shape = CAS.TransferGeometry(ent);
       }
-      catch(Standard_Failure) {
+      catch(Standard_Failure const&) {
 	shape.Nullify();
       }
     }

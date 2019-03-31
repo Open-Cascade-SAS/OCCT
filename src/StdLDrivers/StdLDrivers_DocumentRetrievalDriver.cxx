@@ -184,7 +184,7 @@ Handle(StdObjMgt_Persistent) StdLDrivers_DocumentRetrievalDriver::read (
       aFileDriver->ReadReferenceType (aRef, aType);
       anError = Storage_VSOk;
     }
-    catch (Storage_StreamTypeMismatchError)
+    catch (Storage_StreamTypeMismatchError const&)
     {
       anError = Storage_VSTypeMismatch;
     }
@@ -208,9 +208,9 @@ Handle(StdObjMgt_Persistent) StdLDrivers_DocumentRetrievalDriver::read (
       aReadData.ReadPersistentObject (i);
       anError = Storage_VSOk;
     }
-    catch (Storage_StreamTypeMismatchError) { anError = Storage_VSTypeMismatch; }
-    catch (Storage_StreamFormatError      ) { anError = Storage_VSFormatError;  }
-    catch (Storage_StreamReadError        ) { anError = Storage_VSFormatError;  }
+    catch (Storage_StreamTypeMismatchError const&) { anError = Storage_VSTypeMismatch; }
+    catch (Storage_StreamFormatError const&      ) { anError = Storage_VSFormatError;  }
+    catch (Storage_StreamReadError const&        ) { anError = Storage_VSFormatError;  }
 
     raiseOnStorageError (anError);
   }

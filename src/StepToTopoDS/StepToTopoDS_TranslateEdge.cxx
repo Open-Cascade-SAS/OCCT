@@ -494,7 +494,7 @@ Handle(Geom2d_Curve)  StepToTopoDS_TranslateEdge::MakePCurve
     }
     
   }
-  catch(Standard_Failure)
+  catch(Standard_Failure const&)
   {
     return C2d;
   }

@@ -285,7 +285,7 @@ Standard_Boolean V3d_Viewer::AddZLayer (Graphic3d_ZLayerId& theLayerId)
     OCC_CATCH_SIGNALS
     theLayerId = myZLayerGenId.Next();
   }
-  catch (Aspect_IdentDefinitionError)
+  catch (Aspect_IdentDefinitionError const&)
   {
     // new index can't be generated
     return Standard_False;

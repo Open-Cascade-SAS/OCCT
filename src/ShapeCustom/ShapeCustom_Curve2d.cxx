@@ -174,7 +174,7 @@ Standard_Boolean ShapeCustom_Curve2d::SimplifyBSpline2d (Handle(Geom2d_BSplineCu
                                  aMult-1,
                                  theTolerance);
         }
-        catch(Standard_Failure)
+        catch(Standard_Failure const&)
         {
         }
       }

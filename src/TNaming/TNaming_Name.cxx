@@ -2106,7 +2106,7 @@ case TNaming_SHELLIN:
       break;
     }
   }
-} catch (Standard_Failure) {
+} catch (Standard_Failure const&) {
 #ifdef OCCT_DEBUG
   cout << "Name::Solve: EXCEPTION==> NameType = " << NameTypeToString(myType) << "  ";
   PrintEntry(aLab);

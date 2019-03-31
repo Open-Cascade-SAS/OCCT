@@ -210,8 +210,7 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord (Standard_IStream& theIStr
           }       // otherwise ERROR
         }     // end of switch
         myError = "Unknown XML object: ";
-        myError += TCollection_AsciiString ((const Standard_CString)myPtr,
-                                            XML_MIN_BUFFER);
+        myError += TCollection_AsciiString (myPtr, XML_MIN_BUFFER);
         return XML_UNKNOWN;
       case '\0':
         if (myEOF == Standard_True) continue;

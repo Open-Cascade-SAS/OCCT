@@ -181,7 +181,7 @@ Standard_Boolean TopoDSToStep_WireframeBuilder::
     OCC_CATCH_SIGNALS
     CA.Initialize (anEdge);
   }
-  catch (Standard_NullObject) {
+  catch (Standard_NullObject const&) {
     return Standard_False;
   }
 

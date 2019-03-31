@@ -100,7 +100,7 @@ class GeomLib_CheckCurveOnSurface_TargetFunc :
       
       theFVal = -1.0*aP1.SquareDistance(aP2);
     }
-    catch(Standard_Failure) {
+    catch(Standard_Failure const&) {
       return Standard_False;
     }
     //
@@ -157,7 +157,7 @@ class GeomLib_CheckCurveOnSurface_TargetFunc :
         *theDeriv2 = -2.0*(aVec2.SquareMagnitude() + aVec1.Dot(aVec3));
       }
     }
-    catch(Standard_Failure)
+    catch(Standard_Failure const&)
     {
       return Standard_False;
     }
@@ -455,7 +455,7 @@ void GeomLib_CheckCurveOnSurface::Perform(const Handle(Geom2d_Curve)& thePCurve,
 
     myMaxDistance = sqrt(Abs(myMaxDistance));
   }
-  catch (Standard_Failure) {
+  catch (Standard_Failure const&) {
     myErrorStatus = 3;
   }
 }
@@ -676,7 +676,7 @@ Standard_Integer FillSubIntervals(const Handle(Geom_Curve)& theCurve3d,
       theNbParticles = Max(theNbParticles, aBS2DCurv->Degree());
     }
   }
-  catch(Standard_Failure)
+  catch(Standard_Failure const&)
   {
 #ifdef OCCT_DEBUG
     cout << "ERROR! BRepLib_CheckCurveOnSurface.cxx, "
@@ -801,7 +801,7 @@ Standard_Boolean MinComputing (
       }
     }
   }
-  catch(Standard_Failure)
+  catch(Standard_Failure const&)
   {
 #ifdef OCCT_DEBUG
     cout << "BRepLib_CheckCurveOnSurface.cxx: Exception in MinComputing()!" << endl;

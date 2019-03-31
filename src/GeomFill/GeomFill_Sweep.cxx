@@ -608,7 +608,7 @@ static Standard_Boolean IsSweepParallelSpine (const Handle(GeomFill_LocationLaw)
 		    Tf(2,1), Tf(2,2), Tf(2,3), Tf(2,4),
 		    Tf(3,1), Tf(3,2), Tf(3,3), Tf(3,4));
     }
-    catch (Standard_ConstructionError) {
+    catch (Standard_ConstructionError const&) {
       IsTrsf = Standard_False;
     }
     if (!IsTrsf) {

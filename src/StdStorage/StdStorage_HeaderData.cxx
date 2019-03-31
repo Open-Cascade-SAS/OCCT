@@ -58,13 +58,13 @@ Standard_Boolean StdStorage_HeaderData::Read(Storage_BaseDriver& theDriver)
                         myDataType,
                         myUserInfo);
   }
-  catch (Storage_StreamTypeMismatchError)
+  catch (Storage_StreamTypeMismatchError const&)
   {
     myErrorStatus = Storage_VSTypeMismatch;
     myErrorStatusExt = "ReadInfo";
     return Standard_False;
   }
-  catch (Storage_StreamExtCharParityError)
+  catch (Storage_StreamExtCharParityError const&)
   {
     myErrorStatus = Storage_VSExtCharParityError;
     myErrorStatusExt = "ReadInfo";
@@ -91,13 +91,13 @@ Standard_Boolean StdStorage_HeaderData::Read(Storage_BaseDriver& theDriver)
     OCC_CATCH_SIGNALS
     theDriver.ReadComment(myComments);
   }
-  catch (Storage_StreamTypeMismatchError)
+  catch (Storage_StreamTypeMismatchError const&)
   {
     myErrorStatus = Storage_VSTypeMismatch;
     myErrorStatusExt = "ReadComment";
     return Standard_False;
   }
-  catch (Storage_StreamExtCharParityError)
+  catch (Storage_StreamExtCharParityError const&)
   {
     myErrorStatus = Storage_VSExtCharParityError;
     myErrorStatusExt = "ReadComment";
@@ -146,13 +146,13 @@ Standard_Boolean StdStorage_HeaderData::Write(Storage_BaseDriver& theDriver)
                         myDataType,
                         myUserInfo);
   }
-  catch (Storage_StreamTypeMismatchError)
+  catch (Storage_StreamTypeMismatchError const&)
   {
     myErrorStatus = Storage_VSTypeMismatch;
     myErrorStatusExt = "WriteInfo";
     return Standard_False;
   }
-  catch (Storage_StreamExtCharParityError)
+  catch (Storage_StreamExtCharParityError const&)
   {
     myErrorStatus = Storage_VSExtCharParityError;
     myErrorStatusExt = "WriteInfo";
@@ -179,13 +179,13 @@ Standard_Boolean StdStorage_HeaderData::Write(Storage_BaseDriver& theDriver)
     OCC_CATCH_SIGNALS
     theDriver.WriteComment(myComments);
   }
-  catch (Storage_StreamTypeMismatchError)
+  catch (Storage_StreamTypeMismatchError const&)
   {
     myErrorStatus = Storage_VSTypeMismatch;
     myErrorStatusExt = "WriteComment";
     return Standard_False;
   }
-  catch (Storage_StreamExtCharParityError)
+  catch (Storage_StreamExtCharParityError const&)
   {
     myErrorStatus = Storage_VSExtCharParityError;
     myErrorStatusExt = "WriteComment";

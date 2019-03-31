@@ -838,7 +838,7 @@ static void AppendControlPoles (TColgp_SequenceOfPnt& seq,
         AppendControlPoles(seq,bslp);
         done = Standard_True;
       }
-      catch (Standard_Failure) {
+      catch (Standard_Failure const&) {
       }
     }
     else if ( aBaseCrv->IsKind(STANDARD_TYPE(Geom_BezierCurve))) {
@@ -850,7 +850,7 @@ static void AppendControlPoles (TColgp_SequenceOfPnt& seq,
         AppendControlPoles(seq,bz);
         done = Standard_True;
       }
-      catch (Standard_Failure) {
+      catch (Standard_Failure const&) {
       }
     }
     if (!done) {

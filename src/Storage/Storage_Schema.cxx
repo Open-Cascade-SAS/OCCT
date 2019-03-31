@@ -484,7 +484,7 @@ void Storage_Schema::Write
       errorContext = "EndWriteDataSection";
       f.EndWriteDataSection();
     }
-    catch(Storage_StreamWriteError) {
+    catch(Storage_StreamWriteError const&) {
       aData->SetErrorStatus(Storage_VSWriteError);
       aData->SetErrorStatusExtension(errorContext);
     }

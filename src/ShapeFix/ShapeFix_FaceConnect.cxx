@@ -282,7 +282,7 @@ ShapeFix_FaceConnect::ShapeFix_FaceConnect() {}
 	      Standard_Boolean sewing_ok = Standard_True;
 	      {
  	      try { OCC_CATCH_SIGNALS theSewer.Perform(); }
-	      catch(Standard_Failure) { sewing_ok = Standard_False; }
+          catch(Standard_Failure const&) { sewing_ok = Standard_False; }
 	      }
 	      if ( sewing_ok )
 		if (theSewer.SewedShape().IsNull()) sewing_ok = Standard_False;

@@ -60,13 +60,13 @@ Standard_Boolean Storage_HeaderData::Read (Storage_BaseDriver& theDriver)
                           myDataType,
                           myUserInfo);
     }
-    catch (Storage_StreamTypeMismatchError)
+    catch (Storage_StreamTypeMismatchError const&)
     {
       myErrorStatus = Storage_VSTypeMismatch;
       myErrorStatusExt = "ReadInfo";
       return Standard_False;
     }
-    catch (Storage_StreamExtCharParityError)
+    catch (Storage_StreamExtCharParityError const&)
     {
       myErrorStatus = Storage_VSExtCharParityError;
       myErrorStatusExt = "ReadInfo";
@@ -95,13 +95,13 @@ Standard_Boolean Storage_HeaderData::Read (Storage_BaseDriver& theDriver)
       OCC_CATCH_SIGNALS
       theDriver.ReadComment (myComments);
     }
-    catch (Storage_StreamTypeMismatchError)
+    catch (Storage_StreamTypeMismatchError const&)
     {
       myErrorStatus = Storage_VSTypeMismatch;
       myErrorStatusExt = "ReadComment";
       return Standard_False;
     }
-    catch (Storage_StreamExtCharParityError)
+    catch (Storage_StreamExtCharParityError const&)
     {
       myErrorStatus = Storage_VSExtCharParityError;
       myErrorStatusExt = "ReadComment";

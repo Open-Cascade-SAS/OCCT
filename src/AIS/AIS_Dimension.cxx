@@ -352,7 +352,7 @@ TCollection_ExtendedString AIS_Dimension::GetValueString (Standard_Real& theWidt
     Handle(Font_FTFont) aFont = new Font_FTFont();
     aFont->Init (aTextAspect->Aspect()->Font().ToCString(),
                  aTextAspect->Aspect()->GetTextFontAspect(),
-                 (const unsigned int)aTextAspect->Height(),
+                 (unsigned int )aTextAspect->Height(),
                  THE_2D_TEXT_RESOLUTION);
 
     for (NCollection_Utf8Iter anIter = anUTFString.Iterator(); *anIter != 0; )

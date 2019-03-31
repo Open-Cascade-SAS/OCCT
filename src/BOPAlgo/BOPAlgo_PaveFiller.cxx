@@ -223,7 +223,7 @@ void BOPAlgo_PaveFiller::Perform()
     PerformInternal();
   }
   //
-  catch (Standard_Failure) {
+  catch (Standard_Failure const&) {
     AddError (new BOPAlgo_AlertIntersectionFailed);
   } 
 }

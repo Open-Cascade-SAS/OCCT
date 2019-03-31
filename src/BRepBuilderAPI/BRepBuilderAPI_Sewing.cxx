@@ -903,7 +903,7 @@ TopoDS_Edge BRepBuilderAPI_Sewing::SameParameterEdge(const TopoDS_Edge& edgeFirs
     }
   }
   
-  catch(Standard_Failure)
+  catch(Standard_Failure const&)
   {
     isSamePar = Standard_False;
   }
@@ -4744,7 +4744,7 @@ void BRepBuilderAPI_Sewing::SameParameterShape()
 
       BRepLib::SameParameter(sec, BRep_Tool::Tolerance(sec));
     }
-    catch (Standard_Failure) {
+    catch (Standard_Failure const&) {
 #ifdef OCCT_DEBUG
       cout << "Fail: BRepBuilderAPI_Sewing::SameParameterShape exception in BRepLib::SameParameter" << endl;
 #endif
