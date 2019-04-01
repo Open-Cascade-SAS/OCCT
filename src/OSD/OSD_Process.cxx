@@ -12,24 +12,44 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _WIN32
+#ifdef _WIN32
+//it is important to undefine NOUSER and enforce including <windows.h> before
+//Standard_Macro.hxx defines it and includes <windows.h> causing compilation errors
+#ifdef NOUSER
+#undef NOUSER // we need SW_HIDE from windows.h
+#endif
+#include <windows.h>
+#endif
 
+#include <OSD_Process.hxx>
+
+#include <NCollection_Array1.hxx>
 #include <OSD_Environment.hxx>
 #include <OSD_OSDError.hxx>
 #include <OSD_Path.hxx>
-#include <OSD_Process.hxx>
 #include <OSD_WhoAmI.hxx>
+#include <Standard_PExtCharacter.hxx>
+#include <TCollection_ExtendedString.hxx>
 #include <Quantity_Date.hxx>
-#include <TCollection_AsciiString.hxx>
 
-const OSD_WhoAmI Iam = OSD_WProcess;
+#ifdef _WIN32
+  #include <OSD_WNT.hxx>
+  #include <lmcons.h> // for UNLEN - maximum user name length GetUserName()
+#else
+  const OSD_WhoAmI Iam = OSD_WProcess;
+  #include <errno.h>
+  #include <stdlib.h>
+  #include <sys/param.h>
+  #include <sys/time.h>
+  #include <pwd.h>       // For command getpwuid
+  #include <unistd.h>
+#endif
 
-#include <errno.h>
-#include <stdlib.h>
-#include <sys/param.h>
-#include <sys/time.h>
-#include <pwd.h>       // For command getpwuid
-#include <unistd.h>
+#if defined(__APPLE__)
+  #include <mach-o/dyld.h>
+#endif
+
+#ifndef _WIN32
 
 OSD_Process::OSD_Process(){
 }
@@ -166,23 +186,6 @@ Standard_Integer OSD_Process::Error()const{
 //------------------------------------------------------------------------
 //-------------------  WNT Sources of OSD_Path ---------------------------
 //------------------------------------------------------------------------
-
-//it is important to undefine NOUSER and enforce including <windows.h> before
-//Standard_Macro.hxx defines it and includes <windows.h> causing compilation errors
-#ifdef NOUSER
-#undef NOUSER /* we need SW_HIDE from windows.h */
-#endif
-#include <windows.h>
-
-#include <OSD_Process.hxx>
-
-#include <OSD_Path.hxx>
-#include <Quantity_Date.hxx>
-#include <Standard_PExtCharacter.hxx>
-#include <TCollection_ExtendedString.hxx>
-
-#include <OSD_WNT.hxx>
-#include <lmcons.h> // for UNLEN - maximum user name length GetUserName()
 
 void _osd_wnt_set_error ( OSD_Error&, OSD_WhoAmI, ... );
 
@@ -354,3 +357,112 @@ Standard_Integer OSD_Process :: Error () const {
 }  // end OSD_Process :: Error
 
 #endif
+
+// =======================================================================
+// function : ExecutablePath
+// purpose  :
+// =======================================================================
+TCollection_AsciiString OSD_Process::ExecutablePath()
+{
+#ifdef _WIN32
+  wchar_t aBuff[MAX_PATH + 2];
+  DWORD aLenFilled = GetModuleFileNameW (0, aBuff, MAX_PATH + 1);
+  aBuff[MAX_PATH + 1] = 0;
+  if (aLenFilled == 0)
+  {
+    return TCollection_AsciiString();
+  }
+  else if (aLenFilled <= MAX_PATH)
+  {
+    return TCollection_AsciiString (aBuff);
+  }
+
+  // buffer is not large enough (e.g. path uses \\?\ prefix)
+  wchar_t* aBuffDyn = NULL;
+  for (int anIter = 2;; ++anIter)
+  {
+    size_t aBuffLen = MAX_PATH * anIter;
+    aBuffDyn = reinterpret_cast<wchar_t*> (realloc (aBuffDyn, sizeof(wchar_t) * (aBuffLen + 1)));
+    if (aBuffDyn == NULL)
+    {
+      return TCollection_AsciiString();
+    }
+
+    aLenFilled = GetModuleFileNameW (NULL, aBuffDyn, DWORD(aBuffLen));
+    if (aLenFilled != aBuffLen)
+    {
+      aBuffDyn[aBuffLen] = L'\0';
+      TCollection_AsciiString aRes (aBuffDyn);
+      free (aBuffDyn);
+      return aRes;
+    }
+  }
+#elif defined(__APPLE__)
+  // determine buffer size
+  uint32_t aNbBytes = 0;
+  _NSGetExecutablePath (NULL, &aNbBytes);
+  if (aNbBytes == 0)
+  {
+    return TCollection_AsciiString();
+  }
+
+  // retrieve path to executable (probably link)
+  NCollection_Array1<char> aBuff (0, aNbBytes);
+  _NSGetExecutablePath (&aBuff.ChangeFirst(), &aNbBytes);
+  aBuff[aNbBytes] = '\0';
+
+  // retrieve real path to executable (resolve links and normalize)
+  char* aResultBuf = realpath (&aBuff.First(), NULL);
+  if (aResultBuf == NULL)
+  {
+    return TCollection_AsciiString();
+  }
+
+  TCollection_AsciiString aProcessPath (aResultBuf);
+  free (aResultBuf); // according to man for realpath()
+  return aProcessPath;
+#elif defined(__linux__)
+  // get info from /proc/PID/exe
+
+  TCollection_AsciiString aSimLink = TCollection_AsciiString("/proc/") + TCollection_AsciiString(getpid()) + "/exe";
+  char aBuff[4096];
+  ssize_t aBytes = readlink (aSimLink.ToCString(), aBuff, 4096);
+  if (aBytes > 0)
+  {
+    aBuff[aBytes] = '\0';
+    return TCollection_AsciiString(aBuff);
+  }
+  return TCollection_AsciiString();
+#else
+  // not implemented
+  return TCollection_AsciiString();
+#endif
+}
+
+// =======================================================================
+// function : ExecutableFolder
+// purpose  :
+// =======================================================================
+TCollection_AsciiString OSD_Process::ExecutableFolder()
+{
+  TCollection_AsciiString aFullPath = ExecutablePath();
+  Standard_Integer aLastSplit = -1;
+#ifdef _WIN32
+  const char THE_FILE_SEPARATOR = '\\';
+#else
+  const char THE_FILE_SEPARATOR = '/';
+#endif
+  for (Standard_Integer anIter = 1; anIter <= aFullPath.Length(); ++anIter)
+  {
+    if (aFullPath.Value (anIter) == THE_FILE_SEPARATOR)
+    {
+      aLastSplit = anIter;
+    }
+  }
+
+  if (aLastSplit != -1)
+  {
+    return aFullPath.SubString (1, aLastSplit);
+  }
+  return TCollection_AsciiString();
+}

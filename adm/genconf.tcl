@@ -30,9 +30,29 @@ set aRowIter 0
 set aCheckRowIter 0
 frame .myFrame -padx 5 -pady 5
 pack  .myFrame -fill both -expand 1
+frame .myFrame.myPrjFrame
 frame .myFrame.myVsFrame
 frame .myFrame.myHxxChecks
 frame .myFrame.myChecks
+
+# project file format
+set SYS_PRJFMT_LIST {}
+set SYS_PRJNAME_LIST {}
+if { "$::tcl_platform(platform)" == "windows" } {
+  lappend ::SYS_PRJFMT_LIST "vcxproj"
+  lappend ::SYS_PRJNAME_LIST "Visual Studio (.vcxproj)"
+}
+if { "$tcl_platform(os)" == "Darwin" } {
+  lappend ::SYS_PRJFMT_LIST "xcd"
+  lappend ::SYS_PRJNAME_LIST "XCode (.xcd)"
+}
+lappend ::SYS_PRJFMT_LIST "cbp"
+lappend ::SYS_PRJNAME_LIST "Code Blocks (.cbp)"
+lappend ::SYS_PRJFMT_LIST "pro"
+lappend ::SYS_PRJNAME_LIST "Qt Creator (.pro)"
+
+set aPrjIndex [lsearch $::SYS_PRJFMT_LIST $::PRJFMT]
+set ::PRJNAME [lindex $::SYS_PRJNAME_LIST $aPrjIndex]
 
 set SYS_VS_LIST {}
 set SYS_VC_LIST {}
@@ -101,6 +121,7 @@ proc wokdep:gui:Close {} {
 }
 
 proc wokdep:gui:SwitchConfig {} {
+  set ::PRJFMT [lindex $::SYS_PRJFMT_LIST [.myFrame.myPrjFrame.myPrjCombo current]]
   set ::VCVER  [lindex $::SYS_VC_LIST     [.myFrame.myVsFrame.myVsCombo current]]
   set ::VCVARS [lindex $::SYS_VCVARS_LIST [.myFrame.myVsFrame.myVsCombo current]]
 
@@ -390,6 +411,8 @@ proc wokdep:gui:Show64Bitness { theRowIter } {
 }
 
 # Header
+ttk::label    .myFrame.myPrjFrame.myPrjLbl     -text "Project format:" -padding {5 5 20 5}
+ttk::combobox .myFrame.myPrjFrame.myPrjCombo   -values $SYS_PRJNAME_LIST -state readonly -textvariable PRJNAME -width 40
 ttk::label    .myFrame.myVsFrame.myVsLbl       -text "Visual Studio configuration:" -padding {5 5 20 5}
 ttk::combobox .myFrame.myVsFrame.myVsCombo     -values $SYS_VS_LIST -state readonly -textvariable VSVER -width 40
 ttk::combobox .myFrame.myVsFrame.myArchCombo   -values { {32} {64} } -textvariable ARCH -state readonly -width 6
@@ -494,6 +517,10 @@ ttk::button   .myFrame.myClose -text "Close" -command wokdep:gui:Close
 
 # Create grid
 # Header
+grid .myFrame.myPrjFrame            -row $aRowIter -column 0 -columnspan 10 -sticky w
+grid .myFrame.myPrjFrame.myPrjLbl   -row 0 -column 0
+grid .myFrame.myPrjFrame.myPrjCombo -row 0 -column 1
+incr aRowIter
 if { "$tcl_platform(platform)" == "windows" } {
   grid .myFrame.myVsFrame               -row $aRowIter -column 0 -columnspan 10 -sticky w
   grid .myFrame.myVsFrame.myVsLbl       -row 0 -column 0
@@ -592,6 +619,9 @@ grid .myFrame.mySave  -row $aRowIter -column 4 -columnspan 2
 grid .myFrame.myClose -row $aRowIter -column 6 -columnspan 2
 
 # Bind events
+bind .myFrame.myPrjFrame.myPrjCombo <<ComboboxSelected>> {
+  wokdep:gui:SwitchConfig
+}
 bind .myFrame.myVsFrame.myVsCombo <<ComboboxSelected>> {
   wokdep:gui:SwitchConfig
 }

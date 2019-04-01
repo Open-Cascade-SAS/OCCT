@@ -1,0 +1,17 @@
+PRODUCTS_PATH = c:/3rdparty/vc14
+
+#CONFIG += HAVE_FREEIMAGE
+#CONFIG += HAVE_FFMPEG
+#CONFIG += HAVE_TBB
+#CONFIG += HAVE_GLES2
+#CONFIG += HAVE_D3D
+#CONFIG += HAVE_VTK
+
+aFreeType = $$PRODUCTS_PATH/freetype-2.5.5-vc14-64
+aTclTk    = $$PRODUCTS_PATH/tcltk-86-64
+
+INCLUDEPATH += $$aFreeType/include
+LIBS        += -L$$aFreeType/lib
+
+INCLUDEPATH += $$aTclTk/include
+LIBS        += -L$$aTclTk/lib

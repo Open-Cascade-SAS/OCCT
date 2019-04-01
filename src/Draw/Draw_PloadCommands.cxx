@@ -59,18 +59,28 @@ static Standard_Boolean FindPluginFile (TCollection_AsciiString& thePluginName, 
   
   // the order of search : by CSF_<PluginFileName>Defaults and then by CASROOT
   TCollection_AsciiString aCSFVariable = TCollection_AsciiString ("CSF_") + thePluginName + "Defaults";
-  aPluginDir = getenv (aCSFVariable.ToCString());
-
-  if (aPluginDir.IsEmpty()) {
-    // now try by CASROOT
-    aPluginDir = getenv("CASROOT");
-
-    if ( !aPluginDir.IsEmpty() ) {
-      aPluginDir +="/src/DrawResources" ;
+  aPluginDir = OSD_Environment (aCSFVariable).Value();
+  if (aPluginDir.IsEmpty())
+  {
+    aPluginDir = OSD_Environment ("DRAWHOME").Value();
+    if (!aPluginDir.IsEmpty())
+    {
       aToSetCSFVariable = Standard_True; //CSF variable to be set later
-    } else {
-      aResult = aDirFound = Standard_False;
-      cout << FAILSTR "Neither " << aCSFVariable.ToCString() << ", nor CASROOT variables have been set" << endl;
+    }
+    else
+    {
+      // now try by CASROOT
+      aPluginDir = OSD_Environment ("CASROOT").Value();
+      if (!aPluginDir.IsEmpty())
+      {
+        aPluginDir += "/src/DrawResources";
+        aToSetCSFVariable = Standard_True; //CSF variable to be set later
+      }
+      else
+      {
+        aResult = aDirFound = Standard_False;
+        std::cout << FAILSTR "Neither " << aCSFVariable << ", nor CASROOT variables have been set\n";
+      }
     }
   }
   

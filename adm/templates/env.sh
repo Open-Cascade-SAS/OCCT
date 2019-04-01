@@ -6,7 +6,7 @@ aScriptPath=${BASH_SOURCE%/*}; if [ -d "${aScriptPath}" ]; then cd "$aScriptPath
 # Reset values
 export CASROOT="__CASROOT__"
 export CASDEB=""
-export TARGET="";
+export PRJFMT="";
 export HAVE_TBB="false";
 export HAVE_OPENCL="false";
 export HAVE_FREEIMAGE="false";
@@ -40,9 +40,9 @@ do
   elif [ "$i" == "i" ] || [ "$i" == "relwithdeb" ]; then
     export CASDEB="i"
   elif [ "$i" == "cbp" ]; then
-    export TARGET="cbp";
+    export PRJFMT="cbp";
   elif [ "$i" == "xcd" ] || [ "$i" == "xcode" ]; then
-    export TARGET="xcd";
+    export PRJFMT="xcd";
   fi
 done
 shopt -u nocasematch
@@ -64,28 +64,32 @@ else
 fi
 
 export CASBIN=""
-if [ "${TARGET}" == "cbp" ]; then
-  export CASBIN="${WOKSTATION}/cbp"
-elif [ "${TARGET}" == "xcd" ]; then
+if [ "${PRJFMT}" == "xcd" ]; then
   export CASBIN="adm/mac/xcd/build"
+else
+  if [ "$aSystem" == "Darwin" ]; then
+    export CASBIN="${WOKSTATION}/clang"
+  else
+    export CASBIN="${WOKSTATION}/gcc"
+  fi
 fi
 
 export CSF_OPT_INC="${CSF_OPT_INC}:${CASROOT}/inc"
 
-if [ "${TARGET}" == "cbp" ]; then
-  export CSF_OPT_LIB32D="${CSF_OPT_LIB32}:${CASROOT}/${CASBIN}/libd"
-  export CSF_OPT_LIB64D="${CSF_OPT_LIB64}:${CASROOT}/${CASBIN}/libd"
-  export CSF_OPT_LIB32="${CSF_OPT_LIB32}:${CASROOT}/${CASBIN}/lib"
-  export CSF_OPT_LIB64="${CSF_OPT_LIB64}:${CASROOT}/${CASBIN}/lib"
-  export CSF_OPT_LIB32I="${CSF_OPT_LIB32}:${CASROOT}/${CASBIN}/libi"
-  export CSF_OPT_LIB64I="${CSF_OPT_LIB64}:${CASROOT}/${CASBIN}/libi"
-elif [ "${TARGET}" == "xcd" ]; then
+if [ "${PRJFMT}" == "xcd" ]; then
   export CSF_OPT_LIB32D="${CSF_OPT_LIB32}:${CASROOT}/${CASBIN}/Debug"
   export CSF_OPT_LIB64D="${CSF_OPT_LIB64}:${CASROOT}/${CASBIN}/Debug"
   export CSF_OPT_LIB32="${CSF_OPT_LIB32}:${CASROOT}/${CASBIN}/Release"
   export CSF_OPT_LIB64="${CSF_OPT_LIB64}:${CASROOT}/${CASBIN}/Release"
   export CSF_OPT_LIB32I="${CSF_OPT_LIB32}:${CASROOT}/${CASBIN}/RelWithDebInfo"
   export CSF_OPT_LIB64I="${CSF_OPT_LIB64}:${CASROOT}/${CASBIN}/RelWithDebInfo"
+else
+  export CSF_OPT_LIB32D="${CSF_OPT_LIB32}:${CASROOT}/${CASBIN}/libd"
+  export CSF_OPT_LIB64D="${CSF_OPT_LIB64}:${CASROOT}/${CASBIN}/libd"
+  export CSF_OPT_LIB32="${CSF_OPT_LIB32}:${CASROOT}/${CASBIN}/lib"
+  export CSF_OPT_LIB64="${CSF_OPT_LIB64}:${CASROOT}/${CASBIN}/lib"
+  export CSF_OPT_LIB32I="${CSF_OPT_LIB32}:${CASROOT}/${CASBIN}/libi"
+  export CSF_OPT_LIB64I="${CSF_OPT_LIB64}:${CASROOT}/${CASBIN}/libi"
 fi
 
 export CSF_OPT_CMPL=""
@@ -174,7 +178,7 @@ export CSF_OCCTSamplesPath="${CSF_OCCTSamplesPath:-$CASROOT/samples}"
 export CSF_OCCTDataPath="${CSF_OCCTDataPath:-$CASROOT/data}"
 export CSF_OCCTTestsPath="${CSF_OCCTTestsPath:-$CASROOT/tests}"
 
-if [ "${TARGET}" == "xcd" ]; then
+if [ "${PRJFMT}" == "xcd" ]; then
   if [ "${CASDEB}" == "d" ]; then
     export CSF_OCCTBinPath="${CSF_OCCTBinPath:-$CASROOT/$CASBIN/Debug}"
   else

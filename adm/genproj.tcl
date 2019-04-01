@@ -256,7 +256,7 @@ proc genAllResources {} {
 
 # Wrapper-function to generate VS project files
 proc genproj {theFormat args} {
-  set aSupportedFormats { "vc7" "vc8" "vc9" "vc10" "vc11" "vc12" "vc14" "vc141" "cbp" "xcd"}
+  set aSupportedFormats { "vc7" "vc8" "vc9" "vc10" "vc11" "vc12" "vc14" "vc141" "cbp" "xcd" "pro"}
   set aSupportedPlatforms { "wnt" "uwp" "lin" "mac" "ios" "qnx" }
   set isHelpRequire false
 
@@ -314,6 +314,7 @@ proc genproj {theFormat args} {
       vc141    -  Visual Studio 2017
       cbp      -  CodeBlocks
       xcd      -  XCode
+      pro      -  Qt Creator
 
     Platform (optional):
       wnt   -  Windows Desktop
@@ -395,9 +396,14 @@ proc genprojbat {theFormat thePlatform} {
       "cbp"   {
         file copy -force -- "$::THE_CASROOT/adm/templates/codeblocks.sh"  "$::path/codeblocks.sh"
         file copy -force -- "$::THE_CASROOT/adm/templates/codeblocks.bat" "$::path/codeblocks.bat"
+
         # Code::Blocks 16.01 does not create directory for import libs, help him
-        file mkdir "$::path/$thePlatform/cbp/lib"
-        file mkdir "$::path/$thePlatform/cbp/libd"
+        set aPlatformAndCompiler "${thePlatform}/gcc"
+        if { "$thePlatform" == "mac" || "$thePlatform" == "ios" } {
+          set aPlatformAndCompiler "${thePlatform}/clang"
+        }
+        file mkdir "$::path/${aPlatformAndCompiler}/lib"
+        file mkdir "$::path/${aPlatformAndCompiler}/libd"
       }
       "xcd"   { file copy -force -- "$::THE_CASROOT/adm/templates/xcode.sh"      "$::path/xcode.sh" }
     }
@@ -472,15 +478,6 @@ proc OS:MKPRC { theOutDir theFormat theLibType thePlatform theCmpl } {
     }
   }
 
-  # generate one solution for all projects if complete OS or VAS is processed
-  set anAllSolution "OCCT"
-
-  wokUtils:FILES:mkdir $anOutDir
-  if { ![file exists $anOutDir] } {
-    puts stderr "Error: Could not create output directory \"$anOutDir\""
-    return
-  }
-
   # create the out dir if it does not exist
   if (![file isdirectory $path/inc]) {
     puts "$path/inc folder does not exists and will be created"
@@ -490,6 +487,19 @@ proc OS:MKPRC { theOutDir theFormat theLibType thePlatform theCmpl } {
   # collect all required header files
   puts "Collecting required header files into $path/inc ..."
   osutils:collectinc $aModules $path/inc
+
+  if { "$theFormat" == "pro" } {
+    return
+  }
+
+  # generate one solution for all projects if complete OS or VAS is processed
+  set anAllSolution "OCCT"
+
+  wokUtils:FILES:mkdir $anOutDir
+  if { ![file exists $anOutDir] } {
+    puts stderr "Error: Could not create output directory \"$anOutDir\""
+    return
+  }
 
   # Generating project files for the selected format
   switch -exact -- "$theFormat" {
@@ -2295,6 +2305,10 @@ proc osutils:cbp { theCmpl theOutDir theProjName thePlatform theSrcFiles theLibs
   set aCmplFlagsDebug   [list]
   set toPassArgsByFile 0
   set aLibPrefix "lib"
+  set aPlatformAndCompiler "${thePlatform}/gcc"
+  if { "$thePlatform" == "mac" || "$thePlatform" == "ios" } {
+    set aPlatformAndCompiler "${thePlatform}/clang"
+  }
   if { "$thePlatform" == "wnt" || "$thePlatform" == "uwp" || "$thePlatform" == "qnx" } {
     set toPassArgsByFile 1
   }
@@ -2351,17 +2365,17 @@ proc osutils:cbp { theCmpl theOutDir theProjName thePlatform theSrcFiles theLibs
   # Release target configuration
   puts $aFile "\t\t\t<Target title=\"Release\">"
   if { "$theIsExe" == "true" } {
-    puts $aFile "\t\t\t\t<Option output=\"../../../${thePlatform}/cbp/bin/${theProjName}\" prefix_auto=\"0\" extension_auto=\"0\" />"
+    puts $aFile "\t\t\t\t<Option output=\"../../../${aPlatformAndCompiler}/bin/${theProjName}\" prefix_auto=\"0\" extension_auto=\"0\" />"
     puts $aFile "\t\t\t\t<Option type=\"1\" />"
   } else {
     if { "$thePlatform" == "wnt" || "$thePlatform" == "uwp" } {
-      puts $aFile "\t\t\t\t<Option output=\"../../../${thePlatform}/cbp/bin/${aLibPrefix}${theProjName}\" imp_lib=\"../../../${thePlatform}/cbp/lib/\$(TARGET_OUTPUT_BASENAME)\" prefix_auto=\"1\" extension_auto=\"1\" />"
+      puts $aFile "\t\t\t\t<Option output=\"../../../${aPlatformAndCompiler}/bin/${aLibPrefix}${theProjName}\" imp_lib=\"../../../${aPlatformAndCompiler}/lib/\$(TARGET_OUTPUT_BASENAME)\" prefix_auto=\"1\" extension_auto=\"1\" />"
     } else {
-      puts $aFile "\t\t\t\t<Option output=\"../../../${thePlatform}/cbp/lib/lib${theProjName}.so\" prefix_auto=\"0\" extension_auto=\"0\" />"
+      puts $aFile "\t\t\t\t<Option output=\"../../../${aPlatformAndCompiler}/lib/lib${theProjName}.so\" prefix_auto=\"0\" extension_auto=\"0\" />"
     }
     puts $aFile "\t\t\t\t<Option type=\"3\" />"
   }
-  puts $aFile "\t\t\t\t<Option object_output=\"../../../${thePlatform}/cbp/obj\" />"
+  puts $aFile "\t\t\t\t<Option object_output=\"../../../${aPlatformAndCompiler}/obj\" />"
   puts $aFile "\t\t\t\t<Option compiler=\"$aCmplCbp\" />"
   puts $aFile "\t\t\t\t<Option createDefFile=\"0\" />"
   if { "$thePlatform" == "wnt" || "$thePlatform" == "uwp" } {
@@ -2384,7 +2398,7 @@ proc osutils:cbp { theCmpl theOutDir theProjName thePlatform theSrcFiles theLibs
   if { $toPassArgsByFile == 1 } {
     puts $aFile "\t\t\t\t\t<Add option=\"\@$aLnkFileName\" />"
   }
-  puts $aFile "\t\t\t\t\t<Add directory=\"../../../${thePlatform}/cbp/lib\" />"
+  puts $aFile "\t\t\t\t\t<Add directory=\"../../../${aPlatformAndCompiler}/lib\" />"
   if { "$thePlatform" == "mac" } {
     if { [ lsearch $theLibsList X11 ] >= 0} {
       puts $aFile "\t\t\t\t\t<Add directory=\"/usr/X11/lib\" />"
@@ -2392,7 +2406,7 @@ proc osutils:cbp { theCmpl theOutDir theProjName thePlatform theSrcFiles theLibs
   }
   puts $aFile "\t\t\t\t\t<Add option=\"\$(CSF_OPT_LNK${aWokArch})\" />"
   if { "$thePlatform" == "lin" } {
-    puts $aFile "\t\t\t\t\t<Add option=\"-Wl,-rpath-link=../../../${thePlatform}/cbp/lib\" />"
+    puts $aFile "\t\t\t\t\t<Add option=\"-Wl,-rpath-link=../../../${aPlatformAndCompiler}/lib\" />"
   }
   puts $aFile "\t\t\t\t</Linker>"
 
@@ -2401,17 +2415,17 @@ proc osutils:cbp { theCmpl theOutDir theProjName thePlatform theSrcFiles theLibs
   # Debug target configuration
   puts $aFile "\t\t\t<Target title=\"Debug\">"
   if { "$theIsExe" == "true" } {
-    puts $aFile "\t\t\t\t<Option output=\"../../../${thePlatform}/cbp/bind/${theProjName}\" prefix_auto=\"0\" extension_auto=\"0\" />"
+    puts $aFile "\t\t\t\t<Option output=\"../../../${aPlatformAndCompiler}/bind/${theProjName}\" prefix_auto=\"0\" extension_auto=\"0\" />"
     puts $aFile "\t\t\t\t<Option type=\"1\" />"
   } else {
     if { "$thePlatform" == "wnt" || "$thePlatform" == "uwp" } {
-      puts $aFile "\t\t\t\t<Option output=\"../../../${thePlatform}/cbp/bind/${aLibPrefix}${theProjName}\" imp_lib=\"../../../${thePlatform}/cbp/libd/\$(TARGET_OUTPUT_BASENAME)\" prefix_auto=\"1\" extension_auto=\"1\" />"
+      puts $aFile "\t\t\t\t<Option output=\"../../../${aPlatformAndCompiler}/bind/${aLibPrefix}${theProjName}\" imp_lib=\"../../../${aPlatformAndCompiler}/libd/\$(TARGET_OUTPUT_BASENAME)\" prefix_auto=\"1\" extension_auto=\"1\" />"
     } else {
-      puts $aFile "\t\t\t\t<Option output=\"../../../${thePlatform}/cbp/libd/lib${theProjName}.so\" prefix_auto=\"0\" extension_auto=\"0\" />"
+      puts $aFile "\t\t\t\t<Option output=\"../../../${aPlatformAndCompiler}/libd/lib${theProjName}.so\" prefix_auto=\"0\" extension_auto=\"0\" />"
     }
     puts $aFile "\t\t\t\t<Option type=\"3\" />"
   }
-  puts $aFile "\t\t\t\t<Option object_output=\"../../../${thePlatform}/cbp/objd\" />"
+  puts $aFile "\t\t\t\t<Option object_output=\"../../../${aPlatformAndCompiler}/objd\" />"
   puts $aFile "\t\t\t\t<Option compiler=\"$aCmplCbp\" />"
   puts $aFile "\t\t\t\t<Option createDefFile=\"0\" />"
   if { "$thePlatform" == "wnt" || "$thePlatform" == "uwp" } {
@@ -2434,7 +2448,7 @@ proc osutils:cbp { theCmpl theOutDir theProjName thePlatform theSrcFiles theLibs
   if { $toPassArgsByFile == 1 } {
     puts $aFile "\t\t\t\t\t<Add option=\"\@$aLnkDebFileName\" />"
   }
-  puts $aFile "\t\t\t\t\t<Add directory=\"../../../${thePlatform}/cbp/libd\" />"
+  puts $aFile "\t\t\t\t\t<Add directory=\"../../../${aPlatformAndCompiler}/libd\" />"
   if { "$thePlatform" == "mac" } {
     if { [ lsearch $theLibsList X11 ] >= 0} {
       puts $aFile "\t\t\t\t\t<Add directory=\"/usr/X11/lib\" />"
@@ -2442,7 +2456,7 @@ proc osutils:cbp { theCmpl theOutDir theProjName thePlatform theSrcFiles theLibs
   }
   puts $aFile "\t\t\t\t\t<Add option=\"\$(CSF_OPT_LNK${aWokArch}D)\" />"
   if { "$thePlatform" == "lin" } {
-    puts $aFile "\t\t\t\t\t<Add option=\"-Wl,-rpath-link=../../../${thePlatform}/cbp/libd\" />"
+    puts $aFile "\t\t\t\t\t<Add option=\"-Wl,-rpath-link=../../../${aPlatformAndCompiler}/libd\" />"
   }
   puts $aFile "\t\t\t\t</Linker>"
 
@@ -2509,8 +2523,8 @@ proc osutils:cbp { theCmpl theOutDir theProjName thePlatform theSrcFiles theLibs
       puts $aFile "\t\t\t<Option link=\"0\" />"
       puts $aFile "\t\t</Unit>"
 
-      set aFileObj  [string map {.cxx .o} [string map [list "/src/" "/$thePlatform/cbp/obj/src/"]  $aSrcFile]]
-      set aFileObjd [string map {.cxx .o} [string map [list "/src/" "/$thePlatform/cbp/objd/src/"] $aSrcFile]]
+      set aFileObj  [string map {.cxx .o} [string map [list "/src/" "/${aPlatformAndCompiler}/obj/src/"]  $aSrcFile]]
+      set aFileObjd [string map {.cxx .o} [string map [list "/src/" "/${aPlatformAndCompiler}/objd/src/"] $aSrcFile]]
       puts -nonewline $aFileLnkObj  "$aFileObj "
       puts -nonewline $aFileLnkObjd "$aFileObjd "
     } else {

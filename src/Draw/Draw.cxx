@@ -25,6 +25,8 @@
 #include <gp_Pnt2d.hxx>
 #include <OSD.hxx>
 #include <OSD_Environment.hxx>
+#include <OSD_File.hxx>
+#include <OSD_Process.hxx>
 #include <OSD_SharedLibrary.hxx>
 #include <OSD_Timer.hxx>
 #include <Plugin_MapOfFunctions.hxx>
@@ -75,18 +77,19 @@ Standard_EXPORT Standard_Boolean Draw_Interprete(const char* command);
 // read an init file
 // *******************************************************************
 
-static void ReadInitFile (const TCollection_AsciiString& theFileName)
+static void interpreteTclCommand (const TCollection_AsciiString& theCmd)
 {
-  TCollection_AsciiString aPath = theFileName;
 #ifdef _WIN32
-  aPath.ChangeAll('\\', '/');
   if (!Draw_Batch)
   {
     try
     {
+      while (console_semaphore == HAS_CONSOLE_COMMAND)
       {
-        TCollection_ExtendedString aCmdWide ("source -encoding utf-8 \"");
-        aCmdWide += TCollection_ExtendedString (aPath) + "\"";
+        Sleep(10);
+      }
+      {
+        TCollection_ExtendedString aCmdWide (theCmd);
         wcscpy_s (console_command, aCmdWide.ToWideString());
       }
       console_semaphore = HAS_CONSOLE_COMMAND;
@@ -95,19 +98,127 @@ static void ReadInitFile (const TCollection_AsciiString& theFileName)
         Sleep(10);
       }
     }
-    catch(...) {
-      cout << "Error while reading a script file." << endl;
+    catch (...)
+    {
+      std::cout << "Error while reading a script file.\n";
       ExitProcess(0);
     }
-  } else {
-#endif
-    char* com = new char [aPath.Length() + strlen ("source -encoding utf-8 ") + 2];
-    Sprintf (com, "source -encoding utf-8 %s", aPath.ToCString());
-    Draw_Interprete (com);
-    delete [] com;
-#ifdef _WIN32
   }
+  else
 #endif
+  {
+    Draw_Interprete (theCmd.ToCString());
+  }
+}
+
+static void ReadInitFile (const TCollection_AsciiString& theFileName)
+{
+  TCollection_AsciiString aCmd = theFileName;
+#ifdef _WIN32
+  aCmd.ChangeAll ('\\', '/');
+#endif
+  aCmd = TCollection_AsciiString ("source -encoding utf-8 \"") + aCmd + "\"";
+  interpreteTclCommand (aCmd);
+}
+
+//! Define environment variable available from Tcl and OCCT.
+static void setOcctTclEnv (const TCollection_AsciiString& theName,
+                           TCollection_AsciiString& thePath)
+{
+  if (thePath.IsEmpty())
+  {
+    return;
+  }
+
+  thePath.ChangeAll ('\\', '/');
+  OSD_Environment aRedPathEnv (theName);
+  aRedPathEnv.SetValue (thePath);
+  aRedPathEnv.Build();
+
+  const TCollection_AsciiString aPutEnv = theName + "=" + thePath;
+  Tcl_PutEnv (aPutEnv.ToCString());
+}
+
+//! Look for resource within standard installation layouts relative to executable location.
+//!
+//! Bin (INSTALL_DIR_BIN):
+//!  - Windows: <prefix>/win64/vc10/bin(d)
+//!  - Unix:    <prefix>/bin
+//! Resources (INSTALL_DIR_RESOURCE):
+//!  - Windows: <prefix>/src
+//!  - Unix:    <prefix>/share/opencascade-7.0.0/resources
+//! Samples (INSTALL_DIR_SAMPLES):
+//!  - Windows: <prefix>/samples
+//!  - Unix:    <prefix>/share/opencascade-7.0.0/samples
+//! Tests (INSTALL_DIR_TESTS):
+//!  - Windows: <prefix>/tests
+//!  - Unix:    <prefix>/share/opencascade-7.0.0/tests
+//!
+//! @param theCasRoot  [out] found CASROOT location (e.g. installation folder)
+//! @param theResRoot  [out] found resources root location
+//! @param theResName   [in] resource to find ("resources", "samples", etc.)
+//! @param theProbeFile [in] file to probe within resources location (e.g. "DrawResources/DrawDefault" within "resources")
+static bool searchResources (TCollection_AsciiString& theCasRoot,
+                             TCollection_AsciiString& theResRoot,
+                             const TCollection_AsciiString& theResName,
+                             const TCollection_AsciiString& theProbeFile)
+{
+  const TCollection_AsciiString aResLayouts[] =
+  {
+    TCollection_AsciiString("/share/opencascade-" OCC_VERSION_STRING_EXT "/") + theResName,
+    TCollection_AsciiString("/share/opencascade-" OCC_VERSION_COMPLETE "/") + theResName,
+    TCollection_AsciiString("/share/opencascade-" OCC_VERSION_STRING "/") + theResName,
+    TCollection_AsciiString("/share/opencascade/") + theResName,
+    TCollection_AsciiString("/share/occt-" OCC_VERSION_STRING_EXT "/") + theResName,
+    TCollection_AsciiString("/share/occt-" OCC_VERSION_COMPLETE "/") + theResName,
+    TCollection_AsciiString("/share/occt-" OCC_VERSION_STRING "/") + theResName,
+    TCollection_AsciiString("/share/occt/") + theResName,
+    TCollection_AsciiString("/") + theResName,
+    TCollection_AsciiString("/share/opencascade"),
+    TCollection_AsciiString("/share/occt"),
+    TCollection_AsciiString("/share"),
+    TCollection_AsciiString("/src"),
+    TCollection_AsciiString("")
+  };
+
+  const TCollection_AsciiString anExeDir (OSD_Process::ExecutableFolder());
+  for (Standard_Integer aLayIter = 0;; ++aLayIter)
+  {
+    const TCollection_AsciiString& aResLayout = aResLayouts[aLayIter];
+    const TCollection_AsciiString  aProbeFile = aResLayout + "/" + theProbeFile;
+    if (OSD_File (anExeDir + aProbeFile).Exists())
+    {
+      theCasRoot = anExeDir;
+      theResRoot = theCasRoot + aResLayout;
+      return true;
+    }
+    // <prefix>/bin(d)
+    else if (OSD_File (anExeDir + "../" + aProbeFile).Exists())
+    {
+      theCasRoot = anExeDir + "..";
+      theResRoot = theCasRoot + aResLayout;
+      return true;
+    }
+    // <prefix>/gcc/bin(d)
+    else if (OSD_File (anExeDir + "../../" + aProbeFile).Exists())
+    {
+      theCasRoot = anExeDir + "../..";
+      theResRoot = theCasRoot + aResLayout;
+      return true;
+    }
+    // <prefix>/win64/vc10/bin(d)
+    else if (OSD_File (anExeDir + "../../../" + aProbeFile).Exists())
+    {
+      theCasRoot = anExeDir + "../../..";
+      theResRoot = theCasRoot + aResLayout;
+      return true;
+    }
+
+    if (aResLayout.IsEmpty())
+    {
+      return false;
+    }
+  }
 }
 
 //=======================================================================
@@ -325,10 +436,52 @@ void Draw_Appli(int argc, char** argv, const FDraw_InitAppli Draw_InitAppli)
   // read init files
   // *****************************************************************
   // default
-
-  if (getenv ("DRAWDEFAULT") == NULL)
+  const TCollection_AsciiString aDrawDef (OSD_Environment ("DRAWDEFAULT").Value());
+  if (!aDrawDef.IsEmpty())
   {
-    if (getenv ("CASROOT") == NULL)
+    ReadInitFile (aDrawDef);
+  }
+  else
+  {
+    TCollection_AsciiString aDrawHome;
+    TCollection_AsciiString aCasRoot (OSD_Environment ("CASROOT").Value());
+    if (!aCasRoot.IsEmpty())
+    {
+      aDrawHome = aCasRoot + "/src/DrawResources";
+    }
+    else
+    {
+      // search for relative locations within standard development environment
+      TCollection_AsciiString aResPath;
+      if (searchResources (aCasRoot, aResPath, "resources", "DrawResources/DrawDefault"))
+      {
+        aDrawHome = aResPath + "/DrawResources";
+        setOcctTclEnv ("CASROOT",  aCasRoot);
+        setOcctTclEnv ("DRAWHOME", aDrawHome);
+        setOcctTclEnv ("CSF_OCCTResourcePath", aResPath);
+      }
+
+      TCollection_AsciiString aSamplesPath;
+      if (OSD_Environment ("CSF_OCCTSamplesPath").Value().IsEmpty()
+       && searchResources (aCasRoot, aSamplesPath, "samples", "tcl/Readme.txt"))
+      {
+        setOcctTclEnv ("CSF_OCCTSamplesPath", aSamplesPath);
+      }
+
+      TCollection_AsciiString aTestsPath;
+      if (OSD_Environment ("CSF_TestScriptsPath").Value().IsEmpty()
+       && searchResources (aCasRoot, aTestsPath, "tests", "parse.rules"))
+      {
+        setOcctTclEnv ("CSF_TestScriptsPath", aTestsPath);
+      }
+    }
+
+    if (!aDrawHome.IsEmpty())
+    {
+      const TCollection_AsciiString aDefStr = aDrawHome + "/DrawDefault";
+      ReadInitFile (aDefStr);
+    }
+    else
     {
 #ifdef _WIN32
       ReadInitFile ("ddefault");
@@ -337,16 +490,6 @@ void Draw_Appli(int argc, char** argv, const FDraw_InitAppli Draw_InitAppli)
       cout << "No default file" << endl;
 #endif
     }
-    else
-    {
-      TCollection_AsciiString aDefStr (getenv ("CASROOT"));
-      aDefStr += "/src/DrawResources/DrawDefault";
-      ReadInitFile (aDefStr);
-    }
-  }
-  else
-  {
-    ReadInitFile (getenv ("DRAWDEFAULT"));
   }
 
   // read commands from file

@@ -19,10 +19,6 @@ anOpt2=$2
 anOpt3=$3
 anOpt4=$4
 anOpt5=$5
-if [ "$aTarget" == "" ]; then
-  aTarget="cbp"
-  if [ "$aSystem" == "Darwin" ]; then aTarget="xcd"; fi;
-fi
 
 if [ ! -e "${aScriptPath}/custom.sh" ]; then
   tclsh "${aScriptPath}/adm/genconf.tcl"
@@ -36,6 +32,12 @@ fi
 source "${aScriptPath}/custom.sh"
 
 if [ -e "${aScriptPath}/env.sh" ]; then source "${aScriptPath}/env.sh"; fi
+
+if [ "$aTarget" == "" ]; then aTarget=$PRJFMT; fi;
+if [ "$aTarget" == "" ]; then
+  aTarget="cbp"
+  if [ "$aSystem" == "Darwin" ]; then aTarget="xcd"; fi;
+fi
 
 cd $aScriptPath
 tclsh "./adm/start.tcl" genproj ${aTarget} $anOpt2 $anOpt3 $anOpt4 $anOpt5
