@@ -12002,6 +12002,7 @@ static int VManipulator (Draw_Interpretor& theDi,
   aCmd.AddOption ("followDragging",    "... {0|1} - set following dragging transform");
   aCmd.AddOption ("gap",               "... value - set gap between sub-parts");
   aCmd.AddOption ("part",              "... axis mode {0|1} - set visual part");
+  aCmd.AddOption ("parts",             "... all axes mode {0|1} - set visual part");
   aCmd.AddOption ("pos",               "... x y z [nx ny nz [xx xy xz]] - set position of manipulator");
   aCmd.AddOption ("size",              "... size - set size of manipulator");
   aCmd.AddOption ("zoomable",          "... {0|1} - set zoom persistence");
@@ -12108,6 +12109,18 @@ static int VManipulator (Draw_Interpretor& theDi,
     }
 
     aManipulator->SetPart (anAxis, static_cast<AIS_ManipulatorMode> (aMode), aOnOff);
+  }
+  if (aCmd.HasOption("parts", 2, Standard_True))
+  {
+    Standard_Integer aMode = aCmd.ArgInt("parts", 0);
+    Standard_Boolean aOnOff = aCmd.ArgBool("parts", 1);
+    if (aMode < 1 || aMode > 4)
+    {
+      std::cerr << theArgVec[0] << " error: mode value should be in range [1, 4].\n";
+      return 1;
+    }
+
+    aManipulator->SetPart(static_cast<AIS_ManipulatorMode>(aMode), aOnOff);
   }
   if (aCmd.HasOption ("pos", 3, Standard_True))
   {
@@ -13365,6 +13378,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
       "\n      '-followDragging    {0|1}'        - set following dragging transform"
       "\n      '-gap value'                      - set gap between sub-parts"
       "\n      '-part axis mode    {0|1}'        - set visual part"
+      "\n      '-parts axis mode   {0|1}'        - set visual part"
       "\n      '-pos x y z [nx ny nz [xx xy xz]' - set position of manipulator"
       "\n      '-size value'                     - set size of manipulator"
       "\n      '-zoomable {0|1}'                 - set zoom persistence",

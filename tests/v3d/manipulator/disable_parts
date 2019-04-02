@@ -23,3 +23,9 @@ vmanipulator m -detach
 
 vmanipulator m -attach b -part 0 3 0
 vdump $imagedir/${casename}_3.png
+vmanipulator m -detach
+
+vmanipulator m -attach b -parts 1 0
+vdump $imagedir/${casename}_4.png
+
+set to_dump_screen 0

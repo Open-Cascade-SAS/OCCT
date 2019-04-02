@@ -297,7 +297,7 @@ void AIS_Manipulator::SetPart (const Standard_Integer theAxisIndex, const AIS_Ma
 //=======================================================================
 void AIS_Manipulator::SetPart (const AIS_ManipulatorMode theMode, const Standard_Boolean theIsEnabled)
 {
-  for (Standard_Integer anIt = 0; anIt < 4; ++anIt)
+  for (Standard_Integer anIt = 0; anIt < 3; ++anIt)
   {
     SetPart (anIt, theMode, theIsEnabled);
   }
