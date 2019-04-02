@@ -283,6 +283,21 @@ GeomFill_SectionPlacement(const Handle(GeomFill_LocationLaw)& L,
 	  Handle(TColgp_HArray1OfPnt) Pnts;
 	  Standard_Real first = myAdpSection.FirstParameter();
 	  Standard_Real last =  myAdpSection.LastParameter();
+          if (myAdpSection.IsPeriodic())
+          {
+            //Correct boundaries to avoid mistake of LocateU
+            Handle(Geom_Curve) aCurve = myAdpSection.Curve();
+            if (aCurve->IsInstance(STANDARD_TYPE(Geom_TrimmedCurve)))
+              aCurve = (Handle(Geom_TrimmedCurve)::DownCast(aCurve))->BasisCurve();
+            Standard_Real Ufirst = aCurve->FirstParameter();
+            Standard_Real aPeriod = aCurve->Period();
+            Standard_Real U1 = Ufirst + Floor((first - Ufirst)/aPeriod) * aPeriod;
+            Standard_Real U2 = U1 + aPeriod;
+            if (Abs(first - U1) <= Precision::PConfusion())
+              first = U1;
+            if (Abs(last - U2) <= Precision::PConfusion())
+              last = U2;
+          }
 	  Standard_Real t, delta;
 	  if (myAdpSection.GetType() == GeomAbs_BSplineCurve)
 	    {

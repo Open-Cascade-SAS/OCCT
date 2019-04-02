@@ -1,0 +1,19 @@
+puts "================================================================"
+puts "OCC30597: BRepOffsetAPI_MakePipeShell raises Standard_RangeError"
+puts "================================================================"
+puts ""
+
+restore [locate_data_file bug30597_compound.brep] a
+explode a
+
+explode a_1 v
+explode a_2
+explode a_3
+
+mksweep a_1
+addsweep a_2_1 a_1_1
+addsweep a_3_1 a_1_2
+
+buildsweep result
+
+checkprops result -s 0.95884
