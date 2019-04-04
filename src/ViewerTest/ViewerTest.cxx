@@ -1762,6 +1762,8 @@ struct ViewerTest_AspectsChangeSet
 
   Standard_Integer             ToSetColor;
   Quantity_Color               Color;
+  Standard_Integer             ToSetBackFaceColor;
+  Quantity_Color               BackFaceColor;
 
   Standard_Integer             ToSetLineWidth;
   Standard_Real                LineWidth;
@@ -1848,6 +1850,8 @@ struct ViewerTest_AspectsChangeSet
     Visibility        (1),
     ToSetColor        (0),
     Color             (DEFAULT_COLOR),
+    ToSetBackFaceColor(0),
+    BackFaceColor     (DEFAULT_COLOR),
     ToSetLineWidth    (0),
     LineWidth         (1.0),
     ToSetTypeOfLine   (0),
@@ -1909,6 +1913,7 @@ struct ViewerTest_AspectsChangeSet
         && ToSetTransparency      == 0
         && ToSetAlphaMode         == 0
         && ToSetColor             == 0
+        && ToSetBackFaceColor     == 0
         && ToSetMaterial          == 0
         && ToSetShowFreeBoundary  == 0
         && ToSetFreeBoundaryColor == 0
@@ -2141,6 +2146,15 @@ struct ViewerTest_AspectsChangeSet
       {
         toRecompute = theDrawer->SetupOwnShadingAspect (aDefDrawer) || toRecompute;
         theDrawer->ShadingAspect()->Aspect()->SetShadingModel (ShadingModel);
+      }
+    }
+    if (ToSetBackFaceColor != 0)
+    {
+      if (ToSetBackFaceColor != -1
+       || theDrawer->HasOwnShadingAspect())
+      {
+        toRecompute = theDrawer->SetupOwnShadingAspect (aDefDrawer) || toRecompute;
+        theDrawer->ShadingAspect()->SetColor (BackFaceColor, Aspect_TOFM_BACK_SIDE);
       }
     }
     if (ToSetAlphaMode != 0)
@@ -2675,6 +2689,10 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
     }
     else if (anArg == "-setcolor"
           || anArg == "-color"
+          || anArg == "-setbackfacecolor"
+          || anArg == "-backfacecolor"
+          || anArg == "-setbackcolor"
+          || anArg == "-backcolor"
           || anArg == "-setfaceboundarycolor"
           || anArg == "-setboundarycolor"
           || anArg == "-faceboundarycolor"
@@ -2703,6 +2721,14 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
       {
         aChangeSet->ToSetFaceBoundaryColor = 1;
         aChangeSet->FaceBoundaryColor = aColor;
+      }
+      else if (anArg == "-setbackfacecolor"
+            || anArg == "-backfacecolor"
+            || anArg == "-setbackcolor"
+            || anArg == "-backcolor")
+      {
+        aChangeSet->ToSetBackFaceColor = 1;
+        aChangeSet->BackFaceColor = aColor;
       }
       else
       {
@@ -3218,6 +3244,8 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
       aChangeSet->AlphaCutoff = 0.5f;
       aChangeSet->ToSetColor = -1;
       aChangeSet->Color = DEFAULT_COLOR;
+      //aChangeSet->ToSetBackFaceColor = -1; // should be reset by ToSetColor
+      //aChangeSet->BackFaceColor = DEFAULT_COLOR;
       aChangeSet->ToSetMaterial = -1;
       aChangeSet->Material = Graphic3d_NOM_DEFAULT;
       aChangeSet->ToSetShowFreeBoundary = -1;
@@ -6565,6 +6593,7 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
               "vaspects [-noupdate|-update] [name1 [name2 [...]] | -defaults]"
       "\n\t\t:          [-setVisibility 0|1]"
       "\n\t\t:          [-setColor ColorName] [-setcolor R G B] [-unsetColor]"
+      "\n\t\t:          [-setBackFaceColor Color]"
       "\n\t\t:          [-setMaterial MatName] [-unsetMaterial]"
       "\n\t\t:          [-setTransparency Transp] [-unsetTransparency]"
       "\n\t\t:          [-setWidth LineWidth] [-unsetWidth]"

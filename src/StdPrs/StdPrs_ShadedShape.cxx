@@ -208,7 +208,7 @@ namespace
         aPoint = aNodes (aNodeIter);
         const Standard_Integer anId = 3 * (aNodeIter - aNodes.Lower());
         gp_Dir aNorm (aNormArr[anId + 0], aNormArr[anId + 1], aNormArr[anId + 2]);
-        if (aFace.Orientation() == TopAbs_REVERSED)
+        if ((aFace.Orientation() == TopAbs_REVERSED) ^ isMirrored)
         {
           aNorm.Reverse();
         }
@@ -237,7 +237,7 @@ namespace
       Standard_Integer anIndex[3];
       for (Standard_Integer aTriIter = 1; aTriIter <= aT->NbTriangles(); ++aTriIter)
       {
-        if ((aFace.Orientation() == TopAbs_REVERSED) ^ isMirrored)
+        if ((aFace.Orientation() == TopAbs_REVERSED))
         {
           aTriangles (aTriIter).Get (anIndex[0], anIndex[2], anIndex[1]);
         }
