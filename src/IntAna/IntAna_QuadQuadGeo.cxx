@@ -2077,7 +2077,7 @@ void IntAna_QuadQuadGeo::Perform(const gp_Pln& Pln,
     }
     //
     if (Abs(aDR) < aTolNum) {
-      aDist=aRMin;
+      aDist = (aDist < 0) ? -aRMin : aRMin;
     }
     //
     typeres = IntAna_Circle;
