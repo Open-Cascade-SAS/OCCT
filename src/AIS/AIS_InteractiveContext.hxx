@@ -454,6 +454,7 @@ public: //! @name iteration through detected entities
 public: //! @name Selection management
 
   //! Sets the graphic basic aspect to the current presentation of ALL selected objects.
+  Standard_DEPRECATED ("Deprecated method - presentation attributes should be assigned directly to object")
   Standard_EXPORT void SetSelectedAspect (const Handle(Prs3d_BasicAspect)& theAspect,
                                           const Standard_Boolean           theToUpdateViewer);
 

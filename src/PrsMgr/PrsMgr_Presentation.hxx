@@ -18,7 +18,6 @@
 #define _PrsMgr_Presentation_HeaderFile
 
 #include <Graphic3d_ZLayerId.hxx>
-#include <PrsMgr_PresentableObjectPointer.hxx>
 #include <Standard.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
@@ -114,7 +113,7 @@ protected:
 
   Handle(PrsMgr_PresentationManager) myPresentationManager;
   Handle(Prs3d_Presentation) myStructure;
-  PrsMgr_PresentableObjectPointer myPresentableObject;
+  PrsMgr_PresentableObject* myPresentableObject;
   Standard_Boolean myMustBeUpdated;
   Standard_Integer myBeforeHighlightState;
 

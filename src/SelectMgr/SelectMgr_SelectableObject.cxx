@@ -16,9 +16,6 @@
 
 #include <SelectMgr_SelectableObject.hxx>
 
-#include <Aspect_TypeOfMarker.hxx>
-#include <Bnd_Box.hxx>
-#include <gp_Pnt.hxx>
 #include <Graphic3d_AspectLine3d.hxx>
 #include <Graphic3d_AspectMarker3d.hxx>
 #include <Prs3d_Drawer.hxx>
@@ -26,8 +23,7 @@
 #include <Prs3d_PlaneAspect.hxx>
 #include <Prs3d_PointAspect.hxx>
 #include <Prs3d_Presentation.hxx>
-#include <PrsMgr_PresentableObjectPointer.hxx>
-#include <PrsMgr_PresentationManager3d.hxx>
+#include <PrsMgr_PresentationManager.hxx>
 #include <Select3D_SensitiveEntity.hxx>
 #include <SelectBasics_EntityOwner.hxx>
 #include <SelectMgr_EntityOwner.hxx>
@@ -36,15 +32,14 @@
 #include <SelectMgr_SelectionManager.hxx>
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_NotImplemented.hxx>
-#include <Standard_Type.hxx>
 #include <TopLoc_Location.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_SelectableObject,PrsMgr_PresentableObject)
 
 namespace
 {
-  Handle(SelectMgr_Selection)   THE_NULL_SELECTION;
-  Handle(SelectMgr_EntityOwner) THE_NULL_ENTITYOWNER;
+  static const Handle(SelectMgr_Selection)   THE_NULL_SELECTION;
+  static const Handle(SelectMgr_EntityOwner) THE_NULL_ENTITYOWNER;
 }
 
 //==================================================
@@ -54,9 +49,9 @@ namespace
 
 SelectMgr_SelectableObject::SelectMgr_SelectableObject (const PrsMgr_TypeOfPresentation3d aTypeOfPresentation3d)
 : PrsMgr_PresentableObject (aTypeOfPresentation3d),
-  myAutoHilight            (Standard_True),
+  myGlobalSelMode          (0),
   mycurrent                (0),
-  myGlobalSelMode          (0)
+  myAutoHilight            (Standard_True)
 {
   //
 }
@@ -290,7 +285,7 @@ void SelectMgr_SelectableObject::UpdateTransformations (const Handle(SelectMgr_S
 //function : HilightSelected
 //purpose  :
 //=======================================================================
-void SelectMgr_SelectableObject::HilightSelected (const Handle(PrsMgr_PresentationManager3d)&,
+void SelectMgr_SelectableObject::HilightSelected (const Handle(PrsMgr_PresentationManager)&,
                                                   const SelectMgr_SequenceOfOwner&)
 {
   throw Standard_NotImplemented("SelectMgr_SelectableObject::HilightSelected");
@@ -312,7 +307,7 @@ void SelectMgr_SelectableObject::ClearSelected()
 //function : ClearDynamicHighlight
 //purpose  :
 //=======================================================================
-void SelectMgr_SelectableObject::ClearDynamicHighlight (const Handle(PrsMgr_PresentationManager3d)& theMgr)
+void SelectMgr_SelectableObject::ClearDynamicHighlight (const Handle(PrsMgr_PresentationManager)& theMgr)
 {
   theMgr->ClearImmediateDraw();
 }
@@ -321,7 +316,7 @@ void SelectMgr_SelectableObject::ClearDynamicHighlight (const Handle(PrsMgr_Pres
 //function : HilightOwnerWithColor
 //purpose  :
 //=======================================================================
-void SelectMgr_SelectableObject::HilightOwnerWithColor (const Handle(PrsMgr_PresentationManager3d)&,
+void SelectMgr_SelectableObject::HilightOwnerWithColor (const Handle(PrsMgr_PresentationManager)&,
                                                         const Handle(Prs3d_Drawer)&,
                                                         const Handle(SelectMgr_EntityOwner)&)
 {
@@ -329,28 +324,10 @@ void SelectMgr_SelectableObject::HilightOwnerWithColor (const Handle(PrsMgr_Pres
 }
 
 //=======================================================================
-//function : IsAutoHilight
-//purpose  :
-//=======================================================================
-Standard_Boolean SelectMgr_SelectableObject::IsAutoHilight() const
-{
-  return myAutoHilight;
-}
-
-//=======================================================================
-//function : SetAutoHilight
-//purpose  :
-//=======================================================================
-void SelectMgr_SelectableObject::SetAutoHilight ( const Standard_Boolean newAutoHilight )
-{
-  myAutoHilight = newAutoHilight;
-}
-
-//=======================================================================
 //function : GetHilightPresentation
 //purpose  :
 //=======================================================================
-Handle(Prs3d_Presentation) SelectMgr_SelectableObject::GetHilightPresentation (const Handle(PrsMgr_PresentationManager3d)& theMgr)
+Handle(Prs3d_Presentation) SelectMgr_SelectableObject::GetHilightPresentation (const Handle(PrsMgr_PresentationManager)& theMgr)
 {
   if (myHilightPrs.IsNull() && !theMgr.IsNull())
   {
@@ -363,12 +340,11 @@ Handle(Prs3d_Presentation) SelectMgr_SelectableObject::GetHilightPresentation (c
   return myHilightPrs;
 }
 
-
 //=======================================================================
 //function : GetSelectPresentation
 //purpose  :
 //=======================================================================
-Handle(Prs3d_Presentation) SelectMgr_SelectableObject::GetSelectPresentation (const Handle(PrsMgr_PresentationManager3d)& theMgr)
+Handle(Prs3d_Presentation) SelectMgr_SelectableObject::GetSelectPresentation (const Handle(PrsMgr_PresentationManager)& theMgr)
 {
   if (mySelectionPrs.IsNull() && !theMgr.IsNull())
   {

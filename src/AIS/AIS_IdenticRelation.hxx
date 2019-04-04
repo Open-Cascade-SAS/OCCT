@@ -17,21 +17,14 @@
 #ifndef _AIS_IdenticRelation_HeaderFile
 #define _AIS_IdenticRelation_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
-#include <Standard_Boolean.hxx>
-#include <gp_Pnt.hxx>
 #include <AIS_Relation.hxx>
+#include <gp_Pnt.hxx>
 #include <PrsMgr_PresentationManager3d.hxx>
-#include <Standard_Integer.hxx>
 #include <SelectMgr_Selection.hxx>
-#include <Standard_Real.hxx>
+#include <TColStd_ListOfTransient.hxx>
+
 class TopoDS_Shape;
 class Geom_Plane;
-class Prs3d_Presentation;
-class Prs3d_Projector;
-class Geom_Transformation;
 class Geom_Line;
 class gp_Pnt;
 class Geom_Circle;
@@ -40,8 +33,6 @@ class TopoDS_Wire;
 class TopoDS_Vertex;
 class gp_Dir;
 
-
-class AIS_IdenticRelation;
 DEFINE_STANDARD_HANDLE(AIS_IdenticRelation, AIS_Relation)
 
 //! Constructs a constraint by a relation of identity

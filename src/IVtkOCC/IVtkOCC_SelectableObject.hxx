@@ -60,11 +60,17 @@ private:
   //! Inspired by AIS_Shape::ComputeSelection() from OCCT 6.5.1
   //! @param [in] selection container for sensitive primitives
   //! @param [in] mode Selection mode
-  void ComputeSelection (const Handle(SelectMgr_Selection)& theSelection,
-                         const Standard_Integer theMode) Standard_OVERRIDE;
+  virtual void ComputeSelection (const Handle(SelectMgr_Selection)& theSelection,
+                                 const Standard_Integer theMode) Standard_OVERRIDE;
+
+  //! Dummy.
+  virtual void Compute (const Handle(PrsMgr_PresentationManager3d)& ,
+                        const Handle(Prs3d_Presentation)& ,
+                        const Standard_Integer ) Standard_OVERRIDE {}
 
   const Bnd_Box& BoundingBox();
 
+private:
   IVtkOCC_Shape::Handle myShape;
   Bnd_Box               myBndBox;
   Handle(Prs3d_Drawer)  myOCCTDrawer;

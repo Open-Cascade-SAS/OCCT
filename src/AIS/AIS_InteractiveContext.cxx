@@ -1807,6 +1807,7 @@ void AIS_InteractiveContext::UnsetTransparency (const Handle(AIS_InteractiveObje
 void AIS_InteractiveContext::SetSelectedAspect (const Handle(Prs3d_BasicAspect)& theAspect,
                                                 const Standard_Boolean           theToUpdateViewer)
 {
+  Standard_DISABLE_DEPRECATION_WARNINGS
   Standard_Boolean isFound = Standard_False;
   for (AIS_NListOfEntityOwner::Iterator aSelIter (mySelection->Objects()); aSelIter.More(); aSelIter.Next())
   {
@@ -1814,6 +1815,7 @@ void AIS_InteractiveContext::SetSelectedAspect (const Handle(Prs3d_BasicAspect)&
     Handle(AIS_InteractiveObject) anObj = Handle(AIS_InteractiveObject)::DownCast (aSelIter.Value()->Selectable());
     anObj->SetAspect (theAspect);
   }
+  Standard_ENABLE_DEPRECATION_WARNINGS
 
   if (isFound && theToUpdateViewer)
   {

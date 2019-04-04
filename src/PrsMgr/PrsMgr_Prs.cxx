@@ -26,8 +26,8 @@
 IMPLEMENT_STANDARD_RTTIEXT(PrsMgr_Prs,Prs3d_Presentation)
 
 PrsMgr_Prs::PrsMgr_Prs (const Handle(Graphic3d_StructureManager)& theStructManager,
-                        const PrsMgr_PresentationPointer&         thePrs,
-                        const PrsMgr_TypeOfPresentation3d         theTypeOfPresentation)
+                        PrsMgr_Presentation* thePrs,
+                        PrsMgr_TypeOfPresentation3d theTypeOfPresentation)
 : Prs3d_Presentation (theStructManager),
   myPresentation3d   (thePrs)
 {
