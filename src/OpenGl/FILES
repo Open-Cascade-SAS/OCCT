@@ -39,7 +39,6 @@ OpenGl_View_Raytrace.cxx
 OpenGl_View_Redraw.cxx
 OpenGl_GraduatedTrihedron.hxx
 OpenGl_GraduatedTrihedron.cxx
-OpenGl_MapOfZLayerSettings.hxx
 OpenGl_Material.hxx
 OpenGl_MaterialState.hxx
 OpenGl_Matrix.hxx
@@ -63,12 +62,6 @@ OpenGl_Font.hxx
 OpenGl_Font.cxx
 OpenGl_BackgroundArray.cxx
 OpenGl_BackgroundArray.hxx
-OpenGl_BVHClipPrimitiveSet.cxx
-OpenGl_BVHClipPrimitiveSet.hxx
-OpenGl_BVHClipPrimitiveTrsfPersSet.cxx
-OpenGl_BVHClipPrimitiveTrsfPersSet.hxx
-OpenGl_BVHTreeSelector.cxx
-OpenGl_BVHTreeSelector.hxx
 OpenGl_CappingAlgo.cxx
 OpenGl_CappingAlgo.hxx
 OpenGl_CappingPlaneResource.cxx
@@ -109,7 +102,6 @@ OpenGl_GraphicDriver.cxx
 OpenGl_GraphicDriver.hxx
 OpenGl_IndexBuffer.cxx
 OpenGl_IndexBuffer.hxx
-OpenGl_Layer.cxx
 OpenGl_Layer.hxx
 OpenGl_RenderFilter.hxx
 OpenGl_Sampler.cxx

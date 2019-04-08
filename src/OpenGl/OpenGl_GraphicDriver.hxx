@@ -20,39 +20,15 @@
 
 #include <Aspect_Display.hxx>
 #include <Aspect_DisplayConnection.hxx>
-#include <Aspect_GradientFillMethod.hxx>
-#include <Aspect_FillMethod.hxx>
-#include <Aspect_TypeOfTriedronPosition.hxx>
-#include <Aspect_Handle.hxx>
 #include <Aspect_RenderingContext.hxx>
-#include <gp_Ax2.hxx>
 #include <Graphic3d_CView.hxx>
 #include <Graphic3d_CStructure.hxx>
-#include <Graphic3d_TextPath.hxx>
-#include <Graphic3d_HorizontalTextAlignment.hxx>
-#include <Graphic3d_VerticalTextAlignment.hxx>
-#include <Graphic3d_GraduatedTrihedron.hxx>
-#include <Graphic3d_TypeOfComposition.hxx>
-#include <Graphic3d_BufferType.hxx>
 #include <NCollection_DataMap.hxx>
 #include <OpenGl_Context.hxx>
-#include <OpenGl_MapOfZLayerSettings.hxx>
-#include <Quantity_NameOfColor.hxx>
-#include <Standard_CString.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_Array2OfReal.hxx>
-#include <TColStd_HArray1OfByte.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColStd_MapOfInteger.hxx>
 
 class Aspect_Window;
 class Quantity_Color;
-class Graphic3d_Vertex;
-class TCollection_ExtendedString;
-class Image_PixMap;
-class OpenGl_Element;
 class OpenGl_Structure;
-class OpenGl_Text;
 class OpenGl_View;
 class OpenGl_Window;
 
@@ -143,14 +119,8 @@ public:
   //! (reserved for default layers that can not be removed).
   Standard_EXPORT void RemoveZLayer (const Graphic3d_ZLayerId theLayerId) Standard_OVERRIDE;
 
-  //! Returns list of Z layers defined for the graphical driver.
-  Standard_EXPORT void ZLayers (TColStd_SequenceOfInteger& theLayerSeq) const Standard_OVERRIDE;
-
   //! Sets the settings for a single Z layer.
   Standard_EXPORT void SetZLayerSettings (const Graphic3d_ZLayerId theLayerId, const Graphic3d_ZLayerSettings& theSettings) Standard_OVERRIDE;
-
-  //! Returns the settings of a single Z layer.
-  Standard_EXPORT virtual const Graphic3d_ZLayerSettings& ZLayerSettings (const Graphic3d_ZLayerId theLayerId) const Standard_OVERRIDE;
 
 public:
 
@@ -191,9 +161,6 @@ public:
   void*                   getRawGlConfig()  const { return myEglConfig; }
 #endif
 
-  //! Insert index layer at proper position.
-  Standard_EXPORT void addZLayerIndex (const Graphic3d_ZLayerId theLayerId);
-
   //! Set device lost flag for redrawn views.
   Standard_EXPORT void setDeviceLost();
 
@@ -217,10 +184,6 @@ protected:
   Handle(OpenGl_Caps)                                      myCaps;
   NCollection_Map<Handle(OpenGl_View)>                     myMapOfView;
   NCollection_DataMap<Standard_Integer, OpenGl_Structure*> myMapOfStructure;
-
-  TColStd_MapOfInteger       myLayerIds;
-  TColStd_SequenceOfInteger  myLayerSeq;
-  OpenGl_MapOfZLayerSettings myMapOfZLayerSettings;
 
   mutable OpenGl_StateCounter myStateCounter; //!< State counter for OpenGl structures.
   mutable OpenGl_StateCounter myUIDGenerator; //!< Unique ID counter for primitive arrays.

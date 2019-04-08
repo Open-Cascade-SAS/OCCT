@@ -28,6 +28,7 @@
 #include <Aspect_GradientFillMethod.hxx>
 
 #include <Graphic3d_CView.hxx>
+#include <Graphic3d_CullingTool.hxx>
 #include <Graphic3d_GraduatedTrihedron.hxx>
 #include <Graphic3d_SequenceOfHClipPlane.hxx>
 #include <Graphic3d_ToneMappingMethod.hxx>
@@ -37,7 +38,6 @@
 
 #include <OpenGl_Aspects.hxx>
 #include <OpenGl_BackgroundArray.hxx>
-#include <OpenGl_BVHTreeSelector.hxx>
 #include <OpenGl_Context.hxx>
 #include <OpenGl_FrameBuffer.hxx>
 #include <OpenGl_FrameStatsPrs.hxx>
@@ -127,21 +127,6 @@ public:
   //! Return true if view content cache has been invalidated.
   virtual Standard_Boolean IsInvalidated() Standard_OVERRIDE { return !myBackBufferRestored; }
 
-  //! Returns data of a graduated trihedron
-  const Graphic3d_GraduatedTrihedron& GetGraduatedTrihedron() Standard_OVERRIDE
-  { return myGTrihedronData; }
-
-  //! Displays Graduated Trihedron.
-  Standard_EXPORT virtual void GraduatedTrihedronDisplay (const Graphic3d_GraduatedTrihedron& theTrihedronData) Standard_OVERRIDE;
-
-  //! Erases Graduated Trihedron.
-  Standard_EXPORT virtual void GraduatedTrihedronErase() Standard_OVERRIDE;
-
-  //! Sets minimum and maximum points of scene bounding box for Graduated Trihedron stored in graphic view object.
-  //! @param theMin [in] the minimum point of scene.
-  //! @param theMax [in] the maximum point of scene.
-  Standard_EXPORT virtual void GraduatedTrihedronMinMaxValues (const Graphic3d_Vec3 theMin, const Graphic3d_Vec3 theMax) Standard_OVERRIDE;
-
   //! Dump active rendering buffer into specified memory buffer.
   //! In Ray-Tracing allow to get a raw HDR buffer using Graphic3d_BT_RGB_RayTraceHdrLeft buffer type,
   //! only Left view will be dumped ignoring stereoscopic parameter.
@@ -211,12 +196,6 @@ public:
 
 public:
 
-  //! Returns background  fill color.
-  Standard_EXPORT virtual Aspect_Background Background() const Standard_OVERRIDE;
-
-  //! Sets background fill color.
-  Standard_EXPORT virtual void SetBackground (const Aspect_Background& theBackground) Standard_OVERRIDE;
-
   //! Returns gradient background fill colors.
   Standard_EXPORT virtual Aspect_GradientBackground GradientBackground() const Standard_OVERRIDE;
 
@@ -247,17 +226,11 @@ public:
   //! Sets backfacing model for the view.
   virtual void SetBackfacingModel (const Graphic3d_TypeOfBackfacingModel theModel) Standard_OVERRIDE { myBackfacing = theModel; }
 
-  //! Returns camera object of the view.
-  virtual const Handle(Graphic3d_Camera)& Camera() const Standard_OVERRIDE { return myCamera; }
-
   //! Returns local camera origin currently set for rendering, might be modified during rendering.
   const gp_XYZ& LocalOrigin() const { return myLocalOrigin; }
 
   //! Setup local camera origin currently set for rendering.
   Standard_EXPORT void SetLocalOrigin (const gp_XYZ& theOrigin);
-
-  //! Sets camera used by the view.
-  Standard_EXPORT virtual void SetCamera (const Handle(Graphic3d_Camera)& theCamera) Standard_OVERRIDE;
 
   //! Returns list of lights of the view.
   virtual const Handle(Graphic3d_LightSet)& Lights() const Standard_OVERRIDE { return myLights; }
@@ -319,13 +292,26 @@ public:
 
   //! Returns selector for BVH tree, providing a possibility to store information
   //! about current view volume and to detect which objects are overlapping it.
-  const OpenGl_BVHTreeSelector& BVHTreeSelector() const { return myBVHSelector; }
+  const Graphic3d_CullingTool& BVHTreeSelector() const { return myBVHSelector; }
 
   //! Returns true if there are immediate structures to display
   bool HasImmediateStructures() const
   {
     return myZLayers.NbImmediateStructures() != 0;
   }
+
+public: //! @name obsolete Graduated Trihedron functionality
+
+  //! Displays Graduated Trihedron.
+  Standard_EXPORT virtual void GraduatedTrihedronDisplay (const Graphic3d_GraduatedTrihedron& theTrihedronData) Standard_OVERRIDE;
+
+  //! Erases Graduated Trihedron.
+  Standard_EXPORT virtual void GraduatedTrihedronErase() Standard_OVERRIDE;
+
+  //! Sets minimum and maximum points of scene bounding box for Graduated Trihedron stored in graphic view object.
+  //! @param theMin [in] the minimum point of scene.
+  //! @param theMax [in] the maximum point of scene.
+  Standard_EXPORT virtual void GraduatedTrihedronMinMaxValues (const Graphic3d_Vec3 theMin, const Graphic3d_Vec3 theMax) Standard_OVERRIDE;
 
 protected: //! @name Internal methods for managing GL resources
 
@@ -458,9 +444,7 @@ protected:
   Standard_Boolean         myWasRedrawnGL;
 
   Graphic3d_TypeOfBackfacingModel myBackfacing;
-  Quantity_ColorRGBA              myBgColor;
   Handle(Graphic3d_SequenceOfHClipPlane) myClipPlanes;
-  Handle(Graphic3d_Camera)        myCamera;
   gp_XYZ                          myLocalOrigin;
   Handle(OpenGl_FrameBuffer)      myFBO;
   Standard_Boolean                myToShowGradTrihedron;
@@ -484,7 +468,7 @@ protected:
   StateInfo myLastLightSourceState;
 
   //! Is needed for selection of overlapping objects and storage of the current view volume
-  OpenGl_BVHTreeSelector myBVHSelector;
+  Graphic3d_CullingTool myBVHSelector;
 
   OpenGl_GraduatedTrihedron myGraduatedTrihedron;
   OpenGl_FrameStatsPrs      myFrameStatsPrs;

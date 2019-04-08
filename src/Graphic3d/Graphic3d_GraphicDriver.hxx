@@ -42,9 +42,11 @@
 #include <Aspect_Handle.hxx>
 #include <Graphic3d_ZLayerId.hxx>
 #include <Graphic3d_ZLayerSettings.hxx>
+#include <Graphic3d_MapOfZLayerSettings.hxx>
 #include <Graphic3d_CLight.hxx>
 #include <Graphic3d_TypeOfLimit.hxx>
 #include <TColStd_Array2OfReal.hxx>
+#include <TColStd_MapOfInteger.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
 
 class Aspect_DisplayConnection;
@@ -122,13 +124,16 @@ public:
   virtual void RemoveZLayer (const Graphic3d_ZLayerId theLayerId) = 0;
 
   //! Returns list of Z layers defined for the graphical driver.
-  virtual void ZLayers (TColStd_SequenceOfInteger& theLayerSeq) const = 0;
+  virtual void ZLayers (TColStd_SequenceOfInteger& theLayerSeq) const
+  {
+    theLayerSeq.Assign (myLayerSeq);
+  }
 
   //! Sets the settings for a single Z layer.
-  virtual void SetZLayerSettings (const Graphic3d_ZLayerId theLayerId, const Graphic3d_ZLayerSettings& theSettings) = 0;
+  Standard_EXPORT virtual void SetZLayerSettings (const Graphic3d_ZLayerId theLayerId, const Graphic3d_ZLayerSettings& theSettings) = 0;
 
   //! Returns the settings of a single Z layer.
-  virtual const Graphic3d_ZLayerSettings& ZLayerSettings (const Graphic3d_ZLayerId theLayerId) const = 0;
+  Standard_EXPORT virtual const Graphic3d_ZLayerSettings& ZLayerSettings (const Graphic3d_ZLayerId theLayerId) const;
 
   //! Returns view associated with the window if it is exists and is activated.
   //! Returns Standard_True if the view associated to the window exists.
@@ -150,10 +155,16 @@ protected:
   //! Initializes the Driver
   Standard_EXPORT Graphic3d_GraphicDriver(const Handle(Aspect_DisplayConnection)& theDisp);
 
+  //! Insert index layer at proper position.
+  Standard_EXPORT void addZLayerIndex (const Graphic3d_ZLayerId theLayerId);
+
 protected:
 
   Handle(Aspect_DisplayConnection) myDisplayConnection;
   Aspect_GenId myStructGenId;
+  TColStd_MapOfInteger          myLayerIds;
+  TColStd_SequenceOfInteger     myLayerSeq;
+  Graphic3d_MapOfZLayerSettings myMapOfZLayerSettings;
 
 };
 

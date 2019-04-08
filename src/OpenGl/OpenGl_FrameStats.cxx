@@ -186,12 +186,12 @@ void OpenGl_FrameStats::updateStatistics (const Handle(Graphic3d_CView)& theView
 // purpose  :
 // =======================================================================
 void OpenGl_FrameStats::updateStructures (Standard_Integer theViewId,
-                                          const OpenGl_IndexedMapOfStructure& theStructures,
+                                          const NCollection_IndexedMap<const Graphic3d_CStructure*>& theStructures,
                                           Standard_Boolean theToCountElems,
                                           Standard_Boolean theToCountTris,
                                           Standard_Boolean theToCountMem)
 {
-  for (OpenGl_IndexedMapOfStructure::Iterator aStructIter (theStructures); aStructIter.More(); aStructIter.Next())
+  for (OpenGl_Structure::StructIterator aStructIter (theStructures); aStructIter.More(); aStructIter.Next())
   {
     const OpenGl_Structure* aStruct = aStructIter.Value();
     const bool isStructHidden = aStruct->IsCulled()

@@ -33,6 +33,10 @@ Graphic3d_Buffer.cxx
 Graphic3d_Buffer.hxx
 Graphic3d_BufferRange.hxx
 Graphic3d_BufferType.hxx
+Graphic3d_BvhCStructureSet.cxx
+Graphic3d_BvhCStructureSet.hxx
+Graphic3d_BvhCStructureSetTrsfPers.cxx
+Graphic3d_BvhCStructureSetTrsfPers.hxx
 Graphic3d_Camera.cxx
 Graphic3d_Camera.hxx
 Graphic3d_CameraTile.hxx
@@ -44,6 +48,8 @@ Graphic3d_ClipPlane.hxx
 Graphic3d_CStructure.cxx
 Graphic3d_CStructure.hxx
 Graphic3d_CTexture.hxx
+Graphic3d_CullingTool.cxx
+Graphic3d_CullingTool.hxx
 Graphic3d_CView.cxx
 Graphic3d_CView.hxx
 Graphic3d_DataStructureManager.cxx
@@ -78,6 +84,7 @@ Graphic3d_MapOfAspectsToAspects.hxx
 Graphic3d_MapIteratorOfMapOfStructure.hxx
 Graphic3d_MapOfObject.hxx
 Graphic3d_MapOfStructure.hxx
+Graphic3d_MapOfZLayerSettings.hxx
 Graphic3d_MarkerImage.cxx
 Graphic3d_MarkerImage.hxx
 Graphic3d_Mat4.hxx
@@ -173,5 +180,7 @@ Graphic3d_VerticalTextAlignment.hxx
 Graphic3d_ViewAffinity.cxx
 Graphic3d_ViewAffinity.hxx
 Graphic3d_WorldViewProjState.hxx
+Graphic3d_Layer.cxx
+Graphic3d_Layer.hxx
 Graphic3d_ZLayerId.hxx
 Graphic3d_ZLayerSettings.hxx

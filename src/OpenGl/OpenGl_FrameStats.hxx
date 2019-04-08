@@ -17,9 +17,7 @@
 #include <Graphic3d_FrameStats.hxx>
 #include <NCollection_IndexedMap.hxx>
 
-class OpenGl_Workspace;
-class OpenGl_Structure;
-typedef NCollection_IndexedMap<const OpenGl_Structure*> OpenGl_IndexedMapOfStructure;
+class Graphic3d_CStructure;
 
 //! Class storing the frame statistics.
 class OpenGl_FrameStats : public Graphic3d_FrameStats
@@ -48,7 +46,7 @@ protected:
 
   //! Updates counters for structures.
   Standard_EXPORT virtual void updateStructures (Standard_Integer theViewId,
-                                                 const OpenGl_IndexedMapOfStructure& theStructures,
+                                                 const NCollection_IndexedMap<const Graphic3d_CStructure*>& theStructures,
                                                  Standard_Boolean theToCountElems,
                                                  Standard_Boolean theToCountTris,
                                                  Standard_Boolean theToCountMem);

@@ -13,18 +13,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <OpenGl_BVHClipPrimitiveSet.hxx>
+#include <Graphic3d_BvhCStructureSet.hxx>
 
 #include <BVH_BinnedBuilder.hxx>
-#include <Graphic3d_GraphicDriver.hxx>
+#include <Graphic3d_CStructure.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(OpenGl_BVHClipPrimitiveSet, BVH_PrimitiveSet3d)
+IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_BvhCStructureSet, BVH_PrimitiveSet3d)
 
 // =======================================================================
-// function : OpenGl_BVHClipPrimitiveSet
+// function : Graphic3d_BvhCStructureSet
 // purpose  :
 // =======================================================================
-OpenGl_BVHClipPrimitiveSet::OpenGl_BVHClipPrimitiveSet()
+Graphic3d_BvhCStructureSet::Graphic3d_BvhCStructureSet()
 {
   myBuilder = new BVH_BinnedBuilder<Standard_Real, 3> (BVH_Constants_LeafNodeSizeSingle, BVH_Constants_MaxTreeDepth);
 }
@@ -33,7 +33,7 @@ OpenGl_BVHClipPrimitiveSet::OpenGl_BVHClipPrimitiveSet()
 // function : Size
 // purpose  :
 // =======================================================================
-Standard_Integer OpenGl_BVHClipPrimitiveSet::Size() const
+Standard_Integer Graphic3d_BvhCStructureSet::Size() const
 {
   return myStructs.Size();
 }
@@ -42,7 +42,7 @@ Standard_Integer OpenGl_BVHClipPrimitiveSet::Size() const
 // function : Box
 // purpose  :
 // =======================================================================
-Graphic3d_BndBox3d OpenGl_BVHClipPrimitiveSet::Box (const Standard_Integer theIdx) const
+Graphic3d_BndBox3d Graphic3d_BvhCStructureSet::Box (const Standard_Integer theIdx) const
 {
   return myStructs.FindKey (theIdx + 1)->BoundingBox();
 }
@@ -51,7 +51,7 @@ Graphic3d_BndBox3d OpenGl_BVHClipPrimitiveSet::Box (const Standard_Integer theId
 // function : Center
 // purpose  :
 // =======================================================================
-Standard_Real OpenGl_BVHClipPrimitiveSet::Center (const Standard_Integer theIdx,
+Standard_Real Graphic3d_BvhCStructureSet::Center (const Standard_Integer theIdx,
                                                   const Standard_Integer theAxis) const
 {
   Graphic3d_BndBox3d aBndBox = myStructs.FindKey (theIdx + 1)->BoundingBox();
@@ -66,7 +66,7 @@ Standard_Real OpenGl_BVHClipPrimitiveSet::Center (const Standard_Integer theIdx,
 // function : Swap
 // purpose  :
 // =======================================================================
-void OpenGl_BVHClipPrimitiveSet::Swap (const Standard_Integer theIdx1,
+void Graphic3d_BvhCStructureSet::Swap (const Standard_Integer theIdx1,
                                        const Standard_Integer theIdx2)
 {
   myStructs.Swap (theIdx1 + 1, theIdx2 + 1);
@@ -76,7 +76,7 @@ void OpenGl_BVHClipPrimitiveSet::Swap (const Standard_Integer theIdx1,
 // function : Add
 // purpose  :
 // =======================================================================
-Standard_Boolean OpenGl_BVHClipPrimitiveSet::Add (const OpenGl_Structure* theStruct)
+Standard_Boolean Graphic3d_BvhCStructureSet::Add (const Graphic3d_CStructure* theStruct)
 {
   const Standard_Integer aSize = myStructs.Size();
 
@@ -94,7 +94,7 @@ Standard_Boolean OpenGl_BVHClipPrimitiveSet::Add (const OpenGl_Structure* theStr
 // function : Remove
 // purpose  :
 // =======================================================================
-Standard_Boolean OpenGl_BVHClipPrimitiveSet::Remove (const OpenGl_Structure* theStruct)
+Standard_Boolean Graphic3d_BvhCStructureSet::Remove (const Graphic3d_CStructure* theStruct)
 {
   const Standard_Integer anIndex = myStructs.FindIndex (theStruct);
 
@@ -114,7 +114,7 @@ Standard_Boolean OpenGl_BVHClipPrimitiveSet::Remove (const OpenGl_Structure* the
 // function : Clear
 // purpose  :
 // =======================================================================
-void OpenGl_BVHClipPrimitiveSet::Clear()
+void Graphic3d_BvhCStructureSet::Clear()
 {
   myStructs.Clear();
   MarkDirty();
@@ -124,7 +124,7 @@ void OpenGl_BVHClipPrimitiveSet::Clear()
 // function : GetStructureById
 // purpose  :
 // =======================================================================
-const OpenGl_Structure* OpenGl_BVHClipPrimitiveSet::GetStructureById (Standard_Integer theId)
+const Graphic3d_CStructure* Graphic3d_BvhCStructureSet::GetStructureById (Standard_Integer theId)
 {
   return myStructs.FindKey (theId + 1);
 }

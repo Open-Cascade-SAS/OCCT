@@ -13,13 +13,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <OpenGl_BVHClipPrimitiveTrsfPersSet.hxx>
+#include <Graphic3d_BvhCStructureSetTrsfPers.hxx>
+
+#include <Graphic3d_CStructure.hxx>
 
 // =======================================================================
-// function : OpenGl_BVHClipPrimitiveTrsfPersSet
+// function : Graphic3d_BvhCStructureSetTrsfPers
 // purpose  :
 // =======================================================================
-OpenGl_BVHClipPrimitiveTrsfPersSet::OpenGl_BVHClipPrimitiveTrsfPersSet (const Handle(Select3D_BVHBuilder3d)& theBuilder)
+Graphic3d_BvhCStructureSetTrsfPers::Graphic3d_BvhCStructureSetTrsfPers (const Handle(Select3D_BVHBuilder3d)& theBuilder)
 : myIsDirty (Standard_False),
   myBVH (new BVH_Tree<Standard_Real, 3>()),
   myBuilder (theBuilder)
@@ -31,7 +33,7 @@ OpenGl_BVHClipPrimitiveTrsfPersSet::OpenGl_BVHClipPrimitiveTrsfPersSet (const Ha
 // function : Size
 // purpose  :
 // =======================================================================
-Standard_Integer OpenGl_BVHClipPrimitiveTrsfPersSet::Size() const
+Standard_Integer Graphic3d_BvhCStructureSetTrsfPers::Size() const
 {
   return myStructs.Size();
 }
@@ -40,7 +42,7 @@ Standard_Integer OpenGl_BVHClipPrimitiveTrsfPersSet::Size() const
 // function : Box
 // purpose  :
 // =======================================================================
-Graphic3d_BndBox3d OpenGl_BVHClipPrimitiveTrsfPersSet::Box (const Standard_Integer theIdx) const
+Graphic3d_BndBox3d Graphic3d_BvhCStructureSetTrsfPers::Box (const Standard_Integer theIdx) const
 {
   return *myStructBoxes (theIdx + 1);
 }
@@ -49,7 +51,7 @@ Graphic3d_BndBox3d OpenGl_BVHClipPrimitiveTrsfPersSet::Box (const Standard_Integ
 // function : Center
 // purpose  :
 // =======================================================================
-Standard_Real OpenGl_BVHClipPrimitiveTrsfPersSet::Center (const Standard_Integer theIdx,
+Standard_Real Graphic3d_BvhCStructureSetTrsfPers::Center (const Standard_Integer theIdx,
                                                           const Standard_Integer theAxis) const
 {
   const Graphic3d_BndBox3d& aBndBox = *myStructBoxes (theIdx + 1);
@@ -60,7 +62,7 @@ Standard_Real OpenGl_BVHClipPrimitiveTrsfPersSet::Center (const Standard_Integer
 // function : Swap
 // purpose  :
 // =======================================================================
-void OpenGl_BVHClipPrimitiveTrsfPersSet::Swap (const Standard_Integer theIdx1,
+void Graphic3d_BvhCStructureSetTrsfPers::Swap (const Standard_Integer theIdx1,
                                                const Standard_Integer theIdx2)
 {
   const Standard_Integer aStructIdx1 = theIdx1 + 1;
@@ -74,7 +76,7 @@ void OpenGl_BVHClipPrimitiveTrsfPersSet::Swap (const Standard_Integer theIdx1,
 // function : Add
 // purpose  :
 // =======================================================================
-Standard_Boolean OpenGl_BVHClipPrimitiveTrsfPersSet::Add (const OpenGl_Structure* theStruct)
+Standard_Boolean Graphic3d_BvhCStructureSetTrsfPers::Add (const Graphic3d_CStructure* theStruct)
 {
   const Standard_Integer aSize = myStructs.Size();
 
@@ -92,7 +94,7 @@ Standard_Boolean OpenGl_BVHClipPrimitiveTrsfPersSet::Add (const OpenGl_Structure
 // function : Remove
 // purpose  :
 // =======================================================================
-Standard_Boolean OpenGl_BVHClipPrimitiveTrsfPersSet::Remove (const OpenGl_Structure* theStruct)
+Standard_Boolean Graphic3d_BvhCStructureSetTrsfPers::Remove (const Graphic3d_CStructure* theStruct)
 {
   const Standard_Integer anIndex = myStructs.FindIndex (theStruct);
 
@@ -112,7 +114,7 @@ Standard_Boolean OpenGl_BVHClipPrimitiveTrsfPersSet::Remove (const OpenGl_Struct
 // function : Clear
 // purpose  :
 // =======================================================================
-void OpenGl_BVHClipPrimitiveTrsfPersSet::Clear()
+void Graphic3d_BvhCStructureSetTrsfPers::Clear()
 {
   myStructs.Clear();
   MarkDirty();
@@ -122,7 +124,7 @@ void OpenGl_BVHClipPrimitiveTrsfPersSet::Clear()
 // function : GetStructureById
 // purpose  :
 // =======================================================================
-const OpenGl_Structure* OpenGl_BVHClipPrimitiveTrsfPersSet::GetStructureById (Standard_Integer theId)
+const Graphic3d_CStructure* Graphic3d_BvhCStructureSetTrsfPers::GetStructureById (Standard_Integer theId)
 {
   return myStructs.FindKey (theId + 1);
 }
@@ -131,13 +133,12 @@ const OpenGl_Structure* OpenGl_BVHClipPrimitiveTrsfPersSet::GetStructureById (St
 // function : BVH
 // purpose  :
 //=======================================================================
-const opencascade::handle<BVH_Tree<Standard_Real, 3> >&
-  OpenGl_BVHClipPrimitiveTrsfPersSet::BVH (const Handle(Graphic3d_Camera)& theCamera,
-                                           const OpenGl_Mat4d& theProjectionMatrix,
-                                           const OpenGl_Mat4d& theWorldViewMatrix,
-                                           const Standard_Integer theViewportWidth,
-                                           const Standard_Integer theViewportHeight,
-                                           const Graphic3d_WorldViewProjState& theWVPState)
+const opencascade::handle<BVH_Tree<Standard_Real, 3> >& Graphic3d_BvhCStructureSetTrsfPers::BVH (const Handle(Graphic3d_Camera)& theCamera,
+                                                                                                 const Graphic3d_Mat4d& theProjectionMatrix,
+                                                                                                 const Graphic3d_Mat4d& theWorldViewMatrix,
+                                                                                                 const Standard_Integer theViewportWidth,
+                                                                                                 const Standard_Integer theViewportHeight,
+                                                                                                 const Graphic3d_WorldViewProjState& theWVPState)
 {
   if (!myIsDirty
     && (myStructBoxesState.IsValid()
@@ -150,7 +151,7 @@ const opencascade::handle<BVH_Tree<Standard_Real, 3> >&
 
   for (Standard_Integer aStructIdx = 1; aStructIdx <= myStructs.Size(); ++aStructIdx)
   {
-    const OpenGl_Structure* aStructure = myStructs (aStructIdx);
+    const Graphic3d_CStructure* aStructure = myStructs (aStructIdx);
 
     Handle(HBndBox3d) aBoundingBox = new HBndBox3d();
     *aBoundingBox = aStructure->BoundingBox();

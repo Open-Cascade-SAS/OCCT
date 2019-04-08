@@ -1,4 +1,4 @@
-// Copyright (c) 2014 OPEN CASCADE SAS
+// Copyright (c) 2019 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -11,14 +11,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _OpenGl_MapOfZLayerSettings_HeaderFile
-#define _OpenGl_MapOfZLayerSettings_HeaderFile
+#ifndef _Vulkan_MapOfZLayerSettings_HeaderFile
+#define _Vulkan_MapOfZLayerSettings_HeaderFile
 
 #include <Standard_TypeDef.hxx>
 #include <NCollection_Map.hxx>
 #include <Graphic3d_ZLayerId.hxx>
 #include <Graphic3d_ZLayerSettings.hxx>
 
-typedef NCollection_DataMap<Graphic3d_ZLayerId, Graphic3d_ZLayerSettings> OpenGl_MapOfZLayerSettings;
+typedef NCollection_DataMap<Graphic3d_ZLayerId, Graphic3d_ZLayerSettings> Graphic3d_MapOfZLayerSettings;
 
-#endif // _OpenGl_MapOfZLayerSettings_HeaderFile
+#endif // _Vulkan_MapOfZLayerSettings_HeaderFile

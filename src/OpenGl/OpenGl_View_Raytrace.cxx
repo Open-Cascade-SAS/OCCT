@@ -111,11 +111,11 @@ Standard_Boolean OpenGl_View::updateRaytraceGeometry (const RaytraceUpdateMode  
 
   if (aLayer.NbStructures() != 0)
   {
-    const OpenGl_ArrayOfIndexedMapOfStructure& aStructArray = aLayer.ArrayOfStructures();
+    const Graphic3d_ArrayOfIndexedMapOfStructure& aStructArray = aLayer.ArrayOfStructures();
 
     for (Standard_Integer anIndex = 0; anIndex < aStructArray.Length(); ++anIndex)
     {
-      for (OpenGl_IndexedMapOfStructure::Iterator aStructIt (aStructArray (anIndex)); aStructIt.More(); aStructIt.Next())
+      for (OpenGl_Structure::StructIterator aStructIt (aStructArray.Value (anIndex)); aStructIt.More(); aStructIt.Next())
       {
         const OpenGl_Structure* aStructure = aStructIt.Value();
 

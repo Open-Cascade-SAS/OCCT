@@ -26,6 +26,7 @@
 #include <Graphic3d_Vec3.hxx>
 #include <Graphic3d_ZLayerId.hxx>
 #include <Geom_Transformation.hxx>
+#include <NCollection_IndexedMap.hxx>
 
 class Graphic3d_GraphicDriver;
 class Graphic3d_StructureManager;
@@ -33,6 +34,35 @@ class Graphic3d_StructureManager;
 //! Low-level graphic structure interface
 class Graphic3d_CStructure : public Standard_Transient
 {
+protected:
+
+  //! Auxiliary wrapper to iterate through structure list.
+  template<class Struct_t>
+  class SubclassStructIterator
+  {
+  public:
+    SubclassStructIterator (const NCollection_IndexedMap<const Graphic3d_CStructure*>& theStructs) : myIter (theStructs) {}
+    Standard_Boolean More() const  { return myIter.More(); }
+    void Next()                    { myIter.Next(); }
+    const Struct_t*  Value() const { return (const Struct_t* )(myIter.Value()); }
+    Struct_t*        ChangeValue() { return (Struct_t* )(myIter.Value()); }
+  private:
+    NCollection_IndexedMap<const Graphic3d_CStructure*>::Iterator myIter;
+  };
+
+  //! Auxiliary wrapper to iterate through group sequence.
+  template<class Group_t>
+  class SubclassGroupIterator
+  {
+  public:
+    SubclassGroupIterator (const Graphic3d_SequenceOfGroup& theGroups) : myIter (theGroups) {}
+    Standard_Boolean More() const  { return myIter.More(); }
+    void Next()                    { myIter.Next(); }
+    const Group_t*   Value() const { return (const Group_t* )(myIter.Value().get()); }
+    Group_t*         ChangeValue() { return (Group_t* )(myIter.ChangeValue().get()); }
+  private:
+    Graphic3d_SequenceOfGroup::Iterator myIter;
+  };
 
 public:
 
@@ -105,6 +135,28 @@ public:
 
 public:
 
+  //! Returns FALSE if the structure hits the current view volume, otherwise returns TRUE.
+  Standard_Boolean IsCulled() const { return myIsCulled; }
+
+  //! Marks structure as culled/not culled - note that IsAlwaysRendered() is ignored here!
+  void SetCulled (Standard_Boolean theIsCulled) const { myIsCulled = theIsCulled; }
+
+  //! Marks structure as overlapping the current view volume one.
+  //! The method is called during traverse of BVH tree.
+  void MarkAsNotCulled() const { myIsCulled = Standard_False; }
+
+  //! Checks if the structure should be included into BVH tree or not.
+  Standard_Boolean IsAlwaysRendered() const
+  {
+    return IsInfinite
+        || IsForHighlight
+        || IsMutable
+        || Is2dText
+        || (!myTrsfPers.IsNull() && myTrsfPers->IsTrihedronOr2d());
+  }
+
+public:
+
   //! Update structure visibility state
   virtual void OnVisibilityChanged() = 0;
 
@@ -132,6 +184,9 @@ public:
 
   //! Remove group from this structure
   virtual void RemoveGroup (const Handle(Graphic3d_Group)& theGroup) = 0;
+
+  //! Update render transformation matrix.
+  virtual void updateLayerTransformation() {}
 
 public:
 
@@ -167,6 +222,8 @@ protected:
   Handle(Graphic3d_TransformPers) myTrsfPers;
   Handle(Graphic3d_SequenceOfHClipPlane) myClipPlanes;
   Handle(Graphic3d_PresentationAttributes) myHighlightStyle; //! Current highlight style; is set only if highlight flag is true
+
+  mutable Standard_Boolean myIsCulled; //!< A status specifying is structure needs to be rendered after BVH tree traverse
 
 public:
 

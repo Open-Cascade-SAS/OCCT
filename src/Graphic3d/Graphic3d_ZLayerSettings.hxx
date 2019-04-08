@@ -18,6 +18,7 @@
 #include <Geom_Transformation.hxx>
 #include <Graphic3d_LightSet.hxx>
 #include <Graphic3d_PolygonOffset.hxx>
+#include <Precision.hxx>
 #include <TCollection_AsciiString.hxx>
 
 enum Graphic3d_ZLayerSetting

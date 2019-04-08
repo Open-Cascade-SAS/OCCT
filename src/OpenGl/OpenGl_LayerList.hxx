@@ -19,12 +19,15 @@
 #include <OpenGl_Layer.hxx>
 #include <OpenGl_LayerFilter.hxx>
 
+#include <Graphic3d_ZLayerId.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_Handle.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_DataMap.hxx>
 
 class OpenGl_Structure;
+class OpenGl_Workspace;
+struct OpenGl_GlobalLayerSettings;
 
 typedef NCollection_Sequence<Handle(OpenGl_Layer)> OpenGl_SequenceOfLayers;
 typedef NCollection_DataMap<int, int> OpenGl_LayerSeqIds;
@@ -124,14 +127,14 @@ protected:
   class OpenGl_LayerStack
   {
   public:
-    typedef NCollection_Array1<const OpenGl_Layer*>::iterator iterator;
+    typedef NCollection_Array1<const Graphic3d_Layer*>::iterator iterator;
 
     //! Reallocate internal buffer of the stack.
     void Allocate (Standard_Integer theSize)
     {
       if (theSize > 0)
       {
-        myStackSpace = new NCollection_Array1<const OpenGl_Layer*> (1, theSize);
+        myStackSpace = new NCollection_Array1<const Graphic3d_Layer*> (1, theSize);
         myStackSpace->Init (NULL);
         myBackPtr    = myStackSpace->begin();
       }
@@ -184,6 +187,11 @@ protected:
                           const OpenGl_GlobalLayerSettings& theGlobalSettings,
                           OpenGl_FrameBuffer*               theReadDrawFbo,
                           OpenGl_FrameBuffer*               theOitAccumFbo) const;
+
+  // Render structures within specified layer.
+  void renderLayer (const Handle(OpenGl_Workspace)& theWorkspace,
+                    const OpenGl_GlobalLayerSettings& theDefaultSettings,
+                    const Graphic3d_Layer& theLayer) const;
 
 protected:
 

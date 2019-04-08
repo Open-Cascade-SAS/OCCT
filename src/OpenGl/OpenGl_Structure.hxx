@@ -29,33 +29,23 @@
 
 #include <NCollection_List.hxx>
 
-class OpenGl_Structure;
 class OpenGl_GraphicDriver;
 
+DEFINE_STANDARD_HANDLE(OpenGl_Structure, Graphic3d_CStructure)
 typedef NCollection_List<const OpenGl_Structure* > OpenGl_ListOfStructure;
 
 //! Implementation of low-level graphic structure.
 class OpenGl_Structure : public Graphic3d_CStructure
 {
   friend class OpenGl_Group;
-
+  DEFINE_STANDARD_RTTIEXT(OpenGl_Structure, Graphic3d_CStructure)
 public:
 
+  //! Auxiliary wrapper to iterate OpenGl_Structure sequence.
+  typedef SubclassStructIterator<OpenGl_Structure> StructIterator;
+
   //! Auxiliary wrapper to iterate OpenGl_Group sequence.
-  class GroupIterator
-  {
-
-  public:
-    GroupIterator (const Graphic3d_SequenceOfGroup& theGroups) : myIter (theGroups) {}
-    Standard_Boolean More() const     { return myIter.More(); }
-    void Next()                       { myIter.Next(); }
-    const OpenGl_Group* Value() const { return (const OpenGl_Group* )(myIter.Value().operator->()); }
-    OpenGl_Group*       ChangeValue() { return (OpenGl_Group* )(myIter.ChangeValue().operator->()); }
-
-  private:
-    Graphic3d_SequenceOfGroup::Iterator myIter;
-
-  };
+  typedef SubclassGroupIterator<OpenGl_Group> GroupIterator;
 
 public:
 
@@ -115,28 +105,6 @@ public:
   //! Releases structure resources.
   virtual void Release (const Handle(OpenGl_Context)& theGlCtx);
 
-  //! Marks structure as culled/not culled - note that IsAlwaysRendered() is ignored here!
-  void SetCulled (Standard_Boolean theIsCulled) const { myIsCulled = theIsCulled; }
-
-  //! Marks structure as overlapping the current view volume one.
-  //! The method is called during traverse of BVH tree.
-  void MarkAsNotCulled() const { myIsCulled = Standard_False; }
-
-  //! Returns Standard_False if the structure hits the current view volume, otherwise
-  //! returns Standard_True. The default value for all structures before each traverse
-  //! of BVH tree is Standard_True.
-  Standard_Boolean IsCulled() const { return myIsCulled; }
-
-  //! Checks if the structure should be included into BVH tree or not.
-  Standard_Boolean IsAlwaysRendered() const
-  {
-    return IsInfinite
-        || IsForHighlight
-        || IsMutable
-        || Is2dText
-        || (!myTrsfPers.IsNull() && myTrsfPers->IsTrihedronOr2d());
-  }
-
   //! This method releases GL resources without actual elements destruction.
   //! As result structure could be correctly destroyed layer without GL context
   //! (after last window was closed for example).
@@ -158,7 +126,7 @@ public:
   Standard_Boolean IsRaytracable() const;
 
   //! Update render transformation matrix.
-  Standard_EXPORT void updateLayerTransformation();
+  Standard_EXPORT virtual void updateLayerTransformation() Standard_OVERRIDE;
 
 protected:
 
@@ -184,16 +152,8 @@ protected:
   mutable Standard_Boolean   myIsRaytracable;
   mutable Standard_Size      myModificationState;
 
-  mutable Standard_Boolean   myIsCulled; //!< A status specifying is structure needs to be rendered after BVH tree traverse.
-
   Standard_Boolean           myIsMirrored; //!< Used to tell OpenGl to interpret polygons in clockwise order.
 
-public:
-
-  DEFINE_STANDARD_RTTIEXT(OpenGl_Structure,Graphic3d_CStructure) // Type definition
-
 };
-
-DEFINE_STANDARD_HANDLE(OpenGl_Structure, Graphic3d_CStructure)
 
 #endif // OpenGl_Structure_Header

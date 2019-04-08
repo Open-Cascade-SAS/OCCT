@@ -13,19 +13,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _OpenGl_BVHClipPrimitiveSet_HeaderFile
-#define _OpenGl_BVHClipPrimitiveSet_HeaderFile
+#ifndef _Graphic3d_BvhCStructureSet_HeaderFile
+#define _Graphic3d_BvhCStructureSet_HeaderFile
 
 #include <BVH_PrimitiveSet3d.hxx>
-#include <NCollection_Array1.hxx>
+#include <Graphic3d_BndBox3d.hxx>
 #include <NCollection_IndexedMap.hxx>
 
-#include <OpenGl_Structure.hxx>
+class Graphic3d_CStructure;
 
 //! Set of OpenGl_Structures for building BVH tree.
-class OpenGl_BVHClipPrimitiveSet : public BVH_PrimitiveSet3d
+class Graphic3d_BvhCStructureSet : public BVH_PrimitiveSet3d
 {
-  DEFINE_STANDARD_RTTIEXT(OpenGl_BVHClipPrimitiveSet, BVH_PrimitiveSet3d)
+  DEFINE_STANDARD_RTTIEXT(Graphic3d_BvhCStructureSet, BVH_PrimitiveSet3d)
 protected:
 
   using BVH_PrimitiveSet3d::Box;
@@ -33,7 +33,7 @@ protected:
 public:
 
   //! Creates an empty primitive set for BVH clipping.
-  OpenGl_BVHClipPrimitiveSet();
+  Graphic3d_BvhCStructureSet();
 
   //! Returns total number of structures.
   virtual Standard_Integer Size() const Standard_OVERRIDE;
@@ -51,25 +51,25 @@ public:
 
   //! Adds structure to the set.
   //! @return true if structure added, otherwise returns false (structure already in the set).
-  Standard_Boolean Add (const OpenGl_Structure* theStruct);
+  Standard_Boolean Add (const Graphic3d_CStructure* theStruct);
 
   //! Removes the given structure from the set.
   //! @return true if structure removed, otherwise returns false (structure is not in the set).
-  Standard_Boolean Remove (const OpenGl_Structure* theStruct);
+  Standard_Boolean Remove (const Graphic3d_CStructure* theStruct);
 
   //! Cleans the whole primitive set.
   void Clear();
 
   //! Returns the structure corresponding to the given ID.
-  const OpenGl_Structure* GetStructureById (Standard_Integer theId);
+  const Graphic3d_CStructure* GetStructureById (Standard_Integer theId);
 
   //! Access directly a collection of structures.
-  const NCollection_IndexedMap<const OpenGl_Structure*>& Structures() const { return myStructs; }
+  const NCollection_IndexedMap<const Graphic3d_CStructure*>& Structures() const { return myStructs; }
 
 private:
 
-  NCollection_IndexedMap<const OpenGl_Structure*> myStructs;    //!< Indexed map of structures.
+  NCollection_IndexedMap<const Graphic3d_CStructure*> myStructs;    //!< Indexed map of structures.
 
 };
 
-#endif // _OpenGl_BVHClipPrimitiveSet_HeaderFile
+#endif // _Graphic3d_BvhCStructureSet_HeaderFile

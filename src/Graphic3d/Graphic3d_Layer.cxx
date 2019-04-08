@@ -1,6 +1,4 @@
-// Created on: 2014-03-31
-// Created by: Danila ULYANOV
-// Copyright (c) 2014 OPEN CASCADE SAS
+// Copyright (c) 2011-2019 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -13,23 +11,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <OpenGl_Layer.hxx>
+#include <Graphic3d_Layer.hxx>
 
-#include <OpenGl_BVHTreeSelector.hxx>
-#include <OpenGl_Structure.hxx>
-#include <OpenGl_ShaderManager.hxx>
-#include <OpenGl_View.hxx>
-#include <OpenGl_Workspace.hxx>
-#include <Graphic3d_GraphicDriver.hxx>
+#include <Graphic3d_CStructure.hxx>
+#include <Graphic3d_CullingTool.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Layer, Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_Layer, Standard_Transient)
 
 // =======================================================================
-// function : OpenGl_Layer
+// function : Graphic3d_Layer
 // purpose  :
 // =======================================================================
-OpenGl_Layer::OpenGl_Layer (const Standard_Integer theNbPriorities,
-                            const Handle(Select3D_BVHBuilder3d)& theBuilder)
+Graphic3d_Layer::Graphic3d_Layer (Standard_Integer theNbPriorities,
+                                  const Handle(Select3D_BVHBuilder3d)& theBuilder)
 : myArray                     (0, theNbPriorities - 1),
   myNbStructures              (0),
   myNbStructuresNotCulled     (0),
@@ -41,10 +35,10 @@ OpenGl_Layer::OpenGl_Layer (const Standard_Integer theNbPriorities,
 }
 
 // =======================================================================
-// function : ~OpenGl_Layer
+// function : ~Graphic3d_Layer
 // purpose  :
 // =======================================================================
-OpenGl_Layer::~OpenGl_Layer()
+Graphic3d_Layer::~Graphic3d_Layer()
 {
   //
 }
@@ -53,9 +47,9 @@ OpenGl_Layer::~OpenGl_Layer()
 // function : Add
 // purpose  :
 // =======================================================================
-void OpenGl_Layer::Add (const OpenGl_Structure* theStruct,
-                        const Standard_Integer  thePriority,
-                        Standard_Boolean        isForChangePriority)
+void Graphic3d_Layer::Add (const Graphic3d_CStructure* theStruct,
+                           Standard_Integer thePriority,
+                           Standard_Boolean isForChangePriority)
 {
   const Standard_Integer anIndex = Min (Max (thePriority, 0), myArray.Length() - 1);
   if (theStruct == NULL)
@@ -90,9 +84,9 @@ void OpenGl_Layer::Add (const OpenGl_Structure* theStruct,
 // function : Remove
 // purpose  :
 // =======================================================================
-bool OpenGl_Layer::Remove (const OpenGl_Structure* theStruct,
-                           Standard_Integer&       thePriority,
-                           Standard_Boolean        isForChangePriority)
+bool Graphic3d_Layer::Remove (const Graphic3d_CStructure* theStruct,
+                              Standard_Integer& thePriority,
+                              Standard_Boolean isForChangePriority)
 {
   if (theStruct == NULL)
   {
@@ -103,41 +97,42 @@ bool OpenGl_Layer::Remove (const OpenGl_Structure* theStruct,
   const Standard_Integer aNbPriorities = myArray.Length();
   for (Standard_Integer aPriorityIter = 0; aPriorityIter < aNbPriorities; ++aPriorityIter)
   {
-    OpenGl_IndexedMapOfStructure& aStructures = myArray (aPriorityIter);
-
+    Graphic3d_IndexedMapOfStructure& aStructures = myArray (aPriorityIter);
     const Standard_Integer anIndex = aStructures.FindIndex (theStruct);
-    if (anIndex != 0)
+    if (anIndex == 0)
     {
-      aStructures.Swap (anIndex, aStructures.Size());
-      aStructures.RemoveLast();
+      continue;
+    }
 
-      if (!isForChangePriority)
+    aStructures.Swap (anIndex, aStructures.Size());
+    aStructures.RemoveLast();
+
+    if (!isForChangePriority)
+    {
+      Standard_Boolean isAlwaysRend = theStruct->IsAlwaysRendered();
+      if (!isAlwaysRend)
       {
-        Standard_Boolean isAlwaysRend = theStruct->IsAlwaysRendered();
-        if (!isAlwaysRend)
+        if (!myBVHPrimitives.Remove (theStruct))
         {
-          if (!myBVHPrimitives.Remove (theStruct))
+          if (!myBVHPrimitivesTrsfPers.Remove (theStruct))
           {
-            if (!myBVHPrimitivesTrsfPers.Remove (theStruct))
-            {
-              isAlwaysRend = Standard_True;
-            }
-          }
-        }
-        if (isAlwaysRend)
-        {
-          const Standard_Integer anIndex2 = myAlwaysRenderedMap.FindIndex (theStruct);
-          if (anIndex2 != 0)
-          {
-            myAlwaysRenderedMap.Swap (myAlwaysRenderedMap.Size(), anIndex2);
-            myAlwaysRenderedMap.RemoveLast();
+            isAlwaysRend = Standard_True;
           }
         }
       }
-      --myNbStructures;
-      thePriority = aPriorityIter;
-      return true;
+      if (isAlwaysRend)
+      {
+        const Standard_Integer anIndex2 = myAlwaysRenderedMap.FindIndex (theStruct);
+        if (anIndex2 != 0)
+        {
+          myAlwaysRenderedMap.Swap (myAlwaysRenderedMap.Size(), anIndex2);
+          myAlwaysRenderedMap.RemoveLast();
+        }
+      }
     }
+    --myNbStructures;
+    thePriority = aPriorityIter;
+    return true;
   }
 
   thePriority = -1;
@@ -148,7 +143,7 @@ bool OpenGl_Layer::Remove (const OpenGl_Structure* theStruct,
 // function : InvalidateBVHData
 // purpose  :
 // =======================================================================
-void OpenGl_Layer::InvalidateBVHData()
+void Graphic3d_Layer::InvalidateBVHData()
 {
   myIsBVHPrimitivesNeedsReset = Standard_True;
 }
@@ -178,11 +173,11 @@ inline bool isInfiniteBndBox (const Graphic3d_BndBox3d& theBndBox)
 // function : BoundingBox
 // purpose  :
 // =======================================================================
-Bnd_Box OpenGl_Layer::BoundingBox (const Standard_Integer          theViewId,
-                                   const Handle(Graphic3d_Camera)& theCamera,
-                                   const Standard_Integer          theWindowWidth,
-                                   const Standard_Integer          theWindowHeight,
-                                   const Standard_Boolean          theToIncludeAuxiliary) const
+Bnd_Box Graphic3d_Layer::BoundingBox (Standard_Integer theViewId,
+                                      const Handle(Graphic3d_Camera)& theCamera,
+                                      Standard_Integer theWindowWidth,
+                                      Standard_Integer theWindowHeight,
+                                      Standard_Boolean theToIncludeAuxiliary) const
 {
   updateBVH();
 
@@ -194,12 +189,12 @@ Bnd_Box OpenGl_Layer::BoundingBox (const Standard_Integer          theViewId,
     // Recompute layer bounding box
     myBoundingBox[aBoxId].SetVoid();
 
-    for (OpenGl_ArrayOfIndexedMapOfStructure::Iterator aMapIter (myArray); aMapIter.More(); aMapIter.Next())
+    for (Graphic3d_ArrayOfIndexedMapOfStructure::Iterator aMapIter (myArray); aMapIter.More(); aMapIter.Next())
     {
-      const OpenGl_IndexedMapOfStructure& aStructures = aMapIter.Value();
-      for (OpenGl_IndexedMapOfStructure::Iterator aStructIter (aStructures); aStructIter.More(); aStructIter.Next())
+      const Graphic3d_IndexedMapOfStructure& aStructures = aMapIter.Value();
+      for (Graphic3d_IndexedMapOfStructure::Iterator aStructIter (aStructures); aStructIter.More(); aStructIter.Next())
       {
-        const OpenGl_Structure* aStructure = aStructIter.Value();
+        const Graphic3d_CStructure* aStructure = aStructIter.Value();
         if (!aStructure->IsVisible (theViewId))
         {
           continue;
@@ -264,9 +259,9 @@ Bnd_Box OpenGl_Layer::BoundingBox (const Standard_Integer          theViewId,
   }
 
   // add transformation-persistent objects which depend on camera position (and thus can not be cached) for operations like Z-fit
-  for (NCollection_IndexedMap<const OpenGl_Structure*>::Iterator aStructIter (myAlwaysRenderedMap); aStructIter.More(); aStructIter.Next())
+  for (NCollection_IndexedMap<const Graphic3d_CStructure*>::Iterator aStructIter (myAlwaysRenderedMap); aStructIter.More(); aStructIter.Next())
   {
-    const OpenGl_Structure* aStructure = aStructIter.Value();
+    const Graphic3d_CStructure* aStructure = aStructIter.Value();
     if (!aStructure->IsVisible (theViewId))
     {
       continue;
@@ -299,10 +294,10 @@ Bnd_Box OpenGl_Layer::BoundingBox (const Standard_Integer          theViewId,
 // function : considerZoomPersistenceObjects
 // purpose  :
 // =======================================================================
-Standard_Real OpenGl_Layer::considerZoomPersistenceObjects (const Standard_Integer          theViewId,
-                                                            const Handle(Graphic3d_Camera)& theCamera,
-                                                            Standard_Integer                theWindowWidth,
-                                                            Standard_Integer                theWindowHeight) const
+Standard_Real Graphic3d_Layer::considerZoomPersistenceObjects (Standard_Integer theViewId,
+                                                               const Handle(Graphic3d_Camera)& theCamera,
+                                                               Standard_Integer theWindowWidth,
+                                                               Standard_Integer theWindowHeight) const
 {
   if (NbOfTransformPersistenceObjects() == 0)
   {
@@ -313,12 +308,12 @@ Standard_Real OpenGl_Layer::considerZoomPersistenceObjects (const Standard_Integ
   const Graphic3d_Mat4d& aWorldViewMat  = theCamera->OrientationMatrix();
   Standard_Real          aMaxCoef       = -std::numeric_limits<double>::max();
 
-  for (OpenGl_ArrayOfIndexedMapOfStructure::Iterator aMapIter (myArray); aMapIter.More(); aMapIter.Next())
+  for (Graphic3d_ArrayOfIndexedMapOfStructure::Iterator aMapIter (myArray); aMapIter.More(); aMapIter.Next())
   {
-    const OpenGl_IndexedMapOfStructure& aStructures = aMapIter.Value();
-    for (OpenGl_IndexedMapOfStructure::Iterator aStructIter (aStructures); aStructIter.More(); aStructIter.Next())
+    const Graphic3d_IndexedMapOfStructure& aStructures = aMapIter.Value();
+    for (Graphic3d_IndexedMapOfStructure::Iterator aStructIter (aStructures); aStructIter.More(); aStructIter.Next())
     {
-      const OpenGl_Structure* aStructure = aStructIter.Value();
+      const Graphic3d_CStructure* aStructure = aStructIter.Value();
       if (!aStructure->IsVisible (theViewId)
        ||  aStructure->TransformPersistence().IsNull()
        || !aStructure->TransformPersistence()->IsZoomOrRotate())
@@ -418,34 +413,10 @@ Standard_Real OpenGl_Layer::considerZoomPersistenceObjects (const Standard_Integ
 }
 
 // =======================================================================
-// function : renderAll
-// purpose  :
-// =======================================================================
-void OpenGl_Layer::renderAll (const Handle(OpenGl_Workspace)& theWorkspace) const
-{
-  const Standard_Integer aViewId = theWorkspace->View()->Identification();
-  for (OpenGl_ArrayOfIndexedMapOfStructure::Iterator aMapIter (myArray); aMapIter.More(); aMapIter.Next())
-  {
-    const OpenGl_IndexedMapOfStructure& aStructures = aMapIter.Value();
-    for (OpenGl_IndexedMapOfStructure::Iterator aStructIter (aStructures); aStructIter.More(); aStructIter.Next())
-    {
-      const OpenGl_Structure* aStruct = aStructIter.Value();
-      if (aStruct->IsCulled()
-      || !aStruct->IsVisible (aViewId))
-      {
-        continue;
-      }
-
-      aStruct->Render (theWorkspace);
-    }
-  }
-}
-
-// =======================================================================
 // function : updateBVH
 // purpose  :
 // =======================================================================
-void OpenGl_Layer::updateBVH() const
+void Graphic3d_Layer::updateBVH() const
 {
   if (!myIsBVHPrimitivesNeedsReset)
   {
@@ -456,12 +427,12 @@ void OpenGl_Layer::updateBVH() const
   myBVHPrimitivesTrsfPers.Clear();
   myAlwaysRenderedMap.Clear();
   myIsBVHPrimitivesNeedsReset = Standard_False;
-  for (OpenGl_ArrayOfIndexedMapOfStructure::Iterator aMapIter (myArray); aMapIter.More(); aMapIter.Next())
+  for (Graphic3d_ArrayOfIndexedMapOfStructure::Iterator aMapIter (myArray); aMapIter.More(); aMapIter.Next())
   {
-    const OpenGl_IndexedMapOfStructure& aStructures = aMapIter.Value();
-    for (OpenGl_IndexedMapOfStructure::Iterator aStructIter (aStructures); aStructIter.More(); aStructIter.Next())
+    const Graphic3d_IndexedMapOfStructure& aStructures = aMapIter.Value();
+    for (Graphic3d_IndexedMapOfStructure::Iterator aStructIter (aStructures); aStructIter.More(); aStructIter.Next())
     {
-      const OpenGl_Structure* aStruct = aStructIter.Value();
+      const Graphic3d_CStructure* aStruct = aStructIter.Value();
       if (aStruct->IsAlwaysRendered())
       {
         aStruct->MarkAsNotCulled();
@@ -483,25 +454,24 @@ void OpenGl_Layer::updateBVH() const
 // function : UpdateCulling
 // purpose  :
 // =======================================================================
-void OpenGl_Layer::UpdateCulling (const Standard_Integer theViewId,
-                                  const OpenGl_BVHTreeSelector& theSelector,
-                                  const Graphic3d_RenderingParams::FrustumCulling theFrustumCullingState)
+void Graphic3d_Layer::UpdateCulling (Standard_Integer theViewId,
+                                     const Graphic3d_CullingTool& theSelector,
+                                     const Graphic3d_RenderingParams::FrustumCulling theFrustumCullingState)
 {
   updateBVH();
 
   myNbStructuresNotCulled = myNbStructures;
   if (theFrustumCullingState != Graphic3d_RenderingParams::FrustumCulling_NoUpdate)
   {
-    Standard_Boolean toTraverse =
-      (theFrustumCullingState == Graphic3d_RenderingParams::FrustumCulling_On);
-    for (OpenGl_IndexedMapOfStructure::Iterator aStructIter (myBVHPrimitives.Structures()); aStructIter.More(); aStructIter.Next())
+    Standard_Boolean toTraverse = (theFrustumCullingState == Graphic3d_RenderingParams::FrustumCulling_On);
+    for (Graphic3d_IndexedMapOfStructure::Iterator aStructIter (myBVHPrimitives.Structures()); aStructIter.More(); aStructIter.Next())
     {
-      const OpenGl_Structure* aStruct = aStructIter.Value();
+      const Graphic3d_CStructure* aStruct = aStructIter.Value();
       aStruct->SetCulled (toTraverse);
     }
-    for (OpenGl_IndexedMapOfStructure::Iterator aStructIter (myBVHPrimitivesTrsfPers.Structures()); aStructIter.More(); aStructIter.Next())
+    for (Graphic3d_IndexedMapOfStructure::Iterator aStructIter (myBVHPrimitivesTrsfPers.Structures()); aStructIter.More(); aStructIter.Next())
     {
-      const OpenGl_Structure* aStruct = aStructIter.Value();
+      const Graphic3d_CStructure* aStruct = aStructIter.Value();
       aStruct->SetCulled (toTraverse);
     }
   }
@@ -517,7 +487,7 @@ void OpenGl_Layer::UpdateCulling (const Standard_Integer theViewId,
   }
 
   myNbStructuresNotCulled = myAlwaysRenderedMap.Extent();
-  OpenGl_BVHTreeSelector::CullingContext aCullCtx;
+  Graphic3d_CullingTool::CullingContext aCullCtx;
   theSelector.SetCullingDistance(aCullCtx, myLayerSettings.CullingDistance());
   theSelector.SetCullingSize    (aCullCtx, myLayerSettings.CullingSize());
   for (Standard_Integer aBVHTreeIdx = 0; aBVHTreeIdx < 2; ++aBVHTreeIdx)
@@ -529,8 +499,8 @@ void OpenGl_Layer::UpdateCulling (const Standard_Integer theViewId,
       if (myBVHPrimitivesTrsfPers.Size() == 0)
         continue;
 
-      const OpenGl_Mat4d& aProjection               = theSelector.ProjectionMatrix();
-      const OpenGl_Mat4d& aWorldView                = theSelector.WorldViewMatrix();
+      const Graphic3d_Mat4d& aProjection            = theSelector.ProjectionMatrix();
+      const Graphic3d_Mat4d& aWorldView             = theSelector.WorldViewMatrix();
       const Graphic3d_WorldViewProjState& aWVPState = theSelector.WorldViewProjState();
       const Standard_Integer aViewportWidth         = theSelector.ViewportWidth();
       const Standard_Integer aViewportHeight        = theSelector.ViewportHeight();
@@ -586,9 +556,9 @@ void OpenGl_Layer::UpdateCulling (const Standard_Integer theViewId,
       else
       {
         Standard_Integer aIdx = aBVHTree->BegPrimitive (aNode);
-        const OpenGl_Structure* aStruct = isTrsfPers
-                                        ? myBVHPrimitivesTrsfPers.GetStructureById (aIdx)
-                                        : myBVHPrimitives.GetStructureById (aIdx);
+        const Graphic3d_CStructure* aStruct = isTrsfPers
+                                            ? myBVHPrimitivesTrsfPers.GetStructureById (aIdx)
+                                            : myBVHPrimitives.GetStructureById (aIdx);
         if (aStruct->IsVisible (theViewId))
         {
           aStruct->MarkAsNotCulled();
@@ -609,7 +579,7 @@ void OpenGl_Layer::UpdateCulling (const Standard_Integer theViewId,
 // function : Append
 // purpose  :
 // =======================================================================
-Standard_Boolean OpenGl_Layer::Append (const OpenGl_Layer& theOther)
+Standard_Boolean Graphic3d_Layer::Append (const Graphic3d_Layer& theOther)
 {
   // the source priority list shouldn't have more priorities
   const Standard_Integer aNbPriorities = theOther.NbPriorities();
@@ -621,8 +591,8 @@ Standard_Boolean OpenGl_Layer::Append (const OpenGl_Layer& theOther)
   // add all structures to destination priority list
   for (Standard_Integer aPriorityIter = 0; aPriorityIter < aNbPriorities; ++aPriorityIter)
   {
-    const OpenGl_IndexedMapOfStructure& aStructures = theOther.myArray (aPriorityIter);
-    for (OpenGl_IndexedMapOfStructure::Iterator aStructIter (aStructures); aStructIter.More(); aStructIter.Next())
+    const Graphic3d_IndexedMapOfStructure& aStructures = theOther.myArray (aPriorityIter);
+    for (Graphic3d_IndexedMapOfStructure::Iterator aStructIter (aStructures); aStructIter.More(); aStructIter.Next())
     {
       Add (aStructIter.Value(), aPriorityIter);
     }
@@ -635,139 +605,22 @@ Standard_Boolean OpenGl_Layer::Append (const OpenGl_Layer& theOther)
 //function : SetLayerSettings
 //purpose  :
 //=======================================================================
-void OpenGl_Layer::SetLayerSettings (const Graphic3d_ZLayerSettings& theSettings)
+void Graphic3d_Layer::SetLayerSettings (const Graphic3d_ZLayerSettings& theSettings)
 {
   const Standard_Boolean toUpdateTrsf = !myLayerSettings.Origin().IsEqual (theSettings.Origin(), gp::Resolution());
   myLayerSettings = theSettings;
-  if (toUpdateTrsf)
+  if (!toUpdateTrsf)
   {
-    for (OpenGl_ArrayOfIndexedMapOfStructure::Iterator aMapIter (myArray); aMapIter.More(); aMapIter.Next())
+    return;
+  }
+
+  for (Graphic3d_ArrayOfIndexedMapOfStructure::Iterator aMapIter (myArray); aMapIter.More(); aMapIter.Next())
+  {
+    Graphic3d_IndexedMapOfStructure& aStructures = aMapIter.ChangeValue();
+    for (Graphic3d_IndexedMapOfStructure::Iterator aStructIter (aStructures); aStructIter.More(); aStructIter.Next())
     {
-      OpenGl_IndexedMapOfStructure& aStructures = aMapIter.ChangeValue();
-      for (OpenGl_IndexedMapOfStructure::Iterator aStructIter (aStructures); aStructIter.More(); aStructIter.Next())
-      {
-        OpenGl_Structure* aStructure = const_cast<OpenGl_Structure*> (aStructIter.Value());
-        aStructure->updateLayerTransformation();
-      }
+      Graphic3d_CStructure* aStructure = const_cast<Graphic3d_CStructure* >(aStructIter.Value());
+      aStructure->updateLayerTransformation();
     }
-  }
-}
-
-//=======================================================================
-//function : Render
-//purpose  :
-//=======================================================================
-void OpenGl_Layer::Render (const Handle(OpenGl_Workspace)&   theWorkspace,
-                           const OpenGl_GlobalLayerSettings& theDefaultSettings) const
-{
-  const Handle(OpenGl_Context)& aCtx = theWorkspace->GetGlContext();
-  // myLayerSettings.ToClearDepth() is handled outside
-
-  // handle depth test
-  if (myLayerSettings.ToEnableDepthTest())
-  {
-    // assuming depth test is enabled by default
-    glDepthFunc (theDefaultSettings.DepthFunc);
-  }
-  else
-  {
-    glDepthFunc (GL_ALWAYS);
-  }
-
-  // save environment texture
-  Handle(OpenGl_TextureSet) anEnvironmentTexture = theWorkspace->EnvironmentTexture();
-  if (!myLayerSettings.UseEnvironmentTexture())
-  {
-    theWorkspace->SetEnvironmentTexture (Handle(OpenGl_TextureSet)());
-  }
-
-  // handle depth offset
-  const Graphic3d_PolygonOffset anAppliedOffsetParams = theWorkspace->SetDefaultPolygonOffset (myLayerSettings.PolygonOffset());
-
-  // handle depth write
-  theWorkspace->UseDepthWrite() = myLayerSettings.ToEnableDepthWrite() && theDefaultSettings.DepthMask == GL_TRUE;
-  glDepthMask (theWorkspace->UseDepthWrite() ? GL_TRUE : GL_FALSE);
-
-  const Standard_Boolean hasLocalCS = !myLayerSettings.OriginTransformation().IsNull();
-  const Handle(OpenGl_ShaderManager)& aManager = aCtx->ShaderManager();
-  Handle(Graphic3d_LightSet) aLightsBack = aManager->LightSourceState().LightSources();
-  const bool hasOwnLights = aCtx->ColorMask() && !myLayerSettings.Lights().IsNull() && myLayerSettings.Lights() != aLightsBack;
-  if (hasOwnLights)
-  {
-    myLayerSettings.Lights()->UpdateRevision();
-    aManager->UpdateLightSourceStateTo (myLayerSettings.Lights());
-  }
-
-  const Handle(Graphic3d_Camera)& aWorldCamera = theWorkspace->View()->Camera();
-  if (hasLocalCS)
-  {
-    // Apply local camera transformation.
-    // The vertex position is computed by the following formula in GLSL program:
-    //   gl_Position = occProjectionMatrix * occWorldViewMatrix * occModelWorldMatrix * occVertex;
-    // where:
-    //   occProjectionMatrix - matrix defining orthographic/perspective/stereographic projection
-    //   occWorldViewMatrix  - world-view  matrix defining Camera position and orientation
-    //   occModelWorldMatrix - model-world matrix defining Object transformation from local coordinate system to the world coordinate system
-    //   occVertex           - input vertex position
-    //
-    // Since double precision is quite expensive on modern GPUs, and not available on old hardware,
-    // all these values are passed with single float precision to the shader.
-    // As result, single precision become insufficient for handling objects far from the world origin.
-    //
-    // Several approaches can be used to solve precision issues:
-    //  - [Broute force] migrate to double precision for all matrices and vertex position.
-    //    This is too expensive for most hardware.
-    //  - Store only translation part with double precision and pass it to GLSL program.
-    //    This requires modified GLSL programs for computing transformation
-    //    and extra packing mechanism for hardware not supporting double precision natively.
-    //    This solution is less expensive then previous one.
-    //  - Move translation part of occModelWorldMatrix into occWorldViewMatrix.
-    //    The main idea here is that while moving Camera towards the object,
-    //    Camera translation part and Object translation part will compensate each other
-    //    to fit into single float precision.
-    //    But this operation should be performed with double precision - this is why we are moving
-    //    translation part of occModelWorldMatrix to occWorldViewMatrix.
-    //
-    // All approaches might be useful in different scenarios, but for the moment we consider the last one as main scenario.
-    // Here we do the trick:
-    //  - OpenGl_Layer defines the Local Origin, which is expected to be the center of objects stored within it.
-    //    This Local Origin is included into occWorldViewMatrix during rendering.
-    //  - OpenGl_Structure defines Object local transformation occModelWorldMatrix with subtracted Local Origin of the Layer.
-    //    This means that Object itself should be defined within either Local Transformation equal or near to Local Origin of the Layer.
-    theWorkspace->View()->SetLocalOrigin (myLayerSettings.Origin());
-
-    NCollection_Mat4<Standard_Real> aWorldView = aWorldCamera->OrientationMatrix();
-    Graphic3d_TransformUtils::Translate (aWorldView, myLayerSettings.Origin().X(), myLayerSettings.Origin().Y(), myLayerSettings.Origin().Z());
-
-    NCollection_Mat4<Standard_ShortReal> aWorldViewF;
-    aWorldViewF.ConvertFrom (aWorldView);
-    aCtx->WorldViewState.SetCurrent (aWorldViewF);
-    aCtx->ShaderManager()->UpdateClippingState();
-    aCtx->ShaderManager()->UpdateLightSourceState();
-  }
-
-  // render priority list
-  renderAll (theWorkspace);
-
-  if (hasOwnLights)
-  {
-    aManager->UpdateLightSourceStateTo (aLightsBack);
-  }
-  if (hasLocalCS)
-  {
-    aCtx->ShaderManager()->RevertClippingState();
-    aCtx->ShaderManager()->UpdateLightSourceState();
-
-    aCtx->WorldViewState.SetCurrent (aWorldCamera->OrientationMatrixF());
-    theWorkspace->View() ->SetLocalOrigin (gp_XYZ (0.0, 0.0, 0.0));
-  }
-
-  // always restore polygon offset between layers rendering
-  theWorkspace->SetDefaultPolygonOffset (anAppliedOffsetParams);
-
-  // restore environment texture
-  if (!myLayerSettings.UseEnvironmentTexture())
-  {
-    theWorkspace->SetEnvironmentTexture (anEnvironmentTexture);
   }
 }

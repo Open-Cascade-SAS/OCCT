@@ -60,7 +60,7 @@ public: //! @name context creation parameters
    * (see OpenGl_Context - messages will be printed to standard output).
    * Affects performance - thus should not be turned on by products in released state.
    *
-   * OFF by default. Currently implemented only for Windows (WGL).
+   * OFF by default.
    */
   Standard_Boolean contextDebug;
 

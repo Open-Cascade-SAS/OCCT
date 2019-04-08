@@ -13,17 +13,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <Graphic3d_CullingTool.hxx>
+
+#include <Precision.hxx>
+
 #include <limits>
 
-#include <OpenGl_BVHTreeSelector.hxx>
-#include <OpenGl_BVHClipPrimitiveSet.hxx>
-#include <Graphic3d_GraphicDriver.hxx>
-
 // =======================================================================
-// function : OpenGl_BVHTreeSelector
+// function : Graphic3d_CullingTool
 // purpose  :
 // =======================================================================
-OpenGl_BVHTreeSelector::OpenGl_BVHTreeSelector()
+Graphic3d_CullingTool::Graphic3d_CullingTool()
 : myClipVerts (0, Graphic3d_Camera::FrustumVerticesNB),
   myIsProjectionParallel (Standard_True),
   myCamScale (1.0),
@@ -36,7 +36,7 @@ OpenGl_BVHTreeSelector::OpenGl_BVHTreeSelector()
 // function : SetViewVolume
 // purpose  : Retrieves view volume's planes equations and its vertices from projection and world-view matrices.
 // =======================================================================
-void OpenGl_BVHTreeSelector::SetViewVolume (const Handle(Graphic3d_Camera)& theCamera)
+void Graphic3d_CullingTool::SetViewVolume (const Handle(Graphic3d_Camera)& theCamera)
 {
   if (!myWorldViewProjState.IsChanged (theCamera->WorldViewProjState()))
     return;
@@ -70,7 +70,7 @@ void OpenGl_BVHTreeSelector::SetViewVolume (const Handle(Graphic3d_Camera)& theC
   {
     for (Standard_Integer i = 0; i < 2; ++i)
     {
-      OpenGl_Vec3d aPlanePnts[3];
+      Graphic3d_Vec3d aPlanePnts[3];
       for (Standard_Integer aPntIter = 0; aPntIter < 3; ++aPntIter)
       {
         aShifts[aFaceIdx] = i;
@@ -82,8 +82,8 @@ void OpenGl_BVHTreeSelector::SetViewVolume (const Handle(Graphic3d_Camera)& theC
       
       myClipPlanes[aFaceIdx * 2 + i].Origin = aPlanePnts[0];
       myClipPlanes[aFaceIdx * 2 + i].Normal =
-          OpenGl_Vec3d::Cross (aPlanePnts[1] - aPlanePnts[0],
-                               aPlanePnts[2] - aPlanePnts[0]).Normalized() * (i == 0 ? -1.f : 1.f);
+        Graphic3d_Vec3d::Cross (aPlanePnts[1] - aPlanePnts[0],
+                                aPlanePnts[2] - aPlanePnts[0]).Normalized() * (i == 0 ? -1.f : 1.f);
       }
   }
 }
@@ -92,9 +92,9 @@ void OpenGl_BVHTreeSelector::SetViewVolume (const Handle(Graphic3d_Camera)& theC
 // function : SetViewportSize
 // purpose  :
 // =======================================================================
-void OpenGl_BVHTreeSelector::SetViewportSize (Standard_Integer theViewportWidth,
-                                              Standard_Integer theViewportHeight,
-                                              Standard_Real theResolutionRatio)
+void Graphic3d_CullingTool::SetViewportSize (Standard_Integer theViewportWidth,
+                                             Standard_Integer theViewportHeight,
+                                             Standard_Real theResolutionRatio)
 {
   myViewportHeight = theViewportHeight > 0 ? theViewportHeight : 1;
   myViewportWidth  = theViewportWidth  > 0 ? theViewportWidth  : 1;
@@ -106,8 +106,8 @@ void OpenGl_BVHTreeSelector::SetViewportSize (Standard_Integer theViewportWidth,
 // function : SignedPlanePointDistance
 // purpose  :
 // =======================================================================
-Standard_Real OpenGl_BVHTreeSelector::SignedPlanePointDistance (const OpenGl_Vec4d& theNormal,
-                                                                const OpenGl_Vec4d& thePnt)
+Standard_Real Graphic3d_CullingTool::SignedPlanePointDistance (const Graphic3d_Vec4d& theNormal,
+                                                               const Graphic3d_Vec4d& thePnt)
 {
   const Standard_Real aNormLength = std::sqrt (theNormal.x() * theNormal.x()
                                              + theNormal.y() * theNormal.y()
@@ -128,8 +128,8 @@ Standard_Real OpenGl_BVHTreeSelector::SignedPlanePointDistance (const OpenGl_Vec
 // function : SetCullingDistance
 // purpose  :
 // =======================================================================
-void OpenGl_BVHTreeSelector::SetCullingDistance (CullingContext& theCtx,
-                                                 Standard_Real theDistance) const
+void Graphic3d_CullingTool::SetCullingDistance (CullingContext& theCtx,
+                                                Standard_Real theDistance) const
 {
   theCtx.DistCull = -1.0;
   if (!myIsProjectionParallel)
@@ -144,8 +144,8 @@ void OpenGl_BVHTreeSelector::SetCullingDistance (CullingContext& theCtx,
 // function : SetCullingSize
 // purpose  :
 // =======================================================================
-void OpenGl_BVHTreeSelector::SetCullingSize (CullingContext& theCtx,
-                                             Standard_Real theSize) const
+void Graphic3d_CullingTool::SetCullingSize (CullingContext& theCtx,
+                                            Standard_Real theSize) const
 {
   theCtx.SizeCull2 = -1.0;
   if (theSize > 0.0 && !Precision::IsInfinite (theSize))
@@ -160,7 +160,7 @@ void OpenGl_BVHTreeSelector::SetCullingSize (CullingContext& theCtx,
 // function : CacheClipPtsProjections
 // purpose  :
 // =======================================================================
-void OpenGl_BVHTreeSelector::CacheClipPtsProjections()
+void Graphic3d_CullingTool::CacheClipPtsProjections()
 {
   // project frustum onto its own normals
   const Standard_Integer anIncFactor = myIsProjectionParallel ? 2 : 1;
@@ -179,9 +179,9 @@ void OpenGl_BVHTreeSelector::CacheClipPtsProjections()
   }
 
   // project frustum onto main axes
-  OpenGl_Vec3d anAxes[] = { OpenGl_Vec3d (1.0, 0.0, 0.0),
-                            OpenGl_Vec3d (0.0, 1.0, 0.0),
-                            OpenGl_Vec3d (0.0, 0.0, 1.0) };
+  Graphic3d_Vec3d anAxes[] = { Graphic3d_Vec3d (1.0, 0.0, 0.0),
+                               Graphic3d_Vec3d (0.0, 1.0, 0.0),
+                               Graphic3d_Vec3d (0.0, 0.0, 1.0) };
   for (Standard_Integer aDim = 0; aDim < 3; ++aDim)
   {
     Standard_Real aMaxProj = -std::numeric_limits<Standard_Real>::max();

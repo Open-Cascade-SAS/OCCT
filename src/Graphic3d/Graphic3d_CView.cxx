@@ -33,7 +33,9 @@ namespace
 //purpose  :
 //=======================================================================
 Graphic3d_CView::Graphic3d_CView (const Handle(Graphic3d_StructureManager)& theMgr)
-: myStructureManager       (theMgr),
+: myBgColor                (Quantity_NOC_BLACK),
+  myStructureManager       (theMgr),
+  myCamera                 (new Graphic3d_Camera()),
   myHiddenObjects          (new Graphic3d_NMapOfTransient()),
   myIsInComputedMode       (Standard_False),
   myIsActive               (Standard_False),

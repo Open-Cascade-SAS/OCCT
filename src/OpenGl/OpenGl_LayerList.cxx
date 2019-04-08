@@ -137,6 +137,12 @@ namespace
   };
 }
 
+struct OpenGl_GlobalLayerSettings
+{
+  GLint DepthFunc;
+  GLboolean DepthMask;
+};
+
 //=======================================================================
 //function : OpenGl_LayerList
 //purpose  : Constructor
@@ -519,7 +525,7 @@ void OpenGl_LayerList::UpdateCulling (const Handle(OpenGl_Workspace)& theWorkspa
   aTimer.Start();
 
   const Standard_Integer aViewId = theWorkspace->View()->Identification();
-  const OpenGl_BVHTreeSelector& aSelector = theWorkspace->View()->BVHTreeSelector();
+  const Graphic3d_CullingTool& aSelector = theWorkspace->View()->BVHTreeSelector();
   for (OpenGl_IndexedLayerIterator anIts (myLayers); anIts.More(); anIts.Next())
   {
     OpenGl_Layer& aLayer = *anIts.ChangeValue();
@@ -533,6 +539,143 @@ void OpenGl_LayerList::UpdateCulling (const Handle(OpenGl_Workspace)& theWorkspa
 
   aTimer.Stop();
   aStats->ActiveDataFrame()[Graphic3d_FrameStatsTimer_CpuCulling] = aTimer.UserTimeCPU();
+}
+
+//=======================================================================
+//function : renderLayer
+//purpose  :
+//=======================================================================
+void OpenGl_LayerList::renderLayer (const Handle(OpenGl_Workspace)& theWorkspace,
+                                    const OpenGl_GlobalLayerSettings& theDefaultSettings,
+                                    const Graphic3d_Layer& theLayer) const
+{
+  const Handle(OpenGl_Context)& aCtx = theWorkspace->GetGlContext();
+
+  const Graphic3d_ZLayerSettings& aLayerSettings = theLayer.LayerSettings();
+  // aLayerSettings.ToClearDepth() is handled outside
+
+  // handle depth test
+  if (aLayerSettings.ToEnableDepthTest())
+  {
+    // assuming depth test is enabled by default
+    glDepthFunc (theDefaultSettings.DepthFunc);
+  }
+  else
+  {
+    glDepthFunc (GL_ALWAYS);
+  }
+
+  // save environment texture
+  Handle(OpenGl_TextureSet) anEnvironmentTexture = theWorkspace->EnvironmentTexture();
+  if (!aLayerSettings.UseEnvironmentTexture())
+  {
+    theWorkspace->SetEnvironmentTexture (Handle(OpenGl_TextureSet)());
+  }
+
+  // handle depth offset
+  const Graphic3d_PolygonOffset anAppliedOffsetParams = theWorkspace->SetDefaultPolygonOffset (aLayerSettings.PolygonOffset());
+
+  // handle depth write
+  theWorkspace->UseDepthWrite() = aLayerSettings.ToEnableDepthWrite() && theDefaultSettings.DepthMask == GL_TRUE;
+  glDepthMask (theWorkspace->UseDepthWrite() ? GL_TRUE : GL_FALSE);
+
+  const Standard_Boolean hasLocalCS = !aLayerSettings.OriginTransformation().IsNull();
+  const Handle(OpenGl_ShaderManager)& aManager = aCtx->ShaderManager();
+  Handle(Graphic3d_LightSet) aLightsBack = aManager->LightSourceState().LightSources();
+  const bool hasOwnLights = aCtx->ColorMask() && !aLayerSettings.Lights().IsNull() && aLayerSettings.Lights() != aLightsBack;
+  if (hasOwnLights)
+  {
+    aLayerSettings.Lights()->UpdateRevision();
+    aManager->UpdateLightSourceStateTo (aLayerSettings.Lights());
+  }
+
+  const Handle(Graphic3d_Camera)& aWorldCamera = theWorkspace->View()->Camera();
+  if (hasLocalCS)
+  {
+    // Apply local camera transformation.
+    // The vertex position is computed by the following formula in GLSL program:
+    //   gl_Position = occProjectionMatrix * occWorldViewMatrix * occModelWorldMatrix * occVertex;
+    // where:
+    //   occProjectionMatrix - matrix defining orthographic/perspective/stereographic projection
+    //   occWorldViewMatrix  - world-view  matrix defining Camera position and orientation
+    //   occModelWorldMatrix - model-world matrix defining Object transformation from local coordinate system to the world coordinate system
+    //   occVertex           - input vertex position
+    //
+    // Since double precision is quite expensive on modern GPUs, and not available on old hardware,
+    // all these values are passed with single float precision to the shader.
+    // As result, single precision become insufficient for handling objects far from the world origin.
+    //
+    // Several approaches can be used to solve precision issues:
+    //  - [Broute force] migrate to double precision for all matrices and vertex position.
+    //    This is too expensive for most hardware.
+    //  - Store only translation part with double precision and pass it to GLSL program.
+    //    This requires modified GLSL programs for computing transformation
+    //    and extra packing mechanism for hardware not supporting double precision natively.
+    //    This solution is less expensive then previous one.
+    //  - Move translation part of occModelWorldMatrix into occWorldViewMatrix.
+    //    The main idea here is that while moving Camera towards the object,
+    //    Camera translation part and Object translation part will compensate each other
+    //    to fit into single float precision.
+    //    But this operation should be performed with double precision - this is why we are moving
+    //    translation part of occModelWorldMatrix to occWorldViewMatrix.
+    //
+    // All approaches might be useful in different scenarios, but for the moment we consider the last one as main scenario.
+    // Here we do the trick:
+    //  - OpenGl_Layer defines the Local Origin, which is expected to be the center of objects stored within it.
+    //    This Local Origin is included into occWorldViewMatrix during rendering.
+    //  - OpenGl_Structure defines Object local transformation occModelWorldMatrix with subtracted Local Origin of the Layer.
+    //    This means that Object itself should be defined within either Local Transformation equal or near to Local Origin of the Layer.
+    theWorkspace->View()->SetLocalOrigin (aLayerSettings.Origin());
+
+    NCollection_Mat4<Standard_Real> aWorldView = aWorldCamera->OrientationMatrix();
+    Graphic3d_TransformUtils::Translate (aWorldView, aLayerSettings.Origin().X(), aLayerSettings.Origin().Y(), aLayerSettings.Origin().Z());
+
+    NCollection_Mat4<Standard_ShortReal> aWorldViewF;
+    aWorldViewF.ConvertFrom (aWorldView);
+    aCtx->WorldViewState.SetCurrent (aWorldViewF);
+    aCtx->ShaderManager()->UpdateClippingState();
+    aCtx->ShaderManager()->UpdateLightSourceState();
+  }
+
+  // render priority list
+  const Standard_Integer aViewId = theWorkspace->View()->Identification();
+  for (Graphic3d_ArrayOfIndexedMapOfStructure::Iterator aMapIter (theLayer.ArrayOfStructures()); aMapIter.More(); aMapIter.Next())
+  {
+    const Graphic3d_IndexedMapOfStructure& aStructures = aMapIter.Value();
+    for (OpenGl_Structure::StructIterator aStructIter (aStructures); aStructIter.More(); aStructIter.Next())
+    {
+      const OpenGl_Structure* aStruct = aStructIter.Value();
+      if (aStruct->IsCulled()
+      || !aStruct->IsVisible (aViewId))
+      {
+        continue;
+      }
+
+      aStruct->Render (theWorkspace);
+    }
+  }
+
+  if (hasOwnLights)
+  {
+    aManager->UpdateLightSourceStateTo (aLightsBack);
+  }
+  if (hasLocalCS)
+  {
+    aCtx->ShaderManager()->RevertClippingState();
+    aCtx->ShaderManager()->UpdateLightSourceState();
+
+    aCtx->WorldViewState.SetCurrent (aWorldCamera->OrientationMatrixF());
+    theWorkspace->View() ->SetLocalOrigin (gp_XYZ (0.0, 0.0, 0.0));
+  }
+
+  // always restore polygon offset between layers rendering
+  theWorkspace->SetDefaultPolygonOffset (anAppliedOffsetParams);
+
+  // restore environment texture
+  if (!aLayerSettings.UseEnvironmentTexture())
+  {
+    theWorkspace->SetEnvironmentTexture (anEnvironmentTexture);
+  }
 }
 
 //=======================================================================
@@ -652,7 +795,7 @@ void OpenGl_LayerList::Render (const Handle(OpenGl_Workspace)& theWorkspace,
         // the transparency post-processing stack.
         theWorkspace->ResetSkippedCounter();
 
-        aLayer.Render (theWorkspace, aDefaultSettings);
+        renderLayer (theWorkspace, aDefaultSettings, aLayer);
 
         if (aPassIter != 0
          && theWorkspace->NbSkippedTransparentElements() > 0)
@@ -751,7 +894,7 @@ void OpenGl_LayerList::renderTransparent (const Handle(OpenGl_Workspace)&   theW
 
   for (; theLayerIter != myTransparentToProcess.Back(); ++theLayerIter)
   {
-    (*theLayerIter)->Render (theWorkspace, aGlobalSettings);
+    renderLayer (theWorkspace, aGlobalSettings, *(*theLayerIter));
   }
 
   // Revert state of rendering.

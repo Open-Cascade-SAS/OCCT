@@ -13,24 +13,26 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _OpenGl_BVHClipPrimitiveTrsfPersSet_HeaderFile
-#define _OpenGl_BVHClipPrimitiveTrsfPersSet_HeaderFile
+#ifndef _Graphic3d_BvhCStructureSetTrsfPers_HeaderFile
+#define _Graphic3d_BvhCStructureSetTrsfPers_HeaderFile
 
 #include <BVH_Set.hxx>
 #include <BVH_Tree.hxx>
-#include <Graphic3d_BndBox4f.hxx>
+#include <Graphic3d_BndBox3d.hxx>
+#include <Graphic3d_Mat4d.hxx>
 #include <Graphic3d_WorldViewProjState.hxx>
 #include <NCollection_Shared.hxx>
 #include <NCollection_IndexedMap.hxx>
-#include <OpenGl_Structure.hxx>
-#include <OpenGl_Vec.hxx>
 #include <Select3D_BVHBuilder3d.hxx>
+
+class Graphic3d_Camera;
+class Graphic3d_CStructure;
 
 //! Set of transformation persistent OpenGl_Structure for building BVH tree.
 //! Provides built-in mechanism to invalidate tree when world view projection state changes.
 //! Due to frequent invalidation of BVH tree the choice of BVH tree builder is made
 //! in favor of BVH linear builder (quick rebuild).
-class OpenGl_BVHClipPrimitiveTrsfPersSet : public BVH_Set<Standard_Real, 3>
+class Graphic3d_BvhCStructureSetTrsfPers : public BVH_Set<Standard_Real, 3>
 {
 private:
 
@@ -39,7 +41,7 @@ private:
 public:
 
   //! Creates an empty primitive set for BVH clipping.
-  OpenGl_BVHClipPrimitiveTrsfPersSet (const Handle(Select3D_BVHBuilder3d)& theBuilder);
+  Graphic3d_BvhCStructureSetTrsfPers (const Handle(Select3D_BVHBuilder3d)& theBuilder);
 
   //! Returns total number of structures.
   virtual Standard_Integer Size() const Standard_OVERRIDE;
@@ -57,20 +59,20 @@ public:
 
   //! Adds structure to the set.
   //! @return true if structure added, otherwise returns false (structure already in the set).
-  Standard_Boolean Add (const OpenGl_Structure* theStruct);
+  Standard_Boolean Add (const Graphic3d_CStructure* theStruct);
 
   //! Removes the given structure from the set.
   //! @return true if structure removed, otherwise returns false (structure is not in the set).
-  Standard_Boolean Remove (const OpenGl_Structure* theStruct);
+  Standard_Boolean Remove (const Graphic3d_CStructure* theStruct);
 
   //! Cleans the whole primitive set.
   void Clear();
 
   //! Returns the structure corresponding to the given ID.
-  const OpenGl_Structure* GetStructureById (Standard_Integer theId);
+  const Graphic3d_CStructure* GetStructureById (Standard_Integer theId);
 
   //! Access directly a collection of structures.
-  const NCollection_IndexedMap<const OpenGl_Structure*>& Structures() const { return myStructs; }
+  const NCollection_IndexedMap<const Graphic3d_CStructure*>& Structures() const { return myStructs; }
 
   //! Marks object state as outdated (needs BVH rebuilding).
   void MarkDirty()
@@ -80,8 +82,8 @@ public:
 
   //! Returns BVH tree for the given world view projection (builds it if necessary).
   const opencascade::handle<BVH_Tree<Standard_Real, 3> >& BVH (const Handle(Graphic3d_Camera)& theCamera,
-                                                               const OpenGl_Mat4d& theProjectionMatrix,
-                                                               const OpenGl_Mat4d& theWorldViewMatrix,
+                                                               const Graphic3d_Mat4d& theProjectionMatrix,
+                                                               const Graphic3d_Mat4d& theWorldViewMatrix,
                                                                const Standard_Integer theViewportWidth,
                                                                const Standard_Integer theViewportHeight,
                                                                const Graphic3d_WorldViewProjState& theWVPState);
@@ -104,7 +106,7 @@ private:
   Handle(Select3D_BVHBuilder3d) myBuilder;
 
   //! Indexed map of structures.
-  NCollection_IndexedMap<const OpenGl_Structure*> myStructs;
+  NCollection_IndexedMap<const Graphic3d_CStructure*> myStructs;
 
   //! Cached set of bounding boxes precomputed for transformation persistent selectable objects.
   //! Cache exists only during computation of BVH Tree. Bounding boxes are world view projection
@@ -115,4 +117,4 @@ private:
   Graphic3d_WorldViewProjState myStructBoxesState;
 };
 
-#endif // _OpenGl_BVHClipPrimitiveTrsfPersSet_HeaderFile
+#endif // _Graphic3d_BvhCStructureSetTrsfPers_HeaderFile

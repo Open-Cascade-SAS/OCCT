@@ -107,7 +107,6 @@ OpenGl_Structure::OpenGl_Structure (const Handle(Graphic3d_StructureManager)& th
   myInstancedStructure (NULL),
   myIsRaytracable      (Standard_False),
   myModificationState  (0),
-  myIsCulled           (Standard_True),
   myIsMirrored         (Standard_False)
 {
   updateLayerTransformation();

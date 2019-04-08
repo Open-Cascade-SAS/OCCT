@@ -87,6 +87,12 @@ public:
   //! Returns true if the view was removed.
   Standard_Boolean IsRemoved() const { return myIsRemoved; }
 
+  //! Returns camera object of the view.
+  virtual const Handle(Graphic3d_Camera)& Camera() const { return myCamera; }
+
+  //! Sets camera used by the view.
+  virtual void SetCamera (const Handle(Graphic3d_Camera)& theCamera) { myCamera = theCamera; }
+
 public:
 
   //! Returns default Shading Model of the view; Graphic3d_TOSM_FRAGMENT by default.
@@ -252,20 +258,6 @@ public:
   //! Returns True if the window associated to the view is defined.
   virtual Standard_Boolean IsDefined() const = 0;
 
-  //! Returns data of a graduated trihedron
-  virtual const Graphic3d_GraduatedTrihedron& GetGraduatedTrihedron() = 0;
-
-  //! Displays Graduated Trihedron.
-  virtual void GraduatedTrihedronDisplay (const Graphic3d_GraduatedTrihedron& theTrihedronData) = 0;
-
-  //! Erases Graduated Trihedron.
-  virtual void GraduatedTrihedronErase() = 0;
-
-  //! Sets minimum and maximum points of scene bounding box for Graduated Trihedron stored in graphic view object.
-  //! @param theMin [in] the minimum point of scene.
-  //! @param theMax [in] the maximum point of scene.
-  virtual void GraduatedTrihedronMinMaxValues (const Graphic3d_Vec3 theMin, const Graphic3d_Vec3 theMax) = 0;
-
   //! Dump active rendering buffer into specified memory buffer.
   virtual Standard_Boolean BufferDump (Image_PixMap& theImage, const Graphic3d_BufferType& theBufferType) = 0;
 
@@ -352,10 +344,10 @@ public:
   Graphic3d_RenderingParams& ChangeRenderingParams() { return myRenderParams; }
 
   //! Returns background  fill color.
-  virtual Aspect_Background Background() const = 0;
+  virtual Aspect_Background Background() const { return Aspect_Background (myBgColor.GetRGB()); }
 
   //! Sets background fill color.
-  virtual void SetBackground (const Aspect_Background& theBackground) = 0;
+  virtual void SetBackground (const Aspect_Background& theBackground) { myBgColor.SetRGB (theBackground.Color()); }
 
   //! Returns gradient background fill colors.
   virtual Aspect_GradientBackground GradientBackground() const = 0;
@@ -387,12 +379,6 @@ public:
   //! Sets backfacing model for the view.
   virtual void SetBackfacingModel (const Graphic3d_TypeOfBackfacingModel theModel) = 0;
 
-  //! Returns camera object of the view.
-  virtual const Handle(Graphic3d_Camera)& Camera() const = 0;
-
-  //! Sets camera used by the view.
-  virtual void SetCamera (const Handle(Graphic3d_Camera)& theCamera) = 0;
-
   //! Returns list of lights of the view.
   virtual const Handle(Graphic3d_LightSet)& Lights() const = 0;
 
@@ -421,6 +407,26 @@ public:
   //! Fills in the dictionary with statistic performance info.
   virtual void StatisticInformation (TColStd_IndexedDataMapOfStringString& theDict) const = 0;
 
+public: //! @name obsolete Graduated Trihedron functionality
+
+  //! Returns data of a graduated trihedron
+  virtual const Graphic3d_GraduatedTrihedron& GetGraduatedTrihedron() { return myGTrihedronData; }
+
+  //! Displays Graduated Trihedron.
+  virtual void GraduatedTrihedronDisplay (const Graphic3d_GraduatedTrihedron& theTrihedronData) { (void )theTrihedronData; }
+
+  //! Erases Graduated Trihedron.
+  virtual void GraduatedTrihedronErase() {}
+
+  //! Sets minimum and maximum points of scene bounding box for Graduated Trihedron stored in graphic view object.
+  //! @param theMin [in] the minimum point of scene.
+  //! @param theMax [in] the maximum point of scene.
+  virtual void GraduatedTrihedronMinMaxValues (const Graphic3d_Vec3 theMin, const Graphic3d_Vec3 theMax)
+  {
+    (void )theMin;
+    (void )theMax;
+  }
+
 private:
 
   //! Adds the structure to display lists of the view.
@@ -448,7 +454,9 @@ protected:
 
   Standard_Integer myId;
   Graphic3d_RenderingParams myRenderParams;
+  Quantity_ColorRGBA        myBgColor;
   Handle(Graphic3d_StructureManager) myStructureManager;
+  Handle(Graphic3d_Camera)  myCamera;
   Graphic3d_SequenceOfStructure myStructsToCompute;
   Graphic3d_SequenceOfStructure myStructsComputed;
   Graphic3d_MapOfStructure myStructsDisplayed;
@@ -458,6 +466,10 @@ protected:
   Standard_Boolean myIsRemoved;
   Graphic3d_TypeOfShadingModel  myShadingModel;
   Graphic3d_TypeOfVisualization myVisualization;
+
+protected:
+
+  Graphic3d_GraduatedTrihedron myGTrihedronData;
 
 };
 

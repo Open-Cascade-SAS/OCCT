@@ -19,7 +19,6 @@
 #include <Graphic3d_TransModeFlags.hxx>
 #include <Graphic3d_GraphicDriver.hxx>
 
-
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_CStructure,Standard_Transient)
 
 //=============================================================================
@@ -39,7 +38,8 @@ Graphic3d_CStructure::Graphic3d_CStructure (const Handle(Graphic3d_StructureMana
   IsForHighlight   (Standard_False),
   IsMutable        (Standard_False),
   Is2dText         (Standard_False),
-  myGraphicDriver  (theManager->GraphicDriver())
+  myGraphicDriver  (theManager->GraphicDriver()),
+  myIsCulled       (Standard_True)
 {
   Id = myGraphicDriver->NewIdentification();
 }

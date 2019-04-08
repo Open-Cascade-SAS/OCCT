@@ -13,17 +13,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _OpenGl_BVHTreeSelector_HeaderFile
-#define _OpenGl_BVHTreeSelector_HeaderFile
+#ifndef _Graphic3d_CullingTool_HeaderFile
+#define _Graphic3d_CullingTool_HeaderFile
 
 #include <Graphic3d_Camera.hxx>
+#include <Graphic3d_Vec4.hxx>
 #include <Graphic3d_WorldViewProjState.hxx>
-#include <OpenGl_Vec.hxx>
 
-//! BVHTreeSelector class provides a possibility to store parameters of view volume,
-//! such as its vertices and equations, and contains methods detecting if given AABB overlaps
-//! view volume.
-class OpenGl_BVHTreeSelector
+//! Graphic3d_CullingTool class provides a possibility to store parameters of view volume,
+//! such as its vertices and equations, and contains methods detecting if given AABB overlaps view volume.
+class Graphic3d_CullingTool
 {
 public:
   //! Auxiliary structure holding non-persistent culling options.
@@ -45,19 +44,19 @@ public:
       Normal (0.0, 0.0, 1.0) {}
 
     //! Creates plane with specific parameters.
-    Plane (const OpenGl_Vec3d& theOrigin,
-           const OpenGl_Vec3d& theNormal)
+    Plane (const Graphic3d_Vec3d& theOrigin,
+           const Graphic3d_Vec3d& theNormal)
     : Origin (theOrigin),
       Normal (theNormal) {}
 
-    OpenGl_Vec3d Origin;
-    OpenGl_Vec3d Normal;
+    Graphic3d_Vec3d Origin;
+    Graphic3d_Vec3d Normal;
   };
 
 public:
 
   //! Creates an empty selector object with parallel projection type by default.
-  Standard_EXPORT OpenGl_BVHTreeSelector();
+  Standard_EXPORT Graphic3d_CullingTool();
 
   //! Retrieves view volume's planes equations and its vertices from projection and world-view matrices.
   Standard_EXPORT void SetViewVolume (const Handle(Graphic3d_Camera)& theCamera);
@@ -84,8 +83,8 @@ public:
   //! @param theMaxPt [in] minimum point of AABB
   //! @return Standard_True, if AABB is in viewing area, Standard_False otherwise
   bool IsCulled (const CullingContext& theCtx,
-                 const OpenGl_Vec3d& theMinPt,
-                 const OpenGl_Vec3d& theMaxPt) const
+                 const Graphic3d_Vec3d& theMinPt,
+                 const Graphic3d_Vec3d& theMaxPt) const
   {
     return isFullOut   (theMinPt, theMaxPt)
         || isTooDistant(theCtx, theMinPt, theMaxPt)
@@ -96,13 +95,13 @@ public:
   const Handle(Graphic3d_Camera)& Camera() const { return myCamera; }
 
   //! Returns current projection matrix.
-  const OpenGl_Mat4d& ProjectionMatrix() const
+  const Graphic3d_Mat4d& ProjectionMatrix() const
   {
     return myProjectionMat;
   }
 
   //! Returns current world view transformation matrix.
-  const OpenGl_Mat4d& WorldViewMatrix() const
+  const Graphic3d_Mat4d& WorldViewMatrix() const
   {
     return myWorldViewMat;
   }
@@ -128,15 +127,15 @@ protected:
   //! Calculates signed distance from plane to point.
   //! @param theNormal [in] the plane's normal.
   //! @param thePnt    [in]
-  Standard_EXPORT Standard_Real SignedPlanePointDistance (const OpenGl_Vec4d& theNormal,
-                                                          const OpenGl_Vec4d& thePnt);
+  Standard_EXPORT Standard_Real SignedPlanePointDistance (const Graphic3d_Vec4d& theNormal,
+                                                          const Graphic3d_Vec4d& thePnt);
 
   //! Detects if AABB overlaps view volume using separating axis theorem (SAT).
   //! @param theMinPt [in] maximum point of AABB.
   //! @param theMaxPt [in] minimum point of AABB.
   //! @return FALSE, if AABB is in viewing area, TRUE otherwise.
-  bool isFullOut (const OpenGl_Vec3d& theMinPt,
-                  const OpenGl_Vec3d& theMaxPt) const
+  bool isFullOut (const Graphic3d_Vec3d& theMinPt,
+                  const Graphic3d_Vec3d& theMaxPt) const
   {
     //     E1
     //    |_ E0
@@ -168,11 +167,11 @@ protected:
     for (Standard_Integer aPlaneIter = 0; aPlaneIter < PlanesNB - 1; aPlaneIter += anIncFactor)
     {
       // frustum normals
-      const OpenGl_Vec3d anAxis = myClipPlanes[aPlaneIter].Normal;
+      const Graphic3d_Vec3d anAxis = myClipPlanes[aPlaneIter].Normal;
 
-      const OpenGl_Vec3d aPVertex (anAxis.x() > 0.0 ? theMaxPt.x() : theMinPt.x(),
-                                   anAxis.y() > 0.0 ? theMaxPt.y() : theMinPt.y(),
-                                   anAxis.z() > 0.0 ? theMaxPt.z() : theMinPt.z());
+      const Graphic3d_Vec3d aPVertex (anAxis.x() > 0.0 ? theMaxPt.x() : theMinPt.x(),
+                                      anAxis.y() > 0.0 ? theMaxPt.y() : theMinPt.y(),
+                                      anAxis.z() > 0.0 ? theMaxPt.z() : theMinPt.z());
       Standard_Real aPnt0 = aPVertex.Dot (anAxis);
 
       if (aPnt0 >= myMinClipProjectionPts[aPlaneIter]
@@ -181,9 +180,9 @@ protected:
         continue;
       }
       
-      const OpenGl_Vec3d aNVertex (anAxis.x() > 0.0 ? theMinPt.x() : theMaxPt.x(),
-                                   anAxis.y() > 0.0 ? theMinPt.y() : theMaxPt.y(),
-                                   anAxis.z() > 0.0 ? theMinPt.z() : theMaxPt.z());
+      const Graphic3d_Vec3d aNVertex (anAxis.x() > 0.0 ? theMinPt.x() : theMaxPt.x(),
+                                      anAxis.y() > 0.0 ? theMinPt.y() : theMaxPt.y(),
+                                      anAxis.z() > 0.0 ? theMinPt.z() : theMaxPt.z());
       Standard_Real aPnt1 = aNVertex.Dot (anAxis);
 
       const Standard_Real aMin = aPnt0 < aPnt1 ? aPnt0 : aPnt1;
@@ -200,8 +199,8 @@ protected:
 
   //! Returns TRUE if given AABB should be discarded by distance culling criterion.
   bool isTooDistant (const CullingContext& theCtx,
-                     const OpenGl_Vec3d& theMinPt,
-                     const OpenGl_Vec3d& theMaxPt) const
+                     const Graphic3d_Vec3d& theMinPt,
+                     const Graphic3d_Vec3d& theMaxPt) const
   {
     if (theCtx.DistCull <= 0.0)
     {
@@ -216,8 +215,8 @@ protected:
 
   //! Returns TRUE if given AABB should be discarded by size culling criterion.
   bool isTooSmall (const CullingContext& theCtx,
-                   const OpenGl_Vec3d& theMinPt,
-                   const OpenGl_Vec3d& theMaxPt) const
+                   const Graphic3d_Vec3d& theMinPt,
+                   const Graphic3d_Vec3d& theMaxPt) const
   {
     if (theCtx.SizeCull2 <= 0.0)
     {
@@ -232,8 +231,8 @@ protected:
 
     // note that distances behind the Eye (aBndDist < 0) are not scaled correctly here,
     // but majority of such objects should be culled by frustum
-    const OpenGl_Vec3d  aBndCenter = (theMinPt + theMaxPt) * 0.5;
-    const Standard_Real aBndDist   = (aBndCenter - myCamEye).Dot (myCamDir);
+    const Graphic3d_Vec3d aBndCenter = (theMinPt + theMaxPt) * 0.5;
+    const Standard_Real   aBndDist   = (aBndCenter - myCamEye).Dot (myCamDir);
     return aBoxDiag2 < theCtx.SizeCull2 * aBndDist * aBndDist;
   }
 
@@ -253,8 +252,8 @@ protected:
 
 protected:
 
-  Plane                            myClipPlanes[PlanesNB]; //!< Planes
-  NCollection_Array1<OpenGl_Vec3d> myClipVerts;            //!< Vertices
+  Plane                               myClipPlanes[PlanesNB]; //!< Planes
+  NCollection_Array1<Graphic3d_Vec3d> myClipVerts;            //!< Vertices
 
   Handle(Graphic3d_Camera) myCamera; //!< camera definition
 
@@ -270,8 +269,8 @@ protected:
 
   Standard_Boolean myIsProjectionParallel;
 
-  OpenGl_Mat4d myProjectionMat;
-  OpenGl_Mat4d myWorldViewMat;
+  Graphic3d_Mat4d myProjectionMat;
+  Graphic3d_Mat4d myWorldViewMat;
 
   Standard_Integer myViewportWidth;
   Standard_Integer myViewportHeight;
@@ -285,4 +284,4 @@ protected:
 
 };
 
-#endif // _OpenGl_BVHTreeSelector_HeaderFile
+#endif // _Graphic3d_CullingTool_HeaderFile

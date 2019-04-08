@@ -51,8 +51,6 @@ OpenGl_View::OpenGl_View (const Handle(Graphic3d_StructureManager)& theMgr,
   myCaps           (theCaps),
   myWasRedrawnGL   (Standard_False),
   myBackfacing     (Graphic3d_TOBM_AUTOMATIC),
-  myBgColor        (Quantity_NOC_BLACK),
-  myCamera         (new Graphic3d_Camera()),
   myToShowGradTrihedron  (false),
   myZLayers        (Structure_MAX_PRIORITY - Structure_MIN_PRIORITY + 1),
   myStateCounter         (theCounter),
@@ -190,15 +188,6 @@ void OpenGl_View::Remove()
   myWindow.Nullify();
 
   Graphic3d_CView::Remove();
-}
-
-// =======================================================================
-// function : SetTextureEnv
-// purpose  :
-// =======================================================================
-void OpenGl_View::SetCamera(const Handle(Graphic3d_Camera)& theCamera)
-{
-  myCamera = theCamera;
 }
 
 // =======================================================================
@@ -418,24 +407,6 @@ Standard_Boolean OpenGl_View::BufferDump (Image_PixMap& theImage, const Graphic3
 
   return true;
 #endif
-}
-
-// =======================================================================
-// function : Background
-// purpose  :
-// =======================================================================
-Aspect_Background OpenGl_View::Background() const
-{
-  return Aspect_Background (myBgColor.GetRGB());
-}
-
-// =======================================================================
-// function : SetBackground
-// purpose  :
-// =======================================================================
-void OpenGl_View::SetBackground (const Aspect_Background& theBackground)
-{
-  myBgColor.SetRGB (theBackground.Color());
 }
 
 // =======================================================================

@@ -139,72 +139,6 @@ OpenGl_GraphicDriver::OpenGl_GraphicDriver (const Handle(Aspect_DisplayConnectio
   {
     throw Aspect_GraphicDeviceDefinitionError("OpenGl_GraphicDriver: default context can not be initialized!");
   }
-
-  // default layers are always presented in display layer sequence it can not be removed
-  {
-    Graphic3d_ZLayerSettings aSettings;
-    aSettings.SetImmediate          (Standard_False);
-    aSettings.SetEnvironmentTexture (Standard_False);
-    aSettings.SetEnableDepthTest    (Standard_False);
-    aSettings.SetEnableDepthWrite   (Standard_False);
-    aSettings.SetClearDepth         (Standard_False);
-    aSettings.SetPolygonOffset (Graphic3d_PolygonOffset());
-    myLayerIds.Add             (Graphic3d_ZLayerId_BotOSD);
-    myLayerSeq.Append          (Graphic3d_ZLayerId_BotOSD);
-    myMapOfZLayerSettings.Bind (Graphic3d_ZLayerId_BotOSD, aSettings);
-  }
-
-  {
-    Graphic3d_ZLayerSettings aSettings;
-    aSettings.SetImmediate          (Standard_False);
-    aSettings.SetEnvironmentTexture (Standard_True);
-    aSettings.SetEnableDepthTest    (Standard_True);
-    aSettings.SetEnableDepthWrite   (Standard_True);
-    aSettings.SetClearDepth         (Standard_False);
-    aSettings.SetPolygonOffset (Graphic3d_PolygonOffset());
-    myLayerIds.Add             (Graphic3d_ZLayerId_Default);
-    myLayerSeq.Append          (Graphic3d_ZLayerId_Default);
-    myMapOfZLayerSettings.Bind (Graphic3d_ZLayerId_Default, aSettings);
-  }
-
-  {
-    Graphic3d_ZLayerSettings aSettings;
-    aSettings.SetImmediate          (Standard_True);
-    aSettings.SetEnvironmentTexture (Standard_True);
-    aSettings.SetEnableDepthTest    (Standard_True);
-    aSettings.SetEnableDepthWrite   (Standard_True);
-    aSettings.SetClearDepth         (Standard_False);
-    aSettings.SetPolygonOffset (Graphic3d_PolygonOffset());
-    myLayerIds.Add             (Graphic3d_ZLayerId_Top);
-    myLayerSeq.Append          (Graphic3d_ZLayerId_Top);
-    myMapOfZLayerSettings.Bind (Graphic3d_ZLayerId_Top, aSettings);
-  }
-
-  {
-    Graphic3d_ZLayerSettings aSettings;
-    aSettings.SetImmediate          (Standard_True);
-    aSettings.SetEnvironmentTexture (Standard_True);
-    aSettings.SetEnableDepthTest    (Standard_True);
-    aSettings.SetEnableDepthWrite   (Standard_True);
-    aSettings.SetClearDepth         (Standard_True);
-    aSettings.SetPolygonOffset (Graphic3d_PolygonOffset());
-    myLayerIds.Add             (Graphic3d_ZLayerId_Topmost);
-    myLayerSeq.Append          (Graphic3d_ZLayerId_Topmost);
-    myMapOfZLayerSettings.Bind (Graphic3d_ZLayerId_Topmost, aSettings);
-  }
-
-  {
-    Graphic3d_ZLayerSettings aSettings;
-    aSettings.SetImmediate          (Standard_True);
-    aSettings.SetEnvironmentTexture (Standard_False);
-    aSettings.SetEnableDepthTest    (Standard_False);
-    aSettings.SetEnableDepthWrite   (Standard_False);
-    aSettings.SetClearDepth         (Standard_False);
-    aSettings.SetPolygonOffset (Graphic3d_PolygonOffset());
-    myLayerIds.Add             (Graphic3d_ZLayerId_TopOSD);
-    myLayerSeq.Append          (Graphic3d_ZLayerId_TopOSD);
-    myMapOfZLayerSettings.Bind (Graphic3d_ZLayerId_TopOSD, aSettings);
-  }
 }
 
 // =======================================================================
@@ -571,50 +505,6 @@ void OpenGl_GraphicDriver::TextSize (const Handle(Graphic3d_CView)& theView,
 }
 
 //=======================================================================
-//function : addZLayerIndex
-//purpose  :
-//=======================================================================
-void OpenGl_GraphicDriver::addZLayerIndex (const Graphic3d_ZLayerId theLayerId)
-{
-  // remove index
-  for (TColStd_SequenceOfInteger::Iterator aLayerIt (myLayerSeq); aLayerIt.More(); aLayerIt.Next())
-  {
-    if (aLayerIt.Value() == theLayerId)
-    {
-      myLayerSeq.Remove (aLayerIt);
-      break;
-    }
-  }
-
-  if (myMapOfZLayerSettings.Find (theLayerId).IsImmediate())
-  {
-    myLayerSeq.Append (theLayerId);
-    return;
-  }
-
-  for (TColStd_SequenceOfInteger::Iterator aLayerIt (myLayerSeq); aLayerIt.More(); aLayerIt.Next())
-  {
-    const Graphic3d_ZLayerSettings& aSettings = myMapOfZLayerSettings.Find (aLayerIt.Value());
-    if (aSettings.IsImmediate())
-    {
-      aLayerIt.Previous();
-      if (aLayerIt.More())
-      {
-        myLayerSeq.InsertAfter (aLayerIt, theLayerId);
-        return;
-      }
-
-      // first non-immediate layer
-      myLayerSeq.Prepend (theLayerId);
-      return;
-    }
-  }
-
-  // no immediate layers
-  myLayerSeq.Append (theLayerId);
-}
-
-//=======================================================================
 //function : AddZLayer
 //purpose  :
 //=======================================================================
@@ -687,56 +577,19 @@ void OpenGl_GraphicDriver::RemoveZLayer (const Graphic3d_ZLayerId theLayerId)
 }
 
 //=======================================================================
-//function : ZLayers
-//purpose  :
-//=======================================================================
-void OpenGl_GraphicDriver::ZLayers (TColStd_SequenceOfInteger& theLayerSeq) const
-{
-  theLayerSeq.Assign (myLayerSeq);
-}
-
-//=======================================================================
 //function : SetZLayerSettings
 //purpose  :
 //=======================================================================
 void OpenGl_GraphicDriver::SetZLayerSettings (const Graphic3d_ZLayerId theLayerId,
                                               const Graphic3d_ZLayerSettings& theSettings)
 {
-  Graphic3d_ZLayerSettings* aSettings = myMapOfZLayerSettings.ChangeSeek (theLayerId);
-  if (aSettings != NULL)
-  {
-    const bool isChanged = (aSettings->IsImmediate() != theSettings.IsImmediate());
-    *aSettings = theSettings;
-    if (isChanged)
-    {
-      addZLayerIndex (theLayerId);
-    }
-  }
-  else
-  {
-    // abnormal case
-    myMapOfZLayerSettings.Bind (theLayerId, theSettings);
-    addZLayerIndex (theLayerId);
-  }
+  base_type::SetZLayerSettings (theLayerId, theSettings);
 
   // Change Z layer settings in all managed views
   for (NCollection_Map<Handle(OpenGl_View)>::Iterator aViewIt (myMapOfView); aViewIt.More(); aViewIt.Next())
   {
     aViewIt.Value()->SetZLayerSettings (theLayerId, theSettings);
   }
-}
-
-//=======================================================================
-//function : ZLayerSettings
-//purpose  :
-//=======================================================================
-const Graphic3d_ZLayerSettings& OpenGl_GraphicDriver::ZLayerSettings (const Graphic3d_ZLayerId theLayerId) const
-{
-  Standard_ASSERT_RAISE (myLayerIds.Contains (theLayerId),
-                         "OpenGl_GraphicDriver::ZLayerSettings, "
-                         "Layer with theLayerId does not exist");
-
-  return myMapOfZLayerSettings.Find (theLayerId);
 }
 
 // =======================================================================
