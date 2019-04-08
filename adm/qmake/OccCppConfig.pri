@@ -53,8 +53,11 @@ android {
 
 # Define output folder depending on compiler name
 MY_BITNESS = 32
+
 equals(QMAKE_TARGET.arch, x86_64) | equals(QMAKE_HOST.arch, x86_64) { MY_BITNESS = 64 }
 equals(ANDROID_TARGET_ARCH, arm64-v8a) { MY_BITNESS = 64 }
+has64Target = $$find(QMAKE_TARGET.arch, "x64")
+count(has64Target, 1) { MY_BITNESS = 64 }
 
 MY_PLATFORM = platform
 CONFIG(iphonesimulator, iphoneos|iphonesimulator) { MY_PLATFORM = iphonesimulator
@@ -89,11 +92,24 @@ android-g++ {
 } else:win32-msvc2017 {
   MY_COMPILER = vc14
   MY_VC_VER = 14
+} else:win32-msvc {
+  MY_COMPILER = vc14
+  MY_VC_VER = 14
+  aMsvcVer = $$(VisualStudioVersion)
+  equals(aMsvcVer, 14.0){
+    # VS2015, vc140
+  } else:equals(aMsvcVer, 15.0){
+    # VS2015, vc141
+  } else:equals(aMsvcVer, 16.0){
+    # VS2019, vc142
+  } else {
+    warning (Unknown msvc version. "$$MY_COMPILER" is used)
+  }
 } else {
   warning (Unknown compiler. "$$MY_COMPILER" is used)
 }
 MY_PLATFORM_AND_COMPILER = $$MY_PLATFORM/$$MY_COMPILER
-#message (The platform is "$$MY_PLATFORM"; bitness is "$$MY_BITNESS"; compiler is "$$MY_COMPILER")
+#warning (The platform is "$$MY_PLATFORM"; bitness is "$$MY_BITNESS"; compiler is "$$MY_COMPILER")
 
 CONFIG(debug, debug|release) { MY_BUILDTYPE = d }
 
