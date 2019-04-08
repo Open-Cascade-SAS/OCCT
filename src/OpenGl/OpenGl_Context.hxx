@@ -132,6 +132,10 @@ template<typename theBaseClass_t> struct OpenGl_TmplCore44;
 typedef OpenGl_TmplCore44<OpenGl_GlCore43Back> OpenGl_GlCore44Back;
 typedef OpenGl_TmplCore44<OpenGl_GlCore43>     OpenGl_GlCore44;
 
+template<typename theBaseClass_t> struct OpenGl_TmplCore45;
+typedef OpenGl_TmplCore45<OpenGl_GlCore44Back> OpenGl_GlCore45Back;
+typedef OpenGl_TmplCore45<OpenGl_GlCore44>     OpenGl_GlCore45;
+
 class Graphic3d_PresentationAttributes;
 class OpenGl_Aspects;
 class OpenGl_FrameBuffer;
@@ -853,6 +857,8 @@ public: //! @name core profiles
   OpenGl_GlCore43Back* core43back; //!< OpenGL 4.3 backward compatibility profile
   OpenGl_GlCore44*     core44;     //!< OpenGL 4.4 core profile
   OpenGl_GlCore44Back* core44back; //!< OpenGL 4.4 backward compatibility profile
+  OpenGl_GlCore45*     core45;     //!< OpenGL 4.5 core profile
+  OpenGl_GlCore45Back* core45back; //!< OpenGL 4.5 backward compatibility profile
 
   Handle(OpenGl_Caps) caps; //!< context options
 

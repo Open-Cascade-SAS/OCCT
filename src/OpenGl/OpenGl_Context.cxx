@@ -26,7 +26,7 @@
 #include <OpenGl_ExtGS.hxx>
 #include <OpenGl_ArbSamplerObject.hxx>
 #include <OpenGl_ArbTexBindless.hxx>
-#include <OpenGl_GlCore44.hxx>
+#include <OpenGl_GlCore45.hxx>
 #include <OpenGl_FrameBuffer.hxx>
 #include <OpenGl_FrameStats.hxx>
 #include <OpenGl_Sampler.hxx>
@@ -109,6 +109,8 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
   core43back (NULL),
   core44     (NULL),
   core44back (NULL),
+  core45     (NULL),
+  core45back (NULL),
   caps   (!theCaps.IsNull() ? theCaps : new OpenGl_Caps()),
 #if defined(GL_ES_VERSION_2_0)
   hasHighp   (Standard_False),
@@ -1266,6 +1268,8 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
   core43back = NULL;
   core44     = NULL;
   core44back = NULL;
+  core45     = NULL;
+  core45back = NULL;
   arbTBO     = NULL;
   arbTboRGB32 = Standard_False;
   arbIns     = NULL;
@@ -1532,6 +1536,7 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
   bool has42 = false;
   bool has43 = false;
   bool has44 = false;
+  bool has45 = false;
 
   // retrieve platform-dependent extensions
 #if defined(HAVE_EGL)
@@ -2331,6 +2336,131 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
        && FindProcShort (glBindImageTextures)
        && FindProcShort (glBindVertexBuffers);
 
+  has45 = IsGlGreaterEqual (4, 5)
+       && FindProcShort (glBindVertexBuffers)
+       && FindProcShort (glClipControl)
+       && FindProcShort (glCreateTransformFeedbacks)
+       && FindProcShort (glTransformFeedbackBufferBase)
+       && FindProcShort (glTransformFeedbackBufferRange)
+       && FindProcShort (glGetTransformFeedbackiv)
+       && FindProcShort (glGetTransformFeedbacki_v)
+       && FindProcShort (glGetTransformFeedbacki64_v)
+       && FindProcShort (glCreateBuffers)
+       && FindProcShort (glNamedBufferStorage)
+       && FindProcShort (glNamedBufferData)
+       && FindProcShort (glNamedBufferSubData)
+       && FindProcShort (glCopyNamedBufferSubData)
+       && FindProcShort (glClearNamedBufferData)
+       && FindProcShort (glClearNamedBufferSubData)
+       && FindProcShort (glMapNamedBuffer)
+       && FindProcShort (glMapNamedBufferRange)
+       && FindProcShort (glUnmapNamedBuffer)
+       && FindProcShort (glFlushMappedNamedBufferRange)
+       && FindProcShort (glGetNamedBufferParameteriv)
+       && FindProcShort (glGetNamedBufferParameteri64v)
+       && FindProcShort (glGetNamedBufferPointerv)
+       && FindProcShort (glGetNamedBufferSubData)
+       && FindProcShort (glCreateFramebuffers)
+       && FindProcShort (glNamedFramebufferRenderbuffer)
+       && FindProcShort (glNamedFramebufferParameteri)
+       && FindProcShort (glNamedFramebufferTexture)
+       && FindProcShort (glNamedFramebufferTextureLayer)
+       && FindProcShort (glNamedFramebufferDrawBuffer)
+       && FindProcShort (glNamedFramebufferDrawBuffers)
+       && FindProcShort (glNamedFramebufferReadBuffer)
+       && FindProcShort (glInvalidateNamedFramebufferData)
+       && FindProcShort (glInvalidateNamedFramebufferSubData)
+       && FindProcShort (glClearNamedFramebufferiv)
+       && FindProcShort (glClearNamedFramebufferuiv)
+       && FindProcShort (glClearNamedFramebufferfv)
+       && FindProcShort (glClearNamedFramebufferfi)
+       && FindProcShort (glBlitNamedFramebuffer)
+       && FindProcShort (glCheckNamedFramebufferStatus)
+       && FindProcShort (glGetNamedFramebufferParameteriv)
+       && FindProcShort (glGetNamedFramebufferAttachmentParameteriv)
+       && FindProcShort (glCreateRenderbuffers)
+       && FindProcShort (glNamedRenderbufferStorage)
+       && FindProcShort (glNamedRenderbufferStorageMultisample)
+       && FindProcShort (glGetNamedRenderbufferParameteriv)
+       && FindProcShort (glCreateTextures)
+       && FindProcShort (glTextureBuffer)
+       && FindProcShort (glTextureBufferRange)
+       && FindProcShort (glTextureStorage1D)
+       && FindProcShort (glTextureStorage2D)
+       && FindProcShort (glTextureStorage3D)
+       && FindProcShort (glTextureStorage2DMultisample)
+       && FindProcShort (glTextureStorage3DMultisample)
+       && FindProcShort (glTextureSubImage1D)
+       && FindProcShort (glTextureSubImage2D)
+       && FindProcShort (glTextureSubImage3D)
+       && FindProcShort (glCompressedTextureSubImage1D)
+       && FindProcShort (glCompressedTextureSubImage2D)
+       && FindProcShort (glCompressedTextureSubImage3D)
+       && FindProcShort (glCopyTextureSubImage1D)
+       && FindProcShort (glCopyTextureSubImage2D)
+       && FindProcShort (glCopyTextureSubImage3D)
+       && FindProcShort (glTextureParameterf)
+       && FindProcShort (glTextureParameterfv)
+       && FindProcShort (glTextureParameteri)
+       && FindProcShort (glTextureParameterIiv)
+       && FindProcShort (glTextureParameterIuiv)
+       && FindProcShort (glTextureParameteriv)
+       && FindProcShort (glGenerateTextureMipmap)
+       && FindProcShort (glBindTextureUnit)
+       && FindProcShort (glGetTextureImage)
+       && FindProcShort (glGetCompressedTextureImage)
+       && FindProcShort (glGetTextureLevelParameterfv)
+       && FindProcShort (glGetTextureLevelParameteriv)
+       && FindProcShort (glGetTextureParameterfv)
+       && FindProcShort (glGetTextureParameterIiv)
+       && FindProcShort (glGetTextureParameterIuiv)
+       && FindProcShort (glGetTextureParameteriv)
+       && FindProcShort (glCreateVertexArrays)
+       && FindProcShort (glDisableVertexArrayAttrib)
+       && FindProcShort (glEnableVertexArrayAttrib)
+       && FindProcShort (glVertexArrayElementBuffer)
+       && FindProcShort (glVertexArrayVertexBuffer)
+       && FindProcShort (glVertexArrayVertexBuffers)
+       && FindProcShort (glVertexArrayAttribBinding)
+       && FindProcShort (glVertexArrayAttribFormat)
+       && FindProcShort (glVertexArrayAttribIFormat)
+       && FindProcShort (glVertexArrayAttribLFormat)
+       && FindProcShort (glVertexArrayBindingDivisor)
+       && FindProcShort (glGetVertexArrayiv)
+       && FindProcShort (glGetVertexArrayIndexediv)
+       && FindProcShort (glGetVertexArrayIndexed64iv)
+       && FindProcShort (glCreateSamplers)
+       && FindProcShort (glCreateProgramPipelines)
+       && FindProcShort (glCreateQueries)
+       && FindProcShort (glGetQueryBufferObjecti64v)
+       && FindProcShort (glGetQueryBufferObjectiv)
+       && FindProcShort (glGetQueryBufferObjectui64v)
+       && FindProcShort (glGetQueryBufferObjectuiv)
+       && FindProcShort (glMemoryBarrierByRegion)
+       && FindProcShort (glGetTextureSubImage)
+       && FindProcShort (glGetCompressedTextureSubImage)
+       && FindProcShort (glGetGraphicsResetStatus)
+       && FindProcShort (glGetnCompressedTexImage)
+       && FindProcShort (glGetnTexImage)
+       && FindProcShort (glGetnUniformdv)
+       && FindProcShort (glGetnUniformfv)
+       && FindProcShort (glGetnUniformiv)
+       && FindProcShort (glGetnUniformuiv)
+       && FindProcShort (glReadnPixels)
+       && FindProcShort (glGetnMapdv)
+       && FindProcShort (glGetnMapfv)
+       && FindProcShort (glGetnMapiv)
+       && FindProcShort (glGetnPixelMapfv)
+       && FindProcShort (glGetnPixelMapuiv)
+       && FindProcShort (glGetnPixelMapusv)
+       && FindProcShort (glGetnPolygonStipple)
+       && FindProcShort (glGetnColorTable)
+       && FindProcShort (glGetnConvolutionFilter)
+       && FindProcShort (glGetnSeparableFilter)
+       && FindProcShort (glGetnHistogram)
+       && FindProcShort (glGetnMinmax)
+       && FindProcShort (glTextureBarrier);
+
   // initialize debug context extension
   if (CheckExtension ("GL_ARB_debug_output"))
   {
@@ -2635,6 +2765,19 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
   if (!isCoreProfile)
   {
     core44back = (OpenGl_GlCore44Back* )(&(*myFuncs));
+  }
+
+  if (!has45)
+  {
+    checkWrongVersion (4, 5);
+    myGlVerMajor = 4;
+    myGlVerMinor = 4;
+    return;
+  }
+  core45 = (OpenGl_GlCore45* )(&(*myFuncs));
+  if (!isCoreProfile)
+  {
+    core45back = (OpenGl_GlCore45Back* )(&(*myFuncs));
   }
 #endif
 }
