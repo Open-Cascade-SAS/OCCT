@@ -1194,71 +1194,20 @@ Handle(OpenGl_ShaderObject) OpenGl_View::initShader (const GLenum               
                                                      const Handle(OpenGl_Context)& theGlContext)
 {
   Handle(OpenGl_ShaderObject) aShader = new OpenGl_ShaderObject (theType);
-
   if (!aShader->Create (theGlContext))
   {
-    const TCollection_ExtendedString aMessage = TCollection_ExtendedString ("Error: Failed to create ") +
-      (theType == GL_VERTEX_SHADER ? "vertex" : "fragment") + " shader object";
-
-    theGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION,
-      GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH, aMessage);
-
-    aShader->Release (theGlContext.operator->());
-
+    theGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
+                               TCollection_ExtendedString ("Error: Failed to create ") +
+                               (theType == GL_VERTEX_SHADER ? "vertex" : "fragment") + " shader object");
+    aShader->Release (theGlContext.get());
     return Handle(OpenGl_ShaderObject)();
   }
 
-  if (!aShader->LoadSource (theGlContext, theSource.Source()))
+  if (!aShader->LoadAndCompile (theGlContext, "", theSource.Source()))
   {
-    const TCollection_ExtendedString aMessage = TCollection_ExtendedString ("Error: Failed to set ") +
-      (theType == GL_VERTEX_SHADER ? "vertex" : "fragment") + " shader source";
-
-    theGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION,
-      GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH, aMessage);
-
-    aShader->Release (theGlContext.operator->());
-
+    aShader->Release (theGlContext.get());
     return Handle(OpenGl_ShaderObject)();
   }
-
-  TCollection_AsciiString aBuildLog;
-
-  if (!aShader->Compile (theGlContext))
-  {
-    aShader->FetchInfoLog (theGlContext, aBuildLog);
-
-    const TCollection_ExtendedString aMessage = TCollection_ExtendedString ("Error: Failed to compile ") +
-      (theType == GL_VERTEX_SHADER ? "vertex" : "fragment") + " shader object:\n" + aBuildLog;
-
-    theGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION,
-      GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH, aMessage);
-
-    aShader->Release (theGlContext.operator->());
-
-#ifdef RAY_TRACE_PRINT_INFO
-    std::cout << "Shader build log:\n" << aBuildLog << "\n";
-#endif
-
-    return Handle(OpenGl_ShaderObject)();
-  }
-  else if (theGlContext->caps->glslWarnings)
-  {
-    aShader->FetchInfoLog (theGlContext, aBuildLog);
-
-    if (!aBuildLog.IsEmpty() && !aBuildLog.IsEqual ("No errors.\n"))
-    {
-      const TCollection_ExtendedString aMessage = TCollection_ExtendedString (theType == GL_VERTEX_SHADER ?
-        "Vertex" : "Fragment") + " shader was compiled with following warnings:\n" + aBuildLog;
-
-      theGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION,
-        GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_LOW, aMessage);
-    }
-
-#ifdef RAY_TRACE_PRINT_INFO
-    std::cout << "Shader build log:\n" << aBuildLog << "\n";
-#endif
-  }
-
   return aShader;
 }
 
