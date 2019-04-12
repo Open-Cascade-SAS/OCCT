@@ -95,12 +95,25 @@ public:
   //! Converts numeric expression, that can involve DRAW
   //! variables, to real value.
   Standard_EXPORT static Standard_Real Atof (const Standard_CString Name);
-  
+
+  //! Converts the numeric expression, that can involve DRAW variables, to a real value
+  //! @param theExpressionString the strings that containes the expression involving DRAW variables to be parsed
+  //! @param theParsedRealValue a real value that is a result of parsing
+  //! @return true if parsing was successfull, or false otherwise
+  Standard_EXPORT static bool ParseReal (const Standard_CString theExpressionString, Standard_Real& theParsedRealValue);
+
   //! Converts numeric expression, that can involve DRAW
   //! variables, to integer value.
   //! Implemented as cast of Atof() to integer.
   Standard_EXPORT static Standard_Integer Atoi (const Standard_CString Name);
-  
+
+  //! Converts the numeric expression, that can involve DRAW variables, to an integer value
+  //! @param theExpressionString the strings that containes the expression involving DRAW variables to be parsed
+  //! @param theParsedIntegerValue an integer value that is a result of parsing
+  //! @return true if parsing was successfull, or false otherwise
+  Standard_EXPORT static bool ParseInteger (const Standard_CString theExpressionString,
+                                            Standard_Integer&      theParsedIntegerValue);
+
   //! Returns last graphic selection description.
   Standard_EXPORT static void LastPick (Standard_Integer& view, Standard_Integer& X, Standard_Integer& Y, Standard_Integer& button);
   

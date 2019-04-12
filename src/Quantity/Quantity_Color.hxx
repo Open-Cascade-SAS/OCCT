@@ -222,7 +222,31 @@ Standard_Boolean operator == (const Quantity_Color& Other) const
   //! corresponds to "BLACK" is Quantity_NOC_BLACK.
   //! Returns false if name is unknown.
   Standard_EXPORT static Standard_Boolean ColorFromName (const Standard_CString theName, Quantity_NameOfColor& theColor);
-  
+
+  //! Finds color from predefined names.
+  //! For example, the name of the color which
+  //! corresponds to "BLACK" is Quantity_NOC_BLACK.
+  //! Returns false if name is unknown.
+  //! @param theColorNameString the color name
+  //! @param theColor a found color
+  //! @return false if the color name is unknown, or true if the search by color name was successful
+  static Standard_Boolean ColorFromName (const Standard_CString theColorNameString, Quantity_Color& theColor)
+  {
+    Quantity_NameOfColor aColorName = Quantity_NOC_BLACK;
+    if (!ColorFromName (theColorNameString, aColorName))
+    {
+      return false;
+    }
+    theColor = aColorName;
+    return true;
+  }
+
+  //! Parses the string as a hex color (like "#FF0" for short RGB color, or "#FFFF00" for RGB color)
+  //! @param theHexColorString the string to be parsed
+  //! @param theColor a color that is a result of parsing
+  //! @return true if parsing was successful, or false otherwise
+  Standard_EXPORT static bool ColorFromHex (const Standard_CString theHexColorString, Quantity_Color& theColor);
+
   //! Converts HLS components into RGB ones.
   Standard_EXPORT static void HlsRgb (const Standard_Real H, const Standard_Real L, const Standard_Real S, Standard_Real& R, Standard_Real& G, Standard_Real& B);
   

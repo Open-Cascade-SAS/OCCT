@@ -57,6 +57,18 @@ public:
     v[1] = theY;
   }
 
+  //! Conversion constructor (explicitly converts some 2-component vector with other element type
+  //! to a new 2-component vector with the element type Element_t,
+  //! whose elements are static_cast'ed corresponding elements of theOtherVec2 vector)
+  //! @tparam OtherElement_t the element type of the other 2-component vector theOtherVec2
+  //! @param theOtherVec2 the 2-component vector that needs to be converted
+  template <typename OtherElement_t>
+  explicit NCollection_Vec2 (const NCollection_Vec2<OtherElement_t>& theOtherVec2)
+  {
+    v[0] = static_cast<Element_t> (theOtherVec2[0]);
+    v[1] = static_cast<Element_t> (theOtherVec2[1]);
+  }
+
   //! Assign new values to the vector.
   void SetValues (const Element_t theX,
                   const Element_t theY)

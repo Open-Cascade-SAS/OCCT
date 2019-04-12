@@ -49,6 +49,17 @@ public:
     InitIdentity();
   }
 
+  //! Conversion constructor (explicitly converts some 4 x 4 matrix with other element type
+  //! to a new 4 x 4 matrix with the element type Element_t,
+  //! whose elements are static_cast'ed corresponding elements of theOtherMat4 matrix)
+  //! @tparam OtherElement_t the element type of the other 4 x 4 matrix theOtherVec4
+  //! @param theOtherMat4 the 4 x 4 matrix that needs to be converted
+  template <typename OtherElement_t>
+  explicit NCollection_Mat4 (const NCollection_Mat4<OtherElement_t>& theOtherMat4)
+  {
+    ConvertFrom (theOtherMat4);
+  }
+
   //! Get element at the specified row and column.
   //! @param theRow [in] the row.to address.
   //! @param theCol [in] the column to address.

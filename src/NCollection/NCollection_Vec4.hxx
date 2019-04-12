@@ -73,6 +73,20 @@ public:
     v[3] = theW;
   }
 
+  //! Conversion constructor (explicitly converts some 4-component vector with other element type
+  //! to a new 4-component vector with the element type Element_t,
+  //! whose elements are static_cast'ed corresponding elements of theOtherVec4 vector)
+  //! @tparam OtherElement_t the element type of the other 4-component vector theOtherVec4
+  //! @param theOtherVec4 the 4-component vector that needs to be converted
+  template <typename OtherElement_t>
+  explicit NCollection_Vec4 (const NCollection_Vec4<OtherElement_t>& theOtherVec4)
+  {
+    v[0] = static_cast<Element_t> (theOtherVec4[0]);
+    v[1] = static_cast<Element_t> (theOtherVec4[1]);
+    v[2] = static_cast<Element_t> (theOtherVec4[2]);
+    v[3] = static_cast<Element_t> (theOtherVec4[3]);
+  }
+
   //! Assign new values to the vector.
   void SetValues (const Element_t theX,
                   const Element_t theY,

@@ -1122,9 +1122,10 @@ static Standard_Real Parse(char*& name)
     }
   }
 }
+
 //=======================================================================
-//function : Atof
-//purpose  : 
+// function : Atof
+// purpose  :
 //=======================================================================
 Standard_Real Draw::Atof(const Standard_CString name)
 {
@@ -1132,6 +1133,7 @@ Standard_Real Draw::Atof(const Standard_CString name)
   char* n = new char[1+strlen(name)];
   char* b = n;
   strcpy(n,name);
+  Draw_ParseFailed = Standard_False;
   Standard_Real x = Parse(n);
   while ((*n == ' ') || (*n == '\t')) n++;
   if (*n) Draw_ParseFailed = Standard_True;
@@ -1139,10 +1141,51 @@ Standard_Real Draw::Atof(const Standard_CString name)
   return x;
 }
 
+//=======================================================================
+// function : ParseReal
+// purpose  :
+//=======================================================================
+bool Draw::ParseReal (const Standard_CString theExpressionString, Standard_Real& theParsedRealValue)
+{
+  const Standard_Real aParsedRealValue = Atof (theExpressionString);
+  if (Draw_ParseFailed)
+  {
+    Draw_ParseFailed = Standard_False;
+    return false;
+  }
+  theParsedRealValue = aParsedRealValue;
+  return true;
+}
+
+//=======================================================================
+// function : Atoi
+// purpose  :
+//=======================================================================
 Standard_Integer Draw::Atoi(const Standard_CString name)
 {
-  return (Standard_Integer ) Draw::Atof(name);
+  return (Standard_Integer) Draw::Atof(name);
 }
+
+//=======================================================================
+// function : ParseInteger
+// purpose  :
+//=======================================================================
+bool Draw::ParseInteger (const Standard_CString theExpressionString, Standard_Integer& theParsedIntegerValue)
+{
+  Standard_Real aParsedRealValue = 0.0;
+  if (!ParseReal (theExpressionString, aParsedRealValue))
+  {
+    return false;
+  }
+  const Standard_Integer aParsedIntegerValue = static_cast<Standard_Integer> (aParsedRealValue);
+  if (static_cast<Standard_Real> (aParsedIntegerValue) != aParsedRealValue)
+  {
+    return false;
+  }
+  theParsedIntegerValue = aParsedIntegerValue;
+  return true;
+}
+
 //=======================================================================
 //function : Set
 //purpose  : set a TCL var

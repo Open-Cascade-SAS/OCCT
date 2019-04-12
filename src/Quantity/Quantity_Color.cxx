@@ -16,6 +16,7 @@
 #include <Quantity_Color.hxx>
 
 #include <Quantity_ColorDefinitionError.hxx>
+#include <Quantity_ColorRGBA.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <TCollection_AsciiString.hxx>
@@ -64,6 +65,21 @@ Standard_Boolean Quantity_Color::ColorFromName (const Standard_CString theName,
     }
   }
   return Standard_False;
+}
+
+//=======================================================================
+// function : ColorFromHex
+// purpose  :
+//=======================================================================
+bool Quantity_Color::ColorFromHex (const Standard_CString theHexColorString, Quantity_Color& theColor)
+{
+  Quantity_ColorRGBA aColorRGBA;
+  if (!Quantity_ColorRGBA::ColorFromHex (theHexColorString, aColorRGBA, true))
+  {
+    return false;
+  }
+  theColor = aColorRGBA.GetRGB();
+  return true;
 }
 
 Quantity_Color::Quantity_Color () {

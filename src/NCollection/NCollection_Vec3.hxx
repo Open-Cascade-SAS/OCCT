@@ -73,6 +73,19 @@ public:
     v[2] = theZ;
   }
 
+  //! Conversion constructor (explicitly converts some 3-component vector with other element type
+  //! to a new 3-component vector with the element type Element_t,
+  //! whose elements are static_cast'ed corresponding elements of theOtherVec3 vector)
+  //! @tparam OtherElement_t the element type of the other 3-component vector theOtherVec3
+  //! @param theOtherVec3 the 3-component vector that needs to be converted
+  template <typename OtherElement_t>
+  explicit NCollection_Vec3 (const NCollection_Vec3<OtherElement_t>& theOtherVec3)
+  {
+    v[0] = static_cast<Element_t> (theOtherVec3[0]);
+    v[1] = static_cast<Element_t> (theOtherVec3[1]);
+    v[2] = static_cast<Element_t> (theOtherVec3[2]);
+  }
+
   //! Assign new values to the vector.
   void SetValues (const Element_t theX,
                   const Element_t theY,
