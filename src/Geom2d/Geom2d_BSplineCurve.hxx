@@ -20,6 +20,7 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
+#include <Precision.hxx>
 #include <Standard_Boolean.hxx>
 #include <GeomAbs_BSplKnotDistribution.hxx>
 #include <GeomAbs_Shape.hxx>
@@ -356,6 +357,10 @@ public:
   //! All data structure tables of this BSpline curve are
   //! modified, but the knots located between U1 and U2
   //! are retained. The degree of the curve is not modified.
+  //!
+  //! Parameter theTolerance defines the possible proximity of the segment
+  //! boundaries and B-spline knots to treat them as equal.
+  //!
   //! Warnings :
   //! Even if <me> is not closed it can become closed after the
   //! segmentation for example if U1 or U2 are out of the bounds
@@ -369,7 +374,8 @@ public:
   //! raises if U2 < U1.
   //! Standard_DomainError if U2 - U1 exceeds the period for periodic curves.
   //! i.e. ((U2 - U1) - Period) > Precision::PConfusion().
-  Standard_EXPORT void Segment (const Standard_Real U1, const Standard_Real U2);
+  Standard_EXPORT void Segment (const Standard_Real U1, const Standard_Real U2,
+                                const Standard_Real theTolerance = Precision::PConfusion());
   
   //! Modifies this BSpline curve by assigning the value K
   //! to the knot of index Index in the knots table. This is a

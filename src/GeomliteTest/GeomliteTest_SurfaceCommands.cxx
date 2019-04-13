@@ -1351,7 +1351,7 @@ static Standard_Integer exchuv (Draw_Interpretor& , Standard_Integer n, const ch
 
 static Standard_Integer segsur (Draw_Interpretor& , Standard_Integer n, const char** a)
 {
-  if (n < 6) return 1;
+  if (n < 6 || n > 8) return 1;
 
   Handle(Geom_BezierSurface) GBz = DrawTrSurf::GetBezierSurface(a[1]);
   Handle(Geom_BSplineSurface) GBs;
@@ -1359,7 +1359,15 @@ static Standard_Integer segsur (Draw_Interpretor& , Standard_Integer n, const ch
     GBs = DrawTrSurf::GetBSplineSurface(a[1]);
     if (GBs.IsNull())
       return 1;
-    GBs->Segment(Draw::Atof(a[2]),Draw::Atof(a[3]),Draw::Atof(a[4]),Draw::Atof(a[5])); 
+
+    Standard_Real aUTolerance = Precision::PConfusion();
+    Standard_Real aVTolerance = Precision::PConfusion();
+    if (n >= 7)
+      aUTolerance = aVTolerance = Draw::Atof(a[6]);
+    if (n == 8)
+      aVTolerance = Draw::Atof(a[7]);
+
+    GBs->Segment(Draw::Atof(a[2]),Draw::Atof(a[3]),Draw::Atof(a[4]),Draw::Atof(a[5]), aUTolerance, aVTolerance); 
   }
   else {
     GBz->Segment(Draw::Atof(a[2]),Draw::Atof(a[3]),Draw::Atof(a[4]),Draw::Atof(a[5]));
@@ -1770,7 +1778,7 @@ void  GeomliteTest::SurfaceCommands(Draw_Interpretor& theCommands)
 		  exchuv,g);
 
   theCommands.Add("segsur",
-		  "segsur name Ufirst Ulast Vfirst Vlast",
+		  "segsur name Ufirst Ulast Vfirst Vlast [Utol [Vtol]]",
 		  __FILE__,
 		  segsur , g);
 

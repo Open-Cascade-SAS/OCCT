@@ -1131,7 +1131,7 @@ static Standard_Integer value2d (Draw_Interpretor& ,
 
 static Standard_Integer segment (Draw_Interpretor& , Standard_Integer n, const char** a)
 {
-  if (n < 4) return 1;
+  if (n < 4 || n > 5) return 1;
 
   Handle(Geom_BezierCurve) GBz = DrawTrSurf::GetBezierCurve(a[1]);
   Handle(Geom_BSplineCurve) GBs = DrawTrSurf::GetBSplineCurve(a[1]);
@@ -1140,14 +1140,18 @@ static Standard_Integer segment (Draw_Interpretor& , Standard_Integer n, const c
 
   Standard_Real f = Draw::Atof(a[2]), l = Draw::Atof(a[3]);
 
+  Standard_Real aTolerance = Precision::PConfusion();
+  if (n == 5)
+    aTolerance = Draw::Atof(a[4]);
+
   if (!GBz.IsNull()) 
     GBz->Segment(f,l);
   else if (!GBs.IsNull())
-    GBs->Segment(f,l);
+    GBs->Segment(f, l, aTolerance);
   else if (!GBz2d.IsNull()) 
     GBz2d->Segment(f,l);
   else if (!GBs2d.IsNull())
-    GBs2d->Segment(f,l);
+    GBs2d->Segment(f, l, aTolerance);
   else
     return 1;
 
@@ -2135,7 +2139,7 @@ void  GeomliteTest::CurveCommands(Draw_Interpretor& theCommands)
 		  csetperiodic,g);
 
   theCommands.Add("segment",
-		  "segment name Ufirst Ulast",
+		  "segment name Ufirst Ulast [tol]",
 		   __FILE__,
 		  segment , g);
 

@@ -491,7 +491,8 @@ Standard_Real Geom_BSplineCurve::ReversedParameter
 //=======================================================================
 
 void Geom_BSplineCurve::Segment(const Standard_Real U1,
-				const Standard_Real U2)
+                                const Standard_Real U2,
+                                const Standard_Real theTolerance)
 {
   if (U2 < U1)
     throw Standard_DomainError("Geom_BSplineCurve::Segment");
@@ -539,7 +540,7 @@ void Geom_BSplineCurve::Segment(const Standard_Real U1,
   AbsUMax = Max(AbsUMax, Max(Abs(FirstParameter()),Abs(LastParameter())));
 //  Modified by Sergey KHROMOV - Fri Apr 11 12:15:40 2003 End
 
-  Standard_Real Eps = 100. * Epsilon(AbsUMax);
+  Standard_Real Eps = Max(Epsilon(AbsUMax), theTolerance);
 
   InsertKnots( Knots, Mults, Eps);
 

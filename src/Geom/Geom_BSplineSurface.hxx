@@ -20,6 +20,7 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
+#include <Precision.hxx>
 #include <Standard_Boolean.hxx>
 #include <GeomAbs_BSplKnotDistribution.hxx>
 #include <GeomAbs_Shape.hxx>
@@ -547,6 +548,10 @@ public:
   //! between V1 and V2 in the V-Direction.
   //! The control points are modified, the first and the last point
   //! are not the same.
+  //!
+  //! Parameters theUTolerance, theVTolerance define the possible proximity along the correponding
+  //! direction of the segment boundaries and B-spline knots to treat them as equal.
+  //!
   //! Warnings :
   //! Even if <me> is not closed it can become closed after the
   //! segmentation for example if U1 or U2 are out of the bounds
@@ -556,7 +561,9 @@ public:
   //! i.e. ((U2 - U1) - UPeriod) > Precision::PConfusion().
   //! Standard_DomainError if V2 - V1 exceeds the vperiod for vperiodic surfaces.
   //! i.e. ((V2 - V1) - VPeriod) > Precision::PConfusion()).
-  Standard_EXPORT void Segment (const Standard_Real U1, const Standard_Real U2, const Standard_Real V1, const Standard_Real V2);
+  Standard_EXPORT void Segment (const Standard_Real U1, const Standard_Real U2, const Standard_Real V1, const Standard_Real V2,
+                                const Standard_Real theUTolerance = Precision::PConfusion(),
+                                const Standard_Real theVTolerance = Precision::PConfusion());
   
 
   //! Segments the surface between U1 and U2 in the U-Direction.
@@ -567,6 +574,9 @@ public:
   //! For example, if <me> is periodic in V, it will be always periodic
   //! in V after the segmentation if the bounds in V are unchanged
   //!
+  //! Parameters theUTolerance, theVTolerance define the possible proximity along the correponding
+  //! direction of the segment boundaries and B-spline knots to treat them as equal.
+  //!
   //! Warnings :
   //! Even if <me> is not closed it can become closed after the
   //! segmentation for example if U1 or U2 are out of the bounds
@@ -576,7 +586,9 @@ public:
   //! i.e. ((U2 - U1) - UPeriod) > Precision::PConfusion().
   //! Standard_DomainError if V2 - V1 exceeds the vperiod for vperiodic surfaces.
   //! i.e. ((V2 - V1) - VPeriod) > Precision::PConfusion()).
-  Standard_EXPORT void CheckAndSegment (const Standard_Real U1, const Standard_Real U2, const Standard_Real V1, const Standard_Real V2);
+  Standard_EXPORT void CheckAndSegment (const Standard_Real U1, const Standard_Real U2, const Standard_Real V1, const Standard_Real V2,
+                                        const Standard_Real theUTolerance = Precision::PConfusion(),
+                                        const Standard_Real theVTolerance = Precision::PConfusion());
   
   //! Substitutes the UKnots of range UIndex with K.
   //!
@@ -1184,7 +1196,16 @@ public:
 
 protected:
 
-
+  //! Segments the surface between U1 and U2 in the U-Direction.
+  //! between V1 and V2 in the V-Direction.
+  //! The control points are modified, the first and the last point
+  //! are not the same.
+  //!
+  //! Parameters EpsU, EpsV define the proximity along U-Direction and V-Direction respectively.
+  void segment(const Standard_Real U1, const Standard_Real U2,
+               const Standard_Real V1, const Standard_Real V2,
+               const Standard_Real EpsU, const Standard_Real EpsV,
+               const Standard_Boolean SegmentInU, const Standard_Boolean SegmentInV);
 
 
 private:

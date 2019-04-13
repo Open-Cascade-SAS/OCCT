@@ -226,7 +226,10 @@ void BndLib_Add3dCurve::Add( const Adaptor3d_Curve& C,
 	  if(Bsaux->LastParameter()  < U2 ) u2  = Bsaux->LastParameter();
 	  //  modified by NIZHNY-EAP Fri Dec  3 14:29:18 1999 ___END___
 	}
-	Bsaux->Segment(u1, u2);
+        Standard_Real aSegmentTol = Precision::PConfusion();
+        if (Abs(u2 - u1) < aSegmentTol)
+          aSegmentTol = Abs(u2 - u1) * 0.01;
+	Bsaux->Segment(u1, u2, aSegmentTol);
 	Bs = Bsaux;
       }
       //OCC566(apo)->

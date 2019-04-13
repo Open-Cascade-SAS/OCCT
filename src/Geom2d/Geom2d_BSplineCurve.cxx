@@ -650,13 +650,14 @@ Standard_Real Geom2d_BSplineCurve::ReversedParameter( const Standard_Real U) con
 //purpose  : 
 //=======================================================================
 void Geom2d_BSplineCurve::Segment(const Standard_Real aU1,
-				  const Standard_Real aU2)
+                                  const Standard_Real aU2,
+                                  const Standard_Real theTolerance)
 {
   if (aU2 < aU1)
     throw Standard_DomainError("Geom2d_BSplineCurve::Segment");
   //
   Standard_Real AbsUMax = Max(Abs(FirstParameter()),Abs(LastParameter()));
-  Standard_Real Eps = Max (Epsilon(AbsUMax), Precision::PConfusion());
+  Standard_Real Eps = Max (Epsilon(AbsUMax), theTolerance);
   Standard_Real NewU1, NewU2;
   Standard_Real U, DU=0;
   Standard_Integer i, k, index;

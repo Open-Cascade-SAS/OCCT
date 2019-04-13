@@ -529,20 +529,20 @@ void Geom_BSplineSurface::IncreaseVMultiplicity
 }
 
 //=======================================================================
-//function : Segment
+//function : segment
 //purpose  : 
 //=======================================================================
 
-void Geom_BSplineSurface::Segment(const Standard_Real U1, 
-				  const Standard_Real U2,
-				  const Standard_Real V1,
-				  const Standard_Real V2) 
+void Geom_BSplineSurface::segment(const Standard_Real U1,
+                                  const Standard_Real U2,
+                                  const Standard_Real V1,
+                                  const Standard_Real V2,
+                                  const Standard_Real EpsU,
+                                  const Standard_Real EpsV,
+                                  const Standard_Boolean SegmentInU,
+                                  const Standard_Boolean SegmentInV)
 {
-  if ((U2 < U1) || (V2 < V1))
-    throw Standard_DomainError("Geom_BSplineSurface::Segment");
-  Standard_Real deltaU = Max(Abs(U2),Abs(U1));
-  Standard_Real EpsU = Epsilon(deltaU);
-  deltaU = U2 - U1;
+  Standard_Real deltaU = U2 - U1;
   if (uperiodic) {
     Standard_Real aUPeriod = uknots->Last() - uknots->First();
     if (deltaU - aUPeriod > Precision::PConfusion())
@@ -550,10 +550,8 @@ void Geom_BSplineSurface::Segment(const Standard_Real U1,
     if (deltaU > aUPeriod)
       deltaU = aUPeriod;
   }
-  
-  Standard_Real deltaV = Max(Abs(V2),Abs(V1));
-  Standard_Real EpsV = Epsilon(deltaV);
-  deltaV = V2 - V1;
+
+  Standard_Real deltaV = V2 - V1;
   if (vperiodic) {
     Standard_Real aVPeriod = vknots->Last() - vknots->First();
     if (deltaV - aVPeriod > Precision::PConfusion())
@@ -563,50 +561,53 @@ void Geom_BSplineSurface::Segment(const Standard_Real U1,
   }
 
   Standard_Real NewU1, NewU2, NewV1, NewV2;
-  Standard_Real U,V;
+  Standard_Real U, V;
   Standard_Integer indexU, indexV;
 
-  // inserting the UKnots
-  TColStd_Array1OfReal    UKnots(1,2);
-  TColStd_Array1OfInteger UMults(1,2);
-
   indexU = 0;
-  BSplCLib::LocateParameter(udeg,uknots->Array1(),umults->Array1(),
-			    U1,uperiodic,uknots->Lower(),uknots->Upper(),
-			    indexU,NewU1);
+  BSplCLib::LocateParameter(udeg, uknots->Array1(), umults->Array1(),
+                            U1, uperiodic, uknots->Lower(), uknots->Upper(),
+                            indexU, NewU1);
   indexU = 0;
-  BSplCLib::LocateParameter(udeg,uknots->Array1(),umults->Array1(),
-			    U2,uperiodic,uknots->Lower(),uknots->Upper(),
-			    indexU,NewU2);
-  UKnots( 1) = Min( NewU1, NewU2);
-  UKnots( 2) = Max( NewU1, NewU2);
-  UMults( 1) = UMults( 2) = udeg;
-  InsertUKnots( UKnots, UMults, EpsU);
+  BSplCLib::LocateParameter(udeg, uknots->Array1(), umults->Array1(),
+                            U2, uperiodic, uknots->Lower(), uknots->Upper(),
+                            indexU, NewU2);
+  if (SegmentInU) {
+    // inserting the UKnots
+    TColStd_Array1OfReal    UKnots(1, 2);
+    TColStd_Array1OfInteger UMults(1, 2);
+    UKnots(1) = Min(NewU1, NewU2);
+    UKnots(2) = Max(NewU1, NewU2);
+    UMults(1) = UMults(2) = udeg;
 
-  // Inserting the VKnots
-  TColStd_Array1OfReal    VKnots(1,2);
-  TColStd_Array1OfInteger VMults(1,2);
+    InsertUKnots(UKnots, UMults, EpsU);
+  }
 
   indexV = 0;
-  BSplCLib::LocateParameter(vdeg,vknots->Array1(),vmults->Array1(),
-			    V1,vperiodic,vknots->Lower(),vknots->Upper(),
-			    indexV,NewV1);
+  BSplCLib::LocateParameter(vdeg, vknots->Array1(), vmults->Array1(),
+                            V1, vperiodic, vknots->Lower(), vknots->Upper(),
+                            indexV, NewV1);
   indexV = 0;
-  BSplCLib::LocateParameter(vdeg,vknots->Array1(),vmults->Array1(),
-			    V2,vperiodic,vknots->Lower(),vknots->Upper(),
-			    indexV,NewV2);
-  VKnots( 1) = Min( NewV1, NewV2);
-  VKnots( 2) = Max( NewV1, NewV2);
-  VMults( 1) = VMults( 2) = vdeg;
-  InsertVKnots( VKnots, VMults, EpsV);
+  BSplCLib::LocateParameter(vdeg, vknots->Array1(), vmults->Array1(),
+                            V2, vperiodic, vknots->Lower(), vknots->Upper(),
+                            indexV, NewV2);
+  if (SegmentInV) {
+    // Inserting the VKnots
+    TColStd_Array1OfReal    VKnots(1, 2);
+    TColStd_Array1OfInteger VMults(1, 2);
 
+    VKnots(1) = Min(NewV1, NewV2);
+    VKnots(2) = Max(NewV1, NewV2);
+    VMults(1) = VMults(2) = vdeg;
+    InsertVKnots(VKnots, VMults, EpsV);
+  }
 
-  if (uperiodic) { // set the origine at NewU1
+  if (uperiodic && SegmentInU) { // set the origine at NewU1
     Standard_Integer index = 0;
-    BSplCLib::LocateParameter(udeg,uknots->Array1(),umults->Array1(),
-			      U1,uperiodic,uknots->Lower(),uknots->Upper(),
-			      index,U);
-    if ( Abs(uknots->Value(index+1)-U) <= EpsU)
+    BSplCLib::LocateParameter(udeg, uknots->Array1(), umults->Array1(),
+      U1, uperiodic, uknots->Lower(), uknots->Upper(),
+      index, U);
+    if (Abs(uknots->Value(index + 1) - U) <= EpsU)
       index++;
     SetUOrigin(index);
     SetUNotPeriodic();
@@ -615,37 +616,38 @@ void Geom_BSplineSurface::Segment(const Standard_Real U1,
   // compute index1 and index2 to set the new knots and mults 
   Standard_Integer index1U = 0, index2U = 0;
   Standard_Integer FromU1 = uknots->Lower();
-  Standard_Integer ToU2   = uknots->Upper();
-  BSplCLib::LocateParameter(udeg,uknots->Array1(),umults->Array1(),
-			    NewU1,uperiodic,FromU1,ToU2,index1U,U);
-  BSplCLib::LocateParameter(udeg,uknots->Array1(),umults->Array1(),
-			    NewU1 + deltaU,uperiodic,FromU1,ToU2,index2U,U);
-  if ( Abs(uknots->Value(index2U+1)-U) <= EpsU)
+  Standard_Integer ToU2 = uknots->Upper();
+  BSplCLib::LocateParameter(udeg, uknots->Array1(), umults->Array1(),
+                            NewU1, uperiodic, FromU1, ToU2, index1U, U);
+  BSplCLib::LocateParameter(udeg, uknots->Array1(), umults->Array1(),
+                            NewU1 + deltaU, uperiodic, FromU1, ToU2, index2U, U);
+  if (Abs(uknots->Value(index2U + 1) - U) <= EpsU)
     index2U++;
-  
+
   Standard_Integer nbuknots = index2U - index1U + 1;
 
-  Handle(TColStd_HArray1OfReal) 
-    nuknots = new TColStd_HArray1OfReal(1,nbuknots);
-  Handle(TColStd_HArray1OfInteger) 
-    numults = new TColStd_HArray1OfInteger(1,nbuknots);
+  Handle(TColStd_HArray1OfReal)
+    nuknots = new TColStd_HArray1OfReal(1, nbuknots);
+  Handle(TColStd_HArray1OfInteger)
+    numults = new TColStd_HArray1OfInteger(1, nbuknots);
 
-  Standard_Integer i , k = 1;
-  for ( i = index1U; i<= index2U; i++) {
+  Standard_Integer i, k = 1;
+  for (i = index1U; i <= index2U; i++) {
     nuknots->SetValue(k, uknots->Value(i));
     numults->SetValue(k, umults->Value(i));
     k++;
   }
-  numults->SetValue(       1, udeg + 1);
-  numults->SetValue(nbuknots, udeg + 1);
+  if (SegmentInU) {
+    numults->SetValue(1, udeg + 1);
+    numults->SetValue(nbuknots, udeg + 1);
+  }
 
-
-  if (vperiodic) { // set the origine at NewV1
+  if (vperiodic&& SegmentInV) { // set the origine at NewV1
     Standard_Integer index = 0;
-    BSplCLib::LocateParameter(vdeg,vknots->Array1(),vmults->Array1(),
-			      V1,vperiodic,vknots->Lower(),vknots->Upper(),
-			      index,V);
-    if ( Abs(vknots->Value(index+1)-V) <= EpsV)
+    BSplCLib::LocateParameter(vdeg, vknots->Array1(), vmults->Array1(),
+      V1, vperiodic, vknots->Lower(), vknots->Upper(),
+      index, V);
+    if (Abs(vknots->Value(index + 1) - V) <= EpsV)
       index++;
     SetVOrigin(index);
     SetVNotPeriodic();
@@ -654,79 +656,80 @@ void Geom_BSplineSurface::Segment(const Standard_Real U1,
   // compute index1 and index2 to set the new knots and mults 
   Standard_Integer index1V = 0, index2V = 0;
   Standard_Integer FromV1 = vknots->Lower();
-  Standard_Integer ToV2   = vknots->Upper();
-  BSplCLib::LocateParameter(vdeg,vknots->Array1(),vmults->Array1(),
-			    NewV1,vperiodic,FromV1,ToV2,index1V,V);
-  BSplCLib::LocateParameter(vdeg,vknots->Array1(),vmults->Array1(),
-			    NewV1 + deltaV,vperiodic,FromV1,ToV2,index2V,V);
-  if ( Abs(vknots->Value(index2V+1)-V) <= EpsV)
+  Standard_Integer ToV2 = vknots->Upper();
+  BSplCLib::LocateParameter(vdeg, vknots->Array1(), vmults->Array1(),
+                            NewV1, vperiodic, FromV1, ToV2, index1V, V);
+  BSplCLib::LocateParameter(vdeg, vknots->Array1(), vmults->Array1(),
+                            NewV1 + deltaV, vperiodic, FromV1, ToV2, index2V, V);
+  if (Abs(vknots->Value(index2V + 1) - V) <= EpsV)
     index2V++;
-  
+
   Standard_Integer nbvknots = index2V - index1V + 1;
 
-  Handle(TColStd_HArray1OfReal) 
-    nvknots = new TColStd_HArray1OfReal(1,nbvknots);
-  Handle(TColStd_HArray1OfInteger) 
-    nvmults = new TColStd_HArray1OfInteger(1,nbvknots);
+  Handle(TColStd_HArray1OfReal)
+    nvknots = new TColStd_HArray1OfReal(1, nbvknots);
+  Handle(TColStd_HArray1OfInteger)
+    nvmults = new TColStd_HArray1OfInteger(1, nbvknots);
 
   k = 1;
-  for ( i = index1V; i<= index2V; i++) {
+  for (i = index1V; i <= index2V; i++) {
     nvknots->SetValue(k, vknots->Value(i));
     nvmults->SetValue(k, vmults->Value(i));
     k++;
   }
-  nvmults->SetValue(       1, vdeg + 1);
-  nvmults->SetValue(nbvknots, vdeg + 1);
+  if (SegmentInV) {
+    nvmults->SetValue(1, vdeg + 1);
+    nvmults->SetValue(nbvknots, vdeg + 1);
+  }
 
 
   // compute index1 and index2 to set the new poles and weights
-  Standard_Integer pindex1U 
-    = BSplCLib::PoleIndex(udeg,index1U,uperiodic,umults->Array1());
-  Standard_Integer pindex2U 
-    = BSplCLib::PoleIndex(udeg,index2U,uperiodic,umults->Array1());
+  Standard_Integer pindex1U
+    = BSplCLib::PoleIndex(udeg, index1U, uperiodic, umults->Array1());
+  Standard_Integer pindex2U
+    = BSplCLib::PoleIndex(udeg, index2U, uperiodic, umults->Array1());
 
   pindex1U++;
-  pindex2U = Min( pindex2U+1, poles->ColLength());
+  pindex2U = Min(pindex2U + 1, poles->ColLength());
 
-  Standard_Integer nbupoles  = pindex2U - pindex1U + 1;
+  Standard_Integer nbupoles = pindex2U - pindex1U + 1;
 
   // compute index1 and index2 to set the new poles and weights
-  Standard_Integer pindex1V 
-    = BSplCLib::PoleIndex(vdeg,index1V,vperiodic,vmults->Array1());
-  Standard_Integer pindex2V 
-    = BSplCLib::PoleIndex(vdeg,index2V,vperiodic,vmults->Array1());
+  Standard_Integer pindex1V
+    = BSplCLib::PoleIndex(vdeg, index1V, vperiodic, vmults->Array1());
+  Standard_Integer pindex2V
+    = BSplCLib::PoleIndex(vdeg, index2V, vperiodic, vmults->Array1());
 
   pindex1V++;
-  pindex2V = Min( pindex2V+1, poles->RowLength());
+  pindex2V = Min(pindex2V + 1, poles->RowLength());
 
-  Standard_Integer nbvpoles  = pindex2V - pindex1V + 1;
+  Standard_Integer nbvpoles = pindex2V - pindex1V + 1;
 
 
-  Handle(TColStd_HArray2OfReal) nweights; 
+  Handle(TColStd_HArray2OfReal) nweights;
 
   Handle(TColgp_HArray2OfPnt)
-    npoles = new TColgp_HArray2OfPnt(1,nbupoles,1,nbvpoles);
-
+    npoles = new TColgp_HArray2OfPnt(1, nbupoles, 1, nbvpoles);
   k = 1;
   Standard_Integer j, l;
-  if ( urational || vrational) {
-    nweights = new TColStd_HArray2OfReal( 1,nbupoles,1,nbvpoles);
-    for ( i = pindex1U; i <= pindex2U; i++) {
+  if (urational || vrational) {
+    nweights = new TColStd_HArray2OfReal(1, nbupoles, 1, nbvpoles);
+    for (i = pindex1U; i <= pindex2U; i++) {
       l = 1;
-      for ( j = pindex1V; j <= pindex2V; j++) {
-	npoles->SetValue(k,l, poles->Value(i,j));
-	nweights->SetValue(k,l, weights->Value(i,j));
-	l++;
+      for (j = pindex1V; j <= pindex2V; j++) {
+        npoles->SetValue(k, l, poles->Value(i, j));
+        nweights->SetValue(k, l, weights->Value(i, j));
+        l++;
       }
       k++;
     }
   }
   else {
-    for ( i = pindex1U; i <= pindex2U; i++) {
+    for (i = pindex1U; i <= pindex2U; i++) {
       l = 1;
-      for ( j = pindex1V; j <= pindex2V; j++) {
-	npoles->SetValue(k,l, poles->Value(i,j));
-	l++;
+      for (j = pindex1V; j <= pindex2V; j++) {
+        npoles->SetValue(k, l, poles->Value(i, j));
+        l++;
       }
       k++;
     }
@@ -737,16 +740,39 @@ void Geom_BSplineSurface::Segment(const Standard_Real U1,
   vknots = nvknots;
   vmults = nvmults;
   poles = npoles;
-  if ( urational || vrational) 
+  if (urational || vrational)
     weights = nweights;
-  else 
-    weights = new TColStd_HArray2OfReal (1,poles->ColLength(),
-					 1,poles->RowLength(), 1.0);
+  else
+    weights = new TColStd_HArray2OfReal(1, poles->ColLength(),
+                                        1, poles->RowLength(), 1.0);
 
   maxderivinvok = 0;
   UpdateUKnots();
   UpdateVKnots();
+}
 
+//=======================================================================
+//function : Segment
+//purpose  : 
+//=======================================================================
+
+void Geom_BSplineSurface::Segment(const Standard_Real U1, 
+                                  const Standard_Real U2,
+                                  const Standard_Real V1,
+                                  const Standard_Real V2,
+                                  const Standard_Real theUTolerance,
+                                  const Standard_Real theVTolerance)
+{
+  if ((U2 < U1) || (V2 < V1))
+    throw Standard_DomainError("Geom_BSplineSurface::Segment");
+
+  Standard_Real aMaxU = Max(Abs(U2), Abs(U1));
+  Standard_Real EpsU = Max(Epsilon(aMaxU), theUTolerance);
+  
+  Standard_Real aMaxV = Max(Abs(V2), Abs(V1));
+  Standard_Real EpsV = Max(Epsilon(aMaxV), theVTolerance);
+
+  segment(U1, U2, V1, V2, EpsU, EpsV, Standard_True, Standard_True);
 }
 
 //=======================================================================
@@ -755,38 +781,21 @@ void Geom_BSplineSurface::Segment(const Standard_Real U1,
 //=======================================================================
 
 void Geom_BSplineSurface::CheckAndSegment(const Standard_Real U1, 
-					  const Standard_Real U2,
-					  const Standard_Real V1,
-					  const Standard_Real V2) 
+                                          const Standard_Real U2,
+                                          const Standard_Real V1,
+                                          const Standard_Real V2,
+                                          const Standard_Real theUTolerance,
+                                          const Standard_Real theVTolerance)
 {
 
   if ((U2 < U1) || (V2 < V1))
     throw Standard_DomainError("Geom_BSplineSurface::CheckAndSegment");
-  Standard_Real deltaU = Max(Abs(U2),Abs(U1));
-  Standard_Real EpsU = Epsilon(deltaU);
-  deltaU = U2 - U1;
-  if (uperiodic) {
-    Standard_Real aUPeriod = uknots->Last() - uknots->First();
-    if (deltaU - aUPeriod > Precision::PConfusion())
-      throw Standard_DomainError("Geom_BSplineSurface::CheckAndSegment");
-    if (deltaU > aUPeriod)
-      deltaU = aUPeriod;
-  }
-  
-  Standard_Real deltaV = Max(Abs(V2),Abs(V1));
-  Standard_Real EpsV = Epsilon(deltaV);
-  deltaV = V2 - V1;
-  if (vperiodic) {
-    Standard_Real aVPeriod = vknots->Last() - vknots->First();
-    if (deltaV - aVPeriod > Precision::PConfusion())
-      throw Standard_DomainError("Geom_BSplineSurface::CheckAndSegment");
-    if (deltaV > aVPeriod)
-      deltaV = aVPeriod;
-  }
 
-  Standard_Real NewU1, NewU2, NewV1, NewV2;
-  Standard_Real U,V;
-  Standard_Integer indexU, indexV;
+  Standard_Real aMaxU = Max(Abs(U2), Abs(U1));
+  Standard_Real EpsU = Max(Epsilon(aMaxU), theUTolerance);
+  
+  Standard_Real aMaxV = Max(Abs(V2), Abs(V1));
+  Standard_Real EpsV = Max(Epsilon(aMaxV), theVTolerance);
 
   Standard_Boolean segment_in_U = Standard_True;
   Standard_Boolean segment_in_V = Standard_True;
@@ -795,192 +804,7 @@ void Geom_BSplineSurface::CheckAndSegment(const Standard_Real U1,
   segment_in_V = ( Abs(V1 - vknots->Value(vknots->Lower())) > EpsV )
                         || ( Abs(V2 - vknots->Value(vknots->Upper())) > EpsV );
 
-  indexU = 0;
-  BSplCLib::LocateParameter(udeg,uknots->Array1(),umults->Array1(),
-			    U1,uperiodic,uknots->Lower(),uknots->Upper(),
-			    indexU,NewU1);
-  indexU = 0;
-  BSplCLib::LocateParameter(udeg,uknots->Array1(),umults->Array1(),
-			    U2,uperiodic,uknots->Lower(),uknots->Upper(),
-			    indexU,NewU2);
-  if (segment_in_U) {
-    // inserting the UKnots
-    TColStd_Array1OfReal    UKnots(1,2);
-    TColStd_Array1OfInteger UMults(1,2);
-    UKnots( 1) = Min( NewU1, NewU2);
-    UKnots( 2) = Max( NewU1, NewU2);
-    UMults( 1) = UMults( 2) = udeg;
-    
-    InsertUKnots( UKnots, UMults, EpsU);
-  }
-
-  indexV = 0;
-  BSplCLib::LocateParameter(vdeg,vknots->Array1(),vmults->Array1(),
-			    V1,vperiodic,vknots->Lower(),vknots->Upper(),
-			    indexV,NewV1);
-  indexV = 0;
-  BSplCLib::LocateParameter(vdeg,vknots->Array1(),vmults->Array1(),
-			    V2,vperiodic,vknots->Lower(),vknots->Upper(),
-			    indexV,NewV2);
-  if (segment_in_V) {
-    // Inserting the VKnots
-    TColStd_Array1OfReal    VKnots(1,2);
-    TColStd_Array1OfInteger VMults(1,2);
-    
-    VKnots( 1) = Min( NewV1, NewV2);
-    VKnots( 2) = Max( NewV1, NewV2);
-    VMults( 1) = VMults( 2) = vdeg;
-    InsertVKnots( VKnots, VMults, EpsV);
-  }
-
-  if (uperiodic && segment_in_U) { // set the origine at NewU1
-    Standard_Integer index = 0;
-    BSplCLib::LocateParameter(udeg,uknots->Array1(),umults->Array1(),
-			      U1,uperiodic,uknots->Lower(),uknots->Upper(),
-			      index,U);
-    if ( Abs(uknots->Value(index+1)-U) <= EpsU)
-      index++;
-    SetUOrigin(index);
-    SetUNotPeriodic();
-  }
-
-  // compute index1 and index2 to set the new knots and mults 
-  Standard_Integer index1U = 0, index2U = 0;
-  Standard_Integer FromU1 = uknots->Lower();
-  Standard_Integer ToU2   = uknots->Upper();
-  BSplCLib::LocateParameter(udeg,uknots->Array1(),umults->Array1(),
-			    NewU1,uperiodic,FromU1,ToU2,index1U,U);
-  BSplCLib::LocateParameter(udeg,uknots->Array1(),umults->Array1(),
-			    NewU1 + deltaU,uperiodic,FromU1,ToU2,index2U,U);
-  if ( Abs(uknots->Value(index2U+1)-U) <= EpsU)
-    index2U++;
-  
-  Standard_Integer nbuknots = index2U - index1U + 1;
-
-  Handle(TColStd_HArray1OfReal) 
-    nuknots = new TColStd_HArray1OfReal(1,nbuknots);
-  Handle(TColStd_HArray1OfInteger) 
-    numults = new TColStd_HArray1OfInteger(1,nbuknots);
-
-  Standard_Integer i , k = 1;
-  for ( i = index1U; i<= index2U; i++) {
-    nuknots->SetValue(k, uknots->Value(i));
-    numults->SetValue(k, umults->Value(i));
-    k++;
-  }
-  if (segment_in_U) {
-    numults->SetValue(       1, udeg + 1);
-    numults->SetValue(nbuknots, udeg + 1);
-  }
-
-  if (vperiodic&& segment_in_V) { // set the origine at NewV1
-    Standard_Integer index = 0;
-    BSplCLib::LocateParameter(vdeg,vknots->Array1(),vmults->Array1(),
-			      V1,vperiodic,vknots->Lower(),vknots->Upper(),
-			      index,V);
-    if ( Abs(vknots->Value(index+1)-V) <= EpsV)
-      index++;
-    SetVOrigin(index);
-    SetVNotPeriodic();
-  }
-
-  // compute index1 and index2 to set the new knots and mults 
-  Standard_Integer index1V = 0, index2V = 0;
-  Standard_Integer FromV1 = vknots->Lower();
-  Standard_Integer ToV2   = vknots->Upper();
-  BSplCLib::LocateParameter(vdeg,vknots->Array1(),vmults->Array1(),
-			    NewV1,vperiodic,FromV1,ToV2,index1V,V);
-  BSplCLib::LocateParameter(vdeg,vknots->Array1(),vmults->Array1(),
-			    NewV1 + deltaV,vperiodic,FromV1,ToV2,index2V,V);
-  if ( Abs(vknots->Value(index2V+1)-V) <= EpsV)
-    index2V++;
-  
-  Standard_Integer nbvknots = index2V - index1V + 1;
-
-  Handle(TColStd_HArray1OfReal) 
-    nvknots = new TColStd_HArray1OfReal(1,nbvknots);
-  Handle(TColStd_HArray1OfInteger) 
-    nvmults = new TColStd_HArray1OfInteger(1,nbvknots);
-
-  k = 1;
-  for ( i = index1V; i<= index2V; i++) {
-    nvknots->SetValue(k, vknots->Value(i));
-    nvmults->SetValue(k, vmults->Value(i));
-    k++;
-  }
-  if (segment_in_V) {
-    nvmults->SetValue(       1, vdeg + 1);
-    nvmults->SetValue(nbvknots, vdeg + 1);
-  }
-
-  // compute index1 and index2 to set the new poles and weights
-  Standard_Integer pindex1U 
-    = BSplCLib::PoleIndex(udeg,index1U,uperiodic,umults->Array1());
-  Standard_Integer pindex2U 
-    = BSplCLib::PoleIndex(udeg,index2U,uperiodic,umults->Array1());
-
-  pindex1U++;
-  pindex2U = Min( pindex2U+1, poles->ColLength());
-
-  Standard_Integer nbupoles  = pindex2U - pindex1U + 1;
-
-  // compute index1 and index2 to set the new poles and weights
-  Standard_Integer pindex1V 
-    = BSplCLib::PoleIndex(vdeg,index1V,vperiodic,vmults->Array1());
-  Standard_Integer pindex2V 
-    = BSplCLib::PoleIndex(vdeg,index2V,vperiodic,vmults->Array1());
-
-  pindex1V++;
-  pindex2V = Min( pindex2V+1, poles->RowLength());
-
-  Standard_Integer nbvpoles  = pindex2V - pindex1V + 1;
-
-
-  Handle(TColStd_HArray2OfReal) nweights; 
-
-  Handle(TColgp_HArray2OfPnt)
-    npoles = new TColgp_HArray2OfPnt(1,nbupoles,1,nbvpoles);
-
-  k = 1;
-  Standard_Integer j, l;
-  if ( urational || vrational) {
-    nweights = new TColStd_HArray2OfReal( 1,nbupoles,1,nbvpoles);
-    for ( i = pindex1U; i <= pindex2U; i++) {
-      l = 1;
-      for ( j = pindex1V; j <= pindex2V; j++) {
-	npoles->SetValue(k,l, poles->Value(i,j));
-	nweights->SetValue(k,l, weights->Value(i,j));
-	l++;
-      }
-      k++;
-    }
-  }
-  else {
-    for ( i = pindex1U; i <= pindex2U; i++) {
-      l = 1;
-      for ( j = pindex1V; j <= pindex2V; j++) {
-	npoles->SetValue(k,l, poles->Value(i,j));
-	l++;
-      }
-      k++;
-    }
-  }
-
-  uknots = nuknots;
-  umults = numults;
-  vknots = nvknots;
-  vmults = nvmults;
-  poles = npoles;
-  if ( urational || vrational) 
-    weights = nweights;
-  else 
-    weights = new TColStd_HArray2OfReal (1,poles->ColLength(),
-					 1,poles->RowLength(), 1.0);
-
-  maxderivinvok = 0;
-  UpdateUKnots();
-  UpdateVKnots();
-
+  segment(U1, U2, V1, V2, EpsU, EpsV, segment_in_U, segment_in_V);
 }
 
 //=======================================================================
