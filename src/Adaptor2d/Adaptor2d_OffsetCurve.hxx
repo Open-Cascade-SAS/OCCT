@@ -174,6 +174,7 @@ public:
   
   Standard_EXPORT Handle(Geom2d_BSplineCurve) BSpline() const Standard_OVERRIDE;
 
+  Standard_EXPORT  Standard_Integer NbSamples() const Standard_OVERRIDE;
 
 
 

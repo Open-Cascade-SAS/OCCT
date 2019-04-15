@@ -1,0 +1,30 @@
+puts "========"
+puts "0030647: Geom2dGcc_Circ2d2TanRad not giving all the solutions"
+puts "========"
+puts ""
+
+restore [locate_data_file bug30647_curve1_720.brep] c1
+restore [locate_data_file bug30647_curve2_720.brep] c2
+
+explode c1 e
+mk2dcurve q1 c1_1
+explode c2 e
+mk2dcurve q2 c2_1
+
+cirtang r -c q1 -c q2 -r 0.4
+
+smallview  -2D-
+
+2dclear q1
+2dfit
+display q1
+
+xwd ${imagedir}/${test_image}.png
+
+set NbCurv [llength [directory r_*]]
+
+if { $NbCurv == 8 } {
+  puts "OK: Number of circles is good"
+} else {
+  puts "Error: Not all solutions"
+}

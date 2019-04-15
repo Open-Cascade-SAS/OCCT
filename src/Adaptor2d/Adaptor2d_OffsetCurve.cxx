@@ -458,7 +458,7 @@ GeomAbs_CurveType Adaptor2d_OffsetCurve::GetType() const {
       return GeomAbs_Circle;
       
     default:
-      return GeomAbs_OtherCurve;
+      return GeomAbs_OffsetCurve;
       
     }
   }
@@ -649,4 +649,35 @@ Handle(Geom2d_BSplineCurve) Adaptor2d_OffsetCurve::BSpline() const
   Standard_NoSuchObject_Raise_if (myOffset != 0.0e0 || GetType() != GeomAbs_BSplineCurve,
                                   "Adaptor2d_OffsetCurve::BSpline() - wrong curve type");
   return myCurve->BSpline();
+}
+
+static Standard_Integer nbPoints(const Handle(Adaptor2d_HCurve2d)& theCurve)
+{
+
+  Standard_Integer nbs = 20;
+
+  if (theCurve->GetType() == GeomAbs_Line)
+    nbs = 2;
+  else if (theCurve->GetType() == GeomAbs_BezierCurve)
+  {
+    nbs = 3 + theCurve->NbPoles();
+  }
+  else if (theCurve->GetType() == GeomAbs_BSplineCurve) {
+    nbs = theCurve->NbKnots();
+    nbs *= theCurve->Degree();
+  }
+
+  if (nbs > 200)
+    nbs = 200;
+  return nbs;
+
+}
+//=======================================================================
+//function : NbSamples
+//purpose  : 
+//=======================================================================
+
+Standard_Integer Adaptor2d_OffsetCurve::NbSamples() const
+{
+  return  nbPoints(myCurve);
 }
