@@ -1167,26 +1167,41 @@ proc wokdep:SaveCustom {} {
     }
 
     set aStringInc [join $::CSF_OPT_INC $::SYS_PATH_SPLITTER]
+    if { "$::PRODUCTS_PATH" != "" } {
+      set aStringInc [regsub -all "$::PRODUCTS_PATH" $aStringInc "%PRODUCTS_PATH%"]
+    }
     puts $aFile ""
     puts $aFile "rem Additional headers search paths"
     puts $aFile "set \"CSF_OPT_INC=$aStringInc\""
 
     set aStringLib32 [join $::CSF_OPT_LIB32 $::SYS_PATH_SPLITTER]
+    if { "$::PRODUCTS_PATH" != "" } {
+      set aStringLib32 [regsub -all "$::PRODUCTS_PATH" $aStringLib32 "%PRODUCTS_PATH%"]
+    }
     puts $aFile ""
     puts $aFile "rem Additional libraries (32-bit) search paths"
     puts $aFile "set \"CSF_OPT_LIB32=$aStringLib32\""
 
     set aStringLib64 [join $::CSF_OPT_LIB64 $::SYS_PATH_SPLITTER]
+    if { "$::PRODUCTS_PATH" != "" } {
+      set aStringLib64 [regsub -all "$::PRODUCTS_PATH" $aStringLib64 "%PRODUCTS_PATH%"]
+    }
     puts $aFile ""
     puts $aFile "rem Additional libraries (64-bit) search paths"
     puts $aFile "set \"CSF_OPT_LIB64=$aStringLib64\""
 
     set aStringBin32 [join $::CSF_OPT_BIN32 $::SYS_PATH_SPLITTER]
+    if { "$::PRODUCTS_PATH" != "" } {
+      set aStringBin32 [regsub -all "$::PRODUCTS_PATH" $aStringBin32 "%PRODUCTS_PATH%"]
+    }
     puts $aFile ""
     puts $aFile "rem Additional (32-bit) search paths"
     puts $aFile "set \"CSF_OPT_BIN32=$aStringBin32\""
 
     set aStringBin64 [join $::CSF_OPT_BIN64 $::SYS_PATH_SPLITTER]
+    if { "$::PRODUCTS_PATH" != "" } {
+      set aStringBin64 [regsub -all "$::PRODUCTS_PATH" $aStringBin64 "%PRODUCTS_PATH%"]
+    }
     puts $aFile ""
     puts $aFile "rem Additional (64-bit) search paths"
     puts $aFile "set \"CSF_OPT_BIN64=$aStringBin64\""
@@ -1217,25 +1232,36 @@ proc wokdep:SaveCustom {} {
     }
 
     set aStringInc [join $::CSF_OPT_INC $::SYS_PATH_SPLITTER]
+    if { "$::PRODUCTS_PATH" != "" } {
+      set aStringInc [regsub -all "$::PRODUCTS_PATH" $aStringInc "\${PRODUCTS_PATH}"]
+    }
     puts $aFile ""
     puts $aFile "# Additional headers search paths"
     puts $aFile "export CSF_OPT_INC=\"$aStringInc\""
 
-    set aStringLib$::ARCH [join [set ::CSF_OPT_LIB$::ARCH] $::SYS_PATH_SPLITTER]
+    set aStringLib [join [set ::CSF_OPT_LIB$::ARCH] $::SYS_PATH_SPLITTER]
+    if { "$::PRODUCTS_PATH" != "" } {
+      set aStringLib [regsub -all "$::PRODUCTS_PATH" $aStringLib "\${PRODUCTS_PATH}"]
+    }
     puts $aFile ""
     puts $aFile "# Additional libraries ($::ARCH-bit) search paths"
-    puts $aFile "export CSF_OPT_LIB$::ARCH=\"[set aStringLib$::ARCH]\""
+    puts $aFile "export CSF_OPT_LIB$::ARCH=\"[set aStringLib]\""
 
-    set aStringBin$::ARCH [join [set ::CSF_OPT_BIN$::ARCH] $::SYS_PATH_SPLITTER]
+    set aStringBin [join [set ::CSF_OPT_BIN$::ARCH] $::SYS_PATH_SPLITTER]
+    if { "$::PRODUCTS_PATH" != "" } {
+      set aStringBin [regsub -all "$::PRODUCTS_PATH" $aStringBin "\${PRODUCTS_PATH}"]
+    }
     puts $aFile ""
     puts $aFile "# Additional ($::ARCH-bit) search paths"
-    puts $aFile "export CSF_OPT_BIN$::ARCH=\"[set aStringBin$::ARCH]\""
+    puts $aFile "export CSF_OPT_BIN$::ARCH=\"[set aStringBin]\""
 
     close $aFile
   }
   puts "Configuration saved to file '$aCustomFilePath'"
 
-  if { "$::PRJFMT" == "pro" } {
+  # generate custom.auto.pri
+  set toExportCustomPri 1
+  if { $toExportCustomPri == 1 } {
     set aCasVer [wokdep:DetectCasVersion]
     set aCustomFilePath "./adm/qmake/custom.auto.pri"
     set aFile [open $aCustomFilePath "w"]
@@ -1260,12 +1286,18 @@ proc wokdep:SaveCustom {} {
     puts $aFile ""
     puts $aFile "# Additional headers search paths"
     foreach anIncPath $::CSF_OPT_INC {
+      if { "$::PRODUCTS_PATH" != "" } {
+        set anIncPath [regsub -all "$::PRODUCTS_PATH" $anIncPath "\$\$\{PRODUCTS_PATH\}"]
+      }
       puts $aFile "INCLUDEPATH += \"${anIncPath}\""
     }
 
     puts $aFile ""
     puts $aFile "# Additional libraries search paths"
     foreach aLibPath [set ::CSF_OPT_LIB$::ARCH] {
+      if { "$::PRODUCTS_PATH" != "" } {
+        set aLibPath [regsub -all "$::PRODUCTS_PATH" $aLibPath "\$\$\{PRODUCTS_PATH\}"]
+      }
       puts $aFile "LIBS += -L\"${aLibPath}\""
     }
 
@@ -1273,6 +1305,9 @@ proc wokdep:SaveCustom {} {
       puts $aFile ""
       puts $aFile "# Additional DLLs search paths"
       foreach aDllPath [set ::CSF_OPT_BIN$::ARCH] {
+        if { "$::PRODUCTS_PATH" != "" } {
+          set aDllPath [regsub -all "$::PRODUCTS_PATH" $aDllPath "\$\$\{PRODUCTS_PATH\}"]
+        }
         puts $aFile "LIBS += -L\"${aDllPath}\""
       }
     }

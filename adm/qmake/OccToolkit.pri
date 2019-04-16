@@ -38,6 +38,7 @@ win32 {
   CSF_OpenGlLibs = -lopengl32
   HAVE_GLES2 { CSF_OpenGlLibs = -llibEGL -llibGLESv2 }
   CSF_psapi      = -lPsapi
+  CSF_winmm      = -lwinmm
   CSF_d3d9       = -ld3d9
   CSF_TclLibs    = -ltcl86
   CSF_TclTkLibs  = -ltk86
