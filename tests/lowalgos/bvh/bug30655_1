@@ -1,0 +1,58 @@
+puts "======="
+puts "0030655: Modeling Data - Provide interfaces for selection of the elements from BVH tree"
+puts "======="
+puts ""
+
+pload QAcommands
+
+box b 10 10 10
+
+# select elements interfering with each vertex (must be one vertex (itself), three edges and three faces - 7 in total)
+foreach v [explode b v] {
+  QABVH_ShapeSelect r_$v b $v
+  QABVH_ShapeSelect rv_$v b $v -void
+
+  if { [llength [explode r_$v]] != 7} {
+    puts "Error: incorrect selection"
+  }
+
+  checknbshapes rv_$v -ref [nbshapes r_$v]
+  checkprops rv_$v -equal r_$v
+}
+
+# select elements interfering with each edge (must be two vertices, five edges and and four faces - 11 in total)
+foreach e [explode b e] {
+  QABVH_ShapeSelect r_$e b $e
+  QABVH_ShapeSelect rv_$e b $e -void
+
+  if { [llength [explode r_$e]] != 11} {
+    puts "Error: incorrect selection"
+  }
+
+  checknbshapes rv_$e -ref [nbshapes r_$e]
+  checkprops rv_$e -equal r_$e
+}
+
+# select elements interfering with each face (must be ffour vertices, eight edges and and five faces - 17 in total)
+foreach f [explode b f] {
+  QABVH_ShapeSelect r_$f b $f
+  QABVH_ShapeSelect rv_$f b $f -void
+
+  if { [llength [explode r_$f]] != 17} {
+    puts "Error: incorrect selection"
+  }
+
+  checknbshapes rv_$f -ref [nbshapes r_$f]
+  checkprops rv_$f -equal r_$f
+}
+
+# intersect the box with itself - select all interfering pairs (8 * 7 + 12 * 11 + 6 * 17 = 290)
+QABVH_PairSelect r b b
+QABVH_PairSelect rv b b -void
+
+if { [llength [explode r]] != 290} {
+  puts "Error: incorrect selection"
+}
+
+checknbshapes rv -ref [nbshapes r]
+checkprops rv -equal r

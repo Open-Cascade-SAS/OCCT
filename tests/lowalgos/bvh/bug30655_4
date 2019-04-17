@@ -1,0 +1,13 @@
+puts "======="
+puts "0030655: Modeling Data - Provide interfaces for selection of the elements from BVH tree"
+puts "======="
+puts ""
+
+pload QAcommands
+
+box b 10 10 10
+incmesh b 0.1
+
+# test the work of distance field
+QABVH_DistanceField b 2
+

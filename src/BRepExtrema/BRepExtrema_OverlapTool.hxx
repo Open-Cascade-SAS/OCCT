@@ -16,10 +16,10 @@
 #ifndef _BRepExtrema_OverlapTool_HeaderFile
 #define _BRepExtrema_OverlapTool_HeaderFile
 
-#include <BVH_Geometry.hxx>
 #include <BRepExtrema_TriangleSet.hxx>
 #include <BRepExtrema_ElementFilter.hxx>
 #include <BRepExtrema_MapOfIntegerPackedMapOfInteger.hxx>
+#include <BVH_Traverse.hxx>
 
 //! Enables storing of individual overlapped triangles (useful for debug).
 // #define OVERLAP_TOOL_OUTPUT_TRIANGLES
@@ -35,7 +35,7 @@
 //! In second case, tessellation of single shape will be tested for self-
 //! intersections. Please note that algorithm results are approximate and
 //! depend greatly on the quality of input tessellation(s).
-class BRepExtrema_OverlapTool
+class BRepExtrema_OverlapTool : public BVH_PairTraverse <Standard_Real, 3>
 {
 public:
 
@@ -78,16 +78,30 @@ public:
   //! Sets filtering tool for preliminary checking pairs of mesh elements.
   void SetElementFilter (BRepExtrema_ElementFilter* theFilter) { myFilter = theFilter; }
 
+
+public: //! @name Reject/Accept implementations
+
+  //! Defines the rules for node rejection by bounding box
+  Standard_EXPORT virtual Standard_Boolean RejectNode (const BVH_Vec3d& theCornerMin1,
+                                                       const BVH_Vec3d& theCornerMax1,
+                                                       const BVH_Vec3d& theCornerMin2,
+                                                       const BVH_Vec3d& theCornerMax2,
+                                                       Standard_Real&) const Standard_OVERRIDE;
+  //! Defines the rules for leaf acceptance
+  Standard_EXPORT virtual Standard_Boolean Accept (const Standard_Integer theLeaf1,
+                                                   const Standard_Integer theLeaf2) Standard_OVERRIDE;
+
+
 protected:
 
   //! Performs narrow-phase of overlap test (exact intersection).
-  void intersectTriangleRangesExact (const BVH_Vec4i& theLeaf1,
-                                     const BVH_Vec4i& theLeaf2);
+  void intersectTrianglesExact (const Standard_Integer theTrgIdx1,
+                                const Standard_Integer theTrgIdx2);
 
   //! Performs narrow-phase of overlap test (intersection with non-zero tolerance).
-  void intersectTriangleRangesToler (const BVH_Vec4i&    theLeaf1,
-                                     const BVH_Vec4i&    theLeaf2,
-                                     const Standard_Real theToler);
+  void intersectTrianglesToler (const Standard_Integer theTrgIdx1,
+                                const Standard_Integer theTrgIdx2,
+                                const Standard_Real theToler);
 
 private:
 
@@ -113,6 +127,8 @@ private:
 
   //! Is overlap test test completed?
   Standard_Boolean myIsDone;
+
+  Standard_Real myTolerance;
 };
 
 #endif // _BRepExtrema_OverlapTool_HeaderFile

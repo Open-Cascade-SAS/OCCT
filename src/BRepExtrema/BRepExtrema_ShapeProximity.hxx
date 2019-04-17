@@ -16,7 +16,6 @@
 #ifndef _BRepExtrema_ShapeProximity_HeaderFile
 #define _BRepExtrema_ShapeProximity_HeaderFile
 
-#include <BVH_Geometry.hxx>
 #include <NCollection_DataMap.hxx>
 #include <TColStd_PackedMapOfInteger.hxx>
 

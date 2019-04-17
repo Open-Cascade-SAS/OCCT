@@ -15,6 +15,7 @@
 
 #include <BVH_Triangulation.hxx>
 #include <OSD_Parallel.hxx>
+#include <BVH_Distance.hxx>
 
 // =======================================================================
 // function : BVH_DistanceField
@@ -163,6 +164,105 @@ namespace BVH
   }
 
   //=======================================================================
+  //function : SquareDistanceToPoint
+  //purpose  : Abstract class to compute squared distance from point to BVH tree
+  //=======================================================================
+  template<class T, int N, class BVHSetType>
+  class SquareDistanceToPoint : public BVH_Distance<T,N,typename VectorType<T, N>::Type, BVHSetType>
+  {
+  public:
+    typedef typename VectorType<T, N>::Type BVH_VecNt;
+
+  public:
+    SquareDistanceToPoint()
+      : BVH_Distance<T, N, BVH_VecNt, BVHSetType>(),
+        myIsOutside (Standard_True)
+    {}
+
+  public:
+
+    //! IsOutside
+    Standard_Boolean IsOutside() const { return myIsOutside; }
+
+  public:
+
+    //! Defines the rules for node rejection
+    virtual Standard_Boolean RejectNode (const BVH_VecNt& theCMin,
+                                         const BVH_VecNt& theCMax,
+                                         T& theMetric) const Standard_OVERRIDE
+    {
+      theMetric = DistanceToBox<T, N> (this->myObject, theCMin, theCMax);
+      return theMetric > this->myDistance;
+    }
+
+  public:
+
+    //! Redefine the Stop to never stop the selection
+    virtual Standard_Boolean Stop() const Standard_OVERRIDE
+    {
+      return Standard_False;
+    }
+
+  protected:
+
+    Standard_Boolean myIsOutside;
+  };
+
+  //=======================================================================
+  //function : PointTriangulationSquareDistance
+  //purpose  : Computes squared distance from point to BVH triangulation
+  //=======================================================================
+  template<class T, int N>
+  class PointTriangulationSquareDistance: public SquareDistanceToPoint <T,N, BVH_Triangulation<T, N>>
+  {
+  public:
+    typedef typename VectorType<T, N>::Type BVH_VecNt;
+
+  public:
+    //! Constructor
+    PointTriangulationSquareDistance()
+      : SquareDistanceToPoint<T, N, BVH_Triangulation<T, N>>()
+    {
+    }
+
+  public:
+    // Accepting the element
+    virtual Standard_Boolean Accept (const Standard_Integer theIndex,
+                                     const T&) Standard_OVERRIDE
+    {
+      const BVH_Vec4i aTriangle = this->myBVHSet->Elements[theIndex];
+
+      const BVH_VecNt aVertex0 = this->myBVHSet->Vertices[aTriangle.x()];
+      const BVH_VecNt aVertex1 = this->myBVHSet->Vertices[aTriangle.y()];
+      const BVH_VecNt aVertex2 = this->myBVHSet->Vertices[aTriangle.z()];
+
+      const BVH_VecNt aDirection =
+        DirectionToNearestPoint<T, N> (this->myObject, aVertex0, aVertex1, aVertex2);
+
+      const T aDistance = BVH_DOT3 (aDirection, aDirection);
+
+      if (aDistance < this->myDistance)
+      {
+        this->myDistance = aDistance;
+
+        BVH_VecNt aTrgEdges[] = { aVertex1 - aVertex0, aVertex2 - aVertex0 };
+
+        BVH_VecNt aTrgNormal;
+
+        aTrgNormal.x () = aTrgEdges[0].y () * aTrgEdges[1].z () - aTrgEdges[0].z () * aTrgEdges[1].y ();
+        aTrgNormal.y () = aTrgEdges[0].z () * aTrgEdges[1].x () - aTrgEdges[0].x () * aTrgEdges[1].z ();
+        aTrgNormal.z () = aTrgEdges[0].x () * aTrgEdges[1].y () - aTrgEdges[0].y () * aTrgEdges[1].x ();
+
+        this->myIsOutside = BVH_DOT3 (aTrgNormal, aDirection) > 0;
+
+        return Standard_True;
+      }
+
+      return Standard_False;
+    }
+  };
+
+  //=======================================================================
   //function : SquareDistanceToObject
   //purpose  : Computes squared distance from point to BVH triangulation
   //=======================================================================
@@ -186,109 +286,50 @@ namespace BVH
       return Standard_False;
     }
 
-    std::pair<Standard_Integer, T> aStack[BVH_Constants_MaxTreeDepth];
-
-    Standard_Integer aHead = -1;
-    Standard_Integer aNode =  0; // root node
-
-    for (;;)
-    {
-      BVH_Vec4i aData = aBVH->NodeInfoBuffer()[aNode];
-
-      if (aData.x() == 0) // if inner node
-      {
-        const T aDistToLft = DistanceToBox<T, N> (thePnt,
-                                                  aBVH->MinPoint (aData.y()),
-                                                  aBVH->MaxPoint (aData.y()));
-
-        const T aDistToRgh = DistanceToBox<T, N> (thePnt,
-                                                  aBVH->MinPoint (aData.z()),
-                                                  aBVH->MaxPoint (aData.z()));
-
-        const Standard_Boolean aHitLft = aDistToLft <= aMinDistance;
-        const Standard_Boolean aHitRgh = aDistToRgh <= aMinDistance;
-
-        if (aHitLft & aHitRgh)
-        {
-          aNode = (aDistToLft < aDistToRgh) ? aData.y() : aData.z();
-
-          aStack[++aHead] = std::pair<Standard_Integer, T> (
-            aDistToLft < aDistToRgh ? aData.z() : aData.y(), Max (aDistToLft, aDistToRgh));
-        }
-        else
-        {
-          if (aHitLft | aHitRgh)
-          {
-            aNode = aHitLft ? aData.y() : aData.z();
-          }
-          else
-          {
-            if (aHead < 0)
-              return aMinDistance;
-
-            std::pair<Standard_Integer, T>& anInfo = aStack[aHead--];
-
-            while (anInfo.second > aMinDistance)
-            {
-              if (aHead < 0)
-                return aMinDistance;
-
-              anInfo = aStack[aHead--];
-            }
-
-            aNode = anInfo.first;
-          }
-        }
-      }
-      else  // if leaf node
-      {
-        for (Standard_Integer aTrgIdx = aData.y(); aTrgIdx <= aData.z(); ++aTrgIdx)
-        {
-          const BVH_Vec4i aTriangle = aTriangulation->Elements[aTrgIdx];
-
-          const typename VectorType<T, N>::Type aVertex0 = aTriangulation->Vertices[aTriangle.x()];
-          const typename VectorType<T, N>::Type aVertex1 = aTriangulation->Vertices[aTriangle.y()];
-          const typename VectorType<T, N>::Type aVertex2 = aTriangulation->Vertices[aTriangle.z()];
-
-          const typename VectorType<T, N>::Type aDirection =
-            DirectionToNearestPoint<T, N> (thePnt, aVertex0, aVertex1, aVertex2);
-
-          const T aDistance = BVH_DOT3 (aDirection, aDirection);
-
-          if (aDistance < aMinDistance)
-          {
-            aMinDistance = aDistance;
-
-            typename VectorType<T, N>::Type aTrgEdges[] = { aVertex1 - aVertex0,
-                                                            aVertex2 - aVertex0 };
-
-            typename VectorType<T, N>::Type aTrgNormal;
-            
-            aTrgNormal.x() = aTrgEdges[0].y() * aTrgEdges[1].z() - aTrgEdges[0].z() * aTrgEdges[1].y();
-            aTrgNormal.y() = aTrgEdges[0].z() * aTrgEdges[1].x() - aTrgEdges[0].x() * aTrgEdges[1].z();
-            aTrgNormal.z() = aTrgEdges[0].x() * aTrgEdges[1].y() - aTrgEdges[0].y() * aTrgEdges[1].x();
-
-            theIsOutside = BVH_DOT3 (aTrgNormal, aDirection) > 0;
-          }
-        }
-
-        if (aHead < 0)
-          return aMinDistance;
-
-        std::pair<Standard_Integer, T>& anInfo = aStack[aHead--];
-
-        while (anInfo.second > aMinDistance)
-        {
-          if (aHead < 0)
-            return aMinDistance;
-
-          anInfo = aStack[aHead--];
-        }
-
-        aNode = anInfo.first;
-      }
-    }
+    PointTriangulationSquareDistance<T,N> aDistTool;
+    aDistTool.SetObject (thePnt);
+    aDistTool.SetBVHSet (aTriangulation);
+    aDistTool.ComputeDistance();
+    theIsOutside = aDistTool.IsOutside();
+    return aDistTool.Distance();
   }
+
+  //=======================================================================
+  //function : PointGeometrySquareDistance
+  //purpose  : Computes squared distance from point to BVH geometry
+  //=======================================================================
+  template<class T, int N>
+  class PointGeometrySquareDistance: public SquareDistanceToPoint <T,N,BVH_Geometry<T, N>>
+  {
+  public:
+    typedef typename VectorType<T, N>::Type BVH_VecNt;
+
+  public:
+    //! Constructor
+    PointGeometrySquareDistance()
+      : SquareDistanceToPoint<T, N, BVH_Geometry<T, N>>()
+    {
+    }
+
+  public:
+    // Accepting the element
+    virtual Standard_Boolean Accept (const Standard_Integer theIndex,
+                                     const T&) Standard_OVERRIDE
+    {
+      Standard_Boolean isOutside = Standard_True;
+      const T aDistance = SquareDistanceToObject (
+        this->myBVHSet->Objects ()(theIndex).operator->(), this->myObject, isOutside);
+
+      if (aDistance < this->myDistance)
+      {
+        this->myDistance = aDistance;
+        this->myIsOutside = isOutside;
+
+        return Standard_True;
+      }
+      return Standard_False;
+    }
+  };
 
   //=======================================================================
   //function : SquareDistanceToGeomerty
@@ -307,91 +348,12 @@ namespace BVH
       return Standard_False;
     }
 
-    std::pair<Standard_Integer, T> aStack[BVH_Constants_MaxTreeDepth];
-
-    Standard_Integer aHead = -1;
-    Standard_Integer aNode =  0; // root node
-
-    T aMinDistance = std::numeric_limits<T>::max();
-
-    for (;;)
-    {
-      BVH_Vec4i aData = aBVH->NodeInfoBuffer()[aNode];
-
-      if (aData.x() == 0) // if inner node
-      {
-        const T aDistToLft = DistanceToBox<T, N> (thePnt,
-                                                  aBVH->MinPoint (aData.y()),
-                                                  aBVH->MaxPoint (aData.y()));
-
-        const T aDistToRgh = DistanceToBox<T, N> (thePnt,
-                                                  aBVH->MinPoint (aData.z()),
-                                                  aBVH->MaxPoint (aData.z()));
-
-        const Standard_Boolean aHitLft = aDistToLft <= aMinDistance;
-        const Standard_Boolean aHitRgh = aDistToRgh <= aMinDistance;
-
-        if (aHitLft & aHitRgh)
-        {
-          aNode = (aDistToLft < aDistToRgh) ? aData.y() : aData.z();
-
-          aStack[++aHead] = std::pair<Standard_Integer, T> (
-            aDistToLft < aDistToRgh ? aData.z() : aData.y(), Max (aDistToLft, aDistToRgh));
-        }
-        else
-        {
-          if (aHitLft | aHitRgh)
-          {
-            aNode = aHitLft ? aData.y() : aData.z();
-          }
-          else
-          {
-            if (aHead < 0)
-              return aMinDistance;
-
-            std::pair<Standard_Integer, T>& anInfo = aStack[aHead--];
-
-            while (anInfo.second > aMinDistance)
-            {
-              if (aHead < 0)
-                return aMinDistance;
-
-              anInfo = aStack[aHead--];
-            }
-
-            aNode = anInfo.first;
-          }
-        }
-      }
-      else  // if leaf node
-      {
-        Standard_Boolean isOutside = Standard_True;
-
-        const T aDistance = SquareDistanceToObject (
-          theGeometry.Objects()(aNode).operator->(), thePnt, isOutside);
-
-        if (aDistance < aMinDistance)
-        {
-          aMinDistance = aDistance;
-          theIsOutside = isOutside;
-        }
-
-        if (aHead < 0)
-          return aMinDistance;
-
-        std::pair<Standard_Integer, T>& anInfo = aStack[aHead--];
-
-        while (anInfo.second > aMinDistance)
-        {
-          if (aHead < 0)
-            return aMinDistance;
-
-          anInfo = aStack[aHead--];
-        }
-
-        aNode = anInfo.first;
-      }
-    }
+    PointGeometrySquareDistance<T,N> aDistTool;
+    aDistTool.SetObject (thePnt);
+    aDistTool.SetBVHSet (&theGeometry);
+    aDistTool.ComputeDistance();
+    theIsOutside = aDistTool.IsOutside();
+    return aDistTool.Distance();
   }
 }
 

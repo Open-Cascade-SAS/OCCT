@@ -108,6 +108,87 @@ public:
   //! Returns center of bounding box along the given axis.
   T Center (const Standard_Integer theAxis) const;
 
+public:
+
+  //! Checks if the Box is out of the other box.
+  Standard_Boolean IsOut (const BVH_Box<T, N>& theOther) const
+  {
+    if (!theOther.IsValid())
+      return Standard_True;
+
+    return IsOut (theOther.myMinPoint, theOther.myMaxPoint);
+  }
+
+  //! Checks if the Box is out of the other box defined by two points.
+  Standard_Boolean IsOut (const BVH_VecNt& theMinPoint,
+                          const BVH_VecNt& theMaxPoint) const
+  {
+    if (!IsValid())
+      return Standard_True;
+
+    int n = Min (N, 3);
+    for (int i = 0; i < n; ++i)
+    {
+      if (myMinPoint[i] > theMaxPoint[i] ||
+          myMaxPoint[i] < theMinPoint[i])
+        return Standard_True;
+    }
+    return Standard_False;
+  }
+
+  //! Checks if the Box fully contains the other box.
+  Standard_Boolean Contains (const BVH_Box<T, N>& theOther,
+                             Standard_Boolean& hasOverlap) const
+  {
+    hasOverlap = Standard_False;
+    if (!theOther.IsValid())
+      return Standard_False;
+
+    return Contains (theOther.myMinPoint, theOther.myMaxPoint, hasOverlap);
+  }
+
+  //! Checks if the Box is fully contains the other box.
+  Standard_Boolean Contains (const BVH_VecNt& theMinPoint,
+                             const BVH_VecNt& theMaxPoint,
+                             Standard_Boolean& hasOverlap) const
+  {
+    hasOverlap = Standard_False;
+    if (!IsValid())
+      return Standard_False;
+
+    Standard_Boolean isInside = Standard_True;
+
+    int n = Min (N, 3);
+    for (int i = 0; i < n; ++i)
+    {
+      hasOverlap = (myMinPoint[i] <= theMaxPoint[i] &&
+                    myMaxPoint[i] >= theMinPoint[i]);
+      if (!hasOverlap)
+        return Standard_False;
+
+      isInside = isInside && (myMinPoint[i] <= theMinPoint[i] &&
+                              myMaxPoint[i] >= theMaxPoint[i]);
+    }
+    return isInside;
+  }
+
+  //! Checks if the Point is out of the box.
+  Standard_Boolean IsOut (const BVH_VecNt& thePoint) const
+  {
+    if (!IsValid())
+      return Standard_True;
+
+    int n = Min (N, 3);
+    for (int i = 0; i < n; ++i)
+    {
+      if (thePoint[i] < myMinPoint[i] ||
+          thePoint[i] > myMaxPoint[i])
+        return Standard_True;
+    }
+    return Standard_False;
+  }
+
+
 protected:
 
   BVH_VecNt        myMinPoint; //!< Minimum point of bounding box

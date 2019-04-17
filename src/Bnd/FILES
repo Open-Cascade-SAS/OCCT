@@ -32,3 +32,4 @@ Bnd_SeqOfBox.hxx
 Bnd_Sphere.cxx
 Bnd_Sphere.hxx
 Bnd_Sphere.lxx
+Bnd_Tools.hxx

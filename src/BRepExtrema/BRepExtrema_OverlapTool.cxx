@@ -22,7 +22,8 @@
 //purpose  :
 //=======================================================================
 BRepExtrema_OverlapTool::BRepExtrema_OverlapTool()
-: myFilter (NULL)
+: myFilter (NULL),
+  myTolerance (0.0)
 {
   myIsDone = Standard_False;
 }
@@ -33,7 +34,8 @@ BRepExtrema_OverlapTool::BRepExtrema_OverlapTool()
 //=======================================================================
 BRepExtrema_OverlapTool::BRepExtrema_OverlapTool (const Handle(BRepExtrema_TriangleSet)& theSet1,
                                                   const Handle(BRepExtrema_TriangleSet)& theSet2)
-: myFilter (NULL)
+: myFilter (NULL),
+  myTolerance (0.0)
 {
   LoadTriangleSets (theSet1, theSet2);
 }
@@ -57,21 +59,6 @@ void BRepExtrema_OverlapTool::LoadTriangleSets (const Handle(BRepExtrema_Triangl
 
 namespace
 {
-  //! Tool class to describe stack item in traverse function.
-  struct BRepExtrema_StackItem
-  {
-    Standard_Integer Node1;
-    Standard_Integer Node2;
-
-    BRepExtrema_StackItem (const Standard_Integer theNode1 = 0,
-                           const Standard_Integer theNode2 = 0)
-    : Node1 (theNode1),
-      Node2 (theNode2)
-    {
-      //
-    }
-  };
-
   //! Bounding triangular prism for specified triangle.
   class BRepExtrema_BoundingPrism
   {
@@ -517,175 +504,163 @@ namespace
 }
 
 //=======================================================================
-//function : intersectTriangleRangesExact
+//function : intersectTrianglesExact
 //purpose  :
 //=======================================================================
-void BRepExtrema_OverlapTool::intersectTriangleRangesExact (const BVH_Vec4i& theLeaf1,
-                                                            const BVH_Vec4i& theLeaf2)
+void BRepExtrema_OverlapTool::intersectTrianglesExact (const Standard_Integer theTrgIdx1,
+                                                       const Standard_Integer theTrgIdx2)
 {
-  for (Standard_Integer aTrgIdx1 = theLeaf1.y(); aTrgIdx1 <= theLeaf1.z(); ++aTrgIdx1)
+  const Standard_Integer aFaceIdx1 = mySet1->GetFaceID (theTrgIdx1);
+
+  BVH_Vec3d aTrg1Vert1;
+  BVH_Vec3d aTrg1Vert2;
+  BVH_Vec3d aTrg1Vert3;
+
+  mySet1->GetVertices (theTrgIdx1,
+                       aTrg1Vert1,
+                       aTrg1Vert2,
+                       aTrg1Vert3);
+
+  const Standard_Boolean aIsInSet = myOverlapSubShapes1.IsBound (aFaceIdx1);
+
+  const Standard_Integer aFaceIdx2 = mySet2->GetFaceID (theTrgIdx2);
+
+  if (aIsInSet && myOverlapSubShapes1.Find (aFaceIdx1).Contains (aFaceIdx2))
   {
-    const Standard_Integer aFaceIdx1 = mySet1->GetFaceID (aTrgIdx1);
+    return;
+  }
 
-    BVH_Vec3d aTrg1Vert1;
-    BVH_Vec3d aTrg1Vert2;
-    BVH_Vec3d aTrg1Vert3;
+  BRepExtrema_ElementFilter::FilterResult aResult = myFilter == NULL ?
+    BRepExtrema_ElementFilter::DoCheck : myFilter->PreCheckElements (theTrgIdx1, theTrgIdx2);
 
-    mySet1->GetVertices (aTrgIdx1,
-                         aTrg1Vert1,
-                         aTrg1Vert2,
-                         aTrg1Vert3);
+  if (aResult == BRepExtrema_ElementFilter::Overlap)
+  {
+    getSetOfFaces (myOverlapSubShapes1, aFaceIdx1).Add (aFaceIdx2);
+    getSetOfFaces (myOverlapSubShapes2, aFaceIdx2).Add (aFaceIdx1);
 
-    const Standard_Boolean aIsInSet = myOverlapSubShapes1.IsBound (aFaceIdx1);
-
-    for (Standard_Integer aTrgIdx2 = theLeaf2.y(); aTrgIdx2 <= theLeaf2.z(); ++aTrgIdx2)
+#ifdef OVERLAP_TOOL_OUTPUT_TRIANGLES
+    if (mySet1 == mySet2)
     {
-      const Standard_Integer aFaceIdx2 = mySet2->GetFaceID (aTrgIdx2);
+      myOverlapTriangles1.Add (theTrgIdx1);
+      myOverlapTriangles1.Add (theTrgIdx2);
+    }
+    else
+    {
+      myOverlapTriangles1.Add (theTrgIdx1);
+      myOverlapTriangles2.Add (theTrgIdx2);
+    }
+#endif
+  }
+  else if (aResult == BRepExtrema_ElementFilter::DoCheck)
+  {
+    BVH_Vec3d aTrg2Vert1;
+    BVH_Vec3d aTrg2Vert2;
+    BVH_Vec3d aTrg2Vert3;
 
-      if (aIsInSet && myOverlapSubShapes1.Find (aFaceIdx1).Contains (aFaceIdx2))
-      {
-        continue;
-      }
+    mySet2->GetVertices (theTrgIdx2, aTrg2Vert1, aTrg2Vert2, aTrg2Vert3);
 
-      BRepExtrema_ElementFilter::FilterResult aResult = myFilter == NULL ?
-        BRepExtrema_ElementFilter::DoCheck : myFilter->PreCheckElements (aTrgIdx1, aTrgIdx2);
-
-      if (aResult == BRepExtrema_ElementFilter::Overlap)
-      {
-        getSetOfFaces (myOverlapSubShapes1, aFaceIdx1).Add (aFaceIdx2);
-        getSetOfFaces (myOverlapSubShapes2, aFaceIdx2).Add (aFaceIdx1);
+    if (trianglesIntersected (aTrg1Vert1,
+                              aTrg1Vert2,
+                              aTrg1Vert3,
+                              aTrg2Vert1,
+                              aTrg2Vert2,
+                              aTrg2Vert3))
+    {
+      getSetOfFaces (myOverlapSubShapes1, aFaceIdx1).Add (aFaceIdx2);
+      getSetOfFaces (myOverlapSubShapes2, aFaceIdx2).Add (aFaceIdx1);
 
 #ifdef OVERLAP_TOOL_OUTPUT_TRIANGLES
-        if (mySet1 == mySet2)
-        {
-          myOverlapTriangles1.Add (aTrgIdx1);
-          myOverlapTriangles1.Add (aTrgIdx2);
-        }
-        else
-        {
-          myOverlapTriangles1.Add (aTrgIdx1);
-          myOverlapTriangles2.Add (aTrgIdx2);
-        }
-#endif
-      }
-      else if (aResult == BRepExtrema_ElementFilter::DoCheck)
+      if (mySet1 == mySet2)
       {
-        BVH_Vec3d aTrg2Vert1;
-        BVH_Vec3d aTrg2Vert2;
-        BVH_Vec3d aTrg2Vert3;
-
-        mySet2->GetVertices (aTrgIdx2, aTrg2Vert1, aTrg2Vert2, aTrg2Vert3);
-
-        if (trianglesIntersected (aTrg1Vert1,
-                                  aTrg1Vert2,
-                                  aTrg1Vert3,
-                                  aTrg2Vert1,
-                                  aTrg2Vert2,
-                                  aTrg2Vert3))
-        {
-          getSetOfFaces (myOverlapSubShapes1, aFaceIdx1).Add (aFaceIdx2);
-          getSetOfFaces (myOverlapSubShapes2, aFaceIdx2).Add (aFaceIdx1);
-
-#ifdef OVERLAP_TOOL_OUTPUT_TRIANGLES
-        if (mySet1 == mySet2)
-        {
-          myOverlapTriangles1.Add (aTrgIdx1);
-          myOverlapTriangles1.Add (aTrgIdx2);
-        }
-        else
-        {
-          myOverlapTriangles1.Add (aTrgIdx1);
-          myOverlapTriangles2.Add (aTrgIdx2);
-        }
-#endif
-        }
+        myOverlapTriangles1.Add (theTrgIdx1);
+        myOverlapTriangles1.Add (theTrgIdx2);
       }
+      else
+      {
+        myOverlapTriangles1.Add (theTrgIdx1);
+        myOverlapTriangles2.Add (theTrgIdx2);
+      }
+#endif
     }
   }
 }
 
 //=======================================================================
-//function : intersectTriangleRangesToler
+//function : intersectTrianglesToler
 //purpose  :
 //=======================================================================
-void BRepExtrema_OverlapTool::intersectTriangleRangesToler (const BVH_Vec4i&    theLeaf1,
-                                                            const BVH_Vec4i&    theLeaf2,
-                                                            const Standard_Real theToler)
+void BRepExtrema_OverlapTool::intersectTrianglesToler (const Standard_Integer theTrgIdx1,
+                                                       const Standard_Integer theTrgIdx2,
+                                                       const Standard_Real theToler)
 {
-  for (Standard_Integer aTrgIdx1 = theLeaf1.y(); aTrgIdx1 <= theLeaf1.z(); ++aTrgIdx1)
+  const Standard_Integer aFaceIdx1 = mySet1->GetFaceID (theTrgIdx1);
+
+  BVH_Vec3d aTrg1Vert1;
+  BVH_Vec3d aTrg1Vert2;
+  BVH_Vec3d aTrg1Vert3;
+
+  mySet1->GetVertices (theTrgIdx1,
+                       aTrg1Vert1,
+                       aTrg1Vert2,
+                       aTrg1Vert3);
+
+  BRepExtrema_BoundingPrism aPrism1; // not initialized
+
+  const Standard_Boolean aIsInSet = myOverlapSubShapes1.IsBound (aFaceIdx1);
+
+  const Standard_Integer aFaceIdx2 = mySet2->GetFaceID (theTrgIdx2);
+
+  if (aIsInSet && myOverlapSubShapes1.Find (aFaceIdx1).Contains (aFaceIdx2))
   {
-    const Standard_Integer aFaceIdx1 = mySet1->GetFaceID (aTrgIdx1);
+    return;
+  }
 
-    BVH_Vec3d aTrg1Vert1;
-    BVH_Vec3d aTrg1Vert2;
-    BVH_Vec3d aTrg1Vert3;
+  BRepExtrema_ElementFilter::FilterResult aResult = myFilter == NULL ?
+    BRepExtrema_ElementFilter::DoCheck : myFilter->PreCheckElements (theTrgIdx1, theTrgIdx2);
 
-    mySet1->GetVertices (aTrgIdx1,
-                         aTrg1Vert1,
-                         aTrg1Vert2,
-                         aTrg1Vert3);
-
-    BRepExtrema_BoundingPrism aPrism1; // not initialized
-
-    const Standard_Boolean aIsInSet = myOverlapSubShapes1.IsBound (aFaceIdx1);
-
-    for (Standard_Integer aTrgIdx2 = theLeaf2.y(); aTrgIdx2 <= theLeaf2.z(); ++aTrgIdx2)
-    {
-      const Standard_Integer aFaceIdx2 = mySet2->GetFaceID (aTrgIdx2);
-
-      if (aIsInSet && myOverlapSubShapes1.Find (aFaceIdx1).Contains (aFaceIdx2))
-      {
-        continue;
-      }
-
-      BRepExtrema_ElementFilter::FilterResult aResult = myFilter == NULL ?
-        BRepExtrema_ElementFilter::DoCheck : myFilter->PreCheckElements (aTrgIdx1, aTrgIdx2);
-
-      if (aResult == BRepExtrema_ElementFilter::Overlap)
-      {
-        getSetOfFaces (myOverlapSubShapes1, aFaceIdx1).Add (aFaceIdx2);
-        getSetOfFaces (myOverlapSubShapes2, aFaceIdx2).Add (aFaceIdx1);
+  if (aResult == BRepExtrema_ElementFilter::Overlap)
+  {
+    getSetOfFaces (myOverlapSubShapes1, aFaceIdx1).Add (aFaceIdx2);
+    getSetOfFaces (myOverlapSubShapes2, aFaceIdx2).Add (aFaceIdx1);
 
 #ifdef OVERLAP_TOOL_OUTPUT_TRIANGLES
-        if (mySet1 == mySet2)
-        {
-          myOverlapTriangles1.Add (aTrgIdx1);
-          myOverlapTriangles1.Add (aTrgIdx2);
-        }
-        else
-        {
-          myOverlapTriangles1.Add (aTrgIdx1);
-          myOverlapTriangles2.Add (aTrgIdx2);
-        }
+    if (mySet1 == mySet2)
+    {
+      myOverlapTriangles1.Add (theTrgIdx1);
+      myOverlapTriangles1.Add (theTrgIdx2);
+    }
+    else
+    {
+      myOverlapTriangles1.Add (theTrgIdx1);
+      myOverlapTriangles2.Add (theTrgIdx2);
+    }
 #endif
-      }
-      else if (aResult == BRepExtrema_ElementFilter::DoCheck)
-      {
-        if (!aPrism1.IsInited)
-        {
-          aPrism1.Init (aTrg1Vert1, aTrg1Vert2, aTrg1Vert3, theToler);
-        }
+  }
+  else if (aResult == BRepExtrema_ElementFilter::DoCheck)
+  {
+    if (!aPrism1.IsInited)
+    {
+      aPrism1.Init (aTrg1Vert1, aTrg1Vert2, aTrg1Vert3, theToler);
+    }
 
-        BVH_Vec3d aTrg2Vert1;
-        BVH_Vec3d aTrg2Vert2;
-        BVH_Vec3d aTrg2Vert3;
+    BVH_Vec3d aTrg2Vert1;
+    BVH_Vec3d aTrg2Vert2;
+    BVH_Vec3d aTrg2Vert3;
 
-        mySet2->GetVertices (aTrgIdx2,
-                             aTrg2Vert1,
-                             aTrg2Vert2,
-                             aTrg2Vert3);
+    mySet2->GetVertices (theTrgIdx2,
+                         aTrg2Vert1,
+                         aTrg2Vert2,
+                         aTrg2Vert3);
 
-        BRepExtrema_BoundingPrism aPrism2 (aTrg2Vert1,
-                                           aTrg2Vert2,
-                                           aTrg2Vert3,
-                                           theToler);
+    BRepExtrema_BoundingPrism aPrism2 (aTrg2Vert1,
+                                       aTrg2Vert2,
+                                       aTrg2Vert3,
+                                       theToler);
 
-        if (prismsIntersected (aPrism1, aPrism2))
-        {
-          getSetOfFaces (myOverlapSubShapes1, aFaceIdx1).Add (aFaceIdx2);
-          getSetOfFaces (myOverlapSubShapes2, aFaceIdx2).Add (aFaceIdx1);
-        }
-      }
+    if (prismsIntersected (aPrism1, aPrism2))
+    {
+      getSetOfFaces (myOverlapSubShapes1, aFaceIdx1).Add (aFaceIdx2);
+      getSetOfFaces (myOverlapSubShapes2, aFaceIdx2).Add (aFaceIdx1);
     }
   }
 }
@@ -696,136 +671,38 @@ void BRepExtrema_OverlapTool::intersectTriangleRangesToler (const BVH_Vec4i&    
 //=======================================================================
 void BRepExtrema_OverlapTool::Perform (const Standard_Real theTolerance)
 {
-  if (mySet1.IsNull() || mySet2.IsNull())
+  myTolerance = theTolerance;
+
+  myIsDone = (this->Select(mySet1->BVH(), mySet2->BVH()) > 0);
+}
+
+//=======================================================================
+//function : Branch rejection
+//purpose  : 
+//=======================================================================
+Standard_Boolean BRepExtrema_OverlapTool::RejectNode (const BVH_Vec3d& theCornerMin1,
+                                                      const BVH_Vec3d& theCornerMax1,
+                                                      const BVH_Vec3d& theCornerMin2,
+                                                      const BVH_Vec3d& theCornerMax2,
+                                                      Standard_Real&) const
+{
+  return !overlapBoxes (theCornerMin1, theCornerMax1, theCornerMin2, theCornerMax2, myTolerance);
+}
+
+//=======================================================================
+//function : Leaf acceptance
+//purpose  : 
+//=======================================================================
+Standard_Boolean BRepExtrema_OverlapTool::Accept (const Standard_Integer theTrgIdx1,
+                                                  const Standard_Integer theTrgIdx2)
+{
+  if (myTolerance == 0.0)
   {
-    return;
+    intersectTrianglesExact (theTrgIdx1, theTrgIdx2);
   }
-
-  BRepExtrema_StackItem aStack[96];
-
-  const opencascade::handle<BVH_Tree<Standard_Real, 3> >& aBVH1 = mySet1->BVH();
-  const opencascade::handle<BVH_Tree<Standard_Real, 3> >& aBVH2 = mySet2->BVH();
-
-  if (aBVH1.IsNull() || aBVH2.IsNull())
+  else
   {
-    return;
+    intersectTrianglesToler (theTrgIdx1, theTrgIdx2, myTolerance);
   }
-
-  BRepExtrema_StackItem aNodes; // current pair of nodes
-
-  Standard_Integer aHead = -1; // stack head position
-
-  for (;;)
-  {
-    BVH_Vec4i aNodeData1 = aBVH1->NodeInfoBuffer()[aNodes.Node1];
-    BVH_Vec4i aNodeData2 = aBVH2->NodeInfoBuffer()[aNodes.Node2];
-
-    if (aNodeData1.x() != 0 && aNodeData2.x() != 0) // leaves
-    {
-      if (theTolerance == 0.0)
-      {
-        intersectTriangleRangesExact (aNodeData1, aNodeData2);
-      }
-      else
-      {
-        intersectTriangleRangesToler (aNodeData1, aNodeData2, theTolerance);
-      }
-
-      if (aHead < 0)
-        break;
-
-      aNodes = aStack[aHead--];
-    }
-    else
-    {
-      BRepExtrema_StackItem aPairsToProcess[4];
-
-      Standard_Integer aNbPairs = 0;
-
-      if (aNodeData1.x() == 0) // inner node
-      {
-        const BVH_Vec3d& aMinPntLft1 = aBVH1->MinPoint (aNodeData1.y());
-        const BVH_Vec3d& aMaxPntLft1 = aBVH1->MaxPoint (aNodeData1.y());
-        const BVH_Vec3d& aMinPntRgh1 = aBVH1->MinPoint (aNodeData1.z());
-        const BVH_Vec3d& aMaxPntRgh1 = aBVH1->MaxPoint (aNodeData1.z());
-
-        if (aNodeData2.x() == 0) // inner node
-        {
-          const BVH_Vec3d& aMinPntLft2 = aBVH2->MinPoint (aNodeData2.y());
-          const BVH_Vec3d& aMaxPntLft2 = aBVH2->MaxPoint (aNodeData2.y());
-          const BVH_Vec3d& aMinPntRgh2 = aBVH2->MinPoint (aNodeData2.z());
-          const BVH_Vec3d& aMaxPntRgh2 = aBVH2->MaxPoint (aNodeData2.z());
-
-          if (overlapBoxes (aMinPntLft1, aMaxPntLft1, aMinPntLft2, aMaxPntLft2, theTolerance))
-          {
-            aPairsToProcess[aNbPairs++] = BRepExtrema_StackItem (aNodeData1.y(), aNodeData2.y());
-          }
-          if (overlapBoxes (aMinPntLft1, aMaxPntLft1, aMinPntRgh2, aMaxPntRgh2, theTolerance))
-          {
-            aPairsToProcess[aNbPairs++] = BRepExtrema_StackItem (aNodeData1.y(), aNodeData2.z());
-          }
-          if (overlapBoxes (aMinPntRgh1, aMaxPntRgh1, aMinPntLft2, aMaxPntLft2, theTolerance))
-          {
-            aPairsToProcess[aNbPairs++] = BRepExtrema_StackItem (aNodeData1.z(), aNodeData2.y());
-          }
-          if (overlapBoxes (aMinPntRgh1, aMaxPntRgh1, aMinPntRgh2, aMaxPntRgh2, theTolerance))
-          {
-            aPairsToProcess[aNbPairs++] = BRepExtrema_StackItem (aNodeData1.z(), aNodeData2.z());
-          }
-        }
-        else
-        {
-          const BVH_Vec3d& aMinPntLeaf = aBVH2->MinPoint (aNodes.Node2);
-          const BVH_Vec3d& aMaxPntLeaf = aBVH2->MaxPoint (aNodes.Node2);
-
-          if (overlapBoxes (aMinPntLft1, aMaxPntLft1, aMinPntLeaf, aMaxPntLeaf, theTolerance))
-          {
-            aPairsToProcess[aNbPairs++] = BRepExtrema_StackItem (aNodeData1.y(), aNodes.Node2);
-          }
-          if (overlapBoxes (aMinPntRgh1, aMaxPntRgh1, aMinPntLeaf, aMaxPntLeaf, theTolerance))
-          {
-            aPairsToProcess[aNbPairs++] = BRepExtrema_StackItem (aNodeData1.z(), aNodes.Node2);
-          }
-        }
-      }
-      else
-      {
-        const BVH_Vec3d& aMinPntLeaf = aBVH1->MinPoint (aNodes.Node1);
-        const BVH_Vec3d& aMaxPntLeaf = aBVH1->MaxPoint (aNodes.Node1);
-
-        const BVH_Vec3d& aMinPntLft2 = aBVH2->MinPoint (aNodeData2.y());
-        const BVH_Vec3d& aMaxPntLft2 = aBVH2->MaxPoint (aNodeData2.y());
-        const BVH_Vec3d& aMinPntRgh2 = aBVH2->MinPoint (aNodeData2.z());
-        const BVH_Vec3d& aMaxPntRgh2 = aBVH2->MaxPoint (aNodeData2.z());
-
-        if (overlapBoxes (aMinPntLft2, aMaxPntLft2, aMinPntLeaf, aMaxPntLeaf, theTolerance))
-        {
-          aPairsToProcess[aNbPairs++] = BRepExtrema_StackItem (aNodes.Node1, aNodeData2.y());
-        }
-        if (overlapBoxes (aMinPntRgh2, aMaxPntRgh2, aMinPntLeaf, aMaxPntLeaf, theTolerance))
-        {
-          aPairsToProcess[aNbPairs++] = BRepExtrema_StackItem (aNodes.Node1, aNodeData2.z());
-        }
-      }
-
-      if (aNbPairs > 0)
-      {
-        aNodes = aPairsToProcess[0];
-
-        for (Standard_Integer anIdx = 1; anIdx < aNbPairs; ++anIdx)
-        {
-          aStack[++aHead] = aPairsToProcess[anIdx];
-        }
-      }
-      else
-      {
-        if (aHead < 0)
-          break;
-
-        aNodes = aStack[aHead--];
-      }
-    }
-  }
-
-  myIsDone = Standard_True;
+  return Standard_True;
 }
