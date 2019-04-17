@@ -315,24 +315,6 @@ void V3d_View::SetAutoZFitMode (const Standard_Boolean theIsOn,
   myAutoZFitIsOn = theIsOn;
 }
 
-// ========================================================================
-// function : AutoZFitMode
-// purpose  :
-// ========================================================================
-Standard_Boolean V3d_View::AutoZFitMode() const
-{
-  return myAutoZFitIsOn;
-}
-
-// ========================================================================
-// function : AutoZFitScaleFactor
-// purpose  :
-// ========================================================================
-Standard_Real V3d_View::AutoZFitScaleFactor() const
-{
-  return myAutoZFitScaleFactor;
-}
-
 //=============================================================================
 //function : AutoZFit
 //purpose  :
@@ -1504,18 +1486,6 @@ void V3d_View::DepthFitAll(const Standard_Real Aspect,
     ImmediateUpdate();
 }
 
-//=============================================================================
-//function : WindowFitAll
-//purpose  :
-//=============================================================================
-void V3d_View::WindowFitAll(const Standard_Integer Xmin,
-                            const Standard_Integer Ymin,
-                            const Standard_Integer Xmax,
-                            const Standard_Integer Ymax)
-{
-  WindowFit(Xmin,Ymin,Xmax,Ymax);
-}
-
 //=======================================================================
 //function : WindowFit
 //purpose  :
@@ -2099,15 +2069,6 @@ void V3d_View::Eye(Standard_Real& X, Standard_Real& Y, Standard_Real& Z) const
 }
 
 //=============================================================================
-//function : FocalReferencePoint
-//purpose  :
-//=============================================================================
-void V3d_View::FocalReferencePoint(Standard_Real& X, Standard_Real& Y,Standard_Real& Z) const
-{
-  Eye (X,Y,Z);
-}
-
-//=============================================================================
 //function : ProjReferenceAxe
 //purpose  :
 //=============================================================================
@@ -2246,30 +2207,12 @@ V3d_TypeOfVisualization V3d_View::Visualization() const
 }
 
 //=============================================================================
-//function : Viewer
-//purpose  :
-//=============================================================================
-Handle(V3d_Viewer) V3d_View::Viewer() const
-{
-  return MyViewer;
-}
-
-//=============================================================================
 //function : IfWindow
 //purpose  :
 //=============================================================================
 Standard_Boolean V3d_View::IfWindow() const
 {
   return myView->IsDefined();
-}
-
-//=============================================================================
-//function : Window
-//purpose  :
-//=============================================================================
-Handle(Aspect_Window) V3d_View::Window() const
-{
-  return MyWindow;
 }
 
 //=============================================================================
@@ -2315,15 +2258,6 @@ Standard_Real V3d_View::Focale() const
   }
 
   return aCamera->Distance() * 2.0 * Tan (aCamera->FOVy() * M_PI / 360.0);
-}
-
-//=============================================================================
-//function : View
-//purpose  :
-//=============================================================================
-Handle(Graphic3d_CView) V3d_View::View() const
-{
-  return myView;
 }
 
 //=============================================================================

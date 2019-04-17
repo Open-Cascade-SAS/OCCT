@@ -179,10 +179,10 @@ public:
   Standard_EXPORT void SetAutoZFitMode (const Standard_Boolean theIsOn, const Standard_Real theScaleFactor = 1.0);
 
   //! returns TRUE if automatic z-fit mode is turned on.
-  Standard_EXPORT Standard_Boolean AutoZFitMode() const;
+  Standard_Boolean AutoZFitMode() const { return myAutoZFitIsOn; }
 
   //! returns scale factor parameter of automatic z-fit mode.
-  Standard_EXPORT Standard_Real AutoZFitScaleFactor() const;
+  Standard_Real AutoZFitScaleFactor() const { return myAutoZFitScaleFactor; }
 
   //! If automatic z-range fitting is turned on, adjusts Z-min and Z-max
   //! projection volume planes with call to ZFitAll.
@@ -645,9 +645,8 @@ public:
   //! Returns the position of the eye.
   Standard_EXPORT void Eye (Standard_Real& X, Standard_Real& Y, Standard_Real& Z) const;
 
-  //! Returns the position of point which emanating the
-  //! projections.
-  Standard_EXPORT void FocalReferencePoint (Standard_Real& X, Standard_Real& Y, Standard_Real& Z) const;
+  //! Returns the position of point which emanating the projections.
+  void FocalReferencePoint (Standard_Real& X, Standard_Real& Y, Standard_Real& Z) const { Eye (X,Y,Z); }
 
   //! Returns the coordinate of the point (Xpix,Ypix)
   //! in the view (XP,YP,ZP), and the projection vector of the
@@ -702,13 +701,13 @@ public:
   Standard_EXPORT Standard_Integer LightLimit() const;
 
   //! Returns the viewer in which the view has been created.
-  Standard_EXPORT Handle(V3d_Viewer) Viewer() const;
+  Handle(V3d_Viewer) Viewer() const { return MyViewer; }
 
   //! Returns True if MyView is associated with a window .
   Standard_EXPORT Standard_Boolean IfWindow() const;
 
   //! Returns the Aspect Window associated with the view.
-  Standard_EXPORT Handle(Aspect_Window) Window() const;
+  const Handle(Aspect_Window)& Window() const { return MyWindow; }
 
   //! Returns the Type of the View
   Standard_EXPORT V3d_TypeOfView Type() const;
@@ -771,7 +770,7 @@ public:
   Standard_EXPORT Standard_Real Focale() const;
 
   //! Returns the associated Graphic3d view.
-  Standard_EXPORT Handle(Graphic3d_CView) View() const;
+  const Handle(Graphic3d_CView)& View() const { return myView; }
 
   //! Switches computed HLR mode in the view.
   Standard_EXPORT void SetComputedMode (const Standard_Boolean theMode);
@@ -780,7 +779,10 @@ public:
   Standard_EXPORT Standard_Boolean ComputedMode() const;
 
   //! idem than WindowFit
-  Standard_EXPORT void WindowFitAll (const Standard_Integer Xmin, const Standard_Integer Ymin, const Standard_Integer Xmax, const Standard_Integer Ymax);
+  void WindowFitAll (const Standard_Integer Xmin, const Standard_Integer Ymin, const Standard_Integer Xmax, const Standard_Integer Ymax)
+  {
+    WindowFit (Xmin, Ymin, Xmax, Ymax);
+  }
 
   //! Transform camera eye, center and scale to fit in the passed bounding box specified in WCS.
   //! @param theCamera [in] the camera
