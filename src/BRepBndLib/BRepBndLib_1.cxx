@@ -293,6 +293,7 @@ static Standard_Integer IsWCS(const gp_Dir& theDir)
 //=======================================================================
 static Standard_Boolean CheckPoints(const TopoDS_Shape& theS,
                                     const Standard_Boolean theIsTriangulationUsed,
+                                    const Standard_Boolean theIsOptimal,
                                     const Standard_Boolean theIsShapeToleranceUsed,
                                     Bnd_OBB& theOBB)
 {
@@ -329,7 +330,7 @@ static Standard_Boolean CheckPoints(const TopoDS_Shape& theS,
   }
 #endif
 
-  theOBB.ReBuild(anArrPnts, aPtrArrTol);
+  theOBB.ReBuild(anArrPnts, aPtrArrTol, theIsOptimal);
 
   return (!theOBB.IsVoid());
 }
@@ -498,7 +499,7 @@ void BRepBndLib::AddOBB(const TopoDS_Shape& theS,
                         const Standard_Boolean theIsOptimal,
                         const Standard_Boolean theIsShapeToleranceUsed)
 {
-  if(CheckPoints(theS, theIsTriangulationUsed, theIsShapeToleranceUsed, theOBB))
+  if (CheckPoints(theS, theIsTriangulationUsed, theIsOptimal, theIsShapeToleranceUsed, theOBB))
     return;
 
   ComputePCA(theS, theOBB, theIsTriangulationUsed, theIsOptimal, theIsShapeToleranceUsed);

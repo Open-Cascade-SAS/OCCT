@@ -1,0 +1,18 @@
+puts "==============================================================="
+puts "0030595: Oriented Bounding Box seems not optimal for some shapes"
+puts "==============================================================="
+puts ""
+
+pload XSDRAW
+
+stepread [locate_data_file bug30595_UC1.stp] s *
+incmesh s_1 0.1
+dchrono stime start
+bounding s_1 -obb -shape bs -optimal
+dchrono stime stop counter s_OBB
+
+checkprops bs -v 1.32656e+07 -deps 1.e-5
+
+smallview
+donly s_1 bs; fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

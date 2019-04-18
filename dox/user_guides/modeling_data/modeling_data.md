@@ -1341,7 +1341,26 @@ Further, let us consider the triangle \f$ T_{0}\left \langle p_{0}, p_{1}, p_{2}
 <span>10.</span> Compute the center of OBB and its half dimensions.<br>
 <span>11.</span> Create OBB using the center, axes and half dimensions.<br>
 
-This algorithm is implemented in the *Bnd_OBB::ReBuild(...)* method.
+@subsubsection occt_modat_6_1_1_opt Creation of Optimal OBB from set of points
+
+For creation of the optimal OBB from set of points the same algorithm as described above is used but with some simplifications in logic and increased computation time.
+For the optimal OBB it is necessary to check all possible axes which can be created by the extremal points. And since the extremal points are only valid for the initial axes it is necessary to project the whole set of points on each axis.
+This approach usually provides much tighter OBB but the performance is lower. The complexity of the algorithm is still linear and with use of BVH for the set of points it is O(N + C*log(N)).
+
+Here is the example of optimal and not optimal OBB for the model using the set of 125K nodes:
+<table align="center">
+<tr>
+  <td>@figure{/user_guides/modeling_data/images/modeling_data_obb_125K.png,"Not optimal OBB by DiTo-14",160}</td>
+  <td>@figure{/user_guides/modeling_data/images/modeling_data_opt_obb_125K.png,"Optimal OBB by DiTo-14",160}</td>
+  <td>@figure{/user_guides/modeling_data/images/modeling_data_pca_obb_125K.png,"Not optimal OBB by PCA",160}</td>
+</tr>
+</table>
+
+Computation of the not optimal OBB in this case took 0.007 sec, optimal - 0.1 sec, which is about 14 times slower. Such performance is comparable to creation of the OBB for this shape by PCA approach (see below) which takes about 0.17 sec.
+
+The computation of optimal OBB is controlled by the same *theIsOptimal* flag in the BRepBndLib::AddOBB method as for PCA algorithm.
+
+These algorithms are implemented in the *Bnd_OBB::ReBuild(...)* method.
 
 @subsubsection occt_modat_6_1_2 Creation of OBB based on Axes of inertia
 

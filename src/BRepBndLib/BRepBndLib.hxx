@@ -93,9 +93,8 @@ public:
   //! be ignored at all. 
   //! If theIsShapeToleranceUsed == TRUE then resulting box will be
   //! extended on the tolerance of the shape.
-  //! theIsOptimal flag defines the algorithm for construction of initial
-  //! Bnd_Box for the second method (if theIsOptimal == TRUE then
-  //! this box will be created by AddOptimal(...) method).
+  //! theIsOptimal flag defines whether to look for the more tight
+  //! OBB for the cost of performance or not.
   Standard_EXPORT static 
     void AddOBB(const TopoDS_Shape& theS,
                 Bnd_OBB& theOBB,

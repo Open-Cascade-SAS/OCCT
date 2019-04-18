@@ -95,12 +95,17 @@ public:
     myCenter.SetCoord(0.5*(aX2 + aX1), 0.5*(aY2 + aY1), 0.5*(aZ2 + aZ1));
   }
 
-  //! Created new OBB covering every point in theListOfPoints.
+  //! Creates new OBB covering every point in theListOfPoints.
   //! Tolerance of every such point is set by *theListOfTolerances array.
   //! If this array is not void (not null-pointer) then the resulted Bnd_OBB
   //! will be enlarged using tolerances of points lying on the box surface.
+  //! <theIsOptimal> flag defines the mode in which the OBB will be built.
+  //! Constructing Optimal box takes more time, but the resulting box is usually
+  //! more tight. In case of construction of Optimal OBB more possible
+  //! axes are checked.
   Standard_EXPORT void ReBuild(const TColgp_Array1OfPnt& theListOfPoints,
-                               const TColStd_Array1OfReal *theListOfTolerances = 0);
+                               const TColStd_Array1OfReal *theListOfTolerances = 0,
+                               const Standard_Boolean theIsOptimal = Standard_False);
 
   //! Sets the center of OBB
   void SetCenter(const gp_Pnt& theCenter)
