@@ -16,14 +16,13 @@
 #include <BOPDS_SubIterator.hxx>
 
 #include <Bnd_Box.hxx>
+#include <Bnd_Tools.hxx>
 
 #include <BOPDS_DS.hxx>
 #include <BOPDS_Pair.hxx>
 #include <BOPDS_MapOfPair.hxx>
 
-#include <BOPTools_BoxBndTree.hxx>
-
-#include <NCollection_UBTreeFiller.hxx>
+#include <BOPTools_BoxTree.hxx>
 
 #include <TopoDS_Shape.hxx>
 
@@ -115,60 +114,65 @@ void BOPDS_SubIterator::Initialize()
 // function: Intersect
 // purpose: 
 //=======================================================================
-  void BOPDS_SubIterator::Intersect()
+void BOPDS_SubIterator::Intersect()
 {
-  Standard_Integer i, j, iTi, iTj;
-  BOPTools_BoxBndTree aBBTree;
-  NCollection_UBTreeFiller <Standard_Integer, Bnd_Box> aTreeFiller(aBBTree);
-  //
-  TColStd_ListIteratorOfListOfInteger aIt(*mySubSet1);
-  for (; aIt.More(); aIt.Next()) {
-    i = aIt.Value();
-    //
-    const BOPDS_ShapeInfo& aSI = myDS->ShapeInfo(i);
-    const Bnd_Box& aBoxEx = aSI.Box();
-    //
-    aTreeFiller.Add(i, aBoxEx);
+  if (!mySubSet1->Extent() || !mySubSet2->Extent())
+    return;
+
+  // Construct BVH tree for each sub-set
+  BOPTools_BoxTree aBBTree[2];
+  for (Standard_Integer i = 0; i < 2; ++i)
+  {
+    const TColStd_ListOfInteger* aSubSet = !i ? mySubSet1 : mySubSet2;
+    aBBTree[i].SetSize (aSubSet->Extent());
+    for (TColStd_ListOfInteger::Iterator it (*aSubSet); it.More(); it.Next())
+    {
+      const Standard_Integer nS = it.Value();
+      const BOPDS_ShapeInfo& aSI = myDS->ShapeInfo(nS);
+      const Bnd_Box& aBoxEx = aSI.Box();
+      aBBTree[i].Add(nS, Bnd_Tools::Bnd2BVH (aBoxEx));
+    }
+    aBBTree[i].Build();
   }
-  //
-  aTreeFiller.Fill();
-  //
+
+  // Perform selection of the interfering pairs
+  BOPTools_BoxPairSelector aPairSelector;
+  aPairSelector.SetBVHSets (&aBBTree[0], &aBBTree[1]);
+  aPairSelector.Select();
+  aPairSelector.Sort();
+
+  // Treat the selected pairs
+  const std::vector<BOPTools_BoxPairSelector::PairIDs>& aPairs = aPairSelector.Pairs();
+  const Standard_Integer aNbPairs = static_cast<Standard_Integer> (aPairs.size());
+
+  // Fence map
   BOPDS_MapOfPair aMPKFence;
-  //
-  aIt.Initialize(*mySubSet2);
-  for (; aIt.More(); aIt.Next()) {
-    i = aIt.Value();
-    //
-    const BOPDS_ShapeInfo& aSI = myDS->ShapeInfo(i);
-    const Bnd_Box& aBoxEx = aSI.Box();
-    //
-    BOPTools_BoxBndTreeSelector aSelector;
-    aSelector.SetBox(aBoxEx);
-    Standard_Integer aNbSD = aBBTree.Select(aSelector);
-    if (!aNbSD) {
+
+  for (Standard_Integer iPair = 0; iPair < aNbPairs; ++iPair)
+  {
+    const BOPTools_BoxPairSelector::PairIDs& aPair = aPairs[iPair];
+    if (aPair.ID1 == aPair.ID2)
       continue;
-    }
-    //
-    iTi = BOPDS_Tools::TypeToInteger(aSI.ShapeType());
-    //
-    const TColStd_ListOfInteger& aLI = aSelector.Indices();
-    TColStd_ListIteratorOfListOfInteger aItLI(aLI);
-    for (; aItLI.More(); aItLI.Next()) {
-      j = aItLI.Value();
-      //
-      const BOPDS_ShapeInfo& aSJ = myDS->ShapeInfo(j);
-      iTj = BOPDS_Tools::TypeToInteger(aSJ.ShapeType());
-      //
-      // avoid interfering of the same shapes and shape with its sub-shapes
-      if ((i == j) || ((iTi < iTj) && aSI.HasSubShape(j)) ||
-                      ((iTi > iTj) && aSJ.HasSubShape(i))) {
-        continue;
-      }
-      //
-      BOPDS_Pair aPair(j, i);
-      if (aMPKFence.Add(aPair)) {
-        myList.Append(aPair);
-      }
-    }
+
+    BOPDS_Pair aDSPair (Min(aPair.ID1, aPair.ID2),
+                        Max(aPair.ID1, aPair.ID2));
+    if (!aMPKFence.Add(aDSPair))
+      continue;
+
+    const BOPDS_ShapeInfo& aSI1 = myDS->ShapeInfo (aPair.ID1);
+    const BOPDS_ShapeInfo& aSI2 = myDS->ShapeInfo (aPair.ID2);
+
+    const TopAbs_ShapeEnum aType1 = aSI1.ShapeType();
+    const TopAbs_ShapeEnum aType2 = aSI2.ShapeType();
+
+    Standard_Integer iType1 = BOPDS_Tools::TypeToInteger (aType1);
+    Standard_Integer iType2 = BOPDS_Tools::TypeToInteger (aType2);
+
+    // avoid interfering of the shape with its sub-shapes
+    if (((iType1 < iType2) && aSI1.HasSubShape (aPair.ID2)) ||
+        ((iType1 > iType2) && aSI2.HasSubShape (aPair.ID1)))
+      continue;
+
+    myList.Append(aDSPair);
   }
 }

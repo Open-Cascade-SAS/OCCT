@@ -1751,3 +1751,13 @@ Proxy classes *SelectBasics_SensitiveEntity* and *SelectBasics_EntityOwner* have
 *env.bat* produced by Visual Studio project generator *genproj.bat* has been modified so that *%CSF_DEFINES%* variable is reset to initial state.
 Custom building environment relying on old behavior and setting extra macros within *%CSF_DEFINES%* before env.bat should be updated
 to either modify custom.bat or setup new variable *%CSF_DEFINES_EXTRA%* instead.
+
+@subsection upgrade_740_BVH_in_BOP Switching Boolean Operations algorithm to use BVH tree instead of UB tree
+
+Since OCCT 7.4.0 Boolean Operations algorithm uses BVH tree instead of UBTree to find the pairs of entities with interfering bounding boxes.
+The following API changes have been made:
+* BOPTools_BoxBndTree and BOPTools_BoxBndTreeSelector have been removed. Use the BOPTools_BoxTree and BOPTools_BoxTreeSelector instead.
+* BOPTools_BoxSelector::SetBox() method now accepts the BVH_Box instead of Bnd_Box.
+* Methods BOPTools_BoxSelector::Reject and BOPTools_BoxSelector::Accept have been removed as unused.
+* The RunParallel flag has been removed from the list of parameters of BOPAlgo_Tools::IntersectVertices method. Earlier, it performed selection from the UB tree in parallel mode. Now all interfering pairs are found in one pass, using pair traverse of the same BVH tree.
+

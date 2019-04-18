@@ -21,9 +21,10 @@
 #include <BOPAlgo_Tools.hxx>
 #include <BOPTools_AlgoTools.hxx>
 #include <BOPTools_AlgoTools3D.hxx>
-#include <BOPTools_BoxBndTree.hxx>
+#include <BOPTools_BoxTree.hxx>
 #include <BOPTools_CoupleOfShape.hxx>
 #include <BOPTools_Parallel.hxx>
+#include <Bnd_Tools.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepBndLib.hxx>
@@ -39,7 +40,6 @@
 #include <IntTools_Context.hxx>
 #include <NCollection_DataMap.hxx>
 #include <NCollection_List.hxx>
-#include <NCollection_UBTreeFiller.hxx>
 #include <NCollection_Vector.hxx>
 #include <TColStd_MapIntegerHasher.hxx>
 #include <TopAbs.hxx>
@@ -443,24 +443,23 @@ void BOPAlgo_BuilderSolid::PerformAreas()
 
   // Classify holes relatively solids
 
-  // Prepare tree filler with the boxes of the hole shells
-  BOPTools_BoxBndTree aBBTree;
-  NCollection_UBTreeFiller <Standard_Integer, Bnd_Box> aTreeFiller(aBBTree);
-
+  // Prepare tree with the boxes of the hole shells
+  BOPTools_BoxTree aBBTree;
   Standard_Integer i, aNbH = aHoleShells.Extent();
+  aBBTree.SetSize (aNbH);
   for (i = 1; i <= aNbH; ++i)
   {
     const TopoDS_Shape& aHShell = aHoleShells(i);
     //
     Bnd_Box aBox;
     BRepBndLib::Add(aHShell, aBox);
-    aTreeFiller.Add(i, aBox);
+    aBBTree.Add(i, Bnd_Tools::Bnd2BVH(aBox));
 
     myBoxes.Bind(aHShell, aBox);
   }
 
-  // Shake TreeFiller
-  aTreeFiller.Fill();
+  // Build BVH
+  aBBTree.Build();
 
   // Find outer growth shell that is most close to each hole shell
   TopTools_IndexedDataMapOfShapeShape aHoleSolidMap;
@@ -476,9 +475,10 @@ void BOPAlgo_BuilderSolid::PerformAreas()
 
     myBoxes.Bind(aSolid, aBox);
 
-    BOPTools_BoxBndTreeSelector aSelector;
-    aSelector.SetBox(aBox);
-    aBBTree.Select(aSelector);
+    BOPTools_BoxTreeSelector aSelector;
+    aSelector.SetBox(Bnd_Tools::Bnd2BVH(aBox));
+    aSelector.SetBVHSet (&aBBTree);
+    aSelector.Select();
 
     const TColStd_ListOfInteger& aLI = aSelector.Indices();
     TColStd_ListIteratorOfListOfInteger aItLI(aLI);

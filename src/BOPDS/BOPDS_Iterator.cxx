@@ -18,16 +18,16 @@
 
 #include <Bnd_Box.hxx>
 #include <Bnd_OBB.hxx>
+#include <Bnd_Tools.hxx>
 #include <BOPDS_DS.hxx>
 #include <BOPDS_IndexRange.hxx>
 #include <BOPDS_Iterator.hxx>
 #include <BOPDS_Pair.hxx>
 #include <BOPDS_MapOfPair.hxx>
 #include <BOPDS_Tools.hxx>
-#include <BOPTools_BoxBndTree.hxx>
+#include <BOPTools_BoxTree.hxx>
 #include <BOPTools_Parallel.hxx>
 #include <IntTools_Context.hxx>
-#include <NCollection_UBTreeFiller.hxx>
 #include <NCollection_Vector.hxx>
 #include <TopoDS_Shape.hxx>
 #include <algorithm>
@@ -37,12 +37,12 @@
 //class    : BOPDS_TreeSelector
 //purpose  : 
 //=======================================================================
-class BOPDS_TSR : public BOPTools_BoxBndTreeSelector{
+class BOPDS_TSR : public BOPTools_BoxTreeSelector
+{
  public:
   BOPDS_TSR() : 
-    BOPTools_BoxBndTreeSelector(), 
+    BOPTools_BoxTreeSelector(), 
     myHasBRep(Standard_False), 
-    myTree(NULL),
     myIndex(-1) {}
   //
   virtual ~BOPDS_TSR() {
@@ -52,30 +52,24 @@ class BOPDS_TSR : public BOPTools_BoxBndTreeSelector{
     myHasBRep=bFlag;
   }
   //
-  void SetTree(BOPTools_BoxBndTree& aTree) {
-    myTree=&aTree;
-  }
-  //
   void SetIndex(const Standard_Integer theIndex) { myIndex = theIndex; }
   //
   Standard_Integer Index() const { return myIndex; }
   //
   void Perform() {
     if (myHasBRep) {
-      myTree->Select(*this);
+      Select();
     }
   }
   //
  protected:
   Standard_Boolean myHasBRep;
-  BOPTools_BoxBndTree *myTree;
   Standard_Integer myIndex;
 };
 //
 //=======================================================================
 typedef NCollection_Vector<BOPDS_TSR> BOPDS_VectorOfTSR;
 /////////////////////////////////////////////////////////////////////////
-
 
 //=======================================================================
 //function : 
@@ -289,142 +283,81 @@ void BOPDS_Iterator::Intersect(const Handle(IntTools_Context)& theCtx,
                                const Standard_Boolean theCheckOBB,
                                const Standard_Real theFuzzyValue)
 {
-  Standard_Integer i, j, iX, i1, i2, iR, aNb, aNbR;
-  Standard_Integer iTi, iTj;
-  TopAbs_ShapeEnum aTi, aTj;
-  //
-  myBoxTree.Clear();
-  NCollection_UBTreeFiller <Standard_Integer, Bnd_Box> aTreeFiller(myBoxTree);
-  //
-  aNb = myDS->NbSourceShapes();
-  BOPDS_VectorOfTSR aVTSR(aNb);
-  //
-  for (i=0; i<aNb; ++i) {
-    const BOPDS_ShapeInfo& aSI=myDS->ShapeInfo(i);
-    Standard_Boolean bHasBrep = aSI.IsInterfering() && !(aSI.ShapeType() == TopAbs_SOLID);
-    //
-    BOPDS_TSR& aTSR=aVTSR.Appended();
-    //
-    aTSR.SetHasBRep(bHasBrep);
-    if (!bHasBrep) {
-      continue;
-    }
-    //
-    const Bnd_Box& aBoxEx=aSI.Box();
-    aTSR.SetTree(myBoxTree);
-    aTSR.SetBox(aBoxEx);
-    aTSR.SetIndex(i);
-    //
-    aTreeFiller.Add(i, aBoxEx);
-  }
-  //
-  aTreeFiller.Fill();
-  //
-  //===========================================
-  BOPTools_Parallel::Perform (myRunParallel, aVTSR);
-  //===========================================
-  //
-  BOPDS_MapOfPair aMPFence;
-  //
-  aNbR = myDS->NbRanges() - 1;
-  for (iR = 0; iR < aNbR; ++iR) {
-    const BOPDS_IndexRange& aR = myDS->Range(iR);
-    i1 = aR.First();
-    i2 = aR.Last();
-    for (i = i1; i <= i2; ++i) {
-      const BOPDS_ShapeInfo& aSI = myDS->ShapeInfo(i);
-      //
-      if (!aSI.IsInterfering() || (aSI.ShapeType() == TopAbs_SOLID)) {
-        continue;
-      }
-      //
-      BOPDS_TSR& aTSRi = aVTSR(i);
-      const TColStd_ListOfInteger& aLI = aTSRi.Indices();
-      Standard_Integer aNbSD = aLI.Extent();
-      if (!aNbSD) {
-        continue;
-      }
-      //
-      aTi = aSI.ShapeType();
-      iTi = BOPDS_Tools::TypeToInteger(aTi);
-      //
-      TColStd_ListIteratorOfListOfInteger aIt(aLI);
-      for (; aIt.More(); aIt.Next()) {
-        j = aIt.Value(); // DS index
-        if (j >= i1 && j <= i2) {
-          continue;// same range
-        }
-        //
-        const BOPDS_ShapeInfo& aSJ = myDS->ShapeInfo(j);
-        aTj = aSJ.ShapeType();
-        iTj = BOPDS_Tools::TypeToInteger(aTj);
-        //
-        // avoid interfering of the same shapes and shape with its sub-shapes
-        if (((iTi < iTj) && aSI.HasSubShape(j)) ||
-            ((iTi > iTj) && aSJ.HasSubShape(i))) {
-          continue;
-        }
-        //
-        BOPDS_Pair aPair(i, j);
-        if (aMPFence.Add(aPair)) {
-          if (theCheckOBB)
-          {
-            // Check intersection of Oriented bounding boxes of the shapes
-            Bnd_OBB& anOBBi = theCtx->OBB(aSI.Shape(), theFuzzyValue);
-            Bnd_OBB& anOBBj = theCtx->OBB(aSJ.Shape(), theFuzzyValue);
+  const Standard_Integer aNb = myDS->NbSourceShapes();
 
-            if (anOBBi.IsOut(anOBBj))
-              continue;
-          }
-
-          iX = BOPDS_Tools::TypeToInteger(aTi, aTj);
-          myLists(iX).Append(aPair);
-        }// if (aMPFence.Add(aPair)) {
-      }// for (; aIt.More(); aIt.Next()) {
-    }//for (i=i1; i<=i2; ++i) {
-  }//for (iR=1; iR<aNbR; ++iR) {
-  //
-  aMPFence.Clear();
-  aVTSR.Clear();
-  //-----------------------------------------------------scope_1 t
-}
-
-//=======================================================================
-// function: PrepareExt
-// purpose: 
-//=======================================================================
-void BOPDS_Iterator::PrepareExt(const TColStd_MapOfInteger& theIndices)
-{
-  if (!myDS)
-    return;
-
-  // Update UB tree of bounding boxes with the increased shapes.
-  // It is expected that not too many shapes will be modified during
-  // the intersection, so after updating the tree it should not become
-  // too unbalanced.
-  TColStd_MapIteratorOfMapOfInteger itM(theIndices);
-  for (; itM.More(); itM.Next())
+  // Prepare BVH
+  BOPTools_BoxTree aBoxTree;
+  aBoxTree.SetSize (aNb);
+  for (Standard_Integer i = 0; i < aNb; ++i)
   {
-    Standard_Integer nV = itM.Value();
-    myBoxTree.Remove(nV);
-
-    // Add with new box
-    Standard_Integer nVSD = nV;
-    myDS->HasShapeSD(nV, nVSD);
-    const BOPDS_ShapeInfo& aSI = myDS->ShapeInfo(nVSD);
+    const BOPDS_ShapeInfo& aSI = myDS->ShapeInfo(i);
+    if (!aSI.HasBRep())
+      continue;
     const Bnd_Box& aBox = aSI.Box();
-    myBoxTree.Add(nV, aBox);
+    aBoxTree.Add (i, Bnd_Tools::Bnd2BVH (aBox));
   }
 
-  // Clear the extra lists
-  const Standard_Integer aNbExt = BOPDS_Iterator::NbExtInterfs();
-  myLength = 0;
-  for (Standard_Integer i = 0; i < aNbExt; ++i)
-    myExtLists(i).Clear();
+  // Build BVH
+  aBoxTree.Build();
 
-  IntersectExt(theIndices);
+  // Select pairs of shapes with interfering bounding boxes
+  BOPTools_BoxPairSelector aPairSelector;
+  aPairSelector.SetBVHSets (&aBoxTree, &aBoxTree);
+  aPairSelector.SetSame (Standard_True);
+  aPairSelector.Select();
+  aPairSelector.Sort();
 
-  myUseExt = Standard_True;
+  // Treat the selected pairs
+  const std::vector<BOPTools_BoxPairSelector::PairIDs>& aPairs = aPairSelector.Pairs();
+  const Standard_Integer aNbPairs = static_cast<Standard_Integer> (aPairs.size());
+
+  Standard_Integer iPair = 0;
+
+  const Standard_Integer aNbR = myDS->NbRanges();
+  for (Standard_Integer iR = 0; iR < aNbR; ++iR)
+  {
+    const BOPDS_IndexRange& aRange = myDS->Range(iR);
+
+    for (; iPair < aNbPairs; ++iPair)
+    {
+      const BOPTools_BoxPairSelector::PairIDs& aPair = aPairs[iPair];
+      if (!aRange.Contains (aPair.ID1))
+        // Go to the next range
+        break;
+
+      if (aRange.Contains (aPair.ID2))
+        // Go to the next pair
+        continue;
+
+      const BOPDS_ShapeInfo& aSI1 = myDS->ShapeInfo (aPair.ID1);
+      const BOPDS_ShapeInfo& aSI2 = myDS->ShapeInfo (aPair.ID2);
+
+      const TopAbs_ShapeEnum aType1 = aSI1.ShapeType();
+      const TopAbs_ShapeEnum aType2 = aSI2.ShapeType();
+
+      Standard_Integer iType1 = BOPDS_Tools::TypeToInteger (aType1);
+      Standard_Integer iType2 = BOPDS_Tools::TypeToInteger (aType2);
+
+      // avoid interfering of the shape with its sub-shapes
+      if (((iType1 < iType2) && aSI1.HasSubShape (aPair.ID2)) ||
+          ((iType1 > iType2) && aSI2.HasSubShape (aPair.ID1)))
+        continue;
+
+      if (theCheckOBB)
+      {
+        // Check intersection of Oriented bounding boxes of the shapes
+        const Bnd_OBB& anOBB1 = theCtx->OBB (aSI1.Shape(), theFuzzyValue);
+        const Bnd_OBB& anOBB2 = theCtx->OBB (aSI2.Shape(), theFuzzyValue);
+
+        if (anOBB1.IsOut (anOBB2))
+          continue;
+      }
+
+      Standard_Integer iX = BOPDS_Tools::TypeToInteger (aType1, aType2);
+      myLists(iX).Append (BOPDS_Pair (Min (aPair.ID1, aPair.ID2),
+                                      Max (aPair.ID1, aPair.ID2)));
+    }
+  }
 }
 
 //=======================================================================
@@ -433,23 +366,42 @@ void BOPDS_Iterator::PrepareExt(const TColStd_MapOfInteger& theIndices)
 //=======================================================================
 void BOPDS_Iterator::IntersectExt(const TColStd_MapOfInteger& theIndices)
 {
-  // Prepare vector for parallel selection
-  BOPDS_VectorOfTSR aVTSR(theIndices.Extent());
+  if (!myDS)
+    return;
 
-  TColStd_MapIteratorOfMapOfInteger itM(theIndices);
-  for (; itM.More(); itM.Next())
+  const Standard_Integer aNb = myDS->NbSourceShapes();
+
+  BOPTools_BoxTree aBoxTree;
+  aBoxTree.SetSize (aNb);
+  BOPDS_VectorOfTSR aVTSR(theIndices.Extent());
+  //
+  for (Standard_Integer i = 0; i < aNb; ++i)
   {
-    Standard_Integer nV = itM.Value();
-    Standard_Integer nVSD = nV;
-    myDS->HasShapeSD(nV, nVSD);
-    const BOPDS_ShapeInfo& aSI = myDS->ShapeInfo(nVSD);
-    const Bnd_Box& aBox = aSI.Box();
-    BOPDS_TSR& aTSR = aVTSR.Appended();
-    aTSR.SetHasBRep(Standard_True);
-    aTSR.SetTree(myBoxTree);
-    aTSR.SetBox(aBox);
-    aTSR.SetIndex(nV);
+    const BOPDS_ShapeInfo& aSI=myDS->ShapeInfo(i);
+    if (!aSI.IsInterfering() || (aSI.ShapeType() == TopAbs_SOLID))
+      continue;
+    //
+    if (theIndices.Contains (i))
+    {
+      Standard_Integer nVSD = i;
+      myDS->HasShapeSD (i, nVSD);
+      const BOPDS_ShapeInfo& aSISD = myDS->ShapeInfo (nVSD);
+      const Bnd_Box& aBox = aSISD.Box ();
+      aBoxTree.Add (i, Bnd_Tools::Bnd2BVH(aBox));
+
+      BOPDS_TSR& aTSR=aVTSR.Appended();
+      aTSR.SetHasBRep(Standard_True);
+      aTSR.SetBVHSet (&aBoxTree);
+      aTSR.SetBox (Bnd_Tools::Bnd2BVH (aBox));
+      aTSR.SetIndex (i);
+    }
+    else
+    {
+      aBoxTree.Add (i, Bnd_Tools::Bnd2BVH (aSI.Box ()));
+    }
   }
+
+  aBoxTree.Build();
 
   // Perform selection
   BOPTools_Parallel::Perform (myRunParallel, aVTSR);
@@ -459,8 +411,8 @@ void BOPDS_Iterator::IntersectExt(const TColStd_MapOfInteger& theIndices)
   // Fence map to avoid duplicating pairs
   BOPDS_MapOfPair aMPFence;
 
-  const Standard_Integer aNb = aVTSR.Length();
-  for (Standard_Integer k = 0; k < aNb; ++k)
+  const Standard_Integer aNbV = aVTSR.Length();
+  for (Standard_Integer k = 0; k < aNbV; ++k)
   {
     BOPDS_TSR& aTSRi = aVTSR(k);
     const TColStd_ListOfInteger& aLI = aTSRi.Indices();
@@ -485,7 +437,7 @@ void BOPDS_Iterator::IntersectExt(const TColStd_MapOfInteger& theIndices)
       const TopAbs_ShapeEnum aTJ = aSJ.ShapeType();
       const Standard_Integer iTJ = BOPDS_Tools::TypeToInteger(aTJ);
 
-      // avoid interfering of the same shapes and shape with its sub-shapes
+      // avoid interfering of the shape with its sub-shapes
       if (((iTI < iTJ) && aSI.HasSubShape(j)) ||
           ((iTI > iTJ) && aSJ.HasSubShape(i)))
         continue;
@@ -499,4 +451,6 @@ void BOPDS_Iterator::IntersectExt(const TColStd_MapOfInteger& theIndices)
       }
     }
   }
+
+  myUseExt = Standard_True;
 }

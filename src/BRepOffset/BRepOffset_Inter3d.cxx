@@ -16,6 +16,7 @@
 
 //  Modified by skv - Fri Dec 26 12:20:14 2003 OCC4455
 
+#include <Bnd_Tools.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
@@ -46,8 +47,7 @@
 #include <TopTools_MapOfShape.hxx>
 //
 #include <BRepBndLib.hxx>
-#include <BOPTools_BoxBndTree.hxx>
-#include <NCollection_UBTreeFiller.hxx>
+#include <BOPTools_BoxTree.hxx>
 //
 #include <BOPTools_AlgoTools.hxx>
 
@@ -114,8 +114,8 @@ void BRepOffset_Inter3d::CompletInt(const TopTools_ListOfShape& SetOfFaces,
   //---------------------------------------------------------------
 
   // Prepare tools for sorting the bounding boxes
-  BOPTools_BoxBndTree aBBTree;
-  NCollection_UBTreeFiller <Standard_Integer, Bnd_Box> aTreeFiller(aBBTree);
+  BOPTools_BoxTree aBBTree;
+  aBBTree.SetSize (SetOfFaces.Extent());
   //
   NCollection_IndexedDataMap<TopoDS_Shape, Bnd_Box, TopTools_ShapeMapHasher> aMFaces;
   // Construct bounding boxes for faces and add them to the tree
@@ -127,36 +127,36 @@ void BRepOffset_Inter3d::CompletInt(const TopTools_ListOfShape& SetOfFaces,
     Bnd_Box aBoxF;
     BRepBndLib::Add(aF, aBoxF);
     //
-    Standard_Integer i = aMFaces.Add(aF, aBoxF);
+    Standard_Integer i = aMFaces.Add (aF, aBoxF);
     //
-    aTreeFiller.Add(i, aBoxF);
+    aBBTree.Add(i, Bnd_Tools::Bnd2BVH(aBoxF));
   }
-  //
-  // shake tree filler
-  aTreeFiller.Fill();
-  //
-  // get faces with interfering bounding boxes
-  aItL.Initialize(SetOfFaces);
-  for (; aItL.More(); aItL.Next()) {
-    const TopoDS_Face& aF1 = TopoDS::Face(aItL.Value());
-    const Bnd_Box& aBoxF1 = aMFaces.FindFromKey(aF1);
-    //
-    BOPTools_BoxBndTreeSelector aSelector;
-    aSelector.SetBox(aBoxF1);
-    aBBTree.Select(aSelector);
-    //
-    const TColStd_ListOfInteger& aLI = aSelector.Indices();
-    TColStd_ListIteratorOfListOfInteger aItLI(aLI);
-    for (; aItLI.More(); aItLI.Next()) {
-      Standard_Integer i = aItLI.Value();
-      const TopoDS_Face& aF2 = TopoDS::Face(aMFaces.FindKey(i));
-      //
-      // intersect faces
-      FaceInter(aF1, aF2, InitOffsetFace);
-    }
+
+  // Build BVH
+  aBBTree.Build();
+
+  // Perform selection of the pairs
+  BOPTools_BoxPairSelector aSelector;
+  aSelector.SetBVHSets (&aBBTree, &aBBTree);
+  aSelector.SetSame (Standard_True);
+  aSelector.Select();
+  aSelector.Sort();
+
+  // Treat the selected pairs
+  const std::vector<BOPTools_BoxPairSelector::PairIDs>& aPairs = aSelector.Pairs();
+  const Standard_Integer aNbPairs = static_cast<Standard_Integer> (aPairs.size());
+
+  for (Standard_Integer iPair = 0; iPair < aNbPairs; ++iPair)
+  {
+    const BOPTools_BoxPairSelector::PairIDs& aPair = aPairs[iPair];
+
+    const TopoDS_Face& aF1 = TopoDS::Face (aMFaces.FindKey (Min (aPair.ID1, aPair.ID2)));
+    const TopoDS_Face& aF2 = TopoDS::Face (aMFaces.FindKey (Max (aPair.ID1, aPair.ID2)));
+
+    // intersect faces
+    FaceInter(aF1, aF2, InitOffsetFace);
   }
 }
-
 
 //=======================================================================
 //function : FaceInter

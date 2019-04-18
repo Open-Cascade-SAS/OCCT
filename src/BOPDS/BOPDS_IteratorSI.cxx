@@ -14,6 +14,7 @@
 
 #include <Bnd_Box.hxx>
 #include <Bnd_OBB.hxx>
+#include <Bnd_Tools.hxx>
 #include <BOPDS_DS.hxx>
 #include <BOPDS_IndexRange.hxx>
 #include <BOPDS_IteratorSI.hxx>
@@ -21,11 +22,10 @@
 #include <BOPDS_Pair.hxx>
 #include <BOPDS_ShapeInfo.hxx>
 #include <BOPDS_Tools.hxx>
-#include <BOPTools_BoxBndTree.hxx>
+#include <BOPTools_BoxTree.hxx>
 #include <BRep_Tool.hxx>
 #include <gp_Pnt.hxx>
 #include <IntTools_Context.hxx>
-#include <NCollection_UBTreeFiller.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <TColStd_DataMapOfIntegerInteger.hxx>
 #include <TColStd_DataMapOfIntegerListOfInteger.hxx>
@@ -79,83 +79,68 @@ void BOPDS_IteratorSI::UpdateByLevelOfCheck(const Standard_Integer theLevel)
 // function: Intersect
 // purpose: 
 //=======================================================================
-void BOPDS_IteratorSI::Intersect(const Handle(IntTools_Context)& theCtx,
-                                 const Standard_Boolean theCheckOBB,
-                                 const Standard_Real theFuzzyValue)
+void BOPDS_IteratorSI::Intersect (const Handle(IntTools_Context)& theCtx,
+                                  const Standard_Boolean theCheckOBB,
+                                  const Standard_Real theFuzzyValue)
 {
-  Standard_Integer i, j, iX, aNbS;
-  Standard_Integer iTi, iTj;
-  TopAbs_ShapeEnum aTi, aTj;
-  //
-  BOPTools_BoxBndTreeSelector aSelector;
-  BOPTools_BoxBndTree aBBTree;
-  NCollection_UBTreeFiller <Standard_Integer, Bnd_Box> aTreeFiller(aBBTree);
-  //
-  aNbS = myDS->NbSourceShapes();
-  for (i=0; i<aNbS; ++i) {
-    const BOPDS_ShapeInfo& aSI=myDS->ShapeInfo(i);
-    if (!aSI.IsInterfering()) {
+  const Standard_Integer aNbS = myDS->NbSourceShapes();
+
+  BOPTools_BoxTree aBBTree;
+  aBBTree.SetSize (aNbS);
+
+  for (Standard_Integer i = 0; i < aNbS; ++i)
+  {
+    const BOPDS_ShapeInfo& aSI = myDS->ShapeInfo (i);
+    if (!aSI.IsInterfering())
       continue;
-    }
-    //
+
     const Bnd_Box& aBoxEx = aSI.Box();
-    aTreeFiller.Add(i, aBoxEx);
+    aBBTree.Add (i, Bnd_Tools::Bnd2BVH (aBoxEx));
   }
-  //
-  aTreeFiller.Fill();
-  //
-  BOPDS_MapOfPair aMPFence;
-  //
-  for (i = 0; i < aNbS; ++i) {
-    const BOPDS_ShapeInfo& aSI = myDS->ShapeInfo(i);
-    if (!aSI.IsInterfering()){
+
+  aBBTree.Build();
+
+  // Select pairs of shapes with interfering bounding boxes
+  BOPTools_BoxPairSelector aPairSelector;
+  aPairSelector.SetBVHSets (&aBBTree, &aBBTree);
+  aPairSelector.SetSame (Standard_True);
+  aPairSelector.Select();
+  aPairSelector.Sort();
+
+  // Treat the selected pairs
+  const std::vector<BOPTools_BoxPairSelector::PairIDs>& aPairs = aPairSelector.Pairs();
+  const Standard_Integer aNbPairs = static_cast<Standard_Integer> (aPairs.size());
+
+  for (Standard_Integer iPair = 0; iPair < aNbPairs; ++iPair)
+  {
+    const BOPTools_BoxPairSelector::PairIDs& aPair = aPairs[iPair];
+
+    const BOPDS_ShapeInfo& aSI1 = myDS->ShapeInfo (aPair.ID1);
+    const BOPDS_ShapeInfo& aSI2 = myDS->ShapeInfo (aPair.ID2);
+
+    const TopAbs_ShapeEnum aType1 = aSI1.ShapeType();
+    const TopAbs_ShapeEnum aType2 = aSI2.ShapeType();
+
+    Standard_Integer iType1 = BOPDS_Tools::TypeToInteger (aType1);
+    Standard_Integer iType2 = BOPDS_Tools::TypeToInteger (aType2);
+
+    // avoid interfering of the shape with its sub-shapes
+    if (((iType1 < iType2) && aSI1.HasSubShape (aPair.ID2)) ||
+        ((iType1 > iType2) && aSI2.HasSubShape (aPair.ID1)))
       continue;
-    }
-    //
-    const Bnd_Box& aBoxEx = aSI.Box();
-    //
-    aSelector.Clear();
-    aSelector.SetBox(aBoxEx);
-    //
-    Standard_Integer aNbSD = aBBTree.Select(aSelector);
-    if (!aNbSD) {
-      continue;
-    }
-    //
-    aTi = aSI.ShapeType();
-    iTi = BOPDS_Tools::TypeToInteger(aTi);
-    //
-    const TColStd_ListOfInteger& aLI = aSelector.Indices();
-    TColStd_ListIteratorOfListOfInteger aIt(aLI);
-    for (; aIt.More(); aIt.Next()) {
-      j = aIt.Value();
-      const BOPDS_ShapeInfo& aSJ = myDS->ShapeInfo(j);
-      aTj = aSJ.ShapeType();
-      iTj = BOPDS_Tools::TypeToInteger(aTj);
-      //
-      // avoid interfering of the same shapes and shape with its sub-shapes
-      if ((i == j) || ((iTi < iTj) && aSI.HasSubShape(j)) ||
-                      ((iTi > iTj) && aSJ.HasSubShape(i))) {
+
+    if (theCheckOBB)
+    {
+      // Check intersection of Oriented bounding boxes of the shapes
+      const Bnd_OBB& anOBB1 = theCtx->OBB (aSI1.Shape (), theFuzzyValue);
+      const Bnd_OBB& anOBB2 = theCtx->OBB (aSI2.Shape (), theFuzzyValue);
+
+      if (anOBB1.IsOut (anOBB2))
         continue;
-      }
-      //
-      BOPDS_Pair aPair(i, j);
-      if (aMPFence.Add(aPair)) {
-        if (theCheckOBB)
-        {
-          // Check intersection of Oriented bounding boxes of the shapes
-          Bnd_OBB& anOBBi = theCtx->OBB(aSI.Shape(), theFuzzyValue);
-          Bnd_OBB& anOBBj = theCtx->OBB(aSJ.Shape(), theFuzzyValue);
+    }
 
-          if (anOBBi.IsOut(anOBBj))
-            continue;
-        }
-
-        iX = BOPDS_Tools::TypeToInteger(aTi, aTj);
-        myLists(iX).Append(aPair);
-      }// if (aMPKXB.Add(aPKXB)) {
-    }// for (; aIt.More(); aIt.Next()) {
-  }//for (i=1; i<=aNbS; ++i) {
-  //
-  aMPFence.Clear();
+    Standard_Integer iX = BOPDS_Tools::TypeToInteger (aType1, aType2);
+    myLists(iX).Append (BOPDS_Pair (Min (aPair.ID1, aPair.ID2),
+                                    Max (aPair.ID1, aPair.ID2)));
+  }
 }

@@ -595,7 +595,7 @@ void BOPAlgo_PaveFiller::TreatNewVertices
   //
   // Perform intersection
   TopTools_ListOfListOfShape aChains;
-  BOPAlgo_Tools::IntersectVertices(aVerts, myRunParallel, myFuzzyValue, aChains);
+  BOPAlgo_Tools::IntersectVertices(aVerts, myFuzzyValue, aChains);
   //
   // Treat the results - make new vertices for each chain
   TopTools_ListOfListOfShape::Iterator aItC(aChains);

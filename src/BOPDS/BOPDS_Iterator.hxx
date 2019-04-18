@@ -26,7 +26,7 @@
 #include <BOPDS_PDS.hxx>
 #include <BOPDS_VectorOfPair.hxx>
 #include <BOPDS_VectorOfVectorOfPair.hxx>
-#include <BOPTools_BoxBndTree.hxx>
+#include <BOPTools_BoxTree.hxx>
 #include <NCollection_BaseAllocator.hxx>
 #include <Precision.hxx>
 #include <Standard_Boolean.hxx>
@@ -88,7 +88,7 @@ public:
 
   //! Updates the tree of Bounding Boxes with increased boxes and
   //! intersects such elements with the tree.
-  Standard_EXPORT void PrepareExt(const TColStd_MapOfInteger& theIndicies);
+  Standard_EXPORT void IntersectExt(const TColStd_MapOfInteger& theIndicies);
 
   //! Returns the number of intersections founded
   Standard_EXPORT Standard_Integer ExpectedLength() const;
@@ -119,12 +119,6 @@ protected: //! @name Protected methods for bounding boxes intersection
                                          const Standard_Boolean theCheckOBB = Standard_False,
                                          const Standard_Real theFuzzyValue = Precision::Confusion());
 
-  //! Intersects the bounding boxes of the shapes with given indices in DS
-  //! with the tree of bounding boxes and saves the interfering pairs in
-  //! extra lists for further geometrical intersection.
-  Standard_EXPORT void IntersectExt(const TColStd_MapOfInteger& theIndices);
-
-
 protected: //! @name Fields
 
   Handle(NCollection_BaseAllocator) myAllocator; //!< Allocator
@@ -134,7 +128,6 @@ protected: //! @name Fields
   BOPDS_VectorOfVectorOfPair myLists;            //!< Pairs with interfering bounding boxes
   BOPDS_VectorOfPair::Iterator myIterator;       //!< Iterator on each interfering type
   Standard_Boolean myRunParallel;                //!< Flag for parallel processing
-  BOPTools_BoxBndTree myBoxTree;                 //!< Unbalanced tree of bounding boxes
   BOPDS_VectorOfVectorOfPair myExtLists;         //!< Extra pairs of sub-shapes found after
                                                  //! intersection of increased sub-shapes
   Standard_Boolean myUseExt;                     //!< Information flag for using the extra lists

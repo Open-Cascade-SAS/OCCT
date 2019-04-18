@@ -8,13 +8,14 @@ BOPTools_AlgoTools3D.hxx
 BOPTools_AlgoTools_1.cxx
 BOPTools_AlgoTools_2.cxx
 BOPTools_BoxSelector.hxx
-BOPTools_BoxBndTree.hxx
+BOPTools_BoxTree.hxx
 BOPTools_ConnexityBlock.hxx
 BOPTools_CoupleOfShape.hxx
 BOPTools_IndexedDataMapOfSetShape.hxx
 BOPTools_ListOfConnexityBlock.hxx
 BOPTools_ListOfCoupleOfShape.hxx
 BOPTools_MapOfSet.hxx
+BOPTools_PairSelector.hxx
 BOPTools_Parallel.hxx
 BOPTools_Set.cxx
 BOPTools_Set.hxx

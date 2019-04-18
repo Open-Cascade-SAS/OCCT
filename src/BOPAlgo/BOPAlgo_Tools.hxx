@@ -162,7 +162,6 @@ public:
 
   //! Finds chains of intersecting vertices
   Standard_EXPORT static void IntersectVertices(const TopTools_IndexedDataMapOfShapeReal& theVertices,
-                                                const Standard_Boolean theRunParallel,
                                                 const Standard_Real theFuzzyValue,
                                                 TopTools_ListOfListOfShape& theChains);
 

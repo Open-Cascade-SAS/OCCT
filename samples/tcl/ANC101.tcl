@@ -264,11 +264,11 @@ bfuse _model _model t_s
 explode _model e
 
 # Make a weld at joint edges of platform and wedge 
-blend _model _model 2 _model_26
 blend _model _model 2 _model_27
 blend _model _model 2 _model_28
 blend _model _model 2 _model_29
-blend _model _model 2 _model_31
+blend _model _model 2 _model_30
+blend _model _model 2 _model_32
 
 # Cylinder on wedge
 blend result _model 2 _model_161

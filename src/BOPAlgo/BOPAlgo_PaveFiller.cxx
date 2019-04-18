@@ -298,7 +298,7 @@ void BOPAlgo_PaveFiller::PerformInternal()
   //
   MakeSplitEdges();
   if (HasErrors()) {
-    return; 
+    return;
   }
   //
   UpdatePaveBlocksWithSDVertices();
@@ -361,7 +361,7 @@ void BOPAlgo_PaveFiller::RepeatIntersection()
     return;
 
   // Update iterator of pairs of shapes with interfering boxes
-  myIterator->PrepareExt(anExtraInterfMap);
+  myIterator->IntersectExt(anExtraInterfMap);
 
   // Perform intersections with vertices
   PerformVV();

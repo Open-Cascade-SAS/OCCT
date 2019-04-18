@@ -126,18 +126,7 @@ inline TColStd_ListOfInteger& BOPDS_ShapeInfo::ChangeSubShapes()
 inline Standard_Boolean BOPDS_ShapeInfo::HasSubShape
   (const Standard_Integer theI)const
 {
-  Standard_Boolean bRet;
-  TColStd_ListIteratorOfListOfInteger aIt;
-  //
-  bRet=Standard_False;
-  aIt.Initialize(mySubShapes);
-  for (; aIt.More(); aIt.Next()) {
-    bRet=(theI==aIt.Value());
-    if (bRet) {
-      return bRet;
-    }
-  }
-  return bRet;
+  return mySubShapes.Contains (theI);
 }
 //=======================================================================
 //function : HasReference

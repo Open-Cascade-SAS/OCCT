@@ -17,6 +17,7 @@
 
 
 #include <Bnd_Box.hxx>
+#include <Bnd_Tools.hxx>
 #include <BOPAlgo_PaveFiller.hxx>
 #include <BOPAlgo_Alerts.hxx>
 #include <BOPAlgo_Tools.hxx>
@@ -31,7 +32,6 @@
 #include <BOPDS_PaveBlock.hxx>
 #include <BOPTools_AlgoTools.hxx>
 #include <BOPTools_AlgoTools2D.hxx>
-#include <BOPTools_BoxSelector.hxx>
 #include <BOPTools_Parallel.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
@@ -729,8 +729,7 @@ void BOPAlgo_PaveFiller::ForceInterfEF(const BOPDS_IndexedMapOfPaveBlock& theMPB
     return;
 
   // Fill the tree with bounding boxes of the pave blocks
-  NCollection_UBTree<Standard_Integer, Bnd_Box> aBBTree;
-  NCollection_UBTreeFiller<Standard_Integer, Bnd_Box> aTreeFiller(aBBTree);
+  BOPTools_BoxTree aBBTree;
 
   Handle(NCollection_IncAllocator) anAlloc = new NCollection_IncAllocator;
   BOPDS_IndexedMapOfPaveBlock aPBMap(1, anAlloc);
@@ -751,11 +750,11 @@ void BOPAlgo_PaveFiller::ForceInterfEF(const BOPDS_IndexedMapOfPaveBlock& theMPB
     Standard_Boolean isSplit;
     aPB->ShrunkData(f, l, aPBBox, isSplit);
 
-    aTreeFiller.Add(aPBMap.Add(aPB), aPBBox);
+    aBBTree.Add(aPBMap.Add(aPB), Bnd_Tools::Bnd2BVH(aPBBox));
   }
 
   // Shake the tree
-  aTreeFiller.Fill();
+  aBBTree.Build();
 
   // Find pairs of Face/PaveBlock containing the same vertices
   // and prepare those pairs for intersection.
@@ -774,10 +773,10 @@ void BOPAlgo_PaveFiller::ForceInterfEF(const BOPDS_IndexedMapOfPaveBlock& theMPB
       continue;
 
     const Bnd_Box& aBoxF = aSI.Box();
-    BOPTools_BoxSelector<Bnd_Box> aSelector;
-    aSelector.SetBox(aBoxF);
-
-    if (!aBBTree.Select(aSelector))
+    BOPTools_BoxTreeSelector aSelector;
+    aSelector.SetBox(Bnd_Tools::Bnd2BVH(aBoxF));
+    aSelector.SetBVHSet (&aBBTree);
+    if (!aSelector.Select())
       continue;
 
     const TopoDS_Face& aF = TopoDS::Face(aSI.Shape());

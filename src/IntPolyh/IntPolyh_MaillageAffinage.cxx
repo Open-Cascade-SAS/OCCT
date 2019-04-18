@@ -27,6 +27,10 @@
 #include <Bnd_BoundSortBox.hxx>
 #include <Bnd_Box.hxx>
 #include <Bnd_HArray1OfBox.hxx>
+#include <Bnd_Tools.hxx>
+#include <BVH_BoxSet.hxx>
+#include <BVH_LinearBuilder.hxx>
+#include <BVH_Traverse.hxx>
 #include <gp.hxx>
 #include <gp_Pnt.hxx>
 #include <IntPolyh_ListOfCouples.hxx>
@@ -42,16 +46,14 @@
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_MapOfInteger.hxx>
 #include <TColStd_ListIteratorOfListOfInteger.hxx>
-#include <NCollection_UBTree.hxx>
-#include <NCollection_UBTreeFiller.hxx>
 #include <algorithm>
 #include <NCollection_IndexedDataMap.hxx>
 
 typedef NCollection_Array1<Standard_Integer> IntPolyh_ArrayOfInteger;
 typedef NCollection_IndexedDataMap
   <Standard_Integer,
-   IntPolyh_ArrayOfInteger,
-   TColStd_MapIntegerHasher> IntPolyh_IndexedDataMapOfIntegerArrayOfInteger;
+   TColStd_ListOfInteger,
+   TColStd_MapIntegerHasher> IntPolyh_IndexedDataMapOfIntegerListOfInteger;
 
 
 static Standard_Real MyTolerance=10.0e-7;
@@ -133,32 +135,82 @@ static
                         Standard_Integer& aI2);
 
 //=======================================================================
-//class : IntPolyh_BoxBndTreeSelector
-//purpose  : Select interfering bounding boxes
+//class : IntPolyh_BoxBndTree
+//purpose  : BVH structure to contain the boxes of triangles
 //=======================================================================
-typedef NCollection_UBTree<Standard_Integer, Bnd_Box> IntPolyh_BoxBndTree;
-class IntPolyh_BoxBndTreeSelector : public IntPolyh_BoxBndTree::Selector {
- public:
-  IntPolyh_BoxBndTreeSelector(const Bnd_Box& theBox) : myBox(theBox) {}
-  //
-  virtual Standard_Boolean Reject(const Bnd_Box& theOther) const
+typedef BVH_BoxSet <Standard_Real, 3, Standard_Integer> IntPolyh_BoxBndTree;
+
+//=======================================================================
+//class : IntPolyh_BoxBndTreeSelector
+//purpose  : Selector of interfering boxes
+//=======================================================================
+class IntPolyh_BoxBndTreeSelector :
+  public BVH_PairTraverse<Standard_Real, 3, IntPolyh_BoxBndTree>
+{
+public:
+  typedef BVH_Box<Standard_Real, 3>::BVH_VecNt BVH_Vec3d;
+
+  //! Auxiliary structure to keep the pair of indices
+  struct PairIDs
   {
-    return myBox.IsOut(theOther);
-  }
-  //
-  virtual Standard_Boolean Accept(const Standard_Integer &theInd)
+    PairIDs (const Standard_Integer theId1 = -1,
+             const Standard_Integer theId2 = -1)
+      : ID1 (theId1), ID2 (theId2)
+    {}
+
+    Standard_Boolean operator< (const PairIDs& theOther) const
+    {
+      return ID1 < theOther.ID1 ||
+            (ID1 == theOther.ID1 && ID2 < theOther.ID2);
+    }
+
+    Standard_Integer ID1;
+    Standard_Integer ID2;
+  };
+
+public:
+
+  //! Constructor
+  IntPolyh_BoxBndTreeSelector ()
+  {}
+
+  //! Rejects the node
+  virtual Standard_Boolean RejectNode (const BVH_Vec3d& theCMin1,
+                                       const BVH_Vec3d& theCMax1,
+                                       const BVH_Vec3d& theCMin2,
+                                       const BVH_Vec3d& theCMax2,
+                                       Standard_Real&) const Standard_OVERRIDE
   {
-    myIndices.Append(theInd);
-    return Standard_True;
+    return BVH_Box<Standard_Real, 3> (theCMin1, theCMax1).IsOut (theCMin2, theCMax2);
   }
-  //
-  const TColStd_ListOfInteger& Indices() const
+
+  //! Accepts the element
+  virtual Standard_Boolean Accept (const Standard_Integer theID1,
+                                   const Standard_Integer theID2) Standard_OVERRIDE
   {
-    return myIndices;
+    if (!myBVHSet1->Box (theID1).IsOut (myBVHSet2->Box (theID2)))
+    {
+      myPairs.push_back (PairIDs (myBVHSet1->Element (theID1), myBVHSet2->Element (theID2)));
+      return Standard_True;
+    }
+    return Standard_False;
   }
- private:
-  Bnd_Box myBox;
-  TColStd_ListOfInteger myIndices;
+
+  //! Returns indices
+  const std::vector<PairIDs>& Pairs() const
+  {
+    return myPairs;
+  }
+
+  //! Sorts the resulting indices
+  void Sort()
+  {
+    std::sort (myPairs.begin(), myPairs.end());
+  }
+
+private:
+
+  std::vector<PairIDs> myPairs;
 };
 
 //=======================================================================
@@ -170,59 +222,57 @@ static
                                const IntPolyh_ArrayOfPoints& thePoints1,
                                IntPolyh_ArrayOfTriangles& theTriangles2,
                                const IntPolyh_ArrayOfPoints& thePoints2,
-                               IntPolyh_IndexedDataMapOfIntegerArrayOfInteger& theCouples)
+                               IntPolyh_IndexedDataMapOfIntegerListOfInteger& theCouples)
 {
-  // To find the triangles with interfering bounding boxes
-  // use the algorithm of unbalanced binary tree of overlapping bounding boxes
-  IntPolyh_BoxBndTree aBBTree;
-  NCollection_UBTreeFiller <Standard_Integer, Bnd_Box> aTreeFiller(aBBTree);
-  // 1. Fill the tree with the boxes of the triangles from second surface
-  Standard_Integer i, aNbT2 = theTriangles2.NbItems();
-  Standard_Boolean bAdded = Standard_False;
-  for (i = 0; i < aNbT2; ++i) {
-    IntPolyh_Triangle& aT = theTriangles2[i];
-    if (!aT.IsIntersectionPossible() || aT.IsDegenerated()) {
-      continue;
-    }
-    //
-    const Bnd_Box& aBox = aT.BoundingBox(thePoints2);
-    aTreeFiller.Add(i, aBox);
-    bAdded = Standard_True;
-  }
-  //
-  if (!bAdded)
-    // Intersection is not possible for all triangles in theTriangles2
-    return;
+  // Use linear builder for BVH construction
+  opencascade::handle<BVH_LinearBuilder<Standard_Real, 3>> aLBuilder =
+    new BVH_LinearBuilder<Standard_Real, 3> (10);
 
-  // 2. Shake the tree filler
-  aTreeFiller.Fill();
-  //
-  // 3. Find boxes interfering with the first triangles
-  Standard_Integer aNbT1 = theTriangles1.NbItems();
-  for (i = 0; i < aNbT1; ++i) {
-    IntPolyh_Triangle& aT = theTriangles1[i];
-    if (!aT.IsIntersectionPossible() || aT.IsDegenerated()) {
-      continue;
+  // To find the triangles with interfering bounding boxes
+  // use the BVH structure
+  IntPolyh_BoxBndTree aBBTree1 (aLBuilder), aBBTree2 (aLBuilder);
+
+  // 1. Fill the trees with the boxes of the surfaces triangles
+  for (Standard_Integer i = 0; i < 2; ++i)
+  {
+    IntPolyh_BoxBndTree &aBBTree =          !i ? aBBTree1      : aBBTree2;
+    IntPolyh_ArrayOfTriangles& aTriangles = !i ? theTriangles1 : theTriangles2;
+    const IntPolyh_ArrayOfPoints& aPoints = !i ? thePoints1    : thePoints2;
+
+    const Standard_Integer aNbT = aTriangles.NbItems();
+    aBBTree.SetSize (aNbT);
+    for (Standard_Integer j = 0; j < aNbT; ++j)
+    {
+      IntPolyh_Triangle& aT = aTriangles[j];
+      if (!aT.IsIntersectionPossible() || aT.IsDegenerated())
+        continue;
+
+      aBBTree.Add (j, Bnd_Tools::Bnd2BVH (aT.BoundingBox(aPoints)));
     }
-    //
-    const Bnd_Box& aBox = aT.BoundingBox(thePoints1);
-    //
-    IntPolyh_BoxBndTreeSelector aSelector(aBox);
-    if (!aBBTree.Select(aSelector)) {
-      continue;
-    }
-    //
-    const TColStd_ListOfInteger& aLI = aSelector.Indices();
-    // Sort the indices
-    IntPolyh_ArrayOfInteger anArr(1, aLI.Extent());
-    TColStd_ListIteratorOfListOfInteger aItLI(aLI);
-    for (Standard_Integer j = 1; aItLI.More(); aItLI.Next(), ++j) {
-      anArr(j) = aItLI.Value();
-    }
-    //
-    std::sort(anArr.begin(), anArr.end());
-    //
-    theCouples.Add(i, anArr);
+
+    if (!aBBTree.Size())
+      return;
+  }
+  // 2. Construct BVH trees
+  aBBTree1.Build();
+  aBBTree2.Build();
+
+  // 3. Perform selection of the interfering triangles
+  IntPolyh_BoxBndTreeSelector aSelector;
+  aSelector.SetBVHSets (&aBBTree1, &aBBTree2);
+  aSelector.Select();
+  aSelector.Sort();
+
+  const std::vector<IntPolyh_BoxBndTreeSelector::PairIDs>& aPairs = aSelector.Pairs();
+  const Standard_Integer aNbPairs = static_cast<Standard_Integer>(aPairs.size());
+
+  for (Standard_Integer i = 0; i < aNbPairs; ++i)
+  {
+    const IntPolyh_BoxBndTreeSelector::PairIDs& aPair = aPairs[i];
+    TColStd_ListOfInteger* pTriangles2 = theCouples.ChangeSeek (aPair.ID1);
+    if (!pTriangles2)
+      pTriangles2 = &theCouples( theCouples.Add (aPair.ID1, TColStd_ListOfInteger()));
+    pTriangles2->Append (aPair.ID2);
   }
 }
 
@@ -921,7 +971,7 @@ static
                                       const Standard_Real theFlecheCritique2)
 {
   // Find the intersecting triangles
-  IntPolyh_IndexedDataMapOfIntegerArrayOfInteger aDMILI;
+  IntPolyh_IndexedDataMapOfIntegerListOfInteger aDMILI;
   GetInterferingTriangles(theTriangles1, thePoints1, theTriangles2, thePoints2, aDMILI);
   //
   // Interfering triangles of second surface
@@ -938,8 +988,8 @@ static
       continue;
     }
     //
-    const IntPolyh_ArrayOfInteger *pLI = aDMILI.Seek(i_S1);
-    if (!pLI || !pLI->Length()) {
+    const TColStd_ListOfInteger *pLI = aDMILI.Seek(i_S1);
+    if (!pLI || pLI->IsEmpty()) {
       // Mark non-interfering triangles of S1 to avoid their repeated usage
       aTriangle1.SetIntersectionPossible(Standard_False);
       continue;
@@ -949,7 +999,7 @@ static
       aTriangle1.MiddleRefinement(i_S1, theS1, thePoints1, theTriangles1, theEdges1);
     }
     //
-    IntPolyh_ArrayOfInteger::Iterator Iter(*pLI);
+    TColStd_ListOfInteger::Iterator Iter(*pLI);
     for (; Iter.More(); Iter.Next()) {
       Standard_Integer i_S2 = Iter.Value();
       if (aMIntS2.Add(i_S2)) {
@@ -2295,7 +2345,7 @@ Standard_Integer IntPolyh_MaillageAffinage::TriangleEdgeContact
 Standard_Integer IntPolyh_MaillageAffinage::TriangleCompare ()
 {
   // Find couples with interfering bounding boxes
-  IntPolyh_IndexedDataMapOfIntegerArrayOfInteger aDMILI;
+  IntPolyh_IndexedDataMapOfIntegerListOfInteger aDMILI;
   GetInterferingTriangles(TTriangles1, TPoints1,
                           TTriangles2, TPoints2,
                           aDMILI);
@@ -2314,8 +2364,8 @@ Standard_Integer IntPolyh_MaillageAffinage::TriangleCompare ()
     const IntPolyh_Point& P2 = TPoints1[Triangle1.SecondPoint()];
     const IntPolyh_Point& P3 = TPoints1[Triangle1.ThirdPoint()];
     //
-    const IntPolyh_ArrayOfInteger& aLI2 = aDMILI(i);
-    IntPolyh_ArrayOfInteger::Iterator aItLI(aLI2);
+    const TColStd_ListOfInteger& aLI2 = aDMILI(i);
+    TColStd_ListOfInteger::Iterator aItLI(aLI2);
     for (; aItLI.More(); aItLI.Next()) {
       const Standard_Integer i_S2 = aItLI.Value();
       IntPolyh_Triangle &Triangle2 =  TTriangles2[i_S2];
