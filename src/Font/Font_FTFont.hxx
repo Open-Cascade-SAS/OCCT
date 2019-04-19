@@ -18,21 +18,56 @@
 
 #include <Font_FontAspect.hxx>
 #include <Font_Rect.hxx>
+#include <Font_StrictLevel.hxx>
 #include <Graphic3d_HorizontalTextAlignment.hxx>
 #include <Graphic3d_VerticalTextAlignment.hxx>
 #include <Image_PixMap.hxx>
 #include <NCollection_String.hxx>
+#include <TCollection_AsciiString.hxx>
 
 // forward declarations to avoid including of FreeType headers
 typedef struct FT_FaceRec_* FT_Face;
 typedef struct FT_Vector_   FT_Vector;
 class Font_FTLibrary;
 
+//! Font initialization parameters.
+struct Font_FTFontParams
+{
+  unsigned int PointSize;          //!< face size in points (1/72 inch)
+  unsigned int Resolution;         //!< resolution of the target device in dpi for FT_Set_Char_Size()
+  bool         ToSynthesizeItalic; //!< generate italic style (e.g. for font family having no italic style); FALSE by default
+  bool         IsSingleStrokeFont; //!< single-stroke (one-line) font, FALSE by default
+
+  //! Empty constructor.
+  Font_FTFontParams() : PointSize (0), Resolution (72u), ToSynthesizeItalic (false), IsSingleStrokeFont (false) {}
+
+  //! Constructor.
+  Font_FTFontParams (unsigned int thePointSize,
+                     unsigned int theResolution)
+  : PointSize (thePointSize), Resolution (theResolution), ToSynthesizeItalic (false), IsSingleStrokeFont (false) {}
+};
+
+DEFINE_STANDARD_HANDLE(Font_FTFont, Standard_Transient)
+
 //! Wrapper over FreeType font.
 //! Notice that this class uses internal buffers for loaded glyphs
 //! and it is absolutely UNSAFE to load/read glyph from concurrent threads!
 class Font_FTFont : public Standard_Transient
 {
+  DEFINE_STANDARD_RTTIEXT(Font_FTFont, Standard_Transient)
+public:
+
+  //! Find the font Initialize the font.
+  //! @param theFontName    the font name
+  //! @param theFontAspect  the font style
+  //! @param theParams      initialization parameters
+  //! @param theStrictLevel search strict level for using aliases and fallback
+  //! @return true on success
+  Standard_EXPORT static Handle(Font_FTFont) FindAndCreate (const TCollection_AsciiString& theFontName,
+                                                            const Font_FontAspect     theFontAspect,
+                                                            const Font_FTFontParams&  theParams,
+                                                            const Font_StrictLevel    theStrictLevel = Font_StrictLevel_Any);
+
 public:
 
   //! Create uninitialized instance.
@@ -53,32 +88,46 @@ public:
     return myGlyphImg;
   }
 
-  //! Initialize the font.
-  //! @param theFontPath   path to the font
-  //! @param thePointSize  the face size in points (1/72 inch)
-  //! @param theResolution the resolution of the target device in dpi
+  //! Initialize the font from the given file path.
+  //! @param theFontPath path to the font
+  //! @param theParams   initialization parameters
   //! @return true on success
-  Standard_EXPORT bool Init (const NCollection_String& theFontPath,
-                             const unsigned int        thePointSize,
-                             const unsigned int        theResolution);
+  bool Init (const TCollection_AsciiString& theFontPath,
+             const Font_FTFontParams& theParams)
+  {
+    return Init (Handle(NCollection_Buffer)(), theFontPath, theParams);
+  }
 
-  //! Initialize the font.
-  //! @param theFontName   the font name
-  //! @param theFontAspect the font style
-  //! @param thePointSize  the face size in points (1/72 inch)
-  //! @param theResolution the resolution of the target device in dpi
+  //! Initialize the font from the given file path or memory buffer.
+  //! @param theData     memory to read from, should NOT be freed after initialization!
+  //!                    when NULL, function will attempt to open theFileName file
+  //! @param theFileName optional path to the font
+  //! @param theParams   initialization parameters
   //! @return true on success
-  Standard_EXPORT bool Init (const NCollection_String& theFontName,
-                             const Font_FontAspect     theFontAspect,
-                             const unsigned int        thePointSize,
-                             const unsigned int        theResolution);
+  Standard_EXPORT bool Init (const Handle(NCollection_Buffer)& theData,
+                             const TCollection_AsciiString& theFileName,
+                             const Font_FTFontParams& theParams);
+
+  //! Find (using Font_FontMgr) and initialize the font from the given name.
+  //! @param theFontName    the font name
+  //! @param theFontAspect  the font style
+  //! @param theParams      initialization parameters
+  //! @param theStrictLevel search strict level for using aliases and fallback
+  //! @return true on success
+  Standard_EXPORT bool FindAndInit (const TCollection_AsciiString& theFontName,
+                                    Font_FontAspect theFontAspect,
+                                    const Font_FTFontParams& theParams,
+                                    Font_StrictLevel theStrictLevel = Font_StrictLevel_Any);
 
   //! Return TRUE if this is single-stroke (one-line) font, FALSE by default.
   //! Such fonts define single-line glyphs instead of closed contours, so that they are rendered incorrectly by normal software.
-  bool IsSingleStrokeFont() const { return myIsSingleLine; }
+  bool IsSingleStrokeFont() const { return myFontParams.IsSingleStrokeFont; }
 
   //! Set if this font should be rendered as single-stroke (one-line).
-  void SetSingleStrokeFont (bool theIsSingleLine) { myIsSingleLine = theIsSingleLine; }
+  void SetSingleStrokeFont (bool theIsSingleLine) { myFontParams.IsSingleStrokeFont = theIsSingleLine; }
+
+  //! Return TRUE if italic style should be synthesized; FALSE by default.
+  bool ToSynthesizeItalic() const { return myFontParams.ToSynthesizeItalic; }
 
   //! Release currently loaded font.
   Standard_EXPORT virtual void Release();
@@ -104,7 +153,7 @@ public:
   //! Configured point size
   unsigned int PointSize() const
   {
-    return myPointSize;
+    return myFontParams.PointSize;
   }
 
   //! Setup glyph scaling along X-axis.
@@ -151,6 +200,42 @@ public:
                                          const Graphic3d_HorizontalTextAlignment theAlignX,
                                          const Graphic3d_VerticalTextAlignment   theAlignY);
 
+public:
+
+  //! Initialize the font.
+  //! @param theFontPath   path to the font
+  //! @param thePointSize  the face size in points (1/72 inch)
+  //! @param theResolution the resolution of the target device in dpi
+  //! @return true on success
+  Standard_DEPRECATED ("Deprecated method, Font_FTFontParams should be used for passing parameters")
+  bool Init (const NCollection_String& theFontPath,
+             unsigned int thePointSize,
+             unsigned int theResolution)
+  {
+    Font_FTFontParams aParams;
+    aParams.PointSize  = thePointSize;
+    aParams.Resolution = theResolution;
+    return Init (theFontPath.ToCString(), aParams);
+  }
+
+  //! Initialize the font.
+  //! @param theFontName   the font name
+  //! @param theFontAspect the font style
+  //! @param thePointSize  the face size in points (1/72 inch)
+  //! @param theResolution the resolution of the target device in dpi
+  //! @return true on success
+  Standard_DEPRECATED ("Deprecated method, Font_FTFontParams should be used for passing parameters")
+  bool Init (const NCollection_String& theFontName,
+             Font_FontAspect theFontAspect,
+             unsigned int thePointSize,
+             unsigned int theResolution)
+  {
+    Font_FTFontParams aParams;
+    aParams.PointSize  = thePointSize;
+    aParams.Resolution = theResolution;
+    return FindAndInit (theFontName.ToCString(), theFontAspect, aParams);
+  }
+
 protected:
 
   //! Convert value to 26.6 fixed-point format for FT library API.
@@ -179,23 +264,17 @@ protected:
 
 protected:
 
-  Handle(Font_FTLibrary) myFTLib;        //!< handle to the FT library object
-  FT_Face                myFTFace;       //!< FT face object
-  NCollection_String     myFontPath;     //!< font path
-  unsigned int           myPointSize;    //!< point size set by FT_Set_Char_Size
-  float                  myWidthScaling; //!< scale glyphs along X-axis
-  int32_t                myLoadFlags;    //!< default load flags
-  bool                   myIsSingleLine; //!< single stroke font flag, FALSE by default
+  Handle(Font_FTLibrary)     myFTLib;        //!< handle to the FT library object
+  Handle(NCollection_Buffer) myBuffer;       //!< memory buffer
+  FT_Face                    myFTFace;       //!< FT face object
+  TCollection_AsciiString    myFontPath;     //!< font path
+  Font_FTFontParams          myFontParams;   //!< font initialization parameters
+  float                      myWidthScaling; //!< scale glyphs along X-axis
+  int32_t                    myLoadFlags;    //!< default load flags
 
-  Image_PixMap           myGlyphImg;     //!< cached glyph plane
-  Standard_Utf32Char     myUChar;        //!< currently loaded unicode character
-
-public:
-
-  DEFINE_STANDARD_RTTIEXT(Font_FTFont,Standard_Transient) // Type definition
+  Image_PixMap               myGlyphImg;     //!< cached glyph plane
+  Standard_Utf32Char         myUChar;        //!< currently loaded unicode character
 
 };
-
-DEFINE_STANDARD_HANDLE(Font_FTFont, Standard_Transient)
 
 #endif // _Font_FTFont_H__

@@ -335,31 +335,31 @@ TCollection_ExtendedString AIS_Dimension::GetValueString (Standard_Real& theWidt
   if (myDrawer->DimensionAspect()->IsText3d())
   {
     // text width produced by BRepFont
-    Font_BRepFont aFont (aTextAspect->Aspect()->Font().ToCString(),
-                         aTextAspect->Aspect()->GetTextFontAspect(),
-                         aTextAspect->Height());
-
-    for (NCollection_Utf8Iter anIter = anUTFString.Iterator(); *anIter != 0; )
+    Font_BRepFont aFont;
+    if (aFont.FindAndInit (aTextAspect->Aspect()->Font(), aTextAspect->Aspect()->GetTextFontAspect(), aTextAspect->Height(), Font_StrictLevel_Any))
     {
-      Standard_Utf32Char aCurrChar = *anIter;
-      Standard_Utf32Char aNextChar = *(++anIter);
-      theWidth += aFont.AdvanceX (aCurrChar, aNextChar);
+      for (NCollection_Utf8Iter anIter = anUTFString.Iterator(); *anIter != 0; )
+      {
+        Standard_Utf32Char aCurrChar = *anIter;
+        Standard_Utf32Char aNextChar = *(++anIter);
+        theWidth += aFont.AdvanceX (aCurrChar, aNextChar);
+      }
     }
   }
   else
   {
     // Text width for 1:1 scale 2D case
-    Handle(Font_FTFont) aFont = new Font_FTFont();
-    aFont->Init (aTextAspect->Aspect()->Font().ToCString(),
-                 aTextAspect->Aspect()->GetTextFontAspect(),
-                 (unsigned int )aTextAspect->Height(),
-                 THE_2D_TEXT_RESOLUTION);
-
-    for (NCollection_Utf8Iter anIter = anUTFString.Iterator(); *anIter != 0; )
+    Font_FTFontParams aFontParams;
+    aFontParams.PointSize  = (unsigned int )aTextAspect->Height();
+    aFontParams.Resolution = THE_2D_TEXT_RESOLUTION;
+    if (Handle(Font_FTFont) aFont = Font_FTFont::FindAndCreate (aTextAspect->Aspect()->Font(), aTextAspect->Aspect()->GetTextFontAspect(), aFontParams, Font_StrictLevel_Any))
     {
-      Standard_Utf32Char aCurrChar = *anIter;
-      Standard_Utf32Char aNextChar = *(++anIter);
-      theWidth += (Standard_Real) aFont->AdvanceX (aCurrChar, aNextChar);
+      for (NCollection_Utf8Iter anIter = anUTFString.Iterator(); *anIter != 0; )
+      {
+        Standard_Utf32Char aCurrChar = *anIter;
+        Standard_Utf32Char aNextChar = *(++anIter);
+        theWidth += (Standard_Real) aFont->AdvanceX (aCurrChar, aNextChar);
+      }
     }
   }
 

@@ -542,6 +542,35 @@ namespace
     }
     return Standard_False;
   }
+
+  //! Auxiliary function to parse font strict level argument
+  static Standard_Integer parseFontStrictLevel (const Standard_Integer theArgNb,
+                                                const char**           theArgVec,
+                                                Font_StrictLevel&      theLevel)
+  {
+    if (theArgNb >= 1)
+    {
+      TCollection_AsciiString anArg (theArgVec[0]);
+      anArg.LowerCase();
+      if (anArg == "any")
+      {
+        theLevel = Font_StrictLevel_Any;
+        return 1;
+      }
+      else if (anArg == "aliases")
+      {
+        theLevel = Font_StrictLevel_Aliases;
+        return 1;
+      }
+      else if (anArg == "strict")
+      {
+        theLevel = Font_StrictLevel_Strict;
+        return 1;
+      }
+    }
+    theLevel = Font_StrictLevel_Strict;
+    return 0;
+  }
 }
 
 //==============================================================================
@@ -5141,7 +5170,7 @@ static int TextToBRep (Draw_Interpretor& /*theDI*/,
 
   Graphic3d_HorizontalTextAlignment aHJustification = Graphic3d_HTA_LEFT;
   Graphic3d_VerticalTextAlignment   aVJustification = Graphic3d_VTA_BOTTOM;
-
+  Font_StrictLevel aStrictLevel = Font_StrictLevel_Any;
   for (; anArgIt < theArgNb; ++anArgIt)
   {
     TCollection_AsciiString aParam (theArgVec[anArgIt]);
@@ -5256,6 +5285,12 @@ static int TextToBRep (Draw_Interpretor& /*theDI*/,
 
       aFontName = theArgVec[anArgIt];
     }
+    else if (aParam == "-strict")
+    {
+      anArgIt += parseFontStrictLevel (theArgNb  - anArgIt - 1,
+                                       theArgVec + anArgIt + 1,
+                                       aStrictLevel);
+    }
     else if (aParam == "-composite")
     {
       if (++anArgIt >= theArgNb)
@@ -5291,9 +5326,9 @@ static int TextToBRep (Draw_Interpretor& /*theDI*/,
   }
 
   aFont.SetCompositeCurveMode (anIsCompositeCurve);
-  if (!aFont.Init (aFontName.ToCString(), aFontAspect, aTextHeight))
+  if (!aFont.FindAndInit (aFontName.ToCString(), aFontAspect, aTextHeight, aStrictLevel))
   {
-    std::cerr << "Font initialization error\n";
+    std::cout << "Error: unable to load Font\n";
     return 1;
   }
 
@@ -5333,14 +5368,21 @@ static int VFont (Draw_Interpretor& theDI,
     return 0;
   }
 
+  Font_StrictLevel aStrictLevel = Font_StrictLevel_Any;
   for (Standard_Integer anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
   {
     const TCollection_AsciiString anArg (theArgVec[anArgIter]);
     TCollection_AsciiString anArgCase (anArg);
     anArgCase.LowerCase();
-    if (anArgIter + 1 < theArgNb
-     && (anArgCase == "-find"
-      || anArgCase == "find"))
+    if (anArgCase == "-strict")
+    {
+      anArgIter += parseFontStrictLevel (theArgNb  - anArgIter - 1,
+                                         theArgVec + anArgIter + 1,
+                                         aStrictLevel);
+    }
+    else if (anArgIter + 1 < theArgNb
+          && (anArgCase == "-find"
+           || anArgCase == "find"))
     {
       Standard_CString aFontName   = theArgVec[++anArgIter];
       Font_FontAspect  aFontAspect = Font_FA_Undefined;
@@ -5354,13 +5396,13 @@ static int VFont (Draw_Interpretor& theDI,
         }
       }
 
-      if (Handle(Font_SystemFont) aFont = aMgr->FindFont (aFontName, aFontAspect))
+      if (Handle(Font_SystemFont) aFont = aMgr->FindFont (aFontName, aStrictLevel, aFontAspect))
       {
         theDI << aFont->ToString();
       }
       else
       {
-        std::cerr << "Error: font '" << aFontName << "' is not found!\n";
+        std::cout << "Error: font '" << aFontName << "' is not found!\n";
       }
     }
     else if (anArgIter + 1 < theArgNb
@@ -6378,13 +6420,13 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
                    "\n\t\t: [-valign {top|center|bottom|topfirstline}=bottom}]"
                    "\n\t\t: [-height height=16]"
                    "\n\t\t: [-aspect {regular|bold|italic|boldItalic}=regular]"
-                   "\n\t\t: [-font font=Courier]"
+                   "\n\t\t: [-font font=Courier] [-strict {strict|aliases|any}=any]"
                    "\n\t\t: [-composite {on|off}=off]"
                    "\n\t\t: [-plane NormX NormY NormZ DirX DirY DirZ]",
                    __FILE__, TextToBRep, group);
   theCommands.Add ("vfont",
                             "vfont [-add pathToFont [fontName] [regular,bold,italic,boldItalic=undefined] [singleStroke]]"
-                   "\n\t\t:        [-find fontName [regular,bold,italic,boldItalic=undefined]] [-verbose {on|off}]",
+                   "\n\t\t:        [-strict {any|aliases|strict}] [-find fontName [regular,bold,italic,boldItalic=undefined]] [-verbose {on|off}]",
                    __FILE__, VFont, group);
 
   theCommands.Add ("vvertexmode",

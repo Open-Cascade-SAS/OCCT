@@ -12,6 +12,7 @@ Font_FTLibrary.hxx
 Font_NameOfFont.hxx
 Font_NListOfSystemFont.hxx
 Font_Rect.hxx
+Font_StrictLevel.hxx
 Font_SystemFont.cxx
 Font_SystemFont.hxx
 Font_TextFormatter.hxx

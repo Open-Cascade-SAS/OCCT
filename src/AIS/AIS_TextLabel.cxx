@@ -263,14 +263,14 @@ void AIS_TextLabel::Compute (const Handle(PrsMgr_PresentationManager3d)& /*thePr
         if (myHasFlipping)
         {
           // Get width and height of text
-          Font_FTFont aFont;
-          unsigned int aResolution = GetContext()->CurrentViewer()->DefaultRenderingParams().Resolution;
-          if (aFont.Init (anAsp->Aspect()->Font().ToCString(),
-                          anAsp->Aspect()->GetTextFontAspect(), (unsigned int)anAsp->Height(), aResolution))
+          Font_FTFontParams aFontParams;
+          aFontParams.PointSize  = (unsigned int )anAsp->Height();
+          aFontParams.Resolution = GetContext()->CurrentViewer()->DefaultRenderingParams().Resolution;
+          if (Handle(Font_FTFont) aFont = Font_FTFont::FindAndCreate (anAsp->Aspect()->Font(), anAsp->Aspect()->GetTextFontAspect(), aFontParams))
           {
             isInit = Standard_True;
             const NCollection_String aText (myText.ToExtString());
-            Font_Rect aBndBox = aFont.BoundingBox (aText, anAsp->HorizontalJustification(), anAsp->VerticalJustification());
+            Font_Rect aBndBox = aFont->BoundingBox (aText, anAsp->HorizontalJustification(), anAsp->VerticalJustification());
             Standard_Real aWidth = Abs (aBndBox.Width());
             Standard_Real aHeight = Abs (aBndBox.Height());
             gp_Pnt aCenterOfLabel = aPosition;

@@ -21,6 +21,7 @@
 #include <Standard_Type.hxx>
 #include <Font_FontAspect.hxx>
 #include <Font_NListOfSystemFont.hxx>
+#include <Font_StrictLevel.hxx>
 #include <NCollection_DataMap.hxx>
 #include <NCollection_IndexedMap.hxx>
 #include <NCollection_Shared.hxx>
@@ -29,7 +30,6 @@
 class Font_SystemFont;
 class TCollection_HAsciiString;
 
-class Font_FontMgr;
 DEFINE_STANDARD_HANDLE(Font_FontMgr, Standard_Transient)
 
 //! Collects and provides information about available fonts in system.
@@ -92,11 +92,20 @@ public:
   //! If the requested family name not found -> search for any font family with given aspect and height.
   //! If the font is still not found, returns any font available in the system.
   //! Returns NULL in case when the fonts are not found in the system.
-  //! @param theFontName   [in]       font family to find or alias name
-  //! @param theFontAspect [in] [out] font aspect to find (considered only if family name is not found);
-  //!                                 can be modified if specified font alias refers to another style (compatibility with obsolete aliases)
+  //! @param theFontName    [in]       font family to find or alias name
+  //! @param theStrictLevel [in]       search strict level for using aliases and fallback
+  //! @param theFontAspect  [in] [out] font aspect to find (considered only if family name is not found);
+  //!                                  can be modified if specified font alias refers to another style (compatibility with obsolete aliases)
   Standard_EXPORT Handle(Font_SystemFont) FindFont (const TCollection_AsciiString& theFontName,
+                                                    Font_StrictLevel theStrictLevel,
                                                     Font_FontAspect& theFontAspect) const;
+
+  //! Tries to find font by given parameters.
+  Handle(Font_SystemFont) FindFont (const TCollection_AsciiString& theFontName,
+                                    Font_FontAspect& theFontAspect) const
+  {
+    return FindFont (theFontName, Font_StrictLevel_Any, theFontAspect);
+  }
   
   //! Read font file and retrieve information from it.
   Standard_EXPORT Handle(Font_SystemFont) CheckFont (const Standard_CString theFontPath) const;

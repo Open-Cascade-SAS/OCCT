@@ -54,17 +54,36 @@ public:
   }
 
   //! Returns any defined font file path.
-  const TCollection_AsciiString& FontPathAny (Font_FontAspect theAspect) const
+  const TCollection_AsciiString& FontPathAny (Font_FontAspect theAspect,
+                                              bool& theToSynthesizeItalic) const
   {
     const TCollection_AsciiString& aPath = myFilePaths[theAspect != Font_FontAspect_UNDEFINED ? theAspect : Font_FontAspect_Regular];
     if (!aPath.IsEmpty())
     {
       return aPath;
     }
-    else if (!myFilePaths[Font_FontAspect_Regular].IsEmpty())
+
+    if (theAspect == Font_FontAspect_Italic
+     || theAspect == Font_FontAspect_BoldItalic)
+    {
+      if (theAspect == Font_FontAspect_BoldItalic
+      && !myFilePaths[Font_FontAspect_Bold].IsEmpty())
+      {
+        theToSynthesizeItalic = true;
+        return myFilePaths[Font_FontAspect_Bold];
+      }
+      else if (!myFilePaths[Font_FontAspect_Regular].IsEmpty())
+      {
+        theToSynthesizeItalic = true;
+        return myFilePaths[Font_FontAspect_Regular];
+      }
+    }
+
+    if (!myFilePaths[Font_FontAspect_Regular].IsEmpty())
     {
       return myFilePaths[Font_FontAspect_Regular];
     }
+
     for (int anAspectIter = 0; anAspectIter < Font_FontAspect_NB; ++anAspectIter)
     {
       if (!myFilePaths[anAspectIter].IsEmpty())

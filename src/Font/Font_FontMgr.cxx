@@ -691,12 +691,14 @@ Handle(Font_SystemFont) Font_FontMgr::GetFont (const TCollection_AsciiString& th
 // purpose  :
 // =======================================================================
 Handle(Font_SystemFont) Font_FontMgr::FindFont (const TCollection_AsciiString& theFontName,
+                                                Font_StrictLevel theStrictLevel,
                                                 Font_FontAspect& theFontAspect) const
 {
   TCollection_AsciiString aFontName (theFontName);
   aFontName.LowerCase();
   Handle(Font_SystemFont) aFont = myFontMap.Find (aFontName);
-  if (!aFont.IsNull())
+  if (!aFont.IsNull()
+    || theStrictLevel == Font_StrictLevel_Strict)
   {
     return aFont;
   }
@@ -709,7 +711,7 @@ Handle(Font_SystemFont) Font_FontMgr::FindFont (const TCollection_AsciiString& t
     {
       myFontAliases.Find (aFontName, anAliases);
     }
-    else
+    else if (theStrictLevel == Font_StrictLevel_Any)
     {
       anAliases = myFallbackAlias;
     }

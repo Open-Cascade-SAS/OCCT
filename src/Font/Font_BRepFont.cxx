@@ -20,6 +20,7 @@
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include <BRepLib_MakeEdge.hxx>
 #include <Font_FTLibrary.hxx>
+#include <Font_FontMgr.hxx>
 #include <Font_TextFormatter.hxx>
 #include <GCE2d_MakeSegment.hxx>
 #include <GC_MakeSegment.hxx>
@@ -57,6 +58,7 @@ namespace
   // pre-defined font rendering options
   static const unsigned int THE_FONT_SIZE      = 72;
   static const unsigned int THE_RESOLUTION_DPI = 4800;
+  static const Font_FTFontParams THE_FONT_PARAMS (THE_FONT_SIZE, THE_RESOLUTION_DPI);
 
   // compute scaling factor for specified font size
   inline Standard_Real getScale (const Standard_Real theSize)
@@ -159,7 +161,7 @@ Font_BRepFont::Font_BRepFont (const NCollection_String& theFontPath,
   }
 
   myScaleUnits = getScale (theSize);
-  Font_FTFont::Init (theFontPath, THE_FONT_SIZE, THE_RESOLUTION_DPI);
+  Font_FTFont::Init (theFontPath.ToCString(), THE_FONT_PARAMS);
 }
 
 // =======================================================================
@@ -168,7 +170,8 @@ Font_BRepFont::Font_BRepFont (const NCollection_String& theFontPath,
 // =======================================================================
 Font_BRepFont::Font_BRepFont (const NCollection_String& theFontName,
                               const Font_FontAspect     theFontAspect,
-                              const Standard_Real       theSize)
+                              const Standard_Real       theSize,
+                              const Font_StrictLevel    theStrictLevel)
 : myPrecision  (Precision::Confusion()),
   myScaleUnits (1.0),
   myIsCompositeCurve (Standard_False),
@@ -182,7 +185,7 @@ Font_BRepFont::Font_BRepFont (const NCollection_String& theFontName,
   }
 
   myScaleUnits = getScale (theSize);
-  Font_FTFont::Init (theFontName, theFontAspect, THE_FONT_SIZE, THE_RESOLUTION_DPI);
+  Font_FTFont::FindAndInit (theFontName.ToCString(), theFontAspect, THE_FONT_PARAMS, theStrictLevel);
 }
 
 // =======================================================================
@@ -221,16 +224,17 @@ bool Font_BRepFont::Init (const NCollection_String& theFontPath,
   }
 
   myScaleUnits = getScale (theSize);
-  return Font_FTFont::Init (theFontPath, THE_FONT_SIZE, THE_RESOLUTION_DPI);
+  return Font_FTFont::Init (theFontPath.ToCString(), THE_FONT_PARAMS);
 }
 
 // =======================================================================
-// function : Init
+// function : FindAndInit
 // purpose  :
 // =======================================================================
-bool Font_BRepFont::Init (const NCollection_String& theFontName,
-                          const Font_FontAspect     theFontAspect,
-                          const Standard_Real       theSize)
+bool Font_BRepFont::FindAndInit (const TCollection_AsciiString& theFontName,
+                                 const Font_FontAspect  theFontAspect,
+                                 const Standard_Real    theSize,
+                                 const Font_StrictLevel theStrictLevel)
 {
   if (theSize <= myPrecision * 100.0)
   {
@@ -238,7 +242,7 @@ bool Font_BRepFont::Init (const NCollection_String& theFontName,
   }
 
   myScaleUnits = getScale (theSize);
-  return Font_FTFont::Init (theFontName, theFontAspect, THE_FONT_SIZE, THE_RESOLUTION_DPI);
+  return Font_FTFont::FindAndInit (theFontName.ToCString(), theFontAspect, THE_FONT_PARAMS, theStrictLevel);
 }
 
 // =======================================================================
@@ -431,7 +435,7 @@ Standard_Boolean Font_BRepFont::renderGlyph (const Standard_Utf32Char theChar,
     const short anEndIndex = anOutline.contours[aContour];
     const short aPntsNb    = (anEndIndex - aStartIndex) + 1;
     aStartIndex = anEndIndex + 1;
-    if (aPntsNb < 3 && !myIsSingleLine)
+    if (aPntsNb < 3 && !myFontParams.IsSingleStrokeFont)
     {
       // closed contour can not be constructed from < 3 points
       continue;
@@ -443,7 +447,7 @@ Standard_Boolean Font_BRepFont::renderGlyph (const Standard_Utf32Char theChar,
     gp_XY aPntCurr = readFTVec (aPntList[aPntsNb - 1], myScaleUnits, myWidthScaling);
     gp_XY aPntNext = readFTVec (aPntList[0], myScaleUnits, myWidthScaling);
 
-    bool isLineSeg = !myIsSingleLine
+    bool isLineSeg = !myFontParams.IsSingleStrokeFont
                   && FT_CURVE_TAG(aTags[aPntsNb - 1]) == FT_Curve_Tag_On;
     gp_XY aPntLine1 = aPntCurr;
 
@@ -566,7 +570,7 @@ Standard_Boolean Font_BRepFont::renderGlyph (const Standard_Utf32Char theChar,
 
       const gp_Pnt2d aFirstPnt = aDraft2d->StartPoint();
       const gp_Pnt2d aLastPnt  = aDraft2d->EndPoint();
-      if (!myIsSingleLine
+      if (!myFontParams.IsSingleStrokeFont
        && !aFirstPnt.IsEqual (aLastPnt, myPrecision))
       {
         Handle(Geom2d_TrimmedCurve) aLine = GCE2d_MakeSegment (aLastPnt, aFirstPnt);
@@ -594,7 +598,7 @@ Standard_Boolean Font_BRepFont::renderGlyph (const Standard_Utf32Char theChar,
       TopExp::Vertices (aWireMaker.Wire(), aFirstV, aLastV);
       gp_Pnt aFirstPoint = BRep_Tool::Pnt (aFirstV);
       gp_Pnt aLastPoint  = BRep_Tool::Pnt (aLastV);
-      if (!myIsSingleLine
+      if (!myFontParams.IsSingleStrokeFont
        && !aFirstPoint.IsEqual (aLastPoint, myPrecision))
       {
         aWireMaker.Add (BRepLib_MakeEdge (aFirstV, aLastV));
@@ -607,7 +611,7 @@ Standard_Boolean Font_BRepFont::renderGlyph (const Standard_Utf32Char theChar,
     }
 
     TopoDS_Wire aWireDraft = aWireMaker.Wire();
-    if (!myIsSingleLine)
+    if (!myFontParams.IsSingleStrokeFont)
     {
       // collect all wires and set CCW orientation
       TopoDS_Face aFace;

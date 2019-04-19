@@ -18,6 +18,8 @@
 #include <Font_FTLibrary.hxx>
 #include <Font_FontMgr.hxx>
 #include <Font_TextFormatter.hxx>
+#include <Message.hxx>
+#include <Message_Messenger.hxx>
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
@@ -31,10 +33,8 @@ IMPLEMENT_STANDARD_RTTIEXT(Font_FTFont,Standard_Transient)
 Font_FTFont::Font_FTFont (const Handle(Font_FTLibrary)& theFTLib)
 : myFTLib       (theFTLib),
   myFTFace      (NULL),
-  myPointSize   (0U),
   myWidthScaling(1.0),
   myLoadFlags   (FT_LOAD_NO_HINTING | FT_LOAD_TARGET_NORMAL),
-  myIsSingleLine(false),
   myUChar       (0U)
 {
   if (myFTLib.IsNull())
@@ -66,64 +66,130 @@ void Font_FTFont::Release()
     FT_Done_Face (myFTFace);
     myFTFace = NULL;
   }
+  myBuffer.Nullify();
 }
 
 // =======================================================================
 // function : Init
 // purpose  :
 // =======================================================================
-bool Font_FTFont::Init (const NCollection_String& theFontPath,
-                        const unsigned int        thePointSize,
-                        const unsigned int        theResolution)
+bool Font_FTFont::Init (const Handle(NCollection_Buffer)& theData,
+                        const TCollection_AsciiString& theFileName,
+                        const Font_FTFontParams& theParams)
 {
   Release();
-  myFontPath  = theFontPath;
-  myPointSize = thePointSize;
+  myBuffer = theData;
+  myFontPath = theFileName;
+  myFontParams = theParams;
   if (!myFTLib->IsValid())
   {
-    //std::cerr << "FreeType library is unavailable!\n";
+    Message::DefaultMessenger()->Send ("FreeType library is unavailable", Message_Trace);
     Release();
     return false;
   }
 
-  if (FT_New_Face (myFTLib->Instance(), myFontPath.ToCString(), 0, &myFTFace) != 0)
+  if (!theData.IsNull())
   {
-    //std::cerr << "Font '" << myFontPath << "' fail to load!\n";
+    if (FT_New_Memory_Face (myFTLib->Instance(), theData->Data(), (FT_Long )theData->Size(), 0, &myFTFace) != 0)
+    {
+      Message::DefaultMessenger()->Send (TCollection_AsciiString("Font '") + myFontPath + "' failed to load from memory", Message_Trace);
+      Release();
+      return false;
+    }
+  }
+  else
+  {
+    if (FT_New_Face (myFTLib->Instance(), myFontPath.ToCString(), 0, &myFTFace) != 0)
+    {
+      //Message::DefaultMessenger()->Send (TCollection_AsciiString("Font '") + myFontPath + "' failed to load from file", Message_Trace);
+      Release();
+      return false;
+    }
+  }
+
+  if (FT_Select_Charmap (myFTFace, ft_encoding_unicode) != 0)
+  {
+    Message::DefaultMessenger()->Send (TCollection_AsciiString("Font '") + myFontPath + "' doesn't contains Unicode charmap", Message_Trace);
     Release();
     return false;
   }
-  else if (FT_Select_Charmap (myFTFace, ft_encoding_unicode) != 0)
+  else if (FT_Set_Char_Size (myFTFace, 0L, toFTPoints (theParams.PointSize), theParams.Resolution, theParams.Resolution) != 0)
   {
-    //std::cerr << "Font '" << myFontPath << "' doesn't contains Unicode charmap!\n";
+    Message::DefaultMessenger()->Send (TCollection_AsciiString("Font '") + myFontPath + "' doesn't contains Unicode charmap of requested size", Message_Trace);
     Release();
     return false;
   }
-  else if (FT_Set_Char_Size (myFTFace, 0L, toFTPoints (thePointSize), theResolution, theResolution) != 0)
+
+  if (theParams.ToSynthesizeItalic)
   {
-    //std::cerr << "Font '" << myFontPath << "' doesn't contains Unicode charmap!\n";
-    Release();
-    return false;
+    const double THE_SHEAR_ANGLE = 10.0 * M_PI / 180.0;
+
+    FT_Matrix aMat;
+    aMat.xx = FT_Fixed (Cos (-THE_SHEAR_ANGLE) * (1 << 16));
+    aMat.xy = 0;
+    aMat.yx = 0;
+    aMat.yy = aMat.xx;
+
+    FT_Fixed aFactor = FT_Fixed (Tan (THE_SHEAR_ANGLE) * (1 << 16));
+    aMat.xy += FT_MulFix (aFactor, aMat.xx);
+
+    FT_Set_Transform (myFTFace, &aMat, 0);
   }
   return true;
 }
 
 // =======================================================================
-// function : Init
+// function : FindAndCreate
 // purpose  :
 // =======================================================================
-bool Font_FTFont::Init (const NCollection_String& theFontName,
-                        const Font_FontAspect     theFontAspect,
-                        const unsigned int        thePointSize,
-                        const unsigned int        theResolution)
+Handle(Font_FTFont) Font_FTFont::FindAndCreate (const TCollection_AsciiString& theFontName,
+                                                const Font_FontAspect     theFontAspect,
+                                                const Font_FTFontParams&  theParams,
+                                                const Font_StrictLevel    theStrictLevel)
 {
   Handle(Font_FontMgr) aFontMgr = Font_FontMgr::GetInstance();
-  const TCollection_AsciiString aFontName (theFontName.ToCString());
   Font_FontAspect aFontAspect = theFontAspect;
-  if (Handle(Font_SystemFont) aRequestedFont = aFontMgr->FindFont (aFontName, aFontAspect))
+  if (Handle(Font_SystemFont) aRequestedFont = aFontMgr->FindFont (theFontName, theStrictLevel, aFontAspect))
   {
-    myIsSingleLine = aRequestedFont->IsSingleStrokeFont();
-    return Font_FTFont::Init (aRequestedFont->FontPathAny (aFontAspect).ToCString(), thePointSize, theResolution);
+    Font_FTFontParams aParams = theParams;
+    if (aRequestedFont->IsSingleStrokeFont())
+    {
+      aParams.IsSingleStrokeFont = true;
+    }
+
+    const TCollection_AsciiString& aPath = aRequestedFont->FontPathAny (aFontAspect, aParams.ToSynthesizeItalic);
+    Handle(Font_FTFont) aFont = new Font_FTFont();
+    if (aFont->Init (aPath, aParams))
+    {
+      return aFont;
+    }
   }
+  return Handle(Font_FTFont)();
+}
+
+// =======================================================================
+// function : FindAndInit
+// purpose  :
+// =======================================================================
+bool Font_FTFont::FindAndInit (const TCollection_AsciiString& theFontName,
+                               Font_FontAspect theFontAspect,
+                               const Font_FTFontParams& theParams,
+                               Font_StrictLevel theStrictLevel)
+{
+  Font_FTFontParams aParams = theParams;
+  Font_FontAspect aFontAspect = theFontAspect;
+  Handle(Font_FontMgr) aFontMgr = Font_FontMgr::GetInstance();
+  if (Handle(Font_SystemFont) aRequestedFont = aFontMgr->FindFont (theFontName.ToCString(), theStrictLevel, aFontAspect))
+  {
+    if (aRequestedFont->IsSingleStrokeFont())
+    {
+      aParams.IsSingleStrokeFont = true;
+    }
+
+    const TCollection_AsciiString& aPath = aRequestedFont->FontPathAny (aFontAspect, aParams.ToSynthesizeItalic);
+    return Init (aPath, aParams);
+  }
+  Release();
   return false;
 }
 
