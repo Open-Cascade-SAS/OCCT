@@ -6,9 +6,9 @@ puts ""
 pload VISUALIZATION
 vclear
 vinit View1
-vsetcolorbg 127 127 127
+vbackground -color GRAY50
 vdump $imagedir/${casename}_127.png
-vsetcolorbg 130 130 130
+vbackground -color GRAY51
 vdump $imagedir/${casename}_130.png
 set aNbDiff0  [diffimage $imagedir/${casename}_127.png $imagedir/${casename}_130.png $imagedir/${casename}_0.png  -toleranceOfColor 0]
 set aNbDiff1  [diffimage $imagedir/${casename}_127.png $imagedir/${casename}_130.png $imagedir/${casename}_1.png  -toleranceOfColor 0.1]

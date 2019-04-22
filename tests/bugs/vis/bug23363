@@ -6,7 +6,7 @@ puts ""
 vclear
 vinit View1
 vaxo
-vsetgradientbg 250 0 0 0 255 0 2
+vbackground -gradient 0.980392 0 0 GREEN -gradientMode VERTICAL
 pcylinder p 100 200
 vdisplay -dispMode 1 p
 vaspects p -setInteriorStyle HOLLOW -setDrawEdges 1

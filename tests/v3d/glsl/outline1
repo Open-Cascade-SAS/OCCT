@@ -8,8 +8,8 @@ pload MODELING VISUALIZATION
 
 vclear
 vinit View1
-vsetcolorbg 220 220 220
-#vsetgradientbg 180 200 255 180 180 180 2
+vbackground -color GAINSBORO
+#vbackground -gradient 0.705882 0.784314 1  0.705882 0.705882 0.705882 -gradientMode VERTICAL
 vaxo
 
 psphere s 1.0

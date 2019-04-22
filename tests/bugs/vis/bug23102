@@ -9,7 +9,7 @@ puts ""
 set BugNumber OCC23102
 
 vinit
-vsetbg [locate_data_file OCC23102.bmp] TILED
+vbackground -image [locate_data_file OCC23102.bmp] -imageMode TILED
 
 set x1 58
 set y1 4

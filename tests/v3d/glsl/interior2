@@ -9,7 +9,7 @@ vclear
 vclose ALL
 vinit View1 -width 768 -height 409
 vzbufftrihedron
-vsetgradientbg 180 200 255 180 180 180 2
+vbackground -gradient 0.705882 0.784314 1  0.705882 0.705882 0.705882 -gradientMode VERTICAL
 box b1 -2 0  2 1 0.2 1
 box b2  2 0  2 1 0.2 1
 box b3  0 0  0 1 0.2 1

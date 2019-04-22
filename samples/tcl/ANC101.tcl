@@ -276,7 +276,7 @@ blend result _model 2 _model_161
 # Show result
 pload VISUALIZATION
 vinit Driver1/Viewer1/View1
-vsetcolorbg 200 200 255
+vbackground -color 0.784314 0.784314 1
 vdisplay -dispMode 1 result
 vfit
 vaspects result -setFaceBoundaryDraw 1 -mostContinuity c2

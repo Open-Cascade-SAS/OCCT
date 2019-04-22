@@ -11,7 +11,7 @@ vinit View1
 vclear
 vaxo
 vsetdispmode 1
-vsetcolorbg 10 10 10
+vbackground -color GRAY4
 vdisplay b
 vfit
 vraytrace 1
@@ -19,8 +19,8 @@ set bug_info_1 [vreadpixel 50 50 rgb name]
 if {$bug_info_1 != "GRAY4"} {
   puts "ERROR: OCC26404 is reproduced. Background color is invalid (case #1)."
 }
-vsetgradientbg 255 0 0 0 0 255 1
-vsetgradientbg 255 0 0 0 0 255 0
+vbackground -gradient RED BLUE1 -gradientMode HORIZONTAL
+vbackground -gradient RED BLUE1 -gradientMode NONE
 set bug_info_2 [vreadpixel 50 50 rgb name]
 if {$bug_info_2 != "GRAY4"} {
   puts "ERROR: OCC26404 is reproduced. Background color is invalid (case #2)."

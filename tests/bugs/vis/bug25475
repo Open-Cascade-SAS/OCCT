@@ -9,16 +9,16 @@ set aTextureFile [locate_data_file hatch_1.png]
 pload VISUALIZATION
 vinit View1
 
-vsetbg $aTextureFile STRETCH
+vbackground -image $aTextureFile -imageMode STRETCH
 vdump $imagedir/${casename}_1.png
 
-vsetbg $aTextureFile NONE
-vsetbg $aTextureFile TILED
+vbackground -image $aTextureFile -imageMode NONE
+vbackground -image $aTextureFile -imageMode TILED
 vdump $imagedir/${casename}_2.png
 
-vsetgradientbg 255 0 0 0 0 255 1
-vsetbg $aTextureFile CENTERED
+vbackground -gradient RED BLUE1 -gradientMode HORIZONTAL
+vbackground -image $aTextureFile -imageMode CENTERED
 vdump $imagedir/${casename}_3.png
 
-vsetbg $aTextureFile NONE
+vbackground -image $aTextureFile -imageMode NONE
 vdump $imagedir/${casename}_4.png

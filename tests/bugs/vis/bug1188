@@ -5,7 +5,7 @@ puts ""
 
 vinit View1
 
-vsetbg [locate_data_file OCC1188.gif]
+vbackground -image [locate_data_file OCC1188.gif]
 if { [vreadpixel 200 200 rgb name] != "WHITE" } { puts "Error: image background is not set" }
 
 vdump $imagedir/${casename}.png

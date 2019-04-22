@@ -59,7 +59,7 @@ XShow D
 vfit
 vsetdispmode 1
 vrenderparams -msaa 8
-vsetcolorbg 255 255 255
+vbackground -color WHITE
 
 #param write.iges.brep.mode 1
 #WriteIges D d:/pencil3.igs

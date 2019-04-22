@@ -2,40 +2,14 @@ puts "============"
 puts "OCC21747"
 puts "============"
 puts ""
-#######################################################################
-# Implementation of gradient background style 
-# 
-# vsetgradientbg: vsetgradientbg R1 G1 B1 R2 G2 B2 Type
-# R1\G1\B1 - First color [0..255]
-# R2\G2\B2 - Second color [0..255]
-# Type 0 to 8
-# 0 = NONE,
-# 1 = HORIZONTAL,
-# 2 = VERTICAL,
-# 3 = DIAGONAL1,
-# 4 = DIAGONAL2,
-# 5 = CORNER1,
-# 6 = CORNER2,
-# 7 = CORNER3,
-# 8 = CORNER4
-#######################################################################
 
 set BugNumber OCC21747
 
 vinit
 
-set R1 255
-set G1 0
-set B1 0
-set R2 0
-set G2 0
-set B2 255
-set Type 2
-
 puts "${BugNumber}"
 puts "Type=VERTICAL, Color from RED to BLUE, Direction from TOP to BOTTOM"
-puts "R1=${R1} G1=${G1} B1=${B1} R2=${R2} G2=${G2} B2=${B2} Type=${Type}"
 
-vsetgradientbg ${R1} ${G1} ${B1} ${R2} ${G2} ${B2} ${Type}
+vbackground -gradient RED BLUE1 -gradientMode VERTICAL
 
 checkview -screenshot -3d -path ${imagedir}/${test_image}.png

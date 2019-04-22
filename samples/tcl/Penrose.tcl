@@ -53,7 +53,7 @@ for {set i 1} {$i <= 1} {incr i} {
 
 # prepare a view
 vinit Penrose w=1024 h=512
-vsetcolorbg 255 255 255
+vbackground -color WHITE
 vrenderparams -rayTrace -fsaa on -reflections off -shadows off
 
 # set camera position and adjust lights

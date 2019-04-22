@@ -9,7 +9,7 @@ pload MODELING VISUALIZATION
 # test for creation of bottle as in tutorial (script is in samples)
 source $env(CSF_OCCTSamplesPath)/tcl/bottle.tcl
 
-vsetcolorbg 255 255 255
+vbackground -color WHITE
 vzbufftrihedron -type wireframe -colorLabels BLACK
 vaspects bottle -setDrawSilhouette 1 -setEdgeColor BLACK -setFaceBoundaryDraw 1 -setMostContinuity c0 -setFaceBoundaryColor BLACK -setInteriorStyle HIDDENLINE 
 vrenderparams -rendScale 2

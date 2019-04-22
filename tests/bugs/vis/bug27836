@@ -11,7 +11,7 @@ box b 0 0 -100 100 90 10
 vclear
 vinit View1
 vaxo
-vsetgradientbg 180 200 255 180 180 180 2
+vbackground -gradient 0.705882 0.784314 1  0.705882 0.705882 0.705882 -gradientMode VERTICAL
 vzbufftrihedron
 vdisplay -dispMode 1 b
 vsetlocation b 0 0 1000

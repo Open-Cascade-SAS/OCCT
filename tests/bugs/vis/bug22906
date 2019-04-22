@@ -21,7 +21,7 @@ set x4 87
 set y4 232
 
 vinit
-vsetgradientbg 255 0 0 0 0 255 4
+vbackground -gradient RED BLUE1 -gradientMode DIAGONAL2
 set Color1 [vreadpixel ${x1} ${y1} rgb]
 set Color2 [vreadpixel ${x2} ${y2} rgb]
 set Color3 [vreadpixel ${x3} ${y3} rgb]

@@ -19,7 +19,7 @@ restore $aBotLoc b
 vinit View1 w=768 h=768
 vclear
 vsetdispmode 0
-vsetcolorbg 255 255 255
+vbackground -color WHITE
 vbottom
 
 puts "Getting cut projection..."

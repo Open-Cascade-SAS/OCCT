@@ -69,7 +69,7 @@ vclose ALL
 vinit View1 w=768 h=768
 vtop
 vglinfo
-vsetgradientbg 180 200 255 180 180 180 2
+vbackground -gradient 0.705882 0.784314 1  0.705882 0.705882 0.705882 -gradientMode VERTICAL
 
 vlight -change 0 -dir 0.577 -0.577 -0.577
 vrenderparams -msaa 8

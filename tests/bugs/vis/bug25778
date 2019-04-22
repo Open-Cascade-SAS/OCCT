@@ -20,11 +20,11 @@ vclipplane create pln
 vclipplane set pln view Driver1/Viewer1/View1
 vclipplane change pln equation 0 1 0 -0.5
 
-vsetgradientbg 0 0 0 0 0 0 0
+vbackground -gradient BLACK BLACK -gradientMode NONE
 
 vdump $aExpectedImg
 
-vsetgradientbg 0 0 0 0 0 0 1
+vbackground -gradient BLACK BLACK -gradientMode HORIZONTAL
 
 vdump $aVerifiedImg
 

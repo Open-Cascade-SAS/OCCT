@@ -30,7 +30,7 @@ vsettransparency glass 0.6
 vlight new spot pos -100 -100 300
 
 # set white background and fit view
-vsetcolorbg 255 255 255
+vbackground -color WHITE
 vfit
 
 # set ray tracing

@@ -129,7 +129,7 @@ vrenderparams -msaa 8
 vsetcolor snowflake 0 0 0 
 vsetcolor lines 0 0 0 
 vsetcolor text 0 0 0 
-vsetcolorbg 255 255 255
+vbackground -color WHITE
 vtop
 vfit
 

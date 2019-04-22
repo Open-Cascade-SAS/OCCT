@@ -12,7 +12,7 @@ vglinfo
 
 vvbo 0
 vsetdispmode 1
-vsetgradientbg 180 200 255 180 180 180 2
+vbackground -gradient 0.705882 0.784314 1  0.705882 0.705882 0.705882 -gradientMode VERTICAL
 vtextureenv on 4
 restore $aShape1 s1
 restore $aShape2 s2

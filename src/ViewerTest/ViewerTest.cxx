@@ -5965,7 +5965,7 @@ static int VBsdf (Draw_Interpretor& theDI,
 
   ViewerTest_CmdParser aCmd;
 
-  aCmd.AddDescription ("Adjusts parameters of material BSDF:");
+  aCmd.SetDescription ("Adjusts parameters of material BSDF:");
 
   aCmd.AddOption ("print|echo|p", "Prints BSDF");
 
@@ -6007,7 +6007,7 @@ static int VBsdf (Draw_Interpretor& theDI,
   }
 
   // find object
-  TCollection_AsciiString aName (aCmd.Arg ("", 0).c_str());
+  TCollection_AsciiString aName (aCmd.Arg (ViewerTest_CmdParser::THE_UNNAMED_COMMAND_OPTION_KEY, 0).c_str());
   Handle(AIS_InteractiveObject) anIObj;
   if (!GetMapOfAIS().Find2 (aName, anIObj))
   {
