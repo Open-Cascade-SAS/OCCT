@@ -21,15 +21,17 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
+#include <BRepClass_FaceExplorer.hxx>
 #include <BRepTopAdaptor_SeqOfPtr.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
 #include <Standard_Real.hxx>
 #include <TopoDS_Face.hxx>
 #include <Standard_Boolean.hxx>
 #include <TopAbs_State.hxx>
+#include <memory>
+
 class TopoDS_Face;
 class gp_Pnt2d;
-
 
 //! Class provides an algorithm to classify a 2d Point
 //! in 2d space of face using boundaries of the face.
@@ -108,6 +110,15 @@ private:
   Standard_Real Vmax;
   Standard_Boolean myIsHole;
 
+#ifdef _MSC_VER
+#if _MSC_VER < 1600
+  mutable std::auto_ptr<BRepClass_FaceExplorer> myFExplorer;
+#else
+  mutable std::unique_ptr<BRepClass_FaceExplorer> myFExplorer;
+#endif
+#else
+  mutable std::unique_ptr<BRepClass_FaceExplorer> myFExplorer;
+#endif
 
 };
 

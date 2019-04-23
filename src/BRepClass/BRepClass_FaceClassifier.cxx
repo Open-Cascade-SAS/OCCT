@@ -97,7 +97,7 @@ void  BRepClass_FaceClassifier::Perform(const TopoDS_Face& aF,
   aMaxDist=RealLast();
   aIndice=0;
   //
-  BRepAdaptor_Surface aSurf(aF);
+  BRepAdaptor_Surface aSurf(aF, Standard_False);
   BRepTools::UVBounds(aF, aU1, aU2, aV1, aV2);
   aExtrema.Initialize(aSurf, aU1, aU2, aV1, aV2, aTol, aTol);
   //
@@ -128,10 +128,3 @@ void  BRepClass_FaceClassifier::Perform(const TopoDS_Face& aF,
     Perform(aF, aPuv, aTol);
   }
 }
-
-
-
-
-
-
-

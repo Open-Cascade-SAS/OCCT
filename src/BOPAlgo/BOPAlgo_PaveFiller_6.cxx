@@ -200,36 +200,18 @@ void BOPAlgo_PaveFiller::PerformFF()
   for (; myIterator->More(); myIterator->Next()) {
     myIterator->Value(nF1, nF2);
 
-    // Update/Initialize FaceInfo structure for first face
-    if (myDS->HasFaceInfo(nF1))
-    {
-      if (aMIFence.Add(nF1))
-      {
-        myDS->UpdateFaceInfoOn(nF1);
-        myDS->UpdateFaceInfoIn(nF1);
-      }
-    }
-    else if (myDS->HasInterfShapeSubShapes(nF2, nF1))
-    {
-      myDS->ChangeFaceInfo(nF1);
-      aMIFence.Add(nF1);
-    }
+    aMIFence.Add (nF1);
+    aMIFence.Add (nF2);
+  }
+  // Update face info
+  myDS->UpdateFaceInfoOn (aMIFence);
+  myDS->UpdateFaceInfoIn (aMIFence);
 
-    // Update/Initialize FaceInfo structure for second face
-    if (myDS->HasFaceInfo(nF2))
-    {
-      if (aMIFence.Add(nF2))
-      {
-        myDS->UpdateFaceInfoOn(nF2);
-        myDS->UpdateFaceInfoIn(nF2);
-      }
-    }
-    else if (myDS->HasInterfShapeSubShapes(nF1, nF2))
-    {
-      myDS->ChangeFaceInfo(nF2);
-      aMIFence.Add(nF2);
-    }
-    //
+  // Initialize interferences
+  myIterator->Initialize(TopAbs_FACE, TopAbs_FACE);
+  for (; myIterator->More(); myIterator->Next()) {
+    myIterator->Value(nF1, nF2);
+
     if (myGlue == BOPAlgo_GlueOff)
     {
       const TopoDS_Face& aF1 = (*(TopoDS_Face *)(&myDS->Shape(nF1)));

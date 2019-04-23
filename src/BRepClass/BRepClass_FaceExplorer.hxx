@@ -99,8 +99,8 @@ public:
 
 protected:
 
-
-
+  //! Computes UV bounds of a face
+  Standard_EXPORT void ComputeFaceBounds();
 
 
 private:
@@ -113,7 +113,10 @@ private:
   Standard_Integer myCurEdgeInd;
   Standard_Real myCurEdgePar;
 
-
+  Standard_Real myUMin;
+  Standard_Real myUMax;
+  Standard_Real myVMin;
+  Standard_Real myVMax;
 };
 
 

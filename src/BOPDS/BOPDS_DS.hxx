@@ -274,10 +274,14 @@ Standard_EXPORT virtual ~BOPDS_DS();
   //! Update the state In of face with index theIndex
   Standard_EXPORT void UpdateFaceInfoIn (const Standard_Integer theIndex);
   
+  //! Update the state IN for all faces in the given map
+  Standard_EXPORT void UpdateFaceInfoIn (const TColStd_MapOfInteger& theFaces);
 
   //! Update the state On of face with index theIndex
   Standard_EXPORT void UpdateFaceInfoOn (const Standard_Integer theIndex);
   
+  //! Update the state ON for all faces in the given map
+  Standard_EXPORT void UpdateFaceInfoOn (const TColStd_MapOfInteger& theFaces);
 
   //! Selector
   //! Returns the state On
@@ -479,6 +483,10 @@ protected:
 
   //! Initializes the state of face with index theIndex
   Standard_EXPORT void InitFaceInfo (const Standard_Integer theIndex);
+
+  //! Initializes the FaceInfo structure for face with index theIndex with elements
+  //! having IN state for the face
+  Standard_EXPORT void InitFaceInfoIn (const Standard_Integer theIndex);
   
   Standard_EXPORT void InitShape (const Standard_Integer theIndex, const TopoDS_Shape& theS);
   

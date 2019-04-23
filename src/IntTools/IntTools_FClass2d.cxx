@@ -67,7 +67,7 @@ IntTools_FClass2d::IntTools_FClass2d()
 //=======================================================================
 IntTools_FClass2d::IntTools_FClass2d(const TopoDS_Face& aFace,
 				     const Standard_Real TolUV) 
-: Toluv(TolUV), Face(aFace)  
+: Toluv(TolUV), Face(aFace)
 {
   Init(Face, Toluv);
 }
@@ -662,8 +662,12 @@ TopAbs_State IntTools_FClass2d::Perform
 	aFCTol = (!bUIn) ? aURes : aVRes;
       }
       //
-      BRepClass_FaceClassifier aClassifier;
-      aClassifier.Perform(Face,Puv,aFCTol);
+
+      if (myFExplorer.get() == NULL)
+        myFExplorer.reset (new BRepClass_FaceExplorer (Face));
+
+      BRepClass_FClassifier aClassifier;
+      aClassifier.Perform(*myFExplorer, Puv, aFCTol);
       aStatus = aClassifier.State();
     }
     
@@ -779,8 +783,12 @@ TopAbs_State IntTools_FClass2d::TestOnRestriction
       }
     }
     else {  //-- TabOrien(1)=-1  Wrong  Wire 
-      BRepClass_FaceClassifier aClassifier;
-      aClassifier.Perform(Face,Puv,Tol);
+
+      if (myFExplorer.get() == NULL)
+        myFExplorer.reset (new BRepClass_FaceExplorer (Face));
+
+      BRepClass_FClassifier aClassifier;
+      aClassifier.Perform(*myFExplorer, Puv, Tol);
       aStatus = aClassifier.State();
     }
     

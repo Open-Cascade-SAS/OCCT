@@ -37,7 +37,7 @@
 
 static 
 void RefineTolerance(const TopoDS_Face& aF,
-                     const BRepAdaptor_Curve2d& aC,
+                     const Geom2dAdaptor_Curve& aC,
                      const Standard_Real aT,
                      Standard_Real& aTolZ);
 
@@ -72,7 +72,7 @@ void  BRepClass_Intersector::Perform(const gp_Lin2d& L,
     return;
   }
   //
-  BRepAdaptor_Curve2d C(EE, F);
+  Geom2dAdaptor_Curve C(aC2D, deb, fin);
   //
   deb = C.FirstParameter();
   fin = C.LastParameter();
@@ -185,7 +185,7 @@ void  BRepClass_Intersector::LocalGeometry(const BRepClass_Edge& E,
 //purpose  : 
 //=======================================================================
 void RefineTolerance(const TopoDS_Face& aF,
-                     const BRepAdaptor_Curve2d& aC,
+                     const Geom2dAdaptor_Curve& aC,
                      const Standard_Real aT,
                      Standard_Real& aTolZ)
 {

@@ -469,12 +469,8 @@ void BOPAlgo_PaveFiller::PerformEF()
   PerformNewVertices(aMVCPB, aAllocator, Standard_False);
   //
   // Update FaceInfoIn for all faces having EF common parts
-  TColStd_MapIteratorOfMapOfInteger aItMI;
-  aItMI.Initialize(aMIEFC);
-  for (; aItMI.More(); aItMI.Next()) {
-    nF=aItMI.Value();
-    myDS->UpdateFaceInfoIn(nF);
-  }
+  myDS->UpdateFaceInfoIn (aMIEFC);
+
   //-----------------------------------------------------scope t
   aMIEFC.Clear();
   aMVCPB.Clear();

@@ -40,9 +40,29 @@ static const Standard_Real Probing_Step = 0.2111;
 BRepClass_FaceExplorer::BRepClass_FaceExplorer(const TopoDS_Face& F) :
        myFace(F),
        myCurEdgeInd(1),
-       myCurEdgePar(Probing_Start)
+       myCurEdgePar(Probing_Start),
+       myUMin (Precision::Infinite()),
+       myUMax (-Precision::Infinite()),
+       myVMin (Precision::Infinite()),
+       myVMax (-Precision::Infinite())
 {
   myFace.Orientation(TopAbs_FORWARD);
+}
+
+//=======================================================================
+//function : ComputeFaceBounds
+//purpose  : 
+//=======================================================================
+void BRepClass_FaceExplorer::ComputeFaceBounds()
+{
+  TopLoc_Location aLocation;
+  const Handle(Geom_Surface)& aSurface = BRep_Tool::Surface (myFace, aLocation);
+  aSurface->Bounds (myUMin, myUMax, myVMin, myVMax);
+  if (Precision::IsInfinite (myUMin) || Precision::IsInfinite (myUMax) ||
+      Precision::IsInfinite (myVMin) || Precision::IsInfinite (myVMax))
+  {
+    BRepTools::UVBounds(myFace, myUMin, myUMax, myVMin, myVMax);
+  }
 }
 
 //=======================================================================
@@ -50,35 +70,31 @@ BRepClass_FaceExplorer::BRepClass_FaceExplorer(const TopoDS_Face& F) :
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean  BRepClass_FaceExplorer::CheckPoint(gp_Pnt2d& thePoint)
+Standard_Boolean BRepClass_FaceExplorer::CheckPoint(gp_Pnt2d& thePoint)
 {
-  Standard_Real anUMin = 0.0, anUMax = 0.0, aVMin = 0.0, aVMax = 0.0;
-  TopLoc_Location aLocation;
-  const Handle(Geom_Surface)& aSurface = BRep_Tool::Surface(myFace, aLocation);
-  aSurface->Bounds(anUMin, anUMax, aVMin, aVMax);
-  if (Precision::IsInfinite(anUMin) || Precision::IsInfinite(anUMax) ||
-      Precision::IsInfinite(aVMin) || Precision::IsInfinite(aVMax))
+  if (myUMin > myUMax)
   {
-    BRepTools::UVBounds(myFace, anUMin, anUMax, aVMin, aVMax);
-    if (Precision::IsInfinite(anUMin) || Precision::IsInfinite(anUMax) ||
-        Precision::IsInfinite(aVMin) || Precision::IsInfinite(aVMax))
-    {
-      return Standard_True;
-    }
+    ComputeFaceBounds();
   }
 
-  gp_Pnt2d aCenterPnt(( anUMin + anUMax ) / 2, ( aVMin + aVMax ) / 2);
+  if (Precision::IsInfinite(myUMin) || Precision::IsInfinite(myUMax) ||
+      Precision::IsInfinite(myVMin) || Precision::IsInfinite(myVMax))
+  {
+    return Standard_True;
+  }
+
+  gp_Pnt2d aCenterPnt(( myUMin + myUMax ) / 2, ( myVMin + myVMax ) / 2);
   Standard_Real aDistance = aCenterPnt.Distance(thePoint);
   if (Precision::IsInfinite(aDistance))
   {
-    thePoint.SetCoord(anUMin - ( anUMax - anUMin ),
-                       aVMin - ( aVMax - aVMin ));
+    thePoint.SetCoord (myUMin - (myUMax - myUMin ),
+                       myVMin - (myVMax - myVMin ));
     return Standard_False;
   }
   else
   {
     Standard_Real anEpsilon = Epsilon(aDistance);
-    if (anEpsilon > Max(anUMax - anUMin, aVMax - aVMin))
+    if (anEpsilon > Max (myUMax - myUMin, myVMax - myVMin))
     {
       gp_Vec2d aLinVec(aCenterPnt, thePoint);
       gp_Dir2d aLinDir(aLinVec);
