@@ -702,7 +702,20 @@ void AIS_Manipulator::Transform (const gp_Trsf& theTrsf)
     NCollection_Sequence<gp_Trsf>::Iterator aTrsfIter (myStartTrsfs);
     for (; anObjIter.More(); anObjIter.Next(), aTrsfIter.Next())
     {
-      anObjIter.ChangeValue()->SetLocalTransformation (theTrsf * aTrsfIter.Value());
+      const Handle(AIS_InteractiveObject)& anObj = anObjIter.ChangeValue();
+      const gp_Trsf& anOldTrsf = aTrsfIter.Value();
+      const Handle(Geom_Transformation)& aParentTrsf = anObj->CombinedParentTransformation();
+      if (!aParentTrsf.IsNull()
+        && aParentTrsf->Form() != gp_Identity)
+      {
+        // recompute local transformation relative to parent transformation
+        const gp_Trsf aNewLocalTrsf = aParentTrsf->Trsf().Inverted() * theTrsf * aParentTrsf->Trsf() * anOldTrsf;
+        anObj->SetLocalTransformation (aNewLocalTrsf);
+      }
+      else
+      {
+        anObj->SetLocalTransformation (theTrsf * anOldTrsf);
+      }
     }
   }
 

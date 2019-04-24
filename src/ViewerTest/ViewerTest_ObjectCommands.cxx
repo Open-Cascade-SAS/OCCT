@@ -4609,6 +4609,81 @@ static Standard_Integer VListConnected (Draw_Interpretor& /*di*/,
   return 0;
 }
 
+//=======================================================================
+//function : VChild
+//purpose  :
+//=======================================================================
+static Standard_Integer VChild (Draw_Interpretor& ,
+                                Standard_Integer theNbArgs,
+                                const char** theArgVec)
+{
+  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
+  if (aContext.IsNull())
+  {
+    std::cout << "Error: no active view\n";
+    return 1;
+  }
+
+  int toAdd = -1;
+  Handle(AIS_InteractiveObject) aParent;
+  bool hasActions = false;
+  ViewerTest_AutoUpdater anUpdateTool (aContext, ViewerTest::CurrentView());
+  for (Standard_Integer anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
+  {
+    TCollection_AsciiString anArg (theArgVec[anArgIter]);
+    anArg.LowerCase();
+    if (anUpdateTool.parseRedrawMode (anArg))
+    {
+      continue;
+    }
+    else if (anArg == "-add")
+    {
+      toAdd = 1;
+      continue;
+    }
+    else if (anArg == "-remove")
+    {
+      toAdd = 0;
+      continue;
+    }
+
+    Handle(AIS_InteractiveObject) aChild;
+    if (!GetMapOfAIS().Find2 (theArgVec[anArgIter], aChild))
+    {
+      std::cout << "Syntax error: object '" << theArgVec[anArgIter] << "' is not found\n";
+      return 1;
+    }
+
+    if (aParent.IsNull())
+    {
+      aParent = aChild;
+    }
+    else if (toAdd == -1)
+    {
+      std::cout << "Syntax error: no action specified\n";
+      return 1;
+    }
+    else
+    {
+      hasActions = true;
+      if (toAdd == 1)
+      {
+        aParent->AddChild (aChild);
+      }
+      else
+      {
+        aParent->RemoveChild (aChild);
+      }
+    }
+  }
+  if (!hasActions)
+  {
+    std::cout << "Syntax error: not enough arguments\n";
+    return 1;
+  }
+  return 0;
+}
+
 //===============================================================================================
 //function : VSetSelectionMode
 //purpose  : vselmode
@@ -6311,7 +6386,11 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
   theCommands.Add ("vsetlocation",
                    "alias for vlocation",
         __FILE__, VSetLocation, group);
-
+  theCommands.Add ("vchild",
+                   "vchild parent [-add] [-remove] child1 [child2] [...]"
+      "\n\t\t: Command for testing low-level presentation connections."
+      "\n\t\t: vconnect command should be used instead.",
+        __FILE__, VChild, group);
   theCommands.Add ("vcomputehlr",
                 "vcomputehlr shapeInput hlrResult [-algoType {algo|polyAlgo}=polyAlgo]"
       "\n\t\t:   [eyeX eyeY eyeZ dirX dirY dirZ upX upY upZ]"

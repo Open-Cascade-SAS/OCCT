@@ -1,0 +1,28 @@
+puts "============="
+puts "0030669: Visualization - AIS_Manipulator ignores parent transformation"
+puts "============="
+
+pload MODELING VISUALIZATION
+box b1 0 0 0 1 2 3
+box b2 2 0 0 2 1 3
+vclear
+vinit View1
+vpoint p0 0 0 0
+vdisplay -dispMode 1 b1 b2
+vchild b1 -add b2
+vlocation b1  -setRotation  1 0 0 1 -setLocation 4 -2 0
+vfit
+vmanipulator m -attach b2
+
+set mouse_pick {265 265}
+set mouse_drag {265 200}
+
+vmoveto {*}$mouse_pick
+vselect {*}$mouse_pick
+vmanipulator m -startTransform {*}$mouse_pick
+vmanipulator m -transform {*}$mouse_drag
+vmanipulator m -stopTransform
+vselect 0 0
+
+if { [string trim [vlocation b2 -location]] != "0 1.80711 0" } { puts "Error: wrong location" }
+vdump $imagedir/${casename}.png
