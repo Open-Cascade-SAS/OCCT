@@ -23,7 +23,8 @@
 #include <Prs3d_Presentation.hxx>
 #include <Prs3d_Projector.hxx>
 #include <Prs3d_ShadingAspect.hxx>
-#include <PrsMgr_ModedPresentation.hxx>
+#include <PrsMgr_Presentation.hxx>
+#include <PrsMgr_PresentationManager.hxx>
 #include <Standard_NotImplemented.hxx>
 #include <TColStd_MapOfInteger.hxx>
 
@@ -66,6 +67,14 @@ PrsMgr_PresentableObject::PrsMgr_PresentableObject (const PrsMgr_TypeOfPresentat
 //=======================================================================
 PrsMgr_PresentableObject::~PrsMgr_PresentableObject()
 {
+  for (PrsMgr_Presentations::Iterator aPrsIter (myPresentations); aPrsIter.More(); aPrsIter.Next())
+  {
+    // should never happen - assertion can be used
+    const Handle(PrsMgr_Presentation)& aPrs3d = aPrsIter.Value();
+    aPrs3d->Erase();
+    aPrs3d->myPresentableObject = NULL;
+  }
+
   for (PrsMgr_ListOfPresentableObjectsIter anIter (myChildren); anIter.More(); anIter.Next())
   {
     anIter.Value()->SetCombinedParentTransform (Handle(Geom_Transformation)());
@@ -81,7 +90,7 @@ void PrsMgr_PresentableObject::Fill (const Handle(PrsMgr_PresentationManager)& t
                                      const Handle(PrsMgr_Presentation)&        thePrs,
                                      const Standard_Integer                    theMode)
 {
-  Handle(Prs3d_Presentation) aStruct3d = thePrs->Presentation();
+  const Handle(Prs3d_Presentation)& aStruct3d = thePrs;
   Compute (thePrsMgr, aStruct3d, theMode);
   aStruct3d->SetTransformation (myTransformation);
   aStruct3d->SetClipPlanes (myClipPlanes);
@@ -117,17 +126,17 @@ Standard_Boolean PrsMgr_PresentableObject::ToBeUpdated (Standard_Boolean theToIn
 {
   for (PrsMgr_Presentations::Iterator aPrsIter (myPresentations); aPrsIter.More(); aPrsIter.Next())
   {
-    const PrsMgr_ModedPresentation& aModedPrs = aPrsIter.Value();
-    if (aModedPrs.Presentation()->MustBeUpdated())
+    const Handle(PrsMgr_Presentation)& aModedPrs = aPrsIter.Value();
+    if (aModedPrs->MustBeUpdated())
     {
       if (theToIncludeHidden)
       {
         return Standard_True;
       }
 
-      Handle(PrsMgr_PresentationManager) aPrsMgr = aModedPrs.Presentation()->PresentationManager();
-      if (aPrsMgr->IsDisplayed  (this, aModedPrs.Mode())
-       || aPrsMgr->IsHighlighted(this, aModedPrs.Mode()))
+      Handle(PrsMgr_PresentationManager) aPrsMgr = aModedPrs->PresentationManager();
+      if (aPrsMgr->IsDisplayed  (this, aModedPrs->Mode())
+       || aPrsMgr->IsHighlighted(this, aModedPrs->Mode()))
       {
         return Standard_True;
       }
@@ -145,16 +154,16 @@ Standard_Boolean PrsMgr_PresentableObject::UpdatePresentations (Standard_Boolean
   Standard_Boolean hasUpdates = Standard_False;
   for (PrsMgr_Presentations::Iterator aPrsIter (myPresentations); aPrsIter.More(); aPrsIter.Next())
   {
-    const PrsMgr_ModedPresentation& aModedPrs = aPrsIter.Value();
-    if (aModedPrs.Presentation()->MustBeUpdated())
+    const Handle(PrsMgr_Presentation)& aModedPrs = aPrsIter.Value();
+    if (aModedPrs->MustBeUpdated())
     {
-      Handle(PrsMgr_PresentationManager) aPrsMgr = aModedPrs.Presentation()->PresentationManager();
+      Handle(PrsMgr_PresentationManager) aPrsMgr = aModedPrs->PresentationManager();
       if (theToIncludeHidden
-       || aPrsMgr->IsDisplayed  (this, aModedPrs.Mode())
-       || aPrsMgr->IsHighlighted(this, aModedPrs.Mode()))
+       || aPrsMgr->IsDisplayed  (this, aModedPrs->Mode())
+       || aPrsMgr->IsHighlighted(this, aModedPrs->Mode()))
       {
         hasUpdates = Standard_True;
-        aPrsMgr->Update (this, aModedPrs.Mode());
+        aPrsMgr->Update (this, aModedPrs->Mode());
       }
     }
   }
@@ -169,18 +178,18 @@ void PrsMgr_PresentableObject::Update (Standard_Integer theMode, Standard_Boolea
 {
   for (PrsMgr_Presentations::Iterator aPrsIter (myPresentations); aPrsIter.More();)
   {
-    if (aPrsIter.Value().Mode() == theMode)
+    if (aPrsIter.Value()->Mode() == theMode)
     {
-      Handle(PrsMgr_PresentationManager) aPrsMgr = aPrsIter.Value().Presentation()->PresentationManager();
+      Handle(PrsMgr_PresentationManager) aPrsMgr = aPrsIter.Value()->PresentationManager();
       if (aPrsMgr->IsDisplayed  (this, theMode)
        || aPrsMgr->IsHighlighted(this, theMode))
       {
         aPrsMgr->Update (this, theMode);
-        aPrsIter.Value().Presentation()->SetUpdateStatus (Standard_False);
+        aPrsIter.Value()->SetUpdateStatus (Standard_False);
       }
       else
       {
-        SetToUpdate (aPrsIter.Value().Mode());
+        SetToUpdate (aPrsIter.Value()->Mode());
       }
     }
     else if (theToClearOther)
@@ -201,9 +210,9 @@ void PrsMgr_PresentableObject::SetToUpdate (Standard_Integer theMode)
   for (PrsMgr_Presentations::Iterator aPrsIter (myPresentations); aPrsIter.More(); aPrsIter.Next())
   {
     if (theMode == -1
-     || aPrsIter.Value().Mode() == theMode)
+     || aPrsIter.Value()->Mode() == theMode)
     {
-      aPrsIter.ChangeValue().Presentation()->SetUpdateStatus(Standard_True);
+      aPrsIter.ChangeValue()->SetUpdateStatus (Standard_True);
     }
   }
 }
@@ -218,11 +227,11 @@ void PrsMgr_PresentableObject::ToBeUpdated (TColStd_ListOfInteger& theOutList) c
   TColStd_MapOfInteger MI(myPresentations.Length()); 
   for (PrsMgr_Presentations::Iterator aPrsIter (myPresentations); aPrsIter.More(); aPrsIter.Next())
   {
-    const PrsMgr_ModedPresentation& aModedPrs = aPrsIter.Value();
-    if (aModedPrs.Presentation()->MustBeUpdated()
-     && MI.Add (aModedPrs.Mode()))
+    const Handle(PrsMgr_Presentation)& aModedPrs = aPrsIter.Value();
+    if (aModedPrs->MustBeUpdated()
+     && MI.Add (aModedPrs->Mode()))
     {
-      theOutList.Append (aModedPrs.Mode());
+      theOutList.Append (aModedPrs->Mode());
     }
   }
 }
@@ -236,10 +245,10 @@ void PrsMgr_PresentableObject::SetTypeOfPresentation (const PrsMgr_TypeOfPresent
   myTypeOfPresentation3d = theType;
   for (PrsMgr_Presentations::Iterator aPrsIter (myPresentations); aPrsIter.More(); aPrsIter.Next())
   {
-    const Handle(PrsMgr_Presentation)& aPrs  = aPrsIter.Value().Presentation();
-    aPrs->Presentation()->SetVisual (myTypeOfPresentation3d == PrsMgr_TOP_ProjectorDependant
-                                   ? Graphic3d_TOS_COMPUTED
-                                   : Graphic3d_TOS_ALL);
+    const Handle(PrsMgr_Presentation)& aPrs  = aPrsIter.Value();
+    aPrs->SetVisual (myTypeOfPresentation3d == PrsMgr_TOP_ProjectorDependant
+                   ? Graphic3d_TOS_COMPUTED
+                   : Graphic3d_TOS_ALL);
   }
 }
 
@@ -302,7 +311,7 @@ void PrsMgr_PresentableObject::UpdateTransformation()
 
   for (PrsMgr_Presentations::Iterator aPrsIter (myPresentations); aPrsIter.More(); aPrsIter.Next())
   {
-    aPrsIter.ChangeValue().Presentation()->SetTransformation (myTransformation);
+    aPrsIter.ChangeValue()->SetTransformation (myTransformation);
   }
 
   for (PrsMgr_ListOfPresentableObjectsIter aChildIter (myChildren); aChildIter.More(); aChildIter.Next())
@@ -319,12 +328,8 @@ void PrsMgr_PresentableObject::recomputeComputed() const
 {
   for (PrsMgr_Presentations::Iterator aPrsIter (myPresentations); aPrsIter.More(); aPrsIter.Next())
   {
-    const Handle(PrsMgr_Presentation)& aPrs3d = aPrsIter.Value().Presentation();
-    if (!aPrs3d.IsNull()
-     && !aPrs3d->Presentation().IsNull())
-    {
-      aPrs3d->Presentation()->ReCompute();
-    }
+    const Handle(PrsMgr_Presentation)& aPrs3d = aPrsIter.Value();
+    aPrs3d->ReCompute();
   }
 }
 
@@ -337,13 +342,9 @@ void PrsMgr_PresentableObject::SetTransformPersistence (const Handle(Graphic3d_T
   myTransformPersistence = theTrsfPers;
   for (PrsMgr_Presentations::Iterator aPrsIter (myPresentations); aPrsIter.More(); aPrsIter.Next())
   {
-    const Handle(PrsMgr_Presentation)& aPrs3d = aPrsIter.Value().Presentation();
-    if (!aPrs3d.IsNull()
-     && !aPrs3d->Presentation().IsNull())
-    {
-      aPrs3d->Presentation()->SetTransformPersistence (myTransformPersistence);
-      aPrs3d->Presentation()->ReCompute();
-    }
+    const Handle(PrsMgr_Presentation)& aPrs3d = aPrsIter.Value();
+    aPrs3d->SetTransformPersistence (myTransformPersistence);
+    aPrs3d->ReCompute();
   }
 }
 
@@ -439,14 +440,8 @@ void PrsMgr_PresentableObject::SetZLayer (const Graphic3d_ZLayerId theLayerId)
   myDrawer->SetZLayer (theLayerId);
   for (PrsMgr_Presentations::Iterator aPrsIter (myPresentations); aPrsIter.More(); aPrsIter.Next())
   {
-    const PrsMgr_ModedPresentation& aModedPrs = aPrsIter.Value();
-    if (aModedPrs.Presentation().IsNull()
-     || aModedPrs.Presentation()->Presentation().IsNull())
-    {
-      continue;
-    }
-
-    aModedPrs.Presentation()->Presentation()->SetZLayer (theLayerId);
+    const Handle(PrsMgr_Presentation)& aModedPrs = aPrsIter.Value();
+    aModedPrs->SetZLayer (theLayerId);
   }
 }
 
@@ -509,12 +504,8 @@ void PrsMgr_PresentableObject::UpdateClipping()
 {
   for (PrsMgr_Presentations::Iterator aPrsIter (myPresentations); aPrsIter.More(); aPrsIter.Next())
   {
-    const PrsMgr_ModedPresentation& aModedPrs = aPrsIter.Value();
-    if (!aModedPrs.Presentation().IsNull()
-     && !aModedPrs.Presentation()->Presentation().IsNull())
-    {
-      aModedPrs.Presentation()->Presentation()->SetClipPlanes (myClipPlanes);
-    }
+    const Handle(PrsMgr_Presentation)& aModedPrs = aPrsIter.Value();
+    aModedPrs->SetClipPlanes (myClipPlanes);
   }
 }
 
@@ -532,12 +523,8 @@ void PrsMgr_PresentableObject::SetInfiniteState (const Standard_Boolean theFlag)
   myInfiniteState = theFlag;
   for (PrsMgr_Presentations::Iterator aPrsIter (myPresentations); aPrsIter.More(); aPrsIter.Next())
   {
-    const PrsMgr_ModedPresentation& aModedPrs = aPrsIter.Value();
-    if (!aModedPrs.Presentation().IsNull()
-     && !aModedPrs.Presentation()->Presentation().IsNull())
-    {
-      aModedPrs.Presentation()->Presentation()->SetInfiniteState (theFlag);
-    }
+    const Handle(PrsMgr_Presentation)& aModedPrs = aPrsIter.Value();
+    aModedPrs->SetInfiniteState (theFlag);
   }
 }
 
@@ -555,12 +542,8 @@ void PrsMgr_PresentableObject::SetMutable (const Standard_Boolean theIsMutable)
   myIsMutable = theIsMutable;
   for (PrsMgr_Presentations::Iterator aPrsIter (myPresentations); aPrsIter.More(); aPrsIter.Next())
   {
-    const PrsMgr_ModedPresentation& aModedPrs = aPrsIter.Value();
-    if (!aModedPrs.Presentation().IsNull()
-     && !aModedPrs.Presentation()->Presentation().IsNull())
-    {
-      aModedPrs.Presentation()->Presentation()->SetMutable (theIsMutable);
-    }
+    const Handle(PrsMgr_Presentation)& aModedPrs = aPrsIter.Value();
+    aModedPrs->SetMutable (theIsMutable);
   }
 }
 
@@ -617,14 +600,8 @@ void PrsMgr_PresentableObject::SynchronizeAspects()
 {
   for (PrsMgr_Presentations::Iterator aPrsIter (myPresentations); aPrsIter.More(); aPrsIter.Next())
   {
-    const Handle(PrsMgr_Presentation)& aPrs3d = aPrsIter.ChangeValue().Presentation();
-    if (aPrs3d.IsNull()
-     || aPrs3d->Presentation().IsNull())
-    {
-      continue;
-    }
-
-    for (Graphic3d_SequenceOfGroup::Iterator aGroupIter (aPrs3d->Presentation()->Groups()); aGroupIter.More(); aGroupIter.Next())
+    const Handle(PrsMgr_Presentation)& aPrs3d = aPrsIter.ChangeValue();
+    for (Graphic3d_SequenceOfGroup::Iterator aGroupIter (aPrs3d->Groups()); aGroupIter.More(); aGroupIter.Next())
     {
       if (!aGroupIter.Value().IsNull())
       {
@@ -647,14 +624,8 @@ void PrsMgr_PresentableObject::replaceAspects (const Graphic3d_MapOfAspectsToAsp
 
   for (PrsMgr_Presentations::Iterator aPrsIter (myPresentations); aPrsIter.More(); aPrsIter.Next())
   {
-    const Handle(PrsMgr_Presentation)& aPrs3d = aPrsIter.ChangeValue().Presentation();
-    if (aPrs3d.IsNull()
-     || aPrs3d->Presentation().IsNull())
-    {
-      continue;
-    }
-
-    for (Graphic3d_SequenceOfGroup::Iterator aGroupIter (aPrs3d->Presentation()->Groups()); aGroupIter.More(); aGroupIter.Next())
+    const Handle(PrsMgr_Presentation)& aPrs3d = aPrsIter.ChangeValue();
+    for (Graphic3d_SequenceOfGroup::Iterator aGroupIter (aPrs3d->Groups()); aGroupIter.More(); aGroupIter.Next())
     {
       if (!aGroupIter.Value().IsNull())
       {
@@ -674,9 +645,8 @@ void PrsMgr_PresentableObject::BoundingBox (Bnd_Box& theBndBox)
   {
     if (!myPresentations.IsEmpty())
     {
-      const Handle(PrsMgr_Presentation)& aPrs3d = myPresentations.First().Presentation();
-      const Handle(Graphic3d_Structure)& aStruct = aPrs3d->Presentation();
-      const Graphic3d_BndBox3d& aBndBox = aStruct->CStructure()->BoundingBox();
+      const Handle(PrsMgr_Presentation)& aPrs3d = myPresentations.First();
+      const Graphic3d_BndBox3d& aBndBox = aPrs3d->CStructure()->BoundingBox();
       if (aBndBox.IsValid())
       {
         theBndBox.Update (aBndBox.CornerMin().x(), aBndBox.CornerMin().y(), aBndBox.CornerMin().z(),
@@ -701,13 +671,12 @@ void PrsMgr_PresentableObject::BoundingBox (Bnd_Box& theBndBox)
     return;
   }
 
-  for (Standard_Integer aPrsIter = 1; aPrsIter <= myPresentations.Length(); ++aPrsIter)
+  for (PrsMgr_Presentations::Iterator aPrsIter (myPresentations); aPrsIter.More(); aPrsIter.Next())
   {
-    if (myPresentations (aPrsIter).Mode() == myDrawer->DisplayMode())
+    const Handle(PrsMgr_Presentation)& aPrs3d = aPrsIter.ChangeValue();
+    if (aPrs3d->Mode() == myDrawer->DisplayMode())
     {
-      const Handle(PrsMgr_Presentation)& aPrs3d = myPresentations (aPrsIter).Presentation();
-      const Handle(Graphic3d_Structure)& aStruct = aPrs3d->Presentation();
-      const Graphic3d_BndBox3d& aBndBox = aStruct->CStructure()->BoundingBox();
+      const Graphic3d_BndBox3d& aBndBox = aPrs3d->CStructure()->BoundingBox();
       if (aBndBox.IsValid())
       {
         theBndBox.Update (aBndBox.CornerMin().x(), aBndBox.CornerMin().y(), aBndBox.CornerMin().z(),

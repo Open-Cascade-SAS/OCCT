@@ -22,13 +22,12 @@
 #include <Standard_Handle.hxx>
 
 #include <Prs3d_Drawer.hxx>
-class Prs3d_Presentation;
+#include <Prs3d_Presentation.hxx>
+
 class TCollection_ExtendedString;
 class gp_Pnt;
 class gp_Ax2;
 class gp_Elips;
-
-
 
 class DsgPrs_IdenticPresentation 
 {

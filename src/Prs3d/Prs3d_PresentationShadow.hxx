@@ -19,14 +19,14 @@
 #include <Prs3d_Presentation.hxx>
 
 //! Defines a "shadow" of existing presentation object with custom aspects.
-class Prs3d_PresentationShadow : public Prs3d_Presentation
+class Prs3d_PresentationShadow : public Graphic3d_Structure
 {
-
+  DEFINE_STANDARD_RTTIEXT(Prs3d_PresentationShadow, Graphic3d_Structure)
 public:
 
   //! Constructs a shadow of existing presentation object.
   Standard_EXPORT Prs3d_PresentationShadow (const Handle(Graphic3d_StructureManager)& theViewer,
-                                            const Handle(Prs3d_Presentation)&         thePrs);
+                                            const Handle(Graphic3d_Structure)&        thePrs);
 
   //! Returns the id of the parent presentation
   inline Standard_Integer ParentId() const { return myParentStructId; }
@@ -37,16 +37,13 @@ public:
   //! Do nothing - axis-aligned bounding box should be initialized from parent structure.
   Standard_EXPORT virtual void CalculateBoundBox() Standard_OVERRIDE;
 
-private: 
-
-  DEFINE_STANDARD_RTTIEXT(Prs3d_PresentationShadow,Prs3d_Presentation)
-
 private:
-  Standard_Integer               myParentStructId;
+
   Handle(Graphic3d_ViewAffinity) myParentAffinity;
+  Standard_Integer               myParentStructId;
 
 };
 
-DEFINE_STANDARD_HANDLE(Prs3d_PresentationShadow, Prs3d_Presentation)
+DEFINE_STANDARD_HANDLE(Prs3d_PresentationShadow, Graphic3d_Structure)
 
 #endif // _Prs3d_PresentationShadow_HeaderFile

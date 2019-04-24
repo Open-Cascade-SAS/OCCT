@@ -23,10 +23,10 @@
 
 #include <Prs3d_Drawer.hxx>
 #include <DsgPrs_ArrowSide.hxx>
-class Prs3d_Presentation;
+#include <Prs3d_Presentation.hxx>
+
 class gp_Pnt;
 class TCollection_ExtendedString;
-
 
 //! Framework for display of 2D chamfers.
 class DsgPrs_Chamf2dPresentation 

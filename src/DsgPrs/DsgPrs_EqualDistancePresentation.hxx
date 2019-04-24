@@ -23,12 +23,12 @@
 
 #include <Prs3d_Drawer.hxx>
 #include <DsgPrs_ArrowSide.hxx>
-class Prs3d_Presentation;
+#include <Prs3d_Presentation.hxx>
+
 class gp_Pnt;
 class Geom_Plane;
 class gp_Dir;
 class gp_Circ;
-
 
 //! A framework to display equal distances between shapes and a given plane.
 //! The distance is the length of a projection from the shape to the plane.

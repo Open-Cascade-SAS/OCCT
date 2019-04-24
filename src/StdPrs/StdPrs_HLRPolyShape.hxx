@@ -17,16 +17,11 @@
 #ifndef _StdPrs_HLRPolyShape_HeaderFile
 #define _StdPrs_HLRPolyShape_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
 #include <Prs3d_Root.hxx>
 #include <Prs3d_Drawer.hxx>
-class Prs3d_Presentation;
+
 class TopoDS_Shape;
 class Prs3d_Projector;
-
 
 //! Instantiates Prs3d_PolyHLRShape to define a
 //! display of a shape where hidden and visible lines are

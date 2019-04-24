@@ -17,47 +17,14 @@
 #ifndef _DsgPrs_HeaderFile
 #define _DsgPrs_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
 #include <DsgPrs_ArrowSide.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
-class Prs3d_Presentation;
-class Prs3d_DimensionAspect;
-class gp_Pnt;
-class gp_Dir;
-class gp_Pln;
-class Geom_Surface;
-class Geom_Curve;
-class gp_Ax1;
-class gp_Circ;
-class gp_Elips;
-class DsgPrs_EllipseRadiusPresentation;
-class DsgPrs_LengthPresentation;
-class DsgPrs_RadiusPresentation;
-class DsgPrs_DiameterPresentation;
-class DsgPrs_FilletRadiusPresentation;
-class DsgPrs_AnglePresentation;
-class DsgPrs_Chamf2dPresentation;
-class DsgPrs_ParalPresentation;
-class DsgPrs_PerpenPresentation;
-class DsgPrs_SymmetricPresentation;
-class DsgPrs_MidPointPresentation;
-class DsgPrs_TangentPresentation;
-class DsgPrs_ConcentricPresentation;
-class DsgPrs_FixPresentation;
-class DsgPrs_IdenticPresentation;
-class DsgPrs_EqualRadiusPresentation;
-class DsgPrs_EqualDistancePresentation;
-class DsgPrs_SymbPresentation;
-class DsgPrs_ShapeDirPresentation;
-class DsgPrs_OffsetPresentation;
-class DsgPrs_XYZAxisPresentation;
-class DsgPrs_XYZPlanePresentation;
-class DsgPrs_ShadedPlanePresentation;
+#include <gp_Dir.hxx>
+#include <gp_Pnt.hxx>
+#include <Prs3d_Presentation.hxx>
 
+class Geom_Curve;
+class Geom_Surface;
+class Prs3d_DimensionAspect;
 
 //! Describes Standard Presentations for DsgIHM objects
 class DsgPrs 
@@ -66,7 +33,6 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
   //! draws symbols ((one or two) arrows,(one or two)points
   //! at thebeginning and at the end of the dimension
   Standard_EXPORT static void ComputeSymbol (const Handle(Prs3d_Presentation)& aPresentation, const Handle(Prs3d_DimensionAspect)& anAspect, const gp_Pnt& pt1, const gp_Pnt& pt2, const gp_Dir& dir1, const gp_Dir& dir2, const DsgPrs_ArrowSide ArrowSide, const Standard_Boolean drawFromCenter = Standard_True);
@@ -88,50 +54,6 @@ public:
   //! computes  length  of  ellipse  arc  in  parametric  units
   Standard_EXPORT static Standard_Real DistanceFromApex (const gp_Elips& elips, const gp_Pnt& Apex, const Standard_Real par);
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class DsgPrs_EllipseRadiusPresentation;
-friend class DsgPrs_LengthPresentation;
-friend class DsgPrs_RadiusPresentation;
-friend class DsgPrs_DiameterPresentation;
-friend class DsgPrs_FilletRadiusPresentation;
-friend class DsgPrs_AnglePresentation;
-friend class DsgPrs_Chamf2dPresentation;
-friend class DsgPrs_ParalPresentation;
-friend class DsgPrs_PerpenPresentation;
-friend class DsgPrs_SymmetricPresentation;
-friend class DsgPrs_MidPointPresentation;
-friend class DsgPrs_TangentPresentation;
-friend class DsgPrs_ConcentricPresentation;
-friend class DsgPrs_FixPresentation;
-friend class DsgPrs_IdenticPresentation;
-friend class DsgPrs_EqualRadiusPresentation;
-friend class DsgPrs_EqualDistancePresentation;
-friend class DsgPrs_SymbPresentation;
-friend class DsgPrs_ShapeDirPresentation;
-friend class DsgPrs_OffsetPresentation;
-friend class DsgPrs_XYZAxisPresentation;
-friend class DsgPrs_XYZPlanePresentation;
-friend class DsgPrs_ShadedPlanePresentation;
-
 };
-
-
-
-
-
-
 
 #endif // _DsgPrs_HeaderFile

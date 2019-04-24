@@ -37,7 +37,6 @@
 #include <Prs3d_PlaneAspect.hxx>
 #include <Prs3d_PointAspect.hxx>
 #include <Prs3d_ShadingAspect.hxx>
-#include <PrsMgr_ModedPresentation.hxx>
 #include <PrsMgr_PresentableObject.hxx>
 #include <Quantity_Color.hxx>
 #include <SelectMgr_EntityOwner.hxx>
@@ -2447,6 +2446,13 @@ void AIS_InteractiveContext::Disconnect (const Handle(AIS_InteractiveObject)& th
   {
     Handle(AIS_MultipleConnectedInteractive) theObj (Handle(AIS_MultipleConnectedInteractive)::DownCast (theAssembly));
     theObj->Disconnect (theObjToDisconnect);
+    if (!myObjects.IsBound (theObjToDisconnect))
+    {
+      // connected presentation might contain displayed presentations
+      myMainPM->Erase (theObjToDisconnect, -1);
+      theObjToDisconnect->ErasePresentations (true);
+    }
+
     const Handle(SelectMgr_SelectableObject)& anObj = theObjToDisconnect; // to avoid ambiguity
     mgrSelector->Remove (anObj);
   }

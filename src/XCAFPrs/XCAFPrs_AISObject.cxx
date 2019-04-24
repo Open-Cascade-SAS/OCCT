@@ -207,8 +207,8 @@ void XCAFPrs_AISObject::Compute (const Handle(PrsMgr_PresentationManager3d)& the
     Standard_Boolean toMapStyles = myToSyncStyles;
     for (PrsMgr_Presentations::Iterator aPrsIter (myPresentations); aPrsIter.More(); aPrsIter.Next())
     {
-      if (aPrsIter.Value().Presentation()->Presentation() != thePrs
-      && !aPrsIter.Value().Presentation()->MustBeUpdated())
+      if (aPrsIter.Value() != thePrs
+      && !aPrsIter.Value()->MustBeUpdated())
       {
         toMapStyles = Standard_False;
         break;

@@ -16,20 +16,15 @@
 
 #include <Geom_Transformation.hxx>
 #include <Graphic3d_DataStructureManager.hxx>
-#include <Graphic3d_Structure.hxx>
 #include <Precision.hxx>
 #include <Prs3d_Drawer.hxx>
-#include <Prs3d_Presentation.hxx>
 #include <Prs3d_Projector.hxx>
-#include <PrsMgr_ModedPresentation.hxx>
 #include <PrsMgr_PresentableObject.hxx>
 #include <PrsMgr_PresentationManager.hxx>
-#include <PrsMgr_Prs.hxx>
 #include <Quantity_Color.hxx>
-#include <Standard_Type.hxx>
 #include <Graphic3d_CView.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(PrsMgr_Presentation, Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(PrsMgr_Presentation, Graphic3d_Structure)
 
 namespace
 {
@@ -40,7 +35,7 @@ namespace
     State_Visible
   };
 
-  static BeforeHighlightState StructureState(const Handle(Prs3d_Presentation)& theStructure)
+  static BeforeHighlightState StructureState (const Graphic3d_Structure* theStructure)
   {
     return !theStructure->IsDisplayed() ?
       State_Empty : !theStructure->IsVisible() ?
@@ -53,16 +48,21 @@ namespace
 //purpose  :
 //=======================================================================
 PrsMgr_Presentation::PrsMgr_Presentation (const Handle(PrsMgr_PresentationManager3d)& thePrsMgr,
-                                          const Handle(PrsMgr_PresentableObject)&     thePrsObject)
-: myPresentationManager  (thePrsMgr),
-  myPresentableObject    (thePrsObject.operator->()),
-  myMustBeUpdated        (Standard_False),
-  myBeforeHighlightState (State_Empty)
+                                          const Handle(PrsMgr_PresentableObject)& thePrsObject,
+                                          const Standard_Integer theMode)
+: Graphic3d_Structure (thePrsMgr->StructureManager()),
+  myPresentationManager  (thePrsMgr),
+  myPresentableObject    (thePrsObject.get()),
+  myBeforeHighlightState (State_Empty),
+  myMode                 (theMode),
+  myMustBeUpdated        (Standard_False)
 {
-  myStructure = new PrsMgr_Prs (thePrsMgr->StructureManager(),
-                                this, thePrsObject->TypeOfPresentation3d());
-  myStructure->SetOwner (myPresentableObject);
-  myStructure->SetMutable (myPresentableObject->IsMutable());
+  if (thePrsObject->TypeOfPresentation3d() == PrsMgr_TOP_ProjectorDependant)
+  {
+    SetVisual (Graphic3d_TOS_COMPUTED);
+  }
+  SetOwner (myPresentableObject);
+  SetMutable (myPresentableObject->IsMutable());
 }
 
 //=======================================================================
@@ -81,15 +81,15 @@ void PrsMgr_Presentation::Display()
 //=======================================================================
 void PrsMgr_Presentation::display (const Standard_Boolean theIsHighlight)
 {
-  if (!myStructure->IsDisplayed())
+  if (!base_type::IsDisplayed())
   {
-    myStructure->SetIsForHighlight (theIsHighlight);
-    myStructure->Display();
+    base_type::SetIsForHighlight (theIsHighlight);
+    base_type::Display();
   }
-  else if (!myStructure->IsVisible())
+  else if (!base_type::IsVisible())
   {
-    SetVisible (Standard_True);
-    myStructure->SetIsForHighlight (theIsHighlight);
+    base_type::SetVisible (Standard_True);
+    base_type::SetIsForHighlight (theIsHighlight);
   }
 }
 
@@ -99,27 +99,18 @@ void PrsMgr_Presentation::display (const Standard_Boolean theIsHighlight)
 //=======================================================================
 void PrsMgr_Presentation::Erase()
 {
-  if (myStructure.IsNull())
+  if (IsDeleted())
   {
     return;
   }
 
   // Erase structure from structure manager
-  myStructure->Erase();
-  myStructure->Clear();
+  base_type::Erase();
+  base_type::Clear();
   // Disconnect other structures
-  myStructure->DisconnectAll (Graphic3d_TOC_DESCENDANT);
+  base_type::DisconnectAll (Graphic3d_TOC_DESCENDANT);
   // Clear groups and remove graphic structure
-  myStructure.Nullify();
-}
-
-//=======================================================================
-//function : SetVisible
-//purpose  :
-//=======================================================================
-void PrsMgr_Presentation::SetVisible (const Standard_Boolean theValue)
-{
-  myStructure->SetVisible (theValue);
+  base_type::Remove();
 }
 
 //=======================================================================
@@ -130,30 +121,30 @@ void PrsMgr_Presentation::Highlight (const Handle(Prs3d_Drawer)& theStyle)
 {
   if (!IsHighlighted())
   {
-    myBeforeHighlightState = StructureState (myStructure);
+    myBeforeHighlightState = StructureState (this);
   }
 
   display (Standard_True);
-  myStructure->Highlight (theStyle);
+  base_type::Highlight (theStyle);
 }
 
 //=======================================================================
 //function : Unhighlight
 //purpose  :
 //=======================================================================
-void PrsMgr_Presentation::Unhighlight() const
+void PrsMgr_Presentation::Unhighlight()
 {
-  myStructure->UnHighlight();
+  base_type::UnHighlight();
   switch (myBeforeHighlightState)
   {
- case State_Visible:
-    return;
- case State_Hidden:
-    myStructure->SetVisible (Standard_False);
-    break;
- case State_Empty:
-    myStructure->Erase();
-    break;
+    case State_Visible:
+      return;
+    case State_Hidden:
+      base_type::SetVisible (Standard_False);
+      break;
+    case State_Empty:
+      base_type::Erase();
+      break;
   }
 }
 
@@ -161,7 +152,7 @@ void PrsMgr_Presentation::Unhighlight() const
 //function : Clear
 //purpose  :
 //=======================================================================
-void PrsMgr_Presentation::Clear()
+void PrsMgr_Presentation::Clear (const Standard_Boolean theWithDestruction)
 {
   // This modification remove the contain of the structure:
   // Consequence:
@@ -169,69 +160,33 @@ void PrsMgr_Presentation::Clear()
   //    2. The speed for animation is constant
   //myPresentableObject = NULL;
   SetUpdateStatus (Standard_True);
-  if (myStructure.IsNull())
+  if (IsDeleted())
   {
     return;
   }
 
-  myStructure->Clear (Standard_True);
-  //  myStructure->Clear(Standard_False);
-  myStructure->RemoveAll();
+  base_type::Clear (theWithDestruction);
+  base_type::DisconnectAll (Graphic3d_TOC_DESCENDANT);
 }
 
 //=======================================================================
-//function : IsDisplayed
+//function : Compute
 //purpose  :
 //=======================================================================
-Standard_Boolean PrsMgr_Presentation::IsDisplayed() const
+void PrsMgr_Presentation::Compute()
 {
-  return  myStructure->IsDisplayed()
-      &&  myStructure->IsVisible();
-}
+  Standard_Integer aDispMode = 0;
+  for (PrsMgr_Presentations::Iterator aPrsIter (myPresentableObject->myPresentations); aPrsIter.More(); aPrsIter.Next())
+  {
+    const Handle(PrsMgr_Presentation)& aModedPresentation = aPrsIter.Value();
+    if (aModedPresentation == this)
+    {
+      aDispMode = aModedPresentation->Mode();
+      break;
+    }
+  }
 
-//=======================================================================
-//function : IsHighlighted
-//purpose  :
-//=======================================================================
-Standard_Boolean PrsMgr_Presentation::IsHighlighted() const
-{
-  return myStructure->IsHighlighted();
-}
-
-//=======================================================================
-//function : DisplayPriority
-//purpose  :
-//=======================================================================
-Standard_Integer PrsMgr_Presentation::DisplayPriority() const
-{
-  return myStructure->DisplayPriority();
-}
-
-//=======================================================================
-//function : SetDisplayPriority
-//purpose  :
-//=======================================================================
-void PrsMgr_Presentation::SetDisplayPriority (const Standard_Integer theNewPrior)
-{
-  myStructure->SetDisplayPriority (theNewPrior);
-}
-
-//=======================================================================
-//function : Connect
-//purpose  :
-//=======================================================================
-void PrsMgr_Presentation::Connect (const Handle(PrsMgr_Presentation)& theOther) const
-{
-  myStructure->Connect (theOther->Presentation());
-}
-
-//=======================================================================
-//function : SetTransformation
-//purpose  :
-//=======================================================================
-void PrsMgr_Presentation::SetTransformation (const Handle(Geom_Transformation)& theTrsf) const
-{
-  myStructure->SetTransformation (theTrsf);
+  myPresentableObject->Compute (myPresentationManager, this, aDispMode);
 }
 
 //=======================================================================
@@ -240,7 +195,7 @@ void PrsMgr_Presentation::SetTransformation (const Handle(Geom_Transformation)& 
 //=======================================================================
 Handle(Graphic3d_Structure) PrsMgr_Presentation::Compute (const Handle(Graphic3d_DataStructureManager)& theProjector)
 {
-  Handle(Prs3d_Presentation) aPrs = new Prs3d_Presentation (myPresentationManager->StructureManager());
+  Handle(Graphic3d_Structure) aPrs = new Graphic3d_Structure (myPresentationManager->StructureManager());
   myPresentableObject->Compute (Projector (theProjector), aPrs);
   return aPrs;
 }
@@ -249,33 +204,11 @@ Handle(Graphic3d_Structure) PrsMgr_Presentation::Compute (const Handle(Graphic3d
 //function : Compute
 //purpose  :
 //=======================================================================
-void PrsMgr_Presentation::Compute (const Handle(Graphic3d_Structure)& theStructure)
-{
-  Standard_Integer aDispMode = 0;
-  Standard_Integer aPresentationsNumber = myPresentableObject->myPresentations.Length();
-  for (Standard_Integer anIter = 1; anIter <= aPresentationsNumber; ++anIter)
-  {
-    const PrsMgr_ModedPresentation& aModedPresentation = myPresentableObject->myPresentations.Value (anIter);
-    if (aModedPresentation.Presentation().operator->() == this)
-    {
-      aDispMode = aModedPresentation.Mode();
-      break;
-    }
-  }
-
-  Handle(Prs3d_Presentation) aPrs3d = Handle(Prs3d_Presentation)::DownCast (theStructure);
-  myPresentableObject->Compute (myPresentationManager, aPrs3d, aDispMode);
-}
-
-//=======================================================================
-//function : Compute
-//purpose  :
-//=======================================================================
 void PrsMgr_Presentation::Compute (const Handle(Graphic3d_DataStructureManager)& theProjector,
-                                   const Handle(Graphic3d_Structure)&            theStructToFill)
+                                   Handle(Graphic3d_Structure)& theStructToFill)
 {
   theStructToFill->Clear();
-  Handle(Prs3d_Presentation) aPrs (Handle(Prs3d_Presentation)::DownCast (theStructToFill));
+  Handle(Prs3d_Presentation) aPrs = theStructToFill;
   myPresentableObject->Compute (Projector (theProjector), aPrs);
 }
 
@@ -296,11 +229,11 @@ Handle(Graphic3d_Structure) PrsMgr_Presentation::Compute (const Handle(Graphic3d
 //purpose  :
 //=======================================================================
 void PrsMgr_Presentation::Compute (const Handle(Graphic3d_DataStructureManager)& theProjector,
-                                   const Handle(Geom_Transformation)&            theTrsf,
-                                   const Handle(Graphic3d_Structure)&            theStructToFill)
+                                   const Handle(Geom_Transformation)& theTrsf,
+                                   Handle(Graphic3d_Structure)& theStructToFill)
 {
   // recompute HLR after transformation in all the case
-  Handle(Prs3d_Presentation) aPrs = Handle(Prs3d_Presentation)::DownCast (theStructToFill);
+  Handle(Graphic3d_Structure) aPrs = theStructToFill;
   theStructToFill->Clear();
   myPresentableObject->Compute (Projector (theProjector), theTrsf, aPrs);
 }
@@ -330,22 +263,4 @@ Handle(Prs3d_Projector) PrsMgr_Presentation::Projector (const Handle(Graphic3d_D
 PrsMgr_Presentation::~PrsMgr_Presentation()
 {
   Erase();
-}
-
-//=======================================================================
-//function : SetZLayer
-//purpose  :
-//=======================================================================
-void PrsMgr_Presentation::SetZLayer (Graphic3d_ZLayerId theLayerId)
-{
-  myStructure->SetZLayer (theLayerId);
-}
-
-//=======================================================================
-//function : GetZLayer
-//purpose  :
-//=======================================================================
-Graphic3d_ZLayerId PrsMgr_Presentation::GetZLayer() const
-{
-  return myStructure->GetZLayer();
 }

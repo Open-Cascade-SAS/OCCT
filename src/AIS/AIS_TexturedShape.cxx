@@ -28,7 +28,6 @@
 #include <Precision.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_Presentation.hxx>
-#include <PrsMgr_ModedPresentation.hxx>
 #include <Prs3d_Root.hxx>
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_ShadingAspect.hxx>
@@ -199,14 +198,12 @@ void AIS_TexturedShape::SetColor (const Quantity_Color& theColor)
 {
   AIS_Shape::SetColor (theColor);
 
-  for (Standard_Integer aPrsIt = 1; aPrsIt <= Presentations().Length(); ++aPrsIt)
+  for (PrsMgr_Presentations::Iterator aPrsIter (Presentations()); aPrsIter.More(); aPrsIter.Next())
   {
-    const PrsMgr_ModedPresentation& aPrsModed = Presentations().Value (aPrsIt);
-
-    if (aPrsModed.Mode() != 3)
-      continue;
-
-    updateAttributes (aPrsModed.Presentation()->Presentation());
+    if (aPrsIter.Value()->Mode() == 3)
+    {
+      updateAttributes (aPrsIter.Value());
+    }
   }
 }
 
@@ -228,15 +225,12 @@ void AIS_TexturedShape::UnsetColor()
 void AIS_TexturedShape::SetMaterial (const Graphic3d_MaterialAspect& theMat)
 {
   AIS_Shape::SetMaterial (theMat);
-
-  for (Standard_Integer aPrsIt = 1; aPrsIt <= Presentations().Length(); ++aPrsIt)
+  for (PrsMgr_Presentations::Iterator aPrsIter (Presentations()); aPrsIter.More(); aPrsIter.Next())
   {
-    const PrsMgr_ModedPresentation& aPrsModed = Presentations().Value (aPrsIt);
-    
-    if (aPrsModed.Mode() != 3)
-      continue;
-    
-    updateAttributes (aPrsModed.Presentation()->Presentation());
+    if (aPrsIter.Value()->Mode() == 3)
+    {
+      updateAttributes (aPrsIter.Value());
+    }
   }
 }
 
@@ -247,15 +241,12 @@ void AIS_TexturedShape::SetMaterial (const Graphic3d_MaterialAspect& theMat)
 void AIS_TexturedShape::UnsetMaterial()
 {
   AIS_Shape::UnsetMaterial();
-
-  for (Standard_Integer aPrsIt = 1; aPrsIt <= Presentations().Length(); ++aPrsIt)
+  for (PrsMgr_Presentations::Iterator aPrsIter (Presentations()); aPrsIter.More(); aPrsIter.Next())
   {
-    const PrsMgr_ModedPresentation& aPrsModed = Presentations().Value (aPrsIt);
-
-    if (aPrsModed.Mode() != 3)
-      continue;
-
-    updateAttributes (aPrsModed.Presentation()->Presentation());
+    if (aPrsIter.Value()->Mode() == 3)
+    {
+      updateAttributes (aPrsIter.Value());
+    }
   }
 }
 

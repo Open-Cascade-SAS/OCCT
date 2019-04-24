@@ -89,13 +89,15 @@ public:
   Standard_EXPORT virtual void ReCompute (const Handle(Graphic3d_Structure)& theStructure, const Handle(Graphic3d_DataStructureManager)& theProjector);
 
   //! Clears the structure.
-  Standard_EXPORT virtual void Clear (const Handle(Graphic3d_Structure)& theStructure, const Standard_Boolean theWithDestruction);
+  Standard_EXPORT virtual void Clear (Graphic3d_Structure* theStructure, const Standard_Boolean theWithDestruction);
 
   //! Connects the structures.
-  Standard_EXPORT virtual void Connect (const Handle(Graphic3d_Structure)& theMother, const Handle(Graphic3d_Structure)& theDaughter);
+  Standard_EXPORT virtual void Connect (const Graphic3d_Structure* theMother,
+                                        const Graphic3d_Structure* theDaughter);
 
   //! Disconnects the structures.
-  Standard_EXPORT virtual void Disconnect (const Handle(Graphic3d_Structure)& theMother, const Handle(Graphic3d_Structure)& theDaughter);
+  Standard_EXPORT virtual void Disconnect (const Graphic3d_Structure* theMother,
+                                           const Graphic3d_Structure* theDaughter);
 
   //! Display the structure.
   Standard_EXPORT virtual void Display (const Handle(Graphic3d_Structure)& theStructure);
@@ -147,7 +149,7 @@ public:
   Standard_EXPORT void RecomputeStructures();
 
   //! Recomputes all structures from theStructures.
-  Standard_EXPORT void RecomputeStructures (const Graphic3d_MapOfStructure& theStructures);
+  Standard_EXPORT void RecomputeStructures (const NCollection_Map<Graphic3d_Structure*>& theStructures);
 
   Standard_EXPORT Handle(Graphic3d_ViewAffinity) RegisterObject (const Handle(Standard_Transient)& theObject);
 

@@ -22,9 +22,9 @@
 #include <Standard_Handle.hxx>
 
 #include <Prs3d_Drawer.hxx>
-class Prs3d_Presentation;
-class gp_Pnt;
+#include <Prs3d_Presentation.hxx>
 
+class gp_Pnt;
 
 //! A framework for displaying the planes of an XYZ trihedron.
 class DsgPrs_XYZPlanePresentation 

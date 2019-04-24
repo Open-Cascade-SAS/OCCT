@@ -17,15 +17,10 @@
 #ifndef _StdPrs_WFPoleSurface_HeaderFile
 #define _StdPrs_WFPoleSurface_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
 #include <Prs3d_Root.hxx>
 #include <Prs3d_Drawer.hxx>
-class Prs3d_Presentation;
-class Adaptor3d_Surface;
 
+class Adaptor3d_Surface;
 
 //! Computes the presentation of surfaces by drawing a
 //! double network of lines linking the poles of the surface

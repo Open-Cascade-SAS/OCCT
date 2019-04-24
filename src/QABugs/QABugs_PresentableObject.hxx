@@ -16,54 +16,23 @@
 #ifndef _QABugs_PresentableObject_HeaderFile
 #define _QABugs_PresentableObject_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
 #include <AIS_InteractiveObject.hxx>
-#include <PrsMgr_TypeOfPresentation3d.hxx>
-#include <SelectMgr_Selection.hxx>
-#include <Standard_Integer.hxx>
-#include <PrsMgr_PresentationManager3d.hxx>
-class Prs3d_Presentation;
 
-
-class QABugs_PresentableObject;
 DEFINE_STANDARD_HANDLE(QABugs_PresentableObject, AIS_InteractiveObject)
-
 
 class QABugs_PresentableObject : public AIS_InteractiveObject
 {
-
+  DEFINE_STANDARD_RTTIEXT(QABugs_PresentableObject, AIS_InteractiveObject)
 public:
 
-  
   Standard_EXPORT QABugs_PresentableObject(const PrsMgr_TypeOfPresentation3d aTypeOfPresentation3d = PrsMgr_TOP_AllView);
-
-
-
-
-  DEFINE_STANDARD_RTTIEXT(QABugs_PresentableObject,AIS_InteractiveObject)
 
 protected:
 
-  
   Standard_EXPORT virtual void ComputeSelection (const Handle(SelectMgr_Selection)& aSelection, const Standard_Integer aMode) Standard_OVERRIDE;
   
   Standard_EXPORT virtual void Compute (const Handle(PrsMgr_PresentationManager3d)& aPresentationManager, const Handle(Prs3d_Presentation)& aPresentation, const Standard_Integer aMode = 0) Standard_OVERRIDE;
 
-
-
-private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _QABugs_PresentableObject_HeaderFile

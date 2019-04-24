@@ -27,7 +27,6 @@
 #include <DsgPrs_ArrowSide.hxx>
 #include <gp_Pln.hxx>
 #include <gp_Pnt.hxx>
-#include <PrsMgr_TypeOfPresentation3d.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <TopoDS_Shape.hxx>
 

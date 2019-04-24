@@ -22,10 +22,10 @@
 #include <Standard_Handle.hxx>
 
 #include <Prs3d_Drawer.hxx>
-class Prs3d_Presentation;
+#include <Prs3d_Presentation.hxx>
+
 class gp_Pnt;
 class Geom_Plane;
-
 
 //! A framework to define display of equality in radii.
 class DsgPrs_EqualRadiusPresentation 

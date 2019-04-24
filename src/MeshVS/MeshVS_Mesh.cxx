@@ -44,7 +44,6 @@
 #include <Prs3d_Presentation.hxx>
 #include <Prs3d_Root.hxx>
 #include <Prs3d_ShadingAspect.hxx>
-#include <PrsMgr_ModedPresentation.hxx>
 #include <PrsMgr_PresentationManager3d.hxx>
 #include <Select3D_SensitiveBox.hxx>
 #include <Select3D_SensitiveGroup.hxx>

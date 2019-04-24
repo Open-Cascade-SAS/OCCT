@@ -17,17 +17,13 @@
 #ifndef _DsgPrs_ParalPresentation_HeaderFile
 #define _DsgPrs_ParalPresentation_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
 #include <Prs3d_Drawer.hxx>
 #include <DsgPrs_ArrowSide.hxx>
-class Prs3d_Presentation;
+#include <Prs3d_Presentation.hxx>
+
 class TCollection_ExtendedString;
 class gp_Pnt;
 class gp_Dir;
-
 
 //! A framework to define display of relations of parallelism between shapes.
 class DsgPrs_ParalPresentation 

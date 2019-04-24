@@ -17,15 +17,10 @@
 #ifndef _StdPrs_ShadedSurface_HeaderFile
 #define _StdPrs_ShadedSurface_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
 #include <Prs3d_Root.hxx>
 #include <Prs3d_Drawer.hxx>
-class Prs3d_Presentation;
-class Adaptor3d_Surface;
 
+class Adaptor3d_Surface;
 
 //! Computes the shading presentation of surfaces.
 //! Draws a surface by drawing the isoparametric curves with respect to

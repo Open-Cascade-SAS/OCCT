@@ -16,21 +16,16 @@
 #ifndef _MeshVS_PrsBuilder_HeaderFile
 #define _MeshVS_PrsBuilder_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
-#include <Standard_Boolean.hxx>
 #include <MeshVS_MeshPtr.hxx>
-#include <Standard_Integer.hxx>
 #include <PrsMgr_PresentationManager3d.hxx>
-#include <Standard_Transient.hxx>
+#include <Prs3d_Presentation.hxx>
 #include <MeshVS_DisplayModeFlags.hxx>
 #include <MeshVS_BuilderPriority.hxx>
 #include <TColStd_PackedMapOfInteger.hxx>
+
 class MeshVS_DataSource;
 class MeshVS_Drawer;
 class MeshVS_Mesh;
-class Prs3d_Presentation;
 class SelectBasics_SensitiveEntity;
 class SelectBasics_EntityOwner;
 

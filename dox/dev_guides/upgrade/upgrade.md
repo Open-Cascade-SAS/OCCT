@@ -1738,6 +1738,12 @@ or updating presentation without recomputation (see *AIS_InteractiveObject::Sync
 * *Aspect_IS_HIDDENLINE* does not implicitly enables drawing mesh edges anymore.
   Specify Graphic3d_AspectFillArea3d::SetDrawEdges(true) with Graphic3d_AspectFillArea3d::SetInteriorStyle(Aspect_IS_HIDDENLINE) to get previous behavior of Aspect_IS_HIDDENLINE style.
 
+@subsection upgrade_740_modedprs PrsMgr_ModedPresentation removal
+
+Proxy classes *Prs3d_Presentation*, *PrsMgr_ModedPresentation* and *PrsMgr_Prs* have been removed.
+Code iterating through the list of low-level structures AIS_InteractiveObject::Presentations() should be updated to access PrsMgr_Presentation directly.
+Forward declarations of *Prs3d_Presentation* should be corrected, since it is now a typedef to *Graphic3d_Structure*.
+
 @subsection upgrade_740_geproj Custom defines within env.bat
 
 *env.bat* produced by Visual Studio project generator *genproj.bat* has been modified so that *%CSF_DEFINES%* variable is reset to initial state.

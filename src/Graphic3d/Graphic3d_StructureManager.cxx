@@ -162,21 +162,21 @@ void Graphic3d_StructureManager::RecomputeStructures()
   myDeviceLostFlag = Standard_False;
 
   // Go through all unique structures including child (connected) ones and ensure that they are computed.
-  Graphic3d_MapOfStructure aStructNetwork;
+  NCollection_Map<Graphic3d_Structure*> aStructNetwork;
   for (Graphic3d_MapIteratorOfMapOfStructure anIter(myDisplayedStructure); anIter.More(); anIter.Next())
   {
     Handle(Graphic3d_Structure) aStructure = anIter.Key();
-    anIter.Key()->Network (anIter.Key(), Graphic3d_TOC_DESCENDANT, aStructNetwork);
+    anIter.Key()->Network (anIter.Key().get(), Graphic3d_TOC_DESCENDANT, aStructNetwork);
   }
 
   RecomputeStructures (aStructNetwork);
 }
 
-void Graphic3d_StructureManager::RecomputeStructures (const Graphic3d_MapOfStructure& theStructures)
+void Graphic3d_StructureManager::RecomputeStructures (const NCollection_Map<Graphic3d_Structure*>& theStructures)
 {
-  for (Graphic3d_MapIteratorOfMapOfStructure anIter (theStructures); anIter.More(); anIter.Next())
+  for (NCollection_Map<Graphic3d_Structure*>::Iterator anIter (theStructures); anIter.More(); anIter.Next())
   {
-    Handle(Graphic3d_Structure) aStruct = anIter.Key();
+    Graphic3d_Structure* aStruct = anIter.Key();
     aStruct->Clear();
     aStruct->Compute();
   }
@@ -295,7 +295,7 @@ void Graphic3d_StructureManager::ReCompute (const Handle(Graphic3d_Structure)& t
 // function : Clear
 // purpose  :
 // ========================================================================
-void Graphic3d_StructureManager::Clear (const Handle(Graphic3d_Structure)& theStructure,
+void Graphic3d_StructureManager::Clear (Graphic3d_Structure* theStructure,
                                         const Standard_Boolean theWithDestruction)
 {
   for (Graphic3d_IndexedMapOfView::Iterator aViewIt (myDefinedViews); aViewIt.More(); aViewIt.Next())
@@ -308,8 +308,8 @@ void Graphic3d_StructureManager::Clear (const Handle(Graphic3d_Structure)& theSt
 // function : Connect
 // purpose  :
 // ========================================================================
-void Graphic3d_StructureManager::Connect (const Handle(Graphic3d_Structure)& theMother,
-                                          const Handle(Graphic3d_Structure)& theDaughter)
+void Graphic3d_StructureManager::Connect (const Graphic3d_Structure* theMother,
+                                          const Graphic3d_Structure* theDaughter)
 {
   for (Graphic3d_IndexedMapOfView::Iterator aViewIt (myDefinedViews); aViewIt.More(); aViewIt.Next())
   {
@@ -321,8 +321,8 @@ void Graphic3d_StructureManager::Connect (const Handle(Graphic3d_Structure)& the
 // function : Disconnect
 // purpose  :
 // ========================================================================
-void Graphic3d_StructureManager::Disconnect (const Handle(Graphic3d_Structure)& theMother,
-                                             const Handle(Graphic3d_Structure)& theDaughter)
+void Graphic3d_StructureManager::Disconnect (const Graphic3d_Structure* theMother,
+                                             const Graphic3d_Structure* theDaughter)
 {
   for (Graphic3d_IndexedMapOfView::Iterator aViewIt (myDefinedViews); aViewIt.More(); aViewIt.Next())
   {

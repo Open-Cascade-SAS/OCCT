@@ -18,37 +18,13 @@
 #include <AIS_Dimension.hxx>
 #include <AIS_KindOfDimension.hxx>
 #include <Geom_Plane.hxx>
-#include <Geom_Transformation.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Dir.hxx>
 #include <Prs3d_DimensionAspect.hxx>
 #include <Prs3d_Drawer.hxx>
-#include <Prs3d_Presentation.hxx>
 #include <Prs3d_Projector.hxx>
-#include <PrsMgr_PresentationManager3d.hxx>
-#include <SelectMgr_Selection.hxx>
-#include <Standard.hxx>
-#include <Standard_Macro.hxx>
-#include <Standard_Type.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Vertex.hxx>
-#include <TCollection_ExtendedString.hxx>
-
-class TopoDS_Face;
-class TCollection_ExtendedString;
-class gp_Pnt;
-class TopoDS_Edge;
-class TopoDS_Shape;
-class Geom_Plane;
-class Prs3d_Presentation;
-class Prs3d_Projector;
-class Geom_Transformation;
-class SelectMgr_Selection;
-class Bnd_Box;
-class gp_Dir;
-class TopoDS_Vertex;
-class Standard_Transient;
-class AIS_LengthDimension;
 
 DEFINE_STANDARD_HANDLE (AIS_LengthDimension, AIS_Dimension)
 

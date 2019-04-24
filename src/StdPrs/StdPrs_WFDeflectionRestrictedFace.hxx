@@ -17,20 +17,12 @@
 #ifndef _StdPrs_WFDeflectionRestrictedFace_HeaderFile
 #define _StdPrs_WFDeflectionRestrictedFace_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
 #include <Prs3d_Root.hxx>
 #include <Prs3d_Drawer.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Integer.hxx>
 #include <Prs3d_NListOfSequenceOfPnt.hxx>
 
-class Prs3d_Presentation;
 class BRepAdaptor_HSurface;
 class Bnd_Box;
-
 
 //! A framework to provide display of U and V
 //! isoparameters of faces, while allowing you to impose

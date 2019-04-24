@@ -16,20 +16,11 @@
 #ifndef _AIS_Triangulation_HeaderFile
 #define _AIS_Triangulation_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
 #include <TColStd_HArray1OfInteger.hxx>
-#include <Standard_Integer.hxx>
 #include <AIS_InteractiveObject.hxx>
-#include <PrsMgr_PresentationManager3d.hxx>
-#include <SelectMgr_Selection.hxx>
-#include <Standard_Real.hxx>
+
 class Poly_Triangulation;
-class Prs3d_Presentation;
 
-
-class AIS_Triangulation;
 DEFINE_STANDARD_HANDLE(AIS_Triangulation, AIS_InteractiveObject)
 
 //! Interactive object that draws data from  Poly_Triangulation, optionally with colors associated
@@ -38,10 +29,9 @@ DEFINE_STANDARD_HANDLE(AIS_Triangulation, AIS_InteractiveObject)
 //! Interactive selection of triangles and vertices is not yet implemented.
 class AIS_Triangulation : public AIS_InteractiveObject
 {
-
+  DEFINE_STANDARD_RTTIEXT(AIS_Triangulation, AIS_InteractiveObject)
 public:
 
-  
   //! Constructs the Triangulation display object
   Standard_EXPORT AIS_Triangulation(const Handle(Poly_Triangulation)& aTriangulation);
   
@@ -73,8 +63,6 @@ public:
   //! Removes the setting for transparency in the reconstructed compound shape.
   Standard_EXPORT virtual void UnsetTransparency() Standard_OVERRIDE;
 
-  DEFINE_STANDARD_RTTIEXT(AIS_Triangulation,AIS_InteractiveObject)
-
 protected:
 
   Standard_EXPORT void updatePresentation();
@@ -101,13 +89,6 @@ private:
   Standard_Integer myNbNodes;
   Standard_Integer myNbTriangles;
 
-
 };
-
-
-
-
-
-
 
 #endif // _AIS_Triangulation_HeaderFile

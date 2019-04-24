@@ -48,7 +48,6 @@
 #include <Prs3d_ShadingAspect.hxx>
 #include <StdPrs_BndBox.hxx>
 #include <StdPrs_ToolTriangulatedShape.hxx>
-#include <PrsMgr_ModedPresentation.hxx>
 #include <Quantity_Color.hxx>
 #include <Select3D_SensitiveBox.hxx>
 #include <Select3D_SensitiveEntity.hxx>

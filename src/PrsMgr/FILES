@@ -1,7 +1,5 @@
 PrsMgr_ListOfPresentableObjects.hxx
 PrsMgr_ListOfPresentations.hxx
-PrsMgr_ModedPresentation.cxx
-PrsMgr_ModedPresentation.hxx
 PrsMgr_PresentableObject.cxx
 PrsMgr_PresentableObject.hxx
 PrsMgr_Presentation.cxx
@@ -11,6 +9,4 @@ PrsMgr_PresentationManager.cxx
 PrsMgr_PresentationManager.hxx
 PrsMgr_PresentationManager3d.hxx
 PrsMgr_Presentations.hxx
-PrsMgr_Prs.cxx
-PrsMgr_Prs.hxx
 PrsMgr_TypeOfPresentation3d.hxx

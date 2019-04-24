@@ -21,15 +21,14 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Real.hxx>
 #include <Standard_CString.hxx>
-class Prs3d_Presentation;
+#include <Prs3d_Presentation.hxx>
+
 class Prs3d_LineAspect;
 class gp_Dir;
 class gp_Pnt;
 class Prs3d_ArrowAspect;
 class Prs3d_TextAspect;
-
 
 //! A framework for displaying the axes of an XYZ trihedron.
 class DsgPrs_XYZAxisPresentation 

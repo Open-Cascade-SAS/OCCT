@@ -17,27 +17,9 @@
 #ifndef _AIS_ParallelRelation_HeaderFile
 #define _AIS_ParallelRelation_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
-#include <gp_Pnt.hxx>
-#include <gp_Dir.hxx>
 #include <AIS_Relation.hxx>
 #include <DsgPrs_ArrowSide.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
-#include <PrsMgr_PresentationManager3d.hxx>
-#include <Standard_Integer.hxx>
-#include <SelectMgr_Selection.hxx>
-class TopoDS_Shape;
-class Geom_Plane;
-class gp_Pnt;
-class Prs3d_Presentation;
-class Prs3d_Projector;
-class Geom_Transformation;
 
-
-class AIS_ParallelRelation;
 DEFINE_STANDARD_HANDLE(AIS_ParallelRelation, AIS_Relation)
 
 //! A framework to display constraints of parallelism
@@ -45,7 +27,7 @@ DEFINE_STANDARD_HANDLE(AIS_ParallelRelation, AIS_Relation)
 //! entities can be faces or edges.
 class AIS_ParallelRelation : public AIS_Relation
 {
-
+  DEFINE_STANDARD_RTTIEXT(AIS_ParallelRelation, AIS_Relation)
 public:
 
   
@@ -73,19 +55,8 @@ public:
   //! to the object to display before computation  !!!
   Standard_EXPORT virtual void Compute (const Handle(Prs3d_Projector)& aProjector, const Handle(Geom_Transformation)& aTrsf, const Handle(Prs3d_Presentation)& aPresentation) Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(AIS_ParallelRelation,AIS_Relation)
-
-protected:
-
-
-
-
 private:
 
-  
   Standard_EXPORT void Compute (const Handle(PrsMgr_PresentationManager3d)& aPresentationManager, const Handle(Prs3d_Presentation)& aPresentation, const Standard_Integer aMode = 0) Standard_OVERRIDE;
   
   Standard_EXPORT void Compute (const Handle(Prs3d_Projector)& aProjector, const Handle(Prs3d_Presentation)& aPresentation) Standard_OVERRIDE;
@@ -100,14 +71,8 @@ private:
   gp_Pnt mySAttach;
   gp_Dir myDirAttach;
 
-
 };
 
-
 #include <AIS_ParallelRelation.lxx>
-
-
-
-
 
 #endif // _AIS_ParallelRelation_HeaderFile

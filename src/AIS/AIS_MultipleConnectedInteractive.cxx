@@ -20,7 +20,6 @@
 #include <AIS_InteractiveContext.hxx>
 #include <AIS_InteractiveObject.hxx>
 #include <Prs3d_Projector.hxx>
-#include <PrsMgr_ModedPresentation.hxx>
 #include <Select3D_SensitiveEntity.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <Standard_NotImplemented.hxx>

@@ -25,7 +25,8 @@
 #include <Standard_Real.hxx>
 #include <DsgPrs_ArrowSide.hxx>
 #include <Standard_Boolean.hxx>
-class Prs3d_Presentation;
+#include <Prs3d_Presentation.hxx>
+
 class TCollection_ExtendedString;
 class gp_Circ;
 class gp_Pnt;

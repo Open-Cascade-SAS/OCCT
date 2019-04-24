@@ -76,7 +76,6 @@ Graphic3d_PresentationAttributes.cxx
 Graphic3d_HorizontalTextAlignment.hxx
 Graphic3d_IndexBuffer.hxx
 Graphic3d_MutableIndexBuffer.hxx
-Graphic3d_IndexedMapOfAddress.hxx
 Graphic3d_LevelOfTextureAnisotropy.hxx
 Graphic3d_LightSet.cxx
 Graphic3d_LightSet.hxx

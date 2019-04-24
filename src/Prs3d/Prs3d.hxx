@@ -21,13 +21,11 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_NListOfSequenceOfPnt.hxx>
+#include <Prs3d_Presentation.hxx>
 
 class TopoDS_Shape;
-class Prs3d_Presentation;
 
 //! The Prs3d package provides the following services
 //! -   a presentation object (the context for all

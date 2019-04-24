@@ -17,19 +17,11 @@
 #ifndef _StdPrs_Curve_HeaderFile
 #define _StdPrs_Curve_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
 #include <Prs3d_Root.hxx>
 #include <Prs3d_Drawer.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
 #include <TColgp_SequenceOfPnt.hxx>
-#include <Standard_Integer.hxx>
-class Prs3d_Presentation;
-class Adaptor3d_Curve;
 
+class Adaptor3d_Curve;
 
 //! A framework to define display of lines, arcs of circles
 //! and conic sections.

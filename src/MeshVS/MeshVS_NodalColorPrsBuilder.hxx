@@ -16,32 +16,24 @@
 #ifndef _MeshVS_NodalColorPrsBuilder_HeaderFile
 #define _MeshVS_NodalColorPrsBuilder_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
 #include <MeshVS_DataMapOfIntegerColor.hxx>
-#include <Standard_Boolean.hxx>
 #include <Aspect_SequenceOfColor.hxx>
 #include <TColStd_DataMapOfIntegerReal.hxx>
 #include <Quantity_Color.hxx>
 #include <MeshVS_PrsBuilder.hxx>
 #include <MeshVS_DisplayModeFlags.hxx>
-#include <Standard_Integer.hxx>
 #include <MeshVS_BuilderPriority.hxx>
 #include <TColStd_PackedMapOfInteger.hxx>
-#include <Standard_Real.hxx>
 #include <MeshVS_HArray1OfSequenceOfInteger.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>
+
 class MeshVS_Mesh;
 class MeshVS_DataSource;
-class Prs3d_Presentation;
 class Quantity_Color;
 class Graphic3d_Texture2D;
 class Graphic3d_ArrayOfPrimitives;
 
-
-class MeshVS_NodalColorPrsBuilder;
 DEFINE_STANDARD_HANDLE(MeshVS_NodalColorPrsBuilder, MeshVS_PrsBuilder)
 
 //! This class provides methods to create presentation of nodes with assigned color.

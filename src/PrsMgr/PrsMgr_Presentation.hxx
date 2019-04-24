@@ -17,39 +17,32 @@
 #ifndef _PrsMgr_Presentation_HeaderFile
 #define _PrsMgr_Presentation_HeaderFile
 
-#include <Graphic3d_ZLayerId.hxx>
-#include <Standard.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Integer.hxx>
-#include <Standard_Transient.hxx>
-#include <Standard_Type.hxx>
 #include <Aspect_TypeOfHighlightMethod.hxx>
+#include <Prs3d_Presentation.hxx>
 
 class PrsMgr_PresentationManager;
-class PrsMgr_Prs;
 class PrsMgr_PresentableObject;
 class Quantity_Color;
 class Geom_Transformation;
-class Prs3d_Presentation;
 class Prs3d_Drawer;
 class Graphic3d_Structure;
 class Graphic3d_DataStructureManager;
 class Prs3d_Projector;
 
-DEFINE_STANDARD_HANDLE(PrsMgr_Presentation, Standard_Transient)
+DEFINE_STANDARD_HANDLE(PrsMgr_Presentation, Graphic3d_Structure)
 
-class PrsMgr_Presentation : public Standard_Transient
+class PrsMgr_Presentation : public Graphic3d_Structure
 {
-  DEFINE_STANDARD_RTTIEXT(PrsMgr_Presentation, Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(PrsMgr_Presentation, Graphic3d_Structure)
   friend class PrsMgr_PresentationManager;
   friend class PrsMgr_PresentableObject;
-  friend class PrsMgr_Prs;
 public:
 
   //! Destructor
   Standard_EXPORT ~PrsMgr_Presentation();
 
-  const Handle(Prs3d_Presentation)& Presentation() const { return myStructure; }
+  Standard_DEPRECATED("Dummy to simplify porting - returns self")
+  Prs3d_Presentation* Presentation() { return this; }
 
   //! returns the PresentationManager in which the presentation has been created.
   const Handle(PrsMgr_PresentationManager)& PresentationManager() const { return myPresentationManager; }
@@ -58,64 +51,66 @@ public:
 
   Standard_Boolean MustBeUpdated() const { return myMustBeUpdated; }
 
-private:
+  //! Return display mode index.
+  Standard_Integer Mode() const { return myMode; }
 
-  Standard_EXPORT PrsMgr_Presentation(const Handle(PrsMgr_PresentationManager)& thePresentationManager, const Handle(PrsMgr_PresentableObject)& thePresentableObject);
-  
-  Standard_EXPORT void Display();
-  
-  //! Displays myStructure.
-  Standard_EXPORT void display (const Standard_Boolean theIsHighlight);
-  
-  Standard_EXPORT void Erase();
-  
-  Standard_EXPORT void SetVisible (const Standard_Boolean theValue);
-  
+  //! Display structure.
+  Standard_EXPORT virtual void Display() Standard_OVERRIDE;
+
+  //! Remove structure.
+  Standard_EXPORT virtual void Erase() Standard_OVERRIDE;
+
+  //! Highlight structure.
   Standard_EXPORT void Highlight (const Handle(Prs3d_Drawer)& theStyle);
-  
-  Standard_EXPORT void Unhighlight() const;
-  
-  Standard_EXPORT Standard_Boolean IsHighlighted() const;
-  
-  Standard_EXPORT Standard_Boolean IsDisplayed() const;
-  
-  Standard_EXPORT Standard_Integer DisplayPriority() const;
-  
-  Standard_EXPORT void SetDisplayPriority (const Standard_Integer aNewPrior);
-  
-  //! Set Z layer ID for the presentation
-  Standard_EXPORT void SetZLayer (const Graphic3d_ZLayerId theLayerId);
-  
-  //! Get Z layer ID for the presentation
-  Standard_EXPORT Graphic3d_ZLayerId GetZLayer() const;
-  
+
+  //! Unhighlight structure.
+  Standard_EXPORT void Unhighlight();
+
+  //! Return TRUE if structure has been displayed and in no hidden state.
+  virtual Standard_Boolean IsDisplayed() const Standard_OVERRIDE
+  {
+    return base_type::IsDisplayed()
+        && base_type::IsVisible();
+  }
+
   //! removes the whole content of the presentation.
   //! Does not remove the other connected presentations.
-  Standard_EXPORT void Clear();
-  
-  Standard_EXPORT void Connect (const Handle(PrsMgr_Presentation)& theOther) const;
-  
-  Standard_EXPORT void SetTransformation (const Handle(Geom_Transformation)& theTrsf) const;
+  Standard_EXPORT virtual void Clear (const Standard_Boolean theWithDestruction = Standard_True) Standard_OVERRIDE;
 
-  Standard_EXPORT void Compute (const Handle(Graphic3d_Structure)& theStructure);
-  
-  Standard_EXPORT Handle(Graphic3d_Structure) Compute (const Handle(Graphic3d_DataStructureManager)& theProjector);
-  
-  Standard_EXPORT Handle(Graphic3d_Structure) Compute (const Handle(Graphic3d_DataStructureManager)& theProjector, const Handle(Geom_Transformation)& theTrsf);
-  
-  Standard_EXPORT void Compute (const Handle(Graphic3d_DataStructureManager)& theProjector, const Handle(Graphic3d_Structure)& theGivenStruct);
-  
-  Standard_EXPORT void Compute (const Handle(Graphic3d_DataStructureManager)& theProjector, const Handle(Geom_Transformation)& theTrsf, const Handle(Graphic3d_Structure)& theGivenStruct);
-  
+  //! Compute structure using presentation manager.
+  Standard_EXPORT virtual void Compute() Standard_OVERRIDE;
+
+protected:
+
+  //! Main constructor.
+  Standard_EXPORT PrsMgr_Presentation (const Handle(PrsMgr_PresentationManager)& thePresentationManager,
+                                       const Handle(PrsMgr_PresentableObject)& thePresentableObject,
+                                       const Standard_Integer theMode);
+
+  //! Displays myStructure.
+  Standard_EXPORT void display (const Standard_Boolean theIsHighlight);
+
+  Standard_EXPORT virtual Handle(Graphic3d_Structure) Compute (const Handle(Graphic3d_DataStructureManager)& theProjector) Standard_OVERRIDE;
+
+  Standard_EXPORT virtual Handle(Graphic3d_Structure) Compute (const Handle(Graphic3d_DataStructureManager)& theProjector,
+                                                               const Handle(Geom_Transformation)& theTrsf) Standard_OVERRIDE;
+
+  Standard_EXPORT virtual void Compute (const Handle(Graphic3d_DataStructureManager)& theProjector,
+                                        Handle(Graphic3d_Structure)& theGivenStruct) Standard_OVERRIDE;
+
+  Standard_EXPORT virtual void Compute (const Handle(Graphic3d_DataStructureManager)& theProjector,
+                                        const Handle(Geom_Transformation)& theTrsf,
+                                        Handle(Graphic3d_Structure)& theGivenStruct) Standard_OVERRIDE;
+
   Standard_EXPORT static Handle(Prs3d_Projector) Projector (const Handle(Graphic3d_DataStructureManager)& theProjector);
 
 protected:
 
   Handle(PrsMgr_PresentationManager) myPresentationManager;
-  Handle(Prs3d_Presentation) myStructure;
   PrsMgr_PresentableObject* myPresentableObject;
-  Standard_Boolean myMustBeUpdated;
   Standard_Integer myBeforeHighlightState;
+  Standard_Integer myMode;
+  Standard_Boolean myMustBeUpdated;
 
 };
 

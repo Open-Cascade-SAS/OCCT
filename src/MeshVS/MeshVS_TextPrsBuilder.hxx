@@ -16,25 +16,16 @@
 #ifndef _MeshVS_TextPrsBuilder_HeaderFile
 #define _MeshVS_TextPrsBuilder_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
 #include <MeshVS_DataMapOfIntegerAsciiString.hxx>
 #include <MeshVS_PrsBuilder.hxx>
-#include <Standard_Real.hxx>
 #include <MeshVS_DisplayModeFlags.hxx>
-#include <Standard_Integer.hxx>
 #include <MeshVS_BuilderPriority.hxx>
-#include <TColStd_PackedMapOfInteger.hxx>
-#include <Standard_Boolean.hxx>
+
 class MeshVS_Mesh;
 class Quantity_Color;
 class MeshVS_DataSource;
-class Prs3d_Presentation;
 class TCollection_AsciiString;
 
-
-class MeshVS_TextPrsBuilder;
 DEFINE_STANDARD_HANDLE(MeshVS_TextPrsBuilder, MeshVS_PrsBuilder)
 
 //! This class provides methods to create text data presentation.

@@ -29,11 +29,13 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Type.hxx>
 
+class Graphic3d_Structure;
+typedef Graphic3d_Structure Prs3d_Presentation;
+
 class Geom_Transformation;
 class Prs3d_Drawer;
-class Prs3d_Presentation;
-class PrsMgr_PresentableObject;
 class PrsMgr_Presentation;
+class PrsMgr_PresentableObject;
 class Standard_NoSuchObject;
 class V3d_Viewer;
 

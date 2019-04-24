@@ -17,22 +17,8 @@
 #ifndef _AIS_PerpendicularRelation_HeaderFile
 #define _AIS_PerpendicularRelation_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
-#include <gp_Pnt.hxx>
 #include <AIS_Relation.hxx>
-#include <PrsMgr_PresentationManager3d.hxx>
-#include <Standard_Integer.hxx>
-#include <SelectMgr_Selection.hxx>
-class TopoDS_Shape;
-class Geom_Plane;
-class Prs3d_Presentation;
-class Prs3d_Projector;
-class Geom_Transformation;
 
-
-class AIS_PerpendicularRelation;
 DEFINE_STANDARD_HANDLE(AIS_PerpendicularRelation, AIS_Relation)
 
 //! A framework to display constraints of perpendicularity
@@ -40,10 +26,9 @@ DEFINE_STANDARD_HANDLE(AIS_PerpendicularRelation, AIS_Relation)
 //! datums can be edges or faces.
 class AIS_PerpendicularRelation : public AIS_Relation
 {
-
+  DEFINE_STANDARD_RTTIEXT(AIS_PerpendicularRelation, AIS_Relation)
 public:
 
-  
   //! Constructs an object to display constraints of
   //! perpendicularity on shapes.
   //! This object is defined by a first shape aFShape, a
@@ -68,16 +53,6 @@ public:
   //! to the object to display before computation  !!!
   Standard_EXPORT virtual void Compute (const Handle(Prs3d_Projector)& aProjector, const Handle(Geom_Transformation)& aTrsf, const Handle(Prs3d_Presentation)& aPresentation) Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(AIS_PerpendicularRelation,AIS_Relation)
-
-protected:
-
-
-
-
 private:
 
   
@@ -94,13 +69,6 @@ private:
   gp_Pnt myFAttach;
   gp_Pnt mySAttach;
 
-
 };
-
-
-
-
-
-
 
 #endif // _AIS_PerpendicularRelation_HeaderFile

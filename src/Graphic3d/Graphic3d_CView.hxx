@@ -169,15 +169,16 @@ private:
   Standard_EXPORT Graphic3d_TypeOfAnswer acceptDisplay (const Graphic3d_TypeOfStructure theStructType) const;
 
   //! Clears the structure in this view.
-  Standard_EXPORT void Clear (const Handle(Graphic3d_Structure)& theStructure, const Standard_Boolean theWithDestruction);
+  Standard_EXPORT void Clear (Graphic3d_Structure* theStructure,
+                              const Standard_Boolean theWithDestruction);
 
   //! Connects the structures.
-  Standard_EXPORT void Connect (const Handle(Graphic3d_Structure)& theMother,
-                                const Handle(Graphic3d_Structure)& theDaughter);
+  Standard_EXPORT void Connect (const Graphic3d_Structure* theMother,
+                                const Graphic3d_Structure* theDaughter);
 
   //! Disconnects the structures.
-  Standard_EXPORT void Disconnect (const Handle(Graphic3d_Structure)& theMother,
-                                   const Handle(Graphic3d_Structure)& theDaughter);
+  Standard_EXPORT void Disconnect (const Graphic3d_Structure* theMother,
+                                   const Graphic3d_Structure* theDaughter);
 
   //! Displays the structure in the view.
   Standard_EXPORT void Display (const Handle(Graphic3d_Structure)& theStructure);
@@ -197,7 +198,9 @@ private:
   Standard_EXPORT void UnHighlight (const Handle(Graphic3d_Structure)& theStructure);
 
   //! Returns an index != 0 if the structure have another structure computed for the view <me>.
-  Standard_EXPORT Standard_Integer IsComputed (const Handle(Graphic3d_Structure)& theStructure) const;
+  Standard_EXPORT Standard_Integer IsComputed (const Graphic3d_Structure* theStructure) const;
+
+  Standard_Integer IsComputed (const Handle(Graphic3d_Structure)& theStructure) const { return IsComputed (theStructure.get()); }
 
   //! Returns true if the structure is displayed in the view.
   Standard_EXPORT Standard_Boolean IsDisplayed (const Handle(Graphic3d_Structure)& theStructure) const;

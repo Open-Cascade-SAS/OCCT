@@ -24,7 +24,6 @@
 #include <SelectMgr_SequenceOfOwner.hxx>
 
 class SelectMgr_EntityOwner;
-class Prs3d_Presentation;
 class Standard_NotImplemented;
 class SelectMgr_SelectionManager;
 

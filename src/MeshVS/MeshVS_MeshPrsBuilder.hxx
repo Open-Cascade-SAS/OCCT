@@ -16,29 +16,21 @@
 #ifndef _MeshVS_MeshPrsBuilder_HeaderFile
 #define _MeshVS_MeshPrsBuilder_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
 #include <MeshVS_PrsBuilder.hxx>
 #include <MeshVS_DisplayModeFlags.hxx>
-#include <Standard_Integer.hxx>
 #include <MeshVS_BuilderPriority.hxx>
 #include <TColStd_PackedMapOfInteger.hxx>
-#include <Standard_Boolean.hxx>
 #include <TColStd_Array1OfReal.hxx>
-#include <Standard_Real.hxx>
 #include <MeshVS_HArray1OfSequenceOfInteger.hxx>
+
 class MeshVS_Mesh;
 class MeshVS_DataSource;
-class Prs3d_Presentation;
 class Graphic3d_ArrayOfSegments;
 class Graphic3d_ArrayOfTriangles;
 class Graphic3d_ArrayOfPrimitives;
 class Graphic3d_AspectFillArea3d;
 class Graphic3d_AspectLine3d;
 
-
-class MeshVS_MeshPrsBuilder;
 DEFINE_STANDARD_HANDLE(MeshVS_MeshPrsBuilder, MeshVS_PrsBuilder)
 
 //! This class provides methods to compute base mesh presentation

@@ -29,7 +29,6 @@
 #include <Prs3d_Presentation.hxx>
 #include <Prs3d_ShadingAspect.hxx>
 #include <Prs3d_TextAspect.hxx>
-#include <PrsMgr_ModedPresentation.hxx>
 #include <PrsMgr_PresentationManager.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(AIS_InteractiveObject,SelectMgr_SelectableObject)
@@ -106,9 +105,7 @@ Handle(Prs3d_Presentation) AIS_InteractiveObject::Presentation() const
   }
 
   Handle(PrsMgr_Presentation) aPrs = myCTXPtr->MainPrsMgr()->Presentation (this, myDrawer->DisplayMode(), false);
-  return !aPrs.IsNull()
-       ? aPrs->Presentation()
-       : Handle(Prs3d_Presentation)();
+  return aPrs;
 }
 
 //=======================================================================

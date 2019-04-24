@@ -17,28 +17,9 @@
 #ifndef _AIS_OffsetDimension_HeaderFile
 #define _AIS_OffsetDimension_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
-#include <gp_Pnt.hxx>
-#include <gp_Dir.hxx>
-#include <gp_Trsf.hxx>
 #include <AIS_Relation.hxx>
-#include <Standard_Real.hxx>
-#include <PrsMgr_PresentationManager3d.hxx>
-#include <Standard_Integer.hxx>
-#include <SelectMgr_Selection.hxx>
 #include <AIS_KindOfDimension.hxx>
-#include <Standard_Boolean.hxx>
-class TopoDS_Shape;
-class TCollection_ExtendedString;
-class Prs3d_Presentation;
-class Prs3d_Projector;
-class Geom_Transformation;
-class gp_Trsf;
 
-
-class AIS_OffsetDimension;
 DEFINE_STANDARD_HANDLE(AIS_OffsetDimension, AIS_Relation)
 
 //! A framework to display dimensions of offsets.
@@ -48,10 +29,9 @@ DEFINE_STANDARD_HANDLE(AIS_OffsetDimension, AIS_Relation)
 //! and the basis shape.
 class AIS_OffsetDimension : public AIS_Relation
 {
-
+  DEFINE_STANDARD_RTTIEXT(AIS_OffsetDimension, AIS_Relation)
 public:
 
-  
   //! Constructs the offset display object defined by the
   //! first shape aFShape, the second shape aSShape, the
   //! dimension aVal, and the text aText.
@@ -77,19 +57,8 @@ public:
   //! selection to a relative position.
     void SetRelativePos (const gp_Trsf& aTrsf);
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(AIS_OffsetDimension,AIS_Relation)
-
-protected:
-
-
-
-
 private:
 
-  
   Standard_EXPORT virtual void Compute (const Handle(PrsMgr_PresentationManager3d)& aPresentationManager, const Handle(Prs3d_Presentation)& aPresentation, const Standard_Integer aMode = 0) Standard_OVERRIDE;
   
   Standard_EXPORT void Compute (const Handle(Prs3d_Projector)& aProjector, const Handle(Prs3d_Presentation)& aPresentation) Standard_OVERRIDE;
@@ -108,14 +77,8 @@ private:
   gp_Dir myDirAttach2;
   gp_Trsf myRelativePos;
 
-
 };
 
-
 #include <AIS_OffsetDimension.lxx>
-
-
-
-
 
 #endif // _AIS_OffsetDimension_HeaderFile

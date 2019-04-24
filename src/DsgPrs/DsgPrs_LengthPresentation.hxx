@@ -23,13 +23,13 @@
 
 #include <Prs3d_Drawer.hxx>
 #include <DsgPrs_ArrowSide.hxx>
-class Prs3d_Presentation;
+#include <Prs3d_Presentation.hxx>
+
 class TCollection_ExtendedString;
 class gp_Pnt;
 class gp_Dir;
 class gp_Pln;
 class Geom_Surface;
-
 
 //! Framework for displaying lengths.
 //! The length displayed is indicated by line segments

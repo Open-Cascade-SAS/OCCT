@@ -32,7 +32,6 @@ Prs3d_PlaneAspect.hxx
 Prs3d_Point.hxx
 Prs3d_PointAspect.cxx
 Prs3d_PointAspect.hxx
-Prs3d_Presentation.cxx
 Prs3d_Presentation.hxx
 Prs3d_PresentationShadow.cxx
 Prs3d_PresentationShadow.hxx

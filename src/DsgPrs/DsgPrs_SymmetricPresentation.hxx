@@ -22,12 +22,12 @@
 #include <Standard_Handle.hxx>
 
 #include <Prs3d_Drawer.hxx>
-class Prs3d_Presentation;
+#include <Prs3d_Presentation.hxx>
+
 class gp_Pnt;
 class gp_Dir;
 class gp_Lin;
 class gp_Circ;
-
 
 //! A framework to define display of symmetry between shapes.
 class DsgPrs_SymmetricPresentation 

@@ -17,38 +17,19 @@
 #ifndef _AIS_MaxRadiusDimension_HeaderFile
 #define _AIS_MaxRadiusDimension_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
-#include <gp_Pnt.hxx>
 #include <AIS_EllipseRadiusDimension.hxx>
-#include <Standard_Real.hxx>
 #include <DsgPrs_ArrowSide.hxx>
-#include <PrsMgr_PresentationManager3d.hxx>
-#include <Standard_Integer.hxx>
-#include <SelectMgr_Selection.hxx>
-class Standard_ConstructionError;
-class TopoDS_Shape;
-class TCollection_ExtendedString;
-class gp_Pnt;
-class Prs3d_Presentation;
-class Prs3d_Projector;
-class Geom_Transformation;
 
-
-class AIS_MaxRadiusDimension;
 DEFINE_STANDARD_HANDLE(AIS_MaxRadiusDimension, AIS_EllipseRadiusDimension)
-
 
 //! Ellipse  Max  radius  dimension  of  a  Shape  which  can  be  Edge
 //! or  Face  (planar  or  cylindrical(surface  of  extrusion  or
 //! surface  of  offset))
 class AIS_MaxRadiusDimension : public AIS_EllipseRadiusDimension
 {
-
+  DEFINE_STANDARD_RTTIEXT(AIS_MaxRadiusDimension, AIS_EllipseRadiusDimension)
 public:
 
-  
   //! Max  Ellipse  radius dimension
   //! Shape  can  be  edge  ,  planar  face  or  cylindrical  face
   Standard_EXPORT AIS_MaxRadiusDimension(const TopoDS_Shape& aShape, const Standard_Real aVal, const TCollection_ExtendedString& aText);
@@ -66,19 +47,8 @@ public:
   //! to the object to display before computation  !!!
   Standard_EXPORT virtual void Compute (const Handle(Prs3d_Projector)& aProjector, const Handle(Geom_Transformation)& aTrsf, const Handle(Prs3d_Presentation)& aPresentation) Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(AIS_MaxRadiusDimension,AIS_EllipseRadiusDimension)
-
-protected:
-
-
-
-
 private:
 
-  
   Standard_EXPORT virtual void Compute (const Handle(PrsMgr_PresentationManager3d)& aPresentationManager, const Handle(Prs3d_Presentation)& aPresentation, const Standard_Integer aMode = 0) Standard_OVERRIDE;
   
   Standard_EXPORT void Compute (const Handle(Prs3d_Projector)& aProjector, const Handle(Prs3d_Presentation)& aPresentation) Standard_OVERRIDE;
@@ -93,13 +63,6 @@ private:
   gp_Pnt myApexN;
   gp_Pnt myEndOfArrow;
 
-
 };
-
-
-
-
-
-
 
 #endif // _AIS_MaxRadiusDimension_HeaderFile

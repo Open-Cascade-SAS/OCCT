@@ -419,7 +419,7 @@ Standard_Boolean AIS_InteractiveContext::ImmediateAdd (const Handle(AIS_Interact
     return Standard_False;
   }
 
-  myMainPM->AddToImmediateList (myMainPM->Presentation (theObj, theMode)->Presentation());
+  myMainPM->AddToImmediateList (myMainPM->Presentation (theObj, theMode));
   return Standard_True;
 }
 

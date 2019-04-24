@@ -22,11 +22,10 @@
 #include <Standard_Handle.hxx>
 
 #include <Prs3d_Drawer.hxx>
-#include <Standard_Real.hxx>
-class Prs3d_Presentation;
+#include <Prs3d_Presentation.hxx>
+
 class gp_Pnt;
 class gp_Dir;
-
 
 //! class which draws the presentation of Fixed objects
 class DsgPrs_FixPresentation 

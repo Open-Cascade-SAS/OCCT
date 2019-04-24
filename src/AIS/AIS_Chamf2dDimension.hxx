@@ -17,29 +17,13 @@
 #ifndef _AIS_Chamf2dDimension_HeaderFile
 #define _AIS_Chamf2dDimension_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
-#include <gp_Pnt.hxx>
-#include <gp_Dir.hxx>
-#include <AIS_Relation.hxx>
-#include <Standard_Real.hxx>
-#include <DsgPrs_ArrowSide.hxx>
 #include <AIS_KindOfDimension.hxx>
-#include <Standard_Boolean.hxx>
-#include <PrsMgr_PresentationManager3d.hxx>
-#include <Standard_Integer.hxx>
-#include <SelectMgr_Selection.hxx>
-class TopoDS_Shape;
+#include <AIS_Relation.hxx>
+#include <DsgPrs_ArrowSide.hxx>
+#include <gp_Dir.hxx>
+
 class Geom_Plane;
-class TCollection_ExtendedString;
-class gp_Pnt;
-class Prs3d_Presentation;
-class Prs3d_Projector;
-class Geom_Transformation;
 
-
-class AIS_Chamf2dDimension;
 DEFINE_STANDARD_HANDLE(AIS_Chamf2dDimension, AIS_Relation)
 
 //! A framework to define display of 2D chamfers.
@@ -48,10 +32,9 @@ DEFINE_STANDARD_HANDLE(AIS_Chamf2dDimension, AIS_Relation)
 //! chamfer, or the angle if it is not.
 class AIS_Chamf2dDimension : public AIS_Relation
 {
-
+  DEFINE_STANDARD_RTTIEXT(AIS_Chamf2dDimension, AIS_Relation)
 public:
 
-  
   //! Constructs the display object for 2D chamfers.
   //! This object is defined by the face aFShape, the
   //! dimension aVal, the plane aPlane and the text aText.
@@ -79,18 +62,7 @@ public:
   //! to the object to display before computation  !!!
   Standard_EXPORT virtual void Compute (const Handle(Prs3d_Projector)& aProjector, const Handle(Geom_Transformation)& aTrsf, const Handle(Prs3d_Presentation)& aPresentation) Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(AIS_Chamf2dDimension,AIS_Relation)
-
-protected:
-
-
-
-
 private:
-
   
   Standard_EXPORT void Compute (const Handle(PrsMgr_PresentationManager3d)& aPresentationManager, const Handle(Prs3d_Presentation)& aPresentation, const Standard_Integer aMode = 0) Standard_OVERRIDE;
   
@@ -101,14 +73,8 @@ private:
   gp_Pnt myPntAttach;
   gp_Dir myDir;
 
-
 };
 
-
 #include <AIS_Chamf2dDimension.lxx>
-
-
-
-
 
 #endif // _AIS_Chamf2dDimension_HeaderFile

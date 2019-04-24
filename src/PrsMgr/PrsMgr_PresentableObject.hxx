@@ -28,9 +28,11 @@
 #include <PrsMgr_ListOfPresentableObjects.hxx>
 #include <PrsMgr_Presentation.hxx>
 #include <PrsMgr_Presentations.hxx>
-#include <PrsMgr_PresentationManager3d.hxx>
 #include <PrsMgr_TypeOfPresentation3d.hxx>
 #include <TColStd_ListOfInteger.hxx>
+
+class PrsMgr_PresentationManager;
+typedef PrsMgr_PresentationManager PrsMgr_PresentationManager3d;
 
 //! A framework to supply the Graphic3d structure of the object to be presented.
 //! On the first display request, this structure is created by calling the appropriate algorithm and retaining this framework for further display.

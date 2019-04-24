@@ -22,7 +22,6 @@
 
 class AIS_InteractiveContext;
 class Graphic3d_MaterialAspect;
-class Prs3d_Presentation;
 class Prs3d_BasicAspect;
 class Bnd_Box;
 

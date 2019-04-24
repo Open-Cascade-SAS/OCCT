@@ -17,32 +17,12 @@
 #ifndef _AIS_EqualDistanceRelation_HeaderFile
 #define _AIS_EqualDistanceRelation_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
-#include <TopoDS_Shape.hxx>
-#include <gp_Pnt.hxx>
 #include <AIS_Relation.hxx>
-#include <PrsMgr_PresentationManager3d.hxx>
-#include <Standard_Integer.hxx>
-#include <SelectMgr_Selection.hxx>
-#include <Prs3d_Drawer.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
-#include <DsgPrs_ArrowSide.hxx>
 #include <AIS_TypeOfDist.hxx>
-class TopoDS_Shape;
+#include <DsgPrs_ArrowSide.hxx>
+
 class Geom_Plane;
-class Prs3d_Presentation;
-class Prs3d_Projector;
-class Geom_Transformation;
-class TopoDS_Edge;
-class Bnd_Box;
-class gp_Pnt;
-class TopoDS_Vertex;
 
-
-class AIS_EqualDistanceRelation;
 DEFINE_STANDARD_HANDLE(AIS_EqualDistanceRelation, AIS_Relation)
 
 //! A framework to display equivalent distances between
@@ -52,10 +32,9 @@ DEFINE_STANDARD_HANDLE(AIS_EqualDistanceRelation, AIS_Relation)
 //! These distances are used to compare shapes by this vector alone.
 class AIS_EqualDistanceRelation : public AIS_Relation
 {
-
+  DEFINE_STANDARD_RTTIEXT(AIS_EqualDistanceRelation,AIS_Relation)
 public:
 
-  
   //! Constructs a framework to display equivalent
   //! distances between the shapes aShape1, aShape2,
   //! aShape3, aShape4 and the plane aPlane.
@@ -105,19 +84,8 @@ public:
   //! a line or a circle.
   Standard_EXPORT static void ComputeOneEdgeOneVertexLength (const Handle(Prs3d_Presentation)& aPresentation, const Handle(Prs3d_Drawer)& aDrawer, const Standard_Real ArrowSize, const TopoDS_Shape& FirstShape, const TopoDS_Shape& SecondShape, const Handle(Geom_Plane)& Plane, const Standard_Boolean AutomaticPos, const Standard_Boolean IsSetBndBox, const Bnd_Box& BndBox, gp_Pnt& Position, gp_Pnt& FirstAttach, gp_Pnt& SecondAttach, gp_Pnt& FirstExtreme, gp_Pnt& SecondExtreme, DsgPrs_ArrowSide& SymbolPrs);
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(AIS_EqualDistanceRelation,AIS_Relation)
-
-protected:
-
-
-
-
 private:
 
-  
   Standard_EXPORT void Compute (const Handle(PrsMgr_PresentationManager3d)& aPresentationManager, const Handle(Prs3d_Presentation)& aPresentation, const Standard_Integer aMode = 0) Standard_OVERRIDE;
   
   Standard_EXPORT void Compute (const Handle(Prs3d_Projector)& aProjector, const Handle(Prs3d_Presentation)& aPresentation) Standard_OVERRIDE;
@@ -135,14 +103,8 @@ private:
   gp_Pnt myPoint3;
   gp_Pnt myPoint4;
 
-
 };
 
-
 #include <AIS_EqualDistanceRelation.lxx>
-
-
-
-
 
 #endif // _AIS_EqualDistanceRelation_HeaderFile

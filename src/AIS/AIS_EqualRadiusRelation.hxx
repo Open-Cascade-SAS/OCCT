@@ -17,31 +17,17 @@
 #ifndef _AIS_EqualRadiusRelation_HeaderFile
 #define _AIS_EqualRadiusRelation_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
-#include <gp_Pnt.hxx>
 #include <AIS_Relation.hxx>
-#include <PrsMgr_PresentationManager3d.hxx>
-#include <Standard_Integer.hxx>
-#include <SelectMgr_Selection.hxx>
-class TopoDS_Edge;
+
 class Geom_Plane;
-class Prs3d_Presentation;
-class Prs3d_Projector;
-class Geom_Transformation;
 
-
-class AIS_EqualRadiusRelation;
 DEFINE_STANDARD_HANDLE(AIS_EqualRadiusRelation, AIS_Relation)
-
 
 class AIS_EqualRadiusRelation : public AIS_Relation
 {
-
+  DEFINE_STANDARD_RTTIEXT(AIS_EqualRadiusRelation, AIS_Relation)
 public:
 
-  
   //! Creates equal relation of two arc's radiuses.
   //! If one of edges is not in the given plane,
   //! the presentation method projects it onto the plane.
@@ -56,19 +42,8 @@ public:
   //! to the object to display before computation  !!!
   Standard_EXPORT virtual void Compute (const Handle(Prs3d_Projector)& aProjector, const Handle(Geom_Transformation)& aTrsf, const Handle(Prs3d_Presentation)& aPresentation) Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(AIS_EqualRadiusRelation,AIS_Relation)
-
-protected:
-
-
-
-
 private:
 
-  
   Standard_EXPORT void Compute (const Handle(PrsMgr_PresentationManager3d)& aPresentationManager, const Handle(Prs3d_Presentation)& aPresentation, const Standard_Integer aMode = 0) Standard_OVERRIDE;
   
   Standard_EXPORT void Compute (const Handle(Prs3d_Projector)& aProjector, const Handle(Prs3d_Presentation)& aPresentation) Standard_OVERRIDE;
@@ -82,13 +57,6 @@ private:
   gp_Pnt myFirstPoint;
   gp_Pnt mySecondPoint;
 
-
 };
-
-
-
-
-
-
 
 #endif // _AIS_EqualRadiusRelation_HeaderFile

@@ -17,17 +17,10 @@
 #ifndef _StdPrs_Plane_HeaderFile
 #define _StdPrs_Plane_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
 #include <Prs3d_Root.hxx>
 #include <Prs3d_Drawer.hxx>
-#include <Standard_Boolean.hxx>
 
-class Prs3d_Presentation;
 class Adaptor3d_Surface;
-
 
 //! A framework to display infinite planes.
 class StdPrs_Plane  : public Prs3d_Root

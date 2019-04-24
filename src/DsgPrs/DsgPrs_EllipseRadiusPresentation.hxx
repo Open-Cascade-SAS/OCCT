@@ -22,16 +22,13 @@
 #include <Standard_Handle.hxx>
 
 #include <Prs3d_Drawer.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
 #include <DsgPrs_ArrowSide.hxx>
-class Prs3d_Presentation;
+#include <Prs3d_Presentation.hxx>
+
 class TCollection_ExtendedString;
 class gp_Pnt;
 class gp_Elips;
 class Geom_OffsetCurve;
-
-
 
 class DsgPrs_EllipseRadiusPresentation 
 {

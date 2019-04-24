@@ -19,7 +19,6 @@
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_Presentation.hxx>
 #include <Prs3d_PresentationShadow.hxx>
-#include <PrsMgr_ModedPresentation.hxx>
 #include <PrsMgr_PresentableObject.hxx>
 #include <PrsMgr_Presentation.hxx>
 #include <PrsMgr_Presentations.hxx>
@@ -58,7 +57,7 @@ void PrsMgr_PresentationManager::Display (const Handle(PrsMgr_PresentableObject)
 
     if (myImmediateModeOn > 0)
     {
-      AddToImmediateList (aPrs->Presentation());
+      AddToImmediateList (aPrs);
     }
     else
     {
@@ -89,22 +88,22 @@ void PrsMgr_PresentationManager::Erase (const Handle(PrsMgr_PresentableObject)& 
   }
 
   PrsMgr_Presentations& aPrsList = thePrsObj->Presentations();
-  for (PrsMgr_Presentations::Iterator anIt (aPrsList); anIt.More();)
+  for (PrsMgr_Presentations::Iterator aPrsIter (aPrsList); aPrsIter.More();)
   {
-    const PrsMgr_ModedPresentation& aModedPrs = anIt.Value();
-    if (aModedPrs.Presentation().IsNull())
+    const Handle(PrsMgr_Presentation)& aPrs = aPrsIter.Value();
+    if (aPrs.IsNull())
     {
-      anIt.Next();
+      aPrsIter.Next();
       continue;
     }
 
-    const Handle(PrsMgr_PresentationManager)& aPrsMgr = aModedPrs.Presentation()->PresentationManager();
-    if ((theMode == aModedPrs.Mode() || theMode == -1)
+    const Handle(PrsMgr_PresentationManager)& aPrsMgr = aPrs->PresentationManager();
+    if ((theMode == aPrs->Mode() || theMode == -1)
      && (this == aPrsMgr))
     {
-      aModedPrs.Presentation()->Erase();
+      aPrs->Erase();
 
-      aPrsList.Remove (anIt);
+      aPrsList.Remove (aPrsIter);
 
       if (theMode != -1)
       {
@@ -113,7 +112,7 @@ void PrsMgr_PresentationManager::Erase (const Handle(PrsMgr_PresentableObject)& 
     }
     else
     {
-      anIt.Next();
+      aPrsIter.Next();
     }
   }
 }
@@ -173,11 +172,10 @@ void PrsMgr_PresentationManager::Unhighlight (const Handle(PrsMgr_PresentableObj
   }
 
   const PrsMgr_Presentations& aPrsList = thePrsObj->Presentations();
-  for (Standard_Integer aPrsIter = 1; aPrsIter <= aPrsList.Length(); ++aPrsIter)
+  for (PrsMgr_Presentations::Iterator aPrsIter (aPrsList); aPrsIter.More(); aPrsIter.Next())
   {
-    const PrsMgr_ModedPresentation&           aModedPrs = aPrsList.Value (aPrsIter);
-    const Handle(PrsMgr_Presentation)&        aPrs      = aModedPrs.Presentation();
-    const Handle(PrsMgr_PresentationManager)& aPrsMgr   = aPrs->PresentationManager();
+    const Handle(PrsMgr_Presentation)& aPrs = aPrsIter.Value();
+    const Handle(PrsMgr_PresentationManager)& aPrsMgr = aPrs->PresentationManager();
     if (this == aPrsMgr
     &&  aPrs->IsHighlighted())
     {
@@ -344,8 +342,7 @@ void PrsMgr_PresentationManager::displayImmediate (const Handle(V3d_Viewer)& the
       if (!aShadowPrs.IsNull() && aView->IsComputed (aShadowPrs->ParentId(), aViewDepPrs))
       {
         aShadowPrs.Nullify();
-        aShadowPrs = new Prs3d_PresentationShadow (myStructureManager, 
-                                                   Handle(Prs3d_Presentation)::DownCast (aViewDepPrs));
+        aShadowPrs = new Prs3d_PresentationShadow (myStructureManager, aViewDepPrs);
         aShadowPrs->SetZLayer (aViewDepPrs->CStructure()->ZLayer());
         aShadowPrs->SetClipPlanes (aViewDepPrs->ClipPlanes());
         aShadowPrs->CStructure()->IsForHighlight = 1;
@@ -447,11 +444,11 @@ Standard_Boolean PrsMgr_PresentationManager::HasPresentation (const Handle(PrsMg
     return Standard_False;
 
   const PrsMgr_Presentations& aPrsList = thePrsObj->Presentations();
-  for (Standard_Integer aPrsIter = 1; aPrsIter <= aPrsList.Length(); ++aPrsIter)
+  for (PrsMgr_Presentations::Iterator aPrsIter (aPrsList); aPrsIter.More(); aPrsIter.Next())
   {
-    const PrsMgr_ModedPresentation&           aModedPrs = aPrsList.Value (aPrsIter);
-    const Handle(PrsMgr_PresentationManager)& aPrsMgr   = aModedPrs.Presentation()->PresentationManager();
-    if (theMode == aModedPrs.Mode()
+    const Handle(PrsMgr_Presentation)& aPrs = aPrsIter.Value();
+    const Handle(PrsMgr_PresentationManager)& aPrsMgr = aPrs->PresentationManager();
+    if (theMode == aPrs->Mode()
      && this    == aPrsMgr)
     {
       return Standard_True;
@@ -470,14 +467,14 @@ Handle(PrsMgr_Presentation) PrsMgr_PresentationManager::Presentation (const Hand
                                                                       const Handle(PrsMgr_PresentableObject)& theSelObj) const
 {
   const PrsMgr_Presentations& aPrsList = thePrsObj->Presentations();
-  for (Standard_Integer aPrsIter = 1; aPrsIter <= aPrsList.Length(); ++aPrsIter)
+  for (PrsMgr_Presentations::Iterator aPrsIter (aPrsList); aPrsIter.More(); aPrsIter.Next())
   {
-    const PrsMgr_ModedPresentation&           aModedPrs = aPrsList.Value (aPrsIter);
-    const Handle(PrsMgr_PresentationManager)& aPrsMgr   = aModedPrs.Presentation()->PresentationManager();
-    if (theMode == aModedPrs.Mode()
+    const Handle(PrsMgr_Presentation)& aPrs = aPrsIter.Value();
+    const Handle(PrsMgr_PresentationManager)& aPrsMgr = aPrs->PresentationManager();
+    if (theMode == aPrs->Mode()
      && this    == aPrsMgr)
     {
-      return aModedPrs.Presentation();
+      return aPrs;
     }
   }
 
@@ -486,10 +483,10 @@ Handle(PrsMgr_Presentation) PrsMgr_PresentationManager::Presentation (const Hand
     return Handle(PrsMgr_Presentation)();
   }
 
-  Handle(PrsMgr_Presentation) aPrs = new PrsMgr_Presentation (this, thePrsObj);
+  Handle(PrsMgr_Presentation) aPrs = new PrsMgr_Presentation (this, thePrsObj, theMode);
   aPrs->SetZLayer (thePrsObj->ZLayer());
-  aPrs->Presentation()->CStructure()->ViewAffinity = myStructureManager->ObjectAffinity (!theSelObj.IsNull() ? theSelObj : thePrsObj);
-  thePrsObj->Presentations().Append (PrsMgr_ModedPresentation (aPrs, theMode));
+  aPrs->CStructure()->ViewAffinity = myStructureManager->ObjectAffinity (!theSelObj.IsNull() ? theSelObj : thePrsObj);
+  thePrsObj->Presentations().Append (aPrs);
   thePrsObj->Fill (this, aPrs, theMode);
 
   // set layer index accordingly to object's presentations
@@ -505,11 +502,11 @@ Standard_Boolean PrsMgr_PresentationManager::RemovePresentation (const Handle(Pr
                                                                  const Standard_Integer                  theMode)
 {
   PrsMgr_Presentations& aPrsList = thePrsObj->Presentations();
-  for (Standard_Integer aPrsIter = 1; aPrsIter <= aPrsList.Length(); ++aPrsIter)
+  for (PrsMgr_Presentations::Iterator aPrsIter (aPrsList); aPrsIter.More(); aPrsIter.Next())
   {
-    const PrsMgr_ModedPresentation&           aModedPrs = aPrsList.Value (aPrsIter);
-    const Handle(PrsMgr_PresentationManager)& aPrsMgr   = aModedPrs.Presentation()->PresentationManager();
-    if (theMode == aPrsList (aPrsIter).Mode()
+    const Handle(PrsMgr_Presentation)& aPrs = aPrsIter.Value();
+    const Handle(PrsMgr_PresentationManager)& aPrsMgr = aPrs->PresentationManager();
+    if (theMode == aPrs->Mode()
      && this    == aPrsMgr)
     {
       aPrsList.Remove (aPrsIter);
@@ -558,7 +555,7 @@ void PrsMgr_PresentationManager::Connect (const Handle(PrsMgr_PresentableObject)
 {
   Handle(PrsMgr_Presentation) aPrs      = Presentation (thePrsObject,   theMode,      Standard_True);
   Handle(PrsMgr_Presentation) aPrsOther = Presentation (theOtherObject, theOtherMode, Standard_True);
-  aPrs->Connect (aPrsOther);
+  aPrs->Connect (aPrsOther.get(), Graphic3d_TOC_DESCENDANT);
 }
 
 // =======================================================================
@@ -599,9 +596,9 @@ void PrsMgr_PresentationManager::Color (const Handle(PrsMgr_PresentableObject)& 
 
   if (myImmediateModeOn > 0)
   {
-    Handle(Prs3d_PresentationShadow) aShadow = new Prs3d_PresentationShadow (myStructureManager, aPrs->Presentation());
+    Handle(Prs3d_PresentationShadow) aShadow = new Prs3d_PresentationShadow (myStructureManager, aPrs);
     aShadow->SetZLayer (theImmediateStructLayerId);
-    aShadow->SetClipPlanes (aPrs->Presentation()->ClipPlanes());
+    aShadow->SetClipPlanes (aPrs->ClipPlanes());
     aShadow->CStructure()->IsForHighlight = 1;
     aShadow->Highlight (theStyle);
     AddToImmediateList (aShadow);
@@ -658,7 +655,7 @@ void PrsMgr_PresentationManager::UpdateHighlightTrsf (const Handle(V3d_Viewer)& 
   }
 
   Handle(Geom_Transformation) aTrsf = theObj->LocalTransformationGeom();
-  const Standard_Integer aParentId = aPrs->Presentation()->CStructure()->Id;
+  const Standard_Integer aParentId = aPrs->CStructure()->Id;
   updatePrsTransformation (myImmediateList, aParentId, aTrsf);
 
   if (!myViewDependentImmediateList.IsEmpty())

@@ -21,14 +21,12 @@
 #include <Standard_Handle.hxx>
 
 #include <Prs3d_Drawer.hxx>
-#include <Standard_Boolean.hxx>
-class Prs3d_Presentation;
+#include <Prs3d_Presentation.hxx>
+
 class gp_Ax2;
 class gp_Pnt;
 class gp_Circ;
 class gp_Elips;
-
-
 
 class DsgPrs_MidPointPresentation 
 {

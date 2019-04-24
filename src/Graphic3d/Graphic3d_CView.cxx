@@ -620,7 +620,7 @@ void Graphic3d_CView::Compute()
 // function : Clear
 // purpose  :
 // =======================================================================
-void Graphic3d_CView::Clear (const Handle(Graphic3d_Structure)& theStructure,
+void Graphic3d_CView::Clear (Graphic3d_Structure* theStructure,
                              const Standard_Boolean theWithDestruction)
 {
   const Standard_Integer anIndex = IsComputed (theStructure);
@@ -636,8 +636,8 @@ void Graphic3d_CView::Clear (const Handle(Graphic3d_Structure)& theStructure,
 // function : Connect
 // purpose  :
 // =======================================================================
-void Graphic3d_CView::Connect (const Handle(Graphic3d_Structure)& theMother,
-                               const Handle(Graphic3d_Structure)& theDaughter)
+void Graphic3d_CView::Connect (const Graphic3d_Structure* theMother,
+                               const Graphic3d_Structure* theDaughter)
 {
   Standard_Integer anIndexM = IsComputed (theMother);
   Standard_Integer anIndexD = IsComputed (theDaughter);
@@ -654,8 +654,8 @@ void Graphic3d_CView::Connect (const Handle(Graphic3d_Structure)& theMother,
 // function : Disconnect
 // purpose  :
 // =======================================================================
-void Graphic3d_CView::Disconnect (const Handle(Graphic3d_Structure)& theMother,
-                                  const Handle(Graphic3d_Structure)& theDaughter)
+void Graphic3d_CView::Disconnect (const Graphic3d_Structure* theMother,
+                                  const Graphic3d_Structure* theDaughter)
 {
   Standard_Integer anIndexM = IsComputed (theMother);
   Standard_Integer anIndexD = IsComputed (theDaughter);
@@ -850,25 +850,25 @@ void Graphic3d_CView::Erase (const Handle(Graphic3d_Structure)& theStructure)
     return;
   }
 
-  Graphic3d_TypeOfAnswer anAnswer = acceptDisplay (theStructure->Visual());
-  if (!ComputedMode())
-  {
-    anAnswer = Graphic3d_TOA_YES;
-  }
-
+  const Graphic3d_TypeOfAnswer anAnswer = myIsInComputedMode ? acceptDisplay (theStructure->Visual()) : Graphic3d_TOA_YES;
   if (anAnswer != Graphic3d_TOA_COMPUTE)
   {
     eraseStructure (theStructure->CStructure());
   }
-  else if (anAnswer == Graphic3d_TOA_COMPUTE && myIsInComputedMode)
+
+  const Standard_Integer anIndex = !myStructsToCompute.IsEmpty() ? IsComputed (theStructure) : 0;
+  if (anIndex != 0)
   {
-    const Standard_Integer anIndex = IsComputed (theStructure);
-    if (anIndex != 0)
+    if (anAnswer == Graphic3d_TOA_COMPUTE
+     && myIsInComputedMode)
     {
       const Handle(Graphic3d_Structure)& aCompStruct = myStructsComputed.ChangeValue (anIndex);
       eraseStructure (aCompStruct->CStructure());
     }
+    myStructsComputed .Remove (anIndex);
+    myStructsToCompute.Remove (anIndex);
   }
+
   myStructsDisplayed.Remove (theStructure);
   Update (theStructure->GetZLayer());
 }
@@ -966,16 +966,16 @@ Standard_Boolean Graphic3d_CView::IsComputed (const Standard_Integer theStructId
 // function : IsComputed
 // purpose  :
 // =======================================================================
-Standard_Integer Graphic3d_CView::IsComputed (const Handle(Graphic3d_Structure)& theStructure) const
+Standard_Integer Graphic3d_CView::IsComputed (const Graphic3d_Structure* theStructure) const
 {
   const Standard_Integer aStructId  = theStructure->Identification();
-  const Standard_Integer aNbStructs = myStructsToCompute.Length();
-  for (Standard_Integer aStructIter = 1; aStructIter <= aNbStructs; ++aStructIter)
+  Standard_Integer aStructIndex = 1;
+  for (Graphic3d_SequenceOfStructure::Iterator aStructIter (myStructsToCompute); aStructIter.More(); aStructIter.Next(), ++aStructIndex)
   {
-    const Handle(Graphic3d_Structure)& aStruct = myStructsToCompute.Value (aStructIter);
+    const Handle(Graphic3d_Structure)& aStruct = aStructIter.Value();
     if (aStruct->Identification() == aStructId)
     {
-      return aStructIter;
+      return aStructIndex;
     }
   }
   return 0;

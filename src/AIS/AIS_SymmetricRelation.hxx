@@ -17,25 +17,11 @@
 #ifndef _AIS_SymmetricRelation_HeaderFile
 #define _AIS_SymmetricRelation_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
 #include <TopoDS_Shape.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Dir.hxx>
 #include <AIS_Relation.hxx>
-#include <Standard_Boolean.hxx>
-#include <PrsMgr_PresentationManager3d.hxx>
-#include <Standard_Integer.hxx>
-#include <SelectMgr_Selection.hxx>
-class TopoDS_Shape;
-class Geom_Plane;
-class Prs3d_Presentation;
-class Prs3d_Projector;
-class Geom_Transformation;
 
-
-class AIS_SymmetricRelation;
 DEFINE_STANDARD_HANDLE(AIS_SymmetricRelation, AIS_Relation)
 
 //! A framework to display constraints of symmetricity
@@ -44,10 +30,9 @@ DEFINE_STANDARD_HANDLE(AIS_SymmetricRelation, AIS_Relation)
 //! shapes of which the datums are parts.
 class AIS_SymmetricRelation : public AIS_Relation
 {
-
+  DEFINE_STANDARD_RTTIEXT(AIS_SymmetricRelation, AIS_Relation)
 public:
 
-  
   //! Constructs an object to display constraints of symmetricity.
   //! This object is defined by a tool aSymmTool, a first
   //! shape FirstShape, a second shape SecondShape, and a plane aPlane.
@@ -79,19 +64,8 @@ public:
   //! to the object to display before computation  !!!
   Standard_EXPORT virtual void Compute (const Handle(Prs3d_Projector)& aProjector, const Handle(Geom_Transformation)& aTrsf, const Handle(Prs3d_Presentation)& aPresentation) Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(AIS_SymmetricRelation,AIS_Relation)
-
-protected:
-
-
-
-
 private:
 
-  
   Standard_EXPORT void Compute (const Handle(PrsMgr_PresentationManager3d)& aPresentationManager, const Handle(Prs3d_Presentation)& aPresentation, const Standard_Integer aMode = 0) Standard_OVERRIDE;
   
   Standard_EXPORT void Compute (const Handle(Prs3d_Projector)& aProjector, const Handle(Prs3d_Presentation)& aPresentation) Standard_OVERRIDE;
@@ -110,14 +84,8 @@ private:
   gp_Dir myFDirAttach;
   gp_Dir myAxisDirAttach;
 
-
 };
 
-
 #include <AIS_SymmetricRelation.lxx>
-
-
-
-
 
 #endif // _AIS_SymmetricRelation_HeaderFile

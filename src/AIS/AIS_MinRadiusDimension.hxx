@@ -17,26 +17,9 @@
 #ifndef _AIS_MinRadiusDimension_HeaderFile
 #define _AIS_MinRadiusDimension_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
-#include <gp_Pnt.hxx>
 #include <AIS_EllipseRadiusDimension.hxx>
-#include <Standard_Real.hxx>
 #include <DsgPrs_ArrowSide.hxx>
-#include <PrsMgr_PresentationManager3d.hxx>
-#include <Standard_Integer.hxx>
-#include <SelectMgr_Selection.hxx>
-class Standard_ConstructionError;
-class TopoDS_Shape;
-class TCollection_ExtendedString;
-class gp_Pnt;
-class Prs3d_Presentation;
-class Prs3d_Projector;
-class Geom_Transformation;
 
-
-class AIS_MinRadiusDimension;
 DEFINE_STANDARD_HANDLE(AIS_MinRadiusDimension, AIS_EllipseRadiusDimension)
 
 //! --  Ellipse  Min  radius  dimension  of  a  Shape  which
@@ -44,10 +27,9 @@ DEFINE_STANDARD_HANDLE(AIS_MinRadiusDimension, AIS_EllipseRadiusDimension)
 //! extrusion  or  surface  of  offset))
 class AIS_MinRadiusDimension : public AIS_EllipseRadiusDimension
 {
-
+  DEFINE_STANDARD_RTTIEXT(AIS_MinRadiusDimension, AIS_EllipseRadiusDimension)
 public:
 
-  
   //! Max  Ellipse  radius dimension
   //! Shape  can  be  edge  ,  planar  face  or  cylindrical  face
   Standard_EXPORT AIS_MinRadiusDimension(const TopoDS_Shape& aShape, const Standard_Real aVal, const TCollection_ExtendedString& aText);
@@ -65,18 +47,7 @@ public:
   //! to the object to display before computation  !!!
   Standard_EXPORT virtual void Compute (const Handle(Prs3d_Projector)& aProjector, const Handle(Geom_Transformation)& aTrsf, const Handle(Prs3d_Presentation)& aPresentation) Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(AIS_MinRadiusDimension,AIS_EllipseRadiusDimension)
-
-protected:
-
-
-
-
 private:
-
   
   Standard_EXPORT virtual void Compute (const Handle(PrsMgr_PresentationManager3d)& aPresentationManager, const Handle(Prs3d_Presentation)& aPresentation, const Standard_Integer aMode = 0) Standard_OVERRIDE;
   
@@ -92,13 +63,6 @@ private:
   gp_Pnt myApexN;
   gp_Pnt myEndOfArrow;
 
-
 };
-
-
-
-
-
-
 
 #endif // _AIS_MinRadiusDimension_HeaderFile

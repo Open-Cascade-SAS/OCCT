@@ -17,18 +17,10 @@
 #ifndef _StdPrs_PoleCurve_HeaderFile
 #define _StdPrs_PoleCurve_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
 #include <Prs3d_Root.hxx>
 #include <Prs3d_Drawer.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Integer.hxx>
 
-class Prs3d_Presentation;
 class Adaptor3d_Curve;
-
 
 //! A framework to provide display of Bezier or BSpline curves
 //! (by drawing a broken line linking the poles of the curve).

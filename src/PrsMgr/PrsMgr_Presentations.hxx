@@ -17,10 +17,10 @@
 #ifndef PrsMgr_Presentations_HeaderFile
 #define PrsMgr_Presentations_HeaderFile
 
-#include <PrsMgr_ModedPresentation.hxx>
+#include <Standard_Type.hxx>
 #include <NCollection_Sequence.hxx>
 
-typedef NCollection_Sequence<PrsMgr_ModedPresentation> PrsMgr_Presentations;
-
+class PrsMgr_Presentation;
+typedef NCollection_Sequence<Handle(PrsMgr_Presentation)> PrsMgr_Presentations;
 
 #endif

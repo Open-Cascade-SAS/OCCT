@@ -21,11 +21,9 @@
 #include <Prs3d_Root.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <StdPrs_Volume.hxx>
-#include <Standard_Boolean.hxx>
 
 class Graphic3d_ArrayOfSegments;
 class Graphic3d_ArrayOfTriangles;
-class Prs3d_Presentation;
 class TopoDS_Shape;
 class gp_Pnt2d;
 class BRep_Builder;

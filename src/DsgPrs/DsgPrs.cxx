@@ -12,9 +12,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <DsgPrs.hxx>
+
 #include <Aspect_TypeOfLine.hxx>
 #include <Aspect_TypeOfMarker.hxx>
-#include <DsgPrs.hxx>
 #include <ElCLib.hxx>
 #include <gce_MakeLin.hxx>
 #include <Geom_Circle.hxx>

@@ -3870,10 +3870,10 @@ inline void bndPresentation (Draw_Interpretor&                         theDI,
       Bnd_Box aBox;
       for (PrsMgr_Presentations::Iterator aPrsIter (theObj->Presentations()); aPrsIter.More(); aPrsIter.Next())
       {
-        if (aPrsIter.Value().Mode() != theDispMode)
+        if (aPrsIter.Value()->Mode() != theDispMode)
           continue;
 
-        aBox = aPrsIter.Value().Presentation()->Presentation()->MinMaxValues();
+        aBox = aPrsIter.Value()->MinMaxValues();
       }
       gp_Pnt aMin = aBox.CornerMin();
       gp_Pnt aMax = aBox.CornerMax();

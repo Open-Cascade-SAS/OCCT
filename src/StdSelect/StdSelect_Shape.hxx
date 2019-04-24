@@ -17,19 +17,11 @@
 #ifndef _StdSelect_Shape_HeaderFile
 #define _StdSelect_Shape_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
 #include <TopoDS_Shape.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <PrsMgr_PresentableObject.hxx>
-#include <PrsMgr_PresentationManager3d.hxx>
-#include <Standard_Integer.hxx>
 
 class TopoDS_Shape;
-class Prs3d_Presentation;
-class Prs3d_Projector;
-class Geom_Transformation;
 
 //! Presentable shape only for purpose of display for BRepOwner...
 class StdSelect_Shape : public PrsMgr_PresentableObject

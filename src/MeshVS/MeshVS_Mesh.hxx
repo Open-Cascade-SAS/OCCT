@@ -16,29 +16,20 @@
 #ifndef _MeshVS_Mesh_HeaderFile
 #define _MeshVS_Mesh_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
 #include <MeshVS_SequenceOfPrsBuilder.hxx>
 #include <MeshVS_DataMapOfIntegerOwner.hxx>
 #include <MeshVS_MeshSelectionMethod.hxx>
 #include <AIS_InteractiveObject.hxx>
-#include <Standard_Boolean.hxx>
-#include <PrsMgr_PresentationManager3d.hxx>
-#include <Standard_Integer.hxx>
-#include <SelectMgr_Selection.hxx>
 #include <SelectMgr_SequenceOfOwner.hxx>
 #include <Quantity_NameOfColor.hxx>
 #include <Standard_CString.hxx>
+
 class MeshVS_PrsBuilder;
 class TColStd_HPackedMapOfInteger;
 class MeshVS_DataSource;
 class MeshVS_Drawer;
 class SelectMgr_EntityOwner;
-class Prs3d_Presentation;
 
-
-class MeshVS_Mesh;
 DEFINE_STANDARD_HANDLE(MeshVS_Mesh, AIS_InteractiveObject)
 
 //! the main class provides interface to create mesh presentation as a whole

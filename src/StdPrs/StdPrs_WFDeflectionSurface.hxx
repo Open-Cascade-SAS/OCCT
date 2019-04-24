@@ -17,15 +17,10 @@
 #ifndef _StdPrs_WFDeflectionSurface_HeaderFile
 #define _StdPrs_WFDeflectionSurface_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
 #include <Prs3d_Root.hxx>
 #include <Prs3d_Drawer.hxx>
-class Prs3d_Presentation;
-class Adaptor3d_HSurface;
 
+class Adaptor3d_HSurface;
 
 //! Draws a surface by drawing the isoparametric curves with respect to
 //! a maximal chordial deviation.

@@ -17,24 +17,11 @@
 #ifndef _AIS_ConcentricRelation_HeaderFile
 #define _AIS_ConcentricRelation_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
-#include <gp_Pnt.hxx>
-#include <Standard_Real.hxx>
-#include <gp_Dir.hxx>
 #include <AIS_Relation.hxx>
-#include <PrsMgr_PresentationManager3d.hxx>
-#include <Standard_Integer.hxx>
-#include <SelectMgr_Selection.hxx>
-class TopoDS_Shape;
+#include <gp_Dir.hxx>
+
 class Geom_Plane;
-class Prs3d_Presentation;
-class Prs3d_Projector;
-class Geom_Transformation;
 
-
-class AIS_ConcentricRelation;
 DEFINE_STANDARD_HANDLE(AIS_ConcentricRelation, AIS_Relation)
 
 //! A framework to define a constraint by a relation of
@@ -44,10 +31,9 @@ DEFINE_STANDARD_HANDLE(AIS_ConcentricRelation, AIS_Relation)
 //! relation of concentricity can be extended.
 class AIS_ConcentricRelation : public AIS_Relation
 {
-
+  DEFINE_STANDARD_RTTIEXT(AIS_ConcentricRelation, AIS_Relation)
 public:
 
-  
   //! Constructs the display object for concentric relations
   //! between shapes.
   //! This object is defined by the two shapes, aFShape
@@ -65,19 +51,8 @@ public:
   //! to the object to display before computation  !!!
   Standard_EXPORT virtual void Compute (const Handle(Prs3d_Projector)& aProjector, const Handle(Geom_Transformation)& aTrsf, const Handle(Prs3d_Presentation)& aPresentation) Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(AIS_ConcentricRelation,AIS_Relation)
-
-protected:
-
-
-
-
 private:
 
-  
   Standard_EXPORT void Compute (const Handle(PrsMgr_PresentationManager3d)& aPresentationManager, const Handle(Prs3d_Presentation)& aPresentation, const Standard_Integer aMode = 0) Standard_OVERRIDE;
   
   Standard_EXPORT void Compute (const Handle(Prs3d_Projector)& aProjector, const Handle(Prs3d_Presentation)& aPresentation) Standard_OVERRIDE;
@@ -95,13 +70,6 @@ private:
   gp_Dir myDir;
   gp_Pnt myPnt;
 
-
 };
-
-
-
-
-
-
 
 #endif // _AIS_ConcentricRelation_HeaderFile

@@ -16,21 +16,15 @@
 #ifndef _MeshVS_ElementalColorPrsBuilder_HeaderFile
 #define _MeshVS_ElementalColorPrsBuilder_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
 #include <MeshVS_DataMapOfIntegerColor.hxx>
 #include <MeshVS_DataMapOfIntegerTwoColors.hxx>
 #include <MeshVS_PrsBuilder.hxx>
 #include <MeshVS_DisplayModeFlags.hxx>
-#include <Standard_Integer.hxx>
 #include <MeshVS_BuilderPriority.hxx>
-#include <TColStd_PackedMapOfInteger.hxx>
-#include <Standard_Boolean.hxx>
 #include <MeshVS_TwoColors.hxx>
+
 class MeshVS_Mesh;
 class MeshVS_DataSource;
-class Prs3d_Presentation;
 class Quantity_Color;
 
 

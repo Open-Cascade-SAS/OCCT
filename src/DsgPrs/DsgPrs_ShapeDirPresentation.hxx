@@ -22,10 +22,9 @@
 #include <Standard_Handle.hxx>
 
 #include <Prs3d_Drawer.hxx>
-#include <Standard_Integer.hxx>
-class Prs3d_Presentation;
-class TopoDS_Shape;
+#include <Prs3d_Presentation.hxx>
 
+class TopoDS_Shape;
 
 //! A framework to define display of the normal to the
 //! surface of a shape.

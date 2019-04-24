@@ -16,28 +16,19 @@
 #ifndef _MeshVS_VectorPrsBuilder_HeaderFile
 #define _MeshVS_VectorPrsBuilder_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
 #include <MeshVS_DataMapOfIntegerVector.hxx>
 #include <MeshVS_PrsBuilder.hxx>
 #include <MeshVS_DisplayModeFlags.hxx>
-#include <Standard_Integer.hxx>
 #include <MeshVS_BuilderPriority.hxx>
-#include <TColStd_PackedMapOfInteger.hxx>
 #include <TColgp_Array1OfPnt.hxx>
+
 class MeshVS_Mesh;
 class Quantity_Color;
 class MeshVS_DataSource;
-class Prs3d_Presentation;
 class gp_Trsf;
 class Graphic3d_ArrayOfPrimitives;
 class gp_Vec;
 
-
-class MeshVS_VectorPrsBuilder;
 DEFINE_STANDARD_HANDLE(MeshVS_VectorPrsBuilder, MeshVS_PrsBuilder)
 
 //! This class provides methods to create vector data presentation.

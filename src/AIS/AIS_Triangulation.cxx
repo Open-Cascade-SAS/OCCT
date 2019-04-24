@@ -95,16 +95,14 @@ void AIS_Triangulation::updatePresentation()
     // modify shading presentation without re-computation
     const PrsMgr_Presentations&        aPrsList  = Presentations();
     Handle(Graphic3d_AspectFillArea3d) anAreaAsp = myDrawer->ShadingAspect()->Aspect();
-    for (Standard_Integer aPrsIt = 1; aPrsIt <= aPrsList.Length(); ++aPrsIt)
+    for (PrsMgr_Presentations::Iterator aPrsIter (aPrsList); aPrsIter.More(); aPrsIter.Next())
     {
-      const PrsMgr_ModedPresentation& aPrsModed = aPrsList.Value (aPrsIt);
-      if (aPrsModed.Mode() != AIS_WireFrame)
+      if (aPrsIter.Value()->Mode() != AIS_WireFrame)
       {
         continue;
       }
 
-      const Handle(Prs3d_Presentation)& aPrs = aPrsModed.Presentation()->Presentation();
-
+      const Handle(Prs3d_Presentation)& aPrs = aPrsIter.Value();
       for (Graphic3d_SequenceOfGroup::Iterator aGroupIt (aPrs->Groups()); aGroupIt.More(); aGroupIt.Next())
       {
         const Handle(Graphic3d_Group)& aGroup = aGroupIt.Value();

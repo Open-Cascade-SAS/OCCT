@@ -22,10 +22,9 @@
 #include <Standard_Handle.hxx>
 
 #include <Prs3d_Drawer.hxx>
-#include <Standard_Boolean.hxx>
-class Prs3d_Presentation;
-class gp_Pnt;
+#include <Prs3d_Presentation.hxx>
 
+class gp_Pnt;
 
 //! A framework to define display of perpendicular
 //! constraints between shapes.

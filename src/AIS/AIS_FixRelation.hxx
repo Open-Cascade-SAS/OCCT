@@ -17,32 +17,11 @@
 #ifndef _AIS_FixRelation_HeaderFile
 #define _AIS_FixRelation_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
 #include <TopoDS_Wire.hxx>
-#include <gp_Pnt.hxx>
 #include <AIS_Relation.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
-#include <PrsMgr_PresentationManager3d.hxx>
-#include <Standard_Integer.hxx>
-#include <SelectMgr_Selection.hxx>
-class TopoDS_Shape;
+
 class Geom_Plane;
-class TopoDS_Wire;
-class gp_Pnt;
-class Prs3d_Presentation;
-class Prs3d_Projector;
-class Geom_Transformation;
-class TopoDS_Vertex;
-class Geom_Curve;
-class TopoDS_Edge;
-class gp_Lin;
-class gp_Circ;
 
-
-class AIS_FixRelation;
 DEFINE_STANDARD_HANDLE(AIS_FixRelation, AIS_Relation)
 
 //! Constructs and manages a constraint by a fixed
@@ -55,9 +34,8 @@ DEFINE_STANDARD_HANDLE(AIS_FixRelation, AIS_Relation)
 //! object.
 class AIS_FixRelation : public AIS_Relation
 {
-
+  DEFINE_STANDARD_RTTIEXT(AIS_FixRelation, AIS_Relation)
 public:
-
   
   //! initializes the vertex aShape, the
   //! plane aPlane and the wire aWire, which connects
@@ -98,16 +76,6 @@ public:
   //! to the object to display before computation  !!!
   Standard_EXPORT virtual void Compute (const Handle(Prs3d_Projector)& aProjector, const Handle(Geom_Transformation)& aTrsf, const Handle(Prs3d_Presentation)& aPresentation) Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(AIS_FixRelation,AIS_Relation)
-
-protected:
-
-
-
-
 private:
 
   
@@ -141,11 +109,6 @@ private:
 
 };
 
-
 #include <AIS_FixRelation.lxx>
-
-
-
-
 
 #endif // _AIS_FixRelation_HeaderFile

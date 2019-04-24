@@ -15,18 +15,17 @@
 
 #include <Prs3d_PresentationShadow.hxx>
 
-
-IMPLEMENT_STANDARD_RTTIEXT(Prs3d_PresentationShadow,Prs3d_Presentation)
+IMPLEMENT_STANDARD_RTTIEXT(Prs3d_PresentationShadow, Graphic3d_Structure)
 
 //=======================================================================
 //function : Prs3d_PresentationShadow
 //purpose  :
 //=======================================================================
 Prs3d_PresentationShadow::Prs3d_PresentationShadow (const Handle(Graphic3d_StructureManager)& theViewer,
-                                                    const Handle(Prs3d_Presentation)&         thePrs)
-: Prs3d_Presentation (theViewer, thePrs),
-  myParentStructId (thePrs->Identification()),
-  myParentAffinity (thePrs->CStructure()->ViewAffinity)
+                                                    const Handle(Graphic3d_Structure)&        thePrs)
+: Graphic3d_Structure (theViewer, thePrs),
+  myParentAffinity (thePrs->CStructure()->ViewAffinity),
+  myParentStructId (thePrs->Identification())
 {
   //
 }
