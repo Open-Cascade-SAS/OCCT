@@ -90,6 +90,7 @@ void SelectMgr_SelectionManager::Remove (const Handle(SelectMgr_SelectableObject
       {
         mySelector->RemoveSelectionOfObject (theObject, aSelIter.Value());
         aSelIter.Value()->UpdateBVHStatus (SelectMgr_TBU_Remove);
+        mySelector->Deactivate (aSelIter.Value());
       }
       mySelector->RemoveSelectableObject (theObject);
     }
