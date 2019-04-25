@@ -3,9 +3,7 @@ puts "OCC29972: Intersection curve has a weird gap in the middle of it"
 puts "========"
 puts ""
 
-puts "TODO OCC27243 ALL: Error: The curve res_1 possibly has a bend"
-
-set GoodNbCurves 2
+set GoodNbCurves 1
 
 foreach a [directory res*] {unset $a}
 

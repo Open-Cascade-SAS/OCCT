@@ -487,10 +487,10 @@ void BOPAlgo_PaveFiller::MakeBlocks()
       BOPDS_Curve& aNC=aVC.ChangeValue(j);
       const IntTools_Curve& aIC=aNC.Curve();
       //
-      PutStickPavesOnCurve(aF1, aF2, aMI, aNC, aMVStick, aMVTol, aDMVLV);
+      PutStickPavesOnCurve(aF1, aF2, aMI, aVC, j, aMVStick, aMVTol, aDMVLV);
       //904/F7
       if (aNbC == 1) {
-        PutEFPavesOnCurve(aNC, aMI, aMVEF, aMVTol, aDMVLV);
+        PutEFPavesOnCurve(aVC, j, aMI, aMVEF, aMVTol, aDMVLV);
       }
       //
       if (aIC.HasBounds()) {
@@ -814,12 +814,7 @@ void BOPAlgo_PaveFiller::PostTreatFF
     TColStd_MapOfInteger aMV, aMVEF, aMI;
     GetStickVertices(nF1, nF2, aMV, aMVEF, aMI);
     BOPDS_VectorOfCurve& aVC = aFF.ChangeCurves();
-    Standard_Integer aNbC = aVC.Length();
-    for (j = 0; j < aNbC; j++)
-    {
-      BOPDS_Curve& aNC = aVC.ChangeValue(j);
-      RemoveUsedVertices(aNC, aMV);
-    }
+    RemoveUsedVertices (aVC, aMV);
 
     TColStd_MapIteratorOfMapOfInteger itmap(aMV);
     for(; itmap.More(); itmap.Next())
@@ -1650,13 +1645,13 @@ Standard_Boolean BOPAlgo_PaveFiller::IsExistingPaveBlock
 //purpose  : 
 //=======================================================================
 static void getBoundPaves(const BOPDS_DS* theDS,
-                          BOPDS_Curve& theNC,
+                          const BOPDS_Curve& theNC,
                           Standard_Integer theNV[2])
 {
   theNV[0] = theNV[1] = -1;
 
   // get extreme paves
-  Handle(BOPDS_PaveBlock)& aPB = theNC.ChangePaveBlock1();
+  const Handle(BOPDS_PaveBlock)& aPB = theNC.PaveBlocks().First();
   const BOPDS_ListOfPave& aLP = aPB->ExtPaves();
   Standard_Integer aNbEP = aLP.Extent();
   if (aNbEP == 0)
@@ -2062,7 +2057,8 @@ void BOPAlgo_PaveFiller::GetEFPnts
 //purpose  : 
 //=======================================================================
   void BOPAlgo_PaveFiller::PutEFPavesOnCurve
-  (BOPDS_Curve& aNC,
+  (const BOPDS_VectorOfCurve& theVC, 
+   const Standard_Integer theIndex,
    const TColStd_MapOfInteger& aMI,
    const TColStd_MapOfInteger& aMVEF,
    TColStd_DataMapOfIntegerReal& aMVTol,
@@ -2072,6 +2068,7 @@ void BOPAlgo_PaveFiller::GetEFPnts
     return;
   }
   //
+  const BOPDS_Curve& aNC = theVC.Value(theIndex);
   const IntTools_Curve& aIC=aNC.Curve();
   GeomAbs_CurveType aTypeC;
   aTypeC=aIC.Type();
@@ -2083,7 +2080,7 @@ void BOPAlgo_PaveFiller::GetEFPnts
   TColStd_MapOfInteger aMV;
   //
   aMV.Assign(aMVEF);
-  RemoveUsedVertices(aNC, aMV);
+  RemoveUsedVertices(theVC, aMV);
   if (!aMV.Extent()) {
     return;
   }
@@ -2117,11 +2114,13 @@ void BOPAlgo_PaveFiller::GetEFPnts
   (const TopoDS_Face& aF1,
    const TopoDS_Face& aF2,
    const TColStd_MapOfInteger& aMI,
-   BOPDS_Curve& aNC,
+   const BOPDS_VectorOfCurve& theVC,
+   const Standard_Integer theIndex,
    const TColStd_MapOfInteger& aMVStick,
    TColStd_DataMapOfIntegerReal& aMVTol,
    TColStd_DataMapOfIntegerListOfInteger& aDMVLV)
 {
+  const BOPDS_Curve& aNC = theVC.Value(theIndex);
   // Get numbers of vertices assigned to the ends of the curve
   Standard_Integer aBndNV[2];
   getBoundPaves(myDS, aNC, aBndNV);
@@ -2132,7 +2131,7 @@ void BOPAlgo_PaveFiller::GetEFPnts
   }
   TColStd_MapOfInteger aMV;
   aMV.Assign(aMVStick);
-  RemoveUsedVertices(aNC, aMV);
+  RemoveUsedVertices(theVC, aMV);
   //
   if (!aMV.Extent()) {
     return;
@@ -2142,7 +2141,6 @@ void BOPAlgo_PaveFiller::GetEFPnts
   Handle(Geom_Surface) aS2=BRep_Tool::Surface(aF2);
   //
   const IntTools_Curve& aIC=aNC.Curve();
-  //if (aTypeC==GeomAbs_BezierCurve || aTypeC==GeomAbs_BSplineCurve) {
   Handle(Geom2d_Curve) aC2D[2];
   //
   aC2D[0]=aIC.FirstCurve2d();
@@ -2237,6 +2235,7 @@ void BOPAlgo_PaveFiller::GetStickVertices(const Standard_Integer nF1,
         aInt->Indices(nS1, nS2);
         if(aMI.Contains(nS1) && aMI.Contains(nS2)) {
           nVNew = aInt->IndexNew();
+          myDS->HasShapeSD (nVNew, nVNew);
           aMVStick.Add(nVNew);
         }
       }
@@ -2249,6 +2248,7 @@ void BOPAlgo_PaveFiller::GetStickVertices(const Standard_Integer nF1,
       aInt.Indices(nS1, nS2);
       if(aMI.Contains(nS1) && aMI.Contains(nS2)) {
         nVNew = aInt.IndexNew();
+        myDS->HasShapeSD (nVNew, nVNew);
         aMVStick.Add(nVNew);
         aMVEF.Add(nVNew);
       }
@@ -2281,24 +2281,28 @@ void BOPAlgo_PaveFiller::GetFullShapeMap(const Standard_Integer nF,
 // function: RemoveUsedVertices
 // purpose: 
 //=======================================================================
-void BOPAlgo_PaveFiller::RemoveUsedVertices(const BOPDS_Curve& aNC,
+void BOPAlgo_PaveFiller::RemoveUsedVertices(const BOPDS_VectorOfCurve& aVC,
                                             TColStd_MapOfInteger& aMV)
 {
   if (aMV.IsEmpty())
     return;
 
-  const BOPDS_ListOfPaveBlock& aLPBC = aNC.PaveBlocks();
-  BOPDS_ListIteratorOfListOfPaveBlock itPB(aLPBC);
-  for (; itPB.More(); itPB.Next())
+  for (Standard_Integer i = 0; i < aVC.Length(); ++i)
   {
-    const Handle(BOPDS_PaveBlock)& aPB = itPB.Value();
-    const BOPDS_ListOfPave& aLP = aPB->ExtPaves();
-    BOPDS_ListIteratorOfListOfPave itLP(aLP);
-    for (; itLP.More(); itLP.Next())
-      aMV.Remove(itLP.Value().Index());
-
-    aMV.Remove(aPB->Pave1().Index());
-    aMV.Remove(aPB->Pave2().Index());
+    const BOPDS_Curve& aNC = aVC.Value(i);
+    const BOPDS_ListOfPaveBlock& aLPBC = aNC.PaveBlocks();
+    BOPDS_ListIteratorOfListOfPaveBlock itPB(aLPBC);
+    for (; itPB.More(); itPB.Next())
+    {
+      const Handle(BOPDS_PaveBlock)& aPB = itPB.Value();
+      const BOPDS_ListOfPave& aLP = aPB->ExtPaves();
+      BOPDS_ListIteratorOfListOfPave itLP(aLP);
+      for (; itLP.More(); itLP.Next())
+        aMV.Remove(itLP.Value().Index());
+    
+      aMV.Remove(aPB->Pave1().Index());
+      aMV.Remove(aPB->Pave2().Index());
+    }
   }
 }
 

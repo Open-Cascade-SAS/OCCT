@@ -954,6 +954,10 @@ Standard_Boolean Adaptor3d_CurveOnSurface::IsClosed() const
 
 Standard_Boolean Adaptor3d_CurveOnSurface::IsPeriodic() const
 {
+  if (myType == GeomAbs_Circle ||
+      myType == GeomAbs_Ellipse)
+    return Standard_True;
+  
   return myCurve->IsPeriodic();
 }
 
@@ -964,6 +968,10 @@ Standard_Boolean Adaptor3d_CurveOnSurface::IsPeriodic() const
 
 Standard_Real Adaptor3d_CurveOnSurface::Period() const
 {
+  if (myType == GeomAbs_Circle ||
+      myType == GeomAbs_Ellipse)
+    return (2.*M_PI);
+  
   return myCurve->Period();
 }
 

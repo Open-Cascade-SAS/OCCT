@@ -13,13 +13,21 @@
 // commercial license or contractual agreement.
 
 #include <algorithm>
+#include <memory>
 #include <TopoDS_Edge.hxx>
 #include <Geom_Curve.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <Adaptor3d_HSurface.hxx>
+#include <Adaptor3d_CurveOnSurface.hxx>
+#include <Adaptor3d_HCurveOnSurface.hxx>
 #include <GeomAbs_SurfaceType.hxx>
 #include <BRep_Tool.hxx>
 #include <Geom_Line.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_CylindricalSurface.hxx>
+#include <Geom_ConicalSurface.hxx>
+#include <Geom_SphericalSurface.hxx>
+#include <Geom_ToroidalSurface.hxx>
 #include <gp_Lin.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Dir.hxx>
@@ -28,9 +36,12 @@
 #include <gp_Lin.hxx>
 
 #include <GeomAdaptor_Curve.hxx>
+#include <GeomAdaptor_HSurface.hxx>
 #include <Precision.hxx>
 #include <Extrema_ExtCC.hxx>
+//#include <Extrema_ExtCS.hxx>
 #include <Extrema_POnCurv.hxx>
+#include <IntCurveSurface_HInter.hxx>
 
 #include <math_FunctionSample.hxx>
 #include <math_FunctionAllRoots.hxx>
@@ -45,6 +56,20 @@
 #include <math_Matrix.hxx>
 #include <math_Vector.hxx>
 #include <NCollection_Array1.hxx>
+
+#ifdef OCCT_DEBUG
+#include <Geom_Circle.hxx>
+#include <Geom_Ellipse.hxx>
+#include <Geom_Hyperbola.hxx>
+#include <Geom_Parabola.hxx>
+#include <Geom_BezierCurve.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <GeomLib.hxx>
+#endif
+
+
+static Standard_Boolean IsDegenerated(const Handle(Adaptor3d_HCurveOnSurface)& theCurve);
+static Standard_Boolean IsDegenerated(const IntSurf_Quadric& theQuadric);
 
 static void FindVertex (const TheArc&,
                         const Handle(TheTopolTool)&,
@@ -149,6 +174,30 @@ void FindVertex (const TheArc& A,
   }
 }
 
+Standard_Boolean IsDegenerated(const Handle(Adaptor3d_HCurveOnSurface)& theCurve)
+{
+  if (theCurve->GetType() == GeomAbs_Circle)
+  {
+    gp_Circ aCirc = theCurve->Circle();
+    if (aCirc.Radius() <= Precision::Confusion())
+      return Standard_True;
+  }
+  return Standard_False;
+}
+
+Standard_Boolean IsDegenerated(const IntSurf_Quadric& theQuadric)
+{
+  GeomAbs_SurfaceType TypeQuad = theQuadric.TypeQuadric();
+  if (TypeQuad == GeomAbs_Cone)
+  {
+    gp_Cone aCone = theQuadric.Cone();
+    Standard_Real aSemiAngle = Abs(aCone.SemiAngle());
+    if (aSemiAngle < 0.02 || aSemiAngle > 1.55)
+      return Standard_True;
+  }
+  return Standard_False;
+}
+
 class SolInfo
 {
 public:
@@ -160,6 +209,12 @@ public:
   {
     myMathIndex = theIndex;
     myValue = theSolution.GetPoint(theIndex);
+  }
+
+  void Init(const IntCurveSurface_HInter& theSolution, const Standard_Integer theIndex)
+  {
+    myMathIndex = theIndex;
+    myValue = theSolution.Point(theIndex).W();
   }
 
   Standard_Real Value() const
@@ -215,12 +270,11 @@ void BoundedArc (const TheArc& A,
   // des arcs ayant un point debut et un point de fin (intervalle ferme de
   // parametrage).
 
-  Standard_Integer i,Nbi,Nbp;
+  Standard_Integer i, Nbi = 0, Nbp = 0;
 
   gp_Pnt ptdeb,ptfin;
   Standard_Real pardeb = 0., parfin = 0.;
   Standard_Integer ideb,ifin,range,ranged,rangef;
-
 
   // Creer l echantillonage (math_FunctionSample ou classe heritant)
   // Appel a math_FunctionAllRoots
@@ -238,7 +292,9 @@ void BoundedArc (const TheArc& A,
 
   //  Standard_Integer NbEchant = TheSOBTool::NbSamplesOnArc(A); 
   Standard_Integer NbEchant = Func.NbSamples(); 
-
+  if(NbEchant<100) NbEchant = 100; //-- lbr le 22 Avril 96 
+  //-- Toujours des pbs 
+  
   //-- Modif 24  Aout 93 -----------------------------
   Standard_Real nTolTangency = TolTangency;
   if((Pfin - Pdeb) < (TolTangency*10.0)) { 
@@ -247,6 +303,7 @@ void BoundedArc (const TheArc& A,
   if(EpsX>(nTolTangency+nTolTangency)) { 
     EpsX = nTolTangency * 0.1; 
   }
+
   //--------------------------------------------------
   //-- Plante avec un edge avec 2 Samples  
   //-- dont les extremites son solutions (f=0) 
@@ -255,11 +312,6 @@ void BoundedArc (const TheArc& A,
   //-- if(NbEchant<3) NbEchant = 3; //-- lbr le 19 Avril 95
   //--------------------------------------------------
   Standard_Real para=0,dist,maxdist;
-  /*  if(NbEchant<20) NbEchant = 20; //-- lbr le 22 Avril 96 
-  //-- Toujours des pbs 
-  */
-  if(NbEchant<100) NbEchant = 100; //-- lbr le 22 Avril 96 
-  //-- Toujours des pbs 
   
   //-------------------------------------------------------------- REJECTIONS le 15 oct 98 
   Standard_Boolean Rejection=Standard_True;  
@@ -298,7 +350,21 @@ void BoundedArc (const TheArc& A,
 
   Arcsol=Standard_False;
 
-  if(Rejection==Standard_False) { 
+  if(Rejection==Standard_False)
+  {
+    const IntSurf_Quadric& aQuadric = Func.Quadric();
+    GeomAbs_SurfaceType TypeQuad = aQuadric.TypeQuadric();
+    
+    IntCurveSurface_HInter IntCS;
+    Standard_Boolean IsIntCSdone = Standard_False;
+    TColStd_SequenceOfReal Params;
+    
+#if (defined(_MSC_VER) && (_MSC_VER < 1600))
+    std::auto_ptr<math_FunctionAllRoots>  pSol;
+#else
+    std::unique_ptr<math_FunctionAllRoots> pSol;
+#endif  
+    
     math_FunctionSample Echant(Pdeb,Pfin,NbEchant);
 
     Standard_Boolean aelargir=Standard_True;
@@ -320,11 +386,128 @@ void BoundedArc (const TheArc& A,
       maxdist = TolBoundary;
     }
 
-    math_FunctionAllRoots Sol(Func,Echant,EpsX,maxdist,maxdist); //-- TolBoundary,nTolTangency);
+    if (TypeQuad != GeomAbs_OtherSurface) //intersection of boundary curve and quadric surface
+    {
+      //Exact solution
+      Handle(Adaptor3d_HSurface) aSurf = Func.Surface();
+      Adaptor3d_CurveOnSurface ConS(A, aSurf);
+      GeomAbs_CurveType TypeConS = ConS.GetType();
+#ifdef OCCT_DEBUG
+      Handle(Geom_Curve) CurveConS;
+      switch(TypeConS)
+      {
+      case GeomAbs_Line:
+        {
+          CurveConS = new Geom_Line(ConS.Line());
+          break;
+        }
+      case GeomAbs_Circle:
+        {
+          CurveConS = new Geom_Circle(ConS.Circle());
+          break;
+        }
+      case GeomAbs_Ellipse:
+        {
+          CurveConS = new Geom_Ellipse(ConS.Ellipse());
+          break;
+        }
+      case GeomAbs_Hyperbola:
+        {
+          CurveConS = new Geom_Hyperbola(ConS.Hyperbola());
+          break;
+        }
+      case GeomAbs_Parabola:
+        {
+          CurveConS = new Geom_Parabola(ConS.Parabola());
+          break;
+        }
+      case GeomAbs_BezierCurve:
+        {
+          CurveConS = ConS.Bezier();
+          break;
+        }
+      case GeomAbs_BSplineCurve:
+        {
+          CurveConS = ConS.BSpline();
+          break;
+        }
+      default:
+        {
+          Standard_Real MaxDeviation, AverageDeviation;
+          GeomLib::BuildCurve3d(1.e-5, ConS, ConS.FirstParameter(), ConS.LastParameter(),
+                                CurveConS, MaxDeviation, AverageDeviation);
+          break;
+        }
+      }
+#endif
+      Handle(Adaptor3d_HCurveOnSurface) HConS = new Adaptor3d_HCurveOnSurface(ConS);
+      Handle(Geom_Surface) QuadSurf;
+      switch (TypeQuad)
+      {
+      case GeomAbs_Plane:
+        {
+          QuadSurf = new Geom_Plane(aQuadric.Plane());
+          break;
+        }
+      case GeomAbs_Cylinder:
+        {
+          QuadSurf = new Geom_CylindricalSurface(aQuadric.Cylinder());
+          break;
+        }
+      case GeomAbs_Cone:
+        {
+          QuadSurf = new Geom_ConicalSurface(aQuadric.Cone());
+          break;
+        }
+      case GeomAbs_Sphere:
+        {
+          QuadSurf = new Geom_SphericalSurface(aQuadric.Sphere());
+          break;
+        }
+      case GeomAbs_Torus:
+        {
+          QuadSurf = new Geom_ToroidalSurface(aQuadric.Torus());
+          break;
+        }
+      default:
+        break;
+      }
+      Handle(GeomAdaptor_HSurface) GAHsurf = new GeomAdaptor_HSurface(QuadSurf);
+      
+      if ((TypeConS == GeomAbs_Line ||
+           TypeConS == GeomAbs_Circle ||
+           TypeConS == GeomAbs_Ellipse ||
+           TypeConS == GeomAbs_Parabola ||
+           TypeConS == GeomAbs_Hyperbola) &&
+          TypeQuad != GeomAbs_Torus &&
+          !IsDegenerated(HConS) &&
+          !IsDegenerated(aQuadric))
+      {
+        //exact intersection for only canonic curves and real quadric surfaces
+        IntCS.Perform(HConS, GAHsurf);
+      }
+      
+      IsIntCSdone = IntCS.IsDone();
+      if (IsIntCSdone)
+      {
+        Nbp = IntCS.NbPoints();
+        Nbi = IntCS.NbSegments();
+      }
+      //If we have not got intersection, it may be touch with some tolerance,
+      //need to be checked
+      if (Nbp == 0 && Nbi == 0)
+        IsIntCSdone = Standard_False;
 
-    if (!Sol.IsDone()) {throw Standard_Failure();}
-
-    Nbp=Sol.NbPoints();
+    } //if (TypeQuad != GeomAbs_OtherSurface) - intersection of boundary curve and quadric surface
+    
+    if (!IsIntCSdone)
+    {
+      pSol.reset(new math_FunctionAllRoots(Func,Echant,EpsX,maxdist,maxdist)); //-- TolBoundary,nTolTangency);
+      
+      if (!pSol->IsDone()) {throw Standard_Failure();}
+      
+      Nbp=pSol->NbPoints();
+    }
     //
     //jgv: build solution on the whole boundary
     if (RecheckOnRegularity && Nbp > 0 && IsRegularity(A, Domain))
@@ -387,7 +570,7 @@ void BoundedArc (const TheArc& A,
           return;
         }
       }
-    }
+    } //if (RecheckOnRegularity && Nbp > 0 && IsRegularity(A, Domain))
     ////////////////////////////////////////////
 
     //-- detection du cas ou la fonction est quasi tangente et que les 
@@ -400,7 +583,10 @@ void BoundedArc (const TheArc& A,
 
       for(i=1;i<=Nbp;i++)
       {
-        aSI(i).Init(Sol, i);
+        if (IsIntCSdone)
+          aSI(i).Init(IntCS, i);
+        else
+          aSI(i).Init(*pSol, i);
       }
 
       std::sort(aSI.begin(), aSI.end());
@@ -413,10 +599,8 @@ void BoundedArc (const TheArc& A,
       // But we have 2,3,.. solutions.     That is wrong ersult.
       // The TreatLC(...) function is dedicated to solve the pb.
       //                           PKV Fri Mar 23 12:17:29 2001
-      Standard_Integer ip;
-      const IntSurf_Quadric& aQuadric=Func.Quadric();
 
-      ip=TreatLC (A, Domain, aQuadric, TolBoundary, pnt);
+      Standard_Integer ip = TreatLC (A, Domain, aQuadric, TolBoundary, pnt);
       if (ip) {
         //////////////////////////////////////////////////////////
         //modified by NIZNHY-PKV Wed Mar 21 18:34:23 2001 t
@@ -483,19 +667,14 @@ void BoundedArc (const TheArc& A,
           dist = Abs(dist);
 
           Standard_Integer anIndx = -1;
-          const Standard_Real aParam = Sol.GetPoint(aSI(i).Index());
+          //const Standard_Real aParam = Sol->GetPoint(aSI(i).Index());
+          const Standard_Real aParam = aSI(i).Value();
           if (dist < maxdist)
           {
-            if (Abs(aParam - Pdeb) <= Precision::PConfusion() || Abs(aParam - Pfin) <= Precision::PConfusion())
+            if (!IsIntCSdone &&
+                (Abs(aParam - Pdeb) <= Precision::PConfusion() || Abs(aParam - Pfin) <= Precision::PConfusion()))
             {
-              Standard_Real aDistTemp = RealLast();
-              if (Func.Value(aParam, aDistTemp))
-              {
-                if (Abs(aDistTemp) < maxdist)
-                {
-                  anIndx = Sol.GetPointState(aSI(i).Index());
-                }
-              }
+              anIndx = pSol->GetPointState(aSI(i).Index());
             }
           }
 
@@ -535,8 +714,8 @@ void BoundedArc (const TheArc& A,
     //   Traiter les extremites comme des points
     //   Ajouter intervalle dans la liste des segments
 
-    Nbi=Sol.NbIntervals();
-
+    if (!IsIntCSdone)
+      Nbi = pSol->NbIntervals();
 
     if (!RecheckOnRegularity && Nbp) { 
       //--cout<<" Debug : IntStart_SearchOnBoundaries_1.gxx :Nbp>0  0 <- Nbi "<<Nbi<<endl;
@@ -549,14 +728,26 @@ void BoundedArc (const TheArc& A,
       IntStart_TheSegment newseg;
       newseg.SetValue(A);
       // Recuperer point debut et fin, et leur parametre.
-      Sol.GetInterval(i,pardeb,parfin);
-      Sol.GetIntervalState(i,ideb,ifin);
+      if (IsIntCSdone)
+      {
+        IntCurveSurface_IntersectionSegment IntSeg = IntCS.Segment(i);
+        IntCurveSurface_IntersectionPoint End1 = IntSeg.FirstPoint();
+        IntCurveSurface_IntersectionPoint End2 = IntSeg.SecondPoint();
+        pardeb = End1.W();
+        parfin = End2.W();
+        ptdeb  = End1.Pnt();
+        ptfin  = End2.Pnt();
+      }
+      else
+      {
+        pSol->GetInterval(i,pardeb,parfin);
+        pSol->GetIntervalState(i,ideb,ifin);
 
-
-      //-- cout<<" Debug : IntStart_SearchOnBoundaries_1.gxx : i= "<<i<<" ParDeb:"<<pardeb<<"  ParFin:"<<parfin<<endl;
-
-      ptdeb=Func.Valpoint(ideb);
-      ptfin=Func.Valpoint(ifin);
+        //-- cout<<" Debug : IntStart_SearchOnBoundaries_1.gxx : i= "<<i<<" ParDeb:"<<pardeb<<"  ParFin:"<<parfin<<endl;
+        
+        ptdeb=Func.Valpoint(ideb);
+        ptfin=Func.Valpoint(ifin);
+      }
 
       PointProcess(ptdeb,pardeb,A,Domain,pnt,TolBoundary,ranged);
       newseg.SetLimitPoint(pnt.Value(ranged),Standard_True);

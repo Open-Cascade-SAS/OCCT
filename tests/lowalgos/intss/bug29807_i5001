@@ -3,10 +3,6 @@ puts "0029807: Impossible to cut cone from prism"
 puts "========"
 puts ""
 
-puts "TODO OCC29883 ALL: Error in res_2: T=0"
-puts "TODO OCC29883 ALL: Error: 0 vertices are expected but 2 are found"
-puts "TODO OCC29883 ALL: Error :  is WRONG because number of VERTEX entities in shape \"result\" is 3"
-
 foreach a [directory res*] {unset $a}
 
 binrestore [locate_data_file bug29807_f1.bin] f1

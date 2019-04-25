@@ -19,17 +19,23 @@ checkprops result -s 45.9872
 
 set nbshapes_expected "
 Number of shapes in result
- VERTEX    : 6
- EDGE      : 7
+ VERTEX    : 7
+ EDGE      : 8
  WIRE      : 2
  FACE      : 2
  SHELL     : 1
  SOLID     : 0
  COMPSOLID : 0
  COMPOUND  : 0
- SHAPE     : 18
+ SHAPE     : 20
 "
 checknbshapes result -ref ${nbshapes_expected} -t -m "Result obtained by Boolean cut operation"
+
+set tolres [checkmaxtol result]
+
+if { ${tolres} > 5.e-7} {
+   puts "Error: bad tolerance of result"
+}
 
 checkview -display result -2d -path ${imagedir}/${test_image}.png
 
