@@ -48,6 +48,31 @@ public:
   //! Creates a NULL Shape referring to nothing.
   TopoDS_Shape() : myOrient (TopAbs_EXTERNAL) {}
 
+#ifndef OCCT_NO_RVALUE_REFERENCE
+
+  //! Generalized move constructor, accepting also sub-classes
+  //! (TopoDS_Shape hierarchy declares only fake sub-classes with no extra fields).
+  template<class T2>
+  TopoDS_Shape (T2&& theOther, typename std::enable_if<opencascade::std::is_base_of<TopoDS_Shape, T2>::value>::type* = 0)
+  : myTShape  (std::forward<T2> (theOther).myTShape),
+    myLocation(std::forward<T2> (theOther).myLocation),
+    myOrient  (std::forward<T2> (theOther).myOrient)
+  {
+  }
+
+  //! Generalized move assignment operator.
+  template<class T2>
+  typename std::enable_if<opencascade::std::is_base_of<TopoDS_Shape, T2>::value, TopoDS_Shape>::type&
+  operator= (T2&& theOther)
+  {
+    myTShape   = std::forward<T2> (theOther).myTShape;
+    myLocation = std::forward<T2> (theOther).myLocation;
+    myOrient   = std::forward<T2> (theOther).myOrient;
+    return *this;
+  }
+
+#endif
+
   //! Returns true if this shape is null. In other words, it
   //! references no underlying shape with the potential to
   //! be given a location and an orientation.

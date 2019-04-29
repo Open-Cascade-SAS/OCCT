@@ -70,8 +70,7 @@ namespace opencascade {
       BeginScope();
     }
 
-#if(defined(_MSC_VER) && (_MSC_VER < 1600))
-#else
+#ifndef OCCT_NO_RVALUE_REFERENCE
     //! Move constructor
     handle (handle&& theHandle) : entity(theHandle.entity)
     {
@@ -114,8 +113,7 @@ namespace opencascade {
       return *this;
     }
 
-#if(defined(_MSC_VER) && (_MSC_VER < 1600))
-#else
+#ifndef OCCT_NO_RVALUE_REFERENCE
     //! Move operator
     handle& operator= (handle&& theHandle)
     {
@@ -309,8 +307,7 @@ namespace opencascade {
       BeginScope();
     }
 
-#if(defined(_MSC_VER) && (_MSC_VER < 1600))
-#else
+#ifndef OCCT_NO_RVALUE_REFERENCE
     //! Generalized move constructor
     template <class T2>
     handle (handle<T2>&& theHandle, typename std::enable_if <is_base_but_not_same <T, T2>::value>::type* = nullptr)
@@ -330,8 +327,7 @@ namespace opencascade {
       return *this;
     }
 
-#if(defined(_MSC_VER) && (_MSC_VER < 1600))
-#else
+#ifndef OCCT_NO_RVALUE_REFERENCE
     //! Generalized move operator
     template <class T2>
     handle& operator= (handle<T2>&& theHandle)
