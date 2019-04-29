@@ -12,13 +12,11 @@ CONFIG -= debug_and_release
 OccGitRoot = $$_PRO_FILE_PWD_/../../../..
 
 # Define compilation flags
-!win32 { DEFINES += OCC_CONVERT_SIGNALS }
-android {
-  CONFIG += warn_off
-  QMAKE_CFLAGS   += -fexceptions -Wno-ignored-qualifiers -Wall
-  QMAKE_CXXFLAGS += -fexceptions -Wno-ignored-qualifiers -Wall
-  #android-g++ { QMAKE_CXXFLAGS += -Wno-strict-overflow }
-} else:win32 {
+CONFIG += warn_on
+QMAKE_CFLAGS_WARN_ON   = -Wall
+QMAKE_CXXFLAGS_WARN_ON = -Wall
+win32 {
+  QMAKE_CFLAGS_WARN_ON   = -W4
   QMAKE_CXXFLAGS_WARN_ON = -W4
   QMAKE_CXXFLAGS_EXCEPTIONS_ON = /EHa
   QMAKE_CXXFLAGS_STL_ON = /EHa
@@ -39,15 +37,27 @@ android {
   DEFINES += _CRT_SECURE_NO_WARNINGS
   DEFINES += _CRT_NONSTDC_NO_DEPRECATE
   DEFINES += _SCL_SECURE_NO_WARNINGS
-} else:mac {
+} else {
   CONFIG += c++11
-  CONFIG += warn_off
-  QMAKE_CXXFLAGS += -Wall
+  QMAKE_CFLAGS   += -fexceptions
+  QMAKE_CXXFLAGS += -fexceptions
   QMAKE_CXXFLAGS += -fvisibility=default
-  iphoneos {
-    QMAKE_IOS_DEPLOYMENT_TARGET = 8.0
-  } else {
-    QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.10
+  DEFINES += OCC_CONVERT_SIGNALS
+  mac {
+    iphoneos {
+      QMAKE_IOS_DEPLOYMENT_TARGET = 8.0
+    } else {
+      QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.14
+    }
+  }
+}
+!CONFIG(debug, debug|release) {
+  # disable exceptions in Release builds
+  DEFINES += No_Exception
+  HAVE_RelWithDebInfo {
+    win32 {
+      CONFIG += force_debug_info
+    }
   }
 }
 
@@ -126,9 +136,6 @@ win32 {
   QMAKE_SUBSTITUTES += occtkgen_libfolder
 
   LIBS += -L$$aLibDest
-  HAVE_RelWithDebInfo {
-    !CONFIG(debug, debug|release) { CONFIG += force_debug_info }
-  }
   equals(TEMPLATE, lib) {
     QMAKE_CLEAN += $$DESTDIR/$${TARGET}.dll
     QMAKE_CLEAN += $$aLibDest/$${TARGET}.lib
