@@ -282,7 +282,7 @@ static IFSelect_ReturnStatus XSControl_traccess
   //        ****    trscomp (comp -> save)         **** 29
   Standard_Boolean cascomp = (pilot->Word(0).Location(1,'o',1,5) > 0);
   Standard_Boolean cassave = (pilot->Word(0).Location(1,'s',1,5) > 0);
-  char nomsh[100], noms[100];
+  TCollection_AsciiString nomsh, noms;
   const Handle(XSControl_TransferReader) &TR = XSControl::Session(pilot)->TransferReader();
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
   if (TR.IsNull()) { sout<<" manque init"<<endl; return IFSelect_RetError; }
@@ -290,8 +290,8 @@ static IFSelect_ReturnStatus XSControl_traccess
   if (mdl.IsNull()) { sout<<" modele absent"<<endl; return IFSelect_RetError; }
   Standard_Integer num = (argc > 1 ? IFSelect_Functions::GiveEntityNumber(XSControl::Session(pilot),arg1) : 0);
 
-  if (argc > 1) strcpy (nomsh,arg1);
-  else    strcpy (nomsh,(cascomp ? "TREAD_COMP" : "TREAD_LIST"));
+  if (argc > 1) nomsh = arg1;
+  else nomsh = cascomp ? "TREAD_COMP" : "TREAD_LIST";
   if (cassave) sout<<" save shapes -> current directory"<<endl;
 
   if (num == 0 || cascomp) {
@@ -300,30 +300,30 @@ static IFSelect_ReturnStatus XSControl_traccess
     B.MakeCompound(C);
 
     const Handle(TopTools_HSequenceOfShape) &list = TR->ShapeResultList(Standard_True);
-    Standard_Integer i,  nb = list->Length();
-    sout<<" TOUS RESULTATS par ShapeResultList, soit "<<nb<<endl;
-    for (i = 1; i <= nb; i ++) {
-      sprintf (noms,"%s_%d",nomsh,i);
+    sout<<" TOUS RESULTATS par ShapeResultList, soit "<<list->Length()<<endl;
+    for (Standard_Integer i = 1, nb = list->Length(); i <= nb; ++i)
+    {
+      noms = nomsh + "_" + i;
       if      ( (i%1000) == 0) sout<<"("<<i<<")"<<endl;
       else if ( (i%100)  == 0) sout<<"*";
       else if ( (i%10)   == 0) sout<<"0";
       else                     sout<<".";
       if (list->Value(i).IsNull()) continue;
-      if      (!cascomp && !cassave) XSControl::Vars(pilot)->SetShape(noms,list->Value(i));
-      else if (!cascomp &&  cassave) BRepTools::Write (list->Value(i),noms);
+      if      (!cascomp && !cassave) XSControl::Vars(pilot)->SetShape (noms.ToCString(), list->Value(i));
+      else if (!cascomp &&  cassave) BRepTools::Write (list->Value(i), noms.ToCString());
       else if (cascomp) B.Add (C,list->Value(i));
     }
     sout<<endl;
-    if      (cascomp && !cassave) XSControl::Vars(pilot)->SetShape(nomsh,C);
-    else if (cascomp &&  cassave) BRepTools::Write (C,nomsh);
+    if      (cascomp && !cassave) XSControl::Vars(pilot)->SetShape (nomsh.ToCString(), C);
+    else if (cascomp &&  cassave) BRepTools::Write (C, nomsh.ToCString());
   } else {
     if (num < 1 || num > mdl->NbEntities()) { sout<<" incorrect:"<<arg1<<endl; return IFSelect_RetError; }
     TopoDS_Shape sh = TR->ShapeResult(mdl->Value(num));
     if (sh.IsNull()) { sout<<" Pas de resultat pour "<<arg1<<endl; return IFSelect_RetError; }
-    if (argc > 2) sprintf (nomsh,"%s",arg2);
-    else sprintf (nomsh,"TREAD_%d",num);
-    if      (!cascomp && !cassave) XSControl::Vars(pilot)->SetShape(nomsh,sh);
-    else if (!cascomp &&  cassave) BRepTools::Write (sh,nomsh);
+    if (argc > 2) nomsh = arg2;
+    else nomsh = TCollection_AsciiString ("TREAD_") + num;
+    if      (!cascomp && !cassave) XSControl::Vars(pilot)->SetShape (nomsh.ToCString(), sh);
+    else if (!cascomp &&  cassave) BRepTools::Write (sh, nomsh.ToCString());
     else sout<<"Option non comprise"<<endl;
   }
   return IFSelect_RetDone;

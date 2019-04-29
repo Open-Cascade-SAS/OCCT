@@ -56,7 +56,7 @@ Standard_Boolean Storage_TypeData::Read (Storage_BaseDriver& theDriver)
       OCC_CATCH_SIGNALS
       theDriver.ReadTypeInformations (aTypeNum, aTypeName);
     }
-    catch (Storage_StreamTypeMismatchError)
+    catch (const Storage_StreamTypeMismatchError&)
     {
       myErrorStatus = Storage_VSTypeMismatch;
       myErrorStatusExt = "ReadTypeInformations";
