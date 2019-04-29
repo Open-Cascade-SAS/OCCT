@@ -19,6 +19,9 @@
 #define GL_GLEXT_LEGACY // To prevent inclusion of system glext.h on Mac OS X 10.6.8
 #endif
 
+// macOS 10.4 deprecated OpenGL framework - suppress useless warnings
+#define GL_SILENCE_DEPRECATION
+
 #import <TargetConditionals.h>
 
 #if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE

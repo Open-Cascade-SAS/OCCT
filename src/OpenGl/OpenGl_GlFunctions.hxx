@@ -46,6 +46,8 @@
 // include main OpenGL header provided with system
 #if defined(__APPLE__)
   #import <TargetConditionals.h>
+  // macOS 10.4 deprecated OpenGL framework - suppress useless warnings
+  #define GL_SILENCE_DEPRECATION
   #if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
     #include <OpenGLES/ES2/gl.h>
   #else
