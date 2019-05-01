@@ -81,6 +81,11 @@ void SelectMgr_ViewerSelector::updatePoint3d (SelectMgr_SortCriterion& theCriter
   {
     theCriterion.Point = thePickResult.PickedPoint();
   }
+  else if (!thePickResult.IsValid())
+  {
+    theCriterion.Point = thePickResult.PickedPoint();
+    return;
+  }
   else
   {
     theCriterion.Point = theMgr.DetectedPoint (theCriterion.Depth);
@@ -106,7 +111,7 @@ void SelectMgr_ViewerSelector::updatePoint3d (SelectMgr_SortCriterion& theCriter
   }
   else
   {
-    const Standard_Real aDistFromEye = (theCriterion.Point.XYZ() - myCameraEye.XYZ()).Dot (myCameraDir.XYZ());
+    const Standard_Real aDistFromEye = Abs ((theCriterion.Point.XYZ() - myCameraEye.XYZ()).Dot (myCameraDir.XYZ()));
     theCriterion.Tolerance = aDistFromEye * myCameraScale * theEntity->SensitivityFactor();
   }
 }
