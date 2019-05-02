@@ -83,13 +83,12 @@ void PrsMgr_Presentation::display (const Standard_Boolean theIsHighlight)
 {
   if (!base_type::IsDisplayed())
   {
-    base_type::SetIsForHighlight (theIsHighlight);
+    base_type::SetIsForHighlight (theIsHighlight); // optimization - disable frustum culling for this presentation
     base_type::Display();
   }
   else if (!base_type::IsVisible())
   {
     base_type::SetVisible (Standard_True);
-    base_type::SetIsForHighlight (theIsHighlight);
   }
 }
 
