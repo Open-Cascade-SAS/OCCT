@@ -76,6 +76,7 @@ Standard_PExtCharacter.hxx
 Standard_PrimitiveTypes.hxx
 Standard_ProgramError.hxx
 Standard_RangeError.hxx
+Standard_ReadBuffer.hxx
 Standard_Real.cxx
 Standard_Real.hxx
 Standard_ShortReal.cxx

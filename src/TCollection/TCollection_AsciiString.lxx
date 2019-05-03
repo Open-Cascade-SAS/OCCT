@@ -114,9 +114,9 @@ inline Standard_Boolean TCollection_AsciiString::IsEqual(const TCollection_Ascii
 inline TCollection_AsciiString TCollection_AsciiString::SubString(const Standard_Integer FromIndex,
 							   const Standard_Integer ToIndex) const
 {
-
-  if (ToIndex > mylength || FromIndex <= 0 || FromIndex > ToIndex ) throw Standard_OutOfRange();
-
+  // note the we are doing here weird casts just to suppress annoying and meaningless warning -Wstrict-overflow
+  Standard_OutOfRange_Always_Raise_if(FromIndex <= 0 || ToIndex <= 0 || (unsigned int)ToIndex > (unsigned int)mylength || (unsigned int)FromIndex > (unsigned int)ToIndex,
+                                      "TCollection_AsciiString::SubString() out of range");
   return TCollection_AsciiString( &mystring [ FromIndex - 1 ] ,
                                   ToIndex - FromIndex + 1 ) ;
 }

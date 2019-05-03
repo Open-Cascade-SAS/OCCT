@@ -3180,97 +3180,307 @@ void ViewerTest::GetMousePosition(Standard_Integer& Xpix,Standard_Integer& Ypix)
 }
 
 //==============================================================================
-//function : ViewProject: implements VAxo, VTop, VLeft, ...
-//purpose  : Switches to an axonometric, top, left and other views
+//function : VViewProj
+//purpose  : Switch view projection
 //==============================================================================
-
-static int ViewProject(Draw_Interpretor& di, const V3d_TypeOfOrientation ori)
+static int VViewProj (Draw_Interpretor& ,
+                      Standard_Integer theNbArgs,
+                      const char** theArgVec)
 {
-  if ( ViewerTest::CurrentView().IsNull() )
+  static Standard_Boolean isYup = Standard_False;
+  const Handle(V3d_View)& aView = ViewerTest::CurrentView();
+  if (aView.IsNull())
   {
-    di<<"Call vinit before this command, please\n";
+    std::cout << "Error: no active view\n";
     return 1;
   }
 
-  ViewerTest::CurrentView()->SetProj(ori);
+  TCollection_AsciiString aCmdName (theArgVec[0]);
+  Standard_Boolean isGeneralCmd = Standard_False;
+  if (aCmdName == "vfront")
+  {
+    aView->SetProj (isYup ? V3d_TypeOfOrientation_Yup_Front : V3d_TypeOfOrientation_Zup_Front, isYup);
+  }
+  else if (aCmdName == "vback")
+  {
+    aView->SetProj (isYup ? V3d_TypeOfOrientation_Yup_Back : V3d_TypeOfOrientation_Zup_Back, isYup);
+  }
+  else if (aCmdName == "vtop")
+  {
+    aView->SetProj (isYup ? V3d_TypeOfOrientation_Yup_Top : V3d_TypeOfOrientation_Zup_Top, isYup);
+  }
+  else if (aCmdName == "vbottom")
+  {
+    aView->SetProj (isYup ? V3d_TypeOfOrientation_Yup_Bottom : V3d_TypeOfOrientation_Zup_Bottom, isYup);
+  }
+  else if (aCmdName == "vleft")
+  {
+    aView->SetProj (isYup ? V3d_TypeOfOrientation_Yup_Left : V3d_TypeOfOrientation_Zup_Left, isYup);
+  }
+  else if (aCmdName == "vright")
+  {
+    aView->SetProj (isYup ? V3d_TypeOfOrientation_Yup_Right : V3d_TypeOfOrientation_Zup_Right, isYup);
+  }
+  else if (aCmdName == "vaxo")
+  {
+    aView->SetProj (isYup ? V3d_TypeOfOrientation_Yup_AxoRight : V3d_TypeOfOrientation_Zup_AxoRight, isYup);
+  }
+  else
+  {
+    isGeneralCmd = Standard_True;
+    for (Standard_Integer anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
+    {
+      TCollection_AsciiString anArgCase (theArgVec[anArgIter]);
+      anArgCase.LowerCase();
+      if (anArgCase == "-zup")
+      {
+        isYup = Standard_False;
+      }
+      else if (anArgCase == "-yup")
+      {
+        isYup = Standard_True;
+      }
+      else if (anArgCase == "-front"
+            || anArgCase == "front"
+            || anArgCase == "-f"
+            || anArgCase == "f")
+      {
+        aView->SetProj (isYup ? V3d_TypeOfOrientation_Yup_Front : V3d_TypeOfOrientation_Zup_Front, isYup);
+      }
+      else if (anArgCase == "-back"
+            || anArgCase == "back"
+            || anArgCase == "-b"
+            || anArgCase == "b")
+      {
+        aView->SetProj (isYup ? V3d_TypeOfOrientation_Yup_Back : V3d_TypeOfOrientation_Zup_Back, isYup);
+      }
+      else if (anArgCase == "-top"
+            || anArgCase == "top"
+            || anArgCase == "-t"
+            || anArgCase == "t")
+      {
+        aView->SetProj (isYup ? V3d_TypeOfOrientation_Yup_Top : V3d_TypeOfOrientation_Zup_Top, isYup);
+      }
+      else if (anArgCase == "-bottom"
+            || anArgCase == "bottom"
+            || anArgCase == "-bot"
+            || anArgCase == "bot"
+            || anArgCase == "-b"
+            || anArgCase == "b")
+      {
+        aView->SetProj (isYup ? V3d_TypeOfOrientation_Yup_Bottom : V3d_TypeOfOrientation_Zup_Bottom, isYup);
+      }
+      else if (anArgCase == "-left"
+            || anArgCase == "left"
+            || anArgCase == "-l"
+            || anArgCase == "l")
+      {
+        aView->SetProj (isYup ? V3d_TypeOfOrientation_Yup_Left : V3d_TypeOfOrientation_Zup_Left, isYup);
+      }
+      else if (anArgCase == "-right"
+            || anArgCase == "right"
+            || anArgCase == "-r"
+            || anArgCase == "r")
+      {
+        aView->SetProj (isYup ? V3d_TypeOfOrientation_Yup_Right : V3d_TypeOfOrientation_Zup_Right, isYup);
+      }
+      else if (anArgCase == "-axoleft"
+            || anArgCase == "-leftaxo"
+            || anArgCase == "axoleft"
+            || anArgCase == "leftaxo")
+      {
+        aView->SetProj (isYup ? V3d_TypeOfOrientation_Yup_AxoLeft : V3d_TypeOfOrientation_Zup_AxoLeft, isYup);
+      }
+      else if (anArgCase == "-axo"
+            || anArgCase == "axo"
+            || anArgCase == "-a"
+            || anArgCase == "a"
+            || anArgCase == "-axoright"
+            || anArgCase == "-rightaxo"
+            || anArgCase == "axoright"
+            || anArgCase == "rightaxo")
+      {
+        aView->SetProj (isYup ? V3d_TypeOfOrientation_Yup_AxoRight : V3d_TypeOfOrientation_Zup_AxoRight, isYup);
+      }
+      else if (anArgCase == "+x")
+      {
+        aView->SetProj (V3d_Xpos, isYup);
+      }
+      else if (anArgCase == "-x")
+      {
+        aView->SetProj (V3d_Xneg, isYup);
+      }
+      else if (anArgCase == "+y")
+      {
+        aView->SetProj (V3d_Ypos, isYup);
+      }
+      else if (anArgCase == "-y")
+      {
+        aView->SetProj (V3d_Yneg, isYup);
+      }
+      else if (anArgCase == "+z")
+      {
+        aView->SetProj (V3d_Zpos, isYup);
+      }
+      else if (anArgCase == "-z")
+      {
+        aView->SetProj (V3d_Zneg, isYup);
+      }
+      else if (anArgCase == "+x+y+z")
+      {
+        aView->SetProj (V3d_XposYposZpos, isYup);
+      }
+      else if (anArgCase == "+x+y-z")
+      {
+        aView->SetProj (V3d_XposYposZneg, isYup);
+      }
+      else if (anArgCase == "+x-y+z")
+      {
+        aView->SetProj (V3d_XposYnegZpos, isYup);
+      }
+      else if (anArgCase == "+x-y-z")
+      {
+        aView->SetProj (V3d_XposYnegZneg, isYup);
+      }
+      else if (anArgCase == "-x+y+z")
+      {
+        aView->SetProj (V3d_XnegYposZpos, isYup);
+      }
+      else if (anArgCase == "-x+y-z")
+      {
+        aView->SetProj (V3d_XnegYposZneg, isYup);
+      }
+      else if (anArgCase == "-x-y+z")
+      {
+        aView->SetProj (V3d_XnegYnegZpos, isYup);
+      }
+      else if (anArgCase == "-x-y-z")
+      {
+        aView->SetProj (V3d_XnegYnegZneg, isYup);
+      }
+      else if (anArgCase == "+x+y")
+      {
+        aView->SetProj (V3d_XposYpos, isYup);
+      }
+      else if (anArgCase == "+x-y")
+      {
+        aView->SetProj (V3d_XposYneg, isYup);
+      }
+      else if (anArgCase == "-x+y")
+      {
+        aView->SetProj (V3d_XnegYpos, isYup);
+      }
+      else if (anArgCase == "-x-y")
+      {
+        aView->SetProj (V3d_XnegYneg, isYup);
+      }
+      else if (anArgCase == "+x+z")
+      {
+        aView->SetProj (V3d_XposZpos, isYup);
+      }
+      else if (anArgCase == "+x-z")
+      {
+        aView->SetProj (V3d_XposZneg, isYup);
+      }
+      else if (anArgCase == "-x+z")
+      {
+        aView->SetProj (V3d_XnegZpos, isYup);
+      }
+      else if (anArgCase == "-x-z")
+      {
+        aView->SetProj (V3d_XnegZneg, isYup);
+      }
+      else if (anArgCase == "+y+z")
+      {
+        aView->SetProj (V3d_YposZpos, isYup);
+      }
+      else if (anArgCase == "+y-z")
+      {
+        aView->SetProj (V3d_YposZneg, isYup);
+      }
+      else if (anArgCase == "-y+z")
+      {
+        aView->SetProj (V3d_YnegZpos, isYup);
+      }
+      else if (anArgCase == "-y-z")
+      {
+        aView->SetProj (V3d_YnegZneg, isYup);
+      }
+      else if (anArgIter + 1 < theNbArgs
+            && anArgCase == "-frame"
+            && TCollection_AsciiString (theArgVec[anArgIter + 1]).Length() == 4)
+      {
+        TCollection_AsciiString aFrameDef (theArgVec[++anArgIter]);
+        aFrameDef.LowerCase();
+        gp_Dir aRight, anUp;
+        if (aFrameDef.Value (2) == aFrameDef.Value (4))
+        {
+          std::cout << "Syntax error at '" << theArgVec[anArgIter] << "'\n";
+          return 1;
+        }
+
+        if (aFrameDef.Value (2) == 'x')
+        {
+          aRight = aFrameDef.Value (1) == '+' ? gp::DX() : -gp::DX();
+        }
+        else if (aFrameDef.Value (2) == 'y')
+        {
+          aRight = aFrameDef.Value (1) == '+' ? gp::DY() : -gp::DY();
+        }
+        else if (aFrameDef.Value (2) == 'z')
+        {
+          aRight = aFrameDef.Value (1) == '+' ? gp::DZ() : -gp::DZ();
+        }
+        else
+        {
+          std::cout << "Syntax error at '" << theArgVec[anArgIter] << "'\n";
+          return 1;
+        }
+
+        if (aFrameDef.Value (4) == 'x')
+        {
+          anUp = aFrameDef.Value (3) == '+' ? gp::DX() : -gp::DX();
+        }
+        else if (aFrameDef.Value (4) == 'y')
+        {
+          anUp = aFrameDef.Value (3) == '+' ? gp::DY() : -gp::DY();
+        }
+        else if (aFrameDef.Value (4) == 'z')
+        {
+          anUp = aFrameDef.Value (3) == '+' ? gp::DZ() : -gp::DZ();
+        }
+        else
+        {
+          std::cout << "Syntax error at '" << theArgVec[anArgIter] << "'\n";
+          return 1;
+        }
+
+        const Handle(Graphic3d_Camera)& aCamera = aView->Camera();
+        const gp_Pnt anOriginVCS = aCamera->ConvertWorld2View (gp::Origin());
+        const gp_Dir aDir = anUp.Crossed (aRight);
+        aCamera->SetCenter (gp_Pnt (0, 0, 0));
+        aCamera->SetDirection (aDir);
+        aCamera->SetUp (anUp);
+        aCamera->OrthogonalizeUp();
+
+        aView->Panning (anOriginVCS.X(), anOriginVCS.Y());
+        aView->Update();
+      }
+      else
+      {
+        std::cout << "Syntax error at '" << theArgVec[anArgIter] << "'\n";
+        return 1;
+      }
+    }
+  }
+
+  if (!isGeneralCmd
+    && theNbArgs != 1)
+  {
+    std::cout << "Syntax error: wrong number of arguments\n";
+    return 1;
+  }
   return 0;
-}
-
-//==============================================================================
-//function : VAxo
-//purpose  : Switch to an Axonometric view
-//Draw arg : No args
-//==============================================================================
-
-static int VAxo(Draw_Interpretor& di, Standard_Integer , const char** )
-{
-  return ViewProject(di, V3d_XposYnegZpos);
-}
-
-//==============================================================================
-//function : VTop
-//purpose  : Switch to a Top View
-//Draw arg : No args
-//==============================================================================
-
-static int VTop(Draw_Interpretor& di, Standard_Integer , const char** )
-{
-  return ViewProject(di, V3d_Zpos);
-}
-
-//==============================================================================
-//function : VBottom
-//purpose  : Switch to a Bottom View
-//Draw arg : No args
-//==============================================================================
-
-static int VBottom(Draw_Interpretor& di, Standard_Integer , const char** )
-{
-  return ViewProject(di, V3d_Zneg);
-}
-
-//==============================================================================
-//function : VLeft
-//purpose  : Switch to a Left View
-//Draw arg : No args
-//==============================================================================
-
-static int VLeft(Draw_Interpretor& di, Standard_Integer , const char** )
-{
-  return ViewProject(di, V3d_Xneg);
-}
-
-//==============================================================================
-//function : VRight
-//purpose  : Switch to a Right View
-//Draw arg : No args
-//==============================================================================
-
-static int VRight(Draw_Interpretor& di, Standard_Integer , const char** )
-{
-  return ViewProject(di, V3d_Xpos);
-}
-
-//==============================================================================
-//function : VFront
-//purpose  : Switch to a Front View
-//Draw arg : No args
-//==============================================================================
-
-static int VFront(Draw_Interpretor& di, Standard_Integer , const char** )
-{
-  return ViewProject(di, V3d_Yneg);
-}
-
-//==============================================================================
-//function : VBack
-//purpose  : Switch to a Back View
-//Draw arg : No args
-//==============================================================================
-
-static int VBack(Draw_Interpretor& di, Standard_Integer , const char** )
-{
-  return ViewProject(di, V3d_Ypos);
 }
 
 //==============================================================================
@@ -13543,27 +13753,38 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
   theCommands.Add("vhelp" ,
     "vhelp            : display help on the viewer commands",
     __FILE__,VHelp,group);
+  theCommands.Add("vviewproj",
+          "vviewproj [top|bottom|left|right|front|back|axoLeft|axoRight]"
+    "\n\t\t:         [+-X+-Y+-Z] [-Zup|-Yup] [-frame +-X+-Y]"
+    "\n\t\t: Setup view direction"
+    "\n\t\t:   -Yup      use Y-up convention instead of Zup (which is default)."
+    "\n\t\t:   +-X+-Y+-Z define direction as combination of DX, DY and DZ;"
+    "\n\t\t:             for example '+Z' will show front of the model,"
+    "\n\t\t:             '-X-Y+Z' will define left axonometrical view."
+    "\n\t\t:   -frame    define camera Up and Right directions (regardless Up convention);"
+    "\n\t\t:             for example '+X+Z' will show front of the model with Z-up."
+    __FILE__,VViewProj,group);
   theCommands.Add("vtop" ,
     "vtop or <T>      : Top view. Orientation +X+Y" ,
-    __FILE__,VTop,group);
+    __FILE__,VViewProj,group);
   theCommands.Add("vbottom" ,
     "vbottom          : Bottom view. Orientation +X-Y" ,
-    __FILE__,VBottom,group);
+    __FILE__,VViewProj,group);
   theCommands.Add("vleft" ,
     "vleft            : Left view. Orientation -Y+Z" ,
-    __FILE__,VLeft,group);
+    __FILE__,VViewProj,group);
   theCommands.Add("vright" ,
     "vright           : Right view. Orientation +Y+Z" ,
-    __FILE__,VRight,group);
+    __FILE__,VViewProj,group);
   theCommands.Add("vaxo" ,
     " vaxo or <A>     : Axonometric view. Orientation +X-Y+Z",
-    __FILE__,VAxo,group);
+    __FILE__,VViewProj,group);
   theCommands.Add("vfront" ,
     "vfront           : Front view. Orientation +X+Z" ,
-    __FILE__,VFront,group);
+    __FILE__,VViewProj,group);
   theCommands.Add("vback" ,
     "vback            : Back view. Orientation -X+Z" ,
-    __FILE__,VBack,group);
+    __FILE__,VViewProj,group);
   theCommands.Add("vpick" ,
     "vpick           : vpick X Y Z [shape subshape] ( all variables as string )",
     VPick,group);

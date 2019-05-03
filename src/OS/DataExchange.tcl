@@ -17,7 +17,7 @@
 proc DataExchange:toolkits { } {
     return [list TKXSBase TKSTEPBase TKSTEPAttr TKSTEP209 TKSTEP TKIGES \
 		TKXCAF TKXDEIGES TKXDESTEP \
-		TKSTL TKVRML TKXmlXCAF TKBinXCAF]
+		TKSTL TKVRML TKXmlXCAF TKBinXCAF TKRWMesh]
 }
 ;#
 ;# Autres UDs a prendre.

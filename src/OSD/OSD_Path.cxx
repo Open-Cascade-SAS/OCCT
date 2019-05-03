@@ -1635,3 +1635,40 @@ Standard_Boolean LocateExecFile(OSD_Path& )
 {
   return Standard_False ;
 }
+
+// =======================================================================
+// function : FolderAndFileFromPath
+// purpose  :
+// =======================================================================
+void OSD_Path::FolderAndFileFromPath (const TCollection_AsciiString& theFilePath,
+                                      TCollection_AsciiString&       theFolder,
+                                      TCollection_AsciiString&       theFileName)
+{
+  Standard_Integer aLastSplit = -1;
+  Standard_CString aString = theFilePath.ToCString();
+  for (Standard_Integer anIter = 0; anIter < theFilePath.Length(); ++anIter)
+  {
+    if (aString[anIter] == '/'
+     || aString[anIter] == '\\')
+    {
+      aLastSplit = anIter;
+    }
+  }
+
+  if (aLastSplit == -1)
+  {
+    theFolder.Clear();
+    theFileName = theFilePath;
+    return;
+  }
+
+  theFolder = theFilePath.SubString (1, aLastSplit + 1);
+  if (aLastSplit + 2 <= theFilePath.Length())
+  {
+    theFileName = theFilePath.SubString (aLastSplit + 2, theFilePath.Length());
+  }
+  else
+  {
+    theFileName.Clear();
+  }
+}

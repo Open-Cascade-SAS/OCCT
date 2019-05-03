@@ -21,6 +21,7 @@
 
 #include <gp_Pnt.hxx>
 
+#include <OSD_Path.hxx>
 #include <Precision.hxx>
 #include <Standard_Overflow.hxx>
 
@@ -1224,6 +1225,114 @@ static Standard_Integer QANColTestVec4 (Draw_Interpretor& theDI, Standard_Intege
   return 0;
 }
 
+//! Print file path flags deduced from path string.
+static Standard_Integer QAOsdPathType (Draw_Interpretor& theDI, Standard_Integer theNbArgs, const char** theArgVec)
+{
+  if (theNbArgs != 2)
+  {
+    std::cout << "Syntax error: wrong number of arguments\n";
+    return 1;
+  }
+
+  TCollection_AsciiString aPath (theArgVec[1]);
+  if (OSD_Path::IsAbsolutePath (aPath.ToCString()))
+  {
+    theDI << "absolute ";
+  }
+  if (OSD_Path::IsRelativePath (aPath.ToCString()))
+  {
+    theDI << "relative ";
+  }
+  if (OSD_Path::IsUnixPath (aPath.ToCString()))
+  {
+    theDI << "unix ";
+  }
+  if (OSD_Path::IsDosPath (aPath.ToCString()))
+  {
+    theDI << "dos ";
+  }
+  if (OSD_Path::IsUncPath (aPath.ToCString()))
+  {
+    theDI << "unc ";
+  }
+  if (OSD_Path::IsNtExtendedPath (aPath.ToCString()))
+  {
+    theDI << "ntextended ";
+  }
+  if (OSD_Path::IsUncExtendedPath (aPath.ToCString()))
+  {
+    theDI << "uncextended ";
+  }
+  if (OSD_Path::IsRemoteProtocolPath (aPath.ToCString()))
+  {
+    theDI << "protocol ";
+  }
+  if (OSD_Path::IsContentProtocolPath (aPath.ToCString()))
+  {
+    theDI << "content ";
+  }
+  return 0;
+}
+
+//! Print file path part deduced from path string.
+static Standard_Integer QAOsdPathPart (Draw_Interpretor& theDI, Standard_Integer theNbArgs, const char** theArgVec)
+{
+  TCollection_AsciiString aPath;
+  enum PathPart
+  {
+    PathPart_NONE,
+    PathPart_Folder,
+    PathPart_FileName,
+  };
+  PathPart aPart = PathPart_NONE;
+  for (Standard_Integer anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
+  {
+    TCollection_AsciiString anArgCase (theArgVec[anArgIter]);
+    anArgCase.LowerCase();
+    if (aPart == PathPart_NONE
+     && anArgCase == "-folder")
+    {
+      aPart = PathPart_Folder;
+    }
+    else if (aPart == PathPart_NONE
+          && anArgCase == "-filename")
+    {
+      aPart = PathPart_FileName;
+    }
+    else if (aPath.IsEmpty())
+    {
+      aPath = theArgVec[anArgIter];
+    }
+    else
+    {
+      std::cout << "Syntax error at '" << theArgVec[anArgIter] << "'\n";
+      return 1;
+    }
+  }
+  if (aPath.IsEmpty()
+   || aPart == PathPart_NONE)
+  {
+    std::cout << "Syntax error: wrong number of arguments\n";
+    return 1;
+  }
+
+  TCollection_AsciiString aFolder, aFileName;
+  OSD_Path::FolderAndFileFromPath (aPath, aFolder, aFileName);
+  switch (aPart)
+  {
+    case PathPart_Folder:
+      theDI << aFolder;
+      return 0;
+    case PathPart_FileName:
+      theDI << aFileName;
+      return 0;
+    case PathPart_NONE:
+    default:
+      return 1;
+  }
+}
+
+
 void QANCollection::CommandsTest(Draw_Interpretor& theCommands) {
   const char *group = "QANCollection";
 
@@ -1242,4 +1351,6 @@ void QANCollection::CommandsTest(Draw_Interpretor& theCommands) {
   theCommands.Add("QANColTestArrayMove",      "QANColTestArrayMove (is expected to give error)", __FILE__, QANColTestArrayMove, group);  
   theCommands.Add("QANColTestVec4",           "QANColTestVec4 test Vec4 implementation", __FILE__, QANColTestVec4, group);
   theCommands.Add("QATestAtof", "QATestAtof [nbvalues [nbdigits [min [max]]]]", __FILE__, QATestAtof, group);
+  theCommands.Add("QAOsdPathType",  "QAOsdPathType path : Print file path flags deduced from path string", __FILE__, QAOsdPathType, group);
+  theCommands.Add("QAOsdPathPart",  "QAOsdPathPart path [-folder][-fileName] : Print file path part", __FILE__, QAOsdPathPart, group);
 }

@@ -410,7 +410,10 @@ public:
   Standard_EXPORT void SetProj (const Standard_Real Vx, const Standard_Real Vy, const Standard_Real Vz);
 
   //! Defines the orientation of the projection .
-  Standard_EXPORT void SetProj (const V3d_TypeOfOrientation Orientation);
+  //! @param theOrientation camera direction
+  //! @param theIsYup       flag indicating Y-up (TRUE) or Z-up (FALSE) convention
+  Standard_EXPORT void SetProj (const V3d_TypeOfOrientation theOrientation,
+                                const Standard_Boolean theIsYup = Standard_False);
 
   //! Defines the position of the view point.
   Standard_EXPORT void SetAt (const Standard_Real X, const Standard_Real Y, const Standard_Real Z);

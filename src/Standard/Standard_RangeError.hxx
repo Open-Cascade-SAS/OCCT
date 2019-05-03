@@ -26,7 +26,7 @@ class Standard_RangeError;
 DEFINE_STANDARD_HANDLE(Standard_RangeError, Standard_DomainError)
 
 #if !defined No_Exception && !defined No_Standard_RangeError
-#if defined(__GNUC__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 2))
+#if (defined(__GNUC__) && __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6))
   // suppress false-positive warnings produced by GCC optimizer
   #define Standard_RangeError_Raise_if(CONDITION, MESSAGE) \
   _Pragma("GCC diagnostic push") \

@@ -8,6 +8,10 @@ XCAFPrs_DataMapIteratorOfDataMapOfStyleTransient.hxx
 XCAFPrs_IndexedDataMapOfShapeStyle.hxx
 XCAFPrs_DataMapOfStyleShape.hxx
 XCAFPrs_DataMapOfStyleTransient.hxx
+XCAFPrs_DocumentExplorer.cxx
+XCAFPrs_DocumentExplorer.hxx
+XCAFPrs_DocumentIdIterator.hxx
+XCAFPrs_DocumentNode.hxx
 XCAFPrs_Driver.cxx
 XCAFPrs_Driver.hxx
 XCAFPrs_Style.cxx

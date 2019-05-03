@@ -1,0 +1,48 @@
+puts "============="
+puts "OSD_Path - test file path parsing tools"
+puts "============="
+
+pload QAcommands
+
+if { [QAOsdPathType {c:\folder\file.png}]              != "absolute dos " }              { puts "Error: DOS path misdetection" }
+if { [QAOsdPathType {c:\file.png}]                     != "absolute dos " }              { puts "Error: DOS path misdetection" }
+if { [QAOsdPathType "D:\\"]                            != "absolute dos " }              { puts "Error: DOS root misdetection" }
+if { [QAOsdPathType {\\share\file.pdf}]                != "absolute unc " }              { puts "Error: UNC path misdetection" }
+if { [QAOsdPathType {\\?\C:\documents\file.docx}]      != "absolute ntextended " }       { puts "Error: NT Extended path misdetection" }
+if { [QAOsdPathType {\\?\UNC\server\share\file.zip}]   != "absolute unc ntextended uncextended " } { puts "Error: UNC extended path misdetection" }
+if { [QAOsdPathType {https://www.server.org/file.gif}] != "absolute protocol " }         { puts "Error: remote protocal path misdetection" }
+if { [QAOsdPathType {content://file.jpg}]              != "absolute protocol content " } { puts "Error: content protocal path misdetection" }
+if { [QAOsdPathType {/home/username/file.txt}]         != "absolute unix " }             { puts "Error: Unix path misdetection" }
+if { [QAOsdPathType {/boot.bin}]                       != "absolute unix " }             { puts "Error: Unix path misdetection" }
+if { [QAOsdPathType {/}]                               != "absolute unix " }             { puts "Error: Unix root misdetection" }
+if { [QAOsdPathType {./subfolder/../file.txt}]         != "relative " }                  { puts "Error: Realtive path misdetection" }
+if { [QAOsdPathType {../file.txt}]                     != "relative " }                  { puts "Error: Realtive path misdetection" }
+if { [QAOsdPathType {.}]                               != "relative " }                  { puts "Error: Realtive path misdetection" }
+if { [QAOsdPathType {..}]                              != "relative " }                  { puts "Error: Realtive path misdetection" }
+if { [QAOsdPathType {image.png}]                       != "relative " }                  { puts "Error: Realtive path misdetection" }
+
+if { [QAOsdPathPart {image.png} -folder]                   != "" }                  { puts "Error: Empty folder misdetected" }
+if { [QAOsdPathPart {image.png} -fileName]                 != "image.png" }         { puts "Error: File name misdetected" }
+if { [QAOsdPathPart {c:\folder\file.png} -folder]          != "c:\\folder\\" }      { puts "Error: DOS folder misdetected" }
+if { [QAOsdPathPart {c:\folder\file.png} -fileName]        != "file.png" }          { puts "Error: DOS file name misdetected" }
+if { [QAOsdPathPart {c:\file.png} -folder]                 != "c:\\" }              { puts "Error: DOS folder misdetected" }
+if { [QAOsdPathPart {c:\file.png} -fileName]               != "file.png" }          { puts "Error: DOS file name misdetected" }
+if { [QAOsdPathPart "D:\\" -folder]                        != "D:\\" }              { puts "Error: DOS root misdetected" }
+if { [QAOsdPathPart "D:\\" -fileName]                      != "" }                  { puts "Error: DOS root misdetected" }
+if { [QAOsdPathPart "/" -folder]                           != "/" }                 { puts "Error: Unit root misdetected" }
+if { [QAOsdPathPart "/" -fileName]                         != "" }                  { puts "Error: Unit root misdetected" }
+if { [QAOsdPathPart {subfolder/file.txt} -folder]          != "subfolder/" }        { puts "Error: Relative folder misdetected" }
+if { [QAOsdPathPart {subfolder/file.txt} -fileName]        != "file.txt" }          { puts "Error: Relative file name misdetected" }
+if { [QAOsdPathPart {./subfolder/../file.txt} -folder]     != "./subfolder/../" }   { puts "Error: Relative folder misdetected" }
+if { [QAOsdPathPart {./subfolder/../file.txt} -fileName]   != "file.txt" }          { puts "Error: Relative file name misdetected" }
+if { [QAOsdPathPart {../../file.txt} -folder]              != "../../" }            { puts "Error: Relative folder misdetected" }
+if { [QAOsdPathPart {../../file.txt} -fileName]            != "file.txt" }          { puts "Error: Relative file name misdetected" }
+if { [QAOsdPathPart {/home/username/file.txt} -folder]     != "/home/username/" }   { puts "Error: Unix folder misdetected" }
+if { [QAOsdPathPart {/home/username/file.txt} -fileName]   != "file.txt" }          { puts "Error: Unix file name misdetected" }
+
+if { [QAOsdPathPart {content://file.jpg} -folder]          != "content://" }        { puts "Error: Content folder misdetected" }
+if { [QAOsdPathPart {content://file.jpg} -fileName]        != "file.jpg" }          { puts "Error: Content file name misdetected" }
+if { [QAOsdPathPart {ftp://server.org/file.gif} -folder]   != "ftp://server.org/" } { puts "Error: Remote protocol folder misdetected" }
+if { [QAOsdPathPart {ftp://server.org/file.gif} -fileName] != "file.gif" }          { puts "Error: Remote protocol file name misdetected" }
+if { [QAOsdPathPart {\\?\UNC\server\file.zip} -folder]     != "\\\\?\\UNC\\server\\" } { puts "Error: UNC folder misdetected" }
+if { [QAOsdPathPart {\\?\UNC\server\file.zip} -fileName]   != "file.zip" }          { puts "Error: UNC filename misdetected" }

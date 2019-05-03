@@ -20,27 +20,14 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
-
 #include <TCollection_AsciiString.hxx>
-#include <Standard_Boolean.hxx>
 #include <OSD_SysType.hxx>
-#include <Standard_Integer.hxx>
-class Standard_ConstructionError;
-class Standard_NullObject;
-class OSD_OSDError;
-class Standard_NumericError;
-class Standard_ProgramError;
-class TCollection_AsciiString;
-
-
 
 class OSD_Path 
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Creates a Path object initialized to an empty string.
   //! i.e. current directory.
   Standard_EXPORT OSD_Path();
@@ -199,10 +186,12 @@ public:
   //! "which" Unix utility. Uses the path environment variable.
   //! Returns False if executable file not found.
   Standard_EXPORT Standard_Boolean LocateExecFile (OSD_Path& aPath);
-  
+
+public:
+
   //! Returns the relative file path between the absolute directory
   //! path <DirPath>  and the absolute file path <AbsFilePath>.
-  //! If <DirPath> starts with "/", pathes are handled as
+  //! If <DirPath> starts with "/", paths are handled as
   //! on Unix, if it starts with a letter followed by ":", as on
   //! WNT. In particular on WNT directory names are not key sensitive.
   //! If handling fails, an empty string is returned.
@@ -215,18 +204,108 @@ public:
   //! If handling fails, an empty string is returned.
   Standard_EXPORT static TCollection_AsciiString AbsolutePath (const TCollection_AsciiString& DirPath, const TCollection_AsciiString& RelFilePath);
 
+  //! Split absolute filepath into folder path and file name.
+  //! Example: IN  theFilePath ='/media/cdrom/image.jpg'
+  //!          OUT theFolder   ='/media/cdrom/'
+  //!          OUT theFileName ='image.jpg'
+  //! @param theFilePath [in]  file path
+  //! @param theFolder   [out] folder path (with trailing separator)
+  //! @param theFileName [out] file name
+  Standard_EXPORT static void FolderAndFileFromPath (const TCollection_AsciiString& theFilePath,
+                                                     TCollection_AsciiString&       theFolder,
+                                                     TCollection_AsciiString&       theFileName);
 
+  //! Detect absolute DOS-path also used in Windows.
+  //! The total path length is limited to 256 characters.
+  //! Sample path:
+  //!   C:\folder\file
+  //! @return true if DOS path syntax detected.
+  static Standard_Boolean IsDosPath (const char* thePath) { return thePath[0] != '\0' && thePath[1] == ':'; }
 
+  //! Detect extended-length NT path (can be only absolute).
+  //! Approximate maximum path is 32767 characters.
+  //! Sample path:
+  //!   \\?\D:\very long path
+  //! File I/O functions in the Windows API convert "/" to "\" as part of converting the name to an NT-style name, except when using the "\\?\" prefix.
+  //! @return true if extended-length NT path syntax detected.
+  static Standard_Boolean IsNtExtendedPath (const char* thePath) { return ::memcmp (thePath, "\\\\?\\", 4) == 0; }
 
-protected:
+  //! UNC is a naming convention used primarily to specify and map network drives in Microsoft Windows.
+  //! Sample path:
+  //!   \\server\share\file
+  //! @return true if UNC path syntax detected.
+  static Standard_Boolean IsUncPath (const char* thePath)
+  {
+    if (::memcmp (thePath, "\\\\", 2) == 0)
+    {
+      return thePath[2] != '?'
+          || IsUncExtendedPath (thePath);
+    }
+    return ::memcmp (thePath, "//",   2) == 0;
+  }
 
+  //! Detect extended-length UNC path.
+  //! Sample path:
+  //!   \\?\UNC\server\share
+  //! @return true if extended-length UNC path syntax detected.
+  static Standard_Boolean IsUncExtendedPath (const char* thePath) { return ::memcmp (thePath, "\\\\?\\UNC\\", 8) == 0; }
 
+  //! Detect absolute UNIX-path.
+  //! Sample path:
+  //!   /media/cdrom/file
+  //! @return true if UNIX path syntax detected.
+  static Standard_Boolean IsUnixPath (const char* thePath) { return thePath[0] == '/' && thePath[1] != '/'; }
 
+  //! Detect special URLs on Android platform.
+  //! Sample path:
+  //!   content://filename
+  //! @return true if content path syntax detected
+  static Standard_Boolean IsContentProtocolPath (const char* thePath) { return ::memcmp (thePath, "content://", 10) == 0; }
 
+  //! Detect remote protocol path (http / ftp / ...).
+  //! Actually shouldn't be remote...
+  //! Sample path:
+  //!   http://domain/path/file
+  //! @return true if remote protocol path syntax detected.
+  static Standard_Boolean IsRemoteProtocolPath (const char* thePath)
+  {
+    const char* anIter = thePath;
+    if (*anIter == ':')
+    {
+      return false;
+    }
+    for (; *anIter != '\0'; ++anIter)
+    {
+      if (*anIter == ':')
+      {
+        return *(++anIter) == '/'
+            && *(++anIter) == '/';
+      }
+    }
+    return false;
+  }
+
+  //! Method to recognize path is absolute or not.
+  //! Detection is based on path syntax - no any filesystem / network access performed.
+  //! @return true if path is incomplete (relative).
+  static Standard_Boolean IsRelativePath (const char* thePath)
+  {
+    return !IsUncPath  (thePath)
+        && !IsDosPath  (thePath)
+        && !IsNtExtendedPath (thePath)
+        && !IsUnixPath (thePath)
+        && !IsRemoteProtocolPath (thePath);
+  }
+
+  //! Method to recognize path is absolute or not.
+  //! Detection is based on path syntax - no any filesystem / network access performed.
+  //! @return true if path is complete (absolute)
+  static Standard_Boolean IsAbsolutePath (const char* thePath)
+  {
+    return !IsRelativePath (thePath);
+  }
 
 private:
-
-
 
   TCollection_AsciiString myNode;
   TCollection_AsciiString myUserName;
@@ -238,13 +317,6 @@ private:
   Standard_Boolean myUNCFlag;
   OSD_SysType mySysDep;
 
-
 };
-
-
-
-
-
-
 
 #endif // _OSD_Path_HeaderFile

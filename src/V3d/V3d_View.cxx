@@ -1019,38 +1019,42 @@ void V3d_View::SetProj( const Standard_Real Vx,const Standard_Real Vy, const Sta
 //function : SetProj
 //purpose  :
 //=============================================================================
-void V3d_View::SetProj( const V3d_TypeOfOrientation Orientation )
+void V3d_View::SetProj (const V3d_TypeOfOrientation theOrientation,
+                        const Standard_Boolean theIsYup)
 {
-  Standard_Real Xpn=0;
-  Standard_Real Ypn=0;
-  Standard_Real Zpn=0;
-
-  switch (Orientation) {
-  case V3d_Zpos :
-    Ypn = 1.;
-    break;
-  case V3d_Zneg :
-    Ypn = -1.;
-    break;
-  default:
-    Zpn = 1.;
+  Graphic3d_Vec3d anUp = theIsYup ? Graphic3d_Vec3d (0.0, 1.0, 0.0) : Graphic3d_Vec3d (0.0, 0.0, 1.0);
+  if (theIsYup)
+  {
+    if (theOrientation == V3d_Ypos
+     || theOrientation == V3d_Yneg)
+    {
+      anUp.SetValues (0.0, 0.0, -1.0);
+    }
+  }
+  else
+  {
+    if (theOrientation == V3d_Zpos)
+    {
+      anUp.SetValues (0.0, 1.0, 0.0);
+    }
+    else if (theOrientation == V3d_Zneg)
+    {
+      anUp.SetValues (0.0, -1.0, 0.0);
+    }
   }
 
-  const gp_Dir aBck = V3d::GetProjAxis (Orientation);
+  const gp_Dir aBck = V3d::GetProjAxis (theOrientation);
 
   // retain camera panning from origin when switching projection
-  Handle(Graphic3d_Camera) aCamera = Camera();
-
-  gp_Pnt anOriginVCS  = aCamera->ConvertWorld2View (gp::Origin());
-  Standard_Real aPanX = anOriginVCS.X();
-  Standard_Real aPanY = anOriginVCS.Y();
+  const Handle(Graphic3d_Camera)& aCamera = Camera();
+  const gp_Pnt anOriginVCS = aCamera->ConvertWorld2View (gp::Origin());
 
   aCamera->SetCenter (gp_Pnt (0, 0, 0));
   aCamera->SetDirection (gp_Dir (aBck.X(), aBck.Y(), aBck.Z()).Reversed());
-  aCamera->SetUp (gp_Dir (Xpn, Ypn, Zpn));
+  aCamera->SetUp (gp_Dir (anUp.x(), anUp.y(), anUp.z()));
   aCamera->OrthogonalizeUp();
 
-  Panning (aPanX, aPanY);
+  Panning (anOriginVCS.X(), anOriginVCS.Y());
 
   AutoZFit();
 
