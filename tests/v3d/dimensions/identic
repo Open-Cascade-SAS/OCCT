@@ -20,7 +20,7 @@ vselmode b 2 1
 vselect 87 170
 vselect 165 170 $shift
 
-vrelation redgess -identic
+vrelation redges -identic
 
 vdump $imagedir/${casename}_edges.png
 

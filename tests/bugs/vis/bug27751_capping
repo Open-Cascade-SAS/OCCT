@@ -52,7 +52,6 @@ vfit
 set aPln1Z 40
 set aPln2Y 15
 
-vremove -noupdate p1 p2 p3 pp1 pp2
 vpoint p1 0 0 1
 vpoint p2 1 0 1
 vpoint p3 0 1 1

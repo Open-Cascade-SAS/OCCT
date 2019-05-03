@@ -1061,14 +1061,55 @@ static Standard_Integer VClearSensi (Draw_Interpretor& ,
 //purpose  : To list the displayed object with their attributes
 //==============================================================================
 static int VDir (Draw_Interpretor& theDI,
-                 Standard_Integer ,
-                 const char** )
+                 Standard_Integer theNbArgs,
+                 const char** theArgVec)
 {
-  for (ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName anIter (GetMapOfAIS());
-       anIter.More(); anIter.Next())
+  TCollection_AsciiString aMatch;
+  Standard_Boolean toFormat = Standard_False;
+  for (Standard_Integer anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
   {
-    theDI << "\t" << anIter.Key2() << "\n";
+    TCollection_AsciiString anArgCase (theArgVec[anArgIter]);
+    anArgCase.LowerCase();
+    if (anArgCase == "-list"
+     || anArgCase == "-format")
+    {
+      toFormat = Standard_True;
+    }
+    else if (aMatch.IsEmpty())
+    {
+      aMatch = theArgVec[anArgIter];
+    }
+    else
+    {
+      std::cout << "Syntax error at '" << theArgVec[anArgIter] << "'\n";
+      return 1;
+    }
   }
+
+  TCollection_AsciiString aRes;
+  for (ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName anIter (GetMapOfAIS()); anIter.More(); anIter.Next())
+  {
+    if (!aMatch.IsEmpty())
+    {
+      const TCollection_AsciiString aCheck = TCollection_AsciiString ("string match '") + aMatch + "' '" + anIter.Key2() + "'";
+      if (theDI.Eval (aCheck.ToCString()) == 0
+      && *theDI.Result() != '1')
+      {
+        continue;
+      }
+    }
+
+    if (toFormat)
+    {
+      aRes += TCollection_AsciiString("\t") + anIter.Key2() + "\n";
+    }
+    else
+    {
+      aRes += anIter.Key2() + " ";
+    }
+  }
+  theDI.Reset();
+  theDI << aRes;
   return 0;
 }
 
@@ -3537,6 +3578,7 @@ int VRemove (Draw_Interpretor& theDI,
   Standard_Boolean isContextOnly = Standard_False;
   Standard_Boolean toRemoveAll   = Standard_False;
   Standard_Boolean toPrintInfo   = Standard_True;
+  Standard_Boolean toFailOnError = Standard_True;
 
   Standard_Integer anArgIter = 1;
   for (; anArgIter < theArgNb; ++anArgIter)
@@ -3554,6 +3596,11 @@ int VRemove (Draw_Interpretor& theDI,
     else if (anArg == "-noinfo")
     {
       toPrintInfo = Standard_False;
+    }
+    else if (anArg == "-noerror"
+          || anArg == "-nofail")
+    {
+      toFailOnError = Standard_False;
     }
     else if (anUpdateTool.parseRedrawMode (anArg))
     {
@@ -3584,23 +3631,48 @@ int VRemove (Draw_Interpretor& theDI,
   {
     for (; anArgIter < theArgNb; ++anArgIter)
     {
-      TCollection_AsciiString aName = theArgVec[anArgIter];
+      const TCollection_AsciiString aName (theArgVec[anArgIter]);
+      if (aName.Search ("*") != -1)
+      {
+        for (ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName aPrsIter (GetMapOfAIS()); aPrsIter.More(); aPrsIter.Next())
+        {
+          if (aPrsIter.Key1()->GetContext() != aCtx)
+          {
+            continue;
+          }
+          const TCollection_AsciiString aCheck = TCollection_AsciiString ("string match '") + aName + "' '" + aPrsIter.Key2() + "'";
+          if (theDI.Eval (aCheck.ToCString()) == 0
+          && *theDI.Result() == '1')
+          {
+            anIONameList.Append (aPrsIter.Key2());
+          }
+        }
+        theDI.Reset();
+        continue;
+      }
+
       Handle(AIS_InteractiveObject) anIO;
       if (!GetMapOfAIS().Find2 (aName, anIO))
       {
-        theDI << aName << " was not bound to some object.\n";
-        continue;
+        if (toFailOnError)
+        {
+          std::cout << "Syntax error: '" << aName << "' was not bound to some object.\n";
+          return 1;
+        }
       }
-
-      if (anIO->GetContext() != aCtx)
+      else if (anIO->GetContext() != aCtx)
       {
-        theDI << aName << " was not displayed in current context.\n";
-        theDI << "Please activate view with this object displayed and try again.\n";
-        continue;
+        if (toFailOnError)
+        {
+          std::cout << "Syntax error: '" << aName << "' was not displayed in current context.\n"
+                    << "Please activate view with this object displayed and try again.\n";
+          return 1;
+        }
       }
-
-      anIONameList.Append (aName);
-      continue;
+      else
+      {
+        anIONameList.Append (aName);
+      }
     }
   }
   else if (aCtx->NbSelected() > 0)
@@ -3626,7 +3698,7 @@ int VRemove (Draw_Interpretor& theDI,
     aCtx->Remove (anIO, Standard_False);
     if (toPrintInfo)
     {
-      theDI << anIter.Value() << " was removed\n";
+      theDI << anIter.Value() << " ";
     }
     if (!isContextOnly)
     {
@@ -3658,6 +3730,7 @@ int VErase (Draw_Interpretor& theDI,
 
   Standard_Integer anArgIter = 1;
   Standard_Boolean toEraseInView = Standard_False;
+  Standard_Boolean toFailOnError = Standard_True;
   TColStd_SequenceOfAsciiString aNamesOfEraseIO;
   for (; anArgIter < theArgNb; ++anArgIter)
   {
@@ -3671,6 +3744,11 @@ int VErase (Draw_Interpretor& theDI,
           || anArgCase == "-inview")
     {
       toEraseInView = Standard_True;
+    }
+    else if (anArgCase == "-noerror"
+          || anArgCase == "-nofail")
+    {
+      toFailOnError = Standard_False;
     }
     else
     {
@@ -3687,26 +3765,51 @@ int VErase (Draw_Interpretor& theDI,
   if (!aNamesOfEraseIO.IsEmpty())
   {
     // Erase named objects
-    for (Standard_Integer anIter = 1; anIter <= aNamesOfEraseIO.Length(); ++anIter)
+    NCollection_IndexedDataMap<Handle(AIS_InteractiveObject), TCollection_AsciiString> aPrsList;
+    for (TColStd_SequenceOfAsciiString::Iterator anIter (aNamesOfEraseIO); anIter.More(); anIter.Next())
     {
-      TCollection_AsciiString aName = aNamesOfEraseIO.Value (anIter);
-      Handle(AIS_InteractiveObject) anIO;
-      if (!GetMapOfAIS().Find2 (aName, anIO))
+      const TCollection_AsciiString& aName = anIter.Value();
+      if (aName.Search ("*") != -1)
       {
-        continue;
-      }
-
-      theDI << aName << " ";
-      if (!anIO.IsNull())
-      {
-        if (toEraseInView)
+        for (ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName aPrsIter (GetMapOfAIS()); aPrsIter.More(); aPrsIter.Next())
         {
-          aCtx->SetViewAffinity (anIO, aView, Standard_False);
+          const TCollection_AsciiString aCheck = TCollection_AsciiString ("string match '") + aName + "' '" + aPrsIter.Key2() + "'";
+          if (theDI.Eval (aCheck.ToCString()) == 0
+          && *theDI.Result() == '1')
+          {
+            aPrsList.Add (aPrsIter.Key1(), aPrsIter.Key2());
+          }
+        }
+        theDI.Reset();
+      }
+      else
+      {
+        Handle(AIS_InteractiveObject) anIO;
+        if (!GetMapOfAIS().Find2 (aName, anIO))
+        {
+          if (toFailOnError)
+          {
+            std::cout << "Syntax error: '" << aName << "' is not found\n";
+            return 1;
+          }
         }
         else
         {
-          aCtx->Erase (anIO, Standard_False);
+          aPrsList.Add (anIO, aName);
         }
+      }
+    }
+
+    for (NCollection_IndexedDataMap<Handle(AIS_InteractiveObject), TCollection_AsciiString>::Iterator anIter (aPrsList); anIter.More(); anIter.Next())
+    {
+      theDI << anIter.Value() << " ";
+      if (toEraseInView)
+      {
+        aCtx->SetViewAffinity (anIter.Key(), aView, Standard_False);
+      }
+      else
+      {
+        aCtx->Erase (anIter.Key(), Standard_False);
       }
     }
   }
@@ -4684,6 +4787,12 @@ static int VDisplay2 (Draw_Interpretor& theDI,
     std::cerr << theArgVec[0] << "Error: wrong number of arguments.\n";
     return 1;
   }
+  if (theArgNb == 2
+   && TCollection_AsciiString (theArgVec[1]) == "*")
+  {
+    // alias
+    return VDisplayAll (theDI, 1, theArgVec);
+  }
 
   Handle(AIS_InteractiveContext) aCtx = ViewerTest::GetAISContext();
   if (aCtx.IsNull())
@@ -4763,7 +4872,8 @@ static int VDisplay2 (Draw_Interpretor& theDI,
 
       anObjDispMode = Draw::Atoi (theArgVec [anArgIter]);
     }
-    else if (aNameCase == "-highmode"
+    else if (aNameCase == "-himode"
+          || aNameCase == "-highmode"
           || aNameCase == "-highlightmode")
     {
       if (++anArgIter >= theArgNb)
@@ -4940,10 +5050,28 @@ static int VDisplay2 (Draw_Interpretor& theDI,
         }
         if (anObjDispMode != -2)
         {
-          aShape->SetDisplayMode (anObjDispMode);
+          if (anObjDispMode == -1)
+          {
+            aShape->UnsetDisplayMode();
+          }
+          if (!aShape->AcceptDisplayMode (anObjDispMode))
+          {
+            std::cout << "Syntax error: " << aShape->DynamicType()->Name() << " rejects " << anObjDispMode << " display mode\n";
+            return 1;
+          }
+          else
+          {
+            aShape->SetDisplayMode (anObjDispMode);
+          }
         }
         if (anObjHighMode != -2)
         {
+          if (anObjHighMode != -1
+          && !aShape->AcceptDisplayMode (anObjHighMode))
+          {
+            std::cout << "Syntax error: " << aShape->DynamicType()->Name() << " rejects " << anObjHighMode << " display mode\n";
+            return 1;
+          }
           aShape->SetHilightMode (anObjHighMode);
         }
 
@@ -5343,7 +5471,9 @@ static Standard_Integer VState (Draw_Interpretor& theDI,
       const Handle(SelectBasics_SensitiveEntity)& anEntity = aSelector->PickedEntity (aPickIter);
       Handle(SelectMgr_EntityOwner) anOwner    = Handle(SelectMgr_EntityOwner)::DownCast (anEntity->OwnerId());
       Handle(AIS_InteractiveObject) anObj      = Handle(AIS_InteractiveObject)::DownCast (anOwner->Selectable());
-      TCollection_AsciiString aName = GetMapOfAIS().Find1 (anObj);
+
+      TCollection_AsciiString aName;
+      GetMapOfAIS().Find1 (anObj, aName);
       aName.LeftJustify (20, ' ');
       char anInfoStr[512];
       Sprintf (anInfoStr,
@@ -5423,7 +5553,8 @@ static Standard_Integer VState (Draw_Interpretor& theDI,
       // handle whole object selection
       if (anOwner == anObj->GlobalSelOwner())
       {
-        TCollection_AsciiString aName = GetMapOfAIS().Find1 (anObj);
+        TCollection_AsciiString aName;
+        GetMapOfAIS().Find1 (anObj, aName);
         aName.LeftJustify (20, ' ');
         theDI << aName << " ";
         objInfo (aDetected, anObj, theDI);
@@ -6354,15 +6485,16 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
       __FILE__, VUpdate, group);
 
   theCommands.Add("verase",
-      "verase [-noupdate|-update] [-local] [name1] ...  [name n]"
+      "verase [-noupdate|-update] [-local] [name1] ...  [name n] [-noerror]"
       "\n\t\t: Erases selected or named objects."
       "\n\t\t: If there are no selected or named objects the whole viewer is erased."
       "\n\t\t: Option -local enables erasing of selected or named objects without"
-      "\n\t\t: closing local selection context.",
+      "\n\t\t: closing local selection context."
+      "\n\t\t: Option -noerror prevents exception on non-existing objects.",
       __FILE__, VErase, group);
 
   theCommands.Add("vremove",
-      "vremove [-noupdate|-update] [-context] [-all] [-noinfo] [name1] ...  [name n]"
+      "vremove [-noupdate|-update] [-context] [-all] [-noinfo] [name1] ...  [name n] [-noerror]"
       "or vremove [-context] -all to remove all objects"
       "\n\t\t: Removes selected or named objects."
       "\n\t\t  If -context is in arguments, the objects are not deleted"
@@ -6371,7 +6503,8 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
       "\n\t\t: closing local selection context. Empty local selection context will be"
       "\n\t\t: closed."
       "\n\t\t: Option -noupdate suppresses viewer redraw call."
-      "\n\t\t: Option -noinfo suppresses displaying the list of removed objects.",
+      "\n\t\t: Option -noinfo suppresses displaying the list of removed objects."
+      "\n\t\t: Option -noerror prevents exception on non-existing objects.",
       __FILE__, VRemove, group);
 
   theCommands.Add("vdonly",
@@ -6416,7 +6549,10 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
 		  __FILE__,VDispMode,group);
 
   theCommands.Add("vdir",
-		  "Lists all objects displayed in 3D viewer",
+              "vdir [mask] [-list]"
+      "\n\t\t: Lists all objects displayed in 3D viewer"
+      "\n\t\t:    mask - name filter like prefix*"
+      "\n\t\t:   -list - format list with new-line per name; OFF by default",
 		  __FILE__,VDir,group);
 
 #ifdef HAVE_FREEIMAGE

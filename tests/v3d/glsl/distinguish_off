@@ -5,7 +5,7 @@ puts "========"
 pload MODELING OCAF XDE
 box b 10 10 10
 vclear
-vclose all
+vinit View1
 catch { Close D }
 NewDocument D BinXCAF
 XAddShape D b
@@ -13,14 +13,14 @@ XSetColor D b 0 0 1
 explode b f
 XSetColor D b_1 1 0 0
 
-XShow D
+XDisplay D
 vviewparams -proj 1 0.1 0.1
 vfit
 vsetdispmode 1
 
 catch { vclipplane delete pln }
 vclipplane create pln
-vclipplane set pln view Driver1/Document_D/View1
+vclipplane set pln view Driver1/Viewer1/View1
 vclipplane change pln equation -1 0 0 5
 
 # FFP on, pixel is RED3, which is expected
