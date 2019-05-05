@@ -1,0 +1,9 @@
+puts "========"
+puts "0029296: Data Exchange - implement import of mesh data from files in OBJ format"
+puts "Ship model with transparent windows"
+puts "========"
+
+ReadObj D [locate_data_file ship_boat.obj]
+XGetOneShape s D
+checknbshapes s -face 2359 -compound 2
+checktrinfo s -tri 27297 -nod 40496

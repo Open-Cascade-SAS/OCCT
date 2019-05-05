@@ -1,0 +1,9 @@
+puts "========"
+puts "0029296: Data Exchange - implement import of mesh data from files in OBJ format"
+puts "Small textured airplane model"
+puts "========"
+
+ReadObj D [locate_data_file "P-51 Mustang.obj"]
+XGetOneShape s D
+checknbshapes s -face 14 -compound 1
+checktrinfo s -tri 4309 -nod 4727

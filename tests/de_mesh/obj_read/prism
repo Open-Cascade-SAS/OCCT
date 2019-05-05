@@ -1,0 +1,73 @@
+puts "========"
+puts "0029296: Data Exchange - implement import of mesh data from files in OBJ format"
+puts "Reading small generated file."
+puts "========"
+
+set material_mtl {newmtl ObjMat1
+Ns 96.07
+Ka 0.00 0.00 0.00
+Kd 0.64 0.64 0.64
+Ks 0.50 0.50 0.50
+Ni 1.00
+d  1.00}
+
+set minimal_ascii_obj {mtllib A1_material.mtl
+g Group1
+usemtl ObjMat1
+v 0 0 0
+v 2 0 0
+v 2 1 0
+v 1 2 0
+v 0 1 0
+v 0 0 2
+v 2 0 2
+v 2 1 2
+v 1 2 2
+v 0 1 2
+f 5 4 3 2 1
+f 7 8 9 10 6
+f 10 9 4 5
+f 9 8 3 4
+f 6 10 5 1
+f 2 3 8 7
+f 1 2 7 6}
+
+# Ascii MTL file, CRLF
+set fd [open ${imagedir}/${casename}_material.mtl w]
+fconfigure $fd -translation crlf
+puts $fd $material_mtl
+close $fd
+
+puts ""
+puts "#======================================================================"
+puts "# Ascii file, CRLF"
+puts "#======================================================================"
+set fd [open ${imagedir}/${casename}_one_ascii_dos.obj w]
+fconfigure $fd -translation crlf
+puts $fd $minimal_ascii_obj
+close $fd
+readobj mcrlf ${imagedir}/${casename}_one_ascii_dos.obj -singleFace
+checknbshapes mcrlf -face 1
+checktrinfo   mcrlf -tri 16 -nod 10
+
+puts ""
+puts "#======================================================================"
+puts "# Ascii file with single facet, LF"
+puts "#======================================================================"
+set fd [open ${imagedir}/${casename}_one_ascii_unix.obj w]
+fconfigure $fd -translation lf
+puts $fd $minimal_ascii_obj
+close $fd
+readobj mlf ${imagedir}/${casename}_one_ascii_unix.obj -singleFace
+checknbshapes mlf -face 1
+checktrinfo   mlf -tri 16 -nod 10
+
+vclear
+vinit View1
+vdisplay -dispMode 1 mlf
+vaxo
+vfit
+vdump ${imagedir}/${casename}_raw.png
+
+# read OBJ into document
+ReadObj D ${imagedir}/${casename}_one_ascii_unix.obj

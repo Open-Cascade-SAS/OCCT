@@ -44,6 +44,8 @@
 #include <Quantity_NameOfColor.hxx>
 #include <RWGltf_CafReader.hxx>
 #include <RWStl.hxx>
+#include <RWObj.hxx>
+#include <RWObj_CafReader.hxx>
 #include <SelectMgr_SelectionManager.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <StdSelect_ViewerSelector3d.hxx>
@@ -287,6 +289,210 @@ static Standard_Integer readstl(Draw_Interpretor& theDI,
     Standard_ENABLE_DEPRECATION_WARNINGS
   }
   DBRep::Set (aShapeName.ToCString(), aShape);
+  return 0;
+}
+
+//! Parse RWMesh_CoordinateSystem enumeration.
+static Standard_Boolean parseCoordinateSystem (const char* theArg,
+                                               RWMesh_CoordinateSystem& theSystem)
+{
+  TCollection_AsciiString aCSStr (theArg);
+  aCSStr.LowerCase();
+  if (aCSStr == "zup")
+  {
+    theSystem = RWMesh_CoordinateSystem_Zup;
+  }
+  else if (aCSStr == "yup")
+  {
+    theSystem = RWMesh_CoordinateSystem_Yup;
+  }
+  else
+  {
+    return Standard_False;
+  }
+  return Standard_True;
+}
+
+//=============================================================================
+//function : ReadObj
+//purpose  : Reads OBJ file
+//=============================================================================
+static Standard_Integer ReadObj (Draw_Interpretor& theDI,
+                                 Standard_Integer theNbArgs,
+                                 const char** theArgVec)
+{
+  TCollection_AsciiString aDestName, aFilePath;
+  Standard_Boolean toUseExistingDoc = Standard_False;
+  Standard_Real aFileUnitFactor = -1.0;
+  RWMesh_CoordinateSystem aResultCoordSys = RWMesh_CoordinateSystem_Zup, aFileCoordSys = RWMesh_CoordinateSystem_Yup;
+  Standard_Boolean toListExternalFiles = Standard_False, isSingleFace = Standard_False, isSinglePrecision = Standard_False;
+  Standard_Boolean isNoDoc = (TCollection_AsciiString(theArgVec[0]) == "readobj");
+  for (Standard_Integer anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
+  {
+    TCollection_AsciiString anArgCase (theArgVec[anArgIter]);
+    anArgCase.LowerCase();
+    if (anArgIter + 1 < theNbArgs
+     && (anArgCase == "-unit"
+      || anArgCase == "-units"
+      || anArgCase == "-fileunit"
+      || anArgCase == "-fileunits"))
+    {
+      const TCollection_AsciiString aUnitStr (theArgVec[++anArgIter]);
+      aFileUnitFactor = UnitsAPI::AnyToSI (1.0, aUnitStr.ToCString());
+      if (aFileUnitFactor <= 0.0)
+      {
+        std::cout << "Syntax error: wrong length unit '" << aUnitStr << "'\n";
+        return 1;
+      }
+    }
+    else if (anArgIter + 1 < theNbArgs
+          && (anArgCase == "-filecoordinatesystem"
+           || anArgCase == "-filecoordsystem"
+           || anArgCase == "-filecoordsys"))
+    {
+      if (!parseCoordinateSystem (theArgVec[++anArgIter], aFileCoordSys))
+      {
+        std::cout << "Syntax error: unknown coordinate system '" << theArgVec[anArgIter] << "'\n";
+        return 1;
+      }
+    }
+    else if (anArgIter + 1 < theNbArgs
+          && (anArgCase == "-resultcoordinatesystem"
+           || anArgCase == "-resultcoordsystem"
+           || anArgCase == "-resultcoordsys"
+           || anArgCase == "-rescoordsys"))
+    {
+      if (!parseCoordinateSystem (theArgVec[++anArgIter], aResultCoordSys))
+      {
+        std::cout << "Syntax error: unknown coordinate system '" << theArgVec[anArgIter] << "'\n";
+        return 1;
+      }
+    }
+    else if (anArgCase == "-singleprecision"
+          || anArgCase == "-singleprec")
+    {
+      isSinglePrecision = Standard_True;
+      if (anArgIter + 1 < theNbArgs
+       && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], isSinglePrecision))
+      {
+        ++anArgIter;
+      }
+    }
+    else if (isNoDoc
+          && (anArgCase == "-singleface"
+           || anArgCase == "-singletriangulation"))
+    {
+      isSingleFace = Standard_True;
+    }
+    else if (!isNoDoc
+          && (anArgCase == "-nocreate"
+           || anArgCase == "-nocreatedoc"))
+    {
+      toUseExistingDoc = Standard_True;
+      if (anArgIter + 1 < theNbArgs
+       && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], toUseExistingDoc))
+      {
+        ++anArgIter;
+      }
+    }
+    else if (anArgCase == "-listexternalfiles"
+          || anArgCase == "-listexternals"
+          || anArgCase == "-listexternal"
+          || anArgCase == "-external"
+          || anArgCase == "-externalfiles")
+    {
+      toListExternalFiles = Standard_True;
+    }
+    else if (aDestName.IsEmpty())
+    {
+      aDestName = theArgVec[anArgIter];
+    }
+    else if (aFilePath.IsEmpty())
+    {
+      aFilePath = theArgVec[anArgIter];
+    }
+    else
+    {
+      std::cout << "Syntax error at '" << theArgVec[anArgIter] << "'\n";
+      return 1;
+    }
+  }
+  if (aFilePath.IsEmpty())
+  {
+    std::cout << "Syntax error: wrong number of arguments\n";
+    return 1;
+  }
+
+  Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator (theDI, 1);
+  Handle(TDocStd_Document) aDoc;
+  if (!isNoDoc
+   && !toListExternalFiles)
+  {
+    Handle(TDocStd_Application) anApp = DDocStd::GetApplication();
+    Standard_CString aNameVar = aDestName.ToCString();
+    DDocStd::GetDocument (aNameVar, aDoc, Standard_False);
+    if (aDoc.IsNull())
+    {
+      if (toUseExistingDoc)
+      {
+        std::cout << "Error: document with name " << aDestName << " does not exist\n";
+        return 1;
+      }
+      anApp->NewDocument (TCollection_ExtendedString ("BinXCAF"), aDoc);
+    }
+    else if (!toUseExistingDoc)
+    {
+      std::cout << "Error: document with name " << aDestName << " already exists\n";
+      return 1;
+    }
+  }
+
+  RWObj_CafReader aReader;
+  aReader.SetSinglePrecision (isSinglePrecision);
+  aReader.SetSystemLengthUnit (UnitsMethods::GetCasCadeLengthUnit() * 0.001);
+  aReader.SetSystemCoordinateSystem (aResultCoordSys);
+  aReader.SetFileLengthUnit (aFileUnitFactor);
+  aReader.SetFileCoordinateSystem (aFileCoordSys);
+  aReader.SetDocument (aDoc);
+  if (isSingleFace)
+  {
+    RWObj_TriangulationReader aSimpleReader;
+    aSimpleReader.SetSinglePrecision (isSinglePrecision);
+    aSimpleReader.SetCreateShapes (Standard_False);
+    aSimpleReader.SetTransformation (aReader.CoordinateSystemConverter());
+    aSimpleReader.Read (aFilePath.ToCString(), aProgress);
+
+    Handle(Poly_Triangulation) aTriangulation = aSimpleReader.GetTriangulation();
+    TopoDS_Face aFace;
+    BRep_Builder aBuiler;
+    aBuiler.MakeFace (aFace);
+    aBuiler.UpdateFace (aFace, aTriangulation);
+    DBRep::Set (aDestName.ToCString(), aFace);
+    return 0;
+  }
+
+  if (toListExternalFiles)
+  {
+    aReader.ProbeHeader (aFilePath);
+    for (NCollection_IndexedMap<TCollection_AsciiString>::Iterator aFileIter (aReader.ExternalFiles()); aFileIter.More(); aFileIter.Next())
+    {
+      theDI << "\"" << aFileIter.Value() << "\" ";
+    }
+  }
+  else
+  {
+    aReader.Perform (aFilePath, aProgress);
+    if (isNoDoc)
+    {
+      DBRep::Set (aDestName.ToCString(), aReader.SingleShape());
+    }
+    else
+    {
+      Handle(DDocStd_DrawDocument) aDrawDoc = new DDocStd_DrawDocument (aDoc);
+      TDataStd_Name::Set (aDoc->GetData()->Root(), aDestName.ToCString());
+      Draw::Set (aDestName.ToCString(), aDrawDoc);
+    }
+  }
   return 0;
 }
 
@@ -1404,6 +1610,25 @@ void  XSDRAWSTLVRML::InitCommands (Draw_Interpretor& theCommands)
                    "\n\t\t: Single triangulation-only Face is created otherwise (default).",
                    __FILE__, readstl, g);
   theCommands.Add ("loadvrml" , "shape file",__FILE__,loadvrml,g);
+  theCommands.Add ("ReadObj",
+                   "ReadObj Doc file [-fileCoordSys {Zup|Yup}] [-fileUnit Unit]"
+           "\n\t\t:                  [-resultCoordSys {Zup|Yup}] [-singlePrecision]"
+           "\n\t\t:                  [-listExternalFiles] [-noCreateDoc]"
+           "\n\t\t: Read OBJ file into XDE document."
+           "\n\t\t:   -fileUnit       length unit of OBJ file content;"
+           "\n\t\t:   -fileCoordSys   coordinate system defined by OBJ file; Yup when not specified."
+           "\n\t\t:   -resultCoordSys result coordinate system; Zup when not specified."
+           "\n\t\t:   -singlePrecision truncate vertex data to single precision during read; FALSE by default."
+           "\n\t\t:   -listExternalFiles do not read mesh and only list external files."
+           "\n\t\t:   -noCreateDoc    read into existing XDE document.",
+                   __FILE__, ReadObj, g);
+  theCommands.Add ("readobj",
+                   "readobj shape file [-fileCoordSys {Zup|Yup}] [-fileUnit Unit]"
+           "\n\t\t:                    [-resultCoordSys {Zup|Yup}] [-singlePrecision]"
+           "\n\t\t:                    [-singleFace]"
+           "\n\t\t: Same as ReadObj but reads OBJ file into a shape instead of a document."
+           "\n\t\t:   -singleFace merge OBJ content into a single triangulation Face.",
+           __FILE__, ReadObj, g);
 
   theCommands.Add ("meshfromstl",     "creates MeshVS_Mesh from STL file",            __FILE__, createmesh,      g );
   theCommands.Add ("mesh3delem",      "creates 3d element mesh to test",              __FILE__, create3d,        g );
