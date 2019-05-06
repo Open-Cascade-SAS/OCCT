@@ -16,15 +16,9 @@
 #ifndef _STEPCAFControl_Reader_HeaderFile
 #define _STEPCAFControl_Reader_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
+#include <Resource_FormatType.hxx>
 #include <STEPControl_Reader.hxx>
-#include <Standard_Boolean.hxx>
 #include <IFSelect_ReturnStatus.hxx>
-#include <Standard_CString.hxx>
-#include <Standard_Integer.hxx>
 #include <TDF_LabelSequence.hxx>
 #include <TopTools_MapOfShape.hxx>
 #include <STEPCAFControl_DataMapOfShapePD.hxx>
@@ -33,6 +27,7 @@
 #include <TColStd_HSequenceOfTransient.hxx>
 #include <XCAFDimTolObjects_DatumModifiersSequence.hxx>
 #include <XCAFDimTolObjects_DatumModifWithValue.hxx>
+
 class XSControl_WorkSession;
 class TDocStd_Document;
 class TCollection_AsciiString;
@@ -135,7 +130,14 @@ public:
   Standard_EXPORT void SetNameMode (const Standard_Boolean namemode);
   
   Standard_EXPORT Standard_Boolean GetNameMode() const;
-  
+
+  //! Return the encoding of STEP file for converting names into UNICODE.
+  //! Initialized from "read.stepcaf.codepage" variable by constructor, which is Resource_UTF8 by default.
+  Resource_FormatType SourceCodePage() const { return mySourceCodePage; }
+
+  //! Return the encoding of STEP file for converting names into UNICODE.
+  void SetSourceCodePage (Resource_FormatType theCode) { mySourceCodePage = theCode; }
+
   //! Set LayerMode for indicate read Layers or not.
   Standard_EXPORT void SetLayerMode (const Standard_Boolean layermode);
   
@@ -252,8 +254,8 @@ protected:
   //! are skipped.
   Standard_EXPORT void ExpandShell (const Handle(StepShape_ConnectedFaceSet)& theShell, TDF_Label& theLab, const Handle(Transfer_TransientProcess)& theTP, const Handle(XCAFDoc_ShapeTool)& theShapeTool) const;
 
-
-
+  //! Convert name into UNICODE text.
+  Standard_EXPORT virtual TCollection_ExtendedString convertName (const TCollection_AsciiString& theName) const;
 
 private:
 
@@ -281,6 +283,7 @@ private:
 
   STEPControl_Reader myReader;
   NCollection_DataMap<TCollection_AsciiString, Handle(STEPCAFControl_ExternFile)> myFiles;
+  Resource_FormatType mySourceCodePage;
   Standard_Boolean myColorMode;
   Standard_Boolean myNameMode;
   Standard_Boolean myLayerMode;
@@ -292,11 +295,5 @@ private:
   NCollection_DataMap<Handle(Standard_Transient), TDF_Label> myGDTMap;
 
 };
-
-
-
-
-
-
 
 #endif // _STEPCAFControl_Reader_HeaderFile

@@ -277,6 +277,7 @@
 #include <Transfer_ActorOfTransientProcess.hxx>
 #include <Bnd_Box.hxx>
 #include <BRepBndLib.hxx>
+#include <Resource_Unicode.hxx>
 
 // skl 21.08.2003 for reading G&DT
 //#include <StepRepr_CompoundItemDefinition.hxx>
@@ -315,7 +316,8 @@ TCollection_AsciiString AddrToString(const TopoDS_Shape& theShape)
 //purpose  : 
 //=======================================================================
 
-STEPCAFControl_Reader::STEPCAFControl_Reader() :
+STEPCAFControl_Reader::STEPCAFControl_Reader()
+: mySourceCodePage (Resource_FormatType_UTF8),
   myColorMode(Standard_True),
   myNameMode(Standard_True),
   myLayerMode(Standard_True),
@@ -326,6 +328,7 @@ STEPCAFControl_Reader::STEPCAFControl_Reader() :
   myViewMode(Standard_True)
 {
   STEPCAFControl_Controller::Init();
+  mySourceCodePage = (Resource_FormatType )Interface_Static::IVal ("read.stepcaf.codepage");
 }
 
 
@@ -335,7 +338,8 @@ STEPCAFControl_Reader::STEPCAFControl_Reader() :
 //=======================================================================
 
 STEPCAFControl_Reader::STEPCAFControl_Reader(const Handle(XSControl_WorkSession)& WS,
-  const Standard_Boolean scratch) :
+  const Standard_Boolean scratch)
+: mySourceCodePage (Resource_FormatType_UTF8),
   myColorMode(Standard_True),
   myNameMode(Standard_True),
   myLayerMode(Standard_True),
@@ -346,6 +350,7 @@ STEPCAFControl_Reader::STEPCAFControl_Reader(const Handle(XSControl_WorkSession)
   myViewMode(Standard_True)
 {
   STEPCAFControl_Controller::Init();
+  mySourceCodePage = (Resource_FormatType )Interface_Static::IVal ("read.stepcaf.codepage");
   Init(WS, scratch);
 }
 
@@ -363,6 +368,16 @@ void STEPCAFControl_Reader::Init(const Handle(XSControl_WorkSession)& WS,
   myFiles.Clear();
 }
 
+//=======================================================================
+//function : convertName
+//purpose  :
+//=======================================================================
+TCollection_ExtendedString STEPCAFControl_Reader::convertName (const TCollection_AsciiString& theName) const
+{
+  TCollection_ExtendedString aName;
+  Resource_Unicode::ConvertFormatToUnicode (mySourceCodePage, theName.ToCString(), aName);
+  return aName;
+}
 
 //=======================================================================
 //function : ReadFile
@@ -1158,7 +1173,8 @@ Standard_Boolean STEPCAFControl_Reader::ReadNames(const Handle(XSControl_WorkSes
       // find proper label
       L = FindInstance(NAUO, STool, Tool, ShapeLabelMap);
       if (L.IsNull()) continue;
-      TCollection_ExtendedString str(name->String());
+
+      TCollection_ExtendedString str = convertName (name->String());
       TDataStd_Name::Set(L, str);
     }
 
@@ -1179,11 +1195,11 @@ Standard_Boolean STEPCAFControl_Reader::ReadNames(const Handle(XSControl_WorkSes
         name = new TCollection_HAsciiString;
       L = GetLabelFromPD(PD, STool, TP, PDFileMap, ShapeLabelMap);
       if (L.IsNull()) continue;
-      TCollection_ExtendedString str(name->String());
+      TCollection_ExtendedString str = convertName (name->String());
       TDataStd_Name::Set(L, str);
     }
     // set a name to the document
-    //TCollection_ExtendedString str ( name->String() );
+    //TCollection_ExtendedString str = convertName (name->String());
     //TDataStd_Name::Set ( L, str );
   }
 

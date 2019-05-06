@@ -105,8 +105,7 @@ static Standard_Integer DDataStd_GetName (Draw_Interpretor& di,
 	if(!N.IsNull()) 
       cout << "String = " << TCollection_AsciiString(N->Get(), '?').ToCString()  << endl;
 #endif
-    TCollection_AsciiString s(N->Get(),'?');
-    di << s.ToCString();
+    di << N->Get();
     return 0;
   }
   di << "DDataStd_SetName : Error\n";

@@ -9,7 +9,7 @@ puts ""
 
 pload DCAF
 
-ReadStep D [locate_data_file OCC23251-dm1-oc-214.stp] res
+ReadStep D [locate_data_file OCC23251-dm1-oc-214.stp]
 
 set dump_info [ XDumpDF D ]
 

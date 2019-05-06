@@ -596,57 +596,80 @@ void  Resource_Unicode::ReadFormat()
   Resource_Unicode::GetFormat();
 }
 
-void Resource_Unicode::ConvertFormatToUnicode(const Standard_CString fromstr,
-					      TCollection_ExtendedString& tostr)
+void Resource_Unicode::ConvertFormatToUnicode (const Resource_FormatType theFormat,
+                                               const Standard_CString theFromStr,
+                                               TCollection_ExtendedString& theToStr)
 {
-  Resource_FormatType theform = Resource_Unicode::GetFormat();
-  switch (theform) {
-  case Resource_SJIS :
+  switch (theFormat)
+  {
+    case Resource_FormatType_SJIS:
     {
-      ConvertSJISToUnicode(fromstr,tostr);
+      ConvertSJISToUnicode (theFromStr, theToStr);
       break;
     }
-  case Resource_EUC :
+    case Resource_FormatType_EUC:
     {
-      ConvertEUCToUnicode(fromstr,tostr);
+      ConvertEUCToUnicode(theFromStr, theToStr);
       break;
     }
-  case Resource_GB :
+    case Resource_FormatType_GB:
     {
-      ConvertGBToUnicode(fromstr,tostr);
+      ConvertGBToUnicode(theFromStr, theToStr);
       break;
     }
-  case Resource_ANSI :
+    case Resource_FormatType_ANSI:
+    case Resource_FormatType_UTF8:
     {
-      ConvertANSIToUnicode(fromstr,tostr);
+      theToStr = TCollection_ExtendedString (theFromStr, theFormat == Resource_FormatType_UTF8);
+      break;
+    }
+    case Resource_FormatType_SystemLocale:
+    {
+      NCollection_Utf16String aString;
+      aString.FromLocale (theFromStr);
+      theToStr = TCollection_ExtendedString (aString.ToCString());
       break;
     }
   }
 }
 
-Standard_Boolean Resource_Unicode::ConvertUnicodeToFormat(const TCollection_ExtendedString& fromstr,
-							  Standard_PCharacter& tostr,
-							  const Standard_Integer maxsize)
+Standard_Boolean Resource_Unicode::ConvertUnicodeToFormat(const Resource_FormatType theFormat,
+                                                          const TCollection_ExtendedString& theFromStr,
+                                                          Standard_PCharacter& theToStr,
+                                                          const Standard_Integer theMaxSize)
 {
-  Resource_FormatType theform = Resource_Unicode::GetFormat();
-  switch (theform) {
-  case Resource_SJIS :
+  switch (theFormat)
+  {
+    case Resource_FormatType_SJIS:
     {
-      return ConvertUnicodeToSJIS(fromstr,tostr,maxsize);
+      return ConvertUnicodeToSJIS (theFromStr, theToStr, theMaxSize);
     }
-  case Resource_EUC :
+    case Resource_FormatType_EUC:
     {
-      return ConvertUnicodeToEUC(fromstr,tostr,maxsize);
+      return ConvertUnicodeToEUC (theFromStr, theToStr, theMaxSize);
     }
-  case Resource_GB :
+    case Resource_FormatType_GB:
     {
-      return ConvertUnicodeToGB(fromstr,tostr,maxsize);
+      return ConvertUnicodeToGB (theFromStr, theToStr, theMaxSize);
     }
-  case Resource_ANSI :
+    case Resource_FormatType_ANSI:
     {
-      return ConvertUnicodeToANSI(fromstr,tostr,maxsize);
+      return ConvertUnicodeToANSI (theFromStr, theToStr, theMaxSize);
+    }
+    case Resource_FormatType_UTF8:
+    {
+      if (theMaxSize < theFromStr.LengthOfCString())
+      {
+        return Standard_False;
+      }
+      theFromStr.ToUTF8CString (theToStr);
+      return Standard_True;
+    }
+    case Resource_FormatType_SystemLocale:
+    {
+      const NCollection_Utf16String aString (theFromStr.ToExtString());
+      return aString.ToLocale (theToStr, theMaxSize);
     }
   }
   return Standard_False;
 }
-

@@ -307,33 +307,61 @@ static Standard_Integer WriteIges (Draw_Interpretor& di, Standard_Integer argc, 
 
 static Standard_Integer ReadStep (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
-  if ( argc <3 ) {
-    di << "Use: " << argv[0] << " Doc filename [mode]: read STEP file to a document\n";
-    return 0;
-  }
-  
   DeclareAndCast(STEPControl_Controller,ctl,XSDRAW::Controller());
   if (ctl.IsNull()) XSDRAW::SetNorm("STEP");
 
+  Standard_CString aDocName = NULL;
+  TCollection_AsciiString aFilePath, aModeStr;
+  for (Standard_Integer anArgIter = 1; anArgIter < argc; ++anArgIter)
+  {
+    TCollection_AsciiString anArgCase (argv[anArgIter]);
+    anArgCase.LowerCase();
+    if (aDocName == NULL)
+    {
+      aDocName = argv[anArgIter];
+    }
+    else if (aFilePath.IsEmpty())
+    {
+      aFilePath = argv[anArgIter];
+    }
+    else if (aModeStr.IsEmpty())
+    {
+      aModeStr = argv[anArgIter];
+    }
+    else
+    {
+      std::cout << "Syntax error at '" << argv[anArgIter] << "'\n";
+      return 1;
+    }
+  }
+
   TCollection_AsciiString fnom, rnom;
-  Standard_Boolean modfic = XSDRAW::FileAndVar(argv[2], argv[1], "STEP", fnom, rnom);
+  Standard_Boolean modfic = XSDRAW::FileAndVar (aFilePath.ToCString(), aDocName, "STEP", fnom, rnom);
   if (modfic) di << " File STEP to read : " << fnom.ToCString() << "\n";
   else        di << " Model taken from the session : " << fnom.ToCString() << "\n";
   //  di<<" -- Names of variables BREP-DRAW prefixed by : "<<rnom<<"\n";
 
   STEPCAFControl_Reader reader ( XSDRAW::Session(),modfic);
-  
-  if (argc == 4) {
+  if (!aModeStr.IsEmpty())
+  {
     Standard_Boolean mode = Standard_True;
-    for ( Standard_Integer i = 0; argv[3][i] ; i++ ) 
-      switch (argv[3][i]) {
-      case '-' : mode = Standard_False; break;
-      case '+' : mode = Standard_True; break;
-      case 'c' : reader.SetColorMode (mode); break;
-      case 'n' : reader.SetNameMode (mode); break;
-      case 'l' : reader.SetLayerMode (mode); break;
-      case 'v' : reader.SetPropsMode (mode); break;
+    for (Standard_Integer i = 1; aModeStr.Value (i); ++i)
+    {
+      switch (aModeStr.Value (i))
+      {
+        case '-' : mode = Standard_False; break;
+        case '+' : mode = Standard_True; break;
+        case 'c' : reader.SetColorMode (mode); break;
+        case 'n' : reader.SetNameMode (mode); break;
+        case 'l' : reader.SetLayerMode (mode); break;
+        case 'v' : reader.SetPropsMode (mode); break;
+        default:
+        {
+          std::cout << "Syntax error at '" << aModeStr << "'\n";
+          return 1;
+        }
       }
+    }
   }
   
   IFSelect_ReturnStatus readstat = IFSelect_RetVoid;
@@ -346,27 +374,28 @@ static Standard_Integer ReadStep (Draw_Interpretor& di, Standard_Integer argc, c
   }
 
   Handle(TDocStd_Document) doc;
-  if (!DDocStd::GetDocument(argv[1],doc,Standard_False)) {  
+  if (!DDocStd::GetDocument (aDocName, doc, Standard_False))
+  {
     Handle(TDocStd_Application) A = DDocStd::GetApplication();
-    A->NewDocument("BinXCAF",doc);  
-    TDataStd_Name::Set(doc->GetData()->Root(),argv[1]);  
-    Handle(DDocStd_DrawDocument) DD = new DDocStd_DrawDocument(doc);  
-    Draw::Set(argv[1],DD);       
-//     di << "Document saved with name " << argv[1];
+    A->NewDocument("BinXCAF",doc);
+    TDataStd_Name::Set(doc->GetData()->Root(), aDocName);
+    Handle(DDocStd_DrawDocument) DD = new DDocStd_DrawDocument(doc);
+    Draw::Set (aDocName, DD);
+//     di << "Document saved with name " << aDocName;
   }
   if ( ! reader.Transfer ( doc ) ) {
     di << "Cannot read any relevant data from the STEP file\n";
     return 1;
   }
   
-  Handle(DDocStd_DrawDocument) DD = new DDocStd_DrawDocument(doc);  
-  Draw::Set(argv[1],DD);       
-  di << "Document saved with name " << argv[1];
+  Handle(DDocStd_DrawDocument) DD = new DDocStd_DrawDocument(doc);
+  Draw::Set (aDocName, DD);
+  di << "Document saved with name " << aDocName;
 
   NCollection_DataMap<TCollection_AsciiString, Handle(STEPCAFControl_ExternFile)> DicFile = reader.ExternFiles();
   FillDicWS( DicFile );
   AddWS ( fnom , XSDRAW::Session() );
-  
+
   return 0;
 }
 
@@ -587,7 +616,10 @@ void XDEDRAW_Common::InitCommands(Draw_Interpretor& di)
 
   di.Add("ReadIges" , "Doc filename: Read IGES file to DECAF document" ,__FILE__, ReadIges, g);
   di.Add("WriteIges" , "Doc filename: Write DECAF document to IGES file" ,__FILE__, WriteIges, g);
-  di.Add("ReadStep" , "Doc filename: Read STEP file to DECAF document" ,__FILE__, ReadStep, g);
+  di.Add("ReadStep" ,
+         "Doc filename [mode]"
+         "\n\t\t: Read STEP file to a document.",
+         __FILE__, ReadStep, g);
   di.Add("WriteStep" , "Doc filename [mode=a [multifile_prefix] [label]]: Write DECAF document to STEP file" ,__FILE__, WriteStep, g);  
   
   di.Add("XFileList","Print list of files that was transfered by the last transfer" ,__FILE__, GetDicWSList , g);
