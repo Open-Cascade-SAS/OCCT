@@ -1612,7 +1612,8 @@ proc _log_html {file log {title {}}} {
     }
     
     # print header
-    puts $fd "<html><head><title>$title</title></head><body><h1>$title</h1>"
+    puts $fd "<html><head><meta http-equiv='Content-Type' content='text/html; charset=utf-8'/>"
+    puts $fd "<title>$title</title></head><body><h1>$title</h1>"
 
     # add images if present; these should have either PNG, GIF, or JPG extension,
     # and start with name of the test script, with optional suffix separated
@@ -1681,7 +1682,7 @@ proc _log_html_summary {logdir log totals regressions improvements skipped total
     }
 
     # write HRML header, including command to refresh log if still in progress
-    puts $fd "<html><head>"
+    puts $fd "<html><head><meta http-equiv='Content-Type' content='text/html; charset=utf-8'/>"
     puts $fd "<title>Tests summary</title>"
     if { $total_time == "" } {
         puts $fd "<meta http-equiv=\"refresh\" content=\"10\">"
@@ -2337,7 +2338,8 @@ proc _log_html_diff {file log dir1 dir2 highlight_percent} {
     }
     
     # print header
-    puts $fd "<html><head><title>Diff $dir1 vs. $dir2</title></head><body>"
+    puts $fd "<html><head><meta http-equiv='Content-Type' content='text/html; charset=utf-8'/>"
+    puts $fd "<title>Diff $dir1 vs. $dir2</title></head><body>"
     puts $fd "<h1>Comparison of test results:</h1>"
     puts $fd "<h2>Version A \[NEW\] - $dir1</h2>"
     puts $fd "<h2>Version B \[REF\] - $dir2</h2>"
