@@ -1332,13 +1332,23 @@ TopoDS_Shape DBRep::getShape (Standard_CString& theName,
 
 static Standard_Integer XProgress (Draw_Interpretor& di, Standard_Integer argc, const char **argv)
 {
-  for ( Standard_Integer i=1; i < argc; i++ ) {
+  for ( Standard_Integer i=1; i < argc; i++ )
+  {
     Standard_Boolean turn = Standard_True;
     if ( argv[i][0] == '-' ) turn = Standard_False;
     else if ( argv[i][0] != '+' ) continue;
-    if ( argv[i][1] == 't' ) Draw_ProgressIndicator::DefaultTextMode() = turn;
+
+    TCollection_AsciiString anArgCase (argv[i]);
+    anArgCase.LowerCase();
+    if (anArgCase == "-tcloutput")
+    {
+      Draw_ProgressIndicator::DefaultTclOutput() = Standard_True;
+      return 0;
+    }
+    else if ( argv[i][1] == 't' ) Draw_ProgressIndicator::DefaultTextMode() = turn;
     else if ( argv[i][1] == 'g' ) Draw_ProgressIndicator::DefaultGraphMode() = turn;
-    else if ( ! strcmp ( argv[i], "-stop" ) && i+1 < argc ) {
+    else if ( ! strcmp ( argv[i], "-stop" ) && i+1 < argc )
+    {
       Standard_Address aPtr = 0;
       if (sscanf (argv[++i], "%p", &aPtr) == 1)
         Draw_ProgressIndicator::StopIndicator() = aPtr;
@@ -1463,7 +1473,13 @@ void  DBRep::BasicCommands(Draw_Interpretor& theCommands)
 		  __FILE__,purgemmgt,g);
   
   // Add command for DRAW-specific ProgressIndicator
-  theCommands.Add ( "XProgress","XProgress [+|-t] [+|-g]: switch on/off textual and graphical mode of Progress Indicator",XProgress,"DE: General");
+  theCommands.Add ( "XProgress",
+                    "XProgress [+|-t] [+|-g] [-tclOutput]"
+                    "\n\t\t: The options are:"
+                    "\n\t\t:   +|-t, +|-g :  switch on/off textual and graphical mode of Progress Indicator"
+                    "\n\t\t:   -tclOutput :  switch on data output mode in tcl"
+                    "\n\t\t: Allows to control the output form of Progress Indicator",
+                    XProgress,"DE: General");
 
   theCommands.Add("binsave", "binsave shape filename\n"
                   "\t\tsave the shape in the binary format file",

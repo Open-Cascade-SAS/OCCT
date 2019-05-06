@@ -23,6 +23,7 @@
 #include <BRepPrimAPI_MakeSphere.hxx>
 #include <DBRep.hxx>
 #include <Draw_Interpretor.hxx>
+#include <Draw_Printer.hxx>
 #include <DrawTrSurf.hxx>
 #include <GCE2d_MakeSegment.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
@@ -33,6 +34,9 @@
 #include <gp_Quaternion.hxx>
 #include <Image_Color.hxx>
 #include <Image_PixMap.hxx>
+#include <Message.hxx>
+#include <Message_Messenger.hxx>
+#include <Message_PrinterOStream.hxx>
 #include <NCollection_Handle.hxx>
 #include <NCollection_IncAllocator.hxx>
 #include <NCollection_Map.hxx>
@@ -1702,7 +1706,16 @@ static Standard_Integer OCC23951 (Draw_Interpretor& di, Standard_Integer argc, c
     return 1;
   }
 
-  writer.Write(argv[1]);
+  const Handle(Message_Messenger)& aMsgMgr = Message::DefaultMessenger();
+  Message_SequenceOfPrinters aPrinters;
+  aPrinters.Append (aMsgMgr->ChangePrinters());
+  aMsgMgr->AddPrinter (new Draw_Printer (di));
+
+  writer.Write (argv[1]);
+
+  aMsgMgr->RemovePrinters (STANDARD_TYPE(Draw_Printer));
+  aMsgMgr->ChangePrinters().Append (aPrinters);
+
   return 0;
 }
 
@@ -1745,7 +1758,16 @@ static Standard_Integer OCC23950 (Draw_Interpretor& di, Standard_Integer argc, c
     return 1;
   }
 
+  const Handle(Message_Messenger)& aMsgMgr = Message::DefaultMessenger();
+  Message_SequenceOfPrinters aPrinters;
+  aPrinters.Append (aMsgMgr->ChangePrinters());
+  aMsgMgr->AddPrinter (new Draw_Printer (di));
+
   writer.Write (argv[1]);
+
+  aMsgMgr->RemovePrinters (STANDARD_TYPE(Draw_Printer));
+  aMsgMgr->ChangePrinters().Append (aPrinters);
+
   return 0;
 }
 

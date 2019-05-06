@@ -17,6 +17,7 @@
 #include <BOPTest.hxx>
 #include <BRepTest.hxx>
 #include <DBRep.hxx>
+#include <Draw.hxx>
 #include <Draw_Interpretor.hxx>
 #include <Draw_PluginMacro.hxx>
 #include <GeometryTest.hxx>
@@ -136,7 +137,8 @@ void BOPTest::ReportAlerts(const Handle(Message_Report)& theReport)
       }
 
       // output message with list of shapes
-      Message::DefaultMessenger()->Send (aText, anAlertTypes[iGravity]);
+      Draw_Interpretor& aDrawInterpretor = Draw::GetInterpretor();
+      aDrawInterpretor << aText << "\n";
     }
   }
 }

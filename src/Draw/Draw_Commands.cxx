@@ -17,29 +17,11 @@
 
 #include <Draw.hxx>
 #include <Draw_Drawable3D.hxx>
-#include <Draw_Printer.hxx>
 #include <Draw_ProgressIndicator.hxx>
-#include <Message.hxx>
-#include <Message_Messenger.hxx>
-#include <Message_PrinterOStream.hxx>
 #include <TCollection_AsciiString.hxx>
 
 void Draw::Commands (Draw_Interpretor& theCommands)
 {
-  static Standard_Boolean isFirstTime = Standard_True;
-  if (isFirstTime)
-  {
-    // override default std::cout printer by draw interpretor printer
-    const Handle(Message_Messenger)& aMsgMgr = Message::DefaultMessenger();
-    if (!aMsgMgr.IsNull())
-    {
-      aMsgMgr->RemovePrinters (STANDARD_TYPE (Message_PrinterOStream));
-      aMsgMgr->RemovePrinters (STANDARD_TYPE (Draw_Printer));
-      aMsgMgr->AddPrinter (new Draw_Printer (theCommands));
-    }
-    isFirstTime = Standard_False;
-  }
-
   Draw::BasicCommands(theCommands);
   Draw::VariableCommands(theCommands);
   Draw::GraphicCommands(theCommands);

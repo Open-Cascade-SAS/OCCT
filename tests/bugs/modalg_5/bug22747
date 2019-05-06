@@ -12,6 +12,7 @@ pload XSDRAW
 
 restore [locate_data_file OCC22765.brep] a
 vinit
+XProgress -tclOutput
 XProgress -t
 set List1 [sewing result 0.1 a]
 if { [string compare $List1 ""] != 0 } {

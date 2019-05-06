@@ -14,12 +14,15 @@
 
 #include <DBRep.hxx>
 #include <Draw_Appli.hxx>
+#include <Draw_Printer.hxx>
 #include <IFSelect_Functions.hxx>
 #include <IFSelect_SessionPilot.hxx>
 #include <Interface_InterfaceModel.hxx>
 #include <Interface_Macros.hxx>
 #include <Interface_Protocol.hxx>
 #include <Message.hxx>
+#include <Message_Messenger.hxx>
+#include <Message_PrinterOStream.hxx>
 #include <Standard_Transient.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TColStd_HSequenceOfAsciiString.hxx>
@@ -48,14 +51,23 @@ static Handle(TColStd_HSequenceOfAsciiString) thenews;
 
 static Handle(IFSelect_SessionPilot)    thepilot;  // detient Session, Model
 
-static Standard_Integer XSTEPDRAWRUN (Draw_Interpretor& , Standard_Integer argc, const char** argv)
+static Standard_Integer XSTEPDRAWRUN (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   TCollection_AsciiString mess;
   for (Standard_Integer i = 0; i < argc; i ++) {
     mess.AssignCat(argv[i]);  mess.AssignCat(" ");
   }
 
+  const Handle(Message_Messenger)& aMsgMgr = Message::DefaultMessenger();
+  Message_SequenceOfPrinters aPrinters;
+  aPrinters.Append (aMsgMgr->ChangePrinters());
+  aMsgMgr->AddPrinter (new Draw_Printer (di));
+
   IFSelect_ReturnStatus stat = thepilot->Execute (mess.ToCString());
+
+  aMsgMgr->RemovePrinters (STANDARD_TYPE(Draw_Printer));
+  aMsgMgr->ChangePrinters().Append (aPrinters);
+
   if (stat == IFSelect_RetError || stat == IFSelect_RetFail) return 1;
   else return 0;
 }

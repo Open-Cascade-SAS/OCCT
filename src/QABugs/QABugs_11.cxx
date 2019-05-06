@@ -4753,6 +4753,7 @@ Standard_Integer OCC28478 (Draw_Interpretor& di, Standard_Integer argc, const ch
   // test behavior of progress indicator when using nested scopes with names set by Sentry objects
   Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator (di, 1);
   aProgress->SetTextMode (Standard_True);
+  aProgress->SetTclOutput (Standard_True);
 
   // Outer cycle
   Message_ProgressSentry anOuter (aProgress, "Outer", 0, nbOuter, 1);

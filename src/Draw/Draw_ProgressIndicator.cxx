@@ -31,7 +31,8 @@ IMPLEMENT_STANDARD_RTTIEXT(Draw_ProgressIndicator,Message_ProgressIndicator)
 Draw_ProgressIndicator::Draw_ProgressIndicator (const Draw_Interpretor &di, Standard_Real theUpdateThreshold)
 : myTextMode ( DefaultTextMode() ),
   myGraphMode ( DefaultGraphMode() ),
-  myDraw ( (Standard_Address)&di ),
+  myTclOutput ( DefaultTclOutput() ),
+  myDraw ( (Draw_Interpretor*)&di ),
   myShown ( Standard_False ),
   myBreak ( Standard_False ),
   myUpdateThreshold ( 0.01 * theUpdateThreshold ),
@@ -59,7 +60,7 @@ void Draw_ProgressIndicator::Reset()
 {
   Message_ProgressIndicator::Reset();
   if ( myShown ) {
-    ((Draw_Interpretor*)myDraw)->Eval ( "destroy .xprogress" );
+    myDraw->Eval ( "destroy .xprogress" );
     myShown = Standard_False;
   }
   myBreak = Standard_False;
@@ -145,7 +146,7 @@ Standard_Boolean Draw_ProgressIndicator::Show(const Standard_Boolean force)
                          "message .xprogress.text -width 400 -text \"Progress 0%%\";"
                          "button .xprogress.stop -text \"Break\" -relief groove -width 9 -command {XProgress -stop %p};"
                          "pack .xprogress.bar .xprogress.text .xprogress.stop -side top;", this );
-      ((Draw_Interpretor*)myDraw)->Eval ( command );
+      myDraw->Eval ( command );
       myShown = Standard_True;
     }
     std::stringstream aCommand;
@@ -155,16 +156,24 @@ Standard_Boolean Draw_ProgressIndicator::Show(const Standard_Boolean force)
     aCommand << ".xprogress.bar coords progress_next 2 2 " << (1 + 400 * GetScope(1).GetLast()) << " 21;";
     aCommand << ".xprogress.text configure -text \"" << aText.str() << "\";";
     aCommand << "update";
-    ((Draw_Interpretor*)myDraw)->Eval (aCommand.str().c_str());
+    myDraw->Eval (aCommand.str().c_str());
   }
 
   // Print textual progress info
-  if ( myTextMode )
-    Message::DefaultMessenger()->Send (aText.str().c_str(), Message_Info);
-  
+  if (myTextMode)
+  {
+    if (myTclOutput && myDraw)
+    {
+      *myDraw << aText.str().c_str() << "\n";
+    }
+    else
+    {
+      std::cout << aText.str().c_str() << "\n";
+    }
+  }
   return Standard_True;
 }
-       
+
 //=======================================================================
 //function : UserBreak
 //purpose  : 
@@ -175,7 +184,7 @@ Standard_Boolean Draw_ProgressIndicator::UserBreak()
   if ( StopIndicator() == this ) {
 //    std::cout << "Progress Indicator - User Break: " << StopIndicator() << ", " << (void*)this << std::endl;
     myBreak = Standard_True;
-    ((Draw_Interpretor*)myDraw)->Eval ( "XProgress -stop 0" );
+    myDraw->Eval ( "XProgress -stop 0" );
   }
   return myBreak;
 }
@@ -225,29 +234,40 @@ Standard_Boolean Draw_ProgressIndicator::GetGraphMode() const
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean &Draw_ProgressIndicator::DefaultTextMode () 
+Standard_Boolean &Draw_ProgressIndicator::DefaultTextMode()
 {
   static Standard_Boolean defTextMode = Standard_False;
   return defTextMode;
 }
-    
+
 //=======================================================================
 //function : DefaultGraphMode
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean &Draw_ProgressIndicator::DefaultGraphMode () 
+Standard_Boolean &Draw_ProgressIndicator::DefaultGraphMode()
 {
   static Standard_Boolean defGraphMode = Standard_False;
   return defGraphMode;
 }
-    
+
+//=======================================================================
+//function : DefaultTclOutput
+//purpose  :
+//=======================================================================
+
+Standard_Boolean &Draw_ProgressIndicator::DefaultTclOutput()
+{
+  static Standard_Boolean defTclOutput = Standard_False;
+  return defTclOutput;
+}
+
 //=======================================================================
 //function : StopIndicator
 //purpose  : 
 //=======================================================================
 
-Standard_Address &Draw_ProgressIndicator::StopIndicator ()
+Standard_Address &Draw_ProgressIndicator::StopIndicator()
 {
   static Standard_Address stopIndicator = 0;
   return stopIndicator;

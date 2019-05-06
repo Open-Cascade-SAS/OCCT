@@ -54,7 +54,13 @@ public:
   
   //! Gets graphical output mode (on/off)
   Standard_EXPORT Standard_Boolean GetGraphMode() const;
-  
+
+  //! Sets tcl output mode (on/off)
+  void SetTclOutput (const Standard_Boolean theTclOutput) { myTclOutput = theTclOutput; }
+
+  //! Gets tcl output mode (on/off)
+  Standard_Boolean GetTclOutput() const { return myTclOutput; }
+
   //! Clears/erases opened TCL windows if any
   //! and sets myBreak to False
   Standard_EXPORT virtual void Reset() Standard_OVERRIDE;
@@ -69,7 +75,10 @@ public:
   
   //! Get/Set default values for output modes
   Standard_EXPORT static Standard_Boolean& DefaultGraphMode();
-  
+
+  //! Get/Set default values for tcl output mode
+  Standard_EXPORT static Standard_Boolean& DefaultTclOutput();
+
   //! Internal method for implementation of UserBreak mechanism;
   //! note that it uses static variable and thus not thread-safe! 
   Standard_EXPORT static Standard_Address& StopIndicator();
@@ -79,7 +88,8 @@ public:
 private:
   Standard_Boolean myTextMode;
   Standard_Boolean myGraphMode;
-  Standard_Address myDraw;
+  Standard_Boolean myTclOutput;
+  Draw_Interpretor* myDraw;
   Standard_Boolean myShown;
   Standard_Boolean myBreak;
   Standard_Real myUpdateThreshold;
