@@ -39,7 +39,8 @@ Graphic3d_CStructure::Graphic3d_CStructure (const Handle(Graphic3d_StructureMana
   IsMutable        (Standard_False),
   Is2dText         (Standard_False),
   myGraphicDriver  (theManager->GraphicDriver()),
-  myIsCulled       (Standard_True)
+  myIsCulled       (Standard_True),
+  myBndBoxClipCheck(Standard_True)
 {
   Id = myGraphicDriver->NewIdentification();
 }

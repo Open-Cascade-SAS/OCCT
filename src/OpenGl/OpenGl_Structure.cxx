@@ -527,15 +527,15 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
         }
 
         const Graphic3d_ClipState aBoxState = aPlane->ProbeBox (aBBox);
-        if (aBoxState == Graphic3d_ClipState_Out)
-        {
-          isClipped = true;
-          break;
-        }
-        else if (aBoxState == Graphic3d_ClipState_In)
+        if (aBoxState == Graphic3d_ClipState_In)
         {
           aCtx->ChangeClipping().SetEnabled (aPlaneIt, false);
           hasDisabled = true;
+        }
+        else if (aBoxState == Graphic3d_ClipState_Out && myBndBoxClipCheck)
+        {
+          isClipped = true;
+          break;
         }
       }
     }

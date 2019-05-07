@@ -145,6 +145,12 @@ public:
   //! The method is called during traverse of BVH tree.
   void MarkAsNotCulled() const { myIsCulled = Standard_False; }
 
+  //! Returns whether check of object's bounding box clipping is enabled before drawing of object; TRUE by default.
+  Standard_Boolean BndBoxClipCheck() const { return myBndBoxClipCheck; }
+
+  //! Enable/disable check of object's bounding box clipping before drawing of object.
+  void SetBndBoxClipCheck(Standard_Boolean theBndBoxClipCheck) { myBndBoxClipCheck = theBndBoxClipCheck; }
+
   //! Checks if the structure should be included into BVH tree or not.
   Standard_Boolean IsAlwaysRendered() const
   {
@@ -224,6 +230,7 @@ protected:
   Handle(Graphic3d_PresentationAttributes) myHighlightStyle; //! Current highlight style; is set only if highlight flag is true
 
   mutable Standard_Boolean myIsCulled; //!< A status specifying is structure needs to be rendered after BVH tree traverse
+  Standard_Boolean myBndBoxClipCheck;  //!< Flag responsible for checking of bounding box clipping before drawing of object
 
 public:
 
