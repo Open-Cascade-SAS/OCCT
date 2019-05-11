@@ -5451,6 +5451,14 @@ static int TextToBRep (Draw_Interpretor& /*theDI*/,
 //function : VFont
 //purpose  : Font management
 //=======================================================================
+struct FontComparator
+{
+  bool operator() (const Handle(Font_SystemFont)& theFontA,
+                   const Handle(Font_SystemFont)& theFontB)
+  {
+    return theFontA->FontKey().IsLess (theFontB->FontKey());
+  }
+};
 
 static int VFont (Draw_Interpretor& theDI,
                   Standard_Integer  theArgNb,
@@ -5462,9 +5470,16 @@ static int VFont (Draw_Interpretor& theDI,
     // just print the list of available fonts
     Standard_Boolean isFirst = Standard_True;
     const Font_NListOfSystemFont aFonts = aMgr->GetAvailableFonts();
-    for (Font_NListOfSystemFont::Iterator anIter (aFonts); anIter.More(); anIter.Next())
+    std::vector<Handle(Font_SystemFont)> aFontsSorted;
+    aFontsSorted.reserve (aFonts.Size());
+    for (Font_NListOfSystemFont::Iterator aFontIter (aFonts); aFontIter.More(); aFontIter.Next())
     {
-      const Handle(Font_SystemFont)& aFont = anIter.Value();
+      aFontsSorted.push_back (aFontIter.Value());
+    }
+    std::stable_sort (aFontsSorted.begin(), aFontsSorted.end(), FontComparator());
+    for (std::vector<Handle(Font_SystemFont)>::iterator aFontIter = aFontsSorted.begin(); aFontIter != aFontsSorted.end(); ++aFontIter)
+    {
+      const Handle(Font_SystemFont)& aFont = *aFontIter;
       if (!isFirst)
       {
         theDI << "\n";

@@ -14,6 +14,7 @@ CSF_user32
 CSF_XwLibs
 CSF_dpsLibs
 CSF_XmuLibs
+CSF_fontconfig
 CSF_objc
 CSF_Appkit
 CSF_IOKit

@@ -1393,6 +1393,7 @@ proc osutils:csfList { theOS theCsfLibsMap theCsfFrmsMap } {
       set aLibsMap(CSF_TclTkLibs)  ""
       set aLibsMap(CSF_QT)         "QtCore QtGui"
     } else {
+      set aLibsMap(CSF_fontconfig) "fontconfig"
       if { "$theOS" == "qnx" } {
         # CSF_ThreadLibs - pthread API is part of libc on QNX
         set aLibsMap(CSF_OpenGlLibs) "EGL GLESv2"

@@ -88,6 +88,10 @@ IMPLEMENT_STANDARD_RTTIEXT(Font_FontMgr,Standard_Transient)
                                                    "/usr/X11/lib/X11/fs/config",
                                                    NULL
                                                   };
+
+    // Although fontconfig library can be built for various platforms,
+    // practically it is useful only on desktop Linux distributions, where it is always packaged.
+    #include <fontconfig/fontconfig.h>
   #endif
 
   #ifdef __APPLE__
@@ -393,7 +397,7 @@ Standard_Boolean Font_FontMgr::RegisterFont (const Handle(Font_SystemFont)& theF
 void Font_FontMgr::InitFontDataBase()
 {
   myFontMap.Clear();
-  Handle(Font_FTLibrary) aFtLibrary;
+  Handle(Font_FTLibrary) aFtLibrary = new Font_FTLibrary();
 
 #if defined(OCCT_UWP)
   // system font files are not accessible
@@ -428,7 +432,6 @@ void Font_FontMgr::InitFontDataBase()
     aSupportedExtensions.Add (TCollection_AsciiString (anExt));
   }
 
-  aFtLibrary = new Font_FTLibrary();
   static const DWORD aBufferSize = 256;
   char aNameBuff[aBufferSize];
   char aPathBuff[aBufferSize];
@@ -471,61 +474,86 @@ void Font_FontMgr::InitFontDataBase()
 
   NCollection_Map<TCollection_AsciiString> aMapOfFontsDirs;
 #if !defined(__ANDROID__) && !defined(__APPLE__)
-  const OSD_Protection aProtectRead (OSD_R, OSD_R, OSD_R, OSD_R);
-
-  // read fonts directories from font service config file (obsolete)
-  for (Standard_Integer anIter = 0; myFontServiceConf[anIter] != NULL; ++anIter)
+  if (FcConfig* aFcCfg = FcInitLoadConfig())
   {
-    const TCollection_AsciiString aFileOfFontsPath (myFontServiceConf[anIter]);
-    OSD_File aFile (aFileOfFontsPath);
-    if (!aFile.Exists())
+    if (FcStrList* aFcFontDir = FcConfigGetFontDirs (aFcCfg))
     {
-      continue;
-    }
-
-    aFile.Open (OSD_ReadOnly, aProtectRead);
-    if (!aFile.IsOpen())
-    {
-      continue;
-    }
-
-    Standard_Integer aNByte = 256;
-    Standard_Integer aNbyteRead;
-    TCollection_AsciiString aStr; // read string with information
-    while (!aFile.IsAtEnd())
-    {
-      Standard_Integer aLocation = -1;
-      Standard_Integer aPathLocation = -1;
-
-      aFile.ReadLine (aStr, aNByte, aNbyteRead); // reading 1 line (256 bytes)
-      aLocation = aStr.Search ("catalogue=");
-      if (aLocation < 0)
+      for (;;)
       {
-        aLocation = aStr.Search ("catalogue =");
-      }
-
-      aPathLocation = aStr.Search ("/");
-      if (aLocation > 0 && aPathLocation > 0)
-      {
-        aStr = aStr.Split (aPathLocation - 1);
-        TCollection_AsciiString aFontPath;
-        Standard_Integer aPathNumber = 1;
-        do
+        FcChar8* aFcFolder = FcStrListNext (aFcFontDir);
+        if (aFcFolder == NULL)
         {
-          // Getting directory paths, which can be splitted by "," or ":"
-          aFontPath = aStr.Token (":,", aPathNumber);
-          aFontPath.RightAdjust();
-          if (!aFontPath.IsEmpty())
-          {
-            OSD_Path aPath(aFontPath);
-            addDirsRecursively (aPath, aMapOfFontsDirs);
-          }
-          aPathNumber++;
+          break;
         }
-        while (!aFontPath.IsEmpty());
+
+        TCollection_AsciiString aPathStr ((const char* )aFcFolder);
+        OSD_Path aPath (aPathStr);
+        addDirsRecursively (aPath, aMapOfFontsDirs);
       }
+      FcStrListDone (aFcFontDir);
     }
-    aFile.Close();
+    FcConfigDestroy (aFcCfg);
+  }
+
+  const OSD_Protection aProtectRead (OSD_R, OSD_R, OSD_R, OSD_R);
+  if (aMapOfFontsDirs.IsEmpty())
+  {
+    Message::DefaultMessenger()->Send ("Font_FontMgr, fontconfig library returns an empty folder list", Message_Alarm);
+
+    // read fonts directories from font service config file (obsolete)
+    for (Standard_Integer anIter = 0; myFontServiceConf[anIter] != NULL; ++anIter)
+    {
+      const TCollection_AsciiString aFileOfFontsPath (myFontServiceConf[anIter]);
+      OSD_File aFile (aFileOfFontsPath);
+      if (!aFile.Exists())
+      {
+        continue;
+      }
+
+      aFile.Open (OSD_ReadOnly, aProtectRead);
+      if (!aFile.IsOpen())
+      {
+        continue;
+      }
+
+      Standard_Integer aNByte = 256;
+      Standard_Integer aNbyteRead;
+      TCollection_AsciiString aStr; // read string with information
+      while (!aFile.IsAtEnd())
+      {
+        Standard_Integer aLocation = -1;
+        Standard_Integer aPathLocation = -1;
+
+        aFile.ReadLine (aStr, aNByte, aNbyteRead); // reading 1 line (256 bytes)
+        aLocation = aStr.Search ("catalogue=");
+        if (aLocation < 0)
+        {
+          aLocation = aStr.Search ("catalogue =");
+        }
+
+        aPathLocation = aStr.Search ("/");
+        if (aLocation > 0 && aPathLocation > 0)
+        {
+          aStr = aStr.Split (aPathLocation - 1);
+          TCollection_AsciiString aFontPath;
+          Standard_Integer aPathNumber = 1;
+          do
+          {
+            // Getting directory paths, which can be splitted by "," or ":"
+            aFontPath = aStr.Token (":,", aPathNumber);
+            aFontPath.RightAdjust();
+            if (!aFontPath.IsEmpty())
+            {
+              OSD_Path aPath(aFontPath);
+              addDirsRecursively (aPath, aMapOfFontsDirs);
+            }
+            aPathNumber++;
+          }
+          while (!aFontPath.IsEmpty());
+        }
+      }
+      aFile.Close();
+    }
   }
 #endif
 
@@ -545,7 +573,6 @@ void Font_FontMgr::InitFontDataBase()
     aSupportedExtensions.Add (TCollection_AsciiString (anExt));
   }
 
-  aFtLibrary = new Font_FTLibrary();
   for (NCollection_Map<TCollection_AsciiString>::Iterator anIter (aMapOfFontsDirs);
        anIter.More(); anIter.Next())
   {

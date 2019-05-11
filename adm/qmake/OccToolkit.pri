@@ -63,6 +63,7 @@ win32 {
   CSF_TclTkLibs  = -lX11 -ltk8.6
   CSF_XwLibs     = -lX11 -lXext -lXmu -lXi
   CSF_MotifLibs  = -lX11
+  CSF_fontconfig = -lfontconfig
   HAVE_GLES2 { CSF_OpenGlLibs = -lEGL -lGLESv2 }
 }
 
