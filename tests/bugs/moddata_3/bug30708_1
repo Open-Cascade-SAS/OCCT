@@ -1,0 +1,10 @@
+puts "================"
+puts "0030708: Modeling Data - Crash while initializing TopoDS_Iterator with null shape"
+puts "================"
+puts ""
+
+pload QAcommands
+
+if { [regexp "Cannot initialize" [OCC30708_1]]} {
+  puts "Error: Cannot initialize TopoDS_Iterator with null shape"
+}
