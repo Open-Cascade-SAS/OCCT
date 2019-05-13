@@ -1,0 +1,12 @@
+puts "========"
+puts "0030679: Attached model hangs most of OCCT common functionality"
+puts "========"
+puts ""
+
+puts "REQUIRED ALL: Evaluation of infinite parameters"
+restore [locate_data_file bug30679_face.brep] a
+
+pcurve a
+2dcvalue a_4 1 u v
+mksurface s a
+catch {svalue s u v x y z}

@@ -60,6 +60,37 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(ShapeAnalysis_Surface,Standard_Transient)
 
+namespace
+{
+  inline void RestrictBounds (double& theFirst, double& theLast)
+  {
+    Standard_Boolean isFInf = Precision::IsNegativeInfinite(theFirst);
+    Standard_Boolean isLInf = Precision::IsPositiveInfinite(theLast);
+    if (isFInf || isLInf)
+    {
+      if (isFInf && isLInf)
+      {
+        theFirst = -1000;
+        theLast = 1000;
+      }
+      else if (isFInf)
+      {
+        theFirst = theLast - 2000;
+      }
+      else
+      {
+        theLast = theFirst + 2000;
+      }
+    }
+  }
+
+  inline void RestrictBounds (double& theUf, double& theUl, double& theVf, double& theVl)
+  {
+    RestrictBounds (theUf, theUl);
+    RestrictBounds (theVf, theVl);
+  }
+}
+
 //S4135
 //S4135
 //=======================================================================
@@ -540,15 +571,9 @@ Standard_Boolean ShapeAnalysis_Surface::IsUClosed(const Standard_Real preci)
     Standard_Real uf, ul, vf, vl;
     Bounds(uf, ul, vf, vl);//modified by rln on 12/11/97 mySurf-> is deleted
     //mySurf->Bounds (uf,ul,vf,vl);
-    if (Precision::IsInfinite(uf) || Precision::IsInfinite(ul))
-    {
-      myUDelt = 0.;
-    }
-    else
-    {
-      myUDelt = Abs(ul - uf) / 20;//modified by rln 11/11/97 instead of 10
-                                  //because of the example when 10 was not enough
-    }
+    RestrictBounds (uf, ul, vf, vl);
+    myUDelt = Abs(ul - uf) / 20;//modified by rln 11/11/97 instead of 10
+                                //because of the example when 10 was not enough
     if (mySurf->IsUClosed())
     {
       myUCloseVal = 0.;
@@ -759,15 +784,9 @@ Standard_Boolean ShapeAnalysis_Surface::IsVClosed(const Standard_Real preci)
     Standard_Real uf, ul, vf, vl;
     Bounds(uf, ul, vf, vl);//modified by rln on 12/11/97 mySurf-> is deleted
                            //    mySurf->Bounds (uf,ul,vf,vl);
-    if (Precision::IsInfinite(vf) || Precision::IsInfinite(vl))
-    {
-      myVDelt = 0.;
-    }
-    else
-    {
-      myVDelt = Abs(vl - vf) / 20;// 2; rln S4135
-                                  //because of the example when 10 was not enough
-    }
+    RestrictBounds (uf, ul, vf, vl);
+    myVDelt = Abs(vl - vf) / 20;// 2; rln S4135
+                                //because of the example when 10 was not enough
     if (mySurf->IsVClosed())
     {
       myVCloseVal = 0.;
@@ -1192,10 +1211,7 @@ gp_Pnt2d ShapeAnalysis_Surface::ValueOfUV(const gp_Pnt& P3D, const Standard_Real
           ul = 500;
         }
 
-        if (Precision::IsInfinite(uf)) uf = -1000;
-        if (Precision::IsInfinite(ul)) ul = 1000;
-        if (Precision::IsInfinite(vf)) vf = -1000;
-        if (Precision::IsInfinite(vl)) vl = 1000;
+        RestrictBounds (uf, ul, vf, vl);
 
         //:30 by abv 2.12.97: speed optimization
         // code is taken from GeomAPI_ProjectPointOnSurf
@@ -1417,8 +1433,7 @@ Standard_Real ShapeAnalysis_Surface::UVFromIso(const gp_Pnt& P3d, const Standard
           Cf = iso->FirstParameter();
           Cl = iso->LastParameter();
 
-          if (Precision::IsInfinite(Cf))  Cf = -1000;
-          if (Precision::IsInfinite(Cl))  Cl = +1000;
+          RestrictBounds (Cf, Cl);
           dist = ShapeAnalysis_Curve().Project(iso, P3d, preci, pntres, other, Cf, Cl, Standard_False);
           if (dist < theMin) {
             theMin = dist;
@@ -1464,8 +1479,7 @@ Standard_Real ShapeAnalysis_Surface::UVFromIso(const gp_Pnt& P3d, const Standard
         if (!iso.IsNull()) {
           Cf = iso->FirstParameter();
           Cl = iso->LastParameter();
-          if (Precision::IsInfinite(Cf))  Cf = -1000;
-          if (Precision::IsInfinite(Cl))  Cl = +1000;
+          RestrictBounds (Cf, Cl);
           dist = ShapeAnalysis_Curve().Project(iso, P3d, preci, pntres, other, Cf, Cl, Standard_False);
           if (dist < theMin) {
             theMin = dist;
@@ -1478,8 +1492,7 @@ Standard_Real ShapeAnalysis_Surface::UVFromIso(const gp_Pnt& P3d, const Standard
         if (!iso.IsNull()) {
           Cf = iso->FirstParameter();
           Cl = iso->LastParameter();
-          if (Precision::IsInfinite(Cf))  Cf = -1000;
-          if (Precision::IsInfinite(Cl))  Cl = +1000;
+          RestrictBounds (Cf, Cl);
           dist = ShapeAnalysis_Curve().Project(iso, P3d, preci, pntres, other, Cf, Cl, Standard_False);
           if (dist < theMin) {
             theMin = dist;
@@ -1504,8 +1517,7 @@ Standard_Real ShapeAnalysis_Surface::UVFromIso(const gp_Pnt& P3d, const Standard
         }
         Cf = anIsoCurve.FirstParameter();
         Cl = anIsoCurve.LastParameter();
-        if (Precision::IsInfinite(Cf))  Cf = -1000;
-        if (Precision::IsInfinite(Cl))  Cl = +1000;
+        RestrictBounds (Cf, Cl);
         dist = ShapeAnalysis_Curve().Project(anIsoCurve, P3d, preci, pntres, other);
         if (dist < theMin) {
           theMin = dist;
@@ -1522,8 +1534,7 @@ Standard_Real ShapeAnalysis_Surface::UVFromIso(const gp_Pnt& P3d, const Standard
         }
         Cf = anIsoCurve.FirstParameter();
         Cl = anIsoCurve.LastParameter();
-        if (Precision::IsInfinite(Cf))  Cf = -1000;
-        if (Precision::IsInfinite(Cl))  Cl = +1000;
+        RestrictBounds (Cf, Cl);
         dist = ShapeAnalysis_Curve().ProjectAct(anIsoCurve, P3d, preci, pntres, other);
         if (dist < theMin) {
           theMin = dist;
