@@ -1550,7 +1550,9 @@ int OpenGl_ShaderManager::defaultGlslVersion (const Handle(Graphic3d_ShaderProgr
       }
       else if (myContext->CheckExtension ("GL_EXT_gpu_shader4"))
       {
-        theProgram->SetHeader ("#extension GL_EXT_gpu_shader4 : enable");
+        // GL_EXT_gpu_shader4 defines GLSL type "unsigned int", while core GLSL specs define type "uint"
+        theProgram->SetHeader ("#extension GL_EXT_gpu_shader4 : enable\n"
+                               "#define uint unsigned int");
       }
       else
       {
