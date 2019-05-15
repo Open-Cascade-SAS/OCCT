@@ -63,6 +63,11 @@ Standard_Boolean BinMDataXtd_TriangulationDriver::Paste(const BinObjMgt_Persiste
   theSource >> hasUV;
   theSource >> deflection;
 
+  if (!nbNodes || !nbTriangles)
+  {
+    return Standard_False;
+  }
+
   // allocate the mesh
   Handle(Poly_Triangulation) PT = new Poly_Triangulation(nbNodes, nbTriangles, hasUV);
 
