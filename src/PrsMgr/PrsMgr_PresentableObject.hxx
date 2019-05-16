@@ -295,8 +295,16 @@ public: //! @name parent/children properties
   //! Makes theObject child of current object in scene hierarchy.
   Standard_EXPORT virtual void AddChild (const Handle(PrsMgr_PresentableObject)& theObject);
 
+  //! Makes theObject child of current object in scene hierarchy with keeping the current global transformation
+  //! So the object keeps the same position/orientation in the global CS.
+  Standard_EXPORT void AddChildWithCurrentTransformation(const Handle(PrsMgr_PresentableObject)& theObject);
+
   //! Removes theObject from children of current object in scene hierarchy.
   Standard_EXPORT virtual void RemoveChild (const Handle(PrsMgr_PresentableObject)& theObject);
+
+  //! Removes theObject from children of current object in scene hierarchy with keeping the current global transformation.
+  //! So the object keeps the same position/orientation in the global CS.
+  Standard_EXPORT void RemoveChildWithRestoreTransformation(const Handle(PrsMgr_PresentableObject)& theObject);
 
   //! Returns true if object should have own presentations.
   Standard_Boolean HasOwnPresentations() const { return myHasOwnPresentations; }

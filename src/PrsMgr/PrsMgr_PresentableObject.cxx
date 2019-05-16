@@ -408,6 +408,17 @@ void PrsMgr_PresentableObject::AddChild (const Handle(PrsMgr_PresentableObject)&
 }
 
 //=======================================================================
+//function : AddChildWithCurrentTransformation
+//purpose  : 
+//=======================================================================
+void PrsMgr_PresentableObject::AddChildWithCurrentTransformation(const Handle(PrsMgr_PresentableObject)& theObject)
+{
+  gp_Trsf aTrsf = Transformation().Inverted() * theObject->Transformation();
+  theObject->SetLocalTransformation(aTrsf);
+  AddChild(theObject);
+}
+
+//=======================================================================
 //function : RemoveChild
 //purpose  : 
 //=======================================================================
@@ -424,6 +435,17 @@ void PrsMgr_PresentableObject::RemoveChild (const Handle(PrsMgr_PresentableObjec
       break;
     }
   }
+}
+
+//=======================================================================
+//function : RemoveChildWithRestoreTransformation
+//purpose  : 
+//=======================================================================
+void PrsMgr_PresentableObject::RemoveChildWithRestoreTransformation(const Handle(PrsMgr_PresentableObject)& theObject)
+{
+  gp_Trsf aTrsf = theObject->Transformation();
+  RemoveChild(theObject);
+  theObject->SetLocalTransformation(aTrsf);
 }
 
 //=======================================================================

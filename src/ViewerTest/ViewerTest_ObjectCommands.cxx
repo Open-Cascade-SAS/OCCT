@@ -4627,6 +4627,7 @@ static Standard_Integer VChild (Draw_Interpretor& ,
   int toAdd = -1;
   Handle(AIS_InteractiveObject) aParent;
   bool hasActions = false;
+  int toInheritTrsf = -1;
   ViewerTest_AutoUpdater anUpdateTool (aContext, ViewerTest::CurrentView());
   for (Standard_Integer anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
   {
@@ -4644,6 +4645,33 @@ static Standard_Integer VChild (Draw_Interpretor& ,
     else if (anArg == "-remove")
     {
       toAdd = 0;
+      continue;
+    }
+    else if (anArg == "-inheritparenttrsf"
+      || anArg == "-inheritparentloc"
+      || anArg == "-inheritparentlocation"
+      || anArg == "-inheritparent"
+      || anArg == "-noinheritparenttrsf"
+      || anArg == "-noinheritparentloc"
+      || anArg == "-noinheritparentlocation"
+      || anArg == "-noinheritparent"
+      || anArg == "-ignoreparenttrsf"
+      || anArg == "-ignoreparentloc"
+      || anArg == "-ignoreparentlocation"
+      || anArg == "-ignoreparent")
+    {
+      bool aVal = true;
+      if (anArgIter + 1 < theNbArgs
+        && ViewerTest::ParseOnOff(theArgVec[anArgIter + 1], aVal))
+      {
+        ++anArgIter;
+      }
+      if (anArg.StartsWith("-no")
+        || anArg.StartsWith("-ignore"))
+      {
+        aVal = !aVal;
+      }
+      toInheritTrsf = aVal ? 1 : 0;
       continue;
     }
 
@@ -4668,11 +4696,17 @@ static Standard_Integer VChild (Draw_Interpretor& ,
       hasActions = true;
       if (toAdd == 1)
       {
-        aParent->AddChild (aChild);
+        if(toInheritTrsf == 0)
+          aParent->AddChildWithCurrentTransformation(aChild);
+        else
+          aParent->AddChild (aChild);
       }
       else
       {
-        aParent->RemoveChild (aChild);
+        if (toInheritTrsf == 0)
+          aParent->RemoveChildWithRestoreTransformation(aChild);
+        else
+          aParent->RemoveChild (aChild);
       }
     }
   }
@@ -6373,6 +6407,7 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
       "\n\t\t:   [-setLocation X Y [Z]]"
       "\n\t\t:   [-setRotation QX QY QZ QW]"
       "\n\t\t:   [-setScale [X Y Z] scale]"
+      "\n\t\t:   [-inheritParentTrsf {on|off}]"
       "\n\t\t: Object local transformation management:"
       "\n\t\t:   -reset       reset transformation to identity"
       "\n\t\t:   -translate   translate object"
@@ -6381,13 +6416,15 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
       "\n\t\t:   -mirror      applies mirror   to local transformation"
       "\n\t\t:   -setLocation assign object location"
       "\n\t\t:   -setRotation assign object rotation (quaternion)"
-      "\n\t\t:   -setScale    assign object scale factor",
+      "\n\t\t:   -setScale    assign object scale factor"
+      "\n\t\t:   -inheritParentTrsf option to inherit parent"
+      "\n\t\t:                transformation or not (ON by default)",
         __FILE__, VSetLocation, group);
   theCommands.Add ("vsetlocation",
                    "alias for vlocation",
         __FILE__, VSetLocation, group);
   theCommands.Add ("vchild",
-                   "vchild parent [-add] [-remove] child1 [child2] [...]"
+                   "vchild parent [-add] [-remove] [-ignoreParentTrsf {0|1}] child1 [child2] [...]"
       "\n\t\t: Command for testing low-level presentation connections."
       "\n\t\t: vconnect command should be used instead.",
         __FILE__, VChild, group);
