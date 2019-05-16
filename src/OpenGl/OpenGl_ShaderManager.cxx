@@ -628,16 +628,11 @@ void OpenGl_ShaderManager::UpdateWorldViewStateTo (const OpenGl_Mat4& theWorldVi
 }
 
 // =======================================================================
-// function : PushLightSourceState
-// purpose  : Pushes state of OCCT light sources to the program
+// function : pushLightSourceState
+// purpose  :
 // =======================================================================
-void OpenGl_ShaderManager::PushLightSourceState (const Handle(OpenGl_ShaderProgram)& theProgram) const
+void OpenGl_ShaderManager::pushLightSourceState (const Handle(OpenGl_ShaderProgram)& theProgram) const
 {
-  if (myLightSourceState.Index() == theProgram->ActiveState (OpenGl_LIGHT_SOURCES_STATE))
-  {
-    return;
-  }
-
   theProgram->UpdateState (OpenGl_LIGHT_SOURCES_STATE, myLightSourceState.Index());
   if (theProgram == myFfpProgram)
   {
@@ -800,16 +795,11 @@ void OpenGl_ShaderManager::PushLightSourceState (const Handle(OpenGl_ShaderProgr
 }
 
 // =======================================================================
-// function : PushProjectionState
-// purpose  : Pushes state of OCCT projection transform to the program
+// function : pushProjectionState
+// purpose  :
 // =======================================================================
-void OpenGl_ShaderManager::PushProjectionState (const Handle(OpenGl_ShaderProgram)& theProgram) const
+void OpenGl_ShaderManager::pushProjectionState (const Handle(OpenGl_ShaderProgram)& theProgram) const
 {
-  if (myProjectionState.Index() == theProgram->ActiveState (OpenGl_PROJECTION_STATE))
-  {
-    return;
-  }
-
   theProgram->UpdateState (OpenGl_PROJECTION_STATE, myProjectionState.Index());
   if (theProgram == myFfpProgram)
   {
@@ -845,16 +835,11 @@ void OpenGl_ShaderManager::PushProjectionState (const Handle(OpenGl_ShaderProgra
 }
 
 // =======================================================================
-// function : PushModelWorldState
-// purpose  : Pushes state of OCCT model-world transform to the program
+// function : pushModelWorldState
+// purpose  :
 // =======================================================================
-void OpenGl_ShaderManager::PushModelWorldState (const Handle(OpenGl_ShaderProgram)& theProgram) const
+void OpenGl_ShaderManager::pushModelWorldState (const Handle(OpenGl_ShaderProgram)& theProgram) const
 {
-  if (myModelWorldState.Index() == theProgram->ActiveState (OpenGl_MODEL_WORLD_STATE))
-  {
-    return;
-  }
-
   theProgram->UpdateState (OpenGl_MODEL_WORLD_STATE, myModelWorldState.Index());
   if (theProgram == myFfpProgram)
   {
@@ -892,10 +877,10 @@ void OpenGl_ShaderManager::PushModelWorldState (const Handle(OpenGl_ShaderProgra
 }
 
 // =======================================================================
-// function : PushWorldViewState
-// purpose  : Pushes state of OCCT world-view transform to the program
+// function : pushWorldViewState
+// purpose  :
 // =======================================================================
-void OpenGl_ShaderManager::PushWorldViewState (const Handle(OpenGl_ShaderProgram)& theProgram) const
+void OpenGl_ShaderManager::pushWorldViewState (const Handle(OpenGl_ShaderProgram)& theProgram) const
 {
   if (myWorldViewState.Index() == theProgram->ActiveState (OpenGl_WORLD_VIEW_STATE))
   {
@@ -957,16 +942,11 @@ void OpenGl_ShaderManager::RevertClippingState()
 }
 
 // =======================================================================
-// function : PushClippingState
-// purpose  : Pushes state of OCCT clipping planes to the program
+// function : pushClippingState
+// purpose  :
 // =======================================================================
-void OpenGl_ShaderManager::PushClippingState (const Handle(OpenGl_ShaderProgram)& theProgram) const
+void OpenGl_ShaderManager::pushClippingState (const Handle(OpenGl_ShaderProgram)& theProgram) const
 {
-  if (myClippingState.Index() == theProgram->ActiveState (OpenGl_CLIP_PLANES_STATE))
-  {
-    return;
-  }
-
   theProgram->UpdateState (OpenGl_CLIP_PLANES_STATE, myClippingState.Index());
   if (theProgram == myFfpProgram)
   {
@@ -1136,16 +1116,11 @@ void OpenGl_ShaderManager::PushClippingState (const Handle(OpenGl_ShaderProgram)
 }
 
 // =======================================================================
-// function : PushMaterialState
+// function : pushMaterialState
 // purpose  :
 // =======================================================================
-void OpenGl_ShaderManager::PushMaterialState (const Handle(OpenGl_ShaderProgram)& theProgram) const
+void OpenGl_ShaderManager::pushMaterialState (const Handle(OpenGl_ShaderProgram)& theProgram) const
 {
-  if (myMaterialState.Index() == theProgram->ActiveState (OpenGl_MATERIAL_STATE))
-  {
-    return;
-  }
-
   const OpenGl_Material& aFrontMat = myMaterialState.FrontMaterial();
   const OpenGl_Material& aBackMat  = myMaterialState.BackMaterial();
   theProgram->UpdateState (OpenGl_MATERIAL_STATE, myMaterialState.Index());
@@ -1208,21 +1183,11 @@ void OpenGl_ShaderManager::PushMaterialState (const Handle(OpenGl_ShaderProgram)
 }
 
 // =======================================================================
-// function : PushOitState
-// purpose  : Pushes state of OIT uniforms to the specified program
+// function : pushOitState
+// purpose  :
 // =======================================================================
-void OpenGl_ShaderManager::PushOitState (const Handle(OpenGl_ShaderProgram)& theProgram) const
+void OpenGl_ShaderManager::pushOitState (const Handle(OpenGl_ShaderProgram)& theProgram) const
 {
-  if (!theProgram->IsValid())
-  {
-    return;
-  }
-
-  if (myOitState.Index() == theProgram->ActiveState (OpenGL_OIT_STATE))
-  {
-    return;
-  }
-
   const GLint aLocOutput = theProgram->GetStateLocation (OpenGl_OCCT_OIT_OUTPUT);
   if (aLocOutput != OpenGl_ShaderProgram::INVALID_LOCATION)
   {
@@ -1249,10 +1214,6 @@ void OpenGl_ShaderManager::PushInteriorState (const Handle(OpenGl_ShaderProgram)
     return;
   }
 
-  if (const OpenGl_ShaderUniformLocation aLocViewPort = theProgram->GetStateLocation (OpenGl_OCCT_VIEWPORT))
-  {
-    theProgram->SetUniform (myContext, aLocViewPort, OpenGl_Vec4 ((float )myContext->Viewport()[0], (float )myContext->Viewport()[1], (float )myContext->Viewport()[2], (float )myContext->Viewport()[3]));
-  }
   if (const OpenGl_ShaderUniformLocation aLocLineWidth = theProgram->GetStateLocation (OpenGl_OCCT_LINE_WIDTH))
   {
     theProgram->SetUniform (myContext, aLocLineWidth, theAspect->EdgeWidth() * myContext->LineWidthScale());
@@ -1289,6 +1250,15 @@ void OpenGl_ShaderManager::PushState (const Handle(OpenGl_ShaderProgram)& thePro
   PushLightSourceState (aProgram);
   PushMaterialState    (aProgram);
   PushOitState         (aProgram);
+
+  if (!theProgram.IsNull())
+  {
+    if (const OpenGl_ShaderUniformLocation& aLocViewPort = theProgram->GetStateLocation (OpenGl_OCCT_VIEWPORT))
+    {
+      theProgram->SetUniform (myContext, aLocViewPort, OpenGl_Vec4 ((float )myContext->Viewport()[0], (float )myContext->Viewport()[1],
+                                                                    (float )myContext->Viewport()[2], (float )myContext->Viewport()[3]));
+    }
+  }
 }
 
 // =======================================================================
@@ -1851,12 +1821,23 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramUnlit (Handle(OpenGl_Sha
     {
       aUniforms.Append (OpenGl_ShaderObject::ShaderVariable ("int   uPattern", Graphic3d_TOS_FRAGMENT));
       aUniforms.Append (OpenGl_ShaderObject::ShaderVariable ("float uFactor",  Graphic3d_TOS_FRAGMENT));
+      aUniforms.Append (OpenGl_ShaderObject::ShaderVariable ("vec4 occViewport", Graphic3d_TOS_VERTEX));
       aStageInOuts.Append (OpenGl_ShaderObject::ShaderVariable ("vec2 ScreenSpaceCoord", Graphic3d_TOS_VERTEX | Graphic3d_TOS_FRAGMENT));
       aSrcVertEndMain =
-        EOL"  ScreenSpaceCoord = gl_Position.xy / gl_Position.w;";
+        EOL"  vec2 aPosition   = gl_Position.xy / gl_Position.w;"
+        EOL"  aPosition        = aPosition * 0.5 + 0.5;"
+        EOL"  ScreenSpaceCoord = aPosition.xy * occViewport.zw + occViewport.xy;";
       aSrcFragMainGetColor =
-        EOL"  float anAngle      = atan (dFdx (ScreenSpaceCoord.x), dFdy (ScreenSpaceCoord.y));"
-        EOL"  float aRotatePoint = gl_FragCoord.x * sin (anAngle) + gl_FragCoord.y * cos (anAngle);"
+        EOL"  vec2 anAxis = vec2 (0.0);"
+        EOL"  if (abs (dFdx (ScreenSpaceCoord.x)) - abs (dFdy (ScreenSpaceCoord.y)) > 0.001)" 
+        EOL"  {"
+        EOL"    anAxis = vec2 (1.0, 0.0);"
+        EOL"  }"
+        EOL"  else"
+        EOL"  {"
+        EOL"    anAxis = vec2 (0.0, 1.0);"
+        EOL"  }"
+        EOL"  float aRotatePoint = dot (gl_FragCoord.xy, anAxis);"
         EOL"  uint  aBit         = uint (floor (aRotatePoint / uFactor + 0.5)) & 15U;"
         EOL"  if ((uint (uPattern) & (1U << aBit)) == 0U) discard;"
         EOL"  vec4 aColor = getFinalColor();"

@@ -1,0 +1,19 @@
+puts "============="
+puts "0030713: Visualization, TKOpenGl - stipple line artifacts on Intel UHD Graphics 630"
+puts "============="
+
+pload MODELING VISUALIZATION
+box b 1 2 3
+vclear
+vcaps -core
+vinit View1
+vglinfo
+vdisplay -dispMode 0 b
+vtop
+vfit
+vzoom 0.8
+vaspects b -lineType DASH
+vrotate 0 0 0.785
+vfit
+
+vdump ${imagedir}/${casename}.png

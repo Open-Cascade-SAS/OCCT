@@ -250,8 +250,17 @@ public:
   //! Invalidate state of OCCT light sources.
   Standard_EXPORT void UpdateLightSourceState();
 
+  //! Pushes current state of OCCT light sources to specified program (only on state change).
+  void PushLightSourceState (const Handle(OpenGl_ShaderProgram)& theProgram) const
+  {
+    if (myLightSourceState.Index() != theProgram->ActiveState (OpenGl_LIGHT_SOURCES_STATE))
+    {
+      pushLightSourceState (theProgram);
+    }
+  }
+
   //! Pushes current state of OCCT light sources to specified program.
-  Standard_EXPORT void PushLightSourceState (const Handle(OpenGl_ShaderProgram)& theProgram) const;
+  Standard_EXPORT void pushLightSourceState (const Handle(OpenGl_ShaderProgram)& theProgram) const;
 
 public:
 
@@ -261,8 +270,17 @@ public:
   //! Updates state of OCCT projection transform.
   Standard_EXPORT void UpdateProjectionStateTo (const OpenGl_Mat4& theProjectionMatrix);
 
+  //! Pushes current state of OCCT projection transform to specified program (only on state change).
+  void PushProjectionState (const Handle(OpenGl_ShaderProgram)& theProgram) const
+  {
+    if (myProjectionState.Index() != theProgram->ActiveState (OpenGl_PROJECTION_STATE))
+    {
+      pushProjectionState (theProgram);
+    }
+  }
+
   //! Pushes current state of OCCT projection transform to specified program.
-  Standard_EXPORT void PushProjectionState (const Handle(OpenGl_ShaderProgram)& theProgram) const;
+  Standard_EXPORT void pushProjectionState (const Handle(OpenGl_ShaderProgram)& theProgram) const;
 
 public:
 
@@ -272,8 +290,17 @@ public:
   //! Updates state of OCCT model-world transform.
   Standard_EXPORT void UpdateModelWorldStateTo (const OpenGl_Mat4& theModelWorldMatrix);
 
+  //! Pushes current state of OCCT model-world transform to specified program (only on state change).
+  void PushModelWorldState (const Handle(OpenGl_ShaderProgram)& theProgram) const
+  {
+    if (myModelWorldState.Index() != theProgram->ActiveState (OpenGl_MODEL_WORLD_STATE))
+    {
+      pushModelWorldState (theProgram);
+    }
+  }
+
   //! Pushes current state of OCCT model-world transform to specified program.
-  Standard_EXPORT void PushModelWorldState (const Handle(OpenGl_ShaderProgram)& theProgram) const;
+  Standard_EXPORT void pushModelWorldState (const Handle(OpenGl_ShaderProgram)& theProgram) const;
 
 public:
 
@@ -283,8 +310,17 @@ public:
   //! Updates state of OCCT world-view transform.
   Standard_EXPORT void UpdateWorldViewStateTo (const OpenGl_Mat4& theWorldViewMatrix);
 
+  //! Pushes current state of OCCT world-view transform to specified program (only on state change).
+  void PushWorldViewState (const Handle(OpenGl_ShaderProgram)& theProgram) const
+  {
+    if (myWorldViewState.Index() != theProgram->ActiveState (OpenGl_WORLD_VIEW_STATE))
+    {
+      pushWorldViewState (theProgram);
+    }
+  }
+
   //! Pushes current state of OCCT world-view transform to specified program.
-  Standard_EXPORT void PushWorldViewState (const Handle(OpenGl_ShaderProgram)& theProgram) const;
+  Standard_EXPORT void pushWorldViewState (const Handle(OpenGl_ShaderProgram)& theProgram) const;
 
 public:
 
@@ -294,8 +330,17 @@ public:
   //! Reverts state of OCCT clipping planes.
   Standard_EXPORT void RevertClippingState();
 
+  //! Pushes current state of OCCT clipping planes to specified program (only on state change).
+  void PushClippingState (const Handle(OpenGl_ShaderProgram)& theProgram) const
+  {
+    if (myClippingState.Index() != theProgram->ActiveState (OpenGl_CLIP_PLANES_STATE))
+    {
+      pushClippingState (theProgram);
+    }
+  }
+
   //! Pushes current state of OCCT clipping planes to specified program.
-  Standard_EXPORT void PushClippingState (const Handle(OpenGl_ShaderProgram)& theProgram) const;
+  Standard_EXPORT void pushClippingState (const Handle(OpenGl_ShaderProgram)& theProgram) const;
 
 public:
 
@@ -319,8 +364,17 @@ public:
     myMaterialState.Update();
   }
 
+  //! Pushes current state of material to specified program (only on state change).
+  void PushMaterialState (const Handle(OpenGl_ShaderProgram)& theProgram) const
+  {
+    if (myMaterialState.Index() != theProgram->ActiveState (OpenGl_MATERIAL_STATE))
+    {
+      pushMaterialState (theProgram);
+    }
+  }
+
   //! Pushes current state of material to specified program.
-  void PushMaterialState (const Handle(OpenGl_ShaderProgram)& theProgram) const;
+  Standard_EXPORT void pushMaterialState (const Handle(OpenGl_ShaderProgram)& theProgram) const;
 
 public:
 
@@ -333,7 +387,7 @@ public:
   //! Returns state of OIT uniforms.
   const OpenGl_OitState& OitState() const { return myOitState; }
 
-  //! Set the state of OIT rendering pass.
+  //! Set the state of OIT rendering pass (only on state change).
   //! @param theToEnableOitWrite [in] flag indicating whether the special output should be written for OIT algorithm.
   //! @param theDepthFactor [in] the scalar factor of depth influence to the fragment's coverage.
   void SetOitState (const bool theToEnableOitWrite, const float theDepthFactor)
@@ -343,7 +397,17 @@ public:
   }
 
   //! Pushes state of OIT uniforms to the specified program.
-  Standard_EXPORT void PushOitState (const Handle(OpenGl_ShaderProgram)& theProgram) const;
+  void PushOitState (const Handle(OpenGl_ShaderProgram)& theProgram) const
+  {
+    if (theProgram->IsValid()
+     && myOitState.Index() != theProgram->ActiveState (OpenGL_OIT_STATE))
+    {
+      pushOitState (theProgram);
+    }
+  }
+
+  //! Pushes state of OIT uniforms to the specified program.
+  Standard_EXPORT void pushOitState (const Handle(OpenGl_ShaderProgram)& theProgram) const;
 
 public:
 
