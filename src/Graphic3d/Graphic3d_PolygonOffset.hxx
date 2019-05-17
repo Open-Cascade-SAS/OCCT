@@ -24,7 +24,7 @@ struct Graphic3d_PolygonOffset
   Standard_ShortReal       Units;
 
   //! Empty constructor.
-  Graphic3d_PolygonOffset() : Mode(Aspect_POM_Fill), Factor (1.0f), Units  (0.0f) {}
+  Graphic3d_PolygonOffset() : Mode(Aspect_POM_Fill), Factor (1.0f), Units (1.0f) {}
 
   //! Equality comparison.
   bool operator== (const Graphic3d_PolygonOffset& theOther) const
