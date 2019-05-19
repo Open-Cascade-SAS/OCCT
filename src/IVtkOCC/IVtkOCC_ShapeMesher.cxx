@@ -37,7 +37,9 @@
 #include <Precision.hxx>
 #include <Prs3d.hxx>
 #include <Prs3d_Drawer.hxx>
+#include <Prs3d_IsoAspect.hxx>
 #include <Standard_ErrorHandler.hxx>
+#include <StdPrs_Isolines.hxx>
 #include <TColgp_SequenceOfPnt2d.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TopExp.hxx>
@@ -386,411 +388,6 @@ void IVtkOCC_ShapeMesher::addEdge (const TopoDS_Edge&  theEdge,
   }
 }
 
-
-//================================================================
-// Function : FindLimits
-// Purpose  : Static internal function, finds parametrical limits of the curve.
-//! @param [in] theCurve 3D curve adaptor used to retrieve the curve geometry
-//! @param [in] theLimit maximum allowed absolute parameter value
-//! @param [out] theFirst minimum parameter value for the curve
-//! @param [out] theLast maximum parameter value for the curve
-//================================================================
-static void FindLimits (const Adaptor3d_Curve& theCurve,
-                        const Standard_Real&   theLimit,
-                        Standard_Real&         theFirst,
-                        Standard_Real&         theLast)
-{
-  theFirst = Max(theCurve.FirstParameter(), theFirst);
-  theLast  = Min(theCurve.LastParameter(), theLast);
-  Standard_Boolean isFirstInf = Precision::IsNegativeInfinite (theFirst);
-  Standard_Boolean isLastInf  = Precision::IsPositiveInfinite (theLast);
-
-  if (isFirstInf || isLastInf)
-  {
-    gp_Pnt aP1, aP2;
-    Standard_Real aDelta = 1;
-    if (isFirstInf && isLastInf)
-    {
-      do
-      {
-        aDelta *= 2;
-        theFirst = - aDelta;
-        theLast  =   aDelta;
-        theCurve.D0 (theFirst, aP1);
-        theCurve.D0 (theLast, aP2);
-      } while (aP1.Distance (aP2) < theLimit);
-    }
-    else if (isFirstInf)
-    {
-      theCurve.D0 (theLast, aP2);
-      do {
-        aDelta *= 2;
-        theFirst = theLast - aDelta;
-        theCurve.D0 (theFirst, aP1);
-      } while (aP1.Distance(aP2) < theLimit);
-    }
-    else if (isLastInf)
-    {
-      theCurve.D0 (theFirst, aP1);
-      do
-      {
-        aDelta *= 2;
-        theLast = theFirst + aDelta;
-        theCurve.D0 (theLast, aP2);
-      } while (aP1.Distance (aP2) < theLimit);
-    }
-  }
-}
-
-//================================================================
-// Function : FindLimits
-// Purpose  :Static helper function, builds a discrete representation
-//! (sequence of points) for the given curve.
-//!
-//! @param [in] theCurve 3D curve adaptor used to retrieve the curve geometry
-//! @param [in] theDeflection absolute deflection value
-//! @param [in] theAngle deviation angle value
-//! @param [in] theU1 minimal curve parameter value
-//! @param [in] theU2 maximal curve parameter value
-//! @param [out] thePoints the container for generated polyline
-//================================================================
-static void DrawCurve (Adaptor3d_Curve&    theCurve,
-                       const Standard_Real theDeflection,
-                       const Standard_Real theAngle,
-                       const Standard_Real theU1,
-                       const Standard_Real theU2,
-                       IVtk_Polyline&      thePoints)
-{
-  switch (theCurve.GetType())
-  {
-  case GeomAbs_Line:
-    {
-      gp_Pnt aPnt = theCurve.Value(theU1);
-      thePoints.Append (aPnt);
-
-      aPnt = theCurve.Value(0.5 * (theU1 + theU2));
-      thePoints.Append (aPnt);
-
-      aPnt = theCurve.Value (theU2);
-      thePoints.Append(aPnt);
-   }
-    break;
-  default:
-    {
-      Standard_Integer aNbInter = theCurve.NbIntervals(GeomAbs_C1);
-      Standard_Integer anI, aJ;
-      TColStd_Array1OfReal aParams(1, aNbInter+1);
-      theCurve.Intervals(aParams, GeomAbs_C1);
-      Standard_Real anU1, anU2;
-      Standard_Integer NumberOfPoints;
-
-      for (aJ = 1; aJ <= aNbInter; aJ++)
-      {
-        anU1 = aParams (aJ); anU2 = aParams (aJ + 1);
-        if (anU2 > anU1 && anU1 < anU2)
-        {
-          anU1 = Max(anU1, anU1);
-          anU2 = Min(anU2, anU2);
-
-          GCPnts_TangentialDeflection anAlgo (theCurve, anU1, anU2, theAngle, theDeflection);
-          NumberOfPoints = anAlgo.NbPoints();
-
-          if (NumberOfPoints > 0)
-          {
-            for (anI = 1; anI < NumberOfPoints; anI++)
-            {
-              thePoints.Append(anAlgo.Value (anI));
-            }
-            if (aJ == aNbInter)
-            {
-              thePoints.Append (anAlgo.Value (NumberOfPoints));
-            }
-          }
-        }
-      }
-    }
-  }
-}
-
-//================================================================
-// Function : buildIsoLines
-// Purpose  : 
-//================================================================
-void IVtkOCC_ShapeMesher::buildIsoLines (const Handle(BRepAdaptor_HSurface)& theFace,
-                                         const Standard_Boolean          theIsDrawUIso,
-                                         const Standard_Boolean          theIsDrawVIso,
-                                         const Standard_Integer          theNBUiso,
-                                         const Standard_Integer          theNBViso,
-                                         IVtk_PolylineList&              thePolylines)
-{
-  Standard_Real anUF, anUL, aVF, aVL;
-  anUF = theFace->FirstUParameter();
-  anUL = theFace->LastUParameter();
-  aVF = theFace->FirstVParameter();
-  aVL = theFace->LastVParameter();
-
-  // Restrict maximal parameter value
-  // in OCCT it's 5e+5 by default
-  const Standard_Real aLimit = 5e+5;
-
-  // compute bounds of the restriction
-  Standard_Real anUMin, anUMax, aVMin, aVMax;
-  Standard_Integer anI;
-
-  anUMin = Max (anUF, -aLimit);
-  anUMax = Min (anUL, aLimit);
-  aVMin = Max (aVF, -aLimit);
-  aVMax = Min (aVL, aLimit);
-
-  // update min max for the hatcher.
-  gp_Pnt2d aP1,aP2;
-  gp_Pnt aDummyPnt;
-
-  Standard_Real aDdefle = Max (anUMax - anUMin, aVMax - aVMin) * GetDeviationCoeff();
-  TColgp_SequenceOfPnt2d aTabPoints;
-
-  anUMin = aVMin = 1.e100;
-  anUMax = aVMax = -1.e100;
-
-  // Process the edges
-  TopExp_Explorer aToolRst;
-  TopoDS_Face aTopoFace (((BRepAdaptor_Surface*)&(theFace->Surface()))->Face());
-  for (aToolRst.Init (aTopoFace, TopAbs_EDGE); aToolRst.More(); aToolRst.Next())
-  {
-    TopAbs_Orientation anOrient = aToolRst.Current().Orientation();
-    // Skip INTERNAL and EXTERNAL edges
-    if (anOrient == TopAbs_FORWARD || anOrient == TopAbs_REVERSED)
-    {
-      Standard_Real anU1, anU2;
-      const Handle(Geom2d_Curve)& aCurve = 
-        BRep_Tool::CurveOnSurface (TopoDS::Edge (aToolRst.Current()),
-                                   aTopoFace,
-                                   anU1, anU2);
-      if (aCurve.IsNull())
-      {
-        continue;
-      }
-
-      Geom2dAdaptor_Curve aRCurve;
-      aRCurve.Load (aCurve, anU1, anU2);
-      if (aRCurve.GetType() != GeomAbs_Line)
-      {
-        GCPnts_QuasiUniformDeflection aUDP(aRCurve, aDdefle);
-        if (aUDP.IsDone())
-        {
-          Standard_Integer NumberOfPoints = aUDP.NbPoints();
-          if ( NumberOfPoints >= 2 )
-          {
-            aDummyPnt = aUDP.Value (1);
-            aP2.SetCoord (aDummyPnt.X(), aDummyPnt.Y());
-            anUMin = Min (aP2.X(), anUMin);
-            anUMax = Max (aP2.X(), anUMax);
-            aVMin = Min (aP2.Y(), aVMin);
-            aVMax = Max (aP2.Y(), aVMax);
-            for (anI = 2; anI <= NumberOfPoints; anI++)
-            {
-              aP1 = aP2;
-              aDummyPnt = aUDP.Value (anI);
-              aP2.SetCoord (aDummyPnt.X(), aDummyPnt.Y());
-              anUMin = Min(aP2.X(), anUMin);
-              anUMax = Max(aP2.X(), anUMax);
-              aVMin = Min(aP2.Y(), aVMin);
-              aVMax = Max(aP2.Y(), aVMax);
-
-              if(anOrient == TopAbs_FORWARD )
-              {
-                //isobuild.Trim(P1,P2);
-                aTabPoints.Append (aP1);
-                aTabPoints.Append (aP2);
-              }
-              else
-              {
-                //isobuild.Trim(P2,P1);
-                aTabPoints.Append (aP2);
-                aTabPoints.Append (aP1);
-              }
-            }
-          }
-        }
-        else
-        {
-          cout << "Cannot evaluate curve on surface"<<endl;
-        }
-      }
-      else
-      {
-        anU1 = aRCurve.FirstParameter();
-        anU2 = aRCurve.LastParameter();
-        // MSV 17.08.06 OCC13144: U2 occured less than U1, to overcome it
-        // ensure that distance U2-U1 is not greater than aLimit*2,
-        // if greater then choose an origin and use aLimit to define
-        // U1 and U2 anew
-        Standard_Real aOrigin = 0.;
-        if (!Precision::IsNegativeInfinite(anU1) || !Precision::IsPositiveInfinite (anU2))
-        {
-          if (Precision::IsNegativeInfinite (anU1))
-          {
-            aOrigin = anU2 - aLimit;
-          }
-          else if (Precision::IsPositiveInfinite (anU2))
-          {
-            aOrigin = anU1 + aLimit;
-          }
-          else
-          {
-            aOrigin = (anU1 + anU2) * 0.5;
-          }
-        }
-
-        anU1 = Max (aOrigin - aLimit, anU1);
-        anU2 = Min (aOrigin + aLimit, anU2);
-        aP1 = aRCurve.Value (anU1);
-        aP2 = aRCurve.Value (anU2);
-        anUMin = Min(aP1.X(), anUMin);
-        anUMax = Max(aP1.X(), anUMax);
-        aVMin = Min(aP1.Y(), aVMin);
-        aVMax = Max(aP1.Y(), aVMax);
-        anUMin = Min(aP2.X(), anUMin);
-        anUMax = Max(aP2.X(), anUMax);
-        aVMin = Min(aP2.Y(), aVMin);
-        aVMax = Max(aP2.Y(), aVMax);
-        if(anOrient == TopAbs_FORWARD )
-        {
-         // isobuild.Trim(P1,P2);
-          aTabPoints.Append (aP1);
-          aTabPoints.Append (aP2);
-        }
-        else
-        {
-          //isobuild.Trim(P2,P1);
-          aTabPoints.Append (aP2);
-          aTabPoints.Append (aP1);
-        }
-      }
-    }
-  }
-
-  // load the isos
-  const Standard_Real anIntersectionTolerance = 1.e-5;
-  Hatch_Hatcher anIsoBuild (anIntersectionTolerance, Standard_True );
-
-  Standard_Boolean isUClosed = theFace->IsUClosed();
-  Standard_Boolean isVClosed = theFace->IsVClosed();
-
-  if (!isUClosed)
-  {
-    anUMin = anUMin + (anUMax - anUMin) / 1000.0;
-    anUMax = anUMax - (anUMax - anUMin) /1000.0;
-  }
-
-  if (!isVClosed)
-  {
-    aVMin = aVMin + (aVMax - aVMin) /1000.0;
-    aVMax = aVMax - (aVMax - aVMin) /1000.0;
-  }
-
-  if (theIsDrawUIso)
-  {
-    if (theNBUiso > 0)
-    {
-      isUClosed = Standard_False;
-      Standard_Real aDu= isUClosed ? (anUMax - anUMin) / theNBUiso : (anUMax - anUMin) / (1 + theNBUiso);
-      for (anI = 1; anI <= theNBUiso; anI++)
-      {
-        anIsoBuild.AddXLine (anUMin + aDu*anI);
-      }
-    }
-  }
-  if (theIsDrawVIso)
-  {
-    if (theNBViso > 0)
-    {
-      isVClosed = Standard_False;
-      Standard_Real aDv= isVClosed ? (aVMax - aVMin) / theNBViso : (aVMax - aVMin) / (1 + theNBViso);
-      for (anI = 1; anI <= theNBViso; anI++)
-      {
-        anIsoBuild.AddYLine (aVMin + aDv*anI);
-      }
-    }
-  }
-
-  Standard_Integer aLength = aTabPoints.Length();
-  for (anI = 1; anI <= aLength; anI += 2)
-  {
-    anIsoBuild.Trim (aTabPoints (anI),aTabPoints (anI + 1));
-  }
-
-  // Create the polylines for isos
-  Adaptor3d_IsoCurve anIso;
-  anIso.Load(theFace);
-  Handle(Geom_Curve) aBCurve;
-  const BRepAdaptor_Surface& aBSurf = *(BRepAdaptor_Surface*)&(theFace->Surface());
-  GeomAbs_SurfaceType aType = theFace->GetType();
-
-  Standard_Integer aNumberOfLines = anIsoBuild.NbLines();
-  Handle(Geom_Surface) aGeomSurf;
-  if (aType == GeomAbs_BezierSurface)
-  {
-    aGeomSurf = aBSurf.Bezier();
-  }
-  else if (aType == GeomAbs_BSplineSurface)
-  {
-    aGeomSurf = aBSurf.BSpline();
-  }
-
-  Standard_Real aDeflection = GetDeflection();
-  Standard_Real anAngle     = GetDeviationAngle();
-  for (anI = 1; anI <= aNumberOfLines; anI++)
-  {
-    Standard_Integer aNumberOfIntervals = anIsoBuild.NbIntervals(anI);
-    Standard_Real aCoord = anIsoBuild.Coordinate(anI);
-    for (Standard_Integer aJ = 1; aJ <= aNumberOfIntervals; aJ++)
-    {
-      Standard_Real aB1 = anIsoBuild.Start (anI, aJ);
-      Standard_Real aB2 = anIsoBuild.End(anI, aJ);
-
-      if (!aGeomSurf.IsNull())
-      {
-        if (anIsoBuild.IsXLine (anI))
-        {
-          aBCurve = aGeomSurf->UIso (aCoord);
-        }
-        else
-        {
-          aBCurve = aGeomSurf->VIso (aCoord);
-        }
-
-        GeomAdaptor_Curve aGeomCurve (aBCurve);
-        FindLimits (aGeomCurve, aLimit, aB1, aB2);
-        if (aB2 - aB1 > Precision::Confusion())
-        {
-          IVtk_Polyline aPoints;
-          DrawCurve (aGeomCurve, aDeflection, anAngle, aB1, aB2, aPoints);
-          thePolylines.Append (aPoints);
-        }
-      }
-      else
-      {
-        if (anIsoBuild.IsXLine (anI))
-        {
-          anIso.Load (GeomAbs_IsoU, aCoord, aB1, aB2);
-        }
-        else
-        {
-          anIso.Load (GeomAbs_IsoV, aCoord, aB1, aB2);
-        }
-        FindLimits (anIso, aLimit, aB1, aB2);
-        if (aB2 - aB1>Precision::Confusion())
-        {
-          IVtk_Polyline aPoints;
-          DrawCurve (anIso, aDeflection, anAngle, aB1, aB2, aPoints);
-          thePolylines.Append (aPoints);
-        }
-      }
-    }
-  }
-}
-
 //================================================================
 // Function : addWFFace
 // Purpose  : 
@@ -813,8 +410,7 @@ void IVtkOCC_ShapeMesher::addWFFace (const TopoDS_Face& theFace,
   // - StdPrs_DeflectionCurve::Add()
 
   // Add face's edges here but with the face ID
-  TopExp_Explorer anEdgeIter (aFaceToMesh, TopAbs_EDGE );
-  for (; anEdgeIter.More(); anEdgeIter.Next())
+  for (TopExp_Explorer anEdgeIter (aFaceToMesh, TopAbs_EDGE); anEdgeIter.More(); anEdgeIter.Next())
   {
     const TopoDS_Edge& anOcctEdge = TopoDS::Edge (anEdgeIter.Current());
     addEdge (anOcctEdge, theShapeId, myEdgesTypes (anOcctEdge));
@@ -827,85 +423,34 @@ void IVtkOCC_ShapeMesher::addWFFace (const TopoDS_Face& theFace,
     return;
   }
 
-  BRepAdaptor_Surface aSurf;
-  aSurf.Initialize (aFaceToMesh);
-  Handle(BRepAdaptor_HSurface) aSurfAdaptor = new BRepAdaptor_HSurface (aSurf);
+  const Standard_Real aDeflection = GetDeflection();
+  Handle(Prs3d_Drawer) aDrawer = new Prs3d_Drawer();
+  aDrawer->SetUIsoAspect (new Prs3d_IsoAspect (Quantity_NOC_WHITE, Aspect_TOL_SOLID, 1.0f, myNbIsos[0]));
+  aDrawer->SetVIsoAspect (new Prs3d_IsoAspect (Quantity_NOC_WHITE, Aspect_TOL_SOLID, 1.0f, myNbIsos[1]));
+  aDrawer->SetDeviationAngle (myDevAngle);
+  aDrawer->SetDeviationCoefficient (myDevCoeff);
+  aDrawer->SetMaximalChordialDeviation (aDeflection);
 
-  IVtk_PolylineList aPolylines;
-  gp_Trsf aDummyTrsf;
-
-  // Building U isolines
-  // Introducing a local scope here to simplify variable naming
+  Prs3d_NListOfSequenceOfPnt aPolylines;
+  StdPrs_Isolines::Add (theFace, aDrawer, aDeflection, aPolylines, aPolylines);
+  for (Prs3d_NListOfSequenceOfPnt::Iterator aPolyIter (aPolylines); aPolyIter.More(); aPolyIter.Next())
   {
-    buildIsoLines (aSurfAdaptor,
-                   myNbIsos[0] != 0,
-                   Standard_False,
-                   myNbIsos[0],
-                   0,
-                   aPolylines);
-
-    IVtk_PolylineList::Iterator anIt (aPolylines);
-    for (; anIt.More(); anIt.Next())
+    const Handle(TColgp_HSequenceOfPnt)& aPoints = aPolyIter.Value();
+    const Standard_Integer theNbNodes = aPoints->Length();
+    if (theNbNodes < 2)
     {
-      const IVtk_Polyline& aPntSeq = anIt.Value();
-      Standard_Integer aNbNodes = aPntSeq.Length();
-      TColgp_Array1OfPnt aPoints (1, aNbNodes);
-      for (Standard_Integer aJ = 1; aJ <= aNbNodes; aJ++)
-      {
-        aPoints.SetValue (aJ, aPntSeq.Value(aJ));
-      }
-
-      TColStd_Array1OfInteger aPointIds (1, aNbNodes);
-      for (Standard_Integer anI = 1; anI <= aNbNodes; anI++)
-      {
-        aPointIds.SetValue (anI, anI);
-      }
-
-      processPolyline (aNbNodes,
-                       aPoints,
-                       aPointIds,
-                       theShapeId,
-                       true,
-                       aDummyTrsf, 
-                       MT_IsoLine);
+      continue;
     }
-  }
 
-  // Building V isolines
-  {
-    aPolylines.Clear();
-    buildIsoLines (aSurfAdaptor,
-                   Standard_False,
-                   myNbIsos[1] != 0,
-                   0,
-                   myNbIsos[1],
-                   aPolylines);
-
-    IVtk_PolylineList::Iterator anIt (aPolylines);
-    for (; anIt.More(); anIt.Next())
+    IVtk_PointIdList aPolyPointIds;
+    for (TColgp_HSequenceOfPnt::Iterator aNodeIter (*aPoints); aNodeIter.More(); aNodeIter.Next())
     {
-      const IVtk_Polyline& aPntSeq = anIt.Value();
-      Standard_Integer aNbNodes = aPntSeq.Length();
-      TColgp_Array1OfPnt aPoints (1, aNbNodes);
-      for (int aJ = 1; aJ <= aNbNodes; aJ++)
-      {
-        aPoints.SetValue (aJ, aPntSeq.Value (aJ));
-      }
-
-      TColStd_Array1OfInteger aPointIds (1, aNbNodes);
-      for (Standard_Integer anI = 1; anI <= aNbNodes; anI++)
-      {
-        aPointIds.SetValue (anI, anI);
-      }
-
-      processPolyline (aNbNodes,
-                       aPoints,
-                       aPointIds,
-                       theShapeId,
-                       true,
-                       aDummyTrsf, 
-                       MT_IsoLine);
+      const gp_Pnt& aPnt = aNodeIter.Value();
+      const IVtk_PointId anId = myShapeData->InsertCoordinate (aPnt.X(), aPnt.Y(), aPnt.Z());
+      aPolyPointIds.Append (anId);
     }
+
+    myShapeData->InsertLine (theShapeId, &aPolyPointIds, MT_IsoLine);
   }
 }
 

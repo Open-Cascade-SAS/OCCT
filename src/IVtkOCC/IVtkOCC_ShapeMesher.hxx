@@ -145,23 +145,6 @@ private:
   void addShadedFace (const TopoDS_Face&   theFace,
                       const IVtk_IdType    theShapeId);
 
-  //! Internal function, builds polylines for boundary edges
-  //! and isolines of the face. It has been made a class method in order
-  //! to facilitate passing deflection, etc. here.
-  //!
-  //! @param [in] theFace surface adaptor for the face
-  //! @param [in] theIsDrawUIso if equal to Standard_True, U isolines are built
-  //! @param [in] theIsDrawVIso if equal to Standard_True, V isolines are built
-  //! @param [in] theNBUiso number of U isolines
-  //! @param [in] theNBViso number of V isolines
-  //! @param [out] thePolylines container for the generated polylines
-  void buildIsoLines (const Handle(BRepAdaptor_HSurface)& theFace,
-                      const Standard_Boolean              theIsDrawUIso,
-                      const Standard_Boolean              theIsDrawVIso,
-                      const Standard_Integer              theNBUiso,
-                      const Standard_Integer              theNBViso,
-                      IVtk_PolylineList&                  thePolylines);
-
   //! Internal helper method that unpacks the input arrays of points and 
   //! connectivity and creates the polyline using IPolyData interface.
   //! Optionally, the transformation specified through the last argument
