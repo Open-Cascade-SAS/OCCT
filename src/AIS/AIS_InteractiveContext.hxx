@@ -1340,16 +1340,16 @@ protected: //! @name internal methods
   //! Removes dynamic highlight draw
   void clearDynamicHighlight() const
   {
-    if (myLastinMain.IsNull())
+    if (myLastPicked.IsNull())
       return;
 
-    if (myLastinMain->IsAutoHilight())
+    if (myLastPicked->IsAutoHilight())
     {
       myMainPM->ClearImmediateDraw();
     }
     else
     {
-      myLastinMain->Selectable()->ClearDynamicHighlight (myMainPM);
+      myLastPicked->Selectable()->ClearDynamicHighlight (myMainPM);
     }
   }
 
@@ -1361,8 +1361,6 @@ protected: //! @name internal fields
   Handle(V3d_Viewer) myMainVwr;
   Handle(StdSelect_ViewerSelector3d) myMainSel;
   Handle(SelectMgr_EntityOwner) myLastPicked;
-  Handle(SelectMgr_EntityOwner) myLastinMain;
-  Standard_Boolean myWasLastMain;
   Standard_Boolean myToHilightSelected;
   Handle(AIS_Selection) mySelection;
   Handle(SelectMgr_OrFilter) myFilters;

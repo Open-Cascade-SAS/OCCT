@@ -106,7 +106,6 @@ AIS_InteractiveContext::AIS_InteractiveContext(const Handle(V3d_Viewer)& MainVie
 myMainPM(new PrsMgr_PresentationManager3d(MainViewer->StructureManager())),
 myMainVwr(MainViewer),
 myMainSel(new StdSelect_ViewerSelector3d()),
-myWasLastMain(Standard_False),
 myToHilightSelected(Standard_True),
 mySelection(new AIS_Selection()),
 myFilters(new SelectMgr_OrFilter()),
@@ -1662,20 +1661,20 @@ void AIS_InteractiveContext::SetWidth (const Handle(AIS_InteractiveObject)& theI
   setContextToObject (theIObj);
   theIObj->SetWidth (theWidth);
   theIObj->UpdatePresentations();
-  if (!myLastinMain.IsNull() && myLastinMain->IsSameSelectable (theIObj))
+  if (!myLastPicked.IsNull() && myLastPicked->IsSameSelectable (theIObj))
   {
-    if (myLastinMain->IsAutoHilight())
+    if (myLastPicked->IsAutoHilight())
     {
       const Standard_Integer aHiMode = theIObj->HasHilightMode() ? theIObj->HilightMode() : 0;
-      myLastinMain->HilightWithColor (myMainPM,
-                                      myLastinMain->IsSelected() ? getSelStyle (theIObj, myLastinMain) : getHiStyle (theIObj, myLastinMain),
+      myLastPicked->HilightWithColor (myMainPM,
+                                      myLastPicked->IsSelected() ? getSelStyle (theIObj, myLastPicked) : getHiStyle (theIObj, myLastPicked),
                                       aHiMode);
     }
     else
     {
       theIObj->HilightOwnerWithColor (myMainPM,
-                                      myLastinMain->IsSelected() ? getSelStyle (theIObj, myLastinMain) : getHiStyle (theIObj, myLastinMain),
-                                      myLastinMain);
+                                      myLastPicked->IsSelected() ? getSelStyle (theIObj, myLastPicked) : getHiStyle (theIObj, myLastPicked),
+                                      myLastPicked);
     }
   }
   if (theToUpdateViewer)
@@ -1937,41 +1936,17 @@ void AIS_InteractiveContext::GetDefModes (const Handle(AIS_InteractiveObject)& t
 void AIS_InteractiveContext::EraseGlobal (const Handle(AIS_InteractiveObject)& theIObj,
                                           const Standard_Boolean               theToUpdateviewer)
 {
+  Handle(AIS_GlobalStatus) aStatus;
   if (theIObj.IsNull()
-  || !myObjects.IsBound (theIObj))
+  || !myObjects.Find (theIObj, aStatus)
+  ||  aStatus->GraphicStatus() == AIS_DS_Erased)
   {
     return;
   }
-
-  Handle(AIS_GlobalStatus) aStatus = myObjects (theIObj);
 
   const Standard_Integer aDispMode = theIObj->HasHilightMode() ? theIObj->HilightMode() : 0;
-  if (aStatus->GraphicStatus() == AIS_DS_Erased)
-  {
-    return;
-  }
-
-  if (aStatus->IsHilighted())
-  {
-    Standard_DISABLE_DEPRECATION_WARNINGS
-    if (IsCurrent (theIObj))
-    {
-      AddOrRemoveCurrentObject (theIObj, Standard_False);
-    }
-    else if (myMainPM->IsHighlighted (theIObj, aStatus->DisplayMode()))
-    {
-      unhighlightGlobal (theIObj);
-    }
-    Standard_ENABLE_DEPRECATION_WARNINGS
-  }
-
+  unhighlightOwners (theIObj);
   myMainPM->SetVisibility (theIObj, aStatus->DisplayMode(), Standard_False);
-
-  if (aStatus->IsHilighted()
-   && theIObj->HasHilightMode())
-  {
-    unhighlightGlobal (theIObj);
-  }
 
   if (!myLastPicked.IsNull()
     && myLastPicked->IsSameSelectable (theIObj))
@@ -2028,8 +2003,9 @@ void AIS_InteractiveContext::unhighlightOwners (const Handle(AIS_InteractiveObje
 void AIS_InteractiveContext::ClearGlobal (const Handle(AIS_InteractiveObject)& theIObj,
                                           const Standard_Boolean               theToUpdateviewer)
 {
+  Handle(AIS_GlobalStatus) aStatus;
   if (theIObj.IsNull()
-  || !myObjects.IsBound (theIObj))
+  || !myObjects.Find (theIObj, aStatus))
   {
     // for cases when reference shape of connected interactives was not displayed
     // but its selection primitives were calculated
@@ -2038,7 +2014,6 @@ void AIS_InteractiveContext::ClearGlobal (const Handle(AIS_InteractiveObject)& t
     return;
   }
 
-  Handle(AIS_GlobalStatus) aStatus = myObjects (theIObj);
   unhighlightOwners (theIObj);
 
   myMainPM->Erase (theIObj, -1);
@@ -2087,13 +2062,11 @@ void AIS_InteractiveContext::ClearGlobal (const Handle(AIS_InteractiveObject)& t
     aDefViewIter.Value()->View()->ChangeHiddenObjects()->Remove (theIObj.get());
   }
 
-  if (!myLastinMain.IsNull())
+  if (!myLastPicked.IsNull())
   {
-    if (myLastinMain->IsSameSelectable (theIObj)
-     || myLastPicked->IsSameSelectable(theIObj))
+    if (myLastPicked->IsSameSelectable (theIObj))
     {
       clearDynamicHighlight();
-      myLastinMain.Nullify();
       myLastPicked.Nullify();
     }
   }
@@ -2147,15 +2120,12 @@ Standard_Boolean AIS_InteractiveContext::ClearDetected (Standard_Boolean theToRe
   myCurDetected = 0;
   myCurHighlighted = 0;
   myDetectedSeq.Clear();
-  myLastPicked  = myLastinMain;
-  myWasLastMain = Standard_True;
   Standard_Boolean toUpdate = Standard_False;
   if (!myLastPicked.IsNull() && myLastPicked->HasSelectable())
   {
     toUpdate = Standard_True;
     clearDynamicHighlight();
   }
-  myLastinMain.Nullify();
   myLastPicked.Nullify();
   myMainSel->ClearPicked();
   if (toUpdate && theToRedrawImmediate)

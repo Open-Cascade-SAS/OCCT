@@ -328,8 +328,6 @@ AIS_StatusOfDetection AIS_InteractiveContext::MoveTo (const Standard_Integer  th
   myDetectedSeq.Clear();
 
   // preliminaires
-  myLastPicked  = myLastinMain;
-  myWasLastMain = Standard_True;
   AIS_StatusOfDetection aStatus        = AIS_SOD_Nothing;
   Standard_Boolean      toUpdateViewer = Standard_False;
 
@@ -399,7 +397,6 @@ AIS_StatusOfDetection AIS_InteractiveContext::MoveTo (const Standard_Integer  th
 
     // initialize myLastPicked field with currently detected object
     myLastPicked = aNewPickedOwner;
-    myLastinMain = myLastPicked;
 
     // highlight detected object if it is not selected or myToHilightSelected flag is true
     if (myLastPicked->HasSelectable())
@@ -440,7 +437,6 @@ AIS_StatusOfDetection AIS_InteractiveContext::MoveTo (const Standard_Integer  th
       toUpdateViewer = Standard_True;
     }
 
-    myLastinMain.Nullify();
     myLastPicked.Nullify();
   }
 
@@ -500,7 +496,6 @@ AIS_StatusOfPick AIS_InteractiveContext::Select (const Standard_Integer  theXPMi
   // all objects detected by the selector are taken, previous current objects are emptied,
   // new objects are put...
   ClearSelected (Standard_False);
-  myWasLastMain = Standard_True;
   myMainSel->Pick (theXPMin, theYPMin, theXPMax, theYPMax, theView);
   for (Standard_Integer aPickIter = 1; aPickIter <= myMainSel->NbPicked(); ++aPickIter)
   {
@@ -541,7 +536,6 @@ AIS_StatusOfPick AIS_InteractiveContext::Select (const TColgp_Array1OfPnt2d& the
   // all objects detected by the selector are taken, previous current objects are emptied,
   // new objects are put...
   ClearSelected (Standard_False);
-  myWasLastMain = Standard_True;
   myMainSel->Pick (thePolyline, theView);
   for (Standard_Integer aPickIter = 1; aPickIter <= myMainSel->NbPicked(); ++aPickIter)
   {
@@ -572,17 +566,17 @@ AIS_StatusOfPick AIS_InteractiveContext::Select (const TColgp_Array1OfPnt2d& the
 //=======================================================================
 AIS_StatusOfPick AIS_InteractiveContext::Select (const Standard_Boolean toUpdateViewer)
 {
-  if (myWasLastMain && !myLastinMain.IsNull())
+  if (!myLastPicked.IsNull())
   {
     if (myAutoHilight)
     {
       clearDynamicHighlight();
     }
-    if (!myLastinMain->IsSelected()
-      || myLastinMain->IsForcedHilight()
+    if (!myLastPicked->IsSelected()
+      || myLastPicked->IsForcedHilight()
       || NbSelected() > 1)
     {
-      SetSelected (myLastinMain, Standard_False);
+      SetSelected (myLastPicked, Standard_False);
       if(toUpdateViewer)
       {
         UpdateCurrentViewer();
@@ -611,9 +605,9 @@ AIS_StatusOfPick AIS_InteractiveContext::ShiftSelect (const Standard_Boolean toU
   {
     clearDynamicHighlight();
   }
-  if (myWasLastMain && !myLastinMain.IsNull())
+  if (!myLastPicked.IsNull())
   {
-    AddOrRemoveSelected (myLastinMain, toUpdateViewer);
+    AddOrRemoveSelected (myLastPicked, toUpdateViewer);
   }
 
   Standard_Integer aSelNum = NbSelected();
@@ -643,7 +637,6 @@ AIS_StatusOfPick AIS_InteractiveContext::ShiftSelect (const Standard_Integer the
   {
     UnhilightSelected (Standard_False);
   }
-  myWasLastMain = Standard_True;
   myMainSel->Pick (theXPMin, theYPMin, theXPMax, theYPMax, theView);
   for (Standard_Integer aPickIter = 1; aPickIter <= myMainSel->NbPicked(); ++aPickIter)
   {
@@ -685,7 +678,6 @@ AIS_StatusOfPick AIS_InteractiveContext::ShiftSelect (const TColgp_Array1OfPnt2d
   {
     UnhilightSelected (Standard_False);
   }
-  myWasLastMain = Standard_True;
   myMainSel->Pick (thePolyline, theView);
   for (Standard_Integer aPickIter = 1; aPickIter <= myMainSel->NbPicked(); ++aPickIter)
   {
@@ -1201,7 +1193,6 @@ Standard_Integer AIS_InteractiveContext::HilightNextDetected (const Handle(V3d_V
 
   highlightWithColor (anOwner, theView->Viewer());
   myLastPicked = anOwner;
-  myLastinMain = myLastPicked;
 
   if (theToRedrawImmediate)
   {
@@ -1237,7 +1228,6 @@ Standard_Integer AIS_InteractiveContext::HilightPreviousDetected (const Handle(V
 
   highlightWithColor (anOwner, theView->Viewer());
   myLastPicked = anOwner;
-  myLastinMain = myLastPicked;
 
   if (theToRedrawImmediate)
   {
