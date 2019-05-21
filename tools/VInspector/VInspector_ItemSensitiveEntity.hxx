@@ -17,17 +17,17 @@
 #define VInspector_ItemSensitiveEntity_H
 
 #include <SelectMgr_SensitiveEntity.hxx>
-#include <SelectBasics_SensitiveEntity.hxx>
+#include <Select3D_SensitiveEntity.hxx>
 #include <Standard.hxx>
 #include <inspector/VInspector_ItemBase.hxx>
 
-class SelectBasics_EntityOwner;
+class SelectMgr_EntityOwner;
 class VInspector_ItemSensitiveEntity;
 
 typedef QExplicitlySharedDataPointer<VInspector_ItemSensitiveEntity> VInspector_ItemSensitiveEntityPtr;
 
 //! \class VInspector_ItemSensitiveEntity
-//! The item shows information about SelectBasics_EntityOwner.
+//! The item shows information about SelectMgr_EntityOwner.
 //! The parent is item selection, children are item entity owners
 class VInspector_ItemSensitiveEntity : public VInspector_ItemBase
 {
@@ -73,7 +73,7 @@ protected:
 
   //! Returns owner of the current sensitive entity
   //! \return owner
-  Handle(SelectBasics_EntityOwner) getEntityOwner() const;
+  Handle(SelectMgr_EntityOwner) getEntityOwner() const;
 
 private:
 

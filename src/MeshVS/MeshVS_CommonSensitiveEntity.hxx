@@ -28,9 +28,9 @@ class MeshVS_CommonSensitiveEntity : public Select3D_SensitiveSet
 public:
 
   //! Default constructor.
-  Standard_EXPORT MeshVS_CommonSensitiveEntity (const Handle(SelectBasics_EntityOwner)& theOwner,
-                                                const Handle(MeshVS_Mesh)&              theParentMesh,
-                                                const MeshVS_MeshSelectionMethod        theSelMethod);
+  Standard_EXPORT MeshVS_CommonSensitiveEntity (const Handle(SelectMgr_EntityOwner)& theOwner,
+                                                const Handle(MeshVS_Mesh)& theParentMesh,
+                                                const MeshVS_MeshSelectionMethod theSelMethod);
 
   //! Destructor.
   Standard_EXPORT virtual ~MeshVS_CommonSensitiveEntity();

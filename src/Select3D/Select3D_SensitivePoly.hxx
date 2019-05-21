@@ -36,7 +36,7 @@ public:
   //! owner OwnerId, the array of points ThePoints, and
   //! the sensitivity type Sensitivity.
   //! The array of points is the outer polygon of the geometric face.
-  Standard_EXPORT Select3D_SensitivePoly (const Handle(SelectBasics_EntityOwner)& theOwnerId,
+  Standard_EXPORT Select3D_SensitivePoly (const Handle(SelectMgr_EntityOwner)& theOwnerId,
                                           const TColgp_Array1OfPnt& thePoints,
                                           const Standard_Boolean theIsBVHEnabled);
 
@@ -44,14 +44,14 @@ public:
   //! owner OwnerId, the array of points ThePoints, and
   //! the sensitivity type Sensitivity.
   //! The array of points is the outer polygon of the geometric face.
-  Standard_EXPORT Select3D_SensitivePoly (const Handle(SelectBasics_EntityOwner)& theOwnerId,
+  Standard_EXPORT Select3D_SensitivePoly (const Handle(SelectMgr_EntityOwner)& theOwnerId,
                                           const Handle(TColgp_HArray1OfPnt)& thePoints,
                                           const Standard_Boolean theIsBVHEnabled);
 
   //! Constructs the sensitive circle object defined by the
   //! owner OwnerId, the circle Circle, the Boolean
   //! FilledCircle and the number of points NbOfPoints.
-  Standard_EXPORT Select3D_SensitivePoly (const Handle(SelectBasics_EntityOwner)& theOwnerId,
+  Standard_EXPORT Select3D_SensitivePoly (const Handle(SelectMgr_EntityOwner)& theOwnerId,
                                           const Standard_Boolean theIsBVHEnabled,
                                           const Standard_Integer theNbPnts = 6);
 

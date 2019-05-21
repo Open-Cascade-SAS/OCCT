@@ -27,7 +27,7 @@ public:
 
   //! Constructs a sensitive wire object defined by the
   //! owner theOwnerId
-  Standard_EXPORT Select3D_SensitiveWire (const Handle(SelectBasics_EntityOwner)& theOwnerId);
+  Standard_EXPORT Select3D_SensitiveWire (const Handle(SelectMgr_EntityOwner)& theOwnerId);
 
   //! Adds the sensitive entity theSensitive to this framework.
   Standard_EXPORT void Add (const Handle(Select3D_SensitiveEntity)& theSensitive);
@@ -41,7 +41,7 @@ public:
   Standard_EXPORT const NCollection_Vector<Handle(Select3D_SensitiveEntity)>& GetEdges();
 
   //! Sets the owner for all entities in wire
-  Standard_EXPORT void Set (const Handle(SelectBasics_EntityOwner)& theOwnerId) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Set (const Handle(SelectMgr_EntityOwner)& theOwnerId) Standard_OVERRIDE;
 
   Standard_EXPORT Handle(Select3D_SensitiveEntity) GetLastDetected() const;
 

@@ -58,7 +58,7 @@ namespace
 //function : Select3D_SensitiveCircle (constructor)
 //purpose  : Definition of a sensitive circle
 //=======================================================================
-Select3D_SensitiveCircle::Select3D_SensitiveCircle(const Handle(SelectBasics_EntityOwner)& theOwnerId,
+Select3D_SensitiveCircle::Select3D_SensitiveCircle(const Handle(SelectMgr_EntityOwner)& theOwnerId,
                                                    const Handle(Geom_Circle)& theCircle,
                                                    const Standard_Boolean theIsFilled,
                                                    const Standard_Integer theNbPnts)
@@ -116,7 +116,7 @@ Select3D_SensitiveCircle::Select3D_SensitiveCircle(const Handle(SelectBasics_Ent
 //function : Select3D_SensitiveCircle (constructor)
 //purpose  : Definition of a sensitive arc
 //=======================================================================
-Select3D_SensitiveCircle::Select3D_SensitiveCircle (const Handle(SelectBasics_EntityOwner)& theOwnerId,
+Select3D_SensitiveCircle::Select3D_SensitiveCircle (const Handle(SelectMgr_EntityOwner)& theOwnerId,
                                                     const Handle(Geom_Circle)& theCircle,
                                                     const Standard_Real theU1,
                                                     const Standard_Real theU2,
@@ -174,7 +174,7 @@ Select3D_SensitiveCircle::Select3D_SensitiveCircle (const Handle(SelectBasics_En
 //function : Select3D_SensitiveCircle
 //purpose  :
 //=======================================================================
-Select3D_SensitiveCircle::Select3D_SensitiveCircle(const Handle(SelectBasics_EntityOwner)& theOwnerId,
+Select3D_SensitiveCircle::Select3D_SensitiveCircle(const Handle(SelectMgr_EntityOwner)& theOwnerId,
                                                    const Handle(TColgp_HArray1OfPnt)& thePnts3d,
                                                    const Standard_Boolean theIsFilled)
 : Select3D_SensitivePoly (theOwnerId, thePnts3d, static_cast<Standard_Boolean> (!theIsFilled)),
@@ -199,7 +199,7 @@ Select3D_SensitiveCircle::Select3D_SensitiveCircle(const Handle(SelectBasics_Ent
 //purpose  :
 //=======================================================================
 
-Select3D_SensitiveCircle::Select3D_SensitiveCircle(const Handle(SelectBasics_EntityOwner)& theOwnerId,
+Select3D_SensitiveCircle::Select3D_SensitiveCircle(const Handle(SelectMgr_EntityOwner)& theOwnerId,
                                                    const TColgp_Array1OfPnt& thePnts3d,
                                                    const Standard_Boolean theIsFilled)
 : Select3D_SensitivePoly (theOwnerId, thePnts3d, !theIsFilled),

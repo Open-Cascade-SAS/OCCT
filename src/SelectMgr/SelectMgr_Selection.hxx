@@ -23,7 +23,7 @@
 #include <SelectMgr_TypeOfBVHUpdate.hxx>
 #include <SelectMgr_TypeOfUpdate.hxx>
 
-class SelectBasics_SensitiveEntity;
+class Select3D_SensitiveEntity;
 
 //!  Represents the state of a given selection mode for a
 //! Selectable Object. Contains all the sensitive entities available for this mode.
@@ -75,7 +75,7 @@ public:
 
   //! Adds the sensitive primitive to the list of stored entities in this object.
   //! Raises NullObject if the primitive is a null handle.
-  Standard_EXPORT void Add (const Handle(SelectBasics_SensitiveEntity)& theSensitive);
+  Standard_EXPORT void Add (const Handle(Select3D_SensitiveEntity)& theSensitive);
 
   //! empties the selection from all the stored entities
   Standard_EXPORT void Clear();

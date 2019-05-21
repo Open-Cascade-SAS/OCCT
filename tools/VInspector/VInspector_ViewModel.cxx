@@ -20,7 +20,7 @@
 #include <inspector/VInspector_ItemEntityOwner.hxx>
 #include <inspector/VInspector_ItemPresentableObject.hxx>
 #include <inspector/VInspector_ItemSensitiveEntity.hxx>
-#include <SelectBasics_EntityOwner.hxx>
+#include <SelectMgr_EntityOwner.hxx>
 
 #include <Standard_WarningsDisable.hxx>
 #include <QItemSelectionModel>
@@ -146,7 +146,7 @@ QModelIndex VInspector_ViewModel::FindIndex (const Handle(AIS_InteractiveObject)
 // purpose :
 // =======================================================================
 void VInspector_ViewModel::GetSelectedOwners (QItemSelectionModel* theSelectionModel,
-                                              NCollection_List<Handle(SelectBasics_EntityOwner)>& theOwners)
+                                              NCollection_List<Handle(SelectMgr_EntityOwner)>& theOwners)
 {
   if (!theSelectionModel)
     return;
@@ -165,7 +165,7 @@ void VInspector_ViewModel::GetSelectedOwners (QItemSelectionModel* theSelectionM
   for (QList<TreeModel_ItemBasePtr>::const_iterator anItemIt = anItems.begin(); anItemIt != anItems.end(); anItemIt++)
   {
     TreeModel_ItemBasePtr anItem = *anItemIt;
-    Handle(SelectBasics_EntityOwner) anEntityOwner;
+    Handle(SelectMgr_EntityOwner) anEntityOwner;
     if (VInspector_ItemEntityOwnerPtr anOwnerItem = itemDynamicCast<VInspector_ItemEntityOwner>(anItem))
     {
       anEntityOwner = anOwnerItem->EntityOwner();

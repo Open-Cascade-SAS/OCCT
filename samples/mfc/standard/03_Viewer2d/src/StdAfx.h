@@ -155,7 +155,6 @@ class ISession2D_InteractiveObject;
 class V3d_Viewer;
 class SelectMgr_SelectableObject;
 class TCollection_AsciiString;
-class SelectBasics_EntityOwner;
 class gp_Pnt2d;
 
 //{{AFX_INSERT_LOCATION}}

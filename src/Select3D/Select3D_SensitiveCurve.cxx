@@ -25,7 +25,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitiveCurve,Select3D_SensitivePoly)
 // Function: Creation
 // Purpose :
 //==================================================
-Select3D_SensitiveCurve::Select3D_SensitiveCurve (const Handle(SelectBasics_EntityOwner)& theOwnerId,
+Select3D_SensitiveCurve::Select3D_SensitiveCurve (const Handle(SelectMgr_EntityOwner)& theOwnerId,
                                                   const Handle(Geom_Curve)& theCurve,
                                                   const Standard_Integer theNbPnts)
 : Select3D_SensitivePoly (theOwnerId, Standard_True, theNbPnts),
@@ -39,7 +39,7 @@ Select3D_SensitiveCurve::Select3D_SensitiveCurve (const Handle(SelectBasics_Enti
 // Function: Creation
 // Purpose :
 //==================================================
-Select3D_SensitiveCurve::Select3D_SensitiveCurve (const Handle(SelectBasics_EntityOwner)& theOwnerId,
+Select3D_SensitiveCurve::Select3D_SensitiveCurve (const Handle(SelectMgr_EntityOwner)& theOwnerId,
                                                   const Handle(TColgp_HArray1OfPnt)& thePoints)
 : Select3D_SensitivePoly (theOwnerId, thePoints, Standard_True)
 
@@ -51,7 +51,7 @@ Select3D_SensitiveCurve::Select3D_SensitiveCurve (const Handle(SelectBasics_Enti
 // Function: Creation
 // Purpose :
 //==================================================
-Select3D_SensitiveCurve::Select3D_SensitiveCurve (const Handle(SelectBasics_EntityOwner)& theOwnerId,
+Select3D_SensitiveCurve::Select3D_SensitiveCurve (const Handle(SelectMgr_EntityOwner)& theOwnerId,
                                                   const TColgp_Array1OfPnt& thePoints)
 : Select3D_SensitivePoly (theOwnerId, thePoints, Standard_True)
 {

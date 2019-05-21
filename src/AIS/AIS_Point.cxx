@@ -31,7 +31,6 @@
 #include <Prs3d_Projector.hxx>
 #include <Quantity_Color.hxx>
 #include <Select3D_SensitivePoint.hxx>
-#include <SelectBasics_EntityOwner.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <Standard_Type.hxx>
 #include <StdPrs_Point.hxx>
@@ -124,7 +123,6 @@ void AIS_Point::ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
                                  const Standard_Integer /*aMode*/)
 {
   Handle(SelectMgr_EntityOwner) eown = new SelectMgr_EntityOwner(this,10);
-//  eown -> SelectBasics_EntityOwner::Set(5);
   Handle(Select3D_SensitivePoint) sp = new Select3D_SensitivePoint(eown,
 								   myComponent->Pnt());
   aSelection->Add(sp);

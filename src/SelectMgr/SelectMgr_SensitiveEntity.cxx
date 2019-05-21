@@ -23,7 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_SensitiveEntity,Standard_Transient)
 // purpose  : Creates new inactive for selection object with base entity
 //            theEntity
 //=======================================================================
-SelectMgr_SensitiveEntity::SelectMgr_SensitiveEntity (const Handle(SelectBasics_SensitiveEntity)& theEntity)
+SelectMgr_SensitiveEntity::SelectMgr_SensitiveEntity (const Handle(Select3D_SensitiveEntity)& theEntity)
 : mySensitive (theEntity),
   myIsActiveForSelection (Standard_False)
 {

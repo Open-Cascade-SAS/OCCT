@@ -20,7 +20,6 @@
 #include <Select3D_BndBox3d.hxx>
 #include <Select3D_BVHBuilder3d.hxx>
 #include <Select3D_SensitiveEntity.hxx>
-#include <SelectBasics_EntityOwner.hxx>
 
 //! This class is base class for handling overlap detection of complex sensitive
 //! entities. It provides an interface for building BVH tree for some set of entities.
@@ -44,7 +43,7 @@ public:
 public:
 
   //! Creates new empty sensitive set and its content
-  Standard_EXPORT Select3D_SensitiveSet (const Handle(SelectBasics_EntityOwner)& theOwnerId);
+  Standard_EXPORT Select3D_SensitiveSet (const Handle(SelectMgr_EntityOwner)& theOwnerId);
 
 public:
 

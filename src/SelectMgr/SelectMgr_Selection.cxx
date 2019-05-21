@@ -14,9 +14,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <SelectBasics_EntityOwner.hxx>
-
 #include <SelectMgr_Selection.hxx>
+
+#include <SelectMgr_EntityOwner.hxx>
 #include <Standard_NullObject.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_Selection,Standard_Transient)
@@ -57,7 +57,7 @@ void SelectMgr_Selection::Destroy()
 // Function: ADD
 // Purpose :
 //==================================================
-void SelectMgr_Selection::Add (const Handle(SelectBasics_SensitiveEntity)& theSensitive)
+void SelectMgr_Selection::Add (const Handle(Select3D_SensitiveEntity)& theSensitive)
 {
   // if input is null: in debug mode raise exception
   Standard_NullObject_Raise_if (theSensitive.IsNull(), "Null sensitive entity is added to the selection");

@@ -37,7 +37,7 @@ public:
   //! owner theOwnerId, the array of points thePoints, and
   //! the sensitivity type theType.
   //! The array of points is the outer polygon of the geometric face.
-  Standard_EXPORT Select3D_SensitiveFace (const Handle(SelectBasics_EntityOwner)& theOwnerId,
+  Standard_EXPORT Select3D_SensitiveFace (const Handle(SelectMgr_EntityOwner)& theOwnerId,
                                           const TColgp_Array1OfPnt& thePoints,
                                           const Select3D_TypeOfSensitivity theType);
 
@@ -45,7 +45,7 @@ public:
   //! owner theOwnerId, the array of points thePoints, and
   //! the sensitivity type theType.
   //! The array of points is the outer polygon of the geometric face.
-  Standard_EXPORT Select3D_SensitiveFace (const Handle(SelectBasics_EntityOwner)& theOwnerId,
+  Standard_EXPORT Select3D_SensitiveFace (const Handle(SelectMgr_EntityOwner)& theOwnerId,
                                           const Handle(TColgp_HArray1OfPnt)& thePoints,
                                           const Select3D_TypeOfSensitivity theType);
 

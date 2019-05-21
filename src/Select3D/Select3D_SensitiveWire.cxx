@@ -28,7 +28,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitiveWire,Select3D_SensitiveSet)
 // Function : Select3D_SensitiveWire
 // Purpose  :
 //=====================================================
-Select3D_SensitiveWire::Select3D_SensitiveWire (const Handle(SelectBasics_EntityOwner)& theOwnerId)
+Select3D_SensitiveWire::Select3D_SensitiveWire (const Handle(SelectMgr_EntityOwner)& theOwnerId)
 : Select3D_SensitiveSet (theOwnerId),
   myCenter (0.0, 0.0, 0.0)
 {}
@@ -188,7 +188,7 @@ Handle(Select3D_SensitiveEntity) Select3D_SensitiveWire::GetLastDetected() const
 //function : Set
 //purpose  :
 //=======================================================================
-void Select3D_SensitiveWire::Set (const Handle(SelectBasics_EntityOwner)& theOwnerId)
+void Select3D_SensitiveWire::Set (const Handle(SelectMgr_EntityOwner)& theOwnerId)
 {
   Select3D_SensitiveEntity::Set (theOwnerId);
 

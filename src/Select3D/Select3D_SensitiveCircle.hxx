@@ -37,7 +37,7 @@ public:
   //! Constructs the sensitive circle object defined by the
   //! owner theOwnerId, the circle theCircle, the boolean
   //! theIsFilled and the number of points theNbPnts.
-  Standard_EXPORT Select3D_SensitiveCircle (const Handle(SelectBasics_EntityOwner)& theOwnerId,
+  Standard_EXPORT Select3D_SensitiveCircle (const Handle(SelectMgr_EntityOwner)& theOwnerId,
                                             const Handle(Geom_Circle)& theCircle,
                                             const Standard_Boolean theIsFilled = Standard_False,
                                             const Standard_Integer theNbPnts = 12);
@@ -46,7 +46,7 @@ public:
   //! owner theOwnerId, the circle theCircle, the parameters theU1
   //! and theU2, the boolean theIsFilled and the number of points theNbPnts.
   //! theU1 and theU2 define the first and last points of the arc on theCircle.
-  Standard_EXPORT Select3D_SensitiveCircle (const Handle(SelectBasics_EntityOwner)& theOwnerId,
+  Standard_EXPORT Select3D_SensitiveCircle (const Handle(SelectMgr_EntityOwner)& theOwnerId,
                                             const Handle(Geom_Circle)& theCircle,
                                             const Standard_Real theU1,
                                             const Standard_Real theU2,
@@ -59,7 +59,7 @@ public:
   //! circle. The triangle i+1 lies on the intersection of the
   //! tangents to the circle of i and i+2. Note, that the first point of thePnts3d
   //! must be equal to the last point of thePnts3d.
-  Standard_EXPORT Select3D_SensitiveCircle (const Handle(SelectBasics_EntityOwner)& theOwnerId,
+  Standard_EXPORT Select3D_SensitiveCircle (const Handle(SelectMgr_EntityOwner)& theOwnerId,
                                             const Handle(TColgp_HArray1OfPnt)& thePnts3d,
                                             const Standard_Boolean theIsFilled = Standard_False);
 
@@ -67,7 +67,7 @@ public:
   //! owner theOwnerId, the array of points thePnts3d, and the boolean theIsFilled.
   //! If the length of thePnts3d is more then 1, the first point of thePnts3d
   //! must be equal to the last point of thePnts3d.
-  Standard_EXPORT Select3D_SensitiveCircle (const Handle(SelectBasics_EntityOwner)& theOwnerId,
+  Standard_EXPORT Select3D_SensitiveCircle (const Handle(SelectMgr_EntityOwner)& theOwnerId,
                                             const TColgp_Array1OfPnt& thePnts3d,
                                             const Standard_Boolean theIsFilled = Standard_False);
 

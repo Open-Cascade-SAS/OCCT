@@ -36,7 +36,7 @@ public:
   //! Constructs a sensitive triangulation object defined by
   //! the owner theOwnerId, the triangulation theTrg,
   //! the location theInitLoc, and the flag theIsInterior.
-  Standard_EXPORT Select3D_SensitiveTriangulation (const Handle(SelectBasics_EntityOwner)& theOwnerId,
+  Standard_EXPORT Select3D_SensitiveTriangulation (const Handle(SelectMgr_EntityOwner)& theOwnerId,
                                                    const Handle(Poly_Triangulation)& theTrg,
                                                    const TopLoc_Location& theInitLoc,
                                                    const Standard_Boolean theIsInterior = Standard_True);
@@ -47,7 +47,7 @@ public:
   //! theFreeEdges, the center of gravity theCOG, and the flag theIsInterior.
   //! As free edges and the center of gravity do not have
   //! to be computed later, this syntax reduces computation time.
-  Standard_EXPORT Select3D_SensitiveTriangulation (const Handle(SelectBasics_EntityOwner)& theOwnerId,
+  Standard_EXPORT Select3D_SensitiveTriangulation (const Handle(SelectMgr_EntityOwner)& theOwnerId,
                                                    const Handle(Poly_Triangulation)& theTrg,
                                                    const TopLoc_Location& theInitLoc,
                                                    const Handle(TColStd_HArray1OfInteger)& theFreeEdges,

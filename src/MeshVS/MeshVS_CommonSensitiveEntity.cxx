@@ -27,9 +27,9 @@ IMPLEMENT_STANDARD_RTTIEXT (MeshVS_CommonSensitiveEntity, Select3D_SensitiveSet)
 //function : Constructor
 //purpose  :
 //=======================================================================
-MeshVS_CommonSensitiveEntity::MeshVS_CommonSensitiveEntity (const Handle(SelectBasics_EntityOwner)& theOwner,
-                                                            const Handle(MeshVS_Mesh)&              theParentMesh,
-                                                            const MeshVS_MeshSelectionMethod        theSelMethod)
+MeshVS_CommonSensitiveEntity::MeshVS_CommonSensitiveEntity (const Handle(SelectMgr_EntityOwner)& theOwner,
+                                                            const Handle(MeshVS_Mesh)& theParentMesh,
+                                                            const MeshVS_MeshSelectionMethod theSelMethod)
 : Select3D_SensitiveSet (theOwner),
   myDataSource (theParentMesh->GetDataSource()),
   mySelMethod (theSelMethod)

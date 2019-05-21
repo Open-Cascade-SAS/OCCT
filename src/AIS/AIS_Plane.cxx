@@ -43,7 +43,6 @@
 #include <Prs3d_ShadingAspect.hxx>
 #include <Quantity_Color.hxx>
 #include <Select3D_SensitiveTriangulation.hxx>
-#include <SelectBasics_EntityOwner.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <Standard_Type.hxx>
 #include <StdPrs_Plane.hxx>

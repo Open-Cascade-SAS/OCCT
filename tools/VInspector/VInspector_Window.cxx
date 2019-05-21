@@ -408,7 +408,7 @@ void VInspector_Window::onToolBarActionClicked (const int theActionId)
     }
     case VInspector_ToolActionType_SelectOwnersId:
     {
-      NCollection_List<Handle(SelectBasics_EntityOwner)> anOwnersForViewer;
+      NCollection_List<Handle(SelectMgr_EntityOwner)> anOwnersForViewer;
       if (myToolBar->GetToolButton((VInspector_ToolActionType)theActionId)->isChecked())
         VInspector_ViewModel::GetSelectedOwners(myTreeView->selectionModel(), anOwnersForViewer);
       VInspector_Tools::AddOrRemoveSelectedShapes(aViewModel->GetContext(), anOwnersForViewer);

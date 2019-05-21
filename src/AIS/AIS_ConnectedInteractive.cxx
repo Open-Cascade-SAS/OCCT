@@ -233,7 +233,7 @@ void AIS_ConnectedInteractive::ComputeSelection (const Handle(SelectMgr_Selectio
 
   for (NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>::Iterator aSelEntIter (TheRefSel->Entities()); aSelEntIter.More(); aSelEntIter.Next())
   {
-    if (Handle(Select3D_SensitiveEntity) aSensitive = Handle(Select3D_SensitiveEntity)::DownCast (aSelEntIter.Value()->BaseSensitive()))
+    if (const Handle(Select3D_SensitiveEntity)& aSensitive = aSelEntIter.Value()->BaseSensitive())
     {
       // Get the copy of SE3D
       if (Handle(Select3D_SensitiveEntity) aNewSensitive = aSensitive->GetConnected())
@@ -271,7 +271,7 @@ void AIS_ConnectedInteractive::computeSubShapeSelection (const Handle(SelectMgr_
   Shapes2EntitiesMap aShapes2EntitiesMap;
   for (NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>::Iterator aSelEntIter (aRefSel->Entities()); aSelEntIter.More(); aSelEntIter.Next())
   {
-    if (Handle(Select3D_SensitiveEntity) aSE = Handle(Select3D_SensitiveEntity)::DownCast (aSelEntIter.Value()->BaseSensitive()))
+    if (const Handle(Select3D_SensitiveEntity)& aSE = aSelEntIter.Value()->BaseSensitive())
     {
       if (Handle(StdSelect_BRepOwner) anOwner = Handle(StdSelect_BRepOwner)::DownCast (aSE->OwnerId()))
       {

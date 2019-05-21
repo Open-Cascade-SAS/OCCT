@@ -19,7 +19,7 @@
 #include <inspector/VInspector_Tools.hxx>
 
 #include <SelectMgr_SensitiveEntity.hxx>
-#include <SelectBasics_SensitiveEntity.hxx>
+#include <Select3D_SensitiveEntity.hxx>
 #include <Standard_Version.hxx>
 #include <StdSelect_BRepOwner.hxx>
 
@@ -40,7 +40,7 @@ QVariant VInspector_ItemEntityOwner::initValue(int theItemRole) const
     case Qt::EditRole:
     case Qt::ToolTipRole:
     {
-      Handle(SelectBasics_EntityOwner) anOwner = getEntityOwner();
+      Handle(SelectMgr_EntityOwner) anOwner = getEntityOwner();
       if (anOwner.IsNull())
         return QVariant();
 
@@ -107,7 +107,7 @@ QVariant VInspector_ItemEntityOwner::initValue(int theItemRole) const
 // =======================================================================
 void VInspector_ItemEntityOwner::Init()
 {
-  Handle(SelectBasics_EntityOwner) anOwner;
+  Handle(SelectMgr_EntityOwner) anOwner;
 
   VInspector_ItemSensitiveEntityPtr aParentItem = itemDynamicCast<VInspector_ItemSensitiveEntity>(Parent());
   if (aParentItem)
@@ -139,7 +139,7 @@ void VInspector_ItemEntityOwner::Init()
         {
           Handle(SelectMgr_SensitiveEntity) anEntity = aSelEntIter.Value();
 #endif
-          const Handle(SelectBasics_SensitiveEntity)& aBase = anEntity->BaseSensitive();
+          const Handle(Select3D_SensitiveEntity)& aBase = anEntity->BaseSensitive();
           if (!aBase.IsNull())
           {
             if (aRowId == aCurrentIndex)
@@ -179,7 +179,7 @@ void VInspector_ItemEntityOwner::initItem() const
 // function : getEntityOwner
 // purpose :
 // =======================================================================
-Handle(SelectBasics_EntityOwner) VInspector_ItemEntityOwner::getEntityOwner() const
+Handle(SelectMgr_EntityOwner) VInspector_ItemEntityOwner::getEntityOwner() const
 {
   initItem();
   return myOwner;

@@ -19,7 +19,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitivePoly,Select3D_SensitiveSet)
 // Function: Select3D_SensitivePoly
 // Purpose :
 //==================================================
-Select3D_SensitivePoly::Select3D_SensitivePoly (const Handle(SelectBasics_EntityOwner)& theOwnerId,
+Select3D_SensitivePoly::Select3D_SensitivePoly (const Handle(SelectMgr_EntityOwner)& theOwnerId,
                                                 const TColgp_Array1OfPnt& thePoints,
                                                 const Standard_Boolean theIsBVHEnabled)
 : Select3D_SensitiveSet (theOwnerId),
@@ -60,7 +60,7 @@ Select3D_SensitivePoly::Select3D_SensitivePoly (const Handle(SelectBasics_Entity
 // Function: Select3D_SensitivePoly
 // Purpose :
 //==================================================
-Select3D_SensitivePoly::Select3D_SensitivePoly (const Handle(SelectBasics_EntityOwner)& theOwnerId,
+Select3D_SensitivePoly::Select3D_SensitivePoly (const Handle(SelectMgr_EntityOwner)& theOwnerId,
                                                 const Handle(TColgp_HArray1OfPnt)& thePoints,
                                                 const Standard_Boolean theIsBVHEnabled)
 : Select3D_SensitiveSet (theOwnerId),
@@ -101,7 +101,7 @@ Select3D_SensitivePoly::Select3D_SensitivePoly (const Handle(SelectBasics_Entity
 // Function: Creation
 // Purpose :
 //==================================================
-Select3D_SensitivePoly::Select3D_SensitivePoly (const Handle(SelectBasics_EntityOwner)& theOwnerId,
+Select3D_SensitivePoly::Select3D_SensitivePoly (const Handle(SelectMgr_EntityOwner)& theOwnerId,
                                                 const Standard_Boolean theIsBVHEnabled,
                                                 const Standard_Integer theNbPnts)
 : Select3D_SensitiveSet (theOwnerId),

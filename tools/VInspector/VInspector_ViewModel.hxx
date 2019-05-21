@@ -18,7 +18,7 @@
 
 #include <AIS_InteractiveContext.hxx>
 #include <NCollection_List.hxx>
-#include <SelectBasics_EntityOwner.hxx>
+#include <SelectMgr_EntityOwner.hxx>
 #include <Standard.hxx>
 #include <inspector/TreeModel_ModelBase.hxx>
 #include <inspector/VInspector_ItemBase.hxx>
@@ -77,7 +77,7 @@ public:
   //! \param theSelectionModel a selection model
   //! \param theOwners an output list of owners
   Standard_EXPORT static void GetSelectedOwners (QItemSelectionModel* theSelectionModel,
-                                                 NCollection_List<Handle(SelectBasics_EntityOwner)>& theOwners);
+                                                 NCollection_List<Handle(SelectMgr_EntityOwner)>& theOwners);
 
   //! Updates tree model
   Standard_EXPORT void UpdateTreeModel();

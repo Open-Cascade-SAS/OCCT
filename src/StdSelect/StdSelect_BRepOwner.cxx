@@ -19,7 +19,7 @@
 #include <Graphic3d_StructureManager.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <PrsMgr_PresentationManager.hxx>
-#include <SelectBasics_EntityOwner.hxx>
+#include <SelectMgr_EntityOwner.hxx>
 #include <SelectMgr_SelectableObject.hxx>
 #include <Standard_Type.hxx>
 #include <StdSelect_Shape.hxx>
@@ -162,16 +162,6 @@ void StdSelect_BRepOwner::Clear(const Handle(PrsMgr_PresentationManager)& PM,
 void StdSelect_BRepOwner::SetLocation(const TopLoc_Location& aLoc)
 {
   SelectMgr_EntityOwner::SetLocation(aLoc);
-  // we must not nullify the myPrsSh here, because unhilight method
-  // will be working with wrong entity in this case, the best is to
-  // set the update flag and then recompute myPrsSh on hilighting
-  if (!myPrsSh.IsNull())
-    myPrsSh->SetToUpdate();
-}
-
-void StdSelect_BRepOwner::ResetLocation()
-{
-  SelectMgr_EntityOwner::ResetLocation();
   // we must not nullify the myPrsSh here, because unhilight method
   // will be working with wrong entity in this case, the best is to
   // set the update flag and then recompute myPrsSh on hilighting

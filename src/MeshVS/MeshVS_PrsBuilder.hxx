@@ -26,11 +26,9 @@
 class MeshVS_DataSource;
 class MeshVS_Drawer;
 class MeshVS_Mesh;
-class SelectBasics_SensitiveEntity;
-class SelectBasics_EntityOwner;
+class Select3D_SensitiveEntity;
+class SelectMgr_EntityOwner;
 
-
-class MeshVS_PrsBuilder;
 DEFINE_STANDARD_HANDLE(MeshVS_PrsBuilder, Standard_Transient)
 
 //! This class is parent for all builders using in MeshVS_Mesh.
@@ -58,7 +56,7 @@ public:
   Standard_EXPORT virtual void CustomBuild (const Handle(Prs3d_Presentation)& Prs, const TColStd_PackedMapOfInteger& IDs, TColStd_PackedMapOfInteger& IDsToExclude, const Standard_Integer DisplayMode) const;
   
   //! This method is called to build sensitive of custom elements ( they have MeshVS_ET_0D type )
-  Standard_EXPORT virtual Handle(SelectBasics_SensitiveEntity) CustomSensitiveEntity (const Handle(SelectBasics_EntityOwner)& Owner, const Standard_Integer SelectMode) const;
+  Standard_EXPORT virtual Handle(Select3D_SensitiveEntity) CustomSensitiveEntity (const Handle(SelectMgr_EntityOwner)& Owner, const Standard_Integer SelectMode) const;
   
   //! Returns flags, assigned with builder during creation
   Standard_EXPORT Standard_Integer GetFlags() const;

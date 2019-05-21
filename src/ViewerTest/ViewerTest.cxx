@@ -5467,10 +5467,10 @@ static Standard_Integer VState (Draw_Interpretor& theDI,
     SelectMgr_SelectingVolumeManager aMgr = aSelector->GetManager();
     for (Standard_Integer aPickIter = 1; aPickIter <= aSelector->NbPicked(); ++aPickIter)
     {
-      const SelectMgr_SortCriterion&              aPickData = aSelector->PickedData (aPickIter);
-      const Handle(SelectBasics_SensitiveEntity)& anEntity = aSelector->PickedEntity (aPickIter);
-      Handle(SelectMgr_EntityOwner) anOwner    = Handle(SelectMgr_EntityOwner)::DownCast (anEntity->OwnerId());
-      Handle(AIS_InteractiveObject) anObj      = Handle(AIS_InteractiveObject)::DownCast (anOwner->Selectable());
+      const SelectMgr_SortCriterion&         aPickData = aSelector->PickedData (aPickIter);
+      const Handle(Select3D_SensitiveEntity)& anEntity = aSelector->PickedEntity (aPickIter);
+      const Handle(SelectMgr_EntityOwner)& anOwner = anEntity->OwnerId();
+      Handle(AIS_InteractiveObject) anObj = Handle(AIS_InteractiveObject)::DownCast (anOwner->Selectable());
 
       TCollection_AsciiString aName;
       GetMapOfAIS().Find1 (anObj, aName);

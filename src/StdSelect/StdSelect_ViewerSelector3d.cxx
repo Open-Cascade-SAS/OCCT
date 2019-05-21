@@ -16,7 +16,7 @@
 
 #include <StdSelect_ViewerSelector3d.hxx>
 #include <StdSelect.hxx>
-#include <SelectBasics_SensitiveEntity.hxx>
+#include <Select3D_SensitiveEntity.hxx>
 #include <Graphic3d_AspectLine3d.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Lin.hxx>
@@ -282,7 +282,7 @@ void StdSelect_ViewerSelector3d::computeSensitivePrs (const Handle(Graphic3d_Str
   TColStd_SequenceOfInteger aSeqBnds;
   for (NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>::Iterator aSelEntIter (theSel->Entities()); aSelEntIter.More(); aSelEntIter.Next())
   {
-    Handle(Select3D_SensitiveEntity) Ent = Handle(Select3D_SensitiveEntity)::DownCast(aSelEntIter.Value()->BaseSensitive());
+    const Handle(Select3D_SensitiveEntity)& Ent = aSelEntIter.Value()->BaseSensitive();
     const Standard_Boolean hasloc = theLoc.Form() != gp_Identity;
 
     //==============
@@ -759,14 +759,14 @@ namespace
         return;
       }
 
-      const Handle(SelectBasics_SensitiveEntity)& aPickedEntity = myMainSel->PickedEntity (thePicked);
+      const Handle(Select3D_SensitiveEntity)& aPickedEntity = myMainSel->PickedEntity (thePicked);
       Quantity_Color aColor (Quantity_NOC_BLACK);
       myMapEntityColors.Find (aPickedEntity, aColor);
       myImage->SetPixelColor (theCol, theRow, aColor);
     }
 
   protected:
-    NCollection_DataMap<Handle(SelectBasics_SensitiveEntity), Quantity_Color> myMapEntityColors;
+    NCollection_DataMap<Handle(Select3D_SensitiveEntity), Quantity_Color> myMapEntityColors;
   };
 
   //! Help class for filling pixel with normalized depth of ray.
@@ -969,8 +969,8 @@ namespace
       }
 
       Standard_Integer aSelectionMode = -1;
-      const Handle(SelectMgr_SelectableObject)&   aSelectable = myMainSel->Picked       (thePicked)->Selectable();
-      const Handle(SelectBasics_SensitiveEntity)& anEntity    = myMainSel->PickedEntity (thePicked);
+      const Handle(SelectMgr_SelectableObject)& aSelectable = myMainSel->Picked       (thePicked)->Selectable();
+      const Handle(Select3D_SensitiveEntity)&   anEntity    = myMainSel->PickedEntity (thePicked);
       for (SelectMgr_SequenceOfSelection::Iterator aSelIter (aSelectable->Selections()); aSelIter.More(); aSelIter.Next())
       {
         const Handle(SelectMgr_Selection)& aSelection = aSelIter.Value();

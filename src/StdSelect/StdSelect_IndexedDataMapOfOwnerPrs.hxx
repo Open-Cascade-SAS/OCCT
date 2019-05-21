@@ -17,12 +17,11 @@
 #ifndef StdSelect_IndexedDataMapOfOwnerPrs_HeaderFile
 #define StdSelect_IndexedDataMapOfOwnerPrs_HeaderFile
 
-#include <SelectBasics_EntityOwner.hxx>
+#include <SelectMgr_EntityOwner.hxx>
 #include <StdSelect_Prs.hxx>
 #include <TColStd_MapTransientHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 
-typedef NCollection_IndexedDataMap<Handle(SelectBasics_EntityOwner),Handle(StdSelect_Prs),TColStd_MapTransientHasher> StdSelect_IndexedDataMapOfOwnerPrs;
-
+typedef NCollection_IndexedDataMap<Handle(SelectMgr_EntityOwner), Handle(StdSelect_Prs), TColStd_MapTransientHasher> StdSelect_IndexedDataMapOfOwnerPrs;
 
 #endif

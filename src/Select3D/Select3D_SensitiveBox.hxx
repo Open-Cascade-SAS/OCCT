@@ -28,7 +28,7 @@ public:
 
   //! Constructs a sensitive box object defined by the
   //! owner theOwnerId, and the box theBox.
-  Standard_EXPORT Select3D_SensitiveBox (const Handle(SelectBasics_EntityOwner)& theOwnerId, const Bnd_Box& theBox);
+  Standard_EXPORT Select3D_SensitiveBox (const Handle(SelectMgr_EntityOwner)& theOwnerId, const Bnd_Box& theBox);
 
   //! Constructs a sensitive box object defined by the
   //! owner theOwnerId, and the coordinates theXmin, theYMin, theZMin, theXMax, theYMax, theZMax.
@@ -36,7 +36,7 @@ public:
   //! the front lower left hand corner of the box,
   //! and theXMax, theYMax and theZMax define the maximum
   //! point in the back upper right hand corner of the box.
-  Standard_EXPORT Select3D_SensitiveBox (const Handle(SelectBasics_EntityOwner)& theOwnerId,
+  Standard_EXPORT Select3D_SensitiveBox (const Handle(SelectMgr_EntityOwner)& theOwnerId,
                                          const Standard_Real theXMin,
                                          const Standard_Real theYMin,
                                          const Standard_Real theZMin,

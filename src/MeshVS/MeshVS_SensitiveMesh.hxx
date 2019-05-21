@@ -24,21 +24,28 @@
 #include <Select3D_SensitiveEntity.hxx>
 #include <Select3D_BndBox3d.hxx>
 
-class SelectBasics_EntityOwner;
 class Select3D_SensitiveEntity;
-
 
 //! This class provides custom mesh sensitive entity used in advanced mesh selection.
 class MeshVS_SensitiveMesh : public Select3D_SensitiveEntity
 {
 public:
   
-  Standard_EXPORT MeshVS_SensitiveMesh (const Handle(SelectBasics_EntityOwner)& theOwner,
+  Standard_EXPORT MeshVS_SensitiveMesh (const Handle(SelectMgr_EntityOwner)& theOwner,
                                         const Standard_Integer theMode = 0);
   
   Standard_EXPORT Standard_Integer GetMode() const;
   
   Standard_EXPORT virtual Handle(Select3D_SensitiveEntity) GetConnected() Standard_OVERRIDE;
+
+  //! Checks whether sensitive overlaps current selecting volume.
+  virtual Standard_Boolean Matches (SelectBasics_SelectingVolumeManager& theMgr,
+                                    SelectBasics_PickResult& thePickResult) Standard_OVERRIDE
+  {
+    (void )theMgr;
+    (void )thePickResult;
+    return Standard_False;
+  }
 
   //! Returns the amount of mesh nodes
   Standard_EXPORT virtual Standard_Integer NbSubElements() Standard_OVERRIDE;

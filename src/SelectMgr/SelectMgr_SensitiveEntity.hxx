@@ -27,7 +27,7 @@ class SelectMgr_SensitiveEntity : public Standard_Transient
 public:
 
   //! Creates new inactive for selection object with base entity theEntity
-  Standard_EXPORT SelectMgr_SensitiveEntity (const Handle(SelectBasics_SensitiveEntity)& theEntity);
+  Standard_EXPORT SelectMgr_SensitiveEntity (const Handle(Select3D_SensitiveEntity)& theEntity);
 
   ~SelectMgr_SensitiveEntity() {}
 
@@ -35,7 +35,7 @@ public:
   Standard_EXPORT void Clear();
 
   //! Returns related instance of SelectBasics class
-  const Handle(SelectBasics_SensitiveEntity)& BaseSensitive() const { return mySensitive; }
+  const Handle(Select3D_SensitiveEntity)& BaseSensitive() const { return mySensitive; }
 
   //! Returns true if this entity belongs to the active selection
   //! mode of parent object
@@ -51,8 +51,8 @@ public:
 
 private:
 
-  Handle(SelectBasics_SensitiveEntity) mySensitive;      //!< Related SelectBasics entity
-  mutable Standard_Boolean             myIsActiveForSelection;       //!< Selection activity status
+  Handle(Select3D_SensitiveEntity) mySensitive;      //!< Related SelectBasics entity
+  mutable Standard_Boolean         myIsActiveForSelection;       //!< Selection activity status
 };
 
 DEFINE_STANDARD_HANDLE(SelectMgr_SensitiveEntity, Standard_Transient)

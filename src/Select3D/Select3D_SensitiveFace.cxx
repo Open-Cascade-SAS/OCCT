@@ -25,7 +25,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitiveFace,Select3D_SensitiveEntity)
 // Function: Hide this constructor to the next version...
 // Purpose : simply avoid interfering with the version update
 //==================================================
-Select3D_SensitiveFace::Select3D_SensitiveFace (const Handle(SelectBasics_EntityOwner)& theOwnerId,
+Select3D_SensitiveFace::Select3D_SensitiveFace (const Handle(SelectMgr_EntityOwner)& theOwnerId,
                                                 const TColgp_Array1OfPnt& thePoints,
                                                 const Select3D_TypeOfSensitivity theType)
 : Select3D_SensitiveEntity (theOwnerId),
@@ -45,7 +45,7 @@ Select3D_SensitiveFace::Select3D_SensitiveFace (const Handle(SelectBasics_Entity
 // Function: Creation
 // Purpose :
 //==================================================
-Select3D_SensitiveFace::Select3D_SensitiveFace (const Handle(SelectBasics_EntityOwner)& theOwnerId,
+Select3D_SensitiveFace::Select3D_SensitiveFace (const Handle(SelectMgr_EntityOwner)& theOwnerId,
                                                 const Handle(TColgp_HArray1OfPnt)& thePoints,
                                                 const Select3D_TypeOfSensitivity theType)
 : Select3D_SensitiveEntity (theOwnerId),

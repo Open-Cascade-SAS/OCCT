@@ -25,7 +25,6 @@
 #include <Prs3d_Presentation.hxx>
 #include <PrsMgr_PresentationManager.hxx>
 #include <Select3D_SensitiveEntity.hxx>
-#include <SelectBasics_EntityOwner.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <SelectMgr_IndexedMapOfOwner.hxx>
 #include <SelectMgr_Selection.hxx>
@@ -270,12 +269,11 @@ void SelectMgr_SelectableObject::UpdateTransformations (const Handle(SelectMgr_S
   const TopLoc_Location aSelfLocation (Transformation());
   for (NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>::Iterator aSelEntIter (theSel->Entities()); aSelEntIter.More(); aSelEntIter.Next())
   {
-    if (Handle(Select3D_SensitiveEntity) aSensEntity = Handle(Select3D_SensitiveEntity)::DownCast (aSelEntIter.Value()->BaseSensitive()))
+    if (const Handle(Select3D_SensitiveEntity)& aSensEntity = aSelEntIter.Value()->BaseSensitive())
     {
-      const Handle(SelectBasics_EntityOwner)& aEOwner = aSensEntity->OwnerId();
-      if (Handle(SelectMgr_EntityOwner) aMgrEO = Handle(SelectMgr_EntityOwner)::DownCast (aEOwner))
+      if (const Handle(SelectMgr_EntityOwner)& aEOwner = aSensEntity->OwnerId())
       {
-        aMgrEO->SetLocation (aSelfLocation);
+        aEOwner->SetLocation (aSelfLocation);
       }
     }
   }
@@ -405,9 +403,9 @@ void SelectMgr_SelectableObject::SetZLayer (const Graphic3d_ZLayerId theLayerId)
     const Handle(SelectMgr_Selection)& aSel = aSelIter.Value();
     for (NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>::Iterator aSelEntIter (aSel->Entities()); aSelEntIter.More(); aSelEntIter.Next())
     {
-      if (Handle(Select3D_SensitiveEntity) aEntity = Handle(Select3D_SensitiveEntity)::DownCast (aSelEntIter.Value()->BaseSensitive()))
+      if (const Handle(Select3D_SensitiveEntity)& aEntity = aSelEntIter.Value()->BaseSensitive())
       {
-        if (Handle(SelectMgr_EntityOwner) aOwner = Handle(SelectMgr_EntityOwner)::DownCast (aEntity->OwnerId()))
+        if (const Handle(SelectMgr_EntityOwner)& aOwner = aEntity->OwnerId())
         {
           aOwner->SetZLayer (theLayerId);
         }
@@ -514,7 +512,7 @@ Bnd_Box SelectMgr_SelectableObject::BndBoxOfSelected (const Handle(SelectMgr_Ind
 
     for (NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>::Iterator aSelEntIter (aSel->Entities()); aSelEntIter.More(); aSelEntIter.Next())
     {
-      const Handle(SelectMgr_EntityOwner) anOwner = Handle(SelectMgr_EntityOwner)::DownCast (aSelEntIter.Value()->BaseSensitive()->OwnerId());
+      const Handle(SelectMgr_EntityOwner)& anOwner = aSelEntIter.Value()->BaseSensitive()->OwnerId();
       if (theOwners->Contains (anOwner))
       {
         Select3D_BndBox3d aBox = aSelEntIter.Value()->BaseSensitive()->BoundingBox();
@@ -537,7 +535,7 @@ Handle(SelectMgr_EntityOwner) SelectMgr_SelectableObject::GlobalSelOwner() const
   if (!aGlobalSel.IsNull()
    && !aGlobalSel->IsEmpty())
   {
-    return Handle(SelectMgr_EntityOwner)::DownCast (aGlobalSel->Entities().First()->BaseSensitive()->OwnerId());
+    return aGlobalSel->Entities().First()->BaseSensitive()->OwnerId();
   }
   return THE_NULL_ENTITYOWNER;
 }

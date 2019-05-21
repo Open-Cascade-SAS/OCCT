@@ -24,7 +24,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitiveGroup,Select3D_SensitiveSet)
 //function : Creation
 //purpose  :
 //=======================================================================
-Select3D_SensitiveGroup::Select3D_SensitiveGroup (const Handle(SelectBasics_EntityOwner)& theOwnerId,
+Select3D_SensitiveGroup::Select3D_SensitiveGroup (const Handle(SelectMgr_EntityOwner)& theOwnerId,
                                                   const Standard_Boolean theIsMustMatchAll)
 : Select3D_SensitiveSet (theOwnerId),
   myMustMatchAll (theIsMustMatchAll),
@@ -35,7 +35,7 @@ Select3D_SensitiveGroup::Select3D_SensitiveGroup (const Handle(SelectBasics_Enti
 //function : Creation
 //purpose  :
 //=======================================================================
-Select3D_SensitiveGroup::Select3D_SensitiveGroup (const Handle(SelectBasics_EntityOwner)& theOwnerId,
+Select3D_SensitiveGroup::Select3D_SensitiveGroup (const Handle(SelectMgr_EntityOwner)& theOwnerId,
                                                   Select3D_EntitySequence& theEntities,
                                                   const Standard_Boolean theIsMustMatchAll)
 : Select3D_SensitiveSet (theOwnerId),
@@ -236,7 +236,7 @@ Standard_Boolean Select3D_SensitiveGroup::Matches (SelectBasics_SelectingVolumeM
 //function : Set
 //purpose  :
 //=======================================================================
-void Select3D_SensitiveGroup::Set (const Handle(SelectBasics_EntityOwner)& theOwnerId)
+void Select3D_SensitiveGroup::Set (const Handle(SelectMgr_EntityOwner)& theOwnerId)
 { 
   Select3D_SensitiveEntity::Set (theOwnerId);
   for (Select3D_IndexedMapOfEntity::Iterator anEntityIter (myEntities); anEntityIter.More(); anEntityIter.Next())

@@ -28,7 +28,6 @@
 #include <Select3D_SensitiveEntity.hxx>
 #include <Select3D_BndBox3d.hxx>
 
-class SelectBasics_EntityOwner;
 class Select3D_SensitiveEntity;
 class TopLoc_Location;
 class Bnd_Box2d;
@@ -46,7 +45,7 @@ class MeshVS_SensitivePolyhedron : public Select3D_SensitiveEntity
 {
 public:
 
-  Standard_EXPORT MeshVS_SensitivePolyhedron (const Handle(SelectBasics_EntityOwner)& theOwner,
+  Standard_EXPORT MeshVS_SensitivePolyhedron (const Handle(SelectMgr_EntityOwner)& theOwner,
                                               const TColgp_Array1OfPnt& theNodes,
                                               const Handle(MeshVS_HArray1OfSequenceOfInteger)& theTopo);
 

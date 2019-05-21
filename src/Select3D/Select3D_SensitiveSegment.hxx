@@ -29,7 +29,7 @@ public:
 
   //! Constructs the sensitive segment object defined by
   //! the owner theOwnerId, the points theFirstPnt, theLastPnt
-  Standard_EXPORT Select3D_SensitiveSegment (const Handle(SelectBasics_EntityOwner)& theOwnerId,
+  Standard_EXPORT Select3D_SensitiveSegment (const Handle(SelectMgr_EntityOwner)& theOwnerId,
                                              const gp_Pnt& theFirstPnt,
                                              const gp_Pnt& theLastPnt);
 

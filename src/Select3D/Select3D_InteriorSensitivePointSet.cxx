@@ -86,7 +86,7 @@ private:
 // purpose  : Splits the given point set thePoints onto planar convex
 //            polygons
 // =======================================================================
-Select3D_InteriorSensitivePointSet::Select3D_InteriorSensitivePointSet (const Handle(SelectBasics_EntityOwner)& theOwnerId,
+Select3D_InteriorSensitivePointSet::Select3D_InteriorSensitivePointSet (const Handle(SelectMgr_EntityOwner)& theOwnerId,
                                                                         const TColgp_Array1OfPnt& thePoints)
   : Select3D_SensitiveSet (theOwnerId)
 {

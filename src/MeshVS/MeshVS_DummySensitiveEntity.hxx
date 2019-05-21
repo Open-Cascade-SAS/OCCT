@@ -20,21 +20,18 @@
 #include <Standard_Type.hxx>
 
 #include <Select3D_BndBox3d.hxx>
-#include <SelectBasics_SensitiveEntity.hxx>
+#include <Select3D_SensitiveEntity.hxx>
 #include <SelectBasics_SelectingVolumeManager.hxx>
-
-class SelectBasics_EntityOwner;
-
 
 //! This class allows to create owners to all elements or nodes,
 //! both hidden and shown, but these owners user cannot select "by hands"
 //! in viewer. They means for internal application tasks, for example, receiving
 //! all owners, both for hidden and shown entities.
-class MeshVS_DummySensitiveEntity : public SelectBasics_SensitiveEntity
+class MeshVS_DummySensitiveEntity : public Select3D_SensitiveEntity
 {
 public:
 
-  Standard_EXPORT MeshVS_DummySensitiveEntity (const Handle(SelectBasics_EntityOwner)& theOwnerId);
+  Standard_EXPORT MeshVS_DummySensitiveEntity (const Handle(SelectMgr_EntityOwner)& theOwnerId);
 
   Standard_EXPORT virtual Standard_Boolean Matches (SelectBasics_SelectingVolumeManager& theMgr,
                                                     SelectBasics_PickResult& thePickResult) Standard_OVERRIDE;
@@ -51,9 +48,11 @@ public:
 
   Standard_EXPORT virtual gp_GTrsf InvInitLocation() const Standard_OVERRIDE;
 
-  DEFINE_STANDARD_RTTIEXT(MeshVS_DummySensitiveEntity,SelectBasics_SensitiveEntity)
+  virtual gp_Pnt CenterOfGeometry() const Standard_OVERRIDE { return gp_Pnt(); }
+
+  DEFINE_STANDARD_RTTIEXT(MeshVS_DummySensitiveEntity, Select3D_SensitiveEntity)
 };
 
-DEFINE_STANDARD_HANDLE(MeshVS_DummySensitiveEntity, SelectBasics_SensitiveEntity)
+DEFINE_STANDARD_HANDLE(MeshVS_DummySensitiveEntity, Select3D_SensitiveEntity)
 
 #endif // _MeshVS_DummySensitiveEntity_HeaderFile

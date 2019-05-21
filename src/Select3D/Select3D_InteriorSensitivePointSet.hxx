@@ -25,7 +25,7 @@
 #include <Select3D_SensitiveSet.hxx>
 
 class gp_Pnt;
-class SelectBasics_EntityOwner;
+class SelectMgr_EntityOwner;
 
 typedef NCollection_Vector<Handle(Select3D_SensitivePoly)> Select3D_VectorOfHPoly;
 
@@ -37,7 +37,7 @@ class Select3D_InteriorSensitivePointSet : public Select3D_SensitiveSet
 public:
 
   //! Splits the given point set thePoints onto planar convex polygons
-  Standard_EXPORT Select3D_InteriorSensitivePointSet (const Handle(SelectBasics_EntityOwner)& theOwnerId,
+  Standard_EXPORT Select3D_InteriorSensitivePointSet (const Handle(SelectMgr_EntityOwner)& theOwnerId,
                                                       const TColgp_Array1OfPnt& thePoints);
 
   //! Initializes the given array theHArrayOfPnt by 3d coordinates of vertices of the

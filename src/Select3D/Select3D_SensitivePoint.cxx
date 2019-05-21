@@ -22,7 +22,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitivePoint,Select3D_SensitiveEntity)
 // Function: Creation
 // Purpose :
 //==================================================
-Select3D_SensitivePoint::Select3D_SensitivePoint (const Handle(SelectBasics_EntityOwner)& theOwner,
+Select3D_SensitivePoint::Select3D_SensitivePoint (const Handle(SelectMgr_EntityOwner)& theOwner,
                                                   const gp_Pnt& thePoint)
 : Select3D_SensitiveEntity (theOwner)
 {

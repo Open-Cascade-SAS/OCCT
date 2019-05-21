@@ -36,18 +36,18 @@ public:
   //! Constructs a sensitive curve object defined by the
   //! owner theOwnerId, the curve theCurve, and the
   //! maximum number of points on the curve: theNbPnts.
-  Standard_EXPORT Select3D_SensitiveCurve (const Handle(SelectBasics_EntityOwner)& theOwnerId,
+  Standard_EXPORT Select3D_SensitiveCurve (const Handle(SelectMgr_EntityOwner)& theOwnerId,
                                            const Handle(Geom_Curve)& theCurve,
                                            const Standard_Integer theNbPnts = 17);
 
   //! Constructs a sensitive curve object defined by the
   //! owner theOwnerId and the set of points ThePoints.
-  Standard_EXPORT Select3D_SensitiveCurve (const Handle(SelectBasics_EntityOwner)& theOwnerId,
+  Standard_EXPORT Select3D_SensitiveCurve (const Handle(SelectMgr_EntityOwner)& theOwnerId,
                                            const Handle(TColgp_HArray1OfPnt)& thePoints);
 
   //! Creation of Sensitive Curve from Points.
   //!          Warning : This Method should disappear in the next version...
-  Standard_EXPORT Select3D_SensitiveCurve (const Handle(SelectBasics_EntityOwner)& theOwnerId,
+  Standard_EXPORT Select3D_SensitiveCurve (const Handle(SelectMgr_EntityOwner)& theOwnerId,
                                            const TColgp_Array1OfPnt& thePoints);
 
   //! Returns the copy of this

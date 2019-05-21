@@ -34,10 +34,8 @@
 #include <Prs3d_Projector.hxx>
 #include <Quantity_Color.hxx>
 #include <Select3D_SensitiveSegment.hxx>
-#include <SelectBasics_EntityOwner.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <SelectMgr_Selection.hxx>
-#include <Standard_Type.hxx>
 #include <StdPrs_Curve.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TopoDS.hxx>
@@ -199,8 +197,7 @@ void AIS_Axis::Compute(const Handle(Prs3d_Projector)& aProjector, const Handle(G
 void AIS_Axis::ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
 				const Standard_Integer)
 {
-  Handle(SelectMgr_EntityOwner) eown = new SelectMgr_EntityOwner(this);
-  eown -> SelectBasics_EntityOwner::Set(3);
+  Handle(SelectMgr_EntityOwner) eown = new SelectMgr_EntityOwner (this, 3);
   Handle(Select3D_SensitiveSegment) seg = new Select3D_SensitiveSegment(eown,
 									myPfirst,
 									myPlast);

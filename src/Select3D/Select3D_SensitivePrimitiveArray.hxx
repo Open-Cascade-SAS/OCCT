@@ -33,7 +33,7 @@ class Select3D_SensitivePrimitiveArray : public Select3D_SensitiveSet
 public:
 
   //! Constructs an empty sensitive object.
-  Standard_EXPORT Select3D_SensitivePrimitiveArray (const Handle(SelectBasics_EntityOwner)& theOwnerId);
+  Standard_EXPORT Select3D_SensitivePrimitiveArray (const Handle(SelectMgr_EntityOwner)& theOwnerId);
 
   //! Return patch size limit (1 by default).
   Standard_Integer PatchSizeMax() const { return myPatchSizeMax; }
@@ -251,7 +251,7 @@ public:
   }
 
   //! Sets the owner for all entities in group
-  Standard_EXPORT virtual void Set (const Handle(SelectBasics_EntityOwner)& theOwnerId) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Set (const Handle(SelectMgr_EntityOwner)& theOwnerId) Standard_OVERRIDE;
 
   //! Builds BVH tree for sensitive set.
   Standard_EXPORT virtual void BVH() Standard_OVERRIDE;

@@ -14,9 +14,7 @@
 // commercial license or contractual agreement.
 
 #include <MeshVS_SensitiveFace.hxx>
-#include <SelectBasics_EntityOwner.hxx>
 #include <TColgp_Array1OfPnt.hxx>
-
 
 IMPLEMENT_STANDARD_RTTIEXT(MeshVS_SensitiveFace,Select3D_SensitiveFace)
 
@@ -24,9 +22,9 @@ IMPLEMENT_STANDARD_RTTIEXT(MeshVS_SensitiveFace,Select3D_SensitiveFace)
 // name    : MeshVS_SensitiveFace::MeshVS_SensitiveFace
 // Purpose :
 //=======================================================================
-MeshVS_SensitiveFace::MeshVS_SensitiveFace (const Handle(SelectBasics_EntityOwner)& theOwnerId,
-                                            const TColgp_Array1OfPnt&               thePnts,
-                                            const Select3D_TypeOfSensitivity        theSensitivity)
+MeshVS_SensitiveFace::MeshVS_SensitiveFace (const Handle(SelectMgr_EntityOwner)& theOwnerId,
+                                            const TColgp_Array1OfPnt& thePnts,
+                                            const Select3D_TypeOfSensitivity theSensitivity)
 : Select3D_SensitiveFace (theOwnerId, thePnts, theSensitivity)
 {
   gp_XYZ aCenter (0.0, 0.0, 0.0);

@@ -155,7 +155,7 @@ private:
 // function : Select3D_SensitivePrimitiveArray
 // purpose  :
 // =======================================================================
-Select3D_SensitivePrimitiveArray::Select3D_SensitivePrimitiveArray (const Handle(SelectBasics_EntityOwner)& theOwnerId)
+Select3D_SensitivePrimitiveArray::Select3D_SensitivePrimitiveArray (const Handle(SelectMgr_EntityOwner)& theOwnerId)
 : Select3D_SensitiveSet (theOwnerId),
   myPosData (NULL),
   myPosStride (Standard_Size(-1)),
@@ -610,7 +610,7 @@ Handle(Select3D_SensitiveEntity) Select3D_SensitivePrimitiveArray::GetConnected(
 //function : Set
 //purpose  :
 //=======================================================================
-void Select3D_SensitivePrimitiveArray::Set (const Handle(SelectBasics_EntityOwner)& theOwnerId)
+void Select3D_SensitivePrimitiveArray::Set (const Handle(SelectMgr_EntityOwner)& theOwnerId)
 {
   base_type::Set (theOwnerId);
   if (!myGroups.IsNull())

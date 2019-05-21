@@ -19,7 +19,7 @@
 
 #include <Graphic3d_ZLayerId.hxx>
 #include <Precision.hxx>
-#include <SelectBasics_SensitiveEntity.hxx>
+#include <Select3D_SensitiveEntity.hxx>
 
 //! This class provides data and criterion for sorting candidate
 //! entities in the process of interactive selection by mouse click
@@ -27,7 +27,7 @@ class SelectMgr_SortCriterion
 {
 public:
 
-  Handle(SelectBasics_SensitiveEntity) Entity; //!< detected entity
+  Handle(Select3D_SensitiveEntity) Entity; //!< detected entity
   gp_Pnt             Point;           //!< 3D point
   Standard_Real      Depth;           //!< distance from the view plane to the entity
   Standard_Real      MinDist;         //!< distance from the clicked point to the entity on the view plane

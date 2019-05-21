@@ -28,7 +28,7 @@ public:
 
   //! Constructs a sensitive point object defined by the
   //! owner OwnerId and the point Point.
-  Standard_EXPORT Select3D_SensitivePoint (const Handle(SelectBasics_EntityOwner)& theOwnerId, const gp_Pnt& thePoint);
+  Standard_EXPORT Select3D_SensitivePoint (const Handle(SelectMgr_EntityOwner)& theOwnerId, const gp_Pnt& thePoint);
 
   //! Returns the amount of sub-entities in sensitive
   Standard_EXPORT virtual Standard_Integer NbSubElements() Standard_OVERRIDE;

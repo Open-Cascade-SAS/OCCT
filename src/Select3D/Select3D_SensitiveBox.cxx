@@ -22,7 +22,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitiveBox,Select3D_SensitiveEntity)
 // Function: Select3D_SensitiveBox
 // Purpose :
 //==================================================
-Select3D_SensitiveBox::Select3D_SensitiveBox (const Handle(SelectBasics_EntityOwner)& theOwnerId,
+Select3D_SensitiveBox::Select3D_SensitiveBox (const Handle(SelectMgr_EntityOwner)& theOwnerId,
                                               const Bnd_Box& theBox)
 : Select3D_SensitiveEntity (theOwnerId)
 {
@@ -40,7 +40,7 @@ Select3D_SensitiveBox::Select3D_SensitiveBox (const Handle(SelectBasics_EntityOw
 // Purpose :
 //==================================================
 
-Select3D_SensitiveBox::Select3D_SensitiveBox (const Handle(SelectBasics_EntityOwner)& theOwnerId,
+Select3D_SensitiveBox::Select3D_SensitiveBox (const Handle(SelectMgr_EntityOwner)& theOwnerId,
                                               const Standard_Real theXMin,
                                               const Standard_Real theYMin,
                                               const Standard_Real theZMin,

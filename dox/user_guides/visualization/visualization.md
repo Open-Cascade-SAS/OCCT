@@ -226,8 +226,6 @@ Selection is implemented as a combination of various algorithms divided among se
 #### SelectBasics
 
 *SelectBasics* package contains basic classes and interfaces for selection. The most notable are:
-  - *SelectBasics_SensitiveEntity* -- the base definition of a sensitive entity;
-  - *SelectBasics_EntityOwner* -- the base definition of the an entity owner -- the link between the sensitive entity and the object to be selected;
   - *SelectBasics_PickResult* -- the structure for storing quantitative results of detection procedure, for example, depth and distance to the center of geometry;
   - *SelectBasics_SelectingVolumeManager* -- the interface for interaction with the current selection frustum.
 
@@ -247,8 +245,10 @@ Each custom sensitive entity must inherit at least *SelectBasics_SensitiveEntity
   - triangulation;
   - wire.
 
-Each basic sensitive entity inherits *Select3D_SensitiveEntity*, which is a child class of *SelectBasics_SensitiveEntity*.
+Each basic sensitive entity inherits *Select3D_SensitiveEntity*.
 The package also contains two auxiliary classes, *Select3D_SensitivePoly* and *Select3D_SensitiveSet*.
+
+*Select3D_SensitiveEntity* -- the base definition of a sensitive entity.
 
 *Select3D_SensitiveSet* -- a base class for all complex sensitive entities that require the third level BVH usage. It implements traverse of the tree and defines an interface for the methods that check sub-entities.
 

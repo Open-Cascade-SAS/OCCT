@@ -16,22 +16,15 @@
 #ifndef _MeshVS_SensitiveSegment_HeaderFile
 #define _MeshVS_SensitiveSegment_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
 #include <gp_Pnt.hxx>
 #include <Select3D_SensitiveSegment.hxx>
-
-class SelectBasics_EntityOwner;
-class gp_Pnt;
-
 
 //! This class provides custom sensitive face, which will be selected if it center is in rectangle.
 class MeshVS_SensitiveSegment : public Select3D_SensitiveSegment
 {
 public:
 
-  Standard_EXPORT MeshVS_SensitiveSegment (const Handle(SelectBasics_EntityOwner)& theOwner,
+  Standard_EXPORT MeshVS_SensitiveSegment (const Handle(SelectMgr_EntityOwner)& theOwner,
                                            const gp_Pnt& theFirstPnt,
                                            const gp_Pnt& theLastPnt);
 

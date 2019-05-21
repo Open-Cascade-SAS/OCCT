@@ -19,7 +19,6 @@
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_HPackedMapOfInteger.hxx>
 #include <Select3D_SensitiveEntity.hxx>
-#include <SelectBasics_EntityOwner.hxx>
 #include <TopLoc_Location.hxx>
 #include <MeshVS_DataSource.hxx>
 #include <MeshVS_MeshOwner.hxx>
@@ -32,7 +31,7 @@ IMPLEMENT_STANDARD_RTTIEXT(MeshVS_SensitiveMesh,Select3D_SensitiveEntity)
 // name    : MeshVS_SensitiveMesh::MeshVS_SensitiveMesh
 // Purpose :
 //=======================================================================
-MeshVS_SensitiveMesh::MeshVS_SensitiveMesh (const Handle(SelectBasics_EntityOwner)& theOwnerId,
+MeshVS_SensitiveMesh::MeshVS_SensitiveMesh (const Handle(SelectMgr_EntityOwner)& theOwnerId,
                                             const Standard_Integer theMode)
 : Select3D_SensitiveEntity (theOwnerId)
 {

@@ -53,7 +53,7 @@ namespace
 //function : Select3D_SensitiveTriangulation
 //purpose  :
 //=======================================================================
-Select3D_SensitiveTriangulation::Select3D_SensitiveTriangulation (const Handle(SelectBasics_EntityOwner)& theOwnerId,
+Select3D_SensitiveTriangulation::Select3D_SensitiveTriangulation (const Handle(SelectMgr_EntityOwner)& theOwnerId,
                                                                   const Handle(Poly_Triangulation)& theTrg,
                                                                   const TopLoc_Location& theInitLoc,
                                                                   const Standard_Boolean theIsInterior)
@@ -140,7 +140,7 @@ Select3D_SensitiveTriangulation::Select3D_SensitiveTriangulation (const Handle(S
 //function : Select3D_SensitiveTriangulation
 //purpose  :
 //=======================================================================
-Select3D_SensitiveTriangulation::Select3D_SensitiveTriangulation (const Handle(SelectBasics_EntityOwner)& theOwnerId,
+Select3D_SensitiveTriangulation::Select3D_SensitiveTriangulation (const Handle(SelectMgr_EntityOwner)& theOwnerId,
                                                                   const Handle(Poly_Triangulation)& theTrg,
                                                                   const TopLoc_Location& theInitLoc,
                                                                   const Handle(TColStd_HArray1OfInteger)& theFreeEdges,

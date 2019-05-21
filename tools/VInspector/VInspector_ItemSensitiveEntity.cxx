@@ -17,7 +17,7 @@
 #include <inspector/VInspector_ItemSensitiveEntity.hxx>
 
 #include <AIS_ListOfInteractive.hxx>
-#include <SelectBasics_SensitiveEntity.hxx>
+#include <Select3D_SensitiveEntity.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <SelectMgr_Selection.hxx>
 #include <SelectMgr_SensitiveEntity.hxx>
@@ -51,7 +51,7 @@ Handle(SelectMgr_SensitiveEntity) VInspector_ItemSensitiveEntity::GetSensitiveEn
 QVariant VInspector_ItemSensitiveEntity::initValue (int theItemRole) const
 {
   Handle(SelectMgr_SensitiveEntity) aBase = GetSensitiveEntity();
-  Handle(SelectBasics_EntityOwner) anOwner = aBase->BaseSensitive()->OwnerId();
+  Handle(SelectMgr_EntityOwner) anOwner = aBase->BaseSensitive()->OwnerId();
 
   switch (theItemRole)
   {
@@ -183,12 +183,12 @@ void VInspector_ItemSensitiveEntity::initItem() const
 // function : getEntityOwner
 // purpose :
 // =======================================================================
-Handle(SelectBasics_EntityOwner) VInspector_ItemSensitiveEntity::getEntityOwner() const
+Handle(SelectMgr_EntityOwner) VInspector_ItemSensitiveEntity::getEntityOwner() const
 {
   initItem();
 
-  Handle(SelectBasics_EntityOwner) anOwner;
-  const Handle(SelectBasics_SensitiveEntity)& aBase = myEntity->BaseSensitive();
+  Handle(SelectMgr_EntityOwner) anOwner;
+  const Handle(Select3D_SensitiveEntity)& aBase = myEntity->BaseSensitive();
   if (aBase.IsNull())
     return anOwner;
   return aBase->OwnerId();

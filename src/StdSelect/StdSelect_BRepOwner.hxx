@@ -111,8 +111,6 @@ public:
   Standard_EXPORT virtual void Clear (const Handle(PrsMgr_PresentationManager)& aPM, const Standard_Integer aMode = 0) Standard_OVERRIDE;
   
   Standard_EXPORT virtual void SetLocation (const TopLoc_Location& aLoc) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void ResetLocation() Standard_OVERRIDE;
 
   //! Implements immediate application of location transformation of parent object to dynamic highlight structure
   Standard_EXPORT virtual void UpdateHighlightTrsf (const Handle(V3d_Viewer)& theViewer,

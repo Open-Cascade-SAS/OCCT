@@ -49,7 +49,7 @@
 #include <Select3D_SensitiveGroup.hxx>
 #include <Select3D_SensitivePoint.hxx>
 #include <Select3D_SensitiveTriangle.hxx>
-#include <SelectBasics_SensitiveEntity.hxx>
+#include <Select3D_SensitiveEntity.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <SelectMgr_Selection.hxx>
 #include <SelectMgr_SequenceOfOwner.hxx>
@@ -542,7 +542,7 @@ void MeshVS_Mesh::ComputeSelection (const Handle(SelectMgr_Selection)& theSelect
               }
               else //if ( aType == MeshVS_ET_0D )   // Custom : not only 0D-elements !!!
               {
-                Handle(SelectBasics_SensitiveEntity) anEnt = myHilighter->CustomSensitiveEntity (anOwner, aKey);
+                Handle(Select3D_SensitiveEntity) anEnt = myHilighter->CustomSensitiveEntity (anOwner, aKey);
                 if (!anEnt.IsNull())
                 {
                   theSelection->Add (anEnt);
@@ -635,7 +635,7 @@ void MeshVS_Mesh::ComputeSelection (const Handle(SelectMgr_Selection)& theSelect
               }
               else //if ( aType == MeshVS_ET_0D )   // Custom : not only 0D-elements !!!
               {
-                Handle(SelectBasics_SensitiveEntity) anEnt = myHilighter->CustomSensitiveEntity (anOwner, aKey);
+                Handle(Select3D_SensitiveEntity) anEnt = myHilighter->CustomSensitiveEntity (anOwner, aKey);
                 if (!anEnt.IsNull())
                 {
                   theSelection->Add (anEnt);

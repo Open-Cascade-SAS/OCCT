@@ -21,8 +21,7 @@
 #include <gp_Pnt.hxx>
 #include <OSD_Environment.hxx>
 #include <Precision.hxx>
-#include <SelectBasics_EntityOwner.hxx>
-#include <SelectBasics_SensitiveEntity.hxx>
+#include <Select3D_SensitiveEntity.hxx>
 #include <SelectBasics_PickResult.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <SelectMgr_SortCriterion.hxx>
@@ -68,7 +67,7 @@ namespace {
 //=======================================================================
 void SelectMgr_ViewerSelector::updatePoint3d (SelectMgr_SortCriterion& theCriterion,
                                               const SelectBasics_PickResult& thePickResult,
-                                              const Handle(SelectBasics_SensitiveEntity)& theEntity,
+                                              const Handle(Select3D_SensitiveEntity)& theEntity,
                                               const gp_GTrsf& theInversedTrsf,
                                               const SelectMgr_SelectingVolumeManager& theMgr) const
 {
@@ -184,7 +183,7 @@ void SelectMgr_ViewerSelector::Clear()
 // function: isToScaleFrustum
 // purpose : Checks if the entity given requires to scale current selecting frustum
 //=======================================================================
-Standard_Boolean SelectMgr_ViewerSelector::isToScaleFrustum (const Handle(SelectBasics_SensitiveEntity)& theEntity)
+Standard_Boolean SelectMgr_ViewerSelector::isToScaleFrustum (const Handle(Select3D_SensitiveEntity)& theEntity)
 {
   return mySelectingVolumeMgr.GetActiveSelectionType() == SelectMgr_SelectingVolumeManager::Point
     && sensitivity (theEntity) < myTolerances.Tolerance();
@@ -195,7 +194,7 @@ Standard_Boolean SelectMgr_ViewerSelector::isToScaleFrustum (const Handle(Select
 // purpose : In case if custom tolerance is set, this method will return sum of entity
 //           sensitivity and custom tolerance.
 //=======================================================================
-Standard_Integer SelectMgr_ViewerSelector::sensitivity (const Handle(SelectBasics_SensitiveEntity)& theEntity) const
+Standard_Integer SelectMgr_ViewerSelector::sensitivity (const Handle(Select3D_SensitiveEntity)& theEntity) const
 {
   return myTolerances.IsCustomTolSet() ?
     theEntity->SensitivityFactor() + myTolerances.CustomTolerance() : theEntity->SensitivityFactor();
@@ -206,11 +205,11 @@ Standard_Integer SelectMgr_ViewerSelector::sensitivity (const Handle(SelectBasic
 // purpose : Internal function that checks if a particular sensitive
 //           entity theEntity overlaps current selecting volume precisely
 //=======================================================================
-void SelectMgr_ViewerSelector::checkOverlap (const Handle(SelectBasics_SensitiveEntity)& theEntity,
+void SelectMgr_ViewerSelector::checkOverlap (const Handle(Select3D_SensitiveEntity)& theEntity,
                                              const gp_GTrsf& theInversedTrsf,
                                              SelectMgr_SelectingVolumeManager& theMgr)
 {
-  Handle(SelectMgr_EntityOwner) anOwner (Handle(SelectMgr_EntityOwner)::DownCast (theEntity->OwnerId()));
+  const Handle(SelectMgr_EntityOwner)& anOwner = theEntity->OwnerId();
   Handle(SelectMgr_SelectableObject) aSelectable;
   Standard_Boolean toRestoresViewClipEnabled = Standard_False;
   if (!anOwner.IsNull())
@@ -316,7 +315,7 @@ void SelectMgr_ViewerSelector::checkOverlap (const Handle(SelectBasics_Sensitive
 //           needs to be scaled and transformed for the entity and performs
 //           necessary calculations
 //=======================================================================
-void SelectMgr_ViewerSelector::computeFrustum (const Handle(SelectBasics_SensitiveEntity)& theEnt,
+void SelectMgr_ViewerSelector::computeFrustum (const Handle(Select3D_SensitiveEntity)& theEnt,
                                                const SelectMgr_SelectingVolumeManager&     theMgr,
                                                const gp_GTrsf&                             theInvTrsf,
                                                SelectMgr_FrustumCache&                     theCachedMgrs,
@@ -451,7 +450,7 @@ void SelectMgr_ViewerSelector::traverseObject (const Handle(SelectMgr_Selectable
         const Handle(SelectMgr_SensitiveEntity)& aSensitive = anEntitySet->GetSensitiveById (anIdx);
         if (aSensitive->IsActiveForSelection())
         {
-          const Handle(SelectBasics_SensitiveEntity)& anEnt = aSensitive->BaseSensitive();
+          const Handle(Select3D_SensitiveEntity)& anEnt = aSensitive->BaseSensitive();
           SelectMgr_SelectingVolumeManager aTmpMgr = aMgr;
           computeFrustum (anEnt, theMgr, aInversedTrsf, aScaledTrnsfFrustums, aTmpMgr);
           checkOverlap (anEnt, aInversedTrsf, aTmpMgr);
@@ -478,7 +477,7 @@ void SelectMgr_ViewerSelector::traverseObject (const Handle(SelectMgr_Selectable
   for (Standard_Integer aStoredIter = mystored.Extent(); aStoredIter >= aFirstStored; --aStoredIter)
   {
     const SelectMgr_SortCriterion& aCriterion = mystored.FindFromIndex (aStoredIter);
-    const Handle(SelectBasics_EntityOwner)& anOwner = aCriterion.Entity->OwnerId();
+    const Handle(SelectMgr_EntityOwner)& anOwner = aCriterion.Entity->OwnerId();
     Standard_Integer aNbOwnerEntities = 0;
     for (SelectMgr_IndexedMapOfHSensitive::Iterator aSensIter (anEntitySet->Sensitives()); aSensIter.More(); aSensIter.Next())
     {
@@ -655,13 +654,11 @@ void SelectMgr_ViewerSelector::ClearPicked()
 // Function: Picked
 // Purpose :
 //==================================================
-Handle(SelectMgr_EntityOwner) SelectMgr_ViewerSelector
-::Picked() const
+Handle(SelectMgr_EntityOwner) SelectMgr_ViewerSelector::Picked() const
 {
-  Standard_Integer RankInMap = myIndexes->Value (myCurRank);
-  const Handle(SelectBasics_EntityOwner)& toto = mystored.FindKey(RankInMap);
-  Handle(SelectMgr_EntityOwner) Ownr = Handle(SelectMgr_EntityOwner)::DownCast (toto);
-  return Ownr;
+  const Standard_Integer aRankInMap = myIndexes->Value (myCurRank);
+  const Handle(SelectMgr_EntityOwner)& anOwner = mystored.FindKey (aRankInMap);
+  return anOwner;
 }
 
 //=======================================================================
@@ -670,16 +667,14 @@ Handle(SelectMgr_EntityOwner) SelectMgr_ViewerSelector
 //=======================================================================
 Handle(SelectMgr_EntityOwner) SelectMgr_ViewerSelector::Picked (const Standard_Integer theRank) const
 {
-  Handle(SelectMgr_EntityOwner) anOwner;
   if (theRank < 1 || theRank > NbPicked())
   {
-    return anOwner;
+    return Handle(SelectMgr_EntityOwner)();
   }
 
   const Standard_Integer anOwnerIdx = myIndexes->Value (theRank);
-  const Handle(SelectBasics_EntityOwner)& aStoredOwner = mystored.FindKey (anOwnerIdx);
-  anOwner = Handle(SelectMgr_EntityOwner)::DownCast (aStoredOwner);
-  return anOwner;
+  const Handle(SelectMgr_EntityOwner)& aStoredOwner = mystored.FindKey (anOwnerIdx);
+  return aStoredOwner;
 }
 
 //=======================================================================
@@ -982,7 +977,7 @@ void SelectMgr_ViewerSelector::ResetSelectionActivationStatus()
 // purpose  : Returns sensitive entity that was detected during the
 //            previous run of selection algorithm
 //=======================================================================
-const Handle(SelectBasics_SensitiveEntity)& SelectMgr_ViewerSelector::DetectedEntity() const
+const Handle(Select3D_SensitiveEntity)& SelectMgr_ViewerSelector::DetectedEntity() const
 {
   const Standard_Integer aRankInMap = myIndexes->Value(myCurRank);
   return mystored.FindFromIndex (aRankInMap).Entity;
@@ -992,7 +987,7 @@ const Handle(SelectBasics_SensitiveEntity)& SelectMgr_ViewerSelector::DetectedEn
 // function : ActiveOwners
 // purpose  : Returns the list of active entity owners
 //=======================================================================
-void SelectMgr_ViewerSelector::ActiveOwners (NCollection_List<Handle(SelectBasics_EntityOwner)>& theOwners) const
+void SelectMgr_ViewerSelector::ActiveOwners (NCollection_List<Handle(SelectMgr_EntityOwner)>& theOwners) const
 {
   for (SelectMgr_MapOfObjectSensitivesIterator anIter (myMapOfObjectSensitives); anIter.More(); anIter.Next())
   {

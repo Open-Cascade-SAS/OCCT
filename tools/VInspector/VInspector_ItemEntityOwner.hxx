@@ -46,7 +46,7 @@ public:
   Standard_EXPORT virtual void Reset() Standard_OVERRIDE;
 
   //! Returns the current entity owner
-  Handle(SelectBasics_EntityOwner) EntityOwner() const { return myOwner; }
+  Handle(SelectMgr_EntityOwner) EntityOwner() const { return myOwner; }
 
 protected:
   //! \return number of children.
@@ -79,11 +79,11 @@ private:
 private:
 
   //! Returns the current entity owner. Initializes the item if it was not initialized yet
-  Handle(SelectBasics_EntityOwner) getEntityOwner() const;
+  Handle(SelectMgr_EntityOwner) getEntityOwner() const;
 
 private:
 
-  Handle(SelectBasics_EntityOwner) myOwner; //!< the current entity owner
+  Handle(SelectMgr_EntityOwner) myOwner; //!< the current entity owner
 };
 
 #endif

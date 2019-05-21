@@ -225,8 +225,8 @@ protected:
 protected:
 
   //! Creates a sensitive entity for the datum part that will be used in selection owner creation.
-  Standard_EXPORT Handle(SelectBasics_SensitiveEntity) createSensitiveEntity (const Prs3d_DatumParts thePart,
-                                                     const Handle(SelectBasics_EntityOwner)& theOwner) const;
+  Standard_EXPORT Handle(Select3D_SensitiveEntity) createSensitiveEntity (const Prs3d_DatumParts thePart,
+                                                     const Handle(SelectMgr_EntityOwner)& theOwner) const;
 
   //! Computes presentation for display mode equal 1.
   Standard_EXPORT void computePresentation (const Handle(PrsMgr_PresentationManager3d)& thePrsMgr,

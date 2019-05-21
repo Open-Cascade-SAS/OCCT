@@ -26,7 +26,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitiveTriangle,Select3D_SensitiveEntity)
 // Function: Creation
 // Purpose :
 //==================================================
-Select3D_SensitiveTriangle::Select3D_SensitiveTriangle (const Handle(SelectBasics_EntityOwner)& theOwnerId,
+Select3D_SensitiveTriangle::Select3D_SensitiveTriangle (const Handle(SelectMgr_EntityOwner)& theOwnerId,
                                                         const gp_Pnt& thePnt0,
                                                         const gp_Pnt& thePnt1,
                                                         const gp_Pnt& thePnt2,

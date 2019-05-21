@@ -55,8 +55,7 @@ MeshVS_SensitiveQuad::MeshVS_SensitiveQuad (const Handle(SelectMgr_EntityOwner)&
 //=======================================================================
 Handle(Select3D_SensitiveEntity) MeshVS_SensitiveQuad::GetConnected()
 {
-  return new MeshVS_SensitiveQuad (Handle(SelectMgr_EntityOwner)::DownCast (OwnerId()),
-    myVertices[0], myVertices[1], myVertices[2], myVertices[3]);
+  return new MeshVS_SensitiveQuad (myOwnerId, myVertices[0], myVertices[1], myVertices[2], myVertices[3]);
 }
 
 //=======================================================================

@@ -30,7 +30,7 @@
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_Presentation.hxx>
 #include <Quantity_Color.hxx>
-#include <SelectBasics_SensitiveEntity.hxx>
+#include <Select3D_SensitiveEntity.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <SelectMgr_Filter.hxx>
 #include <SelectMgr_OrFilter.hxx>
@@ -1136,9 +1136,9 @@ void AIS_InteractiveContext::EntityOwners(Handle(SelectMgr_IndexedMapOfOwner)& t
 
     for (NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>::Iterator aSelEntIter (aSel->Entities()); aSelEntIter.More(); aSelEntIter.Next())
     {
-      if (Handle(SelectBasics_SensitiveEntity) aEntity = aSelEntIter.Value()->BaseSensitive())
+      if (Handle(Select3D_SensitiveEntity) aEntity = aSelEntIter.Value()->BaseSensitive())
       {
-        if (Handle(SelectMgr_EntityOwner) aOwner = Handle(SelectMgr_EntityOwner)::DownCast(aEntity->OwnerId()))
+        if (const Handle(SelectMgr_EntityOwner)& aOwner = aEntity->OwnerId())
         {
           theOwners->Add (aOwner);
         }

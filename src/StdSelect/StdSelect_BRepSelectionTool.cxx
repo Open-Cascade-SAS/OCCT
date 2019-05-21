@@ -75,7 +75,7 @@ void StdSelect_BRepSelectionTool::PreBuildBVH (const Handle(SelectMgr_Selection)
 {
   for (NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>::Iterator aSelEntIter (theSelection->Entities()); aSelEntIter.More(); aSelEntIter.Next())
   {
-    const Handle(SelectBasics_SensitiveEntity)& aSensitive = aSelEntIter.Value()->BaseSensitive();
+    const Handle(Select3D_SensitiveEntity)& aSensitive = aSelEntIter.Value()->BaseSensitive();
     if (aSensitive->NbSubElements() >= BVH_PRIMITIVE_LIMIT)
     {
       aSensitive->BVH();
@@ -190,8 +190,8 @@ void StdSelect_BRepSelectionTool::Load (const Handle(SelectMgr_Selection)& theSe
   // loading of selectables...
   for (NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>::Iterator aSelEntIter (theSelection->Entities()); aSelEntIter.More(); aSelEntIter.Next())
   {
-    Handle(SelectMgr_EntityOwner) anOwner = Handle(SelectMgr_EntityOwner)::DownCast (aSelEntIter.Value()->BaseSensitive()->OwnerId());
-    anOwner->Set (theSelectableObj);
+    const Handle(SelectMgr_EntityOwner)& anOwner = aSelEntIter.Value()->BaseSensitive()->OwnerId();
+    anOwner->SetSelectable (theSelectableObj);
   }
 
   PreBuildBVH (theSelection);

@@ -85,7 +85,7 @@ namespace
   {
   public:
     //! Main constructor.
-    ManipSensCircle (const Handle(SelectBasics_EntityOwner)& theOwnerId,
+    ManipSensCircle (const Handle(SelectMgr_EntityOwner)& theOwnerId,
                      const Handle(Geom_Circle)& theCircle,
                      const Standard_Integer theNbPnts)
     : Select3D_SensitiveCircle (theOwnerId, theCircle, Standard_False, theNbPnts),
@@ -104,7 +104,7 @@ namespace
   class ManipSensTriangulation : public Select3D_SensitiveTriangulation, public ManipSensRotation
   {
   public:
-    ManipSensTriangulation (const Handle(SelectBasics_EntityOwner)& theOwnerId,
+    ManipSensTriangulation (const Handle(SelectMgr_EntityOwner)& theOwnerId,
                             const Handle(Poly_Triangulation)& theTrg,
                             const gp_Dir& thePlaneNormal)
     : Select3D_SensitiveTriangulation (theOwnerId, theTrg, TopLoc_Location(), Standard_True),

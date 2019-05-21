@@ -19,7 +19,6 @@
 #include <MeshVS_MeshOwner.hxx>
 #include <PrsMgr_PresentationManager.hxx>
 #include <PrsMgr_PresentationManager3d.hxx>
-#include <SelectBasics_EntityOwner.hxx>
 #include <SelectMgr_SelectableObject.hxx>
 #include <Standard_Type.hxx>
 #include <TColStd_HPackedMapOfInteger.hxx>
@@ -44,7 +43,6 @@ MeshVS_MeshOwner::MeshVS_MeshOwner (const SelectMgr_SOPtr&           theSelObj,
   myLastID = -1;
   if( !theDS.IsNull() )
     myDataSource = theDS;
-  SelectBasics_EntityOwner::Set ( thePriority );
 }
 
 //================================================================

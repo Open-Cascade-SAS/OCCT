@@ -43,7 +43,6 @@
 #include <Select3D_SensitivePrimitiveArray.hxx>
 #include <Select3D_SensitiveSegment.hxx>
 #include <Select3D_SensitiveTriangle.hxx>
-#include <SelectBasics_EntityOwner.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <Standard_Type.hxx>
 
@@ -732,14 +731,14 @@ void AIS_Trihedron::SetDrawArrows (const Standard_Boolean theToDraw)
 //function : createSensitiveEntity
 //purpose  :
 //=======================================================================
-Handle(SelectBasics_SensitiveEntity) AIS_Trihedron::createSensitiveEntity (const Prs3d_DatumParts thePart,
-                                                   const Handle(SelectBasics_EntityOwner)& theOwner) const
+Handle(Select3D_SensitiveEntity) AIS_Trihedron::createSensitiveEntity (const Prs3d_DatumParts thePart,
+                                                   const Handle(SelectMgr_EntityOwner)& theOwner) const
 {
   Handle(Prs3d_DatumAspect) anAspect = myDrawer->DatumAspect();
   Handle(Graphic3d_ArrayOfPrimitives) aPrimitives = arrayOfPrimitives (thePart);
   if (aPrimitives.IsNull())
   {
-    return Handle(SelectBasics_SensitiveEntity)();
+    return Handle(Select3D_SensitiveEntity)();
   }
 
   if (thePart >= Prs3d_DP_XOYAxis
@@ -769,7 +768,7 @@ Handle(SelectBasics_SensitiveEntity) AIS_Trihedron::createSensitiveEntity (const
     const gp_Pnt anXYZ2 = aSegments->Vertice (2);
     return new Select3D_SensitiveSegment (theOwner, anXYZ1, anXYZ2);
   }
-  return Handle(SelectBasics_SensitiveEntity)();
+  return Handle(Select3D_SensitiveEntity)();
 }
 
 // =======================================================================

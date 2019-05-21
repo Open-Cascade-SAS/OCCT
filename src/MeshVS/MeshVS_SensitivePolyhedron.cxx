@@ -20,7 +20,6 @@
 #include <MeshVS_Tool.hxx>
 #include <NCollection_Vec4.hxx>
 #include <Select3D_SensitiveEntity.hxx>
-#include <SelectBasics_EntityOwner.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
@@ -33,7 +32,7 @@ IMPLEMENT_STANDARD_RTTIEXT(MeshVS_SensitivePolyhedron,Select3D_SensitiveEntity)
 // Function : Constructor MeshVS_SensitivePolyhedron
 // Purpose  :
 //================================================================
-MeshVS_SensitivePolyhedron::MeshVS_SensitivePolyhedron (const Handle(SelectBasics_EntityOwner)& theOwner,
+MeshVS_SensitivePolyhedron::MeshVS_SensitivePolyhedron (const Handle(SelectMgr_EntityOwner)& theOwner,
                                                         const TColgp_Array1OfPnt& theNodes,
                                                         const Handle(MeshVS_HArray1OfSequenceOfInteger)& theTopo)
 : Select3D_SensitiveEntity (theOwner),

@@ -15,19 +15,14 @@
 
 #include <MeshVS_DummySensitiveEntity.hxx>
 
-#include <Bnd_Box2d.hxx>
-#include <SelectBasics_EntityOwner.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-
-
-IMPLEMENT_STANDARD_RTTIEXT(MeshVS_DummySensitiveEntity,SelectBasics_SensitiveEntity)
+IMPLEMENT_STANDARD_RTTIEXT(MeshVS_DummySensitiveEntity, Select3D_SensitiveEntity)
 
 //================================================================
 // Function : Constructor MeshVS_DummySensitiveEntity
 // Purpose  :
 //================================================================
-MeshVS_DummySensitiveEntity::MeshVS_DummySensitiveEntity (const Handle(SelectBasics_EntityOwner)& theOwnerId)
-: SelectBasics_SensitiveEntity (theOwnerId)
+MeshVS_DummySensitiveEntity::MeshVS_DummySensitiveEntity (const Handle(SelectMgr_EntityOwner)& theOwnerId)
+: Select3D_SensitiveEntity (theOwnerId)
 {}
 
 //================================================================

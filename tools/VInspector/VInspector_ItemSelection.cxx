@@ -97,11 +97,11 @@ QVariant VInspector_ItemSelection::initValue (int theItemRole) const
 #if OCC_VERSION_HEX < 0x070201
               for (mySelection->Init(); mySelection->More(); mySelection->Next())
               {
-                const Handle(SelectBasics_EntityOwner)& anOwner = mySelection->Sensitive()->BaseSensitive()->OwnerId();
+                const Handle(SelectMgr_EntityOwner)& anOwner = mySelection->Sensitive()->BaseSensitive()->OwnerId();
 #else
               for (NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>::Iterator aSelEntIter (mySelection->Entities()); aSelEntIter.More(); aSelEntIter.Next())
               {
-                const Handle(SelectBasics_EntityOwner)& anOwner = aSelEntIter.Value()->BaseSensitive()->OwnerId();
+                const Handle(SelectMgr_EntityOwner)& anOwner = aSelEntIter.Value()->BaseSensitive()->OwnerId();
 #endif
                 if (VInspector_Tools::IsOwnerSelected(aContext, anOwner))
                   aNbSelected++;

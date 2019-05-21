@@ -13,16 +13,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <MeshVS_PrsBuilder.hxx>
 
 #include <MeshVS_DataSource.hxx>
 #include <MeshVS_Drawer.hxx>
 #include <MeshVS_Mesh.hxx>
-#include <MeshVS_PrsBuilder.hxx>
 #include <Prs3d_Presentation.hxx>
 #include <Prs3d_Root.hxx>
-#include <SelectBasics_EntityOwner.hxx>
-#include <SelectBasics_SensitiveEntity.hxx>
-#include <Standard_Type.hxx>
+#include <Select3D_SensitiveEntity.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(MeshVS_PrsBuilder,Standard_Transient)
 
@@ -66,8 +64,8 @@ void MeshVS_PrsBuilder::CustomBuild ( const Handle(Prs3d_Presentation)&,
 // Function : CustomSensitiveEntity
 // Purpose  :
 //================================================================
-Handle( SelectBasics_SensitiveEntity ) MeshVS_PrsBuilder::CustomSensitiveEntity
-  ( const Handle( SelectBasics_EntityOwner )&,
+Handle( Select3D_SensitiveEntity ) MeshVS_PrsBuilder::CustomSensitiveEntity
+  ( const Handle(SelectMgr_EntityOwner)&,
     const Standard_Integer ) const
 {
   return 0;

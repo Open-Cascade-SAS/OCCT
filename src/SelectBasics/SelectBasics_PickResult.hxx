@@ -16,8 +16,7 @@
 #ifndef _SelectBasics_PickResult_HeaderFile
 #define _SelectBasics_PickResult_HeaderFile
 
-#include <Standard.hxx>
-#include <NCollection_Vec4.hxx>
+#include <gp_Pnt.hxx>
 
 //! This structure provides unified access to the results of Matches() method in all sensitive entities,
 //! so that it defines a Depth (distance to the entity along picking ray) and a closest Point on entity.

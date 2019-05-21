@@ -47,7 +47,7 @@ void Select3D_SensitiveSet::SetDefaultBVHBuilder (const Handle(Select3D_BVHBuild
 // function : Select3D_SensitiveSet
 // purpose  : Creates new empty sensitive set and its content
 //=======================================================================
-Select3D_SensitiveSet::Select3D_SensitiveSet (const Handle(SelectBasics_EntityOwner)& theOwnerId)
+Select3D_SensitiveSet::Select3D_SensitiveSet (const Handle(SelectMgr_EntityOwner)& theOwnerId)
 : Select3D_SensitiveEntity (theOwnerId),
   myDetectedIdx (-1)
 {

@@ -16,74 +16,17 @@
 
 #include <Select3D_SensitiveEntity.hxx>
 
-#include <Precision.hxx>
-#include <SelectBasics_EntityOwner.hxx>
+#include <SelectMgr_EntityOwner.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitiveEntity,SelectBasics_SensitiveEntity)
+IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitiveEntity, Standard_Transient)
 
 //=======================================================================
 //function : Select3D_SensitiveEntity
 //purpose  :
 //=======================================================================
-Select3D_SensitiveEntity::Select3D_SensitiveEntity (const Handle(SelectBasics_EntityOwner)& theOwnerId)
-: SelectBasics_SensitiveEntity (theOwnerId) {}
-
-//=======================================================================
-// function : Matches
-// purpose  : Checks whether sensitive overlaps current selecting volume.
-//            Stores minimum depth, distance to center of geometry and
-//            closest point detected into thePickResult
-//=======================================================================
-Standard_Boolean Select3D_SensitiveEntity::Matches (SelectBasics_SelectingVolumeManager& /*theMgr*/,
-                                                    SelectBasics_PickResult& /*thePickResult*/)
+Select3D_SensitiveEntity::Select3D_SensitiveEntity (const Handle(SelectMgr_EntityOwner)& theOwnerId)
+: myOwnerId (theOwnerId),
+  mySFactor (2)
 {
-  return Standard_False;
-}
-
-//=======================================================================
-//function : GetConnected
-//purpose  : 
-//=======================================================================
-
-Handle(Select3D_SensitiveEntity) Select3D_SensitiveEntity::GetConnected()
-{
-  Handle(Select3D_SensitiveEntity) aNewEntity;
-  return aNewEntity;
-}
-
-//=======================================================================
-// function : BVH
-// purpose  : Builds BVH tree for a sensitive if needed
-//=======================================================================
-void Select3D_SensitiveEntity::BVH()
-{
-  return;
-}
-
-//=======================================================================
-// function : Clear
-// purpose  : Cleans up resources and memory
-//=======================================================================
-void Select3D_SensitiveEntity::Clear()
-{
-  Set (NULL);
-}
-
-//=======================================================================
-// function : HasInitLocation
-// purpose  : Returns true if the shape corresponding to the entity has init location
-//=======================================================================
-Standard_Boolean Select3D_SensitiveEntity::HasInitLocation() const
-{
-  return Standard_False;
-}
-
-//=======================================================================
-// function : InvInitLocation
-// purpose  : Returns inversed location transformation matrix if the shape corresponding
-//            to this entity has init location set. Otherwise, returns identity matrix.
-//=======================================================================
-gp_GTrsf Select3D_SensitiveEntity::InvInitLocation() const
-{
-  return gp_GTrsf();
+  //
 }

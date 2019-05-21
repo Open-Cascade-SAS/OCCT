@@ -39,12 +39,12 @@ public:
   //! This is a set of sensitive 3D entities. The sensitive
   //! entities will be defined using the function Add to fill
   //! the entity owner OwnerId. If MatchAll is false, nothing can be added.
-  Standard_EXPORT Select3D_SensitiveGroup (const Handle(SelectBasics_EntityOwner)& theOwnerId,
+  Standard_EXPORT Select3D_SensitiveGroup (const Handle(SelectMgr_EntityOwner)& theOwnerId,
                                            const Standard_Boolean theIsMustMatchAll = Standard_True);
 
   //! Constructs a sensitive group object defined by the list
   //! TheList and the entity owner OwnerId. If MatchAll is false, nothing is done.
-  Standard_EXPORT Select3D_SensitiveGroup (const Handle(SelectBasics_EntityOwner)& theOwnerId,
+  Standard_EXPORT Select3D_SensitiveGroup (const Handle(SelectMgr_EntityOwner)& theOwnerId,
                                            Select3D_EntitySequence& theEntities,
                                            const Standard_Boolean theIsMustMatchAll = Standard_True);
 
@@ -118,7 +118,7 @@ public:
   Standard_EXPORT virtual Handle(Select3D_SensitiveEntity) GetConnected() Standard_OVERRIDE;
 
   //! Sets the owner for all entities in group
-  Standard_EXPORT void Set (const Handle(SelectBasics_EntityOwner)& theOwnerId) Standard_OVERRIDE;
+  Standard_EXPORT void Set (const Handle(SelectMgr_EntityOwner)& theOwnerId) Standard_OVERRIDE;
 
   //! Returns bounding box of the group. If location transformation
   //! is set, it will be applied

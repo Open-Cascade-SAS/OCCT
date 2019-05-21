@@ -107,9 +107,7 @@ Select3D_BndBox3d SelectMgr_SensitiveEntitySet::Box (const Standard_Integer theI
 Standard_Real SelectMgr_SensitiveEntitySet::Center (const Standard_Integer theIndex,
                                                     const Standard_Integer theAxis) const
 {
-  const Handle(SelectBasics_SensitiveEntity)& aBasicEntity =
-    GetSensitiveById (theIndex)->BaseSensitive();
-  Handle(Select3D_SensitiveEntity) aSensitive (Handle(Select3D_SensitiveEntity)::DownCast (aBasicEntity));
+  const Handle(Select3D_SensitiveEntity)& aSensitive = GetSensitiveById (theIndex)->BaseSensitive();
   const gp_Pnt aCenter = aSensitive->CenterOfGeometry();
   Standard_Real aCenterCoord = 0.0;
   aCenterCoord = theAxis == 0 ? aCenter.X() :

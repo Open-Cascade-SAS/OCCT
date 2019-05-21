@@ -26,7 +26,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitiveSegment,Select3D_SensitiveEntity)
 // Function : Create
 // Purpose  : Constructor
 //=====================================================
-Select3D_SensitiveSegment::Select3D_SensitiveSegment (const Handle(SelectBasics_EntityOwner)& theOwnerId,
+Select3D_SensitiveSegment::Select3D_SensitiveSegment (const Handle(SelectMgr_EntityOwner)& theOwnerId,
                                                       const gp_Pnt& theFirstPnt,
                                                       const gp_Pnt& theLastPnt)
 : Select3D_SensitiveEntity (theOwnerId)

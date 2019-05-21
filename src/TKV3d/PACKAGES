@@ -3,6 +3,7 @@ Graphic3d
 Select3D
 Prs3d
 StdPrs
+SelectBasics
 SelectMgr
 PrsMgr
 AIS

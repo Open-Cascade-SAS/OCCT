@@ -26,14 +26,10 @@ class SelectBasics
 {
 public:
 
-  DEFINE_STANDARD_ALLOC
+  //! Structure to provide all-in-one result of selection of sensitive for "Matches" method of Select3D_SensitiveEntity.
+  static Standard_Integer MaxOwnerPriority() { return 9; }
 
-  //! Structure to provide all-in-one result of selection of sensitive
-  //! for "Matches" method of SelectBasics_SensitiveEntity.
-  Standard_EXPORT static Standard_Integer MaxOwnerPriority();
-  
-  Standard_EXPORT static Standard_Integer MinOwnerPriority();
-
+  static Standard_Integer MinOwnerPriority() { return 0; }
 };
 
 #endif // _SelectBasics_HeaderFile

@@ -20,7 +20,6 @@
 #include <Prs3d_Root.hxx>
 #include <PrsMgr_PresentationManager.hxx>
 #include <PrsMgr_PresentationManager3d.hxx>
-#include <SelectBasics_EntityOwner.hxx>
 #include <SelectMgr_SelectableObject.hxx>
 #include <Standard_Type.hxx>
 #include <TColStd_ListIteratorOfListOfReal.hxx>
@@ -49,7 +48,7 @@ MeshVS_MeshEntityOwner::MeshVS_MeshEntityOwner
   myID      ( ID ),
   myIsGroup ( IsGroup )
 {
-  SelectBasics_EntityOwner::Set ( Priority );
+  //
 }
 
 //================================================================

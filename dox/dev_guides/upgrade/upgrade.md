@@ -1738,11 +1738,13 @@ or updating presentation without recomputation (see *AIS_InteractiveObject::Sync
 * *Aspect_IS_HIDDENLINE* does not implicitly enables drawing mesh edges anymore.
   Specify Graphic3d_AspectFillArea3d::SetDrawEdges(true) with Graphic3d_AspectFillArea3d::SetInteriorStyle(Aspect_IS_HIDDENLINE) to get previous behavior of Aspect_IS_HIDDENLINE style.
 
-@subsection upgrade_740_modedprs PrsMgr_ModedPresentation removal
+@subsection upgrade_740_modedprs PrsMgr and SelectMgr hierarchy clean up
 
 Proxy classes *Prs3d_Presentation*, *PrsMgr_ModedPresentation* and *PrsMgr_Prs* have been removed.
 Code iterating through the list of low-level structures AIS_InteractiveObject::Presentations() should be updated to access PrsMgr_Presentation directly.
 Forward declarations of *Prs3d_Presentation* should be corrected, since it is now a typedef to *Graphic3d_Structure*.
+
+Proxy classes *SelectBasics_SensitiveEntity* and *SelectBasics_EntityOwner* have been removed - *Select3D_SensitiveEntity* and *SelectMgr_EntityOwner* should be now used directly instead.
 
 @subsection upgrade_740_geproj Custom defines within env.bat
 
