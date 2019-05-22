@@ -163,8 +163,8 @@ static Standard_Integer removeShape (Draw_Interpretor& di, Standard_Integer argc
 
 static Standard_Integer findShape (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
-  if (argc!=3) {
-    di<<"Use: "<<argv[0]<<" DocName Shape\n";
+  if (argc < 3) {
+    di << "Use: " << argv[0] << " DocName Shape [0/1]\n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;   
@@ -177,7 +177,8 @@ static Standard_Integer findShape (Draw_Interpretor& di, Standard_Integer argc, 
 //  XCAFDoc_ShapeTool myAssembly;
 //  myAssembly.Init(Doc);
   Handle(XCAFDoc_ShapeTool) myAssembly = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
-  aLabel = myAssembly->FindShape(aShape);
+  Standard_Boolean findInstance = ((argc == 4) && argv[3][0] == '1');
+  aLabel = myAssembly->FindShape(aShape, findInstance);
   TCollection_AsciiString Entry;
   TDF_Tool::Entry(aLabel, Entry);
   di << Entry.ToCString();
@@ -213,6 +214,32 @@ static Standard_Integer findSubShape(Draw_Interpretor& di, Standard_Integer argc
   di << anEntry.ToCString();
   return 0;
 }
+
+static Standard_Integer findMainShape(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+{
+  if (argc != 3) {
+    di << "Use: " << argv[0] << " DocName SubShape\n";
+    return 1;
+  }
+  Handle(TDocStd_Document) aDoc;
+  DDocStd::GetDocument(argv[1], aDoc);
+  if (aDoc.IsNull()) {
+    di << argv[1] << " is not a document\n";
+    return 1;
+  }
+
+  TopoDS_Shape aShape;
+  aShape = DBRep::Get(argv[2]);
+
+  Handle(XCAFDoc_ShapeTool) aShapeTool = XCAFDoc_DocumentTool::ShapeTool(aDoc->Main());
+  TDF_Label aLabel = aShapeTool->FindMainShape(aShape);
+
+  TCollection_AsciiString anEntry;
+  TDF_Tool::Entry(aLabel, anEntry);
+  di << anEntry.ToCString();
+  return 0;
+}
+
 
 static Standard_Integer addSubShape(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
@@ -935,11 +962,14 @@ void XDEDRAW_Shapes::InitCommands(Draw_Interpretor& di)
   di.Add ("XRemoveShape","Doc Label \t: Remove shape from document",
                    __FILE__, removeShape, g);
 
-  di.Add ("XFindShape","Doc Shape \t: Find and print label with indicated top-level shape",
+  di.Add ("XFindShape","Doc Shape [findInstance (0/1), 0 by default]\t: Find and print label with indicated top-level shape",
                    __FILE__, findShape, g);
 
   di.Add("XFindSubShape", "Doc Shape ParentLabel \t: Find subshape under given parent shape label",
     __FILE__, findSubShape, g);
+
+  di.Add("XFindMainShape", "Doc SubShape \t: Find main shape for given subshape",
+    __FILE__, findMainShape, g);
 
   di.Add("XAddSubShape", "Doc Shape ParentLabel \t: Add subshape under given parent shape label",
     __FILE__, addSubShape, g);

@@ -1,0 +1,35 @@
+puts "==============================================="
+puts "0030727: Data Exchange - Problems in Shape Tool"
+puts "==============================================="
+puts ""
+
+pload DCAF
+
+box b 1 1 1
+copy b bb
+ttranslate bb 2 0 0
+XNewDoc D
+XAddShape D bb
+explode bb f
+explode b f
+
+set result [XFindMainShape D b_1]
+if {$result != "0:1:1:2"} {
+  puts "Error: wrong result of FindMainShape"
+}
+
+set result [XFindMainShape D bb_1]
+if {$result != ""} {
+  puts "Error: wrong result of FindMainShape"
+}
+
+XAddSubShape D b_1 0:1:1:2
+compound b_1 b_2 c
+XAddShape D c
+
+set result [XGetTopLevelShapes D]
+if {$result != "0:1:1:1 0:1:1:2 0:1:1:3 0:1:1:4 0:1:1:5 "} {
+  puts "Error: wrong result of FindMainShape"
+}
+Close D
+

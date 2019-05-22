@@ -176,11 +176,11 @@ public:
   
   //! Returns the label corresponding to shape S
   //! (searches among top-level shapes, not including subcomponents
-  //! of assemblies)
-  //! If findInstance is False (default), searches for the
-  //! non-located shape (i.e. among original shapes)
-  //! If findInstance is True, searches for the shape with the same
-  //! location, including shape instances
+  //! of assemblies and subshapes)
+  //! If findInstance is False (default), seach for the
+  //! input shape without location
+  //! If findInstance is True, searches for the
+  //! input shape as is.
   //! Return True if <S> is found.
   Standard_EXPORT Standard_Boolean FindShape (const TopoDS_Shape& S, TDF_Label& L, const Standard_Boolean findInstance = Standard_False) const;
   

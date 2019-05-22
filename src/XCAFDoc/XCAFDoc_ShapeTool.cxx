@@ -303,20 +303,26 @@ Standard_Boolean XCAFDoc_ShapeTool::FindShape (const TopoDS_Shape& S,
   if (TNaming_Tool::HasLabel(Label(), S0)) {
     int TransDef = 0;
     L = TNaming_Tool::Label(Label(), S0, TransDef);
-    return Standard_True;
   }
-/*
-  TDF_ChildIDIterator it(myLabel,TNaming_NamedShape::GetID());
+  else
+    return Standard_False;
+
+  if (IsTopLevel(L))
+    return Standard_True;
+
+  // Try to find shape manually
+  TDF_ChildIDIterator it(Label(), TNaming_NamedShape::GetID());
   for (; it.More(); it.Next()) {
     TDF_Label aLabel = it.Value()->Label();
     Handle(TNaming_NamedShape) NS;
     if ( aLabel.FindAttribute(TNaming_NamedShape::GetID(), NS) &&
-	 S0.IsSame ( TNaming_Tool::GetShape(NS) ) ) {
+      S0.IsSame ( TNaming_Tool::GetShape(NS) ) ) {
       L = aLabel;
       return Standard_True;
     }
   }
-*/
+
+  L = TDF_Label();
   return Standard_False;
 }
 
@@ -1154,7 +1160,8 @@ TDF_Label XCAFDoc_ShapeTool::FindMainShape (const TopoDS_Shape &sub) const
   TDF_ChildIterator it(Label());
   for (; it.More(); it.Next()) {
     TDF_Label L = it.Value();
-    if ( ! IsAssembly ( L ) && IsSubShape ( L, sub ) ) return L;
+
+    if ( IsSimpleShape( L ) && IsSubShape ( L, sub ) ) return L;
   }
   TDF_Label L0;
   return L0;
