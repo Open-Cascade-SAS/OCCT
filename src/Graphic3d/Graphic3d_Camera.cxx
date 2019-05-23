@@ -696,8 +696,17 @@ void Graphic3d_Camera::Frustum (gp_Pln& theLeft,
   theNear = gp_Pln (Eye().Translated (aProjection * ZNear()), aProjection);
   theFar  = gp_Pln (Eye().Translated (aProjection * ZFar()), -aProjection);
 
-  Standard_Real aHScaleHor = Scale() * 0.5 * Aspect();
-  Standard_Real aHScaleVer = Scale() * 0.5;
+  Standard_Real aHScaleHor = 0.0, aHScaleVer = 0.0;
+  if (Aspect() >= 1.0)
+  {
+    aHScaleHor = Scale() * 0.5 * Aspect();
+    aHScaleVer = Scale() * 0.5;
+  }
+  else
+  {
+    aHScaleHor = Scale() * 0.5;
+    aHScaleVer = Scale() * 0.5 / Aspect();
+  }
 
   gp_Pnt aPntLeft   = Center().Translated (aHScaleHor * -aSide);
   gp_Pnt aPntRight  = Center().Translated (aHScaleHor *  aSide);
