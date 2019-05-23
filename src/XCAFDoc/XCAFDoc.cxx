@@ -25,9 +25,9 @@
 //purpose  : 
 //=======================================================================
 
-Standard_GUID XCAFDoc::ShapeRefGUID ()
+const Standard_GUID& XCAFDoc::ShapeRefGUID ()
 {
-  static Standard_GUID ID ("5b896afe-3adf-11d4-b9b7-0060b0ee281b");
+  static const Standard_GUID ID ("5b896afe-3adf-11d4-b9b7-0060b0ee281b");
   return ID;
 }
 
@@ -37,9 +37,9 @@ Standard_GUID XCAFDoc::ShapeRefGUID ()
 //purpose  : 
 //=======================================================================
 
-Standard_GUID XCAFDoc::AssemblyGUID ()
+const Standard_GUID& XCAFDoc::AssemblyGUID ()
 {
-  static Standard_GUID ID ("5b896b00-3adf-11d4-b9b7-0060b0ee281b");
+  static const Standard_GUID ID ("5b896b00-3adf-11d4-b9b7-0060b0ee281b");
   return ID;
 }
 
@@ -49,9 +49,9 @@ Standard_GUID XCAFDoc::AssemblyGUID ()
 //purpose  : 
 //=======================================================================
 
-Standard_GUID XCAFDoc::ExternRefGUID ()
+const Standard_GUID& XCAFDoc::ExternRefGUID ()
 {
-  static Standard_GUID ID ("6b896b01-3adf-11d4-b9b7-0060b0ee281b");
+  static const Standard_GUID ID ("6b896b01-3adf-11d4-b9b7-0060b0ee281b");
   return ID;
 }
 
@@ -61,11 +61,11 @@ Standard_GUID XCAFDoc::ExternRefGUID ()
 //purpose  : 
 //=======================================================================
 
-Standard_GUID XCAFDoc::ColorRefGUID (const XCAFDoc_ColorType type)
+const Standard_GUID& XCAFDoc::ColorRefGUID (const XCAFDoc_ColorType type)
 {
-  static Standard_GUID IDcol     ("efd212e4-6dfd-11d4-b9c8-0060b0ee281b");
-  static Standard_GUID IDcolSurf ("efd212e5-6dfd-11d4-b9c8-0060b0ee281b");
-  static Standard_GUID IDcolCurv ("efd212e6-6dfd-11d4-b9c8-0060b0ee281b");
+  static const Standard_GUID IDcol     ("efd212e4-6dfd-11d4-b9c8-0060b0ee281b");
+  static const Standard_GUID IDcolSurf ("efd212e5-6dfd-11d4-b9c8-0060b0ee281b");
+  static const Standard_GUID IDcolCurv ("efd212e6-6dfd-11d4-b9c8-0060b0ee281b");
 
   switch ( type ) {
   default:
@@ -81,10 +81,10 @@ Standard_GUID XCAFDoc::ColorRefGUID (const XCAFDoc_ColorType type)
 //purpose  : 
 //=======================================================================
 
-Standard_GUID XCAFDoc::DimTolRefGUID()
+const Standard_GUID& XCAFDoc::DimTolRefGUID()
 {
-  //static Standard_GUID IDDimTol("58ed092d-44de-11d8-8776-001083004c77");
-  static Standard_GUID ID("efd212e9-6dfd-11d4-b9c8-0060b0ee281b");
+  //static const Standard_GUID IDDimTol("58ed092d-44de-11d8-8776-001083004c77");
+  static const Standard_GUID ID("efd212e9-6dfd-11d4-b9c8-0060b0ee281b");
   //return IDDimTol;
   return ID;
 }
@@ -94,9 +94,9 @@ Standard_GUID XCAFDoc::DimTolRefGUID()
 //purpose  : 
 //=======================================================================
 
-Standard_GUID XCAFDoc::DimensionRefFirstGUID()
+const Standard_GUID& XCAFDoc::DimensionRefFirstGUID()
 {
-  static Standard_GUID ID("efd212e3-6dfd-11d4-b9c8-0060b0ee281b");
+  static const Standard_GUID ID("efd212e3-6dfd-11d4-b9c8-0060b0ee281b");
   return ID;
 }
 
@@ -105,9 +105,9 @@ Standard_GUID XCAFDoc::DimensionRefFirstGUID()
 //purpose  : 
 //=======================================================================
 
-Standard_GUID XCAFDoc::DimensionRefSecondGUID()
+const Standard_GUID& XCAFDoc::DimensionRefSecondGUID()
 {
-  static Standard_GUID ID("efd212e0-6dfd-11d4-b9c8-0060b0ee281b");
+  static const Standard_GUID ID("efd212e0-6dfd-11d4-b9c8-0060b0ee281b");
   return ID;
 }
 
@@ -116,9 +116,9 @@ Standard_GUID XCAFDoc::DimensionRefSecondGUID()
 //purpose  : 
 //=======================================================================
 
-Standard_GUID XCAFDoc::GeomToleranceRefGUID()
+const Standard_GUID& XCAFDoc::GeomToleranceRefGUID()
 {
-  static Standard_GUID ID("efd213e3-6dfd-11d4-b9c8-0060b0ee281b");
+  static const Standard_GUID ID("efd213e3-6dfd-11d4-b9c8-0060b0ee281b");
   return ID;
 }
 
@@ -127,9 +127,9 @@ Standard_GUID XCAFDoc::GeomToleranceRefGUID()
 //purpose  : 
 //=======================================================================
 
-Standard_GUID XCAFDoc::DatumRefGUID()
+const Standard_GUID& XCAFDoc::DatumRefGUID()
 {
-  static Standard_GUID ID("efd212e2-6dfd-11d4-b9c8-0060b0ee281b");
+  static const Standard_GUID ID("efd212e2-6dfd-11d4-b9c8-0060b0ee281b");
   return ID;
 }
 
@@ -139,10 +139,10 @@ Standard_GUID XCAFDoc::DatumRefGUID()
 //purpose  : 
 //=======================================================================
 
-Standard_GUID XCAFDoc::DatumTolRefGUID()
+const Standard_GUID& XCAFDoc::DatumTolRefGUID()
 {
-  //static Standard_GUID IDDimTol("58ed092d-44de-11d8-8776-001083004c77");
-  static Standard_GUID ID("efd212e7-6dfd-11d4-b9c8-0060b0ee281b");
+  //static const Standard_GUID IDDimTol("58ed092d-44de-11d8-8776-001083004c77");
+  static const Standard_GUID ID("efd212e7-6dfd-11d4-b9c8-0060b0ee281b");
   //return IDDimTol;
   return ID;
 }
@@ -153,9 +153,9 @@ Standard_GUID XCAFDoc::DatumTolRefGUID()
 //purpose  : 
 //=======================================================================
 
-Standard_GUID XCAFDoc::LayerRefGUID ()
+const Standard_GUID& XCAFDoc::LayerRefGUID ()
 {
-  static Standard_GUID ID ("efd212e8-6dfd-11d4-b9c8-0060b0ee281b");
+  static const Standard_GUID ID ("efd212e8-6dfd-11d4-b9c8-0060b0ee281b");
   return ID;
 }
 
@@ -165,9 +165,9 @@ Standard_GUID XCAFDoc::LayerRefGUID ()
 //purpose  : 
 //=======================================================================
 
-Standard_GUID XCAFDoc::MaterialRefGUID ()
+const Standard_GUID& XCAFDoc::MaterialRefGUID ()
 {
-  static Standard_GUID ID ("efd212f7-6dfd-11d4-b9c8-0060b0ee281b");
+  static const Standard_GUID ID ("efd212f7-6dfd-11d4-b9c8-0060b0ee281b");
   return ID;
 }
 
@@ -177,9 +177,9 @@ Standard_GUID XCAFDoc::MaterialRefGUID ()
 //purpose  : 
 //=======================================================================
 
-Standard_GUID XCAFDoc::NoteRefGUID()
+const Standard_GUID& XCAFDoc::NoteRefGUID()
 {
-  static Standard_GUID ID ("F3599E50-F84A-493e-8D1B-1284E79322F1");
+  static const Standard_GUID ID ("F3599E50-F84A-493e-8D1B-1284E79322F1");
   return ID;
 }
 
@@ -188,9 +188,9 @@ Standard_GUID XCAFDoc::NoteRefGUID()
 //purpose  : 
 //=======================================================================
 
-Standard_GUID XCAFDoc::InvisibleGUID ()
+const Standard_GUID& XCAFDoc::InvisibleGUID ()
 {
-  static Standard_GUID ID ("5b896aff-3adf-11d4-b9b7-0060b0ee281b");
+  static const Standard_GUID ID ("5b896aff-3adf-11d4-b9b7-0060b0ee281b");
   return ID;
 }
 
@@ -200,9 +200,9 @@ Standard_GUID XCAFDoc::InvisibleGUID ()
 //purpose  : 
 //=======================================================================
 
-Standard_GUID XCAFDoc::ColorByLayerGUID ()
+const Standard_GUID& XCAFDoc::ColorByLayerGUID ()
 {
-  static Standard_GUID ID ("279e8c1e-70af-4130-b626-9cc52a537db8");
+  static const Standard_GUID ID ("279e8c1e-70af-4130-b626-9cc52a537db8");
   return ID;
 }
 
@@ -212,9 +212,9 @@ Standard_GUID XCAFDoc::ColorByLayerGUID ()
 //purpose  : 
 //=======================================================================
 
-Standard_GUID XCAFDoc::SHUORefGUID ()
+const Standard_GUID& XCAFDoc::SHUORefGUID ()
 {
-  static Standard_GUID ID ("efd212ea-6dfd-11d4-b9c8-0060b0ee281b");
+  static const Standard_GUID ID ("efd212ea-6dfd-11d4-b9c8-0060b0ee281b");
   return ID;
 }
 
@@ -223,9 +223,9 @@ Standard_GUID XCAFDoc::SHUORefGUID ()
 //purpose  : 
 //=======================================================================
 
-Standard_GUID XCAFDoc::ViewRefGUID()
+const Standard_GUID& XCAFDoc::ViewRefGUID()
 {
-  static Standard_GUID ID("efd213e5-6dfd-11d4-b9c8-0060b0ee281b");
+  static const Standard_GUID ID("efd213e5-6dfd-11d4-b9c8-0060b0ee281b");
   return ID;
 }
 
@@ -234,9 +234,9 @@ Standard_GUID XCAFDoc::ViewRefGUID()
 //purpose  : 
 //=======================================================================
 
-Standard_GUID XCAFDoc::ViewRefShapeGUID()
+const Standard_GUID& XCAFDoc::ViewRefShapeGUID()
 {
-  static Standard_GUID ID("efd213e6-6dfd-11d4-b9c8-0060b0ee281b");
+  static const Standard_GUID ID("efd213e6-6dfd-11d4-b9c8-0060b0ee281b");
   return ID;
 }
 
@@ -245,9 +245,9 @@ Standard_GUID XCAFDoc::ViewRefShapeGUID()
 //purpose  : 
 //=======================================================================
 
-Standard_GUID XCAFDoc::ViewRefGDTGUID()
+const Standard_GUID& XCAFDoc::ViewRefGDTGUID()
 {
-  static Standard_GUID ID("efd213e7-6dfd-11d4-b9c8-0060b0ee281b");
+  static const Standard_GUID ID("efd213e7-6dfd-11d4-b9c8-0060b0ee281b");
   return ID;
 }
 
@@ -256,9 +256,9 @@ Standard_GUID XCAFDoc::ViewRefGDTGUID()
 //purpose  : 
 //=======================================================================
 
-Standard_GUID XCAFDoc::ViewRefPlaneGUID()
+const Standard_GUID& XCAFDoc::ViewRefPlaneGUID()
 {
-  static Standard_GUID ID("efd213e9-6dfd-11d4-b9c8-0060b0ee281b");
+  static const Standard_GUID ID("efd213e9-6dfd-11d4-b9c8-0060b0ee281b");
   return ID;
 }
 
@@ -267,9 +267,9 @@ Standard_GUID XCAFDoc::ViewRefPlaneGUID()
 //purpose  : 
 //=======================================================================
 
-Standard_GUID XCAFDoc::ViewRefNoteGUID()
+const Standard_GUID& XCAFDoc::ViewRefNoteGUID()
 {
-  static Standard_GUID ID("C814ACC6-43AC-4812-9B2A-4E9A2A549354");
+  static const Standard_GUID ID("C814ACC6-43AC-4812-9B2A-4E9A2A549354");
   return ID;
 }
 
@@ -278,9 +278,9 @@ Standard_GUID XCAFDoc::ViewRefNoteGUID()
 //purpose  : 
 //=======================================================================
 
-Standard_GUID XCAFDoc::ViewRefAnnotationGUID()
+const Standard_GUID& XCAFDoc::ViewRefAnnotationGUID()
 {
-  static Standard_GUID ID("A2B5BA42-DD00-43f5-8882-4B5F8E76B9D2");
+  static const Standard_GUID ID("A2B5BA42-DD00-43f5-8882-4B5F8E76B9D2");
   return ID;
 }
 
@@ -289,8 +289,8 @@ Standard_GUID XCAFDoc::ViewRefAnnotationGUID()
 //purpose  : 
 //=======================================================================
 
-Standard_GUID XCAFDoc::LockGUID()
+const Standard_GUID& XCAFDoc::LockGUID()
 {
-  static Standard_GUID ID("efd213eb-6dfd-11d4-b9c8-0060b0ee281b");
+  static const Standard_GUID ID("efd213eb-6dfd-11d4-b9c8-0060b0ee281b");
   return ID;
 }

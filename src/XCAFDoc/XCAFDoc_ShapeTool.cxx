@@ -46,6 +46,7 @@
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopTools_ListOfShape.hxx>
+#include <TopTools_MapOfOrientedShape.hxx>
 #include <XCAFDoc.hxx>
 #include <XCAFDoc_GraphNode.hxx>
 #include <XCAFDoc_Location.hxx>
@@ -1971,6 +1972,7 @@ Standard_Boolean XCAFDoc_ShapeTool::updateComponent(const TDF_Label& theItemLabe
   // Get the currently stored compound for the assembly
   TopoDS_Shape aCurrentRootShape;
   GetShape(theItemLabel, aCurrentRootShape);
+  TopTools_MapOfOrientedShape aCurrentRootShapeMap (aCurrentRootShape.NbChildren());
 
   // Get components of the assembly
   TDF_LabelSequence aComponentLabs;
@@ -1982,7 +1984,7 @@ Standard_Boolean XCAFDoc_ShapeTool::updateComponent(const TDF_Label& theItemLabe
   // Compare the number of components in XDE structure with the number of
   // components in topological structure. A component may happen to be removed,
   // so we have to update the assembly compound
-  Standard_Integer aNumTopoComponents = aCurrentRootShape.NbChildren();
+  const Standard_Integer aNumTopoComponents = aCurrentRootShape.NbChildren();
   //
   if ( aNumTopoComponents != aComponentLabs.Length() )
     isModified = Standard_True;
@@ -2021,21 +2023,23 @@ Standard_Boolean XCAFDoc_ShapeTool::updateComponent(const TDF_Label& theItemLabe
     else
     {
       // Search for a part in the actual compound of the ultimate assembly.
-      // If the part is there, then the compound is up-to-date, so it does
-      // not require rebuilding
-      Standard_Boolean isPartFound = Standard_False;
-      for ( TopoDS_Iterator aTopoIt(aCurrentRootShape); aTopoIt.More(); aTopoIt.Next() )
+      // If the part is there, then the compound is up-to-date, so it does not require rebuilding
+      if (!isModified)
       {
-        if ( aTopoIt.Value() == aComponentShape )
+        if (aCurrentRootShapeMap.IsEmpty())
         {
-          isPartFound = Standard_True;
-          break;
+          // optimize search for next labels in aComponentLabs
+          for (TopoDS_Iterator aTopoIt(aCurrentRootShape); aTopoIt.More(); aTopoIt.Next())
+          {
+            aCurrentRootShapeMap.Add (aTopoIt.Value());
+          }
+        }
+        if (!aCurrentRootShapeMap.Contains (aComponentShape))
+        {
+          // Part has been modified somewhere, so the compound has to be rebuilt
+          isModified = Standard_True;
         }
       }
-
-      if ( !isPartFound && !isModified )
-        isModified = Standard_True; // Part has been modified somewhere, so the compound
-                                    // has to be rebuilt
     }
 
     // Fill the list of shapes composing a new compound for the assembly

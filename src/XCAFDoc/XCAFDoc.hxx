@@ -68,105 +68,68 @@ public:
   
   //! class for containing GraphNodes.
   //! Returns GUID for UAttribute identifying assembly
-  Standard_EXPORT static Standard_GUID AssemblyGUID();
+  Standard_EXPORT static const Standard_GUID& AssemblyGUID();
   
   //! Returns GUID for TreeNode representing assembly link
-  Standard_EXPORT static Standard_GUID ShapeRefGUID();
+  Standard_EXPORT static const Standard_GUID& ShapeRefGUID();
   
   //! Return GUIDs for TreeNode representing specified types of colors
-  Standard_EXPORT static Standard_GUID ColorRefGUID (const XCAFDoc_ColorType type);
+  Standard_EXPORT static const Standard_GUID& ColorRefGUID (const XCAFDoc_ColorType type);
   
   //! Return GUIDs for TreeNode representing specified types of DGT
-  Standard_EXPORT static Standard_GUID DimTolRefGUID();
+  Standard_EXPORT static const Standard_GUID& DimTolRefGUID();
 
   //! Return GUIDs for TreeNode representing specified types of Dimension
-  Standard_EXPORT static Standard_GUID DimensionRefFirstGUID() ;
+  Standard_EXPORT static const Standard_GUID& DimensionRefFirstGUID() ;
 
   //! Return GUIDs for TreeNode representing specified types of Dimension
-  Standard_EXPORT static Standard_GUID DimensionRefSecondGUID() ;
+  Standard_EXPORT static const Standard_GUID& DimensionRefSecondGUID() ;
 
   //! Return GUIDs for TreeNode representing specified types of GeomTolerance
-  Standard_EXPORT static Standard_GUID GeomToleranceRefGUID() ;
+  Standard_EXPORT static const Standard_GUID& GeomToleranceRefGUID() ;
   
   //! Return GUIDs for TreeNode representing specified types of datum
-  Standard_EXPORT static Standard_GUID DatumRefGUID();
+  Standard_EXPORT static const Standard_GUID& DatumRefGUID();
   
   //! Return GUIDs for TreeNode representing connections Datum-Toler
-  Standard_EXPORT static Standard_GUID DatumTolRefGUID();
+  Standard_EXPORT static const Standard_GUID& DatumTolRefGUID();
   
-  Standard_EXPORT static Standard_GUID LayerRefGUID();
+  Standard_EXPORT static const Standard_GUID& LayerRefGUID();
   
-  Standard_EXPORT static Standard_GUID MaterialRefGUID();
+  Standard_EXPORT static const Standard_GUID& MaterialRefGUID();
 
   //! Return GUIDs for representing notes
-  Standard_EXPORT static Standard_GUID NoteRefGUID();
+  Standard_EXPORT static const Standard_GUID& NoteRefGUID();
 
-  Standard_EXPORT static Standard_GUID InvisibleGUID();
+  Standard_EXPORT static const Standard_GUID& InvisibleGUID();
 
-  Standard_EXPORT static Standard_GUID ColorByLayerGUID();
+  Standard_EXPORT static const Standard_GUID& ColorByLayerGUID();
   
   //! Returns GUID for UAttribute identifying external reference on no-step file
-  Standard_EXPORT static Standard_GUID ExternRefGUID();
+  Standard_EXPORT static const Standard_GUID& ExternRefGUID();
   
   //! Returns GUID for UAttribute identifying specified higher usage occurrence
-  Standard_EXPORT static Standard_GUID SHUORefGUID();
+  Standard_EXPORT static const Standard_GUID& SHUORefGUID();
 
   //! Return GUIDs for TreeNode representing specified types of View
-  Standard_EXPORT static Standard_GUID ViewRefGUID();
+  Standard_EXPORT static const Standard_GUID& ViewRefGUID();
 
   //! Return GUIDs for TreeNode representing specified types of View
-  Standard_EXPORT static Standard_GUID ViewRefShapeGUID();
+  Standard_EXPORT static const Standard_GUID& ViewRefShapeGUID();
 
   //! Return GUIDs for TreeNode representing specified types of View
-  Standard_EXPORT static Standard_GUID ViewRefGDTGUID();
+  Standard_EXPORT static const Standard_GUID& ViewRefGDTGUID();
   
   //! Return GUIDs for TreeNode representing specified types of View
-  Standard_EXPORT static Standard_GUID ViewRefPlaneGUID();
+  Standard_EXPORT static const Standard_GUID& ViewRefPlaneGUID();
 
   //! Return GUIDs for GraphNode representing specified types of View
-  Standard_EXPORT static Standard_GUID ViewRefNoteGUID();
-  Standard_EXPORT static Standard_GUID ViewRefAnnotationGUID();
+  Standard_EXPORT static const Standard_GUID& ViewRefNoteGUID();
+  Standard_EXPORT static const Standard_GUID& ViewRefAnnotationGUID();
 
   //! Returns GUID for UAttribute identifying lock flag
-  Standard_EXPORT static Standard_GUID LockGUID();
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class XCAFDoc_DocumentTool;
-friend class XCAFDoc_Location;
-friend class XCAFDoc_Color;
-friend class XCAFDoc_DimTol;
-friend class XCAFDoc_Datum;
-friend class XCAFDoc_Material;
-friend class XCAFDoc_Volume;
-friend class XCAFDoc_Area;
-friend class XCAFDoc_Centroid;
-friend class XCAFDoc_ClippingPlaneTool;
-friend class XCAFDoc_ShapeTool;
-friend class XCAFDoc_ShapeMapTool;
-friend class XCAFDoc_ColorTool;
-friend class XCAFDoc_DimTolTool;
-friend class XCAFDoc_LayerTool;
-friend class XCAFDoc_MaterialTool;
-friend class XCAFDoc_GraphNode;
-friend class XCAFDoc_Editor;
-friend class XCAFDoc_ViewTool;
+  Standard_EXPORT static const Standard_GUID& LockGUID();
 
 };
-
-
-
-
-
-
 
 #endif // _XCAFDoc_HeaderFile
