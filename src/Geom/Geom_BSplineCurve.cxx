@@ -65,20 +65,20 @@ static void CheckCurveData
  const Standard_Boolean            Periodic)
 {
   if (Degree < 1 || Degree > Geom_BSplineCurve::MaxDegree()) {
-    throw Standard_ConstructionError();
+    throw Standard_ConstructionError("BSpline curve: invalid degree");
   }
   
-  if (CPoles.Length() < 2)                throw Standard_ConstructionError();
-  if (CKnots.Length() != CMults.Length()) throw Standard_ConstructionError();
+  if (CPoles.Length() < 2)                throw Standard_ConstructionError("BSpline curve: at least 2 poles required");
+  if (CKnots.Length() != CMults.Length()) throw Standard_ConstructionError("BSpline curve: Knot and Mult array size mismatch");
   
   for (Standard_Integer I = CKnots.Lower(); I < CKnots.Upper(); I++) {
     if (CKnots (I+1) - CKnots (I) <= Epsilon (Abs(CKnots (I)))) {
-      throw Standard_ConstructionError();
+      throw Standard_ConstructionError("BSpline curve: Knots interval values too close");
     }
   }
   
   if (CPoles.Length() != BSplCLib::NbPoles(Degree,Periodic,CMults))
-    throw Standard_ConstructionError();
+    throw Standard_ConstructionError("BSpline curve: # Poles and degree mismatch");
 }
 
 //=======================================================================
@@ -187,12 +187,12 @@ Geom_BSplineCurve::Geom_BSplineCurve
                  Periodic);
 
   if (Weights.Length() != Poles.Length())
-    throw Standard_ConstructionError("Geom_BSplineCurve");
+    throw Standard_ConstructionError("Geom_BSplineCurve: Weights and Poles array size mismatch");
 
   Standard_Integer i;
   for (i = Weights.Lower(); i <= Weights.Upper(); i++) {
     if (Weights(i) <= gp::Resolution())  
-      throw Standard_ConstructionError("Geom_BSplineCurve");
+      throw Standard_ConstructionError("Geom_BSplineCurve: Weights values too small");
   }
   
   // check really rational
@@ -237,7 +237,7 @@ void Geom_BSplineCurve::IncreaseDegree  (const Standard_Integer Degree)
   if (Degree == deg) return;
   
   if (Degree < deg || Degree > Geom_BSplineCurve::MaxDegree()) {
-    throw Standard_ConstructionError();
+    throw Standard_ConstructionError("BSpline curve: IncreaseDegree: bad degree value");
   }
   Standard_Integer FromK1 = FirstUKnotIndex ();
   Standard_Integer ToK2   = LastUKnotIndex  ();
@@ -406,10 +406,10 @@ Standard_Boolean  Geom_BSplineCurve::RemoveKnot(const Standard_Integer Index,
   Standard_Integer I2  = LastUKnotIndex  ();
 
   if ( !periodic && (Index <= I1 || Index >= I2) ) {
-    throw Standard_OutOfRange();
+    throw Standard_OutOfRange("BSpline curve: RemoveKnot: index out of range");
   }
   else if ( periodic  && (Index < I1 || Index > I2)) {
-    throw Standard_OutOfRange();
+    throw Standard_OutOfRange("BSpline curve: RemoveKnot: index out of range");
   }
   
   const TColgp_Array1OfPnt   & oldpoles   = poles->Array1();
@@ -652,20 +652,20 @@ void Geom_BSplineCurve::SetKnot
 (const Standard_Integer Index,
  const Standard_Real K)
 {
-  if (Index < 1 || Index > knots->Length())     throw Standard_OutOfRange();
+  if (Index < 1 || Index > knots->Length())     throw Standard_OutOfRange("BSpline curve: SetKnot: Index and #knots mismatch");
   Standard_Real DK = Abs(Epsilon (K));
   if (Index == 1) { 
-    if (K >= knots->Value(2) - DK) throw Standard_ConstructionError();
+    if (K >= knots->Value(2) - DK) throw Standard_ConstructionError("BSpline curve: SetKnot: K out of range");
   }
   else if (Index == knots->Length()) {
     if (K <= knots->Value (knots->Length()-1) + DK)  {
-      throw Standard_ConstructionError();
+      throw Standard_ConstructionError("BSpline curve: SetKnot: K out of range");
     }
   }
   else {
     if (K <= knots->Value(Index-1) + DK ||
 	K >= knots->Value(Index+1) - DK ) {
-      throw Standard_ConstructionError();
+      throw Standard_ConstructionError("BSpline curve: SetKnot: K out of range");
     }
   }
   if (K != knots->Value (Index)) {
@@ -931,7 +931,7 @@ void Geom_BSplineCurve::SetPole
 (const Standard_Integer Index,
  const gp_Pnt& P)
 {
-  if (Index < 1 || Index > poles->Length()) throw Standard_OutOfRange();
+  if (Index < 1 || Index > poles->Length()) throw Standard_OutOfRange("BSpline curve: SetPole: index and #pole mismatch");
   poles->SetValue (Index, P);
   maxderivinvok = 0;
 }
@@ -959,9 +959,9 @@ void Geom_BSplineCurve::SetWeight
 (const Standard_Integer Index,
  const Standard_Real W)
 {
-  if (Index < 1 || Index > poles->Length())   throw Standard_OutOfRange();
+  if (Index < 1 || Index > poles->Length())   throw Standard_OutOfRange("BSpline curve: SetWeight: Index and #pole mismatch");
 
-  if (W <= gp::Resolution ())     throw Standard_ConstructionError();
+  if (W <= gp::Resolution ())     throw Standard_ConstructionError("BSpline curve: SetWeight: Weight too small");
 
 
   Standard_Boolean rat = IsRational() || (Abs(W - 1.) > gp::Resolution());
@@ -998,7 +998,7 @@ void Geom_BSplineCurve::MovePoint(const Standard_Real U,
 {
   if (Index1 < 1 || Index1 > poles->Length() || 
       Index2 < 1 || Index2 > poles->Length() || Index1 > Index2) {
-    throw Standard_OutOfRange();
+    throw Standard_OutOfRange("BSpline curve: MovePoint: Index and #pole mismatch");
   }
   TColgp_Array1OfPnt npoles(1, poles->Length());
   gp_Pnt P0;

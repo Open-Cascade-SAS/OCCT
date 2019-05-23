@@ -62,35 +62,35 @@ static void CheckSurfaceData
 {
   if (UDegree < 1 || UDegree > Geom_BSplineSurface::MaxDegree () || 
       VDegree < 1 || VDegree > Geom_BSplineSurface::MaxDegree ()) {
-    throw Standard_ConstructionError("Geom_BSplineSurface");
+    throw Standard_ConstructionError("Geom_BSplineSurface: invalid degree");
   }
   if (SPoles.ColLength () < 2 || SPoles.RowLength () < 2) {
-    throw Standard_ConstructionError("Geom_BSplineSurface");
+    throw Standard_ConstructionError("Geom_BSplineSurface: at least 2 poles required");
   }
 
   if (SUKnots.Length() != SUMults.Length() ||
       SVKnots.Length() != SVMults.Length()) {
-    throw Standard_ConstructionError("Geom_BSplineSurface");
+    throw Standard_ConstructionError("Geom_BSplineSurface: Knot and Mult array size mismatch");
   }
 
   Standard_Integer i;
   for (i = SUKnots.Lower(); i < SUKnots.Upper(); i++) {
     if (SUKnots(i+1) - SUKnots(i) <= Epsilon(Abs(SUKnots(i)))) {
-      throw Standard_ConstructionError("Geom_BSplineSurface");
+      throw Standard_ConstructionError("Geom_BSplineSurface: UKnots interval values too close");
     }
   }
 
   for (i = SVKnots.Lower(); i < SVKnots.Upper(); i++) {
     if (SVKnots(i+1) - SVKnots(i) <= Epsilon(Abs(SVKnots(i)))) {
-      throw Standard_ConstructionError("Geom_BSplineSurface");
+      throw Standard_ConstructionError("Geom_BSplineSurface: VKnots interval values too close");
     }
   }
   
   if (SPoles.ColLength() != BSplCLib::NbPoles(UDegree,UPeriodic,SUMults))
-    throw Standard_ConstructionError("Geom_BSplineSurface");
+    throw Standard_ConstructionError("Geom_BSplineSurface: # U Poles and degree mismatch");
 
   if (SPoles.RowLength() != BSplCLib::NbPoles(VDegree,VPeriodic,SVMults))
-    throw Standard_ConstructionError("Geom_BSplineSurface");
+    throw Standard_ConstructionError("Geom_BSplineSurface: # V Poles and degree mismatch");
 }
 
 //=======================================================================
@@ -237,16 +237,16 @@ Geom_BSplineSurface::Geom_BSplineSurface
   // check weights
 
   if (Weights.ColLength() != Poles.ColLength())
-    throw Standard_ConstructionError("Geom_BSplineSurface");
+    throw Standard_ConstructionError("Geom_BSplineSurface: U Weights and Poles array size mismatch");
 
   if (Weights.RowLength() != Poles.RowLength())
-    throw Standard_ConstructionError("Geom_BSplineSurface");
+    throw Standard_ConstructionError("Geom_BSplineSurface: V Weights and Poles array size mismatch");
 
   Standard_Integer i,j;
   for (i = Weights.LowerRow(); i <= Weights.UpperRow(); i++) {
     for (j = Weights.LowerCol(); j <= Weights.UpperCol(); j++) {
       if (Weights(i,j) <= gp::Resolution())  
-	throw Standard_ConstructionError("Geom_BSplineSurface");
+        throw Standard_ConstructionError("Geom_BSplineSurface: Weights values too small");
     }
   }
   
@@ -357,7 +357,7 @@ void Geom_BSplineSurface::IncreaseDegree (const Standard_Integer UDegree,
 { 
   if (UDegree != udeg) {
     if ( UDegree < udeg || UDegree > Geom_BSplineSurface::MaxDegree())
-      throw Standard_ConstructionError();
+      throw Standard_ConstructionError("Geom_BSplineSurface::IncreaseDegree: bad U degree value");
     
     Standard_Integer FromK1 = FirstUKnotIndex();
     Standard_Integer ToK2   = LastUKnotIndex();
@@ -409,7 +409,7 @@ void Geom_BSplineSurface::IncreaseDegree (const Standard_Integer UDegree,
 
   if (VDegree != vdeg) {
     if ( VDegree < vdeg || VDegree > Geom_BSplineSurface::MaxDegree())
-      throw Standard_ConstructionError();
+      throw Standard_ConstructionError("Geom_BSplineSurface::IncreaseDegree: bad V degree value");
     
     Standard_Integer FromK1 = FirstVKnotIndex();
     Standard_Integer ToK2   = LastVKnotIndex();
@@ -816,22 +816,24 @@ void Geom_BSplineSurface::SetUKnot
 (const Standard_Integer UIndex,
  const Standard_Real    K      )
 {
-  if (UIndex < 1 || UIndex > uknots->Length()) throw Standard_OutOfRange();
+  if (UIndex < 1 || UIndex > uknots->Length())
+    throw Standard_OutOfRange("Geom_BSplineSurface::SetUKnot: Index and #knots mismatch");
 
   Standard_Integer NewIndex = UIndex;
   Standard_Real DU = Abs(Epsilon (K));
   if (UIndex == 1) {
-    if (K >= uknots->Value (2) - DU) throw Standard_ConstructionError();
+    if (K >= uknots->Value (2) - DU)
+      throw Standard_ConstructionError("Geom_BSplineSurface::SetUKnot: K out of range");
   }
   else if (UIndex == uknots->Length()) {
     if (K <= uknots->Value (uknots->Length()-1) + DU)  {
-      throw Standard_ConstructionError();
+      throw Standard_ConstructionError("Geom_BSplineSurface::SetUKnot: K out of range");
     }
   }
   else {
     if (K <= uknots->Value (NewIndex-1) + DU || 
 	K >= uknots->Value (NewIndex+1) - DU ) { 
-      throw Standard_ConstructionError();
+      throw Standard_ConstructionError("Geom_BSplineSurface::SetUKnot: K out of range");
     } 
   }
   
@@ -853,16 +855,16 @@ void Geom_BSplineSurface::SetUKnots (const TColStd_Array1OfReal& UK) {
   Standard_Integer Upper = UK.Upper();
   if (Lower < 1 || Lower > uknots->Length() ||
       Upper < 1 || Upper > uknots->Length() ) {
-    throw Standard_OutOfRange();
+    throw Standard_OutOfRange("Geom_BSplineSurface::SetUKnots: invalid array dimension");
   }
   if (Lower > 1) {
     if (Abs (UK (Lower) - uknots->Value (Lower-1)) <= gp::Resolution()) {
-      throw Standard_ConstructionError();
+      throw Standard_ConstructionError("Geom_BSplineSurface::SetUKnots: invalid knot value");
     }
   }
   if (Upper < uknots->Length ()) {
     if (Abs (UK (Upper) - uknots->Value (Upper+1)) <= gp::Resolution()) {
-      throw Standard_ConstructionError();
+      throw Standard_ConstructionError("Geom_BSplineSurface::SetUKnots: invalid knot value");
     }
   }
   Standard_Real K1 = UK (Lower);
@@ -870,7 +872,7 @@ void Geom_BSplineSurface::SetUKnots (const TColStd_Array1OfReal& UK) {
     uknots->SetValue (i, UK(i));
     if (i != Lower) {
       if (Abs (UK(i) - K1) <= gp::Resolution()) {
-        throw Standard_ConstructionError();
+        throw Standard_ConstructionError("Geom_BSplineSurface::SetUKnots: invalid knot value");
       }
       K1 = UK (i);
     }
@@ -903,23 +905,24 @@ void Geom_BSplineSurface::SetVKnot
 (const Standard_Integer VIndex,
  const Standard_Real    K)
 {
-  if (VIndex < 1 || VIndex > vknots->Length())  throw Standard_OutOfRange();
+  if (VIndex < 1 || VIndex > vknots->Length())
+    throw Standard_OutOfRange("Geom_BSplineSurface::SetVKnot: Index and #knots mismatch");
   Standard_Integer NewIndex = VIndex + vknots->Lower() - 1;
   Standard_Real DV = Abs(Epsilon (K));
   if (VIndex == 1) {
     if (K >=  vknots->Value (2) - DV) {
-      throw Standard_ConstructionError();
+      throw Standard_ConstructionError("Geom_BSplineSurface::SetVKnot: K out of range");
     }
   }
   else if (VIndex == vknots->Length()) {
     if (K <= vknots->Value (vknots->Length()-1) + DV)  {
-      throw Standard_ConstructionError();
+      throw Standard_ConstructionError("Geom_BSplineSurface::SetVKnot: K out of range");
     }
   }
   else {
     if (K <= vknots->Value (NewIndex-1) + DV || 
 	K >= vknots->Value (NewIndex+1) - DV ) { 
-      throw Standard_ConstructionError();
+      throw Standard_ConstructionError("Geom_BSplineSurface::SetVKnot: K out of range");
     } 
   }
   
@@ -941,16 +944,16 @@ void Geom_BSplineSurface::SetVKnots (const TColStd_Array1OfReal& VK) {
   Standard_Integer Upper = VK.Upper();
   if (Lower < 1 || Lower > vknots->Length() ||
       Upper < 1 || Upper > vknots->Length() ) {
-    throw Standard_OutOfRange();
+    throw Standard_OutOfRange("Geom_BSplineSurface::SetVKnots: invalid array dimension");
   }
   if (Lower > 1) {
     if (Abs (VK (Lower) - vknots->Value (Lower-1)) <= gp::Resolution()) {
-      throw Standard_ConstructionError();
+      throw Standard_ConstructionError("Geom_BSplineSurface::SetVKnots: invalid knot value");
     }
   }
   if (Upper < vknots->Length ()) {
     if (Abs (VK (Upper) - vknots->Value (Upper+1)) <= gp::Resolution()) {
-      throw Standard_ConstructionError();
+      throw Standard_ConstructionError("Geom_BSplineSurface::SetVKnots: invalid knot value");
     }
   }
   Standard_Real K1 = VK (Lower);
@@ -958,7 +961,7 @@ void Geom_BSplineSurface::SetVKnots (const TColStd_Array1OfReal& VK) {
     vknots->SetValue (i, VK(i));
     if (i != Lower) {
       if (Abs (VK(i) - K1) <= gp::Resolution()) {
-        throw Standard_ConstructionError();
+        throw Standard_ConstructionError("Geom_BSplineSurface::SetVKnots: invalid knot value");
       }
       K1 = VK (i);
     }
@@ -1192,11 +1195,12 @@ void Geom_BSplineSurface::SetWeight (const Standard_Integer UIndex,
 				     const Standard_Integer VIndex,
 				     const Standard_Real    Weight)
 {
-  if (Weight <= gp::Resolution())  throw Standard_ConstructionError();
+  if (Weight <= gp::Resolution())
+    throw Standard_ConstructionError("Geom_BSplineSurface::SetWeight: Weight too small");
   TColStd_Array2OfReal & Weights = weights->ChangeArray2();
   if (UIndex < 1 || UIndex > Weights.ColLength() ||
       VIndex < 1 || VIndex > Weights.RowLength() ) {
-    throw Standard_OutOfRange();
+    throw Standard_OutOfRange("Geom_BSplineSurface::SetWeight: Index and #pole mismatch");
   }
   Weights (UIndex+Weights.LowerRow()-1, VIndex+Weights.LowerCol()-1) = Weight;
   Rational(Weights, urational, vrational);
@@ -1213,18 +1217,18 @@ void Geom_BSplineSurface::SetWeightCol
 {
   TColStd_Array2OfReal & Weights = weights->ChangeArray2();   
   if (VIndex < 1 || VIndex > Weights.RowLength()) {
-    throw Standard_OutOfRange();
+    throw Standard_OutOfRange("Geom_BSplineSurface::SetWeightCol: Index and #pole mismatch");
   }
   if (CPoleWeights.Lower() < 1 || 
       CPoleWeights.Lower() > Weights.ColLength() ||
       CPoleWeights.Upper() < 1 ||
       CPoleWeights.Upper() > Weights.ColLength()  ) {
-    throw Standard_ConstructionError();
+    throw Standard_ConstructionError("Geom_BSplineSurface::SetWeightCol: invalid array dimension");
   }
   Standard_Integer I = CPoleWeights.Lower();
   while (I <= CPoleWeights.Upper()) {
     if (CPoleWeights(I) <= gp::Resolution()) { 
-      throw Standard_ConstructionError();
+      throw Standard_ConstructionError("Geom_BSplineSurface::SetWeightCol: Weight too small");
     }
     Weights (I+Weights.LowerRow()-1, VIndex+Weights.LowerCol()-1) = 
       CPoleWeights (I);
@@ -1245,20 +1249,20 @@ void Geom_BSplineSurface::SetWeightRow
 {
   TColStd_Array2OfReal & Weights = weights->ChangeArray2();   
   if (UIndex < 1 || UIndex > Weights.ColLength()) {
-    throw Standard_OutOfRange();
+    throw Standard_OutOfRange("Geom_BSplineSurface::SetWeightRow: Index and #pole mismatch");
   }
   if (CPoleWeights.Lower() < 1 ||
       CPoleWeights.Lower() > Weights.RowLength() ||
       CPoleWeights.Upper() < 1 ||
       CPoleWeights.Upper() > Weights.RowLength()  ) {
     
-    throw Standard_ConstructionError();
+    throw Standard_ConstructionError("Geom_BSplineSurface::SetWeightRow: invalid array dimension");
   }
   Standard_Integer I = CPoleWeights.Lower();
 
   while (I <= CPoleWeights.Upper()) {
     if (CPoleWeights(I)<=gp::Resolution()) {
-      throw Standard_ConstructionError();
+      throw Standard_ConstructionError("Geom_BSplineSurface::SetWeightRow: Weight too small");
     }
     Weights (UIndex+Weights.LowerRow()-1, I+Weights.LowerCol()-1) = 
       CPoleWeights (I);

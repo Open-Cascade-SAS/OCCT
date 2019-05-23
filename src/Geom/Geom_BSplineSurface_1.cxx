@@ -918,14 +918,14 @@ void Geom_BSplineSurface::SetVPeriodic ()
 void Geom_BSplineSurface::SetUOrigin(const Standard_Integer Index)
 {
   if (!uperiodic)
-    throw Standard_NoSuchObject("Geom_BSplineSurface::SetUOrigin");
+    throw Standard_NoSuchObject("Geom_BSplineSurface::SetUOrigin: surface is not U periodic");
 
   Standard_Integer i,j,k;
   Standard_Integer first = FirstUKnotIndex();
   Standard_Integer last  = LastUKnotIndex();
 
   if ((Index < first) || (Index > last))
-    throw Standard_DomainError("Geom_BSplineCurve::SetUOrigin");
+    throw Standard_DomainError("Geom_BSplineCurve::SetUOrigin: Index out of range");
 
   Standard_Integer nbknots = uknots->Length();
   Standard_Integer nbpoles = poles->ColLength();
@@ -1016,14 +1016,14 @@ void Geom_BSplineSurface::SetUOrigin(const Standard_Integer Index)
 void Geom_BSplineSurface::SetVOrigin(const Standard_Integer Index)
 {
   if (!vperiodic)
-    throw Standard_NoSuchObject("Geom_BSplineSurface::SetVOrigin");
+    throw Standard_NoSuchObject("Geom_BSplineSurface::SetVOrigin: surface is not V periodic");
 
   Standard_Integer i,j,k;
   Standard_Integer first = FirstVKnotIndex();
   Standard_Integer last  = LastVKnotIndex();
 
   if ((Index < first) || (Index > last))
-    throw Standard_DomainError("Geom_BSplineCurve::SetVOrigin");
+    throw Standard_DomainError("Geom_BSplineCurve::SetVOrigin: Index out of range");
 
   Standard_Integer nbknots = vknots->Length();
   Standard_Integer nbpoles = poles->RowLength();
@@ -1494,13 +1494,15 @@ Standard_Real Geom_BSplineSurface::VReversedParameter
 void Geom_BSplineSurface::SetPoleCol (const Standard_Integer      VIndex,
 				      const TColgp_Array1OfPnt&   CPoles)
 {
-  if (VIndex < 1 || VIndex > poles->RowLength()) {
-    throw Standard_OutOfRange();
-    }
+  if (VIndex < 1 || VIndex > poles->RowLength())
+  {
+    throw Standard_OutOfRange("Geom_BSplineSurface::SetPoleCol: VIndex out of range");
+  }
   if (CPoles.Lower() < 1 || CPoles.Lower() > poles->ColLength() || 
-      CPoles.Upper() < 1 || CPoles.Upper() > poles->ColLength()) {
-    throw Standard_ConstructionError();
-    }
+      CPoles.Upper() < 1 || CPoles.Upper() > poles->ColLength())
+  {
+    throw Standard_ConstructionError("Geom_BSplineSurface::SetPoleCol: invalid array dimension");
+  }
 
   TColgp_Array2OfPnt & Poles = poles->ChangeArray2();
 
@@ -1530,13 +1532,15 @@ void Geom_BSplineSurface::SetPoleCol (const Standard_Integer      VIndex,
 void Geom_BSplineSurface::SetPoleRow (const Standard_Integer    UIndex,
 				      const TColgp_Array1OfPnt& CPoles)
 {
-  if (UIndex < 1 || UIndex > poles->ColLength()  ) {
-    throw Standard_OutOfRange();
-    }
+  if (UIndex < 1 || UIndex > poles->ColLength())
+  {
+    throw Standard_OutOfRange("Geom_BSplineSurface::SetPoleRow: UIndex out of range");
+  }
   if (CPoles.Lower() < 1 || CPoles.Lower() > poles->RowLength() || 
-      CPoles.Upper() < 1 || CPoles.Upper() > poles->RowLength() ) {
-    throw Standard_ConstructionError();
-    }
+      CPoles.Upper() < 1 || CPoles.Upper() > poles->RowLength())
+  {
+    throw Standard_ConstructionError("Geom_BSplineSurface::SetPoleRow: invalid array dimension");
+  }
 
   TColgp_Array2OfPnt & Poles = poles->ChangeArray2();
 
@@ -1604,8 +1608,9 @@ void Geom_BSplineSurface::MovePoint(const Standard_Real U,
   if (UIndex1 < 1 || UIndex1 > poles->UpperRow() || 
       UIndex2 < 1 || UIndex2 > poles->UpperRow() || UIndex1 > UIndex2 ||
       VIndex1 < 1 || VIndex1 > poles->UpperCol() || 
-      VIndex2 < 1 || VIndex2 > poles->UpperCol() || VIndex1 > VIndex2) {
-    throw Standard_OutOfRange();
+      VIndex2 < 1 || VIndex2 > poles->UpperCol() || VIndex1 > VIndex2)
+  {
+    throw Standard_OutOfRange ("Geom_BSplineSurface::MovePoint: Index and #pole mismatch");
   }
 
   TColgp_Array2OfPnt npoles(1, poles->UpperRow(), 1, poles->UpperCol());
@@ -1911,11 +1916,13 @@ Standard_Boolean  Geom_BSplineSurface::RemoveUKnot
   Standard_Integer I1 = FirstUKnotIndex ();
   Standard_Integer I2 = LastUKnotIndex  ();
   
-  if ( !uperiodic && (Index <= I1 || Index >= I2) ) {
-    throw Standard_OutOfRange();
+  if ( !uperiodic && (Index <= I1 || Index >= I2) )
+  {
+    throw Standard_OutOfRange("Geom_BSplineSurface::RemoveUKnot: invalid Index");
   }
-  else if ( uperiodic  && (Index < I1 || Index > I2)) {
-    throw Standard_OutOfRange();
+  else if ( uperiodic  && (Index < I1 || Index > I2))
+  {
+    throw Standard_OutOfRange("Geom_BSplineSurface::RemoveUKnot: invalid Index for periodic case");
   }
   
   const TColgp_Array2OfPnt   & oldpoles = poles->Array2();
@@ -1992,11 +1999,12 @@ Standard_Boolean  Geom_BSplineSurface::RemoveVKnot
   Standard_Integer I1 = FirstVKnotIndex ();
   Standard_Integer I2 = LastVKnotIndex  ();
   
-  if ( !vperiodic && (Index <= I1 || Index >= I2) ) {
-    throw Standard_OutOfRange();
+  if ( !vperiodic && (Index <= I1 || Index >= I2) )
+  {
+    throw Standard_OutOfRange("Geom_BSplineSurface::RemoveVKnot: invalid Index");
   }
   else if ( vperiodic  && (Index < I1 || Index > I2)) {
-    throw Standard_OutOfRange();
+    throw Standard_OutOfRange("Geom_BSplineSurface::RemoveVKnot: invalid Index for periodic case");
   }
   
   const TColgp_Array2OfPnt   & oldpoles = poles->Array2();
