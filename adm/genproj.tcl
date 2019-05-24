@@ -1377,11 +1377,16 @@ proc osutils:csfList { theOS theCsfLibsMap theCsfFrmsMap } {
     set aLibsMap(CSF_TBB) ""
   } else {
     set aLibsMap(CSF_dl)           "dl"
-    if { "$theOS" == "mac" } {
+    if { "$theOS" == "mac" || "$theOS" == "ios" } {
       set aLibsMap(CSF_objc)       "objc"
-      set aFrmsMap(CSF_Appkit)     "AppKit"
+      if { "$theOS" == "ios" } {
+        set aFrmsMap(CSF_Appkit)     "UIKit"
+        set aFrmsMap(CSF_OpenGlLibs) "OpenGLES"
+      } else {
+        set aFrmsMap(CSF_Appkit)     "AppKit"
+        set aFrmsMap(CSF_OpenGlLibs) "OpenGL"
+      }
       set aFrmsMap(CSF_IOKit)      "IOKit"
-      set aFrmsMap(CSF_OpenGlLibs) "OpenGL"
       set aFrmsMap(CSF_TclLibs)    "Tcl"
       set aLibsMap(CSF_TclLibs)    ""
       set aFrmsMap(CSF_TclTkLibs)  "Tk"
@@ -2670,7 +2675,7 @@ proc OS:xcodeproj { theModules theOutDir theGuidsMap theLibType thePlatform} {
 }
 
 # Generates dependencies section for Xcode project files.
-proc osutils:xcdtk:deps {theToolKit theTargetType theGuidsMap theFileRefSection theDepsGuids theDepsRefGuids theIsStatic} {
+proc osutils:xcdtk:deps {theToolKit theTargetType theGuidsMap theFileRefSection theDepsGuids theDepsRefGuids thePlatform theIsStatic} {
   upvar $theGuidsMap         aGuidsMap
   upvar $theFileRefSection   aFileRefSection
   upvar $theDepsGuids        aDepsGuids
@@ -2694,7 +2699,7 @@ proc osutils:xcdtk:deps {theToolKit theTargetType theGuidsMap theFileRefSection 
     }
   }
 
-  osutils:usedOsLibs $theToolKit "mac" aLibs aFrameworks
+  osutils:usedOsLibs $theToolKit $thePlatform aLibs aFrameworks
   set aUsedLibs [concat $aUsedLibs $aLibs]
   set aUsedLibs [concat $aUsedLibs $aFrameworks]
   foreach tkx $aUsedLibs {
@@ -2909,7 +2914,7 @@ proc osutils:xcdtk { theOutDir theToolKit theGuidsMap theIsStatic thePlatform {t
   }
 
   puts $aPbxprojFile [osutils:xcdtk:sources $theToolKit $theTargetType aSrcFileRefSection aGroupSection aPackagesGuids aSrcFileGuids aGuidsMap anIncPaths]
-  puts $aPbxprojFile [osutils:xcdtk:deps    $theToolKit $theTargetType aGuidsMap aDepsFileRefSection aDepsGuids aDepsRefGuids $theIsStatic]
+  puts $aPbxprojFile [osutils:xcdtk:deps    $theToolKit $theTargetType aGuidsMap aDepsFileRefSection aDepsGuids aDepsRefGuids $thePlatform $theIsStatic]
   # End PBXBuildFile section
 
   # Begin PBXFileReference section

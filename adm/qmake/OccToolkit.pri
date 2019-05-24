@@ -46,9 +46,14 @@ win32 {
 } else:mac {
   CSF_dl         = -ldl
   CSF_objc       = -lobjc
-  CSF_Appkit     = -framework AppKit
+  iphoneos {
+    CSF_Appkit     = -framework UIKit
+    CSF_OpenGlLibs = -framework OpenGLES
+  } else {
+    CSF_Appkit     = -framework AppKit
+    CSF_OpenGlLibs = -framework OpenGL
+  }
   CSF_IOKit      = -framework IOKit
-  CSF_OpenGlLibs = -framework OpenGL
   CSF_TclLibs    = -framework Tcl
   CSF_TclTkLibs  = -framework Tk
 } else {

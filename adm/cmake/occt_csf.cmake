@@ -79,22 +79,29 @@ if (WIN32)
     set (CSF_objc        "objc")
 
     # frameworks
-    find_library (Appkit_LIB NAMES AppKit)
-    set (CSF_Appkit ${Appkit_LIB})
+    if (IOS)
+      find_library (Appkit_LIB NAMES UIKit)
+      set (CSF_Appkit ${Appkit_LIB})
+    else()
+      find_library (Appkit_LIB NAMES AppKit)
+      set (CSF_Appkit ${Appkit_LIB})
+    endif()
+    OCCT_CHECK_AND_UNSET (Appkit_LIB)
 
     find_library (IOKit_LIB NAMES IOKit)
     set (CSF_IOKit ${IOKit_LIB})
-
-    OCCT_CHECK_AND_UNSET (Appkit_LIB)
     OCCT_CHECK_AND_UNSET (IOKit_LIB)
 
-    if (USE_GLX)
+    if (IOS)
+      find_library (OpenGlLibs_LIB NAMES OpenGLES)
+      set (CSF_OpenGlLibs ${OpenGlLibs_LIB})
+      OCCT_CHECK_AND_UNSET (OpenGlLibs_LIB)
+    elseif (USE_GLX)
       set (CSF_OpenGlLibs GL)
       set (CSF_XwLibs     "X11 Xext Xmu Xi")
     else()
       find_library (OpenGlLibs_LIB NAMES OpenGL)
       set (CSF_OpenGlLibs ${OpenGlLibs_LIB})
-
       OCCT_CHECK_AND_UNSET (OpenGlLibs_LIB)
     endif()
     
