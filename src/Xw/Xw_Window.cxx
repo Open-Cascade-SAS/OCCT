@@ -24,6 +24,9 @@
 
 #if defined(HAVE_EGL) || defined(HAVE_GLES2)
   #include <EGL/egl.h>
+  #ifndef EGL_OPENGL_ES3_BIT
+    #define EGL_OPENGL_ES3_BIT 0x00000040
+  #endif
 #else
   #include <GL/glx.h>
 
@@ -120,16 +123,31 @@ Xw_Window::Xw_Window (const Handle(Aspect_DisplayConnection)& theXDisplay,
 
     EGLint aNbConfigs = 0;
     void* anEglConfig = NULL;
-    if (eglChooseConfig (anEglDisplay, aConfigAttribs, &anEglConfig, 1, &aNbConfigs) != EGL_TRUE
-     || anEglConfig == NULL)
+    for (Standard_Integer aGlesVer = 3; aGlesVer >= 2; --aGlesVer)
     {
-      eglGetError();
-      aConfigAttribs[4 * 2 + 1] = 16; // try config with smaller depth buffer
-      if (eglChooseConfig (anEglDisplay, aConfigAttribs, &anEglConfig, 1, &aNbConfigs) != EGL_TRUE
-       || anEglConfig == NULL)
+    #if defined(GL_ES_VERSION_2_0)
+      aConfigAttribs[6 * 2 + 1] = aGlesVer == 3 ? EGL_OPENGL_ES3_BIT : EGL_OPENGL_ES2_BIT;
+    #else
+      if (aGlesVer == 2)
       {
-        anEglConfig = NULL;
+        break;
       }
+    #endif
+
+      if (eglChooseConfig (anEglDisplay, aConfigAttribs, &anEglConfig, 1, &aNbConfigs) == EGL_TRUE
+       && anEglConfig != NULL)
+      {
+        break;
+      }
+      eglGetError();
+
+      aConfigAttribs[4 * 2 + 1] = 16; // try config with smaller depth buffer
+      if (eglChooseConfig (anEglDisplay, aConfigAttribs, &anEglConfig, 1, &aNbConfigs) == EGL_TRUE
+       && anEglConfig != NULL)
+      {
+        break;
+      }
+      eglGetError();
     }
 
     if (anEglConfig != NULL

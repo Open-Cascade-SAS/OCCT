@@ -50,6 +50,9 @@ IMPLEMENT_STANDARD_RTTIEXT(OpenGl_GraphicDriver,Graphic3d_GraphicDriver)
 
 #if defined(HAVE_EGL) || defined(HAVE_GLES2) || defined(OCCT_UWP) || defined(__ANDROID__) || defined(__QNX__)
   #include <EGL/egl.h>
+  #ifndef EGL_OPENGL_ES3_BIT
+    #define EGL_OPENGL_ES3_BIT 0x00000040
+  #endif
 #endif
 
 namespace
@@ -78,17 +81,30 @@ namespace
 
     EGLConfig aCfg = NULL;
     EGLint aNbConfigs = 0;
-    if (eglChooseConfig (theDisplay, aConfigAttribs, &aCfg, 1, &aNbConfigs) == EGL_TRUE
-     || aCfg != NULL)
+    for (Standard_Integer aGlesVer = 3; aGlesVer >= 2; --aGlesVer)
     {
-      return aCfg;
-    }
+    #if defined(GL_ES_VERSION_2_0)
+      aConfigAttribs[6 * 2 + 1] = aGlesVer == 3 ? EGL_OPENGL_ES3_BIT : EGL_OPENGL_ES2_BIT;
+    #else
+      if (aGlesVer == 2)
+      {
+        break;
+      }
+    #endif
 
-    eglGetError();
-    aConfigAttribs[4 * 2 + 1] = 16; // try config with smaller depth buffer
-    if (eglChooseConfig (theDisplay, aConfigAttribs, &aCfg, 1, &aNbConfigs) != EGL_TRUE
-     || aCfg == NULL)
-    {
+      if (eglChooseConfig (theDisplay, aConfigAttribs, &aCfg, 1, &aNbConfigs) == EGL_TRUE
+       && aCfg != NULL)
+      {
+        return aCfg;
+      }
+      eglGetError();
+
+      aConfigAttribs[4 * 2 + 1] = 16; // try config with smaller depth buffer
+      if (eglChooseConfig (theDisplay, aConfigAttribs, &aCfg, 1, &aNbConfigs) == EGL_TRUE
+       && aCfg != NULL)
+      {
+        return aCfg;
+      }
       eglGetError();
     }
     return aCfg;
@@ -280,15 +296,17 @@ Standard_Boolean OpenGl_GraphicDriver::InitContext()
   }
 
 #if defined(GL_ES_VERSION_2_0)
-  EGLint anEglCtxAttribs[] =
-  {
-    EGL_CONTEXT_CLIENT_VERSION, 2,
-    EGL_NONE
-  };
+  EGLint anEglCtxAttribs3[] = { EGL_CONTEXT_CLIENT_VERSION, 3, EGL_NONE, EGL_NONE };
+  EGLint anEglCtxAttribs2[] = { EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE, EGL_NONE };
   if (eglBindAPI (EGL_OPENGL_ES_API) != EGL_TRUE)
   {
     ::Message::DefaultMessenger()->Send ("Error: EGL does not provide OpenGL ES client!", Message_Fail);
     return Standard_False;
+  }
+  myEglContext = (Aspect_RenderingContext )eglCreateContext ((EGLDisplay )myEglDisplay, myEglConfig, EGL_NO_CONTEXT, anEglCtxAttribs3);
+  if ((EGLContext )myEglContext == EGL_NO_CONTEXT)
+  {
+    myEglContext = (Aspect_RenderingContext )eglCreateContext ((EGLDisplay )myEglDisplay, myEglConfig, EGL_NO_CONTEXT, anEglCtxAttribs2);
   }
 #else
   EGLint* anEglCtxAttribs = NULL;
@@ -297,9 +315,9 @@ Standard_Boolean OpenGl_GraphicDriver::InitContext()
     ::Message::DefaultMessenger()->Send ("Error: EGL does not provide OpenGL client!", Message_Fail);
     return Standard_False;
   }
+  myEglContext = (Aspect_RenderingContext )eglCreateContext ((EGLDisplay )myEglDisplay, myEglConfig, EGL_NO_CONTEXT, anEglCtxAttribs);
 #endif
 
-  myEglContext = (Aspect_RenderingContext )eglCreateContext ((EGLDisplay )myEglDisplay, myEglConfig, EGL_NO_CONTEXT, anEglCtxAttribs);
   if ((EGLContext )myEglContext == EGL_NO_CONTEXT)
   {
     ::Message::DefaultMessenger()->Send ("Error: EGL is unable to create OpenGL context!", Message_Fail);
