@@ -313,6 +313,26 @@ public:
   //! Pointer to function retrieved from library is statically casted
   //! to requested type - there no way to check real signature of exported function.
   //! The context should be bound before call.
+  //! @param theLastFailFuncName [out] set to theFuncName in case of failure, unmodified on success
+  //! @param theFuncName [in] function name to find
+  //! @param theFuncPtr [out] retrieved function pointer
+  //! @return TRUE on success
+  template <typename FuncType_t>
+  Standard_Boolean FindProcVerbose (const char*& theLastFailFuncName,
+                                    const char* theFuncName,
+                                    FuncType_t& theFuncPtr)
+  {
+    theFuncPtr = (FuncType_t )findProc (theFuncName);
+    if (theFuncPtr == NULL)
+    {
+      theLastFailFuncName = theFuncName;
+      return Standard_False;
+    }
+    return Standard_True;
+  }
+
+  //! Auxiliary template to retrieve GL function pointer.
+  //! Same as FindProcVerbose() but without auxiliary last function name argument.
   template <typename FuncType_t>
   Standard_Boolean FindProc (const char* theFuncName,
                              FuncType_t& theFuncPtr)
@@ -831,8 +851,9 @@ private:
   //! Note that this will never happen when using GLX, since returned functions can not be validated.
   //! @param theGlVerMajor the OpenGL major version with missing functions
   //! @param theGlVerMinor the OpenGL minor version with missing functions
-  Standard_EXPORT void checkWrongVersion (const Standard_Integer theGlVerMajor,
-                                          const Standard_Integer theGlVerMinor);
+  //! @param theLastFailedProc function name which cannot be found
+  Standard_EXPORT void checkWrongVersion (Standard_Integer theGlVerMajor, Standard_Integer theGlVerMinor,
+                                          const char* theLastFailedProc);
 
   //! Private initialization function that should be called only once.
   Standard_EXPORT void init (const Standard_Boolean theIsCoreProfile);

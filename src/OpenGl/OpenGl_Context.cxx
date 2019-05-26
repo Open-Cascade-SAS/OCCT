@@ -1164,24 +1164,42 @@ Standard_Boolean OpenGl_Context::IncludeMessage (const unsigned int theSource,
 // function : checkWrongVersion
 // purpose  :
 // ======================================================================
-void OpenGl_Context::checkWrongVersion (const Standard_Integer theGlVerMajor,
-                                        const Standard_Integer theGlVerMinor)
+void OpenGl_Context::checkWrongVersion (Standard_Integer theGlVerMajor, Standard_Integer theGlVerMinor,
+                                        const char* theLastFailedProc)
 {
   if (!IsGlGreaterEqual (theGlVerMajor, theGlVerMinor))
   {
     return;
   }
 
-  TCollection_ExtendedString aMsg = TCollection_ExtendedString()
-    + "Error! OpenGL context reports version "
-    + myGlVerMajor  + "." + myGlVerMinor
-    + " but does not export required functions for "
-    + theGlVerMajor + "." + theGlVerMinor;
-  PushMessage (GL_DEBUG_SOURCE_APPLICATION,
-               GL_DEBUG_TYPE_ERROR,
-               0,
-               GL_DEBUG_SEVERITY_HIGH,
-               aMsg);
+  PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
+               TCollection_AsciiString()
+               + "Error! OpenGL context reports version "
+               + myGlVerMajor  + "." + myGlVerMinor
+               + " but does not export required functions for " + theGlVerMajor + "." + theGlVerMinor
+               + " (" + (theLastFailedProc != NULL ? theLastFailedProc : "") + ")\n"
+               + "Please report this issue to OpenGL driver vendor '" + myVendor + "'");
+
+  // lower internal version
+  if (theGlVerMinor > 0)
+  {
+    myGlVerMajor = theGlVerMajor;
+    myGlVerMinor = theGlVerMinor - 1;
+    return;
+  }
+#if defined(GL_ES_VERSION_2_0)
+  switch (theGlVerMajor)
+  {
+    case 3: myGlVerMajor = 2; myGlVerMinor = 0; return;
+  }
+#else
+  switch (theGlVerMajor)
+  {
+    case 2: myGlVerMajor = 1; myGlVerMinor = 5; return;
+    case 3: myGlVerMajor = 2; myGlVerMinor = 1; return;
+    case 4: myGlVerMajor = 3; myGlVerMinor = 3; return;
+  }
+#endif
 }
 
 // =======================================================================
@@ -1280,7 +1298,8 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
   myDefaultVao = 0;
 
   //! Make record shorter to retrieve function pointer using variable with same name
-  #define FindProcShort(theFunc) FindProc(#theFunc, myFuncs->theFunc)
+  const char* aLastFailedProc = NULL;
+  #define FindProcShort(theFunc) FindProcVerbose(aLastFailedProc, #theFunc, myFuncs->theFunc)
 
 #if defined(GL_ES_VERSION_2_0)
 
@@ -1334,7 +1353,7 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
   extFragDepth = !IsGlGreaterEqual(3, 0)
                && CheckExtension ("GL_EXT_frag_depth");
   if (IsGlGreaterEqual (3, 1)
-   && FindProc ("glTexStorage2DMultisample", myFuncs->glTexStorage2DMultisample))
+   && FindProcShort (glTexStorage2DMultisample))
   {
     // MSAA RenderBuffers have been defined in OpenGL ES 3.0,
     // but MSAA Textures - only in OpenGL ES 3.1+
@@ -1353,9 +1372,9 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
   }
 
   arbTexFloat = IsGlGreaterEqual (3, 0)
-             && FindProc ("glTexImage3D", myFuncs->glTexImage3D);
+             && FindProcShort (glTexImage3D);
 
-  const Standard_Boolean hasTexBuffer32  = IsGlGreaterEqual (3, 2) && FindProc ("glTexBuffer", myFuncs->glTexBuffer);
+  const Standard_Boolean hasTexBuffer32  = IsGlGreaterEqual (3, 2) && FindProcShort (glTexBuffer);
   const Standard_Boolean hasExtTexBuffer = CheckExtension ("GL_EXT_texture_buffer") && FindProc ("glTexBufferEXT", myFuncs->glTexBuffer);
 
   if (hasTexBuffer32 || hasExtTexBuffer)
@@ -1396,7 +1415,7 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
   extDrawBuffers = CheckExtension ("GL_EXT_draw_buffers") && FindProc ("glDrawBuffersEXT", myFuncs->glDrawBuffers);
   arbDrawBuffers = CheckExtension ("GL_ARB_draw_buffers") && FindProc ("glDrawBuffersARB", myFuncs->glDrawBuffers);
 
-  if (IsGlGreaterEqual (3, 0) && FindProc ("glDrawBuffers", myFuncs->glDrawBuffers))
+  if (IsGlGreaterEqual (3, 0) && FindProcShort (glDrawBuffers))
   {
     hasDrawBuffers = OpenGl_FeatureInCore;
   }
@@ -1605,6 +1624,10 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
        && FindProcShort (glTexImage3D)
        && FindProcShort (glTexSubImage3D)
        && FindProcShort (glCopyTexSubImage3D);
+  if (!has12)
+  {
+    checkWrongVersion (1, 2, aLastFailedProc);
+  }
 
   // load OpenGL 1.3 new functions
   has13 = IsGlGreaterEqual (1, 3)
@@ -1659,6 +1682,10 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
        && FindProcShort (glMultTransposeMatrixf)
        && FindProcShort (glMultTransposeMatrixd);
   }
+  if (!has13)
+  {
+    checkWrongVersion (1, 3, aLastFailedProc);
+  }
 
   // load OpenGL 1.4 new functions
   has14 = IsGlGreaterEqual (1, 4)
@@ -1669,6 +1696,10 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
        && FindProcShort (glPointParameterfv)
        && FindProcShort (glPointParameteri)
        && FindProcShort (glPointParameteriv);
+  if (!has14)
+  {
+    checkWrongVersion (1, 4, aLastFailedProc);
+  }
 
   // load OpenGL 1.5 new functions
   has15 = IsGlGreaterEqual (1, 5)
@@ -1691,6 +1722,18 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
        && FindProcShort (glUnmapBuffer)
        && FindProcShort (glGetBufferParameteriv)
        && FindProcShort (glGetBufferPointerv);
+  if (has15)
+  {
+    if (!isCoreProfile)
+    {
+      core15 = (OpenGl_GlCore15* )(&(*myFuncs));
+    }
+    core15fwd = (OpenGl_GlCore15Fwd* )(&(*myFuncs));
+  }
+  else
+  {
+    checkWrongVersion (1, 5, aLastFailedProc);
+  }
 
   // load OpenGL 2.0 new functions
   has20 = IsGlGreaterEqual (2, 0)
@@ -1787,6 +1830,32 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
        && FindProcShort (glVertexAttrib4uiv)
        && FindProcShort (glVertexAttrib4usv)
        && FindProcShort (glVertexAttribPointer);
+  if (has20)
+  {
+    const char* aGlslVer = (const char* )::glGetString (GL_SHADING_LANGUAGE_VERSION);
+    if (aGlslVer == NULL
+    || *aGlslVer == '\0')
+    {
+      // broken context has been detected
+      PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
+                   TCollection_AsciiString("Error! OpenGL context reports version ")
+                   + myGlVerMajor  + "." + myGlVerMinor + " but reports wrong GLSL version");
+      myGlVerMajor = 1;
+      myGlVerMinor = 5;
+    }
+    else
+    {
+      if (!isCoreProfile)
+      {
+        core20  = (OpenGl_GlCore20*    )(&(*myFuncs));
+      }
+      core20fwd = (OpenGl_GlCore20Fwd* )(&(*myFuncs));
+    }
+  }
+  else
+  {
+    checkWrongVersion (2, 0, aLastFailedProc);
+  }
 
   // load OpenGL 2.1 new functions
   has21 = IsGlGreaterEqual (2, 1)
@@ -1796,6 +1865,10 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
        && FindProcShort (glUniformMatrix4x2fv)
        && FindProcShort (glUniformMatrix3x4fv)
        && FindProcShort (glUniformMatrix4x3fv);
+  if (!has21)
+  {
+    checkWrongVersion (2, 1, aLastFailedProc);
+  }
 
   // load GL_ARB_framebuffer_object (added to OpenGL 3.0 core)
   const bool hasFBO = (IsGlGreaterEqual (3, 0) || CheckExtension ("GL_ARB_framebuffer_object"))
@@ -1895,6 +1968,10 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
        && FindProcShort (glClearBufferfv)
        && FindProcShort (glClearBufferfi)
        && FindProcShort (glGetStringi);
+  if (!has30)
+  {
+    checkWrongVersion (3, 0, aLastFailedProc);
+  }
 
   // load GL_ARB_uniform_buffer_object (added to OpenGL 3.1 core)
   const bool hasUBO = (IsGlGreaterEqual (3, 1) || CheckExtension ("GL_ARB_uniform_buffer_object"))
@@ -1926,6 +2003,32 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
        && FindProcShort (glDrawElementsInstanced)
        && FindProcShort (glTexBuffer)
        && FindProcShort (glPrimitiveRestartIndex);
+  if (has31)
+  {
+    arbTBO = (OpenGl_ArbTBO* )(&(*myFuncs));
+    arbIns = (OpenGl_ArbIns* )(&(*myFuncs));
+  }
+  else
+  {
+    checkWrongVersion (3, 1, aLastFailedProc);
+
+    // initialize TBO extension (ARB)
+    if (CheckExtension ("GL_ARB_texture_buffer_object")
+     && FindProc ("glTexBufferARB", myFuncs->glTexBuffer))
+    {
+      arbTBO = (OpenGl_ArbTBO* )(&(*myFuncs));
+    }
+
+    // initialize hardware instancing extension (ARB)
+    if (CheckExtension ("GL_ARB_draw_instanced")
+     && FindProc ("glDrawArraysInstancedARB",   myFuncs->glDrawArraysInstanced)
+     && FindProc ("glDrawElementsInstancedARB", myFuncs->glDrawElementsInstanced))
+    {
+      arbIns = (OpenGl_ArbIns* )(&(*myFuncs));
+    }
+  }
+
+  arbTboRGB32 = CheckExtension ("GL_ARB_texture_buffer_object_rgb32");
 
   // load GL_ARB_draw_elements_base_vertex (added to OpenGL 3.2 core)
   const bool hasDrawElemsBaseVert = (IsGlGreaterEqual (3, 2) || CheckExtension ("GL_ARB_draw_elements_base_vertex"))
@@ -1964,6 +2067,23 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
        && FindProcShort (glGetInteger64i_v)
        && FindProcShort (glGetBufferParameteri64v)
        && FindProcShort (glFramebufferTexture);
+  if (has32)
+  {
+    core32 = (OpenGl_GlCore32* )(&(*myFuncs));
+    if (isCoreProfile)
+    {
+      core32->glGenVertexArrays (1, &myDefaultVao);
+    }
+    else
+    {
+      core32back = (OpenGl_GlCore32Back* )(&(*myFuncs));
+    }
+    ::glGetIntegerv (GL_MAX_SAMPLES, &myMaxMsaaSamples);
+  }
+  else
+  {
+    checkWrongVersion (3, 2, aLastFailedProc);
+  }
 
   // load GL_ARB_blend_func_extended (added to OpenGL 3.3 core)
   const bool hasBlendFuncExtended = (IsGlGreaterEqual (3, 3) || CheckExtension ("GL_ARB_blend_func_extended"))
@@ -2053,6 +2173,18 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
        && hasTimerQuery
        && hasVertType21010101rev
        && FindProcShort (glVertexAttribDivisor);
+  if (has33)
+  {
+    core33 = (OpenGl_GlCore33* )(&(*myFuncs));
+    if (!isCoreProfile)
+    {
+      core33back = (OpenGl_GlCore33Back* )(&(*myFuncs));
+    }
+  }
+  else
+  {
+    checkWrongVersion (3, 3, aLastFailedProc);
+  }
 
   // load GL_ARB_draw_indirect (added to OpenGL 4.0 core)
   const bool hasDrawIndirect = (IsGlGreaterEqual (4, 0) || CheckExtension ("GL_ARB_draw_indirect"))
@@ -2126,6 +2258,14 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
       && FindProcShort (glBlendEquationSeparatei)
       && FindProcShort (glBlendFunci)
       && FindProcShort (glBlendFuncSeparatei);
+  if (has40)
+  {
+    arbTboRGB32 = Standard_True; // in core since OpenGL 4.0
+  }
+  else
+  {
+    checkWrongVersion (4, 0, aLastFailedProc);
+  }
 
   // load GL_ARB_ES2_compatibility (added to OpenGL 4.1 core)
   const bool hasES2Compatibility = (IsGlGreaterEqual (4, 1) || CheckExtension ("GL_ARB_ES2_compatibility"))
@@ -2237,6 +2377,18 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
        && hasSeparateShaderObjects
        && hasVertAttrib64bit
        && hasViewportArray;
+  if (has41)
+  {
+    core41 = (OpenGl_GlCore41* )(&(*myFuncs));
+    if (!isCoreProfile)
+    {
+      core41back = (OpenGl_GlCore41Back* )(&(*myFuncs));
+    }
+  }
+  else
+  {
+    checkWrongVersion (4, 1, aLastFailedProc);
+  }
 
   // load GL_ARB_base_instance (added to OpenGL 4.2 core)
   const bool hasBaseInstance = (IsGlGreaterEqual (4, 2) || CheckExtension ("GL_ARB_base_instance"))
@@ -2275,6 +2427,18 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
        && hasShaderAtomicCounters
        && hasShaderImgLoadStore
        && hasTextureStorage;
+  if (has42)
+  {
+    core42 = (OpenGl_GlCore42* )(&(*myFuncs));
+    if (!isCoreProfile)
+    {
+      core42back = (OpenGl_GlCore42Back* )(&(*myFuncs));
+    }
+  }
+  else
+  {
+    checkWrongVersion (4, 2, aLastFailedProc);
+  }
 
   has43 = IsGlGreaterEqual (4, 3)
        && FindProcShort (glClearBufferData)
@@ -2320,6 +2484,18 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
        && FindProcShort (glGetObjectLabel)
        && FindProcShort (glObjectPtrLabel)
        && FindProcShort (glGetObjectPtrLabel);
+  if (has43)
+  {
+    core43 = (OpenGl_GlCore43* )(&(*myFuncs));
+    if (!isCoreProfile)
+    {
+      core43back = (OpenGl_GlCore43Back* )(&(*myFuncs));
+    }
+  }
+  else
+  {
+    checkWrongVersion (4, 3, aLastFailedProc);
+  }
 
   // load GL_ARB_clear_texture (added to OpenGL 4.4 core)
   bool arbTexClear = (IsGlGreaterEqual (4, 4) || CheckExtension ("GL_ARB_clear_texture"))
@@ -2335,6 +2511,18 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
        && FindProcShort (glBindSamplers)
        && FindProcShort (glBindImageTextures)
        && FindProcShort (glBindVertexBuffers);
+  if (has44)
+  {
+    core44 = (OpenGl_GlCore44* )(&(*myFuncs));
+    if (!isCoreProfile)
+    {
+      core44back = (OpenGl_GlCore44Back* )(&(*myFuncs));
+    }
+  }
+  else
+  {
+    checkWrongVersion (4, 4, aLastFailedProc);
+  }
 
   has45 = IsGlGreaterEqual (4, 5)
        && FindProcShort (glBindVertexBuffers)
@@ -2460,6 +2648,18 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
        && FindProcShort (glGetnHistogram)
        && FindProcShort (glGetnMinmax)
        && FindProcShort (glTextureBarrier);
+  if (has45)
+  {
+    core45 = (OpenGl_GlCore45* )(&(*myFuncs));
+    if (!isCoreProfile)
+    {
+      core45back = (OpenGl_GlCore45Back* )(&(*myFuncs));
+    }
+  }
+  else
+  {
+    checkWrongVersion (4, 5, aLastFailedProc);
+  }
 
   // initialize debug context extension
   if (CheckExtension ("GL_ARB_debug_output"))
@@ -2492,24 +2692,6 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
         ::glEnable (GL_DEBUG_OUTPUT_SYNCHRONOUS);
       }
     }
-  }
-
-  // initialize TBO extension (ARB)
-  if (!has31
-   && CheckExtension ("GL_ARB_texture_buffer_object")
-   && FindProc ("glTexBufferARB", myFuncs->glTexBuffer))
-  {
-    arbTBO = (OpenGl_ArbTBO* )(&(*myFuncs));
-  }
-  arbTboRGB32 = CheckExtension ("GL_ARB_texture_buffer_object_rgb32");
-
-  // initialize hardware instancing extension (ARB)
-  if (!has31
-   && CheckExtension ("GL_ARB_draw_instanced")
-   && FindProc ("glDrawArraysInstancedARB",   myFuncs->glDrawArraysInstanced)
-   && FindProc ("glDrawElementsInstancedARB", myFuncs->glDrawElementsInstanced))
-  {
-    arbIns = (OpenGl_ArbIns* )(&(*myFuncs));
   }
 
   // initialize FBO extension (ARB)
@@ -2549,116 +2731,26 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
     arbTexBindless = (OpenGl_ArbTexBindless* )(&(*myFuncs));
   }
 
-  if (!has12)
+  if (has30)
   {
-    checkWrongVersion (1, 2);
-    myGlVerMajor = 1;
-    myGlVerMinor = 1;
-    return;
+    // MSAA RenderBuffers have been defined in OpenGL 3.0,
+    // but MSAA Textures - only in OpenGL 3.2+
+    if (!has32
+     && CheckExtension ("GL_ARB_texture_multisample")
+     && FindProcShort (glTexImage2DMultisample))
+    {
+      GLint aNbColorSamples = 0, aNbDepthSamples = 0;
+      ::glGetIntegerv (GL_MAX_COLOR_TEXTURE_SAMPLES, &aNbColorSamples);
+      ::glGetIntegerv (GL_MAX_DEPTH_TEXTURE_SAMPLES, &aNbDepthSamples);
+      myMaxMsaaSamples = Min (aNbColorSamples, aNbDepthSamples);
+    }
+    if (!has43
+     && CheckExtension ("GL_ARB_texture_storage_multisample")
+     && FindProcShort (glTexStorage2DMultisample))
+    {
+      //
+    }
   }
-  else if (!has13)
-  {
-    checkWrongVersion (1, 3);
-    myGlVerMajor = 1;
-    myGlVerMinor = 2;
-    return;
-  }
-  else if (!has14)
-  {
-    checkWrongVersion (1, 4);
-    myGlVerMajor = 1;
-    myGlVerMinor = 3;
-    return;
-  }
-  else if (!has15)
-  {
-    checkWrongVersion (1, 5);
-    myGlVerMajor = 1;
-    myGlVerMinor = 4;
-    return;
-  }
-  if (!isCoreProfile)
-  {
-    core15 = (OpenGl_GlCore15* )(&(*myFuncs));
-  }
-  core15fwd = (OpenGl_GlCore15Fwd* )(&(*myFuncs));
-
-  if (!has20)
-  {
-    checkWrongVersion (2, 0);
-    myGlVerMajor = 1;
-    myGlVerMinor = 5;
-    return;
-  }
-
-  const char* aGlslVer = (const char* )::glGetString (GL_SHADING_LANGUAGE_VERSION);
-  if (aGlslVer == NULL
-  || *aGlslVer == '\0')
-  {
-    // broken context has been detected
-    TCollection_ExtendedString aMsg = TCollection_ExtendedString()
-      + "Error! OpenGL context reports version "
-      + myGlVerMajor  + "." + myGlVerMinor
-      + " but reports wrong GLSL version";
-    PushMessage (GL_DEBUG_SOURCE_APPLICATION,
-                 GL_DEBUG_TYPE_ERROR,
-                 0,
-                 GL_DEBUG_SEVERITY_HIGH,
-                 aMsg);
-    myGlVerMajor = 1;
-    myGlVerMinor = 5;
-    return;
-  }
-
-  if (!isCoreProfile)
-  {
-    core20  = (OpenGl_GlCore20*    )(&(*myFuncs));
-  }
-  core20fwd = (OpenGl_GlCore20Fwd* )(&(*myFuncs));
-
-  if (!has21)
-  {
-    checkWrongVersion (2, 1);
-    myGlVerMajor = 2;
-    myGlVerMinor = 0;
-    return;
-  }
-
-  if (!has30)
-  {
-    checkWrongVersion (3, 0);
-    myGlVerMajor = 2;
-    myGlVerMinor = 1;
-    return;
-  }
-
-  // MSAA RenderBuffers have been defined in OpenGL 3.0,
-  // but MSAA Textures - only in OpenGL 3.2+
-  if (!has32
-   && CheckExtension ("GL_ARB_texture_multisample")
-   && FindProcShort (glTexImage2DMultisample))
-  {
-    GLint aNbColorSamples = 0, aNbDepthSamples = 0;
-    ::glGetIntegerv (GL_MAX_COLOR_TEXTURE_SAMPLES, &aNbColorSamples);
-    ::glGetIntegerv (GL_MAX_DEPTH_TEXTURE_SAMPLES, &aNbDepthSamples);
-    myMaxMsaaSamples = Min (aNbColorSamples, aNbDepthSamples);
-  }
-  if (!has43
-   && CheckExtension ("GL_ARB_texture_storage_multisample")
-   && FindProcShort (glTexStorage2DMultisample))
-  {
-    //
-  }
-
-  if (!has31)
-  {
-    checkWrongVersion (3, 1);
-    myGlVerMajor = 3;
-    myGlVerMinor = 0;
-    return;
-  }
-  arbTBO = (OpenGl_ArbTBO* )(&(*myFuncs));
-  arbIns = (OpenGl_ArbIns* )(&(*myFuncs));
 
   // check whether ray tracing mode is supported
   myHasRayTracing = has31
@@ -2674,111 +2766,6 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
                                  && has44;
   myHasRayTracingAdaptiveSamplingAtomic = myHasRayTracingAdaptiveSampling
                                        && CheckExtension ("GL_NV_shader_atomic_float");
-
-  if (!has32)
-  {
-    checkWrongVersion (3, 2);
-    myGlVerMajor = 3;
-    myGlVerMinor = 1;
-    return;
-  }
-  core32 = (OpenGl_GlCore32* )(&(*myFuncs));
-  if (isCoreProfile)
-  {
-    core32->glGenVertexArrays (1, &myDefaultVao);
-  }
-  else
-  {
-    core32back = (OpenGl_GlCore32Back* )(&(*myFuncs));
-  }
-  ::glGetIntegerv (GL_MAX_SAMPLES, &myMaxMsaaSamples);
-
-  if (!has33)
-  {
-    checkWrongVersion (3, 3);
-    myGlVerMajor = 3;
-    myGlVerMinor = 2;
-    return;
-  }
-  core33 = (OpenGl_GlCore33* )(&(*myFuncs));
-  if (!isCoreProfile)
-  {
-    core33back = (OpenGl_GlCore33Back* )(&(*myFuncs));
-  }
-
-  if (!has40)
-  {
-    checkWrongVersion (4, 0);
-    myGlVerMajor = 3;
-    myGlVerMinor = 3;
-    return;
-  }
-  arbTboRGB32 = Standard_True; // in core since OpenGL 4.0
-
-  if (!has41)
-  {
-    checkWrongVersion (4, 1);
-    myGlVerMajor = 4;
-    myGlVerMinor = 0;
-    return;
-  }
-  core41 = (OpenGl_GlCore41* )(&(*myFuncs));
-  if (!isCoreProfile)
-  {
-    core41back = (OpenGl_GlCore41Back* )(&(*myFuncs));
-  }
-
-  if(!has42)
-  {
-    checkWrongVersion (4, 2);
-    myGlVerMajor = 4;
-    myGlVerMinor = 1;
-    return;
-  }
-  core42 = (OpenGl_GlCore42* )(&(*myFuncs));
-  if (!isCoreProfile)
-  {
-    core42back = (OpenGl_GlCore42Back* )(&(*myFuncs));
-  }
-
-  if (!has43)
-  {
-    checkWrongVersion (4, 3);
-    myGlVerMajor = 4;
-    myGlVerMinor = 2;
-    return;
-  }
-  core43 = (OpenGl_GlCore43* )(&(*myFuncs));
-  if (!isCoreProfile)
-  {
-    core43back = (OpenGl_GlCore43Back* )(&(*myFuncs));
-  }
-
-  if (!has44)
-  {
-    checkWrongVersion (4, 4);
-    myGlVerMajor = 4;
-    myGlVerMinor = 3;
-    return;
-  }
-  core44 = (OpenGl_GlCore44* )(&(*myFuncs));
-  if (!isCoreProfile)
-  {
-    core44back = (OpenGl_GlCore44Back* )(&(*myFuncs));
-  }
-
-  if (!has45)
-  {
-    checkWrongVersion (4, 5);
-    myGlVerMajor = 4;
-    myGlVerMinor = 4;
-    return;
-  }
-  core45 = (OpenGl_GlCore45* )(&(*myFuncs));
-  if (!isCoreProfile)
-  {
-    core45back = (OpenGl_GlCore45Back* )(&(*myFuncs));
-  }
 #endif
 }
 
