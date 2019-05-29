@@ -60,6 +60,18 @@ public:
     myHasLocalOrigin = !theOrigin.IsEqual (gp_XYZ(0.0, 0.0, 0.0), gp::Resolution());
   }
 
+  //! Return clipping plane W equation value moved considering local camera transformation.
+  Standard_Real LocalClippingPlaneW (const Graphic3d_ClipPlane& thePlane) const
+  {
+    const Graphic3d_Vec4d& anEq = thePlane.GetEquation();
+    if (myHasLocalOrigin)
+    {
+      const gp_XYZ aPos = thePlane.ToPlane().Position().Location().XYZ() - myLocalOrigin;
+      return -(anEq.x() * aPos.X() + anEq.y() * aPos.Y() + anEq.z() * aPos.Z());
+    }
+    return anEq.w();
+  }
+
   //! Creates new shader program or re-use shared instance.
   //! @param theProxy    [IN]  program definition
   //! @param theShareKey [OUT] sharing key
@@ -733,9 +745,7 @@ protected:
     aPlaneEq.w() = float(theEq.w());
     if (myHasLocalOrigin)
     {
-      const gp_XYZ        aPos = thePlane.ToPlane().Position().Location().XYZ() - myLocalOrigin;
-      const Standard_Real aD   = -(theEq.x() * aPos.X() + theEq.y() * aPos.Y() + theEq.z() * aPos.Z());
-      aPlaneEq.w() = float(aD);
+      aPlaneEq.w() = float(LocalClippingPlaneW (thePlane));
     }
     ++thePlaneId;
   }

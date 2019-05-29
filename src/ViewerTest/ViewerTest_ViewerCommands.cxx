@@ -2963,33 +2963,29 @@ void VT_ProcessKeyPress (const char* buf_ret)
       Draw_Interprete (Draw_ToExitOnCloseView ? "exit" : "vclose");
     }
   }
-  else
+  else if (*buf_ret >= '0' && *buf_ret <= '7') // Number
   {
-    // Number
-    const Standard_Integer aSelMode = Draw::Atoi(buf_ret);
-    if (aSelMode >= 0 && aSelMode <= 7)
+    const Standard_Integer aSelMode = Draw::Atoi (buf_ret);
+    bool toEnable = true;
+    if (const Handle(AIS_InteractiveContext)& aCtx = ViewerTest::GetAISContext())
     {
-      bool toEnable = true;
-      if (const Handle(AIS_InteractiveContext) aCtx = ViewerTest::GetAISContext())
+      AIS_ListOfInteractive aPrsList;
+      aCtx->DisplayedObjects (aPrsList);
+      for (AIS_ListOfInteractive::Iterator aPrsIter (aPrsList); aPrsIter.More() && toEnable; aPrsIter.Next())
       {
-        AIS_ListOfInteractive aPrsList;
-        aCtx->DisplayedObjects (aPrsList);
-        for (AIS_ListOfInteractive::Iterator aPrsIter (aPrsList); aPrsIter.More() && toEnable; aPrsIter.Next())
+        TColStd_ListOfInteger aModes;
+        aCtx->ActivatedModes (aPrsIter.Value(), aModes);
+        for (TColStd_ListOfInteger::Iterator aModeIter (aModes); aModeIter.More() && toEnable; aModeIter.Next())
         {
-          TColStd_ListOfInteger aModes;
-          aCtx->ActivatedModes (aPrsIter.Value(), aModes);
-          for (TColStd_ListOfInteger::Iterator aModeIter (aModes); aModeIter.More() && toEnable; aModeIter.Next())
+          if (aModeIter.Value() == aSelMode)
           {
-            if (aModeIter.Value() == aSelMode)
-            {
-              toEnable = false;
-            }
+            toEnable = false;
           }
         }
       }
-      TCollection_AsciiString aCmd = TCollection_AsciiString ("vselmode ") + aSelMode + (toEnable ? " 1" : " 0");
-      Draw_Interprete (aCmd.ToCString());
     }
+    TCollection_AsciiString aCmd = TCollection_AsciiString ("vselmode ") + aSelMode + (toEnable ? " 1" : " 0");
+    Draw_Interprete (aCmd.ToCString());
   }
 }
 

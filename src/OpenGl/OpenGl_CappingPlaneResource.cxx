@@ -17,6 +17,7 @@
 #include <OpenGl_CappingPlaneResource.hxx>
 #include <OpenGl_Context.hxx>
 #include <OpenGl_Vec.hxx>
+#include <OpenGl_ShaderManager.hxx>
 #include <Precision.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_CappingPlaneResource,OpenGl_Resource)
@@ -99,10 +100,10 @@ OpenGl_CappingPlaneResource::~OpenGl_CappingPlaneResource()
 // function : Update
 // purpose  :
 // =======================================================================
-void OpenGl_CappingPlaneResource::Update (const Handle(OpenGl_Context)& ,
+void OpenGl_CappingPlaneResource::Update (const Handle(OpenGl_Context)& theCtx,
                                           const Handle(Graphic3d_Aspects)& theObjAspect)
 {
-  updateTransform();
+  updateTransform (theCtx);
   updateAspect (theObjAspect);
 }
 
@@ -179,55 +180,47 @@ void OpenGl_CappingPlaneResource::updateAspect (const Handle(Graphic3d_Aspects)&
 // function : updateTransform
 // purpose  :
 // =======================================================================
-void OpenGl_CappingPlaneResource::updateTransform()
+void OpenGl_CappingPlaneResource::updateTransform (const Handle(OpenGl_Context)& theCtx)
 {
-  const Graphic3d_ClipPlane::Equation& anEquation = myPlaneRoot->GetEquation();
-  if (myEquationMod == myPlaneRoot->MCountEquation())
+  if (myEquationMod == myPlaneRoot->MCountEquation()
+   && myLocalOrigin.IsEqual (theCtx->ShaderManager()->LocalOrigin(), gp::Resolution()))
   {
     return; // nothing to update
   }
 
+  myEquationMod = myPlaneRoot->MCountEquation();
+  myLocalOrigin = theCtx->ShaderManager()->LocalOrigin();
+
+  const Graphic3d_ClipPlane::Equation& anEq = myPlaneRoot->GetEquation();
+  const Standard_Real anEqW = theCtx->ShaderManager()->LocalClippingPlaneW (*myPlaneRoot);
+
   // re-evaluate infinite plane transformation matrix
-  Standard_ShortReal N[3] = 
-    { (Standard_ShortReal)anEquation[0],
-      (Standard_ShortReal)anEquation[1],
-      (Standard_ShortReal)anEquation[2] };
-
-  Standard_ShortReal T[3] = 
-    { (Standard_ShortReal)(anEquation[0] * -anEquation[3]),
-      (Standard_ShortReal)(anEquation[1] * -anEquation[3]),
-      (Standard_ShortReal)(anEquation[2] * -anEquation[3]) };
-
-  Standard_ShortReal L[3] = { 0.0f, 0.0f, 0.0f };
-  Standard_ShortReal F[3] = { 0.0f, 0.0f, 0.0f };
+  const Graphic3d_Vec3 aNorm (anEq.xyz());
+  const Graphic3d_Vec3 T (anEq.xyz() * -anEqW);
 
   // project plane normal onto OX to find left vector
-  Standard_ShortReal aProjLen = 
-    sqrt (  (Standard_ShortReal)(anEquation[0] * anEquation[0])
-          + (Standard_ShortReal)(anEquation[2] * anEquation[2]));
+  const Standard_ShortReal aProjLen = sqrt ((Standard_ShortReal)anEq.xz().SquareModulus());
+  Graphic3d_Vec3 aLeft;
   if (aProjLen < ShortRealSmall())
   {
-    L[0] = 1.0f;
+    aLeft[0] = 1.0f;
   }
   else
   {
-    L[0] =  N[2] / aProjLen;
-    L[2] = -N[0] / aProjLen;
+    aLeft[0] =  aNorm[2] / aProjLen;
+    aLeft[2] = -aNorm[0] / aProjLen;
   }
 
-  // (-aLeft) x aNorm
-  F[0] = (-L[1])*N[2] - (-L[2])*N[1];
-  F[1] = (-L[2])*N[0] - (-L[0])*N[2];
-  F[2] = (-L[0])*N[1] - (-L[1])*N[0];
+  const Graphic3d_Vec3 F = Graphic3d_Vec3::Cross (-aLeft, aNorm);
 
-  myOrientation.mat[0][0] = L[0];
-  myOrientation.mat[0][1] = L[1];
-  myOrientation.mat[0][2] = L[2];
+  myOrientation.mat[0][0] = aLeft[0];
+  myOrientation.mat[0][1] = aLeft[1];
+  myOrientation.mat[0][2] = aLeft[2];
   myOrientation.mat[0][3] = 0.0f;
 
-  myOrientation.mat[1][0] = N[0];
-  myOrientation.mat[1][1] = N[1];
-  myOrientation.mat[1][2] = N[2];
+  myOrientation.mat[1][0] = aNorm[0];
+  myOrientation.mat[1][1] = aNorm[1];
+  myOrientation.mat[1][2] = aNorm[2];
   myOrientation.mat[1][3] = 0.0f;
 
   myOrientation.mat[2][0] = F[0];
@@ -239,6 +232,4 @@ void OpenGl_CappingPlaneResource::updateTransform()
   myOrientation.mat[3][1] = T[1];
   myOrientation.mat[3][2] = T[2];
   myOrientation.mat[3][3] = 1.0f;
-
-  myEquationMod = myPlaneRoot->MCountEquation();
 }

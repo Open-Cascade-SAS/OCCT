@@ -72,7 +72,7 @@ public:
 private:
 
   //! Update precomputed plane orientation matrix.
-  void updateTransform();
+  void updateTransform (const Handle(OpenGl_Context)& theCtx);
 
   //! Update resources.
   void updateAspect (const Handle(Graphic3d_Aspects)& theObjAspect);
@@ -84,6 +84,7 @@ private:
   OpenGl_Aspects*             myAspect;        //!< capping face aspect.
   Handle(Graphic3d_ClipPlane) myPlaneRoot;     //!< parent clipping plane structure.
   Handle(Graphic3d_Aspects)   myFillAreaAspect;//!< own capping aspect
+  gp_XYZ                      myLocalOrigin;   //!< layer origin
   unsigned int                myEquationMod;   //!< modification counter for plane equation.
   unsigned int                myAspectMod;     //!< modification counter for aspect.
 
