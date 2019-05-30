@@ -153,7 +153,9 @@ public:
 
   //! Method to retrieve valid GL context.
   //! Could return NULL-handle if no window created by this driver.
-  Standard_EXPORT const Handle(OpenGl_Context)& GetSharedContext() const;
+  //! @param theBound if TRUE then currently bound context will be returned,
+  //!                 any context will be returned otherwise
+  Standard_EXPORT const Handle(OpenGl_Context)& GetSharedContext (bool theBound = false) const;
 
 #if defined(HAVE_EGL) || defined(HAVE_GLES2) || defined(OCCT_UWP) || defined(__ANDROID__) || defined(__QNX__)
   Aspect_Display          getRawGlDisplay() const { return myEglDisplay; }

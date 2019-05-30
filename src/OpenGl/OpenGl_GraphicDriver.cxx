@@ -447,23 +447,26 @@ void OpenGl_GraphicDriver::EnableVBO (const Standard_Boolean theToTurnOn)
 // function : GetSharedContext
 // purpose  :
 // =======================================================================
-const Handle(OpenGl_Context)& OpenGl_GraphicDriver::GetSharedContext() const
+const Handle(OpenGl_Context)& OpenGl_GraphicDriver::GetSharedContext (bool theBound) const
 {
   if (myMapOfView.IsEmpty())
   {
     return TheNullGlCtx;
   }
 
-  NCollection_Map<Handle(OpenGl_View)>::Iterator anIter (myMapOfView);
-  for (; anIter.More(); anIter.Next())
+  for (NCollection_Map<Handle(OpenGl_View)>::Iterator aViewIter (myMapOfView); aViewIter.More(); aViewIter.Next())
   {
-    Handle(OpenGl_Window) aWindow = anIter.Value()->GlWindow();
-    if (aWindow.IsNull())
+    if (const Handle(OpenGl_Window)& aWindow = aViewIter.Value()->GlWindow())
     {
-      continue;
+      if (!theBound)
+      {
+        return aWindow->GetGlContext();
+      }
+      else if (aWindow->GetGlContext()->IsCurrent())
+      {
+        return aWindow->GetGlContext();
+      }
     }
-
-    return aWindow->GetGlContext();
   }
 
   return TheNullGlCtx;

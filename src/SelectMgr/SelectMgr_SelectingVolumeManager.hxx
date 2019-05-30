@@ -196,6 +196,17 @@ public:
   //! correspondingly) onto far view frustum plane
   Standard_EXPORT virtual gp_Pnt GetFarPickedPnt() const Standard_OVERRIDE;
 
+  //! Return mouse coordinates for Point selection mode.
+  virtual gp_Pnt2d GetMousePosition() const Standard_OVERRIDE
+  {
+    if (myActiveSelectionType != Point)
+    {
+      return gp_Pnt2d (RealLast(), RealLast());
+    }
+    const SelectMgr_RectangularFrustum* aFr = reinterpret_cast<const SelectMgr_RectangularFrustum*> (mySelectingVolumes[myActiveSelectionType / 2].get());
+    return aFr->GetMousePosition();
+  }
+
   //! Returns active selecting volume that was built during last
   //! run of OCCT selection mechanism
   Handle(SelectMgr_BaseFrustum) ActiveVolume() const

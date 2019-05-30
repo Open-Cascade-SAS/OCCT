@@ -109,6 +109,9 @@ public:
   //! correspondingly) onto far view frustum plane
   virtual gp_Pnt GetFarPickedPnt() const = 0;
 
+  //! Return mouse coordinates for Point selection mode.
+  virtual gp_Pnt2d GetMousePosition() const = 0;
+
   //! Stores plane equation coefficients (in the following form:
   //! Ax + By + Cz + D = 0) to the given vector
   virtual void GetPlanes (NCollection_Vector<NCollection_Vec4<Standard_Real> >& thePlaneEquations) const = 0;
