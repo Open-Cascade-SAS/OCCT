@@ -12,10 +12,10 @@ regexp {Number +of +other +pcurves +- +([-0-9.+eE]+)} $expsh full nb_pcurve
 if { $nb_plane != 0 || $nb_other_surf != 0 || $nb_curve != 0 || $nb_pcurve != 0} {
    puts "Error : The resulting shape is not correct"
 }
-regexp {Mass +: +([-0-9.+eE]+)} [sprops a] full mass
-regexp {Mass +: +([-0-9.+eE]+)} [sprops result] full m
+regexp {Mass +: +([-0-9.+eE]+)} [sprops a $rel_tol] full mass
+regexp {Mass +: +([-0-9.+eE]+)} [sprops result $rel_tol] full m
 
-if { ($mass != 0 && [expr 1.*abs($mass - $m)/$mass] > $rel_tol) || ($mass == 0 && $m != 0) } {
+if { ($mass != 0 && [expr 1.*abs($mass - $m)/$mass] > 1.5*$rel_tol) || ($mass == 0 && $m != 0) } {
    puts "Error : The area of the resulting shape is $m"
 } else {
    puts "The areas of the initial and the resulting shape are equal"

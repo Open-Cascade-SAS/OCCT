@@ -34,7 +34,7 @@ if { [llength $closed_wires] != 1} {
    puts "Error : Amount of free closed wires is not equal 1"
 }
 
-checkmaxtol result -ref 9.43897e+001
+checkmaxtol result -ref 66.072757207853044
 checknbshapes result -shell 1
 checkfreebounds result 86
 

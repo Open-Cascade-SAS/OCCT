@@ -24,7 +24,6 @@ Approx_MCurvesToBSpCurve.hxx
 Approx_ParametrizationType.hxx
 Approx_SameParameter.cxx
 Approx_SameParameter.hxx
-Approx_SameParameter.lxx
 Approx_SequenceOfHArray1OfReal.hxx
 Approx_Status.hxx
 Approx_SweepApproximation.cxx

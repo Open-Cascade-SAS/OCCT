@@ -29,7 +29,7 @@ if { $ve1 != $ve2 || $ed1 != $ed2 || $we1 != $we2} {
     puts "OK OCC714: SEWING operation was made PROPERLY"
 }
 
-checkmaxtol result -ref 0.25619311354638169
+checkmaxtol result -ref 0.17933517948246736
 checknbshapes result -shell 1
 checkfreebounds result 0
 

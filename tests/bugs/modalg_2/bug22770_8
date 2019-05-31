@@ -18,7 +18,7 @@ checkprops result -s 1.88469e+07
 checkshape result
 
 checknbshapes result -vertex 482 -edge 744 -wire 273 -face 259 -shell 2 -solid 0 -compsolid 0 -compound 1 -shape 1761
-checkmaxtol result -ref 0.066338232054955981
+checkmaxtol result -ref 0.04656161000546645
 checknbshapes result -shell 2
 checkfreebounds result 6
 checkview -display result -3d -path ${imagedir}/${test_image}.png

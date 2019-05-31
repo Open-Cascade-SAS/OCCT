@@ -933,6 +933,7 @@ void Adaptor3d_TopolTool::BSplSamplePnts(const Standard_Real theDefl,
 					 const Standard_Integer theNUmin,
 					 const Standard_Integer theNVmin)
 { 
+  const Standard_Integer aMaxPnts = 1001;
   const Handle(Geom_BSplineSurface)& aBS = myS->BSpline();
   Standard_Real uinf,usup,vinf,vsup;
   uinf = myS->FirstUParameter();  usup = myS->LastUParameter();
@@ -999,9 +1000,18 @@ void Adaptor3d_TopolTool::BSplSamplePnts(const Standard_Real theDefl,
     nbsu = theNUmin;
     bUuniform = Standard_True;
   }
-
+  else if (nbsu > aMaxPnts)
+  {
+    nbsu = aMaxPnts;
+    bUuniform = Standard_True;
+  }
   if(nbsv < theNVmin) {
     nbsv = theNVmin;
+    bVuniform = Standard_True;
+  }
+  else if (nbsv > aMaxPnts)
+  {
+    nbsv = aMaxPnts;
     bVuniform = Standard_True;
   }
 

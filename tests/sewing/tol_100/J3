@@ -4,7 +4,7 @@ restore [locate_data_file CIN902_intcqhmp.rle] a
 
 sewing result $tol a
 
-checkmaxtol result -ref 122.47700432877426
+checkmaxtol result -ref 98.605773005137095
 checknbshapes result -shell 1
 checkfreebounds result 19
 checkfaults result a 7

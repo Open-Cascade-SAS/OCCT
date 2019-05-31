@@ -18,7 +18,7 @@ if [catch {igesbrep $filepath a *} catch_result] {
     #
     sewing result1 100. a
 
-    checkmaxtol result1 -ref 9.43897e+001
+    checkmaxtol result1 -ref 66.0727572
     checknbshapes result1 -shell 1
     checkfreebounds result1 86
 
@@ -71,7 +71,7 @@ if [catch {igesbrep $filepath a *} catch_result] {
         tpcompound a
 	sewing result2 100. a
 
-        checkmaxtol result2 -ref 9.43897e+001
+        checkmaxtol result2 -ref 66.072757207851282
         checknbshapes result2 -shell 1
         checkfreebounds result2 86
 

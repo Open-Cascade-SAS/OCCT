@@ -15,7 +15,7 @@ set tolerance 1000
 sewing result ${tolerance} a
 
 checknbshapes result -face 263 -shell 1
-checkmaxtol result -ref 185.91005891234283
+checkmaxtol result -ref 130.21536414731227
 checkfreebounds result 73
 
 checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -28,7 +28,7 @@ if { ${minTolerance}  > ${VertexTolerance} } {
 
 
 checkreal "Min tolerance" ${minTolerance} ${oTolerance} 0 0.001
-checkmaxtol result -ref 2352.4465999220711
+checkmaxtol result -ref 1699.9358291469857
 checknbshapes result -shell 1
 checkfreebounds result 5
 

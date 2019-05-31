@@ -1,4 +1,4 @@
-puts "TODO OCC27531 ALL: Error: Max tolerance"
+#puts "TODO OCC27531 ALL: Error: Max tolerance"
 puts "========"
 puts "0027015: Sewing returns invalid shape if some faces are nearly plane cones"
 puts "========"
@@ -14,4 +14,4 @@ checkshape result
 # Check tolerance of the result shape.
 # Currently same parameter algorithm can not interpolate pcurve.
 #"same parameter" state is obtained increasing tolerance to ~130.0 mm (max deviation between curves in 3d and 2d).
-checkmaxtol result -ref 1.0
+checkmaxtol result -ref 0.029697490042886372

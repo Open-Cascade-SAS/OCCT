@@ -20,7 +20,7 @@ vdisplay result
 
 # checkshape res
 
-checkmaxtol result -ref 1.56901e+001
+checkmaxtol result -ref 1.098308e+001
 checknbshapes result -shell 2
 checkfreebounds result 115
 

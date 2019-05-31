@@ -12,7 +12,7 @@ igesread [locate_data_file bug25175_3.igs] a *
 
 sewing result 0.1 a
 
-checkmaxtol result -ref 0.40493352048584974 
+checkmaxtol result -ref 0.21794517334615857 
 checknbshapes result -shell 1
 checkfreebounds result 0
 

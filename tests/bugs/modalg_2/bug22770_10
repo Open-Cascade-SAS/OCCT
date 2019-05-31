@@ -14,7 +14,7 @@ sewing result +t 0.01 a b +mint 0.01 -a
 
 set nbshapes_expected "
 Number of shapes in shape
- VERTEX    : 479
+ VERTEX    : 480
  EDGE      : 748
  WIRE      : 273
  FACE      : 259
@@ -22,11 +22,11 @@ Number of shapes in shape
  SOLID     : 0
  COMPSOLID : 0
  COMPOUND  : 1
- SHAPE     : 1762
+ SHAPE     : 1763
 "
 checknbshapes result -ref ${nbshapes_expected} -t -m "sewing result"
-checkmaxtol result -ref 0.066338232054955981
-checkfreebounds result 12
+checkmaxtol result -ref 0.04656161000546645
+checkfreebounds result 14
 
 checkprops result -s 1.8847e+07 -eps 0.1
 checkshape result

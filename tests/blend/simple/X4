@@ -1,4 +1,4 @@
-puts "TODO #OCC26740 ALL: Faulty shapes in variables faulty_1 to faulty_2"
+#puts "TODO #OCC26740 ALL: Faulty shapes in variables faulty_1 to faulty_2"
 
 ## ===========================================
 ## Grid    : CCV001
