@@ -46,10 +46,7 @@ void CDF_Store::Init() {
   myCurrentDocument = myMainDocument;
   myList = new CDF_StoreList(myCurrentDocument);
 
-  myIsMainDocument = Standard_True;
-  FindDefault();
-
-// getting the subcomponents.
+  // getting the subcomponents.
   //
   myIsMainDocument = Standard_False;
   myList->Init();

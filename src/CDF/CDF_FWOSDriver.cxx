@@ -180,7 +180,7 @@ TCollection_ExtendedString CDF_FWOSDriver::DefaultFolder()
     else {
       theDefaultFolder=UTL::xgetenv("TEMP");
       if(theDefaultFolder.Length()==0)
-        throw Standard_Failure("cannot determine default folder; HOMEDRIVE and TEMP are undefined");
+        theDefaultFolder = ".";
     }
 #else
     TCollection_ExtendedString home=UTL::xgetenv("HOME");
