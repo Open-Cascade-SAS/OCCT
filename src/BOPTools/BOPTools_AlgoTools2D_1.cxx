@@ -58,9 +58,9 @@ static
 //purpose  : 
 //=======================================================================
 Standard_Integer BOPTools_AlgoTools2D::AttachExistingPCurve
-  (const TopoDS_Edge& aE2, // old
-   const TopoDS_Edge& aE1, // new
-   const TopoDS_Face& aF, 
+  (const TopoDS_Edge& theE2, // old
+   const TopoDS_Edge& theE1, // new
+   const TopoDS_Face& theF, 
    const Handle(IntTools_Context)& aCtx)
 {
   Standard_Boolean bIsToReverse, bIsClosed, bComp;
@@ -72,6 +72,13 @@ Standard_Integer BOPTools_AlgoTools2D::AttachExistingPCurve
   BRep_Builder aBB;
   //
   iRet=0;
+  //
+  TopoDS_Face aF = theF;
+  aF.Orientation (TopAbs_FORWARD);
+  TopoDS_Edge aE1 = theE1;
+  aE1.Orientation (TopAbs_FORWARD);
+  TopoDS_Edge aE2 = theE2;
+  aE2.Orientation (TopAbs_FORWARD);
   //
   aC2Dold=BRep_Tool::CurveOnSurface(aE2, aF, aT21, aT22);
   if (aC2Dold.IsNull()){
