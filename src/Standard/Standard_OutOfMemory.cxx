@@ -89,9 +89,17 @@ void Standard_OutOfMemory::Raise(Standard_SStream& theMessage)
 // global instance must be allocated at load-time
 static Handle(Standard_OutOfMemory) anOutOfMemInstance = new Standard_OutOfMemory;
 
-Handle(Standard_OutOfMemory) Standard_OutOfMemory::NewInstance(const Standard_CString theMessage)
+Handle(Standard_OutOfMemory) Standard_OutOfMemory::NewInstance (Standard_CString theMessage)
 {
   anOutOfMemInstance->SetMessageString (theMessage);
+  return anOutOfMemInstance;
+}
+
+Handle(Standard_OutOfMemory) Standard_OutOfMemory::NewInstance (Standard_CString theMessage,
+                                                                Standard_CString theStackTrace)
+{
+  anOutOfMemInstance->SetMessageString (theMessage);
+  anOutOfMemInstance->SetStackString (theStackTrace);
   return anOutOfMemInstance;
 }
 

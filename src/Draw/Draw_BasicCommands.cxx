@@ -954,6 +954,7 @@ static int dsetsignal (Draw_Interpretor& theDI, Standard_Integer theArgNb, const
 {
   OSD_SignalMode aMode = OSD_SignalMode_Set;
   Standard_Boolean aSetFPE = OSD::ToCatchFloatingSignals();
+  Standard_Integer aStackLen = OSD::SignalStackTraceLength();
 
   // default for FPE signal is defined by CSF_FPE variable, if set
   OSD_Environment aEnv("CSF_FPE");
@@ -995,6 +996,14 @@ static int dsetsignal (Draw_Interpretor& theDI, Standard_Integer theArgNb, const
     else if (anArg == "default")
     {
     }
+    else if (anArgIter + 1 < theArgNb
+          && (anArg == "-stracktracelength"
+           || anArg == "-stracktracelen"
+           || anArg == "-stracklength"
+           || anArg == "-stracklen"))
+    {
+      aStackLen = Draw::Atoi (theArgVec[++anArgIter]);
+    }
     else
     {
       Message::SendFail() << "Syntax error: unknown argument '" << anArg << "'";
@@ -1003,19 +1012,21 @@ static int dsetsignal (Draw_Interpretor& theDI, Standard_Integer theArgNb, const
   }
 
   OSD::SetSignal(aMode, aSetFPE);
+  OSD::SetSignalStackTraceLength (aStackLen);
 
   // report actual status in the end
   const char* aModeStr = 0;
   switch (OSD::SignalMode())
   {
-  default:
-  case OSD_SignalMode_AsIs:         aModeStr = "asis";      break;
-  case OSD_SignalMode_Set:          aModeStr = "set";       break;
-  case OSD_SignalMode_SetUnhandled: aModeStr = "unhandled"; break;
-  case OSD_SignalMode_Unset:        aModeStr = "unset";     break;
+    default:
+    case OSD_SignalMode_AsIs:         aModeStr = "asis";      break;
+    case OSD_SignalMode_Set:          aModeStr = "set";       break;
+    case OSD_SignalMode_SetUnhandled: aModeStr = "unhandled"; break;
+    case OSD_SignalMode_Unset:        aModeStr = "unset";     break;
   }
   theDI << "Signal mode: " << aModeStr << "\n"
-        << "Catch FPE: " << (OSD::ToCatchFloatingSignals() ? "1" : "0") << "\n";
+        << "Catch FPE: " << (OSD::ToCatchFloatingSignals() ? "1" : "0") << "\n"
+        << "Stack Trace Length: " << aStackLen << "\n";
   return 0;
 }
 
@@ -1109,6 +1120,27 @@ static int dtracelevel (Draw_Interpretor& theDI,
     aPrinter->SetTraceLevel (aLevel);
   }
 
+  return 0;
+}
+
+//==============================================================================
+//function : ddebugtraces
+//purpose  :
+//==============================================================================
+static int ddebugtraces (Draw_Interpretor& theDI, Standard_Integer theArgNb, const char** theArgVec)
+{
+  if (theArgNb < 2)
+  {
+    theDI << Standard_Failure::DefaultStackTraceLength();
+    return 0;
+  }
+  else if (theArgNb != 2)
+  {
+    theDI << "Syntax error: wrong number of arguments";
+    return 1;
+  }
+
+  Standard_Failure::SetDefaultStackTraceLength (Draw::Atoi (theArgVec[1]));
   return 0;
 }
 
@@ -1243,7 +1275,11 @@ void Draw::BasicCommands(Draw_Interpretor& theCommands)
 	  __FILE__, dmeminfo, g);
   theCommands.Add("dperf","dperf [reset] -- show performance counters, reset if argument is provided",
 		  __FILE__,dperf,g);
-  theCommands.Add("dsetsignal","dsetsignal [{asis|set|unhandled|unset}=set] [{0|1|default=$CSF_FPE}]\n -- set OSD signal handler, with FPE option if argument is given",
+  theCommands.Add("dsetsignal",
+            "dsetsignal [{asIs|set|unhandled|unset}=set] [{0|1|default=$CSF_FPE}]"
+    "\n\t\t:            [-strackTraceLength Length]"
+    "\n\t\t: Sets OSD signal handler, with FPE option if argument is given."
+    "\n\t\t:  -strackTraceLength specifies length of stack trace to put into exceptions redirected from signals.",
 		  __FILE__,dsetsignal,g);
 
   theCommands.Add("dparallel",
@@ -1264,6 +1300,11 @@ void Draw::BasicCommands(Draw_Interpretor& theCommands)
 		  __FILE__,decho,g);
   theCommands.Add("dtracelevel", "dtracelevel [trace|info|warn|alarm|fail]",
                   __FILE__, dtracelevel, g);
+  theCommands.Add("ddebugtraces",
+    "ddebugtraces nbTraces"
+    "\n\t\t: Sets the number of lines for the stack trace within Standard_Failure constructor."
+    "\n\t\t: Intended for debug purposes.",
+    __FILE__, ddebugtraces, g);
 
   theCommands.Add("dbreak", "raises Tcl exception if user has pressed Control-Break key",
 		  __FILE__,dbreak,g);

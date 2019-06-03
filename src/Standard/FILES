@@ -87,6 +87,7 @@ Standard_ShortReal.cxx
 Standard_ShortReal.hxx
 Standard_Size.hxx
 Standard_SStream.hxx
+Standard_StackTrace.cxx
 Standard_Std.hxx
 Standard_Stream.hxx
 Standard_Strtod.cxx

@@ -90,6 +90,17 @@
   #define Standard_UNUSED
 #endif
 
+//! @def Standard_NOINLINE
+//! Macro for disallowing function inlining.
+//! Expands to "__attribute__((noinline))" on GCC and CLang.
+#if defined(__clang__) || (defined(__GNUC__) && (__GNUC__ > 4 || (__GNUC__ == 3 && __GNUC_MINOR__ >= 1)))
+  #define Standard_NOINLINE __attribute__((noinline))
+#elif defined(_MSC_VER)
+  #define Standard_NOINLINE __declspec(noinline)
+#else
+  #define Standard_NOINLINE
+#endif
+
 //! @def Standard_THREADLOCAL
 //! Define Standard_THREADLOCAL modifier as C++11 thread_local keyword where it is available.
 #if defined(__clang__)

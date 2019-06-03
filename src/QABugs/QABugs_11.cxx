@@ -2396,6 +2396,88 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
   return 0;
 }
 
+//! Auxiliary functions for printing synthetic backtrace
+class MyTestInterface : public Standard_Transient
+{
+public:
+  virtual int Standard_NOINLINE testMethod3 (int* theIntPtr, bool theToPrintStack) = 0;
+};
+
+class MyTestClass : public MyTestInterface
+{
+public:
+  MyTestClass() {}
+  virtual int Standard_NOINLINE testMethod3 (int* theIntPtr, bool theToPrintStack)
+  {
+    if (theToPrintStack)
+    {
+      char aMsg[4096] = {};
+      Standard::StackTrace (aMsg, 4096, 10);
+      std::cout << aMsg << "\n";
+      return 0;
+    }
+    *theIntPtr = 4;
+    return *theIntPtr;
+  }
+};
+
+static int Standard_NOINLINE myTestFunction2 (int* theIntPtr, bool theToPrintStack)
+{
+  Handle(MyTestInterface) aTest = new MyTestClass();
+  return aTest->testMethod3 (theIntPtr, theToPrintStack);
+}
+
+static void Standard_NOINLINE myTestFunction1 (bool theToPrintStack)
+{
+  int* anIntPtr = NULL;
+  myTestFunction2 (anIntPtr, theToPrintStack);
+}
+
+static Standard_NOINLINE Standard_Integer OCC30762 (Draw_Interpretor& theDI,
+                                                    Standard_Integer theNbArgs,
+                                                    const char** )
+{
+  if (theNbArgs != 1)
+  {
+    theDI << "Syntax error: wrong number of arguments";
+    return 1;
+  }
+
+  // just print stack
+  std::cout << "Test normal backtrace...\n";
+  myTestFunction1 (true);
+
+  // test access violation
+  {
+    try
+    {
+      OCC_CATCH_SIGNALS
+      std::cout << "Test segmentation Fault...\n";
+      myTestFunction1 (false);
+      std::cout << "Error: writing by NULL address - no exception is raised!\n";
+    }
+  #ifdef _WIN32
+    catch (OSD_Exception_ACCESS_VIOLATION const& aSegException)
+  #else
+    catch (OSD_SIGSEGV const& aSegException)
+  #endif
+    {
+      theDI << " Caught (";
+      theDI << aSegException.GetMessageString();
+      theDI << aSegException.GetStackString();
+      theDI << ")... OK\n";
+    }
+    catch (Standard_Failure const& anException)
+    {
+      theDI << " Caught (";
+      theDI << anException.GetMessageString();
+      theDI << anException.GetStackString();
+      theDI << ")... KO\n";
+    }
+  }
+  return 0;
+}
+
 //! Auxiliary functor.
 struct TestParallelFunctor
 {
@@ -4949,6 +5031,7 @@ void QABugs::Commands_11(Draw_Interpretor& theCommands) {
   theCommands.Add("OCC5698", "OCC5698 wire", __FILE__, OCC5698, group);
   theCommands.Add("OCC6143", "OCC6143 catching signals", __FILE__, OCC6143, group);
   theCommands.Add("OCC30775", "OCC30775 catching signals in threads", __FILE__, OCC30775, group);
+  theCommands.Add("OCC30762", "OCC30762 printing backtrace", __FILE__, OCC30762, group);
   theCommands.Add("OCC7141", "OCC7141 [nCount] aPath", __FILE__, OCC7141, group);
   theCommands.Add("OCC7372", "OCC7372", __FILE__, OCC7372, group);
   theCommands.Add("OCC8169", "OCC8169 edge1 edge2 plane", __FILE__, OCC8169, group);

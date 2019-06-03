@@ -12,9 +12,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <Standard_Failure.hxx>
 
 #include <Standard_ErrorHandler.hxx>
-#include <Standard_Failure.hxx>
 #include <Standard_Macro.hxx>
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_PCharacter.hxx>
@@ -22,173 +22,341 @@
 #include <Standard_TypeMismatch.hxx>
 
 #include <string.h>
+
 IMPLEMENT_STANDARD_RTTIEXT(Standard_Failure,Standard_Transient)
 
-static Standard_CString allocate_message(const Standard_CString AString)
+namespace
 {
-  Standard_CString aStr = 0;
-  if(AString) {
-    const Standard_Size aLen = strlen(AString);
-    aStr = (Standard_CString) malloc(aLen+sizeof(Standard_Integer)+1);
-    if (aStr) {
-      Standard_PCharacter pStr=(Standard_PCharacter)aStr;
-      strcpy(pStr+sizeof(Standard_Integer),AString);
-      *((Standard_Integer*)aStr) = 1;
+  //! Global last failure object returned by Standard_Failure::Caught().
+  static Standard_THREADLOCAL Handle(Standard_Failure) Standard_Failure_RaisedError;
+
+  //! Global parameter defining default length of stack trace.
+  static Standard_Integer Standard_Failure_DefaultStackTraceLength = 0;
+}
+
+// =======================================================================
+// function : StringRef::allocate_message
+// purpose  :
+// =======================================================================
+Standard_Failure::StringRef* Standard_Failure::StringRef::allocate_message (const Standard_CString theString)
+{
+  if (theString == NULL
+  || *theString == '\0')
+  {
+    return NULL;
+  }
+
+  const Standard_Size aLen = strlen (theString);
+  StringRef* aStrPtr = (StringRef* )malloc (aLen + sizeof(Standard_Integer) + 1);
+  if (aStrPtr != NULL)
+  {
+    strcpy ((char* )&aStrPtr->Message[0], theString);
+    aStrPtr->Counter = 1;
+  }
+  return aStrPtr;
+}
+
+// =======================================================================
+// function : StringRef::copy_message
+// purpose  :
+// =======================================================================
+Standard_Failure::StringRef* Standard_Failure::StringRef::copy_message (Standard_Failure::StringRef* theString)
+{
+  if (theString == NULL)
+  {
+    return NULL;
+  }
+
+  ++theString->Counter;
+  return theString;
+}
+
+// =======================================================================
+// function : StringRef::deallocate_message
+// purpose  :
+// =======================================================================
+void Standard_Failure::StringRef::deallocate_message (Standard_Failure::StringRef* theString)
+{
+  if (theString != NULL)
+  {
+    if (--theString->Counter == 0)
+    {
+      free ((void* )theString);
     }
   }
-  return aStr;
 }
 
-static Standard_CString copy_message(Standard_CString aMessage)
+// =======================================================================
+// function : Standard_Failure
+// purpose  :
+// =======================================================================
+Standard_Failure::Standard_Failure()
+: myMessage (NULL),
+  myStackTrace (NULL)
 {
-  Standard_CString aStr = 0;
-  if(aMessage) {
-    aStr = aMessage;
-    (*((Standard_Integer*)aStr))++;
+  const Standard_Integer aStackLength = Standard_Failure_DefaultStackTraceLength;
+  if (aStackLength > 0)
+  {
+    int aStackBufLen = Max (aStackLength * 200, 2048);
+    char* aStackBuffer = (char* )alloca (aStackBufLen);
+    if (aStackBuffer != NULL)
+    {
+      memset (aStackBuffer, 0, aStackBufLen);
+      if (Standard::StackTrace (aStackBuffer, aStackBufLen, aStackLength, NULL, 1))
+      {
+        myStackTrace = StringRef::allocate_message (aStackBuffer);
+      }
+    }
   }
-  return aStr;
 }
 
-static void deallocate_message(Standard_CString aMessage)
+// =======================================================================
+// function : Standard_Failure
+// purpose  :
+// =======================================================================
+Standard_Failure::Standard_Failure (const Standard_CString theDesc)
+: myMessage (NULL),
+  myStackTrace (NULL)
 {
-  if(aMessage) {
-    (*((Standard_Integer*)aMessage))--;
-    if(*((Standard_Integer*)aMessage)==0)
-      free((void*)aMessage);
+  myMessage = StringRef::allocate_message (theDesc);
+  const Standard_Integer aStackLength = Standard_Failure_DefaultStackTraceLength;
+  if (aStackLength > 0)
+  {
+    int aStackBufLen = Max (aStackLength * 200, 2048);
+    char* aStackBuffer = (char* )alloca (aStackBufLen);
+    if (aStackBuffer != NULL)
+    {
+      memset (aStackBuffer, 0, aStackBufLen);
+      Standard::StackTrace (aStackBuffer, aStackBufLen, aStackLength, NULL, 1);
+      myStackTrace = StringRef::allocate_message (aStackBuffer);
+    }
   }
 }
 
-// ******************************************************************
-//                           Standard_Failure                       *
-// ******************************************************************
-static Standard_THREADLOCAL Handle(Standard_Failure) RaisedError;
-
-// ------------------------------------------------------------------
-//
-// ------------------------------------------------------------------
-Standard_Failure::Standard_Failure ()
-: myMessage(NULL) 
+// =======================================================================
+// function : Standard_Failure
+// purpose  :
+// =======================================================================
+Standard_Failure::Standard_Failure (const Standard_CString theDesc,
+                                    const Standard_CString theStackTrace)
+: myMessage (NULL),
+  myStackTrace (NULL)
 {
+  myMessage = StringRef::allocate_message (theDesc);
+  myStackTrace = StringRef::allocate_message (theStackTrace);
 }
 
-// ------------------------------------------------------------------
-// Create returns mutable Failure;
-// ------------------------------------------------------------------
-Standard_Failure::Standard_Failure (const Standard_CString AString) 
-:  myMessage(NULL)
+// =======================================================================
+// function : Standard_Failure
+// purpose  :
+// =======================================================================
+Standard_Failure::Standard_Failure (const Standard_Failure& theFailure)
+: Standard_Transient (theFailure),
+  myMessage (NULL),
+  myStackTrace (NULL)
 {
-  myMessage = allocate_message(AString);
+  myMessage    = StringRef::copy_message (theFailure.myMessage);
+  myStackTrace = StringRef::copy_message (theFailure.myStackTrace);
 }
 
-Standard_Failure::Standard_Failure (const Standard_Failure& theFailure) 
-: Standard_Transient(theFailure)
-{
-  myMessage = copy_message(theFailure.myMessage);
-}
-
+// =======================================================================
+// function : ~Standard_Failure
+// purpose  :
+// =======================================================================
 Standard_Failure::~Standard_Failure()
 {
-  deallocate_message(myMessage);
+  StringRef::deallocate_message (myMessage);
+  StringRef::deallocate_message (myStackTrace);
 }
 
-void Standard_Failure::SetMessageString(const Standard_CString AString)
+// =======================================================================
+// function : GetMessageString
+// purpose  :
+// =======================================================================
+Standard_CString Standard_Failure::GetMessageString() const
 {
-  if ( AString == GetMessageString() ) return;
-  deallocate_message(myMessage);
-  myMessage = allocate_message(AString);
+  return myMessage != NULL
+       ? myMessage->GetMessage()
+       : "";
 }
 
-// ------------------------------------------------------------------
-// Caught (myclass) returns mutable Failure raises NoSuchObject ;
-// ------------------------------------------------------------------
-Handle(Standard_Failure) Standard_Failure::Caught() 
+// =======================================================================
+// function : SetMessageString
+// purpose  :
+// =======================================================================
+void Standard_Failure::SetMessageString (const Standard_CString theDesc)
 {
-  return RaisedError ;
+  if (theDesc == GetMessageString())
+  {
+    return;
+  }
+
+  StringRef::deallocate_message (myMessage);
+  myMessage = StringRef::allocate_message (theDesc);
 }
 
-// ------------------------------------------------------------------
-// Raise (myclass; aMessage: CString = "") ;
-// ------------------------------------------------------------------
-void Standard_Failure::Raise (const Standard_CString AString) 
+// =======================================================================
+// function : GetStackString
+// purpose  :
+// =======================================================================
+Standard_CString Standard_Failure::GetStackString() const
+{
+  return myStackTrace != NULL
+       ? myStackTrace->GetMessage()
+       : "";
+}
+
+// =======================================================================
+// function : SetStackString
+// purpose  :
+// =======================================================================
+void Standard_Failure::SetStackString (const Standard_CString theStack)
+{
+  if (theStack == GetStackString())
+  {
+    return;
+  }
+
+  StringRef::deallocate_message (myStackTrace);
+  myStackTrace = StringRef::allocate_message (theStack);
+}
+
+// =======================================================================
+// function : Caught
+// purpose  :
+// =======================================================================
+Handle(Standard_Failure) Standard_Failure::Caught()
+{
+  return Standard_Failure_RaisedError;
+}
+
+// =======================================================================
+// function : Raise
+// purpose  :
+// =======================================================================
+void Standard_Failure::Raise (const Standard_CString theDesc)
 { 
-  Handle(Standard_Failure) E = new Standard_Failure()  ;
-  E->Reraise (AString) ;
+  Handle(Standard_Failure) aFailure = new Standard_Failure();
+  aFailure->Reraise (theDesc);
 }
 
-// ------------------------------------------------------------------
-// Raise(myclass; aReason: in out SStream) ;
-// ------------------------------------------------------------------
-void Standard_Failure::Raise (const Standard_SStream& AReason) 
+// =======================================================================
+// function : Raise
+// purpose  :
+// =======================================================================
+void Standard_Failure::Raise (const Standard_SStream& theReason)
 { 
-  Handle(Standard_Failure) E = new Standard_Failure();
-  E->Reraise (AReason);
+  Handle(Standard_Failure) aFailure = new Standard_Failure();
+  aFailure->Reraise (theReason);
 }
 
-// ------------------------------------------------------------------
-// Reraise (me: mutable; aMessage: CString) ;
-// ------------------------------------------------------------------
-void Standard_Failure::Reraise (const Standard_CString AString) 
+// =======================================================================
+// function : Reraise
+// purpose  :
+// =======================================================================
+void Standard_Failure::Reraise (const Standard_CString theDesc)
 {
-  SetMessageString(AString);
+  SetMessageString (theDesc);
   Reraise();
 }
 
-void Standard_Failure::Reraise (const Standard_SStream& AReason) 
+// =======================================================================
+// function : Reraise
+// purpose  :
+// =======================================================================
+void Standard_Failure::Reraise (const Standard_SStream& theReason)
 {
-  SetMessageString(AReason.str().c_str());
+  SetMessageString (theReason.str().c_str());
   Reraise();
 }
 
-void Standard_Failure::Reraise () 
+// =======================================================================
+// function : Reraise
+// purpose  :
+// =======================================================================
+void Standard_Failure::Reraise()
 {
-  RaisedError = this;
+  Standard_Failure_RaisedError = this;
   Throw();
 }
 
+// =======================================================================
+// function : Jump
+// purpose  :
+// =======================================================================
 void Standard_Failure::Jump()
 {
 #if defined (OCC_CONVERT_SIGNALS)
   Standard_ErrorHandler::Error (this);
   Standard_ErrorHandler::Abort (this);
 #else
-  RaisedError = this;
+  Standard_Failure_RaisedError = this;
   Throw();
 #endif
 }
 
-
-// ------------------------------------------------------------------
-// Throw (me) is virtual ;
-// ------------------------------------------------------------------
+// =======================================================================
+// function : Throw
+// purpose  :
+// =======================================================================
 void Standard_Failure::Throw() const
 {
   throw *this;
 }
 
-// ------------------------------------------------------------------
-// Print (me; s: in out OStream) returns OStream;
-// ------------------------------------------------------------------
-void Standard_Failure::Print (Standard_OStream& AStream) const
+// =======================================================================
+// function : Print
+// purpose  :
+// =======================================================================
+void Standard_Failure::Print (Standard_OStream& theStream) const
 {
-if(myMessage){ 
-    AStream << DynamicType() << ": " << GetMessageString(); 
- } 
- else { 
-    AStream << DynamicType();
- }
+  if (myMessage != NULL)
+  {
+    theStream << DynamicType() << ": " << GetMessageString();
+  }
+  else
+  {
+    theStream << DynamicType();
+  }
+  if (myStackTrace != NULL)
+  {
+    theStream << GetStackString();
+  }
 }
 
-Handle(Standard_Failure) Standard_Failure::NewInstance(const Standard_CString AString)
+// =======================================================================
+// function : NewInstance
+// purpose  :
+// =======================================================================
+Handle(Standard_Failure) Standard_Failure::NewInstance (Standard_CString theString)
 {
-  return new Standard_Failure(AString)  ;
+  return new Standard_Failure (theString);
 }
 
-//=======================================================================
-//function : GetMessageString
-//purpose  : Returns error message
-//=======================================================================
-Standard_CString Standard_Failure::GetMessageString () const
+// =======================================================================
+// function : NewInstance
+// purpose  :
+// =======================================================================
+Handle(Standard_Failure) Standard_Failure::NewInstance (Standard_CString theMessage,
+                                                        Standard_CString theStackTrace)
 {
-  return (myMessage ? myMessage+sizeof(Standard_Integer) : "");
+  return new Standard_Failure (theMessage, theStackTrace);
 }
 
+// =======================================================================
+// function : GetNbStackTraces
+// purpose  :
+// =======================================================================
+Standard_Integer Standard_Failure::DefaultStackTraceLength()
+{
+  return Standard_Failure_DefaultStackTraceLength;
+}
+
+// =======================================================================
+// function : SetNbStackTraces
+// purpose  :
+// =======================================================================
+void Standard_Failure::SetDefaultStackTraceLength (Standard_Integer theNbStackTraces)
+{
+  Standard_Failure_DefaultStackTraceLength = theNbStackTraces;
+}

@@ -134,6 +134,14 @@ public:
   //! not. If yes then raises Exception_CTRL_BREAK.
   Standard_EXPORT static void ControlBreak();
 
+  //! Returns a length of stack trace to be put into exception redirected from signal;
+  //! 0 by default meaning no stack trace.
+  //! @sa Standard_Failure::GetStackString()
+  Standard_EXPORT static Standard_Integer SignalStackTraceLength();
+
+  //! Sets a length of stack trace to be put into exception redirected from signal.
+  Standard_EXPORT static void SetSignalStackTraceLength (Standard_Integer theLength);
+
 };
 
 #endif // _OSD_HeaderFile
