@@ -24,8 +24,11 @@
     #pragma comment( lib, "FreeImage.lib" )
   #endif
 #elif defined(HAVE_WINCODEC)
-  //#include <initguid.h>
   #include <wincodec.h>
+  // prevent warnings on MSVC10
+  #include <Standard_WarningsDisable.hxx>
+  #include <Standard_TypeDef.hxx>
+  #include <Standard_WarningsRestore.hxx>
   #undef min
   #undef max
 #endif
@@ -39,6 +42,7 @@
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <OSD_OpenFile.hxx>
+
 #include <fstream>
 #include <algorithm>
 
