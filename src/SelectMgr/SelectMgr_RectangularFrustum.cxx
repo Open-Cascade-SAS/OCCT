@@ -204,6 +204,56 @@ namespace
     // Far
     theNormals[5] = -theNormals[4];
   }
+  
+  // =======================================================================
+  // function : rayBoxIntersection
+  // purpose  : Computes an intersection of ray with box
+  //            Returns distances to the first (or 0.0 if the ray origin is inside the box) and second intersection
+  //            If the ray has no intersection with the box returns DBL_MAX
+  // =======================================================================
+  Bnd_Range rayBoxIntersection (const gp_Ax1& theRay, const gp_Pnt& theBoxMin, const gp_Pnt& theBoxMax)
+  {
+    Standard_Real aTimeMinX = -DBL_MAX;
+    Standard_Real aTimeMinY = -DBL_MAX;
+    Standard_Real aTimeMinZ = -DBL_MAX;
+    Standard_Real aTimeMaxX = DBL_MAX;
+    Standard_Real aTimeMaxY = DBL_MAX;
+    Standard_Real aTimeMaxZ = DBL_MAX;
+
+    Standard_Real aTime1;
+    Standard_Real aTime2;
+
+    if (Abs (theRay.Direction().X()) > DBL_EPSILON)
+    {
+      aTime1 = (theBoxMin.X() - theRay.Location().X()) / theRay.Direction().X();
+      aTime2 = (theBoxMax.X() - theRay.Location().X()) / theRay.Direction().X();
+
+      aTimeMinX = Min (aTime1, aTime2);
+      aTimeMaxX = Max (aTime1, aTime2);
+    }
+    if (Abs (theRay.Direction().Y()) > DBL_EPSILON)
+    {
+      aTime1 = (theBoxMin.Y() - theRay.Location().Y()) / theRay.Direction().Y();
+      aTime2 = (theBoxMax.Y() - theRay.Location().Y()) / theRay.Direction().Y();
+
+      aTimeMinY = Min (aTime1, aTime2);
+      aTimeMaxY = Max (aTime1, aTime2);
+    }
+    if (Abs (theRay.Direction().Z()) > DBL_EPSILON)
+    {
+      aTime1 = (theBoxMin.Z() - theRay.Location().Z()) / theRay.Direction().Z();
+      aTime2 = (theBoxMax.Z() - theRay.Location().Z()) / theRay.Direction().Z();
+
+      aTimeMinZ = Min (aTime1, aTime2);
+      aTimeMaxZ = Max (aTime1, aTime2);
+    }
+
+    Standard_Real aTimeMin = Max (aTimeMinX, Max (aTimeMinY, aTimeMinZ));
+    Standard_Real aTimeMax = Min (aTimeMaxX, Min (aTimeMaxY, aTimeMaxZ));
+
+    return aTimeMin > aTimeMax || aTimeMax < 0.0 ? Bnd_Range (DBL_MAX, DBL_MAX)
+      : Bnd_Range (Max (aTimeMin, 0.0), aTimeMax);
+  }
 }
 
 // =======================================================================
@@ -446,14 +496,34 @@ Standard_Boolean SelectMgr_RectangularFrustum::Overlaps (const SelectMgr_Vec3& t
   if (!hasOverlap (theBoxMin, theBoxMax))
     return Standard_False;
 
-  gp_Pnt aNearestPnt (RealLast(), RealLast(), RealLast());
-  aNearestPnt.SetX (Max (Min (myNearPickedPnt.X(), theBoxMax.x()), theBoxMin.x()));
-  aNearestPnt.SetY (Max (Min (myNearPickedPnt.Y(), theBoxMax.y()), theBoxMin.y()));
-  aNearestPnt.SetZ (Max (Min (myNearPickedPnt.Z(), theBoxMax.z()), theBoxMin.z()));
+  gp_Ax1 aRay (myNearPickedPnt, myViewRayDir);
+  Bnd_Range aRange = rayBoxIntersection (aRay,
+                                         gp_Pnt (theBoxMin.x(), theBoxMin.y(), theBoxMin.z()),
+                                         gp_Pnt (theBoxMax.x(), theBoxMax.y(), theBoxMax.z()));
 
-  thePickResult.SetDepth (aNearestPnt.Distance (myNearPickedPnt));
+  Standard_Real aDepth = 0.0;
+  aRange.GetMin (aDepth);
 
-  return isViewClippingOk (thePickResult);
+  if (aDepth == DBL_MAX)
+  {
+    gp_Pnt aNearestPnt (RealLast(), RealLast(), RealLast());
+    aNearestPnt.SetX (Max (Min (myNearPickedPnt.X(), theBoxMax.x()), theBoxMin.x()));
+    aNearestPnt.SetY (Max (Min (myNearPickedPnt.Y(), theBoxMax.y()), theBoxMin.y()));
+    aNearestPnt.SetZ (Max (Min (myNearPickedPnt.Z(), theBoxMax.z()), theBoxMin.z()));
+
+    aDepth = aNearestPnt.Distance (myNearPickedPnt);
+    thePickResult.SetDepth (aDepth);
+    return isViewClippingOk (thePickResult);
+  }
+
+  if (myIsViewClipEnabled && !myViewClipRange.GetNearestDepth (aRange, aDepth))
+  {
+    return Standard_False;
+  }
+
+  thePickResult.SetDepth (aDepth);
+
+  return Standard_True;
 }
 
 // =======================================================================

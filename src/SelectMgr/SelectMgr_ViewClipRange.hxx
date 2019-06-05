@@ -48,6 +48,50 @@ public:
     }
     return Standard_False;
   }
+  
+  //! Calculates the min not clipped value from the range.
+  //! Returns FALSE if the whole range is clipped.
+  Standard_Boolean GetNearestDepth (const Bnd_Range& theRange, Standard_Real& theDepth) const
+  {
+    if (!myUnclipRange.IsVoid() && myUnclipRange.IsOut (theRange))
+    {
+      return false;
+    }
+
+    Bnd_Range aCommonClipRange;
+    theRange.GetMin (theDepth);
+
+    if (!myUnclipRange.IsVoid() && myUnclipRange.IsOut (theDepth))
+    {
+      myUnclipRange.GetMin (theDepth);
+    }
+
+    for (size_t aRangeIter = 0; aRangeIter < myClipRanges.size(); ++aRangeIter)
+    {
+      if (!myClipRanges[aRangeIter].IsOut (theDepth))
+      {
+        aCommonClipRange = myClipRanges[aRangeIter];
+        break;
+      }
+    }
+
+    if (aCommonClipRange.IsVoid())
+    {
+      return true;
+    }
+
+    for (size_t aRangeIter = 0; aRangeIter < myClipRanges.size(); ++aRangeIter)
+    {
+      if (!aCommonClipRange.IsOut (myClipRanges[aRangeIter]))
+      {
+        aCommonClipRange.Add (myClipRanges[aRangeIter]);
+      }
+    }
+
+    aCommonClipRange.GetMax (theDepth);
+
+    return !theRange.IsOut (theDepth);
+  }
 
   //! Clears clipping range.
   void SetVoid()
