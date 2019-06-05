@@ -81,20 +81,17 @@ static void CheckCurveData
     throw Standard_ConstructionError("BSpline curve: # Poles and degree mismatch");
 }
 
-//=======================================================================
-//function : Rational
-//purpose  : check rationality of an array of weights
-//=======================================================================
-
-static Standard_Boolean Rational(const TColStd_Array1OfReal& W)
+//! Check rationality of an array of weights
+static Standard_Boolean Rational (const TColStd_Array1OfReal& theWeights)
 {
-  Standard_Integer i, n = W.Length();
-  Standard_Boolean rat = Standard_False;
-  for (i = 1; i < n; i++) {
-    rat =  Abs(W(i) - W(i+1)) > gp::Resolution();
-    if (rat) break;
+  for (Standard_Integer i = theWeights.Lower(); i < theWeights.Upper(); i++)
+  {
+    if (Abs (theWeights[i] - theWeights[i + 1]) > gp::Resolution())
+    {
+      return Standard_True;
+    }
   }
-  return rat;
+  return Standard_False;
 }
 
 //=======================================================================
