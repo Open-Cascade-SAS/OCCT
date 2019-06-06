@@ -1364,6 +1364,14 @@ protected: //! @name internal methods
     }
   }
 
+  //! Bind/Unbind status to object and its children
+  //! @param theObj [in] the object to change status
+  //! @param theStatus status, if NULL, unbind object
+  Standard_EXPORT void setObjectStatus (const Handle(AIS_InteractiveObject)& theIObj,
+                                        const AIS_DisplayStatus theStatus,
+                                        const Standard_Integer theDispyMode,
+                                        const Standard_Integer theSelectionMode);
+
 protected: //! @name internal fields
 
   AIS_DataMapOfIOStatus myObjects;
