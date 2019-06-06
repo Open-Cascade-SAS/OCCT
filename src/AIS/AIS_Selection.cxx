@@ -39,6 +39,11 @@ AIS_Selection::AIS_Selection()
 //=======================================================================
 void AIS_Selection::Clear()
 {
+  for (AIS_NListOfEntityOwner::Iterator aSelIter (Objects()); aSelIter.More(); aSelIter.Next())
+  {
+    const Handle(SelectMgr_EntityOwner) anObject = aSelIter.Value();
+    anObject->SetSelected (Standard_False);
+  }
   myresult.Clear();
   myResultMap.Clear();
   myIterator = AIS_NListOfEntityOwner::Iterator();
@@ -61,6 +66,7 @@ AIS_SelectStatus AIS_Selection::Select (const Handle(SelectMgr_EntityOwner)& the
     AIS_NListOfEntityOwner::Iterator aListIter;
     myresult.Append  (theObject, aListIter);
     myResultMap.Bind (theObject, aListIter);
+    theObject->SetSelected (Standard_True);
     return AIS_SS_Added;
   }
 
@@ -87,6 +93,7 @@ AIS_SelectStatus AIS_Selection::Select (const Handle(SelectMgr_EntityOwner)& the
 
   myresult.Remove (aListIter);
   myResultMap.UnBind (theObject);
+  theObject->SetSelected (Standard_False);
 
   // update list iterator for next object in <myresult> list if any
   if (aListIter.More())
@@ -120,5 +127,6 @@ AIS_SelectStatus AIS_Selection::AddSelect (const Handle(SelectMgr_EntityOwner)& 
   AIS_NListOfEntityOwner::Iterator aListIter;
   myresult.Append  (theObject, aListIter);
   myResultMap.Bind (theObject, aListIter);
+  theObject->SetSelected (Standard_True);
   return AIS_SS_Added;
 }

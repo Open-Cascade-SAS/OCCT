@@ -754,7 +754,9 @@ Standard_Boolean AIS_InteractiveContext::IsHilighted (const Handle(SelectMgr_Ent
     return myObjects (anObj)->IsHilighted();
   }
 
-  return theOwner->IsSelected();
+  const Handle(Prs3d_Drawer)& aStyle = getSelStyle (anObj, theOwner);
+  const Standard_Integer aHiMode = getHilightMode (anObj, aStyle, -1);
+  return theOwner->IsHilighted (myMainPM, aHiMode);
 }
 
 //=======================================================================

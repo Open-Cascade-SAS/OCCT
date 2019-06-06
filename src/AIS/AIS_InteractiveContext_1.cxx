@@ -184,7 +184,6 @@ void AIS_InteractiveContext::unhighlightSelected (const Standard_Boolean theIsTo
     {
       anObjToClear.Add (anInteractive);
     }
-    anOwner->SetSelected (Standard_False);
     if (anOwner == anInteractive->GlobalSelOwner())
     {
       myObjects.ChangeFind (anInteractive)->SetHilightStatus (Standard_False);
@@ -504,7 +503,6 @@ AIS_StatusOfPick AIS_InteractiveContext::Select (const Standard_Integer  theXPMi
       continue;
 
     mySelection->Select (aCurOwner);
-    aCurOwner->SetSelected (Standard_True);
   }
 
   if (myAutoHilight)
@@ -544,7 +542,6 @@ AIS_StatusOfPick AIS_InteractiveContext::Select (const TColgp_Array1OfPnt2d& the
       continue;
 
     mySelection->Select (anOwner);
-    anOwner->SetSelected (Standard_True);
   }
 
   if (myAutoHilight)
@@ -644,8 +641,7 @@ AIS_StatusOfPick AIS_InteractiveContext::ShiftSelect (const Standard_Integer the
     if (anOwner.IsNull() || !anOwner->HasSelectable() || !myFilters->IsOk (anOwner))
       continue;
 
-    AIS_SelectStatus aSelStatus = mySelection->Select (anOwner);
-    anOwner->SetSelected (aSelStatus == AIS_SS_Added);
+    mySelection->Select (anOwner);
   }
 
   if (myAutoHilight)
@@ -685,8 +681,7 @@ AIS_StatusOfPick AIS_InteractiveContext::ShiftSelect (const TColgp_Array1OfPnt2d
     if (anOwner.IsNull() || !anOwner->HasSelectable() || !myFilters->IsOk (anOwner))
       continue;
 
-    AIS_SelectStatus aSelStatus = mySelection->Select (anOwner);
-    anOwner->SetSelected (aSelStatus == AIS_SS_Added);
+    mySelection->Select (anOwner);
   }
 
   if (myAutoHilight)
@@ -721,7 +716,6 @@ void AIS_InteractiveContext::HilightSelected (const Standard_Boolean theToUpdate
       aState->SetHilightStatus (Standard_True);
       aState->SetHilightStyle (anObjSelStyle);
     }
-    anOwner->SetSelected (Standard_True);
     if (!anOwner->IsAutoHilight())
     {
       NCollection_Handle<SelectMgr_SequenceOfOwner> aSeq;
@@ -771,7 +765,6 @@ void AIS_InteractiveContext::UnhilightSelected (const Standard_Boolean theToUpda
       myObjects.ChangeFind (anObj)->SetHilightStatus (Standard_False);
     }
 
-    anOwner->SetSelected (Standard_False);
     anOwner->Unhilight (myMainPM);
   }
 
@@ -792,13 +785,6 @@ void AIS_InteractiveContext::ClearSelected (const Standard_Boolean theToUpdateVi
   if (myAutoHilight)
   {
     unhighlightSelected();
-  }
-  else
-  {
-    for (AIS_NListOfEntityOwner::Iterator aSelIter (mySelection->Objects()); aSelIter.More(); aSelIter.Next())
-    {
-      aSelIter.Value()->SetSelected (Standard_False);
-    }
   }
 
   mySelection->Clear();
@@ -861,7 +847,6 @@ void AIS_InteractiveContext::SetSelected (const Handle(AIS_InteractiveObject)& t
     {
       Unhilight (aSelectable, Standard_False);
     }
-    aSelOwner->SetSelected (Standard_False);
     if (aSelOwner == aSelectable->GlobalSelOwner())
     {
       myObjects.ChangeFind (aSelectable)->SetHilightStatus (Standard_False);
@@ -886,7 +871,6 @@ void AIS_InteractiveContext::SetSelected (const Handle(AIS_InteractiveObject)& t
       HilightWithColor (theObject, anObjSelStyle, Standard_False);
     }
   }
-  anOwner->SetSelected (Standard_True);
 
   if (theToUpdateViewer)
     UpdateCurrentViewer();
@@ -933,12 +917,10 @@ void AIS_InteractiveContext::SetSelected (const Handle(SelectMgr_EntityOwner)& t
     if (!HighlightStyle (theOwner, aCustomStyle) ||
       (!aCustomStyle.IsNull() && aCustomStyle != anObjSelStyle))
     {
-      theOwner->SetSelected (Standard_True);
       highlightSelected (theOwner);
     }
   }
 
-  theOwner->SetSelected (Standard_True);
   if (myAutoHilight && theOwner == anObject->GlobalSelOwner())
   {
     Handle(AIS_GlobalStatus)& aState = myObjects.ChangeFind (anObject);
@@ -987,8 +969,7 @@ void AIS_InteractiveContext::AddOrRemoveSelected (const Handle(SelectMgr_EntityO
   if (!myFilters->IsOk(theOwner) && !theOwner->IsSelected())
     return;
 
-  AIS_SelectStatus aSelStat = mySelection->Select (theOwner);
-  theOwner->SetSelected (aSelStat == AIS_SS_Added);
+  mySelection->Select (theOwner);
 
   if (myAutoHilight)
   {
