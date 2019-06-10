@@ -557,6 +557,14 @@ public: //! @name Selection management
   Standard_EXPORT void AddOrRemoveSelected (const Handle(AIS_InteractiveObject)& theObject,
                                             const Standard_Boolean               theToUpdateViewer);
 
+  //! Updates Selected state of specified owner without calling HilightSelected().
+  //! Has no effect if Selected state is not changed, and redirects to AddOrRemoveSelected() otherwise.
+  //! @param theOwner owner object to set selected state
+  //! @param theIsSelected new selected state
+  //! @return TRUE if Selected state has been changed
+  Standard_EXPORT Standard_Boolean SetSelectedState (const Handle(SelectMgr_EntityOwner)& theOwner,
+                                                     const Standard_Boolean               theIsSelected);
+
   //! Highlights selected objects.
   Standard_EXPORT void HilightSelected (const Standard_Boolean theToUpdateViewer);
 
@@ -815,6 +823,9 @@ public: //! @name common properties
   //! only effective when no Local Context is opened...
   //! returns the number of removed  structures from the viewers.
   Standard_EXPORT Standard_Integer PurgeDisplay();
+
+  //! Return rotation gravity point.
+  Standard_EXPORT virtual gp_Pnt GravityPoint (const Handle(V3d_View)& theView) const;
 
 public: //! @name debug visualization
 

@@ -1,7 +1,4 @@
-// Created on: 1998-08-27
-// Created by: Robert COUBLANC
-// Copyright (c) 1998-1999 Matra Datavision
-// Copyright (c) 1999-2014 OPEN CASCADE SAS
+// Copyright (c) 2016-2019 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -14,5 +11,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-inline const Handle(AIS_InteractiveContext)& ViewerTest_EventManager::Context() const
-{return myCtx;}
+#ifndef _Aspect_TouchMap_HeaderFile
+#define _Aspect_TouchMap_HeaderFile
+
+#include <Aspect_Touch.hxx>
+
+#include <NCollection_IndexedDataMap.hxx>
+
+typedef NCollection_IndexedDataMap<Standard_Size, Aspect_Touch> Aspect_TouchMap;
+
+#endif // _Aspect_TouchMap_HeaderFile

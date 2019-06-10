@@ -16,28 +16,21 @@
 #ifndef _Aspect_Window_HeaderFile
 #define _Aspect_Window_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
 #include <Aspect_Background.hxx>
 #include <Aspect_GradientBackground.hxx>
 #include <Aspect_FBConfig.hxx>
 #include <Aspect_FillMethod.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Transient.hxx>
 #include <Quantity_Color.hxx>
 #include <Aspect_GradientFillMethod.hxx>
 #include <Aspect_TypeOfResize.hxx>
-#include <Standard_Integer.hxx>
 #include <Aspect_Drawable.hxx>
+#include <Standard.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
 
 class Aspect_DisplayConnection;
-class Aspect_WindowDefinitionError;
-class Aspect_WindowError;
-class Aspect_Background;
-class Aspect_GradientBackground;
 
-class Aspect_Window;
 DEFINE_STANDARD_HANDLE(Aspect_Window, Standard_Transient)
 
 //! Defines a window.
@@ -108,6 +101,9 @@ public:
 
   //! Returns native Window FB config (GLXFBConfig on Xlib)
   Standard_EXPORT virtual Aspect_FBConfig NativeFBConfig() const = 0;
+
+  //! Sets window title.
+  virtual void SetTitle (const TCollection_AsciiString& theTitle) { (void )theTitle; }
 
   //! Invalidate entire window content.
   //!

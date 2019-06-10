@@ -49,8 +49,8 @@ if {$aNbSelected3 != 4} {
 
 vselect 0 0
 
-vselect 75 230 235 320 -allowoverlap 1 1
-vselect 350 150 380 170 1
+vselect  75 230 235 320 -allowoverlap 1 1
+vselect 350 150 380 170 -allowOverlap 1 1
 vnbselected
 set aNbSelected4 [vnbselected]
 if {$aNbSelected4 != 13} {

@@ -56,6 +56,7 @@ AIS_DimensionSelectionMode.hxx
 AIS_DisplayMode.hxx
 AIS_DisplaySpecialSymbol.hxx
 AIS_DisplayStatus.hxx
+AIS_DragAction.hxx
 AIS_EllipseRadiusDimension.cxx
 AIS_EllipseRadiusDimension.hxx
 AIS_EqualDistanceRelation.cxx
@@ -106,6 +107,7 @@ AIS_MaxRadiusDimension.cxx
 AIS_MaxRadiusDimension.hxx
 AIS_MediaPlayer.cxx
 AIS_MediaPlayer.hxx
+AIS_MouseGesture.hxx
 AIS_MidPointRelation.cxx
 AIS_MidPointRelation.hxx
 AIS_MidPointRelation.lxx
@@ -114,6 +116,7 @@ AIS_MinRadiusDimension.hxx
 AIS_MultipleConnectedInteractive.cxx
 AIS_MultipleConnectedInteractive.hxx
 AIS_MultipleConnectedInteractive.lxx
+AIS_NavigationMode.hxx
 AIS_NListOfEntityOwner.hxx
 AIS_OffsetDimension.cxx
 AIS_OffsetDimension.hxx
@@ -135,6 +138,7 @@ AIS_RadiusDimension.cxx
 AIS_RadiusDimension.hxx
 AIS_Relation.cxx
 AIS_Relation.hxx
+AIS_RotationMode.hxx
 AIS_RubberBand.hxx
 AIS_RubberBand.cxx
 AIS_Selection.cxx
@@ -175,3 +179,7 @@ AIS_TypeOfAxis.hxx
 AIS_TypeOfDist.hxx
 AIS_TypeOfIso.hxx
 AIS_TypeOfPlane.hxx
+AIS_ViewController.cxx
+AIS_ViewController.hxx
+AIS_ViewInputBuffer.hxx
+AIS_WalkDelta.hxx

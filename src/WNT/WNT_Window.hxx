@@ -17,36 +17,42 @@
 #ifndef _WNT_Window_HeaderFile
 #define _WNT_Window_HeaderFile
 
-#include <Standard.hxx>
+#include <Aspect_Window.hxx>
 
 #if defined(_WIN32) && !defined(OCCT_UWP)
 
-#include <Standard_Type.hxx>
-#include <Standard_Integer.hxx>
-#include <Aspect_Handle.hxx>
-#include <Standard_Boolean.hxx>
-#include <Aspect_Window.hxx>
-#include <Standard_CString.hxx>
-#include <WNT_Dword.hxx>
-#include <Quantity_NameOfColor.hxx>
-#include <Standard_Address.hxx>
-#include <Aspect_TypeOfResize.hxx>
 #include <Aspect_Drawable.hxx>
+#include <Aspect_VKey.hxx>
+#include <Aspect_Handle.hxx>
+#include <Standard_Type.hxx>
+#include <WNT_Dword.hxx>
+
 class WNT_WClass;
-class Aspect_WindowDefinitionError;
-class Aspect_WindowError;
 
-
-class WNT_Window;
 DEFINE_STANDARD_HANDLE(WNT_Window, Aspect_Window)
 
 //! This class defines Windows NT window
 class WNT_Window : public Aspect_Window
 {
+public:
+
+  //! Convert WInAPI virtual key (VK_ enumeration) into Aspect_VKey.
+  Standard_EXPORT static Aspect_VKey VirtualKeyFromNative (Standard_Integer theKey);
+
+  //! Convert WPARAM from mouse event to key flags.
+  Standard_EXPORT static Aspect_VKeyFlags MouseKeyFlagsFromEvent (WPARAM theKeys);
+
+  //! Convert WPARAM from mouse event to mouse buttons bitmask.
+  Standard_EXPORT static Aspect_VKeyMouse MouseButtonsFromEvent (WPARAM theKeys);
+
+  //! Use GetAsyncKeyState() to fetch actual mouse key flags regardless of event loop.
+  Standard_EXPORT static Aspect_VKeyFlags MouseKeyFlagsAsync();
+
+  //! Use GetAsyncKeyState() to fetch actual mouse buttons state regardless of event loop.
+  Standard_EXPORT static Aspect_VKeyMouse MouseButtonsAsync();
 
 public:
 
-  
   //! Creates a Window defined by his position and size
   //! in pixles from the Parent Window.
   //! Trigger: Raises WindowDefinitionError if the Position out of the
@@ -114,6 +120,9 @@ public:
 
   //! Returns nothing on Windows
   virtual Aspect_FBConfig NativeFBConfig() const Standard_OVERRIDE { return NULL; }
+
+  //! Sets window title.
+  Standard_EXPORT virtual void SetTitle (const TCollection_AsciiString& theTitle) Standard_OVERRIDE;
 
   //! Invalidate entire window content by calling InvalidateRect() WinAPI function, resulting in WM_PAINT event put into window message loop.
   //! Method can be called from non-window thread, and system will also automatically aggregate multiple events into single one.

@@ -47,6 +47,7 @@
 #include <Aspect_GradientFillMethod.hxx>
 #include <Aspect_Handle.hxx>
 #include <Aspect_TypeOfResize.hxx>
+#include <Aspect_VKey.hxx>
 #include <Quantity_NameOfColor.hxx>
 
 class Aspect_WindowDefinitionError;
@@ -58,6 +59,10 @@ class Aspect_GradientBackground;
 //! This class defines Cocoa window
 class Cocoa_Window : public Aspect_Window
 {
+public:
+
+  //! Convert Carbon virtual key into Aspect_VKey.
+  Standard_EXPORT static Aspect_VKey VirtualKeyFromNative (Standard_Integer theKey);
 
 public:
 
@@ -135,6 +140,9 @@ public:
 
   //! Returns nothing on OS X
   virtual Aspect_FBConfig NativeFBConfig() const Standard_OVERRIDE { return NULL; }
+
+  //! Sets window title.
+  Standard_EXPORT virtual void SetTitle (const TCollection_AsciiString& theTitle) Standard_OVERRIDE;
 
   //! Invalidate entire window content by setting NSView::setNeedsDisplay property.
   //! Call will be implicitly redirected to the main thread when called from non-GUI thread.

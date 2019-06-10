@@ -1004,6 +1004,43 @@ void AIS_InteractiveContext::AddOrRemoveSelected (const Handle(SelectMgr_EntityO
     UpdateCurrentViewer();
 }
 
+// =======================================================================
+// function : SetSelectedState
+// purpose  :
+// =======================================================================
+Standard_Boolean AIS_InteractiveContext::SetSelectedState (const Handle(SelectMgr_EntityOwner)& theEntity,
+                                                           const Standard_Boolean theIsSelected)
+{
+  if (theEntity.IsNull())
+  {
+    throw Standard_ProgramError ("Internal error: AIS_InteractiveContext::SetSelectedState() called with NO object");
+  }
+
+  if (!theEntity->HasSelectable()
+    || mySelection->IsSelected (theEntity) == theIsSelected)
+  {
+    return false;
+  }
+
+  if (theEntity->IsAutoHilight())
+  {
+    AddOrRemoveSelected (theEntity, false);
+    return true;
+  }
+
+  if (theIsSelected)
+  {
+    const AIS_SelectStatus aSelStatus = mySelection->AddSelect (theEntity);
+    theEntity->SetSelected (true);
+    return aSelStatus == AIS_SS_Added;
+  }
+  else
+  {
+    const AIS_SelectStatus aSelStatus = mySelection->Select (theEntity);
+    theEntity->SetSelected (false);
+    return aSelStatus == AIS_SS_Removed;
+  }
+}
 
 //=======================================================================
 //function : IsSelected

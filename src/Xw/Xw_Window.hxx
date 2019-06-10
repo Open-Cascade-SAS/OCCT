@@ -20,6 +20,7 @@
 
 #include <Aspect_Window.hxx>
 
+#include <Aspect_VKey.hxx>
 #include <Aspect_DisplayConnection.hxx>
 #include <Aspect_FillMethod.hxx>
 #include <Aspect_GradientFillMethod.hxx>
@@ -38,6 +39,10 @@ class Aspect_GradientBackground;
 //! This class defines XLib window intended for creation of OpenGL context.
 class Xw_Window : public Aspect_Window
 {
+public:
+
+  //! Convert X11 virtual key (KeySym) into Aspect_VKey.
+  Standard_EXPORT static Aspect_VKey VirtualKeyFromNative (unsigned long theKey);
 
 public:
 
@@ -110,6 +115,9 @@ public:
   {
     return myFBConfig;
   }
+
+  //! Sets window title.
+  Standard_EXPORT virtual void SetTitle (const TCollection_AsciiString& theTitle) Standard_OVERRIDE;
 
   //! Invalidate entire window content through generation of Expose event.
   //! This method does not aggregate multiple calls into single event - dedicated event will be sent on each call.

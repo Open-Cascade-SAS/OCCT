@@ -57,8 +57,6 @@ extern ViewerTest_DoubleMapOfInteractiveAndName& GetMapOfAIS();
 Standard_EXPORT ViewerTest_DoubleMapOfInteractiveAndName& GetMapOfAIS();
 #endif
 
-static TColStd_MapOfInteger theactivatedmodes(8);
-
 #include <AIS_PlaneTrihedron.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopExp_Explorer.hxx>

@@ -64,7 +64,8 @@ namespace
 //purpose  :
 //=============================================================================
 V3d_View::V3d_View (const Handle(V3d_Viewer)& theViewer, const V3d_TypeOfView theType)
-: MyViewer (theViewer.operator->()),
+: myIsInvalidatedImmediate (Standard_True),
+  MyViewer (theViewer.operator->()),
   SwitchSetFront (Standard_False),
   myZRotation (Standard_False),
   myTrihedron (new V3d_Trihedron()),
@@ -114,7 +115,8 @@ V3d_View::V3d_View (const Handle(V3d_Viewer)& theViewer, const V3d_TypeOfView th
 //purpose  :
 //=============================================================================
 V3d_View::V3d_View (const Handle(V3d_Viewer)& theViewer, const Handle(V3d_View)& theView)
-: MyViewer (theViewer.operator->()),
+: myIsInvalidatedImmediate (Standard_True),
+  MyViewer (theViewer.operator->()),
   SwitchSetFront(Standard_False),
   myZRotation (Standard_False),
   MyTrsf (1, 4, 1, 4)
@@ -228,6 +230,7 @@ void V3d_View::Update() const
     return;
   }
 
+  myIsInvalidatedImmediate = Standard_False;
   myView->Update();
   myView->Compute();
   myView->Redraw();
@@ -245,6 +248,7 @@ void V3d_View::Redraw() const
     return;
   }
 
+  myIsInvalidatedImmediate = Standard_False;
   Handle(Graphic3d_StructureManager) aStructureMgr  = MyViewer->StructureManager();
   for (Standard_Integer aRetryIter = 0; aRetryIter < 2; ++aRetryIter)
   {
@@ -276,6 +280,7 @@ void V3d_View::RedrawImmediate() const
     return;
   }
 
+  myIsInvalidatedImmediate = Standard_False;
   myView->RedrawImmediate();
 }
 
@@ -1950,12 +1955,10 @@ Standard_Integer V3d_View::MinMax(Standard_Real& Xmin,
 }
 
 //=======================================================================
-//function : Gravity
+//function : GravityPoint
 //purpose  :
 //=======================================================================
-void V3d_View::Gravity (Standard_Real& theX,
-                        Standard_Real& theY,
-                        Standard_Real& theZ) const
+gp_Pnt V3d_View::GravityPoint() const
 {
   Graphic3d_MapOfStructure aSetOfStructures;
   myView->DisplayedStructures (aSetOfStructures);
@@ -2055,9 +2058,8 @@ void V3d_View::Gravity (Standard_Real& theX,
   {
     aResult /= aNbPoints;
   }
-  theX = aResult.X();
-  theY = aResult.Y();
-  theZ = aResult.Z();
+
+  return aResult;
 }
 
 //=======================================================================
@@ -2513,8 +2515,10 @@ void V3d_View::StartRotation(const Standard_Integer X,
   Size(x,y);
   rx = Standard_Real(Convert(x));
   ry = Standard_Real(Convert(y));
-  Gravity(gx,gy,gz);
-  Rotate(0.,0.,0.,gx,gy,gz,Standard_True);
+  myRotateGravity = GravityPoint();
+  Rotate (0.0, 0.0, 0.0,
+          myRotateGravity.X(), myRotateGravity.Y(), myRotateGravity.Z(),
+          Standard_True);
   myZRotation = Standard_False;
   if( zRotationThreshold > 0. ) {
     Standard_Real dx = Abs(sx - rx/2.);
@@ -2546,7 +2550,9 @@ void V3d_View::Rotation(const Standard_Integer X,
     dy = (sy - Standard_Real(Y)) * M_PI / ry;
   }
 
-  Rotate(dx, dy, dz, gx, gy, gz, Standard_False);
+  Rotate (dx, dy, dz,
+          myRotateGravity.X(), myRotateGravity.Y(), myRotateGravity.Z(),
+          Standard_False);
 }
 
 //=============================================================================

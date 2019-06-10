@@ -15,79 +15,70 @@
 // commercial license or contractual agreement.
 
 #include <OpenGl_GlCore20.hxx>
+#include <ViewerTest.hxx>
 
-#include <AIS_Animation.hxx>
 #include <AIS_AnimationCamera.hxx>
 #include <AIS_AnimationObject.hxx>
 #include <AIS_CameraFrustum.hxx>
 #include <AIS_ColorScale.hxx>
-#include <AIS_Manipulator.hxx>
-#include <AIS_RubberBand.hxx>
-#include <AIS_Shape.hxx>
-#include <AIS_InteractiveObject.hxx>
+#include <AIS_InteractiveContext.hxx>
 #include <AIS_ListOfInteractive.hxx>
 #include <AIS_ListIteratorOfListOfInteractive.hxx>
+#include <AIS_Manipulator.hxx>
+#include <AIS_Shape.hxx>
+#include <Aspect_DisplayConnection.hxx>
 #include <Aspect_Grid.hxx>
-#include <DBRep.hxx>
+#include <Aspect_TypeOfLine.hxx>
+#include <Draw.hxx>
+#include <Draw_Appli.hxx>
+#include <Draw_Interpretor.hxx>
 #include <Draw_ProgressIndicator.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Pnt.hxx>
 #include <Graphic3d_ArrayOfPolylines.hxx>
+#include <Graphic3d_AspectFillArea3d.hxx>
 #include <Graphic3d_AspectMarker3d.hxx>
-#include <Graphic3d_NameOfTextureEnv.hxx>
+#include <Graphic3d_ClipPlane.hxx>
 #include <Graphic3d_GraduatedTrihedron.hxx>
+#include <Graphic3d_NameOfTextureEnv.hxx>
+#include <Graphic3d_Texture2Dmanual.hxx>
 #include <Graphic3d_TextureEnv.hxx>
 #include <Graphic3d_TextureParams.hxx>
 #include <Graphic3d_TypeOfTextureFilter.hxx>
-#include <Graphic3d_AspectFillArea3d.hxx>
-#include <ViewerTest.hxx>
-#include <ViewerTest_AutoUpdater.hxx>
-#include <ViewerTest_EventManager.hxx>
-#include <ViewerTest_DoubleMapOfInteractiveAndName.hxx>
-#include <ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName.hxx>
-#include <ViewerTest_CmdParser.hxx>
-#include <V3d_AmbientLight.hxx>
-#include <V3d_DirectionalLight.hxx>
-#include <V3d_PositionalLight.hxx>
-#include <V3d_SpotLight.hxx>
+#include <Image_AlienPixMap.hxx>
+#include <Image_Diff.hxx>
+#include <Image_VideoRecorder.hxx>
 #include <Message_ProgressSentry.hxx>
-#include <NCollection_DoubleMap.hxx>
+#include <NCollection_DataMap.hxx>
 #include <NCollection_List.hxx>
 #include <NCollection_Vector.hxx>
-#include <AIS_InteractiveContext.hxx>
-#include <Draw_Interpretor.hxx>
-#include <Draw.hxx>
-#include <Draw_Appli.hxx>
-#include <Image_AlienPixMap.hxx>
-#include <Image_VideoRecorder.hxx>
-#include <OpenGl_GraphicDriver.hxx>
 #include <OSD.hxx>
 #include <OSD_Timer.hxx>
-#include <TColStd_HSequenceOfAsciiString.hxx>
-#include <TColStd_SequenceOfInteger.hxx>
-#include <TColStd_HSequenceOfReal.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-#include <TColStd_MapOfAsciiString.hxx>
-#include <Aspect_TypeOfLine.hxx>
-#include <Image_Diff.hxx>
-#include <Aspect_DisplayConnection.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Dir.hxx>
-#include <gp_Pln.hxx>
-#include <PrsMgr_PresentableObject.hxx>
-#include <Graphic3d_ClipPlane.hxx>
-#include <NCollection_DataMap.hxx>
-#include <Graphic3d_Texture2Dmanual.hxx>
+#include <OpenGl_GraphicDriver.hxx>
 #include <Prs3d_ShadingAspect.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_Root.hxx>
 #include <Prs3d_Text.hxx>
 #include <Select3D_SensitivePrimitiveArray.hxx>
+#include <TColStd_HSequenceOfAsciiString.hxx>
+#include <TColStd_SequenceOfInteger.hxx>
+#include <TColStd_HSequenceOfReal.hxx>
+#include <TColgp_Array1OfPnt2d.hxx>
+#include <TColStd_MapOfAsciiString.hxx>
+#include <ViewerTest_AutoUpdater.hxx>
+#include <ViewerTest_EventManager.hxx>
+#include <ViewerTest_DoubleMapOfInteractiveAndName.hxx>
+#include <ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName.hxx>
+#include <ViewerTest_CmdParser.hxx>
+#include <ViewerTest_V3dView.hxx>
+#include <V3d_AmbientLight.hxx>
+#include <V3d_DirectionalLight.hxx>
+#include <V3d_PositionalLight.hxx>
+#include <V3d_SpotLight.hxx>
 
 #include <tcl.h>
-
-#ifdef _WIN32
-#undef DrawText
-#endif
 
 #include <cstdlib>
 
@@ -103,10 +94,6 @@
   #include <tk.h>
 #endif
 
-// Auxiliary definitions
-static const char THE_KEY_DELETE = 127;
-static const char THE_KEY_ESCAPE = 27;
-
 //==============================================================================
 //  VIEWER GLOBAL VARIABLES
 //==============================================================================
@@ -116,10 +103,6 @@ Standard_IMPORT Standard_Boolean Draw_Interprete (const char* theCommand);
 
 Standard_EXPORT int ViewerMainLoop(Standard_Integer , const char** argv);
 extern ViewerTest_DoubleMapOfInteractiveAndName& GetMapOfAIS();
-
-extern int VErase (Draw_Interpretor& theDI,
-                   Standard_Integer  theArgNb,
-                   const char**      theArgVec);
 
 #if defined(_WIN32)
 static Handle(WNT_Window)& VT_GetWindow() {
@@ -133,7 +116,6 @@ static Handle(Cocoa_Window)& VT_GetWindow()
   return aWindow;
 }
 extern void ViewerTest_SetCocoaEventManagerView (const Handle(Cocoa_Window)& theWindow);
-extern void SetCocoaWindowTitle (const Handle(Cocoa_Window)& theWindow, Standard_CString theTitle);
 extern void GetCocoaScreenResolution (Standard_Integer& theWidth, Standard_Integer& theHeight);
 
 #else
@@ -156,76 +138,6 @@ static void SetDisplayConnection (const Handle(Aspect_DisplayConnection)& theDis
   GetDisplayConnection() = theDisplayConnection;
 }
 
-#if defined(_WIN32) || (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
-Aspect_Handle GetWindowHandle(const Handle(Aspect_Window)& theWindow)
-{
-  Aspect_Handle aWindowHandle = (Aspect_Handle)NULL;
-#if defined(_WIN32)
-  const Handle (WNT_Window) aWindow = Handle(WNT_Window)::DownCast (theWindow);
-  if (!aWindow.IsNull())
-    return aWindow->HWindow();
-#elif (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
-  const Handle (Xw_Window) aWindow = Handle(Xw_Window)::DownCast (theWindow);
-  if (!aWindow.IsNull())
-  return aWindow->XWindow();
-#endif
-  return aWindowHandle;
-}
-#endif
-
-//! Setting additional flag to store 2D mode of the View to avoid scene rotation by mouse/key events
-class ViewerTest_V3dView : public V3d_View
-{
-  DEFINE_STANDARD_RTTI_INLINE(ViewerTest_V3dView, V3d_View)
-public:
-  //! Initializes the view.
-  ViewerTest_V3dView (const Handle(V3d_Viewer)& theViewer, const V3d_TypeOfView theType = V3d_ORTHOGRAPHIC,
-                      bool theIs2dMode = false)
-  : V3d_View (theViewer, theType), myIs2dMode (theIs2dMode) {}
-
-  //! Initializes the view by copying.
-  ViewerTest_V3dView (const Handle(V3d_Viewer)& theViewer, const Handle(V3d_View)& theView)
-  : V3d_View (theViewer, theView), myIs2dMode (false)
-  {
-    if (Handle(ViewerTest_V3dView) aV3dView = Handle(ViewerTest_V3dView)::DownCast (theView))
-    {
-      myIs2dMode = aV3dView->IsViewIn2DMode();
-    }
-  }
-
-  //! Returns true if 2D mode is set for the view
-  bool IsViewIn2DMode() const { return myIs2dMode; }
-
-  //! Sets 2D mode for the view
-  void SetView2DMode (bool the2dMode) { myIs2dMode = the2dMode; }
-
-public:
-
-  //! Returns true if active view in 2D mode.
-  static bool IsCurrentViewIn2DMode()
-  {
-    if (Handle(ViewerTest_V3dView) aV3dView = Handle(ViewerTest_V3dView)::DownCast (ViewerTest::CurrentView()))
-    {
-      return aV3dView->IsViewIn2DMode();
-    }
-    return false;
-  }
-
-  //! Set if active view in 2D mode.
-  static void SetCurrentView2DMode (bool theIs2d)
-  {
-    if (Handle(ViewerTest_V3dView) aV3dView = Handle(ViewerTest_V3dView)::DownCast (ViewerTest::CurrentView()))
-    {
-      aV3dView->SetView2DMode (theIs2d);
-    }
-  }
-
-private:
-
-  Standard_Boolean myIs2dMode; //!< 2D mode flag
-
-};
-
 NCollection_DoubleMap <TCollection_AsciiString, Handle(V3d_View)> ViewerTest_myViews;
 static NCollection_DoubleMap <TCollection_AsciiString, Handle(AIS_InteractiveContext)>  ViewerTest_myContexts;
 static NCollection_DoubleMap <TCollection_AsciiString, Handle(Graphic3d_GraphicDriver)> ViewerTest_myDrivers;
@@ -245,17 +157,7 @@ static struct
 //  EVENT GLOBAL VARIABLES
 //==============================================================================
 
-static int Start_Rot = 0;
-Standard_Boolean HasHlrOnBeforeRotation = Standard_False;
-int X_Motion = 0; // Current cursor position
-int Y_Motion = 0;
-int X_ButtonPress = 0; // Last ButtonPress position
-int Y_ButtonPress = 0;
-Standard_Boolean IsDragged = Standard_False;
-Standard_Boolean DragFirst = Standard_False;
 Standard_Boolean TheIsAnimating = Standard_False;
-Standard_Boolean Draw_ToExitOnCloseView = Standard_False;
-Standard_Boolean Draw_ToCloseViewOnEsc  = Standard_False;
 
 namespace
 {
@@ -1281,17 +1183,6 @@ namespace
 
 } // namespace
 
-Standard_EXPORT const Handle(AIS_RubberBand)& GetRubberBand()
-{
-  static Handle(AIS_RubberBand) aBand;
-  if (aBand.IsNull())
-  {
-    aBand = new AIS_RubberBand (Quantity_NOC_LIGHTBLUE, Aspect_TOL_SOLID, Quantity_NOC_LIGHTBLUE, 0.4, 1.0);
-    aBand->SetDisplayMode (0);
-  }
-  return aBand;
-}
-
 typedef NCollection_Map<AIS_Manipulator*> ViewerTest_MapOfAISManipulators;
 
 Standard_EXPORT ViewerTest_MapOfAISManipulators& GetMapOfAISManipulators()
@@ -1527,30 +1418,6 @@ Handle(AIS_InteractiveContext) FindContextByView (const Handle(V3d_View)& theVie
        return anIter.Key2();
   }
   return anAISContext;
-}
-
-
-//==============================================================================
-//function : SetWindowTitle
-//purpose  : Set window title
-//==============================================================================
-
-void SetWindowTitle (const Handle(Aspect_Window)& theWindow,
-                     Standard_CString theTitle)
-{
-#if defined(_WIN32)
-  const TCollection_ExtendedString theTitleW (theTitle);
-  SetWindowTextW ((HWND )Handle(WNT_Window)::DownCast(theWindow)->HWindow(), theTitleW.ToWideString());
-#elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
-  SetCocoaWindowTitle (Handle(Cocoa_Window)::DownCast(theWindow), theTitle);
-#else
-  if(GetDisplayConnection()->GetDisplay())
-  {
-    Window aWindow =
-      Handle(Xw_Window)::DownCast(theWindow)->XWindow();
-    XStoreName (GetDisplayConnection()->GetDisplay(), aWindow , theTitle);
-  }
-#endif
 }
 
 //==============================================================================
@@ -1853,12 +1720,9 @@ TCollection_AsciiString ViewerTest::ViewerInit (const Standard_Integer thePxLeft
   aTitle = aTitle + aViewNames.GetViewName() + "(*)";
 
   // Change name of current active window
-  if (!ViewerTest::CurrentView().IsNull())
+  if (const Handle(V3d_View)& aCurrentView = ViewerTest::CurrentView())
   {
-    TCollection_AsciiString anActiveWindowTitle("3D View - ");
-    anActiveWindowTitle = anActiveWindowTitle
-      + ViewerTest_myViews.Find2 (ViewerTest::CurrentView());
-    SetWindowTitle (ViewerTest::CurrentView()->Window(), anActiveWindowTitle.ToCString());
+    aCurrentView->Window()->SetTitle (TCollection_AsciiString ("3D View - ") + ViewerTest_myViews.Find2 (aCurrentView));
   }
 
   // Create viewer
@@ -2036,9 +1900,9 @@ static int VInit (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const cha
     }
     else if (anArgCase == "-exitonclose")
     {
-      Draw_ToExitOnCloseView = true;
+      ViewerTest_EventManager::ToExitOnCloseView() = true;
       if (anArgIt + 1 < theArgsNb
-       && ViewerTest::ParseOnOff (theArgVec[anArgIt + 1], Draw_ToExitOnCloseView))
+       && ViewerTest::ParseOnOff (theArgVec[anArgIt + 1], ViewerTest_EventManager::ToExitOnCloseView()))
       {
         ++anArgIt;
       }
@@ -2046,9 +1910,9 @@ static int VInit (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const cha
     else if (anArgCase == "-closeonescape"
           || anArgCase == "-closeonesc")
     {
-      Draw_ToCloseViewOnEsc = true;
+      ViewerTest_EventManager::ToCloseViewOnEscape() = true;
       if (anArgIt + 1 < theArgsNb
-       && ViewerTest::ParseOnOff (theArgVec[anArgIt + 1], Draw_ToCloseViewOnEsc))
+       && ViewerTest::ParseOnOff (theArgVec[anArgIt + 1], ViewerTest_EventManager::ToCloseViewOnEscape()))
       {
         ++anArgIt;
       }
@@ -2400,13 +2264,13 @@ static int VHLRType (Draw_Interpretor& , Standard_Integer argc, const char** arg
 //function : FindViewIdByWindowHandle
 //purpose  : Find theView Id in the map of views by window handle
 //==============================================================================
-#if defined(_WIN32) || defined(__WIN32__) || (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
-TCollection_AsciiString FindViewIdByWindowHandle(const Aspect_Handle theWindowHandle)
+#if defined(_WIN32) || (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
+TCollection_AsciiString FindViewIdByWindowHandle (Aspect_Drawable theWindowHandle)
 {
   for (NCollection_DoubleMap<TCollection_AsciiString, Handle(V3d_View)>::Iterator
        anIter(ViewerTest_myViews); anIter.More(); anIter.Next())
   {
-    Aspect_Handle aWindowHandle = GetWindowHandle(anIter.Value()->Window());
+    Aspect_Drawable aWindowHandle = anIter.Value()->Window()->NativeHandle();
     if (aWindowHandle == theWindowHandle)
       return anIter.Key1();
   }
@@ -2427,17 +2291,14 @@ void ActivateView (const TCollection_AsciiString& theViewName,
   Handle(AIS_InteractiveContext) anAISContext = FindContextByView(aView);
   if (!anAISContext.IsNull())
   {
-    if (!ViewerTest::CurrentView().IsNull())
+    if (const Handle(V3d_View)& aCurrentView = ViewerTest::CurrentView())
     {
-      TCollection_AsciiString aTitle("3D View - ");
-      aTitle = aTitle + ViewerTest_myViews.Find2 (ViewerTest::CurrentView());
-      SetWindowTitle (ViewerTest::CurrentView()->Window(), aTitle.ToCString());
+      aCurrentView->Window()->SetTitle (TCollection_AsciiString ("3D View - ") + ViewerTest_myViews.Find2 (aCurrentView));
     }
 
     ViewerTest::CurrentView (aView);
     ViewerTest::SetAISContext (anAISContext);
-    TCollection_AsciiString aTitle = TCollection_AsciiString("3D View - ") + theViewName + "(*)";
-    SetWindowTitle (ViewerTest::CurrentView()->Window(), aTitle.ToCString());
+    aView->Window()->SetTitle (TCollection_AsciiString("3D View - ") + theViewName + "(*)");
 #if defined(_WIN32)
     VT_GetWindow() = Handle(WNT_Window)::DownCast(ViewerTest::CurrentView()->Window());
 #elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
@@ -2559,7 +2420,7 @@ void ViewerTest::RemoveView (const TCollection_AsciiString& theViewName, const S
     }
   }
   cout << "3D View - " << theViewName << " was deleted.\n";
-  if (Draw_ToExitOnCloseView)
+  if (ViewerTest_EventManager::ToExitOnCloseView())
   {
     Draw_Interprete ("exit");
   }
@@ -2654,9 +2515,7 @@ static int VActivate (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const
           && aNameString.IsEmpty()
           && anArg == "none")
     {
-      TCollection_AsciiString aTitle("3D View - ");
-      aTitle = aTitle + ViewerTest_myViews.Find2(ViewerTest::CurrentView());
-      SetWindowTitle (ViewerTest::CurrentView()->Window(), aTitle.ToCString());
+      ViewerTest::CurrentView()->Window()->SetTitle (TCollection_AsciiString ("3D View - ") + ViewerTest_myViews.Find2 (ViewerTest::CurrentView()));
       VT_GetWindow().Nullify();
       ViewerTest::CurrentView (Handle(V3d_View)());
       ViewerTest::ResetEventManager();
@@ -2772,411 +2631,17 @@ static int VViewList (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const
 }
 
 //==============================================================================
-//function : VT_ProcessKeyPress
-//purpose  : Handle KeyPress event from a CString
-//==============================================================================
-void VT_ProcessKeyPress (const char* buf_ret)
-{
-  //cout << "KeyPress" << endl;
-  const Handle(V3d_View) aView = ViewerTest::CurrentView();
-  // Letter in alphabetic order
-
-  if (!strcasecmp (buf_ret, "A")
-   && !ViewerTest_V3dView::IsCurrentViewIn2DMode())
-  {
-    // AXO
-    aView->SetProj(V3d_XposYnegZpos);
-  }
-  else if (!strcasecmp (buf_ret, "D")
-        && !ViewerTest_V3dView::IsCurrentViewIn2DMode())
-  {
-    // Reset
-    aView->Reset();
-  }
-  else if (!strcasecmp (buf_ret, "F"))
-  {
-    if (ViewerTest::GetAISContext()->NbSelected() > 0)
-    {
-      ViewerTest::GetAISContext()->FitSelected (aView);
-    }
-    else
-    {
-      // FitAll
-      aView->FitAll();
-    }
-  }
-  else if (!strcasecmp (buf_ret, "H"))
-  {
-    // HLR
-    std::cout << "HLR" << std::endl;
-    aView->SetComputedMode (!aView->ComputedMode());
-    aView->Redraw();
-  }
-  else if (!strcasecmp (buf_ret, "P"))
-  {
-    // Type of HLR
-    Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
-    if (aContext->DefaultDrawer()->TypeOfHLR() == Prs3d_TOH_Algo)
-      aContext->DefaultDrawer()->SetTypeOfHLR(Prs3d_TOH_PolyAlgo);
-    else
-      aContext->DefaultDrawer()->SetTypeOfHLR(Prs3d_TOH_Algo);
-    if (aContext->NbSelected()==0)
-    {
-      AIS_ListOfInteractive aListOfShapes;
-      aContext->DisplayedObjects(aListOfShapes);
-      for (AIS_ListIteratorOfListOfInteractive anIter(aListOfShapes);
-        anIter.More(); anIter.Next())
-      {
-        Handle(AIS_Shape) aShape = Handle(AIS_Shape)::DownCast(anIter.Value());
-        if (aShape.IsNull())
-          continue;
-        if (aShape->TypeOfHLR() == Prs3d_TOH_PolyAlgo)
-          aShape->SetTypeOfHLR (Prs3d_TOH_Algo);
-        else
-          aShape->SetTypeOfHLR (Prs3d_TOH_PolyAlgo);
-        aContext->Redisplay (aShape, Standard_False);
-      }
-    }
-    else
-    {
-      for (aContext->InitSelected();aContext->MoreSelected();aContext->NextSelected())
-      {
-        Handle(AIS_Shape) aShape = Handle(AIS_Shape)::DownCast(aContext->SelectedInteractive());
-        if (aShape.IsNull())
-          continue;
-        if(aShape->TypeOfHLR() == Prs3d_TOH_PolyAlgo)
-          aShape->SetTypeOfHLR (Prs3d_TOH_Algo);
-        else
-          aShape->SetTypeOfHLR (Prs3d_TOH_PolyAlgo);
-        aContext->Redisplay (aShape, Standard_False);
-      }
-    }
-
-    aContext->UpdateCurrentViewer();
-
-  }
-  else if (!strcasecmp (buf_ret, "S"))
-  {
-    std::cout << "setup Shaded display mode" << std::endl;
-
-    Handle(AIS_InteractiveContext) Ctx = ViewerTest::GetAISContext();
-    if(Ctx->NbSelected()==0)
-      Ctx->SetDisplayMode (AIS_Shaded, Standard_True);
-    else{
-      for(Ctx->InitSelected();Ctx->MoreSelected();Ctx->NextSelected())
-        Ctx->SetDisplayMode(Ctx->SelectedInteractive(),1,Standard_False);
-      Ctx->UpdateCurrentViewer();
-    }
-  }
-  else if (!strcasecmp (buf_ret, "U"))
-  {
-    // Unset display mode
-    std::cout << "reset display mode to defaults" << std::endl;
-
-    Handle(AIS_InteractiveContext) Ctx = ViewerTest::GetAISContext();
-    if(Ctx->NbSelected()==0)
-      Ctx->SetDisplayMode (AIS_WireFrame, Standard_True);
-    else{
-      for(Ctx->InitSelected();Ctx->MoreSelected();Ctx->NextSelected())
-        Ctx->UnsetDisplayMode(Ctx->SelectedInteractive(),Standard_False);
-      Ctx->UpdateCurrentViewer();
-    }
-
-  }
-  else if (!strcasecmp (buf_ret, "T")
-        && !ViewerTest_V3dView::IsCurrentViewIn2DMode())
-  {
-    // Top
-    aView->SetProj(V3d_Zpos);
-  }
-  else if (!strcasecmp (buf_ret, "B")
-        && !ViewerTest_V3dView::IsCurrentViewIn2DMode())
-  {
-    // Bottom
-    aView->SetProj(V3d_Zneg);
-  }
-  else if (!strcasecmp (buf_ret, "L")
-        && !ViewerTest_V3dView::IsCurrentViewIn2DMode())
-  {
-    // Left
-    aView->SetProj(V3d_Xneg);
-  }
-  else if (!strcasecmp (buf_ret, "R")
-        && !ViewerTest_V3dView::IsCurrentViewIn2DMode())
-  {
-    // Right
-    aView->SetProj(V3d_Xpos);
-  }
-  else if (!strcasecmp (buf_ret, "W"))
-  {
-    std::cout << "setup WireFrame display mode" << std::endl;
-    Handle(AIS_InteractiveContext) Ctx = ViewerTest::GetAISContext();
-    if(Ctx->NbSelected()==0)
-      Ctx->SetDisplayMode (AIS_WireFrame, Standard_True);
-    else{
-      for(Ctx->InitSelected();Ctx->MoreSelected();Ctx->NextSelected())
-        Ctx->SetDisplayMode(Ctx->SelectedInteractive(),0,Standard_False);
-      Ctx->UpdateCurrentViewer();
-    }
-  }
-  else if (!strcasecmp (buf_ret, ","))
-  {
-    ViewerTest::GetAISContext()->HilightNextDetected(ViewerTest::CurrentView());
-  }
-  else if (!strcasecmp (buf_ret, "."))
-  {
-    ViewerTest::GetAISContext()->HilightPreviousDetected(ViewerTest::CurrentView());
-  }
-  else if (!strcasecmp (buf_ret, "/"))
-  {
-    Handle(Graphic3d_Camera) aCamera = aView->Camera();
-    if (aCamera->IsStereo())
-    {
-      aCamera->SetIOD (aCamera->GetIODType(), aCamera->IOD() - 0.01);
-      aView->Redraw();
-    }
-  }
-  else if (!strcasecmp (buf_ret, "*"))
-  {
-    Handle(Graphic3d_Camera) aCamera = aView->Camera();
-    if (aCamera->IsStereo())
-    {
-      aCamera->SetIOD (aCamera->GetIODType(), aCamera->IOD() + 0.01);
-      aView->Redraw();
-    }
-  }
-  else if (*buf_ret == THE_KEY_DELETE)
-  {
-    Handle(AIS_InteractiveContext) aCtx = ViewerTest::GetAISContext();
-    if (!aCtx.IsNull()
-     && aCtx->NbSelected() > 0)
-    {
-      Draw_Interprete ("verase");
-    }
-  }
-  else if (*buf_ret == THE_KEY_ESCAPE)
-  {
-    Handle(AIS_InteractiveContext) aCtx = ViewerTest::GetAISContext();
-    if (!aCtx.IsNull()
-     && Draw_ToCloseViewOnEsc)
-    {
-      Draw_Interprete (Draw_ToExitOnCloseView ? "exit" : "vclose");
-    }
-  }
-  else if (*buf_ret >= '0' && *buf_ret <= '7') // Number
-  {
-    const Standard_Integer aSelMode = Draw::Atoi (buf_ret);
-    bool toEnable = true;
-    if (const Handle(AIS_InteractiveContext)& aCtx = ViewerTest::GetAISContext())
-    {
-      AIS_ListOfInteractive aPrsList;
-      aCtx->DisplayedObjects (aPrsList);
-      for (AIS_ListOfInteractive::Iterator aPrsIter (aPrsList); aPrsIter.More() && toEnable; aPrsIter.Next())
-      {
-        TColStd_ListOfInteger aModes;
-        aCtx->ActivatedModes (aPrsIter.Value(), aModes);
-        for (TColStd_ListOfInteger::Iterator aModeIter (aModes); aModeIter.More() && toEnable; aModeIter.Next())
-        {
-          if (aModeIter.Value() == aSelMode)
-          {
-            toEnable = false;
-          }
-        }
-      }
-    }
-    TCollection_AsciiString aCmd = TCollection_AsciiString ("vselmode ") + aSelMode + (toEnable ? " 1" : " 0");
-    Draw_Interprete (aCmd.ToCString());
-  }
-}
-
-//==============================================================================
-//function : VT_ProcessExpose
-//purpose  : Redraw the View on an Expose Event
-//==============================================================================
-void VT_ProcessExpose()
-{
-  Handle(V3d_View) aView3d = ViewerTest::CurrentView();
-  if (!aView3d.IsNull())
-  {
-    aView3d->Redraw();
-  }
-}
-
-//==============================================================================
-//function : VT_ProcessConfigure
-//purpose  : Resize the View on an Configure Event
-//==============================================================================
-void VT_ProcessConfigure()
-{
-  Handle(V3d_View) aView3d = ViewerTest::CurrentView();
-  if (aView3d.IsNull())
-  {
-    return;
-  }
-
-  aView3d->MustBeResized();
-  aView3d->Update();
-  aView3d->Redraw();
-}
-
-//==============================================================================
-//function : VT_ProcessButton1Press
-//purpose  : Picking
-//==============================================================================
-Standard_Boolean VT_ProcessButton1Press (Standard_Integer ,
-                                         const char**     theArgVec,
-                                         Standard_Boolean theToPick,
-                                         Standard_Boolean theIsShift)
-{
-  if (TheIsAnimating)
-  {
-    TheIsAnimating = Standard_False;
-    return Standard_False;
-  }
-
-  if (theToPick)
-  {
-    Standard_Real X, Y, Z;
-    ViewerTest::CurrentView()->Convert (X_Motion, Y_Motion, X, Y, Z);
-
-    Draw::Set (theArgVec[1], X);
-    Draw::Set (theArgVec[2], Y);
-    Draw::Set (theArgVec[3], Z);
-  }
-
-  if (theIsShift)
-  {
-    ViewerTest::CurrentEventManager()->ShiftSelect();
-  }
-  else
-  {
-    ViewerTest::CurrentEventManager()->Select();
-  }
-
-  return Standard_False;
-}
-
-//==============================================================================
-//function : VT_ProcessButton1Release
-//purpose  : End selecting
-//==============================================================================
-void VT_ProcessButton1Release (Standard_Boolean theIsShift)
-{
-  if (IsDragged)
-  {
-    IsDragged = Standard_False;
-    Handle(ViewerTest_EventManager) EM = ViewerTest::CurrentEventManager();
-    if (theIsShift)
-    {
-      EM->ShiftSelect (X_ButtonPress, Y_ButtonPress,
-                       X_Motion, Y_Motion);
-    }
-    else
-    {
-      EM->Select (X_ButtonPress, Y_ButtonPress,
-                  X_Motion, Y_Motion);
-    }
-  }
-}
-
-//==============================================================================
-//function : VT_ProcessButton3Press
-//purpose  : Start Rotation
-//==============================================================================
-void VT_ProcessButton3Press()
-{
-  if (ViewerTest_V3dView::IsCurrentViewIn2DMode())
-  {
-    return;
-  }
-
-  Start_Rot = 1;
-  HasHlrOnBeforeRotation = ViewerTest::CurrentView()->ComputedMode();
-  if (HasHlrOnBeforeRotation)
-  {
-    ViewerTest::CurrentView()->SetComputedMode (Standard_False);
-  }
-  ViewerTest::CurrentView()->StartRotation( X_ButtonPress, Y_ButtonPress );
-}
-
-//==============================================================================
-//function : VT_ProcessButton3Release
-//purpose  : End rotation
-//==============================================================================
-void VT_ProcessButton3Release()
-{
-  if (Start_Rot)
-  {
-    Start_Rot = 0;
-    if (HasHlrOnBeforeRotation)
-    {
-      HasHlrOnBeforeRotation = Standard_False;
-      ViewerTest::CurrentView()->SetComputedMode (Standard_True);
-      ViewerTest::CurrentView()->Redraw();
-    }
-  }
-}
-
-//==============================================================================
-//function : ProcessControlButton1Motion
-//purpose  : Zoom
-//==============================================================================
-
-#if defined(_WIN32) || ! defined(__APPLE__) || defined(MACOSX_USE_GLX)
-static void ProcessControlButton1Motion()
-{
-  ViewerTest::CurrentView()->Zoom( X_ButtonPress, Y_ButtonPress, X_Motion, Y_Motion);
-
-  X_ButtonPress = X_Motion;
-  Y_ButtonPress = Y_Motion;
-}
-#endif
-
-//==============================================================================
-//function : VT_ProcessControlButton2Motion
-//purpose  : Panning
-//==============================================================================
-void VT_ProcessControlButton2Motion()
-{
-  Standard_Integer aDx = X_Motion - X_ButtonPress;
-  Standard_Integer aDy = Y_Motion - Y_ButtonPress;
-
-  aDy = -aDy; // Xwindow Y axis is from top to Bottom
-
-  ViewerTest::CurrentView()->Pan (aDx, aDy);
-
-  X_ButtonPress = X_Motion;
-  Y_ButtonPress = Y_Motion;
-}
-
-//==============================================================================
-//function : VT_ProcessControlButton3Motion
-//purpose  : Rotation
-//==============================================================================
-void VT_ProcessControlButton3Motion()
-{
-  if (Start_Rot)
-  {
-    ViewerTest::CurrentView()->Rotation (X_Motion, Y_Motion);
-  }
-}
-
-//==============================================================================
-//function : VT_ProcessMotion
+//function : GetMousePosition
 //purpose  :
 //==============================================================================
-void VT_ProcessMotion()
+void ViewerTest::GetMousePosition (Standard_Integer& theX,
+                                   Standard_Integer& theY)
 {
-  //pre-hilights detected objects at mouse position
-
-  Handle(ViewerTest_EventManager) EM = ViewerTest::CurrentEventManager();
-  EM->MoveTo(X_Motion, Y_Motion);
-}
-
-
-void ViewerTest::GetMousePosition(Standard_Integer& Xpix,Standard_Integer& Ypix)
-{
-  Xpix = X_Motion;Ypix=Y_Motion;
+  if (Handle(ViewerTest_EventManager) aViewCtrl = ViewerTest::CurrentEventManager())
+  {
+    theX = aViewCtrl->LastMousePosition().x();
+    theY = aViewCtrl->LastMousePosition().y();
+  }
 }
 
 //==============================================================================
@@ -3491,9 +2956,6 @@ static int VViewProj (Draw_Interpretor& ,
 
 static int VHelp(Draw_Interpretor& di, Standard_Integer , const char** )
 {
-
-  di << "Q : Quit the application\n";
-
   di << "=========================\n";
   di << "F : FitAll\n";
   di << "T : TopView\n";
@@ -3506,7 +2968,7 @@ static int VHelp(Draw_Interpretor& di, Standard_Integer , const char** )
   di << "=========================\n";
   di << "S : Shading\n";
   di << "W : Wireframe\n";
-  di << "H : HidelLineRemoval\n";
+  di << "H : HiddenLineRemoval\n";
   di << "U : Unset display mode\n";
   di << "Delete : Remove selection from viewer\n";
 
@@ -3522,338 +2984,220 @@ static int VHelp(Draw_Interpretor& di, Standard_Integer , const char** )
   di << "7 : Compound\n";
 
   di << "=========================\n";
-  di << "Z : Switch Z clipping On/Off\n";
-  di << ", : Hilight next detected\n";
-  di << ". : Hilight previous detected\n";
+  di << "< : Hilight next detected\n";
+  di << "> : Hilight previous detected\n";
 
   return 0;
 }
 
 #ifdef _WIN32
 
-static Standard_Boolean Ppick = 0;
-static Standard_Integer Pargc = 0;
-static const char**           Pargv = NULL;
-
-
-static LRESULT WINAPI AdvViewerWindowProc( HWND hwnd,
-                                          UINT Msg,
-                                          WPARAM wParam,
-                                          LPARAM lParam )
+static LRESULT WINAPI AdvViewerWindowProc (HWND theWinHandle,
+                                           UINT theMsg,
+                                           WPARAM wParam,
+                                           LPARAM lParam )
 {
-  if (!ViewerTest_myViews.IsEmpty()) {
+  if (ViewerTest_myViews.IsEmpty())
+  {
+    return ViewerWindowProc (theWinHandle, theMsg, wParam, lParam);
+  }
 
-    WPARAM fwKeys = wParam;
-
-    switch( Msg ) {
+  switch (theMsg)
+  {
     case WM_CLOSE:
-       {
-         // Delete view from map of views
-         ViewerTest::RemoveView(FindViewIdByWindowHandle(hwnd));
-         return 0;
-       }
-       break;
+    {
+      // Delete view from map of views
+      ViewerTest::RemoveView (FindViewIdByWindowHandle (theWinHandle));
+      return 0;
+    }
     case WM_ACTIVATE:
-      if(LOWORD(wParam) == WA_CLICKACTIVE || LOWORD(wParam) == WA_ACTIVE
-        || ViewerTest::CurrentView().IsNull())
+    {
+      if (LOWORD(wParam) == WA_CLICKACTIVE
+       || LOWORD(wParam) == WA_ACTIVE
+       || ViewerTest::CurrentView().IsNull())
       {
         // Activate inactive window
-        if(GetWindowHandle(VT_GetWindow()) != hwnd)
+        if (VT_GetWindow().IsNull()
+         || (HWND )VT_GetWindow()->HWindow() != theWinHandle)
         {
-          ActivateView (FindViewIdByWindowHandle(hwnd));
+          ActivateView (FindViewIdByWindowHandle (theWinHandle));
         }
       }
       break;
-
-    case WM_LBUTTONUP:
-      if (IsDragged && !DragFirst)
-      {
-        if (!GetActiveAISManipulator().IsNull())
-        {
-          GetActiveAISManipulator()->StopTransform();
-          ViewerTest::GetAISContext()->ClearSelected (Standard_True);
-        }
-
-        if (ViewerTest::GetAISContext()->IsDisplayed (GetRubberBand()))
-        {
-          ViewerTest::GetAISContext()->Remove (GetRubberBand(), Standard_False);
-          ViewerTest::GetAISContext()->CurrentViewer()->RedrawImmediate();
-        }
-
-        VT_ProcessButton1Release ((fwKeys & MK_SHIFT) != 0);
-      }
-      IsDragged = Standard_False;
-      return ViewerWindowProc( hwnd, Msg, wParam, lParam );
-
-    case WM_RBUTTONUP:
-      if (IsDragged && !DragFirst)
-      {
-        if (!GetActiveAISManipulator().IsNull())
-        {
-          GetActiveAISManipulator()->StopTransform (Standard_False);
-          ViewerTest::GetAISContext()->ClearSelected (Standard_True);
-        }
-        IsDragged = Standard_False;
-      }
-      return ViewerWindowProc (hwnd, Msg, wParam, lParam);
-
-    case WM_LBUTTONDOWN:
-      if (!GetActiveAISManipulator().IsNull())
-      {
-        IsDragged = ( fwKeys == MK_LBUTTON );
-      }
-      else
-      {
-        IsDragged = ( fwKeys == MK_LBUTTON || fwKeys == ( MK_LBUTTON | MK_SHIFT ) );
-      }
-
-      if (IsDragged)
-      {
-        DragFirst = Standard_True;
-        X_ButtonPress = LOWORD(lParam);
-        Y_ButtonPress = HIWORD(lParam);
-      }
-      return ViewerWindowProc( hwnd, Msg, wParam, lParam );
-
-    case WM_MOUSEMOVE:
-      if (IsDragged)
-      {
-        X_Motion = LOWORD (lParam);
-        Y_Motion = HIWORD (lParam);
-        if (!GetActiveAISManipulator().IsNull())
-        {
-          if (DragFirst)
-          {
-            GetActiveAISManipulator()->StartTransform (X_ButtonPress, Y_ButtonPress, ViewerTest::CurrentView());
-          }
-          else
-          {
-            GetActiveAISManipulator()->Transform (X_Motion, Y_Motion, ViewerTest::CurrentView());
-            ViewerTest::GetAISContext()->CurrentViewer()->Redraw();
-          }
-        }
-        else
-        {
-          bool toRedraw = false;
-          if (!DragFirst && ViewerTest::GetAISContext()->IsDisplayed (GetRubberBand()))
-          {
-            ViewerTest::GetAISContext()->Remove (GetRubberBand(), Standard_False);
-            toRedraw = true;
-          }
-
-          RECT aRect;
-          if (GetClientRect (hwnd, &aRect))
-          {
-            int aHeight = aRect.bottom - aRect.top;
-            GetRubberBand()->SetRectangle (X_ButtonPress, aHeight - Y_ButtonPress, X_Motion, aHeight - Y_Motion);
-            ViewerTest::GetAISContext()->Display (GetRubberBand(), 0, -1, Standard_False, AIS_DS_Displayed);
-            toRedraw = true;
-          }
-          if (toRedraw)
-          {
-            ViewerTest::GetAISContext()->CurrentViewer()->RedrawImmediate();
-          }
-        }
-
-        DragFirst = Standard_False;
-      }
-      else
-        return ViewerWindowProc( hwnd, Msg, wParam, lParam );
-      break;
-
-    default:
-      return ViewerWindowProc( hwnd, Msg, wParam, lParam );
     }
-    return 0;
+    default:
+    {
+      return ViewerWindowProc (theWinHandle, theMsg, wParam, lParam);
+    }
   }
-  return ViewerWindowProc( hwnd, Msg, wParam, lParam );
+  return 0;
 }
 
-
-static LRESULT WINAPI ViewerWindowProc( HWND hwnd,
-                                       UINT Msg,
-                                       WPARAM wParam,
-                                       LPARAM lParam )
+static LRESULT WINAPI ViewerWindowProc (HWND theWinHandle,
+                                        UINT theMsg,
+                                        WPARAM wParam,
+                                        LPARAM lParam)
 {
-  static int Up = 1;
   const Handle(V3d_View)& aView = ViewerTest::CurrentView();
   if (aView.IsNull())
   {
-    return DefWindowProcW (hwnd, Msg, wParam, lParam);
+    return DefWindowProcW (theWinHandle, theMsg, wParam, lParam);
   }
 
-    PAINTSTRUCT    ps;
-
-    switch( Msg ) {
+  switch (theMsg)
+  {
     case WM_PAINT:
-      BeginPaint(hwnd, &ps);
-      EndPaint(hwnd, &ps);
-      VT_ProcessExpose();
+    {
+      PAINTSTRUCT aPaint;
+      BeginPaint(theWinHandle, &aPaint);
+      EndPaint  (theWinHandle, &aPaint);
+      ViewerTest::CurrentEventManager()->ProcessExpose();
       break;
-
+    }
     case WM_SIZE:
-      VT_ProcessConfigure();
+    {
+      ViewerTest::CurrentEventManager()->ProcessConfigure();
       break;
+    }
     case WM_MOVE:
     case WM_MOVING:
     case WM_SIZING:
+    {
       switch (aView->RenderingParams().StereoMode)
       {
         case Graphic3d_StereoMode_RowInterlaced:
         case Graphic3d_StereoMode_ColumnInterlaced:
         case Graphic3d_StereoMode_ChessBoard:
-          VT_ProcessConfigure(); // track window moves to reverse stereo pair
+        {
+          // track window moves to reverse stereo pair
+          aView->MustBeResized();
+          aView->Update();
           break;
+        }
         default:
           break;
       }
       break;
-
+    }
+    case WM_KEYUP:
     case WM_KEYDOWN:
-      if ((wParam != VK_SHIFT) && (wParam != VK_CONTROL))
+    {
+      const Aspect_VKey aVKey = WNT_Window::VirtualKeyFromNative ((Standard_Integer )wParam);
+      if (aVKey != Aspect_VKey_UNKNOWN)
       {
-        char c[2];
-        c[0] = (char) wParam;
-        c[1] = '\0';
-        if (wParam == VK_DELETE)
+        const double aTimeStamp = ViewerTest::CurrentEventManager()->EventTime();
+        if (theMsg == WM_KEYDOWN)
         {
-          c[0] = THE_KEY_DELETE;
+          ViewerTest::CurrentEventManager()->KeyDown (aVKey, aTimeStamp);
         }
-        else if (wParam == VK_ESCAPE)
+        else
         {
-          c[0] = THE_KEY_ESCAPE;
+          ViewerTest::CurrentEventManager()->KeyUp (aVKey, aTimeStamp);
         }
-        // comma
-        else if (wParam == VK_OEM_COMMA)
-        {
-          c[0] = ',';
-        }
-        // dot
-        else if (wParam == VK_OEM_PERIOD)
-        {
-          c[0] = '.';
-        }
-        else if (wParam == VK_DIVIDE)
-        {
-          c[0] = '/';
-        }
-        // dot
-        else if (wParam == VK_MULTIPLY)
-        {
-          c[0] = '*';
-        }
-        VT_ProcessKeyPress (c);
+        ViewerTest::CurrentEventManager()->FlushViewEvents (ViewerTest::GetAISContext(), ViewerTest::CurrentView(), true);
       }
       break;
-
+    }
     case WM_LBUTTONUP:
     case WM_MBUTTONUP:
     case WM_RBUTTONUP:
-      Up = 1;
-      VT_ProcessButton3Release();
-      break;
-
     case WM_LBUTTONDOWN:
     case WM_MBUTTONDOWN:
     case WM_RBUTTONDOWN:
-      {
-        WPARAM fwKeys = wParam;
-
-        Up = 0;
-
-        X_ButtonPress = LOWORD(lParam);
-        Y_ButtonPress = HIWORD(lParam);
-
-        if (Msg == WM_LBUTTONDOWN)
-        {
-          if ((fwKeys & MK_CONTROL) != 0)
-          {
-            Ppick = VT_ProcessButton1Press (Pargc, Pargv, Ppick, (fwKeys & MK_SHIFT) != 0);
-          }
-          else
-          {
-            VT_ProcessButton1Press (Pargc, Pargv, Ppick, (fwKeys & MK_SHIFT) != 0);
-          }
-        }
-        else if (Msg == WM_RBUTTONDOWN)
-        {
-          // Start rotation
-          VT_ProcessButton3Press();
-        }
-      }
-      break;
-
-    case WM_MOUSEWHEEL:
     {
-      int aDelta = GET_WHEEL_DELTA_WPARAM (wParam);
-      if (wParam & MK_CONTROL)
+      const Graphic3d_Vec2i aPos (LOWORD(lParam), HIWORD(lParam));
+      const Aspect_VKeyFlags aFlags = WNT_Window::MouseKeyFlagsFromEvent (wParam);
+      Aspect_VKeyMouse aButton = Aspect_VKeyMouse_NONE;
+      switch (theMsg)
       {
-        if (aView->Camera()->IsStereo())
+        case WM_LBUTTONUP:
+        case WM_LBUTTONDOWN:
+          aButton = Aspect_VKeyMouse_LeftButton;
+          break;
+        case WM_MBUTTONUP:
+        case WM_MBUTTONDOWN:
+          aButton = Aspect_VKeyMouse_MiddleButton;
+          break;
+        case WM_RBUTTONUP:
+        case WM_RBUTTONDOWN:
+          aButton = Aspect_VKeyMouse_RightButton;
+          break;
+      }
+      if (theMsg == WM_LBUTTONDOWN
+       || theMsg == WM_MBUTTONDOWN
+       || theMsg == WM_RBUTTONDOWN)
+      {
+        if (aButton == Aspect_VKeyMouse_LeftButton)
         {
-          Standard_Real aFocus = aView->Camera()->ZFocus() + (aDelta > 0 ? 0.05 : -0.05);
-          if (aFocus > 0.2
-           && aFocus < 2.0)
-          {
-            aView->Camera()->SetZFocus (aView->Camera()->ZFocusType(), aFocus);
-            aView->Redraw();
-          }
+          TheIsAnimating = Standard_False;
         }
+
+        SetFocus  (theWinHandle);
+        SetCapture(theWinHandle);
+        ViewerTest::CurrentEventManager()->PressMouseButton (aPos, aButton, aFlags, false);
       }
       else
       {
-        aView->Zoom (0, 0, aDelta / 40, aDelta / 40);
+        ReleaseCapture();
+        ViewerTest::CurrentEventManager()->ReleaseMouseButton (aPos, aButton, aFlags, false);
       }
+      ViewerTest::CurrentEventManager()->FlushViewEvents (ViewerTest::GetAISContext(), ViewerTest::CurrentView(), true);
       break;
     }
-
-    case WM_MOUSEMOVE:
+    case WM_MOUSEWHEEL:
+    {
+      const int aDelta = GET_WHEEL_DELTA_WPARAM (wParam);
+      const Standard_Real aDeltaF = Standard_Real(aDelta) / Standard_Real(WHEEL_DELTA);
+      const Aspect_VKeyFlags aFlags = WNT_Window::MouseKeyFlagsFromEvent (wParam);
+      Graphic3d_Vec2i aPos (int(short(LOWORD(lParam))), int(short(HIWORD(lParam))));
+      POINT aCursorPnt = { aPos.x(), aPos.y() };
+      if (ScreenToClient (theWinHandle, &aCursorPnt))
       {
-        //cout << "\t WM_MOUSEMOVE" << endl;
-        WPARAM fwKeys = wParam;
-        X_Motion = LOWORD(lParam);
-        Y_Motion = HIWORD(lParam);
-
-        if ( Up &&
-          (fwKeys & ( MK_LBUTTON|MK_MBUTTON|MK_RBUTTON )) != 0 )
-          {
-            Up = 0;
-            X_ButtonPress = LOWORD(lParam);
-            Y_ButtonPress = HIWORD(lParam);
-
-            if ((fwKeys & MK_RBUTTON) != 0) {
-              // Start rotation
-              VT_ProcessButton3Press();
-            }
-          }
-
-          if ((fwKeys & MK_CONTROL) != 0)
-          {
-            if ((fwKeys & MK_LBUTTON) != 0)
-            {
-              ProcessControlButton1Motion();
-            }
-            else if ((fwKeys & MK_MBUTTON) != 0
-                 || ((fwKeys & MK_LBUTTON) != 0
-                  && (fwKeys & MK_RBUTTON) != 0))
-            {
-              VT_ProcessControlButton2Motion();
-            }
-            else if ((fwKeys & MK_RBUTTON) != 0)
-            {
-              VT_ProcessControlButton3Motion();
-            }
-          }
-          else if (GetWindowHandle (VT_GetWindow()) == hwnd)
-          {
-            VT_ProcessMotion();
-          }
+        aPos.SetValues (aCursorPnt.x, aCursorPnt.y);
       }
-      break;
 
-    default:
-      return DefWindowProcW (hwnd, Msg, wParam, lParam);
+      ViewerTest::CurrentEventManager()->UpdateMouseScroll (Aspect_ScrollDelta (aPos, aDeltaF, aFlags));
+      ViewerTest::CurrentEventManager()->FlushViewEvents (ViewerTest::GetAISContext(), ViewerTest::CurrentView(), true);
+      break;
     }
-    return 0L;
+    case WM_MOUSEMOVE:
+    {
+      Graphic3d_Vec2i aPos (LOWORD(lParam), HIWORD(lParam));
+      Aspect_VKeyMouse aButtons = WNT_Window::MouseButtonsFromEvent (wParam);
+      Aspect_VKeyFlags aFlags   = WNT_Window::MouseKeyFlagsFromEvent(wParam);
+
+      // don't make a slide-show from input events - fetch the actual mouse cursor position
+      CURSORINFO aCursor;
+      aCursor.cbSize = sizeof(aCursor);
+      if (::GetCursorInfo (&aCursor) != FALSE)
+      {
+        POINT aCursorPnt = { aCursor.ptScreenPos.x, aCursor.ptScreenPos.y };
+        if (ScreenToClient (theWinHandle, &aCursorPnt))
+        {
+          // as we override mouse position, we need overriding also mouse state
+          aPos.SetValues (aCursorPnt.x, aCursorPnt.y);
+          aButtons = WNT_Window::MouseButtonsAsync();
+          aFlags   = WNT_Window::MouseKeyFlagsAsync();
+        }
+      }
+
+      if (VT_GetWindow().IsNull()
+      || (HWND )VT_GetWindow()->HWindow() != theWinHandle)
+      {
+        // mouse move events come also for inactive windows
+        break;
+      }
+
+      ViewerTest::CurrentEventManager()->UpdateMousePosition (aPos, aButtons, aFlags, false);
+      ViewerTest::CurrentEventManager()->FlushViewEvents (ViewerTest::GetAISContext(), aView, true);
+      break;
+    }
+    default:
+    {
+      return DefWindowProcW (theWinHandle, theMsg, wParam, lParam);
+    }
+  }
+  return 0L;
 }
 
 //==============================================================================
@@ -3861,32 +3205,33 @@ static LRESULT WINAPI ViewerWindowProc( HWND hwnd,
 //purpose  : Get a Event on the view and dispatch it
 //==============================================================================
 
-
-int ViewerMainLoop(Standard_Integer argc, const char** argv)
+int ViewerMainLoop (Standard_Integer theNbArgs, const char** theArgVec)
 {
-  Ppick = (argc > 0)? 1 : 0;
-  Pargc = argc;
-  Pargv = argv;
-
-  if ( Ppick ) {
-    MSG msg;
-    msg.wParam = 1;
-
-    cout << "Start picking" << endl;
-
-    while ( Ppick == 1 ) {
-      // Wait for a VT_ProcessButton1Press() to toggle pick to 1 or 0
-      if (GetMessageW (&msg, NULL, 0, 0))
-      {
-        TranslateMessage (&msg);
-        DispatchMessageW (&msg);
-      }
-    }
-
-    cout << "Picking done" << endl;
+  Handle(ViewerTest_EventManager) aViewCtrl = ViewerTest::CurrentEventManager();
+  if (aViewCtrl.IsNull()
+   || theNbArgs < 4)
+  {
+    return 0;
   }
 
-  return Ppick;
+  aViewCtrl->StartPickPoint (theArgVec[1], theArgVec[2], theArgVec[3]);
+
+  std::cout << "Start picking\n";
+
+  MSG aMsg;
+  aMsg.wParam = 1;
+  while (aViewCtrl->ToPickPoint())
+  {
+    // Wait for a VT_ProcessButton1Press() to toggle pick to 1 or 0
+    if (GetMessageW (&aMsg, NULL, 0, 0))
+    {
+      TranslateMessage (&aMsg);
+      DispatchMessageW (&aMsg);
+    }
+  }
+
+  std::cout << "Picking done\n";
+  return 0;
 }
 
 #elif !defined(__APPLE__) || defined(MACOSX_USE_GLX)
@@ -3907,11 +3252,19 @@ int max( int a, int b )
     return b;
 }
 
-int ViewerMainLoop (Standard_Integer argc, const char** argv)
+int ViewerMainLoop (Standard_Integer theNbArgs, const char** theArgVec)
 {
   static XEvent aReport;
-  const Standard_Boolean toPick = argc > 0;
-  Standard_Boolean toPickMore = toPick;
+  const Standard_Boolean toPick = theNbArgs > 0;
+  if (theNbArgs > 0)
+  {
+    if (ViewerTest::CurrentEventManager().IsNull())
+    {
+      return 0;
+    }
+    ViewerTest::CurrentEventManager()->StartPickPoint (theArgVec[1], theArgVec[2], theArgVec[3]);
+  }
+
   Display* aDisplay = GetDisplayConnection()->GetDisplay();
   XNextEvent (aDisplay, &aReport);
 
@@ -3931,7 +3284,7 @@ int ViewerMainLoop (Standard_Integer argc, const char** argv)
     case FocusIn:
     {
       // Activate inactive view
-      Window aWindow = GetWindowHandle(VT_GetWindow());
+      Window aWindow = !VT_GetWindow().IsNull() ? VT_GetWindow()->XWindow() : 0;
       if (aWindow != aReport.xfocus.window)
       {
         ActivateView (FindViewIdByWindowHandle (aReport.xfocus.window));
@@ -3940,10 +3293,10 @@ int ViewerMainLoop (Standard_Integer argc, const char** argv)
     }
     case Expose:
     {
-      Window anXWindow = GetWindowHandle (VT_GetWindow());
+      Window anXWindow = !VT_GetWindow().IsNull() ? VT_GetWindow()->XWindow() : 0;
       if (anXWindow == aReport.xexpose.window)
       {
-        VT_ProcessExpose();
+        ViewerTest::CurrentEventManager()->ProcessExpose();
       }
 
       // remove all the ExposureMask and process them at once
@@ -3960,7 +3313,7 @@ int ViewerMainLoop (Standard_Integer argc, const char** argv)
     case ConfigureNotify:
     {
       // remove all the StructureNotifyMask and process them at once
-      Window anXWindow = GetWindowHandle (VT_GetWindow());
+      Window anXWindow = !VT_GetWindow().IsNull() ? VT_GetWindow()->XWindow() : 0;
       for (int aNbMaxEvents = XPending (aDisplay); aNbMaxEvents > 0; --aNbMaxEvents)
       {
         if (!XCheckWindowEvent (aDisplay, anXWindow, StructureNotifyMask, &aReport))
@@ -3971,106 +3324,92 @@ int ViewerMainLoop (Standard_Integer argc, const char** argv)
 
       if (anXWindow == aReport.xconfigure.window)
       {
-        VT_ProcessConfigure();
+        ViewerTest::CurrentEventManager()->ProcessConfigure();
       }
       break;
     }
     case KeyPress:
+    case KeyRelease:
     {
-      KeySym aKeySym;
-      char aKeyBuf[11];
-      XComposeStatus status_in_out;
-      int aKeyLen = XLookupString ((XKeyEvent* )&aReport, (char* )aKeyBuf, 10, &aKeySym, &status_in_out);
-      aKeyBuf[aKeyLen] = '\0';
-      if (aKeyLen != 0)
+      XKeyEvent*   aKeyEvent = (XKeyEvent* )&aReport;
+      const KeySym aKeySym = XLookupKeysym (aKeyEvent, 0);
+      const Aspect_VKey aVKey = Xw_Window::VirtualKeyFromNative (aKeySym);
+      if (aVKey != Aspect_VKey_UNKNOWN)
       {
-        VT_ProcessKeyPress (aKeyBuf);
+        const double aTimeStamp = ViewerTest::CurrentEventManager()->EventTime();
+        if (aReport.type == KeyPress)
+        {
+          ViewerTest::CurrentEventManager()->KeyDown (aVKey, aTimeStamp);
+        }
+        else
+        {
+          ViewerTest::CurrentEventManager()->KeyUp (aVKey, aTimeStamp);
+        }
+        ViewerTest::CurrentEventManager()->FlushViewEvents (ViewerTest::GetAISContext(), ViewerTest::CurrentView(), true);
       }
       break;
     }
     case ButtonPress:
-    {
-      X_ButtonPress = aReport.xbutton.x;
-      Y_ButtonPress = aReport.xbutton.y;
-      if (aReport.xbutton.button == Button1)
-      {
-        if (aReport.xbutton.state & ControlMask)
-        {
-          toPickMore = VT_ProcessButton1Press (argc, argv, toPick, (aReport.xbutton.state & ShiftMask) != 0);
-        }
-        else
-        {
-          IsDragged = Standard_True;
-          DragFirst = Standard_True;
-        }
-      }
-      else if (aReport.xbutton.button == Button3)
-      {
-        // Start rotation
-        VT_ProcessButton3Press();
-      }
-      break;
-    }
     case ButtonRelease:
     {
-      if (!IsDragged)
+      const Graphic3d_Vec2i aPos (aReport.xbutton.x, aReport.xbutton.y);
+      Aspect_VKeyFlags aFlags = Aspect_VKeyFlags_NONE;
+      Aspect_VKeyMouse aButton = Aspect_VKeyMouse_NONE;
+      if (aReport.xbutton.button == Button1)
       {
-        VT_ProcessButton3Release();
-        break;
+        aButton = Aspect_VKeyMouse_LeftButton;
+      }
+      if (aReport.xbutton.button == Button2)
+      {
+        aButton = Aspect_VKeyMouse_MiddleButton;
+      }
+      if (aReport.xbutton.button == Button3)
+      {
+        aButton = Aspect_VKeyMouse_RightButton;
       }
 
-      Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
-      if (aContext.IsNull())
+      if (aReport.xbutton.state & ControlMask)
       {
-        std::cout << "Error: No active view.\n";
-        return 0;
+        aFlags |= Aspect_VKeyFlags_CTRL;
+      }
+      if (aReport.xbutton.state & ShiftMask)
+      {
+        aFlags |= Aspect_VKeyFlags_SHIFT;
+      }
+      if (ViewerTest::CurrentEventManager()->Keys().IsKeyDown (Aspect_VKey_Alt))
+      {
+        aFlags |= Aspect_VKeyFlags_ALT;
       }
 
-      if (!DragFirst
-        && aContext->IsDisplayed (GetRubberBand()))
+      if (aReport.xbutton.button == Button4
+       || aReport.xbutton.button == Button5)
       {
-        aContext->Remove (GetRubberBand(), Standard_False);
-        aContext->CurrentViewer()->RedrawImmediate();
-      }
-
-      if (aReport.xbutton.button != Button1)
-      {
-        break;
-      }
-
-      const Standard_Boolean isShiftPressed = (aReport.xbutton.state & ShiftMask) != 0;
-      if (DragFirst)
-      {
-        if (isShiftPressed)
+        if (aReport.type != ButtonPress)
         {
-          aContext->ShiftSelect (Standard_True);
+          break;
         }
-        else
+
+        const double aDeltaF = (aReport.xbutton.button == Button4 ? 1.0 : -1.0);
+        ViewerTest::CurrentEventManager()->UpdateMouseScroll (Aspect_ScrollDelta (aPos, aDeltaF, aFlags));
+      }
+      else if (aReport.type == ButtonPress)
+      {
+        if (aButton == Aspect_VKeyMouse_LeftButton)
         {
-          aContext->Select (Standard_True);
+          TheIsAnimating = Standard_False;
         }
+        ViewerTest::CurrentEventManager()->PressMouseButton (aPos, aButton, aFlags, false);
       }
       else
       {
-        if (isShiftPressed)
-        {
-          aContext->ShiftSelect (Min (X_ButtonPress, X_Motion), Min (Y_ButtonPress, Y_Motion),
-                                 Max (X_ButtonPress, X_Motion), Max (Y_ButtonPress, Y_Motion),
-                                 ViewerTest::CurrentView(), Standard_True);
-        }
-        else
-        {
-          aContext->Select (Min (X_ButtonPress, X_Motion), Min(Y_ButtonPress, Y_Motion),
-                            Max (X_ButtonPress, X_Motion), Max(Y_ButtonPress, Y_Motion),
-                            ViewerTest::CurrentView(), Standard_True);
-        }
+        ViewerTest::CurrentEventManager()->ReleaseMouseButton (aPos, aButton, aFlags, false);
       }
-      IsDragged = Standard_False;
+      ViewerTest::CurrentEventManager()->FlushViewEvents (ViewerTest::GetAISContext(), ViewerTest::CurrentView(), true);
       break;
     }
     case MotionNotify:
     {
-      Window anXWindow = GetWindowHandle (VT_GetWindow());
+      Window anXWindow = !VT_GetWindow().IsNull() ? VT_GetWindow()->XWindow() : 0;
       if (anXWindow != aReport.xmotion.window)
       {
         break;
@@ -4085,55 +3424,41 @@ int ViewerMainLoop (Standard_Integer argc, const char** argv)
         }
       }
 
-      if (IsDragged)
+      Graphic3d_Vec2i aPos (aReport.xmotion.x, aReport.xmotion.y);
+      Aspect_VKeyMouse aButtons = Aspect_VKeyMouse_NONE;
+      Aspect_VKeyFlags aFlags   = Aspect_VKeyFlags_NONE;
+      if ((aReport.xmotion.state & Button1Mask) != 0)
       {
-        if (!DragFirst
-          && ViewerTest::GetAISContext()->IsDisplayed (GetRubberBand()))
-        {
-          ViewerTest::GetAISContext()->Remove (GetRubberBand(), Standard_False);
-        }
-
-        X_Motion = aReport.xmotion.x;
-        Y_Motion = aReport.xmotion.y;
-        DragFirst = Standard_False;
-
-        Window aWindow = GetWindowHandle(VT_GetWindow());
-        Window aRoot;
-        int anX, anY;
-        unsigned int aWidth, aHeight, aBorderWidth, aDepth;
-        XGetGeometry (aDisplay, aWindow, &aRoot, &anX, &anY, &aWidth, &aHeight, &aBorderWidth, &aDepth);
-        GetRubberBand()->SetRectangle (X_ButtonPress, aHeight - Y_ButtonPress, X_Motion, aHeight - Y_Motion);
-        ViewerTest::GetAISContext()->Display (GetRubberBand(), 0, -1, Standard_False, AIS_DS_Displayed);
-        ViewerTest::GetAISContext()->CurrentViewer()->RedrawImmediate();
+        aButtons |= Aspect_VKeyMouse_LeftButton;
       }
-      else
+      else if ((aReport.xmotion.state & Button2Mask) != 0)
       {
-        X_Motion = aReport.xmotion.x;
-        Y_Motion = aReport.xmotion.y;
-        if ((aReport.xmotion.state & ControlMask) != 0)
-        {
-          if ((aReport.xmotion.state & Button1Mask) != 0)
-          {
-            ProcessControlButton1Motion();
-          }
-          else if ((aReport.xmotion.state & Button2Mask) != 0)
-          {
-            VT_ProcessControlButton2Motion();
-          }
-          else if ((aReport.xmotion.state & Button3Mask) != 0)
-          {
-            VT_ProcessControlButton3Motion();
-          }
-        }
-        else
-        {
-          VT_ProcessMotion();
-        }
+        aButtons |= Aspect_VKeyMouse_MiddleButton;
       }
+      else if ((aReport.xmotion.state & Button3Mask) != 0)
+      {
+        aButtons |= Aspect_VKeyMouse_RightButton;
+      }
+
+      if (aReport.xmotion.state & ControlMask)
+      {
+        aFlags |= Aspect_VKeyFlags_CTRL;
+      }
+      if (aReport.xmotion.state & ShiftMask)
+      {
+        aFlags |= Aspect_VKeyFlags_SHIFT;
+      }
+      if (ViewerTest::CurrentEventManager()->Keys().IsKeyDown (Aspect_VKey_Alt))
+      {
+        aFlags |= Aspect_VKeyFlags_ALT;
+      }
+
+      ViewerTest::CurrentEventManager()->UpdateMousePosition (aPos, aButtons, aFlags, false);
+      ViewerTest::CurrentEventManager()->FlushViewEvents (ViewerTest::GetAISContext(), ViewerTest::CurrentView(), true);
       break;
     }
   }
-  return (!toPick || toPickMore) ? 1 : 0;
+  return (!toPick || ViewerTest::CurrentEventManager()->ToPickPoint()) ? 1 : 0;
 }
 
 //==============================================================================
@@ -4224,7 +3549,7 @@ static void OSWindowSetup()
 
   XSetWMHints( aDisplay, window, &wmhints);
 
-  XSelectInput( aDisplay, window,  ExposureMask | KeyPressMask |
+  XSelectInput( aDisplay, window,  ExposureMask | KeyPressMask | KeyReleaseMask |
     ButtonPressMask | ButtonReleaseMask |
     StructureNotifyMask |
     PointerMotionMask |
@@ -4468,18 +3793,27 @@ static int VClear(Draw_Interpretor& , Standard_Integer , const char** )
 //purpose  :
 //==============================================================================
 
-static int VPick(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
-{ if (ViewerTest::CurrentView().IsNull() ) return 1;
+static int VPick (Draw_Interpretor& ,
+                  Standard_Integer theNbArgs,
+                  const char** theArgVec)
+{
+  if (ViewerTest::CurrentView().IsNull())
+  {
+    return 1;
+  }
 
-if ( argc < 4 ) {
-  di << argv[0] << "Invalid number of arguments\n";
-  return 1;
-}
+  if (theNbArgs < 4)
+  {
+    std::cout << "Syntax error: Invalid number of arguments\n";
+    return 1;
+  }
 
-while (ViewerMainLoop( argc, argv)) {
-}
+  while (ViewerMainLoop (theNbArgs, theArgVec))
+  {
+    //
+  }
 
-return 0;
+  return 0;
 }
 
 namespace
@@ -7785,9 +7119,9 @@ static int VDiffImage (Draw_Interpretor& theDI, Standard_Integer theArgNb, const
     }
     else if (anArg == "-exitonclose")
     {
-      Draw_ToExitOnCloseView = true;
+      ViewerTest_EventManager::ToExitOnCloseView() = true;
       if (anArgIter + 1 < theArgNb
-       && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], Draw_ToExitOnCloseView))
+       && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], ViewerTest_EventManager::ToExitOnCloseView()))
       {
         ++anArgIter;
       }
@@ -7795,9 +7129,9 @@ static int VDiffImage (Draw_Interpretor& theDI, Standard_Integer theArgNb, const
     else if (anArg == "-closeonescape"
           || anArg == "-closeonesc")
     {
-      Draw_ToCloseViewOnEsc = true;
+      ViewerTest_EventManager::ToCloseViewOnEscape() = true;
       if (anArgIter + 1 < theArgNb
-       && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], Draw_ToCloseViewOnEsc))
+       && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], ViewerTest_EventManager::ToCloseViewOnEscape()))
       {
         ++anArgIter;
       }
@@ -7973,71 +7307,93 @@ static int VDiffImage (Draw_Interpretor& theDI, Standard_Integer theArgNb, const
 //           pixel positions (x1,y1),...,(xn,yn)
 //           4) any of these selections with shift button pressed
 //=======================================================================
-static Standard_Integer VSelect (Draw_Interpretor& di,
-                                 Standard_Integer argc,
-                                 const char ** argv)
+static Standard_Integer VSelect (Draw_Interpretor& ,
+                                 Standard_Integer theNbArgs,
+                                 const char** theArgVec)
 {
-  if(argc < 3)
+  const Handle(AIS_InteractiveContext)& aCtx = ViewerTest::GetAISContext();
+  if (aCtx.IsNull())
   {
-    di << "Usage : " << argv[0] << " x1 y1 [x2 y2 [... xn yn]] [shift_selection = 1|0]\n";
+    std::cout << "Error: no active View\n";
     return 1;
   }
 
-  Handle(AIS_InteractiveContext) myAIScontext = ViewerTest::GetAISContext();
-  if(myAIScontext.IsNull())
+  NCollection_Sequence<Graphic3d_Vec2i> aPnts;
+  bool isShiftSelection = false, toAllowOverlap = false;
+  for (Standard_Integer anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
   {
-    di << "use 'vinit' command before " << argv[0] << "\n";
-    return 1;
-  }
-
-  const Standard_Boolean isShiftSelection = (argc > 3 && !(argc % 2) && (atoi (argv[argc - 1]) == 1));
-  Standard_Integer aCoordsNb = isShiftSelection ? argc - 2 : argc - 1;
-  TCollection_AsciiString anArg;
-  anArg = isShiftSelection ? argv[argc - 3] : argv[argc - 2];
-  anArg.LowerCase();
-  if (anArg == "-allowoverlap")
-  {
-    Standard_Boolean isValidated = isShiftSelection ? argc == 8
-      : argc == 7;
-    if (!isValidated)
+    TCollection_AsciiString anArg (theArgVec[anArgIter]);
+    anArg.LowerCase();
+    if (anArg == "-allowoverlap")
     {
-      di << "Wrong number of arguments! -allowoverlap key is applied only for rectangle selection";
+      toAllowOverlap = true;
+      if (anArgIter + 1 < theNbArgs
+       && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], toAllowOverlap))
+      {
+        ++anArgIter;
+      }
+    }
+    else if (anArgIter + 1 < theNbArgs
+          && anArg.IsIntegerValue()
+          && TCollection_AsciiString (theArgVec[anArgIter + 1]).IsIntegerValue())
+    {
+      const TCollection_AsciiString anArgNext (theArgVec[++anArgIter]);
+      aPnts.Append (Graphic3d_Vec2i (anArg.IntegerValue(), anArgNext.IntegerValue()));
+    }
+    else if (anArgIter + 1 == theNbArgs
+          && anArg.IsIntegerValue())
+    {
+      isShiftSelection = anArg.IntegerValue() == 1;
+    }
+    else
+    {
+      std::cout << "Syntax error at '" << anArg << "'\n";
       return 1;
     }
-
-    Standard_Integer isToAllow = isShiftSelection ? Draw::Atoi(argv[argc - 2]) : Draw::Atoi(argv[argc - 1]);
-    myAIScontext->MainSelector()->AllowOverlapDetection (isToAllow != 0);
-    aCoordsNb -= 2;
+  }
+  if (toAllowOverlap
+   && aPnts.Length() != 2)
+  {
+    std::cout << "Syntax error: -allowoverlap key is applied only for rectangle selection\n";
+    return 1;
+  }
+  if (toAllowOverlap)
+  {
+    aCtx->MainSelector()->AllowOverlapDetection (toAllowOverlap);
   }
 
   Handle(ViewerTest_EventManager) aCurrentEventManager = ViewerTest::CurrentEventManager();
-  aCurrentEventManager->MoveTo(atoi(argv[1]),atoi(argv[2]));
-  if(aCoordsNb == 2)
+  if (aPnts.IsEmpty())
   {
-    if(isShiftSelection)
-      aCurrentEventManager->ShiftSelect();
+    if (isShiftSelection)
+    {
+      aCtx->ShiftSelect (false);
+    }
     else
-      aCurrentEventManager->Select();
+    {
+      aCtx->Select (false);
+    }
+    aCtx->CurrentViewer()->Invalidate();
   }
-  else if(aCoordsNb == 4)
+  else if (aPnts.Length() == 2)
   {
-    if(isShiftSelection)
-      aCurrentEventManager->ShiftSelect (atoi (argv[1]), atoi (argv[2]), atoi (argv[3]), atoi (argv[4]), Standard_False);
-    else
-      aCurrentEventManager->Select (atoi (argv[1]), atoi (argv[2]), atoi (argv[3]), atoi (argv[4]), Standard_False);
+    if (toAllowOverlap
+     && aPnts.First().y() < aPnts.Last().y())
+    {
+      std::swap (aPnts.ChangeFirst(), aPnts.ChangeLast());
+    }
+    else if (!toAllowOverlap
+           && aPnts.First().y() > aPnts.Last().y())
+    {
+      std::swap (aPnts.ChangeFirst(), aPnts.ChangeLast());
+    }
+    aCurrentEventManager->SelectInViewer (aPnts, isShiftSelection);
   }
   else
   {
-    TColgp_Array1OfPnt2d aPolyline (1,aCoordsNb / 2);
-
-    for(Standard_Integer i=1;i<=aCoordsNb / 2;++i)
-      aPolyline.SetValue(i,gp_Pnt2d(atoi(argv[2*i-1]),atoi(argv[2*i])));
-
-    if(isShiftSelection)
-      aCurrentEventManager->ShiftSelect(aPolyline);
-    else
-      aCurrentEventManager->Select(aPolyline);
+    aCurrentEventManager->SelectInViewer (aPnts, isShiftSelection);
   }
+  aCurrentEventManager->FlushViewEvents (aCtx, ViewerTest::CurrentView(), true);
   return 0;
 }
 
@@ -8107,7 +7463,10 @@ static Standard_Integer VMoveTo (Draw_Interpretor& theDI,
     return 1;
   }
 
-  ViewerTest::CurrentEventManager()->MoveTo (aMousePos.x(), aMousePos.y());
+  ViewerTest::CurrentEventManager()->ResetPreviousMoveTo();
+  ViewerTest::CurrentEventManager()->UpdateMousePosition (aMousePos, Aspect_VKeyMouse_NONE, Aspect_VKeyFlags_NONE, false);
+  ViewerTest::CurrentEventManager()->FlushViewEvents (ViewerTest::GetAISContext(), aView, true);
+
   gp_Pnt aTopPnt (RealLast(), RealLast(), RealLast());
   const Handle(SelectMgr_EntityOwner)& aDetOwner = aContext->DetectedOwner();
   for (Standard_Integer aDetIter = 1; aDetIter <= aContext->MainSelector()->NbPicked(); ++aDetIter)
@@ -12846,52 +12205,6 @@ static Standard_Integer VStatProfiler (Draw_Interpretor& theDI,
 }
 
 //=======================================================================
-//function : VProgressiveMode
-//purpose  :
-//=======================================================================
-#if defined(_WIN32)
-static Standard_Integer VProgressiveMode (Draw_Interpretor& /*theDI*/,
-                                          Standard_Integer  /*theNbArgs*/,
-                                          const char**      /*theArgs*/)
-{
-  Handle(V3d_View) aView = ViewerTest::CurrentView();
-  if (aView.IsNull())
-  {
-    std::cerr << "Error: no active viewer!\n";
-    return 1;
-  }
-
-  std::cout << "Press Enter or Escape key to exit progressive rendering mode" << std::endl;
-
-  for (;;)
-  {
-    aView->Redraw();
-
-    Standard_Boolean toExit = Standard_False;
-
-    MSG aMsg;
-    while (PeekMessageW (&aMsg, NULL, 0, 0, PM_REMOVE))
-    {
-      if (aMsg.message == WM_KEYDOWN && (aMsg.wParam == 0x0d || aMsg.wParam == 0x1b))
-      {
-        toExit = Standard_True;
-      }
-
-      TranslateMessage (&aMsg);
-      DispatchMessageW (&aMsg);
-    }
-
-    if (toExit)
-    {
-      break;
-    }
-  }
-
-  return 0;
-}
-#endif
-
-//=======================================================================
 //function : VXRotate
 //purpose  :
 //=======================================================================
@@ -13065,6 +12378,7 @@ static int VManipulator (Draw_Interpretor& theDi,
     std::cout << theArgVec[0] << ": AIS object \"" << aName << "\" has been created.\n";
 
     aManipulator = new ViewerTest_AISManipulator();
+    aManipulator->SetModeActivationOnDetection (true);
     aMapAIS.Bind (aManipulator, aName);
   }
   else
@@ -14492,11 +13806,5 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
                    "\n\t\t:   selMode     color of selection mode"
                    "\n\t\t:   entity      color of etected entity",
                    __FILE__, VDumpSelectionImage, group);
-
-#if defined(_WIN32)
-  theCommands.Add("vprogressive",
-    "vprogressive",
-    __FILE__, VProgressiveMode, group);
-#endif
 }
 

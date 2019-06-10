@@ -148,6 +148,12 @@ public:
   //! Returns true if cached view content has been invalidated.
   Standard_EXPORT Standard_Boolean IsInvalidated() const;
 
+  //! Returns true if immediate layer content has been invalidated.
+  Standard_Boolean IsInvalidatedImmediate() const { return myIsInvalidatedImmediate; }
+
+  //! Invalidates view content within immediate layer but does not redraw it.
+  void InvalidateImmediate() { myIsInvalidatedImmediate = Standard_True; }
+
   //! Must be called when the window supporting the
   //! view changes size.
   //! if the view is not mapped on a window.
@@ -939,6 +945,9 @@ public:
   //! Fills in the dictionary with statistic performance info.
   Standard_EXPORT void StatisticInformation (TColStd_IndexedDataMapOfStringString& theDict) const;
 
+  //! Returns the Objects number and the gravity center of ALL viewable points in the view
+  Standard_EXPORT gp_Pnt GravityPoint() const;
+
   DEFINE_STANDARD_RTTIEXT(V3d_View,Standard_Transient)
 
 protected:
@@ -976,10 +985,6 @@ private:
   //! the objects contained in the view
   Standard_EXPORT Standard_Integer MinMax (Standard_Real& Xmin, Standard_Real& Ymin, Standard_Real& Zmin, Standard_Real& Xmax, Standard_Real& Ymax, Standard_Real& Zmax) const;
   
-  //! Returns the Objects number and the gravity center
-  //! of ALL viewable points in the view
-  Standard_EXPORT void Gravity (Standard_Real& X, Standard_Real& Y, Standard_Real& Z) const;
-  
   Standard_EXPORT void Init();
   
   //! Returns a new vertex when the grid is activated.
@@ -996,6 +1001,7 @@ protected:
   Handle(Graphic3d_Camera) myDefaultCamera;
   Handle(Graphic3d_CView) myView;
   Standard_Boolean myImmediateUpdate;
+  mutable Standard_Boolean myIsInvalidatedImmediate;
 
 private:
 
@@ -1009,9 +1015,7 @@ private:
   Standard_Integer sy;
   Standard_Real rx;
   Standard_Real ry;
-  Standard_Real gx;
-  Standard_Real gy;
-  Standard_Real gz;
+  gp_Pnt myRotateGravity;
   Standard_Boolean myComputedMode;
   Standard_Boolean SwitchSetFront;
   Standard_Boolean myZRotation;

@@ -17,76 +17,85 @@
 #ifndef _ViewerTest_EventManager_HeaderFile
 #define _ViewerTest_EventManager_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
-#include <Standard_Integer.hxx>
-#include <Standard_Transient.hxx>
-#include <Standard_Boolean.hxx>
+#include <AIS_ViewController.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
+#include <TCollection_AsciiString.hxx>
+
 class AIS_InteractiveContext;
 class V3d_View;
 
-
-class ViewerTest_EventManager;
 DEFINE_STANDARD_HANDLE(ViewerTest_EventManager, Standard_Transient)
 
 //! used to manage mouse event (move,select,shiftselect)
 //! By default the events are transmitted to interactive context.
-class ViewerTest_EventManager : public Standard_Transient
+class ViewerTest_EventManager : public Standard_Transient, public AIS_ViewController
 {
+  DEFINE_STANDARD_RTTIEXT(ViewerTest_EventManager, Standard_Transient)
+public:
+
+  //! Return TRUE if View should be closed on escape.
+  static Standard_Boolean& ToCloseViewOnEscape()
+  {
+    static Standard_Boolean Draw_ToCloseViewOnEsc = Standard_False;
+    return Draw_ToCloseViewOnEsc;
+  }
+
+  //! Return TRUE if Draw Harness should exit on closing View.
+  static Standard_Boolean& ToExitOnCloseView()
+  {
+    static Standard_Boolean Draw_ToExitOnCloseView = Standard_False;
+    return Draw_ToExitOnCloseView;
+  }
 
 public:
 
-  
+  //! Main constructor.
   Standard_EXPORT ViewerTest_EventManager(const Handle(V3d_View)& aView, const Handle(AIS_InteractiveContext)& aCtx);
   
-  Standard_EXPORT virtual void MoveTo (const Standard_Integer xpix, const Standard_Integer ypix);
-  
-  Standard_EXPORT virtual void Select();
-  
-  Standard_EXPORT virtual void ShiftSelect();
-  
-  Standard_EXPORT virtual void Select (const Standard_Integer theXPressed, const Standard_Integer theYPressed, const Standard_Integer theXMotion, const Standard_Integer theYMotion, const Standard_Boolean theIsAutoAllowOverlap = Standard_True);
-  
-  Standard_EXPORT virtual void ShiftSelect (const Standard_Integer theXPressed, const Standard_Integer theYPressed, const Standard_Integer theXMotion, const Standard_Integer theYMotion, const Standard_Boolean theIsAutoAllowOverlap = Standard_True);
-  
-  Standard_EXPORT virtual void Select (const TColgp_Array1OfPnt2d& thePolyline);
-  
-  Standard_EXPORT virtual void ShiftSelect (const TColgp_Array1OfPnt2d& thePolyline);
-  
-    const Handle(AIS_InteractiveContext)& Context() const;
-  
-  //! Gets current mouse position. It tracks change of mouse position
-  //! with mouse drugging or with DRAW command call (vmoveto).
-  Standard_EXPORT void GetCurrentPosition (Standard_Integer& theXPix, Standard_Integer& theYPix) const;
+  //! Return interactive context.
+  const Handle(AIS_InteractiveContext)& Context() const { return myCtx; }
 
+  //! Returns TRUE if picking point mode has been enabled (for VPick command).
+  Standard_Boolean ToPickPoint() const { return myToPickPnt; }
 
+  //! Start picking point for VPick command.
+  void StartPickPoint (const char* theArgX,
+                       const char* theArgY,
+                       const char* theArgZ)
+  {
+    myToPickPnt = Standard_True;
+    myPickPntArgVec[0] = theArgX;
+    myPickPntArgVec[1] = theArgY;
+    myPickPntArgVec[2] = theArgZ;
+  }
 
+  //! Handle mouse button press/release event.
+  Standard_EXPORT virtual bool UpdateMouseButtons (const Graphic3d_Vec2i& thePoint,
+                                                   Aspect_VKeyMouse theButtons,
+                                                   Aspect_VKeyFlags theModifiers,
+                                                   bool theIsEmulated) Standard_OVERRIDE;
 
-  DEFINE_STANDARD_RTTIEXT(ViewerTest_EventManager,Standard_Transient)
+  //! Release key.
+  Standard_EXPORT virtual void KeyUp (Aspect_VKey theKey,
+                                      double theTime) Standard_OVERRIDE;
 
-protected:
+  //! Redraw the View on an Expose Event
+  Standard_EXPORT virtual void ProcessExpose();
 
+  //! Resize View.
+  Standard_EXPORT virtual void ProcessConfigure();
 
-
+  //! Handle KeyPress event.
+  Standard_EXPORT void ProcessKeyPress (Aspect_VKey theKey);
 
 private:
 
-
   Handle(AIS_InteractiveContext) myCtx;
   Handle(V3d_View) myView;
-  Standard_Integer myX;
-  Standard_Integer myY;
 
+  TCollection_AsciiString myPickPntArgVec[3];
+  Standard_Boolean myToPickPnt;
 
 };
-
-
-#include <ViewerTest_EventManager.lxx>
-
-
-
-
 
 #endif // _ViewerTest_EventManager_HeaderFile

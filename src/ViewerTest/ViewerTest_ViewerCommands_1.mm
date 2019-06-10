@@ -17,6 +17,7 @@
 
 #include <Cocoa_Window.hxx>
 #include <ViewerTest.hxx>
+#include <ViewerTest_EventManager.hxx>
 #include <V3d_View.hxx>
 #include <V3d_Viewer.hxx>
 #include <AIS_InteractiveContext.hxx>
@@ -39,41 +40,8 @@
 
 extern void ActivateView (const TCollection_AsciiString& theViewName,
                           Standard_Boolean theToUpdate = Standard_True);
-extern void VT_ProcessExpose();
-extern void VT_ProcessConfigure();
-extern void VT_ProcessKeyPress (const char* theBuffer);
-extern void VT_ProcessMotion();
-extern void VT_ProcessButton3Press();
-extern void VT_ProcessButton3Release();
-extern void VT_ProcessControlButton2Motion();
-extern void VT_ProcessControlButton3Motion();
-extern Standard_Boolean VT_ProcessButton1Press (Standard_Integer theArgsNb,
-                                                const char**     theArgsVec,
-                                                Standard_Boolean theToPick,
-                                                Standard_Boolean theIsShift);
-extern void VT_ProcessButton1Release(Standard_Boolean theIsShift);
 
 extern NCollection_DoubleMap <TCollection_AsciiString, Handle(V3d_View)> ViewerTest_myViews;
-extern int X_Motion; // Current cursor position
-extern int Y_Motion;
-extern int X_ButtonPress; // Last ButtonPress position
-extern int Y_ButtonPress;
-extern Standard_Boolean IsDragged;
-
-// =======================================================================
-// function : SetCocoaWindowTitle
-// purpose  :
-// =======================================================================
-void SetCocoaWindowTitle (const Handle(Cocoa_Window)& theWindow, Standard_CString theTitle)
-{
-  NSView* aView = theWindow->HView();
-  NSWindow* aWindow = [aView window];
-
-  NSString* aTitleNS = [[NSString alloc] initWithUTF8String: theTitle];
-  [aWindow setTitle: aTitleNS];
-  [aTitleNS release];
-  
-}
 
 // =======================================================================
 // function : GetCocoaScreenResolution
@@ -170,20 +138,41 @@ void ViewerTest_SetCocoaEventManagerView (const Handle(Cocoa_Window)& theWindow)
   [aView release];
 }
 
-// =======================================================================
-// function : getMouseCoords
-// purpose  : Retrieve cursor position
-// =======================================================================
-static void getMouseCoords (NSView*           theView,
-                            NSEvent*          theEvent,
-                            Standard_Integer& theX,
-                            Standard_Integer& theY)
+//! Retrieve cursor position
+static Graphic3d_Vec2i getMouseCoords (NSView*  theView,
+                                       NSEvent* theEvent)
 {
   NSPoint aMouseLoc = [theView convertPoint: [theEvent locationInWindow] fromView: nil];
   NSRect  aBounds   = [theView bounds];
+  return Graphic3d_Vec2i (Standard_Integer(aMouseLoc.x),
+                          Standard_Integer(aBounds.size.height - aMouseLoc.y));
+}
 
-  theX = Standard_Integer(aMouseLoc.x);
-  theY = Standard_Integer(aBounds.size.height - aMouseLoc.y);
+//! Convert key flags from mouse event.
+static Aspect_VKeyFlags getMouseKeyFlags (NSEvent* theEvent)
+{
+  Aspect_VKeyFlags aFlags = Aspect_VKeyFlags_NONE;
+  if (([theEvent modifierFlags] & NSEventModifierFlagShift) != 0)
+  {
+    aFlags |= Aspect_VKeyFlags_SHIFT;
+  }
+  if (([theEvent modifierFlags] & NSEventModifierFlagControl) != 0)
+  {
+    aFlags |= Aspect_VKeyFlags_CTRL;
+  }
+  if (([theEvent modifierFlags] & NSEventModifierFlagOption) != 0)
+  {
+    aFlags |= Aspect_VKeyFlags_ALT;
+  }
+  if (([theEvent modifierFlags] & NSEventModifierFlagFunction) != 0)
+  {
+    //aFlags |= Aspect_VKeyFlags_FUNC;
+  }
+  if (([theEvent modifierFlags] & NSEventModifierFlagCommand) != 0)
+  {
+    //aFlags |= Aspect_VKeyFlags_CMD;
+  }
+  return aFlags;
 }
 
 @implementation ViewerTest_CocoaEventManagerView
@@ -195,7 +184,7 @@ static void getMouseCoords (NSView*           theView,
 - (void )setFrameSize: (NSSize )theNewSize
 {
   [super setFrameSize: theNewSize];
-  VT_ProcessConfigure();
+  ViewerTest::CurrentEventManager()->ProcessConfigure();
 }
 
 // =======================================================================
@@ -205,7 +194,10 @@ static void getMouseCoords (NSView*           theView,
 - (void )drawRect: (NSRect )theDirtyRect
 {
   (void )theDirtyRect;
-  VT_ProcessExpose();
+  if (!ViewerTest::CurrentEventManager().IsNull())
+  {
+    ViewerTest::CurrentEventManager()->ProcessExpose();
+  }
 }
 
 // =======================================================================
@@ -214,8 +206,11 @@ static void getMouseCoords (NSView*           theView,
 // =======================================================================
 - (void )mouseMoved: (NSEvent* )theEvent
 {
-  getMouseCoords (self, theEvent, X_Motion, Y_Motion);
-  VT_ProcessMotion();
+  const Graphic3d_Vec2i  aPos   = getMouseCoords (self, theEvent);
+  const Aspect_VKeyFlags aFlags = getMouseKeyFlags (theEvent);
+  const Aspect_VKeyMouse aButtons = ViewerTest::CurrentEventManager()->PressedMouseButtons();
+  ViewerTest::CurrentEventManager()->UpdateMousePosition (aPos, aButtons, aFlags, false);
+  ViewerTest::CurrentEventManager()->FlushViewEvents (ViewerTest::GetAISContext(), ViewerTest::CurrentView(), true);
 }
 
 // =======================================================================
@@ -233,8 +228,10 @@ static void getMouseCoords (NSView*           theView,
 // =======================================================================
 - (void )mouseDown: (NSEvent* )theEvent
 {
-  getMouseCoords (self, theEvent, X_ButtonPress, Y_ButtonPress);
-  VT_ProcessButton1Press (0, NULL, Standard_False, [theEvent modifierFlags] & NSEventModifierFlagShift);
+  const Graphic3d_Vec2i  aPos   = getMouseCoords (self, theEvent);
+  const Aspect_VKeyFlags aFlags = getMouseKeyFlags (theEvent);
+  ViewerTest::CurrentEventManager()->PressMouseButton (aPos, Aspect_VKeyMouse_LeftButton, aFlags, false);
+  ViewerTest::CurrentEventManager()->FlushViewEvents (ViewerTest::GetAISContext(), ViewerTest::CurrentView(), true);
 }
 
 // =======================================================================
@@ -243,10 +240,11 @@ static void getMouseCoords (NSView*           theView,
 // =======================================================================
 - (void )mouseUp: (NSEvent* )theEvent
 {
-  getMouseCoords (self, theEvent, X_Motion, Y_Motion);
-  VT_ProcessButton1Release([theEvent modifierFlags] & NSEventModifierFlagShift);
+  const Graphic3d_Vec2i  aPos   = getMouseCoords (self, theEvent);
+  const Aspect_VKeyFlags aFlags = getMouseKeyFlags (theEvent);
+  ViewerTest::CurrentEventManager()->ReleaseMouseButton (aPos, Aspect_VKeyMouse_LeftButton, aFlags, false);
+  ViewerTest::CurrentEventManager()->FlushViewEvents (ViewerTest::GetAISContext(), ViewerTest::CurrentView(), true);
 }
-
 
 // =======================================================================
 // function : mouseDragged
@@ -254,12 +252,11 @@ static void getMouseCoords (NSView*           theView,
 // =======================================================================
 - (void )mouseDragged: (NSEvent* )theEvent
 {
-  IsDragged = Standard_True;
-  if ([theEvent modifierFlags] & NSEventModifierFlagControl)
-  {
-    getMouseCoords (self, theEvent, X_Motion, Y_Motion);
-    VT_ProcessControlButton2Motion();
-  }
+  const Graphic3d_Vec2i  aPos   = getMouseCoords (self, theEvent);
+  const Aspect_VKeyFlags aFlags = getMouseKeyFlags (theEvent);
+  const Aspect_VKeyMouse aButtons = ViewerTest::CurrentEventManager()->PressedMouseButtons();
+  ViewerTest::CurrentEventManager()->UpdateMousePosition (aPos, aButtons, aFlags, false);
+  ViewerTest::CurrentEventManager()->FlushViewEvents (ViewerTest::GetAISContext(), ViewerTest::CurrentView(), true);
 }
 
 // =======================================================================
@@ -268,8 +265,10 @@ static void getMouseCoords (NSView*           theView,
 // =======================================================================
 - (void )rightMouseDown: (NSEvent* )theEvent
 {
-  getMouseCoords (self, theEvent, X_ButtonPress, Y_ButtonPress);
-  VT_ProcessButton3Press(); // Start rotation
+  const Graphic3d_Vec2i  aPos   = getMouseCoords (self, theEvent);
+  const Aspect_VKeyFlags aFlags = getMouseKeyFlags (theEvent);
+  ViewerTest::CurrentEventManager()->PressMouseButton (aPos, Aspect_VKeyMouse_RightButton, aFlags, false);
+  ViewerTest::CurrentEventManager()->FlushViewEvents (ViewerTest::GetAISContext(), ViewerTest::CurrentView(), true);
 }
 
 // =======================================================================
@@ -278,8 +277,10 @@ static void getMouseCoords (NSView*           theView,
 // =======================================================================
 - (void )rightMouseUp: (NSEvent* )theEvent
 {
-  (void )theEvent;
-  VT_ProcessButton3Release();
+  const Graphic3d_Vec2i  aPos   = getMouseCoords (self, theEvent);
+  const Aspect_VKeyFlags aFlags = getMouseKeyFlags (theEvent);
+  ViewerTest::CurrentEventManager()->ReleaseMouseButton (aPos, Aspect_VKeyMouse_RightButton, aFlags, false);
+  ViewerTest::CurrentEventManager()->FlushViewEvents (ViewerTest::GetAISContext(), ViewerTest::CurrentView(), true);
 }
 
 // =======================================================================
@@ -288,11 +289,11 @@ static void getMouseCoords (NSView*           theView,
 // =======================================================================
 - (void )rightMouseDragged: (NSEvent* )theEvent
 {
-  if ([theEvent modifierFlags] & NSEventModifierFlagControl)
-  {
-    getMouseCoords (self, theEvent, X_Motion, Y_Motion);
-    VT_ProcessControlButton3Motion();
-  }
+  const Graphic3d_Vec2i  aPos   = getMouseCoords (self, theEvent);
+  const Aspect_VKeyFlags aFlags = getMouseKeyFlags (theEvent);
+  const Aspect_VKeyMouse aButtons = ViewerTest::CurrentEventManager()->PressedMouseButtons();
+  ViewerTest::CurrentEventManager()->UpdateMousePosition (aPos, aButtons, aFlags, false);
+  ViewerTest::CurrentEventManager()->FlushViewEvents (ViewerTest::GetAISContext(), ViewerTest::CurrentView(), true);
 }
 
 // =======================================================================
@@ -301,14 +302,18 @@ static void getMouseCoords (NSView*           theView,
 // =======================================================================
 - (void )scrollWheel: (NSEvent* )theEvent
 {
-  float aDelta = [theEvent deltaY];
+  const Graphic3d_Vec2i  aPos   = getMouseCoords (self, theEvent);
+  const Aspect_VKeyFlags aFlags = getMouseKeyFlags (theEvent);
+
+  const Standard_Real aDelta = [theEvent deltaY];
   if (Abs (aDelta) < 0.001)
   {
     // a lot of values near zero can be generated by touchpad
     return;
   }
 
-  ViewerTest::CurrentView()->Zoom (0, 0, aDelta, aDelta);
+  ViewerTest::CurrentEventManager()->UpdateMouseScroll (Aspect_ScrollDelta (aPos, aDelta, aFlags));
+  ViewerTest::CurrentEventManager()->FlushViewEvents (ViewerTest::GetAISContext(), ViewerTest::CurrentView(), true);
 }
 
 // =======================================================================
@@ -317,14 +322,36 @@ static void getMouseCoords (NSView*           theView,
 // =======================================================================
 - (void )keyDown: (NSEvent* )theEvent
 {
-  NSString* aStringNs = [theEvent characters];
-  if (aStringNs == NULL || [aStringNs length] == 0)
+  unsigned int aKeyCode = [theEvent keyCode];
+  const Aspect_VKey aVKey = Cocoa_Window::VirtualKeyFromNative (aKeyCode);
+  if (aVKey != Aspect_VKey_UNKNOWN)
   {
-    return;
+    const double aTimeStamp = [theEvent timestamp];
+    ViewerTest::CurrentEventManager()->KeyDown (aVKey, aTimeStamp);
+    ViewerTest::CurrentEventManager()->FlushViewEvents (ViewerTest::GetAISContext(), ViewerTest::CurrentView(), true);
   }
 
-  const Standard_CString aString = [aStringNs UTF8String];
-  VT_ProcessKeyPress (aString);
+  //NSString* aStringNs = [theEvent characters];
+  //if (aStringNs != NULL && [aStringNs length] != 1)
+  //{
+  //  const Standard_CString aString = [aStringNs UTF8String];
+  //}
+}
+
+// =======================================================================
+// function : keyUp
+// purpose  :
+// =======================================================================
+- (void )keyUp: (NSEvent* )theEvent
+{
+  unsigned int aKeyCode = [theEvent keyCode];
+  const Aspect_VKey aVKey = Cocoa_Window::VirtualKeyFromNative (aKeyCode);
+  if (aVKey != Aspect_VKey_UNKNOWN)
+  {
+    const double aTimeStamp = [theEvent timestamp];
+    ViewerTest::CurrentEventManager()->KeyUp (aVKey, aTimeStamp);
+    ViewerTest::CurrentEventManager()->FlushViewEvents (ViewerTest::GetAISContext(), ViewerTest::CurrentView(), true);
+  }
 }
 
 @end

@@ -766,15 +766,7 @@ Standard_EXPORT Standard_Boolean VDisplayAISObject (const TCollection_AsciiStrin
   return ViewerTest::Display (theName, theObject, Standard_True, theReplaceIfExists);
 }
 
-static TColStd_MapOfInteger theactivatedmodes(8);
-static TColStd_ListOfTransient theEventMgrs;
-
-static void VwrTst_InitEventMgr(const Handle(V3d_View)& aView,
-                                const Handle(AIS_InteractiveContext)& Ctx)
-{
-  theEventMgrs.Clear();
-  theEventMgrs.Prepend(new ViewerTest_EventManager(aView, Ctx));
-}
+static NCollection_List<Handle(ViewerTest_EventManager)> theEventMgrs;
 
 static Handle(V3d_View)&  a3DView()
 {
@@ -831,17 +823,15 @@ void ViewerTest::UnsetEventManager()
 
 void ViewerTest::ResetEventManager()
 {
-  const Handle(V3d_View) aView = ViewerTest::CurrentView();
-  VwrTst_InitEventMgr(aView, ViewerTest::GetAISContext());
+  theEventMgrs.Clear();
+  theEventMgrs.Prepend (new ViewerTest_EventManager (ViewerTest::CurrentView(), ViewerTest::GetAISContext()));
 }
 
 Handle(ViewerTest_EventManager) ViewerTest::CurrentEventManager()
 {
-  Handle(ViewerTest_EventManager) EM;
-  if(theEventMgrs.IsEmpty()) return EM;
-  Handle(Standard_Transient) Tr =  theEventMgrs.First();
-  EM = Handle(ViewerTest_EventManager)::DownCast (Tr);
-  return EM;
+  return !theEventMgrs.IsEmpty()
+        ? theEventMgrs.First()
+        : Handle(ViewerTest_EventManager)();
 }
 
 //=======================================================================

@@ -2524,3 +2524,12 @@ void AIS_InteractiveContext::SetTransformPersistence (const Handle(AIS_Interacti
     anActiveViewIter.Value()->View()->InvalidateZLayerBoundingBox (aLayerId);
   }
 }
+
+//=======================================================================
+//function : GravityPoint
+//purpose  :
+//=======================================================================
+gp_Pnt AIS_InteractiveContext::GravityPoint (const Handle(V3d_View)& theView) const
+{
+  return theView->GravityPoint();
+}

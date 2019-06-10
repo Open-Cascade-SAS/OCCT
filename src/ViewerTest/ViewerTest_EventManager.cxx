@@ -17,9 +17,12 @@
 #include <ViewerTest_EventManager.hxx>
 
 #include <AIS_InteractiveContext.hxx>
+#include <AIS_Shape.hxx>
 #include <Aspect_Grid.hxx>
-#include <Standard_Type.hxx>
-#include <V3d_View.hxx>
+#include <Draw.hxx>
+#include <ViewerTest_V3dView.hxx>
+
+Standard_IMPORT Standard_Boolean Draw_Interprete (const char* theCommand);
 
 IMPLEMENT_STANDARD_RTTIEXT(ViewerTest_EventManager,Standard_Transient)
 
@@ -31,204 +34,309 @@ ViewerTest_EventManager::ViewerTest_EventManager (const Handle(V3d_View)&       
                                                   const Handle(AIS_InteractiveContext)& theCtx)
 : myCtx  (theCtx),
   myView (theView),
-  myX    (-1),
-  myY    (-1)
+  myToPickPnt (Standard_False)
 {}
 
 //=======================================================================
-//function : MoveTo
+//function : UpdateMouseButtons
 //purpose  :
 //=======================================================================
-
-void ViewerTest_EventManager::MoveTo (const Standard_Integer theXPix,
-                                      const Standard_Integer theYPix)
+bool ViewerTest_EventManager::UpdateMouseButtons (const Graphic3d_Vec2i& thePoint,
+                                                  Aspect_VKeyMouse theButtons,
+                                                  Aspect_VKeyFlags theModifiers,
+                                                  bool theIsEmulated)
 {
-  Standard_Real aPnt3d[3] = {0.0, 0.0, 0.0};
-  if (!myCtx.IsNull()
-   && !myView.IsNull())
+  SetAllowRotation (!ViewerTest_V3dView::IsCurrentViewIn2DMode());
+
+  if (theButtons == Aspect_VKeyMouse_LeftButton)
   {
-    const Standard_Boolean toEchoGrid = myView->Viewer()->Grid()->IsActive()
-                                     && myView->Viewer()->GridEcho();
-    switch (myCtx->MoveTo (theXPix, theYPix, myView, !toEchoGrid))
+    if (myToPickPnt && (theModifiers & Aspect_VKeyFlags_CTRL) != 0)
     {
-      case AIS_SOD_Nothing:
+      Graphic3d_Vec3d anXYZ;
+      myView->Convert (thePoint.x(), thePoint.y(), anXYZ.x(), anXYZ.y(), anXYZ.z());
+      Draw::Set (myPickPntArgVec[0].ToCString(), anXYZ.x());
+      Draw::Set (myPickPntArgVec[1].ToCString(), anXYZ.y());
+      Draw::Set (myPickPntArgVec[2].ToCString(), anXYZ.z());
+      myToPickPnt = false;
+    }
+  }
+
+  return AIS_ViewController::UpdateMouseButtons (thePoint, theButtons, theModifiers, theIsEmulated);
+}
+
+//==============================================================================
+//function : ProcessExpose
+//purpose  :
+//==============================================================================
+void ViewerTest_EventManager::ProcessExpose()
+{
+  if (!myView.IsNull())
+  {
+    myView->Invalidate();
+    FlushViewEvents (myCtx, myView, true);
+  }
+}
+
+//==============================================================================
+//function : ProcessConfigure
+//purpose  :
+//==============================================================================
+void ViewerTest_EventManager::ProcessConfigure()
+{
+  if (!myView.IsNull())
+  {
+    myView->MustBeResized();
+    FlushViewEvents (myCtx, myView, true);
+  }
+}
+
+//=======================================================================
+//function : KeyUp
+//purpose  :
+//=======================================================================
+void ViewerTest_EventManager::KeyUp (Aspect_VKey theKey,
+                                     double theTime)
+{
+  AIS_ViewController::KeyUp (theKey, theTime);
+  ProcessKeyPress (theKey);
+}
+
+//==============================================================================
+//function : ProcessKeyPress
+//purpose  :
+//==============================================================================
+void ViewerTest_EventManager::ProcessKeyPress (Aspect_VKey theKey)
+{
+  if (myCtx.IsNull()
+   || myView.IsNull())
+  {
+    return;
+  }
+
+  switch (theKey)
+  {
+    case Aspect_VKey_A: // AXO
+    {
+      if (!ViewerTest_V3dView::IsCurrentViewIn2DMode())
       {
-        if (toEchoGrid)
-        {
-          myView->ConvertToGrid (theXPix, theYPix, aPnt3d[0], aPnt3d[1], aPnt3d[2]);
-          myView->Viewer()->ShowGridEcho (myView, Graphic3d_Vertex (aPnt3d[0], aPnt3d[1], aPnt3d[2]));
-          myView->RedrawImmediate();
-        }
-        break;
+        myView->SetProj(V3d_XposYnegZpos);
       }
-      default:
+      break;
+    }
+    case Aspect_VKey_D: // Reset
+    {
+      if (!ViewerTest_V3dView::IsCurrentViewIn2DMode())
       {
-        if (toEchoGrid)
+        myView->Reset();
+      }
+      break;
+    }
+    case Aspect_VKey_F:
+    {
+      if (myCtx->NbSelected() > 0)
+      {
+        myCtx->FitSelected (myView);
+      }
+      else
+      {
+        myView->FitAll();
+      }
+      break;
+    }
+    case Aspect_VKey_H: // HLR
+    {
+      std::cout << "HLR\n";
+      myView->SetComputedMode (!myView->ComputedMode());
+      myView->Redraw();
+      break;
+    }
+    case Aspect_VKey_P: // Type of HLR
+    {
+      myCtx->DefaultDrawer()->SetTypeOfHLR (myCtx->DefaultDrawer()->TypeOfHLR() == Prs3d_TOH_Algo
+                                          ? Prs3d_TOH_PolyAlgo
+                                          : Prs3d_TOH_Algo);
+      if (myCtx->NbSelected() == 0)
+      {
+        AIS_ListOfInteractive aListOfShapes;
+        myCtx->DisplayedObjects (aListOfShapes);
+        for (AIS_ListIteratorOfListOfInteractive anIter (aListOfShapes); anIter.More(); anIter.Next())
         {
-          myView->Viewer()->HideGridEcho (myView);
-          myView->RedrawImmediate();
+          if (Handle(AIS_Shape) aShape = Handle(AIS_Shape)::DownCast (anIter.Value()))
+          {
+            aShape->SetTypeOfHLR (aShape->TypeOfHLR() == Prs3d_TOH_PolyAlgo
+                                ? Prs3d_TOH_Algo
+                                : Prs3d_TOH_PolyAlgo);
+            myCtx->Redisplay (aShape, Standard_False);
+          }
         }
-        break;
+      }
+      else
+      {
+        for (myCtx->InitSelected(); myCtx->MoreSelected(); myCtx->NextSelected())
+        {
+          if (Handle(AIS_Shape) aShape = Handle(AIS_Shape)::DownCast (myCtx->SelectedInteractive()))
+          {
+            aShape->SetTypeOfHLR (aShape->TypeOfHLR() == Prs3d_TOH_PolyAlgo
+                                ? Prs3d_TOH_Algo
+                                : Prs3d_TOH_PolyAlgo);
+            myCtx->Redisplay (aShape, Standard_False);
+          }
+        }
+      }
+      myCtx->UpdateCurrentViewer();
+      break;
+    }
+    case Aspect_VKey_S:
+    case Aspect_VKey_W:
+    {
+      Standard_Integer aDispMode = AIS_Shaded;
+      if (theKey == Aspect_VKey_S)
+      {
+        aDispMode = AIS_Shaded;
+        std::cout << "setup Shaded display mode\n";
+      }
+      else
+      {
+        aDispMode = AIS_WireFrame;
+        std::cout << "setup WireFrame display mode\n";
+      }
+
+      if (myCtx->NbSelected() == 0)
+      {
+        myCtx->SetDisplayMode (aDispMode, true);
+      }
+      else
+      {
+        for (myCtx->InitSelected(); myCtx->MoreSelected(); myCtx->NextSelected())
+        {
+          myCtx->SetDisplayMode (myCtx->SelectedInteractive(), aDispMode, false);
+        }
+        myCtx->UpdateCurrentViewer();
+      }
+      break;
+    }
+    case Aspect_VKey_U: // Unset display mode
+    {
+      std::cout << "reset display mode to defaults\n";
+      if (myCtx->NbSelected() == 0)
+      {
+        myCtx->SetDisplayMode (AIS_WireFrame, true);
+      }
+      else
+      {
+        for (myCtx->InitSelected(); myCtx->MoreSelected(); myCtx->NextSelected())
+        {
+          myCtx->UnsetDisplayMode (myCtx->SelectedInteractive(), false);
+        }
+        myCtx->UpdateCurrentViewer();
+      }
+      break;
+    }
+    case Aspect_VKey_T:
+    {
+      if (!ViewerTest_V3dView::IsCurrentViewIn2DMode())
+      {
+        myView->SetProj (V3d_TypeOfOrientation_Zup_Top);
+      }
+      break;
+    }
+    case Aspect_VKey_B:
+    {
+      if (!ViewerTest_V3dView::IsCurrentViewIn2DMode())
+      {
+        myView->SetProj (V3d_TypeOfOrientation_Zup_Bottom);
+      }
+      break;
+    }
+    case Aspect_VKey_L:
+    {
+      if (!ViewerTest_V3dView::IsCurrentViewIn2DMode())
+      {
+        myView->SetProj (V3d_TypeOfOrientation_Zup_Left);
+      }
+      break;
+    }
+    case Aspect_VKey_R:
+    {
+      if (!ViewerTest_V3dView::IsCurrentViewIn2DMode())
+      {
+        myView->SetProj (V3d_TypeOfOrientation_Zup_Right);
+      }
+      break;
+    }
+    case Aspect_VKey_Comma:
+    {
+      myCtx->HilightNextDetected (myView);
+      break;
+    }
+    case Aspect_VKey_Period:
+    {
+      myCtx->HilightPreviousDetected (myView);
+      break;
+    }
+    case Aspect_VKey_Slash:
+    case Aspect_VKey_NumpadDivide:
+    {
+      Handle(Graphic3d_Camera) aCamera = myView->Camera();
+      if (aCamera->IsStereo())
+      {
+        aCamera->SetIOD (aCamera->GetIODType(), aCamera->IOD() - 0.01);
+        myView->Redraw();
+      }
+      break;
+    }
+    case Aspect_VKey_NumpadMultiply:
+    {
+      Handle(Graphic3d_Camera) aCamera = myView->Camera();
+      if (aCamera->IsStereo())
+      {
+        aCamera->SetIOD (aCamera->GetIODType(), aCamera->IOD() + 0.01);
+        myView->Redraw();
+      }
+      break;
+    }
+    case Aspect_VKey_Delete:
+    {
+      if (!myCtx.IsNull()
+        && myCtx->NbSelected() > 0)
+      {
+        Draw_Interprete ("verase");
+      }
+      break;
+    }
+    case Aspect_VKey_Escape:
+    {
+      if (!myCtx.IsNull()
+        && ViewerTest_EventManager::ToCloseViewOnEscape())
+      {
+        Draw_Interprete (ViewerTest_EventManager::ToExitOnCloseView() ? "exit" : "vclose");
       }
     }
   }
 
-  myX = theXPix;
-  myY = theYPix;
-}
-
-//=======================================================================
-//function : Select
-//purpose  :
-//=======================================================================
-
-void ViewerTest_EventManager::Select (const Standard_Integer theXPressed,
-                                      const Standard_Integer theYPressed,
-                                      const Standard_Integer theXMotion,
-                                      const Standard_Integer theYMotion,
-                                      const Standard_Boolean theIsAutoAllowOverlap)
-{
-  if (myView.IsNull()
-   || myCtx.IsNull()
-   || Abs (theXPressed - theXMotion) < 2
-   || Abs (theYPressed - theYMotion) < 2)
+  if (theKey >= Aspect_VKey_0
+   && theKey <= Aspect_VKey_7)
   {
-    return;
+    const Standard_Integer aSelMode = theKey - Aspect_VKey_0;
+    bool toEnable = true;
+    if (!myCtx.IsNull())
+    {
+      AIS_ListOfInteractive aPrsList;
+      myCtx->DisplayedObjects (aPrsList);
+      for (AIS_ListOfInteractive::Iterator aPrsIter (aPrsList); aPrsIter.More() && toEnable; aPrsIter.Next())
+      {
+        TColStd_ListOfInteger aModes;
+        myCtx->ActivatedModes (aPrsIter.Value(), aModes);
+        for (TColStd_ListOfInteger::Iterator aModeIter (aModes); aModeIter.More() && toEnable; aModeIter.Next())
+        {
+          if (aModeIter.Value() == aSelMode)
+          {
+            toEnable = false;
+          }
+        }
+      }
+    }
+    TCollection_AsciiString aCmd = TCollection_AsciiString ("vselmode ") + aSelMode + (toEnable ? " 1" : " 0");
+    Draw_Interprete (aCmd.ToCString());
   }
-
-  if (theIsAutoAllowOverlap)
-  {
-    const Standard_Boolean toAllowOverlap = theYPressed != Min (theYPressed, theYMotion);
-    myCtx->MainSelector()->AllowOverlapDetection (toAllowOverlap);
-  }
-  myCtx->Select (Min (theXPressed, theXMotion),
-                 Min (theYPressed, theYMotion),
-                 Max (theXPressed, theXMotion),
-                 Max (theYPressed, theYMotion),
-                 myView,
-                 Standard_False);
-
-  // to restore default state of viewer selector
-  if (theIsAutoAllowOverlap)
-  {
-    myCtx->MainSelector()->AllowOverlapDetection (Standard_False);
-  }
-  myView->Redraw();
-}
-
-//=======================================================================
-//function : ShiftSelect
-//purpose  :
-//=======================================================================
-
-void ViewerTest_EventManager::ShiftSelect (const Standard_Integer theXPressed,
-                                           const Standard_Integer theYPressed,
-                                           const Standard_Integer theXMotion,
-                                           const Standard_Integer theYMotion,
-                                           const Standard_Boolean theIsAutoAllowOverlap)
-{
-  if (myView.IsNull()
-   || myCtx.IsNull()
-   || Abs (theXPressed - theXMotion) < 2
-   || Abs (theYPressed - theYMotion) < 2)
-  {
-    return;
-  }
-
-  if (theIsAutoAllowOverlap)
-  {
-    const Standard_Boolean toAllowOverlap = theYPressed != Min (theYPressed, theYMotion);
-    myCtx->MainSelector()->AllowOverlapDetection (toAllowOverlap);
-  }
-  myCtx->ShiftSelect (Min (theXPressed, theXMotion),
-                      Min (theYPressed, theYMotion),
-                      Max (theXPressed, theXMotion),
-                      Max (theYPressed, theYMotion),
-                      myView,
-                      Standard_False);
-
-  // to restore default state of viewer selector
-  if (theIsAutoAllowOverlap)
-  {
-    myCtx->MainSelector()->AllowOverlapDetection (Standard_False);
-  }
-  myView->Redraw();
-}
-
-//=======================================================================
-//function : Select
-//purpose  :
-//=======================================================================
-
-void ViewerTest_EventManager::Select()
-{
-  if (myView.IsNull()
-   || myCtx.IsNull())
-  {
-    return;
-  }
-
-  myCtx->Select (Standard_False);
-  myView->Redraw();
-}
-
-//=======================================================================
-//function : ShiftSelect
-//purpose  :
-//=======================================================================
-
-void ViewerTest_EventManager::ShiftSelect()
-{
-  if (myView.IsNull()
-   || myCtx.IsNull())
-  {
-    return;
-  }
-
-  myCtx->ShiftSelect (Standard_False);
-  myView->Redraw();
-}
-
-//=======================================================================
-//function : Select
-//purpose  : Selection with polyline
-//=======================================================================
-
-void ViewerTest_EventManager::Select (const TColgp_Array1OfPnt2d& thePolyline)
-{
-  if (myView.IsNull()
-   || myCtx.IsNull())
-  {
-    return;
-  }
-
-  myCtx->Select (thePolyline, myView, Standard_False);
-  myView->Redraw();
-}
-
-//=======================================================================
-//function : ShiftSelect
-//purpose  : Selection with polyline without erasing of current selection
-//=======================================================================
-
-void ViewerTest_EventManager::ShiftSelect (const TColgp_Array1OfPnt2d& thePolyline)
-{
-  if (myView.IsNull()
-   || myCtx.IsNull())
-  {
-    return;
-  }
-
-  myCtx->ShiftSelect (thePolyline, myView, Standard_False);
-  myView->Redraw();
-}
-
-//=======================================================================
-//function : GetCurrentPosition
-//purpose  :
-//=======================================================================
-void ViewerTest_EventManager::GetCurrentPosition (Standard_Integer& theXPix, Standard_Integer& theYPix) const
-{
-  theXPix = myX;
-  theYPix = myY;
 }

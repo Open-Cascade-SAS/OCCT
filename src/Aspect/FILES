@@ -34,6 +34,9 @@ Aspect_RectangularGrid.cxx
 Aspect_RectangularGrid.hxx
 Aspect_RenderingContext.hxx
 Aspect_SequenceOfColor.hxx
+Aspect_ScrollDelta.hxx
+Aspect_Touch.hxx
+Aspect_TouchMap.hxx
 Aspect_TypeOfColorScaleData.hxx
 Aspect_TypeOfColorScaleOrientation.hxx
 Aspect_TypeOfColorScalePosition.hxx
@@ -47,6 +50,10 @@ Aspect_TypeOfResize.hxx
 Aspect_TypeOfStyleText.hxx
 Aspect_TypeOfTriedronPosition.hxx
 Aspect_Units.hxx
+Aspect_VKey.hxx
+Aspect_VKeyFlags.hxx
+Aspect_VKeySet.cxx
+Aspect_VKeySet.hxx
 Aspect_WidthOfLine.hxx
 Aspect_Window.cxx
 Aspect_Window.hxx
