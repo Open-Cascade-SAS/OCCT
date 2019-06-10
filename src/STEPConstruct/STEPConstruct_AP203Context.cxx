@@ -179,15 +179,14 @@ Handle(StepBasic_PersonAndOrganization) STEPConstruct_AP203Context::DefaultPerso
     
     // construct person`s name
     OSD_Process sys;
-    Standard_CString usr = sys.UserName().ToCString();
-#if !defined(_WIN32) && !defined(__ANDROID__)
-    if ( usr ) {
-      struct passwd *pwd = getpwnam ( usr );
-      if ( pwd ) usr = pwd->pw_gecos;
+    TCollection_AsciiString user (sys.UserName());
+#if !defined(_WIN32) && !defined(__ANDROID__)	
+    if ( !user.IsEmpty() ) {
+      struct passwd *pwd = getpwnam ( user.ToCString() );
+      if ( pwd ) user = pwd->pw_gecos;
     }
-    else usr = "Unknown";
+    else user = "Unknown";
 #endif
-    TCollection_AsciiString user ( usr );
     Handle(TCollection_HAsciiString) fname = new TCollection_HAsciiString ("");
     Handle(TCollection_HAsciiString) lname = new TCollection_HAsciiString ("");
     Handle(Interface_HArray1OfHAsciiString) mname;
