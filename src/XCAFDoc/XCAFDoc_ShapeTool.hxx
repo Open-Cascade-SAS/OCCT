@@ -298,6 +298,11 @@ public:
   //! label shapeL
   //! Returns Null label if it is not subshape
   Standard_EXPORT TDF_Label AddSubShape (const TDF_Label& shapeL, const TopoDS_Shape& sub) const;
+
+  //! Adds (of finds already existed) a label for subshape <sub> of shape stored on
+  //! label shapeL. Label addedSubShapeL returns added (found) label or empty in case of wrong subshape.
+  //! Returns True, if new shape was added, False in case of already existed subshape/wrong subshape
+  Standard_EXPORT Standard_Boolean AddSubShape(const TDF_Label& shapeL, const TopoDS_Shape& sub, TDF_Label& addedSubShapeL) const;
   
   Standard_EXPORT TDF_Label FindMainShapeUsingMap (const TopoDS_Shape& sub) const;
   

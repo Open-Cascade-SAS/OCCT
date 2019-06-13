@@ -1094,12 +1094,16 @@ Standard_Boolean XCAFDoc_ShapeTool::FindSubShape (const TDF_Label &shapeL,
   TDF_ChildIterator aChldLabIt(shapeL);
   for (; aChldLabIt.More(); aChldLabIt.Next() ) {
     TDF_Label aSubLabel = aChldLabIt.Value();
-    TopoDS_Shape aSubShape;
-    if (GetShape(aSubLabel, aSubShape) && aSubShape.IsSame(sub)) {
+    Handle(TNaming_NamedShape) NS;
+    if (!aSubLabel.FindAttribute(TNaming_NamedShape::GetID(), NS))
+      continue;
+    TopoDS_Shape aSubShape = TNaming_Tool::GetShape(NS);
+    if (!aSubShape.IsNull() && aSubShape.IsSame(sub)) {
       L = aSubLabel;
       return Standard_True;
     }
   }
+
   return Standard_False;
 }
 
@@ -1126,10 +1130,36 @@ TDF_Label XCAFDoc_ShapeTool::AddSubShape (const TDF_Label &shapeL,
   TNaming_Builder tnBuild(L);
   tnBuild.Generated(sub);
 
-//  if(!mySubShapes.IsBound(sub))
-//    mySubShapes.Bind(sub,L);
-   
   return L;
+}
+
+//=======================================================================
+//function : AddSubShape
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean XCAFDoc_ShapeTool::AddSubShape(const TDF_Label &shapeL,
+                                                const TopoDS_Shape &sub,
+                                                TDF_Label &addedSubShapeL) const
+{
+  addedSubShapeL = TDF_Label();
+  // Check if adding subshape is possible
+  if (!IsSimpleShape(shapeL) || !IsTopLevel(shapeL))
+    return Standard_False;
+
+  // Try to find already existed subshape
+  if (FindSubShape(shapeL, sub, addedSubShapeL))
+    return Standard_False;
+
+  if (!IsSubShape(shapeL, sub))
+    return Standard_False;
+
+  TDF_TagSource aTag;
+  addedSubShapeL = aTag.NewChild(shapeL);
+  TNaming_Builder tnBuild(addedSubShapeL);
+  tnBuild.Generated(sub);
+
+  return Standard_True;
 }
 
 
@@ -1915,6 +1945,7 @@ void XCAFDoc_ShapeTool::makeSubShape (const TDF_Label& theMainShapeL,
   TopoDS_Iterator anIter(theShape);
   Standard_Boolean isCompoundPart = (GetShape(thePart).ShapeType() == TopAbs_COMPOUND);
   Standard_Boolean isAssembly = IsAssembly(thePart);
+
   for(; anIter.More(); anIter.Next()) {
     const TopoDS_Shape& aChildShape = anIter.Value();
     TDF_Label aChildLabel;
@@ -1925,18 +1956,25 @@ void XCAFDoc_ShapeTool::makeSubShape (const TDF_Label& theMainShapeL,
         makeSubShape(theMainShapeL, thePart, aChildShape, theLoc);
         continue;
       }
-
       //get name
       Handle(TDataStd_Name) anAttr;
       aChildLabel.FindAttribute(TDataStd_Name::GetID(), anAttr);
       TopLoc_Location aSubLoc;
       // Calculate location for subshapes of compound parts
+      aSubLoc = aChildShape.Location();
       if (isCompoundPart) 
-        aSubLoc = theLoc.Inverted() * aChildShape.Location();
+        aSubLoc = theLoc.Inverted() * aSubLoc;
       //make subshape
       TDF_Label aSubLabel;
-      if (!FindSubShape(thePart, aChildShape.Located(aSubLoc), aSubLabel)) {
-        aSubLabel = AddSubShape(thePart, aChildShape.Located(aSubLoc));
+      // Identical location and empty location are not the same for ShapeTool, so try to process both
+      // in case of aSubLoc is not identical, the second Add try will not affect algorithm.
+      Standard_Boolean isNewSubL;
+      isNewSubL = AddSubShape(thePart, aChildShape.Located(aSubLoc), aSubLabel);
+      if (aSubLabel.IsNull())
+      {
+        isNewSubL = AddSubShape(thePart, aChildShape.Located(TopLoc_Location()), aSubLabel);
+      }
+      if (isNewSubL){
         //set name to sub shape
         if (!anAttr.IsNull()) {
           TDataStd_Name::Set(aSubLabel, anAttr->Get());
@@ -1954,6 +1992,7 @@ void XCAFDoc_ShapeTool::makeSubShape (const TDF_Label& theMainShapeL,
         aChildLabel.ForgetAllAttributes();
       }
     }
+
     makeSubShape(theMainShapeL, thePart, aChildShape, theLoc);
   }
 }

@@ -1,0 +1,27 @@
+puts "============================================================================"
+puts "0030779: Data Exchange - Problems with located subshapes in expand compounds"
+puts "============================================================================"
+puts ""
+
+pload DCAF
+
+XOpen [locate_data_file bug30779.xbf] D
+XExpand D 1
+
+# check model structure after expand
+set result [XGetTopLevelShapes D]
+if {$result != "0:1:1:1 0:1:1:2 0:1:1:3 "} {
+  puts "Error: wrong result of Expand compounds."
+}
+
+# check colors of subshapes
+for {set i 1} {$i <= 4} {incr i} {
+  set sublabel 0:1:1:3:$i
+  set color [XGetShapeColor D $sublabel]
+  if {$color != "GRAY"} {
+    puts "Error: wrong color after expand compounds."
+  }
+}
+
+Close D
+
