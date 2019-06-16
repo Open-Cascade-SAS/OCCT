@@ -194,6 +194,16 @@ Handle(Font_FontMgr) Font_FontMgr::GetInstance()
 }
 
 // =======================================================================
+// function : ToUseUnicodeSubsetFallback
+// purpose  :
+// =======================================================================
+Standard_Boolean& Font_FontMgr::ToUseUnicodeSubsetFallback()
+{
+  static Standard_Boolean TheToUseUnicodeSubsetFallback = true;
+  return TheToUseUnicodeSubsetFallback;
+}
+
+// =======================================================================
 // function : addFontAlias
 // purpose  :
 // =======================================================================
@@ -239,6 +249,7 @@ Font_FontMgr::Font_FontMgr()
   Handle(Font_FontAliasSequence) anIris  = new Font_FontAliasSequence();
   Handle(Font_FontAliasSequence) aCJK    = new Font_FontAliasSequence();
   Handle(Font_FontAliasSequence) aKorean = new Font_FontAliasSequence();
+  Handle(Font_FontAliasSequence) anArab  = new Font_FontAliasSequence();
 
   // best matches - pre-installed on Windows, some of them are pre-installed on macOS,
   // and sometimes them can be found installed on other systems (by user)
@@ -289,6 +300,15 @@ Font_FontMgr::Font_FontMgr()
   aKorean->Append (Font_FontAlias ("noto serif cjk jp")); // Linux
   aKorean->Append (Font_FontAlias ("noto sans cjk jp")); // Linux
 
+#if defined(_WIN32)
+  anArab->Append (Font_FontAlias ("times new roman"));
+#elif defined(__APPLE__)
+  anArab->Append (Font_FontAlias ("decotype naskh"));
+#elif defined(__ANDROID__)
+  anArab->Append (Font_FontAlias ("droid arabic naskh"));
+  anArab->Append (Font_FontAlias ("noto naskh arabic"));
+#endif
+
   addFontAlias ("mono",              aMono);
   addFontAlias ("courier",           aMono);                      // Font_NOF_ASCII_MONO
   addFontAlias ("monospace",         aMono);                      // Font_NOF_MONOSPACE
@@ -308,6 +328,7 @@ Font_FontMgr::Font_FontMgr()
   addFontAlias ("korean",            aKorean);                    // Font_NOF_KOREAN
   addFontAlias ("cjk",               aCJK);                       // Font_NOF_CJK
   addFontAlias ("nsimsun",           aCJK);
+  addFontAlias ("arabic",            anArab);                     // Font_NOF_ARABIC
   addFontAlias (Font_NOF_SYMBOL_MONO,          aWinDin);
   addFontAlias (Font_NOF_ASCII_SCRIPT_SIMPLEX, aScript);
 
@@ -687,6 +708,24 @@ Handle(Font_SystemFont) Font_FontMgr::GetFont (const TCollection_AsciiString& th
 }
 
 // =======================================================================
+// function : FindFallbackFont
+// purpose  :
+// =======================================================================
+Handle(Font_SystemFont) Font_FontMgr::FindFallbackFont (Font_UnicodeSubset theSubset,
+                                                        Font_FontAspect theFontAspect) const
+{
+  Font_FontAspect aFontAspect = theFontAspect;
+  switch (theSubset)
+  {
+    case Font_UnicodeSubset_Western: return FindFont (Font_NOF_SANS_SERIF, Font_StrictLevel_Aliases, aFontAspect);
+    case Font_UnicodeSubset_Korean:  return FindFont (Font_NOF_KOREAN,     Font_StrictLevel_Aliases, aFontAspect);
+    case Font_UnicodeSubset_CJK:     return FindFont (Font_NOF_CJK,        Font_StrictLevel_Aliases, aFontAspect);
+    case Font_UnicodeSubset_Arabic:  return FindFont (Font_NOF_ARABIC,     Font_StrictLevel_Aliases, aFontAspect);
+  }
+  return Handle(Font_SystemFont)();
+}
+
+// =======================================================================
 // function : FindFont
 // purpose  :
 // =======================================================================
@@ -770,7 +809,8 @@ Handle(Font_SystemFont) Font_FontMgr::FindFont (const TCollection_AsciiString& t
     }
   }
 
-  if (aFont.IsNull())
+  if (aFont.IsNull()
+   && theStrictLevel == Font_StrictLevel_Any)
   {
     // try finding ANY font in case if even default fallback alias myFallbackAlias cannot be found
     aFont = myFontMap.Find (TCollection_AsciiString());

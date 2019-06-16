@@ -19,6 +19,7 @@
 #include <Font_FontAspect.hxx>
 #include <Font_Rect.hxx>
 #include <Font_StrictLevel.hxx>
+#include <Font_UnicodeSubset.hxx>
 #include <Graphic3d_HorizontalTextAlignment.hxx>
 #include <Graphic3d_VerticalTextAlignment.hxx>
 #include <Image_PixMap.hxx>
@@ -33,10 +34,10 @@ class Font_FTLibrary;
 //! Font initialization parameters.
 struct Font_FTFontParams
 {
-  unsigned int PointSize;          //!< face size in points (1/72 inch)
-  unsigned int Resolution;         //!< resolution of the target device in dpi for FT_Set_Char_Size()
-  bool         ToSynthesizeItalic; //!< generate italic style (e.g. for font family having no italic style); FALSE by default
-  bool         IsSingleStrokeFont; //!< single-stroke (one-line) font, FALSE by default
+  unsigned int PointSize;                  //!< face size in points (1/72 inch)
+  unsigned int Resolution;                 //!< resolution of the target device in dpi for FT_Set_Char_Size()
+  bool         ToSynthesizeItalic;         //!< generate italic style (e.g. for font family having no italic style); FALSE by default
+  bool         IsSingleStrokeFont;         //!< single-stroke (one-line) font, FALSE by default
 
   //! Empty constructor.
   Font_FTFontParams() : PointSize (0), Resolution (72u), ToSynthesizeItalic (false), IsSingleStrokeFont (false) {}
@@ -67,6 +68,69 @@ public:
                                                             const Font_FontAspect     theFontAspect,
                                                             const Font_FTFontParams&  theParams,
                                                             const Font_StrictLevel    theStrictLevel = Font_StrictLevel_Any);
+
+  //! Return TRUE if specified character is within subset of modern CJK characters.
+  static bool IsCharFromCJK (Standard_Utf32Char theUChar)
+  {
+    return (theUChar >= 0x03400 && theUChar <= 0x04DFF)
+        || (theUChar >= 0x04E00 && theUChar <= 0x09FFF)
+        || (theUChar >= 0x0F900 && theUChar <= 0x0FAFF)
+        || (theUChar >= 0x20000 && theUChar <= 0x2A6DF)
+        || (theUChar >= 0x2F800 && theUChar <= 0x2FA1F)
+        // Hiragana and Katakana (Japanese) are NOT part of CJK, but CJK fonts usually include these symbols
+        || IsCharFromHiragana (theUChar)
+        || IsCharFromKatakana (theUChar);
+  }
+
+  //! Return TRUE if specified character is within subset of Hiragana (Japanese).
+  static bool IsCharFromHiragana (Standard_Utf32Char theUChar)
+  {
+    return (theUChar >= 0x03040 && theUChar <= 0x0309F);
+  }
+
+  //! Return TRUE if specified character is within subset of Katakana (Japanese).
+  static bool IsCharFromKatakana (Standard_Utf32Char theUChar)
+  {
+    return (theUChar >= 0x030A0 && theUChar <= 0x030FF);
+  }
+
+  //! Return TRUE if specified character is within subset of modern Korean characters (Hangul).
+  static bool IsCharFromKorean (Standard_Utf32Char theUChar)
+  {
+    return (theUChar >= 0x01100 && theUChar <= 0x011FF)
+        || (theUChar >= 0x03130 && theUChar <= 0x0318F)
+        || (theUChar >= 0x0AC00 && theUChar <= 0x0D7A3);
+  }
+
+  //! Return TRUE if specified character is within subset of Arabic characters.
+  static bool IsCharFromArabic (Standard_Utf32Char theUChar)
+  {
+    return (theUChar >= 0x00600 && theUChar <= 0x006FF);
+  }
+
+  //! Return TRUE if specified character should be displayed in Right-to-Left order.
+  static bool IsCharRightToLeft (Standard_Utf32Char theUChar)
+  {
+    return IsCharFromArabic(theUChar);
+  }
+
+  //! Determine Unicode subset for specified character
+  static Font_UnicodeSubset CharSubset (Standard_Utf32Char theUChar)
+  {
+    if (IsCharFromCJK (theUChar))
+    {
+      return Font_UnicodeSubset_CJK;
+    }
+    else if (IsCharFromKorean (theUChar))
+    {
+      return Font_UnicodeSubset_Korean;
+    }
+    else if (IsCharFromArabic (theUChar))
+    {
+      return Font_UnicodeSubset_Arabic;
+    }
+    return Font_UnicodeSubset_Western;
+  }
 
 public:
 
@@ -119,6 +183,13 @@ public:
                                     const Font_FTFontParams& theParams,
                                     Font_StrictLevel theStrictLevel = Font_StrictLevel_Any);
 
+  //! Return flag to use fallback fonts in case if used font does not include symbols from specific Unicode subset; TRUE by default.
+  //! @sa Font_FontMgr::ToUseUnicodeSubsetFallback()
+  Standard_Boolean ToUseUnicodeSubsetFallback() const { return myToUseUnicodeSubsetFallback; }
+
+  //! Set if fallback fonts should be used in case if used font does not include symbols from specific Unicode subset.
+  void SetUseUnicodeSubsetFallback (Standard_Boolean theToFallback) { myToUseUnicodeSubsetFallback = theToFallback; }
+
   //! Return TRUE if this is single-stroke (one-line) font, FALSE by default.
   //! Such fonts define single-line glyphs instead of closed contours, so that they are rendered incorrectly by normal software.
   bool IsSingleStrokeFont() const { return myFontParams.IsSingleStrokeFont; }
@@ -136,10 +207,10 @@ public:
   Standard_EXPORT bool RenderGlyph (const Standard_Utf32Char theChar);
 
   //! @return maximal glyph width in pixels (rendered to bitmap).
-  Standard_EXPORT unsigned int GlyphMaxSizeX() const;
+  Standard_EXPORT unsigned int GlyphMaxSizeX (bool theToIncludeFallback = false) const;
 
   //! @return maximal glyph height in pixels (rendered to bitmap).
-  Standard_EXPORT unsigned int GlyphMaxSizeY() const;
+  Standard_EXPORT unsigned int GlyphMaxSizeY (bool theToIncludeFallback = false) const;
 
   //! @return vertical distance from the horizontal baseline to the highest character coordinate.
   Standard_EXPORT float Ascender() const;
@@ -162,6 +233,9 @@ public:
   {
     myWidthScaling = theScaleFactor;
   }
+
+  //! Return TRUE if font contains specified symbol (excluding fallback list).
+  Standard_EXPORT bool HasSymbol (Standard_Utf32Char theUChar) const;
 
   //! Compute horizontal advance to the next character with kerning applied when applicable.
   //! Assuming text rendered horizontally.
@@ -187,8 +261,9 @@ public:
   Standard_EXPORT float AdvanceY (Standard_Utf32Char theUChar,
                                   Standard_Utf32Char theUCharNext);
 
-  //! @return glyphs number in this font.
-  Standard_EXPORT Standard_Integer GlyphsNumber() const;
+  //! Return glyphs number in this font.
+  //! @param theToIncludeFallback if TRUE then the number will include fallback list
+  Standard_EXPORT Standard_Integer GlyphsNumber (bool theToIncludeFallback = false) const;
 
   //! Retrieve glyph bitmap rectangle
   Standard_EXPORT void GlyphRect (Font_Rect& theRect) const;
@@ -262,18 +337,25 @@ protected:
                                    Standard_Utf32Char theUCharCurr,
                                    Standard_Utf32Char theUCharNext) const;
 
+  //! Initialize fallback font.
+  Standard_EXPORT bool findAndInitFallback (Font_UnicodeSubset theSubset);
+
 protected:
 
   Handle(Font_FTLibrary)     myFTLib;        //!< handle to the FT library object
   Handle(NCollection_Buffer) myBuffer;       //!< memory buffer
+  Handle(Font_FTFont)        myFallbackFaces[Font_UnicodeSubset_NB]; //!< fallback fonts
   FT_Face                    myFTFace;       //!< FT face object
+  FT_Face                    myActiveFTFace; //!< active FT face object (the main of fallback)
   TCollection_AsciiString    myFontPath;     //!< font path
   Font_FTFontParams          myFontParams;   //!< font initialization parameters
+  Font_FontAspect            myFontAspect;   //!< font initialization aspect
   float                      myWidthScaling; //!< scale glyphs along X-axis
   int32_t                    myLoadFlags;    //!< default load flags
 
   Image_PixMap               myGlyphImg;     //!< cached glyph plane
   Standard_Utf32Char         myUChar;        //!< currently loaded unicode character
+  Standard_Boolean           myToUseUnicodeSubsetFallback; //!< use default fallback fonts for extended Unicode sub-sets (Korean, CJK, etc.)
 
 };
 

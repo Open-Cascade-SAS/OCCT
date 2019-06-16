@@ -5598,6 +5598,18 @@ static int VFont (Draw_Interpretor& theDI,
       }
       aMgr->SetTraceAliases (toEnable);
     }
+    else if (anArgCase == "-unicodefallback"
+          || anArgCase == "-fallback"
+          || anArgCase == "-touseunicodesubsetfallback")
+    {
+      bool toEnable = true;
+      if (anArgIter + 1 < theArgNb
+       && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], toEnable))
+      {
+        ++anArgIter;
+      }
+      Font_FontMgr::ToUseUnicodeSubsetFallback() = toEnable;
+    }
     else
     {
       std::cerr << "Warning! Unknown argument '" << anArg << "'\n";
@@ -6541,7 +6553,8 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
                    __FILE__, TextToBRep, group);
   theCommands.Add ("vfont",
                             "vfont [-add pathToFont [fontName] [regular,bold,italic,boldItalic=undefined] [singleStroke]]"
-                   "\n\t\t:        [-strict {any|aliases|strict}] [-find fontName [regular,bold,italic,boldItalic=undefined]] [-verbose {on|off}]",
+                   "\n\t\t:        [-strict {any|aliases|strict}] [-find fontName [regular,bold,italic,boldItalic=undefined]] [-verbose {on|off}]"
+                   "\n\t\t:        [-unicodeFallback {on|off}]",
                    __FILE__, VFont, group);
 
   theCommands.Add ("vvertexmode",

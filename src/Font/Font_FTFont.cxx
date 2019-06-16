@@ -21,6 +21,8 @@
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
 
+#include <algorithm>
+
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
@@ -33,9 +35,12 @@ IMPLEMENT_STANDARD_RTTIEXT(Font_FTFont,Standard_Transient)
 Font_FTFont::Font_FTFont (const Handle(Font_FTLibrary)& theFTLib)
 : myFTLib       (theFTLib),
   myFTFace      (NULL),
+  myActiveFTFace(NULL),
+  myFontAspect  (Font_FontAspect_Regular),
   myWidthScaling(1.0),
   myLoadFlags   (FT_LOAD_NO_HINTING | FT_LOAD_TARGET_NORMAL),
-  myUChar       (0U)
+  myUChar       (0U),
+  myToUseUnicodeSubsetFallback (Font_FontMgr::ToUseUnicodeSubsetFallback())
 {
   if (myFTLib.IsNull())
   {
@@ -66,6 +71,7 @@ void Font_FTFont::Release()
     FT_Done_Face (myFTFace);
     myFTFace = NULL;
   }
+  myActiveFTFace = NULL;
   myBuffer.Nullify();
 }
 
@@ -135,6 +141,7 @@ bool Font_FTFont::Init (const Handle(NCollection_Buffer)& theData,
 
     FT_Set_Transform (myFTFace, &aMat, 0);
   }
+  myActiveFTFace = myFTFace;
   return true;
 }
 
@@ -161,6 +168,7 @@ Handle(Font_FTFont) Font_FTFont::FindAndCreate (const TCollection_AsciiString& t
     Handle(Font_FTFont) aFont = new Font_FTFont();
     if (aFont->Init (aPath, aParams))
     {
+      aFont->myFontAspect = aFontAspect;
       return aFont;
     }
   }
@@ -177,20 +185,59 @@ bool Font_FTFont::FindAndInit (const TCollection_AsciiString& theFontName,
                                Font_StrictLevel theStrictLevel)
 {
   Font_FTFontParams aParams = theParams;
-  Font_FontAspect aFontAspect = theFontAspect;
+  myFontAspect = theFontAspect;
   Handle(Font_FontMgr) aFontMgr = Font_FontMgr::GetInstance();
-  if (Handle(Font_SystemFont) aRequestedFont = aFontMgr->FindFont (theFontName.ToCString(), theStrictLevel, aFontAspect))
+  if (Handle(Font_SystemFont) aRequestedFont = aFontMgr->FindFont (theFontName.ToCString(), theStrictLevel, myFontAspect))
   {
     if (aRequestedFont->IsSingleStrokeFont())
     {
       aParams.IsSingleStrokeFont = true;
     }
 
-    const TCollection_AsciiString& aPath = aRequestedFont->FontPathAny (aFontAspect, aParams.ToSynthesizeItalic);
+    const TCollection_AsciiString& aPath = aRequestedFont->FontPathAny (myFontAspect, aParams.ToSynthesizeItalic);
     return Init (aPath, aParams);
   }
   Release();
   return false;
+}
+
+// =======================================================================
+// function : findAndInitFallback
+// purpose  :
+// =======================================================================
+bool Font_FTFont::findAndInitFallback (Font_UnicodeSubset theSubset)
+{
+  if (!myFallbackFaces[theSubset].IsNull())
+  {
+    return myFallbackFaces[theSubset]->IsValid();
+  }
+
+  myFallbackFaces[theSubset] = new Font_FTFont (myFTLib);
+  myFallbackFaces[theSubset]->myToUseUnicodeSubsetFallback = false; // no recursion
+
+  Handle(Font_FontMgr) aFontMgr = Font_FontMgr::GetInstance();
+  if (Handle(Font_SystemFont) aRequestedFont = aFontMgr->FindFallbackFont (theSubset, myFontAspect))
+  {
+    Font_FTFontParams aParams = myFontParams;
+    aParams.IsSingleStrokeFont = aRequestedFont->IsSingleStrokeFont();
+
+    const TCollection_AsciiString& aPath = aRequestedFont->FontPathAny (myFontAspect, aParams.ToSynthesizeItalic);
+    if (myFallbackFaces[theSubset]->Init (aPath, aParams))
+    {
+      Message::DefaultMessenger()->Send (TCollection_AsciiString ("Font_FTFont, using fallback font '") + aRequestedFont->FontName() + "'"
+                                      + " for symbols unsupported by '" + myFTFace->family_name + "'", Message_Trace);
+    }
+  }
+  return myFallbackFaces[theSubset]->IsValid();
+}
+
+// =======================================================================
+// function : HasSymbol
+// purpose  :
+// =======================================================================
+bool Font_FTFont::HasSymbol (Standard_Utf32Char theUChar) const
+{
+  return FT_Get_Char_Index (myFTFace, theUChar) != 0;
 }
 
 // =======================================================================
@@ -206,9 +253,26 @@ bool Font_FTFont::loadGlyph (const Standard_Utf32Char theUChar)
 
   myGlyphImg.Clear();
   myUChar = 0;
-  if (theUChar == 0
-   || FT_Load_Char (myFTFace, theUChar, FT_Int32(myLoadFlags)) != 0
-   || myFTFace->glyph == NULL)
+  myActiveFTFace = myFTFace;
+  if (theUChar == 0)
+  {
+    return false;
+  }
+
+  if (myToUseUnicodeSubsetFallback
+  && !HasSymbol (theUChar))
+  {
+    // try using fallback
+    const Font_UnicodeSubset aSubset = CharSubset (theUChar);
+    if (findAndInitFallback (aSubset)
+     && myFallbackFaces[aSubset]->HasSymbol (theUChar))
+    {
+      myActiveFTFace = myFallbackFaces[aSubset]->myFTFace;
+    }
+  }
+
+  if (FT_Load_Char (myActiveFTFace, theUChar, FT_Int32(myLoadFlags)) != 0
+   || myActiveFTFace->glyph == NULL)
   {
     return false;
   }
@@ -225,26 +289,67 @@ bool Font_FTFont::RenderGlyph (const Standard_Utf32Char theUChar)
 {
   myGlyphImg.Clear();
   myUChar = 0;
+  myActiveFTFace = myFTFace;
+
+  if (theUChar != 0
+  &&  myToUseUnicodeSubsetFallback
+  && !HasSymbol (theUChar))
+  {
+    // try using fallback
+    const Font_UnicodeSubset aSubset = CharSubset (theUChar);
+    if (findAndInitFallback (aSubset)
+     && myFallbackFaces[aSubset]->HasSymbol (theUChar))
+    {
+      myActiveFTFace = myFallbackFaces[aSubset]->myFTFace;
+    }
+  }
+
   if (theUChar == 0
-   || FT_Load_Char (myFTFace, theUChar, FT_Int32(myLoadFlags | FT_LOAD_RENDER)) != 0
-   || myFTFace->glyph == NULL
-   || myFTFace->glyph->format != FT_GLYPH_FORMAT_BITMAP)
+   || FT_Load_Char (myActiveFTFace, theUChar, FT_Int32(myLoadFlags | FT_LOAD_RENDER)) != 0
+   || myActiveFTFace->glyph == NULL
+   || myActiveFTFace->glyph->format != FT_GLYPH_FORMAT_BITMAP)
   {
     return false;
   }
 
-  FT_Bitmap aBitmap = myFTFace->glyph->bitmap;
-  if (aBitmap.pixel_mode != FT_PIXEL_MODE_GRAY
-   || aBitmap.buffer == NULL || aBitmap.width == 0 || aBitmap.rows == 0)
+  FT_Bitmap aBitmap = myActiveFTFace->glyph->bitmap;
+  if (aBitmap.buffer == NULL || aBitmap.width == 0 || aBitmap.rows == 0)
   {
     return false;
   }
-  if (!myGlyphImg.InitWrapper (Image_Format_Alpha, aBitmap.buffer,
-                               aBitmap.width, aBitmap.rows, Abs (aBitmap.pitch)))
+
+  if (aBitmap.pixel_mode == FT_PIXEL_MODE_GRAY)
+  {
+    if (!myGlyphImg.InitWrapper (Image_Format_Alpha, aBitmap.buffer,
+                                 aBitmap.width, aBitmap.rows, Abs (aBitmap.pitch)))
+    {
+      return false;
+    }
+    myGlyphImg.SetTopDown (aBitmap.pitch > 0);
+  }
+  else if (aBitmap.pixel_mode == FT_PIXEL_MODE_MONO)
+  {
+    if (!myGlyphImg.InitTrash (Image_Format_Gray, aBitmap.width, aBitmap.rows))
+    {
+      return false;
+    }
+
+    myGlyphImg.SetTopDown (aBitmap.pitch > 0);
+    const int aNumOfBytesInRow = aBitmap.width / 8 + (aBitmap.width % 8 ? 1 : 0);
+    for (int aRow = 0; aRow < (int )aBitmap.rows; ++aRow)
+    {
+      for (int aCol = 0; aCol < (int )aBitmap.width; ++aCol)
+      {
+        const int aBitOn = aBitmap.buffer[aNumOfBytesInRow * aRow + aCol / 8] & (0x80 >> (aCol % 8));
+        *myGlyphImg.ChangeRawValue (aRow, aCol) = aBitOn ? 255 : 0;
+      }
+    }
+  }
+  else
   {
     return false;
   }
-  myGlyphImg.SetTopDown (aBitmap.pitch > 0);
+
   myUChar = theUChar;
   return true;
 }
@@ -253,24 +358,58 @@ bool Font_FTFont::RenderGlyph (const Standard_Utf32Char theUChar)
 // function : GlyphMaxSizeX
 // purpose  :
 // =======================================================================
-unsigned int Font_FTFont::GlyphMaxSizeX() const
+unsigned int Font_FTFont::GlyphMaxSizeX (bool theToIncludeFallback) const
 {
-  float aWidth = (FT_IS_SCALABLE(myFTFace) != 0)
-               ? float(myFTFace->bbox.xMax - myFTFace->bbox.xMin) * (float(myFTFace->size->metrics.x_ppem) / float(myFTFace->units_per_EM))
-               : fromFTPoints<float> (myFTFace->size->metrics.max_advance);
-  return (unsigned int)(aWidth + 0.5f);
+  if (!theToIncludeFallback)
+  {
+    float aWidth = (FT_IS_SCALABLE(myFTFace) != 0)
+                 ? float(myFTFace->bbox.xMax - myFTFace->bbox.xMin) * (float(myFTFace->size->metrics.x_ppem) / float(myFTFace->units_per_EM))
+                 : fromFTPoints<float> (myFTFace->size->metrics.max_advance);
+    return (unsigned int)(aWidth + 0.5f);
+  }
+
+  unsigned int aWidth = GlyphMaxSizeX (false);
+  if (theToIncludeFallback)
+  {
+    for (Standard_Integer aFontIter = 0; aFontIter < Font_UnicodeSubset_NB; ++aFontIter)
+    {
+      if (!myFallbackFaces[aFontIter].IsNull()
+        && myFallbackFaces[aFontIter]->IsValid())
+      {
+        aWidth = std::max (aWidth, myFallbackFaces[aFontIter]->GlyphMaxSizeX (false));
+      }
+    }
+  }
+  return aWidth;
 }
 
 // =======================================================================
 // function : GlyphMaxSizeY
 // purpose  :
 // =======================================================================
-unsigned int Font_FTFont::GlyphMaxSizeY() const
+unsigned int Font_FTFont::GlyphMaxSizeY (bool theToIncludeFallback) const
 {
-  float aHeight = (FT_IS_SCALABLE(myFTFace) != 0)
-                ? float(myFTFace->bbox.yMax - myFTFace->bbox.yMin) * (float(myFTFace->size->metrics.y_ppem) / float(myFTFace->units_per_EM))
-                : fromFTPoints<float> (myFTFace->size->metrics.height);
-  return (unsigned int)(aHeight + 0.5f);
+  if (!theToIncludeFallback)
+  {
+    float aHeight = (FT_IS_SCALABLE(myFTFace) != 0)
+                  ? float(myFTFace->bbox.yMax - myFTFace->bbox.yMin) * (float(myFTFace->size->metrics.y_ppem) / float(myFTFace->units_per_EM))
+                  : fromFTPoints<float> (myFTFace->size->metrics.height);
+    return (unsigned int)(aHeight + 0.5f);
+  }
+
+  unsigned int aHeight = GlyphMaxSizeY (false);
+  if (theToIncludeFallback)
+  {
+    for (Standard_Integer aFontIter = 0; aFontIter < Font_UnicodeSubset_NB; ++aFontIter)
+    {
+      if (!myFallbackFaces[aFontIter].IsNull()
+        && myFallbackFaces[aFontIter]->IsValid())
+      {
+        aHeight = std::max (aHeight, myFallbackFaces[aFontIter]->GlyphMaxSizeY (false));
+      }
+    }
+  }
+  return aHeight;
 }
 
 // =======================================================================
@@ -322,18 +461,22 @@ float Font_FTFont::AdvanceY (Standard_Utf32Char theUChar,
   return AdvanceY (theUCharNext);
 }
 
+// =======================================================================
+// function : getKerning
+// purpose  :
+// =======================================================================
 bool Font_FTFont::getKerning (FT_Vector& theKern,
                               Standard_Utf32Char theUCharCurr,
                               Standard_Utf32Char theUCharNext) const
 {
   theKern.x = 0;
   theKern.y = 0;
-  if (theUCharNext != 0 && FT_HAS_KERNING(myFTFace) != 0)
+  if (theUCharNext != 0 && FT_HAS_KERNING(myActiveFTFace) != 0)
   {
-    const FT_UInt aCharCurr = FT_Get_Char_Index (myFTFace, theUCharCurr);
-    const FT_UInt aCharNext = FT_Get_Char_Index (myFTFace, theUCharNext);
+    const FT_UInt aCharCurr = FT_Get_Char_Index (myActiveFTFace, theUCharCurr);
+    const FT_UInt aCharNext = FT_Get_Char_Index (myActiveFTFace, theUCharNext);
     if (aCharCurr == 0 || aCharNext == 0
-     || FT_Get_Kerning (myFTFace, aCharCurr, aCharNext, FT_KERNING_UNFITTED, &theKern) != 0)
+     || FT_Get_Kerning (myActiveFTFace, aCharCurr, aCharNext, FT_KERNING_UNFITTED, &theKern) != 0)
     {
       theKern.x = 0;
       theKern.y = 0;
@@ -357,7 +500,7 @@ float Font_FTFont::AdvanceX (Standard_Utf32Char theUCharNext) const
 
   FT_Vector aKern;
   getKerning (aKern, myUChar, theUCharNext);
-  return myWidthScaling * fromFTPoints<float> (myFTFace->glyph->advance.x + aKern.x);
+  return myWidthScaling * fromFTPoints<float> (myActiveFTFace->glyph->advance.x + aKern.x);
 }
 
 // =======================================================================
@@ -373,29 +516,41 @@ float Font_FTFont::AdvanceY (Standard_Utf32Char theUCharNext) const
 
   FT_Vector aKern;
   getKerning (aKern, myUChar, theUCharNext);
-  return fromFTPoints<float> (myFTFace->glyph->advance.y + aKern.y);
+  return fromFTPoints<float> (myActiveFTFace->glyph->advance.y + aKern.y);
 }
 
 // =======================================================================
 // function : GlyphsNumber
 // purpose  :
 // =======================================================================
-Standard_Integer Font_FTFont::GlyphsNumber() const
+Standard_Integer Font_FTFont::GlyphsNumber (bool theToIncludeFallback) const
 {
-  return myFTFace->num_glyphs;
+  Standard_Integer aNbGlyphs = myFTFace->num_glyphs;
+  if (theToIncludeFallback)
+  {
+    for (Standard_Integer aFontIter = 0; aFontIter < Font_UnicodeSubset_NB; ++aFontIter)
+    {
+      if (!myFallbackFaces[aFontIter].IsNull()
+        && myFallbackFaces[aFontIter]->IsValid())
+      {
+        aNbGlyphs += myFallbackFaces[aFontIter]->GlyphsNumber (false);
+      }
+    }
+  }
+  return aNbGlyphs;
 }
 
 // =======================================================================
-// function : theRect
+// function : GlyphRect
 // purpose  :
 // =======================================================================
 void Font_FTFont::GlyphRect (Font_Rect& theRect) const
 {
-  const FT_Bitmap& aBitmap = myFTFace->glyph->bitmap;
-  theRect.Left   = float(myFTFace->glyph->bitmap_left);
-  theRect.Top    = float(myFTFace->glyph->bitmap_top);
-  theRect.Right  = float(myFTFace->glyph->bitmap_left + (int )aBitmap.width);
-  theRect.Bottom = float(myFTFace->glyph->bitmap_top  - (int )aBitmap.rows);
+  const FT_Bitmap& aBitmap = myActiveFTFace->glyph->bitmap;
+  theRect.Left   = float(myActiveFTFace->glyph->bitmap_left);
+  theRect.Top    = float(myActiveFTFace->glyph->bitmap_top);
+  theRect.Right  = float(myActiveFTFace->glyph->bitmap_left + (int )aBitmap.width);
+  theRect.Bottom = float(myActiveFTFace->glyph->bitmap_top  - (int )aBitmap.rows);
 }
 
 // =======================================================================

@@ -407,7 +407,7 @@ Standard_Boolean Font_BRepFont::renderGlyph (const Standard_Utf32Char theChar,
 {
   theShape.Nullify();
   if (!loadGlyph (theChar)
-   || myFTFace->glyph->format != FT_GLYPH_FORMAT_OUTLINE)
+   || myActiveFTFace->glyph->format != FT_GLYPH_FORMAT_OUTLINE)
   {
     return Standard_False;
   }
@@ -416,8 +416,7 @@ Standard_Boolean Font_BRepFont::renderGlyph (const Standard_Utf32Char theChar,
     return !theShape.IsNull();
   }
 
-  FT_Outline& anOutline = myFTFace->glyph->outline;
-
+  const FT_Outline& anOutline = myActiveFTFace->glyph->outline;
   if (!anOutline.n_contours)
     return Standard_False;
 

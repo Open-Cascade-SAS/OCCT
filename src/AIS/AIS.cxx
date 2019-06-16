@@ -783,6 +783,7 @@ Standard_Boolean AIS::GetPlaneFromFace(const TopoDS_Face&            aFace,
   BRepAdaptor_Surface surf1( aFace );
   Handle( Adaptor3d_HSurface ) surf2;
   Standard_Boolean isOffset = Standard_False;
+  Offset = 0.0;
 
   if (surf1.GetType() == GeomAbs_OffsetSurface)
   {
@@ -801,7 +802,6 @@ Standard_Boolean AIS::GetPlaneFromFace(const TopoDS_Face&            aFace,
   {
     aPlane = surf2->Plane();
     aSurfType = AIS_KOS_Plane;
-    Offset = 0.;
     Result = Standard_True;
   }
 
@@ -817,7 +817,6 @@ Standard_Boolean AIS::GetPlaneFromFace(const TopoDS_Face&            aFace,
       gp_Pln thePlane( LinePos, LineDir ^ ExtrusionDir);
       aPlane = thePlane;
       aSurfType = AIS_KOS_Plane;
-      Offset = 0.;
       Result = Standard_True;
     }
   }
@@ -826,7 +825,6 @@ Standard_Boolean AIS::GetPlaneFromFace(const TopoDS_Face&            aFace,
   {
     aSurf = (Handle( Geom_OffsetSurface )::DownCast( aSurf ))->Surface();
     aPlane = (Handle( Geom_Plane )::DownCast( aSurf ))->Pln();
-    Offset = 0.0e0;
   }
   if (Result == Standard_False)
   {
@@ -839,7 +837,6 @@ Standard_Boolean AIS::GetPlaneFromFace(const TopoDS_Face&            aFace,
         TheType == STANDARD_TYPE(Geom_ToroidalSurface))
       {
         aSurf = (Handle( Geom_OffsetSurface )::DownCast( aSurf ))->Surface();
-        Offset = 0.0e0;
       }
       else
       {
@@ -899,20 +896,18 @@ gp_Pnt AIS::ProjectPointOnLine( const gp_Pnt & aPoint, const gp_Lin & aLine )
 //function : InitFaceLength
 //purpose  : 
 //=======================================================================
-void AIS::InitFaceLength (const TopoDS_Face& aFace,
-                          gp_Pln               & aPlane,
-                          Handle(Geom_Surface) & aSurface,
-                          AIS_KindOfSurface    & aSurfaceType,
-                          Standard_Real        & anOffset)
+void AIS::InitFaceLength (const TopoDS_Face& theFace,
+                          gp_Pln& thePlane,
+                          Handle(Geom_Surface)& theSurface,
+                          AIS_KindOfSurface& theSurfaceType,
+                          Standard_Real& theOffset)
 {
-  AIS::GetPlaneFromFace( aFace, aPlane, aSurface, aSurfaceType, anOffset );
-  
-  if (Abs( anOffset ) > Precision::Confusion())
-    {
-      aSurface = new Geom_OffsetSurface( aSurface, anOffset );
-      anOffset = 0.0e0;
-    }
-  
+  if (AIS::GetPlaneFromFace (theFace, thePlane, theSurface, theSurfaceType, theOffset)
+   && Abs (theOffset) > Precision::Confusion())
+  {
+    theSurface = new Geom_OffsetSurface (theSurface, theOffset);
+    theOffset = 0.0e0;
+  }
 }
 
 //=======================================================================

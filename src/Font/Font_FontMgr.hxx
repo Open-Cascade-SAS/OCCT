@@ -22,6 +22,7 @@
 #include <Font_FontAspect.hxx>
 #include <Font_NListOfSystemFont.hxx>
 #include <Font_StrictLevel.hxx>
+#include <Font_UnicodeSubset.hxx>
 #include <NCollection_DataMap.hxx>
 #include <NCollection_IndexedMap.hxx>
 #include <NCollection_Shared.hxx>
@@ -54,6 +55,9 @@ public:
     }
     return "invalid";
   }
+
+  //! Return flag to use fallback fonts in case if used font does not include symbols from specific Unicode subset; TRUE by default.
+  Standard_EXPORT static Standard_Boolean& ToUseUnicodeSubsetFallback();
 
 public:
 
@@ -106,7 +110,14 @@ public:
   {
     return FindFont (theFontName, Font_StrictLevel_Any, theFontAspect);
   }
-  
+
+  //! Tries to find fallback font for specified Unicode subset.
+  //! Returns NULL in case when fallback font is not found in the system.
+  //! @param theSubset     [in] Unicode subset
+  //! @param theFontAspect [in] font aspect to find
+  Standard_EXPORT Handle(Font_SystemFont) FindFallbackFont (Font_UnicodeSubset theSubset,
+                                                            Font_FontAspect theFontAspect) const;
+
   //! Read font file and retrieve information from it.
   Standard_EXPORT Handle(Font_SystemFont) CheckFont (const Standard_CString theFontPath) const;
   

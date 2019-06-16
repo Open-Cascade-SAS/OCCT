@@ -21,7 +21,6 @@
 #include <Standard_Assert.hxx>
 #include <TCollection_ExtendedString.hxx>
 
-
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Font,OpenGl_Resource)
 
 // =======================================================================
@@ -34,8 +33,6 @@ OpenGl_Font::OpenGl_Font (const Handle(Font_FTFont)&     theFont,
   myFont (theFont),
   myAscender (0.0f),
   myDescender (0.0f),
-  myLineSpacing (0.0f),
-  myTileSizeX (0),
   myTileSizeY (0),
   myLastTileId (-1),
   myTextureFormat (GL_ALPHA)
@@ -105,11 +102,9 @@ bool OpenGl_Font::Init (const Handle(OpenGl_Context)& theCtx)
     return false;
   }
 
-  myAscender    = myFont->Ascender();
-  myDescender   = myFont->Descender();
-  myLineSpacing = myFont->LineSpacing();
-  myTileSizeX   = myFont->GlyphMaxSizeX();
-  myTileSizeY   = myFont->GlyphMaxSizeY();
+  myAscender  = myFont->Ascender();
+  myDescender = myFont->Descender();
+  myTileSizeY = myFont->GlyphMaxSizeY (true);
 
   myLastTileId = -1;
   if (!createTexture (theCtx))
@@ -126,12 +121,16 @@ bool OpenGl_Font::Init (const Handle(OpenGl_Context)& theCtx)
 // =======================================================================
 bool OpenGl_Font::createTexture (const Handle(OpenGl_Context)& theCtx)
 {
-  const Standard_Integer aMaxSize = theCtx->MaxTextureSize();
+  // Single font might define very wide range of symbols, with very few of them actually used in text.
+  // Limit single texture with circa 4096 glyphs.
+  static const Standard_Integer THE_MAX_GLYPHS_PER_TEXTURE = 4096;
 
-  Standard_Integer aGlyphsNb = myFont->GlyphsNumber() - myLastTileId + 1;
-
-  const Standard_Integer aTextureSizeX = OpenGl_Context::GetPowerOfTwo (aGlyphsNb * myTileSizeX, aMaxSize);
-  const Standard_Integer aTilesPerRow  = aTextureSizeX / myTileSizeX;
+  myTileSizeY = myFont->GlyphMaxSizeY (true);
+  const Standard_Integer aGlyphsNb = Min (THE_MAX_GLYPHS_PER_TEXTURE, myFont->GlyphsNumber (true) - myLastTileId + 1);
+  const Standard_Integer aMaxTileSizeX = myFont->GlyphMaxSizeX (true);
+  const Standard_Integer aMaxSize      = theCtx->MaxTextureSize();
+  const Standard_Integer aTextureSizeX = OpenGl_Context::GetPowerOfTwo (aGlyphsNb * aMaxTileSizeX, aMaxSize);
+  const Standard_Integer aTilesPerRow  = aTextureSizeX / aMaxTileSizeX;
   const Standard_Integer aTextureSizeY = OpenGl_Context::GetPowerOfTwo (GLint((aGlyphsNb / aTilesPerRow) + 1) * myTileSizeY, aMaxSize);
 
   memset (&myLastTilePx, 0, sizeof(myLastTilePx));
@@ -186,14 +185,18 @@ bool OpenGl_Font::renderGlyph (const Handle(OpenGl_Context)& theCtx,
   const Standard_Integer aTileId = myLastTileId + 1;
   myLastTilePx.Left  = myLastTilePx.Right + 3;
   myLastTilePx.Right = myLastTilePx.Left + (Standard_Integer )anImg.SizeX();
-  if (myLastTilePx.Right >= aTexture->SizeX())
+  if (myLastTilePx.Right > aTexture->SizeX()
+   || (Standard_Integer )anImg.SizeY() > myTileSizeY)
   {
+    myTileSizeY = myFont->GlyphMaxSizeY (true);
+
     myLastTilePx.Left    = 0;
     myLastTilePx.Right   = (Standard_Integer )anImg.SizeX();
     myLastTilePx.Top    += myTileSizeY;
     myLastTilePx.Bottom += myTileSizeY;
 
-    if (myLastTilePx.Bottom >= aTexture->SizeY())
+    if (myLastTilePx.Bottom > aTexture->SizeY()
+     || myLastTilePx.Right  > aTexture->SizeX())
     {
       if (!createTexture (theCtx))
       {

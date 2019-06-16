@@ -16,8 +16,9 @@
 #define  Font_NOF_MONOSPACE             "monospace"
 #define  Font_NOF_SERIF                 "serif"
 #define  Font_NOF_SANS_SERIF            "sans-serif"
-#define  Font_NOF_CJK                   "cjk"
-#define  Font_NOF_KOREAN                "korean"
+#define  Font_NOF_CJK                   "cjk"        // Font_UnicodeSubset_CJK
+#define  Font_NOF_KOREAN                "korean"     // Font_UnicodeSubset_Korean
+#define  Font_NOF_ARABIC                "arabic"     // Font_UnicodeSubset_Arabic
 
 #define  Font_NOF_ASCII_MONO            "Courier"
 #define  Font_NOF_ASCII_SIMPLEX         "Times-Roman"

@@ -1298,23 +1298,23 @@ proc _run_test {scriptsdir group gridname casefile echo} {
         # execute test scripts 
         if { [file exists $scriptsdir/$group/begin] } {
             puts "Executing $scriptsdir/$group/begin..."; flush stdout
-            uplevel source $scriptsdir/$group/begin
+            uplevel source -encoding utf-8 $scriptsdir/$group/begin
         }
         if { [file exists $scriptsdir/$group/$gridname/begin] } {
             puts "Executing $scriptsdir/$group/$gridname/begin..."; flush stdout
-            uplevel source $scriptsdir/$group/$gridname/begin
+            uplevel source -encoding utf-8 $scriptsdir/$group/$gridname/begin
         }
 
         puts "Executing $casefile..."; flush stdout
-        uplevel source $casefile
+        uplevel source -encoding utf-8 $casefile
 
         if { [file exists $scriptsdir/$group/$gridname/end] } {
             puts "Executing $scriptsdir/$group/$gridname/end..."; flush stdout
-            uplevel source $scriptsdir/$group/$gridname/end
+            uplevel source -encoding utf-8 $scriptsdir/$group/$gridname/end
         }
         if { [file exists $scriptsdir/$group/end] } {
             puts "Executing $scriptsdir/$group/end..."; flush stdout
-            uplevel source $scriptsdir/$group/end
+            uplevel source -encoding utf-8 $scriptsdir/$group/end
         }
     } res] {
         puts "Tcl Exception: $res"
