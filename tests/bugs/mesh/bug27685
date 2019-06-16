@@ -1,0 +1,18 @@
+puts "======="
+puts "0027685: Visualization of a shape imported from IGES hangs"
+puts "======="
+puts ""
+
+pload XDE
+
+igesread [locate_data_file bug27685_MyShoeLast.igs] result *
+incmesh result 0.9363477928 -a 20
+
+vinit
+vsetdispmode 1
+vdefaults -autoTriang 0
+vdisplay result
+vfit
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
+
