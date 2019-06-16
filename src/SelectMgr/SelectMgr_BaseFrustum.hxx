@@ -165,18 +165,16 @@ public:
 
   Standard_EXPORT virtual gp_Pnt DetectedPoint (const Standard_Real theDepth) const;
 
-  //! Checks if the point of sensitive in which selection was detected belongs
-  //! to the region defined by clipping planes
-  Standard_EXPORT virtual Standard_Boolean IsClipped (const Graphic3d_SequenceOfHClipPlane& thePlanes,
-                                                      const Standard_Real theDepth) const;
-
   //! Valid for point selection only!
-  //! Computes depth range for global (defined for the whole view) clipping planes.
-  virtual void SetViewClipping (const Handle(Graphic3d_SequenceOfHClipPlane)& /*thePlanes*/) {};
-
-  //! Set if view clipping plane is enabled or not.
-  //! @return previous value of the flag
-  virtual Standard_Boolean SetViewClippingEnabled (const Standard_Boolean /*theToEnable*/) { return Standard_False; }
+  //! Computes depth range for clipping planes.
+  //! @param theViewPlanes global view planes
+  //! @param theObjPlanes  object planes
+  virtual void SetViewClipping (const Handle(Graphic3d_SequenceOfHClipPlane)& theViewPlanes,
+                                const Handle(Graphic3d_SequenceOfHClipPlane)& theObjPlanes)
+  {
+    (void )theViewPlanes;
+    (void )theObjPlanes;
+  }
 
   //! Stores plane equation coefficients (in the following form:
   //! Ax + By + Cz + D = 0) to the given vector

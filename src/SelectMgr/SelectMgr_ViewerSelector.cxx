@@ -210,74 +210,13 @@ void SelectMgr_ViewerSelector::checkOverlap (const Handle(Select3D_SensitiveEnti
                                              SelectMgr_SelectingVolumeManager& theMgr)
 {
   const Handle(SelectMgr_EntityOwner)& anOwner = theEntity->OwnerId();
-  Handle(SelectMgr_SelectableObject) aSelectable;
-  Standard_Boolean toRestoresViewClipEnabled = Standard_False;
-  if (!anOwner.IsNull())
-  {
-    aSelectable = anOwner->Selectable();
-  }
-  if (!aSelectable.IsNull())
-  {
-    if (!aSelectable->ClipPlanes().IsNull()
-      && aSelectable->ClipPlanes()->ToOverrideGlobal())
-    {
-      theMgr.SetViewClippingEnabled (Standard_False);
-      toRestoresViewClipEnabled = Standard_True;
-    }
-    else if (!aSelectable->TransformPersistence().IsNull())
-    {
-      if (aSelectable->TransformPersistence()->IsZoomOrRotate()
-      && !theMgr.ViewClipping().IsNull())
-      {
-        // Zoom/rotate persistence object lives in two worlds at the same time.
-        // Global clipping planes can not be trivially applied without being converted
-        // into local space of transformation persistence object.
-        // As more simple alternative - just clip entire object by its anchor point defined in the world space.
-        const Handle(Graphic3d_SequenceOfHClipPlane)& aViewPlanes = theMgr.ViewClipping();
-
-        const gp_Pnt anAnchor = aSelectable->TransformPersistence()->AnchorPoint();
-        for (Graphic3d_SequenceOfHClipPlane::Iterator aPlaneIt (*aViewPlanes); aPlaneIt.More(); aPlaneIt.Next())
-        {
-          const Handle(Graphic3d_ClipPlane)& aPlane = aPlaneIt.Value();
-          if (!aPlane->IsOn())
-          {
-            continue;
-          }
-
-          const Graphic3d_Vec4d aCheckPnt (anAnchor.X(), anAnchor.Y(), anAnchor.Z(), 1.0);
-          if (aPlane->ProbePoint (aCheckPnt) == Graphic3d_ClipState_Out)
-          {
-            return;
-          }
-        }
-      }
-
-      theMgr.SetViewClippingEnabled (Standard_False);
-      toRestoresViewClipEnabled = Standard_True;
-    }
-  }
-
+  Handle(SelectMgr_SelectableObject) aSelectable = !anOwner.IsNull() ? anOwner->Selectable() : Handle(SelectMgr_SelectableObject)();
   SelectBasics_PickResult aPickResult;
   const Standard_Boolean isMatched = theEntity->Matches(theMgr, aPickResult);
-  if (toRestoresViewClipEnabled)
-  {
-    theMgr.SetViewClippingEnabled (Standard_True);
-  }
-
   if (!isMatched
     || anOwner.IsNull())
   {
     return;
-  }
-
-  if (HasDepthClipping (anOwner)
-  && !aSelectable.IsNull()
-  &&  theMgr.GetActiveSelectionType() == SelectMgr_SelectingVolumeManager::Point)
-  {
-    Standard_Boolean isClipped = mySelectingVolumeMgr.IsClipped (*aSelectable->ClipPlanes(),
-                                                                  aPickResult.Depth());
-    if (isClipped)
-      return;
   }
 
   SelectMgr_SortCriterion aCriterion;
@@ -394,20 +333,57 @@ void SelectMgr_ViewerSelector::traverseObject (const Handle(SelectMgr_Selectable
   SelectMgr_SelectingVolumeManager aMgr = aInversedTrsf.Form() != gp_Identity
                                         ? theMgr.ScaleAndTransform (1, aInversedTrsf, NULL)
                                         : theMgr;
-
-  SelectMgr_FrustumCache aScaledTrnsfFrustums;
-
-  Standard_Integer aNode = 0; // a root node
   if (!aMgr.Overlaps (aSensitivesTree->MinPoint (0),
                       aSensitivesTree->MaxPoint (0)))
   {
     return;
   }
 
+  if (!theObject->ClipPlanes().IsNull()
+    && theObject->ClipPlanes()->ToOverrideGlobal())
+  {
+    aMgr.SetViewClipping (Handle(Graphic3d_SequenceOfHClipPlane)(), theObject->ClipPlanes());
+  }
+  else if (!theObject->TransformPersistence().IsNull())
+  {
+    if (theObject->TransformPersistence()->IsZoomOrRotate()
+    && !theMgr.ViewClipping().IsNull())
+    {
+      // Zoom/rotate persistence object lives in two worlds at the same time.
+      // Global clipping planes can not be trivially applied without being converted
+      // into local space of transformation persistence object.
+      // As more simple alternative - just clip entire object by its anchor point defined in the world space.
+      const gp_Pnt anAnchor = theObject->TransformPersistence()->AnchorPoint();
+      for (Graphic3d_SequenceOfHClipPlane::Iterator aPlaneIt (*theMgr.ViewClipping()); aPlaneIt.More(); aPlaneIt.Next())
+      {
+        const Handle(Graphic3d_ClipPlane)& aPlane = aPlaneIt.Value();
+        if (!aPlane->IsOn())
+        {
+          continue;
+        }
+
+        const Graphic3d_Vec4d aCheckPnt (anAnchor.X(), anAnchor.Y(), anAnchor.Z(), 1.0);
+        if (aPlane->ProbePoint (aCheckPnt) == Graphic3d_ClipState_Out)
+        {
+          return;
+        }
+      }
+    }
+
+    aMgr.SetViewClipping (Handle(Graphic3d_SequenceOfHClipPlane)(), theObject->ClipPlanes());
+  }
+  else if (!theObject->ClipPlanes().IsNull()
+        && !theObject->ClipPlanes()->IsEmpty())
+  {
+    aMgr.SetViewClipping (theMgr.ViewClipping(), theObject->ClipPlanes());
+  }
+
   const Standard_Integer aFirstStored = mystored.Extent() + 1;
 
   Standard_Integer aStack[BVH_Constants_MaxTreeDepth];
   Standard_Integer aHead = -1;
+  Standard_Integer aNode = 0; // a root node
+  SelectMgr_FrustumCache aScaledTrnsfFrustums;
   for (;;)
   {
     if (!aSensitivesTree->IsOuter (aNode))
@@ -830,15 +806,6 @@ void SelectMgr_ViewerSelector::SortResult()
     anIndexArray.SetValue (anIndexIter, anIndexIter);
   }
   std::sort (anIndexArray.begin(), anIndexArray.end(), CompareResults (mystored));
-}
-
-//=======================================================================
-//function : HasDepthClipping
-//purpose  : Stub
-//=======================================================================
-Standard_Boolean SelectMgr_ViewerSelector::HasDepthClipping (const Handle(SelectMgr_EntityOwner)& /*theOwner*/) const
-{
-  return Standard_False;
 }
 
 //=======================================================================

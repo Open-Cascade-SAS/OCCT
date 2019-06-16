@@ -2,12 +2,6 @@ puts "========"
 puts "Sensitive box selection"
 puts "========"
 
-proc checkPoint {theName theValue theExpected} {
-  set e 0.0001
-  foreach i {0 1 2} { if { [expr abs([lindex $theValue $i] - [lindex $theExpected $i])] > $e } { puts "Error: wrong picked point $theName" } }
-  return
-}
-
 # create sphere
 sphere ss 10
 mkface s ss
@@ -28,7 +22,7 @@ if {[string first "e+308" $p1] != -1} {
   puts "Faulty : Selection 1"
 }
 vpoint pp1 {*}$p1
-checkPoint pp1 $p1 {-1.7763568394002505e-15 -0.51078486684208357 0.59985611160264973}
+checkpoint pp1 $p1 {-1.7763568394002505e-15 -0.51078486684208357 0.59985611160264973} 0.0001
 vdump $::imagedir/${::casename}_clip1_selection_axo.png
 vtop
 vdump $::imagedir/${::casename}_clip1_selection_top.png
@@ -45,7 +39,7 @@ if {[string first "e+308" $p2] != -1} {
   puts "Faulty : Selection 2"
 }
 vpoint pp2 {*}$p2
-checkPoint pp2 $p2 {2.9999999999999991 -3.5107848668420845 3.5998561116026506}
+checkpoint pp2 $p2 {2.9999999999999991 -3.5107848668420845 3.5998561116026506} 0.0001
 vdump $::imagedir/${::casename}_clip2_selection_axo.png
 vtop
 vdump $::imagedir/${::casename}_clip2_selection_top.png

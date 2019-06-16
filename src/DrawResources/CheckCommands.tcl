@@ -310,6 +310,23 @@ proc checkreal {name value expected tol_abs tol_rel} {
     return
 }
 
+# Procedure to check equality of two 3D points with tolerance
+help checkpoint {
+  Compare two 3D points with given tolerance
+  Use: checkpoint name {valueX valueY valueZ} {expectedX expectedY expectedZ} tolerance
+}
+proc checkpoint {theName theValue theExpected theTolerance} {
+  set e 0.0001
+  foreach i {0 1 2} {
+    if { [expr abs([lindex $theValue $i] - [lindex $theExpected $i])] > $theTolerance } {
+      puts "Error: $theName, ($theValue) is not equal to expected ($theExpected)"
+      return
+    }
+  }
+  puts "Check of $theName OK: value = ($theValue), expected = ($theExpected)"
+  return
+}
+
 help checkfreebounds {
   Compare number of free edges with ref_value
 

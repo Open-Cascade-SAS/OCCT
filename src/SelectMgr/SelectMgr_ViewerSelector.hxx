@@ -253,14 +253,6 @@ protected:
   //! finds candidates for further search of overlap
   Standard_EXPORT void TraverseSensitives();
 
-  //! Returns True if the owner provides clipping by depth
-  //! for its sensitives. Override this method to tell the selector
-  //! to use the DepthClipping method for the owner.
-  //! Default implementation returns False for every owner.
-  //! @param theOwner [in] the onwer to check.
-  //! @return True if owner provides depth limits for sensitive clipping.
-  Standard_EXPORT virtual Standard_Boolean HasDepthClipping (const Handle(SelectMgr_EntityOwner)& theOwner) const;
-
   //! Internal function that checks if there is possible overlap between some entity of selectable object theObject and
   //! current selecting volume.
   //! @param theObject [in] the selectable object for traversal.

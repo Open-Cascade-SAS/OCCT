@@ -240,14 +240,3 @@ gp_Pnt SelectMgr_BaseFrustum::DetectedPoint (const Standard_Real /*theDepth*/) c
 {
   return gp_Pnt (RealLast(), RealLast(), RealLast());
 }
-
-//=======================================================================
-// function : IsClipped
-// purpose  : Checks if the point of sensitive in which selection was
-//            detected belongs to the region defined by clipping planes
-//=======================================================================
-Standard_Boolean SelectMgr_BaseFrustum::IsClipped (const Graphic3d_SequenceOfHClipPlane& /*thePlanes*/,
-                                                   const Standard_Real /*theDepth*/) const
-{
-  return Standard_True;
-}

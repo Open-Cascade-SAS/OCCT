@@ -34,7 +34,7 @@ class SelectMgr_RectangularFrustum : public SelectMgr_Frustum<4>
 {
 public:
 
-  SelectMgr_RectangularFrustum() : myScale (1.0), myIsViewClipEnabled (Standard_True) {};
+  SelectMgr_RectangularFrustum() : myScale (1.0) {};
 
   //! Builds volume according to the point and given pixel tolerance
   Standard_EXPORT virtual void Build (const gp_Pnt2d& thePoint) Standard_OVERRIDE;
@@ -102,23 +102,12 @@ public:
   //! Calculates the point on a view ray that was detected during the run of selection algo by given depth
   Standard_EXPORT virtual gp_Pnt DetectedPoint (const Standard_Real theDepth) const Standard_OVERRIDE;
 
-  //! Checks if the point of sensitive in which selection was detected belongs
-  //! to the region defined by clipping planes
-  Standard_EXPORT virtual Standard_Boolean IsClipped (const Graphic3d_SequenceOfHClipPlane& thePlanes,
-                                                      const Standard_Real theDepth) const Standard_OVERRIDE;
-
   //! Valid for point selection only!
-  //! Computes depth range for global (defined for the whole view) clipping planes.
-  Standard_EXPORT virtual void SetViewClipping (const Handle(Graphic3d_SequenceOfHClipPlane)& thePlanes) Standard_OVERRIDE;
-
-  //! Set if view clipping plane is enabled or not.
-  //! @return previous value of the flag
-  virtual Standard_Boolean SetViewClippingEnabled (const Standard_Boolean theToEnable) Standard_OVERRIDE
-  {
-    Standard_Boolean aPrevValue = myIsViewClipEnabled;
-    myIsViewClipEnabled = theToEnable;
-    return aPrevValue;
-  }
+  //! Computes depth range for clipping planes.
+  //! @param theViewPlanes global view planes
+  //! @param theObjPlanes  object planes
+  Standard_EXPORT virtual void SetViewClipping (const Handle(Graphic3d_SequenceOfHClipPlane)& theViewPlanes,
+                                                const Handle(Graphic3d_SequenceOfHClipPlane)& theObjPlanes) Standard_OVERRIDE;
 
   //! A set of helper functions that return rectangular selecting frustum data
   inline const gp_Pnt* GetVertices() const { return myVertices; }
@@ -175,7 +164,6 @@ private:
   gp_Pnt2d                myMousePos;                  //!< Mouse coordinates
   Standard_Real           myScale;                     //!< Scale factor of applied transformation, if there was any
   SelectMgr_ViewClipRange myViewClipRange;
-  Standard_Boolean        myIsViewClipEnabled;         //!< view clipping enabled state
 
 };
 

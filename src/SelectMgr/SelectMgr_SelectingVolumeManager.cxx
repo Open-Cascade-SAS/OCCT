@@ -61,6 +61,7 @@ SelectMgr_SelectingVolumeManager SelectMgr_SelectingVolumeManager::ScaleAndTrans
   aMgr.myToAllowOverlap = myToAllowOverlap;
   aMgr.mySelectingVolumes[myActiveSelectionType / 2]->SetBuilder (theBuilder);
   aMgr.myViewClipPlanes = myViewClipPlanes;
+  aMgr.myObjectClipPlanes = myObjectClipPlanes;
 
   return aMgr;
 }
@@ -389,20 +390,6 @@ gp_Pnt SelectMgr_SelectingVolumeManager::DetectedPoint (const Standard_Real theD
 }
 
 //=======================================================================
-// function : IsClipped
-// purpose  : Checks if the point of sensitive in which selection was
-//            detected belongs to the region defined by clipping planes
-//=======================================================================
-Standard_Boolean SelectMgr_SelectingVolumeManager::IsClipped (const Graphic3d_SequenceOfHClipPlane& thePlanes,
-                                                              const Standard_Real& theDepth) const
-{
-  if (myActiveSelectionType != Point)
-    return Standard_False;
-
-  return mySelectingVolumes[Frustum]->IsClipped (thePlanes, theDepth);
-}
-
-//=======================================================================
 // function : AllowOverlapDetection
 // purpose  : If theIsToAllow is false, only fully included sensitives will
 //            be detected, otherwise the algorithm will mark both included
@@ -468,23 +455,13 @@ gp_Pnt SelectMgr_SelectingVolumeManager::GetFarPickedPnt() const
 // function : SetViewClipping
 // purpose  :
 //=======================================================================
-void SelectMgr_SelectingVolumeManager::SetViewClipping (const Handle(Graphic3d_SequenceOfHClipPlane)& thePlanes)
+void SelectMgr_SelectingVolumeManager::SetViewClipping (const Handle(Graphic3d_SequenceOfHClipPlane)& theViewPlanes,
+                                                        const Handle(Graphic3d_SequenceOfHClipPlane)& theObjPlanes)
 {
-  myViewClipPlanes = thePlanes;
+  myViewClipPlanes   = theViewPlanes;
+  myObjectClipPlanes = theObjPlanes;
   if (myActiveSelectionType != Point)
     return;
 
-  mySelectingVolumes[Frustum]->SetViewClipping (thePlanes);
-}
-
-//=======================================================================
-// function : SetViewClippingEnabled
-// purpose  :
-//=======================================================================
-Standard_Boolean SelectMgr_SelectingVolumeManager::SetViewClippingEnabled (const Standard_Boolean theToEnable)
-{
-  if (myActiveSelectionType != Point)
-    return Standard_False;
-
-  return mySelectingVolumes[Frustum]->SetViewClippingEnabled (theToEnable);
+  mySelectingVolumes[Frustum]->SetViewClipping (theViewPlanes, theObjPlanes);
 }

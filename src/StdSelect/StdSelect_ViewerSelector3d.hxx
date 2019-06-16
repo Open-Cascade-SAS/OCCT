@@ -93,8 +93,6 @@ public:
                                          const Handle(V3d_View)& theView,
                                          const Standard_Boolean theToClearOthers = Standard_True);
 
-  Standard_EXPORT virtual Standard_Boolean HasDepthClipping (const Handle(SelectMgr_EntityOwner)& theOwner) const Standard_OVERRIDE;
-
   DEFINE_STANDARD_RTTIEXT(StdSelect_ViewerSelector3d,SelectMgr_ViewerSelector)
 
 protected:

@@ -132,7 +132,7 @@ void StdSelect_ViewerSelector3d::Pick (const Standard_Integer theXPix,
   gp_Pnt2d aMousePos (static_cast<Standard_Real> (theXPix),
                       static_cast<Standard_Real> (theYPix));
   mySelectingVolumeMgr.BuildSelectingVolume (aMousePos);
-  mySelectingVolumeMgr.SetViewClipping (theView->ClipPlanes());
+  mySelectingVolumeMgr.SetViewClipping (theView->ClipPlanes(), Handle(Graphic3d_SequenceOfHClipPlane)());
 
   TraverseSensitives();
 }
@@ -622,22 +622,6 @@ void StdSelect_ViewerSelector3d::computeSensitivePrs (const Handle(Graphic3d_Str
     aSensGroup->AddPrimitiveArray(aPrims);
     aSensGroup->SetPrimitivesAspect (new Graphic3d_AspectLine3d (Quantity_NOC_GRAY40, Aspect_TOL_SOLID, 2.0));
   }
-}
-
-//=======================================================================
-//function : HasDepthClipping
-//purpose  :
-//=======================================================================
-Standard_Boolean StdSelect_ViewerSelector3d::HasDepthClipping (const Handle(SelectMgr_EntityOwner)& theOwner) const
-{
-  if (!theOwner->HasSelectable())
-  {
-    return Standard_False;
-  }
-
-  const Handle(SelectMgr_SelectableObject)& aSelectable = theOwner->Selectable();
-  return !aSelectable->ClipPlanes().IsNull()
-      && !aSelectable->ClipPlanes()->IsEmpty();
 }
 
 //=======================================================================

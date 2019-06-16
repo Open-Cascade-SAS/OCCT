@@ -465,7 +465,6 @@ Handle(SelectMgr_BaseFrustum) SelectMgr_RectangularFrustum::ScaleAndTransform (c
   cacheVertexProjections (aRes.get());
 
   aRes->myViewClipRange = myViewClipRange;
-  aRes->myIsViewClipEnabled = myIsViewClipEnabled;
   aRes->myMousePos      = myMousePos;
 
   return aRes;
@@ -516,7 +515,7 @@ Standard_Boolean SelectMgr_RectangularFrustum::Overlaps (const SelectMgr_Vec3& t
     return isViewClippingOk (thePickResult);
   }
 
-  if (myIsViewClipEnabled && !myViewClipRange.GetNearestDepth (aRange, aDepth))
+  if (!myViewClipRange.GetNearestDepth (aRange, aDepth))
   {
     return Standard_False;
   }
@@ -816,32 +815,23 @@ void SelectMgr_RectangularFrustum::computeClippingRange (const Graphic3d_Sequenc
 }
 
 // =======================================================================
-// function : IsClipped
-// purpose  : Checks if the point of sensitive in which selection was
-//            detected belongs to the region defined by clipping planes
-// =======================================================================
-Standard_Boolean SelectMgr_RectangularFrustum::IsClipped (const Graphic3d_SequenceOfHClipPlane& thePlanes,
-                                                          const Standard_Real theDepth) const
-{
-  SelectMgr_ViewClipRange aRange;
-  computeClippingRange (thePlanes, aRange);
-  return aRange.IsClipped (theDepth);
-}
-
-// =======================================================================
 // function : SetViewClipping
 // purpose  :
 // =======================================================================
-void SelectMgr_RectangularFrustum::SetViewClipping (const Handle(Graphic3d_SequenceOfHClipPlane)& thePlanes)
+void SelectMgr_RectangularFrustum::SetViewClipping (const Handle(Graphic3d_SequenceOfHClipPlane)& theViewPlanes,
+                                                    const Handle(Graphic3d_SequenceOfHClipPlane)& theObjPlanes)
 {
-  if (thePlanes.IsNull()
-   || thePlanes->IsEmpty())
+  myViewClipRange.SetVoid();
+  if (!theViewPlanes.IsNull()
+   && !theViewPlanes->IsEmpty())
   {
-    myViewClipRange.SetVoid();
-    return;
+    computeClippingRange (*theViewPlanes, myViewClipRange);
   }
-
-  computeClippingRange (*thePlanes, myViewClipRange);
+  if (!theObjPlanes.IsNull()
+   && !theObjPlanes->IsEmpty())
+  {
+    computeClippingRange (*theObjPlanes, myViewClipRange);
+  }
 }
 
 // =======================================================================
@@ -850,8 +840,7 @@ void SelectMgr_RectangularFrustum::SetViewClipping (const Handle(Graphic3d_Seque
 // =======================================================================
 Standard_Boolean SelectMgr_RectangularFrustum::isViewClippingOk (const SelectBasics_PickResult& thePickResult) const
 {
-  return !myIsViewClipEnabled
-      || !myViewClipRange.IsClipped (thePickResult.Depth());
+  return !myViewClipRange.IsClipped (thePickResult.Depth());
 }
 
 // =======================================================================

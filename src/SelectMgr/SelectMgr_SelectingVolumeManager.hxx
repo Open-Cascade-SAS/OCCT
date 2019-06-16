@@ -158,11 +158,6 @@ public:
   //! Throws exception if active selection type is not Point.
   Standard_EXPORT virtual gp_Pnt DetectedPoint (const Standard_Real theDepth) const Standard_OVERRIDE;
 
-  //! Checks if the point of sensitive in which selection was detected belongs
-  //! to the region defined by clipping planes
-  Standard_EXPORT virtual Standard_Boolean IsClipped (const Graphic3d_SequenceOfHClipPlane& thePlanes,
-                                                      const Standard_Real& theDepth) const;
-
   //! Is used for rectangular selection only
   //! If theIsToAllow is false, only fully included sensitives will be detected, otherwise the algorithm will
   //! mark both included and overlapped entities as matched
@@ -173,13 +168,15 @@ public:
   //! Return view clipping planes.
   const Handle(Graphic3d_SequenceOfHClipPlane)& ViewClipping() const { return myViewClipPlanes; }
 
-  //! Valid for point selection only!
-  //! Computes depth range for global (defined for the whole view) clipping planes.
-  Standard_EXPORT void SetViewClipping (const Handle(Graphic3d_SequenceOfHClipPlane)& thePlanes);
+  //! Return object clipping planes.
+  const Handle(Graphic3d_SequenceOfHClipPlane)& ObjectClipping() const { return myObjectClipPlanes; }
 
-  //! Set if view clipping plane is enabled or not.
-  //! @return previous flag value
-  Standard_EXPORT Standard_Boolean SetViewClippingEnabled (const Standard_Boolean theToEnable);
+  //! Valid for point selection only!
+  //! Computes depth range for clipping planes.
+  //! @param theViewPlanes global view planes
+  //! @param theObjPlanes  object planes
+  Standard_EXPORT void SetViewClipping (const Handle(Graphic3d_SequenceOfHClipPlane)& theViewPlanes,
+                                        const Handle(Graphic3d_SequenceOfHClipPlane)& theObjPlanes);
 
   //! A set of helper functions that return rectangular selecting frustum data
   Standard_EXPORT const gp_Pnt* GetVertices() const;
@@ -235,6 +232,7 @@ private:
 
   Handle(SelectMgr_BaseFrustum)          mySelectingVolumes[VolumeTypesNb]; //!< Array of selecting volumes
   Handle(Graphic3d_SequenceOfHClipPlane) myViewClipPlanes;                  //!< view clipping planes
+  Handle(Graphic3d_SequenceOfHClipPlane) myObjectClipPlanes;                //!< object clipping planes
   Standard_Boolean                       myToAllowOverlap;                  //!< Defines if partially overlapped entities will me detected or not
 };
 
