@@ -55,6 +55,7 @@
 #include <OSD_Exception_ACCESS_VIOLATION.hxx>
 #include <OSD_Exception_STACK_OVERFLOW.hxx>
 #include <OSD.hxx>
+#include <OSD_ThreadPool.hxx>
 #include <STEPCAFControl_Writer.hxx>
 #include <STEPControl_StepModelType.hxx>
 #include <Interface_Static.hxx>
@@ -2458,6 +2459,68 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
 
   return 0;
 }
+
+//! Auxiliary functor.
+struct TestParallelFunctor
+{
+  TestParallelFunctor() : myNbNotRaised (0), myNbSigSegv (0), myNbUnknown (0) {}
+
+  Standard_Integer NbNotRaised() const { return myNbNotRaised; }
+  Standard_Integer NbSigSegv()   const { return myNbSigSegv; }
+  Standard_Integer NbUnknown()   const { return myNbUnknown; }
+
+  void operator() (int theThreadId, int theTaskId) const
+  {
+    (void )theThreadId;
+    (void )theTaskId;
+
+    // Test Access Violation
+    {
+      try {
+        OCC_CATCH_SIGNALS
+        int* pint = NULL;
+        *pint = 4;
+        Standard_Atomic_Increment (&myNbNotRaised);
+      }
+    #ifdef _WIN32
+      catch (OSD_Exception_ACCESS_VIOLATION const&)
+    #else
+      catch (OSD_SIGSEGV const&)
+    #endif
+      {
+        Standard_Atomic_Increment (&myNbSigSegv);
+      }
+      catch (Standard_Failure const& )
+      {
+        Standard_Atomic_Increment (&myNbUnknown);
+      }
+    }
+  }
+private:
+  mutable volatile Standard_Integer myNbNotRaised;
+  mutable volatile Standard_Integer myNbSigSegv;
+  mutable volatile Standard_Integer myNbUnknown;
+};
+
+static Standard_Integer OCC30775 (Draw_Interpretor& theDI, Standard_Integer theNbArgs, const char** )
+{
+  if (theNbArgs != 1)
+  {
+    std::cout << "Syntax error: wrong number of arguments\n";
+    return 1;
+  }
+
+  Handle(OSD_ThreadPool) aPool = new OSD_ThreadPool (4);
+  OSD_ThreadPool::Launcher aLauncher (*aPool, 4);
+  TestParallelFunctor aFunctor;
+  aLauncher.Perform (0, 100, aFunctor);
+  theDI << "NbRaised: "    << (aFunctor.NbSigSegv() + aFunctor.NbUnknown()) << "\n"
+        << "NbNotRaised: " << aFunctor.NbNotRaised() << "\n"
+        << "NbSigSeg: "    << aFunctor.NbSigSegv() << "\n"
+        << "NbUnknown: "   << aFunctor.NbUnknown() << "\n";
+  return 0;
+}
+
 #if defined(_MSC_VER)
 #pragma optimize( "", on )
 #endif
@@ -4816,7 +4879,8 @@ void QABugs::Commands_11(Draw_Interpretor& theCommands) {
   theCommands.Add("OCC5739", "OCC5739 name shape step", __FILE__, OCC5739_UniAbs, group);
   theCommands.Add("OCC6046", "OCC6046 nb_of_vectors size", __FILE__, OCC6046, group);
   theCommands.Add("OCC5698", "OCC5698 wire", __FILE__, OCC5698, group);
-  theCommands.Add("OCC6143", "OCC6143", __FILE__, OCC6143, group);
+  theCommands.Add("OCC6143", "OCC6143 catching signals", __FILE__, OCC6143, group);
+  theCommands.Add("OCC30775", "OCC30775 catching signals in threads", __FILE__, OCC30775, group);
   theCommands.Add("OCC7141", "OCC7141 [nCount] aPath", __FILE__, OCC7141, group);
   theCommands.Add("OCC7372", "OCC7372", __FILE__, OCC7372, group);
   theCommands.Add("OCC8169", "OCC8169 edge1 edge2 plane", __FILE__, OCC8169, group);

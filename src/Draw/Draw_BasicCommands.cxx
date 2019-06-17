@@ -913,21 +913,70 @@ static int dperf (Draw_Interpretor& theDI, Standard_Integer theArgNb, const char
 
 static int dsetsignal (Draw_Interpretor& theDI, Standard_Integer theArgNb, const char** theArgVec)
 {
-  // arm FPE handler if argument is provided and its first symbol is not '0'
-  // or if environment variable CSF_FPE is set and its first symbol is not '0'
-  bool setFPE = false;
-  if (theArgNb > 1)
+  OSD_SignalMode aMode = OSD_SignalMode_Set;
+  Standard_Boolean aSetFPE = OSD::ToCatchFloatingSignals();
+
+  // default for FPE signal is defined by CSF_FPE variable, if set
+  OSD_Environment aEnv("CSF_FPE");
+  TCollection_AsciiString aEnvStr = aEnv.Value();
+  if (!aEnvStr.IsEmpty())
   {
-    setFPE = (theArgVec[1][0] == '1' || theArgVec[1][0] == 't');
+    aSetFPE = (aEnvStr.Value(1) != '0');
   }
-  else
+
+  // parse arguments
+  for (Standard_Integer anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
   {
-    OSD_Environment aEnv ("CSF_FPE");
-    TCollection_AsciiString aEnvStr = aEnv.Value();
-    setFPE = (! aEnvStr.IsEmpty() && aEnvStr.Value(1) != '0');
+    TCollection_AsciiString anArg(theArgVec[anArgIter]);
+    anArg.LowerCase();
+    if (anArg == "asis")
+    {
+      aMode = OSD_SignalMode_AsIs;
+    }
+    else if (anArg == "set")
+    {
+      aMode = OSD_SignalMode_Set;
+    }
+    else if (anArg == "unhandled")
+    {
+      aMode = OSD_SignalMode_SetUnhandled;
+    }
+    else if (anArg == "unset")
+    {
+      aMode = OSD_SignalMode_Unset;
+    }
+    else if (anArg == "1" || anArg == "on")
+    {
+      aSetFPE = Standard_True;
+    }
+    else if (anArg == "0" || anArg == "off")
+    {
+      aSetFPE = Standard_False;
+    }
+    else if (anArg == "default")
+    {
+    }
+    else
+    {
+      std::cout << "Syntax error: unknown argument '" << anArg << "'\n";
+      return 1;
+    }
   }
-  OSD::SetSignal (setFPE);
-  theDI << "Signal handlers are set, with FPE " << (setFPE ? "armed" : "disarmed"); 
+
+  OSD::SetSignal(aMode, aSetFPE);
+
+  // report actual status in the end
+  const char* aModeStr = 0;
+  switch (OSD::SignalMode())
+  {
+  default:
+  case OSD_SignalMode_AsIs:         aModeStr = "asis";      break;
+  case OSD_SignalMode_Set:          aModeStr = "set";       break;
+  case OSD_SignalMode_SetUnhandled: aModeStr = "unhandled"; break;
+  case OSD_SignalMode_Unset:        aModeStr = "unset";     break;
+  }
+  theDI << "Signal mode: " << aModeStr << "\n"
+        << "Catch FPE: " << (OSD::ToCatchFloatingSignals() ? "1" : "0") << "\n";
   return 0;
 }
 
@@ -1057,7 +1106,7 @@ void Draw::BasicCommands(Draw_Interpretor& theCommands)
 	  __FILE__, dmeminfo, g);
   theCommands.Add("dperf","dperf [reset] -- show performance counters, reset if argument is provided",
 		  __FILE__,dperf,g);
-  theCommands.Add("dsetsignal","dsetsignal [fpe=0] -- set OSD signal handler, with FPE option if argument is given",
+  theCommands.Add("dsetsignal","dsetsignal [{asis|set|unhandled|unset}=set] [{0|1|default=$CSF_FPE}]\n -- set OSD signal handler, with FPE option if argument is given",
 		  __FILE__,dsetsignal,g);
 
   theCommands.Add("dparallel",

@@ -508,7 +508,11 @@ bool Media_PlayerContext::receiveFrame (const Handle(Media_Frame)& theFrame,
 //================================================================
 void Media_PlayerContext::doThreadLoop()
 {
-  OSD::SetSignal (false);
+  // always set OCCT signal handler to catch signals if any;
+  // this is safe (for thread local handler) since the thread
+  // is owned by this class
+  OSD::SetThreadLocalSignal (OSD_SignalMode_Set, false);
+
   Handle(Media_Frame) aFrame;
   bool wasSeeked = false;
   for (;;)

@@ -1,0 +1,24 @@
+puts "================"
+puts "0030775: OSD::SetSignal() within OSD_ThreadPool should not override global handlers"
+puts "================"
+puts ""
+
+pload QAcommands
+
+dsetsignal set
+
+set IsDone [catch {set aResult [OCC30775]} result]
+
+if { ${IsDone} != 0 } {
+  puts "result = ${result}"
+  puts "Error: command raised exception"
+} else {
+  if { [string first "NbRaised: 100" $aResult] != -1 } {
+    puts "OK test case"
+  } else {
+    puts "Error: expected to have 100 raised expections"
+  }
+}
+
+# restore defaults
+dsetsignal

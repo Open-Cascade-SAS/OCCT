@@ -16,16 +16,17 @@
 #include <OSD_Exception_CTRL_BREAK.hxx>
 #include <Standard_DivideByZero.hxx>
 #include <Standard_Overflow.hxx>
+#include <Standard_Assert.hxx>
 
-static Standard_THREADLOCAL Standard_Boolean fFltExceptions = Standard_False;
+static OSD_SignalMode OSD_WasSetSignal = OSD_SignalMode_AsIs;
 
 //=======================================================================
-//function : ToCatchFloatingSignals
+//function : SignalMode
 //purpose  :
 //=======================================================================
-Standard_Boolean OSD::ToCatchFloatingSignals()
+OSD_SignalMode OSD::SignalMode()
 {
-  return fFltExceptions;
+  return OSD_WasSetSignal;
 }
 
 #ifdef _WIN32
@@ -90,7 +91,6 @@ static Standard_Boolean fDbgLoaded;
 static LONG _osd_debug   ( void );
 #endif
 
-//# define _OSD_FPX ( _EM_INVALID | _EM_DENORMAL | _EM_ZERODIVIDE | _EM_OVERFLOW | _EM_UNDERFLOW )
 # define _OSD_FPX ( _EM_INVALID | _EM_DENORMAL | _EM_ZERODIVIDE | _EM_OVERFLOW )
 
 #ifdef OCC_CONVERT_SIGNALS
@@ -236,15 +236,16 @@ static LONG CallHandler (DWORD dwExceptionCode,
 
   }  // end switch
 
+  // reset FPE state (before message box, otherwise it may fail to show up)
+  if ( flterr ) {
+    OSD::SetFloatingSignal (Standard_True);
+  }
+
+#if ! defined(OCCT_UWP) && !defined(__MINGW32__) && !defined(__CYGWIN32__)
  // provide message to the user with possibility to stop
   size_t idx;
   StringCchLengthW (buffer, _countof(buffer),&idx);
   if ( idx && fMsgBox && dwExceptionCode != EXCEPTION_NONCONTINUABLE_EXCEPTION ) {
-     // reset FP operations before message box, otherwise it may fail to show up
-    _fpreset();
-    _clearfp();
-
-#if ! defined(OCCT_UWP) && !defined(__MINGW32__) && !defined(__CYGWIN32__)
     MessageBeep ( MB_ICONHAND );
     int aChoice = ::MessageBoxW (0, buffer, L"OCCT Exception Handler", MB_ABORTRETRYIGNORE | MB_ICONSTOP);
     if (aChoice == IDRETRY)
@@ -253,17 +254,8 @@ static LONG CallHandler (DWORD dwExceptionCode,
       DebugBreak();
     } else if (aChoice == IDABORT)
       exit(0xFFFF);
+  }
 #endif
-  }
-
-  // reset FPE state
-  if ( flterr ) {
-    if ( !fFltExceptions ) return EXCEPTION_EXECUTE_HANDLER;
-   _fpreset () ;
-   _clearfp() ;
-   _controlfp ( 0, _OSD_FPX ) ;          // JR add :
-//     std::cout << "OSD::WntHandler _controlfp( 0, _OSD_FPX ) " << std::hex << _controlfp(0,0) << std::dec << std::endl ;
-  }
 
   char aBufferA[2048];
   WideCharToMultiByte(CP_UTF8, 0, buffer, -1, aBufferA, sizeof(aBufferA), NULL, NULL);
@@ -368,12 +360,59 @@ static LONG WINAPI WntHandler (EXCEPTION_POINTERS *lpXP)
 }
 
 //=======================================================================
+//function : SetFloatingSignal
+//purpose  :
+//=======================================================================
+void OSD::SetFloatingSignal (Standard_Boolean theFloatingSignal)
+{
+  _fpreset();
+  _clearfp();
+  
+  // Note: zero bit means exception will be raised
+  _controlfp (theFloatingSignal ? 0 : _OSD_FPX, _OSD_FPX);
+}
+
+//=======================================================================
+//function : ToCatchFloatingSignals
+//purpose  :
+//=======================================================================
+Standard_Boolean OSD::ToCatchFloatingSignals()
+{
+  // return true if at least one of bits within _OSD_FPX
+  // is unset, which means relevant FPE will raise exception
+  int aControlWord = _controlfp (0, 0);
+  return (_OSD_FPX & ~aControlWord) != 0;
+}
+
+//=======================================================================
+//function : SetThreadLocalSignal
+//purpose  :
+//=======================================================================
+void OSD::SetThreadLocalSignal (OSD_SignalMode theSignalMode,
+                                Standard_Boolean theFloatingSignal)
+{
+#ifdef _MSC_VER
+  _se_translator_function aPreviousFunc = NULL;
+  if (theSignalMode == OSD_SignalMode_Set || theSignalMode == OSD_SignalMode_SetUnhandled)
+    aPreviousFunc = _set_se_translator(TranslateSE);
+  if (theSignalMode == OSD_SignalMode_Unset || (theSignalMode == OSD_SignalMode_SetUnhandled && aPreviousFunc != NULL))
+    _set_se_translator(aPreviousFunc);
+#else
+  (void)theSignalMode;
+#endif
+  SetFloatingSignal (theFloatingSignal);
+}
+
+//=======================================================================
 //function : SetSignal
 //purpose  :
 //=======================================================================
-void OSD::SetSignal (const Standard_Boolean theFloatingSignal)
+void OSD::SetSignal (OSD_SignalMode theSignalMode,
+                     Standard_Boolean theFloatingSignal)
 {
   Standard_Mutex::Sentry aSentry (THE_SIGNAL_MUTEX); // lock the mutex to prevent simultaneous handling
+  OSD_WasSetSignal = theSignalMode;
+
 #if !defined(OCCT_UWP) || defined(NTDDI_WIN10_TH2)
   OSD_Environment env ("CSF_DEBUG_MODE");
   TCollection_AsciiString val = env.Value();
@@ -391,37 +430,53 @@ void OSD::SetSignal (const Standard_Boolean theFloatingSignal)
   // when user's code is compiled with /EHs
   // Replaces the existing top-level exception filter for all existing and all future threads
   // in the calling process
-  ::SetUnhandledExceptionFilter (/*(LPTOP_LEVEL_EXCEPTION_FILTER)*/ WntHandler);
+  {
+    LPTOP_LEVEL_EXCEPTION_FILTER aPreviousFunc = NULL;
+    if (theSignalMode == OSD_SignalMode_Set || theSignalMode == OSD_SignalMode_SetUnhandled)
+    {
+      aPreviousFunc = ::SetUnhandledExceptionFilter(WntHandler);
+    }
+    if (theSignalMode == OSD_SignalMode_Unset || (theSignalMode == OSD_SignalMode_SetUnhandled && aPreviousFunc != NULL))
+    {
+      ::SetUnhandledExceptionFilter(aPreviousFunc);
+    }
+  }
 #endif // NTDDI_WIN10_TH2
 
-  // Signal handlers will only be used when the method ::raise() will be used
-  // Handlers must be set for every thread
-  if (signal (SIGSEGV, (void(*)(int))SIGWntHandler) == SIG_ERR)
-    std::cout << "signal(OSD::SetSignal) error\n";
-  if (signal (SIGFPE,  (void(*)(int))SIGWntHandler) == SIG_ERR)
-    std::cout << "signal(OSD::SetSignal) error\n";
-  if (signal (SIGILL,  (void(*)(int))SIGWntHandler) == SIG_ERR)
-    std::cout << "signal(OSD::SetSignal) error\n";
+  // Signal handlers will only be used when function ::raise() is called
+  const int NBSIG = 3;
+  const int aSignalTypes[NBSIG] = { SIGSEGV, SIGILL, SIGFPE };
+  for (int i = 0; i < NBSIG; ++i)
+  {
+    typedef void (*SignalFuncType)(int); // same as _crt_signal_t available since vc14
+    SignalFuncType aPreviousFunc = SIG_DFL;
+    if (theSignalMode == OSD_SignalMode_Set || theSignalMode == OSD_SignalMode_SetUnhandled)
+    {
+      aPreviousFunc = signal(aSignalTypes[i], (SignalFuncType)SIGWntHandler);
+    }
+    if (theSignalMode == OSD_SignalMode_Unset ||
+        (theSignalMode == OSD_SignalMode_SetUnhandled && aPreviousFunc != SIG_DFL && aPreviousFunc != SIG_ERR))
+    {
+      aPreviousFunc = signal(aSignalTypes[i], aPreviousFunc);
+    }
+    Standard_ASSERT(aPreviousFunc != SIG_ERR, "signal() failed", std::cout << "OSD::SetSignal(): signal() returns SIG_ERR");
+  }
 
   // Set Ctrl-C and Ctrl-Break handler
   fCtrlBrk = Standard_False;
 #ifndef OCCT_UWP
-  SetConsoleCtrlHandler (&_osd_ctrl_break_handler, TRUE);
-#endif
-#ifdef _MSC_VER
-//  _se_translator_function pOldSeFunc =
-  _set_se_translator (TranslateSE);
+  if (theSignalMode == OSD_SignalMode_Set || theSignalMode == OSD_SignalMode_SetUnhandled)
+  {
+    SetConsoleCtrlHandler(&_osd_ctrl_break_handler, true);
+  }
+  else if (theSignalMode == OSD_SignalMode_Unset)
+  {
+    SetConsoleCtrlHandler(&_osd_ctrl_break_handler, false);
+  }
 #endif
 
-  fFltExceptions = theFloatingSignal;
-  if (theFloatingSignal)
-  {
-    _controlfp (0, _OSD_FPX);        // JR add :
-  }
-  else {
-    _controlfp (_OSD_FPX, _OSD_FPX); // JR add :
-  }
-}  // end OSD :: SetSignal
+  SetThreadLocalSignal (theSignalMode, theFloatingSignal);
+}
 
 //============================================================================
 //==== ControlBreak
@@ -636,18 +691,12 @@ static Standard_Boolean fCtrlBrk;
 typedef void (ACT_SIGIO_HANDLER)(void) ;
 ACT_SIGIO_HANDLER *ADR_ACT_SIGIO_HANDLER = NULL ;
 
-#ifdef DECOSF1
-typedef void (* SIG_PFV) (int);
-#endif
-
 #ifdef __GNUC__
 # include <stdlib.h>
 # include <stdio.h>
 #else
 #  ifdef SA_SIGINFO
-#    ifndef _AIX
 #  include <sys/siginfo.h>
-#     endif
 #  endif
 #endif
 typedef void (* SIG_PFV) (int);
@@ -657,6 +706,8 @@ typedef void (* SIG_PFV) (int);
 #if !defined(__ANDROID__) && !defined(__QNX__)
   #include <sys/signal.h>
 #endif
+
+# define _OSD_FPX (FE_INVALID | FE_DIVBYZERO | FE_OVERFLOW)
 
 //============================================================================
 //==== Handler
@@ -696,11 +747,7 @@ static void Handler (const int theSignal)
   // std::cout << "OSD::Handler: signal " << (int) theSignal << " occured inside a try block " <<  std::endl ;
   if ( ADR_ACT_SIGIO_HANDLER != NULL )
     (*ADR_ACT_SIGIO_HANDLER)() ;
-#ifdef __linux__
-  if (fFltExceptions)
-    feenableexcept (FE_INVALID | FE_DIVBYZERO | FE_OVERFLOW);
-    //feenableexcept (FE_INVALID | FE_DIVBYZERO);
-#endif
+
   sigset_t set;
   sigemptyset(&set);
   switch (theSignal) {
@@ -746,10 +793,8 @@ static void Handler (const int theSignal)
   case SIGFPE:
     sigaddset(&set, SIGFPE);
     sigprocmask(SIG_UNBLOCK, &set, NULL) ;
-#ifdef DECOSF1
-    // Pour DEC/OSF1 SIGFPE = Division par zero.
-    Standard_DivideByZero::NewInstance('')->Jump;
-    break;
+#ifdef __linux__
+    OSD::SetFloatingSignal (Standard_True);
 #endif
 #if (!defined (__sun)) && (!defined(SOLARIS))
     Standard_NumericError::NewInstance("SIGFPE Arithmetic exception detected")->Jump();
@@ -788,12 +833,6 @@ static void Handler (const int theSignal)
     }
 #endif
     break;
-#if defined (__sgi) || defined(IRIX)
-  case SIGTRAP:
-    sigaddset(&set, SIGTRAP);
-    sigprocmask(SIG_UNBLOCK, &set, NULL) ;
-    Standard_DivideByZero::NewInstance("SIGTRAP IntegerDivideByZero")->Jump(); break;
-#endif
   default:
 #ifdef OCCT_DEBUG
     std::cout << "Unexpected signal " << theSignal << std::endl ;
@@ -814,11 +853,6 @@ static void SegvHandler(const int theSignal,
   (void)theSignal; // silence GCC warnings
   (void)theContext;
 
-#ifdef __linux__
-  if (fFltExceptions)
-    feenableexcept (FE_INVALID | FE_DIVBYZERO | FE_OVERFLOW);
-    //feenableexcept (FE_INVALID | FE_DIVBYZERO);
-#endif
 //  std::cout << "OSD::SegvHandler activated(SA_SIGINFO)" << std::endl ;
   if ( ip != NULL ) {
      sigset_t set;
@@ -874,160 +908,127 @@ static void SegvHandler(const int theSignal,
 
 #endif
 
+//=======================================================================
+//function : SetFloatingSignal
+//purpose  :
+//=======================================================================
+void OSD::SetFloatingSignal (Standard_Boolean theFloatingSignal)
+{
+#if defined (__linux__)
+  feclearexcept (FE_ALL_EXCEPT);
+  if (theFloatingSignal)
+  {
+    feenableexcept (_OSD_FPX);
+  }
+  else
+  {
+    fedisableexcept (_OSD_FPX);
+  }
+#elif defined (__sun) || defined (SOLARIS)
+  int aSunStat = 0;
+  sigfpe_handler_type anFpeHandler = (theFloatingSignal ? (sigfpe_handler_type)Handler : NULL);
+  aSunStat = ieee_handler ("set", "invalid",  anFpeHandler);
+  aSunStat = ieee_handler ("set", "division", anFpeHandler) || aSunStat;
+  aSunStat = ieee_handler ("set", "overflow", anFpeHandler) || aSunStat;
+  if (aSunStat)
+  {
+#ifdef OCCT_DEBUG
+    std::cerr << "ieee_handler does not work !!! KO\n";
+#endif
+  }
+#else
+  (void)theFloatingSignal;
+#endif
+}
+
+//=======================================================================
+//function : ToCatchFloatingSignals
+//purpose  :
+//=======================================================================
+Standard_Boolean OSD::ToCatchFloatingSignals()
+{
+#if defined (__linux__)
+  return (fegetexcept() & _OSD_FPX) != 0;
+#else
+  return Standard_False;
+#endif
+}
+
+//=======================================================================
+//function : SetThreadLocalSignal
+//purpose  :
+//=======================================================================
+void OSD::SetThreadLocalSignal (OSD_SignalMode /*theSignalMode*/,
+                                Standard_Boolean theFloatingSignal)
+{
+  SetFloatingSignal (theFloatingSignal);
+}
+
 //============================================================================
 //==== SetSignal
 //====     Set the differents signals:
 //============================================================================
 
-void OSD::SetSignal(const Standard_Boolean aFloatingSignal)
+void OSD::SetSignal (OSD_SignalMode theSignalMode,
+                     Standard_Boolean theFloatingSignal)
 {
-  struct sigaction act, oact;
-  int              stat = 0;
+  SetFloatingSignal (theFloatingSignal);
 
-  if( aFloatingSignal ) {
-    //==== Enable the floating point exceptions ===============
-#if defined (__sun) || defined (SOLARIS)
-    sigfpe_handler_type PHandler = (sigfpe_handler_type) Handler ;
-    stat = ieee_handler("set", "invalid",  PHandler);
-    stat = ieee_handler("set", "division", PHandler) || stat;
-    stat = ieee_handler("set", "overflow", PHandler) || stat;
+  OSD_WasSetSignal = theSignalMode;
+  if (theSignalMode == OSD_SignalMode_AsIs)
+  {
+    return; // nothing to be done with signal handlers
+  }
 
-    //stat = ieee_handler("set", "underflow", PHandler) || stat;
-    //stat = ieee_handler("set", "inexact", PHandler) || stat;
+  // Prepare signal descriptors
+  struct sigaction anActSet, anActDfl, anActOld;
+  sigemptyset(&anActSet.sa_mask);
+  sigemptyset(&anActDfl.sa_mask);
+  sigemptyset(&anActOld.sa_mask);
+#ifdef SA_RESTART
+  anActSet.sa_flags = anActDfl.sa_flags = anActOld.sa_flags = SA_RESTART;
+#else
+  anActSet.sa_flags = anActDfl.sa_flags = anActOld.sa_flags = 0;
+#endif
+#ifdef SA_SIGINFO
+  anActSet.sa_flags = anActSet.sa_flags | SA_SIGINFO;
+  anActSet.sa_sigaction = Handler;
+#else
+  anActSet.sa_handler = Handler;
+#endif
+  anActDfl.sa_handler = SIG_DFL;
 
-    if (stat) {
-#ifdef OCCT_DEBUG
-      std::cerr << "ieee_handler does not work !!! KO " << std::endl;
+  // Set signal handlers; NB: SIGSEGV must be the last one!
+  const int NBSIG = 8;
+  const int aSignalTypes[NBSIG] = { SIGFPE, SIGHUP, SIGINT, SIGQUIT, SIGILL, SIGBUS, SIGSYS, SIGSEGV };
+  for (int i = 0; i < NBSIG; ++i)
+  {
+    // SIGSEGV has special handler
+    if (aSignalTypes[i] == SIGSEGV)
+    {
+#ifdef SA_SIGINFO
+      anActSet.sa_sigaction = /*(void(*)(int, siginfo_t *, void*))*/ SegvHandler;
+#else
+      anActSet.sa_handler = /*(SIG_PFV)*/ SegvHandler;
 #endif
     }
-#elif defined (__linux__)
-    feenableexcept (FE_INVALID | FE_DIVBYZERO | FE_OVERFLOW);
-    fFltExceptions = Standard_True;
-#endif
+
+    // set handler according to specified mode and current handler
+    int retcode = -1;
+    if (theSignalMode == OSD_SignalMode_Set || theSignalMode == OSD_SignalMode_SetUnhandled)
+    {
+      retcode = sigaction (aSignalTypes[i], &anActSet, &anActOld);
+    }
+    else if (theSignalMode == OSD_SignalMode_Unset)
+    {
+      retcode = sigaction (aSignalTypes[i], &anActDfl, &anActOld);
+    }
+    if (theSignalMode == OSD_SignalMode_SetUnhandled && retcode == 0 && anActOld.sa_handler != SIG_DFL)
+    {
+      retcode = sigaction (aSignalTypes[i], &anActOld, &anActOld);
+    }
+    Standard_ASSERT(retcode == 0, "sigaction() failed", std::cout << "OSD::SetSignal(): sigaction() failed for " << aSignalTypes[i] << std::endl);
   }
-  else
-  {
-#if defined (__linux__)
-    fedisableexcept (FE_INVALID | FE_DIVBYZERO | FE_OVERFLOW);
-    fFltExceptions = Standard_False;
-#endif
-  }
-
-#if defined (sgi) || defined (IRIX )
- char *TRAP_FPE = getenv("TRAP_FPE") ;
- if ( TRAP_FPE == NULL ) {
-#ifdef OCCT_DEBUG
-   std::cout << "On SGI you must set TRAP_FPE environment variable : " << std::endl ;
-   std::cout << "set env(TRAP_FPE) \"UNDERFL=FLUSH_ZERO;OVERFL=DEFAULT;DIVZERO=DEFAULT;INT_OVERFL=DEFAULT\" or" << std::endl ;
-   std::cout << "setenv TRAP_FPE \"UNDERFL=FLUSH_ZERO;OVERFL=DEFAULT;DIVZERO=DEFAULT;INT_OVERFL=DEFAULT\"" << std::endl ;
-#endif
- }
-#endif
-
-  //==== Save the old Signal Handler, and set the new one ===================
-
-  sigemptyset(&act.sa_mask) ;
-
-#ifdef SA_RESTART
-  act.sa_flags   = SA_RESTART ;
-#else
-  act.sa_flags   = 0 ;
-#endif
-#ifdef SA_SIGINFO
-  act.sa_flags = act.sa_flags | SA_SIGINFO ;
-  act.sa_sigaction = /*(void(*)(int, siginfo_t *, void*))*/ Handler;
-#else
-  act.sa_handler = /*(SIG_PFV)*/ Handler;
-#endif
-
-  //==== Always detected the signal "SIGFPE" =================================
-  stat = sigaction(SIGFPE,&act,&oact);   // ...... floating point exception
-  if (stat) {
-#ifdef OCCT_DEBUG
-     std::cerr << "sigaction does not work !!! KO " << std::endl;
-#endif
-     perror("sigaction ");
-  }
-
-  //==== Detected the only the "free" signals ================================
-  sigaction(SIGHUP,&act,&oact);    // ...... hangup
-
-#ifdef OBJS
-  if(oact.sa_handler)
-	sigaction(SIGHUP,&oact,&oact);
-#endif
-
-  sigaction(SIGINT,&act,&oact);   // ...... interrupt
-
-#ifdef OBJS
-  if(oact.sa_handler)
-	sigaction(SIGINT,&oact,&oact);
-#endif
-
-  sigaction(SIGQUIT,&act,&oact);  // ...... quit
-
-#ifdef OBJS
-  if(oact.sa_handler)
-	sigaction(SIGQUIT,&oact,&oact);
-#endif
-
-  sigaction(SIGILL,&act,&oact);   // ...... illegal instruction
-
-#ifdef OBJS
-  if(oact.sa_handler)
-	sigaction(SIGILL,&oact,&oact);
-#endif
-
-  sigaction(SIGBUS,&act,&oact);   // ...... bus error
-
-#ifdef OBJS
-  if(oact.sa_handler)
-	sigaction(SIGBUS,&oact,&oact);
-#endif
-
-#if !defined(__linux__)
-  sigaction(SIGSYS,&act,&oact);   // ...... bad argument to system call
-
-# ifdef OBJS
-  if(oact.sa_handler)
-	sigaction(SIGSYS,&oact,&oact);
-# endif
-#endif
-
-#if defined (__sgi) || defined(IRIX)
-  sigaction(SIGTRAP,&act,&oact);   // Integer Divide By Zero (IRIX)
-
-# ifdef OBJS
-  if(oact.sa_handler)
-	sigaction(SIGTRAP,&oact,&oact);
-# endif
-#endif
-
-#ifdef SA_SIGINFO
-  act.sa_sigaction = /*(void(*)(int, siginfo_t *, void*))*/ SegvHandler;
-#else
-  act.sa_handler = /*(SIG_PFV)*/ SegvHandler;
-#endif
-
-  if ( sigaction( SIGSEGV , &act , &oact ) )  // ...... segmentation violation
-    perror("OSD::SetSignal sigaction( SIGSEGV , &act , &oact ) ") ;
-
-#ifdef OBJS
-  if(oact.sa_handler)
-	sigaction(SIGSEGV,&oact,&oact);
-#endif
-#if defined(__osf__) || defined(DECOSF1)
-   struct sigaction action, prev_action;
-   action.sa_handler = SIG_IGN;
-   action.sa_mask = 0;
-   action.sa_flags = 0;
-
-   if (sigaction (SIGFPE, &action, &prev_action) == -1) {
-     perror ("sigaction");
-     exit (1);
-   }
-#endif
-
 }
 
 //============================================================================
