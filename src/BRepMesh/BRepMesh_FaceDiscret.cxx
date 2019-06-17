@@ -43,7 +43,7 @@ BRepMesh_FaceDiscret::~BRepMesh_FaceDiscret()
 // Function: Perform
 // Purpose : 
 //=======================================================================
-Standard_Boolean BRepMesh_FaceDiscret::Perform(
+Standard_Boolean BRepMesh_FaceDiscret::performInternal(
   const Handle(IMeshData_Model)& theModel,
   const IMeshTools_Parameters&   theParameters)
 {
@@ -73,14 +73,23 @@ void BRepMesh_FaceDiscret::process(const Standard_Integer theFaceIndex) const
     return;
   }
 
-  Handle(IMeshTools_MeshAlgo) aMeshingAlgo = 
-    myAlgoFactory->GetAlgo(aDFace->GetSurface()->GetType(), myParameters);
-
-  if (aMeshingAlgo.IsNull())
+  try
   {
-    aDFace->SetStatus(IMeshData_Failure);
-    return;
-  }
+    OCC_CATCH_SIGNALS
 
-  aMeshingAlgo->Perform(aDFace, myParameters);
+    Handle(IMeshTools_MeshAlgo) aMeshingAlgo = 
+      myAlgoFactory->GetAlgo(aDFace->GetSurface()->GetType(), myParameters);
+  
+    if (aMeshingAlgo.IsNull())
+    {
+      aDFace->SetStatus(IMeshData_Failure);
+      return;
+    }
+  
+    aMeshingAlgo->Perform(aDFace, myParameters);
+  }
+  catch (Standard_Failure const&)
+  {
+    aDFace->SetStatus (IMeshData_Failure);
+  }
 }

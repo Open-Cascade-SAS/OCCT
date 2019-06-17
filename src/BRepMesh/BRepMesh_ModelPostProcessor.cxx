@@ -177,7 +177,7 @@ BRepMesh_ModelPostProcessor::~BRepMesh_ModelPostProcessor()
 // Function: Perform
 // Purpose : 
 //=======================================================================
-Standard_Boolean BRepMesh_ModelPostProcessor::Perform(
+Standard_Boolean BRepMesh_ModelPostProcessor::performInternal(
   const Handle(IMeshData_Model)& theModel,
   const IMeshTools_Parameters&   /*theParameters*/)
 {

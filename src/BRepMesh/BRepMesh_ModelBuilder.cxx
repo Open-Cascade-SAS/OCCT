@@ -18,7 +18,6 @@
 #include <BRepMesh_ShapeVisitor.hxx>
 #include <BRepMesh_ShapeTool.hxx>
 #include <IMeshTools_ShapeExplorer.hxx>
-#include <Standard_ErrorHandler.hxx>
 
 #include <Bnd_Box.hxx>
 #include <BRepBndLib.hxx>
@@ -43,52 +42,42 @@ BRepMesh_ModelBuilder::~BRepMesh_ModelBuilder ()
 // Function: Perform
 // Purpose : 
 //=======================================================================
-Handle (IMeshData_Model) BRepMesh_ModelBuilder::Perform (
+Handle (IMeshData_Model) BRepMesh_ModelBuilder::performInternal (
   const TopoDS_Shape&          theShape,
   const IMeshTools_Parameters& theParameters)
 {
-  ClearStatus ();
-
   Handle (BRepMeshData_Model) aModel;
-  try
+
+  Bnd_Box aBox;
+  BRepBndLib::Add (theShape, aBox, Standard_False);
+
+  if (!aBox.IsVoid ())
   {
-    OCC_CATCH_SIGNALS
+    // Build data model for further processing.
+    aModel = new BRepMeshData_Model (theShape);
 
-    Bnd_Box aBox;
-    BRepBndLib::Add (theShape, aBox, Standard_False);
-
-    if (!aBox.IsVoid ())
+    if (theParameters.Relative)
     {
-      // Build data model for further processing.
-      aModel = new BRepMeshData_Model (theShape);
-
-      if (theParameters.Relative)
-      {
-        Standard_Real aMaxSize;
-        BRepMesh_ShapeTool::BoxMaxDimension (aBox, aMaxSize);
-        aModel->SetMaxSize(aMaxSize);
-      }
-      else
-      {
-        aModel->SetMaxSize(Max(theParameters.Deflection,
-                               theParameters.DeflectionInterior));
-      }
-
-      Handle (IMeshTools_ShapeVisitor) aVisitor =
-        new BRepMesh_ShapeVisitor (aModel);
-
-      IMeshTools_ShapeExplorer aExplorer (theShape);
-      aExplorer.Accept (aVisitor);
-      SetStatus (Message_Done1);
+      Standard_Real aMaxSize;
+      BRepMesh_ShapeTool::BoxMaxDimension (aBox, aMaxSize);
+      aModel->SetMaxSize(aMaxSize);
     }
     else
     {
-      SetStatus(Message_Fail1);
+      aModel->SetMaxSize(Max(theParameters.Deflection,
+                             theParameters.DeflectionInterior));
     }
+
+    Handle (IMeshTools_ShapeVisitor) aVisitor =
+      new BRepMesh_ShapeVisitor (aModel);
+
+    IMeshTools_ShapeExplorer aExplorer (theShape);
+    aExplorer.Accept (aVisitor);
+    SetStatus (Message_Done1);
   }
-  catch (Standard_Failure&)
+  else
   {
-    SetStatus (Message_Fail2);
+    SetStatus (Message_Fail1);
   }
 
   return aModel;

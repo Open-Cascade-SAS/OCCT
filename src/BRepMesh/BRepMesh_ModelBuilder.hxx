@@ -36,13 +36,15 @@ public:
   //! Destructor.
   Standard_EXPORT virtual ~BRepMesh_ModelBuilder ();
 
+  DEFINE_STANDARD_RTTI_INLINE(BRepMesh_ModelBuilder, IMeshTools_ModelBuilder)
+
+protected:
+
   //! Creates discrete model for the given shape.
   //! Returns nullptr in case of failure.
-  Standard_EXPORT virtual Handle (IMeshData_Model) Perform (
+  Standard_EXPORT virtual Handle (IMeshData_Model) performInternal (
     const TopoDS_Shape&          theShape,
     const IMeshTools_Parameters& theParameters) Standard_OVERRIDE;
-
-  DEFINE_STANDARD_RTTI_INLINE(BRepMesh_ModelBuilder, IMeshTools_ModelBuilder)
 };
 
 #endif

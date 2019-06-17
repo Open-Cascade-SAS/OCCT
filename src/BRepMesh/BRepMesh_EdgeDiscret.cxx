@@ -83,7 +83,7 @@ Handle(IMeshTools_CurveTessellator) BRepMesh_EdgeDiscret::CreateEdgeTessellation
 // Function: Perform
 // Purpose : 
 //=======================================================================
-Standard_Boolean BRepMesh_EdgeDiscret::Perform (
+Standard_Boolean BRepMesh_EdgeDiscret::performInternal (
   const Handle (IMeshData_Model)& theModel,
   const IMeshTools_Parameters&    theParameters)
 {
@@ -108,69 +108,78 @@ Standard_Boolean BRepMesh_EdgeDiscret::Perform (
 void BRepMesh_EdgeDiscret::process (const Standard_Integer theEdgeIndex) const
 {
   const IMeshData::IEdgeHandle& aDEdge = myModel->GetEdge (theEdgeIndex);
-  BRepMesh_Deflection::ComputeDeflection (aDEdge, myModel->GetMaxSize (), myParameters);
-
-  Handle (IMeshTools_CurveTessellator) aEdgeTessellator;
-  if (!aDEdge->IsFree ())
+  try
   {
-    // Iterate over pcurves and check deflection on corresponding face.
-    Standard_Real    aMinDeflection = RealLast ();
-    Standard_Integer aMinPCurveIndex = -1;
-    for (Standard_Integer aPCurveIt = 0; aPCurveIt < aDEdge->PCurvesNb (); ++aPCurveIt)
+    OCC_CATCH_SIGNALS
+
+    BRepMesh_Deflection::ComputeDeflection (aDEdge, myModel->GetMaxSize (), myParameters);
+  
+    Handle (IMeshTools_CurveTessellator) aEdgeTessellator;
+    if (!aDEdge->IsFree ())
     {
-      const IMeshData::IPCurveHandle& aPCurve = aDEdge->GetPCurve (aPCurveIt);
-      const Standard_Real aTmpDeflection = checkExistingPolygonAndUpdateStatus(aDEdge, aPCurve);
-      if (aTmpDeflection < aMinDeflection)
+      // Iterate over pcurves and check deflection on corresponding face.
+      Standard_Real    aMinDeflection = RealLast ();
+      Standard_Integer aMinPCurveIndex = -1;
+      for (Standard_Integer aPCurveIt = 0; aPCurveIt < aDEdge->PCurvesNb (); ++aPCurveIt)
       {
-        // Identify pcurve with the smallest deflection in order to
-        // retrieve polygon that represents the most smooth discretization.
-        aMinDeflection  = aTmpDeflection;
-        aMinPCurveIndex = aPCurveIt;
+        const IMeshData::IPCurveHandle& aPCurve = aDEdge->GetPCurve (aPCurveIt);
+        const Standard_Real aTmpDeflection = checkExistingPolygonAndUpdateStatus(aDEdge, aPCurve);
+        if (aTmpDeflection < aMinDeflection)
+        {
+          // Identify pcurve with the smallest deflection in order to
+          // retrieve polygon that represents the most smooth discretization.
+          aMinDeflection  = aTmpDeflection;
+          aMinPCurveIndex = aPCurveIt;
+        }
+  
+        BRepMesh_ShapeTool::CheckAndUpdateFlags (aDEdge, aPCurve);
       }
-
-      BRepMesh_ShapeTool::CheckAndUpdateFlags (aDEdge, aPCurve);
-    }
-
-    if (aMinPCurveIndex != -1)
-    {
-      aDEdge->SetDeflection (aMinDeflection);
-      const IMeshData::IFaceHandle aDFace = aDEdge->GetPCurve(aMinPCurveIndex)->GetFace();
-      aEdgeTessellator = CreateEdgeTessellationExtractor(aDEdge, aDFace);
-    }
-    else
-    {
-      const IMeshData::IPCurveHandle& aPCurve = aDEdge->GetPCurve(0);
-      const IMeshData::IFaceHandle    aDFace  = aPCurve->GetFace();
-      aEdgeTessellator = BRepMesh_EdgeDiscret::CreateEdgeTessellator(
-        aDEdge, aPCurve->GetOrientation(), aDFace, myParameters);
-    }
-  }
-  else
-  {
-    TopLoc_Location aLoc;
-    const Handle (Poly_Polygon3D)& aPoly3D = BRep_Tool::Polygon3D (aDEdge->GetEdge (), aLoc);
-    if (!aPoly3D.IsNull ())
-    {
-      if (aPoly3D->HasParameters () &&
-          aPoly3D->Deflection () < 1.1 * aDEdge->GetDeflection ())
+  
+      if (aMinPCurveIndex != -1)
       {
-        // Edge already has suitable 3d polygon.
-        aDEdge->SetStatus(IMeshData_Reused);
-        return;
+        aDEdge->SetDeflection (aMinDeflection);
+        const IMeshData::IFaceHandle aDFace = aDEdge->GetPCurve(aMinPCurveIndex)->GetFace();
+        aEdgeTessellator = CreateEdgeTessellationExtractor(aDEdge, aDFace);
       }
       else
       {
-        aDEdge->SetStatus(IMeshData_Outdated);
+        const IMeshData::IPCurveHandle& aPCurve = aDEdge->GetPCurve(0);
+        const IMeshData::IFaceHandle    aDFace  = aPCurve->GetFace();
+        aEdgeTessellator = BRepMesh_EdgeDiscret::CreateEdgeTessellator(
+          aDEdge, aPCurve->GetOrientation(), aDFace, myParameters);
       }
     }
-
-    aEdgeTessellator = CreateEdgeTessellator(aDEdge, myParameters);
+    else
+    {
+      TopLoc_Location aLoc;
+      const Handle (Poly_Polygon3D)& aPoly3D = BRep_Tool::Polygon3D (aDEdge->GetEdge (), aLoc);
+      if (!aPoly3D.IsNull ())
+      {
+        if (aPoly3D->HasParameters () &&
+            aPoly3D->Deflection () < 1.1 * aDEdge->GetDeflection ())
+        {
+          // Edge already has suitable 3d polygon.
+          aDEdge->SetStatus(IMeshData_Reused);
+          return;
+        }
+        else
+        {
+          aDEdge->SetStatus(IMeshData_Outdated);
+        }
+      }
+  
+      aEdgeTessellator = CreateEdgeTessellator(aDEdge, myParameters);
+    }
+  
+    Tessellate3d (aDEdge, aEdgeTessellator, Standard_True);
+    if (!aDEdge->IsFree())
+    {
+      Tessellate2d(aDEdge, Standard_True);
+    }
   }
-
-  Tessellate3d (aDEdge, aEdgeTessellator, Standard_True);
-  if (!aDEdge->IsFree())
+  catch (Standard_Failure const&)
   {
-    Tessellate2d(aDEdge, Standard_True);
+    aDEdge->SetStatus (IMeshData_Failure);
   }
 }
 

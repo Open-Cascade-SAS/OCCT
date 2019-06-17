@@ -17,6 +17,8 @@
 #define _IMeshTools_ModelBuilder_HeaderFile
 
 #include <Message_Algorithm.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_Failure.hxx>
 #include <Standard_Type.hxx>
 #include <TopoDS_Shape.hxx>
 
@@ -38,11 +40,26 @@ public:
   {
   }
 
-  //! Creates discrete model for the given shape.
+  //! Exceptions protected method to create discrete model for the given shape.
   //! Returns nullptr in case of failure.
-  Standard_EXPORT virtual Handle (IMeshData_Model) Perform (
+  Handle (IMeshData_Model) Perform (
     const TopoDS_Shape&          theShape,
-    const IMeshTools_Parameters& theParameters) = 0;
+    const IMeshTools_Parameters& theParameters)
+  {
+    ClearStatus ();
+
+    try
+    {
+      OCC_CATCH_SIGNALS
+
+      return performInternal (theShape, theParameters);
+    }
+    catch (Standard_Failure const&)
+    {
+      SetStatus (Message_Fail2);
+      return NULL;
+    }
+  }
 
   DEFINE_STANDARD_RTTI_INLINE(IMeshTools_ModelBuilder, Message_Algorithm)
 
@@ -52,6 +69,12 @@ protected:
   Standard_EXPORT IMeshTools_ModelBuilder()
   {
   }
+
+  //! Creates discrete model for the given shape.
+  //! Returns nullptr in case of failure.
+  Standard_EXPORT virtual Handle (IMeshData_Model) performInternal (
+    const TopoDS_Shape&          theShape,
+    const IMeshTools_Parameters& theParameters) = 0;
 };
 
 #endif

@@ -16,6 +16,8 @@
 #ifndef _IMeshTools_ModelAlgo_HeaderFile
 #define _IMeshTools_ModelAlgo_HeaderFile
 
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_Failure.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 
@@ -32,10 +34,22 @@ public:
   {
   }
 
-  //! Performs processing of edges of the given model.
-  Standard_EXPORT virtual Standard_Boolean Perform (
+  //! Exceptions protected processing of the given model.
+  Standard_Boolean Perform (
     const Handle (IMeshData_Model)& theModel,
-    const IMeshTools_Parameters&    theParameters) = 0;
+    const IMeshTools_Parameters&    theParameters)
+  {
+    try
+    {
+      OCC_CATCH_SIGNALS
+
+      return performInternal (theModel, theParameters);
+    }
+    catch (Standard_Failure const&)
+    {
+      return Standard_False;
+    }
+  }
 
   DEFINE_STANDARD_RTTI_INLINE(IMeshTools_ModelAlgo, Standard_Transient)
 
@@ -45,6 +59,11 @@ protected:
   Standard_EXPORT IMeshTools_ModelAlgo()
   {
   }
+
+  //! Performs processing of the given model.
+  Standard_EXPORT virtual Standard_Boolean performInternal (
+    const Handle (IMeshData_Model)& theModel,
+    const IMeshTools_Parameters&    theParameters) = 0;
 };
 
 #endif

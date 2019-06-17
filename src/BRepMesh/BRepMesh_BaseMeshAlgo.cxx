@@ -65,7 +65,7 @@ void BRepMesh_BaseMeshAlgo::Perform(
       commitSurfaceTriangulation();
     }
   }
-  catch (Standard_Failure& /*theExeption*/)
+  catch (Standard_Failure const& /*theExeption*/)
   {
   }
 

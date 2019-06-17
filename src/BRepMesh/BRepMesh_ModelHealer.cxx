@@ -115,7 +115,7 @@ BRepMesh_ModelHealer::~BRepMesh_ModelHealer()
 // Function: Perform
 // Purpose : 
 //=======================================================================
-Standard_Boolean BRepMesh_ModelHealer::Perform(
+Standard_Boolean BRepMesh_ModelHealer::performInternal(
   const Handle(IMeshData_Model)& theModel,
   const IMeshTools_Parameters&   theParameters)
 {
@@ -226,21 +226,30 @@ Standard_Boolean BRepMesh_ModelHealer::popEdgesToUpdate(
 //=======================================================================
 void BRepMesh_ModelHealer::process(const IMeshData::IFaceHandle& theDFace) const
 {
-  Handle(IMeshData::MapOfIEdgePtr)& aIntersections = myFaceIntersectingEdges->ChangeFind(theDFace.get());
-  aIntersections.Nullify();
-
-  fixFaceBoundaries(theDFace);
-
-  if (!theDFace->IsSet(IMeshData_Failure))
+  try
   {
-    BRepMesh_FaceChecker aChecker(theDFace, myParameters);
-    if (!aChecker.Perform())
+    OCC_CATCH_SIGNALS
+
+    Handle(IMeshData::MapOfIEdgePtr)& aIntersections = myFaceIntersectingEdges->ChangeFind(theDFace.get());
+    aIntersections.Nullify();
+  
+    fixFaceBoundaries(theDFace);
+  
+    if (!theDFace->IsSet(IMeshData_Failure))
     {
+      BRepMesh_FaceChecker aChecker(theDFace, myParameters);
+      if (!aChecker.Perform())
+      {
 #ifdef DEBUG_HEALER
-      std::cout << "Failed : #" << aChecker.GetIntersectingEdges()->Size() << std::endl;
+        std::cout << "Failed : #" << aChecker.GetIntersectingEdges()->Size() << std::endl;
 #endif
-      aIntersections = aChecker.GetIntersectingEdges();
+        aIntersections = aChecker.GetIntersectingEdges();
+      }
     }
+  }
+  catch (Standard_Failure const&)
+  {
+    theDFace->SetStatus (IMeshData_Failure);
   }
 }
 

@@ -52,11 +52,6 @@ public:
     const IMeshData::IEdgeHandle& theDEdge,
     const IMeshData::IFaceHandle& theDFace);
 
-  //! Performs processing of edges of the given model.
-  Standard_EXPORT virtual Standard_Boolean Perform (
-    const Handle (IMeshData_Model)& theModel,
-    const IMeshTools_Parameters&    theParameters) Standard_OVERRIDE;
-
   //! Functor API to discretize the given edge.
   inline void operator() (const Standard_Integer theEdgeIndex) const {
     process (theEdgeIndex);
@@ -74,6 +69,13 @@ public:
     const Standard_Boolean        theUpdateEnds);
 
   DEFINE_STANDARD_RTTI_INLINE(BRepMesh_EdgeDiscret, IMeshTools_ModelAlgo)
+
+protected:
+
+  //! Performs processing of edges of the given model.
+  Standard_EXPORT virtual Standard_Boolean performInternal (
+    const Handle (IMeshData_Model)& theModel,
+    const IMeshTools_Parameters&    theParameters) Standard_OVERRIDE;
 
 private:
 

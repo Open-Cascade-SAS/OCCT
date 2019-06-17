@@ -23,7 +23,7 @@
 
 //! Class implements functionality starting triangulation of model's faces.
 //! Each face is processed separately and can be executed in parallel mode.
-//! Uses mesh algo factory passed as initializer to create instace of triangulation 
+//! Uses mesh algo factory passed as initializer to create instance of triangulation 
 //! algorithm according to type of surface of target face.
 class BRepMesh_FaceDiscret : public IMeshTools_ModelAlgo
 {
@@ -36,17 +36,19 @@ public:
   //! Destructor.
   Standard_EXPORT virtual ~BRepMesh_FaceDiscret();
 
-  //! Performs processing of edges of the given model.
-  Standard_EXPORT virtual Standard_Boolean Perform(
-    const Handle(IMeshData_Model)& theModel,
-    const IMeshTools_Parameters&   theParameters) Standard_OVERRIDE;
-
   //! Functor API to discretize the given edge.
   inline void operator() (const Standard_Integer theFaceIndex) const {
     process(theFaceIndex);
   }
 
   DEFINE_STANDARD_RTTI_INLINE(BRepMesh_FaceDiscret, IMeshTools_ModelAlgo)
+
+protected:
+
+  //! Performs processing of faces of the given model.
+  Standard_EXPORT virtual Standard_Boolean performInternal (
+    const Handle(IMeshData_Model)& theModel,
+    const IMeshTools_Parameters&   theParameters) Standard_OVERRIDE;
 
 private:
 
