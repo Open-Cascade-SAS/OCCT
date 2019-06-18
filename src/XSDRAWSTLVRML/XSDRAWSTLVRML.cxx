@@ -19,6 +19,8 @@
 #include <Bnd_Box.hxx>
 #include <BRep_Builder.hxx>
 #include <DBRep.hxx>
+#include <DDocStd.hxx>
+#include <DDocStd_DrawDocument.hxx>
 #include <Draw.hxx>
 #include <Draw_Interpretor.hxx>
 #include <Draw_PluginMacro.hxx>
@@ -40,6 +42,7 @@
 #include <Quantity_Color.hxx>
 #include <Quantity_HArray1OfColor.hxx>
 #include <Quantity_NameOfColor.hxx>
+#include <RWGltf_CafReader.hxx>
 #include <RWStl.hxx>
 #include <SelectMgr_SelectionManager.hxx>
 #include <Standard_ErrorHandler.hxx>
@@ -51,8 +54,11 @@
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_HPackedMapOfInteger.hxx>
 #include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
+#include <TDataStd_Name.hxx>
+#include <TDocStd_Application.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
+#include <UnitsAPI.hxx>
 #include <UnitsMethods.hxx>
 #include <V3d_View.hxx>
 #include <ViewerTest.hxx>
@@ -76,6 +82,126 @@
 extern Standard_Boolean VDisplayAISObject (const TCollection_AsciiString& theName,
                                            const Handle(AIS_InteractiveObject)& theAISObj,
                                            Standard_Boolean theReplaceIfExists = Standard_True);
+
+//=============================================================================
+//function : ReadGltf
+//purpose  : Reads glTF file
+//=============================================================================
+static Standard_Integer ReadGltf (Draw_Interpretor& theDI,
+                                  Standard_Integer theNbArgs,
+                                  const char** theArgVec)
+{
+  TCollection_AsciiString aDestName, aFilePath;
+  Standard_Boolean toUseExistingDoc = Standard_False;
+  Standard_Real aSystemUnitFactor = UnitsMethods::GetCasCadeLengthUnit() * 0.001;
+  Standard_Boolean toListExternalFiles = Standard_False;
+  Standard_Boolean isParallel = Standard_False;
+  Standard_Boolean isNoDoc = (TCollection_AsciiString(theArgVec[0]) == "readgltf");
+  for (Standard_Integer anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
+  {
+    TCollection_AsciiString anArgCase (theArgVec[anArgIter]);
+    anArgCase.LowerCase();
+    if (!isNoDoc
+     && (anArgCase == "-nocreate"
+      || anArgCase == "-nocreatedoc"))
+    {
+      toUseExistingDoc = Standard_True;
+      if (anArgIter + 1 < theNbArgs
+       && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], toUseExistingDoc))
+      {
+        ++anArgIter;
+      }
+    }
+    else if (anArgCase == "-parallel")
+    {
+      isParallel = Standard_True;
+      if (anArgIter + 1 < theNbArgs
+       && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], isParallel))
+      {
+        ++anArgIter;
+      }
+    }
+    else if (anArgCase == "-listexternalfiles"
+          || anArgCase == "-listexternals"
+          || anArgCase == "-listexternal"
+          || anArgCase == "-external"
+          || anArgCase == "-externalfiles")
+    {
+      toListExternalFiles = Standard_True;
+    }
+    else if (aDestName.IsEmpty())
+    {
+      aDestName = theArgVec[anArgIter];
+    }
+    else if (aFilePath.IsEmpty())
+    {
+      aFilePath = theArgVec[anArgIter];
+    }
+    else
+    {
+      std::cout << "Syntax error at '" << theArgVec[anArgIter] << "'\n";
+      return 1;
+    }
+  }
+  if (aFilePath.IsEmpty())
+  {
+    std::cout << "Syntax error: wrong number of arguments\n";
+    return 1;
+  }
+
+  Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator (theDI, 1);
+  Handle(TDocStd_Document) aDoc;
+  if (!toListExternalFiles
+   && !isNoDoc)
+  {
+    Handle(TDocStd_Application) anApp = DDocStd::GetApplication();
+    Standard_CString aNameVar = aDestName.ToCString();
+    DDocStd::GetDocument (aNameVar, aDoc, Standard_False);
+    if (aDoc.IsNull())
+    {
+      if (toUseExistingDoc)
+      {
+        std::cout << "Error: document with name " << aDestName << " does not exist\n";
+        return 1;
+      }
+      anApp->NewDocument (TCollection_ExtendedString ("BinXCAF"), aDoc);
+    }
+    else if (!toUseExistingDoc)
+    {
+      std::cout << "Error: document with name " << aDestName << " already exists\n";
+      return 1;
+    }
+  }
+
+  RWGltf_CafReader aReader;
+  aReader.SetSystemLengthUnit (aSystemUnitFactor);
+  aReader.SetSystemCoordinateSystem (RWMesh_CoordinateSystem_Zup);
+  aReader.SetDocument (aDoc);
+  aReader.SetParallel (isParallel);
+  if (toListExternalFiles)
+  {
+    aReader.ProbeHeader (aFilePath);
+    for (NCollection_IndexedMap<TCollection_AsciiString>::Iterator aFileIter (aReader.ExternalFiles()); aFileIter.More(); aFileIter.Next())
+    {
+      theDI << "\"" << aFileIter.Value() << "\" ";
+    }
+  }
+  else
+  {
+    aReader.Perform (aFilePath, aProgress);
+    if (isNoDoc)
+    {
+      DBRep::Set (aDestName.ToCString(), aReader.SingleShape());
+    }
+    else
+    {
+      Handle(DDocStd_DrawDocument) aDrawDoc = new DDocStd_DrawDocument (aDoc);
+      TDataStd_Name::Set (aDoc->GetData()->Root(), aDestName.ToCString());
+      Draw::Set (aDestName.ToCString(), aDrawDoc);
+    }
+  }
+  return 0;
+}
 
 static Standard_Integer writestl
 (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
@@ -1259,6 +1385,16 @@ void  XSDRAWSTLVRML::InitCommands (Draw_Interpretor& theCommands)
   const char* g = "XSTEP-STL/VRML";  // Step transfer file commands
   //XSDRAW::LoadDraw(theCommands);
 
+  theCommands.Add ("ReadGltf",
+                   "ReadGltf Doc file [-parallel {on|off}] [-listExternalFiles] [-noCreateDoc]"
+                   "\n\t\t: Read glTF file into XDE document."
+                   "\n\t\t:   -listExternalFiles do not read mesh and only list external files"
+                   "\n\t\t:   -noCreateDoc read into existing XDE document",
+                   __FILE__, ReadGltf, g);
+  theCommands.Add ("readgltf",
+                   "readgltf shape file"
+                   "\n\t\t: Same as ReadGltf but reads glTF file into a shape instead of a document.",
+                   __FILE__, ReadGltf, g);
   theCommands.Add ("writevrml", "shape file [version VRML#1.0/VRML#2.0 (1/2): 2 by default] [representation shaded/wireframe/both (0/1/2): 1 by default]",__FILE__,writevrml,g);
   theCommands.Add ("writestl",  "shape file [ascii/binary (0/1) : 1 by default] [InParallel (0/1) : 0 by default]",__FILE__,writestl,g);
   theCommands.Add ("readstl",

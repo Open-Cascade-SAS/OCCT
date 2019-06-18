@@ -1,0 +1,8 @@
+puts "========"
+puts "0030691: test glTF reader on standard sample models"
+puts "========"
+
+ReadGltf D [locate_data_file bug30691_BrainStem.gltf]
+XGetOneShape s D
+checknbshapes s -face 59 -compound 1
+checktrinfo s -tri 61666 -nod 34159

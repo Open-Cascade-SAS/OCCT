@@ -440,4 +440,5 @@ t TKVCAF
 n XCAFView
 n XCAFNoteObjects
 t TKRWMesh
+n RWGltf
 n RWMesh

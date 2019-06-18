@@ -222,6 +222,7 @@ for which OCCT is certified to work.
 | Freetype (for text rendering) | FreeType 2.4.11-2.7.1 https://sourceforge.net/projects/freetype/files/ |
 | FreeImage (optional, for support of common 2D graphic formats) | FreeImage 3.17.0+ https://sourceforge.net/projects/freeimage/files |
 | FFmpeg (optional, for video recording) | FFmpeg 3.1+ https://www.ffmpeg.org/download.html |
+| RapidJSON (optional, for reading glTF) | RapidJSON 1.1+ http://rapidjson.org/ |
 | Intel TBB (optional, for multithreaded algorithms) | TBB 4.x or 5.x https://www.threadingbuildingblocks.org/ |
 | VTK (for VTK Integration Services | VTK 6.1+ http://www.vtk.org/download/ |
 | Doxygen (optional for building documentation) | Doxygen 1.8.5+ https://www.stack.nl/~dimitri/doxygen/download.html |

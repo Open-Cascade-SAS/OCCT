@@ -1,0 +1,8 @@
+puts "========"
+puts "0030691: test glTF reader on standard sample models"
+puts "========"
+
+ReadGltf D [locate_data_file bug30691_OrientationTest.glb]
+XGetOneShape s D
+checknbshapes s -face 13 -compound 1
+checktrinfo s -tri 524 -nod 1048

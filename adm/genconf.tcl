@@ -189,6 +189,9 @@ proc wokdep:gui:UpdateList {} {
     }
     wokdep:SearchStandardLibrary  anIncErrs anLib32Errs anLib64Errs anBin32Errs anBin64Errs "liblzma" "lzma.h" "$aCheckLib" {"lzma" "xz"}
   }
+  if { "$::HAVE_RAPIDJSON" == "true" } {
+    wokdep:SearchRapidJson anIncErrs anLib32Errs anLib64Errs anBin32Errs anBin64Errs
+  }
 
   if { "$::CHECK_QT4" == "true" } {
     wokdep:SearchQt4     anIncErrs anLib32Errs anLib64Errs anBin32Errs anBin64Errs
@@ -456,6 +459,9 @@ ttk::label    .myFrame.myChecks.myZLibLbl       -text "Use zlib"
 checkbutton   .myFrame.myChecks.myLzmaCheck     -offvalue "false" -onvalue "true" -variable HAVE_LIBLZMA   -command wokdep:gui:UpdateList
 ttk::label    .myFrame.myChecks.myLzmaLbl       -text "Use liblzma"
 
+checkbutton   .myFrame.myChecks.myRapidJsonCheck -offvalue "false" -onvalue "true" -variable HAVE_RAPIDJSON -command wokdep:gui:UpdateList
+ttk::label    .myFrame.myChecks.myRapidJsonLbl   -text "Use RapidJSON"
+
 checkbutton   .myFrame.myChecks.myQt4Check      -offvalue "false" -onvalue "true" -variable CHECK_QT4      -command wokdep:gui:UpdateList
 ttk::label    .myFrame.myChecks.myQt4Lbl        -text "Search Qt4"
 checkbutton   .myFrame.myChecks.myJDKCheck      -offvalue "false" -onvalue "true" -variable CHECK_JDK      -command wokdep:gui:UpdateList
@@ -564,8 +570,8 @@ if { "$::tcl_platform(os)" != "Darwin" } {
 grid .myFrame.myChecks.myZLibCheck     -row $aCheckRowIter -column 6 -sticky e
 grid .myFrame.myChecks.myZLibLbl       -row $aCheckRowIter -column 7 -sticky w
 
-grid .myFrame.myChecks.myQt4Check      -row $aCheckRowIter -column 10 -sticky e
-grid .myFrame.myChecks.myQt4Lbl        -row $aCheckRowIter -column 11 -sticky w
+grid .myFrame.myChecks.myQt4Check      -row $aCheckRowIter -column 12 -sticky e
+grid .myFrame.myChecks.myQt4Lbl        -row $aCheckRowIter -column 13 -sticky w
 
 incr aCheckRowIter
 grid .myFrame.myChecks.myFFmpegCheck   -row $aCheckRowIter -column 0 -sticky e
@@ -578,8 +584,8 @@ if { "$::tcl_platform(platform)" == "windows" } {
 }
 grid .myFrame.myChecks.myLzmaCheck     -row $aCheckRowIter -column 6 -sticky e
 grid .myFrame.myChecks.myLzmaLbl       -row $aCheckRowIter -column 7 -sticky w
-grid .myFrame.myChecks.myJDKCheck      -row $aCheckRowIter -column 10 -sticky e
-grid .myFrame.myChecks.myJDKLbl        -row $aCheckRowIter -column 11 -sticky w
+grid .myFrame.myChecks.myJDKCheck      -row $aCheckRowIter -column 12 -sticky e
+grid .myFrame.myChecks.myJDKLbl        -row $aCheckRowIter -column 13 -sticky w
 
 incr aCheckRowIter
 if { "$::tcl_platform(os)" == "Darwin" } {
@@ -587,6 +593,10 @@ if { "$::tcl_platform(os)" == "Darwin" } {
   grid .myFrame.myChecks.myMacGLXLbl   -row $aCheckRowIter -column 1 -sticky w
   incr aCheckRowIter
 }
+
+grid .myFrame.myChecks.myRapidJsonCheck -row $aCheckRowIter -column 6 -sticky e
+grid .myFrame.myChecks.myRapidJsonLbl   -row $aCheckRowIter -column 7 -sticky w
+incr aCheckRowIter
 
 # Additional headers search paths
 grid .myFrame.myIncLbl    -row $aRowIter -column 0 -columnspan 10 -sticky w

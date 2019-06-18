@@ -1,0 +1,6 @@
+vclear
+vinit View1
+XDisplay -dispMode 1 D
+vaxo
+vfit
+vdump ${imagedir}/${casename}.png

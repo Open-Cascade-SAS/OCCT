@@ -68,7 +68,7 @@ if { [info exists ::env(SHORTCUT_HEADERS)] } {
 }
 
 # fetch environment variables (e.g. set by custom.sh or custom.bat) and set them as tcl variables with the same name
-set THE_ENV_VARIABLES {HAVE_FREEIMAGE HAVE_FFMPEG HAVE_TBB HAVE_GLES2 HAVE_D3D HAVE_VTK HAVE_ZLIB HAVE_LIBLZMA HAVE_OPENCL CHECK_QT4 CHECK_JDK MACOSX_USE_GLX HAVE_RelWithDebInfo}
+set THE_ENV_VARIABLES {HAVE_FREEIMAGE HAVE_FFMPEG HAVE_TBB HAVE_GLES2 HAVE_D3D HAVE_VTK HAVE_ZLIB HAVE_LIBLZMA HAVE_RAPIDJSON HAVE_OPENCL CHECK_QT4 CHECK_JDK MACOSX_USE_GLX HAVE_RelWithDebInfo}
 foreach anEnvIter $THE_ENV_VARIABLES {
   set ${anEnvIter} "false"
   if { [info exists ::env(${anEnvIter})] } {
@@ -852,6 +852,25 @@ proc wokdep:SearchGLES {theErrInc theErrLib32 theErrLib64 theErrBin32 theErrBin6
           if { "$::ARCH" == "$anArchIter"} { set isFound "false" }
         }
       }
+    }
+  }
+
+  return "$isFound"
+}
+
+# Search RapidJSON headers
+proc wokdep:SearchRapidJson {theErrInc theErrLib32 theErrLib64 theErrBin32 theErrBin64} {
+  upvar $theErrInc anErrInc
+
+  set isFound "true"
+  set aRJHPath [wokdep:SearchHeader "rapidjson/rapidjson.h"]
+  if { "$aRJHPath"  == "" } {
+    set aPath [wokdep:Preferred [glob -nocomplain -directory "$::PRODUCTS_PATH" -type d *{rapidjson}*] "$::VCVER" "$::ARCH" ]
+    if { "$aPath" != "" && [file exists "$aPath/include/rapidjson/rapidjson.h"] } {
+      lappend ::CSF_OPT_INC "$aPath/include"
+    } else {
+      lappend anErrInc "Error: 'rapidjson/rapidjson.h' not found (RapidJSON)"
+      set isFound "false"
     }
   }
 

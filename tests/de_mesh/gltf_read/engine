@@ -1,0 +1,8 @@
+puts "========"
+puts "0030691: test glTF reader on standard sample models"
+puts "========"
+
+ReadGltf D [locate_data_file bug30691_2CylinderEngine.glb]
+XGetOneShape s D
+checknbshapes s -face 34 -compound 18
+checktrinfo s -tri 121496 -nod 84657

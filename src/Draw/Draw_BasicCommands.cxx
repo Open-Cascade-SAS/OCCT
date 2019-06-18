@@ -362,6 +362,11 @@ static Standard_Integer dversion(Draw_Interpretor& di, Standard_Integer, const c
 #else
   di << "OpenGL: desktop\n";
 #endif
+#ifdef HAVE_RAPIDJSON
+  di << "RapidJSON enabled (HAVE_RAPIDJSON)\n";
+#else
+  di << "RapidJSON disabled\n";
+#endif
 #ifdef HAVE_VTK
   di << "VTK enabled (HAVE_VTK)\n";
 #else
