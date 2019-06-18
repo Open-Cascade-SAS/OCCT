@@ -39,6 +39,7 @@
 #include <StepBasic_ProductDefinition.hxx>
 #include <StepBasic_ProductDefinitionFormation.hxx>
 #include <StepBasic_ProductDefinitionRelationship.hxx>
+#include <StepBasic_ProductDefinitionWithAssociatedDocuments.hxx>
 #include <StepBasic_SiUnit.hxx>
 #include <StepBasic_SiUnitAndLengthUnit.hxx>
 #include <StepBasic_Unit.hxx>
@@ -1146,6 +1147,7 @@ Standard_Boolean STEPCAFControl_Reader::ReadNames(const Handle(XSControl_WorkSes
   Standard_Integer nb = Model->NbEntities();
   Handle(Standard_Type) tNAUO = STANDARD_TYPE(StepRepr_NextAssemblyUsageOccurrence);
   Handle(Standard_Type) tPD = STANDARD_TYPE(StepBasic_ProductDefinition);
+  Handle(Standard_Type) tPDWAD = STANDARD_TYPE(StepBasic_ProductDefinitionWithAssociatedDocuments);
   Handle(TCollection_HAsciiString) name;
   TDF_Label L;
   for (Standard_Integer i = 1; i <= nb; i++) {
@@ -1179,7 +1181,7 @@ Standard_Boolean STEPCAFControl_Reader::ReadNames(const Handle(XSControl_WorkSes
     }
 
     // for PD get name of associated product
-    if (enti->DynamicType() == tPD) {
+    if (enti->DynamicType() == tPD || enti->DynamicType() == tPDWAD) {
       L.Nullify();
       Handle(StepBasic_ProductDefinition) PD =
         Handle(StepBasic_ProductDefinition)::DownCast(enti);
