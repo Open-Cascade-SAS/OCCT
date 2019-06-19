@@ -146,7 +146,8 @@ protected:
   
 
   //! Looking for the exact intersection ranges
-  Standard_EXPORT void FindSolutions (const IntTools_Range& theR1, 
+  Standard_EXPORT void FindSolutions (
+    const IntTools_Range& theR1, const Bnd_Box& theBox1,
     const IntTools_Range& theR2, const Bnd_Box& theBox2,
     IntTools_SequenceOfRanges& theRanges1, IntTools_SequenceOfRanges& theRanges2);
   
