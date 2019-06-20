@@ -563,7 +563,7 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)&       theCtx,
   {
     case Graphic3d_TOT_CUBEMAP:
     {
-      return initCubeMap (theCtx, Handle(Graphic3d_CubeMap)::DownCast(theTextureMap),
+      return InitCubeMap (theCtx, Handle(Graphic3d_CubeMap)::DownCast(theTextureMap),
                           0, Image_Format_RGB, false, theTextureMap->IsColorMap());
     }
     default:
@@ -793,10 +793,10 @@ bool OpenGl_Texture::Init3D (const Handle(OpenGl_Context)& theCtx,
 }
 
 // =======================================================================
-// function : initCubeMap
+// function : InitCubeMap
 // purpose  :
 // =======================================================================
-bool OpenGl_Texture::initCubeMap (const Handle(OpenGl_Context)&    theCtx,
+bool OpenGl_Texture::InitCubeMap (const Handle(OpenGl_Context)&    theCtx,
                                   const Handle(Graphic3d_CubeMap)& theCubeMap,
                                   Standard_Size    theSize,
                                   Image_Format     theFormat,
@@ -811,6 +811,7 @@ bool OpenGl_Texture::initCubeMap (const Handle(OpenGl_Context)&    theCtx,
 
   if (!theCubeMap.IsNull())
   {
+    theToGenMipmap = theCubeMap->HasMipmaps();
     if (Handle(Image_PixMap) anImage = theCubeMap->Reset().Value())
     {
       theSize   = anImage->SizeX();
@@ -836,6 +837,8 @@ bool OpenGl_Texture::initCubeMap (const Handle(OpenGl_Context)&    theCtx,
   myTarget = GL_TEXTURE_CUBE_MAP;
   myHasMipmaps = theToGenMipmap;
   myNbSamples = 1;
+  mySizeX = (GLsizei )theSize;
+  mySizeY = (GLsizei )theSize;
   Bind (theCtx);
   applyDefaultSamplerParams (theCtx);
 
@@ -990,6 +993,10 @@ Standard_Size OpenGl_Texture::EstimatedDataSize() const
   if (mySizeZ != 0)
   {
     aSize *= Standard_Size(mySizeZ);
+  }
+  if (myTarget == GL_TEXTURE_CUBE_MAP)
+  {
+    aSize *= 6; // cube sides
   }
   if (myHasMipmaps)
   {

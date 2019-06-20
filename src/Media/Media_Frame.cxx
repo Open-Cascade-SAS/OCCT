@@ -92,6 +92,7 @@ int Media_Frame::FormatOcct2FFmpeg (Image_Format theFormat)
       return AV_PIX_FMT_GRAY8;
     case Image_Format_GrayF:
     case Image_Format_AlphaF:
+    case Image_Format_RGF:
     case Image_Format_RGBAF:
     case Image_Format_RGBF:
     case Image_Format_BGRAF:

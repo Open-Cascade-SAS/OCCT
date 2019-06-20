@@ -151,6 +151,13 @@ public:
   //! Note that weighted OIT also requires at least 2 Fragment Outputs (color + coverage).
   void SetWeightOitOutput (Standard_Boolean theOutput) { myHasWeightOitOutput = theOutput; }
 
+  //! Return TRUE if standard program header should define functions and variables used in PBR pipeline.
+  //! FALSE by default
+  Standard_Boolean IsPBR() const { return myIsPBR; }
+
+  //! Sets whether standard program header should define functions and variables used in PBR pipeline.
+  void SetPBR (Standard_Boolean theIsPBR) { myIsPBR = theIsPBR; }
+
   //! Pushes custom uniform variable to the program.
   //! The list of pushed variables is automatically cleared after applying to GLSL program.
   //! Thus after program recreation even unchanged uniforms should be pushed anew.
@@ -204,6 +211,7 @@ private:
   Standard_Boolean              myHasDefSampler; //!< flag indicating that program defines default texture sampler occSampler0
   Standard_Boolean              myHasAlphaTest;       //!< flag indicating that Fragment Shader performs alpha test
   Standard_Boolean              myHasWeightOitOutput; //!< flag indicating that Fragment Shader includes weighted OIT coverage
+  Standard_Boolean              myIsPBR;         //!< flag indicating that program defines functions and variables used in PBR pipeline
 
 };
 

@@ -21,6 +21,8 @@
   #define occTexture1D   texture
   #define occTexture2D   texture
   #define occTexture3D   texture
+  #define occTextureCube texture
+  #define occTextureCubeLod textureLod
 #else
   #define THE_ATTRIBUTE  attribute
   #define THE_SHADER_IN  varying
@@ -29,10 +31,16 @@
   #define occTexture1D   texture1D
   #define occTexture2D   texture2D
   #define occTexture3D   texture3D
+  #define occTextureCube textureCube
+  #define occTextureCubeLod textureCubeLod
 #endif
 
 #ifdef GL_ES
-  #define THE_PREC_ENUM lowp // enumerations should fit into lowp range
+#if (__VERSION__ >= 300)
+  #define THE_PREC_ENUM highp // lowp should be enough for enums but triggers driver bugs
+#else
+  #define THE_PREC_ENUM lowp
+#endif
 #else
   #define THE_PREC_ENUM
 #endif
@@ -85,6 +93,15 @@
   void occSetFragColor (in vec4 theColor);
 #endif
 
+// Pi number definitions
+#define PI       3.141592654
+#define PI_2     6.283185307
+#define PI_DIV_2 1.570796327
+#define PI_DIV_3 1.047197551
+#define PI_DIV_4 0.785398163
+#define INV_PI   0.318309886
+#define INV_PI_2 0.159154943
+
 // Matrix state
 uniform mat4 occWorldViewMatrix;  //!< World-view  matrix
 uniform mat4 occProjectionMatrix; //!< Projection  matrix
@@ -102,6 +119,15 @@ uniform mat4 occWorldViewMatrixInverseTranspose;  //!< Transpose of the inverse 
 uniform mat4 occProjectionMatrixInverseTranspose; //!< Transpose of the inverse of the projection  matrix
 uniform mat4 occModelWorldMatrixInverseTranspose; //!< Transpose of the inverse of the model-world matrix
 
+#if defined(THE_IS_PBR)
+uniform sampler2D   occEnvLUT;             //!< Environment Lookup Table
+uniform sampler2D   occDiffIBLMapSHCoeffs; //!< Packed diffuse (irradiance) IBL map's spherical harmonics coefficients
+uniform samplerCube occSpecIBLMap;         //!< Specular IBL map
+uniform int         occNbSpecIBLLevels;    //!< Number of mipmap levels used in occSpecIBLMap to store different roughness values maps
+
+vec3 occDiffIBLMap (in vec3 theNormal); //!< Unpacks spherical harmonics coefficients to diffuse IBL map's values
+#endif
+
 // light type enumeration (same as Graphic3d_TypeOfLightSource)
 const int OccLightType_Direct = 1; //!< directional     light source
 const int OccLightType_Point  = 2; //!< isotropic point light source
@@ -116,7 +142,7 @@ uniform THE_PREC_ENUM int  occLightSourcesCount; //!< Total number of light sour
 #define occLight_Type(theId)              occLightSourcesTypes[theId].x
 
 //! Is light a headlight, int?
-#define occLight_IsHeadlight(theId)       occLightSourcesTypes[theId].y
+#define occLight_IsHeadlight(theId)       (occLightSourcesTypes[theId].y != 0)
 
 //! Specular intensity (equals to diffuse), vec4.
 #define occLight_Specular(theId)          occLightSources[theId * 4 + 0]
@@ -133,6 +159,11 @@ uniform THE_PREC_ENUM int  occLightSourcesCount; //!< Total number of light sour
 //! Attenuation of the spot light intensity (from 0 to 1), float.
 #define occLight_SpotExponent(theId)      occLightSources[theId * 4 + 3].w
 
+#if defined(THE_IS_PBR)
+//! Intensity of light source (>= 0), float.
+#define occLight_Intensity(theId)         occLightSources[theId * 4 + 0].a
+#else
+
 //! Diffuse intensity (equals to Specular), vec4.
 #define occLight_Diffuse(theId)           occLightSources[theId * 4 + 0]
 
@@ -142,22 +173,44 @@ uniform THE_PREC_ENUM int  occLightSourcesCount; //!< Total number of light sour
 //! Linear attenuation factor of positional light source, float.
 #define occLight_LinearAttenuation(theId) occLightSources[theId * 4 + 3].y
 #endif
+#endif
+
+// Converts roughness value from range [0, 1] to real value for calculations
+float occRoughness (in float theNormalizedRoughness);
 
 // Front material properties accessors
-vec4  occFrontMaterial_Emission(void);     //!< Emission color
-vec4  occFrontMaterial_Ambient(void);      //!< Ambient  reflection
-vec4  occFrontMaterial_Diffuse(void);      //!< Diffuse  reflection
-vec4  occFrontMaterial_Specular(void);     //!< Specular reflection
-float occFrontMaterial_Shininess(void);    //!< Specular exponent
-float occFrontMaterial_Transparency(void); //!< Transparency coefficient
+#if !defined(THE_IS_PBR)
+vec4  occFrontMaterial_Emission(void);            //!< Emission color
+vec4  occFrontMaterial_Ambient(void);             //!< Ambient  reflection
+vec4  occFrontMaterial_Diffuse(void);             //!< Diffuse  reflection
+vec4  occFrontMaterial_Specular(void);            //!< Specular reflection
+float occFrontMaterial_Shininess(void);           //!< Specular exponent
+float occFrontMaterial_Transparency(void);        //!< Transparency coefficient
+#else
+vec4  occPBRFrontMaterial_Color(void);               //!< Base color of PBR material
+float occPBRFrontMaterial_Metallic(void);            //!< Metallic coefficient
+float occPBRFrontMaterial_Roughness(void);           //!< Roughness coefficient
+float occPBRFrontMaterial_NormalizedRoughness(void); //!< Normalized roughness coefficient
+vec3  occPBRFrontMaterial_Emission(void);            //!< Light intensity emitted by material
+float occPBRFrontMaterial_IOR(void);                 //!< Index of refraction
+#endif
 
 // Back material properties accessors
-vec4  occBackMaterial_Emission(void);      //!< Emission color
-vec4  occBackMaterial_Ambient(void);       //!< Ambient  reflection
-vec4  occBackMaterial_Diffuse(void);       //!< Diffuse  reflection
-vec4  occBackMaterial_Specular(void);      //!< Specular reflection
-float occBackMaterial_Shininess(void);     //!< Specular exponent
-float occBackMaterial_Transparency(void);  //!< Transparency coefficient
+#if !defined(THE_IS_PBR)
+vec4  occBackMaterial_Emission(void);            //!< Emission color
+vec4  occBackMaterial_Ambient(void);             //!< Ambient  reflection
+vec4  occBackMaterial_Diffuse(void);             //!< Diffuse  reflection
+vec4  occBackMaterial_Specular(void);            //!< Specular reflection
+float occBackMaterial_Shininess(void);           //!< Specular exponent
+float occBackMaterial_Transparency(void);        //!< Transparency coefficient
+#else
+vec4  occPBRBackMaterial_Color(void);               //!< Base color of PBR material
+float occPBRBackMaterial_Metallic(void);            //!< Metallic coefficient
+float occPBRBackMaterial_Roughness(void);           //!< Roughness coefficient
+float occPBRBackMaterial_NormalizedRoughness(void); //!< Normalized roughness coefficient
+vec3  occPBRBackMaterial_Emission(void);            //!< Light intensity emitted by material
+float occPBRBackMaterial_IOR(void);                 //!< Index of refraction
+#endif
 
 #ifdef THE_HAS_DEFAULT_SAMPLER
 #define occActiveSampler    occSampler0                //!< alias for backward compatibility

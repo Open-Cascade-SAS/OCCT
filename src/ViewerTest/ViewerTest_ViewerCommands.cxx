@@ -416,6 +416,9 @@ namespace
     //! the option key for the command that sets inversion of Z axis for background cubemap
     ViewerTest_CommandOptionKey myCubeMapInvertedZOptionKey;
 
+    //! the option key for the command that allows skip IBL map generation
+    ViewerTest_CommandOptionKey myCubeMapDoNotGenPBREnvOptionKey;
+
     //! the variable set of options that are allowed for the old scenario (without any option passed)
     CommandOptionKeyVariableSet myUnnamedOptionVariableSet;
 
@@ -466,6 +469,7 @@ namespace
       myCubeMapOrderOptionKey      = myCommandParser.AddOption ("order|o", "order of sides in one image packed cubemap");
       myCubeMapInvertedZOptionKey = myCommandParser.AddOption (
         "invertedz|invz|iz", "whether Z axis is inverted or not during background cubemap rendering");
+      myCubeMapDoNotGenPBREnvOptionKey = myCommandParser.AddOption ("nopbrenv", "whether IBL map generation should be skipped");
     }
 
     //! Creates option sets used to determine if a passed option set is valid or not
@@ -479,6 +483,7 @@ namespace
       aCubeMapOptionSet.insert (myCubeMapOptionKey);
       ViewerTest_CommandOptionKeySet aCubeMapAdditionalOptionKeySet;
       aCubeMapAdditionalOptionKeySet.insert (myCubeMapInvertedZOptionKey);
+      aCubeMapAdditionalOptionKeySet.insert (myCubeMapDoNotGenPBREnvOptionKey);
       aCubeMapAdditionalOptionKeySet.insert (myCubeMapOrderOptionKey);
       myCubeMapOptionVariableSet     = CommandOptionKeyVariableSet (aCubeMapOptionSet, aCubeMapAdditionalOptionKeySet);
 
@@ -852,7 +857,17 @@ namespace
         aZIsInverted = true;
       }
 
-      setCubeMap (aFilePaths, anOrder.Validated(), aZIsInverted);
+      bool aToGenPBREnv = true;
+      if (myCommandParser.HasOption (myCubeMapDoNotGenPBREnvOptionKey))
+      {
+        if (!processCubeMapDoNotGenPBREnvOptionSet())
+        {
+          return false;
+        }
+        aToGenPBREnv = false;
+      }
+
+      setCubeMap (aFilePaths, anOrder.Validated(), aZIsInverted, aToGenPBREnv);
       return true;
     }
 
@@ -1017,8 +1032,7 @@ namespace
       return true;
     }
 
-    //! Processes the cubemap option
-    //! @param theIsNeededToRedraw defines need of redraw after option's processing 
+    //! Processes the inverted z cubemap option
     //! @return true if processing was successful, or false otherwise
     bool processCubeMapInvertedZOptionSet () const
     {
@@ -1026,6 +1040,21 @@ namespace
         myCommandParser.GetNumberOfOptionArguments (myCubeMapInvertedZOptionKey);
 
       if (aNumberOfCubeMapZInversionOptionArguments != 0)
+      {
+        return false;
+      }
+
+      return true;
+    }
+
+    //! Processes the option allowing to skip IBM maps generation
+    //! @return true if processing was successful, or false otherwise
+    bool processCubeMapDoNotGenPBREnvOptionSet() const
+    {
+      const Standard_Integer aNumberOfCubeMapDoNotGenPBREnvOptionArguments =
+        myCommandParser.GetNumberOfOptionArguments(myCubeMapDoNotGenPBREnvOptionKey);
+
+      if (aNumberOfCubeMapDoNotGenPBREnvOptionArguments != 0)
       {
         return false;
       }
@@ -1221,7 +1250,8 @@ namespace
     //! @param theOrder array of cubemap sides indexes mapping them from tiles in packed cubemap
     static void setCubeMap (const NCollection_Array1<TCollection_AsciiString>& theFileNames,
                             const Graphic3d_ValidatedCubeMapOrder              theOrder = Graphic3d_CubeMapOrder::Default(),
-                            bool                                               theZIsInverted = false)
+                            bool                                               theZIsInverted = false,
+                            bool                                               theToGenPBREnv = true)
     {
       const Handle(V3d_View)& aCurrentView = ViewerTest::CurrentView();
       Handle(Graphic3d_CubeMap) aCubeMap;
@@ -1237,7 +1267,7 @@ namespace
       aCubeMap->GetParams()->SetRepeat(Standard_False);
       aCubeMap->GetParams()->SetTextureUnit(Graphic3d_TextureUnit_EnvMap);
 
-      aCurrentView->SetBackgroundCubeMap (aCubeMap, Standard_True);
+      aCurrentView->SetBackgroundCubeMap (aCubeMap, theToGenPBREnv, Standard_True);
     }
 
     //! Sets the image as a background
@@ -11185,6 +11215,48 @@ static int VLight (Draw_Interpretor& theDi,
   return 0;
 }
 
+//===============================================================================================
+//function : VPBREnvironment
+//purpose  :
+//===============================================================================================
+static int VPBREnvironment (Draw_Interpretor&,
+                            Standard_Integer theArgsNb,
+                            const char**     theArgVec)
+{
+  if (theArgsNb > 2)
+  {
+    std::cerr << "Error: 'vpbrenv' command has only one argument\n";
+    return 1;
+  }
+
+  Handle(V3d_View) aView = ViewerTest::CurrentView();
+  if (aView.IsNull())
+  {
+    std::cerr << "Error: no active viewer!\n";
+    return 1;
+  }
+
+  TCollection_AsciiString anArg = TCollection_AsciiString (theArgVec[1]);
+  anArg.LowerCase();
+
+  if (anArg == "-generate"
+   || anArg == "-gen")
+  {
+    aView->GeneratePBREnvironment (Standard_True);
+  }
+  else if (anArg == "-clear")
+  {
+    aView->ClearPBREnvironment (Standard_True);
+  }
+  else
+  {
+    std::cerr << "Error: unknown argument [" << theArgVec[1] << "] for 'vpbrenv' command\n";
+    return 1;
+  }
+
+  return 0;
+}
+
 //! Read Graphic3d_RenderingParams::PerfCounters flag.
 static Standard_Boolean parsePerfStatsFlag (const TCollection_AsciiString& theValue,
                                             Standard_Boolean& theToReset,
@@ -11391,11 +11463,13 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
     theDI << "shadingModel: ";
     switch (aView->ShadingModel())
     {
-      case Graphic3d_TOSM_DEFAULT:  theDI << "default"; break;
-      case Graphic3d_TOSM_UNLIT:    theDI << "unlit";   break;
-      case Graphic3d_TOSM_FACET:    theDI << "flat";    break;
-      case Graphic3d_TOSM_VERTEX:   theDI << "gouraud"; break;
-      case Graphic3d_TOSM_FRAGMENT: theDI << "phong";   break;
+      case Graphic3d_TOSM_DEFAULT:   theDI << "default";   break;
+      case Graphic3d_TOSM_UNLIT:     theDI << "unlit";     break;
+      case Graphic3d_TOSM_FACET:     theDI << "flat";      break;
+      case Graphic3d_TOSM_VERTEX:    theDI << "gouraud";   break;
+      case Graphic3d_TOSM_FRAGMENT:  theDI << "phong";     break;
+      case Graphic3d_TOSM_PBR:       theDI << "pbr";       break;
+      case Graphic3d_TOSM_PBR_FACET: theDI << "pbr_facet"; break;
     }
     {
       theDI << "perfCounters:";
@@ -11957,11 +12031,13 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
       {
         switch (aView->ShadingModel())
         {
-          case Graphic3d_TOSM_DEFAULT:  theDI << "default";  break;
-          case Graphic3d_TOSM_UNLIT:    theDI << "unlit ";   break;
-          case Graphic3d_TOSM_FACET:    theDI << "flat ";    break;
-          case Graphic3d_TOSM_VERTEX:   theDI << "gouraud "; break;
-          case Graphic3d_TOSM_FRAGMENT: theDI << "phong ";   break;
+          case Graphic3d_TOSM_DEFAULT:   theDI << "default";   break;
+          case Graphic3d_TOSM_UNLIT:     theDI << "unlit ";    break;
+          case Graphic3d_TOSM_FACET:     theDI << "flat ";     break;
+          case Graphic3d_TOSM_VERTEX:    theDI << "gouraud ";  break;
+          case Graphic3d_TOSM_FRAGMENT:  theDI << "phong ";    break;
+          case Graphic3d_TOSM_PBR:       theDI << "pbr";       break;
+          case Graphic3d_TOSM_PBR_FACET: theDI << "pbr_facet"; break;
         }
         continue;
       }
@@ -11982,6 +12058,97 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
         std::cout << "Error: unknown shading model '" << theArgVec[anArgIter] << "'\n";
         return 1;
       }
+    }
+    else if (aFlag == "-pbrenvpow2size"
+          || aFlag == "-pbrenvp2s"
+          || aFlag == "-pep2s")
+    {
+      if (++anArgIter >= theArgNb)
+      {
+        std::cerr << "Error: wrong syntax at argument '" << anArg << "'\n";
+        return 1;
+      }
+
+      const Standard_Integer aPbrEnvPow2Size = Draw::Atoi (theArgVec[anArgIter]);
+      if (aPbrEnvPow2Size < 1)
+      {
+        std::cout << "Error: 'Pow2Size' of PBR Environment has to be greater or equal 1\n";
+        return 1;
+      }
+      aParams.PbrEnvPow2Size = aPbrEnvPow2Size;
+    }
+    else if (aFlag == "-pbrenvspecmaplevelsnumber"
+          || aFlag == "-pbrenvspecmapnblevels"
+          || aFlag == "-pbrenvspecmaplevels"
+          || aFlag == "-pbrenvsmln"
+          || aFlag == "-pesmln")
+    {
+      if (++anArgIter >= theArgNb)
+      {
+        std::cerr << "Error: wrong syntax at argument '" << anArg << "'\n";
+        return 1;
+      }
+
+      const Standard_Integer aPbrEnvSpecMapNbLevels = Draw::Atoi (theArgVec[anArgIter]);
+      if (aPbrEnvSpecMapNbLevels < 2)
+      {
+        std::cout << "Error: 'SpecMapLevelsNumber' of PBR Environment has to be greater or equal 2\n";
+        return 1;
+      }
+      aParams.PbrEnvSpecMapNbLevels = aPbrEnvSpecMapNbLevels;
+    }
+    else if (aFlag == "-pbrenvbakngdiffsamplesnumber"
+          || aFlag == "-pbrenvbakingdiffsamples"
+          || aFlag == "-pbrenvbdsn")
+    {
+      if (++anArgIter >= theArgNb)
+      {
+        std::cerr << "Error: wrong syntax at argument '" << anArg << "'\n";
+        return 1;
+      }
+
+      const Standard_Integer aPbrEnvBakingDiffNbSamples = Draw::Atoi (theArgVec[anArgIter]);
+      if (aPbrEnvBakingDiffNbSamples < 1)
+      {
+        std::cout << "Error: 'BakingDiffSamplesNumber' of PBR Environtment has to be greater or equal 1\n";
+        return 1;
+      }
+      aParams.PbrEnvBakingDiffNbSamples = aPbrEnvBakingDiffNbSamples;
+    }
+    else if (aFlag == "-pbrenvbakngspecsamplesnumber"
+          || aFlag == "-pbrenvbakingspecsamples"
+          || aFlag == "-pbrenvbssn")
+    {
+    if (++anArgIter >= theArgNb)
+    {
+      std::cerr << "Error: wrong syntax at argument '" << anArg << "'\n";
+      return 1;
+    }
+
+    const Standard_Integer aPbrEnvBakingSpecNbSamples = Draw::Atoi(theArgVec[anArgIter]);
+    if (aPbrEnvBakingSpecNbSamples < 1)
+    {
+      std::cout << "Error: 'BakingSpecSamplesNumber' of PBR Environtment has to be greater or equal 1\n";
+      return 1;
+    }
+    aParams.PbrEnvBakingSpecNbSamples = aPbrEnvBakingSpecNbSamples;
+    }
+    else if (aFlag == "-pbrenvbakingprobability"
+          || aFlag == "-pbrenvbp")
+    {
+      if (++anArgIter >= theArgNb)
+      {
+        std::cerr << "Error: wrong syntax at argument '" << anArg << "'\n";
+        return 1;
+      }
+      const Standard_ShortReal aPbrEnvBakingProbability = static_cast<Standard_ShortReal>(Draw::Atof (theArgVec[anArgIter]));
+      if (aPbrEnvBakingProbability < 0.f
+       || aPbrEnvBakingProbability > 1.f)
+      {
+        std::cout << "Error: 'BakingProbability' of PBR Environtment has to be in range of [0, 1]\n";
+        return 1;
+      }
+      aParams.PbrEnvBakingProbability = aPbrEnvBakingProbability;
     }
     else if (aFlag == "-resolution")
     {
@@ -14205,6 +14372,12 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "\n\n        example: vlight -add positional -head 1 -pos 0 1 1 -color red"
     "\n        example: vlight -change 0 -direction 0 -1 0 -linearAttenuation 0.2",
     __FILE__, VLight, group);
+  theCommands.Add("vpbrenv",
+    "vpbrenv -clear|-generate"
+    "\n\t\t: Clears or generates PBR environment map of active view."
+    "\n\t\t:  -clear clears PBR environment (fills by white color)"
+    "\n\t\t:  -generate generates PBR environment from current background cubemap",
+    __FILE__, VPBREnvironment, group);
   theCommands.Add("vraytrace",
             "vraytrace [0|1]"
     "\n\t\t: Turns on/off ray-tracing renderer."
@@ -14238,6 +14411,11 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "\n      '-rebuildGlsl  on|off'      Rebuild Ray-Tracing GLSL programs (for debugging)"
     "\n      '-shadingModel model'       Controls shading model from enumeration"
     "\n                                  unlit, flat, gouraud, phong"
+    "\n      '-pbrEnvPow2size > 0'       Controls size of IBL maps (real size can be calculates as 2^pbrenvpow2size)"
+    "\n      '-pbrEnvSMLN > 1'           Controls number of mipmap levels used in specular IBL map"
+    "\n      '-pbrEnvBDSN > 0'           Controls number of samples in Monte-Carlo integration during diffuse IBL map's sherical harmonics calculation"
+    "\n      '-pbrEnvBSSN > 0'           Controls maximum number of samples per mipmap level in Monte-Carlo integration during specular IBL maps generation"
+    "\n      '-pbrEnvBP [0, 1]'          Controls strength of samples number reducing during specular IBL maps generation (1 disables reducing)"
     "\n      '-resolution   value'       Sets a new pixels density (PPI), defines scaling factor for parameters like text size"
     "\n      '-aperture     >= 0.0'      Aperture size  of perspective camera for depth-of-field effect (0 disables DOF)"
     "\n      '-focal        >= 0.0'      Focal distance of perspective camera for depth-of-field effect"

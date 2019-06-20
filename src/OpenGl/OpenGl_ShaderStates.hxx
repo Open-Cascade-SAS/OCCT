@@ -122,7 +122,7 @@ class OpenGl_LightSourceState : public OpenGl_StateInterface
 public:
 
   //! Creates uninitialized state of light sources.
-  OpenGl_LightSourceState() {}
+  OpenGl_LightSourceState() : mySpecIBLMapLevels (0) {}
 
   //! Sets new light sources.
   void Set (const Handle(Graphic3d_LightSet)& theLightSources) { myLightSources = theLightSources; }
@@ -130,9 +130,17 @@ public:
   //! Returns current list of light sources.
   const Handle(Graphic3d_LightSet)& LightSources() const { return myLightSources; }
 
+  //! Returns number of mipmap levels used in specular IBL map.
+  //! 0 by default or in case of using non-PBR shading model.
+  Standard_Integer SpecIBLMapLevels() const { return mySpecIBLMapLevels; }
+
+  //! Sets number of mipmap levels used in specular IBL map.
+  void SetSpecIBLMapLevels(Standard_Integer theSpecIBLMapLevels) { mySpecIBLMapLevels = theSpecIBLMapLevels; }
+
 private:
 
-  Handle(Graphic3d_LightSet) myLightSources; //!< List of OCCT light sources
+  Handle(Graphic3d_LightSet) myLightSources;     //!< List of OCCT light sources
+  Standard_Integer           mySpecIBLMapLevels; //!< Number of mipmap levels used in specular IBL map (0 by default or in case of using non-PBR shading model)
 
 };
 

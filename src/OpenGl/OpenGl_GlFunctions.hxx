@@ -80,6 +80,9 @@
   // adds GL_FRAMEBUFFER_SRGB_EXT flag as on desktop OpenGL
   #define GL_FRAMEBUFFER_SRGB 0x8DB9
 
+  #define GL_TEXTURE_BASE_LEVEL 0x813C
+  #define GL_TEXTURE_MAX_LEVEL  0x813D
+
   // OpenGL ES 3.1+
   #define GL_TEXTURE_2D_MULTISAMPLE 0x9100
   #define GL_MAX_SAMPLES  0x8D57

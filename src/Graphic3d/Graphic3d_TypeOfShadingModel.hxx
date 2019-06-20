@@ -46,6 +46,12 @@ enum Graphic3d_TypeOfShadingModel
   //! Shading model requires normals to be defined within vertex attributes.
   Graphic3d_TOSM_FRAGMENT,
 
+  //! Metallic-roughness physically based (PBR) illumination system.
+  Graphic3d_TOSM_PBR,
+
+  //! Same as Graphic3d_TOSM_PBR but using flat per-triangle normal.
+  Graphic3d_TOSM_PBR_FACET,
+
   // obsolete aliases
   Graphic3d_TOSM_NONE = Graphic3d_TOSM_UNLIT,
   V3d_COLOR   = Graphic3d_TOSM_NONE,
@@ -57,7 +63,7 @@ enum Graphic3d_TypeOfShadingModel
 enum
 {
   //! Auxiliary value defining the overall number of values in enumeration Graphic3d_TypeOfShadingModel
-  Graphic3d_TypeOfShadingModel_NB = Graphic3d_TOSM_FRAGMENT + 1
+  Graphic3d_TypeOfShadingModel_NB = Graphic3d_TOSM_PBR_FACET + 1
 };
 
 #endif // _Graphic3d_TypeOfShadingModel_HeaderFile

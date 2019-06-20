@@ -15,6 +15,8 @@
 
 #include <Graphic3d_BSDF.hxx>
 
+#include <Graphic3d_PBRMaterial.hxx>
+
 #include <algorithm>
 
 // =======================================================================
@@ -63,6 +65,7 @@ Graphic3d_Fresnel Graphic3d_Fresnel::CreateConductor (const Graphic3d_Vec3& theR
 // purpose  :
 // =======================================================================
 Graphic3d_BSDF::Graphic3d_BSDF()
+: Ks (Graphic3d_Vec3 (0.f), 1.f)
 {
   FresnelCoat = Graphic3d_Fresnel::CreateConstant (0.f);
   FresnelBase = Graphic3d_Fresnel::CreateConstant (1.f);
@@ -189,4 +192,21 @@ Graphic3d_BSDF Graphic3d_BSDF::CreateGlass (const Graphic3d_Vec3& theWeight,
                                      theAbsorptionCoeff);
 
   return aBSDF;
+}
+
+// =======================================================================
+// function : CreateMetallicRoughness
+// purpose  :
+// =======================================================================
+Graphic3d_BSDF Graphic3d_BSDF::CreateMetallicRoughness (const Graphic3d_PBRMaterial& thePbr)
+{
+  const Graphic3d_Vec3 aDiff = (Graphic3d_Vec3 )thePbr.Color().GetRGB() * thePbr.Alpha();
+  const Standard_ShortReal aRougness2 = thePbr.NormalizedRoughness() * thePbr.NormalizedRoughness();
+
+  Graphic3d_BSDF aBsdf;
+  aBsdf.FresnelBase = Graphic3d_Fresnel::CreateSchlick (aDiff * thePbr.Metallic());
+  aBsdf.Ks.SetValues (Graphic3d_Vec3 (thePbr.Alpha()), aRougness2);
+  aBsdf.Kt = Graphic3d_Vec3 (1.0f - thePbr.Alpha());
+  aBsdf.Kd = aDiff * (1.0f - thePbr.Metallic());
+  return aBsdf;
 }

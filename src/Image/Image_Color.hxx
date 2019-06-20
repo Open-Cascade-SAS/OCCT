@@ -266,6 +266,31 @@ public:
 
 };
 
+//! POD structure for packed float RG color value (2 floats)
+struct Image_ColorRGF
+{
+  //! Component type.
+  typedef Standard_ShortReal ComponentType_t;
+
+  //! Returns the number of components.
+  static Standard_Integer Length() { return 2; }
+
+  //! Alias to 1st component (red intensity).
+  Standard_ShortReal r() const { return v[0]; }
+
+  //! Alias to 2nd component (green intensity).
+  Standard_ShortReal g() const { return v[1]; }
+
+  //! Alias to 1st component (red intensity).
+  Standard_ShortReal& r() { return v[0]; }
+
+  //! Alias to 2nd component (green intensity).
+  Standard_ShortReal& g() { return v[1]; }
+
+public:
+  Standard_ShortReal v[2];
+};
+
 //! POD structure for packed float RGB color value (3 floats)
 struct Image_ColorRGBF
 {

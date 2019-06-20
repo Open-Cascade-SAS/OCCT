@@ -166,22 +166,6 @@ XCAFDoc_VisMaterialCommon XCAFDoc_VisMaterial::ConvertToCommonMaterial()
   return aComMat;
 }
 
-//! Compute material roughness from common material.
-static Standard_ShortReal roughnessFromCommon (const XCAFDoc_VisMaterialCommon& theMat)
-{
-  Standard_Real aRoughnessFactor = 1.0 - theMat.Shininess;
-  //Standard_Real aSpecIntens = theMat.SpecularColor.Light() * theMat.SpecularColor;
-  const Standard_Real aSpecIntens = theMat.SpecularColor.Red()   * 0.2125
-                                  + theMat.SpecularColor.Green() * 0.7154
-                                  + theMat.SpecularColor.Blue()  * 0.0721;
-  if (aSpecIntens < 0.1)
-  {
-    // low specular intensity should produce a rough material even if shininess is high
-    aRoughnessFactor *= (1.0 - aSpecIntens);
-  }
-  return (Standard_ShortReal )aRoughnessFactor;
-}
-
 //=======================================================================
 //function : ConvertToPbrMaterial
 //purpose  :
@@ -201,9 +185,8 @@ XCAFDoc_VisMaterialPBR XCAFDoc_VisMaterial::ConvertToPbrMaterial()
   aPbrMat.IsDefined = true;
   aPbrMat.BaseColor.SetRGB (myCommonMat.DiffuseColor);
   aPbrMat.BaseColor.SetAlpha (1.0f - myCommonMat.Transparency);
-  // we allow to save any number in range [0, 1] but logically metallicity can be either 0 or 1
-  aPbrMat.Metallic = ((Graphic3d_Vec3 )myCommonMat.SpecularColor).maxComp(); // > 0.1f ? 1.0 : 0.0;
-  aPbrMat.Roughness = roughnessFromCommon (myCommonMat);
+  aPbrMat.Metallic  = Graphic3d_PBRMaterial::MetallicFromSpecular (myCommonMat.SpecularColor);
+  aPbrMat.Roughness = Graphic3d_PBRMaterial::RoughnessFromSpecular (myCommonMat.SpecularColor, myCommonMat.Shininess);
   return aPbrMat;
 }
 
@@ -226,13 +209,12 @@ void XCAFDoc_VisMaterial::FillMaterialAspect (Graphic3d_MaterialAspect& theAspec
     // convert common into metal-roughness
     if (!myPbrMat.IsDefined)
     {
-    #ifdef _Graphic3d_PBRMaterial_HeaderFile
       Graphic3d_PBRMaterial aPbr;
       aPbr.SetColor (myCommonMat.DiffuseColor);
-      aPbr.SetMetallic (((Graphic3d_Vec3 )myCommonMat.SpecularColor).maxComp());
-      aPbr.SetRoughness (roughnessFromCommon (myCommonMat));
+      aPbr.SetMetallic (Graphic3d_PBRMaterial::MetallicFromSpecular (myCommonMat.SpecularColor));
+      aPbr.SetRoughness (Graphic3d_PBRMaterial::RoughnessFromSpecular (myCommonMat.SpecularColor, myCommonMat.Shininess));
       theAspect.SetPBRMaterial (aPbr);
-    #endif
+      theAspect.SetBSDF (Graphic3d_BSDF::CreateMetallicRoughness (aPbr));
     }
   }
 
@@ -248,14 +230,16 @@ void XCAFDoc_VisMaterial::FillMaterialAspect (Graphic3d_MaterialAspect& theAspec
       theAspect.SetShininess    (1.0f - myPbrMat.Roughness);
     }
 
-  #ifdef _Graphic3d_PBRMaterial_HeaderFile
     Graphic3d_PBRMaterial aPbr;
     aPbr.SetColor    (myPbrMat.BaseColor);
     aPbr.SetMetallic (myPbrMat.Metallic);
     aPbr.SetRoughness(myPbrMat.Roughness);
-    aPbr.SetEmission (myPbrMat.EmissiveFactor);
+    if (myPbrMat.EmissiveTexture.IsNull()) // TODO Temporal measure until emissive map will be implemented
+    {
+      aPbr.SetEmission(myPbrMat.EmissiveFactor);
+    }
     theAspect.SetPBRMaterial (aPbr);
-  #endif
+    theAspect.SetBSDF (Graphic3d_BSDF::CreateMetallicRoughness (aPbr));
   }
 }
 

@@ -106,6 +106,21 @@ public:
   //! Setup texture coordinates generation mode.
   Standard_EXPORT void SetGenMode (const Graphic3d_TypeOfTextureMode theMode, const Graphic3d_Vec4 thePlaneS, const Graphic3d_Vec4 thePlaneT);
 
+  //! @return base texture mipmap level; 0 by default.
+  Standard_Integer BaseLevel() const { return myBaseLevel; }
+
+  //! @return maximum texture mipmap array level; 1000 by default.
+  Standard_Integer MaxLevel() const { return myMaxLevel; }
+
+  //! Setups texture mipmap array levels range.
+  //! The lowest value will be the base level.
+  //! The remaining one will be the maximum level.
+  void SetLevelsRange (Standard_Integer theFirstLevel, Standard_Integer theSecondLevel = 0)
+  {
+    myMaxLevel  = theFirstLevel > theSecondLevel ? theFirstLevel : theSecondLevel;
+    myBaseLevel = theFirstLevel > theSecondLevel ? theSecondLevel : theFirstLevel;
+  }
+
   //! Return modification counter of parameters related to sampler state.
   unsigned int SamplerRevision() const { return mySamplerRevision; }
 
@@ -125,6 +140,8 @@ private:
   Graphic3d_TypeOfTextureFilter      myFilter;          //!< texture filter, Graphic3d_TOTF_NEAREST by default
   Graphic3d_LevelOfTextureAnisotropy myAnisoLevel;      //!< level of anisotropy filter, Graphic3d_LOTA_OFF by default
   Graphic3d_TypeOfTextureMode        myGenMode;         //!< texture coordinates generation mode, Graphic3d_TOTM_MANUAL by default
+  Standard_Integer                   myBaseLevel;       //!< base texture mipmap level (0 by default)
+  Standard_Integer                   myMaxLevel;        //!< maximum texture mipmap array level (1000 by default)
   Standard_ShortReal                 myRotAngle;        //!< texture coordinates rotation angle in degrees, 0 by default
   Standard_Boolean                   myToModulate;      //!< flag to modulate texture with material color, FALSE by default
   Standard_Boolean                   myToRepeat;        //!< flag to repeat (true) or wrap (false) texture coordinates out of [0,1] range

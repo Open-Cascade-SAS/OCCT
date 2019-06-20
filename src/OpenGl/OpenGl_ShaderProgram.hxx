@@ -62,8 +62,10 @@ enum OpenGl_StateVariable
   // Material state
   OpenGl_OCCT_TEXTURE_ENABLE,
   OpenGl_OCCT_DISTINGUISH_MODE,
-  OpenGl_OCCT_FRONT_MATERIAL,
-  OpenGl_OCCT_BACK_MATERIAL,
+  OpenGl_OCCT_PBR_FRONT_MATERIAL,
+  OpenGl_OCCT_PBR_BACK_MATERIAL,
+  OpenGl_OCCT_COMMON_FRONT_MATERIAL,
+  OpenGl_OCCT_COMMON_BACK_MATERIAL,
   OpenGl_OCCT_ALPHA_CUTOFF,
   OpenGl_OCCT_COLOR,
 
@@ -87,6 +89,9 @@ enum OpenGl_StateVariable
   // Parameters of outline (silhouette) shader
   OpenGl_OCCT_ORTHO_SCALE,
   OpenGl_OCCT_SILHOUETTE_THICKNESS,
+
+  // PBR state
+  OpenGl_OCCT_NB_SPEC_IBL_LEVELS,
 
   // DON'T MODIFY THIS ITEM (insert new items before it)
   OpenGl_OCCT_NUMBER_OF_STATE_VARIABLES

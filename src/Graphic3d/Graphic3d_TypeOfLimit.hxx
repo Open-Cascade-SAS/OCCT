@@ -25,6 +25,7 @@ enum Graphic3d_TypeOfLimit
   Graphic3d_TypeOfLimit_MaxViewDumpSizeY,               //!< maximum height for image dump
   Graphic3d_TypeOfLimit_MaxCombinedTextureUnits,        //!< maximum number of combined texture units for multitexturing
   Graphic3d_TypeOfLimit_MaxMsaa,                        //!< maximum number of MSAA samples
+  Graphic3d_TypeOfLimit_HasPBR,                         //!< indicates whether PBR metallic-roughness shading model is supported
   Graphic3d_TypeOfLimit_HasRayTracing,                  //!< indicates whether ray tracing is supported
   Graphic3d_TypeOfLimit_HasRayTracingTextures,          //!< indicates whether ray tracing textures are supported
   Graphic3d_TypeOfLimit_HasRayTracingAdaptiveSampling,  //!< indicates whether adaptive screen sampling is supported

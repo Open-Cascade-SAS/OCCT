@@ -31,7 +31,7 @@ OpenGl_TextureFormat OpenGl_TextureFormat::FindFormat (const Handle(OpenGl_Conte
       aFormat.SetNbComponents (1);
       if (theCtx->core11 == NULL)
       {
-        aFormat.SetInternalFormat (GL_R8); // GL_R32F
+        aFormat.SetInternalFormat (theCtx->arbTexFloat ? GL_R32F : GL_R8);
         aFormat.SetPixelFormat (GL_RED);
       }
       else
@@ -51,7 +51,7 @@ OpenGl_TextureFormat OpenGl_TextureFormat::FindFormat (const Handle(OpenGl_Conte
       aFormat.SetNbComponents (1);
       if (theCtx->core11 == NULL)
       {
-        aFormat.SetInternalFormat (GL_R8);  // GL_R32F
+        aFormat.SetInternalFormat (theCtx->arbTexFloat ? GL_R32F : GL_R8);
         aFormat.SetPixelFormat (GL_RED);
       }
       else
@@ -66,10 +66,22 @@ OpenGl_TextureFormat OpenGl_TextureFormat::FindFormat (const Handle(OpenGl_Conte
       aFormat.SetDataType (GL_FLOAT);
       return aFormat;
     }
+    case Image_Format_RGF:
+    {
+      if (!theCtx->arbTexRG)
+      {
+        return OpenGl_TextureFormat();
+      }
+      aFormat.SetNbComponents (2);
+      aFormat.SetInternalFormat (theCtx->arbTexFloat ? GL_RG32F : GL_RG8);
+      aFormat.SetPixelFormat (GL_RG);
+      aFormat.SetDataType (GL_FLOAT);
+      return aFormat;
+    }
     case Image_Format_RGBAF:
     {
       aFormat.SetNbComponents (4);
-      aFormat.SetInternalFormat (GL_RGBA8); // GL_RGBA32F
+      aFormat.SetInternalFormat (theCtx->arbTexFloat ? GL_RGBA32F : GL_RGBA8);
       aFormat.SetPixelFormat (GL_RGBA);
       aFormat.SetDataType (GL_FLOAT);
       return aFormat;
@@ -81,7 +93,7 @@ OpenGl_TextureFormat OpenGl_TextureFormat::FindFormat (const Handle(OpenGl_Conte
         return OpenGl_TextureFormat();
       }
       aFormat.SetNbComponents (4);
-      aFormat.SetInternalFormat (GL_RGBA8); // GL_RGBA32F
+      aFormat.SetInternalFormat (theCtx->arbTexFloat ? GL_RGBA32F : GL_RGBA8);
       aFormat.SetPixelFormat (GL_BGRA_EXT); // equals to GL_BGRA
       aFormat.SetDataType (GL_FLOAT);
       return aFormat;
@@ -89,7 +101,7 @@ OpenGl_TextureFormat OpenGl_TextureFormat::FindFormat (const Handle(OpenGl_Conte
     case Image_Format_RGBF:
     {
       aFormat.SetNbComponents (3);
-      aFormat.SetInternalFormat (GL_RGB8); // GL_RGB32F
+      aFormat.SetInternalFormat (theCtx->arbTexFloat ? GL_RGB32F : GL_RGB8);
       aFormat.SetPixelFormat (GL_RGB);
       aFormat.SetDataType (GL_FLOAT);
       return aFormat;
@@ -98,7 +110,7 @@ OpenGl_TextureFormat OpenGl_TextureFormat::FindFormat (const Handle(OpenGl_Conte
     {
     #if !defined(GL_ES_VERSION_2_0)
       aFormat.SetNbComponents (3);
-      aFormat.SetInternalFormat (GL_RGB8); // GL_RGB32F
+      aFormat.SetInternalFormat (theCtx->arbTexFloat ? GL_RGB32F : GL_RGB8);
       aFormat.SetPixelFormat (GL_BGR);     // equals to GL_BGR_EXT
       aFormat.SetDataType (GL_FLOAT);
       return aFormat;

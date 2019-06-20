@@ -22,6 +22,7 @@
 #include <NCollection_DataMap.hxx>
 #include <NCollection_Sequence.hxx>
 
+#include <OpenGl_PBREnvironment.hxx>
 #include <OpenGl_SetOfShaderPrograms.hxx>
 #include <OpenGl_ShaderStates.hxx>
 #include <OpenGl_Aspects.hxx>
@@ -249,8 +250,35 @@ public:
   //! Returns bounding box vertex buffer.
   const Handle(OpenGl_VertexBuffer)& BoundBoxVertBuffer() const { return myBoundBoxVertBuffer; }
 
+  //! Bind program for IBL maps generation in PBR pipeline.
+  Standard_Boolean BindPBREnvBakingProgram()
+  {
+    if (myPBREnvBakingProgram.IsNull())
+    {
+      preparePBREnvBakingProgram();
+    }
+    return myContext->BindProgram (myPBREnvBakingProgram);
+  }
+
   //! Generates shader program to render environment cubemap as background.
   Standard_EXPORT const Handle(Graphic3d_ShaderProgram)& GetBgCubeMapProgram ();
+
+  //! Resets PBR shading models to corresponding non-PBR ones if PBR is not allowed.
+  static Graphic3d_TypeOfShadingModel PBRShadingModelFallback (Graphic3d_TypeOfShadingModel theShadingModel,
+                                                               Standard_Boolean             theIsPbrAllowed = Standard_False)
+  {
+    if (theIsPbrAllowed)
+    {
+      return theShadingModel;
+    }
+
+    switch (theShadingModel)
+    {
+      case Graphic3d_TOSM_PBR:       return Graphic3d_TOSM_FRAGMENT;
+      case Graphic3d_TOSM_PBR_FACET: return Graphic3d_TOSM_FACET;
+      default: return theShadingModel;
+    }
+  }
 
 public:
 
@@ -258,7 +286,8 @@ public:
   const OpenGl_LightSourceState& LightSourceState() const { return myLightSourceState; }
 
   //! Updates state of OCCT light sources.
-  Standard_EXPORT void UpdateLightSourceStateTo (const Handle(Graphic3d_LightSet)& theLights);
+  Standard_EXPORT void UpdateLightSourceStateTo (const Handle(Graphic3d_LightSet)& theLights,
+                                                 Standard_Integer                  theSpecIBLMapLevels = 0);
 
   //! Invalidate state of OCCT light sources.
   Standard_EXPORT void UpdateLightSourceState();
@@ -443,6 +472,7 @@ public:
 
   //! Choose Shading Model for filled primitives.
   //! Fallbacks to FACET model if there are no normal attributes.
+  //! Fallbacks to corresponding non-PBR models if PBR is unavailable.
   Graphic3d_TypeOfShadingModel ChooseFaceShadingModel (Graphic3d_TypeOfShadingModel theCustomModel,
                                                        bool theHasNodalNormals) const
   {
@@ -460,12 +490,17 @@ public:
       case Graphic3d_TOSM_VERTEX:
       case Graphic3d_TOSM_FRAGMENT:
         return theHasNodalNormals ? aModel : Graphic3d_TOSM_FACET;
+      case Graphic3d_TOSM_PBR:
+        return PBRShadingModelFallback (theHasNodalNormals ? aModel : Graphic3d_TOSM_PBR_FACET, IsPbrAllowed());
+      case Graphic3d_TOSM_PBR_FACET:
+        return PBRShadingModelFallback (aModel, IsPbrAllowed());
     }
     return Graphic3d_TOSM_UNLIT;
   }
 
   //! Choose Shading Model for line primitives.
   //! Fallbacks to UNLIT model if there are no normal attributes.
+  //! Fallbacks to corresponding non-PBR models if PBR is unavailable.
   Graphic3d_TypeOfShadingModel ChooseLineShadingModel (Graphic3d_TypeOfShadingModel theCustomModel,
                                                        bool theHasNodalNormals) const
   {
@@ -483,6 +518,10 @@ public:
       case Graphic3d_TOSM_VERTEX:
       case Graphic3d_TOSM_FRAGMENT:
         return theHasNodalNormals ? aModel : Graphic3d_TOSM_UNLIT;
+      case Graphic3d_TOSM_PBR:
+        return PBRShadingModelFallback (theHasNodalNormals ? aModel : Graphic3d_TOSM_UNLIT, IsPbrAllowed());
+      case Graphic3d_TOSM_PBR_FACET:
+        return Graphic3d_TOSM_UNLIT;
     }
     return Graphic3d_TOSM_UNLIT;
   }
@@ -648,11 +687,13 @@ protected:
   {
     switch (theShadingModel)
     {
-      case Graphic3d_TOSM_UNLIT:    return prepareStdProgramUnlit  (theProgram, theBits, false);
-      case Graphic3d_TOSM_FACET:    return prepareStdProgramPhong  (theProgram, theBits, true);
-      case Graphic3d_TOSM_VERTEX:   return prepareStdProgramGouraud(theProgram, theBits);
+      case Graphic3d_TOSM_UNLIT:     return prepareStdProgramUnlit  (theProgram, theBits, false);
+      case Graphic3d_TOSM_FACET:     return prepareStdProgramPhong  (theProgram, theBits, true);
+      case Graphic3d_TOSM_VERTEX:    return prepareStdProgramGouraud(theProgram, theBits);
       case Graphic3d_TOSM_DEFAULT:
-      case Graphic3d_TOSM_FRAGMENT: return prepareStdProgramPhong  (theProgram, theBits, false);
+      case Graphic3d_TOSM_FRAGMENT:  return prepareStdProgramPhong  (theProgram, theBits, false);
+      case Graphic3d_TOSM_PBR:       return prepareStdProgramPhong  (theProgram, theBits, false, true);
+      case Graphic3d_TOSM_PBR_FACET: return prepareStdProgramPhong  (theProgram, theBits, true, true);
     }
     return false;
   }
@@ -663,15 +704,19 @@ protected:
 
   //! Prepare standard GLSL program with per-pixel lighting.
   //! @param theIsFlatNormal when TRUE, the Vertex normals will be ignored and Face normal will be computed instead
+  //! @param theIsPBR when TRUE, the PBR pipeline will be activated
   Standard_EXPORT Standard_Boolean prepareStdProgramPhong (Handle(OpenGl_ShaderProgram)& theProgram,
                                                            const Standard_Integer        theBits,
-                                                           const Standard_Boolean        theIsFlatNormal = false);
+                                                           const Standard_Boolean        theIsFlatNormal = false,
+                                                           const Standard_Boolean        theIsPBR = false);
 
   //! Define computeLighting GLSL function depending on current lights configuration
   //! @param theNbLights     [out] number of defined light sources
   //! @param theHasVertColor [in]  flag to use getVertColor() instead of Ambient and Diffuse components of active material
+  //! @param theIsPBR        [in]  flag to activate PBR pipeline
   Standard_EXPORT TCollection_AsciiString stdComputeLighting (Standard_Integer& theNbLights,
-                                                              Standard_Boolean  theHasVertColor);
+                                                              Standard_Boolean  theHasVertColor,
+                                                              Standard_Boolean  theIsPBR);
 
   //! Bind specified program to current context and apply state.
   Standard_EXPORT Standard_Boolean bindProgramWithState (const Handle(OpenGl_ShaderProgram)& theProgram);
@@ -696,6 +741,13 @@ protected:
   Standard_EXPORT TCollection_AsciiString prepareGeomMainSrc (OpenGl_ShaderObject::ShaderVariableList& theUnifoms,
                                                               OpenGl_ShaderObject::ShaderVariableList& theStageInOuts,
                                                               Standard_Integer theBits);
+
+  //! Prepare GLSL source for IBL generation used in PBR pipeline.
+  Standard_EXPORT Standard_Boolean preparePBREnvBakingProgram();
+
+  //! Checks whether one of PBR shading models is set as default model.
+  Standard_Boolean IsPbrAllowed() const { return myShadingModel == Graphic3d_TOSM_PBR
+                                              || myShadingModel == Graphic3d_TOSM_PBR_FACET; }
 
 protected:
 
@@ -769,11 +821,14 @@ protected:
   Handle(OpenGl_ShaderProgram)       myOitCompositingProgram[2]; //!< standard program for OIT compositing (default and MSAA).
   OpenGl_MapOfShaderPrograms         myMapOfLightPrograms; //!< map of lighting programs depending on lights configuration
 
+  Handle(OpenGl_ShaderProgram)       myPBREnvBakingProgram;//!< program for IBL maps generation used in PBR pipeline
   Handle(Graphic3d_ShaderProgram)    myBgCubeMapProgram;   //!< program for background cubemap rendering
 
   Handle(OpenGl_ShaderProgram)       myStereoPrograms[Graphic3d_StereoMode_NB]; //!< standard stereo programs
 
   Handle(OpenGl_VertexBuffer)        myBoundBoxVertBuffer; //!< bounding box vertex buffer
+
+  mutable Handle(OpenGl_PBREnvironment) myPBREnvironment;  //!< manager of IBL maps used in PBR pipeline
 
   OpenGl_Context*                    myContext;            //!< OpenGL context
   Standard_Boolean                   mySRgbState;          //!< track sRGB state

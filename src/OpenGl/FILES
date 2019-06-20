@@ -105,6 +105,8 @@ OpenGl_GraphicDriver.hxx
 OpenGl_IndexBuffer.cxx
 OpenGl_IndexBuffer.hxx
 OpenGl_Layer.hxx
+OpenGl_PBREnvironment.cxx
+OpenGl_PBREnvironment.hxx
 OpenGl_RenderFilter.hxx
 OpenGl_Sampler.cxx
 OpenGl_Sampler.hxx

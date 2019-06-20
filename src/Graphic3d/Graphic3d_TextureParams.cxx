@@ -29,6 +29,8 @@ Graphic3d_TextureParams::Graphic3d_TextureParams()
   myFilter     (Graphic3d_TOTF_NEAREST),
   myAnisoLevel (Graphic3d_LOTA_OFF),
   myGenMode    (Graphic3d_TOTM_MANUAL),
+  myBaseLevel  (0),
+  myMaxLevel   (1000),
   myRotAngle   (0.0f),
   myToModulate (Standard_False),
   myToRepeat   (Standard_False)

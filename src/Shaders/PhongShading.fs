@@ -29,7 +29,7 @@ void pointLight (in int  theId,
                  in vec3 thePoint)
 {
   vec3 aLight = occLight_Position (theId).xyz;
-  if (occLight_IsHeadlight (theId) == 0)
+  if (!occLight_IsHeadlight (theId))
   {
     aLight = vec3 (occWorldViewMatrix * vec4 (aLight, 1.0));
   }

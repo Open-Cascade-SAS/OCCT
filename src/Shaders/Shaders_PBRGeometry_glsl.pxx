@@ -1,0 +1,16 @@
+// This file has been automatically generated from resource file src/Shaders/PBRGeometry.glsl
+
+static const char Shaders_PBRGeometry_glsl[] =
+  "//! Calculates geometry factor for Cook-Torrance BRDF.\n"
+  "float occPBRGeometry (in float theCosV,\n"
+  "                      in float theCosL,\n"
+  "                      in float theRoughness)\n"
+  "{\n"
+  "  float k = theRoughness + 1.0;\n"
+  "  k *= 0.125 * k;\n"
+  "  float g1 = 1.0;\n"
+  "  g1 /= theCosV * (1.0 - k) + k;\n"
+  "  float g2 = 1.0;\n"
+  "  g2 /= theCosL * (1.0 - k) + k;\n"
+  "  return g1 * g2;\n"
+  "}\n";

@@ -587,6 +587,25 @@ public:
     return Quantity_ColorRGBA::Convert_LinearRGB_To_sRGB (theColor);
   }
 
+  //! Returns TRUE if PBR shading model is supported.
+  //! Basically, feature requires OpenGL 3.0+ / OpenGL ES 3.0+ hardware; more precisely:
+  //! - Graphics hardware with moderate capabilities for compiling long enough GLSL program.
+  //! - FBO (e.g. for baking environment).
+  //! - Multi-texturing with >= 4 units (LUT and IBL textures).
+  //! - GL_RG32F texture format (arbTexRG + arbTexFloat)
+  //! - Cubemap texture lookup textureCubeLod()/textureLod() with LOD index within Fragment Shader,
+  //!   which requires GLSL OpenGL 3.0+ / OpenGL ES 3.0+ or OpenGL 2.1 + GL_EXT_gpu_shader4 extension.
+  Standard_Boolean HasPBR() const { return myHasPBR; }
+
+  //! Returns texture unit where Environment Lookup Table is expected to be bound, or 0 if PBR is unavailable.
+  Graphic3d_TextureUnit PBREnvLUTTexUnit() const { return myPBREnvLUTTexUnit; }
+
+  //! Returns texture unit where Diffuse (irradiance) IBL map's spherical harmonics coefficients is expected to be bound, or 0 if PBR is unavailable.
+  Graphic3d_TextureUnit PBRDiffIBLMapSHTexUnit() const { return myPBRDiffIBLMapSHTexUnit; }
+
+  //! Returns texture unit where Specular IBL map is expected to be bound, or 0 if PBR is unavailable.
+  Graphic3d_TextureUnit PBRSpecIBLMapTexUnit() const { return myPBRSpecIBLMapTexUnit; }
+
   //! Returns true if VBO is supported and permitted.
   inline bool ToUseVbo() const
   {
@@ -956,6 +975,7 @@ public: //! @name extensions
   Standard_Boolean       hasHighp;           //!< highp in GLSL ES fragment shader is supported
   Standard_Boolean       hasUintIndex;       //!< GLuint for index buffer is supported (always available on desktop; on OpenGL ES - since 3.0 or as extension GL_OES_element_index_uint)
   Standard_Boolean       hasTexRGBA8;        //!< always available on desktop; on OpenGL ES - since 3.0 or as extension GL_OES_rgb8_rgba8
+  Standard_Boolean       hasTexFloatLinear;  //!< texture-filterable state for 32-bit floating texture formats (always on desktop, GL_OES_texture_float_linear within OpenGL ES)
   Standard_Boolean       hasTexSRGB;         //!< sRGB texture    formats (desktop OpenGL 2.0, OpenGL ES 3.0 or GL_EXT_texture_sRGB)
   Standard_Boolean       hasFboSRGB;         //!< sRGB FBO render targets (desktop OpenGL 2.1, OpenGL ES 3.0)
   Standard_Boolean       hasSRGBControl;     //!< sRGB write control (any desktop OpenGL, OpenGL ES + GL_EXT_sRGB_write_control extension)
@@ -969,7 +989,7 @@ public: //! @name extensions
   Standard_Boolean       arbDrawBuffers;     //!< GL_ARB_draw_buffers
   Standard_Boolean       arbNPTW;            //!< GL_ARB_texture_non_power_of_two
   Standard_Boolean       arbTexRG;           //!< GL_ARB_texture_rg
-  Standard_Boolean       arbTexFloat;        //!< GL_ARB_texture_float (on desktop OpenGL - since 3.0 or as extension GL_ARB_texture_float; on OpenGL ES - since 3.0)
+  Standard_Boolean       arbTexFloat;        //!< GL_ARB_texture_float (on desktop OpenGL - since 3.0 or as extension GL_ARB_texture_float; on OpenGL ES - since 3.0); @sa hasTexFloatLinear for linear filtering support
   OpenGl_ArbSamplerObject* arbSamplerObject; //!< GL_ARB_sampler_objects (on desktop OpenGL - since 3.3 or as extension GL_ARB_sampler_objects; on OpenGL ES - since 3.0)
   OpenGl_ArbTexBindless* arbTexBindless;     //!< GL_ARB_bindless_texture
   OpenGl_ArbTBO*         arbTBO;             //!< GL_ARB_texture_buffer_object
@@ -1055,6 +1075,12 @@ private: // context info
   Standard_Boolean myHasRayTracingTextures;         //! indicates whether textures in ray tracing mode are supported
   Standard_Boolean myHasRayTracingAdaptiveSampling; //! indicates whether adaptive screen sampling in ray tracing mode is supported
   Standard_Boolean myHasRayTracingAdaptiveSamplingAtomic; //! indicates whether atomic adaptive screen sampling in ray tracing mode is supported
+
+  Standard_Boolean myHasPBR;                      //!< indicates whether PBR shading model is supported
+  Graphic3d_TextureUnit myPBREnvLUTTexUnit;       //!< texture unit where environment lookup table is expected to be binded (0 if PBR is not supported)
+  Graphic3d_TextureUnit myPBRDiffIBLMapSHTexUnit; //!< texture unit where diffuse (irradiance) IBL map's spherical harmonics coefficients is expected to  be binded
+                                                  //!  (0 if PBR is not supported)
+  Graphic3d_TextureUnit myPBRSpecIBLMapTexUnit;   //!< texture unit where specular IBL map is expected to  be binded (0 if PBR is not supported)
 
   Handle(OpenGl_ShaderManager) myShaderManager; //! support object for managing shader programs
 

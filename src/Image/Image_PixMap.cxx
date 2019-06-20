@@ -47,6 +47,8 @@ Standard_Size Image_PixMap::SizePixelBytes (const Image_Format thePixelFormat)
     case Image_Format_GrayF:
     case Image_Format_AlphaF:
       return sizeof(float);
+    case Image_Format_RGF:
+      return sizeof(float) * 2;
     case Image_Format_RGBAF:
     case Image_Format_BGRAF:
       return sizeof(float) * 4;
@@ -214,6 +216,11 @@ Quantity_ColorRGBA Image_PixMap::PixelColor (const Standard_Integer theX,
       const Standard_ShortReal& aPixel = Value<Standard_ShortReal> (theY, theX);
       return Quantity_ColorRGBA (NCollection_Vec4<float> (1.0f, 1.0f, 1.0f, aPixel));
     }
+    case Image_Format_RGF:
+    {
+      const Image_ColorRGF& aPixel = Value<Image_ColorRGF> (theY, theX);
+      return Quantity_ColorRGBA (NCollection_Vec4<float> (aPixel.r(), aPixel.g(), 0.0f, 1.0f));
+    }
     case Image_Format_RGBAF:
     {
       const Image_ColorRGBAF& aPixel = Value<Image_ColorRGBAF> (theY, theX);
@@ -337,6 +344,13 @@ void Image_PixMap::SetPixelColor (const Standard_Integer theX,
     case Image_Format_AlphaF:
     {
       ChangeValue<Standard_ShortReal> (theY, theX) = aColor.a();
+      return;
+    }
+    case Image_Format_RGF:
+    {
+      Image_ColorRGF& aPixel = ChangeValue<Image_ColorRGF> (theY, theX);
+      aPixel.r() = aColor.r();
+      aPixel.g() = aColor.g();
       return;
     }
     case Image_Format_RGBAF:

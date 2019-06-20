@@ -56,38 +56,42 @@ Standard_CString OpenGl_ShaderProgram::PredefinedKeywords[] =
   "occWorldViewMatrixInverseTranspose",  // OpenGl_OCC_WORLD_VIEW_MATRIX_INVERSE_TRANSPOSE
   "occProjectionMatrixInverseTranspose", // OpenGl_OCC_PROJECTION_MATRIX_INVERSE_TRANSPOSE
 
-  "occClipPlaneEquations", // OpenGl_OCC_CLIP_PLANE_EQUATIONS
-  "occClipPlaneChains",    // OpenGl_OCC_CLIP_PLANE_CHAINS
-  "occClipPlaneCount",     // OpenGl_OCC_CLIP_PLANE_COUNT
+  "occClipPlaneEquations",  // OpenGl_OCC_CLIP_PLANE_EQUATIONS
+  "occClipPlaneChains",     // OpenGl_OCC_CLIP_PLANE_CHAINS
+  "occClipPlaneCount",      // OpenGl_OCC_CLIP_PLANE_COUNT
 
-  "occLightSourcesCount",  // OpenGl_OCC_LIGHT_SOURCE_COUNT
-  "occLightSourcesTypes",  // OpenGl_OCC_LIGHT_SOURCE_TYPES
-  "occLightSources",       // OpenGl_OCC_LIGHT_SOURCE_PARAMS
-  "occLightAmbient",       // OpenGl_OCC_LIGHT_AMBIENT
+  "occLightSourcesCount",   // OpenGl_OCC_LIGHT_SOURCE_COUNT
+  "occLightSourcesTypes",   // OpenGl_OCC_LIGHT_SOURCE_TYPES
+  "occLightSources",        // OpenGl_OCC_LIGHT_SOURCE_PARAMS
+  "occLightAmbient",        // OpenGl_OCC_LIGHT_AMBIENT
 
-  "occTextureEnable",      // OpenGl_OCCT_TEXTURE_ENABLE
-  "occDistinguishingMode", // OpenGl_OCCT_DISTINGUISH_MODE
-  "occFrontMaterial",      // OpenGl_OCCT_FRONT_MATERIAL
-  "occBackMaterial",       // OpenGl_OCCT_BACK_MATERIAL
-  "occAlphaCutoff",        // OpenGl_OCCT_ALPHA_CUTOFF
-  "occColor",              // OpenGl_OCCT_COLOR
+  "occTextureEnable",       // OpenGl_OCCT_TEXTURE_ENABLE
+  "occDistinguishingMode",  // OpenGl_OCCT_DISTINGUISH_MODE
+  "occPbrFrontMaterial",    // OpenGl_OCCT_PBR_FRONT_MATERIAL
+  "occPbrBackMaterial",     // OpenGl_OCCT_PBR_BACK_MATERIAL
+  "occFrontMaterial",       // OpenGl_OCCT_COMMON_FRONT_MATERIAL
+  "occBackMaterial",        // OpenGl_OCCT_COMMON_BACK_MATERIAL
+  "occAlphaCutoff",         // OpenGl_OCCT_ALPHA_CUTOFF
+  "occColor",               // OpenGl_OCCT_COLOR
 
-  "occOitOutput",          // OpenGl_OCCT_OIT_OUTPUT
-  "occOitDepthFactor",     // OpenGl_OCCT_OIT_DEPTH_FACTOR
+  "occOitOutput",           // OpenGl_OCCT_OIT_OUTPUT
+  "occOitDepthFactor",      // OpenGl_OCCT_OIT_DEPTH_FACTOR
 
-  "occTexTrsf2d",          // OpenGl_OCCT_TEXTURE_TRSF2D
-  "occPointSize",          // OpenGl_OCCT_POINT_SIZE
+  "occTexTrsf2d",           // OpenGl_OCCT_TEXTURE_TRSF2D
+  "occPointSize",           // OpenGl_OCCT_POINT_SIZE
 
-  "occViewport",           // OpenGl_OCCT_VIEWPORT
-  "occLineWidth",          // OpenGl_OCCT_LINE_WIDTH
-  "occLineFeather",        // OpenGl_OCCT_LINE_FEATHER
-  "occStipplePattern",     // OpenGl_OCCT_LINE_STIPPLE_PATTERN
-  "occStippleFactor",      // OpenGl_OCCT_LINE_STIPPLE_FACTOR
-  "occWireframeColor",     // OpenGl_OCCT_WIREFRAME_COLOR
-  "occIsQuadMode",         // OpenGl_OCCT_QUAD_MODE_STATE
+  "occViewport",            // OpenGl_OCCT_VIEWPORT
+  "occLineWidth",           // OpenGl_OCCT_LINE_WIDTH
+  "occLineFeather",         // OpenGl_OCCT_LINE_FEATHER
+  "occStipplePattern",      // OpenGl_OCCT_LINE_STIPPLE_PATTERN
+  "occStippleFactor",       // OpenGl_OCCT_LINE_STIPPLE_FACTOR
+  "occWireframeColor",      // OpenGl_OCCT_WIREFRAME_COLOR
+  "occIsQuadMode",          // OpenGl_OCCT_QUAD_MODE_STATE
 
-  "occOrthoScale",         // OpenGl_OCCT_ORTHO_SCALE
-  "occSilhouetteThickness" // OpenGl_OCCT_SILHOUETTE_THICKNESS
+  "occOrthoScale",          // OpenGl_OCCT_ORTHO_SCALE
+  "occSilhouetteThickness", // OpenGl_OCCT_SILHOUETTE_THICKNESS
+
+  "occNbSpecIBLLevels"      // OpenGl_OCCT_NB_SPEC_IBL_LEVELS
 };
 
 namespace
@@ -409,6 +413,11 @@ Standard_Boolean OpenGl_ShaderProgram::Initialize (const Handle(OpenGl_Context)&
     {
       aHeaderConstants += "#define THE_HAS_DEFAULT_SAMPLER\n";
     }
+    if (!myProxy.IsNull()
+      && myProxy->IsPBR())
+    {
+      aHeaderConstants += "#define THE_IS_PBR\n";
+    }
 
     const TCollection_AsciiString aSource = aHeaderVer                     // #version   - header defining GLSL version, should be first
                                           + (!aHeaderVer.IsEmpty() ? "\n" : "")
@@ -487,6 +496,18 @@ Standard_Boolean OpenGl_ShaderProgram::Initialize (const Handle(OpenGl_Context)&
   if (const OpenGl_ShaderUniformLocation aLocSampler = GetUniformLocation (theCtx, "occSamplerPointSprite"))
   {
     SetUniform (theCtx, aLocSampler, GLint(theCtx->SpriteTextureUnit()));
+  }
+  if (const OpenGl_ShaderUniformLocation aLocSampler = GetUniformLocation (theCtx, "occDiffIBLMapSHCoeffs"))
+  {
+    SetUniform (theCtx, aLocSampler, GLint(theCtx->PBRDiffIBLMapSHTexUnit()));
+  }
+  if (const OpenGl_ShaderUniformLocation aLocSampler = GetUniformLocation (theCtx, "occSpecIBLMap"))
+  {
+    SetUniform (theCtx, aLocSampler, GLint(theCtx->PBRSpecIBLMapTexUnit()));
+  }
+  if (const OpenGl_ShaderUniformLocation aLocSampler = GetUniformLocation (theCtx, "occEnvLUT"))
+  {
+    SetUniform (theCtx, aLocSampler, GLint(theCtx->PBREnvLUTTexUnit()));
   }
 
   const TCollection_AsciiString aSamplerNamePrefix ("occSampler");

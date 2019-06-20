@@ -1,5 +1,12 @@
 srcinc:::Declarations.glsl
 srcinc:::DeclarationsImpl.glsl
+srcinc:::PBRCookTorrance.glsl
+srcinc:::PBRDistribution.glsl
+srcinc:::PBREnvBaking.fs
+srcinc:::PBREnvBaking.vs
+srcinc:::PBRFresnel.glsl
+srcinc:::PBRGeometry.glsl
+srcinc:::PBRIllumination.glsl
 srcinc:::PhongShading.fs
 srcinc:::PhongShading.vs
 srcinc:::Display.fs
@@ -11,6 +18,13 @@ srcinc:::RaytraceSmooth.fs
 Shaders_Declarations_glsl.pxx
 Shaders_DeclarationsImpl_glsl.pxx
 Shaders_Display_fs.pxx
+Shaders_PBRCookTorrance_glsl.pxx
+Shaders_PBRDistribution_glsl.pxx
+Shaders_PBREnvBaking_fs.pxx
+Shaders_PBREnvBaking_vs.pxx
+Shaders_PBRFresnel_glsl.pxx
+Shaders_PBRGeometry_glsl.pxx
+Shaders_PBRIllumination_glsl.pxx
 Shaders_RaytraceBase_fs.pxx
 Shaders_RaytraceRender_fs.pxx
 Shaders_PathtraceBase_fs.pxx

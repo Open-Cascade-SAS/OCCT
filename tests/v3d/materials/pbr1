@@ -1,0 +1,11 @@
+source $env(CSF_OCCTSamplesPath)/tcl/materials.tcl
+vlight -change 0 -intensity 5
+vrenderparams -shadingModel PBR -msaa 0
+vdump $imagedir/${casename}_default.png
+
+set aCubeMap [locate_data_file Circus_CubeMap_V.png]
+vbackground -cubemap $aCubeMap
+vdump $imagedir/${casename}_env.png
+
+vbackground -cubemap $aCubeMap -invertedz
+vdump $imagedir/${casename}_env_iz.png

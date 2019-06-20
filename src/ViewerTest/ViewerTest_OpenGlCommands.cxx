@@ -32,6 +32,7 @@
 #include <OpenGl_Workspace.hxx>
 #include <OSD_Environment.hxx>
 #include <OSD_File.hxx>
+#include <OSD_OpenFile.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_Presentation.hxx>
 #include <Prs3d_Root.hxx>
@@ -1037,17 +1038,24 @@ static Standard_Integer VListMaterials (Draw_Interpretor& theDI,
                                               "ASPECT material does not define final colors, it is taken from Internal Color instead.\n"
                                               "See also Graphic3d_TypeOfMaterial enumeration'>"
                                    "Type</div></th>\n"
-                  "<th colspan='5'><div title='Common material definition for Phong shading model'>"
-                                   "Common</div></th>\n"
                   "<th rowspan='2'>Transparency</th>\n"
-                  "<th rowspan='2'>Refraction Index</th>\n"
-                  "<th colspan='9'><div title='BSDF (Bidirectional Scattering Distribution Function).\n"
+                  "<th colspan='5'><div title='PBR Metallic-Roughness'>"
+                                   "PBR Metallic-Roughness</div></th>\n"
+                  "<th colspan='5'><div title='Common material definition for Phong shading model'>"
+                                   "Common (Blinn-Phong)</div></th>\n"
+                  "<th colspan='10'><div title='BSDF (Bidirectional Scattering Distribution Function).\n"
                                               "Used for physically-based rendering (in path tracing engine).\n"
                                               "BSDF is represented as weighted mixture of basic BRDFs/BTDFs (Bidirectional Reflectance (Transmittance) Distribution Functions).\n"
                                               "See also Graphic3d_BSDF structure.'>"
-                                   "BSDF</div></th>\n"
+                                   "BSDF (Bidirectional Scattering Distribution Function)</div></th>\n"
                   "</tr>\n"
                   "<tr>\n"
+                  "<th>Color</th>\n"
+                  "<th>Metallic</th>\n"
+                  "<th>Roughness</th>\n"
+                  "<th>Emission</th>\n"
+                  "<th><div title='Index of refraction'>"
+                       "IOR</div></th>\n"
                   "<th>Ambient</th>\n"
                   "<th>Diffuse</th>\n"
                   "<th>Specular</th>\n"
@@ -1069,6 +1077,7 @@ static Standard_Integer VListMaterials (Draw_Interpretor& theDI,
                        "FresnelCoat</div></th>\n"
                   "<th><div title='Parameters of Fresnel reflectance of base layer'>"
                        "FresnelBase</div></th>\n"
+                  "<th>Refraction Index</th>\n"
                   "</tr>\n";
   }
   else if (!aDumpFile.IsEmpty())
@@ -1105,13 +1114,17 @@ static Standard_Integer VListMaterials (Draw_Interpretor& theDI,
       anHtmlFile << "<tr>\n";
       anHtmlFile << "<td>" << aMat.StringName() << "</td>\n";
       anHtmlFile << "<td>" << (aMat.MaterialType() == Graphic3d_MATERIAL_PHYSIC ? "PHYSIC" : "ASPECT")  << "</td>\n";
+      anHtmlFile << "<td>" << aMat.Transparency() << "</td>\n";
+      anHtmlFile << "<td>" << formatSvgColoredRect (aMat.PBRMaterial().Color().GetRGB()) << (Graphic3d_Vec3 )aMat.PBRMaterial().Color().GetRGB() << "</td>\n";
+      anHtmlFile << "<td>" << aMat.PBRMaterial().Metallic() << "</td>\n";
+      anHtmlFile << "<td>" << aMat.PBRMaterial().NormalizedRoughness() << "</td>\n";
+      anHtmlFile << "<td>" << formatSvgColoredRect (Quantity_Color (aMat.PBRMaterial().Emission())) << aMat.PBRMaterial().Emission() << "</td>\n";
+      anHtmlFile << "<td>" << aMat.PBRMaterial().IOR() << "</td>\n";
       anHtmlFile << "<td>" << formatSvgColoredRect (Quantity_Color (anAmbient))  << anAmbient  << "</td>\n";
       anHtmlFile << "<td>" << formatSvgColoredRect (Quantity_Color (aDiffuse))   << aDiffuse   << "</td>\n";
       anHtmlFile << "<td>" << formatSvgColoredRect (Quantity_Color (aSpecular))  << aSpecular  << "</td>\n";
       anHtmlFile << "<td>" << formatSvgColoredRect (Quantity_Color (anEmission)) << anEmission << "</td>\n";
       anHtmlFile << "<td>" << aMat.Shininess() << "</td>\n";
-      anHtmlFile << "<td>" << aMat.Transparency() << "</td>\n";
-      anHtmlFile << "<td>" << aMat.RefractionIndex() << "</td>\n";
       anHtmlFile << "<td>" << aMat.BSDF().Kc << "</td>\n";
       anHtmlFile << "<td>" << aMat.BSDF().Kd << "</td>\n";
       anHtmlFile << "<td>" << aMat.BSDF().Ks << "</td>\n";
@@ -1120,18 +1133,23 @@ static Standard_Integer VListMaterials (Draw_Interpretor& theDI,
       anHtmlFile << "<td>" << aMat.BSDF().Absorption << "</td>\n";
       anHtmlFile << "<td>" << fresnelModelString (aMat.BSDF().FresnelCoat.FresnelType()) << "</td>\n";
       anHtmlFile << "<td>" << fresnelModelString (aMat.BSDF().FresnelBase.FresnelType()) << "</td>\n";
+      anHtmlFile << "<td>" << aMat.RefractionIndex() << "</td>\n";
       anHtmlFile << "</tr>\n";
     }
     else
     {
       theDI << aMat.StringName() << "\n";
+      theDI << "  Transparency:           " << aMat.Transparency() << "\n";
+      theDI << "  PBR.BaseColor:          " << (Graphic3d_Vec3 )aMat.PBRMaterial().Color().GetRGB() << "\n";
+      theDI << "  PBR.Metallic:           " << aMat.PBRMaterial().Metallic() << "\n";
+      theDI << "  PBR.Roughness:          " << aMat.PBRMaterial().NormalizedRoughness() << "\n";
+      theDI << "  PBR.Emission:           " << aMat.PBRMaterial().Emission() << "\n";
+      theDI << "  PBR.IOR:                " << aMat.PBRMaterial().IOR() << "\n";
       theDI << "  Common.Ambient:         " << anAmbient << "\n";
       theDI << "  Common.Diffuse:         " << aDiffuse  << "\n";
       theDI << "  Common.Specular:        " << aSpecular << "\n";
       theDI << "  Common.Emissive:        " << anEmission << "\n";
       theDI << "  Common.Shiness:         " << aMat.Shininess() << "\n";
-      theDI << "  Common.Transparency:    " << aMat.Transparency() << "\n";
-      theDI << "  RefractionIndex:        " << aMat.RefractionIndex() << "\n";
       theDI << "  BSDF.Kc:                " << aMat.BSDF().Kc << "\n";
       theDI << "  BSDF.Kd:                " << aMat.BSDF().Kd << "\n";
       theDI << "  BSDF.Ks:                " << aMat.BSDF().Ks << "\n";
@@ -1140,6 +1158,7 @@ static Standard_Integer VListMaterials (Draw_Interpretor& theDI,
       theDI << "  BSDF.Absorption:        " << aMat.BSDF().Absorption << "\n";
       theDI << "  BSDF.FresnelCoat:       " << fresnelModelString (aMat.BSDF().FresnelCoat.FresnelType()) << "\n";
       theDI << "  BSDF.FresnelBase:       " << fresnelModelString (aMat.BSDF().FresnelBase.FresnelType()) << "\n";
+      theDI << "  RefractionIndex:        " << aMat.RefractionIndex() << "\n";
     }
 
     if (anObjFile.is_open())
@@ -1335,6 +1354,159 @@ static Standard_Integer VListColors (Draw_Interpretor& theDI,
   return 0;
 }
 
+//==============================================================================
+//function : envlutWriteToFile
+//purpose  :
+//==============================================================================
+static std::string envLutWriteToFile (Standard_ShortReal theValue)
+{
+  std::stringstream aStream;
+  aStream << theValue;
+  if (aStream.str().length() == 1)
+  {
+    aStream << '.';
+  }
+  aStream << 'f';
+  return aStream.str();
+}
+
+//==============================================================================
+//function : VGenEnvLUT
+//purpose  :
+//==============================================================================
+static Standard_Integer VGenEnvLUT (Draw_Interpretor&,
+                                    Standard_Integer  theArgNb,
+                                    const char**      theArgVec)
+{
+  Standard_Integer aTableSize = -1;
+  Standard_Integer aNbSamples = -1;
+  TCollection_AsciiString aFilePath = Graphic3d_TextureRoot::TexturesFolder() + "/Textures_EnvLUT.pxx";
+
+  for (Standard_Integer anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
+  {
+    TCollection_AsciiString anArg(theArgVec[anArgIter]);
+    anArg.LowerCase();
+
+    if (anArg == "-size"
+     || anArg == "-s")
+    {
+      if (anArgIter + 1 >= theArgNb)
+      {
+        std::cerr << "Syntax error: size of PBR environment look up table is undefined" << "\n";
+        return 1;
+      }
+
+      aTableSize = Draw::Atoi(theArgVec[++anArgIter]);
+
+      if (aTableSize < 16)
+      {
+        std::cerr << "Error: size of PBR environment look up table must be greater or equal 16\n";
+        return 1;
+      }
+    }
+    else if (anArg == "-nbsamples"
+          || anArg == "-samples")
+    {
+      if (anArgIter + 1 >= theArgNb)
+      {
+        std::cerr << "Syntax error: number of samples to generate PBR environment look up table is undefined" << "\n";
+        return 1;
+      }
+
+      aNbSamples = Draw::Atoi(theArgVec[++anArgIter]);
+
+      if (aNbSamples < 1)
+      {
+        std::cerr << "Syntax error: number of samples to generate PBR environment look up table must be greater than 1\n" << "\n";
+        return 1;
+      }
+    }
+    else
+    {
+      std::cerr << "Syntax error: unknown argument " << anArg << ";\n";
+      return 1;
+    }
+  }
+
+  if (aTableSize < 0)
+  {
+    aTableSize = 128;
+  }
+
+  if (aNbSamples < 0)
+  {
+    aNbSamples = 1024;
+  }
+
+  std::ofstream aFile;
+
+  OSD_OpenStream (aFile, aFilePath, std::ios::out | std::ios::binary);
+
+  if (!aFile.good())
+  {
+    std::cerr << "Error: unable to write to " << aFilePath << "\n";
+    return 1;
+  }
+
+  aFile << "//this file has been generated by vgenenvlut draw command\n";
+  aFile << "static unsigned int Textures_EnvLUTSize = " << aTableSize << ";\n\n";
+  aFile << "static float Textures_EnvLUT[] =\n";
+  aFile << "{\n";
+
+  Handle(Image_PixMap) aPixMap = new Image_PixMap();
+  aPixMap->InitZero (Image_Format_RGF, aTableSize, aTableSize);
+  Graphic3d_PBRMaterial::GenerateEnvLUT (aPixMap, aNbSamples);
+
+  const Standard_Integer aNumbersInRow = 5;
+  Standard_Integer aCounter = 0;
+
+  for (int y = 0; y < aTableSize - 1; ++y)
+  {
+    aCounter = 0;
+    for (int x = 0; x < aTableSize; ++x)
+    {
+      aFile << envLutWriteToFile (aPixMap->Value<Graphic3d_Vec3>(aTableSize - 1 - y, x).x()) << ",";
+      aFile << envLutWriteToFile (aPixMap->Value<Graphic3d_Vec3>(aTableSize - 1 - y, x).y()) << ",";
+      if (++aCounter % aNumbersInRow == 0)
+      {
+        aFile << "\n";
+      }
+      else if (x != aTableSize - 1)
+      {
+        aFile << " ";
+      }
+    }
+    aFile << "\n";
+    if (aTableSize % aNumbersInRow != 0)
+    {
+      aFile << "\n";
+    }
+  }
+
+  aCounter = 0;
+  for (int x = 0; x < aTableSize - 1; ++x)
+  {
+    aFile << envLutWriteToFile (aPixMap->Value<Graphic3d_Vec3>(0, x).x()) << ",";
+    aFile << envLutWriteToFile (aPixMap->Value<Graphic3d_Vec3>(0, x).y()) << ",";
+    if (++aCounter % aNumbersInRow == 0)
+    {
+      aFile << "\n";
+    }
+    else
+    {
+      aFile << " ";
+    }
+  }
+
+  aFile << envLutWriteToFile (aPixMap->Value<Graphic3d_Vec3>(0, aTableSize - 1).x()) << ",";
+  aFile << envLutWriteToFile (aPixMap->Value<Graphic3d_Vec3>(0, aTableSize - 1).y()) << "\n";
+
+  aFile << "};";
+  aFile.close();
+
+  return 0;
+}
+
 //=======================================================================
 //function : OpenGlCommands
 //purpose  :
@@ -1386,4 +1558,12 @@ void ViewerTest::OpenGlCommands(Draw_Interpretor& theCommands)
                   "\n\t\t: or dumped into specified file."
                   "\n\t\t: * can be used to refer to complete list of standard colors.",
                   __FILE__, VListColors, aGroup);
+  theCommands.Add("vgenenvlut",
+                  "vgenenvlut [-size size = 128] [-nbsamples nbsamples = 1024]"
+                  "\n\t\t: Generates PBR environment look up table."
+                  "\n\t\t: Saves it as C++ source file which is expected to be included in code."
+                  "\n\t\t: The path where result will be located is 'Graphic3d_TextureRoot::TexturesFolder()'."
+                  "\n\t\t:  -size size of one side of resulted square table"
+                  "\n\t\t:  -nbsamples number of samples used in Monte-Carlo integration",
+                  __FILE__, VGenEnvLUT, aGroup);
 }

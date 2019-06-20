@@ -72,6 +72,8 @@ OpenGl_View::OpenGl_View (const Handle(Graphic3d_StructureManager)& theMgr,
   myTextureParams   (new OpenGl_Aspects()),
   myCubeMapParams   (new OpenGl_Aspects()),
   myBackgroundType  (Graphic3d_TOB_NONE),
+  myPBREnvState     (OpenGl_PBREnvState_NONEXISTENT),
+  myPBREnvRequest   (OpenGl_PBREnvRequest_NONE),
   // ray-tracing fields initialization
   myRaytraceInitStatus     (OpenGl_RT_NONE),
   myIsRaytraceDataValid    (Standard_False),
@@ -202,6 +204,11 @@ void OpenGl_View::ReleaseGlResources (const Handle(OpenGl_Context)& theCtx)
   releaseSrgbResources (theCtx);
 
   releaseRaytraceResources (theCtx);
+
+  if (!myPBREnvironment.IsNull())
+  {
+    myPBREnvironment->Release (theCtx.get());
+  }
 }
 
 // =======================================================================
@@ -530,37 +537,56 @@ Handle(Graphic3d_CubeMap) OpenGl_View::BackgroundCubeMap() const
 {
   return myBackgroundCubeMap;
 }
+
+// =======================================================================
+// function : SpecIBLMapLevels
+// purpose  :
+// =======================================================================
+unsigned int OpenGl_View::SpecIBLMapLevels() const
+{
+  return myPBREnvironment.IsNull() ? 0 : myPBREnvironment->SpecMapLevelsNumber();
+}
  
 // =======================================================================
 // function : SetBackgroundCubeMap
 // purpose  :
 // =======================================================================
-void OpenGl_View::SetBackgroundCubeMap (const Handle(Graphic3d_CubeMap)& theCubeMap)
+void OpenGl_View::SetBackgroundCubeMap (const Handle(Graphic3d_CubeMap)& theCubeMap,
+                                        Standard_Boolean theToUpdatePBREnv)
 {
   myBackgroundCubeMap = theCubeMap;
-  Handle(Graphic3d_AspectFillArea3d) anAspect = new Graphic3d_AspectFillArea3d;
-  Handle(Graphic3d_TextureSet) aTextureSet = new Graphic3d_TextureSet (myBackgroundCubeMap);
+  if (theCubeMap.IsNull())
+  {
+    if (theToUpdatePBREnv)
+    {
+      myPBREnvRequest = OpenGl_PBREnvRequest_CLEAR;
+    }
+    if (myBackgroundType == Graphic3d_TOB_CUBEMAP)
+    {
+      myBackgroundType = Graphic3d_TOB_NONE;
+    }
+    return;
+  }
 
-  anAspect->SetInteriorStyle(Aspect_IS_SOLID);
-  anAspect->SetSuppressBackFaces(false);
-  anAspect->SetTextureSet(aTextureSet);
+  theCubeMap ->SetMipmapsGeneration (Standard_True);
+  Handle(Graphic3d_AspectFillArea3d) anAspect = new Graphic3d_AspectFillArea3d();
+  Handle(Graphic3d_TextureSet) aTextureSet = new Graphic3d_TextureSet (myBackgroundCubeMap);
+  anAspect->SetInteriorStyle (Aspect_IS_SOLID);
+  anAspect->SetSuppressBackFaces (false);
+  anAspect->SetTextureSet (aTextureSet);
 
   const Handle(OpenGl_Context)& aCtx = myWorkspace->GetGlContext();
   if (!aCtx.IsNull())
   {
     anAspect->SetShaderProgram (aCtx->ShaderManager()->GetBgCubeMapProgram());
   }
+  anAspect->SetTextureMapOn (theCubeMap->IsDone());
+  myCubeMapParams->SetAspect (anAspect);
 
-  if (theCubeMap->IsDone())
+  if (theToUpdatePBREnv)
   {
-    anAspect->SetTextureMapOn();
+    myPBREnvRequest = OpenGl_PBREnvRequest_BAKE;
   }
-  else
-  {
-    anAspect->SetTextureMapOff();
-  }
-
-  myCubeMapParams->SetAspect(anAspect);
   const OpenGl_Aspects* anAspectsBackup = myWorkspace->SetAspects (myCubeMapParams);
   myWorkspace->ApplyAspects();
   myWorkspace->SetAspects (anAspectsBackup);

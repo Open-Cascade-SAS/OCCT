@@ -506,10 +506,36 @@ void V3d_View::SetBgImageStyle (const Aspect_FillMethod theFillStyle, const Stan
 //purpose  :
 //=============================================================================
 void V3d_View::SetBackgroundCubeMap (const Handle(Graphic3d_CubeMap)& theCubeMap,
+                                     Standard_Boolean                 theToUpdatePBREnv,
                                      Standard_Boolean                 theToUpdate)
 {
-  myView->SetBackgroundCubeMap (theCubeMap);
+  myView->SetBackgroundCubeMap (theCubeMap, theToUpdatePBREnv);
+  if (myImmediateUpdate || theToUpdate)
+  {
+    Redraw();
+  }
+}
 
+//=============================================================================
+//function : GeneratePBREnvironment
+//purpose  :
+//=============================================================================
+void V3d_View::GeneratePBREnvironment (Standard_Boolean theToUpdate)
+{
+  myView->GeneratePBREnvironment();
+  if (myImmediateUpdate || theToUpdate)
+  {
+    Redraw();
+  }
+}
+
+//=============================================================================
+//function : ClearPBREnvironment
+//purpose  :
+//=============================================================================
+void V3d_View::ClearPBREnvironment (Standard_Boolean theToUpdate)
+{
+  myView->ClearPBREnvironment();
   if (myImmediateUpdate || theToUpdate)
   {
     Redraw();

@@ -378,7 +378,23 @@ public:
   virtual Handle(Graphic3d_CubeMap) BackgroundCubeMap() const = 0;
 
   //! Sets environment cubemap as background.
-  virtual void SetBackgroundCubeMap (const Handle(Graphic3d_CubeMap)& theCubeMap) = 0;
+  //! @param theCubeMap cubemap source to be set as background
+  //! @param theToUpdatePBREnv defines whether IBL maps will be generated or not (see 'GeneratePBREnvironment')
+  virtual void SetBackgroundCubeMap (const Handle(Graphic3d_CubeMap)& theCubeMap,
+                                     Standard_Boolean theToUpdatePBREnv = Standard_True) = 0;
+
+  //! Generates PBR specular probe and irradiance map
+  //! in order to provide environment indirect illumination in PBR shading model (Image Based Lighting).
+  //! The source of environment data is background cubemap.
+  //! If PBR is unavailable it does nothing.
+  //! If PBR is available but there is no cubemap being set to background it clears all IBL maps (see 'ClearPBREnvironment').
+  virtual void GeneratePBREnvironment() = 0;
+
+  //! Fills PBR specular probe and irradiance map with white color.
+  //! So that environment indirect illumination will be constant
+  //! and will be fully controlled by ambient light sources.
+  //! If PBR is unavailable it does nothing.
+  virtual void ClearPBREnvironment() = 0;
 
   //! Returns environment texture set for the view.
   virtual Handle(Graphic3d_TextureEnv) TextureEnv() const = 0; 

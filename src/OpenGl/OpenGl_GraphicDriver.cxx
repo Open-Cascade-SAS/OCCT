@@ -400,6 +400,8 @@ Standard_Integer OpenGl_GraphicDriver::InquireLimit (const Graphic3d_TypeOfLimit
       return !aCtx.IsNull() ? aCtx->MaxDumpSizeX() : 1024;
     case Graphic3d_TypeOfLimit_MaxViewDumpSizeY:
       return !aCtx.IsNull() ? aCtx->MaxDumpSizeY() : 1024;
+    case Graphic3d_TypeOfLimit_HasPBR:
+      return (!aCtx.IsNull() && aCtx->HasPBR()) ? 1 : 0;
     case Graphic3d_TypeOfLimit_HasRayTracing:
       return (!aCtx.IsNull() && aCtx->HasRayTracing()) ? 1 : 0;
     case Graphic3d_TypeOfLimit_HasRayTracingTextures:

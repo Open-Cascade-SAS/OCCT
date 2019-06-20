@@ -22,7 +22,7 @@
 class OpenGl_Context;
 
 //! OpenGL material definition
-struct OpenGl_Material
+struct OpenGl_MaterialCommon
 {
 
   OpenGl_Vec4 Ambient;  //!< ambient reflection coefficient
@@ -37,30 +37,57 @@ struct OpenGl_Material
   float  Transparency() const { return Params.y(); }
   float& ChangeTransparency() { return Params.y(); }
 
+  //! Empty constructor.
+  OpenGl_MaterialCommon() : Ambient (1.0f), Diffuse (1.0f), Specular (1.0f), Emission (1.0f), Params (1.0f, 0.0f, 0.0f, 0.0f) {}
+
+  //! Returns packed (serialized) representation of material properties
+  const OpenGl_Vec4* Packed() const { return reinterpret_cast<const OpenGl_Vec4*> (this); }
+  static Standard_Integer NbOfVec4() { return 5; }
+
+};
+
+//! OpenGL material definition
+struct OpenGl_MaterialPBR
+{
+
+  OpenGl_Vec4 BaseColor;   //!< base color of PBR material with alpha component
+  OpenGl_Vec4 EmissionIOR; //!< light intensity which is emitted by PBR material and index of refraction
+  OpenGl_Vec4 Params;      //!< extra packed parameters
+
+  float  Metallic()  const { return Params.b(); }
+  float& ChangeMetallic()  { return Params.b(); }
+
+  float  Roughness() const { return Params.g(); }
+  float& ChangeRoughness() { return Params.g(); }
+
+  //! Empty constructor.
+  OpenGl_MaterialPBR() : BaseColor (1.0f), EmissionIOR (1.0f), Params  (1.0f, 1.0f, 1.0f, 1.0f) {}
+
+  //! Returns packed (serialized) representation of material properties
+  const OpenGl_Vec4* Packed() const { return reinterpret_cast<const OpenGl_Vec4*> (this); }
+  static Standard_Integer NbOfVec4() { return 3; }
+
+};
+
+//! OpenGL material definition
+struct OpenGl_Material
+{
+  OpenGl_MaterialCommon Common;
+  OpenGl_MaterialPBR    Pbr;
+
   //! Set material color.
   void SetColor (const OpenGl_Vec4& theColor)
   {
     // apply the same formula as in Graphic3d_MaterialAspect::SetColor()
-    Ambient.SetValues (theColor.rgb() * 0.25f, Ambient.a());
-    Diffuse.SetValues (theColor.rgb(), Diffuse.a());
+    Common.Ambient.SetValues (theColor.rgb() * 0.25f, Common.Ambient.a());
+    Common.Diffuse.SetValues (theColor.rgb(), Common.Diffuse.a());
+    Pbr .BaseColor.SetValues (theColor.rgb(), Pbr.BaseColor.a());
   }
-
-  //! Empty constructor.
-  OpenGl_Material()
-  : Ambient (1.0f),
-    Diffuse (1.0f),
-    Specular(1.0f),
-    Emission(1.0f),
-    Params  (1.0f, 0.0f, 0.0f, 0.0f) {}
 
   //! Initialize material
   void Init (const OpenGl_Context& theCtx,
              const Graphic3d_MaterialAspect& theProp,
              const Quantity_Color& theInteriorColor);
-
-  //! Returns packed (serialized) representation of material properties
-  const OpenGl_Vec4* Packed() const { return reinterpret_cast<const OpenGl_Vec4*> (this); }
-  static Standard_Integer NbOfVec4() { return 5; }
 
   //! Check this material for equality with another material (without tolerance!).
   bool IsEqual (const OpenGl_Material& theOther) const

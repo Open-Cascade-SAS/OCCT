@@ -786,6 +786,10 @@ Standard_Boolean OpenGl_FrameBuffer::BufferDump (const Handle(OpenGl_Context)& t
       aFormat = GL_DEPTH_COMPONENT;
       aType   = GL_FLOAT;
       break;
+    case Image_Format_RGF:
+      aFormat = GL_RG;
+      aType   = GL_FLOAT;
+      break;
     case Image_Format_RGB:
       aFormat = GL_RGB;
       aType   = GL_UNSIGNED_BYTE;
@@ -812,6 +816,7 @@ Standard_Boolean OpenGl_FrameBuffer::BufferDump (const Handle(OpenGl_Context)& t
     case Image_Format_GrayF:
     case Image_Format_BGRF:
     case Image_Format_BGRAF:
+    case Image_Format_RGF:
       return Standard_False;
     case Image_Format_BGRA:
     case Image_Format_BGR32:

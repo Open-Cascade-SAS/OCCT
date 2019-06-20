@@ -58,36 +58,42 @@ void OpenGl_Material::Init (const OpenGl_Context& theCtx,
                             const Graphic3d_MaterialAspect& theMat,
                             const Quantity_Color& theInteriorColor)
 {
-  ChangeShine()        = 128.0f * theMat.Shininess();
-  ChangeTransparency() = theMat.Alpha();
+  Common.ChangeShine()        = 128.0f * theMat.Shininess();
+  Common.ChangeTransparency() = theMat.Alpha();
+
+  Pbr.ChangeMetallic()  = theMat.PBRMaterial().Metallic();
+  Pbr.ChangeRoughness() = theMat.PBRMaterial().NormalizedRoughness();
+  Pbr.EmissionIOR = Graphic3d_Vec4 (theMat.PBRMaterial().Emission(), theMat.PBRMaterial().IOR());
 
   const OpenGl_Vec3& aSrcAmb = theMat.AmbientColor();
   const OpenGl_Vec3& aSrcDif = theMat.DiffuseColor();
   const OpenGl_Vec3& aSrcSpe = theMat.SpecularColor();
   const OpenGl_Vec3& aSrcEms = theMat.EmissiveColor();
-  Specular.SetValues (aSrcSpe, 1.0f); // interior color is ignored for Specular
+  Common.Specular.SetValues (aSrcSpe, 1.0f); // interior color is ignored for Specular
   switch (theMat.MaterialType())
   {
     case Graphic3d_MATERIAL_ASPECT:
     {
-      Ambient .SetValues (aSrcAmb * theInteriorColor, 1.0f);
-      Diffuse .SetValues (aSrcDif * theInteriorColor, 1.0f);
-      Emission.SetValues (aSrcEms * theInteriorColor, 1.0f);
+      Common.Ambient .SetValues (aSrcAmb * theInteriorColor, 1.0f);
+      Common.Diffuse .SetValues (aSrcDif * theInteriorColor, 1.0f);
+      Common.Emission.SetValues (aSrcEms * theInteriorColor, 1.0f);
+      Pbr  .BaseColor.SetValues (theInteriorColor, theMat.Alpha());
       break;
     }
     case Graphic3d_MATERIAL_PHYSIC:
     {
-      Ambient .SetValues (aSrcAmb, 1.0f);
-      Diffuse .SetValues (aSrcDif, 1.0f);
-      Emission.SetValues (aSrcEms, 1.0f);
+      Common.Ambient .SetValues (aSrcAmb, 1.0f);
+      Common.Diffuse .SetValues (aSrcDif, 1.0f);
+      Common.Emission.SetValues (aSrcEms, 1.0f);
+      Pbr.BaseColor = theMat.PBRMaterial().Color();
       break;
     }
   }
 
-  Ambient  = theCtx.Vec4FromQuantityColor (Ambient);
-  Diffuse  = theCtx.Vec4FromQuantityColor (Diffuse);
-  Specular = theCtx.Vec4FromQuantityColor (Specular);
-  Emission = theCtx.Vec4FromQuantityColor (Emission);
+  Common.Ambient  = theCtx.Vec4FromQuantityColor (Common.Ambient);
+  Common.Diffuse  = theCtx.Vec4FromQuantityColor (Common.Diffuse);
+  Common.Specular = theCtx.Vec4FromQuantityColor (Common.Specular);
+  Common.Emission = theCtx.Vec4FromQuantityColor (Common.Emission);
 }
 
 // =======================================================================
@@ -308,6 +314,14 @@ const OpenGl_Aspects* OpenGl_Workspace::ApplyAspects()
   else
   {
     myGlContext->BindTextures (myEnvironmentTexture);
+  }
+
+  if ((myView->myShadingModel == Graphic3d_TOSM_PBR
+    || myView->myShadingModel == Graphic3d_TOSM_PBR_FACET)
+   && !myView->myPBREnvironment.IsNull()
+   &&  myView->myPBREnvironment->IsNeededToBeBound())
+  {
+    myView->myPBREnvironment->Bind (myGlContext);
   }
 
   myAspectsApplied = myAspectsSet->Aspect();

@@ -26,21 +26,25 @@ class Graphic3d_CubeMap : public Graphic3d_TextureMap
 public:
 
   //! Constructor defining loading cubemap from file.
-  Graphic3d_CubeMap (const TCollection_AsciiString& theFileName) :
+  Graphic3d_CubeMap (const TCollection_AsciiString& theFileName,
+                     Standard_Boolean               theToGenerateMipmaps = Standard_False) :
     Graphic3d_TextureMap (theFileName, Graphic3d_TOT_CUBEMAP),
     myCurrentSide  (Graphic3d_CMS_POS_X),
     myEndIsReached (false),
     myIsTopDown    (true),
-    myZIsInverted  (false)
+    myZIsInverted  (false),
+    myHasMipmaps   (theToGenerateMipmaps)
   {}
 
   //! Constructor defining direct cubemap initialization from PixMap.
-  Graphic3d_CubeMap (const Handle(Image_PixMap)& thePixmap = Handle(Image_PixMap)()) :
+  Graphic3d_CubeMap (const Handle(Image_PixMap)& thePixmap = Handle(Image_PixMap)(),
+                     Standard_Boolean            theToGenerateMipmaps = Standard_False) :
     Graphic3d_TextureMap (thePixmap, Graphic3d_TOT_CUBEMAP),
     myCurrentSide  (Graphic3d_CMS_POS_X),
     myEndIsReached (false),
     myIsTopDown    (true),
-    myZIsInverted  (false)
+    myZIsInverted  (false),
+    myHasMipmaps   (theToGenerateMipmaps)
   {}
 
   //! Returns whether the iterator has reached the end (true if it hasn't). 
@@ -81,6 +85,12 @@ public:
     return myZIsInverted;
   }
 
+  //! Returns whether mipmaps of cubemap will be generated or not.
+  Standard_Boolean HasMipmaps() const { return myHasMipmaps; }
+
+  //! Sets whether to generate mipmaps of cubemap or not.
+  void SetMipmapsGeneration (Standard_Boolean theToGenerateMipmaps) { myHasMipmaps = theToGenerateMipmaps; }
+
   //! Returns PixMap containing current side of cubemap.
   //! Returns null handle if current side is invalid.
   virtual Handle(Image_PixMap) Value() = 0;
@@ -102,6 +112,7 @@ protected:
   Standard_Boolean      myEndIsReached; //!< Indicates whether end of iteration has been reached or hasn't
   Standard_Boolean      myIsTopDown;    //!< Stores rows's memory layout
   Standard_Boolean      myZIsInverted;  //!< Indicates whether Z axis is inverted that allows to synchronize vertical flip of cubemap
+  Standard_Boolean      myHasMipmaps;   //!< Indicates whether mipmaps of cubemap will be generated or not
 
 };
 

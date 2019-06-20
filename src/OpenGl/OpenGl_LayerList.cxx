@@ -594,7 +594,7 @@ void OpenGl_LayerList::renderLayer (const Handle(OpenGl_Workspace)& theWorkspace
   if (hasOwnLights)
   {
     aLayerSettings.Lights()->UpdateRevision();
-    aManager->UpdateLightSourceStateTo (aLayerSettings.Lights());
+    aManager->UpdateLightSourceStateTo (aLayerSettings.Lights(), theWorkspace->View()->SpecIBLMapLevels());
   }
 
   const Handle(Graphic3d_Camera)& aWorldCamera = theWorkspace->View()->Camera();
@@ -665,7 +665,7 @@ void OpenGl_LayerList::renderLayer (const Handle(OpenGl_Workspace)& theWorkspace
 
   if (hasOwnLights)
   {
-    aManager->UpdateLightSourceStateTo (aLightsBack);
+    aManager->UpdateLightSourceStateTo (aLightsBack, theWorkspace->View()->SpecIBLMapLevels());
   }
   if (hasLocalCS)
   {
@@ -732,7 +732,7 @@ void OpenGl_LayerList::Render (const Handle(OpenGl_Workspace)& theWorkspace,
       if (aPassIter == 0)
       {
         aCtx->SetColorMask (false);
-        aCtx->ShaderManager()->UpdateLightSourceStateTo (Handle(Graphic3d_LightSet)());
+        aCtx->ShaderManager()->UpdateLightSourceStateTo (Handle(Graphic3d_LightSet)(), theWorkspace->View()->SpecIBLMapLevels());
         aDefaultSettings.DepthFunc = aPrevSettings.DepthFunc;
         aDefaultSettings.DepthMask = GL_TRUE;
       }
@@ -743,13 +743,13 @@ void OpenGl_LayerList::Render (const Handle(OpenGl_Workspace)& theWorkspace,
           continue;
         }
         aCtx->SetColorMask (true);
-        aCtx->ShaderManager()->UpdateLightSourceStateTo (aLightsBack);
+        aCtx->ShaderManager()->UpdateLightSourceStateTo (aLightsBack, theWorkspace->View()->SpecIBLMapLevels());
         aDefaultSettings = aPrevSettings;
       }
       else if (aPassIter == 2)
       {
         aCtx->SetColorMask (true);
-        aCtx->ShaderManager()->UpdateLightSourceStateTo (aLightsBack);
+        aCtx->ShaderManager()->UpdateLightSourceStateTo (aLightsBack, theWorkspace->View()->SpecIBLMapLevels());
         if (toPerformDepthPrepass)
         {
           aDefaultSettings.DepthFunc = GL_EQUAL;

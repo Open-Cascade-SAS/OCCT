@@ -95,6 +95,13 @@ public:
   : Method                      (Graphic3d_RM_RASTERIZATION),
     TransparencyMethod          (Graphic3d_RTM_BLEND_UNORDERED),
     LineFeather                 (1.0f),
+    // PBR parameters
+    PbrEnvPow2Size              (9),
+    PbrEnvSpecMapNbLevels       (6),
+    PbrEnvBakingDiffNbSamples   (1024),
+    PbrEnvBakingSpecNbSamples   (256),
+    PbrEnvBakingProbability     (0.99f),
+    //
     OitDepthFactor              (0.0f),
     NbMsaaSamples               (0),
     RenderResolutionScale       (1.0f),
@@ -171,6 +178,15 @@ public:
   Graphic3d_RenderTransparentMethod TransparencyMethod;          //!< specifies rendering method for transparent graphics
   Standard_ShortReal                LineFeather;                 //!< line feater width in pixels (> 0.0), 1.0 by default;
                                                                  //!  high values produce blurred results, small values produce sharp (aliased) edges
+
+  Standard_Integer                  PbrEnvPow2Size;              //!< size of IBL maps side can be calculated as 2^PbrEnvPow2Size (> 0), 9 by default
+  Standard_Integer                  PbrEnvSpecMapNbLevels;       //!< number of levels used in specular IBL map (> 1), 6 by default
+  Standard_Integer                  PbrEnvBakingDiffNbSamples;   //!< number of samples used in Monte-Carlo integration during diffuse IBL map's
+                                                                 //!  spherical harmonics coefficients generation (> 0), 1024 by default
+  Standard_Integer                  PbrEnvBakingSpecNbSamples;   //!< number of samples used in Monte-Carlo integration during specular IBL map's generation (> 0), 256 by default
+  Standard_ShortReal                PbrEnvBakingProbability;     //!< controls strength of samples reducing strategy during specular IBL map's generation
+                                                                 //!  (see 'SpecIBLMapSamplesFactor' function for detail explanation) [0.0, 1.0], 0.99 by default
+
   Standard_ShortReal                OitDepthFactor;              //!< scalar factor [0-1] controlling influence of depth of a fragment to its final coverage
   Standard_Integer                  NbMsaaSamples;               //!< number of MSAA samples (should be within 0..GL_MAX_SAMPLES, power-of-two number), 0 by default
   Standard_ShortReal                RenderResolutionScale;       //!< rendering resolution scale factor, 1 by default;

@@ -144,6 +144,7 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
   hasUintIndex(Standard_True),
   hasTexRGBA8(Standard_True),
 #endif
+  hasTexFloatLinear (Standard_False),
   hasTexSRGB (Standard_False),
   hasFboSRGB (Standard_False),
   hasSRGBControl (Standard_False),
@@ -208,6 +209,10 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
   myHasRayTracingTextures (Standard_False),
   myHasRayTracingAdaptiveSampling (Standard_False),
   myHasRayTracingAdaptiveSamplingAtomic (Standard_False),
+  myHasPBR (Standard_False),
+  myPBREnvLUTTexUnit       (Graphic3d_TextureUnit_0),
+  myPBRDiffIBLMapSHTexUnit (Graphic3d_TextureUnit_0),
+  myPBRSpecIBLMapTexUnit   (Graphic3d_TextureUnit_0),
   myFrameStats (new OpenGl_FrameStats()),
 #if !defined(GL_ES_VERSION_2_0)
   myPointSpriteOrig (GL_UPPER_LEFT),
@@ -1485,6 +1490,8 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
 
   arbTexFloat = IsGlGreaterEqual (3, 0)
              && FindProcShort (glTexImage3D);
+  hasTexFloatLinear = arbTexFloat
+                   && CheckExtension ("GL_OES_texture_float_linear");
 
   const Standard_Boolean hasTexBuffer32  = IsGlGreaterEqual (3, 2) && FindProcShort (glTexBuffer);
   const Standard_Boolean hasExtTexBuffer = CheckExtension ("GL_EXT_texture_buffer") && FindProc ("glTexBufferEXT", myFuncs->glTexBuffer);
@@ -1581,6 +1588,7 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
   arbNPTW          = CheckExtension ("GL_ARB_texture_non_power_of_two");
   arbTexFloat      = IsGlGreaterEqual (3, 0)
                   || CheckExtension ("GL_ARB_texture_float");
+  hasTexFloatLinear = arbTexFloat;
   arbSampleShading = CheckExtension ("GL_ARB_sample_shading");
   extBgra          = CheckExtension ("GL_EXT_bgra");
   extAnis          = CheckExtension ("GL_EXT_texture_filter_anisotropic");
@@ -2933,6 +2941,23 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
                                          "Check OpenGL window creation parameters for optimal performance.", Message_Trace);
     }
   }
+
+  // check whether PBR shading model is supported
+  myHasPBR = arbFBO != NULL
+          && myMaxTexCombined >= 4
+          && arbTexRG
+          && arbTexFloat
+          && (IsGlGreaterEqual (3, 0)
+        #if !defined(GL_ES_VERSION_2_0)
+          || (IsGlGreaterEqual (2, 1) && CheckExtension ("GL_EXT_gpu_shader4"))
+        #endif
+             );
+  if (myHasPBR)
+  {
+    myPBREnvLUTTexUnit = static_cast<Graphic3d_TextureUnit>(myMaxTexCombined - 3);
+    myPBRDiffIBLMapSHTexUnit = static_cast<Graphic3d_TextureUnit>(myMaxTexCombined - 2);
+    myPBRSpecIBLMapTexUnit = static_cast<Graphic3d_TextureUnit>(myMaxTexCombined - 1);
+  }
 }
 
 // =======================================================================
@@ -3547,8 +3572,11 @@ void OpenGl_Context::SetShadingMaterial (const OpenGl_Aspects* theAspect,
   Standard_ShortReal anAlphaBack  = 1.0f;
   if (CheckIsTransparent (theAspect, theHighlight, anAlphaFront, anAlphaBack))
   {
-    myMatFront.Diffuse.a() = anAlphaFront;
-    myMatBack .Diffuse.a() = anAlphaBack;
+    myMatFront.Common.Diffuse.a() = anAlphaFront;
+    myMatBack .Common.Diffuse.a() = anAlphaBack;
+
+    myMatFront.Pbr.BaseColor.a() = anAlphaFront;
+    myMatBack .Pbr.BaseColor.a() = anAlphaBack;
   }
 
   // do not update material properties in case of zero reflection mode,

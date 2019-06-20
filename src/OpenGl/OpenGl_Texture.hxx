@@ -245,11 +245,6 @@ public:
     return Init3D (theCtx, aFormat, Graphic3d_Vec3i (theSizeX, theSizeY, theSizeZ), thePixels);
   }
 
-protected:
-
-  //! Apply default sampler parameters after texture creation.
-  Standard_EXPORT void applyDefaultSamplerParams (const Handle(OpenGl_Context)& theCtx);
-
   //! Initializes 6 sides of cubemap.
   //! If theCubeMap is not NULL then size and format will be taken from it and corresponding arguments will be ignored.
   //! Otherwise this parametres will be taken from arguments.
@@ -259,12 +254,17 @@ protected:
   //! @param theFormat      [in] image format
   //! @param theToGenMipmap [in] flag to generate mipmaped cubemap
   //! @param theIsColorMap  [in] flag indicating cubemap storing color values
-  Standard_EXPORT bool initCubeMap (const Handle(OpenGl_Context)&    theCtx,
+  Standard_EXPORT bool InitCubeMap (const Handle(OpenGl_Context)&    theCtx,
                                     const Handle(Graphic3d_CubeMap)& theCubeMap,
                                     Standard_Size    theSize,
                                     Image_Format     theFormat,
                                     Standard_Boolean theToGenMipmap,
                                     Standard_Boolean theIsColorMap);
+
+protected:
+
+  //! Apply default sampler parameters after texture creation.
+  Standard_EXPORT void applyDefaultSamplerParams (const Handle(OpenGl_Context)& theCtx);
 
 protected:
 

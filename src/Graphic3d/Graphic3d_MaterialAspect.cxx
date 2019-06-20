@@ -25,6 +25,7 @@ namespace
   {
     const char*              StringName;
     Graphic3d_BSDF           BSDF;
+    Graphic3d_PBRMaterial    PBRMaterial;
     Quantity_Color           Colors[Graphic3d_TypeOfReflection_NB];
     Standard_ShortReal       TransparencyCoef;
     Standard_ShortReal       RefractionIndex;
@@ -99,6 +100,7 @@ RawMaterial::RawMaterial (Graphic3d_NameOfMaterial theName, const char* theStrin
       BSDF.Kd = Graphic3d_Vec3 (0.2f);
       BSDF.Ks = Graphic3d_Vec4 (0.00784314f, 0.00784314f, 0.00784314f, 0.25f);
       BSDF.Normalize();
+
       break;
     case Graphic3d_NOM_SHINY_PLASTIC:
       MaterialType = Graphic3d_MATERIAL_ASPECT;
@@ -124,6 +126,7 @@ RawMaterial::RawMaterial (Graphic3d_NameOfMaterial theName, const char* theStrin
 
       BSDF.Kd = Graphic3d_Vec3 (0.2f);
       BSDF.Ks = Graphic3d_Vec4 (0.6f);
+
       break;
     case Graphic3d_NOM_NEON_GNC:
       MaterialType = Graphic3d_MATERIAL_ASPECT;
@@ -221,6 +224,7 @@ RawMaterial::RawMaterial (Graphic3d_NameOfMaterial theName, const char* theStrin
       Colors[Graphic3d_TOR_EMISSION] = Quantity_Color (Graphic3d_Vec3 (0.0f));
 
       BSDF.Kd = Graphic3d_Vec3 (0.482353f, 0.482353f, 0.482353f);
+
       break;
     case Graphic3d_NOM_SILVER:
       MaterialType = Graphic3d_MATERIAL_PHYSIC;
@@ -261,6 +265,7 @@ RawMaterial::RawMaterial (Graphic3d_NameOfMaterial theName, const char* theStrin
 
       BSDF.Kd = Graphic3d_Vec3 (0.243137f, 0.243137f, 0.243137f);
       BSDF.Ks = Graphic3d_Vec4 (0.00392157f, 0.00392157f, 0.00392157f, 0.5f);
+
       break;
     case Graphic3d_NOM_CHROME:
       MaterialType = Graphic3d_MATERIAL_PHYSIC;
@@ -418,6 +423,7 @@ RawMaterial::RawMaterial (Graphic3d_NameOfMaterial theName, const char* theStrin
       Colors[Graphic3d_TOR_EMISSION] = Quantity_Color (Graphic3d_Vec3 (0.0f));
       break;
   }
+  PBRMaterial.SetBSDF (BSDF);
 }
 
 // =======================================================================
@@ -447,8 +453,9 @@ Graphic3d_MaterialAspect::Graphic3d_MaterialAspect (const Graphic3d_NameOfMateri
 void Graphic3d_MaterialAspect::init (const Graphic3d_NameOfMaterial theName)
 {
   const RawMaterial& aMat = THE_MATERIALS[theName];
-  myBSDF       = aMat.BSDF;
-  myStringName = aMat.StringName;
+  myBSDF        = aMat.BSDF;
+  myPBRMaterial = aMat.PBRMaterial;
+  myStringName  = aMat.StringName;
   myColors[Graphic3d_TOR_AMBIENT]     = aMat.Colors[Graphic3d_TOR_AMBIENT];
   myColors[Graphic3d_TOR_DIFFUSE]     = aMat.Colors[Graphic3d_TOR_DIFFUSE];
   myColors[Graphic3d_TOR_SPECULAR]    = aMat.Colors[Graphic3d_TOR_SPECULAR];
@@ -498,6 +505,8 @@ void Graphic3d_MaterialAspect::SetColor (const Quantity_Color& theColor)
   {
     return;
   }
+
+  myPBRMaterial.SetColor (theColor);
 
   const RawMaterial& aSrcMat = THE_MATERIALS[myRequestedMaterialName];
   const Quantity_Color anAmbient((Graphic3d_Vec3 )theColor * aSrcMat.AmbientCoef);
@@ -585,6 +594,7 @@ void Graphic3d_MaterialAspect::SetTransparency (const Standard_ShortReal theValu
   }
 
   myTransparencyCoef = theValue;
+  myPBRMaterial.SetAlpha (1.0f - theValue);
 }
 
 // =======================================================================

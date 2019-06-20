@@ -517,6 +517,14 @@ Standard_Boolean ViewerTest::ParseShadingModel (Standard_CString              th
   {
     theModel = Graphic3d_TOSM_FRAGMENT;
   }
+  else if (aTypeStr == "pbr")
+  {
+    theModel = Graphic3d_TOSM_PBR;
+  }
+  else if (aTypeStr == "pbr_facet")
+  {
+    theModel = Graphic3d_TOSM_PBR_FACET;
+  }
   else if (aTypeStr == "default"
         || aTypeStr == "def")
   {
@@ -1982,7 +1990,7 @@ struct ViewerTest_AspectsChangeSet
       isOk = Standard_False;
     }
     if (ToSetShadingModel == 1
-    && (ShadingModel < Graphic3d_TOSM_DEFAULT || ShadingModel > Graphic3d_TOSM_FRAGMENT))
+    && (ShadingModel < Graphic3d_TOSM_DEFAULT || ShadingModel > Graphic3d_TOSM_PBR_FACET))
     {
       std::cout << "Error: unknown shading model " << ShadingModelName << ".\n";
       isOk = Standard_False;

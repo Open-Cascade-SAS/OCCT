@@ -228,9 +228,24 @@ public:
   Standard_EXPORT void SetBgImageStyle (const Aspect_FillMethod theFillStyle,
                                         const Standard_Boolean theToUpdate = Standard_False);
 
-  //! Sets environment cubemap as interactive background.
+  //! Sets environment cubemap as background.
+  //! @param theCubeMap cubemap source to be set as background
+  //! @param theToUpdatePBREnv defines whether IBL maps will be generated or not (see 'GeneratePBREnvironment')
   Standard_EXPORT void SetBackgroundCubeMap (const Handle(Graphic3d_CubeMap)& theCubeMap,
+                                             Standard_Boolean                 theToUpdatePBREnv = Standard_True,
                                              Standard_Boolean                 theToUpdate = Standard_False);
+
+  //! Generates PBR specular probe and irradiance map
+  //! in order to provide environment indirect illumination in PBR shading model (Image Based Lighting).
+  //! The source of environment data is background cubemap.
+  //! If PBR is unavailable it does nothing.
+  //! If PBR is available but there is no cubemap being set to background it clears all IBL maps (see 'ClearPBREnvironment').
+  Standard_EXPORT void GeneratePBREnvironment (Standard_Boolean theToUpdate = Standard_False);
+
+  //! Fills PBR specular probe and irradiance map with white color.
+  //! So that environment indirect illumination will be constant and will be fully controlled by ambient light sources.
+  //! If PBR is unavailable it does nothing.
+  Standard_EXPORT void ClearPBREnvironment (Standard_Boolean theToUpdate = Standard_False);
 
   //! Definition of an axis from its origin and
   //! its orientation .
