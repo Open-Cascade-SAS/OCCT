@@ -152,8 +152,6 @@ Standard_Integer BOPAlgo_PaveFiller::UpdateVertex
   //
   // add vertex to SD map
   myDS->AddShapeSD(nV, nVNew);
-  //
-  myDS->InitPaveBlocksForVertex(nV);
 
   // Add new vertex to map of vertices to avoid further extension
   myVertsToAvoidExtension.Add(nVNew);

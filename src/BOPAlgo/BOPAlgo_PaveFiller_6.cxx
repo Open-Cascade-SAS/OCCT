@@ -3250,6 +3250,7 @@ void BOPAlgo_PaveFiller::UpdateBlocksWithSharedVertices()
         aTolV=BRep_Tool::Tolerance(aV);
         //
         UpdateVertex(nV, aTolV);
+        myDS->InitPaveBlocksForVertex (nV);
       }
     }//for (j=0; j<aNbC; ++j) {
   }//for (i=0; i<aNbFF; ++i) {
