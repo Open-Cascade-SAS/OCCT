@@ -16,7 +16,7 @@ if { ${int1} == 0 } {
     puts "Error : Intersection is not found"
 } 
 
-av2d
+smallview -2D-
 2dfit
 
 xwd ${imagedir}/${test_image}.png

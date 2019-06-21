@@ -26,6 +26,7 @@
 #include <DrawTrSurf_Curve2d.hxx>
 #include <Geom2dAPI_ProjectPointOnCurve.hxx>
 #include <Geom2dAPI_ExtremaCurveCurve.hxx>
+#include <Geom2dAPI_Interpolate.hxx>
 #include <Geom2dAPI_PointsToBSpline.hxx>
 #include <Geom2dAPI_InterCurveCurve.hxx>
 #include <Geom2d_Line.hxx>
@@ -178,7 +179,6 @@ static Standard_Integer appro(Draw_Interpretor& di, Standard_Integer n, const ch
 
     else {
       // test points ou ordonnees
-      hasPoints = Standard_False;
       Standard_Integer nc = n - 3;
       if (nc == 2 * Nb) {
 	// points
@@ -190,6 +190,7 @@ static Standard_Integer appro(Draw_Interpretor& di, Standard_Integer n, const ch
       }
       else if (nc - 2 == Nb) {
 	// YValues
+        hasPoints = Standard_False;
 	nc = 5;
 	X0 = Draw::Atof(a[3]);
 	DX = Draw::Atof(a[4]);
@@ -214,9 +215,44 @@ static Standard_Integer appro(Draw_Interpretor& di, Standard_Integer n, const ch
   
   Handle(Geom2d_BSplineCurve) TheCurve;
   if (hasPoints)
-    TheCurve = Geom2dAPI_PointsToBSpline(Points,Dmin,Dmax,GeomAbs_C2,Tol2d);
+  {
+    if (!strcmp (a[0], "2dinterpole"))
+    {
+      Geom2dAPI_Interpolate anInterpol (new TColgp_HArray1OfPnt2d(Points), Standard_False, Tol2d);
+      anInterpol.Perform();
+      if (!anInterpol.IsDone())
+      {
+        di << "not done";
+        return 1;
+      }
+      TheCurve = anInterpol.Curve();
+    }
+    else
+    {
+      Geom2dAPI_PointsToBSpline anApprox (Points, Dmin, Dmax, GeomAbs_C2, Tol2d);
+      if (!anApprox.IsDone())
+      {
+        di << "not done";
+        return 1;
+      }
+      TheCurve = anApprox.Curve();
+    }
+  }
   else
-    TheCurve = Geom2dAPI_PointsToBSpline(YValues,X0,DX,Dmin,Dmax,GeomAbs_C2,Tol2d);
+  {
+    if (!strcmp (a[0], "2dinterpole"))
+    {
+      di << "incorrect usage";
+      return 1;
+    }
+    Geom2dAPI_PointsToBSpline anApprox (YValues, X0, DX, Dmin, Dmax, GeomAbs_C2, Tol2d);
+    if (!anApprox.IsDone())
+    {
+      di << "not done";
+      return 1;
+    }
+    TheCurve = anApprox.Curve();
+  }
   
   DrawTrSurf::Set(a[1], TheCurve);
   di << a[1];

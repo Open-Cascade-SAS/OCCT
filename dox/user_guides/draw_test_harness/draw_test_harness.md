@@ -5595,7 +5595,7 @@ Draw provides command to create curves and surfaces by approximation.
 * **appro** fits a curve through 3d points;
 * **surfapp** and **grilapp** fit a surface through 3d points by approximation;
 * **surfint** fit a surface through 3d points by interpolation;
-* **2dinterpolate** interpolates a curve. 
+* **2dinterpole** interpolates a curve. 
 
 @subsubsection occt_draw_6_8_1   appro, dapprox
 

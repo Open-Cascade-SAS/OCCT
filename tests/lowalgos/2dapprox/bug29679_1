@@ -1,0 +1,12 @@
+puts "================"
+puts "0029679: Command 2dapprox works wrong when giving points in command line"
+puts "================"
+puts ""
+
+2dapprox c 5 0 0 3 4 -1 4 -4 0 -4 -3
+
+checklength c -l 18.723980878126035
+
+smallview -2D-
+2dfit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

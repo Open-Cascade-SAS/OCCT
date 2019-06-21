@@ -30,7 +30,7 @@ if { $int1 == 0 || $int2 == 0 || $int3 == 0 || $int4 ==0 } {
     puts "Error : Intersection is not found"
 } 
 
-av2d
+smallview -2D-
 2dfit
 
 xwd ${imagedir}/${test_image}.png
