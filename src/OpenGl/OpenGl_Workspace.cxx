@@ -204,6 +204,10 @@ void OpenGl_Workspace::ResetAppliedAspect()
   ApplyAspects();
   myGlContext->SetTypeOfLine (myDefaultAspects.Aspect()->LineType());
   myGlContext->SetLineWidth  (myDefaultAspects.Aspect()->LineWidth());
+  if (myGlContext->core15fwd != NULL)
+  {
+    myGlContext->core15fwd->glActiveTexture (GL_TEXTURE0);
+  }
 }
 
 // =======================================================================
