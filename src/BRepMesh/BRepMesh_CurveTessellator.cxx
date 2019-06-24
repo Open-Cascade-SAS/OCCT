@@ -26,6 +26,7 @@
 #include <Adaptor3d_HCurveOnSurface.hxx>
 #include <Adaptor2d_HCurve2d.hxx>
 #include <Standard_Failure.hxx>
+#include <GCPnts_AbscissaPoint.hxx>
 
 //=======================================================================
 //function : Constructor
@@ -79,21 +80,28 @@ void BRepMesh_CurveTessellator::init()
     aPreciseLinDef *= 0.5;
   }
 
-  aPreciseLinDef = Max(aPreciseLinDef, Precision::Confusion());
-  aPreciseAngDef = Max(aPreciseAngDef, Precision::Angular());
+  aPreciseLinDef = Max (aPreciseLinDef, Precision::Confusion());
+  aPreciseAngDef = Max (aPreciseAngDef, Precision::Angular());
+
+  Standard_Real aMinSize = myParameters.MinSize;
+  if (myParameters.AdjustMinSize)
+  {
+    aMinSize = Min (aMinSize, myParameters.RelMinSize() * GCPnts_AbscissaPoint::Length (
+      myCurve, myCurve.FirstParameter(), myCurve.LastParameter(), aPreciseLinDef));
+  }
 
   mySquareEdgeDef = aPreciseLinDef * aPreciseLinDef;
-  mySquareMinSize = Max(mySquareEdgeDef, myParameters.MinSize * myParameters.MinSize);
+  mySquareMinSize = Max (mySquareEdgeDef, aMinSize * aMinSize);
 
-  myEdgeSqTol  = BRep_Tool::Tolerance(myEdge);
+  myEdgeSqTol  = BRep_Tool::Tolerance (myEdge);
   myEdgeSqTol *= myEdgeSqTol;
 
   const Standard_Integer aMinPntNb = (myCurve.GetType() == GeomAbs_Circle) ? 4 : 2; //OCC287
 
-  myDiscretTool.Initialize(myCurve,
-                           myCurve.FirstParameter(), myCurve.LastParameter(),
-                           aPreciseAngDef, aPreciseLinDef, aMinPntNb,
-                           Precision::PConfusion(), myParameters.MinSize);
+  myDiscretTool.Initialize (myCurve,
+                            myCurve.FirstParameter(), myCurve.LastParameter(),
+                            aPreciseAngDef, aPreciseLinDef, aMinPntNb,
+                            Precision::PConfusion(), aMinSize);
 
   if (myCurve.IsCurveOnSurface())
   {
