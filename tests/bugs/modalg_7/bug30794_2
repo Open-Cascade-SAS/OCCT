@@ -1,0 +1,23 @@
+puts "TODO OCC30794 ALL: Faulty shapes in variables"
+puts "TODO OCC30794 ALL: Error : The area of result shape is"
+puts "TODO OCC30794 ALL: Error : The volume of result shape is"
+puts "TODO OCC30794 ALL: Error :  is WRONG because number of"
+
+puts "========"
+puts "0030794: BRepOffsetAPI_MakePipeShell: shape is produced with artifacts"
+puts "========"
+puts ""
+
+restore [locate_data_file bug30794_shapes1.brep] c
+explode c
+
+mksweep c_1
+addsweep c_2
+buildsweep result -C -S
+
+checkshape result
+
+checkprops result -s 1.24302e+06 -v 5.64101e+06
+checknbshapes result -wire 14 -face 14 -shell 1 -solid 1 -t
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
