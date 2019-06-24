@@ -443,19 +443,20 @@ void StdSelect_BRepSelectionTool::GetEdgeSensitive (const TopoDS_Shape& theShape
                                                     Handle(Select3D_SensitiveEntity)& theSensitive)
 {
   const TopoDS_Edge& anEdge = TopoDS::Edge (theShape);
+  // try to get points from existing polygons
+  Handle(TColgp_HArray1OfPnt) aPoints = GetPointsFromPolygon (anEdge);
+  if (!aPoints.IsNull()
+   && !aPoints->IsEmpty())
+  {
+    theSensitive = new Select3D_SensitiveCurve (theOwner, aPoints);
+    return;
+  }
+
   BRepAdaptor_Curve cu3d;
   try {
     OCC_CATCH_SIGNALS
     cu3d.Initialize (anEdge);
   } catch (Standard_NullObject const&) {
-    return;
-  }
-
-  // try to get points from existing polygons
-  Handle(TColgp_HArray1OfPnt) aPoints = GetPointsFromPolygon (anEdge);
-  if (!aPoints.IsNull() && aPoints->Length() > 0)
-  {
-    theSensitive = new Select3D_SensitiveCurve (theOwner, aPoints);
     return;
   }
 
