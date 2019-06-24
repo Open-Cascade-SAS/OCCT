@@ -78,13 +78,19 @@ proc dftree { DDF_Browser } {
 ##	    ]
 
   set w .$DDF_Browser
-  toplevel $w -height 400 -width 700 -background bisque3
+  toplevel $w -width 700 -height 400 -background bisque3
+  wm minsize $w 700 400
 
   ########
   # Tree #
   ########
 
-  set tree1 [ttk::treeview $w.tree -show tree]
+  #set tree1 [ttk::treeview $w.tree -show tree]
+  set tree1 [ttk::treeview $w.tree -show tree -xscrollcommand "$w.tree.xscroll set" -yscrollcommand "$w.tree.yscroll set"]
+  set aScrollX [ttk::scrollbar $w.tree.xscroll -command "$w.tree xview" -orient horizontal]
+  set aScrollY [ttk::scrollbar $w.tree.yscroll -command "$w.tree yview"]
+  pack $aScrollX -side bottom -fill x
+  pack $aScrollY -side right  -fill y
   $tree1 tag bind Label <<TreeviewOpen>> [list DFTREE:Tree:Open $DDF_Browser $w]
   $tree1 tag configure Label -font 9x15bold -foreground DarkGreen
   #$tree1 tag configure Attribute -font 9x15 -background bisque3
