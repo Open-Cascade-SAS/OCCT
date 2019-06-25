@@ -366,9 +366,7 @@ void RWMesh_CafReader::generateNames (const TCollection_AsciiString& theFile,
 
   if (theWithSubLabels)
   {
-    for (XCAFPrs_DocumentExplorer aDocIter (myXdeDoc,
-                                            aNewRootLabels,
-                                            XCAFPrs_DocumentExplorerFlags_OnlyLeafNodes | XCAFPrs_DocumentExplorerFlags_NoStyle);
+    for (XCAFPrs_DocumentExplorer aDocIter (myXdeDoc, aNewRootLabels, XCAFPrs_DocumentExplorerFlags_NoStyle);
          aDocIter.More(); aDocIter.Next())
     {
       if (aDocIter.CurrentDepth() == 0
