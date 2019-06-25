@@ -1,0 +1,30 @@
+puts "====================================="
+puts "Display manipulator in one view only"
+puts "====================================="
+
+pload MODELING VISUALIZATION
+vclear
+vclose ALL
+vinit View1
+vinit View2
+vaxo
+
+box b 500 500 1 50 100 150
+vdisplay b -dispMode 1
+vfit
+
+vactivate View1
+vmanipulator m -attach b -view active
+vfit
+vmoveto 200 200
+vdump $imagedir/${casename}_View1_1.png
+vactivate View2
+vdump $imagedir/${casename}_View2_1.png
+vmanipulator m -detach
+
+vmanipulator m -attach b -view View2
+vmoveto 200 200
+vdump $imagedir/${casename}_View2_2.png
+vactivate View1
+vdump $imagedir/${casename}_View1_2.png
+vmanipulator m -detach

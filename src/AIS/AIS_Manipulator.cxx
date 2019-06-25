@@ -1035,15 +1035,21 @@ void AIS_Manipulator::HilightOwnerWithColor (const Handle(PrsMgr_PresentationMan
   {
     return;
   }
+
+  aPresentation->CStructure()->ViewAffinity = thePM->StructureManager()->ObjectAffinity (Handle(Standard_Transient) (this));
+
   if (anOwner->Mode() == AIS_MM_TranslationPlane)
   {
     Handle(Prs3d_Drawer) aStyle = new Prs3d_Drawer();
-    aStyle->SetColor(myAxes[anOwner->Index()].Color());
-    aStyle->SetTransparency(0.5);
-    aPresentation->Highlight(aStyle);
+    aStyle->SetColor (myAxes[anOwner->Index()].Color());
+    aStyle->SetTransparency (0.5);
+    aPresentation->Highlight (aStyle);
   }
   else
-    aPresentation->Highlight(theStyle);
+  {
+    aPresentation->Highlight (theStyle);
+  }
+
   for (Graphic3d_SequenceOfGroup::Iterator aGroupIter (aPresentation->Groups());
        aGroupIter.More(); aGroupIter.Next())
   {

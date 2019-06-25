@@ -12280,10 +12280,10 @@ static int VManipulator (Draw_Interpretor& theDi,
                          Standard_Integer  theArgsNb,
                          const char**      theArgVec)
 {
-  Handle(V3d_View)   aView   = ViewerTest::CurrentView();
+  Handle(V3d_View)   aCurrentView   = ViewerTest::CurrentView();
   Handle(V3d_Viewer) aViewer = ViewerTest::GetViewerFromContext();
   ViewerTest::GetAISContext()->MainSelector()->SetPickClosest (Standard_False);
-  if (aView.IsNull()
+  if (aCurrentView.IsNull()
    || aViewer.IsNull())
   {
     std::cerr << "No active viewer!\n";
@@ -12303,6 +12303,7 @@ static int VManipulator (Draw_Interpretor& theDi,
   aCmd.AddOption ("adjustPosition", "... {0|1} - adjust position when attaching");
   aCmd.AddOption ("adjustSize",     "... {0|1} - adjust size when attaching ");
   aCmd.AddOption ("enableModes",    "... {0|1} - enable modes when attaching ");
+  aCmd.AddOption ("view",           "... {active | [view name]} - define view in which manipulator will be displayed, 'all' by default");
   aCmd.AddOption ("detach",         "...       - detach manipulator");
 
   aCmd.AddOption ("startTransform",   "... mouse_x mouse_y - invoke start transformation");
@@ -12508,6 +12509,42 @@ static int VManipulator (Draw_Interpretor& theDi,
     }
 
     aManipulator->Attach (anObject, anOptions);
+
+    // Check view option
+    if (aCmd.HasOption ("view"))
+    {
+      if (!aCmd.HasOption ("view", 1, Standard_True))
+      {
+        return 1;
+      }
+      TCollection_AsciiString aViewString (aCmd.Arg ("view", 0).c_str());
+      Handle(V3d_View) aView;
+      if (aViewString.IsEqual ("active"))
+      {
+        aView = ViewerTest::CurrentView();
+      }
+      else // Check view name
+      {
+        ViewerTest_Names aViewNames (aViewString);
+        if (!ViewerTest_myViews.IsBound1 (aViewNames.GetViewName()))
+        {
+          std::cerr << theArgVec[0] << " error: wrong view name '" << aViewString << "'\n";
+          return 1;
+        }
+        aView = ViewerTest_myViews.Find1 (aViewNames.GetViewName());
+        if (aView.IsNull())
+        {
+          std::cerr << theArgVec[0] << " error: cannot find view with name '" << aViewString << "'\n";
+          return 1;
+        }
+      }
+      for (NCollection_DoubleMap <TCollection_AsciiString, Handle(V3d_View)>::Iterator
+        anIter (ViewerTest_myViews); anIter.More(); anIter.Next())
+      {
+        ViewerTest::GetAISContext()->SetViewAffinity (aManipulator, anIter.Value(), Standard_False);
+      }
+      ViewerTest::GetAISContext()->SetViewAffinity (aManipulator, aView, Standard_True);
+    }
   }
 
   // --------------------------------------
@@ -13756,6 +13793,8 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
       "\n      '-adjustPosition {0|1}'             adjust position when attaching"
       "\n      '-adjustSize     {0|1}'             adjust size when attaching"
       "\n      '-enableModes    {0|1}'             enable modes when attaching"
+      "\n      '-view  {active | [name of view]}'  display manipulator only in defined view,"
+      "\n                                          by default it is displayed in all views of the current viewer"
       "\n      '-detach'                           detach manipulator"
       "\n      '-startTransform mouse_x mouse_y' - invoke start of transformation"
       "\n      '-transform      mouse_x mouse_y' - invoke transformation"
