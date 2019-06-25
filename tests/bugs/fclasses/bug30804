@@ -1,0 +1,12 @@
+puts "============"
+puts "0030804: Foundation Classes - Poly_Connect crashes due to out-of-range array modification"
+puts "============"
+
+pload MODELING VISUALIZATION
+restore [locate_data_file bug30804.brep] b
+vclear
+vinit View1
+vdisplay b
+vfit
+
+vdump ${imagedir}/${casename}.png

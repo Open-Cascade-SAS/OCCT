@@ -76,13 +76,13 @@ void Poly_Connect::Load (const Handle(Poly_Triangulation)& theTriangulation)
   mysense = false;
   mymore  = false;
 
-  const Standard_Integer nbNodes     = myTriangulation->NbNodes();
-  const Standard_Integer nbTriangles = myTriangulation->NbTriangles();
+  const Standard_Integer aNbNodes = myTriangulation->NbNodes();
+  const Standard_Integer aNbTris  = myTriangulation->NbTriangles();
   {
-    const Standard_Integer aNbAdjs = 6 * nbTriangles;
-    if (myTriangles.Size() != nbNodes)
+    const Standard_Integer aNbAdjs = 6 * aNbTris;
+    if (myTriangles.Size() != aNbNodes)
     {
-      myTriangles.Resize (1, nbNodes, Standard_False);
+      myTriangles.Resize (1, aNbNodes, Standard_False);
     }
     if (myAdjacents.Size() != aNbAdjs)
     {
@@ -95,118 +95,117 @@ void Poly_Connect::Load (const Handle(Poly_Triangulation)& theTriangulation)
 
   // We first build an array of the list of edges connected to the nodes
   // create an array to store the edges starting from the vertices
-  Standard_Integer i;
-  // the last node is not used because edges are stored at the lower node index
-  polyedge** edges = new polyedge*[nbNodes];
-  for (i = 0; i < nbNodes; i++) edges[i] = 0;
-
+  NCollection_Array1<polyedge*> anEdges (1, aNbNodes);
+  anEdges.Init (NULL);
 
   // loop on the triangles
-  Standard_Integer j,k,n[3],n1,n2;
-  const Poly_Array1OfTriangle& triangles = myTriangulation->Triangles();
-
-  for (i = 1; i <= nbTriangles; i++) {
-
+  NCollection_Vec3<Standard_Integer> aTriNodes;
+  NCollection_Vec2<Standard_Integer> anEdgeNodes;
+  for (Standard_Integer aTriIter = 1; aTriIter <= aNbTris; ++aTriIter)
+  {
     // get the nodes
-    triangles(i).Get(n[0],n[1],n[2]);
+    myTriangulation->Triangle (aTriIter).Get (aTriNodes[0], aTriNodes[1], aTriNodes[2]);
 
     // Update the myTriangles array
-    myTriangles(n[0]) = i;
-    myTriangles(n[1]) = i;
-    myTriangles(n[2]) = i;
+    myTriangles.SetValue (aTriNodes[0], aTriIter);
+    myTriangles.SetValue (aTriNodes[1], aTriIter);
+    myTriangles.SetValue (aTriNodes[2], aTriIter);
 
     // update the edge lists
-    for (j = 0; j < 3; j++) {
-      k = (j+1) % 3;  // the following node of the edge
-      if (n[j] <= n[k]) {
-	n1 = n[j];
-	n2 = n[k];
+    for (Standard_Integer aNodeInTri = 0; aNodeInTri < 3; ++aNodeInTri)
+    {
+      const Standard_Integer aNodeNext = (aNodeInTri + 1) % 3;  // the following node of the edge
+      if (aTriNodes[aNodeInTri] < aTriNodes[aNodeNext])
+      {
+        anEdgeNodes[0] = aTriNodes[aNodeInTri];
+        anEdgeNodes[1] = aTriNodes[aNodeNext];
       }
-      else {
-	n1 = n[k];
-	n2 = n[j];
-      }
-
-      // edge from n1 to n2 with n1 < n2
-      // insert in the list of n1
-
-      polyedge* ced = edges[n1];
-      while (ced != 0) {
-	// the edge already exists
-	if (ced->nd == n2)
-	  break;
-	else
-	  ced = ced->next;
+      else
+      {
+        anEdgeNodes[0] = aTriNodes[aNodeNext];
+        anEdgeNodes[1] = aTriNodes[aNodeInTri];
       }
 
-      if (ced == 0) {
-	// create the edge if not found
-	ced = new polyedge;
-	ced->next = edges[n1];
-	edges[n1] = ced;
-	ced->nd = n2;
-	ced->nt[0] = i;
-	ced->nn[0] = n[3-j-k];  // the third node
-	ced->nt[1] = 0;
-	ced->nn[1] = 0;
+      // edge from node 0 to node 1 with node 0 < node 1
+      // insert in the list of node 0
+      polyedge* ced = anEdges[anEdgeNodes[0]];
+      for (; ced != NULL; ced = ced->next)
+      {
+        // the edge already exists
+        if (ced->nd == anEdgeNodes[1])
+        {
+          // just mark the adjacency if found
+          ced->nt[1] = aTriIter;
+          ced->nn[1] = aTriNodes[3 - aNodeInTri - aNodeNext];  // the third node
+          break;
+        }
       }
-      else {
-	// just mark the adjacency if found
-	ced->nt[1] = i;
-	ced->nn[1] = n[3-j-k];  // the third node
+
+      if (ced == NULL)
+      {
+        // create the edge if not found
+        ced = new polyedge();
+        ced->next = anEdges[anEdgeNodes[0]];
+        anEdges[anEdgeNodes[0]] = ced;
+        ced->nd = anEdgeNodes[1];
+        ced->nt[0] = aTriIter;
+        ced->nn[0] = aTriNodes[3 - aNodeInTri - aNodeNext];  // the third node
+        ced->nt[1] = 0;
+        ced->nn[1] = 0;
       }
     }
   }
 
-
   // now complete the myAdjacents array
-  
-  Standard_Integer index = 1;
-  for (i = 1; i <= nbTriangles; i++) {
-    
+  Standard_Integer anAdjIndex = 1;
+  for (Standard_Integer aTriIter = 1; aTriIter <= aNbTris; ++aTriIter)
+  {
     // get the nodes
-    triangles(i).Get(n[0],n[1],n[2]);
+    myTriangulation->Triangle (aTriIter).Get (aTriNodes[0], aTriNodes[1], aTriNodes[2]);
 
-    // fore each edge
-    for (j = 0; j < 3; j++) {
-      k = (j+1) % 3;  // the following node of the edge
-      if (n[j] <= n[k]) {
-	n1 = n[j];
-	n2 = n[k];
+    // for each edge in triangle
+    for (Standard_Integer aNodeInTri = 0; aNodeInTri < 3; ++aNodeInTri)
+    {
+      const Standard_Integer aNodeNext = (aNodeInTri + 1) % 3;  // the following node of the edge
+      if (aTriNodes[aNodeInTri] < aTriNodes[aNodeNext])
+      {
+        anEdgeNodes[0] = aTriNodes[aNodeInTri];
+        anEdgeNodes[1] = aTriNodes[aNodeNext];
       }
-      else {
-	n1 = n[k];
-	n2 = n[j];
+      else
+      {
+        anEdgeNodes[0] = aTriNodes[aNodeNext];
+        anEdgeNodes[1] = aTriNodes[aNodeInTri];
       }
 
-      // edge from n1 to n2 with n1 < n2
-      // find in the list of n1
-
-      polyedge* ced = edges[n1];
-      while (ced->nd != n2)
-	ced = ced->next;
+      // edge from node 0 to node 1 with node 0 < node 1
+      // find in the list of node 0
+      const polyedge* ced = anEdges[anEdgeNodes[0]];
+      while (ced->nd != anEdgeNodes[1])
+      {
+        ced = ced->next;
+      }
 
       // Find the adjacent triangle
-      Standard_Integer l = 0;
-      if (ced->nt[0] == i) l = 1;
-      
-      myAdjacents(index)   = ced->nt[l];
-      myAdjacents(index+3) = ced->nn[l];
-      index++;
+      const Standard_Integer l = ced->nt[0] == aTriIter ? 1 : 0;
+
+      myAdjacents.SetValue (anAdjIndex,     ced->nt[l]);
+      myAdjacents.SetValue (anAdjIndex + 3, ced->nn[l]);
+      ++anAdjIndex;
     }
-    index += 3;
+    anAdjIndex += 3;
   }
 
   // destroy the edges array
-  for (i = 0; i < nbNodes; i++) {
-    polyedge* ced = edges[i];
-    while (ced != 0) {
-      polyedge* tmp = ced->next;
-      delete ced;
-      ced = tmp;
+  for (Standard_Integer aNodeIter = anEdges.Lower(); aNodeIter <= anEdges.Upper(); ++aNodeIter)
+  {
+    for (polyedge* anEdgeIter = anEdges[aNodeIter]; anEdgeIter != NULL;)
+    {
+      polyedge* aTmp = anEdgeIter->next;
+      delete anEdgeIter;
+      anEdgeIter = aTmp;
     }
   }
-  delete [] edges;
 }
 
 //=======================================================================
