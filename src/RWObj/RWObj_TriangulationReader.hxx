@@ -117,6 +117,7 @@ protected:
   TopoDS_Compound         myLastObjectShape; //!< Compound containing current object groups
   TopoDS_Shape            myLastGroupShape;  //!< current group shape - either a single Face or Compound of Faces
   TCollection_AsciiString myLastGroupName;   //!< current group name
+  TCollection_AsciiString myLastFaceMaterial;//!< last face material name
   Standard_Boolean        myToCreateShapes;  //!< create a single triangulation
 
 };

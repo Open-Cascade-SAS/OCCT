@@ -32,7 +32,6 @@ Standard_Boolean RWObj_TriangulationReader::addMesh (const RWObj_SubMesh& theMes
     return Standard_False;
   }
 
-  const RWObj_Material* aMaterial = myMaterials.Seek (theMesh.Material);
   if (Handle(Poly_Triangulation) aTris = GetTriangulation())
   {
     myNodes.Clear();
@@ -46,7 +45,11 @@ Standard_Boolean RWObj_TriangulationReader::addMesh (const RWObj_SubMesh& theMes
       {
         if (myShapeReceiver != NULL)
         {
-          myShapeReceiver->BindNamedShape (myLastGroupShape, theMesh.Group, myLastGroupShape.ShapeType() == TopAbs_FACE ? aMaterial : NULL, Standard_False);
+          const RWObj_Material* aMaterial = myLastGroupShape.ShapeType() == TopAbs_FACE
+                                        && !myLastFaceMaterial.IsEmpty()
+                                          ? myMaterials.Seek (myLastFaceMaterial)
+                                          : NULL;
+          myShapeReceiver->BindNamedShape (myLastGroupShape, myLastGroupName, aMaterial, Standard_False);
         }
       }
       myLastGroupShape = TopoDS_Shape();
@@ -57,8 +60,10 @@ Standard_Boolean RWObj_TriangulationReader::addMesh (const RWObj_SubMesh& theMes
     BRep_Builder aBuilder;
     aBuilder.MakeFace (aNewFace, aTris);
     addSubShape (myLastGroupShape, aNewFace, Standard_True);
+    myLastFaceMaterial = theMesh.Material;
     if (myShapeReceiver != NULL)
     {
+      const RWObj_Material* aMaterial = myMaterials.Seek (theMesh.Material);
       myShapeReceiver->BindNamedShape (aNewFace, "", aMaterial, Standard_False);
     }
   }
@@ -70,7 +75,11 @@ Standard_Boolean RWObj_TriangulationReader::addMesh (const RWObj_SubMesh& theMes
     {
       if (myShapeReceiver != NULL)
       {
-        myShapeReceiver->BindNamedShape (myLastGroupShape, theMesh.Group, myLastGroupShape.ShapeType() == TopAbs_FACE ? aMaterial : NULL, Standard_False);
+        const RWObj_Material* aMaterial = myLastGroupShape.ShapeType() == TopAbs_FACE
+                                          && !myLastFaceMaterial.IsEmpty()
+                                            ? myMaterials.Seek (myLastFaceMaterial)
+                                            : NULL;
+        myShapeReceiver->BindNamedShape (myLastGroupShape, myLastGroupName, aMaterial, Standard_False);
       }
     }
     myLastGroupShape = TopoDS_Shape();

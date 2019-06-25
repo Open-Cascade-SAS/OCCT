@@ -63,7 +63,18 @@ namespace
         theRelativePath = aRelPath;
         return true;
       }
+
       aPath = aFolder;
+      for (; aPath.Length() >= 2;)
+      {
+        if (aPath.Value (aPath.Length()) == '/'
+         || aPath.Value (aPath.Length()) == '\\')
+        {
+          aPath = aPath.SubString (1, aPath.Length() - 1);
+          continue;
+        }
+        break;
+      }
     }
   }
 }
@@ -195,6 +206,7 @@ bool RWObj_MtlReader::Read (const TCollection_AsciiString& theFolder,
       if (validateColor (aColor))
       {
         aMat.SpecularColor = Quantity_Color (aColor.r(), aColor.g(), aColor.b(), Quantity_TOC_RGB);
+        hasAspect = true;
       }
     }
     else if (::memcmp (aPos, "Ns", 2) == 0
@@ -207,6 +219,7 @@ bool RWObj_MtlReader::Read (const TCollection_AsciiString& theFolder,
       if (aSpecular >= 0.0)
       {
         aMat.Shininess = (float )Min (aSpecular / 1000.0, 1.0);
+        hasAspect = true;
       }
     }
     else if (::memcmp (aPos, "Tr", 2) == 0
@@ -220,6 +233,7 @@ bool RWObj_MtlReader::Read (const TCollection_AsciiString& theFolder,
        && aTransp <= 0.99)
       {
         aMat.Transparency = (float )aTransp;
+        hasAspect = true;
       }
     }
     else if (*aPos == 'd' && IsSpace (aPos[1]))
@@ -233,6 +247,7 @@ bool RWObj_MtlReader::Read (const TCollection_AsciiString& theFolder,
        && anAlpha >= 0.01)
       {
         aMat.Transparency = float(1.0 - anAlpha);
+        hasAspect = true;
       }
     }
     else if (::memcmp (aPos, "map_Kd", 6) == 0
@@ -242,6 +257,7 @@ bool RWObj_MtlReader::Read (const TCollection_AsciiString& theFolder,
       if (RWObj_Tools::ReadName (aPos, aMat.DiffuseTexture))
       {
         processTexturePath (aMat.DiffuseTexture, theFolder);
+        hasAspect = true;
       }
     }
     else if (::memcmp (aPos, "map_Ks", 6) == 0
@@ -251,6 +267,7 @@ bool RWObj_MtlReader::Read (const TCollection_AsciiString& theFolder,
       if (RWObj_Tools::ReadName (aPos, aMat.SpecularTexture))
       {
         processTexturePath (aMat.SpecularTexture, theFolder);
+        hasAspect = true;
       }
     }
     else if (::memcmp (aPos, "map_Bump", 8) == 0
@@ -260,6 +277,7 @@ bool RWObj_MtlReader::Read (const TCollection_AsciiString& theFolder,
       if (RWObj_Tools::ReadName (aPos, aMat.BumpTexture))
       {
         processTexturePath (aMat.BumpTexture, theFolder);
+        hasAspect = true;
       }
     }
     /*else if (::memcmp (aPos, "illum", 5) == 0)
