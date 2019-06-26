@@ -87,6 +87,9 @@ public:
   //! Set list for storing external files.
   void SetExternalFiles (NCollection_IndexedMap<TCollection_AsciiString>& theExternalFiles) { myExternalFiles = &theExternalFiles; }
 
+  //! Set metadata map.
+  void SetMetadata (TColStd_IndexedDataMapOfStringString& theMetadata) { myMetadata = &theMetadata; }
+
   //! Return transformation from glTF to OCCT coordinate system.
   const RWMesh_CoordinateSystemConverter& CoordinateSystemConverter() const { return myCSTrsf; }
 
@@ -104,9 +107,6 @@ public:
 
   //! Parse glTF document.
   Standard_EXPORT bool Parse (const Handle(Message_ProgressIndicator)& theProgress);
-
-  //! Return metadata map.
-  const TColStd_IndexedDataMapOfStringString& Metadata() const { return myMetadata; }
 
   //! Return face list for loading triangulation.
   NCollection_Vector<TopoDS_Face>& FaceList() { return myFaceList; }
@@ -387,8 +387,8 @@ protected:
   NCollection_IndexedMap<TCollection_AsciiString>*
                                    myExternalFiles; //!< list of external file references
   RWMesh_CoordinateSystemConverter myCSTrsf;        //!< transformation from glTF to OCCT coordinate system
+  TColStd_IndexedDataMapOfStringString* myMetadata; //!< file metadata
 
-  TColStd_IndexedDataMapOfStringString myMetadata; //!< file metadata
   NCollection_DataMap<TCollection_AsciiString, Handle(RWGltf_MaterialMetallicRoughness)> myMaterialsPbr;
   NCollection_DataMap<TCollection_AsciiString, Handle(RWGltf_MaterialCommon)> myMaterialsCommon;
   NCollection_DataMap<TCollection_AsciiString, TopoDS_Shape> myShapeMap[2];

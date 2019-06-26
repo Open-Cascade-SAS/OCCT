@@ -215,6 +215,7 @@ Standard_Boolean RWGltf_CafReader::performMesh (const TCollection_AsciiString& t
   aDoc.SetFilePath (theFile);
   aDoc.SetProbeHeader (theToProbe);
   aDoc.SetExternalFiles (myExternalFiles);
+  aDoc.SetMetadata (myMetadata);
   aDoc.SetErrorPrefix (anErrPrefix);
   aDoc.SetCoordinateSystemConverter (myCoordSysConverter);
   if (!theToProbe)

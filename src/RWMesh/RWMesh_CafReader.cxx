@@ -90,13 +90,10 @@ Standard_Boolean RWMesh_CafReader::perform (const TCollection_AsciiString& theFi
                                             const Standard_Boolean theToProbe)
 {
   Standard_Integer aNewRootsLower = 1;
-  Handle(XCAFDoc_ShapeTool) aShapeTool = !myXdeDoc.IsNull()
-                                       ? XCAFDoc_DocumentTool::ShapeTool (myXdeDoc->Main())
-                                       : Handle(XCAFDoc_ShapeTool)();
   if (!myXdeDoc.IsNull())
   {
     TDF_LabelSequence aRootLabels;
-    aShapeTool->GetFreeShapes (aRootLabels);
+    XCAFDoc_DocumentTool::ShapeTool (myXdeDoc->Main())->GetFreeShapes (aRootLabels);
     aNewRootsLower = aRootLabels.Upper() + 1;
   }
 
@@ -118,28 +115,11 @@ Standard_Boolean RWMesh_CafReader::perform (const TCollection_AsciiString& theFi
     myExtraStatus |= RWMesh_CafReaderStatusEx_Partial;
   }
 
-  BRep_Builder aBuilder;
-  TopoDS_Shape aShape;
-  if (myRootShapes.Size() > 1)
-  {
-    TopoDS_Compound aCompound;
-    aBuilder.MakeCompound (aCompound);
-    for (TopTools_SequenceOfShape::Iterator aRootIter (myRootShapes); aRootIter.More(); aRootIter.Next())
-    {
-      aBuilder.Add (aCompound, aRootIter.Value());
-    }
-    aShape = aCompound;
-  }
-  else if (!myRootShapes.IsEmpty())
-  {
-    aShape = myRootShapes.First();
-  }
-
+  TopLoc_Location aDummyLoc;
   Standard_Integer aNbNodes = 0, aNbElems = 0, aNbFaces = 0;
-  if (!aShape.IsNull())
+  for (TopTools_SequenceOfShape::Iterator aRootIter (myRootShapes); aRootIter.More(); aRootIter.Next())
   {
-    TopLoc_Location aDummyLoc;
-    for (TopExp_Explorer aFaceIter (aShape, TopAbs_FACE); aFaceIter.More(); aFaceIter.Next())
+    for (TopExp_Explorer aFaceIter (aRootIter.Value(), TopAbs_FACE); aFaceIter.More(); aFaceIter.Next())
     {
       const TopoDS_Face& aFace = TopoDS::Face (aFaceIter.Current());
       if (const Handle(Poly_Triangulation)& aPolyTri = BRep_Tool::Triangulation (aFace, aDummyLoc))
@@ -155,40 +135,39 @@ Standard_Boolean RWMesh_CafReader::perform (const TCollection_AsciiString& theFi
     return Standard_False;
   }
 
-  if (myToFillDoc
-  && !myXdeDoc.IsNull())
-  {
-    const Standard_Boolean wasAutoNaming = aShapeTool->AutoNaming();
-    aShapeTool->SetAutoNaming (Standard_False);
-    const TCollection_AsciiString aRootName; // = generateRootName (theFile);
-    for (TopTools_SequenceOfShape::Iterator aRootIter (myRootShapes); aRootIter.More(); aRootIter.Next())
-    {
-      addShapeIntoDoc (aRootIter.Value(), TDF_Label(), aRootName);
-    }
-    aShapeTool->UpdateAssemblies();
-    aShapeTool->SetAutoNaming (wasAutoNaming);
-  }
-  if (!myXdeDoc.IsNull())
-  {
-    generateNames (theFile, aNewRootsLower, Standard_False);
-  }
+  fillDocument();
+  generateNames (theFile, aNewRootsLower, Standard_False);
 
   aLoadingTimer.Stop();
 
-  TCollection_AsciiString aStats = TCollection_AsciiString("[") + aNbNodes + " nodes] [" + aNbElems + " 2d elements]";
-  if (!isDone)
-  {
-    Message::DefaultMessenger()->Send (TCollection_AsciiString ("Mesh ") + theFile
-                                     + "\n" + aStats
-                                     + "\n[PARTIALLY read in " + aLoadingTimer.ElapsedTime() + " s]", Message_Info);
-  }
-  else
-  {
-    Message::DefaultMessenger()->Send (TCollection_AsciiString ("Mesh ") + theFile
-                                     + "\n" + aStats
-                                     + "\n[read in " + aLoadingTimer.ElapsedTime() + " s]", Message_Info);
-  }
+  Message::DefaultMessenger()->Send (TCollection_AsciiString ("Mesh ") + theFile
+                                   + "\n[" + aNbNodes + " nodes] [" + aNbElems + " 2d elements]"
+                                   + "\n[" + (!isDone ? "PARTIALLY " : "") + "read in " + aLoadingTimer.ElapsedTime() + " s]", Message_Info);
   return Standard_True;
+}
+
+// =======================================================================
+// function : fillDocument
+// purpose  :
+// =======================================================================
+void RWMesh_CafReader::fillDocument()
+{
+  if (!myToFillDoc
+    || myXdeDoc.IsNull()
+    || myRootShapes.IsEmpty())
+  {
+    return;
+  }
+
+  const Standard_Boolean wasAutoNaming = XCAFDoc_ShapeTool::AutoNaming();
+  XCAFDoc_ShapeTool::SetAutoNaming (Standard_False);
+  const TCollection_AsciiString aRootName; // = generateRootName (theFile);
+  for (TopTools_SequenceOfShape::Iterator aRootIter (myRootShapes); aRootIter.More(); aRootIter.Next())
+  {
+    addShapeIntoDoc (aRootIter.Value(), TDF_Label(), aRootName);
+  }
+  XCAFDoc_DocumentTool::ShapeTool (myXdeDoc->Main())->UpdateAssemblies();
+  XCAFDoc_ShapeTool::SetAutoNaming (wasAutoNaming);
 }
 
 // =======================================================================

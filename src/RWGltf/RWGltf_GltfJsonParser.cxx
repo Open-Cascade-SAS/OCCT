@@ -250,18 +250,23 @@ void RWGltf_GltfJsonParser::gltfParseAsset()
     }
   }
 
+  if (myMetadata == NULL)
+  {
+    return;
+  }
+
   if (const RWGltf_JsonValue* aGenerator = findObjectMember (*anAsset, "generator"))
   {
     if (aGenerator->IsString())
     {
-      myMetadata.Add ("generator", aGenerator->GetString());
+      myMetadata->Add ("generator", aGenerator->GetString());
     }
   }
   if (const RWGltf_JsonValue* aCopyRight = findObjectMember (*anAsset, "copyright"))
   {
     if (aCopyRight->IsString())
     {
-      myMetadata.Add ("copyright", aCopyRight->GetString());
+      myMetadata->Add ("copyright", aCopyRight->GetString());
     }
   }
 }

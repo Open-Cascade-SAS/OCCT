@@ -173,17 +173,20 @@ protected:
   //! @param theFile    file to read
   //! @param optional   progress indicator
   //! @param theToProbe flag indicating that mesh data should be skipped and only basing information to be read
-  virtual Standard_Boolean perform (const TCollection_AsciiString& theFile,
-                                    const Handle(Message_ProgressIndicator)& theProgress,
-                                    const Standard_Boolean theToProbe);
+  Standard_EXPORT virtual Standard_Boolean perform (const TCollection_AsciiString& theFile,
+                                                    const Handle(Message_ProgressIndicator)& theProgress,
+                                                    const Standard_Boolean theToProbe);
 
   //! Read the mesh from specified file - interface to be implemented by sub-classes.
-  virtual Standard_Boolean performMesh (const TCollection_AsciiString& theFile,
-                                        const Handle(Message_ProgressIndicator)& theProgress,
-                                        const Standard_Boolean theToProbe) = 0;
+  Standard_EXPORT virtual Standard_Boolean performMesh (const TCollection_AsciiString& theFile,
+                                                        const Handle(Message_ProgressIndicator)& theProgress,
+                                                        const Standard_Boolean theToProbe) = 0;
 
 //! @name tools for filling XDE document
 protected:
+
+  //! Fill document with new root shapes.
+  Standard_EXPORT void fillDocument();
 
   //! Append new shape into the document (recursively).
   Standard_EXPORT Standard_Boolean addShapeIntoDoc (const TopoDS_Shape& theShape,
