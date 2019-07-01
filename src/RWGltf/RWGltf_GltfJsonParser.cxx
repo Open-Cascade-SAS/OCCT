@@ -171,6 +171,7 @@ RWGltf_GltfJsonParser::RWGltf_GltfJsonParser (TopTools_SequenceOfShape& theRootS
   myIsBinary (false),
   myIsGltf1 (false),
   myToSkipEmptyNodes (true),
+  myUseMeshNameAsFallback (true),
   myToProbeHeader (false)
 {
   myCSTrsf.SetInputLengthUnit (1.0); // meters
@@ -1587,6 +1588,43 @@ void RWGltf_GltfJsonParser::bindNamedShape (TopoDS_Shape& theShape,
         {
           aShapeAttribs.Style.SetColorSurf (aLateData->BaseColor());
         }
+        if (aShapeAttribs.Name.IsEmpty()
+         && myUseMeshNameAsFallback)
+        {
+          // fallback using Mesh name
+          aShapeAttribs.Name = aLateData->Name();
+        }
+      }
+    }
+    else if (aShapeAttribs.Name.IsEmpty()
+          && myUseMeshNameAsFallback)
+    {
+      // fallback using Mesh name
+      TopLoc_Location aDummy;
+      TCollection_AsciiString aMeshName;
+      for (TopExp_Explorer aFaceIter (theShape, TopAbs_FACE); aFaceIter.More(); aFaceIter.Next())
+      {
+        if (Handle(RWGltf_GltfLatePrimitiveArray) aLateData = Handle(RWGltf_GltfLatePrimitiveArray)::DownCast (BRep_Tool::Triangulation (TopoDS::Face (aFaceIter.Value()), aDummy)))
+        {
+          if (aLateData->Name().IsEmpty())
+          {
+            aMeshName.Clear();
+            break;
+          }
+          else if (aMeshName.IsEmpty())
+          {
+            aMeshName = aLateData->Name();
+          }
+          else if (!aMeshName.IsEqual (aLateData->Name()))
+          {
+            aMeshName.Clear();
+            break;
+          }
+        }
+      }
+      if (!aMeshName.IsEmpty())
+      {
+        aShapeAttribs.Name = aMeshName;
       }
     }
     myAttribMap->Bind (theShape, aShapeAttribs);

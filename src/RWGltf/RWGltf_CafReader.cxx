@@ -103,7 +103,9 @@ private:
 // Purpose  :
 //================================================================
 RWGltf_CafReader::RWGltf_CafReader()
-: myToParallel (false)
+: myToParallel (false),
+  myToSkipEmptyNodes (true),
+  myUseMeshNameAsFallback (true)
 {
   myCoordSysConverter.SetInputLengthUnit (1.0); // glTF defines model in meters
   myCoordSysConverter.SetInputCoordinateSystem (RWMesh_CoordinateSystem_glTF);
@@ -218,6 +220,8 @@ Standard_Boolean RWGltf_CafReader::performMesh (const TCollection_AsciiString& t
   aDoc.SetMetadata (myMetadata);
   aDoc.SetErrorPrefix (anErrPrefix);
   aDoc.SetCoordinateSystemConverter (myCoordSysConverter);
+  aDoc.SetSkipEmptyNodes (myToSkipEmptyNodes);
+  aDoc.SetMeshNameAsFallback (myUseMeshNameAsFallback);
   if (!theToProbe)
   {
     aDoc.SetAttributeMap (myAttribMap);

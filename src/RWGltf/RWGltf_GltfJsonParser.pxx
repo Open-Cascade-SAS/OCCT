@@ -105,6 +105,12 @@ public:
     myBinBodyLen    = theBinBodyLen;
   }
 
+  //! Set flag to ignore nodes without Geometry, TRUE by default.
+  void SetSkipEmptyNodes (bool theToSkip) { myToSkipEmptyNodes = theToSkip; }
+
+  //! Set flag to use Mesh name in case if Node name is empty, TRUE by default.
+  void SetMeshNameAsFallback (bool theToFallback) { myUseMeshNameAsFallback = theToFallback; }
+
   //! Parse glTF document.
   Standard_EXPORT bool Parse (const Handle(Message_ProgressIndicator)& theProgress);
 
@@ -405,6 +411,7 @@ protected:
   bool                      myIsBinary;       //!< binary document
   bool                      myIsGltf1;        //!< obsolete glTF 1.0 version format
   bool                      myToSkipEmptyNodes; //!< ignore nodes without Geometry
+  bool                      myUseMeshNameAsFallback; //!< flag to use Mesh name in case if Node name is empty, TRUE by default
   bool                      myToProbeHeader;  //!< flag to probe header without full reading, FALSE by default
 
 #ifdef HAVE_RAPIDJSON

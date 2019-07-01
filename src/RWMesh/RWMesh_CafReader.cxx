@@ -186,14 +186,11 @@ Standard_Boolean RWMesh_CafReader::addShapeIntoDoc (const TopoDS_Shape& theShape
 
   Handle(XCAFDoc_ShapeTool) aShapeTool = XCAFDoc_DocumentTool::ShapeTool (myXdeDoc->Main());
 
-  TopLoc_Location aDummyLoc;
-
   const TopAbs_ShapeEnum aShapeType = theShape.ShapeType();
   TopoDS_Shape aShapeToAdd = theShape;
   Standard_Boolean toMakeAssembly = Standard_False;
   if (theShape.ShapeType() == TopAbs_COMPOUND)
   {
-    TCollection_AsciiString aFirstName;
     RWMesh_NodeAttributes aSubFaceAttribs;
     for (TopoDS_Iterator aSubShapeIter (theShape, Standard_True, Standard_False); !toMakeAssembly && aSubShapeIter.More(); aSubShapeIter.Next())
     {

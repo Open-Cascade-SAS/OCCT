@@ -36,6 +36,18 @@ public:
   //! Setup multithreaded execution.
   void SetParallel (bool theToParallel) { myToParallel = theToParallel; }
 
+  //! Return TRUE if Nodes without Geometry should be ignored, TRUE by default.
+  bool ToSkipEmptyNodes() { return myToSkipEmptyNodes; }
+
+  //! Set flag to ignore nodes without Geometry.
+  void SetSkipEmptyNodes (bool theToSkip) { myToSkipEmptyNodes = theToSkip; }
+
+  //! Set flag to use Mesh name in case if Node name is empty, TRUE by default.
+  bool ToUseMeshNameAsFallback() { return myUseMeshNameAsFallback; }
+
+  //! Set flag to use Mesh name in case if Node name is empty.
+  void SetMeshNameAsFallback (bool theToFallback) { myUseMeshNameAsFallback = theToFallback; }
+
 protected:
 
   //! Read the mesh from specified file.
@@ -58,7 +70,9 @@ protected:
 
 protected:
 
-  Standard_Boolean myToParallel; //!< flag to use multithreading; FALSE by default
+  Standard_Boolean myToParallel;            //!< flag to use multithreading; FALSE by default
+  Standard_Boolean myToSkipEmptyNodes;      //!< ignore nodes without Geometry; TRUE by default
+  Standard_Boolean myUseMeshNameAsFallback; //!< flag to use Mesh name in case if Node name is empty, TRUE by default
 
 };
 
