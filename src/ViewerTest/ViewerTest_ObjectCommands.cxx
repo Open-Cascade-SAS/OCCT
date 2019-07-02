@@ -3344,6 +3344,10 @@ public:
 
   virtual Standard_Boolean AcceptDisplayMode (const Standard_Integer theMode) const Standard_OVERRIDE { return theMode == 0; }
 
+  //! Sets color to this interactive object
+  //! @param theColor the color to be set
+  virtual void SetColor (const Quantity_Color& theColor) Standard_OVERRIDE;
+
 private:
 
   void Compute (const Handle(PrsMgr_PresentationManager3d)& aPresentationManager,
@@ -3358,6 +3362,13 @@ private:
                           Standard_Integer &theArgIndex,
                           Standard_Integer theArgCount,
                           Standard_Integer theMaxArgs);
+
+  //! Sets color for the shading aspect of the drawer used in this interactive object
+  //! @param theColor the color to be set
+  void setColorForShadingAspect(const Quantity_Color& theColor);
+
+  //! Replaces shading aspect from myDrawer->Link() with the own shading aspect of myDrawer for this interactive object
+  void replaceShadingAspect();
 
 protected:
 
@@ -3584,6 +3595,21 @@ Standard_Boolean MyPArrayObject::Init (Graphic3d_TypeOfPrimitiveArray thePrimTyp
   return Standard_True;
 }
 
+//=======================================================================
+// function : SetColor
+// purpose  :
+//=======================================================================
+void MyPArrayObject::SetColor (const Quantity_Color& theColor)
+{
+  AIS_InteractiveObject::SetColor (theColor);
+  setColorForShadingAspect (theColor);
+  if (myMarkerAspect)
+  {
+    myMarkerAspect->SetColor (theColor);
+  }
+  SynchronizeAspects();
+}
+
 void MyPArrayObject::ComputeSelection (const Handle(SelectMgr_Selection)& theSelection,
                                        const Standard_Integer theMode)
 {
@@ -3658,6 +3684,34 @@ bool MyPArrayObject::CheckInputCommand (const TCollection_AsciiString theCommand
   }
 
   return true;
+}
+
+//=======================================================================
+// function : setColorForShadingAspect
+// purpose  :
+//=======================================================================
+void MyPArrayObject::setColorForShadingAspect (const Quantity_Color& theColor)
+{
+  if (myDrawer->SetupOwnShadingAspect())
+  {
+    replaceShadingAspect();
+  }
+  myDrawer->ShadingAspect()->SetColor (theColor);
+}
+
+//=======================================================================
+// function : replaceShadingAspect
+// purpose  :
+//=======================================================================
+void MyPArrayObject::replaceShadingAspect()
+{
+  if (!myDrawer->Link())
+  {
+    return;
+  }
+  Graphic3d_MapOfAspectsToAspects anAspectReplacementMap;
+  anAspectReplacementMap.Bind (myDrawer->Link()->ShadingAspect()->Aspect(), myDrawer->ShadingAspect()->Aspect());
+  replaceAspects (anAspectReplacementMap);
 }
 
 //=============================================================================
