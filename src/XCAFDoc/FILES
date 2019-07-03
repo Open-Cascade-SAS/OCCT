@@ -63,5 +63,11 @@ XCAFDoc_View.cxx
 XCAFDoc_View.hxx
 XCAFDoc_ViewTool.cxx
 XCAFDoc_ViewTool.hxx
+XCAFDoc_VisMaterial.cxx
+XCAFDoc_VisMaterial.hxx
+XCAFDoc_VisMaterialCommon.hxx
+XCAFDoc_VisMaterialPBR.hxx
+XCAFDoc_VisMaterialTool.cxx
+XCAFDoc_VisMaterialTool.hxx
 XCAFDoc_Volume.cxx
 XCAFDoc_Volume.hxx

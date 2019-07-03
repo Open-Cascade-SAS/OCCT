@@ -43,10 +43,17 @@ DEFINE_STANDARD_HANDLE(XCAFDoc_ColorTool, TDF_Attribute)
 //! Provide tools for management of Colors section of document.
 class XCAFDoc_ColorTool : public TDF_Attribute
 {
+public:
+  //! Returns current auto-naming mode; TRUE by default.
+  //! If TRUE then for added colors the TDataStd_Name attribute will be automatically added.
+  //! This setting is global.
+  Standard_EXPORT static Standard_Boolean AutoNaming();
+
+  //! See also AutoNaming().
+  Standard_EXPORT static void SetAutoNaming (Standard_Boolean theIsAutoNaming);
 
 public:
 
-  
   Standard_EXPORT XCAFDoc_ColorTool();
   
   //! Creates (if not exist) ColorTool.

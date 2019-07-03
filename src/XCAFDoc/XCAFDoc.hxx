@@ -98,6 +98,9 @@ public:
   
   Standard_EXPORT static const Standard_GUID& MaterialRefGUID();
 
+  //! Return GUID for TreeNode representing Visualization Material.
+  Standard_EXPORT static const Standard_GUID& VisMaterialRefGUID();
+
   //! Return GUIDs for representing notes
   Standard_EXPORT static const Standard_GUID& NoteRefGUID();
 

@@ -308,6 +308,7 @@ void RWGltf_GltfJsonParser::gltfParseMaterials()
       }
       aMat->Id = aMatId.GetString();
       myMaterialsCommon.Bind (aMat->Id, aMat);
+      gltfBindMaterial (Handle(RWGltf_MaterialMetallicRoughness)(), aMat);
     }
   }
   else if (aMatList->IsArray())
@@ -342,8 +343,96 @@ void RWGltf_GltfJsonParser::gltfParseMaterials()
         aMatCommon->Id = TCollection_AsciiString ("mat_") + aMatIndex;
         myMaterialsCommon.Bind (TCollection_AsciiString (aMatIndex), aMatCommon);
       }
+
+      gltfBindMaterial (aMatPbr, aMatCommon);
     }
   }
+}
+
+// =======================================================================
+// function : gltfBindMaterial
+// purpose  :
+// =======================================================================
+void RWGltf_GltfJsonParser::gltfBindMaterial (const Handle(RWGltf_MaterialMetallicRoughness)& theMatPbr,
+                                              const Handle(RWGltf_MaterialCommon)& theMatCommon)
+{
+  if (theMatPbr.IsNull()
+   && theMatCommon.IsNull())
+  {
+    return;
+  }
+
+  Handle(XCAFDoc_VisMaterial) aMat = new XCAFDoc_VisMaterial();
+  if (!theMatCommon.IsNull())
+  {
+    XCAFDoc_VisMaterialCommon aMatXde;
+    aMatXde.IsDefined = true;
+    aMatXde.AmbientColor    = theMatCommon->AmbientColor;
+    aMatXde.DiffuseColor    = theMatCommon->DiffuseColor;
+    aMatXde.SpecularColor   = theMatCommon->SpecularColor;
+    aMatXde.EmissiveColor   = theMatCommon->EmissiveColor;
+    aMatXde.Shininess       = theMatCommon->Shininess;
+    aMatXde.Transparency    = theMatCommon->Transparency;
+    aMatXde.DiffuseTexture  = theMatCommon->DiffuseTexture;
+    if (aMatXde.DiffuseTexture.IsNull()
+    && !theMatCommon->AmbientTexture.IsNull())
+    {
+      aMatXde.DiffuseTexture = theMatCommon->AmbientTexture;
+    }
+    aMat->SetCommonMaterial (aMatXde);
+    if (!theMatCommon->Name.IsEmpty())
+    {
+      aMat->SetRawName (new TCollection_HAsciiString (theMatCommon->Name));
+    }
+  }
+  if (!theMatPbr.IsNull())
+  {
+    XCAFDoc_VisMaterialPBR aMatXde;
+    aMatXde.IsDefined = true;
+    aMatXde.MetallicRoughnessTexture = theMatPbr->MetallicRoughnessTexture;
+    aMatXde.BaseColorTexture = theMatPbr->BaseColorTexture;
+    aMatXde.EmissiveTexture  = theMatPbr->EmissiveTexture;
+    aMatXde.OcclusionTexture = theMatPbr->OcclusionTexture;
+    aMatXde.NormalTexture    = theMatPbr->NormalTexture;
+    aMatXde.BaseColor        = theMatPbr->BaseColor;
+    aMatXde.EmissiveFactor   = theMatPbr->EmissiveFactor;
+    aMatXde.Metallic         = theMatPbr->Metallic;
+    aMatXde.Roughness        = theMatPbr->Roughness;
+    aMat->SetPbrMaterial (aMatXde);
+
+    Graphic3d_AlphaMode anAlphaMode = Graphic3d_AlphaMode_BlendAuto;
+    switch (theMatPbr->AlphaMode)
+    {
+      case RWGltf_GltfAlphaMode_Opaque:
+      {
+        anAlphaMode = Graphic3d_AlphaMode_Opaque;
+        if (aMatXde.BaseColor.Alpha() < 1.0f)
+        {
+          Message::DefaultMessenger()->Send ("glTF reader - material with non-zero Transparency specifies Opaque AlphaMode", Message_Warning);
+        }
+        break;
+      }
+      case RWGltf_GltfAlphaMode_Mask:
+      {
+        anAlphaMode = Graphic3d_AlphaMode_Mask;
+        break;
+      }
+      case RWGltf_GltfAlphaMode_Blend:
+      {
+        anAlphaMode = Graphic3d_AlphaMode_Blend;
+        break;
+      }
+    }
+    aMat->SetAlphaMode (anAlphaMode, theMatPbr->AlphaCutOff);
+    aMat->SetDoubleSided (theMatPbr->IsDoubleSided);
+
+    if (!theMatPbr->Name.IsEmpty())
+    {
+      aMat->SetRawName (new TCollection_HAsciiString (theMatPbr->Name));
+    }
+  }
+
+  myMaterials.Bind (!theMatPbr.IsNull() ? theMatPbr->Id : theMatCommon->Id, aMat);
 }
 
 // =======================================================================
@@ -450,6 +539,9 @@ bool RWGltf_GltfJsonParser::gltfParsePbrMaterial (Handle(RWGltf_MaterialMetallic
   const RWGltf_JsonValue* anEmissFactorVal  = findObjectMember (theMatNode, "emissiveFactor");
   const RWGltf_JsonValue* anEmissTexVal     = findObjectMember (theMatNode, "emissiveTexture");
   const RWGltf_JsonValue* anOcclusionTexVal = findObjectMember (theMatNode, "occlusionTexture");
+  const RWGltf_JsonValue* aDoubleSidedVal   = findObjectMember (theMatNode, "doubleSided");
+  const RWGltf_JsonValue* anAlphaModeVal    = findObjectMember (theMatNode, "alphaMode");
+  const RWGltf_JsonValue* anAlphaCutoffVal  = findObjectMember (theMatNode, "alphaCutoff");
   if (aMetalRoughVal == NULL)
   {
     return false;
@@ -461,6 +553,22 @@ bool RWGltf_GltfJsonParser::gltfParsePbrMaterial (Handle(RWGltf_MaterialMetallic
   const RWGltf_JsonValue* aMetallicFactorVal  = findObjectMember (*aMetalRoughVal, "metallicFactor");
   const RWGltf_JsonValue* aRoughnessFactorVal = findObjectMember (*aMetalRoughVal, "roughnessFactor");
   const RWGltf_JsonValue* aMetalRoughTexVal   = findObjectMember (*aMetalRoughVal, "metallicRoughnessTexture");
+
+  if (aDoubleSidedVal != NULL
+   && aDoubleSidedVal->IsBool())
+  {
+    theMat->IsDoubleSided = aDoubleSidedVal->GetBool();
+  }
+  if (anAlphaCutoffVal != NULL
+   && anAlphaCutoffVal->IsNumber())
+  {
+    theMat->AlphaCutOff = (float )anAlphaCutoffVal->GetDouble();
+  }
+  if (anAlphaModeVal != NULL
+   && anAlphaModeVal->IsString())
+  {
+    theMat->AlphaMode = RWGltf_GltfParseAlphaMode (anAlphaModeVal->GetString());
+  }
 
   if (aBaseColorTexVal != NULL
    && aBaseColorTexVal->IsObject())
@@ -1116,7 +1224,14 @@ bool RWGltf_GltfJsonParser::gltfParseMesh (TopoDS_Shape& theMeshShape,
       {
         RWMesh_NodeAttributes aShapeAttribs;
         aShapeAttribs.RawName = aUserName;
-        aShapeAttribs.Style.SetColorSurf (aMeshData->BaseColor());
+
+        // assign material and not color
+        //aShapeAttribs.Style.SetColorSurf (aMeshData->BaseColor());
+
+        Handle(XCAFDoc_VisMaterial) aMat;
+        myMaterials.Find (!aMeshData->MaterialPbr().IsNull() ? aMeshData->MaterialPbr()->Id : aMeshData->MaterialCommon()->Id, aMat);
+        aShapeAttribs.Style.SetMaterial (aMat);
+
         myAttribMap->Bind (aFace, aShapeAttribs);
       }
       myFaceList.Append (aFace);
@@ -1586,7 +1701,12 @@ void RWGltf_GltfJsonParser::bindNamedShape (TopoDS_Shape& theShape,
       {
         if (aLateData->HasStyle())
         {
-          aShapeAttribs.Style.SetColorSurf (aLateData->BaseColor());
+          // assign material and not color
+          //aShapeAttribs.Style.SetColorSurf (aLateData->BaseColor());
+
+          Handle(XCAFDoc_VisMaterial) aMat;
+          myMaterials.Find (!aLateData->MaterialPbr().IsNull() ? aLateData->MaterialPbr()->Id : aLateData->MaterialCommon()->Id, aMat);
+          aShapeAttribs.Style.SetMaterial (aMat);
         }
         if (aShapeAttribs.Name.IsEmpty()
          && myUseMeshNameAsFallback)

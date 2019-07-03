@@ -21,6 +21,7 @@
 #include <gp_Pnt.hxx>
 #include <Graphic3d_AspectFillArea3d.hxx>
 #include <Graphic3d_AspectLine3d.hxx>
+#include <Graphic3d_Texture2Dmanual.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_DimensionAspect.hxx>
 #include <Prs3d_IsoAspect.hxx>
@@ -36,7 +37,6 @@
 #include <XCAFPrs_IndexedDataMapOfShapeStyle.hxx>
 #include <XCAFPrs_DataMapIteratorOfIndexedDataMapOfShapeStyle.hxx>
 #include <XCAFPrs_Style.hxx>
-
 
 IMPLEMENT_STANDARD_RTTIEXT(XCAFPrs_AISObject,AIS_ColoredShape)
 
@@ -139,10 +139,7 @@ void XCAFPrs_AISObject::DispatchStyles (const Standard_Boolean theToSyncStyles)
   // Getting default colors
   XCAFPrs_Style aDefStyle;
   DefaultStyle (aDefStyle);
-  Quantity_Color aColorCurv = aDefStyle.GetColorCurv();
-  Quantity_ColorRGBA aColorSurf = aDefStyle.GetColorSurfRGBA();
-
-  SetColors (myDrawer, aColorCurv, aColorSurf);
+  setStyleToDrawer (myDrawer, aDefStyle, aDefStyle, myDrawer->ShadingAspect()->Aspect()->FrontMaterial());
 
   // collect sub-shapes with the same style into compounds
   BRep_Builder aBuilder;
@@ -184,11 +181,17 @@ void XCAFPrs_AISObject::DispatchStyles (const Standard_Boolean theToSyncStyles)
     myShapeColors.Bind (aShapeCur, aDrawer);
     const XCAFPrs_Style& aStyle = aStyleGroupIter.Key();
     aDrawer->SetHidden (!aStyle.IsVisible());
-
-    aColorCurv = aStyle.IsSetColorCurv() ? aStyle.GetColorCurv()     : aDefStyle.GetColorCurv();
-    aColorSurf = aStyle.IsSetColorSurf() ? aStyle.GetColorSurfRGBA() : aDefStyle.GetColorSurfRGBA();
-
-    SetColors (aDrawer, aColorCurv, aColorSurf);
+    if (!aStyle.Material().IsNull()
+     && !aStyle.Material()->IsEmpty())
+    {
+      aDrawer->SetOwnMaterial();
+    }
+    if (aStyle.IsSetColorSurf()
+     || aStyle.IsSetColorCurv())
+    {
+      aDrawer->SetOwnColor (Quantity_Color());
+    }
+    setStyleToDrawer (aDrawer, aStyle, aDefStyle, myDrawer->ShadingAspect()->Aspect()->FrontMaterial());
   }
   aStyleGroups.Clear();
 }
@@ -243,83 +246,48 @@ void XCAFPrs_AISObject::Compute (const Handle(PrsMgr_PresentationManager3d)& the
 }
 
 //=======================================================================
-//function : SetColors
+//function : setStyleToDrawer
 //purpose  :
 //=======================================================================
-void XCAFPrs_AISObject::SetColors (const Handle(Prs3d_Drawer)& theDrawer,
-                                   const Quantity_Color&       theColorCurv,
-                                   const Quantity_ColorRGBA&   theColorSurf)
+void XCAFPrs_AISObject::setStyleToDrawer (const Handle(Prs3d_Drawer)& theDrawer,
+                                          const XCAFPrs_Style& theStyle,
+                                          const XCAFPrs_Style& theDefStyle,
+                                          const Graphic3d_MaterialAspect& theDefMaterial)
 {
-  if (!theDrawer->HasOwnShadingAspect())
+  theDrawer->SetupOwnShadingAspect();
+  theDrawer->SetOwnLineAspects();
+
+  Quantity_ColorRGBA aSurfColor = theDefStyle.GetColorSurfRGBA();
+  Quantity_Color     aCurvColor = theDefStyle.GetColorCurv();
+  Graphic3d_MaterialAspect aMaterial = theDefMaterial;
+  const Handle(XCAFDoc_VisMaterial)& anXMat = !theStyle.Material().IsNull() ? theStyle.Material() : theDefStyle.Material();
+  if (!anXMat.IsNull()
+   && !anXMat->IsEmpty())
   {
-    theDrawer->SetShadingAspect (new Prs3d_ShadingAspect());
-    if (theDrawer->HasLink())
-    {
-      *theDrawer->ShadingAspect()->Aspect() = *theDrawer->Link()->ShadingAspect()->Aspect();
-    }
+    anXMat->FillAspect (theDrawer->ShadingAspect()->Aspect());
+    aMaterial = theDrawer->ShadingAspect()->Aspect()->FrontMaterial();
+    aSurfColor = Quantity_ColorRGBA (aMaterial.Color(), aMaterial.Alpha());
+    aCurvColor = aMaterial.Color();
   }
-  if (!theDrawer->HasOwnLineAspect())
+  if (theStyle.IsSetColorSurf())
   {
-    theDrawer->SetLineAspect (new Prs3d_LineAspect (Quantity_NOC_BLACK, Aspect_TOL_SOLID, 1.0));
-    if (theDrawer->HasLink())
-    {
-      *theDrawer->LineAspect()->Aspect() = *theDrawer->Link()->LineAspect()->Aspect();
-    }
+    aSurfColor = theStyle.GetColorSurfRGBA();
+    aMaterial.SetColor (aSurfColor.GetRGB());
+    aMaterial.SetAlpha (aSurfColor.Alpha());
   }
-  if (!theDrawer->HasOwnWireAspect())
+  if (theStyle.IsSetColorCurv())
   {
-    theDrawer->SetWireAspect (new Prs3d_LineAspect (Quantity_NOC_BLACK, Aspect_TOL_SOLID, 1.0));
-    if (theDrawer->HasLink())
-    {
-      *theDrawer->WireAspect()->Aspect() = *theDrawer->Link()->WireAspect()->Aspect();
-    }
-  }
-  if (!theDrawer->HasOwnUIsoAspect())
-  {
-    theDrawer->SetUIsoAspect (new Prs3d_IsoAspect (Quantity_NOC_GRAY75, Aspect_TOL_SOLID, 0.5, 1));
-    if (theDrawer->HasLink())
-    {
-      *theDrawer->UIsoAspect()->Aspect() = *theDrawer->Link()->UIsoAspect()->Aspect();
-      theDrawer->UIsoAspect()->SetNumber (theDrawer->Link()->UIsoAspect()->Number());
-    }
-  }
-  if (!theDrawer->HasOwnVIsoAspect())
-  {
-    theDrawer->SetVIsoAspect (new Prs3d_IsoAspect (Quantity_NOC_GRAY75, Aspect_TOL_SOLID, 0.5, 1));
-    if (theDrawer->HasLink())
-    {
-      *theDrawer->VIsoAspect()->Aspect() = *theDrawer->Link()->VIsoAspect()->Aspect();
-      theDrawer->VIsoAspect()->SetNumber (theDrawer->Link()->VIsoAspect()->Number());
-    }
-  }
-  if (!theDrawer->HasOwnFreeBoundaryAspect())
-  {
-    theDrawer->SetFreeBoundaryAspect (new Prs3d_LineAspect (Quantity_NOC_BLACK, Aspect_TOL_SOLID, 1.0));
-    if (theDrawer->HasLink())
-    {
-      *theDrawer->FreeBoundaryAspect()->Aspect() = *theDrawer->Link()->FreeBoundaryAspect()->Aspect();
-    }
-  }
-  if (!theDrawer->HasOwnUnFreeBoundaryAspect())
-  {
-    theDrawer->SetUnFreeBoundaryAspect (new Prs3d_LineAspect (Quantity_NOC_BLACK, Aspect_TOL_SOLID, 1.0));
-    if (theDrawer->HasLink())
-    {
-      *theDrawer->UnFreeBoundaryAspect()->Aspect() = *theDrawer->Link()->UnFreeBoundaryAspect()->Aspect();
-    }
+    aCurvColor = theStyle.GetColorCurv();
   }
 
-  theDrawer->UnFreeBoundaryAspect()->SetColor (theColorCurv);
-  theDrawer->FreeBoundaryAspect()->SetColor (theColorCurv);
-  theDrawer->WireAspect()->SetColor (theColorCurv);
+  theDrawer->UnFreeBoundaryAspect()->SetColor (aCurvColor);
+  theDrawer->FreeBoundaryAspect()->SetColor (aCurvColor);
+  theDrawer->WireAspect()->SetColor (aCurvColor);
 
-  Graphic3d_MaterialAspect aMaterial = myDrawer->ShadingAspect()->Aspect()->FrontMaterial();
-  aMaterial.SetColor (theColorSurf.GetRGB());
-  aMaterial.SetAlpha (theColorSurf.Alpha());
-  theDrawer->ShadingAspect()->Aspect()->SetInteriorColor (theColorSurf);
+  theDrawer->ShadingAspect()->Aspect()->SetInteriorColor (aSurfColor);
   theDrawer->ShadingAspect()->Aspect()->SetFrontMaterial (aMaterial);
-  theDrawer->UIsoAspect()->SetColor (theColorSurf.GetRGB());
-  theDrawer->VIsoAspect()->SetColor (theColorSurf.GetRGB());
+  theDrawer->UIsoAspect()->SetColor (aSurfColor.GetRGB());
+  theDrawer->VIsoAspect()->SetColor (aSurfColor.GetRGB());
 }
 
 //=======================================================================
@@ -341,17 +309,25 @@ void XCAFPrs_AISObject::SetMaterial (const Graphic3d_MaterialAspect& theMaterial
   XCAFPrs_Style aDefStyle;
   DefaultStyle (aDefStyle);
   setMaterial (myDrawer, theMaterial, HasColor(), IsTransparent());
-  SetColors (myDrawer, aDefStyle.GetColorCurv(), aDefStyle.GetColorSurf());
+  setStyleToDrawer (myDrawer, aDefStyle, aDefStyle, myDrawer->ShadingAspect()->Aspect()->FrontMaterial());
   for (AIS_DataMapOfShapeDrawer::Iterator anIter (myShapeColors); anIter.More(); anIter.Next())
   {
     const Handle(AIS_ColoredDrawer)& aDrawer = anIter.Value();
+    if (aDrawer->HasOwnMaterial())
+    {
+      continue;
+    }
 
-    // take current color
-    const Quantity_Color     aColorCurv = aDrawer->WireAspect()->Aspect()->Color();
-    const Quantity_ColorRGBA aSurfColor = aDrawer->ShadingAspect()->Aspect()->InteriorColorRGBA();
-
-    // SetColors() will take the material from myDrawer
-    SetColors (aDrawer, aColorCurv, aSurfColor);
+    if (aDrawer->HasOwnShadingAspect())
+    {
+      // take current color
+      const Quantity_ColorRGBA aSurfColor = aDrawer->ShadingAspect()->Aspect()->InteriorColorRGBA();
+      Graphic3d_MaterialAspect aMaterial = myDrawer->ShadingAspect()->Aspect()->FrontMaterial();
+      aMaterial.SetColor (aSurfColor.GetRGB());
+      aMaterial.SetAlpha (aSurfColor.Alpha());
+      aDrawer->ShadingAspect()->Aspect()->SetInteriorColor (aSurfColor);
+      aDrawer->ShadingAspect()->Aspect()->SetFrontMaterial (aMaterial);
+    }
   }
   SynchronizeAspects();
 }

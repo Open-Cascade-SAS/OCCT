@@ -16,3 +16,5 @@ XCAFPrs_Driver.cxx
 XCAFPrs_Driver.hxx
 XCAFPrs_Style.cxx
 XCAFPrs_Style.hxx
+XCAFPrs_Texture.cxx
+XCAFPrs_Texture.hxx

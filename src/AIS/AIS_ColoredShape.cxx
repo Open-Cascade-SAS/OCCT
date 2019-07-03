@@ -333,7 +333,11 @@ void AIS_ColoredShape::SetMaterial (const Graphic3d_MaterialAspect& theMaterial)
   for (AIS_DataMapOfShapeDrawer::Iterator anIter (myShapeColors); anIter.More(); anIter.Next())
   {
     const Handle(AIS_ColoredDrawer)& aDrawer = anIter.Value();
-    //if (aDrawer->HasOwnMaterial()) continue;
+    if (aDrawer->HasOwnMaterial())
+    {
+      continue;
+    }
+
     if (aDrawer->HasOwnShadingAspect())
     {
       setMaterial (aDrawer, theMaterial, aDrawer->HasOwnColor(), aDrawer->HasOwnTransparency());

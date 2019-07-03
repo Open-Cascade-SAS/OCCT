@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <XCAFPrs.hxx>
 
-#include <BRep_Builder.hxx>
 #include <TColStd_HSequenceOfExtendedString.hxx>
 #include <TDF_AttributeSequence.hxx>
 #include <TDF_Label.hxx>
@@ -29,11 +29,32 @@
 #include <XCAFDoc_DocumentTool.hxx>
 #include <XCAFDoc_GraphNode.hxx>
 #include <XCAFDoc_LayerTool.hxx>
+#include <XCAFDoc_VisMaterialTool.hxx>
 #include <XCAFDoc_ShapeTool.hxx>
-#include <XCAFPrs.hxx>
 #include <XCAFPrs_Style.hxx>
 
 static Standard_Boolean viewnameMode = Standard_False;
+
+//! Fill colors of XCAFPrs_Style structure.
+static void fillStyleColors (XCAFPrs_Style& theStyle,
+                             const Handle(XCAFDoc_ColorTool)& theTool,
+                             const TDF_Label& theLabel)
+{
+  Quantity_ColorRGBA aColor;
+  if (theTool->GetColor (theLabel, XCAFDoc_ColorGen, aColor))
+  {
+    theStyle.SetColorCurv (aColor.GetRGB());
+    theStyle.SetColorSurf (aColor);
+  }
+  if (theTool->GetColor (theLabel, XCAFDoc_ColorSurf, aColor))
+  {
+    theStyle.SetColorSurf (aColor);
+  }
+  if (theTool->GetColor (theLabel, XCAFDoc_ColorCurv, aColor))
+  {
+    theStyle.SetColorCurv (aColor.GetRGB());
+  }
+}
 
 static Standard_Boolean getShapesOfSHUO (TopLoc_IndexedMapOfLocation& theaPrevLocMap,
                                          const Handle(XCAFDoc_ShapeTool)& theSTool,
@@ -128,6 +149,8 @@ void XCAFPrs::CollectStyleSettings (const TDF_Label& theLabel,
 
   // collect settings on subshapes
   Handle(XCAFDoc_ColorTool) aColorTool = XCAFDoc_DocumentTool::ColorTool(theLabel);
+  Handle(XCAFDoc_VisMaterialTool) aMatTool = XCAFDoc_DocumentTool::VisMaterialTool (theLabel);
+
   TDF_LabelSequence aLabSeq;
   XCAFDoc_ShapeTool::GetSubShapes (theLabel, aLabSeq);
   // and add the shape itself
@@ -136,12 +159,14 @@ void XCAFPrs::CollectStyleSettings (const TDF_Label& theLabel,
   {
     const TDF_Label& aLabel = aLabIter.Value();
     XCAFPrs_Style aStyle;
+    aStyle.SetVisibility (aColorTool->IsVisible (aLabel));
+    aStyle.SetMaterial (aMatTool->GetShapeMaterial (aLabel));
 
-    Standard_Boolean isVisible = aColorTool->IsVisible (aLabel);
-    if (isVisible)
+    Handle(TColStd_HSequenceOfExtendedString) aLayerNames;
+    Handle(XCAFDoc_LayerTool) aLayerTool = XCAFDoc_DocumentTool::LayerTool (aLabel);
+    if (aStyle.IsVisible())
     {
-      Handle(XCAFDoc_LayerTool) aLayerTool = XCAFDoc_DocumentTool::LayerTool (aLabel);
-      Handle(TColStd_HSequenceOfExtendedString) aLayerNames = new TColStd_HSequenceOfExtendedString();
+      aLayerNames = new TColStd_HSequenceOfExtendedString();
       aLayerTool->GetLayers (aLabel, aLayerNames);
       Standard_Integer aNbHidden = 0;
       for (TColStd_HSequenceOfExtendedString::Iterator aLayerIter (*aLayerNames); aLayerIter.More(); aLayerIter.Next())
@@ -152,54 +177,38 @@ void XCAFPrs::CollectStyleSettings (const TDF_Label& theLabel,
           ++aNbHidden;
         }
       }
-      isVisible = aNbHidden == 0
-               || aNbHidden != aLayerNames->Length();
+      aStyle.SetVisibility (aNbHidden == 0
+                         || aNbHidden != aLayerNames->Length());
     }
 
-    if (!isVisible)
+    if (aColorTool->IsColorByLayer (aLabel))
     {
-      aStyle.SetVisibility (Standard_False);
+      Quantity_ColorRGBA aLayerColor = theLayerColor;
+      if (aLayerNames.IsNull())
+      {
+        aLayerNames = new TColStd_HSequenceOfExtendedString();
+        aLayerTool->GetLayers (aLabel, aLayerNames);
+      }
+      if (aLayerNames->Length() == 1)
+      {
+        TDF_Label aLayer = aLayerTool->FindLayer (aLayerNames->First());
+        Quantity_ColorRGBA aColor;
+        if (aColorTool->GetColor (aLayer, XCAFDoc_ColorGen, aColor))
+        {
+          aLayerColor = aColor;
+        }
+      }
+
+      aStyle.SetColorCurv (aLayerColor.GetRGB());
+      aStyle.SetColorSurf (aLayerColor);
     }
     else
     {
-      if (aColorTool->IsColorByLayer(aLabel))
-      {
-        Quantity_ColorRGBA aLayerColor = theLayerColor;
-        Handle(XCAFDoc_LayerTool) aLayerTool = XCAFDoc_DocumentTool::LayerTool (aLabel);
-        Handle(TColStd_HSequenceOfExtendedString) aLayerNames = new TColStd_HSequenceOfExtendedString();
-        aLayerTool->GetLayers (aLabel, aLayerNames);
-        if (aLayerNames->Length() == 1)
-        {
-          TDF_Label aLayer = aLayerTool->FindLayer (aLayerNames->First());
-          Quantity_ColorRGBA aColor;
-          if (aColorTool->GetColor (aLayer, XCAFDoc_ColorGen, aColor))
-            aLayerColor = aColor;
-        }
-
-        aStyle.SetColorCurv (aLayerColor.GetRGB());
-        aStyle.SetColorSurf (aLayerColor);
-      }
-      else
-      {
-        Quantity_ColorRGBA aColor;
-        if (aColorTool->GetColor (aLabel, XCAFDoc_ColorGen, aColor))
-        {
-          aStyle.SetColorCurv (aColor.GetRGB());
-          aStyle.SetColorSurf (aColor);
-        }
-        if (aColorTool->GetColor (aLabel, XCAFDoc_ColorSurf, aColor))
-        {
-          aStyle.SetColorSurf (aColor);
-        }
-        if (aColorTool->GetColor (aLabel, XCAFDoc_ColorCurv, aColor))
-        {
-          aStyle.SetColorCurv (aColor.GetRGB());
-        }
-      }
+      fillStyleColors (aStyle, aColorTool, aLabel);
     }
 
     // PTV try to set color from SHUO structure
-    Handle(XCAFDoc_ShapeTool) aShapeTool = aColorTool->ShapeTool();
+    const Handle(XCAFDoc_ShapeTool)& aShapeTool = aColorTool->ShapeTool();
     if (aShapeTool->IsComponent (aLabel))
     {
       TDF_AttributeSequence aShuoAttribSeq;
@@ -222,31 +231,11 @@ void XCAFPrs::CollectStyleSettings (const TDF_Label& theLabel,
           }
         }
 
-        Quantity_ColorRGBA aColor;
         XCAFPrs_Style aShuoStyle;
-        if (!aColorTool->IsVisible (aShuolab))
-        {
-          aShuoStyle.SetVisibility (Standard_False);
-        }
-        else
-        {
-          if (aColorTool->GetColor (aShuolab, XCAFDoc_ColorGen, aColor))
-          {
-            aShuoStyle.SetColorCurv (aColor.GetRGB());
-            aShuoStyle.SetColorSurf (aColor);
-          }
-          if (aColorTool->GetColor (aShuolab, XCAFDoc_ColorSurf, aColor))
-          {
-            aShuoStyle.SetColorSurf (aColor);
-          }
-          if (aColorTool->GetColor (aShuolab, XCAFDoc_ColorCurv, aColor))
-          {
-            aShuoStyle.SetColorCurv (aColor.GetRGB());
-          }
-        }
-        if (!aShuoStyle.IsSetColorCurv()
-         && !aShuoStyle.IsSetColorSurf()
-         &&  aShuoStyle.IsVisible())
+        aShuoStyle.SetMaterial  (aMatTool->GetShapeMaterial (aShuolab));
+        aShuoStyle.SetVisibility(aColorTool->IsVisible (aShuolab));
+        fillStyleColors (aShuoStyle, aColorTool, aShuolab);
+        if (aShuoStyle.IsEmpty())
         {
           continue;
         }
@@ -293,9 +282,7 @@ void XCAFPrs::CollectStyleSettings (const TDF_Label& theLabel,
       }
     }
 
-    if (!aStyle.IsSetColorCurv()
-     && !aStyle.IsSetColorSurf()
-     &&  aStyle.IsVisible())
+    if (aStyle.IsEmpty())
     {
       continue;
     }

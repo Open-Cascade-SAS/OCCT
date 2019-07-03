@@ -276,6 +276,7 @@ void IGESCAFControl_Writer::MakeColors (const TopoDS_Shape &S,
     XCAFPrs_Style own = settings.FindFromKey(S);
     if ( own.IsSetColorCurv() ) style.SetColorCurv ( own.GetColorCurv() );
     if ( own.IsSetColorSurf() ) style.SetColorSurf ( own.GetColorSurf() );
+    style.SetMaterial (own.Material());
   }
   
   // analyze whether current entity should get a color 
@@ -285,6 +286,12 @@ void IGESCAFControl_Writer::MakeColors (const TopoDS_Shape &S,
     if ( style.IsSetColorSurf() ) {
       hasColor = Standard_True;
       col = style.GetColorSurf();
+    }
+    else if (!style.Material().IsNull()
+          && !style.Material()->IsEmpty())
+    {
+      hasColor = Standard_True;
+      col = style.Material()->BaseColor().GetRGB();
     }
   }
   else if ( S.ShapeType() == TopAbs_EDGE || S.ShapeType() == TopAbs_WIRE ) {

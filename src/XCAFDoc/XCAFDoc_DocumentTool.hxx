@@ -32,6 +32,7 @@ class XCAFDoc_DimTolTool;
 class XCAFDoc_MaterialTool;
 class XCAFDoc_NotesTool;
 class XCAFDoc_ViewTool;
+class XCAFDoc_VisMaterialTool;
 class TDF_Attribute;
 class TDF_RelocationTable;
 
@@ -47,7 +48,6 @@ class XCAFDoc_DocumentTool : public TDF_Attribute
 
 public:
 
-  
   Standard_EXPORT static const Standard_GUID& GetID();
   
   //! Create (if not exist) DocumentTool attribute
@@ -89,12 +89,19 @@ public:
   //! Returns sub-label of DocLabel() with tag 9.
   Standard_EXPORT static TDF_Label NotesLabel(const TDF_Label& acces);
 
+  //! Returns sub-label of DocLabel() with tag 10.
+  Standard_EXPORT static TDF_Label VisMaterialLabel (const TDF_Label& theLabel);
+
   //! Creates (if it does not exist) ShapeTool attribute on ShapesLabel().
   Standard_EXPORT static Handle(XCAFDoc_ShapeTool) ShapeTool (const TDF_Label& acces);
   
   //! Creates (if it does not exist) ColorTool attribute on ColorsLabel().
   Standard_EXPORT static Handle(XCAFDoc_ColorTool) ColorTool (const TDF_Label& acces);
-  
+
+  //! Creates (if it does not exist) XCAFDoc_VisMaterialTool attribute on VisMaterialLabel().
+  //! Should not be confused with MaterialTool() defining physical/manufacturing materials.
+  Standard_EXPORT static Handle(XCAFDoc_VisMaterialTool) VisMaterialTool (const TDF_Label& theLabel);
+
   //! Creates (if it does not exist) LayerTool attribute on LayersLabel().
   Standard_EXPORT static Handle(XCAFDoc_LayerTool) LayerTool (const TDF_Label& acces);
   
@@ -113,6 +120,8 @@ public:
   //! Creates (if it does not exist) NotesTool attribute on NotesLabel().
   Standard_EXPORT static Handle(XCAFDoc_NotesTool) NotesTool(const TDF_Label& acces);
 
+public:
+
   Standard_EXPORT XCAFDoc_DocumentTool();
   
   //! to be called when reading this attribute from file
@@ -128,22 +137,6 @@ public:
  
   DEFINE_STANDARD_RTTIEXT(XCAFDoc_DocumentTool,TDF_Attribute)
 
-protected:
-
-
-
-
-private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _XCAFDoc_DocumentTool_HeaderFile

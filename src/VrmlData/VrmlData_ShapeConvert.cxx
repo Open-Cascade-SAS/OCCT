@@ -52,7 +52,9 @@
 #include <XCAFDoc_ColorTool.hxx>
 #include <XCAFDoc_DocumentTool.hxx>
 #include <XCAFDoc_ShapeTool.hxx>
-
+#include <XCAFPrs_Style.hxx>
+#include <XCAFDoc_VisMaterial.hxx>
+#include <XCAFDoc_VisMaterialTool.hxx>
 
 //=======================================================================
 //function : AddShape
@@ -597,6 +599,7 @@ void VrmlData_ShapeConvert::addShape (const Handle(VrmlData_Group)& theParent,
 {
   Handle(XCAFDoc_ShapeTool) aShapeTool = XCAFDoc_DocumentTool::ShapeTool(theDoc->Main());
   Handle(XCAFDoc_ColorTool) aColorTool = XCAFDoc_DocumentTool::ColorTool(theDoc->Main());
+  Handle(XCAFDoc_VisMaterialTool) aMatTool = XCAFDoc_DocumentTool::VisMaterialTool(theDoc->Main());
 
   NCollection_DataMap<TopoDS_Shape, TDF_Label> aChildShapeToLabels;
   TDF_LabelSequence aChildLabels;
@@ -661,26 +664,50 @@ void VrmlData_ShapeConvert::addShape (const Handle(VrmlData_Group)& theParent,
       }
 
       // set color
-      TDF_Label aColorL;
-      Standard_Boolean findColor = Standard_False;
-      const TDF_Label* aLabel = aChildShapeToLabels.Seek(anExp.Current());
-      if (aLabel != NULL)
+      XCAFPrs_Style aStyle;
+      Quantity_ColorRGBA aColor;
+      TDF_Label aLabel, anAttribLab;
+      if (aChildShapeToLabels.Find (anExp.Current(), aLabel))
       {
-        findColor = aColorTool->GetColor(*aLabel, XCAFDoc_ColorSurf, aColorL)
-          || aColorTool->GetColor(*aLabel, XCAFDoc_ColorGen, aColorL);
+        Handle(XCAFDoc_VisMaterial) aVisMat = aMatTool->GetShapeMaterial (aLabel);
+        if (!aVisMat.IsNull()
+         && !aVisMat->IsEmpty())
+        {
+          anAttribLab = aVisMat->Label();
+          aStyle.SetMaterial (aVisMat);
+        }
+        else if (aColorTool->GetColor (aLabel, XCAFDoc_ColorSurf, anAttribLab)
+              || aColorTool->GetColor (aLabel, XCAFDoc_ColorGen,  anAttribLab))
+        {
+          aColorTool->GetColor (anAttribLab, aColor);
+          aStyle.SetColorSurf (aColor);
+        }
       }
-      if (!findColor)
+      if (!aStyle.IsSetColorSurf()
+        && aStyle.Material().IsNull())
       {
-        findColor = aColorTool->GetColor(theLabel, XCAFDoc_ColorSurf, aColorL)
-          || aColorTool->GetColor(theLabel, XCAFDoc_ColorGen, aColorL);
+        Handle(XCAFDoc_VisMaterial) aVisMat = aMatTool->GetShapeMaterial (theLabel);
+        if (!aVisMat.IsNull()
+         && !aVisMat->IsEmpty())
+        {
+          anAttribLab = aVisMat->Label();
+          aStyle.SetMaterial (aVisMat);
+        }
+        if (aColorTool->GetColor (theLabel, XCAFDoc_ColorSurf, anAttribLab)
+         || aColorTool->GetColor (theLabel, XCAFDoc_ColorGen,  anAttribLab))
+        {
+          aColorTool->GetColor (anAttribLab, aColor);
+          aStyle.SetColorSurf (aColor);
+        }
       }
-      if (!findColor)
+      if (!aStyle.IsSetColorSurf()
+        && aStyle.Material().IsNull())
       {
         aShapeNode->SetAppearance(defaultMaterialFace());
       }
       else
       {
-        aShapeNode->SetAppearance(makeMaterialFromColor(aColorL, aColorTool));
+        aShapeNode->SetAppearance (makeMaterialFromStyle (aStyle, anAttribLab));
       }
 
       myScene.AddNode(aShapeNode, theParent.IsNull() && aGroup.IsNull());
@@ -877,22 +904,20 @@ void VrmlData_ShapeConvert::ConvertDocument(const Handle(TDocStd_Document) &theD
   }
 }
 
-
 //=======================================================================
-//function : makeMaterialFromColor
-//purpose  : 
+//function : makeMaterialFromStyle
+//purpose  :
 //=======================================================================
-
-Handle(VrmlData_Appearance) VrmlData_ShapeConvert::makeMaterialFromColor(
-  const TDF_Label& theColorL,
-  const Handle(XCAFDoc_ColorTool)& theColorTool) const
+Handle(VrmlData_Appearance) VrmlData_ShapeConvert::makeMaterialFromStyle (const XCAFPrs_Style& theStyle,
+                                                                          const TDF_Label& theAttribLab) const
 {
-  Quantity_ColorRGBA aColor;
-  theColorTool->GetColor(theColorL, aColor);
+  const Quantity_ColorRGBA aColor = !theStyle.Material().IsNull()
+                                   ? theStyle.Material()->BaseColor()
+                                   : theStyle.GetColorSurfRGBA();
 
   TCollection_AsciiString aNodeName = "_materialFace_";
   Handle(TDataStd_Name) aNameAttribute;
-  if (theColorL.FindAttribute(TDataStd_Name::GetID(), aNameAttribute))
+  if (theAttribLab.FindAttribute(TDataStd_Name::GetID(), aNameAttribute))
   {
     aNodeName.AssignCat(aNameAttribute->Get());
     Standard_Integer n = aNodeName.Search(" ");
@@ -912,19 +937,16 @@ Handle(VrmlData_Appearance) VrmlData_ShapeConvert::makeMaterialFromColor(
     aNodeName.AssignCat(aColor_sRGB.b());
   }
 
-  Handle(VrmlData_Appearance) anAppearance =
-    Handle(VrmlData_Appearance)::DownCast(myScene.FindNode(aNodeName.ToCString()));
-  if (anAppearance.IsNull()) {
-    const Handle(VrmlData_Material) aMaterial =
-      new VrmlData_Material(myScene, 0L);
-    aMaterial->SetDiffuseColor(aColor.GetRGB());
-    myScene.AddNode(aMaterial, Standard_False);
-    anAppearance = new VrmlData_Appearance(myScene, aNodeName.ToCString());
-    anAppearance->SetMaterial(aMaterial);
-    myScene.AddNode(anAppearance, Standard_False);
+  Handle(VrmlData_Appearance) anAppearance = Handle(VrmlData_Appearance)::DownCast(myScene.FindNode(aNodeName.ToCString()));
+  if (anAppearance.IsNull())
+  {
+    Handle(VrmlData_Material) aMaterial = new VrmlData_Material (myScene, 0L);
+    aMaterial->SetDiffuseColor (aColor.GetRGB());
+    myScene.AddNode (aMaterial, Standard_False);
+    anAppearance = new VrmlData_Appearance (myScene, aNodeName.ToCString());
+    anAppearance->SetMaterial (aMaterial);
+    myScene.AddNode (anAppearance, Standard_False);
   }
 
   return anAppearance;
 }
-
-

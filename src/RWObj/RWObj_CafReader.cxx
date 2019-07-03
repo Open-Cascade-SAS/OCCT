@@ -49,7 +49,29 @@ void RWObj_CafReader::BindNamedShape (const TopoDS_Shape& theShape,
   aShapeAttribs.Name = theName;
   if (theMaterial != NULL)
   {
-    aShapeAttribs.Style.SetColorSurf (Quantity_ColorRGBA (theMaterial->DiffuseColor, 1.0f - theMaterial->Transparency));
+    // assign material and not color
+    //aShapeAttribs.Style.SetColorSurf (Quantity_ColorRGBA (theMaterial->DiffuseColor, 1.0f - theMaterial->Transparency));
+
+    Handle(XCAFDoc_VisMaterial) aMat = new XCAFDoc_VisMaterial();
+    if (!myObjMaterialMap.Find (theMaterial->Name, aMat)) // material names are used as unique keys in OBJ
+    {
+      XCAFDoc_VisMaterialCommon aMatXde;
+      aMatXde.IsDefined = true;
+      aMatXde.AmbientColor    = theMaterial->AmbientColor;
+      aMatXde.DiffuseColor    = theMaterial->DiffuseColor;
+      aMatXde.SpecularColor   = theMaterial->SpecularColor;
+      aMatXde.Shininess       = theMaterial->Shininess;
+      aMatXde.Transparency    = theMaterial->Transparency;
+      if (!theMaterial->DiffuseTexture.IsEmpty())
+      {
+        aMatXde.DiffuseTexture  = new Image_Texture (theMaterial->DiffuseTexture);
+      }
+
+      aMat = new XCAFDoc_VisMaterial();
+      aMat->SetCommonMaterial (aMatXde);
+      aMat->SetRawName (new TCollection_HAsciiString (theMaterial->Name));
+    }
+    aShapeAttribs.Style.SetMaterial (aMat);
   }
   myAttribMap.Bind (theShape, aShapeAttribs);
 

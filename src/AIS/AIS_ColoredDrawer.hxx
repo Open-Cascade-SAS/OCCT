@@ -26,6 +26,7 @@ public:
   //! Default constructor.
   AIS_ColoredDrawer (const Handle(Prs3d_Drawer)& theLink)
   : myIsHidden    (false),
+    myHasOwnMaterial(false),
     myHasOwnColor (false),
     myHasOwnTransp(false),
     myHasOwnWidth (false)
@@ -35,6 +36,10 @@ public:
 
   bool IsHidden() const                                 { return myIsHidden;     }
   void SetHidden (const bool theToHide)                 { myIsHidden = theToHide;}
+
+  bool HasOwnMaterial() const                           { return myHasOwnMaterial;  }
+  void UnsetOwnMaterial()                               { myHasOwnMaterial = false; }
+  void SetOwnMaterial()                                 { myHasOwnMaterial = true;  }
 
   bool HasOwnColor() const                              { return myHasOwnColor;  }
   void UnsetOwnColor()                                  { myHasOwnColor = false; }
@@ -51,6 +56,7 @@ public:
 public:  //! @name list of overridden properties
 
   bool myIsHidden;
+  bool myHasOwnMaterial;
   bool myHasOwnColor;
   bool myHasOwnTransp;
   bool myHasOwnWidth;

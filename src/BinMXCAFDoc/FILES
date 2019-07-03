@@ -51,5 +51,9 @@ BinMXCAFDoc_ViewDriver.cxx
 BinMXCAFDoc_ViewDriver.hxx
 BinMXCAFDoc_ViewToolDriver.cxx
 BinMXCAFDoc_ViewToolDriver.hxx
+BinMXCAFDoc_VisMaterialDriver.cxx
+BinMXCAFDoc_VisMaterialDriver.hxx
+BinMXCAFDoc_VisMaterialToolDriver.cxx
+BinMXCAFDoc_VisMaterialToolDriver.hxx
 BinMXCAFDoc_VolumeDriver.cxx
 BinMXCAFDoc_VolumeDriver.hxx

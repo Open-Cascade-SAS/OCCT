@@ -33,7 +33,25 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(XCAFDoc_ColorTool,TDF_Attribute)
 
-#define AUTONAMING // automatically set names for labels
+static Standard_Boolean XCAFDoc_ColorTool_AutoNaming = Standard_True;
+
+//=======================================================================
+//function : SetAutoNaming
+//purpose  :
+//=======================================================================
+void XCAFDoc_ColorTool::SetAutoNaming (Standard_Boolean theIsAutoNaming)
+{
+  XCAFDoc_ColorTool_AutoNaming = theIsAutoNaming;
+}
+
+//=======================================================================
+//function : AutoNaming
+//purpose  :
+//=======================================================================
+Standard_Boolean XCAFDoc_ColorTool::AutoNaming()
+{
+  return XCAFDoc_ColorTool_AutoNaming;
+}
 
 //=======================================================================
 //function : BaseLabel
@@ -175,36 +193,32 @@ TDF_Label XCAFDoc_ColorTool::AddColor (const Quantity_Color& col) const
 //purpose  : 
 //=======================================================================
 
-TDF_Label XCAFDoc_ColorTool::AddColor(const Quantity_ColorRGBA& col) const
+TDF_Label XCAFDoc_ColorTool::AddColor (const Quantity_ColorRGBA& theColor) const
 {
-  TDF_Label L;
-  if (FindColor(col, L)) return L;
+  TDF_Label aLab;
+  if (FindColor (theColor, aLab))
+  {
+    return aLab;
+  }
 
   // create a new color entry
-
   TDF_TagSource aTag;
-  L = aTag.NewChild(Label());
+  aLab = aTag.NewChild (Label());
+  XCAFDoc_Color::Set (aLab, theColor);
 
-  XCAFDoc_Color::Set(L, col);
+  if (XCAFDoc_ColorTool_AutoNaming)
+  {
+    // set name according to color value
+    const NCollection_Vec4<float>& anRgbaF = theColor;
+    const NCollection_Vec4<unsigned int> anRgba (anRgbaF * 255.0f);
+    char aColorHex[32];
+    Sprintf (aColorHex, "%02X%02X%02X%02X", anRgba.r(), anRgba.g(), anRgba.b(), anRgba.a());
+    const TCollection_AsciiString aName = TCollection_AsciiString (Quantity_Color::StringName (theColor.GetRGB().Name()))
+                                        + " (#" + aColorHex + ")";
+    TDataStd_Name::Set (aLab, aName);
+  }
 
-#ifdef AUTONAMING
-  // set name according to color value
-  TCollection_AsciiString str;
-  Quantity_Color aColor = col.GetRGB();
-  str += aColor.StringName(aColor.Name());
-  str += " (";
-  str += TCollection_AsciiString(aColor.Red());
-  str += ",";
-  str += TCollection_AsciiString(aColor.Green());
-  str += ",";
-  str += TCollection_AsciiString(aColor.Blue());
-  str += ",";
-  str += TCollection_AsciiString(col.Alpha());
-  str += ")";
-  TDataStd_Name::Set(L, str);
-#endif
-
-  return L;
+  return aLab;
 }
 
 //=======================================================================

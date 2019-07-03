@@ -32,6 +32,7 @@
 #include <XCAFDoc_DocumentTool.hxx>
 #include <XCAFDoc_ShapeMapTool.hxx>
 #include <XCAFDoc_ShapeTool.hxx>
+#include <XCAFDoc_VisMaterialTool.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(RWMesh_CafReader, Standard_Transient)
 
@@ -275,6 +276,19 @@ Standard_Boolean RWMesh_CafReader::addShapeIntoDoc (const TopoDS_Shape& theShape
   if (aShapeAttribs.Style.IsSetColorCurv())
   {
     aColorTool->SetColor (aNewRefLabel, aShapeAttribs.Style.GetColorCurv(), XCAFDoc_ColorCurv);
+  }
+  if (!aShapeAttribs.Style.Material().IsNull())
+  {
+    Handle(XCAFDoc_VisMaterialTool) aMatTool = XCAFDoc_DocumentTool::VisMaterialTool (myXdeDoc->Main());
+    TDF_Label aMaterialLabel = aShapeAttribs.Style.Material()->Label();
+    if (aMaterialLabel.IsNull())
+    {
+      const TCollection_AsciiString aMatName = !aShapeAttribs.Style.Material()->RawName().IsNull()
+                                             ?  aShapeAttribs.Style.Material()->RawName()->String()
+                                             :  "";
+      aMaterialLabel = aMatTool->AddMaterial (aShapeAttribs.Style.Material(), aMatName);
+    }
+    aMatTool->SetShapeMaterial (aNewRefLabel, aMaterialLabel);
   }
 
   // store sub-shapes (iterator is set to ignore Location)

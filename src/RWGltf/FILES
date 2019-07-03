@@ -1,6 +1,7 @@
 RWGltf_GltfAccessor.hxx
 RWGltf_GltfAccessorCompType.hxx
 RWGltf_GltfAccessorLayout.hxx
+RWGltf_GltfAlphaMode.hxx
 RWGltf_GltfArrayType.hxx
 RWGltf_GltfBufferView.hxx
 RWGltf_GltfBufferViewTarget.hxx

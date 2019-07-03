@@ -57,20 +57,18 @@ protected:
                                          const Handle(Prs3d_Presentation)&           thePresentation,
                                          const Standard_Integer                      theMode) Standard_OVERRIDE;
 
-  //! Set colors to drawer
-  Standard_EXPORT void SetColors (const Handle(Prs3d_Drawer)& theDrawer,
-                                  const Quantity_Color&       theColorCurv,
-                                  const Quantity_ColorRGBA&   theColorSurf);
-
-  //! Set colors to drawer
-  void SetColors (const Handle(Prs3d_Drawer)& theDrawer,
-                  const Quantity_Color& theColorCurv,
-                  const Quantity_Color& theColorSurf) { SetColors (theDrawer, theColorCurv, Quantity_ColorRGBA (theColorSurf)); }
-
   //! Fills out a default style object which is used when styles are
   //! not explicitly defined in the document.
   //! By default, the style uses white color for curves and surfaces.
   Standard_EXPORT virtual  void DefaultStyle (XCAFPrs_Style& theStyle) const;
+
+protected:
+
+  //! Assign style to drawer.
+  static void setStyleToDrawer (const Handle(Prs3d_Drawer)& theDrawer,
+                                const XCAFPrs_Style& theStyle,
+                                const XCAFPrs_Style& theDefStyle,
+                                const Graphic3d_MaterialAspect& theDefMaterial);
 
 protected:
 

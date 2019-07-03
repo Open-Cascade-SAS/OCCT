@@ -171,6 +171,15 @@ const Standard_GUID& XCAFDoc::MaterialRefGUID ()
   return ID;
 }
 
+//=======================================================================
+//function : VisMaterialRefGUID
+//purpose  :
+//=======================================================================
+const Standard_GUID& XCAFDoc::VisMaterialRefGUID()
+{
+  static const Standard_GUID ID ("936F4070-5369-405D-A7AD-2AC76C860EC8");
+  return ID;
+}
 
 //=======================================================================
 //function : NoteRefGUID

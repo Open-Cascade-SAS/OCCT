@@ -20,6 +20,7 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 #include <Quantity_ColorRGBAHasher.hxx>
+#include <XCAFDoc_VisMaterial.hxx>
 
 //! Represents a set of styling settings applicable to a (sub)shape
 class XCAFPrs_Style 
@@ -30,6 +31,21 @@ public:
 
   //! Empty constructor - colors are unset, visibility is TRUE.
   Standard_EXPORT XCAFPrs_Style();
+
+  //! Return TRUE if style is empty - does not override any properties.
+  Standard_Boolean IsEmpty() const
+  {
+    return !myHasColorSurf
+        && !myHasColorCurv
+        &&  myMaterial.IsNull()
+        &&  myIsVisible;
+  }
+
+  //! Return material.
+  const Handle(XCAFDoc_VisMaterial)& Material() const { return myMaterial; }
+
+  //! Set material.
+  void SetMaterial (const Handle(XCAFDoc_VisMaterial)& theMaterial) { myMaterial = theMaterial; }
 
   //! Return TRUE if surface color has been defined.
   Standard_Boolean IsSetColorSurf() const { return myHasColorSurf; }
@@ -82,6 +98,7 @@ public:
 
     return myHasColorSurf == theOther.myHasColorSurf
         && myHasColorCurv == theOther.myHasColorCurv
+        && myMaterial == theOther.myMaterial
         && (!myHasColorSurf || myColorSurf == theOther.myColorSurf)
         && (!myHasColorCurv || myColorCurv == theOther.myColorCurv);
   }
@@ -112,6 +129,10 @@ public:
     {
       aHashCode = aHashCode ^ Quantity_ColorHasher::HashCode (theStyle.myColorCurv, theUpperBound);
     }
+    if (!theStyle.myMaterial.IsNull())
+    {
+      aHashCode = aHashCode ^ ::HashCode (theStyle.myMaterial, theUpperBound);
+    }
     return ::HashCode (aHashCode, theUpperBound);
   }
 
@@ -126,6 +147,7 @@ public:
 
 protected:
 
+  Handle(XCAFDoc_VisMaterial) myMaterial;
   Quantity_ColorRGBA myColorSurf;
   Quantity_Color     myColorCurv;
   Standard_Boolean   myHasColorSurf;

@@ -150,6 +150,10 @@ protected:
   Standard_EXPORT bool gltfParseTexture (Handle(Image_Texture)& theTexture,
                                          const RWGltf_JsonValue* theTextureId);
 
+  //! Bind material definition to the map.
+  Standard_EXPORT void gltfBindMaterial (const Handle(RWGltf_MaterialMetallicRoughness)& theMatPbr,
+                                         const Handle(RWGltf_MaterialCommon)& theMatCommon);
+
 protected:
 
   //! Parse scene array of nodes recursively.
@@ -397,6 +401,7 @@ protected:
 
   NCollection_DataMap<TCollection_AsciiString, Handle(RWGltf_MaterialMetallicRoughness)> myMaterialsPbr;
   NCollection_DataMap<TCollection_AsciiString, Handle(RWGltf_MaterialCommon)> myMaterialsCommon;
+  NCollection_DataMap<TCollection_AsciiString, Handle(XCAFDoc_VisMaterial)> myMaterials;
   NCollection_DataMap<TCollection_AsciiString, TopoDS_Shape> myShapeMap[2];
 
   NCollection_DataMap<TCollection_AsciiString, bool> myProbedFiles;

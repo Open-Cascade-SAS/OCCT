@@ -233,6 +233,8 @@
 #include <XCAFDoc_MaterialTool.hxx>
 #include <XCAFDoc_ShapeTool.hxx>
 #include <XCAFDoc_Volume.hxx>
+#include <XCAFDoc_VisMaterial.hxx>
+#include <XCAFDoc_VisMaterialTool.hxx>
 #include <XCAFPrs.hxx>
 #include <XCAFPrs_DataMapIteratorOfDataMapOfStyleShape.hxx>
 #include <XCAFPrs_IndexedDataMapOfShapeStyle.hxx>
@@ -1163,6 +1165,7 @@ Standard_Boolean STEPCAFControl_Writer::WriteColors (const Handle(XSControl_Work
 
   // Iterate on shapes in the document
   Handle(XCAFDoc_ColorTool) CTool = XCAFDoc_DocumentTool::ColorTool( labels(1) );
+  Handle(XCAFDoc_VisMaterialTool) aMatTool = XCAFDoc_DocumentTool::VisMaterialTool( labels(1) );
   if ( CTool.IsNull() ) return Standard_False;
 
   STEPConstruct_Styles Styles ( WS );
@@ -1232,6 +1235,16 @@ Standard_Boolean STEPCAFControl_Writer::WriteColors (const Handle(XSControl_Work
         style.SetColorSurf ( C );
       if ( CTool->GetColor ( lab, XCAFDoc_ColorCurv, C ) )
         style.SetColorCurv ( C );
+      if (!style.IsSetColorSurf())
+      {
+        Handle(XCAFDoc_VisMaterial) aVisMat = aMatTool->GetShapeMaterial (lab);
+        if (!aVisMat.IsNull()
+         && !aVisMat->IsEmpty())
+        {
+          // only color can be stored in STEP
+          style.SetColorSurf (aVisMat->BaseColor());
+        }
+      }
       
       // commented, cause we are need to take reference from 
 //       if ( isComponent && lab == L && !isVisible)
@@ -1659,6 +1672,7 @@ Standard_Boolean STEPCAFControl_Writer::WriteLayers (const Handle(XSControl_Work
 //=======================================================================
 static Standard_Boolean getSHUOstyle(const TDF_Label& aSHUOlab,
                                      const Handle(XCAFDoc_ColorTool)& CTool,
+                                     const Handle(XCAFDoc_VisMaterialTool)& theMatTool,
                                      XCAFPrs_Style& SHUOstyle)
 {
   Quantity_Color C;
@@ -1673,6 +1687,16 @@ static Standard_Boolean getSHUOstyle(const TDF_Label& aSHUOlab,
       SHUOstyle.SetColorSurf ( C );
     if ( CTool->GetColor ( aSHUOlab, XCAFDoc_ColorCurv, C ) )
       SHUOstyle.SetColorCurv ( C );
+    if (!SHUOstyle.IsSetColorSurf())
+    {
+      Handle(XCAFDoc_VisMaterial) aVisMat = theMatTool->GetShapeMaterial (aSHUOlab);
+      if (!aVisMat.IsNull()
+       && !aVisMat->IsEmpty())
+      {
+        // only color can be stored in STEP
+        SHUOstyle.SetColorSurf (aVisMat->BaseColor());
+      }
+    }
   }
   if ( !SHUOstyle.IsSetColorCurv() && 
       !SHUOstyle.IsSetColorSurf() &&
@@ -1977,6 +2001,7 @@ Standard_Boolean STEPCAFControl_Writer::WriteSHUOs (const Handle(XSControl_WorkS
 
   // get working data
   Handle(XCAFDoc_ColorTool) CTool = XCAFDoc_DocumentTool::ColorTool( labels(1) );
+  Handle(XCAFDoc_VisMaterialTool) aMatTool = XCAFDoc_DocumentTool::VisMaterialTool( labels(1) );
   if (CTool.IsNull() )
     return Standard_False;
   // map of transfered SHUO
@@ -2009,7 +2034,7 @@ Standard_Boolean STEPCAFControl_Writer::WriteSHUOs (const Handle(XSControl_WorkS
           aMapOfMainSHUO.Add( aSHUO );
           // check if it is styled SHUO
           XCAFPrs_Style SHUOstyle;
-          if ( !getSHUOstyle ( aSHUOlab, CTool, SHUOstyle ) ) {
+          if ( !getSHUOstyle ( aSHUOlab, CTool, aMatTool, SHUOstyle ) ) {
 #ifdef OCCT_DEBUG
             std::cout << "Warning: " << __FILE__ << ": do not store SHUO without any style to the STEP model" << std::endl;
 #endif

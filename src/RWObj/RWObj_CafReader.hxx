@@ -56,6 +56,7 @@ protected:
 
 protected:
 
+  NCollection_DataMap<TCollection_AsciiString, Handle(XCAFDoc_VisMaterial)> myObjMaterialMap;
   Standard_Boolean myIsSinglePrecision; //!< flag for reading vertex data with single or double floating point precision
 
 };
