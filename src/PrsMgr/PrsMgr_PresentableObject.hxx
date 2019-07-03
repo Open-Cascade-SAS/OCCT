@@ -528,6 +528,14 @@ public: //! @name deprecated methods
   Standard_DEPRECATED("This method is deprecated - TransformPersistence() should be called instead")
   Standard_EXPORT gp_Pnt GetTransformPersistencePoint() const;
 
+  //! Get value of the flag "propagate visual state"
+  //! It means that the display/erase/color visual state is propagated automatically to all children;
+  //! by default, the flag is true 
+  Standard_Boolean ToPropagateVisualState() const { return myToPropagateVisualState; }
+
+  //! Change the value of the flag "propagate visual state"
+  void SetPropagateVisualState(const Standard_Boolean theFlag) { myToPropagateVisualState = theFlag; }
+
 protected:
 
   //! Recomputes all presentations of the object.
@@ -569,6 +577,7 @@ protected:
   Standard_Boolean                       myIsMutable;               //!< mutable flag
   Standard_Boolean                       myHasOwnPresentations;     //!< flag indicating if object should have own presentations
 
+  Standard_Boolean                       myToPropagateVisualState;  //!< flag indicating if visual state (display/erase/color) should be propagated to all children
 };
 
 DEFINE_STANDARD_HANDLE(PrsMgr_PresentableObject, Standard_Transient)

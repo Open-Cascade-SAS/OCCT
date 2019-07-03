@@ -56,7 +56,8 @@ PrsMgr_PresentableObject::PrsMgr_PresentableObject (const PrsMgr_TypeOfPresentat
   //
   myInfiniteState (Standard_False),
   myIsMutable (Standard_False),
-  myHasOwnPresentations (Standard_True)
+  myHasOwnPresentations (Standard_True),
+  myToPropagateVisualState (Standard_True)
 {
   myDrawer->SetDisplayMode (-1);
 }

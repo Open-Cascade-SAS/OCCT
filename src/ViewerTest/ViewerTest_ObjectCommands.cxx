@@ -4771,6 +4771,46 @@ static Standard_Integer VChild (Draw_Interpretor& ,
   return 0;
 }
 
+//=======================================================================
+//function : VParent
+//purpose  :
+//=======================================================================
+static Standard_Integer VParent(Draw_Interpretor&,
+  Standard_Integer theNbArgs,
+  const char** theArgVec)
+{
+  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
+  if (aContext.IsNull())
+  {
+    std::cout << "Error: no active view\n";
+    return 1;
+  }
+
+  if (theNbArgs < 2 )
+  {
+    std::cout << theArgVec[0] << " error: expect at least 2 arguments\n";
+    return 1;
+  }
+
+  TCollection_AsciiString aName(theArgVec[1]);
+  Handle(AIS_InteractiveObject) aParent;
+  if (!GetMapOfAIS().Find2(theArgVec[1], aParent))
+  {
+    std::cout << "Syntax error: object '" << theArgVec[1] << "' is not found\n";
+    return 1;
+  }
+
+  ViewerTest_AutoUpdater anUpdateTool(aContext, ViewerTest::CurrentView());
+  for (Standard_Integer anArgIter = 2; anArgIter < theNbArgs; ++anArgIter)
+  {
+    TCollection_AsciiString anArg(theArgVec[anArgIter]);
+    anArg.LowerCase();
+    if (anArg == "-ignorevisu")
+      aParent->SetPropagateVisualState(Standard_False);
+  }
+  return 0;
+}
+
 //===============================================================================================
 //function : VSetSelectionMode
 //purpose  : vselmode
@@ -6508,6 +6548,12 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
       "\n\t\t: Command for testing low-level presentation connections."
       "\n\t\t: vconnect command should be used instead.",
         __FILE__, VChild, group);
+  theCommands.Add("vparent",
+    "vparent parent [-ignoreVisu]"
+    "\n\t\t: Command for testing object properties as parent in the hierarchy."
+    "\n\t\t: Arguments:"
+    "\n\t\t:   -ignoreVisu do not propagate the visual state (display/erase/color) to children objects",
+    __FILE__, VParent, group);
   theCommands.Add ("vcomputehlr",
                 "vcomputehlr shapeInput hlrResult [-algoType {algo|polyAlgo}=polyAlgo]"
       "\n\t\t:   [eyeX eyeY eyeZ dirX dirY dirZ upX upY upZ]"
