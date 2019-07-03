@@ -370,6 +370,9 @@ public: //! @name mouse picking logic (detection and dynamic highlighting of ent
                                                 const Standard_Integer theMode,
                                                 const Standard_Integer theNewSensitivity);
 
+  //! Returns last active View (argument of MoveTo()/Select() methods).
+  Standard_EXPORT Handle(V3d_View) LastActiveView() const;
+
   //! Relays mouse position in pixels theXPix and theYPix to the interactive context selectors.
   //! This is done by the view theView passing this position to the main viewer and updating it.
   //! If theToRedrawOnUpdate is set to false, callee should call RedrawImmediate() to highlight detected object.
@@ -504,6 +507,9 @@ public: //! @name Selection management
                                                 const Standard_Integer  theYPMax,
                                                 const Handle(V3d_View)& theView,
                                                 const Standard_Boolean  theToUpdateViewer);
+
+  //! Returns bounding box of selected objects.
+  Standard_EXPORT Bnd_Box BoundingBoxOfSelection() const;
 
   //! Fits the view correspondingly to the bounds of selected objects.
   //! Infinite objects are ignored if infinite state of AIS_InteractiveObject is set to true.
@@ -1379,6 +1385,7 @@ protected: //! @name internal fields
   Handle(PrsMgr_PresentationManager3d) myMainPM;
   Handle(V3d_Viewer) myMainVwr;
   Handle(StdSelect_ViewerSelector3d) myMainSel;
+  V3d_View* myLastActiveView;
   Handle(SelectMgr_EntityOwner) myLastPicked;
   Standard_Boolean myToHilightSelected;
   Handle(AIS_Selection) mySelection;

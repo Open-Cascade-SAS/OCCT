@@ -16,6 +16,7 @@
 
 #include <ViewerTest_EventManager.hxx>
 
+#include <AIS_AnimationCamera.hxx>
 #include <AIS_InteractiveContext.hxx>
 #include <AIS_Shape.hxx>
 #include <Aspect_Grid.hxx>
@@ -27,6 +28,16 @@ Standard_IMPORT Standard_Boolean Draw_Interprete (const char* theCommand);
 IMPLEMENT_STANDARD_RTTIEXT(ViewerTest_EventManager,Standard_Transient)
 
 //=======================================================================
+//function : GlobalViewAnimation
+//purpose  :
+//=======================================================================
+const Handle(AIS_AnimationCamera)& ViewerTest_EventManager::GlobalViewAnimation()
+{
+  static Handle(AIS_AnimationCamera) THE_CAMERA_ANIM = new AIS_AnimationCamera ("ViewerTest_EventManager_ViewAnimation", Handle(V3d_View)());
+  return THE_CAMERA_ANIM;
+}
+
+//=======================================================================
 //function : ViewerTest_EventManager
 //purpose  :
 //=======================================================================
@@ -35,7 +46,23 @@ ViewerTest_EventManager::ViewerTest_EventManager (const Handle(V3d_View)&       
 : myCtx  (theCtx),
   myView (theView),
   myToPickPnt (Standard_False)
-{}
+{
+  myViewAnimation = GlobalViewAnimation();
+}
+
+//=======================================================================
+//function : ~ViewerTest_EventManager
+//purpose  :
+//=======================================================================
+ViewerTest_EventManager::~ViewerTest_EventManager()
+{
+  if (!myViewAnimation.IsNull()
+    && myViewAnimation->View() == myView)
+  {
+    myViewAnimation->Stop();
+    myViewAnimation->SetView (Handle(V3d_View)());
+  }
+}
 
 //=======================================================================
 //function : UpdateMouseButtons

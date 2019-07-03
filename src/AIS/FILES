@@ -182,4 +182,6 @@ AIS_TypeOfPlane.hxx
 AIS_ViewController.cxx
 AIS_ViewController.hxx
 AIS_ViewInputBuffer.hxx
+AIS_ViewCube.cxx
+AIS_ViewCube.hxx
 AIS_WalkDelta.hxx

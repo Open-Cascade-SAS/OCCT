@@ -25,6 +25,7 @@
 #include <AIS_ListOfInteractive.hxx>
 #include <AIS_ListIteratorOfListOfInteractive.hxx>
 #include <AIS_Manipulator.hxx>
+#include <AIS_ViewCube.hxx>
 #include <AIS_Shape.hxx>
 #include <Aspect_DisplayConnection.hxx>
 #include <Aspect_Grid.hxx>
@@ -13084,6 +13085,258 @@ static int VDumpSelectionImage (Draw_Interpretor& /*theDi*/,
   return 0;
 }
 
+//===============================================================================================
+//function : VViewCube
+//purpose  :
+//===============================================================================================
+static int VViewCube (Draw_Interpretor& ,
+                      Standard_Integer  theNbArgs,
+                      const char**      theArgVec)
+{
+  const Handle(AIS_InteractiveContext)& aContext = ViewerTest::GetAISContext();
+  const Handle(V3d_View)& aView = ViewerTest::CurrentView();
+  if (aContext.IsNull() || aView.IsNull())
+  {
+    std::cout << "Error: no active view.\n";
+    return 1;
+  }
+  else if (theNbArgs < 2)
+  {
+    std::cout << "Syntax error: wrong number arguments\n";
+    return 1;
+  }
+
+  Handle(AIS_ViewCube) aViewCube;
+  ViewerTest_AutoUpdater anUpdateTool (aContext, aView);
+  Quantity_Color aColorRgb;
+  TCollection_AsciiString aName;
+  for (Standard_Integer anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
+  {
+    TCollection_AsciiString anArg (theArgVec[anArgIter]);
+    anArg.LowerCase();
+    if (anUpdateTool.parseRedrawMode (anArg))
+    {
+      //
+    }
+    else if (aViewCube.IsNull())
+    {
+      aName = theArgVec[anArgIter];
+      if (aName.StartsWith ("-"))
+      {
+        std::cout << "Syntax error: object name should be specified.\n";
+        return 1;
+      }
+      Handle(AIS_InteractiveObject) aPrs;
+      GetMapOfAIS().Find2 (aName, aPrs);
+      aViewCube = Handle(AIS_ViewCube)::DownCast (aPrs);
+      if (aViewCube.IsNull())
+      {
+        aViewCube = new AIS_ViewCube();
+        aViewCube->SetBoxColor (Quantity_NOC_GRAY50);
+        aViewCube->SetViewAnimation (ViewerTest::CurrentEventManager()->ViewAnimation());
+        aViewCube->SetFixedAnimationLoop (false);
+      }
+    }
+    else if (anArg == "-reset")
+    {
+      aViewCube->ResetStyles();
+    }
+    else if (anArg == "-color"
+          || anArg == "-boxcolor"
+          || anArg == "-boxsidecolor"
+          || anArg == "-sidecolor"
+          || anArg == "-boxedgecolor"
+          || anArg == "-edgecolor"
+          || anArg == "-boxcornercolor"
+          || anArg == "-cornercolor"
+          || anArg == "-innercolor"
+          || anArg == "-textcolor")
+    {
+      Standard_Integer aNbParsed = ViewerTest::ParseColor (theNbArgs - anArgIter - 1,
+                                                           theArgVec + anArgIter + 1,
+                                                           aColorRgb);
+      if (aNbParsed == 0)
+      {
+        std::cerr << "Error: wrong syntax at '" << anArg << "'\n";
+        return 1;
+      }
+      anArgIter += aNbParsed;
+      if (anArg == "-boxcolor")
+      {
+        aViewCube->SetBoxColor (aColorRgb);
+      }
+      else if (anArg == "-boxsidecolor"
+            || anArg == "-sidecolor")
+      {
+        aViewCube->BoxSideStyle()->SetColor (aColorRgb);
+        aViewCube->SynchronizeAspects();
+      }
+      else if (anArg == "-boxedgecolor"
+            || anArg == "-edgecolor")
+      {
+        aViewCube->BoxEdgeStyle()->SetColor (aColorRgb);
+        aViewCube->SynchronizeAspects();
+      }
+      else if (anArg == "-boxcornercolor"
+            || anArg == "-cornercolor")
+      {
+        aViewCube->BoxCornerStyle()->SetColor (aColorRgb);
+        aViewCube->SynchronizeAspects();
+      }
+      else if (anArg == "-innercolor")
+      {
+        aViewCube->SetInnerColor (aColorRgb);
+      }
+      else if (anArg == "-textcolor")
+      {
+        aViewCube->SetTextColor (aColorRgb);
+      }
+      else
+      {
+        aViewCube->SetColor (aColorRgb);
+      }
+    }
+    else if (anArgIter + 1 < theNbArgs
+          && (anArg == "-transparency"
+           || anArg == "-boxtransparency"))
+    {
+      const Standard_Real aValue = Draw::Atof (theArgVec[++anArgIter]);
+      if (aValue < 0.0 || aValue > 1.0)
+      {
+        std::cout << "Syntax error: invalid transparency value " << theArgVec[anArgIter] << "\n";
+        return 1;
+      }
+
+      if (anArg == "-boxtransparency")
+      {
+        aViewCube->SetBoxTransparency (aValue);
+      }
+      else
+      {
+        aViewCube->SetTransparency (aValue);
+      }
+    }
+    else if (anArg == "-axes"
+          || anArg == "-edges"
+          || anArg == "-vertices"
+          || anArg == "-vertexes"
+          || anArg == "-fixedanimation")
+    {
+      bool toShow = true;
+      if (anArgIter + 1 < theNbArgs
+       && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], toShow))
+      {
+        ++anArgIter;
+      }
+      if (anArg == "-fixedanimation")
+      {
+        aViewCube->SetFixedAnimationLoop (toShow);
+      }
+      else if (anArg == "-axes")
+      {
+        aViewCube->SetDrawAxes (toShow);
+      }
+      else if (anArg == "-edges")
+      {
+        aViewCube->SetDrawEdges (toShow);
+      }
+      else
+      {
+        aViewCube->SetDrawVertices (toShow);
+      }
+    }
+    else if (anArg == "-yup"
+          || anArg == "-zup")
+    {
+      bool isOn = true;
+      if (anArgIter + 1 < theNbArgs
+       && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], isOn))
+      {
+        ++anArgIter;
+      }
+      if (anArg == "-yup")
+      {
+        aViewCube->SetYup (isOn);
+      }
+      else
+      {
+        aViewCube->SetYup (!isOn);
+      }
+    }
+    else if (anArgIter + 1 < theNbArgs
+          && anArg == "-font")
+    {
+      aViewCube->SetFont (theArgVec[++anArgIter]);
+    }
+    else if (anArgIter + 1 < theNbArgs
+          && anArg == "-fontheight")
+    {
+      aViewCube->SetFontHeight (Draw::Atof (theArgVec[++anArgIter]));
+    }
+    else if (anArgIter + 1 < theNbArgs
+          && (anArg == "-size"
+           || anArg == "-boxsize"))
+    {
+      aViewCube->SetSize (Draw::Atof (theArgVec[++anArgIter]),
+                          anArg != "-boxsize");
+    }
+    else if (anArgIter + 1 < theNbArgs
+          && (anArg == "-boxfacet"
+           || anArg == "-boxfacetextension"
+           || anArg == "-facetextension"
+           || anArg == "-extension"))
+    {
+      aViewCube->SetBoxFacetExtension (Draw::Atof (theArgVec[++anArgIter]));
+    }
+    else if (anArgIter + 1 < theNbArgs
+          && (anArg == "-boxedgegap"
+           || anArg == "-edgegap"))
+    {
+      aViewCube->SetBoxEdgeGap (Draw::Atof (theArgVec[++anArgIter]));
+    }
+    else if (anArgIter + 1 < theNbArgs
+          && (anArg == "-boxedgeminsize"
+           || anArg == "-edgeminsize"))
+    {
+      aViewCube->SetBoxEdgeMinSize (Draw::Atof (theArgVec[++anArgIter]));
+    }
+    else if (anArgIter + 1 < theNbArgs
+          && (anArg == "-boxcornerminsize"
+           || anArg == "-cornerminsize"))
+    {
+      aViewCube->SetBoxCornerMinSize (Draw::Atof (theArgVec[++anArgIter]));
+    }
+    else if (anArgIter + 1 < theNbArgs
+          && anArg == "-axespadding")
+    {
+      aViewCube->SetAxesPadding (Draw::Atof (theArgVec[++anArgIter]));
+    }
+    else if (anArgIter + 1 < theNbArgs
+          && anArg == "-roundradius")
+    {
+      aViewCube->SetRoundRadius (Draw::Atof (theArgVec[++anArgIter]));
+    }
+    else if (anArgIter + 1 < theNbArgs
+          && anArg == "-duration")
+    {
+      aViewCube->SetDuration (Draw::Atof (theArgVec[++anArgIter]));
+    }
+    else
+    {
+      std::cout << "Syntax error: unknown argument '" << anArg << "'\n";
+      return 1;
+    }
+  }
+  if (aViewCube.IsNull())
+  {
+    std::cout << "Syntax error: wrong number of arguments\n";
+    return 1;
+  }
+
+  ViewerTest::Display (aName, aViewCube, false);
+  return 0;
+}
+
 //=======================================================================
 //function : ViewerCommands
 //purpose  :
@@ -13880,5 +14133,37 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
                    "\n\t\t:   selMode     color of selection mode"
                    "\n\t\t:   entity      color of etected entity",
                    __FILE__, VDumpSelectionImage, group);
-}
 
+  theCommands.Add ("vviewcube",
+                   "vviewcube name"
+                   "\n\t\t: Displays interactive view manipualtion object."
+                   "\n\t\t: Options: "
+                   "\n\t\t:   -reset                   reset geomertical and visual attributes'"
+                   "\n\t\t:   -size Size               adapted size of View Cube"
+                   "\n\t\t:   -boxSize Size            box size"
+                   "\n\t\t:   -axes {0|1 }             show/hide axes (trihedron)"
+                   "\n\t\t:   -edges {0|1}             show/hide edges of View Cube"
+                   "\n\t\t:   -vertices {0|1}          show/hide vertices of View Cube"
+                   "\n\t\t:   -Yup {0|1} -Zup {0|1}    set Y-up or Z-up view orientation"
+                   "\n\t\t:   -color Color             color of View Cube"
+                   "\n\t\t:   -boxColor Color          box color"
+                   "\n\t\t:   -boxSideColor Color      box sides color"
+                   "\n\t\t:   -boxEdgeColor Color      box edges color"
+                   "\n\t\t:   -boxCornerColor Color    box corner color"
+                   "\n\t\t:   -textColor Color         color of side text of view cube"
+                   "\n\t\t:   -innerColor Color        inner box color"
+                   "\n\t\t:   -transparency Value      transparency of object within [0, 1] range"
+                   "\n\t\t:   -boxTransparency Value   transparency of box    within [0, 1] range"
+                   "\n\t\t:   -font Name               font name"
+                   "\n\t\t:   -fontHeight Value        font height"
+                   "\n\t\t:   -boxFacetExtension Value box facet extension"
+                   "\n\t\t:   -boxEdgeGap Value        gap between box edges and box sides"
+                   "\n\t\t:   -boxEdgeMinSize Value    minimal box edge size"
+                   "\n\t\t:   -boxCornerMinSize Value  minimal box corner size"
+                   "\n\t\t:   -axesPadding Value       padding between box and arrows"
+                   "\n\t\t:   -roundRadius Value       relative radius of corners of sides within [0.0, 0.5] range"
+                   "\n\t\t:   -fixedanimation {0|1}    uninterruptible animation loop"
+                   "\n\t\t:   -duration Seconds        animation duration in seconds",
+    __FILE__, VViewCube, group);
+
+}

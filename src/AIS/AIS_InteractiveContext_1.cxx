@@ -325,6 +325,7 @@ AIS_StatusOfDetection AIS_InteractiveContext::MoveTo (const Standard_Integer  th
   myCurDetected = 0;
   myCurHighlighted = 0;
   myDetectedSeq.Clear();
+  myLastActiveView = theView.get();
 
   // preliminaires
   AIS_StatusOfDetection aStatus        = AIS_SOD_Nothing;
@@ -495,6 +496,7 @@ AIS_StatusOfPick AIS_InteractiveContext::Select (const Standard_Integer  theXPMi
   // all objects detected by the selector are taken, previous current objects are emptied,
   // new objects are put...
   ClearSelected (Standard_False);
+  myLastActiveView = theView.get();
   myMainSel->Pick (theXPMin, theYPMin, theXPMax, theYPMax, theView);
   for (Standard_Integer aPickIter = 1; aPickIter <= myMainSel->NbPicked(); ++aPickIter)
   {
@@ -534,6 +536,7 @@ AIS_StatusOfPick AIS_InteractiveContext::Select (const TColgp_Array1OfPnt2d& the
   // all objects detected by the selector are taken, previous current objects are emptied,
   // new objects are put...
   ClearSelected (Standard_False);
+  myLastActiveView = theView.get();
   myMainSel->Pick (thePolyline, theView);
   for (Standard_Integer aPickIter = 1; aPickIter <= myMainSel->NbPicked(); ++aPickIter)
   {
@@ -565,6 +568,17 @@ AIS_StatusOfPick AIS_InteractiveContext::Select (const Standard_Boolean toUpdate
 {
   if (!myLastPicked.IsNull())
   {
+    Graphic3d_Vec2i aMousePos (-1, -1);
+    if (myMainSel->GetManager().GetActiveSelectionType() == SelectBasics_SelectingVolumeManager::Point)
+    {
+      aMousePos.SetValues ((Standard_Integer )myMainSel->GetManager().GetMousePosition().X(),
+                           (Standard_Integer )myMainSel->GetManager().GetMousePosition().Y());
+    }
+    if (myLastPicked->HandleMouseClick (aMousePos, Aspect_VKeyMouse_LeftButton, Aspect_VKeyFlags_NONE, false))
+    {
+      return AIS_SOP_NothingSelected;
+    }
+
     if (myAutoHilight)
     {
       clearDynamicHighlight();
@@ -630,6 +644,7 @@ AIS_StatusOfPick AIS_InteractiveContext::ShiftSelect (const Standard_Integer the
     throw Standard_ProgramError ("AIS_InteractiveContext::ShiftSelect() - invalid argument");
   }
 
+  myLastActiveView = theView.get();
   if (myAutoHilight)
   {
     UnhilightSelected (Standard_False);
@@ -670,6 +685,7 @@ AIS_StatusOfPick AIS_InteractiveContext::ShiftSelect (const TColgp_Array1OfPnt2d
     throw Standard_ProgramError ("AIS_InteractiveContext::ShiftSelect() - invalid argument");
   }
 
+  myLastActiveView = theView.get();
   if (myAutoHilight)
   {
     UnhilightSelected (Standard_False);

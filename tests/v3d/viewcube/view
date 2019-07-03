@@ -1,0 +1,22 @@
+puts "=================================="
+puts "0028954: Visualization - implement interactive object AIS_ViewCube for camera manipulations"
+puts "Check view affinity"
+puts "=================================="
+
+vclear
+vclose ALL
+vinit View1
+vinit View2
+
+vviewcube vc
+verase vc -view
+
+if {[vreadpixel 100 350 name rgb] != "BLACK"} { puts "Error: hiding Cube in View2 fails." }
+vdump $imagedir/${casename}_v2.png
+
+vactivate View1
+
+if {[vreadpixel 100 350 name rgb] == "BLACK"} { puts "Error: showing Cube in View1 fails." }
+vdump $imagedir/${casename}_v1.png
+
+vactivate View2

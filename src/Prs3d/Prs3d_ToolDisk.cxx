@@ -28,7 +28,9 @@ Prs3d_ToolDisk::Prs3d_ToolDisk (const Standard_Real    theInnerRadius,
                                 const Standard_Integer theNbSlices,
                                 const Standard_Integer theNbStacks)
 : myInnerRadius (theInnerRadius),
-  myOuterRadius (theOuterRadius)
+  myOuterRadius (theOuterRadius),
+  myStartAngle  (0.0),
+  myEndAngle    (M_PI * 2.0)
 {
   mySlicesNb = theNbSlices;
   myStacksNb = theNbStacks;
@@ -40,20 +42,11 @@ Prs3d_ToolDisk::Prs3d_ToolDisk (const Standard_Real    theInnerRadius,
 //=======================================================================
 gp_Pnt Prs3d_ToolDisk::Vertex (const Standard_Real theU, const Standard_Real theV)
 {
-  const Standard_Real aU      = theU * M_PI * 2.0;
+  const Standard_Real aU      = myStartAngle + theU * (myEndAngle - myStartAngle);
   const Standard_Real aRadius = myInnerRadius + (myOuterRadius - myInnerRadius) * theV;
   return gp_Pnt (Cos (aU) * aRadius,
                  Sin (aU) * aRadius,
                  0.0);
-}
-
-//=======================================================================
-//function : Add
-//purpose  :
-//=======================================================================
-gp_Dir Prs3d_ToolDisk::Normal (const Standard_Real /*theU*/, const Standard_Real /*theV*/)
-{
-  return gp_Dir (0.0, 0.0, -1.0);
 }
 
 //=======================================================================

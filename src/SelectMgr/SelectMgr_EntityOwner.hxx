@@ -17,6 +17,7 @@
 #ifndef _SelectMgr_EntityOwner_HeaderFile
 #define _SelectMgr_EntityOwner_HeaderFile
 
+#include <Aspect_VKey.hxx>
 #include <PrsMgr_PresentationManager.hxx>
 #include <SelectMgr_SelectableObject.hxx>
 #include <TopLoc_Location.hxx>
@@ -59,6 +60,22 @@ public:
 
   //! Sets the selectable object.
   virtual void SetSelectable (const Handle(SelectMgr_SelectableObject)& theSelObj) { mySelectable = theSelObj.get(); }
+
+  //! Handle mouse button click event.
+  //! Does nothing by default and returns FALSE.
+  //! @param thePoint      mouse cursor position
+  //! @param theButton     clicked button
+  //! @param theModifiers  key modifiers
+  //! @param theIsDoubleClick flag indicating double mouse click
+  //! @return TRUE if object handled click
+  virtual Standard_Boolean HandleMouseClick (const Graphic3d_Vec2i& thePoint,
+                                             Aspect_VKeyMouse theButton,
+                                             Aspect_VKeyFlags theModifiers,
+                                             bool theIsDoubleClick)
+  {
+    (void )thePoint; (void )theButton; (void )theModifiers; (void )theIsDoubleClick;
+    return Standard_False;
+  }
 
   //! Returns true if the presentation manager highlights selections corresponding to the selection mode.
   virtual Standard_Boolean IsHilighted (const Handle(PrsMgr_PresentationManager)& thePrsMgr,

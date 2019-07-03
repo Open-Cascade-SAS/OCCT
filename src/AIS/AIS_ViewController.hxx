@@ -30,6 +30,7 @@
 #include <Precision.hxx>
 #include <Standard_Mutex.hxx>
 
+class AIS_AnimationCamera;
 class AIS_InteractiveObject;
 class AIS_InteractiveContext;
 class AIS_Point;
@@ -55,6 +56,15 @@ public:
 
   //! Return input buffer.
   AIS_ViewInputBuffer& ChangeInputBuffer (AIS_ViewInputBufferType theType)       { return theType == AIS_ViewInputBufferType_UI ? myUI : myGL; }
+
+  //! Return view animation; empty (but not NULL) animation by default.
+  const Handle(AIS_AnimationCamera)& ViewAnimation() const { return myViewAnimation; }
+
+  //! Set view animation to be handled within handleViewRedraw().
+  void SetViewAnimation (const Handle(AIS_AnimationCamera)& theAnimation) { myViewAnimation = theAnimation; }
+
+  //! Interrupt active view animation.
+  Standard_EXPORT void AbortViewAnimation();
 
 public: //! @name global parameters
 
@@ -596,6 +606,7 @@ protected:
   Standard_ShortReal  myThrustSpeed;              //!< active thrust value
   Standard_Boolean    myHasThrust;                //!< flag indicating active thrust
 
+  Handle(AIS_AnimationCamera) myViewAnimation;    //!< view animation
   Handle(AIS_RubberBand) myRubberBand;            //!< Rubber-band presentation
   Handle(AIS_InteractiveObject) myDragObject;     //!< currently dragged object
   Graphic3d_Vec2i     myPrevMoveTo;               //!< previous position of MoveTo event in 3D viewer

@@ -13,6 +13,7 @@
 
 #include "AIS_ViewController.hxx"
 
+#include <AIS_AnimationCamera.hxx>
 #include <AIS_InteractiveContext.hxx>
 #include <AIS_Manipulator.hxx>
 #include <AIS_Point.hxx>
@@ -53,6 +54,7 @@ AIS_ViewController::AIS_ViewController()
   myThrustSpeed (0.0f),
   myHasThrust (false),
   //
+  myViewAnimation (new AIS_AnimationCamera ("AIS_ViewController_ViewAnimation", Handle(V3d_View)())),
   myPrevMoveTo (-1, -1),
   myHasHlrOnBeforeRotation (false),
   //
@@ -1225,6 +1227,20 @@ AIS_WalkDelta AIS_ViewController::FetchNavigationKeys (Standard_Real theCrouchRa
 }
 
 // =======================================================================
+// function : AbortViewAnimation
+// purpose  :
+// =======================================================================
+void AIS_ViewController::AbortViewAnimation()
+{
+  if (!myViewAnimation.IsNull()
+   && !myViewAnimation->IsStopped())
+  {
+    myViewAnimation->Stop();
+    myViewAnimation->SetView (Handle(V3d_View)());
+  }
+}
+
+// =======================================================================
 // function : handlePanning
 // purpose  :
 // =======================================================================
@@ -1235,6 +1251,8 @@ void AIS_ViewController::handlePanning (const Handle(V3d_View)& theView)
   {
     return;
   }
+
+  AbortViewAnimation();
 
   const Handle(Graphic3d_Camera)& aCam = theView->Camera();
   if (aCam->IsOrthographic()
@@ -1276,6 +1294,8 @@ void AIS_ViewController::handleZRotate (const Handle(V3d_View)& theView)
     return;
   }
 
+  AbortViewAnimation();
+
   Graphic3d_Vec2i aViewPort;
   theView->Window()->Size (aViewPort.x(), aViewPort.y());
   Graphic3d_Vec2d aRotPnt (0.99 * aViewPort.x(),
@@ -1298,6 +1318,8 @@ void AIS_ViewController::handleZoom (const Handle(V3d_View)& theView,
   {
     return;
   }
+
+  AbortViewAnimation();
 
   const Handle(Graphic3d_Camera)& aCam = theView->Camera();
   if (thePnt != NULL)
@@ -1450,6 +1472,7 @@ void AIS_ViewController::handleOrbitRotation (const Handle(V3d_View)& theView,
     return;
   }
 
+  AbortViewAnimation();
   if (theToLockZUp)
   {
     // amend camera to exclude roll angle (put camera Up vector to plane containing global Z and view direction)
@@ -1560,6 +1583,8 @@ void AIS_ViewController::handleViewRotation (const Handle(V3d_View)& theView,
   {
     return;
   }
+
+  AbortViewAnimation();
 
   Graphic3d_Vec2i aWinXY;
   theView->Window()->Size (aWinXY.x(), aWinXY.y());
@@ -2035,11 +2060,6 @@ void AIS_ViewController::handleSelectionPick (const Handle(AIS_InteractiveContex
   {
     for (NCollection_Sequence<Graphic3d_Vec2i>::Iterator aPntIter (myGL.Selection.Points); aPntIter.More(); aPntIter.Next())
     {
-      if (!myGL.Selection.IsXOR)
-      {
-        theCtx->ClearSelected (false);
-      }
-
       const bool hadPrevMoveTo = HasPreviousMoveTo();
       contextLazyMoveTo (theCtx, theView, aPntIter.Value());
       if (!hadPrevMoveTo)
@@ -2274,6 +2294,15 @@ void AIS_ViewController::handleMoveTo (const Handle(AIS_InteractiveContext)& the
 void AIS_ViewController::handleViewRedraw (const Handle(AIS_InteractiveContext)& ,
                                            const Handle(V3d_View)& theView)
 {
+  // manage animation state
+  if (!myViewAnimation.IsNull()
+   && !myViewAnimation->IsStopped())
+  {
+    myViewAnimation->UpdateTimer();
+    ResetPreviousMoveTo();
+    setAskNextFrame();
+  }
+
   for (V3d_ListOfViewIterator aViewIter (theView->Viewer()->ActiveViewIterator()); aViewIter.More(); aViewIter.Next())
   {
     const Handle(V3d_View)& aView = aViewIter.Value();

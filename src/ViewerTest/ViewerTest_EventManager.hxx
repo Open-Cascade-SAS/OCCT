@@ -47,11 +47,17 @@ public:
     return Draw_ToExitOnCloseView;
   }
 
+  //! Use global camera animation object shared across all Views in ViewerTest.
+  Standard_EXPORT static const Handle(AIS_AnimationCamera)& GlobalViewAnimation();
+
 public:
 
   //! Main constructor.
   Standard_EXPORT ViewerTest_EventManager(const Handle(V3d_View)& aView, const Handle(AIS_InteractiveContext)& aCtx);
-  
+
+  //! Destructor.
+  Standard_EXPORT virtual ~ViewerTest_EventManager();
+
   //! Return interactive context.
   const Handle(AIS_InteractiveContext)& Context() const { return myCtx; }
 

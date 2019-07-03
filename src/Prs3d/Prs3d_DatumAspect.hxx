@@ -43,14 +43,23 @@ public:
   //! Returns the right-handed coordinate system set in SetComponent.
   Standard_EXPORT Handle(Prs3d_ShadingAspect) ShadingAspect (Prs3d_DatumParts thePart) const;
 
-  //! Returns the right-handed coordinate system set in SetComponent.
+  //! Returns the text attributes for rendering labels.
   const Handle(Prs3d_TextAspect)& TextAspect() const { return myTextAspect; }
+
+  //! Sets text attributes for rendering labels.
+  void SetTextAspect (const Handle(Prs3d_TextAspect)& theTextAspect) { myTextAspect = theTextAspect; }
 
   //! Returns the point aspect of origin wireframe presentation
   const Handle(Prs3d_PointAspect)& PointAspect() const { return myPointAspect; }
 
+  //! Returns the point aspect of origin wireframe presentation
+  void SetPointAspect (const Handle(Prs3d_PointAspect)& theAspect) { myPointAspect = theAspect; }
+
   //! Returns the arrow aspect of presentation
   const Handle(Prs3d_ArrowAspect)& ArrowAspect() const { return myArrowAspect; }
+
+  //! Sets the arrow aspect of presentation
+  void SetArrowAspect (const Handle(Prs3d_ArrowAspect)& theAspect) { myArrowAspect = theAspect; }
 
   //! Returns the attributes for display of the first axis.
   Standard_DEPRECATED("This method is deprecated - LineAspect() should be called instead")

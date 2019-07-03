@@ -33,6 +33,9 @@ public:
   //! Return the target view.
   const Handle(V3d_View)& View() const { return myView; }
 
+  //! Set target view.
+  void SetView (const Handle(V3d_View)& theView) { myView = theView; }
+
   //! Return camera start position.
   const Handle(Graphic3d_Camera)& CameraStart() const { return myCamStart; }
 

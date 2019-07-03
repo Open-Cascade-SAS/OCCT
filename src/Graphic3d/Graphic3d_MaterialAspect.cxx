@@ -462,6 +462,15 @@ RawMaterial::RawMaterial (Graphic3d_NameOfMaterial theName, const char* theStrin
       Colors[Graphic3d_TOR_SPECULAR] = Quantity_Color (Graphic3d_Vec3 (0.970f, 0.970f, 0.970f));
       break;
     case Graphic3d_NOM_UserDefined:
+      MaterialType = Graphic3d_MATERIAL_PHYSIC;
+      ColorCoef[Graphic3d_TOR_AMBIENT]  = 1.00f;
+      ColorCoef[Graphic3d_TOR_DIFFUSE]  = 1.00f;
+      ColorCoef[Graphic3d_TOR_SPECULAR] = 1.00f;
+      ColorCoef[Graphic3d_TOR_EMISSION] = 1.00f;
+      Colors[Graphic3d_TOR_AMBIENT]  = Quantity_Color (Graphic3d_Vec3 (0.1f, 0.1f, 0.1f));
+      Colors[Graphic3d_TOR_DIFFUSE]  = Quantity_Color (Graphic3d_Vec3 (0.8f, 0.8f, 0.8f));
+      Colors[Graphic3d_TOR_SPECULAR] = Quantity_Color (Graphic3d_Vec3 (0.2f, 0.2f, 0.2f));
+      Colors[Graphic3d_TOR_EMISSION] = Quantity_Color (Graphic3d_Vec3 (0.0f, 0.0f, 0.0f));
       break;
     case Graphic3d_NOM_DEFAULT:
       break;

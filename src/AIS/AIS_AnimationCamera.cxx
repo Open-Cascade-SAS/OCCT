@@ -48,7 +48,7 @@ void AIS_AnimationCamera::update (const AIS_AnimationProgress& theProgress)
   Handle(Graphic3d_Camera) aCamera = myView->Camera();
 
   Graphic3d_CameraLerp aCamLerp (myCamStart, myCamEnd);
-  aCamLerp.Interpolate (theProgress.LocalNormalized, aCamera);
+  aCamLerp.Interpolate (HasOwnDuration() ? theProgress.LocalNormalized : 1.0, aCamera);
 
   const Standard_Boolean aPrevImmUpdate = myView->SetImmediateUpdate (Standard_False);
   myView->SetCamera (aCamera);

@@ -188,6 +188,29 @@ AIS_InteractiveContext::~AIS_InteractiveContext()
 }
 
 //=======================================================================
+//function : LastActiveView
+//purpose  :
+//=======================================================================
+Handle(V3d_View) AIS_InteractiveContext::LastActiveView() const
+{
+  if (myLastActiveView == NULL
+   || myMainVwr.IsNull())
+  {
+    return Handle(V3d_View)();
+  }
+
+  // as a precaution - check that myLastActiveView pointer is a valid active View
+  for (V3d_ListOfViewIterator aViewIter = myMainVwr->ActiveViewIterator(); aViewIter.More(); aViewIter.Next())
+  {
+    if (aViewIter.Value() == myLastActiveView)
+    {
+      return aViewIter.Value();
+    }
+  }
+  return Handle(V3d_View)();
+}
+
+//=======================================================================
 //function : UpdateCurrentViewer
 //purpose  : 
 //=======================================================================
@@ -2447,12 +2470,10 @@ void AIS_InteractiveContext::FitSelected (const Handle(V3d_View)& theView)
 }
 
 //=======================================================================
-//function : FitSelected
-//purpose  : Fits the view corresponding to the bounds of selected objects
+//function : BoundingBoxOfSelection
+//purpose  :
 //=======================================================================
-void AIS_InteractiveContext::FitSelected (const Handle(V3d_View)& theView,
-                                          const Standard_Real theMargin,
-                                          const Standard_Boolean theToUpdate)
+Bnd_Box AIS_InteractiveContext::BoundingBoxOfSelection() const
 {
   Bnd_Box aBndSelected;
   AIS_MapOfObjectOwners anObjectOwnerMap;
@@ -2491,12 +2512,22 @@ void AIS_InteractiveContext::FitSelected (const Handle(V3d_View)& theView,
     aBndSelected.Add (aTmpBox);
   }
 
-  anObjectOwnerMap.Clear();
+  return aBndSelected;
+}
 
-  if (aBndSelected.IsVoid())
-    return;
-
-  theView->FitAll (aBndSelected, theMargin, theToUpdate);
+//=======================================================================
+//function : FitSelected
+//purpose  : Fits the view corresponding to the bounds of selected objects
+//=======================================================================
+void AIS_InteractiveContext::FitSelected (const Handle(V3d_View)& theView,
+                                          const Standard_Real theMargin,
+                                          const Standard_Boolean theToUpdate)
+{
+  Bnd_Box aBndSelected = BoundingBoxOfSelection();
+  if (!aBndSelected.IsVoid())
+  {
+    theView->FitAll (aBndSelected, theMargin, theToUpdate);
+  }
 }
 
 //=======================================================================
