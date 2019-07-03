@@ -35,13 +35,13 @@ namespace
   template<class RangeSplitter>
   struct NodeInsertionMeshAlgo
   {
-    typedef BRepMesh_DelaunayNodeInsertionMeshAlgo<RangeSplitter> Type;
+    typedef BRepMesh_DelaunayNodeInsertionMeshAlgo<RangeSplitter, BRepMesh_DelaunayBaseMeshAlgo> Type;
   };
 
   template<class RangeSplitter>
   struct DeflectionControlMeshAlgo
   {
-    typedef BRepMesh_DelaunayDeflectionControlMeshAlgo<RangeSplitter> Type;
+    typedef BRepMesh_DelaunayDeflectionControlMeshAlgo<RangeSplitter, BRepMesh_DelaunayBaseMeshAlgo> Type;
   };
 }
 
@@ -82,7 +82,9 @@ Handle(IMeshTools_MeshAlgo) BRepMesh_MeshAlgoFactory::GetAlgo(
     break;
 
   case GeomAbs_Cylinder:
-    return new NodeInsertionMeshAlgo<BRepMesh_CylinderRangeSplitter>::Type;
+    return theParameters.InternalVerticesMode ?
+      new NodeInsertionMeshAlgo<BRepMesh_CylinderRangeSplitter>::Type :
+      new BaseMeshAlgo::Type;
     break;
 
   case GeomAbs_Cone:

@@ -83,6 +83,12 @@ public:
     myFaceMax = theMax;
   }
 
+  //! Retruns true if cell filter contains no circle.
+  inline Standard_Boolean IsEmpty () const
+  {
+    return mySelector.Circles ().IsEmpty ();
+  }
+
   //! Binds the circle to the tool.
   //! @param theIndex index a circle should be bound with.
   //! @param theCircle circle to be bound.

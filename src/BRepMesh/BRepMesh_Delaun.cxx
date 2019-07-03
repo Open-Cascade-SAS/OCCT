@@ -80,6 +80,25 @@ namespace {
 
 //=======================================================================
 //function : BRepMesh_Delaun
+//purpose  : 
+//=======================================================================
+BRepMesh_Delaun::BRepMesh_Delaun (
+  const Handle(BRepMesh_DataStructureOfDelaun)& theOldMesh,
+  const Standard_Integer                        theCellsCountU,
+  const Standard_Integer                        theCellsCountV,
+  const Standard_Boolean                        isFillCircles)
+: myMeshData ( theOldMesh ),
+  myCircles (new NCollection_IncAllocator(
+             IMeshData::MEMORY_BLOCK_SIZE_HUGE))
+{
+  if (isFillCircles)
+  {
+    InitCirclesTool (theCellsCountU, theCellsCountV);
+  }
+}
+
+//=======================================================================
+//function : BRepMesh_Delaun
 //purpose  : Creates the triangulation with an empty Mesh data structure
 //=======================================================================
 BRepMesh_Delaun::BRepMesh_Delaun(IMeshData::Array1OfVertexOfDelaun& theVertices)
@@ -103,7 +122,8 @@ BRepMesh_Delaun::BRepMesh_Delaun(
   const Handle(BRepMesh_DataStructureOfDelaun)& theOldMesh,
   IMeshData::Array1OfVertexOfDelaun&            theVertices)
 : myMeshData( theOldMesh ),
-  myCircles ( theVertices.Length(), theOldMesh->Allocator() )
+  myCircles ( theVertices.Length(), new NCollection_IncAllocator(
+             IMeshData::MEMORY_BLOCK_SIZE_HUGE))
 {
   if ( theVertices.Length() > 2 )
   {
@@ -119,7 +139,8 @@ BRepMesh_Delaun::BRepMesh_Delaun(
   const Handle(BRepMesh_DataStructureOfDelaun)& theOldMesh,
   IMeshData::VectorOfInteger&                   theVertexIndices)
 : myMeshData( theOldMesh ),
-  myCircles ( theVertexIndices.Length(), theOldMesh->Allocator() )
+  myCircles ( theVertexIndices.Length(), new NCollection_IncAllocator(
+             IMeshData::MEMORY_BLOCK_SIZE_HUGE))
 {
   perform(theVertexIndices);
 }
@@ -133,7 +154,8 @@ BRepMesh_Delaun::BRepMesh_Delaun (const Handle (BRepMesh_DataStructureOfDelaun)&
                                   const Standard_Integer                         theCellsCountU,
                                   const Standard_Integer                         theCellsCountV)
 : myMeshData (theOldMesh),
-  myCircles (theVertexIndices.Length (), theOldMesh->Allocator ())
+  myCircles (theVertexIndices.Length (), new NCollection_IncAllocator(
+             IMeshData::MEMORY_BLOCK_SIZE_HUGE))
 {
   perform (theVertexIndices, theCellsCountU, theCellsCountV);
 }
@@ -155,6 +177,63 @@ void BRepMesh_Delaun::Init(IMeshData::Array1OfVertexOfDelaun& theVertices)
   }
 
   perform( aVertexIndexes );
+}
+
+//=======================================================================
+//function : InitCirclesTool
+//purpose  : 
+//=======================================================================
+void BRepMesh_Delaun::InitCirclesTool (const Standard_Integer theCellsCountU,
+                                       const Standard_Integer theCellsCountV)
+{
+  Bnd_Box2d aBox;
+  for (Standard_Integer aNodeIt = 1; aNodeIt <= myMeshData->NbNodes(); ++aNodeIt)
+  {
+    aBox.Add (gp_Pnt2d (GetVertex (aNodeIt).Coord ()));
+  }
+  aBox.Enlarge (Precision);
+
+  initCirclesTool (aBox, theCellsCountU, theCellsCountV);
+
+  IMeshData::IteratorOfMapOfInteger aTriangleIt (myMeshData->ElementsOfDomain());
+  for (; aTriangleIt.More(); aTriangleIt.Next())
+  {
+    Standard_Integer aNodesIndices[3];
+    const BRepMesh_Triangle& aTriangle = myMeshData->GetElement (aTriangleIt.Key());
+    myMeshData->ElementNodes (aTriangle, aNodesIndices);
+    myCircles.Bind (aTriangleIt.Key(),
+                    GetVertex( aNodesIndices[0] ).Coord(), 
+                    GetVertex( aNodesIndices[1] ).Coord(),
+                    GetVertex( aNodesIndices[2] ).Coord());
+  }
+}
+
+//=======================================================================
+//function : initCirclesTool
+//purpose  : 
+//=======================================================================
+void BRepMesh_Delaun::initCirclesTool (const Bnd_Box2d&       theBox,
+                                       const Standard_Integer theCellsCountU,
+                                       const Standard_Integer theCellsCountV)
+{
+  Standard_Real aMinX, aMinY, aMaxX, aMaxY;
+  theBox.Get  ( aMinX, aMinY, aMaxX, aMaxY );
+  const Standard_Real aDeltaX = aMaxX - aMinX;
+  const Standard_Real aDeltaY = aMaxY - aMinY;
+
+  Standard_Integer aScaler = 2;
+  if ( myMeshData->NbNodes() > 100 )
+  {
+    aScaler = 5;
+  }
+  else if( myMeshData->NbNodes() > 1000 )
+  {
+    aScaler = 7;
+  }
+
+  myCircles.SetMinMaxSize( gp_XY( aMinX, aMinY ), gp_XY( aMaxX, aMaxY ) );
+  myCircles.SetCellSize  ( aDeltaX / Max (theCellsCountU, aScaler),
+                           aDeltaY / Max (theCellsCountV, aScaler));
 }
 
 //=======================================================================
@@ -180,18 +259,8 @@ void BRepMesh_Delaun::perform(IMeshData::VectorOfInteger& theVertexIndices,
 
   aBox.Enlarge (Precision);
 
-  Standard_Integer aScaler = 2;
-  if ( myMeshData->NbNodes() > 100 )
-  {
-    aScaler = 5;
-  }
-  else if( myMeshData->NbNodes() > 1000 )
-  {
-    aScaler = 7;
-  }
-
-  superMesh (aBox, Max (theCellsCountU, aScaler),
-                   Max (theCellsCountV, aScaler));
+  initCirclesTool (aBox, theCellsCountU, theCellsCountV);
+  superMesh       (aBox);
 
   ComparatorOfIndexedVertexOfDelaun aCmp(myMeshData);
   std::make_heap(theVertexIndices.begin(), theVertexIndices.end(), aCmp);
@@ -204,9 +273,7 @@ void BRepMesh_Delaun::perform(IMeshData::VectorOfInteger& theVertexIndices,
 //function : superMesh
 //purpose  : Build the super mesh
 //=======================================================================
-void BRepMesh_Delaun::superMesh(const Bnd_Box2d&       theBox,
-                                const Standard_Integer theCellsCountU,
-                                const Standard_Integer theCellsCountV)
+void BRepMesh_Delaun::superMesh(const Bnd_Box2d& theBox)
 {
   Standard_Real aMinX, aMinY, aMaxX, aMaxY;
   theBox.Get  ( aMinX, aMinY, aMaxX, aMaxY );
@@ -216,9 +283,6 @@ void BRepMesh_Delaun::superMesh(const Bnd_Box2d&       theBox,
   Standard_Real aDeltaMin = Min( aDeltaX, aDeltaY );
   Standard_Real aDeltaMax = Max( aDeltaX, aDeltaY );
   Standard_Real aDelta    = aDeltaX + aDeltaY;
-
-  myCircles.SetMinMaxSize( gp_XY( aMinX, aMinY ), gp_XY( aMaxX, aMaxY ) );
-  myCircles.SetCellSize( aDeltaX / theCellsCountU, aDeltaY / theCellsCountV);
 
   mySupVert[0] = myMeshData->AddNode(
     BRepMesh_Vertex( ( aMinX + aMaxX ) / 2, aMaxY + aDeltaMax, BRepMesh_Free ) );
@@ -254,7 +318,10 @@ void BRepMesh_Delaun::superMesh(const Bnd_Box2d&       theBox,
 void BRepMesh_Delaun::deleteTriangle(const Standard_Integer          theIndex, 
                                      IMeshData::MapOfIntegerInteger& theLoopEdges )
 {
-  myCircles.Delete( theIndex );
+  if (!myCircles.IsEmpty())
+  {
+    myCircles.Delete (theIndex);
+  }
 
   const BRepMesh_Triangle& aElement = GetTriangle(theIndex);
   const Standard_Integer(&e)[3] = aElement.myEdges;
@@ -279,8 +346,11 @@ void BRepMesh_Delaun::deleteTriangle(const Standard_Integer          theIndex,
 //=======================================================================
 void BRepMesh_Delaun::compute(IMeshData::VectorOfInteger& theVertexIndexes)
 {
-  // Insertion of edges of super triangles in the list of free edges: 
-  IMeshData::MapOfIntegerInteger aLoopEdges(10, myMeshData->Allocator());
+  // Insertion of edges of super triangles in the list of free edges:
+  Handle(NCollection_IncAllocator) aAllocator = new NCollection_IncAllocator(
+    IMeshData::MEMORY_BLOCK_SIZE_HUGE);
+
+  IMeshData::MapOfIntegerInteger aLoopEdges(10, aAllocator);
   const Standard_Integer(&e)[3] = mySupTrian.myEdges;
                     
   aLoopEdges.Bind( e[0], Standard_True );
@@ -531,10 +601,7 @@ void BRepMesh_Delaun::createTrianglesOnNewVertices(
     }
   }
 
-  insertInternalEdges();
-
-  // Adjustment of meshes to boundary edges
-  frontierAdjust();
+  ProcessConstraints();
 }
 
 //=======================================================================

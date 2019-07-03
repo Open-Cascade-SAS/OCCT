@@ -1,5 +1,5 @@
-// Created on: 2016-07-07
-// Copyright (c) 2016 OPEN CASCADE SAS
+// Created on: 2019-07-08
+// Copyright (c) 2019 OPEN CASCADE SAS
 // Created by: Oleg AGASHIN
 //
 // This file is part of Open CASCADE Technology software library.
@@ -13,10 +13,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _BRepMesh_DelaunayBaseMeshAlgo_HeaderFile
-#define _BRepMesh_DelaunayBaseMeshAlgo_HeaderFile
+#ifndef _BRepMesh_ConstrainedBaseMeshAlgo_HeaderFile
+#define _BRepMesh_ConstrainedBaseMeshAlgo_HeaderFile
 
-#include <BRepMesh_ConstrainedBaseMeshAlgo.hxx>
+#include <BRepMesh_BaseMeshAlgo.hxx>
 #include <NCollection_Shared.hxx>
 #include <IMeshTools_Parameters.hxx>
 
@@ -25,22 +25,36 @@ class BRepMesh_Delaun;
 
 //! Class provides base fuctionality to build face triangulation using Dealunay approach.
 //! Performs generation of mesh using raw data from model.
-class BRepMesh_DelaunayBaseMeshAlgo : public BRepMesh_ConstrainedBaseMeshAlgo
+class BRepMesh_ConstrainedBaseMeshAlgo : public BRepMesh_BaseMeshAlgo
 {
 public:
 
   //! Constructor.
-  Standard_EXPORT BRepMesh_DelaunayBaseMeshAlgo();
+  BRepMesh_ConstrainedBaseMeshAlgo ()
+  {
+  }
 
   //! Destructor.
-  Standard_EXPORT virtual ~BRepMesh_DelaunayBaseMeshAlgo();
+  virtual ~BRepMesh_ConstrainedBaseMeshAlgo ()
+  {
+  }
 
-  DEFINE_STANDARD_RTTI_INLINE(BRepMesh_DelaunayBaseMeshAlgo, BRepMesh_ConstrainedBaseMeshAlgo)
+  DEFINE_STANDARD_RTTI_INLINE(BRepMesh_ConstrainedBaseMeshAlgo, BRepMesh_BaseMeshAlgo)
 
 protected:
 
-  //! Generates mesh for the contour stored in data structure.
-  Standard_EXPORT virtual void generateMesh() Standard_OVERRIDE;
+  //! Returns size of cell to be used by acceleration circles grid structure.
+  virtual std::pair<Standard_Integer, Standard_Integer> getCellsCount (const Standard_Integer /*theVerticesNb*/)
+  {
+    return std::pair<Standard_Integer, Standard_Integer> (-1, -1);
+  }
+
+  //! Perfroms processing of generated mesh.
+  //! By default does nothing.
+  //! Expected to be called from method generateMesh() in successor classes.
+  virtual void postProcessMesh (BRepMesh_Delaun& /*theMesher*/)
+  {
+  }
 };
 
 #endif

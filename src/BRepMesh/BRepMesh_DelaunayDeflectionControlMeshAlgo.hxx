@@ -22,12 +22,12 @@
 
 //! Extends node insertion Delaunay meshing algo in order to control 
 //! deflection of generated trianges. Splits triangles failing the check.
-template<class RangeSplitter>
-class BRepMesh_DelaunayDeflectionControlMeshAlgo : public BRepMesh_DelaunayNodeInsertionMeshAlgo<RangeSplitter>
+template<class RangeSplitter, class BaseAlgo>
+class BRepMesh_DelaunayDeflectionControlMeshAlgo : public BRepMesh_DelaunayNodeInsertionMeshAlgo<RangeSplitter, BaseAlgo>
 {
 private:
   // Typedef for OCCT RTTI
-  typedef BRepMesh_DelaunayNodeInsertionMeshAlgo<RangeSplitter> DelaunayInsertionBaseClass;
+  typedef BRepMesh_DelaunayNodeInsertionMeshAlgo<RangeSplitter, BaseAlgo> DelaunayInsertionBaseClass;
 
 public:
 

@@ -16,6 +16,7 @@
 
 #include <BRepMesh_DiscretRoot.hxx>
 #include <IMeshTools_Parameters.hxx>
+#include <IMeshTools_Context.hxx>
 
 //! Builds the mesh of a shape with respect of their 
 //! correctly triangulated parts 
@@ -51,8 +52,11 @@ public: //! @name mesher API
   Standard_EXPORT BRepMesh_IncrementalMesh(const TopoDS_Shape&          theShape,
                                            const IMeshTools_Parameters& theParameters);
 
-//! Performs meshing ot the shape.
+  //! Performs meshing ot the shape.
   Standard_EXPORT virtual void Perform() Standard_OVERRIDE;
+
+  //! Performs meshing using custom context;
+  Standard_EXPORT void Perform(const Handle(IMeshTools_Context)& theContext);
   
 public: //! @name accessing to parameters.
 

@@ -41,6 +41,12 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
+  //! Creates instance of triangulator, but do not run the algorithm automatically.
+  Standard_EXPORT BRepMesh_Delaun (const Handle(BRepMesh_DataStructureOfDelaun)& theOldMesh,
+                                   const Standard_Integer                        theCellsCountU,
+                                   const Standard_Integer                        theCellsCountV,
+                                   const Standard_Boolean                        isFillCircles);
+
   //! Creates the triangulation with an empty Mesh data structure.
   Standard_EXPORT BRepMesh_Delaun (IMeshData::Array1OfVertexOfDelaun& theVertices);
 
@@ -61,6 +67,10 @@ public:
   //! Initializes the triangulation with an array of vertices.
   Standard_EXPORT void Init (IMeshData::Array1OfVertexOfDelaun& theVertices);
 
+  //! Forces initialization of circles cell filter using working structure.
+  Standard_EXPORT void InitCirclesTool (const Standard_Integer theCellsCountU,
+                                        const Standard_Integer theCellsCountV);
+
   //! Removes a vertex from the triangulation.
   Standard_EXPORT void RemoveVertex (const BRepMesh_Vertex& theVertex);
 
@@ -75,6 +85,15 @@ public:
   inline const Handle(BRepMesh_DataStructureOfDelaun)& Result() const
   {
     return myMeshData;
+  }
+
+  //! Forces insertion of constraint edges into the base triangulation. 
+  inline void ProcessConstraints()
+  {
+    insertInternalEdges();
+
+    // Adjustment of meshes to boundary edges
+    frontierAdjust();
   }
 
   //! Gives the list of frontier edges.
@@ -139,6 +158,11 @@ private:
 
   typedef NCollection_DataMap<Standard_Integer, IMeshData::MapOfInteger> DataMapOfMap;
 
+  //! Performs initialization of circles cell filter tool.
+  void initCirclesTool (const Bnd_Box2d&       theBox,
+                        const Standard_Integer theCellsCountU,
+                        const Standard_Integer theCellsCountV);
+
   //! Add boundig box for edge defined by start & end point to
   //! the given vector of bounding boxes for triangulation edges.
   void fillBndBox (IMeshData::SequenceOfBndB2d&  theBoxes,
@@ -156,9 +180,7 @@ private:
                 const Standard_Integer      theCellsCountV = -1);
 
   //! Build the super mesh.
-  void superMesh (const Bnd_Box2d&       theBox,
-                  const Standard_Integer theCellsCountU,
-                  const Standard_Integer theCellsCountV);
+  void superMesh (const Bnd_Box2d& theBox);
 
   //! Computes the triangulation and adds the vertices,
   //! edges and triangles to the Mesh data structure.

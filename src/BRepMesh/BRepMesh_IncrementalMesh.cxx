@@ -87,18 +87,27 @@ BRepMesh_IncrementalMesh::~BRepMesh_IncrementalMesh()
 //=======================================================================
 void BRepMesh_IncrementalMesh::Perform()
 {
+  Handle(BRepMesh_Context) aContext = new BRepMesh_Context;
+  Perform (aContext);
+}
+
+//=======================================================================
+//function : Perform
+//purpose  : 
+//=======================================================================
+void BRepMesh_IncrementalMesh::Perform(const Handle(IMeshTools_Context)& theContext)
+{
   initParameters();
 
-  Handle(BRepMesh_Context) aContext = new BRepMesh_Context;
-  aContext->SetShape(Shape());
-  aContext->ChangeParameters()            = myParameters;
-  aContext->ChangeParameters().CleanModel = Standard_False;
+  theContext->SetShape(Shape());
+  theContext->ChangeParameters()            = myParameters;
+  theContext->ChangeParameters().CleanModel = Standard_False;
 
-  IMeshTools_MeshBuilder aIncMesh(aContext);
+  IMeshTools_MeshBuilder aIncMesh(theContext);
   aIncMesh.Perform();
 
   myStatus = IMeshData_NoError;
-  const Handle(IMeshData_Model)& aModel = aContext->GetModel();
+  const Handle(IMeshData_Model)& aModel = theContext->GetModel();
   for (Standard_Integer aFaceIt = 0; aFaceIt < aModel->FacesNb(); ++aFaceIt)
   {
     const IMeshData::IFaceHandle& aDFace = aModel->GetFace(aFaceIt);

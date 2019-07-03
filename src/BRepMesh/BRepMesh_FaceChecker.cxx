@@ -96,8 +96,6 @@ namespace
 
   //! Selector.
   //! Used to identify segments with overlapped bounding boxes.
-  //! Selector.
-  //! Used to identify segments with overlapped bounding boxes.
   class BndBox2dTreeSelector : public IMeshData::BndBox2dTree::Selector
   {
   public:
