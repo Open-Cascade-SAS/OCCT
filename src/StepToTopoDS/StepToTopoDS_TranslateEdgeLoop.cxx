@@ -238,7 +238,6 @@ void StepToTopoDS_TranslateEdgeLoop::Init(const Handle(StepShape_FaceBound)& Fac
 
   Standard_Boolean isSeam, isLikeSeam;
 
-  Handle(StepShape_Edge)         StepEdge, StepEdge1;
   Handle(StepShape_OrientedEdge) OrEdge1, OrEdge2;
   Handle(StepGeom_Curve) StepCurve, StepCurve1, StepCurve2;
   Handle(StepRepr_DefinitionalRepresentation) DRI, Dri1, Dri2;
@@ -284,10 +283,18 @@ void StepToTopoDS_TranslateEdgeLoop::Init(const Handle(StepShape_FaceBound)& Fac
 
   for (j=1; j<=NbEdge; j++) {
     OrEdge1  = EL->EdgeListValue(j);
-    StepEdge = OrEdge1->EdgeElement();
-    //    if(j>1 && StepEdge == StepEdge1) theSame++; //gka 15.12.98
-    StepEdge1 = StepEdge;                         //
-    Handle(StepShape_EdgeCurve) EC = Handle(StepShape_EdgeCurve)::DownCast(StepEdge);
+
+    // see bug #29979: oriented edge contains another oriented edge
+    if (OrEdge1->EdgeElement()->IsKind (STANDARD_TYPE(StepShape_OrientedEdge)))
+      OrEdge1 = Handle(StepShape_OrientedEdge)::DownCast (OrEdge1->EdgeElement());
+
+    Handle(StepShape_EdgeCurve) EC = Handle(StepShape_EdgeCurve)::DownCast(OrEdge1->EdgeElement());
+    if (EC.IsNull())
+    {
+      TP->AddWarning (OrEdge1, "Edge does not contain EDGE_CURVE, skipped");
+      continue;
+    }
+
     Handle(StepGeom_Curve) C = EC->EdgeGeometry();
     if (!C.IsNull()) {
       if (C->IsKind(STANDARD_TYPE(StepGeom_SurfaceCurve))) {
@@ -366,6 +373,10 @@ void StepToTopoDS_TranslateEdgeLoop::Init(const Handle(StepShape_FaceBound)& Fac
       Handle(StepShape_EdgeCurve)::DownCast (OrEdge1->EdgeElement());
     Handle(StepShape_EdgeCurve) EC2 =
       Handle(StepShape_EdgeCurve)::DownCast (OrEdge2->EdgeElement());
+    if (EC1.IsNull() || EC2.IsNull()) // see #29979
+    {
+      continue;
+    }
 
     Handle(StepShape_Vertex) Vs1, Vs2, Vs11, Vs22;
     Vs1 = (OrEdge1->Orientation() ? EC1->EdgeEnd() : EC1->EdgeStart());
@@ -413,8 +424,16 @@ void StepToTopoDS_TranslateEdgeLoop::Init(const Handle(StepShape_FaceBound)& Fac
 #endif
 
     OrEdge1  = EL->EdgeListValue(j);
-    StepEdge = OrEdge1->EdgeElement();
-    Handle(StepShape_EdgeCurve) EC = Handle(StepShape_EdgeCurve)::DownCast(StepEdge);
+
+    // see bug #29979: oriented edge contains another oriented edge
+    if (OrEdge1->EdgeElement()->IsKind (STANDARD_TYPE(StepShape_OrientedEdge)))
+      OrEdge1 = Handle(StepShape_OrientedEdge)::DownCast (OrEdge1->EdgeElement());
+
+    Handle(StepShape_EdgeCurve) EC = Handle(StepShape_EdgeCurve)::DownCast(OrEdge1->EdgeElement());
+    if (EC.IsNull())
+    {
+      continue;
+    }
 
     // ----------------
     // Map the StepEdge
@@ -491,9 +510,9 @@ void StepToTopoDS_TranslateEdgeLoop::Init(const Handle(StepShape_FaceBound)& Fac
         // ---        or is like a seam curve      ---
         // ---         (see CATIA cylinder)        ---
         // -------------------------------------------
-        isLikeSeam = StepToTopoDS_GeometricTool::IsLikeSeam(SurfCurve, StepSurf, StepEdge, EL);
+        isLikeSeam = StepToTopoDS_GeometricTool::IsLikeSeam(SurfCurve, StepSurf, EC, EL);
 
-        isSeam = StepToTopoDS_GeometricTool::IsSeamCurve(SurfCurve, StepSurf, StepEdge, EL);
+        isSeam = StepToTopoDS_GeometricTool::IsSeamCurve(SurfCurve, StepSurf, EC, EL);
 
         if (isSeam || isLikeSeam) {
           // isLikeSeam = Two faces on the same Surface
@@ -570,7 +589,7 @@ void StepToTopoDS_TranslateEdgeLoop::Init(const Handle(StepShape_FaceBound)& Fac
           Standard_Integer forwardPC =
             ShapeAnalysis_Curve().SelectForwardSeam(C2d1, C2d2);
           if (forwardPC == 0) {
-            TP->AddFail(StepEdge, " Seam curve not mapped");
+            TP->AddFail(EC, " Seam curve not mapped");
             done = Standard_False;
             myError = StepToTopoDS_TranslateEdgeLoopOther;
             continue;
@@ -602,7 +621,7 @@ void StepToTopoDS_TranslateEdgeLoop::Init(const Handle(StepShape_FaceBound)& Fac
           }
         }
         else {
-          TP->AddFail(StepEdge, " Seam curve not mapped");
+          TP->AddFail(EC, " Seam curve not mapped");
           done = Standard_False;
           myError = StepToTopoDS_TranslateEdgeLoopOther;
           continue;
@@ -619,7 +638,7 @@ void StepToTopoDS_TranslateEdgeLoop::Init(const Handle(StepShape_FaceBound)& Fac
             B.UpdateEdge(E, C2d, Face, 0.);
           }
           else {
-            TP->AddFail(StepEdge, " Edge: Trimming of 2D curve failed");
+            TP->AddFail(EC, " Edge: Trimming of 2D curve failed");
             done = Standard_False;
             myError = StepToTopoDS_TranslateEdgeLoopOther;
             continue;
@@ -628,13 +647,13 @@ void StepToTopoDS_TranslateEdgeLoop::Init(const Handle(StepShape_FaceBound)& Fac
       }
 
       if (E.IsNull()) {
-        TP->AddFail(StepEdge, " an Edge not mapped");
+        TP->AddFail(EC, " an Edge not mapped");
         done = Standard_False;
         myError = StepToTopoDS_TranslateEdgeLoopOther;
       }
     }
     else { // The Edge is Not mapped => switch to next wire ?
-      TP->AddFail(StepEdge, " an Edge not mapped");
+      TP->AddFail(EC," an Edge not mapped");
       done = Standard_False;
       myError = StepToTopoDS_TranslateEdgeLoopOther;
     }
@@ -642,8 +661,8 @@ void StepToTopoDS_TranslateEdgeLoop::Init(const Handle(StepShape_FaceBound)& Fac
     if (done) B.Add (W, E);  // on le fait ici. Sauf si erreur rencontree ... !
     else {
       Handle(StepShape_Vertex) Vs1, Vs2;
-      Vs1 = StepEdge->EdgeStart();
-      Vs2 = StepEdge->EdgeEnd();
+      Vs1 = EC->EdgeStart();
+      Vs2 = EC->EdgeEnd();
       if (!Vs1.IsNull() && !Vs2.IsNull() && Vs1==Vs2) {
         done = Standard_True;
         TP->AddFail(EL, " Edge with equal vertices failed, scipped");

@@ -936,7 +936,7 @@ proc osutils:collectinc {theModules theIncPath} {
   set anIncFiles [glob -tails -nocomplain -dir ${anIncPath} "*"]
   foreach anIncFile ${anIncFiles} {
     if { [lsearch -exact ${allHeaderFiles} ${anIncFile}] == -1 } {
-      puts "Warning: file ${anIncPath}/${anIncFile} is not presented in the sources and will be removed from ${theIncPath}!"
+      puts "Warning: file ${anIncPath}/${anIncFile} is not present in the sources and will be removed from ${theIncPath}"
       file delete -force "${theIncPath}/${anIncFile}"
     }
   }

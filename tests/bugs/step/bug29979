@@ -1,0 +1,11 @@
+puts "==============================================================="
+puts "0029979: Data Exchange - Crash by reading STEP file"
+puts "==============================================================="
+puts ""
+
+puts "Read only the solid that contains broken edges"
+stepread [locate_data_file bug29979_firetherm_12.step] a #10154
+tpstat c
+
+puts "\nCheck that result is not empty"
+checknbshapes a_1 -solid 1 -face 1565
