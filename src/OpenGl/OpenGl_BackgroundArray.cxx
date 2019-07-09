@@ -119,6 +119,7 @@ bool OpenGl_BackgroundArray::IsDefined() const
   {
     case Graphic3d_TOB_GRADIENT: return myGradientParams.type != Aspect_GFM_NONE;
     case Graphic3d_TOB_TEXTURE:  return myFillMethod          != Aspect_FM_NONE;
+    case Graphic3d_TOB_CUBEMAP:  return Standard_True;
     case Graphic3d_TOB_NONE:     return Standard_False;
   }
   return Standard_False;
@@ -152,6 +153,14 @@ Standard_Boolean OpenGl_BackgroundArray::init (const Handle(OpenGl_Workspace)& t
     case Graphic3d_TOB_TEXTURE:
     {
       if (!createTextureArray (theWorkspace))
+      {
+        return Standard_False;
+      }
+      break;
+    }
+    case Graphic3d_TOB_CUBEMAP:
+    {
+      if (!createCubeMapArray())
       {
         return Standard_False;
       }
@@ -378,7 +387,33 @@ Standard_Boolean OpenGl_BackgroundArray::createTextureArray (const Handle(OpenGl
 }
 
 // =======================================================================
-// method  : createTextureArray
+// method  : createCubeMapArray
+// purpose :
+// =======================================================================
+Standard_Boolean OpenGl_BackgroundArray::createCubeMapArray() const
+{
+  Graphic3d_Attribute aCubeMapAttribInfo[] =
+  {
+    { Graphic3d_TOA_POS, Graphic3d_TOD_VEC2}
+  };
+
+  if (!myAttribs->Init(4, aCubeMapAttribInfo, 1))
+  {
+    return Standard_False;
+  }
+
+  OpenGl_Vec2* aData = reinterpret_cast<OpenGl_Vec2*>(myAttribs->changeValue(0));
+
+  for (unsigned int i = 0; i < 4; ++i)
+  {
+    aData[i] = (OpenGl_Vec2(Standard_ShortReal(i / 2), Standard_ShortReal(i % 2)) - OpenGl_Vec2(0.5f)) * 2.f;
+  }
+
+  return Standard_True;
+}
+
+// =======================================================================
+// method  : Render
 // purpose :
 // =======================================================================
 void OpenGl_BackgroundArray::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
@@ -402,8 +437,12 @@ void OpenGl_BackgroundArray::Render (const Handle(OpenGl_Workspace)& theWorkspac
 
   OpenGl_Mat4 aProjection = aCtx->ProjectionState.Current();
   OpenGl_Mat4 aWorldView  = aCtx->WorldViewState.Current();
-  myTrsfPers.Apply (theWorkspace->View()->Camera(), aProjection, aWorldView,
-                    aCtx->Viewport()[2], aCtx->Viewport()[3]);
+
+  if (myType != Graphic3d_TOB_CUBEMAP)
+  {
+    myTrsfPers.Apply(theWorkspace->View()->Camera(), aProjection, aWorldView,
+      aCtx->Viewport()[2], aCtx->Viewport()[3]);
+  }
 
   aCtx->ProjectionState.Push();
   aCtx->WorldViewState.Push();

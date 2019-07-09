@@ -19,6 +19,7 @@
 #include <Aspect_Window.hxx>
 #include <Graphic3d_BufferType.hxx>
 #include <Graphic3d_Camera.hxx>
+#include <Graphic3d_CubeMap.hxx>
 #include <Graphic3d_CLight.hxx>
 #include <Graphic3d_CStructure.hxx>
 #include <Graphic3d_DataStructureManager.hxx>
@@ -372,6 +373,12 @@ public:
 
   //! Sets background image fill style.
   virtual void SetBackgroundImageStyle (const Aspect_FillMethod theFillStyle) = 0;
+
+  //! Returns cubemap being setted last time on background.
+  virtual Handle(Graphic3d_CubeMap) BackgroundCubeMap() const = 0;
+
+  //! Sets environment cubemap as background.
+  virtual void SetBackgroundCubeMap (const Handle(Graphic3d_CubeMap)& theCubeMap) = 0;
 
   //! Returns environment texture set for the view.
   virtual Handle(Graphic3d_TextureEnv) TextureEnv() const = 0; 

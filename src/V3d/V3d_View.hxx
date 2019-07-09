@@ -228,6 +228,10 @@ public:
   Standard_EXPORT void SetBgImageStyle (const Aspect_FillMethod theFillStyle,
                                         const Standard_Boolean theToUpdate = Standard_False);
 
+  //! Sets environment cubemap as interactive background.
+  Standard_EXPORT void SetBackgroundCubeMap (const Handle(Graphic3d_CubeMap)& theCubeMap,
+                                             Standard_Boolean                 theToUpdate = Standard_False);
+
   //! Definition of an axis from its origin and
   //! its orientation .
   //! This will be the current axis for rotations and movements.

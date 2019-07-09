@@ -206,12 +206,10 @@ void OpenGl_AspectsTextureSet::build (const Handle(OpenGl_Context)& theCtx,
          &&  aTexture->GetId()    == aResource->ResourceId()
          &&  aTexture->Revision() != aResource->Revision())
         {
-          if (Handle(Image_PixMap) anImage = aTexture->GetImage())
+          if (aResource->Init(theCtx, aTexture))
           {
-            aResource->Sampler()->SetParameters (aTexture->GetParams());
-            aResource->Init (theCtx, *anImage.operator->(), aTexture->Type());
+            aResource->Sampler()->SetParameters(aTexture->GetParams());
             aResource->SetRevision (aTexture->Revision());
-            continue;
           }
         }
 
@@ -235,9 +233,9 @@ void OpenGl_AspectsTextureSet::build (const Handle(OpenGl_Context)& theCtx,
         || !theCtx->GetResource<Handle(OpenGl_Texture)> (aTextureKeyNew, aResource))
         {
           aResource = new OpenGl_Texture (aTextureKeyNew, aTexture->GetParams());
-          if (Handle(Image_PixMap) anImage = aTexture->GetImage())
+
+          if (aResource->Init(theCtx, aTexture))
           {
-            aResource->Init (theCtx, *anImage.operator->(), aTexture->Type());
             aResource->SetRevision (aTexture->Revision());
           }
           if (!aTextureKeyNew.IsEmpty())
@@ -249,9 +247,8 @@ void OpenGl_AspectsTextureSet::build (const Handle(OpenGl_Context)& theCtx,
         {
           if (aTexture->Revision() != aResource->Revision())
           {
-            if (Handle(Image_PixMap) anImage = aTexture->GetImage())
+            if (aResource->Init(theCtx, aTexture))
             {
-              aResource->Init (theCtx, *anImage.operator->(), aTexture->Type());
               aResource->SetRevision (aTexture->Revision());
             }
           }

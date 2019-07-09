@@ -48,6 +48,15 @@ Graphic3d_ClipPlane.hxx
 Graphic3d_CStructure.cxx
 Graphic3d_CStructure.hxx
 Graphic3d_CTexture.hxx
+Graphic3d_CubeMap.cxx
+Graphic3d_CubeMap.hxx
+Graphic3d_CubeMapOrder.cxx
+Graphic3d_CubeMapOrder.hxx
+Graphic3d_CubeMapPacked.cxx
+Graphic3d_CubeMapPacked.hxx
+Graphic3d_CubeMapSeparate.cxx
+Graphic3d_CubeMapSeparate.hxx
+Graphic3d_CubeMapSide.hxx
 Graphic3d_CullingTool.cxx
 Graphic3d_CullingTool.hxx
 Graphic3d_CView.cxx

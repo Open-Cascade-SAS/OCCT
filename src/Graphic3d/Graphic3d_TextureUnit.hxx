@@ -40,6 +40,8 @@ enum Graphic3d_TextureUnit
   //Graphic3d_TextureUnit_MetallicRoughness = Graphic3d_TextureUnit_2, //!< metalness+roughness of the material
   //Graphic3d_TextureUnit_Emissive          = Graphic3d_TextureUnit_3, //!< emissive map controls the color and intensity of the light being emitted by the material
   //Graphic3d_TextureUnit_Occlusion         = Graphic3d_TextureUnit_4, //!< occlusion map indicating areas of indirect lighting
+
+  Graphic3d_TextureUnit_EnvMap = Graphic3d_TextureUnit_0  //!< environment cubemap for background
 };
 enum
 {

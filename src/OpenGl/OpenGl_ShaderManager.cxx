@@ -2677,6 +2677,53 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramBoundBox()
 }
 
 // =======================================================================
+// function : GetBgCubeMapProgram
+// purpose  :
+// =======================================================================
+const Handle(Graphic3d_ShaderProgram)& OpenGl_ShaderManager::GetBgCubeMapProgram ()
+{
+  if (myBgCubeMapProgram.IsNull())
+  {
+    myBgCubeMapProgram = new Graphic3d_ShaderProgram;
+
+    OpenGl_ShaderObject::ShaderVariableList aUniforms, aStageInOuts;
+    aStageInOuts.Append (OpenGl_ShaderObject::ShaderVariable("vec3 ViewDirection", Graphic3d_TOS_VERTEX | Graphic3d_TOS_FRAGMENT));
+    aUniforms.Append (OpenGl_ShaderObject::ShaderVariable ("int uZCoeff", Graphic3d_TOS_VERTEX)); // defines orientation of Z axis to make horizontal flip
+    aUniforms.Append (OpenGl_ShaderObject::ShaderVariable ("int uYCoeff", Graphic3d_TOS_VERTEX)); // defines orientation of Y axis to make vertical flip
+    aUniforms.Append (OpenGl_ShaderObject::ShaderVariable ("samplerCube occSampler0", Graphic3d_TOS_FRAGMENT));
+
+    TCollection_AsciiString aSrcVert =
+      EOL"void main()"
+      EOL"{"
+      EOL"  vec4 aViewDirection = occProjectionMatrixInverse * vec4(occVertex.xy, 0.0, 1.0);"
+      EOL"  aViewDirection /= aViewDirection.w;"
+      EOL"  aViewDirection.w = 0.0;"
+      EOL"  ViewDirection = normalize((occWorldViewMatrixInverse * aViewDirection).xyz);"
+      EOL"  ViewDirection = ViewDirection.yzx;" // is needed to sync horizon and frontal camera position
+      EOL"  ViewDirection.y *= uYCoeff;"
+      EOL"  ViewDirection.z *= uZCoeff;"
+      EOL"  gl_Position = vec4(occVertex.xy, 0.0, 1.0);"
+      EOL"}";
+
+    TCollection_AsciiString aSrcFrag =
+      EOL"#define occEnvCubemap occSampler0"
+      EOL"void main()"
+      EOL"{"
+      EOL"  occSetFragColor (vec4(texture(occEnvCubemap, ViewDirection).rgb, 1.0));"
+      EOL"}";
+
+    defaultGlslVersion(myBgCubeMapProgram, "background_cubemap", 0);
+    myBgCubeMapProgram->SetDefaultSampler(false);
+    myBgCubeMapProgram->SetNbLightsMax(0);
+    myBgCubeMapProgram->SetNbClipPlanesMax(0);
+    myBgCubeMapProgram->AttachShader(OpenGl_ShaderObject::CreateFromSource(aSrcVert, Graphic3d_TOS_VERTEX, aUniforms, aStageInOuts));
+    myBgCubeMapProgram->AttachShader(OpenGl_ShaderObject::CreateFromSource(aSrcFrag, Graphic3d_TOS_FRAGMENT, aUniforms, aStageInOuts));
+  }
+
+  return myBgCubeMapProgram;
+}
+
+// =======================================================================
 // function : bindProgramWithState
 // purpose  :
 // =======================================================================

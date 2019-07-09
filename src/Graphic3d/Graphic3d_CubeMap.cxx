@@ -1,7 +1,5 @@
-// Created on: 1993-03-31
-// Created by: NW,JPB,CAL
-// Copyright (c) 1993-1999 Matra Datavision
-// Copyright (c) 1999-2014 OPEN CASCADE SAS
+// Author: Ilya Khramov
+// Copyright (c) 2019 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -14,16 +12,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _Graphic3d_TypeOfTexture_HeaderFile
-#define _Graphic3d_TypeOfTexture_HeaderFile
+#include <Graphic3d_CubeMap.hxx>
 
-//! Type of the texture file format.
-enum Graphic3d_TypeOfTexture
-{
-Graphic3d_TOT_1D,
-Graphic3d_TOT_2D,
-Graphic3d_TOT_2D_MIPMAP,
-Graphic3d_TOT_CUBEMAP
-};
-
-#endif // _Graphic3d_TypeOfTexture_HeaderFile
+IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_CubeMap, Graphic3d_TextureMap)

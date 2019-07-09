@@ -41,6 +41,8 @@
 #include <Graphic3d_AspectFillArea3d.hxx>
 #include <Graphic3d_AspectMarker3d.hxx>
 #include <Graphic3d_ClipPlane.hxx>
+#include <Graphic3d_CubeMapPacked.hxx>
+#include <Graphic3d_CubeMapSeparate.hxx>
 #include <Graphic3d_GraduatedTrihedron.hxx>
 #include <Graphic3d_NameOfTextureEnv.hxx>
 #include <Graphic3d_Texture2Dmanual.hxx>
@@ -241,13 +243,13 @@ namespace
   // Defines possible commands related to background changing
   enum BackgroundCommand
   {
-    BackgroundCommand_Main,         //!< The main command that manages other commands through options
-    BackgroundCommand_Image,        //!< Sets an image as a background
-    BackgroundCommand_ImageMode,    //!< Changes a background image mode
-    BackgroundCommand_Gradient,     //!< Sets a gradient as a background
-    BackgroundCommand_GradientMode, //!< Changes a background gradient mode
-    BackgroundCommand_Color,        //!< Fills background with a specified color
-    BackgroundCommand_Default       //!< Sets the background default color or gradient
+    BackgroundCommand_Main,              //!< The main command that manages other commands through options
+    BackgroundCommand_Image,             //!< Sets an image as a background
+    BackgroundCommand_ImageMode,         //!< Changes a background image mode
+    BackgroundCommand_Gradient,          //!< Sets a gradient as a background
+    BackgroundCommand_GradientMode,      //!< Changes a background gradient mode
+    BackgroundCommand_Color,             //!< Fills background with a specified color
+    BackgroundCommand_Default            //!< Sets the background default color or gradient
   };
 
   //! Map from background command names to its codes
@@ -258,13 +260,13 @@ namespace
   static BackgroundCommandNameMap createBackgroundCommandNameMap()
   {
     BackgroundCommandNameMap aBackgroundCommandNameMap;
-    aBackgroundCommandNameMap["vbackground"]    = BackgroundCommand_Main;
-    aBackgroundCommandNameMap["vsetbg"]         = BackgroundCommand_Image;
-    aBackgroundCommandNameMap["vsetbgmode"]     = BackgroundCommand_ImageMode;
-    aBackgroundCommandNameMap["vsetgradientbg"] = BackgroundCommand_Gradient;
-    aBackgroundCommandNameMap["vsetgrbgmode"]   = BackgroundCommand_GradientMode;
-    aBackgroundCommandNameMap["vsetcolorbg"]    = BackgroundCommand_Color;
-    aBackgroundCommandNameMap["vsetdefaultbg"]  = BackgroundCommand_Default;
+    aBackgroundCommandNameMap["vbackground"]      = BackgroundCommand_Main;
+    aBackgroundCommandNameMap["vsetbg"]           = BackgroundCommand_Image;
+    aBackgroundCommandNameMap["vsetbgmode"]       = BackgroundCommand_ImageMode;
+    aBackgroundCommandNameMap["vsetgradientbg"]   = BackgroundCommand_Gradient;
+    aBackgroundCommandNameMap["vsetgrbgmode"]     = BackgroundCommand_GradientMode;
+    aBackgroundCommandNameMap["vsetcolorbg"]      = BackgroundCommand_Color;
+    aBackgroundCommandNameMap["vsetdefaultbg"]    = BackgroundCommand_Default;
     return aBackgroundCommandNameMap;
   }
 
@@ -405,8 +407,20 @@ namespace
     //! the option key for the command that sets default background gradient or color
     ViewerTest_CommandOptionKey myDefaultOptionKey;
 
+    //! the option key for the command that sets an environment cubemap as a background
+    ViewerTest_CommandOptionKey myCubeMapOptionKey;
+
+    //! the option key for the command that defines order of tiles in one image packed cubemap
+    ViewerTest_CommandOptionKey myCubeMapOrderOptionKey;
+
+    //! the option key for the command that sets inversion of Z axis for background cubemap
+    ViewerTest_CommandOptionKey myCubeMapInvertedZOptionKey;
+
     //! the variable set of options that are allowed for the old scenario (without any option passed)
     CommandOptionKeyVariableSet myUnnamedOptionVariableSet;
+
+    //! the variable set of options that are allowed for setting an environment cubemap as background
+    CommandOptionKeyVariableSet myCubeMapOptionVariableSet;
 
     //! the variable set of options that are allowed for setting an image as a background
     CommandOptionKeyVariableSet myImageOptionVariableSet;
@@ -447,6 +461,11 @@ namespace
                                    "DIAG[ONAL]1, DIAG[ONAL]2, CORNER1, CORNER2, CORNER3, CORNER4");
       myColorOptionKey   = myCommandParser.AddOption ("color|col", "background color");
       myDefaultOptionKey = myCommandParser.AddOption ("default|def", "sets background default gradient or color");
+
+      myCubeMapOptionKey           = myCommandParser.AddOption ("cubemap|cmap|cm", "background cubemap");
+      myCubeMapOrderOptionKey      = myCommandParser.AddOption ("order|o", "order of sides in one image packed cubemap");
+      myCubeMapInvertedZOptionKey = myCommandParser.AddOption (
+        "invertedz|invz|iz", "whether Z axis is inverted or not during background cubemap rendering");
     }
 
     //! Creates option sets used to determine if a passed option set is valid or not
@@ -455,6 +474,13 @@ namespace
       ViewerTest_CommandOptionKeySet anUnnamedOptionSet;
       anUnnamedOptionSet.insert (ViewerTest_CmdParser::THE_UNNAMED_COMMAND_OPTION_KEY);
       myUnnamedOptionVariableSet = CommandOptionKeyVariableSet (anUnnamedOptionSet);
+
+      ViewerTest_CommandOptionKeySet aCubeMapOptionSet;
+      aCubeMapOptionSet.insert (myCubeMapOptionKey);
+      ViewerTest_CommandOptionKeySet aCubeMapAdditionalOptionKeySet;
+      aCubeMapAdditionalOptionKeySet.insert (myCubeMapInvertedZOptionKey);
+      aCubeMapAdditionalOptionKeySet.insert (myCubeMapOrderOptionKey);
+      myCubeMapOptionVariableSet     = CommandOptionKeyVariableSet (aCubeMapOptionSet, aCubeMapAdditionalOptionKeySet);
 
       ViewerTest_CommandOptionKeySet anImageOptionSet;
       anImageOptionSet.insert (myImageOptionKey);
@@ -748,6 +774,10 @@ namespace
     {
       const bool                           isMain       = (theBackgroundCommand == BackgroundCommand_Main);
       const ViewerTest_CommandOptionKeySet aUsedOptions = myCommandParser.GetUsedOptions();
+      if (myCubeMapOptionVariableSet.IsInSet (aUsedOptions) && isMain)
+      {
+        return processCubeMapOptionSet();
+      }
       if (myImageOptionVariableSet.IsInSet (aUsedOptions)
           && (isMain || (theBackgroundCommand == BackgroundCommand_Image)))
       {
@@ -789,6 +819,41 @@ namespace
         return processHelpOptionSet (theBackgroundCommandName, theDrawInterpretor);
       }
       return false;
+    }
+
+    //! Process the cubemap option set in named and unnamed case.
+    //! @return true if processing was successful, or false otherwise
+    bool processCubeMapOptionSet() const
+    {
+      NCollection_Array1<TCollection_AsciiString> aFilePaths;
+
+      if (!processCubeMapOptions (aFilePaths))
+      {
+        return false;
+      }
+
+      Graphic3d_CubeMapOrder anOrder = Graphic3d_CubeMapOrder::Default();
+
+      if (myCommandParser.HasOption (myCubeMapOrderOptionKey))
+      {
+        if (!processCubeMapOrderOptions (anOrder))
+        {
+          return false;
+        }
+      }
+
+      bool aZIsInverted = false;
+      if (myCommandParser.HasOption (myCubeMapInvertedZOptionKey))
+      {
+        if (!processCubeMapInvertedZOptionSet())
+        {
+          return false;
+        }
+        aZIsInverted = true;
+      }
+
+      setCubeMap (aFilePaths, anOrder.Validated(), aZIsInverted);
+      return true;
     }
 
     //! Processes the image option set
@@ -922,6 +987,79 @@ namespace
         return false;
       }
       return printHelp (theBackgroundCommandName, theDrawInterpretor);
+    }
+
+    //! Processes the cubemap option
+    //! @param theFilePaths the array of filenames of cubemap sides
+    //! @return true if processing was successful, or false otherwise
+    bool processCubeMapOptions (NCollection_Array1<TCollection_AsciiString> &theFilePaths) const
+    {
+      const Standard_Integer aNumberOfCubeMapOptionArguments = myCommandParser.GetNumberOfOptionArguments (myCubeMapOptionKey);
+
+      if (aNumberOfCubeMapOptionArguments != 1
+       && aNumberOfCubeMapOptionArguments != 6)
+      {
+        return false;
+      }
+
+      theFilePaths.Resize(0, aNumberOfCubeMapOptionArguments - 1, Standard_False);
+
+      for (int i = 0; i < aNumberOfCubeMapOptionArguments; ++i)
+      {
+        std::string aCubeMapFileName;
+        if (!myCommandParser.Arg (myCubeMapOptionKey, i, aCubeMapFileName))
+        {
+          return false;
+        }
+        theFilePaths[i] = aCubeMapFileName.c_str();
+      }
+
+      return true;
+    }
+
+    //! Processes the cubemap option
+    //! @param theIsNeededToRedraw defines need of redraw after option's processing 
+    //! @return true if processing was successful, or false otherwise
+    bool processCubeMapInvertedZOptionSet () const
+    {
+      const Standard_Integer aNumberOfCubeMapZInversionOptionArguments =
+        myCommandParser.GetNumberOfOptionArguments (myCubeMapInvertedZOptionKey);
+
+      if (aNumberOfCubeMapZInversionOptionArguments != 0)
+      {
+        return false;
+      }
+
+      return true;
+    }
+
+    //! Processes the tiles order option
+    //! @param theOrder the array of indexes if cubemap sides in tile grid
+    //! @return true if processing was successful, or false otherwise
+    bool processCubeMapOrderOptions (Graphic3d_CubeMapOrder& theOrder) const
+    {
+      const Standard_Integer aNumberOfCubeMapOrderOptionArguments = myCommandParser.GetNumberOfOptionArguments(
+        myCubeMapOrderOptionKey);
+
+      if (aNumberOfCubeMapOrderOptionArguments != 6)
+      {
+        return false;
+      }
+
+
+      for (unsigned int i = 0; i < 6; ++i)
+      {
+        std::string anOrderItem;
+        if (!myCommandParser.Arg (myCubeMapOrderOptionKey, i, anOrderItem)) 
+        {
+          return false;
+        }
+
+        theOrder.Set (Graphic3d_CubeMapSide (i),
+                      static_cast<unsigned char> (Draw::Atoi (anOrderItem.c_str())));
+      }
+
+      return theOrder.IsValid();
     }
 
     //! Processes the image option
@@ -1076,6 +1214,30 @@ namespace
     static bool printHelp (const char* const theBackgroundCommandName, Draw_Interpretor& theDrawInterpretor)
     {
       return theDrawInterpretor.PrintHelp (theBackgroundCommandName) == TCL_OK;
+    }
+
+    //! Sets the cubemap as a background
+    //! @param theFileNames the array of filenames of packed or multifile cubemap
+    //! @param theOrder array of cubemap sides indexes mapping them from tiles in packed cubemap
+    static void setCubeMap (const NCollection_Array1<TCollection_AsciiString>& theFileNames,
+                            const Graphic3d_ValidatedCubeMapOrder              theOrder = Graphic3d_CubeMapOrder::Default(),
+                            bool                                               theZIsInverted = false)
+    {
+      const Handle(V3d_View)& aCurrentView = ViewerTest::CurrentView();
+      Handle(Graphic3d_CubeMap) aCubeMap;
+
+      if (theFileNames.Size() == 1)
+        aCubeMap = new Graphic3d_CubeMapPacked(theFileNames[0], theOrder);
+      else
+        aCubeMap = new Graphic3d_CubeMapSeparate(theFileNames);
+
+      aCubeMap->SetZInversion (theZIsInverted);
+
+      aCubeMap->GetParams()->SetFilter(Graphic3d_TOTF_BILINEAR);
+      aCubeMap->GetParams()->SetRepeat(Standard_False);
+      aCubeMap->GetParams()->SetTextureUnit(Graphic3d_TextureUnit_EnvMap);
+
+      aCurrentView->SetBackgroundCubeMap (aCubeMap, Standard_True);
     }
 
     //! Sets the image as a background
@@ -13502,6 +13664,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "  vbackground -imageMode FillType\n"
     "  vbackground -gradient Color1 Color2 [-gradientMode FillMethod]\n"
     "  vbackground -gradientMode FillMethod\n"
+    "  vbackground -cubemap CubemapFile1 [CubeMapFiles2-5] [-order TilesIndexes1-6] [-invertedz]\n"
     "  vbackground -color Color\n"
     "  vbackground -default -gradient Color1 Color2 [-gradientMode FillType]\n"
     "  vbackground -default -color Color\n"
@@ -13512,19 +13675,25 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "  -imageMode    (-imgMode, -imageMd, -imgMd):         sets image fill type\n"
     "  -gradient     (-grad, -gr):                         sets background gradient starting and ending colors\n"
     "  -gradientMode (-gradMode, -gradMd, -grMode, -grMd): sets gradient fill method\n"
+    "  -cubemap      (-cmap, -cm):                         sets environmet cubemap as background\n"
+    "  -invertedz    (-invz, -iz):                         sets inversion of Z axis for background cubemap rendering\n"
+    "  -order        (-o):                                 defines order of tiles in one image cubemap\n"
+    "                                                      (has no effect in case of multi image cubemaps)\n"
     "  -color        (-col):                               sets background color\n"
     "  -default      (-def):                               sets background default gradient or color\n"
     "  -help         (-h):                                 outputs short help message\n"
     "\n"
     "Arguments:\n"
-    "  Color:      Red Green Blue  - where Red, Green, Blue must be integers within the range [0, 255]\n"
+    "  Color:        Red Green Blue  - where Red, Green, Blue must be integers within the range [0, 255]\n"
     "                                  or reals within the range [0.0, 1.0]\n"
-    "              ColorName       - one of WHITE, BLACK, RED, GREEN, BLUE, etc.\n"
-    "              #HHH, [#]HHHHHH - where H is a hexadecimal digit (0 .. 9, a .. f, or A .. F)\n"
-    "  FillMethod: one of NONE, HOR[IZONTAL], VER[TICAL], DIAG[ONAL]1, DIAG[ONAL]2, CORNER1, CORNER2, CORNER3, "
+    "                ColorName       - one of WHITE, BLACK, RED, GREEN, BLUE, etc.\n"
+    "                #HHH, [#]HHHHHH - where H is a hexadecimal digit (0 .. 9, a .. f, or A .. F)\n"
+    "  FillMethod:   one of NONE, HOR[IZONTAL], VER[TICAL], DIAG[ONAL]1, DIAG[ONAL]2, CORNER1, CORNER2, CORNER3, "
     "CORNER4\n"
-    "  FillType:   one of CENTERED, TILED, STRETCH, NONE\n"
-    "  ImageFile:  a name of the file with the image used as a background\n",
+    "  FillType:     one of CENTERED, TILED, STRETCH, NONE\n"
+    "  ImageFile:    a name of the file with the image used as a background\n"
+    "  CubemapFilei: a name of the file with one image packed cubemap or names of separate files with every cubemap side\n"
+    "  TileIndexi:   a cubemap side index in range [0, 5] for i tile of one image packed cubemap\n",
     __FILE__,
     vbackground,
     group);

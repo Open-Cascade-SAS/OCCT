@@ -1,0 +1,158 @@
+puts "============"
+puts "0030807: Visualization, TKOpenGl - supporting cubemaps"
+puts "============"
+puts ""
+
+set aCubeMap_V [locate_data_file Circus_CubeMap_V.png]
+set aCubeMap_V_021345 [locate_data_file Circus_CubeMap_V_021345.png]
+set aCubeMap_H [locate_data_file Circus_CubeMap_H.png]
+set aCubeMap_GridV [locate_data_file Circus_CubeMap_GridV.png]
+set aCubeMap_GridV_021345 [locate_data_file Circus_CubeMap_GridV_021345.png]
+set aCubeMap_GridH [locate_data_file Circus_CubeMap_GridH.png]
+set aCubeMap_GridH_021345 [locate_data_file Circus_CubeMap_GridH_021345.png]
+set aCubeMap_posx [locate_data_file SF_CubeMap_posx.jpg]
+set aCubeMap_negx [locate_data_file SF_CubeMap_negx.jpg]
+set aCubeMap_posy [locate_data_file SF_CubeMap_posy.jpg]
+set aCubeMap_negy [locate_data_file SF_CubeMap_negy.jpg]
+set aCubeMap_posz [locate_data_file SF_CubeMap_posz.jpg]
+set aCubeMap_negz [locate_data_file SF_CubeMap_negz.jpg]
+
+vclear
+vclose ALL
+vinit v -w 512 -h 512
+vcamera -fovy 100
+
+#vertical tiles orientation
+vbackground -cubemap $aCubeMap_V
+vfront
+vdump $imagedir/${casename}_V_front.png
+vback
+vdump $imagedir/${casename}_V_back.png
+vtop
+vdump $imagedir/${casename}_V_top.png
+vbottom
+vdump $imagedir/${casename}_V_bottom.png
+vleft
+vdump $imagedir/${casename}_V_left.png
+vright
+vdump $imagedir/${casename}_V_right.png
+
+#test of flipping
+vbackground -cubemap $aCubeMap_V -invertedz
+vfront
+vdump $imagedir/${casename}_flip_front.png
+vback
+vdump $imagedir/${casename}_flip_back.png
+vtop
+vdump $imagedir/${casename}_flip_top.png
+vbottom
+vdump $imagedir/${casename}_flip_bottom.png
+vleft
+vdump $imagedir/${casename}_flip_left.png
+vright
+vdump $imagedir/${casename}_flip_right.png
+
+#vertical tiles orientation (disordered)
+vbackground -cubemap $aCubeMap_V_021345 -order 0 2 1 3 4 5
+vfront
+vdump $imagedir/${casename}_V_021345_front.png
+vback
+vdump $imagedir/${casename}_V_021345_back.png
+vtop
+vdump $imagedir/${casename}_V_021345_top.png
+vbottom
+vdump $imagedir/${casename}_V_021345_bottom.png
+vleft
+vdump $imagedir/${casename}_V_021345_left.png
+vright
+vdump $imagedir/${casename}_V_021345_right.png
+
+#horizontal tile orientation
+vbackground -cubemap $aCubeMap_H
+vfront
+vdump $imagedir/${casename}_H_front.png
+vback
+vdump $imagedir/${casename}_H_back.png
+vtop
+vdump $imagedir/${casename}_H_top.png
+vbottom
+vdump $imagedir/${casename}_H_bottom.png
+vleft
+vdump $imagedir/${casename}_H_left.png
+vright
+vdump $imagedir/${casename}_H_right.png
+
+#vertical grid tile orientation
+vbackground -cubemap $aCubeMap_GridV
+vfront
+vdump $imagedir/${casename}_GridV_front.png
+vback
+vdump $imagedir/${casename}_GridV_back.png
+vtop
+vdump $imagedir/${casename}_GridV_top.png
+vbottom
+vdump $imagedir/${casename}_GridV_bottom.png
+vleft
+vdump $imagedir/${casename}_GridV_left.png
+vright
+vdump $imagedir/${casename}_GridV_right.png
+
+#vertical grid tile orientation (disordered)
+vbackground -cubemap $aCubeMap_GridV_021345 -order 0 2 1 3 4 5
+vfront
+vdump $imagedir/${casename}_GridV_021345_front.png
+vback
+vdump $imagedir/${casename}_GridV_021345_back.png
+vtop
+vdump $imagedir/${casename}_GridV_021345_top.png
+vbottom
+vdump $imagedir/${casename}_GridV_021345_bottom.png
+vleft
+vdump $imagedir/${casename}_GridV_021345_left.png
+vright
+vdump $imagedir/${casename}_GridV_021345_right.png
+
+#horizontal grid tile orientation
+vbackground -cubemap $aCubeMap_GridH
+vfront
+vdump $imagedir/${casename}_GridH_front.png
+vback
+vdump $imagedir/${casename}_GridH_back.png
+vtop
+vdump $imagedir/${casename}_GridH_top.png
+vbottom
+vdump $imagedir/${casename}_GridH_bottom.png
+vleft
+vdump $imagedir/${casename}_GridH_left.png
+vright
+vdump $imagedir/${casename}_GridH_right.png
+
+#horizontal grid tile orientation (disordered)
+vbackground -cubemap $aCubeMap_GridH_021345 -order 0 2 1 3 4 5
+vfront
+vdump $imagedir/${casename}_GridH_021345_front.png
+vback
+vdump $imagedir/${casename}_GridH_021345_back.png
+vtop
+vdump $imagedir/${casename}_GridH_021345_top.png
+vbottom
+vdump $imagedir/${casename}_GridH_021345_bottom.png
+vleft
+vdump $imagedir/${casename}_GridH_021345_left.png
+vright
+vdump $imagedir/${casename}_GridH_021345_right.png
+
+#multiimage cubemap
+vbackground -cubemap $aCubeMap_posx $aCubeMap_negx $aCubeMap_posy $aCubeMap_negy $aCubeMap_posz $aCubeMap_negz
+vfront
+vdump $imagedir/${casename}_multi_front.png
+vback
+vdump $imagedir/${casename}_multi_back.png
+vtop
+vdump $imagedir/${casename}_multi_top.png
+vbottom
+vdump $imagedir/${casename}_multi_bottom.png
+vleft
+vdump $imagedir/${casename}_multi_left.png
+vright
+vdump $imagedir/${casename}_multi_right.png

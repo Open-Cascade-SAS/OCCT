@@ -74,59 +74,75 @@ namespace
 void OpenGl_View::drawBackground (const Handle(OpenGl_Workspace)& theWorkspace)
 {
   const Handle(OpenGl_Context)& aCtx = theWorkspace->GetGlContext();
-
-  if (!myBgTextureArray->IsDefined()   // no texture
-   && !myBgGradientArray->IsDefined()) // no gradient
-  {
-    return;
-  }
-
   const Standard_Boolean wasUsedZBuffer = theWorkspace->SetUseZBuffer (Standard_False);
   if (wasUsedZBuffer)
   {
     aCtx->core11fwd->glDisable (GL_DEPTH_TEST);
   }
 
-  // Drawing background gradient if:
-  // - gradient fill type is not Aspect_GFM_NONE and
-  // - either background texture is no specified or it is drawn in Aspect_FM_CENTERED mode
-  if (myBgGradientArray->IsDefined()
-    && (!myTextureParams->Aspect()->ToMapTexture()
-      || myBgTextureArray->TextureFillMethod() == Aspect_FM_CENTERED
-      || myBgTextureArray->TextureFillMethod() == Aspect_FM_NONE))
+  if (myBackgroundType == Graphic3d_TOB_CUBEMAP)
   {
-  #if !defined(GL_ES_VERSION_2_0)
-    GLint aShadingModelOld = GL_SMOOTH;
-    if (aCtx->core11 != NULL
-     && aCtx->caps->ffpEnable)
-    {
-      aCtx->core11fwd->glDisable (GL_LIGHTING);
-      aCtx->core11fwd->glGetIntegerv (GL_SHADE_MODEL, &aShadingModelOld);
-      aCtx->core11->glShadeModel (GL_SMOOTH);
-    }
-  #endif
+    Graphic3d_Camera aCamera (theWorkspace->View()->Camera());
+    aCamera.SetZRange (0.01, 1.0); // is needed to avoid perspective camera exception
+    aCamera.SetProjectionType (Graphic3d_Camera::Projection_Perspective);
 
-    myBgGradientArray->Render (theWorkspace);
+    aCtx->ProjectionState.Push();
+    aCtx->ProjectionState.SetCurrent (aCamera.ProjectionMatrixF());
 
-  #if !defined(GL_ES_VERSION_2_0)
-    if (aCtx->core11 != NULL
-     && aCtx->caps->ffpEnable)
-    {
-      aCtx->core11->glShadeModel (aShadingModelOld);
-    }
-  #endif
-  }
+    myCubeMapParams->Aspect()->ShaderProgram()->PushVariableInt ("uZCoeff", myBackgroundCubeMap->ZIsInverted() ? -1 : 1);
+    myCubeMapParams->Aspect()->ShaderProgram()->PushVariableInt ("uYCoeff", myBackgroundCubeMap->IsTopDown() ? 1 : -1);
+    const OpenGl_Aspects* anOldAspectFace = theWorkspace->SetAspects (myCubeMapParams);
 
-  // Drawing background image if it is defined
-  // (texture is defined and fill type is not Aspect_FM_NONE)
-  if (myBgTextureArray->IsDefined()
-   && myTextureParams->Aspect()->ToMapTexture())
-  {
-    aCtx->core11fwd->glDisable (GL_BLEND);
+    myBackgrounds[Graphic3d_TOB_CUBEMAP]->Render (theWorkspace);
 
-    const OpenGl_Aspects* anOldAspectFace = theWorkspace->SetAspects (myTextureParams);
-    myBgTextureArray->Render (theWorkspace);
+    aCtx->ProjectionState.Pop();
+    aCtx->ApplyProjectionMatrix();
     theWorkspace->SetAspects (anOldAspectFace);
+  }
+  else if (myBackgroundType == Graphic3d_TOB_GRADIENT
+        || myBackgroundType == Graphic3d_TOB_TEXTURE)
+  {
+    // Drawing background gradient if:
+    // - gradient fill type is not Aspect_GFM_NONE and
+    // - either background texture is no specified or it is drawn in Aspect_FM_CENTERED mode
+    if (myBackgrounds[Graphic3d_TOB_GRADIENT]->IsDefined()
+      && (!myTextureParams->Aspect()->ToMapTexture()
+        || myBackgrounds[Graphic3d_TOB_TEXTURE]->TextureFillMethod() == Aspect_FM_CENTERED
+        || myBackgrounds[Graphic3d_TOB_TEXTURE]->TextureFillMethod() == Aspect_FM_NONE))
+    {
+      #if !defined(GL_ES_VERSION_2_0)
+      GLint aShadingModelOld = GL_SMOOTH;
+      if (aCtx->core11 != NULL
+        && aCtx->caps->ffpEnable)
+      {
+        aCtx->core11fwd->glDisable (GL_LIGHTING);
+        aCtx->core11fwd->glGetIntegerv (GL_SHADE_MODEL, &aShadingModelOld);
+        aCtx->core11->glShadeModel (GL_SMOOTH);
+      }
+      #endif
+
+      myBackgrounds[Graphic3d_TOB_GRADIENT]->Render(theWorkspace);
+
+      #if !defined(GL_ES_VERSION_2_0)
+      if (aCtx->core11 != NULL
+        && aCtx->caps->ffpEnable)
+      {
+        aCtx->core11->glShadeModel (aShadingModelOld);
+      }
+      #endif
+    }
+
+    // Drawing background image if it is defined
+    // (texture is defined and fill type is not Aspect_FM_NONE)
+    if (myBackgrounds[Graphic3d_TOB_TEXTURE]->IsDefined()
+      && myTextureParams->Aspect()->ToMapTexture())
+    {
+      aCtx->core11fwd->glDisable (GL_BLEND);
+
+      const OpenGl_Aspects* anOldAspectFace = theWorkspace->SetAspects (myTextureParams);
+      myBackgrounds[Graphic3d_TOB_TEXTURE]->Render (theWorkspace);
+      theWorkspace->SetAspects (anOldAspectFace);
+    }
   }
 
   if (wasUsedZBuffer)

@@ -2592,12 +2592,13 @@ Standard_Boolean OpenGl_View::setUniformState (const Standard_Integer        the
   }
 
   // Set background colors (only gradient background supported)
-  if (myBgGradientArray != NULL && myBgGradientArray->IsDefined())
+  if (myBackgrounds[Graphic3d_TOB_GRADIENT] != NULL
+   && myBackgrounds[Graphic3d_TOB_GRADIENT]->IsDefined())
   {
     theProgram->SetUniform (theGlContext,
-      myUniformLocations[theProgramId][OpenGl_RT_uBackColorTop], myBgGradientArray->GradientColor (0));
+      myUniformLocations[theProgramId][OpenGl_RT_uBackColorTop], myBackgrounds[Graphic3d_TOB_GRADIENT]->GradientColor (0));
     theProgram->SetUniform (theGlContext,
-      myUniformLocations[theProgramId][OpenGl_RT_uBackColorBot], myBgGradientArray->GradientColor (1));
+      myUniformLocations[theProgramId][OpenGl_RT_uBackColorBot], myBackgrounds[Graphic3d_TOB_GRADIENT]->GradientColor (1));
   }
   else
   {

@@ -502,6 +502,21 @@ void V3d_View::SetBgImageStyle (const Aspect_FillMethod theFillStyle, const Stan
 }
 
 //=============================================================================
+//function : SetBackgroundCubeMap
+//purpose  :
+//=============================================================================
+void V3d_View::SetBackgroundCubeMap (const Handle(Graphic3d_CubeMap)& theCubeMap,
+                                     Standard_Boolean                 theToUpdate)
+{
+  myView->SetBackgroundCubeMap (theCubeMap);
+
+  if (myImmediateUpdate || theToUpdate)
+  {
+    Redraw();
+  }
+}
+
+//=============================================================================
 //function : SetAxis
 //purpose  :
 //=============================================================================

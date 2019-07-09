@@ -85,6 +85,9 @@ protected:
   //! @param theWorkspace OpenGl workspace that stores texture in the current enabled face aspect.
   Standard_EXPORT Standard_Boolean createTextureArray (const Handle(OpenGl_Workspace)& theWorkspace) const;
 
+  //! Initializes cubemap arrays.
+  Standard_EXPORT Standard_Boolean createCubeMapArray() const;
+
   //! Marks array parameters as changed,
   //! on next rendering stage array data is to be updated.
   Standard_EXPORT void invalidateData();

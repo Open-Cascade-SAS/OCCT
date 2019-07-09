@@ -69,8 +69,8 @@ OpenGl_View::OpenGl_View (const Handle(Graphic3d_StructureManager)& theMgr,
   myBackBufferRestored   (Standard_False),
   myIsImmediateDrawn     (Standard_False),
   myTextureParams   (new OpenGl_Aspects()),
-  myBgGradientArray (new OpenGl_BackgroundArray (Graphic3d_TOB_GRADIENT)),
-  myBgTextureArray  (new OpenGl_BackgroundArray (Graphic3d_TOB_TEXTURE)),
+  myCubeMapParams   (new OpenGl_Aspects()),
+  myBackgroundType  (Graphic3d_TOB_NONE),
   // ray-tracing fields initialization
   myRaytraceInitStatus     (OpenGl_RT_NONE),
   myIsRaytraceDataValid    (Standard_False),
@@ -86,6 +86,11 @@ OpenGl_View::OpenGl_View (const Handle(Graphic3d_StructureManager)& theMgr,
   myPrevCameraApertureRadius(0.f),
   myPrevCameraFocalPlaneDist(0.f)
 {
+  for (int i = 0; i < Graphic3d_TypeOfBackground_NB; ++i)
+  {
+    myBackgrounds[i] = new OpenGl_BackgroundArray(Graphic3d_TypeOfBackground(i));
+  }
+
   myWorkspace = new OpenGl_Workspace (this, NULL);
 
   Handle(Graphic3d_CLight) aLight = new Graphic3d_CLight (Graphic3d_TOLS_AMBIENT);
@@ -117,9 +122,13 @@ OpenGl_View::OpenGl_View (const Handle(Graphic3d_StructureManager)& theMgr,
 OpenGl_View::~OpenGl_View()
 {
   ReleaseGlResources (NULL); // ensure ReleaseGlResources() was called within valid context
-  OpenGl_Element::Destroy (NULL, myBgGradientArray);
-  OpenGl_Element::Destroy (NULL, myBgTextureArray);
+  for (int i = 0; i < Graphic3d_TypeOfBackground_NB; ++i)
+  {
+    OpenGl_Element::Destroy(NULL, myBackgrounds[i]);
+  }
+
   OpenGl_Element::Destroy (NULL, myTextureParams);
+  OpenGl_Element::Destroy (NULL, myCubeMapParams);
 }
 
 // =======================================================================
@@ -148,13 +157,18 @@ void OpenGl_View::ReleaseGlResources (const Handle(OpenGl_Context)& theCtx)
   {
     myTextureParams->Release (theCtx.get());
   }
-  if (myBgGradientArray != NULL)
+
+  if (myCubeMapParams != NULL)
   {
-    myBgGradientArray->Release (theCtx.get());
+    myCubeMapParams->Release (theCtx.get());
   }
-  if (myBgTextureArray != NULL)
+
+  for (int i = 0; i < Graphic3d_TypeOfBackground_NB; ++i)
   {
-    myBgTextureArray->Release (theCtx.get());
+    if (myBackgrounds[i] != NULL)
+    {
+      myBackgrounds[i]->Release (theCtx.get());
+    }
   }
 
   myMainSceneFbos[0]        ->Release (theCtx.get());
@@ -416,13 +430,13 @@ Standard_Boolean OpenGl_View::BufferDump (Image_PixMap& theImage, const Graphic3
 Aspect_GradientBackground OpenGl_View::GradientBackground() const
 {
   Quantity_Color aColor1, aColor2;
-  aColor1.SetValues (myBgGradientArray->GradientColor (0).r(),
-                     myBgGradientArray->GradientColor (0).g(),
-                     myBgGradientArray->GradientColor (0).b(), Quantity_TOC_RGB);
-  aColor2.SetValues (myBgGradientArray->GradientColor (1).r(),
-                     myBgGradientArray->GradientColor (1).g(),
-                     myBgGradientArray->GradientColor (1).b(), Quantity_TOC_RGB);
-  return Aspect_GradientBackground (aColor1, aColor2, myBgGradientArray->GradientFillMethod());
+  aColor1.SetValues (myBackgrounds[Graphic3d_TOB_GRADIENT]->GradientColor (0).r(),
+                     myBackgrounds[Graphic3d_TOB_GRADIENT]->GradientColor (0).g(),
+                     myBackgrounds[Graphic3d_TOB_GRADIENT]->GradientColor (0).b(), Quantity_TOC_RGB);
+  aColor2.SetValues (myBackgrounds[Graphic3d_TOB_GRADIENT]->GradientColor (1).r(),
+                     myBackgrounds[Graphic3d_TOB_GRADIENT]->GradientColor (1).g(),
+                     myBackgrounds[Graphic3d_TOB_GRADIENT]->GradientColor (1).b(), Quantity_TOC_RGB);
+  return Aspect_GradientBackground (aColor1, aColor2, myBackgrounds[Graphic3d_TOB_GRADIENT]->GradientFillMethod());
 }
 
 // =======================================================================
@@ -433,7 +447,9 @@ void OpenGl_View::SetGradientBackground (const Aspect_GradientBackground& theBac
 {
   Quantity_Color aColor1, aColor2;
   theBackground.Colors (aColor1, aColor2);
-  myBgGradientArray->SetGradientParameters (aColor1, aColor2, theBackground.BgGradientFillMethod());
+  myBackgrounds[Graphic3d_TOB_GRADIENT]->SetGradientParameters (aColor1, aColor2, theBackground.BgGradientFillMethod());
+
+  myBackgroundType = Graphic3d_TOB_GRADIENT;
 }
 
 // =======================================================================
@@ -467,6 +483,8 @@ void OpenGl_View::SetBackgroundImage (const TCollection_AsciiString& theFilePath
 
   // Set texture parameters
   myTextureParams->SetAspect (anAspect);
+
+  myBackgroundType = Graphic3d_TOB_TEXTURE;
 }
 
 // =======================================================================
@@ -475,7 +493,7 @@ void OpenGl_View::SetBackgroundImage (const TCollection_AsciiString& theFilePath
 // =======================================================================
 Aspect_FillMethod OpenGl_View::BackgroundImageStyle() const
 {
-  return myBgTextureArray->TextureFillMethod();
+  return myBackgrounds[Graphic3d_TOB_TEXTURE]->TextureFillMethod();
 }
 
 // =======================================================================
@@ -484,7 +502,54 @@ Aspect_FillMethod OpenGl_View::BackgroundImageStyle() const
 // =======================================================================
 void OpenGl_View::SetBackgroundImageStyle (const Aspect_FillMethod theFillStyle)
 {
-  myBgTextureArray->SetTextureFillMethod (theFillStyle);
+  myBackgrounds[Graphic3d_TOB_TEXTURE]->SetTextureFillMethod (theFillStyle);
+}
+
+// =======================================================================
+// function : BackgroundCubeMap
+// purpose  :
+// =======================================================================
+Handle(Graphic3d_CubeMap) OpenGl_View::BackgroundCubeMap() const
+{
+  return myBackgroundCubeMap;
+}
+ 
+// =======================================================================
+// function : SetBackgroundCubeMap
+// purpose  :
+// =======================================================================
+void OpenGl_View::SetBackgroundCubeMap (const Handle(Graphic3d_CubeMap)& theCubeMap)
+{
+  myBackgroundCubeMap = theCubeMap;
+  Handle(Graphic3d_AspectFillArea3d) anAspect = new Graphic3d_AspectFillArea3d;
+  Handle(Graphic3d_TextureSet) aTextureSet = new Graphic3d_TextureSet (myBackgroundCubeMap);
+
+  anAspect->SetInteriorStyle(Aspect_IS_SOLID);
+  anAspect->SetSuppressBackFaces(false);
+  anAspect->SetTextureSet(aTextureSet);
+
+  const Handle(OpenGl_Context)& aCtx = myWorkspace->GetGlContext();
+  if (!aCtx.IsNull())
+  {
+    anAspect->SetShaderProgram (aCtx->ShaderManager()->GetBgCubeMapProgram());
+  }
+
+  if (theCubeMap->IsDone())
+  {
+    anAspect->SetTextureMapOn();
+  }
+  else
+  {
+    anAspect->SetTextureMapOff();
+  }
+
+  myCubeMapParams->SetAspect(anAspect);
+  const OpenGl_Aspects* anAspectsBackup = myWorkspace->SetAspects (myCubeMapParams);
+  myWorkspace->ApplyAspects();
+  myWorkspace->SetAspects (anAspectsBackup);
+  myWorkspace->ApplyAspects();
+
+  myBackgroundType = Graphic3d_TOB_CUBEMAP;
 }
 
 //=======================================================================
@@ -492,8 +557,8 @@ void OpenGl_View::SetBackgroundImageStyle (const Aspect_FillMethod theFillStyle)
 //purpose  :
 //=======================================================================
 void OpenGl_View::InsertLayerBefore (const Graphic3d_ZLayerId theLayerId,
-                                     const Graphic3d_ZLayerSettings& theSettings,
-                                     const Graphic3d_ZLayerId theLayerAfter)
+  const Graphic3d_ZLayerSettings& theSettings,
+  const Graphic3d_ZLayerId theLayerAfter)
 {
   myZLayers.InsertLayerBefore (theLayerId, theSettings, theLayerAfter);
 }
@@ -503,8 +568,8 @@ void OpenGl_View::InsertLayerBefore (const Graphic3d_ZLayerId theLayerId,
 //purpose  :
 //=======================================================================
 void OpenGl_View::InsertLayerAfter (const Graphic3d_ZLayerId theLayerId,
-                                    const Graphic3d_ZLayerSettings& theSettings,
-                                    const Graphic3d_ZLayerId theLayerBefore)
+  const Graphic3d_ZLayerSettings& theSettings,
+  const Graphic3d_ZLayerId theLayerBefore)
 {
   myZLayers.InsertLayerAfter (theLayerId, theSettings, theLayerBefore);
 }
@@ -580,8 +645,8 @@ Bnd_Box OpenGl_View::MinMaxValues (const Standard_Boolean theToIncludeAuxiliary)
 
   // add bounding box of gradient/texture background for proper Z-fit
   if (theToIncludeAuxiliary
-   && (myBgTextureArray->IsDefined()
-    || myBgGradientArray->IsDefined()))
+    && (myBackgrounds[Graphic3d_TOB_TEXTURE]->IsDefined()
+     || myBackgrounds[Graphic3d_TOB_GRADIENT]->IsDefined()))
   {
     const Handle(Graphic3d_Camera)& aCamera = Camera();
     Graphic3d_Vec2i aWinSize;

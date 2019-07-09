@@ -222,6 +222,12 @@ public:
   //! Sets background image fill style.
   Standard_EXPORT virtual void SetBackgroundImageStyle (const Aspect_FillMethod theFillStyle) Standard_OVERRIDE;
 
+  //! Returns cubemap being set last time on background.
+  Standard_EXPORT Handle(Graphic3d_CubeMap) BackgroundCubeMap() const Standard_OVERRIDE;
+
+  //! Sets environment cubemap as background.
+  Standard_EXPORT virtual void SetBackgroundCubeMap (const Handle(Graphic3d_CubeMap)& theCubeMap) Standard_OVERRIDE;
+
   //! Returns environment texture set for the view.
   virtual Handle(Graphic3d_TextureEnv) TextureEnv() const Standard_OVERRIDE { return myTextureEnvData; }
 
@@ -506,9 +512,11 @@ protected: //! @name Rendering properties
 
 protected: //! @name Background parameters
 
-  OpenGl_Aspects*         myTextureParams;   //!< Stores texture and its parameters for textured background
-  OpenGl_BackgroundArray* myBgGradientArray; //!< Primitive array for gradient background
-  OpenGl_BackgroundArray* myBgTextureArray;  //!< Primitive array for texture  background
+  OpenGl_Aspects*            myTextureParams;                     //!< Stores texture and its parameters for textured background
+  OpenGl_Aspects*            myCubeMapParams;                     //!< Stores cubemap and its parameters for cubemap background
+  Handle(Graphic3d_CubeMap)  myBackgroundCubeMap;                 //!< Cubemap has been setted as background
+  Graphic3d_TypeOfBackground myBackgroundType;                    //!< Current typy of background
+  OpenGl_BackgroundArray*    myBackgrounds[Graphic3d_TypeOfBackground_NB]; //!< Array of primitive arrays of different background types
 
 protected: //! @name data types related to ray-tracing
 
