@@ -103,6 +103,21 @@ Graphic3d_Camera::Graphic3d_Camera()
 // purpose  :
 // =======================================================================
 Graphic3d_Camera::Graphic3d_Camera (const Handle(Graphic3d_Camera)& theOther)
+: myUp (0.0, 1.0, 0.0),
+  myEye (0.0, 0.0, -1500.0),
+  myCenter (0.0, 0.0, 0.0),
+  myAxialScale (1.0, 1.0, 1.0),
+  myProjType (Projection_Orthographic),
+  myFOVy (45.0),
+  myFOVyTan (Tan (DTR_HALF * 45.0)),
+  myZNear (DEFAULT_ZNEAR),
+  myZFar (DEFAULT_ZFAR),
+  myAspect (1.0),
+  myScale (1000.0),
+  myZFocus (1.0),
+  myZFocusType (FocusType_Relative),
+  myIOD (0.05),
+  myIODType (IODType_Relative)
 {
   myWorldViewProjState.Initialize (this);
 
