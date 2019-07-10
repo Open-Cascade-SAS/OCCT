@@ -88,7 +88,7 @@ BRepMesh_IncrementalMesh::~BRepMesh_IncrementalMesh()
 //=======================================================================
 void BRepMesh_IncrementalMesh::Perform(const Message_ProgressRange& theRange)
 {
-  Handle(BRepMesh_Context) aContext = new BRepMesh_Context;
+  Handle(BRepMesh_Context) aContext = new BRepMesh_Context (myParameters.MeshAlgo);
   Perform (aContext, theRange);
 }
 

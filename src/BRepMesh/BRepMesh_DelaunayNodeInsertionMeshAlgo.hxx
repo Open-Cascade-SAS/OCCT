@@ -84,7 +84,7 @@ protected:
                                           &this->getRangeSplitter());
   }
 
-  //! Perfroms processing of generated mesh. Generates surface nodes and inserts them into structure.
+  //! Performs processing of generated mesh. Generates surface nodes and inserts them into structure.
   virtual void postProcessMesh (BRepMesh_Delaun& theMesher,
                                 const Message_ProgressRange& theRange) Standard_OVERRIDE
   {

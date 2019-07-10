@@ -133,3 +133,9 @@ int Sprintf (char* theBuffer, const char* theFormat, ...)
   va_end(argp);
   return result;
 }
+
+int Vsprintf (char* theBuffer, const char* theFormat, va_list theArgList)
+{
+  SAVE_TL();
+  return vsprintf_l(theBuffer, Standard_CLocaleSentry::GetCLocale(), theFormat, theArgList);
+}

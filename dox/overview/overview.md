@@ -156,6 +156,10 @@ RapidJSON is optionally used by OCCT for reading glTF files (https://rapidjson.o
 **DejaVu** fonts are a font family based on the Vera Fonts under a permissive license (MIT-like, https://dejavu-fonts.github.io/License.html).
 DejaVu Sans (basic Latin sub-set) is used by OCCT as fallback font when no system font is available.
 
+**Delabella** is an open-source, cross-platform implementation of the Newton Apple Wrapper algorithm producing 2D Delaunay triangulation.
+Delabella is used by BRepMesh as one of alternative 2D triangulation algorithms.
+Delabella is licensed under the MIT license (https://github.com/msokalski/delabella).
+
 Adobe Systems, Inc. provides **Adobe Reader**, which can be used to view files in Portable Document Format (PDF). 
 
 @section OCCT_OVW_SECTION_3 Documentation

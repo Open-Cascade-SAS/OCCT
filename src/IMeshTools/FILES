@@ -2,6 +2,7 @@ IMeshTools_Context.hxx
 IMeshTools_CurveTessellator.hxx
 IMeshTools_MeshAlgo.hxx
 IMeshTools_MeshAlgoFactory.hxx
+IMeshTools_MeshAlgoType.hxx
 IMeshTools_MeshBuilder.hxx
 IMeshTools_MeshBuilder.cxx
 IMeshTools_ModelAlgo.hxx

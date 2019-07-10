@@ -149,6 +149,17 @@ public:
                                              const Standard_Real    theSqTolerance,
                                              Standard_Integer&      theEdgeOn) const;
 
+  //! Explicitly sets ids of auxiliary vertices used to build mesh and used by 3rd-party algorithms.
+  inline void SetAuxVertices (const IMeshData::VectorOfInteger& theSupVert)
+  {
+    mySupVert = theSupVert;
+  }
+
+  //! Destruction of auxiliary triangles containing the given vertices.
+  //! Removes auxiliary vertices also.
+  //! @param theAuxVertices auxiliary vertices to be cleaned up.
+  Standard_EXPORT void RemoveAuxElements ();
+
 private:
 
   enum ReplaceFlag
@@ -353,13 +364,27 @@ private:
   //! Performs insertion of internal edges into mesh.
   void insertInternalEdges();
 
+  //! Checks whether the given vertex id relates to super contour.
+  Standard_Boolean isSupVertex (const Standard_Integer theVertexIdx) const
+  {
+    for (IMeshData::VectorOfInteger::Iterator aIt (mySupVert); aIt.More (); aIt.Next ())
+    {
+      if (theVertexIdx == aIt.Value ())
+      {
+        return Standard_True;
+      }
+    }
+
+    return Standard_False;
+  }
+
 private:
 
   Handle(BRepMesh_DataStructureOfDelaun) myMeshData;
   BRepMesh_CircleTool                    myCircles;
-  Standard_Integer                       mySupVert[3];
+  IMeshData::VectorOfInteger             mySupVert;
+  Standard_Boolean                       myInitCircles;
   BRepMesh_Triangle                      mySupTrian;
-
 };
 
 #endif

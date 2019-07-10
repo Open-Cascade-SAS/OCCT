@@ -43,6 +43,11 @@
 #include <TopExp_Explorer.hxx>
 #include <TopTools_MapIteratorOfMapOfShape.hxx>
 
+#include <BRepMesh_Context.hxx>
+#include <BRepMesh_FaceDiscret.hxx>
+#include <BRepMesh_MeshAlgoFactory.hxx>
+#include <BRepMesh_DelabellaMeshAlgoFactory.hxx>
+
 //epa Memory leaks test
 //OAN: for triepoints
 #ifdef _WIN32
@@ -94,7 +99,8 @@ options:\n\
         -adjust_min     enables local adjustment of min size depending on edge size (switched off by default)\n\
         -force_face_def disables usage of shape tolerances for computing face deflection (switched off by default)\n\
         -decrease       enforces the meshing of the shape even if current mesh satisfies the new criteria\
-                        (switched off by default).\n";
+                        (switched off by default).\n\
+        -algo {watson|delabella} changes core triangulation algorithm to one with specified id (watson is used by default)\n";
     return 0;
   }
 
@@ -109,6 +115,7 @@ options:\n\
   aMeshParams.Deflection = aMeshParams.DeflectionInterior = 
     Max(Draw::Atof(argv[2]), Precision::Confusion());
 
+  Handle (IMeshTools_Context) aContext = new BRepMesh_Context;
   if (nbarg > 3)
   {
     Standard_Integer i = 3;
@@ -135,23 +142,54 @@ options:\n\
         aMeshParams.AllowQualityDecrease = Standard_True;
       else if (i < nbarg)
       {
-        Standard_Real aVal = Draw::Atof(argv[i++]);
-        if (aOpt == "-a")
+        if (aOpt == "-algo")
         {
-          aMeshParams.Angle = aVal * M_PI / 180.;
-        }
-        else if (aOpt == "-ai")
-        {
-          aMeshParams.AngleInterior = aVal * M_PI / 180.;
-        }
-        else if (aOpt == "-min")
-          aMeshParams.MinSize = aVal;
-        else if (aOpt == "-di")
-        {
-          aMeshParams.DeflectionInterior = aVal;
+          TCollection_AsciiString anAlgoStr (argv[i++]);
+          anAlgoStr.LowerCase();
+          if (anAlgoStr == "watson"
+           || anAlgoStr == "0")
+          {
+            aMeshParams.MeshAlgo = IMeshTools_MeshAlgoType_Watson;
+            aContext->SetFaceDiscret (new BRepMesh_FaceDiscret (new BRepMesh_MeshAlgoFactory));
+          }
+          else if (anAlgoStr == "delabella"
+                || anAlgoStr == "1")
+          {
+            aMeshParams.MeshAlgo = IMeshTools_MeshAlgoType_Delabella;
+            aContext->SetFaceDiscret (new BRepMesh_FaceDiscret (new BRepMesh_DelabellaMeshAlgoFactory));
+          }
+          else if (anAlgoStr == "-1"
+                || anAlgoStr == "default")
+          {
+            // already handled by BRepMesh_Context constructor
+            //aMeshParams.MeshAlgo = IMeshTools_MeshAlgoType_DEFAULT;
+          }
+          else
+          {
+            di << "Syntax error at " << anAlgoStr;
+            return 1;
+          }
         }
         else
-          --i;
+        {
+          Standard_Real aVal = Draw::Atof(argv[i++]);
+          if (aOpt == "-a")
+          {
+            aMeshParams.Angle = aVal * M_PI / 180.;
+          }
+          else if (aOpt == "-ai")
+          {
+            aMeshParams.AngleInterior = aVal * M_PI / 180.;
+          }
+          else if (aOpt == "-min")
+            aMeshParams.MinSize = aVal;
+          else if (aOpt == "-di")
+          {
+            aMeshParams.DeflectionInterior = aVal;
+          }
+          else
+            --i;
+        }
       }
     }
   }
@@ -160,7 +198,11 @@ options:\n\
      << (aMeshParams.InParallel ? "ON" : "OFF") << "\n";
 
   Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(di, 1);
-  BRepMesh_IncrementalMesh aMesher (aShape, aMeshParams, aProgress->Start());
+  BRepMesh_IncrementalMesh aMesher;
+  aMesher.SetShape (aShape);
+  aMesher.ChangeParameters() = aMeshParams;
+
+  aMesher.Perform (aContext, aProgress->Start());
 
   di << "Meshing statuses: ";
   const Standard_Integer aStatus = aMesher.GetStatusFlags();

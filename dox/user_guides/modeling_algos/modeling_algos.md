@@ -3251,6 +3251,40 @@ In general, face meshing algorithms have the following structure:
   * Classes *BRepMesh_DelaunayNodeInsertionMeshAlgo* and *BRepMesh_SweepLineNodeInsertionMeshAlgo* implement algorithm-specific functionality related to addition of internal nodes supplementing functionality provided by *BRepMesh_NodeInsertionMeshAlgo*;
   * *BRepMesh_DelaunayDeflectionControlMeshAlgo* extends functionality of *BRepMesh_DelaunayNodeInsertionMeshAlgo* by additional procedure controlling deflection of generated triangles.
 
+BRepMesh provides user a way to switch default triangulation algorithm to a custom one, either implemented by user or available worldwide.
+There are three base classes that can be currently used to integrate 3rd-party algorithms:
+  * *BRepMesh_ConstrainedBaseMeshAlgo* base class for tools providing generation of triangulations with constraints requiring no common processing by BRepMesh;
+  * *BRepMesh_CustomBaseMeshAlgo* provides the entry point for generic algorithms without support of constraints and supposed for generation of base mesh only.
+    Constraint edges are processed using standard functionality provided by the component itself upon background mesh produced by 3rd-party solver;
+  * *BRepMesh_CustomDelaunayBaseMeshAlgo* contains initialization part for tools used by BRepMesh for checks or optimizations using results of 3rd-party algorithm.
+
+Meshing algorithms could be provided by implemeting IMeshTools_MeshAlgoFactory with related interfaces and passing it to BRepMesh_Context::SetFaceDiscret().
+OCCT comes with two base 2D meshing algorithms: BRepMesh_MeshAlgoFactory (used by default) and BRepMesh_DelabellaMeshAlgoFactory.
+
+The following example demonstrates how it could be done from Draw environment:
+~~~~~
+psphere s 10
+
+### Default Algo ###
+incmesh s 0.0001 -algo default
+
+### Delabella Algo ###
+incmesh s 0.0001 -algo delabella
+~~~~~
+
+The code snippet below shows passing a custom mesh factory to BRepMesh_IncrementalMesh:
+~~~~~
+IMeshTools_Parameters aMeshParams;
+Handle(IMeshTools_Context) aContext = new BRepMesh_Context();
+aContext->SetFaceDiscret (new BRepMesh_FaceDiscret (new BRepMesh_DelabellaMeshAlgoFactory()));
+
+BRepMesh_IncrementalMesh aMesher;
+aMesher.SetShape (aShape);
+aMesher.ChangeParameters() = aMeshParams;
+
+aMesher.Perform (aContext);
+~~~~~
+
 #### Range splitter
 Range splitter tools provide functionality to generate internal surface nodes defined within the range computed using discrete model data. The base functionality is provided by *BRepMesh_DefaultRangeSplitter* which can be used without modifications in case of planar surface. The default splitter does not generate any internal node.
 

@@ -25,7 +25,7 @@ class BRepMesh_Context : public IMeshTools_Context
 public:
 
   //! Constructor.
-  Standard_EXPORT BRepMesh_Context ();
+  Standard_EXPORT BRepMesh_Context (IMeshTools_MeshAlgoType theMeshType = IMeshTools_MeshAlgoType_DEFAULT);
 
   //! Destructor.
   Standard_EXPORT virtual ~BRepMesh_Context ();

@@ -16,6 +16,7 @@
 #ifndef _IMeshTools_Parameters_HeaderFile
 #define _IMeshTools_Parameters_HeaderFile
 
+#include <IMeshTools_MeshAlgoType.hxx>
 #include <Precision.hxx>
 
 //! Structure storing meshing parameters
@@ -24,6 +25,7 @@ struct IMeshTools_Parameters {
   //! Default constructor
   IMeshTools_Parameters ()
     :
+    MeshAlgo (IMeshTools_MeshAlgoType_DEFAULT),
     Angle(0.5),
     Deflection(0.001),
     AngleInterior(-1.0),
@@ -46,6 +48,9 @@ struct IMeshTools_Parameters {
   {
     return 0.1;
   }
+
+  //! 2D Delaunay triangulation algorithm factory to use
+  IMeshTools_MeshAlgoType                          MeshAlgo;
 
   //! Angular deflection used to tessellate the boundary edges
   Standard_Real                                    Angle;

@@ -25,7 +25,7 @@
 class BRepMesh_DataStructureOfDelaun;
 class BRepMesh_Delaun;
 
-//! Class provides base fuctionality for algorithms building face triangulation.
+//! Class provides base functionality for algorithms building face triangulation.
 //! Performs initialization of BRepMesh_DataStructureOfDelaun and nodes map structures.
 class BRepMesh_BaseMeshAlgo : public IMeshTools_MeshAlgo
 {
@@ -108,7 +108,7 @@ protected:
 
 private:
 
-  //! If the given edge has another pcurve for current face coinsiding with specified one,
+  //! If the given edge has another pcurve for current face coinciding with specified one,
   //! returns TopAbs_INTERNAL flag. Elsewhere returns orientation of specified pcurve.
   TopAbs_Orientation fixSeamEdgeOrientation(
     const IMeshData::IEdgeHandle&   theDEdge,

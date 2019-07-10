@@ -86,3 +86,9 @@ BRepMesh_VertexTool.cxx
 BRepMesh_VertexTool.hxx
 BRepMesh_CustomBaseMeshAlgo.hxx
 BRepMesh_CustomDelaunayBaseMeshAlgo.hxx
+delabella.pxx
+delabella.cpp
+BRepMesh_DelabellaBaseMeshAlgo.hxx
+BRepMesh_DelabellaBaseMeshAlgo.cxx
+BRepMesh_DelabellaMeshAlgoFactory.hxx
+BRepMesh_DelabellaMeshAlgoFactory.cxx

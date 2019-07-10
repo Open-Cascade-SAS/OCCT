@@ -1,5 +1,5 @@
-// Created on: 2016-07-07
-// Copyright (c) 2016 OPEN CASCADE SAS
+// Created on: 2019-07-05
+// Copyright (c) 2019 OPEN CASCADE SAS
 // Created by: Oleg AGASHIN
 //
 // This file is part of Open CASCADE Technology software library.
@@ -13,34 +13,34 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _BRepMesh_DelaunayBaseMeshAlgo_HeaderFile
-#define _BRepMesh_DelaunayBaseMeshAlgo_HeaderFile
+#ifndef _BRepMesh_DelabellaBaseMeshAlgo_HeaderFile
+#define _BRepMesh_DelabellaBaseMeshAlgo_HeaderFile
 
-#include <BRepMesh_ConstrainedBaseMeshAlgo.hxx>
+#include <BRepMesh_CustomBaseMeshAlgo.hxx>
 #include <NCollection_Shared.hxx>
 #include <IMeshTools_Parameters.hxx>
 
 class BRepMesh_DataStructureOfDelaun;
 class BRepMesh_Delaun;
 
-//! Class provides base functionality to build face triangulation using Dealunay approach.
+//! Class provides base functionality to build face triangulation using Delabella project.
 //! Performs generation of mesh using raw data from model.
-class BRepMesh_DelaunayBaseMeshAlgo : public BRepMesh_ConstrainedBaseMeshAlgo
+class BRepMesh_DelabellaBaseMeshAlgo : public BRepMesh_CustomBaseMeshAlgo
 {
 public:
 
   //! Constructor.
-  Standard_EXPORT BRepMesh_DelaunayBaseMeshAlgo();
+  Standard_EXPORT BRepMesh_DelabellaBaseMeshAlgo ();
 
   //! Destructor.
-  Standard_EXPORT virtual ~BRepMesh_DelaunayBaseMeshAlgo();
+  Standard_EXPORT virtual ~BRepMesh_DelabellaBaseMeshAlgo ();
 
-  DEFINE_STANDARD_RTTI_INLINE(BRepMesh_DelaunayBaseMeshAlgo, BRepMesh_ConstrainedBaseMeshAlgo)
+  DEFINE_STANDARD_RTTIEXT(BRepMesh_DelabellaBaseMeshAlgo, BRepMesh_CustomBaseMeshAlgo)
 
 protected:
 
-  //! Generates mesh for the contour stored in data structure.
-  Standard_EXPORT virtual void generateMesh (const Message_ProgressRange& theRange) Standard_OVERRIDE;
+  //! Builds base triangulation using Delabella project.
+  Standard_EXPORT virtual void buildBaseTriangulation() Standard_OVERRIDE;
 };
 
 #endif
