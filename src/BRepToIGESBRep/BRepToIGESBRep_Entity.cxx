@@ -845,7 +845,6 @@ Handle(IGESData_IGESEntity) BRepToIGESBRep_Entity::TransferCompound (const TopoD
   // take all isolated Wires 
   for (Ex.Init(start, TopAbs_WIRE, TopAbs_FACE); Ex.More(); Ex.Next()) {
     TopoDS_Wire S = TopoDS::Wire(Ex.Current());
-    AddWarning(S," a Wire alone is not an IGESBRep entity : no Transfer");
 
     BRepToIGES_BRWire BW(*this);
     BW.SetModel(GetModel());
@@ -857,7 +856,6 @@ Handle(IGESData_IGESEntity) BRepToIGESBRep_Entity::TransferCompound (const TopoD
   // take all isolated Edges 
   for (Ex.Init(start, TopAbs_EDGE, TopAbs_WIRE); Ex.More(); Ex.Next()) {
     TopoDS_Edge S = TopoDS::Edge(Ex.Current());
-    AddWarning(S," a Edge alone is not an IGESBRep entity : no Transfer");
 
     BRepToIGES_BRWire BW(*this);
     BW.SetModel(GetModel());
@@ -869,7 +867,6 @@ Handle(IGESData_IGESEntity) BRepToIGESBRep_Entity::TransferCompound (const TopoD
   // take all isolated Vertices 
   for (Ex.Init(start, TopAbs_VERTEX, TopAbs_EDGE); Ex.More(); Ex.Next()) {
     TopoDS_Vertex S = TopoDS::Vertex(Ex.Current());
-    AddWarning(S," a Vertex alone is not an IGESBRep entity : no Transfer");
 
     BRepToIGES_BRWire BW(*this);
     BW.SetModel(GetModel());
