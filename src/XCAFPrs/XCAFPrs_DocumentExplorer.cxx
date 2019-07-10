@@ -221,7 +221,7 @@ void XCAFPrs_DocumentExplorer::Init (const Handle(TDocStd_Document)& theDocument
                                      const XCAFPrs_DocumentExplorerFlags theFlags,
                                      const XCAFPrs_Style& theDefStyle)
 {
-  if ((theFlags & XCAFPrs_DocumentExplorerFlags_NoStyle) != 0)
+  if ((theFlags & XCAFPrs_DocumentExplorerFlags_NoStyle) == 0)
   {
     myColorTool = XCAFDoc_DocumentTool::ColorTool (theDocument->Main());
   }
@@ -230,7 +230,6 @@ void XCAFPrs_DocumentExplorer::Init (const Handle(TDocStd_Document)& theDocument
     myColorTool.Nullify();
   }
 
-  ///myColorTool = theColorTool;
   myDefStyle  = theDefStyle;
   myRoots     = theRoots;
   myRootIter  = TDF_LabelSequence::Iterator (myRoots);
@@ -263,7 +262,7 @@ void XCAFPrs_DocumentExplorer::initRoot()
     if (aRootLab.IsNull())
     {
       // assert - invalid input
-      //Standard_ProgramError::Raise ("CadDocumentExplorer - NULL label in the input");
+      //Standard_ProgramError::Raise ("XCAFPrs_DocumentExplorer - NULL label in the input");
       myRootIter.Next();
       continue;
     }
@@ -294,7 +293,7 @@ void XCAFPrs_DocumentExplorer::initCurrent (Standard_Boolean theIsAssmebly)
   {
     if (myTop < 0)
     {
-      Standard_ProgramError::Raise ("CadDocumentExplorer - internal error");
+      Standard_ProgramError::Raise ("XCAFPrs_DocumentExplorer - internal error");
     }
     myCurrent = myNodeStack.Value (myTop);
   }
@@ -334,7 +333,7 @@ void XCAFPrs_DocumentExplorer::Next()
 {
   if (!myHasMore)
   {
-    Standard_ProgramError::Raise ("CadDocumentExplorer::Next() - out of range");
+    Standard_ProgramError::Raise ("XCAFPrs_DocumentExplorer::Next() - out of range");
     return; // assert
   }
 
