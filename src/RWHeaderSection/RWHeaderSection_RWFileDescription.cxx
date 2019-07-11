@@ -37,15 +37,17 @@ void RWHeaderSection_RWFileDescription::ReadStep
 
 	Handle(Interface_HArray1OfHAsciiString) aDescription;
 	Handle(TCollection_HAsciiString) aDescriptionItem;
-	Standard_Integer nsub1;
-	nsub1 = data->SubListNumber(num, 1, Standard_False);
+	Standard_Integer nsub1 = data->SubListNumber(num, 1, Standard_False);
 	if (nsub1 !=0) {
 	  Standard_Integer nb1 = data->NbParams(nsub1);
-	  aDescription = new Interface_HArray1OfHAsciiString (1, nb1);
-	  for (Standard_Integer i1 = 1; i1 <= nb1; i1 ++) {
-	    Standard_Boolean stat1 = data->ReadString
-	         (nsub1,i1,"description",ach,aDescriptionItem);
-	    if (stat1) aDescription->SetValue(i1,aDescriptionItem);
+	  if (nb1 > 0)
+	  {
+	    aDescription = new Interface_HArray1OfHAsciiString (1, nb1);
+	    for (Standard_Integer i1 = 1; i1 <= nb1; i1 ++) {
+	      Standard_Boolean stat1 = data->ReadString
+	           (nsub1,i1,"description",ach,aDescriptionItem);
+	      if (stat1) aDescription->SetValue(i1,aDescriptionItem);
+	    }
 	  }
 	}
 	else {
