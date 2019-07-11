@@ -34,13 +34,11 @@ static int OSD_OpenFile_iosMode2FileFlags (::std::ios_base::openmode theMode)
   {
     aFlags |= O_WRONLY;
     aFlags |= O_CREAT;
+    aFlags |= O_TRUNC;
+
     if (theMode & ::std::ios_base::app)
     {
       aFlags |= O_APPEND;
-    }
-    if (theMode & ::std::ios_base::trunc)
-    {
-      aFlags |= O_TRUNC;
     }
   }
 #ifdef _WIN32
