@@ -160,6 +160,7 @@ private:
   IntCurveSurface_SequenceOfPnt SeqPnt;
   TColStd_SequenceOfInteger mySeqState;
   Standard_Boolean done;
+  Standard_Boolean myReady;
   Standard_Integer nbpnt;
   TopoDS_Face face;
   Standard_Address PtrOnPolyhedron;
