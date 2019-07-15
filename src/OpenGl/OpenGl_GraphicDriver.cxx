@@ -526,29 +526,36 @@ void OpenGl_GraphicDriver::TextSize (const Handle(Graphic3d_CView)& theView,
 }
 
 //=======================================================================
-//function : AddZLayer
+//function : InsertLayerBefore
 //purpose  :
 //=======================================================================
-void OpenGl_GraphicDriver::AddZLayer (const Graphic3d_ZLayerId theLayerId)
+void OpenGl_GraphicDriver::InsertLayerBefore (const Graphic3d_ZLayerId theLayerId,
+                                              const Graphic3d_ZLayerSettings& theSettings,
+                                              const Graphic3d_ZLayerId theLayerAfter)
 {
-  if (theLayerId < 1)
-  {
-    Standard_ASSERT_RAISE (theLayerId > 0,
-                           "OpenGl_GraphicDriver::AddZLayer, "
-                           "negative and zero IDs are reserved");
-  }
-
-  myLayerIds.Add (theLayerId);
-
-  // Default z-layer settings
-  myMapOfZLayerSettings.Bind (theLayerId, Graphic3d_ZLayerSettings());
-  addZLayerIndex (theLayerId);
+  base_type::InsertLayerBefore (theLayerId, theSettings, theLayerAfter);
 
   // Add layer to all views
-  NCollection_Map<Handle(OpenGl_View)>::Iterator aViewIt (myMapOfView);
-  for (; aViewIt.More(); aViewIt.Next())
+  for (NCollection_Map<Handle(OpenGl_View)>::Iterator aViewIt (myMapOfView); aViewIt.More(); aViewIt.Next())
   {
-    aViewIt.Value()->AddZLayer (theLayerId);
+    aViewIt.Value()->InsertLayerBefore (theLayerId, theSettings, theLayerAfter);
+  }
+}
+
+//=======================================================================
+//function : InsertLayerAfter
+//purpose  :
+//=======================================================================
+void OpenGl_GraphicDriver::InsertLayerAfter (const Graphic3d_ZLayerId theNewLayerId,
+                                             const Graphic3d_ZLayerSettings& theSettings,
+                                             const Graphic3d_ZLayerId theLayerBefore)
+{
+  base_type::InsertLayerAfter (theNewLayerId, theSettings, theLayerBefore);
+
+  // Add layer to all views
+  for (NCollection_Map<Handle(OpenGl_View)>::Iterator aViewIt (myMapOfView); aViewIt.More(); aViewIt.Next())
+  {
+    aViewIt.Value()->InsertLayerAfter (theNewLayerId, theSettings, theLayerBefore);
   }
 }
 
@@ -558,43 +565,21 @@ void OpenGl_GraphicDriver::AddZLayer (const Graphic3d_ZLayerId theLayerId)
 //=======================================================================
 void OpenGl_GraphicDriver::RemoveZLayer (const Graphic3d_ZLayerId theLayerId)
 {
-  Standard_ASSERT_RAISE (theLayerId > 0,
-                         "OpenGl_GraphicDriver::AddZLayer, "
-                         "negative and zero IDs are reserved"
-                         "and can not be removed");
-
-  Standard_ASSERT_RAISE (myLayerIds.Contains (theLayerId),
-                         "OpenGl_GraphicDriver::RemoveZLayer, "
-                         "Layer with theLayerId does not exist");
+  base_type::RemoveZLayer (theLayerId);
 
   // Remove layer from all of the views
-  NCollection_Map<Handle(OpenGl_View)>::Iterator aViewIt (myMapOfView);
-  for (; aViewIt.More(); aViewIt.Next())
+  for (NCollection_Map<Handle(OpenGl_View)>::Iterator aViewIt (myMapOfView); aViewIt.More(); aViewIt.Next())
   {
     aViewIt.Value()->RemoveZLayer (theLayerId);
   }
 
   // Unset Z layer for all of the structures.
-  NCollection_DataMap<Standard_Integer, OpenGl_Structure*>::Iterator aStructIt (myMapOfStructure);
-  for( ; aStructIt.More (); aStructIt.Next ())
+  for (NCollection_DataMap<Standard_Integer, OpenGl_Structure*>::Iterator aStructIt (myMapOfStructure); aStructIt.More(); aStructIt.Next())
   {
     OpenGl_Structure* aStruct = aStructIt.ChangeValue ();
     if (aStruct->ZLayer() == theLayerId)
       aStruct->SetZLayer (Graphic3d_ZLayerId_Default);
   }
-
-  // Remove index
-  for (TColStd_SequenceOfInteger::Iterator aLayerIt (myLayerSeq); aLayerIt.More(); aLayerIt.Next())
-  {
-    if (aLayerIt.Value() == theLayerId)
-    {
-      myLayerSeq.Remove (aLayerIt);
-      break;
-    }
-  }
-
-  myMapOfZLayerSettings.UnBind (theLayerId);
-  myLayerIds.Remove  (theLayerId);
 }
 
 //=======================================================================
@@ -642,23 +627,18 @@ void OpenGl_GraphicDriver::RemoveStructure (Handle(Graphic3d_CStructure)& theCSt
 }
 
 // =======================================================================
-// function : View
+// function : CreateView
 // purpose  :
 // =======================================================================
 Handle(Graphic3d_CView) OpenGl_GraphicDriver::CreateView (const Handle(Graphic3d_StructureManager)& theMgr)
 {
   Handle(OpenGl_View) aView = new OpenGl_View (theMgr, this, myCaps, &myStateCounter);
-
   myMapOfView.Add (aView);
-
-  for (TColStd_SequenceOfInteger::Iterator aLayerIt (myLayerSeq); aLayerIt.More(); aLayerIt.Next())
+  for (NCollection_List<Handle(Graphic3d_Layer)>::Iterator aLayerIter (myLayers); aLayerIter.More(); aLayerIter.Next())
   {
-    const Graphic3d_ZLayerId        aLayerID  = aLayerIt.Value();
-    const Graphic3d_ZLayerSettings& aSettings = myMapOfZLayerSettings.Find (aLayerID);
-    aView->AddZLayer         (aLayerID);
-    aView->SetZLayerSettings (aLayerID, aSettings);
+    const Handle(Graphic3d_Layer)& aLayer = aLayerIter.Value();
+    aView->InsertLayerAfter (aLayer->LayerId(), aLayer->LayerSettings(), Graphic3d_ZLayerId_UNKNOWN);
   }
-
   return aView;
 }
 

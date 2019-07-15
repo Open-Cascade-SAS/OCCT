@@ -29,9 +29,6 @@ class OpenGl_Structure;
 class OpenGl_Workspace;
 struct OpenGl_GlobalLayerSettings;
 
-typedef NCollection_Sequence<Handle(OpenGl_Layer)> OpenGl_SequenceOfLayers;
-typedef NCollection_DataMap<int, int> OpenGl_LayerSeqIds;
-
 //! Class defining the list of layers.
 class OpenGl_LayerList
 {
@@ -53,7 +50,14 @@ public:
   Standard_Integer NbImmediateStructures() const { return myImmediateNbStructures; }
 
   //! Insert a new layer with id.
-  void AddLayer (const Graphic3d_ZLayerId theLayerId);
+  void InsertLayerBefore (const Graphic3d_ZLayerId theNewLayerId,
+                          const Graphic3d_ZLayerSettings& theSettings,
+                          const Graphic3d_ZLayerId theLayerAfter);
+
+  //! Insert a new layer with id.
+  void InsertLayerAfter (const Graphic3d_ZLayerId theNewLayerId,
+                         const Graphic3d_ZLayerSettings& theSettings,
+                         const Graphic3d_ZLayerId theLayerBefore);
 
   //! Remove layer by its id.
   void RemoveLayer (const Graphic3d_ZLayerId theLayerId);
@@ -82,10 +86,10 @@ public:
                        const Standard_Integer   theNewPriority);
 
   //! Returns reference to the layer with given ID.
-  OpenGl_Layer& Layer (const Graphic3d_ZLayerId theLayerId);
+  OpenGl_Layer& Layer (const Graphic3d_ZLayerId theLayerId) { return *myLayerIds.Find (theLayerId); }
 
   //! Returns reference to the layer with given ID.
-  const OpenGl_Layer& Layer (const Graphic3d_ZLayerId theLayerId) const;
+  const OpenGl_Layer& Layer (const Graphic3d_ZLayerId theLayerId) const { return *myLayerIds.Find (theLayerId); }
 
   //! Assign new settings to the layer.
   void SetLayerSettings (const Graphic3d_ZLayerId        theLayerId,
@@ -103,10 +107,10 @@ public:
                OpenGl_FrameBuffer*             theOitAccumFbo) const;
 
   //! Returns the set of OpenGL Z-layers.
-  const OpenGl_SequenceOfLayers& Layers() const { return myLayers; }
+  const NCollection_List<Handle(Graphic3d_Layer)>& Layers() const { return myLayers; }
 
   //! Returns the map of Z-layer IDs to indexes.
-  const OpenGl_LayerSeqIds& LayerIDs() const { return myLayerIds; }
+  const NCollection_DataMap<Graphic3d_ZLayerId, Handle(Graphic3d_Layer)>& LayerIDs() const { return myLayerIds; }
 
   //! Marks BVH tree for given priority list as dirty and
   //! marks primitive set for rebuild.
@@ -134,13 +138,14 @@ protected:
     {
       if (theSize > 0)
       {
-        myStackSpace = new NCollection_Array1<const Graphic3d_Layer*> (1, theSize);
-        myStackSpace->Init (NULL);
-        myBackPtr    = myStackSpace->begin();
+        myStackSpace.Resize (1, theSize, false);
+        myStackSpace.Init (NULL);
+        myBackPtr = myStackSpace.begin();
       }
       else
       {
-        myStackSpace.Nullify();
+        NCollection_Array1<const Graphic3d_Layer*> aDummy;
+        myStackSpace.Move (aDummy);
         myBackPtr = iterator();
       }
     }
@@ -148,18 +153,15 @@ protected:
     //! Clear stack.
     void Clear()
     {
-      if (!myStackSpace.IsNull())
-      {
-        myStackSpace->Init (NULL);
-        myBackPtr = myStackSpace->begin();
-      }
+      myStackSpace.Init (NULL);
+      myBackPtr = myStackSpace.begin();
     }
 
     //! Push a new layer reference to the stack.
     void Push (const OpenGl_Layer* theLayer) { (*myBackPtr++) = theLayer; }
 
     //! Returns iterator to the origin of the stack.
-    iterator Origin() const { return myStackSpace.IsNull() ? iterator() : myStackSpace->begin(); }
+    iterator Origin() const { return myStackSpace.IsEmpty() ? iterator() : myStackSpace.begin(); }
 
     //! Returns iterator to the back of the stack (after last item added).
     iterator Back() const { return myBackPtr; }
@@ -169,8 +171,8 @@ protected:
 
   private:
 
-    NCollection_Handle<NCollection_Array1<const OpenGl_Layer*> > myStackSpace;
-    iterator                                                     myBackPtr;
+    NCollection_Array1<const OpenGl_Layer*> myStackSpace;
+    iterator                                myBackPtr;
   };
 
   //! Render transparent objects using blending operator.
@@ -195,11 +197,9 @@ protected:
 
 protected:
 
-  // number of structures temporary put to default layer
-  OpenGl_SequenceOfLayers myLayers;
-  OpenGl_LayerSeqIds      myLayerIds;
+  NCollection_List<Handle(Graphic3d_Layer)> myLayers;
+  NCollection_DataMap<Graphic3d_ZLayerId, Handle(Graphic3d_Layer)> myLayerIds;
   Handle(Select3D_BVHBuilder3d) myBVHBuilder;      //!< BVH tree builder for frustom culling
-  Standard_Integer        myDefaultLayerIndex;     //!< index of Graphic3d_ZLayerId_Default layer in myLayers sequence
 
   Standard_Integer        myNbPriorities;
   Standard_Integer        myNbStructures;

@@ -1129,7 +1129,7 @@ void OpenGl_View::renderStructs (Graphic3d_Camera::Projection theProjection,
           }
 
           // Render non-polygonal elements in default layer
-          myZLayers.Render (myWorkspace, theToDrawImmediate, OpenGl_LF_Default, theReadDrawFbo, theOitAccumFbo);
+          myZLayers.Render (myWorkspace, theToDrawImmediate, OpenGl_LF_RayTracable, theReadDrawFbo, theOitAccumFbo);
         }
         myWorkspace->SetRenderFilter (aPrevFilter);
       }

@@ -38,6 +38,7 @@ struct Graphic3d_ZLayerSettings
   : myCullingDistance (Precision::Infinite()),
     myCullingSize     (Precision::Infinite()),
     myIsImmediate       (Standard_False),
+    myToRaytrace        (Standard_True),
     myUseEnvironmentTexture (Standard_True),
     myToEnableDepthTest (Standard_True),
     myToEnableDepthWrite(Standard_True),
@@ -104,6 +105,13 @@ struct Graphic3d_ZLayerSettings
 
   //! Set the flag indicating the immediate layer, which should be drawn after all normal (non-immediate) layers.
   void SetImmediate (const Standard_Boolean theValue) { myIsImmediate = theValue; }
+
+  //! Returns TRUE if layer should be processed by ray-tracing renderer; TRUE by default.
+  //! Note that this flag is IGNORED for layers with IsImmediate() flag.
+  Standard_Boolean IsRaytracable() const { return myToRaytrace; }
+
+  //! Sets if layer should be processed by ray-tracing renderer.
+  void SetRaytracable (Standard_Boolean theToRaytrace) { myToRaytrace = theToRaytrace; }
 
   //! Return flag to allow/prevent environment texture mapping usage for specific layer.
   Standard_Boolean UseEnvironmentTexture() const { return myUseEnvironmentTexture; }
@@ -210,6 +218,7 @@ protected:
   Standard_Real               myCullingSize;           //!< size to discard objects
   Graphic3d_PolygonOffset     myPolygonOffset;         //!< glPolygonOffset() arguments
   Standard_Boolean            myIsImmediate;           //!< immediate layer will be drawn after all normal layers
+  Standard_Boolean            myToRaytrace;            //!< option to render layer within ray-tracing engine
   Standard_Boolean            myUseEnvironmentTexture; //!< flag to allow/prevent environment texture mapping usage for specific layer
   Standard_Boolean            myToEnableDepthTest;     //!< option to enable depth test
   Standard_Boolean            myToEnableDepthWrite;    //!< option to enable write depth values

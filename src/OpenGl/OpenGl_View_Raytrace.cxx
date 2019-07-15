@@ -107,12 +107,17 @@ Standard_Boolean OpenGl_View::updateRaytraceGeometry (const RaytraceUpdateMode  
   // of changes in OpenGL scene (only for path tracing)
   std::set<Standard_Integer> aNonRaytraceIDs;
 
-  const OpenGl_Layer& aLayer = myZLayers.Layer (Graphic3d_ZLayerId_Default);
-
-  if (aLayer.NbStructures() != 0)
+  for (NCollection_List<Handle(Graphic3d_Layer)>::Iterator aLayerIter (myZLayers.Layers()); aLayerIter.More(); aLayerIter.Next())
   {
-    const Graphic3d_ArrayOfIndexedMapOfStructure& aStructArray = aLayer.ArrayOfStructures();
+    const Handle(OpenGl_Layer)& aLayer = aLayerIter.Value();
+    if (aLayer->NbStructures() == 0
+    || !aLayer->LayerSettings().IsRaytracable()
+    ||  aLayer->LayerSettings().IsImmediate())
+    {
+      continue;
+    }
 
+    const Graphic3d_ArrayOfIndexedMapOfStructure& aStructArray = aLayer->ArrayOfStructures();
     for (Standard_Integer anIndex = 0; anIndex < aStructArray.Length(); ++anIndex)
     {
       for (OpenGl_Structure::StructIterator aStructIt (aStructArray.Value (anIndex)); aStructIt.More(); aStructIt.Next())

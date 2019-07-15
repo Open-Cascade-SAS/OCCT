@@ -190,9 +190,39 @@ public:
 
   //! Add a new top-level Z layer to all managed views and get its ID as <theLayerId> value.
   //! The Z layers are controlled entirely by viewer, it is not possible to add a layer to a particular view.
-  //! The method returns Standard_False if the layer can not be created.
-  //! The layer mechanism allows to display structures in higher layers in overlay of structures in lower layers.
-  Standard_EXPORT Standard_Boolean AddZLayer (Graphic3d_ZLayerId& theLayerId);
+  //! Custom layers will be inserted before Graphic3d_ZLayerId_Top (e.g. between Graphic3d_ZLayerId_Default and before Graphic3d_ZLayerId_Top).
+  //! @param theLayerId [out] id of created layer
+  //! @param theSettings [in] new layer settings
+  //! @return FALSE if the layer can not be created
+  Standard_Boolean AddZLayer (Graphic3d_ZLayerId& theLayerId,
+                              const Graphic3d_ZLayerSettings& theSettings = Graphic3d_ZLayerSettings())
+  {
+    return InsertLayerBefore (theLayerId, theSettings, Graphic3d_ZLayerId_Top);
+  }
+
+  //! Add a new top-level Z layer to all managed views and get its ID as <theLayerId> value.
+  //! The Z layers are controlled entirely by viewer, it is not possible to add a layer to a particular view.
+  //! Layer rendering order is defined by its position in list (altered by theLayerAfter)
+  //! and IsImmediate() flag (all layers with IsImmediate() flag are drawn afterwards);
+  //! @param theNewLayerId [out] id of created layer; layer id is arbitrary and does not depend on layer position in the list
+  //! @param theSettings    [in] new layer settings
+  //! @param theLayerAfter  [in] id of layer to append new layer before
+  //! @return FALSE if the layer can not be created
+  Standard_EXPORT Standard_Boolean InsertLayerBefore (Graphic3d_ZLayerId& theNewLayerId,
+                                                      const Graphic3d_ZLayerSettings& theSettings,
+                                                      const Graphic3d_ZLayerId theLayerAfter);
+
+  //! Add a new top-level Z layer to all managed views and get its ID as <theLayerId> value.
+  //! The Z layers are controlled entirely by viewer, it is not possible to add a layer to a particular view.
+  //! Layer rendering order is defined by its position in list (altered by theLayerAfter)
+  //! and IsImmediate() flag (all layers with IsImmediate() flag are drawn afterwards);
+  //! @param theNewLayerId [out] id of created layer; layer id is arbitrary and does not depend on layer position in the list
+  //! @param theSettings    [in] new layer settings
+  //! @param theLayerBefore [in] id of layer to append new layer after
+  //! @return FALSE if the layer can not be created
+  Standard_EXPORT Standard_Boolean InsertLayerAfter (Graphic3d_ZLayerId& theNewLayerId,
+                                                     const Graphic3d_ZLayerSettings& theSettings,
+                                                     const Graphic3d_ZLayerId theLayerBefore);
 
   //! Remove Z layer with ID <theLayerId>.
   //! Method returns Standard_False if the layer can not be removed or doesn't exists.
@@ -200,7 +230,7 @@ public:
   Standard_EXPORT Standard_Boolean RemoveZLayer (const Graphic3d_ZLayerId theLayerId);
 
   //! Returns the settings of a single Z layer.
-  Standard_EXPORT Graphic3d_ZLayerSettings ZLayerSettings (const Graphic3d_ZLayerId theLayerId);
+  Standard_EXPORT const Graphic3d_ZLayerSettings& ZLayerSettings (const Graphic3d_ZLayerId theLayerId) const;
 
   //! Sets the settings for a single Z layer.
   Standard_EXPORT void SetZLayerSettings (const Graphic3d_ZLayerId theLayerId, const Graphic3d_ZLayerSettings& theSettings);

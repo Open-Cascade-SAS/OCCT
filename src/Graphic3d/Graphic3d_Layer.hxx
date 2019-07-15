@@ -17,6 +17,7 @@
 #include <Graphic3d_BvhCStructureSet.hxx>
 #include <Graphic3d_BvhCStructureSetTrsfPers.hxx>
 #include <Graphic3d_Camera.hxx>
+#include <Graphic3d_ZLayerId.hxx>
 #include <Graphic3d_ZLayerSettings.hxx>
 #include <Graphic3d_RenderingParams.hxx>
 #include <NCollection_Array1.hxx>
@@ -38,11 +39,15 @@ class Graphic3d_Layer : public Standard_Transient
 public:
 
   //! Initializes associated priority list and layer properties
-  Standard_EXPORT Graphic3d_Layer (Standard_Integer theNbPriorities,
+  Standard_EXPORT Graphic3d_Layer (Graphic3d_ZLayerId theId,
+                                   Standard_Integer theNbPriorities,
                                    const Handle(Select3D_BVHBuilder3d)& theBuilder);
 
   //! Destructor.
   Standard_EXPORT virtual ~Graphic3d_Layer();
+
+  //! Return layer id.
+  Graphic3d_ZLayerId LayerId() const { return myLayerId; }
 
   //! Returns BVH tree builder for frustom culling.
   const Handle(Select3D_BVHBuilder3d)& FrustumCullingBVHBuilder() const { return myBVHPrimitivesTrsfPers.Builder(); }
@@ -157,6 +162,9 @@ private:
 
   //! Layer setting flags.
   Graphic3d_ZLayerSettings myLayerSettings;
+
+  //! Layer id.
+  Graphic3d_ZLayerId myLayerId;
 
   //! Set of Graphic3d_CStructures structures for building BVH tree.
   mutable Graphic3d_BvhCStructureSet myBVHPrimitives;

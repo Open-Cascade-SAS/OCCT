@@ -103,7 +103,7 @@ void OpenGl_FrameStats::updateStatistics (const Handle(Graphic3d_CView)& theView
    || (aBits & Graphic3d_RenderingParams::PerfCounters_Layers)    != 0)
   {
     const Standard_Integer aViewId = aView->Identification();
-    for (OpenGl_SequenceOfLayers::Iterator aLayerIter (aView->LayerList().Layers()); aLayerIter.More(); aLayerIter.Next())
+    for (NCollection_List<Handle(Graphic3d_Layer)>::Iterator aLayerIter (aView->LayerList().Layers()); aLayerIter.More(); aLayerIter.Next())
     {
       const Handle(OpenGl_Layer)& aLayer = aLayerIter.Value();
       myCountersTmp[Graphic3d_FrameStatsCounter_NbStructs] += aLayer->NbStructures();

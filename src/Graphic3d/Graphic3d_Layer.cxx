@@ -22,11 +22,13 @@ IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_Layer, Standard_Transient)
 // function : Graphic3d_Layer
 // purpose  :
 // =======================================================================
-Graphic3d_Layer::Graphic3d_Layer (Standard_Integer theNbPriorities,
+Graphic3d_Layer::Graphic3d_Layer (Graphic3d_ZLayerId theId,
+                                  Standard_Integer theNbPriorities,
                                   const Handle(Select3D_BVHBuilder3d)& theBuilder)
 : myArray                     (0, theNbPriorities - 1),
   myNbStructures              (0),
   myNbStructuresNotCulled     (0),
+  myLayerId                   (theId),
   myBVHPrimitivesTrsfPers     (theBuilder),
   myBVHIsLeftChildQueuedFirst (Standard_True),
   myIsBVHPrimitivesNeedsReset (Standard_False)

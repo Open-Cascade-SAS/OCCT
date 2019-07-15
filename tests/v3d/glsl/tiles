@@ -28,7 +28,7 @@ vzbufftrihedron
 
 catch { vzlayer del 1 }
 set aLayerId [vzlayer add]
-vzlayer $aLayerId -enable depthClear
+vzlayer $aLayerId -enable depthClear -disable rayTracing
 
 vtrihedron trh
 vdisplay  -noupdate trh -layer $aLayerId -trihedron topRight 100 100

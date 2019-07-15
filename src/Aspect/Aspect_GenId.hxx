@@ -49,33 +49,31 @@ public:
   Standard_EXPORT void Free (const Standard_Integer theId);
   
   //! Returns true if there are available identifiers in range.
-  Standard_EXPORT Standard_Boolean HasFree() const;
+  Standard_Boolean HasFree() const
+  {
+    return myFreeCount > 0
+        || myFreeIds.Extent() > 0;
+  }
   
   //! Returns the number of available identifiers.
-  Standard_EXPORT Standard_Integer Available() const;
+  Standard_Integer Available() const { return myFreeCount + myFreeIds.Extent(); }
   
   //! Returns the lower identifier in range.
-  Standard_EXPORT Standard_Integer Lower() const;
+  Standard_Integer Lower() const { return myLowerBound; }
   
   //! Returns the next available identifier.
   //! Warning: Raises IdentDefinitionError if all identifiers are busy.
   Standard_EXPORT Standard_Integer Next();
+
+  //! Generates the next available identifier.
+  //! @param theId [out] generated identifier
+  //! @return FALSE if all identifiers are busy.
+  Standard_EXPORT Standard_Boolean Next (Standard_Integer& theId);
   
   //! Returns the upper identifier in range.
-  Standard_EXPORT Standard_Integer Upper() const;
-
-
-
-
-protected:
-
-
-
-
+  Standard_Integer Upper() const { return myUpperBound; }
 
 private:
-
-
 
   Standard_Integer myFreeCount;
   Standard_Integer myLength;
@@ -83,13 +81,6 @@ private:
   Standard_Integer myUpperBound;
   TColStd_ListOfInteger myFreeIds;
 
-
 };
-
-
-
-
-
-
 
 #endif // _Aspect_GenId_HeaderFile

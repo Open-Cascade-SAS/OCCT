@@ -46,6 +46,7 @@
 
 class Graphic3d_CView;
 class Graphic3d_GraphicDriver;
+class Graphic3d_Layer;
 class Graphic3d_StructureManager;
 
 DEFINE_STANDARD_HANDLE (Graphic3d_CView, Graphic3d_DataStructureManager)
@@ -267,32 +268,34 @@ public:
   //! Marks BVH tree and the set of BVH primitives of correspondent priority list with id theLayerId as outdated.
   virtual void InvalidateBVHData (const Graphic3d_ZLayerId theLayerId) = 0;
 
-  //! Add a new top-level z layer with ID <theLayerId> for
-  //! the view. Z layers allow drawing structures in higher layers
-  //! in foreground of structures in lower layers. To add a structure
-  //! to desired layer on display it is necessary to set the layer
-  //! ID for the structure.
-  virtual void AddZLayer (const Graphic3d_ZLayerId theLayerId) = 0;
+  //! Add a layer to the view.
+  //! @param theNewLayerId [in] id of new layer, should be > 0 (negative values are reserved for default layers).
+  //! @param theSettings   [in] new layer settings
+  //! @param theLayerAfter [in] id of layer to append new layer before
+  virtual void InsertLayerBefore (const Graphic3d_ZLayerId theNewLayerId,
+                                  const Graphic3d_ZLayerSettings& theSettings,
+                                  const Graphic3d_ZLayerId theLayerAfter) = 0;
+
+  //! Add a layer to the view.
+  //! @param theNewLayerId  [in] id of new layer, should be > 0 (negative values are reserved for default layers).
+  //! @param theSettings    [in] new layer settings
+  //! @param theLayerBefore [in] id of layer to append new layer after
+  virtual void InsertLayerAfter (const Graphic3d_ZLayerId theNewLayerId,
+                                 const Graphic3d_ZLayerSettings& theSettings,
+                                 const Graphic3d_ZLayerId theLayerBefore) = 0;
 
   //! Returns the maximum Z layer ID.
   //! First layer ID is Graphic3d_ZLayerId_Default, last ID is ZLayerMax().
   virtual Standard_Integer ZLayerMax() const = 0;
 
-  //! Returns the bounding box of all structures displayed in the Z layer.
-  virtual void InvalidateZLayerBoundingBox (const Graphic3d_ZLayerId theLayerId) const = 0;
+  //! Returns the list of layers.
+  virtual const NCollection_List<Handle(Graphic3d_Layer)>& Layers() const = 0;
+
+  //! Returns layer with given ID or NULL if undefined.
+  virtual Handle(Graphic3d_Layer) Layer (const Graphic3d_ZLayerId theLayerId) const = 0;
 
   //! Returns the bounding box of all structures displayed in the Z layer.
-  //! @param theLayerId            layer identifier
-  //! @param theCamera             camera definition
-  //! @param theWindowWidth        viewport width  (for applying transformation-persistence)
-  //! @param theWindowHeight       viewport height (for applying transformation-persistence)
-  //! @param theToIncludeAuxiliary consider also auxiliary presentations (with infinite flag or with trihedron transformation persistence)
-  //! @return computed bounding box
-  virtual Bnd_Box ZLayerBoundingBox (const Graphic3d_ZLayerId        theLayerId,
-                                     const Handle(Graphic3d_Camera)& theCamera,
-                                     const Standard_Integer          theWindowWidth,
-                                     const Standard_Integer          theWindowHeight,
-                                     const Standard_Boolean          theToIncludeAuxiliary) const = 0;
+  Standard_EXPORT virtual void InvalidateZLayerBoundingBox (const Graphic3d_ZLayerId theLayerId);
 
   //! Remove Z layer from the specified view. All structures
   //! displayed at the moment in layer will be displayed in default layer
@@ -446,12 +449,6 @@ private:
   //! Changes the priority of a structure within its Z layer in the specified view.
   virtual void changePriority (const Handle(Graphic3d_CStructure)& theCStructure,
                                const Standard_Integer theNewPriority) = 0;
-
-  //! Returns zoom-scale factor.
-  virtual Standard_Real considerZoomPersistenceObjects (const Graphic3d_ZLayerId        theLayerId,
-                                                        const Handle(Graphic3d_Camera)& theCamera,
-                                                        const Standard_Integer          theWindowWidth,
-                                                        const Standard_Integer          theWindowHeight) const = 0;
 
 protected:
 

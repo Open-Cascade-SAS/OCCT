@@ -136,8 +136,21 @@ public:
   //! Marks BVH tree and the set of BVH primitives of correspondent priority list with id theLayerId as outdated.
   Standard_EXPORT virtual void InvalidateBVHData (const Graphic3d_ZLayerId theLayerId) Standard_OVERRIDE;
 
-  //! Insert a new top-level z layer with the given ID.
-  Standard_EXPORT virtual void AddZLayer (const Graphic3d_ZLayerId theLayerId) Standard_OVERRIDE;
+  //! Add a layer to the view.
+  //! @param theNewLayerId [in] id of new layer, should be > 0 (negative values are reserved for default layers).
+  //! @param theSettings   [in] new layer settings
+  //! @param theLayerAfter [in] id of layer to append new layer before
+  Standard_EXPORT virtual void InsertLayerBefore (const Graphic3d_ZLayerId theLayerId,
+                                                  const Graphic3d_ZLayerSettings& theSettings,
+                                                  const Graphic3d_ZLayerId theLayerAfter) Standard_OVERRIDE;
+
+  //! Add a layer to the view.
+  //! @param theNewLayerId  [in] id of new layer, should be > 0 (negative values are reserved for default layers).
+  //! @param theSettings    [in] new layer settings
+  //! @param theLayerBefore [in] id of layer to append new layer after
+  Standard_EXPORT virtual void InsertLayerAfter (const Graphic3d_ZLayerId theNewLayerId,
+                                                 const Graphic3d_ZLayerSettings& theSettings,
+                                                 const Graphic3d_ZLayerId theLayerBefore) Standard_OVERRIDE;
 
   //! Remove a z layer with the given ID.
   Standard_EXPORT virtual void RemoveZLayer (const Graphic3d_ZLayerId theLayerId) Standard_OVERRIDE;
@@ -150,23 +163,18 @@ public:
   //! First layer ID is Graphic3d_ZLayerId_Default, last ID is ZLayerMax().
   Standard_EXPORT virtual Standard_Integer ZLayerMax() const Standard_OVERRIDE;
 
-  //! Returns the bounding box of all structures displayed in the Z layer.
-  //! Never fails. If Z layer does not exist nothing happens.
-  Standard_EXPORT virtual void InvalidateZLayerBoundingBox (const Graphic3d_ZLayerId theLayerId) const Standard_OVERRIDE;
+  //! Returns the list of layers.
+  Standard_EXPORT virtual const NCollection_List<Handle(Graphic3d_Layer)>& Layers() const Standard_OVERRIDE;
 
-  //! Returns the bounding box of all structures displayed in the Z layer.
-  //! If Z layer does not exist the empty box is returned.
-  //! @param theLayerId            layer identifier
-  //! @param theCamera             camera definition
-  //! @param theWindowWidth        viewport width  (for applying transformation-persistence)
-  //! @param theWindowHeight       viewport height (for applying transformation-persistence)
+  //! Returns layer with given ID or NULL if undefined.
+  Standard_EXPORT virtual Handle(Graphic3d_Layer) Layer (const Graphic3d_ZLayerId theLayerId) const Standard_OVERRIDE;
+
+  //! Returns the bounding box of all structures displayed in the view.
+  //! If theToIncludeAuxiliary is TRUE, then the boundary box also includes minimum and maximum limits
+  //! of graphical elements forming parts of infinite and other auxiliary structures.
   //! @param theToIncludeAuxiliary consider also auxiliary presentations (with infinite flag or with trihedron transformation persistence)
   //! @return computed bounding box
-  Standard_EXPORT virtual Bnd_Box ZLayerBoundingBox (const Graphic3d_ZLayerId        theLayerId,
-                                                     const Handle(Graphic3d_Camera)& theCamera,
-                                                     const Standard_Integer          theWindowWidth,
-                                                     const Standard_Integer          theWindowHeight,
-                                                     const Standard_Boolean          theToIncludeAuxiliary) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Bnd_Box MinMaxValues (const Standard_Boolean theToIncludeAuxiliary) const Standard_OVERRIDE;
 
   //! Returns pointer to an assigned framebuffer object.
   Standard_EXPORT virtual Handle(Standard_Transient) FBO() const Standard_OVERRIDE;
@@ -408,12 +416,6 @@ private:
   //! Changes the priority of a structure within its Z layer in the specified view.
   Standard_EXPORT virtual void changePriority (const Handle(Graphic3d_CStructure)& theCStructure,
                                                const Standard_Integer theNewPriority) Standard_OVERRIDE;
-
-  //! Returns zoom-scale factor.
-  Standard_EXPORT virtual Standard_Real considerZoomPersistenceObjects (const Graphic3d_ZLayerId        theLayerId,
-                                                                        const Handle(Graphic3d_Camera)& theCamera,
-                                                                        const Standard_Integer          theWindowWidth,
-                                                                        const Standard_Integer          theWindowHeight) const Standard_OVERRIDE;
 
 private:
 

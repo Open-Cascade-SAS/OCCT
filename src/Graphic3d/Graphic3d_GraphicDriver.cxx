@@ -16,6 +16,8 @@
 
 #include <Graphic3d_GraphicDriver.hxx>
 
+#include <Graphic3d_Layer.hxx>
+
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_GraphicDriver,Standard_Transient)
 
 // =======================================================================
@@ -25,70 +27,85 @@ IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_GraphicDriver,Standard_Transient)
 Graphic3d_GraphicDriver::Graphic3d_GraphicDriver (const Handle(Aspect_DisplayConnection)& theDisp)
 : myDisplayConnection (theDisp)
 {
-  // default layers are always presented in display layer sequence it can not be removed
+  // default layers are always presented in display layer sequence and cannot be removed
   {
     Graphic3d_ZLayerSettings aSettings;
+    aSettings.SetName ("UNDERLAY");
     aSettings.SetImmediate          (Standard_False);
+    aSettings.SetRaytracable        (Standard_False);
     aSettings.SetEnvironmentTexture (Standard_False);
     aSettings.SetEnableDepthTest    (Standard_False);
     aSettings.SetEnableDepthWrite   (Standard_False);
     aSettings.SetClearDepth         (Standard_False);
     aSettings.SetPolygonOffset (Graphic3d_PolygonOffset());
-    myLayerIds.Add             (Graphic3d_ZLayerId_BotOSD);
-    myLayerSeq.Append          (Graphic3d_ZLayerId_BotOSD);
-    myMapOfZLayerSettings.Bind (Graphic3d_ZLayerId_BotOSD, aSettings);
+    Handle(Graphic3d_Layer) aLayer = new Graphic3d_Layer (Graphic3d_ZLayerId_BotOSD, 1, Handle(Select3D_BVHBuilder3d)());
+    aLayer->SetLayerSettings (aSettings);
+    myLayers.Append (aLayer);
+    myLayerIds.Bind (aLayer->LayerId(), aLayer);
   }
 
   {
     Graphic3d_ZLayerSettings aSettings;
+    aSettings.SetName ("DEFAULT");
     aSettings.SetImmediate          (Standard_False);
+    aSettings.SetRaytracable        (Standard_True);
     aSettings.SetEnvironmentTexture (Standard_True);
     aSettings.SetEnableDepthTest    (Standard_True);
     aSettings.SetEnableDepthWrite   (Standard_True);
     aSettings.SetClearDepth         (Standard_False);
     aSettings.SetPolygonOffset (Graphic3d_PolygonOffset());
-    myLayerIds.Add             (Graphic3d_ZLayerId_Default);
-    myLayerSeq.Append          (Graphic3d_ZLayerId_Default);
-    myMapOfZLayerSettings.Bind (Graphic3d_ZLayerId_Default, aSettings);
+    Handle(Graphic3d_Layer) aLayer = new Graphic3d_Layer (Graphic3d_ZLayerId_Default, 1, Handle(Select3D_BVHBuilder3d)());
+    aLayer->SetLayerSettings (aSettings);
+    myLayers.Append (aLayer);
+    myLayerIds.Bind (aLayer->LayerId(), aLayer);
   }
 
   {
     Graphic3d_ZLayerSettings aSettings;
+    aSettings.SetName ("TOP");
     aSettings.SetImmediate          (Standard_True);
+    aSettings.SetRaytracable        (Standard_False);
     aSettings.SetEnvironmentTexture (Standard_True);
     aSettings.SetEnableDepthTest    (Standard_True);
     aSettings.SetEnableDepthWrite   (Standard_True);
     aSettings.SetClearDepth         (Standard_False);
     aSettings.SetPolygonOffset (Graphic3d_PolygonOffset());
-    myLayerIds.Add             (Graphic3d_ZLayerId_Top);
-    myLayerSeq.Append          (Graphic3d_ZLayerId_Top);
-    myMapOfZLayerSettings.Bind (Graphic3d_ZLayerId_Top, aSettings);
+    Handle(Graphic3d_Layer) aLayer = new Graphic3d_Layer (Graphic3d_ZLayerId_Top, 1, Handle(Select3D_BVHBuilder3d)());
+    aLayer->SetLayerSettings (aSettings);
+    myLayers.Append (aLayer);
+    myLayerIds.Bind (aLayer->LayerId(), aLayer);
   }
 
   {
     Graphic3d_ZLayerSettings aSettings;
+    aSettings.SetName ("TOPMOST");
     aSettings.SetImmediate          (Standard_True);
+    aSettings.SetRaytracable        (Standard_False);
     aSettings.SetEnvironmentTexture (Standard_True);
     aSettings.SetEnableDepthTest    (Standard_True);
     aSettings.SetEnableDepthWrite   (Standard_True);
     aSettings.SetClearDepth         (Standard_True);
     aSettings.SetPolygonOffset (Graphic3d_PolygonOffset());
-    myLayerIds.Add             (Graphic3d_ZLayerId_Topmost);
-    myLayerSeq.Append          (Graphic3d_ZLayerId_Topmost);
-    myMapOfZLayerSettings.Bind (Graphic3d_ZLayerId_Topmost, aSettings);
+    Handle(Graphic3d_Layer) aLayer = new Graphic3d_Layer (Graphic3d_ZLayerId_Topmost, 1, Handle(Select3D_BVHBuilder3d)());
+    aLayer->SetLayerSettings (aSettings);
+    myLayers.Append (aLayer);
+    myLayerIds.Bind (aLayer->LayerId(), aLayer);
   }
 
   {
     Graphic3d_ZLayerSettings aSettings;
+    aSettings.SetName ("OVERLAY");
     aSettings.SetImmediate          (Standard_True);
+    aSettings.SetRaytracable        (Standard_False);
     aSettings.SetEnvironmentTexture (Standard_False);
     aSettings.SetEnableDepthTest    (Standard_False);
     aSettings.SetEnableDepthWrite   (Standard_False);
     aSettings.SetClearDepth         (Standard_False);
     aSettings.SetPolygonOffset (Graphic3d_PolygonOffset());
-    myLayerIds.Add             (Graphic3d_ZLayerId_TopOSD);
-    myLayerSeq.Append          (Graphic3d_ZLayerId_TopOSD);
-    myMapOfZLayerSettings.Bind (Graphic3d_ZLayerId_TopOSD, aSettings);
+    Handle(Graphic3d_Layer) aLayer = new Graphic3d_Layer (Graphic3d_ZLayerId_TopOSD, 1, Handle(Select3D_BVHBuilder3d)());
+    aLayer->SetLayerSettings (aSettings);
+    myLayers.Append (aLayer);
+    myLayerIds.Bind (aLayer->LayerId(), aLayer);
   }
 }
 
@@ -125,52 +142,130 @@ void Graphic3d_GraphicDriver::RemoveIdentification(const Standard_Integer theId)
 //=======================================================================
 const Graphic3d_ZLayerSettings& Graphic3d_GraphicDriver::ZLayerSettings (const Graphic3d_ZLayerId theLayerId) const
 {
-  Standard_ASSERT_RAISE (myLayerIds.Contains (theLayerId), "Graphic3d_GraphicDriver::ZLayerSettings, Layer with theLayerId does not exist");
-  return myMapOfZLayerSettings.Find (theLayerId);
+  const Handle(Graphic3d_Layer)* aLayer = myLayerIds.Seek (theLayerId);
+  if (aLayer == NULL)
+  {
+    throw Standard_OutOfRange ("Graphic3d_GraphicDriver::ZLayerSettings, Layer with theLayerId does not exist");
+  }
+  return (*aLayer)->LayerSettings();
 }
 
 //=======================================================================
-//function : addZLayerIndex
+//function : ZLayers
 //purpose  :
 //=======================================================================
-void Graphic3d_GraphicDriver::addZLayerIndex (const Graphic3d_ZLayerId theLayerId)
+void Graphic3d_GraphicDriver::ZLayers (TColStd_SequenceOfInteger& theLayerSeq) const
 {
-  // remove index
-  for (TColStd_SequenceOfInteger::Iterator aLayerIt (myLayerSeq); aLayerIt.More(); aLayerIt.Next())
+  theLayerSeq.Clear();
+
+  // append normal layers
+  for (NCollection_List<Handle(Graphic3d_Layer)>::Iterator aLayerIter (myLayers); aLayerIter.More(); aLayerIter.Next())
   {
-    if (aLayerIt.Value() == theLayerId)
+    const Handle(Graphic3d_Layer)& aLayer = aLayerIter.Value();
+    if (!aLayer->IsImmediate())
     {
-      myLayerSeq.Remove (aLayerIt);
-      break;
+      theLayerSeq.Append (aLayer->LayerId());
     }
   }
 
-  if (myMapOfZLayerSettings.Find (theLayerId).IsImmediate())
+  // append immediate layers
+  for (NCollection_List<Handle(Graphic3d_Layer)>::Iterator aLayerIter (myLayers); aLayerIter.More(); aLayerIter.Next())
   {
-    myLayerSeq.Append (theLayerId);
-    return;
-  }
-
-  for (TColStd_SequenceOfInteger::Iterator aLayerIt (myLayerSeq); aLayerIt.More(); aLayerIt.Next())
-  {
-    const Graphic3d_ZLayerSettings& aSettings = myMapOfZLayerSettings.Find (aLayerIt.Value());
-    if (aSettings.IsImmediate())
+    const Handle(Graphic3d_Layer)& aLayer = aLayerIter.Value();
+    if (aLayer->IsImmediate())
     {
-      aLayerIt.Previous();
-      if (aLayerIt.More())
+      theLayerSeq.Append (aLayer->LayerId());
+    }
+  }
+}
+
+//=======================================================================
+//function : InsertLayerBefore
+//purpose  :
+//=======================================================================
+void Graphic3d_GraphicDriver::InsertLayerBefore (const Graphic3d_ZLayerId theNewLayerId,
+                                                 const Graphic3d_ZLayerSettings& theSettings,
+                                                 const Graphic3d_ZLayerId theLayerAfter)
+{
+  Standard_ASSERT_RAISE (theNewLayerId > 0,
+                         "Graphic3d_GraphicDriver::InsertLayerBefore, negative and zero IDs are reserved");
+  Standard_ASSERT_RAISE (!myLayerIds.IsBound (theNewLayerId),
+                         "Graphic3d_GraphicDriver::InsertLayerBefore, Layer with theLayerId already exists");
+
+  Handle(Graphic3d_Layer) aNewLayer = new Graphic3d_Layer (theNewLayerId, 1, Handle(Select3D_BVHBuilder3d)());
+  aNewLayer->SetLayerSettings (theSettings);
+
+  Handle(Graphic3d_Layer) anOtherLayer;
+  if (theLayerAfter != Graphic3d_ZLayerId_UNKNOWN
+   && myLayerIds.Find (theLayerAfter, anOtherLayer))
+  {
+    for (NCollection_List<Handle(Graphic3d_Layer)>::Iterator aLayerIter (myLayers); aLayerIter.More(); aLayerIter.Next())
+    {
+      if (aLayerIter.Value() == anOtherLayer)
       {
-        myLayerSeq.InsertAfter (aLayerIt, theLayerId);
-        return;
+        myLayers.InsertBefore (aNewLayer, aLayerIter);
+        break;
       }
-
-      // first non-immediate layer
-      myLayerSeq.Prepend (theLayerId);
-      return;
     }
   }
+  else
+  {
+    myLayers.Prepend (aNewLayer);
+  }
+  myLayerIds.Bind (theNewLayerId, aNewLayer);
+}
 
-  // no immediate layers
-  myLayerSeq.Append (theLayerId);
+//=======================================================================
+//function : InsertLayerAfter
+//purpose  :
+//=======================================================================
+void Graphic3d_GraphicDriver::InsertLayerAfter (const Graphic3d_ZLayerId theNewLayerId,
+                                                const Graphic3d_ZLayerSettings& theSettings,
+                                                const Graphic3d_ZLayerId theLayerBefore)
+{
+  Standard_ASSERT_RAISE (theNewLayerId > 0,
+                         "Graphic3d_GraphicDriver::InsertLayerAfter, negative and zero IDs are reserved");
+  Standard_ASSERT_RAISE (!myLayerIds.IsBound (theNewLayerId),
+                         "Graphic3d_GraphicDriver::InsertLayerAfter, Layer with theLayerId already exists");
+
+  Handle(Graphic3d_Layer) aNewLayer = new Graphic3d_Layer (theNewLayerId, 1, Handle(Select3D_BVHBuilder3d)());
+  aNewLayer->SetLayerSettings (theSettings);
+
+  Handle(Graphic3d_Layer) anOtherLayer;
+  if (theLayerBefore != Graphic3d_ZLayerId_UNKNOWN
+   && myLayerIds.Find (theLayerBefore, anOtherLayer))
+  {
+    for (NCollection_List<Handle(Graphic3d_Layer)>::Iterator aLayerIter (myLayers); aLayerIter.More(); aLayerIter.Next())
+    {
+      if (aLayerIter.Value() == anOtherLayer)
+      {
+        myLayers.InsertAfter (aNewLayer, aLayerIter);
+        break;
+      }
+    }
+  }
+  else
+  {
+    myLayers.Append (aNewLayer);
+  }
+  myLayerIds.Bind (theNewLayerId, aNewLayer);
+}
+
+//=======================================================================
+//function : RemoveZLayer
+//purpose  :
+//=======================================================================
+void Graphic3d_GraphicDriver::RemoveZLayer (const Graphic3d_ZLayerId theLayerId)
+{
+  Standard_ASSERT_RAISE (theLayerId > 0,
+                         "Graphic3d_GraphicDriver::RemoveZLayer, negative and zero IDs are reserved and cannot be removed");
+
+  Handle(Graphic3d_Layer) aLayerDef;
+  myLayerIds.Find (theLayerId, aLayerDef);
+  Standard_ASSERT_RAISE (!aLayerDef.IsNull(),
+                         "Graphic3d_GraphicDriver::RemoveZLayer, Layer with theLayerId does not exist");
+  myLayers.Remove (aLayerDef);
+  myLayerIds.UnBind (theLayerId);
 }
 
 //=======================================================================
@@ -180,20 +275,9 @@ void Graphic3d_GraphicDriver::addZLayerIndex (const Graphic3d_ZLayerId theLayerI
 void Graphic3d_GraphicDriver::SetZLayerSettings (const Graphic3d_ZLayerId theLayerId,
                                                  const Graphic3d_ZLayerSettings& theSettings)
 {
-  Graphic3d_ZLayerSettings* aSettings = myMapOfZLayerSettings.ChangeSeek (theLayerId);
-  if (aSettings != NULL)
-  {
-    const bool isChanged = (aSettings->IsImmediate() != theSettings.IsImmediate());
-    *aSettings = theSettings;
-    if (isChanged)
-    {
-      addZLayerIndex (theLayerId);
-    }
-  }
-  else
-  {
-    // abnormal case
-    myMapOfZLayerSettings.Bind (theLayerId, theSettings);
-    addZLayerIndex (theLayerId);
-  }
+  Handle(Graphic3d_Layer) aLayerDef;
+  myLayerIds.Find (theLayerId, aLayerDef);
+  Standard_ASSERT_RAISE (!aLayerDef.IsNull(),
+                         "Graphic3d_GraphicDriver::SetZLayerSettings, Layer with theLayerId does not exist");
+  aLayerDef->SetLayerSettings (theSettings);
 }

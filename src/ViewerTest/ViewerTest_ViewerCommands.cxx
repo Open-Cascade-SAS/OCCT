@@ -5322,6 +5322,7 @@ static int VZLayer (Draw_Interpretor& theDI,
     }
   }
 
+  Graphic3d_ZLayerId anOtherLayerId = Graphic3d_ZLayerId_UNKNOWN;
   for (; anArgIter < theArgNb; ++anArgIter)
   {
     // perform operation
@@ -5336,6 +5337,34 @@ static int VZLayer (Draw_Interpretor& theDI,
     {
       aLayerId = Graphic3d_ZLayerId_UNKNOWN;
       if (!aViewer->AddZLayer (aLayerId))
+      {
+        std::cout << "Error: can not add a new z layer!\n";
+        return 0;
+      }
+
+      theDI << aLayerId;
+    }
+    else if (anArg == "-insertbefore"
+          && anArgIter + 1 < theArgNb
+          && ViewerTest::ParseZLayer (theArgVec[anArgIter + 1], anOtherLayerId))
+    {
+      ++anArgIter;
+      aLayerId = Graphic3d_ZLayerId_UNKNOWN;
+      if (!aViewer->InsertLayerBefore (aLayerId, Graphic3d_ZLayerSettings(), anOtherLayerId))
+      {
+        std::cout << "Error: can not add a new z layer!\n";
+        return 0;
+      }
+
+      theDI << aLayerId;
+    }
+    else if (anArg == "-insertafter"
+          && anArgIter + 1 < theArgNb
+          && ViewerTest::ParseZLayer (theArgVec[anArgIter + 1], anOtherLayerId))
+    {
+      ++anArgIter;
+      aLayerId = Graphic3d_ZLayerId_UNKNOWN;
+      if (!aViewer->InsertLayerAfter (aLayerId, Graphic3d_ZLayerSettings(), anOtherLayerId))
       {
         std::cout << "Error: can not add a new z layer!\n";
         return 0;
@@ -5583,6 +5612,10 @@ static int VZLayer (Draw_Interpretor& theDI,
       else if (aSubOp == "textureenv")
       {
         aSettings.SetEnvironmentTexture (toEnable);
+      }
+      else if (aSubOp == "raytracing")
+      {
+        aSettings.SetRaytracable (toEnable);
       }
 
       aViewer->SetZLayerSettings (aLayerId, aSettings);
@@ -13336,12 +13369,14 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     __FILE__, VTile, group);
   theCommands.Add("vzlayer",
               "vzlayer [layerId]"
-      "\n\t\t:         [-add|-delete|-get|-settings]"
+      "\n\t\t:         [-add|-delete|-get|-settings] [-insertBefore AnotherLayer] [-insertAfter AnotherLayer]"
       "\n\t\t:         [-origin X Y Z] [-cullDist Distance] [-cullSize Size]"
       "\n\t\t:         [-enable|-disable {depthTest|depthWrite|depthClear|depthoffset}]"
-      "\n\t\t:         [-enable|-disable {positiveOffset|negativeOffset|textureenv}]"
+      "\n\t\t:         [-enable|-disable {positiveOffset|negativeOffset|textureenv|rayTracing}]"
       "\n\t\t: ZLayer list management:"
       "\n\t\t:   -add      add new z layer to viewer and print its id"
+      "\n\t\t:   -insertBefore add new z layer and insert it before existing one"
+      "\n\t\t:   -insertAfter  add new z layer and insert it after  existing one"
       "\n\t\t:   -delete   delete z layer"
       "\n\t\t:   -get      print sequence of z layers"
       "\n\t\t:   -settings print status of z layer settings"

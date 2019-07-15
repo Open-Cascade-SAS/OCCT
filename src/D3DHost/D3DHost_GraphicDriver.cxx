@@ -44,22 +44,17 @@ D3DHost_GraphicDriver::~D3DHost_GraphicDriver()
 }
 
 // =======================================================================
-// function : View
+// function : CreateView
 // purpose  :
 // =======================================================================
 Handle(Graphic3d_CView) D3DHost_GraphicDriver::CreateView (const Handle(Graphic3d_StructureManager)& theMgr)
 {
   Handle(D3DHost_View) aView = new D3DHost_View (theMgr, this, myCaps, &myStateCounter);
-
   myMapOfView.Add (aView);
-
-  for (TColStd_SequenceOfInteger::Iterator aLayerIt (myLayerSeq); aLayerIt.More(); aLayerIt.Next())
+  for (NCollection_List<Handle(Graphic3d_Layer)>::Iterator aLayerIter (myLayers); aLayerIter.More(); aLayerIter.Next())
   {
-    const Graphic3d_ZLayerId        aLayerID  = aLayerIt.Value();
-    const Graphic3d_ZLayerSettings& aSettings = myMapOfZLayerSettings.Find (aLayerID);
-    aView->AddZLayer         (aLayerID);
-    aView->SetZLayerSettings (aLayerID, aSettings);
+    const Handle(Graphic3d_Layer)& aLayer = aLayerIter.Value();
+    aView->InsertLayerAfter (aLayer->LayerId(), aLayer->LayerSettings(), Graphic3d_ZLayerId_UNKNOWN);
   }
-
   return aView;
 }

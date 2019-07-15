@@ -275,26 +275,37 @@ void V3d_Viewer::DelView (const Handle(V3d_View)& theView)
 }
 
 //=======================================================================
-//function : AddZLayer
+//function : InsertLayerBefore
 //purpose  :
 //=======================================================================
-Standard_Boolean V3d_Viewer::AddZLayer (Graphic3d_ZLayerId& theLayerId)
+Standard_Boolean V3d_Viewer::InsertLayerBefore (Graphic3d_ZLayerId& theNewLayerId,
+                                                const Graphic3d_ZLayerSettings& theSettings,
+                                                const Graphic3d_ZLayerId theLayerAfter)
 {
-  try
+  if (myZLayerGenId.Next (theNewLayerId))
   {
-    OCC_CATCH_SIGNALS
-    theLayerId = myZLayerGenId.Next();
+    myLayerIds.Add (theNewLayerId);
+    myDriver->InsertLayerBefore (theNewLayerId, theSettings, theLayerAfter);
+    return Standard_True;
   }
-  catch (Aspect_IdentDefinitionError const&)
+  return Standard_False;
+}
+
+//=======================================================================
+//function : InsertLayerAfter
+//purpose  :
+//=======================================================================
+Standard_Boolean V3d_Viewer::InsertLayerAfter (Graphic3d_ZLayerId& theNewLayerId,
+                                               const Graphic3d_ZLayerSettings& theSettings,
+                                               const Graphic3d_ZLayerId theLayerBefore)
+{
+  if (myZLayerGenId.Next (theNewLayerId))
   {
-    // new index can't be generated
-    return Standard_False;
+    myLayerIds.Add (theNewLayerId);
+    myDriver->InsertLayerAfter (theNewLayerId, theSettings, theLayerBefore);
+    return Standard_True;
   }
-
-  myLayerIds.Add (theLayerId);
-  myDriver->AddZLayer (theLayerId);
-
-  return Standard_True;
+  return Standard_False;
 }
 
 //=======================================================================
@@ -339,7 +350,7 @@ void V3d_Viewer::SetZLayerSettings (const Graphic3d_ZLayerId theLayerId, const G
 //function : ZLayerSettings
 //purpose  :
 //=======================================================================
-Graphic3d_ZLayerSettings V3d_Viewer::ZLayerSettings (const Graphic3d_ZLayerId theLayerId)
+const Graphic3d_ZLayerSettings& V3d_Viewer::ZLayerSettings (const Graphic3d_ZLayerId theLayerId) const
 {
   return myDriver->ZLayerSettings (theLayerId);
 }

@@ -52,6 +52,7 @@
 class Aspect_DisplayConnection;
 class Graphic3d_CView;
 class Graphic3d_GraphicDriver;
+class Graphic3d_Layer;
 class Graphic3d_TransformError;
 class Graphic3d_Structure;
 class Graphic3d_StructureManager;
@@ -65,7 +66,7 @@ DEFINE_STANDARD_HANDLE(Graphic3d_GraphicDriver, Standard_Transient)
 //! for 3d interface (currently only OpenGl driver is used).
 class Graphic3d_GraphicDriver : public Standard_Transient
 {
-
+  DEFINE_STANDARD_RTTIEXT(Graphic3d_GraphicDriver, Standard_Transient)
 public:
 
   //! Request limit of graphic resource of specific type.
@@ -110,24 +111,31 @@ public:
                          Standard_ShortReal&            theAscent,
                          Standard_ShortReal&            theDescent) const = 0;
 
-  //! Add a new top-level z layer with ID <theLayerId> for
-  //! the view. Z layers allow drawing structures in higher layers
-  //! in foreground of structures in lower layers. To add a structure
-  //! to desired layer on display it is necessary to set the layer
-  //! ID for the structure.
-  virtual void AddZLayer (const Graphic3d_ZLayerId theLayerId) = 0;
+  //! Adds a layer to all views.
+  //! To add a structure to desired layer on display it is necessary to set the layer ID for the structure.
+  //! @param theNewLayerId [in] id of new layer, should be > 0 (negative values are reserved for default layers).
+  //! @param theSettings   [in] new layer settings
+  //! @param theLayerAfter [in] id of layer to append new layer before
+  Standard_EXPORT virtual void InsertLayerBefore (const Graphic3d_ZLayerId theNewLayerId,
+                                                  const Graphic3d_ZLayerSettings& theSettings,
+                                                  const Graphic3d_ZLayerId theLayerAfter) = 0;
+
+  //! Adds a layer to all views.
+  //! @param theNewLayerId  [in] id of new layer, should be > 0 (negative values are reserved for default layers).
+  //! @param theSettings    [in] new layer settings
+  //! @param theLayerBefore [in] id of layer to append new layer after
+  Standard_EXPORT virtual void InsertLayerAfter (const Graphic3d_ZLayerId theNewLayerId,
+                                                 const Graphic3d_ZLayerSettings& theSettings,
+                                                 const Graphic3d_ZLayerId theLayerBefore) = 0;
 
   //! Removes Z layer. All structures displayed at the moment in layer will be displayed in
   //! default layer (the bottom-level z layer). By default, there are always default
   //! bottom-level layer that can't be removed.  The passed theLayerId should be not less than 0
   //! (reserved for default layers that can not be removed).
-  virtual void RemoveZLayer (const Graphic3d_ZLayerId theLayerId) = 0;
+  Standard_EXPORT virtual void RemoveZLayer (const Graphic3d_ZLayerId theLayerId) = 0;
 
   //! Returns list of Z layers defined for the graphical driver.
-  virtual void ZLayers (TColStd_SequenceOfInteger& theLayerSeq) const
-  {
-    theLayerSeq.Assign (myLayerSeq);
-  }
+  Standard_EXPORT virtual void ZLayers (TColStd_SequenceOfInteger& theLayerSeq) const;
 
   //! Sets the settings for a single Z layer.
   Standard_EXPORT virtual void SetZLayerSettings (const Graphic3d_ZLayerId theLayerId, const Graphic3d_ZLayerSettings& theSettings) = 0;
@@ -148,23 +156,17 @@ public:
   //! Frees the identifier of a structure.
   Standard_EXPORT void RemoveIdentification(const Standard_Integer theId);
 
-  DEFINE_STANDARD_RTTIEXT(Graphic3d_GraphicDriver,Standard_Transient)
-
 protected:
   
   //! Initializes the Driver
   Standard_EXPORT Graphic3d_GraphicDriver(const Handle(Aspect_DisplayConnection)& theDisp);
 
-  //! Insert index layer at proper position.
-  Standard_EXPORT void addZLayerIndex (const Graphic3d_ZLayerId theLayerId);
-
 protected:
 
   Handle(Aspect_DisplayConnection) myDisplayConnection;
   Aspect_GenId myStructGenId;
-  TColStd_MapOfInteger          myLayerIds;
-  TColStd_SequenceOfInteger     myLayerSeq;
-  Graphic3d_MapOfZLayerSettings myMapOfZLayerSettings;
+  NCollection_List<Handle(Graphic3d_Layer)> myLayers;
+  NCollection_DataMap<Graphic3d_ZLayerId, Handle(Graphic3d_Layer)> myLayerIds;
 
 };
 

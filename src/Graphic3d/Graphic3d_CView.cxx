@@ -12,21 +12,12 @@
 // commercial license or contractual agreement.
 
 #include <Graphic3d_CView.hxx>
+
+#include <Graphic3d_Layer.hxx>
 #include <Graphic3d_MapIteratorOfMapOfStructure.hxx>
 #include <Graphic3d_StructureManager.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_CView,Graphic3d_DataStructureManager)
-
-namespace
-{
-  static const int THE_DEFAULT_LAYERS[] = { Graphic3d_ZLayerId_Top,
-                                            Graphic3d_ZLayerId_Topmost,
-                                            Graphic3d_ZLayerId_BotOSD,
-                                            Graphic3d_ZLayerId_TopOSD };
-
-  static const int THE_NB_DEFAULT_LAYERS = sizeof(THE_DEFAULT_LAYERS) / sizeof(*THE_DEFAULT_LAYERS);
-
-}
 
 //=======================================================================
 //function : Constructor
@@ -358,6 +349,28 @@ void Graphic3d_CView::Update (const Graphic3d_ZLayerId theLayerId)
 }
 
 // =======================================================================
+// function : InvalidateZLayerBoundingBox
+// purpose  :
+// =======================================================================
+void Graphic3d_CView::InvalidateZLayerBoundingBox (const Graphic3d_ZLayerId theLayerId)
+{
+  if (Handle(Graphic3d_Layer) aLayer = Layer (theLayerId))
+  {
+    aLayer->InvalidateBoundingBox();
+    return;
+  }
+
+  for (NCollection_List<Handle(Graphic3d_Layer)>::Iterator aLayerIter (Layers()); aLayerIter.More(); aLayerIter.Next())
+  {
+    const Handle(Graphic3d_Layer)& aLayer = aLayerIter.Value();
+    if (aLayer->NbOfTransformPersistenceObjects() > 0)
+    {
+      aLayer->InvalidateBoundingBox();
+    }
+  }
+}
+
+// =======================================================================
 // function : ContainsFacet
 // purpose  :
 // =======================================================================
@@ -407,40 +420,25 @@ void Graphic3d_CView::DisplayedStructures (Graphic3d_MapOfStructure& theStructur
 // =======================================================================
 Bnd_Box Graphic3d_CView::MinMaxValues (const Standard_Boolean theToIncludeAuxiliary) const
 {
-  Bnd_Box aResult;
-
   if (!IsDefined())
   {
-    return aResult;
+    return Bnd_Box();
   }
 
-  Handle(Graphic3d_Camera) aCamera = Camera();
-  Standard_Integer aWinWidth  = 0;
-  Standard_Integer aWinHeight = 0;
+  const Handle(Graphic3d_Camera)& aCamera = Camera();
+  Graphic3d_Vec2i aWinSize;
+  Window()->Size (aWinSize.x(), aWinSize.y());
 
-  Window()->Size (aWinWidth, aWinHeight);
-
-  for (Standard_Integer aLayer = 0; aLayer < THE_NB_DEFAULT_LAYERS; ++aLayer)
+  Bnd_Box aResult;
+  for (NCollection_List<Handle(Graphic3d_Layer)>::Iterator aLayerIter (Layers()); aLayerIter.More(); aLayerIter.Next())
   {
-    Bnd_Box aBox = ZLayerBoundingBox (THE_DEFAULT_LAYERS[aLayer],
-                                      aCamera,
-                                      aWinWidth,
-                                      aWinHeight,
-                                      theToIncludeAuxiliary);
+    const Handle(Graphic3d_Layer)& aLayer = aLayerIter.Value();
+    Bnd_Box aBox = aLayer->BoundingBox (Identification(),
+                                        aCamera,
+                                        aWinSize.x(), aWinSize.y(),
+                                        theToIncludeAuxiliary);
     aResult.Add (aBox);
   }
-
-  Standard_Integer aMaxZLayer = ZLayerMax();
-  for (Standard_Integer aLayerId = Graphic3d_ZLayerId_Default; aLayerId <= aMaxZLayer; ++aLayerId)
-  {
-    Bnd_Box aBox = ZLayerBoundingBox (aLayerId,
-                                      aCamera,
-                                      aWinWidth,
-                                      aWinHeight,
-                                      theToIncludeAuxiliary);
-    aResult.Add(aBox);
-  }
-
   return aResult;
 }
 
@@ -455,21 +453,15 @@ Standard_Real Graphic3d_CView::ConsiderZoomPersistenceObjects()
     return 1.0;
   }
 
-  Handle(Graphic3d_Camera) aCamera = Camera();
-  Standard_Integer aWinWidth  = 0;
-  Standard_Integer aWinHeight = 0;
-
-  Window()->Size (aWinWidth, aWinHeight);
+  const Handle(Graphic3d_Camera)& aCamera = Camera();
+  Graphic3d_Vec2i aWinSize;
+  Window()->Size (aWinSize.x(), aWinSize.y());
 
   Standard_Real aMaxCoef = 1.0;
-  for (Standard_Integer aLayer = 0; aLayer < THE_NB_DEFAULT_LAYERS; ++aLayer)
+  for (NCollection_List<Handle(Graphic3d_Layer)>::Iterator aLayerIter (Layers()); aLayerIter.More(); aLayerIter.Next())
   {
-    aMaxCoef = Max (aMaxCoef, considerZoomPersistenceObjects (THE_DEFAULT_LAYERS[aLayer], aCamera, aWinWidth, aWinHeight));
-  }
-
-  for (Standard_Integer aLayer = Graphic3d_ZLayerId_Default; aLayer <= ZLayerMax(); ++aLayer)
-  {
-    aMaxCoef = Max (aMaxCoef, considerZoomPersistenceObjects (aLayer, aCamera, aWinWidth, aWinHeight));
+    const Handle(Graphic3d_Layer)& aLayer = aLayerIter.Value();
+    aMaxCoef = Max (aMaxCoef, aLayer->considerZoomPersistenceObjects (Identification(), aCamera, aWinSize.x(), aWinSize.y()));
   }
 
   return aMaxCoef;
