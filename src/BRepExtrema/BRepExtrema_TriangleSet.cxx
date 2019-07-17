@@ -16,10 +16,8 @@
 #include <BRepExtrema_TriangleSet.hxx>
 
 #include <BRep_Tool.hxx>
-#include <BRepAdaptor_Surface.hxx>
 #include <BVH_LinearBuilder.hxx>
 #include <Poly_Triangulation.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(BRepExtrema_TriangleSet, BVH_PrimitiveSet3d)
 
@@ -152,9 +150,6 @@ void BRepExtrema_TriangleSet::Clear()
   BVH_Array4i anEmptyTriangles;
   myTriangles.swap (anEmptyTriangles);
 
-  BVH_Array2d anEmptyVertUVArray;
-  myVertUVArray.swap (anEmptyVertUVArray);
-
   BVH_Array3d anEmptyVertexArray;
   myVertexArray.swap (anEmptyVertexArray);
 }
@@ -179,8 +174,6 @@ Standard_Boolean BRepExtrema_TriangleSet::Init (const BRepExtrema_ShapeList& the
       return Standard_False;
     }
 
-    BRepAdaptor_Surface aFaceAdaptor (theFaces (aFaceIdx), Standard_False);
-
     const Standard_Integer aVertOffset =
       static_cast<Standard_Integer> (myVertexArray.size()) - 1;
 
@@ -193,11 +186,6 @@ Standard_Boolean BRepExtrema_TriangleSet::Init (const BRepExtrema_ShapeList& the
       myVertexArray.push_back (BVH_Vec3d (aVertex.X(),
                                           aVertex.Y(),
                                           aVertex.Z()));
-
-      const Standard_Real aU = aTriangulation->UVNodes().Value (aVertIdx).X();
-      const Standard_Real aV = aTriangulation->UVNodes().Value (aVertIdx).Y();
-
-      myVertUVArray.push_back (BVH_Vec2d (aU, aV));
     }
 
     for (Standard_Integer aTriIdx = 1; aTriIdx <= aTriangulation->NbTriangles(); ++aTriIdx)

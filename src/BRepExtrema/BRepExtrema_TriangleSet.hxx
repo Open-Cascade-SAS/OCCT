@@ -75,9 +75,6 @@ protected:
   //! Array of vertex indices.
   BVH_Array4i myTriangles;
 
-  //! Array of vertex UV params.
-  BVH_Array2d myVertUVArray;
-
   //! Array of vertex coordinates.
   BVH_Array3d myVertexArray;
 
