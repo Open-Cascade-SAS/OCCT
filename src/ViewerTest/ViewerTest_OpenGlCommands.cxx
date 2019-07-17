@@ -606,13 +606,20 @@ static Standard_Integer VShaderProg (Draw_Interpretor& theDI,
     TCollection_AsciiString anArg (theArgVec[anArgIter]);
     anArg.LowerCase();
     Graphic3d_TypeOfShaderObject aShaderTypeArg = Graphic3d_TypeOfShaderObject(-1);
-    if (anArg == "-list"
-     || ((anArg == "-update"
-       || anArg == "-dump"
-       || anArg == "-debug"
-       || anArg == "-reload"
-       || anArg == "-load")
-      && anArgIter + 1 < theArgNb))
+    if (!aProgram.IsNull()
+      && anArg == "-uniform"
+      && anArgIter + 2 < theArgNb)
+    {
+      TCollection_AsciiString aName = theArgVec[++anArgIter];
+      aProgram->PushVariableFloat (aName, float (Draw::Atof (theArgVec[++anArgIter])));
+    }
+    else if (anArg == "-list"
+          || ((anArg == "-update"
+            || anArg == "-dump"
+            || anArg == "-debug"
+            || anArg == "-reload"
+            || anArg == "-load")
+           && anArgIter + 1 < theArgNb))
     {
       Handle(OpenGl_Context) aGlCtx;
       if (Handle(OpenGl_GraphicDriver) aDriver = Handle(OpenGl_GraphicDriver)::DownCast (aCtx->CurrentViewer()->Driver()))
@@ -895,6 +902,7 @@ void ViewerTest::OpenGlCommands(Draw_Interpretor& theCommands)
                   "\n\t\t:   [-off] [-phong] [-aspect {shading|line|point|text}=shading]"
                   "\n\t\t:   [-header VersionHeader]"
                   "\n\t\t:   [-tessControl TessControlShader -tesseval TessEvaluationShader]"
+                  "\n\t\t:   [-uniform Name FloatValue]"
                   "\n\t\t: Assign custom GLSL program to presentation aspects."
                   "\nvshader [-list] [-dump] [-reload] ShaderId"
                   "\n\t\t:  -list   prints the list of registered GLSL programs"
