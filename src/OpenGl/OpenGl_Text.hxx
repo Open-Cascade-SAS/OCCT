@@ -160,9 +160,7 @@ protected:
   mutable OpenGl_Mat4d myProjMatrix;
   mutable OpenGl_Mat4d myModelMatrix;
   mutable OpenGl_Mat4d myOrientationMatrix;
-  mutable GLdouble myWinX;
-  mutable GLdouble myWinY;
-  mutable GLdouble myWinZ;
+  mutable OpenGl_Vec3d myWinXYZ;
   mutable GLdouble myScaleHeight;
   mutable GLdouble myExportHeight;
 

@@ -1,0 +1,17 @@
+puts "=================================="
+puts "0030850: Visualization, OpenGl_Text - text within trihedron persistence jitters when camera is far from origin"
+puts "=================================="
+
+pload MODELING VISUALIZATION
+
+box b 0.001 0.001 0.001
+vclear
+vinit View1
+vaxo
+vdisplay -dispMode 1 b
+vlocation b -setLocation 1000000 0 0
+vfit
+vzlayer DEFAULT -origin 1000000 0 0
+vviewcube vc
+
+vdump $imagedir/${casename}.png

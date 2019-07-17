@@ -31,13 +31,7 @@
 
 namespace
 {
-  static const GLdouble THE_IDENTITY_MATRIX[16] =
-  {
-    1.0, 0.0, 0.0, 0.0,
-    0.0, 1.0, 0.0, 0.0,
-    0.0, 0.0, 1.0, 0.0,
-    0.0, 0.0, 0.0, 1.0
-  };
+  static const OpenGl_Mat4d THE_IDENTITY_MATRIX;
 
   static const TCollection_AsciiString THE_DEFAULT_FONT (Font_NOF_ASCII_MONO);
 
@@ -80,10 +74,7 @@ namespace
 // purpose  :
 // =======================================================================
 OpenGl_Text::OpenGl_Text()
-: myWinX (0.0f),
-  myWinY (0.0f),
-  myWinZ (0.0f),
-  myScaleHeight (1.0f),
+: myScaleHeight (1.0f),
   myPoint  (0.0f, 0.0f, 0.0f),
   myIs2d   (false),
   myHasPlane (false),
@@ -101,10 +92,7 @@ OpenGl_Text::OpenGl_Text()
 OpenGl_Text::OpenGl_Text (const Standard_Utf8Char* theText,
                           const OpenGl_Vec3&       thePoint,
                           const OpenGl_TextParam&  theParams)
-: myWinX (0.0f),
-  myWinY (0.0f),
-  myWinZ (0.0f),
-  myScaleHeight  (1.0f),
+: myScaleHeight  (1.0f),
   myExportHeight (1.0f),
   myParams (theParams),
   myString (theText),
@@ -124,10 +112,7 @@ OpenGl_Text::OpenGl_Text (const Standard_Utf8Char* theText,
                           const gp_Ax2&            theOrientation,
                           const OpenGl_TextParam&  theParams,
                           const bool               theHasOwnAnchor)
-: myWinX         (0.0),
-  myWinY         (0.0),
-  myWinZ         (0.0),
-  myScaleHeight  (1.0),
+: myScaleHeight  (1.0),
   myExportHeight (1.0),
   myParams       (theParams),
   myString       (theText),
@@ -362,7 +347,15 @@ void OpenGl_Text::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
   // Bind custom shader program or generate default version
   aCtx->ShaderManager()->BindFontProgram (aTextAspect->ShaderProgramRes (aCtx));
 
-  myOrientationMatrix = theWorkspace->View()->Camera()->OrientationMatrix();
+  if (myHasPlane && myHasAnchorPoint)
+  {
+    myOrientationMatrix = theWorkspace->View()->Camera()->OrientationMatrix();
+    // reset translation part
+    myOrientationMatrix.ChangeValue (0, 3) = 0.0;
+    myOrientationMatrix.ChangeValue (1, 3) = 0.0;
+    myOrientationMatrix.ChangeValue (2, 3) = 0.0;
+  }
+
   myProjMatrix.Convert (aCtx->ProjectionState.Current());
 
   // use highlight color or colors from aspect
@@ -417,8 +410,7 @@ void OpenGl_Text::setupMatrix (const Handle(OpenGl_Context)& theCtx,
                                const OpenGl_Aspects& theTextAspect,
                                const OpenGl_Vec3& theDVec) const
 {
-  OpenGl_Mat4d aModViewMat;
-  OpenGl_Mat4d aProjectMat;
+  OpenGl_Mat4d aModViewMat, aProjectMat;
   if (myHasPlane && myHasAnchorPoint)
   {
     aProjectMat = myProjMatrix * myOrientationMatrix;
@@ -436,18 +428,20 @@ void OpenGl_Text::setupMatrix (const Handle(OpenGl_Context)& theCtx,
   }
   else
   {
-    // align coordinates to the nearest integer
-    // to avoid extra interpolation issues
-    GLdouble anObjX, anObjY, anObjZ;
-    Graphic3d_TransformUtils::UnProject<Standard_Real> (std::floor (myWinX + theDVec.x()),
-                                                        std::floor (myWinY + theDVec.y()),
-                                                        myWinZ + theDVec.z(),
-                                                        OpenGl_Mat4d::Map (THE_IDENTITY_MATRIX),
-                                                        OpenGl_Mat4d::Map (aProjectMat),
-                                                        theCtx->Viewport(),
-                                                        anObjX,
-                                                        anObjY,
-                                                        anObjZ);
+    OpenGl_Vec3d anObjXYZ;
+    OpenGl_Vec3d aWinXYZ = myWinXYZ + OpenGl_Vec3d (theDVec);
+    if (!myHasPlane && !theTextAspect.Aspect()->IsTextZoomable())
+    {
+      // Align coordinates to the nearest integer to avoid extra interpolation issues.
+      // Note that for better readability we could also try aligning freely rotated in 3D text (myHasPlane),
+      // when camera orientation co-aligned with horizontal text orientation,
+      // but this might look awkward while rotating camera.
+      aWinXYZ.x() = Floor (aWinXYZ.x());
+      aWinXYZ.y() = Floor (aWinXYZ.y());
+    }
+    Graphic3d_TransformUtils::UnProject<Standard_Real> (aWinXYZ.x(), aWinXYZ.y(), aWinXYZ.z(),
+                                                        THE_IDENTITY_MATRIX, aProjectMat, theCtx->Viewport(),
+                                                        anObjXYZ.x(), anObjXYZ.y(), anObjXYZ.z());
 
     if (myHasPlane)
     {
@@ -468,12 +462,12 @@ void OpenGl_Text::setupMatrix (const Handle(OpenGl_Context)& theCtx,
       }
       else
       {
-        aModViewMat.SetColumn (3, OpenGl_Vec3d (anObjX, anObjY, anObjZ));
+        aModViewMat.SetColumn (3, anObjXYZ);
       }
     }
     else
     {
-      Graphic3d_TransformUtils::Translate<GLdouble> (aModViewMat, anObjX, anObjY, anObjZ);
+      Graphic3d_TransformUtils::Translate<GLdouble> (aModViewMat, anObjXYZ.x(), anObjXYZ.y(), anObjXYZ.z());
       Graphic3d_TransformUtils::Rotate<GLdouble> (aModViewMat, theTextAspect.Aspect()->TextAngle(), 0.0, 0.0, 1.0);
     }
 
@@ -737,7 +731,7 @@ void OpenGl_Text::render (const Handle(OpenGl_Context)& theCtx,
   {
     Graphic3d_TransformUtils::Project<Standard_Real> (myPoint.x(), myPoint.y(), myPoint.z(),
                                                       myModelMatrix, myProjMatrix, theCtx->Viewport(),
-                                                      myWinX, myWinY, myWinZ);
+                                                      myWinXYZ.x(), myWinXYZ.y(), myWinXYZ.z());
 
     // compute scale factor for constant text height
     if (theTextAspect.Aspect()->IsTextZoomable())
@@ -747,11 +741,11 @@ void OpenGl_Text::render (const Handle(OpenGl_Context)& theCtx,
     else
     {
       Graphic3d_Vec3d aPnt1, aPnt2;
-      Graphic3d_TransformUtils::UnProject<Standard_Real> (myWinX, myWinY, myWinZ,
-                                                          OpenGl_Mat4d::Map (THE_IDENTITY_MATRIX), myProjMatrix, theCtx->Viewport(),
+      Graphic3d_TransformUtils::UnProject<Standard_Real> (myWinXYZ.x(), myWinXYZ.y(), myWinXYZ.z(),
+                                                          THE_IDENTITY_MATRIX, myProjMatrix, theCtx->Viewport(),
                                                           aPnt1.x(), aPnt1.y(), aPnt1.z());
-      Graphic3d_TransformUtils::UnProject<Standard_Real> (myWinX, myWinY + aPointSize, myWinZ,
-                                                          OpenGl_Mat4d::Map (THE_IDENTITY_MATRIX), myProjMatrix, theCtx->Viewport(),
+      Graphic3d_TransformUtils::UnProject<Standard_Real> (myWinXYZ.x(), myWinXYZ.y() + aPointSize, myWinXYZ.z(),
+                                                          THE_IDENTITY_MATRIX, myProjMatrix, theCtx->Viewport(),
                                                           aPnt2.x(), aPnt2.y(), aPnt2.z());
       myScaleHeight = (aPnt2.y() - aPnt1.y()) / aPointSize;
     }
