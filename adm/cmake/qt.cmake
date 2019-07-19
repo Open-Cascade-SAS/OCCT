@@ -1,23 +1,21 @@
 #qt
 
-#looking for 3RDPARTY_QT_DIR variable used later in qt_macro.cmake
-SET(CSF_QtCore "QtCore")
-THIRDPARTY_PRODUCT("QT" "" "CSF_QtCore" "d")
+# Qt is searched manually first (just determine root)
+message (STATUS "Processing Qt 3-rd party")
 
-list (APPEND 3RDPARTY_DLL_DIRS "${3RDPARTY_QT_DIR}/bin")
+if (NOT DEFINED ${3RDPARTY_QT_DIR} AND ${3RDPARTY_QT_DIR} STREQUAL "")
+  FIND_PRODUCT_DIR ("${3RDPARTY_DIR}" Qt 3RDPARTY_QT_DIR_NAME)
 
-list (REMOVE_ITEM 3RDPARTY_NOT_INCLUDED "3RDPARTY_QT_INCLUDE_DIR")
-list (REMOVE_ITEM 3RDPARTY_NO_LIBS "3RDPARTY_QT_LIBRARY_DIR")
-list (REMOVE_ITEM 3RDPARTY_NO_DLLS "3RDPARTY_QT_DLL_DIR")
+  if (NOT DEFINED ${3RDPARTY_QT_DIR_NAME} AND ${3RDPARTY_QT_DIR_NAME} STREQUAL "")
+    message (FATAL_ERROR "... Qt root directory was not found")
+  endif()
 
-UNSET (${3RDPARTY_QT_DLL} CACHE)
-UNSET (${3RDPARTY_QT_DLL_DIR} CACHE)
-UNSET (${3RDPARTY_QT_INCLUDE_DIR} CACHE)
-UNSET (${3RDPARTY_QT_LIBRARY} CACHE)
-UNSET (${3RDPARTY_QT_LIBRARY_DIR} CACHE)
+  # Combine directory name with absolute path and show in GUI
+  set (3RDPARTY_QT_DIR "${3RDPARTY_DIR}/${3RDPARTY_QT_DIR_NAME}" CACHE PATH "The directory containing Qt" FORCE)
+  message (STATUS "Info: Qt is used from folder: ${3RDPARTY_QT_DIR}")
+endif()
 
 set (USED_3RDPARTY_QT_DIR "${3RDPARTY_QT_DIR}")
-message (STATUS "Info: Qt is used from folder: ${3RDPARTY_QT_DIR}")
 
 # Now set CMAKE_PREFIX_PATH to point to local Qt installation.
 # Without this setting find_package() will not work

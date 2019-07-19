@@ -708,6 +708,18 @@ else()
   OCCT_CHECK_AND_UNSET ("3RDPARTY_FLEX_EXECUTABLE")
 endif()
 
+# qt for inspector and samples
+if (BUILD_Inspector OR BUILD_SAMPLES_QT)
+  # check qt 3rdparty path
+  add_definitions (-DHAVE_QT)
+  OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/qt")
+  message (STATUS "Info: Qt is used by OCCT")
+else()
+  OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_QT")
+  OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_TQTMALLOC")
+  OCCT_CHECK_AND_UNSET ("INSTALL_QT")
+endif()
+
 # check all 3rdparty include paths
 string (REGEX REPLACE ";" " " 3RDPARTY_NOT_INCLUDED "${3RDPARTY_NOT_INCLUDED}")
 if (3RDPARTY_NOT_INCLUDED)
@@ -793,17 +805,6 @@ if (WIN32)
   set (SCRIPT_EXT bat)
 else()
   set (SCRIPT_EXT sh)
-endif()
-
-if (BUILD_Inspector OR BUILD_SAMPLES_QT)
-  # check qt 3rdparty path
-  add_definitions (-DHAVE_QT)
-  OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/qt")
-  message (STATUS "Info: Qt is used by OCCT")
-else()
-  OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_QT")
-  OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_TQTMALLOC")
-  OCCT_CHECK_AND_UNSET ("INSTALL_QT")
 endif()
 
 # OCCT tools
