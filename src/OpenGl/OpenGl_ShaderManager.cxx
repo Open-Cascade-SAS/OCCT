@@ -1505,6 +1505,8 @@ int OpenGl_ShaderManager::defaultGlslVersion (const Handle(Graphic3d_ShaderProgr
                                               bool theUsesDerivates) const
 {
   int aBits = theBits;
+  const bool toUseDerivates = theUsesDerivates
+                          || (theBits & OpenGl_PO_StippleLine) != 0;
 #if !defined(GL_ES_VERSION_2_0)
   if (myContext->core32 != NULL)
   {
@@ -1518,19 +1520,15 @@ int OpenGl_ShaderManager::defaultGlslVersion (const Handle(Graphic3d_ShaderProgr
       {
         theProgram->SetHeader ("#version 130");
       }
-      else if (myContext->CheckExtension ("GL_EXT_gpu_shader4"))
+      else if (myContext->CheckExtension ("GL_EXT_gpu_shader4")) // myContext->hasGlslBitwiseOps == OpenGl_FeatureInExtensions
       {
         // GL_EXT_gpu_shader4 defines GLSL type "unsigned int", while core GLSL specs define type "uint"
         theProgram->SetHeader ("#extension GL_EXT_gpu_shader4 : enable\n"
                                "#define uint unsigned int");
       }
-      else
-      {
-        aBits = aBits & ~OpenGl_PO_StippleLine;
-      }
     }
   }
-  (void )theUsesDerivates;
+  (void )toUseDerivates;
 #else
   // prefer "100 es" on OpenGL ES 3.0- devices (save the features unavailable before "300 es")
   // and    "300 es" on OpenGL ES 3.1+ devices
@@ -1557,10 +1555,13 @@ int OpenGl_ShaderManager::defaultGlslVersion (const Handle(Graphic3d_ShaderProgr
       else
       {
         aBits = aBits & ~OpenGl_PO_WriteOit;
-        aBits = aBits & ~OpenGl_PO_StippleLine;
+        if (!myContext->oesStdDerivatives)
+        {
+          aBits = aBits & ~OpenGl_PO_StippleLine;
+        }
       }
     }
-    if (theUsesDerivates)
+    if (toUseDerivates)
     {
       if (myContext->IsGlGreaterEqual (3, 0))
       {
@@ -1819,28 +1820,34 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramUnlit (Handle(OpenGl_Sha
     const Standard_Integer aBits = defaultGlslVersion (aProgramSrc, "unlit", theBits);
     if ((aBits & OpenGl_PO_StippleLine) != 0)
     {
-      aUniforms.Append (OpenGl_ShaderObject::ShaderVariable ("int   uPattern", Graphic3d_TOS_FRAGMENT));
-      aUniforms.Append (OpenGl_ShaderObject::ShaderVariable ("float uFactor",  Graphic3d_TOS_FRAGMENT));
+      if (myContext->hasGlslBitwiseOps != OpenGl_FeatureNotAvailable)
+      {
+        aUniforms.Append (OpenGl_ShaderObject::ShaderVariable ("int   occStipplePattern", Graphic3d_TOS_FRAGMENT));
+      }
+      else
+      {
+        aUniforms.Append (OpenGl_ShaderObject::ShaderVariable ("bool  occStipplePattern[16]", Graphic3d_TOS_FRAGMENT));
+      }
+      aUniforms.Append (OpenGl_ShaderObject::ShaderVariable ("float occStippleFactor",  Graphic3d_TOS_FRAGMENT));
       aUniforms.Append (OpenGl_ShaderObject::ShaderVariable ("vec4 occViewport", Graphic3d_TOS_VERTEX));
       aStageInOuts.Append (OpenGl_ShaderObject::ShaderVariable ("vec2 ScreenSpaceCoord", Graphic3d_TOS_VERTEX | Graphic3d_TOS_FRAGMENT));
       aSrcVertEndMain =
         EOL"  vec2 aPosition   = gl_Position.xy / gl_Position.w;"
         EOL"  aPosition        = aPosition * 0.5 + 0.5;"
         EOL"  ScreenSpaceCoord = aPosition.xy * occViewport.zw + occViewport.xy;";
-      aSrcFragMainGetColor =
-        EOL"  vec2 anAxis = vec2 (0.0);"
+      aSrcFragMainGetColor = TCollection_AsciiString()
+      + EOL"  vec2 anAxis = vec2 (0.0, 1.0);"
         EOL"  if (abs (dFdx (ScreenSpaceCoord.x)) - abs (dFdy (ScreenSpaceCoord.y)) > 0.001)" 
         EOL"  {"
         EOL"    anAxis = vec2 (1.0, 0.0);"
         EOL"  }"
-        EOL"  else"
-        EOL"  {"
-        EOL"    anAxis = vec2 (0.0, 1.0);"
-        EOL"  }"
         EOL"  float aRotatePoint = dot (gl_FragCoord.xy, anAxis);"
-        EOL"  uint  aBit         = uint (floor (aRotatePoint / uFactor + 0.5)) & 15U;"
-        EOL"  if ((uint (uPattern) & (1U << aBit)) == 0U) discard;"
-        EOL"  vec4 aColor = getFinalColor();"
+      + (myContext->hasGlslBitwiseOps != OpenGl_FeatureNotAvailable
+       ? EOL"  uint aBit = uint (floor (aRotatePoint / occStippleFactor + 0.5)) & 15U;"
+         EOL"  if ((uint (occStipplePattern) & (1U << aBit)) == 0U) discard;"
+       : EOL"  int aBit = int (mod (floor (aRotatePoint / occStippleFactor + 0.5), 16.0));"
+         EOL"  if (!occStipplePattern[aBit]) discard;")
+      + EOL"  vec4 aColor = getFinalColor();"
         EOL"  if (aColor.a <= 0.1) discard;"
         EOL"  occSetFragColor (aColor);";
     }

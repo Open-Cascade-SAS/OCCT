@@ -79,6 +79,8 @@ enum OpenGl_StateVariable
   OpenGl_OCCT_VIEWPORT,
   OpenGl_OCCT_LINE_WIDTH,
   OpenGl_OCCT_LINE_FEATHER,
+  OpenGl_OCCT_LINE_STIPPLE_PATTERN, // occStipplePattern
+  OpenGl_OCCT_LINE_STIPPLE_FACTOR,  // occStippleFactor
   OpenGl_OCCT_WIREFRAME_COLOR,
   OpenGl_OCCT_QUAD_MODE_STATE,
 

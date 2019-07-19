@@ -81,6 +81,8 @@ Standard_CString OpenGl_ShaderProgram::PredefinedKeywords[] =
   "occViewport",           // OpenGl_OCCT_VIEWPORT
   "occLineWidth",          // OpenGl_OCCT_LINE_WIDTH
   "occLineFeather",        // OpenGl_OCCT_LINE_FEATHER
+  "occStipplePattern",     // OpenGl_OCCT_LINE_STIPPLE_PATTERN
+  "occStippleFactor",      // OpenGl_OCCT_LINE_STIPPLE_FACTOR
   "occWireframeColor",     // OpenGl_OCCT_WIREFRAME_COLOR
   "occIsQuadMode",         // OpenGl_OCCT_QUAD_MODE_STATE
 

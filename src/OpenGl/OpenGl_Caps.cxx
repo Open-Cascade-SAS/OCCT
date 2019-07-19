@@ -51,6 +51,9 @@ OpenGl_Caps::OpenGl_Caps()
 #else
   contextCompatible (Standard_False),
 #endif
+  contextNoExtensions (Standard_False),
+  contextMajorVersionUpper (-1),
+  contextMinorVersionUpper (-1),
   glslWarnings      (Standard_False),
   suppressExtraMsg  (Standard_True),
   glslDumpLevel     (OpenGl_ShaderProgramDumpLevel_Off)
@@ -76,6 +79,9 @@ OpenGl_Caps& OpenGl_Caps::operator= (const OpenGl_Caps& theCopy)
   contextSyncDebug  = theCopy.contextSyncDebug;
   contextNoAccel    = theCopy.contextNoAccel;
   contextCompatible = theCopy.contextCompatible;
+  contextNoExtensions = theCopy.contextNoExtensions;
+  contextMajorVersionUpper = theCopy.contextMajorVersionUpper;
+  contextMinorVersionUpper = theCopy.contextMinorVersionUpper;
   glslWarnings      = theCopy.glslWarnings;
   suppressExtraMsg  = theCopy.suppressExtraMsg;
   glslDumpLevel     = theCopy.glslDumpLevel;

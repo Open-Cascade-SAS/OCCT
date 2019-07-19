@@ -303,7 +303,10 @@ Standard_Boolean OpenGl_GraphicDriver::InitContext()
     ::Message::DefaultMessenger()->Send ("Error: EGL does not provide OpenGL ES client!", Message_Fail);
     return Standard_False;
   }
-  myEglContext = (Aspect_RenderingContext )eglCreateContext ((EGLDisplay )myEglDisplay, myEglConfig, EGL_NO_CONTEXT, anEglCtxAttribs3);
+  if (myCaps->contextMajorVersionUpper != 2)
+  {
+    myEglContext = (Aspect_RenderingContext )eglCreateContext ((EGLDisplay )myEglDisplay, myEglConfig, EGL_NO_CONTEXT, anEglCtxAttribs3);
+  }
   if ((EGLContext )myEglContext == EGL_NO_CONTEXT)
   {
     myEglContext = (Aspect_RenderingContext )eglCreateContext ((EGLDisplay )myEglDisplay, myEglConfig, EGL_NO_CONTEXT, anEglCtxAttribs2);

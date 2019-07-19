@@ -123,6 +123,7 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
   hasTexRGBA8(Standard_True),
   hasFlatShading (OpenGl_FeatureInCore),
 #endif
+  hasGlslBitwiseOps  (OpenGl_FeatureNotAvailable),
   hasDrawBuffers     (OpenGl_FeatureNotAvailable),
   hasFloatBuffer     (OpenGl_FeatureNotAvailable),
   hasHalfFloatBuffer (OpenGl_FeatureNotAvailable),
@@ -749,6 +750,10 @@ Standard_Boolean OpenGl_Context::CheckExtension (const char* theExtName) const
 #endif
     return Standard_False;
   }
+  else if (caps->contextNoExtensions)
+  {
+    return Standard_False;
+  }
 
 #if !defined(GL_ES_VERSION_2_0)
   // available since OpenGL 3.0
@@ -1217,6 +1222,44 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
   ReadGlVersion (myGlVerMajor, myGlVerMinor);
   myVendor = (const char* )::glGetString (GL_VENDOR);
   myVendor.LowerCase();
+
+  if (caps->contextMajorVersionUpper != -1)
+  {
+    // synthetically restrict OpenGL version for testing
+    Standard_Integer aCtxVer[2] = { myGlVerMajor, myGlVerMinor };
+    bool isLowered = false;
+    if (myGlVerMajor > caps->contextMajorVersionUpper)
+    {
+      isLowered = true;
+      myGlVerMajor = caps->contextMajorVersionUpper;
+    #if defined(GL_ES_VERSION_2_0)
+      switch (myGlVerMajor)
+      {
+        case 2: myGlVerMinor = 0; break;
+      }
+    #else
+      switch (myGlVerMajor)
+      {
+        case 1: myGlVerMinor = 5; break;
+        case 2: myGlVerMinor = 1; break;
+        case 3: myGlVerMinor = 3; break;
+      }
+    #endif
+    }
+    if (caps->contextMinorVersionUpper != -1
+     && myGlVerMinor > caps->contextMinorVersionUpper)
+    {
+      isLowered = true;
+      myGlVerMinor = caps->contextMinorVersionUpper;
+    }
+    if (isLowered)
+    {
+      PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_MEDIUM,
+                   TCollection_AsciiString ("OpenGL version ") + aCtxVer[0] + "." + aCtxVer[1]
+                   + " has been lowered to " + myGlVerMajor + "." + myGlVerMinor);
+    }
+  }
+
   if (!caps->ffpEnable
    && !IsGlGreaterEqual (2, 0))
   {
@@ -1436,6 +1479,9 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
   hasSampleVariables = IsGlGreaterEqual (3, 2) ? OpenGl_FeatureInCore :
                        oesSampleVariables ? OpenGl_FeatureInExtensions
                                           : OpenGl_FeatureNotAvailable;
+  hasGlslBitwiseOps = IsGlGreaterEqual (3, 0)
+                    ? OpenGl_FeatureInCore
+                    : OpenGl_FeatureNotAvailable;
   // without hasHighp, dFdx/dFdy precision is considered too low for flat shading (visual artifacts)
   hasFlatShading = IsGlGreaterEqual (3, 0)
                  ? OpenGl_FeatureInCore
@@ -1473,6 +1519,12 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
   hasDrawBuffers = IsGlGreaterEqual (2, 0) ? OpenGl_FeatureInCore :
                    arbDrawBuffers ? OpenGl_FeatureInExtensions 
                                   : OpenGl_FeatureNotAvailable;
+
+  hasGlslBitwiseOps = IsGlGreaterEqual (3, 0)
+                    ? OpenGl_FeatureInCore
+                    : CheckExtension ("GL_EXT_gpu_shader4")
+                     ? OpenGl_FeatureInExtensions
+                     : OpenGl_FeatureNotAvailable;
 
   hasFloatBuffer = hasHalfFloatBuffer =  IsGlGreaterEqual (3, 0) ? OpenGl_FeatureInCore :
                                          CheckExtension ("GL_ARB_color_buffer_float") ? OpenGl_FeatureInExtensions
@@ -2989,9 +3041,16 @@ void OpenGl_Context::DiagnosticInformation (TColStd_IndexedDataMapOfStringString
 
   if ((theFlags & Graphic3d_DiagnosticInfo_Device) != 0)
   {
+    Standard_Integer aDriverVer[2] = {};
+    ReadGlVersion (aDriverVer[0], aDriverVer[1]);
     addInfo (theDict, "GLvendor",    (const char*)::glGetString (GL_VENDOR));
     addInfo (theDict, "GLdevice",    (const char*)::glGetString (GL_RENDERER));
     addInfo (theDict, "GLversion",   (const char*)::glGetString (GL_VERSION));
+    if (myGlVerMajor != aDriverVer[0]
+     || myGlVerMinor != aDriverVer[1])
+    {
+      addInfo (theDict, "GLversionOcct", TCollection_AsciiString (myGlVerMajor) + "." + TCollection_AsciiString (myGlVerMinor));
+    }
     if (IsGlGreaterEqual (2, 0))
     {
       addInfo (theDict, "GLSLversion", (const char*)::glGetString (GL_SHADING_LANGUAGE_VERSION));
@@ -3496,8 +3555,23 @@ void OpenGl_Context::SetTypeOfLine (const Aspect_TypeOfLine  theType,
 
   if (!myActiveProgram.IsNull())
   {
-    myActiveProgram->SetUniform (this, "uPattern", aPattern);
-    myActiveProgram->SetUniform (this, "uFactor",  theFactor);
+    if (const OpenGl_ShaderUniformLocation aPatternLoc = myActiveProgram->GetStateLocation (OpenGl_OCCT_LINE_STIPPLE_PATTERN))
+    {
+      if (hasGlslBitwiseOps != OpenGl_FeatureNotAvailable)
+      {
+        myActiveProgram->SetUniform (this, aPatternLoc, aPattern);
+      }
+      else
+      {
+        Standard_Integer aPatArr[16] = {};
+        for (unsigned int aBit = 0; aBit < 16; ++aBit)
+        {
+          aPatArr[aBit] = ((unsigned int)(aPattern) & (1U << aBit)) != 0 ? 1 : 0;
+        }
+        myActiveProgram->SetUniform (this, aPatternLoc, 16, aPatArr);
+      }
+      myActiveProgram->SetUniform (this, myActiveProgram->GetStateLocation (OpenGl_OCCT_LINE_STIPPLE_FACTOR), theFactor);
+    }
     return;
   }
 

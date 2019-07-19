@@ -1658,8 +1658,9 @@ TCollection_AsciiString ViewerTest::ViewerInit (const Standard_Integer thePxLeft
       // alternatively we can disable buffer swap at all, but this might be inappropriate for testing
       //ViewerTest_myDefaultCaps.buffersNoSwap = true;
     }
-    aGraphicDriver = new OpenGl_GraphicDriver (GetDisplayConnection());
+    aGraphicDriver = new OpenGl_GraphicDriver (GetDisplayConnection(), false);
     aGraphicDriver->ChangeOptions() = ViewerTest_myDefaultCaps;
+    aGraphicDriver->InitContext();
 
     ViewerTest_myDrivers.Bind (aViewNames.GetDriverName(), aGraphicDriver);
     toCreateViewer = Standard_True;
@@ -6626,6 +6627,8 @@ static int VCaps (Draw_Interpretor& theDI,
     theDI << "Compatible:" << (aCaps->contextCompatible ? "1" : "0") << "\n";
     theDI << "Stereo:  " << (aCaps->contextStereo ? "1" : "0") << "\n";
     theDI << "WinBuffer: " << (aCaps->useSystemBuffer ? "1" : "0") << "\n";
+    theDI << "NoExt:"    << (aCaps->contextNoExtensions ? "1" : "0") << "\n";
+    theDI << "MaxVersion:" << aCaps->contextMajorVersionUpper << "." << aCaps->contextMinorVersionUpper << "\n";
     return 0;
   }
 
@@ -6768,6 +6771,44 @@ static int VCaps (Draw_Interpretor& theDI,
         --anArgIter;
       }
       aCaps->contextStereo = toEnable;
+    }
+    else if (anArgCase == "-noext"
+          || anArgCase == "-noextensions"
+          || anArgCase == "-noextension")
+    {
+      Standard_Boolean toDisable = Standard_True;
+      if (++anArgIter < theArgNb
+      && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toDisable))
+      {
+        --anArgIter;
+      }
+      aCaps->contextNoExtensions = toDisable;
+    }
+    else if (anArgCase == "-maxversion"
+          || anArgCase == "-upperversion"
+          || anArgCase == "-limitversion")
+    {
+      Standard_Integer aVer[2] = { -2, -1 };
+      for (Standard_Integer aValIter = 0; aValIter < 2; ++aValIter)
+      {
+        if (anArgIter + 1 < theArgNb)
+        {
+          const TCollection_AsciiString aStr (theArgVec[anArgIter + 1]);
+          if (aStr.IsIntegerValue())
+          {
+            aVer[aValIter] = aStr.IntegerValue();
+            ++anArgIter;
+          }
+        }
+      }
+      if (aVer[0] < -1
+       || aVer[1] < -1)
+      {
+        std::cout << "Syntax error at '" << anArgCase << "'\n";
+        return 1;
+      }
+      aCaps->contextMajorVersionUpper = aVer[0];
+      aCaps->contextMinorVersionUpper = aVer[1];
     }
     else
     {
@@ -13713,6 +13754,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "\n\t\t:       [-vsync {0|1}] [-useWinBuffer {0|1}]"
     "\n\t\t:       [-quadBuffer {0|1}] [-stereo {0|1}]"
     "\n\t\t:       [-softMode {0|1}] [-noupdate|-update]"
+    "\n\t\t:       [-noExtensions {0|1}] [-maxVersion Major Minor]"
     "\n\t\t: Modify particular graphic driver options:"
     "\n\t\t:  FFP      - use fixed-function pipeline instead of"
     "\n\t\t:             built-in GLSL programs"
@@ -13727,6 +13769,8 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "\n\t\t:  softMode          - software OpenGL implementation"
     "\n\t\t:  compatibleProfile - backward-compatible profile"
     "\n\t\t:  quadbuffer        - QuadBuffer"
+    "\n\t\t:  noExtensions      - disallow usage of extensions"
+    "\n\t\t:  maxVersion        - force upper OpenGL version to be used"
     "\n\t\t: Unlike vrenderparams, these parameters control alternative"
     "\n\t\t: rendering paths producing the same visual result when"
     "\n\t\t: possible."
