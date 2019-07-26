@@ -48,6 +48,8 @@ AIS_ViewController::AIS_ViewController()
   myToAllowZFocus        (true),
   myToAllowHighlight     (true),
   myToAllowDragging      (true),
+  myToStickToRayOnZoom   (true),
+  myToStickToRayOnRotation (true),
   //
   myWalkSpeedAbsolute (1.5f),
   myWalkSpeedRelative (0.1f),
@@ -1393,9 +1395,9 @@ void AIS_ViewController::handleZoom (const Handle(V3d_View)& theView,
     Graphic3d_Vec2i aWinSize;
     theView->Window()->Size (aWinSize.x(), aWinSize.y());
     const Graphic3d_Vec2d aPanFromCenterPx (double(theParams.Point.x()) - 0.5 * double(aWinSize.x()),
-                                            double(theParams.Point.y()) - 0.5 * double(aWinSize.y()));
+                                            double(aWinSize.y() - theParams.Point.y() - 1) - 0.5 * double(aWinSize.y()));
     aDxy.x() += -aViewDims1.X() * aPanFromCenterPx.x() / double(aWinSize.x());
-    aDxy.y() +=  aViewDims1.X() * aPanFromCenterPx.y() / double(aWinSize.x());
+    aDxy.y() += -aViewDims1.Y() * aPanFromCenterPx.y() / double(aWinSize.y());
   }
 
   //theView->Translate (aCam, aDxy.x(), aDxy.y());
@@ -1661,7 +1663,7 @@ gp_Pnt AIS_ViewController::GravityPoint (const Handle(AIS_InteractiveContext)& t
       }
 
       gp_Pnt aPnt;
-      if (PickPoint (aPnt, theCtx, theView, aCursor, false))
+      if (PickPoint (aPnt, theCtx, theView, aCursor, myToStickToRayOnRotation))
       {
         return aPnt;
       }
@@ -1882,12 +1884,9 @@ void AIS_ViewController::handleCameraActions (const Handle(AIS_InteractiveContex
 
       if (!theView->Camera()->IsOrthographic())
       {
-        // what is more natural to user - point on ray or point exactly on geometry in corner cases?
-        const bool toStickToRay = false; // true;
-
         gp_Pnt aPnt;
         if (aZoomParams.HasPoint()
-         && PickPoint (aPnt, theCtx, theView, aZoomParams.Point, toStickToRay))
+         && PickPoint (aPnt, theCtx, theView, aZoomParams.Point, myToStickToRayOnZoom))
         {
           handleZoom (theView, aZoomParams, &aPnt);
           continue;
@@ -1895,7 +1894,7 @@ void AIS_ViewController::handleCameraActions (const Handle(AIS_InteractiveContex
 
         Graphic3d_Vec2i aWinSize;
         theView->Window()->Size (aWinSize.x(), aWinSize.y());
-        if (PickPoint (aPnt, theCtx, theView, aWinSize / 2, toStickToRay))
+        if (PickPoint (aPnt, theCtx, theView, aWinSize / 2, myToStickToRayOnZoom))
         {
           aZoomParams.ResetPoint(); // do not pretend to zoom at 'nothing'
           handleZoom (theView, aZoomParams, &aPnt);

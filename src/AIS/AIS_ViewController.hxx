@@ -152,6 +152,18 @@ public: //! @name global parameters
   //! Set if dynamic highlight on mouse move is allowed.
   void SetAllowDragging (bool theToEnable) { myToAllowDragging = theToEnable; }
 
+  //! Return TRUE if picked point should be projected to picking ray on zooming at point; TRUE by default.
+  bool ToStickToRayOnZoom() const { return myToStickToRayOnZoom; }
+
+  //! Set if picked point should be projected to picking ray on zooming at point.
+  void SetStickToRayOnZoom (bool theToEnable) { myToStickToRayOnZoom = theToEnable; }
+
+  //! Return TRUE if picked point should be projected to picking ray on rotating around point; TRUE by default.
+  bool ToStickToRayOnRotation() const { return myToStickToRayOnRotation; }
+
+  //! Set if picked point should be projected to picking ray on rotating around point.
+  void SetStickToRayOnRotation (bool theToEnable) { myToStickToRayOnRotation = theToEnable; }
+
   //! Return TRUE if pitch direction should be inverted while processing Aspect_VKey_NavLookUp/Aspect_VKey_NavLookDown; FALSE by default.
   bool ToInvertPitch() const { return myToInvertPitch; }
 
@@ -600,6 +612,8 @@ protected:
   Standard_Boolean    myToAllowZFocus;            //!< enable ZFocus change; TRUE by default
   Standard_Boolean    myToAllowHighlight;         //!< enable dynamic highlight on mouse move; TRUE by default
   Standard_Boolean    myToAllowDragging;          //!< enable dragging object; TRUE by default
+  Standard_Boolean    myToStickToRayOnZoom;       //!< project picked point to ray while zooming at point, TRUE by default
+  Standard_Boolean    myToStickToRayOnRotation;   //!< project picked point to ray while rotating around point; TRUE by default
 
   Standard_ShortReal  myWalkSpeedAbsolute;        //!< normal walking speed, in m/s; 1.5 by default
   Standard_ShortReal  myWalkSpeedRelative;        //!< walking speed relative to scene bounding box; 0.1 by default
