@@ -172,7 +172,7 @@ protected:
                    size_t theLen,
                    size_t& theReadLen)
   {
-    theReadLen = theStream.read (myReadBuffer.data(), theLen).gcount();
+    theReadLen = (size_t )theStream.read (myReadBuffer.data(), theLen).gcount();
     return !theStream.bad();
   }
 
