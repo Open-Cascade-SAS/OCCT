@@ -28,8 +28,12 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(V3d_CircularGrid,Aspect_CircularGrid)
 
-#define DIVISION 8
-#define MYFACTOR 50.
+namespace
+{
+  static const Standard_Real THE_DEFAULT_GRID_STEP = 10.0;
+  #define DIVISION 8
+  #define MYFACTOR 50.
+}
 
 //! Dummy implementation of Graphic3d_Structure overriding ::Compute() method for handling Device Lost.
 class V3d_CircularGrid::CircularGridStructure : public Graphic3d_Structure
@@ -58,7 +62,15 @@ V3d_CircularGrid::V3d_CircularGrid (const V3d_ViewerPointer& aViewer, const Quan
 : Aspect_CircularGrid (1.,8),
   myViewer (aViewer),
   myCurAreDefined (Standard_False),
-  myToComputePrs (Standard_False)
+  myToComputePrs (Standard_False),
+  myCurDrawMode (Aspect_GDM_Lines),
+  myCurXo (0.0),
+  myCurYo (0.0),
+  myCurAngle (0.0),
+  myCurStep (0.0),
+  myCurDivi (0),
+  myRadius (0.5 * aViewer->DefaultViewSize()),
+  myOffSet (THE_DEFAULT_GRID_STEP / MYFACTOR)
 {
   myColor = aColor;
   myTenthColor = aTenthColor;
@@ -67,10 +79,7 @@ V3d_CircularGrid::V3d_CircularGrid (const V3d_ViewerPointer& aViewer, const Quan
   myGroup = myStructure->NewGroup();
   myStructure->SetInfiniteState (Standard_True);
 
-  const Standard_Real step = 10.;
-  const Standard_Real size = 0.5*myViewer->DefaultViewSize();
-  SetGraphicValues (size, step/MYFACTOR);
-  SetRadiusStep (step);
+  SetRadiusStep (THE_DEFAULT_GRID_STEP);
 }
 
 V3d_CircularGrid::~V3d_CircularGrid()
@@ -263,7 +272,7 @@ void V3d_CircularGrid::DefineLines ()
     myGroup->AddPrimitiveArray(aPrims3, Standard_False);
   }
 
-  myGroup->SetMinMaxValues(-myRadius, -myRadius, 0.0, myRadius, myRadius, 0.0);
+  myGroup->SetMinMaxValues (-myRadius, -myRadius, -myOffSet, myRadius, myRadius, -myOffSet);
   myCurStep = aStep, myCurDivi = (Standard_Integer ) aDivision;
 
   // update bounding box
@@ -321,7 +330,7 @@ void V3d_CircularGrid::DefinePoints ()
     }
     myGroup->AddPrimitiveArray (Cercle, Standard_False);
   }
-  myGroup->SetMinMaxValues(-myRadius, -myRadius, 0.0, myRadius, myRadius, 0.0);
+  myGroup->SetMinMaxValues (-myRadius, -myRadius, -myOffSet, myRadius, myRadius, -myOffSet);
 
   myCurStep = aStep, myCurDivi = (Standard_Integer ) aDivision;
 

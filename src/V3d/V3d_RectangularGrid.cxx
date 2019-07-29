@@ -28,7 +28,11 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(V3d_RectangularGrid,Aspect_RectangularGrid)
 
-#define MYFACTOR 50.
+namespace
+{
+  static const Standard_Real THE_DEFAULT_GRID_STEP = 10.0;
+  #define MYFACTOR 50.
+}
 
 //! Dummy implementation of Graphic3d_Structure overriding ::Compute() method for handling Device Lost.
 class V3d_RectangularGrid::RectangularGridStructure : public Graphic3d_Structure
@@ -57,7 +61,16 @@ V3d_RectangularGrid::V3d_RectangularGrid (const V3d_ViewerPointer& aViewer, cons
 : Aspect_RectangularGrid (1.,1.),
   myViewer (aViewer),
   myCurAreDefined (Standard_False),
-  myToComputePrs (Standard_True)
+  myToComputePrs (Standard_True),
+  myCurDrawMode (Aspect_GDM_Lines),
+  myCurXo (0.0),
+  myCurYo (0.0),
+  myCurAngle (0.0),
+  myCurXStep (0.0),
+  myCurYStep (0.0),
+  myXSize  (0.5 * aViewer->DefaultViewSize()),
+  myYSize  (0.5 * aViewer->DefaultViewSize()),
+  myOffSet (THE_DEFAULT_GRID_STEP / MYFACTOR)
 {
   myColor = aColor;
   myTenthColor = aTenthColor;
@@ -66,12 +79,8 @@ V3d_RectangularGrid::V3d_RectangularGrid (const V3d_ViewerPointer& aViewer, cons
   myGroup = myStructure->NewGroup();
   myStructure->SetInfiniteState (Standard_True);
 
-  const Standard_Real step = 10.;
-  const Standard_Real gstep = step/MYFACTOR;
-  const Standard_Real size = 0.5*myViewer->DefaultViewSize();
-  SetGraphicValues (size, size, gstep);
-  SetXStep (step);
-  SetYStep (step);
+  SetXStep (THE_DEFAULT_GRID_STEP);
+  SetYStep (THE_DEFAULT_GRID_STEP);
 }
 
 V3d_RectangularGrid::~V3d_RectangularGrid()
@@ -261,7 +270,7 @@ void V3d_RectangularGrid::DefineLines ()
     myGroup->AddPrimitiveArray(aPrims, Standard_False);
   }
 
-  myGroup->SetMinMaxValues(-myXSize, -myYSize, 0.0, myXSize, myYSize, 0.0);
+  myGroup->SetMinMaxValues(-myXSize, -myYSize, -myOffSet, myXSize, myYSize, -myOffSet);
   myCurXStep = aXStep, myCurYStep = aYStep;
 
   // update bounding box
@@ -321,7 +330,7 @@ void V3d_RectangularGrid::DefinePoints ()
     myGroup->AddPrimitiveArray (Vertical, Standard_False);
   }
 
-  myGroup->SetMinMaxValues(-myXSize, -myYSize, 0.0, myXSize, myYSize, 0.0);
+  myGroup->SetMinMaxValues(-myXSize, -myYSize, -myOffSet, myXSize, myYSize, -myOffSet);
   myCurXStep = aXStep, myCurYStep = aYStep;
 
   // update bounding box
