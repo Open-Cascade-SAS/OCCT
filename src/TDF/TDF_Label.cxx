@@ -60,8 +60,8 @@ Standard_Boolean TDF_Label::FindAttribute
   if (IsNull()) throw Standard_NullObject("A null Label has no attribute.");
   TDF_AttributeIterator itr (myLabelNode); // Without removed attributes.
   for ( ; itr.More(); itr.Next()) {
-    if (itr.Value()->ID() == anID) {
-      anAttribute = itr.Value();
+    if (itr.PtrValue()->ID() == anID) {
+      anAttribute = itr.PtrValue();
       return Standard_True;
     }
   }

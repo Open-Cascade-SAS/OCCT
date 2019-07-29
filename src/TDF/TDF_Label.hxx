@@ -154,7 +154,7 @@ public:
   template <class T> 
   Standard_Boolean FindAttribute (const Standard_GUID& theID, Handle(T)& theAttr) const
   { 
-    Handle(TDF_Attribute) anAttr = theAttr;
+    Handle(TDF_Attribute) anAttr;
     return FindAttribute (theID, anAttr) && ! (theAttr = Handle(T)::DownCast(anAttr)).IsNull();
   }
 

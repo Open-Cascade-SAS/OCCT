@@ -61,6 +61,9 @@ public:
   Standard_EXPORT   void Next() ;
   inline   Handle(TDF_Attribute) Value() const;
 
+  //! Provides an access to the internal pointer of the current attribute.
+  //! The method has better performance as not-creating handle.
+  inline const TDF_Attribute* PtrValue() const { return myValue; }
 
 protected:
 
