@@ -1453,6 +1453,7 @@ void AIS_ViewController::handleOrbitRotation (const Handle(V3d_View)& theView,
 
     myRotatePnt3d      = thePnt;
     myCamStartOpUp     = aCam->Up();
+    myCamStartOpDir    = aCam->Direction();
     myCamStartOpEye    = aCam->Eye();
     myCamStartOpCenter = aCam->Center();
 
@@ -1493,8 +1494,9 @@ void AIS_ViewController::handleOrbitRotation (const Handle(V3d_View)& theView,
 
     const gp_Dir aNewUp = gp::DZ().Transformed (aTrsfRot);
     aCam->SetUp (aNewUp);
-    aCam->SetCenter(myRotatePnt3d.XYZ() + myCamStartOpToCenter.Transformed (aTrsfRot).XYZ());
-    aCam->SetEye   (myRotatePnt3d.XYZ() + myCamStartOpToEye   .Transformed (aTrsfRot).XYZ());
+    aCam->SetEyeAndCenter (myRotatePnt3d.XYZ() + myCamStartOpToEye   .Transformed (aTrsfRot).XYZ(),
+                           myRotatePnt3d.XYZ() + myCamStartOpToCenter.Transformed (aTrsfRot).XYZ());
+
     aCam->OrthogonalizeUp();
   }
   else
@@ -1504,9 +1506,9 @@ void AIS_ViewController::handleOrbitRotation (const Handle(V3d_View)& theView,
     //theView->Rotate (aDX, aDY, aDZ, myRotatePnt3d.X(), myRotatePnt3d.Y(), myRotatePnt3d.Z(), false);
 
     // restore previous camera state
-    aCam->SetUp     (myCamStartOpUp);
-    aCam->SetEye    (myCamStartOpEye);
-    aCam->SetCenter (myCamStartOpCenter);
+    aCam->SetEyeAndCenter (myCamStartOpEye, myCamStartOpCenter);
+    aCam->SetUp (myCamStartOpUp);
+    aCam->SetDirectionFromEye (myCamStartOpDir);
 
     Graphic3d_Vec2d aWinXY;
     theView->Size (aWinXY.x(), aWinXY.y());
@@ -1599,11 +1601,10 @@ void AIS_ViewController::handleViewRotation (const Handle(V3d_View)& theView,
   gp_Trsf aTrsfRot;
   aTrsfRot.SetRotation (aRot);
 
-  const double aDist   = aCam->Distance();
   const gp_Dir aNewUp  = gp::DZ().Transformed (aTrsfRot);
   const gp_Dir aNewDir = gp::DX().Transformed (aTrsfRot);
-  aCam->SetUp     (aNewUp);
-  aCam->SetCenter (aCam->Eye().Translated (gp_Vec (aNewDir) * aDist));
+  aCam->SetUp (aNewUp);
+  aCam->SetDirectionFromEye (aNewDir);
   aCam->OrthogonalizeUp();
   theView->Invalidate();
 }

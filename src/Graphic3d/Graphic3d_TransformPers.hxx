@@ -349,7 +349,7 @@ void Graphic3d_TransformPers::Apply (const Handle(Graphic3d_Camera)& theCamera,
     // scale factor to pixels
     const gp_XYZ aViewDim = theCamera->ViewDimensions (aFocus);
     const Standard_Real aScale = Abs(aViewDim.Y()) / Standard_Real(aVPSizeY);
-    const gp_Dir aForward (theCamera->Center().XYZ() - theCamera->Eye().XYZ());
+    const gp_Dir aForward = theCamera->Direction();
     gp_XYZ aCenter = theCamera->Center().XYZ() + aForward.XYZ() * (aFocus - theCamera->Distance());
     if ((myParams.Params2d.Corner & (Aspect_TOTP_LEFT | Aspect_TOTP_RIGHT)) != 0)
     {

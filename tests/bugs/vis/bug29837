@@ -1,0 +1,20 @@
+puts "============"
+puts "0029837: Visualization, Graphic3d_Camera - Fit All operation works incorrectly on flat object"
+puts "============"
+puts ""
+
+pload VISUALIZATION
+vclear
+vinit View1
+vtop
+vpoint p1   0 0 4000
+vpoint p2 200 0 4000
+vaspects p1 -setColor RED
+vaspects p2 -setColor GREEN
+vaspects p1 p2 -setMarkerType . -setMarkerSize 20
+vsegment s p1 p2
+vfit
+if { [vreadpixel   5 200 -rgb -name] != "RED"   } { puts "Error: p1 not found" }
+if { [vreadpixel 402 200 -rgb -name] != "GREEN" } { puts "Error: p2 not found" }
+
+vdump $::imagedir/${::casename}.png

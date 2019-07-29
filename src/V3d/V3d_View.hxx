@@ -995,6 +995,7 @@ protected:
   Standard_Real myOldMouseX;
   Standard_Real myOldMouseY;
   gp_Dir myCamStartOpUp;
+  gp_Dir myCamStartOpDir;
   gp_Pnt myCamStartOpEye;
   Standard_Real myCamStartOpBnd[6];
   gp_Pnt myCamStartOpCenter;

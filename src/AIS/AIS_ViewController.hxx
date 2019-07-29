@@ -672,6 +672,7 @@ protected: //! @name rotation/panning transient state variables
   gp_Pnt              myPanPnt3d;                 //!< active panning anchor point
   gp_Pnt              myRotatePnt3d;              //!< active rotation center of gravity
   gp_Dir              myCamStartOpUp;             //!< camera Up    direction at the beginning of rotation
+  gp_Dir              myCamStartOpDir;            //!< camera View  direction at the beginning of rotation
   gp_Pnt              myCamStartOpEye;            //!< camera Eye    position at the beginning of rotation
   gp_Pnt              myCamStartOpCenter;         //!< camera Center position at the beginning of rotation
   gp_Vec              myCamStartOpToCenter;       //!< vector from rotation gravity point to camera Center at the beginning of rotation

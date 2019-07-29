@@ -39,9 +39,6 @@ namespace
   // atomic state counter
   static volatile Standard_Integer THE_STATE_COUNTER = 0;
 
-  // minimum camera distance
-  static const Standard_Real MIN_DISTANCE = Pow (0.1, ShortRealDigits() - 2);
-
   // z-range tolerance compatible with for floating point.
   static Standard_Real zEpsilon()
   {
@@ -64,7 +61,7 @@ namespace
   //! Convert camera definition to Ax3
   gp_Ax3 cameraToAx3 (const Graphic3d_Camera& theCamera)
   {
-    const gp_Dir aBackDir(gp_Vec(theCamera.Center(), theCamera.Eye()));
+    const gp_Dir aBackDir = -theCamera.Direction();
     const gp_Dir anXAxis (theCamera.Up().Crossed (aBackDir));
     const gp_Dir anYAxis (aBackDir      .Crossed (anXAxis));
     const gp_Dir aZAxis  (anXAxis       .Crossed (anYAxis));
@@ -78,8 +75,9 @@ namespace
 // =======================================================================
 Graphic3d_Camera::Graphic3d_Camera()
 : myUp (0.0, 1.0, 0.0),
+  myDirection (0.0, 0.0, 1.0),
   myEye (0.0, 0.0, -1500.0),
-  myCenter (0.0, 0.0, 0.0),
+  myDistance (1500.0),
   myAxialScale (1.0, 1.0, 1.0),
   myProjType (Projection_Orthographic),
   myFOVy (45.0),
@@ -104,8 +102,9 @@ Graphic3d_Camera::Graphic3d_Camera()
 // =======================================================================
 Graphic3d_Camera::Graphic3d_Camera (const Handle(Graphic3d_Camera)& theOther)
 : myUp (0.0, 1.0, 0.0),
+  myDirection (0.0, 0.0, 1.0),
   myEye (0.0, 0.0, -1500.0),
-  myCenter (0.0, 0.0, 0.0),
+  myDistance (1500.0),
   myAxialScale (1.0, 1.0, 1.0),
   myProjType (Projection_Orthographic),
   myFOVy (45.0),
@@ -146,9 +145,17 @@ void Graphic3d_Camera::CopyMappingData (const Handle(Graphic3d_Camera)& theOther
 // =======================================================================
 void Graphic3d_Camera::CopyOrientationData (const Handle(Graphic3d_Camera)& theOtherCamera)
 {
-  SetUp         (theOtherCamera->Up());
-  SetEye        (theOtherCamera->Eye());
-  SetCenter     (theOtherCamera->Center());
+  if (!myEye.IsEqual (theOtherCamera->Eye(), 0.0)
+   || !myUp.IsEqual (theOtherCamera->Up(), 0.0)
+   || !myDirection.IsEqual (theOtherCamera->Direction(), 0.0)
+   ||  myDistance != theOtherCamera->Distance())
+  {
+    myEye = theOtherCamera->Eye();
+    myUp  = theOtherCamera->Up();
+    myDirection = theOtherCamera->Direction();
+    myDistance = theOtherCamera->Distance();
+    InvalidateOrientation();
+  }
   SetAxialScale (theOtherCamera->AxialScale());
 }
 
@@ -163,6 +170,43 @@ void Graphic3d_Camera::Copy (const Handle(Graphic3d_Camera)& theOther)
 }
 
 // =======================================================================
+// function : MoveEyeTo
+// purpose  :
+// =======================================================================
+void Graphic3d_Camera::MoveEyeTo (const gp_Pnt& theEye)
+{
+  if (myEye.IsEqual (theEye, 0.0))
+  {
+    return;
+  }
+
+  myEye = theEye;
+  InvalidateOrientation();
+}
+
+// =======================================================================
+// function : SetEyeAndCenter
+// purpose  :
+// =======================================================================
+void Graphic3d_Camera::SetEyeAndCenter (const gp_Pnt& theEye,
+                                        const gp_Pnt& theCenter)
+{
+  if (Eye()   .IsEqual (theEye,    0.0)
+   && Center().IsEqual (theCenter, 0.0))
+  {
+    return;
+  }
+
+  myEye = theEye;
+  myDistance = theEye.Distance (theCenter);
+  if (myDistance > gp::Resolution())
+  {
+    myDirection = gp_Dir (theCenter.XYZ() - theEye.XYZ());
+  }
+  InvalidateOrientation();
+}
+
+// =======================================================================
 // function : SetEye
 // purpose  :
 // =======================================================================
@@ -173,7 +217,13 @@ void Graphic3d_Camera::SetEye (const gp_Pnt& theEye)
     return;
   }
 
+  const gp_Pnt aCenter = Center();
   myEye = theEye;
+  myDistance = myEye.Distance (aCenter);
+  if (myDistance > gp::Resolution())
+  {
+    myDirection = gp_Dir (aCenter.XYZ() - myEye.XYZ());
+  }
   InvalidateOrientation();
 }
 
@@ -183,12 +233,17 @@ void Graphic3d_Camera::SetEye (const gp_Pnt& theEye)
 // =======================================================================
 void Graphic3d_Camera::SetCenter (const gp_Pnt& theCenter)
 {
-  if (Center().IsEqual (theCenter, 0.0))
+  const Standard_Real aDistance = myEye.Distance (theCenter);
+  if (myDistance == aDistance)
   {
     return;
   }
 
-  myCenter = theCenter;
+  myDistance = aDistance;
+  if (myDistance > gp::Resolution())
+  {
+    myDirection = gp_Dir (theCenter.XYZ() - myEye.XYZ());
+  }
   InvalidateOrientation();
 }
 
@@ -228,26 +283,30 @@ void Graphic3d_Camera::SetAxialScale (const gp_XYZ& theAxialScale)
 // =======================================================================
 void Graphic3d_Camera::SetDistance (const Standard_Real theDistance)
 {
-  if (Distance() == theDistance)
+  if (myDistance == theDistance)
   {
     return;
   }
 
-  gp_Vec aCenter2Eye (Direction());
-  aCenter2Eye.Reverse();
-
-  // Camera should have non-zero distance.
-  aCenter2Eye.Scale (Max (theDistance, MIN_DISTANCE));
-  SetEye (Center().Translated (aCenter2Eye));
+  const gp_Pnt aCenter = Center();
+  myDistance = theDistance;
+  myEye = aCenter.XYZ() - myDirection.XYZ() * myDistance;
+  InvalidateOrientation();
 }
 
 // =======================================================================
-// function : Distance
+// function : SetDirectionFromEye
 // purpose  :
 // =======================================================================
-Standard_Real Graphic3d_Camera::Distance() const
+void Graphic3d_Camera::SetDirectionFromEye (const gp_Dir& theDir)
 {
-  return myEye.Distance (myCenter);
+  if (myDirection.IsEqual (theDir, 0.0))
+  {
+    return;
+  }
+
+  myDirection = theDir;
+  InvalidateOrientation();
 }
 
 // =======================================================================
@@ -256,24 +315,15 @@ Standard_Real Graphic3d_Camera::Distance() const
 // =======================================================================
 void Graphic3d_Camera::SetDirection (const gp_Dir& theDir)
 {
-  if (Direction().IsEqual (theDir, 0.0))
+  if (myDirection.IsEqual (theDir, 0.0))
   {
     return;
   }
 
-  gp_Vec aScaledDir (theDir);
-  aScaledDir.Scale (Distance());
-  aScaledDir.Reverse();
-  SetEye (Center().Translated (aScaledDir));
-}
-
-// =======================================================================
-// function : Direction
-// purpose  :
-// =======================================================================
-gp_Dir Graphic3d_Camera::Direction() const
-{
-  return gp_Dir (gp_Vec (myEye, myCenter));
+  const gp_Pnt aCenter = Center();
+  myDirection = theDir;
+  myEye = aCenter.XYZ() - theDir.XYZ() * myDistance;
+  InvalidateOrientation();
 }
 
 // =======================================================================
@@ -500,9 +550,10 @@ void Graphic3d_Camera::Transform (const gp_Trsf& theTrsf)
     return;
   }
 
-  SetUp     (myUp.Transformed (theTrsf));
-  SetEye    (myEye.Transformed (theTrsf));
-  SetCenter (myCenter.Transformed (theTrsf));
+  myUp .Transform (theTrsf);
+  myDirection.Transform (theTrsf);
+  myEye.Transform (theTrsf);
+  InvalidateOrientation();
 }
 
 // =======================================================================
@@ -953,9 +1004,9 @@ Graphic3d_Camera::TransformMatrices<Elem_t>&
                                   static_cast<Elem_t> (myEye.Y()),
                                   static_cast<Elem_t> (myEye.Z()));
 
-  NCollection_Vec3<Elem_t> aCenter (static_cast<Elem_t> (myCenter.X()),
-                                    static_cast<Elem_t> (myCenter.Y()),
-                                    static_cast<Elem_t> (myCenter.Z()));
+  NCollection_Vec3<Elem_t> aViewDir (static_cast<Elem_t> (myDirection.X()),
+                                     static_cast<Elem_t> (myDirection.Y()),
+                                     static_cast<Elem_t> (myDirection.Z()));
 
   NCollection_Vec3<Elem_t> anUp (static_cast<Elem_t> (myUp.X()),
                                  static_cast<Elem_t> (myUp.Y()),
@@ -965,7 +1016,7 @@ Graphic3d_Camera::TransformMatrices<Elem_t>&
                                          static_cast<Elem_t> (myAxialScale.Y()),
                                          static_cast<Elem_t> (myAxialScale.Z()));
 
-  LookOrientation (anEye, aCenter, anUp, anAxialScale, theMatrices.Orientation);
+  LookOrientation (anEye, aViewDir, anUp, anAxialScale, theMatrices.Orientation);
 
   return theMatrices; // for inline accessors
 }
@@ -1106,12 +1157,12 @@ void Graphic3d_Camera::StereoEyeProj (const Elem_t theLeft,
 // =======================================================================
 template <typename Elem_t>
 void Graphic3d_Camera::LookOrientation (const NCollection_Vec3<Elem_t>& theEye,
-                                        const NCollection_Vec3<Elem_t>& theLookAt,
+                                        const NCollection_Vec3<Elem_t>& theFwdDir,
                                         const NCollection_Vec3<Elem_t>& theUpDir,
                                         const NCollection_Vec3<Elem_t>& theAxialScale,
                                         NCollection_Mat4<Elem_t>& theOutMx)
 {
-  NCollection_Vec3<Elem_t> aForward = theLookAt - theEye;
+  NCollection_Vec3<Elem_t> aForward = theFwdDir;
   aForward.Normalize();
 
   // side = forward x up
@@ -1219,7 +1270,9 @@ bool Graphic3d_Camera::ZFitAll (const Standard_Real theScaleFactor,
     Standard_Real aDistance = aCamPln.Distance (aMeasurePnt);
 
     // Check if the camera is intruded into the scene.
-    if (aCamDir.IsOpposite (gp_Vec (aCamEye, aMeasurePnt), M_PI * 0.5))
+    gp_Vec aVecToMeasurePnt (aCamEye, aMeasurePnt);
+    if (aVecToMeasurePnt.Magnitude() > gp::Resolution()
+     && aCamDir.IsOpposite (aVecToMeasurePnt, M_PI * 0.5))
     {
       aDistance *= -1;
     }
@@ -1310,6 +1363,10 @@ bool Graphic3d_Camera::ZFitAll (const Standard_Real theScaleFactor,
     {
       // Clip zNear according to the minimum value matching the quality.
       aZNear = aZNearMin;
+      if (aZFar < aZNear)
+      {
+        aZFar = aZNear;
+      }
     }
     else
     {
@@ -1325,10 +1382,12 @@ bool Graphic3d_Camera::ZFitAll (const Standard_Real theScaleFactor,
     {
       aZNear = zEpsilon();
     }
+    Standard_ASSERT_RAISE (aZFar > aZNear, "ZFar should be greater than ZNear");
   }
 
   theZNear = aZNear;
   theZFar  = aZFar;
+  Standard_ASSERT_RAISE (aZFar > aZNear, "ZFar should be greater than ZNear");
   return true;
 }
 
@@ -1400,8 +1459,7 @@ Standard_EXPORT void NCollection_Lerp<Handle(Graphic3d_Camera)>::Interpolate (co
     aCenter = anAnchor + aDirEyeToCenter.XYZ() * aDistEyeCenter * aKc;
     anEye   = anAnchor - aDirEyeToCenter.XYZ() * aDistEyeCenter * (1.0 - aKc);
 
-    theCamera->SetCenter (aCenter);
-    theCamera->SetEye    (anEye);
+    theCamera->SetEyeAndCenter (anEye, aCenter);
   }
 
   // apply scaling

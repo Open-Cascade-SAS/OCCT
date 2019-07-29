@@ -609,16 +609,17 @@ void V3d_View::Rotate (const Standard_Real ax,
   if (Start)
   {
     myCamStartOpUp     = aCamera->Up();
+    myCamStartOpDir    = aCamera->Direction();
     myCamStartOpEye    = aCamera->Eye();
     myCamStartOpCenter = aCamera->Center();
   }
 
-  aCamera->SetUp     (myCamStartOpUp);
-  aCamera->SetEye    (myCamStartOpEye);
-  aCamera->SetCenter (myCamStartOpCenter);
+  aCamera->SetUp (myCamStartOpUp);
+  aCamera->SetEyeAndCenter (myCamStartOpEye, myCamStartOpCenter);
+  aCamera->SetDirectionFromEye (myCamStartOpDir);
 
   // rotate camera around 3 initial axes
-  gp_Dir aBackDir (gp_Vec (myCamStartOpCenter, myCamStartOpEye));
+  gp_Dir aBackDir = -myCamStartOpDir;
   gp_Dir aXAxis (myCamStartOpUp.Crossed (aBackDir));
   gp_Dir aYAxis (aBackDir.Crossed (aXAxis));
   gp_Dir aZAxis (aXAxis.Crossed (aYAxis));
@@ -663,15 +664,16 @@ void V3d_View::Rotate(const Standard_Real ax, const Standard_Real ay, const Stan
   {
     myGravityReferencePoint.SetCoord (X, Y, Z);
     myCamStartOpUp     = aCamera->Up();
+    myCamStartOpDir    = aCamera->Direction();
     myCamStartOpEye    = aCamera->Eye();
     myCamStartOpCenter = aCamera->Center();
   }
 
   const Graphic3d_Vertex& aVref = myGravityReferencePoint;
 
-  aCamera->SetUp     (myCamStartOpUp);
-  aCamera->SetEye    (myCamStartOpEye);
-  aCamera->SetCenter (myCamStartOpCenter);
+  aCamera->SetUp (myCamStartOpUp);
+  aCamera->SetEyeAndCenter (myCamStartOpEye, myCamStartOpCenter);
+  aCamera->SetDirectionFromEye (myCamStartOpDir);
 
   // rotate camera around 3 initial axes
   gp_Pnt aRCenter (aVref.X(), aVref.Y(), aVref.Z());
@@ -732,26 +734,22 @@ void V3d_View::Rotate (const V3d_TypeOfAxe theAxe, const Standard_Real theAngle,
   {
     myGravityReferencePoint.SetCoord (theX, theY, theZ);
     myCamStartOpUp     = aCamera->Up();
+    myCamStartOpDir    = aCamera->Direction();
     myCamStartOpEye    = aCamera->Eye();
     myCamStartOpCenter = aCamera->Center();
-
     switch (theAxe)
     {
       case V3d_X: myViewAxis = gp::DX(); break;
       case V3d_Y: myViewAxis = gp::DY(); break;
       case V3d_Z: myViewAxis = gp::DZ(); break;
     }
-
-    myCamStartOpUp     = aCamera->Up();
-    myCamStartOpEye    = aCamera->Eye();
-    myCamStartOpCenter = aCamera->Center();
   }
 
   const Graphic3d_Vertex& aVref = myGravityReferencePoint;
 
-  aCamera->SetUp     (myCamStartOpUp);
-  aCamera->SetEye    (myCamStartOpEye);
-  aCamera->SetCenter (myCamStartOpCenter);
+  aCamera->SetUp (myCamStartOpUp);
+  aCamera->SetEyeAndCenter (myCamStartOpEye, myCamStartOpCenter);
+  aCamera->SetDirectionFromEye (myCamStartOpDir);
 
   // rotate camera around passed axis
   gp_Trsf aRotation;
@@ -782,15 +780,17 @@ void V3d_View::Rotate(const Standard_Real angle, const Standard_Boolean Start)
 
   Handle(Graphic3d_Camera) aCamera = Camera();
 
-  if( Start ) {
+  if (Start)
+  {
     myCamStartOpUp     = aCamera->Up();
+    myCamStartOpDir    = aCamera->Direction();
     myCamStartOpEye    = aCamera->Eye();
     myCamStartOpCenter = aCamera->Center();
   }
 
-  aCamera->SetUp     (myCamStartOpUp);
-  aCamera->SetEye    (myCamStartOpEye);
-  aCamera->SetCenter (myCamStartOpCenter);
+  aCamera->SetUp (myCamStartOpUp);
+  aCamera->SetEyeAndCenter (myCamStartOpEye, myCamStartOpCenter);
+  aCamera->SetDirectionFromEye (myCamStartOpDir);
 
   gp_Trsf aRotation;
   gp_Pnt aRCenter (myDefaultViewPoint);
@@ -823,15 +823,17 @@ void V3d_View::Turn(const Standard_Real ax, const Standard_Real ay, const Standa
 
   Handle(Graphic3d_Camera) aCamera = Camera();
 
-  if( Start ) {
+  if (Start)
+  {
     myCamStartOpUp     = aCamera->Up();
+    myCamStartOpDir    = aCamera->Direction();
     myCamStartOpEye    = aCamera->Eye();
     myCamStartOpCenter = aCamera->Center();
   }
 
-  aCamera->SetUp     (myCamStartOpUp);
-  aCamera->SetEye    (myCamStartOpEye);
-  aCamera->SetCenter (myCamStartOpCenter);
+  aCamera->SetUp (myCamStartOpUp);
+  aCamera->SetEyeAndCenter (myCamStartOpEye, myCamStartOpCenter);
+  aCamera->SetDirectionFromEye (myCamStartOpDir);
 
   // rotate camera around 3 initial axes
   gp_Pnt aRCenter = aCamera->Eye();
@@ -886,15 +888,17 @@ void V3d_View::Turn(const Standard_Real angle, const Standard_Boolean Start)
 
   Handle(Graphic3d_Camera) aCamera = Camera();
 
-  if( Start ) {
+  if (Start)
+  {
     myCamStartOpUp     = aCamera->Up();
+    myCamStartOpDir    = aCamera->Direction();
     myCamStartOpEye    = aCamera->Eye();
     myCamStartOpCenter = aCamera->Center();
   }
 
-  aCamera->SetUp     (myCamStartOpUp);
-  aCamera->SetEye    (myCamStartOpEye);
-  aCamera->SetCenter (myCamStartOpCenter);
+  aCamera->SetUp (myCamStartOpUp);
+  aCamera->SetEyeAndCenter (myCamStartOpEye, myCamStartOpCenter);
+  aCamera->SetDirectionFromEye (myCamStartOpDir);
 
   gp_Trsf aRotation;
   gp_Pnt aRCenter = aCamera->Eye();
@@ -1054,8 +1058,10 @@ void V3d_View::SetProj (const V3d_TypeOfOrientation theOrientation,
   const Handle(Graphic3d_Camera)& aCamera = Camera();
   const gp_Pnt anOriginVCS = aCamera->ConvertWorld2View (gp::Origin());
 
-  aCamera->SetCenter (gp_Pnt (0, 0, 0));
-  aCamera->SetDirection (gp_Dir (aBck.X(), aBck.Y(), aBck.Z()).Reversed());
+  const Standard_Real aNewDist = aCamera->Eye().Distance (gp_Pnt (0, 0, 0));
+  aCamera->SetEyeAndCenter (gp_XYZ (0, 0, 0) + aBck.XYZ() * aNewDist,
+                            gp_XYZ (0, 0, 0));
+  aCamera->SetDirectionFromEye (-aBck);
   aCamera->SetUp (gp_Dir (anUp.x(), anUp.y(), anUp.z()));
   aCamera->OrthogonalizeUp();
 
@@ -2343,6 +2349,7 @@ void V3d_View::Panning (const Standard_Real theDXv,
 
   if (theToStart)
   {
+    myCamStartOpDir    = aCamera->Direction();
     myCamStartOpEye    = aCamera->Eye();
     myCamStartOpCenter = aCamera->Center();
   }
@@ -2351,8 +2358,8 @@ void V3d_View::Panning (const Standard_Real theDXv,
 
   gp_Pnt aViewDims = aCamera->ViewDimensions();
 
-  aCamera->SetEye (myCamStartOpEye);
-  aCamera->SetCenter (myCamStartOpCenter);
+  aCamera->SetEyeAndCenter (myCamStartOpEye, myCamStartOpCenter);
+  aCamera->SetDirectionFromEye (myCamStartOpDir);
   Translate (aCamera, -theDXv, -theDYv);
   Scale (aCamera, aViewDims.X() / theZoomFactor, aViewDims.Y() / theZoomFactor);
 

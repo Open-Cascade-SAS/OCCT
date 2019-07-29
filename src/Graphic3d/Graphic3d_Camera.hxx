@@ -155,30 +155,28 @@ public:
 //! @name Public camera properties
 public:
 
-  //! Sets camera Eye position.
-  //! @param theEye [in] the location of camera's Eye.
-  Standard_EXPORT void SetEye (const gp_Pnt& theEye);
+  //! Get camera look direction.
+  //! @return camera look direction.
+  const gp_Dir& Direction() const { return myDirection; }
 
-  //! Get camera Eye position.
-  //! @return camera eye location.
-  const gp_Pnt& Eye() const
-  {
-    return myEye;
-  }
+  //! Sets camera look direction preserving the current Eye() position.
+  //! WARNING! This method does NOT verify that the current Up() vector is orthogonal to the new Direction.
+  //! @param theDir [in] the direction.
+  Standard_EXPORT void SetDirectionFromEye (const gp_Dir& theDir);
 
-  //! Sets Center of the camera.
-  //! @param theCenter [in] the point where the camera looks at.
-  Standard_EXPORT void SetCenter (const gp_Pnt& theCenter);
+  //! Sets camera look direction and computes the new Eye position relative to current Center.
+  //! WARNING! This method does NOT verify that the current Up() vector is orthogonal to the new Direction.
+  //! @param theDir [in] the direction.
+  Standard_EXPORT void SetDirection (const gp_Dir& theDir);
 
-  //! Get Center of the camera.
-  //! @return the point where the camera looks at.
-  const gp_Pnt& Center() const
-  {
-    return myCenter;
-  }
+  //! Get camera Up direction vector.
+  //! @return Camera's Up direction vector.
+  const gp_Dir& Up() const { return myUp; }
 
   //! Sets camera Up direction vector, orthogonal to camera direction.
+  //! WARNING! This method does NOT verify that the new Up vector is orthogonal to the current Direction().
   //! @param theUp [in] the Up direction vector.
+  //! @sa OrthogonalizeUp().
   Standard_EXPORT void SetUp (const gp_Dir& theUp);
 
   //! Orthogonalize up direction vector.
@@ -187,39 +185,54 @@ public:
   //! Return a copy of orthogonalized up direction vector.
   Standard_EXPORT gp_Dir OrthogonalizedUp() const;
 
-  //! Get camera Up direction vector.
-  //! @return Camera's Up direction vector.
-  const gp_Dir& Up() const
+  //! Get camera Eye position.
+  //! @return camera eye location.
+  const gp_Pnt& Eye() const { return myEye; }
+
+  //! Sets camera Eye position.
+  //! Unlike SetEye(), this method only changes Eye point and preserves camera direction.
+  //! @param theEye [in] the location of camera's Eye.
+  //! @sa SetEye()
+  Standard_EXPORT void MoveEyeTo (const gp_Pnt& theEye);
+
+  //! Sets camera Eye and Center positions.
+  //! @param theEye    [in] the location of camera's Eye
+  //! @param theCenter [in] the location of camera's Center
+  Standard_EXPORT void SetEyeAndCenter (const gp_Pnt& theEye,
+                                        const gp_Pnt& theCenter);
+
+  //! Sets camera Eye position.
+  //! WARNING! For backward compatibility reasons, this method also changes view direction,
+  //! so that the new direction is computed from new Eye position to old Center position.
+  //! @param theEye [in] the location of camera's Eye.
+  //! @sa MoveEyeTo(), SetEyeAndCenter()
+  Standard_EXPORT void SetEye (const gp_Pnt& theEye);
+
+  //! Get Center of the camera, e.g. the point where camera looks at.
+  //! This point is computed as Eye() translated along Direction() at Distance().
+  //! @return the point where the camera looks at.
+  gp_Pnt Center() const
   {
-    return myUp;
+    return myEye.XYZ() + myDirection.XYZ() * myDistance;
   }
 
-  //! Set camera axial scale.
-  //! @param theAxialScale [in] the axial scale vector.
-  Standard_EXPORT void SetAxialScale (const gp_XYZ& theAxialScale);
+  //! Sets Center of the camera, e.g. the point where camera looks at.
+  //! This methods changes camera direction, so that the new direction is computed
+  //! from current Eye position to specified Center position.
+  //! @param theCenter [in] the point where the camera looks at.
+  Standard_EXPORT void SetCenter (const gp_Pnt& theCenter);
 
-  //! Get camera axial scale.
-  //! @return Camera's axial scale.
-  const gp_XYZ& AxialScale() const
-  {
-    return myAxialScale;
-  }
+  //! Get distance of Eye from camera Center.
+  //! @return the distance.
+  Standard_Real Distance() const { return myDistance; }
 
   //! Set distance of Eye from camera Center.
   //! @param theDistance [in] the distance.
   Standard_EXPORT void SetDistance (const Standard_Real theDistance);
 
-  //! Get distance of Eye from camera Center.
-  //! @return the distance.
-  Standard_EXPORT Standard_Real Distance() const;
-
-  //! Sets camera look direction.
-  //! @param theDir [in] the direction.
-  Standard_EXPORT void SetDirection (const gp_Dir& theDir);
-
-  //! Get camera look direction.
-  //! @return camera look direction.
-  Standard_EXPORT gp_Dir Direction() const;
+  //! Get camera scale.
+  //! @return camera scale factor.
+  Standard_EXPORT Standard_Real Scale() const;
 
   //! Sets camera scale. For orthographic projection the scale factor
   //! corresponds to parallel scale of view mapping  (i.e. size
@@ -231,9 +244,13 @@ public:
   //! @param theScale [in] the scale factor.
   Standard_EXPORT void SetScale (const Standard_Real theScale);
 
-  //! Get camera scale.
-  //! @return camera scale factor.
-  Standard_EXPORT Standard_Real Scale() const;
+  //! Get camera axial scale.
+  //! @return Camera's axial scale.
+  const gp_XYZ& AxialScale() const { return myAxialScale; }
+
+  //! Set camera axial scale.
+  //! @param theAxialScale [in] the axial scale vector.
+  Standard_EXPORT void SetAxialScale (const gp_XYZ& theAxialScale);
 
   //! Change camera projection type.
   //! When switching to perspective projection from orthographic one,
@@ -619,14 +636,14 @@ private:
   //! Reference point differs for perspective and ortho modes 
   //! (made for compatibility, to be improved..).
   //! @param theEye [in] the eye coordinates in 3D space.
-  //! @param theLookAt [in] the point the camera looks at.
+  //! @param theFwdDir [in] view direction
   //! @param theUpDir [in] the up direction vector.
   //! @param theAxialScale [in] the axial scale vector.
   //! @param theOutMx [in/out] the orientation matrix.
   template <typename Elem_t>
   static void
     LookOrientation (const NCollection_Vec3<Elem_t>& theEye,
-                     const NCollection_Vec3<Elem_t>& theLookAt,
+                     const NCollection_Vec3<Elem_t>& theFwdDir,
                      const NCollection_Vec3<Elem_t>& theUpDir,
                      const NCollection_Vec3<Elem_t>& theAxialScale,
                      NCollection_Mat4<Elem_t>&       theOutMx);
@@ -654,9 +671,10 @@ public:
 
 private:
 
-  gp_Dir myUp;     //!< Camera up direction vector.
-  gp_Pnt myEye;    //!< Camera eye position.
-  gp_Pnt myCenter; //!< Camera center.
+  gp_Dir        myUp;       //!< Camera up direction vector
+  gp_Dir        myDirection;//!< Camera view direction (from eye)
+  gp_Pnt        myEye;      //!< Camera eye position
+  Standard_Real myDistance; //!< distance from Eye to Center
 
   gp_XYZ myAxialScale; //!< World axial scale.
 
