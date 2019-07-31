@@ -1,0 +1,48 @@
+puts "========================"
+puts "0030856: Wrong colors after STEP file import"
+puts "========================"
+
+pload DCAF
+
+ReadStep D1 [locate_data_file bug30856_SOT223-4P230_700X190L65X72.step]
+WriteStep D1 $imagedir/${casename}.stp
+ReadStep D2 $imagedir/${casename}.stp
+
+# Check colors
+# Blue
+set color1 [XGetShapeColor D1 0:1:1:1:1 s]
+set color2 [XGetShapeColor D2 0:1:1:1:1 s]
+if {$color1 != "BLUE1" || $color2 != "BLUE1"} {
+  puts "Error: wrong color."
+}
+
+# Gray
+set color1 [XGetShapeColor D1 0:1:1:1:2 s]
+set color2 [XGetShapeColor D2 0:1:1:1:2 s]
+if {$color1 != "GRAY" || $color2 != "GRAY"} {
+  puts "Error: wrong color."
+}
+
+set color1 [XGetShapeColor D1 0:1:1:1:3 s]
+set color2 [XGetShapeColor D2 0:1:1:1:3 s]
+if {$color1 != "GRAY" || $color2 != "GRAY"} {
+  puts "Error: wrong color."
+}
+
+set color1 [XGetShapeColor D1 0:1:1:1:4 s]
+set color2 [XGetShapeColor D2 0:1:1:1:4 s]
+if {$color1 != "GRAY" || $color2 != "GRAY"} {
+  puts "Error: wrong color."
+}
+
+# White
+set color1 [XGetShapeColor D1 0:1:1:1:30 s]
+set color2 [XGetShapeColor D2 0:1:1:1:30 s]
+if {$color1 != "WHITE" || $color2 != "WHITE"} {
+  puts "Error: wrong color."
+}
+
+# Clean data
+Close D1
+Close D2
+file delete $imagedir/${casename}.stp

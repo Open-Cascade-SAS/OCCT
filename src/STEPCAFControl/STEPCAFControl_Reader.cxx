@@ -26,6 +26,7 @@
 #include <NCollection_DataMap.hxx>
 #include <OSD_Path.hxx>
 #include <Quantity_Color.hxx>
+#include <Quantity_ColorRGBA.hxx>
 #include <StepAP214_AppliedExternalIdentificationAssignment.hxx>
 #include <StepBasic_ConversionBasedUnitAndLengthUnit.hxx>
 #include <StepBasic_ConversionBasedUnitAndPlaneAngleUnit.hxx>
@@ -888,6 +889,45 @@ static void findStyledSR(const Handle(StepVisual_StyledItem) &style,
 
 
 //=======================================================================
+//function : propagateColorToParts
+//purpose  : auxilary, propagate color styles from assemblies to parts
+//=======================================================================
+
+static void propagateColorToParts(const Handle(XCAFDoc_ShapeTool)& theSTool,
+                                  const Handle(XCAFDoc_ColorTool)& theCTool,
+                                  const TDF_Label& theRoot)
+{
+  // collect components to propagate
+  TDF_LabelSequence aComponents;
+  if (theRoot.IsEqual(theSTool->Label()))
+    theSTool->GetFreeShapes(aComponents);
+  else
+    theSTool->GetComponents(theRoot, aComponents);
+
+  // iterate each component
+  for (TDF_LabelSequence::Iterator anIt(aComponents); anIt.More(); anIt.Next())
+  {
+    // get original label
+    TDF_Label anOriginalL = anIt.Value();
+    theSTool->GetReferredShape(anOriginalL, anOriginalL);
+
+    // propagate to components without own colors
+    TDF_Label aColorL, aDummyColorL;
+    for (Standard_Integer aType = 1; aType <= 3; aType++)
+    {
+      if (theCTool->GetColor(theRoot, (XCAFDoc_ColorType)aType, aColorL) &&
+          !theCTool->GetColor(anOriginalL, (XCAFDoc_ColorType)aType, aDummyColorL))
+        theCTool->SetColor(anOriginalL, aColorL, (XCAFDoc_ColorType)aType);
+    }
+    if (!theCTool->IsVisible(theRoot))
+      theCTool->SetVisibility(anOriginalL, Standard_False);
+
+    // propagate to next level children
+    if (theSTool->IsAssembly(anOriginalL))
+      propagateColorToParts(theSTool, theCTool, anOriginalL);
+  }
+}
+//=======================================================================
 //function : ReadColors
 //purpose  : 
 //=======================================================================
@@ -934,20 +974,20 @@ Standard_Boolean STEPCAFControl_Reader::ReadColors(const Handle(XSControl_WorkSe
     if (!Styles.GetColors(style, SurfCol, BoundCol, CurveCol, IsComponent) && IsVisible)
       continue;
 
-    // find shape
-    NCollection_Vector<Handle(Standard_Transient)> anItems;
-    if (!style->Item().IsNull()) {
-      anItems.Append(style->Item());
+    // collect styled items
+    NCollection_Vector<StepVisual_StyledItemTarget> anItems;
+    if (!style->ItemAP242().IsNull()) {
+      anItems.Append(style->ItemAP242());
     }
-    else if (!style->ItemAP242().Representation().IsNull()) {
-      //special case for AP242: item can be Reprsentation
-      Handle(StepRepr_Representation) aRepr = style->ItemAP242().Representation();
-      for (Standard_Integer j = 1; j <= aRepr->Items()->Length(); j++)
-        anItems.Append(aRepr->Items()->Value(j));
-    }
+
+    const Handle(Transfer_TransientProcess) &TP = WS->TransferReader()->TransientProcess();
     for (Standard_Integer itemIt = 0; itemIt < anItems.Length(); itemIt++) {
-      TopoDS_Shape S = STEPConstruct::FindShape(Styles.TransientProcess(),
-        Handle(StepRepr_RepresentationItem)::DownCast(anItems.Value(itemIt)));
+      Standard_Integer index = TP->MapIndex(anItems.Value(itemIt).Value());
+      TopoDS_Shape S;
+      if (index > 0) {
+        Handle(Transfer_Binder) binder = TP->MapItem(index);
+        S = TransferBRep::ShapeResult(binder);
+      }
       Standard_Boolean isSkipSHUOstyle = Standard_False;
       // take shape with real location.
       while (IsComponent) {
@@ -1051,6 +1091,9 @@ Standard_Boolean STEPCAFControl_Reader::ReadColors(const Handle(XSControl_WorkSe
     }
   }
   CTool->ReverseChainsOfTreeNodes();
+
+  // some colors can be attached to assemblies, propagate them to components
+  propagateColorToParts(STool, CTool, STool->Label());
   return Standard_True;
 }
 
